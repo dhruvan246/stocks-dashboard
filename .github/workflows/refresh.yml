@@ -1,0 +1,64 @@
+name: Daily stock data refresh
+
+on:
+  schedule:
+    # 14:30 UTC == 20:00 IST
+    - cron: "30 14 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Download NSE + BSE scrip lists
+        run: |
+          curl -s -A "Mozilla/5.0" \
+               "https://archives.nseindia.com/content/equities/EQUITY_L.csv" \
+               -o /tmp/nse.csv
+          curl -s -A "Mozilla/5.0" \
+               -H "Referer: https://www.bseindia.com/" \
+               "https://api.bseindia.com/BseIndiaAPI/api/ListofScripData/w?Group=&Scripcode=&industry=&segment=Equity&status=Active" \
+               -o /tmp/bse.json
+          wc -l /tmp/nse.csv
+          ls -la /tmp/bse.json
+
+      - name: Fetch price history from Yahoo Finance
+        run: python3 scripts/fetch_all.py
+
+      - name: Fetch sector metadata from BSE
+        run: python3 scripts/fetch_sectors.py
+
+      - name: Build dashboard HTML
+        run: python3 scripts/build_compressed.py
+
+      - name: Commit updated dashboard
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/nse-bse-dashboard.html
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Daily refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            git push
+          fi
+
+      - name: Upload raw data as artifact (optional, 7-day retention)
+        uses: actions/upload-artifact@v4
+        with:
+          name: stock_data
+          path: scripts/stock_data.json
+          retention-days: 7
+          if-no-files-found: ignore
