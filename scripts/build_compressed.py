@@ -100,17 +100,25 @@ HTML = r"""<!DOCTYPE html>
           <label class="block text-xs font-medium text-slate-600 mb-1">To Date</label>
           <input type="date" id="toDate" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white" />
         </div>
-        <div class="md:col-span-1">
+        <div class="md:col-span-1 relative">
           <label class="block text-xs font-medium text-slate-600 mb-1">Market Cap (&#8377; Cr)</label>
-          <select id="mcapRange" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
-            <option value="all">All market caps</option>
-            <option value="below100">100 and below</option>
-            <option value="100to500">100 &ndash; 500</option>
-            <option value="500to1000">500 &ndash; 1,000</option>
-            <option value="1000to5000">1,000 &ndash; 5,000</option>
-            <option value="5000to20000">5,000 &ndash; 20,000</option>
-            <option value="above20000">20,000 and above</option>
-          </select>
+          <button type="button" id="mcapTrigger"
+                  class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm bg-white text-left flex justify-between items-center hover:bg-slate-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            <span id="mcapLabel" class="truncate">All market caps</span>
+            <svg class="w-4 h-4 text-slate-400 ml-1 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div id="mcapPanel" class="hidden absolute z-30 mt-1 w-64 bg-white border border-slate-200 rounded-lg shadow-lg p-2">
+            <div class="flex justify-between text-[11px] text-slate-500 px-2 py-1 border-b border-slate-100 mb-1">
+              <button type="button" id="mcapSelectAll" class="hover:text-blue-600 font-medium">Select all</button>
+              <button type="button" id="mcapClear"     class="hover:text-blue-600 font-medium">Clear</button>
+            </div>
+            <label class="flex items-center gap-2 px-2 py-1 hover:bg-slate-50 rounded cursor-pointer text-sm"><input type="checkbox" class="mcap-cb rounded border-slate-300" data-bucket="below100"/>100 and below</label>
+            <label class="flex items-center gap-2 px-2 py-1 hover:bg-slate-50 rounded cursor-pointer text-sm"><input type="checkbox" class="mcap-cb rounded border-slate-300" data-bucket="100to500"/>100 &ndash; 500</label>
+            <label class="flex items-center gap-2 px-2 py-1 hover:bg-slate-50 rounded cursor-pointer text-sm"><input type="checkbox" class="mcap-cb rounded border-slate-300" data-bucket="500to1000"/>500 &ndash; 1,000</label>
+            <label class="flex items-center gap-2 px-2 py-1 hover:bg-slate-50 rounded cursor-pointer text-sm"><input type="checkbox" class="mcap-cb rounded border-slate-300" data-bucket="1000to5000"/>1,000 &ndash; 5,000</label>
+            <label class="flex items-center gap-2 px-2 py-1 hover:bg-slate-50 rounded cursor-pointer text-sm"><input type="checkbox" class="mcap-cb rounded border-slate-300" data-bucket="5000to20000"/>5,000 &ndash; 20,000</label>
+            <label class="flex items-center gap-2 px-2 py-1 hover:bg-slate-50 rounded cursor-pointer text-sm"><input type="checkbox" class="mcap-cb rounded border-slate-300" data-bucket="above20000"/>20,000 and above</label>
+          </div>
         </div>
         <div class="md:col-span-1">
           <label class="block text-xs font-medium text-slate-600 mb-1">Industry</label>
@@ -270,15 +278,21 @@ async function loadAndInit() {
   }
 }
 
+// Test a single mcap value against a single bucket key
 function inMcapBucket(mcap, bucket) {
-  if (bucket === 'all') return true;
   if (bucket === 'below100')     return mcap > 0 && mcap <= 100;
   if (bucket === '100to500')     return mcap > 100    && mcap <= 500;
   if (bucket === '500to1000')    return mcap > 500    && mcap <= 1000;
   if (bucket === '1000to5000')   return mcap > 1000   && mcap <= 5000;
   if (bucket === '5000to20000')  return mcap > 5000   && mcap <= 20000;
   if (bucket === 'above20000')   return mcap > 20000;
-  return true;
+  return false;
+}
+// True if mcap matches ANY bucket in the set; empty set means no filter (all)
+function inAnyMcapBucket(mcap, bucketSet) {
+  if (!bucketSet || bucketSet.size === 0) return true;
+  for (const b of bucketSet) if (inMcapBucket(mcap, b)) return true;
+  return false;
 }
 
 function firstOnOrAfter(arr, v) {
@@ -297,7 +311,7 @@ let lastResults = [];
 function loadData() {
   const fromDate     = document.getElementById('fromDate').value;
   const toDate       = document.getElementById('toDate').value;
-  const mcapRange    = document.getElementById('mcapRange').value;
+  const mcapBuckets  = getMcapBucketSet();   // Set of selected buckets (empty = all)
   const sectorFilter = document.getElementById('sectorFilter').value;
   if (!fromDate || !toDate)                 return alert('Please select both From Date and To Date');
   if (new Date(fromDate) >= new Date(toDate)) return alert('From Date must be earlier than To Date');
@@ -310,7 +324,7 @@ function loadData() {
   const results = [];
   for (const ticker of UNIVERSE) {
     const m = META[ticker];
-    if (!inMcapBucket(m.mcap, mcapRange)) continue;
+    if (!inAnyMcapBucket(m.mcap, mcapBuckets)) continue;
     const indKey = (m.industry && m.industry.trim()) || m.sector || 'Uncategorized';
     if (sectorFilter !== 'all' && indKey !== sectorFilter) continue;
     const ser = SERIES[ticker];
@@ -460,6 +474,50 @@ document.getElementById('loadBtn').addEventListener('click', loadData);
 document.getElementById('sortBy').addEventListener('change', () => lastResults.length && renderResults(lastResults));
 document.getElementById('searchBox').addEventListener('input', () => lastResults.length && renderResults(lastResults));
 document.getElementById('exportBtn').addEventListener('click', exportCSV);
+
+// --- Market cap multi-select ---
+const MCAP_LABELS = {
+  'below100':    '\u2264 100 Cr',
+  '100to500':    '100\u2013500 Cr',
+  '500to1000':   '500\u20131k Cr',
+  '1000to5000':  '1k\u20135k Cr',
+  '5000to20000': '5k\u201320k Cr',
+  'above20000':  '\u2265 20k Cr',
+};
+function getMcapBucketSet() {
+  const cbs = document.querySelectorAll('#mcapPanel .mcap-cb:checked');
+  return new Set(Array.from(cbs).map(c => c.dataset.bucket));
+}
+function updateMcapLabel() {
+  const cbs = document.querySelectorAll('#mcapPanel .mcap-cb:checked');
+  const lab = document.getElementById('mcapLabel');
+  if (cbs.length === 0)        lab.textContent = 'All market caps';
+  else if (cbs.length === 1)   lab.textContent = MCAP_LABELS[cbs[0].dataset.bucket];
+  else if (cbs.length <= 3)    lab.textContent = Array.from(cbs).map(c => MCAP_LABELS[c.dataset.bucket]).join(', ');
+  else                          lab.textContent = cbs.length + ' selected';
+}
+document.getElementById('mcapTrigger').addEventListener('click', e => {
+  e.stopPropagation();
+  document.getElementById('mcapPanel').classList.toggle('hidden');
+});
+document.querySelectorAll('#mcapPanel .mcap-cb').forEach(cb =>
+  cb.addEventListener('change', () => { updateMcapLabel(); if (lastResults.length || META) loadData(); }));
+document.getElementById('mcapSelectAll').addEventListener('click', () => {
+  document.querySelectorAll('#mcapPanel .mcap-cb').forEach(cb => cb.checked = true);
+  updateMcapLabel();
+  if (Object.keys(META).length) loadData();
+});
+document.getElementById('mcapClear').addEventListener('click', () => {
+  document.querySelectorAll('#mcapPanel .mcap-cb').forEach(cb => cb.checked = false);
+  updateMcapLabel();
+  if (Object.keys(META).length) loadData();
+});
+// click outside closes the panel
+document.addEventListener('click', e => {
+  const panel = document.getElementById('mcapPanel');
+  const trigger = document.getElementById('mcapTrigger');
+  if (!panel.contains(e.target) && !trigger.contains(e.target)) panel.classList.add('hidden');
+});
 document.querySelectorAll('.preset-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const today = new Date();
