@@ -239,8 +239,11 @@ async function loadAndInit() {
 
     const dt = ((performance.now() - t0) / 1000).toFixed(1);
     statusEl.textContent = 'Ready in ' + dt + 's';
+    const priced = Object.keys(SERIES).length;
+    const unpriced = UNIVERSE.length - priced;
     document.getElementById('universeCount').textContent =
-      UNIVERSE.length.toLocaleString('en-IN') + ' NSE & BSE-listed stocks, daily from Mar 2020';
+      UNIVERSE.length.toLocaleString('en-IN') + ' NSE & BSE listings' +
+      ' (' + priced.toLocaleString('en-IN') + ' with prices, ' + unpriced.toLocaleString('en-IN') + ' metadata-only)';
 
     const today = new Date();
     const mar2020 = new Date(2020, 2, 1);
@@ -302,20 +305,29 @@ function loadData() {
     if (!inMcapBucket(m.mcap, mcapRange)) continue;
     if (sectorFilter !== 'all' && (m.sector || 'Uncategorized') !== sectorFilter) continue;
     const ser = SERIES[ticker];
-    if (!ser) continue;
-    const iFrom = firstOnOrAfter(ser.d, fromDayOffset);
-    const iTo   = lastOnOrBefore(ser.d, toDayOffset);
-    if (iFrom === -1 || iTo === -1 || iTo <= iFrom) continue;
-    const fromPrice = ser.p[iFrom] / 100;
-    const toPrice   = ser.p[iTo]   / 100;
-    if (!fromPrice || !toPrice) continue;
-    const changePercent = ((toPrice - fromPrice) / fromPrice) * 100;
-    results.push({
+    // Base row — same shape regardless of whether we have prices.
+    const row = {
       symbol: m.symbol, name: m.name, sector: m.sector, mcap: m.mcap,
-      fromPrice, toPrice, changePercent,
-      fromDate: new Date((START_TS + ser.d[iFrom] * DAY) * 1000).toISOString().slice(0, 10),
-      toDate:   new Date((START_TS + ser.d[iTo]   * DAY) * 1000).toISOString().slice(0, 10),
-    });
+      fromPrice: null, toPrice: null, changePercent: null,
+      fromDate: null,  toDate: null,  noData: true,
+    };
+    if (ser) {
+      const iFrom = firstOnOrAfter(ser.d, fromDayOffset);
+      const iTo   = lastOnOrBefore(ser.d, toDayOffset);
+      if (iFrom !== -1 && iTo !== -1 && iTo > iFrom) {
+        const fromPrice = ser.p[iFrom] / 100;
+        const toPrice   = ser.p[iTo]   / 100;
+        if (fromPrice && toPrice) {
+          row.fromPrice = fromPrice;
+          row.toPrice   = toPrice;
+          row.changePercent = ((toPrice - fromPrice) / fromPrice) * 100;
+          row.fromDate = new Date((START_TS + ser.d[iFrom] * DAY) * 1000).toISOString().slice(0, 10);
+          row.toDate   = new Date((START_TS + ser.d[iTo]   * DAY) * 1000).toISOString().slice(0, 10);
+          row.noData = false;
+        }
+      }
+    }
+    results.push(row);
   }
   lastResults = results;
   renderResults(results);
@@ -328,8 +340,15 @@ function renderResults(results) {
   let f = results;
   if (q) f = f.filter(r => r.symbol.toLowerCase().includes(q) || r.name.toLowerCase().includes(q) || (r.sector || '').toLowerCase().includes(q));
   f = f.slice();
-  if      (sortBy === 'changeDesc') f.sort((a, b) => b.changePercent - a.changePercent);
-  else if (sortBy === 'changeAsc')  f.sort((a, b) => a.changePercent - b.changePercent);
+  // Push noData rows to the bottom for change-based sorts so price-bearing rows lead.
+  const cmpChange = (a, b, dir) => {
+    if (a.noData && b.noData) return 0;
+    if (a.noData) return 1;
+    if (b.noData) return -1;
+    return dir * (a.changePercent - b.changePercent);
+  };
+  if      (sortBy === 'changeDesc') f.sort((a, b) => cmpChange(a, b, -1));
+  else if (sortBy === 'changeAsc')  f.sort((a, b) => cmpChange(a, b,  1));
   else if (sortBy === 'mcapDesc')   f.sort((a, b) => b.mcap - a.mcap);
   else if (sortBy === 'mcapAsc')    f.sort((a, b) => a.mcap - b.mcap);
   else if (sortBy === 'nameAsc')    f.sort((a, b) => a.name.localeCompare(b.name));
@@ -343,57 +362,78 @@ function renderResults(results) {
     tbody.innerHTML = '<tr><td colspan="8" class="text-center text-slate-400 py-16 text-sm">No matching stocks. Adjust filters or search.</td></tr>';
   } else {
     const out = [];
+    const DASH = '<span class="text-slate-400">\u2014</span>';
     for (let i = 0; i < view.length; i++) {
       const r = view[i];
-      const cls = r.changePercent >= 0 ? 'chip-gain' : 'chip-loss';
-      const arr = r.changePercent >= 0 ? '&#9650;' : '&#9660;';
-      const sgn = r.changePercent >= 0 ? '+' : '';
       const mcap = r.mcap > 0 ? r.mcap.toLocaleString('en-IN', {maximumFractionDigits: 0}) : '\u2014';
+      let fromCell, toCell, chgCell;
+      if (r.noData) {
+        fromCell = toCell = chgCell = DASH;
+      } else {
+        const cls = r.changePercent >= 0 ? 'chip-gain' : 'chip-loss';
+        const arr = r.changePercent >= 0 ? '&#9650;' : '&#9660;';
+        const sgn = r.changePercent >= 0 ? '+' : '';
+        fromCell = '&#8377;' + r.fromPrice.toFixed(2);
+        toCell   = '&#8377;' + r.toPrice.toFixed(2);
+        chgCell  = '<span class="inline-flex items-center gap-1 ' + cls + ' rounded-md px-2 py-0.5 font-semibold text-xs tabular-nums">' + arr + ' ' + sgn + r.changePercent.toFixed(2) + '%</span>';
+      }
       out.push(
-        '<tr class="hover:bg-slate-50 transition">' +
+        '<tr class="hover:bg-slate-50 transition' + (r.noData ? ' bg-slate-50/40' : '') + '">' +
         '<td class="px-4 py-3 text-slate-400 text-xs">' + (i + 1) + '</td>' +
         '<td class="px-4 py-3"><span class="font-semibold text-slate-800">' + r.symbol + '</span></td>' +
         '<td class="px-4 py-3 text-slate-700">' + r.name + '</td>' +
         '<td class="px-4 py-3"><span class="text-xs bg-slate-100 text-slate-600 rounded-md px-2 py-0.5">' + r.sector + '</span></td>' +
         '<td class="px-4 py-3 text-right text-slate-700 tabular-nums">' + mcap + '</td>' +
-        '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">&#8377;' + r.fromPrice.toFixed(2) + '</td>' +
-        '<td class="px-4 py-3 text-right text-slate-800 font-medium tabular-nums">&#8377;' + r.toPrice.toFixed(2) + '</td>' +
-        '<td class="px-4 py-3 text-right"><span class="inline-flex items-center gap-1 ' + cls + ' rounded-md px-2 py-0.5 font-semibold text-xs tabular-nums">' + arr + ' ' + sgn + r.changePercent.toFixed(2) + '%</span></td>' +
+        '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">' + fromCell + '</td>' +
+        '<td class="px-4 py-3 text-right text-slate-800 font-medium tabular-nums">' + toCell + '</td>' +
+        '<td class="px-4 py-3 text-right">' + chgCell + '</td>' +
         '</tr>'
       );
     }
     tbody.innerHTML = out.join('');
   }
+  const noDataCount = f.filter(r => r.noData).length;
+  const noDataNote  = noDataCount ? ' &middot; <span class="text-slate-400">' + noDataCount.toLocaleString('en-IN') + ' without price data</span>' : '';
   document.getElementById('resultCount').innerHTML =
-    '<span class="font-semibold text-slate-700">' + f.length.toLocaleString('en-IN') + '</span> stocks' +
+    '<span class="font-semibold text-slate-700">' + f.length.toLocaleString('en-IN') + '</span> stocks' + noDataNote +
     (truncated ? ' (showing top ' + MAX_ROWS + ' \u2014 use sort/search/filters to narrow)' : '');
 }
 
 function updateStats(results) {
   if (!results.length) { document.getElementById('statsGrid').innerHTML = ''; return; }
-  const gainers = results.filter(r => r.changePercent > 0).length;
-  const losers  = results.filter(r => r.changePercent < 0).length;
-  const avg     = results.reduce((s, r) => s + r.changePercent, 0) / results.length;
-  const top     = results.reduce((m, r) => r.changePercent > m.changePercent ? r : m);
+  const priced  = results.filter(r => !r.noData);
+  const gainers = priced.filter(r => r.changePercent > 0).length;
+  const losers  = priced.filter(r => r.changePercent < 0).length;
+  const avg     = priced.length ? priced.reduce((s, r) => s + r.changePercent, 0) / priced.length : 0;
+  const top     = priced.length ? priced.reduce((m, r) => r.changePercent > m.changePercent ? r : m) : null;
   const card = (label, value, cls = '') =>
     '<div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4">' +
     '<div class="text-[11px] text-slate-500 uppercase font-semibold tracking-wide">' + label + '</div>' +
     '<div class="text-xl font-bold mt-1 ' + cls + '">' + value + '</div></div>';
+  const topCard = top ?
+    '<div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4">' +
+    '<div class="text-[11px] text-slate-500 uppercase font-semibold tracking-wide">Top Mover</div>' +
+    '<div class="text-sm font-bold mt-1 text-slate-800 truncate">' + top.symbol + '</div>' +
+    '<div class="text-xs gain mt-0.5">+' + top.changePercent.toFixed(2) + '%</div></div>'
+    : card('Top Mover', '\u2014');
   document.getElementById('statsGrid').innerHTML =
     card('Total Stocks', results.length.toLocaleString('en-IN')) +
     card('Gainers', gainers.toLocaleString('en-IN'), 'gain') +
     card('Losers',  losers.toLocaleString('en-IN'),  'loss') +
-    card('Avg Change', (avg >= 0 ? '+' : '') + avg.toFixed(2) + '%', avg >= 0 ? 'gain' : 'loss') +
-    '<div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4">' +
-    '<div class="text-[11px] text-slate-500 uppercase font-semibold tracking-wide">Top Mover</div>' +
-    '<div class="text-sm font-bold mt-1 text-slate-800 truncate">' + top.symbol + '</div>' +
-    '<div class="text-xs gain mt-0.5">+' + top.changePercent.toFixed(2) + '%</div></div>';
+    card('Avg Change', priced.length ? ((avg >= 0 ? '+' : '') + avg.toFixed(2) + '%') : '\u2014',
+         priced.length ? (avg >= 0 ? 'gain' : 'loss') : '') +
+    topCard;
 }
 
 function exportCSV() {
   if (!lastResults.length) return alert('No data to export. Load data first.');
-  const rows = [['Symbol','Company','Group','Market Cap (Cr)','From Date','From Price','To Date','To Price','Change %']];
-  lastResults.forEach(r => rows.push([r.symbol, r.name, r.sector, r.mcap, r.fromDate, r.fromPrice.toFixed(2), r.toDate, r.toPrice.toFixed(2), r.changePercent.toFixed(2)]));
+  const rows = [['Symbol','Company','Sector','Market Cap (Cr)','From Date','From Price','To Date','To Price','Change %']];
+  lastResults.forEach(r => rows.push([
+    r.symbol, r.name, r.sector, r.mcap,
+    r.fromDate || '', r.fromPrice != null ? r.fromPrice.toFixed(2) : '',
+    r.toDate   || '', r.toPrice   != null ? r.toPrice.toFixed(2)   : '',
+    r.changePercent != null ? r.changePercent.toFixed(2) : '',
+  ]));
   const csv  = rows.map(row => row.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(',')).join('\n');
   const blob = new Blob([csv], { type: 'text/csv' });
   const url  = URL.createObjectURL(blob);
