@@ -113,7 +113,7 @@ HTML = r"""<!DOCTYPE html>
           </select>
         </div>
         <div class="md:col-span-1">
-          <label class="block text-xs font-medium text-slate-600 mb-1">Sector</label>
+          <label class="block text-xs font-medium text-slate-600 mb-1">Industry</label>
           <select id="sectorFilter" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
             <option value="all">All sectors</option>
           </select>
@@ -168,7 +168,7 @@ HTML = r"""<!DOCTYPE html>
               <th class="px-4 py-3 text-left font-semibold">#</th>
               <th class="px-4 py-3 text-left font-semibold">Symbol</th>
               <th class="px-4 py-3 text-left font-semibold">Company</th>
-              <th class="px-4 py-3 text-left font-semibold">Sector</th>
+              <th class="px-4 py-3 text-left font-semibold">Industry</th>
               <th class="px-4 py-3 text-right font-semibold">Market Cap<br><span class="normal-case text-slate-400 text-[10px] font-normal">(&#8377; Cr)</span></th>
               <th class="px-4 py-3 text-right font-semibold">From Price<br><span class="normal-case text-slate-400 text-[10px] font-normal">(&#8377;)</span></th>
               <th class="px-4 py-3 text-right font-semibold">To Price<br><span class="normal-case text-slate-400 text-[10px] font-normal">(&#8377;)</span></th>
@@ -223,19 +223,25 @@ async function loadAndInit() {
     UNIVERSE = Object.keys(META);
     document.getElementById('compressedData').remove();
 
-    // Populate sector dropdown from data
-    const sectorCounts = {};
+    // Populate the dropdown using BSE's IndustryNew (granular: Pharma, Metals,
+    // Chemicals, etc.) with a fallback to the broad sector or 'Uncategorized'.
+    // The selected key is stored on each option's data-key for filtering.
+    const indCounts = {};
     for (const t of UNIVERSE) {
-      const s = META[t].sector || 'Uncategorized';
-      sectorCounts[s] = (sectorCounts[s] || 0) + 1;
+      const m = META[t];
+      const ind = (m.industry && m.industry.trim()) || m.sector || 'Uncategorized';
+      indCounts[ind] = (indCounts[ind] || 0) + 1;
     }
     const sectorSel = document.getElementById('sectorFilter');
-    Object.keys(sectorCounts).sort().forEach(s => {
-      const opt = document.createElement('option');
-      opt.value = s;
-      opt.textContent = s + ' (' + sectorCounts[s].toLocaleString('en-IN') + ')';
-      sectorSel.appendChild(opt);
-    });
+    // Sort: largest industry first so common ones surface
+    Object.entries(indCounts)
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+      .forEach(([ind, n]) => {
+        const opt = document.createElement('option');
+        opt.value = ind;
+        opt.textContent = ind + '  (' + n.toLocaleString('en-IN') + ')';
+        sectorSel.appendChild(opt);
+      });
 
     const dt = ((performance.now() - t0) / 1000).toFixed(1);
     statusEl.textContent = 'Ready in ' + dt + 's';
@@ -303,11 +309,15 @@ function loadData() {
   for (const ticker of UNIVERSE) {
     const m = META[ticker];
     if (!inMcapBucket(m.mcap, mcapRange)) continue;
-    if (sectorFilter !== 'all' && (m.sector || 'Uncategorized') !== sectorFilter) continue;
+    const indKey = (m.industry && m.industry.trim()) || m.sector || 'Uncategorized';
+    if (sectorFilter !== 'all' && indKey !== sectorFilter) continue;
     const ser = SERIES[ticker];
     // Base row — same shape regardless of whether we have prices.
     const row = {
-      symbol: m.symbol, name: m.name, sector: m.sector, mcap: m.mcap,
+      symbol: m.symbol, name: m.name,
+      sector: indKey,                       // shown in the table chip
+      sectorBroad: m.sector || '',           // kept for tooltip / CSV
+      mcap: m.mcap,
       fromPrice: null, toPrice: null, changePercent: null,
       fromDate: null,  toDate: null,  noData: true,
     };
