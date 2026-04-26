@@ -403,11 +403,16 @@ function renderResults(results) {
         toCell   = '&#8377;' + r.toPrice.toFixed(2);
         chgCell  = '<span class="inline-flex items-center gap-1 ' + cls + ' rounded-md px-2 py-0.5 font-semibold text-xs tabular-nums">' + arr + ' ' + sgn + r.changePercent.toFixed(2) + '%</span>';
       }
+      // Screener.in URL: NSE symbols use the symbol itself; BSE-only stocks use
+      // the numeric scrip code (Screener accepts both formats).
+      const screenerKey = encodeURIComponent(r.symbol);
+      const screenerUrl = 'https://www.screener.in/company/' + screenerKey + '/';
+      const linkAttrs = 'href="' + screenerUrl + '" target="_blank" rel="noopener" title="Open ' + r.symbol + ' on Screener.in"';
       out.push(
         '<tr class="hover:bg-slate-50 transition' + (r.noData ? ' bg-slate-50/40' : '') + '">' +
         '<td class="px-4 py-3 text-slate-400 text-xs">' + (i + 1) + '</td>' +
-        '<td class="px-4 py-3"><span class="font-semibold text-slate-800">' + r.symbol + '</span></td>' +
-        '<td class="px-4 py-3 text-slate-700">' + r.name + '</td>' +
+        '<td class="px-4 py-3"><a ' + linkAttrs + ' class="font-semibold text-slate-800 hover:text-blue-600 hover:underline">' + r.symbol + '</a></td>' +
+        '<td class="px-4 py-3"><a ' + linkAttrs + ' class="text-slate-700 hover:text-blue-600 hover:underline">' + r.name + '</a></td>' +
         '<td class="px-4 py-3"><span class="text-xs bg-slate-100 text-slate-600 rounded-md px-2 py-0.5">' + r.sector + '</span></td>' +
         '<td class="px-4 py-3 text-right text-slate-700 tabular-nums">' + mcap + '</td>' +
         '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">' + fromCell + '</td>' +
