@@ -261,10 +261,11 @@ async function loadAndInit() {
       UNIVERSE.length.toLocaleString('en-IN') + ' NSE & BSE listings' +
       ' (' + priced.toLocaleString('en-IN') + ' with prices, ' + unpriced.toLocaleString('en-IN') + ' metadata-only)';
 
+    // Default range: last 7 days
     const today = new Date();
-    const mar2020 = new Date(2020, 2, 1);
+    const weekAgo = new Date(); weekAgo.setDate(today.getDate() - 7);
     document.getElementById('toDate').value   = today.toISOString().split('T')[0];
-    document.getElementById('fromDate').value = mar2020.toISOString().split('T')[0];
+    document.getElementById('fromDate').value = weekAgo.toISOString().split('T')[0];
 
     const ov = document.getElementById('loadingOverlay');
     ov.style.opacity = '0';
