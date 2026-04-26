@@ -53,23 +53,31 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/nse-bse-dashboard.html
-          if git diff --cached --quiet; then
-            echo "No changes to commit"
-            exit 0
-          fi
-          git commit -m "Daily refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
-          # Retry-with-rebase: handles the case where main moved while we were
-          # running (parallel workflow runs, script edits during a fetch, etc.)
+
+          # Save the newly built dashboard outside the working tree first.
+          # We use a "reset-and-replay" strategy on push conflicts: pull latest
+          # main, drop our new dashboard on top (overwrite, no merge), commit,
+          # push. Avoids content-merge conflicts on the binary-ish HTML.
+          cp docs/nse-bse-dashboard.html /tmp/new_dashboard.html
+
           for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/new_dashboard.html docs/nse-bse-dashboard.html
+            git add docs/nse-bse-dashboard.html
+
+            if git diff --cached --quiet; then
+              echo "Remote already has identical dashboard — nothing to commit"
+              exit 0
+            fi
+
+            git commit -m "Daily refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
             if git push origin HEAD:main; then
               echo "Pushed on attempt #$attempt"
               exit 0
             fi
-            echo "Push attempt #$attempt rejected; rebasing onto remote main"
-            git fetch origin main
-            git rebase origin/main || { git rebase --abort; echo "Rebase conflict"; exit 1; }
-            sleep $(( attempt * 2 ))
+            echo "Push attempt #$attempt rejected; resetting and retrying"
+            sleep $(( attempt * 3 ))
           done
           echo "Failed to push after 5 attempts"
           exit 1

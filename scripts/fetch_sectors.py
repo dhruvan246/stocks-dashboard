@@ -92,20 +92,54 @@ for ind, n in ind_hist.most_common(15):
     print(f"  {n:5d}  {ind}")
 
 # --- Merge into stock_data.json --------------------------------------
+# Build TWO lookups: scrip_id -> code (text match) and ISIN -> code (canonical).
+# Many NSE symbols differ slightly from BSE scrip_id but share an ISIN, so the
+# ISIN fallback recovers ~50% more sector matches.
 data = json.loads(DATA.read_text())
-sid_to_code = {}
+sid_to_code  = {}
+isin_to_code = {}
 for b in bse:
-    sid = (b.get("scrip_id") or "").strip()
+    sid  = (b.get("scrip_id") or "").strip()
     code = (b.get("SCRIP_CD") or "").strip()
-    if sid and code: sid_to_code[sid] = code
+    isin = (b.get("ISIN_NUMBER") or "").strip()
+    if sid and code:  sid_to_code[sid]   = code
+    if isin and code: isin_to_code[isin] = code
+
+# Build NSE symbol -> ISIN map from the NSE master
+import csv
+nse_sym_to_isin = {}
+with open("/tmp/nse.csv") as f:
+    for row in csv.DictReader(f):
+        row = {k.strip(): (v or '').strip() for k, v in row.items()}
+        sym = row.get("SYMBOL")
+        isin = row.get("ISIN NUMBER")
+        if sym and isin: nse_sym_to_isin[sym] = isin
+print(f"NSE symbol->ISIN map: {len(nse_sym_to_isin)}")
 
 merged = 0
+fallback_isin = 0
+fallback_sid  = 0
 for ticker, meta in data["meta"].items():
     sym, suffix = ticker.rsplit(".", 1)
-    code = sym if suffix == "BO" else sid_to_code.get(sym)
+    code = None
+    if suffix == "BO":
+        # Ticker can be {numeric_code}.BO OR {scrip_id_text}.BO depending on
+        # which one Yahoo accepted. Detect numeric vs text.
+        if sym.isdigit():
+            code = sym
+        else:
+            code = sid_to_code.get(sym)
+            if code: fallback_sid += 1
+    else:  # .NS
+        # NSE symbol: try direct scrip_id match, then ISIN fallback.
+        code = sid_to_code.get(sym)
+        if not code:
+            isin = nse_sym_to_isin.get(sym)
+            if isin:
+                code = isin_to_code.get(isin)
+                if code: fallback_isin += 1
     info = sectors.get(code or "")
     if info:
-        # Prefer granular, fall back through the hierarchy
         meta["sector"]   = info.get("sector")   or info.get("industry") or "Uncategorized"
         meta["industry"] = info.get("industry") or info.get("igroup")   or info.get("sector") or ""
         merged += 1
@@ -115,4 +149,7 @@ for ticker, meta in data["meta"].items():
 
 DATA.write_text(json.dumps(data, separators=(",", ":")))
 print(f"\nMerged sector data into {merged}/{len(data['meta'])} stocks ({100*merged/len(data['meta']):.1f}%)")
+print(f"  via numeric/scrip_id direct: {merged - fallback_isin - fallback_sid}")
+print(f"  via .BO scrip_id text match: {fallback_sid}")
+print(f"  via ISIN fallback:           {fallback_isin}")
 print(f"Updated {DATA}")
