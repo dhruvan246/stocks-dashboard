@@ -139,7 +139,9 @@ HTML = r"""<!DOCTYPE html>
         <button class="preset-btn text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 py-1 font-medium" data-days="365">1 year</button>
         <button class="preset-btn text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 py-1 font-medium" data-days="1095">3 years</button>
         <button class="preset-btn text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 py-1 font-medium" data-days="1825">5 years</button>
-        <button class="preset-btn text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 py-1 font-medium" data-since-mar-2020="1">Since Mar 2020</button>
+        <button class="preset-btn text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 py-1 font-medium" data-days="3650">10 years</button>
+        <button class="preset-btn text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 py-1 font-medium" data-days="7300">20 years</button>
+        <button class="preset-btn text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 py-1 font-medium" data-since-1996="1">Since 1996</button>
         <button class="preset-btn text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 py-1 font-medium" data-ytd="1">YTD</button>
       </div>
     </div>
@@ -184,7 +186,7 @@ HTML = r"""<!DOCTYPE html>
   </section>
 
   <footer class="max-w-7xl mx-auto px-6 py-6 text-xs text-slate-400 text-center">
-    Price data from Yahoo Finance &middot; Market caps from BSE &middot; Daily history from 1 Mar 2020 onwards &middot; NSE suffix .NS / BSE suffix .BO
+    Price data from Yahoo Finance &middot; Market caps from BSE &middot; Weekly closes 1996&ndash;2019, daily 2020&ndash;today &middot; NSE suffix .NS / BSE suffix .BO
   </footer>
 </div>
 
@@ -462,8 +464,8 @@ document.querySelectorAll('.preset-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const today = new Date();
     let from;
-    if (btn.dataset.ytd)            from = new Date(today.getFullYear(), 0, 1);
-    else if (btn.dataset.sinceMar2020) from = new Date(2020, 2, 1);
+    if (btn.dataset.ytd)             from = new Date(today.getFullYear(), 0, 1);
+    else if (btn.dataset.since1996)  from = new Date(1996, 0, 1);
     else { const days = parseInt(btn.dataset.days, 10); from = new Date(); from.setDate(today.getDate() - days); }
     document.getElementById('toDate').value   = today.toISOString().split('T')[0];
     document.getElementById('fromDate').value = from.toISOString().split('T')[0];

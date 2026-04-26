@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
-"""Fetch historical price data for the full NSE + BSE universe via curl.
+"""Fetch historical price data for the full NSE+BSE universe via curl.
 
-Recovery passes:
-  Pass 1 — primary ticker (NSE if symbol exists in NSE master, else BSE).
-  Pass 2 — for misses, try the alternate exchange (.BO if .NS failed, vice
-           versa). Recovers names like INA where one of the two listings
-           is too new on Yahoo.
-Stocks where BOTH passes return no data are still included in the output —
-their `series` is empty and the dashboard shows "—" for prices/change.
+History ranges back to **1 Jan 1996** (Yahoo Finance's earliest reliable data
+for Indian equities). To keep the dashboard payload small, we use:
+
+  * Weekly closes from 1996-01-01 to 2019-12-31  (~1,250 points / stock)
+  * Daily closes  from 2020-01-01 to today        (~1,500 points / stock)
+
+Both ranges are concatenated (sorted, deduped by timestamp) into one series.
+
+Recovery passes: each entry has a primary ticker (NSE if symbol exists in NSE
+master, else BSE) and one or two alternate tickers. We try them in order; if
+all fail, the stock still ships in the dashboard with empty series so the row
+shows up with metadata + "—" prices.
 """
 import json, csv, time, subprocess, concurrent.futures, datetime as _dt
 from pathlib import Path
@@ -63,13 +68,16 @@ for sym in sorted(nse_symbols - bse_nse_syms):
 
 print(f"Total universe: {len(universe)}")
 
-# --- Fetch via curl ----------------------------------------------------
-END_TS   = int(time.time())
-START_TS = int(_dt.datetime(2020, 3, 1).timestamp())
+# --- Date ranges -------------------------------------------------------
+END_TS          = int(time.time())
+WEEKLY_START_TS = int(_dt.datetime(1996, 1, 1).timestamp())
+DAILY_START_TS  = int(_dt.datetime(2020, 1, 1).timestamp())
+START_TS        = WEEKLY_START_TS  # this is what we tell the dashboard
+
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
 
-def fetch_one(ticker):
-    url = f"https://query1.finance.yahoo.com/v8/finance/chart/{ticker}?period1={START_TS}&period2={END_TS}&interval=1d"
+def fetch_chart(ticker, p1, p2, interval):
+    url = f"https://query1.finance.yahoo.com/v8/finance/chart/{ticker}?period1={p1}&period2={p2}&interval={interval}"
     try:
         res = subprocess.run(["curl","-s","--max-time","12","-A",UA,url],
                              capture_output=True, timeout=15)
@@ -79,42 +87,48 @@ def fetch_one(ticker):
         result = data.get("chart", {}).get("result")
         if not result: return None
         result = result[0]
-        # Skip if Yahoo reports it as MUTUALFUND or other non-equity
+        # Yahoo sometimes mis-classifies BSE scrips as MUTUALFUND; reject those
         if result.get("meta", {}).get("instrumentType") and \
            result["meta"]["instrumentType"] != "EQUITY":
             return None
         ts = result.get("timestamp") or []
         closes = (result.get("indicators", {}).get("quote") or [{}])[0].get("close") or []
-        pairs = [[t2, round(c, 2)] for t2, c in zip(ts, closes) if c is not None]
-        return pairs if len(pairs) >= 2 else None
+        return [[t2, round(c, 2)] for t2, c in zip(ts, closes) if c is not None]
     except Exception:
         return None
 
 def fetch_with_fallback(entry):
-    """Try primary, then each alt. Return (winning_ticker, pairs) or (primary, None)."""
-    series = fetch_one(entry["primary"])
-    if series: return entry["primary"], series
-    for alt in entry["alts"]:
-        series = fetch_one(alt)
-        if series: return alt, series
+    """Try primary then alts. For each candidate, fetch weekly+daily, merge, dedupe."""
+    for ticker in [entry["primary"]] + entry["alts"]:
+        weekly = fetch_chart(ticker, WEEKLY_START_TS, DAILY_START_TS - 1, "1wk")
+        daily  = fetch_chart(ticker, DAILY_START_TS, END_TS, "1d")
+        combined = (weekly or []) + (daily or [])
+        if not combined: continue
+        # Sort + dedupe by ts
+        seen, out = set(), []
+        for ts, close in sorted(combined, key=lambda x: x[0]):
+            if ts in seen: continue
+            seen.add(ts); out.append([ts, close])
+        if len(out) >= 2:
+            return ticker, out
     return entry["primary"], None
 
-# Pass 1 + Pass 2 in one go (each entry tries primary then alts internally)
-results = {}  # ticker -> pairs
-empty   = {}  # ticker -> None (still in universe)
+# --- Fetch the universe ------------------------------------------------
+results = {}
+empty   = {}
 start   = time.time()
 with concurrent.futures.ThreadPoolExecutor(max_workers=30) as ex:
     futures = {ex.submit(fetch_with_fallback, u): u for u in universe}
     done = 0
     for fut in concurrent.futures.as_completed(futures):
         done += 1
-        entry  = futures[fut]
+        entry = futures[fut]
         winning_ticker, pairs = fut.result()
-        entry["ticker"] = winning_ticker  # remember which one paid off
+        entry["ticker"] = winning_ticker
         if pairs is not None:
             results[winning_ticker] = pairs
         else:
-            empty[winning_ticker]   = None
+            empty[winning_ticker] = None
         if done % 250 == 0:
             ok = 100 * len(results) / done
             print(f"  {done}/{len(universe)}  with_data={len(results)} ({ok:.0f}%)  empty={len(empty)}  elapsed={time.time()-start:.0f}s", flush=True)
@@ -122,16 +136,18 @@ with concurrent.futures.ThreadPoolExecutor(max_workers=30) as ex:
 elapsed = time.time() - start
 print(f"\nDone: {len(results)} with data, {len(empty)} without, total {len(universe)} ({elapsed:.0f}s)")
 
-# Sort universe by mcap desc so the heaviest names are first in the payload
 universe.sort(key=lambda u: -u["mcap"])
 
 payload = {
-    "generatedAt": END_TS, "startTs": START_TS, "endTs": END_TS,
+    "generatedAt": END_TS,
+    "startTs":     START_TS,
+    "endTs":       END_TS,
+    "dailyStartTs": DAILY_START_TS,
     "meta":   {u["ticker"]: {
         "symbol": u["display"], "name": u["name"],
         "sector": u["group"],   "mcap": u["mcap"],
     } for u in universe},
-    "series": results,   # only contains tickers that had data
+    "series": results,
 }
 OUT_JSON.write_text(json.dumps(payload, separators=(",", ":")))
 print(f"Wrote {OUT_JSON} ({OUT_JSON.stat().st_size/1024/1024:.2f} MB)")
