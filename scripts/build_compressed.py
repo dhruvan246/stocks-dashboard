@@ -88,8 +88,8 @@ HTML = r"""<!DOCTYPE html>
 
 <div id="loadingOverlay">
   <div class="spinner"></div>
-  <div class="mt-5 text-sm font-semibold text-slate-700">Loading 4,000+ NSE/BSE stocks&hellip;</div>
-  <div class="mt-1 text-xs text-slate-500" id="loadingStatus">Decompressing embedded price history&hellip;</div>
+  <div class="mt-5 text-sm font-semibold text-slate-700">Delivering magic soon&hellip;</div>
+  <div class="mt-1 text-xs text-slate-500" id="loadingStatus">Brewing your dashboard</div>
 </div>
 
 <div class="min-h-screen">
@@ -231,7 +231,7 @@ async function loadAndInit() {
   try {
     const t0 = performance.now();
     const b64 = document.getElementById('compressedData').textContent.trim();
-    statusEl.textContent = 'Decoding ' + (b64.length / 1024 / 1024).toFixed(1) + ' MB...';
+    statusEl.textContent = 'Polishing the numbers…';
     // give the browser a frame to paint the spinner
     await new Promise(r => requestAnimationFrame(() => setTimeout(r, 16)));
 
@@ -240,7 +240,7 @@ async function loadAndInit() {
     const bytes = new Uint8Array(binStr.length);
     for (let i = 0; i < binStr.length; i++) bytes[i] = binStr.charCodeAt(i);
 
-    statusEl.textContent = 'Decompressing ' + (bytes.length / 1024 / 1024).toFixed(1) + ' MB gzip...';
+    statusEl.textContent = 'Almost there…';
     await new Promise(r => requestAnimationFrame(() => setTimeout(r, 16)));
 
     // DecompressionStream (Chrome/Edge/Safari 16+/Firefox 113+)
@@ -248,7 +248,7 @@ async function loadAndInit() {
     const stream = new Blob([bytes]).stream().pipeThrough(ds);
     const text = await new Response(stream).text();
 
-    statusEl.textContent = 'Parsing ' + (text.length / 1024 / 1024).toFixed(1) + ' MB JSON...';
+    statusEl.textContent = 'Final touches…';
     await new Promise(r => requestAnimationFrame(() => setTimeout(r, 16)));
 
     const D = JSON.parse(text);
@@ -277,7 +277,7 @@ async function loadAndInit() {
       });
 
     const dt = ((performance.now() - t0) / 1000).toFixed(1);
-    statusEl.textContent = 'Ready in ' + dt + 's';
+    statusEl.textContent = 'Ready ✨';
     const priced = Object.keys(SERIES).length;
     const unpriced = UNIVERSE.length - priced;
     document.getElementById('universeCount').textContent =
