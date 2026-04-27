@@ -17,12 +17,32 @@ start_date = datetime.fromtimestamp(start_ts).strftime("%d %b %Y")
 
 DAY = 86400
 compact_series = {}
+# 52-week-high distance: max close in the last 365 calendar days from the snapshot,
+# vs the latest close. Anchored at the snapshot date so the value is constant
+# across the user's selected From/To dates (matches Screener / Yahoo convention).
+end_ts = payload["endTs"]
+year_ago_ts = end_ts - 365 * DAY
+h52_count = 0
 for tkr, pairs in payload["series"].items():
     ds, ps = [], []
     for ts, close in pairs:
         ds.append(int((ts - start_ts) // DAY))
         ps.append(int(round(close * 100)))
     compact_series[tkr] = {"d": ds, "p": ps}
+
+    # 52w-high pass — only meaningful with at least 30 data points in the last year
+    last_year = [(t, c) for t, c in pairs if t >= year_ago_ts]
+    if len(last_year) >= 30 and pairs:
+        h52   = max(c for _, c in last_year)
+        last  = pairs[-1][1]
+        d52   = (last - h52) / h52 * 100 if h52 else 0
+        meta = payload["meta"].get(tkr)
+        if meta is not None:
+            meta["h52"]    = round(h52, 2)
+            meta["d52"]    = round(d52, 2)
+            meta["latest"] = round(last, 2)
+            h52_count += 1
+print(f"52w-high attached to {h52_count} stocks")
 
 compact = {
     "startTs": start_ts,
@@ -133,6 +153,8 @@ HTML = r"""<!DOCTYPE html>
             <option value="changeAsc">% Change &uarr;</option>
             <option value="mcapDesc">Market Cap &darr;</option>
             <option value="mcapAsc">Market Cap &uarr;</option>
+            <option value="d52Desc">Closest to 52W high</option>
+            <option value="d52Asc">Farthest from 52W high</option>
             <option value="nameAsc">Name A&ndash;Z</option>
           </select>
         </div>
@@ -183,10 +205,11 @@ HTML = r"""<!DOCTYPE html>
               <th class="px-4 py-3 text-right font-semibold">From Price<br><span class="normal-case text-slate-400 text-[10px] font-normal">(&#8377;)</span></th>
               <th class="px-4 py-3 text-right font-semibold">To Price<br><span class="normal-case text-slate-400 text-[10px] font-normal">(&#8377;)</span></th>
               <th class="px-4 py-3 text-right font-semibold">Change %</th>
+              <th class="px-4 py-3 text-right font-semibold" title="Distance from 52-week high, anchored at snapshot date">From 52W<br><span class="normal-case text-slate-400 text-[10px] font-normal">High</span></th>
             </tr>
           </thead>
           <tbody id="resultsBody" class="divide-y divide-slate-100">
-            <tr><td colspan="8" class="text-center text-slate-400 py-16 text-sm">Loading stock data&hellip;</td></tr>
+            <tr><td colspan="9" class="text-center text-slate-400 py-16 text-sm">Loading stock data&hellip;</td></tr>
           </tbody>
         </table>
       </div>
@@ -337,6 +360,9 @@ function loadData() {
       mcap: m.mcap,
       fromPrice: null, toPrice: null, changePercent: null,
       fromDate: null,  toDate: null,  noData: true,
+      // 52-week-high distance, anchored at snapshot date (constant per stock)
+      d52: (typeof m.d52 === 'number') ? m.d52 : null,
+      h52: (typeof m.h52 === 'number') ? m.h52 : null,
     };
     if (ser) {
       const iFrom = firstOnOrAfter(ser.d, fromDayOffset);
@@ -378,6 +404,25 @@ function renderResults(results) {
   else if (sortBy === 'changeAsc')  f.sort((a, b) => cmpChange(a, b,  1));
   else if (sortBy === 'mcapDesc')   f.sort((a, b) => b.mcap - a.mcap);
   else if (sortBy === 'mcapAsc')    f.sort((a, b) => a.mcap - b.mcap);
+  else if (sortBy === 'd52Desc') {
+    // Closest to 52W high first; nulls to bottom. d52 is <= 0, so descending puts -0 ahead of -50.
+    f.sort((a, b) => {
+      const av = a.d52, bv = b.d52;
+      if (av == null && bv == null) return 0;
+      if (av == null) return 1;
+      if (bv == null) return -1;
+      return bv - av;
+    });
+  }
+  else if (sortBy === 'd52Asc') {
+    f.sort((a, b) => {
+      const av = a.d52, bv = b.d52;
+      if (av == null && bv == null) return 0;
+      if (av == null) return 1;
+      if (bv == null) return -1;
+      return av - bv;
+    });
+  }
   else if (sortBy === 'nameAsc')    f.sort((a, b) => a.name.localeCompare(b.name));
 
   const tbody = document.getElementById('resultsBody');
@@ -386,7 +431,7 @@ function renderResults(results) {
   const view = f.slice(0, MAX_ROWS);
 
   if (view.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8" class="text-center text-slate-400 py-16 text-sm">No matching stocks. Adjust filters or search.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9" class="text-center text-slate-400 py-16 text-sm">No matching stocks. Adjust filters or search.</td></tr>';
   } else {
     const out = [];
     const DASH = '<span class="text-slate-400">\u2014</span>';
@@ -409,6 +454,20 @@ function renderResults(results) {
       const screenerKey = encodeURIComponent(r.symbol);
       const screenerUrl = 'https://www.screener.in/company/' + screenerKey + '/';
       const linkAttrs = 'href="' + screenerUrl + '" target="_blank" rel="noopener" title="Open ' + r.symbol + ' on Screener.in"';
+      // From-52w-high cell. d52 is always <= 0; closer to zero = closer to high.
+      let h52Cell;
+      if (typeof r.d52 !== 'number') {
+        h52Cell = DASH;
+      } else {
+        // colour scale: 0% = green chip, deeper = red. tooltip shows the price.
+        let cls;
+        if (r.d52 >= -2)       cls = 'chip-gain';
+        else if (r.d52 >= -10) cls = 'bg-amber-50 text-amber-700';
+        else if (r.d52 >= -25) cls = 'bg-orange-50 text-orange-700';
+        else                    cls = 'chip-loss';
+        const titleAttr = r.h52 ? ' title="52W high: ₹' + r.h52.toFixed(2) + '"' : '';
+        h52Cell = '<span class="inline-flex items-center ' + cls + ' rounded-md px-2 py-0.5 font-semibold text-xs tabular-nums"' + titleAttr + '>' + r.d52.toFixed(2) + '%</span>';
+      }
       out.push(
         '<tr class="hover:bg-slate-50 transition' + (r.noData ? ' bg-slate-50/40' : '') + '">' +
         '<td class="px-4 py-3 text-slate-400 text-xs">' + (i + 1) + '</td>' +
@@ -419,6 +478,7 @@ function renderResults(results) {
         '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">' + fromCell + '</td>' +
         '<td class="px-4 py-3 text-right text-slate-800 font-medium tabular-nums">' + toCell + '</td>' +
         '<td class="px-4 py-3 text-right">' + chgCell + '</td>' +
+        '<td class="px-4 py-3 text-right">' + h52Cell + '</td>' +
         '</tr>'
       );
     }
@@ -459,12 +519,14 @@ function updateStats(results) {
 
 function exportCSV() {
   if (!lastResults.length) return alert('No data to export. Load data first.');
-  const rows = [['Symbol','Company','Sector','Market Cap (Cr)','From Date','From Price','To Date','To Price','Change %']];
+  const rows = [['Symbol','Company','Sector','Market Cap (Cr)','From Date','From Price','To Date','To Price','Change %','52W High','From 52W High %']];
   lastResults.forEach(r => rows.push([
     r.symbol, r.name, r.sector, r.mcap,
     r.fromDate || '', r.fromPrice != null ? r.fromPrice.toFixed(2) : '',
     r.toDate   || '', r.toPrice   != null ? r.toPrice.toFixed(2)   : '',
     r.changePercent != null ? r.changePercent.toFixed(2) : '',
+    r.h52 != null ? r.h52.toFixed(2) : '',
+    r.d52 != null ? r.d52.toFixed(2) : '',
   ]));
   const csv  = rows.map(row => row.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(',')).join('\n');
   const blob = new Blob([csv], { type: 'text/csv' });
