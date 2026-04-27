@@ -162,6 +162,7 @@ HTML = r"""<!DOCTYPE html>
         </div>
       </div>
       <div class="flex flex-wrap gap-2 mt-4">
+        <button class="preset-btn text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 py-1 font-medium" data-days="1">Today</button>
         <button class="preset-btn text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 py-1 font-medium" data-days="7">Last 7 days</button>
         <button class="preset-btn text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 py-1 font-medium" data-days="30">Last 30 days</button>
         <button class="preset-btn text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 py-1 font-medium" data-days="90">Last 90 days</button>
