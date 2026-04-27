@@ -146,17 +146,8 @@ HTML = r"""<!DOCTYPE html>
             <option value="all">All sectors</option>
           </select>
         </div>
-        <div class="md:col-span-1">
-          <label class="block text-xs font-medium text-slate-600 mb-1">Sort By</label>
-          <select id="sortBy" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
-            <option value="changeDesc">% Change &darr;</option>
-            <option value="changeAsc">% Change &uarr;</option>
-            <option value="mcapDesc">Market Cap &darr;</option>
-            <option value="mcapAsc">Market Cap &uarr;</option>
-            <option value="d52Desc">Closest to 52W high</option>
-            <option value="d52Asc">Farthest from 52W high</option>
-            <option value="nameAsc">Name A&ndash;Z</option>
-          </select>
+        <div class="md:col-span-1 flex items-end">
+          <p class="text-xs text-slate-500 italic">Tip: click any column header below to sort by it.</p>
         </div>
         <div class="md:col-span-1 flex items-end">
           <button id="loadBtn" class="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-lg px-4 py-2 text-sm font-semibold shadow-sm transition">Load Data</button>
@@ -196,16 +187,16 @@ HTML = r"""<!DOCTYPE html>
       <div class="max-h-[640px] overflow-auto scrollbar">
         <table class="w-full text-sm">
           <thead class="bg-slate-50 text-slate-600 text-xs uppercase">
-            <tr>
+            <tr id="resultsHead">
               <th class="px-4 py-3 text-left font-semibold">#</th>
-              <th class="px-4 py-3 text-left font-semibold">Symbol</th>
-              <th class="px-4 py-3 text-left font-semibold">Company</th>
-              <th class="px-4 py-3 text-left font-semibold">Industry</th>
-              <th class="px-4 py-3 text-right font-semibold">Market Cap<br><span class="normal-case text-slate-400 text-[10px] font-normal">(&#8377; Cr)</span></th>
-              <th class="px-4 py-3 text-right font-semibold">From Price<br><span class="normal-case text-slate-400 text-[10px] font-normal">(&#8377;)</span></th>
-              <th class="px-4 py-3 text-right font-semibold">To Price<br><span class="normal-case text-slate-400 text-[10px] font-normal">(&#8377;)</span></th>
-              <th class="px-4 py-3 text-right font-semibold">Change %</th>
-              <th class="px-4 py-3 text-right font-semibold" title="Distance from 52-week high, anchored at snapshot date">From 52W<br><span class="normal-case text-slate-400 text-[10px] font-normal">High</span></th>
+              <th class="px-4 py-3 text-left font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="symbol">Symbol <span class="sort-ind text-slate-300">&#8597;</span></th>
+              <th class="px-4 py-3 text-left font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="name">Company <span class="sort-ind text-slate-300">&#8597;</span></th>
+              <th class="px-4 py-3 text-left font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="sector">Industry <span class="sort-ind text-slate-300">&#8597;</span></th>
+              <th class="px-4 py-3 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="mcap">Market Cap <span class="sort-ind text-slate-300">&#8597;</span><br><span class="normal-case text-slate-400 text-[10px] font-normal">(&#8377; Cr)</span></th>
+              <th class="px-4 py-3 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="fromPrice">From Price <span class="sort-ind text-slate-300">&#8597;</span><br><span class="normal-case text-slate-400 text-[10px] font-normal">(&#8377;)</span></th>
+              <th class="px-4 py-3 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="toPrice">To Price <span class="sort-ind text-slate-300">&#8597;</span><br><span class="normal-case text-slate-400 text-[10px] font-normal">(&#8377;)</span></th>
+              <th class="px-4 py-3 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="changePercent">Change % <span class="sort-ind text-blue-600">&darr;</span></th>
+              <th class="px-4 py-3 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="d52" title="Distance from 52-week high, anchored at snapshot date">From 52W <span class="sort-ind text-slate-300">&#8597;</span><br><span class="normal-case text-slate-400 text-[10px] font-normal">High</span></th>
             </tr>
           </thead>
           <tbody id="resultsBody" class="divide-y divide-slate-100">
@@ -390,43 +381,37 @@ function loadData() {
   updateStats(results);
 }
 
+// Mutable sort state (key = column data-sort, dir = 'asc'|'desc')
+const SORT_STATE = { key: 'changePercent', dir: 'desc' };
+const STRING_COLS = new Set(['symbol', 'name', 'sector']);
+
+function compareRows(a, b, key, dir) {
+  // Always push noData rows to the bottom for any sort.
+  if (a.noData && !b.noData) return 1;
+  if (b.noData && !a.noData) return -1;
+
+  const av = a[key];
+  const bv = b[key];
+
+  // Null/undefined goes to bottom regardless of direction
+  const aNull = (av == null || (typeof av === 'number' && isNaN(av)));
+  const bNull = (bv == null || (typeof bv === 'number' && isNaN(bv)));
+  if (aNull && bNull) return 0;
+  if (aNull) return 1;
+  if (bNull) return -1;
+
+  let cmp;
+  if (STRING_COLS.has(key)) cmp = String(av).localeCompare(String(bv));
+  else                       cmp = av - bv;
+  return dir === 'asc' ? cmp : -cmp;
+}
+
 function renderResults(results) {
-  const sortBy = document.getElementById('sortBy').value;
   const q = document.getElementById('searchBox').value.toLowerCase().trim();
   let f = results;
   if (q) f = f.filter(r => r.symbol.toLowerCase().includes(q) || r.name.toLowerCase().includes(q) || (r.sector || '').toLowerCase().includes(q));
   f = f.slice();
-  // Push noData rows to the bottom for change-based sorts so price-bearing rows lead.
-  const cmpChange = (a, b, dir) => {
-    if (a.noData && b.noData) return 0;
-    if (a.noData) return 1;
-    if (b.noData) return -1;
-    return dir * (a.changePercent - b.changePercent);
-  };
-  if      (sortBy === 'changeDesc') f.sort((a, b) => cmpChange(a, b, -1));
-  else if (sortBy === 'changeAsc')  f.sort((a, b) => cmpChange(a, b,  1));
-  else if (sortBy === 'mcapDesc')   f.sort((a, b) => b.mcap - a.mcap);
-  else if (sortBy === 'mcapAsc')    f.sort((a, b) => a.mcap - b.mcap);
-  else if (sortBy === 'd52Desc') {
-    // Closest to 52W high first; nulls to bottom. d52 is <= 0, so descending puts -0 ahead of -50.
-    f.sort((a, b) => {
-      const av = a.d52, bv = b.d52;
-      if (av == null && bv == null) return 0;
-      if (av == null) return 1;
-      if (bv == null) return -1;
-      return bv - av;
-    });
-  }
-  else if (sortBy === 'd52Asc') {
-    f.sort((a, b) => {
-      const av = a.d52, bv = b.d52;
-      if (av == null && bv == null) return 0;
-      if (av == null) return 1;
-      if (bv == null) return -1;
-      return av - bv;
-    });
-  }
-  else if (sortBy === 'nameAsc')    f.sort((a, b) => a.name.localeCompare(b.name));
+  f.sort((a, b) => compareRows(a, b, SORT_STATE.key, SORT_STATE.dir));
 
   const tbody = document.getElementById('resultsBody');
   const MAX_ROWS = 500;
@@ -552,8 +537,38 @@ function exportCSV() {
 }
 
 document.getElementById('loadBtn').addEventListener('click', loadData);
-document.getElementById('sortBy').addEventListener('change', () => lastResults.length && renderResults(lastResults));
 document.getElementById('searchBox').addEventListener('input', () => lastResults.length && renderResults(lastResults));
+
+// Column-header click sort.
+function updateSortIndicators() {
+  document.querySelectorAll('#resultsHead th[data-sort]').forEach(th => {
+    const ind = th.querySelector('.sort-ind');
+    if (!ind) return;
+    if (th.dataset.sort === SORT_STATE.key) {
+      ind.textContent = SORT_STATE.dir === 'asc' ? '↑' : '↓';
+      ind.classList.remove('text-slate-300');
+      ind.classList.add('text-blue-600');
+    } else {
+      ind.textContent = '↕';
+      ind.classList.add('text-slate-300');
+      ind.classList.remove('text-blue-600');
+    }
+  });
+}
+document.querySelectorAll('#resultsHead th[data-sort]').forEach(th => {
+  th.addEventListener('click', () => {
+    const key = th.dataset.sort;
+    if (SORT_STATE.key === key) {
+      SORT_STATE.dir = SORT_STATE.dir === 'asc' ? 'desc' : 'asc';
+    } else {
+      SORT_STATE.key = key;
+      // String columns default to ascending; numeric default to descending
+      SORT_STATE.dir = STRING_COLS.has(key) ? 'asc' : 'desc';
+    }
+    updateSortIndicators();
+    if (lastResults.length) renderResults(lastResults);
+  });
+});
 document.getElementById('exportBtn').addEventListener('click', exportCSV);
 
 // --- Market cap multi-select ---
