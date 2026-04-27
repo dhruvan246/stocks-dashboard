@@ -312,9 +312,12 @@ function inMcapBucket(mcap, bucket) {
   if (bucket === 'above20000')   return mcap > 20000;
   return false;
 }
-// True if mcap matches ANY bucket in the set; empty set means no filter (all)
+// True if mcap matches ANY bucket in the set. Empty set = no filter (all).
+// All 6 buckets selected = also no filter (catches mcap=0/unknown stocks too,
+// matching user intuition that "all checked" means "everything").
 function inAnyMcapBucket(mcap, bucketSet) {
   if (!bucketSet || bucketSet.size === 0) return true;
+  if (bucketSet.size >= 6) return true;
   for (const b of bucketSet) if (inMcapBucket(mcap, b)) return true;
   return false;
 }
@@ -493,27 +496,41 @@ function renderResults(results) {
 
 function updateStats(results) {
   if (!results.length) { document.getElementById('statsGrid').innerHTML = ''; return; }
-  const priced  = results.filter(r => !r.noData);
-  const gainers = priced.filter(r => r.changePercent > 0).length;
-  const losers  = priced.filter(r => r.changePercent < 0).length;
-  const avg     = priced.length ? priced.reduce((s, r) => s + r.changePercent, 0) / priced.length : 0;
-  const top     = priced.length ? priced.reduce((m, r) => r.changePercent > m.changePercent ? r : m) : null;
-  const card = (label, value, cls = '') =>
+  const priced    = results.filter(r => !r.noData);
+  const gainers   = priced.filter(r => r.changePercent > 0).length;
+  const losers    = priced.filter(r => r.changePercent < 0).length;
+  const unchanged = priced.length - gainers - losers;
+  const noData    = results.length - priced.length;
+  const avg       = priced.length ? priced.reduce((s, r) => s + r.changePercent, 0) / priced.length : 0;
+  const top       = priced.length ? priced.reduce((m, r) => r.changePercent > m.changePercent ? r : m) : null;
+
+  // Card with optional subtitle line under the headline number
+  const card = (label, value, sub, cls = '') =>
     '<div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4">' +
     '<div class="text-[11px] text-slate-500 uppercase font-semibold tracking-wide">' + label + '</div>' +
-    '<div class="text-xl font-bold mt-1 ' + cls + '">' + value + '</div></div>';
+    '<div class="text-xl font-bold mt-1 ' + cls + '">' + value + '</div>' +
+    (sub ? '<div class="text-[11px] text-slate-400 mt-0.5">' + sub + '</div>' : '') +
+    '</div>';
+
+  // Total = priced count (so it equals gainers + losers + unchanged exactly).
+  // Stocks without price data are shown as a small note under the count.
+  const totalSub = [];
+  if (unchanged > 0) totalSub.push(unchanged.toLocaleString('en-IN') + ' unchanged');
+  if (noData    > 0) totalSub.push(noData.toLocaleString('en-IN') + ' no price data');
+
   const topCard = top ?
     '<div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4">' +
     '<div class="text-[11px] text-slate-500 uppercase font-semibold tracking-wide">Top Mover</div>' +
     '<div class="text-sm font-bold mt-1 text-slate-800 truncate">' + top.symbol + '</div>' +
     '<div class="text-xs gain mt-0.5">+' + top.changePercent.toFixed(2) + '%</div></div>'
-    : card('Top Mover', '\u2014');
+    : card('Top Mover', '\u2014', '');
+
   document.getElementById('statsGrid').innerHTML =
-    card('Total Stocks', results.length.toLocaleString('en-IN')) +
-    card('Gainers', gainers.toLocaleString('en-IN'), 'gain') +
-    card('Losers',  losers.toLocaleString('en-IN'),  'loss') +
+    card('Total Stocks', priced.length.toLocaleString('en-IN'), totalSub.join(' \u00b7 ')) +
+    card('Gainers', gainers.toLocaleString('en-IN'), '', 'gain') +
+    card('Losers',  losers.toLocaleString('en-IN'),  '', 'loss') +
     card('Avg Change', priced.length ? ((avg >= 0 ? '+' : '') + avg.toFixed(2) + '%') : '\u2014',
-         priced.length ? (avg >= 0 ? 'gain' : 'loss') : '') +
+         '', priced.length ? (avg >= 0 ? 'gain' : 'loss') : '') +
     topCard;
 }
 
@@ -559,10 +576,10 @@ function getMcapBucketSet() {
 function updateMcapLabel() {
   const cbs = document.querySelectorAll('#mcapPanel .mcap-cb:checked');
   const lab = document.getElementById('mcapLabel');
-  if (cbs.length === 0)        lab.textContent = 'All market caps';
-  else if (cbs.length === 1)   lab.textContent = MCAP_LABELS[cbs[0].dataset.bucket];
-  else if (cbs.length <= 3)    lab.textContent = Array.from(cbs).map(c => MCAP_LABELS[c.dataset.bucket]).join(', ');
-  else                          lab.textContent = cbs.length + ' selected';
+  if (cbs.length === 0 || cbs.length >= 6) lab.textContent = 'All market caps';
+  else if (cbs.length === 1)               lab.textContent = MCAP_LABELS[cbs[0].dataset.bucket];
+  else if (cbs.length <= 3)                lab.textContent = Array.from(cbs).map(c => MCAP_LABELS[c.dataset.bucket]).join(', ');
+  else                                      lab.textContent = cbs.length + ' selected';
 }
 document.getElementById('mcapTrigger').addEventListener('click', e => {
   e.stopPropagation();
