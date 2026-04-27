@@ -14,8 +14,19 @@ master, else BSE) and one or two alternate tickers. We try them in order; if
 all fail, the stock still ships in the dashboard with empty series so the row
 shows up with metadata + "—" prices.
 """
-import json, csv, time, subprocess, concurrent.futures, datetime as _dt
+import json, csv, re, time, subprocess, concurrent.futures, datetime as _dt
 from pathlib import Path
+
+# Filter out non-stock instruments (ETFs, mutual fund schemes, REITs, InvITs).
+# Word-boundary regex so we don't false-positive on companies like
+# "Brainbees Solutions" or "Capital Trust" that just contain ETF-adjacent
+# substrings as part of larger words.
+NONSTOCK_RE = re.compile(
+    r'\b(?:ETF|BeES|InvIT|REIT|Index Fund|Exchange Traded Fund|FoF)\b'
+    r'|Mutual Fund', re.IGNORECASE
+)
+def is_non_stock(name):
+    return bool(name) and bool(NONSTOCK_RE.search(name))
 
 ROOT     = Path(__file__).resolve().parent.parent
 NSE_CSV  = "/tmp/nse.csv"
@@ -32,7 +43,7 @@ with open(NSE_CSV) as f:
 print(f"NSE EQ symbols: {len(nse_symbols)}")
 
 bse_scrips = json.load(open(BSE_JSON))
-universe, seen = [], set()
+universe, seen, skipped_etf = [], set(), 0
 for b in bse_scrips:
     if b.get("Status") != "Active" or b.get("Segment") != "Equity": continue
     sid  = (b.get("scrip_id") or "").strip()
@@ -42,6 +53,9 @@ for b in bse_scrips:
     except: mcap = 0
     grp  = (b.get("GROUP") or "").strip() or "Other"
     if not sid and not code: continue
+    if is_non_stock(name):
+        skipped_etf += 1
+        continue
     if sid and sid in nse_symbols:
         primary = f"{sid}.NS"
         alts    = [f"{sid}.BO"] + ([f"{code}.BO"] if code else [])
@@ -66,6 +80,7 @@ for sym in sorted(nse_symbols - bse_nse_syms):
         "display": sym, "name": sym, "group": "NSE-only", "mcap": 0,
     })
 
+print(f"Skipped non-stocks (ETFs/MF/REITs/InvITs): {skipped_etf}")
 print(f"Total universe: {len(universe)}")
 
 # --- Date ranges -------------------------------------------------------
