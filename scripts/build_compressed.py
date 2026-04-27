@@ -368,8 +368,13 @@ function loadData() {
       h52: (typeof m.h52 === 'number') ? m.h52 : null,
     };
     if (ser) {
-      const iFrom = firstOnOrAfter(ser.d, fromDayOffset);
-      const iTo   = lastOnOrBefore(ser.d, toDayOffset);
+      let iFrom = firstOnOrAfter(ser.d, fromDayOffset);
+      let iTo   = lastOnOrBefore(ser.d, toDayOffset);
+      // If both endpoints collapse to the same row (only one trading day's
+      // entry sits inside the requested range, e.g. weekend-gapped "Today"
+      // preset), slide From back one trading day so we report a real change
+      // instead of an empty row.
+      if (iFrom !== -1 && iTo !== -1 && iFrom === iTo && iFrom > 0) iFrom = iTo - 1;
       if (iFrom !== -1 && iTo !== -1 && iTo > iFrom) {
         const fromPrice = ser.p[iFrom] / 100;
         const toPrice   = ser.p[iTo]   / 100;
