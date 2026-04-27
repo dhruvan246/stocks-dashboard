@@ -178,7 +178,7 @@ HTML = r"""<!DOCTYPE html>
   </section>
 
   <section class="max-w-7xl mx-auto px-6 pb-6">
-    <div class="grid grid-cols-2 md:grid-cols-5 gap-3" id="statsGrid"></div>
+    <div class="grid grid-cols-2 md:grid-cols-7 gap-3" id="statsGrid"></div>
   </section>
 
   <section class="max-w-7xl mx-auto px-6 pb-10">
@@ -504,19 +504,12 @@ function updateStats(results) {
   const avg       = priced.length ? priced.reduce((s, r) => s + r.changePercent, 0) / priced.length : 0;
   const top       = priced.length ? priced.reduce((m, r) => r.changePercent > m.changePercent ? r : m) : null;
 
-  // Card with optional subtitle line under the headline number
   const card = (label, value, sub, cls = '') =>
     '<div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4">' +
     '<div class="text-[11px] text-slate-500 uppercase font-semibold tracking-wide">' + label + '</div>' +
     '<div class="text-xl font-bold mt-1 ' + cls + '">' + value + '</div>' +
     (sub ? '<div class="text-[11px] text-slate-400 mt-0.5">' + sub + '</div>' : '') +
     '</div>';
-
-  // Total = priced count (so it equals gainers + losers + unchanged exactly).
-  // Stocks without price data are shown as a small note under the count.
-  const totalSub = [];
-  if (unchanged > 0) totalSub.push(unchanged.toLocaleString('en-IN') + ' unchanged');
-  if (noData    > 0) totalSub.push(noData.toLocaleString('en-IN') + ' no price data');
 
   const topCard = top ?
     '<div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4">' +
@@ -525,12 +518,15 @@ function updateStats(results) {
     '<div class="text-xs gain mt-0.5">+' + top.changePercent.toFixed(2) + '%</div></div>'
     : card('Top Mover', '\u2014', '');
 
+  // Total = full row count = Gainers + Losers + Unchanged + No Data exactly.
   document.getElementById('statsGrid').innerHTML =
-    card('Total Stocks', priced.length.toLocaleString('en-IN'), totalSub.join(' \u00b7 ')) +
-    card('Gainers', gainers.toLocaleString('en-IN'), '', 'gain') +
-    card('Losers',  losers.toLocaleString('en-IN'),  '', 'loss') +
+    card('Total Stocks', results.length.toLocaleString('en-IN'), 'in current view') +
+    card('Gainers',   gainers.toLocaleString('en-IN'),   '', 'gain') +
+    card('Losers',    losers.toLocaleString('en-IN'),    '', 'loss') +
+    card('Unchanged', unchanged.toLocaleString('en-IN'), '0% change', 'text-slate-700') +
+    card('No Data',   noData.toLocaleString('en-IN'),    'no price in range', 'text-slate-500') +
     card('Avg Change', priced.length ? ((avg >= 0 ? '+' : '') + avg.toFixed(2) + '%') : '\u2014',
-         '', priced.length ? (avg >= 0 ? 'gain' : 'loss') : '') +
+         'across ' + priced.length.toLocaleString('en-IN') + ' priced', priced.length ? (avg >= 0 ? 'gain' : 'loss') : '') +
     topCard;
 }
 
