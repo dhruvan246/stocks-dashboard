@@ -94,14 +94,22 @@ HTML = r"""<!DOCTYPE html>
 
 <div class="min-h-screen">
   <header class="bg-white border-b border-slate-200 sticky top-0 z-20 shadow-sm">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
       <div class="flex items-center gap-3">
         <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex items-center justify-center font-bold text-sm shadow">DS</div>
         <div>
           <h1 class="text-lg font-bold tracking-tight">Dhruvan's stocks data</h1>
         </div>
       </div>
-      <div class="text-xs text-slate-500" id="lastUpdated">Data: __START_DATE__ &rarr; __GEN_DATE__ IST</div>
+      <nav class="flex items-center gap-2">
+        <span class="text-xs px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 font-semibold">Cash market</span>
+        <a href="https://dhruvan246.github.io/fno-dashboard/" target="_blank" rel="noopener"
+           class="text-xs px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900 font-semibold transition flex items-center gap-1">
+          F&amp;O dashboard
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        </a>
+      </nav>
+      <div class="text-xs text-slate-500 hidden md:block" id="lastUpdated">Data: __START_DATE__ &rarr; __GEN_DATE__ IST</div>
     </div>
   </header>
 
