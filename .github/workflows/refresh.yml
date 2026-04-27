@@ -2,8 +2,15 @@ name: Daily stock data refresh
 
 on:
   schedule:
-    # 14:30 UTC == 20:00 IST
-    - cron: "30 14 * * *"
+    # NSE/BSE close at 15:30 IST. Yahoo finishes pushing closes by ~16:00 IST,
+    # BSE typically finalises live mcap by ~16:30 IST. We schedule three runs
+    # to catch the data the moment it's ready and self-correct if the earliest
+    # run got partial data:
+    - cron: "30 10 * * 1-5"   # 16:00 IST primary (closes usually fresh)
+    - cron: "0  11 * * 1-5"   # 16:30 IST safety (mcap settled by now)
+    - cron: "30 11 * * 1-5"   # 17:00 IST backup (always reliable)
+    # Each later run cancels the previous in-flight one (see concurrency block
+    # below), so fresher data always wins.
   workflow_dispatch: {}
 
 permissions:
