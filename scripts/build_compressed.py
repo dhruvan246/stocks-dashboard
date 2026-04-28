@@ -162,7 +162,7 @@ HTML = r"""<!DOCTYPE html>
         </div>
       </div>
       <div class="flex flex-wrap gap-2 mt-4">
-        <button class="preset-btn text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 py-1 font-medium" data-days="1">Today</button>
+        <button class="preset-btn text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 py-1 font-medium" data-latest="1" title="Most recent trading day's move (vs the previous trading day's close)">Latest move</button>
         <button class="preset-btn text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 py-1 font-medium" data-days="7">Last 7 days</button>
         <button class="preset-btn text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 py-1 font-medium" data-days="30">Last 30 days</button>
         <button class="preset-btn text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 py-1 font-medium" data-days="90">Last 90 days</button>
@@ -223,7 +223,7 @@ HTML = r"""<!DOCTYPE html>
 
 <script id="compressedData" type="text/base64">__B64_PAYLOAD__</script>
 <script>
-let META = {}, SERIES = {}, UNIVERSE = [], START_TS = 0;
+let META = {}, SERIES = {}, UNIVERSE = [], START_TS = 0, END_TS = 0;
 const DAY = 86400;
 
 async function loadAndInit() {
@@ -252,7 +252,7 @@ async function loadAndInit() {
     await new Promise(r => requestAnimationFrame(() => setTimeout(r, 16)));
 
     const D = JSON.parse(text);
-    META = D.meta; SERIES = D.series; START_TS = D.startTs;
+    META = D.meta; SERIES = D.series; START_TS = D.startTs; END_TS = D.endTs || D.generatedAt;
     UNIVERSE = Object.keys(META);
     document.getElementById('compressedData').remove();
 
@@ -631,11 +631,19 @@ document.addEventListener('click', e => {
 document.querySelectorAll('.preset-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const today = new Date();
-    let from;
-    if (btn.dataset.ytd)             from = new Date(today.getFullYear(), 0, 1);
-    else if (btn.dataset.since1996)  from = new Date(1996, 0, 1);
+    let from, to = today;
+    if (btn.dataset.latest) {
+      // Anchor to the snapshot date inside the data, not the calendar today,
+      // so "Latest move" always points to the freshest trading-day pair the
+      // dashboard actually contains (Yahoo close data lags reality).
+      const snapDate = END_TS ? new Date(END_TS * 1000) : today;
+      to   = snapDate;
+      from = new Date(snapDate); from.setDate(snapDate.getDate() - 4); // covers weekend gap
+    }
+    else if (btn.dataset.ytd)             from = new Date(today.getFullYear(), 0, 1);
+    else if (btn.dataset.since1996)       from = new Date(1996, 0, 1);
     else { const days = parseInt(btn.dataset.days, 10); from = new Date(); from.setDate(today.getDate() - days); }
-    document.getElementById('toDate').value   = today.toISOString().split('T')[0];
+    document.getElementById('toDate').value   = to.toISOString().split('T')[0];
     document.getElementById('fromDate').value = from.toISOString().split('T')[0];
   });
 });
