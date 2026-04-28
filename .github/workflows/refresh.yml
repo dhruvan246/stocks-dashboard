@@ -2,15 +2,19 @@ name: Daily stock data refresh
 
 on:
   schedule:
-    # NSE/BSE close at 15:30 IST. Yahoo finishes pushing closes by ~16:00 IST,
-    # BSE typically finalises live mcap by ~16:30 IST. We schedule three runs
-    # to catch the data the moment it's ready and self-correct if the earliest
-    # run got partial data:
-    - cron: "30 10 * * 1-5"   # 16:00 IST primary (closes usually fresh)
-    - cron: "0  11 * * 1-5"   # 16:30 IST safety (mcap settled by now)
-    - cron: "30 11 * * 1-5"   # 17:00 IST backup (always reliable)
-    # Each later run cancels the previous in-flight one (see concurrency block
-    # below), so fresher data always wins.
+    # GitHub's own cron is best-effort and skips occasionally. We keep these
+    # as a fallback (16:00 / 16:30 / 17:00 IST weekdays), but the primary
+    # trigger now comes from an external scheduler (cron-job.org or similar)
+    # via the `repository_dispatch` event below.
+    - cron: "30 10 * * 1-5"
+    - cron: "0  11 * * 1-5"
+    - cron: "30 11 * * 1-5"
+  # External scheduler hits  POST /repos/{owner}/{repo}/dispatches
+  # with header `Authorization: Bearer <PAT>` and body
+  # `{"event_type":"scheduled-refresh"}` — guaranteed delivery, no GitHub-cron
+  # luck involved.
+  repository_dispatch:
+    types: [scheduled-refresh]
   workflow_dispatch: {}
 
 permissions:
