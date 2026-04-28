@@ -20,11 +20,13 @@ on:
 permissions:
   contents: write
 
-# Only one refresh run at a time. New triggers cancel any older in-flight run
-# so a slow run can't push stale data on top of a fresh one.
+# Only one refresh run at a time, but later triggers WAIT for in-flight runs
+# instead of cancelling them. This way the 16:00 IST cron (which may catch
+# partial Yahoo data) completes and commits, then 16:30 / 17:00 runs queue
+# and re-fetch in case the earlier one missed today's full close set.
 concurrency:
   group: refresh-main
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   refresh:
