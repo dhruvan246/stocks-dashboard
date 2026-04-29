@@ -341,7 +341,9 @@ function loadData() {
   const mcapBuckets  = getMcapBucketSet();   // Set of selected buckets (empty = all)
   const sectorFilter = document.getElementById('sectorFilter').value;
   if (!fromDate || !toDate)                 return alert('Please select both From Date and To Date');
-  if (new Date(fromDate) >= new Date(toDate)) return alert('From Date must be earlier than To Date');
+  // Allow From == To (means "show this day's 1-day move" — slide-back logic
+  // below picks the previous trading day's close as the comparison point).
+  if (new Date(fromDate) > new Date(toDate)) return alert('From Date must be on or before To Date');
 
   const fromTs = Math.floor(new Date(fromDate + 'T00:00:00').getTime() / 1000);
   const toTs   = Math.floor(new Date(toDate   + 'T23:59:59').getTime() / 1000);
