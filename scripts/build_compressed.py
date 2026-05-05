@@ -396,7 +396,23 @@ function loadData() {
           row.fromDate = new Date((START_TS + ser.d[iFrom] * DAY) * 1000).toISOString().slice(0, 10);
           row.toDate   = new Date((START_TS + ser.d[iTo]   * DAY) * 1000).toISOString().slice(0, 10);
           row.noData = false;
+          // Staleness flag: how far is the resolved To date from what the user
+          // actually picked? If the gap is large (suspended / illiquid stock
+          // that hasn't traded in weeks), flag the row so the user knows the
+          // displayed change is stale rather than a fresh result.
+          row.staleDays = Math.max(0, toDayOffset - ser.d[iTo]);
+          row.fromGapDays = Math.max(0, (fromDayOffset - 1) - ser.d[iFrom]);
         }
+      } else if (iFrom !== -1 && iFrom === iTo && iFrom === 0) {
+        // Listing-day edge case: stock has only one entry inside the window
+        // and there's nothing earlier. Show the listing-day price as "Day 1"
+        // with no change figure, instead of an empty row.
+        row.fromPrice = ser.p[iFrom] / 100;
+        row.toPrice   = ser.p[iFrom] / 100;
+        row.changePercent = null;
+        row.fromDate = row.toDate = new Date((START_TS + ser.d[iFrom] * DAY) * 1000).toISOString().slice(0, 10);
+        row.firstDay = true;
+        row.noData = false;
       }
     }
     results.push(row);
@@ -454,13 +470,25 @@ function renderResults(results) {
       let fromCell, toCell, chgCell;
       if (r.noData) {
         fromCell = toCell = chgCell = DASH;
+      } else if (r.firstDay) {
+        // Stock has only one trading day inside the window (its listing day);
+        // show the price but flag that no comparison is possible.
+        fromCell = toCell = '&#8377;' + r.fromPrice.toFixed(2);
+        chgCell  = '<span class="inline-flex items-center bg-blue-50 text-blue-700 rounded-md px-2 py-0.5 font-semibold text-xs" title="Stock\'s first trading day — no prior close to compare">Day 1</span>';
       } else {
         const cls = r.changePercent >= 0 ? 'chip-gain' : 'chip-loss';
         const arr = r.changePercent >= 0 ? '&#9650;' : '&#9660;';
         const sgn = r.changePercent >= 0 ? '+' : '';
         fromCell = '&#8377;' + r.fromPrice.toFixed(2);
         toCell   = '&#8377;' + r.toPrice.toFixed(2);
-        chgCell  = '<span class="inline-flex items-center gap-1 ' + cls + ' rounded-md px-2 py-0.5 font-semibold text-xs tabular-nums">' + arr + ' ' + sgn + r.changePercent.toFixed(2) + '%</span>';
+        // Append a small "stale" warning badge if the resolved To date is more
+        // than 14 days before the user-picked To date — almost always means the
+        // stock is suspended or hasn't traded recently. We still report the
+        // change, just flag that it's not "fresh".
+        const staleNote = (r.staleDays && r.staleDays > 14)
+          ? '<span class="inline-flex items-center bg-amber-50 text-amber-700 rounded-md px-1.5 py-0.5 font-medium text-[10px] ml-1" title="Stock\'s last trade in this window was ' + r.staleDays + ' days before your To Date">stale</span>'
+          : '';
+        chgCell  = '<span class="inline-flex items-center gap-1 ' + cls + ' rounded-md px-2 py-0.5 font-semibold text-xs tabular-nums">' + arr + ' ' + sgn + r.changePercent.toFixed(2) + '%</span>' + staleNote;
       }
       // Screener.in URL: NSE symbols use the symbol itself; BSE-only stocks use
       // the numeric scrip code (Screener accepts both formats).
