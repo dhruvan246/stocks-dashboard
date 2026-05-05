@@ -345,8 +345,11 @@ function loadData() {
   // below picks the previous trading day's close as the comparison point).
   if (new Date(fromDate) > new Date(toDate)) return alert('From Date must be on or before To Date');
 
-  const fromTs = Math.floor(new Date(fromDate + 'T00:00:00').getTime() / 1000);
-  const toTs   = Math.floor(new Date(toDate   + 'T23:59:59').getTime() / 1000);
+  // Interpret user-picked dates as UTC midnight so they line up exactly with
+  // Yahoo's day_offsets (which use UTC). Without 'Z' the browser would treat
+  // "May 5" as IST midnight = May 4 18:30 UTC, landing on the WRONG offset.
+  const fromTs = Math.floor(new Date(fromDate + 'T00:00:00Z').getTime() / 1000);
+  const toTs   = Math.floor(new Date(toDate   + 'T23:59:59Z').getTime() / 1000);
   const fromDayOffset = Math.floor((fromTs - START_TS) / DAY);
   const toDayOffset   = Math.floor((toTs   - START_TS) / DAY);
 
@@ -370,12 +373,18 @@ function loadData() {
       h52: (typeof m.h52 === 'number') ? m.h52 : null,
     };
     if (ser) {
-      let iFrom = firstOnOrAfter(ser.d, fromDayOffset);
+      // From-date semantics: anchor to the last trading day STRICTLY BEFORE
+      // the from-date — i.e., the close right before the user's window opens.
+      // This way "May 4 → May 5" reports the May 1 → May 5 window (covering
+      // everything that happened ON May 4 and May 5) instead of just May 4
+      // close → May 5 close (which would identical to "May 5 → May 5").
+      let iFrom = lastOnOrBefore(ser.d, fromDayOffset - 1);
       let iTo   = lastOnOrBefore(ser.d, toDayOffset);
-      // If both endpoints collapse to the same row (only one trading day's
-      // entry sits inside the requested range, e.g. weekend-gapped "Today"
-      // preset), slide From back one trading day so we report a real change
-      // instead of an empty row.
+      // If iFrom resolves to nothing (from-date is before the very first data
+      // point), fall back to the earliest entry so we still produce a row.
+      if (iFrom === -1 && iTo !== -1 && iTo > 0) iFrom = 0;
+      // If iFrom and iTo collapse (selected window covers ≤ 1 trading day),
+      // slide iFrom back one more so we still report a 1-trading-day change.
       if (iFrom !== -1 && iTo !== -1 && iFrom === iTo && iFrom > 0) iFrom = iTo - 1;
       if (iFrom !== -1 && iTo !== -1 && iTo > iFrom) {
         const fromPrice = ser.p[iFrom] / 100;
