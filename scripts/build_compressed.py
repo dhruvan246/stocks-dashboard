@@ -649,7 +649,11 @@ document.querySelectorAll('.preset-btn').forEach(btn => {
       // dashboard actually contains (Yahoo close data lags reality).
       const snapDate = END_TS ? new Date(END_TS * 1000) : today;
       to   = snapDate;
-      from = new Date(snapDate); from.setDate(snapDate.getDate() - 4); // covers weekend gap
+      // From == To. With the new "from-anchor = last close before from-date"
+      // rule, this resolves to (previous trading day's close → snapshot day's
+      // close), i.e. exactly the latest 1-trading-day move. Slide-back picks
+      // up the right pair even across weekends or holidays.
+      from = snapDate;
     }
     else if (btn.dataset.ytd)             from = new Date(today.getFullYear(), 0, 1);
     else if (btn.dataset.since1996)       from = new Date(1996, 0, 1);
