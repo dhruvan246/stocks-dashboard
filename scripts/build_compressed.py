@@ -44,12 +44,25 @@ for tkr, pairs in payload["series"].items():
             h52_count += 1
 print(f"52w-high attached to {h52_count} stocks")
 
+# Historical index snapshots (per-rebalance constituent lists, NSE symbols only).
+# Optional — if missing, the dashboard falls back to today's META.indices.
+indices_history_path = ROOT / "scripts" / "indices_history.json"
+indices_history = {}
+if indices_history_path.exists():
+    try:
+        indices_history = json.loads(indices_history_path.read_text())
+        n_snaps = sum(len(v) for v in indices_history.values())
+        print(f"Indices history: {len(indices_history)} indices, {n_snaps} snapshots")
+    except Exception as e:
+        print(f"WARN: failed to load indices_history.json: {e}")
+
 compact = {
     "startTs": start_ts,
     "endTs":   payload["endTs"],
     "generatedAt": gen_ts,
     "meta":    payload["meta"],
     "series":  compact_series,
+    "indicesHistory": indices_history,
 }
 
 raw_json = json.dumps(compact, separators=(",", ":")).encode("utf-8")
@@ -259,7 +272,21 @@ HTML = r"""<!DOCTYPE html>
 
 <script id="compressedData" type="text/base64">__B64_PAYLOAD__</script>
 <script>
-let META = {}, SERIES = {}, UNIVERSE = [], START_TS = 0, END_TS = 0;
+let META = {}, SERIES = {}, UNIVERSE = [], START_TS = 0, END_TS = 0, INDICES_HISTORY = {};
+
+// Return the set of NSE symbols that were in `indexName` on/before `dateISO`.
+// Snapshots are stored ascending by effectiveDate; each snapshot represents the
+// membership IMMEDIATELY BEFORE its effectiveDate. So we want the first
+// snapshot whose effectiveDate is strictly GREATER than the user's date —
+// because that snapshot's set covers the period (prev event, this event).
+function getIndexMembersAt(indexName, dateISO) {
+  const snaps = INDICES_HISTORY[indexName];
+  if (!snaps || !snaps.length) return null; // no history → fall back to current
+  for (const s of snaps) {
+    if (s.effectiveDate > dateISO) return new Set(s.symbols);
+  }
+  return new Set(snaps[snaps.length - 1].symbols); // after all events → latest
+}
 const DAY = 86400;
 
 async function loadAndInit() {
@@ -290,6 +317,8 @@ async function loadAndInit() {
     const D = JSON.parse(text);
     META = D.meta; SERIES = D.series; START_TS = D.startTs; END_TS = D.endTs || D.generatedAt;
     UNIVERSE = Object.keys(META);
+    // Historical index membership (per-rebalance snapshots). Optional.
+    INDICES_HISTORY = D.indicesHistory || {};
     document.getElementById('compressedData').remove();
 
     // Populate the dropdown using BSE's IndustryNew (granular: Pharma, Metals,
@@ -411,11 +440,25 @@ function loadData() {
   const fromDayOffset = Math.floor((fromTs - START_TS) / DAY);
   const toDayOffset   = Math.floor((toTs   - START_TS) / DAY);
 
+  // Historical index membership at the user's From Date — so e.g. selecting
+  // "Nifty 500 + 2021-Jan-01 → 2021-Dec-31" shows stocks that were in Nifty 500
+  // back in 2021, not today's Nifty 500. Falls back to today's META.indices if
+  // no history is available for the chosen index.
+  const histMembers = indexFilter !== 'all'
+    ? getIndexMembersAt(indexFilter, fromDate)
+    : null;
   const results = [];
   for (const ticker of UNIVERSE) {
     const m = META[ticker];
     if (!inAnyMcapBucket(m.mcap, mcapBuckets)) continue;
-    if (indexFilter !== 'all' && !(m.indices || []).includes(indexFilter)) continue;
+    if (indexFilter !== 'all') {
+      if (histMembers) {
+        const base = ticker.endsWith('.NS') ? ticker.slice(0, -3) : ticker;
+        if (!histMembers.has(base)) continue;
+      } else {
+        if (!(m.indices || []).includes(indexFilter)) continue;
+      }
+    }
     const indKey = (m.industry && m.industry.trim()) || m.sector || 'Uncategorized';
     if (sectorFilter !== 'all' && indKey !== sectorFilter) continue;
     const ser = SERIES[ticker];
@@ -738,14 +781,28 @@ function runBacktest() {
   const indexFilter   = document.getElementById('indexFilter').value;
 
   // Build screen-period results filtered by index + mcap + sector. For backtesting,
-  // mcap MUST be evaluated as-of the screening period (not today's mcap), so we
-  // approximate historical mcap = today's mcap × (price-at-screen-From / latest-price).
-  // Yahoo's adjusted prices handle splits/bonuses, so the main residual error
-  // is buybacks/new-issuances (typically <10% for large caps).
+  // both mcap AND index membership MUST be evaluated as-of the screening
+  // period (not today). Index membership comes from per-rebalance snapshots
+  // walked back from today's NSE constituent lists. Mcap is approximated as
+  // today's mcap × (price-at-screen-From / latest-price). Yahoo's adjusted
+  // prices handle splits/bonuses, so the main residual error is
+  // buybacks/new-issuances (typically <10% for large caps).
+  const historicalMembers = indexFilter !== 'all'
+    ? getIndexMembersAt(indexFilter, screenFrom)
+    : null;
   const screened = [];
   for (const ticker of UNIVERSE) {
     const m = META[ticker];
-    if (indexFilter !== 'all' && !(m.indices || []).includes(indexFilter)) continue;
+    if (indexFilter !== 'all') {
+      // Use historical snapshot if available, else fall back to today's META.indices
+      if (historicalMembers) {
+        // ticker is "RELIANCE.NS" — strip suffix for lookup
+        const base = ticker.endsWith('.NS') ? ticker.slice(0, -3) : ticker;
+        if (!historicalMembers.has(base)) continue;
+      } else {
+        if (!(m.indices || []).includes(indexFilter)) continue;
+      }
+    }
     const indKey = (m.industry && m.industry.trim()) || m.sector || 'Uncategorized';
     if (sectorFilter !== 'all' && indKey !== sectorFilter) continue;
     const ser = SERIES[ticker];
