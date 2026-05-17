@@ -30,12 +30,17 @@ if len(text) < 1000:
     print(f"  WARN: response too short ({len(text)} bytes), keeping existing fno_list.json")
     raise SystemExit(0)
 
+# NSE's CSV actually has TWO header rows:
+#   1) "UNDERLYING, SYMBOL, MAY-26, JUN-26, ..."
+#   2) "Derivatives on Individual Securities, Symbol, ..." (sub-section header)
+# The case differs ("SYMBOL" vs "Symbol") so we need both forms in the skip list.
+BOGUS_HEADERS = {"SYMBOL", "Symbol", "symbol", "TckrSymb", "TCKR"}
 rows = list(csv.reader(io.StringIO(text)))
 stocks = []
 for r in rows[1:]:
     if len(r) < 2: continue
     sym = r[1].strip().strip('"')
-    if not sym or sym == 'SYMBOL': continue
+    if not sym or sym in BOGUS_HEADERS: continue
     if sym in INDEX_UNDERLYINGS: continue
     stocks.append(sym)
 
