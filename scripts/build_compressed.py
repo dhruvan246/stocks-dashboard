@@ -149,13 +149,16 @@ HTML = r"""<!DOCTYPE html>
           </div>
         </div>
         <div class="md:col-span-1">
+          <label class="block text-xs font-medium text-slate-600 mb-1">Index</label>
+          <select id="indexFilter" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
+            <option value="all">All indices</option>
+          </select>
+        </div>
+        <div class="md:col-span-1">
           <label class="block text-xs font-medium text-slate-600 mb-1">Industry</label>
           <select id="sectorFilter" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
             <option value="all">All sectors</option>
           </select>
-        </div>
-        <div class="md:col-span-1 flex items-end">
-          <p class="text-xs text-slate-500 italic">Tip: click any column header below to sort by it.</p>
         </div>
         <div class="md:col-span-1 flex items-end">
           <button id="loadBtn" class="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-lg px-4 py-2 text-sm font-semibold shadow-sm transition">Load Data</button>
@@ -309,6 +312,27 @@ async function loadAndInit() {
         sectorSel.appendChild(opt);
       });
 
+    // Index dropdown — fed by per-stock `indices` arrays (Nifty 500, etc.)
+    const indexCounts = {};
+    for (const t of UNIVERSE) {
+      const arr = META[t].indices || [];
+      for (const ix of arr) indexCounts[ix] = (indexCounts[ix] || 0) + 1;
+    }
+    const indexSel = document.getElementById('indexFilter');
+    // Preferred ordering so the most common picks surface at the top
+    const PREFERRED = ['Nifty 50','Nifty Next 50','Nifty 100','Nifty 200','Nifty 500',
+                       'Nifty Midcap 50','Nifty Midcap 100','Nifty Midcap 150',
+                       'Nifty Smallcap 50','Nifty Smallcap 100','Nifty Smallcap 250',
+                       'Nifty LargeMidcap 250','Nifty MidSmallcap 400'];
+    const inPref = PREFERRED.filter(x => indexCounts[x]);
+    const rest   = Object.keys(indexCounts).filter(x => !PREFERRED.includes(x)).sort();
+    for (const ix of inPref.concat(rest)) {
+      const opt = document.createElement('option');
+      opt.value = ix;
+      opt.textContent = ix + '  (' + indexCounts[ix].toLocaleString('en-IN') + ')';
+      indexSel.appendChild(opt);
+    }
+
     const dt = ((performance.now() - t0) / 1000).toFixed(1);
     statusEl.textContent = 'Ready ✨';
     const priced = Object.keys(SERIES).length;
@@ -373,6 +397,7 @@ function loadData() {
   const toDate       = document.getElementById('toDate').value;
   const mcapBuckets  = getMcapBucketSet();   // Set of selected buckets (empty = all)
   const sectorFilter = document.getElementById('sectorFilter').value;
+  const indexFilter  = document.getElementById('indexFilter').value;
   if (!fromDate || !toDate)                 return alert('Please select both From Date and To Date');
   // Allow From == To (means "show this day's 1-day move" — slide-back logic
   // below picks the previous trading day's close as the comparison point).
@@ -390,6 +415,7 @@ function loadData() {
   for (const ticker of UNIVERSE) {
     const m = META[ticker];
     if (!inAnyMcapBucket(m.mcap, mcapBuckets)) continue;
+    if (indexFilter !== 'all' && !(m.indices || []).includes(indexFilter)) continue;
     const indKey = (m.industry && m.industry.trim()) || m.sector || 'Uncategorized';
     if (sectorFilter !== 'all' && indKey !== sectorFilter) continue;
     const ser = SERIES[ticker];
@@ -709,8 +735,9 @@ function runBacktest() {
 
   const mcapBuckets   = getMcapBucketSet();
   const sectorFilter  = document.getElementById('sectorFilter').value;
+  const indexFilter   = document.getElementById('indexFilter').value;
 
-  // Build screen-period results filtered by mcap + sector. For backtesting,
+  // Build screen-period results filtered by index + mcap + sector. For backtesting,
   // mcap MUST be evaluated as-of the screening period (not today's mcap), so we
   // approximate historical mcap = today's mcap × (price-at-screen-From / latest-price).
   // Yahoo's adjusted prices handle splits/bonuses, so the main residual error
@@ -718,6 +745,7 @@ function runBacktest() {
   const screened = [];
   for (const ticker of UNIVERSE) {
     const m = META[ticker];
+    if (indexFilter !== 'all' && !(m.indices || []).includes(indexFilter)) continue;
     const indKey = (m.industry && m.industry.trim()) || m.sector || 'Uncategorized';
     if (sectorFilter !== 'all' && indKey !== sectorFilter) continue;
     const ser = SERIES[ticker];
