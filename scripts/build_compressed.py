@@ -710,20 +710,37 @@ function runBacktest() {
   const mcapBuckets   = getMcapBucketSet();
   const sectorFilter  = document.getElementById('sectorFilter').value;
 
-  // Build screen-period results filtered by mcap + sector
+  // Build screen-period results filtered by mcap + sector. For backtesting,
+  // mcap MUST be evaluated as-of the screening period (not today's mcap), so we
+  // approximate historical mcap = today's mcap × (price-at-screen-From / latest-price).
+  // Yahoo's adjusted prices handle splits/bonuses, so the main residual error
+  // is buybacks/new-issuances (typically <10% for large caps).
   const screened = [];
   for (const ticker of UNIVERSE) {
     const m = META[ticker];
-    if (!inAnyMcapBucket(m.mcap, mcapBuckets)) continue;
     const indKey = (m.industry && m.industry.trim()) || m.sector || 'Uncategorized';
     if (sectorFilter !== 'all' && indKey !== sectorFilter) continue;
+    const ser = SERIES[ticker];
+    if (!ser || !ser.d.length || !m.mcap) continue;
+
+    // Historical-mcap approximation, anchored at the screening From Date
+    const latestPx = ser.p[ser.p.length - 1] / 100;
+    const fromTs   = Math.floor(new Date(screenFrom + 'T00:00:00Z').getTime() / 1000);
+    const fromOff  = Math.floor((fromTs - START_TS) / DAY);
+    const iAtFrom  = lastOnOrBefore(ser.d, fromOff);
+    if (iAtFrom === -1) continue;
+    const pxAtFrom    = ser.p[iAtFrom] / 100;
+    const histMcap    = latestPx > 0 ? m.mcap * (pxAtFrom / latestPx) : m.mcap;
+    if (!inAnyMcapBucket(histMcap, mcapBuckets)) continue;
+
     const screen = computeReturn(ticker, screenFrom, screenTo);
     if (!screen) continue;
     // Need hold-period return too (from screening To Date → holdTo)
     const hold = computeReturn(ticker, screenTo, holdTo);
     if (!hold) continue;
     screened.push({
-      ticker, symbol: m.symbol, name: m.name, sector: indKey, mcap: m.mcap,
+      ticker, symbol: m.symbol, name: m.name, sector: indKey,
+      mcap: m.mcap, histMcap,
       screenPct: screen.changePercent,
       holdPct:   hold.changePercent,
       buyPrice:  hold.fromPrice,
@@ -778,6 +795,7 @@ function renderBacktest(d) {
       '<td class="px-3 py-2 text-slate-400 text-xs">' + (i + 1) + '</td>' +
       '<td class="px-3 py-2"><a href="https://www.screener.in/company/' + encodeURIComponent(p.symbol) + '/" target="_blank" rel="noopener" class="font-semibold text-slate-800 hover:text-blue-600 hover:underline">' + p.symbol + '</a></td>' +
       '<td class="px-3 py-2 text-slate-700 text-xs">' + p.name + '</td>' +
+      '<td class="px-3 py-2 text-right text-slate-600 tabular-nums" title="Approx mcap at screening start (today\'s mcap × adj-price ratio)">&#8377;' + fmtINR(p.histMcap) + '</td>' +
       '<td class="px-3 py-2 text-right text-slate-600 tabular-nums">' + screenSgn + p.screenPct.toFixed(2) + '%</td>' +
       '<td class="px-3 py-2 text-right text-slate-600 tabular-nums">&#8377;' + p.buyPrice.toFixed(2) + '</td>' +
       '<td class="px-3 py-2 text-right text-slate-800 font-medium tabular-nums">&#8377;' + p.sellPrice.toFixed(2) + '</td>' +
@@ -823,6 +841,7 @@ function renderBacktest(d) {
           '<th class="px-3 py-2 text-left font-semibold">#</th>' +
           '<th class="px-3 py-2 text-left font-semibold">Symbol</th>' +
           '<th class="px-3 py-2 text-left font-semibold">Company</th>' +
+          '<th class="px-3 py-2 text-right font-semibold" title="Approx historical market cap at screening start">Hist Mcap<br><span class="normal-case text-slate-400 text-[10px] font-normal">(&#8377; Cr)</span></th>' +
           '<th class="px-3 py-2 text-right font-semibold">Screen %</th>' +
           '<th class="px-3 py-2 text-right font-semibold">Buy Price</th>' +
           '<th class="px-3 py-2 text-right font-semibold">Sell Price</th>' +
