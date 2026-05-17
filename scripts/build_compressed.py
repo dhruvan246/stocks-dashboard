@@ -181,6 +181,39 @@ HTML = r"""<!DOCTYPE html>
     <div class="grid grid-cols-2 md:grid-cols-7 gap-3" id="statsGrid"></div>
   </section>
 
+  <!-- Backtest panel: pick top-N by screening returns, hold to a later date, see portfolio P&L -->
+  <section class="max-w-7xl mx-auto px-6 pb-6">
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+      <div class="flex items-center justify-between mb-3">
+        <div>
+          <h2 class="text-sm font-semibold text-slate-700 uppercase tracking-wide">Backtest</h2>
+          <p class="text-[11px] text-slate-500 mt-0.5">Pick the top-N stocks by the From&rarr;To return, &ldquo;buy&rdquo; them equal-weighted on the To Date, sell on Hold&nbsp;Until. Returns shown.</p>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-3 items-end">
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">Top N (sorted by % Change)</label>
+          <input type="number" id="backtestN" value="10" min="1" max="500" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white" />
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">Hold Until</label>
+          <input type="date" id="backtestHoldTo" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white" />
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">Capital (&#8377;)</label>
+          <input type="text" id="backtestCapital" value="1,00,000" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm tabular-nums focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white" />
+        </div>
+        <div class="flex items-end">
+          <button id="runBacktestBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg px-4 py-2 text-sm font-semibold shadow-sm transition">Run Backtest</button>
+        </div>
+        <div class="flex items-end">
+          <p class="text-[11px] text-slate-500 italic">Screen period = main From&rarr;To dates above. Buy date = To Date.</p>
+        </div>
+      </div>
+      <div id="backtestResults" class="mt-5 hidden"></div>
+    </div>
+  </section>
+
   <section class="max-w-7xl mx-auto px-6 pb-10">
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
       <div class="px-6 py-4 border-b border-slate-200 flex flex-wrap gap-3 justify-between items-center">
@@ -623,6 +656,193 @@ document.querySelectorAll('#resultsHead th[data-sort]').forEach(th => {
   });
 });
 document.getElementById('exportBtn').addEventListener('click', exportCSV);
+
+// --- Backtest engine -----------------------------------------------
+function computeReturn(ticker, fromDate, toDate) {
+  const ser = SERIES[ticker]; if (!ser) return null;
+  const fromTs = Math.floor(new Date(fromDate + 'T00:00:00Z').getTime() / 1000);
+  const toTs   = Math.floor(new Date(toDate   + 'T23:59:59Z').getTime() / 1000);
+  const fromOff = Math.floor((fromTs - START_TS) / DAY);
+  const toOff   = Math.floor((toTs   - START_TS) / DAY);
+  let iFrom = lastOnOrBefore(ser.d, fromOff - 1);
+  let iTo   = lastOnOrBefore(ser.d, toOff);
+  if (iFrom === -1 && iTo !== -1 && iTo > 0) iFrom = 0;
+  if (iFrom !== -1 && iTo !== -1 && iFrom === iTo && iFrom > 0) iFrom = iTo - 1;
+  if (iFrom === -1 || iTo === -1 || iTo <= iFrom) return null;
+  const fp = ser.p[iFrom] / 100;
+  const tp = ser.p[iTo]   / 100;
+  if (!fp || !tp) return null;
+  return {
+    fromPrice: fp, toPrice: tp,
+    changePercent: ((tp - fp) / fp) * 100,
+    fromDate: new Date((START_TS + ser.d[iFrom] * DAY) * 1000).toISOString().slice(0, 10),
+    toDate:   new Date((START_TS + ser.d[iTo]   * DAY) * 1000).toISOString().slice(0, 10),
+  };
+}
+
+function parseCapital(s) {
+  // Accept "1,00,000" or "100000" or "100,000"
+  const cleaned = String(s).replace(/[^0-9.]/g, '');
+  return parseFloat(cleaned) || 0;
+}
+function fmtINR(n) {
+  // Indian numbering: 1,23,45,678
+  const x = Math.round(n);
+  const s = String(x);
+  if (s.length <= 3) return s;
+  const last3 = s.slice(-3);
+  const rest = s.slice(0, -3);
+  return rest.replace(/(\d)(?=(\d\d)+$)/g, '$1,') + ',' + last3;
+}
+
+function runBacktest() {
+  const screenFrom = document.getElementById('fromDate').value;
+  const screenTo   = document.getElementById('toDate').value;
+  const holdTo     = document.getElementById('backtestHoldTo').value;
+  const topN       = Math.max(1, Math.min(500, parseInt(document.getElementById('backtestN').value, 10) || 10));
+  const capital    = parseCapital(document.getElementById('backtestCapital').value);
+
+  if (!screenFrom || !screenTo) return alert('Set the From/To dates in the main filter row first — those are the screening period.');
+  if (!holdTo)                  return alert('Pick a Hold Until date.');
+  if (new Date(screenTo) > new Date(holdTo)) return alert('Hold Until must be on or after the screening To Date.');
+  if (capital <= 0)             return alert('Capital must be a positive number.');
+
+  const mcapBuckets   = getMcapBucketSet();
+  const sectorFilter  = document.getElementById('sectorFilter').value;
+
+  // Build screen-period results filtered by mcap + sector
+  const screened = [];
+  for (const ticker of UNIVERSE) {
+    const m = META[ticker];
+    if (!inAnyMcapBucket(m.mcap, mcapBuckets)) continue;
+    const indKey = (m.industry && m.industry.trim()) || m.sector || 'Uncategorized';
+    if (sectorFilter !== 'all' && indKey !== sectorFilter) continue;
+    const screen = computeReturn(ticker, screenFrom, screenTo);
+    if (!screen) continue;
+    // Need hold-period return too (from screening To Date → holdTo)
+    const hold = computeReturn(ticker, screenTo, holdTo);
+    if (!hold) continue;
+    screened.push({
+      ticker, symbol: m.symbol, name: m.name, sector: indKey, mcap: m.mcap,
+      screenPct: screen.changePercent,
+      holdPct:   hold.changePercent,
+      buyPrice:  hold.fromPrice,
+      sellPrice: hold.toPrice,
+      buyDate:   hold.fromDate,
+      sellDate:  hold.toDate,
+    });
+  }
+  if (screened.length === 0) {
+    alert('No stocks matched both periods. Widen filters or date range.');
+    return;
+  }
+  // Sort by screening return (desc) and take top-N
+  screened.sort((a, b) => b.screenPct - a.screenPct);
+  const picked = screened.slice(0, topN);
+
+  // Equal-weight portfolio simulation
+  const perStock = capital / picked.length;
+  let finalValue = 0;
+  for (const p of picked) {
+    p.allocated  = perStock;
+    p.finalValue = perStock * (1 + p.holdPct / 100);
+    p.pnl        = p.finalValue - perStock;
+    finalValue  += p.finalValue;
+  }
+  const totalReturnPct = (finalValue - capital) / capital * 100;
+  const avgHoldPct     = picked.reduce((s, p) => s + p.holdPct, 0) / picked.length;
+  const winners        = picked.filter(p => p.holdPct > 0).length;
+  const top    = picked.reduce((a, b) => a.holdPct > b.holdPct ? a : b);
+  const bottom = picked.reduce((a, b) => a.holdPct < b.holdPct ? a : b);
+
+  renderBacktest({
+    picked, capital, finalValue, totalReturnPct, avgHoldPct, winners,
+    top, bottom,
+    screenFrom: picked[0]?.buyDate ? null : screenFrom,    // not used here
+    holdFrom: picked[0]?.buyDate, holdTo: picked[0]?.sellDate,
+    universeSize: screened.length,
+  });
+}
+
+function renderBacktest(d) {
+  const wrap = document.getElementById('backtestResults');
+  wrap.classList.remove('hidden');
+  const sign = d.totalReturnPct >= 0 ? '+' : '';
+  const retCls = d.totalReturnPct >= 0 ? 'text-green-700 bg-green-50' : 'text-red-700 bg-red-50';
+  let rowsHtml = '';
+  d.picked.forEach((p, i) => {
+    const pnlCls = p.holdPct >= 0 ? 'chip-gain' : 'chip-loss';
+    const sgn = p.holdPct >= 0 ? '+' : '';
+    const screenSgn = p.screenPct >= 0 ? '+' : '';
+    rowsHtml += '<tr class="hover:bg-slate-50">' +
+      '<td class="px-3 py-2 text-slate-400 text-xs">' + (i + 1) + '</td>' +
+      '<td class="px-3 py-2"><a href="https://www.screener.in/company/' + encodeURIComponent(p.symbol) + '/" target="_blank" rel="noopener" class="font-semibold text-slate-800 hover:text-blue-600 hover:underline">' + p.symbol + '</a></td>' +
+      '<td class="px-3 py-2 text-slate-700 text-xs">' + p.name + '</td>' +
+      '<td class="px-3 py-2 text-right text-slate-600 tabular-nums">' + screenSgn + p.screenPct.toFixed(2) + '%</td>' +
+      '<td class="px-3 py-2 text-right text-slate-600 tabular-nums">&#8377;' + p.buyPrice.toFixed(2) + '</td>' +
+      '<td class="px-3 py-2 text-right text-slate-800 font-medium tabular-nums">&#8377;' + p.sellPrice.toFixed(2) + '</td>' +
+      '<td class="px-3 py-2 text-right"><span class="inline-flex items-center gap-1 ' + pnlCls + ' rounded-md px-2 py-0.5 font-semibold text-xs tabular-nums">' + sgn + p.holdPct.toFixed(2) + '%</span></td>' +
+      '<td class="px-3 py-2 text-right text-slate-600 tabular-nums">&#8377;' + fmtINR(p.allocated) + '</td>' +
+      '<td class="px-3 py-2 text-right text-slate-800 font-medium tabular-nums">&#8377;' + fmtINR(p.finalValue) + '</td>' +
+      '<td class="px-3 py-2 text-right tabular-nums ' + (p.pnl >= 0 ? 'text-green-700' : 'text-red-700') + '">' + (p.pnl >= 0 ? '+' : '') + '&#8377;' + fmtINR(p.pnl) + '</td>' +
+      '</tr>';
+  });
+  const summary =
+    '<div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">' +
+      '<div class="bg-slate-50 rounded-lg p-3 border border-slate-200">' +
+        '<div class="text-[10px] uppercase tracking-wide font-semibold text-slate-500">Starting Capital</div>' +
+        '<div class="text-base font-bold mt-0.5">&#8377;' + fmtINR(d.capital) + '</div>' +
+      '</div>' +
+      '<div class="bg-slate-50 rounded-lg p-3 border border-slate-200">' +
+        '<div class="text-[10px] uppercase tracking-wide font-semibold text-slate-500">Final Value</div>' +
+        '<div class="text-base font-bold mt-0.5">&#8377;' + fmtINR(d.finalValue) + '</div>' +
+      '</div>' +
+      '<div class="rounded-lg p-3 border border-slate-200 ' + retCls + '">' +
+        '<div class="text-[10px] uppercase tracking-wide font-semibold opacity-80">Total Return</div>' +
+        '<div class="text-base font-bold mt-0.5">' + sign + d.totalReturnPct.toFixed(2) + '%</div>' +
+      '</div>' +
+      '<div class="bg-slate-50 rounded-lg p-3 border border-slate-200">' +
+        '<div class="text-[10px] uppercase tracking-wide font-semibold text-slate-500">Winners</div>' +
+        '<div class="text-base font-bold mt-0.5">' + d.winners + ' / ' + d.picked.length + '</div>' +
+      '</div>' +
+      '<div class="bg-slate-50 rounded-lg p-3 border border-slate-200">' +
+        '<div class="text-[10px] uppercase tracking-wide font-semibold text-slate-500">Hold Period</div>' +
+        '<div class="text-xs font-bold mt-0.5">' + (d.holdFrom || '—') + ' &rarr; ' + (d.holdTo || '—') + '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="text-xs text-slate-500 mb-2">Top mover: <span class="font-semibold text-green-700">' + d.top.symbol + ' +' + d.top.holdPct.toFixed(2) + '%</span> · ' +
+      'Worst: <span class="font-semibold text-red-700">' + d.bottom.symbol + ' ' + d.bottom.holdPct.toFixed(2) + '%</span> · ' +
+      'Mean: ' + (d.avgHoldPct >= 0 ? '+' : '') + d.avgHoldPct.toFixed(2) + '% · ' +
+      'Sampled from ' + d.universeSize.toLocaleString('en-IN') + ' stocks matching filters</div>';
+
+  wrap.innerHTML = summary +
+    '<div class="overflow-x-auto border border-slate-200 rounded-lg">' +
+      '<table class="w-full text-sm">' +
+        '<thead class="bg-slate-50 text-slate-600 text-xs uppercase">' +
+        '<tr>' +
+          '<th class="px-3 py-2 text-left font-semibold">#</th>' +
+          '<th class="px-3 py-2 text-left font-semibold">Symbol</th>' +
+          '<th class="px-3 py-2 text-left font-semibold">Company</th>' +
+          '<th class="px-3 py-2 text-right font-semibold">Screen %</th>' +
+          '<th class="px-3 py-2 text-right font-semibold">Buy Price</th>' +
+          '<th class="px-3 py-2 text-right font-semibold">Sell Price</th>' +
+          '<th class="px-3 py-2 text-right font-semibold">Hold %</th>' +
+          '<th class="px-3 py-2 text-right font-semibold">Allocated</th>' +
+          '<th class="px-3 py-2 text-right font-semibold">Final Value</th>' +
+          '<th class="px-3 py-2 text-right font-semibold">P&amp;L</th>' +
+        '</tr></thead>' +
+        '<tbody class="divide-y divide-slate-100">' + rowsHtml + '</tbody>' +
+      '</table>' +
+    '</div>';
+  wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+document.getElementById('runBacktestBtn').addEventListener('click', runBacktest);
+// Default Hold Until = today
+(function initBacktest() {
+  const today = new Date();
+  document.getElementById('backtestHoldTo').value = today.toISOString().split('T')[0];
+})();
 
 // --- Market cap multi-select ---
 const MCAP_LABELS = {
