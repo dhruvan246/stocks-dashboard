@@ -56,6 +56,22 @@ if indices_history_path.exists():
     except Exception as e:
         print(f"WARN: failed to load indices_history.json: {e}")
 
+# F&O underlyings list (today's + optional history). History format mirrors
+# indicesHistory: [{ effectiveDate, symbols: [...] }, ...] sorted ascending.
+# When history is empty, the dashboard falls back to today's list for ALL dates
+# (with a UI note about the limitation).
+fno_today = []
+fno_history = []
+fno_list_path = ROOT / "scripts" / "fno_list.json"
+fno_history_path = ROOT / "scripts" / "fno_history.json"
+if fno_list_path.exists():
+    fno = json.loads(fno_list_path.read_text())
+    fno_today = fno.get("stocks", [])
+    print(f"F&O today's list: {len(fno_today)} stocks (as of {fno.get('asOf')})")
+if fno_history_path.exists():
+    fno_history = json.loads(fno_history_path.read_text())
+    print(f"F&O history: {len(fno_history)} snapshots")
+
 compact = {
     "startTs": start_ts,
     "endTs":   payload["endTs"],
@@ -63,6 +79,8 @@ compact = {
     "meta":    payload["meta"],
     "series":  compact_series,
     "indicesHistory": indices_history,
+    "fnoToday":   fno_today,
+    "fnoHistory": fno_history,
 }
 
 raw_json = json.dumps(compact, separators=(",", ":")).encode("utf-8")
@@ -165,6 +183,13 @@ HTML = r"""<!DOCTYPE html>
           <label class="block text-xs font-medium text-slate-600 mb-1">Index</label>
           <select id="indexFilter" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
             <option value="all">All indices</option>
+          </select>
+        </div>
+        <div class="md:col-span-1">
+          <label class="block text-xs font-medium text-slate-600 mb-1">F&amp;O</label>
+          <select id="fnoFilter" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
+            <option value="all">All stocks</option>
+            <option value="fno">F&amp;O stocks only</option>
           </select>
         </div>
         <div class="md:col-span-1">
@@ -272,7 +297,8 @@ HTML = r"""<!DOCTYPE html>
 
 <script id="compressedData" type="text/base64">__B64_PAYLOAD__</script>
 <script>
-let META = {}, SERIES = {}, UNIVERSE = [], START_TS = 0, END_TS = 0, INDICES_HISTORY = {};
+let META = {}, SERIES = {}, UNIVERSE = [], START_TS = 0, END_TS = 0,
+    INDICES_HISTORY = {}, FNO_TODAY = new Set(), FNO_HISTORY = [];
 
 // Return the set of NSE symbols that were in `indexName` on/before `dateISO`.
 // Snapshots are stored ascending by effectiveDate; each snapshot represents the
@@ -286,6 +312,19 @@ function getIndexMembersAt(indexName, dateISO) {
     if (s.effectiveDate > dateISO) return new Set(s.symbols);
   }
   return new Set(snaps[snaps.length - 1].symbols); // after all events → latest
+}
+
+// F&O membership at a given date. If we have history snapshots, look them up
+// the same way as indices. Otherwise (and for now this is the common case)
+// fall back to today's NSE F&O list.
+function getFnoMembersAt(dateISO) {
+  if (FNO_HISTORY && FNO_HISTORY.length) {
+    for (const s of FNO_HISTORY) {
+      if (s.effectiveDate > dateISO) return new Set(s.symbols);
+    }
+    return new Set(FNO_HISTORY[FNO_HISTORY.length - 1].symbols);
+  }
+  return FNO_TODAY;
 }
 const DAY = 86400;
 
@@ -319,6 +358,8 @@ async function loadAndInit() {
     UNIVERSE = Object.keys(META);
     // Historical index membership (per-rebalance snapshots). Optional.
     INDICES_HISTORY = D.indicesHistory || {};
+    FNO_TODAY = new Set(D.fnoToday || []);
+    FNO_HISTORY = D.fnoHistory || [];
     document.getElementById('compressedData').remove();
 
     // Populate the dropdown using BSE's IndustryNew (granular: Pharma, Metals,
@@ -444,9 +485,11 @@ function loadData() {
   // "Nifty 500 + 2021-Jan-01 → 2021-Dec-31" shows stocks that were in Nifty 500
   // back in 2021, not today's Nifty 500. Falls back to today's META.indices if
   // no history is available for the chosen index.
+  const fnoFilter    = document.getElementById('fnoFilter').value;
   const histMembers = indexFilter !== 'all'
     ? getIndexMembersAt(indexFilter, fromDate)
     : null;
+  const fnoMembers = fnoFilter === 'fno' ? getFnoMembersAt(fromDate) : null;
   const results = [];
   for (const ticker of UNIVERSE) {
     const m = META[ticker];
@@ -458,6 +501,10 @@ function loadData() {
       } else {
         if (!(m.indices || []).includes(indexFilter)) continue;
       }
+    }
+    if (fnoMembers) {
+      const base = ticker.endsWith('.NS') ? ticker.slice(0, -3) : ticker;
+      if (!fnoMembers.has(base)) continue;
     }
     const indKey = (m.industry && m.industry.trim()) || m.sector || 'Uncategorized';
     if (sectorFilter !== 'all' && indKey !== sectorFilter) continue;
@@ -780,16 +827,19 @@ function runBacktest() {
   const sectorFilter  = document.getElementById('sectorFilter').value;
   const indexFilter   = document.getElementById('indexFilter').value;
 
-  // Build screen-period results filtered by index + mcap + sector. For backtesting,
-  // both mcap AND index membership MUST be evaluated as-of the screening
-  // period (not today). Index membership comes from per-rebalance snapshots
-  // walked back from today's NSE constituent lists. Mcap is approximated as
+  // Build screen-period results filtered by index + F&O + mcap + sector. For
+  // backtesting, mcap AND index/F&O membership MUST be evaluated as-of the
+  // screening period (not today). Index membership comes from per-rebalance
+  // snapshots walked back from today's NSE constituent lists. F&O uses
+  // history if available, else today's NSE F&O list. Mcap is approximated as
   // today's mcap × (price-at-screen-From / latest-price). Yahoo's adjusted
   // prices handle splits/bonuses, so the main residual error is
   // buybacks/new-issuances (typically <10% for large caps).
+  const fnoFilter = document.getElementById('fnoFilter').value;
   const historicalMembers = indexFilter !== 'all'
     ? getIndexMembersAt(indexFilter, screenFrom)
     : null;
+  const fnoSet = fnoFilter === 'fno' ? getFnoMembersAt(screenFrom) : null;
   const screened = [];
   for (const ticker of UNIVERSE) {
     const m = META[ticker];
@@ -802,6 +852,10 @@ function runBacktest() {
       } else {
         if (!(m.indices || []).includes(indexFilter)) continue;
       }
+    }
+    if (fnoSet) {
+      const base = ticker.endsWith('.NS') ? ticker.slice(0, -3) : ticker;
+      if (!fnoSet.has(base)) continue;
     }
     const indKey = (m.industry && m.industry.trim()) || m.sector || 'Uncategorized';
     if (sectorFilter !== 'all' && indKey !== sectorFilter) continue;
