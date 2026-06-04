@@ -32,6 +32,21 @@ LOOKBACKS_DAYS = {
     'r5y':   5*365,
     'r10y': 10*365,
 }
+# Maximum gap between requested lookback and the actual NAV we matched. Beyond
+# this we return null — otherwise sparse-NAV schemes (segregated side-pockets,
+# illiquid debt) would show the SAME return at every horizon because every
+# lookback finds the same single old NAV point.
+STALENESS_TOLERANCE_DAYS = {
+    'r1d':   7,   # weekend/holiday OK, but not weeks
+    'r1w':   7,
+    'r1m':   30,
+    'r3m':   30,
+    'r6m':   60,
+    'r1y':   60,
+    'r3y':  180,
+    'r5y':  180,
+    'r10y': 180,
+}
 ANNUALIZE_AFTER_DAYS = 365  # any period > 1 year is reported as CAGR
 
 def nav_at_or_before(data, target_dt):
@@ -86,6 +101,12 @@ def fetch_one(scheme):
             nav_then, d_then = hit
             actual_days = (d_lat - d_then).days
             if actual_days < 1:
+                returns[label] = None
+                continue
+            # Staleness check: the matched NAV must be within tolerance of the
+            # requested lookback. Otherwise the data is too sparse for a
+            # meaningful return at this horizon.
+            if actual_days > days + STALENESS_TOLERANCE_DAYS[label]:
                 returns[label] = None
                 continue
             if days <= ANNUALIZE_AFTER_DAYS:

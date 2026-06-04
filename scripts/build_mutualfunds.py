@@ -256,9 +256,10 @@ function render() {
     const tr = document.createElement('tr');
     tr.className = i % 2 ? 'bg-slate-50' : '';
     const cagr = r.cagrPct;
+    const staleBadge = r.stale ? ' <span class="badge b-other" title="Latest NAV is ' + (r.staleDays || '?') + ' days old — short-period returns suppressed">stale</span>' : '';
     tr.innerHTML =
       '<td class="px-2 py-2 text-slate-500 text-[10px]">' + (i + 1) + '</td>' +
-      '<td class="px-3 py-2"><div class="font-medium text-slate-800 text-xs">' + r.short.replace(/[<>]/g, '') + '</div>' +
+      '<td class="px-3 py-2"><div class="font-medium text-slate-800 text-xs">' + r.short.replace(/[<>]/g, '') + staleBadge + '</div>' +
         (r.amc ? '<div class="text-[10px] text-slate-500">' + r.amc.replace(/[<>]/g, '') + '</div>' : '') + '</td>' +
       '<td class="px-2 py-2 text-right text-slate-300 italic text-[10px]">—</td>' +
       '<td class="px-2 py-2"><span class="badge ' + badgeClass(r.cat) + '">' + r.cat + '</span></td>' +
