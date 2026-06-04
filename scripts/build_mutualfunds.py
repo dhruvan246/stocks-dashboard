@@ -8,8 +8,103 @@ ROOT = Path(__file__).resolve().parent.parent
 SRC  = ROOT / "scripts" / "mutual_funds.json"
 OUT  = ROOT / "docs" / "mutual-funds.html"
 
-mf = json.loads(SRC.read_text())
+mf = json.loads(SRC.read_text(encoding="utf-8"))
 print(f"Building MF dashboard for {len(mf)} schemes...")
+
+# ---------------------------------------------------------------------------
+# Groww-style category normalization.
+# Groww's screener (groww.in/mutual-funds/filter) groups funds into a small set
+# of parent categories, each with SEBI subcategories. The raw `category` field
+# from AMFI/mfapi is messy: clean SEBI names for open-ended funds, but garbage
+# ("IDF", "Income", "1099 Days", "Growth") for closed-ended / FMP / defunct
+# schemes that Groww does not list at all. We map every fund to a (group, sub)
+# pair from Groww's taxonomy; anything that doesn't fit -> "Uncategorized".
+# ---------------------------------------------------------------------------
+import re as _re
+
+GROUP_ORDER = ['Equity', 'Hybrid', 'Debt', 'Index / Other',
+               'Commodities', 'Solution Oriented', 'Uncategorized']
+SUB_ORDER = {
+    'Equity': ['Large Cap', 'Large & Mid Cap', 'Mid Cap', 'Small Cap',
+               'Multi Cap', 'Flexi Cap', 'ELSS (Tax Saver)', 'Sectoral / Thematic',
+               'Focused', 'Value', 'Contra', 'Dividend Yield'],
+    'Hybrid': ['Aggressive Hybrid', 'Balanced Advantage', 'Multi Asset Allocation',
+               'Equity Savings', 'Arbitrage', 'Conservative Hybrid'],
+    'Debt': ['Overnight', 'Liquid', 'Ultra Short Duration', 'Low Duration',
+             'Money Market', 'Short Duration', 'Medium Duration',
+             'Medium to Long Duration', 'Long Duration', 'Dynamic Bond',
+             'Corporate Bond', 'Credit Risk', 'Banking & PSU', 'Gilt',
+             'Gilt 10Y Constant', 'Floater'],
+    'Index / Other': ['Index Funds', 'ETF', 'Fund of Funds'],
+    'Commodities': ['Gold', 'Silver'],
+    'Solution Oriented': ['Retirement', "Children's"],
+    'Uncategorized': ['Uncategorized'],
+}
+
+def normalize_category(category, name=''):
+    c = (category or '').lower()
+    n = (name or '').lower()
+    def has(*xs): return any(x in c for x in xs)
+    # --- Equity ---
+    if   has('large & mid', 'large and mid'): g, s = 'Equity', 'Large & Mid Cap'
+    elif has('large cap'):           g, s = 'Equity', 'Large Cap'
+    elif has('mid cap'):             g, s = 'Equity', 'Mid Cap'
+    elif has('small cap'):           g, s = 'Equity', 'Small Cap'
+    elif has('multi cap', 'multicap'): g, s = 'Equity', 'Multi Cap'
+    elif has('flexi cap', 'flexicap'): g, s = 'Equity', 'Flexi Cap'
+    elif has('elss', 'tax saver'):   g, s = 'Equity', 'ELSS (Tax Saver)'
+    elif has('sectoral', 'thematic'): g, s = 'Equity', 'Sectoral / Thematic'
+    elif has('focused'):             g, s = 'Equity', 'Focused'
+    elif has('dividend yield'):      g, s = 'Equity', 'Dividend Yield'
+    elif has('contra'):              g, s = 'Equity', 'Contra'
+    # --- Hybrid ---
+    elif has('aggressive'):          g, s = 'Hybrid', 'Aggressive Hybrid'
+    elif has('balanced advantage', 'dynamic asset'): g, s = 'Hybrid', 'Balanced Advantage'
+    elif has('multi asset', 'multi-asset'): g, s = 'Hybrid', 'Multi Asset Allocation'
+    elif has('equity savings'):      g, s = 'Hybrid', 'Equity Savings'
+    elif has('arbitrage'):           g, s = 'Hybrid', 'Arbitrage'
+    elif has('conservative'):        g, s = 'Hybrid', 'Conservative Hybrid'
+    # --- Debt ---
+    elif has('overnight'):           g, s = 'Debt', 'Overnight'
+    elif has('liquid'):              g, s = 'Debt', 'Liquid'
+    elif has('ultra short'):         g, s = 'Debt', 'Ultra Short Duration'
+    elif has('low duration'):        g, s = 'Debt', 'Low Duration'
+    elif has('money market'):        g, s = 'Debt', 'Money Market'
+    elif has('short duration'):      g, s = 'Debt', 'Short Duration'
+    elif has('medium to long', 'medium-long'): g, s = 'Debt', 'Medium to Long Duration'
+    elif has('medium duration'):     g, s = 'Debt', 'Medium Duration'
+    elif has('long duration'):       g, s = 'Debt', 'Long Duration'
+    elif has('dynamic bond'):        g, s = 'Debt', 'Dynamic Bond'
+    elif has('corporate bond'):      g, s = 'Debt', 'Corporate Bond'
+    elif has('credit risk'):         g, s = 'Debt', 'Credit Risk'
+    elif has('banking'):             g, s = 'Debt', 'Banking & PSU'
+    elif has('10 year constant', '10y constant'): g, s = 'Debt', 'Gilt 10Y Constant'
+    elif has('gilt'):                g, s = 'Debt', 'Gilt'
+    elif has('floater', 'floating rate'): g, s = 'Debt', 'Floater'
+    elif has('value'):               g, s = 'Equity', 'Value'   # after the specific ones
+    # --- Index / Other ---
+    elif has('index'):               g, s = 'Index / Other', 'Index Funds'
+    elif has('etf'):                 g, s = 'Index / Other', 'ETF'
+    elif has('fof', 'fund of fund'): g, s = 'Index / Other', 'Fund of Funds'
+    # --- Solution Oriented ---
+    elif has('retirement'):          g, s = 'Solution Oriented', 'Retirement'
+    elif has('children', 'child'):   g, s = 'Solution Oriented', "Children's"
+    else:                            g, s = 'Uncategorized', 'Uncategorized'
+    # Commodities are identified by fund name (Gold/Silver ETFs & FoFs), which
+    # otherwise land in Index / Other or Uncategorized.
+    if g in ('Index / Other', 'Uncategorized'):
+        if   _re.search(r'\bgold\b', n):   g, s = 'Commodities', 'Gold'
+        elif _re.search(r'\bsilver\b', n): g, s = 'Commodities', 'Silver'
+    return g, s
+
+from collections import Counter as _Counter
+_dist = _Counter()
+for r in mf:
+    g, s = normalize_category(r.get('category', ''), r.get('name', ''))
+    r['g'], r['s'] = g, s
+    r.pop('cat', None)  # drop the old messy short-category field
+    _dist[g] += 1
+print("  Category groups: " + ", ".join(f"{g}={_dist[g]}" for g in GROUP_ORDER if _dist[g]))
 
 raw = json.dumps(mf, separators=(",", ":")).encode()
 gz  = gzip.compress(raw, compresslevel=9)
@@ -34,6 +129,7 @@ HTML = r"""<!DOCTYPE html>
   .b-hybrid { background:#fae8ff; color:#86198f; }
   .b-passive{ background:#dcfce7; color:#166534; }
   .b-fof    { background:#e0e7ff; color:#3730a3; }
+  .b-commodity { background:#ffedd5; color:#9a3412; }
   .b-other  { background:#f1f5f9; color:#475569; }
   #loadingOverlay{position:fixed;inset:0;background:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50;}
   .pos { color:#15803d; font-weight:600; }
@@ -117,7 +213,7 @@ HTML = r"""<!DOCTYPE html>
             <th class="px-2 py-2 text-left font-semibold w-10">#</th>
             <th class="px-3 py-2 text-left font-semibold cursor-pointer hover:bg-slate-100 select-none min-w-[260px]" data-sort="short">Mutual fund <span class="sort-ind text-slate-300">&#8597;</span></th>
             <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="aum">AUM<br><span class="normal-case text-slate-400 text-[9px] font-normal">(soon)</span></th>
-            <th class="px-2 py-2 text-left font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="cat">Category <span class="sort-ind text-slate-300">&#8597;</span></th>
+            <th class="px-2 py-2 text-left font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="s">Category <span class="sort-ind text-slate-300">&#8597;</span></th>
             <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="years">Yrs <span class="sort-ind text-slate-300">&#8597;</span></th>
             <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none border-l border-slate-200 bg-slate-50" data-sort="r1d">1D <span class="sort-ind text-slate-300">&#8597;</span></th>
             <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none bg-slate-50" data-sort="r1w">1W <span class="sort-ind text-slate-300">&#8597;</span></th>
@@ -151,6 +247,8 @@ HTML = r"""<!DOCTYPE html>
     AUM is a placeholder for now — AMFI's scheme-wise AUM is published as a monthly XLSX and will be ingested separately.
     Returns shown as "—" mean the fund hasn't existed for that lookback period (e.g. no 10Y return for a 6-year-old fund).
     Side-pocket / Segregated schemes show -100% returns by design.
+    Categories follow Groww's taxonomy (parent group &rarr; subcategory). Closed-ended,
+    fixed-maturity (FMP), infrastructure-debt and other schemes Groww doesn't list are grouped under <b>Uncategorized</b>.
   </p>
 </main>
 
@@ -171,38 +269,58 @@ async function loadData() {
   ALL = JSON.parse(text);
   document.getElementById('compressedData').remove();
 
-  // Populate category dropdown
-  const cats = {};
-  for (const r of ALL) cats[r.cat] = (cats[r.cat] || 0) + 1;
-  const sel = document.getElementById('catFilter');
-  // Sort categories: equity first, then hybrid, debt, passive, others
-  const order = (c) => {
-    if (c.startsWith('Equity')) return 1;
-    if (c.startsWith('Hybrid')) return 2;
-    if (c.startsWith('Passive')) return 3;
-    if (c.startsWith('Debt'))   return 4;
-    if (c.startsWith('FoF'))    return 5;
-    if (c.startsWith('Solution')) return 6;
-    return 7;
+  // Build the two-level category dropdown (Groww-style: parent group -> subcategory)
+  const GROUP_ORDER = ['Equity','Hybrid','Debt','Index / Other','Commodities','Solution Oriented','Uncategorized'];
+  const SUB_ORDER = {
+    'Equity': ['Large Cap','Large & Mid Cap','Mid Cap','Small Cap','Multi Cap','Flexi Cap','ELSS (Tax Saver)','Sectoral / Thematic','Focused','Value','Contra','Dividend Yield'],
+    'Hybrid': ['Aggressive Hybrid','Balanced Advantage','Multi Asset Allocation','Equity Savings','Arbitrage','Conservative Hybrid'],
+    'Debt': ['Overnight','Liquid','Ultra Short Duration','Low Duration','Money Market','Short Duration','Medium Duration','Medium to Long Duration','Long Duration','Dynamic Bond','Corporate Bond','Credit Risk','Banking & PSU','Gilt','Gilt 10Y Constant','Floater'],
+    'Index / Other': ['Index Funds','ETF','Fund of Funds'],
+    'Commodities': ['Gold','Silver'],
+    'Solution Oriented': ['Retirement',"Children's"],
+    'Uncategorized': ['Uncategorized'],
   };
-  Object.keys(cats).sort((a,b) => order(a)-order(b) || a.localeCompare(b)).forEach(c => {
-    const opt = document.createElement('option');
-    opt.value = c;
-    opt.textContent = c + '  (' + cats[c] + ')';
-    sel.appendChild(opt);
+  const gCount = {}, sCount = {};
+  for (const r of ALL) {
+    gCount[r.g] = (gCount[r.g] || 0) + 1;
+    (sCount[r.g] = sCount[r.g] || {});
+    sCount[r.g][r.s] = (sCount[r.g][r.s] || 0) + 1;
+  }
+  const sel = document.getElementById('catFilter');
+  GROUP_ORDER.forEach(g => {
+    if (!gCount[g]) return;
+    const og = document.createElement('optgroup');
+    og.label = g + '  (' + gCount[g] + ')';
+    const allOpt = document.createElement('option');
+    allOpt.value = 'G:::' + g;
+    allOpt.textContent = 'All ' + g + '  (' + gCount[g] + ')';
+    og.appendChild(allOpt);
+    const subs = (SUB_ORDER[g] || []).slice();
+    Object.keys(sCount[g] || {}).forEach(s => { if (!subs.includes(s)) subs.push(s); });
+    subs.forEach(s => {
+      if (!sCount[g] || !sCount[g][s]) return;
+      const opt = document.createElement('option');
+      opt.value = 'S:::' + g + ':::' + s;
+      opt.textContent = ' ' + s + '  (' + sCount[g][s] + ')';
+      og.appendChild(opt);
+    });
+    sel.appendChild(og);
   });
 
   document.getElementById('loadingOverlay').remove();
   render();
 }
 
-function badgeClass(cat) {
-  if (cat.startsWith('Equity'))  return 'b-equity';
-  if (cat.startsWith('Debt'))    return 'b-debt';
-  if (cat.startsWith('Hybrid'))  return 'b-hybrid';
-  if (cat.startsWith('Passive')) return 'b-passive';
-  if (cat.startsWith('FoF'))     return 'b-fof';
-  return 'b-other';
+function badgeClass(g) {
+  switch (g) {
+    case 'Equity':            return 'b-equity';
+    case 'Debt':              return 'b-debt';
+    case 'Hybrid':            return 'b-hybrid';
+    case 'Index / Other':     return 'b-passive';
+    case 'Commodities':       return 'b-commodity';
+    case 'Solution Oriented': return 'b-fof';
+    default:                  return 'b-other';
+  }
 }
 
 function fmtINR(n) {
@@ -215,7 +333,14 @@ function applyFilters() {
   const cat   = document.getElementById('catFilter').value;
   const minYr = parseFloat(document.getElementById('yrFilter').value) || 0;
   let s = ALL.filter(r => {
-    if (cat !== 'all' && r.cat !== cat) return false;
+    if (cat !== 'all') {
+      if (cat.startsWith('G:::')) {
+        if (r.g !== cat.slice(4)) return false;
+      } else if (cat.startsWith('S:::')) {
+        const rest = cat.slice(4), i = rest.indexOf(':::');
+        if (r.g !== rest.slice(0, i) || r.s !== rest.slice(i + 3)) return false;
+      }
+    }
     if (r.years < minYr) return false;
     if (q) {
       const hay = (r.short + ' ' + (r.amc || '') + ' ' + r.name).toLowerCase();
@@ -262,7 +387,7 @@ function render() {
       '<td class="px-3 py-2"><div class="font-medium text-slate-800 text-xs">' + r.short.replace(/[<>]/g, '') + staleBadge + '</div>' +
         (r.amc ? '<div class="text-[10px] text-slate-500">' + r.amc.replace(/[<>]/g, '') + '</div>' : '') + '</td>' +
       '<td class="px-2 py-2 text-right text-slate-300 italic text-[10px]">—</td>' +
-      '<td class="px-2 py-2"><span class="badge ' + badgeClass(r.cat) + '">' + r.cat + '</span></td>' +
+      '<td class="px-2 py-2"><span class="badge ' + badgeClass(r.g) + '" title="' + (r.category || '').replace(/["<>]/g, '') + '">' + r.s + '</span></td>' +
       '<td class="px-2 py-2 text-right text-slate-600">' + r.years.toFixed(1) + '</td>' +
       '<td class="px-2 py-2 text-right border-l border-slate-200">' + fmtRet(r.r1d) + '</td>' +
       '<td class="px-2 py-2 text-right">' + fmtRet(r.r1w) + '</td>' +
@@ -280,7 +405,7 @@ function render() {
 
   // Stats
   document.getElementById('statShown').textContent = SHOWN.length.toLocaleString() + (SHOWN.length > 1500 ? '  (first 1,500 rendered)' : '');
-  const cs = new Set(SHOWN.map(r => r.cat));
+  const cs = new Set(SHOWN.map(r => r.s));
   document.getElementById('statCats').textContent = cs.size;
   if (SHOWN.length) {
     const avg = SHOWN.reduce((s, r) => s + (r.cagrPct || 0), 0) / SHOWN.length;
@@ -314,7 +439,7 @@ document.addEventListener('DOMContentLoaded', () => {
       th.addEventListener('click', () => {
         const k = th.getAttribute('data-sort');
         if (SORT.key === k) SORT.dir = -SORT.dir;
-        else { SORT.key = k; SORT.dir = (k === 'name' || k === 'cat') ? 1 : -1; }
+        else { SORT.key = k; SORT.dir = (k === 'name' || k === 's') ? 1 : -1; }
         document.querySelectorAll('.sort-ind').forEach(el => { el.textContent = '↕'; el.className = 'sort-ind text-slate-300'; });
         const ind = th.querySelector('.sort-ind');
         ind.textContent = SORT.dir === -1 ? '▼' : '▲';
@@ -329,5 +454,5 @@ document.addEventListener('DOMContentLoaded', () => {
 </html>
 """
 HTML = HTML.replace("__B64__", b64).replace("__GEN__", gen)
-OUT.write_text(HTML)
+OUT.write_text(HTML, encoding="utf-8")
 print(f"Wrote {OUT} ({OUT.stat().st_size / 1024:.1f} KB)")
