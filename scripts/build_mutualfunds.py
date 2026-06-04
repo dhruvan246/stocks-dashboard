@@ -111,16 +111,33 @@ HTML = r"""<!DOCTYPE html>
   <!-- Results -->
   <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
     <div class="overflow-x-auto max-h-[calc(100vh-280px)] overflow-y-auto">
-      <table class="w-full text-sm">
-        <thead class="text-xs uppercase text-slate-600 border-b border-slate-200">
+      <table class="w-full text-xs">
+        <thead class="text-[10px] uppercase text-slate-600 border-b border-slate-200">
           <tr>
-            <th class="px-4 py-3 text-left font-semibold w-12">#</th>
-            <th class="px-4 py-3 text-left font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="name">Mutual fund <span class="sort-ind text-slate-300">&#8597;</span></th>
-            <th class="px-4 py-3 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="aum">AUM (&#8377; Cr) <span class="sort-ind text-slate-300">&#8597;</span><br><span class="normal-case text-slate-400 text-[10px] font-normal">(not yet available)</span></th>
-            <th class="px-4 py-3 text-left font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="cat">Category <span class="sort-ind text-slate-300">&#8597;</span></th>
-            <th class="px-4 py-3 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="years">Years <span class="sort-ind text-slate-300">&#8597;</span></th>
-            <th class="px-4 py-3 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="totalReturnPct">Total Return % <span class="sort-ind text-slate-300">&#8597;</span></th>
-            <th class="px-4 py-3 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="cagrPct"><b>CAGR %</b> <span class="sort-ind text-blue-600">&#9660;</span><br><span class="normal-case text-slate-400 text-[10px] font-normal">since inception</span></th>
+            <th class="px-2 py-2 text-left font-semibold w-10">#</th>
+            <th class="px-3 py-2 text-left font-semibold cursor-pointer hover:bg-slate-100 select-none min-w-[260px]" data-sort="short">Mutual fund <span class="sort-ind text-slate-300">&#8597;</span></th>
+            <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="aum">AUM<br><span class="normal-case text-slate-400 text-[9px] font-normal">(soon)</span></th>
+            <th class="px-2 py-2 text-left font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="cat">Category <span class="sort-ind text-slate-300">&#8597;</span></th>
+            <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="years">Yrs <span class="sort-ind text-slate-300">&#8597;</span></th>
+            <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none border-l border-slate-200 bg-slate-50" data-sort="r1d">1D <span class="sort-ind text-slate-300">&#8597;</span></th>
+            <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none bg-slate-50" data-sort="r1w">1W <span class="sort-ind text-slate-300">&#8597;</span></th>
+            <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none bg-slate-50" data-sort="r1m">1M <span class="sort-ind text-slate-300">&#8597;</span></th>
+            <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none bg-slate-50" data-sort="r3m">3M <span class="sort-ind text-slate-300">&#8597;</span></th>
+            <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none bg-slate-50" data-sort="r6m">6M <span class="sort-ind text-slate-300">&#8597;</span></th>
+            <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none bg-slate-50" data-sort="r1y">1Y <span class="sort-ind text-slate-300">&#8597;</span></th>
+            <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none border-l border-slate-200 bg-blue-50" data-sort="r3y">3Y* <span class="sort-ind text-slate-300">&#8597;</span></th>
+            <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none bg-blue-50" data-sort="r5y">5Y* <span class="sort-ind text-slate-300">&#8597;</span></th>
+            <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none bg-blue-50" data-sort="r10y">10Y* <span class="sort-ind text-slate-300">&#8597;</span></th>
+            <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none border-l border-slate-200 bg-blue-100" data-sort="cagrPct"><b>Since incep*</b> <span class="sort-ind text-blue-600">&#9660;</span></th>
+          </tr>
+          <tr class="text-[9px] normal-case text-slate-400">
+            <th class="px-2 py-1"></th>
+            <th class="px-3 py-1 text-left">name &middot; AMC</th>
+            <th class="px-2 py-1 text-right">₹ Cr</th>
+            <th class="px-2 py-1"></th>
+            <th class="px-2 py-1 text-right">since launch</th>
+            <th colspan="6" class="px-2 py-1 text-center bg-slate-50 border-l border-slate-200">absolute % returns</th>
+            <th colspan="4" class="px-2 py-1 text-center bg-blue-50 border-l border-slate-200">annualized (CAGR) %</th>
           </tr>
         </thead>
         <tbody id="resultsBody"></tbody>
@@ -128,11 +145,12 @@ HTML = r"""<!DOCTYPE html>
     </div>
   </div>
   <p class="text-[11px] text-slate-500 mt-3">
-    Data sources: AMFI NAVAll daily file (scheme master + current NAV) and mfapi.in (inception NAV).
-    Only Direct-Growth variants are shown (no Regular plans, no IDCW/dividend options).
-    AUM column is a placeholder — AMFI publishes scheme-wise AUM as a monthly XLSX which needs a separate ingestor.
-    Side-pocket / Segregated schemes show -100% returns by design (assets carved out).
-    CAGR &gt; 100% on funds with &lt;3 years of history usually reflects gold/silver-FoF launches catching a precious-metals rally — not reliable forward returns.
+    * Columns marked with asterisk are annualized (CAGR). 1D–1Y are absolute returns.
+    Data sources: AMFI NAVAll daily file (scheme master + current NAV) and mfapi.in (full NAV history).
+    Only Direct-Growth variants shown (no Regular plans, no IDCW/dividend options).
+    AUM is a placeholder for now — AMFI's scheme-wise AUM is published as a monthly XLSX and will be ingested separately.
+    Returns shown as "—" mean the fund hasn't existed for that lookback period (e.g. no 10Y return for a 6-year-old fund).
+    Side-pocket / Segregated schemes show -100% returns by design.
   </p>
 </main>
 
@@ -205,20 +223,26 @@ function applyFilters() {
     }
     return true;
   });
-  // Apply sort
+  // Apply sort — push nulls to the bottom regardless of direction
   const dir = SORT.dir;
   s.sort((a, b) => {
     const va = a[SORT.key], vb = b[SORT.key];
-    if (typeof va === 'string') return dir * va.localeCompare(vb);
-    return dir * ((vb ?? -Infinity) - (va ?? -Infinity)) * -1 * -1;  // descending if dir=-1
-  });
-  // Fix: sort numeric desc when dir = -1
-  s.sort((a, b) => {
-    const va = a[SORT.key], vb = b[SORT.key];
+    const aN = (va === null || va === undefined);
+    const bN = (vb === null || vb === undefined);
+    if (aN && bN) return 0;
+    if (aN) return 1;
+    if (bN) return -1;
     if (typeof va === 'string') return dir === -1 ? vb.localeCompare(va) : va.localeCompare(vb);
     return (vb - va) * (dir === -1 ? 1 : -1);
   });
   SHOWN = s;
+}
+
+function fmtRet(v) {
+  if (v == null) return '<span class="text-slate-300">—</span>';
+  const cls = v >= 0 ? 'pos' : 'neg';
+  const sign = v >= 0 ? '+' : '';
+  return '<span class="' + cls + '">' + sign + v.toFixed(1) + '</span>';
 }
 
 function render() {
@@ -231,16 +255,24 @@ function render() {
   slice.forEach((r, i) => {
     const tr = document.createElement('tr');
     tr.className = i % 2 ? 'bg-slate-50' : '';
-    const ret = r.totalReturnPct, cagr = r.cagrPct;
+    const cagr = r.cagrPct;
     tr.innerHTML =
-      '<td class="px-4 py-2 text-slate-500 text-xs">' + (i + 1) + '</td>' +
-      '<td class="px-4 py-2"><div class="font-medium text-slate-800">' + r.short.replace(/[<>]/g, '') + '</div>' +
-        (r.amc ? '<div class="text-[11px] text-slate-500">' + r.amc.replace(/[<>]/g, '') + '</div>' : '') + '</td>' +
-      '<td class="px-4 py-2 text-right text-slate-400 italic">—</td>' +
-      '<td class="px-4 py-2"><span class="badge ' + badgeClass(r.cat) + '">' + r.cat + '</span></td>' +
-      '<td class="px-4 py-2 text-right text-slate-600">' + r.years.toFixed(1) + '</td>' +
-      '<td class="px-4 py-2 text-right ' + (ret >= 0 ? 'pos' : 'neg') + '">' + (ret >= 0 ? '+' : '') + ret.toFixed(1) + '%</td>' +
-      '<td class="px-4 py-2 text-right ' + (cagr >= 0 ? 'pos' : 'neg') + ' text-base">' + (cagr >= 0 ? '+' : '') + cagr.toFixed(2) + '%</td>';
+      '<td class="px-2 py-2 text-slate-500 text-[10px]">' + (i + 1) + '</td>' +
+      '<td class="px-3 py-2"><div class="font-medium text-slate-800 text-xs">' + r.short.replace(/[<>]/g, '') + '</div>' +
+        (r.amc ? '<div class="text-[10px] text-slate-500">' + r.amc.replace(/[<>]/g, '') + '</div>' : '') + '</td>' +
+      '<td class="px-2 py-2 text-right text-slate-300 italic text-[10px]">—</td>' +
+      '<td class="px-2 py-2"><span class="badge ' + badgeClass(r.cat) + '">' + r.cat + '</span></td>' +
+      '<td class="px-2 py-2 text-right text-slate-600">' + r.years.toFixed(1) + '</td>' +
+      '<td class="px-2 py-2 text-right border-l border-slate-200">' + fmtRet(r.r1d) + '</td>' +
+      '<td class="px-2 py-2 text-right">' + fmtRet(r.r1w) + '</td>' +
+      '<td class="px-2 py-2 text-right">' + fmtRet(r.r1m) + '</td>' +
+      '<td class="px-2 py-2 text-right">' + fmtRet(r.r3m) + '</td>' +
+      '<td class="px-2 py-2 text-right">' + fmtRet(r.r6m) + '</td>' +
+      '<td class="px-2 py-2 text-right">' + fmtRet(r.r1y) + '</td>' +
+      '<td class="px-2 py-2 text-right border-l border-slate-200">' + fmtRet(r.r3y) + '</td>' +
+      '<td class="px-2 py-2 text-right">' + fmtRet(r.r5y) + '</td>' +
+      '<td class="px-2 py-2 text-right">' + fmtRet(r.r10y) + '</td>' +
+      '<td class="px-2 py-2 text-right border-l border-slate-200 text-sm ' + (cagr >= 0 ? 'pos' : 'neg') + '">' + (cagr >= 0 ? '+' : '') + cagr.toFixed(2) + '</td>';
     frag.appendChild(tr);
   });
   tbody.appendChild(frag);
