@@ -229,9 +229,22 @@ def fetch_one(scheme):
                 cagr = ((nav_latest / nav_then) ** (1 / yrs) - 1) * 100
                 returns[label] = round(cagr, 2)
 
+        # Month-end NAV history (for the custom from/to date return calculator).
+        # data is newest-first, so the first NAV seen for a month is its latest.
+        monthly = {}
+        for x in data:
+            try:
+                dt = datetime.strptime(x['date'], '%d-%m-%Y'); nv = float(x['nav'])
+            except Exception:
+                continue
+            key = dt.strftime('%Y-%m')
+            if key not in monthly and nv > 0:
+                monthly[key] = round(nv, 2)
+
         meta = d.get('meta', {})
         stale_days = (datetime.now(timezone.utc).replace(tzinfo=None) - d_lat).days
         return {
+            '_monthly': monthly,
             'code': code,
             'name': scheme['name'],
             # Keep the already-cleaned short label / AMC / category / isin from the
@@ -287,6 +300,18 @@ if LIMIT > 0:
             results.append(r)
 
 print(f"\nDone: {refreshed} refreshed, {kept} kept stale, {failed} failed -> {len(results)} total")
+
+# Split the monthly NAV history into its own file (build embeds it for the
+# custom date-range calculator). Kept-stale records have no fresh history.
+HIST = ROOT / "scripts" / "mf_history.json"
+histories = {}
+for r in results:
+    mh = r.pop("_monthly", None)
+    if mh:
+        histories[str(r["code"])] = mh
+HIST.write_text(json.dumps(histories, separators=(",", ":")), encoding="utf-8")
+print(f"Saved -> {HIST}  ({HIST.stat().st_size / 1024:.1f} KB, {len(histories)} histories)")
+
 results.sort(key=lambda r: -(r.get('cagrPct') or 0))
 OUT.write_text(json.dumps(results, separators=(",", ":")), encoding="utf-8")
 print(f"Saved -> {OUT}  ({OUT.stat().st_size / 1024:.1f} KB)")

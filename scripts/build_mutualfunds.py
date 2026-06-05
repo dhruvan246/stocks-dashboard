@@ -111,6 +111,39 @@ gz  = gzip.compress(raw, compresslevel=9)
 b64 = base64.b64encode(gz).decode()
 print(f"  Raw {len(raw)/1024:.1f} KB → gzip {len(gz)/1024:.1f} KB → b64 {len(b64)/1024:.1f} KB")
 
+# ---------------------------------------------------------------------------
+# Monthly NAV history -> compact embedded payload for the custom date-range
+# return calculator. Shared month axis + per-fund [startIdx, nav0, nav1, ...]
+# (dense, carry-forward over any gaps). Optional: if scripts/mf_history.json is
+# absent (build run without a fresh fetch), the date filter is simply disabled.
+# ---------------------------------------------------------------------------
+HISTSRC = ROOT / "scripts" / "mf_history.json"
+hist_b64 = ""
+if HISTSRC.exists():
+    raw_hist = json.loads(HISTSRC.read_text(encoding="utf-8"))
+    allmonths = sorted({m for fund in raw_hist.values() for m in fund})
+    midx = {m: i for i, m in enumerate(allmonths)}
+    packed = {}
+    for code, fund in raw_hist.items():
+        ms = sorted(fund)
+        if not ms:
+            continue
+        s, e = midx[ms[0]], midx[ms[-1]]
+        arr, last = [], None
+        for i in range(s, e + 1):
+            m = allmonths[i]
+            if m in fund:
+                last = fund[m]
+            arr.append(last)
+        packed[code] = [s] + arr
+    hraw = json.dumps({"months": allmonths, "data": packed}, separators=(",", ":")).encode()
+    hgz = gzip.compress(hraw, compresslevel=9)
+    hist_b64 = base64.b64encode(hgz).decode()
+    print(f"  History: {len(packed)} funds × {len(allmonths)} months → "
+          f"gzip {len(hgz)/1024:.1f} KB → b64 {len(hist_b64)/1024:.1f} KB")
+else:
+    print("  History: scripts/mf_history.json not found — custom date filter disabled")
+
 gen = datetime.now().strftime("%d %b %Y %H:%M")
 
 HTML = r"""<!DOCTYPE html>
@@ -182,6 +215,19 @@ HTML = r"""<!DOCTYPE html>
         <button id="resetBtn" class="text-sm text-slate-600 hover:text-blue-600">Reset filters</button>
       </div>
     </div>
+    <div class="mt-3 pt-3 border-t border-slate-100 flex flex-wrap items-end gap-3">
+      <div class="text-xs font-semibold text-amber-700 pb-2">&#128197; Custom return window:</div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">From (month)</label>
+        <input type="month" id="fromDate" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500"/>
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">To (month)</label>
+        <input type="month" id="toDate" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500"/>
+      </div>
+      <button id="clearDates" class="text-sm text-slate-600 hover:text-amber-600 pb-2">Clear</button>
+      <div id="rangeInfo" class="text-xs text-slate-500 pb-2"></div>
+    </div>
   </div>
 
   <!-- Stats -->
@@ -225,6 +271,7 @@ HTML = r"""<!DOCTYPE html>
             <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none bg-blue-50" data-sort="r5y">5Y* <span class="sort-ind text-slate-300">&#8597;</span></th>
             <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none bg-blue-50" data-sort="r10y">10Y* <span class="sort-ind text-slate-300">&#8597;</span></th>
             <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none border-l border-slate-200 bg-blue-100" data-sort="cagrPct"><b>Since incep*</b> <span class="sort-ind text-blue-600">&#9660;</span></th>
+            <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none border-l-2 border-amber-300 bg-amber-100" data-sort="cust" id="custHdr">Custom <span class="sort-ind text-slate-300">&#8597;</span></th>
           </tr>
           <tr class="text-[9px] normal-case text-slate-400">
             <th class="px-2 py-1"></th>
@@ -234,6 +281,7 @@ HTML = r"""<!DOCTYPE html>
             <th class="px-2 py-1 text-right">since launch</th>
             <th colspan="6" class="px-2 py-1 text-center bg-slate-50 border-l border-slate-200">absolute % returns</th>
             <th colspan="4" class="px-2 py-1 text-center bg-blue-50 border-l border-slate-200">annualized (CAGR) %</th>
+            <th class="px-2 py-1 text-right bg-amber-50 border-l-2 border-amber-300" id="custSub">set dates</th>
           </tr>
         </thead>
         <tbody id="resultsBody"></tbody>
@@ -253,11 +301,14 @@ HTML = r"""<!DOCTYPE html>
 </main>
 
 <script id="compressedData" type="application/octet-stream">__B64__</script>
+<script id="histData" type="application/octet-stream">__HIST__</script>
 <script>
 'use strict';
 let ALL = [];
 let SHOWN = [];
 let SORT = { key: 'cagrPct', dir: -1 };
+let HIST = null;            // {months:[...], idx:{m:i}, data:{code:[startIdx, nav...]}}
+let FROM = null, TO = null; // active custom return window (YYYY-MM strings)
 
 async function loadData() {
   const statusEl = document.getElementById('statusText');
@@ -268,6 +319,26 @@ async function loadData() {
   const text = await new Response(stream).text();
   ALL = JSON.parse(text);
   document.getElementById('compressedData').remove();
+
+  // Decode the monthly NAV history (for the custom date-range calculator).
+  try {
+    const hb64 = document.getElementById('histData').textContent.replace(/\s+/g,'');
+    if (hb64) {
+      const hbytes = Uint8Array.from(atob(hb64), c => c.charCodeAt(0));
+      const hstream = new Blob([hbytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+      HIST = JSON.parse(await new Response(hstream).text());
+      HIST.idx = {};
+      HIST.months.forEach((m, i) => { HIST.idx[m] = i; });
+      const fd = document.getElementById('fromDate'), td = document.getElementById('toDate');
+      const lo = HIST.months[0], hi = HIST.months[HIST.months.length - 1];
+      fd.min = td.min = lo; fd.max = td.max = hi;
+    }
+  } catch (e) { HIST = null; }
+  const hd = document.getElementById('histData'); if (hd) hd.remove();
+  if (!HIST) {
+    // No history available — hide the custom column + controls.
+    document.querySelectorAll('#custHdr,#custSub').forEach(el => el.style.display = 'none');
+  }
 
   // Build the two-level category dropdown (Groww-style: parent group -> subcategory)
   const GROUP_ORDER = ['Equity','Hybrid','Debt','Index / Other','Commodities','Solution Oriented','Uncategorized'];
@@ -309,6 +380,48 @@ async function loadData() {
 
   document.getElementById('loadingOverlay').remove();
   render();
+}
+
+// ---- Custom date-range return helpers --------------------------------------
+function monthToIdx(ms) {
+  if (!HIST || !ms) return null;
+  if (ms in HIST.idx) return HIST.idx[ms];
+  const M = HIST.months;
+  if (ms < M[0]) return 0;
+  if (ms > M[M.length - 1]) return M.length - 1;
+  let best = 0;                       // nearest available month <= target
+  for (let i = 0; i < M.length; i++) { if (M[i] <= ms) best = i; else break; }
+  return best;
+}
+function navAt(code, mi) {             // NAV of fund `code` at month-axis index mi
+  const a = HIST.data[code];
+  if (!a) return null;
+  const k = mi - a[0] + 1;            // a[0]=startIdx, a[1]=nav at startIdx
+  if (k < 1 || k >= a.length) return null;
+  return a[k];
+}
+function recomputeCust() {
+  const f = document.getElementById('fromDate').value;
+  const t = document.getElementById('toDate').value;
+  const info = document.getElementById('rangeInfo');
+  const sub  = document.getElementById('custSub');
+  if (!HIST || !f || !t || f >= t) {
+    FROM = TO = null;
+    for (const r of ALL) r.cust = null;
+    if (sub) sub.textContent = 'set dates';
+    info.textContent = (f && t && f >= t) ? 'From must be before To' : '';
+    return;
+  }
+  FROM = f; TO = t;
+  const fi = monthToIdx(f), ti = monthToIdx(t);
+  let n = 0;
+  for (const r of ALL) {
+    const nf = navAt(r.code, fi), nt = navAt(r.code, ti);
+    if (nf != null && nt != null && nf > 0) { r.cust = (nt - nf) / nf * 100; n++; }
+    else r.cust = null;
+  }
+  if (sub) sub.textContent = f + '→' + t;
+  info.textContent = n.toLocaleString() + ' funds have NAV history for this window (absolute %)';
 }
 
 function badgeClass(g) {
@@ -398,7 +511,8 @@ function render() {
       '<td class="px-2 py-2 text-right border-l border-slate-200">' + fmtRet(r.r3y) + '</td>' +
       '<td class="px-2 py-2 text-right">' + fmtRet(r.r5y) + '</td>' +
       '<td class="px-2 py-2 text-right">' + fmtRet(r.r10y) + '</td>' +
-      '<td class="px-2 py-2 text-right border-l border-slate-200 text-sm ' + (cagr >= 0 ? 'pos' : 'neg') + '">' + (cagr >= 0 ? '+' : '') + cagr.toFixed(2) + '</td>';
+      '<td class="px-2 py-2 text-right border-l border-slate-200 text-sm ' + (cagr >= 0 ? 'pos' : 'neg') + '">' + (cagr >= 0 ? '+' : '') + cagr.toFixed(2) + '</td>' +
+      '<td class="px-2 py-2 text-right border-l-2 border-amber-200 bg-amber-50/40">' + fmtRet(r.cust) + '</td>';
     frag.appendChild(tr);
   });
   tbody.appendChild(frag);
@@ -427,10 +541,29 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('searchBox').addEventListener('input', render);
     document.getElementById('catFilter').addEventListener('change', render);
     document.getElementById('yrFilter').addEventListener('change', render);
+
+    // Custom date-range window: recompute the per-fund window return, sort by it.
+    function applyDateRange() {
+      recomputeCust();
+      if (FROM && TO) SORT = { key: 'cust', dir: -1 };
+      else if (SORT.key === 'cust') SORT = { key: 'cagrPct', dir: -1 };
+      render();
+    }
+    document.getElementById('fromDate').addEventListener('change', applyDateRange);
+    document.getElementById('toDate').addEventListener('change', applyDateRange);
+    document.getElementById('clearDates').addEventListener('click', () => {
+      document.getElementById('fromDate').value = '';
+      document.getElementById('toDate').value = '';
+      applyDateRange();
+    });
+
     document.getElementById('resetBtn').addEventListener('click', () => {
       document.getElementById('searchBox').value = '';
       document.getElementById('catFilter').value = 'all';
       document.getElementById('yrFilter').value = '0';
+      document.getElementById('fromDate').value = '';
+      document.getElementById('toDate').value = '';
+      recomputeCust();
       SORT = { key: 'cagrPct', dir: -1 };
       render();
     });
@@ -453,6 +586,6 @@ document.addEventListener('DOMContentLoaded', () => {
 </body>
 </html>
 """
-HTML = HTML.replace("__B64__", b64).replace("__GEN__", gen)
+HTML = HTML.replace("__B64__", b64).replace("__HIST__", hist_b64).replace("__GEN__", gen)
 OUT.write_text(HTML, encoding="utf-8")
 print(f"Wrote {OUT} ({OUT.stat().st_size / 1024:.1f} KB)")
