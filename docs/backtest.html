@@ -186,6 +186,7 @@ function navOn(code,ymdStr){const gi=dateToIdx(ymdToInt(ymdStr));return gi<0?nul
 function fundRange(code){const d=decoded(code);if(!d)return null;return [HIST.dates[d.start], HIST.dates[d.start+d.nav.length-1]];}
 function maxDrawdown(code,giFrom,giTo){const d=decoded(code);if(!d)return null;let peak=-1,mdd=0;for(let gi=giFrom;gi<=giTo;gi++){const k=gi-d.start;if(k<0||k>=d.nav.length)continue;const v=d.nav[k];if(v>peak)peak=v;else if(peak>0){const dd=(peak-v)/peak*100;if(dd>mdd)mdd=dd;}}return mdd;}
 function fmtINR(n){return '₹'+Math.round(n).toLocaleString('en-IN');}
+function cleanName(s){return (s||'').split(/\s+[-–]\s+(?:Direct|Regular)/i)[0].trim();}
 function pct(n){const c=n>=0?'pos':'neg';return '<span class="'+c+'">'+(n>=0?'+':'')+n.toFixed(1)+'%</span>';}
 function cagrOf(nf,nt,years){return years>=1?((Math.pow(nt/nf,1/years)-1)*100):((nt/nf-1)*100);}
 
@@ -533,7 +534,7 @@ $('pRun').addEventListener('click',runPortfolio);
 renderHoldings();
 
 // ---- rotation engine ----
-let SLEEVES=[];
+let SLEEVES=[], LAST_ROT=null;
 function renderRResults(q){
   const box=$('rResults'); q=q.trim().toLowerCase();
   if(!q){box.classList.add('hidden');return;}
@@ -601,7 +602,10 @@ function runRotation(){
       <tr><td class="py-1">Best single (hindsight)</td><td class="text-right">${fmtINR(amt*Math.pow(1+best.cagr/100,years))}</td><td class="text-right">${pct(best.cagr)}</td><td class="text-right text-slate-400" colspan="2">${best.nm}</td></tr>
     </table>
     <div class="text-xs text-slate-500 mt-2">${switches} switches over the period</div>
-  `)+equityChart(eqRot,eqEW,'rotation','equal-weight');
+  `)+equityChart(eqRot,eqEW,'rotation','equal-weight')
+   +`<div class="mt-3"><button id="rSaveBtn" class="btn">⭐ Save this strategy</button> <span id="rSaveMsg" class="text-xs text-green-700 ml-2"></span></div>`;
+  LAST_ROT={funds:SLEEVES.map(h=>({code:h.code,n:cleanName(h.short).replace(/[<>]/g,'')})), lb, reb:rebM, topK, dir};
+  $('rSaveBtn').addEventListener('click',saveCurrentRotation);
 }
 $('rSearch').addEventListener('input',e=>renderRResults(e.target.value));
 $('rResults').addEventListener('click',e=>{const d=e.target.closest('[data-rc]');if(d)rAdd(+d.dataset.rc);});
@@ -680,8 +684,9 @@ function strategyHTML(funds,s){
   plog+='</tbody></table>';
   const ref=funds[0].code, refU=res.amt/navAtIdx(ref,res.eq[0][0]);
   const eqRef=res.eq.map(([gi])=>[gi, refU*(navAtIdx(ref,gi)||0)]);
-  return `<details class="border border-slate-200 rounded-lg mb-2">
-    <summary class="px-3 py-2 cursor-pointer select-none text-sm font-medium text-slate-700 hover:bg-slate-50 rounded-lg">${s.label} <span class="text-xs font-normal text-slate-500">· <span class="pos">+${res.cagr.toFixed(1)}%</span> · <span class="neg">-${res.mdd.toFixed(0)}% DD</span> · ${res.switches} switches</span></summary>
+  const rmBtn = s.user ? `<button class="text-red-500 text-xs ml-2 float-right" title="Remove" onclick="event.preventDefault();event.stopPropagation();removeUserStrategy('${funds.map(f=>f.code).slice().sort().join(',')}','${s.lb}-${s.reb}-${s.topK}-${s.dir}')">✕ remove</button>` : '';
+  return `<details class="border ${s.user?'border-amber-300':'border-slate-200'} rounded-lg mb-2">
+    <summary class="px-3 py-2 cursor-pointer select-none text-sm font-medium text-slate-700 hover:bg-slate-50 rounded-lg">${rmBtn}${s.user?'<span class="text-[9px] uppercase bg-amber-100 text-amber-700 px-1 rounded mr-1">yours</span>':''}${s.label} <span class="text-xs font-normal text-slate-500">· <span class="pos">+${res.cagr.toFixed(1)}%</span> · <span class="neg">-${res.mdd.toFixed(0)}% DD</span> · ${res.switches} switches</span></summary>
     <div class="px-3 pb-3">
       <div class="flex flex-wrap gap-5 text-sm my-2">
         <div><div class="text-[10px] uppercase text-slate-500">Final (₹1L)</div><b>${fmtINR(res.fv)}</b></div>
@@ -697,9 +702,41 @@ function strategyHTML(funds,s){
     </div>
   </details>`;
 }
+// user-saved rotations (browser localStorage) + merge with the built-in ones
+const REB_LBL={1:'monthly',3:'quarterly',6:'half-yearly',12:'annual'};
+function loadUserGroups(){try{return JSON.parse(localStorage.getItem('savedRotations')||'[]');}catch(e){return [];}}
+function saveUserGroups(g){try{localStorage.setItem('savedRotations',JSON.stringify(g));}catch(e){}}
+function saveCurrentRotation(){
+  if(!LAST_ROT)return;
+  const c=LAST_ROT, msg=$('rSaveMsg');
+  const label=`${c.lb}-mo lookback · ${REB_LBL[c.reb]||c.reb+'mo'} re-check · top-${c.topK} · ${c.dir==='mom'?'momentum':'contrarian'}`;
+  const key=c.funds.map(f=>f.code).slice().sort().join(',');
+  const user=loadUserGroups();
+  let g=user.find(x=>x.key===key);
+  if(!g){g={key, name:c.funds.map(f=>f.n).join(' · '), funds:c.funds, strategies:[]}; user.push(g);}
+  const sk=`${c.lb}-${c.reb}-${c.topK}-${c.dir}`;
+  if(g.strategies.some(s=>`${s.lb}-${s.reb}-${s.topK}-${s.dir}`===sk)){ if(msg)msg.textContent='Already saved.'; return; }
+  g.strategies.push({label, lb:c.lb, reb:c.reb, topK:c.topK, dir:c.dir});
+  saveUserGroups(user); renderSavedRotations();
+  if(msg)msg.textContent='✓ Saved — see ⭐ Saved results above.';
+  $('rotSaved').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function removeUserStrategy(key,sk){
+  let user=loadUserGroups();
+  const g=user.find(x=>x.key===key); if(g){g.strategies=g.strategies.filter(s=>`${s.lb}-${s.reb}-${s.topK}-${s.dir}`!==sk);}
+  saveUserGroups(user.filter(x=>x.strategies.length)); renderSavedRotations();
+}
+function allGroups(){
+  const map=new Map();
+  for(const g of SAVED_GROUPS){const key=g.funds.map(f=>f.code).slice().sort().join(','); map.set(key,{key,name:g.name,funds:g.funds,strategies:g.strategies.map(s=>({...s,user:false}))});}
+  for(const g of loadUserGroups()){const key=g.funds.map(f=>f.code).slice().sort().join(',');
+    if(map.has(key)){const ex=map.get(key); g.strategies.forEach(s=>{if(!ex.strategies.some(e=>e.lb===s.lb&&e.reb===s.reb&&e.topK===s.topK&&e.dir===s.dir))ex.strategies.push({...s,user:true});});}
+    else map.set(key,{key,name:g.name,funds:g.funds,strategies:g.strategies.map(s=>({...s,user:true}))});}
+  return [...map.values()];
+}
 function renderSavedRotations(){
   const box=$('rotSaved'); if(!box)return;
-  box.innerHTML = SAVED_GROUPS.map(g=>`
+  box.innerHTML = allGroups().map(g=>`
     <details class="card mb-3">
       <summary class="px-4 py-3 cursor-pointer select-none font-semibold text-slate-800 hover:bg-slate-50 rounded-xl">${g.name} <span class="text-xs font-normal text-slate-500">(${g.strategies.length} strategies · month-end logic)</span></summary>
       <div class="px-4 pb-4">
