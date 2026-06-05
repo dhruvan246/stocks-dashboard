@@ -557,39 +557,43 @@ function runRotation(){
   if(SLEEVES.length<2)return alert('Add at least 2 funds');
   const amt=+$('rAmt').value, f=ymdToInt($('rFrom').value), t=ymdToInt($('rTo').value);
   const lb=+$('rLook').value, topK=Math.min(+$('rTop').value,SLEEVES.length), rebM=REBAL_M[$('rRebal').value], dir=$('rDir').value;
-  const months=[...monthIter(f,t)];
-  let units={}, started=false, startGi=null, switches=0, prevKey='';
-  const eqRot=[], rets=[]; let prev=amt, since=1e9; let ewUnits=null;
-  for(let mi=0;mi<months.length;mi++){
-    const gi=dateToIdx(months[mi]);
-    const ranked=SLEEVES.map(h=>({c:h.code,m:trailingRet(h.code,gi,lb)})).filter(o=>o.m!=null);
+  const codes=SLEEVES.map(h=>h.code);
+  let [fY,fM]=[Math.floor(f/10000),Math.floor(f/100)%100];
+  const [tY,tM]=[Math.floor(t/10000),Math.floor(t/100)%100];
+  const mons=[]; let Y=fY,M=fM;
+  while(Y<tY||(Y===tY&&M<=tM)){mons.push([Y,M]);[Y,M]=addYM(Y,M,1);}
+  let units={}, started=false, startYM=null, switches=0, prevKey='', ewUnits=null;
+  const eqRot=[], rets=[]; let prev=amt, since=1e9;
+  for(const [yy,mm] of mons){
+    const idx=meIdx(yy,mm); if(idx==null)continue;
+    const ranked=codes.map(c=>{const [py,pm]=addYM(yy,mm,-lb);const a=meNavC(c,py,pm),b=meNavC(c,yy,mm);return {c,m:(a&&b&&a>0)?(b/a-1):null};}).filter(o=>o.m!=null);
     if(!ranked.length)continue;
-    if(ewUnits===null){ewUnits={};ranked.forEach(o=>ewUnits[o.c]=(amt/ranked.length)/navAtIdx(o.c,gi));}
-    const val=started?SLEEVES.reduce((s,h)=>s+(units[h.code]||0)*(navAtIdx(h.code,gi)||0),0):amt;
-    eqRot.push([gi,val]);
+    if(ewUnits===null){ewUnits={};ranked.forEach(o=>ewUnits[o.c]=(amt/ranked.length)/meNavC(o.c,yy,mm));}
+    const val=started?codes.reduce((s,c)=>s+(units[c]||0)*(meNavC(c,yy,mm)||0),0):amt;
+    eqRot.push([idx,val]);
     if(started&&prev>0)rets.push(val/prev-1); prev=val;
     since++;
     if(!started||since>=rebM){
       ranked.sort((a,b)=>dir==='mom'?b.m-a.m:a.m-b.m);
       const pick=ranked.slice(0,topK).map(o=>o.c);
       const key=pick.slice().sort().join(','); if(key!==prevKey){switches++;prevKey=key;}
-      units={}; const per=val/pick.length; pick.forEach(c=>units[c]=per/navAtIdx(c,gi));
-      if(!started){started=true;startGi=gi;} since=0;
+      units={}; const per=val/pick.length; pick.forEach(c=>units[c]=per/meNavC(c,yy,mm));
+      if(!started){started=true;startYM=[yy,mm];} since=0;
     }
   }
   if(!started)return $('rOut').innerHTML=card(`Not enough history — need ${lb} months before the start for the momentum signal.`);
-  const endGi=dateToIdx(t);
-  const rotFV=SLEEVES.reduce((s,h)=>s+(units[h.code]||0)*(navAtIdx(h.code,endGi)||0),0);
-  const ewFV=Object.keys(ewUnits).reduce((s,c)=>s+ewUnits[c]*(navAtIdx(c,endGi)||0),0);
-  const years=(ymdToDate(t)-ymdToDate(HIST.dates[startGi]))/(365.25*864e5);
+  const rotFV=codes.reduce((s,c)=>s+(units[c]||0)*(meNavC(c,tY,tM)||0),0);
+  const ewFV=Object.keys(ewUnits).reduce((s,c)=>s+ewUnits[c]*(meNavC(c,tY,tM)||0),0);
+  const [syY,syM]=startYM;
+  const years=((tY*12+tM)-(syY*12+syM)+1)/12;
   const mean=rets.reduce((s,x)=>s+x,0)/(rets.length||1);
   const vol=Math.sqrt(rets.reduce((s,x)=>s+(x-mean)**2,0)/(rets.length||1)*12)*100;
-  const sStr=intToYmd(HIST.dates[startGi]), eStr=intToYmd(HIST.dates[endGi]);
-  const standalone=SLEEVES.map(h=>{const a=navOn(h.code,sStr),b=navOn(h.code,eStr);return{nm:h.short.replace(/[<>]/g,''),cagr:(a&&b)?cagrOf(a,b,years):null};}).filter(x=>x.cagr!=null);
+  const sStr=fmtYM(syY*100+syM), eStr=fmtYM(tY*100+tM);
+  const standalone=SLEEVES.map(h=>{const a=meNavC(h.code,syY,syM),b=meNavC(h.code,tY,tM);return{nm:h.short.replace(/[<>]/g,''),cagr:(a&&b)?cagrOf(a,b,years):null};}).filter(x=>x.cagr!=null);
   const best=standalone.reduce((m,x)=>x.cagr>m.cagr?x:m,standalone[0]);
   const eqEW=eqRot.map(([gi])=>[gi,Object.keys(ewUnits).reduce((s,c)=>s+ewUnits[c]*(navAtIdx(c,gi)||0),0)]);
   $('rOut').innerHTML=card(`
-    <div class="font-semibold text-slate-800 mb-2">${dir==='mom'?'Momentum':'Contrarian'} rotation · top ${topK} by ${lb}-mo return · ${$('rRebal').value} re-check · ${sStr} → ${eStr} (${years.toFixed(1)}y)</div>
+    <div class="font-semibold text-slate-800 mb-2">${dir==='mom'?'Momentum':'Contrarian'} rotation · top ${topK} by ${lb}-mo return · ${$('rRebal').value} re-check · month-end · ${sStr} → ${eStr} (${years.toFixed(1)}y)</div>
     <table class="w-full text-sm">
       <tr class="text-[11px] uppercase text-slate-500"><td></td><td class="text-right">Final value</td><td class="text-right">CAGR</td><td class="text-right">Max DD</td><td class="text-right">Vol</td></tr>
       <tr><td class="py-1">Rotation strategy</td><td class="text-right font-bold">${fmtINR(rotFV)}</td><td class="text-right">${pct(cagrOf(amt,rotFV,years))}</td><td class="text-right neg">-${eqDrawdown(eqRot).toFixed(0)}%</td><td class="text-right text-slate-500">${vol.toFixed(0)}%</td></tr>
