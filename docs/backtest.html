@@ -605,93 +605,104 @@ $('rSleeves').addEventListener('click',e=>{const rm=e.target.closest('[data-rrm]
 $('rRun').addEventListener('click',runRotation);
 renderSleeves();
 
-// ---- saved rotation results (curated; recomputed from data) ----
-const SAVED_ROTATIONS=[
-  {name:'Nippon Small Cap · Gold · Mid Cap — 6-mo momentum, annual re-check',
+// ---- saved rotation results (nested: basket -> strategies -> details; month-end logic) ----
+const SAVED_GROUPS=[
+  {name:'Nippon Small Cap · Gold · Mid Cap',
    funds:[{code:118777,n:'Small Cap'},{code:118663,n:'Gold'},{code:118668,n:'Mid Cap'}],
-   lb:6, reb:12, topK:1, dir:'mom', warmup:12},
-  {name:'Nippon Small Cap · Gold · Mid Cap — 1-mo momentum, quarterly re-check',
-   funds:[{code:118777,n:'Small Cap'},{code:118663,n:'Gold'},{code:118668,n:'Mid Cap'}],
-   lb:1, reb:3, topK:1, dir:'mom', warmup:12},
+   strategies:[
+     {label:'6-mo lookback · half-yearly re-check · top-1 · momentum', lb:6, reb:6,  topK:1, dir:'mom'},
+     {label:'9-mo lookback · quarterly re-check · top-1 · momentum',   lb:9, reb:3,  topK:1, dir:'mom'},
+     {label:'6-mo lookback · quarterly re-check · top-1 · momentum',   lb:6, reb:3,  topK:1, dir:'mom'},
+     {label:'12-mo lookback · quarterly re-check · top-1 · momentum',  lb:12,reb:3,  topK:1, dir:'mom'},
+     {label:'3-mo lookback · monthly re-check · top-1 · momentum',     lb:3, reb:1,  topK:1, dir:'mom'},
+   ]},
 ];
 function fmtYM(d){const s=''+d;return s.slice(0,4)+'-'+s.slice(4,6);}
-function simRotDetailed(funds,lb,reb,topK,dir,warmup,amt){
-  amt=amt||100000;
+function addYM(Y,M,n){M+=n;while(M>12){M-=12;Y++;}while(M<1){M+=12;Y--;}return [Y,M];}
+function meIdx(Y,M){const idx=dateToIdx(Y*10000+M*100+31);const d=HIST.dates[idx];return (Math.floor(d/10000)===Y&&Math.floor(d/100)%100===M)?idx:null;}
+function meNavC(code,Y,M){const i=meIdx(Y,M);return i==null?null:navAtIdx(code,i);}
+// rotation simulated on month-end (last trading day of each month) NAVs
+function simRotME(funds,lb,reb,topK,dir,warmup){
   const codes=funds.map(f=>f.code), nm={}; funds.forEach(f=>nm[f.code]=f.n);
   let start=0,end=99999999;
-  for(const c of codes){const r=fundRange(c); if(!r)return null; start=Math.max(start,r[0]); end=Math.min(end,r[1]);}
-  const sd=ymdToDate(start), fd=new Date(sd.getFullYear(),sd.getMonth()+(warmup||lb),1);
-  const f=fd.getFullYear()*10000+(fd.getMonth()+1)*100+1;
-  const months=[...monthIter(f,end)];
-  let units=0, held=null, since=1e9, val=amt, entry=null, vEntry=amt;
+  for(const c of codes){const r=fundRange(c);if(!r)return null;start=Math.max(start,r[0]);end=Math.min(end,r[1]);}
+  let [fY,fM]=addYM(Math.floor(start/10000),Math.floor(start/100)%100,warmup||12);
+  const eY=Math.floor(end/10000), eM=Math.floor(end/100)%100;
+  const mons=[]; let Y=fY,M=fM;
+  while(Y<eY||(Y===eY&&M<=eM)){mons.push([Y,M]);[Y,M]=addYM(Y,M,1);}
+  const amt=100000; let units={}, held=[], since=1e9, val=amt, entry=null, vE=amt;
   const eq=[], decisions=[], periods=[];
-  for(const mk of months){
-    const gi=dateToIdx(mk);
-    if(held!=null) val=units*navAtIdx(held,gi);
-    eq.push([gi, held==null?amt:val]);
-    since++;
-    if(held==null||since>=reb){
-      const ranked=codes.map(c=>({c,m:trailingRet(c,gi,lb)})).filter(o=>o.m!=null);
+  const heldName=()=>held.map(c=>nm[c]).join(' + ');
+  for(const [yy,mm] of mons){
+    const idx=meIdx(yy,mm); if(idx==null)continue;
+    if(held.length) val=codes.reduce((s,c)=>s+(units[c]||0)*(meNavC(c,yy,mm)||0),0);
+    eq.push([idx, held.length?val:amt]); since++;
+    if(!held.length||since>=reb){
+      const ranked=codes.map(c=>{const [py,pm]=addYM(yy,mm,-lb);const a=meNavC(c,py,pm),b=meNavC(c,yy,mm);return {c,m:(a&&b&&a>0)?(b/a-1):null};}).filter(o=>o.m!=null);
       if(!ranked.length)continue;
       ranked.sort((a,b)=>dir==='mom'?b.m-a.m:a.m-b.m);
-      const win=ranked[0].c;
+      const pick=ranked.slice(0,topK).map(o=>o.c);
+      const key=pick.slice().sort().join(','), prevKey=held.slice().sort().join(',');
       let action;
-      if(win!==held){
-        if(held!=null)periods.push({entry,exit:mk,fund:nm[held],ve:vEntry,vx:val});
-        action=held==null?('Buy '+nm[win]):('Switch '+nm[held]+' → '+nm[win]);
-        units=val/navAtIdx(win,gi); held=win; entry=mk; vEntry=val;
-      } else action='Hold '+nm[win];
-      decisions.push({date:mk, ranks:ranked.map(o=>({n:nm[o.c],r:o.m*100})), action});
+      if(key!==prevKey){
+        if(held.length)periods.push({entry,exit:yy*100+mm,fund:heldName(),ve:vE,vx:val});
+        action=(!held.length?'Buy ':'Switch '+heldName()+' → ')+pick.map(c=>nm[c]).join(' + ');
+        const per=val/pick.length; units={}; pick.forEach(c=>units[c]=per/meNavC(c,yy,mm));
+        held=pick; entry=yy*100+mm; vE=val;
+      } else action='Hold '+heldName();
+      decisions.push({date:yy*100+mm, ranks:ranked.map(o=>({n:nm[o.c],r:o.m*100})), action});
       since=0;
     }
   }
-  const endGi=dateToIdx(end), fv=held==null?amt:units*navAtIdx(held,endGi);
-  if(held!=null)periods.push({entry,exit:end,fund:nm[held],ve:vEntry,vx:fv});
-  const yrs=(ymdToDate(end)-ymdToDate(f))/(365.25*864e5);
-  return {fv, cagr:(Math.pow(fv/amt,1/yrs)-1)*100, mdd:eqDrawdown(eq), yrs, f, end, switches:periods.length-1, decisions, periods, eq, amt};
+  const fv=held.length?codes.reduce((s,c)=>s+(units[c]||0)*(meNavC(c,eY,eM)||0),0):amt;
+  if(held.length)periods.push({entry,exit:eY*100+eM,fund:heldName(),ve:vE,vx:fv});
+  const yrs=((eY*12+eM)-(fY*12+fM)+1)/12;
+  return {fv, cagr:(Math.pow(fv/amt,1/yrs)-1)*100, mdd:eqDrawdown(eq), yrs, fY,fM,eY,eM, switches:periods.length-1, decisions, periods, eq, amt};
 }
-function savedRotCard(sr){
-  const res=simRotDetailed(sr.funds,sr.lb,sr.reb,sr.topK,sr.dir,sr.warmup,sr.amt);
+function strategyHTML(funds,s){
+  const res=simRotME(funds,s.lb,s.reb,s.topK,s.dir,12);
   if(!res)return '';
-  // decision log
-  let dlog='<table class="text-[11px] w-full"><thead class="text-[10px] uppercase text-slate-500"><tr><th class="text-left px-1 py-1">Date</th>'+sr.funds.map(f=>`<th class="text-right px-1">${f.n}</th>`).join('')+'<th class="text-left px-1">Action</th></tr></thead><tbody>';
+  let dlog='<table class="text-[11px] w-full"><thead class="text-[10px] uppercase text-slate-500"><tr><th class="text-left px-1 py-1">Date</th>'+funds.map(f=>`<th class="text-right px-1">${f.n}</th>`).join('')+'<th class="text-left px-1">Action</th></tr></thead><tbody>';
   for(const d of res.decisions){
     const byn={}; d.ranks.forEach(x=>byn[x.n]=x.r);
-    const cells=sr.funds.map(f=>{const v=byn[f.n]; return `<td class="text-right px-1 ${v>=0?'pos':'neg'}">${v==null?'·':(v>=0?'+':'')+Math.round(v)+'%'}</td>`;}).join('');
+    const cells=funds.map(f=>{const v=byn[f.n]; return `<td class="text-right px-1 ${v>=0?'pos':'neg'}">${v==null?'·':(v>=0?'+':'')+Math.round(v)+'%'}</td>`;}).join('');
     const hi=d.action.startsWith('Switch')||d.action.startsWith('Buy');
     dlog+=`<tr class="border-t border-slate-50 ${hi?'font-semibold':''}"><td class="px-1 py-0.5">${fmtYM(d.date)}</td>${cells}<td class="px-1">${d.action}</td></tr>`;
   }
   dlog+='</tbody></table>';
-  // holding periods
   let plog='<table class="text-[11px] w-full"><thead class="text-[10px] uppercase text-slate-500"><tr><th class="text-left px-1 py-1">Held</th><th class="text-left px-1">From → To</th><th class="text-right px-1">Value</th><th class="text-right px-1">Return</th></tr></thead><tbody>';
   for(const p of res.periods){const ret=(p.vx/p.ve-1)*100;
     plog+=`<tr class="border-t border-slate-50"><td class="px-1 py-0.5 font-medium">${p.fund}</td><td class="px-1">${fmtYM(p.entry)} → ${fmtYM(p.exit)}</td><td class="text-right px-1">${fmtINR(p.ve)} → ${fmtINR(p.vx)}</td><td class="text-right px-1 ${ret>=0?'pos':'neg'}">${ret>=0?'+':''}${ret.toFixed(0)}%</td></tr>`;}
   plog+='</tbody></table>';
-  // chart: rotation vs holding the first fund
-  const ref=sr.funds[0].code, refU=res.amt/navAtIdx(ref,dateToIdx(res.f));
+  const ref=funds[0].code, refU=res.amt/navAtIdx(ref,res.eq[0][0]);
   const eqRef=res.eq.map(([gi])=>[gi, refU*(navAtIdx(ref,gi)||0)]);
-  return `<details class="card mb-3">
-    <summary class="px-4 py-3 cursor-pointer select-none font-semibold text-slate-800 hover:bg-slate-50 rounded-xl">${sr.name}</summary>
-    <div class="px-4 pb-4">
-    <div class="text-[11px] text-slate-500 mb-2">${sr.lb}-mo momentum · top ${sr.topK} · re-check every ${sr.reb}mo · ${fmtYM(res.f)} → ${fmtYM(res.end)} (${res.yrs.toFixed(1)}y)</div>
-    <div class="flex flex-wrap gap-5 text-sm mb-2">
-      <div><div class="text-[10px] uppercase text-slate-500">Final (₹1L)</div><b>${fmtINR(res.fv)}</b></div>
-      <div><div class="text-[10px] uppercase text-slate-500">CAGR</div><span class="pos">+${res.cagr.toFixed(1)}%</span></div>
-      <div><div class="text-[10px] uppercase text-slate-500">Max DD</div><span class="neg">-${res.mdd.toFixed(0)}%</span></div>
-      <div><div class="text-[10px] uppercase text-slate-500">Switches</div><b>${res.switches}</b></div>
-    </div>
-    <div class="text-[10px] uppercase text-slate-500 mt-2 mb-1">Decision log — trailing ${sr.lb}-mo returns &rarr; action</div>
-    <div class="overflow-x-auto max-h-72 overflow-y-auto">${dlog}</div>
-    <div class="text-[10px] uppercase text-slate-500 mt-3 mb-1">Holding periods</div>
-    <div class="overflow-x-auto">${plog}</div>
-    ${equityChart(res.eq,eqRef,'rotation','hold '+sr.funds[0].n)}
-    <div class="text-[10px] text-slate-400 mt-1">Before exit-load &amp; capital-gains tax. A swept "best" parameter set — treat the exact figure with skepticism.</div>
+  return `<details class="border border-slate-200 rounded-lg mb-2">
+    <summary class="px-3 py-2 cursor-pointer select-none text-sm font-medium text-slate-700 hover:bg-slate-50 rounded-lg">${s.label} <span class="text-xs font-normal text-slate-500">· <span class="pos">+${res.cagr.toFixed(1)}%</span> · <span class="neg">-${res.mdd.toFixed(0)}% DD</span> · ${res.switches} switches</span></summary>
+    <div class="px-3 pb-3">
+      <div class="flex flex-wrap gap-5 text-sm my-2">
+        <div><div class="text-[10px] uppercase text-slate-500">Final (₹1L)</div><b>${fmtINR(res.fv)}</b></div>
+        <div><div class="text-[10px] uppercase text-slate-500">CAGR</div><span class="pos">+${res.cagr.toFixed(1)}%</span></div>
+        <div><div class="text-[10px] uppercase text-slate-500">Max DD</div><span class="neg">-${res.mdd.toFixed(0)}%</span></div>
+        <div><div class="text-[10px] uppercase text-slate-500">Period</div>${fmtYM(res.fY*100+res.fM)} → ${fmtYM(res.eY*100+res.eM)} (${res.yrs.toFixed(1)}y)</div>
+      </div>
+      <div class="text-[10px] uppercase text-slate-500 mt-2 mb-1">Decision log — trailing ${s.lb}-mo returns &rarr; action</div>
+      <div class="overflow-x-auto max-h-64 overflow-y-auto">${dlog}</div>
+      <div class="text-[10px] uppercase text-slate-500 mt-3 mb-1">Holding periods</div>
+      <div class="overflow-x-auto">${plog}</div>
+      ${equityChart(res.eq,eqRef,'rotation','hold '+funds[0].n)}
     </div>
   </details>`;
 }
 function renderSavedRotations(){
   const box=$('rotSaved'); if(!box)return;
-  box.innerHTML = SAVED_ROTATIONS.map(savedRotCard).join('') || '<div class="text-xs text-slate-400">No saved results yet.</div>';
+  box.innerHTML = SAVED_GROUPS.map(g=>`
+    <details class="card mb-3">
+      <summary class="px-4 py-3 cursor-pointer select-none font-semibold text-slate-800 hover:bg-slate-50 rounded-xl">${g.name} <span class="text-xs font-normal text-slate-500">(${g.strategies.length} strategies · month-end logic)</span></summary>
+      <div class="px-4 pb-4">
+        <div class="text-[11px] text-slate-500 mb-2">Top rotation setups by CAGR — click any to expand its decision log, holding periods &amp; chart. Before exit-load/tax; swept "best" params, treat with skepticism.</div>
+        ${g.strategies.map(s=>strategyHTML(g.funds,s)).join('')}
+      </div>
+    </details>`).join('') || '<div class="text-xs text-slate-400">No saved results yet.</div>';
 }
 
 $('fundSearch').addEventListener('input',e=>renderResults(e.target.value));
