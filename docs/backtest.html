@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dhruvan's MF Backtest</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-feature-settings: "tnum" 1; }
+  .tab.active { border-color:#2563eb; color:#1e40af; font-weight:700; }
+  .pos{color:#15803d;font-weight:600} .neg{color:#b91c1c;font-weight:600}
+  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
+  input,select{outline:none}
+  #overlay{position:fixed;inset:0;background:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50}
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+<div id="overlay">
+  <div class="w-10 h-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-3"></div>
+  <p class="text-sm text-slate-600" id="status">Loading fund list…</p>
+</div>
+
+<header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-30">
+  <div class="max-w-screen-lg mx-auto px-4 py-3 flex items-center justify-between">
+    <h1 class="text-xl md:text-2xl font-bold text-slate-900">Mutual Fund Backtest</h1>
+    <nav class="text-sm"><a href="./mutual-funds.html" class="text-blue-600 hover:underline">&larr; Funds dashboard</a></nav>
+  </div>
+</header>
+
+<main class="max-w-screen-lg mx-auto px-4 py-6">
+
+  <!-- Fund picker -->
+  <div class="card p-4 mb-4">
+    <label class="block text-xs font-medium text-slate-600 mb-1">Fund</label>
+    <input id="fundSearch" type="search" placeholder="Search a fund — e.g. SBI Small Cap, Parag Parikh…"
+           class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500" autocomplete="off"/>
+    <div id="fundResults" class="mt-1 border border-slate-200 rounded-lg divide-y hidden max-h-64 overflow-y-auto"></div>
+    <div id="fundChosen" class="mt-2 text-sm"></div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="flex flex-wrap gap-1 border-b border-slate-200 mb-4 text-sm">
+    <button class="tab active px-3 py-2 border-b-2 border-transparent" data-tab="lumpsum">Lumpsum</button>
+    <button class="tab px-3 py-2 border-b-2 border-transparent" data-tab="sip">SIP</button>
+    <button class="tab px-3 py-2 border-b-2 border-transparent" data-tab="rolling">Rolling returns</button>
+    <button class="tab px-3 py-2 border-b-2 border-transparent" data-tab="timing">Timing strategy</button>
+  </div>
+
+  <!-- LUMPSUM -->
+  <section id="tab-lumpsum" class="tabpane">
+    <div class="card p-4 grid grid-cols-2 md:grid-cols-4 gap-3 items-end">
+      <div><label class="lbl">Amount (₹)</label><input id="lsAmt" type="number" value="100000" class="inp"/></div>
+      <div><label class="lbl">From</label><input id="lsFrom" type="date" class="inp"/></div>
+      <div><label class="lbl">To</label><input id="lsTo" type="date" class="inp"/></div>
+      <button id="lsRun" class="btn">Run</button>
+    </div>
+    <div id="lsOut" class="mt-3"></div>
+  </section>
+
+  <!-- SIP -->
+  <section id="tab-sip" class="tabpane hidden">
+    <div class="card p-4 grid grid-cols-2 md:grid-cols-4 gap-3 items-end">
+      <div><label class="lbl">Monthly SIP (₹)</label><input id="sipAmt" type="number" value="10000" class="inp"/></div>
+      <div><label class="lbl">From</label><input id="sipFrom" type="date" class="inp"/></div>
+      <div><label class="lbl">To</label><input id="sipTo" type="date" class="inp"/></div>
+      <button id="sipRun" class="btn">Run</button>
+    </div>
+    <div id="sipOut" class="mt-3"></div>
+  </section>
+
+  <!-- ROLLING -->
+  <section id="tab-rolling" class="tabpane hidden">
+    <div class="card p-4 grid grid-cols-2 md:grid-cols-4 gap-3 items-end">
+      <div><label class="lbl">Window (years)</label>
+        <select id="rollWin" class="inp"><option>3</option><option selected>5</option><option>7</option><option>10</option></select></div>
+      <div><label class="lbl">Beat target (% CAGR)</label><input id="rollTgt" type="number" value="12" class="inp"/></div>
+      <button id="rollRun" class="btn">Run</button>
+    </div>
+    <div id="rollOut" class="mt-3"></div>
+  </section>
+
+  <!-- TIMING -->
+  <section id="tab-timing" class="tabpane hidden">
+    <div class="card p-4">
+      <p class="text-xs text-slate-500 mb-3">Rule: start in cash; <b>BUY</b> (lumpsum) when the fund's trailing <span id="tSigYrs">5</span>Y CAGR falls below the buy threshold; <b>SELL</b> to cash when it rises above the sell threshold. Compared against buy-&-hold and monthly SIP over the same period.</p>
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-3 items-end">
+        <div><label class="lbl">Amount (₹)</label><input id="tAmt" type="number" value="100000" class="inp"/></div>
+        <div><label class="lbl">Signal: trailing CAGR</label>
+          <select id="tWin" class="inp"><option>3</option><option selected>5</option><option>7</option></select></div>
+        <div><label class="lbl">Buy when &lt; (%)</label><input id="tBuy" type="number" value="10" class="inp"/></div>
+        <div><label class="lbl">Sell when &gt; (%)</label><input id="tSell" type="number" value="25" class="inp"/></div>
+        <button id="tRun" class="btn">Run</button>
+      </div>
+    </div>
+    <div id="tOut" class="mt-3"></div>
+  </section>
+
+  <p class="text-[11px] text-slate-500 mt-6">
+    Backtests use daily NAVs (post data-floor: Direct from 2013, Regular from 2006). All returns are point-to-point on actual NAVs.
+    <b>Caveats:</b> only funds that exist <i>today</i> are here (survivorship bias — results flatter than reality);
+    figures are <b>before</b> exit load &amp; capital-gains tax; past performance isn't predictive. For research, not advice.
+  </p>
+</main>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+// inject small utility classes
+document.querySelectorAll('.lbl').forEach(e=>e.className='lbl block text-xs font-medium text-slate-600 mb-1');
+const STYLE=document.createElement('style');
+STYLE.textContent='.inp{width:100%;border:1px solid #cbd5e1;border-radius:.5rem;padding:.5rem .75rem;font-size:.875rem;background:#fff}.btn{background:#2563eb;color:#fff;border-radius:.5rem;padding:.5rem 1rem;font-size:.875rem;font-weight:600}.btn:hover{background:#1d4ed8}.lbl{display:block;font-size:.75rem;color:#475569;margin-bottom:.25rem}';
+document.head.appendChild(STYLE);
+
+let FUNDS=[], BYCODE={}, HIST=null, SEL=null;
+
+// ---- packed daily history helpers (shared format with the dashboard) ----
+function ymdToInt(s){return parseInt(s.replace(/-/g,''),10);}
+function intToYmd(n){const s=''+n;return s.slice(0,4)+'-'+s.slice(4,6)+'-'+s.slice(6,8);}
+function ymdToDate(n){const s=''+n;return new Date(+s.slice(0,4),+s.slice(4,6)-1,+s.slice(6,8));}
+function dateToIdx(ymd){const A=HIST.dates;if(ymd<A[0])return -1;if(ymd>=A[A.length-1])return A.length-1;let lo=0,hi=A.length-1;while(lo<hi){const m=(lo+hi+1)>>1;if(A[m]<=ymd)lo=m;else hi=m-1;}return lo;}
+function decoded(code){let d=HIST.dec[code];if(d)return d;const a=HIST.data[code];if(!a)return null;const start=a[0],n=a.length-1,out=new Int32Array(n);let acc=0;for(let i=0;i<n;i++){acc+=a[i+1];out[i]=acc;}d={start,nav:out};HIST.dec[code]=d;HIST.data[code]=null;return d;}
+function navAtIdx(code,gi){const d=decoded(code);if(!d)return null;const k=gi-d.start;if(k<0||k>=d.nav.length)return null;return d.nav[k]/100;}
+function navOn(code,ymdStr){const gi=dateToIdx(ymdToInt(ymdStr));return gi<0?null:navAtIdx(code,gi);}
+function fundRange(code){const d=decoded(code);if(!d)return null;return [HIST.dates[d.start], HIST.dates[d.start+d.nav.length-1]];}
+function maxDrawdown(code,giFrom,giTo){const d=decoded(code);if(!d)return null;let peak=-1,mdd=0;for(let gi=giFrom;gi<=giTo;gi++){const k=gi-d.start;if(k<0||k>=d.nav.length)continue;const v=d.nav[k];if(v>peak)peak=v;else if(peak>0){const dd=(peak-v)/peak*100;if(dd>mdd)mdd=dd;}}return mdd;}
+function fmtINR(n){return '₹'+Math.round(n).toLocaleString('en-IN');}
+function pct(n){const c=n>=0?'pos':'neg';return '<span class="'+c+'">'+(n>=0?'+':'')+n.toFixed(1)+'%</span>';}
+function cagrOf(nf,nt,years){return years>=1?((Math.pow(nt/nf,1/years)-1)*100):((nt/nf-1)*100);}
+
+// ---- data load ----
+async function load(){
+  FUNDS = await (await fetch('./mf_funds.json')).json();
+  FUNDS.forEach(f=>BYCODE[f.code]=f);
+  $('status').textContent='Loading price history (~7 MB)…';
+  const buf = await (await fetch('./mf_history.bin')).arrayBuffer();
+  const stream = new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'));
+  HIST = JSON.parse(await new Response(stream).text());
+  HIST.dec={};
+  $('overlay').remove();
+}
+
+// ---- fund picker ----
+function renderResults(q){
+  const box=$('fundResults');
+  q=q.trim().toLowerCase();
+  if(!q){box.classList.add('hidden');return;}
+  const hits=FUNDS.filter(f=>(f.short+' '+(f.amc||'')).toLowerCase().includes(q)).slice(0,30);
+  box.innerHTML=hits.map(f=>`<div class="px-3 py-1.5 text-sm hover:bg-blue-50 cursor-pointer" data-c="${f.code}">
+     <span class="font-medium">${f.short.replace(/[<>]/g,'')}</span>
+     <span class="text-[10px] ${f.plan==='Regular'?'text-red-700':'text-blue-700'}">${(f.plan||'Direct').slice(0,3).toUpperCase()}</span>
+     <span class="text-[10px] text-slate-400"> · ${(f.amc||'').replace(/[<>]/g,'')}</span></div>`).join('')
+     || '<div class="px-3 py-2 text-sm text-slate-400">No match</div>';
+  box.classList.remove('hidden');
+}
+function chooseFund(code){
+  SEL=BYCODE[code];
+  $('fundResults').classList.add('hidden'); $('fundSearch').value='';
+  const r=fundRange(code);
+  const lo=r?intToYmd(r[0]):'—', hi=r?intToYmd(r[1]):'—';
+  $('fundChosen').innerHTML=`Selected: <b>${SEL.short.replace(/[<>]/g,'')}</b>
+     <span class="text-[10px] ${SEL.plan==='Regular'?'text-red-700':'text-blue-700'}">${(SEL.plan||'Direct').toUpperCase()}</span>
+     <span class="text-slate-500">· data ${lo} → ${hi}</span>`;
+  // default date inputs to the fund's range
+  if(r){['lsFrom','sipFrom'].forEach(i=>{$(i).min=lo;$(i).max=hi;$(i).value=lo;});
+        ['lsTo','sipTo'].forEach(i=>{$(i).min=lo;$(i).max=hi;$(i).value=hi;});}
+}
+
+// ---- engines ----
+function runLumpsum(){
+  if(!SEL)return alert('Pick a fund first');
+  const amt=+$('lsAmt').value, f=$('lsFrom').value, t=$('lsTo').value;
+  const nf=navOn(SEL.code,f), nt=navOn(SEL.code,t);
+  if(nf==null||nt==null)return $('lsOut').innerHTML=card('No NAV data at one of those dates for this fund.');
+  const years=(ymdToDate(ymdToInt(t))-ymdToDate(ymdToInt(f)))/(365.25*864e5);
+  const units=amt/nf, fv=units*nt, cagr=cagrOf(nf,nt,years);
+  const mdd=maxDrawdown(SEL.code,dateToIdx(ymdToInt(f)),dateToIdx(ymdToInt(t)));
+  $('lsOut').innerHTML=card(`
+    ${row('Invested',fmtINR(amt))}
+    ${row('Final value',`<b>${fmtINR(fv)}</b>`)}
+    ${row('Gain',pct((fv-amt)/amt*100)+' &nbsp; ('+fmtINR(fv-amt)+')')}
+    ${row('CAGR (annualized)',pct(cagr)+(years<1?' <span class="text-[10px] text-slate-400">(abs, &lt;1y)</span>':''))}
+    ${row('Max drawdown in window',`<span class="neg">-${mdd.toFixed(1)}%</span>`)}
+    ${row('NAV',`₹${nf.toFixed(2)} → ₹${nt.toFixed(2)} over ${years.toFixed(1)}y`)}`);
+}
+
+function* monthIter(fromYmd,toYmd){
+  let y=Math.floor(fromYmd/10000), m=Math.floor(fromYmd/100)%100, d=fromYmd%100;
+  while(true){const cur=y*10000+m*100+d; if(cur>toYmd)return; yield cur; m++; if(m>12){m=1;y++;}}
+}
+function xirr(cf){
+  const t0=cf[0].t, yr=c=>(c.t-t0)/(365.25*864e5);
+  const npv=r=>cf.reduce((s,c)=>s+c.amt/Math.pow(1+r,yr(c)),0);
+  const dnpv=r=>cf.reduce((s,c)=>s-yr(c)*c.amt/Math.pow(1+r,yr(c)+1),0);
+  let r=0.12;
+  for(let i=0;i<200;i++){const v=npv(r),dv=dnpv(r);if(Math.abs(v)<1e-3)break;let nr=r-v/dv;if(!isFinite(nr))break;if(nr<-0.99)nr=-0.99;r=nr;}
+  return r*100;
+}
+function runSip(){
+  if(!SEL)return alert('Pick a fund first');
+  const amt=+$('sipAmt').value, f=ymdToInt($('sipFrom').value), t=ymdToInt($('sipTo').value);
+  let units=0, invested=0, n=0; const cf=[];
+  for(const mk of monthIter(f,t)){
+    const gi=dateToIdx(mk); const nav=navAtIdx(SEL.code,gi);
+    if(nav==null)continue;
+    units+=amt/nav; invested+=amt; n++;
+    cf.push({t:ymdToDate(HIST.dates[gi]).getTime(), amt:-amt});
+  }
+  if(!n)return $('sipOut').innerHTML=card('No SIP installments fell within the fund\'s data range.');
+  const endNav=navAtIdx(SEL.code,dateToIdx(t)); const fv=units*endNav;
+  cf.push({t:ymdToDate(t).getTime(), amt:fv});
+  const xir=xirr(cf);
+  $('sipOut').innerHTML=card(`
+    ${row('Installments',n+' &times; '+fmtINR(amt)+'/mo')}
+    ${row('Total invested',fmtINR(invested))}
+    ${row('Final value',`<b>${fmtINR(fv)}</b>`)}
+    ${row('Gain',pct((fv-invested)/invested*100)+' &nbsp; ('+fmtINR(fv-invested)+')')}
+    ${row('XIRR (annualized)',pct(xir))}`);
+}
+
+function runRolling(){
+  if(!SEL)return alert('Pick a fund first');
+  const win=+$('rollWin').value, tgt=+$('rollTgt').value;
+  const r=fundRange(SEL.code); if(!r)return;
+  const cagrs=[];
+  // step monthly across all start dates that allow a full `win`-year window
+  let sk=r[0];
+  for(const mk of monthIter(r[0], r[1])){
+    const sd=ymdToDate(mk); const ed=new Date(sd.getFullYear()+win, sd.getMonth(), sd.getDate());
+    const eYmd=ed.getFullYear()*10000+(ed.getMonth()+1)*100+ed.getDate();
+    if(eYmd>r[1])break;
+    const nf=navAtIdx(SEL.code,dateToIdx(mk)), nt=navAtIdx(SEL.code,dateToIdx(eYmd));
+    if(nf&&nt)cagrs.push((Math.pow(nt/nf,1/win)-1)*100);
+  }
+  if(cagrs.length<3)return $('rollOut').innerHTML=card(`Not enough history for ${win}-year rolling windows (need older data).`);
+  cagrs.sort((a,b)=>a-b);
+  const n=cagrs.length, avg=cagrs.reduce((s,x)=>s+x,0)/n, med=cagrs[n>>1];
+  const posPct=cagrs.filter(x=>x>0).length/n*100, beat=cagrs.filter(x=>x>=tgt).length/n*100;
+  $('rollOut').innerHTML=card(`
+    ${row(`${win}Y rolling windows tested`,n.toLocaleString())}
+    ${row('Minimum',pct(cagrs[0]))}
+    ${row('Average',pct(avg))}
+    ${row('Median',pct(med))}
+    ${row('Maximum',pct(cagrs[n-1]))}
+    ${row('% windows positive',posPct.toFixed(0)+'%')}
+    ${row(`% windows beating ${tgt}%`,beat.toFixed(0)+'%')}
+  `)+histogram(cagrs);
+}
+
+function runTiming(){
+  if(!SEL)return alert('Pick a fund first');
+  const amt=+$('tAmt').value, win=+$('tWin').value, buy=+$('tBuy').value, sell=+$('tSell').value;
+  const r=fundRange(SEL.code); if(!r)return;
+  // eligible start = first date that has `win` years of prior history
+  const firstD=ymdToDate(r[0]); const startElig=new Date(firstD.getFullYear()+win,firstD.getMonth(),firstD.getDate());
+  const startYmd=startElig.getFullYear()*10000+(startElig.getMonth()+1)*100+startElig.getDate();
+  if(startYmd>=r[1])return $('tOut').innerHTML=card(`Fund needs at least ${win}+ years of history to generate the signal.`);
+  // simulate monthly
+  let inCash=true, cash=amt, units=0, trades=0, monthsIn=0, monthsTot=0;
+  const eqStrat=[], eqBH=[]; let bhUnits=null;
+  for(const mk of monthIter(startYmd, r[1])){
+    const gi=dateToIdx(mk); const nav=navAtIdx(SEL.code,gi); if(nav==null)continue;
+    // trailing win-year CAGR
+    const pd=ymdToDate(mk); const back=new Date(pd.getFullYear()-win,pd.getMonth(),pd.getDate());
+    const backYmd=back.getFullYear()*10000+(back.getMonth()+1)*100+back.getDate();
+    const navBack=navAtIdx(SEL.code,dateToIdx(backYmd)); if(navBack==null)continue;
+    const sig=(Math.pow(nav/navBack,1/win)-1)*100;
+    if(bhUnits===null)bhUnits=amt/nav;                 // buy & hold enters at first eligible date
+    if(inCash && sig<buy){units=cash/nav;cash=0;inCash=false;trades++;}
+    else if(!inCash && sig>sell){cash=units*nav;units=0;inCash=true;trades++;}
+    monthsTot++; if(!inCash)monthsIn++;
+    eqStrat.push([gi, inCash?cash:units*nav]);
+    eqBH.push([gi, bhUnits*nav]);
+  }
+  if(!monthsTot)return $('tOut').innerHTML=card('Not enough data after the signal warm-up.');
+  const endNav=navAtIdx(SEL.code,dateToIdx(r[1]));
+  const stratFV=inCash?cash:units*endNav;
+  const bhFV=bhUnits*endNav;
+  const yrs=(ymdToDate(r[1])-ymdToDate(startYmd))/(365.25*864e5);
+  // SIP over the same period — flat monthly so total invested ≈ the lumpsum amount (fair compare)
+  const monthly=amt/monthsTot; let sUnits=0;
+  for(const mk of monthIter(startYmd,r[1])){const nav=navAtIdx(SEL.code,dateToIdx(mk));if(nav)sUnits+=monthly/nav;}
+  const sipFV=sUnits*endNav;
+  const cagr=(fv)=>(Math.pow(fv/amt,1/yrs)-1)*100;
+  const mddStrat=eqDrawdown(eqStrat), mddBH=eqDrawdown(eqBH);
+  $('tOut').innerHTML=card(`
+    <div class="font-semibold text-slate-800 mb-2">${SEL.short.replace(/[<>]/g,'')} — ${win}Y-CAGR rule, buy&lt;${buy}% / sell&gt;${sell}%</div>
+    <table class="w-full text-sm">
+      <tr class="text-[11px] uppercase text-slate-500"><td></td><td class="text-right">Final value</td><td class="text-right">CAGR</td><td class="text-right">Max DD</td></tr>
+      <tr><td class="py-1">Your timing strategy</td><td class="text-right font-bold">${fmtINR(stratFV)}</td><td class="text-right">${pct(cagr(stratFV))}</td><td class="text-right neg">-${mddStrat.toFixed(0)}%</td></tr>
+      <tr><td class="py-1">Buy &amp; hold (lumpsum)</td><td class="text-right">${fmtINR(bhFV)}</td><td class="text-right">${pct(cagr(bhFV))}</td><td class="text-right neg">-${mddBH.toFixed(0)}%</td></tr>
+      <tr><td class="py-1">Monthly SIP (same total)</td><td class="text-right">${fmtINR(sipFV)}</td><td class="text-right">—</td><td class="text-right">—</td></tr>
+    </table>
+    <div class="text-xs text-slate-500 mt-2">${trades} trades · invested ${(monthsIn/monthsTot*100).toFixed(0)}% of the time · period ${intToYmd(startYmd)} → ${intToYmd(r[1])} (${yrs.toFixed(1)}y)</div>
+  `)+equityChart(eqStrat,eqBH);
+}
+
+// ---- output helpers ----
+function card(inner){return `<div class="card p-4">${inner}</div>`;}
+function row(k,v){return `<div class="flex justify-between py-1 border-b border-slate-100 last:border-0"><span class="text-slate-500 text-sm">${k}</span><span class="text-sm">${v}</span></div>`;}
+function eqDrawdown(eq){let peak=-1,mdd=0;for(const[,v]of eq){if(v>peak)peak=v;else if(peak>0){const dd=(peak-v)/peak*100;if(dd>mdd)mdd=dd;}}return mdd;}
+function histogram(vals){
+  const lo=Math.floor(vals[0]/5)*5, hi=Math.ceil(vals[vals.length-1]/5)*5;
+  const bins={}; for(let b=lo;b<hi;b+=5)bins[b]=0;
+  vals.forEach(v=>{const b=Math.floor(v/5)*5; bins[b]=(bins[b]||0)+1;});
+  const max=Math.max(...Object.values(bins));
+  let h='<div class="card p-4 mt-3"><div class="text-xs font-semibold text-slate-600 mb-2">Distribution of rolling CAGRs (5% buckets)</div>';
+  for(let b=lo;b<hi;b+=5){const c=bins[b]||0,w=max?c/max*100:0;
+    h+=`<div class="flex items-center gap-2 text-[11px]"><span class="w-16 text-right text-slate-500">${b} to ${b+5}%</span>
+        <div class="flex-1 bg-slate-100 rounded"><div class="h-3 rounded ${b<0?'bg-red-400':'bg-blue-400'}" style="width:${w}%"></div></div>
+        <span class="w-10 text-slate-500">${c}</span></div>`;}
+  return h+'</div>';
+}
+function equityChart(a,b){
+  const W=720,H=220,P=28;
+  const gis=a.map(p=>p[0]); const vals=a.map(p=>p[1]).concat(b.map(p=>p[1]));
+  const minG=gis[0],maxG=gis[gis.length-1], minV=Math.min(...vals),maxV=Math.max(...vals);
+  const x=gi=>P+(gi-minG)/(maxG-minG)*(W-2*P);
+  const y=v=>H-P-(v-minV)/(maxV-minV)*(H-2*P);
+  const path=arr=>arr.map((p,i)=>(i?'L':'M')+x(p[0]).toFixed(1)+' '+y(p[1]).toFixed(1)).join(' ');
+  return `<div class="card p-4 mt-3"><div class="text-xs font-semibold text-slate-600 mb-2">Portfolio value over time
+     <span class="text-blue-600">— strategy</span> <span class="text-slate-400">— buy &amp; hold</span></div>
+     <svg viewBox="0 0 ${W} ${H}" class="w-full"><path d="${path(b)}" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+     <path d="${path(a)}" fill="none" stroke="#2563eb" stroke-width="2"/></svg></div>`;
+}
+
+// ---- wiring ----
+$('fundSearch').addEventListener('input',e=>renderResults(e.target.value));
+$('fundResults').addEventListener('click',e=>{const d=e.target.closest('[data-c]');if(d)chooseFund(+d.dataset.c);});
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');
+  document.querySelectorAll('.tabpane').forEach(p=>p.classList.add('hidden'));
+  $('tab-'+t.dataset.tab).classList.remove('hidden');
+}));
+$('lsRun').addEventListener('click',runLumpsum);
+$('sipRun').addEventListener('click',runSip);
+$('rollRun').addEventListener('click',runRolling);
+$('tRun').addEventListener('click',runTiming);
+$('tWin').addEventListener('change',e=>$('tSigYrs').textContent=e.target.value);
+
+load().then(()=>{ /* ready */ }).catch(e=>{$('status').textContent='Load failed: '+e.message;});
+</script>
+</body>
+</html>

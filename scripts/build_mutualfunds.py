@@ -164,8 +164,9 @@ HTML = r"""<!DOCTYPE html>
   <div class="max-w-screen-2xl mx-auto px-4 py-3 flex items-center justify-between">
     <h1 class="text-xl md:text-2xl font-bold text-slate-900">Dhruvan's mutual funds</h1>
     <div class="text-xs text-slate-500">Snapshot &middot; __GEN__</div>
-    <nav class="text-sm">
-      <a href="./nse-bse-dashboard.html" class="text-blue-600 hover:underline">&larr; Stocks dashboard</a>
+    <nav class="text-sm flex gap-3">
+      <a href="./backtest.html" class="text-blue-600 hover:underline font-semibold">📈 Backtest</a>
+      <a href="./nse-bse-dashboard.html" class="text-blue-600 hover:underline">Stocks dashboard</a>
     </nav>
   </div>
 </header>

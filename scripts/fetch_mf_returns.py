@@ -377,9 +377,17 @@ for code, (dd, nn) in series.items():
 hraw = json.dumps({"dates": axis, "data": packed}, separators=(",", ":")).encode()
 hgz = gzip.compress(hraw, compresslevel=9)
 HISTB64.write_text(base64.b64encode(hgz).decode(), encoding="utf-8")
+# Also write the raw gzip as a docs/ asset the backtest page fetches directly.
+(ROOT / "docs" / "mf_history.bin").write_bytes(hgz)
 print(f"Saved -> {HISTB64}  ({HISTB64.stat().st_size/1024/1024:.1f} MB b64, "
-      f"{len(packed)} funds, {len(axis)} trading days)")
+      f"{len(packed)} funds, {len(axis)} trading days)  + docs/mf_history.bin")
 
 results.sort(key=lambda r: -(r.get('cagrPct') or 0))
 OUT.write_text(json.dumps(results, separators=(",", ":")), encoding="utf-8")
 print(f"Saved -> {OUT}  ({OUT.stat().st_size / 1024:.1f} KB)")
+
+# Slim fund list for the backtest page's picker (docs/ asset).
+slim = [{'code': r['code'], 'short': r['short'], 'plan': r.get('plan', 'Direct'),
+         'category': r.get('category', ''), 'years': r.get('years'), 'amc': r.get('amc')}
+        for r in results]
+(ROOT / "docs" / "mf_funds.json").write_text(json.dumps(slim, separators=(",", ":")), encoding="utf-8")
