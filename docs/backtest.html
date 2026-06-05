@@ -45,7 +45,6 @@
     <button class="tab px-3 py-2 border-b-2 border-transparent" data-tab="sip">SIP</button>
     <button class="tab px-3 py-2 border-b-2 border-transparent" data-tab="rolling">Rolling returns</button>
     <button class="tab px-3 py-2 border-b-2 border-transparent" data-tab="timing">Timing strategy</button>
-    <button class="tab px-3 py-2 border-b-2 border-transparent" data-tab="portfolio">Portfolio</button>
     <button class="tab px-3 py-2 border-b-2 border-transparent" data-tab="rotation">Rotation</button>
   </div>
 
@@ -103,30 +102,6 @@
       </div>
     </div>
     <div id="tOut" class="mt-3"></div>
-  </section>
-
-  <!-- PORTFOLIO -->
-  <section id="tab-portfolio" class="tabpane hidden">
-    <div class="card p-4 mb-3">
-      <label class="lbl">Build a portfolio — add 2+ funds</label>
-      <input id="pSearch" type="search" placeholder="Search a fund to add…" class="inp" autocomplete="off"/>
-      <div id="pResults" class="mt-1 border border-slate-200 rounded-lg divide-y hidden max-h-56 overflow-y-auto"></div>
-      <div id="pHoldings" class="mt-3"></div>
-    </div>
-    <div class="card p-4 grid grid-cols-2 md:grid-cols-5 gap-3 items-end">
-      <div><label class="lbl">Amount (₹)</label><input id="pAmt" type="number" value="100000" class="inp"/></div>
-      <div><label class="lbl">From</label><input id="pFrom" type="date" class="inp"/></div>
-      <div><label class="lbl">To</label><input id="pTo" type="date" class="inp"/></div>
-      <div><label class="lbl">Rebalance</label>
-        <select id="pRebal" class="inp">
-          <option value="none">None (let it drift)</option>
-          <option value="quarter">Quarterly</option>
-          <option value="half">Half-yearly</option>
-          <option value="annual" selected>Annually</option>
-        </select></div>
-      <button id="pRun" class="btn">Run</button>
-    </div>
-    <div id="pOut" class="mt-3"></div>
   </section>
 
   <!-- ROTATION -->
@@ -444,94 +419,8 @@ function equityChart(a,b,la='strategy',lb='buy &amp; hold'){
      <path d="${path(a)}" fill="none" stroke="#2563eb" stroke-width="2"/></svg></div>`;
 }
 
-// ---- portfolio engine ----
-let PORT=[];
+// ---- rebalance frequencies (shared with rotation) ----
 const REBAL_M={none:0,quarter:3,half:6,annual:12};
-function renderPResults(q){
-  const box=$('pResults'); q=q.trim().toLowerCase();
-  if(!q){box.classList.add('hidden');return;}
-  const hits=FUNDS.filter(f=>(f.short+' '+(f.amc||'')).toLowerCase().includes(q)).slice(0,30);
-  box.innerHTML=hits.map(f=>`<div class="px-3 py-1.5 text-sm hover:bg-blue-50 cursor-pointer" data-pc="${f.code}">
-     <span class="font-medium">${f.short.replace(/[<>]/g,'')}</span>
-     <span class="text-[10px] ${f.plan==='Regular'?'text-red-700':'text-blue-700'}">${(f.plan||'Direct').slice(0,3).toUpperCase()}</span>
-     <span class="text-[10px] text-slate-400"> · ${(f.amc||'').replace(/[<>]/g,'')}</span></div>`).join('')||'<div class="px-3 py-2 text-sm text-slate-400">No match</div>';
-  box.classList.remove('hidden');
-}
-function renderHoldings(){
-  const box=$('pHoldings');
-  if(!PORT.length){box.innerHTML='<div class="text-xs text-slate-400">No funds yet — search above to add at least 2.</div>';return;}
-  const tot=PORT.reduce((s,h)=>s+(+h.weight||0),0);
-  box.innerHTML=PORT.map((h,i)=>`<div class="flex items-center gap-2 py-1 text-sm">
-     <span class="flex-1 truncate">${h.short.replace(/[<>]/g,'')} <span class="text-[10px] ${h.plan==='Regular'?'text-red-700':'text-blue-700'}">${(h.plan||'D').slice(0,3).toUpperCase()}</span></span>
-     <input type="number" min="0" value="${h.weight}" data-i="${i}" class="pw w-20 border border-slate-300 rounded px-2 py-1 text-right text-sm"/><span class="text-slate-400 text-xs">%</span>
-     <button data-rm="${i}" class="text-red-500 px-1">&times;</button></div>`).join('')
-   +`<div class="text-[11px] text-slate-500 mt-1">Total ${tot}% (auto-normalized) · <button id="pEqual" class="text-blue-600 underline">equal-weight</button></div>`;
-}
-function pAdd(code){
-  if(PORT.some(h=>h.code===code))return;
-  const f=BYCODE[code]; PORT.push({code,short:f.short,plan:f.plan,weight:0});
-  const w=Math.round(100/PORT.length); PORT.forEach(h=>h.weight=w);   // default = equal weight
-  $('pSearch').value=''; $('pResults').classList.add('hidden');
-  renderHoldings(); updatePortDates();
-}
-function updatePortDates(){
-  if(!PORT.length)return;
-  let lo=0, hi=99999999;
-  PORT.forEach(h=>{const r=fundRange(h.code); if(r){lo=Math.max(lo,r[0]); hi=Math.min(hi,r[1]);}});
-  if(lo<hi){const L=intToYmd(lo),H=intToYmd(hi);
-    ['pFrom','pTo'].forEach(id=>{$(id).min=L;$(id).max=H;});
-    $('pFrom').value=L; $('pTo').value=H;}
-}
-function runPortfolio(){
-  if(PORT.length<2)return alert('Add at least 2 funds');
-  const amt=+$('pAmt').value, f=ymdToInt($('pFrom').value), t=ymdToInt($('pTo').value);
-  const rm=REBAL_M[$('pRebal').value];
-  const wsum=PORT.reduce((s,h)=>s+(+h.weight||0),0);
-  if(wsum<=0)return alert('Set weights above 0');
-  const W=PORT.map(h=>(+h.weight||0)/wsum);
-  for(const h of PORT){ if(navOn(h.code,$('pFrom').value)==null||navOn(h.code,$('pTo').value)==null)
-    return $('pOut').innerHTML=card(`<b>${h.short.replace(/[<>]/g,'')}</b> has no NAV across this window — pick a later start date or remove it.`); }
-  const n0=PORT.map((h,i)=>(amt*W[i])/navOn(h.code,$('pFrom').value));  // rebalanced units (mutable)
-  const nb=n0.slice();                                                   // drift units (fixed)
-  const months=[...monthIter(f,t)];
-  const eqR=[], eqD=[]; let since=0, prev=amt; const rets=[];
-  for(let mi=0;mi<months.length;mi++){
-    const gi=dateToIdx(months[mi]);
-    let vR=0,vD=0; PORT.forEach((h,i)=>{const nav=navAtIdx(h.code,gi); if(nav){vR+=n0[i]*nav; vD+=nb[i]*nav;}});
-    eqR.push([gi,vR]); eqD.push([gi,vD]);
-    if(mi>0&&prev>0)rets.push(vR/prev-1); prev=vR;
-    since++;
-    if(rm&&since>=rm&&mi<months.length-1){PORT.forEach((h,i)=>{const nav=navAtIdx(h.code,gi); if(nav)n0[i]=(vR*W[i])/nav;}); since=0;}
-  }
-  const years=(ymdToDate(t)-ymdToDate(f))/(365.25*864e5);
-  const fvR=eqR[eqR.length-1][1], fvD=eqD[eqD.length-1][1];
-  const mean=rets.reduce((s,x)=>s+x,0)/rets.length;
-  const vol=Math.sqrt(rets.reduce((s,x)=>s+(x-mean)**2,0)/rets.length*12)*100;
-  const perFund=PORT.map((h,i)=>{const a=navOn(h.code,$('pFrom').value),b=navOn(h.code,$('pTo').value);
-    return {nm:h.short.replace(/[<>]/g,''),w:Math.round(W[i]*100),cagr:cagrOf(a,b,years)};});
-  const rl=$('pRebal').value;
-  $('pOut').innerHTML=card(`
-    <div class="font-semibold text-slate-800 mb-2">Portfolio of ${PORT.length} funds · ${rl==='none'?'no rebalancing':rl+' rebalance'} · ${$('pFrom').value} → ${$('pTo').value} (${years.toFixed(1)}y)</div>
-    <table class="w-full text-sm">
-      <tr class="text-[11px] uppercase text-slate-500"><td></td><td class="text-right">Final value</td><td class="text-right">CAGR</td><td class="text-right">Max DD</td><td class="text-right">Volatility</td></tr>
-      <tr><td class="py-1">Rebalanced (${rl==='none'?'n/a':rl})</td><td class="text-right font-bold">${fmtINR(fvR)}</td><td class="text-right">${pct(cagrOf(amt,fvR,years))}</td><td class="text-right neg">-${eqDrawdown(eqR).toFixed(0)}%</td><td class="text-right text-slate-500">${vol.toFixed(0)}%</td></tr>
-      <tr><td class="py-1">No rebalance (drift)</td><td class="text-right">${fmtINR(fvD)}</td><td class="text-right">${pct(cagrOf(amt,fvD,years))}</td><td class="text-right neg">-${eqDrawdown(eqD).toFixed(0)}%</td><td class="text-right">—</td></tr>
-    </table>
-    <div class="text-[11px] uppercase text-slate-500 mt-3 mb-1">Each fund standalone (same window)</div>
-    ${perFund.map(p=>row(p.nm+' <span class="text-slate-400">('+p.w+'%)</span>',pct(p.cagr))).join('')}
-  `)+($('pRebal').value==='none'?'':equityChart(eqR,eqD,'rebalanced','drift'));
-}
-
-// ---- wiring ----
-$('pSearch').addEventListener('input',e=>renderPResults(e.target.value));
-$('pResults').addEventListener('click',e=>{const d=e.target.closest('[data-pc]');if(d)pAdd(+d.dataset.pc);});
-$('pHoldings').addEventListener('input',e=>{const w=e.target.closest('.pw');if(w){PORT[+w.dataset.i].weight=+w.value;renderHoldings();}});
-$('pHoldings').addEventListener('click',e=>{
-  const rm=e.target.closest('[data-rm]'); if(rm){PORT.splice(+rm.dataset.rm,1);renderHoldings();updatePortDates();return;}
-  if(e.target.id==='pEqual'){const w=Math.round(100/PORT.length);PORT.forEach(h=>h.weight=w);renderHoldings();}
-});
-$('pRun').addEventListener('click',runPortfolio);
-renderHoldings();
 
 // ---- rotation engine ----
 let SLEEVES=[], LAST_ROT=null;
