@@ -1,4 +1,4 @@
-name: Daily stock + mutual fund refresh
+name: Daily stock data refresh
 
 on:
   schedule:
@@ -31,7 +31,7 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 60
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -62,36 +62,25 @@ jobs:
       - name: Build dashboard HTML
         run: python3 scripts/build_compressed.py
 
-      - name: Refresh mutual fund prices & returns
-        run: python3 scripts/fetch_mf_returns.py
-
-      - name: Build mutual funds dashboard
-        run: python3 scripts/build_mutualfunds.py
-
       - name: Commit updated dashboard
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # Save the newly built artifacts outside the working tree first.
+          # Save the newly built dashboard outside the working tree first.
           # We use a "reset-and-replay" strategy on push conflicts: pull latest
-          # main, drop our new files on top (overwrite, no merge), commit, push.
-          # Avoids content-merge conflicts on the large embedded-data HTML.
-          mkdir -p /tmp/artifacts/docs /tmp/artifacts/scripts
-          cp docs/nse-bse-dashboard.html /tmp/artifacts/docs/
-          cp docs/mutual-funds.html      /tmp/artifacts/docs/
-          cp scripts/mutual_funds.json   /tmp/artifacts/scripts/
+          # main, drop our new dashboard on top (overwrite, no merge), commit,
+          # push. Avoids content-merge conflicts on the binary-ish HTML.
+          cp docs/nse-bse-dashboard.html /tmp/new_dashboard.html
 
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
-            cp /tmp/artifacts/docs/nse-bse-dashboard.html docs/nse-bse-dashboard.html
-            cp /tmp/artifacts/docs/mutual-funds.html      docs/mutual-funds.html
-            cp /tmp/artifacts/scripts/mutual_funds.json   scripts/mutual_funds.json
-            git add docs/nse-bse-dashboard.html docs/mutual-funds.html scripts/mutual_funds.json
+            cp /tmp/new_dashboard.html docs/nse-bse-dashboard.html
+            git add docs/nse-bse-dashboard.html
 
             if git diff --cached --quiet; then
-              echo "Remote already has identical data — nothing to commit"
+              echo "Remote already has identical dashboard — nothing to commit"
               exit 0
             fi
 
