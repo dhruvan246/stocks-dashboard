@@ -171,10 +171,10 @@ HTML = r"""<!DOCTYPE html>
       <div>
         <label class="block text-xs font-medium text-slate-600 mb-1">Min. years since inception</label>
         <select id="yrFilter" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 bg-white">
-          <option value="0">Any</option>
+          <option value="0" selected>Any</option>
           <option value="1">1 year+</option>
           <option value="3">3 years+</option>
-          <option value="5" selected>5 years+</option>
+          <option value="5">5 years+</option>
           <option value="10">10 years+</option>
         </select>
       </div>
@@ -430,7 +430,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('resetBtn').addEventListener('click', () => {
       document.getElementById('searchBox').value = '';
       document.getElementById('catFilter').value = 'all';
-      document.getElementById('yrFilter').value = '5';
+      document.getElementById('yrFilter').value = '0';
       SORT = { key: 'cagrPct', dir: -1 };
       render();
     });
