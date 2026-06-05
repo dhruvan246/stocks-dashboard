@@ -304,11 +304,28 @@ HTML = r"""<!DOCTYPE html>
   </p>
 </main>
 
+<!-- Per-fund detail modal -->
+<div id="detailModal" class="hidden fixed inset-0 z-50 bg-black/40 flex items-start justify-center overflow-y-auto p-3">
+  <div class="bg-white rounded-xl shadow-xl max-w-4xl w-full my-6" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between gap-3 px-5 py-3 border-b border-slate-200 sticky top-0 bg-white rounded-t-xl">
+      <div id="detTitle" class="font-bold text-slate-900 text-sm md:text-base truncate"></div>
+      <div class="flex items-center gap-3 shrink-0">
+        <label class="text-xs text-slate-500">Window
+          <select id="detWin" class="border border-slate-300 rounded px-2 py-1 text-sm ml-1"><option>3</option><option selected>5</option><option>7</option><option>10</option></select> yrs</label>
+        <button id="detClose" class="text-slate-400 hover:text-red-600 text-2xl leading-none">&times;</button>
+      </div>
+    </div>
+    <div id="detSummary" class="px-5 pt-3 text-xs text-slate-500"></div>
+    <div id="detTables" class="px-5 pb-5"></div>
+  </div>
+</div>
+
 <script id="compressedData" type="application/octet-stream">__B64__</script>
 <script id="histData" type="application/octet-stream">__HIST__</script>
 <script>
 'use strict';
 let ALL = [];
+let BYCODE = {};
 let SHOWN = [];
 let SORT = { key: 'cagrPct', dir: -1 };
 let HIST = null;            // {months:[...], idx:{m:i}, data:{code:[startIdx, nav...]}}
@@ -322,6 +339,7 @@ async function loadData() {
   const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
   const text = await new Response(stream).text();
   ALL = JSON.parse(text);
+  ALL.forEach(r => { BYCODE[r.code] = r; });
   document.getElementById('compressedData').remove();
 
   // Decode the daily NAV history (for the exact-date calculator).
@@ -421,6 +439,69 @@ function navAtIdx(code, gi) {           // NAV (paise) of fund `code` at axis in
   if (k < 0 || k >= d.nav.length) return null;
   return d.nav[k];
 }
+
+// ---- per-fund detail: monthly / trailing / forward return calendars ----
+function fundRange(code){ const d=decoded(code); if(!d) return null; return [HIST.dates[d.start], HIST.dates[d.start+d.nav.length-1]]; }
+function addYM(Y,M,n){ M+=n; while(M>12){M-=12;Y++;} while(M<1){M+=12;Y--;} return [Y,M]; }
+function meNavC(code,Y,M){ const idx=dateToIdx(Y*10000+M*100+31); const dd=HIST.dates[idx]; return (Math.floor(dd/10000)===Y && Math.floor(dd/100)%100===M) ? navAtIdx(code,idx) : null; }
+const MN_=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function _cell(v,b){ return v==null ? '<td class="px-1 py-0.5 text-right text-slate-300">·</td>'
+  : '<td class="px-1 py-0.5 text-right '+(b?'font-semibold border-l border-slate-200 ':'')+(v>=0?'pos':'neg')+'">'+(v>=0?'+':'')+v.toFixed(1)+'</td>'; }
+function calMonthly(code){
+  const r=fundRange(code); if(!r) return ''; const fy=Math.floor(r[0]/10000), ly=Math.floor(r[1]/10000);
+  let rows='';
+  for(let Y=fy;Y<=ly;Y++){
+    let cells='', yf=1, any=false;
+    for(let m=1;m<=12;m++){
+      const cur=meNavC(code,Y,m), prev=m===1?meNavC(code,Y-1,12):meNavC(code,Y,m-1);
+      if(cur==null||prev==null||prev<=0){cells+=_cell(null);continue;}
+      const ret=(cur/prev-1)*100; yf*=(1+ret/100); any=true; cells+=_cell(ret);
+    }
+    rows+='<tr class="border-t border-slate-50"><td class="px-1 py-0.5 font-medium text-slate-600">'+Y+'</td>'+cells+_cell(any?(yf-1)*100:null,true)+'</tr>';
+  }
+  const head='<th class="px-1 py-1 text-left">Year</th>'+MN_.map(m=>'<th class="px-1 py-1 text-right">'+m+'</th>').join('')+'<th class="px-1 py-1 text-right border-l border-slate-200">Year</th>';
+  return '<div class="overflow-x-auto"><table class="text-[11px] w-full"><thead class="text-[10px] uppercase text-slate-500"><tr>'+head+'</tr></thead><tbody>'+rows+'</tbody></table></div>';
+}
+function calRolling(code,win,fwd){
+  const r=fundRange(code); if(!r) return ''; const fy=Math.floor(r[0]/10000), ly=Math.floor(r[1]/10000);
+  let rows='', any=false;
+  for(let Y=fy;Y<=ly;Y++){
+    let cells='', rowHas=false;
+    for(let m=1;m<=12;m++){
+      const a = fwd ? meNavC(code,Y,m) : meNavC(code,Y-win,m);
+      const b = fwd ? meNavC(code,Y+win,m) : meNavC(code,Y,m);
+      if(a==null||b==null||a<=0){cells+=_cell(null);continue;}
+      cells+=_cell((Math.pow(b/a,1/win)-1)*100); rowHas=true; any=true;
+    }
+    if(rowHas) rows+='<tr class="border-t border-slate-50"><td class="px-1 py-0.5 font-medium text-slate-600">'+Y+'</td>'+cells+'</tr>';
+  }
+  if(!any) return '<div class="text-xs text-slate-400 py-2">Not enough history for '+win+'-year windows.</div>';
+  const head='<th class="px-1 py-1 text-left">'+(fwd?'Invest in':'As of')+'</th>'+MN_.map(m=>'<th class="px-1 py-1 text-right">'+m+'</th>').join('');
+  return '<div class="overflow-x-auto"><table class="text-[11px] w-full"><thead class="text-[10px] uppercase text-slate-500"><tr>'+head+'</tr></thead><tbody>'+rows+'</tbody></table></div>';
+}
+let DETAIL_CODE = null;
+function showFundDetail(code){
+  const r=BYCODE[code]; if(!r) return; DETAIL_CODE=code;
+  const planTag = (r.plan||'Direct')==='Regular' ? '<span class="badge b-plan-reg">REG</span>' : '<span class="badge b-plan-dir">DIR</span>';
+  document.getElementById('detTitle').innerHTML = cleanName(r.short).replace(/[<>]/g,'') + ' ' + planTag;
+  document.getElementById('detSummary').innerHTML =
+    '<span class="badge '+badgeClass(r.g)+'">'+r.s+'</span> · '+(r.amc||'').replace(/[<>]/g,'')+
+    ' · since-incep CAGR <b>'+(r.cagrPct>=0?'+':'')+r.cagrPct.toFixed(1)+'%</b>'+
+    ' · 1Y '+fmtRet(r.r1y)+' · 3Y '+fmtRet(r.r3y)+' · 5Y '+fmtRet(r.r5y)+' · '+r.years.toFixed(1)+'y of data';
+  renderDetail();
+  document.getElementById('detailModal').classList.remove('hidden');
+  document.body.style.overflow='hidden';
+}
+function renderDetail(){
+  const code=DETAIL_CODE; if(code==null) return;
+  const win=+document.getElementById('detWin').value;
+  document.getElementById('detTables').innerHTML =
+    '<div class="text-sm font-bold text-slate-800 mt-4 mb-1">📅 Monthly returns — each calendar month&apos;s gain</div>'+calMonthly(code)+
+    '<div class="text-sm font-bold text-slate-800 mt-5 mb-1">📉 Trailing '+win+'-year return — your '+win+'-year CAGR as of each month</div>'+calRolling(code,win,false)+
+    '<div class="text-sm font-bold text-slate-800 mt-5 mb-1">📈 Forward '+win+'-year return — invest at month-start &amp; hold '+win+' years</div>'+calRolling(code,win,true)+
+    '<div class="text-[10px] text-slate-400 mt-2">Monthly = each month&apos;s NAV return (right "Year" col = calendar-year return). Trailing = '+win+'-yr CAGR ending that month. Forward = '+win+'-yr CAGR if you invested that month. "·" = outside the fund&apos;s data window.</div>';
+}
+function closeFundDetail(){ document.getElementById('detailModal').classList.add('hidden'); document.body.style.overflow=''; DETAIL_CODE=null; }
 function recomputeCust() {
   const f = document.getElementById('fromDate').value;
   const t = document.getElementById('toDate').value;
@@ -539,7 +620,7 @@ function render() {
       : ' <span class="badge b-plan-dir" title="Direct plan">DIR</span>';
     tr.innerHTML =
       '<td class="px-2 py-2 text-slate-500 text-[10px]">' + (i + 1) + '</td>' +
-      '<td class="px-3 py-2"><div class="font-medium text-slate-800 text-xs">' + cleanName(r.short).replace(/[<>]/g, '') + planBadge + staleBadge + '</div>' +
+      '<td class="px-3 py-2"><div class="text-xs"><span class="font-medium text-slate-800 cursor-pointer hover:text-blue-600 hover:underline" data-detail="' + r.code + '" title="Click for monthly & rolling-return calendars">' + cleanName(r.short).replace(/[<>]/g, '') + '</span>' + planBadge + staleBadge + '</div>' +
         (r.amc ? '<div class="text-[10px] text-slate-500">' + r.amc.replace(/[<>]/g, '') + '</div>' : '') + '</td>' +
       '<td class="px-2 py-2 text-right text-slate-300 italic text-[10px]">—</td>' +
       '<td class="px-2 py-2"><span class="badge ' + badgeClass(r.g) + '" title="' + (r.category || '').replace(/["<>]/g, '') + '">' + r.s + '</span></td>' +
@@ -600,6 +681,16 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('toDate').value = '';
       applyDateRange();
     });
+
+    // Fund detail modal — click a fund name to see its monthly/trailing/forward calendars
+    document.getElementById('resultsBody').addEventListener('click', e => {
+      const t = e.target.closest('[data-detail]');
+      if (t) showFundDetail(+t.dataset.detail);
+    });
+    document.getElementById('detClose').addEventListener('click', closeFundDetail);
+    document.getElementById('detWin').addEventListener('change', renderDetail);
+    document.getElementById('detailModal').addEventListener('click', closeFundDetail);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeFundDetail(); });
 
     document.getElementById('resetBtn').addEventListener('click', () => {
       document.getElementById('searchBox').value = '';
