@@ -22,7 +22,7 @@ universe is simply refreshed.
 Sources: AMFI NAVAll.txt (scheme master) + mfapi.in (full NAV history).
 Output: scripts/mutual_funds.json
 """
-import subprocess, json, os, re
+import subprocess, json, os, re, gzip, base64, time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -167,14 +167,28 @@ def nav_at_or_before(data, target_dt):
                 return None
     return None
 
+def _get(code, attempts=5):
+    """Fetch a scheme's NAV JSON from mfapi with retries + backoff, to ride out
+    transient timeouts / rate-limits. Returns the parsed dict, or None only if
+    every attempt failed (genuinely no data)."""
+    for i in range(attempts):
+        try:
+            r = subprocess.run(
+                ["curl", "-s", "--max-time", "25", f"https://api.mfapi.in/mf/{code}"],
+                capture_output=True, timeout=30)
+            d = json.loads(r.stdout.decode("utf-8", errors="ignore"))
+            if d.get('status') == 'SUCCESS' and d.get('data'):
+                return d
+        except Exception:
+            pass
+        time.sleep(0.4 * (i + 1))
+    return None
+
 def fetch_one(scheme):
     code = scheme['code']
     try:
-        r = subprocess.run(
-            ["curl", "-s", "--max-time", "25", f"https://api.mfapi.in/mf/{code}"],
-            capture_output=True, timeout=30)
-        d = json.loads(r.stdout.decode("utf-8", errors="ignore"))
-        if d.get('status') != 'SUCCESS' or not d.get('data'):
+        d = _get(code)
+        if not d:
             return None
         data = d['data']  # newest first
         # Guard against NAV redenominations / spliced histories: some scheme
@@ -241,22 +255,23 @@ def fetch_one(scheme):
                 cagr = ((nav_latest / nav_then) ** (1 / yrs) - 1) * 100
                 returns[label] = round(cagr, 2)
 
-        # Month-end NAV history (for the custom from/to date return calculator).
-        # data is newest-first, so the first NAV seen for a month is its latest.
-        monthly = {}
-        for x in data:
+        # Full DAILY NAV history (for the exact-date return calculator), as
+        # parallel arrays of YYYYMMDD ints + paise ints (NAV*100). Uses the
+        # clean post-splice-trim series. build packs these to a shared axis.
+        hdays, hnavs = [], []
+        for x in reversed(data):  # oldest -> newest
             try:
-                dt = datetime.strptime(x['date'], '%d-%m-%Y'); nv = float(x['nav'])
+                dt = datetime.strptime(x['date'], '%d-%m-%Y'); pv = round(float(x['nav']) * 100)
             except Exception:
                 continue
-            key = dt.strftime('%Y-%m')
-            if key not in monthly and nv > 0:
-                monthly[key] = round(nv, 2)
+            if pv > 0:
+                hdays.append(dt.year * 10000 + dt.month * 100 + dt.day)
+                hnavs.append(pv)
 
         meta = d.get('meta', {})
         stale_days = (datetime.now(timezone.utc).replace(tzinfo=None) - d_lat).days
         return {
-            '_monthly': monthly,
+            '_d': hdays, '_n': hnavs,
             'code': code,
             'name': scheme['name'],
             # Keep the already-cleaned short label / AMC / category / isin from the
@@ -280,8 +295,8 @@ def fetch_one(scheme):
     except Exception:
         return None
 
-results = []
-refreshed = failed = kept = 0
+by_code = {}            # code -> record (fresh wins; dict dedupes)
+fresh = set()           # codes we got FRESH data for this run
 BATCH = 200
 for batch_start in range(0, len(SCHEMES), BATCH):
     chunk = SCHEMES[batch_start:batch_start + BATCH]
@@ -289,41 +304,81 @@ for batch_start in range(0, len(SCHEMES), BATCH):
         futs = {pool.submit(fetch_one, s): s for s in chunk}
         for fut in as_completed(futs):
             r = fut.result()
-            if r is None:
-                # Keep the previous record so the universe never shrinks. (Newly
-                # discovered funds have no previous record, so they're skipped
-                # this run and will be retried next time.)
-                prev = OLD.get(futs[fut]['code'])
-                if prev is not None:
-                    results.append(prev)
-                    kept += 1
-                failed += 1
-            else:
-                results.append(r)
-                refreshed += 1
+            code = futs[fut]['code']
+            if r is not None:
+                by_code[code] = r; fresh.add(code)
+            elif code not in by_code and OLD.get(code) is not None:
+                by_code[code] = OLD[code]   # provisional: keep old until a retry succeeds
     done = min(batch_start + BATCH, len(SCHEMES))
-    print(f"  [{done}/{len(SCHEMES)}]  refreshed={refreshed} kept-stale={kept} fail={failed}", flush=True)
+    print(f"  [{done}/{len(SCHEMES)}]  fresh={len(fresh)} "
+          f"kept-stale={len(by_code)-len(fresh)} missing={len(SCHEMES)-len(by_code)}", flush=True)
 
-# Add any schemes we skipped via MF_LIMIT back unchanged, so a capped test run
-# never erases the rest of the universe.
-if LIMIT > 0:
-    have = {r['code'] for r in results}
-    for r in existing:
-        if r['code'] not in have:
-            results.append(r)
+# ---- None-left-behind retry passes -----------------------------------------
+# Anything not yet FRESH (a transient failure, or a kept-stale record) gets
+# re-tried with gentler concurrency to dodge mfapi rate-limits. Repeat until a
+# pass recovers nothing, so we don't silently drop / stale-out funds.
+if not LIMIT:
+    for rnd in range(1, 6):
+        todo = [s for s in SCHEMES if s['code'] not in fresh]
+        if not todo:
+            break
+        print(f"Retry pass {rnd}: {len(todo)} not-yet-fresh schemes...", flush=True)
+        got = 0
+        with ThreadPoolExecutor(max_workers=5) as pool:
+            futs = {pool.submit(fetch_one, s): s for s in todo}
+            for fut in as_completed(futs):
+                r = fut.result()
+                if r is not None:
+                    by_code[futs[fut]['code']] = r; fresh.add(futs[fut]['code']); got += 1
+        print(f"  recovered {got}", flush=True)
+        if got == 0:
+            break
+    unfetchable = [s for s in SCHEMES if s['code'] not in by_code]
+    print(f"Unfetchable (no data on mfapi even after retries): {len(unfetchable)}")
+    for s in unfetchable[:50]:
+        print(f"   {s['code']}  {s['name'][:55]}")
+else:
+    for r in existing:                  # MF_LIMIT test: keep the untouched rest
+        if r['code'] not in by_code:
+            by_code[r['code']] = r
 
-print(f"\nDone: {refreshed} refreshed, {kept} kept stale, {failed} failed -> {len(results)} total")
+results = list(by_code.values())
+kept = len(results) - len(fresh)
+print(f"\nDone: {len(fresh)} fresh, {kept} kept stale -> {len(results)} total")
 
-# Split the monthly NAV history into its own file (build embeds it for the
-# custom date-range calculator). Kept-stale records have no fresh history.
-HIST = ROOT / "scripts" / "mf_history.json"
-histories = {}
+# Build the DAILY history payload for the exact-date calculator: a shared
+# trading-day axis (YYYYMMDD ints) + per-fund [startIdx, delta-encoded paise].
+# Delta encoding + gzip keeps a ~20-year daily series for ~5k funds compact.
+# Written pre-gzipped+base64 so build just embeds it. Kept-stale records have
+# no fresh history. (File is gitignored — a build intermediate.)
+HISTB64 = ROOT / "scripts" / "mf_history.b64"
+series, alldates = {}, set()
 for r in results:
-    mh = r.pop("_monthly", None)
-    if mh:
-        histories[str(r["code"])] = mh
-HIST.write_text(json.dumps(histories, separators=(",", ":")), encoding="utf-8")
-print(f"Saved -> {HIST}  ({HIST.stat().st_size / 1024:.1f} KB, {len(histories)} histories)")
+    dd = r.pop("_d", None); nn = r.pop("_n", None)
+    if dd and nn:
+        series[str(r["code"])] = (dd, nn)
+        alldates.update(dd)
+axis = sorted(alldates)
+aidx = {d: i for i, d in enumerate(axis)}
+packed = {}
+for code, (dd, nn) in series.items():
+    navmap = dict(zip(dd, nn))
+    s, e = aidx[dd[0]], aidx[dd[-1]]
+    arr, last = [], None
+    for i in range(s, e + 1):
+        d = axis[i]
+        if d in navmap:
+            last = navmap[d]
+        arr.append(last)
+    deltas = [arr[0]]
+    for k in range(1, len(arr)):
+        deltas.append(arr[k] - arr[k - 1])
+    packed[code] = [s] + deltas
+hraw = json.dumps({"dates": axis, "data": packed}, separators=(",", ":")).encode()
+hgz = gzip.compress(hraw, compresslevel=9)
+HISTB64.write_text(base64.b64encode(hgz).decode(), encoding="utf-8")
+print(f"Saved -> {HISTB64}  ({HISTB64.stat().st_size/1024/1024:.1f} MB b64, "
+      f"{len(packed)} funds, {len(axis)} trading days)")
 
 results.sort(key=lambda r: -(r.get('cagrPct') or 0))
 OUT.write_text(json.dumps(results, separators=(",", ":")), encoding="utf-8")

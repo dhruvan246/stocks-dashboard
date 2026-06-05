@@ -112,37 +112,19 @@ b64 = base64.b64encode(gz).decode()
 print(f"  Raw {len(raw)/1024:.1f} KB → gzip {len(gz)/1024:.1f} KB → b64 {len(b64)/1024:.1f} KB")
 
 # ---------------------------------------------------------------------------
-# Monthly NAV history -> compact embedded payload for the custom date-range
-# return calculator. Shared month axis + per-fund [startIdx, nav0, nav1, ...]
-# (dense, carry-forward over any gaps). Optional: if scripts/mf_history.json is
-# absent (build run without a fresh fetch), the date filter is simply disabled.
+# Daily NAV history for the exact-date calculator. fetch_mf_returns.py already
+# builds the compact payload (shared YYYYMMDD axis + per-fund [startIdx, delta-
+# encoded paise]) and writes it pre-gzipped+base64 to scripts/mf_history.b64.
+# We just embed it. If absent (build without a fresh fetch), the date filter is
+# disabled.
 # ---------------------------------------------------------------------------
-HISTSRC = ROOT / "scripts" / "mf_history.json"
-hist_b64 = ""
+HISTSRC = ROOT / "scripts" / "mf_history.b64"
 if HISTSRC.exists():
-    raw_hist = json.loads(HISTSRC.read_text(encoding="utf-8"))
-    allmonths = sorted({m for fund in raw_hist.values() for m in fund})
-    midx = {m: i for i, m in enumerate(allmonths)}
-    packed = {}
-    for code, fund in raw_hist.items():
-        ms = sorted(fund)
-        if not ms:
-            continue
-        s, e = midx[ms[0]], midx[ms[-1]]
-        arr, last = [], None
-        for i in range(s, e + 1):
-            m = allmonths[i]
-            if m in fund:
-                last = fund[m]
-            arr.append(last)
-        packed[code] = [s] + arr
-    hraw = json.dumps({"months": allmonths, "data": packed}, separators=(",", ":")).encode()
-    hgz = gzip.compress(hraw, compresslevel=9)
-    hist_b64 = base64.b64encode(hgz).decode()
-    print(f"  History: {len(packed)} funds × {len(allmonths)} months → "
-          f"gzip {len(hgz)/1024:.1f} KB → b64 {len(hist_b64)/1024:.1f} KB")
+    hist_b64 = HISTSRC.read_text(encoding="utf-8").strip()
+    print(f"  History: embedded daily payload {len(hist_b64)/1024/1024:.1f} MB (b64)")
 else:
-    print("  History: scripts/mf_history.json not found — custom date filter disabled")
+    hist_b64 = ""
+    print("  History: scripts/mf_history.b64 not found — custom date filter disabled")
 
 gen = datetime.now().strftime("%d %b %Y %H:%M")
 
@@ -228,12 +210,12 @@ HTML = r"""<!DOCTYPE html>
     <div class="mt-3 pt-3 border-t border-slate-100 flex flex-wrap items-end gap-3">
       <div class="text-xs font-semibold text-amber-700 pb-2">&#128197; Custom return window:</div>
       <div>
-        <label class="block text-xs font-medium text-slate-600 mb-1">From (month)</label>
-        <input type="month" id="fromDate" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500"/>
+        <label class="block text-xs font-medium text-slate-600 mb-1">From (date)</label>
+        <input type="date" id="fromDate" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500"/>
       </div>
       <div>
-        <label class="block text-xs font-medium text-slate-600 mb-1">To (month)</label>
-        <input type="month" id="toDate" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500"/>
+        <label class="block text-xs font-medium text-slate-600 mb-1">To (date)</label>
+        <input type="date" id="toDate" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500"/>
       </div>
       <button id="clearDates" class="text-sm text-slate-600 hover:text-amber-600 pb-2">Clear</button>
       <div id="rangeInfo" class="text-xs text-slate-500 pb-2"></div>
@@ -334,17 +316,18 @@ async function loadData() {
   ALL = JSON.parse(text);
   document.getElementById('compressedData').remove();
 
-  // Decode the monthly NAV history (for the custom date-range calculator).
+  // Decode the daily NAV history (for the exact-date calculator).
   try {
     const hb64 = document.getElementById('histData').textContent.replace(/\s+/g,'');
     if (hb64) {
+      statusEl.textContent = 'Decoding price history…';
       const hbytes = Uint8Array.from(atob(hb64), c => c.charCodeAt(0));
       const hstream = new Blob([hbytes]).stream().pipeThrough(new DecompressionStream('gzip'));
       HIST = JSON.parse(await new Response(hstream).text());
-      HIST.idx = {};
-      HIST.months.forEach((m, i) => { HIST.idx[m] = i; });
+      // HIST = {dates:[YYYYMMDD ints], data:{code:[startIdx, delta-paise...]}}
+      HIST.dec = {};
       const fd = document.getElementById('fromDate'), td = document.getElementById('toDate');
-      const lo = HIST.months[0], hi = HIST.months[HIST.months.length - 1];
+      const lo = intToYmd(HIST.dates[0]), hi = intToYmd(HIST.dates[HIST.dates.length - 1]);
       fd.min = td.min = lo; fd.max = td.max = hi;
     }
   } catch (e) { HIST = null; }
@@ -396,23 +379,38 @@ async function loadData() {
   render();
 }
 
-// ---- Custom date-range return helpers --------------------------------------
-function monthToIdx(ms) {
-  if (!HIST || !ms) return null;
-  if (ms in HIST.idx) return HIST.idx[ms];
-  const M = HIST.months;
-  if (ms < M[0]) return 0;
-  if (ms > M[M.length - 1]) return M.length - 1;
-  let best = 0;                       // nearest available month <= target
-  for (let i = 0; i < M.length; i++) { if (M[i] <= ms) best = i; else break; }
-  return best;
+// ---- Exact-date return helpers ---------------------------------------------
+function ymdToInt(s) { return parseInt(s.replace(/-/g, ''), 10); }      // "2020-03-23"->20200323
+function intToYmd(n) { const s = '' + n; return s.slice(0,4)+'-'+s.slice(4,6)+'-'+s.slice(6,8); }
+
+// nearest trading day on/before target (binary search the shared date axis)
+function dateToIdx(ymd) {
+  const A = HIST.dates;
+  if (ymd < A[0]) return -1;
+  if (ymd >= A[A.length - 1]) return A.length - 1;
+  let lo = 0, hi = A.length - 1;
+  while (lo < hi) { const mid = (lo + hi + 1) >> 1; if (A[mid] <= ymd) lo = mid; else hi = mid - 1; }
+  return lo;
 }
-function navAt(code, mi) {             // NAV of fund `code` at month-axis index mi
+// decode a fund's delta-paise array into a cumulative Int32Array (cached); frees the raw array
+function decoded(code) {
+  let d = HIST.dec[code];
+  if (d) return d;
   const a = HIST.data[code];
   if (!a) return null;
-  const k = mi - a[0] + 1;            // a[0]=startIdx, a[1]=nav at startIdx
-  if (k < 1 || k >= a.length) return null;
-  return a[k];
+  const start = a[0], n = a.length - 1, out = new Int32Array(n);
+  let acc = 0;
+  for (let i = 0; i < n; i++) { acc += a[i + 1]; out[i] = acc; }
+  d = { start: start, nav: out };
+  HIST.dec[code] = d; HIST.data[code] = null;   // free raw to save memory
+  return d;
+}
+function navAtIdx(code, gi) {           // NAV (paise) of fund `code` at axis index gi
+  const d = decoded(code);
+  if (!d) return null;
+  const k = gi - d.start;
+  if (k < 0 || k >= d.nav.length) return null;
+  return d.nav[k];
 }
 function recomputeCust() {
   const f = document.getElementById('fromDate').value;
@@ -427,15 +425,15 @@ function recomputeCust() {
     return;
   }
   FROM = f; TO = t;
-  const fi = monthToIdx(f), ti = monthToIdx(t);
+  const fi = dateToIdx(ymdToInt(f)), ti = dateToIdx(ymdToInt(t));
   let n = 0;
   for (const r of ALL) {
-    const nf = navAt(r.code, fi), nt = navAt(r.code, ti);
+    const nf = navAtIdx(r.code, fi), nt = navAtIdx(r.code, ti);  // paise; ratio cancels /100
     if (nf != null && nt != null && nf > 0) { r.cust = (nt - nf) / nf * 100; n++; }
     else r.cust = null;
   }
-  if (sub) sub.textContent = f + '→' + t;
-  info.textContent = n.toLocaleString() + ' funds have NAV history for this window (absolute %)';
+  if (sub) sub.textContent = f + ' → ' + t;
+  info.textContent = n.toLocaleString() + ' funds have data for this window (absolute %)';
 }
 
 function badgeClass(g) {
