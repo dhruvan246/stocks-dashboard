@@ -217,6 +217,13 @@ HTML = r"""<!DOCTYPE html>
         <label class="block text-xs font-medium text-slate-600 mb-1">To (date)</label>
         <input type="date" id="toDate" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500"/>
       </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">Show as</label>
+        <select id="custMode" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500 bg-white">
+          <option value="abs" selected>Absolute</option>
+          <option value="cagr">Annualized (CAGR)</option>
+        </select>
+      </div>
       <button id="clearDates" class="text-sm text-slate-600 hover:text-amber-600 pb-2">Clear</button>
       <div id="rangeInfo" class="text-xs text-slate-500 pb-2"></div>
     </div>
@@ -382,6 +389,7 @@ async function loadData() {
 // ---- Exact-date return helpers ---------------------------------------------
 function ymdToInt(s) { return parseInt(s.replace(/-/g, ''), 10); }      // "2020-03-23"->20200323
 function intToYmd(n) { const s = '' + n; return s.slice(0,4)+'-'+s.slice(4,6)+'-'+s.slice(6,8); }
+function ymdToDate(n) { const s = '' + n; return new Date(+s.slice(0,4), +s.slice(4,6) - 1, +s.slice(6,8)); }
 
 // nearest trading day on/before target (binary search the shared date axis)
 function dateToIdx(ymd) {
@@ -425,15 +433,23 @@ function recomputeCust() {
     return;
   }
   FROM = f; TO = t;
+  const mode = document.getElementById('custMode').value;   // 'abs' | 'cagr'
   const fi = dateToIdx(ymdToInt(f)), ti = dateToIdx(ymdToInt(t));
+  // actual elapsed years between the matched trading days
+  const yf = (ymdToDate(HIST.dates[ti]) - ymdToDate(HIST.dates[fi])) / (365.25 * 86400000);
+  const useCagr = (mode === 'cagr' && yf >= 1);   // don't annualize sub-1-year windows
   let n = 0;
   for (const r of ALL) {
     const nf = navAtIdx(r.code, fi), nt = navAtIdx(r.code, ti);  // paise; ratio cancels /100
-    if (nf != null && nt != null && nf > 0) { r.cust = (nt - nf) / nf * 100; n++; }
-    else r.cust = null;
+    if (nf != null && nt != null && nf > 0) {
+      r.cust = useCagr ? (Math.pow(nt / nf, 1 / yf) - 1) * 100 : (nt - nf) / nf * 100;
+      n++;
+    } else r.cust = null;
   }
-  if (sub) sub.textContent = f + ' → ' + t;
-  info.textContent = n.toLocaleString() + ' funds have data for this window (absolute %)';
+  if (sub) sub.textContent = f + ' → ' + t + (useCagr ? ' · CAGR' : ' · abs');
+  info.textContent = n.toLocaleString() + ' funds · '
+    + (useCagr ? 'annualized CAGR over ' + yf.toFixed(1) + 'y'
+               : 'absolute % over the window' + (mode === 'cagr' ? ' (<1y, not annualized)' : ''));
 }
 
 function badgeClass(g) {
@@ -577,6 +593,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     document.getElementById('fromDate').addEventListener('change', applyDateRange);
     document.getElementById('toDate').addEventListener('change', applyDateRange);
+    document.getElementById('custMode').addEventListener('change', applyDateRange);
     document.getElementById('clearDates').addEventListener('click', () => {
       document.getElementById('fromDate').value = '';
       document.getElementById('toDate').value = '';
@@ -590,6 +607,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('yrFilter').value = '0';
       document.getElementById('fromDate').value = '';
       document.getElementById('toDate').value = '';
+      document.getElementById('custMode').value = 'abs';
       recomputeCust();
       SORT = { key: 'cagrPct', dir: -1 };
       render();
