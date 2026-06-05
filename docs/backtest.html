@@ -131,8 +131,9 @@
 
   <!-- ROTATION -->
   <section id="tab-rotation" class="tabpane hidden">
+    <div id="rotPresets" class="card p-4 mb-3"><div class="text-xs text-slate-400">Computing ready-made rotations across 1–10 year horizons…</div></div>
     <div class="card p-4 mb-3">
-      <p class="text-xs text-slate-500 mb-2">Each period, hold whichever fund(s) had the best (momentum) or worst (contrarian) trailing return. Add candidates — e.g. one small-cap, one mid-cap, one large-cap — to rotate between categories.</p>
+      <p class="text-xs text-slate-500 mb-2">Or build your own — each period, hold whichever fund(s) had the best (momentum) or worst (contrarian) trailing return. Add candidates — e.g. one small-cap, one mid-cap, one large-cap — to rotate between categories.</p>
       <input id="rSearch" type="search" placeholder="Search a fund to add as a rotation candidate…" class="inp" autocomplete="off"/>
       <div id="rResults" class="mt-1 border border-slate-200 rounded-lg divide-y hidden max-h-56 overflow-y-auto"></div>
       <div id="rSleeves" class="mt-3"></div>
@@ -602,6 +603,64 @@ $('rSleeves').addEventListener('click',e=>{const rm=e.target.closest('[data-rrm]
 $('rRun').addEventListener('click',runRotation);
 renderSleeves();
 
+// ---- ready-made rotation board (auto-computed on first open) ----
+function rotateSim(codes,f,t,lb,topK,rebM,dir,amt){
+  amt=amt||100000;
+  const months=[...monthIter(f,t)];
+  let units={}, started=false, startGi=null, since=1e9;
+  for(let mi=0;mi<months.length;mi++){
+    const gi=dateToIdx(months[mi]);
+    const ranked=codes.map(c=>({c,m:trailingRet(c,gi,lb)})).filter(o=>o.m!=null);
+    if(!ranked.length)continue;
+    const val=started?codes.reduce((s,c)=>s+(units[c]||0)*(navAtIdx(c,gi)||0),0):amt;
+    since++;
+    if(!started||since>=rebM){
+      ranked.sort((a,b)=>dir==='mom'?b.m-a.m:a.m-b.m);
+      const pick=ranked.slice(0,topK).map(o=>o.c);
+      units={}; const per=val/pick.length; pick.forEach(c=>units[c]=per/navAtIdx(c,gi));
+      if(!started){started=true;startGi=gi;} since=0;
+    }
+  }
+  if(!started)return null;
+  const endGi=dateToIdx(t);
+  return {fv:codes.reduce((s,c)=>s+(units[c]||0)*(navAtIdx(c,endGi)||0),0)};
+}
+const BASKET_DEFS=[
+  {name:'Small · Mid · Large — Nippon / Kotak / Mirae', funds:[['nippon','small cap'],['kotak','midcap'],['mirae','large cap']]},
+  {name:'Small · Mid · Large — SBI / HDFC / Axis',      funds:[['sbi','small cap'],['hdfc','mid cap'],['axis','large cap']]},
+  {name:'Flexi · Small · Balanced — PPFAS / SBI / ICICI BAF', funds:[['parag parikh','flexi'],['sbi','small cap'],['icici','balanced advantage']]},
+  {name:'Small vs Large — Nippon Small / Mirae Large',  funds:[['nippon','small cap'],['mirae','large cap']]},
+  {name:'Equity vs Gold — PPFAS Flexi / Nippon Gold',   funds:[['parag parikh','flexi'],['nippon','gold']]},
+];
+function resolveFund(terms){const f=FUNDS.find(x=>{const hay=(x.short+' '+(x.amc||'')).toLowerCase().replace(/-/g,' ');return (x.plan||'Direct')==='Direct'&&terms.every(w=>hay.includes(w));});return f?f.code:null;}
+let BASKETS=[], rotComputed=false;
+function buildBaskets(){BASKETS=[];for(const d of BASKET_DEFS){const codes=d.funds.map(resolveFund);if(!codes.includes(null)&&codes.length>=2)BASKETS.push({name:d.name,codes});}}
+function renderRotPresets(){
+  buildBaskets();
+  const box=$('rotPresets'); const YRS=[1,2,3,4,5,6,7,8,9,10], LB=6,TOPK=1,REB=12,DIR='mom';
+  let h='<div class="text-xs font-semibold text-slate-600 mb-2">Ready-made rotations — momentum, hold top-1, 6-mo lookback, annual re-check · annualized return (CAGR) by trailing horizon</div>';
+  h+='<div class="overflow-x-auto"><table class="text-[11px] w-full"><thead class="text-[10px] uppercase text-slate-500"><tr><th class="text-left px-1 py-1 min-w-[180px]">Rotation basket</th>'+YRS.map(y=>`<th class="text-right px-1 py-1">${y}Y</th>`).join('')+'</tr></thead><tbody>';
+  for(const b of BASKETS){
+    let t=99999999, firstMax=0;
+    b.codes.forEach(c=>{const r=fundRange(c);if(r){t=Math.min(t,r[1]);firstMax=Math.max(firstMax,r[0]);}});
+    let cells='';
+    for(const N of YRS){
+      const td=ymdToDate(t), fd=new Date(td.getFullYear()-N,td.getMonth(),td.getDate());
+      const f=fd.getFullYear()*10000+(fd.getMonth()+1)*100+fd.getDate();
+      const lbd=new Date(fd.getFullYear(),fd.getMonth()-LB,fd.getDate()); const fLb=lbd.getFullYear()*10000+(lbd.getMonth()+1)*100+lbd.getDate();
+      if(fLb<firstMax){cells+='<td class="px-1 text-right text-slate-300">·</td>';continue;}
+      const res=rotateSim(b.codes,f,t,LB,TOPK,REB,DIR);
+      if(!res){cells+='<td class="px-1 text-right text-slate-300">·</td>';continue;}
+      const c=(Math.pow(res.fv/100000,1/N)-1)*100;
+      cells+=`<td class="px-1 py-0.5 text-right ${c>=0?'pos':'neg'}">${c>=0?'+':''}${c.toFixed(1)}</td>`;
+    }
+    h+=`<tr class="border-t border-slate-50"><td class="px-1 py-1 text-left">${b.name}</td>${cells}</tr>`;
+  }
+  if(!BASKETS.length)h+='<tr><td class="px-1 py-2 text-slate-400" colspan="11">Could not resolve preset funds.</td></tr>';
+  h+='</tbody></table></div><div class="text-[10px] text-slate-400 mt-1">CAGR of rotating among each basket over the trailing N years (ending at latest NAV). "·" = basket too young for that horizon. Before exit-load/tax. Build a custom rotation below.</div>';
+  box.innerHTML=h;
+}
+
 $('fundSearch').addEventListener('input',e=>renderResults(e.target.value));
 $('fundResults').addEventListener('click',e=>{const d=e.target.closest('[data-c]');if(d)chooseFund(+d.dataset.c);});
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
@@ -609,6 +668,7 @@ document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
   t.classList.add('active');
   document.querySelectorAll('.tabpane').forEach(p=>p.classList.add('hidden'));
   $('tab-'+t.dataset.tab).classList.remove('hidden');
+  if(t.dataset.tab==='rotation' && !rotComputed){rotComputed=true; setTimeout(renderRotPresets,30);}
 }));
 $('lsRun').addEventListener('click',runLumpsum);
 $('sipRun').addEventListener('click',runSip);
