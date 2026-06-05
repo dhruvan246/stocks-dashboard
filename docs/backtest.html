@@ -607,9 +607,12 @@ renderSleeves();
 
 // ---- saved rotation results (curated; recomputed from data) ----
 const SAVED_ROTATIONS=[
-  {name:'Nippon Small Cap · Gold · Mid Cap',
+  {name:'Nippon Small Cap · Gold · Mid Cap — 6-mo momentum, annual re-check',
    funds:[{code:118777,n:'Small Cap'},{code:118663,n:'Gold'},{code:118668,n:'Mid Cap'}],
    lb:6, reb:12, topK:1, dir:'mom', warmup:12},
+  {name:'Nippon Small Cap · Gold · Mid Cap — 1-mo momentum, quarterly re-check',
+   funds:[{code:118777,n:'Small Cap'},{code:118663,n:'Gold'},{code:118668,n:'Mid Cap'}],
+   lb:1, reb:3, topK:1, dir:'mom', warmup:12},
 ];
 function fmtYM(d){const s=''+d;return s.slice(0,4)+'-'+s.slice(4,6);}
 function simRotDetailed(funds,lb,reb,topK,dir,warmup,amt){
@@ -667,8 +670,9 @@ function savedRotCard(sr){
   // chart: rotation vs holding the first fund
   const ref=sr.funds[0].code, refU=res.amt/navAtIdx(ref,dateToIdx(res.f));
   const eqRef=res.eq.map(([gi])=>[gi, refU*(navAtIdx(ref,gi)||0)]);
-  return `<div class="card p-4 mb-3">
-    <div class="font-semibold text-slate-800">${sr.name}</div>
+  return `<details class="card mb-3">
+    <summary class="px-4 py-3 cursor-pointer select-none font-semibold text-slate-800 hover:bg-slate-50 rounded-xl">${sr.name}</summary>
+    <div class="px-4 pb-4">
     <div class="text-[11px] text-slate-500 mb-2">${sr.lb}-mo momentum · top ${sr.topK} · re-check every ${sr.reb}mo · ${fmtYM(res.f)} → ${fmtYM(res.end)} (${res.yrs.toFixed(1)}y)</div>
     <div class="flex flex-wrap gap-5 text-sm mb-2">
       <div><div class="text-[10px] uppercase text-slate-500">Final (₹1L)</div><b>${fmtINR(res.fv)}</b></div>
@@ -677,12 +681,13 @@ function savedRotCard(sr){
       <div><div class="text-[10px] uppercase text-slate-500">Switches</div><b>${res.switches}</b></div>
     </div>
     <div class="text-[10px] uppercase text-slate-500 mt-2 mb-1">Decision log — trailing ${sr.lb}-mo returns &rarr; action</div>
-    <div class="overflow-x-auto">${dlog}</div>
+    <div class="overflow-x-auto max-h-72 overflow-y-auto">${dlog}</div>
     <div class="text-[10px] uppercase text-slate-500 mt-3 mb-1">Holding periods</div>
     <div class="overflow-x-auto">${plog}</div>
     ${equityChart(res.eq,eqRef,'rotation','hold '+sr.funds[0].n)}
     <div class="text-[10px] text-slate-400 mt-1">Before exit-load &amp; capital-gains tax. A swept "best" parameter set — treat the exact figure with skepticism.</div>
-  </div>`;
+    </div>
+  </details>`;
 }
 function renderSavedRotations(){
   const box=$('rotSaved'); if(!box)return;
