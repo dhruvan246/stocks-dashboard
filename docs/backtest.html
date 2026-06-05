@@ -303,9 +303,12 @@ function runTiming(){
   const bhFV=bhUnits*endNav;
   const yrs=(ymdToDate(r[1])-ymdToDate(startYmd))/(365.25*864e5);
   // SIP over the same period — flat monthly so total invested ≈ the lumpsum amount (fair compare)
-  const monthly=amt/monthsTot; let sUnits=0;
-  for(const mk of monthIter(startYmd,r[1])){const nav=navAtIdx(SEL.code,dateToIdx(mk));if(nav)sUnits+=monthly/nav;}
+  const monthly=amt/monthsTot; let sUnits=0; const sipEq=[], sipCf=[];
+  for(const mk of monthIter(startYmd,r[1])){const gi=dateToIdx(mk);const nav=navAtIdx(SEL.code,gi);if(nav==null)continue;
+    sUnits+=monthly/nav; sipCf.push({t:ymdToDate(HIST.dates[gi]).getTime(),amt:-monthly}); sipEq.push([gi,sUnits*nav]);}
   const sipFV=sUnits*endNav;
+  sipCf.push({t:ymdToDate(r[1]).getTime(),amt:sipFV});
+  const sipXirr=xirr(sipCf), sipMdd=eqDrawdown(sipEq);
   const cagr=(fv)=>(Math.pow(fv/amt,1/yrs)-1)*100;
   const mddStrat=eqDrawdown(eqStrat), mddBH=eqDrawdown(eqBH);
   $('tOut').innerHTML=card(`
@@ -314,8 +317,9 @@ function runTiming(){
       <tr class="text-[11px] uppercase text-slate-500"><td></td><td class="text-right">Final value</td><td class="text-right">CAGR</td><td class="text-right">Max DD</td></tr>
       <tr><td class="py-1">Your timing strategy</td><td class="text-right font-bold">${fmtINR(stratFV)}</td><td class="text-right">${pct(cagr(stratFV))}</td><td class="text-right neg">-${mddStrat.toFixed(0)}%</td></tr>
       <tr><td class="py-1">Buy &amp; hold (lumpsum)</td><td class="text-right">${fmtINR(bhFV)}</td><td class="text-right">${pct(cagr(bhFV))}</td><td class="text-right neg">-${mddBH.toFixed(0)}%</td></tr>
-      <tr><td class="py-1">Monthly SIP (same total)</td><td class="text-right">${fmtINR(sipFV)}</td><td class="text-right">—</td><td class="text-right">—</td></tr>
+      <tr><td class="py-1">Monthly SIP (same total)</td><td class="text-right">${fmtINR(sipFV)}</td><td class="text-right">${pct(sipXirr)}<span class="text-[9px] text-slate-400"> XIRR</span></td><td class="text-right neg">-${sipMdd.toFixed(0)}%</td></tr>
     </table>
+    <div class="text-[10px] text-slate-400 mt-1">SIP return shown as XIRR (money-weighted) since money goes in gradually; SIP drawdown is on the accumulating corpus.</div>
     <div class="text-xs text-slate-500 mt-2">${trades} trades · invested ${(monthsIn/monthsTot*100).toFixed(0)}% of the time · period ${intToYmd(startYmd)} → ${intToYmd(r[1])} (${yrs.toFixed(1)}y)</div>
   `)+equityChart(eqStrat,eqBH);
 }
@@ -336,16 +340,35 @@ function histogram(vals){
         <span class="w-10 text-slate-500">${c}</span></div>`;}
   return h+'</div>';
 }
+function fmtShort(n){if(n>=1e7)return '₹'+(n/1e7).toFixed(1)+'Cr';if(n>=1e5)return '₹'+(n/1e5).toFixed(1)+'L';if(n>=1e3)return '₹'+(n/1e3).toFixed(0)+'k';return '₹'+Math.round(n);}
 function equityChart(a,b,la='strategy',lb='buy &amp; hold'){
-  const W=720,H=220,P=28;
+  const W=720,H=230,PL=46,PR=14,PT=14,PB=26;
   const gis=a.map(p=>p[0]); const vals=a.map(p=>p[1]).concat(b.map(p=>p[1]));
   const minG=gis[0],maxG=gis[gis.length-1], minV=Math.min(...vals),maxV=Math.max(...vals);
-  const x=gi=>P+(gi-minG)/(maxG-minG)*(W-2*P);
-  const y=v=>H-P-(v-minV)/(maxV-minV)*(H-2*P);
+  const x=gi=>PL+(gi-minG)/(maxG-minG)*(W-PL-PR);
+  const y=v=>H-PB-(v-minV)/(maxV-minV)*(H-PT-PB);
   const path=arr=>arr.map((p,i)=>(i?'L':'M')+x(p[0]).toFixed(1)+' '+y(p[1]).toFixed(1)).join(' ');
+  // x-axis year ticks
+  let ticks='';
+  const nT=Math.min(8,Math.max(2,Math.round((maxG-minG)/260)));
+  let lastYr='';
+  for(let k=0;k<=nT;k++){
+    const idx=Math.round(minG+(maxG-minG)*k/nT);
+    const yr=(''+HIST.dates[idx]).slice(0,4);
+    if(yr===lastYr)continue; lastYr=yr;
+    const xx=x(idx);
+    ticks+=`<line x1="${xx.toFixed(1)}" y1="${PT}" x2="${xx.toFixed(1)}" y2="${H-PB}" stroke="#f1f5f9"/>`+
+           `<text x="${xx.toFixed(1)}" y="${H-8}" font-size="10" fill="#94a3b8" text-anchor="middle">${yr}</text>`;
+  }
+  // y-axis value labels (3 gridlines)
+  let ylab='';
+  for(let k=0;k<=2;k++){const v=minV+(maxV-minV)*k/2; const yy=y(v);
+    ylab+=`<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="#f1f5f9"/>`+
+          `<text x="${PL-4}" y="${(yy+3).toFixed(1)}" font-size="10" fill="#94a3b8" text-anchor="end">${fmtShort(v)}</text>`;}
   return `<div class="card p-4 mt-3"><div class="text-xs font-semibold text-slate-600 mb-2">Portfolio value over time
      <span class="text-blue-600">— ${la}</span> <span class="text-slate-400">— ${lb}</span></div>
-     <svg viewBox="0 0 ${W} ${H}" class="w-full"><path d="${path(b)}" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+     <svg viewBox="0 0 ${W} ${H}" class="w-full">${ylab}${ticks}
+     <path d="${path(b)}" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
      <path d="${path(a)}" fill="none" stroke="#2563eb" stroke-width="2"/></svg></div>`;
 }
 
