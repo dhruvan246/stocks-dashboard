@@ -3,19 +3,26 @@
 
 Designed to run unattended in CI (GitHub Actions) with no external inputs.
 
-The scheme universe is SEEDED from the existing scripts/mutual_funds.json, so
-fund identities (category, name, AMC, ISIN, inception) stay stable across runs.
-Each scheme's full NAV history is re-fetched from mfapi.in to recompute fresh
-returns at 1d / 1w / 1m / 3m / 6m / 1y / 3y / 5y / 10y + since inception.
+UNIVERSE = (existing scripts/mutual_funds.json)  ∪  (AMFI active Direct-Growth):
+  - Existing funds keep their identity (category/name/AMC/ISIN stay stable).
+  - AMFI's daily NAVAll file is parsed for every currently-active Direct-Growth
+    scheme; any not already present is ADDED (category from AMFI's SEBI section
+    header). Segregated side-pocket portfolios are skipped. This way newly
+    launched funds — and funds that were missing from the original seed —
+    self-heal into the dashboard automatically.
+
+Each scheme's full NAV history is fetched from mfapi.in to compute returns at
+1d / 1w / 1m / 3m / 6m / 1y / 3y / 5y / 10y + since inception.
 
 Resilience: a scheme that fails to fetch (mfapi hiccup / rate-limit) keeps its
 PREVIOUS record instead of being dropped, so the universe never shrinks on a
-transient error. On a totally fresh checkout with no seed file, it exits early.
+transient error. If AMFI is unreachable, discovery is skipped and the existing
+universe is simply refreshed.
 
-Source: mfapi.in (free, no auth, full NAV history per scheme).
+Sources: AMFI NAVAll.txt (scheme master) + mfapi.in (full NAV history).
 Output: scripts/mutual_funds.json
 """
-import subprocess, json, os
+import subprocess, json, os, re
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -28,7 +35,87 @@ if not OUT.exists():
 
 existing = json.loads(OUT.read_text(encoding="utf-8"))
 OLD = {r["code"]: r for r in existing}
-SCHEMES = list(existing)
+
+# ---------------------------------------------------------------------------
+# Direct-Growth filter + side-pocket detector
+# ---------------------------------------------------------------------------
+def is_direct_growth(n):
+    n = n.lower()
+    return ('direct' in n and 'growth' in n and 'idcw' not in n and 'dividend' not in n
+            and 'payout' not in n and 'reinvest' not in n and 'bonus' not in n)
+
+def is_segregated(n):
+    n = n.lower()
+    return ('segregat' in n or 'seg.' in n or 'portfolio' in n
+            or 'side pocket' in n or 'side-pocket' in n)
+
+def clean_short(name):
+    for suf in (' - DIRECT - Growth', ' - Direct Plan - Growth Option',
+                ' - Direct Plan - Growth', ' Direct Plan-Growth',
+                ' Direct - Growth', '- Direct (G)', ' - Direct – Growth',
+                ' -Direct - Growth', '-Direct Plan-Growth'):
+        name = name.replace(suf, '')
+    return name.strip()
+
+# ---------------------------------------------------------------------------
+# Discover AMFI's current active Direct-Growth universe (best-effort)
+# ---------------------------------------------------------------------------
+def discover_amfi():
+    """Return {code(str): {'name':..., 'category':...}} for active Direct-Growth
+    schemes (excluding segregated side-pockets). Empty dict on any failure."""
+    url = "https://www.amfiindia.com/spages/NAVAll.txt"
+    txt = ""
+    # Primary: urllib (portable, works on Windows + CI). Fallback: curl.
+    try:
+        import urllib.request
+        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        txt = urllib.request.urlopen(req, timeout=70).read().decode("utf-8", "ignore")
+    except Exception:
+        try:
+            r = subprocess.run(["curl", "-s", "--max-time", "60", "-A", "Mozilla/5.0", url],
+                               capture_output=True, timeout=70)
+            txt = r.stdout.decode("utf-8", errors="ignore")
+        except Exception:
+            return {}
+    if not txt:
+        return {}
+    out, cat = {}, None
+    for ln in txt.splitlines():
+        if ';' in ln:
+            p = ln.split(';')
+            if len(p) >= 5 and p[0].strip().isdigit():
+                name = p[3].strip()
+                if is_direct_growth(name) and not is_segregated(name):
+                    out[p[0].strip()] = {'name': name, 'category': cat}
+        else:
+            s = ln.strip()
+            m = re.search(r'\((.*)\)\s*$', s)
+            if m and 'Scheme' in s:
+                cat = m.group(1).strip()
+    return out
+
+# Build merged universe: existing first (identity preserved), then AMFI new ones.
+SCHEMES = []
+seen = set()
+for rec in existing:
+    SCHEMES.append({'code': rec['code'], 'name': rec['name'], 'short': rec.get('short'),
+                    'amc': rec.get('amc'), 'category': rec.get('category'),
+                    'isin': rec.get('isin', '')})
+    seen.add(str(rec['code']))
+
+amfi = discover_amfi()
+new_funds = 0
+for code, info in amfi.items():
+    if code in seen:
+        continue
+    SCHEMES.append({'code': int(code), 'name': info['name'],
+                    'short': clean_short(info['name']), 'amc': None,
+                    'category': info['category'], 'isin': ''})
+    seen.add(code)
+    new_funds += 1
+
+print(f"Universe: {len(existing)} existing + {new_funds} newly discovered from AMFI "
+      f"({len(amfi)} active D-G in AMFI) = {len(SCHEMES)} total")
 
 # Optional cap for local testing: MF_LIMIT=20 python scripts/fetch_mf_returns.py
 LIMIT = int(os.environ.get("MF_LIMIT", "0") or "0")
@@ -78,6 +165,24 @@ def fetch_one(scheme):
         if d.get('status') != 'SUCCESS' or not d.get('data'):
             return None
         data = d['data']  # newest first
+        # Guard against NAV redenominations / spliced histories: some scheme
+        # codes have a one-day NAV jump of 10x-100x (a restated NAV base, e.g.
+        # several overnight funds on 2018-05-03) or splice in an unrelated older
+        # fund's NAVs. Such discontinuities wreck since-inception & 10Y returns.
+        # Keep only the clean segment AFTER the most recent implausible jump.
+        chron = list(reversed(data))  # oldest -> newest
+        cut = 0
+        for i in range(1, len(chron)):
+            try:
+                pv = float(chron[i-1]['nav']); cv = float(chron[i]['nav'])
+            except Exception:
+                continue
+            if pv > 0 and (cv / pv > 1.5 or cv / pv < 0.667):
+                cut = i  # a real fund never moves >50% in a single day
+        if cut:
+            data = list(reversed(chron[cut:]))
+        if not data:
+            return None
         latest = data[0]
         nav_latest = float(latest['nav'])
         if nav_latest <= 0:
@@ -93,7 +198,10 @@ def fetch_one(scheme):
         inc_days = (d_lat - d_inc).days
         inc_years = inc_days / 365.25
         inc_total = (nav_latest - nav_inc) / nav_inc * 100
-        inc_cagr = ((nav_latest / nav_inc) ** (1 / inc_years) - 1) * 100 if inc_years > 0.1 else 0
+        # Don't annualize for funds under 1 year old — annualizing a sub-year
+        # return wildly exaggerates it (SEBI shows absolute returns for <1yr).
+        inc_cagr = (((nav_latest / nav_inc) ** (1 / inc_years) - 1) * 100
+                    if inc_years >= 1.0 else inc_total)
 
         # Returns at each lookback
         returns = {}
@@ -127,8 +235,8 @@ def fetch_one(scheme):
             'code': code,
             'name': scheme['name'],
             # Keep the already-cleaned short label / AMC / category / isin from the
-            # seed record; refresh only the price + return fields below.
-            'short':    scheme.get('short') or scheme['name'],
+            # seed record; for newly discovered funds these come from AMFI + mfapi.
+            'short':    scheme.get('short') or clean_short(scheme['name']),
             'amc':      scheme.get('amc') or meta.get('fund_house'),
             'category': scheme.get('category') or meta.get('scheme_category'),
             'isin':     scheme.get('isin', ''),
@@ -156,7 +264,9 @@ for batch_start in range(0, len(SCHEMES), BATCH):
         for fut in as_completed(futs):
             r = fut.result()
             if r is None:
-                # Keep the previous record so the universe never shrinks.
+                # Keep the previous record so the universe never shrinks. (Newly
+                # discovered funds have no previous record, so they're skipped
+                # this run and will be retried next time.)
                 prev = OLD.get(futs[fut]['code'])
                 if prev is not None:
                     results.append(prev)
@@ -171,9 +281,9 @@ for batch_start in range(0, len(SCHEMES), BATCH):
 # Add any schemes we skipped via MF_LIMIT back unchanged, so a capped test run
 # never erases the rest of the universe.
 if LIMIT > 0:
-    seen = {r['code'] for r in results}
+    have = {r['code'] for r in results}
     for r in existing:
-        if r['code'] not in seen:
+        if r['code'] not in have:
             results.append(r)
 
 print(f"\nDone: {refreshed} refreshed, {kept} kept stale, {failed} failed -> {len(results)} total")
