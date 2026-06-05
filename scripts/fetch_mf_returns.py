@@ -37,12 +37,17 @@ existing = json.loads(OUT.read_text(encoding="utf-8"))
 OLD = {r["code"]: r for r in existing}
 
 # ---------------------------------------------------------------------------
-# Direct-Growth filter + side-pocket detector
+# Growth-plan filter (both Direct and Regular) + plan tag + side-pocket detector
 # ---------------------------------------------------------------------------
-def is_direct_growth(n):
+def is_growth(n):
     n = n.lower()
-    return ('direct' in n and 'growth' in n and 'idcw' not in n and 'dividend' not in n
+    return ('growth' in n and 'idcw' not in n and 'dividend' not in n
             and 'payout' not in n and 'reinvest' not in n and 'bonus' not in n)
+
+def plan_of(name):
+    # Regular plans (incl. older funds named just "... - Growth") give the
+    # fund's TRUE pre-2013 history; Direct plans only exist from Jan 2013.
+    return 'Direct' if 'direct' in name.lower() else 'Regular'
 
 def is_segregated(n):
     n = n.lower()
@@ -53,7 +58,10 @@ def clean_short(name):
     for suf in (' - DIRECT - Growth', ' - Direct Plan - Growth Option',
                 ' - Direct Plan - Growth', ' Direct Plan-Growth',
                 ' Direct - Growth', '- Direct (G)', ' - Direct – Growth',
-                ' -Direct - Growth', '-Direct Plan-Growth'):
+                ' -Direct - Growth', '-Direct Plan-Growth',
+                ' - Regular Plan - Growth Option', ' - Regular Plan - Growth',
+                ' Regular Plan-Growth', ' - REGULAR - Growth', '- Regular (G)',
+                ' - Growth Option', ' - Growth Plan', ' - Growth'):
         name = name.replace(suf, '')
     return name.strip()
 
@@ -85,7 +93,7 @@ def discover_amfi():
             p = ln.split(';')
             if len(p) >= 5 and p[0].strip().isdigit():
                 name = p[3].strip()
-                if is_direct_growth(name) and not is_segregated(name):
+                if is_growth(name) and not is_segregated(name):
                     out[p[0].strip()] = {'name': name, 'category': cat}
         else:
             s = ln.strip()
@@ -100,22 +108,26 @@ seen = set()
 for rec in existing:
     SCHEMES.append({'code': rec['code'], 'name': rec['name'], 'short': rec.get('short'),
                     'amc': rec.get('amc'), 'category': rec.get('category'),
-                    'isin': rec.get('isin', '')})
+                    'isin': rec.get('isin', ''),
+                    'plan': rec.get('plan') or plan_of(rec['name'])})
     seen.add(str(rec['code']))
 
 amfi = discover_amfi()
-new_funds = 0
+new_funds = new_regular = 0
 for code, info in amfi.items():
     if code in seen:
         continue
+    pl = plan_of(info['name'])
     SCHEMES.append({'code': int(code), 'name': info['name'],
                     'short': clean_short(info['name']), 'amc': None,
-                    'category': info['category'], 'isin': ''})
+                    'category': info['category'], 'isin': '', 'plan': pl})
     seen.add(code)
     new_funds += 1
+    if pl == 'Regular':
+        new_regular += 1
 
 print(f"Universe: {len(existing)} existing + {new_funds} newly discovered from AMFI "
-      f"({len(amfi)} active D-G in AMFI) = {len(SCHEMES)} total")
+      f"({new_regular} of them Regular plans) = {len(SCHEMES)} total")
 
 # Optional cap for local testing: MF_LIMIT=20 python scripts/fetch_mf_returns.py
 LIMIT = int(os.environ.get("MF_LIMIT", "0") or "0")
@@ -253,6 +265,7 @@ def fetch_one(scheme):
             'amc':      scheme.get('amc') or meta.get('fund_house'),
             'category': scheme.get('category') or meta.get('scheme_category'),
             'isin':     scheme.get('isin', ''),
+            'plan':     scheme.get('plan') or plan_of(scheme['name']),
             'inceptionDate': d_inc.strftime('%Y-%m-%d'),
             'latestDate':    d_lat.strftime('%Y-%m-%d'),
             'inceptionNav':  round(nav_inc, 4),

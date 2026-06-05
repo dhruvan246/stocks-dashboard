@@ -164,6 +164,8 @@ HTML = r"""<!DOCTYPE html>
   .b-fof    { background:#e0e7ff; color:#3730a3; }
   .b-commodity { background:#ffedd5; color:#9a3412; }
   .b-other  { background:#f1f5f9; color:#475569; }
+  .b-plan-dir { background:#dbeafe; color:#1e40af; }
+  .b-plan-reg { background:#fee2e2; color:#991b1b; }
   #loadingOverlay{position:fixed;inset:0;background:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50;}
   .pos { color:#15803d; font-weight:600; }
   .neg { color:#b91c1c; font-weight:600; }
@@ -189,11 +191,19 @@ HTML = r"""<!DOCTYPE html>
 <main class="max-w-screen-2xl mx-auto px-4 py-6">
   <!-- Filter bar -->
   <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-4">
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
       <div>
         <label class="block text-xs font-medium text-slate-600 mb-1">Search by name / AMC</label>
         <input type="search" id="searchBox" placeholder="e.g. Parag Parikh, Small Cap, HDFC…"
                class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"/>
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">Plan</label>
+        <select id="planFilter" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 bg-white">
+          <option value="Direct" selected>Direct only</option>
+          <option value="Regular">Regular only</option>
+          <option value="all">Both (Direct + Regular)</option>
+        </select>
       </div>
       <div>
         <label class="block text-xs font-medium text-slate-600 mb-1">Category</label>
@@ -291,7 +301,11 @@ HTML = r"""<!DOCTYPE html>
   <p class="text-[11px] text-slate-500 mt-3">
     * Columns marked with asterisk are annualized (CAGR). 1D–1Y are absolute returns.
     Data sources: AMFI NAVAll daily file (scheme master + current NAV) and mfapi.in (full NAV history).
-    Only Direct-Growth variants shown (no Regular plans, no IDCW/dividend options).
+    Growth plans only (no IDCW/dividend options), tagged <span class="badge b-plan-dir">DIR</span> /
+    <span class="badge b-plan-reg">REG</span>. <b>Data floor:</b> Direct-plan NAV history starts Jan 2013
+    (when direct plans were introduced); Regular-plan history starts Apr 2006 (AMFI's daily-NAV archive
+    floor). So a fund older than 2006 shows max ~20 years even on its Regular plan — its true 1990s/2000s
+    launch isn't available in free data. "Since inception" means since that data floor, not the fund's legal launch.
     AUM is a placeholder for now — AMFI's scheme-wise AUM is published as a monthly XLSX and will be ingested separately.
     Returns shown as "—" mean the fund hasn't existed for that lookback period (e.g. no 10Y return for a 6-year-old fund).
     Side-pocket / Segregated schemes show -100% returns by design.
@@ -441,11 +455,21 @@ function fmtINR(n) {
   return n.toLocaleString('en-IN', { maximumFractionDigits: 0 });
 }
 
+function cleanName(s) {
+  return (s || '')
+    .replace(/\s*[-–]\s*(Regular|Direct)(\s*Plan)?(\s*[-–]?\s*Growth(\s*Option)?)?\s*$/i, '')
+    .replace(/\s*[-–]\s*Growth(\s*Option|\s*Plan)?\s*$/i, '')
+    .replace(/\s*[-–]\s*$/, '')
+    .trim();
+}
+
 function applyFilters() {
   const q     = document.getElementById('searchBox').value.trim().toLowerCase();
   const cat   = document.getElementById('catFilter').value;
+  const plan  = document.getElementById('planFilter').value;
   const minYr = parseFloat(document.getElementById('yrFilter').value) || 0;
   let s = ALL.filter(r => {
+    if (plan !== 'all' && (r.plan || 'Direct') !== plan) return false;
     if (cat !== 'all') {
       if (cat.startsWith('G:::')) {
         if (r.g !== cat.slice(4)) return false;
@@ -495,9 +519,12 @@ function render() {
     tr.className = i % 2 ? 'bg-slate-50' : '';
     const cagr = r.cagrPct;
     const staleBadge = r.stale ? ' <span class="badge b-other" title="Latest NAV is ' + (r.staleDays || '?') + ' days old — short-period returns suppressed">stale</span>' : '';
+    const planBadge = ((r.plan || 'Direct') === 'Regular')
+      ? ' <span class="badge b-plan-reg" title="Regular plan — older funds carry full pre-2013 history">REG</span>'
+      : ' <span class="badge b-plan-dir" title="Direct plan">DIR</span>';
     tr.innerHTML =
       '<td class="px-2 py-2 text-slate-500 text-[10px]">' + (i + 1) + '</td>' +
-      '<td class="px-3 py-2"><div class="font-medium text-slate-800 text-xs">' + r.short.replace(/[<>]/g, '') + staleBadge + '</div>' +
+      '<td class="px-3 py-2"><div class="font-medium text-slate-800 text-xs">' + cleanName(r.short).replace(/[<>]/g, '') + planBadge + staleBadge + '</div>' +
         (r.amc ? '<div class="text-[10px] text-slate-500">' + r.amc.replace(/[<>]/g, '') + '</div>' : '') + '</td>' +
       '<td class="px-2 py-2 text-right text-slate-300 italic text-[10px]">—</td>' +
       '<td class="px-2 py-2"><span class="badge ' + badgeClass(r.g) + '" title="' + (r.category || '').replace(/["<>]/g, '') + '">' + r.s + '</span></td>' +
@@ -540,6 +567,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadData().then(() => {
     document.getElementById('searchBox').addEventListener('input', render);
     document.getElementById('catFilter').addEventListener('change', render);
+    document.getElementById('planFilter').addEventListener('change', render);
     document.getElementById('yrFilter').addEventListener('change', render);
 
     // Custom date-range window: recompute the per-fund window return, sort by it.
@@ -560,6 +588,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('resetBtn').addEventListener('click', () => {
       document.getElementById('searchBox').value = '';
       document.getElementById('catFilter').value = 'all';
+      document.getElementById('planFilter').value = 'Direct';
       document.getElementById('yrFilter').value = '0';
       document.getElementById('fromDate').value = '';
       document.getElementById('toDate').value = '';
