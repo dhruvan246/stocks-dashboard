@@ -80,18 +80,25 @@
       <button id="rollRun" class="btn">Run</button>
     </div>
     <div id="rollOut" class="mt-3"></div>
+    <div id="rollCal" class="mt-3"></div>
   </section>
 
   <!-- TIMING -->
   <section id="tab-timing" class="tabpane hidden">
     <div class="card p-4">
-      <p class="text-xs text-slate-500 mb-3">Rule: start in cash; <b>BUY</b> (lumpsum) when the fund's trailing <span id="tSigYrs">5</span>Y CAGR falls below the buy threshold; <b>SELL</b> to cash when it rises above the sell threshold. Compared against buy-&-hold and monthly SIP over the same period.</p>
-      <div class="grid grid-cols-2 md:grid-cols-5 gap-3 items-end">
+      <p class="text-xs text-slate-500 mb-3">Start in cash; <b>BUY</b> (lumpsum) on the buy signal, <b>SELL</b> back to cash on the sell signal. Benchmarked vs buy-&-hold and monthly SIP over the same period.</p>
+      <div class="grid grid-cols-2 md:grid-cols-6 gap-3 items-end">
         <div><label class="lbl">Amount (₹)</label><input id="tAmt" type="number" value="100000" class="inp"/></div>
-        <div><label class="lbl">Signal: trailing CAGR</label>
+        <div><label class="lbl">Signal</label>
+          <select id="tSig" class="inp">
+            <option value="cagr" selected>Trailing CAGR</option>
+            <option value="dip">Buy the dip</option>
+            <option value="trend">Trend (10-mo MA)</option>
+          </select></div>
+        <div id="tWinWrap"><label class="lbl">Lookback (yrs)</label>
           <select id="tWin" class="inp"><option>3</option><option selected>5</option><option>7</option></select></div>
-        <div><label class="lbl">Buy when &lt; (%)</label><input id="tBuy" type="number" value="10" class="inp"/></div>
-        <div><label class="lbl">Sell when &gt; (%)</label><input id="tSell" type="number" value="25" class="inp"/></div>
+        <div id="tBuyWrap"><label class="lbl" id="tBuyLbl">Buy when &lt; (%)</label><input id="tBuy" type="number" value="10" class="inp"/></div>
+        <div id="tSellWrap"><label class="lbl" id="tSellLbl">Sell when &gt; (%)</label><input id="tSell" type="number" value="25" class="inp"/></div>
         <button id="tRun" class="btn">Run</button>
       </div>
     </div>
@@ -215,6 +222,8 @@ function chooseFund(code){
   // default date inputs to the fund's range
   if(r){['lsFrom','sipFrom'].forEach(i=>{$(i).min=lo;$(i).max=hi;$(i).value=lo;});
         ['lsTo','sipTo'].forEach(i=>{$(i).min=lo;$(i).max=hi;$(i).value=hi;});}
+  // monthly-returns calendar shown in the Rolling tab
+  const cal=$('rollCal'); if(cal) cal.innerHTML=monthlyReturnsTable(code);
 }
 
 // ---- engines ----
@@ -300,30 +309,35 @@ function runRolling(){
 
 function runTiming(){
   if(!SEL)return alert('Pick a fund first');
-  const amt=+$('tAmt').value, win=+$('tWin').value, buy=+$('tBuy').value, sell=+$('tSell').value;
+  const amt=+$('tAmt').value, sig=$('tSig').value, win=+$('tWin').value, buy=+$('tBuy').value, sell=+$('tSell').value;
   const r=fundRange(SEL.code); if(!r)return;
-  // eligible start = first date that has `win` years of prior history
-  const firstD=ymdToDate(r[0]); const startElig=new Date(firstD.getFullYear()+win,firstD.getMonth(),firstD.getDate());
-  const startYmd=startElig.getFullYear()*10000+(startElig.getMonth()+1)*100+startElig.getDate();
-  if(startYmd>=r[1])return $('tOut').innerHTML=card(`Fund needs at least ${win}+ years of history to generate the signal.`);
-  // simulate monthly
+  const months=[...monthIter(r[0],r[1])];
   let inCash=true, cash=amt, units=0, trades=0, monthsIn=0, monthsTot=0;
-  const eqStrat=[], eqBH=[]; let bhUnits=null;
-  for(const mk of monthIter(startYmd, r[1])){
-    const gi=dateToIdx(mk); const nav=navAtIdx(SEL.code,gi); if(nav==null)continue;
-    // trailing win-year CAGR
-    const pd=ymdToDate(mk); const back=new Date(pd.getFullYear()-win,pd.getMonth(),pd.getDate());
-    const backYmd=back.getFullYear()*10000+(back.getMonth()+1)*100+back.getDate();
-    const navBack=navAtIdx(SEL.code,dateToIdx(backYmd)); if(navBack==null)continue;
-    const sig=(Math.pow(nav/navBack,1/win)-1)*100;
-    if(bhUnits===null)bhUnits=amt/nav;                 // buy & hold enters at first eligible date
-    if(inCash && sig<buy){units=cash/nav;cash=0;inCash=false;trades++;}
-    else if(!inCash && sig>sell){cash=units*nav;units=0;inCash=true;trades++;}
+  const eqStrat=[], eqBH=[]; let bhUnits=null, startGi=null;
+  let peak=0; const maBuf=[], MAW=10;          // for dip (running peak) and trend (10-mo SMA)
+  for(let mi=0;mi<months.length;mi++){
+    const gi=dateToIdx(months[mi]); const nav=navAtIdx(SEL.code,gi); if(nav==null)continue;
+    let ready=false, buySig=false, sellSig=false;
+    if(sig==='cagr'){
+      const pd=ymdToDate(months[mi]); const back=new Date(pd.getFullYear()-win,pd.getMonth(),pd.getDate());
+      const bY=back.getFullYear()*10000+(back.getMonth()+1)*100+back.getDate();
+      const nb=navAtIdx(SEL.code,dateToIdx(bY));
+      if(nb!=null){const c=(Math.pow(nav/nb,1/win)-1)*100; ready=true; buySig=c<buy; sellSig=c>sell;}
+    } else if(sig==='dip'){
+      peak=Math.max(peak,nav); const dd=(peak-nav)/peak*100; ready=true; buySig=dd>=buy; sellSig=dd<=sell;
+    } else {                                    // trend: 10-month moving-average crossover
+      maBuf.push(nav); if(maBuf.length>MAW)maBuf.shift();
+      if(maBuf.length===MAW){const ma=maBuf.reduce((s,x)=>s+x,0)/MAW; ready=true; buySig=nav>ma; sellSig=nav<ma;}
+    }
+    if(!ready)continue;
+    if(bhUnits===null){bhUnits=amt/nav; startGi=gi;}
+    if(inCash&&buySig){units=cash/nav;cash=0;inCash=false;trades++;}
+    else if(!inCash&&sellSig){cash=units*nav;units=0;inCash=true;trades++;}
     monthsTot++; if(!inCash)monthsIn++;
-    eqStrat.push([gi, inCash?cash:units*nav]);
-    eqBH.push([gi, bhUnits*nav]);
+    eqStrat.push([gi,inCash?cash:units*nav]); eqBH.push([gi,bhUnits*nav]);
   }
-  if(!monthsTot)return $('tOut').innerHTML=card('Not enough data after the signal warm-up.');
+  if(!monthsTot||startGi==null)return $('tOut').innerHTML=card('Not enough history for this signal on this fund — try a shorter lookback or a different signal.');
+  const startYmd=HIST.dates[startGi];
   const endNav=navAtIdx(SEL.code,dateToIdx(r[1]));
   const stratFV=inCash?cash:units*endNav;
   const bhFV=bhUnits*endNav;
@@ -337,8 +351,11 @@ function runTiming(){
   const sipXirr=xirr(sipCf), sipMdd=eqDrawdown(sipEq);
   const cagr=(fv)=>(Math.pow(fv/amt,1/yrs)-1)*100;
   const mddStrat=eqDrawdown(eqStrat), mddBH=eqDrawdown(eqBH);
+  const ruleLbl = sig==='cagr' ? `${win}Y-CAGR rule, buy&lt;${buy}% / sell&gt;${sell}%`
+                : sig==='dip'  ? `buy-the-dip: buy &gt;${buy}% below peak, sell within ${sell}% of peak`
+                :                `trend: 10-month moving-average crossover`;
   $('tOut').innerHTML=card(`
-    <div class="font-semibold text-slate-800 mb-2">${SEL.short.replace(/[<>]/g,'')} — ${win}Y-CAGR rule, buy&lt;${buy}% / sell&gt;${sell}%</div>
+    <div class="font-semibold text-slate-800 mb-2">${SEL.short.replace(/[<>]/g,'')} — ${ruleLbl}</div>
     <table class="w-full text-sm">
       <tr class="text-[11px] uppercase text-slate-500"><td></td><td class="text-right">Final value</td><td class="text-right">CAGR</td><td class="text-right">Max DD</td></tr>
       <tr><td class="py-1">Your timing strategy</td><td class="text-right font-bold">${fmtINR(stratFV)}</td><td class="text-right">${pct(cagr(stratFV))}</td><td class="text-right neg">-${mddStrat.toFixed(0)}%</td></tr>
@@ -348,6 +365,31 @@ function runTiming(){
     <div class="text-[10px] text-slate-400 mt-1">SIP return shown as XIRR (money-weighted) since money goes in gradually; SIP drawdown is on the accumulating corpus.</div>
     <div class="text-xs text-slate-500 mt-2">${trades} trades · invested ${(monthsIn/monthsTot*100).toFixed(0)}% of the time · period ${intToYmd(startYmd)} → ${intToYmd(r[1])} (${yrs.toFixed(1)}y)</div>
   `)+equityChart(eqStrat,eqBH);
+}
+
+// ---- monthly returns calendar (rows = years, 12 month columns + year total) ----
+function monthlyReturnsTable(code){
+  const r=fundRange(code); if(!r)return '';
+  const fy=Math.floor(r[0]/10000), ly=Math.floor(r[1]/10000);
+  function meNav(Y,M){const idx=dateToIdx(Y*10000+M*100+31);const d=HIST.dates[idx];
+    if(Math.floor(d/10000)!==Y||Math.floor(d/100)%100!==M)return null;return navAtIdx(code,idx);}
+  const MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const cell=(v,bold)=>v==null?'<td class="px-1 py-0.5 text-right text-slate-300">·</td>'
+    :`<td class="px-1 py-0.5 text-right ${bold?'font-semibold border-l border-slate-200 ':''}${v>=0?'pos':'neg'}">${v>=0?'+':''}${v.toFixed(1)}</td>`;
+  let rows='';
+  for(let Y=fy;Y<=ly;Y++){
+    let cells='', yf=1, any=false;
+    for(let m=1;m<=12;m++){
+      const cur=meNav(Y,m), prev=m===1?meNav(Y-1,12):meNav(Y,m-1);
+      if(cur==null||prev==null||prev<=0){cells+=cell(null);continue;}
+      const ret=(cur/prev-1)*100; yf*=(1+ret/100); any=true; cells+=cell(ret);
+    }
+    rows+=`<tr class="border-t border-slate-50"><td class="px-1 py-0.5 font-medium text-slate-600">${Y}</td>${cells}${cell(any?(yf-1)*100:null,true)}</tr>`;
+  }
+  const head='<th class="px-1 py-1 text-left">Year</th>'+MN.map(m=>`<th class="px-1 py-1 text-right">${m}</th>`).join('')+'<th class="px-1 py-1 text-right border-l border-slate-200">Year</th>';
+  return `<div class="card p-4 overflow-x-auto"><div class="text-xs font-semibold text-slate-600 mb-2">Monthly returns (%) — ${BYCODE[code].short.replace(/[<>]/g,'')}</div>
+    <table class="text-[11px] w-full"><thead class="text-[10px] uppercase text-slate-500"><tr>${head}</tr></thead><tbody>${rows}</tbody></table>
+    <div class="text-[10px] text-slate-400 mt-1">Each cell = that calendar month's NAV return. The right "Year" column is the full calendar-year return (compounded). "·" = before the fund existed / no data yet.</div></div>`;
 }
 
 // ---- output helpers ----
@@ -572,7 +614,15 @@ $('lsRun').addEventListener('click',runLumpsum);
 $('sipRun').addEventListener('click',runSip);
 $('rollRun').addEventListener('click',runRolling);
 $('tRun').addEventListener('click',runTiming);
-$('tWin').addEventListener('change',e=>$('tSigYrs').textContent=e.target.value);
+function updateSigUI(){
+  const s=$('tSig').value;
+  $('tWinWrap').style.display = s==='cagr'?'':'none';
+  $('tBuyWrap').style.display = s==='trend'?'none':'';
+  $('tSellWrap').style.display = s==='trend'?'none':'';
+  if(s==='cagr'){$('tBuyLbl').innerHTML='Buy when &lt; (%)';$('tSellLbl').innerHTML='Sell when &gt; (%)';$('tBuy').value=10;$('tSell').value=25;}
+  else if(s==='dip'){$('tBuyLbl').innerHTML='Buy when % below peak &gt;';$('tSellLbl').innerHTML='Sell within % of peak &lt;';$('tBuy').value=20;$('tSell').value=3;}
+}
+$('tSig').addEventListener('change',updateSigUI); updateSigUI();
 
 load().then(()=>{ /* ready */ }).catch(e=>{$('status').textContent='Load failed: '+e.message;});
 </script>
