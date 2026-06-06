@@ -630,6 +630,17 @@ function strategyHTML(funds,s){
   plog+='</tbody></table>';
   const ref=funds[0].code, refU=res.amt/navAtIdx(ref,res.eq[0][0]);
   const eqRef=res.eq.map(([gi])=>[gi, refU*(navAtIdx(ref,gi)||0)]);
+  // same-period comparison: rotation vs each fund held alone + equal-weight
+  const standalone=funds.map(f=>{const a=meNavC(f.code,res.fY,res.fM),b=meNavC(f.code,res.eY,res.eM);return {n:f.n,cagr:(a&&b&&a>0)?(Math.pow(b/a,1/res.yrs)-1)*100:null};});
+  let ewMult=0,ewOk=true; funds.forEach(f=>{const a=meNavC(f.code,res.fY,res.fM),b=meNavC(f.code,res.eY,res.eM); if(a&&b&&a>0)ewMult+=(b/a)/funds.length; else ewOk=false;});
+  const ewCagr=ewOk?(Math.pow(ewMult,1/res.yrs)-1)*100:null;
+  const bestSingle=Math.max(...standalone.filter(x=>x.cagr!=null).map(x=>x.cagr), -1e9);
+  const cmp=`<div class="text-[10px] uppercase text-slate-500 mt-3 mb-1">Same-period comparison — CAGR over ${fmtYM(res.fY*100+res.fM)} → ${fmtYM(res.eY*100+res.eM)}</div>
+    <table class="text-[11px] w-full">
+      <tr class="font-bold border-b border-slate-100"><td class="px-1 py-0.5">⟳ Rotation strategy</td><td class="text-right px-1 ${res.cagr>=0?'pos':'neg'}">${res.cagr>=0?'+':''}${res.cagr.toFixed(1)}%</td><td class="px-1 text-[10px] text-emerald-600">${res.cagr>=bestSingle?'beats holding any single fund':''}</td></tr>
+      ${standalone.map(x=>`<tr><td class="px-1 py-0.5 text-slate-600">hold ${x.n}</td><td class="text-right px-1 ${x.cagr>=0?'pos':'neg'}">${x.cagr==null?'·':(x.cagr>=0?'+':'')+x.cagr.toFixed(1)+'%'}</td><td></td></tr>`).join('')}
+      ${ewCagr!=null?`<tr class="text-slate-500"><td class="px-1 py-0.5">equal-weight all (buy &amp; hold)</td><td class="text-right px-1">${ewCagr>=0?'+':''}${ewCagr.toFixed(1)}%</td><td></td></tr>`:''}
+    </table>`;
   const rmBtn = s.user ? `<button class="text-red-500 text-xs ml-2 float-right" title="Remove" onclick="event.preventDefault();event.stopPropagation();removeUserStrategy('${funds.map(f=>f.code).slice().sort().join(',')}','${s.lb}-${s.reb}-${s.topK}-${s.dir}')">✕ remove</button>` : '';
   return `<details class="border ${s.user?'border-amber-300':'border-slate-200'} rounded-lg mb-2">
     <summary class="px-3 py-2 cursor-pointer select-none text-sm font-medium text-slate-700 hover:bg-slate-50 rounded-lg">${rmBtn}${s.user?'<span class="text-[9px] uppercase bg-amber-100 text-amber-700 px-1 rounded mr-1">yours</span>':''}${s.label} <span class="text-xs font-normal text-slate-500">· <span class="pos">+${res.cagr.toFixed(1)}%</span> · <span class="neg">-${res.mdd.toFixed(0)}% DD</span> · ${res.switches} switches</span></summary>
@@ -640,6 +651,7 @@ function strategyHTML(funds,s){
         <div><div class="text-[10px] uppercase text-slate-500">Max DD</div><span class="neg">-${res.mdd.toFixed(0)}%</span></div>
         <div><div class="text-[10px] uppercase text-slate-500">Period</div>${fmtYM(res.fY*100+res.fM)} → ${fmtYM(res.eY*100+res.eM)} (${res.yrs.toFixed(1)}y)</div>
       </div>
+      ${cmp}
       <div class="text-[10px] uppercase text-slate-500 mt-2 mb-1">Decision log — trailing ${s.lb}-mo returns &rarr; action</div>
       <div class="overflow-x-auto max-h-64 overflow-y-auto">${dlog}</div>
       <div class="text-[10px] uppercase text-slate-500 mt-3 mb-1">Holding periods</div>
