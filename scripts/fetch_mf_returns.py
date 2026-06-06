@@ -391,3 +391,13 @@ slim = [{'code': r['code'], 'short': r['short'], 'plan': r.get('plan', 'Direct')
          'category': r.get('category', ''), 'years': r.get('years'), 'amc': r.get('amc')}
         for r in results]
 (ROOT / "docs" / "mf_funds.json").write_text(json.dumps(slim, separators=(",", ":")), encoding="utf-8")
+
+# Re-inject the synthetic "Gold (INR, since 2006)" instrument into the backtest
+# data so the Rotation tools keep gold history after every refresh. Never let a
+# gold-fetch hiccup break the main pipeline.
+try:
+    import add_gold_instrument
+    print("Injecting synthetic gold instrument for backtest…")
+    add_gold_instrument.main()
+except Exception as _e:
+    print("  ! gold injection skipped:", _e)

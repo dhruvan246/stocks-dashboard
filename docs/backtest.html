@@ -591,6 +591,15 @@ const SAVED_GROUPS=[
      {label:'12-mo lookback · annual re-check · top-2 · contrarian', lb:12, reb:12, topK:2, dir:'contra'},
      {label:'3-mo lookback · monthly re-check · top-1 · momentum',   lb:3,  reb:1,  topK:1, dir:'mom'},
    ]},
+  {name:'Franklin Small Cap · Gold (INR, since 2006)',
+   funds:[{code:103360,n:'Franklin SC'},{code:9000001,n:'Gold'}],
+   strategies:[
+     {label:'3-mo lookback · half-yearly re-check · top-1 · momentum', lb:3, reb:6, topK:1, dir:'mom'},
+     {label:'3-mo lookback · quarterly re-check · top-1 · momentum',   lb:3, reb:3, topK:1, dir:'mom'},
+     {label:'6-mo lookback · quarterly re-check · top-1 · momentum',   lb:6, reb:3, topK:1, dir:'mom'},
+     {label:'9-mo lookback · quarterly re-check · top-1 · momentum',   lb:9, reb:3, topK:1, dir:'mom'},
+     {label:'6-mo lookback · half-yearly re-check · top-1 · momentum', lb:6, reb:6, topK:1, dir:'mom'},
+   ]},
 ];
 function fmtYM(d){const s=''+d;return s.slice(0,4)+'-'+s.slice(4,6);}
 function addYM(Y,M,n){M+=n;while(M>12){M-=12;Y++;}while(M<1){M+=12;Y--;}return [Y,M];}
