@@ -562,6 +562,14 @@ const SAVED_GROUPS=[
      {label:'12-mo lookback · quarterly re-check · top-1 · momentum',  lb:12,reb:3,  topK:1, dir:'mom'},
      {label:'3-mo lookback · monthly re-check · top-1 · momentum',     lb:3, reb:1,  topK:1, dir:'mom'},
    ]},
+  {name:'Nippon Small Cap · Quant Small Cap · Motilal Midcap',
+   funds:[{code:118777,n:'Nippon SC'},{code:120828,n:'Quant SC'},{code:127042,n:'Motilal Mid'}],
+   strategies:[
+     {label:'12-mo lookback · annual re-check · top-1 · contrarian', lb:12, reb:12, topK:1, dir:'contra'},
+     {label:'9-mo lookback · annual re-check · top-1 · contrarian',  lb:9,  reb:12, topK:1, dir:'contra'},
+     {label:'12-mo lookback · annual re-check · top-2 · contrarian', lb:12, reb:12, topK:2, dir:'contra'},
+     {label:'3-mo lookback · monthly re-check · top-1 · momentum',   lb:3,  reb:1,  topK:1, dir:'mom'},
+   ]},
 ];
 function fmtYM(d){const s=''+d;return s.slice(0,4)+'-'+s.slice(4,6);}
 function addYM(Y,M,n){M+=n;while(M>12){M-=12;Y++;}while(M<1){M+=12;Y--;}return [Y,M];}
