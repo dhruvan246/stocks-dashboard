@@ -46,6 +46,7 @@
     <button class="tab px-3 py-2 border-b-2 border-transparent" data-tab="rolling">Rolling returns</button>
     <button class="tab px-3 py-2 border-b-2 border-transparent" data-tab="timing">Timing strategy</button>
     <button class="tab px-3 py-2 border-b-2 border-transparent" data-tab="rotation">Rotation</button>
+    <button class="tab px-3 py-2 border-b-2 border-transparent" data-tab="catrot">Category rotation</button>
   </div>
 
   <!-- LUMPSUM -->
@@ -130,6 +131,26 @@
       <button id="rRun" class="btn">Run</button>
     </div>
     <div id="rOut" class="mt-3"></div>
+  </section>
+
+  <section id="tab-catrot" class="tabpane hidden">
+    <div class="mb-2 text-sm font-semibold text-slate-700">⭐ Saved category rotations</div>
+    <div id="crSaved" class="mb-4"><div class="text-xs text-slate-400">None yet — build one below and click “Save”.</div></div>
+    <div class="mb-2 text-sm font-semibold text-slate-700">Rotate across an entire category</div>
+    <div class="card p-4 mb-3">
+      <p class="text-xs text-slate-500">Instead of a fixed basket, this rotates over <b>every</b> fund in a whole category. At each re-check it holds the single fund with the best (momentum) or worst (contrarian) trailing return among all funds in that category that have enough history. Optionally fix the fund you start with.</p>
+    </div>
+    <div class="card p-4 flex flex-wrap gap-3 items-end">
+      <div><label class="lbl">Category</label><select id="crCat" class="inp"></select></div>
+      <div><label class="lbl">Plan</label><select id="crPlan" class="inp"><option value="Direct" selected>Direct</option><option value="Regular">Regular</option></select></div>
+      <div><label class="lbl">Start fund</label><select id="crStart" class="inp"></select></div>
+      <div><label class="lbl">Start month</label><input id="crFrom" type="month" value="2015-02" class="inp"/></div>
+      <div><label class="lbl">Lookback</label><select id="crLook" class="inp"><option value="3">3 months</option><option value="6">6 months</option><option value="9">9 months</option><option value="12" selected>12 months</option><option value="24">24 months</option></select></div>
+      <div><label class="lbl">Re-check</label><select id="crRebal" class="inp"><option value="quarter">Quarterly</option><option value="half">Half-yearly</option><option value="annual" selected>Annually</option></select></div>
+      <div><label class="lbl">Direction</label><select id="crDir" class="inp"><option value="mom" selected>Momentum (best)</option><option value="contra">Contrarian (worst)</option></select></div>
+      <button id="crRun" class="btn">Run</button>
+    </div>
+    <div id="crOut" class="mt-3"></div>
   </section>
 
   <p class="text-[11px] text-slate-500 mt-6">
@@ -704,6 +725,143 @@ function renderSavedRotations(){
     </details>`).join('') || '<div class="text-xs text-slate-400">No saved results yet.</div>';
 }
 
+// ================= CATEGORY ROTATION ENGINE =================
+// Rotate across an entire fund category (e.g. all small-cap funds). Each re-check holds the
+// single fund with the best (momentum) / worst (contrarian) trailing return among all funds
+// in the category that have enough history. Optional fixed start fund.
+const catNameOf=c=>cleanName((BYCODE[c]||{}).short||(''+c)).replace(/[<>]/g,'');
+function catShortCat(cat){return cat.replace(/^Equity Scheme - /,'').replace(/^Hybrid Scheme - /,'').replace(/^Debt Scheme - /,'').replace(/ Fund$/,'');}
+function catUniverse(cat,plan){return FUNDS.filter(f=>f.category===cat&&f.plan===plan).map(f=>+f.code);}
+function simCatRot(cfg){
+  const codes=catUniverse(cfg.cat,cfg.plan);
+  if(!codes.length)return null;
+  let last=HIST.dates[HIST.dates.length-1]; let eY=Math.floor(last/10000),eM=Math.floor(last/100)%100;
+  if(meIdx(eY,eM)==null)[eY,eM]=addYM(eY,eM,-1); // current month may be incomplete
+  let Y=cfg.startY,M=cfg.startM,amt=1e5,val=amt,held=null,units=0,since=1e9,entry=null,vE=amt;
+  const eq=[],decisions=[],periods=[];
+  let guard=0;
+  while((Y<eY||(Y===eY&&M<=eM))&&guard++<2000){
+    const idx=meIdx(Y,M);
+    if(idx!=null){
+      if(held!=null){const nv=meNavC(held,Y,M); if(nv)val=units*nv;}
+      eq.push([idx, held!=null?val:amt]); since++;
+      if(held==null||since>=cfg.rebM){
+        let pick=null,pickM=null;
+        if(held==null&&cfg.startCode){pick=cfg.startCode;}
+        else{let best=null; for(const c of codes){const[py,pm]=addYM(Y,M,-cfg.lb);const a=meNavC(c,py,pm),b=meNavC(c,Y,M);const m=(a&&b&&a>0)?(b/a-1):null; if(m!=null){if(best===null||(cfg.dir==='mom'?m>best.m:m<best.m))best={c,m};}} if(best){pick=best.c;pickM=best.m;}}
+        if(pick==null){ if(held==null){since=0;[Y,M]=addYM(Y,M,1);continue;} else pick=held; }
+        const navP=meNavC(pick,Y,M);
+        if(navP){
+          if(pick!==held){
+            if(held!=null)periods.push({entry,exit:Y*100+M,fund:catNameOf(held),code:held,ve:vE,vx:val});
+            units=val/navP; decisions.push({date:Y*100+M,fund:catNameOf(pick),code:pick,mom:pickM,action:held==null?'Buy '+catNameOf(pick):'Switch → '+catNameOf(pick)});
+            held=pick;entry=Y*100+M;vE=val;
+          } else decisions.push({date:Y*100+M,fund:catNameOf(held),code:held,mom:pickM,action:'Hold'});
+          since=0;
+        }
+      }
+    }
+    [Y,M]=addYM(Y,M,1);
+  }
+  const fv=held!=null?units*meNavC(held,eY,eM):amt;
+  if(held!=null)periods.push({entry,exit:eY*100+eM,fund:catNameOf(held),code:held,ve:vE,vx:fv});
+  const fYM=periods.length?periods[0].entry:cfg.startY*100+cfg.startM;
+  const fY=Math.floor(fYM/100),fM=fYM%100;
+  const yrs=((eY*12+eM)-(fY*12+fM))/12;
+  const cagr=yrs>0?(Math.pow(fv/amt,1/yrs)-1)*100:0;
+  const startRef=cfg.startCode||(periods[0]&&periods[0].code)||codes[0];
+  return {fv,cagr,mdd:eqDrawdown(eq),yrs,fY,fM,eY,eM,switches:Math.max(0,periods.length-1),decisions,periods,eq,amt,codes,startRef};
+}
+function catBody(res,cfg){
+  // decision log
+  let dlog='<table class="text-[11px] w-full"><thead class="text-[10px] uppercase text-slate-500"><tr><th class="text-left px-1 py-1">Date</th><th class="text-left px-1">Fund held</th><th class="text-right px-1">Trailing '+cfg.lb+'-mo</th><th class="text-left px-1">Action</th></tr></thead><tbody>';
+  for(const d of res.decisions){const hi=d.action[0]==='B'||d.action[0]==='S';
+    dlog+=`<tr class="border-t border-slate-50 ${hi?'font-semibold':''}"><td class="px-1 py-0.5">${fmtYM(d.date)}</td><td class="px-1">${d.fund}</td><td class="text-right px-1 ${d.mom==null?'text-slate-400':(d.mom>=0?'pos':'neg')}">${d.mom==null?'(start)':(d.mom>=0?'+':'')+(d.mom*100).toFixed(0)+'%'}</td><td class="px-1">${d.action}</td></tr>`;}
+  dlog+='</tbody></table>';
+  // holding periods
+  let plog='<table class="text-[11px] w-full"><thead class="text-[10px] uppercase text-slate-500"><tr><th class="text-left px-1 py-1">Held</th><th class="text-left px-1">From → To</th><th class="text-right px-1">Value</th><th class="text-right px-1">Return</th></tr></thead><tbody>';
+  for(const p of res.periods){const ret=(p.vx/p.ve-1)*100;
+    plog+=`<tr class="border-t border-slate-50"><td class="px-1 py-0.5 font-medium">${p.fund}</td><td class="px-1">${fmtYM(p.entry)} → ${fmtYM(p.exit)}</td><td class="text-right px-1">${fmtINR(p.ve)} → ${fmtINR(p.vx)}</td><td class="text-right px-1 ${ret>=0?'pos':'neg'}">${ret>=0?'+':''}${ret.toFixed(0)}%</td></tr>`;}
+  plog+='</tbody></table>';
+  // same-period comparison: rotation vs hold start fund vs best/median single across category
+  const standalone=res.codes.map(c=>{const a=meNavC(c,res.fY,res.fM),b=meNavC(c,res.eY,res.eM);return (a&&b&&a>0)?{c,cagr:(Math.pow(b/a,1/res.yrs)-1)*100}:null;}).filter(Boolean).sort((x,y)=>y.cagr-x.cagr);
+  const bestS=standalone[0], medS=standalone[Math.floor(standalone.length/2)];
+  const sa=meNavC(res.startRef,res.fY,res.fM),sb=meNavC(res.startRef,res.eY,res.eM);
+  const startCagr=(sa&&sb&&sa>0)?(Math.pow(sb/sa,1/res.yrs)-1)*100:null;
+  const cmp=`<div class="text-[10px] uppercase text-slate-500 mt-3 mb-1">Same-period comparison — CAGR over ${fmtYM(res.fY*100+res.fM)} → ${fmtYM(res.eY*100+res.eM)} · ${standalone.length} funds with full history</div>
+    <table class="text-[11px] w-full">
+      <tr class="font-bold border-b border-slate-100"><td class="px-1 py-0.5">⟳ ${cfg.dir==='mom'?'Momentum':'Contrarian'} rotation</td><td class="text-right px-1 ${res.cagr>=0?'pos':'neg'}">${res.cagr>=0?'+':''}${res.cagr.toFixed(1)}%</td><td class="px-1 text-[10px] text-emerald-600">${bestS&&res.cagr>=bestS.cagr?'beats every single fund':''}</td></tr>
+      ${startCagr!=null?`<tr><td class="px-1 py-0.5 text-slate-600">hold ${catNameOf(res.startRef)} (start fund)</td><td class="text-right px-1 ${startCagr>=0?'pos':'neg'}">${startCagr>=0?'+':''}${startCagr.toFixed(1)}%</td><td></td></tr>`:''}
+      ${bestS?`<tr class="text-slate-500"><td class="px-1 py-0.5">best single fund (hindsight)</td><td class="text-right px-1">+${bestS.cagr.toFixed(1)}%</td><td class="px-1 text-[10px] text-slate-400">${catNameOf(bestS.c)}</td></tr>`:''}
+      ${medS?`<tr class="text-slate-500"><td class="px-1 py-0.5">median fund in category</td><td class="text-right px-1">${medS.cagr>=0?'+':''}${medS.cagr.toFixed(1)}%</td><td></td></tr>`:''}
+    </table>`;
+  const refU=res.amt/(navAtIdx(res.startRef,res.eq[0][0])||1);
+  const eqRef=res.eq.map(([gi])=>[gi, refU*(navAtIdx(res.startRef,gi)||0)]);
+  return `<div class="flex flex-wrap gap-5 text-sm my-2">
+      <div><div class="text-[10px] uppercase text-slate-500">Final (₹1L)</div><b>${fmtINR(res.fv)}</b></div>
+      <div><div class="text-[10px] uppercase text-slate-500">CAGR</div><span class="${res.cagr>=0?'pos':'neg'}">${res.cagr>=0?'+':''}${res.cagr.toFixed(1)}%</span></div>
+      <div><div class="text-[10px] uppercase text-slate-500">Max DD</div><span class="neg">-${res.mdd.toFixed(0)}%</span></div>
+      <div><div class="text-[10px] uppercase text-slate-500">Switches</div>${res.switches}</div>
+      <div><div class="text-[10px] uppercase text-slate-500">Period</div>${fmtYM(res.fY*100+res.fM)} → ${fmtYM(res.eY*100+res.eM)} (${res.yrs.toFixed(1)}y)</div>
+    </div>
+    ${cmp}
+    <div class="text-[10px] uppercase text-slate-500 mt-3 mb-1">Decision log — each re-check</div>
+    <div class="overflow-x-auto max-h-64 overflow-y-auto">${dlog}</div>
+    <div class="text-[10px] uppercase text-slate-500 mt-3 mb-1">Holding periods</div>
+    <div class="overflow-x-auto">${plog}</div>
+    ${equityChart(res.eq,eqRef,(cfg.dir==='mom'?'momentum':'contrarian')+' rotation','hold '+catNameOf(res.startRef))}`;
+}
+function catLabel(cfg){const reb={3:'quarterly',6:'half-yearly',12:'annual'}[cfg.rebM]||cfg.rebM+'-mo';
+  return `${cfg.dir==='mom'?'Momentum':'Contrarian'} · ${cfg.lb}-mo lookback · ${reb} re-check · ${cfg.plan} ${catShortCat(cfg.cat)}${cfg.startCode?' · start '+catNameOf(cfg.startCode):''}`;}
+let LAST_CATROT=null;
+function runCatRotation(){
+  const cat=$('crCat').value, plan=$('crPlan').value;
+  const sv=$('crStart').value, startCode=sv?+sv:null;
+  const fm=$('crFrom').value||'2015-02'; const startY=+fm.slice(0,4), startM=+fm.slice(5,7);
+  const cfg={cat,plan,startCode,startY,startM,lb:+$('crLook').value,rebM:REBAL_M[$('crRebal').value],dir:$('crDir').value};
+  cfg.label=catLabel(cfg);
+  const res=simCatRot(cfg);
+  if(!res)return $('crOut').innerHTML=card('No funds found for that category + plan.');
+  if(!res.periods.length)return $('crOut').innerHTML=card('Not enough history from that start month — try a later start or a different plan.');
+  LAST_CATROT=cfg;
+  $('crOut').innerHTML=`<div class="card p-4"><div class="font-semibold text-slate-800 mb-1">${cfg.label}</div>${catBody(res,cfg)}</div>
+    <div class="mt-3"><button id="crSaveBtn" class="btn">⭐ Save this strategy</button> <span id="crSaveMsg" class="text-xs text-green-700 ml-2"></span></div>`;
+  $('crSaveBtn').addEventListener('click',saveCurrentCatRot);
+}
+function loadCatSaved(){try{return JSON.parse(localStorage.getItem('savedCatRot')||'[]');}catch(e){return [];}}
+function saveCatSaved(a){try{localStorage.setItem('savedCatRot',JSON.stringify(a));}catch(e){}}
+function saveCurrentCatRot(){
+  if(!LAST_CATROT)return; const msg=$('crSaveMsg'); const all=loadCatSaved();
+  const sig=JSON.stringify([LAST_CATROT.cat,LAST_CATROT.plan,LAST_CATROT.startCode,LAST_CATROT.startY,LAST_CATROT.startM,LAST_CATROT.lb,LAST_CATROT.rebM,LAST_CATROT.dir]);
+  if(all.some(c=>JSON.stringify([c.cat,c.plan,c.startCode,c.startY,c.startM,c.lb,c.rebM,c.dir])===sig)){if(msg)msg.textContent='Already saved.';return;}
+  all.push(LAST_CATROT); saveCatSaved(all); renderCatSaved();
+  if(msg)msg.textContent='✓ Saved — see ⭐ above.'; $('crSaved').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function removeCatSaved(i){const all=loadCatSaved(); all.splice(i,1); saveCatSaved(all); renderCatSaved();}
+function renderCatSaved(){
+  const box=$('crSaved'); if(!box)return; const all=loadCatSaved();
+  if(!all.length){box.innerHTML='<div class="text-xs text-slate-400">None yet — build one below and click “Save”.</div>';return;}
+  box.innerHTML=all.map((cfg,i)=>{const res=simCatRot(cfg); if(!res||!res.periods.length)return '';
+    return `<details class="border border-amber-300 rounded-lg mb-2">
+      <summary class="px-3 py-2 cursor-pointer select-none text-sm font-medium text-slate-700 hover:bg-slate-50 rounded-lg"><button class="text-red-500 text-xs ml-2 float-right" title="Remove" onclick="event.preventDefault();event.stopPropagation();removeCatSaved(${i})">✕ remove</button><span class="text-[9px] uppercase bg-amber-100 text-amber-700 px-1 rounded mr-1">yours</span>${cfg.label} <span class="text-xs font-normal text-slate-500">· <span class="${res.cagr>=0?'pos':'neg'}">${res.cagr>=0?'+':''}${res.cagr.toFixed(1)}%</span> · <span class="neg">-${res.mdd.toFixed(0)}% DD</span> · ${res.switches} switches</span></summary>
+      <div class="px-3 pb-3">${catBody(res,cfg)}</div>
+    </details>`;}).join('')||'<div class="text-xs text-slate-400">None yet.</div>';
+}
+function populateCatStart(){
+  const cat=$('crCat').value, plan=$('crPlan').value;
+  const list=FUNDS.filter(f=>f.category===cat&&f.plan===plan).map(f=>({code:+f.code,n:catNameOf(+f.code)})).sort((a,b)=>a.n.localeCompare(b.n));
+  $('crStart').innerHTML='<option value="">Auto (pick by signal)</option>'+list.map(f=>`<option value="${f.code}">${f.n}</option>`).join('');
+}
+function populateCatControls(){
+  if(window.__catInit)return; window.__catInit=true;
+  const cats=[...new Set(FUNDS.map(f=>f.category))].filter(c=>FUNDS.filter(f=>f.category===c).length>=4).sort();
+  const def='Equity Scheme - Small Cap Fund';
+  $('crCat').innerHTML=cats.map(c=>`<option value="${c}" ${c===def?'selected':''}>${catShortCat(c)}</option>`).join('');
+  populateCatStart(); renderCatSaved();
+  $('crCat').addEventListener('change',populateCatStart);
+  $('crPlan').addEventListener('change',populateCatStart);
+  $('crRun').addEventListener('click',runCatRotation);
+}
 $('fundSearch').addEventListener('input',e=>renderResults(e.target.value));
 $('fundResults').addEventListener('click',e=>{const d=e.target.closest('[data-c]');if(d)chooseFund(+d.dataset.c);});
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
@@ -712,6 +870,7 @@ document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
   document.querySelectorAll('.tabpane').forEach(p=>p.classList.add('hidden'));
   $('tab-'+t.dataset.tab).classList.remove('hidden');
   if(t.dataset.tab==='rotation' && !window.__rotSavedDone){window.__rotSavedDone=true; setTimeout(renderSavedRotations,30);}
+  if(t.dataset.tab==='catrot'){setTimeout(populateCatControls,20);}
 }));
 $('lsRun').addEventListener('click',runLumpsum);
 $('sipRun').addEventListener('click',runSip);
