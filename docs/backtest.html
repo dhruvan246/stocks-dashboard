@@ -47,6 +47,7 @@
     <button class="tab px-3 py-2 border-b-2 border-transparent" data-tab="timing">Timing strategy</button>
     <button class="tab px-3 py-2 border-b-2 border-transparent" data-tab="rotation">Rotation</button>
     <button class="tab px-3 py-2 border-b-2 border-transparent" data-tab="catrot">Category rotation</button>
+    <button class="tab px-3 py-2 border-b-2 border-transparent" data-tab="bob">Best-of-breed</button>
   </div>
 
   <!-- LUMPSUM -->
@@ -152,6 +153,28 @@
       <button id="crRun" class="btn">Run</button>
     </div>
     <div id="crOut" class="mt-3"></div>
+  </section>
+
+  <section id="tab-bob" class="tabpane hidden">
+    <div class="mb-2 text-sm font-semibold text-slate-700">⭐ Saved best-of-breed</div>
+    <div id="bobSaved" class="mb-4"><div class="text-xs text-slate-400">None yet — build one below and click “Save”.</div></div>
+    <div class="mb-2 text-sm font-semibold text-slate-700">Rotate among category leaders</div>
+    <div class="card p-4 mb-3">
+      <p class="text-xs text-slate-500 mb-2">The strongest idea found in testing. Each re-check, the engine finds the single best-momentum fund <b>within each category you pick</b> (e.g. the best small-cap AND the best mid-cap right now), adds an optional gold sleeve, then holds whichever of those leaders has the best trailing return. You always own the current category leader, not a fixed fund.</p>
+      <div class="text-xs font-medium text-slate-600 mb-1">Categories (leader of each competes):</div>
+      <div id="bobCats" class="flex flex-wrap gap-x-4 gap-y-1 mb-2"></div>
+      <label class="text-xs text-slate-700 flex items-center gap-1"><input type="checkbox" id="bobGold" checked/> Include a gold sleeve (defensive)</label>
+    </div>
+    <div class="card p-4 flex flex-wrap gap-3 items-end">
+      <div><label class="lbl">Plan</label><select id="bobPlan" class="inp"><option value="Direct" selected>Direct</option><option value="Regular">Regular</option></select></div>
+      <div><label class="lbl">Start month</label><input id="bobFrom" type="month" value="2014-01" class="inp"/></div>
+      <div><label class="lbl">Lookback</label><select id="bobLook" class="inp"><option value="3">3 months</option><option value="6">6 months</option><option value="9" selected>9 months</option><option value="12">12 months</option></select></div>
+      <div><label class="lbl">Re-check</label><select id="bobRebal" class="inp"><option value="quarter" selected>Quarterly</option><option value="half">Half-yearly</option><option value="annual">Annually</option><option value="month">Monthly</option></select></div>
+      <div><label class="lbl">Direction</label><select id="bobDir" class="inp"><option value="mom" selected>Relative momentum (best)</option><option value="abs">Absolute (gold-defensive)</option></select></div>
+      <div><label class="lbl">Hold top</label><select id="bobTop" class="inp"><option value="1" selected>1 (winner)</option><option value="2">2</option></select></div>
+      <button id="bobRun" class="btn">Run</button>
+    </div>
+    <div id="bobOut" class="mt-3"></div>
   </section>
 
   <p class="text-[11px] text-slate-500 mt-6">
@@ -907,6 +930,143 @@ function populateCatControls(){
   $('crPlan').addEventListener('change',populateCatStart);
   $('crRun').addEventListener('click',runCatRotation);
 }
+// ================= BEST-OF-BREED ENGINE =================
+// Each re-check: find the single best-momentum fund WITHIN each chosen category (the live
+// category leader), add an optional gold sleeve, then hold whichever leader has the best
+// trailing return. Found in testing to beat fixed-basket rotation (34% vs 31% on SC+Mid+Gold).
+const BOB_CATS=[
+ {k:'Small Cap',c:'Equity Scheme - Small Cap Fund',on:true},
+ {k:'Mid Cap',c:'Equity Scheme - Mid Cap Fund',on:true},
+ {k:'Large Cap',c:'Equity Scheme - Large Cap Fund'},
+ {k:'Large & Mid',c:'Equity Scheme - Large & Mid Cap Fund'},
+ {k:'Flexi Cap',c:'Equity Scheme - Flexi Cap Fund'},
+ {k:'Multi Cap',c:'Equity Scheme - Multi Cap Fund'},
+ {k:'Focused',c:'Equity Scheme - Focused Fund'},
+ {k:'Value',c:'Equity Scheme - Value Fund'},
+ {k:'ELSS',c:'Equity Scheme - ELSS'},
+ {k:'Sectoral/Thematic',c:'Equity Scheme - Sectoral/ Thematic'},
+];
+const BOB_REB={month:1,quarter:3,half:6,annual:12};
+const BOB_GOLD=118663; // Nippon India Gold Savings (Direct) — domestic gold price proxy
+const bobNm=c=>cleanName((BYCODE[c]||{}).short||''+c).replace(/[<>]/g,'');
+function bobTret(c,Y,M,lb){const[py,pm]=addYM(Y,M,-lb);const a=meNavC(c,py,pm),b=meNavC(c,Y,M);return (a&&b&&a>0)?(b/a-1):null;}
+function simBOB(cfg){
+  const catLabel={}; BOB_CATS.forEach(o=>catLabel[o.c]=o.k);
+  const catCodes=cfg.cats.map(c=>({c,codes:FUNDS.filter(f=>f.category===c&&f.plan===cfg.plan).map(f=>+f.code)})).filter(o=>o.codes.length);
+  if(!catCodes.length)return null;
+  const goldC=cfg.gold?BOB_GOLD:null;
+  let last=HIST.dates[HIST.dates.length-1]; let eY=Math.floor(last/10000),eM=Math.floor(last/100)%100; if(meIdx(eY,eM)==null)[eY,eM]=addYM(eY,eM,-1);
+  let Y=cfg.startY,M=cfg.startM,amt=1e5,val=amt,units={},held=[],since=1e9,entry=null,vE=amt,firstCode=null;
+  const eq=[],decisions=[],periods=[]; const heldName=()=>held.map(c=>bobNm(c)).join(' + ');
+  const lb=cfg.lb, topK=cfg.dir==='abs'?1:cfg.topK; let guard=0;
+  while((Y<eY||(Y===eY&&M<=eM))&&guard++<3000){const idx=meIdx(Y,M);
+    if(idx!=null){ if(held.length)val=held.reduce((s,c)=>s+(units[c]||0)*(meNavC(c,Y,M)||0),0); eq.push([idx,held.length?val:amt]);since++;
+      if(!held.length||since>=cfg.rebM){
+        const leaders=[]; for(const o of catCodes){let b=null;for(const c of o.codes){const s=bobTret(c,Y,M,lb);if(s!=null&&(b===null||s>b.s))b={c,s,cat:catLabel[o.c]||o.c};}if(b)leaders.push(b);}
+        if(goldC!=null){const gs=bobTret(goldC,Y,M,lb); if(gs!=null)leaders.push({c:goldC,s:gs,cat:'Gold'});}
+        if(!leaders.length){since=0;[Y,M]=addYM(Y,M,1);continue;}
+        let pick;
+        if(cfg.dir==='abs'){ const gr=leaders.filter(o=>o.c!==goldC).sort((a,b)=>b.s-a.s); const bestG=gr[0];
+          if(bestG&&bestG.s>=0)pick=[bestG.c]; else if(goldC!=null&&leaders.some(o=>o.c===goldC))pick=[goldC]; else if(bestG)pick=[bestG.c]; else {since=0;[Y,M]=addYM(Y,M,1);continue;} }
+        else { leaders.sort((a,b)=>b.s-a.s); pick=leaders.slice(0,topK).map(o=>o.c); }
+        const key=pick.slice().sort().join(','), prevKey=held.slice().sort().join(',');
+        const lmap={}; leaders.forEach(o=>lmap[o.c]=o); let action;
+        if(key!==prevKey){ if(held.length)periods.push({entry,exit:Y*100+M,fund:heldName(),ve:vE,vx:val}); action=(!held.length?'Buy ':'Switch → ')+pick.map(c=>bobNm(c)).join(' + '); const per=val/pick.length; units={}; pick.forEach(c=>units[c]=per/meNavC(c,Y,M)); held=pick;entry=Y*100+M;vE=val; if(firstCode==null)firstCode=pick[0]; }
+        else action='Hold '+heldName();
+        decisions.push({date:Y*100+M, picks:pick.map(c=>({n:bobNm(c),cat:(lmap[c]||{}).cat,s:(lmap[c]||{}).s})), action});
+        since=0;
+      }
+    }
+    [Y,M]=addYM(Y,M,1);
+  }
+  const fv=held.length?held.reduce((s,c)=>s+(units[c]||0)*(meNavC(c,eY,eM)||0),0):amt;
+  if(held.length)periods.push({entry,exit:eY*100+eM,fund:heldName(),ve:vE,vx:fv});
+  const fYM=periods.length?periods[0].entry:cfg.startY*100+cfg.startM; const fY=Math.floor(fYM/100),fM=fYM%100;
+  const yrs=((eY*12+eM)-(fY*12+fM))/12; const cagr=yrs>0?(Math.pow(fv/amt,1/yrs)-1)*100:0;
+  const unionCodes=[...new Set(catCodes.flatMap(o=>o.codes).concat(goldC!=null?[goldC]:[]))];
+  return {fv,cagr,mdd:eqDrawdown(eq),yrs,fY,fM,eY,eM,switches:Math.max(0,periods.length-1),decisions,periods,eq,amt,unionCodes,firstCode:firstCode||unionCodes[0]};
+}
+function bobBody(res,cfg){
+  let dlog='<table class="text-[11px] w-full"><thead class="text-[10px] uppercase text-slate-500"><tr><th class="text-left px-1 py-1">Date</th><th class="text-left px-1">Held (category)</th><th class="text-right px-1">Trailing '+cfg.lb+'-mo</th><th class="text-left px-1">Action</th></tr></thead><tbody>';
+  for(const d of res.decisions){const hi=d.action[0]==='B'||d.action[0]==='S'; const lab=d.picks.map(p=>`${p.n} <span class="text-slate-400">(${p.cat})</span>`).join(' + '); const s=d.picks[0]&&d.picks[0].s;
+    dlog+=`<tr class="border-t border-slate-50 ${hi?'font-semibold':''}"><td class="px-1 py-0.5">${fmtYM(d.date)}</td><td class="px-1">${lab}</td><td class="text-right px-1 ${s>=0?'pos':'neg'}">${s==null?'·':(s>=0?'+':'')+(s*100).toFixed(0)+'%'}</td><td class="px-1">${d.action}</td></tr>`;}
+  dlog+='</tbody></table>';
+  let plog='<table class="text-[11px] w-full"><thead class="text-[10px] uppercase text-slate-500"><tr><th class="text-left px-1 py-1">Held</th><th class="text-left px-1">From → To</th><th class="text-right px-1">Value</th><th class="text-right px-1">Return</th></tr></thead><tbody>';
+  for(const p of res.periods){const ret=(p.vx/p.ve-1)*100; plog+=`<tr class="border-t border-slate-50"><td class="px-1 py-0.5 font-medium">${p.fund}</td><td class="px-1">${fmtYM(p.entry)} → ${fmtYM(p.exit)}</td><td class="text-right px-1">${fmtINR(p.ve)} → ${fmtINR(p.vx)}</td><td class="text-right px-1 ${ret>=0?'pos':'neg'}">${ret>=0?'+':''}${ret.toFixed(0)}%</td></tr>`;}
+  plog+='</tbody></table>';
+  const sa=res.unionCodes.map(c=>{const a=meNavC(c,res.fY,res.fM),b=meNavC(c,res.eY,res.eM);return (a&&b&&a>0)?{c,cagr:(Math.pow(b/a,1/res.yrs)-1)*100}:null;}).filter(Boolean).sort((x,y)=>y.cagr-x.cagr);
+  const bestS=sa[0],medS=sa[Math.floor(sa.length/2)];
+  const cmp=`<div class="text-[10px] uppercase text-slate-500 mt-3 mb-1">Same-period comparison — CAGR over ${fmtYM(res.fY*100+res.fM)} → ${fmtYM(res.eY*100+res.eM)} · ${sa.length} funds in pool</div>
+    <table class="text-[11px] w-full">
+      <tr class="font-bold border-b border-slate-100"><td class="px-1 py-0.5">⟳ Best-of-breed rotation</td><td class="text-right px-1 ${res.cagr>=0?'pos':'neg'}">${res.cagr>=0?'+':''}${res.cagr.toFixed(1)}%</td><td class="px-1 text-[10px] text-emerald-600">${bestS&&res.cagr>=bestS.cagr?'beats every single fund':''}</td></tr>
+      ${bestS?`<tr class="text-slate-500"><td class="px-1 py-0.5">best single fund (hindsight)</td><td class="text-right px-1">+${bestS.cagr.toFixed(1)}%</td><td class="px-1 text-[10px] text-slate-400">${bobNm(bestS.c)}</td></tr>`:''}
+      ${medS?`<tr class="text-slate-500"><td class="px-1 py-0.5">median fund in pool</td><td class="text-right px-1">${medS.cagr>=0?'+':''}${medS.cagr.toFixed(1)}%</td><td></td></tr>`:''}
+    </table>`;
+  const refU=res.amt/(navAtIdx(res.firstCode,res.eq[0][0])||1);
+  const eqRef=res.eq.map(([gi])=>[gi, refU*(navAtIdx(res.firstCode,gi)||0)]);
+  return `<div class="flex flex-wrap gap-5 text-sm my-2">
+      <div><div class="text-[10px] uppercase text-slate-500">Final (₹1L)</div><b>${fmtINR(res.fv)}</b></div>
+      <div><div class="text-[10px] uppercase text-slate-500">CAGR</div><span class="${res.cagr>=0?'pos':'neg'}">${res.cagr>=0?'+':''}${res.cagr.toFixed(1)}%</span></div>
+      <div><div class="text-[10px] uppercase text-slate-500">Max DD</div><span class="neg">-${res.mdd.toFixed(0)}%</span></div>
+      <div><div class="text-[10px] uppercase text-slate-500">Switches</div>${res.switches}</div>
+      <div><div class="text-[10px] uppercase text-slate-500">Period</div>${fmtYM(res.fY*100+res.fM)} → ${fmtYM(res.eY*100+res.eM)} (${res.yrs.toFixed(1)}y)</div>
+    </div>
+    ${cmp}
+    <div class="text-[10px] uppercase text-slate-500 mt-3 mb-1">Decision log — each re-check (which leader won)</div>
+    <div class="overflow-x-auto max-h-64 overflow-y-auto">${dlog}</div>
+    <div class="text-[10px] uppercase text-slate-500 mt-3 mb-1">Holding periods</div>
+    <div class="overflow-x-auto">${plog}</div>
+    ${equityChart(res.eq,eqRef,'best-of-breed','hold '+bobNm(res.firstCode))}`;
+}
+function bobCatShort(c){return (BOB_CATS.find(o=>o.c===c)||{}).k||c;}
+function bobLabel(cfg){const reb=Object.keys(BOB_REB).find(k=>BOB_REB[k]===cfg.rebM)||cfg.rebM; const rw={month:'monthly',quarter:'quarterly',half:'half-yearly',annual:'annual'}[reb]||reb;
+  return `${cfg.dir==='abs'?'Absolute':'Relative'} · ${cfg.lb}-mo · ${rw} · top-${cfg.dir==='abs'?1:cfg.topK} · ${cfg.plan} · ${cfg.cats.map(bobCatShort).join('+')}${cfg.gold?'+Gold':''}`;}
+let LAST_BOB=null;
+function runBOB(){
+  const cats=[...document.querySelectorAll('#bobCats input:checked')].map(i=>i.value);
+  if(cats.length<1)return $('bobOut').innerHTML=card('Pick at least one category.');
+  const fm=$('bobFrom').value||'2014-01';
+  const cfg={cats,plan:$('bobPlan').value,gold:$('bobGold').checked,startY:+fm.slice(0,4),startM:+fm.slice(5,7),lb:+$('bobLook').value,rebM:BOB_REB[$('bobRebal').value],dir:$('bobDir').value,topK:+$('bobTop').value};
+  cfg.label=bobLabel(cfg);
+  const res=simBOB(cfg);
+  if(!res)return $('bobOut').innerHTML=card('No funds for that category + plan.');
+  if(!res.periods.length)return $('bobOut').innerHTML=card('Not enough history from that start month — try a later start or fewer-restrictive plan.');
+  LAST_BOB=cfg;
+  $('bobOut').innerHTML=`<div class="card p-4"><div class="font-semibold text-slate-800 mb-1">${cfg.label}</div>${bobBody(res,cfg)}</div>
+    <div class="mt-3"><button id="bobSaveBtn" class="btn">⭐ Save this strategy</button> <span id="bobSaveMsg" class="text-xs text-green-700 ml-2"></span></div>`;
+  $('bobSaveBtn').addEventListener('click',saveCurrentBob);
+}
+const BOB_BUILTIN=[
+  {builtin:true, label:'🏆 9-mo · quarterly · Small Cap + Mid Cap + Gold — the tested winner', cats:['Equity Scheme - Small Cap Fund','Equity Scheme - Mid Cap Fund'], plan:'Direct', gold:true, startY:2014, startM:1, lb:9, rebM:3, dir:'mom', topK:1},
+];
+function loadBobSaved(){try{return JSON.parse(localStorage.getItem('savedBOB')||'[]');}catch(e){return [];}}
+function saveBobSaved(a){try{localStorage.setItem('savedBOB',JSON.stringify(a));}catch(e){}}
+function saveCurrentBob(){
+  if(!LAST_BOB)return; const msg=$('bobSaveMsg'); const all=loadBobSaved();
+  const sig=JSON.stringify([LAST_BOB.cats,LAST_BOB.plan,LAST_BOB.gold,LAST_BOB.startY,LAST_BOB.startM,LAST_BOB.lb,LAST_BOB.rebM,LAST_BOB.dir,LAST_BOB.topK]);
+  if(all.some(c=>JSON.stringify([c.cats,c.plan,c.gold,c.startY,c.startM,c.lb,c.rebM,c.dir,c.topK])===sig)){if(msg)msg.textContent='Already saved.';return;}
+  all.push(LAST_BOB); saveBobSaved(all); renderBobSaved();
+  if(msg)msg.textContent='✓ Saved — see ⭐ above.'; $('bobSaved').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function removeBobSaved(i){const all=loadBobSaved();all.splice(i,1);saveBobSaved(all);renderBobSaved();}
+function renderBobSaved(){
+  const box=$('bobSaved'); if(!box)return;
+  const user=loadBobSaved();
+  const list=BOB_BUILTIN.map(c=>({cfg:c,user:false})).concat(user.map(c=>({cfg:c,user:true})));
+  box.innerHTML=list.map((it,idx)=>{const cfg=it.cfg; const res=simBOB(cfg); if(!res||!res.periods.length)return '';
+    const ui=user.indexOf(cfg); const rm=it.user?`<button class="text-red-500 text-xs ml-2 float-right" title="Remove" onclick="event.preventDefault();event.stopPropagation();removeBobSaved(${ui})">✕ remove</button>`:'';
+    const badge=it.user?'<span class="text-[9px] uppercase bg-amber-100 text-amber-700 px-1 rounded mr-1">yours</span>':'<span class="text-[9px] uppercase bg-emerald-100 text-emerald-700 px-1 rounded mr-1">built-in</span>';
+    return `<details class="border ${it.user?'border-amber-300':'border-emerald-200'} rounded-lg mb-2">
+      <summary class="px-3 py-2 cursor-pointer select-none text-sm font-medium text-slate-700 hover:bg-slate-50 rounded-lg">${rm}${badge}${cfg.label} <span class="text-xs font-normal text-slate-500">· <span class="${res.cagr>=0?'pos':'neg'}">${res.cagr>=0?'+':''}${res.cagr.toFixed(1)}%</span> · <span class="neg">-${res.mdd.toFixed(0)}% DD</span> · ${res.switches} switches</span></summary>
+      <div class="px-3 pb-3">${bobBody(res,cfg)}</div>
+    </details>`;}).join('')||'<div class="text-xs text-slate-400">None yet.</div>';
+}
+function populateBobControls(){
+  if(window.__bobInit)return; window.__bobInit=true;
+  $('bobCats').innerHTML=BOB_CATS.map(o=>`<label class="text-xs text-slate-700 flex items-center gap-1"><input type="checkbox" value="${o.c}" ${o.on?'checked':''}/> ${o.k}</label>`).join('');
+  renderBobSaved();
+  $('bobRun').addEventListener('click',runBOB);
+}
 $('fundSearch').addEventListener('input',e=>renderResults(e.target.value));
 $('fundResults').addEventListener('click',e=>{const d=e.target.closest('[data-c]');if(d)chooseFund(+d.dataset.c);});
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
@@ -916,6 +1076,7 @@ document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
   $('tab-'+t.dataset.tab).classList.remove('hidden');
   if(t.dataset.tab==='rotation' && !window.__rotSavedDone){window.__rotSavedDone=true; setTimeout(renderSavedRotations,30);}
   if(t.dataset.tab==='catrot'){setTimeout(populateCatControls,20);}
+  if(t.dataset.tab==='bob'){setTimeout(populateBobControls,20);}
 }));
 $('lsRun').addEventListener('click',runLumpsum);
 $('sipRun').addEventListener('click',runSip);
