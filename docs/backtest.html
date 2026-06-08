@@ -594,17 +594,18 @@ renderSleeves();
 const SAVED_GROUPS=[
   {name:'Nippon Small Cap · Gold · Mid Cap',
    funds:[{code:118777,n:'Small Cap'},{code:118663,n:'Gold',safe:true},{code:118668,n:'Mid Cap'}],
+   note:'Top 10 of an 80-combo sweep (3 directions × 4 lookbacks × 4 re-checks × top-1/2) over 2014-01→2026-06, ranked by CAGR.',
    strategies:[
-     {label:'6-mo lookback · half-yearly re-check · top-1 · relative momentum', lb:6, reb:6,  topK:1, dir:'mom'},
-     {label:'9-mo lookback · quarterly re-check · top-1 · relative momentum',   lb:9, reb:3,  topK:1, dir:'mom'},
-     {label:'6-mo lookback · quarterly re-check · top-1 · relative momentum',   lb:6, reb:3,  topK:1, dir:'mom'},
-     {label:'12-mo lookback · quarterly re-check · top-1 · relative momentum',  lb:12,reb:3,  topK:1, dir:'mom'},
-     {label:'3-mo lookback · monthly re-check · top-1 · relative momentum',     lb:3, reb:1,  topK:1, dir:'mom'},
-     {label:'6-mo lookback · annual re-check · absolute momentum (gold-defensive)',     lb:6, reb:12, topK:1, dir:'abs'},
-     {label:'12-mo lookback · quarterly re-check · absolute momentum (gold-defensive)', lb:12,reb:3,  topK:1, dir:'abs'},
-     {label:'9-mo lookback · annual re-check · absolute momentum (gold-defensive)',     lb:9, reb:12, topK:1, dir:'abs'},
-     {label:'12-mo lookback · half-yearly re-check · absolute momentum (gold-defensive)',lb:12,reb:6, topK:1, dir:'abs'},
-     {label:'12-mo lookback · annual re-check · absolute momentum (gold-defensive)',    lb:12,reb:12, topK:1, dir:'abs'},
+     {label:'#1 · 6-mo lookback · annual re-check · absolute momentum (gold-defensive)', lb:6, reb:12, topK:1, dir:'abs'},
+     {label:'#2 · 6-mo lookback · half-yearly re-check · top-1 · relative momentum',     lb:6, reb:6,  topK:1, dir:'mom'},
+     {label:'#3 · 9-mo lookback · quarterly re-check · top-1 · relative momentum',       lb:9, reb:3,  topK:1, dir:'mom'},
+     {label:'#4 · 6-mo lookback · quarterly re-check · top-1 · relative momentum',       lb:6, reb:3,  topK:1, dir:'mom'},
+     {label:'#5 · 9-mo lookback · half-yearly re-check · top-1 · relative momentum',     lb:9, reb:6,  topK:1, dir:'mom'},
+     {label:'#6 · 12-mo lookback · quarterly re-check · top-1 · relative momentum',      lb:12,reb:3,  topK:1, dir:'mom'},
+     {label:'#7 · 3-mo lookback · monthly re-check · top-1 · relative momentum',         lb:3, reb:1,  topK:1, dir:'mom'},
+     {label:'#8 · 12-mo lookback · monthly re-check · top-1 · relative momentum',        lb:12,reb:1,  topK:1, dir:'mom'},
+     {label:'#9 · 9-mo lookback · annual re-check · top-1 · relative momentum',          lb:9, reb:12, topK:1, dir:'mom'},
+     {label:'#10 · 12-mo lookback · half-yearly re-check · top-1 · relative momentum',   lb:12,reb:6,  topK:1, dir:'mom'},
    ]},
   {name:'Nippon Small Cap · Quant Small Cap · Motilal Midcap',
    funds:[{code:118777,n:'Nippon SC'},{code:120828,n:'Quant SC'},{code:127042,n:'Motilal Mid'}],
@@ -751,7 +752,7 @@ function removeUserStrategy(key,sk){
 }
 function allGroups(){
   const map=new Map();
-  for(const g of SAVED_GROUPS){const key=g.funds.map(f=>f.code).slice().sort().join(','); map.set(key,{key,name:g.name,funds:g.funds,strategies:g.strategies.map(s=>({...s,user:false}))});}
+  for(const g of SAVED_GROUPS){const key=g.funds.map(f=>f.code).slice().sort().join(','); map.set(key,{key,name:g.name,note:g.note,funds:g.funds,strategies:g.strategies.map(s=>({...s,user:false}))});}
   for(const g of loadUserGroups()){const key=g.funds.map(f=>f.code).slice().sort().join(',');
     if(map.has(key)){const ex=map.get(key); g.strategies.forEach(s=>{if(!ex.strategies.some(e=>e.lb===s.lb&&e.reb===s.reb&&e.topK===s.topK&&e.dir===s.dir))ex.strategies.push({...s,user:true});});}
     else map.set(key,{key,name:g.name,funds:g.funds,strategies:g.strategies.map(s=>({...s,user:true}))});}
@@ -763,7 +764,7 @@ function renderSavedRotations(){
     <details class="card mb-3">
       <summary class="px-4 py-3 cursor-pointer select-none font-semibold text-slate-800 hover:bg-slate-50 rounded-xl">${g.name} <span class="text-xs font-normal text-slate-500">(${g.strategies.length} strategies · month-end logic)</span></summary>
       <div class="px-4 pb-4">
-        <div class="text-[11px] text-slate-500 mb-2">Top rotation setups by CAGR — click any to expand its decision log, holding periods &amp; chart. Before exit-load/tax; swept "best" params, treat with skepticism.</div>
+        <div class="text-[11px] text-slate-500 mb-2">${g.note?'<b>'+g.note+'</b><br>':''}Top rotation setups by CAGR — click any to expand its decision log, holding periods &amp; chart. Before exit-load/tax; swept "best" params, treat with skepticism.</div>
         ${g.strategies.map(s=>strategyHTML(g.funds,s)).join('')}
       </div>
     </details>`).join('') || '<div class="text-xs text-slate-400">No saved results yet.</div>';
