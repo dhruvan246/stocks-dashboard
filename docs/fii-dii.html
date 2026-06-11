@@ -135,6 +135,7 @@ const fmtSigned = n => n==null ? '·' : (n>=0?'+':'−')+Math.abs(Math.round(n))
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const fmtDate = d => { const p=d.split('-'); return p[2]+' '+MON[+p[1]-1]+' '+p[0]; };
 let ROWS=[], FO=[], sortKey='date', sortAsc=true, foRange='3y';
+let __FO_PTS=[], __FO_GEOM={};
 
 async function load(){
   let data, fdata={rows:[]};
@@ -232,6 +233,7 @@ function renderFO(){
   let series = FO.map(r=>({d:r.date, v: r.oi&&r.oi.FII ? r.oi.FII.futIdx[0]-r.oi.FII.futIdx[1] : null})).filter(p=>p.v!=null);
   if(cut<1e9) series = series.filter(p=>(lastDate-new Date(p.d))/864e5 <= cut);
   $('foChart').innerHTML = lineChartZero(series);
+  attachFoHover();
 
   // buy/sell table (latest day that has values)
   $('foDate1').textContent = '('+(lastBS?lastBS.date:'n/a')+')';
@@ -281,7 +283,33 @@ function lineChartZero(series){
   let yl=''; for(let k=0;k<=3;k++){const v=mn+(mx-mn)*k/3,yy=y(v);yl+=`<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="${Math.abs(v)<1?'#cbd5e1':'#f1f5f9'}"/><text x="${PL-4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${fmtSigned(v)}</text>`;}
   let xl=''; const step=Math.ceil(n/10);
   series.forEach((p,i)=>{if(i%step)return; xl+=`<text x="${x(i).toFixed(1)}" y="${H-8}" font-size="9" fill="#94a3b8" text-anchor="middle">${p.d.slice(5)}</text>`;});
-  return `<svg viewBox="0 0 ${W} ${H}" class="w-full">${yl}${xl}<path d="${area}" fill="#fee2e2" opacity="0.5"/><path d="${path}" fill="none" stroke="#b91c1c" stroke-width="2"/></svg>`;
+  __FO_PTS = series.map((p,i)=>({px:x(i), py:y(p.v), v:p.v, d:p.d}));
+  __FO_GEOM = {W, H};
+  const cross=`<line id="foCross" x1="0" x2="0" y1="${PT}" y2="${H-PB}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3" style="display:none"/>`;
+  const dot=`<circle id="foDot" r="4" fill="#b91c1c" stroke="#fff" stroke-width="1.5" style="display:none"/>`;
+  const overlay=`<rect x="${PL}" y="${PT}" width="${(W-PL-PR).toFixed(1)}" height="${(H-PT-PB).toFixed(1)}" fill="transparent"/>`;
+  return `<div class="relative">
+    <svg viewBox="0 0 ${W} ${H}" class="w-full block">${yl}${xl}<path d="${area}" fill="#fee2e2" opacity="0.5"/><path d="${path}" fill="none" stroke="#b91c1c" stroke-width="2"/>${cross}${dot}${overlay}</svg>
+    <div id="foTip" class="absolute hidden pointer-events-none -translate-x-1/2 -translate-y-[135%] bg-slate-800 text-white text-[11px] leading-tight px-2 py-1 rounded-md shadow-lg whitespace-nowrap z-10"></div>
+  </div>`;
+}
+function attachFoHover(){
+  const svg=document.querySelector('#foChart svg'); if(!svg||!__FO_PTS.length)return;
+  const tip=document.getElementById('foTip'), cross=document.getElementById('foCross'), dot=document.getElementById('foDot');
+  const move=e=>{
+    const r=svg.getBoundingClientRect(); if(!r.width)return;
+    const sx=(e.clientX-r.left)/r.width*__FO_GEOM.W;
+    let best=0,bd=1e9; for(let i=0;i<__FO_PTS.length;i++){const d=Math.abs(__FO_PTS[i].px-sx); if(d<bd){bd=d;best=i;}}
+    const p=__FO_PTS[best];
+    cross.setAttribute('x1',p.px); cross.setAttribute('x2',p.px); cross.style.display='';
+    dot.setAttribute('cx',p.px); dot.setAttribute('cy',p.py); dot.style.display='';
+    tip.style.left=(p.px/__FO_GEOM.W*100)+'%';
+    tip.style.top=(p.py/__FO_GEOM.H*100)+'%';
+    tip.innerHTML=`<div class="font-semibold">${fmtDate(p.d)}</div><div>${fmtSigned(p.v)} <span class="text-slate-400">contracts</span></div>`;
+    tip.classList.remove('hidden');
+  };
+  svg.addEventListener('mousemove',move);
+  svg.addEventListener('mouseleave',()=>{tip.classList.add('hidden');cross.style.display='none';dot.style.display='none';});
 }
 
 /* ---------------- tabs ---------------- */
