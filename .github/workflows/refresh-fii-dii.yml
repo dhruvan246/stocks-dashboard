@@ -34,6 +34,9 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Install deps (xlrd reads NSE's FII derivative-stats .xls)
+        run: pip install xlrd==2.0.1
+
       - name: Fetch latest FII/DII activity
         run: python3 scripts/fetch_fii_dii.py
 

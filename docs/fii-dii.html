@@ -9,15 +9,16 @@
   body { font-feature-settings: "tnum" 1; }
   .pos{color:#15803d;font-weight:600} .neg{color:#b91c1c;font-weight:600}
   .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
-  th{cursor:pointer;user-select:none}
+  th[data-s]{cursor:pointer;user-select:none}
   th[data-s]:hover{color:#2563eb}
+  .tab.active{border-color:#2563eb;color:#1e40af;font-weight:700}
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
 
 <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-30">
   <div class="max-w-screen-lg mx-auto px-4 py-3 flex items-center justify-between">
-    <h1 class="text-xl md:text-2xl font-bold text-slate-900">FII / DII Activity <span class="text-sm font-normal text-slate-500">· cash segment (₹ crore)</span></h1>
+    <h1 class="text-xl md:text-2xl font-bold text-slate-900">FII / DII Activity</h1>
     <nav class="text-sm flex gap-3">
       <a href="./mutual-funds.html" class="text-blue-600 hover:underline">Funds</a>
       <a href="./backtest.html" class="text-blue-600 hover:underline">Backtest</a>
@@ -29,30 +30,27 @@
   <div id="status" class="text-sm text-slate-500">Loading FII/DII data…</div>
 
   <div id="content" class="hidden">
-    <!-- headline cards -->
-    <div id="cards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"></div>
+    <div class="flex flex-wrap gap-1 border-b border-slate-200 mb-4 text-sm">
+      <button class="tab active px-3 py-2 border-b-2 border-transparent" data-tab="cash">Cash segment</button>
+      <button class="tab px-3 py-2 border-b-2 border-transparent" data-tab="fo">F&amp;O (derivatives)</button>
+    </div>
 
-    <!-- daily net chart -->
-    <div class="card p-4 mb-4">
-      <div class="flex items-center justify-between mb-2">
-        <div class="text-sm font-semibold text-slate-700">Daily net flow — <span class="text-blue-700">FII</span> vs <span class="text-amber-600">DII</span> <span class="text-slate-400 font-normal">(bars, ₹cr)</span> &amp; <span class="text-slate-500">Nifty 50</span> <span class="text-slate-400 font-normal">(line)</span></div>
+    <!-- ===================== CASH ===================== -->
+    <section id="pane-cash">
+      <div id="cards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"></div>
+      <div class="card p-4 mb-4">
+        <div class="text-sm font-semibold text-slate-700 mb-2">Daily net flow — <span class="text-blue-700">FII</span> vs <span class="text-amber-600">DII</span> <span class="text-slate-400 font-normal">(bars, ₹cr)</span> &amp; <span class="text-slate-500">Nifty 50</span> <span class="text-slate-400 font-normal">(line)</span></div>
+        <div id="chartNet" class="overflow-x-auto"></div>
       </div>
-      <div id="chartNet" class="overflow-x-auto"></div>
-    </div>
-
-    <!-- cumulative chart -->
-    <div class="card p-4 mb-4">
-      <div class="text-sm font-semibold text-slate-700 mb-2">Cumulative net flow over the window — <span class="text-blue-700">FII</span> &amp; <span class="text-amber-600">DII</span></div>
-      <div id="chartCum"></div>
-    </div>
-
-    <!-- table -->
-    <div class="card p-4">
-      <div class="text-sm font-semibold text-slate-700 mb-2">Daily table <span class="text-[11px] font-normal text-slate-400">(click a header to sort)</span></div>
-      <div class="overflow-x-auto">
-        <table class="w-full text-sm" id="tbl">
-          <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200">
-            <tr>
+      <div class="card p-4 mb-4">
+        <div class="text-sm font-semibold text-slate-700 mb-2">Cumulative net flow over the window — <span class="text-blue-700">FII</span> &amp; <span class="text-amber-600">DII</span></div>
+        <div id="chartCum"></div>
+      </div>
+      <div class="card p-4">
+        <div class="text-sm font-semibold text-slate-700 mb-2">Daily table <span class="text-[11px] font-normal text-slate-400">(click a header to sort)</span></div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm" id="tbl">
+            <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>
               <th data-s="date" class="text-left py-2 px-1">Date</th>
               <th data-s="fiiBuy" class="text-right px-1">FII buy</th>
               <th data-s="fiiSell" class="text-right px-1">FII sell</th>
@@ -62,19 +60,41 @@
               <th data-s="diiNet" class="text-right px-1">DII net</th>
               <th data-s="nifty" class="text-right px-1">Nifty 50</th>
               <th data-s="chg" class="text-right px-1">Chg%</th>
-            </tr>
-          </thead>
-          <tbody id="tbody"></tbody>
-        </table>
+            </tr></thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
       </div>
-    </div>
+      <p class="text-[11px] text-slate-500 mt-5">Cash-segment provisional figures (₹ crore). <b>Net</b> = buy − sell; positive = net buying. Buy/sell breakdown shown when available (latest day from NSE). Source: NSE + NiftyTrader.</p>
+    </section>
 
-    <p class="text-[11px] text-slate-500 mt-5">
-      Cash-segment provisional figures. <b>Net</b> = buy − sell; a positive number means net buying (inflow).
-      Buy/sell breakdown shown when available (latest day from NSE); earlier rows show net only.
-      Source: NSE (latest) + NiftyTrader (history &amp; Nifty close). History accumulates daily.
-      <span id="updated"></span>
-    </p>
+    <!-- ===================== F&O ===================== -->
+    <section id="pane-fo" class="hidden">
+      <div id="foCards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"></div>
+      <div class="card p-4 mb-4">
+        <div class="text-sm font-semibold text-slate-700 mb-2">FII Index-Futures net position over time <span class="text-slate-400 font-normal">(contracts, long − short — the directional sentiment gauge)</span></div>
+        <div id="foChart"></div>
+      </div>
+      <div class="card p-4 mb-4">
+        <div class="text-sm font-semibold text-slate-700 mb-2">FII derivative buy / sell — latest day <span id="foDate1" class="text-slate-400 font-normal"></span> <span class="text-slate-400 font-normal">(₹ crore)</span></div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>
+            <th class="text-left py-2 px-1">Instrument</th><th class="text-right px-1">Buy</th><th class="text-right px-1">Sell</th><th class="text-right px-1">Net</th></tr></thead>
+            <tbody id="foBS"></tbody></table>
+        </div>
+      </div>
+      <div class="card p-4">
+        <div class="text-sm font-semibold text-slate-700 mb-2">Participant net positions — latest day <span id="foDate2" class="text-slate-400 font-normal"></span> <span class="text-slate-400 font-normal">(no. of contracts)</span></div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>
+            <th class="text-left py-2 px-1">Participant</th>
+            <th class="text-right px-1">Idx-Fut long</th><th class="text-right px-1">Idx-Fut short</th><th class="text-right px-1">Idx-Fut net</th>
+            <th class="text-right px-1">Stk-Fut net</th><th class="text-right px-1">Total long</th><th class="text-right px-1">Total short</th></tr></thead>
+            <tbody id="foOI"></tbody></table>
+        </div>
+      </div>
+      <p class="text-[11px] text-slate-500 mt-5">F&amp;O participant positions = <b>open interest</b> (no. of contracts). <b>Idx-Fut net</b> = index-futures long − short; a large negative FII number = net short / bearish positioning. Buy/sell table is FII-only derivative turnover value. Source: NSE participant-wise OI + FII derivative-stats reports. <span id="updated"></span></p>
+    </section>
   </div>
 </main>
 
@@ -94,88 +114,120 @@ async function load(){
   $('updated').textContent = data.updated ? '· updated '+data.updated.replace('T',' ') : '';
   $('status').classList.add('hidden'); $('content').classList.remove('hidden');
   renderCards(); renderNetChart(); renderCumChart(); renderTable();
+  renderFO();
 }
 
+/* ---------------- CASH ---------------- */
 function renderCards(){
   const last = ROWS[ROWS.length-1];
-  const fNet=last.fiiNet, dNet=last.diiNet;
-  // window cumulative
   const cumF = ROWS.reduce((s,r)=>s+(r.fiiNet||0),0), cumD = ROWS.reduce((s,r)=>s+(r.diiNet||0),0);
-  const card=(title,val,sub,cls)=>`<div class="card p-3">
-      <div class="text-[10px] uppercase text-slate-500">${title}</div>
-      <div class="text-lg font-bold ${cls||''}">${val}</div>
-      <div class="text-[11px] text-slate-400">${sub||''}</div></div>`;
+  const card=(t,v,sub,cls)=>`<div class="card p-3"><div class="text-[10px] uppercase text-slate-500">${t}</div><div class="text-lg font-bold ${cls||''}">${v}</div><div class="text-[11px] text-slate-400">${sub||''}</div></div>`;
   $('cards').innerHTML =
-    card('FII net · '+last.date, fmtSigned(fNet)+' cr', last.fiiBuy!=null?('buy '+fmt(last.fiiBuy)+' / sell '+fmt(last.fiiSell)):'', fNet>=0?'pos':'neg')
-   +card('DII net · '+last.date, fmtSigned(dNet)+' cr', last.diiBuy!=null?('buy '+fmt(last.diiBuy)+' / sell '+fmt(last.diiSell)):'', dNet>=0?'pos':'neg')
+    card('FII net · '+last.date, fmtSigned(last.fiiNet)+' cr', last.fiiBuy!=null?('buy '+fmt(last.fiiBuy)+' / sell '+fmt(last.fiiSell)):'', (last.fiiNet||0)>=0?'pos':'neg')
+   +card('DII net · '+last.date, fmtSigned(last.diiNet)+' cr', last.diiBuy!=null?('buy '+fmt(last.diiBuy)+' / sell '+fmt(last.diiSell)):'', (last.diiNet||0)>=0?'pos':'neg')
    +card('FII — last '+ROWS.length+' days', fmtSigned(cumF)+' cr', 'cumulative net', cumF>=0?'pos':'neg')
    +card('DII — last '+ROWS.length+' days', fmtSigned(cumD)+' cr', 'cumulative net', cumD>=0?'pos':'neg');
 }
-
 function renderNetChart(){
   const r=ROWS, n=r.length;
   const W=Math.max(720, n*22), H=300, PL=52, PR=52, PT=14, PB=46;
-  const nets=r.flatMap(x=>[x.fiiNet||0,x.diiNet||0]);
-  const maxA=Math.max(1000, ...nets.map(Math.abs));
-  const niftyV=r.map(x=>x.nifty).filter(v=>v!=null);
-  const nMin=Math.min(...niftyV), nMax=Math.max(...niftyV);
-  const bw=(W-PL-PR)/n, slot=bw*0.36;
-  const y0=PT+(H-PT-PB)/2;                       // zero line for bars
-  const yBar=v=>y0-(v/maxA)*((H-PT-PB)/2);
-  const xC=i=>PL+bw*(i+0.5);
-  const yN=v=>PT+(H-PT-PB)*(1-(v-nMin)/((nMax-nMin)||1));
+  const maxA=Math.max(1000, ...r.flatMap(x=>[Math.abs(x.fiiNet||0),Math.abs(x.diiNet||0)]));
+  const nv=r.map(x=>x.nifty).filter(v=>v!=null); const nMin=Math.min(...nv),nMax=Math.max(...nv);
+  const bw=(W-PL-PR)/n, slot=bw*0.36, y0=PT+(H-PT-PB)/2;
+  const yBar=v=>y0-(v/maxA)*((H-PT-PB)/2), xC=i=>PL+bw*(i+0.5), yN=v=>PT+(H-PT-PB)*(1-(v-nMin)/((nMax-nMin)||1));
   let bars='';
-  r.forEach((x,i)=>{
-    const cx=xC(i);
-    const f=x.fiiNet||0, d=x.diiNet||0;
+  r.forEach((x,i)=>{const cx=xC(i),f=x.fiiNet||0,d=x.diiNet||0;
     bars+=`<rect x="${(cx-slot-1).toFixed(1)}" y="${Math.min(y0,yBar(f)).toFixed(1)}" width="${slot.toFixed(1)}" height="${Math.abs(yBar(f)-y0).toFixed(1)}" fill="${f>=0?'#2563eb':'#93c5fd'}"/>`;
-    bars+=`<rect x="${(cx+1).toFixed(1)}" y="${Math.min(y0,yBar(d)).toFixed(1)}" width="${slot.toFixed(1)}" height="${Math.abs(yBar(d)-y0).toFixed(1)}" fill="${d>=0?'#d97706':'#fcd34d'}"/>`;
-  });
-  // nifty line
-  let np='';
-  r.forEach((x,i)=>{ if(x.nifty==null)return; np+=(np?'L':'M')+xC(i).toFixed(1)+' '+yN(x.nifty).toFixed(1)+' ';});
-  // x labels (every ~5)
+    bars+=`<rect x="${(cx+1).toFixed(1)}" y="${Math.min(y0,yBar(d)).toFixed(1)}" width="${slot.toFixed(1)}" height="${Math.abs(yBar(d)-y0).toFixed(1)}" fill="${d>=0?'#d97706':'#fcd34d'}"/>`;});
+  let np=''; r.forEach((x,i)=>{ if(x.nifty==null)return; np+=(np?'L':'M')+xC(i).toFixed(1)+' '+yN(x.nifty).toFixed(1)+' ';});
   let xl=''; const step=Math.ceil(n/12);
   r.forEach((x,i)=>{ if(i%step)return; xl+=`<text x="${xC(i).toFixed(1)}" y="${H-PB+16}" font-size="9" fill="#94a3b8" text-anchor="middle" transform="rotate(35 ${xC(i).toFixed(1)} ${H-PB+16})">${x.date.slice(5)}</text>`;});
-  // y left ticks (₹cr)
-  let yl='';
-  for(let k=-1;k<=1;k++){const v=k*maxA;const yy=yBar(v);yl+=`<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="${k===0?'#cbd5e1':'#f1f5f9'}"/><text x="${PL-4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${fmtSigned(v)}</text>`;}
-  // y right (nifty)
-  let yr='';
-  for(let k=0;k<=2;k++){const v=nMin+(nMax-nMin)*k/2;const yy=yN(v);yr+=`<text x="${W-PR+4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="start">${Math.round(v).toLocaleString('en-IN')}</text>`;}
-  $('chartNet').innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${yl}${yr}${bars}<path d="${np}" fill="none" stroke="#64748b" stroke-width="1.6"/></svg>`;
+  let yl=''; for(let k=-1;k<=1;k++){const v=k*maxA,yy=yBar(v);yl+=`<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="${k===0?'#cbd5e1':'#f1f5f9'}"/><text x="${PL-4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${fmtSigned(v)}</text>`;}
+  let yr=''; for(let k=0;k<=2;k++){const v=nMin+(nMax-nMin)*k/2,yy=yN(v);yr+=`<text x="${W-PR+4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="start">${Math.round(v).toLocaleString('en-IN')}</text>`;}
+  $('chartNet').innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${yl}${yr}${xl}${bars}<path d="${np}" fill="none" stroke="#64748b" stroke-width="1.6"/></svg>`;
 }
-
 function renderCumChart(){
-  const r=ROWS, n=r.length;
-  const W=720,H=200,PL=54,PR=14,PT=12,PB=28;
-  let cf=0,cd=0; const F=[],D=[];
-  r.forEach(x=>{cf+=x.fiiNet||0;cd+=x.diiNet||0;F.push(cf);D.push(cd);});
-  const all=F.concat(D); const mn=Math.min(0,...all), mx=Math.max(0,...all);
-  const x=i=>PL+(W-PL-PR)*(n<=1?0:i/(n-1));
-  const y=v=>PT+(H-PT-PB)*(1-(v-mn)/((mx-mn)||1));
+  const r=ROWS,n=r.length,W=720,H=200,PL=54,PR=14,PT=12,PB=28;
+  let cf=0,cd=0;const F=[],D=[];r.forEach(x=>{cf+=x.fiiNet||0;cd+=x.diiNet||0;F.push(cf);D.push(cd);});
+  const all=F.concat(D),mn=Math.min(0,...all),mx=Math.max(0,...all);
+  const x=i=>PL+(W-PL-PR)*(n<=1?0:i/(n-1)), y=v=>PT+(H-PT-PB)*(1-(v-mn)/((mx-mn)||1));
   const path=A=>A.map((v,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1)).join(' ');
-  let yl='';for(let k=0;k<=3;k++){const v=mn+(mx-mn)*k/3;const yy=y(v);yl+=`<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="${Math.abs(v)<1?'#cbd5e1':'#f1f5f9'}"/><text x="${PL-4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${fmtSigned(v)}</text>`;}
+  let yl='';for(let k=0;k<=3;k++){const v=mn+(mx-mn)*k/3,yy=y(v);yl+=`<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="${Math.abs(v)<1?'#cbd5e1':'#f1f5f9'}"/><text x="${PL-4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${fmtSigned(v)}</text>`;}
   $('chartCum').innerHTML=`<svg viewBox="0 0 ${W} ${H}" class="w-full">${yl}<path d="${path(F)}" fill="none" stroke="#2563eb" stroke-width="2"/><path d="${path(D)}" fill="none" stroke="#d97706" stroke-width="2"/></svg>`;
 }
-
 function renderTable(){
-  const r=ROWS.slice().sort((a,b)=>{const A=a[sortKey],B=b[sortKey];let c; if(sortKey==='date')c=(A<B?-1:A>B?1:0); else c=(A||0)-(B||0); return sortAsc?c:-c;});
+  const r=ROWS.slice().sort((a,b)=>{const A=a[sortKey],B=b[sortKey];let c;if(sortKey==='date')c=(A<B?-1:A>B?1:0);else c=(A||0)-(B||0);return sortAsc?c:-c;});
   $('tbody').innerHTML=r.map(x=>`<tr class="border-b border-slate-50">
      <td class="py-1 px-1 font-medium">${x.date}</td>
-     <td class="text-right px-1 text-slate-500">${fmt(x.fiiBuy)}</td>
-     <td class="text-right px-1 text-slate-500">${fmt(x.fiiSell)}</td>
+     <td class="text-right px-1 text-slate-500">${fmt(x.fiiBuy)}</td><td class="text-right px-1 text-slate-500">${fmt(x.fiiSell)}</td>
      <td class="text-right px-1 ${(x.fiiNet||0)>=0?'pos':'neg'}">${fmtSigned(x.fiiNet)}</td>
-     <td class="text-right px-1 text-slate-500">${fmt(x.diiBuy)}</td>
-     <td class="text-right px-1 text-slate-500">${fmt(x.diiSell)}</td>
+     <td class="text-right px-1 text-slate-500">${fmt(x.diiBuy)}</td><td class="text-right px-1 text-slate-500">${fmt(x.diiSell)}</td>
      <td class="text-right px-1 ${(x.diiNet||0)>=0?'pos':'neg'}">${fmtSigned(x.diiNet)}</td>
      <td class="text-right px-1">${x.nifty!=null?x.nifty.toLocaleString('en-IN'):'·'}</td>
-     <td class="text-right px-1 ${(x.chg||0)>=0?'pos':'neg'}">${x.chg!=null?(x.chg>=0?'+':'')+x.chg.toFixed(2)+'%':'·'}</td>
-   </tr>`).join('');
+     <td class="text-right px-1 ${(x.chg||0)>=0?'pos':'neg'}">${x.chg!=null?(x.chg>=0?'+':'')+x.chg.toFixed(2)+'%':'·'}</td></tr>`).join('');
 }
 document.querySelectorAll('th[data-s]').forEach(th=>th.addEventListener('click',()=>{
-  const k=th.dataset.s; if(sortKey===k)sortAsc=!sortAsc; else {sortKey=k;sortAsc=(k==='date');}
-  renderTable();
+  const k=th.dataset.s; if(sortKey===k)sortAsc=!sortAsc; else {sortKey=k;sortAsc=(k==='date');} renderTable();}));
+
+/* ---------------- F&O ---------------- */
+const foNet = o => o ? o[0]-o[1] : null;
+function renderFO(){
+  const foRows = ROWS.filter(r=>r.fo);
+  if(!foRows.length){ $('foCards').innerHTML='<div class="text-xs text-slate-400 col-span-4">No F&O data yet — the next refresh will add it.</div>'; return; }
+  const last = foRows[foRows.length-1];
+  const oi=last.fo.oi||{}, bs=last.fo.bs||{};
+  const fiiIdx = oi.FII ? oi.FII.futIdx : null;
+  const fiiIdxNet = fiiIdx ? fiiIdx[0]-fiiIdx[1] : null;
+  const ratio = fiiIdx && fiiIdx[1] ? (fiiIdx[0]/fiiIdx[1]) : null;
+  const diiIdxNet = oi.DII ? oi.DII.futIdx[0]-oi.DII.futIdx[1] : null;
+  const bsNetTotal = ['idxFut','idxOpt','stkFut','stkOpt'].reduce((s,k)=>s+(bs[k]?bs[k][0]-bs[k][1]:0),0);
+  const card=(t,v,sub,cls)=>`<div class="card p-3"><div class="text-[10px] uppercase text-slate-500">${t}</div><div class="text-lg font-bold ${cls||''}">${v}</div><div class="text-[11px] text-slate-400">${sub||''}</div></div>`;
+  $('foCards').innerHTML =
+    card('FII Index-Fut net · '+last.date, fmtSigned(fiiIdxNet), fiiIdx?('long '+fmt(fiiIdx[0])+' / short '+fmt(fiiIdx[1])):'', (fiiIdxNet||0)>=0?'pos':'neg')
+   +card('FII long/short ratio', ratio!=null?ratio.toFixed(2):'·', ratio!=null?(ratio<1?'net short (bearish)':'net long (bullish)'):'', (ratio||0)>=1?'pos':'neg')
+   +card('FII F&O net turnover', fmtSigned(bsNetTotal)+' cr', 'buy − sell, all instruments', bsNetTotal>=0?'pos':'neg')
+   +card('DII Index-Fut net', fmtSigned(diiIdxNet), 'contracts', (diiIdxNet||0)>=0?'pos':'neg');
+
+  // chart: FII index-fut net over time
+  const series = foRows.map(r=>({d:r.date, v: r.fo.oi&&r.fo.oi.FII ? r.fo.oi.FII.futIdx[0]-r.fo.oi.FII.futIdx[1] : null})).filter(p=>p.v!=null);
+  $('foChart').innerHTML = lineChartZero(series);
+
+  // buy/sell table
+  $('foDate1').textContent = '('+last.date+')';
+  const names={idxFut:'Index Futures',idxOpt:'Index Options',stkFut:'Stock Futures',stkOpt:'Stock Options'};
+  $('foBS').innerHTML = ['idxFut','idxOpt','stkFut','stkOpt'].map(k=>{const b=bs[k];if(!b)return '';const net=b[0]-b[1];
+    return `<tr class="border-b border-slate-50"><td class="py-1 px-1 font-medium">${names[k]}</td>
+      <td class="text-right px-1 text-slate-500">${fmt(b[0])}</td><td class="text-right px-1 text-slate-500">${fmt(b[1])}</td>
+      <td class="text-right px-1 ${net>=0?'pos':'neg'}">${fmtSigned(net)}</td></tr>`;}).join('');
+
+  // participant OI table
+  $('foDate2').textContent = '('+last.date+')';
+  $('foOI').innerHTML = ['FII','DII','Pro','Client'].map(p=>{const o=oi[p];if(!o)return '';
+    const idxNet=o.futIdx[0]-o.futIdx[1], stkNet=o.futStk[0]-o.futStk[1];
+    return `<tr class="border-b border-slate-50"><td class="py-1 px-1 font-medium">${p}</td>
+      <td class="text-right px-1 text-slate-500">${fmt(o.futIdx[0])}</td><td class="text-right px-1 text-slate-500">${fmt(o.futIdx[1])}</td>
+      <td class="text-right px-1 ${idxNet>=0?'pos':'neg'}">${fmtSigned(idxNet)}</td>
+      <td class="text-right px-1 ${stkNet>=0?'pos':'neg'}">${fmtSigned(stkNet)}</td>
+      <td class="text-right px-1 text-slate-500">${fmt(o.totL)}</td><td class="text-right px-1 text-slate-500">${fmt(o.totS)}</td></tr>`;}).join('');
+}
+function lineChartZero(series){
+  const n=series.length, W=720,H=220,PL=64,PR=14,PT=12,PB=30;
+  const vs=series.map(p=>p.v); const mn=Math.min(0,...vs),mx=Math.max(0,...vs);
+  const x=i=>PL+(W-PL-PR)*(n<=1?0:i/(n-1)), y=v=>PT+(H-PT-PB)*(1-(v-mn)/((mx-mn)||1));
+  const path=series.map((p,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(p.v).toFixed(1)).join(' ');
+  const area=`M ${x(0).toFixed(1)} ${y(0).toFixed(1)} `+series.map((p,i)=>'L'+x(i).toFixed(1)+' '+y(p.v).toFixed(1)).join(' ')+` L ${x(n-1).toFixed(1)} ${y(0).toFixed(1)} Z`;
+  let yl=''; for(let k=0;k<=3;k++){const v=mn+(mx-mn)*k/3,yy=y(v);yl+=`<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="${Math.abs(v)<1?'#cbd5e1':'#f1f5f9'}"/><text x="${PL-4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${fmtSigned(v)}</text>`;}
+  let xl=''; const step=Math.ceil(n/10);
+  series.forEach((p,i)=>{if(i%step)return; xl+=`<text x="${x(i).toFixed(1)}" y="${H-8}" font-size="9" fill="#94a3b8" text-anchor="middle">${p.d.slice(5)}</text>`;});
+  return `<svg viewBox="0 0 ${W} ${H}" class="w-full">${yl}${xl}<path d="${area}" fill="#fee2e2" opacity="0.5"/><path d="${path}" fill="none" stroke="#b91c1c" stroke-width="2"/></svg>`;
+}
+
+/* ---------------- tabs ---------------- */
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');
+  $('pane-cash').classList.toggle('hidden', t.dataset.tab!=='cash');
+  $('pane-fo').classList.toggle('hidden', t.dataset.tab!=='fo');
 }));
 load();
 </script>

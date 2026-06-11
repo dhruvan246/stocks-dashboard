@@ -25,13 +25,79 @@ OUT = os.path.join(ROOT, "docs", "fii_dii.json")
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
 
 
-def _get(url, headers=None, jar=None, timeout=30):
+def _get(url, headers=None, jar=None, timeout=30, binary=False):
     req = urllib.request.Request(url, headers=headers or {"User-Agent": UA})
     opener = urllib.request.build_opener()
     if jar is not None:
         opener.add_handler(urllib.request.HTTPCookieProcessor(jar))
     with opener.open(req, timeout=timeout) as r:
-        return r.read().decode("utf-8", "replace")
+        data = r.read()
+        return data if binary else data.decode("utf-8", "replace")
+
+
+def _nse_jar():
+    """Warm an NSE cookie jar (the homepage may 403 but still sets the cookie)."""
+    import http.cookiejar
+    jar = http.cookiejar.CookieJar()
+    try:
+        _get("https://www.nseindia.com/", headers={"User-Agent": UA, "Accept": "text/html"}, jar=jar, timeout=20)
+    except Exception:
+        pass
+    return jar
+
+
+def fetch_fo_for_date(dt, jar):
+    """
+    Fetch F&O participant data for one date (datetime.date):
+      - participant-wise OI (net positions, contracts) for FII/DII/Pro/Client
+      - FII derivative buy/sell VALUE (Rs cr) per instrument
+    Returns a compact dict or None if that day's files aren't available.
+    """
+    import csv, io
+    ddmmyyyy = dt.strftime("%d%m%Y")
+    ddmonyyyy = dt.strftime("%d-%b-%Y")
+    hdr = {"User-Agent": UA, "Referer": "https://www.nseindia.com/"}
+    fo = {}
+    # ---- participant-wise OI (net positions) ----
+    try:
+        raw = _get("https://nsearchives.nseindia.com/content/nsccl/fao_participant_oi_%s.csv" % ddmmyyyy,
+                   headers=hdr, jar=jar, timeout=25)
+        if "Participant" in raw:
+            oi = {}
+            for row in csv.reader(io.StringIO(raw)):
+                if not row or row[0].strip() not in ("Client", "DII", "FII", "Pro"):
+                    continue
+                v = [int(float(x)) for x in (c.strip() or "0" for c in row[1:15])]
+                # cols: 0 FutIdxL 1 FutIdxS 2 FutStkL 3 FutStkS 4 OptIdxCallL 5 OptIdxPutL
+                #       6 OptIdxCallS 7 OptIdxPutS 8 OptStkCallL 9 OptStkPutL 10 OptStkCallS
+                #       11 OptStkPutS 12 TotLong 13 TotShort
+                oi[row[0].strip()] = {"futIdx": [v[0], v[1]], "futStk": [v[2], v[3]],
+                                       "totL": v[12], "totS": v[13]}
+            if oi:
+                fo["oi"] = oi
+    except Exception:
+        pass
+    # ---- FII derivative buy/sell value (Rs cr) ----
+    try:
+        import xlrd
+        blob = _get("https://nsearchives.nseindia.com/content/fo/fii_stats_%s.xls" % ddmonyyyy,
+                    headers=hdr, jar=jar, timeout=25, binary=True)
+        wb = xlrd.open_workbook(file_contents=blob)
+        sh = wb.sheet_by_index(0)
+        want = {"INDEX FUTURES": "idxFut", "INDEX OPTIONS": "idxOpt",
+                "STOCK FUTURES": "stkFut", "STOCK OPTIONS": "stkOpt"}
+        bs = {}
+        for r in range(sh.nrows):
+            label = str(sh.cell_value(r, 0)).strip().upper()
+            if label in want:
+                buy = float(sh.cell_value(r, 2) or 0)   # BUY amount (Rs cr)
+                sell = float(sh.cell_value(r, 4) or 0)  # SELL amount (Rs cr)
+                bs[want[label]] = [round(buy, 2), round(sell, 2)]
+        if bs:
+            fo["bs"] = bs
+    except Exception:
+        pass
+    return fo or None
 
 
 def fetch_niftytrader():
@@ -106,6 +172,26 @@ def main():
     for d, v in nse.items():
         row = hist.setdefault(d, {"date": d})
         row.update(v)
+
+    # ---- F&O backfill: attach participant OI + FII deriv buy/sell to any date missing it ----
+    # First run fills recent history (capped); later runs only the newest 1-2 days.
+    missing = [d for d in sorted(hist) if "fo" not in hist[d]]
+    if missing:
+        jar = _nse_jar()
+        done = 0
+        for d in reversed(missing):          # newest first
+            if done >= 30:
+                break
+            try:
+                dt = datetime.datetime.strptime(d, "%Y-%m-%d").date()
+                fo = fetch_fo_for_date(dt, jar)
+                if fo:
+                    hist[d]["fo"] = fo
+                    done += 1
+                time.sleep(0.4)
+            except Exception:
+                pass
+        print("  F&O attached to %d/%d missing dates" % (done, len(missing)))
 
     rows = [hist[d] for d in sorted(hist)]
     json.dump({"updated": time.strftime("%Y-%m-%dT%H:%M:%S"), "rows": rows},
