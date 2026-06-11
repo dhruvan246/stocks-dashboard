@@ -101,6 +101,27 @@
             <tbody id="foOI"></tbody></table>
         </div>
       </div>
+      <div class="card p-4 mt-4">
+        <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+          <div class="text-sm font-semibold text-slate-700">Day-wise positions <span class="text-slate-400 font-normal">(open interest, no. of contracts)</span></div>
+          <div class="flex items-center gap-2 text-xs flex-wrap">
+            <label class="flex items-center gap-1 text-slate-600">Participant
+              <select id="foDP" class="border border-slate-300 rounded-md px-2 py-1 bg-white font-semibold text-blue-700">
+                <option value="FII">FII</option><option value="DII">DII</option><option value="Pro">Pro</option><option value="Client">Client</option></select></label>
+            <label class="flex items-center gap-1 text-slate-600">Instrument
+              <select id="foDI" class="border border-slate-300 rounded-md px-2 py-1 bg-white">
+                <option value="futIdx">Index Futures</option><option value="futStk">Stock Futures</option><option value="tot">All (total)</option></select></label>
+            <select id="foDN" class="border border-slate-300 rounded-md px-2 py-1 bg-white">
+              <option value="30">Last 30 days</option><option value="90">Last 90 days</option><option value="365">Last 1 year</option><option value="all">All</option></select>
+          </div>
+        </div>
+        <div class="overflow-x-auto max-h-[28rem] overflow-y-auto rounded-lg border border-slate-100">
+          <table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200 sticky top-0 bg-white"><tr>
+            <th class="text-left py-2 px-3">Date</th>
+            <th class="text-right px-3">Long</th><th class="text-right px-3">Short</th><th class="text-right px-3">Net</th></tr></thead>
+            <tbody id="foDaily"></tbody></table>
+        </div>
+      </div>
       <p class="text-[11px] text-slate-500 mt-5">F&amp;O participant positions = <b>open interest</b> (no. of contracts). <b>Idx-Fut net</b> = index-futures long − short; a large negative FII number = net short / bearish positioning. Buy/sell table is FII-only derivative turnover value. Source: NSE participant-wise OI + FII derivative-stats reports. <span id="updated"></span></p>
     </section>
   </div>
@@ -111,6 +132,8 @@
 const $ = id => document.getElementById(id);
 const fmt = n => n==null ? '·' : (n<0?'−':'')+Math.abs(Math.round(n)).toLocaleString('en-IN');
 const fmtSigned = n => n==null ? '·' : (n>=0?'+':'−')+Math.abs(Math.round(n)).toLocaleString('en-IN');
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const fmtDate = d => { const p=d.split('-'); return p[2]+' '+MON[+p[1]-1]+' '+p[0]; };
 let ROWS=[], FO=[], sortKey='date', sortAsc=true, foRange='3y';
 
 async function load(){
@@ -227,6 +250,25 @@ function renderFO(){
       <td class="text-right px-1 ${idxNet>=0?'pos':'neg'}">${fmtSigned(idxNet)}</td>
       <td class="text-right px-1 ${stkNet>=0?'pos':'neg'}">${fmtSigned(stkNet)}</td>
       <td class="text-right px-1 text-slate-500">${fmt(o.totL)}</td><td class="text-right px-1 text-slate-500">${fmt(o.totS)}</td></tr>`;}).join('');
+
+  // day-wise positions table
+  ['foDP','foDI','foDN'].forEach(id=>{const el=$(id); if(el && !el.__wired){el.__wired=true; el.onchange=renderFODaily;}});
+  renderFODaily();
+}
+function renderFODaily(){
+  if(!FO.length) return;
+  const p=$('foDP').value, inst=$('foDI').value, nv=$('foDN').value;
+  const rows=FO.filter(r=>r.oi&&r.oi[p]).slice().reverse();   // newest first
+  const sel=(nv==='all')?rows:rows.slice(0, +nv);
+  $('foDaily').innerHTML = sel.map(r=>{const o=r.oi[p]; let L,S;
+    if(inst==='futStk'){L=o.futStk[0];S=o.futStk[1];}
+    else if(inst==='tot'){L=o.totL;S=o.totS;}
+    else {L=o.futIdx[0];S=o.futIdx[1];}
+    const net=L-S;
+    return `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="py-1.5 px-3 font-medium text-slate-700">${fmtDate(r.date)}</td>
+      <td class="text-right px-3 text-slate-600">${fmt(L)}</td><td class="text-right px-3 text-slate-600">${fmt(S)}</td>
+      <td class="text-right px-3 font-semibold ${net>=0?'pos':'neg'}">${fmtSigned(net)}</td></tr>`;}).join('')
+    || '<tr><td colspan="4" class="py-3 px-3 text-slate-400 text-xs">No data for this selection.</td></tr>';
 }
 function lineChartZero(series){
   const n=series.length, W=720,H=220,PL=64,PR=14,PT=12,PB=30;
