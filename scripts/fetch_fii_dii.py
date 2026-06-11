@@ -23,6 +23,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 OUT = os.path.join(ROOT, "docs", "fii_dii.json")       # cash segment (recent + grows)
 OUT_FO = os.path.join(ROOT, "docs", "fii_fo.json")     # derivatives net positions (2012 -> today)
+OUT_NIFTY = os.path.join(ROOT, "docs", "nifty.json")   # Nifty 50 close history (for chart overlays)
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
 
 
@@ -208,9 +209,26 @@ def update_fo(cash_dates, max_new=40):
     print("  fii_fo.json (derivatives): %d rows (was %d)" % (len(rows), n_before))
 
 
+def update_nifty():
+    """Keep docs/nifty.json current by merging the latest Nifty closes from the cash feed
+    (historical 2012+ seed is committed once; daily runs just append new days)."""
+    try:
+        px = json.load(open(OUT_NIFTY, encoding="utf-8")).get("px", {})
+    except Exception:
+        px = {}
+    n0 = len(px)
+    for r in _load_rows(OUT).values():
+        if r.get("nifty") is not None and r["date"] not in px:
+            px[r["date"]] = round(r["nifty"], 2)
+    json.dump({"updated": time.strftime("%Y-%m-%dT%H:%M:%S"), "px": px},
+              open(OUT_NIFTY, "w", encoding="utf-8"), separators=(",", ":"))
+    print("  nifty.json: %d points (+%d)" % (len(px), len(px) - n0))
+
+
 def main():
     dates = update_cash()
     update_fo(dates)
+    update_nifty()
 
 
 if __name__ == "__main__":

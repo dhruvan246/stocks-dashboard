@@ -46,14 +46,15 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           mkdir -p /tmp/fd/docs
-          cp docs/fii_dii.json docs/fii_fo.json /tmp/fd/docs/
+          cp docs/fii_dii.json docs/fii_fo.json docs/nifty.json /tmp/fd/docs/
 
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
             cp /tmp/fd/docs/fii_dii.json docs/fii_dii.json
             cp /tmp/fd/docs/fii_fo.json  docs/fii_fo.json
-            git add docs/fii_dii.json docs/fii_fo.json
+            cp /tmp/fd/docs/nifty.json   docs/nifty.json
+            git add docs/fii_dii.json docs/fii_fo.json docs/nifty.json
 
             if git diff --cached --quiet; then
               echo "No new FII/DII data — nothing to commit"
