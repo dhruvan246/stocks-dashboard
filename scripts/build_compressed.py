@@ -138,6 +138,10 @@ HTML = r"""<!DOCTYPE html>
            class="text-xs px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900 font-semibold transition flex items-center gap-1">
           Mutual funds
         </a>
+        <a href="./fii-dii.html"
+           class="text-xs px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900 font-semibold transition flex items-center gap-1">
+          FII / DII
+        </a>
         <a href="https://dhruvan246.github.io/fno-dashboard/" target="_blank" rel="noopener"
            class="text-xs px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900 font-semibold transition flex items-center gap-1">
           F&amp;O dashboard
