@@ -86,14 +86,14 @@
       <div class="card p-4 mb-4">
         <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
           <div class="text-sm font-semibold text-slate-700"><span class="text-red-700">FII Index-Futures net</span> vs <span class="text-amber-600">Nifty 50</span> <span class="text-slate-400 font-normal">(contracts long − short; hover for values)</span></div>
-          <div id="foRangeBtns" class="flex gap-1 text-xs"></div>
+          <div id="foRangeBtns" class="flex flex-wrap items-center gap-1 text-xs"></div>
         </div>
         <div id="foChart"></div>
       </div>
       <div class="card p-4 mb-4">
         <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
           <div class="text-sm font-semibold text-slate-700"><span class="text-blue-700">FII Long/Short ratio</span> vs <span class="text-amber-600">Nifty 50</span> <span class="text-slate-400 font-normal">(index futures; ratio &lt; 1 = net short — does positioning lead price?)</span></div>
-          <div id="foRatioBtns" class="flex gap-1 text-xs"></div>
+          <div id="foRatioBtns" class="flex flex-wrap items-center gap-1 text-xs"></div>
         </div>
         <div id="foRatioChart"></div>
       </div>
@@ -153,6 +153,7 @@ const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','De
 const fmtDate = d => { const p=d.split('-'); return p[2]+' '+MON[+p[1]-1]+' '+p[0]; };
 let ROWS=[], FO=[], sortKey='date', sortAsc=true, foRange='3y';
 let NIFTY={}, foRatioRange='3y', CHART_STATE={}, foView='split', foSection='charts';
+let foCustom={from:'',to:''}, foRatioCustom={from:'',to:''};
 
 async function load(){
   let data, fdata={rows:[]};
@@ -223,6 +224,18 @@ document.querySelectorAll('th[data-s]').forEach(th=>th.addEventListener('click',
 
 /* ---------------- F&O ---------------- */
 const RANGES={'1y':365,'3y':1095,'5y':1825,'all':1e9};
+function dMinus(dstr, months){const d=new Date(dstr+'T00:00:00'); d.setMonth(d.getMonth()-months); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function filterRange(arr, rng, custom){
+  if(rng==='custom') return arr.filter(p=>(!custom.from||p.d>=custom.from)&&(!custom.to||p.d<=custom.to));
+  const cut=RANGES[rng]; if(cut>=1e9) return arr;
+  const last=arr.length?new Date(arr[arr.length-1].d):new Date();
+  return arr.filter(p=>(last-new Date(p.d))/864e5<=cut);
+}
+function rangeUI(elId, cur, custom, fromId, toId){
+  const span=FO.length?{min:FO[0].date,max:FO[FO.length-1].date}:{min:'',max:''};
+  $(elId).innerHTML = ['1y','3y','5y','all','custom'].map(k=>`<button data-r="${k}" class="px-2 py-1 rounded ${cur===k?'bg-blue-600 text-white':'bg-slate-100 text-slate-600'}">${k==='custom'?'Custom':k.toUpperCase()}</button>`).join('')
+    + (cur==='custom'?`<input type="date" id="${fromId}" value="${custom.from||''}" min="${span.min}" max="${span.max}" class="border border-slate-300 rounded px-1.5 py-0.5 text-[11px]"/><span class="text-slate-400 text-[11px]">→</span><input type="date" id="${toId}" value="${custom.to||''}" min="${span.min}" max="${span.max}" class="border border-slate-300 rounded px-1.5 py-0.5 text-[11px]"/>`:'');
+}
 function renderFO(){
   if(!FO.length){ $('foCards').innerHTML='<div class="text-xs text-slate-400 col-span-4">No F&O data yet — the next refresh will add it.</div>'; return; }
   const last = FO[FO.length-1];
@@ -251,21 +264,19 @@ function renderFO(){
   $('foViewBtns').innerHTML = [['overlay','Overlay'],['split','Split']].map(([k,lbl])=>`<button data-v="${k}" class="px-2.5 py-1 rounded font-semibold ${foView===k?'bg-blue-600 text-white':'bg-slate-100 text-slate-600'}">${lbl}</button>`).join('');
   $('foViewBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{foView=b.dataset.v; renderFO();});
 
-  // range buttons (net chart)
-  $('foRangeBtns').innerHTML = Object.keys(RANGES).map(k=>`<button data-r="${k}" class="px-2 py-1 rounded ${foRange===k?'bg-blue-600 text-white':'bg-slate-100 text-slate-600'}">${k.toUpperCase()}</button>`).join('');
-  $('foRangeBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{foRange=b.dataset.r; renderFO();});
-  const lastDate = new Date(last.date);
-  const inRange = (arr, rng) => { const cut=RANGES[rng]; return cut>=1e9 ? arr : arr.filter(p=>(lastDate-new Date(p.d))/864e5 <= cut); };
-
-  // chart 1: FII index-fut net position + Nifty overlay
-  let series = inRange(FO.map(r=>({d:r.date, v: r.oi&&r.oi.FII ? r.oi.FII.futIdx[0]-r.oi.FII.futIdx[1] : null})).filter(p=>p.v!=null), foRange);
+  // chart 1: FII index-fut net position + Nifty overlay (with range + custom dates)
+  rangeUI('foRangeBtns', foRange, foCustom, 'foFrom', 'foTo');
+  $('foRangeBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{foRange=b.dataset.r; if(foRange==='custom'&&!foCustom.from){const ld=FO[FO.length-1].date; foCustom.from=dMinus(ld,6); foCustom.to=ld;} renderFO();});
+  if(foRange==='custom'){ $('foFrom').onchange=e=>{foCustom.from=e.target.value; renderFO();}; $('foTo').onchange=e=>{foCustom.to=e.target.value; renderFO();}; }
+  let series = filterRange(FO.map(r=>({d:r.date, v: r.oi&&r.oi.FII ? r.oi.FII.futIdx[0]-r.oi.FII.futIdx[1] : null})).filter(p=>p.v!=null), foRange, foCustom);
   $('foChart').innerHTML = dualChart('foChart', series, {baseline:true, color:'#b91c1c', areaFill:'#fee2e2', label:'FII net', fmt:fmtSigned, unit:'contracts'});
   attachHover('foChart');
 
-  // chart 2: FII long/short ratio + Nifty overlay
-  $('foRatioBtns').innerHTML = Object.keys(RANGES).map(k=>`<button data-r="${k}" class="px-2 py-1 rounded ${foRatioRange===k?'bg-blue-600 text-white':'bg-slate-100 text-slate-600'}">${k.toUpperCase()}</button>`).join('');
-  $('foRatioBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{foRatioRange=b.dataset.r; renderFO();});
-  let rseries = inRange(FO.map(r=>{const f=r.oi&&r.oi.FII?r.oi.FII.futIdx:null; return {d:r.date, v: (f&&f[1])? f[0]/f[1] : null};}).filter(p=>p.v!=null), foRatioRange);
+  // chart 2: FII long/short ratio + Nifty overlay (with range + custom dates)
+  rangeUI('foRatioBtns', foRatioRange, foRatioCustom, 'foRatioFrom', 'foRatioTo');
+  $('foRatioBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{foRatioRange=b.dataset.r; if(foRatioRange==='custom'&&!foRatioCustom.from){const ld=FO[FO.length-1].date; foRatioCustom.from=dMinus(ld,6); foRatioCustom.to=ld;} renderFO();});
+  if(foRatioRange==='custom'){ $('foRatioFrom').onchange=e=>{foRatioCustom.from=e.target.value; renderFO();}; $('foRatioTo').onchange=e=>{foRatioCustom.to=e.target.value; renderFO();}; }
+  let rseries = filterRange(FO.map(r=>{const f=r.oi&&r.oi.FII?r.oi.FII.futIdx:null; return {d:r.date, v: (f&&f[1])? f[0]/f[1] : null};}).filter(p=>p.v!=null), foRatioRange, foRatioCustom);
   $('foRatioChart').innerHTML = dualChart('foRatioChart', rseries, {baseline:false, color:'#2563eb', label:'L/S ratio', fmt:v=>v.toFixed(2), unit:''});
   attachHover('foRatioChart');
 
