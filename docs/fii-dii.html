@@ -72,7 +72,10 @@
     <section id="pane-fo" class="hidden">
       <div id="foCards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"></div>
       <div class="card p-4 mb-4">
-        <div class="text-sm font-semibold text-slate-700 mb-2">FII Index-Futures net position over time <span class="text-slate-400 font-normal">(contracts, long − short — the directional sentiment gauge)</span></div>
+        <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
+          <div class="text-sm font-semibold text-slate-700">FII Index-Futures net position over time <span class="text-slate-400 font-normal">(contracts, long − short — the directional sentiment gauge)</span></div>
+          <div id="foRangeBtns" class="flex gap-1 text-xs"></div>
+        </div>
         <div id="foChart"></div>
       </div>
       <div class="card p-4 mb-4">
@@ -103,13 +106,15 @@
 const $ = id => document.getElementById(id);
 const fmt = n => n==null ? '·' : (n<0?'−':'')+Math.abs(Math.round(n)).toLocaleString('en-IN');
 const fmtSigned = n => n==null ? '·' : (n>=0?'+':'−')+Math.abs(Math.round(n)).toLocaleString('en-IN');
-let ROWS=[], sortKey='date', sortAsc=true;
+let ROWS=[], FO=[], sortKey='date', sortAsc=true, foRange='3y';
 
 async function load(){
-  let data;
+  let data, fdata={rows:[]};
   try { data = await (await fetch('./fii_dii.json?t='+Date.now())).json(); }
   catch(e){ $('status').textContent='Could not load fii_dii.json — has the refresh run yet?'; return; }
+  try { fdata = await (await fetch('./fii_fo.json?t='+Date.now())).json(); } catch(e){}
   ROWS = (data.rows||[]).slice();
+  FO = (fdata.rows||[]).slice();
   if(!ROWS.length){ $('status').textContent='No FII/DII data yet.'; return; }
   $('updated').textContent = data.updated ? '· updated '+data.updated.replace('T',' ') : '';
   $('status').classList.add('hidden'); $('content').classList.remove('hidden');
@@ -170,12 +175,13 @@ document.querySelectorAll('th[data-s]').forEach(th=>th.addEventListener('click',
   const k=th.dataset.s; if(sortKey===k)sortAsc=!sortAsc; else {sortKey=k;sortAsc=(k==='date');} renderTable();}));
 
 /* ---------------- F&O ---------------- */
-const foNet = o => o ? o[0]-o[1] : null;
+const RANGES={'1y':365,'3y':1095,'5y':1825,'all':1e9};
 function renderFO(){
-  const foRows = ROWS.filter(r=>r.fo);
-  if(!foRows.length){ $('foCards').innerHTML='<div class="text-xs text-slate-400 col-span-4">No F&O data yet — the next refresh will add it.</div>'; return; }
-  const last = foRows[foRows.length-1];
-  const oi=last.fo.oi||{}, bs=last.fo.bs||{};
+  if(!FO.length){ $('foCards').innerHTML='<div class="text-xs text-slate-400 col-span-4">No F&O data yet — the next refresh will add it.</div>'; return; }
+  const last = FO[FO.length-1];
+  const oi=last.oi||{};
+  const lastBS = [...FO].reverse().find(r=>r.bs);          // newest row that has buy/sell value
+  const bs = lastBS ? lastBS.bs : {};
   const fiiIdx = oi.FII ? oi.FII.futIdx : null;
   const fiiIdxNet = fiiIdx ? fiiIdx[0]-fiiIdx[1] : null;
   const ratio = fiiIdx && fiiIdx[1] ? (fiiIdx[0]/fiiIdx[1]) : null;
@@ -185,22 +191,29 @@ function renderFO(){
   $('foCards').innerHTML =
     card('FII Index-Fut net · '+last.date, fmtSigned(fiiIdxNet), fiiIdx?('long '+fmt(fiiIdx[0])+' / short '+fmt(fiiIdx[1])):'', (fiiIdxNet||0)>=0?'pos':'neg')
    +card('FII long/short ratio', ratio!=null?ratio.toFixed(2):'·', ratio!=null?(ratio<1?'net short (bearish)':'net long (bullish)'):'', (ratio||0)>=1?'pos':'neg')
-   +card('FII F&O net turnover', fmtSigned(bsNetTotal)+' cr', 'buy − sell, all instruments', bsNetTotal>=0?'pos':'neg')
+   +card('FII F&O net turnover · '+(lastBS?lastBS.date:''), fmtSigned(bsNetTotal)+' cr', 'buy − sell, all instruments', bsNetTotal>=0?'pos':'neg')
    +card('DII Index-Fut net', fmtSigned(diiIdxNet), 'contracts', (diiIdxNet||0)>=0?'pos':'neg');
 
-  // chart: FII index-fut net over time
-  const series = foRows.map(r=>({d:r.date, v: r.fo.oi&&r.fo.oi.FII ? r.fo.oi.FII.futIdx[0]-r.fo.oi.FII.futIdx[1] : null})).filter(p=>p.v!=null);
+  // range buttons
+  $('foRangeBtns').innerHTML = Object.keys(RANGES).map(k=>`<button data-r="${k}" class="px-2 py-1 rounded ${foRange===k?'bg-blue-600 text-white':'bg-slate-100 text-slate-600'}">${k.toUpperCase()}</button>`).join('');
+  $('foRangeBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{foRange=b.dataset.r; renderFO();});
+
+  // chart: FII index-fut net over time (range-filtered)
+  const cut = RANGES[foRange];
+  const lastDate = new Date(last.date);
+  let series = FO.map(r=>({d:r.date, v: r.oi&&r.oi.FII ? r.oi.FII.futIdx[0]-r.oi.FII.futIdx[1] : null})).filter(p=>p.v!=null);
+  if(cut<1e9) series = series.filter(p=>(lastDate-new Date(p.d))/864e5 <= cut);
   $('foChart').innerHTML = lineChartZero(series);
 
-  // buy/sell table
-  $('foDate1').textContent = '('+last.date+')';
+  // buy/sell table (latest day that has values)
+  $('foDate1').textContent = '('+(lastBS?lastBS.date:'n/a')+')';
   const names={idxFut:'Index Futures',idxOpt:'Index Options',stkFut:'Stock Futures',stkOpt:'Stock Options'};
   $('foBS').innerHTML = ['idxFut','idxOpt','stkFut','stkOpt'].map(k=>{const b=bs[k];if(!b)return '';const net=b[0]-b[1];
     return `<tr class="border-b border-slate-50"><td class="py-1 px-1 font-medium">${names[k]}</td>
       <td class="text-right px-1 text-slate-500">${fmt(b[0])}</td><td class="text-right px-1 text-slate-500">${fmt(b[1])}</td>
       <td class="text-right px-1 ${net>=0?'pos':'neg'}">${fmtSigned(net)}</td></tr>`;}).join('');
 
-  // participant OI table
+  // participant OI table (latest day)
   $('foDate2').textContent = '('+last.date+')';
   $('foOI').innerHTML = ['FII','DII','Pro','Client'].map(p=>{const o=oi[p];if(!o)return '';
     const idxNet=o.futIdx[0]-o.futIdx[1], stkNet=o.futStk[0]-o.futStk[1];

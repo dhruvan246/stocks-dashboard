@@ -21,7 +21,8 @@ import os, json, time, datetime, urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-OUT = os.path.join(ROOT, "docs", "fii_dii.json")
+OUT = os.path.join(ROOT, "docs", "fii_dii.json")       # cash segment (recent + grows)
+OUT_FO = os.path.join(ROOT, "docs", "fii_fo.json")     # derivatives net positions (2012 -> today)
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
 
 
@@ -46,12 +47,13 @@ def _nse_jar():
     return jar
 
 
-def fetch_fo_for_date(dt, jar):
+def fetch_fo_for_date(dt, jar, include_bs=True):
     """
     Fetch F&O participant data for one date (datetime.date):
       - participant-wise OI (net positions, contracts) for FII/DII/Pro/Client
-      - FII derivative buy/sell VALUE (Rs cr) per instrument
+      - FII derivative buy/sell VALUE (Rs cr) per instrument  [skipped if include_bs=False]
     Returns a compact dict or None if that day's files aren't available.
+    The buy/sell .xls only exists for recent dates, so bulk backfill passes include_bs=False.
     """
     import csv, io
     ddmmyyyy = dt.strftime("%d%m%Y")
@@ -78,6 +80,8 @@ def fetch_fo_for_date(dt, jar):
     except Exception:
         pass
     # ---- FII derivative buy/sell value (Rs cr) ----
+    if not include_bs:
+        return fo or None
     try:
         import xlrd
         blob = _get("https://nsearchives.nseindia.com/content/fo/fii_stats_%s.xls" % ddmonyyyy,
@@ -145,60 +149,68 @@ def fetch_nse():
         return {}
 
 
-def main():
-    # load existing history
-    hist = {}
+def _load_rows(path):
     try:
-        old = json.load(open(OUT, encoding="utf-8"))
-        for row in old.get("rows", []):
-            hist[row["date"]] = row
+        return {r["date"]: r for r in json.load(open(path, encoding="utf-8")).get("rows", [])}
     except Exception:
-        pass
+        return {}
+
+
+def update_cash():
+    """Refresh the cash-segment file (recent + grows forward)."""
+    hist = _load_rows(OUT)
+    # migrate: if old rows carried an embedded 'fo', drop it (now in fii_fo.json)
+    for r in hist.values():
+        r.pop("fo", None)
     n_before = len(hist)
-
-    nt = fetch_niftytrader()
-    nse = fetch_nse()
+    nt, nse = fetch_niftytrader(), fetch_nse()
     if not nt and not nse:
-        print("  ! both sources failed — keeping existing history untouched")
-        return
-
-    # merge NiftyTrader (net + nifty) first
+        print("  ! cash: both sources failed — keeping existing untouched")
+        return list(hist)
     for d, v in nt.items():
         row = hist.setdefault(d, {"date": d})
         for k in ("fiiNet", "diiNet", "nifty", "chg"):
             if v.get(k) is not None:
                 row[k] = v[k]
-    # NSE overrides/extends the latest day with buy/sell/net
     for d, v in nse.items():
-        row = hist.setdefault(d, {"date": d})
-        row.update(v)
+        hist.setdefault(d, {"date": d}).update(v)
+    rows = [hist[d] for d in sorted(hist)]
+    json.dump({"updated": time.strftime("%Y-%m-%dT%H:%M:%S"), "rows": rows},
+              open(OUT, "w", encoding="utf-8"), separators=(",", ":"))
+    print("  fii_dii.json (cash): %d rows (was %d), latest %s" %
+          (len(rows), n_before, rows[-1]["date"] if rows else "-"))
+    return sorted(hist)
 
-    # ---- F&O backfill: attach participant OI + FII deriv buy/sell to any date missing it ----
-    # First run fills recent history (capped); later runs only the newest 1-2 days.
-    missing = [d for d in sorted(hist) if "fo" not in hist[d]]
+
+def update_fo(cash_dates, max_new=40):
+    """Top up the derivatives file with any recent dates missing F&O data."""
+    fo = _load_rows(OUT_FO)
+    n_before = len(fo)
+    missing = [d for d in cash_dates if d not in fo]
     if missing:
         jar = _nse_jar()
         done = 0
-        for d in reversed(missing):          # newest first
-            if done >= 30:
+        for d in reversed(sorted(missing)):       # newest first
+            if done >= max_new:
                 break
             try:
-                dt = datetime.datetime.strptime(d, "%Y-%m-%d").date()
-                fo = fetch_fo_for_date(dt, jar)
-                if fo:
-                    hist[d]["fo"] = fo
+                rec = fetch_fo_for_date(datetime.datetime.strptime(d, "%Y-%m-%d").date(), jar)
+                if rec:
+                    rec["date"] = d
+                    fo[d] = rec
                     done += 1
                 time.sleep(0.4)
             except Exception:
                 pass
-        print("  F&O attached to %d/%d missing dates" % (done, len(missing)))
-
-    rows = [hist[d] for d in sorted(hist)]
+    rows = [fo[d] for d in sorted(fo)]
     json.dump({"updated": time.strftime("%Y-%m-%dT%H:%M:%S"), "rows": rows},
-              open(OUT, "w", encoding="utf-8"), separators=(",", ":"))
-    latest = rows[-1] if rows else {}
-    print("  fii_dii.json: %d rows (was %d), latest %s — FII net %s, DII net %s" %
-          (len(rows), n_before, latest.get("date"), latest.get("fiiNet"), latest.get("diiNet")))
+              open(OUT_FO, "w", encoding="utf-8"), separators=(",", ":"))
+    print("  fii_fo.json (derivatives): %d rows (was %d)" % (len(rows), n_before))
+
+
+def main():
+    dates = update_cash()
+    update_fo(dates)
 
 
 if __name__ == "__main__":
