@@ -133,7 +133,7 @@ HTML = r"""<!DOCTYPE html>
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Dhruvan's mutual funds</title>
+<title>STOCKSWORLD · Mutual Funds</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
   table { font-feature-settings: "tnum" 1; }
@@ -163,8 +163,8 @@ HTML = r"""<!DOCTYPE html>
 <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
   <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
     <a href="./nse-bse-dashboard.html" class="flex items-center gap-2.5 shrink-0 group">
-      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">DS</span>
-      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">Dhruvan's <span class="text-indigo-600">Markets</span></span>
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
     </a>
     <div class="flex items-center gap-3 min-w-0">
       <nav class="flex items-center gap-1 overflow-x-auto">
