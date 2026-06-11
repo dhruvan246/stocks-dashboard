@@ -166,6 +166,7 @@ HTML = r"""<!DOCTYPE html>
     <div class="text-xs text-slate-500">Snapshot &middot; __GEN__</div>
     <nav class="text-sm flex gap-3">
       <a href="./backtest.html" class="text-blue-600 hover:underline font-semibold">📈 Backtest</a>
+      <a href="./fii-dii.html" class="text-blue-600 hover:underline">FII/DII</a>
       <a href="./nse-bse-dashboard.html" class="text-blue-600 hover:underline">Stocks dashboard</a>
     </nav>
   </div>
