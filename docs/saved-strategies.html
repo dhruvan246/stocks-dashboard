@@ -53,6 +53,8 @@
         <div><label class="block text-[11px] font-semibold text-slate-500 mb-1">📅 As of date</label><input id="mDate" type="date" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-sm"/></div>
         <div><label class="block text-[11px] font-semibold text-slate-500 mb-1">Capital ₹</label><input id="mCap" type="number" value="100000" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-sm w-32"/></div>
         <button id="mRefresh" class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700">↻ Refresh / Re-allocate</button>
+        <button id="mLive" class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-rose-600 text-white hover:bg-rose-700">⚡ Go Live</button>
+        <button id="mLiveCfg" class="text-slate-400 hover:text-slate-700 text-base px-1" title="Set live-feed Worker URL">⚙</button>
         <button id="mCsv" class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-emerald-600 text-white hover:bg-emerald-700">⬇ Download CSV</button>
         <span id="mSort" class="text-[11px] text-slate-400 ml-auto"></span>
       </div>
@@ -80,7 +82,7 @@
           <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>
             <th class="text-left py-2 pr-2">#</th><th class="text-left pr-3">Symbol</th>
             <th class="text-right px-2">Chg %</th><th class="text-right px-2">% 52wHi</th><th class="text-right px-2">% 52wLo</th>
-            <th class="text-right px-2">RSI</th><th class="text-right px-2">Close ₹</th><th class="text-right px-2">Shares</th><th class="text-right px-2">Allocation</th></tr></thead>
+            <th class="text-right px-2">RSI</th><th class="text-right px-2">Close ₹</th><th class="text-right px-2">Live ₹</th><th class="text-right px-2">Δ%</th><th class="text-right px-2">Shares</th><th class="text-right px-2">Allocation</th></tr></thead>
           <tbody id="mBody"></tbody>
         </table>
       </div>
@@ -185,26 +187,35 @@ function openPicks(id) {
   $('mDate').min = SF.start; $('mDate').max = SF.end; $('mDate').value = SF.end;
   $('hFrom').min = SF.start; $('hFrom').max = SF.end; $('hTo').min = SF.start; $('hTo').max = SF.end;
   $('hFrom').value = SF.start; $('hTo').value = SF.end; $('hOut').textContent = '';
+  LIVE = null;   // start from daily-close; user clicks Go Live for live prices
   $('modal').classList.remove('hidden');
   refreshPicks();
 }
 function closeModal() { $('modal').classList.add('hidden'); CUR = null; }
 
-let LAST_BASKET = null;
+let LAST_BASKET = null, LIVE = null;   // LIVE = {ts, data:{SYM:{ltp,prevClose}}}
+function liveLtp(sym) { return (LIVE && LIVE.data[sym] && LIVE.data[sym].ltp != null) ? LIVE.data[sym].ltp : null; }
 function refreshPicks() {
   if (!CUR) return;
   const date = clampDate($('mDate').value || SF.end, SF.start, SF.end);
   $('mDate').value = date;
   const cap = +$('mCap').value || 100000;
-  $('mSub').textContent = `As of ${date} · latest daily close · ${SF.nDead} delisted names included`;
+  const liveTag = LIVE
+    ? `<span class="text-rose-600 font-semibold">🔴 LIVE</span> · fetched ${new Date(LIVE.ts).toLocaleTimeString('en-IN')} · Yahoo NSE (~15 min delay)`
+    : 'latest daily close';
+  $('mSub').innerHTML = `As of ${date} · ${liveTag} · ${SF.nDead} delisted names included`;
   const ranked = screenAsOf(CUR.cfg, date);
   const picks = ranked.slice(0, CUR.cfg.topN);
-  const { rows, deployed, cash } = allocateBasket(picks, cap);
+  // allocate at the EFFECTIVE price: live LTP when available, else the daily close
+  const per = cap / (picks.length || 1); let deployed = 0;
+  const rows = picks.map(r => { const px = liveLtp(r.sym) != null ? liveLtp(r.sym) : r.price; const shares = Math.floor(per / px); const alloc = shares * px; deployed += alloc; return { ...r, px, shares, alloc }; });
   LAST_BASKET = { date, rows };
   $('sDeployed').textContent = fmtINR(deployed);
-  $('sCash').textContent = fmtINR(cash);
+  $('sCash').textContent = fmtINR(cap - deployed);
   $('sQual').textContent = `${ranked.length} / ${CUR.cfg.topN}`;
-  $('mBody').innerHTML = rows.length ? rows.map((r, i) => `<tr class="border-b border-slate-50">
+  $('mBody').innerHTML = rows.length ? rows.map((r, i) => {
+    const live = liveLtp(r.sym); const delta = live != null ? (live / r.price - 1) * 100 : null;
+    return `<tr class="border-b border-slate-50">
     <td class="py-1.5 pr-2 text-slate-400">${i + 1}</td>
     <td class="pr-3 font-semibold text-indigo-700">${esc(r.sym)}</td>
     <td class="text-right px-2 ${r.chg >= 0 ? 'pos' : 'neg'}">${pct(r.chg)}</td>
@@ -212,9 +223,12 @@ function refreshPicks() {
     <td class="text-right px-2">${r.d52low.toFixed(1)}%</td>
     <td class="text-right px-2">${r.rsi == null ? '—' : Math.round(r.rsi)}</td>
     <td class="text-right px-2">${r.price.toFixed(2)}</td>
+    <td class="text-right px-2 ${live != null ? 'font-semibold text-rose-600' : 'text-slate-300'}">${live != null ? live.toFixed(2) : '—'}</td>
+    <td class="text-right px-2 ${delta == null ? 'text-slate-300' : delta >= 0 ? 'pos' : 'neg'}">${delta == null ? '—' : pct(delta)}</td>
     <td class="text-right px-2 font-semibold">${r.shares}</td>
-    <td class="text-right px-2">${fmtINR(r.alloc)}</td></tr>`).join('')
-    : '<tr><td colspan="9" class="py-4 text-center text-slate-400">No stocks qualify on this date.</td></tr>';
+    <td class="text-right px-2">${fmtINR(r.alloc)}</td></tr>`;
+  }).join('')
+    : '<tr><td colspan="11" class="py-4 text-center text-slate-400">No stocks qualify on this date.</td></tr>';
   // also qualifying
   const also = ranked.slice(CUR.cfg.topN);
   if (also.length) {
@@ -226,13 +240,45 @@ function refreshPicks() {
 }
 function downloadCSV() {
   if (!LAST_BASKET || !LAST_BASKET.rows.length) return;
-  const head = ['Rank', 'Symbol', 'Change%', 'Pct_from_52wHigh', 'Pct_from_52wLow', 'RSI', 'Close', 'Shares', 'Allocation'];
-  const lines = [head.join(',')].concat(LAST_BASKET.rows.map((r, i) =>
-    [i + 1, r.sym, r.chg.toFixed(2), r.d52.toFixed(2), r.d52low.toFixed(2), r.rsi == null ? '' : Math.round(r.rsi), r.price.toFixed(2), r.shares, Math.round(r.alloc)].join(',')));
+  const head = ['Rank', 'Symbol', 'Change%', 'Pct_from_52wHigh', 'Pct_from_52wLow', 'RSI', 'Close', 'Live', 'DeltaPct', 'Shares', 'Allocation'];
+  const lines = [head.join(',')].concat(LAST_BASKET.rows.map((r, i) => {
+    const live = liveLtp(r.sym); const delta = live != null ? (live / r.price - 1) * 100 : null;
+    return [i + 1, r.sym, r.chg.toFixed(2), r.d52.toFixed(2), r.d52low.toFixed(2), r.rsi == null ? '' : Math.round(r.rsi),
+      r.price.toFixed(2), live == null ? '' : live.toFixed(2), delta == null ? '' : delta.toFixed(2), r.shares, Math.round(r.alloc)].join(',');
+  }));
   const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
   a.download = `picks_${(CUR ? CUR.name : 'strategy').replace(/[^a-z0-9]+/gi, '_')}_${LAST_BASKET.date}.csv`;
   a.click(); URL.revokeObjectURL(a.href);
+}
+/* ---------- live feed (via user-deployed Cloudflare Worker) ---------- */
+function setWorkerUrl() {
+  const cur = localStorage.getItem('live_worker_url') || '';
+  const v = prompt('Paste your Cloudflare Worker URL for live quotes.\n(Setup guide: scripts/LIVE_FEED_SETUP.md — looks like https://xxx.workers.dev)', cur);
+  if (v == null) return cur;
+  const t = v.trim();
+  if (t && /^https?:\/\//.test(t)) { localStorage.setItem('live_worker_url', t); return t; }
+  if (t === '') { localStorage.removeItem('live_worker_url'); return ''; }
+  alert('That doesn\'t look like a URL (must start with https://).'); return cur;
+}
+async function goLive() {
+  if (!CUR || !LAST_BASKET) return;
+  let wurl = localStorage.getItem('live_worker_url') || '';
+  if (!wurl) { wurl = setWorkerUrl(); if (!wurl) return; }
+  const syms = LAST_BASKET.rows.map(r => r.sym);
+  if (!syms.length) { alert('No stocks in the basket to fetch.'); return; }
+  const btn = $('mLive'); const prev = btn.textContent; btn.textContent = '⏳ Fetching…'; btn.disabled = true;
+  try {
+    const sep = wurl.includes('?') ? '&' : '?';
+    const res = await fetch(wurl + sep + 'symbols=' + encodeURIComponent(syms.join(',')));
+    if (!res.ok) throw new Error('Worker returned HTTP ' + res.status);
+    const d = await res.json();
+    if (!d || !d.data || !Object.keys(d.data).length) throw new Error('no quotes returned (symbols may be BSE-only, or the source is rate-limiting)');
+    LIVE = { ts: d.asOf || Date.now(), data: d.data };
+    refreshPicks();
+  } catch (e) {
+    alert('Live fetch failed: ' + e.message + '\n\nCheck the Worker URL (⚙ button) and that opening it in a browser returns JSON.\nSee scripts/LIVE_FEED_SETUP.md.');
+  } finally { btn.textContent = prev; btn.disabled = false; }
 }
 function runHold() {
   if (!CUR) return;
@@ -249,9 +295,11 @@ function runHold() {
 $('clearAll').onclick = () => { if (confirm('Delete all saved strategies?')) { saveLS('bt_strategies', []); render(); } };
 $('mClose').onclick = closeModal;
 $('modal').addEventListener('click', e => { if (e.target === $('modal')) closeModal(); });
-$('mRefresh').onclick = refreshPicks;
-$('mDate').onchange = refreshPicks;
+$('mRefresh').onclick = () => { LIVE = null; refreshPicks(); };
+$('mDate').onchange = () => { LIVE = null; refreshPicks(); };   // live prices only apply to "now"
 $('mCsv').onclick = downloadCSV;
+$('mLive').onclick = goLive;
+$('mLiveCfg').onclick = setWorkerUrl;
 $('hCompute').onclick = runHold;
 $('mAlsoToggle').onclick = () => { const a = $('mAlso'); a.classList.toggle('hidden'); $('mAlsoToggle').innerHTML = $('mAlsoToggle').innerHTML.replace(a.classList.contains('hidden') ? '▾' : '▸', a.classList.contains('hidden') ? '▸' : '▾'); };
 
