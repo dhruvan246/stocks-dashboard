@@ -412,10 +412,16 @@ function render(r,cfg){
     </div>`;
   html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2"><span class="text-blue-700">Strategy</span> vs <span class="text-amber-600">Nifty 50</span> — ₹${cfg.capital.toLocaleString('en-IN')} grows to…</div><div id="eqc"></div></div>`;
   // latest holdings (current portfolio with weights — winners that rode show larger weights)
-  html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2">📌 Current holdings <span class="text-slate-400 font-normal">(after the last rebalance — ${cfg.method==='hold'?'winners ride, so weights drift':'equal-weight'})</span></div>
-    <div class="overflow-x-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b"><tr><th class="text-left py-1 px-2">#</th><th class="text-left px-2">Stock</th><th class="text-left px-2">Industry</th><th class="text-right px-2">Weight</th><th class="text-right px-2">Value</th><th class="text-right px-2">Chg%(lb)</th><th class="text-right px-2">RSI</th><th class="text-right px-2">52wHi%</th></tr></thead><tbody>
-    ${r.latest.map((p,i)=>`<tr class="border-b border-slate-50"><td class="px-2 py-1 text-slate-400">${i+1}</td><td class="px-2 font-medium">${p.sym}</td><td class="px-2 text-slate-500 text-xs">${p.ind}</td><td class="text-right px-2 font-semibold">${p.wt.toFixed(1)}%</td><td class="text-right px-2 text-slate-500">${fmtINR(p.val)}</td><td class="text-right px-2 ${p.chg>=0?'pos':'neg'}">${p.chg!=null?pct(p.chg):'·'}</td><td class="text-right px-2">${p.rsi!=null?p.rsi.toFixed(0):'·'}</td><td class="text-right px-2 neg">${p.d52!=null?p.d52.toFixed(0)+'%':'·'}</td></tr>`).join('')}
-    ${r.latestCash>1?`<tr class="border-b border-slate-50 bg-slate-50"><td class="px-2 py-1"></td><td class="px-2 font-medium text-slate-600">💵 Cash</td><td class="px-2 text-slate-400 text-xs">uninvested</td><td class="text-right px-2 font-semibold">${(r.latest._cashWt||0).toFixed(1)}%</td><td class="text-right px-2 text-slate-500">${fmtINR(r.latestCash)}</td><td colspan="3"></td></tr>`:''}
+  html+=`<div class="card p-4 mb-4">
+    <div class="flex flex-wrap items-center gap-2 mb-2">
+      <div class="text-sm font-semibold text-slate-700">📌 Current holdings / today's picks <span class="text-slate-400 font-normal">(after the last rebalance — ${cfg.method==='hold'?'winners ride, so weights drift':'equal-weight'})</span></div>
+      <button id="btGoLive" class="ml-auto px-2.5 py-1 rounded-lg text-xs font-semibold bg-rose-600 text-white hover:bg-rose-700">⚡ Go Live</button>
+      <button id="btLiveCfg" class="text-slate-400 hover:text-slate-700 text-sm px-1" title="Set live-feed Worker URL">⚙</button>
+    </div>
+    <div id="liveMsg" class="text-[11px] text-slate-500 mb-1"></div>
+    <div class="overflow-x-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b"><tr><th class="text-left py-1 px-2">#</th><th class="text-left px-2">Stock</th><th class="text-left px-2">Industry</th><th class="text-right px-2">Weight</th><th class="text-right px-2">Value</th><th class="text-right px-2">Chg%(lb)</th><th class="text-right px-2">RSI</th><th class="text-right px-2">52wHi%</th><th class="text-right px-2">Live ₹</th><th class="text-right px-2">Day %</th></tr></thead><tbody>
+    ${r.latest.map((p,i)=>`<tr class="border-b border-slate-50"><td class="px-2 py-1 text-slate-400">${i+1}</td><td class="px-2 font-medium">${p.sym}</td><td class="px-2 text-slate-500 text-xs">${p.ind}</td><td class="text-right px-2 font-semibold">${p.wt.toFixed(1)}%</td><td class="text-right px-2 text-slate-500">${fmtINR(p.val)}</td><td class="text-right px-2 ${p.chg>=0?'pos':'neg'}">${p.chg!=null?pct(p.chg):'·'}</td><td class="text-right px-2">${p.rsi!=null?p.rsi.toFixed(0):'·'}</td><td class="text-right px-2 neg">${p.d52!=null?p.d52.toFixed(0)+'%':'·'}</td><td class="liveCell text-right px-2 text-slate-300" data-sym="${p.sym}">—</td><td class="dayCell text-right px-2 text-slate-300" data-sym="${p.sym}">—</td></tr>`).join('')}
+    ${r.latestCash>1?`<tr class="border-b border-slate-50 bg-slate-50"><td class="px-2 py-1"></td><td class="px-2 font-medium text-slate-600">💵 Cash</td><td class="px-2 text-slate-400 text-xs">uninvested</td><td class="text-right px-2 font-semibold">${(r.latest._cashWt||0).toFixed(1)}%</td><td class="text-right px-2 text-slate-500">${fmtINR(r.latestCash)}</td><td colspan="5"></td></tr>`:''}
     </tbody></table></div></div>`;
   // ----- trade log -----
   const tr=r.trades; const winsT=tr.filter(t=>t.retPct>0).length;
@@ -448,6 +454,40 @@ function render(r,cfg){
   const sh=$('btSaveHist'), ss=$('btSaveStrat');
   if(sh) sh.onclick=saveToHistory;
   if(ss) ss.onclick=saveStrategy;
+  const gl=$('btGoLive'), gc=$('btLiveCfg');
+  if(gl) gl.onclick=goLive;
+  if(gc) gc.onclick=setWorkerUrl;
+}
+// ---- live feed (shares the Cloudflare Worker URL configured on the Strategies page) ----
+function setWorkerUrl(){
+  const cur=localStorage.getItem('live_worker_url')||'';
+  const v=prompt('Paste your Cloudflare Worker URL for live quotes (see scripts/LIVE_FEED_SETUP.md — like https://xxx.workers.dev):', cur);
+  if(v==null) return cur;
+  const t=v.trim();
+  if(t && /^https?:\/\//.test(t)){ localStorage.setItem('live_worker_url',t); return t; }
+  if(t==='') { localStorage.removeItem('live_worker_url'); return ''; }
+  alert('That doesn\'t look like a URL (must start with https://).'); return cur;
+}
+async function goLive(){
+  if(!LAST_RUN) return;
+  let url=localStorage.getItem('live_worker_url')||'';
+  if(!url){ url=setWorkerUrl(); if(!url) return; }
+  const syms=LAST_RUN.res.latest.map(p=>p.sym);
+  if(!syms.length){ return; }
+  const btn=$('btGoLive'); const prev=btn.textContent; btn.textContent='⏳ Fetching…'; btn.disabled=true;
+  try{
+    const sep=url.includes('?')?'&':'?';
+    const res=await fetch(url+sep+'symbols='+encodeURIComponent(syms.join(',')));
+    if(!res.ok) throw new Error('Worker returned HTTP '+res.status);
+    const d=await res.json(); const data=d.data||{};
+    if(!Object.keys(data).length) throw new Error('no quotes returned (symbols may be BSE-only, or the source is rate-limiting)');
+    document.querySelectorAll('.liveCell').forEach(td=>{ const q=data[td.dataset.sym]; const ok=q&&q.ltp!=null;
+      td.textContent= ok?('₹'+q.ltp.toFixed(2)):'—'; td.className='liveCell text-right px-2 '+(ok?'font-semibold text-rose-600':'text-slate-300'); });
+    document.querySelectorAll('.dayCell').forEach(td=>{ const q=data[td.dataset.sym]; const dd=(q&&q.ltp!=null&&q.prevClose)?(q.ltp/q.prevClose-1)*100:null;
+      td.textContent= dd==null?'—':pct(dd); td.className='dayCell text-right px-2 '+(dd==null?'text-slate-300':dd>=0?'pos':'neg'); });
+    $('liveMsg').innerHTML=`<span class="text-rose-600 font-semibold">🔴 LIVE</span> · fetched ${new Date(d.asOf||Date.now()).toLocaleTimeString('en-IN')} · Yahoo NSE (~15 min delay). Day % = live vs previous close.`;
+  }catch(e){ alert('Live fetch failed: '+e.message+'\n\nCheck the Worker URL (⚙) and that opening it in a browser returns JSON. See scripts/LIVE_FEED_SETUP.md.'); }
+  finally{ btn.textContent=prev; btn.disabled=false; }
 }
 function drawEquity(r){
   const eq=r.equity, bn=r.bench; const n=eq.length; if(n<2)return;
