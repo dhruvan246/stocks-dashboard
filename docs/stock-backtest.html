@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Stock Backtest</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body{font-feature-settings:"tnum" 1}
+  .pos{color:#15803d;font-weight:600}.neg{color:#b91c1c;font-weight:600}
+  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
+  .inp{border:1px solid #cbd5e1;border-radius:.5rem;padding:.45rem .6rem;font-size:.875rem;background:#fff}
+  .lbl{display:block;font-size:.7rem;font-weight:600;color:#64748b;margin-bottom:.25rem;text-transform:uppercase;letter-spacing:.02em}
+  #ov{position:fixed;inset:0;background:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50}
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+<div id="ov"><div class="w-10 h-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-3"></div><p class="text-sm text-slate-600" id="ovT">Loading price history (~17 MB)…</p></div>
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./nse-bse-dashboard.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <div class="flex items-center gap-3 min-w-0">
+      <nav class="flex items-center gap-1 overflow-x-auto">
+        <a href="./nse-bse-dashboard.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">📈<span class="hidden sm:inline">Stocks</span></a>
+        <a href="https://dhruvan246.github.io/fno-dashboard/" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">🎯<span class="hidden sm:inline">F&amp;O</span></a>
+        <a href="./mutual-funds.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">💰<span class="hidden sm:inline">Mutual&nbsp;Funds</span></a>
+        <a href="./fii-dii.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">🌐<span class="hidden sm:inline">FII/DII</span></a>
+      </nav>
+      <span class="text-[11px] font-semibold text-indigo-600 hidden md:block shrink-0">🧪 Backtest</span>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-screen-xl mx-auto px-4 py-6">
+  <h1 class="text-xl md:text-2xl font-bold text-slate-900 mb-1">📈 Stock Backtest</h1>
+  <p class="text-xs text-slate-500 mb-4">Screen the whole market by momentum/technical factors, hold the top picks, rebalance, and compare to Nifty 50. Filter &amp; rank like a quant screener.</p>
+
+  <!-- controls -->
+  <div class="card p-4 mb-4">
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+      <div><label class="lbl">From</label><input id="cFrom" type="date" class="inp w-full"/></div>
+      <div><label class="lbl">To</label><input id="cTo" type="date" class="inp w-full"/></div>
+      <div><label class="lbl">Universe — min mcap</label><select id="cMcap" class="inp w-full">
+        <option value="500">₹500 Cr+</option><option value="2000" selected>₹2,000 Cr+</option><option value="5000">₹5,000 Cr+</option><option value="20000">₹20,000 Cr+</option><option value="100000">₹1,00,000 Cr+</option></select></div>
+      <div><label class="lbl">Index filter</label><select id="cIndex" class="inp w-full"></select></div>
+      <div><label class="lbl">Rebalance</label><select id="cFreq" class="inp w-full">
+        <option value="1">Monthly</option><option value="3" selected>Quarterly</option><option value="6">Half-yearly</option><option value="12">Yearly</option></select></div>
+      <div><label class="lbl">Lookback (Change %)</label><select id="cLook" class="inp w-full">
+        <option value="1">1 month</option><option value="3">3 months</option><option value="6" selected>6 months</option><option value="12">12 months</option></select></div>
+      <div><label class="lbl">Sort by</label><select id="cSort" class="inp w-full"></select></div>
+      <div><label class="lbl">Direction</label><select id="cDir" class="inp w-full"><option value="high" selected>Prefer High</option><option value="low">Prefer Low</option></select></div>
+      <div><label class="lbl">Holdings (top-N)</label><input id="cTopN" type="number" value="10" min="1" max="50" class="inp w-full"/></div>
+      <div><label class="lbl">Capital (₹)</label><input id="cCap" type="number" value="100000" class="inp w-full"/></div>
+    </div>
+    <div class="mt-3">
+      <div class="flex items-center justify-between mb-1"><label class="lbl mb-0">Filter criteria (AND-combined)</label>
+        <button id="addF" class="text-xs font-semibold text-blue-600 hover:underline">+ Add filter</button></div>
+      <div id="filters" class="space-y-2"></div>
+    </div>
+    <div class="mt-4 flex items-center gap-3">
+      <button id="run" class="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-5 py-2 text-sm font-semibold shadow-sm">Run Backtest</button>
+      <span id="runMsg" class="text-xs text-slate-500"></span>
+    </div>
+  </div>
+
+  <div id="out"></div>
+
+  <p class="text-[11px] text-slate-500 mt-6">
+    <b>Caveats:</b> universe membership uses point-in-time index lists, but market-cap filtering and the candidate set use the funds that exist <i>today</i> (<b>survivorship bias</b> — results flatter than reality). Returns are price-only (no dividends), <b>before</b> costs/slippage/tax. Historical mcap is approximated from price. Not investment advice.
+  </p>
+</main>
+
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const DAY=86400;
+let META={}, SERIES={}, IDXH={}, FNOH=[], START_TS=0, NIFTY={};
+const FIELDS=[
+  {v:'changePercent',l:'Change % (lookback)'},
+  {v:'rsi',l:'RSI(14)'},
+  {v:'d52',l:'Dist. from 52w High %'},
+  {v:'d52_low_pct',l:'Dist. from 52w Low %'},
+  {v:'indRank',l:'Industry Momentum Rank (1=hot…10=cold)'},
+  {v:'mcap',l:'Market Cap (₹Cr)'},
+  {v:'hist_mcap',l:'Historical Mcap (₹Cr, approx)'},
+];
+const fmtINR=n=>'₹'+Math.round(n).toLocaleString('en-IN');
+const pct=n=>(n>=0?'+':'')+n.toFixed(1)+'%';
+
+async function load(){
+  try{
+    const buf=await (await fetch('./stock_data.bin?t='+Date.now())).arrayBuffer();
+    const stream=new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'));
+    const D=JSON.parse(await new Response(stream).text());
+    META=D.meta; SERIES=D.series; IDXH=D.indicesHistory||{}; FNOH=D.fnoHistory||[]; START_TS=D.startTs;
+  }catch(e){ $('ovT').textContent='Could not load stock_data.bin — has it been built yet?'; return; }
+  try{ NIFTY=(await (await fetch('./nifty.json?t='+Date.now())).json()).px||{}; }catch(e){ NIFTY={}; }
+  initUI(); $('ov').remove();
+}
+
+function initUI(){
+  // index filter options
+  const idxOpts=['', 'Nifty 50','Nifty 100','Nifty 200','Nifty 500','Nifty Midcap 150','Nifty Smallcap 250','__FNO__'];
+  $('cIndex').innerHTML=idxOpts.map(k=>`<option value="${k}">${k===''?'All stocks':k==='__FNO__'?'F&O stocks':k}</option>`).join('');
+  $('cSort').innerHTML=FIELDS.map(f=>`<option value="${f.v}">${f.l}</option>`).join('');
+  // default dates
+  const lastTs=START_TS + (maxOffset())*DAY; const lastD=new Date(lastTs*1000).toISOString().slice(0,10);
+  $('cTo').value=lastD; $('cFrom').value=(+lastD.slice(0,4)-7)+lastD.slice(4);
+  addFilter(); // one empty filter row
+  $('addF').onclick=addFilter;
+  $('run').onclick=run;
+}
+function maxOffset(){ let mx=0; for(const k in SERIES){const d=SERIES[k].d; if(d&&d.length){const v=d[d.length-1]; if(v>mx)mx=v;}} return mx; }
+function addFilter(){
+  const row=document.createElement('div'); row.className='flex items-center gap-2 fRow';
+  row.innerHTML=`<select class="inp f-field text-xs flex-1">${FIELDS.map(f=>`<option value="${f.v}">${f.l}</option>`).join('')}</select>
+    <select class="inp f-op text-xs"><option>&gt;</option><option>&gt;=</option><option>&lt;</option><option>&lt;=</option><option>==</option></select>
+    <input type="number" step="any" class="inp f-val text-xs w-24" placeholder="value"/>
+    <button class="text-red-500 text-sm px-1 f-rm">&times;</button>`;
+  row.querySelector('.f-rm').onclick=()=>row.remove();
+  $('filters').appendChild(row);
+}
+function readFilters(){
+  return [...document.querySelectorAll('.fRow')].map(r=>({
+    field:r.querySelector('.f-field').value, op:r.querySelector('.f-op').value.replace('&gt;','>').replace('&lt;','<'),
+    val:parseFloat(r.querySelector('.f-val').value)
+  })).filter(f=>!isNaN(f.val));
+}
+
+// ---- price helpers ----
+function dayOff(dstr){ return Math.floor((Date.parse(dstr+'T00:00:00Z')/1000 - START_TS)/DAY); }
+function idxLE(arr, off){ let lo=0,hi=arr.length-1,ans=-1; while(lo<=hi){const m=(lo+hi)>>1; if(arr[m]<=off){ans=m;lo=m+1;}else hi=m-1;} return ans; }
+function priceAt(tkr, off){ const s=SERIES[tkr]; if(!s)return null; const i=idxLE(s.d,off); return i<0?null:s.p[i]/100; }
+// 52-week hi/lo over [off-365, off]
+function hl52(tkr, off){ const s=SERIES[tkr]; if(!s)return null; const lo=off-365; let i=idxLE(s.d,off); if(i<0)return null; let hi=-1e18,low=1e18; for(let k=i;k>=0 && s.d[k]>=lo;k--){const p=s.p[k]; if(p>hi)hi=p; if(p<low)low=p;} return {hi:hi/100,low:low/100}; }
+function rsi14(tkr, off){ const s=SERIES[tkr]; if(!s)return null; let i=idxLE(s.d,off); if(i<14)return null; let g=0,l=0; for(let k=i-13;k<=i;k++){const ch=(s.p[k]-s.p[k-1]); if(ch>0)g+=ch; else l-=ch;} if(g+l===0)return 50; const rs=g/(l||1e-9); return 100-100/(1+rs); }
+
+function membersAsOf(name, dstr){
+  if(name==='__FNO__'){ const snap=lastSnap(FNOH,dstr); return snap?new Set(snap.symbols):null; }
+  const snap=lastSnap(IDXH[name]||[], dstr); return snap?new Set(snap.symbols):null;
+}
+function lastSnap(list, dstr){ let best=null; for(const s of list){ if(s.effectiveDate<=dstr && (!best||s.effectiveDate>best.effectiveDate)) best=s; } return best || (list.length?list[0]:null); }
+
+function monthsBetween(start,end){
+  const out=[]; let [y,m]=[+start.slice(0,5-1),+start.slice(5,7)]; const ey=+end.slice(0,4),em=+end.slice(5,7);
+  while(y<ey||(y===ey&&m<=em)){ const last=new Date(Date.UTC(y,m,0)).toISOString().slice(0,10); out.push(last); m++; if(m>12){m=1;y++;} }
+  if(out.length) out[out.length-1]=end; return out;
+}
+
+// ---- the engine ----
+function run(){
+  const cfg={
+    start:$('cFrom').value, end:$('cTo').value, mcapFloor:+$('cMcap').value,
+    indexName:$('cIndex').value, freq:+$('cFreq').value, lookback:+$('cLook').value,
+    sortBy:$('cSort').value, dir:$('cDir').value, topN:Math.max(1,Math.min(50,+$('cTopN').value||10)),
+    capital:+$('cCap').value||100000, filters:readFilters()
+  };
+  if(!cfg.start||!cfg.end||cfg.start>=cfg.end){ $('runMsg').textContent='Pick a valid date range.'; return; }
+  $('runMsg').textContent='Running…';
+  setTimeout(()=>{ try{ const res=simulate(cfg); render(res,cfg); $('runMsg').textContent=''; }
+    catch(e){ $('runMsg').textContent='Error: '+e.message; console.error(e); } }, 30);
+}
+
+function factorsAt(off, cfg){
+  // returns map symbol-> {tkr, sym, name, ind, chg, rsi, d52, d52low, mcap, histMcap, price}
+  const lookOff=off - Math.round(cfg.lookback*30.44);
+  const members = cfg.indexName ? membersAsOf(cfg.indexName, isoOff(off)) : null;
+  const rows=[];
+  for(const tkr in SERIES){
+    const m=META[tkr]; if(!m) continue;
+    if((m.mcap||0) < cfg.mcapFloor) continue;
+    if(members && !members.has(m.symbol)) continue;
+    const price=priceAt(tkr,off); const p0=priceAt(tkr,lookOff);
+    if(price==null||p0==null||p0<=0) continue;
+    const hl=hl52(tkr,off); if(!hl) continue;
+    rows.push({tkr, sym:m.symbol, name:m.name, ind:(m.industry||m.sector||'Other'),
+      price, chg:(price/p0-1)*100, rsi:rsi14(tkr,off),
+      d52:(price-hl.hi)/hl.hi*100, d52low:(price-hl.low)/hl.low*100,
+      mcap:m.mcap, histMcap:(m.latest? m.mcap*price/m.latest : m.mcap)});
+  }
+  // industry momentum rank (deciles by avg chg)
+  const byInd={}; rows.forEach(r=>{(byInd[r.ind]=byInd[r.ind]||[]).push(r.chg);});
+  const indAvg=Object.entries(byInd).map(([k,v])=>[k, v.reduce((a,b)=>a+b,0)/v.length]).sort((a,b)=>b[1]-a[1]);
+  const indRankMap={}; indAvg.forEach(([k],i)=>{ indRankMap[k]=Math.min(10,1+Math.floor(i/Math.max(1,indAvg.length/10))); });
+  rows.forEach(r=>{ r.indRank=indRankMap[r.ind]||10; });
+  return rows;
+}
+function fieldVal(r, f){ return f==='changePercent'?r.chg : f==='rsi'?r.rsi : f==='d52'?r.d52 : f==='d52_low_pct'?r.d52low : f==='indRank'?r.indRank : f==='mcap'?r.mcap : f==='hist_mcap'?r.histMcap : null; }
+function isoOff(off){ return new Date((START_TS+off*DAY)*1000).toISOString().slice(0,10); }
+
+function simulate(cfg){
+  const months=monthsBetween(cfg.start,cfg.end);
+  let val=cfg.capital, units={}, held=[]; const equity=[], rebs=[]; let lastRebVal=cfg.capital, monthsSinceReb=1e9, latest=[];
+  for(let mi=0; mi<months.length; mi++){
+    const md=months[mi], off=dayOff(md);
+    if(held.length){ let v=0; for(const h of held){ const p=priceAt(h.tkr,off); if(p!=null) v+=units[h.tkr]*p; } if(v>0) val=v; }
+    equity.push([md, val]);
+    monthsSinceReb++;
+    const isReb = (mi===0) || (monthsSinceReb>=cfg.freq);
+    if(isReb){
+      if(held.length){ rebs.push({date:md, ret:(val/lastRebVal-1)*100, holds:held.map(h=>h.sym)}); }
+      let rows=factorsAt(off,cfg).filter(r=>r.rsi!=null);
+      for(const f of cfg.filters){ rows=rows.filter(r=>{const x=fieldVal(r,f.field); if(x==null)return false; return f.op==='>'?x>f.val:f.op==='>='?x>=f.val:f.op==='<'?x<f.val:f.op==='<='?x<=f.val:x===f.val;}); }
+      rows.sort((a,b)=>{const x=fieldVal(a,cfg.sortBy),y=fieldVal(b,cfg.sortBy); return cfg.dir==='high'?y-x:x-y;});
+      const picks=rows.slice(0,cfg.topN);
+      units={}; const per=val/(picks.length||1);
+      picks.forEach(p=>{ units[p.tkr]=per/p.price; });
+      held=picks.map(p=>({tkr:p.tkr,sym:p.sym})); lastRebVal=val; monthsSinceReb=0;
+      latest=picks; // last screen = today's picks
+    }
+  }
+  // benchmark (Nifty 50)
+  const bench=[]; const startN=nearestNifty(cfg.start);
+  if(startN) for(const [d] of equity){ const nv=nearestNifty(d); bench.push([d, nv?cfg.capital*nv/startN:null]); }
+  const years=(Date.parse(cfg.end)-Date.parse(cfg.start))/(365.25*864e5);
+  const finalV=equity[equity.length-1][1];
+  const cagr=years>0?(Math.pow(finalV/cfg.capital,1/years)-1)*100:0;
+  const benchFinal=bench.length?bench[bench.length-1][1]:null;
+  const benchCagr=(benchFinal&&years>0)?(Math.pow(benchFinal/cfg.capital,1/years)-1)*100:null;
+  const rets=[]; for(let i=1;i<equity.length;i++){ if(equity[i-1][1]>0) rets.push(equity[i][1]/equity[i-1][1]-1); }
+  const mean=rets.reduce((a,b)=>a+b,0)/(rets.length||1);
+  const vol=Math.sqrt(rets.reduce((a,b)=>a+(b-mean)**2,0)/(rets.length||1)*12)*100;
+  const wins=rebs.filter(r=>r.ret>0).length;
+  return {equity,bench,rebs,latest,cfg,years,finalV,cagr,benchCagr,vol,
+    maxDD:maxDrawdown(equity), winRate:rebs.length?100*wins/rebs.length:0};
+}
+function nearestNifty(dstr){ if(NIFTY[dstr])return NIFTY[dstr]; // step back up to 7 days
+  let d=new Date(dstr+'T00:00:00Z'); for(let i=0;i<7;i++){ d.setUTCDate(d.getUTCDate()-1); const k=d.toISOString().slice(0,10); if(NIFTY[k])return NIFTY[k]; } return null; }
+function maxDrawdown(eq){ let peak=-1,mdd=0; for(const [,v] of eq){ if(v>peak)peak=v; else if(peak>0){const dd=(peak-v)/peak*100; if(dd>mdd)mdd=dd;} } return mdd; }
+
+// ---- render ----
+function render(r,cfg){
+  const card=(t,v,sub,cls)=>`<div class="card p-3"><div class="text-[10px] uppercase text-slate-500">${t}</div><div class="text-lg font-bold ${cls||''}">${v}</div><div class="text-[11px] text-slate-400">${sub||''}</div></div>`;
+  const beat=r.benchCagr!=null && r.cagr>=r.benchCagr;
+  let html=`<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-4">
+    ${card('Final value', fmtINR(r.finalV), 'from '+fmtINR(cfg.capital), r.finalV>=cfg.capital?'pos':'neg')}
+    ${card('CAGR', pct(r.cagr), r.years.toFixed(1)+' years', r.cagr>=0?'pos':'neg')}
+    ${card('Nifty 50 CAGR', r.benchCagr!=null?pct(r.benchCagr):'—', beat?'strategy wins ✓':'benchmark', beat?'pos':'neg')}
+    ${card('Max drawdown', '-'+r.maxDD.toFixed(0)+'%', 'worst peak-to-trough','neg')}
+    ${card('Volatility', r.vol.toFixed(0)+'%', 'annualised','')}
+    ${card('Win rate', r.winRate.toFixed(0)+'%', r.rebs.length+' rebalances','')}
+  </div>`;
+  html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2"><span class="text-blue-700">Strategy</span> vs <span class="text-amber-600">Nifty 50</span> — ₹${cfg.capital.toLocaleString('en-IN')} grows to…</div><div id="eqc"></div></div>`;
+  // latest picks
+  html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2">📌 Today's picks <span class="text-slate-400 font-normal">(latest screen — what the strategy would hold now)</span></div>
+    <div class="overflow-x-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b"><tr><th class="text-left py-1 px-2">#</th><th class="text-left px-2">Stock</th><th class="text-left px-2">Industry</th><th class="text-right px-2">Chg%(lb)</th><th class="text-right px-2">RSI</th><th class="text-right px-2">52wHi%</th><th class="text-right px-2">Mcap ₹Cr</th></tr></thead><tbody>
+    ${r.latest.map((p,i)=>`<tr class="border-b border-slate-50"><td class="px-2 py-1 text-slate-400">${i+1}</td><td class="px-2 font-medium">${p.sym}</td><td class="px-2 text-slate-500 text-xs">${p.ind}</td><td class="text-right px-2 ${p.chg>=0?'pos':'neg'}">${pct(p.chg)}</td><td class="text-right px-2">${p.rsi!=null?p.rsi.toFixed(0):'·'}</td><td class="text-right px-2 neg">${p.d52.toFixed(0)}%</td><td class="text-right px-2 text-slate-500">${Math.round(p.mcap).toLocaleString('en-IN')}</td></tr>`).join('')}
+    </tbody></table></div></div>`;
+  // rebalance log
+  html+=`<div class="card p-4"><div class="text-sm font-semibold text-slate-700 mb-2">Rebalance log <span class="text-slate-400 font-normal">(${r.rebs.length} periods)</span></div>
+    <div class="overflow-x-auto max-h-80 overflow-y-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b sticky top-0 bg-white"><tr><th class="text-left py-1 px-2">Rebalance date</th><th class="text-right px-2">Period return</th><th class="text-left px-2">Held</th></tr></thead><tbody>
+    ${r.rebs.slice().reverse().map(rb=>`<tr class="border-b border-slate-50"><td class="px-2 py-1 font-medium">${rb.date}</td><td class="text-right px-2 ${rb.ret>=0?'pos':'neg'}">${pct(rb.ret)}</td><td class="px-2 text-xs text-slate-500">${rb.holds.join(', ')}</td></tr>`).join('')}
+    </tbody></table></div></div>`;
+  $('out').innerHTML=html;
+  drawEquity(r);
+}
+function drawEquity(r){
+  const eq=r.equity, bn=r.bench; const n=eq.length; if(n<2)return;
+  const W=900,H=300,PL=64,PR=16,PT=14,PB=28;
+  const allV=eq.map(p=>p[1]).concat(bn.map(p=>p[1]).filter(v=>v!=null));
+  const mn=Math.min(...allV), mx=Math.max(...allV);
+  const x=i=>PL+(W-PL-PR)*i/(n-1), y=v=>PT+(H-PT-PB)*(1-(v-mn)/((mx-mn)||1));
+  const path=arr=>arr.map((p,i)=>p[1]==null?'':((arr.slice(0,i).every(q=>q[1]==null)?'M':'L')+x(i).toFixed(1)+' '+y(p[1]).toFixed(1))).filter(Boolean).join(' ');
+  let yl=''; for(let k=0;k<=3;k++){const v=mn+(mx-mn)*k/3,yy=y(v);yl+=`<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="#f1f5f9"/><text x="${PL-4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${fmtINR(v)}</text>`;}
+  let xl=''; const step=Math.ceil(n/8); eq.forEach((p,i)=>{if(i%step)return; xl+=`<text x="${x(i).toFixed(1)}" y="${H-8}" font-size="9" fill="#94a3b8" text-anchor="middle">${p[0].slice(0,7)}</text>`;});
+  $('eqc').innerHTML=`<svg viewBox="0 0 ${W} ${H}" class="w-full">${yl}${xl}<path d="${path(bn)}" fill="none" stroke="#f59e0b" stroke-width="1.6"/><path d="${path(eq)}" fill="none" stroke="#2563eb" stroke-width="2"/></svg>`;
+}
+load();
+</script>
+</body>
+</html>

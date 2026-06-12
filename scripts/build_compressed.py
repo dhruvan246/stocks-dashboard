@@ -137,6 +137,7 @@ HTML = r"""<!DOCTYPE html>
           <a href="./mutual-funds.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">💰<span class="hidden sm:inline">Mutual&nbsp;Funds</span></a>
           <a href="./fii-dii.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">🌐<span class="hidden sm:inline">FII/DII</span></a>
         </nav>
+        <a href="./stock-backtest.html" class="hidden md:inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition whitespace-nowrap shrink-0">🧪 Backtest</a>
         <span class="text-[11px] text-slate-400 hidden xl:block shrink-0" id="lastUpdated">__START_DATE__ &rarr; __GEN_DATE__ IST</span>
       </div>
     </div>
@@ -1076,3 +1077,9 @@ loadAndInit();
 out = HTML.replace("__B64_PAYLOAD__", b64).replace("__START_DATE__", start_date).replace("__GEN_DATE__", gen_date)
 OUT_HTML.write_text(out, encoding="utf-8")
 print(f"Wrote {OUT_HTML} ({OUT_HTML.stat().st_size/1024/1024:.2f} MB)")
+
+# Also emit the raw gzip payload as a standalone file for the stock-backtest page
+# (it fetches + DecompressionStream-gunzips this instead of embedding 17 MB again).
+stock_bin = OUT_HTML.parent / "stock_data.bin"
+stock_bin.write_bytes(gz)
+print(f"Wrote {stock_bin} ({len(gz)/1024/1024:.2f} MB) for stock-backtest.html")
