@@ -45,7 +45,7 @@ const FIELDS = [
 ];
 const FIELD_LABEL = {}; FIELDS.forEach(f => FIELD_LABEL[f.v] = f.l);
 const fmtINR = n => '₹' + Math.round(n).toLocaleString('en-IN');
-const pct = n => (n >= 0 ? '+' : '') + n.toFixed(1) + '%';
+const pct = n => (n >= 0 ? '+' : '') + n.toFixed(2) + '%';
 
 /* ---- data loading (pass an optional onProgress(msg) callback) ---- */
 async function gunzipJSON(url) {

@@ -41,7 +41,7 @@ const $=id=>document.getElementById(id);
 function load(){try{return JSON.parse(localStorage.getItem('bt_history')||'[]');}catch(e){return[];}}
 function save(v){localStorage.setItem('bt_history',JSON.stringify(v));}
 const fmtINR=n=>n==null?'—':'₹'+Math.round(n).toLocaleString('en-IN');
-const pct=n=>n==null?'—':(n>=0?'+':'')+n.toFixed(1)+'%';
+const pct=n=>n==null?'—':(n>=0?'+':'')+n.toFixed(2)+'%';
 const fdate=ts=>{const d=new Date(ts);return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});};
 
 function render(){
@@ -58,7 +58,7 @@ function render(){
         <td class="px-3 text-xs text-slate-500 whitespace-nowrap">${c.start} → ${c.end}</td>
         <td class="text-right px-3 ${m.cagr>=0?'pos':'neg'}">${pct(m.cagr)}</td>
         <td class="text-right px-3 text-xs ${beat?'pos':'neg'}">${m.benchCagr!=null?pct(m.benchCagr):'—'}</td>
-        <td class="text-right px-3 neg">-${Math.round(m.maxDD)}%</td>
+        <td class="text-right px-3 neg">-${m.maxDD.toFixed(2)}%</td>
         <td class="text-right px-3">${fmtINR(m.finalV)}</td>
         <td class="px-3 whitespace-nowrap text-right">
           <button class="text-blue-600 hover:underline text-xs font-semibold" data-load="${it.id}">Load</button>

@@ -124,7 +124,7 @@ const FIELDS=[
 ];
 const FIELD_LABEL={}; FIELDS.forEach(f=>FIELD_LABEL[f.v]=f.l);
 const fmtINR=n=>'₹'+Math.round(n).toLocaleString('en-IN');
-const pct=n=>(n>=0?'+':'')+n.toFixed(1)+'%';
+const pct=n=>(n>=0?'+':'')+n.toFixed(2)+'%';
 
 async function load(){
   try{
@@ -495,8 +495,8 @@ function render(r,cfg){
     ${card('Final value', fmtINR(r.finalV), 'from '+fmtINR(cfg.capital), r.finalV>=cfg.capital?'pos':'neg')}
     ${card('CAGR', pct(r.cagr), r.years.toFixed(1)+' years', r.cagr>=0?'pos':'neg')}
     ${card('Nifty 50 CAGR', r.benchCagr!=null?pct(r.benchCagr):'—', beat?'strategy wins ✓':'benchmark', beat?'pos':'neg')}
-    ${card('Max drawdown', '-'+r.maxDD.toFixed(0)+'%', 'worst peak-to-trough','neg')}
-    ${card('Volatility', r.vol.toFixed(0)+'%', 'annualised','')}
+    ${card('Max drawdown', '-'+r.maxDD.toFixed(2)+'%', 'worst peak-to-trough','neg')}
+    ${card('Volatility', r.vol.toFixed(2)+'%', 'annualised','')}
     ${card('Win rate', r.winRate.toFixed(0)+'%', r.rebs.length+' rebalances','')}
   </div>`;
   html+=`<div class="card p-3 mb-4 flex flex-wrap items-center gap-2">
@@ -516,7 +516,7 @@ function render(r,cfg){
     </div>
     <div id="liveMsg" class="text-[11px] text-slate-500 mb-1"></div>
     <div class="overflow-x-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b"><tr><th class="text-left py-1 px-2">#</th><th class="text-left px-2">Stock</th><th class="text-left px-2">Industry</th><th class="text-right px-2">Weight</th><th class="text-right px-2">Value</th><th class="text-right px-2">Chg%(lb)</th><th class="text-right px-2">RSI</th><th class="text-right px-2">52wHi%</th><th class="text-right px-2">Live ₹</th><th class="text-right px-2">Day %</th></tr></thead><tbody>
-    ${r.latest.map((p,i)=>`<tr class="border-b border-slate-50"><td class="px-2 py-1 text-slate-400">${i+1}</td><td class="px-2 font-medium">${p.sym}</td><td class="px-2 text-slate-500 text-xs">${p.ind}</td><td class="text-right px-2 font-semibold">${p.wt.toFixed(1)}%</td><td class="text-right px-2 text-slate-500">${fmtINR(p.val)}</td><td class="text-right px-2 ${p.chg>=0?'pos':'neg'}">${p.chg!=null?pct(p.chg):'·'}</td><td class="text-right px-2">${p.rsi!=null?p.rsi.toFixed(0):'·'}</td><td class="text-right px-2 neg">${p.d52!=null?p.d52.toFixed(0)+'%':'·'}</td><td class="liveCell text-right px-2 text-slate-300" data-sym="${p.sym}">—</td><td class="dayCell text-right px-2 text-slate-300" data-sym="${p.sym}">—</td></tr>`).join('')}
+    ${r.latest.map((p,i)=>`<tr class="border-b border-slate-50"><td class="px-2 py-1 text-slate-400">${i+1}</td><td class="px-2 font-medium">${p.sym}</td><td class="px-2 text-slate-500 text-xs">${p.ind}</td><td class="text-right px-2 font-semibold">${p.wt.toFixed(1)}%</td><td class="text-right px-2 text-slate-500">${fmtINR(p.val)}</td><td class="text-right px-2 ${p.chg>=0?'pos':'neg'}">${p.chg!=null?pct(p.chg):'·'}</td><td class="text-right px-2">${p.rsi!=null?p.rsi.toFixed(2):'·'}</td><td class="text-right px-2 neg">${p.d52!=null?p.d52.toFixed(2)+'%':'·'}</td><td class="liveCell text-right px-2 text-slate-300" data-sym="${p.sym}">—</td><td class="dayCell text-right px-2 text-slate-300" data-sym="${p.sym}">—</td></tr>`).join('')}
     ${r.latestCash>1?`<tr class="border-b border-slate-50 bg-slate-50"><td class="px-2 py-1"></td><td class="px-2 font-medium text-slate-600">💵 Cash</td><td class="px-2 text-slate-400 text-xs">uninvested</td><td class="text-right px-2 font-semibold">${(r.latest._cashWt||0).toFixed(1)}%</td><td class="text-right px-2 text-slate-500">${fmtINR(r.latestCash)}</td><td colspan="5"></td></tr>`:''}
     </tbody></table></div></div>`;
   // ----- trade log -----
@@ -526,11 +526,11 @@ function render(r,cfg){
     <div class="overflow-x-auto max-h-96 overflow-y-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b sticky top-0 bg-white"><tr>
       <th class="text-left py-1 px-2">Stock</th><th class="text-left px-2">Entry</th><th class="text-right px-2">Entry ₹</th><th class="text-left px-2">Exit</th><th class="text-right px-2">Exit ₹</th><th class="text-right px-2">Return</th><th class="text-right px-2">${r.fLabel}@entry</th><th class="text-right px-2">RSI@entry</th></tr></thead><tbody>
     ${tr.map(t=>`<tr class="border-b border-slate-50"><td class="px-2 py-1 font-medium">${t.sym}${t.held?' <span class="text-[9px] bg-blue-100 text-blue-700 px-1 rounded">HELD</span>':''}</td>
-      <td class="px-2 text-xs text-slate-500">${t.entryDate}</td><td class="text-right px-2 text-slate-500">${t.entryPrice.toFixed(1)}</td>
-      <td class="px-2 text-xs text-slate-500">${t.exitDate}</td><td class="text-right px-2 text-slate-500">${t.exitPrice.toFixed(1)}</td>
+      <td class="px-2 text-xs text-slate-500">${t.entryDate}</td><td class="text-right px-2 text-slate-500">${t.entryPrice.toFixed(2)}</td>
+      <td class="px-2 text-xs text-slate-500">${t.exitDate}</td><td class="text-right px-2 text-slate-500">${t.exitPrice.toFixed(2)}</td>
       <td class="text-right px-2 font-semibold ${t.retPct>=0?'pos':'neg'}">${pct(t.retPct)}</td>
-      <td class="text-right px-2 text-slate-600">${t.factor!=null?(Math.abs(t.factor)>=1000?Math.round(t.factor).toLocaleString('en-IN'):t.factor.toFixed(1)):'·'}</td>
-      <td class="text-right px-2 text-slate-500">${t.rsi!=null?t.rsi.toFixed(0):'·'}</td></tr>`).join('')}
+      <td class="text-right px-2 text-slate-600">${t.factor!=null?(Math.abs(t.factor)>=1000?Math.round(t.factor).toLocaleString('en-IN'):t.factor.toFixed(2)):'·'}</td>
+      <td class="text-right px-2 text-slate-500">${t.rsi!=null?t.rsi.toFixed(2):'·'}</td></tr>`).join('')}
     </tbody></table></div></div>`;
   // ----- rebalance log (expandable, with per-rebalance holdings: weight, NEW, factor) -----
   html+=`<div class="card p-4"><div class="text-sm font-semibold text-slate-700 mb-2">🔄 Rebalance log <span class="text-slate-400 font-normal">(${r.rebs.length} rebalances — click any to see that period's basket, weights &amp; new entries)</span></div>
@@ -541,7 +541,7 @@ function render(r,cfg){
         <span class="text-xs text-slate-500">value ${fmtINR(rb.val)}</span>
         <span class="text-xs text-slate-500">${rb.holds.length} holdings${rb.nNew?` · <span class="text-emerald-600 font-semibold">${rb.nNew} new</span>`:''}${rb.cashWt>1?` · ${rb.cashWt.toFixed(0)}% cash`:''}</span></summary>
       <div class="px-3 pb-3 overflow-x-auto"><table class="w-full text-[13px]"><thead class="text-[10px] uppercase text-slate-400 border-b"><tr><th class="text-left py-1 px-2">Stock</th><th class="text-right px-2">Weight</th><th class="text-right px-2">Value</th><th class="text-right px-2">${r.fLabel}</th><th class="text-right px-2">RSI</th><th class="text-left px-2"></th></tr></thead><tbody>
-        ${rb.holds.map(h=>`<tr class="border-b border-slate-50"><td class="px-2 py-1 font-medium">${h.sym}</td><td class="text-right px-2 font-semibold">${h.wt.toFixed(1)}%</td><td class="text-right px-2 text-slate-500">${fmtINR(h.val)}</td><td class="text-right px-2 text-slate-600">${h.factor!=null?(Math.abs(h.factor)>=1000?Math.round(h.factor).toLocaleString('en-IN'):h.factor.toFixed(1)):'·'}</td><td class="text-right px-2 text-slate-500">${h.rsi!=null?h.rsi.toFixed(0):'·'}</td><td class="px-2">${h.isNew?'<span class="text-[9px] bg-emerald-100 text-emerald-700 px-1 rounded font-semibold">NEW</span>':'<span class="text-[9px] text-slate-400">held</span>'}</td></tr>`).join('')}
+        ${rb.holds.map(h=>`<tr class="border-b border-slate-50"><td class="px-2 py-1 font-medium">${h.sym}</td><td class="text-right px-2 font-semibold">${h.wt.toFixed(1)}%</td><td class="text-right px-2 text-slate-500">${fmtINR(h.val)}</td><td class="text-right px-2 text-slate-600">${h.factor!=null?(Math.abs(h.factor)>=1000?Math.round(h.factor).toLocaleString('en-IN'):h.factor.toFixed(2)):'·'}</td><td class="text-right px-2 text-slate-500">${h.rsi!=null?h.rsi.toFixed(2):'·'}</td><td class="px-2">${h.isNew?'<span class="text-[9px] bg-emerald-100 text-emerald-700 px-1 rounded font-semibold">NEW</span>':'<span class="text-[9px] text-slate-400">held</span>'}</td></tr>`).join('')}
         ${rb.cash>1?`<tr class="bg-slate-50"><td class="px-2 py-1 text-slate-600">💵 Cash</td><td class="text-right px-2 font-semibold">${rb.cashWt.toFixed(1)}%</td><td class="text-right px-2 text-slate-500">${fmtINR(rb.cash)}</td><td colspan="3"></td></tr>`:''}
       </tbody></table></div></details>`;}).join('')}
   </div>`;
