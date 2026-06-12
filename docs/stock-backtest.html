@@ -190,9 +190,9 @@ function updateModeUI(){
   const sf=DATA_MODE==='sf';
   buildUniverse(DATA_MODE, true);
   $('modeNote').innerHTML = sf?`<b>${SF.nDead}</b> delisted/dead stocks included (of ${SF.nTot}). Size buckets use daily turnover (NSE bhavcopy has no mcap). Positions that delist are marked to <b>zero</b>. Data ${SF.start} → ${SF.end}.`:'';
-  // adjust default dates to the active dataset range
-  if(sf){ $('cFrom').value=SF.start; $('cTo').value=SF.end; }
-  else { const lastD=new Date((START_TS+maxOffset()*DAY)*1000).toISOString().slice(0,10); $('cTo').value=lastD; $('cFrom').value=(+lastD.slice(0,4)-7)+lastD.slice(4); }
+  // default range: 2020-03-31 (COVID bottom, the user's standard window) → latest data day
+  if(sf){ $('cFrom').value = SF.start <= '2020-03-31' ? '2020-03-31' : SF.start; $('cTo').value=SF.end; }
+  else { const lastD=new Date((START_TS+maxOffset()*DAY)*1000).toISOString().slice(0,10); $('cTo').value=lastD; $('cFrom').value='2020-03-31'; }
 }
 function turnoverAt(tkr, off){ const s=TURN[tkr]; if(!s)return 0; const i=idxLE(s.d,off); return i<0?0:s.t[i]; }
 function markPrice(tkr, off){ if(DATA_MODE==='sf'){ const s=SERIES[tkr]; if(!s)return null; const ld=s.d[s.d.length-1]; if(off>ld && ld < SF_END_OFF-90) return 0; } return priceAt(tkr,off); }
