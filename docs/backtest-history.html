@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Backtest History</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body{font-feature-settings:"tnum" 1}
+  .pos{color:#15803d;font-weight:600}.neg{color:#b91c1c;font-weight:600}
+  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./nse-bse-dashboard.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav class="flex items-center gap-1 overflow-x-auto">
+      <a href="./nse-bse-dashboard.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">📈<span class="hidden sm:inline">Stocks</span></a>
+      <a href="./stock-backtest.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow transition">🧪<span class="hidden sm:inline">Backtest</span></a>
+      <a href="./saved-strategies.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">⭐<span class="hidden sm:inline">Strategies</span></a>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-screen-xl mx-auto px-4 py-6">
+  <div class="flex items-center justify-between flex-wrap gap-2 mb-1">
+    <h1 class="text-xl md:text-2xl font-bold text-slate-900">📜 Backtest History</h1>
+    <button id="clearAll" class="text-xs text-red-600 hover:underline font-semibold">Clear all</button>
+  </div>
+  <p class="text-xs text-slate-500 mb-4">Every backtest you saved with “💾 Save to History”. Stored in this browser. Click <b>Load</b> to re-open &amp; re-run any setup. <a href="./stock-backtest.html" class="text-indigo-600 hover:underline">← back to Backtest</a></p>
+  <div id="list"></div>
+</main>
+
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+function load(){try{return JSON.parse(localStorage.getItem('bt_history')||'[]');}catch(e){return[];}}
+function save(v){localStorage.setItem('bt_history',JSON.stringify(v));}
+const fmtINR=n=>n==null?'—':'₹'+Math.round(n).toLocaleString('en-IN');
+const pct=n=>n==null?'—':(n>=0?'+':'')+n.toFixed(1)+'%';
+const fdate=ts=>{const d=new Date(ts);return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});};
+
+function render(){
+  const items=load();
+  if(!items.length){ $('list').innerHTML='<div class="card p-8 text-center text-slate-400 text-sm">No saved backtests yet. Run a backtest and click “💾 Save to History”.</div>'; return; }
+  $('list').innerHTML=`<div class="card overflow-x-auto"><table class="w-full text-sm">
+    <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>
+      <th class="text-left py-2 px-3">Saved</th><th class="text-left px-3">Strategy</th><th class="text-left px-3">Period</th>
+      <th class="text-right px-3">CAGR</th><th class="text-right px-3">vs Nifty</th><th class="text-right px-3">Max DD</th><th class="text-right px-3">Final ₹1L</th><th class="px-3"></th></tr></thead>
+    <tbody>${items.map(it=>{const m=it.m,c=it.cfg,beat=m.benchCagr!=null&&m.cagr>=m.benchCagr;
+      return `<tr class="border-b border-slate-50 hover:bg-slate-50">
+        <td class="px-3 py-2 text-xs text-slate-500 whitespace-nowrap">${fdate(it.ts)}</td>
+        <td class="px-3 font-medium">${it.label||''}</td>
+        <td class="px-3 text-xs text-slate-500 whitespace-nowrap">${c.start} → ${c.end}</td>
+        <td class="text-right px-3 ${m.cagr>=0?'pos':'neg'}">${pct(m.cagr)}</td>
+        <td class="text-right px-3 text-xs ${beat?'pos':'neg'}">${m.benchCagr!=null?pct(m.benchCagr):'—'}</td>
+        <td class="text-right px-3 neg">-${Math.round(m.maxDD)}%</td>
+        <td class="text-right px-3">${fmtINR(m.finalV)}</td>
+        <td class="px-3 whitespace-nowrap text-right">
+          <button class="text-blue-600 hover:underline text-xs font-semibold" data-load="${it.id}">Load</button>
+          <button class="text-red-500 hover:underline text-xs ml-2" data-del="${it.id}">Delete</button></td></tr>`;}).join('')}
+    </tbody></table></div>`;
+  $('list').querySelectorAll('[data-load]').forEach(b=>b.onclick=()=>{const it=load().find(x=>x.id===b.dataset.load); if(it){localStorage.setItem('bt_load',JSON.stringify(it.cfg)); location.href='./stock-backtest.html';}});
+  $('list').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{save(load().filter(x=>x.id!==b.dataset.del)); render();});
+}
+$('clearAll').onclick=()=>{ if(confirm('Delete all saved backtests?')){ save([]); render(); } };
+render();
+</script>
+</body>
+</html>

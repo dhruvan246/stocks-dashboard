@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Saved Strategies</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body{font-feature-settings:"tnum" 1}
+  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./nse-bse-dashboard.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav class="flex items-center gap-1 overflow-x-auto">
+      <a href="./nse-bse-dashboard.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">📈<span class="hidden sm:inline">Stocks</span></a>
+      <a href="./stock-backtest.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow transition">🧪<span class="hidden sm:inline">Backtest</span></a>
+      <a href="./backtest-history.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">📜<span class="hidden sm:inline">History</span></a>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-screen-xl mx-auto px-4 py-6">
+  <div class="flex items-center justify-between flex-wrap gap-2 mb-1">
+    <h1 class="text-xl md:text-2xl font-bold text-slate-900">⭐ Saved Strategies</h1>
+    <button id="clearAll" class="text-xs text-red-600 hover:underline font-semibold">Clear all</button>
+  </div>
+  <p class="text-xs text-slate-500 mb-4">Strategies you named with “⭐ Save as Strategy”. Click <b>Load &amp; run</b> to apply the setup on the Backtest page. <a href="./stock-backtest.html" class="text-indigo-600 hover:underline">← back to Backtest</a></p>
+  <div id="list"></div>
+</main>
+
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+function load(){try{return JSON.parse(localStorage.getItem('bt_strategies')||'[]');}catch(e){return[];}}
+function save(v){localStorage.setItem('bt_strategies',JSON.stringify(v));}
+const fdate=ts=>new Date(ts).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+const FREQ={1:'Monthly',3:'Quarterly',6:'Half-yearly',12:'Yearly'};
+const SORT={changePercent:'Momentum',rsi:'RSI',d52:'52w-High',d52_low_pct:'52w-Low',indRank:'Industry-rank',mcap:'Mcap',hist_mcap:'Hist-mcap'};
+function desc(c){
+  const uni=c.indexName?String(c.indexName).replace('__FNO__','F&O'):'≥₹'+(+c.mcapFloor).toLocaleString('en-IN')+'Cr';
+  const meth=c.method==='hold'?'hold-winners':'equal-weight';
+  return `Sort by <b>${SORT[c.sortBy]||c.sortBy}</b> (${c.dir==='high'?'high':'low'}) · top-${c.topN} · ${uni} · ${FREQ[c.freq]||c.freq+'mo'} · ${meth} · ${c.start}→${c.end}${(c.filters||[]).length?' · '+c.filters.map(f=>SORT[f.field]+f.op+f.val).join(', '):''}`;
+}
+function render(){
+  const items=load();
+  if(!items.length){ $('list').innerHTML='<div class="card p-8 text-center text-slate-400 text-sm">No saved strategies yet. Run a backtest and click “⭐ Save as Strategy”.</div>'; return; }
+  $('list').innerHTML=items.map(it=>`<div class="card p-4 mb-3">
+      <div class="flex items-start justify-between gap-3 flex-wrap">
+        <div>
+          <div class="font-semibold text-slate-900">${it.name}</div>
+          <div class="text-xs text-slate-500 mt-1">${desc(it.cfg)}</div>
+          <div class="text-[11px] text-slate-400 mt-1">saved ${fdate(it.ts)}</div>
+        </div>
+        <div class="flex gap-2 shrink-0">
+          <button class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white hover:bg-blue-700" data-run="${it.id}">Load &amp; run →</button>
+          <button class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-red-600 hover:bg-slate-200" data-del="${it.id}">Delete</button>
+        </div>
+      </div></div>`).join('');
+  $('list').querySelectorAll('[data-run]').forEach(b=>b.onclick=()=>{const it=load().find(x=>x.id===b.dataset.run); if(it){localStorage.setItem('bt_load',JSON.stringify(it.cfg)); location.href='./stock-backtest.html';}});
+  $('list').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{save(load().filter(x=>x.id!==b.dataset.del)); render();});
+}
+$('clearAll').onclick=()=>{ if(confirm('Delete all saved strategies?')){ save([]); render(); } };
+render();
+</script>
+</body>
+</html>
