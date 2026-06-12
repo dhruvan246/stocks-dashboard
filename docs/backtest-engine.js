@@ -69,6 +69,7 @@ async function loadSF() {
       d[i] = off; p[i] = Math.round(o.c[i] * 100); t[i] = o.t[i] || 0;
     }
     ser[sym] = { d, p }; turn[sym] = { d, t }; const sm = D.meta[sym] || {};
+    if (o.hb && o.lb) { ser[sym].hb = o.hb; ser[sym].lb = o.lb; }   // intraday high/low per-mil offsets
     meta[sym] = { symbol: sym, name: sm.name || sym, industry: sm.ind || 'Other', sector: sm.ind || 'Other', mcap: 0, latest: o.c[n - 1], alive: sm.alive };
   }
   const endOff = Math.floor((Date.parse((D.end || '2024-01-01') + 'T00:00:00Z') / 1000 - ts) / DAY);
@@ -93,7 +94,18 @@ function priceAt(tkr, off) { const s = SERIES[tkr]; if (!s) return null; const i
 function turnoverAt(tkr, off) { const s = TURN[tkr]; if (!s) return 0; const i = idxLE(s.d, off); return i < 0 ? 0 : s.t[i]; }
 // held position that stops trading >1 quarter before data end → marked to zero (loss realised)
 function markPrice(tkr, off) { const s = SERIES[tkr]; if (!s) return null; const ld = s.d[s.d.length - 1]; if (off > ld && ld < SF_END_OFF - 90) return 0; return priceAt(tkr, off); }
-function hl52(tkr, off) { const s = SERIES[tkr]; if (!s) return null; const lo = off - 365; let i = idxLE(s.d, off); if (i < 0) return null; let hi = -1e18, low = 1e18; for (let k = i; k >= 0 && s.d[k] >= lo; k--) { const p = s.p[k]; if (p > hi) hi = p; if (p < low) low = p; } return { hi: hi / 100, low: low / 100 }; }
+// 52-week high/low over [off-365, off] using TRUE intraday highs/lows when the data
+// carries them (hb/lb = per-mil offsets from close); falls back to closes otherwise.
+function hl52(tkr, off) {
+  const s = SERIES[tkr]; if (!s) return null; const lo = off - 365; let i = idxLE(s.d, off); if (i < 0) return null;
+  let hi = -1e18, low = 1e18;
+  for (let k = i; k >= 0 && s.d[k] >= lo; k--) {
+    const ph = s.hb ? s.p[k] * (1000 + s.hb[k]) / 1000 : s.p[k];
+    const pl = s.lb ? s.p[k] * (1000 - s.lb[k]) / 1000 : s.p[k];
+    if (ph > hi) hi = ph; if (pl < low) low = pl;
+  }
+  return { hi: hi / 100, low: low / 100 };
+}
 // Wilder-smoothed RSI(14) — the industry-standard formula (matches Trendlyne/StockView "Day RSI")
 function rsi14(tkr, off) {
   const s = SERIES[tkr]; if (!s) return null; const i = idxLE(s.d, off); if (i < 15) return null;

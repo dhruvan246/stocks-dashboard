@@ -56,6 +56,7 @@ def parse_rows(text):
         return -1
     iS, iSer = idx("SYMBOL"), idx("SERIES")
     iC, iP, iT = idx("CLOSE_PRICE", "CLOSE"), idx("PREV_CLOSE", "PREVCLOSE"), idx("TURNOVER_LACS", "TOTTRDVAL")
+    iH, iL = idx("HIGH_PRICE", "HIGH"), idx("LOW_PRICE", "LOW")
     if iS < 0 or iC < 0: return []
     out = []
     for r in rows[1:]:
@@ -64,16 +65,22 @@ def parse_rows(text):
         try:
             c = float(r[iC]); p = float(r[iP]) if iP >= 0 and r[iP].strip() else 0.0
             t = float(r[iT]) if iT >= 0 and r[iT].strip() else 0.0
+            h = float(r[iH]) if iH >= 0 and r[iH].strip() else c
+            l = float(r[iL]) if iL >= 0 and r[iL].strip() else c
         except ValueError:
             continue
-        if c > 0: out.append([r[iS].strip(), c, p, t])
+        if c > 0: out.append([r[iS].strip(), c, p, t, h, l])
     return out
 
 
 def fetch_day(d, j):
     cf = os.path.join(CACHE, d.strftime("%Y%m%d") + ".json")
     if os.path.exists(cf):
-        try: return json.load(open(cf))
+        try:
+            rows = json.load(open(cf))
+            # v1 cache rows lack high/low (4 cols) — refetch those days; holiday [] is reusable
+            if not rows or len(rows[0]) >= 6:
+                return rows
         except Exception: pass
     ddmmyyyy = d.strftime("%d%m%Y")
     new = "https://nsearchives.nseindia.com/products/content/sec_bhavdata_full_%s.csv" % ddmmyyyy
@@ -102,8 +109,11 @@ def main():
             rows = fetch_day(d, j)
             if rows:
                 got += 1; ymd = int(d.strftime("%Y%m%d"))
-                for sym, c, p, t in rows:
-                    acc.setdefault(sym, []).append((ymd, c, p, t))
+                for row in rows:
+                    sym, c, p, t = row[0], row[1], row[2], row[3]
+                    h = row[4] if len(row) > 4 else c
+                    l = row[5] if len(row) > 5 else c
+                    acc.setdefault(sym, []).append((ymd, c, p, t, h, l))
             if tried % 250 == 0:
                 print("  ...%s  days=%d/%d  symbols=%d" % (d, got, tried, len(acc)), flush=True)
                 j = jar()
@@ -125,8 +135,8 @@ def main():
     df = int(DAILY_FROM.strftime("%Y%m%d"))
     data, meta, dead = {}, {}, 0
     for sym, obs in acc.items():
-        obs.sort(); ds, cs, ts = [], [], []; adj = None; lastWeek = None
-        for i, (ymd, c, p, t) in enumerate(obs):
+        obs.sort(); ds, cs, ts, hb, lb = [], [], [], [], []; adj = None; lastWeek = None
+        for i, (ymd, c, p, t, h, l) in enumerate(obs):
             adj = c if adj is None else adj * ((c / p) if (p and p > 0) else (c / obs[i-1][1] if obs[i-1][1] else 1.0))
             if ymd >= df:
                 keep = True                              # daily for recent
@@ -135,8 +145,11 @@ def main():
                 keep = (wk != lastWeek); lastWeek = wk   # weekly for old
             if keep:
                 ds.append(ymd); cs.append(round(adj, 2)); ts.append(round(t, 1))
+                # intraday high/low as per-mil offsets from close (split-adjustment cancels in the ratio)
+                hb.append(max(0, round((h / c - 1) * 1000)) if h >= c else 0)
+                lb.append(max(0, round((1 - l / c) * 1000)) if l <= c else 0)
         if len(ds) < 12: continue
-        data[sym] = {"d": ds, "c": cs, "t": ts}
+        data[sym] = {"d": ds, "c": cs, "t": ts, "hb": hb, "lb": lb}
         alive = sym in cur
         dead += (not alive)
         meta[sym] = {"name": (cur.get(sym) or {}).get("name") or sym,
