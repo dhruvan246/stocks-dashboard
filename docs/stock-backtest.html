@@ -153,7 +153,7 @@ async function loadSF(){
       if(o.v)  ser[sym].v =o.v;    // traded volume (shares)
       if(o.dv) ser[sym].dv=o.dv;   // delivery % x10 (0 = unavailable; pre-2020 format lacks it)
       if(o.vw) ser[sym].vw=o.vw;   // VWAP per-mil offset (signed)
-      meta[sym]={symbol:sym, name:sm.name||sym, industry:sm.ind||'Other', sector:sm.ind||'Other', mcap:0, latest:o.c[n-1], alive:sm.alive}; }
+      meta[sym]={symbol:sym, name:sm.name||sym, industry:sm.ind||'Other', sector:sm.ind||'Other', mcap:0, latest:o.c[n-1], alive:sm.alive, raw:sm.raw||null}; }
     const endOff=Math.floor((Date.parse((D.end||'2024-01-01')+'T00:00:00Z')/1000 - ts)/DAY);
     SF={meta, series:ser, turn, startTs:ts, endOff, start:D.start, end:D.end,
         nDead:Object.values(meta).filter(m=>!m.alive).length, nTot:Object.keys(meta).length};

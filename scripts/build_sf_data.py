@@ -104,7 +104,11 @@ def fetch_day(d, j):
                 return rows
         except Exception:
             continue
-    json.dump([], open(cf, "w"))   # cache the miss (holiday) so we don't refetch
+    # cache the miss (holiday) so we don't refetch — but NOT for the last few days:
+    # a same-evening build can run before NSE publishes today's file (~7 pm IST),
+    # and a cached empty marker would wrongly freeze that day as a holiday forever.
+    if d < datetime.date.today() - datetime.timedelta(days=4):
+        json.dump([], open(cf, "w"))
     return []
 
 
@@ -200,7 +204,8 @@ def main():
         alive = sym in cur
         dead += (not alive)
         meta[sym] = {"name": (cur.get(sym) or {}).get("name") or sym,
-                     "ind": (cur.get(sym) or {}).get("industry") or "Unknown", "alive": alive}
+                     "ind": (cur.get(sym) or {}).get("industry") or "Unknown", "alive": alive,
+                     "raw": round(obs[-1][1], 2)}   # latest RAW market close (adjusted series level can drift from market price)
         if sym in isin_of: meta[sym]["isin"] = isin_of[sym]
     print("Stored %d symbols (%d delisted/absent today)" % (len(data), dead), flush=True)
     blob = gzip.compress(json.dumps({"start": START.isoformat(), "dailyFrom": DAILY_FROM.isoformat(),
