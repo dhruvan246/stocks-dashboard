@@ -95,8 +95,8 @@ const TURN_OPTS=[['100','≥₹1 Cr'],['500','≥₹5 Cr'],['2000','≥₹20 Cr'
 const FIELDS=[
   {v:'changePercent',l:'Change % (lookback)'},
   {v:'rsi',l:'RSI(14)'},
-  {v:'d52',l:'Dist. from 52w High % (negative=below; within 10% of high → ≥ -10)'},
-  {v:'d52_low_pct',l:'Dist. from 52w Low % (positive=above low)'},
+  {v:'d52',l:'Distance from 52w High % (high 100, price 95 → 5; near-high = ≤ 10)'},
+  {v:'d52_low_pct',l:'Distance from 52w Low % (% above the low)'},
   {v:'indRank',l:'Industry Momentum Rank (1=hot…10=cold)'},
   {v:'mcap',l:'Market Cap (₹Cr)'},
   {v:'hist_mcap',l:'Historical Mcap (₹Cr, approx)'},
@@ -370,7 +370,8 @@ function factorsAt(off, cfg){
     const hl=hl52(tkr,off); if(!hl) continue;
     const r={tkr, sym:m.symbol, name:m.name, ind:(m.industry||m.sector||'Other'),
       price, chg:(price/p0-1)*100, rsi:rsi14(tkr,off),
-      d52:(price-hl.hi)/hl.hi*100, d52low:(price-hl.low)/hl.low*100,
+      // Trendlyne convention: POSITIVE distance below the 52w high (high 100, price 95 -> 5)
+      d52:(hl.hi-price)/hl.hi*100, d52low:(price-hl.low)/hl.low*100,
       mcap:m.mcap, histMcap};
     if(useTech) Object.assign(r, computeTech(tkr, off, price));   // extended technical factors
     rows.push(r);
