@@ -209,7 +209,11 @@ def main():
             if adj is None:
                 adj = c
             else:
-                base = p if (p and p > 0) else (obs[i-1][1] or 0)
+                # Chain on ACTUAL close-to-close ratios — NOT the file's PREV_CLOSE, which NSE
+                # sometimes mis-states by ±1-6% on random days (verified on CGCL), silently
+                # drifting the series. Corporate actions still snap via ca_factor, so within
+                # any CA-free stretch the adjusted series equals raw NSE prices exactly.
+                base = obs[i-1][1] or 0
                 r = (c / base) if base else 1.0
                 adj = adj * (r / ca_factor(r))
             if ymd >= df:
