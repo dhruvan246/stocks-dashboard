@@ -141,16 +141,16 @@ async function setMode(mode){
   SERIES=SF.series; META=SF.meta; START_TS=SF.startTs; TURN=SF.turn; SF_END_OFF=SF.endOff; DATA_MODE='sf'; IDXH=SURV.idxh; FNOH=SURV.fnoh;
   updateModeUI(); $('out').innerHTML=''; LAST_RUN=null;
 }
-// Single "Universe" dropdown = size buckets (mcap, or turnover in SF mode) + index constituents + F&O.
+// Single "Universe" dropdown = index constituents (default Nifty 500) + size buckets + F&O.
 function uniOptionsHTML(mode){
   const sf=mode==='sf';
   const caps = sf?TURN_OPTS:[['500','₹500 Cr+'],['2000','₹2,000 Cr+'],['5000','₹5,000 Cr+'],['20000','₹20,000 Cr+'],['100000','₹1,00,000 Cr+']];
-  const def = sf?'mcap:500':'mcap:2000';   // default size bucket per mode
+  const def = 'Nifty 500';   // default universe
   const indices=['Nifty 50','Nifty 100','Nifty 200','Nifty 500','Nifty Midcap 150','Nifty Smallcap 250'];
   let h=`<option value="">All stocks</option>`;
+  h+=`<optgroup label="Index constituents">`+indices.map(k=>`<option value="${k}"${k===def?' selected':''}>${k}</option>`).join('')+`</optgroup>`;
   h+=`<optgroup label="${sf?'Min daily turnover':'Min market cap (point-in-time)'}">`+
-     caps.map(([v,l])=>`<option value="mcap:${v}"${('mcap:'+v)===def?' selected':''}>${l}</option>`).join('')+`</optgroup>`;
-  h+=`<optgroup label="Index constituents">`+indices.map(k=>`<option value="${k}">${k}</option>`).join('')+`</optgroup>`;
+     caps.map(([v,l])=>`<option value="mcap:${v}">${l}</option>`).join('')+`</optgroup>`;
   h+=`<optgroup label="Derivatives"><option value="__FNO__">F&O stocks</option></optgroup>`;
   return h;
 }
