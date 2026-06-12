@@ -55,6 +55,9 @@
       <div><label class="lbl">Direction</label><select id="cDir" class="inp w-full"><option value="high" selected>Prefer High</option><option value="low">Prefer Low</option></select></div>
       <div><label class="lbl">Holdings (top-N)</label><input id="cTopN" type="number" value="10" min="1" max="50" class="inp w-full"/></div>
       <div><label class="lbl">Capital (₹)</label><input id="cCap" type="number" value="100000" class="inp w-full"/></div>
+      <div class="col-span-2"><label class="lbl">Rebalance method</label><select id="cMethod" class="inp w-full">
+        <option value="hold" selected>Hold winners · replace only exits (fund new at avg-exit value, rest → cash)</option>
+        <option value="reset">Reset to equal-weight every rebalance</option></select></div>
     </div>
     <div class="mt-3">
       <div class="flex items-center justify-between mb-1"><label class="lbl mb-0">Filter criteria (AND-combined)</label>
@@ -157,7 +160,7 @@ function run(){
     start:$('cFrom').value, end:$('cTo').value, mcapFloor:+$('cMcap').value,
     indexName:$('cIndex').value, freq:+$('cFreq').value, lookback:+$('cLook').value,
     sortBy:$('cSort').value, dir:$('cDir').value, topN:Math.max(1,Math.min(50,+$('cTopN').value||10)),
-    capital:+$('cCap').value||100000, filters:readFilters()
+    capital:+$('cCap').value||100000, method:$('cMethod').value, filters:readFilters()
   };
   if(!cfg.start||!cfg.end||cfg.start>=cfg.end){ $('runMsg').textContent='Pick a valid date range.'; return; }
   $('runMsg').textContent='Running…';
@@ -197,23 +200,48 @@ function isoOff(off){ return new Date((START_TS+off*DAY)*1000).toISOString().sli
 
 function simulate(cfg){
   const months=monthsBetween(cfg.start,cfg.end);
-  let val=cfg.capital, units={}, held=[]; const equity=[], rebs=[]; let lastRebVal=cfg.capital, monthsSinceReb=1e9, latest=[];
+  const N=cfg.topN;
+  let pos={}, cash=0, started=false; const equity=[], rebs=[]; let lastRebVal=cfg.capital, monthsSinceReb=1e9, latest=[], latestCash=0;
+  const mark=off=>{ let v=cash; for(const t in pos){ const p=priceAt(t,off); if(p!=null) v+=pos[t]*p; } return v; };
   for(let mi=0; mi<months.length; mi++){
     const md=months[mi], off=dayOff(md);
-    if(held.length){ let v=0; for(const h of held){ const p=priceAt(h.tkr,off); if(p!=null) v+=units[h.tkr]*p; } if(v>0) val=v; }
-    equity.push([md, val]);
+    const mv = started ? mark(off) : cfg.capital;
+    equity.push([md, mv]);
     monthsSinceReb++;
     const isReb = (mi===0) || (monthsSinceReb>=cfg.freq);
     if(isReb){
-      if(held.length){ rebs.push({date:md, ret:(val/lastRebVal-1)*100, holds:held.map(h=>h.sym)}); }
+      if(started){ rebs.push({date:md, ret:(mv/(lastRebVal||1)-1)*100, holds:Object.keys(pos).map(t=>META[t].symbol)}); }
+      // screen → filter → rank → top-N target
       let rows=factorsAt(off,cfg).filter(r=>r.rsi!=null);
       for(const f of cfg.filters){ rows=rows.filter(r=>{const x=fieldVal(r,f.field); if(x==null)return false; return f.op==='>'?x>f.val:f.op==='>='?x>=f.val:f.op==='<'?x<f.val:f.op==='<='?x<=f.val:x===f.val;}); }
       rows.sort((a,b)=>{const x=fieldVal(a,cfg.sortBy),y=fieldVal(b,cfg.sortBy); return cfg.dir==='high'?y-x:x-y;});
-      const picks=rows.slice(0,cfg.topN);
-      units={}; const per=val/(picks.length||1);
-      picks.forEach(p=>{ units[p.tkr]=per/p.price; });
-      held=picks.map(p=>({tkr:p.tkr,sym:p.sym})); lastRebVal=val; monthsSinceReb=0;
-      latest=picks; // last screen = today's picks
+      const target=rows.slice(0,N); const tmap={}; target.forEach(r=>tmap[r.tkr]=r); const tset=new Set(target.map(r=>r.tkr));
+
+      if(!started || cfg.method==='reset'){
+        // initial buy OR full reset: equal-weight base/N per stock, unfilled slots → cash
+        const base = started ? mv : cfg.capital;
+        const per = base/N; pos={};
+        target.forEach(r=>{ pos[r.tkr]=per/r.price; });
+        cash = base - per*target.length; started=true;
+      } else {
+        // HOLD-WINNERS: stays ride untouched; exits sold; entries funded at avg exit value; rest → cash
+        const valOf=t=>{ const p=priceAt(t,off); return p!=null?pos[t]*p:0; };
+        const exits=Object.keys(pos).filter(t=>!tset.has(t));
+        let proceeds=0; exits.forEach(t=>{ proceeds+=valOf(t); delete pos[t]; });
+        const entries=target.filter(r=>!(r.tkr in pos));
+        let avail=proceeds+cash; cash=0;
+        if(entries.length){
+          const avg = exits.length ? proceeds/exits.length : avail/entries.length;   // each new = average of the stocks that left
+          for(const e of entries){ const a=Math.min(avg,avail); if(a<=1) break; pos[e.tkr]=a/e.price; avail-=a; }
+          cash=Math.max(0,avail);                                                     // surplus (fewer entries than exits) → cash
+        } else { cash=avail; }                                                        // nothing to replace with → all to cash
+      }
+      lastRebVal = mv>0?mv:cfg.capital; monthsSinceReb=0;
+      // current holdings snapshot (with weights) for "today's picks"
+      const now=mark(off); latestCash=cash;
+      latest=Object.keys(pos).map(t=>{ const p=priceAt(t,off), v=p?pos[t]*p:0, r=tmap[t]||{};
+        return {sym:META[t].symbol, ind:(META[t].industry||META[t].sector||'Other'), chg:r.chg, rsi:r.rsi, d52:r.d52, mcap:r.mcap, val:v, wt:now?v/now*100:0}; }).sort((a,b)=>b.wt-a.wt);
+      latest._cashWt = now?cash/now*100:0; latest._cash=cash;
     }
   }
   // benchmark (Nifty 50)
@@ -228,7 +256,7 @@ function simulate(cfg){
   const mean=rets.reduce((a,b)=>a+b,0)/(rets.length||1);
   const vol=Math.sqrt(rets.reduce((a,b)=>a+(b-mean)**2,0)/(rets.length||1)*12)*100;
   const wins=rebs.filter(r=>r.ret>0).length;
-  return {equity,bench,rebs,latest,cfg,years,finalV,cagr,benchCagr,vol,
+  return {equity,bench,rebs,latest,latestCash,cfg,years,finalV,cagr,benchCagr,vol,
     maxDD:maxDrawdown(equity), winRate:rebs.length?100*wins/rebs.length:0};
 }
 function nearestNifty(dstr){ if(NIFTY[dstr])return NIFTY[dstr]; // step back up to 7 days
@@ -248,10 +276,11 @@ function render(r,cfg){
     ${card('Win rate', r.winRate.toFixed(0)+'%', r.rebs.length+' rebalances','')}
   </div>`;
   html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2"><span class="text-blue-700">Strategy</span> vs <span class="text-amber-600">Nifty 50</span> — ₹${cfg.capital.toLocaleString('en-IN')} grows to…</div><div id="eqc"></div></div>`;
-  // latest picks
-  html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2">📌 Today's picks <span class="text-slate-400 font-normal">(latest screen — what the strategy would hold now)</span></div>
-    <div class="overflow-x-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b"><tr><th class="text-left py-1 px-2">#</th><th class="text-left px-2">Stock</th><th class="text-left px-2">Industry</th><th class="text-right px-2">Chg%(lb)</th><th class="text-right px-2">RSI</th><th class="text-right px-2">52wHi%</th><th class="text-right px-2">Mcap ₹Cr</th></tr></thead><tbody>
-    ${r.latest.map((p,i)=>`<tr class="border-b border-slate-50"><td class="px-2 py-1 text-slate-400">${i+1}</td><td class="px-2 font-medium">${p.sym}</td><td class="px-2 text-slate-500 text-xs">${p.ind}</td><td class="text-right px-2 ${p.chg>=0?'pos':'neg'}">${pct(p.chg)}</td><td class="text-right px-2">${p.rsi!=null?p.rsi.toFixed(0):'·'}</td><td class="text-right px-2 neg">${p.d52.toFixed(0)}%</td><td class="text-right px-2 text-slate-500">${Math.round(p.mcap).toLocaleString('en-IN')}</td></tr>`).join('')}
+  // latest holdings (current portfolio with weights — winners that rode show larger weights)
+  html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2">📌 Current holdings <span class="text-slate-400 font-normal">(after the last rebalance — ${cfg.method==='hold'?'winners ride, so weights drift':'equal-weight'})</span></div>
+    <div class="overflow-x-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b"><tr><th class="text-left py-1 px-2">#</th><th class="text-left px-2">Stock</th><th class="text-left px-2">Industry</th><th class="text-right px-2">Weight</th><th class="text-right px-2">Value</th><th class="text-right px-2">Chg%(lb)</th><th class="text-right px-2">RSI</th><th class="text-right px-2">52wHi%</th></tr></thead><tbody>
+    ${r.latest.map((p,i)=>`<tr class="border-b border-slate-50"><td class="px-2 py-1 text-slate-400">${i+1}</td><td class="px-2 font-medium">${p.sym}</td><td class="px-2 text-slate-500 text-xs">${p.ind}</td><td class="text-right px-2 font-semibold">${p.wt.toFixed(1)}%</td><td class="text-right px-2 text-slate-500">${fmtINR(p.val)}</td><td class="text-right px-2 ${p.chg>=0?'pos':'neg'}">${p.chg!=null?pct(p.chg):'·'}</td><td class="text-right px-2">${p.rsi!=null?p.rsi.toFixed(0):'·'}</td><td class="text-right px-2 neg">${p.d52!=null?p.d52.toFixed(0)+'%':'·'}</td></tr>`).join('')}
+    ${r.latestCash>1?`<tr class="border-b border-slate-50 bg-slate-50"><td class="px-2 py-1"></td><td class="px-2 font-medium text-slate-600">💵 Cash</td><td class="px-2 text-slate-400 text-xs">uninvested</td><td class="text-right px-2 font-semibold">${(r.latest._cashWt||0).toFixed(1)}%</td><td class="text-right px-2 text-slate-500">${fmtINR(r.latestCash)}</td><td colspan="3"></td></tr>`:''}
     </tbody></table></div></div>`;
   // rebalance log
   html+=`<div class="card p-4"><div class="text-sm font-semibold text-slate-700 mb-2">Rebalance log <span class="text-slate-400 font-normal">(${r.rebs.length} periods)</span></div>
