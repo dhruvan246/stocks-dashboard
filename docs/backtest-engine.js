@@ -15,8 +15,8 @@ const TURN_OPTS = [['100', '≥₹1 Cr'], ['500', '≥₹5 Cr'], ['2000', '≥�
 const FIELDS = [
   { v: 'changePercent', l: 'Change % (lookback)' },
   { v: 'rsi', l: 'RSI(14)' },
-  { v: 'd52', l: 'Dist. from 52w High %' },
-  { v: 'd52_low_pct', l: 'Dist. from 52w Low %' },
+  { v: 'd52', l: 'Dist. from 52w High % (negative=below; within 10% of high → ≥ -10)' },
+  { v: 'd52_low_pct', l: 'Dist. from 52w Low % (positive=above low)' },
   { v: 'indRank', l: 'Industry Momentum Rank (1=hot…10=cold)' },
   { v: 'mcap', l: 'Market Cap (₹Cr)' },
   { v: 'hist_mcap', l: 'Historical Mcap (₹Cr, approx)' },
@@ -94,7 +94,17 @@ function turnoverAt(tkr, off) { const s = TURN[tkr]; if (!s) return 0; const i =
 // held position that stops trading >1 quarter before data end → marked to zero (loss realised)
 function markPrice(tkr, off) { const s = SERIES[tkr]; if (!s) return null; const ld = s.d[s.d.length - 1]; if (off > ld && ld < SF_END_OFF - 90) return 0; return priceAt(tkr, off); }
 function hl52(tkr, off) { const s = SERIES[tkr]; if (!s) return null; const lo = off - 365; let i = idxLE(s.d, off); if (i < 0) return null; let hi = -1e18, low = 1e18; for (let k = i; k >= 0 && s.d[k] >= lo; k--) { const p = s.p[k]; if (p > hi) hi = p; if (p < low) low = p; } return { hi: hi / 100, low: low / 100 }; }
-function rsi14(tkr, off) { const s = SERIES[tkr]; if (!s) return null; let i = idxLE(s.d, off); if (i < 14) return null; let g = 0, l = 0; for (let k = i - 13; k <= i; k++) { const ch = (s.p[k] - s.p[k - 1]); if (ch > 0) g += ch; else l -= ch; } if (g + l === 0) return 50; const rs = g / (l || 1e-9); return 100 - 100 / (1 + rs); }
+// Wilder-smoothed RSI(14) — the industry-standard formula (matches Trendlyne/StockView "Day RSI")
+function rsi14(tkr, off) {
+  const s = SERIES[tkr]; if (!s) return null; const i = idxLE(s.d, off); if (i < 15) return null;
+  const n = 14, start = Math.max(1, i - 100);
+  let avgG = 0, avgL = 0, k = start, cnt = 0;
+  for (; k <= i && cnt < n; k++, cnt++) { const ch = s.p[k] - s.p[k - 1]; if (ch > 0) avgG += ch; else avgL -= ch; }
+  avgG /= n; avgL /= n;
+  for (; k <= i; k++) { const ch = s.p[k] - s.p[k - 1]; avgG = (avgG * (n - 1) + (ch > 0 ? ch : 0)) / n; avgL = (avgL * (n - 1) + (ch < 0 ? -ch : 0)) / n; }
+  if (avgG + avgL === 0) return 50;
+  return 100 - 100 / (1 + avgG / (avgL || 1e-9));
+}
 function lastSnap(list, dstr) { let best = null; for (const s of list) { if (s.effectiveDate <= dstr && (!best || s.effectiveDate > best.effectiveDate)) best = s; } return best || (list.length ? list[0] : null); }
 function membersAsOf(name, dstr) {
   if (name === '__FNO__') { const snap = lastSnap(FNOH, dstr); return snap ? new Set(snap.symbols) : null; }
@@ -142,9 +152,13 @@ function computeTech(tkr, off, px) {
     turnover: turnAvgAt(tkr, off, 20), turnSurge: t90 > 0 ? t5 / t90 : null, macd, stoch, bollB,
   };
 }
+// extended factors are EXPENSIVE — only compute them when the strategy actually uses one
+const EXT_FIELDS = new Set(['ret3m','ret6m','ret12m','rsNifty','accel','dma50','dma200','rangePos','daysHigh','vol','riskMom','beta','mdd6','upPct','turnover','turnSurge','macd','stoch','bollB']);
+function needsTech(cfg) { return EXT_FIELDS.has(cfg.sortBy) || (cfg.filters || []).some(f => EXT_FIELDS.has(f.field)); }
 function factorsAt(off, cfg) {
   const lookOff = off - Math.round(cfg.lookback * 30.44);
   const members = cfg.indexName ? membersAsOf(cfg.indexName, isoOff(off)) : null;
+  const useTech = needsTech(cfg);
   const rows = [];
   for (const tkr in SERIES) {
     const m = META[tkr]; if (!m) continue;
@@ -157,7 +171,7 @@ function factorsAt(off, cfg) {
       price, chg: (price / p0 - 1) * 100, rsi: rsi14(tkr, off),
       d52: (price - hl.hi) / hl.hi * 100, d52low: (price - hl.low) / hl.low * 100,
       mcap: m.mcap, histMcap: 0 };
-    Object.assign(r, computeTech(tkr, off, price));   // extended technical factors
+    if (useTech) Object.assign(r, computeTech(tkr, off, price));   // extended technical factors
     rows.push(r);
   }
   const byInd = {}; rows.forEach(r => { (byInd[r.ind] = byInd[r.ind] || []).push(r.chg); });
