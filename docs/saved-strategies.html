@@ -187,9 +187,11 @@ function openPicks(id) {
   $('mDate').min = SF.start; $('mDate').max = SF.end; $('mDate').value = SF.end;
   $('hFrom').min = SF.start; $('hFrom').max = SF.end; $('hTo').min = SF.start; $('hTo').max = SF.end;
   $('hFrom').value = SF.start; $('hTo').value = SF.end; $('hOut').textContent = '';
-  LIVE = null;   // start from daily-close; user clicks Go Live for live prices
+  LIVE = null;
   $('modal').classList.remove('hidden');
   refreshPicks();
+  // if a live feed is configured, fetch live prices automatically (no Go Live click needed)
+  if (localStorage.getItem('live_worker_url')) goLive(true);
 }
 function closeModal() { $('modal').classList.add('hidden'); CUR = null; }
 
@@ -263,10 +265,10 @@ function setWorkerUrl() {
   if (t === '') { localStorage.removeItem('live_worker_url'); return ''; }
   alert('That doesn\'t look like a URL (must start with https://).'); return cur;
 }
-async function goLive() {
+async function goLive(silent) {
   if (!CUR || !LAST_BASKET) return;
   let wurl = localStorage.getItem('live_worker_url') || '';
-  if (!wurl) { wurl = setWorkerUrl(); if (!wurl) return; }
+  if (!wurl) { if (silent) return; wurl = setWorkerUrl(); if (!wurl) return; }
   const syms = LAST_BASKET.rows.map(r => r.sym);
   if (!syms.length) { alert('No stocks in the basket to fetch.'); return; }
   const btn = $('mLive'); const prev = btn.textContent; btn.textContent = '⏳ Fetching…'; btn.disabled = true;
@@ -279,7 +281,7 @@ async function goLive() {
     LIVE = { ts: d.asOf || Date.now(), data: d.data };
     refreshPicks();
   } catch (e) {
-    alert('Live fetch failed: ' + e.message + '\n\nCheck the Worker URL (⚙ button) and that opening it in a browser returns JSON.\nSee scripts/LIVE_FEED_SETUP.md.');
+    if (!silent) alert('Live fetch failed: ' + e.message + '\n\nCheck the Worker URL (⚙ button) and that opening it in a browser returns JSON.\nSee scripts/LIVE_FEED_SETUP.md.');
   } finally { btn.textContent = prev; btn.disabled = false; }
 }
 function runHold() {
@@ -297,8 +299,8 @@ function runHold() {
 $('clearAll').onclick = () => { if (confirm('Delete all saved strategies?')) { saveLS('bt_strategies', []); render(); } };
 $('mClose').onclick = closeModal;
 $('modal').addEventListener('click', e => { if (e.target === $('modal')) closeModal(); });
-$('mRefresh').onclick = () => { LIVE = null; refreshPicks(); };
-$('mDate').onchange = () => { LIVE = null; refreshPicks(); };   // live prices only apply to "now"
+$('mRefresh').onclick = () => { LIVE = null; refreshPicks(); if (localStorage.getItem('live_worker_url')) goLive(true); };
+$('mDate').onchange = () => { LIVE = null; refreshPicks(); if ($('mDate').value === SF.end && localStorage.getItem('live_worker_url')) goLive(true); };   // re-fetch live only when viewing "today"
 $('mCsv').onclick = downloadCSV;
 $('mLive').onclick = goLive;
 $('mLiveCfg').onclick = setWorkerUrl;

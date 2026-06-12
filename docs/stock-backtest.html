@@ -259,8 +259,15 @@ function run(){
   const cfg=readCfg();
   if(!cfg.start||!cfg.end||cfg.start>=cfg.end){ $('runMsg').textContent='Pick a valid date range.'; return; }
   $('runMsg').textContent='Running…';
-  setTimeout(()=>{ try{ const res=simulate(cfg); LAST_RUN={cfg,res}; render(res,cfg); $('runMsg').textContent=''; }
+  setTimeout(()=>{ try{ const res=simulate(cfg); LAST_RUN={cfg,res}; render(res,cfg); $('runMsg').textContent=''; autoSaveHistory(); }
     catch(e){ $('runMsg').textContent='Error: '+e.message; console.error(e); } }, 30);
+}
+// every run is recorded to History automatically (skips an exact repeat of the most recent entry)
+function autoSaveHistory(){
+  if(!LAST_RUN) return;
+  const h=loadLS('bt_history'); const item=histItem(LAST_RUN.cfg, LAST_RUN.res);
+  if(h.length && JSON.stringify(h[0].cfg)===JSON.stringify(item.cfg)) return;
+  h.unshift(item); saveLS('bt_history', h.slice(0,300));
 }
 function histItem(c,r){
   return { id:'h'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), ts:Date.now(), label:strategyLabel(c), cfg:c,
@@ -405,7 +412,7 @@ function render(r,cfg){
   </div>`;
   html+=`<div class="card p-3 mb-4 flex flex-wrap items-center gap-2">
       <span class="text-xs text-slate-500 mr-1">${strategyLabel(cfg)}</span>
-      <button id="btSaveHist" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-white hover:bg-slate-900">💾 Save to History</button>
+      <span class="inline-flex items-center gap-1 text-xs font-semibold text-green-700">✓ Auto-saved to History</span>
       <button id="btSaveStrat" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500 text-white hover:bg-amber-600">⭐ Save as Strategy</button>
       <span id="saveMsg" class="text-xs text-green-700"></span>
       <a href="./backtest-history.html" class="text-xs text-indigo-600 hover:underline ml-auto">View history →</a>
@@ -451,12 +458,13 @@ function render(r,cfg){
   </div>`;
   $('out').innerHTML=html;
   drawEquity(r);
-  const sh=$('btSaveHist'), ss=$('btSaveStrat');
-  if(sh) sh.onclick=saveToHistory;
+  const ss=$('btSaveStrat');
   if(ss) ss.onclick=saveStrategy;
   const gl=$('btGoLive'), gc=$('btLiveCfg');
   if(gl) gl.onclick=goLive;
   if(gc) gc.onclick=setWorkerUrl;
+  // if a live feed is already configured, fetch live prices automatically (no click needed)
+  if(gl && localStorage.getItem('live_worker_url')) goLive(true);
 }
 // ---- live feed (shares the Cloudflare Worker URL configured on the Strategies page) ----
 function setWorkerUrl(){
@@ -468,10 +476,10 @@ function setWorkerUrl(){
   if(t==='') { localStorage.removeItem('live_worker_url'); return ''; }
   alert('That doesn\'t look like a URL (must start with https://).'); return cur;
 }
-async function goLive(){
+async function goLive(silent){
   if(!LAST_RUN) return;
   let url=localStorage.getItem('live_worker_url')||'';
-  if(!url){ url=setWorkerUrl(); if(!url) return; }
+  if(!url){ if(silent) return; url=setWorkerUrl(); if(!url) return; }
   const syms=LAST_RUN.res.latest.map(p=>p.sym);
   if(!syms.length){ return; }
   const btn=$('btGoLive'); const prev=btn.textContent; btn.textContent='⏳ Fetching…'; btn.disabled=true;
@@ -486,7 +494,7 @@ async function goLive(){
     document.querySelectorAll('.dayCell').forEach(td=>{ const q=data[td.dataset.sym]; const dd=(q&&q.ltp!=null&&q.prevClose)?(q.ltp/q.prevClose-1)*100:null;
       td.textContent= dd==null?'—':pct(dd); td.className='dayCell text-right px-2 '+(dd==null?'text-slate-300':dd>=0?'pos':'neg'); });
     $('liveMsg').innerHTML=`<span class="text-rose-600 font-semibold">🔴 LIVE</span> · fetched ${new Date(d.asOf||Date.now()).toLocaleTimeString('en-IN')} · Yahoo NSE (~15 min delay). Day % = live vs previous close.`;
-  }catch(e){ alert('Live fetch failed: '+e.message+'\n\nCheck the Worker URL (⚙) and that opening it in a browser returns JSON. See scripts/LIVE_FEED_SETUP.md.'); }
+  }catch(e){ if(!silent) alert('Live fetch failed: '+e.message+'\n\nCheck the Worker URL (⚙) and that opening it in a browser returns JSON. See scripts/LIVE_FEED_SETUP.md.'); }
   finally{ btn.textContent=prev; btn.disabled=false; }
 }
 function drawEquity(r){
