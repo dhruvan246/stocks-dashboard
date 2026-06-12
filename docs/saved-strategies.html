@@ -82,7 +82,7 @@
           <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>
             <th class="text-left py-2 pr-2">#</th><th class="text-left pr-3">Symbol</th>
             <th class="text-right px-2">Chg %</th><th class="text-right px-2">% 52wHi</th><th class="text-right px-2">% 52wLo</th>
-            <th class="text-right px-2">RSI</th><th class="text-right px-2">Close ₹</th><th class="text-right px-2">Live ₹</th><th class="text-right px-2">Δ%</th><th class="text-right px-2">Shares</th><th class="text-right px-2">Allocation</th></tr></thead>
+            <th class="text-right px-2">RSI</th><th class="text-right px-2">Close ₹</th><th class="text-right px-2">Live ₹</th><th class="text-right px-2">Day %</th><th class="text-right px-2">Shares</th><th class="text-right px-2">Allocation</th></tr></thead>
           <tbody id="mBody"></tbody>
         </table>
       </div>
@@ -214,7 +214,8 @@ function refreshPicks() {
   $('sCash').textContent = fmtINR(cap - deployed);
   $('sQual').textContent = `${ranked.length} / ${CUR.cfg.topN}`;
   $('mBody').innerHTML = rows.length ? rows.map((r, i) => {
-    const live = liveLtp(r.sym); const delta = live != null ? (live / r.price - 1) * 100 : null;
+    const live = liveLtp(r.sym); const pc = (LIVE && LIVE.data[r.sym]) ? LIVE.data[r.sym].prevClose : null;
+    const delta = (live != null && pc) ? (live / pc - 1) * 100 : null;   // true day change (live vs Yahoo prev close)
     return `<tr class="border-b border-slate-50">
     <td class="py-1.5 pr-2 text-slate-400">${i + 1}</td>
     <td class="pr-3 font-semibold text-indigo-700">${esc(r.sym)}</td>
@@ -240,9 +241,10 @@ function refreshPicks() {
 }
 function downloadCSV() {
   if (!LAST_BASKET || !LAST_BASKET.rows.length) return;
-  const head = ['Rank', 'Symbol', 'Change%', 'Pct_from_52wHigh', 'Pct_from_52wLow', 'RSI', 'Close', 'Live', 'DeltaPct', 'Shares', 'Allocation'];
+  const head = ['Rank', 'Symbol', 'Change%', 'Pct_from_52wHigh', 'Pct_from_52wLow', 'RSI', 'Close', 'Live', 'DayPct', 'Shares', 'Allocation'];
   const lines = [head.join(',')].concat(LAST_BASKET.rows.map((r, i) => {
-    const live = liveLtp(r.sym); const delta = live != null ? (live / r.price - 1) * 100 : null;
+    const live = liveLtp(r.sym); const pc = (LIVE && LIVE.data[r.sym]) ? LIVE.data[r.sym].prevClose : null;
+    const delta = (live != null && pc) ? (live / pc - 1) * 100 : null;
     return [i + 1, r.sym, r.chg.toFixed(2), r.d52.toFixed(2), r.d52low.toFixed(2), r.rsi == null ? '' : Math.round(r.rsi),
       r.price.toFixed(2), live == null ? '' : live.toFixed(2), delta == null ? '' : delta.toFixed(2), r.shares, Math.round(r.alloc)].join(',');
   }));
