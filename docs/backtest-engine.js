@@ -37,6 +37,8 @@ const FIELDS = [
   { v: 'upPct', l: 'Up-day consistency % (3m)' },
   { v: 'turnover', l: 'Avg daily turnover (₹ lacs, 20d)' },
   { v: 'turnSurge', l: 'Turnover surge (5d ÷ 90d)' },
+  { v: 'volSurge', l: 'Volume surge — shares (5d ÷ 90d)' },
+  { v: 'delivPct', l: 'Delivery % (20d avg, 2020+ data)' },
   { v: 'macd', l: 'MACD histogram (12,26,9)' },
   { v: 'stoch', l: 'Stochastic %K (14)' },
   { v: 'bollB', l: 'Bollinger %b (20,2)' },
@@ -70,6 +72,10 @@ async function loadSF() {
     }
     ser[sym] = { d, p }; turn[sym] = { d, t }; const sm = D.meta[sym] || {};
     if (o.hb && o.lb) { ser[sym].hb = o.hb; ser[sym].lb = o.lb; }   // intraday high/low per-mil offsets
+    if (o.ob) ser[sym].ob = o.ob;   // open per-mil offset (signed)
+    if (o.v)  ser[sym].v  = o.v;    // traded volume (shares)
+    if (o.dv) ser[sym].dv = o.dv;   // delivery % x10 (0 = unavailable; pre-2020 format lacks it)
+    if (o.vw) ser[sym].vw = o.vw;   // VWAP per-mil offset (signed)
     meta[sym] = { symbol: sym, name: sm.name || sym, industry: sm.ind || 'Other', sector: sm.ind || 'Other', mcap: 0, latest: o.c[n - 1], alive: sm.alive };
   }
   const endOff = Math.floor((Date.parse((D.end || '2024-01-01') + 'T00:00:00Z') / 1000 - ts) / DAY);
@@ -152,6 +158,12 @@ function computeTech(tkr, off, px) {
   let stoch = null; { const v = winCloses(tkr, off, 21); if (v && v.length) { const hi = Math.max(...v), lo = Math.min(...v); stoch = hi > lo ? (px - lo) / (hi - lo) * 100 : 50; } }
   let bollB = null; { const v = winCloses(tkr, off, 28); if (v && v.length > 1) { const m = v.reduce((a, b) => a + b, 0) / v.length, sd = stdOf(v), up = m + 2 * sd, dn = m - 2 * sd; bollB = up > dn ? (px - dn) / (up - dn) * 100 : 50; } }
   const t5 = turnAvgAt(tkr, off, 7), t90 = turnAvgAt(tkr, off, 90);
+  // true share-volume surge + delivery % (from the full bhavcopy fields; null when data absent)
+  let volSurge = null, delivPct = null;
+  { const s = SERIES[tkr];
+    if (s && s.v) { const avg = (days) => { const lo = off - days; let i = idxLE(s.d, off), sum = 0, n = 0; for (let k = i; k >= 0 && s.d[k] >= lo; k--) { sum += s.v[k]; n++; } return n ? sum / n : 0; };
+      const v5 = avg(7), v90 = avg(90); volSurge = v90 > 0 ? v5 / v90 : null; }
+    if (s && s.dv) { const lo = off - 28; let i = idxLE(s.d, off), sum = 0, n = 0; for (let k = i; k >= 0 && s.d[k] >= lo; k--) { if (s.dv[k] > 0) { sum += s.dv[k] / 10; n++; } } delivPct = n ? sum / n : null; } }
   return {
     ret3m: r3, ret6m: r6, ret12m: r12,
     rsNifty: (r6 != null && nr6 != null) ? r6 - nr6 : null,
@@ -161,11 +173,11 @@ function computeTech(tkr, off, px) {
     rangePos: (hl && hl.hi > hl.low) ? (px - hl.low) / (hl.hi - hl.low) * 100 : null,
     daysHigh, vol, riskMom: (r3 != null && vol) ? r3 / vol : null, beta, mdd6: mdd,
     upPct: rets90.length ? rets90.filter(x => x > 0).length / rets90.length * 100 : null,
-    turnover: turnAvgAt(tkr, off, 20), turnSurge: t90 > 0 ? t5 / t90 : null, macd, stoch, bollB,
+    turnover: turnAvgAt(tkr, off, 20), turnSurge: t90 > 0 ? t5 / t90 : null, volSurge, delivPct, macd, stoch, bollB,
   };
 }
 // extended factors are EXPENSIVE — only compute them when the strategy actually uses one
-const EXT_FIELDS = new Set(['ret3m','ret6m','ret12m','rsNifty','accel','dma50','dma200','rangePos','daysHigh','vol','riskMom','beta','mdd6','upPct','turnover','turnSurge','macd','stoch','bollB']);
+const EXT_FIELDS = new Set(['ret3m','ret6m','ret12m','rsNifty','accel','dma50','dma200','rangePos','daysHigh','vol','riskMom','beta','mdd6','upPct','turnover','turnSurge','volSurge','delivPct','macd','stoch','bollB']);
 function needsTech(cfg) { return EXT_FIELDS.has(cfg.sortBy) || (cfg.filters || []).some(f => EXT_FIELDS.has(f.field)); }
 function factorsAt(off, cfg) {
   const lookOff = off - Math.round(cfg.lookback * 30.44);

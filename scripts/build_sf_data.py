@@ -56,20 +56,27 @@ def parse_rows(text):
         return -1
     iS, iSer = idx("SYMBOL"), idx("SERIES")
     iC, iP, iT = idx("CLOSE_PRICE", "CLOSE"), idx("PREV_CLOSE", "PREVCLOSE"), idx("TURNOVER_LACS", "TOTTRDVAL")
-    iH, iL = idx("HIGH_PRICE", "HIGH"), idx("LOW_PRICE", "LOW")
+    iH, iL, iO = idx("HIGH_PRICE", "HIGH"), idx("LOW_PRICE", "LOW"), idx("OPEN_PRICE", "OPEN")
+    iV, iN = idx("TTL_TRD_QNTY", "TOTTRDQTY"), idx("NO_OF_TRADES", "TOTALTRADES")
+    iD, iW, iI = idx("DELIV_PER"), idx("AVG_PRICE"), idx("ISIN")
     if iS < 0 or iC < 0: return []
+    def num(r, i, dflt=0.0):
+        if i < 0 or i >= len(r): return dflt
+        s = r[i].strip()
+        if not s or s == "-": return dflt
+        try: return float(s)
+        except ValueError: return dflt
     out = []
     for r in rows[1:]:
         if len(r) <= max(iS, iC): continue
         if (r[iSer].strip() if iSer >= 0 else "EQ") not in ("EQ", "BE"): continue
-        try:
-            c = float(r[iC]); p = float(r[iP]) if iP >= 0 and r[iP].strip() else 0.0
-            t = float(r[iT]) if iT >= 0 and r[iT].strip() else 0.0
-            h = float(r[iH]) if iH >= 0 and r[iH].strip() else c
-            l = float(r[iL]) if iL >= 0 and r[iL].strip() else c
-        except ValueError:
-            continue
-        if c > 0: out.append([r[iS].strip(), c, p, t, h, l])
+        c = num(r, iC)
+        if c <= 0: continue
+        # FULL row cached so future factor additions never need a refetch:
+        # [sym, close, prevclose, turnover, high, low, open, volume, deliv%, vwap, trades, isin]
+        out.append([r[iS].strip(), c, num(r, iP), num(r, iT), num(r, iH, c), num(r, iL, c),
+                    num(r, iO, c), num(r, iV), num(r, iD), num(r, iW), num(r, iN),
+                    (r[iI].strip() if 0 <= iI < len(r) else "")])
     return out
 
 
@@ -78,8 +85,8 @@ def fetch_day(d, j):
     if os.path.exists(cf):
         try:
             rows = json.load(open(cf))
-            # v1 cache rows lack high/low (4 cols) — refetch those days; holiday [] is reusable
-            if not rows or len(rows[0]) >= 6:
+            # older cache rows lack the full column set (v3 = 12 cols) — refetch; holiday [] reusable
+            if not rows or len(rows[0]) >= 12:
                 return rows
         except Exception: pass
     ddmmyyyy = d.strftime("%d%m%Y")
@@ -101,24 +108,59 @@ def fetch_day(d, j):
     return []
 
 
+def needs_fetch(d):
+    cf = os.path.join(CACHE, d.strftime("%Y%m%d") + ".json")
+    if not os.path.exists(cf): return True
+    try:
+        rows = json.load(open(cf))
+        return bool(rows) and len(rows[0]) < 12   # pre-v3 cache (missing columns) -> refetch
+    except Exception:
+        return True
+
+def prefetch_parallel(dates, workers=6):
+    """Fill the cache in parallel (nsearchives is a static CDN; modest concurrency is fine)."""
+    import threading
+    from concurrent.futures import ThreadPoolExecutor
+    local = threading.local()
+    def work(d):
+        if not hasattr(local, "jar"): local.jar = jar()
+        try: fetch_day(d, local.jar)
+        except Exception: pass
+        time.sleep(0.05)
+    done = 0
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        for _ in ex.map(work, dates):
+            done += 1
+            if done % 500 == 0: print("  prefetch %d/%d" % (done, len(dates)), flush=True)
+
 def main():
-    j = jar(); acc = {}; d = START; tried = got = 0
+    all_days = []
+    d = START
     while d <= END:
-        if d.weekday() < 5:
-            tried += 1
-            rows = fetch_day(d, j)
-            if rows:
-                got += 1; ymd = int(d.strftime("%Y%m%d"))
-                for row in rows:
-                    sym, c, p, t = row[0], row[1], row[2], row[3]
-                    h = row[4] if len(row) > 4 else c
-                    l = row[5] if len(row) > 5 else c
-                    acc.setdefault(sym, []).append((ymd, c, p, t, h, l))
-            if tried % 250 == 0:
-                print("  ...%s  days=%d/%d  symbols=%d" % (d, got, tried, len(acc)), flush=True)
-                j = jar()
-            time.sleep(0.30)
+        if d.weekday() < 5: all_days.append(d)
         d += datetime.timedelta(days=1)
+    todo = [d for d in all_days if needs_fetch(d)]
+    print("Trading-day candidates: %d | needing (re)fetch: %d" % (len(all_days), len(todo)), flush=True)
+    if todo: prefetch_parallel(todo)
+
+    j = jar(); acc = {}; isin_of = {}; tried = got = 0
+    for d in all_days:
+        tried += 1
+        rows = fetch_day(d, j)   # cache hit for nearly all after prefetch
+        if rows:
+            got += 1; ymd = int(d.strftime("%Y%m%d"))
+            for row in rows:
+                sym, c, p, t = row[0], row[1], row[2], row[3]
+                h = row[4] if len(row) > 4 else c
+                l = row[5] if len(row) > 5 else c
+                o = row[6] if len(row) > 6 else c
+                v = row[7] if len(row) > 7 else 0
+                dlv = row[8] if len(row) > 8 else 0
+                vw = row[9] if len(row) > 9 else 0
+                if len(row) > 11 and row[11]: isin_of[sym] = row[11]   # last ISIN seen (old-format files carry it)
+                acc.setdefault(sym, []).append((ymd, c, p, t, h, l, o, v, dlv, vw))
+        if tried % 1000 == 0:
+            print("  ...%s  days=%d/%d  symbols=%d" % (d, got, tried, len(acc)), flush=True)
     print("Fetched %d/%d trading days; %d symbols" % (got, tried, len(acc)), flush=True)
 
     cur = {}
@@ -135,8 +177,9 @@ def main():
     df = int(DAILY_FROM.strftime("%Y%m%d"))
     data, meta, dead = {}, {}, 0
     for sym, obs in acc.items():
-        obs.sort(); ds, cs, ts, hb, lb = [], [], [], [], []; adj = None; lastWeek = None
-        for i, (ymd, c, p, t, h, l) in enumerate(obs):
+        obs.sort(); ds, cs, ts, hb, lb, ob, vol, dv, vwb = [], [], [], [], [], [], [], [], []
+        adj = None; lastWeek = None
+        for i, (ymd, c, p, t, h, l, o, v, dlv, vw) in enumerate(obs):
             adj = c if adj is None else adj * ((c / p) if (p and p > 0) else (c / obs[i-1][1] if obs[i-1][1] else 1.0))
             if ymd >= df:
                 keep = True                              # daily for recent
@@ -145,15 +188,20 @@ def main():
                 keep = (wk != lastWeek); lastWeek = wk   # weekly for old
             if keep:
                 ds.append(ymd); cs.append(round(adj, 2)); ts.append(round(t, 1))
-                # intraday high/low as per-mil offsets from close (split-adjustment cancels in the ratio)
+                # high/low/open/vwap as per-mil offsets from close (split-adjustment cancels in the ratio)
                 hb.append(max(0, round((h / c - 1) * 1000)) if h >= c else 0)
                 lb.append(max(0, round((1 - l / c) * 1000)) if l <= c else 0)
+                ob.append(round((o / c - 1) * 1000) if o > 0 else 0)
+                vol.append(int(v))
+                dv.append(round(dlv * 10) if dlv else 0)            # delivery % x10 (0 = unavailable)
+                vwb.append(round((vw / c - 1) * 1000) if vw > 0 else 0)
         if len(ds) < 12: continue
-        data[sym] = {"d": ds, "c": cs, "t": ts, "hb": hb, "lb": lb}
+        data[sym] = {"d": ds, "c": cs, "t": ts, "hb": hb, "lb": lb, "ob": ob, "v": vol, "dv": dv, "vw": vwb}
         alive = sym in cur
         dead += (not alive)
         meta[sym] = {"name": (cur.get(sym) or {}).get("name") or sym,
                      "ind": (cur.get(sym) or {}).get("industry") or "Unknown", "alive": alive}
+        if sym in isin_of: meta[sym]["isin"] = isin_of[sym]
     print("Stored %d symbols (%d delisted/absent today)" % (len(data), dead), flush=True)
     blob = gzip.compress(json.dumps({"start": START.isoformat(), "dailyFrom": DAILY_FROM.isoformat(),
                                      "end": END.isoformat(), "meta": meta, "data": data},
