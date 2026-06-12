@@ -8,6 +8,8 @@
 <style>
   body{font-feature-settings:"tnum" 1}
   .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
+  .pos{color:#15803d}.neg{color:#b91c1c}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
@@ -19,7 +21,7 @@
     </a>
     <nav class="flex items-center gap-1 overflow-x-auto">
       <a href="./nse-bse-dashboard.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">📈<span class="hidden sm:inline">Stocks</span></a>
-      <a href="./stock-backtest.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow transition">🧪<span class="hidden sm:inline">Backtest</span></a>
+      <a href="./stock-backtest.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">🧪<span class="hidden sm:inline">Backtest</span></a>
       <a href="./backtest-history.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">📜<span class="hidden sm:inline">History</span></a>
     </nav>
   </div>
@@ -30,43 +32,238 @@
     <h1 class="text-xl md:text-2xl font-bold text-slate-900">⭐ Saved Strategies</h1>
     <button id="clearAll" class="text-xs text-red-600 hover:underline font-semibold">Clear all</button>
   </div>
-  <p class="text-xs text-slate-500 mb-4">Strategies you named with “⭐ Save as Strategy”. Click <b>Load &amp; run</b> to apply the setup on the Backtest page. <a href="./stock-backtest.html" class="text-indigo-600 hover:underline">← back to Backtest</a></p>
-  <div id="list"></div>
+  <p class="text-xs text-slate-500 mb-4">Strategies you saved from backtests. Each card shows its survivorship-free performance. Click <b>Today's Picks</b> for the live deployment basket, or <b>Backtest</b> to re-open the full run. <a href="./stock-backtest.html" class="text-indigo-600 hover:underline">← back to Backtest</a></p>
+  <div id="status" class="text-xs text-slate-500 mb-3"></div>
+  <div id="list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
 </main>
 
+<!-- Today's Picks modal -->
+<div id="modal" class="hidden fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm overflow-y-auto p-3 sm:p-6">
+  <div class="max-w-5xl mx-auto card shadow-2xl">
+    <div class="flex items-start justify-between gap-3 p-4 border-b border-slate-200">
+      <div>
+        <h2 id="mTitle" class="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">🎯 Today's Picks</h2>
+        <p id="mSub" class="text-[11px] text-slate-500 mt-0.5"></p>
+      </div>
+      <button id="mClose" class="text-slate-400 hover:text-slate-700 text-xl leading-none px-1">×</button>
+    </div>
+    <div class="p-4 space-y-4">
+      <!-- controls -->
+      <div class="flex flex-wrap items-end gap-3">
+        <div><label class="block text-[11px] font-semibold text-slate-500 mb-1">📅 As of date</label><input id="mDate" type="date" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-sm"/></div>
+        <div><label class="block text-[11px] font-semibold text-slate-500 mb-1">Capital ₹</label><input id="mCap" type="number" value="100000" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-sm w-32"/></div>
+        <button id="mRefresh" class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700">↻ Refresh / Re-allocate</button>
+        <button id="mCsv" class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-emerald-600 text-white hover:bg-emerald-700">⬇ Download CSV</button>
+        <span id="mSort" class="text-[11px] text-slate-400 ml-auto"></span>
+      </div>
+      <div id="mFilters" class="text-[11px] text-slate-500 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2"></div>
+
+      <!-- hold calculator -->
+      <div class="bg-violet-50 border border-violet-200 rounded-lg px-3 py-2.5 flex flex-wrap items-end gap-3">
+        <span class="text-xs font-semibold text-violet-700">📐 Hold (buy once, no churn)</span>
+        <div><label class="block text-[10px] text-slate-500 mb-0.5">From</label><input id="hFrom" type="date" class="border border-slate-300 rounded px-2 py-1 text-xs"/></div>
+        <div><label class="block text-[10px] text-slate-500 mb-0.5">To</label><input id="hTo" type="date" class="border border-slate-300 rounded px-2 py-1 text-xs"/></div>
+        <button id="hCompute" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-violet-600 text-white hover:bg-violet-700">✅ Compute hold</button>
+        <span id="hOut" class="text-[11px] text-slate-600"></span>
+      </div>
+
+      <!-- summary -->
+      <div class="grid grid-cols-3 gap-3">
+        <div class="bg-slate-50 rounded-lg p-3 text-center"><div class="text-[11px] text-slate-500">Deployed</div><div id="sDeployed" class="text-lg font-bold text-slate-900">—</div></div>
+        <div class="bg-slate-50 rounded-lg p-3 text-center"><div class="text-[11px] text-slate-500">Cash remaining</div><div id="sCash" class="text-lg font-bold text-slate-900">—</div></div>
+        <div class="bg-slate-50 rounded-lg p-3 text-center"><div class="text-[11px] text-slate-500">Qualifying / Top-N</div><div id="sQual" class="text-lg font-bold text-slate-900">—</div></div>
+      </div>
+
+      <!-- basket -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>
+            <th class="text-left py-2 pr-2">#</th><th class="text-left pr-3">Symbol</th>
+            <th class="text-right px-2">Chg %</th><th class="text-right px-2">% 52wHi</th><th class="text-right px-2">% 52wLo</th>
+            <th class="text-right px-2">RSI</th><th class="text-right px-2">Close ₹</th><th class="text-right px-2">Shares</th><th class="text-right px-2">Allocation</th></tr></thead>
+          <tbody id="mBody"></tbody>
+        </table>
+      </div>
+      <p class="text-[11px] text-slate-500"><b>How to use:</b> place LIMIT buy orders for these shares. Allocation totals ≤ capital (whole-share rounding). Prices are the <b>latest available daily close</b> (this is a static daily-data site — no live intraday feed).</p>
+
+      <!-- also qualifying -->
+      <div id="mAlsoWrap" class="hidden">
+        <button id="mAlsoToggle" class="text-xs font-semibold text-slate-600 hover:text-slate-900">▸ Also qualifying (<span id="mAlsoN">0</span>) — passed filters, ranked below Top-N</button>
+        <div id="mAlso" class="hidden overflow-x-auto mt-2"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="./backtest-engine.js"></script>
 <script>
 'use strict';
-const $=id=>document.getElementById(id);
-function load(){try{return JSON.parse(localStorage.getItem('bt_strategies')||'[]');}catch(e){return[];}}
-function save(v){localStorage.setItem('bt_strategies',JSON.stringify(v));}
-const fdate=ts=>new Date(ts).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
-const FREQ={1:'Monthly',3:'Quarterly',6:'Half-yearly',12:'Yearly'};
-const SORT={changePercent:'Momentum',rsi:'RSI',d52:'52w-High',d52_low_pct:'52w-Low',indRank:'Industry-rank',mcap:'Mcap',hist_mcap:'Hist-mcap'};
-function desc(c){
-  const uni=c.indexName?String(c.indexName).replace('__FNO__','F&O'):'≥₹'+(+c.mcapFloor).toLocaleString('en-IN')+'Cr';
-  const meth=c.method==='hold'?'hold-winners':'equal-weight';
-  return `Sort by <b>${SORT[c.sortBy]||c.sortBy}</b> (${c.dir==='high'?'high':'low'}) · top-${c.topN} · ${uni} · ${FREQ[c.freq]||c.freq+'mo'} · ${meth} · ${c.start}→${c.end}${(c.filters||[]).length?' · '+c.filters.map(f=>SORT[f.field]+f.op+f.val).join(', '):''}`;
-}
-function render(){
-  const items=load();
-  if(!items.length){ $('list').innerHTML='<div class="card p-8 text-center text-slate-400 text-sm">No saved strategies yet. Run a backtest and click “⭐ Save as Strategy”.</div>'; return; }
-  $('list').innerHTML=items.map(it=>`<div class="card p-4 mb-3">
-      <div class="flex items-start justify-between gap-3 flex-wrap">
-        <div>
-          <div class="font-semibold text-slate-900">${it.name}</div>
-          <div class="text-xs text-slate-500 mt-1">${desc(it.cfg)}</div>
-          <div class="text-[11px] text-slate-400 mt-1">saved ${fdate(it.ts)}</div>
+const $ = id => document.getElementById(id);
+let CUR = null;          // currently-open strategy in the modal
+const PERF = {};         // in-memory perf cache keyed by strategy id
+
+const FREQ = { 1: 'Monthly', 3: 'Quarterly', 6: 'Half-yearly', 12: 'Yearly' };
+const SORTL = { changePercent: 'Change % desc', rsi: 'RSI', d52: '% from 52w High', d52_low_pct: '% from 52w Low', indRank: 'Industry rank', mcap: 'Mcap', hist_mcap: 'Hist mcap' };
+
+function strategies() { return loadLS('bt_strategies'); }
+function clampDate(d, lo, hi) { return d < lo ? lo : d > hi ? hi : d; }
+
+/* ---------- card list ---------- */
+function render() {
+  const items = strategies();
+  if (!items.length) {
+    $('list').innerHTML = '<div class="card p-8 text-center text-slate-400 text-sm md:col-span-3">No saved strategies yet. Run a backtest and click “⭐ Save as Strategy”.</div>';
+    return;
+  }
+  $('list').innerHTML = items.map(it => {
+    const c = it.cfg;
+    const expr = filterExpr(c) || '<span class="text-slate-400">no filters</span>';
+    return `<div class="card p-4 flex flex-col" data-card="${it.id}">
+      <div class="flex items-start justify-between gap-2">
+        <div class="font-bold text-slate-900 leading-snug">${esc(it.name)}</div>
+        <button class="text-slate-300 hover:text-red-500 text-sm shrink-0" data-del="${it.id}" title="Delete">🗑️</button>
+      </div>
+      <div class="text-[11px] text-slate-500 mt-1.5 flex items-center gap-1.5 flex-wrap">
+        <span class="font-semibold text-indigo-600">📊 ${esc(universeLabel(c))}</span><span>·</span>
+        <span>${FREQ[c.freq] || c.freq + 'mo'}</span><span>·</span><span>${c.topN} stocks</span>
+      </div>
+      <div class="mono text-[11px] text-slate-500 mt-1.5 break-words">${expr}</div>
+      <div class="text-[11px] text-slate-500 mt-1">Sort: <b>${SORTL[c.sortBy] || c.sortBy}</b> ${c.dir === 'high' ? 'desc' : 'asc'}</div>
+      <div class="bg-slate-50 rounded-lg p-3 mt-3" data-perf="${it.id}">
+        <div class="text-[11px] text-slate-500 mb-1">Backtest performance</div>
+        <div class="flex items-center justify-between">
+          <div class="text-sm">CAGR: <span class="font-bold text-slate-400">computing…</span></div>
+          <div class="text-sm">MaxDD: <span class="font-bold text-slate-400">…</span></div>
         </div>
-        <div class="flex gap-2 shrink-0">
-          <button class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white hover:bg-blue-700" data-run="${it.id}">Load &amp; run →</button>
-          <button class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-red-600 hover:bg-slate-200" data-del="${it.id}">Delete</button>
-        </div>
-      </div></div>`).join('');
-  $('list').querySelectorAll('[data-run]').forEach(b=>b.onclick=()=>{const it=load().find(x=>x.id===b.dataset.run); if(it){localStorage.setItem('bt_load',JSON.stringify(it.cfg)); location.href='./stock-backtest.html';}});
-  $('list').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{save(load().filter(x=>x.id!==b.dataset.del)); render();});
+        <div class="text-[10px] text-slate-400 mt-1">&nbsp;</div>
+      </div>
+      <div class="grid grid-cols-2 gap-2 mt-3">
+        <button class="px-3 py-2 rounded-lg text-xs font-semibold bg-blue-600 text-white hover:bg-blue-700" data-picks="${it.id}">🎯 Today's Picks</button>
+        <button class="px-3 py-2 rounded-lg text-xs font-semibold bg-slate-800 text-white hover:bg-slate-900" data-bt="${it.id}">📈 Backtest</button>
+      </div>
+    </div>`;
+  }).join('');
+  // wire buttons
+  $('list').querySelectorAll('[data-del]').forEach(b => b.onclick = () => { saveLS('bt_strategies', strategies().filter(x => x.id !== b.dataset.del)); render(); computeAllPerf(); });
+  $('list').querySelectorAll('[data-bt]').forEach(b => b.onclick = () => { const it = strategies().find(x => x.id === b.dataset.bt); if (it) { localStorage.setItem('bt_load', JSON.stringify(it.cfg)); location.href = './stock-backtest.html'; } });
+  $('list').querySelectorAll('[data-picks]').forEach(b => b.onclick = () => openPicks(b.dataset.picks));
 }
-$('clearAll').onclick=()=>{ if(confirm('Delete all saved strategies?')){ save([]); render(); } };
-render();
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+
+/* ---------- live performance (computed lazily, one card at a time) ---------- */
+async function computeAllPerf() {
+  for (const it of strategies()) {
+    await new Promise(r => setTimeout(r, 0));   // yield so the UI stays responsive
+    const box = document.querySelector(`[data-perf="${it.id}"]`);
+    if (!box) continue;
+    try {
+      const c = { ...it.cfg };
+      c.start = clampDate(c.start, SF.start, SF.end);
+      c.end = clampDate(c.end, SF.start, SF.end);
+      const res = simulate(c);
+      PERF[it.id] = res;
+      box.innerHTML = `<div class="text-[11px] text-slate-500 mb-1">Backtest performance</div>
+        <div class="flex items-center justify-between">
+          <div class="text-sm">CAGR: <span class="font-bold ${res.cagr >= 0 ? 'pos' : 'neg'}">${pct(res.cagr)}</span></div>
+          <div class="text-sm">MaxDD: <span class="font-bold neg">-${Math.round(res.maxDD)}%</span></div>
+        </div>
+        <div class="text-[10px] text-slate-400 mt-1">${c.start} → ${c.end} · ₹1L → ${fmtINR(res.finalV)}</div>`;
+    } catch (e) {
+      box.querySelector('.text-slate-400') && (box.innerHTML = `<div class="text-[11px] text-red-500">Could not compute: ${esc(e.message)}</div>`);
+    }
+  }
+}
+
+/* ---------- Today's Picks modal ---------- */
+function openPicks(id) {
+  const it = strategies().find(x => x.id === id); if (!it) return;
+  CUR = it;
+  $('mTitle').innerHTML = `🎯 Today's Picks · ${esc(it.name)}`;
+  $('mFilters').innerHTML = `<b>Universe:</b> ${esc(universeLabel(it.cfg))} &nbsp;·&nbsp; <b>Rank:</b> ${SORTL[it.cfg.sortBy] || it.cfg.sortBy} (${it.cfg.dir}) &nbsp;·&nbsp; <b>Filters:</b> ${esc(filterExpr(it.cfg) || 'none')}`;
+  $('mSort').textContent = 'Sort: ' + (SORTL[it.cfg.sortBy] || it.cfg.sortBy);
+  $('mCap').value = it.cfg.capital || 100000;
+  $('mDate').min = SF.start; $('mDate').max = SF.end; $('mDate').value = SF.end;
+  $('hFrom').min = SF.start; $('hFrom').max = SF.end; $('hTo').min = SF.start; $('hTo').max = SF.end;
+  $('hFrom').value = SF.start; $('hTo').value = SF.end; $('hOut').textContent = '';
+  $('modal').classList.remove('hidden');
+  refreshPicks();
+}
+function closeModal() { $('modal').classList.add('hidden'); CUR = null; }
+
+let LAST_BASKET = null;
+function refreshPicks() {
+  if (!CUR) return;
+  const date = clampDate($('mDate').value || SF.end, SF.start, SF.end);
+  $('mDate').value = date;
+  const cap = +$('mCap').value || 100000;
+  $('mSub').textContent = `As of ${date} · latest daily close · ${SF.nDead} delisted names included`;
+  const ranked = screenAsOf(CUR.cfg, date);
+  const picks = ranked.slice(0, CUR.cfg.topN);
+  const { rows, deployed, cash } = allocateBasket(picks, cap);
+  LAST_BASKET = { date, rows };
+  $('sDeployed').textContent = fmtINR(deployed);
+  $('sCash').textContent = fmtINR(cash);
+  $('sQual').textContent = `${ranked.length} / ${CUR.cfg.topN}`;
+  $('mBody').innerHTML = rows.length ? rows.map((r, i) => `<tr class="border-b border-slate-50">
+    <td class="py-1.5 pr-2 text-slate-400">${i + 1}</td>
+    <td class="pr-3 font-semibold text-indigo-700">${esc(r.sym)}</td>
+    <td class="text-right px-2 ${r.chg >= 0 ? 'pos' : 'neg'}">${pct(r.chg)}</td>
+    <td class="text-right px-2">${r.d52.toFixed(1)}%</td>
+    <td class="text-right px-2">${r.d52low.toFixed(1)}%</td>
+    <td class="text-right px-2">${r.rsi == null ? '—' : Math.round(r.rsi)}</td>
+    <td class="text-right px-2">${r.price.toFixed(2)}</td>
+    <td class="text-right px-2 font-semibold">${r.shares}</td>
+    <td class="text-right px-2">${fmtINR(r.alloc)}</td></tr>`).join('')
+    : '<tr><td colspan="9" class="py-4 text-center text-slate-400">No stocks qualify on this date.</td></tr>';
+  // also qualifying
+  const also = ranked.slice(CUR.cfg.topN);
+  if (also.length) {
+    $('mAlsoWrap').classList.remove('hidden'); $('mAlsoN').textContent = also.length;
+    $('mAlso').innerHTML = `<table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>
+      <th class="text-left py-1 pr-2">#</th><th class="text-left pr-3">Symbol</th><th class="text-right px-2">Chg %</th><th class="text-right px-2">% 52wHi</th><th class="text-right px-2">% 52wLo</th><th class="text-right px-2">RSI</th><th class="text-right px-2">Close ₹</th></tr></thead>
+      <tbody>${also.map((r, i) => `<tr class="border-b border-slate-50"><td class="py-1 pr-2 text-slate-400">${CUR.cfg.topN + i + 1}</td><td class="pr-3 font-medium">${esc(r.sym)}</td><td class="text-right px-2 ${r.chg >= 0 ? 'pos' : 'neg'}">${pct(r.chg)}</td><td class="text-right px-2">${r.d52.toFixed(1)}%</td><td class="text-right px-2">${r.d52low.toFixed(1)}%</td><td class="text-right px-2">${r.rsi == null ? '—' : Math.round(r.rsi)}</td><td class="text-right px-2">${r.price.toFixed(2)}</td></tr>`).join('')}</tbody></table>`;
+  } else { $('mAlsoWrap').classList.add('hidden'); }
+}
+function downloadCSV() {
+  if (!LAST_BASKET || !LAST_BASKET.rows.length) return;
+  const head = ['Rank', 'Symbol', 'Change%', 'Pct_from_52wHigh', 'Pct_from_52wLow', 'RSI', 'Close', 'Shares', 'Allocation'];
+  const lines = [head.join(',')].concat(LAST_BASKET.rows.map((r, i) =>
+    [i + 1, r.sym, r.chg.toFixed(2), r.d52.toFixed(2), r.d52low.toFixed(2), r.rsi == null ? '' : Math.round(r.rsi), r.price.toFixed(2), r.shares, Math.round(r.alloc)].join(',')));
+  const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `picks_${(CUR ? CUR.name : 'strategy').replace(/[^a-z0-9]+/gi, '_')}_${LAST_BASKET.date}.csv`;
+  a.click(); URL.revokeObjectURL(a.href);
+}
+function runHold() {
+  if (!CUR) return;
+  const from = clampDate($('hFrom').value || SF.start, SF.start, SF.end);
+  const to = clampDate($('hTo').value || SF.end, SF.start, SF.end);
+  const cap = +$('mCap').value || 100000;
+  if (from >= to) { $('hOut').textContent = 'Pick From < To.'; return; }
+  const h = computeHold(CUR.cfg, from, to, cap);
+  const cls = h.retPct >= 0 ? 'pos' : 'neg';
+  $('hOut').innerHTML = `Buy ${h.rows.length} on ${from}, hold to ${to}: <b class="${cls}">${pct(h.retPct)}</b> · ${fmtINR(h.startVal)} → <b>${fmtINR(h.endVal)}</b>`;
+}
+
+/* ---------- boot ---------- */
+$('clearAll').onclick = () => { if (confirm('Delete all saved strategies?')) { saveLS('bt_strategies', []); render(); } };
+$('mClose').onclick = closeModal;
+$('modal').addEventListener('click', e => { if (e.target === $('modal')) closeModal(); });
+$('mRefresh').onclick = refreshPicks;
+$('mDate').onchange = refreshPicks;
+$('mCsv').onclick = downloadCSV;
+$('hCompute').onclick = runHold;
+$('mAlsoToggle').onclick = () => { const a = $('mAlso'); a.classList.toggle('hidden'); $('mAlsoToggle').innerHTML = $('mAlsoToggle').innerHTML.replace(a.classList.contains('hidden') ? '▾' : '▸', a.classList.contains('hidden') ? '▸' : '▾'); };
+
+(async function boot() {
+  render();   // show cards immediately (perf = "computing…")
+  if (!strategies().length) { $('status').textContent = ''; return; }
+  $('status').textContent = 'Loading survivorship-free data…';
+  try { await loadEngineData(m => { $('status').textContent = m || ''; }); }
+  catch (e) { $('status').innerHTML = '<span class="text-red-500">Could not load market data — has the survivorship-free dataset been built/deployed yet?</span>'; return; }
+  $('status').textContent = `✅ Survivorship-free data ${SF.start} → ${SF.end} · ${SF.nTot} stocks (${SF.nDead} delisted).`;
+  computeAllPerf();
+})();
 </script>
 </body>
 </html>
