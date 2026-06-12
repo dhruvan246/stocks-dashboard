@@ -147,11 +147,20 @@ def main():
     print("Trading-day candidates: %d | needing (re)fetch: %d" % (len(all_days), len(todo)), flush=True)
     if todo: prefetch_parallel(todo)
 
-    j = jar(); acc = {}; isin_of = {}; tried = got = 0
+    j = jar(); acc = {}; isin_of = {}; tried = got = 0; prev_sig = None; skipped_dupes = 0
     for d in all_days:
         tried += 1
         rows = fetch_day(d, j)   # cache hit for nearly all after prefetch
         if rows:
+            # NSE's per-day URL returns the PRIOR trading day's file on holidays (wrong URL date,
+            # correct date inside). Two real trading days are never byte-identical across 2600+ stocks,
+            # so an exact duplicate of the previous accepted day == a holiday → skip it (else it injects
+            # a fake flat day that corrupts RSI/returns).
+            sig = hash(tuple((r[0], r[1]) for r in rows))
+            if sig == prev_sig:
+                skipped_dupes += 1
+                continue
+            prev_sig = sig
             got += 1; ymd = int(d.strftime("%Y%m%d"))
             for row in rows:
                 sym, c, p, t = row[0], row[1], row[2], row[3]
@@ -165,7 +174,7 @@ def main():
                 acc.setdefault(sym, []).append((ymd, c, p, t, h, l, o, v, dlv, vw))
         if tried % 1000 == 0:
             print("  ...%s  days=%d/%d  symbols=%d" % (d, got, tried, len(acc)), flush=True)
-    print("Fetched %d/%d trading days; %d symbols" % (got, tried, len(acc)), flush=True)
+    print("Fetched %d/%d trading days; %d symbols; skipped %d holiday-duplicate days" % (got, tried, len(acc), skipped_dupes), flush=True)
 
     cur = {}
     try:
@@ -179,19 +188,37 @@ def main():
         print("  (current meta unavailable:", e, ")")
 
     df = int(DAILY_FROM.strftime("%Y%m%d"))
+    # Corporate-action ratios: bonus/split ex-dates appear as huge overnight "drops" because
+    # NSE's PREV_CLOSE is NOT adjusted (verified: HDFCBANK 1:1 bonus 2025-08-26, prev_close
+    # left at the raw prior close). Cash-segment circuit filters cap genuine daily moves at
+    # ~20%, so a ratio far outside [0.75, 1.30] that sits within 8% of a canonical fraction
+    # is a corporate action — divide it out; anything else (e.g. a real F&O-stock crash at a
+    # non-fraction ratio) is kept as a genuine market move.
+    CA_FRACS = [1/2, 1/3, 2/3, 1/4, 3/4, 1/5, 2/5, 3/5, 1/6, 5/6, 1/8, 1/10, 1/20, 1/50,
+                2.0, 3.0, 4.0, 5.0, 10.0]
+    def ca_factor(r):
+        if 0.75 <= r <= 1.30: return 1.0
+        for f in CA_FRACS:
+            if abs(r / f - 1) <= 0.08: return f
+        return 1.0
     data, meta, dead = {}, {}, 0
     for sym, obs in acc.items():
         obs.sort(); ds, cs, ts, hb, lb, ob, vol, dv, vwb = [], [], [], [], [], [], [], [], []
         adj = None; lastWeek = None
         for i, (ymd, c, p, t, h, l, o, v, dlv, vw) in enumerate(obs):
-            adj = c if adj is None else adj * ((c / p) if (p and p > 0) else (c / obs[i-1][1] if obs[i-1][1] else 1.0))
+            if adj is None:
+                adj = c
+            else:
+                base = p if (p and p > 0) else (obs[i-1][1] or 0)
+                r = (c / base) if base else 1.0
+                adj = adj * (r / ca_factor(r))
             if ymd >= df:
                 keep = True                              # daily for recent
             else:
                 wk = datetime.date(ymd//10000, ymd//100 % 100, ymd % 100).isocalendar()[:2]
                 keep = (wk != lastWeek); lastWeek = wk   # weekly for old
             if keep:
-                ds.append(ymd); cs.append(round(adj, 2)); ts.append(round(t, 1))
+                ds.append(ymd); cs.append(adj); ts.append(round(t, 1)); raw_last = c
                 # high/low/open/vwap as per-mil offsets from close (split-adjustment cancels in the ratio)
                 hb.append(max(0, round((h / c - 1) * 1000)) if h >= c else 0)
                 lb.append(max(0, round((1 - l / c) * 1000)) if l <= c else 0)
@@ -200,6 +227,10 @@ def main():
                 dv.append(round(dlv * 10) if dlv else 0)            # delivery % x10 (0 = unavailable)
                 vwb.append(round((vw / c - 1) * 1000) if vw > 0 else 0)
         if len(ds) < 12: continue
+        # Re-anchor (Yahoo-style adjusted prices): scale so the LAST value equals the latest
+        # RAW close — today's price reads in real ₹, history carries the CA adjustment.
+        k = (raw_last / cs[-1]) if cs[-1] else 1.0
+        cs = [round(x * k, 2) for x in cs]
         data[sym] = {"d": ds, "c": cs, "t": ts, "hb": hb, "lb": lb, "ob": ob, "v": vol, "dv": dv, "vw": vwb}
         alive = sym in cur
         dead += (not alive)
