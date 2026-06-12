@@ -252,8 +252,9 @@ function isoOff(off){ return new Date((START_TS+off*DAY)*1000).toISOString().sli
 function simulate(cfg){
   const months=monthsBetween(cfg.start,cfg.end);
   const N=cfg.topN;
-  let pos={}, cash=0, started=false; const equity=[], rebs=[]; let lastRebVal=cfg.capital, monthsSinceReb=1e9, latest=[], latestCash=0;
+  let pos={}, cash=0, started=false; const equity=[], rebs=[], trades=[]; let entryInfo={}, lastRebVal=cfg.capital, monthsSinceReb=1e9, latest=[], latestCash=0;
   const mark=off=>{ let v=cash; for(const t in pos){ const p=priceAt(t,off); if(p!=null) v+=pos[t]*p; } return v; };
+  const fLabel={changePercent:'Chg%',rsi:'RSI',d52:'52wHi%',d52_low_pct:'52wLo%',indRank:'IndRank',mcap:'Mcap',hist_mcap:'HMcap'}[cfg.sortBy]||cfg.sortBy;
   for(let mi=0; mi<months.length; mi++){
     const md=months[mi], off=dayOff(md);
     const mv = started ? mark(off) : cfg.capital;
@@ -261,12 +262,16 @@ function simulate(cfg){
     monthsSinceReb++;
     const isReb = (mi===0) || (monthsSinceReb>=cfg.freq);
     if(isReb){
-      if(started){ rebs.push({date:md, ret:(mv/(lastRebVal||1)-1)*100, holds:Object.keys(pos).map(t=>META[t].symbol)}); }
       // screen → filter → rank → top-N target
       let rows=factorsAt(off,cfg).filter(r=>r.rsi!=null);
       for(const f of cfg.filters){ rows=rows.filter(r=>{const x=fieldVal(r,f.field); if(x==null)return false; return f.op==='>'?x>f.val:f.op==='>='?x>=f.val:f.op==='<'?x<f.val:f.op==='<='?x<=f.val:x===f.val;}); }
       rows.sort((a,b)=>{const x=fieldVal(a,cfg.sortBy),y=fieldVal(b,cfg.sortBy); return cfg.dir==='high'?y-x:x-y;});
       const target=rows.slice(0,N); const tmap={}; target.forEach(r=>tmap[r.tkr]=r); const tset=new Set(target.map(r=>r.tkr));
+      // close trades for positions LEAVING the portfolio; flag this period's new entries
+      for(const t of Object.keys(pos)){ if(!tset.has(t)){ const e=entryInfo[t]; if(e){ const xp=priceAt(t,off)||e.price;
+          trades.push({sym:META[t].symbol, entryDate:e.date, exitDate:md, entryPrice:e.price, exitPrice:xp, retPct:(xp/e.price-1)*100, factor:e.factor, rsi:e.rsi, held:false}); }
+        delete entryInfo[t]; } }
+      const wasEntry=new Set(target.filter(r=>!(r.tkr in pos)).map(r=>r.tkr));
 
       if(!started || cfg.method==='reset'){
         // initial buy OR full reset: equal-weight base/N per stock, unfilled slots → cash
@@ -287,14 +292,21 @@ function simulate(cfg){
           cash=Math.max(0,avail);                                                     // surplus (fewer entries than exits) → cash
         } else { cash=avail; }                                                        // nothing to replace with → all to cash
       }
-      lastRebVal = mv>0?mv:cfg.capital; monthsSinceReb=0;
-      // current holdings snapshot (with weights) for "today's picks"
+      // open trades for new entries (record entry price + factor at entry)
+      for(const r of target){ if(wasEntry.has(r.tkr)){ entryInfo[r.tkr]={date:md, price:r.price, factor:fieldVal(r,cfg.sortBy), rsi:r.rsi, chg:r.chg}; } }
       const now=mark(off); latestCash=cash;
-      latest=Object.keys(pos).map(t=>{ const p=priceAt(t,off), v=p?pos[t]*p:0, r=tmap[t]||{};
-        return {sym:META[t].symbol, ind:(META[t].industry||META[t].sector||'Other'), chg:r.chg, rsi:r.rsi, d52:r.d52, mcap:r.mcap, val:v, wt:now?v/now*100:0}; }).sort((a,b)=>b.wt-a.wt);
-      latest._cashWt = now?cash/now*100:0; latest._cash=cash;
+      // rich rebalance record: period return + new portfolio (weights, NEW flag, factor, full row)
+      const holds=Object.keys(pos).map(t=>{ const p=priceAt(t,off), v=p?pos[t]*p:0, r=tmap[t]||{};
+        return {sym:META[t].symbol, ind:(META[t].industry||META[t].sector||'Other'), wt:now?v/now*100:0, val:v,
+                isNew:wasEntry.has(t), factor:fieldVal(r,cfg.sortBy), rsi:r.rsi, chg:r.chg, d52:r.d52, mcap:r.mcap}; }).sort((a,b)=>b.wt-a.wt);
+      rebs.push({date:md, val:now, ret:started?(mv/(lastRebVal||1)-1)*100:0, cash, cashWt:now?cash/now*100:0, nNew:wasEntry.size, holds});
+      lastRebVal = mv>0?mv:cfg.capital; monthsSinceReb=0;
+      latest=holds.slice(); latest._cashWt = now?cash/now*100:0; latest._cash=cash;
     }
   }
+  // close any still-open positions at the end (mark as held)
+  { const lastOff=dayOff(cfg.end); for(const t in entryInfo){ const e=entryInfo[t]; const xp=priceAt(t,lastOff)||e.price;
+    trades.push({sym:META[t].symbol, entryDate:e.date, exitDate:cfg.end, entryPrice:e.price, exitPrice:xp, retPct:(xp/e.price-1)*100, factor:e.factor, rsi:e.rsi, held:true}); } }
   // benchmark (Nifty 50)
   const bench=[]; const startN=nearestNifty(cfg.start);
   if(startN) for(const [d] of equity){ const nv=nearestNifty(d); bench.push([d, nv?cfg.capital*nv/startN:null]); }
@@ -306,9 +318,10 @@ function simulate(cfg){
   const rets=[]; for(let i=1;i<equity.length;i++){ if(equity[i-1][1]>0) rets.push(equity[i][1]/equity[i-1][1]-1); }
   const mean=rets.reduce((a,b)=>a+b,0)/(rets.length||1);
   const vol=Math.sqrt(rets.reduce((a,b)=>a+(b-mean)**2,0)/(rets.length||1)*12)*100;
-  const wins=rebs.filter(r=>r.ret>0).length;
-  return {equity,bench,rebs,latest,latestCash,cfg,years,finalV,cagr,benchCagr,vol,
-    maxDD:maxDrawdown(equity), winRate:rebs.length?100*wins/rebs.length:0};
+  const periodRebs=rebs.slice(1); const wins=periodRebs.filter(r=>r.ret>0).length;
+  trades.sort((a,b)=>a.entryDate<b.entryDate?1:-1);
+  return {equity,bench,rebs,trades,latest,latestCash,cfg,years,finalV,cagr,benchCagr,vol,fLabel,
+    maxDD:maxDrawdown(equity), winRate:periodRebs.length?100*wins/periodRebs.length:0};
 }
 function nearestNifty(dstr){ if(NIFTY[dstr])return NIFTY[dstr]; // step back up to 7 days
   let d=new Date(dstr+'T00:00:00Z'); for(let i=0;i<7;i++){ d.setUTCDate(d.getUTCDate()-1); const k=d.toISOString().slice(0,10); if(NIFTY[k])return NIFTY[k]; } return null; }
@@ -340,11 +353,32 @@ function render(r,cfg){
     ${r.latest.map((p,i)=>`<tr class="border-b border-slate-50"><td class="px-2 py-1 text-slate-400">${i+1}</td><td class="px-2 font-medium">${p.sym}</td><td class="px-2 text-slate-500 text-xs">${p.ind}</td><td class="text-right px-2 font-semibold">${p.wt.toFixed(1)}%</td><td class="text-right px-2 text-slate-500">${fmtINR(p.val)}</td><td class="text-right px-2 ${p.chg>=0?'pos':'neg'}">${p.chg!=null?pct(p.chg):'·'}</td><td class="text-right px-2">${p.rsi!=null?p.rsi.toFixed(0):'·'}</td><td class="text-right px-2 neg">${p.d52!=null?p.d52.toFixed(0)+'%':'·'}</td></tr>`).join('')}
     ${r.latestCash>1?`<tr class="border-b border-slate-50 bg-slate-50"><td class="px-2 py-1"></td><td class="px-2 font-medium text-slate-600">💵 Cash</td><td class="px-2 text-slate-400 text-xs">uninvested</td><td class="text-right px-2 font-semibold">${(r.latest._cashWt||0).toFixed(1)}%</td><td class="text-right px-2 text-slate-500">${fmtINR(r.latestCash)}</td><td colspan="3"></td></tr>`:''}
     </tbody></table></div></div>`;
-  // rebalance log
-  html+=`<div class="card p-4"><div class="text-sm font-semibold text-slate-700 mb-2">Rebalance log <span class="text-slate-400 font-normal">(${r.rebs.length} periods)</span></div>
-    <div class="overflow-x-auto max-h-80 overflow-y-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b sticky top-0 bg-white"><tr><th class="text-left py-1 px-2">Rebalance date</th><th class="text-right px-2">Period return</th><th class="text-left px-2">Held</th></tr></thead><tbody>
-    ${r.rebs.slice().reverse().map(rb=>`<tr class="border-b border-slate-50"><td class="px-2 py-1 font-medium">${rb.date}</td><td class="text-right px-2 ${rb.ret>=0?'pos':'neg'}">${pct(rb.ret)}</td><td class="px-2 text-xs text-slate-500">${rb.holds.join(', ')}</td></tr>`).join('')}
+  // ----- trade log -----
+  const tr=r.trades; const winsT=tr.filter(t=>t.retPct>0).length;
+  const avgT=tr.length?tr.reduce((s,t)=>s+t.retPct,0)/tr.length:0;
+  html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2">📒 Trade log <span class="text-slate-400 font-normal">— ${tr.length} round-trips · ${tr.length?Math.round(100*winsT/tr.length):0}% winners · avg ${pct(avgT)} · shows the ${r.fLabel} at entry (why it was picked)</span></div>
+    <div class="overflow-x-auto max-h-96 overflow-y-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b sticky top-0 bg-white"><tr>
+      <th class="text-left py-1 px-2">Stock</th><th class="text-left px-2">Entry</th><th class="text-right px-2">Entry ₹</th><th class="text-left px-2">Exit</th><th class="text-right px-2">Exit ₹</th><th class="text-right px-2">Return</th><th class="text-right px-2">${r.fLabel}@entry</th><th class="text-right px-2">RSI@entry</th></tr></thead><tbody>
+    ${tr.map(t=>`<tr class="border-b border-slate-50"><td class="px-2 py-1 font-medium">${t.sym}${t.held?' <span class="text-[9px] bg-blue-100 text-blue-700 px-1 rounded">HELD</span>':''}</td>
+      <td class="px-2 text-xs text-slate-500">${t.entryDate}</td><td class="text-right px-2 text-slate-500">${t.entryPrice.toFixed(1)}</td>
+      <td class="px-2 text-xs text-slate-500">${t.exitDate}</td><td class="text-right px-2 text-slate-500">${t.exitPrice.toFixed(1)}</td>
+      <td class="text-right px-2 font-semibold ${t.retPct>=0?'pos':'neg'}">${pct(t.retPct)}</td>
+      <td class="text-right px-2 text-slate-600">${t.factor!=null?(Math.abs(t.factor)>=1000?Math.round(t.factor).toLocaleString('en-IN'):t.factor.toFixed(1)):'·'}</td>
+      <td class="text-right px-2 text-slate-500">${t.rsi!=null?t.rsi.toFixed(0):'·'}</td></tr>`).join('')}
     </tbody></table></div></div>`;
+  // ----- rebalance log (expandable, with per-rebalance holdings: weight, NEW, factor) -----
+  html+=`<div class="card p-4"><div class="text-sm font-semibold text-slate-700 mb-2">🔄 Rebalance log <span class="text-slate-400 font-normal">(${r.rebs.length} rebalances — click any to see that period's basket, weights &amp; new entries)</span></div>
+    ${r.rebs.slice().reverse().map((rb,ri)=>{const idx=r.rebs.length-ri;
+      return `<details class="border border-slate-200 rounded-lg mb-2"><summary class="px-3 py-2 cursor-pointer select-none text-sm hover:bg-slate-50 rounded-lg flex flex-wrap items-center gap-x-3">
+        <span class="font-semibold text-slate-700">#${idx} · ${rb.date}</span>
+        <span class="text-xs">period: <span class="${rb.ret>=0?'pos':'neg'}">${pct(rb.ret)}</span></span>
+        <span class="text-xs text-slate-500">value ${fmtINR(rb.val)}</span>
+        <span class="text-xs text-slate-500">${rb.holds.length} holdings${rb.nNew?` · <span class="text-emerald-600 font-semibold">${rb.nNew} new</span>`:''}${rb.cashWt>1?` · ${rb.cashWt.toFixed(0)}% cash`:''}</span></summary>
+      <div class="px-3 pb-3 overflow-x-auto"><table class="w-full text-[13px]"><thead class="text-[10px] uppercase text-slate-400 border-b"><tr><th class="text-left py-1 px-2">Stock</th><th class="text-right px-2">Weight</th><th class="text-right px-2">Value</th><th class="text-right px-2">${r.fLabel}</th><th class="text-right px-2">RSI</th><th class="text-left px-2"></th></tr></thead><tbody>
+        ${rb.holds.map(h=>`<tr class="border-b border-slate-50"><td class="px-2 py-1 font-medium">${h.sym}</td><td class="text-right px-2 font-semibold">${h.wt.toFixed(1)}%</td><td class="text-right px-2 text-slate-500">${fmtINR(h.val)}</td><td class="text-right px-2 text-slate-600">${h.factor!=null?(Math.abs(h.factor)>=1000?Math.round(h.factor).toLocaleString('en-IN'):h.factor.toFixed(1)):'·'}</td><td class="text-right px-2 text-slate-500">${h.rsi!=null?h.rsi.toFixed(0):'·'}</td><td class="px-2">${h.isNew?'<span class="text-[9px] bg-emerald-100 text-emerald-700 px-1 rounded font-semibold">NEW</span>':'<span class="text-[9px] text-slate-400">held</span>'}</td></tr>`).join('')}
+        ${rb.cash>1?`<tr class="bg-slate-50"><td class="px-2 py-1 text-slate-600">💵 Cash</td><td class="text-right px-2 font-semibold">${rb.cashWt.toFixed(1)}%</td><td class="text-right px-2 text-slate-500">${fmtINR(rb.cash)}</td><td colspan="3"></td></tr>`:''}
+      </tbody></table></div></details>`;}).join('')}
+  </div>`;
   $('out').innerHTML=html;
   drawEquity(r);
   const sh=$('btSaveHist'), ss=$('btSaveStrat');
