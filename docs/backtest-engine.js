@@ -20,7 +20,28 @@ const FIELDS = [
   { v: 'indRank', l: 'Industry Momentum Rank (1=hot…10=cold)' },
   { v: 'mcap', l: 'Market Cap (₹Cr)' },
   { v: 'hist_mcap', l: 'Historical Mcap (₹Cr, approx)' },
+  // --- extended technical factors (close + turnover + Nifty derived) ---
+  { v: 'ret3m', l: 'Return — 3 month %' },
+  { v: 'ret6m', l: 'Return — 6 month %' },
+  { v: 'ret12m', l: 'Return — 12 month %' },
+  { v: 'rsNifty', l: 'Relative strength vs Nifty (6m) %' },
+  { v: 'accel', l: 'Momentum acceleration %' },
+  { v: 'dma50', l: 'Distance from 50-DMA %' },
+  { v: 'dma200', l: 'Distance from 200-DMA %' },
+  { v: 'rangePos', l: '52-week range position (0=low…100=high)' },
+  { v: 'daysHigh', l: 'Days since 52-week high' },
+  { v: 'vol', l: 'Volatility — annualised %' },
+  { v: 'riskMom', l: 'Risk-adjusted momentum (3m ÷ vol)' },
+  { v: 'beta', l: 'Beta vs Nifty' },
+  { v: 'mdd6', l: 'Max drawdown — 6 month %' },
+  { v: 'upPct', l: 'Up-day consistency % (3m)' },
+  { v: 'turnover', l: 'Avg daily turnover (₹ lacs, 20d)' },
+  { v: 'turnSurge', l: 'Turnover surge (5d ÷ 90d)' },
+  { v: 'macd', l: 'MACD histogram (12,26,9)' },
+  { v: 'stoch', l: 'Stochastic %K (14)' },
+  { v: 'bollB', l: 'Bollinger %b (20,2)' },
 ];
+const FIELD_LABEL = {}; FIELDS.forEach(f => FIELD_LABEL[f.v] = f.l);
 const fmtINR = n => '₹' + Math.round(n).toLocaleString('en-IN');
 const pct = n => (n >= 0 ? '+' : '') + n.toFixed(1) + '%';
 
@@ -87,6 +108,40 @@ function monthsBetween(start, end) {
 }
 
 /* ---- screening (the shared "screen → filter → rank" step) ---- */
+/* ---- extended technical factors (close + turnover + Nifty; no fundamentals) ---- */
+function retPctAt(tkr, off, days) { const p = priceAt(tkr, off), p0 = priceAt(tkr, off - days); return (p != null && p0 != null && p0 > 0) ? (p / p0 - 1) * 100 : null; }
+function winCloses(tkr, off, days) { const s = SERIES[tkr]; if (!s) return null; const lo = off - days; let i = idxLE(s.d, off); if (i < 0) return null; const out = []; for (let k = i; k >= 0 && s.d[k] >= lo; k--) out.push(s.p[k] / 100); out.reverse(); return out; }
+function smaAt(tkr, off, days) { const v = winCloses(tkr, off, days); if (!v || !v.length) return null; return v.reduce((a, b) => a + b, 0) / v.length; }
+function retsOf(v) { const r = []; for (let i = 1; i < v.length; i++) if (v[i - 1] > 0) r.push(v[i] / v[i - 1] - 1); return r; }
+function stdOf(a) { if (a.length < 2) return 0; const m = a.reduce((x, y) => x + y, 0) / a.length; return Math.sqrt(a.reduce((x, y) => x + (y - m) ** 2, 0) / (a.length - 1)); }
+function niftyRetAt(off, days) { const a = nearestNifty(isoOff(off)), b = nearestNifty(isoOff(off - days)); return (a && b) ? (a / b - 1) * 100 : null; }
+function turnAvgAt(tkr, off, days) { const s = TURN[tkr]; if (!s) return 0; const lo = off - days; let i = idxLE(s.d, off); if (i < 0) return 0; let sum = 0, n = 0; for (let k = i; k >= 0 && s.d[k] >= lo; k--) { sum += s.t[k]; n++; } return n ? sum / n : 0; }
+function emaSeries(arr, p) { const k = 2 / (p + 1); let e = arr[0]; const out = [e]; for (let i = 1; i < arr.length; i++) { e = arr[i] * k + e * (1 - k); out.push(e); } return out; }
+function computeTech(tkr, off, px) {
+  const r1 = retPctAt(tkr, off, 30), r1p = retPctAt(tkr, off - 30, 30);
+  const r3 = retPctAt(tkr, off, 91), r6 = retPctAt(tkr, off, 182), r12 = retPctAt(tkr, off, 365);
+  const nr6 = niftyRetAt(off, 182), s50 = smaAt(tkr, off, 50), s200 = smaAt(tkr, off, 200), hl = hl52(tkr, off);
+  const w90 = winCloses(tkr, off, 90), rets90 = w90 ? retsOf(w90) : [];
+  const vol = rets90.length > 2 ? stdOf(rets90) * Math.sqrt(252) * 100 : null;
+  let daysHigh = null; { const s = SERIES[tkr]; if (s) { const lo = off - 365; let i = idxLE(s.d, off), hi = -1, hidx = -1; for (let k = i; k >= 0 && s.d[k] >= lo; k--) if (s.p[k] > hi) { hi = s.p[k]; hidx = s.d[k]; } if (hidx >= 0) daysHigh = off - hidx; } }
+  let mdd = null; { const v = winCloses(tkr, off, 182); if (v && v.length) { let pk = -1, d = 0; for (const p of v) { if (p > pk) pk = p; else if (pk > 0) { const x = (pk - p) / pk * 100; if (x > d) d = x; } } mdd = d; } }
+  let beta = null; { const s = SERIES[tkr]; if (s) { const lo = off - 120; let i = idxLE(s.d, off); const ix = []; for (let k = i; k >= 0 && s.d[k] >= lo; k--) ix.push(k); ix.reverse(); const sr = [], nr = []; for (let j = 1; j < ix.length; j++) { const p0 = s.p[ix[j - 1]] / 100, p1 = s.p[ix[j]] / 100, n0 = nearestNifty(isoOff(s.d[ix[j - 1]])), n1 = nearestNifty(isoOff(s.d[ix[j]])); if (p0 > 0 && n0 && n1) { sr.push(p1 / p0 - 1); nr.push(n1 / n0 - 1); } } if (sr.length > 5) { const mn = nr.reduce((a, b) => a + b, 0) / nr.length, ms = sr.reduce((a, b) => a + b, 0) / sr.length; let cov = 0, vn = 0; for (let j = 0; j < sr.length; j++) { cov += (sr[j] - ms) * (nr[j] - mn); vn += (nr[j] - mn) ** 2; } beta = vn > 0 ? cov / vn : null; } } }
+  let macd = null; { const v = winCloses(tkr, off, 320); if (v && v.length > 35) { const e12 = emaSeries(v, 12), e26 = emaSeries(v, 26), ml = v.map((_, i) => e12[i] - e26[i]), sig = emaSeries(ml, 9); macd = ml[ml.length - 1] - sig[sig.length - 1]; } }
+  let stoch = null; { const v = winCloses(tkr, off, 21); if (v && v.length) { const hi = Math.max(...v), lo = Math.min(...v); stoch = hi > lo ? (px - lo) / (hi - lo) * 100 : 50; } }
+  let bollB = null; { const v = winCloses(tkr, off, 28); if (v && v.length > 1) { const m = v.reduce((a, b) => a + b, 0) / v.length, sd = stdOf(v), up = m + 2 * sd, dn = m - 2 * sd; bollB = up > dn ? (px - dn) / (up - dn) * 100 : 50; } }
+  const t5 = turnAvgAt(tkr, off, 7), t90 = turnAvgAt(tkr, off, 90);
+  return {
+    ret3m: r3, ret6m: r6, ret12m: r12,
+    rsNifty: (r6 != null && nr6 != null) ? r6 - nr6 : null,
+    accel: (r1 != null && r1p != null) ? r1 - r1p : null,
+    dma50: (s50 && px) ? (px / s50 - 1) * 100 : null,
+    dma200: (s200 && px) ? (px / s200 - 1) * 100 : null,
+    rangePos: (hl && hl.hi > hl.low) ? (px - hl.low) / (hl.hi - hl.low) * 100 : null,
+    daysHigh, vol, riskMom: (r3 != null && vol) ? r3 / vol : null, beta, mdd6: mdd,
+    upPct: rets90.length ? rets90.filter(x => x > 0).length / rets90.length * 100 : null,
+    turnover: turnAvgAt(tkr, off, 20), turnSurge: t90 > 0 ? t5 / t90 : null, macd, stoch, bollB,
+  };
+}
 function factorsAt(off, cfg) {
   const lookOff = off - Math.round(cfg.lookback * 30.44);
   const members = cfg.indexName ? membersAsOf(cfg.indexName, isoOff(off)) : null;
@@ -98,10 +153,12 @@ function factorsAt(off, cfg) {
     if (price == null || p0 == null || p0 <= 0) continue;
     if (turnoverAt(tkr, off) < cfg.mcapFloor) continue;   // point-in-time daily turnover floor
     const hl = hl52(tkr, off); if (!hl) continue;
-    rows.push({ tkr, sym: m.symbol, name: m.name, ind: (m.industry || m.sector || 'Other'),
+    const r = { tkr, sym: m.symbol, name: m.name, ind: (m.industry || m.sector || 'Other'),
       price, chg: (price / p0 - 1) * 100, rsi: rsi14(tkr, off),
       d52: (price - hl.hi) / hl.hi * 100, d52low: (price - hl.low) / hl.low * 100,
-      mcap: m.mcap, histMcap: 0 });
+      mcap: m.mcap, histMcap: 0 };
+    Object.assign(r, computeTech(tkr, off, price));   // extended technical factors
+    rows.push(r);
   }
   const byInd = {}; rows.forEach(r => { (byInd[r.ind] = byInd[r.ind] || []).push(r.chg); });
   const indAvg = Object.entries(byInd).map(([k, v]) => [k, v.reduce((a, b) => a + b, 0) / v.length]).sort((a, b) => b[1] - a[1]);
@@ -109,7 +166,10 @@ function factorsAt(off, cfg) {
   rows.forEach(r => { r.indRank = indRankMap[r.ind] || 10; });
   return rows;
 }
-function fieldVal(r, f) { return f === 'changePercent' ? r.chg : f === 'rsi' ? r.rsi : f === 'd52' ? r.d52 : f === 'd52_low_pct' ? r.d52low : f === 'indRank' ? r.indRank : f === 'mcap' ? r.mcap : f === 'hist_mcap' ? r.histMcap : null; }
+function fieldVal(r, f) {
+  switch (f) { case 'changePercent': return r.chg; case 'rsi': return r.rsi; case 'd52': return r.d52; case 'd52_low_pct': return r.d52low; case 'indRank': return r.indRank; case 'mcap': return r.mcap; case 'hist_mcap': return r.histMcap; }
+  return (f in r && typeof r[f] === 'number') ? r[f] : null;   // extended tech factors stored under their own key
+}
 function passFilters(r, filters) {
   for (const f of (filters || [])) { const x = fieldVal(r, f.field); if (x == null) return false;
     if (!(f.op === '>' ? x > f.val : f.op === '>=' ? x >= f.val : f.op === '<' ? x < f.val : f.op === '<=' ? x <= f.val : x === f.val)) return false; }
@@ -150,7 +210,7 @@ function simulate(cfg) {
   const N = cfg.topN;
   let pos = {}, cash = 0, started = false; const equity = [], rebs = [], trades = []; let entryInfo = {}, lastRebVal = cfg.capital, monthsSinceReb = 1e9, latest = [], latestCash = 0;
   const mark = off => { let v = cash; for (const t in pos) { const p = markPrice(t, off); if (p != null) v += pos[t] * p; } return v; };
-  const fLabel = { changePercent: 'Chg%', rsi: 'RSI', d52: '52wHi%', d52_low_pct: '52wLo%', indRank: 'IndRank', mcap: 'Mcap', hist_mcap: 'HMcap' }[cfg.sortBy] || cfg.sortBy;
+  const fLabel = { changePercent: 'Chg%', rsi: 'RSI', d52: '52wHi%', d52_low_pct: '52wLo%', indRank: 'IndRank', mcap: 'Mcap', hist_mcap: 'HMcap' }[cfg.sortBy] || FIELD_LABEL[cfg.sortBy] || cfg.sortBy;
   for (let mi = 0; mi < months.length; mi++) {
     const md = months[mi], off = dayOff(md);
     const mv = started ? mark(off) : cfg.capital;
@@ -217,13 +277,13 @@ function strategyLabel(c) {
   const F = { 1: 'Monthly', 3: 'Quarterly', 6: 'Half-yearly', 12: 'Yearly' }[c.freq] || c.freq + 'mo';
   const uni = c.indexName ? String(c.indexName).replace('__FNO__', 'F&O') : c.mcapFloor ? '≥₹' + (+c.mcapFloor).toLocaleString('en-IN') + 'L turnover' : 'All stocks';
   const nf = (c.filters || []).length;
-  return `${S[c.sortBy] || c.sortBy} ${c.dir === 'high' ? 'top' : 'bottom'}-${c.topN} · ${uni} · ${F}${nf ? ' · ' + nf + ' filter' + (nf > 1 ? 's' : '') : ''}`;
+  return `${S[c.sortBy] || FIELD_LABEL[c.sortBy] || c.sortBy} ${c.dir === 'high' ? 'top' : 'bottom'}-${c.topN} · ${uni} · ${F}${nf ? ' · ' + nf + ' filter' + (nf > 1 ? 's' : '') : ''}`;
 }
 function universeLabel(c) { return c.indexName ? String(c.indexName).replace('__FNO__', 'F&O Stocks') : c.mcapFloor ? '≥₹' + (+c.mcapFloor).toLocaleString('en-IN') + 'L turnover' : 'All stocks'; }
 function freqLabel(c) { return { 1: 'Monthly', 3: 'Quarterly', 6: 'Half-yearly', 12: 'Yearly' }[c.freq] || c.freq + 'mo'; }
 function filterExpr(c) {
   const L = { changePercent: 'Change %', rsi: 'RSI', d52: '% from 52w High', d52_low_pct: '% from 52w Low', indRank: 'Industry rank', mcap: 'Mcap', hist_mcap: 'Hist mcap' };
-  return (c.filters || []).map(f => `${L[f.field] || f.field} ${f.op} ${f.val}`).join(' AND ');
+  return (c.filters || []).map(f => `${L[f.field] || FIELD_LABEL[f.field] || f.field} ${f.op} ${f.val}`).join(' AND ');
 }
 function loadLS(k) { try { return JSON.parse(localStorage.getItem(k) || '[]'); } catch (e) { return []; } }
 function saveLS(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
