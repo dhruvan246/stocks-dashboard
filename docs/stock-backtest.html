@@ -48,11 +48,7 @@
   <!-- controls -->
   <div class="card p-4 mb-4">
     <div class="flex items-center gap-2 mb-3 flex-wrap">
-      <span class="lbl mb-0">Data:</span>
-      <div id="modeBtns" class="flex gap-1">
-        <button data-m="surv" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition bg-emerald-600 text-white shadow">Survivors-only (fast)</button>
-        <button data-m="sf" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition bg-slate-100 text-slate-600 hover:bg-slate-200">Survivorship-free (NSE)</button>
-      </div>
+      <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-600 text-white shadow-sm shrink-0">✅ Survivorship-free</span>
       <span id="modeNote" class="text-[11px] text-slate-500 flex-1 min-w-[200px]"></span>
     </div>
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -85,7 +81,7 @@
   <div id="out"></div>
 
   <p class="text-[11px] text-slate-500 mt-6">
-    <b>Survivorship / look-ahead:</b> the universe is now filtered by <b>point-in-time market cap</b> (each stock's size <i>then</i>, price-scaled) and <b>point-in-time index membership</b> — so there is <b>no size look-ahead</b>. The one residual is that stocks <b>delisted/dead before today are absent from the data entirely</b> (no free dataset has their prices); that part can't be removed without a paid survivorship-free database, and it still flatters results somewhat. To minimise it, prefer a liquid universe (an index, or a higher mcap floor). Returns are price-only (no dividends), <b>before</b> costs/slippage/tax. Not investment advice.
+    <b>Survivorship-free data:</b> prices come from <b>NSE daily bhavcopies</b>, which include <b>every stock that traded each day — delisted/dead names too</b>, so the backtest is <b>not survivorship-biased</b>. Positions in a stock that stops trading are <b>marked to zero</b> (the loss is realised, not hidden). The universe is filtered by <b>point-in-time daily turnover</b> or <b>point-in-time index membership</b>, so there's <b>no size look-ahead</b> either. Prices are split/bonus-adjusted; returns are price-only (no dividends), <b>before</b> costs/slippage/tax. Not investment advice.
   </p>
 </main>
 
@@ -117,7 +113,7 @@ async function load(){
     SURV={meta:META, series:SERIES, idxh:IDXH, fnoh:FNOH, startTs:START_TS};
   }catch(e){ $('ovT').textContent='Could not load stock_data.bin — has it been built yet?'; return; }
   try{ NIFTY=(await (await fetch('./nifty.json?t='+Date.now())).json()).px||{}; }catch(e){ NIFTY={}; }
-  initUI(); $('ov').remove();
+  await initUI(); $('ov').remove();
 }
 async function loadSF(){
   if(SF) return true;
@@ -138,9 +134,11 @@ async function loadSF(){
   }catch(e){ $('runMsg').textContent='Could not load sf_stock_data.bin — the survivorship-free build may still be running.'; console.error(e); return false; }
 }
 async function setMode(mode){
-  if(mode===DATA_MODE) return;
-  if(mode==='sf'){ if(!await loadSF()) return; SERIES=SF.series; META=SF.meta; START_TS=SF.startTs; TURN=SF.turn; SF_END_OFF=SF.endOff; DATA_MODE='sf'; IDXH=SURV.idxh; FNOH=SURV.fnoh; }
-  else { SERIES=SURV.series; META=SURV.meta; START_TS=SURV.startTs; IDXH=SURV.idxh; FNOH=SURV.fnoh; DATA_MODE='surv'; SF_END_OFF=Infinity; }
+  // Survivorship-free is the only supported mode; any other request is coerced to 'sf'.
+  if(mode!=='sf') mode='sf';
+  if(mode===DATA_MODE && SF) return;
+  if(!await loadSF()) return;
+  SERIES=SF.series; META=SF.meta; START_TS=SF.startTs; TURN=SF.turn; SF_END_OFF=SF.endOff; DATA_MODE='sf'; IDXH=SURV.idxh; FNOH=SURV.fnoh;
   updateModeUI(); $('out').innerHTML=''; LAST_RUN=null;
 }
 // Single "Universe" dropdown = size buckets (mcap, or turnover in SF mode) + index constituents + F&O.
@@ -162,10 +160,9 @@ function buildUniverse(mode, keep){
   if(keep && prev && [...$('cIndex').options].some(o=>o.value===prev)) $('cIndex').value=prev;
 }
 function updateModeUI(){
-  $('modeBtns').querySelectorAll('button').forEach(b=>{const on=b.dataset.m===DATA_MODE; b.className=`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${on?'bg-emerald-600 text-white shadow':'bg-slate-100 text-slate-600 hover:bg-slate-200'}`;});
   const sf=DATA_MODE==='sf';
   buildUniverse(DATA_MODE, true);
-  $('modeNote').innerHTML = sf?`✅ Survivorship-free: <b>${SF.nDead}</b> delisted/dead stocks included (of ${SF.nTot}). Size buckets use daily turnover (no mcap in bhavcopy). Positions that delist are marked to <b>zero</b>. Data ${SF.start} → ${SF.end}.`:'⚠️ Survivors-only (Yahoo): only currently-listed stocks — momentum results are survivorship-biased (optimistic). Switch to Survivorship-free for honest numbers.';
+  $('modeNote').innerHTML = sf?`<b>${SF.nDead}</b> delisted/dead stocks included (of ${SF.nTot}). Size buckets use daily turnover (NSE bhavcopy has no mcap). Positions that delist are marked to <b>zero</b>. Data ${SF.start} → ${SF.end}.`:'';
   // adjust default dates to the active dataset range
   if(sf){ $('cFrom').value=SF.start; $('cTo').value=SF.end; }
   else { const lastD=new Date((START_TS+maxOffset()*DAY)*1000).toISOString().slice(0,10); $('cTo').value=lastD; $('cFrom').value=(+lastD.slice(0,4)-7)+lastD.slice(4); }
@@ -173,21 +170,17 @@ function updateModeUI(){
 function turnoverAt(tkr, off){ const s=TURN[tkr]; if(!s)return 0; const i=idxLE(s.d,off); return i<0?0:s.t[i]; }
 function markPrice(tkr, off){ if(DATA_MODE==='sf'){ const s=SERIES[tkr]; if(!s)return null; const ld=s.d[s.d.length-1]; if(off>ld && ld < SF_END_OFF-90) return 0; } return priceAt(tkr,off); }
 
-function initUI(){
+async function initUI(){
   // unified Universe dropdown (size buckets + index constituents + F&O)
   buildUniverse(DATA_MODE, false);
   $('cSort').innerHTML=FIELDS.map(f=>`<option value="${f.v}">${f.l}</option>`).join('');
-  // default dates
-  const lastTs=START_TS + (maxOffset())*DAY; const lastD=new Date(lastTs*1000).toISOString().slice(0,10);
-  $('cTo').value=lastD; $('cFrom').value=(+lastD.slice(0,4)-7)+lastD.slice(4);
   addFilter(); // one empty filter row
   $('addF').onclick=addFilter;
   $('run').onclick=run;
-  // data-source toggle (survivors-only vs survivorship-free)
-  $('modeBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>setMode(b.dataset.m));
-  updateModeUI();
+  // Survivorship-free is the ONLY data source — activate it before the UI is shown.
+  await setMode('sf');   // loads sf_stock_data.bin, sets dates/universe to the SF dataset
   // load a config handed over from History / Saved Strategies, then auto-run
-  try{ const c=JSON.parse(localStorage.getItem('bt_load')||'null'); if(c){ localStorage.removeItem('bt_load'); applyCfg(c).then(()=>setTimeout(run, 50)); } }catch(e){}
+  try{ const c=JSON.parse(localStorage.getItem('bt_load')||'null'); if(c){ localStorage.removeItem('bt_load'); await applyCfg(c); setTimeout(run, 50); } }catch(e){}
 }
 function maxOffset(){ let mx=0; for(const k in SERIES){const d=SERIES[k].d; if(d&&d.length){const v=d[d.length-1]; if(v>mx)mx=v;}} return mx; }
 function addFilter(){
@@ -239,7 +232,7 @@ function readCfg(){
 }
 async function applyCfg(c){
   if(!c) return;
-  if(c.mode && c.mode!==DATA_MODE) await setMode(c.mode);   // restore data source first (may load SF data)
+  if(DATA_MODE!=='sf') await setMode('sf');   // always survivorship-free
   // map saved {indexName, mcapFloor} onto the unified Universe value (index wins if both set)
   $('cFrom').value=c.start; $('cTo').value=c.end;
   $('cIndex').value = c.indexName ? c.indexName : (c.mcapFloor ? 'mcap:'+c.mcapFloor : '');
@@ -253,10 +246,9 @@ async function applyCfg(c){
 function strategyLabel(c){
   const S={changePercent:'Momentum',rsi:'RSI',d52:'52w-High',d52_low_pct:'52w-Low',indRank:'Industry-rank',mcap:'Mcap',hist_mcap:'Hist-mcap'};
   const F={1:'Monthly',3:'Quarterly',6:'Half-yearly',12:'Yearly'}[c.freq]||c.freq+'mo';
-  const uni=c.indexName?String(c.indexName).replace('__FNO__','F&O'):c.mode==='sf'?'≥₹'+(+c.mcapFloor).toLocaleString('en-IN')+'L turnover':'≥₹'+(+c.mcapFloor).toLocaleString('en-IN')+'Cr';
+  const uni=c.indexName?String(c.indexName).replace('__FNO__','F&O'):c.mcapFloor?'≥₹'+(+c.mcapFloor).toLocaleString('en-IN')+'L turnover':'All stocks';
   const nf=(c.filters||[]).length;
-  const mode=c.mode==='sf'?'SF · ':'';
-  return `${mode}${S[c.sortBy]||c.sortBy} ${c.dir==='high'?'top':'bottom'}-${c.topN} · ${uni} · ${F}${nf?' · '+nf+' filter'+(nf>1?'s':''):''}`;
+  return `${S[c.sortBy]||c.sortBy} ${c.dir==='high'?'top':'bottom'}-${c.topN} · ${uni} · ${F}${nf?' · '+nf+' filter'+(nf>1?'s':''):''}`;
 }
 function loadLS(k){try{return JSON.parse(localStorage.getItem(k)||'[]');}catch(e){return[];}}
 function saveLS(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
