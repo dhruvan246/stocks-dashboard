@@ -58,9 +58,7 @@
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
       <div><label class="lbl">From</label><input id="cFrom" type="date" class="inp w-full"/></div>
       <div><label class="lbl">To</label><input id="cTo" type="date" class="inp w-full"/></div>
-      <div><label class="lbl" id="mcapLbl">Universe — min mcap (point-in-time)</label><select id="cMcap" class="inp w-full">
-        <option value="500">₹500 Cr+</option><option value="2000" selected>₹2,000 Cr+</option><option value="5000">₹5,000 Cr+</option><option value="20000">₹20,000 Cr+</option><option value="100000">₹1,00,000 Cr+</option></select></div>
-      <div><label class="lbl">Index filter</label><select id="cIndex" class="inp w-full"></select></div>
+      <div><label class="lbl">Universe</label><select id="cIndex" class="inp w-full"></select></div>
       <div><label class="lbl">Rebalance</label><select id="cFreq" class="inp w-full">
         <option value="1">Monthly</option><option value="3" selected>Quarterly</option><option value="6">Half-yearly</option><option value="12">Yearly</option></select></div>
       <div><label class="lbl">Lookback (Change %)</label><select id="cLook" class="inp w-full">
@@ -145,12 +143,29 @@ async function setMode(mode){
   else { SERIES=SURV.series; META=SURV.meta; START_TS=SURV.startTs; IDXH=SURV.idxh; FNOH=SURV.fnoh; DATA_MODE='surv'; SF_END_OFF=Infinity; }
   updateModeUI(); $('out').innerHTML=''; LAST_RUN=null;
 }
+// Single "Universe" dropdown = size buckets (mcap, or turnover in SF mode) + index constituents + F&O.
+function uniOptionsHTML(mode){
+  const sf=mode==='sf';
+  const caps = sf?TURN_OPTS:[['500','₹500 Cr+'],['2000','₹2,000 Cr+'],['5000','₹5,000 Cr+'],['20000','₹20,000 Cr+'],['100000','₹1,00,000 Cr+']];
+  const def = sf?'mcap:500':'mcap:2000';   // default size bucket per mode
+  const indices=['Nifty 50','Nifty 100','Nifty 200','Nifty 500','Nifty Midcap 150','Nifty Smallcap 250'];
+  let h=`<option value="">All stocks</option>`;
+  h+=`<optgroup label="${sf?'Min daily turnover':'Min market cap (point-in-time)'}">`+
+     caps.map(([v,l])=>`<option value="mcap:${v}"${('mcap:'+v)===def?' selected':''}>${l}</option>`).join('')+`</optgroup>`;
+  h+=`<optgroup label="Index constituents">`+indices.map(k=>`<option value="${k}">${k}</option>`).join('')+`</optgroup>`;
+  h+=`<optgroup label="Derivatives"><option value="__FNO__">F&O stocks</option></optgroup>`;
+  return h;
+}
+function buildUniverse(mode, keep){
+  const prev=keep?$('cIndex').value:null;
+  $('cIndex').innerHTML=uniOptionsHTML(mode);
+  if(keep && prev && [...$('cIndex').options].some(o=>o.value===prev)) $('cIndex').value=prev;
+}
 function updateModeUI(){
   $('modeBtns').querySelectorAll('button').forEach(b=>{const on=b.dataset.m===DATA_MODE; b.className=`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${on?'bg-emerald-600 text-white shadow':'bg-slate-100 text-slate-600 hover:bg-slate-200'}`;});
   const sf=DATA_MODE==='sf';
-  $('mcapLbl').textContent = sf?'Universe — min daily turnover':'Universe — min mcap (point-in-time)';
-  $('cMcap').innerHTML = (sf?TURN_OPTS:[['500','₹500 Cr+'],['2000','₹2,000 Cr+'],['5000','₹5,000 Cr+'],['20000','₹20,000 Cr+'],['100000','₹1,00,000 Cr+']]).map(([v,l],i)=>`<option value="${v}" ${i===1?'selected':''}>${l}</option>`).join('');
-  $('modeNote').innerHTML = sf?`✅ Survivorship-free: <b>${SF.nDead}</b> delisted/dead stocks included (of ${SF.nTot}). Universe = turnover (no mcap in bhavcopy). Positions that delist are marked to <b>zero</b>. Data ${SF.start} → ${SF.end}.`:'⚠️ Survivors-only (Yahoo): only currently-listed stocks — momentum results are survivorship-biased (optimistic). Switch to Survivorship-free for honest numbers.';
+  buildUniverse(DATA_MODE, true);
+  $('modeNote').innerHTML = sf?`✅ Survivorship-free: <b>${SF.nDead}</b> delisted/dead stocks included (of ${SF.nTot}). Size buckets use daily turnover (no mcap in bhavcopy). Positions that delist are marked to <b>zero</b>. Data ${SF.start} → ${SF.end}.`:'⚠️ Survivors-only (Yahoo): only currently-listed stocks — momentum results are survivorship-biased (optimistic). Switch to Survivorship-free for honest numbers.';
   // adjust default dates to the active dataset range
   if(sf){ $('cFrom').value=SF.start; $('cTo').value=SF.end; }
   else { const lastD=new Date((START_TS+maxOffset()*DAY)*1000).toISOString().slice(0,10); $('cTo').value=lastD; $('cFrom').value=(+lastD.slice(0,4)-7)+lastD.slice(4); }
@@ -159,9 +174,8 @@ function turnoverAt(tkr, off){ const s=TURN[tkr]; if(!s)return 0; const i=idxLE(
 function markPrice(tkr, off){ if(DATA_MODE==='sf'){ const s=SERIES[tkr]; if(!s)return null; const ld=s.d[s.d.length-1]; if(off>ld && ld < SF_END_OFF-90) return 0; } return priceAt(tkr,off); }
 
 function initUI(){
-  // index filter options
-  const idxOpts=['', 'Nifty 50','Nifty 100','Nifty 200','Nifty 500','Nifty Midcap 150','Nifty Smallcap 250','__FNO__'];
-  $('cIndex').innerHTML=idxOpts.map(k=>`<option value="${k}">${k===''?'All stocks':k==='__FNO__'?'F&O stocks':k}</option>`).join('');
+  // unified Universe dropdown (size buckets + index constituents + F&O)
+  buildUniverse(DATA_MODE, false);
   $('cSort').innerHTML=FIELDS.map(f=>`<option value="${f.v}">${f.l}</option>`).join('');
   // default dates
   const lastTs=START_TS + (maxOffset())*DAY; const lastD=new Date(lastTs*1000).toISOString().slice(0,10);
@@ -214,9 +228,11 @@ function monthsBetween(start,end){
 
 // ---- config read / apply / labels (shared with history & strategies pages) ----
 function readCfg(){
+  // unified Universe value: "" = all, "mcap:<n>" = size floor, anything else = index/F&O membership
+  const u=$('cIndex').value||''; const isCap=u.slice(0,5)==='mcap:';
   return {
-    start:$('cFrom').value, end:$('cTo').value, mcapFloor:+$('cMcap').value,
-    indexName:$('cIndex').value, freq:+$('cFreq').value, lookback:+$('cLook').value,
+    start:$('cFrom').value, end:$('cTo').value, mcapFloor:isCap?+u.slice(5):0,
+    indexName:isCap?'':u, freq:+$('cFreq').value, lookback:+$('cLook').value,
     sortBy:$('cSort').value, dir:$('cDir').value, topN:Math.max(1,Math.min(50,+$('cTopN').value||10)),
     capital:+$('cCap').value||100000, method:$('cMethod').value, filters:readFilters(), mode:DATA_MODE
   };
@@ -224,7 +240,9 @@ function readCfg(){
 async function applyCfg(c){
   if(!c) return;
   if(c.mode && c.mode!==DATA_MODE) await setMode(c.mode);   // restore data source first (may load SF data)
-  $('cFrom').value=c.start; $('cTo').value=c.end; $('cMcap').value=c.mcapFloor; $('cIndex').value=c.indexName;
+  // map saved {indexName, mcapFloor} onto the unified Universe value (index wins if both set)
+  $('cFrom').value=c.start; $('cTo').value=c.end;
+  $('cIndex').value = c.indexName ? c.indexName : (c.mcapFloor ? 'mcap:'+c.mcapFloor : '');
   $('cFreq').value=c.freq; $('cLook').value=c.lookback; $('cSort').value=c.sortBy; $('cDir').value=c.dir;
   $('cTopN').value=c.topN; $('cCap').value=c.capital; $('cMethod').value=c.method;
   document.querySelectorAll('.fRow').forEach(r=>r.remove());
