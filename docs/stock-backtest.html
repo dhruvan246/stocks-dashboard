@@ -44,7 +44,7 @@
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
       <div><label class="lbl">From</label><input id="cFrom" type="date" class="inp w-full"/></div>
       <div><label class="lbl">To</label><input id="cTo" type="date" class="inp w-full"/></div>
-      <div><label class="lbl">Universe — min mcap</label><select id="cMcap" class="inp w-full">
+      <div><label class="lbl">Universe — min mcap (point-in-time)</label><select id="cMcap" class="inp w-full">
         <option value="500">₹500 Cr+</option><option value="2000" selected>₹2,000 Cr+</option><option value="5000">₹5,000 Cr+</option><option value="20000">₹20,000 Cr+</option><option value="100000">₹1,00,000 Cr+</option></select></div>
       <div><label class="lbl">Index filter</label><select id="cIndex" class="inp w-full"></select></div>
       <div><label class="lbl">Rebalance</label><select id="cFreq" class="inp w-full">
@@ -70,7 +70,7 @@
   <div id="out"></div>
 
   <p class="text-[11px] text-slate-500 mt-6">
-    <b>Caveats:</b> universe membership uses point-in-time index lists, but market-cap filtering and the candidate set use the funds that exist <i>today</i> (<b>survivorship bias</b> — results flatter than reality). Returns are price-only (no dividends), <b>before</b> costs/slippage/tax. Historical mcap is approximated from price. Not investment advice.
+    <b>Survivorship / look-ahead:</b> the universe is now filtered by <b>point-in-time market cap</b> (each stock's size <i>then</i>, price-scaled) and <b>point-in-time index membership</b> — so there is <b>no size look-ahead</b>. The one residual is that stocks <b>delisted/dead before today are absent from the data entirely</b> (no free dataset has their prices); that part can't be removed without a paid survivorship-free database, and it still flatters results somewhat. To minimise it, prefer a liquid universe (an index, or a higher mcap floor). Returns are price-only (no dividends), <b>before</b> costs/slippage/tax. Not investment advice.
   </p>
 </main>
 
@@ -172,15 +172,18 @@ function factorsAt(off, cfg){
   const rows=[];
   for(const tkr in SERIES){
     const m=META[tkr]; if(!m) continue;
-    if((m.mcap||0) < cfg.mcapFloor) continue;
     if(members && !members.has(m.symbol)) continue;
     const price=priceAt(tkr,off); const p0=priceAt(tkr,lookOff);
     if(price==null||p0==null||p0<=0) continue;
+    // POINT-IN-TIME size filter: use historical (price-scaled) mcap, NOT today's mcap,
+    // so the universe reflects each stock's size *then* — removes the look-ahead bias.
+    const histMcap = m.latest ? m.mcap*price/m.latest : m.mcap;
+    if(histMcap < cfg.mcapFloor) continue;
     const hl=hl52(tkr,off); if(!hl) continue;
     rows.push({tkr, sym:m.symbol, name:m.name, ind:(m.industry||m.sector||'Other'),
       price, chg:(price/p0-1)*100, rsi:rsi14(tkr,off),
       d52:(price-hl.hi)/hl.hi*100, d52low:(price-hl.low)/hl.low*100,
-      mcap:m.mcap, histMcap:(m.latest? m.mcap*price/m.latest : m.mcap)});
+      mcap:m.mcap, histMcap});
   }
   // industry momentum rank (deciles by avg chg)
   const byInd={}; rows.forEach(r=>{(byInd[r.ind]=byInd[r.ind]||[]).push(r.chg);});
