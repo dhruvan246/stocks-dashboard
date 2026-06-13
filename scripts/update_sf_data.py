@@ -105,7 +105,10 @@ def main():
     blob = gzip.compress(json.dumps(D, separators=(",", ":")).encode(), 6)
     open(OUT, "wb").write(blob)
     open(MARK, "w").write(D["end"])
-    print("Wrote %s (%.2f MB), end=%s" % (OUT, len(blob) / 1048576, D["end"]))
+    # tiny version marker — committed daily, lets the browser cache the big bin in IndexedDB
+    # keyed to this `end` and skip re-downloading 80 MB until the data actually changes.
+    json.dump({"end": D["end"]}, open(os.path.join(ROOT, "docs", "sf_meta.json"), "w"))
+    print("Wrote %s (%.2f MB) + docs/sf_meta.json, end=%s" % (OUT, len(blob) / 1048576, D["end"]))
 
 if __name__ == "__main__":
     main()

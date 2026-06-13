@@ -67,3 +67,24 @@ jobs:
           else
             echo "No new data and release already seeded — nothing to publish"
           fi
+
+      # Commit ONLY the tiny version marker (docs/sf_meta.json, ~20 bytes), and only when the
+      # updater actually appended a day (it rewrote sf_meta.json then). The browser keys its
+      # IndexedDB cache of the big bin on this `end`, so bumping it is what makes clients
+      # re-download; the 80 MB bin itself is never committed (stays a release asset).
+      - name: Commit version marker
+        if: ${{ hashFiles('docs/.sf_updated') != '' }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp docs/sf_meta.json /tmp/sf_meta.json     # preserve the updater's fresh marker across reset
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main && git reset --hard origin/main
+            cp /tmp/sf_meta.json docs/sf_meta.json
+            git add docs/sf_meta.json
+            if git diff --cached --quiet; then echo "marker unchanged"; exit 0; fi
+            git commit -m "Backtest data version marker $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then echo "pushed marker (attempt #$attempt)"; exit 0; fi
+            sleep $(( attempt * 3 ))
+          done
+          echo "marker push failed after 5 attempts"; exit 1

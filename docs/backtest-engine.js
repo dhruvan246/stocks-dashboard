@@ -20,6 +20,9 @@ const FIELDS = [
   { v: 'indRank', l: 'Industry Momentum Rank (1=hot…10=cold)' },
   { v: 'mcap', l: 'Market Cap (₹Cr)' },
   { v: 'hist_mcap', l: 'Historical Mcap (₹Cr, approx)' },
+  // --- fundamentals: point-in-time quarterly net profit (XBRL) ---
+  { v: 'profitYoyPct', l: 'Net Profit Qtr Growth YoY % (point-in-time earnings)' },
+  { v: 'profitBase', l: 'Net Profit Yr-ago Qtr ₹Cr (YoY base)' },
   // --- extended technical factors (close + turnover + Nifty derived) ---
   { v: 'ret3m', l: 'Return — 3 month %' },
   { v: 'ret6m', l: 'Return — 6 month %' },
@@ -60,13 +63,24 @@ async function loadCore() {
   try { NIFTY = (await (await fetch('./nifty.json')).json()).px || {}; } catch (e) { NIFTY = {}; }
 }
 // Release asset FIRST — refreshed DAILY by the refresh-backtest-data workflow (no repo bloat).
-// The in-repo copy is the offline/older fallback. loadSF caches into SF (one download/visit).
+// The in-repo copy is the offline/older fallback. Release URLs aren't browser-cacheable, so we
+// cache the downloaded bytes in IndexedDB keyed to the data version (sf_meta.json {end}): first
+// load downloads once, later visits read it back instantly; a new daily version re-downloads.
 const SF_URLS = ['https://github.com/dhruvan246/stocks-dashboard/releases/download/data/sf_stock_data.bin', './sf_stock_data.bin'];
+const SF_DB = 'sfcache';
+function _sfdb() { return new Promise((res, rej) => { const r = indexedDB.open(SF_DB, 1); r.onupgradeneeded = () => { if (!r.result.objectStoreNames.contains('bin')) r.result.createObjectStore('bin'); }; r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); }
+async function _sfGet(k) { try { const db = await _sfdb(); return await new Promise(res => { const t = db.transaction('bin', 'readonly').objectStore('bin').get(k); t.onsuccess = () => res(t.result || null); t.onerror = () => res(null); }); } catch (e) { return null; } }
+async function _sfPut(k, v) { try { const db = await _sfdb(); await new Promise(res => { const os = db.transaction('bin', 'readwrite').objectStore('bin'); os.clear(); const t = os.put(v, k); t.onsuccess = () => res(); t.onerror = () => res(); }); } catch (e) {} }
 async function loadSF() {
   if (SF) return true;
-  let D = null;
-  for (const u of SF_URLS) { try { D = await gunzipJSON(u); break; } catch (e) { console.warn('sf data source failed:', u, e); } }
-  if (!D) throw new Error('could not load sf_stock_data.bin from any source');
+  let ver = ''; try { ver = (await (await fetch('./sf_meta.json?t=' + Date.now())).json()).end || ''; } catch (e) {}
+  let buf = ver ? await _sfGet('sf:' + ver) : null;
+  if (!buf) {
+    for (const u of SF_URLS) { try { const resp = await fetch(u); if (!resp.ok) throw new Error('HTTP ' + resp.status); buf = await resp.arrayBuffer(); break; } catch (e) { console.warn('sf data source failed:', u, e); } }
+    if (!buf) throw new Error('could not load sf_stock_data.bin from any source');
+    if (ver) _sfPut('sf:' + ver, buf);
+  }
+  const D = JSON.parse(await new Response(new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'))).text());
   const ts = START_TS, ser = {}, meta = {}, turn = {};
   for (const sym in D.data) {
     const o = D.data[sym], n = o.d.length, d = new Array(n), p = new Array(n), t = new Array(n);
@@ -94,6 +108,7 @@ async function loadEngineData(onProgress) {
   await loadCore();
   onProgress && onProgress('Loading survivorship-free data (~17 MB)…');
   await loadSF(); activateSF();
+  await loadFund();   // point-in-time quarterly net profit (small file; enables profit factors)
   onProgress && onProgress('');
 }
 
@@ -184,10 +199,38 @@ function computeTech(tkr, off, px) {
 // extended factors are EXPENSIVE — only compute them when the strategy actually uses one
 const EXT_FIELDS = new Set(['ret3m','ret6m','ret12m','rsNifty','accel','dma50','dma200','rangePos','daysHigh','vol','riskMom','beta','mdd6','upPct','turnover','turnSurge','volSurge','delivPct','macd','stoch','bollB']);
 function needsTech(cfg) { return EXT_FIELDS.has(cfg.sortBy) || (cfg.filters || []).some(f => EXT_FIELDS.has(f.field)); }
+
+// ---- Fundamentals: point-in-time quarterly net profit (StockView's profitYoyPct/profitBase) ----
+// FUND = { SYM: [ [qEndYYYYMMDD, npStd_cr, annStd, npCon_cr, annCon], ... sorted by qEnd ] }
+let FUND = {};
+const FUND_FIELDS = new Set(['profitYoyPct', 'profitBase']);
+function needsFund(cfg) { return FUND_FIELDS.has(cfg.sortBy) || (cfg.filters || []).some(f => FUND_FIELDS.has(f.field)); }
+function dateIntOff(off) { return parseInt(isoOff(off).replace(/-/g, ''), 10); }
+function profitAt(sym, dateInt, basis) {
+  const arr = FUND[sym]; if (!arr || !arr.length) return null;
+  const tries = basis === 'std' ? [[1, 2]] : [[3, 4], [1, 2]];   // con falls back to std
+  for (const [npIdx, annIdx] of tries) {
+    let cur = null;
+    for (let i = arr.length - 1; i >= 0; i--) { const q = arr[i]; if (q[npIdx] != null && q[annIdx] != null && q[annIdx] <= dateInt) { cur = q; break; } }
+    if (!cur) continue;
+    const baseEnd = cur[0] - 10000; let base = null;
+    for (const q of arr) { if (q[0] === baseEnd && q[npIdx] != null) { base = q; break; } }
+    if (!base) continue;
+    const b = base[npIdx], c = cur[npIdx];
+    return { cur: c, base: b, yoy: b !== 0 ? (c - b) / Math.abs(b) * 100 : null };
+  }
+  return null;
+}
+async function loadFund() {
+  if (Object.keys(FUND).length) return;
+  try { FUND = await (await fetch('./sf_fundamentals.json')).json(); } catch (e) { console.warn('no fundamentals data', e); FUND = {}; }
+}
+
 function factorsAt(off, cfg) {
   const lookOff = off - Math.round(cfg.lookback * 30.44);
   const members = cfg.indexName ? membersAsOf(cfg.indexName, isoOff(off)) : null;
   const useTech = needsTech(cfg);
+  const useFund = needsFund(cfg); const fundDate = useFund ? dateIntOff(off) : 0; const basis = cfg.earnBasis || 'con';
   const rows = [];
   for (const tkr in SERIES) {
     const m = META[tkr]; if (!m) continue;
@@ -202,6 +245,7 @@ function factorsAt(off, cfg) {
       d52: (hl.hi - price) / hl.hi * 100, d52low: (price - hl.low) / hl.low * 100,
       mcap: m.mcap, histMcap: 0 };
     if (useTech) Object.assign(r, computeTech(tkr, off, price));   // extended technical factors
+    if (useFund) { const pf = profitAt(m.symbol, fundDate, basis); r.profitYoyPct = pf ? pf.yoy : null; r.profitBase = pf ? pf.base : null; }
     rows.push(r);
   }
   const byInd = {}; rows.forEach(r => { (byInd[r.ind] = byInd[r.ind] || []).push(r.chg); });
@@ -211,7 +255,7 @@ function factorsAt(off, cfg) {
   return rows;
 }
 function fieldVal(r, f) {
-  switch (f) { case 'changePercent': return r.chg; case 'rsi': return r.rsi; case 'd52': return r.d52; case 'd52_low_pct': return r.d52low; case 'indRank': return r.indRank; case 'mcap': return r.mcap; case 'hist_mcap': return r.histMcap; }
+  switch (f) { case 'changePercent': return r.chg; case 'rsi': return r.rsi; case 'd52': return r.d52; case 'd52_low_pct': return r.d52low; case 'indRank': return r.indRank; case 'mcap': return r.mcap; case 'hist_mcap': return r.histMcap; case 'profitYoyPct': return r.profitYoyPct; case 'profitBase': return r.profitBase; }
   return (f in r && typeof r[f] === 'number') ? r[f] : null;   // extended tech factors stored under their own key
 }
 function passFilters(r, filters) {
@@ -223,6 +267,7 @@ function passFilters(r, filters) {
 function screenAsOf(cfg, dateStr) {
   const off = dayOff(dateStr);
   let rows = factorsAt(off, cfg).filter(r => r.rsi != null && passFilters(r, cfg.filters));
+  rows = rows.filter(r => fieldVal(r, cfg.sortBy) != null);   // can't rank on a missing factor (e.g. no earnings yet)
   rows.sort((a, b) => { const x = fieldVal(a, cfg.sortBy), y = fieldVal(b, cfg.sortBy); return cfg.dir === 'high' ? y - x : x - y; });
   return rows;
 }
