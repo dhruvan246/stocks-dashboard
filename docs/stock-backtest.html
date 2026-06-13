@@ -137,11 +137,16 @@ async function load(){
   try{ NIFTY=(await (await fetch('./nifty.json?t='+Date.now())).json()).px||{}; }catch(e){ NIFTY={}; }
   await initUI(); $('ov').remove();
 }
+// The dataset is refreshed DAILY as a GitHub release asset (no repo bloat);
+// the in-repo copy is the fallback snapshot.
+const SF_URLS=['https://github.com/dhruvan246/stocks-dashboard/releases/download/data/sf_stock_data.bin','./sf_stock_data.bin'];
 async function loadSF(){
   if(SF) return true;
-  $('runMsg').textContent='Loading survivorship-free data (~17 MB)…';
+  $('runMsg').textContent='Loading survivorship-free data (~80 MB)…';
   try{
-    const buf=await (await fetch('./sf_stock_data.bin?t='+Date.now())).arrayBuffer();
+    let buf=null;
+    for(const u of SF_URLS){ try{ const resp=await fetch(u+'?t='+Date.now()); if(!resp.ok) throw new Error('HTTP '+resp.status); buf=await resp.arrayBuffer(); break; }catch(e){ console.warn('sf data source failed:', u, e); } }
+    if(!buf) throw new Error('no data source reachable');
     const stream=new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'));
     const D=JSON.parse(await new Response(stream).text());
     const ts=SURV.startTs, ser={}, meta={}, turn={};
@@ -523,15 +528,9 @@ function render(r,cfg){
   const tr=r.trades; const winsT=tr.filter(t=>t.retPct>0).length;
   const avgT=tr.length?tr.reduce((s,t)=>s+t.retPct,0)/tr.length:0;
   html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2">📒 Trade log <span class="text-slate-400 font-normal">— ${tr.length} round-trips · ${tr.length?Math.round(100*winsT/tr.length):0}% winners · avg ${pct(avgT)} · shows the ${r.fLabel} at entry (why it was picked)</span></div>
-    <div class="overflow-x-auto max-h-96 overflow-y-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b sticky top-0 bg-white"><tr>
-      <th class="text-left py-1 px-2">Stock</th><th class="text-left px-2">Entry</th><th class="text-right px-2">Entry ₹</th><th class="text-left px-2">Exit</th><th class="text-right px-2">Exit ₹</th><th class="text-right px-2">Return</th><th class="text-right px-2">${r.fLabel}@entry</th><th class="text-right px-2">RSI@entry</th></tr></thead><tbody>
-    ${tr.map(t=>`<tr class="border-b border-slate-50"><td class="px-2 py-1 font-medium">${t.sym}${t.held?' <span class="text-[9px] bg-blue-100 text-blue-700 px-1 rounded">HELD</span>':''}</td>
-      <td class="px-2 text-xs text-slate-500">${t.entryDate}</td><td class="text-right px-2 text-slate-500">${t.entryPrice.toFixed(2)}</td>
-      <td class="px-2 text-xs text-slate-500">${t.exitDate}</td><td class="text-right px-2 text-slate-500">${t.exitPrice.toFixed(2)}</td>
-      <td class="text-right px-2 font-semibold ${t.retPct>=0?'pos':'neg'}">${pct(t.retPct)}</td>
-      <td class="text-right px-2 text-slate-600">${t.factor!=null?(Math.abs(t.factor)>=1000?Math.round(t.factor).toLocaleString('en-IN'):t.factor.toFixed(2)):'·'}</td>
-      <td class="text-right px-2 text-slate-500">${t.rsi!=null?t.rsi.toFixed(2):'·'}</td></tr>`).join('')}
-    </tbody></table></div></div>`;
+    <div class="overflow-x-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b bg-white"><tr>
+      <th class="text-left py-1 px-2">#</th><th class="text-left px-2">Stock</th><th class="text-left px-2">Entry</th><th class="text-right px-2">Entry ₹</th><th class="text-left px-2">Exit</th><th class="text-right px-2">Exit ₹</th><th class="text-right px-2">Return</th><th class="text-right px-2">${r.fLabel}@entry</th><th class="text-right px-2">RSI@entry</th></tr></thead><tbody id="tradeBody"></tbody></table></div>
+    <div id="tradePager" class="flex flex-wrap items-center justify-center gap-1 mt-3 text-xs"></div></div>`;
   // ----- rebalance log (expandable, with per-rebalance holdings: weight, NEW, factor) -----
   html+=`<div class="card p-4"><div class="text-sm font-semibold text-slate-700 mb-2">🔄 Rebalance log <span class="text-slate-400 font-normal">(${r.rebs.length} rebalances — click any to see that period's basket, weights &amp; new entries)</span></div>
     ${r.rebs.slice().reverse().map((rb,ri)=>{const idx=r.rebs.length-ri;
@@ -547,6 +546,7 @@ function render(r,cfg){
   </div>`;
   $('out').innerHTML=html;
   drawEquity(r);
+  TRADE_PAGE=0; renderTradePage(0);
   const ss=$('btSaveStrat');
   if(ss) ss.onclick=saveStrategy;
   const gl=$('btGoLive'), gc=$('btLiveCfg');
@@ -554,6 +554,31 @@ function render(r,cfg){
   if(gc) gc.onclick=setWorkerUrl;
   // if a live feed is already configured, fetch live prices automatically (no click needed)
   if(gl && localStorage.getItem('live_worker_url')) goLive(true);
+}
+// ---- paginated trade log (50 rows per page — keeps each page well below 100) ----
+let TRADE_PAGE=0; const TRADE_PER=50;
+function renderTradePage(p){
+  if(!LAST_RUN) return;
+  const tr=LAST_RUN.res.trades; const body=$('tradeBody'), pg=$('tradePager');
+  if(!body||!pg) return;
+  const np=Math.max(1,Math.ceil(tr.length/TRADE_PER));
+  TRADE_PAGE=Math.max(0,Math.min(p,np-1));
+  const a=TRADE_PAGE*TRADE_PER, b=Math.min(a+TRADE_PER,tr.length);
+  body.innerHTML=tr.slice(a,b).map((t,i)=>`<tr class="border-b border-slate-50"><td class="px-2 py-1 text-slate-400">${a+i+1}</td><td class="px-2 font-medium">${t.sym}${t.held?' <span class="text-[9px] bg-blue-100 text-blue-700 px-1 rounded">HELD</span>':''}</td>`+
+    `<td class="px-2 text-xs text-slate-500">${t.entryDate}</td><td class="text-right px-2 text-slate-500">${t.entryPrice.toFixed(2)}</td>`+
+    `<td class="px-2 text-xs text-slate-500">${t.exitDate}</td><td class="text-right px-2 text-slate-500">${t.exitPrice.toFixed(2)}</td>`+
+    `<td class="text-right px-2 font-semibold ${t.retPct>=0?'pos':'neg'}">${pct(t.retPct)}</td>`+
+    `<td class="text-right px-2 text-slate-600">${t.factor!=null?(Math.abs(t.factor)>=1000?Math.round(t.factor).toLocaleString('en-IN'):t.factor.toFixed(2)):'·'}</td>`+
+    `<td class="text-right px-2 text-slate-500">${t.rsi!=null?t.rsi.toFixed(2):'·'}</td></tr>`).join('');
+  const mk=(lbl,pp,dis,active)=>`<button data-pg="${pp}" class="tpBtn px-2 py-1 rounded border ${active?'bg-indigo-600 text-white border-indigo-600':dis?'text-slate-300 border-slate-100':'text-slate-700 border-slate-200 hover:bg-slate-50'}" ${dis?'disabled':''}>${lbl}</button>`;
+  let nums='';
+  for(let i=0;i<np;i++){
+    if(np>9 && i>0 && i<np-1 && Math.abs(i-TRADE_PAGE)>1){ if(i===1||i===np-2) nums+='<span class="px-1 text-slate-400">…</span>'; continue; }
+    nums+=mk(i+1,i,false,i===TRADE_PAGE);
+  }
+  pg.innerHTML=mk('‹ Prev',TRADE_PAGE-1,TRADE_PAGE===0,false)+nums+mk('Next ›',TRADE_PAGE+1,TRADE_PAGE===np-1,false)+
+    `<span class="text-slate-400 ml-2 w-full sm:w-auto text-center">${tr.length} trades · showing ${a+1}–${b} (page ${TRADE_PAGE+1}/${np})</span>`;
+  pg.querySelectorAll('.tpBtn').forEach(el=>{ if(!el.disabled) el.onclick=()=>renderTradePage(+el.dataset.pg); });
 }
 // ---- live feed (shares the Cloudflare Worker URL configured on the Strategies page) ----
 function setWorkerUrl(){
