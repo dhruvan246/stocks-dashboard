@@ -137,10 +137,11 @@ async function load(){
   try{ NIFTY=(await (await fetch('./nifty.json')).json()).px||{}; }catch(e){ NIFTY={}; }
   await initUI(); $('ov').remove();
 }
-// Prefer the in-repo Pages copy: it has a stable URL → the browser caches it (ETag/304),
-// so repeat loads don't re-download 80 MB. The release asset (redirects to changing signed
-// URLs, so uncacheable) is only a fallback if the Pages copy is missing.
-const SF_URLS=['./sf_stock_data.bin','https://github.com/dhruvan246/stocks-dashboard/releases/download/data/sf_stock_data.bin'];
+// Release asset FIRST — it's refreshed DAILY by the refresh-backtest-data workflow, so it
+// carries the latest trading day. The in-repo Pages copy (committed only occasionally, to
+// avoid repo bloat) is the offline/older fallback. loadSF caches into SF, so a visit downloads
+// at most once regardless of how many backtests are run.
+const SF_URLS=['https://github.com/dhruvan246/stocks-dashboard/releases/download/data/sf_stock_data.bin','./sf_stock_data.bin'];
 async function loadSF(){
   if(SF) return true;
   $('runMsg').textContent='Loading survivorship-free data (~80 MB)…';

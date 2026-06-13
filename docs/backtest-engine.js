@@ -59,9 +59,9 @@ async function loadCore() {
   IDXH = D.indicesHistory || {}; FNOH = D.fnoHistory || []; START_TS = D.startTs;
   try { NIFTY = (await (await fetch('./nifty.json')).json()).px || {}; } catch (e) { NIFTY = {}; }
 }
-// The dataset is refreshed DAILY as a GitHub release asset (no repo bloat);
-// the in-repo copy is the fallback snapshot.
-const SF_URLS = ['./sf_stock_data.bin', 'https://github.com/dhruvan246/stocks-dashboard/releases/download/data/sf_stock_data.bin'];
+// Release asset FIRST — refreshed DAILY by the refresh-backtest-data workflow (no repo bloat).
+// The in-repo copy is the offline/older fallback. loadSF caches into SF (one download/visit).
+const SF_URLS = ['https://github.com/dhruvan246/stocks-dashboard/releases/download/data/sf_stock_data.bin', './sf_stock_data.bin'];
 async function loadSF() {
   if (SF) return true;
   let D = null;

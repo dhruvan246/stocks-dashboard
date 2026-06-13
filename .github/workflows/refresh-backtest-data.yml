@@ -1,0 +1,69 @@
+name: Daily backtest data refresh
+
+on:
+  schedule:
+    # 15:15 UTC = 20:45 IST, weekdays — after NSE publishes the day's bhavcopy
+    # (~19:00 IST). GitHub cron is best-effort; the updater self-heals (it
+    # appends every missing day since the file's `end`), so a skipped run is
+    # caught up by the next one.
+    - cron: "15 15 * * 1-5"
+  # Optional external trigger (cron-job.org), SEPARATE event type from the
+  # stock/MF/FII jobs: POST /repos/dhruvan246/stocks-dashboard/dispatches
+  # with {"event_type":"backtest-data-refresh"}
+  repository_dispatch:
+    types: [backtest-data-refresh]
+  workflow_dispatch: {}
+  # Bootstrap/self-test: also run when the updater itself changes
+  push:
+    paths:
+      - "scripts/update_sf_data.py"
+      - ".github/workflows/refresh-backtest-data.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-backtest-data
+  cancel-in-progress: false
+
+jobs:
+  refresh-backtest-data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Append missing trading days to sf_stock_data.bin
+        run: python3 scripts/update_sf_data.py
+
+      # The 80+ MB dataset is published as a RELEASE ASSET (replaced in place),
+      # NOT committed — committing it daily would grow the repo by ~2.5 GB/month.
+      # The backtest pages fetch the release URL first and fall back to the
+      # in-repo copy.
+      - name: Publish dataset as release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Seed the release on first run even with no new data, so the frontend's
+          # release-first load works immediately. On later runs, only re-upload when
+          # the updater actually appended a day (docs/.sf_updated present).
+          if gh release view data >/dev/null 2>&1; then
+            EXISTS=1
+          else
+            EXISTS=0
+            gh release create data --title "Backtest data (rolling)" \
+              --notes "Rolling daily survivorship-free dataset for the stock backtest. Replaced in place every trading day." \
+              --latest=false
+          fi
+          if [ -f docs/.sf_updated ] || [ "$EXISTS" = "0" ]; then
+            gh release upload data docs/sf_stock_data.bin --clobber
+            echo "Published sf_stock_data.bin (end=$(python3 -c "import json,gzip;print(json.loads(gzip.decompress(open('docs/sf_stock_data.bin','rb').read()))['end'])"))"
+          else
+            echo "No new data and release already seeded — nothing to publish"
+          fi
