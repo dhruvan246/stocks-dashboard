@@ -128,24 +128,25 @@ const pct=n=>(n>=0?'+':'')+n.toFixed(2)+'%';
 
 async function load(){
   try{
-    const buf=await (await fetch('./stock_data.bin?t='+Date.now())).arrayBuffer();
+    const buf=await (await fetch('./stock_data.bin')).arrayBuffer();
     const stream=new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'));
     const D=JSON.parse(await new Response(stream).text());
     META=D.meta; SERIES=D.series; IDXH=D.indicesHistory||{}; FNOH=D.fnoHistory||[]; START_TS=D.startTs;
     SURV={meta:META, series:SERIES, idxh:IDXH, fnoh:FNOH, startTs:START_TS};
   }catch(e){ $('ovT').textContent='Could not load stock_data.bin — has it been built yet?'; return; }
-  try{ NIFTY=(await (await fetch('./nifty.json?t='+Date.now())).json()).px||{}; }catch(e){ NIFTY={}; }
+  try{ NIFTY=(await (await fetch('./nifty.json')).json()).px||{}; }catch(e){ NIFTY={}; }
   await initUI(); $('ov').remove();
 }
-// The dataset is refreshed DAILY as a GitHub release asset (no repo bloat);
-// the in-repo copy is the fallback snapshot.
-const SF_URLS=['https://github.com/dhruvan246/stocks-dashboard/releases/download/data/sf_stock_data.bin','./sf_stock_data.bin'];
+// Prefer the in-repo Pages copy: it has a stable URL → the browser caches it (ETag/304),
+// so repeat loads don't re-download 80 MB. The release asset (redirects to changing signed
+// URLs, so uncacheable) is only a fallback if the Pages copy is missing.
+const SF_URLS=['./sf_stock_data.bin','https://github.com/dhruvan246/stocks-dashboard/releases/download/data/sf_stock_data.bin'];
 async function loadSF(){
   if(SF) return true;
   $('runMsg').textContent='Loading survivorship-free data (~80 MB)…';
   try{
     let buf=null;
-    for(const u of SF_URLS){ try{ const resp=await fetch(u+'?t='+Date.now()); if(!resp.ok) throw new Error('HTTP '+resp.status); buf=await resp.arrayBuffer(); break; }catch(e){ console.warn('sf data source failed:', u, e); } }
+    for(const u of SF_URLS){ try{ const resp=await fetch(u); if(!resp.ok) throw new Error('HTTP '+resp.status); buf=await resp.arrayBuffer(); break; }catch(e){ console.warn('sf data source failed:', u, e); } }
     if(!buf) throw new Error('no data source reachable');
     const stream=new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'));
     const D=JSON.parse(await new Response(stream).text());

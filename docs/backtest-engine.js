@@ -49,7 +49,7 @@ const pct = n => (n >= 0 ? '+' : '') + n.toFixed(2) + '%';
 
 /* ---- data loading (pass an optional onProgress(msg) callback) ---- */
 async function gunzipJSON(url) {
-  const buf = await (await fetch(url + '?t=' + Date.now())).arrayBuffer();
+  const buf = await (await fetch(url)).arrayBuffer();
   const stream = new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'));
   return JSON.parse(await new Response(stream).text());
 }
@@ -57,11 +57,16 @@ async function gunzipJSON(url) {
 async function loadCore() {
   const D = await gunzipJSON('./stock_data.bin');
   IDXH = D.indicesHistory || {}; FNOH = D.fnoHistory || []; START_TS = D.startTs;
-  try { NIFTY = (await (await fetch('./nifty.json?t=' + Date.now())).json()).px || {}; } catch (e) { NIFTY = {}; }
+  try { NIFTY = (await (await fetch('./nifty.json')).json()).px || {}; } catch (e) { NIFTY = {}; }
 }
+// The dataset is refreshed DAILY as a GitHub release asset (no repo bloat);
+// the in-repo copy is the fallback snapshot.
+const SF_URLS = ['./sf_stock_data.bin', 'https://github.com/dhruvan246/stocks-dashboard/releases/download/data/sf_stock_data.bin'];
 async function loadSF() {
   if (SF) return true;
-  const D = await gunzipJSON('./sf_stock_data.bin');
+  let D = null;
+  for (const u of SF_URLS) { try { D = await gunzipJSON(u); break; } catch (e) { console.warn('sf data source failed:', u, e); } }
+  if (!D) throw new Error('could not load sf_stock_data.bin from any source');
   const ts = START_TS, ser = {}, meta = {}, turn = {};
   for (const sym in D.data) {
     const o = D.data[sym], n = o.d.length, d = new Array(n), p = new Array(n), t = new Array(n);
