@@ -167,8 +167,15 @@ def main():
     if os.path.exists(OUT):
         try: data = json.load(open(OUT))
         except Exception: pass
-    todo = [s for s in syms if not (s in data and data[s])]
-    print("  %d symbols, %d already built, %d to fetch" % (len(syms), len(syms) - len(todo), len(todo)))
+    # "attempted" set: symbols we've already tried (incl. ones that returned empty — delisted
+    # pre-2018 etc.) so restarts don't re-fetch the thousands with no data. Resumability.
+    ATT = os.path.join(HERE, "_fund_attempted.json")
+    try: attempted = set(json.load(open(ATT)))
+    except Exception: attempted = set()
+    attempted |= set(data.keys())   # anything already built counts as attempted
+    todo = [s for s in syms if s not in data and s not in attempted]
+    print("  %d symbols, %d built, %d attempted-empty, %d to fetch" % (
+        len(syms), len(data), len(attempted) - len(data), len(todo)))
 
     _tl = threading.local()
     def worker_jar():
@@ -184,18 +191,20 @@ def main():
     def flush():
         json.dump(data, open(OUT, "w"), separators=(",", ":"))
         json.dump(data, open(docs, "w"), separators=(",", ":"))   # web copy stays usable mid-build
+        json.dump(sorted(attempted), open(ATT, "w"))
 
     lock = threading.Lock(); done = 0
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as ex:
         for sym, rec in ex.map(do_sym, todo):
             done += 1
-            if rec:
-                with lock:
+            with lock:
+                attempted.add(sym)
+                if rec:
                     data[sym] = rec
-                    if done % 50 == 0 or done == len(todo):
-                        flush()
-                print("  [%d/%d] %s: %d quarters  latest=%s npStd=%s npCon=%s" % (
-                    done, len(todo), sym, len(rec), rec[-1][0], rec[-1][1], rec[-1][3]))
+                    print("  [%d/%d] %s: %d quarters  latest=%s npStd=%s npCon=%s" % (
+                        done, len(todo), sym, len(rec), rec[-1][0], rec[-1][1], rec[-1][3]))
+                if done % 50 == 0 or done == len(todo):
+                    flush()
     flush()
     sz = os.path.getsize(docs) / 1024
     print("Wrote %s (%d symbols) + docs/sf_fundamentals.json (%.0f KB)" % (OUT, len(data), sz))
