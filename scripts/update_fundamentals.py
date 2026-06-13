@@ -20,7 +20,9 @@ import build_fundamentals as B   # reuse _get / nse_jar / iso / xbrl_profit / MI
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE)
 DOCS = os.path.join(ROOT, "docs", "sf_fundamentals.json")
 MARK = os.path.join(ROOT, "docs", ".fund_updated")
-WINDOW_DAYS = 21   # overlap window: catches late broadcasts + the standalone/consolidated split
+WINDOW_DAYS = 120  # wide overlap: a full quarter, so even if the workflow misses a few runs the
+                   # next one self-heals. Cheap because we SKIP the iXBRL fetch for quarters/bases
+                   # already stored (see loop) — most filings in the window are already on file.
 
 def main():
     if os.path.exists(MARK): os.remove(MARK)
@@ -50,9 +52,14 @@ def main():
 
     changed = newsyms = 0
     for (sym, qe), filings in byq.items():
+        existing = next((x for x in data.get(sym, []) if x[0] == int(qe)), None)
         std = con = None; annStd = annCon = None
         for f in sorted(filings, key=lambda x: x["ann"]):
             if std is not None and con is not None: break
+            is_con = "consol" in (f.get("basis") or "").lower()
+            # already stored for this basis? skip the ~1 MB iXBRL fetch — lets the window be wide & cheap
+            if existing and ((is_con and existing[3] is not None) or (not is_con and existing[1] is not None)):
+                continue
             try:
                 xml = B._get(f["xbrl"], headers={"User-Agent": B.UA, "Referer": "https://www.nseindia.com/"}, timeout=30)
             except Exception:
