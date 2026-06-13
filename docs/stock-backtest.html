@@ -43,7 +43,7 @@
       <a href="./saved-strategies.html" class="text-amber-600 hover:underline font-semibold">⭐ Saved Strategies</a>
     </div>
   </div>
-  <p class="text-xs text-slate-500 mb-4">Screen the whole market by momentum/technical factors, hold the top picks, rebalance, and compare to Nifty 50. Filter &amp; rank like a quant screener.</p>
+  <p class="text-xs text-slate-500 mb-4">Screen the whole market by momentum/technical factors, hold the top picks, rebalance, and compare to Nifty 500. Filter &amp; rank like a quant screener.</p>
 
   <!-- controls -->
   <div class="card p-4 mb-4">
@@ -539,7 +539,9 @@ function simulate(cfg){
   const years=(Date.parse(cfg.end)-Date.parse(cfg.start))/(365.25*864e5);
   const finalV=equity[equity.length-1][1];
   const cagr=years>0?(Math.pow(finalV/cfg.capital,1/years)-1)*100:0;
-  const benchFinal=bench.length?bench[bench.length-1][1]:null;
+  // headline benchmark = Nifty 500 (the backtest universe); Nifty 50 (bench) is kept for back-compat
+  const benchSeries=(bench500.length?bench500:bench);
+  const benchFinal=benchSeries.length?benchSeries[benchSeries.length-1][1]:null;
   const benchCagr=(benchFinal&&years>0)?(Math.pow(benchFinal/cfg.capital,1/years)-1)*100:null;
   const rets=[]; for(let i=1;i<equity.length;i++){ if(equity[i-1][1]>0) rets.push(equity[i][1]/equity[i-1][1]-1); }
   const mean=rets.reduce((a,b)=>a+b,0)/(rets.length||1);
@@ -561,7 +563,7 @@ function render(r,cfg){
   let html=`<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-4">
     ${card('Final value', fmtINR(r.finalV), 'from '+fmtINR(cfg.capital), r.finalV>=cfg.capital?'pos':'neg')}
     ${card('CAGR', pct(r.cagr), r.years.toFixed(1)+' years', r.cagr>=0?'pos':'neg')}
-    ${card('Nifty 50 CAGR', r.benchCagr!=null?pct(r.benchCagr):'—', beat?'strategy wins ✓':'benchmark', beat?'pos':'neg')}
+    ${card('Nifty 500 CAGR', r.benchCagr!=null?pct(r.benchCagr):'—', beat?'strategy wins ✓':'benchmark', beat?'pos':'neg')}
     ${card('Max drawdown', '-'+r.maxDD.toFixed(2)+'%', 'worst peak-to-trough','neg')}
     ${card('Volatility', r.vol.toFixed(2)+'%', 'annualised','')}
     ${card('Win rate', r.winRate.toFixed(0)+'%', r.rebs.length+' rebalances','')}
@@ -573,7 +575,7 @@ function render(r,cfg){
       <span id="saveMsg" class="text-xs text-green-700"></span>
       <a href="./backtest-history.html" class="text-xs text-indigo-600 hover:underline ml-auto">View history →</a>
     </div>`;
-  html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2"><span class="text-blue-700">Strategy</span> vs <span class="text-amber-600">Nifty 50</span> — ₹${cfg.capital.toLocaleString('en-IN')} grows to…</div><div id="eqc"></div></div>`;
+  html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2"><span class="text-blue-700">Strategy</span> vs <span class="text-amber-600">Nifty 500</span> — ₹${cfg.capital.toLocaleString('en-IN')} grows to… <span class="text-slate-400 font-normal">(hover for values)</span></div><div id="eqc"></div></div>`;
   // ----- returns over the backtest period (per-rebalance bar chart) -----
   html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2">📊 Returns over the backtest period <span class="text-slate-400 font-normal">— each rebalance period's return (blue = up, red = down)</span></div><div id="prc" class="overflow-x-auto"></div></div>`;
   // ----- calendar-year returns (strategy vs Nifty 500) -----
@@ -684,7 +686,7 @@ async function goLive(silent){
   finally{ btn.textContent=prev; btn.disabled=false; }
 }
 function drawEquity(r){
-  const eq=r.equity, bn=r.bench; const n=eq.length; if(n<2)return;
+  const eq=r.equity, bn=((r.bench500&&r.bench500.length?r.bench500:r.bench)||[]); const n=eq.length; if(n<2)return;
   const W=900,H=300,PL=64,PR=16,PT=14,PB=28;
   const allV=eq.map(p=>p[1]).concat(bn.map(p=>p[1]).filter(v=>v!=null));
   const mn=Math.min(...allV), mx=Math.max(...allV);
@@ -692,7 +694,27 @@ function drawEquity(r){
   const path=arr=>arr.map((p,i)=>p[1]==null?'':((arr.slice(0,i).every(q=>q[1]==null)?'M':'L')+x(i).toFixed(1)+' '+y(p[1]).toFixed(1))).filter(Boolean).join(' ');
   let yl=''; for(let k=0;k<=3;k++){const v=mn+(mx-mn)*k/3,yy=y(v);yl+=`<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="#f1f5f9"/><text x="${PL-4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${fmtINR(v)}</text>`;}
   let xl=''; const step=Math.ceil(n/8); eq.forEach((p,i)=>{if(i%step)return; xl+=`<text x="${x(i).toFixed(1)}" y="${H-8}" font-size="9" fill="#94a3b8" text-anchor="middle">${p[0].slice(0,7)}</text>`;});
-  $('eqc').innerHTML=`<svg viewBox="0 0 ${W} ${H}" class="w-full">${yl}${xl}<path d="${path(bn)}" fill="none" stroke="#f59e0b" stroke-width="1.6"/><path d="${path(eq)}" fill="none" stroke="#2563eb" stroke-width="2"/></svg>`;
+  const svg=`<svg id="eqsvg" viewBox="0 0 ${W} ${H}" class="w-full">${yl}${xl}`
+    +`<path d="${path(bn)}" fill="none" stroke="#f59e0b" stroke-width="1.6"/><path d="${path(eq)}" fill="none" stroke="#2563eb" stroke-width="2"/>`
+    +`<line id="eqg" x1="0" y1="${PT}" x2="0" y2="${H-PB}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3" style="display:none"/>`
+    +`<circle id="eqd1" r="3.5" fill="#2563eb" stroke="#fff" style="display:none"/><circle id="eqd2" r="3.5" fill="#f59e0b" stroke="#fff" style="display:none"/>`
+    +`<rect id="eqhit" x="${PL}" y="${PT}" width="${W-PL-PR}" height="${H-PT-PB}" fill="transparent" style="cursor:crosshair"/></svg>`;
+  $('eqc').innerHTML=`<div style="position:relative">${svg}<div id="eqtip" style="position:absolute;display:none;pointer-events:none;background:#0f172a;color:#fff;font-size:11px;line-height:1.5;padding:6px 9px;border-radius:6px;white-space:nowrap;transform:translate(-50%,calc(-100% - 10px));z-index:20;box-shadow:0 2px 10px rgba(0,0,0,.3)"></div></div>`;
+  const svgEl=$('eqsvg'), tip=$('eqtip'), g=$('eqg'), d1=$('eqd1'), d2=$('eqd2'), hit=$('eqhit'), base=eq[0][1];
+  function at(ev){
+    const rect=svgEl.getBoundingClientRect();
+    let i=Math.round((((ev.clientX-rect.left)/rect.width*W)-PL)/(W-PL-PR)*(n-1));
+    i=Math.max(0,Math.min(n-1,i)); const sx=x(i), sv=eq[i][1], nv=bn[i]?bn[i][1]:null;
+    g.setAttribute('x1',sx); g.setAttribute('x2',sx); g.style.display='';
+    d1.setAttribute('cx',sx); d1.setAttribute('cy',y(sv)); d1.style.display='';
+    if(nv!=null){ d2.setAttribute('cx',sx); d2.setAttribute('cy',y(nv)); d2.style.display=''; } else d2.style.display='none';
+    const sr=(sv/base-1)*100, nr=nv!=null?(nv/base-1)*100:null;
+    tip.innerHTML=`<b>${eq[i][0]}</b><br><span style="color:#60a5fa">●</span> Strategy ${fmtINR(sv)} <span style="color:${sr>=0?'#4ade80':'#f87171'}">(${sr>=0?'+':''}${sr.toFixed(1)}%)</span>`
+      +(nv!=null?`<br><span style="color:#fbbf24">●</span> Nifty 500 ${fmtINR(nv)} <span style="color:${nr>=0?'#4ade80':'#f87171'}">(${nr>=0?'+':''}${nr.toFixed(1)}%)</span>`:'');
+    tip.style.display=''; tip.style.left=(sx/W*rect.width)+'px'; tip.style.top=(Math.min(y(sv), nv!=null?y(nv):y(sv))/H*rect.height)+'px';
+  }
+  hit.addEventListener('mousemove',at);
+  svgEl.addEventListener('mouseleave',()=>{[tip,g,d1,d2].forEach(e=>e.style.display='none');});
 }
 // per-rebalance period returns — Trendlyne-style bar chart (blue up / red down)
 function drawPeriodReturns(r){
