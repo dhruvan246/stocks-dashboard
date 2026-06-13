@@ -106,6 +106,7 @@ def fetch_symbol(sym, jar):
         for r in rows:
             qe = iso(r.get(qe_key)); xb = r.get("xbrl", "")
             if not qe or not xb.startswith("http"): continue
+            if "governance" in (r.get("type", "") or "").lower(): continue   # integrated Governance filing has no P&L
             byq.setdefault(qe, []).append({"ann": iso(r.get(ann_key)) or "99999999",
                                            "xbrl": xb, "basis": r.get("consolidated", "")})
     try:
