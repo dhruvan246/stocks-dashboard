@@ -52,7 +52,7 @@ def iso(d):  # "16-Jan-2025 20:20" or "31-Mar-2024" -> "20240331"
     if not m: return None
     return "%04d%02d%02d" % (int(m.group(3)), MONTHS[m.group(2).title()], int(m.group(1)))
 
-def xbrl_profit(xml):
+def xbrl_profit(xml, basis_hint=None):
     """Return (np_standalone_cr, np_consolidated_cr) for the CURRENT QUARTER from one filing.
 
     NSE Ind-AS quirk: context PERIOD dates are unreliable (a 9-month value can be tagged with
@@ -61,21 +61,25 @@ def xbrl_profit(xml):
       - each context carries a NatureOfReportStandaloneConsolidated fact (Standalone/Consolidated);
       - in a COMBINED filing, 'FourD' is the consolidated current quarter (different nature to OneD);
         in a single-basis filing, 'FourD' is the YTD of the SAME nature → ignore it.
+    Net-profit tag namespace varies: `in-bse-fin:` (old corporates-financial-results) vs
+    `in-capmkt:` (new integrated-filing, used by all 2025+ quarters & recent IPOs). Banks/NBFCs
+    use ...ForThePeriod. basis_hint (the API 'consolidated' field) is the fallback when the XBRL
+    omits the nature tag — integrated filings file each basis as a SEPARATE filing.
     """
     nat = {}
     for m in re.finditer(r'NatureOfReportStandaloneConsolidated contextRef="([^"]+)"[^>]*>([^<]+)<', xml):
         nat[m.group(1)] = m.group(2).strip().lower()
+    hint = (basis_hint or "").lower()
     plp = {}
-    # non-financials tag net profit as ProfitLossForPeriod; BANKS/NBFCs use ProfitLossForThePeriod
-    for m in re.finditer(r'<in-bse-fin:ProfitLossFor(?:The)?Period contextRef="([^"]+)"[^>]*>([^<]+)<', xml):
+    for m in re.finditer(r'<in-(?:bse-fin|capmkt):ProfitLossFor(?:The)?Period contextRef="([^"]+)"[^>]*>([^<]+)<', xml):
         if m.group(1) not in plp:
             plp[m.group(1)] = round(float(m.group(2)) / 1e7, 2)   # rupees -> crore
     std = con = None
-    one, one_nat = plp.get("OneD"), nat.get("OneD", "")
+    one, one_nat = plp.get("OneD"), nat.get("OneD", "") or hint
     if one is not None:
         if "consol" in one_nat: con = one
         else: std = one                                  # standalone or unlabelled
-    four, four_nat = plp.get("FourD"), nat.get("FourD", "")
+    four, four_nat = plp.get("FourD"), nat.get("FourD", "") or hint
     if four is not None and four_nat != one_nat:         # combined filing: other basis, current Q
         if "consol" in four_nat: con = con if con is not None else four
         else: std = std if std is not None else four
@@ -93,18 +97,28 @@ def qstart(qe):
 def fetch_symbol(sym, jar):
     h = {"User-Agent": UA, "Accept": "application/json",
          "Referer": "https://www.nseindia.com/companies-listing/corporate-filings-financial-results"}
-    url = "https://www.nseindia.com/api/corporates-financial-results?index=equities&symbol=%s&period=Quarterly" % urllib.parse.quote(sym)  # encode & in M&M, ARE&M, etc.
+    enc = urllib.parse.quote(sym)   # encode & in M&M, ARE&M, etc.
+    # TWO sources, merged by quarter: (A) classic financial-results (covers ~2018..2024);
+    # (B) integrated-filing-results — NSE moved every company to "Integrated Filing" in early
+    # 2025, so ALL post-2024 quarters AND new IPOs (GROWW, LENSKART…) live ONLY here.
+    byq = {}; errors = 0
+    def add(rows, qe_key, ann_key):
+        for r in rows:
+            qe = iso(r.get(qe_key)); xb = r.get("xbrl", "")
+            if not qe or not xb.startswith("http"): continue
+            byq.setdefault(qe, []).append({"ann": iso(r.get(ann_key)) or "99999999",
+                                           "xbrl": xb, "basis": r.get("consolidated", "")})
     try:
-        rows = json.loads(_get(url, headers=h, jar=jar, timeout=30))
-    except Exception as e:
-        print("  %s: list FAIL %s" % (sym, e)); return None
-    # group ALL filings per quarter (standalone & consolidated are often separate filings)
-    byq = {}
-    for r in rows:
-        qe = iso(r.get("toDate")); ann = iso(r.get("broadCastDate") or r.get("filingDate"))
-        xb = r.get("xbrl", "")
-        if not qe or not xb.startswith("http"): continue
-        byq.setdefault(qe, []).append({"ann": ann or "99999999", "xbrl": xb})
+        add(json.loads(_get("https://www.nseindia.com/api/corporates-financial-results?index=equities&symbol=%s&period=Quarterly" % enc,
+                            headers=h, jar=jar, timeout=30)), "toDate", "broadCastDate")
+    except Exception: errors += 1
+    try:
+        jb = json.loads(_get("https://www.nseindia.com/api/integrated-filing-results?index=equities&symbol=%s&period=Quarterly" % enc,
+                             headers=h, jar=jar, timeout=30))
+        add(jb if isinstance(jb, list) else jb.get("data", []), "qe_Date", "broadcast_Date")
+    except Exception: errors += 1
+    if errors == 2:                  # both endpoints errored (network) — signal jar re-warm
+        return None
     out = []
     for qe in sorted(byq):
         if int(qe) < MIN_QE: continue       # skip ancient quarters (no XBRL archive / not needed)
@@ -120,7 +134,7 @@ def fetch_symbol(sym, jar):
                     open(cf, "w", encoding="utf-8").write(xml); time.sleep(0.15)
             except Exception:
                 continue
-            s, c = xbrl_profit(xml)
+            s, c = xbrl_profit(xml, basis_hint=f.get("basis"))
             a = None if f["ann"] == "99999999" else int(f["ann"])
             if std is None and s is not None: std, annStd = s, a
             if con is None and c is not None: con, annCon = c, a
