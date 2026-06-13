@@ -67,7 +67,7 @@ function render(){
         <div class="text-[11px] uppercase text-slate-500 mb-1 pt-1">📅 Calendar-year returns — strategy vs Nifty</div>
         <div class="overflow-x-auto"><table class="text-xs"><thead><tr><th class="px-2 text-left"></th>${it.yby.map(y=>`<th class="px-2 py-0.5 text-right">${y[0]}</th>`).join('')}</tr></thead><tbody>
           <tr><td class="px-2 text-blue-700 font-semibold whitespace-nowrap">Strategy</td>${it.yby.map(y=>`<td class="px-2 text-right ${y[1]>=0?'pos':'neg'}">${pct(y[1])}</td>`).join('')}</tr>
-          <tr><td class="px-2 text-amber-600 font-semibold whitespace-nowrap">Nifty 50</td>${it.yby.map(y=>`<td class="px-2 text-right ${y[2]>=0?'pos':'neg'}">${y[2]!=null?pct(y[2]):'—'}</td>`).join('')}</tr>
+          <tr><td class="px-2 text-amber-600 font-semibold whitespace-nowrap">Nifty 500</td>${it.yby.map(y=>`<td class="px-2 text-right ${y[2]>=0?'pos':'neg'}">${y[2]!=null?pct(y[2]):'—'}</td>`).join('')}</tr>
         </tbody></table></div></td></tr>`:''}`;}).join('')}
     </tbody></table></div>`;
   $('list').querySelectorAll('[data-exp]').forEach(row=>row.addEventListener('click',e=>{ if(e.target.closest('button'))return; const d=$('exp_'+row.dataset.exp); if(!d)return; const open=d.style.display==='none'; d.style.display=open?'table-row':'none'; const ar=row.querySelector('.exparrow'); if(ar)ar.textContent=open?'▾':'▸'; }));

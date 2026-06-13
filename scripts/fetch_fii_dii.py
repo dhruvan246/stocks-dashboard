@@ -24,6 +24,7 @@ ROOT = os.path.dirname(HERE)
 OUT = os.path.join(ROOT, "docs", "fii_dii.json")       # cash segment (recent + grows)
 OUT_FO = os.path.join(ROOT, "docs", "fii_fo.json")     # derivatives net positions (2012 -> today)
 OUT_NIFTY = os.path.join(ROOT, "docs", "nifty.json")   # Nifty 50 close history (for chart overlays)
+OUT_NIFTY500 = os.path.join(ROOT, "docs", "nifty500.json")  # Nifty 500 close history (backtest calendar-year benchmark)
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
 
 
@@ -225,10 +226,35 @@ def update_nifty():
     print("  nifty.json: %d points (+%d)" % (len(px), len(px) - n0))
 
 
+def update_nifty500():
+    """Keep docs/nifty500.json current from Yahoo's Nifty 500 index (^CRSLDX). Merges new
+    daily closes; preserves history on fetch failure. Used as the backtest calendar-year benchmark."""
+    try:
+        px = json.load(open(OUT_NIFTY500, encoding="utf-8")).get("px", {})
+    except Exception:
+        px = {}
+    n0 = len(px)
+    try:
+        url = ("https://query1.finance.yahoo.com/v8/finance/chart/%5ECRSLDX"
+               "?period1=1325376000&period2=" + str(int(time.time())) + "&interval=1d")
+        j = json.loads(_get(url, headers={"User-Agent": UA}))
+        res = j["chart"]["result"][0]
+        for t, c in zip(res["timestamp"], res["indicators"]["quote"][0]["close"]):
+            if c is None:
+                continue
+            px[time.strftime("%Y-%m-%d", time.gmtime(t))] = round(c, 2)
+    except Exception as e:
+        print("  nifty500.json: fetch failed (%s) — keeping existing" % e)
+    json.dump({"updated": time.strftime("%Y-%m-%dT%H:%M:%S"), "px": px},
+              open(OUT_NIFTY500, "w", encoding="utf-8"), separators=(",", ":"))
+    print("  nifty500.json: %d points (+%d)" % (len(px), len(px) - n0))
+
+
 def main():
     dates = update_cash()
     update_fo(dates)
     update_nifty()
+    update_nifty500()
 
 
 if __name__ == "__main__":

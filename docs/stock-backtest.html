@@ -90,7 +90,7 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const DAY=86400;
-let META={}, SERIES={}, IDXH={}, FNOH=[], START_TS=0, NIFTY={};
+let META={}, SERIES={}, IDXH={}, FNOH=[], START_TS=0, NIFTY={}, NIFTY500={};
 let SURV=null, SF=null, DATA_MODE='surv', TURN={}, SF_END_OFF=Infinity;
 const TURN_OPTS=[['100','≥₹1 Cr'],['500','≥₹5 Cr'],['2000','≥₹20 Cr'],['10000','≥₹100 Cr']]; // daily turnover (₹ lacs)
 const FIELDS=[
@@ -138,6 +138,7 @@ async function load(){
     SURV={meta:META, series:SERIES, idxh:IDXH, fnoh:FNOH, startTs:START_TS};
   }catch(e){ $('ovT').textContent='Could not load stock_data.bin — has it been built yet?'; return; }
   try{ NIFTY=(await (await fetch('./nifty.json')).json()).px||{}; }catch(e){ NIFTY={}; }
+  try{ NIFTY500=(await (await fetch('./nifty500.json')).json()).px||{}; }catch(e){ NIFTY500={}; }
   await initUI(); $('ov').remove();
 }
 // Release asset FIRST — refreshed DAILY by the refresh-backtest-data workflow, so it carries
@@ -350,8 +351,8 @@ function autoSaveHistory(){
 function yByY(eq){ if(!eq||!eq.length) return []; const by={}; eq.forEach(e=>{by[(''+e[0]).slice(0,4)]=e[1];}); const ys=Object.keys(by).sort(); const out=[], sv0=eq[0][1];
   for(let i=0;i<ys.length;i++){ const sv=i===0?sv0:by[ys[i-1]]; out.push([+ys[i], sv>0?+((by[ys[i]]/sv-1)*100).toFixed(1):0]); } return out; }
 function histItem(c,r){
-  const sy=yByY(r.equity), ny=yByY(r.bench||[]); const nm={}; ny.forEach(x=>{nm[x[0]]=x[1];});
-  const yby=sy.map(x=>[x[0], x[1], (nm[x[0]]!=null?nm[x[0]]:null)]);   // [year, strategy%, nifty%]
+  const sy=yByY(r.equity), ny=yByY((r.bench500&&r.bench500.length?r.bench500:r.bench)||[]); const nm={}; ny.forEach(x=>{nm[x[0]]=x[1];});
+  const yby=sy.map(x=>[x[0], x[1], (nm[x[0]]!=null?nm[x[0]]:null)]);   // [year, strategy%, nifty500%]
   return { id:'h'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), ts:Date.now(), label:strategyLabel(c), cfg:c, yby:yby,
     m:{cagr:r.cagr, finalV:r.finalV, maxDD:r.maxDD, vol:r.vol, winRate:r.winRate, benchCagr:r.benchCagr, rebs:r.rebs.length, years:r.years} };
 }
@@ -530,9 +531,11 @@ function simulate(cfg){
   // close any still-open positions at the end (mark as held)
   { const lastOff=dayOff(cfg.end); for(const t in entryInfo){ const e=entryInfo[t]; const mp=markPrice(t,lastOff); const xp=(mp==null?e.price:mp);
     trades.push({sym:META[t].symbol, entryDate:e.date, exitDate:cfg.end, entryPrice:e.price, exitPrice:xp, retPct:(xp/e.price-1)*100, factor:e.factor, rsi:e.rsi, held:true}); } }
-  // benchmark (Nifty 50)
+  // benchmark (Nifty 50) + Nifty 500 (used for the calendar-year comparison)
   const bench=[]; const startN=nearestNifty(cfg.start);
   if(startN) for(const [d] of equity){ const nv=nearestNifty(d); bench.push([d, nv?cfg.capital*nv/startN:null]); }
+  const bench500=[]; const startN5=nearestIdx(NIFTY500,cfg.start);
+  if(startN5) for(const [d] of equity){ const nv=nearestIdx(NIFTY500,d); bench500.push([d, nv?cfg.capital*nv/startN5:null]); }
   const years=(Date.parse(cfg.end)-Date.parse(cfg.start))/(365.25*864e5);
   const finalV=equity[equity.length-1][1];
   const cagr=years>0?(Math.pow(finalV/cfg.capital,1/years)-1)*100:0;
@@ -543,11 +546,12 @@ function simulate(cfg){
   const vol=Math.sqrt(rets.reduce((a,b)=>a+(b-mean)**2,0)/(rets.length||1)*12)*100;
   const periodRebs=rebs.slice(1); const wins=periodRebs.filter(r=>r.ret>0).length;
   trades.sort((a,b)=>a.entryDate<b.entryDate?1:-1);
-  return {equity,bench,rebs,trades,latest,latestCash,cfg,years,finalV,cagr,benchCagr,vol,fLabel,
+  return {equity,bench,bench500,rebs,trades,latest,latestCash,cfg,years,finalV,cagr,benchCagr,vol,fLabel,
     maxDD:maxDrawdown(equity), winRate:periodRebs.length?100*wins/periodRebs.length:0};
 }
-function nearestNifty(dstr){ if(NIFTY[dstr])return NIFTY[dstr]; // step back up to 7 days
-  let d=new Date(dstr+'T00:00:00Z'); for(let i=0;i<7;i++){ d.setUTCDate(d.getUTCDate()-1); const k=d.toISOString().slice(0,10); if(NIFTY[k])return NIFTY[k]; } return null; }
+function nearestIdx(map,dstr){ if(map[dstr])return map[dstr]; // step back up to 7 days for a trading day
+  let d=new Date(dstr+'T00:00:00Z'); for(let i=0;i<7;i++){ d.setUTCDate(d.getUTCDate()-1); const k=d.toISOString().slice(0,10); if(map[k])return map[k]; } return null; }
+function nearestNifty(dstr){ return nearestIdx(NIFTY,dstr); }
 function maxDrawdown(eq){ let peak=-1,mdd=0; for(const [,v] of eq){ if(v>peak)peak=v; else if(peak>0){const dd=(peak-v)/peak*100; if(dd>mdd)mdd=dd;} } return mdd; }
 
 // ---- render ----
@@ -572,12 +576,12 @@ function render(r,cfg){
   html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2"><span class="text-blue-700">Strategy</span> vs <span class="text-amber-600">Nifty 50</span> — ₹${cfg.capital.toLocaleString('en-IN')} grows to…</div><div id="eqc"></div></div>`;
   // ----- returns over the backtest period (per-rebalance bar chart) -----
   html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2">📊 Returns over the backtest period <span class="text-slate-400 font-normal">— each rebalance period's return (blue = up, red = down)</span></div><div id="prc" class="overflow-x-auto"></div></div>`;
-  // ----- calendar-year returns (strategy vs Nifty) -----
-  { const sy=yByY(r.equity), nm={}; yByY(r.bench||[]).forEach(x=>{nm[x[0]]=x[1];});
+  // ----- calendar-year returns (strategy vs Nifty 500) -----
+  { const sy=yByY(r.equity), nm={}; yByY((r.bench500&&r.bench500.length?r.bench500:r.bench)||[]).forEach(x=>{nm[x[0]]=x[1];});
     html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2">📅 Calendar-year returns <span class="text-slate-400 font-normal">— each year Jan→Dec (first/last year partial)</span></div>
       <div class="overflow-x-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b"><tr><th class="text-left py-1 px-2 sticky left-0 bg-white">&nbsp;</th>${sy.map(y=>`<th class="text-right px-2">${y[0]}</th>`).join('')}</tr></thead><tbody>
         <tr class="border-b border-slate-50"><td class="px-2 py-1 font-medium text-blue-700 sticky left-0 bg-white">Strategy</td>${sy.map(y=>`<td class="text-right px-2 font-semibold ${y[1]>=0?'pos':'neg'}">${pct(y[1])}</td>`).join('')}</tr>
-        <tr><td class="px-2 py-1 font-medium text-amber-600 sticky left-0 bg-white">Nifty 50</td>${sy.map(y=>{const n=nm[y[0]];return `<td class="text-right px-2 text-xs ${n>=0?'pos':'neg'}">${n!=null?pct(n):'—'}</td>`;}).join('')}</tr>
+        <tr><td class="px-2 py-1 font-medium text-amber-600 sticky left-0 bg-white">Nifty 500</td>${sy.map(y=>{const n=nm[y[0]];return `<td class="text-right px-2 text-xs ${n>=0?'pos':'neg'}">${n!=null?pct(n):'—'}</td>`;}).join('')}</tr>
       </tbody></table></div></div>`; }
   // latest holdings (current portfolio with weights — winners that rode show larger weights)
   html+=`<div class="card p-4 mb-4">
