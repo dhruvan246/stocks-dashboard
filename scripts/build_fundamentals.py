@@ -140,9 +140,25 @@ def load_index(name):
         if len(cols) >= 3 and cols[2].strip(): syms.append(cols[2].strip())
     return syms
 
+def load_sf_universe():
+    """All symbols in the survivorship-free dataset (incl. delisted) — the truly
+    survivorship-free fundamentals universe. Delisted names are fetched first (current
+    index members are already built), so coverage of dropped stocks fills in fastest."""
+    import gzip
+    binp = os.path.join(os.path.dirname(HERE), "docs", "sf_stock_data.bin")
+    D = json.loads(gzip.decompress(open(binp, "rb").read()))
+    meta = D.get("meta", {})
+    syms = list(D.get("data", {}).keys())
+    # dead (delisted) stocks first — they're the survivorship-bias gap
+    syms.sort(key=lambda s: (0 if meta.get(s, {}).get("alive") is False else 1, s))
+    return syms
+
 def main():
     args = sys.argv[1:]
-    if args and args[0].lower() in ("nifty500", "nifty100", "nifty200", "nifty50"):
+    if args and args[0].lower() in ("sf", "all", "survivorship"):
+        syms = load_sf_universe()
+        print("Survivorship-free universe (from sf_stock_data.bin): %d symbols" % len(syms))
+    elif args and args[0].lower() in ("nifty500", "nifty100", "nifty200", "nifty50"):
         syms = load_index(args[0].lower())
         print("Universe %s: %d symbols" % (args[0], len(syms)))
     else:
@@ -164,6 +180,11 @@ def main():
             _tl.jar = nse_jar(); rec = fetch_symbol(sym, _tl.jar)
         return sym, rec
 
+    docs = os.path.join(os.path.dirname(HERE), "docs", "sf_fundamentals.json")
+    def flush():
+        json.dump(data, open(OUT, "w"), separators=(",", ":"))
+        json.dump(data, open(docs, "w"), separators=(",", ":"))   # web copy stays usable mid-build
+
     lock = threading.Lock(); done = 0
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as ex:
         for sym, rec in ex.map(do_sym, todo):
@@ -171,14 +192,11 @@ def main():
             if rec:
                 with lock:
                     data[sym] = rec
-                    if done % 10 == 0 or done == len(todo):
-                        json.dump(data, open(OUT, "w"), separators=(",", ":"))
+                    if done % 50 == 0 or done == len(todo):
+                        flush()
                 print("  [%d/%d] %s: %d quarters  latest=%s npStd=%s npCon=%s" % (
                     done, len(todo), sym, len(rec), rec[-1][0], rec[-1][1], rec[-1][3]))
-    json.dump(data, open(OUT, "w"), separators=(",", ":"))
-    # web-facing copy (committed, loaded by the backtest page)
-    docs = os.path.join(os.path.dirname(HERE), "docs", "sf_fundamentals.json")
-    json.dump(data, open(docs, "w"), separators=(",", ":"))
+    flush()
     sz = os.path.getsize(docs) / 1024
     print("Wrote %s (%d symbols) + docs/sf_fundamentals.json (%.0f KB)" % (OUT, len(data), sz))
 
