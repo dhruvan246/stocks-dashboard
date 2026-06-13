@@ -20,7 +20,7 @@ point-in-time.
 Run:  python -X utf8 build_fundamentals.py [SYM1 SYM2 ...]   (default = a small test set)
 Cache: scripts/_xbrl_cache/ (gitignored via scripts/_*). Resumable.
 """
-import os, sys, re, json, time, gzip, threading, concurrent.futures, urllib.request, http.cookiejar
+import os, sys, re, json, time, gzip, threading, concurrent.futures, urllib.request, urllib.parse, http.cookiejar
 
 MIN_QE = 20170101   # skip quarters ending before this — NSE's XBRL archive is sparse pre-2016
                     # and the backtest default starts 2020 (year-ago bases need ~2018). Cuts the 404 storm.
@@ -66,7 +66,8 @@ def xbrl_profit(xml):
     for m in re.finditer(r'NatureOfReportStandaloneConsolidated contextRef="([^"]+)"[^>]*>([^<]+)<', xml):
         nat[m.group(1)] = m.group(2).strip().lower()
     plp = {}
-    for m in re.finditer(r'<in-bse-fin:ProfitLossForPeriod contextRef="([^"]+)"[^>]*>([^<]+)<', xml):
+    # non-financials tag net profit as ProfitLossForPeriod; BANKS/NBFCs use ProfitLossForThePeriod
+    for m in re.finditer(r'<in-bse-fin:ProfitLossFor(?:The)?Period contextRef="([^"]+)"[^>]*>([^<]+)<', xml):
         if m.group(1) not in plp:
             plp[m.group(1)] = round(float(m.group(2)) / 1e7, 2)   # rupees -> crore
     std = con = None
@@ -92,7 +93,7 @@ def qstart(qe):
 def fetch_symbol(sym, jar):
     h = {"User-Agent": UA, "Accept": "application/json",
          "Referer": "https://www.nseindia.com/companies-listing/corporate-filings-financial-results"}
-    url = "https://www.nseindia.com/api/corporates-financial-results?index=equities&symbol=%s&period=Quarterly" % sym
+    url = "https://www.nseindia.com/api/corporates-financial-results?index=equities&symbol=%s&period=Quarterly" % urllib.parse.quote(sym)  # encode & in M&M, ARE&M, etc.
     try:
         rows = json.loads(_get(url, headers=h, jar=jar, timeout=30))
     except Exception as e:
