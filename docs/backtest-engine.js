@@ -217,10 +217,10 @@ function profitAt(sym, dateInt, basis) {
     for (const q of arr) { if (q[0] === baseEnd && q[npIdx] != null) { base = q; break; } }
     if (!base) continue;
     const b = base[npIdx], c = cur[npIdx];
-    // low-base guard by MAGNITUDE: ignore only when |base| < ₹5cr (a ₹0.01cr base makes +18000%
-    // noise). NEGATIVE bases (loss→profit turnarounds, e.g. Vodafone Idea) ARE included — divide by
-    // |base| so a loss→profit reads as large positive growth, profit→loss as negative.
-    return { cur: c, base: b, yoy: Math.abs(b) >= 5 ? (c - b) / Math.abs(b) * 100 : null };
+    // YoY% for EVERY stock with a non-zero base — tiny (₹0.01cr) and negative/loss bases included.
+    // Divide by |base| so loss→profit reads positive. Null only when base is exactly 0 (÷0).
+    // NOTE: tiny bases give extreme % (₹0.01cr→+18000%); add a current-profit filter to tame it.
+    return { cur: c, base: b, yoy: b !== 0 ? (c - b) / Math.abs(b) * 100 : null };
   }
   return null;
 }
