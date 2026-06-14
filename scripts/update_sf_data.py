@@ -39,6 +39,63 @@ def load_base():
         print("Base: release unavailable (%s) — using local docs copy" % e)
         return json.loads(gzip.decompress(open(OUT, "rb").read()))
 
+def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
+    """Belt-and-suspenders. Re-correct any split/bonus/demerger whose ex-date fell in the last
+    ~4 weeks but was processed by an EARLIER daily run before NSE had published the action (so the
+    incremental updater used inference and baked in the wrong treatment). For each recent official
+    action we recover the factor the bin currently reflects (applied_f = raw_ratio / adjusted_ratio
+    across the ex-date) and compare it to the official one; if they disagree we rescale the pre-ex
+    history by correct_f/applied_f. Idempotent: once correct, applied_f == correct_f so it no-ops."""
+    def od(y): return datetime.date(y // 10000, y // 100 % 100, y % 100).toordinal()
+    cutoff = od(end_ymd) - window_days
+    events = []   # (sym, exYmd, official_split_bonus_factor_or_None, is_demerger)
+    for sym, fl in CA_OFF.items():
+        for ex, fac in fl.items():
+            if od(ex) >= cutoff: events.append((sym, ex, fac, False))
+    for sym, exset in NOADJ.items():
+        for ex in exset:
+            if od(ex) >= cutoff: events.append((sym, ex, None, True))
+    if not events: return 0
+    daycache = {}
+    def raw_close(ymd, sym):
+        if ymd not in daycache:
+            rows = B.fetch_day(datetime.date(ymd // 10000, ymd // 100 % 100, ymd % 100), jar) or []
+            daycache[ymd] = {r[0]: r[1] for r in rows}
+        return daycache[ymd].get(sym)
+    healed = 0
+    for sym, ex, off, is_dem in events:
+        e = data.get(sym)
+        if not e or not e.get("d"): continue
+        ds = e["d"]
+        j = next((k for k in range(len(ds)) if ds[k] >= ex), None)   # drop day = first day on/after ex
+        if j is None or j < 1: continue
+        re_ex, re_prev = raw_close(ds[j], sym), raw_close(ds[j - 1], sym)
+        c = e["c"]
+        if not re_ex or not re_prev or not c[j] or not c[j - 1]: continue
+        adj_ratio, raw_ratio = c[j] / c[j - 1], re_ex / re_prev
+        if adj_ratio <= 0: continue
+        applied_f = raw_ratio / adj_ratio   # factor the bin currently reflects across the ex-date
+        if applied_f <= 0: continue
+        # correct_f = EXACTLY what the rebuild would apply now, given the official action AND the
+        # real drop (same reconciliation guard — so combined split+bonus, ex-date moves and misparses
+        # resolve to inference just like the rebuild, instead of being force-overridden).
+        if off is not None and 0.75 <= raw_ratio / off <= 1.30:
+            correct_f = off
+        elif is_dem and not (0.75 <= raw_ratio <= 1.30):
+            correct_f = 1.0
+        else:
+            correct_f = ca_factor(raw_ratio)
+        corr = correct_f / applied_f
+        if abs(corr - 1) > 0.02:   # baked-in treatment disagrees with the rebuild's -> fix
+            for key in ("c", "h", "l", "op", "vw"):
+                if key in e: e[key] = [round(x * corr, 2) for x in e[key][:j]] + e[key][j:]
+            kind = "demerger:keep-drop" if correct_f == 1.0 else "split/bonus f=%.4f" % correct_f
+            print("  SELF-HEAL %s ex %d: was f=%.4f -> %s  (rescaled %d pre-ex points x%.4f)"
+                  % (sym, ex, applied_f, kind, j, corr))
+            healed += 1
+    return healed
+
+
 def main():
     if os.path.exists(MARK): os.remove(MARK)
     D = load_base()
@@ -131,8 +188,13 @@ def main():
         D["end"] = day.isoformat(); appended += 1
         print("  %s: appended %d rows" % (day, len(rows)))
 
-    if not appended:
-        print("No new trading days appended."); return
+    # Belt-and-suspenders: re-check the last ~4 weeks of official actions and fix any that an
+    # earlier run mis-handled (action published after its ex-date was already processed).
+    healed = self_heal(data, CA_OFF, NOADJ, int(D["end"].replace("-", "")), j)
+    if healed: print("Self-heal corrected %d corporate action(s)." % healed)
+
+    if not appended and not healed:
+        print("No new trading days appended; nothing to self-heal."); return
     blob = gzip.compress(json.dumps(D, separators=(",", ":")).encode(), 6)
     open(OUT, "wb").write(blob)
     open(MARK, "w").write(D["end"])

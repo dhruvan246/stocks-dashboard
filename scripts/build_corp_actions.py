@@ -62,7 +62,8 @@ def fetch():
             if not ex: continue
             f, _ = official_factor(subj)
             if f and 0.05 < f < 0.95:
-                cmap.setdefault(r.get("symbol"), {})[int(ex)] = round(f, 6); n += 1
+                dd = cmap.setdefault(r.get("symbol"), {})   # combine same-day actions (e.g. BAJFINANCE
+                dd[int(ex)] = round(dd.get(int(ex), 1.0) * f, 6); n += 1   # 1:2 split x 4:1 bonus = 0.10
             elif is_demerger(subj):
                 demap.setdefault(r.get("symbol"), set()).add(int(ex)); dm += 1
         print("  %d: %d split/bonus, %d demerger/scheme events" % (yr, n, dm))
