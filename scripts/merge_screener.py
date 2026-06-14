@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
-"""Merge Screener pre-IPO quarters into sf_fundamentals.json as standalone YoY bases.
-
-Screener reports STANDALONE net profit (verified: matches our NSE std to the decimal).
-Trust a symbol only if its OVERLAPPING (post-listing) quarters match NSE (either basis).
-For trusted symbols, add the quarters NSE doesn't have (the pre-IPO ones) as [qe, npStd, None,
-None, None] — std value, con/dates null so they're ONLY ever used as the year-ago YoY base,
-never as a 'current' quarter (point-in-time-safe). Never overwrites an existing NSE quarter.
-Atomic write. Run: python -X utf8 merge_screener.py
+"""Merge Screener pre-IPO quarters into sf_fundamentals.json as YoY bases — BOTH standalone and
+consolidated. Each basis is validated independently against NSE on the overlapping (post-listing)
+quarters; only a basis that matches NSE is trusted. Pre-IPO quarters are added as
+[qe, npStd|None, None, npCon|None, None] (dates null -> used only as the year-ago base, never as a
+current quarter -> point-in-time-safe). Never overwrites an existing NSE quarter. Atomic write.
 """
 import json, os
 import build_fundamentals as bf
@@ -21,23 +18,28 @@ def main():
     nse = json.load(open(DOCS)); scr = json.load(open(SCR))
     added_sym = added_q = skipped = 0; rep = []
     for sym, d in scr.items():
-        s_np = {int(k): v for k, v in d.get("np", {}).items()}
-        if not s_np: continue
+        std = {int(k): v for k, v in d.get("std", {}).items()}
+        con = {int(k): v for k, v in d.get("con", {}).items()}
         have = {r[0]: (r[1], r[3]) for r in nse.get(sym, [])}
-        overlap = [(qe, s_np[qe]) for qe in s_np if qe in have]
-        if not overlap:                                   # can't validate -> skip
-            skipped += 1; continue
-        m = sum(1 for qe, v in overlap if close(have[qe][0], v) or close(have[qe][1], v))
-        if m < len(overlap) * 0.8:                        # overlap doesn't reconcile -> don't trust
+        def valid(vals, idx):
+            ov = [(qe, vals[qe]) for qe in vals if qe in have and have[qe][idx] is not None]
+            if not ov: return False
+            return sum(1 for qe, v in ov if close(have[qe][idx], v)) >= len(ov) * 0.8
+        std_ok = valid(std, 0); con_ok = valid(con, 1)
+        if not (std_ok or con_ok):
             skipped += 1; continue
         rows = {r[0]: list(r) for r in nse.get(sym, [])}
         newq = 0
-        for qe, v in s_np.items():
-            if qe not in rows:                            # add only the quarters NSE lacks (pre-IPO)
-                rows[qe] = [qe, v, None, None, None]; newq += 1
+        for qe in sorted(set(std) | set(con)):
+            if qe in rows: continue                       # never overwrite NSE
+            sv = std.get(qe) if std_ok else None
+            cv = con.get(qe) if con_ok else None
+            if sv is None and cv is None: continue
+            rows[qe] = [qe, sv, None, cv, None]; newq += 1
         if newq:
             nse[sym] = [rows[k] for k in sorted(rows)]
-            added_sym += 1; added_q += newq; rep.append((sym, newq))
+            added_sym += 1; added_q += newq
+            rep.append((sym, newq, "std" if std_ok else "", "con" if con_ok else ""))
     for path in (DOCS, OUT):
         tmp = path + ".tmp"; json.dump(nse, open(tmp, "w"), separators=(",", ":")); os.replace(tmp, path)
     print("merged pre-IPO bases into %d symbols (%d quarters); %d skipped (no/failed overlap)" % (added_sym, added_q, skipped))
