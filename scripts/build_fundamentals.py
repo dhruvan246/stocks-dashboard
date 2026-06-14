@@ -109,6 +109,9 @@ def fetch_integrated(sym, jar, skip=()):
     except Exception:
         return None
     byq = {}
+    # NSE returns duplicate rows per (qe,basis) — one dated, one broadcast_Date=None. Take the dated
+    # one first so the announcement date isn't lost (engine skips quarters with no date).
+    rows.sort(key=lambda r: 0 if r.get("broadcast_Date") else 1)
     for r in rows:
         xb = r.get("xbrl") or ""
         # Financials only (skip GOVERNANCE). _INDAS (most), _BANKING (banks), _NBFC_INDAS (NBFCs).

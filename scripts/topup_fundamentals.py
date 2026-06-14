@@ -44,6 +44,9 @@ def fetch_integrated(sym, jar):
     except Exception:
         return None                      # signal "retry with fresh cookies"
     byq = {}                             # qEnd -> {std:(np,ann), con:(np,ann)}
+    # NSE returns duplicate rows per (qe,basis) — one dated, one broadcast_Date=None. Take the
+    # DATED one first so we don't store a null announcement date (engine skips date-less quarters).
+    rows.sort(key=lambda r: 0 if r.get("broadcast_Date") else 1)
     for r in rows:
         xb = r.get("xbrl") or ""
         # Financials only (skip GOVERNANCE). Schema varies: INTEGRATED_FILING_INDAS (most cos),
