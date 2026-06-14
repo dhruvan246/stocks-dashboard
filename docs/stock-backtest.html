@@ -730,14 +730,16 @@ function drawPeriodReturns(r){
   for(let k=0;k<=4;k++){ const v=vmin+span*k/4, yy=y(v); g+=`<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="#f1f5f9"/><text x="${PL-4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${v.toFixed(0)}</text>`; }
   g+=`<line x1="${PL}" y1="${y0.toFixed(1)}" x2="${W-PR}" y2="${y0.toFixed(1)}" stroke="#cbd5e1"/>`;
   const showLab=gap>=20, dstep=Math.ceil(n/45);
-  let bars='';
+  let bars='', hits='';
   data.forEach((d,i)=>{ const cx=PL+gap*i+(gap-bw)/2, up=d.v>=0, col=up?'#2f6fd0':'#d9534f';
     const top=Math.min(y(d.v),y0), h=Math.max(1,Math.abs(y(d.v)-y0));
     bars+=`<rect x="${cx.toFixed(1)}" y="${top.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" fill="${col}" rx="1"/>`;
     if(showLab) bars+=`<text x="${(cx+bw/2).toFixed(1)}" y="${(up?top-3:top+h+9).toFixed(1)}" font-size="8" fill="${col}" text-anchor="middle">${d.v.toFixed(1)}%</text>`;
     if(i%dstep===0){ const lx=(cx+bw/2).toFixed(1), ly=H-PB+10; bars+=`<text x="${lx}" y="${ly}" font-size="8" fill="#94a3b8" text-anchor="end" transform="rotate(-50 ${lx} ${ly})">${d.d}</text>`; }
+    // full-column transparent hover zone + native tooltip (period date and its return, easy to hover even on thin bars)
+    hits+=`<rect x="${(PL+gap*i).toFixed(1)}" y="${PT}" width="${gap.toFixed(1)}" height="${(H-PT-PB).toFixed(1)}" fill="transparent" style="cursor:pointer"><title>${d.d} ${d.v>=0?'+':''}${d.v.toFixed(2)}%</title></rect>`;
   });
-  el.innerHTML=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="max-width:none">${g}${bars}</svg>`;
+  el.innerHTML=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="max-width:none">${g}${bars}${hits}</svg>`;
 }
 load();
 </script>
