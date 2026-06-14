@@ -36,6 +36,12 @@ jobs:
       - name: Pull newly-filed quarterly results into sf_fundamentals.json
         run: python3 scripts/update_fundamentals.py
 
+      # Backstop: any quarter that lands without a filing date (Screener backfills, integrated
+      # rows with broadcast_Date=None) gets the SEBI deadline so the point-in-time screen can use
+      # it (a null date silently drops the quarter -> stale fallback, which wrongly excluded AIIL).
+      - name: Fill any null announcement dates (point-in-time safety)
+        run: python3 scripts/fill_ann_dates.py
+
       - name: Commit updated fundamentals (only if new earnings landed)
         run: |
           if [ ! -f docs/.fund_updated ]; then
