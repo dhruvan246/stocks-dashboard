@@ -48,16 +48,31 @@ def get(url, tries=5):
         except Exception as e:
             last = e; time.sleep(3)
     raise last
-def download(stem):
+def download(stem, tries=5):
     fp = os.path.join(CACHE, stem + ".pdf")
     if os.path.exists(fp) and os.path.getsize(fp) > 1000:
         return fp
     try:
-        raw = get(BASE + "ind_prs" + stem + ".pdf")
+        raw = get(BASE + "ind_prs" + stem + ".pdf", tries=tries)
         if raw[:4] != b"%PDF": return None
         open(fp, "wb").write(raw); return fp
     except Exception:
         return None
+
+def recent_stems(days=80):
+    """FRESHNESS SAFEGUARD: auto-discover press releases published since the hand-maintained
+    FILES list. Probe each recent weekday's PDF name (ind_prsDDMMYYYY.pdf, + _1/_2 variants),
+    single attempt so 404s are fast. This is what makes a new reshuffle get captured WITHOUT a
+    manual edit — the failure mode that mis-dated the 2026 March reshuffle."""
+    import datetime
+    out = []
+    today = datetime.date.today()
+    for i in range(days):
+        d = today - datetime.timedelta(days=i)
+        if d.weekday() >= 5: continue   # press releases come out on weekdays
+        s = d.strftime("%d%m%Y")
+        out += [s, s + "_1", s + "_2"]
+    return out
 
 DATE_RE = re.compile(r"effective\s+from\s+([A-Z][a-z]+\s+\d{1,2},\s+\d{4})", re.I)
 MONTHS = {m: i for i, m in enumerate(
@@ -101,10 +116,12 @@ def parse_pdf(fp):
     return [b for b in blocks if (b["excluded"] or b["included"]) and b["eff"]]
 
 def main():
-    print(f"Parsing {len(FILES)} press-release PDFs...")
+    known = set(FILES)
+    stems = list(dict.fromkeys(FILES + recent_stems()))   # hand-maintained history + auto-probed recent
+    print(f"Parsing {len(FILES)} known + {len(stems)-len(FILES)} auto-probed recent press releases...")
     ok = miss = 0; changelog = {}
-    for stem in FILES:
-        fp = download(stem)
+    for stem in stems:
+        fp = download(stem, tries=(5 if stem in known else 1))   # don't retry the speculative probes
         if not fp: miss += 1; continue
         ok += 1
         for b in parse_pdf(fp):

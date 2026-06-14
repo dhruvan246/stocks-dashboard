@@ -38,7 +38,9 @@ def dmy_iso(s):
 def load_renames():
     ren = {}  # old -> (new, date)
     try:
-        for r in csv.reader(open(os.path.join(os.path.dirname(ROOT), "symchg.csv"), encoding="utf-8", errors="replace")):
+        sc = os.path.join(HERE, "symchg.csv")                       # repo copy first (works in CI)
+        if not os.path.exists(sc): sc = os.path.join(os.path.dirname(ROOT), "symchg.csv")
+        for r in csv.reader(open(sc, encoding="utf-8", errors="replace")):
             if len(r) >= 4 and r[1].strip() and r[2].strip():
                 d = dmy_iso(r[3]) if r[3].strip() else None
                 ren[r[1].strip().upper()] = (r[2].strip().upper(), d or "1900-01-01")
@@ -128,9 +130,13 @@ def validate_n500(snaps, wb):
             if k <= d: best = k
         return snaps[best]
     print("  validation vs archived official lists (canonical symbols):")
+    worst = 100.0
     for d in sorted(wb):
         off = {canon(x) for x in wb[d]}; rec = asof(d)
-        print("    %s  match %.1f%%  off-by %d" % (d, 100 * len(off & rec) / len(off), len(off ^ rec)))
+        pct = 100 * len(off & rec) / len(off)
+        print("    %s  match %.1f%%  off-by %d" % (d, pct, len(off ^ rec)))
+        worst = min(worst, pct)
+    return worst
 
 def main():
     changelog = json.load(open(os.path.join(HERE, "_changelog.json")))
@@ -145,7 +151,11 @@ def main():
         anchor = today_list(slug)
         cps = {d: set(v) for d, v in wb.items()} if idx == "Nifty 500" else None
         snaps = reconstruct(anchor, events, cps)
-        if idx == "Nifty 500": validate_n500(snaps, wb)
+        if idx == "Nifty 500":
+            worst = validate_n500(snaps, wb)
+            if worst < 99.0:   # SAFETY GATE: never overwrite good membership with a degraded rebuild
+                raise SystemExit("ABORT: Nifty500 validation %.1f%% < 99%% — refusing to write "
+                                 "(likely a missing input or NSE fetch issue); keeping committed data." % worst)
         # era-correct symbols per snapshot date so they match that period's bhavcopy series
         new_snaps = [{"effectiveDate": d, "symbols": sorted(era_symbol(s, d) for s in S)}
                      for d, S in snaps.items() if d != "1900-01-01"]

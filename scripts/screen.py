@@ -12,7 +12,7 @@ H = os.path.dirname(os.path.abspath(__file__)); R = os.path.dirname(H)
 D = json.loads(gzip.decompress(open(os.path.join(R, "docs", "sf_stock_data.bin"), "rb").read()))
 DATA, META = D["data"], D["meta"]
 FUND = json.load(open(os.path.join(R, "docs", "sf_fundamentals.json")))
-HIST = json.load(open(os.path.join(H, "n500_hist.json")))
+HIST = json.load(open(os.path.join(H, "indices_history.json")))["Nifty 500"]  # authoritative (build_membership_v2)
 
 def od(y): return datetime.date(y // 10000, (y // 100) % 100, y % 100).toordinal()
 def le(o, t):
