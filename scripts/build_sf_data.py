@@ -203,7 +203,7 @@ def main():
         return 1.0
     data, meta, dead = {}, {}, 0
     for sym, obs in acc.items():
-        obs.sort(); ds, cs, ts, hb, lb, ob, vol, dv, vwb = [], [], [], [], [], [], [], [], []
+        obs.sort(); ds, cs, ts, hr, lr, orr, vol, dv, vr = [], [], [], [], [], [], [], [], []
         adj = None; lastWeek = None
         for i, (ymd, c, p, t, h, l, o, v, dlv, vw) in enumerate(obs):
             if adj is None:
@@ -223,19 +223,24 @@ def main():
                 keep = (wk != lastWeek); lastWeek = wk   # weekly for old
             if keep:
                 ds.append(ymd); cs.append(adj); ts.append(round(t, 1)); raw_last = c
-                # high/low/open/vwap as per-mil offsets from close (split-adjustment cancels in the ratio)
-                hb.append(max(0, round((h / c - 1) * 1000)) if h >= c else 0)
-                lb.append(max(0, round((1 - l / c) * 1000)) if l <= c else 0)
-                ob.append(round((o / c - 1) * 1000) if o > 0 else 0)
+                # high/low/open/vwap kept as RATIOS to close (CA-adjustment cancels in the ratio) —
+                # converted to EXACT adjusted ₹ below so 52w hi/lo and other filters are paisa-exact.
+                hr.append((h / c) if (h >= c and c) else 1.0)
+                lr.append((l / c) if (0 < l <= c and c) else 1.0)
+                orr.append((o / c) if (o > 0 and c) else 1.0)
                 vol.append(int(v))
-                dv.append(round(dlv * 10) if dlv else 0)            # delivery % x10 (0 = unavailable)
-                vwb.append(round((vw / c - 1) * 1000) if vw > 0 else 0)
+                dv.append(round(dlv, 2) if dlv else 0)              # delivery % (exact; 0 = unavailable)
+                vr.append((vw / c) if (vw > 0 and c) else 1.0)
         if len(ds) < 12: continue
-        # Re-anchor (Yahoo-style adjusted prices): scale so the LAST value equals the latest
-        # RAW close — today's price reads in real ₹, history carries the CA adjustment.
+        # Re-anchor (Yahoo-style adjusted prices): scale so the LAST value equals the latest RAW
+        # close. EXACT high/low/open/vwap = adjusted-close x ratio, rounded to paise.
         k = (raw_last / cs[-1]) if cs[-1] else 1.0
+        hs = [round(cs[i] * k * hr[i], 2) for i in range(len(ds))]
+        ls = [round(cs[i] * k * lr[i], 2) for i in range(len(ds))]
+        ops = [round(cs[i] * k * orr[i], 2) for i in range(len(ds))]
+        vws = [round(cs[i] * k * vr[i], 2) for i in range(len(ds))]
         cs = [round(x * k, 2) for x in cs]
-        data[sym] = {"d": ds, "c": cs, "t": ts, "hb": hb, "lb": lb, "ob": ob, "v": vol, "dv": dv, "vw": vwb}
+        data[sym] = {"d": ds, "c": cs, "t": ts, "h": hs, "l": ls, "op": ops, "v": vol, "dv": dv, "vw": vws}
         alive = sym in cur
         dead += (not alive)
         meta[sym] = {"name": (cur.get(sym) or {}).get("name") or sym,

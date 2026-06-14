@@ -75,27 +75,26 @@ def main():
             h = r[4] if len(r) > 4 else c; l = r[5] if len(r) > 5 else c
             o_ = r[6] if len(r) > 6 else c; v = r[7] if len(r) > 7 else 0
             dlv = r[8] if len(r) > 8 else 0; vw = r[9] if len(r) > 9 else 0
-            hb = max(0, round((h / c - 1) * 1000)) if h >= c else 0
-            lb = max(0, round((1 - l / c) * 1000)) if l <= c else 0
-            ob = round((o_ / c - 1) * 1000) if o_ > 0 else 0
-            dv = round(dlv * 10) if dlv else 0
-            vwb = round((vw / c - 1) * 1000) if vw > 0 else 0
+            hi = round(max(h, c), 2); lo_ = round(min(l, c) if l > 0 else c, 2)   # EXACT intraday hi/lo
+            opx = round(o_, 2) if o_ > 0 else round(c, 2); vwx = round(vw, 2) if vw > 0 else round(c, 2)
+            dvx = round(dlv, 2) if dlv else 0
             e = data.get(sym)
             if e is None:   # new listing (IPO / relist) — start a fresh series
-                data[sym] = {"d": [ymd], "c": [round(c, 2)], "t": [round(t, 1)], "hb": [hb], "lb": [lb],
-                             "ob": [ob], "v": [int(v)], "dv": [dv], "vw": [vwb]}
+                data[sym] = {"d": [ymd], "c": [round(c, 2)], "t": [round(t, 1)], "h": [hi], "l": [lo_],
+                             "op": [opx], "v": [int(v)], "dv": [dvx], "vw": [vwx]}
                 meta.setdefault(sym, {"name": sym, "ind": "Unknown", "alive": True})
                 continue
             if e["d"] and e["d"][-1] >= ymd: continue   # already have this day
             prev_raw = e["c"][-1]   # series is re-anchored: last value == last RAW close
             ratio = (c / prev_raw) if prev_raw else 1.0
             f = ca_factor(ratio)
-            if f != 1.0:   # corporate action: re-anchor the whole history so last stays = raw
-                e["c"] = [round(x * f, 2) for x in e["c"]]
+            if f != 1.0:   # corporate action: re-anchor history (prices scale by f; dv % does not)
+                for key in ("c", "h", "l", "op", "vw"):
+                    if key in e: e[key] = [round(x * f, 2) for x in e[key]]
                 print("  %s: %s corporate action f=%s (history re-anchored)" % (day, sym, f))
             e["d"].append(ymd); e["c"].append(round(c, 2)); e["t"].append(round(t, 1))
-            e["hb"].append(hb); e["lb"].append(lb); e["ob"].append(ob)
-            e["v"].append(int(v)); e["dv"].append(dv); e["vw"].append(vwb)
+            e["h"].append(hi); e["l"].append(lo_); e["op"].append(opx)
+            e["v"].append(int(v)); e["dv"].append(dvx); e["vw"].append(vwx)
             if sym in meta: meta[sym]["raw"] = round(c, 2)
         D["end"] = day.isoformat(); appended += 1
         print("  %s: appended %d rows" % (day, len(rows)))

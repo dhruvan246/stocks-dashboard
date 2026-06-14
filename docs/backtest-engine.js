@@ -74,27 +74,28 @@ async function _sfPut(k, v) { try { const db = await _sfdb(); await new Promise(
 async function loadSF() {
   if (SF) return true;
   let ver = ''; try { ver = (await (await fetch('./sf_meta.json?t=' + Date.now())).json()).end || ''; } catch (e) {}
-  let buf = ver ? await _sfGet('sf:' + ver) : null;
+  let buf = ver ? await _sfGet('sfx:' + ver) : null;
   if (!buf) {
     for (const u of SF_URLS) { try { const resp = await fetch(u); if (!resp.ok) throw new Error('HTTP ' + resp.status); buf = await resp.arrayBuffer(); break; } catch (e) { console.warn('sf data source failed:', u, e); } }
     if (!buf) throw new Error('could not load sf_stock_data.bin from any source');
-    if (ver) _sfPut('sf:' + ver, buf);
+    if (ver) _sfPut('sfx:' + ver, buf);
   }
   const D = JSON.parse(await new Response(new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'))).text());
   const ts = START_TS, ser = {}, meta = {}, turn = {};
   for (const sym in D.data) {
     const o = D.data[sym], n = o.d.length, d = new Array(n), p = new Array(n), t = new Array(n);
+    const hasHL = o.h && o.l, h = hasHL ? new Array(n) : null, l = hasHL ? new Array(n) : null;
     for (let i = 0; i < n; i++) {
       const y = o.d[i];
       const off = Math.floor((Date.UTC(Math.floor(y / 10000), (Math.floor(y / 100) % 100) - 1, y % 100) / 1000 - ts) / DAY);
       d[i] = off; p[i] = Math.round(o.c[i] * 100); t[i] = o.t[i] || 0;
+      if (hasHL) { h[i] = Math.round(o.h[i] * 100); l[i] = Math.round(o.l[i] * 100); }
     }
     ser[sym] = { d, p }; turn[sym] = { d, t }; const sm = D.meta[sym] || {};
-    if (o.hb && o.lb) { ser[sym].hb = o.hb; ser[sym].lb = o.lb; }   // intraday high/low per-mil offsets
-    if (o.ob) ser[sym].ob = o.ob;   // open per-mil offset (signed)
+    if (hasHL) { ser[sym].h = h; ser[sym].l = l; }                     // EXACT intraday high/low (x100, like p)
+    else if (o.hb && o.lb) { ser[sym].hb = o.hb; ser[sym].lb = o.lb; } // old-format fallback (per-mil offsets)
     if (o.v)  ser[sym].v  = o.v;    // traded volume (shares)
-    if (o.dv) ser[sym].dv = o.dv;   // delivery % x10 (0 = unavailable; pre-2020 format lacks it)
-    if (o.vw) ser[sym].vw = o.vw;   // VWAP per-mil offset (signed)
+    if (o.dv) ser[sym].dv = hasHL ? o.dv : o.dv.map(x => x / 10);   // delivery % (normalised to exact %)
     meta[sym] = { symbol: sym, name: sm.name || sym, industry: sm.ind || 'Other', sector: sm.ind || 'Other', mcap: 0, latest: o.c[n - 1], alive: sm.alive, raw: sm.raw || null };
   }
   const endOff = Math.floor((Date.parse((D.end || '2024-01-01') + 'T00:00:00Z') / 1000 - ts) / DAY);
@@ -126,8 +127,8 @@ function hl52(tkr, off) {
   const s = SERIES[tkr]; if (!s) return null; const lo = off - 365; let i = idxLE(s.d, off); if (i < 0) return null;
   let hi = -1e18, low = 1e18;
   for (let k = i; k >= 0 && s.d[k] >= lo; k--) {
-    const ph = s.hb ? s.p[k] * (1000 + s.hb[k]) / 1000 : s.p[k];
-    const pl = s.lb ? s.p[k] * (1000 - s.lb[k]) / 1000 : s.p[k];
+    const ph = s.h ? s.h[k] : (s.hb ? s.p[k] * (1000 + s.hb[k]) / 1000 : s.p[k]);   // exact high (x100)
+    const pl = s.l ? s.l[k] : (s.lb ? s.p[k] * (1000 - s.lb[k]) / 1000 : s.p[k]);   // exact low (x100)
     if (ph > hi) hi = ph; if (pl < low) low = pl;
   }
   return { hi: hi / 100, low: low / 100 };
@@ -183,7 +184,7 @@ function computeTech(tkr, off, px) {
   { const s = SERIES[tkr];
     if (s && s.v) { const avg = (days) => { const lo = off - days; let i = idxLE(s.d, off), sum = 0, n = 0; for (let k = i; k >= 0 && s.d[k] >= lo; k--) { sum += s.v[k]; n++; } return n ? sum / n : 0; };
       const v5 = avg(7), v90 = avg(90); volSurge = v90 > 0 ? v5 / v90 : null; }
-    if (s && s.dv) { const lo = off - 28; let i = idxLE(s.d, off), sum = 0, n = 0; for (let k = i; k >= 0 && s.d[k] >= lo; k--) { if (s.dv[k] > 0) { sum += s.dv[k] / 10; n++; } } delivPct = n ? sum / n : null; } }
+    if (s && s.dv) { const lo = off - 28; let i = idxLE(s.d, off), sum = 0, n = 0; for (let k = i; k >= 0 && s.d[k] >= lo; k--) { if (s.dv[k] > 0) { sum += s.dv[k]; n++; } } delivPct = n ? sum / n : null; } }
   return {
     ret3m: r3, ret6m: r6, ret12m: r12,
     rsNifty: (r6 != null && nr6 != null) ? r6 - nr6 : null,
