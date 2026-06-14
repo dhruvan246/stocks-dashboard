@@ -506,17 +506,16 @@ function simulate(cfg){
         target.forEach(r=>{ pos[r.tkr]=per/r.price; });
         cash = base - per*target.length; started=true;
       } else {
-        // HOLD-WINNERS: stays ride untouched; exits sold; entries funded at avg exit value; rest → cash
+        // HOLD-WINNERS: winners ride untouched; exits sold to cash; each EMPTY SLOT (N − winners
+        // kept) gets an equal share of ALL available cash; entries fill slots, unfilled slots keep cash.
         const valOf=t=>{ const p=markPrice(t,off); return p!=null?pos[t]*p:0; };
         const exits=Object.keys(pos).filter(t=>!tset.has(t));
         let proceeds=0; exits.forEach(t=>{ proceeds+=valOf(t); delete pos[t]; });
         const entries=target.filter(r=>!(r.tkr in pos));
-        let avail=proceeds+cash; cash=0;
-        if(entries.length){
-          const avg = exits.length ? proceeds/exits.length : avail/entries.length;   // each new = average of the stocks that left
-          for(const e of entries){ const a=Math.min(avg,avail); if(a<=1) break; pos[e.tkr]=a/e.price; avail-=a; }
-          cash=Math.max(0,avail);                                                     // surplus (fewer entries than exits) → cash
-        } else { cash=avail; }                                                        // nothing to replace with → all to cash
+        const openSlots=Math.max(1, N-Object.keys(pos).length);    // empty slots = N − winners kept
+        let avail=proceeds+cash; const perSlot=avail/openSlots;     // each empty slot's equal share of free cash
+        for(const e of entries){ if(perSlot<=1) break; pos[e.tkr]=perSlot/e.price; avail-=perSlot; }
+        cash=Math.max(0,avail);                                     // unfilled slots stay in cash
       }
       // open trades for new entries (record entry price + factor at entry)
       for(const r of target){ if(wasEntry.has(r.tkr)){ entryInfo[r.tkr]={date:md, price:r.price, factor:fieldVal(r,cfg.sortBy), rsi:r.rsi, chg:r.chg}; } }

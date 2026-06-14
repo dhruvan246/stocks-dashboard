@@ -325,12 +325,12 @@ function simulate(cfg) {
         const exits = Object.keys(pos).filter(t => !tset.has(t));
         let proceeds = 0; exits.forEach(t => { proceeds += valOf(t); delete pos[t]; });
         const entries = target.filter(r => !(r.tkr in pos));
-        let avail = proceeds + cash; cash = 0;
-        if (entries.length) {
-          const avg = exits.length ? proceeds / exits.length : avail / entries.length;
-          for (const e of entries) { const a = Math.min(avg, avail); if (a <= 1) break; pos[e.tkr] = a / e.price; avail -= a; }
-          cash = Math.max(0, avail);
-        } else { cash = avail; }
+        // each EMPTY SLOT (N − winners kept) gets an equal share of ALL available cash; entries fill
+        // slots, unfilled slots keep their cash share. per-slot (not per-exit) — fixes over-concentration.
+        const openSlots = Math.max(1, N - Object.keys(pos).length);
+        let avail = proceeds + cash; const perSlot = avail / openSlots;
+        for (const e of entries) { if (perSlot <= 1) break; pos[e.tkr] = perSlot / e.price; avail -= perSlot; }
+        cash = Math.max(0, avail);
       }
       for (const r of target) { if (wasEntry.has(r.tkr)) { entryInfo[r.tkr] = { date: md, price: r.price, factor: fieldVal(r, cfg.sortBy), rsi: r.rsi, chg: r.chg }; } }
       const now = mark(off); latestCash = cash;
