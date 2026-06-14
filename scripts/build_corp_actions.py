@@ -16,6 +16,16 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "corp_actions.json")
 
 
+# A demerger / scheme of arrangement is NOT a split: real value leaves the stock (it goes to the
+# spun-off entity), so the ex-date price drop must NOT be divided out. We only need its ex-date to
+# tell the price build "do not treat this drop as a split". (Vedanta 2026-04-30, Raymond, Siemens.)
+DEMERGER_KW = ("demerger", "de-merger", "scheme of arrangement", "scheme of amalgamation",
+               "spin off", "spin-off", "composite scheme", "reduction of capital", "capital reduction")
+
+def is_demerger(subj):
+    s = (subj or "").lower()
+    return any(k in s for k in DEMERGER_KW)
+
 def official_factor(subj):
     """Return (price_factor, label) for a split/bonus subject, else (None, None).
     Split: face value Rs X -> Rs Y  => factor Y/X.   Bonus B:A (B new per A held) => A/(A+B)."""
@@ -36,7 +46,7 @@ def official_factor(subj):
 def fetch():
     jar = F.nse_jar()
     h = {"User-Agent": F.UA, "Accept": "application/json", "Referer": "https://www.nseindia.com/"}
-    cmap = {}
+    cmap = {}; demap = {}
     for yr in range(2016, datetime.date.today().year + 1):
         url = ("https://www.nseindia.com/api/corporates-corporateActions?index=equities"
                "&from_date=01-01-%d&to_date=31-12-%d" % (yr, yr))
@@ -45,26 +55,32 @@ def fetch():
             rows = d if isinstance(d, list) else d.get("data", [])
         except Exception as e:
             print("  %d: fetch failed (%s)" % (yr, str(e)[:40])); continue
-        n = 0
+        n = dm = 0
         for r in rows:
-            f, _ = official_factor(r.get("subject") or r.get("purpose") or "")
+            subj = r.get("subject") or r.get("purpose") or ""
+            ex = F.iso(r.get("exDate"))
+            if not ex: continue
+            f, _ = official_factor(subj)
             if f and 0.05 < f < 0.95:
-                ex = F.iso(r.get("exDate"))
-                if ex:
-                    cmap.setdefault(r.get("symbol"), {})[int(ex)] = round(f, 6)
-                    n += 1
-        print("  %d: %d split/bonus events" % (yr, n))
-    return cmap
+                cmap.setdefault(r.get("symbol"), {})[int(ex)] = round(f, 6); n += 1
+            elif is_demerger(subj):
+                demap.setdefault(r.get("symbol"), set()).add(int(ex)); dm += 1
+        print("  %d: %d split/bonus, %d demerger/scheme events" % (yr, n, dm))
+    return cmap, demap
 
 
 def main():
-    cmap = fetch()
-    # dict-per-symbol -> sorted list, dedup on ex-date
-    out = {sym: sorted([k, v] for k, v in d.items()) for sym, d in cmap.items()}
+    cmap, demap = fetch()
+    out = {
+        "factors":  {sym: sorted([k, v] for k, v in d.items()) for sym, d in cmap.items()},
+        "noadjust": {sym: sorted(s) for sym, s in demap.items()},
+    }
     tmp = OUT + ".tmp"
     json.dump(out, open(tmp, "w"))
     os.replace(tmp, OUT)
-    print("Wrote %s: %d symbols, %d events" % (OUT, len(out), sum(len(v) for v in out.values())))
+    print("Wrote %s: %d split/bonus symbols (%d events), %d demerger/scheme symbols (%d ex-dates)"
+          % (OUT, len(out["factors"]), sum(len(v) for v in out["factors"].values()),
+             len(out["noadjust"]), sum(len(v) for v in out["noadjust"].values())))
 
 
 if __name__ == "__main__":

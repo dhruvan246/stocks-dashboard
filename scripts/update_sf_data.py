@@ -58,10 +58,11 @@ def main():
     # exactly on the ex-date so a split/bonus with an ex-date price move (or a small bonus whose
     # drop stays inside [0.75,1.30]) is adjusted correctly instead of mis-inferred from the drop.
     try:
-        CA_OFF = {s: {int(e[0]): e[1] for e in v} for s, v in
-                  json.load(open(os.path.join(HERE, "corp_actions.json"))).items()}
+        _ca = json.load(open(os.path.join(HERE, "corp_actions.json")))
+        CA_OFF = {s: {int(e[0]): e[1] for e in v} for s, v in _ca.get("factors", {}).items()}
+        NOADJ  = {s: set(v) for s, v in _ca.get("noadjust", {}).items()}
     except Exception as ex:
-        CA_OFF = {}; print("  (corp_actions.json unavailable: %s — inference only)" % ex)
+        CA_OFF = {}; NOADJ = {}; print("  (corp_actions.json unavailable: %s — inference only)" % ex)
     # One-time format migration: old bins store per-mil offsets (hb/lb/ob/vw) + delivery x10; the
     # new format stores EXACT h/l/op/vw + delivery %. Convert on load so this updater works on either
     # (a freshly-rebuilt exact bin already has 'h' and is skipped).
@@ -108,9 +109,14 @@ def main():
             if e["d"] and e["d"][-1] >= ymd: continue   # already have this day
             prev_raw = e["c"][-1]   # series is re-anchored: last value == last RAW close
             ratio = (c / prev_raw) if prev_raw else 1.0
-            off = (CA_OFF.get(sym) or {}).get(ymd)   # OFFICIAL factor for this ex-date, if any
+            off = (CA_OFF.get(sym) or {}).get(ymd)   # OFFICIAL split/bonus factor for this ex-date
+            nd = NOADJ.get(sym)                       # official demerger/scheme ex-dates
             if off is not None and 0.75 <= (ratio / off) <= 1.30:
-                f = off   # exact NSE ratio overrides the drop-based inference
+                f = off   # official split/bonus: divide out the exact ratio
+            elif nd and not (0.75 <= ratio <= 1.30) and any(ymd - 3 <= e <= ymd for e in nd):
+                # official demerger/scheme: real value left the stock -> keep the drop as a genuine move
+                print("  %s: %s demerger/scheme drop ratio=%.3f kept (not divided out)" % (day, sym, ratio))
+                f = 1.0
             else:
                 f = ca_factor(ratio)
             if f != 1.0:   # corporate action: re-anchor history (prices scale by f; dv % does not)

@@ -201,18 +201,23 @@ def main():
         for f in CA_FRACS:
             if abs(r / f - 1) <= 0.08: return f
         return 1.0
-    # OFFICIAL split/bonus ratios (scripts/corp_actions.json, from NSE corporate-actions API).
-    # Applied EXACTLY on each ex-date, overriding the price-drop inference above — which mis-reads
-    # a split/bonus whenever the stock moves on the ex-date (Adani Power 1:5 popped 20% -> looked
-    # 1:4) and silently ignores any small bonus (1:4/1:5/1:10) whose drop stays inside [0.75,1.30].
+    # OFFICIAL corporate actions (scripts/corp_actions.json, from NSE corporate-actions API).
+    # 3-way priority on each ex-date drop:
+    #   1) official split/bonus -> divide out the EXACT factor (fixes Adani Power's 1:5-read-as-1:4
+    #      and small bonuses whose drop hides inside [0.75,1.30]);
+    #   2) official demerger/scheme -> do NOT divide out (real value left the stock, e.g. Vedanta
+    #      2026-04-30 773->271; dividing it out fabricated a fake 1/3 low);
+    #   3) otherwise -> ca_factor inference (covers splits the API/parse missed, e.g. GRASIM).
     try:
-        CA_OFF = {s: sorted(map(tuple, v)) for s, v in
-                  json.load(open(os.path.join(HERE, "corp_actions.json"))).items()}
-        print("Official corporate actions: %d symbols, %d events" %
-              (len(CA_OFF), sum(len(v) for v in CA_OFF.values())), flush=True)
+        _ca = json.load(open(os.path.join(HERE, "corp_actions.json")))
+        CA_OFF = {s: sorted(map(tuple, v)) for s, v in _ca.get("factors", {}).items()}
+        NOADJ  = {s: set(v) for s, v in _ca.get("noadjust", {}).items()}
+        print("Official corporate actions: %d split/bonus symbols, %d demerger symbols" %
+              (len(CA_OFF), len(NOADJ)), flush=True)
     except Exception as e:
-        CA_OFF = {}; print("  (corp_actions.json unavailable: %s — inference only)" % e, flush=True)
-    applied_off = bad_recon = 0
+        CA_OFF = {}; NOADJ = {}; print("  (corp_actions.json unavailable: %s — inference only)" % e, flush=True)
+    applied_off = bad_recon = demerger_skipped = 0
+    skip_log = []
     data, meta, dead = {}, {}, 0
     for sym, obs in acc.items():
         obs.sort(); ds, cs, ts, hr, lr, orr, vol, dv, vr = [], [], [], [], [], [], [], [], []
@@ -239,7 +244,15 @@ def main():
                     else:
                         bad_recon += 1   # official ratio doesn't reconcile with the drop -> use inference
                 if f is None:
-                    f = ca_factor(r)
+                    nd = NOADJ.get(sym)
+                    if nd and not (0.75 <= r <= 1.30) and any(ymd - 3 <= e <= ymd for e in nd):
+                        # official demerger/scheme ex-date -> real value left the stock; keep the
+                        # drop as a genuine move (do NOT divide it out).
+                        demerger_skipped += 1
+                        if len(skip_log) < 80: skip_log.append((sym, ymd, round(r, 3)))
+                        f = 1.0
+                    else:
+                        f = ca_factor(r)
                 adj = adj * (r / f)
             if ymd >= df:
                 keep = True                              # daily for recent
@@ -272,8 +285,12 @@ def main():
                      "ind": (cur.get(sym) or {}).get("industry") or "Unknown", "alive": alive,
                      "raw": round(obs[-1][1], 2)}   # latest RAW market close (adjusted series level can drift from market price)
         if sym in isin_of: meta[sym]["isin"] = isin_of[sym]
-    print("Stored %d symbols (%d delisted/absent today); official CA factors applied=%d, non-reconciling=%d (used inference)"
-          % (len(data), dead, applied_off, bad_recon), flush=True)
+    print("Stored %d symbols (%d delisted/absent today); official split/bonus applied=%d, non-reconciling=%d, "
+          "demerger/scheme drops kept (not divided out)=%d"
+          % (len(data), dead, applied_off, bad_recon, demerger_skipped), flush=True)
+    if skip_log:
+        print("  demerger/scheme ex-dates kept as real drops (sym, date, ratio):", flush=True)
+        for s, y, rr in skip_log: print("    %-12s %d  ratio=%.3f" % (s, y, rr), flush=True)
     blob = gzip.compress(json.dumps({"start": START.isoformat(), "dailyFrom": DAILY_FROM.isoformat(),
                                      "end": END.isoformat(), "meta": meta, "data": data},
                                     separators=(",", ":")).encode(), 6)
