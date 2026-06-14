@@ -217,7 +217,9 @@ function profitAt(sym, dateInt, basis) {
     for (const q of arr) { if (q[0] === baseEnd && q[npIdx] != null) { base = q; break; } }
     if (!base) continue;
     const b = base[npIdx], c = cur[npIdx];
-    return { cur: c, base: b, yoy: b !== 0 ? (c - b) / Math.abs(b) * 100 : null };
+    // low-base guard: YoY% is meaningless when the year-ago base is tiny or a loss
+    // (₹0.01cr→₹2cr reads as +18000%). Require a real ₹5cr+ base, else the factor is null.
+    return { cur: c, base: b, yoy: b >= 5 ? (c - b) / b * 100 : null };
   }
   return null;
 }
