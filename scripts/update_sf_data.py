@@ -54,6 +54,19 @@ def main():
     print("Missing trading-day candidates: %s" % ", ".join(x.isoformat() for x in days))
 
     data = D["data"]; meta = D["meta"]; j = B.jar(); appended = 0
+    # One-time format migration: old bins store per-mil offsets (hb/lb/ob/vw) + delivery x10; the
+    # new format stores EXACT h/l/op/vw + delivery %. Convert on load so this updater works on either
+    # (a freshly-rebuilt exact bin already has 'h' and is skipped).
+    for e in data.values():
+        if "h" not in e and "hb" in e:
+            c = e["c"]; n = len(c)
+            hb = e.get("hb", [0] * n); lb = e.get("lb", [0] * n); ob = e.get("ob", [0] * n); vwo = e.get("vw", [0] * n)
+            e["h"] = [round(c[i] * (1000 + hb[i]) / 1000, 2) for i in range(n)]
+            e["l"] = [round(c[i] * (1000 - lb[i]) / 1000, 2) for i in range(n)]
+            e["op"] = [round(c[i] * (1000 + ob[i]) / 1000, 2) for i in range(n)]
+            e["vw"] = [round(c[i] * (1000 + vwo[i]) / 1000, 2) for i in range(n)]
+            e["dv"] = [round(x / 10, 2) for x in e.get("dv", [])]
+            for kk in ("hb", "lb", "ob"): e.pop(kk, None)
     for day in days:
         rows = B.fetch_day(day, j)
         if not rows:
