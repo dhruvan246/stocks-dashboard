@@ -430,9 +430,10 @@ function profitAt(sym, dateInt, basis){
     for(const q of arr){ if(q[0]===baseEnd && q[npIdx]!=null){ base=q; break; } }
     if(!base) continue;
     const b=base[npIdx], c=cur[npIdx];
-    // low-base guard: YoY% is meaningless when the year-ago base is tiny or a loss
-    // (₹0.01cr→₹2cr reads as +18000%). Require a real ₹5cr+ base, else the factor is null.
-    return {cur:c, base:b, yoy: b>=5 ? (c-b)/b*100 : null};
+    // low-base guard by MAGNITUDE: ignore only |base| < ₹5cr (₹0.01cr base → +18000% noise).
+    // NEGATIVE bases (loss→profit turnarounds, e.g. Vodafone Idea) ARE included — divide by |base|
+    // so loss→profit reads as large positive growth, profit→loss as negative.
+    return {cur:c, base:b, yoy: Math.abs(b)>=5 ? (c-b)/Math.abs(b)*100 : null};
   }
   return null;
 }
