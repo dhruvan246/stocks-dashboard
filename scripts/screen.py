@@ -32,7 +32,7 @@ def prof(s, di):
         cur = next((q for q in reversed(arr) if q[npi] is not None and q[ai] is not None and q[ai] <= di), None)
         if not cur: continue
         be = cur[0] - 10000; base = next((q for q in arr if q[0] == be and q[npi] is not None), None)
-        if not base: return None, None
+        if not base: continue   # no base on this basis -> try the next (con -> std), like the engine
         b, c = base[npi], cur[npi]
         return ((c - b) / abs(b) * 100 if b else None), (cur[0], c, be, b)
     return None, None
