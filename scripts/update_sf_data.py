@@ -54,6 +54,14 @@ def main():
     print("Missing trading-day candidates: %s" % ", ".join(x.isoformat() for x in days))
 
     data = D["data"]; meta = D["meta"]; j = B.jar(); appended = 0
+    # OFFICIAL split/bonus ratios (refreshed by build_corp_actions.py in the workflow). Applied
+    # exactly on the ex-date so a split/bonus with an ex-date price move (or a small bonus whose
+    # drop stays inside [0.75,1.30]) is adjusted correctly instead of mis-inferred from the drop.
+    try:
+        CA_OFF = {s: {int(e[0]): e[1] for e in v} for s, v in
+                  json.load(open(os.path.join(HERE, "corp_actions.json"))).items()}
+    except Exception as ex:
+        CA_OFF = {}; print("  (corp_actions.json unavailable: %s — inference only)" % ex)
     # One-time format migration: old bins store per-mil offsets (hb/lb/ob/vw) + delivery x10; the
     # new format stores EXACT h/l/op/vw + delivery %. Convert on load so this updater works on either
     # (a freshly-rebuilt exact bin already has 'h' and is skipped).
@@ -100,11 +108,16 @@ def main():
             if e["d"] and e["d"][-1] >= ymd: continue   # already have this day
             prev_raw = e["c"][-1]   # series is re-anchored: last value == last RAW close
             ratio = (c / prev_raw) if prev_raw else 1.0
-            f = ca_factor(ratio)
+            off = (CA_OFF.get(sym) or {}).get(ymd)   # OFFICIAL factor for this ex-date, if any
+            if off is not None and 0.75 <= (ratio / off) <= 1.30:
+                f = off   # exact NSE ratio overrides the drop-based inference
+            else:
+                f = ca_factor(ratio)
             if f != 1.0:   # corporate action: re-anchor history (prices scale by f; dv % does not)
                 for key in ("c", "h", "l", "op", "vw"):
                     if key in e: e[key] = [round(x * f, 2) for x in e[key]]
-                print("  %s: %s corporate action f=%s (history re-anchored)" % (day, sym, f))
+                print("  %s: %s corporate action f=%s%s (history re-anchored)"
+                      % (day, sym, f, " [official]" if off is not None and f == off else ""))
             e["d"].append(ymd); e["c"].append(round(c, 2)); e["t"].append(round(t, 1))
             e["h"].append(hi); e["l"].append(lo_); e["op"].append(opx)
             e["v"].append(int(v)); e["dv"].append(dvx); e["vw"].append(vwx)

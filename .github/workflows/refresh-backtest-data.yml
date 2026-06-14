@@ -39,6 +39,12 @@ jobs:
         with:
           python-version: "3.11"
 
+      # Refresh OFFICIAL split/bonus ratios first so the updater applies exact factors on any
+      # ex-date (a split/bonus that moves on its ex-date, or a small bonus, is mis-inferred from
+      # the price drop otherwise). Cheap (~9 NSE API calls); on failure the committed copy is used.
+      - name: Refresh official corporate-action ratios
+        run: python3 scripts/build_corp_actions.py || echo "corp-action refresh failed — using committed copy"
+
       - name: Append missing trading days to sf_stock_data.bin
         run: python3 scripts/update_sf_data.py
 

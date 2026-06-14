@@ -201,21 +201,46 @@ def main():
         for f in CA_FRACS:
             if abs(r / f - 1) <= 0.08: return f
         return 1.0
+    # OFFICIAL split/bonus ratios (scripts/corp_actions.json, from NSE corporate-actions API).
+    # Applied EXACTLY on each ex-date, overriding the price-drop inference above — which mis-reads
+    # a split/bonus whenever the stock moves on the ex-date (Adani Power 1:5 popped 20% -> looked
+    # 1:4) and silently ignores any small bonus (1:4/1:5/1:10) whose drop stays inside [0.75,1.30].
+    try:
+        CA_OFF = {s: sorted(map(tuple, v)) for s, v in
+                  json.load(open(os.path.join(HERE, "corp_actions.json"))).items()}
+        print("Official corporate actions: %d symbols, %d events" %
+              (len(CA_OFF), sum(len(v) for v in CA_OFF.values())), flush=True)
+    except Exception as e:
+        CA_OFF = {}; print("  (corp_actions.json unavailable: %s — inference only)" % e, flush=True)
+    applied_off = bad_recon = 0
     data, meta, dead = {}, {}, 0
     for sym, obs in acc.items():
         obs.sort(); ds, cs, ts, hr, lr, orr, vol, dv, vr = [], [], [], [], [], [], [], [], []
         adj = None; lastWeek = None
+        offlist = CA_OFF.get(sym, []); oi = 0
+        while oi < len(offlist) and obs and offlist[oi][0] <= obs[0][0]:
+            oi += 1   # ex-dates on/before the first data day already happened — nothing to adjust
         for i, (ymd, c, p, t, h, l, o, v, dlv, vw) in enumerate(obs):
             if adj is None:
                 adj = c
             else:
                 # Chain on ACTUAL close-to-close ratios — NOT the file's PREV_CLOSE, which NSE
                 # sometimes mis-states by ±1-6% on random days (verified on CGCL), silently
-                # drifting the series. Corporate actions still snap via ca_factor, so within
-                # any CA-free stretch the adjusted series equals raw NSE prices exactly.
+                # drifting the series. Within any CA-free stretch the adjusted series equals raw
+                # NSE prices exactly; on an ex-date we divide out the OFFICIAL factor (fallback:
+                # inference) so 52w hi/lo and price filters stay paisa-exact.
                 base = obs[i-1][1] or 0
                 r = (c / base) if base else 1.0
-                adj = adj * (r / ca_factor(r))
+                f = None
+                while oi < len(offlist) and offlist[oi][0] <= ymd:
+                    cand = offlist[oi][1]; oi += 1
+                    if 0.75 <= (r / cand) <= 1.30:   # implied ex-date move within circuit-ish bounds
+                        f = cand; applied_off += 1
+                    else:
+                        bad_recon += 1   # official ratio doesn't reconcile with the drop -> use inference
+                if f is None:
+                    f = ca_factor(r)
+                adj = adj * (r / f)
             if ymd >= df:
                 keep = True                              # daily for recent
             else:
@@ -247,7 +272,8 @@ def main():
                      "ind": (cur.get(sym) or {}).get("industry") or "Unknown", "alive": alive,
                      "raw": round(obs[-1][1], 2)}   # latest RAW market close (adjusted series level can drift from market price)
         if sym in isin_of: meta[sym]["isin"] = isin_of[sym]
-    print("Stored %d symbols (%d delisted/absent today)" % (len(data), dead), flush=True)
+    print("Stored %d symbols (%d delisted/absent today); official CA factors applied=%d, non-reconciling=%d (used inference)"
+          % (len(data), dead, applied_off, bad_recon), flush=True)
     blob = gzip.compress(json.dumps({"start": START.isoformat(), "dailyFrom": DAILY_FROM.isoformat(),
                                      "end": END.isoformat(), "meta": meta, "data": data},
                                     separators=(",", ":")).encode(), 6)
