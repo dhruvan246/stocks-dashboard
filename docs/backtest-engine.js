@@ -74,11 +74,11 @@ async function _sfPut(k, v) { try { const db = await _sfdb(); await new Promise(
 async function loadSF() {
   if (SF) return true;
   let ver = ''; try { ver = (await (await fetch('./sf_meta.json?t=' + Date.now())).json()).end || ''; } catch (e) {}
-  let buf = ver ? await _sfGet('sfaa:' + ver) : null;
+  let buf = ver ? await _sfGet('sfab:' + ver) : null;
   if (!buf) {
     for (const u of SF_URLS) { try { const resp = await fetch(u); if (!resp.ok) throw new Error('HTTP ' + resp.status); buf = await resp.arrayBuffer(); break; } catch (e) { console.warn('sf data source failed:', u, e); } }
     if (!buf) throw new Error('could not load sf_stock_data.bin from any source');
-    if (ver) _sfPut('sfaa:' + ver, buf);
+    if (ver) _sfPut('sfab:' + ver, buf);
   }
   const D = JSON.parse(await new Response(new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'))).text());
   const ts = START_TS, ser = {}, meta = {}, turn = {};

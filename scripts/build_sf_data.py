@@ -176,6 +176,48 @@ def main():
             print("  ...%s  days=%d/%d  symbols=%d" % (d, got, tried, len(acc)), flush=True)
     print("Fetched %d/%d trading days; %d symbols; skipped %d holiday-duplicate days" % (got, tried, len(acc), skipped_dupes), flush=True)
 
+    # ---- MERGE renamed tickers into ONE continuous series under the current ticker ----
+    # A rename (Ami Organics AMIORG -> Acutaas ACUTAAS, GET&D -> GVT&D, ADANITRANS -> ADANIENSOL, ...)
+    # starts a fresh bhavcopy series under the new ticker, which truncates every lookback window
+    # (52w hi/lo, returns, RSI) and splits corporate actions for up to a year. Tickers sharing an
+    # ISIN are the SAME security across the rename (a recycled ticker keeps a DIFFERENT ISIN, so this
+    # never merges two real companies); symchg.csv fills pre-2020 gaps where the file carried no ISIN.
+    rename_to = {}
+    by_isin = {}
+    for sym in acc:
+        isin = isin_of.get(sym)
+        if isin: by_isin.setdefault(isin, []).append(sym)
+    for isin, syms in by_isin.items():
+        if len(syms) < 2: continue
+        canon = max(syms, key=lambda s: max(o[0] for o in acc[s]))   # latest-trading ticker = current
+        for s in syms:
+            if s != canon: rename_to[s] = canon
+    try:                                                             # symchg.csv supplement (old,new)
+        sc = os.path.join(HERE, "symchg.csv")
+        if not os.path.exists(sc): sc = os.path.join(os.path.dirname(ROOT), "symchg.csv")
+        for r in csv.reader(open(sc, encoding="utf-8", errors="replace")):
+            if len(r) >= 3 and r[1].strip() and r[2].strip():
+                o2, n2 = r[1].strip().upper(), r[2].strip().upper()
+                if o2 in acc and o2 not in rename_to:
+                    tgt = rename_to.get(n2, n2)
+                    if tgt in acc and tgt != o2: rename_to[o2] = tgt
+    except Exception as e:
+        print("  (symchg.csv not loaded for merge: %s)" % e, flush=True)
+    if rename_to:
+        merged = {}
+        for sym, obs in acc.items():
+            merged.setdefault(rename_to.get(sym, sym), []).extend(obs)
+        for sym in merged:
+            dd = {}
+            for rec in sorted(merged[sym]): dd[rec[0]] = rec        # sort by date + dedup same-day overlap
+            merged[sym] = [dd[k] for k in sorted(dd)]
+        acc = merged
+        ex = ", ".join("%s->%s" % (o, n) for o, n in list(rename_to.items())[:6])
+        print("Merged %d renamed tickers into their current symbol (e.g. %s)" % (len(rename_to), ex), flush=True)
+    # export old->current map so membership (build_membership_v2) keys on the SAME current tickers
+    # the merged price series uses — otherwise renamed stocks vanish from historical backtests.
+    json.dump(rename_to, open(os.path.join(HERE, "_rename_map.json"), "w"))
+
     cur = {}
     try:
         import re, base64

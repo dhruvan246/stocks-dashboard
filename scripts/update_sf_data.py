@@ -120,6 +120,11 @@ def main():
         NOADJ  = {s: set(v) for s, v in _ca.get("noadjust", {}).items()}
     except Exception as ex:
         CA_OFF = {}; NOADJ = {}; print("  (corp_actions.json unavailable: %s — inference only)" % ex)
+    # ISIN -> current ticker. When a NEW ticker appears carrying the same ISIN as an existing series,
+    # it's a rename (same security) -> migrate the history onto the new ticker instead of starting a
+    # fresh, truncated series (which would break 52w hi/lo etc. for ~a year). Same logic the full
+    # build uses; this keeps future renames continuous between rebuilds.
+    isin2sym = {meta[s]["isin"]: s for s in data if isinstance(meta.get(s), dict) and meta[s].get("isin")}
     # One-time format migration: old bins store per-mil offsets (hb/lb/ob/vw) + delivery x10; the
     # new format stores EXACT h/l/op/vw + delivery %. Convert on load so this updater works on either
     # (a freshly-rebuilt exact bin already has 'h' and is skipped).
@@ -158,11 +163,21 @@ def main():
             opx = round(o_, 2) if o_ > 0 else round(c, 2); vwx = round(vw, 2) if vw > 0 else round(c, 2)
             dvx = round(dlv, 2) if dlv else 0
             e = data.get(sym)
-            if e is None:   # new listing (IPO / relist) — start a fresh series
-                data[sym] = {"d": [ymd], "c": [round(c, 2)], "t": [round(t, 1)], "h": [hi], "l": [lo_],
-                             "op": [opx], "v": [int(v)], "dv": [dvx], "vw": [vwx]}
-                meta.setdefault(sym, {"name": sym, "ind": "Unknown", "alive": True})
-                continue
+            if e is None:
+                isin = r[11] if len(r) > 11 and r[11] else ""
+                old = isin2sym.get(isin) if isin else None
+                if old and old in data and old != sym and data[old]["d"] and data[old]["d"][-1] < ymd:
+                    # same ISIN as an existing older series -> ticker RENAME: migrate the history
+                    data[sym] = data.pop(old); meta[sym] = meta.pop(old) if old in meta else {}
+                    meta[sym]["isin"] = isin; isin2sym[isin] = sym
+                    print("  %s: RENAME %s -> %s (ISIN %s) — history migrated" % (day, old, sym, isin))
+                    e = data[sym]   # fall through to append today's row onto the migrated series
+                else:               # genuine new listing (IPO / relist) — fresh series
+                    data[sym] = {"d": [ymd], "c": [round(c, 2)], "t": [round(t, 1)], "h": [hi], "l": [lo_],
+                                 "op": [opx], "v": [int(v)], "dv": [dvx], "vw": [vwx]}
+                    meta.setdefault(sym, {"name": sym, "ind": "Unknown", "alive": True})
+                    if isin: meta[sym]["isin"] = isin; isin2sym[isin] = sym
+                    continue
             if e["d"] and e["d"][-1] >= ymd: continue   # already have this day
             prev_raw = e["c"][-1]   # series is re-anchored: last value == last RAW close
             ratio = (c / prev_raw) if prev_raw else 1.0

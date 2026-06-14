@@ -43,6 +43,7 @@ def factors(s, asof):
     i = le(ords, asof); j = le(ords, asof - 30)
     if i < 15 or j < 0 or c[j] <= 0: return None
     p = c[i]; lo = asof - 365
+    if ords[i] < lo: return None   # latest data older than the 52w window (delisted/stale) -> skip
     if Hh and Ll:
         hi = max(Hh[k] for k in range(i, -1, -1) if ords[k] >= lo); low = min(Ll[k] for k in range(i, -1, -1) if ords[k] >= lo)
     else:

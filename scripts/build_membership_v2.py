@@ -143,6 +143,18 @@ def main():
     wb = json.load(open(os.path.join(HERE, "_wb_n500_snaps.json")))
     hist_path = os.path.join(HERE, "indices_history.json")
     H = json.load(open(hist_path, encoding="utf-8"))
+    # old->current map from the PRICE build (build_sf_data merges renamed series by ISIN). Membership
+    # must key on the SAME current tickers the merged price series uses, else renamed stocks vanish
+    # from historical backtests. This supersedes the old era_symbol() (which deliberately used the OLD
+    # ticker to match the previously-split price series — no longer how the price data is keyed).
+    try:
+        RENAME = json.load(open(os.path.join(HERE, "_rename_map.json")))
+    except Exception:
+        RENAME = {}; print("(_rename_map.json not found — membership keeps era symbols)")
+    def to_current(s):
+        seen = set()
+        while s in RENAME and s not in seen: seen.add(s); s = RENAME[s]
+        return s
 
     for idx, slug in SLUGS.items():
         events = changelog.get(idx, [])
@@ -157,7 +169,7 @@ def main():
                 raise SystemExit("ABORT: Nifty500 validation %.1f%% < 99%% — refusing to write "
                                  "(likely a missing input or NSE fetch issue); keeping committed data." % worst)
         # era-correct symbols per snapshot date so they match that period's bhavcopy series
-        new_snaps = [{"effectiveDate": d, "symbols": sorted(era_symbol(s, d) for s in S)}
+        new_snaps = [{"effectiveDate": d, "symbols": sorted(set(to_current(s) for s in S))}
                      for d, S in snaps.items() if d != "1900-01-01"]
         new_snaps.sort(key=lambda x: x["effectiveDate"])
         earliest = new_snaps[0]["effectiveDate"]
