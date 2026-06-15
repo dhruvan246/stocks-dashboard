@@ -14,7 +14,14 @@ OUT = os.path.join(HERE, "_sfsplit"); os.makedirs(OUT, exist_ok=True)
 
 def main():
     D = json.loads(gzip.decompress(open(SRC, "rb").read()))
-    syms = sorted(D["data"].keys()); half = len(syms) // 2
+    data = D["data"]
+    # GUARD: never publish an UN-merged build (renamed tickers split into stub series). If the
+    # rename merge didn't run, ETERNAL (ex-ZOMATO) has only ~post-rename days and ZOMATO still
+    # exists as its own series. Fail loud so the workflow stops instead of pushing bad data to sf-data.
+    et = data.get("ETERNAL")
+    if "ZOMATO" in data or not et or len(et.get("d", [])) < 1000:
+        raise SystemExit("ABORT: bin looks UN-merged (ZOMATO present or ETERNAL history short) — refusing to publish")
+    syms = sorted(data.keys()); half = len(syms) // 2
     other = {k: v for k, v in D.items() if k not in ("data", "meta")}
     meta = D.get("meta", {})
     for part, grp in ((1, syms[:half]), (2, syms[half:])):

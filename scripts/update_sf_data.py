@@ -12,7 +12,7 @@ Touches docs/.sf_updated when (and only when) new data was appended.
 
 Run: python -X utf8 update_sf_data.py
 """
-import os, sys, json, gzip, datetime, urllib.request
+import os, sys, json, gzip, datetime, urllib.request, time
 
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE)
 OUT = os.path.join(ROOT, "docs", "sf_stock_data.bin")
@@ -31,13 +31,19 @@ def ca_factor(r):
     return 1.0
 
 def load_base():
-    try:
-        raw = urllib.request.urlopen(urllib.request.Request(RELEASE_URL, headers={"User-Agent": "Mozilla/5.0"}), timeout=120).read()
-        print("Base: release asset (%.1f MB)" % (len(raw) / 1048576))
-        return json.loads(gzip.decompress(raw))
-    except Exception as e:
-        print("Base: release unavailable (%s) — using local docs copy" % e)
-        return json.loads(gzip.decompress(open(OUT, "rb").read()))
+    # The release asset is the MERGED source-of-truth (renamed tickers consolidated). We do NOT fall
+    # back to the in-repo docs copy — that copy is an old UN-merged build, and appending to it would
+    # publish bad data (renamed tickers split into stubs). On 3 transient failures, fail loud so the
+    # workflow stops rather than silently regressing.
+    last = None
+    for attempt in range(3):
+        try:
+            raw = urllib.request.urlopen(urllib.request.Request(RELEASE_URL, headers={"User-Agent": "Mozilla/5.0"}), timeout=180).read()
+            print("Base: release asset (%.1f MB)" % (len(raw) / 1048576))
+            return json.loads(gzip.decompress(raw))
+        except Exception as e:
+            last = e; print("Base: release fetch attempt %d failed (%s)" % (attempt + 1, e)); time.sleep(10)
+    raise SystemExit("ABORT: could not fetch the merged release-asset base after 3 tries (%s) — refusing to build from the un-merged in-repo copy" % last)
 
 def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
     """Belt-and-suspenders. Re-correct any split/bonus/demerger whose ex-date fell in the last
