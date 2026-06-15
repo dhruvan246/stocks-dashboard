@@ -74,6 +74,24 @@ jobs:
             echo "No new data and release already seeded — nothing to publish"
           fi
 
+      # The browser loads the dataset from the dedicated same-origin sf-data Pages repo (the release
+      # asset fails CORS in-browser). Split the >100MB file into 2 sub-100MB halves and FORCE-PUSH them
+      # there — a fresh single commit each day, so that repo never accumulates history/bloat.
+      - name: Force-push split data to sf-data Pages repo
+        if: ${{ hashFiles('docs/.sf_updated') != '' }}
+        env:
+          SF_DATA_TOKEN: ${{ secrets.SF_DATA_TOKEN }}
+        run: |
+          python3 scripts/split_sf_data.py
+          cd scripts/_sfsplit
+          git init -q -b main
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add sf_stock_data_1.bin sf_stock_data_2.bin sf_meta.json
+          git commit -q -m "data $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+          git push -q --force "https://x:${SF_DATA_TOKEN}@github.com/dhruvan246/sf-data.git" main
+          echo "force-pushed fresh split data to sf-data"
+
       # Commit ONLY the tiny version marker (docs/sf_meta.json, ~20 bytes), and only when the
       # updater actually appended a day (it rewrote sf_meta.json then). The browser keys its
       # IndexedDB cache of the big bin on this `end`, so bumping it is what makes clients
