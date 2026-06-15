@@ -724,7 +724,10 @@ function drawPeriodReturns(r){
   const data=r.rebs.slice(1).map(b=>({d:b.date, v:b.ret}));   // skip first reb (no prior period)
   const n=data.length; if(!n){ el.innerHTML='<div class="text-xs text-slate-400 py-4">No completed periods yet.</div>'; return; }
   const PL=40, PR=14, PT=22, PB=72, H=320;
-  const gap=Math.max(16, Math.min(34, 1000/n)), bw=gap*0.6, W=Math.max(880, Math.round(PL+PR+gap*n));
+  // fill the container width: expand the per-bar gap so few bars spread across the whole chart,
+  // but keep a 16px floor so many bars stay readable (and the box scrolls horizontally).
+  const elW=Math.max(320, el.clientWidth||el.parentElement.clientWidth||880);
+  const gap=Math.max(16, (elW-PL-PR)/n), bw=Math.min(gap*0.6, 46), W=Math.max(elW, Math.round(PL+PR+gap*n));
   const vmax=Math.max(1,...data.map(d=>d.v)), vmin=Math.min(-1,...data.map(d=>d.v)), span=(vmax-vmin)||1;
   const y=v=>PT+(H-PT-PB)*(1-(v-vmin)/span), y0=y(0);
   let g='';
