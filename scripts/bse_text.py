@@ -50,10 +50,21 @@ def data_after_label(cells):
     nums = [to_val(w) for xc, w in cells if xc > lab_x and NUM.match(w.replace(',', ''))]
     return [v for v in nums if v is not None]
 
+UNIT_DECL = re.compile(r'(?:figures?|amounts?|values?|rs\.?|₹|inr)[^.\n]{0,25}?in\s+(crores?|lakhs?|lacs?|millions?)', re.I)
+UNIT_PAREN = re.compile(r'\(\s*(?:₹|rs\.?|inr)?\s*in\s+(crores?|lakhs?|lacs?|millions?)\s*\)', re.I)
+
 def detect_unit(low):
-    if re.search(r'in\s*lakh|in\s*lac|\blacs?\b|lakhs', low): return 100.0   # lakh -> crore
-    if re.search(r'in\s*million|millions?\b', low): return 10.0              # million -> crore
-    if re.search(r'in\s*crore|crores?\b', low): return 1.0
+    # trust explicit statement declarations first; crore wins (stray "lakh/million" notes shouldn't override)
+    norm = set()
+    for d in UNIT_DECL.findall(low) + UNIT_PAREN.findall(low):
+        d = d.lower()
+        norm.add('cr' if d.startswith('crore') else 'lk' if d[:3] in ('lak', 'lac') else 'mn')
+    if 'cr' in norm: return 1.0
+    if 'lk' in norm: return 100.0
+    if 'mn' in norm: return 10.0
+    if re.search(r'in\s*lakh|in\s*lac|lakhs', low): return 100.0             # loose fallback
+    if re.search(r'in\s*million|millions', low): return 10.0
+    if re.search(r'in\s*crore|crores', low): return 1.0
     return None
 
 def parse_pdf(pdf, ann):
