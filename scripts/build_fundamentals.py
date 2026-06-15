@@ -74,14 +74,19 @@ def xbrl_profit(xml, basis_hint=None):
     for m in re.finditer(r'<in-(?:bse-fin|capmkt):ProfitLossFor(?:The)?Period contextRef="([^"]+)"[^>]*>([^<]+)<', xml):
         if m.group(1) not in plp:
             plp[m.group(1)] = round(float(m.group(2)) / 1e7, 2)   # rupees -> crore
+    attr = {}                                            # owners' share (consolidated only)
+    for m in re.finditer(r'<in-(?:bse-fin|capmkt):ProfitOrLossAttributableToOwnersOfParent contextRef="([^"]+)"[^>]*>([^<]+)<', xml):
+        if m.group(1) not in attr:
+            try: attr[m.group(1)] = round(float(m.group(2)) / 1e7, 2)
+            except Exception: pass
     std = con = None
     one, one_nat = plp.get("OneD"), nat.get("OneD", "") or hint
     if one is not None:
-        if "consol" in one_nat: con = one
+        if "consol" in one_nat: con = attr.get("OneD", one)   # consolidated -> attributable to owners
         else: std = one                                  # standalone or unlabelled
     four, four_nat = plp.get("FourD"), nat.get("FourD", "") or hint
     if four is not None and four_nat != one_nat:         # combined filing: other basis, current Q
-        if "consol" in four_nat: con = con if con is not None else four
+        if "consol" in four_nat: con = con if con is not None else attr.get("FourD", four)
         else: std = std if std is not None else four
     return std, con
 
@@ -89,9 +94,17 @@ def xbrl_profit(xml, basis_hint=None):
 # In early 2025 NSE moved quarterly results to the "Integrated Filing" system. The old
 # corporates-financial-results endpoint above STOPS at the Dec-2024 quarter, so we also pull
 # from integrated-filing-results. Same OneD=current-quarter context convention, in-capmkt: ns.
-def integrated_profit(xml):
+def integrated_profit(xml, con=False):
     """Net profit (₹ crore) for the CURRENT quarter from an Integrated-Filing INDAS iXBRL.
-    Banks/NBFCs tag it ProfitLossForThePeriod (with "The"); everyone else ProfitLossForPeriod."""
+    For CONSOLIDATED filings use profit ATTRIBUTABLE TO OWNERS OF THE PARENT (excludes minority /
+    non-controlling interest) — this is what Trendlyne/StockView report; fall back to the total
+    ProfitLossForPeriod when the tag is absent (standalone, or no minority). Banks/NBFCs tag the
+    total as ProfitLossForThePeriod (with "The")."""
+    if con:
+        m = re.search(r'ProfitOrLossAttributableToOwnersOfParent contextRef="OneD"[^>]*>([-0-9.eE+]+)<', xml)
+        if m:
+            try: return round(float(m.group(1)) / 1e7, 2)
+            except Exception: pass
     m = re.search(r'ProfitLossFor(?:The)?Period contextRef="OneD"[^>]*>([-0-9.eE+]+)<', xml)
     try: return round(float(m.group(1)) / 1e7, 2) if m else None
     except Exception: return None
@@ -130,7 +143,7 @@ def fetch_integrated(sym, jar, skip=()):
                 open(cf, "w", encoding="utf-8").write(xml); time.sleep(0.1)
         except Exception:
             continue
-        np = integrated_profit(xml); ann = iso(r.get("broadcast_Date"))
+        np = integrated_profit(xml, con=(key == "con")); ann = iso(r.get("broadcast_Date"))
         if np is not None:
             d[key] = (np, int(ann) if ann else None)
     return byq
