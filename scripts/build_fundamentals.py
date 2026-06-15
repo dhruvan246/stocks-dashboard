@@ -106,6 +106,8 @@ def integrated_profit(xml, con=False):
             try: return round(float(m.group(1)) / 1e7, 2)
             except Exception: pass
     m = re.search(r'ProfitLossFor(?:The)?Period contextRef="OneD"[^>]*>([-0-9.eE+]+)<', xml)
+    if not m:   # insurers: general -> ProfitLossAfterTax; life -> ProfitLossAfterTaxAndExtraordinaryItems
+        m = re.search(r'ProfitLossAfterTax(?:AndExtraordinaryItems)? contextRef="OneD"[^>]*>([-0-9.eE+]+)<', xml)
     try: return round(float(m.group(1)) / 1e7, 2) if m else None
     except Exception: return None
 
