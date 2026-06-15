@@ -34,7 +34,6 @@ def prof(s, di):
         be = cur[0] - 10000; base = next((q for q in arr if q[0] == be and q[npi] is not None), None)
         if not base: continue   # no base on this basis -> try the next (con -> std), like the engine
         b, c = base[npi], cur[npi]
-        if c <= 0: return None, (cur[0], c, be, b)   # current quarter must be an actual profit (a shrinking loss is not growth)
         return ((c - b) / abs(b) * 100 if b else None), (cur[0], c, be, b)
     return None, None
 def factors(s, asof):
