@@ -430,10 +430,10 @@ function profitAt(sym, dateInt, basis){
     for(const q of arr){ if(q[0]===baseEnd && q[npIdx]!=null){ base=q; break; } }
     if(!base) continue;
     const b=base[npIdx], c=cur[npIdx];
-    // YoY% for EVERY stock with a non-zero base — tiny (₹0.01cr) and negative/loss bases included.
-    // Divide by |base| so loss→profit reads positive. Null only when base is exactly 0 (÷0).
-    // NOTE: tiny bases give extreme % (₹0.01cr→+18000%); add a current-profit filter to tame it.
-    return {cur:c, base:b, yoy: b!==0 ? (c-b)/Math.abs(b)*100 : null};
+    // YoY% only when the CURRENT quarter is an actual profit (c > 0): a loss→profit turnaround reads
+    // positive, but a shrinking loss (−6.5→−2.4) is NOT growth, so yoy is null and it won't qualify —
+    // matches Trendlyne/StockView, which exclude loss-making companies from profit-growth screens.
+    return {cur:c, base:b, yoy: (c>0 && b!==0) ? (c-b)/Math.abs(b)*100 : null};
   }
   return null;
 }
