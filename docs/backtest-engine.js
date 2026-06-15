@@ -70,17 +70,26 @@ const SF_URLS = ['https://github.com/dhruvan246/stocks-dashboard/releases/downlo
 const SF_DB = 'sfcache';
 function _sfdb() { return new Promise((res, rej) => { const r = indexedDB.open(SF_DB, 1); r.onupgradeneeded = () => { if (!r.result.objectStoreNames.contains('bin')) r.result.createObjectStore('bin'); }; r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); }
 async function _sfGet(k) { try { const db = await _sfdb(); return await new Promise(res => { const t = db.transaction('bin', 'readonly').objectStore('bin').get(k); t.onsuccess = () => res(t.result || null); t.onerror = () => res(null); }); } catch (e) { return null; } }
-async function _sfPut(k, v) { try { const db = await _sfdb(); await new Promise(res => { const os = db.transaction('bin', 'readwrite').objectStore('bin'); os.clear(); const t = os.put(v, k); t.onsuccess = () => res(); t.onerror = () => res(); }); } catch (e) {} }
+async function _sfPut(k, v) { try { const db = await _sfdb(); await new Promise(res => { const t = db.transaction('bin', 'readwrite').objectStore('bin').put(v, k); t.onsuccess = () => res(); t.onerror = () => res(); }); } catch (e) {} }
+async function _sfClear() { try { const db = await _sfdb(); await new Promise(res => { const t = db.transaction('bin', 'readwrite').objectStore('bin').clear(); t.onsuccess = t.onerror = () => res(); }); } catch (e) {} }
 async function loadSF() {
   if (SF) return true;
   let ver = ''; try { ver = (await (await fetch('./sf_meta.json?t=' + Date.now())).json()).end || ''; } catch (e) {}
-  let buf = ver ? await _sfGet('sfab:' + ver) : null;
-  if (!buf) {
-    for (const u of SF_URLS) { try { const resp = await fetch(u, { cache: 'reload' }); if (!resp.ok) throw new Error('HTTP ' + resp.status); buf = await resp.arrayBuffer(); break; } catch (e) { console.warn('sf data source failed:', u, e); } }
-    if (!buf) throw new Error('could not load sf_stock_data.bin from any source');
-    if (ver) _sfPut('sfab:' + ver, buf);
+  // Data split into 2 same-origin Pages files (<100MB each; the release-asset URL fails CORS in-browser).
+  const D = { data: {}, meta: {}, end: '', start: '' }; let cleared = false;
+  for (let pi = 1; pi <= 2; pi++) {
+    let buf = ver ? await _sfGet('sfp' + pi + ':' + ver) : null;
+    if (!buf) {
+      if (!cleared) { await _sfClear(); cleared = true; }
+      const resp = await fetch('./sf_stock_data_' + pi + '.bin?v=' + (ver || Date.now()), { cache: 'reload' });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status + ' part ' + pi);
+      buf = await resp.arrayBuffer();
+      if (ver) _sfPut('sfp' + pi + ':' + ver, buf);
+    }
+    const Dp = JSON.parse(await new Response(new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'))).text());
+    Object.assign(D.data, Dp.data); Object.assign(D.meta, Dp.meta);
+    D.end = Dp.end || D.end; D.start = Dp.start || D.start;
   }
-  const D = JSON.parse(await new Response(new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'))).text());
   const ts = START_TS, ser = {}, meta = {}, turn = {};
   for (const sym in D.data) {
     const o = D.data[sym], n = o.d.length, d = new Array(n), p = new Array(n), t = new Array(n);
