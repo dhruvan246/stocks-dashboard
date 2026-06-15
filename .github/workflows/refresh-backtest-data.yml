@@ -78,7 +78,7 @@ jobs:
       # asset fails CORS in-browser). Split the >100MB file into 2 sub-100MB halves and FORCE-PUSH them
       # there — a fresh single commit each day, so that repo never accumulates history/bloat.
       - name: Force-push split data to sf-data Pages repo
-        if: ${{ hashFiles('docs/.sf_updated') != '' }}
+        if: ${{ hashFiles('docs/.sf_updated') != '' || github.event_name == 'workflow_dispatch' }}
         env:
           SF_DATA_TOKEN: ${{ secrets.SF_DATA_TOKEN }}
         run: |
