@@ -58,9 +58,9 @@ async function gunzipJSON(url) {
 }
 // stock_data.bin only supplies point-in-time index membership + time base + benchmark.
 async function loadCore() {
-  const D = await gunzipJSON('./stock_data.bin');
+  const D = await gunzipJSON('./stock_data.bin?t=' + Date.now());
   IDXH = D.indicesHistory || {}; FNOH = D.fnoHistory || []; START_TS = D.startTs;
-  try { NIFTY = (await (await fetch('./nifty.json')).json()).px || {}; } catch (e) { NIFTY = {}; }
+  try { NIFTY = (await (await fetch('./nifty.json?t=' + Date.now())).json()).px || {}; } catch (e) { NIFTY = {}; }
 }
 // Release asset FIRST — refreshed DAILY by the refresh-backtest-data workflow (no repo bloat).
 // The in-repo copy is the offline/older fallback. Release URLs aren't browser-cacheable, so we
@@ -227,7 +227,7 @@ function profitAt(sym, dateInt, basis) {
 }
 async function loadFund() {
   if (Object.keys(FUND).length) return;
-  try { FUND = await (await fetch('./sf_fundamentals.json')).json(); } catch (e) { console.warn('no fundamentals data', e); FUND = {}; }
+  try { FUND = await (await fetch('./sf_fundamentals.json?t=' + Date.now())).json(); } catch (e) { console.warn('no fundamentals data', e); FUND = {}; }
 }
 
 function factorsAt(off, cfg) {
