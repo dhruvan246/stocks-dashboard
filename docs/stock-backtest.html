@@ -159,7 +159,7 @@ async function loadSF(){
     if(buf){ $('runMsg').textContent='Loading survivorship-free data (cached)…'; }
     else{
       $('runMsg').textContent='Loading survivorship-free data (~80 MB, first load)…';
-      for(const u of SF_URLS){ try{ const resp=await fetch(u); if(!resp.ok) throw new Error('HTTP '+resp.status); buf=await resp.arrayBuffer(); break; }catch(e){ console.warn('sf data source failed:', u, e); } }
+      for(const u of SF_URLS){ try{ const resp=await fetch(u,{cache:'reload'}); if(!resp.ok) throw new Error('HTTP '+resp.status); buf=await resp.arrayBuffer(); break; }catch(e){ console.warn('sf data source failed:', u, e); } }
       if(!buf) throw new Error('no data source reachable');
       if(ver) _sfPut('sfab:'+ver, buf);   // fire-and-forget: cache for next time
     }

@@ -76,7 +76,7 @@ async function loadSF() {
   let ver = ''; try { ver = (await (await fetch('./sf_meta.json?t=' + Date.now())).json()).end || ''; } catch (e) {}
   let buf = ver ? await _sfGet('sfab:' + ver) : null;
   if (!buf) {
-    for (const u of SF_URLS) { try { const resp = await fetch(u); if (!resp.ok) throw new Error('HTTP ' + resp.status); buf = await resp.arrayBuffer(); break; } catch (e) { console.warn('sf data source failed:', u, e); } }
+    for (const u of SF_URLS) { try { const resp = await fetch(u, { cache: 'reload' }); if (!resp.ok) throw new Error('HTTP ' + resp.status); buf = await resp.arrayBuffer(); break; } catch (e) { console.warn('sf data source failed:', u, e); } }
     if (!buf) throw new Error('could not load sf_stock_data.bin from any source');
     if (ver) _sfPut('sfab:' + ver, buf);
   }
