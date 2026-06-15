@@ -74,14 +74,16 @@ async function _sfPut(k, v) { try { const db = await _sfdb(); await new Promise(
 async function _sfClear() { try { const db = await _sfdb(); await new Promise(res => { const t = db.transaction('bin', 'readwrite').objectStore('bin').clear(); t.onsuccess = t.onerror = () => res(); }); } catch (e) {} }
 async function loadSF() {
   if (SF) return true;
-  let ver = ''; try { ver = (await (await fetch('./sf_meta.json?t=' + Date.now())).json()).end || ''; } catch (e) {}
-  // Data split into 2 same-origin Pages files (<100MB each; the release-asset URL fails CORS in-browser).
+  // Data lives in a dedicated same-origin repo (dhruvan246.github.io/sf-data/), force-pushed daily
+  // (no bloat), served from Pages — same origin, no CORS. Split into 2 files (<100MB each).
+  const SF_BASE = 'https://dhruvan246.github.io/sf-data/';
+  let ver = ''; try { ver = (await (await fetch(SF_BASE + 'sf_meta.json?t=' + Date.now())).json()).end || ''; } catch (e) {}
   const D = { data: {}, meta: {}, end: '', start: '' }; let cleared = false;
   for (let pi = 1; pi <= 2; pi++) {
     let buf = ver ? await _sfGet('sfp' + pi + ':' + ver) : null;
     if (!buf) {
       if (!cleared) { await _sfClear(); cleared = true; }
-      const resp = await fetch('./sf_stock_data_' + pi + '.bin?v=' + (ver || Date.now()), { cache: 'reload' });
+      const resp = await fetch(SF_BASE + 'sf_stock_data_' + pi + '.bin?v=' + (ver || Date.now()), { cache: 'reload' });
       if (!resp.ok) throw new Error('HTTP ' + resp.status + ' part ' + pi);
       buf = await resp.arrayBuffer();
       if (ver) _sfPut('sfp' + pi + ':' + ver, buf);
