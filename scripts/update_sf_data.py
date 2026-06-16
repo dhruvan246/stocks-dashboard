@@ -144,6 +144,19 @@ def main():
             e["vw"] = [round(c[i] * (1000 + vwo[i]) / 1000, 2) for i in range(n)]
             e["dv"] = [round(x / 10, 2) for x in e.get("dv", [])]
             for kk in ("hb", "lb", "ob"): e.pop(kk, None)
+    # MANUAL rename merges the ISIN-detector can't make: same security, but the ISIN CHANGED at the
+    # rename so the ISIN-based auto-merge skips it (a safety guard against recycled tickers). These are
+    # verified price-continuous. Idempotent: once the old series is folded in and dropped it's a no-op.
+    MANUAL_MERGE = {"PCBL": "PHILIPCARB"}   # INE602A01023 -> INE602A01031 (Jan 2022, prices continuous)
+    for new, old in MANUAL_MERGE.items():
+        on = data.get(new); oo = data.get(old)
+        if on and oo and on["d"] and oo["d"] and oo["d"][0] < on["d"][0]:
+            idx = [i for i, dd in enumerate(oo["d"]) if dd < on["d"][0]]
+            if idx:
+                for f in ("d", "c", "t", "h", "l", "op", "v", "dv", "vw"):
+                    if f in oo and f in on: on[f] = [oo[f][i] for i in idx] + on[f]
+                data.pop(old, None); meta.pop(old, None)
+                print("  MANUAL RENAME MERGE %s -> %s (%d pts prepended)" % (old, new, len(idx)))
     for day in days:
         rows = B.fetch_day(day, j)
         if not rows:
