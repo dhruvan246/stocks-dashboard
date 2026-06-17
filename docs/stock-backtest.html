@@ -241,7 +241,7 @@ async function initUI(){
   // Survivorship-free is the ONLY data source — activate it before the UI is shown.
   await setMode('sf');   // loads sf_stock_data.bin, sets dates/universe to the SF dataset
   // load a config handed over from History / Saved Strategies, then auto-run
-  try{ const c=JSON.parse(localStorage.getItem('bt_load')||'null'); if(c){ localStorage.removeItem('bt_load'); await applyCfg(c); setTimeout(run, 50); } }catch(e){}
+  try{ const c=JSON.parse(localStorage.getItem('bt_load')||'null'); if(c){ localStorage.removeItem('bt_load'); await applyCfg(c); window.__fromLoad=true; setTimeout(run, 50); } }catch(e){}
 }
 function maxOffset(){ let mx=0; for(const k in SERIES){const d=SERIES[k].d; if(d&&d.length){const v=d[d.length-1]; if(v>mx)mx=v;}} return mx; }
 function addFilter(){
@@ -356,8 +356,10 @@ async function run(){
 // every run is recorded to History automatically (skips an exact repeat of the most recent entry)
 function autoSaveHistory(){
   if(!LAST_RUN) return;
+  if(window.__fromLoad){ window.__fromLoad=false; return; }   // this run came from History/Saved "Load" — it's already saved, don't duplicate it
   const h=loadLS('bt_history'); const item=histItem(LAST_RUN.cfg, LAST_RUN.res);
-  if(h.length && JSON.stringify(h[0].cfg)===JSON.stringify(item.cfg)) return;
+  const s=JSON.stringify(item.cfg);
+  if(h.some(x=>JSON.stringify(x.cfg)===s)) return;   // an identical config is already in history — no duplicate row
   h.unshift(item); saveLS('bt_history', h.slice(0,300));
 }
 // calendar-year returns from an equity series [[date,value],…] → [[year, ret%],…]
@@ -598,6 +600,18 @@ function render(r,cfg){
   html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2"><span class="text-blue-700">Strategy</span> vs <span class="text-amber-600">Nifty 500</span> — ₹${cfg.capital.toLocaleString('en-IN')} grows to… <span class="text-slate-400 font-normal">(hover for values)</span></div><div id="eqc"></div></div>`;
   // ----- returns over the backtest period (per-rebalance bar chart) -----
   html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2">📊 Returns over the backtest period <span class="text-slate-400 font-normal">— each rebalance period's return (blue = up, red = down)</span></div><div id="prc" class="overflow-x-auto"></div></div>`;
+  // ----- qualifying universe over time (count of ALL stocks meeting the strategy's filters) -----
+  html+=`<div class="card p-4 mb-4">
+    <div class="flex flex-wrap items-center gap-2 mb-2">
+      <div class="text-sm font-semibold text-slate-700">🎯 Qualifying stocks over time <span class="text-slate-400 font-normal">— how many stocks meet your filters each period (the pool your top-${cfg.topN} is picked from)</span></div>
+      <div id="qsTog" class="ml-auto inline-flex rounded-lg border border-slate-200 overflow-hidden text-xs font-semibold">
+        <button data-g="week" class="px-2.5 py-1 hover:bg-slate-50">Weekly</button>
+        <button data-g="month" class="px-2.5 py-1 border-l border-slate-200 hover:bg-slate-50">Monthly</button>
+        <button data-g="quarter" class="px-2.5 py-1 border-l border-slate-200 hover:bg-slate-50">Quarterly</button>
+      </div>
+    </div>
+    <div id="qsMsg" class="text-[11px] text-slate-500 mb-1"></div>
+    <div id="qsc"></div></div>`;
   // ----- calendar-year returns (strategy vs Nifty 500) -----
   { const sy=yByY(r.equity), nm={}; yByY((r.bench500&&r.bench500.length?r.bench500:r.bench)||[]).forEach(x=>{nm[x[0]]=x[1];});
     html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2">📅 Calendar-year returns <span class="text-slate-400 font-normal">— each year Jan→Dec (first/last year partial)</span></div>
@@ -640,6 +654,7 @@ function render(r,cfg){
   $('out').innerHTML=html;
   drawEquity(r);
   drawPeriodReturns(r);
+  setupQual(cfg);
   TRADE_PAGE=0; renderTradePage(0);
   const ss=$('btSaveStrat');
   if(ss) ss.onclick=saveStrategy;
@@ -762,6 +777,56 @@ function drawPeriodReturns(r){
     hits+=`<rect x="${(PL+gap*i).toFixed(1)}" y="${PT}" width="${gap.toFixed(1)}" height="${(H-PT-PB).toFixed(1)}" fill="transparent" style="cursor:pointer"><title>${d.d} ${d.v>=0?'+':''}${d.v.toFixed(2)}%</title></rect>`;
   });
   el.innerHTML=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="max-width:none">${g}${bars}${hits}</svg>`;
+}
+// ---- qualifying universe over time: count of ALL stocks meeting the strategy's filters at a date ----
+// (same screen the backtest ranks, BEFORE slicing to top-N — i.e. the pool the picks are drawn from)
+function qualCountAt(off, cfg){
+  let rows=factorsAt(off,cfg).filter(r=>r.rsi!=null);
+  for(const f of cfg.filters){ rows=rows.filter(r=>{const x=fieldVal(r,f.field); if(x==null)return false; return f.op==='>'?x>f.val:f.op==='>='?x>=f.val:f.op==='<'?x<f.val:f.op==='<='?x<=f.val:x===f.val;}); }
+  return rows.filter(r=>fieldVal(r,cfg.sortBy)!=null).length;
+}
+function qualDates(cfg, gran){
+  const endData=isoOff(maxOffset()); const end=(cfg.end<endData?cfg.end:endData);
+  if(gran==='month')   return monthsBetween(cfg.start,end);
+  if(gran==='quarter') return monthsBetween(cfg.start,end).filter((d,i,a)=>((+d.slice(5,7))%3===0)||i===a.length-1);
+  const out=[]; let d=new Date(cfg.start+'T00:00:00Z'); const E=new Date(end+'T00:00:00Z');
+  while(d<=E){ out.push(d.toISOString().slice(0,10)); d.setUTCDate(d.getUTCDate()+7); }
+  if(out.length && out[out.length-1]!==end) out.push(end);
+  return out;
+}
+const GRAN_LBL={week:'weekly',month:'monthly',quarter:'quarterly'};
+let QUAL_CACHE={};
+function setupQual(cfg){ QUAL_CACHE={}; const tog=$('qsTog'); if(!tog) return;
+  tog.querySelectorAll('button').forEach(b=>b.onclick=()=>drawQual(cfg,b.dataset.g));
+  drawQual(cfg, cfg.freq>=3?'quarter':'month');   // default to the rebalance granularity (always cheap)
+}
+function drawQual(cfg, gran){
+  const tog=$('qsTog'); if(tog) tog.querySelectorAll('button').forEach(b=>{const on=b.dataset.g===gran; b.classList.toggle('bg-indigo-600',on); b.classList.toggle('text-white',on);});
+  const msg=$('qsMsg');
+  const render=(series)=>{ const el=$('qsc'); if(!el) return; const n=series.length;
+    if(n<2){ el.innerHTML='<div class="text-xs text-slate-400 py-4">Not enough periods to plot.</div>'; return; }
+    const W=900,H=260,PL=44,PR=16,PT=14,PB=46, mx=Math.max(1,...series.map(p=>p[1]));
+    const x=i=>PL+(W-PL-PR)*i/(n-1), y=v=>PT+(H-PT-PB)*(1-v/mx);
+    const line=series.map((p,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(p[1]).toFixed(1)).join(' ');
+    const area='M'+x(0).toFixed(1)+' '+y(0).toFixed(1)+' '+series.map((p,i)=>'L'+x(i).toFixed(1)+' '+y(p[1]).toFixed(1)).join(' ')+' L'+x(n-1).toFixed(1)+' '+y(0).toFixed(1)+' Z';
+    let yl=''; for(let k=0;k<=4;k++){const v=Math.round(mx*k/4),yy=y(v); yl+=`<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="#f1f5f9"/><text x="${PL-4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${v}</text>`;}
+    let xl=''; const step=Math.max(1,Math.ceil(n/9)); series.forEach((p,i)=>{ if(i%step && i!==n-1) return; const xx=x(i).toFixed(1); xl+=`<text x="${xx}" y="${H-26}" font-size="8.5" fill="#94a3b8" text-anchor="end" transform="rotate(-40 ${xx} ${H-26})">${p[0].slice(0,7)}</text>`;});
+    const svg=`<svg id="qssvg" viewBox="0 0 ${W} ${H}" class="w-full">${yl}${xl}<path d="${area}" fill="rgba(37,99,235,.10)"/><path d="${line}" fill="none" stroke="#2563eb" stroke-width="2"/>`
+      +`<line id="qsg" x1="0" y1="${PT}" x2="0" y2="${H-PB}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3" style="display:none"/><circle id="qsd" r="3.5" fill="#2563eb" stroke="#fff" style="display:none"/>`
+      +`<rect id="qshit" x="${PL}" y="${PT}" width="${W-PL-PR}" height="${H-PT-PB}" fill="transparent" style="cursor:crosshair"/></svg>`;
+    el.innerHTML=`<div style="position:relative">${svg}<div id="qstip" style="position:absolute;display:none;pointer-events:none;background:#0f172a;color:#fff;font-size:11px;line-height:1.5;padding:6px 9px;border-radius:6px;white-space:nowrap;transform:translate(-50%,calc(-100% - 10px));z-index:20;box-shadow:0 2px 10px rgba(0,0,0,.3)"></div></div>`;
+    const svgEl=$('qssvg'),tip=$('qstip'),g=$('qsg'),dot=$('qsd'),hit=$('qshit');
+    hit.addEventListener('mousemove',ev=>{ const rc=svgEl.getBoundingClientRect(); let i=Math.round((((ev.clientX-rc.left)/rc.width*W)-PL)/(W-PL-PR)*(n-1)); i=Math.max(0,Math.min(n-1,i)); const sx=x(i),sv=series[i][1];
+      g.setAttribute('x1',sx); g.setAttribute('x2',sx); g.style.display=''; dot.setAttribute('cx',sx); dot.setAttribute('cy',y(sv)); dot.style.display='';
+      tip.innerHTML=`<b>${series[i][0]}</b><br>${sv} stock${sv===1?'':'s'} qualifying`; tip.style.display=''; tip.style.left=(sx/W*rc.width)+'px'; tip.style.top=(y(sv)/H*rc.height)+'px'; });
+    svgEl.addEventListener('mouseleave',()=>{[tip,g,dot].forEach(e=>e.style.display='none');});
+  };
+  const summary=s=>GRAN_LBL[gran]+' · '+s.length+' points · avg '+Math.round(s.reduce((a,b)=>a+b[1],0)/(s.length||1))+' · peak '+Math.max(0,...s.map(p=>p[1]));
+  if(QUAL_CACHE[gran]){ if(msg) msg.textContent=summary(QUAL_CACHE[gran]); render(QUAL_CACHE[gran]); return; }
+  if(msg) msg.textContent='Computing '+GRAN_LBL[gran]+' counts…'+(gran==='week'?' (weekly is slower)':'');
+  const el=$('qsc'); if(el) el.innerHTML='<div class="text-xs text-slate-400 py-6 text-center">⏳ computing…</div>';
+  setTimeout(()=>{ const series=qualDates(cfg,gran).map(dt=>[dt, qualCountAt(dayOff(dt),cfg)]); QUAL_CACHE[gran]=series;
+    if(msg) msg.textContent=summary(series); render(series); }, 30);
 }
 load();
 </script>
