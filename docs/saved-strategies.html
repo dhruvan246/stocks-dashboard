@@ -86,7 +86,7 @@
           <tbody id="mBody"></tbody>
         </table>
       </div>
-      <p class="text-[11px] text-slate-500"><b>How to use:</b> place LIMIT buy orders for these shares. Allocation totals ≤ capital (whole-share rounding). Prices are the <b>latest available daily close</b> (this is a static daily-data site — no live intraday feed).</p>
+      <p class="text-[11px] text-slate-500"><b>How to use:</b> place LIMIT buy orders for these shares. Allocation totals ≤ capital (whole-share rounding). Without <b>⚡ Go Live</b> all figures are the <b>latest daily close</b>; with Go Live on, <b>Chg% · %52wHi · %52wLo · RSI · Live ₹ · Day %</b> all update from the live (~15-min delayed) price. The <i>basket itself</i> is still chosen from the last full close (intraday re-screening isn't possible from a single live tick).</p>
 
       <!-- also qualifying -->
       <div id="mAlsoWrap" class="hidden">
@@ -197,13 +197,44 @@ function closeModal() { $('modal').classList.add('hidden'); CUR = null; }
 
 let LAST_BASKET = null, LIVE = null;   // LIVE = {ts, data:{SYM:{ltp,prevClose}}}
 function liveLtp(sym) { return (LIVE && LIVE.data[sym] && LIVE.data[sym].ltp != null) ? LIVE.data[sym].ltp : null; }
+/* When Go Live is on (and we're viewing "today"), recompute the screen metrics — Chg%, %52wHi,
+   %52wLo, RSI — off the LIVE price instead of the last daily close. The loaded price history is
+   split-adjusted while the live LTP is the raw market price; they differ only by a constant scale,
+   so we map the live print into adjusted space via the raw last close, then reuse the engine math. */
+function liveMetrics(r, ltp) {
+  const tkr = r.tkr, s = SERIES[tkr]; if (!s) return null;
+  const rawLast = META[tkr] && META[tkr].raw; if (!rawLast || !r.price) return null;
+  const off = dayOff(SF.end);
+  const liveAdj = r.price * (ltp / rawLast);                       // live price in the adjusted series' units
+  const lookOff = off - Math.round((CUR.cfg.lookback || 0) * 30.44);
+  const p0 = priceAt(tkr, lookOff);
+  const chg = (p0 && p0 > 0) ? (liveAdj / p0 - 1) * 100 : r.chg;   // return over the strategy's lookback window
+  const hl = hl52(tkr, off);                                       // fold the live print into the 52w high/low
+  const hi = Math.max(hl ? hl.hi : liveAdj, liveAdj), low = Math.min(hl ? hl.low : liveAdj, liveAdj);
+  return { chg, d52: (hi - liveAdj) / hi * 100, d52low: (liveAdj - low) / low * 100, rsi: rsiLive(tkr, off, Math.round(liveAdj * 100)) };
+}
+// Wilder RSI(14), seeded exactly like the engine's rsi14 but with the live print as the most recent close.
+function rsiLive(tkr, off, liveX) {
+  const s = SERIES[tkr]; if (!s) return null;
+  const i = idxLE(s.d, off); if (i < 15) return null;
+  const start = Math.max(1, i - 100), a = [];
+  for (let k = start - 1; k <= i; k++) a.push(s.p[k]);
+  const t = new Date(), today = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
+  if (SF.end < today) a.push(liveX); else a[a.length - 1] = liveX; // new trading day → append; same day → replace last close
+  const n = 14; let avgG = 0, avgL = 0, k = 1, cnt = 0;
+  for (; k < a.length && cnt < n; k++, cnt++) { const ch = a[k] - a[k - 1]; if (ch > 0) avgG += ch; else avgL -= ch; }
+  avgG /= n; avgL /= n;
+  for (; k < a.length; k++) { const ch = a[k] - a[k - 1]; avgG = (avgG * (n - 1) + (ch > 0 ? ch : 0)) / n; avgL = (avgL * (n - 1) + (ch < 0 ? -ch : 0)) / n; }
+  if (avgG + avgL === 0) return 50;
+  return 100 - 100 / (1 + avgG / (avgL || 1e-9));
+}
 function refreshPicks() {
   if (!CUR) return;
   const date = clampDate($('mDate').value || SF.end, SF.start, SF.end);
   $('mDate').value = date;
   const cap = +$('mCap').value || 100000;
   const liveTag = LIVE
-    ? `<span class="text-rose-600 font-semibold">🔴 LIVE</span> · fetched ${new Date(LIVE.ts).toLocaleTimeString('en-IN')} · Yahoo NSE (~15 min delay)`
+    ? `<span class="text-rose-600 font-semibold">🔴 LIVE</span> · Chg%/52w/RSI recomputed off live price · fetched ${new Date(LIVE.ts).toLocaleTimeString('en-IN')} · Yahoo NSE (~15 min delay)`
     : 'latest daily close';
   $('mSub').innerHTML = `As of ${date} · ${liveTag} · ${SF.nDead} delisted names included`;
   const ranked = screenAsOf(CUR.cfg, date);
@@ -214,7 +245,18 @@ function refreshPicks() {
   const atLatest = date === SF.end;
   const baseOf = r => (atLatest && META[r.tkr] && META[r.tkr].raw) ? META[r.tkr].raw : r.price;
   const per = cap / (picks.length || 1); let deployed = 0;
-  const rows = picks.map(r => { const base = baseOf(r); const px = liveLtp(r.sym) != null ? liveLtp(r.sym) : base; const shares = Math.floor(per / px); const alloc = shares * px; deployed += alloc; return { ...r, base, px, shares, alloc }; });
+  const rows = picks.map(r => {
+    const base = baseOf(r);
+    const ltp = liveLtp(r.sym);
+    const px = ltp != null ? ltp : base;
+    const shares = Math.floor(per / px); const alloc = shares * px; deployed += alloc;
+    const row = { ...r, base, px, shares, alloc };
+    if (ltp != null && atLatest) {                       // live: recompute Chg% / %52wHi / %52wLo / RSI off the live price
+      const lm = liveMetrics(r, ltp);
+      if (lm) { row.chg = lm.chg; row.d52 = lm.d52; row.d52low = lm.d52low; row.rsi = lm.rsi; }
+    }
+    return row;
+  });
   LAST_BASKET = { date, rows };
   $('sDeployed').textContent = fmtINR(deployed);
   $('sCash').textContent = fmtINR(cap - deployed);
