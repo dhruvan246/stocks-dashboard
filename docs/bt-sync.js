@@ -36,4 +36,10 @@
   }
   g.btSync = { pull, push, isOwner: () => !!ownerKey(), configured: () => !!client(),
     setOwnerKey: k => { try { k ? localStorage.setItem(OWNER_KEY, k) : localStorage.removeItem(OWNER_KEY); } catch (e) {} } };
+  // One-time owner unlock: open any page with ?ownerkey=YOURKEY once on a PC and that PC can publish
+  // from then on (the key is saved locally and stripped from the URL). Visitors never use this.
+  try {
+    const u = new URL(location.href), ok = u.searchParams.get('ownerkey');
+    if (ok) { localStorage.setItem(OWNER_KEY, ok); u.searchParams.delete('ownerkey'); history.replaceState(null, '', u.pathname + u.search + u.hash); }
+  } catch (e) {}
 })(window);

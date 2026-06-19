@@ -79,6 +79,13 @@ function render(){
 const OWNER = !!(window.btSync && btSync.isOwner());
 if($('clearAll') && !OWNER) $('clearAll').style.display='none';   // visitors get a read-only showcase
 $('clearAll').onclick=()=>{ if(confirm('Delete all saved backtests?')){ save([]); render(); } };
+if(OWNER){   // owner-only banner: confirms this PC publishes, with a log-out
+  const b=document.createElement('div');
+  b.className='text-xs text-green-700 font-semibold mb-3';
+  b.innerHTML='✓ Owner mode — backtests you run on this PC auto-publish to this page. <a href="#" id="ownerOut" class="underline font-normal">Log out of this PC</a>';
+  const list=$('list'); list.parentNode.insertBefore(b, list);
+  $('ownerOut').onclick=e=>{ e.preventDefault(); if(confirm('Stop publishing from this PC? (Your history stays online; this PC just becomes read-only.)')){ btSync.setOwnerKey(''); location.reload(); } };
+}
 
 // auto-load the owner's public history for every visitor, then render
 (async()=>{ if(window.btSync){ try{ await btSync.pull(); }catch(e){} } render(); })();
