@@ -105,10 +105,15 @@ def find_con_pl_page(doc, cprev, cyago):
         if not REV.search(t): continue                  # a P&L HAS revenue-from-ops; BS/notes/recon do not
         if BAL.search(t) and not PLPFT.search(t): continue
         if not PLPFT.search(t): continue                # must carry a profit/PAT row
+        # TABLE gate: a real P&L has many rows with >=3 numbers each (multi-column grid). Notes/press-
+        # release prose pages mention 'consolidated'/'revenue'/'profit' in sentences but have few such
+        # rows -> reject. Count integers too (bank/insurer filings use whole-lakh numbers, no decimals).
+        rows3 = sum(1 for ln in t.split("\n") if len(re.findall(r'\(?-?[\d,]{3,}(?:\.\d+)?\)?', ln)) >= 3)
+        if rows3 < 5: continue
         is_con = "consolidated" in low
         is_std_only = ("standalone" in low) and not is_con
         nums = _nums_on(t)
-        score = min(len(DEC.findall(t)), 50) / 50.0     # denser numeric table preferred (0..1)
+        score = min(rows3, 25) / 25.0                    # denser numeric TABLE preferred (0..1)
         for tgt in tgts:                                # neighbor value present on this page?
             for sc in (1.0, 10.0, 100.0):
                 if any(abs(n - tgt * sc) <= abs(tgt * sc) * 0.006 for n in nums):
