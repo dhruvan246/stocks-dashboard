@@ -32,7 +32,10 @@ AUD = re.compile(r'(independent auditor|auditor.?s report|limited review|review 
 PFT = re.compile(r'profit\s*/?\s*\(?\s*loss\)?\s*(after tax|for the (period|quarter|year))', re.I)
 DEC = re.compile(r'\d[\d,]*\.\d\d')
 SEG = re.compile(r'(segment (revenue|result|report|asset|liabilit)|disclosures? in compliance|'
-                 r'debt[\s-]*equity|ratio\b.*\btimes|coverage ratio|balance sheet|cash flow)', re.I)
+                 r'debt[\s-]*equity|ratio\b.*\btimes|coverage ratio|balance sheet|cash flow|'
+                 r'analytical ratio|solvency ratio|combined ratio|incurred claim ratio|net retention ratio|'
+                 r'foreign exchange (gain|loss)|ipo proceeds|utilisation of (the )?(net )?(ipo|issue) proceeds|'
+                 r'statement of assets and liabilit|assets and liabilities)', re.I)
 REV = re.compile(r'(revenue from operations|total income|total revenue)', re.I)
 
 def find_con_page(doc):
@@ -44,14 +47,46 @@ def find_con_page(doc):
         t = doc[p].get_text(); low = t.lower()
         if "consolidated" not in low or AUD.search(t) or SEG.search(t): continue
         nnum = len(DEC.findall(t))
-        if nnum < 6 or not REV.search(t): continue
-        if "profit for the" in low or PFT.search(t): pl.append((nnum, p))
-        else: dense.append((nnum, p))            # P&L page with a garbled profit-row label
+        if nnum < 10: continue                                # dense numeric table only (skip cover letters)
+        has_pl = ("profit for the" in low or PFT.search(t)); has_rev = bool(REV.search(t))
+        if has_rev and has_pl: pl.append((nnum + 200, p))     # ideal P&L page
+        elif has_pl or has_rev: pl.append((nnum + 80, p))     # partial markers (one garbled)
+        else: dense.append((nnum, p))                          # dense consolidated table, both labels garbled
     if pl: pl.sort(reverse=True); return pl[0][1]
     if dense: dense.sort(reverse=True); return dense[0][1]
     return None
 
 NPAT = re.compile(r'(net\s+)?profit\s*/?\s*\(?\s*loss\)?\s*.{0,18}(after tax|for the (period|quarter|year))', re.I)
+
+def _nums_on(t):
+    out = []
+    for w in re.findall(r'\(?-?[\d,]+\.\d\d\)?', t):
+        v = w.replace(",", "").replace("(", "-").replace(")", "")
+        try: out.append(float(v))
+        except Exception: pass
+    return out
+
+def find_pl_page_by_neighbors(doc, cprev, cyago):
+    """Verification-driven: the P&L page is the one whose text contains the STORED neighbor values
+    (prev and/or yago) at some unit scale (/1,/10,/100). Far more reliable than density heuristics for
+    multi-page insurer/large-cap filings. Returns page index or None."""
+    tgts = [t for t in (cprev, cyago) if t is not None and abs(t) >= 3]
+    if not tgts: return None
+    best = None; best_score = 0.0
+    for p in range(min(len(doc), 32)):
+        t = doc[p].get_text(); low = t.lower()
+        if AUD.search(t) or SEG.search(t): continue
+        # the P&L page must actually have a profit row (rules out balance-sheet/segment coincidental matches)
+        if not (PFT.search(t) or "profit for the" in low or "net profit" in low or "profit after tax" in low): continue
+        nums = _nums_on(t)
+        if len(nums) < 4: continue
+        score = 0.0
+        for tgt in tgts:
+            for sc in (1.0, 10.0, 100.0):
+                if any(abs(n - tgt * sc) <= abs(tgt * sc) * 0.004 for n in nums):  # 0.4% exact-ish match
+                    score += 1.0; break
+        if score > best_score: best_score = score; best = p
+    return best if best_score >= 1.0 else None
 
 def profit_band(pg):
     """y-range covering the net-profit-after-tax row through the owners/NCI attribution rows."""
@@ -72,7 +107,8 @@ def render(sym, q, pdfpath):
     layout (never cuts the net-profit row). Label bar carries stored neighbors for cross-check."""
     try: doc = fitz.open(pdfpath)
     except Exception: return None
-    p = find_con_page(doc)
+    p = find_pl_page_by_neighbors(doc, conval(sym, prevq(q)), conval(sym, q - 10000))
+    if p is None: p = find_con_page(doc)
     if p is None: return None
     pg = doc[p]; H = pg.rect.height; W = pg.rect.width
     y0, y1 = profit_band(pg)
