@@ -362,9 +362,10 @@ async function run(){
     catch(e){ $('runMsg').textContent='Error: '+e.message; console.error(e); } }, 30);
 }
 // every run is recorded to History automatically (skips an exact repeat of the most recent entry)
-function autoSaveHistory(){
+async function autoSaveHistory(){
   if(!LAST_RUN) return;
   if(window.__fromLoad){ window.__fromLoad=false; return; }   // this run came from History/Saved "Load" — it's already saved, don't duplicate it
+  if(window.btSync){ try{ await btSync.pull(); }catch(e){} }   // refresh to the LATEST shared first, so adding never drops another device's entries
   const h=loadLS('bt_history'); const item=histItem(LAST_RUN.cfg, LAST_RUN.res);
   const s=JSON.stringify(item.cfg);
   if(h.some(x=>JSON.stringify(x.cfg)===s)) return;   // an identical config is already in history — no duplicate row
@@ -379,8 +380,9 @@ function histItem(c,r){
   return { id:'h'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), ts:Date.now(), label:strategyLabel(c), cfg:c, yby:yby,
     m:{cagr:r.cagr, finalV:r.finalV, maxDD:r.maxDD, vol:r.vol, winRate:r.winRate, benchCagr:r.benchCagr, rebs:r.rebs.length, years:r.years} };
 }
-function saveToHistory(){
+async function saveToHistory(){
   if(!LAST_RUN) return;
+  if(window.btSync){ try{ await btSync.pull(); }catch(e){} }   // add onto the latest shared, so we never drop another device's entries
   const h=loadLS('bt_history'); h.unshift(histItem(LAST_RUN.cfg, LAST_RUN.res)); saveLS('bt_history', h.slice(0,300)); if(window.btSync)btSync.push();
   const msg=$('saveMsg'); if(msg) msg.textContent='💾 Saved to Backtest History';
 }
