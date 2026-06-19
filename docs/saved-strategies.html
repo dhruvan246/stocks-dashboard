@@ -86,7 +86,7 @@
           <tbody id="mBody"></tbody>
         </table>
       </div>
-      <p class="text-[11px] text-slate-500"><b>How to use:</b> place LIMIT buy orders for these shares. Allocation totals ≤ capital (whole-share rounding). Without <b>⚡ Go Live</b> all figures are the <b>latest daily close</b>; with Go Live on, <b>Chg% · %52wHi · %52wLo · RSI · Live ₹ · Day %</b> all update from the live (~15-min delayed) price. The <i>basket itself</i> is still chosen from the last full close (intraday re-screening isn't possible from a single live tick).</p>
+      <p class="text-[11px] text-slate-500"><b>How to use:</b> place LIMIT buy orders for these shares. Allocation totals ≤ capital (whole-share rounding). <b>During market hours (9:15–15:30 IST)</b> the basket auto-refreshes every 60s on the live (~15-min delayed) price — <b>Chg% · %52wHi · %52wLo · RSI · Live ₹ · Day %</b> all update live. <b>After 15:30</b> it shows the <b>official daily close from the bhavcopy</b> (the true last-30-min VWAP close, which no live tick can reproduce). The <i>basket itself</i> is always chosen from the last full close — intraday re-screening isn't possible from a single live tick.</p>
 
       <!-- also qualifying -->
       <div id="mAlsoWrap" class="hidden">
@@ -190,13 +190,35 @@ function openPicks(id) {
   LIVE = null;
   $('modal').classList.remove('hidden');
   refreshPicks();
-  // if a live feed is configured, fetch live prices automatically (no Go Live click needed)
-  if (localStorage.getItem('live_worker_url')) goLive(true);
+  // during market hours, auto-go-live and keep it refreshing; after 15:30 the bhavcopy close stands
+  startLive();
 }
-function closeModal() { $('modal').classList.add('hidden'); CUR = null; }
+function closeModal() { stopLive(); $('modal').classList.add('hidden'); CUR = null; }
 
-let LAST_BASKET = null, LIVE = null;   // LIVE = {ts, data:{SYM:{ltp,prevClose}}}
+let LAST_BASKET = null, LIVE = null, LIVE_TIMER = null;   // LIVE = {ts, data:{SYM:{ltp,prevClose}}}
 function liveLtp(sym) { return (LIVE && LIVE.data[sym] && LIVE.data[sym].ltp != null) ? LIVE.data[sym].ltp : null; }
+/* NSE continuous session: Mon–Fri 09:15–15:30 IST. Computed from absolute time so it's correct
+   regardless of the viewer's own timezone. Trading holidays aren't excluded — on a holiday the
+   feed just returns the prior close, so the basket stays at its last value (harmless). The official
+   close is the VWAP of the last 30 min and only exists in the evening bhavcopy, never in a live
+   tick — so after 15:30 we stop fetching live and let the (bhavcopy-sourced) daily close stand. */
+function marketOpen() {
+  const d = new Date(Date.now() + 330 * 60000);             // shift epoch into IST
+  const dow = d.getUTCDay(); if (dow === 0 || dow === 6) return false;
+  const mins = d.getUTCHours() * 60 + d.getUTCMinutes();
+  return mins >= 555 && mins <= 930;                         // 09:15 … 15:30 IST
+}
+function stopLive() { if (LIVE_TIMER) { clearInterval(LIVE_TIMER); LIVE_TIMER = null; } }
+// Keep the basket live while the market and the modal are both open; auto-stop at 15:30.
+function startLive() {
+  stopLive();
+  if (!localStorage.getItem('live_worker_url') || !marketOpen()) return;
+  goLive(true);                                              // fetch now…
+  LIVE_TIMER = setInterval(() => {                           // …then every 60s until the close
+    if (!CUR || !marketOpen()) { stopLive(); if (CUR) refreshPicks(); return; }
+    goLive(true);
+  }, 60000);
+}
 /* When Go Live is on (and we're viewing "today"), recompute the screen metrics — Chg%, %52wHi,
    %52wLo, RSI — off the LIVE price instead of the last daily close. The loaded price history is
    split-adjusted while the live LTP is the raw market price; they differ only by a constant scale,
@@ -234,8 +256,8 @@ function refreshPicks() {
   $('mDate').value = date;
   const cap = +$('mCap').value || 100000;
   const liveTag = LIVE
-    ? `<span class="text-rose-600 font-semibold">🔴 LIVE</span> · Chg%/52w/RSI recomputed off live price · fetched ${new Date(LIVE.ts).toLocaleTimeString('en-IN')} · Yahoo NSE (~15 min delay)`
-    : 'latest daily close';
+    ? `<span class="text-rose-600 font-semibold">🔴 LIVE</span> · Chg%/52w/RSI off live price · ${LIVE_TIMER ? 'auto-refresh 60s · ' : ''}fetched ${new Date(LIVE.ts).toLocaleTimeString('en-IN')} · Yahoo NSE (~15 min delay)`
+    : 'official daily close (bhavcopy)';
   $('mSub').innerHTML = `As of ${date} · ${liveTag} · ${SF.nDead} delisted names included`;
   const ranked = screenAsOf(CUR.cfg, date);
   const picks = ranked.slice(0, CUR.cfg.topN);
@@ -345,10 +367,10 @@ function runHold() {
 $('clearAll').onclick = () => { if (confirm('Delete all saved strategies?')) { saveLS('bt_strategies', []); render(); } };
 $('mClose').onclick = closeModal;
 $('modal').addEventListener('click', e => { if (e.target === $('modal')) closeModal(); });
-$('mRefresh').onclick = () => { LIVE = null; refreshPicks(); if (localStorage.getItem('live_worker_url')) goLive(true); };
-$('mDate').onchange = () => { LIVE = null; refreshPicks(); if ($('mDate').value === SF.end && localStorage.getItem('live_worker_url')) goLive(true); };   // re-fetch live only when viewing "today"
+$('mRefresh').onclick = () => { LIVE = null; refreshPicks(); startLive(); };
+$('mDate').onchange = () => { LIVE = null; stopLive(); refreshPicks(); if ($('mDate').value === SF.end) startLive(); };   // live only when viewing "today" during market hours
 $('mCsv').onclick = downloadCSV;
-$('mLive').onclick = goLive;
+$('mLive').onclick = () => { if (marketOpen()) startLive(); else goLive(); };   // manual: keep-live during the session, one-shot snapshot after the close
 $('mLiveCfg').onclick = setWorkerUrl;
 $('hCompute').onclick = runHold;
 $('mAlsoToggle').onclick = () => { const a = $('mAlso'); a.classList.toggle('hidden'); $('mAlsoToggle').innerHTML = $('mAlsoToggle').innerHTML.replace(a.classList.contains('hidden') ? '▾' : '▸', a.classList.contains('hidden') ? '▸' : '▾'); };
