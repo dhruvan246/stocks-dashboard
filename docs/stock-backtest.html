@@ -368,7 +368,7 @@ function autoSaveHistory(){
   const h=loadLS('bt_history'); const item=histItem(LAST_RUN.cfg, LAST_RUN.res);
   const s=JSON.stringify(item.cfg);
   if(h.some(x=>JSON.stringify(x.cfg)===s)) return;   // an identical config is already in history — no duplicate row
-  h.unshift(item); saveLS('bt_history', h.slice(0,300)); if(window.btSync&&btSync.code())btSync.push();
+  h.unshift(item); saveLS('bt_history', h.slice(0,300)); if(window.btSync)btSync.push();
 }
 // calendar-year returns from an equity series [[date,value],…] → [[year, ret%],…]
 function yByY(eq){ if(!eq||!eq.length) return []; const by={}; eq.forEach(e=>{by[(''+e[0]).slice(0,4)]=e[1];}); const ys=Object.keys(by).sort(); const out=[], sv0=eq[0][1];
@@ -381,7 +381,7 @@ function histItem(c,r){
 }
 function saveToHistory(){
   if(!LAST_RUN) return;
-  const h=loadLS('bt_history'); h.unshift(histItem(LAST_RUN.cfg, LAST_RUN.res)); saveLS('bt_history', h.slice(0,300)); if(window.btSync&&btSync.code())btSync.push();
+  const h=loadLS('bt_history'); h.unshift(histItem(LAST_RUN.cfg, LAST_RUN.res)); saveLS('bt_history', h.slice(0,300)); if(window.btSync)btSync.push();
   const msg=$('saveMsg'); if(msg) msg.textContent='💾 Saved to Backtest History';
 }
 function saveStrategy(){

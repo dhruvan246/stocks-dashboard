@@ -33,13 +33,7 @@
     <h1 class="text-xl md:text-2xl font-bold text-slate-900">📜 Backtest History</h1>
     <button id="clearAll" class="text-xs text-red-600 hover:underline font-semibold">Clear all</button>
   </div>
-  <p class="text-xs text-slate-500 mb-4">Every backtest you run is saved here automatically. Set a <b>sync code</b> below to see the same history on any PC. Click <b>Load</b> to re-open &amp; re-run a setup. <a href="./stock-backtest.html" class="text-indigo-600 hover:underline">← back to Backtest</a></p>
-  <div class="card p-3 mb-4 flex items-center gap-2 flex-wrap text-sm" id="syncBar">
-    <span class="font-semibold whitespace-nowrap">☁️ Cross-device sync</span>
-    <input id="syncCode" type="password" autocomplete="off" placeholder="enter a secret sync code (same on every device)" class="border border-slate-300 rounded px-2 py-1 text-sm flex-1 min-w-[200px]">
-    <button id="syncSave" class="px-3 py-1 rounded bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-700">Save &amp; sync</button>
-    <span id="syncStatus" class="text-xs text-slate-500 whitespace-nowrap"></span>
-  </div>
+  <p class="text-xs text-slate-500 mb-4">STOCKSWORLD's backtest track record — updated automatically. Click <b>Load</b> on any row to re-open &amp; re-run that exact setup yourself. <a href="./stock-backtest.html" class="text-indigo-600 hover:underline">← back to Backtest</a></p>
   <div id="list"></div>
 </main>
 
@@ -47,14 +41,14 @@
 'use strict';
 const $=id=>document.getElementById(id);
 function load(){try{return JSON.parse(localStorage.getItem('bt_history')||'[]');}catch(e){return[];}}
-function save(v){localStorage.setItem('bt_history',JSON.stringify(v)); if(window.btSync&&btSync.code())btSync.push();}
+function save(v){localStorage.setItem('bt_history',JSON.stringify(v)); if(window.btSync)btSync.push();}
 const fmtINR=n=>n==null?'—':'₹'+Math.round(n).toLocaleString('en-IN');
 const pct=n=>n==null?'—':(n>=0?'+':'')+n.toFixed(2)+'%';
 const fdate=ts=>{const d=new Date(ts);return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});};
 
 function render(){
   const items=load();
-  if(!items.length){ $('list').innerHTML='<div class="card p-8 text-center text-slate-400 text-sm">No saved backtests yet. Run a backtest and click “💾 Save to History”.</div>'; return; }
+  if(!items.length){ $('list').innerHTML='<div class="card p-8 text-center text-slate-400 text-sm">No backtests yet.</div>'; return; }
   $('list').innerHTML=`<div class="card overflow-x-auto"><table class="w-full text-sm">
     <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>
       <th class="text-left py-2 px-3">Saved</th><th class="text-left px-3">Strategy</th><th class="text-left px-3">Period</th>
@@ -70,7 +64,7 @@ function render(){
         <td class="text-right px-3">${fmtINR(m.finalV)}</td>
         <td class="px-3 whitespace-nowrap text-right">
           <button class="text-blue-600 hover:underline text-xs font-semibold" data-load="${it.id}">Load</button>
-          <button class="text-red-500 hover:underline text-xs ml-2" data-del="${it.id}">Delete</button></td></tr>${hasY?`
+          ${OWNER?`<button class="text-red-500 hover:underline text-xs ml-2" data-del="${it.id}">Delete</button>`:''}</td></tr>${hasY?`
       <tr id="exp_${it.id}" style="display:none"><td colspan="8" class="px-3 pb-3 bg-slate-50">
         <div class="text-[11px] uppercase text-slate-500 mb-1 pt-1">📅 Calendar-year returns — strategy vs Nifty</div>
         <div class="overflow-x-auto"><table class="text-xs"><thead><tr><th class="px-2 text-left"></th>${it.yby.map(y=>`<th class="px-2 py-0.5 text-right">${y[0]}</th>`).join('')}</tr></thead><tbody>
@@ -82,18 +76,12 @@ function render(){
   $('list').querySelectorAll('[data-load]').forEach(b=>b.onclick=()=>{const it=load().find(x=>x.id===b.dataset.load); if(it){localStorage.setItem('bt_load',JSON.stringify(it.cfg)); location.href='./stock-backtest.html';}});
   $('list').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{save(load().filter(x=>x.id!==b.dataset.del)); render();});
 }
+const OWNER = !!(window.btSync && btSync.isOwner());
+if($('clearAll') && !OWNER) $('clearAll').style.display='none';   // visitors get a read-only showcase
 $('clearAll').onclick=()=>{ if(confirm('Delete all saved backtests?')){ save([]); render(); } };
 
-// ---- cross-device sync (Supabase) ----
-const maskCode=c=>c?'••••'+c.slice(-2):'';
-function updateSyncUI(){
-  const ok=window.btSync&&btSync.configured(), c=window.btSync?btSync.code():'';
-  $('syncStatus').textContent = !ok ? 'Sync unavailable' : (c?'Synced ✓ — this history shows on any device with the same code':'Local only — set a code to sync across devices');
-  const inp=$('syncCode'); if(inp&&c&&!inp.value) inp.placeholder='set ✓ ('+maskCode(c)+') — re-enter to change';
-}
-async function refresh(){ if(window.btSync&&btSync.code()){ $('syncStatus').textContent='Syncing…'; await btSync.pull(); } render(); updateSyncUI(); }
-if($('syncSave')) $('syncSave').onclick=async()=>{ const v=$('syncCode').value.trim(); if(!v){ $('syncStatus').textContent='Enter a code first'; return; } btSync.setCode(v); $('syncCode').value=''; await refresh(); };
-refresh();
+// auto-load the owner's public history for every visitor, then render
+(async()=>{ if(window.btSync){ try{ await btSync.pull(); }catch(e){} } render(); })();
 </script>
 </body>
 </html>
