@@ -64,8 +64,8 @@ def profit_band(pg):
             if (NPAT.search(t) or "profit for the" in low or "profit/(loss) for" in low or "profit /(loss) for" in low
                     or "owners of" in low or "non-controlling" in low or "equity holder" in low):
                 ys.append(ln["bbox"][1] / H)
-    if ys: return max(0.04, min(ys) - 0.045), min(0.96, max(ys) + 0.05)
-    return 0.40, 0.84
+    if ys: return max(0.04, min(ys) - 0.05), min(0.97, max(ys) + 0.13)
+    return 0.33, 0.86
 
 def render(sym, q, pdfpath):
     """Render the WHOLE consolidated P&L table region (header + all rows) as one image — robust to
