@@ -18,6 +18,29 @@
   // 1) apply ASAP — runs during <head> parse, before the body is painted
   document.documentElement.setAttribute('data-theme', norm(saved()));
 
+  // ---- PWA wiring: manifest, app icons, Android status-bar colour, service worker ----
+  var THEME_COLOR = { light: '#ffffff', dark: '#0f1423', soft: '#fffdfb' };
+  function head(tag, attrs) {
+    var key = attrs.rel ? 'rel' : 'name';
+    var el = document.head.querySelector(tag + '[' + key + '="' + attrs[key] + '"]');
+    if (!el) { el = document.createElement(tag); document.head.appendChild(el); }
+    Object.keys(attrs).forEach(function (k) { el.setAttribute(k, attrs[k]); });
+    return el;
+  }
+  function setThemeColor(t) { head('meta', { name: 'theme-color', content: THEME_COLOR[t] || THEME_COLOR.light }); }
+  (function wirePWA() {
+    head('link', { rel: 'manifest', href: './manifest.webmanifest' });
+    head('link', { rel: 'apple-touch-icon', href: './apple-touch-icon.png' });
+    head('meta', { name: 'apple-mobile-web-app-capable', content: 'yes' });
+    head('meta', { name: 'mobile-web-app-capable', content: 'yes' });
+    head('meta', { name: 'apple-mobile-web-app-status-bar-style', content: 'default' });
+    head('meta', { name: 'apple-mobile-web-app-title', content: 'STOCKSWORLD' });
+    setThemeColor(norm(saved()));
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () { navigator.serviceWorker.register('./sw.js').catch(function () {}); });
+    }
+  })();
+
   function updateUI(t) {
     var box = document.getElementById('sw-theme-switch'); if (!box) return;
     box.querySelectorAll('button').forEach(function (b) {
@@ -28,6 +51,7 @@
     t = norm(t);
     document.documentElement.setAttribute('data-theme', t);
     try { localStorage.setItem(KEY, t); } catch (e) {}
+    setThemeColor(t);
     updateUI(t);
   }
 
@@ -46,9 +70,11 @@
       b.addEventListener('click', function () { apply(m.k); });
       box.appendChild(b);
     });
-    var host = document.querySelector('header nav')
+    // append to the header's flex ROW (sibling of logo + nav) so the pill can be
+    // pinned to the right edge — outside the nav's horizontal scroll on mobile.
+    var host = document.querySelector('header > div')
             || document.querySelector('header .max-w-screen-xl')
-            || document.querySelector('header > div')
+            || document.querySelector('header nav')
             || document.querySelector('header');
     if (host) { host.appendChild(box); }
     else { box.classList.add('floating'); document.body.appendChild(box); }

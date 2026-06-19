@@ -231,9 +231,12 @@ html[data-theme="dark"] th[data-s]:hover{ color:#93c5fd !important; }
 
 /* =============================== theme pill =============================== */
 .sw-theme-switch{
-  display:inline-flex; gap:2px; padding:3px; margin-left:8px; flex:0 0 auto;
+  display:inline-flex; gap:2px; padding:3px; margin-left:auto; flex:0 0 auto;
   border-radius:999px; background:var(--surface-2); border:1px solid var(--border); box-shadow:var(--shadow);
 }
+/* header: let the page-nav shrink & scroll instead of overflowing; pill stays pinned right */
+html[data-theme] header > div{ gap:8px; }
+html[data-theme] header nav{ min-width:0; }
 .sw-theme-switch.floating{ position:fixed; top:10px; right:10px; z-index:60; }
 .sw-theme-switch button{
   width:30px; height:28px; padding:0; border:0; background:transparent; border-radius:999px;
@@ -244,4 +247,17 @@ html[data-theme="dark"] th[data-s]:hover{ color:#93c5fd !important; }
 .sw-theme-switch button[aria-pressed="true"]{
   background:linear-gradient(135deg, var(--accent), var(--accent-2)); color:#fff;
   box-shadow:0 3px 10px -3px var(--glow);
+}
+
+/* ============================== mobile polish ============================= */
+html{ -webkit-text-size-adjust:100%; }
+html[data-theme] body{ overflow-x:hidden; }                 /* belt-and-suspenders against side-scroll */
+html[data-theme] table{ -webkit-overflow-scrolling:touch; }
+@media (max-width:640px){
+  html[data-theme] header > div{ padding-left:12px; padding-right:12px; }
+  html[data-theme] .sw-theme-switch button{ width:32px; height:30px; font-size:15px; }  /* comfier tap targets */
+  /* comfortable minimum height for tappable controls */
+  html[data-theme] button, html[data-theme] select,
+  html[data-theme] input:not([type="checkbox"]):not([type="radio"]){ min-height:38px; }
+  html[data-theme] .sw-theme-switch button{ min-height:0; }   /* pill buttons keep their own size */
 }
