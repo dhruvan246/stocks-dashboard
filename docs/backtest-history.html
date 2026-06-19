@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>STOCKSWORLD · Backtest History</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./bt-sync.js"></script>
 <style>
   body{font-feature-settings:"tnum" 1}
   .pos{color:#15803d;font-weight:600}.neg{color:#b91c1c;font-weight:600}
@@ -31,7 +33,13 @@
     <h1 class="text-xl md:text-2xl font-bold text-slate-900">📜 Backtest History</h1>
     <button id="clearAll" class="text-xs text-red-600 hover:underline font-semibold">Clear all</button>
   </div>
-  <p class="text-xs text-slate-500 mb-4">Every backtest you saved with “💾 Save to History”. Stored in this browser. Click <b>Load</b> to re-open &amp; re-run any setup. <a href="./stock-backtest.html" class="text-indigo-600 hover:underline">← back to Backtest</a></p>
+  <p class="text-xs text-slate-500 mb-4">Every backtest you run is saved here automatically. Set a <b>sync code</b> below to see the same history on any PC. Click <b>Load</b> to re-open &amp; re-run a setup. <a href="./stock-backtest.html" class="text-indigo-600 hover:underline">← back to Backtest</a></p>
+  <div class="card p-3 mb-4 flex items-center gap-2 flex-wrap text-sm" id="syncBar">
+    <span class="font-semibold whitespace-nowrap">☁️ Cross-device sync</span>
+    <input id="syncCode" type="password" autocomplete="off" placeholder="enter a secret sync code (same on every device)" class="border border-slate-300 rounded px-2 py-1 text-sm flex-1 min-w-[200px]">
+    <button id="syncSave" class="px-3 py-1 rounded bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-700">Save &amp; sync</button>
+    <span id="syncStatus" class="text-xs text-slate-500 whitespace-nowrap"></span>
+  </div>
   <div id="list"></div>
 </main>
 
@@ -39,7 +47,7 @@
 'use strict';
 const $=id=>document.getElementById(id);
 function load(){try{return JSON.parse(localStorage.getItem('bt_history')||'[]');}catch(e){return[];}}
-function save(v){localStorage.setItem('bt_history',JSON.stringify(v));}
+function save(v){localStorage.setItem('bt_history',JSON.stringify(v)); if(window.btSync&&btSync.code())btSync.push();}
 const fmtINR=n=>n==null?'—':'₹'+Math.round(n).toLocaleString('en-IN');
 const pct=n=>n==null?'—':(n>=0?'+':'')+n.toFixed(2)+'%';
 const fdate=ts=>{const d=new Date(ts);return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});};
@@ -75,7 +83,17 @@ function render(){
   $('list').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{save(load().filter(x=>x.id!==b.dataset.del)); render();});
 }
 $('clearAll').onclick=()=>{ if(confirm('Delete all saved backtests?')){ save([]); render(); } };
-render();
+
+// ---- cross-device sync (Supabase) ----
+const maskCode=c=>c?'••••'+c.slice(-2):'';
+function updateSyncUI(){
+  const ok=window.btSync&&btSync.configured(), c=window.btSync?btSync.code():'';
+  $('syncStatus').textContent = !ok ? 'Sync unavailable' : (c?'Synced ✓ — this history shows on any device with the same code':'Local only — set a code to sync across devices');
+  const inp=$('syncCode'); if(inp&&c&&!inp.value) inp.placeholder='set ✓ ('+maskCode(c)+') — re-enter to change';
+}
+async function refresh(){ if(window.btSync&&btSync.code()){ $('syncStatus').textContent='Syncing…'; await btSync.pull(); } render(); updateSyncUI(); }
+if($('syncSave')) $('syncSave').onclick=async()=>{ const v=$('syncCode').value.trim(); if(!v){ $('syncStatus').textContent='Enter a code first'; return; } btSync.setCode(v); $('syncCode').value=''; await refresh(); };
+refresh();
 </script>
 </body>
 </html>

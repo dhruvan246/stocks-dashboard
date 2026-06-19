@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>STOCKSWORLD · Stock Backtest</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./bt-sync.js"></script>
 <style>
   body{font-feature-settings:"tnum" 1}
   .pos{color:#15803d;font-weight:600}.neg{color:#b91c1c;font-weight:600}
@@ -245,6 +247,7 @@ async function initUI(){
   $('run').onclick=run;
   // Survivorship-free is the ONLY data source — activate it before the UI is shown.
   await setMode('sf');   // loads sf_stock_data.bin, sets dates/universe to the SF dataset
+  if(window.btSync){ try{ await btSync.pull(); }catch(e){} }   // pull history from other devices BEFORE any auto-save, so a local save never overwrites them
   // load a config handed over from History / Saved Strategies, then auto-run
   try{ const c=JSON.parse(localStorage.getItem('bt_load')||'null'); if(c){ localStorage.removeItem('bt_load'); await applyCfg(c); window.__fromLoad=true; setTimeout(run, 50); } }catch(e){}
 }
@@ -365,7 +368,7 @@ function autoSaveHistory(){
   const h=loadLS('bt_history'); const item=histItem(LAST_RUN.cfg, LAST_RUN.res);
   const s=JSON.stringify(item.cfg);
   if(h.some(x=>JSON.stringify(x.cfg)===s)) return;   // an identical config is already in history — no duplicate row
-  h.unshift(item); saveLS('bt_history', h.slice(0,300));
+  h.unshift(item); saveLS('bt_history', h.slice(0,300)); if(window.btSync&&btSync.code())btSync.push();
 }
 // calendar-year returns from an equity series [[date,value],…] → [[year, ret%],…]
 function yByY(eq){ if(!eq||!eq.length) return []; const by={}; eq.forEach(e=>{by[(''+e[0]).slice(0,4)]=e[1];}); const ys=Object.keys(by).sort(); const out=[], sv0=eq[0][1];
@@ -378,7 +381,7 @@ function histItem(c,r){
 }
 function saveToHistory(){
   if(!LAST_RUN) return;
-  const h=loadLS('bt_history'); h.unshift(histItem(LAST_RUN.cfg, LAST_RUN.res)); saveLS('bt_history', h.slice(0,300));
+  const h=loadLS('bt_history'); h.unshift(histItem(LAST_RUN.cfg, LAST_RUN.res)); saveLS('bt_history', h.slice(0,300)); if(window.btSync&&btSync.code())btSync.push();
   const msg=$('saveMsg'); if(msg) msg.textContent='💾 Saved to Backtest History';
 }
 function saveStrategy(){
