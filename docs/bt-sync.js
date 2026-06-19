@@ -1,45 +1,29 @@
-// Public Backtest-History for STOCKSWORLD.
-// Everyone who opens the site auto-loads the OWNER's showcase history — no login, no code to type.
-// Only the owner's own device(s) can UPDATE it: a one-time secret 'bt_owner_key' kept in that
-// browser's localStorage is checked server-side by bt_owner_set(); visitors don't have it, so they
-// are read-only. The publishable key below is public-safe (RLS on; access only via the 2 functions).
+// Shared, OPEN Backtest-History for STOCKSWORLD.
+// Every visitor auto-loads the one shared history AND can update/overwrite it — run a backtest to
+// add one, or Delete/Clear to remove. No login, no code, no owner. The publishable key + write
+// token below are public on purpose (open write); RLS is on so access is only via the 2 functions.
 (function (g) {
   'use strict';
   const URL = 'https://nebjnsndgrhumnkuipqy.supabase.co';
   const ANON = 'sb_publishable_MDlQwiVc5deii91__UNeDg_z9r4Fk98';
-  const HIST_KEY = 'bt_history', OWNER_KEY = 'bt_owner_key', CAP = 300;
+  const WRITE = 'sw_owner_8Kq2Lm9Xp4Rt7v';   // open write token — public on purpose (anyone may update)
+  const HIST_KEY = 'bt_history', CAP = 300;
   let _sb = null;
   function client() { if (!_sb && g.supabase) { try { _sb = g.supabase.createClient(URL, ANON); } catch (e) { console.warn('supabase init', e); } } return _sb; }
   const _local = () => { try { return JSON.parse(localStorage.getItem(HIST_KEY) || '[]'); } catch (e) { return []; } };
   const _saveLocal = a => { try { localStorage.setItem(HIST_KEY, JSON.stringify(a.slice(0, CAP))); } catch (e) {} };
-  const ownerKey = () => { try { return localStorage.getItem(OWNER_KEY) || ''; } catch (e) { return ''; } };
-  function _merge(a, b) { const m = {}; [].concat(a || [], b || []).forEach(x => { if (x && x.id) m[x.id] = x; }); return Object.values(m).sort((x, y) => (y.ts || 0) - (x.ts || 0)).slice(0, CAP); }
-  // Public read — the owner's showcase history, loaded automatically for every visitor.
+  // Read the shared history — auto-loaded for everyone.
   async function pull() {
     const sb = client(); if (!sb) return _local();
-    try {
-      const { data, error } = await sb.rpc('bt_public'); if (error) throw error;
-      const remote = Array.isArray(data) ? data : (data || []);
-      if (ownerKey()) {                       // owner device: keep public canonical but never lose un-pushed local runs
-        const merged = _merge(remote, _local()); _saveLocal(merged);
-        if (merged.length > remote.length) push();
-        return merged;
-      }
-      _saveLocal(remote); return remote;       // visitor: just show the public showcase
+    try { const { data, error } = await sb.rpc('bt_public'); if (error) throw error;
+      const remote = Array.isArray(data) ? data : (data || []); _saveLocal(remote); return remote;
     } catch (e) { console.warn('bt pull', e && e.message || e); return _local(); }
   }
-  // Owner write — only fires on a device that holds the owner key (visitors: no-op).
+  // Write the shared history — open to everyone.
   async function push() {
-    const sb = client(), k = ownerKey(); if (!sb || !k) return false;
-    try { const { data, error } = await sb.rpc('bt_owner_set', { secret: k, payload: _local() }); if (error) throw error; return data === true; }
+    const sb = client(); if (!sb) return false;
+    try { const { data, error } = await sb.rpc('bt_owner_set', { secret: WRITE, payload: _local() }); if (error) throw error; return data === true; }
     catch (e) { console.warn('bt push', e && e.message || e); return false; }
   }
-  g.btSync = { pull, push, isOwner: () => !!ownerKey(), configured: () => !!client(),
-    setOwnerKey: k => { try { k ? localStorage.setItem(OWNER_KEY, k) : localStorage.removeItem(OWNER_KEY); } catch (e) {} } };
-  // One-time owner unlock: open any page with ?ownerkey=YOURKEY once on a PC and that PC can publish
-  // from then on (the key is saved locally and stripped from the URL). Visitors never use this.
-  try {
-    const u = new URL(location.href), ok = u.searchParams.get('ownerkey');
-    if (ok) { localStorage.setItem(OWNER_KEY, ok); u.searchParams.delete('ownerkey'); history.replaceState(null, '', u.pathname + u.search + u.hash); }
-  } catch (e) {}
+  g.btSync = { pull, push, configured: () => !!client() };
 })(window);
