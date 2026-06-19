@@ -26,7 +26,9 @@ def conval(s, qe):
         if r[0] == qe: return r[3]
     return None
 
-AUD = re.compile(r'(independent auditor|auditor.s report|we have audited|to the (board|members))', re.I)
+AUD = re.compile(r'(independent auditor|auditor.?s report|limited review|review report|we have audited|'
+                 r'we draw attention|emphasis of matter|our (conclusion|opinion|review)|based on our (review|audit)|'
+                 r'to the (board|members)|key (standalone )?financial)', re.I)
 PFT = re.compile(r'profit\s*/?\s*\(?\s*loss\)?\s*(after tax|for the (period|quarter|year))', re.I)
 DEC = re.compile(r'\d[\d,]*\.\d\d')
 SEG = re.compile(r'(segment (revenue|result|report|asset|liabilit)|disclosures? in compliance|'
