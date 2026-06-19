@@ -388,14 +388,20 @@ async function saveToHistory(){
   const h=loadLS('bt_history'); h.unshift(histItem(LAST_RUN.cfg, LAST_RUN.res)); saveLS('bt_history', h.slice(0,300)); if(window.btSync)btSync.push();
   const msg=$('saveMsg'); if(msg) msg.textContent='💾 Saved to Backtest History';
 }
-function saveStrategy(){
+async function saveStrategy(){
   if(!LAST_RUN) return;
   const def=strategyLabel(LAST_RUN.cfg);
   const name=prompt('Name this strategy:', def);
   if(!name) return;
+  const owner = !!(window.btSync && btSync.isOwner());
+  // owner: refresh from the shared list first so we don't clobber strategies saved on another device
+  if(owner && window.btSync){ try{ await btSync.pullStrategies(); }catch(e){} }
   const s=loadLS('bt_strategies'); s.unshift({ id:'s'+Date.now().toString(36), ts:Date.now(), name:name.trim(), cfg:LAST_RUN.cfg });
   saveLS('bt_strategies', s);
-  const msg=$('saveMsg'); if(msg) msg.textContent='⭐ Saved strategy "'+name.trim()+'" — see Saved Strategies';
+  if(owner && window.btSync){ try{ await btSync.pushStrategies(); }catch(e){} }
+  const msg=$('saveMsg'); if(msg) msg.textContent = owner
+    ? ('⭐ Published "'+name.trim()+'" to Saved Strategies (visible to everyone)')
+    : ('⭐ Saved "'+name.trim()+'" locally — see Saved Strategies');
 }
 
 /* ---- extended technical factors (close + turnover + Nifty; no fundamentals) ---- */

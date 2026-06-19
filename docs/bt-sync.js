@@ -28,7 +28,26 @@
     try { const { data, error } = await sb.rpc('bt_owner_set', { secret: WRITE, payload: _local() }); if (error) throw error; return data === true; }
     catch (e) { console.warn('bt push', e && e.message || e); return false; }
   }
-  g.btSync = { pull, push, isOwner: () => !!ownerKey(), configured: () => !!client(),
+  // ---- Shared SAVED STRATEGIES (owner-curated: everyone reads; the owner publishes) ----
+  const STRAT_KEY = 'bt_strategies';
+  const _localStr = () => { try { return JSON.parse(localStorage.getItem(STRAT_KEY) || '[]'); } catch (e) { return []; } };
+  const _saveLocalStr = a => { try { localStorage.setItem(STRAT_KEY, JSON.stringify(a.slice(0, CAP))); } catch (e) {} };
+  async function pullStrategies() {
+    const sb = client(); if (!sb) return _localStr();
+    try {
+      const { data, error } = await sb.rpc('bt_strats_public'); if (error) throw error;
+      const remote = Array.isArray(data) ? data : (data || []);
+      // first run: if the shared list is empty but this (owner) browser has strategies, seed it up
+      if (!remote.length && ownerKey() && _localStr().length) { await pushStrategies(); return _localStr(); }
+      _saveLocalStr(remote); return remote;
+    } catch (e) { console.warn('strat pull', e && e.message || e); return _localStr(); }
+  }
+  async function pushStrategies() {
+    const sb = client(); if (!sb) return false;
+    try { const { data, error } = await sb.rpc('bt_strats_set', { secret: WRITE, payload: _localStr() }); if (error) throw error; return data === true; }
+    catch (e) { console.warn('strat push', e && e.message || e); return false; }
+  }
+  g.btSync = { pull, push, pullStrategies, pushStrategies, isOwner: () => !!ownerKey(), configured: () => !!client(),
     setOwnerKey: k => { try { k ? localStorage.setItem(OWNER_KEY, k) : localStorage.removeItem(OWNER_KEY); } catch (e) {} } };
   // Owner-UI unlock: open any page with ?ownerkey=YOURKEY once on a PC to reveal the Delete/Clear controls there.
   try {

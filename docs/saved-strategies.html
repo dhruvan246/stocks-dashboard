@@ -7,6 +7,8 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./bt-sync.js"></script>
 <style>
   body{font-feature-settings:"tnum" 1}
   .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
@@ -115,6 +117,7 @@ function clampDate(d, lo, hi) { return d < lo ? lo : d > hi ? hi : d; }
 /* ---------- card list ---------- */
 function render() {
   const items = strategies();
+  const OWNER = !!(window.btSync && btSync.isOwner());   // only the owner sees add/delete controls
   if (!items.length) {
     $('list').innerHTML = '<div class="card p-8 text-center text-slate-400 text-sm md:col-span-3">No saved strategies yet. Run a backtest and click “⭐ Save as Strategy”.</div>';
     return;
@@ -125,7 +128,7 @@ function render() {
     return `<div class="card p-4 flex flex-col" data-card="${it.id}">
       <div class="flex items-start justify-between gap-2">
         <div class="font-bold text-slate-900 leading-snug">${esc(it.name)}</div>
-        <button class="text-slate-300 hover:text-red-500 text-sm shrink-0" data-del="${it.id}" title="Delete">🗑️</button>
+        ${OWNER ? `<button class="text-slate-300 hover:text-red-500 text-sm shrink-0" data-del="${it.id}" title="Delete">🗑️</button>` : ''}
       </div>
       <div class="text-[11px] text-slate-500 mt-1.5 flex items-center gap-1.5 flex-wrap">
         <span class="font-semibold text-indigo-600">📊 ${esc(universeLabel(c))}</span><span>·</span>
@@ -148,7 +151,7 @@ function render() {
     </div>`;
   }).join('');
   // wire buttons
-  $('list').querySelectorAll('[data-del]').forEach(b => b.onclick = () => { saveLS('bt_strategies', strategies().filter(x => x.id !== b.dataset.del)); render(); computeAllPerf(); });
+  $('list').querySelectorAll('[data-del]').forEach(b => b.onclick = () => { saveLS('bt_strategies', strategies().filter(x => x.id !== b.dataset.del)); if (window.btSync) btSync.pushStrategies(); render(); computeAllPerf(); });
   $('list').querySelectorAll('[data-bt]').forEach(b => b.onclick = () => { const it = strategies().find(x => x.id === b.dataset.bt); if (it) { localStorage.setItem('bt_load', JSON.stringify(it.cfg)); location.href = './stock-backtest.html'; } });
   $('list').querySelectorAll('[data-picks]').forEach(b => b.onclick = () => openPicks(b.dataset.picks));
 }
@@ -366,7 +369,8 @@ function runHold() {
 }
 
 /* ---------- boot ---------- */
-$('clearAll').onclick = () => { if (confirm('Delete all saved strategies?')) { saveLS('bt_strategies', []); render(); } };
+$('clearAll').onclick = () => { if (confirm('Delete ALL shared strategies for everyone?')) { saveLS('bt_strategies', []); if (window.btSync) btSync.pushStrategies(); render(); } };
+if ($('clearAll') && !(window.btSync && btSync.isOwner())) $('clearAll').style.display = 'none';   // visitors can't clear the shared list
 $('mClose').onclick = closeModal;
 $('modal').addEventListener('click', e => { if (e.target === $('modal')) closeModal(); });
 $('mRefresh').onclick = () => { LIVE = null; refreshPicks(); startLive(); };
@@ -378,6 +382,7 @@ $('hCompute').onclick = runHold;
 $('mAlsoToggle').onclick = () => { const a = $('mAlso'); a.classList.toggle('hidden'); $('mAlsoToggle').innerHTML = $('mAlsoToggle').innerHTML.replace(a.classList.contains('hidden') ? '▾' : '▸', a.classList.contains('hidden') ? '▸' : '▾'); };
 
 (async function boot() {
+  if (window.btSync) { try { await btSync.pullStrategies(); } catch (e) {} }   // load the shared strategies (everyone)
   render();   // show cards immediately (perf = "computing…")
   if (!strategies().length) { $('status').textContent = ''; return; }
   $('status').textContent = 'Loading survivorship-free data…';
