@@ -30,6 +30,16 @@ def ca_factor(r):
         if abs(r / f - 1) <= 0.08: return f
     return 1.0
 
+# Known FALSE corporate-action detections: a market crash whose overnight drop ca_factor mis-read as
+# a split, divided it out, and (after re-anchoring) mis-scaled the pre-crash history. NSE's CA feed
+# never lists these (they aren't real actions), so build_corp_actions can't surface them and the
+# 28-day self_heal window can't reach them. self_heal reconciles these UNCONDITIONALLY every run
+# (keep the drop as a genuine move). Idempotent: once the baked-in mis-scale is undone, the bin's
+# ex-date ratio already equals the raw ratio, so applied_f == 1 and it no-ops.
+#   ADANIENT 2023-02-01/02 — Hindenburg crash + FPO withdrawal (2/3 x 3/4 = 1/2 false halving of all
+#   pre-crash history -> a too-low 52w high -> wrongly passes Distance-from-52w-High filters in 2023)
+LEGACY_FALSE_CA = [("ADANIENT", 20230201), ("ADANIENT", 20230202)]
+
 def load_base():
     # The release asset is the MERGED source-of-truth (renamed tickers consolidated). We do NOT fall
     # back to the in-repo docs copy — that copy is an old UN-merged build, and appending to it would
@@ -61,6 +71,11 @@ def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
     for sym, exset in NOADJ.items():
         for ex in exset:
             if od(ex) >= cutoff: events.append((sym, ex, None, True))
+    # Legacy false-CA corrections: reconciled every run regardless of age (idempotent), to converge
+    # the release-asset loop on data the 28-day window + NSE-derived noadjust can never reach.
+    for sym, ex in LEGACY_FALSE_CA:
+        if not any(e[0] == sym and e[1] == ex for e in events):
+            events.append((sym, ex, None, True))
     if not events: return 0
     daycache = {}
     def raw_close(ymd, sym):

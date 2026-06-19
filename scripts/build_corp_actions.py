@@ -26,6 +26,16 @@ def is_demerger(subj):
     s = (subj or "").lower()
     return any(k in s for k in DEMERGER_KW)
 
+
+# Hardcoded FALSE corporate-action detections that are NOT in NSE's corporate-actions feed: a market
+# crash whose overnight drop ca_factor mis-reads as a split/bonus, so the build divides it out and
+# (after re-anchoring) mis-scales the pre-crash history. NSE never lists these (they aren't real
+# actions), so without this they'd be lost on every daily regeneration. Merged into `noadjust` =
+# "keep the drop as a genuine move, do NOT divide it out".
+#   ADANIENT  2023-02-01/02 — Hindenburg crash + FPO withdrawal (2/3 x 3/4 = 1/2 false halving)
+#   ADANIPOWER 2020-03-12   — COVID crash mis-read as 3:4
+MANUAL_NOADJUST = {"ADANIENT": [20230201, 20230202], "ADANIPOWER": [20200312]}
+
 def official_factor(subj):
     """Return (price_factor, label) for a split/bonus subject, else (None, None).
     Split: face value Rs X -> Rs Y  => factor Y/X.   Bonus B:A (B new per A held) => A/(A+B)."""
@@ -72,6 +82,10 @@ def fetch():
 
 def main():
     cmap, demap = fetch()
+    # Merge the hardcoded false-CA overrides so they survive this daily regeneration (NSE's feed
+    # doesn't list market crashes, so they'd vanish otherwise).
+    for sym, exs in MANUAL_NOADJUST.items():
+        demap.setdefault(sym, set()).update(exs)
     out = {
         "factors":  {sym: sorted([k, v] for k, v in d.items()) for sym, d in cmap.items()},
         "noadjust": {sym: sorted(s) for sym, s in demap.items()},
