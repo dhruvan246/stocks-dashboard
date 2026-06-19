@@ -33,7 +33,7 @@
     <h1 class="text-xl md:text-2xl font-bold text-slate-900">📜 Backtest History</h1>
     <button id="clearAll" class="text-xs text-red-600 hover:underline font-semibold">Clear all</button>
   </div>
-  <p class="text-xs text-slate-500 mb-4">Shared backtest history — anyone can <b>run a backtest to add one</b>, or Delete / Clear. Click <b>Load</b> to re-open &amp; re-run a setup. <a href="./stock-backtest.html" class="text-indigo-600 hover:underline">← back to Backtest</a></p>
+  <p class="text-xs text-slate-500 mb-4">Shared backtest history — anyone can <b>run a backtest to add one</b>. Click <b>Load</b> to re-open &amp; re-run a setup. <a href="./stock-backtest.html" class="text-indigo-600 hover:underline">← back to Backtest</a></p>
   <div id="list"></div>
 </main>
 
@@ -64,7 +64,7 @@ function render(){
         <td class="text-right px-3">${fmtINR(m.finalV)}</td>
         <td class="px-3 whitespace-nowrap text-right">
           <button class="text-blue-600 hover:underline text-xs font-semibold" data-load="${it.id}">Load</button>
-          <button class="text-red-500 hover:underline text-xs ml-2" data-del="${it.id}">Delete</button></td></tr>${hasY?`
+          ${OWNER?`<button class="text-red-500 hover:underline text-xs ml-2" data-del="${it.id}">Delete</button>`:''}</td></tr>${hasY?`
       <tr id="exp_${it.id}" style="display:none"><td colspan="8" class="px-3 pb-3 bg-slate-50">
         <div class="text-[11px] uppercase text-slate-500 mb-1 pt-1">📅 Calendar-year returns — strategy vs Nifty</div>
         <div class="overflow-x-auto"><table class="text-xs"><thead><tr><th class="px-2 text-left"></th>${it.yby.map(y=>`<th class="px-2 py-0.5 text-right">${y[0]}</th>`).join('')}</tr></thead><tbody>
@@ -76,9 +76,11 @@ function render(){
   $('list').querySelectorAll('[data-load]').forEach(b=>b.onclick=()=>{const it=load().find(x=>x.id===b.dataset.load); if(it){localStorage.setItem('bt_load',JSON.stringify(it.cfg)); location.href='./stock-backtest.html';}});
   $('list').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{save(load().filter(x=>x.id!==b.dataset.del)); render();});
 }
-$('clearAll').onclick=()=>{ if(confirm('Clear the shared backtest history for everyone?')){ save([]); render(); } };
+const OWNER = !!(window.btSync && btSync.isOwner());
+if($('clearAll') && !OWNER) $('clearAll').style.display='none';   // visitors can add, but not erase via the UI
+$('clearAll').onclick=()=>{ if(confirm('Clear the ENTIRE shared history for everyone?')){ save([]); render(); } };
 
-// auto-load the shared history (anyone can add / edit), then render
+// auto-load the shared history (everyone), then render
 (async()=>{ if(window.btSync){ try{ await btSync.pull(); }catch(e){} } render(); })();
 </script>
 </body>
