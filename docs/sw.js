@@ -6,7 +6,7 @@
  *     requests (the sf-data repo, Supabase, the live-quote Worker) — those stay network-only
  *     so data is always fresh and the cache never bloats.
  * Bump CACHE when the shell asset list changes. */
-const CACHE = 'sw-shell-v1';
+const CACHE = 'sw-shell-v2';
 const SHELL = [
   './', './nse-bse-dashboard.html', './stock-backtest.html', './saved-strategies.html',
   './backtest-history.html', './mutual-funds.html', './fii-dii.html', './backtest.html',
@@ -34,27 +34,18 @@ self.addEventListener('fetch', function (e) {
   if (url.origin !== location.origin) return;                       // leave cross-origin (data repo / Supabase / Worker) alone
   if (url.pathname.endsWith('.bin') || url.pathname.endsWith('.json')) return;  // never cache big blobs / live data
 
-  const isHTML = req.mode === 'navigate' || (req.headers.get('accept') || '').indexOf('text/html') >= 0;
-  if (isHTML) {
-    // network-first so updates show immediately; fall back to cache when offline
-    e.respondWith(
-      fetch(req).then(function (r) {
-        const cp = r.clone(); caches.open(CACHE).then(function (c) { c.put(req, cp); });
-        return r;
-      }).catch(function () {
-        return caches.match(req).then(function (m) { return m || caches.match('./nse-bse-dashboard.html'); });
-      })
-    );
-  } else {
-    // stale-while-revalidate for static assets (css / js / png)
-    e.respondWith(
-      caches.match(req).then(function (m) {
-        const f = fetch(req).then(function (r) {
-          if (r && r.status === 200) { const cp = r.clone(); caches.open(CACHE).then(function (c) { c.put(req, cp); }); }
-          return r;
-        }).catch(function () { return m; });
-        return m || f;
-      })
-    );
-  }
+  // Network-first for everything cacheable (HTML / CSS / JS / PNG): always fresh when online,
+  // so fixes land immediately; fall back to cache only when offline.
+  e.respondWith(
+    fetch(req).then(function (r) {
+      if (r && r.status === 200) { const cp = r.clone(); caches.open(CACHE).then(function (c) { c.put(req, cp); }); }
+      return r;
+    }).catch(function () {
+      return caches.match(req).then(function (m) {
+        if (m) return m;
+        const wantsHTML = req.mode === 'navigate' || (req.headers.get('accept') || '').indexOf('text/html') >= 0;
+        return wantsHTML ? caches.match('./nse-bse-dashboard.html') : undefined;
+      });
+    })
+  );
 });

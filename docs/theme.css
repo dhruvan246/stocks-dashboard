@@ -261,3 +261,14 @@ html[data-theme] table{ -webkit-overflow-scrolling:touch; }
   html[data-theme] input:not([type="checkbox"]):not([type="radio"]){ min-height:38px; }
   html[data-theme] .sw-theme-switch button{ min-height:0; }   /* pill buttons keep their own size */
 }
+
+/* backtest "Filter criteria" rows: the factor <select> has very long option labels, and a
+   flex child won't shrink below its content (min-width:auto), so the row overflowed the screen
+   on mobile. Let the selects shrink; on phones, wrap so the factor dropdown gets its own line. */
+html[data-theme] .fRow{ min-width:0; }
+html[data-theme] .fRow .f-field, html[data-theme] .fRow .f-op, html[data-theme] .fRow .inp{ min-width:0; }
+@media (max-width:640px){
+  html[data-theme] .fRow{ flex-wrap:wrap; }
+  html[data-theme] .fRow .f-field{ flex:1 1 100%; }              /* factor dropdown on its own full-width line */
+  html[data-theme] .fRow .f-val{ flex:1 1 auto; width:auto; }    /* value input grows to fill the second line */
+}
