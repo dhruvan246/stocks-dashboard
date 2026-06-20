@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Stock</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<style>
+  body{font-feature-settings:"tnum" 1}
+  .pos{color:#15803d;font-weight:600}.neg{color:#b91c1c;font-weight:600}
+  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
+  .lbl{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.02em}
+  #ov{position:fixed;inset:0;background:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50}
+  .rng{cursor:pointer}
+  .rng.on{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff}
+  #chartWrap{position:relative}
+  #tip{position:absolute;pointer-events:none;display:none;background:var(--surface,#fff);border:1px solid var(--border,#e2e8f0);border-radius:.5rem;padding:.35rem .55rem;font-size:.72rem;box-shadow:0 6px 18px -8px rgba(0,0,0,.35);white-space:nowrap;z-index:5}
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+<div id="ov"><div class="w-10 h-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-3"></div><p class="text-sm text-slate-600" id="ovT">Loading market data (~17 MB, once)…</p></div>
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./nse-bse-dashboard.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav class="flex items-center gap-1 overflow-x-auto">
+      <a href="./nse-bse-dashboard.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">📈<span class="hidden sm:inline">Stocks</span></a>
+      <a href="./stock-backtest.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">🧪<span class="hidden sm:inline">Backtest</span></a>
+      <a href="./saved-strategies.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">⭐<span class="hidden sm:inline">Strategies</span></a>
+      <a href="./mutual-funds.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">💰<span class="hidden sm:inline">Funds</span></a>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-screen-xl mx-auto px-4 py-5 space-y-4">
+  <!-- title -->
+  <div class="card p-4">
+    <div class="flex flex-wrap items-start justify-between gap-3">
+      <div class="min-w-0">
+        <div class="flex items-center gap-2 flex-wrap">
+          <h1 id="sSym" class="text-2xl font-extrabold text-slate-900 tracking-tight">—</h1>
+          <span id="sDead" class="hidden text-[10px] font-bold uppercase bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">delisted</span>
+        </div>
+        <div id="sName" class="text-sm text-slate-500 mt-0.5"></div>
+        <div id="sInd" class="text-xs text-slate-400 mt-0.5"></div>
+      </div>
+      <div class="text-right">
+        <div id="sPrice" class="text-2xl font-extrabold text-slate-900">—</div>
+        <div id="sChg" class="text-sm"></div>
+        <div id="sAsof" class="text-[11px] text-slate-400 mt-0.5"></div>
+      </div>
+    </div>
+    <div id="sChips" class="flex flex-wrap gap-1.5 mt-3"></div>
+    <div class="mt-3 flex flex-wrap items-center gap-2">
+      <a id="sBt" class="text-xs font-semibold text-indigo-600 hover:underline" href="#">🧪 Backtest a strategy →</a>
+      <span class="text-slate-300">·</span>
+      <form id="sForm" class="flex items-center gap-1">
+        <input id="sSearch" placeholder="Look up another symbol…" class="border border-slate-300 rounded-lg px-2.5 py-1 text-xs w-44" />
+        <button class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-800 text-white">Go</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- quick stats -->
+  <div id="stats" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3"></div>
+
+  <!-- price chart -->
+  <div class="card p-4">
+    <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+      <div class="text-sm font-semibold text-slate-700">📈 Price <span class="text-slate-400 font-normal">(split/bonus-adjusted close · hover for values)</span></div>
+      <div id="ranges" class="flex items-center gap-1 text-[11px] font-semibold"></div>
+    </div>
+    <div id="chartWrap"><div id="chart"></div><div id="tip"></div></div>
+  </div>
+
+  <div class="grid lg:grid-cols-2 gap-4">
+    <!-- returns -->
+    <div class="card p-4">
+      <div class="text-sm font-semibold text-slate-700 mb-2">📅 Returns <span class="text-slate-400 font-normal">— stock vs Nifty 500</span></div>
+      <div id="returns" class="overflow-x-auto"></div>
+    </div>
+    <!-- technicals -->
+    <div class="card p-4">
+      <div class="text-sm font-semibold text-slate-700 mb-2">📊 Technicals <span class="text-slate-400 font-normal">— as of latest close</span></div>
+      <div id="tech" class="grid grid-cols-2 gap-x-4 gap-y-1.5 text-sm"></div>
+    </div>
+  </div>
+
+  <!-- fundamentals -->
+  <div class="card p-4">
+    <div class="text-sm font-semibold text-slate-700 mb-2">💰 Quarterly net profit <span class="text-slate-400 font-normal">— point-in-time (₹ cr), consolidated where available, YoY growth</span></div>
+    <div id="funds" class="overflow-x-auto text-sm">—</div>
+  </div>
+
+  <p class="text-[11px] text-slate-400">Data: survivorship-free daily history (1996→latest), point-in-time quarterly earnings, NSE/BSE. Prices are split/bonus-adjusted close; "Last close" shows the raw traded price. Not investment advice.</p>
+</main>
+
+<script src="./backtest-engine.js"></script>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const qs=new URLSearchParams(location.search);
+let SYM=(qs.get('sym')||qs.get('s')||'').trim().toUpperCase();
+let TKR=null, CHART=null, RANGE='Max';
+
+function fail(msg){ $('ov').style.display='none'; $('sSym').textContent=SYM||'?'; $('sName').innerHTML=`<span class="neg">${esc(msg)}</span>`; }
+
+/* ---------- price chart (SVG line + area + hover) ---------- */
+function seriesPoints(){
+  const s=SERIES[TKR]; const out=[];
+  for(let i=0;i<s.d.length;i++) out.push([s.d[i], s.p[i]/100]);   // [offset, price]
+  return out;
+}
+function rangeDays(r){ return {'1M':30,'6M':182,'1Y':365,'3Y':1095,'5Y':1825,'Max':1e9}[r]||1e9; }
+function drawChart(){
+  const all=seriesPoints(); if(!all.length){ $('chart').innerHTML='<div class="text-slate-400 text-sm py-10 text-center">No price history.</div>'; return; }
+  const lastOff=all[all.length-1][0], lo=lastOff-rangeDays(RANGE);
+  let pts=all.filter(p=>p[0]>=lo); if(pts.length<2) pts=all.slice(-2);
+  // downsample to ~420 points for smooth render
+  const MAX=420; if(pts.length>MAX){ const step=pts.length/MAX, ds=[]; for(let i=0;i<MAX;i++) ds.push(pts[Math.floor(i*step)]); ds.push(pts[pts.length-1]); pts=ds; }
+  const W=900,H=300,PADL=52,PADR=12,PADT=12,PADB=24;
+  const xs=pts.map(p=>p[0]), ys=pts.map(p=>p[1]);
+  const x0=xs[0],x1=xs[xs.length-1]; let yMin=Math.min(...ys),yMax=Math.max(...ys); if(yMin===yMax){yMin*=.99;yMax*=1.01;}
+  const X=o=>PADL+(o-x0)/((x1-x0)||1)*(W-PADL-PADR);
+  const Y=v=>PADT+(1-(v-yMin)/((yMax-yMin)||1))*(H-PADT-PADB);
+  const up=ys[ys.length-1]>=ys[0];
+  const line=pts.map((p,i)=>(i?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)).join(' ');
+  const area=line+` L ${X(x1).toFixed(1)} ${Y(yMin).toFixed(1)} L ${X(x0).toFixed(1)} ${Y(yMin).toFixed(1)} Z`;
+  const stroke=up?'#16a34a':'#dc2626', fill=up?'rgba(22,163,74,.10)':'rgba(220,38,38,.10)';
+  // y grid (4 lines)
+  let grid='';
+  for(let g=0;g<=4;g++){ const v=yMin+(yMax-yMin)*g/4, y=Y(v).toFixed(1);
+    grid+=`<line x1="${PADL}" y1="${y}" x2="${W-PADR}" y2="${y}" stroke="var(--border,#e5e7eb)" stroke-width="1"/>`+
+          `<text x="${PADL-6}" y="${(+y+3)}" text-anchor="end" font-size="10" fill="var(--text-faint,#94a3b8)">${v>=1000?Math.round(v).toLocaleString('en-IN'):v.toFixed(1)}</text>`; }
+  // x labels (start, mid, end dates)
+  let xlab='';
+  [0,Math.floor(pts.length/2),pts.length-1].forEach(i=>{ const d=isoOff(pts[i][0]); xlab+=`<text x="${X(pts[i][0]).toFixed(1)}" y="${H-6}" text-anchor="middle" font-size="10" fill="var(--text-faint,#94a3b8)">${d.slice(0,7)}</text>`; });
+  $('chart').innerHTML=`<svg id="svg" viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="none" style="display:block">
+    ${grid}<path d="${area}" fill="${fill}" stroke="none"/><path d="${line}" fill="none" stroke="${stroke}" stroke-width="2"/>
+    <line id="cross" x1="0" y1="${PADT}" x2="0" y2="${H-PADB}" stroke="var(--text-faint,#94a3b8)" stroke-width="1" stroke-dasharray="3 3" style="display:none"/>
+    <circle id="dot" r="3.5" fill="${stroke}" style="display:none"/>${xlab}</svg>`;
+  CHART={pts,X,Y,W,H,PADL,PADR,PADT,PADB};
+  wireHover();
+}
+function wireHover(){
+  const svg=$('svg'); if(!svg||!CHART) return;
+  const {pts,X,Y,W}=CHART;
+  svg.onmousemove=e=>{ const r=svg.getBoundingClientRect(); const px=(e.clientX-r.left)/r.width*W;
+    let best=0,bd=1e9; for(let i=0;i<pts.length;i++){ const dx=Math.abs(X(pts[i][0])-px); if(dx<bd){bd=dx;best=i;} }
+    const p=pts[best], cx=X(p[0]), cy=Y(p[1]);
+    const cr=$('cross'), dot=$('dot'); cr.setAttribute('x1',cx);cr.setAttribute('x2',cx);cr.style.display='';dot.setAttribute('cx',cx);dot.setAttribute('cy',cy);dot.style.display='';
+    const tip=$('tip'); tip.style.display='block'; tip.innerHTML=`<b>${isoOff(p[0])}</b><br>₹${p[1]>=1000?Math.round(p[1]).toLocaleString('en-IN'):p[1].toFixed(2)}`;
+    const wrapW=$('chartWrap').clientWidth, tx=cx/W*wrapW; tip.style.left=Math.min(Math.max(tx+10,4),wrapW-110)+'px'; tip.style.top='6px';
+  };
+  svg.onmouseleave=()=>{ $('cross').style.display='none';$('dot').style.display='none';$('tip').style.display='none'; };
+}
+
+/* ---------- stats / returns / technicals / fundamentals ---------- */
+function statCard(lbl,val,cls){ return `<div class="card p-3"><div class="lbl text-slate-500">${lbl}</div><div class="text-lg font-bold ${cls||'text-slate-900'} mt-0.5">${val}</div></div>`; }
+function render(){
+  const off=SF_END_OFF, s=SERIES[TKR], m=META[TKR];
+  const n=s.p.length, adjLast=s.p[n-1]/100, adjPrev=n>1?s.p[n-2]/100:adjLast;
+  const rawLast=m.raw!=null?m.raw:adjLast;
+  const dayChg=adjPrev>0?(adjLast/adjPrev-1)*100:0;
+  const hl=hl52(TKR,off)||{hi:adjLast,low:adjLast};
+  const d52=(hl.hi-adjLast)/hl.hi*100, d52low=(adjLast-hl.low)/hl.low*100;
+  const rsi=rsi14(TKR,off);
+  const r1y=retPctAt(TKR,off,365);
+  const tech=computeTech(TKR,off,adjLast);
+  // header
+  $('sSym').textContent=m.symbol; document.title='STOCKSWORLD · '+m.symbol;
+  $('sName').textContent=m.name||''; $('sInd').textContent=m.industry||'';
+  if(!m.alive) $('sDead').classList.remove('hidden');
+  $('sPrice').textContent='₹'+(rawLast>=1000?Math.round(rawLast).toLocaleString('en-IN'):rawLast.toFixed(2));
+  $('sChg').innerHTML=`<span class="${dayChg>=0?'pos':'neg'}">${pct(dayChg)}</span> <span class="text-slate-400 text-xs">1-day</span>`;
+  $('sAsof').textContent='as of '+isoOff(off);
+  $('sBt').href='./stock-backtest.html';
+  // chips: index memberships + F&O
+  const today=isoOff(off); const chips=[];
+  try{ for(const idx in (IDXH||{})){ const mem=membersAsOf(idx,today); if(mem&&mem.has(TKR)) chips.push(idx); } }catch(e){}
+  let fno=false; try{ const f=membersAsOf('__FNO__',today); fno=!!(f&&f.has(TKR)); }catch(e){}
+  $('sChips').innerHTML=(fno?`<span class="text-[10px] font-bold bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full">F&amp;O</span>`:'')+
+    chips.map(c=>`<span class="text-[10px] font-semibold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">${esc(c)}</span>`).join('')||'<span class="text-[11px] text-slate-400">Not in any tracked index currently.</span>';
+  // quick stats
+  $('stats').innerHTML=[
+    statCard('Last close','₹'+(rawLast>=1000?Math.round(rawLast).toLocaleString('en-IN'):rawLast.toFixed(2))),
+    statCard('1-year', r1y==null?'—':pct(r1y), r1y>=0?'pos':'neg'),
+    statCard('% from 52w high', d52.toFixed(2)+'%','neg'),
+    statCard('% above 52w low', '+'+d52low.toFixed(2)+'%','pos'),
+    statCard('RSI (14)', rsi==null?'—':rsi.toFixed(1), rsi==null?'':(rsi>=70?'neg':rsi<=30?'pos':'text-slate-900')),
+    statCard('Volatility (ann)', tech.vol==null?'—':tech.vol.toFixed(1)+'%'),
+  ].join('');
+  // ranges
+  $('ranges').innerHTML=['1M','6M','1Y','3Y','5Y','Max'].map(r=>`<span class="rng ${r===RANGE?'on':'text-slate-500 hover:bg-slate-100'} px-2 py-1 rounded-md border border-slate-200" data-r="${r}">${r}</span>`).join('');
+  $('ranges').querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{ RANGE=b.dataset.r; drawChart(); $('ranges').querySelectorAll('[data-r]').forEach(x=>x.classList.toggle('on',x.dataset.r===RANGE)); $('ranges').querySelectorAll('[data-r]').forEach(x=>{if(x.dataset.r!==RANGE)x.classList.add('text-slate-500');else x.classList.remove('text-slate-500');}); });
+  drawChart();
+  // returns table (stock vs Nifty)
+  const periods=[['1M',30],['3M',91],['6M',182],['1Y',365],['3Y',1095],['5Y',1825]];
+  const yStart=dayOff(isoOff(off).slice(0,4)+'-01-01');
+  const firstOff=s.d[0];
+  const rows=periods.map(([l,d])=>{ const sr=retPctAt(TKR,off,d), nr=niftyRetAt(off,d); return [l,sr,nr]; });
+  rows.push(['YTD', retPctAt(TKR,off,off-yStart), niftyRetAt(off,off-yStart)]);
+  rows.push(['Since '+isoOff(firstOff).slice(0,4), retPctAt(TKR,off,off-firstOff), niftyRetAt(off,off-firstOff)]);
+  const years=(off-firstOff)/365.25; const p0=priceAt(TKR,firstOff); const cagr=(p0>0&&years>0)?(Math.pow(adjLast/p0,1/years)-1)*100:null;
+  $('returns').innerHTML=`<table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr><th class="text-left py-1 pr-2">Period</th><th class="text-right px-2">Stock</th><th class="text-right px-2">Nifty 500</th></tr></thead><tbody>
+    ${rows.map(([l,sr,nr])=>`<tr class="border-b border-slate-50"><td class="py-1 pr-2 font-medium">${l}</td><td class="text-right px-2 ${sr>=0?'pos':'neg'}">${sr==null?'—':pct(sr)}</td><td class="text-right px-2 text-xs ${nr>=0?'pos':'neg'}">${nr==null?'—':pct(nr)}</td></tr>`).join('')}
+    <tr class="border-t border-slate-200"><td class="py-1 pr-2 font-semibold">CAGR (full)</td><td class="text-right px-2 font-semibold ${cagr>=0?'pos':'neg'}">${cagr==null?'—':pct(cagr)}</td><td class="text-right px-2"></td></tr>
+  </tbody></table>`;
+  // technicals
+  const tline=(l,v)=>`<div class="text-slate-500">${l}</div><div class="text-right font-semibold">${v}</div>`;
+  const num=(v,suf)=>v==null?'—':(v.toFixed(2)+(suf||''));
+  $('tech').innerHTML=[
+    tline('SMA 50 distance', tech.dma50==null?'—':`<span class="${tech.dma50>=0?'pos':'neg'}">${pct(tech.dma50)}</span>`),
+    tline('SMA 200 distance', tech.dma200==null?'—':`<span class="${tech.dma200>=0?'pos':'neg'}">${pct(tech.dma200)}</span>`),
+    tline('RS vs Nifty (6m)', tech.rsNifty==null?'—':`<span class="${tech.rsNifty>=0?'pos':'neg'}">${pct(tech.rsNifty)}</span>`),
+    tline('Beta (6m)', num(tech.beta)),
+    tline('Max drawdown (6m)', tech.mdd6==null?'—':`<span class="neg">-${tech.mdd6.toFixed(2)}%</span>`),
+    tline('MACD hist', num(tech.macd)),
+    tline('Stochastic %K', num(tech.stoch)),
+    tline('Bollinger %b', num(tech.bollB)),
+    tline('Days since 52w high', tech.daysHigh==null?'—':tech.daysHigh),
+    tline('Up-day % (3m)', num(tech.upPct,'%')),
+    tline('Avg turnover (20d)', tech.turnover==null?'—':'₹'+Math.round(tech.turnover).toLocaleString('en-IN')+' L'),
+    tline('Delivery % (20d)', tech.delivPct==null?'—':tech.delivPct.toFixed(1)+'%'),
+  ].join('');
+  // fundamentals (quarterly net profit, point-in-time)
+  renderFunds();
+}
+function renderFunds(){
+  const arr=(typeof FUND!=='undefined'&&FUND[TKR])?FUND[TKR]:null;
+  if(!arr||!arr.length){ $('funds').innerHTML='<span class="text-slate-400">No quarterly earnings on file for this stock.</span>'; return; }
+  const rows=arr.slice(-12);   // last 12 quarters
+  const val=q=>q[3]!=null?q[3]:(q[1]!=null?q[1]:null);   // con else std (₹ cr)
+  const basisOf=q=>q[3]!=null?'con':'std';
+  const byEnd={}; arr.forEach(q=>byEnd[q[0]]=q);
+  const yoy=q=>{ const b=byEnd[q[0]-10000]; if(!b) return null; const cv=val(q), bv=val(b); return (bv!=null&&cv!=null&&bv!==0)?(cv-bv)/Math.abs(bv)*100:null; };
+  const fq=e=>{ const s=String(e); return s.slice(0,4)+'-'+s.slice(4,6); };
+  $('funds').innerHTML=`<table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr><th class="text-left py-1 pr-2">Quarter end</th><th class="text-right px-2">Net profit (₹ cr)</th><th class="text-right px-2">Basis</th><th class="text-right px-2">YoY %</th></tr></thead><tbody>
+    ${rows.slice().reverse().map(q=>{ const v=val(q), y=yoy(q); return `<tr class="border-b border-slate-50"><td class="py-1 pr-2 font-medium">${fq(q[0])}</td><td class="text-right px-2 ${v>=0?'':'neg'}">${v==null?'—':v.toLocaleString('en-IN',{maximumFractionDigits:1})}</td><td class="text-right px-2 text-[11px] text-slate-400 uppercase">${basisOf(q)}</td><td class="text-right px-2 ${y>=0?'pos':'neg'}">${y==null?'—':pct(y)}</td></tr>`; }).join('')}
+  </tbody></table>`;
+}
+
+/* ---------- boot ---------- */
+$('sForm').onsubmit=e=>{ e.preventDefault(); const v=$('sSearch').value.trim().toUpperCase(); if(v) location.href='./stock.html?sym='+encodeURIComponent(v); };
+(async function boot(){
+  if(!SYM){ fail('No symbol given. Add ?sym=RELIANCE to the URL.'); return; }
+  try{ await loadEngineData(m=>{ const t=$('ovT'); if(t&&m) t.textContent=m; }); }
+  catch(e){ fail('Could not load market data: '+(e&&e.message||e)); return; }
+  if(!META[SYM]){ fail('“'+SYM+'” not found in the dataset.'); return; }
+  TKR=SYM;
+  try{ render(); }catch(e){ fail('Render error: '+(e&&e.message||e)); console.error(e); return; }
+  $('ov').style.display='none';
+})();
+</script>
+</body>
+</html>
