@@ -702,7 +702,7 @@ function updateStats(results) {
   const topCard = top ?
     '<div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4">' +
     '<div class="text-[11px] text-slate-500 uppercase font-semibold tracking-wide">Top Mover</div>' +
-    '<div class="text-sm font-bold mt-1 text-slate-800 truncate">' + top.symbol + '</div>' +
+    '<div class="text-sm font-bold mt-1 truncate"><a href="./stock.html?sym=' + encodeURIComponent(top.symbol) + '" class="text-slate-800 hover:text-blue-600 hover:underline">' + top.symbol + '</a></div>' +
     '<div class="text-xs gain mt-0.5">+' + top.changePercent.toFixed(2) + '%</div></div>'
     : card('Top Mover', '\u2014', '');
 
@@ -968,8 +968,8 @@ function renderBacktest(d) {
         '<div class="text-xs font-bold mt-0.5">' + (d.holdFrom || '—') + ' &rarr; ' + (d.holdTo || '—') + '</div>' +
       '</div>' +
     '</div>' +
-    '<div class="text-xs text-slate-500 mb-2">Top mover: <span class="font-semibold text-green-700">' + d.top.symbol + ' +' + d.top.holdPct.toFixed(2) + '%</span> · ' +
-      'Worst: <span class="font-semibold text-red-700">' + d.bottom.symbol + ' ' + d.bottom.holdPct.toFixed(2) + '%</span> · ' +
+    '<div class="text-xs text-slate-500 mb-2">Top mover: <span class="font-semibold text-green-700"><a href="./stock.html?sym=' + encodeURIComponent(d.top.symbol) + '" class="hover:underline">' + d.top.symbol + '</a> +' + d.top.holdPct.toFixed(2) + '%</span> · ' +
+      'Worst: <span class="font-semibold text-red-700"><a href="./stock.html?sym=' + encodeURIComponent(d.bottom.symbol) + '" class="hover:underline">' + d.bottom.symbol + '</a> ' + d.bottom.holdPct.toFixed(2) + '%</span> · ' +
       'Mean: ' + (d.avgHoldPct >= 0 ? '+' : '') + d.avgHoldPct.toFixed(2) + '% · ' +
       'Sampled from ' + d.universeSize.toLocaleString('en-IN') + ' stocks matching filters</div>';
 
