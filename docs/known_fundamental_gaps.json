@@ -1,74 +1,73 @@
 {
  "generated": "2026-06-20",
- "open_total": 212,
- "filled": 370,
  "target_total": 582,
+ "filled": 380,
+ "open_total": 202,
  "reason_counts": {
-  "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)": 74,
-  "other_unverified (not reachable by current routes / no next-q anchor)": 22,
-  "delisted_or_distressed (no usable later filing / irregular filer)": 57,
+  "no_quarterly_consolidated_comparable": 74,
+  "other_unverified_no_anchor": 22,
+  "delisted_or_distressed": 57,
   "basis_ambiguous_or_stored_is_standalone": 13,
-  "annual_only_consolidated (no quarterly consolidated column exists)": 36,
-  "nse_only_blocked (BSE has no filing; NSE 403 server-blocked)": 10
+  "annual_only_consolidated": 36
  },
- "note": "Consolidated quarterly net-profit gaps remaining after vision + 3 cross-filing passes (year-ago, Q4-via-June, preceding-quarter). All filled values verified by exact stored-anchor match; nothing assumed. NSE-only insurers need user-supplied NSE PDFs (BSE has no filing).",
+ "note": "Consolidated quarterly net-profit gaps after vision + 3 cross-filing passes + NSE curl_cffi insurer pass. All filled values verified by exact stored-anchor match or internal reconciliation; nothing assumed. NSE-only insurer gaps (LICI/SBILIFE/STARHEALTH/HDFCLIFE) fully recovered via curl_cffi (chrome TLS impersonation defeats NSE Akamai 403). Remaining open are structural: distressed/delisted (no later filing), annual-only-consolidated (no quarterly con column), or basis-ambiguous.",
  "by_symbol": {
   "ANDHRSUGAR": [
    {
     "qe": 20210930,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    },
    {
     "qe": 20220331,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "NFL": [
    {
     "qe": 20190331,
-    "reason": "other_unverified (not reachable by current routes / no next-q anchor)"
+    "reason": "other_unverified_no_anchor"
    },
    {
     "qe": 20190630,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "EIDPARRY": [
    {
     "qe": 20210331,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "RAJESHEXPO": [
    {
     "qe": 20200630,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    },
    {
     "qe": 20200930,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    },
    {
     "qe": 20201231,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    },
    {
     "qe": 20250331,
-    "reason": "other_unverified (not reachable by current routes / no next-q anchor)"
+    "reason": "other_unverified_no_anchor"
    }
   ],
   "GVKPIL": [
    {
     "qe": 20210630,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20210930,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20211231,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    }
   ],
   "SUNDARMFIN": [
@@ -100,307 +99,307 @@
   "STLTECH": [
    {
     "qe": 20220630,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "JUBLPHARMA": [
    {
     "qe": 20190630,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "PIRAMALFIN": [
    {
     "qe": 20210930,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20211231,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20220331,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20220930,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20230331,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20230630,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20230930,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20240630,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    }
   ],
   "CYIENT": [
    {
     "qe": 20250331,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "KOLTEPATIL": [
    {
     "qe": 20190630,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "CONSOFINVT": [
    {
     "qe": 20200630,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    }
   ],
   "TTKPRESTIG": [
    {
     "qe": 20190331,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "HEXT": [
    {
     "qe": 20201231,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20210331,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20210630,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20210930,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20211231,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20220331,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20220630,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20220930,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20221231,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20230331,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20230630,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20230930,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    }
   ],
   "BFUTILITIE": [
    {
     "qe": 20190331,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    },
    {
     "qe": 20241231,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "UNITECH": [
    {
     "qe": 20190331,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20210630,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    }
   ],
   "ELECON": [
    {
     "qe": 20220630,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "GPPL": [
    {
     "qe": 20190331,
-    "reason": "other_unverified (not reachable by current routes / no next-q anchor)"
+    "reason": "other_unverified_no_anchor"
    }
   ],
   "MBLINFRA": [
    {
     "qe": 20190331,
-    "reason": "other_unverified (not reachable by current routes / no next-q anchor)"
+    "reason": "other_unverified_no_anchor"
    }
   ],
   "RAMCOCEM": [
    {
     "qe": 20190331,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "DBL": [
    {
     "qe": 20210331,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "ADANIENSOL": [
    {
     "qe": 20220630,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "BORORENEW": [
    {
     "qe": 20200331,
-    "reason": "other_unverified (not reachable by current routes / no next-q anchor)"
+    "reason": "other_unverified_no_anchor"
    },
    {
     "qe": 20200630,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    },
    {
     "qe": 20200930,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    },
    {
     "qe": 20201231,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    },
    {
     "qe": 20210331,
-    "reason": "other_unverified (not reachable by current routes / no next-q anchor)"
+    "reason": "other_unverified_no_anchor"
    },
    {
     "qe": 20210630,
-    "reason": "other_unverified (not reachable by current routes / no next-q anchor)"
+    "reason": "other_unverified_no_anchor"
    },
    {
     "qe": 20210930,
-    "reason": "other_unverified (not reachable by current routes / no next-q anchor)"
+    "reason": "other_unverified_no_anchor"
    },
    {
     "qe": 20211231,
-    "reason": "other_unverified (not reachable by current routes / no next-q anchor)"
+    "reason": "other_unverified_no_anchor"
    },
    {
     "qe": 20220331,
-    "reason": "other_unverified (not reachable by current routes / no next-q anchor)"
+    "reason": "other_unverified_no_anchor"
    }
   ],
   "JSWDULUX": [
    {
     "qe": 20190331,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "BCG": [
    {
     "qe": 20240630,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    },
    {
     "qe": 20250331,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "FMGOETZE": [
    {
     "qe": 20221231,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "DALMIASUG": [
    {
     "qe": 20221231,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    },
    {
     "qe": 20230331,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    },
    {
     "qe": 20250930,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "GAYAPROJ": [
    {
     "qe": 20230331,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20230630,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20230930,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20231231,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20240331,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20240630,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20240930,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    }
   ],
   "JINDALPOLY": [
    {
     "qe": 20190331,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "CHOLAHLDNG": [
    {
     "qe": 20190331,
-    "reason": "other_unverified (not reachable by current routes / no next-q anchor)"
+    "reason": "other_unverified_no_anchor"
    },
    {
     "qe": 20190630,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "ABCAPITAL": [
    {
     "qe": 20190331,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    },
    {
     "qe": 20190930,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "GICRE": [
@@ -420,7 +419,7 @@
   "FINCABLES": [
    {
     "qe": 20190331,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "PVP": [
@@ -432,17 +431,17 @@
   "GHCL": [
    {
     "qe": 20190331,
-    "reason": "other_unverified (not reachable by current routes / no next-q anchor)"
+    "reason": "other_unverified_no_anchor"
    }
   ],
   "SONACOMS": [
    {
     "qe": 20201231,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    },
    {
     "qe": 20210331,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "KIRLFER": [
@@ -458,491 +457,475 @@
   "SAMMAANCAP": [
    {
     "qe": 20190630,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    }
   ],
   "GEOJITFSL": [
    {
     "qe": 20190930,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "ANSALAPI": [
    {
     "qe": 20190331,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20190630,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    }
   ],
   "KARURVYSYA": [
    {
     "qe": 20190930,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20191231,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20200630,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20200930,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20201231,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    }
   ],
   "AEGISVOPAK": [
    {
     "qe": 20240630,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    },
    {
     "qe": 20240930,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "SPANDANA": [
    {
     "qe": 20220331,
-    "reason": "other_unverified (not reachable by current routes / no next-q anchor)"
+    "reason": "other_unverified_no_anchor"
    },
    {
     "qe": 20220630,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    },
    {
     "qe": 20220930,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "GAEL": [
    {
     "qe": 20200331,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "HFCL": [
    {
     "qe": 20220630,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "ICICIGI": [
    {
     "qe": 20220630,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "JYOTHYLAB": [
    {
     "qe": 20190331,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "BALAMINES": [
    {
     "qe": 20190331,
-    "reason": "other_unverified (not reachable by current routes / no next-q anchor)"
+    "reason": "other_unverified_no_anchor"
    }
   ],
   "JISLJALEQS": [
    {
     "qe": 20190331,
-    "reason": "other_unverified (not reachable by current routes / no next-q anchor)"
+    "reason": "other_unverified_no_anchor"
    },
    {
     "qe": 20190630,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "COFFEEDAY": [
    {
     "qe": 20190930,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20191231,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20200331,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20200630,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20200930,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    }
   ],
   "RATNAMANI": [
    {
     "qe": 20190331,
-    "reason": "other_unverified (not reachable by current routes / no next-q anchor)"
+    "reason": "other_unverified_no_anchor"
    },
    {
     "qe": 20190630,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "JKPAPER": [
    {
     "qe": 20190331,
-    "reason": "other_unverified (not reachable by current routes / no next-q anchor)"
+    "reason": "other_unverified_no_anchor"
    },
    {
     "qe": 20190630,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "LUMAXIND": [
    {
     "qe": 20190630,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "POONAWALLA": [
    {
     "qe": 20190331,
-    "reason": "other_unverified (not reachable by current routes / no next-q anchor)"
+    "reason": "other_unverified_no_anchor"
    },
    {
     "qe": 20190630,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
-   }
-  ],
-  "SBILIFE": [
-   {
-    "qe": 20230930,
-    "reason": "nse_only_blocked (BSE has no filing; NSE 403 server-blocked)"
-   }
-  ],
-  "HDFCLIFE": [
-   {
-    "qe": 20200331,
-    "reason": "nse_only_blocked (BSE has no filing; NSE 403 server-blocked)"
-   },
-   {
-    "qe": 20200630,
-    "reason": "nse_only_blocked (BSE has no filing; NSE 403 server-blocked)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "GALLANTT": [
    {
     "qe": 20220331,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "ICICIBANK": [
    {
     "qe": 20190930,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    },
    {
     "qe": 20220930,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "J&KBANK": [
    {
     "qe": 20190930,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "MMTC": [
    {
     "qe": 20210331,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20220630,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    }
   ],
   "SUPREMEINF": [
    {
     "qe": 20240930,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    },
    {
     "qe": 20241231,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    },
    {
     "qe": 20250331,
-    "reason": "other_unverified (not reachable by current routes / no next-q anchor)"
+    "reason": "other_unverified_no_anchor"
    },
    {
     "qe": 20250630,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "BASF": [
    {
     "qe": 20210630,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20220331,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20220630,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20220930,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20221231,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20230331,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20230630,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20230930,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    }
   ],
   "ABB": [
    {
     "qe": 20191231,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20200331,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20200630,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20200930,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20201231,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20210331,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20210630,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20210930,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20211231,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20220930,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20221231,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20230331,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20230630,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20230930,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20231231,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20240331,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20240630,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20240930,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20241231,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20250331,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    },
    {
     "qe": 20250630,
-    "reason": "annual_only_consolidated (no quarterly consolidated column exists)"
+    "reason": "annual_only_consolidated"
    }
   ],
   "SBIN": [
    {
     "qe": 20190331,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    },
    {
     "qe": 20190930,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "BLUEJET": [
    {
     "qe": 20240331,
-    "reason": "other_unverified (not reachable by current routes / no next-q anchor)"
+    "reason": "other_unverified_no_anchor"
    },
    {
     "qe": 20240630,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "KKCL": [
    {
     "qe": 20190331,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "PAISALO": [
    {
     "qe": 20190630,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "PIIND": [
    {
     "qe": 20190331,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "TORNTPHARM": [
    {
     "qe": 20220630,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "GLAND": [
    {
     "qe": 20200930,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    },
    {
     "qe": 20201231,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "HSCL": [
    {
     "qe": 20200331,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "SPICEJET": [
    {
     "qe": 20190331,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20200331,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20210331,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20210630,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20220331,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20220630,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20220930,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20221231,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20230331,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20231231,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20240930,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    },
    {
     "qe": 20241231,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    }
   ],
   "SUNTECK": [
    {
     "qe": 20210331,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "TREEHOUSE": [
    {
     "qe": 20190331,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    }
   ],
   "MPSLTD": [
    {
     "qe": 20190630,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    }
   ],
   "HDBFS": [
    {
     "qe": 20240930,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    },
    {
     "qe": 20241231,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "WELCORP": [
@@ -954,85 +937,53 @@
   "PFOCUS": [
    {
     "qe": 20200331,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
-   }
-  ],
-  "STARHEALTH": [
-   {
-    "qe": 20220630,
-    "reason": "nse_only_blocked (BSE has no filing; NSE 403 server-blocked)"
-   },
-   {
-    "qe": 20220930,
-    "reason": "nse_only_blocked (BSE has no filing; NSE 403 server-blocked)"
-   },
-   {
-    "qe": 20230630,
-    "reason": "nse_only_blocked (BSE has no filing; NSE 403 server-blocked)"
-   },
-   {
-    "qe": 20250930,
-    "reason": "nse_only_blocked (BSE has no filing; NSE 403 server-blocked)"
+    "reason": "delisted_or_distressed"
    }
   ],
   "BLISSGVS": [
    {
     "qe": 20211231,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "HCL-INSYS": [
    {
     "qe": 20190331,
-    "reason": "delisted_or_distressed (no usable later filing / irregular filer)"
+    "reason": "delisted_or_distressed"
    }
   ],
   "CAPLIPOINT": [
    {
     "qe": 20190630,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
-   }
-  ],
-  "LICI": [
-   {
-    "qe": 20230630,
-    "reason": "nse_only_blocked (BSE has no filing; NSE 403 server-blocked)"
-   },
-   {
-    "qe": 20250331,
-    "reason": "nse_only_blocked (BSE has no filing; NSE 403 server-blocked)"
-   },
-   {
-    "qe": 20250630,
-    "reason": "nse_only_blocked (BSE has no filing; NSE 403 server-blocked)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "ZYDUSWELL": [
    {
     "qe": 20190331,
-    "reason": "other_unverified (not reachable by current routes / no next-q anchor)"
+    "reason": "other_unverified_no_anchor"
    },
    {
     "qe": 20190630,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "DHAMPURSUG": [
    {
     "qe": 20190630,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "CDSL": [
    {
     "qe": 20220630,
-    "reason": "other_unverified (not reachable by current routes / no next-q anchor)"
+    "reason": "other_unverified_no_anchor"
    }
   ],
   "TITAGARH": [
    {
     "qe": 20221231,
-    "reason": "no_quarterly_consolidated_comparable (cross-filing routes searched, no clean comparative found)"
+    "reason": "no_quarterly_consolidated_comparable"
    }
   ]
  }
