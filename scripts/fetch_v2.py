@@ -32,17 +32,20 @@ def wide_window(qe):
     return str(lo), "%04d%02d%02d"%(hd.year,hd.month,hd.day)
 
 def content_ok(pdf, qe):
-    """PDF content must mention the target quarter-end date AND have a consolidated profit table."""
+    """A page must be a CONSOLIDATED comparative profit table whose header carries the TARGET quarter-end
+    date (same page) — this rules out press-release/cover pages that merely print the announcement date in
+    prose. Insurer/odd wording allowed (no 'revenue from operations' requirement)."""
     try: doc = fitz.open(stream=pdf, filetype="pdf")
     except Exception: return False
-    pats = qe_date_patterns(qe); datehit = False; conprofit = False
-    for p in range(min(len(doc), 40)):
-        low = doc[p].get_text().lower()
-        if not datehit and any(pt in low for pt in pats): datehit = True
-        if "consolidated" in low and re.search(r'profit.{0,6}(after tax|for the (period|quarter|year))|profit after tax|net profit', low) \
-           and len(re.findall(r'\d[\d,]*\.\d\d', doc[p].get_text())) >= 6:
-            conprofit = True
-    return datehit and conprofit
+    pats = qe_date_patterns(qe)
+    for p in range(min(len(doc), 45)):
+        t = doc[p].get_text(); low = t.lower()
+        if "consolidated" not in low: continue
+        if not re.search(r'profit.{0,6}(after tax|for the (period|quarter|year))|profit after tax|net profit', low): continue
+        if len(re.findall(r'\(?-?[\d,]*\d\.\d\d\)?', t)) < 8: continue   # a real numeric table
+        if any(pt in low for pt in pats):                               # target qe date on THIS table page
+            return True
+    return False
 
 def main():
     targets = json.load(open(sys.argv[1]))
