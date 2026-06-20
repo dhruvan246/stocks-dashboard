@@ -1,59 +1,43 @@
 {
  "generated": "2026-06-20",
  "target_total": 582,
- "filled": 380,
- "open_total": 202,
+ "filled": 406,
+ "open_total": 176,
  "reason_counts": {
-  "no_quarterly_consolidated_comparable": 74,
-  "other_unverified_no_anchor": 22,
+  "standalone_only_that_quarter": 7,
+  "nse_no_pdf_or_scanned_no_text_layer": 35,
   "delisted_or_distressed": 57,
   "basis_ambiguous_or_stored_is_standalone": 13,
-  "annual_only_consolidated": 36
+  "annual_only_consolidated_confirmed": 13,
+  "consolidated_did_not_exist_pre_FY23": 9,
+  "no_quarterly_consolidated_comparable": 4,
+  "annual_only_consolidated": 36,
+  "recent_ipo_no_prior_quarter": 2
  },
- "note": "Consolidated quarterly net-profit gaps after vision + 3 cross-filing passes + NSE curl_cffi insurer pass. All filled values verified by exact stored-anchor match or internal reconciliation; nothing assumed. NSE-only insurer gaps (LICI/SBILIFE/STARHEALTH/HDFCLIFE) fully recovered via curl_cffi (chrome TLS impersonation defeats NSE Akamai 403). Remaining open are structural: distressed/delisted (no later filing), annual-only-consolidated (no quarterly con column), or basis-ambiguous.",
+ "note": "Consolidated quarterly net-profit gaps after vision + 3 cross-filing passes + NSE curl_cffi passes (insurers, bucket-3 actives, content-verified cleanup). All filled values verified by exact stored-anchor match or internal reconciliation; nothing assumed. Remaining are structural: delisted/distressed (no filing), annual-only-consolidated (no quarterly consolidated column exists), standalone-only-that-quarter, NSE 2019 scanned filings with no text layer, recent-IPO pre-listing quarters, or basis-ambiguous.",
  "by_symbol": {
-  "ANDHRSUGAR": [
-   {
-    "qe": 20210930,
-    "reason": "no_quarterly_consolidated_comparable"
-   },
-   {
-    "qe": 20220331,
-    "reason": "no_quarterly_consolidated_comparable"
-   }
-  ],
   "NFL": [
    {
     "qe": 20190331,
-    "reason": "other_unverified_no_anchor"
+    "reason": "standalone_only_that_quarter"
    },
    {
     "qe": 20190630,
-    "reason": "no_quarterly_consolidated_comparable"
-   }
-  ],
-  "EIDPARRY": [
-   {
-    "qe": 20210331,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    }
   ],
   "RAJESHEXPO": [
    {
     "qe": 20200630,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    },
    {
     "qe": 20200930,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    },
    {
     "qe": 20201231,
-    "reason": "no_quarterly_consolidated_comparable"
-   },
-   {
-    "qe": 20250331,
-    "reason": "other_unverified_no_anchor"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    }
   ],
   "GVKPIL": [
@@ -96,16 +80,10 @@
     "reason": "basis_ambiguous_or_stored_is_standalone"
    }
   ],
-  "STLTECH": [
-   {
-    "qe": 20220630,
-    "reason": "no_quarterly_consolidated_comparable"
-   }
-  ],
   "JUBLPHARMA": [
    {
     "qe": 20190630,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    }
   ],
   "PIRAMALFIN": [
@@ -142,16 +120,10 @@
     "reason": "delisted_or_distressed"
    }
   ],
-  "CYIENT": [
-   {
-    "qe": 20250331,
-    "reason": "no_quarterly_consolidated_comparable"
-   }
-  ],
   "KOLTEPATIL": [
    {
     "qe": 20190630,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    }
   ],
   "CONSOFINVT": [
@@ -163,7 +135,7 @@
   "TTKPRESTIG": [
    {
     "qe": 20190331,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "annual_only_consolidated_confirmed"
    }
   ],
   "HEXT": [
@@ -216,16 +188,6 @@
     "reason": "delisted_or_distressed"
    }
   ],
-  "BFUTILITIE": [
-   {
-    "qe": 20190331,
-    "reason": "no_quarterly_consolidated_comparable"
-   },
-   {
-    "qe": 20241231,
-    "reason": "no_quarterly_consolidated_comparable"
-   }
-  ],
   "UNITECH": [
    {
     "qe": 20190331,
@@ -239,111 +201,101 @@
   "ELECON": [
    {
     "qe": 20220630,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    }
   ],
   "GPPL": [
    {
     "qe": 20190331,
-    "reason": "other_unverified_no_anchor"
+    "reason": "annual_only_consolidated_confirmed"
    }
   ],
   "MBLINFRA": [
    {
     "qe": 20190331,
-    "reason": "other_unverified_no_anchor"
+    "reason": "annual_only_consolidated_confirmed"
    }
   ],
   "RAMCOCEM": [
    {
     "qe": 20190331,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    }
   ],
   "DBL": [
    {
     "qe": 20210331,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    }
   ],
   "ADANIENSOL": [
    {
     "qe": 20220630,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    }
   ],
   "BORORENEW": [
    {
     "qe": 20200331,
-    "reason": "other_unverified_no_anchor"
+    "reason": "consolidated_did_not_exist_pre_FY23"
    },
    {
     "qe": 20200630,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "consolidated_did_not_exist_pre_FY23"
    },
    {
     "qe": 20200930,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "consolidated_did_not_exist_pre_FY23"
    },
    {
     "qe": 20201231,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "consolidated_did_not_exist_pre_FY23"
    },
    {
     "qe": 20210331,
-    "reason": "other_unverified_no_anchor"
+    "reason": "consolidated_did_not_exist_pre_FY23"
    },
    {
     "qe": 20210630,
-    "reason": "other_unverified_no_anchor"
+    "reason": "consolidated_did_not_exist_pre_FY23"
    },
    {
     "qe": 20210930,
-    "reason": "other_unverified_no_anchor"
+    "reason": "consolidated_did_not_exist_pre_FY23"
    },
    {
     "qe": 20211231,
-    "reason": "other_unverified_no_anchor"
+    "reason": "consolidated_did_not_exist_pre_FY23"
    },
    {
     "qe": 20220331,
-    "reason": "other_unverified_no_anchor"
+    "reason": "consolidated_did_not_exist_pre_FY23"
    }
   ],
   "JSWDULUX": [
    {
     "qe": 20190331,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "annual_only_consolidated_confirmed"
    }
   ],
   "BCG": [
    {
     "qe": 20240630,
-    "reason": "no_quarterly_consolidated_comparable"
-   },
-   {
-    "qe": 20250331,
-    "reason": "no_quarterly_consolidated_comparable"
-   }
-  ],
-  "FMGOETZE": [
-   {
-    "qe": 20221231,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    }
   ],
   "DALMIASUG": [
    {
     "qe": 20221231,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    },
    {
     "qe": 20230331,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "standalone_only_that_quarter"
    },
    {
     "qe": 20250930,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "standalone_only_that_quarter"
    }
   ],
   "GAYAPROJ": [
@@ -379,24 +331,16 @@
   "JINDALPOLY": [
    {
     "qe": 20190331,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "annual_only_consolidated_confirmed"
    }
   ],
   "CHOLAHLDNG": [
    {
     "qe": 20190331,
-    "reason": "other_unverified_no_anchor"
-   },
-   {
-    "qe": 20190630,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "annual_only_consolidated_confirmed"
    }
   ],
   "ABCAPITAL": [
-   {
-    "qe": 20190331,
-    "reason": "no_quarterly_consolidated_comparable"
-   },
    {
     "qe": 20190930,
     "reason": "no_quarterly_consolidated_comparable"
@@ -419,7 +363,7 @@
   "FINCABLES": [
    {
     "qe": 20190331,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    }
   ],
   "PVP": [
@@ -431,17 +375,17 @@
   "GHCL": [
    {
     "qe": 20190331,
-    "reason": "other_unverified_no_anchor"
+    "reason": "annual_only_consolidated_confirmed"
    }
   ],
   "SONACOMS": [
    {
     "qe": 20201231,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    },
    {
     "qe": 20210331,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    }
   ],
   "KIRLFER": [
@@ -458,12 +402,6 @@
    {
     "qe": 20190630,
     "reason": "delisted_or_distressed"
-   }
-  ],
-  "GEOJITFSL": [
-   {
-    "qe": 20190930,
-    "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "ANSALAPI": [
@@ -501,65 +439,43 @@
   "AEGISVOPAK": [
    {
     "qe": 20240630,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "recent_ipo_no_prior_quarter"
    },
    {
     "qe": 20240930,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "recent_ipo_no_prior_quarter"
    }
   ],
   "SPANDANA": [
    {
     "qe": 20220331,
-    "reason": "other_unverified_no_anchor"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    },
    {
     "qe": 20220630,
-    "reason": "no_quarterly_consolidated_comparable"
-   },
-   {
-    "qe": 20220930,
-    "reason": "no_quarterly_consolidated_comparable"
-   }
-  ],
-  "GAEL": [
-   {
-    "qe": 20200331,
-    "reason": "no_quarterly_consolidated_comparable"
-   }
-  ],
-  "HFCL": [
-   {
-    "qe": 20220630,
-    "reason": "no_quarterly_consolidated_comparable"
-   }
-  ],
-  "ICICIGI": [
-   {
-    "qe": 20220630,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    }
   ],
   "JYOTHYLAB": [
    {
     "qe": 20190331,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "annual_only_consolidated_confirmed"
    }
   ],
   "BALAMINES": [
    {
     "qe": 20190331,
-    "reason": "other_unverified_no_anchor"
+    "reason": "annual_only_consolidated_confirmed"
    }
   ],
   "JISLJALEQS": [
    {
     "qe": 20190331,
-    "reason": "other_unverified_no_anchor"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    },
    {
     "qe": 20190630,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    }
   ],
   "COFFEEDAY": [
@@ -587,21 +503,13 @@
   "RATNAMANI": [
    {
     "qe": 20190331,
-    "reason": "other_unverified_no_anchor"
-   },
-   {
-    "qe": 20190630,
     "reason": "no_quarterly_consolidated_comparable"
    }
   ],
   "JKPAPER": [
    {
     "qe": 20190331,
-    "reason": "other_unverified_no_anchor"
-   },
-   {
-    "qe": 20190630,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "annual_only_consolidated_confirmed"
    }
   ],
   "LUMAXIND": [
@@ -613,33 +521,29 @@
   "POONAWALLA": [
    {
     "qe": 20190331,
-    "reason": "other_unverified_no_anchor"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    },
    {
     "qe": 20190630,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    }
   ],
   "GALLANTT": [
    {
     "qe": 20220331,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "standalone_only_that_quarter"
    }
   ],
   "ICICIBANK": [
    {
-    "qe": 20190930,
-    "reason": "no_quarterly_consolidated_comparable"
-   },
-   {
     "qe": 20220930,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "standalone_only_that_quarter"
    }
   ],
   "J&KBANK": [
    {
     "qe": 20190930,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    }
   ],
   "MMTC": [
@@ -655,19 +559,19 @@
   "SUPREMEINF": [
    {
     "qe": 20240930,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    },
    {
     "qe": 20241231,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    },
    {
     "qe": 20250331,
-    "reason": "other_unverified_no_anchor"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    },
    {
     "qe": 20250630,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    }
   ],
   "BASF": [
@@ -793,61 +697,51 @@
   "SBIN": [
    {
     "qe": 20190331,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    },
    {
     "qe": 20190930,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    }
   ],
   "BLUEJET": [
    {
     "qe": 20240331,
-    "reason": "other_unverified_no_anchor"
-   },
-   {
-    "qe": 20240630,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "standalone_only_that_quarter"
    }
   ],
   "KKCL": [
    {
     "qe": 20190331,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "annual_only_consolidated_confirmed"
    }
   ],
   "PAISALO": [
    {
     "qe": 20190630,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    }
   ],
   "PIIND": [
    {
     "qe": 20190331,
-    "reason": "no_quarterly_consolidated_comparable"
-   }
-  ],
-  "TORNTPHARM": [
-   {
-    "qe": 20220630,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "annual_only_consolidated_confirmed"
    }
   ],
   "GLAND": [
    {
     "qe": 20200930,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    },
    {
     "qe": 20201231,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "standalone_only_that_quarter"
    }
   ],
   "HSCL": [
    {
     "qe": 20200331,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    }
   ],
   "SPICEJET": [
@@ -921,11 +815,11 @@
   "HDBFS": [
    {
     "qe": 20240930,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    },
    {
     "qe": 20241231,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    }
   ],
   "WELCORP": [
@@ -940,12 +834,6 @@
     "reason": "delisted_or_distressed"
    }
   ],
-  "BLISSGVS": [
-   {
-    "qe": 20211231,
-    "reason": "no_quarterly_consolidated_comparable"
-   }
-  ],
   "HCL-INSYS": [
    {
     "qe": 20190331,
@@ -955,35 +843,17 @@
   "CAPLIPOINT": [
    {
     "qe": 20190630,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    }
   ],
   "ZYDUSWELL": [
    {
     "qe": 20190331,
-    "reason": "other_unverified_no_anchor"
+    "reason": "annual_only_consolidated_confirmed"
    },
    {
     "qe": 20190630,
-    "reason": "no_quarterly_consolidated_comparable"
-   }
-  ],
-  "DHAMPURSUG": [
-   {
-    "qe": 20190630,
-    "reason": "no_quarterly_consolidated_comparable"
-   }
-  ],
-  "CDSL": [
-   {
-    "qe": 20220630,
-    "reason": "other_unverified_no_anchor"
-   }
-  ],
-  "TITAGARH": [
-   {
-    "qe": 20221231,
-    "reason": "no_quarterly_consolidated_comparable"
+    "reason": "nse_no_pdf_or_scanned_no_text_layer"
    }
   ]
  }
