@@ -293,7 +293,7 @@ function refreshPicks() {
     const delta = (live != null && pc) ? (live / pc - 1) * 100 : null;   // true day change (live vs Yahoo prev close)
     return `<tr class="border-b border-slate-50">
     <td class="py-1.5 pr-2 text-slate-400">${i + 1}</td>
-    <td class="pr-3 font-semibold text-indigo-700">${esc(r.sym)}</td>
+    <td class="pr-3 font-semibold">${stockLink(r.sym,'text-indigo-700 hover:underline')}</td>
     <td class="text-right px-2 ${r.chg >= 0 ? 'pos' : 'neg'}">${pct(r.chg)}</td>
     <td class="text-right px-2">${r.d52.toFixed(2)}%</td>
     <td class="text-right px-2">${r.d52low.toFixed(2)}%</td>
@@ -311,7 +311,7 @@ function refreshPicks() {
     $('mAlsoWrap').classList.remove('hidden'); $('mAlsoN').textContent = also.length;
     $('mAlso').innerHTML = `<table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>
       <th class="text-left py-1 pr-2">#</th><th class="text-left pr-3">Symbol</th><th class="text-right px-2">Chg %</th><th class="text-right px-2">% 52wHi</th><th class="text-right px-2">% 52wLo</th><th class="text-right px-2">RSI</th><th class="text-right px-2">Close ₹</th></tr></thead>
-      <tbody>${also.map((r, i) => `<tr class="border-b border-slate-50"><td class="py-1 pr-2 text-slate-400">${CUR.cfg.topN + i + 1}</td><td class="pr-3 font-medium">${esc(r.sym)}</td><td class="text-right px-2 ${r.chg >= 0 ? 'pos' : 'neg'}">${pct(r.chg)}</td><td class="text-right px-2">${r.d52.toFixed(2)}%</td><td class="text-right px-2">${r.d52low.toFixed(2)}%</td><td class="text-right px-2">${r.rsi == null ? '—' : r.rsi.toFixed(2)}</td><td class="text-right px-2">${baseOf(r).toFixed(2)}</td></tr>`).join('')}</tbody></table>`;
+      <tbody>${also.map((r, i) => `<tr class="border-b border-slate-50"><td class="py-1 pr-2 text-slate-400">${CUR.cfg.topN + i + 1}</td><td class="pr-3 font-medium">${stockLink(r.sym,'text-indigo-700 hover:underline')}</td><td class="text-right px-2 ${r.chg >= 0 ? 'pos' : 'neg'}">${pct(r.chg)}</td><td class="text-right px-2">${r.d52.toFixed(2)}%</td><td class="text-right px-2">${r.d52low.toFixed(2)}%</td><td class="text-right px-2">${r.rsi == null ? '—' : r.rsi.toFixed(2)}</td><td class="text-right px-2">${baseOf(r).toFixed(2)}</td></tr>`).join('')}</tbody></table>`;
   } else { $('mAlsoWrap').classList.add('hidden'); }
 }
 function downloadCSV() {

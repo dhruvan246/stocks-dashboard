@@ -642,9 +642,9 @@ function renderResults(results) {
       }
       // Screener.in URL: NSE symbols use the symbol itself; BSE-only stocks use
       // the numeric scrip code (Screener accepts both formats).
-      const screenerKey = encodeURIComponent(r.symbol);
-      const screenerUrl = 'https://www.screener.in/company/' + screenerKey + '/';
-      const linkAttrs = 'href="' + screenerUrl + '" target="_blank" rel="noopener" title="Open ' + r.symbol + ' on Screener.in"';
+      const swKey = encodeURIComponent(r.symbol);
+      const linkAttrs = 'href="./stock.html?sym=' + swKey + '" title="' + r.symbol + ' — full details on STOCKSWORLD"';
+      const screenerAttrs = 'href="https://www.screener.in/company/' + swKey + '/" target="_blank" rel="noopener" title="' + r.symbol + ' on Screener.in"';
       // From-52w-high cell. d52 is always <= 0; closer to zero = closer to high.
       let h52Cell;
       if (typeof r.d52 !== 'number') {
@@ -662,7 +662,7 @@ function renderResults(results) {
       out.push(
         '<tr class="hover:bg-slate-50 transition' + (r.noData ? ' bg-slate-50/40' : '') + '">' +
         '<td class="px-4 py-3 text-slate-400 text-xs">' + (i + 1) + '</td>' +
-        '<td class="px-4 py-3"><a ' + linkAttrs + ' class="font-semibold text-slate-800 hover:text-blue-600 hover:underline">' + r.symbol + '</a></td>' +
+        '<td class="px-4 py-3"><a ' + linkAttrs + ' class="font-semibold text-slate-800 hover:text-blue-600 hover:underline">' + r.symbol + '</a> <a ' + screenerAttrs + ' class="text-slate-300 hover:text-blue-600 text-[10px] align-super">↗</a></td>' +
         '<td class="px-4 py-3"><a ' + linkAttrs + ' class="text-slate-700 hover:text-blue-600 hover:underline">' + r.name + '</a></td>' +
         '<td class="px-4 py-3"><span class="text-xs bg-slate-100 text-slate-600 rounded-md px-2 py-0.5">' + r.sector + '</span></td>' +
         '<td class="px-4 py-3 text-right text-slate-700 tabular-nums">' + mcap + '</td>' +
@@ -933,7 +933,7 @@ function renderBacktest(d) {
     const screenSgn = p.screenPct >= 0 ? '+' : '';
     rowsHtml += '<tr class="hover:bg-slate-50">' +
       '<td class="px-3 py-2 text-slate-400 text-xs">' + (i + 1) + '</td>' +
-      '<td class="px-3 py-2"><a href="https://www.screener.in/company/' + encodeURIComponent(p.symbol) + '/" target="_blank" rel="noopener" class="font-semibold text-slate-800 hover:text-blue-600 hover:underline">' + p.symbol + '</a></td>' +
+      '<td class="px-3 py-2"><a href="./stock.html?sym=' + encodeURIComponent(p.symbol) + '" title="' + p.symbol + ' — full details" class="font-semibold text-slate-800 hover:text-blue-600 hover:underline">' + p.symbol + '</a></td>' +
       '<td class="px-3 py-2 text-slate-700 text-xs">' + p.name + '</td>' +
       '<td class="px-3 py-2 text-right text-slate-600 tabular-nums" title="Approx mcap at screening start (today\'s mcap × adj-price ratio)">&#8377;' + fmtINR(p.histMcap) + '</td>' +
       '<td class="px-3 py-2 text-right text-slate-600 tabular-nums">' + screenSgn + p.screenPct.toFixed(2) + '%</td>' +
