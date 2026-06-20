@@ -101,19 +101,19 @@ def find_con_pl_page(doc, cprev, cyago):
     best = None; best_score = -1e9
     for p in range(min(len(doc), 34)):
         t = doc[p].get_text(); low = t.lower()
-        if AUD.search(t) or SEG.search(t): continue
-        if not REV.search(t): continue                  # a P&L HAS revenue-from-ops; BS/notes/recon do not
-        if BAL.search(t) and not PLPFT.search(t): continue
-        if not PLPFT.search(t): continue                # must carry a profit/PAT row
-        # TABLE gate: a real P&L has many rows with >=3 numbers each (multi-column grid). Notes/press-
-        # release prose pages mention 'consolidated'/'revenue'/'profit' in sentences but have few such
-        # rows -> reject. Count integers too (bank/insurer filings use whole-lakh numbers, no decimals).
-        rows3 = sum(1 for ln in t.split("\n") if len(re.findall(r'\(?-?[\d,]{3,}(?:\.\d+)?\)?', ln)) >= 3)
-        if rows3 < 5: continue
+        if AUD.search(t): continue                       # skip auditor / limited-review pages
+        # POSITIVE gate: a real P&L has BOTH a revenue-from-ops row AND a profit/PAT row. This alone
+        # excludes balance-sheet / segment / ratio / notes / cash-flow pages -- so do NOT also reject on
+        # SEG (it false-matches P&L pages that merely mention 'segment' in a one-segment note).
+        if not (REV.search(t) and PLPFT.search(t)): continue
+        # TABLE density (SCORE, not a hard gate): a real P&L has many rows with >=3 numbers each (multi-
+        # column grid); notes/press-release prose pages mention 'consolidated'/'revenue'/'profit' in
+        # sentences but have few such rows. Count any number token (incl small/decimal & whole-lakh).
+        rows3 = sum(1 for ln in t.split("\n") if len(re.findall(r'-?\(?[\d,]*\d(?:\.\d+)?\)?', ln)) >= 3)
         is_con = "consolidated" in low
         is_std_only = ("standalone" in low) and not is_con
         nums = _nums_on(t)
-        score = min(rows3, 25) / 25.0                    # denser numeric TABLE preferred (0..1)
+        score = min(rows3, 30) / 10.0                    # dense numeric TABLE strongly preferred (prose ~0-0.5)
         for tgt in tgts:                                # neighbor value present on this page?
             for sc in (1.0, 10.0, 100.0):
                 if any(abs(n - tgt * sc) <= abs(tgt * sc) * 0.006 for n in nums):
