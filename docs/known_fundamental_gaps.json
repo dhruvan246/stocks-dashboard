@@ -42,12 +42,6 @@
    "reason": "no_anchor_or_basis_conflict",
    "note": "skip: no stored neighbor to verify"
   },
-  "ELGIEQUIP|20190331": {
-   "sym": "ELGIEQUIP",
-   "qe": 20190331,
-   "reason": "consolidated_not_in_cached_filing",
-   "note": "refetch-con: cached PDF = STANDALONE stmt only (Rs-mn); consolidated P&L not in this attachment"
-  },
   "EIDPARRY|20210331": {
    "sym": "EIDPARRY",
    "qe": 20210331,
@@ -162,23 +156,11 @@
    "reason": "no_consolidated_filing_on_bse",
    "note": "nopdf"
   },
-  "SHILPAMED|20190630": {
-   "sym": "SHILPAMED",
-   "qe": 20190630,
-   "reason": "no_anchor_or_basis_conflict",
-   "note": "skip: no stored neighbor"
-  },
   "JBMA|20190630": {
    "sym": "JBMA",
    "qe": 20190630,
    "reason": "other_unverifiable",
    "note": "skip: both neighbors None"
-  },
-  "JUBLPHARMA|20190331": {
-   "sym": "JUBLPHARMA",
-   "qe": 20190331,
-   "reason": "no_anchor_or_basis_conflict",
-   "note": "refetch-con: investor-deck rounded; reported PAT Q4FY19 -99 vs normalised 135 ambiguous; yago 152.4 vs deck 155"
   },
   "JUBLPHARMA|20190630": {
    "sym": "JUBLPHARMA",
@@ -234,29 +216,11 @@
    "reason": "no_consolidated_filing_on_bse",
    "note": "nopdf"
   },
-  "CYIENT|20190630": {
-   "sym": "CYIENT",
-   "qe": 20190630,
-   "reason": "other_unverifiable",
-   "note": "skip: side-by-side Rs-millions; prev Mar-19 not a quarter column here; yago=None"
-  },
   "CYIENT|20250331": {
    "sym": "CYIENT",
    "qe": 20250331,
    "reason": "no_consolidated_filing_on_bse",
    "note": "nopdf"
-  },
-  "INDIANB|20210630": {
-   "sym": "INDIANB",
-   "qe": 20210630,
-   "reason": "other_unverifiable",
-   "note": "skip: notes page (RBI/NPA disclosures); yago=None; bank"
-  },
-  "LTF|20190331": {
-   "sym": "LTF",
-   "qe": 20190331,
-   "reason": "consolidated_not_in_cached_filing",
-   "note": "refetch-con: cached PDF = balance sheet + standalone note-4; consolidated P&L not present; yago=None"
   },
   "LTF|20190630": {
    "sym": "LTF",
@@ -270,18 +234,6 @@
    "reason": "insurer_consolidated_unverifiable",
    "note": "fresh-skip: no-neighbor/insurer/distressed/IPO-prospectus/cover-letter"
   },
-  "LTF|20211231": {
-   "sym": "LTF",
-   "qe": 20211231,
-   "reason": "other_unverifiable",
-   "note": "skip: finder hit ratios-annexure (Reg 52(4)); con P&L on another page; revisit"
-  },
-  "GVPIL|20211231": {
-   "sym": "GVPIL",
-   "qe": 20211231,
-   "reason": "distressed_or_wrong_period_or_nonfiling",
-   "note": "skip: distressed GVK group, no clean double-anchor (col1 30.35 vs 38.29)"
-  },
   "KOLTEPATIL|20190630": {
    "sym": "KOLTEPATIL",
    "qe": 20190630,
@@ -293,12 +245,6 @@
    "qe": 20200630,
    "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "nocode/defunct"
-  },
-  "EXIDEIND|20210331": {
-   "sym": "EXIDEIND",
-   "qe": 20210331,
-   "reason": "other_unverifiable",
-   "note": "skip: balance-sheet page (assets/equity); P&L on other page"
   },
   "TI|20190630": {
    "sym": "TI",
@@ -408,23 +354,11 @@
    "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "nocode/defunct"
   },
-  "AVANTIFEED|20190331": {
-   "sym": "AVANTIFEED",
-   "qe": 20190331,
-   "reason": "other_unverifiable",
-   "note": "skip: filing Mar18 col 124.44 vs stored yago 82.93; no Dec18 col"
-  },
   "AVANTIFEED|20190630": {
    "sym": "AVANTIFEED",
    "qe": 20190630,
    "reason": "no_anchor_or_basis_conflict",
    "note": "skip: no stored neighbor"
-  },
-  "AVANTIFEED|20210630": {
-   "sym": "AVANTIFEED",
-   "qe": 20210630,
-   "reason": "consolidated_not_in_cached_filing",
-   "note": "refetch-con: STANDALONE page (Jun-20 std~84 != stored con yago 120.22); consolidated elsewhere"
   },
   "ELECON|20220630": {
    "sym": "ELECON",
@@ -630,12 +564,6 @@
    "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
-  "CARERATING|20190331": {
-   "sym": "CARERATING",
-   "qe": 20190331,
-   "reason": "no_anchor_or_basis_conflict",
-   "note": "skip: dense side-by-side, columns misalign on read (net-profit>PBT); std 13.09 vs annual-col 5781.43 mismap; yago=None -> unverifiable"
-  },
   "CHOLAHLDNG|20190331": {
    "sym": "CHOLAHLDNG",
    "qe": 20190331,
@@ -647,12 +575,6 @@
    "qe": 20190630,
    "reason": "no_anchor_or_basis_conflict",
    "note": "skip: no stored neighbor to verify"
-  },
-  "CHOLAHLDNG|20201231": {
-   "sym": "CHOLAHLDNG",
-   "qe": 20201231,
-   "reason": "other_unverifiable",
-   "note": "skip: PR gives TOTAL con PAT 455cr but stored is OWNERS-attributable (yago 203.74); owners split not in prose"
   },
   "ABCAPITAL|20190331": {
    "sym": "ABCAPITAL",
@@ -744,12 +666,6 @@
    "reason": "no_consolidated_filing_on_bse",
    "note": "nopdf"
   },
-  "CCL|20190331": {
-   "sym": "CCL",
-   "qe": 20190331,
-   "reason": "no_anchor_or_basis_conflict",
-   "note": "skip: notes-prose decoy (con PAT '3563.98L excl 2825.17L subsidiary dividend' = ambiguous basis); no clean prev/yago in table"
-  },
   "CCL|20190630": {
    "sym": "CCL",
    "qe": 20190630,
@@ -834,12 +750,6 @@
    "reason": "no_consolidated_filing_on_bse",
    "note": "nopdf"
   },
-  "TAKE|20190331": {
-   "sym": "TAKE",
-   "qe": 20190331,
-   "reason": "distressed_or_wrong_period_or_nonfiling",
-   "note": "skip: Take Solutions distressed/defaulted; values mismatch stored"
-  },
   "TAKE|20190630": {
    "sym": "TAKE",
    "qe": 20190630,
@@ -918,23 +828,11 @@
    "reason": "insurer_consolidated_unverifiable",
    "note": "skip: annual-only-con / insurer / distressed-prose / wrong-period / anchor-irreconcilable"
   },
-  "JISLJALEQS|20220331": {
-   "sym": "JISLJALEQS",
-   "qe": 20220331,
-   "reason": "distressed_or_wrong_period_or_nonfiling",
-   "note": "skip: notes page (debt-resolution/scheme); distressed; no P&L table"
-  },
   "METROBRAND|20210630": {
    "sym": "METROBRAND",
    "qe": 20210630,
    "reason": "no_consolidated_filing_on_bse",
    "note": "nopdf"
-  },
-  "PRAJIND|20190331": {
-   "sym": "PRAJIND",
-   "qe": 20190331,
-   "reason": "other_unverifiable",
-   "note": "refetch-con: cached PDF = balance sheet only; consolidated P&L page not present"
   },
   "COFFEEDAY|20190630": {
    "sym": "COFFEEDAY",
@@ -1014,12 +912,6 @@
    "reason": "no_consolidated_filing_on_bse",
    "note": "nopdf"
   },
-  "SFL|20190630": {
-   "sym": "SFL",
-   "qe": 20190630,
-   "reason": "no_anchor_or_basis_conflict",
-   "note": "refetch-con: press-release prose (39 vs 35 ambiguous); prev Mar-19 not shown; yago=None"
-  },
   "SBILIFE|20230930": {
    "sym": "SBILIFE",
    "qe": 20230930,
@@ -1080,12 +972,6 @@
    "reason": "other_unverifiable",
    "note": "skip: stored std/con basis mix"
   },
-  "RBLBANK|20211231": {
-   "sym": "RBLBANK",
-   "qe": 20211231,
-   "reason": "other_unverifiable",
-   "note": "skip: stored mixes std/con (col1 con 9.72 vs stored 30.8 std)"
-  },
   "ICICIBANK|20190930": {
    "sym": "ICICIBANK",
    "qe": 20190930,
@@ -1097,12 +983,6 @@
    "qe": 20220930,
    "reason": "consolidated_not_in_cached_filing",
    "note": "refetch-con: cached PDF = STANDALONE (and looks Q2FY24 wrong-period); need Sep-2022 consolidated results"
-  },
-  "BAJAJFINSV|20190331": {
-   "sym": "BAJAJFINSV",
-   "qe": 20190331,
-   "reason": "other_unverifiable",
-   "note": "skip: filing Q4FY19+Q4FY18 only (no Dec-18 col); yago 637.03 vs stored 685.46"
   },
   "J&KBANK|20190930": {
    "sym": "J&KBANK",
@@ -1116,29 +996,11 @@
    "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
-  "J&KBANK|20210930": {
-   "sym": "J&KBANK",
-   "qe": 20210930,
-   "reason": "other_unverifiable",
-   "note": "skip: stored std/con basis mix"
-  },
-  "J&KBANK|20211231": {
-   "sym": "J&KBANK",
-   "qe": 20211231,
-   "reason": "other_unverifiable",
-   "note": "skip: stored mixes std/con (yago con 88.37 vs stored 66.37)"
-  },
   "ANURAS|20201231": {
    "sym": "ANURAS",
    "qe": 20201231,
    "reason": "no_consolidated_filing_on_bse",
    "note": "nopdf"
-  },
-  "MAHLIFE|20190630": {
-   "sym": "MAHLIFE",
-   "qe": 20190630,
-   "reason": "consolidated_not_in_cached_filing",
-   "note": "refetch-con: cached PDF = notes + standalone note-8; consolidated P&L not present; yago=None"
   },
   "MMTC|20210331": {
    "sym": "MMTC",
@@ -1175,18 +1037,6 @@
    "qe": 20250630,
    "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "wave1-skip: wrong-period (FY25 annual)"
-  },
-  "SARDAEN|20190630": {
-   "sym": "SARDAEN",
-   "qe": 20190630,
-   "reason": "consolidated_not_in_cached_filing",
-   "note": "refetch-con: STANDALONE page (Mar-19 std 37.91 != stored con prev 46.73); consolidated elsewhere"
-  },
-  "BASF|20210331": {
-   "sym": "BASF",
-   "qe": 20210331,
-   "reason": "insurer_consolidated_unverifiable",
-   "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
   "BASF|20210630": {
    "sym": "BASF",
@@ -1386,12 +1236,6 @@
    "reason": "no_consolidated_filing_on_bse",
    "note": "nopdf"
   },
-  "MASFIN|20190331": {
-   "sym": "MASFIN",
-   "qe": 20190331,
-   "reason": "other_unverifiable",
-   "note": "refetch-con: investor-deck, two PAT versions (pre-IndAS 38.85 vs IndAS 41.61); prev Q3FY19 absent; yago=None"
-  },
   "MASFIN|20200930": {
    "sym": "MASFIN",
    "qe": 20200930,
@@ -1410,12 +1254,6 @@
    "reason": "no_consolidated_filing_on_bse",
    "note": "nopdf"
   },
-  "M&M|20211231": {
-   "sym": "M&M",
-   "qe": 20211231,
-   "reason": "other_unverifiable",
-   "note": "skip: extract pdf has only Dec-21+9M cols (no prev/yago to verify); complex continuing/discont"
-  },
   "LUXIND|20190331": {
    "sym": "LUXIND",
    "qe": 20190331,
@@ -1427,12 +1265,6 @@
    "qe": 20190630,
    "reason": "no_consolidated_filing_on_bse",
    "note": "nopdf"
-  },
-  "PAISALO|20190331": {
-   "sym": "PAISALO",
-   "qe": 20190331,
-   "reason": "no_anchor_or_basis_conflict",
-   "note": "refetch-con: cached PDF = STANDALONE stmt; con elsewhere; stored yago -0.61 sign-conflicts std +0.63"
   },
   "PAISALO|20190630": {
    "sym": "PAISALO",
@@ -1481,12 +1313,6 @@
    "qe": 20200331,
    "reason": "no_consolidated_filing_on_bse",
    "note": "nopdf"
-  },
-  "SPICEJET|20200930": {
-   "sym": "SPICEJET",
-   "qe": 20200930,
-   "reason": "distressed_or_wrong_period_or_nonfiling",
-   "note": "skip: distressed airline"
   },
   "SPICEJET|20210331": {
    "sym": "SPICEJET",
@@ -1596,12 +1422,6 @@
    "reason": "no_consolidated_filing_on_bse",
    "note": "nopdf"
   },
-  "CENTRALBK|20200930": {
-   "sym": "CENTRALBK",
-   "qe": 20200930,
-   "reason": "other_unverifiable",
-   "note": "skip: standalone cash-flow page; bank; yago=None"
-  },
   "HDBFS|20240930": {
    "sym": "HDBFS",
    "qe": 20240930,
@@ -1619,12 +1439,6 @@
    "qe": 20220930,
    "reason": "other_unverifiable",
    "note": "skip: investor-presentation (Rs mn), no PAT row, yago=None, no Q1FY23 column"
-  },
-  "IIFL|20190630": {
-   "sym": "IIFL",
-   "qe": 20190630,
-   "reason": "consolidated_not_in_cached_filing",
-   "note": "refetch-con: STANDALONE page (Mar-19 std 126.64 != stored con prev 274.28); consolidated elsewhere"
   },
   "IIFL|20190930": {
    "sym": "IIFL",
@@ -1685,12 +1499,6 @@
    "qe": 20200630,
    "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
-  },
-  "CANBK|20211231": {
-   "sym": "CANBK",
-   "qe": 20211231,
-   "reason": "consolidated_not_in_cached_filing",
-   "note": "refetch-con: STANDALONE page (Dec20 std 696.06 != con yago 739.2); consolidated on later page"
   },
   "HCL-INSYS|20190331": {
    "sym": "HCL-INSYS",
@@ -1775,12 +1583,6 @@
    "qe": 20221231,
    "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "skip: balance-sheet page; restated/difficult co"
-  },
-  "COSMOFIRST|20190331": {
-   "sym": "COSMOFIRST",
-   "qe": 20190331,
-   "reason": "consolidated_not_in_cached_filing",
-   "note": "refetch-con: cached PDF = notes+standalone-keynumbers only; consolidated P&L table not present"
   }
  }
 }
