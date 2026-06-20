@@ -2,18 +2,19 @@
  "_meta": {
   "as_of": "2026-06-20",
   "total_congap_targets": 582,
-  "recovered": 274,
-  "documented_unrecoverable": 308,
-  "method": "vision deep-read of BSE consolidated P&L filings; values accepted only when verified by stored-neighbor double/single anchor, visible date-header, internal reconciliation (H1=Q1+Q2 / FY-9M / PBT-tax=PAT), or cross-filing \u2014 no assumptions",
+  "recovered": 288,
+  "documented_unrecoverable": 294,
+  "method": "vision deep-read of BSE filings (incl IRDAI insurer Shareholders'/consolidated P&L); verified only by stored-neighbor anchor / visible date-header / internal reconciliation (9M=Q1+Q2+Q3, H1=Q1+Q2, PBT-tax=PAT) / cross-filing / press-release \u2014 no assumptions",
   "reason_counts": {
-   "no_consolidated_filing_on_bse": 141,
-   "annual_only_consolidated": 5,
-   "no_anchor_or_ambiguous_basis": 24,
-   "other_unverifiable": 43,
-   "wrong_period_filing_only": 5,
-   "insurer_no_comparable_consolidated": 57,
-   "distressed_restructured_or_nonfiling": 28,
-   "standalone_only_filer": 5
+   "no_consolidated_filing_on_bse": 130,
+   "distressed_or_wrong_period_or_nonfiling": 33,
+   "no_anchor_or_basis_conflict": 24,
+   "consolidated_not_in_cached_filing": 12,
+   "insurer_consolidated_unverifiable": 43,
+   "other_unverifiable": 36,
+   "annual_only_consolidated": 3,
+   "standalone_only_filer": 5,
+   "nse_only_not_on_bse": 8
   }
  },
  "gaps": {
@@ -32,19 +33,19 @@
   "NFL|20190331": {
    "sym": "NFL",
    "qe": 20190331,
-   "reason": "annual_only_consolidated",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "skip: cover-letter annual-only (con FY18=212.76); stored yago 67.68 is quarterly -> basis mismatch"
   },
   "NFL|20190630": {
    "sym": "NFL",
    "qe": 20190630,
-   "reason": "no_anchor_or_ambiguous_basis",
+   "reason": "no_anchor_or_basis_conflict",
    "note": "skip: no stored neighbor to verify"
   },
   "ELGIEQUIP|20190331": {
    "sym": "ELGIEQUIP",
    "qe": 20190331,
-   "reason": "other_unverifiable",
+   "reason": "consolidated_not_in_cached_filing",
    "note": "refetch-con: cached PDF = STANDALONE stmt only (Rs-mn); consolidated P&L not in this attachment"
   },
   "EIDPARRY|20210331": {
@@ -56,19 +57,19 @@
   "RAJESHEXPO|20200630": {
    "sym": "RAJESHEXPO",
    "qe": 20200630,
-   "reason": "wrong_period_filing_only",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "skip: wrong-period PDF (Mar-2020 media release); confirms prev 271.66=2716.57mn/10 but no Jun-2020"
   },
   "RAJESHEXPO|20200930": {
    "sym": "RAJESHEXPO",
    "qe": 20200930,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
   "RAJESHEXPO|20201231": {
    "sym": "RAJESHEXPO",
    "qe": 20201231,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
   "RAJESHEXPO|20241231": {
@@ -80,7 +81,7 @@
   "RAJESHEXPO|20250331": {
    "sym": "RAJESHEXPO",
    "qe": 20250331,
-   "reason": "other_unverifiable",
+   "reason": "no_anchor_or_basis_conflict",
    "note": "skip: yago 12.45 vs stored -31.57 mismatch; unreliable issuer"
   },
   "RAJESHEXPO|20250630": {
@@ -92,19 +93,19 @@
   "GVKPIL|20210630": {
    "sym": "GVKPIL",
    "qe": 20210630,
-   "reason": "distressed_restructured_or_nonfiling",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "nocode/defunct"
   },
   "GVKPIL|20210930": {
    "sym": "GVKPIL",
    "qe": 20210930,
-   "reason": "distressed_restructured_or_nonfiling",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "nocode/defunct"
   },
   "GVKPIL|20211231": {
    "sym": "GVKPIL",
    "qe": 20211231,
-   "reason": "distressed_restructured_or_nonfiling",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "nocode/defunct"
   },
   "SUNDARMFIN|20191231": {
@@ -164,25 +165,25 @@
   "SHILPAMED|20190630": {
    "sym": "SHILPAMED",
    "qe": 20190630,
-   "reason": "no_anchor_or_ambiguous_basis",
+   "reason": "no_anchor_or_basis_conflict",
    "note": "skip: no stored neighbor"
   },
   "JBMA|20190630": {
    "sym": "JBMA",
    "qe": 20190630,
-   "reason": "no_anchor_or_ambiguous_basis",
+   "reason": "other_unverifiable",
    "note": "skip: both neighbors None"
   },
   "JUBLPHARMA|20190331": {
    "sym": "JUBLPHARMA",
    "qe": 20190331,
-   "reason": "no_anchor_or_ambiguous_basis",
+   "reason": "no_anchor_or_basis_conflict",
    "note": "refetch-con: investor-deck rounded; reported PAT Q4FY19 -99 vs normalised 135 ambiguous; yago 152.4 vs deck 155"
   },
   "JUBLPHARMA|20190630": {
    "sym": "JUBLPHARMA",
    "qe": 20190630,
-   "reason": "no_anchor_or_ambiguous_basis",
+   "reason": "other_unverifiable",
    "note": "skip: both neighbors None (deck)"
   },
   "PIRAMALFIN|20210930": {
@@ -254,19 +255,19 @@
   "LTF|20190331": {
    "sym": "LTF",
    "qe": 20190331,
-   "reason": "other_unverifiable",
+   "reason": "consolidated_not_in_cached_filing",
    "note": "refetch-con: cached PDF = balance sheet + standalone note-4; consolidated P&L not present; yago=None"
   },
   "LTF|20190630": {
    "sym": "LTF",
    "qe": 20190630,
-   "reason": "no_anchor_or_ambiguous_basis",
+   "reason": "other_unverifiable",
    "note": "skip: both neighbors None"
   },
   "LTF|20190930": {
    "sym": "LTF",
    "qe": 20190930,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "fresh-skip: no-neighbor/insurer/distressed/IPO-prospectus/cover-letter"
   },
   "LTF|20211231": {
@@ -278,7 +279,7 @@
   "GVPIL|20211231": {
    "sym": "GVPIL",
    "qe": 20211231,
-   "reason": "distressed_restructured_or_nonfiling",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "skip: distressed GVK group, no clean double-anchor (col1 30.35 vs 38.29)"
   },
   "KOLTEPATIL|20190630": {
@@ -290,7 +291,7 @@
   "CONSOFINVT|20200630": {
    "sym": "CONSOFINVT",
    "qe": 20200630,
-   "reason": "distressed_restructured_or_nonfiling",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "nocode/defunct"
   },
   "EXIDEIND|20210331": {
@@ -302,7 +303,7 @@
   "TI|20190630": {
    "sym": "TI",
    "qe": 20190630,
-   "reason": "distressed_restructured_or_nonfiling",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "skip: crop hit audit-qualification stmt; Tilaknagar audit-qualified/distressed"
   },
   "TTKPRESTIG|20190331": {
@@ -386,25 +387,25 @@
   "BFUTILITIE|20190331": {
    "sym": "BFUTILITIE",
    "qe": 20190331,
-   "reason": "no_anchor_or_ambiguous_basis",
+   "reason": "other_unverifiable",
    "note": "skip: both neighbors None"
   },
   "BFUTILITIE|20241231": {
    "sym": "BFUTILITIE",
    "qe": 20241231,
-   "reason": "other_unverifiable",
+   "reason": "no_anchor_or_basis_conflict",
    "note": "skip: filing shows losses vs stored +ve, basis mismatch"
   },
   "UNITECH|20190331": {
    "sym": "UNITECH",
    "qe": 20190331,
-   "reason": "distressed_restructured_or_nonfiling",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "nocode/defunct"
   },
   "UNITECH|20210630": {
    "sym": "UNITECH",
    "qe": 20210630,
-   "reason": "distressed_restructured_or_nonfiling",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "nocode/defunct"
   },
   "AVANTIFEED|20190331": {
@@ -416,13 +417,13 @@
   "AVANTIFEED|20190630": {
    "sym": "AVANTIFEED",
    "qe": 20190630,
-   "reason": "no_anchor_or_ambiguous_basis",
+   "reason": "no_anchor_or_basis_conflict",
    "note": "skip: no stored neighbor"
   },
   "AVANTIFEED|20210630": {
    "sym": "AVANTIFEED",
    "qe": 20210630,
-   "reason": "other_unverifiable",
+   "reason": "consolidated_not_in_cached_filing",
    "note": "refetch-con: STANDALONE page (Jun-20 std~84 != stored con yago 120.22); consolidated elsewhere"
   },
   "ELECON|20220630": {
@@ -434,37 +435,37 @@
   "GPPL|20190331": {
    "sym": "GPPL",
    "qe": 20190331,
-   "reason": "no_anchor_or_ambiguous_basis",
+   "reason": "no_anchor_or_basis_conflict",
    "note": "skip: no stored neighbor"
   },
   "GPPL|20190630": {
    "sym": "GPPL",
    "qe": 20190630,
-   "reason": "no_anchor_or_ambiguous_basis",
+   "reason": "other_unverifiable",
    "note": "skip: both neighbors None"
   },
   "MBLINFRA|20190331": {
    "sym": "MBLINFRA",
    "qe": 20190331,
-   "reason": "distressed_restructured_or_nonfiling",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "skip: distressed (NCLT insolvency) side-by-side garbled; neighbors 39.58/19.09 don't match visible large losses"
   },
   "RAMCOCEM|20190331": {
    "sym": "RAMCOCEM",
    "qe": 20190331,
-   "reason": "no_anchor_or_ambiguous_basis",
+   "reason": "annual_only_consolidated",
    "note": "skip-structural: consolidated reported ANNUALLY ONLY (no Q4 quarter column); stored con neighbors None"
   },
   "ALOKINDS|20200630": {
    "sym": "ALOKINDS",
    "qe": 20200630,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
   "ALOKINDS|20200930": {
    "sym": "ALOKINDS",
    "qe": 20200930,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "fresh-skip: no-neighbor/insurer/distressed/IPO-prospectus/cover-letter"
   },
   "DBL|20210331": {
@@ -476,73 +477,73 @@
   "ADANIENSOL|20220630": {
    "sym": "ADANIENSOL",
    "qe": 20220630,
-   "reason": "no_anchor_or_ambiguous_basis",
+   "reason": "no_anchor_or_basis_conflict",
    "note": "wave1-skip: anchor conflict (prev row7 vs yago row9)"
   },
   "BORORENEW|20200331": {
    "sym": "BORORENEW",
    "qe": 20200331,
-   "reason": "distressed_restructured_or_nonfiling",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "skip: prev 16.93 != filing Dec-19 -0.87; composite amalgamation entity change; yago=None"
   },
   "BORORENEW|20200630": {
    "sym": "BORORENEW",
    "qe": 20200630,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
   "BORORENEW|20200930": {
    "sym": "BORORENEW",
    "qe": 20200930,
-   "reason": "distressed_restructured_or_nonfiling",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "skip: yago 13.12 != filing Sep-19 (negative); amalgamation entity change"
   },
   "BORORENEW|20201231": {
    "sym": "BORORENEW",
    "qe": 20201231,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
   "BORORENEW|20210331": {
    "sym": "BORORENEW",
    "qe": 20210331,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "fresh-skip: no-neighbor/insurer/distressed/IPO-prospectus/cover-letter"
   },
   "BORORENEW|20210630": {
    "sym": "BORORENEW",
    "qe": 20210630,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "fresh-skip: no-neighbor/insurer/distressed/IPO-prospectus/cover-letter"
   },
   "BORORENEW|20210930": {
    "sym": "BORORENEW",
    "qe": 20210930,
-   "reason": "no_anchor_or_ambiguous_basis",
+   "reason": "other_unverifiable",
    "note": "skip: both neighbors None"
   },
   "BORORENEW|20211231": {
    "sym": "BORORENEW",
    "qe": 20211231,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "fresh-skip: no-neighbor/insurer/distressed/IPO-prospectus/cover-letter"
   },
   "BORORENEW|20220331": {
    "sym": "BORORENEW",
    "qe": 20220331,
-   "reason": "no_anchor_or_ambiguous_basis",
+   "reason": "no_anchor_or_basis_conflict",
    "note": "skip: no stored neighbor to verify"
   },
   "JSWDULUX|20190331": {
    "sym": "JSWDULUX",
    "qe": 20190331,
-   "reason": "annual_only_consolidated",
+   "reason": "other_unverifiable",
    "note": "skip: annual-only filing (12-months cols, no quarter)"
   },
   "BCG|20240630": {
    "sym": "BCG",
    "qe": 20240630,
-   "reason": "wrong_period_filing_only",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "wave1-skip: wrong-period (Sep23 scanned)"
   },
   "BCG|20250331": {
@@ -584,7 +585,7 @@
   "GAYAPROJ|20230630": {
    "sym": "GAYAPROJ",
    "qe": 20230630,
-   "reason": "distressed_restructured_or_nonfiling",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "wave1-skip: cover-letter only (CIRP)"
   },
   "GAYAPROJ|20230930": {
@@ -626,25 +627,25 @@
   "JINDALPOLY|20190331": {
    "sym": "JINDALPOLY",
    "qe": 20190331,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
   "CARERATING|20190331": {
    "sym": "CARERATING",
    "qe": 20190331,
-   "reason": "other_unverifiable",
+   "reason": "no_anchor_or_basis_conflict",
    "note": "skip: dense side-by-side, columns misalign on read (net-profit>PBT); std 13.09 vs annual-col 5781.43 mismap; yago=None -> unverifiable"
   },
   "CHOLAHLDNG|20190331": {
    "sym": "CHOLAHLDNG",
    "qe": 20190331,
-   "reason": "annual_only_consolidated",
+   "reason": "other_unverifiable",
    "note": "skip: annual-only filing (no quarterly column)"
   },
   "CHOLAHLDNG|20190630": {
    "sym": "CHOLAHLDNG",
    "qe": 20190630,
-   "reason": "no_anchor_or_ambiguous_basis",
+   "reason": "no_anchor_or_basis_conflict",
    "note": "skip: no stored neighbor to verify"
   },
   "CHOLAHLDNG|20201231": {
@@ -656,49 +657,37 @@
   "ABCAPITAL|20190331": {
    "sym": "ABCAPITAL",
    "qe": 20190331,
-   "reason": "other_unverifiable",
+   "reason": "consolidated_not_in_cached_filing",
    "note": "refetch-con: STANDALONE holding-co page (Dec-18 std -45.05 != stored con prev 206.29); consolidated is separate attachment"
   },
   "ABCAPITAL|20190930": {
    "sym": "ABCAPITAL",
    "qe": 20190930,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
-  },
-  "GICRE|20200331": {
-   "sym": "GICRE",
-   "qe": 20200331,
-   "reason": "other_unverifiable",
-   "note": "retry: notes page (Schedule 16); P&L on other page"
   },
   "GICRE|20220331": {
    "sym": "GICRE",
    "qe": 20220331,
-   "reason": "insurer_no_comparable_consolidated",
-   "note": "skip: insurer mega multi-segment filing"
+   "reason": "consolidated_not_in_cached_filing",
+   "note": "cached PDF is STANDALONE IRDAI only (Mar-2021 std 1260.44); stored series is CONSOLIDATED (2045.48); no consolidated summary in this PDF"
   },
   "GICRE|20220630": {
    "sym": "GICRE",
    "qe": 20220630,
-   "reason": "insurer_no_comparable_consolidated",
-   "note": "skip: insurer mega multi-segment filing"
-  },
-  "GICRE|20220930": {
-   "sym": "GICRE",
-   "qe": 20220930,
-   "reason": "insurer_no_comparable_consolidated",
-   "note": "skip: insurer mega multi-segment filing"
+   "reason": "other_unverifiable",
+   "note": "yago Jun-2021 1260.44 (con) not present in cached PDF (summary/segment pages only)"
   },
   "GICRE|20240331": {
    "sym": "GICRE",
    "qe": 20240331,
-   "reason": "no_anchor_or_ambiguous_basis",
-   "note": "skip: no stored neighbor to verify"
+   "reason": "no_anchor_or_basis_conflict",
+   "note": "dense lakh consolidated stmt; stored prev 1517.96 doesn't match filing Dec-2023 col; basis inconsistency, no clean read"
   },
   "FINCABLES|20190331": {
    "sym": "FINCABLES",
    "qe": 20190331,
-   "reason": "no_anchor_or_ambiguous_basis",
+   "reason": "no_anchor_or_basis_conflict",
    "note": "skip: no stored neighbor"
   },
   "PVP|20200331": {
@@ -710,7 +699,7 @@
   "PVP|20200630": {
    "sym": "PVP",
    "qe": 20200630,
-   "reason": "no_anchor_or_ambiguous_basis",
+   "reason": "no_anchor_or_basis_conflict",
    "note": "skip: no stored neighbor to verify"
   },
   "GHCL|20190331": {
@@ -734,7 +723,7 @@
   "SONACOMS|20210331": {
    "sym": "SONACOMS",
    "qe": 20210331,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "fresh-skip: no-neighbor/insurer/distressed/IPO-prospectus/cover-letter"
   },
   "KIRLFER|20221231": {
@@ -746,7 +735,7 @@
   "KIRLFER|20230331": {
    "sym": "KIRLFER",
    "qe": 20230331,
-   "reason": "no_anchor_or_ambiguous_basis",
+   "reason": "no_anchor_or_basis_conflict",
    "note": "skip: no stored neighbor to verify"
   },
   "SAMMAANCAP|20190630": {
@@ -758,7 +747,7 @@
   "CCL|20190331": {
    "sym": "CCL",
    "qe": 20190331,
-   "reason": "no_anchor_or_ambiguous_basis",
+   "reason": "no_anchor_or_basis_conflict",
    "note": "skip: notes-prose decoy (con PAT '3563.98L excl 2825.17L subsidiary dividend' = ambiguous basis); no clean prev/yago in table"
   },
   "CCL|20190630": {
@@ -770,19 +759,19 @@
   "GEOJITFSL|20190930": {
    "sym": "GEOJITFSL",
    "qe": 20190930,
-   "reason": "other_unverifiable",
+   "reason": "no_anchor_or_basis_conflict",
    "note": "skip: stored std vs con filing mismatch (col1 4.91 vs 10.24)"
   },
   "INDUSINDBK|20190930": {
    "sym": "INDUSINDBK",
    "qe": 20190930,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
   "ANSALAPI|20190331": {
    "sym": "ANSALAPI",
    "qe": 20190331,
-   "reason": "distressed_restructured_or_nonfiling",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "skip-structural: audit-qualifications page (annual FY19 -128cr); distressed; yago -23.74 not reconcilable"
   },
   "ANSALAPI|20190630": {
@@ -848,7 +837,7 @@
   "TAKE|20190331": {
    "sym": "TAKE",
    "qe": 20190331,
-   "reason": "distressed_restructured_or_nonfiling",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "skip: Take Solutions distressed/defaulted; values mismatch stored"
   },
   "TAKE|20190630": {
@@ -860,13 +849,13 @@
   "SPANDANA|20220331": {
    "sym": "SPANDANA",
    "qe": 20220331,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
   "SPANDANA|20220630": {
    "sym": "SPANDANA",
    "qe": 20220630,
-   "reason": "wrong_period_filing_only",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "wave1-skip: wrong-period (FY22 annual)"
   },
   "SPANDANA|20220930": {
@@ -878,7 +867,7 @@
   "GAEL|20191231": {
    "sym": "GAEL",
    "qe": 20191231,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
   "GAEL|20200331": {
@@ -896,14 +885,14 @@
   "HFCL|20220630": {
    "sym": "HFCL",
    "qe": 20220630,
-   "reason": "no_anchor_or_ambiguous_basis",
+   "reason": "no_anchor_or_basis_conflict",
    "note": "skip: side-by-side ambiguous, no single row double-anchors (mixed basis)"
   },
   "ICICIGI|20220630": {
    "sym": "ICICIGI",
    "qe": 20220630,
-   "reason": "insurer_no_comparable_consolidated",
-   "note": "wave1-skip: insurer, yago 151.63 no-match"
+   "reason": "no_anchor_or_basis_conflict",
+   "note": "cached filing Jun-2021 col (194.58) conflicts with stored yago 151.63; basis/period mismatch -> unverifiable"
   },
   "JYOTHYLAB|20190331": {
    "sym": "JYOTHYLAB",
@@ -920,19 +909,19 @@
   "JISLJALEQS|20190331": {
    "sym": "JISLJALEQS",
    "qe": 20190331,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
   "JISLJALEQS|20190630": {
    "sym": "JISLJALEQS",
    "qe": 20190630,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "skip: annual-only-con / insurer / distressed-prose / wrong-period / anchor-irreconcilable"
   },
   "JISLJALEQS|20220331": {
    "sym": "JISLJALEQS",
    "qe": 20220331,
-   "reason": "distressed_restructured_or_nonfiling",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "skip: notes page (debt-resolution/scheme); distressed; no P&L table"
   },
   "METROBRAND|20210630": {
@@ -956,13 +945,13 @@
   "COFFEEDAY|20190930": {
    "sym": "COFFEEDAY",
    "qe": 20190930,
-   "reason": "distressed_restructured_or_nonfiling",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "skip: distressed/fraud-collapse issuer"
   },
   "COFFEEDAY|20191231": {
    "sym": "COFFEEDAY",
    "qe": 20191231,
-   "reason": "distressed_restructured_or_nonfiling",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "skip: distressed/fraud-collapse issuer, unreliable data"
   },
   "COFFEEDAY|20200331": {
@@ -974,7 +963,7 @@
   "COFFEEDAY|20200630": {
    "sym": "COFFEEDAY",
    "qe": 20200630,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "skip: annual-only-con / insurer / distressed-prose / wrong-period / anchor-irreconcilable"
   },
   "COFFEEDAY|20200930": {
@@ -998,7 +987,7 @@
   "JKPAPER|20190331": {
    "sym": "JKPAPER",
    "qe": 20190331,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "skip: annual-only-con / insurer / distressed-prose / wrong-period / anchor-irreconcilable"
   },
   "JKPAPER|20190630": {
@@ -1028,26 +1017,26 @@
   "SFL|20190630": {
    "sym": "SFL",
    "qe": 20190630,
-   "reason": "no_anchor_or_ambiguous_basis",
+   "reason": "no_anchor_or_basis_conflict",
    "note": "refetch-con: press-release prose (39 vs 35 ambiguous); prev Mar-19 not shown; yago=None"
   },
   "SBILIFE|20230930": {
    "sym": "SBILIFE",
    "qe": 20230930,
-   "reason": "no_consolidated_filing_on_bse",
-   "note": "nopdf"
+   "reason": "nse_only_not_on_bse",
+   "note": "NSE-only; not on BSE; NSE 403-blocked"
   },
   "HDFCLIFE|20200331": {
    "sym": "HDFCLIFE",
    "qe": 20200331,
-   "reason": "insurer_no_comparable_consolidated",
-   "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
+   "reason": "no_anchor_or_basis_conflict",
+   "note": "prev Dec-2019 251.09 not a column in Q4 filing (shows Mar-2020/Mar-2019/FY); no anchor"
   },
   "HDFCLIFE|20200630": {
    "sym": "HDFCLIFE",
    "qe": 20200630,
-   "reason": "no_consolidated_filing_on_bse",
-   "note": "nopdf"
+   "reason": "nse_only_not_on_bse",
+   "note": "NSE-only filer; not on BSE; NSE API 403-blocked -> unfetchable"
   },
   "JINDALSAW|20190331": {
    "sym": "JINDALSAW",
@@ -1058,7 +1047,7 @@
   "GALLANTT|20220331": {
    "sym": "GALLANTT",
    "qe": 20220331,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
   "INDOSTAR|20220331": {
@@ -1106,7 +1095,7 @@
   "ICICIBANK|20220930": {
    "sym": "ICICIBANK",
    "qe": 20220930,
-   "reason": "wrong_period_filing_only",
+   "reason": "consolidated_not_in_cached_filing",
    "note": "refetch-con: cached PDF = STANDALONE (and looks Q2FY24 wrong-period); need Sep-2022 consolidated results"
   },
   "BAJAJFINSV|20190331": {
@@ -1118,13 +1107,13 @@
   "J&KBANK|20190930": {
    "sym": "J&KBANK",
    "qe": 20190930,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
   "J&KBANK|20210630": {
    "sym": "J&KBANK",
    "qe": 20210630,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
   "J&KBANK|20210930": {
@@ -1148,19 +1137,19 @@
   "MAHLIFE|20190630": {
    "sym": "MAHLIFE",
    "qe": 20190630,
-   "reason": "other_unverifiable",
+   "reason": "consolidated_not_in_cached_filing",
    "note": "refetch-con: cached PDF = notes + standalone note-8; consolidated P&L not present; yago=None"
   },
   "MMTC|20210331": {
    "sym": "MMTC",
    "qe": 20210331,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
   "MMTC|20220630": {
    "sym": "MMTC",
    "qe": 20220630,
-   "reason": "distressed_restructured_or_nonfiling",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "wave1-skip: waiver-letter only"
   },
   "SUPREMEINF|20240930": {
@@ -1184,19 +1173,19 @@
   "SUPREMEINF|20250630": {
    "sym": "SUPREMEINF",
    "qe": 20250630,
-   "reason": "wrong_period_filing_only",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "wave1-skip: wrong-period (FY25 annual)"
   },
   "SARDAEN|20190630": {
    "sym": "SARDAEN",
    "qe": 20190630,
-   "reason": "other_unverifiable",
+   "reason": "consolidated_not_in_cached_filing",
    "note": "refetch-con: STANDALONE page (Mar-19 std 37.91 != stored con prev 46.73); consolidated elsewhere"
   },
   "BASF|20210331": {
    "sym": "BASF",
    "qe": 20210331,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
   "BASF|20210630": {
@@ -1250,7 +1239,7 @@
   "ABB|20191231": {
    "sym": "ABB",
    "qe": 20191231,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
   "ABB|20200331": {
@@ -1262,13 +1251,13 @@
   "ABB|20200630": {
    "sym": "ABB",
    "qe": 20200630,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
   "ABB|20200930": {
    "sym": "ABB",
    "qe": 20200930,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
   "ABB|20201231": {
@@ -1376,19 +1365,19 @@
   "SBIN|20190331": {
    "sym": "SBIN",
    "qe": 20190331,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
   "SBIN|20190930": {
    "sym": "SBIN",
    "qe": 20190930,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
   "BLUEJET|20240331": {
    "sym": "BLUEJET",
    "qe": 20240331,
-   "reason": "other_unverifiable",
+   "reason": "no_anchor_or_basis_conflict",
    "note": "skip: std Dec23 32.11 vs stored prev 124.1 mismatch (recent-IPO stored err)"
   },
   "BLUEJET|20240630": {
@@ -1412,7 +1401,7 @@
   "MASFIN|20201231": {
    "sym": "MASFIN",
    "qe": 20201231,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "skip: LICI insurer notes-page / MASFIN yago 55.66 != filing Dec19 48.71 (no clean anchor)"
   },
   "KKCL|20190331": {
@@ -1430,7 +1419,7 @@
   "LUXIND|20190331": {
    "sym": "LUXIND",
    "qe": 20190331,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
   "LUXIND|20190630": {
@@ -1442,7 +1431,7 @@
   "PAISALO|20190331": {
    "sym": "PAISALO",
    "qe": 20190331,
-   "reason": "no_anchor_or_ambiguous_basis",
+   "reason": "no_anchor_or_basis_conflict",
    "note": "refetch-con: cached PDF = STANDALONE stmt; con elsewhere; stored yago -0.61 sign-conflicts std +0.63"
   },
   "PAISALO|20190630": {
@@ -1454,7 +1443,7 @@
   "PIIND|20190331": {
    "sym": "PIIND",
    "qe": 20190331,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "skip: annual-only-con / insurer / distressed-prose / wrong-period / anchor-irreconcilable"
   },
   "TORNTPHARM|20220630": {
@@ -1484,7 +1473,7 @@
   "SPICEJET|20190331": {
    "sym": "SPICEJET",
    "qe": 20190331,
-   "reason": "distressed_restructured_or_nonfiling",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "skip: distressed airline"
   },
   "SPICEJET|20200331": {
@@ -1496,25 +1485,25 @@
   "SPICEJET|20200930": {
    "sym": "SPICEJET",
    "qe": 20200930,
-   "reason": "distressed_restructured_or_nonfiling",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "skip: distressed airline"
   },
   "SPICEJET|20210331": {
    "sym": "SPICEJET",
    "qe": 20210331,
-   "reason": "distressed_restructured_or_nonfiling",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "skip: distressed airline, reporting delays/restatements"
   },
   "SPICEJET|20210630": {
    "sym": "SPICEJET",
    "qe": 20210630,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "fresh-skip: no-neighbor/insurer/distressed/IPO-prospectus/cover-letter"
   },
   "SPICEJET|20220331": {
    "sym": "SPICEJET",
    "qe": 20220331,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
   "SPICEJET|20220630": {
@@ -1526,13 +1515,13 @@
   "SPICEJET|20220930": {
    "sym": "SPICEJET",
    "qe": 20220930,
-   "reason": "distressed_restructured_or_nonfiling",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "skip: distressed airline"
   },
   "SPICEJET|20221231": {
    "sym": "SPICEJET",
    "qe": 20221231,
-   "reason": "distressed_restructured_or_nonfiling",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "wave1-skip: distressed, no anchor"
   },
   "SPICEJET|20230331": {
@@ -1556,19 +1545,19 @@
   "SPICEJET|20241231": {
    "sym": "SPICEJET",
    "qe": 20241231,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "fresh-skip: no-neighbor/insurer/distressed/IPO-prospectus/cover-letter"
   },
   "SUNTECK|20210331": {
    "sym": "SUNTECK",
    "qe": 20210331,
-   "reason": "distressed_restructured_or_nonfiling",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "skip: col1 5% off + yago sign mismatch (restated)"
   },
   "TREEHOUSE|20190331": {
    "sym": "TREEHOUSE",
    "qe": 20190331,
-   "reason": "distressed_restructured_or_nonfiling",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "skip: distressed (Tree House Education)"
   },
   "TREEHOUSE|20190630": {
@@ -1586,7 +1575,7 @@
   "BAJAJHLDNG|20190630": {
    "sym": "BAJAJHLDNG",
    "qe": 20190630,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "skip: annual-only-con / insurer / distressed-prose / wrong-period / anchor-irreconcilable"
   },
   "MPSLTD|20190630": {
@@ -1598,7 +1587,7 @@
   "CENTRALBK|20190930": {
    "sym": "CENTRALBK",
    "qe": 20190930,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
   "CENTRALBK|20191231": {
@@ -1634,13 +1623,13 @@
   "IIFL|20190630": {
    "sym": "IIFL",
    "qe": 20190630,
-   "reason": "other_unverifiable",
+   "reason": "consolidated_not_in_cached_filing",
    "note": "refetch-con: STANDALONE page (Mar-19 std 126.64 != stored con prev 274.28); consolidated elsewhere"
   },
   "IIFL|20190930": {
    "sym": "IIFL",
    "qe": 20190930,
-   "reason": "other_unverifiable",
+   "reason": "consolidated_not_in_cached_filing",
    "note": "refetch-con: STANDALONE/dense; yago 223.49 (con) not present; consolidated elsewhere"
   },
   "WELCORP|20211231": {
@@ -1664,49 +1653,49 @@
   "STARHEALTH|20220630": {
    "sym": "STARHEALTH",
    "qe": 20220630,
-   "reason": "insurer_no_comparable_consolidated",
-   "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
+   "reason": "no_anchor_or_basis_conflict",
+   "note": "prev Mar-2022 -82.04 not a column in Q1 filing; no yago; no clean anchor"
   },
   "STARHEALTH|20220930": {
    "sym": "STARHEALTH",
    "qe": 20220930,
-   "reason": "no_consolidated_filing_on_bse",
-   "note": "nopdf"
+   "reason": "nse_only_not_on_bse",
+   "note": "NSE-only; not on BSE; NSE 403-blocked"
   },
   "STARHEALTH|20230630": {
    "sym": "STARHEALTH",
    "qe": 20230630,
-   "reason": "no_consolidated_filing_on_bse",
-   "note": "nopdf"
+   "reason": "nse_only_not_on_bse",
+   "note": "NSE-only; not on BSE; NSE 403-blocked"
   },
   "STARHEALTH|20250930": {
    "sym": "STARHEALTH",
    "qe": 20250930,
-   "reason": "no_consolidated_filing_on_bse",
-   "note": "nopdf"
+   "reason": "nse_only_not_on_bse",
+   "note": "NSE-only; not on BSE; NSE 403-blocked"
   },
   "BLISSGVS|20211231": {
    "sym": "BLISSGVS",
    "qe": 20211231,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
   "CANBK|20200630": {
    "sym": "CANBK",
    "qe": 20200630,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
   "CANBK|20211231": {
    "sym": "CANBK",
    "qe": 20211231,
-   "reason": "other_unverifiable",
+   "reason": "consolidated_not_in_cached_filing",
    "note": "refetch-con: STANDALONE page (Dec20 std 696.06 != con yago 739.2); consolidated on later page"
   },
   "HCL-INSYS|20190331": {
    "sym": "HCL-INSYS",
    "qe": 20190331,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
   "HCL-INSYS|20190630": {
@@ -1724,25 +1713,25 @@
   "LICI|20230630": {
    "sym": "LICI",
    "qe": 20230630,
-   "reason": "no_consolidated_filing_on_bse",
-   "note": "nopdf"
+   "reason": "nse_only_not_on_bse",
+   "note": "NSE-only; not on BSE; NSE 403-blocked"
   },
   "LICI|20250331": {
    "sym": "LICI",
    "qe": 20250331,
-   "reason": "no_consolidated_filing_on_bse",
-   "note": "nopdf"
+   "reason": "nse_only_not_on_bse",
+   "note": "NSE-only; not on BSE; NSE 403-blocked"
   },
   "LICI|20250630": {
    "sym": "LICI",
    "qe": 20250630,
-   "reason": "no_consolidated_filing_on_bse",
-   "note": "nopdf"
+   "reason": "nse_only_not_on_bse",
+   "note": "NSE-only; not on BSE; NSE 403-blocked"
   },
   "ZYDUSWELL|20190331": {
    "sym": "ZYDUSWELL",
    "qe": 20190331,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
   "ZYDUSWELL|20190630": {
@@ -1766,31 +1755,31 @@
   "IDFCFIRSTB|20190930": {
    "sym": "IDFCFIRSTB",
    "qe": 20190930,
-   "reason": "insurer_no_comparable_consolidated",
+   "reason": "insurer_consolidated_unverifiable",
    "note": "w3-skip: standalone-only/insurer/annual-only/distressed/wrong-period/no-anchor"
   },
   "CDSL|20220630": {
    "sym": "CDSL",
    "qe": 20220630,
-   "reason": "distressed_restructured_or_nonfiling",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "nocode/defunct"
   },
   "TITAGARH|20190331": {
    "sym": "TITAGARH",
    "qe": 20190331,
-   "reason": "distressed_restructured_or_nonfiling",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "skip: notes page; restated/difficult FY19 (conciliation)"
   },
   "TITAGARH|20221231": {
    "sym": "TITAGARH",
    "qe": 20221231,
-   "reason": "distressed_restructured_or_nonfiling",
+   "reason": "distressed_or_wrong_period_or_nonfiling",
    "note": "skip: balance-sheet page; restated/difficult co"
   },
   "COSMOFIRST|20190331": {
    "sym": "COSMOFIRST",
    "qe": 20190331,
-   "reason": "other_unverifiable",
+   "reason": "consolidated_not_in_cached_filing",
    "note": "refetch-con: cached PDF = notes+standalone-keynumbers only; consolidated P&L table not present"
   }
  }
