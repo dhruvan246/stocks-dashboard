@@ -8,7 +8,17 @@ upserts the quarter into the dataset. Light: one list call + a handful of XBRL
 fetches during earnings season, ~nothing otherwise.
 
 Picks up automatically: new quarters for existing stocks AND brand-new IPOs
-(GROWW, LENSKART, …) the day they first file.
+(GROWW, LENSKART, …) the day they first file; AND consolidated=standalone for
+established no-subsidiary companies (see is_nosub backfill below).
+
+TWO KNOWN BLIND SPOTS (fill manually when they show gaps):
+  1. INSURERS (LICI/HDFCLIFE/ICICIPRULI/ICICIGI/GICRE/NIACL/SBILIFE/STARHEALTH/
+     GODIGIT/NIVABUPA) file IRDAI-format results (Revenue A/c + Shareholders' P&L)
+     that xbrl_profit can't parse -> they get NEITHER std nor con here. Extract per
+     scripts/INSURER_EXTRACTION_PLAYBOOK.md.
+  2. A BRAND-NEW no-subsidiary company has no con history yet, so the no-sub backfill
+     can't recognise it until it has >=3 con==std quarters; seed it once manually,
+     then this script maintains it.
 
 Run: python -X utf8 update_fundamentals.py
 """
@@ -79,6 +89,25 @@ def main():
             if upd: changed += 1
         else:
             rec.append([int(qe), std, annStd, con, annCon]); rec.sort(key=lambda x: x[0]); changed += 1
+
+    # No-subsidiary auto-fill: a company that has never reported con != std files only a standalone
+    # XBRL (no consolidated), so the loop above leaves con=None. For such companies consolidated ==
+    # standalone (accounting identity), so set con=std for the quarters just added. This closes the
+    # gap that previously needed a manual con=std pass every quarter (AUBANK, COLPAL, SBICARD, ...).
+    # Safe because a company WITH subsidiaries files a consolidated XBRL -> con is read above and this
+    # never fires; and we require >=3 historical con==std quarters before trusting the no-sub pattern.
+    def is_nosub(rec):
+        pairs = [(r[1], r[3]) for r in rec if r[1] is not None and r[3] is not None]
+        if len(pairs) < 3: return False
+        for s, c in pairs:
+            if abs(c - s) > 0.01: return False   # con == std (to the paisa) everywhere -> no subsidiary
+        return True
+    for (sym, qe) in byq:
+        rec = data.get(sym)
+        if not rec or not is_nosub(rec): continue
+        row = next((x for x in rec if x[0] == int(qe)), None)
+        if row and row[1] is not None and row[3] is None:
+            row[3], row[4] = row[1], row[2]; changed += 1   # con = std (no consolidatable subsidiary)
 
     if not changed and not newsyms:
         print("no new earnings — nothing to update"); return
