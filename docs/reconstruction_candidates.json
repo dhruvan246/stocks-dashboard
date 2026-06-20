@@ -1,0 +1,566 @@
+{
+ "note": "Balancing-quarter reconstruction candidates: target con = FY_annual_con - sum(other 3 quarters of its fiscal year, which are already stored). Validated on PFOCUS Q4FY20 (direct read 12.68 == FY20(-131.48) - 9M(-144.16) = 12.68). Needs the FY annual consolidated read from each filing + cross-check that direct-Q4-read==FY-9M (SUNTECK failed this: stored quarters restated). Excludes GICRE (stored=standalone basis) and ABB/BASF (calendar-year).",
+ "count": 35,
+ "candidates": [
+  {
+   "sym": "NFL",
+   "qe": 20190630,
+   "fy_end": 2020,
+   "others": [
+    20190930,
+    20191231,
+    20200331
+   ],
+   "others_con": [
+    24.55,
+    107.11,
+    -248.65
+   ],
+   "sum_others": -116.99
+  },
+  {
+   "sym": "SUNDARMFIN",
+   "qe": 20211231,
+   "fy_end": 2022,
+   "others": [
+    20210630,
+    20210930,
+    20220331
+   ],
+   "others_con": [
+    285.49,
+    259.04,
+    340.0
+   ],
+   "sum_others": 884.53
+  },
+  {
+   "sym": "PIRAMALFIN",
+   "qe": 20240630,
+   "fy_end": 2025,
+   "others": [
+    20240930,
+    20241231,
+    20250331
+   ],
+   "others_con": [
+    163.0,
+    39.0,
+    102.0
+   ],
+   "sum_others": 304.0
+  },
+  {
+   "sym": "KOLTEPATIL",
+   "qe": 20190630,
+   "fy_end": 2020,
+   "others": [
+    20190930,
+    20191231,
+    20200331
+   ],
+   "others_con": [
+    -14.56,
+    -14.32,
+    -2.18
+   ],
+   "sum_others": -31.06
+  },
+  {
+   "sym": "UNITECH",
+   "qe": 20210630,
+   "fy_end": 2022,
+   "others": [
+    20210930,
+    20211231,
+    20220331
+   ],
+   "others_con": [
+    -260.48,
+    -211.14,
+    -318.31
+   ],
+   "sum_others": -789.93
+  },
+  {
+   "sym": "ELECON",
+   "qe": 20220630,
+   "fy_end": 2023,
+   "others": [
+    20220930,
+    20221231,
+    20230331
+   ],
+   "others_con": [
+    64.51,
+    62.74,
+    67.95
+   ],
+   "sum_others": 195.2
+  },
+  {
+   "sym": "DBL",
+   "qe": 20210331,
+   "fy_end": 2021,
+   "others": [
+    20200630,
+    20200930,
+    20201231
+   ],
+   "others_con": [
+    27.05,
+    8.69,
+    182.23
+   ],
+   "sum_others": 217.97
+  },
+  {
+   "sym": "BORORENEW",
+   "qe": 20200331,
+   "fy_end": 2020,
+   "others": [
+    20190630,
+    20190930,
+    20191231
+   ],
+   "others_con": [
+    8.08,
+    13.12,
+    16.93
+   ],
+   "sum_others": 38.13
+  },
+  {
+   "sym": "BCG",
+   "qe": 20240630,
+   "fy_end": 2025,
+   "others": [
+    20240930,
+    20241231,
+    20250331
+   ],
+   "others_con": [
+    186.29,
+    243.56,
+    120.68
+   ],
+   "sum_others": 550.53
+  },
+  {
+   "sym": "DALMIASUG",
+   "qe": 20230331,
+   "fy_end": 2023,
+   "others": [
+    20220630,
+    20220930,
+    20221231
+   ],
+   "others_con": [
+    49.37,
+    11.71,
+    64.91
+   ],
+   "sum_others": 125.99
+  },
+  {
+   "sym": "DALMIASUG",
+   "qe": 20250930,
+   "fy_end": 2026,
+   "others": [
+    20250630,
+    20251231,
+    20260331
+   ],
+   "others_con": [
+    38.37,
+    69.66,
+    104.47
+   ],
+   "sum_others": 212.5
+  },
+  {
+   "sym": "GAYAPROJ",
+   "qe": 20230331,
+   "fy_end": 2023,
+   "others": [
+    20220630,
+    20220930,
+    20221231
+   ],
+   "others_con": [
+    -391.9,
+    -268.33,
+    -291.56
+   ],
+   "sum_others": -951.79
+  },
+  {
+   "sym": "ABCAPITAL",
+   "qe": 20190930,
+   "fy_end": 2020,
+   "others": [
+    20190630,
+    20191231,
+    20200331
+   ],
+   "others_con": [
+    255.78,
+    241.05,
+    126.04
+   ],
+   "sum_others": 622.87
+  },
+  {
+   "sym": "PVP",
+   "qe": 20200630,
+   "fy_end": 2021,
+   "others": [
+    20200930,
+    20201231,
+    20210331
+   ],
+   "others_con": [
+    -15.69,
+    -7.37,
+    -2.85
+   ],
+   "sum_others": -25.91
+  },
+  {
+   "sym": "SAMMAANCAP",
+   "qe": 20190630,
+   "fy_end": 2020,
+   "others": [
+    20190930,
+    20191231,
+    20200331
+   ],
+   "others_con": [
+    709.52,
+    551.7,
+    137.06
+   ],
+   "sum_others": 1398.28
+  },
+  {
+   "sym": "ANSALAPI",
+   "qe": 20190630,
+   "fy_end": 2020,
+   "others": [
+    20190930,
+    20191231,
+    20200331
+   ],
+   "others_con": [
+    -25.41,
+    13.46,
+    -205.28
+   ],
+   "sum_others": -217.23
+  },
+  {
+   "sym": "SPANDANA",
+   "qe": 20220331,
+   "fy_end": 2022,
+   "others": [
+    20210630,
+    20210930,
+    20211231
+   ],
+   "others_con": [
+    53.95,
+    -57.94,
+    45.01
+   ],
+   "sum_others": 41.02
+  },
+  {
+   "sym": "SPANDANA",
+   "qe": 20220630,
+   "fy_end": 2023,
+   "others": [
+    20220930,
+    20221231,
+    20230331
+   ],
+   "others_con": [
+    55.15,
+    71.37,
+    105.54
+   ],
+   "sum_others": 232.06
+  },
+  {
+   "sym": "JISLJALEQS",
+   "qe": 20190630,
+   "fy_end": 2020,
+   "others": [
+    20190930,
+    20191231,
+    20200331
+   ],
+   "others_con": [
+    -133.86,
+    -279.11,
+    -324.16
+   ],
+   "sum_others": -737.13
+  },
+  {
+   "sym": "LUMAXIND",
+   "qe": 20190630,
+   "fy_end": 2020,
+   "others": [
+    20190930,
+    20191231,
+    20200331
+   ],
+   "others_con": [
+    20.08,
+    18.9,
+    16.36
+   ],
+   "sum_others": 55.34
+  },
+  {
+   "sym": "POONAWALLA",
+   "qe": 20190630,
+   "fy_end": 2020,
+   "others": [
+    20190930,
+    20191231,
+    20200331
+   ],
+   "others_con": [
+    29.53,
+    22.39,
+    -35.51
+   ],
+   "sum_others": 16.41
+  },
+  {
+   "sym": "GALLANTT",
+   "qe": 20220331,
+   "fy_end": 2022,
+   "others": [
+    20210630,
+    20210930,
+    20211231
+   ],
+   "others_con": [
+    26.6,
+    6.87,
+    21.93
+   ],
+   "sum_others": 55.4
+  },
+  {
+   "sym": "ICICIBANK",
+   "qe": 20220930,
+   "fy_end": 2023,
+   "others": [
+    20220630,
+    20221231,
+    20230331
+   ],
+   "others_con": [
+    7486.93,
+    8936.18,
+    9985.22
+   ],
+   "sum_others": 26408.33
+  },
+  {
+   "sym": "J&KBANK",
+   "qe": 20190930,
+   "fy_end": 2020,
+   "others": [
+    20190630,
+    20191231,
+    20200331
+   ],
+   "others_con": [
+    21.15,
+    49.06,
+    -293.82
+   ],
+   "sum_others": -223.61
+  },
+  {
+   "sym": "MMTC",
+   "qe": 20210331,
+   "fy_end": 2021,
+   "others": [
+    20200630,
+    20200930,
+    20201231
+   ],
+   "others_con": [
+    -92.54,
+    -44.53,
+    -52.22
+   ],
+   "sum_others": -189.29
+  },
+  {
+   "sym": "MMTC",
+   "qe": 20220630,
+   "fy_end": 2023,
+   "others": [
+    20220930,
+    20221231,
+    20230331
+   ],
+   "others_con": [
+    1576.71,
+    97.55,
+    9.85
+   ],
+   "sum_others": 1684.11
+  },
+  {
+   "sym": "HSCL",
+   "qe": 20200331,
+   "fy_end": 2020,
+   "others": [
+    20190630,
+    20190930,
+    20191231
+   ],
+   "others_con": [
+    73.49,
+    45.16,
+    15.92
+   ],
+   "sum_others": 134.57
+  },
+  {
+   "sym": "SPICEJET",
+   "qe": 20200331,
+   "fy_end": 2020,
+   "others": [
+    20190630,
+    20190930,
+    20191231
+   ],
+   "others_con": [
+    262.89,
+    -461.22,
+    77.97
+   ],
+   "sum_others": -120.36
+  },
+  {
+   "sym": "SPICEJET",
+   "qe": 20210331,
+   "fy_end": 2021,
+   "others": [
+    20200630,
+    20200930,
+    20201231
+   ],
+   "others_con": [
+    -600.52,
+    -105.61,
+    -772.9
+   ],
+   "sum_others": -1479.03
+  },
+  {
+   "sym": "SPICEJET",
+   "qe": 20231231,
+   "fy_end": 2024,
+   "others": [
+    20230630,
+    20230930,
+    20240331
+   ],
+   "others_con": [
+    197.62,
+    -449.43,
+    126.87
+   ],
+   "sum_others": -124.94
+  },
+  {
+   "sym": "SUNTECK",
+   "qe": 20210331,
+   "fy_end": 2021,
+   "others": [
+    20200630,
+    20200930,
+    20201231
+   ],
+   "others_con": [
+    3.06,
+    13.88,
+    22.15
+   ],
+   "sum_others": 39.09
+  },
+  {
+   "sym": "MPSLTD",
+   "qe": 20190630,
+   "fy_end": 2020,
+   "others": [
+    20190930,
+    20191231,
+    20200331
+   ],
+   "others_con": [
+    22.1,
+    12.95,
+    9.43
+   ],
+   "sum_others": 44.48
+  },
+  {
+   "sym": "WELCORP",
+   "qe": 20211231,
+   "fy_end": 2022,
+   "others": [
+    20210630,
+    20210930,
+    20220331
+   ],
+   "others_con": [
+    97.47,
+    84.9,
+    236.14
+   ],
+   "sum_others": 418.51
+  },
+  {
+   "sym": "PFOCUS",
+   "qe": 20200331,
+   "fy_end": 2020,
+   "others": [
+    20190630,
+    20190930,
+    20191231
+   ],
+   "others_con": [
+    -33.79,
+    -9.8,
+    -100.57
+   ],
+   "sum_others": -144.16
+  },
+  {
+   "sym": "ZYDUSWELL",
+   "qe": 20190630,
+   "fy_end": 2020,
+   "others": [
+    20190930,
+    20191231,
+    20200331
+   ],
+   "others_con": [
+    -11.83,
+    4.24,
+    69.1
+   ],
+   "sum_others": 61.51
+  }
+ ]
+}
