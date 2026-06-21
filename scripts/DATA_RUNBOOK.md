@@ -58,6 +58,26 @@ pre-IPO) are filled MANUALLY from BSE PDFs via vision. **Full process: `scripts/
 4. Merge fill-only into **`docs/sf_fundamentals.json` AND `scripts/fundamentals.json`** (owners basis: con=idx3,
    con-date=idx4), then push. Resolver: `scripts/bse_scrips.json`.
 
+### 2b. CORRECTING a wrong NON-NULL value (the deliberate exception to fill-only)
+Overwriting a value the series already has (digit transposition etc.) — proven 2026-06-21
+(NIACL Q1FY23 std 138.47→118.47 + date 20220812→20220810; Q1FY24 std 260.31→260.23).
+- **Anchor 2+ ways BEFORE touching the file.** Read the filing's PAT row (insurers = standalone
+  P&L **line 28**, unit Lakh⇒÷100) via `_wf_render.py`/`_wf_crop.py` (crop y-args are 0–1 page
+  FRACTIONS; text-layer reads are exact, prefer them over the auditor-narrative pages which quote
+  unrelated subsidiary figures). THEN confirm the same number as a *comparative column* in adjacent
+  filings — the **year-ago** column of the +1yr filing and the **preceding-quarter** column of the
+  +1qtr filing — and/or a ΣQ=9M/FY reconciliation. This neighbour cross-check also catches
+  transposition in ADJACENT cells (it surfaced the Q1FY24 error that wasn't in the original report).
+- **Guard-edit BOTH json files:** load fresh, `assert` the OLD value/date still match (the concurrent
+  backfill may have populated con idx3/idx4 mid-session — PRESERVE them), change ONLY the target
+  cells, assert no other key/cell differs, dump `json.dump(d,open(p,'w'),separators=(',',':'))`.
+- **Push:** commit ONLY the 2 json files (leave phantom-dirty `_wf_*`/`backfill_*` unstaged). They
+  are single minified lines → a concurrent push makes line-based rebase CONFLICT; check
+  `git rev-list --left-right --count HEAD...origin/main` first, and if origin advanced on these files
+  RE-APPLY the semantic edit to the fresh file instead of git-merging.
+- **Durability:** insurer std cells are clobber-safe (XBRL cron skips insurers; BSE backfill is
+  fill-only on non-null), so a correction sticks.
+
 ---
 
 ## 3. INSURERS  (IRDAI-format — the cron CAN'T parse them)
