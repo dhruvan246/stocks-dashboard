@@ -7,14 +7,26 @@ import json
 data=json.load(open("../docs/sf_fundamentals.json"))
 union=set(json.load(open("_full_union_2024.json")))
 INSURERS={"LICI","SBILIFE","HDFCLIFE","ICICIPRULI","ICICIGI","GICRE","NIACL","STARHEALTH","GODIGIT","NIVABUPA","MFSL"}
+# Structurally unrecoverable -> exclude from agent partition (documented, don't waste agents):
+#  HEXT: delisted Nov-2020 (Baring PE), re-IPO Feb-2025 -> NO exchange filings 2020Q4..2024.
+#  PIRAMALFIN: stored series tracks the NBFC (Piramal Finance/PCHFL); pre-2022 NSE filings are PEL
+#    (Piramal Enterprises, pre-demerger) and don't reconcile with the series -> ambiguous, manual only.
+#  HDFCLIFE: 2 cells left (Q1FY23 std/con) — agents return the RESTATEMENT; need original-PIT read
+#    from the local _vpdf/HDFCLIFE_20220630_nse.pdf (deferred to a manual cleanup pass).
+EXCLUDE={"HEXT","PIRAMALFIN","HDFCLIFE"}
 QES=[y*10000+md for y in range(2020,2027) for md in (331,630,930,1231) if 20200331<=y*10000+md<=20260331]
 def rowof(rec,q): return next((x for x in rec if x[0]==q),None)
 gaps={}
 for sym in union:
+    if sym in EXCLUDE: continue
     rec=data.get(sym)
     if not rec: continue
     qmin=min(x[0] for x in rec); qmax=max(x[0] for x in rec)
-    span=[q for q in QES if qmin<=q<=max(qmax,20260331)]
+    # span = the company's ACTUAL reporting life [qmin, qmax]. Do NOT force-extend to 20260331:
+    # delisted/merged companies (IDFC->IDFCFIRSTB, TV18BRDCST->NETWORK18) end mid-stream and would
+    # otherwise get phantom post-death "gaps" that no filing can fill (wastes agents). Latest-quarter
+    # gaps for ACTIVE names are the daily cron's job, not this historical backfill.
+    span=[q for q in QES if qmin<=q<=qmax]
     g=[]; series={str(x[0]):[x[1],x[3] if len(x)>3 else None] for x in rec if 20180101<=x[0]<=20260331}
     for q in span:
         r=rowof(rec,q); miss=[]
