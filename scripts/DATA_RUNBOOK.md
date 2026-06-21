@@ -117,6 +117,11 @@ per-filing PDF reads). Validated: chunk of 8 agents recovered 74/74 cells, all a
   a **.zip** (`Result33_*.zip`, `FS_*.zip`, `Outcome*.zip`) → 0 candidates mapped. Fix: pull the zip directly
   with the same curl_cffi session+Referer and extract the inner PDF (usually `Result33.pdf`). Proven 2026-06-21:
   CREDITACC Q4FY19 (Mar-2019) lived in `Result33_08052019161358.zip` (announce 08-May-2019, std PAT 76.31).
+  GOTCHA-2 (FIXED in code 2026-06-21): the BAD-keyword veto matches ONLY the announcement subject (`desc`),
+  not the desc+attchmntText blob. Real "Outcome of Board Meeting" results filings often have attchmntText
+  "...along with press release"; the `press release` BAD keyword used to veto them → "0 cands mapped"/MISS
+  (repro: TIINDIA QE 20220630). A spurious MISS for a quarter whose results PDF clearly exists → check the
+  candidate filter at fetch_nse.py ~L82-90 (BAD must stay scoped to desc).
 - `_wf_dump.py <pdf> <std|con>` — finds the P&L page(s). `_wf_rows.py <pdf> <page>` — text-extract profit
   rows + unit hint. `_wf_render.py <pdf> <page> <out.png>` / `_wf_crop.py <pdf> <page> <out.png> <y0> <y1>`
   — render/crop for VISION reads when the PDF is scanned (no text layer).
