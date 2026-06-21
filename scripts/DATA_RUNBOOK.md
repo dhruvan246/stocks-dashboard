@@ -82,3 +82,49 @@ dedicated playbook (correct page/row, owners-attributable, unit disambiguation, 
 
 ## 5. PENDING QUEUE (remind the user)
 → memory: project-stocks-pending-queue — apply staged pre-IPO backfill (14 stocks) + fix Adani Hindenburg-era prices.
+
+---
+
+## 6. HISTORICAL MULTI-AGENT BACKFILL  (deep 2020→date gap fill, proven 2026-06-21)
+Fill the LONG-TAIL of pre-2024 quarterly gaps (con+std) for every Nifty-500-union member, where the
+daily cron / NSE-XBRL can't reach (NSE integrated-filing-results serves only ~1yr; older history needs
+per-filing PDF reads). Validated: chunk of 8 agents recovered 74/74 cells, all anchor-verified.
+
+**Tools (all in scripts/, persisted):**
+- `fetch_nse.py <targets.json>` — targets `[[SYM, QE_int], …]`; downloads NSE financial-result PDFs to
+  `_vpdf/SYM_QE_nse.pdf`. Works for OLD quarters (uses /api/corporate-announcements, curl_cffi chrome TLS).
+- `_wf_dump.py <pdf> <std|con>` — finds the P&L page(s). `_wf_rows.py <pdf> <page>` — text-extract profit
+  rows + unit hint. `_wf_render.py <pdf> <page> <out.png>` / `_wf_crop.py <pdf> <page> <out.png> <y0> <y1>`
+  — render/crop for VISION reads when the PDF is scanned (no text layer).
+- `_wf_regap.py` — (re)generate `_wf_gaps.json` (current gaps, 2020Q4..Mar26, across `_full_union_2024.json`)
+  AND `_wf_bins.json` (balanced agent partition; big insurers isolated). RUN BETWEEN CHUNKS so filled cells drop.
+- `_wf_gen.py <startBin> <endBin>` — emit a Workflow JS (`> _wf_run_cN.js`) for that slice of bins; bakes each
+  agent's symbol list + the recovery playbook + the StructuredOutput schema.
+- `_wf_apply.py <run_journal_dir> [--apply]` — harvest agent results from the run's journal (robust even if the
+  run was KILLED — completed agents are in journal.jsonl), RE-VERIFY (gap-real, no-overwrite, magnitude vs
+  neighbors, con==std-identity consistency), apply PASS fill-only to BOTH json files, FLAG the rest to
+  `_wf_flagged.json`. con==std-exact copies bypass the magnitude check (validated by the std's provenance).
+
+**Loop (one chunk at a time):**
+1. `python -X utf8 _wf_regap.py`  → see remaining cells + bins.
+2. `python -X utf8 _wf_gen.py 5 25 > _wf_run_c2.js`  (bins 0-4 = the big insurers; run those as their own chunk).
+3. Launch with the **Workflow** tool `{scriptPath: scripts/_wf_run_c2.js}` (multi-agent — needs user opt-in).
+   ~8 agents/chunk is safe for NSE rate-limits; ≤~14 concurrent (workflow cap). Don't also fetch NSE yourself meanwhile.
+4. On completion: `python -X utf8 _wf_apply.py <transcriptDir/wf_…>`  (DRY RUN) → review FLAGS, clear false
+   positives (e.g. con==std across a growth jump/merger), then re-run with `--apply`.
+5. Commit + push both json files (rebase loop §0). Repeat from 1.
+
+**Agent recovery playbook (baked into `_wf_gen.py`, the CONSTRAINT: never output an unanchored value — SKIP instead):**
+- **(A) no-sub con identity** (fast, recovers whole runs): read a filing note ("first consolidated results",
+  "no subsidiary", "acquired … on <date>"). If no subsidiary in the gap quarter → con = series std (SEBI LODR
+  Reg 33 identity). PROVE it: con==std exactly in the overlap quarters where both are stored.
+- **(B) genuine read**: fetch PDF → locate page → text or vision read of "Profit for the period / PAT"
+  (NOT total-comprehensive, NOT pre-tax, NOT segment; owner-attributable for con with minority). Unit: Lakh/100,
+  Million/10, Crore as-is.
+- **(C) insurers**: follow `INSURER_EXTRACTION_PLAYBOOK.md` (§3).
+- **Anchor** every value: filing's year-ago/prior-qtr comparative == our series (exact), or 9M=ΣQ / FY=ΣQ
+  reconciliation, or PBT−tax=PAT. Capture announce date (broadcast/board-meeting) as YYYYMMDD when visible.
+
+Note for backtest point-in-time: a row needs BOTH value AND announce date (≤ as-of) to be picked as the
+"current" reported quarter, but only the VALUE to serve as a year-ago base (`profitAt`, stock-backtest.html).
+So value-only fills still power YoY-vs-prior-year; supply the date when the filing shows it.
