@@ -13,7 +13,10 @@ INSURERS={"LICI","SBILIFE","HDFCLIFE","ICICIPRULI","ICICIGI","GICRE","NIACL","ST
 #    (Piramal Enterprises, pre-demerger) and don't reconcile with the series -> ambiguous, manual only.
 #  HDFCLIFE: 2 cells left (Q1FY23 std/con) — agents return the RESTATEMENT; need original-PIT read
 #    from the local _vpdf/HDFCLIFE_20220630_nse.pdf (deferred to a manual cleanup pass).
-EXCLUDE={"HEXT","PIRAMALFIN","HDFCLIFE"}
+#  IOB: 8 con cells 2020Q1-2021 — bank consolidates associate(Odisha Gramya)+JV, so con!=std (no-sub
+#    identity invalid), and IOB filed NO consolidated results before FY22. Structurally unrecoverable.
+#  SAGILITY: NSE-listed Nov-2024; pre-listing quarters only in IPO prospectus (restated, unanchorable).
+EXCLUDE={"HEXT","PIRAMALFIN","IOB","SAGILITY"}  # HDFCLIFE done 2026-06-21 (original-PIT 365.29/328.79)
 QES=[y*10000+md for y in range(2020,2027) for md in (331,630,930,1231) if 20200331<=y*10000+md<=20260331]
 def rowof(rec,q): return next((x for x in rec if x[0]==q),None)
 gaps={}
