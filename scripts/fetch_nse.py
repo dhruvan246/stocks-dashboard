@@ -79,8 +79,13 @@ def main():
                 print("ERR list", sym, qe, e); log["%s|%d"%(sym,qe)]="err"; continue
             cands = []
             for rec in j:
-                blob = str(rec.get("desc",""))+" "+str(rec.get("attchmntText",""))
-                if not GOOD.search(blob) or BAD.search(blob): continue
+                desc = str(rec.get("desc",""))
+                blob = desc+" "+str(rec.get("attchmntText",""))
+                # GOOD may be signalled by the subject OR the attachment text, but only the
+                # announcement SUBJECT (desc) may VETO via BAD. Genuine results filings routinely
+                # mention "press release"/etc. in attchmntText ("...along with press release"),
+                # which must not drop the real results PDF (e.g. TIINDIA QE 20220630).
+                if not GOOD.search(blob) or BAD.search(desc): continue
                 f = rec.get("attchmntFile","")
                 if not f.lower().endswith(".pdf"): continue
                 pa = parse_an(rec.get("an_dt",""))
