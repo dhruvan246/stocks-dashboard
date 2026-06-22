@@ -41,11 +41,17 @@ jobs:
       - name: Rebuild point-in-time membership (validates vs official archives)
         run: python3 scripts/build_membership_v2.py
 
+      # Append the latest F&O constituents (survivorship-free) from NSE's derivatives bhavcopy and
+      # patch docs/stock_data.bin's fnoHistory in place. build_membership_v2.py preserves fnoHistory,
+      # so this stays consistent. Catches new F&O additions (e.g. GVT&D) within a week.
+      - name: Refresh F&O membership (point-in-time, survivorship-free)
+        run: python3 scripts/extend_fno_history.py || echo "F&O refresh failed — keeping existing fnoHistory"
+
       - name: Commit if membership changed
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add scripts/indices_history.json scripts/_changelog.json docs/stock_data.bin
+          git add scripts/indices_history.json scripts/_changelog.json scripts/fno_history.json docs/stock_data.bin
           if git diff --cached --quiet; then echo "membership unchanged"; exit 0; fi
           git commit -m "Weekly membership refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d')"
           for i in 1 2 3; do
