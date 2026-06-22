@@ -217,9 +217,10 @@ function stopLive() { if (LIVE_TIMER) { clearInterval(LIVE_TIMER); LIVE_TIMER = 
 // Keep the basket live while the market and the modal are both open; auto-stop at 15:30.
 function startLive() {
   stopLive();
-  if (!localStorage.getItem('live_worker_url') || !marketOpen()) return;
-  goLive(true);                                              // fetch now…
-  LIVE_TIMER = setInterval(() => {                           // …then every 60s until the close
+  if (!localStorage.getItem('live_worker_url')) return;
+  goLive(true);                                              // always fetch once on modal open
+  if (!marketOpen()) return;                                 // 60s refresh only during market hours
+  LIVE_TIMER = setInterval(() => {
     if (!CUR || !marketOpen()) { stopLive(); if (CUR) refreshPicks(); return; }
     goLive(true);
   }, 60000);
