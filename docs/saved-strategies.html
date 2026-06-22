@@ -367,6 +367,7 @@ async function goLive(silent) {
     refreshPicks();
   } catch (e) {
     if (!silent) alert('Live fetch failed: ' + e.message + '\n\nCheck the Worker URL (⚙ button) and that opening it in a browser returns JSON.\nSee scripts/LIVE_FEED_SETUP.md.');
+    else { const s = $('mSub'); if (s) s.innerHTML += ' · <span class="text-orange-500 text-[10px]">⚠ live: ' + e.message + '</span>'; }
   } finally { btn.textContent = prev; btn.disabled = false; }
 }
 function runHold() {
