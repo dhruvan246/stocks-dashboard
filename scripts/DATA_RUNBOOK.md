@@ -179,3 +179,28 @@ using the REAL engine in **Node** (no browser freeze/45s-eval limits). Validated
 - ⚠️ Picking the top of N combos is **in-sample / curve-fit** — ALWAYS re-run on other windows (out-of-sample) before trusting.
 - Save the winner to the shared lists by pull→append→push the RPCs (secret `sw_owner_8Kq2Lm9Xp4Rt7v`):
   strategy `{id,ts,name,cfg}` → `bt_strats_set`; history `{id,ts,label,cfg,m:{cagr,benchCagr,maxDD,finalV}}` → `bt_owner_set`.
+
+---
+
+## 8. F&O MEMBERSHIP (survivorship-free, point-in-time)  ★ rebuilt clean 2026-06-23 ★
+The backtest **"F&O stocks" universe** uses point-in-time membership: `membersAsOf('__FNO__', date)` →
+`fnoHistory` in `docs/stock_data.bin`, sourced from `scripts/fno_history.json` (list of
+`{effectiveDate, symbols[]}`, currently **82 snapshots 2015-01-30 → date**, monthly-ish, deduped when unchanged).
+- **Source of truth = NSE F&O bhavcopies** (every stock-future/option underlying actually trading that month,
+  using the ticker that traded THEN). Two formats: old `fo<DD><MON><YYYY>bhav.csv.zip` (INSTRUMENT=FUTSTK/OPTSTK,
+  col SYMBOL) for **≤2024-06**; UDiFF `BhavCopy_NSE_FO_0_0_0_<YYYYMMDD>_F_0000.csv.zip` (FinInstrmTp=STF/STO,
+  col TckrSymb) for **≥2024-07**. Index underlyings (NIFTY/BANKNIFTY/DJIA/S&P500/INDIAVIX/CNX*/…) are EXCLUDED.
+- **Going forward (auto):** `scripts/extend_fno_history.py` (no args = latest trading day) appends a snapshot
+  from the bhavcopy + patches `stock_data.bin`. Wired into `.github/workflows/refresh-membership.yml`
+  (weekly Sat 22:00 IST). `build_membership_v2.py` only touches `indicesHistory` and PRESERVES `fnoHistory`.
+- **Full rebuild (occasional):** `python scripts/rebuild_fno_history.py [START_YEAR]` (default 2020; pass `2015`
+  for the whole history). Walks each month, fetches the last trading day's bhavcopy, dedups, writes
+  `fno_history.json` + patches `stock_data.bin`. ~110 NSE fetches for 2015→date, a few min.
+- **⚠️ WHY the rebuild was needed (root cause, don't reintroduce):** the ORIGINAL `fno_history.json` keyed
+  membership off **today's** tickers → it (a) **dropped every name since delisted/renamed** from the ENTIRE
+  history (look-ahead/survivorship bias — IDFC, GMRINFRA, L&TFH, MCDOWELL-N, MOTHERSUMI, PVR, IBULHSGFIN,
+  INFRATEL, TATAGLOBAL, ZOMATO), (b) **back-labelled old snapshots with modern tickers** (e.g. GMRAIRPORT shown
+  in 2015), and (c) **leaked index derivatives into the stock universe** (CNXIT, DJIA, S&P500, INDIAVIX, INDUS…).
+  Rebuilding straight from the bhavcopy fixes all three. After ANY rebuild, audit: every membership symbol must
+  have a price series in `sf_stock_data.bin['data']` (0 without), and renamed pairs must hand off with no overlap.
+- **⚠️ Before claiming a stock "isn't in F&O," verify against NSE live `fo_mktlots.csv`** (memory: project-stocks-fno-stale).
