@@ -45,6 +45,12 @@ const FIELDS = [
   { v: 'macd', l: 'MACD histogram (12,26,9)' },
   { v: 'stoch', l: 'Stochastic %K (14)' },
   { v: 'bollB', l: 'Bollinger %b (20,2)' },
+  // --- extended fundamentals (added 2026-06-18; must stay in sync with stock-backtest.html FIELDS) ---
+  { v: 'profitAccel', l: 'Profit-growth acceleration (this-Q YoY − last-Q YoY, pts)' },
+  { v: 'profitTTM', l: 'Profit growth TTM % (last 4Q vs prior 4Q)' },
+  { v: 'profitStreak', l: 'Profit-growth streak (consecutive +YoY quarters)' },
+  { v: 'postDrift', l: 'Post-result drift % (return since last earnings date)' },
+  { v: 'composite', l: 'Quality-Momentum composite (z: TTM growth + 12m return − volatility)' },
 ];
 const FIELD_LABEL = {}; FIELDS.forEach(f => FIELD_LABEL[f.v] = f.l);
 const fmtINR = n => '₹' + Math.round(n).toLocaleString('en-IN');
@@ -212,13 +218,13 @@ function computeTech(tkr, off, px) {
   };
 }
 // extended factors are EXPENSIVE — only compute them when the strategy actually uses one
-const EXT_FIELDS = new Set(['ret3m','ret6m','ret12m','rsNifty','accel','dma50','dma200','rangePos','daysHigh','vol','riskMom','beta','mdd6','upPct','turnover','turnSurge','volSurge','delivPct','macd','stoch','bollB']);
+const EXT_FIELDS = new Set(['ret3m','ret6m','ret12m','rsNifty','accel','dma50','dma200','rangePos','daysHigh','vol','riskMom','beta','mdd6','upPct','turnover','turnSurge','volSurge','delivPct','macd','stoch','bollB','composite']);
 function needsTech(cfg) { return EXT_FIELDS.has(cfg.sortBy) || (cfg.filters || []).some(f => EXT_FIELDS.has(f.field)); }
 
 // ---- Fundamentals: point-in-time quarterly net profit (StockView's profitYoyPct/profitBase) ----
 // FUND = { SYM: [ [qEndYYYYMMDD, npStd_cr, annStd, npCon_cr, annCon], ... sorted by qEnd ] }
 let FUND = {};
-const FUND_FIELDS = new Set(['profitYoyPct', 'profitBase']);
+const FUND_FIELDS = new Set(['profitYoyPct', 'profitBase', 'profitAccel', 'profitTTM', 'profitStreak', 'postDrift', 'composite']);
 function needsFund(cfg) { return FUND_FIELDS.has(cfg.sortBy) || (cfg.filters || []).some(f => FUND_FIELDS.has(f.field)); }
 function dateIntOff(off) { return parseInt(isoOff(off).replace(/-/g, ''), 10); }
 function profitAt(sym, dateInt, basis) {
@@ -236,6 +242,30 @@ function profitAt(sym, dateInt, basis) {
     // Divide by |base| so loss→profit reads positive. Null only when base is exactly 0 (÷0).
     // NOTE: tiny bases give extreme % (₹0.01cr→+18000%); add a current-profit filter to tame it.
     return { cur: c, base: b, yoy: b !== 0 ? (c - b) / Math.abs(b) * 100 : null };
+  }
+  return null;
+}
+// Richer point-in-time earnings metrics from the same quarterly net-profit series (no extra data):
+// acceleration (YoY trend), TTM growth (4Q vs prior 4Q), consecutive +YoY streak, last result date.
+// Mirrors stock-backtest.html's profitMetrics so saved strategies rank identically across pages.
+function profitMetrics(sym, dateInt, basis) {
+  const arr = FUND[sym]; if (!arr || !arr.length) return null;
+  const tries = basis === 'std' ? [[1, 2]] : [[3, 4], [1, 2]];
+  for (const [ni, ai] of tries) {
+    let ci = -1; for (let i = arr.length - 1; i >= 0; i--) { if (arr[i][ni] != null && arr[i][ai] != null && arr[i][ai] <= dateInt) { ci = i; break; } }
+    if (ci < 0) continue;
+    const npAt = qe => { const q = arr.find(x => x[0] === qe); return (q && q[ni] != null) ? q[ni] : null; };
+    const yoyOf = q => { const c = q[ni], b = npAt(q[0] - 10000); return (c != null && b != null && b !== 0) ? (c - b) / Math.abs(b) * 100 : null; };
+    const cur = arr[ci], yoy = yoyOf(cur);
+    if (yoy == null) continue;
+    const base = npAt(cur[0] - 10000);
+    let accel = null; if (ci - 1 >= 0) { const py = yoyOf(arr[ci - 1]); if (py != null) accel = yoy - py; }
+    let ttm = null; { let ok = true, last4 = [], prev4 = [];
+      for (let k = 0; k < 4; k++) { const q = arr[ci - k]; const v = q ? q[ni] : null; if (v == null) { ok = false; break; } last4.push(v); }
+      if (ok) for (let k = 0; k < 4; k++) { const v = npAt(arr[ci - k][0] - 10000); if (v == null) { ok = false; break; } prev4.push(v); }
+      if (ok) { const s1 = last4.reduce((a, b) => a + b, 0), s0 = prev4.reduce((a, b) => a + b, 0); ttm = s0 !== 0 ? (s1 - s0) / Math.abs(s0) * 100 : null; } }
+    let streak = 0; for (let i = ci; i >= 0; i--) { const y = yoyOf(arr[i]); if (y != null && y > 0) streak++; else break; }
+    return { yoy, base, accel, ttm, streak, resultDate: cur[ai] };
   }
   return null;
 }
@@ -263,13 +293,25 @@ function factorsAt(off, cfg) {
       d52: (hl.hi - price) / hl.hi * 100, d52low: (price - hl.low) / hl.low * 100,
       mcap: m.mcap, histMcap: 0 };
     if (useTech) Object.assign(r, computeTech(tkr, off, price));   // extended technical factors
-    if (useFund) { const pf = profitAt(m.symbol, fundDate, basis); r.profitYoyPct = pf ? pf.yoy : null; r.profitBase = pf ? pf.base : null; }
+    if (useFund) { const pf = profitMetrics(m.symbol, fundDate, basis);
+      r.profitYoyPct = pf ? pf.yoy : null; r.profitBase = pf ? pf.base : null;
+      r.profitAccel = pf ? pf.accel : null; r.profitTTM = pf ? pf.ttm : null; r.profitStreak = pf ? pf.streak : null;
+      if (pf && pf.resultDate) { const ds = '' + pf.resultDate, ro = dayOff(ds.slice(0, 4) + '-' + ds.slice(4, 6) + '-' + ds.slice(6, 8)); const pr = priceAt(tkr, ro); r.postDrift = (pr != null && pr > 0) ? (price / pr - 1) * 100 : null; } else r.postDrift = null; }
     rows.push(r);
   }
   const byInd = {}; rows.forEach(r => { (byInd[r.ind] = byInd[r.ind] || []).push(r.chg); });
   const indAvg = Object.entries(byInd).map(([k, v]) => [k, v.reduce((a, b) => a + b, 0) / v.length]).sort((a, b) => b[1] - a[1]);
   const indRankMap = {}; indAvg.forEach(([k], i) => { indRankMap[k] = Math.min(10, 1 + Math.floor(i / Math.max(1, indAvg.length / 10))); });
   rows.forEach(r => { r.indRank = indRankMap[r.ind] || 10; });
+  // Quality-Momentum composite: cross-sectional z-scores of TTM profit growth (+), 12m return (+), volatility (−).
+  if (cfg.sortBy === 'composite' || (cfg.filters || []).some(f => f.field === 'composite')) {
+    const zAssign = (key, sign) => { const v = rows.map(r => r[key]).filter(x => typeof x === 'number' && isFinite(x));
+      if (v.length < 5) { rows.forEach(r => r['_z_' + key] = null); return; }
+      const mean = v.reduce((a, b) => a + b, 0) / v.length, sd = Math.sqrt(v.reduce((a, b) => a + (b - mean) ** 2, 0) / v.length) || 1;
+      rows.forEach(r => { const x = r[key]; r['_z_' + key] = (typeof x === 'number' && isFinite(x)) ? sign * (x - mean) / sd : null; }); };
+    zAssign('profitTTM', 1); zAssign('ret12m', 1); zAssign('vol', -1);
+    rows.forEach(r => { const a = r['_z_profitTTM'], b = r['_z_ret12m'], c = r['_z_vol']; r.composite = (a != null && b != null && c != null) ? (a + b + c) : null; });
+  }
   return rows;
 }
 function fieldVal(r, f) {
