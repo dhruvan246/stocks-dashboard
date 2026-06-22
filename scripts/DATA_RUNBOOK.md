@@ -163,3 +163,19 @@ per-filing PDF reads). Validated: chunk of 8 agents recovered 74/74 cells, all a
 Note for backtest point-in-time: a row needs BOTH value AND announce date (≤ as-of) to be picked as the
 "current" reported quarter, but only the VALUE to serve as a year-ago base (`profitAt`, stock-backtest.html).
 So value-only fills still power YoY-vs-prior-year; supply the date when the filing shows it.
+
+---
+
+## 7. GRID SEARCH — find the best strategy over a window  (Node, validated 2026-06-22)
+Brute-force every ranking factor × direction × rebalance-method (+ filter sets) over a fixed window/universe,
+using the REAL engine in **Node** (no browser freeze/45s-eval limits). Validated to match the live site's CAGRs exactly.
+- Tool: `scripts/grid_search.js` — it's APPENDED to the engine (shares scope, sets SF/META/SERIES/IDXH/NIFTY/FUND
+  from the LOCAL `docs/*.bin`+json, calls `activateSF()`, runs `simulate()` over the grid). Build + run:
+  `cat docs/backtest-engine.js scripts/grid_search.js > scripts/_grid_run.js && node scripts/_grid_run.js`
+  (pass `validate` to first check 2 combos vs the browser). Writes ranked top-25 (by CAGR **and** by risk-adj
+  CAGR/maxDD) to `scripts/_gridresult.json`. ~8 min for ~236 combos (tech factors ~3-4s each, simple <0.5s).
+- Edit the `base={start,end,indexName,freq,topN,…}` and `FSETS` in the driver to change the window/universe/filters.
+- `docs/sf_stock_data.bin` must cover the window's `end` (check its `{end}`); it loads fund from `docs/sf_fundamentals.json`.
+- ⚠️ Picking the top of N combos is **in-sample / curve-fit** — ALWAYS re-run on other windows (out-of-sample) before trusting.
+- Save the winner to the shared lists by pull→append→push the RPCs (secret `sw_owner_8Kq2Lm9Xp4Rt7v`):
+  strategy `{id,ts,name,cfg}` → `bt_strats_set`; history `{id,ts,label,cfg,m:{cagr,benchCagr,maxDD,finalV}}` → `bt_owner_set`.
