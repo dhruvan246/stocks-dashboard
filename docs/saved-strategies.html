@@ -291,7 +291,18 @@ function refreshPicks() {
   $('sQual').textContent = `${ranked.length} / ${CUR.cfg.topN}`;
   $('mBody').innerHTML = rows.length ? rows.map((r, i) => {
     const live = liveLtp(r.sym); const pc = (LIVE && LIVE.data[r.sym]) ? LIVE.data[r.sym].prevClose : null;
-    const delta = (live != null && pc) ? (live / pc - 1) * 100 : null;   // true day change (live vs Yahoo prev close)
+    let displayLive = live;
+    let delta = (live != null && pc) ? (live / pc - 1) * 100 : null;
+    if (live == null) {
+      // Fallback: bhavcopy close + series-based day return (always available, no live feed needed)
+      displayLive = r.base;
+      const s = SERIES[r.tkr];
+      if (s && s.d && s.p && s.p.length >= 2) {
+        const endOff = dayOff(SF.end);
+        const idx = idxLE(s.d, endOff);
+        if (idx >= 1 && s.p[idx] > 0 && s.p[idx - 1] > 0) delta = (s.p[idx] / s.p[idx - 1] - 1) * 100;
+      }
+    }
     return `<tr class="border-b border-slate-50">
     <td class="py-1.5 pr-2 text-slate-400">${i + 1}</td>
     <td class="pr-3 font-semibold">${stockLink(r.sym,'text-indigo-700 hover:underline')}</td>
@@ -300,7 +311,7 @@ function refreshPicks() {
     <td class="text-right px-2">${r.d52low.toFixed(2)}%</td>
     <td class="text-right px-2">${r.rsi == null ? '—' : r.rsi.toFixed(2)}</td>
     <td class="text-right px-2">${r.base.toFixed(2)}</td>
-    <td class="text-right px-2 ${live != null ? 'font-semibold text-rose-600' : 'text-slate-300'}">${live != null ? live.toFixed(2) : '—'}</td>
+    <td class="text-right px-2 ${live != null ? 'font-semibold text-rose-600' : ''}">${displayLive != null ? displayLive.toFixed(2) : '—'}</td>
     <td class="text-right px-2 ${delta == null ? 'text-slate-300' : delta >= 0 ? 'pos' : 'neg'}">${delta == null ? '—' : pct(delta)}</td>
     <td class="text-right px-2 font-semibold">${r.shares}</td>
     <td class="text-right px-2">${fmtINR(r.alloc)}</td></tr>`;
