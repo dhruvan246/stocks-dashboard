@@ -191,10 +191,10 @@ using the REAL engine in **Node** (no browser freeze/45s-eval limits). Validated
 
 ---
 
-## 8. F&O MEMBERSHIP (survivorship-free, point-in-time)  ★ rebuilt clean 2026-06-23 ★
-The backtest **"F&O stocks" universe** uses point-in-time membership: `membersAsOf('__FNO__', date)` →
-`fnoHistory` in `docs/stock_data.bin`, sourced from `scripts/fno_history.json` (list of
-`{effectiveDate, symbols[]}`, currently **82 snapshots 2015-01-30 → date**, monthly-ish, deduped when unchanged).
+## 8. F&O MEMBERSHIP (survivorship-free; CURRENT-name labels)  ★ rebuilt + normalized 2026-06-23 ★
+The backtest **"F&O stocks" universe** uses point-in-time *membership* (who was in F&O on each rebalance date)
+but **CURRENT ticker names** as labels: `membersAsOf('__FNO__', date)` → `fnoHistory` in `docs/stock_data.bin`,
+from `scripts/fno_history.json` (`{effectiveDate, symbols[]}`, **76 snapshots 2015-01-30 → date**, deduped).
 - **Source of truth = NSE F&O bhavcopies** (every stock-future/option underlying actually trading that month,
   using the ticker that traded THEN). Two formats: old `fo<DD><MON><YYYY>bhav.csv.zip` (INSTRUMENT=FUTSTK/OPTSTK,
   col SYMBOL) for **≤2024-06**; UDiFF `BhavCopy_NSE_FO_0_0_0_<YYYYMMDD>_F_0000.csv.zip` (FinInstrmTp=STF/STO,
@@ -205,6 +205,13 @@ The backtest **"F&O stocks" universe** uses point-in-time membership: `membersAs
 - **Full rebuild (occasional):** `python scripts/rebuild_fno_history.py [START_YEAR]` (default 2020; pass `2015`
   for the whole history). Walks each month, fetches the last trading day's bhavcopy, dedups, writes
   `fno_history.json` + patches `stock_data.bin`. ~110 NSE fetches for 2015→date, a few min.
+- **⚠️ AFTER ANY REBUILD, NORMALIZE NAMES TO CURRENT — `python scripts/normalize_fno_names.py`.** A bhavcopy
+  rebuild yields the name that traded THEN (TATAMOTORS, GMRINFRA, PVR…), but the price+fundamentals data keys the
+  continuous history under the CURRENT name (TMPV, GMRAIRPORT, PVRINOX) — and on the **live sf-data** the old-name
+  series are split/truncated (e.g. `TATAMOTORS` ends 2003-12, rest under `TMPV`), so point-in-time names make
+  renamed stocks DROP OUT of F&O backtests (Tata Motors missing from Jan-2024 = the bug this fixed). normalize
+  remaps old→current (25 names, same map as `FUND_ALIAS`), matching the data keying + the index universes (which
+  always use current names). Delisted-no-successor names (IDFC) stay. Verify on LIVE sf-data, never stale `docs/sf_stock_data.bin`.
 - **⚠️ WHY the rebuild was needed (root cause, don't reintroduce):** the ORIGINAL `fno_history.json` keyed
   membership off **today's** tickers → it (a) **dropped every name since delisted/renamed** from the ENTIRE
   history (look-ahead/survivorship bias — IDFC, GMRINFRA, L&TFH, MCDOWELL-N, MOTHERSUMI, PVR, IBULHSGFIN,
