@@ -101,12 +101,17 @@ def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
         if not any(e[0] == sym and e[1] == ex for e in events):
             events.append((sym, ex, None, True))
     if not events: return 0
+    try: _RAW = json.load(open(os.path.join(HERE, "crash_raw_prices.json")))
+    except Exception: _RAW = {}
     daycache = {}
     def raw_close(ymd, sym):
         if ymd not in daycache:
             rows = B.fetch_day(datetime.date(ymd // 10000, ymd // 100 % 100, ymd % 100), jar) or []
             daycache[ymd] = {r[0]: r[1] for r in rows}
-        return daycache[ymd].get(sym)
+        v = daycache[ymd].get(sym)
+        if v is None:   # CI runners get blocked/rate-limited fetching NSE's archive -> fall back to the
+            v = (_RAW.get(sym) or {}).get(str(ymd))   # committed raw ex-date prices so self_heal still works
+        return v
     healed = 0
     for sym, ex, off, is_dem in events:
         e = data.get(sym)
