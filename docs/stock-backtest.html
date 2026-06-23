@@ -452,10 +452,16 @@ let FUND={};
 const FUND_FIELDS=new Set(['profitYoyPct','profitBase','profitAccel','profitTTM','profitStreak','postDrift','composite']);
 function needsFund(cfg){ return FUND_FIELDS.has(cfg.sortBy) || (cfg.filters||[]).some(f=>FUND_FIELDS.has(f.field)); }
 function dateIntOff(off){ return parseInt(isoOff(off).replace(/-/g,''),10); }
+// Ticker-rename aliases: pre-rename (point-in-time) symbol -> current symbol holding the profit data.
+// F&O membership + delisted price series use the old name, but fundamentals are keyed by the current
+// name; without this, renamed stocks (TATAMOTORS→TMPV, PVR→PVRINOX, …) return null profit for their
+// old-name era and drop out of profit screens. Keep in sync with backtest-engine.js. Src: _rename_map.json.
+const FUND_ALIAS = {"ADANITRANS":"ADANIENSOL","AEGISCHEM":"AEGISLOG","AKZOINDIA":"JSWDULUX","ALSTOMT&D":"GVT&D","AMARAJABAT":"ARE&M","BAJAJCORP":"BAJAJCON","BHUSANSTL":"TATASTLBSL","CADILAHC":"ZYDUSLIFE","CENTURYTEX":"ABREL","CLNINDIA":"SUDARCOLOR","CROMPGREAV":"CGPOWER","ESSELPACK":"EPL","FCEL":"FCONSUMER","FINANTECH":"63MOONS","FRL":"FEL","GATI":"ACLGATI","GEPIL":"GVPIL","GET&D":"GVT&D","GLS":"ALIVUS","GMRINFRA":"GMRAIRPORT","GUJFLUORO":"GFLLIMITED","HOTELEELA":"HLVLTD","HSIL":"AGI","IBREALEST":"EMBDL","IBULHSGFIN":"SAMMAANCAP","IBULISL":"IBULLSLTD","IDFCBANK":"IDFCFIRSTB","IIFLWAM":"360ONE","INEOSSTYRO":"STYRENIX","INFIBEAM":"CCAVENUE","INFRATEL":"INDUSTOWER","IPAPPM":"ANDHRAPAP","ITDCEM":"CEMPRO","JCHAC":"BOSCH-HCIL","JUBILANT":"JUBLPHARMA","KALPATPOWR":"KPIL","KPIT":"BSOFT","KSBPUMPS":"KSB","L&TFH":"LTF","LAXMIMACH":"LMW","LTI":"LTM","LTIM":"LTM","MAGMA":"POONAWALLA","MAHINDCIE":"CIEINDIA","MAX":"MFSL","MCDOWELL-N":"UNITDSPR","MINDAIND":"UNOMINDA","MOTHERSUMI":"MOTHERSON","NBVENTURES":"NAVA","NIITTECH":"COFORGE","PIPAVAVDOC":"RNAVAL","PRISMCEM":"PRSMJOHNSN","PVR":"PVRINOX","RDEL":"RNAVAL","SEINV":"PAISALO","SEQUENT":"VIYASH","SKSMICRO":"BHARATFIN","SMLISUZU":"SMLMAH","SRTRANSFIN":"SHRIRAMFIN","SSLT":"VEDL","STRTECH":"STLTECH","SUNCLAYLTD":"TVSHLTD","SUVENPHAR":"COHANCE","SWANENERGY":"SWANCORP","TATAGLOBAL":"TATACONSUM","TATAMOTORS":"TMPV","TATASPONGE":"TATASTLLP","TIDEWATER":"VEEDOL","WABCOINDIA":"ZFCVINDIA","WELSPUNIND":"WELSPUNLIV","ZOMATO":"ETERNAL"};
+function fundFor(sym){ return FUND[sym] || (FUND_ALIAS[sym] ? FUND[FUND_ALIAS[sym]] : null) || null; }
 // As-of `dateInt`, return {cur, base, yoy} for the latest quarter whose result was ANNOUNCED by then,
 // vs the same quarter a year earlier. basis 'con' falls back to 'std' (cos w/o subsidiaries file only standalone).
 function profitAt(sym, dateInt, basis){
-  const arr=FUND[sym]; if(!arr||!arr.length) return null;
+  const arr=fundFor(sym); if(!arr||!arr.length) return null;
   const tries = basis==='std' ? [[1,2]] : [[3,4],[1,2]];
   for(const [npIdx,annIdx] of tries){
     let cur=null;
@@ -475,7 +481,7 @@ function profitAt(sym, dateInt, basis){
 // Richer point-in-time earnings metrics from the same quarterly net-profit series (no extra data):
 // acceleration (YoY trend), TTM growth (4Q vs prior 4Q, smoother), consecutive +YoY streak, last result date.
 function profitMetrics(sym, dateInt, basis){
-  const arr=FUND[sym]; if(!arr||!arr.length) return null;
+  const arr=fundFor(sym); if(!arr||!arr.length) return null;
   const tries = basis==='std' ? [[1,2]] : [[3,4],[1,2]];
   for(const [ni,ai] of tries){
     let ci=-1; for(let i=arr.length-1;i>=0;i--){ if(arr[i][ni]!=null && arr[i][ai]!=null && arr[i][ai]<=dateInt){ ci=i; break; } }

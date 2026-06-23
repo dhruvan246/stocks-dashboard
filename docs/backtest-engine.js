@@ -224,11 +224,18 @@ function needsTech(cfg) { return EXT_FIELDS.has(cfg.sortBy) || (cfg.filters || [
 // ---- Fundamentals: point-in-time quarterly net profit (StockView's profitYoyPct/profitBase) ----
 // FUND = { SYM: [ [qEndYYYYMMDD, npStd_cr, annStd, npCon_cr, annCon], ... sorted by qEnd ] }
 let FUND = {};
+// Ticker-rename aliases: pre-rename (point-in-time) symbol -> current symbol that holds the quarterly
+// profit data. F&O membership + delisted price series use the name that traded THEN, but fundamentals
+// are keyed by the CURRENT name; without this, every renamed stock (TATAMOTORS→TMPV, PVR→PVRINOX,
+// CADILAHC→ZYDUSLIFE, …) returns null profit for its old-name era and is silently dropped from any
+// profit-based screen. Covers F&O + all index universes. Source: scripts/_rename_map.json. (2026-06-23)
+const FUND_ALIAS = {"ADANITRANS":"ADANIENSOL","AEGISCHEM":"AEGISLOG","AKZOINDIA":"JSWDULUX","ALSTOMT&D":"GVT&D","AMARAJABAT":"ARE&M","BAJAJCORP":"BAJAJCON","BHUSANSTL":"TATASTLBSL","CADILAHC":"ZYDUSLIFE","CENTURYTEX":"ABREL","CLNINDIA":"SUDARCOLOR","CROMPGREAV":"CGPOWER","ESSELPACK":"EPL","FCEL":"FCONSUMER","FINANTECH":"63MOONS","FRL":"FEL","GATI":"ACLGATI","GEPIL":"GVPIL","GET&D":"GVT&D","GLS":"ALIVUS","GMRINFRA":"GMRAIRPORT","GUJFLUORO":"GFLLIMITED","HOTELEELA":"HLVLTD","HSIL":"AGI","IBREALEST":"EMBDL","IBULHSGFIN":"SAMMAANCAP","IBULISL":"IBULLSLTD","IDFCBANK":"IDFCFIRSTB","IIFLWAM":"360ONE","INEOSSTYRO":"STYRENIX","INFIBEAM":"CCAVENUE","INFRATEL":"INDUSTOWER","IPAPPM":"ANDHRAPAP","ITDCEM":"CEMPRO","JCHAC":"BOSCH-HCIL","JUBILANT":"JUBLPHARMA","KALPATPOWR":"KPIL","KPIT":"BSOFT","KSBPUMPS":"KSB","L&TFH":"LTF","LAXMIMACH":"LMW","LTI":"LTM","LTIM":"LTM","MAGMA":"POONAWALLA","MAHINDCIE":"CIEINDIA","MAX":"MFSL","MCDOWELL-N":"UNITDSPR","MINDAIND":"UNOMINDA","MOTHERSUMI":"MOTHERSON","NBVENTURES":"NAVA","NIITTECH":"COFORGE","PIPAVAVDOC":"RNAVAL","PRISMCEM":"PRSMJOHNSN","PVR":"PVRINOX","RDEL":"RNAVAL","SEINV":"PAISALO","SEQUENT":"VIYASH","SKSMICRO":"BHARATFIN","SMLISUZU":"SMLMAH","SRTRANSFIN":"SHRIRAMFIN","SSLT":"VEDL","STRTECH":"STLTECH","SUNCLAYLTD":"TVSHLTD","SUVENPHAR":"COHANCE","SWANENERGY":"SWANCORP","TATAGLOBAL":"TATACONSUM","TATAMOTORS":"TMPV","TATASPONGE":"TATASTLLP","TIDEWATER":"VEEDOL","WABCOINDIA":"ZFCVINDIA","WELSPUNIND":"WELSPUNLIV","ZOMATO":"ETERNAL"};
+function fundFor(sym) { return FUND[sym] || (FUND_ALIAS[sym] ? FUND[FUND_ALIAS[sym]] : null) || null; }
 const FUND_FIELDS = new Set(['profitYoyPct', 'profitBase', 'profitAccel', 'profitTTM', 'profitStreak', 'postDrift', 'composite']);
 function needsFund(cfg) { return FUND_FIELDS.has(cfg.sortBy) || (cfg.filters || []).some(f => FUND_FIELDS.has(f.field)); }
 function dateIntOff(off) { return parseInt(isoOff(off).replace(/-/g, ''), 10); }
 function profitAt(sym, dateInt, basis) {
-  const arr = FUND[sym]; if (!arr || !arr.length) return null;
+  const arr = fundFor(sym); if (!arr || !arr.length) return null;
   const tries = basis === 'std' ? [[1, 2]] : [[3, 4], [1, 2]];   // con falls back to std
   for (const [npIdx, annIdx] of tries) {
     let cur = null;
@@ -249,7 +256,7 @@ function profitAt(sym, dateInt, basis) {
 // acceleration (YoY trend), TTM growth (4Q vs prior 4Q), consecutive +YoY streak, last result date.
 // Mirrors stock-backtest.html's profitMetrics so saved strategies rank identically across pages.
 function profitMetrics(sym, dateInt, basis) {
-  const arr = FUND[sym]; if (!arr || !arr.length) return null;
+  const arr = fundFor(sym); if (!arr || !arr.length) return null;
   const tries = basis === 'std' ? [[1, 2]] : [[3, 4], [1, 2]];
   for (const [ni, ai] of tries) {
     let ci = -1; for (let i = arr.length - 1; i >= 0; i--) { if (arr[i][ni] != null && arr[i][ai] != null && arr[i][ai] <= dateInt) { ci = i; break; } }
