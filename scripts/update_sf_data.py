@@ -156,9 +156,13 @@ def main():
     while d <= today:
         if d.weekday() < 5: days.append(d)
         d += datetime.timedelta(days=1)
-    if not days:
-        print("Up to date (end=%s)" % D["end"]); return
-    print("Missing trading-day candidates: %s" % ", ".join(x.isoformat() for x in days))
+    # NOTE: do NOT early-return when there are no new days — self_heal (below) must still run so phantom-CA
+    # corrections (e.g. REC) get applied + republished even on an "up to date" day. The append loop simply
+    # iterates an empty list, and the write/publish path already handles the heal-only case (`healed`).
+    if days:
+        print("Missing trading-day candidates: %s" % ", ".join(x.isoformat() for x in days))
+    else:
+        print("No new trading days (end=%s) — running self-heal pass only." % D["end"])
 
     data = D["data"]; meta = D["meta"]; j = B.jar(); appended = 0
     # OFFICIAL split/bonus ratios (refreshed by build_corp_actions.py in the workflow). Applied
