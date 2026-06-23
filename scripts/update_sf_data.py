@@ -38,7 +38,31 @@ def ca_factor(r):
 # ex-date ratio already equals the raw ratio, so applied_f == 1 and it no-ops.
 #   ADANIENT 2023-02-01/02 — Hindenburg crash + FPO withdrawal (2/3 x 3/4 = 1/2 false halving of all
 #   pre-crash history -> a too-low 52w high -> wrongly passes Distance-from-52w-High filters in 2023)
-LEGACY_FALSE_CA = [("ADANIENT", 20230201), ("ADANIENT", 20230202)]
+LEGACY_FALSE_CA = [
+    ("ADANIENT", 20230201), ("ADANIENT", 20230202), ("ADANIPOWER", 20200312),
+    # COVID-19 crash, Mar-2020 (market-wide, no corporate action — verified vs NSE corp-actions):
+    ("IDEA", 20200318), ("ASHOKLEY", 20200319), ("AXISBANK", 20200323), ("BAJAJFINSV", 20200323),
+    ("BANDHANBNK", 20200323), ("CHOLAFIN", 20200323), ("EQUITAS", 20200323), ("M&MFIN", 20200323),
+    ("MFSL", 20200323),
+    # news-driven crashes (no corporate action):
+    ("ZEEL", 20240123),        # Sony merger called off
+    ("RECLTD", 20240604),      # 4-Jun-2024 election-result crash
+    ("INDUSINDBK", 20250311),  # derivatives-accounting disclosure
+    ("PAYTM", 20211118), ("PAYTM", 20211119),   # IPO listing crash
+    ("IEX", 20250724),         # CERC market-coupling order
+    # IPO listing-day pops mis-read as reverse-splits (keep the real move):
+    ("ROUTE", 20200921), ("INDIGOPNTS", 20210202), ("MTARTECH", 20210315), ("GRINFRA", 20210719),
+    ("NYKAA", 20211110), ("IREDA", 20231129), ("PREMIERENE", 20240903),
+]
+# Auto-discovered crashes appended by scripts/audit_phantom_ca.py (weekly): a big fall with NO corporate
+# announcement is a crash, not a split/bonus — keep the drop. Merged additively; missing/empty file is safe.
+try:
+    _pc = json.load(open(os.path.join(HERE, "phantom_crashes.json")))
+    for _s, _ds in _pc.items():
+        for _d in _ds:
+            if (_s, int(_d)) not in LEGACY_FALSE_CA: LEGACY_FALSE_CA.append((_s, int(_d)))
+except Exception:
+    pass
 
 def load_base():
     # The release asset is the MERGED source-of-truth (renamed tickers consolidated). We do NOT fall

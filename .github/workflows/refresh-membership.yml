@@ -47,11 +47,18 @@ jobs:
       - name: Refresh F&O membership (point-in-time, survivorship-free)
         run: python3 scripts/extend_fno_history.py || echo "F&O refresh failed — keeping existing fnoHistory"
 
+      # Auto-detect PHANTOM corporate actions: a big single-day fall matching a split/bonus ratio but
+      # with NO corporate announcement is a CRASH, not a CA — record it so the price build keeps the drop.
+      # Appends to scripts/phantom_crashes.json, which build_corp_actions.py (noadjust) and
+      # update_sf_data.py (self_heal) both read, so the daily build self-corrects new crashes too.
+      - name: Detect phantom corporate actions (crashes mis-read as splits)
+        run: python3 scripts/audit_phantom_ca.py 120 || echo "phantom-CA scan failed — keeping existing list"
+
       - name: Commit if membership changed
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add scripts/indices_history.json scripts/_changelog.json scripts/fno_history.json docs/stock_data.bin
+          git add scripts/indices_history.json scripts/_changelog.json scripts/fno_history.json scripts/phantom_crashes.json docs/stock_data.bin
           if git diff --cached --quiet; then echo "membership unchanged"; exit 0; fi
           git commit -m "Weekly membership refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d')"
           for i in 1 2 3; do

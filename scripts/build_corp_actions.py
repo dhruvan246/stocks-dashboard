@@ -34,7 +34,38 @@ def is_demerger(subj):
 # "keep the drop as a genuine move, do NOT divide it out".
 #   ADANIENT  2023-02-01/02 — Hindenburg crash + FPO withdrawal (2/3 x 3/4 = 1/2 false halving)
 #   ADANIPOWER 2020-03-12   — COVID crash mis-read as 3:4
-MANUAL_NOADJUST = {"ADANIENT": [20230201, 20230202], "ADANIPOWER": [20200312]}
+# Market crashes / corrections whose overnight drop the build mis-reads as a split/bonus. Per the rule
+# "a big fall with NO corporate announcement is a crash, not a CA": each below was verified to have no
+# split/bonus/rights announcement on the date (NSE corporate-actions). Found via scripts/_audit_fullscan.py
+# (full-universe scan) + scripts/_anncheck.py (announcement check). Real splits/rights are NOT listed here
+# (they stay adjusted). 2026-06-23.
+MANUAL_NOADJUST = {
+    "ADANIENT": [20230201, 20230202],   # Hindenburg + FPO withdrawal
+    "ADANIPOWER": [20200312],           # COVID crash
+    # --- COVID-19 crash, Mar-2020 (market-wide, no corporate action) ---
+    "IDEA": [20200318], "ASHOKLEY": [20200319], "AXISBANK": [20200323], "BAJAJFINSV": [20200323],
+    "BANDHANBNK": [20200323], "CHOLAFIN": [20200323], "EQUITAS": [20200323], "M&MFIN": [20200323],
+    "MFSL": [20200323],
+    # --- news-driven crashes (no corporate action) ---
+    "ZEEL": [20240123],         # Sony merger called off
+    "RECLTD": [20240604],       # 4-Jun-2024 election-result crash
+    "INDUSINDBK": [20250311],   # derivatives-accounting disclosure
+    "PAYTM": [20211118, 20211119],   # IPO listing-day crash
+    "IEX": [20250724],          # CERC market-coupling order
+    # --- IPO listing-day pops mis-read as reverse-splits (keep the real move) ---
+    "ROUTE": [20200921], "INDIGOPNTS": [20210202], "MTARTECH": [20210315], "GRINFRA": [20210719],
+    "NYKAA": [20211110], "IREDA": [20231129], "PREMIERENE": [20240903],
+}
+# Auto-discovered crashes appended weekly by scripts/audit_phantom_ca.py (same rule: a big fall with no
+# corporate announcement = a crash -> noadjust). Merged additively; a missing/empty file is safe.
+try:
+    _pc = json.load(open(os.path.join(HERE, "phantom_crashes.json")))
+    for _s, _ds in _pc.items():
+        MANUAL_NOADJUST.setdefault(_s, [])
+        for _d in _ds:
+            if int(_d) not in MANUAL_NOADJUST[_s]: MANUAL_NOADJUST[_s].append(int(_d))
+except Exception:
+    pass
 
 def official_factor(subj):
     """Return (price_factor, label) for a split/bonus subject, else (None, None).
