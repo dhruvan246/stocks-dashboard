@@ -204,3 +204,14 @@ The backtest **"F&O stocks" universe** uses point-in-time membership: `membersAs
   Rebuilding straight from the bhavcopy fixes all three. After ANY rebuild, audit: every membership symbol must
   have a price series in `sf_stock_data.bin['data']` (0 without), and renamed pairs must hand off with no overlap.
 - **⚠️ Before claiming a stock "isn't in F&O," verify against NSE live `fo_mktlots.csv`** (memory: project-stocks-fno-stale).
+- **⚠️ POINT-IN-TIME NAMES NEED A FUNDAMENTALS ALIAS.** F&O membership + delisted price series use the
+  ticker that traded THEN (e.g. `TATAMOTORS`, `PVR`, `GMRINFRA`), but `sf_fundamentals.json` is keyed by
+  the CURRENT name (`TMPV`, `PVRINOX`, `GMRAIRPORT`). Without a bridge, every renamed stock returns
+  `null` profit for its old-name era → silently dropped from any profit-ranked/filtered backtest (hit
+  Tata Motors: excluded from Jan-2024, understated a strategy's CAGR by ~5pp). FIX: `FUND_ALIAS` (old→current)
+  + `fundFor()` fallback in `profitAt`/`profitMetrics`, in **both** `docs/backtest-engine.js` AND
+  `docs/stock-backtest.html` (self-contained — keep in sync, memory: feedback-backtest-engines-sync).
+  Index universes use current names so they mostly dodge this, but a few old names leak in — the alias
+  covers all universes. Regenerate the map after a new rename (add it to `scripts/_rename_map.json` first):
+  iterate `(F&O ∪ index)` symbols that are in `sf_stock_data.bin['data']` but NOT in `sf_fundamentals.json`,
+  resolve via `_rename_map.json` (transitively) to a name that IS in fundamentals → that's `FUND_ALIAS`.
