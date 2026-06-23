@@ -29,6 +29,15 @@ loads every session. (README.md is STALE — it describes the old Yahoo pipeline
 - **Service worker is network-first** (docs/sw.js); the big bin is IndexedDB-cached keyed on
   `sf_meta.json {end}`. Verify deploys with a cache-buster: `curl -s "<url>?cb=$RANDOM" | grep -c <marker>`.
 - **Supabase free project `nebjnsndgrhumnkuipqy` auto-pauses after ~7d idle** → resume in the dashboard.
+- **⚠️ `docs/sf_stock_data.bin` is a STALE committed SNAPSHOT — do NOT analyse against it.** The daily cron
+  commits only `docs/sf_meta.json` (the version marker) and force-pushes the real data to the **sf-data**
+  Pages repo + the `data` release asset; the big `docs/sf_stock_data.bin` is left frozen at whatever was last
+  hand-committed (was 2026-06-13 while live was 2026-06-22). The **live tool loads from the sf-data repo**, so
+  Node grid-search/backtest harnesses that read `docs/sf_stock_data.bin` will silently use days-old prices and
+  print numbers that DON'T match the site (cost me a wrong 88% vs the live 84%). For any analysis meant to match
+  the tool, fetch the LIVE parts first: `curl -s https://dhruvan246.github.io/sf-data/sf_stock_data_{1,2}.bin?v=<end>`
+  (merge `data`/`meta`, `end` from `sf-data/sf_meta.json`), or pull the `data` release asset. Cross-check
+  `gzip-decompress(docs/sf_stock_data.bin).end` vs `sf-data/sf_meta.json {end}` before trusting local results.
 
 ---
 
