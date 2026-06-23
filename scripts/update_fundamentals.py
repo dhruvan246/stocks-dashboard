@@ -109,6 +109,17 @@ def main():
         if row and row[1] is not None and row[3] is None:
             row[3], row[4] = row[1], row[2]; changed += 1   # con = std (no consolidatable subsidiary)
 
+    # Fill a missing result-announce date from the sibling basis: con & std are filed at the SAME
+    # board meeting, so if a quarter has a profit value but a null announce-date on one basis while
+    # the other basis HAS the date, copy it. Without this the engine skips that quarter (needs
+    # annDate<=rebalance) and silently uses a STALE older quarter -> wrong profitYoY. Common for
+    # insurers (IRDAI format) + recent IPOs, e.g. NIACL Q4FY24 npCon present, annCon null. (2026-06-23)
+    for _sym, _rec in data.items():
+        for _r in _rec:
+            if len(_r) < 5: continue
+            if _r[3] is not None and _r[4] is None and _r[2] is not None: _r[4] = _r[2]; changed += 1
+            if _r[1] is not None and _r[2] is None and _r[4] is not None: _r[2] = _r[4]; changed += 1
+
     if not changed and not newsyms:
         print("no new earnings — nothing to update"); return
     json.dump(data, open(DOCS, "w"), separators=(",", ":"))
