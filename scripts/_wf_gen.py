@@ -7,9 +7,22 @@ import json, sys
 bins=json.load(open("_wf_bins.json"))
 a=int(sys.argv[1]); b=int(sys.argv[2]); chunk=bins[a:b]
 
-PROMPT_TMPL = r'''You recover MISSING historical quarterly NET-PROFIT cells for specific NSE companies, to complete docs/sf_fundamentals.json. ABSOLUTE RULE (non-negotiable): only return a value you have ANCHOR-VERIFIED against the filing's own comparative column, an adjacent stored quarter, or a reconciliation. If you cannot verify, SKIP it. NEVER guess, interpolate, or output an unanchored number. Wrong data is far worse than a gap.
+PROMPT_TMPL = r'''You recover MISSING historical quarterly NET-PROFIT cells for specific NSE companies, to complete docs/sf_fundamentals.json.
 
-ALL commands run from: C:/Users/dhruv/stocks-dashboard/scripts  (cd there first, every Bash call).
+TWO RULES, BOTH NON-NEGOTIABLE:
+1. NEVER fabricate: only return a value you ANCHOR-VERIFIED (a source's comparative column EQUALS a stored quarter, OR a 9M/H1/FY reconciliation ties, OR PBT-tax=PAT on the page, OR two INDEPENDENT sources agree to the paisa). Never guess/interpolate/annual-÷4.
+2. NEVER skip lazily: the number almost ALWAYS EXISTS somewhere. A SKIP is a LAST RESORT only after you have ACTUALLY OPENED AND READ every source in the SOURCES list below and shown the quarter is in none of them. "Not in the NSE filing" is NOT a reason to skip — it means go to the next source. Do NOT write a skip reason that names a source you did not actually fetch. Most past skips were WRONG because the agent stopped at NSE; e.g. GOCOLORS/LATENTVIEW were "unrecoverable" until someone opened the RHP. Assume the data is gettable and prove otherwise by exhaustion.
+
+ALL commands run from: C:/Users/dhruv/stocks-dashboard/scripts  (cd there first, every Bash call). You may use curl_cffi (impersonate='chrome', headers={'Accept-Encoding':'identity'}) to fetch ANY url, fitz to render PDF pages, and WebSearch/WebFetch to FIND documents.
+
+SOURCES (exhaust ALL before any skip — a pre-listing quarter lives in at least one):
+  S1 NSE filings (fetch_nse.py) — post-listing quarterlies + their year-ago/preceding comparative columns.
+  S2 BSE filings — BSE hosts results NSE may lack; fetch by scrip via bseindia.com /corporates (announcements/financial-results). Old (~2019-20) results are .zip (use fetch_nse_zip.py-style) or scanned PDFs (render+vision).
+  S3 RHP — the FINAL prospectus (NOT just DRHP). web-search "<company> RHP prospectus pdf"; TRY https://d2un9pqbzgw43g.cloudfront.net/main/IPO_RHP_<NAME>.pdf and BSE /corporates/download and SEBI. Restated P&L OFTEN has a "three months ended June 30, 20XX" Q1 stub (+prior-yr) AND the MD&A "Restated (Loss)/Profit after Tax" text states each interim period's PAT in words. This single doc usually yields Jun (direct) + Sep (via 9M-Q1-Q3) + sometimes H1/9M figures.
+  S4 DRHP — earlier prospectus; sometimes has different interim stubs than the RHP.
+  S5 Company INVESTOR-RELATIONS site — annual reports (5-yr highlights), and especially QUARTERLY INVESTOR PRESENTATIONS / earnings decks which often print the prior-year quarter for YoY. web-search "<company> investor presentation Q_ FY__".
+  S6 AGGREGATORS as a LEAD then CONFIRM: screener.in/company/<SYM>/ , trendlyne.com, moneycontrol.com show historical quarterly P&L (they ingest RHP-restated quarters for recent IPOs). Use these to SEE the value, then CONFIRM it against a primary source (S1-S5) OR require a second aggregator to agree to the paisa before accepting. Do NOT accept a lone aggregator number unconfirmed.
+  S7 9M/H1/FY RECONSTRUCTION: if you have any 3 of {Q1,Q2,Q3,Q4} and the FY (or any 9M/H1 sub-total) from ANY source, the 4th = subtraction — that is a VALID anchored recovery, not a guess.
 
 YOUR ASSIGNED SYMBOLS: __SYMS__
 
