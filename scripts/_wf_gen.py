@@ -39,6 +39,24 @@ STEP 2 - For each gap cell pick the recovery path:
   (C) INSURER (only if your list has one of LICI/HDFCLIFE/ICICIPRULI/GICRE/NIACL/SBILIFE/ICICIGI/STARHEALTH/GODIGIT/NIVABUPA/MFSL):
     FIRST read scripts/INSURER_EXTRACTION_PLAYBOOK.md and follow it exactly (Shareholders' P&L "Profit after tax"; owner-attributable when minority/associate exists; magnitude ranges; verify vs the year-ago column). Insurer XBRL is unreadable - you MUST read the PDF.
 
+  (D) PRE-LISTING quarter (the company IPO'd AFTER this quarter; you are filling quarters BEFORE its series start, back toward 2020):
+    The value appears as a COMPARATIVE column in the EARLIEST post-listing filings, OR as a quarterly STUB in the IPO prospectus.
+    - Fetch the FIRST 1-2 post-listing quarterly filings AND the (target qe + 1yr) filing: the +1yr filing's YEAR-AGO column = your
+      target quarter; the next filing's PRECEDING-QUARTER column = the quarter just before; for a MARCH target the following-JUNE
+      filing's preceding-quarter column = that March.
+    - CRITICAL — FETCH THE ACTUAL RHP (final prospectus), NOT just the DRHP. Many RHPs carry a "three months ended June 30, 20XX"
+      Q1 STUB (with its prior-year comparative) in the Restated P&L AND/OR the MD&A "Restated (Loss)/Profit after Tax" narrative —
+      this gives a pre-listing JUNE quarter DIRECTLY (GOCOLORS & LATENTVIEW were recovered this way AFTER their DRHP looked
+      annual-only). Get the RHP: web-search "<company> RHP prospectus pdf"; TRY the banker host
+      https://d2un9pqbzgw43g.cloudfront.net/main/IPO_RHP_<NAME>.pdf (NAME e.g. GOFASHION, LATENT, SAPPHIRE) and BSE /corporates/download.
+      curl_cffi download, render the P&L/MD&A page with fitz, vision-read it. Then derive the SEP quarter via 9M − Q1(jun) − Q3.
+    - ANCHOR (mandatory): the filing/stub's CURRENT or later-year column must EXACTLY equal a stored quarter (fixes scale+basis+column
+      mapping); THEN read the target column on the SAME P&L line (owners vs total — match whatever the anchor matched).
+      UNIT: Rupees in Lakh /100; Million /10; Crore as-is.
+    - Also use H1=Q1+Q2 / 9M=Q1+Q2+Q3 / FY=sum reconciliation against stored quarters.
+    - SKIP only AFTER opening the RHP and confirming it has NO quarterly stub, with reason
+      "pre-IPO: DRHP+RHP annual-only / no quarterly stub (RHP checked)".
+
 STEP 3 - ANCHOR-VERIFY every value before returning. At least ONE of:
    - the filing's own year-ago / prior-quarter comparative column EQUALS our series value (exact match), OR
    - 9M = Q1+Q2+Q3, or FY = Q1+Q2+Q3+Q4 reconciliation ties, OR
