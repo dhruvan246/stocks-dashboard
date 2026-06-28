@@ -120,32 +120,45 @@ function clampDate(d, lo, hi) { return d < lo ? lo : d > hi ? hi : d; }
    pulled from the shared Backtest History — each showing its saved CAGR/MaxDD + Picks/Backtest.
    Any future run of the same strategy lands in History and auto-appears under its row. */
 function identityKey(c) {
+  // Identity = what picks the SAME stocks. Excludes `method` (hold/reset is execution-only — it
+  // changes rebalance weighting, not the selection) so the two rebalance variants are ONE strategy,
+  // shown as one row with both runs nested inside. Also excludes start/end (the window).
   const f = (c.filters || []).map(x => x.field + x.op + x.val).sort().join(',');
-  return [c.indexName || '', c.mcapFloor || 0, c.freq, c.topN, c.sortBy, c.dir, c.method, c.lookback || 1, c.earnBasis || 'con', f].join('|');
+  return [c.indexName || '', c.mcapFloor || 0, c.freq, c.topN, c.sortBy, c.dir, c.lookback || 1, c.earnBasis || 'con', f].join('|');
 }
 function windowEnd(c) { return (typeof SF !== 'undefined' && SF && SF.end) ? SF.end : (c.end || 'today'); }
-let HIST = [];                 // shared backtest history (every run, every window)
+let HIST = [];                 // shared backtest history — used only to look up each saved window's metrics
 const DETAIL = {};             // id -> {id,name,cfg} for each backtest shown, so Picks/Backtest can resolve it
-function histFor(cfg) {
-  const k = identityKey(cfg);
-  return HIST.filter(h => h.cfg && identityKey(h.cfg) === k).sort((a, b) => (a.cfg.start || '').localeCompare(b.cfg.start || ''));
+// A strategy's backtests are ITS OWN saved windows (the entries you saved), not every visitor's run.
+// Metrics for a window come from the matching history run (same strategy + same start + same method),
+// so a degenerate short-window run by someone else can't inflate a strategy's shown CAGR or its sort.
+function metricsFor(cfg) {
+  const k = identityKey(cfg), s = cfg.start || '', mth = cfg.method || '';
+  let best = null;
+  for (const h of HIST) {
+    if (!h.cfg || identityKey(h.cfg) !== k) continue;
+    if ((h.cfg.start || '') !== s || (h.cfg.method || '') !== mth) continue;
+    if (h.m && h.m.cagr != null && (!best || (h.ts || 0) > (best.ts || 0))) best = h;
+  }
+  return best ? best.m : null;
 }
-function detailCard(h) {
-  const c = h.cfg, m = h.m || {};
-  DETAIL[h.id] = { id: h.id, name: h.label || h.name, cfg: c };
+function detailCard(it) {
+  const c = it.cfg, m = metricsFor(c) || {};
+  DETAIL[it.id] = { id: it.id, name: it.name || it.label, cfg: c };
   const cagr = (m.cagr != null) ? `<span class="font-bold ${m.cagr >= 0 ? 'pos' : 'neg'}">${pct(m.cagr)}</span>` : '<span class="text-slate-400">—</span>';
   const dd = (m.maxDD != null) ? `<span class="font-bold neg">-${(+m.maxDD).toFixed(1)}%</span>` : '<span class="text-slate-400">—</span>';
   const fin = (m.finalV != null) ? `₹1L → ${fmtINR(m.finalV)}` : '&nbsp;';
-  return `<div class="bg-white border border-slate-200 rounded-lg p-3" data-variant="${h.id}">
-    <div class="text-[11px] font-semibold text-slate-700">📅 ${esc(c.start)} → ${esc(windowEnd(c))}</div>
+  const meth = c.method ? `<span class="text-[10px] font-semibold text-slate-500 bg-slate-100 rounded px-1.5 py-0.5 ml-1">${c.method === 'hold' ? 'hold' : 'reset'}</span>` : '';
+  return `<div class="bg-white border border-slate-200 rounded-lg p-3" data-variant="${it.id}">
+    <div class="text-[11px] font-semibold text-slate-700">📅 ${esc(c.start)} → ${esc(windowEnd(c))}${meth}</div>
     <div class="flex items-center justify-between mt-1.5">
       <div class="text-sm">CAGR: ${cagr}</div>
       <div class="text-sm">MaxDD: ${dd}</div>
     </div>
     <div class="text-[10px] text-slate-400 mt-0.5">${fin}</div>
     <div class="grid grid-cols-2 gap-2 mt-2">
-      <button class="px-2 py-1.5 rounded-lg text-[11px] font-semibold bg-blue-600 text-white hover:bg-blue-700" data-picks="${h.id}">🎯 Today's Picks</button>
-      <button class="px-2 py-1.5 rounded-lg text-[11px] font-semibold bg-slate-800 text-white hover:bg-slate-900" data-bt="${h.id}">📈 Backtest</button>
+      <button class="px-2 py-1.5 rounded-lg text-[11px] font-semibold bg-blue-600 text-white hover:bg-blue-700" data-picks="${it.id}">🎯 Today's Picks</button>
+      <button class="px-2 py-1.5 rounded-lg text-[11px] font-semibold bg-slate-800 text-white hover:bg-slate-900" data-bt="${it.id}">📈 Backtest</button>
     </div>
   </div>`;
 }
@@ -156,16 +169,26 @@ function render() {
     $('list').innerHTML = '<div class="card p-8 text-center text-slate-400 text-sm">No saved strategies yet. Run a backtest and click “⭐ Save as Strategy”.</div>';
     return;
   }
-  // collapse to UNIQUE strategies by identity (keep the newest definition for its name)
-  const uniq = new Map();
-  for (const it of items) { const k = identityKey(it.cfg); const p = uniq.get(k); if (!p || (it.ts || 0) > (p.ts || 0)) uniq.set(k, it); }
-  const rows = [...uniq.values()];
+  // group saved entries by strategy identity → one row each; its backtests = its saved windows (dedup by start+method)
+  const groups = new Map();
+  for (const it of items) {
+    const k = identityKey(it.cfg);
+    if (!groups.has(k)) groups.set(k, { rep: it, vars: new Map() });
+    const g = groups.get(k);
+    if ((it.ts || 0) > (g.rep.ts || 0)) g.rep = it;
+    const vk = (it.cfg.start || '') + '|' + (it.cfg.method || '');
+    const prev = g.vars.get(vk);
+    if (!prev || (it.ts || 0) > (prev.ts || 0)) g.vars.set(vk, it);
+  }
+  // sort strategies by their best saved CAGR across their OWN windows (highest first)
+  const bestCagr = g => { let m = -Infinity; for (const v of g.vars.values()) { const mm = metricsFor(v.cfg); if (mm && mm.cagr != null && mm.cagr > m) m = mm.cagr; } return m; };
+  const rows = [...groups.values()].sort((a, b) => bestCagr(b) - bestCagr(a));
   $('list').className = 'card divide-y divide-slate-100 overflow-hidden';
-  $('list').innerHTML = rows.map((it, gi) => {
-    const c = it.cfg;
+  $('list').innerHTML = rows.map((g, gi) => {
+    const it = g.rep, c = it.cfg;
     const expr = filterExpr(c) || 'no filters';
-    let hist = histFor(c); if (!hist.length) hist = [{ id: it.id, label: it.name, cfg: c, m: {} }];   // fall back to the saved cfg
-    const n = hist.length;
+    const vars = [...g.vars.values()].sort((a, b) => (a.cfg.start || '').localeCompare(b.cfg.start || '') || (a.cfg.method || '').localeCompare(b.cfg.method || ''));
+    const n = vars.length;
     return `<div data-row="r${gi}">
       <div class="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-slate-50 cursor-pointer" data-toggle="r${gi}">
         <span class="w-9 h-9 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 text-lg">📈</span>
@@ -179,7 +202,7 @@ function render() {
       </div>
       <div class="hidden px-4 pb-4 bg-slate-50/60" data-detail="r${gi}">
         <div class="text-[11px] text-slate-500 mb-2 mono break-words">Filters: ${esc(expr)} &nbsp;·&nbsp; Sort: ${SORTL[c.sortBy] || c.sortBy} ${c.dir === 'high' ? 'desc' : 'asc'}</div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">${hist.map(h => detailCard(h)).join('')}</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">${vars.map(v => detailCard(v)).join('')}</div>
       </div>
     </div>`;
   }).join('');
