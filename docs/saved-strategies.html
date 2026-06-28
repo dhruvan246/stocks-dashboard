@@ -114,45 +114,88 @@ const SORTL = { changePercent: 'Change % desc', rsi: 'RSI', d52: '% from 52w Hig
 function strategies() { return loadLS('bt_strategies'); }
 function clampDate(d, lo, hi) { return d < lo ? lo : d > hi ? hi : d; }
 
-/* ---------- card list ---------- */
+/* ---------- strategy list (Trendlyne-style) ----------
+   Saved Strategies is a flat LIST: one row per UNIQUE strategy (identity = everything except the
+   date window). Click a row to reveal ALL its saved backtests — every window it was ever run over,
+   pulled from the shared Backtest History — each showing its saved CAGR/MaxDD + Picks/Backtest.
+   Any future run of the same strategy lands in History and auto-appears under its row. */
+function identityKey(c) {
+  const f = (c.filters || []).map(x => x.field + x.op + x.val).sort().join(',');
+  return [c.indexName || '', c.mcapFloor || 0, c.freq, c.topN, c.sortBy, c.dir, c.method, c.lookback || 1, c.earnBasis || 'con', f].join('|');
+}
+function windowEnd(c) { return (typeof SF !== 'undefined' && SF && SF.end) ? SF.end : (c.end || 'today'); }
+let HIST = [];                 // shared backtest history (every run, every window)
+const DETAIL = {};             // id -> {id,name,cfg} for each backtest shown, so Picks/Backtest can resolve it
+function histFor(cfg) {
+  const k = identityKey(cfg);
+  return HIST.filter(h => h.cfg && identityKey(h.cfg) === k).sort((a, b) => (a.cfg.start || '').localeCompare(b.cfg.start || ''));
+}
+function detailCard(h) {
+  const c = h.cfg, m = h.m || {};
+  DETAIL[h.id] = { id: h.id, name: h.label || h.name, cfg: c };
+  const cagr = (m.cagr != null) ? `<span class="font-bold ${m.cagr >= 0 ? 'pos' : 'neg'}">${pct(m.cagr)}</span>` : '<span class="text-slate-400">—</span>';
+  const dd = (m.maxDD != null) ? `<span class="font-bold neg">-${(+m.maxDD).toFixed(1)}%</span>` : '<span class="text-slate-400">—</span>';
+  const fin = (m.finalV != null) ? `₹1L → ${fmtINR(m.finalV)}` : '&nbsp;';
+  return `<div class="bg-white border border-slate-200 rounded-lg p-3" data-variant="${h.id}">
+    <div class="text-[11px] font-semibold text-slate-700">📅 ${esc(c.start)} → ${esc(windowEnd(c))}</div>
+    <div class="flex items-center justify-between mt-1.5">
+      <div class="text-sm">CAGR: ${cagr}</div>
+      <div class="text-sm">MaxDD: ${dd}</div>
+    </div>
+    <div class="text-[10px] text-slate-400 mt-0.5">${fin}</div>
+    <div class="grid grid-cols-2 gap-2 mt-2">
+      <button class="px-2 py-1.5 rounded-lg text-[11px] font-semibold bg-blue-600 text-white hover:bg-blue-700" data-picks="${h.id}">🎯 Today's Picks</button>
+      <button class="px-2 py-1.5 rounded-lg text-[11px] font-semibold bg-slate-800 text-white hover:bg-slate-900" data-bt="${h.id}">📈 Backtest</button>
+    </div>
+  </div>`;
+}
 function render() {
   const items = strategies();
-  const OWNER = !!(window.btSync && btSync.isOwner());   // only the owner sees add/delete controls
+  const OWNER = !!(window.btSync && btSync.isOwner());   // only the owner sees delete controls
   if (!items.length) {
-    $('list').innerHTML = '<div class="card p-8 text-center text-slate-400 text-sm md:col-span-3">No saved strategies yet. Run a backtest and click “⭐ Save as Strategy”.</div>';
+    $('list').innerHTML = '<div class="card p-8 text-center text-slate-400 text-sm">No saved strategies yet. Run a backtest and click “⭐ Save as Strategy”.</div>';
     return;
   }
-  $('list').innerHTML = items.map(it => {
+  // collapse to UNIQUE strategies by identity (keep the newest definition for its name)
+  const uniq = new Map();
+  for (const it of items) { const k = identityKey(it.cfg); const p = uniq.get(k); if (!p || (it.ts || 0) > (p.ts || 0)) uniq.set(k, it); }
+  const rows = [...uniq.values()];
+  $('list').className = 'card divide-y divide-slate-100 overflow-hidden';
+  $('list').innerHTML = rows.map((it, gi) => {
     const c = it.cfg;
-    const expr = filterExpr(c) || '<span class="text-slate-400">no filters</span>';
-    return `<div class="card p-4 flex flex-col" data-card="${it.id}">
-      <div class="flex items-start justify-between gap-2">
-        <div class="font-bold text-slate-900 leading-snug">${esc(it.name)}</div>
-        ${OWNER ? `<button class="text-slate-300 hover:text-red-500 text-sm shrink-0" data-del="${it.id}" title="Delete">🗑️</button>` : ''}
+    const expr = filterExpr(c) || 'no filters';
+    let hist = histFor(c); if (!hist.length) hist = [{ id: it.id, label: it.name, cfg: c, m: {} }];   // fall back to the saved cfg
+    const n = hist.length;
+    return `<div data-row="r${gi}">
+      <div class="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-slate-50 cursor-pointer" data-toggle="r${gi}">
+        <span class="w-9 h-9 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 text-lg">📈</span>
+        <span class="min-w-0 flex-1">
+          <span class="block font-semibold text-indigo-700 leading-snug">${esc(it.name)}</span>
+          <span class="block text-[11px] text-slate-500 truncate">${esc(universeLabel(c))} · ${FREQ[c.freq] || c.freq + 'mo'} · ${c.topN} stocks · ${SORTL[c.sortBy] || c.sortBy} ${c.dir === 'high' ? '↓' : '↑'}</span>
+        </span>
+        <span class="text-[11px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full shrink-0 whitespace-nowrap">${n} backtest${n > 1 ? 's' : ''}</span>
+        ${OWNER ? `<button class="text-slate-300 hover:text-red-500 text-sm shrink-0" data-delgroup="${esc(identityKey(c))}" title="Delete strategy">🗑️</button>` : ''}
+        <span data-arrow class="text-slate-400 shrink-0 select-none text-xs">▸</span>
       </div>
-      <div class="text-[11px] text-slate-500 mt-1.5 flex items-center gap-1.5 flex-wrap">
-        <span class="font-semibold text-indigo-600">📊 ${esc(universeLabel(c))}</span><span>·</span>
-        <span>${FREQ[c.freq] || c.freq + 'mo'}</span><span>·</span><span>${c.topN} stocks</span>
-      </div>
-      <div class="mono text-[11px] text-slate-500 mt-1.5 break-words">${expr}</div>
-      <div class="text-[11px] text-slate-500 mt-1">Sort: <b>${SORTL[c.sortBy] || c.sortBy}</b> ${c.dir === 'high' ? 'desc' : 'asc'}</div>
-      <div class="bg-slate-50 rounded-lg p-3 mt-3" data-perf="${it.id}">
-        <div class="text-[11px] text-slate-500 mb-1">Backtest performance</div>
-        <div class="flex items-center justify-between">
-          <div class="text-sm">CAGR: <span class="font-bold text-slate-400">computing…</span></div>
-          <div class="text-sm">MaxDD: <span class="font-bold text-slate-400">…</span></div>
-        </div>
-        <div class="text-[10px] text-slate-400 mt-1">&nbsp;</div>
-      </div>
-      <div class="grid grid-cols-2 gap-2 mt-3">
-        <button class="px-3 py-2 rounded-lg text-xs font-semibold bg-blue-600 text-white hover:bg-blue-700" data-picks="${it.id}">🎯 Today's Picks</button>
-        <button class="px-3 py-2 rounded-lg text-xs font-semibold bg-slate-800 text-white hover:bg-slate-900" data-bt="${it.id}">📈 Backtest</button>
+      <div class="hidden px-4 pb-4 bg-slate-50/60" data-detail="r${gi}">
+        <div class="text-[11px] text-slate-500 mb-2 mono break-words">Filters: ${esc(expr)} &nbsp;·&nbsp; Sort: ${SORTL[c.sortBy] || c.sortBy} ${c.dir === 'high' ? 'desc' : 'asc'}</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">${hist.map(h => detailCard(h)).join('')}</div>
       </div>
     </div>`;
   }).join('');
-  // wire buttons
-  $('list').querySelectorAll('[data-del]').forEach(b => b.onclick = () => { saveLS('bt_strategies', strategies().filter(x => x.id !== b.dataset.del)); if (window.btSync) btSync.pushStrategies(); render(); computeAllPerf(); });
-  $('list').querySelectorAll('[data-bt]').forEach(b => b.onclick = () => { const it = strategies().find(x => x.id === b.dataset.bt); if (it) { localStorage.setItem('bt_load', JSON.stringify(it.cfg)); location.href = './stock-backtest.html'; } });
+  // wiring
+  $('list').querySelectorAll('[data-toggle]').forEach(b => b.onclick = (e) => {
+    if (e.target.closest('[data-delgroup]')) return;
+    const box = $('list').querySelector('[data-detail="' + b.dataset.toggle + '"]');
+    const arrow = b.querySelector('[data-arrow]'); const hidden = box.classList.toggle('hidden');
+    if (arrow) arrow.textContent = hidden ? '▸' : '▾';
+  });
+  $('list').querySelectorAll('[data-delgroup]').forEach(b => b.onclick = (e) => {
+    e.stopPropagation(); const k = b.dataset.delgroup;
+    if (!confirm('Delete this strategy from the saved list?')) return;
+    saveLS('bt_strategies', strategies().filter(x => identityKey(x.cfg) !== k)); if (window.btSync) btSync.pushStrategies(); render();
+  });
+  $('list').querySelectorAll('[data-bt]').forEach(b => b.onclick = () => { const it = DETAIL[b.dataset.bt] || strategies().find(x => x.id === b.dataset.bt); if (it) { localStorage.setItem('bt_load', JSON.stringify(it.cfg)); location.href = './stock-backtest.html'; } });
   $('list').querySelectorAll('[data-picks]').forEach(b => b.onclick = () => openPicks(b.dataset.picks));
 }
 function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
@@ -183,7 +226,7 @@ async function computeAllPerf() {
 
 /* ---------- Today's Picks modal ---------- */
 function openPicks(id) {
-  const it = strategies().find(x => x.id === id); if (!it) return;
+  const it = DETAIL[id] || strategies().find(x => x.id === id); if (!it) return;
   CUR = it;
   $('mTitle').innerHTML = `🎯 Today's Picks · ${esc(it.name)}`;
   $('mFilters').innerHTML = `<b>Universe:</b> ${esc(universeLabel(it.cfg))} &nbsp;·&nbsp; <b>Rank:</b> ${SORTL[it.cfg.sortBy] || it.cfg.sortBy} (${it.cfg.dir}) &nbsp;·&nbsp; <b>Filters:</b> ${esc(filterExpr(it.cfg) || 'none')}`;
@@ -395,14 +438,16 @@ $('hCompute').onclick = runHold;
 $('mAlsoToggle').onclick = () => { const a = $('mAlso'); a.classList.toggle('hidden'); $('mAlsoToggle').innerHTML = $('mAlsoToggle').innerHTML.replace(a.classList.contains('hidden') ? '▾' : '▸', a.classList.contains('hidden') ? '▸' : '▾'); };
 
 (async function boot() {
-  if (window.btSync) { try { await btSync.pullStrategies(); } catch (e) {} }   // load the shared strategies (everyone)
-  render();   // show cards immediately (perf = "computing…")
+  if (window.btSync) {
+    try { await btSync.pullStrategies(); } catch (e) {}                 // shared strategy definitions
+    try { HIST = await btSync.pull() || []; } catch (e) { HIST = []; }  // shared backtest history (all windows)
+  }
+  render();   // flat list with saved metrics — instant, no engine needed
   if (!strategies().length) { $('status').textContent = ''; return; }
   $('status').textContent = 'Loading survivorship-free data…';
   try { await loadEngineData(m => { $('status').textContent = m || ''; }); }
-  catch (e) { $('status').innerHTML = '<span class="text-red-500">Could not load market data — has the survivorship-free dataset been built/deployed yet?</span>'; return; }
-  $('status').textContent = `✅ Survivorship-free data ${SF.start} → ${SF.end} · ${SF.nTot} stocks (${SF.nDead} delisted).`;
-  computeAllPerf();
+  catch (e) { $('status').innerHTML = '<span class="text-amber-600">Saved metrics shown. (Live market data didn’t load, so Today’s Picks / re-Backtest may be unavailable.)</span>'; return; }
+  $('status').textContent = `✅ Survivorship-free data ${SF.start} → ${SF.end} · ${SF.nTot} stocks (${SF.nDead} delisted). Click a strategy to see its backtests.`;
 })();
 </script>
 </body>
