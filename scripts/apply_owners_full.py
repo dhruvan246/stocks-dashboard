@@ -11,6 +11,12 @@ F=os.path.join(ROOT,"docs","sf_fundamentals.json")
 live=json.load(open(F))
 OWN=json.load(open(os.path.join(HERE,"_reattr_owners.json")))   # "SYM|qe" -> owners cr
 
+# Renamed-ticker map (OLD->NEW). _reattr_owners is keyed by the OLD ticker (name at extraction),
+# but live FUND is keyed by the NEW ticker; without this, renamed stocks silently keep total PAT.
+ALIAS={"ADANITRANS":"ADANIENSOL","AEGISCHEM":"AEGISLOG","AKZOINDIA":"JSWDULUX","ALSTOMT&D":"GVT&D","AMARAJABAT":"ARE&M","BAJAJCORP":"BAJAJCON","BHUSANSTL":"TATASTLBSL","CADILAHC":"ZYDUSLIFE","CENTURYTEX":"ABREL","CLNINDIA":"SUDARCOLOR","CROMPGREAV":"CGPOWER","ESSELPACK":"EPL","FCEL":"FCONSUMER","FINANTECH":"63MOONS","FRL":"FEL","GATI":"ACLGATI","GEPIL":"GVPIL","GET&D":"GVT&D","GLS":"ALIVUS","GMRINFRA":"GMRAIRPORT","GUJFLUORO":"GFLLIMITED","HOTELEELA":"HLVLTD","HSIL":"AGI","IBREALEST":"EMBDL","IBULHSGFIN":"SAMMAANCAP","IBULISL":"IBULLSLTD","IDFCBANK":"IDFCFIRSTB","IIFLWAM":"360ONE","INEOSSTYRO":"STYRENIX","INFIBEAM":"CCAVENUE","INFRATEL":"INDUSTOWER","IPAPPM":"ANDHRAPAP","ITDCEM":"CEMPRO","JCHAC":"BOSCH-HCIL","JUBILANT":"JUBLPHARMA","KALPATPOWR":"KPIL","KPIT":"BSOFT","KSBPUMPS":"KSB","L&TFH":"LTF","LAXMIMACH":"LMW","LTI":"LTM","LTIM":"LTM","MAGMA":"POONAWALLA","MAHINDCIE":"CIEINDIA","MAX":"MFSL","MCDOWELL-N":"UNITDSPR","MINDAIND":"UNOMINDA","MOTHERSUMI":"MOTHERSON","NBVENTURES":"NAVA","NIITTECH":"COFORGE","PIPAVAVDOC":"RNAVAL","PRISMCEM":"PRSMJOHNSN","PVR":"PVRINOX","RDEL":"RNAVAL","SEINV":"PAISALO","SEQUENT":"VIYASH","SKSMICRO":"BHARATFIN","SMLISUZU":"SMLMAH","SRTRANSFIN":"SHRIRAMFIN","SSLT":"VEDL","STRTECH":"STLTECH","SUNCLAYLTD":"TVSHLTD","SUVENPHAR":"COHANCE","SWANENERGY":"SWANCORP","TATAGLOBAL":"TATACONSUM","TATAMOTORS":"TMPV","TATASPONGE":"TATASTLLP","TIDEWATER":"VEEDOL","WABCOINDIA":"ZFCVINDIA","WELSPUNIND":"WELSPUNLIV","ZOMATO":"ETERNAL"}
+REV={}
+for _o,_n in ALIAS.items(): REV.setdefault(_n,[]).append(_o)
+
 # verified-from-filing backfills (owners-attributable, cr) for NCI stocks not in _reattr_owners
 BACKFILL={
  # CEMPRO (ITD Cementation): owners = total - NCI, read from consolidated filings
@@ -19,7 +25,7 @@ BACKFILL={
  # ACUTAAS (Acutaas/Anupam Rasayan, consolidates Tanfac): from Q4FY26 filing attribution
  "ACUTAAS|20250331":62.48, "ACUTAAS|20251231":107.96, "ACUTAAS|20260331":131.76,
 }
-src_own=src_bf=0
+src_own=src_bf=src_ren=0
 for sym,arr in live.items():
     for r in arr:
         if r[3] is None: continue
@@ -28,10 +34,18 @@ for sym,arr in live.items():
         if a is not None:
             if abs(a-r[3])>0.005: r[3]=a; src_bf+=1
             continue
-        a=OWN.get(k)
-        if a is not None and abs(a-r[3])>0.005:
-            r[3]=a; src_own+=1
-print("set npCon=owners: %d from _reattr_owners, %d from filing-backfill"%(src_own,src_bf))
+        a=OWN.get(k); ren=False
+        if a is None:                          # renamed: owners keyed by the OLD ticker
+            for _old in REV.get(sym,()):
+                a=OWN.get("%s|%d"%(_old,r[0]))
+                if a is not None: ren=True; break
+        if a is None: continue
+        if abs(a)<0.005 and abs(r[3])>2: continue   # XBRL owners=0 mis-tag guard
+        if abs(a-r[3])>0.005:
+            r[3]=a
+            if ren: src_ren+=1
+            else: src_own+=1
+print("set npCon=owners: %d from _reattr_owners, %d via rename-alias (renamed stocks), %d from filing-backfill"%(src_own,src_ren,src_bf))
 if "--dry" in sys.argv:
     print("DRY RUN — not written"); sys.exit(0)
 tmp=F+".tmp"; json.dump(live,open(tmp,"w"),separators=(",",":")); os.replace(tmp,F)

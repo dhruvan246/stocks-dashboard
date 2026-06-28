@@ -42,6 +42,13 @@ jobs:
       - name: Fill any null announcement dates (point-in-time safety)
         run: python3 scripts/fill_ann_dates.py
 
+      # Re-assert OWNERS-ATTRIBUTABLE consolidated profit from the reconciled XBRL cache. Without
+      # this, newly-filed quarters land as total PAT, and (critically) renamed tickers never matched
+      # the cache (keyed by the OLD name) so they silently kept total PAT — e.g. SWANCORP Dec-2022
+      # showed -157 instead of owners +16.85. The applier is rename-aware (REV map) + guards 0-mistags.
+      - name: Re-assert owners-attributable consolidated profit (incl. renamed tickers)
+        run: python3 scripts/apply_owners_full.py
+
       - name: Commit updated fundamentals (only if new earnings landed)
         run: |
           if [ ! -f docs/.fund_updated ]; then
