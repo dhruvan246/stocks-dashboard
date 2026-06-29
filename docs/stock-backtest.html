@@ -346,6 +346,12 @@ function strategyLabel(c){
 }
 function loadLS(k){try{return JSON.parse(localStorage.getItem(k)||'[]');}catch(e){return[];}}
 function saveLS(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+// Strategy identity = everything that picks the SAME stocks (excludes the date window, method, capital).
+// MUST stay identical to identityKey() in saved-strategies.html so a run nests under the right strategy.
+function stratIdentity(c){
+  const f=(c.filters||[]).map(x=>x.field+x.op+x.val).sort().join(',');
+  return [c.indexName||'', c.mcapFloor||0, c.freq, c.topN, c.sortBy, c.dir, c.lookback||1, c.earnBasis||'con', f].join('|');
+}
 
 // fundamentals (quarterly net profit) — loaded lazily, only when a profit factor is used
 async function loadFund(){
@@ -361,7 +367,7 @@ async function run(){
   if(needsFund(cfg)){ $('runMsg').textContent='Loading earnings data…'; await loadFund();
     if(!Object.keys(FUND).length){ $('runMsg').textContent='Earnings data not available yet — try a non-fundamental factor.'; return; } }
   $('runMsg').textContent='Running…';
-  setTimeout(()=>{ try{ const res=simulate(cfg); LAST_RUN={cfg,res}; render(res,cfg); $('runMsg').textContent=''; autoSaveHistory(); }
+  setTimeout(()=>{ try{ const res=simulate(cfg); LAST_RUN={cfg,res}; render(res,cfg); $('runMsg').textContent=''; autoSaveHistory().then(autoSaveStrategy); }
     catch(e){ $('runMsg').textContent='Error: '+e.message; console.error(e); } }, 30);
 }
 // every run is recorded to History automatically (skips an exact repeat of the most recent entry)
@@ -373,6 +379,19 @@ async function autoSaveHistory(){
   const s=JSON.stringify(item.cfg);
   if(h.some(x=>JSON.stringify(x.cfg)===s)) return;   // an identical config is already in history — no duplicate row
   h.unshift(item); saveLS('bt_history', h.slice(0,300)); if(window.btSync)btSync.push();
+}
+// Every run also ensures a parent Strategy exists in the Saved Strategies tab, so the run nests as a
+// card under it. Dedup by identity (config minus the date window) → re-running the SAME strategy with
+// different dates adds a card under the existing row, never a duplicate strategy.
+async function autoSaveStrategy(){
+  if(!LAST_RUN) return;
+  const owner = !!(window.btSync && btSync.isOwner());
+  if(owner && window.btSync){ try{ await btSync.pullStrategies(); }catch(e){} }   // sync to the latest shared list first
+  const s=loadLS('bt_strategies'); const k=stratIdentity(LAST_RUN.cfg);
+  if(s.some(x=>stratIdentity(x.cfg)===k)) return;   // this strategy already exists — its runs nest automatically
+  s.unshift({ id:'s'+Date.now().toString(36), ts:Date.now(), name:strategyLabel(LAST_RUN.cfg), cfg:LAST_RUN.cfg, auto:true });
+  saveLS('bt_strategies', s);
+  if(owner && window.btSync){ try{ await btSync.pushStrategies(); }catch(e){} }
 }
 // calendar-year returns from an equity series [[date,value],…] → [[year, ret%],…]
 function yByY(eq){ if(!eq||!eq.length) return []; const by={}; eq.forEach(e=>{by[(''+e[0]).slice(0,4)]=e[1];}); const ys=Object.keys(by).sort(); const out=[], sv0=eq[0][1];
