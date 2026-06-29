@@ -264,7 +264,7 @@ function render() {
     if (!confirm('Delete this strategy from the saved list?')) return;
     saveLS('bt_strategies', strategies().filter(x => identityKey(x.cfg) !== k)); if (window.btSync) btSync.pushStrategies(); render();
   });
-  $('list').querySelectorAll('[data-bt]').forEach(b => b.onclick = () => { const it = DETAIL[b.dataset.bt] || strategies().find(x => x.id === b.dataset.bt); if (it) { localStorage.setItem('bt_load', JSON.stringify(it.cfg)); location.href = './stock-backtest.html'; } });
+  $('list').querySelectorAll('[data-bt]').forEach(b => b.onclick = () => { const it = DETAIL[b.dataset.bt] || strategies().find(x => x.id === b.dataset.bt); if (it) { localStorage.setItem('bt_load', JSON.stringify(it.cfg)); localStorage.setItem('bt_loadrun', '1'); location.href = './stock-backtest.html'; } });
   $('list').querySelectorAll('[data-picks]').forEach(b => b.onclick = () => openPicks(b.dataset.picks));
 }
 function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }

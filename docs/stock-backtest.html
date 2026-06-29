@@ -78,9 +78,10 @@
       <div id="filters" class="space-y-2"></div>
     </div>
     <div class="mt-4 flex items-center gap-3">
-      <button id="run" class="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-5 py-2 text-sm font-semibold shadow-sm">Run Backtest</button>
+      <button id="run" class="bg-amber-500 hover:bg-amber-600 text-white rounded-lg px-5 py-2 text-sm font-semibold shadow-sm">💾 Save Strategy</button>
       <span id="runMsg" class="text-xs text-slate-500"></span>
     </div>
+    <p class="mt-2 text-xs text-slate-500">Set up your filters &amp; settings, then <b>Save Strategy</b> — it’s added to your <a href="./saved-strategies.html" class="text-indigo-600 hover:underline">⭐ Saved Strategies</a>. Run the backtest from there (📈 Backtest on the card); results auto-save to History and appear as cards under the strategy.</p>
   </div>
 
   <div id="out"></div>
@@ -247,12 +248,14 @@ async function initUI(){
   $('cSort').innerHTML=FIELDS.map(f=>`<option value="${f.v}">${f.l}</option>`).join('');
   addFilter(); // one empty filter row
   $('addF').onclick=addFilter;
-  $('run').onclick=run;
+  $('run').onclick=saveStrategyFromForm;   // primary action is now SAVE; runs are launched from the Saved Strategies cards
   // Survivorship-free is the ONLY data source — activate it before the UI is shown.
   await setMode('sf');   // loads sf_stock_data.bin, sets dates/universe to the SF dataset
   if(window.btSync){ try{ await btSync.pull(); }catch(e){} }   // pull history from other devices BEFORE any auto-save, so a local save never overwrites them
   // load a config handed over from History / Saved Strategies, then auto-run
-  try{ const c=JSON.parse(localStorage.getItem('bt_load')||'null'); if(c){ localStorage.removeItem('bt_load'); await applyCfg(c); window.__fromLoad=true; setTimeout(run, 50); } }catch(e){}
+  try{ const c=JSON.parse(localStorage.getItem('bt_load')||'null'); if(c){ const fromStrat=localStorage.getItem('bt_loadrun')==='1'; localStorage.removeItem('bt_load'); localStorage.removeItem('bt_loadrun'); await applyCfg(c);
+    // From a Saved-Strategy card → this IS the run, so record it to History (+ nest). From the History page → just view, don't duplicate.
+    window.__fromLoad=!fromStrat; setTimeout(run, 50); } }catch(e){}
 }
 function maxOffset(){ let mx=0; for(const k in SERIES){const d=SERIES[k].d; if(d&&d.length){const v=d[d.length-1]; if(v>mx)mx=v;}} return mx; }
 function addFilter(){
@@ -422,6 +425,27 @@ async function saveStrategy(){
   const msg=$('saveMsg'); if(msg) msg.textContent = owner
     ? ('⭐ Published "'+name.trim()+'" to Saved Strategies (visible to everyone)')
     : ('⭐ Saved "'+name.trim()+'" locally — see Saved Strategies');
+}
+// PRIMARY page action (new flow): build a strategy from the current form and save it to the Saved
+// Strategies list WITHOUT running. The user then runs it from the strategy card (📈 Backtest), which
+// loads the config back here, auto-runs, and records to History + nests under the strategy.
+async function saveStrategyFromForm(){
+  const cfg=readCfg();
+  if(!cfg.start||!cfg.end||cfg.start>=cfg.end){ $('runMsg').textContent='Pick a valid date range first.'; return; }
+  const def=strategyLabel(cfg);
+  const name=prompt('Name this strategy:', def);
+  if(name===null) return;                                  // cancelled
+  const nm=(name.trim()||def);
+  const owner = !!(window.btSync && btSync.isOwner());
+  if(owner && window.btSync){ try{ await btSync.pullStrategies(); }catch(e){} }   // sync to latest shared list first
+  const s=loadLS('bt_strategies'); const k=stratIdentity(cfg);
+  if(!s.some(x=>stratIdentity(x.cfg)===k)){              // dedup by identity — don't add the same strategy twice
+    s.unshift({ id:'s'+Date.now().toString(36), ts:Date.now(), name:nm, cfg:cfg });
+    saveLS('bt_strategies', s);
+    if(owner && window.btSync){ try{ await btSync.pushStrategies(); }catch(e){} }
+  }
+  $('runMsg').textContent='Saved — opening Saved Strategies…';
+  location.href='./saved-strategies.html';
 }
 
 /* ---- extended technical factors (close + turnover + Nifty; no fundamentals) ---- */
