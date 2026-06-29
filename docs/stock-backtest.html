@@ -765,8 +765,8 @@ function render(r,cfg){
   </div>`;
   html+=`<div class="card p-3 mb-4 flex flex-wrap items-center gap-2">
       <span class="text-xs text-slate-500 mr-1">${strategyLabel(cfg)}</span>
-      <span class="inline-flex items-center gap-1 text-xs font-semibold text-green-700">✓ Auto-saved to History</span>
-      <button id="btSaveStrat" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500 text-white hover:bg-amber-600">⭐ Save as Strategy</button>
+      ${(window.__snapshotMode||window.__viewOnly)?'':'<span class="inline-flex items-center gap-1 text-xs font-semibold text-green-700">✓ Auto-saved to History</span>'}
+      ${(window.__snapshotMode||window.__viewOnly)?'':'<button id="btSaveStrat" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500 text-white hover:bg-amber-600">⭐ Save as Strategy</button>'}
       <span id="saveMsg" class="text-xs text-green-700"></span>
       <a href="./backtest-history.html" class="text-xs text-indigo-600 hover:underline ml-auto">View history →</a>
     </div>`;
