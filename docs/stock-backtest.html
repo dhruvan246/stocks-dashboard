@@ -81,7 +81,7 @@
       <button id="run" class="bg-amber-500 hover:bg-amber-600 text-white rounded-lg px-5 py-2 text-sm font-semibold shadow-sm">💾 Save Strategy</button>
       <span id="runMsg" class="text-xs text-slate-500"></span>
     </div>
-    <p class="mt-2 text-xs text-slate-500">Set up your filters &amp; settings, then <b>Save Strategy</b> — it’s added to your <a href="./saved-strategies.html" class="text-indigo-600 hover:underline">⭐ Saved Strategies</a>. Run the backtest from there (📈 Backtest on the card); results auto-save to History and appear as cards under the strategy.</p>
+    <p id="saveHint" class="mt-2 text-xs text-slate-500">Set up your filters &amp; settings, then <b>Save Strategy</b> — it’s added to your <a href="./saved-strategies.html" class="text-indigo-600 hover:underline">⭐ Saved Strategies</a>. Run the backtest from there (📈 Backtest on the card); results auto-save to History and appear as cards under the strategy.</p>
   </div>
 
   <div id="out"></div>
@@ -254,6 +254,11 @@ async function initUI(){
   if(window.btSync){ try{ await btSync.pull(); }catch(e){} }   // pull history from other devices BEFORE any auto-save, so a local save never overwrites them
   // load a config handed over from History / Saved Strategies, then auto-run
   try{ const c=JSON.parse(localStorage.getItem('bt_load')||'null'); if(c){ const fromStrat=localStorage.getItem('bt_loadrun')==='1'; localStorage.removeItem('bt_load'); localStorage.removeItem('bt_loadrun'); await applyCfg(c);
+    // Opened to RUN an existing strategy (from Saved Strategies / History) → switch from "create" mode to
+    // "run" mode: the primary button becomes ▶ Run Backtest (re-run in place), the heading reflects it, the
+    // create-hint is hidden, and it auto-runs once now so results show immediately.
+    const rb=$('run'); rb.textContent='▶ Run Backtest'; rb.className='bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-5 py-2 text-sm font-semibold shadow-sm'; rb.onclick=run;
+    const h1=document.querySelector('h1'); if(h1) h1.textContent='📈 Backtest'; const hint=$('saveHint'); if(hint) hint.style.display='none';
     // From a Saved-Strategy card → this IS the run, so record it to History (+ nest). From the History page → just view, don't duplicate.
     window.__fromLoad=!fromStrat; setTimeout(run, 50); } }catch(e){}
 }
