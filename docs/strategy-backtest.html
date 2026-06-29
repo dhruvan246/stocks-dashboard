@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Strategy Backtests</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./bt-sync.js"></script>
+<script src="./backtest-engine.js"></script>
+<style>
+  body{font-feature-settings:"tnum" 1}
+  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
+  .pos{color:#15803d}.neg{color:#b91c1c}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .pcell{background:#f8fafc;border-radius:.6rem;padding:.55rem .8rem}
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./nse-bse-dashboard.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav class="flex items-center gap-1 overflow-x-auto">
+      <a href="./nse-bse-dashboard.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">📈<span class="hidden sm:inline">Stocks</span></a>
+      <a href="./stock-backtest.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">🧪<span class="hidden sm:inline">Create a Strategy</span></a>
+      <a href="./saved-strategies.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">⭐<span class="hidden sm:inline">Strategies</span></a>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-screen-xl mx-auto px-4 py-6">
+  <div class="mb-1 flex items-center gap-2">
+    <a href="./saved-strategies.html" class="text-slate-400 hover:text-slate-600 text-sm" title="Back to Saved Strategies">←</a>
+    <h1 id="title" class="text-xl md:text-2xl font-bold text-slate-900">Strategy</h1>
+  </div>
+  <p id="subtitle" class="text-xs text-slate-500 mb-5"></p>
+
+  <div id="body"></div>
+</main>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const FREQ = { 1: 'Monthly', 3: 'Quarterly', 6: 'Half-yearly', 12: 'Yearly' };
+const SORTL = { changePercent: 'Change % desc', rsi: 'RSI', d52: '% from 52w High', d52_low_pct: '% from 52w Low', indRank: 'Industry rank', mcap: 'Mcap', hist_mcap: 'Hist mcap', profitYoyPct: 'Net Profit Qtr Growth YoY %', profitBase: 'Net Profit (year-ago Q)', profitAccel: 'Profit-growth acceleration', profitTTM: 'Profit growth TTM %', profitStreak: 'Profit-growth streak', postDrift: 'Post-result drift %', composite: 'Quality-Momentum composite' };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+let HIST = [];
+// --- identity + backtest lookup: IDENTICAL semantics to saved-strategies.html so a strategy
+//     resolves to exactly the same set of runs there and here. ---
+function identityKey(c) {
+  const f = (c.filters || []).map(x => x.field + x.op + x.val).sort().join(',');
+  return [c.indexName || '', c.mcapFloor || 0, c.freq, c.topN, c.sortBy, c.dir, c.lookback || 1, c.earnBasis || 'con', f].join('|');
+}
+function windowEnd(c) { return (typeof SF !== 'undefined' && SF && SF.end) ? SF.end : (c.end || 'today'); }
+function metricsFor(cfg) {
+  const k = identityKey(cfg), s = cfg.start || '', mth = cfg.method || '';
+  let best = null;
+  for (const h of HIST) {
+    if (!h.cfg || identityKey(h.cfg) !== k) continue;
+    if ((h.cfg.start || '') !== s || (h.cfg.method || '') !== mth) continue;
+    if (h.m && h.m.cagr != null && (!best || (h.ts || 0) > (best.ts || 0))) best = h;
+  }
+  return best ? best.m : null;
+}
+function backtestsFor(savedVars) {
+  if (!savedVars.length) return [];
+  const k = identityKey(savedVars[0].cfg), byWin = new Map();
+  const consider = (id, c, name, m, ts) => {
+    const wk = (c.start || '') + '|' + (c.method || '');
+    const score = (m && m.cagr != null ? 1e15 : 0) + (ts || 0);
+    const prev = byWin.get(wk);
+    if (!prev || score > prev._score) byWin.set(wk, { id, cfg: c, name, m: m || {}, _score: score });
+  };
+  for (const h of HIST) if (h.cfg && identityKey(h.cfg) === k) consider(h.id, h.cfg, h.label || h.name, h.m, h.ts);
+  for (const v of savedVars) consider(v.id, v.cfg, v.name, metricsFor(v.cfg), v.ts);
+  return [...byWin.values()].sort((a, b) => (a.cfg.start || '').localeCompare(b.cfg.start || '') || (a.cfg.method || '').localeCompare(b.cfg.method || ''));
+}
+
+function paramsCard(c) {
+  const row = (label, val) => `<div class="pcell"><div class="text-[11px] text-slate-500">${label}</div><div class="text-sm font-semibold text-slate-800">${val}</div></div>`;
+  const sortTxt = (SORTL[c.sortBy] || c.sortBy) + (c.dir === 'high' ? ' (prefer high)' : ' (prefer low)');
+  const meth = c.method === 'reset' ? 'Reset to equal-weight' : 'Hold winners · replace exits';
+  const earn = c.earnBasis === 'std' ? 'Standalone' : 'Consolidated';
+  return `<div class="card p-5 mb-5">
+    <div class="flex items-center justify-between mb-3">
+      <div class="text-xs font-semibold uppercase tracking-wide text-slate-500">Parameters</div>
+      <button id="runBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2 text-sm font-semibold shadow-sm transition">▶ Run / new backtest</button>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5">
+      ${row('Universe', esc(universeLabel(c)))}
+      ${row('Rebalance', FREQ[c.freq] || c.freq + 'mo')}
+      ${row('Lookback', (c.lookback || 1) + ' month' + ((c.lookback || 1) > 1 ? 's' : ''))}
+      ${row('Holdings', 'Top ' + c.topN)}
+      ${row('Sort by', esc(sortTxt))}
+      ${row('Earnings basis', earn)}
+      ${row('Capital', fmtINR(c.capital || 100000))}
+      ${row('Rebalance method', meth)}
+    </div>
+    <div class="mt-3 text-[12px] text-slate-600"><span class="font-semibold text-slate-500">Filters:</span> <span class="mono">${esc(filterExpr(c) || 'none')}</span></div>
+  </div>`;
+}
+
+function historyTable(list) {
+  if (!list.length) return '<div class="card p-8 text-center text-slate-400 text-sm">No saved backtests for this strategy yet.</div>';
+  const rows = list.map(b => {
+    const c = b.cfg, m = b.m || {};
+    const cagr = (m.cagr != null) ? `<span class="font-bold ${m.cagr >= 0 ? 'pos' : 'neg'}">${pct(m.cagr)}</span>` : '<span class="text-slate-400">—</span>';
+    const dd = (m.maxDD != null) ? `<span class="neg font-semibold">-${(+m.maxDD).toFixed(1)}%</span>` : '<span class="text-slate-400">—</span>';
+    const fin = (m.finalV != null) ? `₹1L → ${fmtINR(m.finalV)}` : '—';
+    const meth = c.method === 'reset' ? 'reset' : 'hold';
+    return `<tr class="border-b border-slate-100 hover:bg-slate-50">
+      <td class="px-4 py-3 whitespace-nowrap font-medium text-slate-700">${esc(c.start)} → ${esc(windowEnd(c))}</td>
+      <td class="px-3 py-3"><span class="text-[10px] font-semibold text-slate-500 bg-slate-100 rounded px-1.5 py-0.5">${meth}</span></td>
+      <td class="px-3 py-3 text-right text-sm">${cagr}</td>
+      <td class="px-3 py-3 text-right text-sm">${dd}</td>
+      <td class="px-3 py-3 text-right text-xs text-slate-500 whitespace-nowrap">${fin}</td>
+      <td class="px-3 py-3 text-right"><button class="text-slate-400 hover:text-indigo-600 text-base" data-eye="${esc(b.id)}" title="View result">👁</button></td>
+    </tr>`;
+  }).join('');
+  return `<div class="text-base font-bold text-slate-900 mb-2 flex items-center justify-between">
+      <span>Run history</span><span class="text-xs font-normal text-slate-400">${list.length} backtest${list.length > 1 ? 's' : ''}</span></div>
+    <div class="card overflow-x-auto"><table class="w-full text-sm border-collapse">
+      <thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
+        <th class="text-left font-semibold px-4 py-2.5">Period</th>
+        <th class="text-left font-semibold px-3 py-2.5">Method</th>
+        <th class="text-right font-semibold px-3 py-2.5">CAGR</th>
+        <th class="text-right font-semibold px-3 py-2.5">Max DD</th>
+        <th class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">₹1L grows to</th>
+        <th class="text-right font-semibold px-3 py-2.5">View</th>
+      </tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+function renderStrategy(strat, list) {
+  const c = strat.cfg;
+  $('title').textContent = strat.name || 'Strategy';
+  $('subtitle').innerHTML = `${esc(universeLabel(c))} · ${FREQ[c.freq] || c.freq + 'mo'} · Top ${c.topN} · ${esc(SORTL[c.sortBy] || c.sortBy)} ${c.dir === 'high' ? '↓' : '↑'}`;
+  $('body').innerHTML = paramsCard(c) + historyTable(list);
+
+  // Top button → open the strategy in the full builder/engine (normal mode: tweak dates & run)
+  $('runBtn').onclick = () => {
+    localStorage.setItem('bt_load', JSON.stringify({ cfg: c, saved: null }));
+    location.href = './stock-backtest.html';
+  };
+  // Each eye → open the results page in RESULT-ONLY mode (full result, no config form)
+  const byId = {}; list.forEach(b => byId[b.id] = b);
+  $('body').querySelectorAll('[data-eye]').forEach(btn => btn.onclick = () => {
+    const b = byId[btn.dataset.eye]; if (!b) return;
+    localStorage.setItem('bt_load', JSON.stringify({ cfg: b.cfg, saved: null, view: 'result' }));
+    location.href = './stock-backtest.html';
+  });
+}
+
+function renderNotFound() {
+  $('title').textContent = 'Strategy not found';
+  $('body').innerHTML = '<div class="card p-8 text-center text-slate-500 text-sm">Couldn\'t find this strategy. <a href="./saved-strategies.html" class="text-indigo-600 hover:underline">← Back to Saved Strategies</a></div>';
+}
+
+(async function boot() {
+  const params = new URLSearchParams(location.search);
+  const id = params.get('id'), kParam = params.get('k');
+  if (window.btSync) {
+    try { await btSync.pullStrategies(); } catch (e) {}
+    try { HIST = await btSync.pull() || []; } catch (e) { HIST = []; }
+  }
+  const all = loadLS('bt_strategies');
+  let strat = id ? all.find(s => s.id === id) : null;
+  if (!strat && kParam) strat = all.find(s => identityKey(s.cfg) === kParam);
+  if (!strat) { renderNotFound(); return; }
+  const k = identityKey(strat.cfg);
+  const savedVars = all.filter(s => identityKey(s.cfg) === k);
+  renderStrategy(strat, backtestsFor(savedVars));
+})();
+</script>
+</body>
+</html>

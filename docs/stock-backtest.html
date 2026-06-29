@@ -47,10 +47,10 @@
       <a href="./saved-strategies.html" class="text-amber-600 hover:underline font-semibold">⭐ Saved Strategies</a>
     </div>
   </div>
-  <p class="text-xs text-slate-500 mb-4">Screen the whole market by momentum/technical factors, hold the top picks, rebalance, and compare to Nifty 500. Filter &amp; rank like a quant screener.</p>
+  <p id="introP" class="text-xs text-slate-500 mb-4">Screen the whole market by momentum/technical factors, hold the top picks, rebalance, and compare to Nifty 500. Filter &amp; rank like a quant screener.</p>
 
   <!-- controls -->
-  <div class="card p-4 mb-4">
+  <div id="cfgCard" class="card p-4 mb-4">
     <div class="flex items-center gap-2 mb-3 flex-wrap">
       <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-600 text-white shadow-sm shrink-0">✅ Survivorship-free</span>
       <span id="modeNote" class="text-[11px] text-slate-500 flex-1 min-w-[200px]"></span>
@@ -255,13 +255,22 @@ async function initUI(){
   // load a config handed over from History / Saved Strategies — SHOW its saved result, don't re-run
   try{ const raw=JSON.parse(localStorage.getItem('bt_load')||'null'); if(raw){ localStorage.removeItem('bt_load'); localStorage.removeItem('bt_loadrun');
     const c = (raw && raw.cfg) ? raw.cfg : raw; const saved = (raw && raw.cfg) ? raw.saved : null;   // {cfg, saved} (new) or bare cfg (back-compat)
+    const resultOnly = !!(raw && raw.view==='result');   // opened via the 👁 on the Strategy page → show ONLY the full result, no config form
     await applyCfg(c);
     // "Run" mode: primary button → ▶ Run Backtest, heading reflects it, create-hint hidden. We do NOT auto-run.
     const rb=$('run'); rb.textContent='▶ Run Backtest'; rb.className='bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-5 py-2 text-sm font-semibold shadow-sm'; rb.onclick=run;
     const h1=document.querySelector('h1'); if(h1) h1.textContent='📈 Backtest'; const hint=$('saveHint'); if(hint) hint.style.display='none';
+    if(resultOnly){
+      // Opened just to VIEW a run → hide the builder/config + intro, then auto-run so ONLY the result sections render.
+      window.__viewOnly = true;   // don't republish this view to the shared public history/strategies
+      const cc=$('cfgCard'); if(cc) cc.style.display='none';
+      const ip=$('introP'); if(ip) ip.style.display='none';
+      if(h1) h1.textContent='📊 Backtest result';
+      run();
+    }
     // Show the SAVED result instantly (no recompute). The full equity curve / rebalance log / picks aren't
     // stored, so they appear only when the user clicks ▶ Run Backtest.
-    if(saved && saved.m && saved.m.cagr!=null) renderSaved(saved, c);
+    else if(saved && saved.m && saved.m.cagr!=null) renderSaved(saved, c);
     else $('runMsg').textContent='Loaded — click ▶ Run Backtest to compute the full results.';
   } }catch(e){}
 }
@@ -383,6 +392,7 @@ async function run(){
 }
 // every run is recorded to History automatically (skips an exact repeat of the most recent entry)
 async function autoSaveHistory(){
+  if(window.__viewOnly) return;   // opened just to VIEW a run (👁) — don't write to the shared history
   if(!LAST_RUN) return;
   if(window.__fromLoad){ window.__fromLoad=false; return; }   // this run came from History/Saved "Load" — it's already saved, don't duplicate it
   if(window.btSync){ try{ await btSync.pull(); }catch(e){} }   // refresh to the LATEST shared first, so adding never drops another device's entries
@@ -395,6 +405,7 @@ async function autoSaveHistory(){
 // card under it. Dedup by identity (config minus the date window) → re-running the SAME strategy with
 // different dates adds a card under the existing row, never a duplicate strategy.
 async function autoSaveStrategy(){
+  if(window.__viewOnly) return;   // view-only (👁) — don't publish a strategy to the shared list
   if(!LAST_RUN) return;
   if(window.btSync){ try{ await btSync.pullStrategies(); }catch(e){} }   // sync to the latest shared list first
   const s=loadLS('bt_strategies'); const k=stratIdentity(LAST_RUN.cfg);
