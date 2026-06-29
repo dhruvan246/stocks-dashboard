@@ -424,7 +424,9 @@ async function saveStrategy(){
   const owner = !!(window.btSync && btSync.isOwner());
   // owner: refresh from the shared list first so we don't clobber strategies saved on another device
   if(owner && window.btSync){ try{ await btSync.pullStrategies(); }catch(e){} }
-  const s=loadLS('bt_strategies'); s.unshift({ id:'s'+Date.now().toString(36), ts:Date.now(), name:name.trim(), cfg:LAST_RUN.cfg });
+  const entry={ id:'s'+Date.now().toString(36), ts:Date.now(), name:name.trim(), cfg:LAST_RUN.cfg };
+  if(!owner) entry.local=true;                            // un-published → keep it on this browser across the shared pull
+  const s=loadLS('bt_strategies'); s.unshift(entry);
   saveLS('bt_strategies', s);
   if(owner && window.btSync){ try{ await btSync.pushStrategies(); }catch(e){} }
   const msg=$('saveMsg'); if(msg) msg.textContent = owner
@@ -445,7 +447,9 @@ async function saveStrategyFromForm(){
   if(owner && window.btSync){ try{ await btSync.pullStrategies(); }catch(e){} }   // sync to latest shared list first
   const s=loadLS('bt_strategies'); const k=stratIdentity(cfg);
   if(!s.some(x=>stratIdentity(x.cfg)===k)){              // dedup by identity — don't add the same strategy twice
-    s.unshift({ id:'s'+Date.now().toString(36), ts:Date.now(), name:nm, cfg:cfg });
+    const entry={ id:'s'+Date.now().toString(36), ts:Date.now(), name:nm, cfg:cfg };
+    if(!owner) entry.local=true;                          // not published to the shared list → flag it so the Saved Strategies pull keeps it on THIS browser
+    s.unshift(entry);
     saveLS('bt_strategies', s);
     if(owner && window.btSync){ try{ await btSync.pushStrategies(); }catch(e){} }
   }

@@ -519,10 +519,16 @@ $('hCompute').onclick = runHold;
 $('mAlsoToggle').onclick = () => { const a = $('mAlso'); a.classList.toggle('hidden'); $('mAlsoToggle').innerHTML = $('mAlsoToggle').innerHTML.replace(a.classList.contains('hidden') ? '▾' : '▸', a.classList.contains('hidden') ? '▸' : '▾'); };
 
 (async function boot() {
+  const localBefore = loadLS('bt_strategies');                          // snapshot before the shared pull replaces local
   if (window.btSync) {
-    try { await btSync.pullStrategies(); } catch (e) {}                 // shared strategy definitions
+    try { await btSync.pullStrategies(); } catch (e) {}                 // shared strategy definitions (replaces local with the shared list)
     try { HIST = await btSync.pull() || []; } catch (e) { HIST = []; }  // shared backtest history (all windows)
   }
+  // Preserve strategies saved locally on THIS browser that the shared list doesn't have (saved while not the
+  // owner, so never published) — otherwise the pull silently drops them and a just-created strategy vanishes.
+  const pulled = loadLS('bt_strategies'); const have = new Set(pulled.map(s => s.id));
+  const localOnly = localBefore.filter(s => s && s.local && !have.has(s.id));
+  if (localOnly.length) saveLS('bt_strategies', pulled.concat(localOnly));
   $('tabBest').onclick = () => setView('best');
   $('tabNew').onclick  = () => setView('new');
   setView(new URLSearchParams(location.search).get('view') === 'new' ? 'new' : 'best');   // flat list with saved metrics — instant; renders once
