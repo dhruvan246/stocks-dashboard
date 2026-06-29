@@ -104,9 +104,17 @@ dedicated playbook (correct page/row, owners-attributable, unit disambiguation, 
 ---
 
 ## 4. BUILD & DEPLOY
-- **Dashboard** `docs/nse-bse-dashboard.html` ← `scripts/build_compressed.py` (`OUT_HTML`, embeds gzip+base64).
-  Edit the `HTML=` template; nightly refresh rebuilds it. Immediate fix → also edit the live output (§0).
-- **Mutual funds** `docs/mutual-funds.html` ← `scripts/build_mutualfunds.py` (template same rule).
+- **Dashboard** `docs/nse-bse-dashboard.html` ← `scripts/build_compressed.py`. NO LONGER base64-inlines the
+  data (used to be ~23 MB). Now emits: a ~60 KB HTML shell + `docs/dash_slim.bin` (~2 MB: metadata + last
+  ~250 days) + `docs/stock_data.bin` (full, also used by backtests). Page renders from slim; full history is
+  lazy-fetched by `ensureFull()` only on a >~1yr range or the dashboard backtest. Edit the `HTML=` template.
+- **Mutual funds** `docs/mutual-funds.html` ← `scripts/build_mutualfunds.py`. Same idea: ~0.5 MB HTML
+  (scheme list inline) + `docs/mf_history.bin` (~7 MB NAV history, EXTERNAL). Page renders instantly; history
+  is lazy-fetched by `ensureHistory()` on first use of the custom-date calculator or a fund-detail modal.
+  → To test either build locally without the CI source artifact: reconstruct the inputs FROM the live HTML
+    (decode the `__B64__` / `histData` inline blobs), drop them in `scripts/`, run the build, verify in a
+    browser, then `git checkout` any tracked source you overwrote. Windows: prefix `PYTHONUTF8=1` (the build
+    `print()`s a `→`). See §9.
 - **Hand-maintained pages** (edit directly): `stock-backtest.html`, `saved-strategies.html`,
   `backtest-history.html`, `stock.html`, `fii-dii.html`, plus shared `theme.css`, `theme.js`, `bt-sync.js`, `backtest-engine.js`.
   NOTE: `stock-backtest.html` is self-contained (its own engine) and does NOT load `backtest-engine.js` —
@@ -231,3 +239,29 @@ from `scripts/fno_history.json` (`{effectiveDate, symbols[]}`, **76 snapshots 20
   covers all universes. Regenerate the map after a new rename (add it to `scripts/_rename_map.json` first):
   iterate `(F&O ∪ index)` symbols that are in `sf_stock_data.bin['data']` but NOT in `sf_fundamentals.json`,
   resolve via `_rename_map.json` (transitively) to a name that IS in fundamentals → that's `FUND_ALIAS`.
+
+---
+
+## 9. PAGE-LOAD PERFORMANCE  (first-load = bytes-before-usable; built 2026-06-30)
+Goal: every page fast even for a brand-new visitor (caching can't help a cold first load — ship fewer bytes).
+- **Caching:** large data files are fetched WITHOUT `?t=Date.now()` (that buster defeated the browser cache →
+  re-downloaded 17 MB every load). Now plain URLs; GitHub Pages' ETag + `max-age=600` keep them fresh (a changed
+  daily file re-fetches via a fast 304). KEEP the buster ONLY on tiny version/freshness files: `sf_meta.json`,
+  `fii_dii.json`. Don't reintroduce it on `stock_data.bin`/`sf_fundamentals.json`/`nifty*.json`/`fii_fo.json`.
+- **Homepage + Mutual Funds = slim payload + lazy full data.** See §4. HTML is a small shell; default view renders
+  from a slim file (`dash_slim.bin` ~2 MB / inline scheme list ~0.5 MB); the heavy history (`stock_data.bin` /
+  `mf_history.bin`) is lazy-fetched on first real need (`ensureFull` / `ensureHistory`) then cached.
+- **Backtest pages lazy-load the engine** (17 MB + 90 MB sf data). `saved-strategies.html` renders its list from
+  synced DB data; the engine loads only when Today's Picks opens (`ensureEngine`). `stock-backtest.html` direct
+  visit shows the builder instantly via `initUIStatic()` (dates from tiny `sf_meta.json`); Saving needs no data;
+  a real Run comes via `bt_load` (loads the engine). `strategy-backtest.html` is DB-only (no engine).
+- **Backtest RESULT SNAPSHOTS (instant 👁, Trendlyne-style, synced).** Full computed results are stored once in
+  Supabase table `bt_snapshots` via RPCs `bt_snap_get(snap_id)` / `bt_snap_set(secret, snap_id, payload)` (same
+  WRITE secret as history; wrappers `btSync.snapGet/snapSet` in `bt-sync.js`). Key = `snapKey(cfg)` =
+  `stratIdentity(cfg)+'||'+start+'||'+method`. A run auto-saves its snapshot (`saveSnapshot` in `run()`); the 👁
+  on `strategy-backtest.html` opens `stock-backtest.html?view=snapshot` → `renderSnapshotPage()` renders the
+  stored result INSTANTLY (no 17 MB load, no recompute; only the live "qualifying stocks" chart is skipped).
+  Missing snapshot → falls back to a one-time recompute that caches it.
+  → **Pre-bake all saved strategies' backtests:** open `…/stock-backtest.html?bake=all` once (loads engine, loops
+    every saved strategy×window, `snapSet` each, skips already-cached, shows a progress bar). Re-run after adding
+    strategies — it only computes the new ones.
