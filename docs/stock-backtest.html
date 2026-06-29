@@ -1005,11 +1005,64 @@ function drawQual(cfg, gran){
   setTimeout(()=>{ const series=qualDates(cfg,gran).map(dt=>[dt, qualCountAt(dayOff(dt),cfg)]); QUAL_CACHE[gran]=series;
     if(msg) msg.textContent=summary(series); render(series); }, 30);
 }
+// ---- BAKE MODE (?bake=all): pre-compute every saved strategy's backtests and store their snapshots
+//      in Supabase, so users never hit a first-time recompute. Reuses this page's real simulate() so
+//      baked snapshots are identical to what the 👁 renders. One-off maintenance run. ----
+function bakeProg(done,total,ok,skip,fail,cfg,state){
+  const lbl=(typeof strategyLabel==='function')?strategyLabel(cfg):(cfg.sortBy||'');
+  return `<div class="card p-4"><div class="text-sm font-semibold text-slate-700 mb-2">🍪 Baking snapshots — ${done}/${total}</div>
+    <div class="w-full bg-slate-100 rounded-full h-2 mb-2"><div class="bg-indigo-600 h-2 rounded-full transition-all" style="width:${total?Math.round(100*done/total):0}%"></div></div>
+    <div class="text-xs text-slate-500">✅ ${ok} baked · ♻️ ${skip} already cached · ⚠️ ${fail} failed</div>
+    <div class="text-[11px] text-slate-400 mt-1 truncate">${state}: ${lbl} · ${cfg.start||'?'} → ${cfg.end||'latest'}</div></div>`;
+}
+async function bakeAll(){
+  const out=$('out'); const log=h=>{ if(out) out.innerHTML=h; };
+  const cc=$('cfgCard'); if(cc) cc.style.display='none';
+  const ip=$('introP'); if(ip) ip.style.display='none';
+  const h1=document.querySelector('h1'); if(h1) h1.textContent='🍪 Baking snapshots';
+  try{
+    try{ await btSync.pullStrategies(); }catch(e){}
+    let HIST=[]; try{ HIST=await btSync.pull()||[]; }catch(e){}
+    const strats=loadLS('bt_strategies');
+    // every distinct window (identity + start + method) across saved strategies AND their history runs —
+    // exactly the set the 👁 can open. Keyed identically to snapKey so the eye finds each one.
+    const ids=new Set(strats.map(s=>stratIdentity(s.cfg)));
+    const byKey=new Map();
+    const add=cfg=>{ if(!cfg||!ids.has(stratIdentity(cfg)))return; const wk=stratIdentity(cfg)+'||'+(cfg.start||'')+'||'+(cfg.method||''); if(!byKey.has(wk)) byKey.set(wk,cfg); };
+    for(const h of HIST) add(h.cfg);
+    for(const s of strats) add(s.cfg);
+    const jobs=[...byKey.entries()];
+    const clamp=d=>d<SF.start?SF.start:(d>SF.end?SF.end:d);
+    log(`<div class="card p-4">Found ${jobs.length} backtests across ${ids.size} strategies. Loading earnings data…</div>`);
+    if(jobs.some(([k,c])=>needsFund(c))) await loadFund();
+    let done=0,ok=0,skip=0,fail=0; const t0=Date.now();
+    for(const [wk,cfg0] of jobs){
+      done++;
+      try{
+        const exists=await btSync.snapGet(wk);
+        if(exists){ skip++; log(bakeProg(done,jobs.length,ok,skip,fail,cfg0,'cached')); await new Promise(r=>setTimeout(r,0)); continue; }
+        const c={...cfg0}; c.end=c.end||SF.end; c.start=c.start||SF.start; c.start=clamp(c.start); c.end=clamp(c.end);
+        if(c.start>=c.end){ fail++; continue; }
+        if(needsFund(c)) await loadFund();
+        log(bakeProg(done,jobs.length,ok,skip,fail,cfg0,'computing'));
+        await new Promise(r=>setTimeout(r,20));            // yield so the progress bar paints before the (blocking) sim
+        const res=simulate(c);
+        const saved=await btSync.snapSet(wk, buildSnapshot(res));
+        saved?ok++:fail++;
+      }catch(e){ fail++; console.warn('bake fail', wk, e&&e.message||e); }
+      log(bakeProg(done,jobs.length,ok,skip,fail,cfg0,'running'));
+      await new Promise(r=>setTimeout(r,0));
+    }
+    log(`<div class="card p-5"><div class="text-lg font-bold text-emerald-600">✅ Done — ${ok} baked, ${skip} already cached${fail?`, ${fail} failed`:''} (of ${jobs.length}) in ${Math.round((Date.now()-t0)/1000)}s.</div>
+      <div class="text-sm text-slate-500 mt-1">Every saved backtest now loads instantly for everyone — no first-time recompute.</div></div>`);
+  }catch(e){ log(`<div class="card p-4 text-red-600">Bake error: ${e&&e.message||e}</div>`); }
+}
 // Boot: if opened to VIEW a saved run (👁) and a stored snapshot exists, render it INSTANTLY
 // (no 17 MB load, no recompute). Otherwise load the engine normally; if no snapshot was found we
 // fall back to a result-only recompute, which caches the snapshot so the next open is instant.
 async function bootBacktest(){
   try{
+    if(new URLSearchParams(location.search).get('bake')){ await load(); await bakeAll(); return; }
     const raw=JSON.parse(localStorage.getItem('bt_load')||'null');
     if(raw && raw.view==='snapshot' && raw.cfg){
       const snap=(window.btSync&&btSync.snapGet)? await btSync.snapGet(snapKey(raw.cfg)) : null;
