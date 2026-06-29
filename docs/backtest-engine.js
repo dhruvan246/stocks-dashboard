@@ -27,7 +27,6 @@ const FIELDS = [
   { v: 'ret3m', l: 'Return — 3 month %' },
   { v: 'ret6m', l: 'Return — 6 month %' },
   { v: 'ret12m', l: 'Return — 12 month %' },
-  { v: 'rsNifty', l: 'Relative strength vs Nifty (6m) %' },
   { v: 'accel', l: 'Momentum acceleration %' },
   { v: 'dma50', l: 'Distance from 50-DMA %' },
   { v: 'dma200', l: 'Distance from 200-DMA %' },
