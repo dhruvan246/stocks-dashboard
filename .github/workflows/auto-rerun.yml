@@ -1,0 +1,75 @@
+name: Auto-rerun failed workflows
+
+# Safety net: whenever any of the data-refresh workflows finishes in failure,
+# re-run its failed jobs automatically — waiting between tries so a transient
+# upstream blip (NSE/BSE/Yahoo timeout) clears — until it succeeds.
+#
+# Capped at 5 retries: a transient failure almost always clears on the 1st-2nd
+# try, while a genuine code/data break (e.g. a missing file) would otherwise loop
+# forever burning CI minutes and never recover. After 5 failed retries this job
+# itself fails, so the normal failure email still reaches you for a human to look.
+
+on:
+  workflow_run:
+    workflows:
+      - "Daily stock data refresh"
+      - "Daily mutual fund refresh"
+      - "Daily FII/DII refresh"
+      - "Daily backtest data refresh"
+      - "Daily fundamentals refresh"
+      - "Weekly index membership refresh"
+      - "Daily backtest-history backup (keep 7 days)"
+    types: [completed]
+
+permissions:
+  actions: write       # required to re-run workflow runs
+  contents: read
+
+# One retry-driver per failed run; don't pile up duplicates for the same run.
+concurrency:
+  group: auto-rerun-${{ github.event.workflow_run.id }}
+  cancel-in-progress: false
+
+jobs:
+  rerun:
+    # Only act on failures (success/cancelled/skipped are ignored).
+    if: github.event.workflow_run.conclusion == 'failure'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      RID: ${{ github.event.workflow_run.id }}
+      WF_NAME: ${{ github.event.workflow_run.name }}
+    steps:
+      - name: Retry the failed run until it succeeds (max 5)
+        run: |
+          set -uo pipefail
+          for attempt in 1 2 3 4 5; do
+            echo "::group::Auto-retry $attempt/5 for '$WF_NAME' (run $RID)"
+            sleep 90                                            # let a transient upstream issue clear
+            gh run rerun "$RID" --failed --repo "$REPO" || echo "rerun trigger returned non-zero (continuing)"
+
+            # wait for the new attempt to actually start
+            for _ in $(seq 1 20); do
+              st=$(gh run view "$RID" --repo "$REPO" --json status -q .status 2>/dev/null || echo "")
+              [ -n "$st" ] && [ "$st" != "completed" ] && break
+              sleep 6
+            done
+            # wait for the new attempt to finish
+            while :; do
+              st=$(gh run view "$RID" --repo "$REPO" --json status -q .status 2>/dev/null || echo "")
+              [ "$st" = "completed" ] && break
+              sleep 15
+            done
+
+            concl=$(gh run view "$RID" --repo "$REPO" --json conclusion -q .conclusion 2>/dev/null || echo "")
+            echo "attempt $attempt conclusion: $concl"
+            echo "::endgroup::"
+            if [ "$concl" = "success" ]; then
+              echo "✅ '$WF_NAME' recovered on auto-retry $attempt"
+              exit 0
+            fi
+          done
+          echo "❌ '$WF_NAME' (run $RID) still failing after 5 auto-retries — needs a human"
+          exit 1
