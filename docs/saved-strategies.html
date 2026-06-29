@@ -146,16 +146,10 @@ function metricsFor(cfg) {
   }
   return best ? best.m : null;
 }
-// Is a history run a REAL backtest (not a degenerate ≤2-rebalance / sub-quarter window)? Junk runs
-// (e.g. a 428% CAGR over ~1 rebalance) are excluded so they don't pollute a strategy or skew its sort.
-function isRealRun(h) {
-  const m = h.m || {}, c = h.cfg || {};
-  if (m.rebs != null && m.rebs < 3) return false;
-  if (c.start && c.end) { const d = (Date.parse(c.end) - Date.parse(c.start)) / 864e5; if (isFinite(d) && d < 90) return false; }
-  return true;
-}
-// All backtests for a strategy = every REAL history run of it + its saved windows, deduped by window+method.
-// A new backtest you run (saved to History) therefore shows up here automatically.
+// All backtests for a strategy = EVERY history run of it + its saved windows, deduped by window+method.
+// A new backtest you run (saved to History) — ANY window, including short ones — shows up here
+// automatically. No min-length filter: the headline CAGR uses the LONGEST window (canonicalCagr), so a
+// short run adds a card + bumps the count but can't inflate the headline or the sort.
 function backtestsFor(savedVars) {
   if (!savedVars.length) return [];
   const k = identityKey(savedVars[0].cfg), byWin = new Map();
@@ -165,7 +159,7 @@ function backtestsFor(savedVars) {
     const prev = byWin.get(wk);
     if (!prev || score > prev._score) byWin.set(wk, { id, cfg: c, name, m: m || {}, _score: score });
   };
-  for (const h of HIST) if (h.cfg && identityKey(h.cfg) === k && isRealRun(h)) consider(h.id, h.cfg, h.label || h.name, h.m, h.ts);
+  for (const h of HIST) if (h.cfg && identityKey(h.cfg) === k) consider(h.id, h.cfg, h.label || h.name, h.m, h.ts);
   for (const v of savedVars) consider(v.id, v.cfg, v.name, metricsFor(v.cfg), v.ts);   // safety net for saved windows
   return [...byWin.values()].sort((a, b) => (a.cfg.start || '').localeCompare(b.cfg.start || '') || (a.cfg.method || '').localeCompare(b.cfg.method || ''));
 }
