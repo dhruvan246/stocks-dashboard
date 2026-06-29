@@ -37,6 +37,10 @@
     <button id="clearAll" class="text-xs text-red-600 hover:underline font-semibold">Clear all</button>
   </div>
   <p class="text-xs text-slate-500 mb-4">Strategies you saved from backtests. Each card shows its survivorship-free performance. Click <b>Today's Picks</b> for the live deployment basket, or <b>Backtest</b> to re-open the full run. <a href="./stock-backtest.html" class="text-indigo-600 hover:underline">← back to Backtest</a></p>
+  <div class="flex items-center gap-1.5 mb-3">
+    <button id="tabBest" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">🏆 Best return</button>
+    <button id="tabNew" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">🆕 New</button>
+  </div>
   <div id="status" class="text-xs text-slate-500 mb-3"></div>
   <div id="list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
 </main>
@@ -196,6 +200,14 @@ function detailCard(b) {
     </div>
   </div>`;
 }
+let VIEW = 'best';   // 'best' = sort by headline CAGR (default), 'new' = most recently saved first
+function setView(v){
+  VIEW = v;
+  const on = 'bg-indigo-600 text-white shadow', off = 'bg-slate-100 text-slate-600 hover:bg-slate-200';
+  $('tabBest').className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition ' + (v === 'best' ? on : off);
+  $('tabNew').className  = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition ' + (v === 'new'  ? on : off);
+  render();
+}
 function render() {
   const items = strategies();
   const OWNER = !!(window.btSync && btSync.isOwner());   // only the owner sees delete controls
@@ -216,12 +228,12 @@ function render() {
   }
   // each strategy's backtests (real runs + saved windows) and its headline full-period CAGR
   for (const g of groups.values()) { g.list = backtestsFor([...g.vars.values()]); g.cagr = canonicalCagr(g.list); }
-  const rows = [...groups.values()].sort((a, b) => b.cagr - a.cagr);
+  const rows = [...groups.values()].sort((a, b) => VIEW === 'new' ? ((b.rep.ts || 0) - (a.rep.ts || 0)) : (b.cagr - a.cagr));
   $('list').className = 'card overflow-x-auto';
   const colspan = OWNER ? 5 : 4;
   const header = `<thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
     <th class="text-left font-semibold px-4 py-2.5">Strategy</th>
-    <th class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">CAGR ▾</th>
+    <th class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">CAGR${VIEW === 'best' ? ' ▾' : ''}</th>
     <th class="text-center font-semibold px-3 py-2.5 whitespace-nowrap">Backtests</th>
     ${OWNER ? '<th class="px-2 py-2.5"></th>' : ''}
     <th class="px-2 py-2.5"></th>
@@ -511,7 +523,9 @@ $('mAlsoToggle').onclick = () => { const a = $('mAlso'); a.classList.toggle('hid
     try { await btSync.pullStrategies(); } catch (e) {}                 // shared strategy definitions
     try { HIST = await btSync.pull() || []; } catch (e) { HIST = []; }  // shared backtest history (all windows)
   }
-  render();   // flat list with saved metrics — instant, no engine needed
+  $('tabBest').onclick = () => setView('best');
+  $('tabNew').onclick  = () => setView('new');
+  setView(new URLSearchParams(location.search).get('view') === 'new' ? 'new' : 'best');   // flat list with saved metrics — instant; renders once
   if (!strategies().length) { $('status').textContent = ''; return; }
   $('status').textContent = 'Loading survivorship-free data…';
   try { await loadEngineData(m => { $('status').textContent = m || ''; }); }

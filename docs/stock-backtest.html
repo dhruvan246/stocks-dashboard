@@ -445,7 +445,7 @@ async function saveStrategyFromForm(){
     if(owner && window.btSync){ try{ await btSync.pushStrategies(); }catch(e){} }
   }
   $('runMsg').textContent='Saved — opening Saved Strategies…';
-  location.href='./saved-strategies.html';
+  location.href='./saved-strategies.html?view=new';   // land on the New view so the just-saved strategy is at the top
 }
 
 /* ---- extended technical factors (close + turnover + Nifty; no fundamentals) ---- */
