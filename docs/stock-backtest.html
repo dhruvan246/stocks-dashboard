@@ -252,15 +252,18 @@ async function initUI(){
   // Survivorship-free is the ONLY data source — activate it before the UI is shown.
   await setMode('sf');   // loads sf_stock_data.bin, sets dates/universe to the SF dataset
   if(window.btSync){ try{ await btSync.pull(); }catch(e){} }   // pull history from other devices BEFORE any auto-save, so a local save never overwrites them
-  // load a config handed over from History / Saved Strategies, then auto-run
-  try{ const c=JSON.parse(localStorage.getItem('bt_load')||'null'); if(c){ const fromStrat=localStorage.getItem('bt_loadrun')==='1'; localStorage.removeItem('bt_load'); localStorage.removeItem('bt_loadrun'); await applyCfg(c);
-    // Opened to RUN an existing strategy (from Saved Strategies / History) → switch from "create" mode to
-    // "run" mode: the primary button becomes ▶ Run Backtest (re-run in place), the heading reflects it, the
-    // create-hint is hidden, and it auto-runs once now so results show immediately.
+  // load a config handed over from History / Saved Strategies — SHOW its saved result, don't re-run
+  try{ const raw=JSON.parse(localStorage.getItem('bt_load')||'null'); if(raw){ localStorage.removeItem('bt_load'); localStorage.removeItem('bt_loadrun');
+    const c = (raw && raw.cfg) ? raw.cfg : raw; const saved = (raw && raw.cfg) ? raw.saved : null;   // {cfg, saved} (new) or bare cfg (back-compat)
+    await applyCfg(c);
+    // "Run" mode: primary button → ▶ Run Backtest, heading reflects it, create-hint hidden. We do NOT auto-run.
     const rb=$('run'); rb.textContent='▶ Run Backtest'; rb.className='bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-5 py-2 text-sm font-semibold shadow-sm'; rb.onclick=run;
     const h1=document.querySelector('h1'); if(h1) h1.textContent='📈 Backtest'; const hint=$('saveHint'); if(hint) hint.style.display='none';
-    // From a Saved-Strategy card → this IS the run, so record it to History (+ nest). From the History page → just view, don't duplicate.
-    window.__fromLoad=!fromStrat; setTimeout(run, 50); } }catch(e){}
+    // Show the SAVED result instantly (no recompute). The full equity curve / rebalance log / picks aren't
+    // stored, so they appear only when the user clicks ▶ Run Backtest.
+    if(saved && saved.m && saved.m.cagr!=null) renderSaved(saved, c);
+    else $('runMsg').textContent='Loaded — click ▶ Run Backtest to compute the full results.';
+  } }catch(e){}
 }
 function maxOffset(){ let mx=0; for(const k in SERIES){const d=SERIES[k].d; if(d&&d.length){const v=d[d.length-1]; if(v>mx)mx=v;}} return mx; }
 function addFilter(){
@@ -687,6 +690,34 @@ function nearestNifty(dstr){ return nearestIdx(NIFTY,dstr); }
 function maxDrawdown(eq){ let peak=-1,mdd=0; for(const [,v] of eq){ if(v>peak)peak=v; else if(peak>0){const dd=(peak-v)/peak*100; if(dd>mdd)mdd=dd;} } return mdd; }
 
 // ---- render ----
+// Show a SAVED backtest result (stored metrics + calendar-year table) WITHOUT recomputing. Used when a config
+// is opened from History "Load" or a Saved-Strategy "Backtest" — the heavy equity curve / rebalance log / picks
+// aren't stored, so they appear only when the user clicks ▶ Run Backtest.
+function renderSaved(saved, cfg){
+  const m=saved.m||{}, yby=saved.yby||[];
+  const card=(t,v,sub,cls)=>`<div class="card p-3"><div class="text-[10px] uppercase text-slate-500">${t}</div><div class="text-lg font-bold ${cls||''}">${v}</div><div class="text-[11px] text-slate-400">${sub||''}</div></div>`;
+  const beat=m.benchCagr!=null && m.cagr!=null && m.cagr>=m.benchCagr;
+  let html=`<div class="card p-3 mb-4 flex flex-wrap items-center gap-2" style="background:#fffbeb;border-color:#fde68a">
+      <span class="text-sm font-semibold text-amber-800">📁 Saved result</span>
+      <span class="text-xs text-amber-700">stored numbers shown — not re-run. Click <b>▶ Run Backtest</b> for the live equity curve, rebalance log &amp; today's picks.</span>
+    </div>`;
+  html+=`<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-4">
+    ${card('Final value', m.finalV!=null?fmtINR(m.finalV):'—', 'from '+fmtINR(cfg.capital), (m.finalV!=null&&m.finalV>=cfg.capital)?'pos':'neg')}
+    ${card('CAGR', m.cagr!=null?pct(m.cagr):'—', m.years!=null?(+m.years).toFixed(1)+' years':'', m.cagr>=0?'pos':'neg')}
+    ${card('Nifty 500 CAGR', m.benchCagr!=null?pct(m.benchCagr):'—', beat?'strategy wins ✓':'benchmark', beat?'pos':'neg')}
+    ${card('Max drawdown', m.maxDD!=null?('-'+(+m.maxDD).toFixed(2)+'%'):'—', 'worst peak-to-trough','neg')}
+    ${card('Volatility', m.vol!=null?(+m.vol).toFixed(2)+'%':'—', 'annualised','')}
+    ${card('Win rate', m.winRate!=null?(+m.winRate).toFixed(0)+'%':'—', m.rebs!=null?m.rebs+' rebalances':'','')}
+  </div>`;
+  if(yby&&yby.length){
+    html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2">📅 Calendar-year returns <span class="text-slate-400 font-normal">— saved (Strategy vs Nifty 500)</span></div>
+      <div class="overflow-x-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b"><tr><th class="text-left py-1 px-2 sticky left-0 bg-white">&nbsp;</th>${yby.map(y=>`<th class="text-right px-2">${y[0]}</th>`).join('')}</tr></thead><tbody>
+        <tr class="border-b border-slate-50"><td class="px-2 py-1 font-medium text-blue-700 sticky left-0 bg-white">Strategy</td>${yby.map(y=>`<td class="text-right px-2 font-semibold ${y[1]>=0?'pos':'neg'}">${pct(y[1])}</td>`).join('')}</tr>
+        <tr><td class="px-2 py-1 font-medium text-amber-600 sticky left-0 bg-white">Nifty 500</td>${yby.map(y=>{const n=y[2];return `<td class="text-right px-2 text-xs ${n!=null&&n>=0?'pos':'neg'}">${n!=null?pct(n):'—'}</td>`;}).join('')}</tr>
+      </tbody></table></div></div>`;
+  }
+  $('out').innerHTML=html;
+}
 function render(r,cfg){
   const card=(t,v,sub,cls)=>`<div class="card p-3"><div class="text-[10px] uppercase text-slate-500">${t}</div><div class="text-lg font-bold ${cls||''}">${v}</div><div class="text-[11px] text-slate-400">${sub||''}</div></div>`;
   const beat=r.benchCagr!=null && r.cagr>=r.benchCagr;

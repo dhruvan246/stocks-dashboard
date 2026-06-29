@@ -270,7 +270,15 @@ function render() {
     if (!confirm('Delete this strategy from the saved list?')) return;
     saveLS('bt_strategies', strategies().filter(x => identityKey(x.cfg) !== k)); if (window.btSync) btSync.pushStrategies(); render();
   });
-  $('list').querySelectorAll('[data-bt]').forEach(b => b.onclick = () => { const it = DETAIL[b.dataset.bt] || strategies().find(x => x.id === b.dataset.bt); if (it) { localStorage.setItem('bt_load', JSON.stringify(it.cfg)); localStorage.setItem('bt_loadrun', '1'); location.href = './stock-backtest.html'; } });
+  $('list').querySelectorAll('[data-bt]').forEach(b => b.onclick = () => {
+    const it = DETAIL[b.dataset.bt] || strategies().find(x => x.id === b.dataset.bt); if (!it) return;
+    // find the matching saved history run for this exact window → its stored result is shown instantly (no re-run)
+    const k = identityKey(it.cfg), st = it.cfg.start || '', mth = it.cfg.method || ''; let h = null;
+    for (const x of HIST) { if (x.cfg && identityKey(x.cfg) === k && (x.cfg.start || '') === st && (x.cfg.method || '') === mth && x.m && x.m.cagr != null) { if (!h || (x.ts || 0) > (h.ts || 0)) h = x; } }
+    const saved = h ? { m: h.m, yby: h.yby, label: h.label } : null;
+    localStorage.setItem('bt_load', JSON.stringify({ cfg: it.cfg, saved }));
+    location.href = './stock-backtest.html';
+  });
   $('list').querySelectorAll('[data-picks]').forEach(b => b.onclick = () => openPicks(b.dataset.picks));
 }
 function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }

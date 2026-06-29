@@ -75,7 +75,7 @@ function render(){
         </tbody></table></div></td></tr>`:''}`;}).join('')}
     </tbody></table></div>`;
   $('list').querySelectorAll('[data-exp]').forEach(row=>row.addEventListener('click',e=>{ if(e.target.closest('button'))return; const d=$('exp_'+row.dataset.exp); if(!d)return; const open=d.style.display==='none'; d.style.display=open?'table-row':'none'; const ar=row.querySelector('.exparrow'); if(ar)ar.textContent=open?'▾':'▸'; }));
-  $('list').querySelectorAll('[data-load]').forEach(b=>b.onclick=()=>{const it=load().find(x=>x.id===b.dataset.load); if(it){localStorage.setItem('bt_load',JSON.stringify(it.cfg)); location.href='./stock-backtest.html';}});
+  $('list').querySelectorAll('[data-load]').forEach(b=>b.onclick=()=>{const it=load().find(x=>x.id===b.dataset.load); if(it){localStorage.setItem('bt_load',JSON.stringify({cfg:it.cfg, saved:{m:it.m, yby:it.yby, label:it.label}})); location.href='./stock-backtest.html';}});
   $('list').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{save(load().filter(x=>x.id!==b.dataset.del)); render();});
 }
 const OWNER = !!(window.btSync && btSync.isOwner());
