@@ -393,13 +393,12 @@ async function autoSaveHistory(){
 // different dates adds a card under the existing row, never a duplicate strategy.
 async function autoSaveStrategy(){
   if(!LAST_RUN) return;
-  const owner = !!(window.btSync && btSync.isOwner());
-  if(owner && window.btSync){ try{ await btSync.pullStrategies(); }catch(e){} }   // sync to the latest shared list first
+  if(window.btSync){ try{ await btSync.pullStrategies(); }catch(e){} }   // sync to the latest shared list first
   const s=loadLS('bt_strategies'); const k=stratIdentity(LAST_RUN.cfg);
   if(s.some(x=>stratIdentity(x.cfg)===k)) return;   // this strategy already exists — its runs nest automatically
-  s.unshift({ id:'s'+Date.now().toString(36), ts:Date.now(), name:strategyLabel(LAST_RUN.cfg), cfg:LAST_RUN.cfg, auto:true });
+  s.unshift({ id:'s'+Date.now().toString(36), ts:Date.now(), name:strategyLabel(LAST_RUN.cfg), cfg:LAST_RUN.cfg, auto:true, local:true });
   saveLS('bt_strategies', s);
-  if(owner && window.btSync){ try{ await btSync.pushStrategies(); }catch(e){} }
+  if(window.btSync){ try{ await btSync.pushStrategies(); }catch(e){} }   // publish (open to everyone)
 }
 // calendar-year returns from an equity series [[date,value],…] → [[year, ret%],…]
 function yByY(eq){ if(!eq||!eq.length) return []; const by={}; eq.forEach(e=>{by[(''+e[0]).slice(0,4)]=e[1];}); const ys=Object.keys(by).sort(); const out=[], sv0=eq[0][1];
@@ -421,17 +420,15 @@ async function saveStrategy(){
   const def=strategyLabel(LAST_RUN.cfg);
   const name=prompt('Name this strategy:', def);
   if(!name) return;
-  const owner = !!(window.btSync && btSync.isOwner());
-  // owner: refresh from the shared list first so we don't clobber strategies saved on another device
-  if(owner && window.btSync){ try{ await btSync.pullStrategies(); }catch(e){} }
-  const entry={ id:'s'+Date.now().toString(36), ts:Date.now(), name:name.trim(), cfg:LAST_RUN.cfg };
-  if(!owner) entry.local=true;                            // un-published → keep it on this browser across the shared pull
+  // OPEN to everyone: refresh from the shared list first so we never clobber another visitor's strategy
+  if(window.btSync){ try{ await btSync.pullStrategies(); }catch(e){} }
+  const entry={ id:'s'+Date.now().toString(36), ts:Date.now(), name:name.trim(), cfg:LAST_RUN.cfg, local:true };
   const s=loadLS('bt_strategies'); s.unshift(entry);
   saveLS('bt_strategies', s);
-  if(owner && window.btSync){ try{ await btSync.pushStrategies(); }catch(e){} }
-  const msg=$('saveMsg'); if(msg) msg.textContent = owner
+  let ok=false; if(window.btSync){ try{ ok=await btSync.pushStrategies(); }catch(e){} }
+  const msg=$('saveMsg'); if(msg) msg.textContent = ok
     ? ('⭐ Published "'+name.trim()+'" to Saved Strategies (visible to everyone)')
-    : ('⭐ Saved "'+name.trim()+'" locally — see Saved Strategies');
+    : ('⭐ Saved "'+name.trim()+'" — see Saved Strategies');
 }
 // PRIMARY page action (new flow): build a strategy from the current form and save it to the Saved
 // Strategies list WITHOUT running. The user then runs it from the strategy card (📈 Backtest), which
@@ -443,15 +440,14 @@ async function saveStrategyFromForm(){
   const name=prompt('Name this strategy:', def);
   if(name===null) return;                                  // cancelled
   const nm=(name.trim()||def);
-  const owner = !!(window.btSync && btSync.isOwner());
-  if(owner && window.btSync){ try{ await btSync.pullStrategies(); }catch(e){} }   // sync to latest shared list first
+  // OPEN to everyone: refresh to the latest shared list first so appending never drops another visitor's strategy
+  if(window.btSync){ try{ await btSync.pullStrategies(); }catch(e){} }
   const s=loadLS('bt_strategies'); const k=stratIdentity(cfg);
   if(!s.some(x=>stratIdentity(x.cfg)===k)){              // dedup by identity — don't add the same strategy twice
-    const entry={ id:'s'+Date.now().toString(36), ts:Date.now(), name:nm, cfg:cfg };
-    if(!owner) entry.local=true;                          // not published to the shared list → flag it so the Saved Strategies pull keeps it on THIS browser
+    const entry={ id:'s'+Date.now().toString(36), ts:Date.now(), name:nm, cfg:cfg, local:true };   // local:true = fallback so it still shows if the publish fails
     s.unshift(entry);
     saveLS('bt_strategies', s);
-    if(owner && window.btSync){ try{ await btSync.pushStrategies(); }catch(e){} }
+    if(window.btSync){ try{ await btSync.pushStrategies(); }catch(e){} }   // publish to the shared list (anyone can add)
   }
   $('runMsg').textContent='Saved — opening Saved Strategies…';
   location.href='./saved-strategies.html?view=new';   // land on the New view so the just-saved strategy is at the top

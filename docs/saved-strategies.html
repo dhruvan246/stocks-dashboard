@@ -528,7 +528,7 @@ $('mAlsoToggle').onclick = () => { const a = $('mAlso'); a.classList.toggle('hid
   // owner, so never published) — otherwise the pull silently drops them and a just-created strategy vanishes.
   const pulled = loadLS('bt_strategies'); const have = new Set(pulled.map(s => s.id));
   const localOnly = localBefore.filter(s => s && s.local && !have.has(s.id));
-  if (localOnly.length) saveLS('bt_strategies', pulled.concat(localOnly));
+  if (localOnly.length) { saveLS('bt_strategies', pulled.concat(localOnly)); if (window.btSync) { try { await btSync.pushStrategies(); } catch (e) {} } }   // publish local-only strategies (open list; self-heals an earlier failed publish)
   $('tabBest').onclick = () => setView('best');
   $('tabNew').onclick  = () => setView('new');
   setView(new URLSearchParams(location.search).get('view') === 'new' ? 'new' : 'best');   // flat list with saved metrics — instant; renders once

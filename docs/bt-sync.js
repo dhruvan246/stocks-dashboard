@@ -28,7 +28,7 @@
     try { const { data, error } = await sb.rpc('bt_owner_set', { secret: WRITE, payload: _local() }); if (error) throw error; return data === true; }
     catch (e) { console.warn('bt push', e && e.message || e); return false; }
   }
-  // ---- Shared SAVED STRATEGIES (owner-curated: everyone reads; the owner publishes) ----
+  // ---- Shared SAVED STRATEGIES (OPEN to add: every visitor reads AND publishes; erase is owner-only in the UI, like history) ----
   const STRAT_KEY = 'bt_strategies';
   const _localStr = () => { try { return JSON.parse(localStorage.getItem(STRAT_KEY) || '[]'); } catch (e) { return []; } };
   const _saveLocalStr = a => { try { localStorage.setItem(STRAT_KEY, JSON.stringify(a.slice(0, CAP))); } catch (e) {} };
