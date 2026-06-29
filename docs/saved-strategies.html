@@ -183,29 +183,43 @@ function render() {
   // sort strategies by their best saved CAGR across their OWN windows (highest first)
   const bestCagr = g => { let m = -Infinity; for (const v of g.vars.values()) { const mm = metricsFor(v.cfg); if (mm && mm.cagr != null && mm.cagr > m) m = mm.cagr; } return m; };
   const rows = [...groups.values()].sort((a, b) => bestCagr(b) - bestCagr(a));
-  $('list').className = 'card divide-y divide-slate-100 overflow-hidden';
-  $('list').innerHTML = rows.map((g, gi) => {
+  $('list').className = 'card overflow-x-auto';
+  const colspan = OWNER ? 5 : 4;
+  const header = `<thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
+    <th class="text-left font-semibold px-4 py-2.5">Strategy</th>
+    <th class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">CAGR ▾</th>
+    <th class="text-center font-semibold px-3 py-2.5 whitespace-nowrap">Backtests</th>
+    ${OWNER ? '<th class="px-2 py-2.5"></th>' : ''}
+    <th class="px-2 py-2.5"></th>
+  </tr></thead>`;
+  const body = rows.map((g, gi) => {
     const it = g.rep, c = it.cfg;
     const expr = filterExpr(c) || 'no filters';
     const vars = [...g.vars.values()].sort((a, b) => (a.cfg.start || '').localeCompare(b.cfg.start || '') || (a.cfg.method || '').localeCompare(b.cfg.method || ''));
     const n = vars.length;
-    return `<div data-row="r${gi}">
-      <div class="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-slate-50 cursor-pointer" data-toggle="r${gi}">
-        <span class="w-9 h-9 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 text-lg">📈</span>
-        <span class="min-w-0 flex-1">
-          <span class="block font-semibold text-indigo-700 leading-snug">${esc(it.name)}</span>
-          <span class="block text-[11px] text-slate-500 truncate">${esc(universeLabel(c))} · ${FREQ[c.freq] || c.freq + 'mo'} · ${c.topN} stocks · ${SORTL[c.sortBy] || c.sortBy} ${c.dir === 'high' ? '↓' : '↑'}</span>
-        </span>
-        <span class="text-[11px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full shrink-0 whitespace-nowrap">${n} backtest${n > 1 ? 's' : ''}</span>
-        ${OWNER ? `<button class="text-slate-300 hover:text-red-500 text-sm shrink-0" data-delgroup="${esc(identityKey(c))}" title="Delete strategy">🗑️</button>` : ''}
-        <span data-arrow class="text-slate-400 shrink-0 select-none text-xs">▸</span>
-      </div>
-      <div class="hidden px-4 pb-4 bg-slate-50/60" data-detail="r${gi}">
-        <div class="text-[11px] text-slate-500 mb-2 mono break-words">Filters: ${esc(expr)} &nbsp;·&nbsp; Sort: ${SORTL[c.sortBy] || c.sortBy} ${c.dir === 'high' ? 'desc' : 'asc'}</div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">${vars.map(v => detailCard(v)).join('')}</div>
-      </div>
-    </div>`;
+    const best = bestCagr(g);
+    const cagrCell = isFinite(best) ? `<span class="font-bold ${best >= 0 ? 'pos' : 'neg'}">${pct(best)}</span>` : '<span class="text-slate-400">—</span>';
+    return `<tr class="border-b border-slate-100 hover:bg-slate-50 cursor-pointer" data-toggle="r${gi}">
+      <td class="px-4 py-3">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">📈</span>
+          <span class="min-w-0">
+            <span class="block font-semibold text-indigo-700 leading-snug">${esc(it.name)}</span>
+            <span class="block text-[11px] text-slate-500 truncate">${esc(universeLabel(c))} · ${FREQ[c.freq] || c.freq + 'mo'} · ${c.topN} stocks · ${SORTL[c.sortBy] || c.sortBy} ${c.dir === 'high' ? '↓' : '↑'}</span>
+          </span>
+        </div>
+      </td>
+      <td class="px-3 py-3 text-right text-sm whitespace-nowrap">${cagrCell}</td>
+      <td class="px-3 py-3 text-center"><span class="text-[11px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full whitespace-nowrap">${n}</span></td>
+      ${OWNER ? `<td class="px-2 py-3 text-center"><button class="text-slate-300 hover:text-red-500 text-sm" data-delgroup="${esc(identityKey(c))}" title="Delete strategy">🗑️</button></td>` : ''}
+      <td class="px-2 py-3 text-right"><span data-arrow class="text-slate-400 select-none text-xs">▸</span></td>
+    </tr>
+    <tr class="hidden" data-detail="r${gi}"><td colspan="${colspan}" class="px-4 pb-4 bg-slate-50/60">
+      <div class="text-[11px] text-slate-500 mb-2 mono break-words">Filters: ${esc(expr)} &nbsp;·&nbsp; Sort: ${SORTL[c.sortBy] || c.sortBy} ${c.dir === 'high' ? 'desc' : 'asc'}</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">${vars.map(v => detailCard(v)).join('')}</div>
+    </td></tr>`;
   }).join('');
+  $('list').innerHTML = `<table class="w-full text-sm border-collapse">${header}<tbody>${body}</tbody></table>`;
   // wiring
   $('list').querySelectorAll('[data-toggle]').forEach(b => b.onclick = (e) => {
     if (e.target.closest('[data-delgroup]')) return;
