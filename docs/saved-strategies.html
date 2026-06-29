@@ -142,14 +142,48 @@ function metricsFor(cfg) {
   }
   return best ? best.m : null;
 }
-function detailCard(it) {
-  const c = it.cfg, m = metricsFor(c) || {};
-  DETAIL[it.id] = { id: it.id, name: it.name || it.label, cfg: c };
+// Is a history run a REAL backtest (not a degenerate ≤2-rebalance / sub-quarter window)? Junk runs
+// (e.g. a 428% CAGR over ~1 rebalance) are excluded so they don't pollute a strategy or skew its sort.
+function isRealRun(h) {
+  const m = h.m || {}, c = h.cfg || {};
+  if (m.rebs != null && m.rebs < 3) return false;
+  if (c.start && c.end) { const d = (Date.parse(c.end) - Date.parse(c.start)) / 864e5; if (isFinite(d) && d < 90) return false; }
+  return true;
+}
+// All backtests for a strategy = every REAL history run of it + its saved windows, deduped by window+method.
+// A new backtest you run (saved to History) therefore shows up here automatically.
+function backtestsFor(savedVars) {
+  if (!savedVars.length) return [];
+  const k = identityKey(savedVars[0].cfg), byWin = new Map();
+  const consider = (id, c, name, m, ts) => {
+    const wk = (c.start || '') + '|' + (c.method || '');
+    const score = (m && m.cagr != null ? 1e15 : 0) + (ts || 0);   // prefer entries WITH metrics, then newest
+    const prev = byWin.get(wk);
+    if (!prev || score > prev._score) byWin.set(wk, { id, cfg: c, name, m: m || {}, _score: score });
+  };
+  for (const h of HIST) if (h.cfg && identityKey(h.cfg) === k && isRealRun(h)) consider(h.id, h.cfg, h.label || h.name, h.m, h.ts);
+  for (const v of savedVars) consider(v.id, v.cfg, v.name, metricsFor(v.cfg), v.ts);   // safety net for saved windows
+  return [...byWin.values()].sort((a, b) => (a.cfg.start || '').localeCompare(b.cfg.start || '') || (a.cfg.method || '').localeCompare(b.cfg.method || ''));
+}
+// Headline CAGR for the column + sort = the LONGEST-window run (most representative full-period number),
+// so a short lucky window can't jump a strategy to the top.
+function canonicalCagr(list) {
+  let best = null, bestDur = -1;
+  for (const b of list) {
+    const m = b.m || {}, c = b.cfg; if (m.cagr == null) continue;
+    const dur = (c.start && c.end) ? (Date.parse(c.end) - Date.parse(c.start)) : 0;
+    if (dur > bestDur || (dur === bestDur && best != null && m.cagr > best)) { bestDur = dur; best = m.cagr; }
+  }
+  return best != null ? best : -Infinity;
+}
+function detailCard(b) {
+  const c = b.cfg, m = b.m || {};
+  DETAIL[b.id] = { id: b.id, name: b.name, cfg: c };
   const cagr = (m.cagr != null) ? `<span class="font-bold ${m.cagr >= 0 ? 'pos' : 'neg'}">${pct(m.cagr)}</span>` : '<span class="text-slate-400">—</span>';
   const dd = (m.maxDD != null) ? `<span class="font-bold neg">-${(+m.maxDD).toFixed(1)}%</span>` : '<span class="text-slate-400">—</span>';
   const fin = (m.finalV != null) ? `₹1L → ${fmtINR(m.finalV)}` : '&nbsp;';
   const meth = c.method ? `<span class="text-[10px] font-semibold text-slate-500 bg-slate-100 rounded px-1.5 py-0.5 ml-1">${c.method === 'hold' ? 'hold' : 'reset'}</span>` : '';
-  return `<div class="bg-white border border-slate-200 rounded-lg p-3" data-variant="${it.id}">
+  return `<div class="bg-white border border-slate-200 rounded-lg p-3" data-variant="${b.id}">
     <div class="text-[11px] font-semibold text-slate-700">📅 ${esc(c.start)} → ${esc(windowEnd(c))}${meth}</div>
     <div class="flex items-center justify-between mt-1.5">
       <div class="text-sm">CAGR: ${cagr}</div>
@@ -157,8 +191,8 @@ function detailCard(it) {
     </div>
     <div class="text-[10px] text-slate-400 mt-0.5">${fin}</div>
     <div class="grid grid-cols-2 gap-2 mt-2">
-      <button class="px-2 py-1.5 rounded-lg text-[11px] font-semibold bg-blue-600 text-white hover:bg-blue-700" data-picks="${it.id}">🎯 Today's Picks</button>
-      <button class="px-2 py-1.5 rounded-lg text-[11px] font-semibold bg-slate-800 text-white hover:bg-slate-900" data-bt="${it.id}">📈 Backtest</button>
+      <button class="px-2 py-1.5 rounded-lg text-[11px] font-semibold bg-blue-600 text-white hover:bg-blue-700" data-picks="${b.id}">🎯 Today's Picks</button>
+      <button class="px-2 py-1.5 rounded-lg text-[11px] font-semibold bg-slate-800 text-white hover:bg-slate-900" data-bt="${b.id}">📈 Backtest</button>
     </div>
   </div>`;
 }
@@ -180,9 +214,9 @@ function render() {
     const prev = g.vars.get(vk);
     if (!prev || (it.ts || 0) > (prev.ts || 0)) g.vars.set(vk, it);
   }
-  // sort strategies by their best saved CAGR across their OWN windows (highest first)
-  const bestCagr = g => { let m = -Infinity; for (const v of g.vars.values()) { const mm = metricsFor(v.cfg); if (mm && mm.cagr != null && mm.cagr > m) m = mm.cagr; } return m; };
-  const rows = [...groups.values()].sort((a, b) => bestCagr(b) - bestCagr(a));
+  // each strategy's backtests (real runs + saved windows) and its headline full-period CAGR
+  for (const g of groups.values()) { g.list = backtestsFor([...g.vars.values()]); g.cagr = canonicalCagr(g.list); }
+  const rows = [...groups.values()].sort((a, b) => b.cagr - a.cagr);
   $('list').className = 'card overflow-x-auto';
   const colspan = OWNER ? 5 : 4;
   const header = `<thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
@@ -195,9 +229,7 @@ function render() {
   const body = rows.map((g, gi) => {
     const it = g.rep, c = it.cfg;
     const expr = filterExpr(c) || 'no filters';
-    const vars = [...g.vars.values()].sort((a, b) => (a.cfg.start || '').localeCompare(b.cfg.start || '') || (a.cfg.method || '').localeCompare(b.cfg.method || ''));
-    const n = vars.length;
-    const best = bestCagr(g);
+    const list = g.list, n = list.length, best = g.cagr;
     const cagrCell = isFinite(best) ? `<span class="font-bold ${best >= 0 ? 'pos' : 'neg'}">${pct(best)}</span>` : '<span class="text-slate-400">—</span>';
     return `<tr class="border-b border-slate-100 hover:bg-slate-50 cursor-pointer" data-toggle="r${gi}">
       <td class="px-4 py-3">
@@ -216,7 +248,7 @@ function render() {
     </tr>
     <tr class="hidden" data-detail="r${gi}"><td colspan="${colspan}" class="px-4 pb-4 bg-slate-50/60">
       <div class="text-[11px] text-slate-500 mb-2 mono break-words">Filters: ${esc(expr)} &nbsp;·&nbsp; Sort: ${SORTL[c.sortBy] || c.sortBy} ${c.dir === 'high' ? 'desc' : 'asc'}</div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">${vars.map(v => detailCard(v)).join('')}</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">${list.map(b => detailCard(b)).join('')}</div>
     </td></tr>`;
   }).join('');
   $('list').innerHTML = `<table class="w-full text-sm border-collapse">${header}<tbody>${body}</tbody></table>`;
