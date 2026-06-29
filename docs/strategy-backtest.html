@@ -148,11 +148,13 @@ function renderStrategy(strat, list) {
     localStorage.setItem('bt_load', JSON.stringify({ cfg: c, saved: null }));
     location.href = './stock-backtest.html';
   };
-  // Each eye → open the results page in RESULT-ONLY mode (full result, no config form)
+  // Each eye → open the saved result. 'snapshot' mode renders the stored full result INSTANTLY
+  // (no 17 MB load, no recompute); if no snapshot exists yet it falls back to a one-time recompute
+  // that then caches the snapshot, so the next open is instant.
   const byId = {}; list.forEach(b => byId[b.id] = b);
   $('body').querySelectorAll('[data-eye]').forEach(btn => btn.onclick = () => {
     const b = byId[btn.dataset.eye]; if (!b) return;
-    localStorage.setItem('bt_load', JSON.stringify({ cfg: b.cfg, saved: null, view: 'result' }));
+    localStorage.setItem('bt_load', JSON.stringify({ cfg: b.cfg, saved: null, view: 'snapshot' }));
     location.href = './stock-backtest.html';
   });
 }

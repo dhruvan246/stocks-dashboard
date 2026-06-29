@@ -372,6 +372,29 @@ function stratIdentity(c){
   const f=(c.filters||[]).map(x=>x.field+x.op+x.val).sort().join(',');
   return [c.indexName||'', c.mcapFloor||0, c.freq, c.topN, c.sortBy, c.dir, c.lookback||1, c.earnBasis||'con', f].join('|');
 }
+// ---- result SNAPSHOTS: store the full computed result once so re-opening is INSTANT (no 17 MB load,
+//      no recompute). Keyed by strategy identity + window + method, so it matches what the 👁 fetches. ----
+function snapKey(c){ return stratIdentity(c)+'||'+(c.start||'')+'||'+(c.method||''); }
+function buildSnapshot(res){
+  const s={};
+  ['cagr','finalV','maxDD','vol','winRate','benchCagr','years','fLabel','dispCols','equity','bench','bench500','latest','latestCash','rebs','trades','cfg'].forEach(k=>{ if(res[k]!==undefined) s[k]=res[k]; });
+  if(res.latest && res.latest._cashWt!=null) s.latestCashWt=res.latest._cashWt;   // arrays drop non-index props in JSON — carry it explicitly
+  return s;
+}
+async function saveSnapshot(cfg,res){ try{ if(window.btSync&&btSync.snapSet) await btSync.snapSet(snapKey(cfg), buildSnapshot(res)); }catch(e){} }
+// Render a stored snapshot straight onto the page — no data load, no simulate(). Everything draws
+// from the saved result; only the live "qualifying stocks" chart is unavailable (needs raw prices).
+function renderSnapshotPage(snap, cfg){
+  window.__snapshotMode=true;
+  if(snap.latest && snap.latestCashWt!=null) snap.latest._cashWt=snap.latestCashWt;
+  LAST_RUN={cfg, res:snap};
+  const cc=$('cfgCard'); if(cc) cc.style.display='none';
+  const ip=$('introP'); if(ip) ip.style.display='none';
+  const h1=document.querySelector('h1'); if(h1) h1.textContent='📊 Backtest result';
+  const hint=$('saveHint'); if(hint) hint.style.display='none';
+  render(snap, cfg);
+  const ov=$('ov'); if(ov) ov.remove();
+}
 
 // fundamentals (quarterly net profit) — loaded lazily, only when a profit factor is used
 async function loadFund(){
@@ -387,7 +410,7 @@ async function run(){
   if(needsFund(cfg)){ $('runMsg').textContent='Loading earnings data…'; await loadFund();
     if(!Object.keys(FUND).length){ $('runMsg').textContent='Earnings data not available yet — try a non-fundamental factor.'; return; } }
   $('runMsg').textContent='Running…';
-  setTimeout(()=>{ try{ const res=simulate(cfg); LAST_RUN={cfg,res}; render(res,cfg); $('runMsg').textContent=''; autoSaveHistory().then(autoSaveStrategy); }
+  setTimeout(()=>{ try{ const res=simulate(cfg); LAST_RUN={cfg,res}; render(res,cfg); $('runMsg').textContent=''; saveSnapshot(cfg,res); autoSaveHistory().then(autoSaveStrategy); }
     catch(e){ $('runMsg').textContent='Error: '+e.message; console.error(e); } }, 30);
 }
 // every run is recorded to History automatically (skips an exact repeat of the most recent entry)
@@ -812,7 +835,7 @@ function render(r,cfg){
   if(gl) gl.onclick=goLive;
   if(gc) gc.onclick=setWorkerUrl;
   // if a live feed is already configured, fetch live prices automatically (no click needed)
-  if(gl && localStorage.getItem('live_worker_url')) goLive(true);
+  if(!window.__snapshotMode && gl && localStorage.getItem('live_worker_url')) goLive(true);
 }
 // ---- paginated trade log (50 rows per page — keeps each page well below 100) ----
 let TRADE_PAGE=0; const TRADE_PER=50;
@@ -947,6 +970,10 @@ function qualDates(cfg, gran){
 const GRAN_LBL={week:'weekly',month:'monthly',quarter:'quarterly'};
 let QUAL_CACHE={};
 function setupQual(cfg){ QUAL_CACHE={}; const tog=$('qsTog'); if(!tog) return;
+  // snapshot mode: raw prices aren't loaded, so this live-recomputed chart isn't available
+  if(window.__snapshotMode || typeof SERIES==='undefined' || !Object.keys(SERIES).length){
+    tog.style.display='none'; const q=$('qsc'); if(q) q.innerHTML='<div class="text-xs text-slate-400 py-4">Open ▶ Run backtest for the live qualifying-stocks chart.</div>'; return;
+  }
   tog.querySelectorAll('button').forEach(b=>b.onclick=()=>drawQual(cfg,b.dataset.g));
   drawQual(cfg, cfg.freq>=3?'quarter':'month');   // default to the rebalance granularity (always cheap)
 }
@@ -978,7 +1005,21 @@ function drawQual(cfg, gran){
   setTimeout(()=>{ const series=qualDates(cfg,gran).map(dt=>[dt, qualCountAt(dayOff(dt),cfg)]); QUAL_CACHE[gran]=series;
     if(msg) msg.textContent=summary(series); render(series); }, 30);
 }
-load();
+// Boot: if opened to VIEW a saved run (👁) and a stored snapshot exists, render it INSTANTLY
+// (no 17 MB load, no recompute). Otherwise load the engine normally; if no snapshot was found we
+// fall back to a result-only recompute, which caches the snapshot so the next open is instant.
+async function bootBacktest(){
+  try{
+    const raw=JSON.parse(localStorage.getItem('bt_load')||'null');
+    if(raw && raw.view==='snapshot' && raw.cfg){
+      const snap=(window.btSync&&btSync.snapGet)? await btSync.snapGet(snapKey(raw.cfg)) : null;
+      if(snap){ localStorage.removeItem('bt_load'); renderSnapshotPage(snap, raw.cfg); return; }
+      raw.view='result'; localStorage.setItem('bt_load', JSON.stringify(raw));   // no snapshot yet → recompute once (and cache it)
+    }
+  }catch(e){}
+  load();
+}
+bootBacktest();
 </script>
 </body>
 </html>

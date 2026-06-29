@@ -47,7 +47,19 @@
     try { const { data, error } = await sb.rpc('bt_strats_set', { secret: WRITE, payload: _localStr() }); if (error) throw error; return data === true; }
     catch (e) { console.warn('strat push', e && e.message || e); return false; }
   }
-  g.btSync = { pull, push, pullStrategies, pushStrategies, isOwner: () => !!ownerKey(), configured: () => !!client(),
+  // ---- Full-result SNAPSHOTS (one row per run, fetched on demand — kept OUT of the whole-array
+  //      history push so a heavy snapshot never bloats history sync). Backed by bt_snapshots table. ----
+  async function snapGet(id) {
+    const sb = client(); if (!sb || !id) return null;
+    try { const { data, error } = await sb.rpc('bt_snap_get', { snap_id: id }); if (error) throw error; return data || null; }
+    catch (e) { console.warn('snap get', e && e.message || e); return null; }
+  }
+  async function snapSet(id, payload) {
+    const sb = client(); if (!sb || !id) return false;
+    try { const { data, error } = await sb.rpc('bt_snap_set', { secret: WRITE, snap_id: id, payload }); if (error) throw error; return data === true; }
+    catch (e) { console.warn('snap set', e && e.message || e); return false; }
+  }
+  g.btSync = { pull, push, pullStrategies, pushStrategies, snapGet, snapSet, isOwner: () => !!ownerKey(), configured: () => !!client(),
     setOwnerKey: k => { try { k ? localStorage.setItem(OWNER_KEY, k) : localStorage.removeItem(OWNER_KEY); } catch (e) {} } };
   // Owner-UI unlock: open any page with ?ownerkey=YOURKEY once on a PC to reveal the Delete/Clear controls there.
   try {
