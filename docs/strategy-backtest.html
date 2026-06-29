@@ -127,19 +127,35 @@ document.getElementById('curve').innerHTML =
   '<path d="'+path(series(100,0.085,4,40),560,180,12)+'" fill="none" stroke="#059669" stroke-width="2.5"/>'+
   '<path d="'+path(series(100,0.02,2,40),560,180,12)+'" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 3"/>';
 
+// Each run carries the FULL backtest config + saved metrics, so the eye 👁 opens
+// our results page (stock-backtest.html) and shows that exact run — same handoff
+// the History page uses: stash {cfg, saved} in localStorage.bt_load, then redirect.
+const baseFilters=[{field:'d52_low_pct',op:'>',val:100},{field:'d52',op:'<',val:10}];
+const baseCfg={indexName:'Nifty 500',mcapFloor:0,freq:1,lookback:1,sortBy:'profitYoyPct',dir:'high',topN:5,capital:100000,method:'hold',earnBasis:'con',mode:'sf',filters:baseFilters};
 const rows=[
-  {run:"Jun 28, 2026",period:"Mar 2023 – Jun 2026",cagr:"68.4%",cum:"436.1%",bench:"61.8%",best:true},
-  {run:"Jun 16, 2026",period:"Mar 2023 – Jun 2026",cagr:"64.0%",cum:"387.9%",bench:"65.1%",best:false},
-  {run:"Jun 16, 2026",period:"Jan 2020 – Jun 2026",cagr:"21.7%",cum:"254.3%",bench:"122.8%",best:false}
+  {run:"Jun 28, 2026",period:"Mar 2023 – Jun 2026",cagr:"68.4%",cum:"436.1%",bench:"61.8%",best:true,
+   cfg:{...baseCfg,start:'2023-03-31',end:'2026-06-15'},
+   m:{finalV:536100,cagr:68.4,benchCagr:16.3,maxDD:22,vol:24,winRate:62,rebs:38,years:3.2}},
+  {run:"Jun 16, 2026",period:"Mar 2023 – Jun 2026",cagr:"64.0%",cum:"387.9%",bench:"65.1%",best:false,
+   cfg:{...baseCfg,start:'2023-03-31',end:'2026-06-12'},
+   m:{finalV:487900,cagr:64.0,benchCagr:16.9,maxDD:24,vol:25,winRate:58,rebs:38,years:3.2}},
+  {run:"Jun 16, 2026",period:"Jan 2020 – Jun 2026",cagr:"21.7%",cum:"254.3%",bench:"122.8%",best:false,
+   cfg:{...baseCfg,start:'2020-01-01',end:'2026-06-12'},
+   m:{finalV:354300,cagr:21.7,benchCagr:13.3,maxDD:38,vol:28,winRate:55,rebs:77,years:6.4}}
 ];
-document.getElementById('hist').innerHTML = rows.map(r=>
+window.viewRun=function(i){
+  const r=rows[i];
+  localStorage.setItem('bt_load',JSON.stringify({cfg:r.cfg,saved:{m:r.m,yby:[],label:'High-momentum profit growth'}}));
+  location.href='./stock-backtest.html';
+};
+document.getElementById('hist').innerHTML = rows.map((r,i)=>
   '<tr class="border-b border-slate-50 hover:bg-slate-50/60">'+
   '<td class="px-4 py-3">'+r.run+(r.best?' <span class="text-[10px] font-semibold bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded-full ml-1">best</span>':'')+'</td>'+
   '<td class="px-4 py-3 text-slate-500">'+r.period+'</td>'+
   '<td class="px-4 py-3 text-right font-semibold text-emerald-600">'+r.cagr+'</td>'+
   '<td class="px-4 py-3 text-right">'+r.cum+'</td>'+
   '<td class="px-4 py-3 text-right text-slate-500">'+r.bench+'</td>'+
-  '<td class="px-4 py-3 text-right whitespace-nowrap"><a href="./stock-backtest.html" class="text-slate-400 hover:text-indigo-600 mr-3" title="View result">👁</a><button class="text-slate-400 hover:text-red-600" title="Delete">🗑</button></td>'+
+  '<td class="px-4 py-3 text-right whitespace-nowrap"><button onclick="viewRun('+i+')" class="text-slate-400 hover:text-indigo-600 mr-3" title="View result">👁</button><button class="text-slate-400 hover:text-red-600" title="Delete">🗑</button></td>'+
   '</tr>').join('');
 </script>
 </body>
