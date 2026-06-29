@@ -145,7 +145,7 @@ const rows=[
 ];
 window.viewRun=function(i){
   const r=rows[i];
-  localStorage.setItem('bt_load',JSON.stringify({cfg:r.cfg,saved:{m:r.m,yby:[],label:'High-momentum profit growth'},view:'result'}));
+  localStorage.setItem('bt_load',JSON.stringify({cfg:r.cfg,saved:{m:r.m,yby:[],label:'High-momentum profit growth'}}));
   location.href='./stock-backtest.html';
 };
 document.getElementById('hist').innerHTML = rows.map((r,i)=>
