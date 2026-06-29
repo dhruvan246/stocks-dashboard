@@ -1057,9 +1057,22 @@ async function bakeAll(){
       <div class="text-sm text-slate-500 mt-1">Every saved backtest now loads instantly for everyone — no first-time recompute.</div></div>`);
   }catch(e){ log(`<div class="card p-4 text-red-600">Bake error: ${e&&e.message||e}</div>`); }
 }
-// Boot: if opened to VIEW a saved run (👁) and a stored snapshot exists, render it INSTANTLY
-// (no 17 MB load, no recompute). Otherwise load the engine normally; if no snapshot was found we
-// fall back to a result-only recompute, which caches the snapshot so the next open is instant.
+// Build the builder UI from STATIC data only (no 17 MB / 90 MB) so a direct visit paints instantly.
+// Saving a strategy needs no market data; an actual Run is launched from Saved Strategies (bt_load),
+// which loads the full engine via load()/applyCfg. So the heavy data is deferred until it's truly needed.
+async function initUIStatic(){
+  DATA_MODE='sf';
+  buildUniverse('sf', false);                                   // universe options are static (TURN_OPTS + index list)
+  $('cSort').innerHTML=FIELDS.map(f=>`<option value="${f.v}">${f.l}</option>`).join('');
+  addFilter(); $('addF').onclick=addFilter;
+  $('run').onclick=saveStrategyFromForm;                        // primary action = Save (no market data needed)
+  let end=''; try{ end=(await (await fetch('./sf_meta.json')).json()).end||''; }catch(e){}
+  $('cTo').value = end || new Date().toISOString().slice(0,10);
+  $('cFrom').value='2020-03-31';
+  if(window.btSync){ btSync.pull().catch(()=>{}); }             // warm the shared history in the background (tiny, non-blocking)
+}
+// Boot: 👁 snapshot → instant render; History/Saved "Load" or result-only → full engine load;
+// direct visit ("Create a Strategy") → instant builder, engine deferred.
 async function bootBacktest(){
   try{
     if(new URLSearchParams(location.search).get('bake')){ await load(); await bakeAll(); return; }
@@ -1069,8 +1082,10 @@ async function bootBacktest(){
       if(snap){ localStorage.removeItem('bt_load'); renderSnapshotPage(snap, raw.cfg); return; }
       raw.view='result'; localStorage.setItem('bt_load', JSON.stringify(raw));   // no snapshot yet → recompute once (and cache it)
     }
+    if(raw){ await load(); return; }   // History/Saved "Load" or result-only — applyCfg loads the engine
   }catch(e){}
-  load();
+  await initUIStatic();                // direct visit — instant, no heavy data
+  const ov=$('ov'); if(ov) ov.remove();
 }
 bootBacktest();
 </script>

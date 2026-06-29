@@ -312,11 +312,27 @@ async function computeAllPerf() {
   }
 }
 
+/* ---------- lazy engine load: the 17 MB + 90 MB market data loads ONLY when Today's Picks needs it,
+   so first-time visitors who just browse the list + open results (👁) never download it. ---------- */
+let ENGINE_READY = false, ENGINE_LOADING = null;
+async function ensureEngine() {
+  if (ENGINE_READY) return true;
+  if (!ENGINE_LOADING) ENGINE_LOADING = loadEngineData(m => { $('status').textContent = m || ''; })
+    .then(() => { ENGINE_READY = true; $('status').textContent = `✅ Survivorship-free data ${SF.start} → ${SF.end} · ${SF.nTot} stocks (${SF.nDead} delisted).`; })
+    .catch(() => { ENGINE_LOADING = null; });
+  await ENGINE_LOADING;
+  return ENGINE_READY;
+}
+
 /* ---------- Today's Picks modal ---------- */
-function openPicks(id) {
+async function openPicks(id) {
   const it = DETAIL[id] || strategies().find(x => x.id === id); if (!it) return;
   CUR = it;
   $('mTitle').innerHTML = `🎯 Today's Picks · ${esc(it.name)}`;
+  $('mFilters').innerHTML = '<span class="text-slate-500">Loading market data…</span>';
+  $('modal').classList.remove('hidden');
+  if (!await ensureEngine()) { $('mFilters').innerHTML = '<span class="text-amber-600">Couldn’t load market data — try again.</span>'; return; }
+  if (CUR !== it) return;   // user closed or switched while it loaded
   $('mFilters').innerHTML = `<b>Universe:</b> ${esc(universeLabel(it.cfg))} &nbsp;·&nbsp; <b>Rank:</b> ${SORTL[it.cfg.sortBy] || it.cfg.sortBy} (${it.cfg.dir}) &nbsp;·&nbsp; <b>Filters:</b> ${esc(filterExpr(it.cfg) || 'none')}`;
   $('mSort').textContent = 'Sort: ' + (SORTL[it.cfg.sortBy] || it.cfg.sortBy);
   $('mCap').value = it.cfg.capital || 100000;
@@ -324,7 +340,6 @@ function openPicks(id) {
   $('hFrom').min = SF.start; $('hFrom').max = SF.end; $('hTo').min = SF.start; $('hTo').max = SF.end;
   $('hFrom').value = SF.start; $('hTo').value = SF.end; $('hOut').textContent = '';
   LIVE = null;
-  $('modal').classList.remove('hidden');
   refreshPicks();
   // during market hours, auto-go-live and keep it refreshing; after 15:30 the bhavcopy close stands
   startLive();
@@ -540,10 +555,9 @@ $('mAlsoToggle').onclick = () => { const a = $('mAlso'); a.classList.toggle('hid
   $('tabNew').onclick  = () => setView('new');
   setView(new URLSearchParams(location.search).get('view') === 'new' ? 'new' : 'best');   // flat list with saved metrics — instant; renders once
   if (!strategies().length) { $('status').textContent = ''; return; }
-  $('status').textContent = 'Loading survivorship-free data…';
-  try { await loadEngineData(m => { $('status').textContent = m || ''; }); }
-  catch (e) { $('status').innerHTML = '<span class="text-amber-600">Saved metrics shown. (Live market data didn’t load, so Today’s Picks / re-Backtest may be unavailable.)</span>'; return; }
-  $('status').textContent = `✅ Survivorship-free data ${SF.start} → ${SF.end} · ${SF.nTot} stocks (${SF.nDead} delisted). Click a strategy to see its backtests.`;
+  // Don't eager-load the 17 MB + 90 MB engine — the list + 👁 results work from saved data alone.
+  // Market data loads on demand only when you open Today's Picks (ensureEngine), so first paint is instant.
+  $('status').textContent = 'Click a strategy to see its backtests. Today’s Picks loads live data on demand.';
 })();
 </script>
 </body>
