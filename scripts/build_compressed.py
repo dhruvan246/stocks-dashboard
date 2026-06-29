@@ -87,10 +87,32 @@ raw_json = json.dumps(compact, separators=(",", ":")).encode("utf-8")
 print(f"Raw JSON: {len(raw_json)/1024/1024:.2f} MB  stocks={len(compact_series)}")
 
 gz = gzip.compress(raw_json, compresslevel=9)
-print(f"Gzipped: {len(gz)/1024/1024:.2f} MB  (ratio {len(raw_json)/len(gz):.1f}x)")
+print(f"Gzipped (full): {len(gz)/1024/1024:.2f} MB  (ratio {len(raw_json)/len(gz):.1f}x)")
 
-b64 = base64.b64encode(gz).decode("ascii")
-print(f"Base64: {len(b64)/1024/1024:.2f} MB")
+# --- SLIM payload: metadata for every stock + ONLY the last RECENT_DAYS of prices.
+#     The homepage paints from this (~1 MB) instead of the full ~17 MB, so a brand-new
+#     visitor sees the dashboard instantly. The full history loads lazily (from the
+#     stock_data.bin written below) only when a longer date range or the backtest needs it. ---
+from bisect import bisect_left
+RECENT_DAYS = 250
+cutoff_off = int((payload["endTs"] - RECENT_DAYS * DAY - start_ts) // DAY)
+recent_series = {}
+for tkr, cs in compact_series.items():
+    ds = cs["d"]
+    i = bisect_left(ds, cutoff_off)
+    if i < len(ds):
+        recent_series[tkr] = {"d": ds[i:], "p": cs["p"][i:]}
+slim = {
+    "startTs": start_ts, "endTs": payload["endTs"], "generatedAt": gen_ts,
+    "meta": payload["meta"], "series": recent_series,
+    "indicesHistory": indices_history, "fnoToday": fno_today, "fnoHistory": fno_history,
+    "recentCutoffOff": cutoff_off,
+}
+slim_json = json.dumps(slim, separators=(",", ":")).encode("utf-8")
+slim_gz = gzip.compress(slim_json, compresslevel=9)
+(OUT_HTML.parent / "dash_slim.bin").write_bytes(slim_gz)
+print(f"Slim: raw {len(slim_json)/1024/1024:.2f} MB -> gz {len(slim_gz)/1024/1024:.2f} MB  "
+      f"(last {RECENT_DAYS}d, {len(recent_series)} priced stocks, cutoff_off={cutoff_off})")
 
 HTML = r"""<!DOCTYPE html>
 <html lang="en">
@@ -296,10 +318,30 @@ HTML = r"""<!DOCTYPE html>
   </footer>
 </div>
 
-<script id="compressedData" type="text/base64">__B64_PAYLOAD__</script>
 <script>
 let META = {}, SERIES = {}, UNIVERSE = [], START_TS = 0, END_TS = 0,
     INDICES_HISTORY = {}, FNO_TODAY = new Set(), FNO_HISTORY = [];
+// Slim-first loading: SERIES initially holds only the last ~250 days (from dash_slim.bin).
+// recentCutoffOff = the earliest day-offset present in the slim data; any query that reaches
+// before it triggers a one-time lazy fetch of the full history from stock_data.bin.
+let RECENT_CUTOFF_OFF = 0, FULL_LOADED = false, FULL_LOADING = null;
+async function gunzipFetch(url) {
+  const buf = await (await fetch(url)).arrayBuffer();
+  const stream = new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'));
+  return JSON.parse(await new Response(stream).text());
+}
+// Lazily pull the FULL price history (only when a long-range query / backtest needs it).
+async function ensureFull(statusFn) {
+  if (FULL_LOADED) return true;
+  if (!FULL_LOADING) FULL_LOADING = (async () => {
+    if (statusFn) statusFn('Loading full history…');
+    const D = await gunzipFetch('./stock_data.bin');   // full series, already built + cacheable
+    SERIES = D.series;                                  // superset of the slim recent series
+    FULL_LOADED = true;
+  })().catch(e => { FULL_LOADING = null; throw e; });
+  await FULL_LOADING;
+  return FULL_LOADED;
+}
 
 // Return the set of NSE symbols that were in `indexName` on/before `dateISO`.
 // Snapshots are stored ascending by effectiveDate; each snapshot represents the
@@ -333,35 +375,19 @@ async function loadAndInit() {
   const statusEl = document.getElementById('loadingStatus');
   try {
     const t0 = performance.now();
-    const b64 = document.getElementById('compressedData').textContent.trim();
-    statusEl.textContent = 'Polishing the numbers…';
-    // give the browser a frame to paint the spinner
+    statusEl.textContent = 'Loading…';
     await new Promise(r => requestAnimationFrame(() => setTimeout(r, 16)));
 
-    // Decode base64 -> Uint8Array
-    const binStr = atob(b64);
-    const bytes = new Uint8Array(binStr.length);
-    for (let i = 0; i < binStr.length; i++) bytes[i] = binStr.charCodeAt(i);
-
-    statusEl.textContent = 'Almost there…';
-    await new Promise(r => requestAnimationFrame(() => setTimeout(r, 16)));
-
-    // DecompressionStream (Chrome/Edge/Safari 16+/Firefox 113+)
-    const ds = new DecompressionStream('gzip');
-    const stream = new Blob([bytes]).stream().pipeThrough(ds);
-    const text = await new Response(stream).text();
-
-    statusEl.textContent = 'Final touches…';
-    await new Promise(r => requestAnimationFrame(() => setTimeout(r, 16)));
-
-    const D = JSON.parse(text);
+    // Slim payload: metadata + last ~250 days only (~1 MB). Full history is fetched
+    // lazily by ensureFull() from stock_data.bin when a longer range / backtest needs it.
+    const D = await gunzipFetch('./dash_slim.bin');
     META = D.meta; SERIES = D.series; START_TS = D.startTs; END_TS = D.endTs || D.generatedAt;
+    RECENT_CUTOFF_OFF = D.recentCutoffOff || 0;
     UNIVERSE = Object.keys(META);
     // Historical index membership (per-rebalance snapshots). Optional.
     INDICES_HISTORY = D.indicesHistory || {};
     FNO_TODAY = new Set(D.fnoToday || []);
     FNO_HISTORY = D.fnoHistory || [];
-    document.getElementById('compressedData').remove();
 
     // Populate the dropdown using BSE's IndustryNew (granular: Pharma, Metals,
     // Chemicals, etc.) with a fallback to the broad sector or 'Uncategorized'.
@@ -463,7 +489,7 @@ function lastOnOrBefore(arr, v) {
 
 let lastResults = [];
 
-function loadData() {
+async function loadData() {
   const fromDate     = document.getElementById('fromDate').value;
   const toDate       = document.getElementById('toDate').value;
   const mcapBuckets  = getMcapBucketSet();   // Set of selected buckets (empty = all)
@@ -481,6 +507,14 @@ function loadData() {
   const toTs   = Math.floor(new Date(toDate   + 'T23:59:59Z').getTime() / 1000);
   const fromDayOffset = Math.floor((fromTs - START_TS) / DAY);
   const toDayOffset   = Math.floor((toTs   - START_TS) / DAY);
+
+  // If the window reaches before the slim recent-data cutoff, pull the FULL history once.
+  // Short / default ranges stay instant on the slim data.
+  if (fromDayOffset < RECENT_CUTOFF_OFF && !FULL_LOADED) {
+    const rc = document.getElementById('resultCount');
+    if (rc) rc.textContent = 'Loading full history…';
+    try { await ensureFull(); } catch (e) { if (rc) rc.textContent = 'Could not load full history. Check your connection and retry.'; return; }
+  }
 
   // Historical index membership at the user's From Date — so e.g. selecting
   // "Nifty 500 + 2021-Jan-01 → 2021-Dec-31" shows stocks that were in Nifty 500
@@ -812,7 +846,7 @@ function fmtINR(n) {
   return rest.replace(/(\d)(?=(\d\d)+$)/g, '$1,') + ',' + last3;
 }
 
-function runBacktest() {
+async function runBacktest() {
   const screenFrom = document.getElementById('fromDate').value;
   const screenTo   = document.getElementById('toDate').value;
   const holdTo     = document.getElementById('backtestHoldTo').value;
@@ -823,6 +857,15 @@ function runBacktest() {
   if (!holdTo)                  return alert('Pick a Hold Until date.');
   if (new Date(screenTo) > new Date(holdTo)) return alert('Hold Until must be on or after the screening To Date.');
   if (capital <= 0)             return alert('Capital must be a positive number.');
+
+  // The backtest screens over arbitrary history → ensure the full series is loaded first.
+  if (!FULL_LOADED) {
+    const btn = document.getElementById('runBacktestBtn'); const prev = btn.textContent;
+    btn.textContent = 'Loading full history…'; btn.disabled = true;
+    try { await ensureFull(); }
+    catch (e) { alert('Could not load full history. Check your connection and retry.'); return; }
+    finally { btn.textContent = prev; btn.disabled = false; }
+  }
 
   const mcapBuckets   = getMcapBucketSet();
   const sectorFilter  = document.getElementById('sectorFilter').value;
@@ -1076,7 +1119,7 @@ loadAndInit();
 </html>
 """
 
-out = HTML.replace("__B64_PAYLOAD__", b64).replace("__START_DATE__", start_date).replace("__GEN_DATE__", gen_date)
+out = HTML.replace("__START_DATE__", start_date).replace("__GEN_DATE__", gen_date)
 OUT_HTML.write_text(out, encoding="utf-8")
 print(f"Wrote {OUT_HTML} ({OUT_HTML.stat().st_size/1024/1024:.2f} MB)")
 
