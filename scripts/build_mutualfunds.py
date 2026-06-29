@@ -121,9 +121,13 @@ print(f"  Raw {len(raw)/1024:.1f} KB → gzip {len(gz)/1024:.1f} KB → b64 {len
 HISTSRC = ROOT / "scripts" / "mf_history.b64"
 if HISTSRC.exists():
     hist_b64 = HISTSRC.read_text(encoding="utf-8").strip()
-    print(f"  History: embedded daily payload {len(hist_b64)/1024/1024:.1f} MB (b64)")
+    # Write the daily NAV history as an EXTERNAL gzip file. The page lazy-loads it only when the
+    # custom-date calculator or a fund-detail modal needs it — instead of base64-inlining ~10 MB
+    # into the HTML, which forced every first-time visitor to download it all up front.
+    hist_gz = base64.b64decode(hist_b64)
+    (OUT.parent / "mf_history.bin").write_bytes(hist_gz)
+    print(f"  History: wrote external mf_history.bin ({len(hist_gz)/1024/1024:.1f} MB, lazy-loaded)")
 else:
-    hist_b64 = ""
     print("  History: scripts/mf_history.b64 not found — custom date filter disabled")
 
 gen = datetime.now().strftime("%d %b %Y %H:%M")
@@ -331,7 +335,6 @@ HTML = r"""<!DOCTYPE html>
 </div>
 
 <script id="compressedData" type="application/octet-stream">__B64__</script>
-<script id="histData" type="application/octet-stream">__HIST__</script>
 <script>
 'use strict';
 let ALL = [];
@@ -352,26 +355,9 @@ async function loadData() {
   ALL.forEach(r => { BYCODE[r.code] = r; });
   document.getElementById('compressedData').remove();
 
-  // Decode the daily NAV history (for the exact-date calculator).
-  try {
-    const hb64 = document.getElementById('histData').textContent.replace(/\s+/g,'');
-    if (hb64) {
-      statusEl.textContent = 'Decoding price history…';
-      const hbytes = Uint8Array.from(atob(hb64), c => c.charCodeAt(0));
-      const hstream = new Blob([hbytes]).stream().pipeThrough(new DecompressionStream('gzip'));
-      HIST = JSON.parse(await new Response(hstream).text());
-      // HIST = {dates:[YYYYMMDD ints], data:{code:[startIdx, delta-paise...]}}
-      HIST.dec = {};
-      const fd = document.getElementById('fromDate'), td = document.getElementById('toDate');
-      const lo = intToYmd(HIST.dates[0]), hi = intToYmd(HIST.dates[HIST.dates.length - 1]);
-      fd.min = td.min = lo; fd.max = td.max = hi;
-    }
-  } catch (e) { HIST = null; }
-  const hd = document.getElementById('histData'); if (hd) hd.remove();
-  if (!HIST) {
-    // No history available — hide the custom column + controls.
-    document.querySelectorAll('#custHdr,#custSub').forEach(el => el.style.display = 'none');
-  }
+  // The daily NAV history (custom-date calculator + fund-detail calendars) is a separate ~7 MB
+  // file fetched lazily by ensureHistory() on first use — NOT loaded here — so the page paints
+  // instantly. The custom column stays visible; using it (or opening a fund) triggers the fetch.
 
   // Build the two-level category dropdown (Groww-style: parent group -> subcategory)
   const GROUP_ORDER = ['Equity','Hybrid','Debt','Index / Other','Commodities','Solution Oriented','Uncategorized'];
@@ -489,8 +475,27 @@ function calRolling(code,win,fwd){
   const head='<th class="px-1 py-1 text-left">'+(fwd?'Invest in':'As of')+'</th>'+MN_.map(m=>'<th class="px-1 py-1 text-right">'+m+'</th>').join('');
   return '<div class="overflow-x-auto"><table class="text-[11px] w-full"><thead class="text-[10px] uppercase text-slate-500"><tr>'+head+'</tr></thead><tbody>'+rows+'</tbody></table></div>';
 }
+// Lazily fetch the ~7 MB daily NAV history — only when the custom-date calculator or a
+// fund-detail modal first needs it. Cached after the first fetch.
+let __histLoading = null;
+async function ensureHistory() {
+  if (HIST) return true;
+  if (!__histLoading) __histLoading = (async () => {
+    const buf = await (await fetch('./mf_history.bin')).arrayBuffer();
+    const stream = new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'));
+    HIST = JSON.parse(await new Response(stream).text());   // {dates:[YYYYMMDD], data:{code:[startIdx, delta-paise...]}}
+    HIST.dec = {};
+    const fd = document.getElementById('fromDate'), td = document.getElementById('toDate');
+    if (fd && td && HIST.dates && HIST.dates.length) {
+      const lo = intToYmd(HIST.dates[0]), hi = intToYmd(HIST.dates[HIST.dates.length - 1]);
+      fd.min = td.min = lo; fd.max = td.max = hi;
+    }
+  })().catch(e => { __histLoading = null; HIST = null; });
+  await __histLoading;
+  return !!HIST;
+}
 let DETAIL_CODE = null;
-function showFundDetail(code){
+async function showFundDetail(code){
   const r=BYCODE[code]; if(!r) return; DETAIL_CODE=code;
   const planTag = (r.plan||'Direct')==='Regular' ? '<span class="badge b-plan-reg">REG</span>' : '<span class="badge b-plan-dir">DIR</span>';
   document.getElementById('detTitle').innerHTML = cleanName(r.short).replace(/[<>]/g,'') + ' ' + planTag;
@@ -498,9 +503,14 @@ function showFundDetail(code){
     '<span class="badge '+badgeClass(r.g)+'">'+r.s+'</span> · '+(r.amc||'').replace(/[<>]/g,'')+
     ' · since-incep CAGR <b>'+(r.cagrPct>=0?'+':'')+r.cagrPct.toFixed(1)+'%</b>'+
     ' · 1Y '+fmtRet(r.r1y)+' · 3Y '+fmtRet(r.r3y)+' · 5Y '+fmtRet(r.r5y)+' · '+r.years.toFixed(1)+'y of data';
-  renderDetail();
   document.getElementById('detailModal').classList.remove('hidden');
   document.body.style.overflow='hidden';
+  if (!HIST) {
+    document.getElementById('detTables').innerHTML = '<div class="text-sm text-slate-500 py-6 text-center">Loading price history…</div>';
+    if (!await ensureHistory()) { document.getElementById('detTables').innerHTML = '<div class="text-sm text-red-500 py-6 text-center">Couldn’t load price history. Check your connection and retry.</div>'; return; }
+    if (DETAIL_CODE !== code) return;   // user closed/switched while it loaded
+  }
+  renderDetail();
 }
 function renderDetail(){
   const code=DETAIL_CODE; if(code==null) return;
@@ -677,7 +687,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('yrFilter').addEventListener('change', render);
 
     // Custom date-range window: recompute the per-fund window return, sort by it.
-    function applyDateRange() {
+    async function applyDateRange() {
+      const f = document.getElementById('fromDate').value, t = document.getElementById('toDate').value;
+      if (f && t && !HIST) {
+        const info = document.getElementById('rangeInfo'); if (info) info.textContent = 'Loading price history…';
+        if (!await ensureHistory()) { if (info) info.textContent = 'Couldn’t load price history. Retry.'; return; }
+      }
       recomputeCust();
       if (FROM && TO) SORT = { key: 'cust', dir: -1 };
       else if (SORT.key === 'cust') SORT = { key: 'cagrPct', dir: -1 };
@@ -733,6 +748,6 @@ document.addEventListener('DOMContentLoaded', () => {
 </body>
 </html>
 """
-HTML = HTML.replace("__B64__", b64).replace("__HIST__", hist_b64).replace("__GEN__", gen)
+HTML = HTML.replace("__B64__", b64).replace("__GEN__", gen)
 OUT.write_text(HTML, encoding="utf-8")
 print(f"Wrote {OUT} ({OUT.stat().st_size / 1024:.1f} KB)")
