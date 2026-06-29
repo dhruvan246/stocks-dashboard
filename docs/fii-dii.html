@@ -162,8 +162,8 @@ async function load(){
   let data, fdata={rows:[]};
   try { data = await (await fetch('./fii_dii.json?t='+Date.now())).json(); }
   catch(e){ $('status').textContent='Could not load fii_dii.json — has the refresh run yet?'; return; }
-  try { fdata = await (await fetch('./fii_fo.json?t='+Date.now())).json(); } catch(e){}
-  try { NIFTY = (await (await fetch('./nifty.json?t='+Date.now())).json()).px || {}; } catch(e){ NIFTY={}; }
+  try { fdata = await (await fetch('./fii_fo.json')).json(); } catch(e){}
+  try { NIFTY = (await (await fetch('./nifty.json')).json()).px || {}; } catch(e){ NIFTY={}; }
   ROWS = (data.rows||[]).slice();
   FO = (fdata.rows||[]).slice();
   if(!ROWS.length){ $('status').textContent='No FII/DII data yet.'; return; }

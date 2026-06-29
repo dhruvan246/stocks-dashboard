@@ -142,14 +142,14 @@ const stockLink=(sym,cls)=>'<a href="'+stockHref(sym)+'" class="'+(cls||'')+'" t
 
 async function load(){
   try{
-    const buf=await (await fetch('./stock_data.bin?t='+Date.now())).arrayBuffer();
+    const buf=await (await fetch('./stock_data.bin')).arrayBuffer();   // browser-cached (ETag); no cache-buster → instant on repeat loads
     const stream=new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'));
     const D=JSON.parse(await new Response(stream).text());
     META=D.meta; SERIES=D.series; IDXH=D.indicesHistory||{}; FNOH=D.fnoHistory||[]; START_TS=D.startTs;
     SURV={meta:META, series:SERIES, idxh:IDXH, fnoh:FNOH, startTs:START_TS};
   }catch(e){ $('ovT').textContent='Could not load stock_data.bin — has it been built yet?'; return; }
-  try{ NIFTY=(await (await fetch('./nifty.json?t='+Date.now())).json()).px||{}; }catch(e){ NIFTY={}; }
-  try{ NIFTY500=(await (await fetch('./nifty500.json?t='+Date.now())).json()).px||{}; }catch(e){ NIFTY500={}; }
+  try{ NIFTY=(await (await fetch('./nifty.json')).json()).px||{}; }catch(e){ NIFTY={}; }
+  try{ NIFTY500=(await (await fetch('./nifty500.json')).json()).px||{}; }catch(e){ NIFTY500={}; }
   await initUI(); $('ov').remove();
 }
 // Release asset FIRST — refreshed DAILY by the refresh-backtest-data workflow, so it carries
@@ -399,7 +399,7 @@ function renderSnapshotPage(snap, cfg){
 // fundamentals (quarterly net profit) — loaded lazily, only when a profit factor is used
 async function loadFund(){
   if(Object.keys(FUND).length) return;
-  try{ FUND=await (await fetch('./sf_fundamentals.json?t='+Date.now())).json(); console.log('fundamentals:', Object.keys(FUND).length, 'symbols'); }
+  try{ FUND=await (await fetch('./sf_fundamentals.json')).json(); console.log('fundamentals:', Object.keys(FUND).length, 'symbols'); }
   catch(e){ console.warn('no fundamentals data', e); FUND={}; }
 }
 // ---- the engine ----
