@@ -36,7 +36,7 @@
     <h1 class="text-xl md:text-2xl font-bold text-slate-900">⭐ Saved Strategies</h1>
     <button id="clearAll" class="text-xs text-red-600 hover:underline font-semibold">Clear all</button>
   </div>
-  <p class="text-xs text-slate-500 mb-4">Strategies you saved from backtests. Each card shows its survivorship-free performance. Click <b>Today's Picks</b> for the live deployment basket, or <b>Backtest</b> to re-open the full run. <a href="./stock-backtest.html" class="text-indigo-600 hover:underline">← back to Backtest</a></p>
+  <p class="text-xs text-slate-500 mb-4">Strategies you saved from backtests. Each card shows its survivorship-free performance. Click <b>Today's Picks</b> for the live deployment basket, or <b>Backtest</b> to view its full saved result instantly. <a href="./stock-backtest.html" class="text-indigo-600 hover:underline">← back to Backtest</a></p>
   <div class="flex items-center gap-1.5 mb-3">
     <button id="tabBest" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">🏆 Best return</button>
     <button id="tabNew" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">🆕 New</button>
@@ -295,7 +295,9 @@ function render() {
     const k = identityKey(it.cfg), st = it.cfg.start || '', mth = it.cfg.method || ''; let h = null;
     for (const x of HIST) { if (x.cfg && identityKey(x.cfg) === k && (x.cfg.start || '') === st && (x.cfg.method || '') === mth && x.m && x.m.cagr != null) { if (!h || (x.ts || 0) > (h.ts || 0)) h = x; } }
     const saved = h ? { m: h.m, yby: h.yby, label: h.label } : null;
-    localStorage.setItem('bt_load', JSON.stringify({ cfg: it.cfg, saved }));
+    // 📈 opens the stored result SNAPSHOT instantly — no 17 MB + 90 MB engine download. If no snapshot
+    // exists yet it falls back to a one-time recompute that caches it, so the next open is instant too.
+    localStorage.setItem('bt_load', JSON.stringify({ cfg: it.cfg, saved, view: 'snapshot' }));
     location.href = './stock-backtest.html';
   });
   $('list').querySelectorAll('[data-picks]').forEach(b => b.onclick = () => openPicks(b.dataset.picks));
