@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Market Mood</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<style>
+  body { font-feature-settings: "tnum" 1; }
+  .pos{color:#15803d;font-weight:600} .neg{color:#b91c1c;font-weight:600}
+  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-lg mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./nse-bse-dashboard.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav class="flex items-center gap-1 overflow-x-auto">
+      <a href="./nse-bse-dashboard.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">📈<span class="hidden sm:inline">Stocks</span></a>
+          <a href="./sectors.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">🔥<span class="hidden sm:inline">Sectors</span></a>
+      <a href="https://dhruvan246.github.io/fno-dashboard/" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">🎯<span class="hidden sm:inline">F&amp;O</span></a>
+      <a href="./mutual-funds.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">💰<span class="hidden sm:inline">Mutual&nbsp;Funds</span></a>
+      <a href="./fii-dii.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">🌐<span class="hidden sm:inline">FII/DII</span></a>
+      <a href="./market-mood.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow transition">🌡️<span class="hidden sm:inline">Market&nbsp;Mood</span></a>
+      <a href="./stock-backtest.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition shrink-0">🧪<span class="hidden sm:inline">Create a Strategy</span></a>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-screen-lg mx-auto px-4 py-6">
+  <div class="mb-4">
+    <h1 class="text-xl font-bold text-slate-900">Market mood — Nifty 500 trading activity</h1>
+    <p class="text-sm text-slate-500 mt-0.5">Total money traded each month across all Nifty 500 stocks. Rising turnover = more participation and liquidity (a "hot" market); falling turnover = cooling interest. <span id="updated" class="text-slate-400"></span></p>
+  </div>
+
+  <div id="status" class="text-sm text-slate-500">Loading market-mood data…</div>
+
+  <div id="content" class="hidden">
+    <div id="cards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"></div>
+
+    <div class="card p-4 mb-4">
+      <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
+        <div class="text-sm font-semibold text-slate-700">Total monthly trade in Nifty 500 <span class="text-slate-400 font-normal">(₹ lakh crore — hover for values)</span></div>
+        <div id="rangeBtns" class="flex flex-wrap items-center gap-1 text-xs"></div>
+      </div>
+      <div class="flex flex-wrap gap-4 mb-2 text-xs text-slate-600">
+        <span class="inline-flex items-center gap-1.5"><span class="inline-block w-3.5 h-[3px] rounded" style="background:#15803d"></span>Monthly traded value <b id="legV" class="text-slate-800 font-semibold">·</b></span>
+        <span class="inline-flex items-center gap-1.5"><span class="inline-block w-3.5 h-0 border-t-2 border-dashed" style="border-color:#b91c1c"></span>12-mo moving average <b id="legM" class="text-slate-800 font-semibold">·</b></span>
+      </div>
+      <div id="chart"></div>
+    </div>
+
+    <div class="card p-4">
+      <div class="text-sm font-semibold text-slate-700 mb-2">Recent months <span class="text-[11px] font-normal text-slate-400">(newest first)</span></div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>
+            <th class="text-left py-2 px-1">Month</th>
+            <th class="text-right px-1">Traded value (₹ cr)</th>
+            <th class="text-right px-1">vs prev month</th>
+            <th class="text-right px-1">12-mo avg (₹ cr)</th>
+            <th class="text-right px-1">vs avg</th>
+          </tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <p class="text-[11px] text-slate-500 mt-5">Each point = sum of the month's traded value (turnover) across that month's Nifty 500 constituents (point-in-time membership), from NSE bhavcopy. Pre-2018 turnover is sampled weekly, so those months are scaled to a full-month estimate (average daily turnover × trading days). The <b>12-month moving average</b> smooths seasonality to show the underlying trend. Educational only — not investment advice.</p>
+  </div>
+</main>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const RANGES={'1y':12,'3y':36,'5y':60,'10y':120,'all':1e9};
+let DATA=null, range='all', CHART={};
+
+const lc = cr => cr/1e5;                                  // ₹ crore → ₹ lakh crore
+const fmtLc = cr => '₹'+lc(cr).toFixed(2)+' L cr';
+const fmtCr = cr => '₹'+Math.round(cr).toLocaleString('en-IN')+' cr';
+const fmtMonShort = ym => { const p=ym.split('-'); return MON[+p[1]-1]+" '"+p[0].slice(2); };
+const fmtMonLong  = ym => { const p=ym.split('-'); return MON[+p[1]-1]+' '+p[0]; };
+const pct = (a,b) => (b? (a-b)/b*100 : null);
+const fmtPct = p => p==null ? '·' : (p>=0?'+':'−')+Math.abs(p).toFixed(1)+'%';
+
+async function load(){
+  try { DATA = await (await fetch('./nifty500_turnover.json?t='+Date.now())).json(); }
+  catch(e){ $('status').textContent='Could not load nifty500_turnover.json — run scripts/build_nifty500_turnover.py first.'; return; }
+  if(!DATA || !DATA.months || !DATA.months.length){ $('status').textContent='No turnover data yet.'; return; }
+  $('updated').textContent = DATA.updated ? '· data through '+fmtMonLong(DATA.updated.slice(0,7)) : '';
+  $('status').classList.add('hidden'); $('content').classList.remove('hidden');
+  renderRangeBtns(); renderCards(); renderChart(); renderTable();
+}
+
+function renderRangeBtns(){
+  $('rangeBtns').innerHTML = ['1y','3y','5y','10y','all'].map(k=>
+    `<button data-r="${k}" class="px-2 py-1 rounded ${range===k?'bg-blue-600 text-white':'bg-slate-100 text-slate-600 hover:bg-slate-200'}">${k==='all'?'All':k.toUpperCase()}</button>`).join('');
+  $('rangeBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{ range=b.dataset.r; renderRangeBtns(); renderChart(); });
+}
+
+function sliced(){
+  const n=DATA.months.length, k=RANGES[range], s=k>=1e9?0:Math.max(0,n-k);
+  return { months:DATA.months.slice(s), value:DATA.value.slice(s), ma:DATA.ma.slice(s) };
+}
+
+function renderCards(){
+  const v=DATA.value, m=DATA.months, ma=DATA.ma, i=v.length-1;
+  let peak=-1, pk=0; v.forEach((x,j)=>{ if(x>peak){peak=x;pk=j;} });
+  const yoy = pct(v[i], i>=12?v[i-12]:null);
+  const card=(t,val,sub,cls)=>`<div class="card p-3"><div class="text-[10px] uppercase text-slate-500">${t}</div><div class="text-lg font-bold ${cls||''}">${val}</div><div class="text-[11px] text-slate-400">${sub||''}</div></div>`;
+  $('cards').innerHTML =
+     card('Latest month · '+fmtMonShort(m[i]), fmtLc(v[i]), fmtCr(v[i]))
+    +card('12-mo average', fmtLc(ma[i]), v[i]>=ma[i]?'now above trend':'now below trend', v[i]>=ma[i]?'pos':'neg')
+    +card('vs a year ago', fmtPct(yoy), 'same month last year', (yoy||0)>=0?'pos':'neg')
+    +card('Record high · '+fmtMonShort(m[pk]), fmtLc(peak), 'busiest month on record');
+  $('legV').textContent = fmtLc(v[i]);
+  $('legM').textContent = fmtLc(ma[i]);
+}
+
+function renderChart(){
+  const d=sliced(), n=d.months.length;
+  if(!n){ $('chart').innerHTML='<div class="text-xs text-slate-400 py-8 text-center">No data in this range.</div>'; return; }
+  const W=720, H=300, PL=44, PR=14, PT=14, PB=32;
+  const x=i=> PL+(W-PL-PR)*(n<=1?0:i/(n-1));
+  const ymax=(Math.max(...d.value, ...d.ma)/1e5)*1.08 || 1;          // in lakh crore
+  const y=val=> PT+(H-PT-PB)*(1-(val/1e5)/ymax);                     // val in crore, baseline 0
+  let grid=''; const GL=5;
+  for(let k=0;k<=GL;k++){ const lcv=ymax*k/GL, yy=PT+(H-PT-PB)*(1-k/GL);
+    grid+=`<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="${k===0?'#cbd5e1':'#f1f5f9'}"/><text x="${PL-4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${lcv.toFixed(1)}</text>`; }
+  let xl=''; const step=Math.max(1,Math.ceil(n/8));
+  d.months.forEach((mm,i)=>{ if(i%step && i!==n-1) return; xl+=`<text x="${x(i).toFixed(1)}" y="${H-8}" font-size="9" fill="#94a3b8" text-anchor="middle">${fmtMonShort(mm)}</text>`; });
+  const vline=d.value.map((cr,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(cr).toFixed(1)).join(' ');
+  const area=`M ${x(0).toFixed(1)} ${y(0).toFixed(1)} `+d.value.map((cr,i)=>'L'+x(i).toFixed(1)+' '+y(cr).toFixed(1)).join(' ')+` L ${x(n-1).toFixed(1)} ${y(0).toFixed(1)} Z`;
+  const mline=d.ma.map((cr,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(cr).toFixed(1)).join(' ');
+  CHART={pts:d.months.map((mm,i)=>({px:x(i),pyV:y(d.value[i]),pyM:y(d.ma[i]),m:mm,v:d.value[i],ma:d.ma[i]})), W, H, PT, PB};
+  $('chart').innerHTML=`<div class="relative">
+    <svg viewBox="0 0 ${W} ${H}" class="w-full block">${grid}${xl}
+      <path d="${area}" fill="#15803d" opacity="0.08"/>
+      <path d="${mline}" fill="none" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5 4"/>
+      <path d="${vline}" fill="none" stroke="#15803d" stroke-width="2"/>
+      <line class="cx" x1="0" x2="0" y1="${PT}" y2="${H-PB}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3" style="display:none"/>
+      <circle class="dM" r="3.5" fill="#b91c1c" stroke="#fff" stroke-width="1.5" style="display:none"/>
+      <circle class="dV" r="4" fill="#15803d" stroke="#fff" stroke-width="1.5" style="display:none"/>
+      <rect x="${PL}" y="${PT}" width="${(W-PL-PR).toFixed(1)}" height="${(H-PT-PB).toFixed(1)}" fill="transparent"/>
+    </svg>
+    <div class="tip absolute hidden pointer-events-none -translate-x-1/2 -translate-y-[135%] bg-slate-800 text-white text-[11px] leading-tight px-2 py-1 rounded-md shadow-lg whitespace-nowrap z-10"></div>
+  </div>`;
+  attachHover();
+}
+
+function attachHover(){
+  const wrap=$('chart'); const svg=wrap.querySelector('svg'); if(!svg||!CHART.pts||!CHART.pts.length)return;
+  const tip=wrap.querySelector('.tip'), cross=wrap.querySelector('.cx'), dV=wrap.querySelector('.dV'), dM=wrap.querySelector('.dM');
+  const move=e=>{
+    const r=svg.getBoundingClientRect(); if(!r.width)return;
+    const sx=(e.clientX-r.left)/r.width*CHART.W;
+    let best=0,bd=1e9; for(let i=0;i<CHART.pts.length;i++){const dd=Math.abs(CHART.pts[i].px-sx); if(dd<bd){bd=dd;best=i;}}
+    const p=CHART.pts[best];
+    cross.setAttribute('x1',p.px); cross.setAttribute('x2',p.px); cross.style.display='';
+    dV.setAttribute('cx',p.px); dV.setAttribute('cy',p.pyV); dV.style.display='';
+    dM.setAttribute('cx',p.px); dM.setAttribute('cy',p.pyM); dM.style.display='';
+    tip.style.left=(p.px/CHART.W*100)+'%'; tip.style.top=(Math.min(p.pyV,p.pyM)/CHART.H*100)+'%';
+    tip.innerHTML=`<div class="font-semibold">${fmtMonLong(p.m)}</div>`
+      +`<div><span style="color:#34d399">●</span> Traded: ${fmtLc(p.v)}</div>`
+      +`<div><span style="color:#fb7185">●</span> 12-mo avg: ${fmtLc(p.ma)}</div>`;
+    tip.classList.remove('hidden');
+  };
+  svg.addEventListener('mousemove',move);
+  svg.addEventListener('mouseleave',()=>{tip.classList.add('hidden');cross.style.display='none';dV.style.display='none';dM.style.display='none';});
+}
+
+function renderTable(){
+  const v=DATA.value, m=DATA.months, ma=DATA.ma;
+  const rows=[];
+  for(let i=v.length-1; i>=0 && rows.length<24; i--){
+    const mom=pct(v[i], i>0?v[i-1]:null), vsAvg=pct(v[i], ma[i]);
+    rows.push(`<tr class="border-b border-slate-50">
+      <td class="py-1 px-1 font-medium">${fmtMonLong(m[i])}</td>
+      <td class="text-right px-1">${Math.round(v[i]).toLocaleString('en-IN')}</td>
+      <td class="text-right px-1 ${(mom||0)>=0?'pos':'neg'}">${fmtPct(mom)}</td>
+      <td class="text-right px-1 text-slate-500">${Math.round(ma[i]).toLocaleString('en-IN')}</td>
+      <td class="text-right px-1 ${(vsAvg||0)>=0?'pos':'neg'}">${fmtPct(vsAvg)}</td></tr>`);
+  }
+  $('tbody').innerHTML=rows.join('');
+}
+
+load();
+</script>
+</body>
+</html>
