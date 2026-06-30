@@ -154,22 +154,18 @@ def main():
             cell[0] += lk
             cell[1] += 1
 
-    # --- latest COMPLETE month: drop current/partial month and any trailing month
-    #     with < MIN_TRADING_DAYS distinct observed trading days ---
-    end_ym = end_dt.year * 100 + end_dt.month
-    # the calendar month containing the data-end date is partial -> exclude it
-    end_ym = (end_ym // 100 - 1) * 100 + 12 if end_ym % 100 == 1 else end_ym - 1
-    while end_ym >= START_YM and len(trading_days.get(end_ym, ())) < MIN_TRADING_DAYS:
-        print("  trailing month %d has %d trading days (<%d) -> dropping" %
-              (end_ym, len(trading_days.get(end_ym, ())), MIN_TRADING_DAYS), flush=True)
-        end_ym = (end_ym // 100 - 1) * 100 + 12 if end_ym % 100 == 1 else end_ym - 1
+    # --- include the CURRENT month as a running MONTH-TO-DATE total (sum of the
+    #     1st -> latest trading day). It grows every day and becomes "complete" once
+    #     the data rolls into the next month. The LAST month in the series is always
+    #     the live/partial one; every earlier month is a finished full month. ---
+    end_ym = end_dt.year * 100 + end_dt.month   # month of the latest data -> include it (live)
 
-    # --- build the monthly total series ---
+    # --- build the monthly total series (last month = month-to-date) ---
     months, value = [], []
     for ym in month_iter(START_YM, end_ym):
         D_m = len(trading_days.get(ym, ()))
         if D_m == 0:
-            continue  # no market data at all this month (shouldn't happen in range)
+            continue  # no market data at all this month
         lastday = last_day_of_month(ym)
         members = members_for(lastday)
         total_lakhs = 0.0
@@ -177,21 +173,34 @@ def main():
             cell = sym_month.get(s, {}).get(ym)
             if cell and cell[1] > 0:
                 mean_l = cell[0] / cell[1]
+                # mean(observed daily turnover) * (#trading days). For the live month
+                # D_m = days seen SO FAR, so this equals the raw month-to-date sum.
                 total_lakhs += mean_l * D_m
         months.append("%04d-%02d" % (ym // 100, ym % 100))
         value.append(round(total_lakhs / 100.0))  # lakhs -> crore, whole crore
 
-    # --- trailing 12-month simple moving average (partial at the start) ---
+    # the last month is the live, still-accumulating one (month-to-date)
+    partial_last = len(months) > 0
+    partial_days = len(trading_days.get(end_ym, ())) if partial_last else 0
+
+    # --- trailing 12-month SMA. For the live partial month, average the 12 COMPLETE
+    #     months *before* it so a half-finished month doesn't drag the trend down. ---
     ma = []
-    for i in range(len(value)):
-        window = value[max(0, i - MA_WINDOW + 1): i + 1]
-        ma.append(round(sum(window) / len(window)))
+    n = len(value)
+    for i in range(n):
+        if partial_last and i == n - 1:
+            window = value[max(0, i - MA_WINDOW): i]       # 12 complete months before the live one
+        else:
+            window = value[max(0, i - MA_WINDOW + 1): i + 1]
+        ma.append(round(sum(window) / len(window)) if window else value[i])
 
     out = {
         "unit": "cr",
         "maWindow": MA_WINDOW,
-        "updated": last_day_of_month(end_ym).isoformat(),  # last COMPLETE month (matches the chart)
-        "dataEnd": end_iso,                                  # raw snapshot freshness (provenance)
+        "updated": end_iso,             # latest data date — the live month is current to here
+        "dataEnd": end_iso,
+        "partialLast": partial_last,    # last month is month-to-date (still accumulating)
+        "partialDays": partial_days,    # trading days summed so far in the live month
         "source": "NSE bhavcopy turnover, point-in-time Nifty 500 (nearest-snapshot)",
         "months": months,
         "value": value,

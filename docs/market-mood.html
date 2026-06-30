@@ -27,8 +27,8 @@
       <a href="https://dhruvan246.github.io/fno-dashboard/" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">🎯<span class="hidden sm:inline">F&amp;O</span></a>
       <a href="./mutual-funds.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">💰<span class="hidden sm:inline">Mutual&nbsp;Funds</span></a>
       <a href="./fii-dii.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">🌐<span class="hidden sm:inline">FII/DII</span></a>
-      <a href="./market-mood.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow transition">🌡️<span class="hidden sm:inline">Market&nbsp;Mood</span></a>
-      <a href="./stock-backtest.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition shrink-0">🧪<span class="hidden sm:inline">Create a Strategy</span></a>
+      <a href="./bank-credit.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">🏦<span class="hidden sm:inline">Banking&nbsp;Growth</span></a>
+      <a href="./market-mood.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow transition">🌡️<span class="hidden sm:inline">Market&nbsp;Mood</span></a>      <a href="./stock-backtest.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition shrink-0">🧪<span class="hidden sm:inline">Create a Strategy</span></a>
     </nav>
   </div>
 </header>
@@ -88,6 +88,7 @@ const fmtLc = cr => '₹'+lc(cr).toFixed(2)+' L cr';
 const fmtCr = cr => '₹'+Math.round(cr).toLocaleString('en-IN')+' cr';
 const fmtMonShort = ym => { const p=ym.split('-'); return MON[+p[1]-1]+" '"+p[0].slice(2); };
 const fmtMonLong  = ym => { const p=ym.split('-'); return MON[+p[1]-1]+' '+p[0]; };
+const fmtDateLong = iso => { const p=iso.split('-'); return p.length<3 ? MON[+p[1]-1]+' '+p[0] : (+p[2])+' '+MON[+p[1]-1]+' '+p[0]; };
 const pct = (a,b) => (b? (a-b)/b*100 : null);
 const fmtPct = p => p==null ? '·' : (p>=0?'+':'−')+Math.abs(p).toFixed(1)+'%';
 
@@ -95,7 +96,7 @@ async function load(){
   try { DATA = await (await fetch('./nifty500_turnover.json?t='+Date.now())).json(); }
   catch(e){ $('status').textContent='Could not load nifty500_turnover.json — run scripts/build_nifty500_turnover.py first.'; return; }
   if(!DATA || !DATA.months || !DATA.months.length){ $('status').textContent='No turnover data yet.'; return; }
-  $('updated').textContent = DATA.updated ? '· data through '+fmtMonLong(DATA.updated.slice(0,7)) : '';
+  $('updated').textContent = DATA.updated ? '· data through '+fmtDateLong(DATA.updated)+(DATA.partialLast?' (current month still updating)':'') : '';
   $('status').classList.add('hidden'); $('content').classList.remove('hidden');
   renderRangeBtns(); renderCards(); renderChart(); renderTable();
 }
@@ -112,16 +113,25 @@ function sliced(){
 }
 
 function renderCards(){
-  const v=DATA.value, m=DATA.months, ma=DATA.ma, i=v.length-1;
-  let peak=-1, pk=0; v.forEach((x,j)=>{ if(x>peak){peak=x;pk=j;} });
-  const yoy = pct(v[i], i>=12?v[i-12]:null);
+  const v=DATA.value, m=DATA.months, ma=DATA.ma, partial=!!DATA.partialLast;
+  const i=v.length-1, c=partial?i-1:i;                 // c = last COMPLETE month
+  let peak=-1, pk=0; v.forEach((x,j)=>{ if((!partial||j<i) && x>peak){peak=x;pk=j;} });
+  const yoy = pct(v[c], c>=12?v[c-12]:null);
   const card=(t,val,sub,cls)=>`<div class="card p-3"><div class="text-[10px] uppercase text-slate-500">${t}</div><div class="text-lg font-bold ${cls||''}">${val}</div><div class="text-[11px] text-slate-400">${sub||''}</div></div>`;
-  $('cards').innerHTML =
-     card('Latest month · '+fmtMonShort(m[i]), fmtLc(v[i]), fmtCr(v[i]))
-    +card('12-mo average', fmtLc(ma[i]), v[i]>=ma[i]?'now above trend':'now below trend', v[i]>=ma[i]?'pos':'neg')
-    +card('vs a year ago', fmtPct(yoy), 'same month last year', (yoy||0)>=0?'pos':'neg')
-    +card('Record high · '+fmtMonShort(m[pk]), fmtLc(peak), 'busiest month on record');
-  $('legV').textContent = fmtLc(v[i]);
+  if(partial && c>=0){
+    $('cards').innerHTML =
+       card('This month so far · '+fmtMonShort(m[i]), fmtLc(v[i]), DATA.partialDays+' trading days')
+      +card('Last full month · '+fmtMonShort(m[c]), fmtLc(v[c]), fmtCr(v[c]))
+      +card('12-mo average', fmtLc(ma[c]), v[c]>=ma[c]?'last month above trend':'last month below trend', v[c]>=ma[c]?'pos':'neg')
+      +card('Record high · '+fmtMonShort(m[pk]), fmtLc(peak), 'busiest full month');
+  } else {
+    $('cards').innerHTML =
+       card('Latest month · '+fmtMonShort(m[i]), fmtLc(v[i]), fmtCr(v[i]))
+      +card('12-mo average', fmtLc(ma[i]), v[i]>=ma[i]?'now above trend':'now below trend', v[i]>=ma[i]?'pos':'neg')
+      +card('vs a year ago', fmtPct(yoy), 'same month last year', (yoy||0)>=0?'pos':'neg')
+      +card('Record high · '+fmtMonShort(m[pk]), fmtLc(peak), 'busiest month on record');
+  }
+  $('legV').textContent = fmtLc(v[i])+(partial?' so far':'');
   $('legM').textContent = fmtLc(ma[i]);
 }
 
@@ -137,15 +147,19 @@ function renderChart(){
     grid+=`<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="${k===0?'#cbd5e1':'#f1f5f9'}"/><text x="${PL-4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${lcv.toFixed(1)}</text>`; }
   let xl=''; const step=Math.max(1,Math.ceil(n/8));
   d.months.forEach((mm,i)=>{ if(i%step && i!==n-1) return; xl+=`<text x="${x(i).toFixed(1)}" y="${H-8}" font-size="9" fill="#94a3b8" text-anchor="middle">${fmtMonShort(mm)}</text>`; });
-  const vline=d.value.map((cr,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(cr).toFixed(1)).join(' ');
+  const partial=!!DATA.partialLast, solidEnd=partial?n-1:n;
+  const vsolid=d.value.slice(0,solidEnd).map((cr,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(cr).toFixed(1)).join(' ');
+  const vdash=(partial&&n>=2)?`M ${x(n-2).toFixed(1)} ${y(d.value[n-2]).toFixed(1)} L ${x(n-1).toFixed(1)} ${y(d.value[n-1]).toFixed(1)}`:'';
   const area=`M ${x(0).toFixed(1)} ${y(0).toFixed(1)} `+d.value.map((cr,i)=>'L'+x(i).toFixed(1)+' '+y(cr).toFixed(1)).join(' ')+` L ${x(n-1).toFixed(1)} ${y(0).toFixed(1)} Z`;
   const mline=d.ma.map((cr,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(cr).toFixed(1)).join(' ');
-  CHART={pts:d.months.map((mm,i)=>({px:x(i),pyV:y(d.value[i]),pyM:y(d.ma[i]),m:mm,v:d.value[i],ma:d.ma[i]})), W, H, PT, PB};
+  CHART={pts:d.months.map((mm,i)=>({px:x(i),pyV:y(d.value[i]),pyM:y(d.ma[i]),m:mm,v:d.value[i],ma:d.ma[i],partial:(partial&&i===n-1)})), W, H, PT, PB};
   $('chart').innerHTML=`<div class="relative">
     <svg viewBox="0 0 ${W} ${H}" class="w-full block">${grid}${xl}
       <path d="${area}" fill="#15803d" opacity="0.08"/>
       <path d="${mline}" fill="none" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5 4"/>
-      <path d="${vline}" fill="none" stroke="#15803d" stroke-width="2"/>
+      <path d="${vsolid}" fill="none" stroke="#15803d" stroke-width="2"/>
+      ${vdash?`<path d="${vdash}" fill="none" stroke="#15803d" stroke-width="2" stroke-dasharray="4 3" opacity="0.8"/>`:''}
+      ${partial?`<circle cx="${x(n-1).toFixed(1)}" cy="${y(d.value[n-1]).toFixed(1)}" r="4" fill="#fff" stroke="#15803d" stroke-width="2"/>`:''}
       <line class="cx" x1="0" x2="0" y1="${PT}" y2="${H-PB}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3" style="display:none"/>
       <circle class="dM" r="3.5" fill="#b91c1c" stroke="#fff" stroke-width="1.5" style="display:none"/>
       <circle class="dV" r="4" fill="#15803d" stroke="#fff" stroke-width="1.5" style="display:none"/>
@@ -168,8 +182,8 @@ function attachHover(){
     dV.setAttribute('cx',p.px); dV.setAttribute('cy',p.pyV); dV.style.display='';
     dM.setAttribute('cx',p.px); dM.setAttribute('cy',p.pyM); dM.style.display='';
     tip.style.left=(p.px/CHART.W*100)+'%'; tip.style.top=(Math.min(p.pyV,p.pyM)/CHART.H*100)+'%';
-    tip.innerHTML=`<div class="font-semibold">${fmtMonLong(p.m)}</div>`
-      +`<div><span style="color:#34d399">●</span> Traded: ${fmtLc(p.v)}</div>`
+    tip.innerHTML=`<div class="font-semibold">${fmtMonLong(p.m)}${p.partial?' · so far':''}</div>`
+      +`<div><span style="color:#34d399">●</span> Traded: ${fmtLc(p.v)}${p.partial?' ('+DATA.partialDays+'d)':''}</div>`
       +`<div><span style="color:#fb7185">●</span> 12-mo avg: ${fmtLc(p.ma)}</div>`;
     tip.classList.remove('hidden');
   };
@@ -178,12 +192,13 @@ function attachHover(){
 }
 
 function renderTable(){
-  const v=DATA.value, m=DATA.months, ma=DATA.ma;
+  const v=DATA.value, m=DATA.months, ma=DATA.ma, last=v.length-1, partial=!!DATA.partialLast;
   const rows=[];
-  for(let i=v.length-1; i>=0 && rows.length<24; i--){
-    const mom=pct(v[i], i>0?v[i-1]:null), vsAvg=pct(v[i], ma[i]);
+  for(let i=last; i>=0 && rows.length<24; i--){
+    const isP = partial && i===last;
+    const mom = isP ? null : pct(v[i], i>0?v[i-1]:null), vsAvg = isP ? null : pct(v[i], ma[i]);
     rows.push(`<tr class="border-b border-slate-50">
-      <td class="py-1 px-1 font-medium">${fmtMonLong(m[i])}</td>
+      <td class="py-1 px-1 font-medium">${fmtMonLong(m[i])}${isP?' <span class="text-[10px] text-amber-600 font-semibold">so far</span>':''}</td>
       <td class="text-right px-1">${Math.round(v[i]).toLocaleString('en-IN')}</td>
       <td class="text-right px-1 ${(mom||0)>=0?'pos':'neg'}">${fmtPct(mom)}</td>
       <td class="text-right px-1 text-slate-500">${Math.round(ma[i]).toLocaleString('en-IN')}</td>
