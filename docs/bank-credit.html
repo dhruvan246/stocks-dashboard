@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Banking Growth</title>
+<meta name="description" content="India Bank Loan Growth (y/y) — RBI bank-credit growth of scheduled commercial banks, fortnightly. The credit cycle at a glance." />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<style>
+  body { font-feature-settings: "tnum" 1; }
+  .pos{color:#15803d;font-weight:600} .neg{color:#b91c1c;font-weight:600}
+  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
+  th[data-s]{cursor:pointer;user-select:none}
+  th[data-s]:hover{color:#2563eb}
+  .rbtn{cursor:pointer}
+  /* chart tooltip */
+  .tip{transition:opacity .08s}
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-lg mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./nse-bse-dashboard.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav class="flex items-center gap-1 overflow-x-auto">
+      <a href="./nse-bse-dashboard.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">📈<span class="hidden sm:inline">Stocks</span></a>
+          <a href="./sectors.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">🔥<span class="hidden sm:inline">Sectors</span></a>
+      <a href="https://dhruvan246.github.io/fno-dashboard/" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">🎯<span class="hidden sm:inline">F&amp;O</span></a>
+      <a href="./mutual-funds.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">💰<span class="hidden sm:inline">Mutual&nbsp;Funds</span></a>
+      <a href="./fii-dii.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">🌐<span class="hidden sm:inline">FII/DII</span></a>
+      <a href="./market-mood.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">🌡️<span class="hidden sm:inline">Market&nbsp;Mood</span></a>
+      <a href="./bank-credit.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow transition">🏦<span class="hidden sm:inline">Banking&nbsp;Growth</span></a>
+      <a href="./results-season.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">📊<span class="hidden sm:inline">Results&nbsp;Season</span></a>
+      <a href="./stock-backtest.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition shrink-0">🧪<span class="hidden sm:inline">Create a Strategy</span></a>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-screen-lg mx-auto px-4 py-6">
+  <div class="mb-4">
+    <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Banking Growth <span class="text-slate-400 font-semibold text-base">· India</span></h1>
+    <p class="text-sm text-slate-500 mt-1">Bank Loan Growth (year-on-year) — the change in total outstanding bank credit of scheduled commercial banks, published fortnightly by the <b>Reserve Bank of India</b>. The same indicator Investing.com tracks: a read on the credit cycle and the broad market regime.</p>
+  </div>
+
+  <div id="status" class="text-sm text-slate-500 py-10 text-center">Loading banking-growth data…</div>
+
+  <div id="content" class="hidden">
+
+    <!-- Latest release banner (Investing.com style) -->
+    <div class="card p-4 mb-4">
+      <div class="flex flex-wrap items-end gap-x-8 gap-y-3">
+        <div>
+          <div class="text-[10px] uppercase tracking-wide text-slate-500">Latest Release</div>
+          <div id="lrDate" class="text-lg font-bold text-slate-800">·</div>
+        </div>
+        <div>
+          <div class="text-[10px] uppercase tracking-wide text-slate-500">Actual</div>
+          <div id="lrActual" class="text-2xl font-extrabold text-blue-700">·</div>
+        </div>
+        <div>
+          <div class="text-[10px] uppercase tracking-wide text-slate-500">Forecast</div>
+          <div id="lrForecast" class="text-lg font-bold text-slate-600">·</div>
+        </div>
+        <div>
+          <div class="text-[10px] uppercase tracking-wide text-slate-500">Previous</div>
+          <div id="lrPrev" class="text-lg font-bold text-slate-600">·</div>
+        </div>
+        <div class="ml-auto text-right">
+          <div class="text-[10px] uppercase tracking-wide text-slate-500">vs Previous</div>
+          <div id="lrChg" class="text-lg font-bold">·</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary cards -->
+    <div id="cards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"></div>
+
+    <!-- Main chart -->
+    <div class="card p-4 mb-4">
+      <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+        <div class="text-sm font-semibold text-slate-700">Bank credit growth <span class="text-slate-400 font-normal">(% y/y · fortnightly · hover for values)</span></div>
+        <div class="flex items-center gap-3 flex-wrap text-xs">
+          <div id="typeBtns" class="flex gap-1"></div>
+          <button id="niftyBtn" class="px-2.5 py-1 rounded font-semibold bg-slate-100 text-slate-600">+ Nifty 50</button>
+          <div id="rangeBtns" class="flex gap-1"></div>
+        </div>
+      </div>
+      <div id="chart"></div>
+      <div id="legend" class="flex items-center gap-4 mt-2 text-[11px] text-slate-500 flex-wrap"></div>
+    </div>
+
+    <!-- Data table -->
+    <div class="card p-4 mb-4">
+      <div class="text-sm font-semibold text-slate-700 mb-2">Release history <span class="text-[11px] font-normal text-slate-400">(click a header to sort)</span></div>
+      <div class="overflow-x-auto max-h-[26rem] overflow-y-auto rounded-lg border border-slate-100">
+        <table class="w-full text-sm" id="tbl">
+          <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200 sticky top-0 bg-white"><tr>
+            <th data-s="date" class="text-left py-2 px-3">Date</th>
+            <th data-s="actual" class="text-right px-3">Actual</th>
+            <th data-s="forecast" class="text-right px-3">Forecast</th>
+            <th data-s="previous" class="text-right px-3">Previous</th>
+            <th data-s="chg" class="text-right px-3">Chg (pp)</th>
+          </tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Explainer -->
+    <div class="card p-4 mb-4">
+      <div class="text-sm font-semibold text-slate-700 mb-2">What is Bank Loan Growth — and why it matters</div>
+      <div class="text-[13px] text-slate-600 space-y-2 leading-relaxed">
+        <p><b>What it measures.</b> The year-on-year change in the total value of outstanding loans issued by banks to households and businesses. The RBI compiles it fortnightly from ~39 commercial banks that cover about 90% of all bank credit.</p>
+        <p><b>Why investors watch it.</b> Borrowing and spending move together with confidence in the economy. Faster credit growth means companies and consumers are taking more loans to invest and spend — usually a tailwind for earnings and for banks/NBFCs. A sharp slowdown often flags caution in the real economy. It's a classic gauge of the <i>credit cycle</i>: long expansions (e.g. 2021→2024) tend to coincide with strong equity regimes, while down-shifts (e.g. the 2016→2017 slide to ~4%) warn of a cooling cycle.</p>
+        <p class="text-[12px] text-slate-400">Turn on the <b>+ Nifty 50</b> overlay above to eyeball how the credit cycle has lined up with the index.</p>
+      </div>
+    </div>
+
+    <p class="text-[11px] text-slate-500">Source: Reserve Bank of India — Bank Loan Growth (y/y), scheduled commercial banks, fortnightly. <span id="updated"></span></p>
+  </div>
+</main>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const fmtDate = d => { const p=d.split('-'); return +p[2]+' '+MON[+p[1]-1]+' '+p[0]; };
+const pct = v => v==null ? '·' : v.toFixed(1)+'%';
+const ppSigned = v => v==null ? '·' : (v>0?'+':v<0?'−':'')+Math.abs(v).toFixed(1);
+const NIFTY_COLOR = '#f59e0b';
+
+let ROWS=[], NIFTY={}, range='5y', chartType='bars', showNifty=false;
+let sortKey='date', sortAsc=false, CHART=null;
+
+async function load(){
+  let data;
+  try { data = await (await fetch('./bank_credit.json?t='+Date.now())).json(); }
+  catch(e){ $('status').textContent='Could not load bank_credit.json — has the refresh run yet?'; return; }
+  ROWS = (data.rows||[]).filter(r=>r.actual!=null).slice();
+  if(!ROWS.length){ $('status').textContent='No banking-growth data yet.'; return; }
+  try { NIFTY = (await (await fetch('./nifty.json')).json()).px || {}; } catch(e){ NIFTY={}; }
+  $('updated').textContent = data.updated ? '· updated '+data.updated.replace('T',' ').replace('Z',' UTC') : '';
+  $('status').classList.add('hidden'); $('content').classList.remove('hidden');
+  renderBanner(); renderCards(); wireControls(); renderChart(); renderTable();
+}
+
+/* nearest Nifty close on/just before a date */
+function niftyAt(date){
+  if(NIFTY[date]!=null) return NIFTY[date];
+  const d=new Date(date+'T00:00:00');
+  for(let i=1;i<=7;i++){ const k=new Date(d); k.setDate(k.getDate()-i);
+    const ks=k.getFullYear()+'-'+String(k.getMonth()+1).padStart(2,'0')+'-'+String(k.getDate()).padStart(2,'0');
+    if(NIFTY[ks]!=null) return NIFTY[ks]; }
+  return null;
+}
+
+function renderBanner(){
+  const last=ROWS[ROWS.length-1], chg=(last.previous!=null)? +(last.actual-last.previous).toFixed(2):null;
+  $('lrDate').textContent=fmtDate(last.date);
+  $('lrActual').textContent=pct(last.actual);
+  $('lrForecast').textContent=last.forecast!=null?pct(last.forecast):'—';
+  $('lrPrev').textContent=last.previous!=null?pct(last.previous):'—';
+  const el=$('lrChg');
+  el.textContent = chg==null?'·':(ppSigned(chg)+' pp');
+  el.className='text-lg font-bold '+(chg>0?'pos':chg<0?'neg':'text-slate-500');
+}
+
+function renderCards(){
+  const vals=ROWS.map(r=>r.actual);
+  const last=ROWS[ROWS.length-1];
+  const max=Math.max(...vals), min=Math.min(...vals);
+  const maxR=ROWS[vals.indexOf(max)], minR=ROWS[vals.indexOf(min)];
+  const avg=vals.reduce((s,v)=>s+v,0)/vals.length;
+  // 1-year-ago comparison
+  const yrAgo=ROWS.filter(r=>r.date<=isoMinus(last.date,12)).slice(-1)[0];
+  const yChg = yrAgo? +(last.actual-yrAgo.actual).toFixed(1):null;
+  const card=(t,v,sub,cls)=>`<div class="card p-3"><div class="text-[10px] uppercase text-slate-500">${t}</div><div class="text-lg font-bold ${cls||''}">${v}</div><div class="text-[11px] text-slate-400">${sub||''}</div></div>`;
+  $('cards').innerHTML =
+     card('Latest', pct(last.actual), fmtDate(last.date), 'text-blue-700')
+    +card('vs 1 year ago', yChg==null?'·':ppSigned(yChg)+' pp', yrAgo?('was '+pct(yrAgo.actual)):'', (yChg||0)>=0?'pos':'neg')
+    +card('All-time high', pct(max), fmtDate(maxR.date))
+    +card('All-time low', pct(min), fmtDate(minR.date))
+    +card('Average ('+ROWS[0].date.slice(0,4)+'–now)', pct(+avg.toFixed(1)), 'long-run mean', 'text-slate-700')
+    +card('Range covered', ROWS.length+' readings', ROWS[0].date.slice(0,7)+' → '+last.date.slice(0,7))
+    +card('Highest recent', pct(Math.max(...vals.slice(-26))), 'last ~1 year')
+    +card('Lowest recent', pct(Math.min(...vals.slice(-26))), 'last ~1 year');
+}
+function isoMinus(dstr, months){ const d=new Date(dstr+'T00:00:00'); d.setMonth(d.getMonth()-months); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+
+/* ---------------- controls ---------------- */
+const RANGES={'1y':365,'2y':730,'5y':1825,'max':1e9};
+function wireControls(){
+  $('rangeBtns').innerHTML=Object.keys(RANGES).map(k=>`<button data-r="${k}" class="rbtn px-2 py-1 rounded font-semibold ${range===k?'bg-blue-600 text-white':'bg-slate-100 text-slate-600'}">${k.toUpperCase()}</button>`).join('');
+  $('rangeBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{range=b.dataset.r; wireControls(); renderChart();});
+  $('typeBtns').innerHTML=[['bars','▊ Bars'],['line','〰 Line']].map(([k,l])=>`<button data-t="${k}" class="px-2.5 py-1 rounded font-semibold ${chartType===k?'bg-slate-800 text-white':'bg-slate-100 text-slate-600'}">${l}</button>`).join('');
+  $('typeBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{chartType=b.dataset.t; wireControls(); renderChart();});
+  const nb=$('niftyBtn'); nb.className='px-2.5 py-1 rounded font-semibold '+(showNifty?'bg-amber-500 text-white':'bg-slate-100 text-slate-600');
+  nb.onclick=()=>{showNifty=!showNifty; wireControls(); renderChart();};
+}
+function filtered(){
+  if(range==='max') return ROWS;
+  const cut=RANGES[range], last=new Date(ROWS[ROWS.length-1].date);
+  return ROWS.filter(r=>(last-new Date(r.date))/864e5<=cut);
+}
+
+/* ---------------- chart ---------------- */
+function renderChart(){
+  const data=filtered(), n=data.length;
+  if(!n){ $('chart').innerHTML='<div class="text-xs text-slate-400 py-10 text-center">No data in this range.</div>'; return; }
+  const W=960, H=360, PL=46, PR=showNifty?54:18, PT=16, PB=42;
+  const plotW=W-PL-PR, plotH=H-PT-PB, baseY=PT+plotH;
+  const vals=data.map(d=>d.actual), vmax=Math.max(...vals);
+  const yMax=Math.max(5, Math.ceil(vmax/5)*5);
+  const avg=vals.reduce((s,v)=>s+v,0)/vals.length;
+  const x=i=>PL+plotW*(n<=1?0.5:i/(n-1));
+  const xBar=i=>PL+(plotW/n)*(i+0.5);
+  const y=v=>PT+plotH*(1-v/yMax);
+  // nifty scale
+  const nv=showNifty?data.map(d=>niftyAt(d.date)).filter(v=>v!=null):[];
+  const nMn=nv.length?Math.min(...nv):0, nMx=nv.length?Math.max(...nv):1;
+  const yN=v=>PT+plotH*(1-(v-nMn)/((nMx-nMn)||1));
+
+  // gridlines + y labels (%)
+  let grid='';
+  for(let g=0; g<=yMax; g+=5){ const yy=y(g);
+    grid+=`<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="var(--border,#eef1f6)"/>`
+        + `<text x="${PL-6}" y="${(yy+3).toFixed(1)}" font-size="10" fill="var(--text-faint,#94a3b8)" text-anchor="end">${g}%</text>`; }
+  // nifty right-axis labels
+  if(showNifty && nv.length){ for(let k=0;k<=2;k++){ const v=nMn+(nMx-nMn)*k/2, yy=yN(v);
+    grid+=`<text x="${W-PR+5}" y="${(yy+3).toFixed(1)}" font-size="9" fill="${NIFTY_COLOR}" text-anchor="start">${Math.round(v).toLocaleString('en-IN')}</text>`; } }
+  // average dashed line
+  const ya=y(avg);
+  grid+=`<line x1="${PL}" y1="${ya.toFixed(1)}" x2="${W-PR}" y2="${ya.toFixed(1)}" stroke="var(--accent,#6366f1)" stroke-width="1" stroke-dasharray="4 4" opacity="0.55"/>`
+      + `<text x="${W-PR}" y="${(ya-4).toFixed(1)}" font-size="9" fill="var(--accent,#6366f1)" text-anchor="end" opacity="0.8">avg ${avg.toFixed(1)}%</text>`;
+
+  // x labels
+  let xl=''; const step=Math.max(1,Math.ceil(n/10)); let lastLbl='';
+  data.forEach((d,i)=>{ if(i%step && i!==n-1) return;
+    const lbl = (range==='1y'||range==='2y') ? d.date.slice(2,7) : d.date.slice(0,4);
+    if(lbl===lastLbl && i!==n-1) return; lastLbl=lbl;
+    const xx=(chartType==='bars'?xBar(i):x(i));
+    xl+=`<text x="${xx.toFixed(1)}" y="${H-PB+16}" font-size="9.5" fill="var(--text-faint,#94a3b8)" text-anchor="middle">${lbl}</text>`; });
+
+  // series
+  let series='';
+  if(chartType==='bars'){
+    const bw=Math.max(1, (plotW/n)*0.74);
+    data.forEach((d,i)=>{ const cx=xBar(i), h=baseY-y(d.actual);
+      const above=d.actual>=avg, isLast=i===n-1;
+      const col=isLast?'var(--accent-2,#7c3aed)':(above?'var(--accent,#4f46e5)':'#9db4e8');
+      series+=`<rect x="${(cx-bw/2).toFixed(1)}" y="${y(d.actual).toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" fill="${col}" rx="${Math.min(2,bw/2).toFixed(1)}"/>`; });
+  } else {
+    const path=data.map((d,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(d.actual).toFixed(1)).join(' ');
+    const area=`M ${x(0).toFixed(1)} ${baseY} `+data.map((d,i)=>'L'+x(i).toFixed(1)+' '+y(d.actual).toFixed(1)).join(' ')+` L ${x(n-1).toFixed(1)} ${baseY} Z`;
+    series=`<path d="${area}" fill="var(--accent-soft,rgba(79,70,229,.12))"/><path d="${path}" fill="none" stroke="var(--accent,#4f46e5)" stroke-width="2"/>`;
+  }
+  // nifty overlay line
+  let npath='';
+  if(showNifty){ data.forEach((d,i)=>{ const v=niftyAt(d.date); if(v==null)return; const xx=(chartType==='bars'?xBar(i):x(i)); npath+=(npath?'L':'M')+xx.toFixed(1)+' '+yN(v).toFixed(1)+' '; }); }
+  const niftyEl = npath?`<path d="${npath}" fill="none" stroke="${NIFTY_COLOR}" stroke-width="1.8" opacity="0.9"/>`:'';
+
+  const cross=`<line class="cx" x1="0" x2="0" y1="${PT}" y2="${baseY}" stroke="var(--text-faint,#94a3b8)" stroke-width="1" stroke-dasharray="3 3" style="display:none"/>`;
+  const dot=`<circle class="dt" r="4" fill="var(--accent-2,#7c3aed)" stroke="#fff" stroke-width="1.5" style="display:none"/>`;
+  const dotN=`<circle class="dtN" r="3.5" fill="${NIFTY_COLOR}" stroke="#fff" stroke-width="1.5" style="display:none"/>`;
+  const hit=`<rect x="${PL}" y="${PT}" width="${plotW.toFixed(1)}" height="${plotH.toFixed(1)}" fill="transparent"/>`;
+
+  $('chart').innerHTML=`<div class="relative">
+    <svg viewBox="0 0 ${W} ${H}" class="w-full block" style="touch-action:none">${grid}${xl}${series}${niftyEl}${cross}${dotN}${dot}${hit}</svg>
+    <div class="tip absolute hidden pointer-events-none -translate-x-1/2 -translate-y-[120%] bg-slate-800 text-white text-[11px] leading-tight px-2 py-1 rounded-md shadow-lg whitespace-nowrap z-10"></div>
+  </div>`;
+
+  CHART={data, W, H, PT, baseY, xPos:i=>(chartType==='bars'?xBar(i):x(i)), y, yN, niftyAt};
+  $('legend').innerHTML =
+    (chartType==='bars'
+      ? `<span><span style="display:inline-block;width:10px;height:10px;background:var(--accent,#4f46e5);border-radius:2px"></span> above average</span>
+         <span><span style="display:inline-block;width:10px;height:10px;background:#9db4e8;border-radius:2px"></span> below average</span>
+         <span><span style="display:inline-block;width:10px;height:10px;background:var(--accent-2,#7c3aed);border-radius:2px"></span> latest</span>`
+      : `<span><span style="display:inline-block;width:14px;height:3px;background:var(--accent,#4f46e5);vertical-align:middle"></span> credit growth (% y/y)</span>`)
+    + `<span style="border-left:1px dashed var(--accent,#6366f1);padding-left:6px">avg line</span>`
+    + (showNifty?`<span><span style="display:inline-block;width:14px;height:3px;background:${NIFTY_COLOR};vertical-align:middle"></span> Nifty 50</span>`:'');
+  attachHover();
+}
+
+function attachHover(){
+  const wrap=$('chart').querySelector('.relative'); if(!wrap||!CHART)return;
+  const svg=wrap.querySelector('svg'), tip=wrap.querySelector('.tip');
+  const cross=wrap.querySelector('.cx'), dot=wrap.querySelector('.dt'), dotN=wrap.querySelector('.dtN');
+  const move=e=>{
+    const r=svg.getBoundingClientRect(); if(!r.width)return;
+    const cxv=((e.touches?e.touches[0].clientX:e.clientX)-r.left)/r.width*CHART.W;
+    let best=0,bd=1e9; for(let i=0;i<CHART.data.length;i++){const d=Math.abs(CHART.xPos(i)-cxv); if(d<bd){bd=d;best=i;}}
+    const d=CHART.data[best], px=CHART.xPos(best), py=CHART.y(d.actual);
+    cross.setAttribute('x1',px); cross.setAttribute('x2',px); cross.style.display='';
+    dot.setAttribute('cx',px); dot.setAttribute('cy',py); dot.style.display='';
+    const nf=showNifty?CHART.niftyAt(d.date):null;
+    if(nf!=null){ dotN.setAttribute('cx',px); dotN.setAttribute('cy',CHART.yN(nf)); dotN.style.display=''; } else dotN.style.display='none';
+    tip.style.left=(px/CHART.W*100)+'%'; tip.style.top=(py/CHART.H*100)+'%';
+    tip.innerHTML=`<div class="font-semibold">${fmtDate(d.date)}</div>`
+      +`<div><span style="color:#93c5fd">●</span> Actual: <b>${pct(d.actual)}</b></div>`
+      +(d.forecast!=null?`<div class="text-slate-300">Forecast: ${pct(d.forecast)}</div>`:'')
+      +(d.previous!=null?`<div class="text-slate-300">Previous: ${pct(d.previous)}</div>`:'')
+      +(nf!=null?`<div><span style="color:${NIFTY_COLOR}">●</span> Nifty: ${Math.round(nf).toLocaleString('en-IN')}</div>`:'');
+    tip.classList.remove('hidden');
+  };
+  const hide=()=>{tip.classList.add('hidden');cross.style.display='none';dot.style.display='none';dotN.style.display='none';};
+  svg.addEventListener('mousemove',move); svg.addEventListener('mouseleave',hide);
+  svg.addEventListener('touchstart',move,{passive:true}); svg.addEventListener('touchmove',move,{passive:true}); svg.addEventListener('touchend',hide);
+}
+
+/* ---------------- table ---------------- */
+function renderTable(){
+  const r=ROWS.slice().sort((a,b)=>{
+    let c; if(sortKey==='date') c=(a.date<b.date?-1:a.date>b.date?1:0);
+    else if(sortKey==='chg'){ const A=(a.previous!=null?a.actual-a.previous:-1e9), B=(b.previous!=null?b.actual-b.previous:-1e9); c=A-B; }
+    else c=((a[sortKey]??-1e9)-(b[sortKey]??-1e9));
+    return sortAsc?c:-c; });
+  $('tbody').innerHTML=r.map(x=>{ const chg=x.previous!=null?+(x.actual-x.previous).toFixed(2):null;
+    return `<tr class="border-b border-slate-50 hover:bg-slate-50">
+      <td class="py-1.5 px-3 font-medium">${fmtDate(x.date)}</td>
+      <td class="text-right px-3 font-semibold text-blue-700">${pct(x.actual)}</td>
+      <td class="text-right px-3 text-slate-500">${x.forecast!=null?pct(x.forecast):'·'}</td>
+      <td class="text-right px-3 text-slate-500">${x.previous!=null?pct(x.previous):'·'}</td>
+      <td class="text-right px-3 ${(chg||0)>0?'pos':(chg||0)<0?'neg':'text-slate-400'}">${chg==null?'·':ppSigned(chg)}</td></tr>`; }).join('');
+}
+document.querySelectorAll('th[data-s]').forEach(th=>th.addEventListener('click',()=>{
+  const k=th.dataset.s; if(sortKey===k)sortAsc=!sortAsc; else{sortKey=k;sortAsc=(k==='date'?false:false);} renderTable(); }));
+
+window.addEventListener('resize',()=>{ if(CHART) renderChart(); });
+load();
+</script>
+</body>
+</html>
