@@ -23,8 +23,12 @@ import os, json, gzip, statistics
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-FUND = os.path.join(HERE, "fundamentals.json")
-REVOP = os.path.join(HERE, "revop_fundamentals.json")
+# Read the DAILY-maintained web copies (the cron upserts these), falling back to the scripts/ source
+# copies for a local full rebuild. PAT = sf_fundamentals.json (owners basis), rev/op = sf_revop.json.
+FUND = os.path.join(ROOT, "docs", "sf_fundamentals.json")
+if not os.path.exists(FUND): FUND = os.path.join(HERE, "fundamentals.json")
+REVOP = os.path.join(ROOT, "docs", "sf_revop.json")
+if not os.path.exists(REVOP): REVOP = os.path.join(HERE, "revop_fundamentals.json")
 BIN = os.path.join(ROOT, "docs", "sf_stock_data.bin")
 OUT = os.path.join(ROOT, "docs", "results_season.json")
 

@@ -26,9 +26,11 @@ import os, sys, json, datetime
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import build_fundamentals as B   # reuse _get / nse_jar / iso / xbrl_profit / MIN_QE
+from build_revop import xbrl_revop   # revenue + operating profit from the SAME filing XBRL
 
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE)
 DOCS = os.path.join(ROOT, "docs", "sf_fundamentals.json")
+REVOP = os.path.join(ROOT, "docs", "sf_revop.json")   # parallel rev/op dataset for the Results Season chart
 MARK = os.path.join(ROOT, "docs", ".fund_updated")
 WINDOW_DAYS = 120  # wide overlap: a full quarter, so even if the workflow misses a few runs the
                    # next one self-heals. Cheap because we SKIP the iXBRL fetch for quarters/bases
@@ -37,6 +39,8 @@ WINDOW_DAYS = 120  # wide overlap: a full quarter, so even if the workflow misse
 def main():
     if os.path.exists(MARK): os.remove(MARK)
     data = json.load(open(DOCS))
+    try: revop = json.load(open(REVOP))   # {SYM: {QE: [revStd,revCon,opStd,opCon,patStd,patCon,fin]}}
+    except Exception: revop = {}
     jar = B.nse_jar()
     h = {"User-Agent": B.UA, "Accept": "application/json",
          "Referer": "https://www.nseindia.com/companies-listing/corporate-filings-financial-results"}
@@ -60,15 +64,21 @@ def main():
         byq.setdefault((sym, qe), []).append(
             {"ann": B.iso(r.get("broadcast_Date")) or "99999999", "xbrl": xb, "basis": r.get("consolidated", "")})
 
-    changed = newsyms = 0
+    changed = newsyms = revop_changed = 0
     for (sym, qe), filings in byq.items():
         existing = next((x for x in data.get(sym, []) if x[0] == int(qe)), None)
+        er = revop.get(sym, {}).get(str(qe))     # existing rev/op row for this (sym, quarter)
         std = con = None; annStd = annCon = None
+        rStd = rCon = oStd = oCon = None; rFin = 0
         for f in sorted(filings, key=lambda x: x["ann"]):
-            if std is not None and con is not None: break
             is_con = "consol" in (f.get("basis") or "").lower()
-            # already stored for this basis? skip the ~1 MB iXBRL fetch — lets the window be wide & cheap
-            if existing and ((is_con and existing[3] is not None) or (not is_con and existing[1] is not None)):
+            # Skip the ~1 MB iXBRL fetch only when BOTH net-profit AND rev/op for this basis are
+            # already known (a bank is "known" once flagged fin). Keeps the wide window cheap.
+            pat_have = ((is_con and (con is not None or (existing and existing[3] is not None))) or
+                        (not is_con and (std is not None or (existing and existing[1] is not None))))
+            rev_have = ((is_con and (rCon is not None or rFin or (er and (er[1] is not None or er[6])))) or
+                        (not is_con and (rStd is not None or rFin or (er and (er[0] is not None or er[6])))))
+            if pat_have and rev_have:
                 continue
             try:
                 xml = B._get(f["xbrl"], headers={"User-Agent": B.UA, "Referer": "https://www.nseindia.com/"}, timeout=30)
@@ -78,17 +88,37 @@ def main():
             a = None if f["ann"] == "99999999" else int(f["ann"])
             if std is None and s is not None: std, annStd = s, a
             if con is None and c is not None: con, annCon = c, a
-        if std is None and con is None: continue
-        if sym not in data: data[sym] = []; newsyms += 1
-        rec = data[sym]
-        row = next((x for x in rec if x[0] == int(qe)), None)
-        if row:   # upsert: only FILL missing fields (keep original point-in-time announcement)
-            upd = False
-            if std is not None and row[1] is None: row[1], row[2] = std, annStd; upd = True
-            if con is not None and row[3] is None: row[3], row[4] = con, annCon; upd = True
-            if upd: changed += 1
-        else:
-            rec.append([int(qe), std, annStd, con, annCon]); rec.sort(key=lambda x: x[0]); changed += 1
+            try:   # rev/op is best-effort: never let it break the net-profit refresh
+                rs2, os2, rc2, oc2, fin2 = xbrl_revop(xml, basis_hint=f.get("basis"))
+                if rStd is None and rs2 is not None: rStd, oStd = rs2, os2
+                if rCon is None and rc2 is not None: rCon, oCon = rc2, oc2
+                if fin2: rFin = 1
+            except Exception:
+                pass
+        # --- upsert net profit (sf_fundamentals.json): only FILL missing fields (point-in-time) ---
+        if std is not None or con is not None:
+            if sym not in data: data[sym] = []; newsyms += 1
+            rec = data[sym]
+            row = next((x for x in rec if x[0] == int(qe)), None)
+            if row:
+                upd = False
+                if std is not None and row[1] is None: row[1], row[2] = std, annStd; upd = True
+                if con is not None and row[3] is None: row[3], row[4] = con, annCon; upd = True
+                if upd: changed += 1
+            else:
+                rec.append([int(qe), std, annStd, con, annCon]); rec.sort(key=lambda x: x[0]); changed += 1
+        # --- upsert revenue / operating profit (sf_revop.json): fill-only, parallel structure ---
+        if rStd is not None or rCon is not None or rFin:
+            d = revop.setdefault(sym, {})
+            rr = d.get(str(qe)) or [None, None, None, None, None, None, 0]
+            if rr[0] is None and rStd is not None: rr[0] = rStd
+            if rr[1] is None and rCon is not None: rr[1] = rCon
+            if rr[2] is None and oStd is not None: rr[2] = oStd
+            if rr[3] is None and oCon is not None: rr[3] = oCon
+            if rr[4] is None and std  is not None: rr[4] = std
+            if rr[5] is None and con  is not None: rr[5] = con
+            if rFin: rr[6] = 1
+            d[str(qe)] = rr; revop_changed += 1
 
     # No-subsidiary auto-fill: a company that has never reported con != std files only a standalone
     # XBRL (no consolidated), so the loop above leaves con=None. For such companies consolidated ==
@@ -120,11 +150,13 @@ def main():
             if _r[3] is not None and _r[4] is None and _r[2] is not None: _r[4] = _r[2]; changed += 1
             if _r[1] is not None and _r[2] is None and _r[4] is not None: _r[2] = _r[4]; changed += 1
 
-    if not changed and not newsyms:
+    if not changed and not newsyms and not revop_changed:
         print("no new earnings — nothing to update"); return
     json.dump(data, open(DOCS, "w"), separators=(",", ":"))
+    json.dump(revop, open(REVOP, "w"), separators=(",", ":"))
     open(MARK, "w").write(today.isoformat())
-    print("upserted %d quarters (%d new symbols); %d symbols total" % (changed, newsyms, len(data)))
+    print("upserted %d quarters (%d new symbols, %d rev/op cells); %d symbols total" % (
+        changed, newsyms, revop_changed, len(data)))
 
 if __name__ == "__main__":
     main()

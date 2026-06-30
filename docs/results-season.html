@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Results Season</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; font-feature-settings:"tnum" 1; }
+  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
+  .scrollbar::-webkit-scrollbar{height:8px}
+  .scrollbar::-webkit-scrollbar-thumb{background:#475569;border-radius:4px}
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-lg mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./nse-bse-dashboard.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav class="flex items-center gap-1 overflow-x-auto">
+      <a href="./nse-bse-dashboard.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">📈<span class="hidden sm:inline">Stocks</span></a>
+      <a href="./sectors.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">🔥<span class="hidden sm:inline">Sectors</span></a>
+      <a href="https://dhruvan246.github.io/fno-dashboard/" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">🎯<span class="hidden sm:inline">F&amp;O</span></a>
+      <a href="./mutual-funds.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">💰<span class="hidden sm:inline">Mutual&nbsp;Funds</span></a>
+      <a href="./fii-dii.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">🌐<span class="hidden sm:inline">FII/DII</span></a>
+      <a href="./bank-credit.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">🏦<span class="hidden sm:inline">Banking&nbsp;Growth</span></a>
+      <a href="./market-mood.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">🌡️<span class="hidden sm:inline">Market&nbsp;Mood</span></a>
+      <a href="./results-season.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow transition">📊<span class="hidden sm:inline">Results&nbsp;Season</span></a>
+      <a href="./stock-backtest.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition shrink-0">🧪<span class="hidden sm:inline">Create a Strategy</span></a>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-screen-lg mx-auto px-4 py-6">
+  <div class="mb-4">
+    <h1 class="text-xl font-bold text-slate-900">Results season &mdash; quarterly earnings pulse</h1>
+    <p class="text-sm text-slate-500 mt-0.5">Median year-on-year growth of companies that declared results each quarter, for Revenue, Operating Profit and PAT. <span id="rsUniverse" class="text-slate-400"></span></p>
+  </div>
+
+  <div id="rsStatus" class="text-sm text-slate-500 py-10 text-center">Loading results-season data&hellip;</div>
+
+  <div id="rsWrap" class="hidden">
+    <div class="rounded-xl shadow-sm border border-slate-700 bg-slate-900 text-slate-100 overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-700 flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 class="text-sm font-bold uppercase tracking-wide text-white flex items-center gap-2">📊 Median YoY growth by quarter</h2>
+          <p class="text-[11px] text-slate-400 mt-1" id="rsAsOf"></p>
+        </div>
+        <div id="rsLegend" class="flex items-center gap-3 sm:gap-4 text-[11px] font-medium shrink-0"></div>
+      </div>
+      <div class="px-2 sm:px-5 py-5">
+        <div id="rsChart" class="w-full overflow-x-auto scrollbar"></div>
+        <p class="text-[10px] text-slate-500 mt-3 px-3 leading-relaxed" id="rsFootnote"></p>
+      </div>
+    </div>
+
+    <div class="card mt-4 overflow-hidden">
+      <div class="px-4 py-3 border-b border-slate-200 text-sm font-semibold text-slate-700">Quarter detail <span class="text-[11px] font-normal text-slate-400">(median YoY %; hover the chart for sample sizes)</span></div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50 text-slate-500 text-xs uppercase">
+            <tr>
+              <th class="px-4 py-2 text-left font-semibold">Quarter</th>
+              <th class="px-4 py-2 text-right font-semibold">Results</th>
+              <th class="px-4 py-2 text-right font-semibold">Revenue</th>
+              <th class="px-4 py-2 text-right font-semibold">Op. Profit</th>
+              <th class="px-4 py-2 text-right font-semibold">PAT</th>
+            </tr>
+          </thead>
+          <tbody id="rsTableBody" class="divide-y divide-slate-100"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+let RESULTS_SEASON = { quarters: [] };
+
+function pct(v){ return (v >= 0 ? '+' : '') + v.toFixed(1) + '%'; }
+function pctCls(v){ return v >= 0 ? 'text-green-700' : 'text-red-700'; }
+
+function renderResultsSeason() {
+  const root = document.getElementById('rsChart');
+  const Q = (RESULTS_SEASON.quarters || []).filter(q =>
+      q.rev.median !== null || q.op.median !== null || q.pat.median !== null);
+  if (!root || !Q.length) return;
+
+  const METRICS = [
+    { key: 'rev', name: 'Revenue',          color: '#38bdf8' },
+    { key: 'op',  name: 'Operating Profit', color: '#34d399' },
+    { key: 'pat', name: 'PAT',              color: '#fbbf24' },
+  ];
+  const uni  = document.getElementById('rsUniverse'); if (uni)  uni.textContent  = RESULTS_SEASON.universe || '';
+  const asof = document.getElementById('rsAsOf');     if (asof) asof.textContent  = 'Universe: ' + (RESULTS_SEASON.universe || '') + (RESULTS_SEASON.dataAsOf ? ' · prices as of ' + RESULTS_SEASON.dataAsOf : '');
+  const foot = document.getElementById('rsFootnote'); if (foot) foot.textContent = RESULTS_SEASON.basis || '';
+  const leg  = document.getElementById('rsLegend');
+  if (leg) leg.innerHTML = METRICS.map(mm =>
+    '<span class="inline-flex items-center gap-1.5"><span style="width:10px;height:10px;border-radius:2px;background:' +
+    mm.color + '"></span><span class="text-slate-300">' + mm.name + '</span></span>').join('');
+
+  let dMax = 0, dMin = 0;
+  Q.forEach(q => METRICS.forEach(mm => { const v = q[mm.key].median;
+    if (v !== null) { if (v > dMax) dMax = v; if (v < dMin) dMin = v; } }));
+  dMax = Math.ceil((dMax + 1) / 5) * 5;
+  dMin = dMin < 0 ? Math.floor((dMin - 1) / 5) * 5 : 0;
+  const range = (dMax - dMin) || 1;
+
+  const n = Q.length, M = { l: 40, r: 14, t: 26, b: 48 };
+  const groupW = 66, bw = 15, gap = 3;
+  const W = M.l + n * groupW + M.r, H = 312;
+  const plotTop = M.t, plotBot = H - M.b;
+  const y = v => plotTop + (dMax - v) / range * (plotBot - plotTop);
+  const zeroY = y(0);
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const fmt = v => (v >= 0 ? '+' : '') + v.toFixed(1) + '%';
+  const cf  = x => x.toLocaleString('en-IN');
+
+  let g = '';
+  for (let t = dMin; t <= dMax + 0.001; t += 5) {
+    const yy = y(t), zero = t === 0;
+    g += '<line x1="' + M.l + '" x2="' + (W - M.r) + '" y1="' + yy.toFixed(1) + '" y2="' + yy.toFixed(1) +
+         '" stroke="' + (zero ? '#64748b' : '#1e293b') + '" stroke-width="' + (zero ? 1.2 : 1) + '" pointer-events="none"/>' +
+         '<text x="' + (M.l - 6) + '" y="' + (yy + 3).toFixed(1) + '" text-anchor="end" font-size="10" fill="#64748b" pointer-events="none">' + t + '%</text>';
+  }
+  Q.forEach((q, i) => {
+    const gx = M.l + i * groupW, cx = (gx + groupW / 2).toFixed(1);
+    let gt = esc(q.label) + ' — ' + cf(q.reported) + ' companies reported';
+    METRICS.forEach(mm => { if (q[mm.key].median !== null) gt += ' · ' + mm.name + ' ' + fmt(q[mm.key].median); });
+    g += '<rect x="' + gx + '" y="' + plotTop + '" width="' + groupW + '" height="' + (plotBot - plotTop) +
+         '" fill="transparent"><title>' + gt + '</title></rect>';
+    const totW = METRICS.length * bw + (METRICS.length - 1) * gap, x0 = gx + (groupW - totW) / 2;
+    METRICS.forEach((mm, j) => {
+      const v = q[mm.key].median; if (v === null) return;
+      const bx = x0 + j * (bw + gap), yv = y(v);
+      const top = Math.min(yv, zeroY), hh = Math.max(0.5, Math.abs(zeroY - yv));
+      g += '<rect x="' + bx.toFixed(1) + '" y="' + top.toFixed(1) + '" width="' + bw + '" height="' + hh.toFixed(1) +
+           '" rx="2" fill="' + mm.color + '"><title>' + esc(q.label) + ' · ' + mm.name + ': ' + fmt(v) +
+           ' (median of ' + cf(q[mm.key].n) + ' companies)</title></rect>';
+      const pos = v >= 0, lx = (bx + bw / 2).toFixed(1), ly = (pos ? yv - 3 : yv + 3).toFixed(1);
+      g += '<text x="' + lx + '" y="' + ly + '" transform="rotate(-90 ' + lx + ' ' + ly + ')" text-anchor="' +
+           (pos ? 'start' : 'end') + '" font-size="9.5" font-weight="600" fill="' + mm.color + '" pointer-events="none">' + fmt(v) + '</text>';
+    });
+    g += '<text x="' + cx + '" y="' + (plotBot + 17) + '" text-anchor="middle" font-size="11" font-weight="600" fill="#cbd5e1" pointer-events="none">' + esc(q.label) + '</text>' +
+         '<text x="' + cx + '" y="' + (plotBot + 31) + '" text-anchor="middle" font-size="9.5" fill="#64748b" pointer-events="none">' + cf(q.reported) + ' Results</text>';
+  });
+  root.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="xMidYMid meet" ' +
+    'style="width:100%;height:auto;display:block;min-width:720px" font-family="Inter,sans-serif">' + g + '</svg>';
+}
+
+function renderResultsTable() {
+  const tb = document.getElementById('rsTableBody');
+  if (!tb) return;
+  const cell = m => m.median === null ? '<span class="text-slate-300">—</span>'
+    : '<span class="' + pctCls(m.median) + ' font-medium tabular-nums">' + pct(m.median) + '</span>';
+  tb.innerHTML = (RESULTS_SEASON.quarters || []).slice().reverse().map(q =>
+    '<tr class="hover:bg-slate-50">' +
+      '<td class="px-4 py-2 font-semibold text-slate-700">' + q.label + '</td>' +
+      '<td class="px-4 py-2 text-right text-slate-600 tabular-nums">' + q.reported.toLocaleString('en-IN') + '</td>' +
+      '<td class="px-4 py-2 text-right">' + cell(q.rev) + '</td>' +
+      '<td class="px-4 py-2 text-right">' + cell(q.op) + '</td>' +
+      '<td class="px-4 py-2 text-right">' + cell(q.pat) + '</td>' +
+    '</tr>').join('');
+}
+
+fetch('./results_season.json')
+  .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+  .then(data => {
+    RESULTS_SEASON = data;
+    if (!RESULTS_SEASON.quarters || !RESULTS_SEASON.quarters.length) throw new Error('no data');
+    renderResultsSeason();
+    renderResultsTable();
+    document.getElementById('rsStatus').classList.add('hidden');
+    document.getElementById('rsWrap').classList.remove('hidden');
+  })
+  .catch(e => {
+    document.getElementById('rsStatus').textContent = 'Could not load results-season data (' + e.message + ').';
+  });
+</script>
+</body>
+</html>

@@ -35,6 +35,7 @@ import os, re, sys, json, glob, concurrent.futures
 HERE = os.path.dirname(os.path.abspath(__file__))
 CACHE = os.path.join(HERE, "_xbrl_cache")
 OUT = os.path.join(HERE, "revop_fundamentals.json")
+DOCS_OUT = os.path.join(os.path.dirname(HERE), "docs", "sf_revop.json")  # web copy the daily cron maintains
 PROG = os.path.join(HERE, "_revop_progress.json")
 FUND = os.path.join(HERE, "fundamentals.json")
 
@@ -98,6 +99,38 @@ def metrics_for(xml, ctx):
             op / CR if op is not None else None,
             pat / CR if pat is not None else None,
             owners / CR if owners is not None else None)
+
+
+def xbrl_revop(xml, basis_hint=None):
+    """(rev_std, op_std, rev_con, op_con, fin) in Rs crore for the CURRENT quarter from ONE filing,
+    mirroring build_fundamentals.xbrl_profit's OneD/FourD + NatureOfReport logic — so the daily
+    incremental updater can read revenue + operating profit straight from the XBRL it already fetches
+    for PAT, no disk cache needed. Operating Profit = PBET + FinanceCosts + Depreciation - OtherIncome
+    (EBITDA ex-other-income). Banks/NBFCs (InterestEarned) -> rev/op None (not comparable), fin=1."""
+    nat = {}
+    for m in re.finditer(r'NatureOfReportStandaloneConsolidated contextRef="([^"]+)"[^>]*>([^<]+)<', xml):
+        nat[m.group(1)] = m.group(2).strip().lower()
+    hint = (basis_hint or "").lower()
+    fin = 1 if "InterestEarned" in xml else 0
+    rev_std = op_std = rev_con = op_con = None
+    one_nat = nat.get("OneD", "") or hint
+    rev, op, _, _ = metrics_for(xml, "OneD")
+    if rev is not None or op is not None:
+        if "consol" in one_nat:
+            rev_con, op_con = rev, op
+        else:
+            rev_std, op_std = rev, op
+    four_nat = nat.get("FourD", "")
+    if four_nat and four_nat != one_nat:          # combined filing: FourD is the OTHER basis
+        rev, op, _, _ = metrics_for(xml, "FourD")
+        if "consol" in four_nat and rev_con is None:
+            rev_con, op_con = rev, op
+        elif "consol" not in four_nat and rev_std is None:
+            rev_std, op_std = rev, op
+    if fin:
+        rev_std = op_std = rev_con = op_con = None
+    r2 = lambda x: round(x, 2) if x is not None else None
+    return r2(rev_std), r2(op_std), r2(rev_con), r2(op_con), fin
 
 
 def ts_key(fname):
@@ -230,7 +263,8 @@ def main():
     json.dump(data, open(OUT, "w"), separators=(",", ":"))
     if not limit:
         json.dump({"done": total}, open(PROG, "w"))
-    print("Wrote %s: %d symbols, %d files processed" % (OUT, len(data), processed))
+        json.dump(data, open(DOCS_OUT, "w"), separators=(",", ":"))   # web copy (daily cron maintains it)
+    print("Wrote %s + %s: %d symbols, %d files processed" % (OUT, DOCS_OUT, len(data), processed))
 
     validate(data)
 
