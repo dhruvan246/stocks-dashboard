@@ -21,6 +21,7 @@ on:
 
 permissions:
   contents: write
+  actions: write   # needed to dispatch pages.yml after a change
 
 concurrency:
   group: refresh-market-mood
@@ -58,6 +59,7 @@ jobs:
       # discarded by the reset). Same concurrent-writer-safe retry loop the
       # other refreshers use.
       - name: Commit updated turnover series (only if changed)
+        id: commit
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -69,11 +71,13 @@ jobs:
             git add docs/nifty500_turnover.json
             if git diff --cached --quiet; then
               echo "Turnover series unchanged — nothing to commit"
+              echo "changed=false" >> "$GITHUB_OUTPUT"
               exit 0
             fi
             git commit -m "Market Mood: refresh Nifty 500 monthly turnover $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
             if git push origin HEAD:main; then
               echo "Pushed on attempt #$attempt"
+              echo "changed=true" >> "$GITHUB_OUTPUT"
               exit 0
             fi
             echo "Push attempt #$attempt rejected; resetting and retrying"
@@ -81,3 +85,12 @@ jobs:
           done
           echo "Failed to push after 5 attempts"
           exit 1
+
+      # A GITHUB_TOKEN commit can't trigger pages.yml (GitHub's loop guard), so
+      # publish explicitly when the series changed. workflow_dispatch IS allowed
+      # from GITHUB_TOKEN; pages.yml's cancel-in-progress de-dupes concurrent deploys.
+      - name: Publish to Pages (only when the series changed)
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml
