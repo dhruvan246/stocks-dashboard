@@ -190,7 +190,8 @@ def main():
     out = {
         "unit": "cr",
         "maWindow": MA_WINDOW,
-        "updated": end_iso,
+        "updated": last_day_of_month(end_ym).isoformat(),  # last COMPLETE month (matches the chart)
+        "dataEnd": end_iso,                                  # raw snapshot freshness (provenance)
         "source": "NSE bhavcopy turnover, point-in-time Nifty 500 (nearest-snapshot)",
         "months": months,
         "value": value,

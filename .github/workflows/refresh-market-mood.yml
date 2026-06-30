@@ -1,0 +1,83 @@
+name: Refresh Market Mood (Nifty 500 monthly turnover)
+
+on:
+  schedule:
+    # 16:05 UTC = 21:35 IST, weekdays — after the "Daily backtest data refresh"
+    # (15:15 UTC) has rebuilt + published the fresh sf_stock_data.bin `data`
+    # release asset. The monthly series only changes at month-end, so most runs
+    # are no-ops (the commit step exits when nothing changed).
+    - cron: "5 16 * * 1-5"
+  # Optional external trigger (cron-job.org) — SEPARATE event type from the
+  # other jobs. POST /repos/dhruvan246/stocks-dashboard/dispatches with
+  #   {"event_type":"market-mood-refresh"}
+  repository_dispatch:
+    types: [market-mood-refresh]
+  workflow_dispatch: {}
+  # Bootstrap/self-test: also run when the builder or this workflow changes.
+  push:
+    paths:
+      - "scripts/build_nifty500_turnover.py"
+      - ".github/workflows/refresh-market-mood.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-market-mood
+  cancel-in-progress: false
+
+jobs:
+  refresh-market-mood:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      # Pull the freshest survivorship-free dataset (published daily by
+      # refresh-backtest-data.yml as the `data` release asset). We BUILD from it
+      # but never commit it — docs/sf_stock_data.bin stays a frozen snapshot.
+      - name: Download fresh sf_stock_data.bin (data release asset)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/mm
+          gh release download data --pattern 'sf_stock_data.bin' --dir /tmp/mm --clobber
+          cp /tmp/mm/sf_stock_data.bin docs/sf_stock_data.bin
+          python3 -c "import json,gzip;print('data end =', json.loads(gzip.decompress(open('docs/sf_stock_data.bin','rb').read()))['end'])"
+
+      - name: Rebuild Nifty 500 monthly turnover
+        run: python3 -X utf8 scripts/build_nifty500_turnover.py
+
+      # Commit ONLY docs/nifty500_turnover.json (the freshly built bin is
+      # discarded by the reset). Same concurrent-writer-safe retry loop the
+      # other refreshers use.
+      - name: Commit updated turnover series (only if changed)
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp docs/nifty500_turnover.json /tmp/nifty500_turnover.json
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/nifty500_turnover.json docs/nifty500_turnover.json
+            git add docs/nifty500_turnover.json
+            if git diff --cached --quiet; then
+              echo "Turnover series unchanged — nothing to commit"
+              exit 0
+            fi
+            git commit -m "Market Mood: refresh Nifty 500 monthly turnover $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then
+              echo "Pushed on attempt #$attempt"
+              exit 0
+            fi
+            echo "Push attempt #$attempt rejected; resetting and retrying"
+            sleep $(( attempt * 3 ))
+          done
+          echo "Failed to push after 5 attempts"
+          exit 1
