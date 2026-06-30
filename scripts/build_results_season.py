@@ -99,9 +99,10 @@ def main():
     for s, rows in fund.items():
         pat[s] = {r[0]: (r[1], r[3]) for r in rows}
 
-    # quarters: standard quarter-ends from Jun-2023 to the latest with enough U reporters
+    # quarters: standard quarter-ends from Mar-2019 (earliest with a 2018 year-ago base) to the
+    # latest with enough U reporters. The >=200 filter below trims any that don't qualify.
     cand = []
-    y, m = 2023, 6
+    y, m = 2019, 3
     while (y, m) <= (2026, 12):
         cand.append(y * 10000 + m * 100 + {3: 31, 6: 30, 9: 30, 12: 31}[m])
         m += 3

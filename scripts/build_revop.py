@@ -39,8 +39,8 @@ DOCS_OUT = os.path.join(os.path.dirname(HERE), "docs", "sf_revop.json")  # web c
 PROG = os.path.join(HERE, "_revop_progress.json")
 FUND = os.path.join(HERE, "fundamentals.json")
 
-# only quarters that can feed the chart (year-ago of Jun-2023 is Jun-2022). Skip ancient filings.
-MIN_QE = 20220301
+# Go back as far as the cache supports (chart starts ~2019 -> needs 2018 as the year-ago base).
+MIN_QE = 20180101
 MAX_QE = 20261231
 
 CR = 1e7  # rupees -> crore
@@ -54,8 +54,26 @@ def _ctx_period_re(cid):
                       r'<xbrli:endDate>(\d{4}-\d{2}-\d{2})</xbrli:endDate>', re.DOTALL)
 RE_ONED = _ctx_period_re("OneD")
 RE_FOURD = _ctx_period_re("FourD")
+RE_CTX = {"OneD": RE_ONED, "FourD": RE_FOURD}
+# OLDER INDAS filings (pre ~2021) don't carry the period inside the <xbrli:context> block the way
+# the newer ones do; instead they tag DateOf{Start,End}OfReportingPeriod per context. Read those.
+RE_DATE = {c: {b: re.compile(r'DateOf' + b + r'OfReportingPeriod contextRef="' + c + r'"[^>]*>(\d{4}-\d{2}-\d{2})')
+               for b in ("Start", "End")} for c in ("OneD", "FourD")}
 RE_NAT = {c: re.compile(r'NatureOfReportStandaloneConsolidated contextRef="' + c + r'">([^<]+)<') for c in ("OneD", "FourD")}
 RE_TS = re.compile(r'(\d{12,14})')
+
+
+def ctx_period(xml, cid):
+    """(startDate, endDate) for context cid — from the <xbrli:context> block (newer files) or the
+    DateOf{Start,End}OfReportingPeriod tags (older files). None if neither is present."""
+    m = RE_CTX[cid].search(xml)
+    if m:
+        return m.group(1), m.group(2)
+    ms = RE_DATE[cid]["Start"].search(xml)
+    me = RE_DATE[cid]["End"].search(xml)
+    if ms and me:
+        return ms.group(1), me.group(1)
+    return None
 
 TAGS = ("RevenueFromOperations", "OtherIncome", "FinanceCosts",
         "DepreciationDepletionAndAmortisationExpense",
@@ -145,10 +163,10 @@ def ts_key(fname):
 
 def parse_file(path, fname):
     xml = open(path, encoding="utf-8", errors="replace").read()
-    mo = RE_ONED.search(xml)
-    if not mo:
+    per = ctx_period(xml, "OneD")
+    if not per:
         return None  # no current-quarter financial context (governance / balance-sheet-only)
-    s, e = mo.group(1), mo.group(2)
+    s, e = per
     if not (0 < days_between(s, e) <= 100):
         return None  # OneD must be the 3-month quarter, not an annual/YTD period
     qe = int(e.replace("-", ""))
@@ -170,8 +188,8 @@ def parse_file(path, fname):
     else:
         out["std"] = one
     # combined filing: FourD is the OTHER basis, current quarter (only if a real 3-month quarter)
-    mf = RE_FOURD.search(xml)
-    if mf and 0 < days_between(mf.group(1), mf.group(2)) <= 100:
+    pf = ctx_period(xml, "FourD")
+    if pf and 0 < days_between(pf[0], pf[1]) <= 100:
         four_nat = RE_NAT["FourD"].search(xml)
         four_nat = four_nat.group(1).strip().lower() if four_nat else ""
         if four_nat and four_nat != one_nat:
@@ -199,9 +217,9 @@ def main():
     fresh = "--fresh" in args
 
     files = sorted(os.listdir(CACHE), key=ts_key)  # ascending -> last (latest) write wins
-    # pre-filter: a filing can only carry a quarter >= MIN_QE (2022-03) if it was FILED in 2022+.
-    # ts_key is YYYYMMDDHHMMSS (or the filename when unparseable, which sorts > "2022" -> kept).
-    files = [f for f in files if ts_key(f)[:4] >= "2022"]
+    # pre-filter: a filing can only carry a quarter >= MIN_QE (2018-01) if it was FILED in 2018+.
+    # ts_key is YYYYMMDDHHMMSS (or the filename when unparseable, which sorts > "2018" -> kept).
+    files = [f for f in files if ts_key(f)[:4] >= "2018"]
     if limit:
         # sample across the whole set, biased to recent (where revenue matters), for validation
         files = files[-limit:]

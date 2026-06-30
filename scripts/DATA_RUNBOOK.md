@@ -298,10 +298,11 @@ view, Top/Bottom movers, search, watchlist (localStorage), equal/mcap toggle, CS
 
 ## 11. RESULTS SEASON CHART  (Trendlyne-style market earnings pulse; built 2026-06-30, SELF-UPDATING)
 Standalone page **`docs/results-season.html`** (own "Results Season" 📊 nav tab; fetches `results_season.json`
-at runtime). Dark grouped-bar chart: per quarter (Jun-2023 → latest), the MEDIAN YoY % across reporting companies
-for **Revenue, Operating Profit, PAT**, with the reporting count in each x-label ("Jun 2023" + "1,158 Results").
-Value labels on each bar, hover tooltips, hand-rolled SVG (no chart lib), + a quarter-detail table.
-⚠️ MOVED OFF the Stocks dashboard (was under the stats grid) → its own page, per user. The nav tab is on every page.
+at runtime). Dark grouped-bar chart: per quarter (**Mar-2019 → latest, 29 quarters**), the MEDIAN YoY % across
+reporting companies for **Revenue, Operating Profit, PAT**, with the reporting count in each x-label. Value labels on
+each bar, hover tooltips, hand-rolled SVG (no chart lib), + a quarter-detail table. For many quarters the SVG renders
+at natural width and the wrapper scrolls (so bars stay readable); it shows the **COVID crash (Jun-2020: PAT −56%) and
+V-recovery (Jun-2021: +48%)**. ⚠️ MOVED OFF the Stocks dashboard → its own page, per user. Nav tab on every page.
 
 - **Universe (user-confirmed = "Trendlyne-match"):** currently-listed (`alive`) names with **median daily
   turnover ≥ ₹1 cr** over the last ~250 sessions (close×volume from `sf_stock_data.bin`). ≈1,434 names →
@@ -326,8 +327,11 @@ Value labels on each bar, hover tooltips, hand-rolled SVG (no chart lib), + a qu
    up the new JSON on next load.
 
 **Occasional FULL rebuild** (only if the daily fill-only drifts or you change the derivation): `python -X utf8
-build_revop.py` re-walks `scripts/_xbrl_cache/` (parallel ProcessPool, resumable via `_revop_progress.json`, prefilter
-≥2022, **latest-filing-wins**) → `revop_fundamentals.json` + `docs/sf_revop.json`; ~98.6% PAT-validated. ⚠️ Dec-2022
-cache hole (~1,100 filings vs ~1,800 neighbours) → Dec-2023 Rev/Op rests on ~480 cos (robust median; not a bug).
-- Tunables: `TURN_FLOOR_CR` in `build_results_season.py` (1.0 → ~1,290 avg reporters; 0.75 → ~1,350; 1.5 → ~1,190);
-  colours/labels in `renderResultsSeason()` inside `docs/results-season.html`.
+build_revop.py` re-walks ALL `scripts/_xbrl_cache/` (~102k files, parallel ProcessPool, resumable via
+`_revop_progress.json`, prefilter ≥2018, MIN_QE 20180101, **latest-filing-wins**) → `revop_fundamentals.json` +
+`docs/sf_revop.json`; ~98.6% PAT-validated (~90k cells). ⚠️ **OLD INDAS format (pre-~2021) needs `ctx_period()`** —
+those filings don't carry the period inside `<xbrli:context>`; they tag `DateOf{Start,End}OfReportingPeriod` per
+context. `ctx_period()` reads the context block first, then falls back to those tags (else 2018-20 silently parse as
+0 symbols — the bug that capped history at 2022). Dec-2022 has a thinner cache (~1,100 vs ~1,800) — robust median, fine.
+- Tunables: chart START quarter = `y, m = 2019, 3` in `build_results_season.py`; `TURN_FLOOR_CR` there (1.0 → ~1,290
+  reporters); colours/labels in `renderResultsSeason()` inside `docs/results-season.html`.
