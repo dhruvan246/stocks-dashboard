@@ -8,6 +8,10 @@ from datetime import datetime
 ROOT     = Path(__file__).resolve().parent.parent
 SRC      = ROOT / "scripts" / "stock_data.json"
 OUT_HTML = ROOT / "docs" / "nse-bse-dashboard.html"
+# Tiny precomputed "results season" payload (median YoY per quarter for Rev/OpProfit/PAT +
+# reporting counts), built by build_results_season.py. Inlined into the page; absent -> chart hides.
+RS_FILE  = ROOT / "docs" / "results_season.json"
+rs_json  = RS_FILE.read_text(encoding="utf-8") if RS_FILE.exists() else '{"quarters":[]}'
 
 payload = json.loads(SRC.read_text())
 start_ts = payload["startTs"]
@@ -245,6 +249,23 @@ HTML = r"""<!DOCTYPE html>
 
   <section class="max-w-7xl mx-auto px-6 pb-6">
     <div class="grid grid-cols-2 md:grid-cols-7 gap-3" id="statsGrid"></div>
+  </section>
+
+  <!-- Results Season: market-wide median YoY growth per quarter (Trendlyne-style earnings pulse) -->
+  <section class="max-w-7xl mx-auto px-6 pb-6" id="resultsSeasonSection">
+    <div class="rounded-xl shadow-sm border border-slate-700 bg-slate-900 text-slate-100 overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-700 flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 class="text-sm font-bold uppercase tracking-wide text-white flex items-center gap-2">📊 Results Season</h2>
+          <p class="text-[11px] text-slate-400 mt-1 max-w-2xl">Median year-on-year growth of companies that declared results each quarter &middot; <span id="rsUniverse" class="text-slate-300"></span></p>
+        </div>
+        <div id="rsLegend" class="flex items-center gap-3 sm:gap-4 text-[11px] font-medium shrink-0"></div>
+      </div>
+      <div class="px-2 sm:px-5 py-5">
+        <div id="rsChart" class="w-full overflow-x-auto scrollbar"></div>
+        <p class="text-[10px] text-slate-500 mt-3 px-3 leading-relaxed" id="rsFootnote"></p>
+      </div>
+    </div>
   </section>
 
   <!-- Backtest panel: pick top-N by screening returns, hold to a later date, see portfolio P&L -->
@@ -1115,13 +1136,86 @@ document.querySelectorAll('.preset-btn').forEach(btn => {
   });
 });
 
+// ---- Results Season chart: market-wide median YoY growth per quarter (hand-rolled SVG) ------
+const RESULTS_SEASON = __RESULTS_SEASON__;
+function renderResultsSeason() {
+  const root = document.getElementById('rsChart');
+  const sec  = document.getElementById('resultsSeasonSection');
+  const Q = (RESULTS_SEASON.quarters || []).filter(q =>
+      q.rev.median !== null || q.op.median !== null || q.pat.median !== null);
+  if (!root || !Q.length) { if (sec) sec.style.display = 'none'; return; }
+
+  const METRICS = [
+    { key: 'rev', name: 'Revenue',          color: '#38bdf8' },
+    { key: 'op',  name: 'Operating Profit', color: '#34d399' },
+    { key: 'pat', name: 'PAT',              color: '#fbbf24' },
+  ];
+  const uni  = document.getElementById('rsUniverse'); if (uni)  uni.textContent  = RESULTS_SEASON.universe || '';
+  const foot = document.getElementById('rsFootnote'); if (foot) foot.textContent = RESULTS_SEASON.basis || '';
+  const leg  = document.getElementById('rsLegend');
+  if (leg) leg.innerHTML = METRICS.map(mm =>
+    '<span class="inline-flex items-center gap-1.5"><span style="width:10px;height:10px;border-radius:2px;background:' +
+    mm.color + '"></span><span class="text-slate-300">' + mm.name + '</span></span>').join('');
+
+  let dMax = 0, dMin = 0;
+  Q.forEach(q => METRICS.forEach(mm => { const v = q[mm.key].median;
+    if (v !== null) { if (v > dMax) dMax = v; if (v < dMin) dMin = v; } }));
+  dMax = Math.ceil((dMax + 1) / 5) * 5;
+  dMin = dMin < 0 ? Math.floor((dMin - 1) / 5) * 5 : 0;
+  const range = (dMax - dMin) || 1;
+
+  const n = Q.length, M = { l: 40, r: 14, t: 26, b: 48 };
+  const groupW = 66, bw = 15, gap = 3;
+  const W = M.l + n * groupW + M.r, H = 312;
+  const plotTop = M.t, plotBot = H - M.b;
+  const y = v => plotTop + (dMax - v) / range * (plotBot - plotTop);
+  const zeroY = y(0);
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const fmt = v => (v >= 0 ? '+' : '') + v.toFixed(1) + '%';
+  const cf  = x => x.toLocaleString('en-IN');
+
+  let g = '';
+  for (let t = dMin; t <= dMax + 0.001; t += 5) {
+    const yy = y(t), zero = t === 0;
+    g += '<line x1="' + M.l + '" x2="' + (W - M.r) + '" y1="' + yy.toFixed(1) + '" y2="' + yy.toFixed(1) +
+         '" stroke="' + (zero ? '#64748b' : '#1e293b') + '" stroke-width="' + (zero ? 1.2 : 1) + '" pointer-events="none"/>' +
+         '<text x="' + (M.l - 6) + '" y="' + (yy + 3).toFixed(1) + '" text-anchor="end" font-size="10" fill="#64748b" pointer-events="none">' + t + '%</text>';
+  }
+  Q.forEach((q, i) => {
+    const gx = M.l + i * groupW, cx = (gx + groupW / 2).toFixed(1);
+    // full-column hover zone (behind bars) -> summary tooltip on whitespace
+    let gt = esc(q.label) + ' — ' + cf(q.reported) + ' companies reported';
+    METRICS.forEach(mm => { if (q[mm.key].median !== null) gt += ' · ' + mm.name + ' ' + fmt(q[mm.key].median); });
+    g += '<rect x="' + gx + '" y="' + plotTop + '" width="' + groupW + '" height="' + (plotBot - plotTop) +
+         '" fill="transparent"><title>' + gt + '</title></rect>';
+    const totW = METRICS.length * bw + (METRICS.length - 1) * gap, x0 = gx + (groupW - totW) / 2;
+    METRICS.forEach((mm, j) => {
+      const v = q[mm.key].median; if (v === null) return;
+      const bx = x0 + j * (bw + gap), yv = y(v);
+      const top = Math.min(yv, zeroY), hh = Math.max(0.5, Math.abs(zeroY - yv));
+      g += '<rect x="' + bx.toFixed(1) + '" y="' + top.toFixed(1) + '" width="' + bw + '" height="' + hh.toFixed(1) +
+           '" rx="2" fill="' + mm.color + '"><title>' + esc(q.label) + ' · ' + mm.name + ': ' + fmt(v) +
+           ' (median of ' + cf(q[mm.key].n) + ' companies)</title></rect>';
+      const pos = v >= 0, lx = (bx + bw / 2).toFixed(1), ly = (pos ? yv - 3 : yv + 3).toFixed(1);
+      g += '<text x="' + lx + '" y="' + ly + '" transform="rotate(-90 ' + lx + ' ' + ly + ')" text-anchor="' +
+           (pos ? 'start' : 'end') + '" font-size="9.5" font-weight="600" fill="' + mm.color + '" pointer-events="none">' + fmt(v) + '</text>';
+    });
+    g += '<text x="' + cx + '" y="' + (plotBot + 17) + '" text-anchor="middle" font-size="11" font-weight="600" fill="#cbd5e1" pointer-events="none">' + esc(q.label) + '</text>' +
+         '<text x="' + cx + '" y="' + (plotBot + 31) + '" text-anchor="middle" font-size="9.5" fill="#64748b" pointer-events="none">' + cf(q.reported) + ' Results</text>';
+  });
+  root.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="xMidYMid meet" ' +
+    'style="width:100%;height:auto;display:block;min-width:720px" font-family="Inter,sans-serif">' + g + '</svg>';
+}
+renderResultsSeason();
+
 loadAndInit();
 </script>
 </body>
 </html>
 """
 
-out = HTML.replace("__START_DATE__", start_date).replace("__GEN_DATE__", gen_date)
+out = (HTML.replace("__START_DATE__", start_date).replace("__GEN_DATE__", gen_date)
+           .replace("__RESULTS_SEASON__", rs_json))
 OUT_HTML.write_text(out, encoding="utf-8")
 print(f"Wrote {OUT_HTML} ({OUT_HTML.stat().st_size/1024/1024:.2f} MB)")
 

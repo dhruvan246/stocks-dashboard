@@ -293,3 +293,37 @@ view, Top/Bottom movers, search, watchlist (localStorage), equal/mcap toggle, CS
   returning 404 even with `?cb=` for up to 10 min — NOT a real failure. Don't hammer the path pre-deploy; verify
   the deploy via `gh run list --workflow="Deploy site to Pages"` (look for your headSha = success), then check the
   URL once. (The legacy `pages/builds` API is stale/irrelevant here — this repo uses build_type=workflow.)
+
+---
+
+## 11. RESULTS SEASON CHART  (Trendlyne-style market earnings pulse; built 2026-06-30)
+Dark grouped-bar chart on the dashboard (below the stats grid): per quarter (Jun-2023 → latest), the MEDIAN
+YoY % across reporting companies for **Revenue, Operating Profit, PAT**, with the reporting count in each
+x-label ("Jun 2023" + "1,158 Results"). Value labels on each bar, hover tooltips, hand-rolled SVG (no chart lib).
+
+- **Universe (user-confirmed = "Trendlyne-match"):** currently-listed (`alive`) names with **median daily
+  turnover ≥ ₹1 cr** over the last ~250 sessions (close×volume from `sf_stock_data.bin`). ≈1,434 names →
+  ~1,160–1,410 reporters/qtr, bracketing Trendlyne's counts (their Jun-2023 ≈1,202 vs ours 1,158). A clean ₹-turnover
+  floor, not an index. (Full coverage would be ~2,300–2,500/qtr — broader than Trendlyne; we deliberately narrowed.)
+- **PAT** comes from `fundamentals.json` (owners-attributable con where filed, else std — same basis as the backtest,
+  memory project-stocks-profit-basis). **Revenue + Operating Profit** are NOT in fundamentals.json — they're a
+  **RE-PARSE** (no re-fetch) of the cached XBRL in `scripts/_xbrl_cache/`.
+
+**Pipeline (re-run in order after new quarters land; NOT yet wired into the nightly cron — manual, quarterly):**
+1. `python -X utf8 build_revop.py` — offline walk of `_xbrl_cache` (parallel ProcessPool, resumable via
+   `_revop_progress.json`, filename-year prefilter ≥2022). Per (symbol, quarter, basis) it reads RevenueFromOperations
+   and derives **Operating Profit = ProfitBeforeExceptionalItemsAndTax + FinanceCosts + Depreciation − OtherIncome**
+   (EBITDA ex-other-income — the basis Trendlyne calls "Operating Profit"). Symbol+qe come from the OneD context
+   (`NSESymbol` identifier + endDate); std/con from `NatureOfReportStandaloneConsolidated`; handles both `in-bse-fin:`
+   (classic INDAS) and `in-capmkt:` (Integrated-Filing 2025+) taxonomies. **Latest-filing-wins** (revisions supersede
+   provisional results). owners≈0 mis-tag guarded like apply_owners_full.py. Banks/NBFCs flagged (InterestEarned) →
+   excluded from Rev/Op. Writes `scripts/revop_fundamentals.json`; self-validates parsed PAT vs fundamentals.json
+   (~98.6% match; residual = sub-₹2cr micro-caps below the floor). ⚠️ Dec-2022 has a cache-coverage hole (~1,100
+   filings vs ~1,800 neighbours) → Dec-2023 Rev/Op rests on ~480 cos (still a robust median); not a bug.
+2. `python -X utf8 build_results_season.py` — aggregate median YoY over the turnover universe → `docs/results_season.json`
+   (tiny). YoY needs the year-ago quarter on a consistent basis with a POSITIVE base.
+3. `build_compressed.py` reads `docs/results_season.json`, inlines it (`__RESULTS_SEASON__` placeholder) and renders it
+   (`renderResultsSeason()` + the `#resultsSeasonSection` dark card). Generated page → EDIT TEMPLATE not output (§0);
+   for an immediate live patch without the CI `stock_data.json`, lift the template's chart block into the output.
+- Tunables: `TURN_FLOOR_CR` in `build_results_season.py` (1.0 → ~1,290 avg reporters; 0.75 → ~1,350; 1.5 → ~1,190);
+  colours/labels in `renderResultsSeason()` in the `build_compressed.py` template.
