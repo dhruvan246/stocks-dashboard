@@ -40,6 +40,7 @@
   <div class="flex items-center gap-1.5 mb-3">
     <button id="tabBest" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">🏆 Best return</button>
     <button id="tabNew" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">🆕 New</button>
+    <button id="tabFav" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">⭐ Favourites</button>
   </div>
   <div id="status" class="text-xs text-slate-500 mb-3"></div>
   <div id="list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
@@ -194,12 +195,17 @@ function detailCard(b) {
     </div>
   </div>`;
 }
-let VIEW = 'best';   // 'best' = sort by headline CAGR (default), 'new' = most recently saved first
+function loadFavs() { try { return new Set(JSON.parse(localStorage.getItem('bt_fav_strategies') || '[]')); } catch(e) { return new Set(); } }
+function saveFavs(s) { localStorage.setItem('bt_fav_strategies', JSON.stringify([...s])); }
+function toggleFav(k) { const s = loadFavs(); s.has(k) ? s.delete(k) : s.add(k); saveFavs(s); render(); }
+
+let VIEW = 'best';   // 'best' = sort by headline CAGR (default), 'new' = most recently saved first, 'fav' = favourites
 function setView(v){
   VIEW = v;
   const on = 'bg-indigo-600 text-white shadow', off = 'bg-slate-100 text-slate-600 hover:bg-slate-200';
   $('tabBest').className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition ' + (v === 'best' ? on : off);
   $('tabNew').className  = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition ' + (v === 'new'  ? on : off);
+  $('tabFav').className  = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition ' + (v === 'fav'  ? on : off);
   render();
 }
 function render() {
@@ -222,13 +228,22 @@ function render() {
   }
   // each strategy's backtests (real runs + saved windows) and its headline full-period CAGR
   for (const g of groups.values()) { g.list = backtestsFor([...g.vars.values()]); g.cagr = canonicalCagr(g.list); }
-  const rows = [...groups.values()].sort((a, b) => VIEW === 'new' ? ((b.rep.ts || 0) - (a.rep.ts || 0)) : (b.cagr - a.cagr));
+  const favs = loadFavs();
+  let rows = [...groups.values()].sort((a, b) => VIEW === 'new' ? ((b.rep.ts || 0) - (a.rep.ts || 0)) : (b.cagr - a.cagr));
+  if (VIEW === 'fav') {
+    rows = rows.filter(g => favs.has(identityKey(g.rep.cfg)));
+    if (!rows.length) {
+      $('list').innerHTML = '<div class="card p-8 text-center text-slate-400 text-sm">No favourites yet. Click ☆ on any strategy to add it here.</div>';
+      return;
+    }
+  }
   $('list').className = 'card overflow-x-auto';
-  const colspan = OWNER ? 5 : 4;
+  const colspan = OWNER ? 6 : 5;
   const header = `<thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
     <th class="text-left font-semibold px-4 py-2.5">Strategy</th>
     <th class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">CAGR${VIEW === 'best' ? ' ▾' : ''}</th>
     <th class="text-center font-semibold px-3 py-2.5 whitespace-nowrap">Backtests</th>
+    <th class="px-2 py-2.5"></th>
     ${OWNER ? '<th class="px-2 py-2.5"></th>' : ''}
     <th class="px-2 py-2.5"></th>
   </tr></thead>`;
@@ -249,6 +264,7 @@ function render() {
       </td>
       <td class="px-3 py-3 text-right text-sm whitespace-nowrap">${cagrCell}</td>
       <td class="px-3 py-3 text-center"><button class="text-slate-400 hover:text-indigo-600 text-base leading-none" data-open="${esc(it.id)}" title="Open ${n} backtest${n > 1 ? 's' : ''}">👁</button></td>
+      <td class="px-2 py-3 text-center"><button class="text-base leading-none transition" data-favtoggle="${esc(identityKey(c))}" title="${favs.has(identityKey(c)) ? 'Remove from favourites' : 'Add to favourites'}">${favs.has(identityKey(c)) ? '⭐' : '☆'}</button></td>
       ${OWNER ? `<td class="px-2 py-3 text-center"><button class="text-slate-300 hover:text-red-500 text-sm" data-delgroup="${esc(identityKey(c))}" title="Delete strategy">🗑️</button></td>` : ''}
       <td class="px-2 py-3 text-right"><span data-arrow class="text-slate-400 select-none text-xs">▸</span></td>
     </tr>
@@ -259,8 +275,11 @@ function render() {
   }).join('');
   $('list').innerHTML = `<table class="w-full text-sm border-collapse">${header}<tbody>${body}</tbody></table>`;
   // wiring
+  $('list').querySelectorAll('[data-favtoggle]').forEach(b => b.onclick = (e) => {
+    e.stopPropagation(); toggleFav(b.dataset.favtoggle);
+  });
   $('list').querySelectorAll('[data-toggle]').forEach(b => b.onclick = (e) => {
-    if (e.target.closest('[data-delgroup]')) return;
+    if (e.target.closest('[data-delgroup]') || e.target.closest('[data-favtoggle]')) return;
     const box = $('list').querySelector('[data-detail="' + b.dataset.toggle + '"]');
     const arrow = b.querySelector('[data-arrow]'); const hidden = box.classList.toggle('hidden');
     if (arrow) arrow.textContent = hidden ? '▸' : '▾';
@@ -553,7 +572,9 @@ $('mAlsoToggle').onclick = () => { const a = $('mAlso'); a.classList.toggle('hid
   if (localOnly.length) { saveLS('bt_strategies', pulled.concat(localOnly)); if (window.btSync) { try { await btSync.pushStrategies(); } catch (e) {} } }   // publish local-only strategies (open list; self-heals an earlier failed publish)
   $('tabBest').onclick = () => setView('best');
   $('tabNew').onclick  = () => setView('new');
-  setView(new URLSearchParams(location.search).get('view') === 'new' ? 'new' : 'best');   // flat list with saved metrics — instant; renders once
+  $('tabFav').onclick  = () => setView('fav');
+  const vParam = new URLSearchParams(location.search).get('view');
+  setView(vParam === 'new' ? 'new' : vParam === 'fav' ? 'fav' : 'best');   // flat list with saved metrics — instant; renders once
   if (!strategies().length) { $('status').textContent = ''; return; }
   // Don't eager-load the 17 MB + 90 MB engine — the list + 👁 results work from saved data alone.
   // Market data loads on demand only when you open Today's Picks (ensureEngine), so first paint is instant.
