@@ -17,6 +17,7 @@ on:
 
 permissions:
   contents: write
+  actions: write   # dispatch pages.yml after a change so the data publishes itself
 
 # Independent of the stock refresh; runs one at a time.
 concurrency:
@@ -43,6 +44,8 @@ jobs:
         run: python3 scripts/build_mutualfunds.py
 
       - name: Commit updated mutual fund dashboard
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -68,6 +71,7 @@ jobs:
             git commit -m "Daily MF refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
             if git push origin HEAD:main; then
               echo "Pushed on attempt #$attempt"
+              gh workflow run pages.yml || echo "(pages deploy dispatch failed — will publish on next push)"
               exit 0
             fi
             echo "Push attempt #$attempt rejected; resetting and retrying"
