@@ -32,13 +32,43 @@ FILES = """
 07122015 18092015 24082015 12082015 05062015 29042015 20042015 18032015_2 20022015 23012015 21012015
 """.split()
 
-CANON = {
-    "nifty50": "Nifty 50", "niftynext50": "Nifty Next 50",
-    "nifty100": "Nifty 100", "nifty200": "Nifty 200", "nifty500": "Nifty 500", "cnx500": "Nifty 500",
-    "niftymidcap150": "Nifty Midcap 150", "niftysmallcap250": "Nifty Smallcap 250",
-}
+_CANON_LIST = [   # (display name, [normalised heading aliases]) — ALL 27 tracked indexes
+    ("Nifty 50", ["nifty50", "cnxnifty"]),
+    ("Nifty Next 50", ["niftynext50", "cnxnifty50junior", "niftyjunior"]),
+    ("Nifty 100", ["nifty100", "cnx100"]),
+    ("Nifty 200", ["nifty200", "cnx200"]),
+    ("Nifty 500", ["nifty500", "cnx500"]),
+    ("Nifty Midcap 50", ["niftymidcap50", "cnxmidcap50"]),
+    ("Nifty Midcap 100", ["niftymidcap100", "cnxmidcap"]),
+    ("Nifty Midcap 150", ["niftymidcap150"]),
+    ("Nifty Smallcap 50", ["niftysmallcap50"]),
+    ("Nifty Smallcap 100", ["niftysmallcap100", "cnxsmallcap"]),
+    ("Nifty Smallcap 250", ["niftysmallcap250"]),
+    ("Nifty LargeMidcap 250", ["niftylargemidcap250"]),
+    ("Nifty MidSmallcap 400", ["niftymidsmallcap400"]),
+    ("Nifty Bank", ["niftybank", "cnxbank", "banknifty"]),
+    ("Nifty IT", ["niftyit", "cnxit"]),
+    ("Nifty Pharma", ["niftypharma", "cnxpharma"]),
+    ("Nifty Auto", ["niftyauto", "cnxauto"]),
+    ("Nifty FMCG", ["niftyfmcg", "cnxfmcg"]),
+    ("Nifty Metal", ["niftymetal", "cnxmetal"]),
+    ("Nifty Energy", ["niftyenergy", "cnxenergy"]),
+    ("Nifty Realty", ["niftyrealty", "cnxrealty"]),
+    ("Nifty Media", ["niftymedia", "cnxmedia"]),
+    ("Nifty Healthcare", ["niftyhealthcare"]),
+    ("Nifty Consumer Durables", ["niftyconsumerdurables"]),
+    ("Nifty Oil & Gas", ["niftyoilgas"]),
+    ("Nifty PSU Bank", ["niftypsubank", "cnxpsubank"]),
+    ("Nifty MNC", ["niftymnc", "cnxmnc"]),
+]
+CANON = {}
+for _disp, _keys in _CANON_LIST:
+    for _k in _keys: CANON[_k] = _disp
+
 def canon_index(name):
-    return CANON.get(re.sub(r"[^a-z0-9]", "", name.lower()))
+    n = re.sub(r"[^a-z0-9]", "", name.lower())
+    n = re.sub(r"index$", "", n)   # "Nifty Bank Index" -> "niftybank"
+    return CANON.get(n)
 
 def get(url, tries=5):
     last = None

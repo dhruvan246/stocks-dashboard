@@ -23,10 +23,16 @@ import os, re, csv, json, gzip, time, urllib.request
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE)
 UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
 
-SLUGS = {  # index display name -> NSE current-list slug
+SLUGS = {  # index display name -> NSE current-list slug — ALL 27 tracked indexes
     "Nifty 50": "nifty50", "Nifty Next 50": "niftynext50", "Nifty 100": "nifty100",
     "Nifty 200": "nifty200", "Nifty 500": "nifty500",
-    "Nifty Midcap 150": "niftymidcap150", "Nifty Smallcap 250": "niftysmallcap250",
+    "Nifty Midcap 50": "niftymidcap50", "Nifty Midcap 100": "niftymidcap100", "Nifty Midcap 150": "niftymidcap150",
+    "Nifty Smallcap 50": "niftysmallcap50", "Nifty Smallcap 100": "niftysmallcap100", "Nifty Smallcap 250": "niftysmallcap250",
+    "Nifty LargeMidcap 250": "niftylargemidcap250", "Nifty MidSmallcap 400": "niftymidsmallcap400",
+    "Nifty Bank": "niftybank", "Nifty IT": "niftyit", "Nifty Pharma": "niftypharma", "Nifty Auto": "niftyauto",
+    "Nifty FMCG": "niftyfmcg", "Nifty Metal": "niftymetal", "Nifty Energy": "niftyenergy", "Nifty Realty": "niftyrealty",
+    "Nifty Media": "niftymedia", "Nifty Healthcare": "niftyhealthcare", "Nifty Consumer Durables": "niftyconsumerdurables",
+    "Nifty Oil & Gas": "niftyoilgas", "Nifty PSU Bank": "niftypsubank", "Nifty MNC": "niftymnc",
 }
 
 # ---------- renames (old -> new, with the date the NEW symbol started) ----------
