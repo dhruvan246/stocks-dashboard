@@ -666,7 +666,7 @@ function simulate(cfg){
     if(isReb){
       // screen → filter → rank → top-N target
       let rows=factorsAt(off,cfg).filter(r=>r.rsi!=null);
-      for(const f of cfg.filters){ rows=rows.filter(r=>{const x=fieldVal(r,f.field); if(x==null)return false; return f.op==='>'?x>f.val:f.op==='>='?x>=f.val:f.op==='<'?x<f.val:f.op==='<='?x<=f.val:x===f.val;}); }
+      for(const f of cfg.filters){ rows=rows.filter(r=>{let x=fieldVal(r,f.field); if(x==null)return false; if(typeof x==='number')x=Math.round(x*1e6)/1e6; return f.op==='>'?x>f.val:f.op==='>='?x>=f.val:f.op==='<'?x<f.val:f.op==='<='?x<=f.val:x===f.val;}); }
       rows=rows.filter(r=>fieldVal(r,cfg.sortBy)!=null);   // can't rank a stock on a factor it's missing (e.g. no earnings yet)
       rows.sort((a,b)=>{const x=fieldVal(a,cfg.sortBy),y=fieldVal(b,cfg.sortBy); return cfg.dir==='high'?y-x:x-y;});
       const target=rows.slice(0,N); const tmap={}; target.forEach(r=>tmap[r.tkr]=r); const tset=new Set(target.map(r=>r.tkr));
@@ -972,7 +972,7 @@ function drawPeriodReturns(r){
 // (same screen the backtest ranks, BEFORE slicing to top-N — i.e. the pool the picks are drawn from)
 function qualCountAt(off, cfg){
   let rows=factorsAt(off,cfg).filter(r=>r.rsi!=null);
-  for(const f of cfg.filters){ rows=rows.filter(r=>{const x=fieldVal(r,f.field); if(x==null)return false; return f.op==='>'?x>f.val:f.op==='>='?x>=f.val:f.op==='<'?x<f.val:f.op==='<='?x<=f.val:x===f.val;}); }
+  for(const f of cfg.filters){ rows=rows.filter(r=>{let x=fieldVal(r,f.field); if(x==null)return false; if(typeof x==='number')x=Math.round(x*1e6)/1e6; return f.op==='>'?x>f.val:f.op==='>='?x>=f.val:f.op==='<'?x<f.val:f.op==='<='?x<=f.val:x===f.val;}); }
   return rows.filter(r=>fieldVal(r,cfg.sortBy)!=null).length;
 }
 function qualDates(cfg, gran){

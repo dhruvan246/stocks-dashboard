@@ -325,7 +325,8 @@ function fieldVal(r, f) {
   return (f in r && typeof r[f] === 'number') ? r[f] : null;   // extended tech factors stored under their own key
 }
 function passFilters(r, filters) {
-  for (const f of (filters || [])) { const x = fieldVal(r, f.field); if (x == null) return false;
+  for (const f of (filters || [])) { let x = fieldVal(r, f.field); if (x == null) return false;
+    if (typeof x === 'number') x = Math.round(x * 1e6) / 1e6;   // kill sub-1e-6 float noise so exact-boundary ties (e.g. 10.0000000002 -> 10) pass <=/>= filters (keep in sync with stock-backtest.html)
     if (!(f.op === '>' ? x > f.val : f.op === '>=' ? x >= f.val : f.op === '<' ? x < f.val : f.op === '<=' ? x <= f.val : x === f.val)) return false; }
   return true;
 }
