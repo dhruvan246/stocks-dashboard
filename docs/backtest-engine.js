@@ -362,12 +362,20 @@ function computeHold(cfg, start, end, capital) {
 /* ---- the backtester ---- */
 function simulate(cfg) {
   const months = monthsBetween(cfg.start, cfg.end);
+  // Rebalance on the LAST TRADING DAY <= the calendar month-end (a month-end can fall on a weekend/holiday).
+  // Standard/NSE 52w hi/lo = trailing 365d from the last TRADING day; anchoring the window on the raw calendar
+  // date while pricing off the last trading day can drop a genuine 52w low just outside the calendar window.
+  // Snap so price AND the 52w window share one trading-day anchor. (Keep in sync with stock-backtest.html.)
+  const _tdset = new Set();
+  for (const _r of ['RELIANCE', 'TCS', 'HDFCBANK', 'INFY', 'ICICIBANK', 'ITC', 'SBIN', 'LT']) { const _s = SERIES[_r]; if (_s && _s.d) for (const _o of _s.d) _tdset.add(_o); }
+  const _td = [..._tdset].sort((a, b) => a - b);
+  const snapTD = o => { if (!_td.length) return o; const i = idxLE(_td, o); return i < 0 ? o : _td[i]; };
   const N = cfg.topN;
   let pos = {}, cash = 0, started = false; const equity = [], rebs = [], trades = []; let entryInfo = {}, lastRebVal = cfg.capital, monthsSinceReb = 1e9, latest = [], latestCash = 0;
   const mark = off => { let v = cash; for (const t in pos) { const p = markPrice(t, off); if (p != null) v += pos[t] * p; } return v; };
   const fLabel = { changePercent: 'Chg%', rsi: 'RSI', d52: '52wHi%', d52_low_pct: '52wLo%', indRank: 'IndRank', mcap: 'Mcap', hist_mcap: 'HMcap' }[cfg.sortBy] || FIELD_LABEL[cfg.sortBy] || cfg.sortBy;
   for (let mi = 0; mi < months.length; mi++) {
-    const md = months[mi], off = dayOff(md);
+    const md = months[mi], off = snapTD(dayOff(md));
     const mv = started ? mark(off) : cfg.capital;
     equity.push([md, mv]);
     monthsSinceReb++;
