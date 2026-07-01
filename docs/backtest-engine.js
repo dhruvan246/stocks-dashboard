@@ -288,6 +288,7 @@ function factorsAt(off, cfg) {
   const rows = [];
   for (const tkr in SERIES) {
     const m = META[tkr]; if (!m) continue;
+    if (m.symbol.includes('DVR')) continue;   // skip differential-voting-rights shares (TATAMTRDVR, JISLDVREQS, …) — a secondary security of a company already in the universe via its ordinary share; avoids double-counting (Sync: stock-backtest.html)
     if (members && !members.has(m.symbol)) continue;
     const price = priceAt(tkr, off); const p0 = priceAt(tkr, lookOff);
     if (price == null || p0 == null || p0 <= 0) continue;
