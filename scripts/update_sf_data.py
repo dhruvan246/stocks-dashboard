@@ -195,16 +195,31 @@ def main():
     # MANUAL rename merges the ISIN-detector can't make: same security, but the ISIN CHANGED at the
     # rename so the ISIN-based auto-merge skips it (a safety guard against recycled tickers). These are
     # verified price-continuous. Idempotent: once the old series is folded in and dropped it's a no-op.
-    MANUAL_MERGE = {"PCBL": "PHILIPCARB"}   # INE602A01023 -> INE602A01031 (Jan 2022, prices continuous)
+    # {new_current_ticker: old_predecessor}. IBC-relisted / renamed securities whose ISIN CHANGED at the
+    # rename (RUCHISOYA->RUCHI post-IBC->PATANJALI; Burger King India->Restaurant Brands Asia).
+    MANUAL_MERGE = {"PCBL": "PHILIPCARB",   # INE602A01023 -> INE602A01031 (Jan 2022, prices continuous)
+                    "PATANJALI": "RUCHI",   # Ruchi Soya relisted as RUCHI (2020-01) -> PATANJALI (2022-07); ISIN changed at IBC
+                    "RBA": "BURGERKING"}    # Burger King India -> Restaurant Brands Asia (2022-02)
     for new, old in MANUAL_MERGE.items():
         on = data.get(new); oo = data.get(old)
         if on and oo and on["d"] and oo["d"] and oo["d"][0] < on["d"][0]:
             idx = [i for i, dd in enumerate(oo["d"]) if dd < on["d"][0]]
             if idx:
+                # The old series is stored RAW; the new series is already split/bonus-adjusted. Apply any
+                # of `new`'s official factors whose ex-date is AFTER the old series ended, so the prepended
+                # prices land on the SAME adjusted scale (else a ratio-3 discontinuity at the join, e.g.
+                # PATANJALI's 2025-09 1:2 bonus f=0.3333 must scale RUCHI's 2020-22 prices down /3).
+                oldend = oo["d"][idx[-1]]; adj = 1.0
+                for ex, f in CA_OFF.get(new, {}).items():
+                    if ex > oldend: adj *= f
                 for f in ("d", "c", "t", "h", "l", "op", "v", "dv", "vw"):
-                    if f in oo and f in on: on[f] = [oo[f][i] for i in idx] + on[f]
+                    if f in oo and f in on:
+                        if adj != 1.0 and f in ("c", "h", "l", "op", "vw"):
+                            on[f] = [round(oo[f][i] * adj, 2) for i in idx] + on[f]
+                        else:
+                            on[f] = [oo[f][i] for i in idx] + on[f]
                 data.pop(old, None); meta.pop(old, None)
-                print("  MANUAL RENAME MERGE %s -> %s (%d pts prepended)" % (old, new, len(idx)))
+                print("  MANUAL RENAME MERGE %s -> %s (%d pts prepended, adj=%.4f)" % (old, new, len(idx), adj))
     for day in days:
         rows = B.fetch_day(day, j)
         if not rows:
