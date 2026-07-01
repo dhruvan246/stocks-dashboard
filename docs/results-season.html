@@ -44,6 +44,10 @@
     <div class="mt-3 flex flex-wrap items-center gap-2">
       <label for="rsUniverseSelect" class="text-xs font-semibold text-slate-600 uppercase tracking-wide">Universe</label>
       <select id="rsUniverseSelect" class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 max-w-full"></select>
+      <span class="inline-flex rounded-lg border border-slate-300 overflow-hidden text-xs font-semibold ml-1" role="group" aria-label="Metric type">
+        <button id="rsModeMedian" type="button" class="px-3 py-1.5" title="Median company's YoY growth (consolidated)">Median</button>
+        <button id="rsModeTotal" type="button" class="px-3 py-1.5 border-l border-slate-300" title="Total / aggregate YoY growth, standalone — matches Trendlyne">Total</button>
+      </span>
       <span id="rsUniverse" class="text-xs text-slate-400"></span>
     </div>
   </div>
@@ -88,6 +92,9 @@
 <script>
 let RS_ALL = { universes: [] };   // full payload
 let CUR = { quarters: [] };        // currently-selected universe
+let MODE = 'median';               // 'median' (typical company, consolidated) or 'total' (aggregate, standalone)
+function mval(m){ return m[MODE]; }                          // the value for the current mode
+function mn(m){ return MODE === 'median' ? m.n : m.tn; }     // the company count for the current mode
 
 function pct(v){ return (v >= 0 ? '+' : '') + v.toFixed(1) + '%'; }
 function pctCls(v){ return v >= 0 ? 'text-green-700' : 'text-red-700'; }
@@ -95,7 +102,7 @@ function pctCls(v){ return v >= 0 ? 'text-green-700' : 'text-red-700'; }
 function renderResultsSeason() {
   const root = document.getElementById('rsChart');
   const Q = (CUR.quarters || []).filter(q =>
-      q.rev.median !== null || q.op.median !== null || q.pat.median !== null);
+      mval(q.rev) !== null || mval(q.op) !== null || mval(q.pat) !== null);
   if (!root) return;
   if (!Q.length) { root.innerHTML = '<p style="color:#64748b;font-size:13px;padding:1rem">No comparable data for this universe.</p>'; return; }
 
@@ -106,14 +113,18 @@ function renderResultsSeason() {
   ];
   const uni  = document.getElementById('rsUniverse'); if (uni)  uni.textContent  = CUR.note || '';
   const asof = document.getElementById('rsAsOf');     if (asof) asof.textContent  = (CUR.label || '') + (RS_ALL.dataAsOf ? ' · prices as of ' + RS_ALL.dataAsOf : '');
-  const foot = document.getElementById('rsFootnote'); if (foot) foot.textContent = RS_ALL.basis || '';
+  const foot = document.getElementById('rsFootnote');
+  if (foot) foot.textContent = (MODE === 'median'
+      ? 'MEDIAN — the typical company’s YoY growth (consolidated where filed, else standalone); half of members grew faster, half slower. '
+      : 'TOTAL — aggregate YoY growth = sum of all members this year ÷ sum last year, standalone basis (matches Trendlyne’s result-analysis; dominated by the largest companies). ')
+    + 'Revenue & Operating profit exclude banks/NBFCs. Point-in-time index membership. YoY vs the year-ago quarter.';
   const leg  = document.getElementById('rsLegend');
   if (leg) leg.innerHTML = METRICS.map(mm =>
     '<span class="inline-flex items-center gap-1.5"><span style="width:10px;height:10px;border-radius:2px;background:' +
     mm.color + '"></span><span class="text-slate-300">' + mm.name + '</span></span>').join('');
 
   let dMax = 0, dMin = 0;
-  Q.forEach(q => METRICS.forEach(mm => { const v = q[mm.key].median;
+  Q.forEach(q => METRICS.forEach(mm => { const v = mval(q[mm.key]);
     if (v !== null) { if (v > dMax) dMax = v; if (v < dMin) dMin = v; } }));
   dMax = Math.ceil((dMax + 1) / 5) * 5;
   dMin = dMin < 0 ? Math.floor((dMin - 1) / 5) * 5 : 0;
@@ -139,17 +150,17 @@ function renderResultsSeason() {
   Q.forEach((q, i) => {
     const gx = M.l + i * groupW, cx = (gx + groupW / 2).toFixed(1);
     let gt = esc(q.label) + ' — ' + cf(q.reported) + ' companies reported';
-    METRICS.forEach(mm => { if (q[mm.key].median !== null) gt += ' · ' + mm.name + ' ' + fmt(q[mm.key].median); });
+    METRICS.forEach(mm => { if (mval(q[mm.key]) !== null) gt += ' · ' + mm.name + ' ' + fmt(mval(q[mm.key])); });
     g += '<rect x="' + gx + '" y="' + plotTop + '" width="' + groupW + '" height="' + (plotBot - plotTop) +
          '" fill="transparent"><title>' + gt + '</title></rect>';
     const totW = METRICS.length * bw + (METRICS.length - 1) * gap, x0 = gx + (groupW - totW) / 2;
     METRICS.forEach((mm, j) => {
-      const v = q[mm.key].median; if (v === null) return;
+      const v = mval(q[mm.key]); if (v === null) return;
       const bx = x0 + j * (bw + gap), yv = y(v);
       const top = Math.min(yv, zeroY), hh = Math.max(0.5, Math.abs(zeroY - yv));
       g += '<rect x="' + bx.toFixed(1) + '" y="' + top.toFixed(1) + '" width="' + bw + '" height="' + hh.toFixed(1) +
            '" rx="2" fill="' + mm.color + '"><title>' + esc(q.label) + ' · ' + mm.name + ': ' + fmt(v) +
-           ' (median of ' + cf(q[mm.key].n) + ' companies)</title></rect>';
+           ' (' + (MODE === 'median' ? 'median of ' : 'total of ') + cf(mn(q[mm.key])) + ' companies)</title></rect>';
       const pos = v >= 0, lx = (bx + bw / 2).toFixed(1), ly = (pos ? yv - 3 : yv + 3).toFixed(1);
       g += '<text x="' + lx + '" y="' + ly + '" transform="rotate(-90 ' + lx + ' ' + ly + ')" text-anchor="' +
            (pos ? 'start' : 'end') + '" font-size="9.5" font-weight="600" fill="' + mm.color + '" pointer-events="none">' + fmt(v) + '</text>';
@@ -168,8 +179,8 @@ function renderResultsSeason() {
 function renderResultsTable() {
   const tb = document.getElementById('rsTableBody');
   if (!tb) return;
-  const cell = m => m.median === null ? '<span class="text-slate-300">—</span>'
-    : '<span class="' + pctCls(m.median) + ' font-medium tabular-nums">' + pct(m.median) + '</span>';
+  const cell = m => mval(m) === null ? '<span class="text-slate-300">—</span>'
+    : '<span class="' + pctCls(mval(m)) + ' font-medium tabular-nums">' + pct(mval(m)) + '</span>';
   tb.innerHTML = (CUR.quarters || []).slice().reverse().map(q =>
     '<tr class="hover:bg-slate-50">' +
       '<td class="px-4 py-2 font-semibold text-slate-700">' + q.label + '</td>' +
@@ -187,6 +198,17 @@ function selectUniverse(key) {
   renderResultsTable();
 }
 
+function setMode(m) {
+  MODE = m;
+  const mb = document.getElementById('rsModeMedian'), tb = document.getElementById('rsModeTotal');
+  const paint = function (btn, on, extra) {
+    btn.className = 'px-3 py-1.5' + extra + (on ? ' bg-blue-600 text-white' : ' bg-white text-slate-600 hover:bg-slate-50');
+  };
+  if (mb && tb) { paint(mb, m === 'median', ''); paint(tb, m === 'total', ' border-l border-slate-300'); }
+  renderResultsSeason();
+  renderResultsTable();
+}
+
 fetch('./results_season.json')
   .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
   .then(data => {
@@ -199,7 +221,10 @@ fetch('./results_season.json')
     }).join('');
     sel.value = RS_ALL.defaultUniverse || uvs[0].key;
     sel.addEventListener('change', function () { selectUniverse(sel.value); });
+    document.getElementById('rsModeMedian').addEventListener('click', function () { setMode('median'); });
+    document.getElementById('rsModeTotal').addEventListener('click', function () { setMode('total'); });
     selectUniverse(sel.value);
+    setMode('median');   // initial button styling + render
     document.getElementById('rsStatus').classList.add('hidden');
     document.getElementById('rsWrap').classList.remove('hidden');
   })

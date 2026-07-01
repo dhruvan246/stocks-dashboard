@@ -314,7 +314,12 @@ V-recovery (Jun-2021: +48%)**. ⚠️ MOVED OFF the Stocks dashboard → its own
   the snapshot whose effectiveDate ≤ the quarter-end), so no survivorship bias (today's Nifty 50 is NOT applied to 2019).
   The join is ~100% (renames via `_rename_map.json`). Financial-heavy indexes (Nifty Bank/PSU Bank) show **PAT only**
   — banks have no comparable rev/op, and `MIN_N=5` suppresses medians over <5 cos. `build_results_season.py` emits
-  `{defaultUniverse, basis, dataAsOf, universes:[{key,label,note,quarters}]}`; the page's dropdown re-renders per universe.
+  `{defaultUniverse, dataAsOf, universes:[{key,label,note,quarters:[{...,rev:{median,n,total,tn},op,pat}]}]}`.
+- **MEDIAN ↔ TOTAL toggle (2026-07-01, user compared to Trendlyne):** each metric carries BOTH `median` (per-company
+  YoY, consolidated-preferred, positive base — "typical company") AND `total` (aggregate Σnow/Σago−1, **STANDALONE**).
+  Trendlyne's result-analysis page shows the **TOTAL, standalone** number — verified: our total = Nifty 500 Q4FY26 rev
+  **9.6%** / op **8.6%** vs Trendlyne **9.0% / 8.1%** (residual = live-vs-frozen reporting cut-off). The median reads
+  HIGHER (rev 13.8%) because it's equal-weight (giants that grow slower don't dominate). Page has a Median/Total toggle.
 - **⚠️ MEMBERSHIP COMPLETENESS (2026-07-01 — user: "fetch every rebalance, none missed"):** `indices_history.json`
   is reconstructed from **niftyindices reconstitution press-release PDFs** (`ind_prs<DDMMYYYY>.pdf`), parsed by
   **`build_changelog.py`** → `_changelog.json` (per-index add/drop events), then **`build_membership_v2.py`** walks

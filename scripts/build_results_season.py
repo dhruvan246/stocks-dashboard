@@ -88,11 +88,22 @@ def median_yoy(pairs):
     return (round(statistics.median(ys), 1) if len(ys) >= MIN_N else None), len(ys)
 
 
+def agg_total(pairs):
+    """Aggregate (total-based, Trendlyne-style) growth: sum(now)/sum(ago)-1, on the pairs given
+    (STANDALONE basis). Needs a positive aggregate base + >=MIN_N contributors."""
+    sn = sum(n for n, a in pairs)
+    sa = sum(a for n, a in pairs)
+    return (round((sn / sa - 1) * 100, 1) if (sa > 0 and len(pairs) >= MIN_N) else None), len(pairs)
+
+
 def agg_quarter(members, qe, pat, revop):
-    """Return (quarter-dict, reported) for one member set + quarter."""
+    """Return (quarter-dict, reported). Each metric carries BOTH:
+      median  = median of per-company YoY (consolidated-preferred, positive base) — 'typical company'
+      total   = aggregate sum(now)/sum(ago)-1 on STANDALONE basis — the index P&L (matches Trendlyne)."""
     ya = yago(qe)
     reported = 0
-    pat_pairs, rev_pairs, op_pairs = [], [], []
+    pat_pairs, rev_pairs, op_pairs = [], [], []              # median (con-pref, positive base)
+    pat_tot, rev_tot, op_tot = [], [], []                    # total (standalone, all-with-both)
     for s in members:
         pq = pat.get(s)
         if pq:
@@ -104,23 +115,29 @@ def agg_quarter(members, qe, pat, revop):
                     pr = consistent(cur_pat, base_pat)
                     if pr:
                         pat_pairs.append(pr)
+                    if cur_pat[0] is not None and base_pat[0] is not None:   # standalone PAT
+                        pat_tot.append((cur_pat[0], base_pat[0]))
         rv = revop.get(s)
         if rv:
             cq, bq = rv.get(str(qe)), rv.get(str(ya))
-            if cq and bq and not cq[6] and not bq[6]:
+            if cq and bq and not cq[6] and not bq[6]:         # both non-financial
                 pr = consistent((cq[0], cq[1]), (bq[0], bq[1]))
                 if pr:
                     rev_pairs.append(pr)
                 po = consistent((cq[2], cq[3]), (bq[2], bq[3]))
                 if po:
                     op_pairs.append(po)
-    rev_m, rev_n = median_yoy(rev_pairs)
-    op_m, op_n = median_yoy(op_pairs)
-    pat_m, pat_n = median_yoy(pat_pairs)
+                if cq[0] is not None and bq[0] is not None:   # standalone revenue
+                    rev_tot.append((cq[0], bq[0]))
+                if cq[2] is not None and bq[2] is not None:   # standalone operating profit
+                    op_tot.append((cq[2], bq[2]))
+    rev_m, rev_n = median_yoy(rev_pairs); rev_t, rev_tn = agg_total(rev_tot)
+    op_m, op_n = median_yoy(op_pairs);   op_t, op_tn = agg_total(op_tot)
+    pat_m, pat_n = median_yoy(pat_pairs); pat_t, pat_tn = agg_total(pat_tot)
     return {"qe": qe, "label": quarter_label(qe), "reported": reported,
-            "rev": {"median": rev_m, "n": rev_n},
-            "op": {"median": op_m, "n": op_n},
-            "pat": {"median": pat_m, "n": pat_n}}, reported
+            "rev": {"median": rev_m, "n": rev_n, "total": rev_t, "tn": rev_tn},
+            "op": {"median": op_m, "n": op_n, "total": op_t, "tn": op_tn},
+            "pat": {"median": pat_m, "n": pat_n, "total": pat_t, "tn": pat_tn}}, reported
 
 
 def main():
