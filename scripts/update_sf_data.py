@@ -291,10 +291,16 @@ def main():
     healed = self_heal(data, CA_OFF, NOADJ, int(D["end"].replace("-", "")), j)
     if healed: print("Self-heal corrected %d corporate action(s)." % healed)
 
-    if not appended and not healed and not merged:
-        print("No new trading days appended; nothing to self-heal."); return
+    # ALWAYS rewrite the freshly-loaded MERGED base to disk — even on a no-op run — so the split/publish
+    # step never reads the stale, UN-merged in-repo copy (frozen at an old `end`, still carrying
+    # ZOMATO/RUCHI/BURGERKING as separate stubs) and trip split_sf_data.py's ZOMATO/ETERNAL publish-guard.
+    # That guard-abort is what made a 2nd (workflow_dispatch / auto-rerun) run of the same day fail on
+    # loop. The .sf_updated MARK + version marker stay gated on a REAL change below, so a no-op run
+    # refreshes the on-disk bin but does NOT publish the release, bump clients, or commit a marker.
     blob = gzip.compress(json.dumps(D, separators=(",", ":")).encode(), 6)
     open(OUT, "wb").write(blob)
+    if not appended and not healed and not merged:
+        print("No new day / heal / merge — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
     open(MARK, "w").write(D["end"])
     # tiny version marker — committed daily, lets the browser cache the big bin in IndexedDB
     # keyed to this `end` and skip re-downloading 80 MB until the data actually changes.
