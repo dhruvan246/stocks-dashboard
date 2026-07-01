@@ -200,6 +200,7 @@ def main():
     MANUAL_MERGE = {"PCBL": "PHILIPCARB",   # INE602A01023 -> INE602A01031 (Jan 2022, prices continuous)
                     "PATANJALI": "RUCHI",   # Ruchi Soya relisted as RUCHI (2020-01) -> PATANJALI (2022-07); ISIN changed at IBC
                     "RBA": "BURGERKING"}    # Burger King India -> Restaurant Brands Asia (2022-02)
+    merged = 0
     for new, old in MANUAL_MERGE.items():
         on = data.get(new); oo = data.get(old)
         if on and oo and on["d"] and oo["d"] and oo["d"][0] < on["d"][0]:
@@ -218,7 +219,7 @@ def main():
                             on[f] = [round(oo[f][i] * adj, 2) for i in idx] + on[f]
                         else:
                             on[f] = [oo[f][i] for i in idx] + on[f]
-                data.pop(old, None); meta.pop(old, None)
+                data.pop(old, None); meta.pop(old, None); merged += 1
                 print("  MANUAL RENAME MERGE %s -> %s (%d pts prepended, adj=%.4f)" % (old, new, len(idx), adj))
     for day in days:
         rows = B.fetch_day(day, j)
@@ -290,7 +291,7 @@ def main():
     healed = self_heal(data, CA_OFF, NOADJ, int(D["end"].replace("-", "")), j)
     if healed: print("Self-heal corrected %d corporate action(s)." % healed)
 
-    if not appended and not healed:
+    if not appended and not healed and not merged:
         print("No new trading days appended; nothing to self-heal."); return
     blob = gzip.compress(json.dumps(D, separators=(",", ":")).encode(), 6)
     open(OUT, "wb").write(blob)
