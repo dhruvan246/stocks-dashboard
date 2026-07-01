@@ -183,6 +183,35 @@ def main():
         H[idx] = sorted(kept_old + new_snaps, key=lambda s: s["effectiveDate"])
         print(f"{idx}: {len(kept_old)} scrapbook (pre-{earliest}) + {len(new_snaps)} accurate = {len(H[idx])} snapshots")
 
+    # --- DERIVE the cleanly-partitionable sub-indices from the VALIDATED Nifty 500 -----------------
+    # NSE methodology: Nifty 500 = Nifty 100 (+) Midcap 150 (+) Smallcap 250 (disjoint by mcap rank),
+    # and MidSmallcap 400 = Nifty 500 - Nifty 100. Nifty 500 is validated 100% vs archived lists and
+    # Nifty 100 is exact, so deriving these two RECOVERS members the sparse per-index press-release
+    # reconstruction missed (mainly 2020-21 delisted small-caps that archive.org — blocked here —
+    # would otherwise be needed to pin). Smallcap 250 goes from ~233 (missing 19) to ~250.
+    def _asof(idx, d):
+        best = None
+        for s in H.get(idx, []):
+            if s["effectiveDate"] <= d: best = s
+        return set(best["symbols"]) if best else set()
+    def _derive(name, fn, basis):
+        dates = sorted({s["effectiveDate"] for bi in basis for s in H.get(bi, [])})
+        out = []
+        for d in dates:
+            syms = sorted(fn(d))
+            if not syms or (out and out[-1]["symbols"] == syms):
+                continue
+            out.append({"effectiveDate": d, "symbols": syms})
+        if out:
+            H[name] = out
+            print(f"  derived {name}: {len(out)} snapshots (from {' - '.join(basis)})")
+    _derive("Nifty MidSmallcap 400",
+            lambda d: _asof("Nifty 500", d) - _asof("Nifty 100", d),
+            ["Nifty 500", "Nifty 100"])
+    _derive("Nifty Smallcap 250",
+            lambda d: _asof("Nifty 500", d) - _asof("Nifty 100", d) - _asof("Nifty Midcap 150", d),
+            ["Nifty 500", "Nifty 100", "Nifty Midcap 150"])
+
     json.dump(H, open(hist_path, "w", encoding="utf-8"), separators=(",", ":"))
     print(f"\nWrote {hist_path}")
     binp = os.path.join(ROOT, "docs", "stock_data.bin")
