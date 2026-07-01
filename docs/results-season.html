@@ -40,7 +40,7 @@
 <main class="max-w-screen-lg mx-auto px-4 py-6">
   <div class="mb-4">
     <h1 class="text-xl font-bold text-slate-900">Results season &mdash; quarterly earnings pulse</h1>
-    <p class="text-sm text-slate-500 mt-0.5">Median year-on-year growth of companies that declared results each quarter, for Revenue, Operating Profit and PAT.</p>
+    <p class="text-sm text-slate-500 mt-0.5">Year-on-year growth of companies that declared results each quarter — Revenue, EBITDA (= Trendlyne’s EBIDT) and PAT on the chart; the detail table also lists after-depreciation Operating Profit (EBIT).</p>
     <div class="mt-3 flex flex-wrap items-center gap-2">
       <label for="rsUniverseSelect" class="text-xs font-semibold text-slate-600 uppercase tracking-wide">Universe</label>
       <select id="rsUniverseSelect" class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 max-w-full"></select>
@@ -78,7 +78,8 @@
               <th class="px-4 py-2 text-left font-semibold">Quarter</th>
               <th class="px-4 py-2 text-right font-semibold">Results</th>
               <th class="px-4 py-2 text-right font-semibold">Revenue</th>
-              <th class="px-4 py-2 text-right font-semibold">Op. Profit</th>
+              <th class="px-4 py-2 text-right font-semibold" title="EBITDA — Trendlyne’s ‘EBIDT’ card">EBITDA</th>
+              <th class="px-4 py-2 text-right font-semibold" title="Operating profit after depreciation — Trendlyne’s ‘Oper Profit’ card">Oper Profit</th>
               <th class="px-4 py-2 text-right font-semibold">PAT</th>
             </tr>
           </thead>
@@ -93,8 +94,8 @@
 let RS_ALL = { universes: [] };   // full payload
 let CUR = { quarters: [] };        // currently-selected universe
 let MODE = 'median';               // 'median' (typical company, consolidated) or 'total' (aggregate, standalone)
-function mval(m){ return m[MODE]; }                          // the value for the current mode
-function mn(m){ return MODE === 'median' ? m.n : m.tn; }     // the company count for the current mode
+function mval(m){ return m ? m[MODE] : null; }               // the value for the current mode (null if metric absent)
+function mn(m){ return m ? (MODE === 'median' ? m.n : m.tn) : null; }  // the company count for the current mode
 
 function pct(v){ return (v >= 0 ? '+' : '') + v.toFixed(1) + '%'; }
 function pctCls(v){ return v >= 0 ? 'text-green-700' : 'text-red-700'; }
@@ -106,10 +107,13 @@ function renderResultsSeason() {
   if (!root) return;
   if (!Q.length) { root.innerHTML = '<p style="color:#64748b;font-size:13px;padding:1rem">No comparable data for this universe.</p>'; return; }
 
+  // Chart bars: Revenue, EBITDA (= Trendlyne 'EBIDT', which it matches), PAT. After-dep EBIT is
+  // NOT a bar — it's in the detail table only (Trendlyne's 'Oper Profit' card is proprietary/not
+  // reproducible, and aggregate EBIT reads higher than EBITDA which looks broken as a bar).
   const METRICS = [
-    { key: 'rev', name: 'Revenue',          color: '#38bdf8' },
-    { key: 'op',  name: 'Operating Profit', color: '#34d399' },
-    { key: 'pat', name: 'PAT',              color: '#fbbf24' },
+    { key: 'rev', name: 'Revenue', color: '#38bdf8' },
+    { key: 'op',  name: 'EBITDA',  color: '#34d399' },
+    { key: 'pat', name: 'PAT',     color: '#fbbf24' },
   ];
   const uni  = document.getElementById('rsUniverse'); if (uni)  uni.textContent  = CUR.note || '';
   const asof = document.getElementById('rsAsOf');     if (asof) asof.textContent  = (CUR.label || '') + (RS_ALL.dataAsOf ? ' · prices as of ' + RS_ALL.dataAsOf : '');
@@ -117,7 +121,7 @@ function renderResultsSeason() {
   if (foot) foot.textContent = (MODE === 'median'
       ? 'MEDIAN — the typical company’s YoY growth (consolidated where filed, else standalone); half of members grew faster, half slower. '
       : 'TOTAL — aggregate YoY growth = sum of all members this year ÷ sum last year, standalone basis (matches Trendlyne’s result-analysis; dominated by the largest companies). ')
-    + 'Revenue & Operating profit exclude banks/NBFCs. Point-in-time index membership. YoY vs the year-ago quarter.';
+    + 'EBITDA (Trendlyne “EBIDT”) is before depreciation; Oper Profit is after. Both exclude banks/NBFCs. Point-in-time index membership. YoY vs the year-ago quarter.';
   const leg  = document.getElementById('rsLegend');
   if (leg) leg.innerHTML = METRICS.map(mm =>
     '<span class="inline-flex items-center gap-1.5"><span style="width:10px;height:10px;border-radius:2px;background:' +
@@ -131,7 +135,7 @@ function renderResultsSeason() {
   const range = (dMax - dMin) || 1;
 
   const n = Q.length, M = { l: 40, r: 14, t: 26, b: 48 };
-  const groupW = 66, bw = 15, gap = 3;
+  const groupW = 66, bw = 15, gap = 3;   // 3 bars/group: totW = 3*15 + 2*3 = 51 < 66
   const W = M.l + n * groupW + M.r, H = 312;
   const plotTop = M.t, plotBot = H - M.b;
   const y = v => plotTop + (dMax - v) / range * (plotBot - plotTop);
@@ -187,6 +191,7 @@ function renderResultsTable() {
       '<td class="px-4 py-2 text-right text-slate-600 tabular-nums">' + q.reported.toLocaleString('en-IN') + '</td>' +
       '<td class="px-4 py-2 text-right">' + cell(q.rev) + '</td>' +
       '<td class="px-4 py-2 text-right">' + cell(q.op) + '</td>' +
+      '<td class="px-4 py-2 text-right">' + cell(q.ebit) + '</td>' +
       '<td class="px-4 py-2 text-right">' + cell(q.pat) + '</td>' +
     '</tr>').join('');
 }

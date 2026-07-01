@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-"""Aggregate the 'results season' chart payload: per quarter, the MEDIAN YoY % across reporting
-companies for Revenue, Operating Profit and PAT, + the count that declared results — for MANY
-universes: an 'all liquid' set PLUS every NSE index (point-in-time membership).
+"""Aggregate the 'results season' chart payload: per quarter, the YoY % across reporting companies
+for Revenue, EBITDA (= Trendlyne 'EBIDT'), Operating Profit (EBIT, after depreciation ~ Trendlyne
+'Oper Profit') and PAT, + the count that declared results — for MANY universes: an 'all liquid' set
+PLUS every NSE index (point-in-time membership). Each metric carries BOTH median and total.
 
 Universes:
   - "liquid": currently-listed companies with median daily turnover >= Rs 1 cr (~250 sessions).
@@ -106,8 +107,8 @@ def agg_quarter(members, qe, pat, revop):
       total   = aggregate sum(now)/sum(ago)-1 on STANDALONE basis — the index P&L (matches Trendlyne)."""
     ya = yago(qe)
     reported = 0
-    pat_pairs, rev_pairs, op_pairs = [], [], []              # median (con-pref, positive base)
-    pat_tot, rev_tot, op_tot = [], [], []                    # total (standalone, all-with-both)
+    pat_pairs, rev_pairs, op_pairs, ebit_pairs = [], [], [], []   # median (con-pref, positive base)
+    pat_tot, rev_tot, op_tot, ebit_tot = [], [], [], []           # total (standalone, all-with-both)
     for s in members:
         pq = pat.get(s)
         if pq:
@@ -131,16 +132,26 @@ def agg_quarter(members, qe, pat, revop):
                 po = consistent((cq[2], cq[3]), (bq[2], bq[3]))
                 if po:
                     op_pairs.append(po)
+                # EBIT (after-dep operating profit) lives at idx 7/8 — defensive for legacy 7-elem rows
+                ce_s, ce_c = (cq[7] if len(cq) > 7 else None), (cq[8] if len(cq) > 8 else None)
+                be_s, be_c = (bq[7] if len(bq) > 7 else None), (bq[8] if len(bq) > 8 else None)
+                pe = consistent((ce_s, ce_c), (be_s, be_c))
+                if pe:
+                    ebit_pairs.append(pe)
                 if cq[0] is not None and bq[0] is not None:   # standalone revenue
                     rev_tot.append((cq[0], bq[0]))
-                if cq[2] is not None and bq[2] is not None:   # standalone operating profit
+                if cq[2] is not None and bq[2] is not None:   # standalone EBITDA
                     op_tot.append((cq[2], bq[2]))
-    rev_m, rev_n = median_yoy(rev_pairs); rev_t, rev_tn = agg_total(rev_tot)
-    op_m, op_n = median_yoy(op_pairs);   op_t, op_tn = agg_total(op_tot)
-    pat_m, pat_n = median_yoy(pat_pairs); pat_t, pat_tn = agg_total(pat_tot)
+                if ce_s is not None and be_s is not None:     # standalone EBIT
+                    ebit_tot.append((ce_s, be_s))
+    rev_m, rev_n = median_yoy(rev_pairs);   rev_t, rev_tn = agg_total(rev_tot)
+    op_m, op_n = median_yoy(op_pairs);       op_t, op_tn = agg_total(op_tot)
+    ebit_m, ebit_n = median_yoy(ebit_pairs); ebit_t, ebit_tn = agg_total(ebit_tot)
+    pat_m, pat_n = median_yoy(pat_pairs);    pat_t, pat_tn = agg_total(pat_tot)
     return {"qe": qe, "label": quarter_label(qe), "reported": reported,
             "rev": {"median": rev_m, "n": rev_n, "total": rev_t, "tn": rev_tn},
             "op": {"median": op_m, "n": op_n, "total": op_t, "tn": op_tn},
+            "ebit": {"median": ebit_m, "n": ebit_n, "total": ebit_t, "tn": ebit_tn},
             "pat": {"median": pat_m, "n": pat_n, "total": pat_t, "tn": pat_tn}}, reported
 
 

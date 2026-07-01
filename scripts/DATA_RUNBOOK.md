@@ -314,7 +314,7 @@ V-recovery (Jun-2021: +48%)**. ⚠️ MOVED OFF the Stocks dashboard → its own
   the snapshot whose effectiveDate ≤ the quarter-end), so no survivorship bias (today's Nifty 50 is NOT applied to 2019).
   The join is ~100% (renames via `_rename_map.json`). Financial-heavy indexes (Nifty Bank/PSU Bank) show **PAT only**
   — banks have no comparable rev/op, and `MIN_N=5` suppresses medians over <5 cos. `build_results_season.py` emits
-  `{defaultUniverse, dataAsOf, universes:[{key,label,note,quarters:[{...,rev:{median,n,total,tn},op,pat}]}]}`.
+  `{defaultUniverse, dataAsOf, universes:[{key,label,note,quarters:[{...,rev:{median,n,total,tn},op,ebit,pat}]}]}`.
 - **MEDIAN ↔ TOTAL toggle (2026-07-01, user compared to Trendlyne):** each metric carries BOTH `median` (per-company
   YoY, consolidated-preferred, positive base — "typical company") AND `total` (aggregate Σnow/Σago−1, **STANDALONE**).
   Trendlyne's result-analysis page shows the **TOTAL, standalone** number — verified: our total = Nifty 500 Q4FY26 rev
@@ -326,6 +326,16 @@ V-recovery (Jun-2021: +48%)**. ⚠️ MOVED OFF the Stocks dashboard → its own
   reads −5.8% purely because **ITC's standalone base had a huge ITC-Hotels demerger gain** (₹19.6k→5.1k cr), Bharti/
   Reliance-standalone similar. That's exactly why Trendlyne shows profit COUNTS, not a total-PAT%. Total Revenue + Total
   Op (EBITDA) ARE reliable (Nifty 500 9.6%/9.8% ≈ Trendlyne 9.0%/9.9%); for PROFIT, use the Median or a pos/neg count.
+- **EBITDA vs EBIT vs Trendlyne's two op cards (2026-07-01, user: "midsmall op profit is 12.1"):** Trendlyne shows
+  TWO operating-profit cards — **EBIDT** and **Oper Profit**. Our chart's op bar = **EBITDA** (`op*`, idx2/3 =
+  PBET+FC+Dep−OI) and it matches **EBIDT** to the decimal (N500 total 9.8 vs 9.9). Their **Oper Profit** card (N500 8.1 /
+  MidSmall 12.1) is **NOT reproducible** — exhaustively tested every metric×filter×basis: no single formula fits BOTH
+  (N500 8.1 ≈ our total-EBITDA-all 8.6; MidSmall 12.1 ≈ our *median* EBITDA 11.4 — different aggregations). It's a
+  proprietary calc that smooths cyclical outliers (HPCL/refiners inflate our honest MidSmall total to 19.2). We DID add
+  **after-dep EBIT** (`ebit*`, idx7/8 = PBET+FC−OI) to `sf_revop.json` + a **detail-table column** (NOT a chart bar):
+  aggregate EBIT reads HIGHER than EBITDA (base effect: smaller denominator → bigger %, N500 12.9 vs 9.8), which looks
+  broken as a bar. Chart bars stay **Revenue / EBITDA / PAT**; the table adds EBIT for completeness. `sf_revop` row is now
+  **9 elems** `[revStd,revCon,opStd,opCon,patStd,patCon,fin,ebitStd,ebitCon]` — readers pad legacy 7-elem rows.
 - **⚠️ MEMBERSHIP COMPLETENESS (2026-07-01 — user: "fetch every rebalance, none missed"):** `indices_history.json`
   is reconstructed from **niftyindices reconstitution press-release PDFs** (`ind_prs<DDMMYYYY>.pdf`), parsed by
   **`build_changelog.py`** → `_changelog.json` (per-index add/drop events), then **`build_membership_v2.py`** walks

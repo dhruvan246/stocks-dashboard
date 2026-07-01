@@ -101,8 +101,10 @@ def fnum(xml, tag, ctx):
 
 
 def metrics_for(xml, ctx):
-    """Reconstruct (revenue_cr, operating_profit_cr, pat_total_cr, pat_owners_cr) for one context.
-    Returns rupee->crore values; revenue/op are None when the inputs aren't industrial."""
+    """Reconstruct (revenue_cr, ebitda_cr, ebit_cr, pat_total_cr, pat_owners_cr) for one context.
+    Returns rupee->crore values; revenue/op are None when the inputs aren't industrial.
+      op   = EBITDA  = PBET + FinanceCosts + Depreciation - OtherIncome  (= Trendlyne 'EBIDT')
+      ebit = EBIT    = PBET + FinanceCosts - OtherIncome  (after depreciation; ~ Trendlyne 'Oper Profit')"""
     rev = fnum(xml, "RevenueFromOperations", ctx)
     oi = fnum(xml, "OtherIncome", ctx) or 0.0
     fc = fnum(xml, "FinanceCosts", ctx) or 0.0
@@ -113,42 +115,46 @@ def metrics_for(xml, ctx):
     pat = fnum(xml, "ProfitLossForPeriod", ctx)
     owners = fnum(xml, "ProfitOrLossAttributableToOwnersOfParent", ctx)
     op = (pbet + fc + dep - oi) if (pbet is not None) else None
+    ebit = (pbet + fc - oi) if (pbet is not None) else None
     return (rev / CR if rev is not None else None,
             op / CR if op is not None else None,
+            ebit / CR if ebit is not None else None,
             pat / CR if pat is not None else None,
             owners / CR if owners is not None else None)
 
 
 def xbrl_revop(xml, basis_hint=None):
-    """(rev_std, op_std, rev_con, op_con, fin) in Rs crore for the CURRENT quarter from ONE filing,
-    mirroring build_fundamentals.xbrl_profit's OneD/FourD + NatureOfReport logic — so the daily
-    incremental updater can read revenue + operating profit straight from the XBRL it already fetches
-    for PAT, no disk cache needed. Operating Profit = PBET + FinanceCosts + Depreciation - OtherIncome
-    (EBITDA ex-other-income). Banks/NBFCs (InterestEarned) -> rev/op None (not comparable), fin=1."""
+    """(rev_std, op_std, ebit_std, rev_con, op_con, ebit_con, fin) in Rs crore for the CURRENT quarter
+    from ONE filing, mirroring build_fundamentals.xbrl_profit's OneD/FourD + NatureOfReport logic — so
+    the daily incremental updater can read revenue + operating profit straight from the XBRL it already
+    fetches for PAT, no disk cache needed.
+      op   = EBITDA = PBET + FinanceCosts + Depreciation - OtherIncome  (= Trendlyne 'EBIDT')
+      ebit = EBIT   = PBET + FinanceCosts - OtherIncome  (after depreciation; ~ Trendlyne 'Oper Profit')
+    Banks/NBFCs (InterestEarned) -> rev/op/ebit None (not comparable), fin=1."""
     nat = {}
     for m in re.finditer(r'NatureOfReportStandaloneConsolidated contextRef="([^"]+)"[^>]*>([^<]+)<', xml):
         nat[m.group(1)] = m.group(2).strip().lower()
     hint = (basis_hint or "").lower()
     fin = 1 if "InterestEarned" in xml else 0
-    rev_std = op_std = rev_con = op_con = None
+    rev_std = op_std = ebit_std = rev_con = op_con = ebit_con = None
     one_nat = nat.get("OneD", "") or hint
-    rev, op, _, _ = metrics_for(xml, "OneD")
+    rev, op, ebit, _, _ = metrics_for(xml, "OneD")
     if rev is not None or op is not None:
         if "consol" in one_nat:
-            rev_con, op_con = rev, op
+            rev_con, op_con, ebit_con = rev, op, ebit
         else:
-            rev_std, op_std = rev, op
+            rev_std, op_std, ebit_std = rev, op, ebit
     four_nat = nat.get("FourD", "")
     if four_nat and four_nat != one_nat:          # combined filing: FourD is the OTHER basis
-        rev, op, _, _ = metrics_for(xml, "FourD")
+        rev, op, ebit, _, _ = metrics_for(xml, "FourD")
         if "consol" in four_nat and rev_con is None:
-            rev_con, op_con = rev, op
+            rev_con, op_con, ebit_con = rev, op, ebit
         elif "consol" not in four_nat and rev_std is None:
-            rev_std, op_std = rev, op
+            rev_std, op_std, ebit_std = rev, op, ebit
     if fin:
-        rev_std = op_std = rev_con = op_con = None
+        rev_std = op_std = ebit_std = rev_con = op_con = ebit_con = None
     r2 = lambda x: round(x, 2) if x is not None else None
-    return r2(rev_std), r2(op_std), r2(rev_con), r2(op_con), fin
+    return r2(rev_std), r2(op_std), r2(ebit_std), r2(rev_con), r2(op_con), r2(ebit_con), fin
 
 
 def ts_key(fname):
@@ -181,8 +187,8 @@ def parse_file(path, fname):
     one_nat = (RE_NAT["OneD"].search(xml) or [None, ""])
     one_nat = one_nat.group(1).strip().lower() if hasattr(one_nat, "group") else ""
     out = {"std": None, "con": None, "fin": fin, "qe": qe, "sym": sym, "ts": ts_key(fname)}
-    rev, op, pat, owners = metrics_for(xml, "OneD")
-    one = {"rev": rev, "op": op, "pat": pat, "owners": owners}
+    rev, op, ebit, pat, owners = metrics_for(xml, "OneD")
+    one = {"rev": rev, "op": op, "ebit": ebit, "pat": pat, "owners": owners}
     if "consol" in one_nat:
         out["con"] = one
     else:
@@ -193,8 +199,8 @@ def parse_file(path, fname):
         four_nat = RE_NAT["FourD"].search(xml)
         four_nat = four_nat.group(1).strip().lower() if four_nat else ""
         if four_nat and four_nat != one_nat:
-            rev, op, pat, owners = metrics_for(xml, "FourD")
-            d = {"rev": rev, "op": op, "pat": pat, "owners": owners}
+            rev, op, ebit, pat, owners = metrics_for(xml, "FourD")
+            d = {"rev": rev, "op": op, "ebit": ebit, "pat": pat, "owners": owners}
             if "consol" in four_nat and out["con"] is None:
                 out["con"] = d
             elif "consol" not in four_nat and out["std"] is None:
@@ -225,7 +231,8 @@ def main():
         files = files[-limit:]
     total = len(files)
 
-    data = {}   # sym -> { qe(str) -> [revStd,revCon,opStd,opCon,patStd,patCon,fin] }
+    data = {}   # sym -> { qe(str) -> [revStd,revCon,opStd,opCon,patStd,patCon,fin,ebitStd,ebitCon] }
+                #   op* = EBITDA (Trendlyne EBIDT); ebit* = after-dep operating profit (~Oper Profit)
     fin_seen = {}  # (sym,qe) -> fin
     start_i = 0
     if not fresh and not limit and os.path.exists(PROG):
@@ -239,7 +246,10 @@ def main():
 
     def cell(sym, qe):
         d = data.setdefault(sym, {})
-        return d.setdefault(str(qe), [None, None, None, None, None, None, 0])
+        row = d.setdefault(str(qe), [None, None, None, None, None, None, 0, None, None])
+        if len(row) < 9:                                # pad legacy 7-element rows (resume/merge path)
+            row += [None] * (9 - len(row))
+        return row
 
     def put(row, idx, val):
         if val is not None:                         # latest-filing-wins (files sorted asc -> last overwrites)
@@ -253,8 +263,10 @@ def main():
             row[6] = 1
         if r["std"]:
             put(row, 0, r["std"]["rev"]); put(row, 2, r["std"]["op"]); put(row, 4, r["std"]["pat"])
+            put(row, 7, r["std"]["ebit"])
         if r["con"]:
             put(row, 1, r["con"]["rev"]); put(row, 3, r["con"]["op"])
+            put(row, 8, r["con"]["ebit"])
             # consolidated PAT = owners-attributable (matches the backtest basis), else total.
             # Guard a mis-tagged owners=0 (real profit sits only in ProfitLossForPeriod) — same
             # guard as apply_owners_full.py: owners ~0 while total is material -> use total.

@@ -39,7 +39,7 @@ WINDOW_DAYS = 120  # wide overlap: a full quarter, so even if the workflow misse
 def main():
     if os.path.exists(MARK): os.remove(MARK)
     data = json.load(open(DOCS))
-    try: revop = json.load(open(REVOP))   # {SYM: {QE: [revStd,revCon,opStd,opCon,patStd,patCon,fin]}}
+    try: revop = json.load(open(REVOP))   # {SYM:{QE:[revStd,revCon,opStd,opCon,patStd,patCon,fin,ebitStd,ebitCon]}}
     except Exception: revop = {}
     jar = B.nse_jar()
     h = {"User-Agent": B.UA, "Accept": "application/json",
@@ -69,7 +69,7 @@ def main():
         existing = next((x for x in data.get(sym, []) if x[0] == int(qe)), None)
         er = revop.get(sym, {}).get(str(qe))     # existing rev/op row for this (sym, quarter)
         std = con = None; annStd = annCon = None
-        rStd = rCon = oStd = oCon = None; rFin = 0
+        rStd = rCon = oStd = oCon = eStd = eCon = None; rFin = 0
         for f in sorted(filings, key=lambda x: x["ann"]):
             is_con = "consol" in (f.get("basis") or "").lower()
             # Skip the ~1 MB iXBRL fetch only when BOTH net-profit AND rev/op for this basis are
@@ -89,9 +89,9 @@ def main():
             if std is None and s is not None: std, annStd = s, a
             if con is None and c is not None: con, annCon = c, a
             try:   # rev/op is best-effort: never let it break the net-profit refresh
-                rs2, os2, rc2, oc2, fin2 = xbrl_revop(xml, basis_hint=f.get("basis"))
-                if rStd is None and rs2 is not None: rStd, oStd = rs2, os2
-                if rCon is None and rc2 is not None: rCon, oCon = rc2, oc2
+                rs2, os2, es2, rc2, oc2, ec2, fin2 = xbrl_revop(xml, basis_hint=f.get("basis"))
+                if rStd is None and rs2 is not None: rStd, oStd, eStd = rs2, os2, es2
+                if rCon is None and rc2 is not None: rCon, oCon, eCon = rc2, oc2, ec2
                 if fin2: rFin = 1
             except Exception:
                 pass
@@ -110,7 +110,8 @@ def main():
         # --- upsert revenue / operating profit (sf_revop.json): fill-only, parallel structure ---
         if rStd is not None or rCon is not None or rFin:
             d = revop.setdefault(sym, {})
-            rr = d.get(str(qe)) or [None, None, None, None, None, None, 0]
+            rr = d.get(str(qe)) or [None, None, None, None, None, None, 0, None, None]
+            if len(rr) < 9: rr += [None] * (9 - len(rr))   # pad legacy 7-element rows -> add ebit slots
             if rr[0] is None and rStd is not None: rr[0] = rStd
             if rr[1] is None and rCon is not None: rr[1] = rCon
             if rr[2] is None and oStd is not None: rr[2] = oStd
@@ -118,6 +119,8 @@ def main():
             if rr[4] is None and std  is not None: rr[4] = std
             if rr[5] is None and con  is not None: rr[5] = con
             if rFin: rr[6] = 1
+            if rr[7] is None and eStd is not None: rr[7] = eStd
+            if rr[8] is None and eCon is not None: rr[8] = eCon
             d[str(qe)] = rr; revop_changed += 1
 
     # No-subsidiary auto-fill: a company that has never reported con != std files only a standalone
