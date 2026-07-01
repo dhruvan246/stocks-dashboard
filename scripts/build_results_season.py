@@ -90,7 +90,11 @@ def median_yoy(pairs):
 
 def agg_total(pairs):
     """Aggregate (total-based, Trendlyne-style) growth: sum(now)/sum(ago)-1, on the pairs given
-    (STANDALONE basis). Needs a positive aggregate base + >=MIN_N contributors."""
+    (STANDALONE basis). Aggregate only companies PROFITABLE IN BOTH periods (base AND current > 0) —
+    a loss/near-zero base blows the ratio up (mid/small-cap PAT read 72%), and filtering base-only made
+    it swing the other way (Nifty 500 PAT 1.9%, Smallcap -15%). Both>0 is the standard stable 'total
+    profit growth'. Revenue/op are unaffected (both always > 0)."""
+    pairs = [(n, a) for n, a in pairs if a > 0 and n > 0]
     sn = sum(n for n, a in pairs)
     sa = sum(a for n, a in pairs)
     return (round((sn / sa - 1) * 100, 1) if (sa > 0 and len(pairs) >= MIN_N) else None), len(pairs)

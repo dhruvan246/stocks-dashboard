@@ -320,6 +320,12 @@ V-recovery (Jun-2021: +48%)**. ⚠️ MOVED OFF the Stocks dashboard → its own
   Trendlyne's result-analysis page shows the **TOTAL, standalone** number — verified: our total = Nifty 500 Q4FY26 rev
   **9.6%** / op **8.6%** vs Trendlyne **9.0% / 8.1%** (residual = live-vs-frozen reporting cut-off). The median reads
   HIGHER (rev 13.8%) because it's equal-weight (giants that grow slower don't dominate). Page has a Median/Total toggle.
+  `agg_total()` sums only companies **profitable in BOTH periods** (base AND current > 0) — a loss/near-zero base blows
+  the ratio up (MidSmallcap400 PAT read 72%), base-only filtering swings it negative. ⚠️ **TOTAL PAT is still unreliable
+  at index level** — one-off/exceptional items + standalone-vs-consolidated wreck it: e.g. Nifty 50 Q4FY26 total PAT
+  reads −5.8% purely because **ITC's standalone base had a huge ITC-Hotels demerger gain** (₹19.6k→5.1k cr), Bharti/
+  Reliance-standalone similar. That's exactly why Trendlyne shows profit COUNTS, not a total-PAT%. Total Revenue + Total
+  Op (EBITDA) ARE reliable (Nifty 500 9.6%/9.8% ≈ Trendlyne 9.0%/9.9%); for PROFIT, use the Median or a pos/neg count.
 - **⚠️ MEMBERSHIP COMPLETENESS (2026-07-01 — user: "fetch every rebalance, none missed"):** `indices_history.json`
   is reconstructed from **niftyindices reconstitution press-release PDFs** (`ind_prs<DDMMYYYY>.pdf`), parsed by
   **`build_changelog.py`** → `_changelog.json` (per-index add/drop events), then **`build_membership_v2.py`** walks
