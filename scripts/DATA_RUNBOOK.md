@@ -183,19 +183,56 @@ So value-only fills still power YoY-vs-prior-year; supply the date when the fili
 
 ---
 
-## 7. GRID SEARCH — find the best strategy over a window  (Node, validated 2026-06-22)
-Brute-force every ranking factor × direction × rebalance-method (+ filter sets) over a fixed window/universe,
-using the REAL engine in **Node** (no browser freeze/45s-eval limits). Validated to match the live site's CAGRs exactly.
-- Tool: `scripts/grid_search.js` — it's APPENDED to the engine (shares scope, sets SF/META/SERIES/IDXH/NIFTY/FUND
-  from the LOCAL `docs/*.bin`+json, calls `activateSF()`, runs `simulate()` over the grid). Build + run:
-  `cat docs/backtest-engine.js scripts/grid_search.js > scripts/_grid_run.js && node scripts/_grid_run.js`
-  (pass `validate` to first check 2 combos vs the browser). Writes ranked top-25 (by CAGR **and** by risk-adj
-  CAGR/maxDD) to `scripts/_gridresult.json`. ~8 min for ~236 combos (tech factors ~3-4s each, simple <0.5s).
-- Edit the `base={start,end,indexName,freq,topN,…}` and `FSETS` in the driver to change the window/universe/filters.
-- `docs/sf_stock_data.bin` must cover the window's `end` (check its `{end}`); it loads fund from `docs/sf_fundamentals.json`.
-- ⚠️ Picking the top of N combos is **in-sample / curve-fit** — ALWAYS re-run on other windows (out-of-sample) before trusting.
-- Save the winner to the shared lists by pull→append→push the RPCs (secret `sw_owner_8Kq2Lm9Xp4Rt7v`):
-  strategy `{id,ts,name,cfg}` → `bt_strats_set`; history `{id,ts,label,cfg,m:{cagr,benchCagr,maxDD,finalV}}` → `bt_owner_set`.
+## 7. STRATEGY FINDER — find the best strategy over a window  (Node; exhaustive, proven 2026-07-02)
+"find best strategies" → run the REAL engine in **Node** over the search grid (no browser freeze/45s limits).
+Default config unless the user says otherwise: **Nifty 500, monthly (freq 1), top 5, earnBasis con**, end = latest data.
+(memory: [[feedback-strategy-finder-exhaustive]])
+
+### 7.0 ALWAYS use LIVE data first (the committed bin is STALE — §0)
+`docs/sf_stock_data.bin` is a frozen snapshot (was 2026-06-13 while live was -06-25). Before ANY Node grid run,
+merge the LIVE sf-data parts over it, else prices are days stale and CAGRs won't match the site:
+```
+curl -s "https://dhruvan246.github.io/sf-data/sf_stock_data_1.bin?v=<end>" -o scripts/_live/p1.bin
+curl -s "https://dhruvan246.github.io/sf-data/sf_stock_data_2.bin?v=<end>" -o scripts/_live/p2.bin   # <end> from sf-data/sf_meta.json
+node -e "z=require('zlib');f=require('fs');a=JSON.parse(z.gunzipSync(f.readFileSync('scripts/_live/p1.bin')));b=JSON.parse(z.gunzipSync(f.readFileSync('scripts/_live/p2.bin')));m={...a,data:{...a.data,...b.data},meta:{...(a.meta||{}),...(b.meta||{})}};f.writeFileSync('docs/sf_stock_data.bin',z.gzipSync(JSON.stringify(m),{level:6}))"
+# verify: node -e "...gunzip docs/sf_stock_data.bin...console.log(d.end)"  → must equal sf-data {end}; ZOMATO absent, ETERNAL len>1000
+```
+Restore afterwards if you don't want the working tree dirty: `git checkout docs/sf_stock_data.bin`.
+
+### 7.1 EXHAUSTIVE grid — `scripts/grid_search_full.js` (NOT the greedy `grid_search.js`)
+The old `grid_search.js` is GREEDY: it ranks factors unfiltered (stage1), then only bolts filters onto the TOP-12.
+That PRUNES factors weak-raw-but-strong-filtered and MISSES real winners (proven: high-`mdd6` was ~130th raw so
+never got filtered, but `mdd6`+`d52<=10`+`profitYoyPct>0` = 65% CAGR, the #2 strategy). **Use the exhaustive driver.**
+- `grid_search_full.js` runs **every FIELDS sort × both dirs × every FSET** (method=reset, top5), then sweeps
+  method(hold) + topN(3/8/10) on the top-15. Appended to the engine; parametrized by start date via argv:
+  `cat docs/backtest-engine.js scripts/grid_search_full.js > scripts/_gridfull_run.js && node scripts/_gridfull_run.js 2020-03-31`
+  Writes `scripts/_gridfull_result_<start>.json` (topByCAGR 40 + topByRiskAdj 20, each with full `raw` cfg).
+  **RUNTIME IS LONG — run in BACKGROUND:** ~980 combos = ~55 min for a 3yr window, **~108 min for a 6yr window**
+  (each combo ~3–8s; longer window = more rebalances = slower). Don't foreground it.
+- Ensure `FSETS` includes the meaningful filters incl. `[d52<=10, profitYoyPct>0]`. Cross-window compare tool: `scripts/_cross.js`.
+
+### 7.2 ALWAYS out-of-sample validate (curve-fit guard)
+Top-of-N over ONE window is in-sample. Re-run the winners on ≥1 other window. A strategy that only wins from a
+**crash-bottom start (2020-03-31)** is regime-luck, not edge. Proven robust across 2020 & 2023 starts:
+- ★ **`high-mdd6` + `d52<=10` + `profitYoyPct>0`** (top5, monthly, N500) — #2 from 2023 (65%), #3 from 2020 (71%). The all-weather winner.
+- **`high-delivPct` + `profitYoyPct>25`** — #1 from 2023 (71%/13.5dd), #9 from 2020. Runner-up; best risk-adj.
+- Recovery-momentum (`ret6m`/`d52_low_pct`) tops 2020 only (COVID bounce) → fades to >#40 from 2023. Window-luck.
+- NOTE: `rsNifty` was REMOVED from FIELDS (2026-07-02) — in a single-index universe it == `ret6m` minus a
+  per-date constant, so it never re-ranks. Don't re-add it.
+
+### 7.3 Save winners to BOTH shared lists (Supabase `nebjnsndgrhumnkuipqy`, write secret `sw_owner_8Kq2Lm9Xp4Rt7v`)
+Use FILE scripts, not `node -e` (shell quoting mangles the URL). Pull→prepend→push via REST rpc (fetch, Node ≥18):
+- **Backtest History** — `scripts/_save_history.js <result.json> [N]`: re-runs `simulate()` for FULL metrics, builds
+  UI-identical items `{id,ts,label,cfg,yby,m:{cagr,finalV,maxDD,vol,winRate,benchCagr,rebs,years}}`, dedups top-N
+  distinct, pull `bt_public` → prepend → push `bt_owner_set {secret,payload}`. Writes `scripts/_save_items.json`.
+- **Saved Strategies** — `scripts/_save_strats.js`: reads `_save_items.json`, builds `{id,ts,name:label,cfg}`,
+  pull `bt_strats_public` → prepend → push `bt_strats_set {secret,payload}`.
+- The **saved-strategies.html** page is a Trendlyne-style TABLE (Strategy / CAGR / Backtests / 🗑), one row per
+  UNIQUE strategy (identity = cfg minus the date window), sorted by **canonical CAGR = the longest-window run**
+  (so a short lucky window can't jump the sort). Click a row → expands ALL its backtests, pulled from shared
+  **History** filtered by `isRealRun` (rebs≥3 AND window≥90d — excludes degenerate junk like a 428% 1-rebalance run).
+  So a NEW backtest of a saved strategy (which autosaves to History) auto-appears under it. Don't revert to
+  sourcing windows only from the strategy list — that hid freshly-run backtests.
 
 ---
 
