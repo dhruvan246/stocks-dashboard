@@ -231,7 +231,11 @@ def main():
     # rename (RUCHISOYA->RUCHI post-IBC->PATANJALI; Burger King India->Restaurant Brands Asia).
     MANUAL_MERGE = {"PCBL": "PHILIPCARB",   # INE602A01023 -> INE602A01031 (Jan 2022, prices continuous)
                     "PATANJALI": "RUCHI",   # Ruchi Soya relisted as RUCHI (2020-01) -> PATANJALI (2022-07); ISIN changed at IBC
-                    "RBA": "BURGERKING"}    # Burger King India -> Restaurant Brands Asia (2022-02)
+                    "RBA": "BURGERKING",    # Burger King India -> Restaurant Brands Asia (2022-02)
+                    "LTM": "LTIM"}          # L&T Infotech (LTIM series 2016-2022) -> LTIMindtree (LTM 2022-12);
+                                            # Nifty-500 membership + fundamentals use LTM, so the pre-2022 price
+                                            # history (under LTIM) was orphaned -> LTM missing 2020-2022. Prices
+                                            # continuous at the join (5065.75 -> 4975.40, no split); no LTM CAs.
     merged = 0
     for new, old in MANUAL_MERGE.items():
         on = data.get(new); oo = data.get(old)
