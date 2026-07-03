@@ -212,6 +212,23 @@ def main():
             lambda d: _asof("Nifty 500", d) - _asof("Nifty 100", d) - _asof("Nifty Midcap 150", d),
             ["Nifty 500", "Nifty 100", "Nifty Midcap 150"])
 
+    # --- MANUAL MEMBERSHIP ADDS (survive every rebuild) -------------------------------------------
+    # Verified members the press-release/checkpoint reconstruction can't carry. Applied AFTER the
+    # derives so they land ONLY in the listed index. Each: (index, symbol, from_date, to_date).
+    #   TATAMTRDVR — Tata Motors DVR. StockView counts the DVR as a Nifty-500 constituent; NSE's
+    #   constituent CSVs list only the ordinary share, so the reconstruction shows it in just ~8
+    #   semi-annual snapshots and it flickers in/out. It traded continuously until its merger
+    #   record date (last trade 2024-08-29) -> hold it in every Nifty 500 snapshot in range.
+    #   First added in cf46cc9 as a direct data patch; that was WIPED by the next rebuild (this
+    #   script regenerates indicesHistory wholesale), so it now lives here. 2026-07-04.
+    MANUAL_ADDS = [("Nifty 500", "TATAMTRDVR", "2018-10-04", "2024-08-29")]
+    for m_idx, m_sym, m_from, m_to in MANUAL_ADDS:
+        n = 0
+        for s in H.get(m_idx, []):
+            if m_from <= s["effectiveDate"] <= m_to and m_sym not in s["symbols"]:
+                s["symbols"] = sorted(s["symbols"] + [m_sym]); n += 1
+        print(f"  MANUAL ADD {m_sym} -> {m_idx} [{m_from}..{m_to}]: patched {n} snapshots")
+
     json.dump(H, open(hist_path, "w", encoding="utf-8"), separators=(",", ":"))
     print(f"\nWrote {hist_path}")
     binp = os.path.join(ROOT, "docs", "stock_data.bin")
