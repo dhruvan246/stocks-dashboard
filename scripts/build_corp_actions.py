@@ -71,17 +71,23 @@ def official_factor(subj):
     """Return (price_factor, label) for a split/bonus subject, else (None, None).
     Split: face value Rs X -> Rs Y  => factor Y/X.   Bonus B:A (B new per A held) => A/(A+B)."""
     s = (subj or "").lower()
-    m = re.search(r'from\s*(?:rs\.?\s*)?([\d.]+).*?to\s*(?:rs\.?\s*)?([\d.]+)', s)
+    factor = 1.0; parts = []
+    # A single NSE subject can carry a bonus AND a split together ("Bonus 1:1/Face Value Split - From
+    # Rs 10 To Re 1") -> the price factor is their PRODUCT. The old code returned on the FIRST match and
+    # dropped the other leg, so combined bonus+split lines were under-recorded (SUNILHITEC 0.1 not 0.05,
+    # HINDCOMPOS 0.5 not 0.333), which then disagreed with the correctly-combined price data and got
+    # reverted by self_heal. Also: NSE writes the currency as "Rs" for >Re.1 but "Re" for exactly Re.1,
+    # so accept BOTH (the rs-only regex silently dropped every split down to Re.1, e.g. GAEL Rs2->Re1).
+    m = re.search(r'from\s*(?:r[se]\.?\s*)?([\d.]+).*?to\s*(?:r[se]\.?\s*)?([\d.]+)', s)
     if m and ("split" in s or "sub-division" in s or "sub division" in s):
         x, y = float(m.group(1)), float(m.group(2))
-        if x and 0 < y < x:
-            return y / x, "split (FV %s->%s)" % (m.group(1), m.group(2))
+        if x and 0 < y < x: factor *= y / x; parts.append("split FV %s->%s" % (m.group(1), m.group(2)))
     m = re.search(r'bonus[^0-9]*(\d+)\s*:\s*(\d+)', s)
     if m:
         b, a = int(m.group(1)), int(m.group(2))
         if a + b and b <= 50 and a <= 250:           # ignore absurd parses (stray digits)
-            return a / (a + b), "bonus %d:%d" % (b, a)
-    return None, None
+            factor *= a / (a + b); parts.append("bonus %d:%d" % (b, a))
+    return (factor, " + ".join(parts)) if parts else (None, None)
 
 
 def fetch():
@@ -113,10 +119,16 @@ def fetch():
 
 def main():
     cmap, demap = fetch()
-    # Merge the hardcoded false-CA overrides so they survive this daily regeneration (NSE's feed
-    # doesn't list market crashes, so they'd vanish otherwise).
+    # Merge the hardcoded/auto-detected false-CA (crash) overrides so they survive this daily
+    # regeneration (NSE's feed doesn't list market crashes, so they'd vanish otherwise). BUT a
+    # crash-flag on a date that ALSO carries an official split/bonus is a FALSE POSITIVE: the big
+    # single-day drop is the corporate action, not a crash. Skip those, else self_heal would reverse
+    # the correct split adjustment as keep-drop (e.g. SUNILHITEC/HINDCOMPOS/DVL — bonus+split to Re.1
+    # that the crash detector mis-read as ~95% falls). Genuine demergers from NSE (is_demerger, already
+    # in demap) are untouched and still keep their drop even if they also carry a bonus.
     for sym, exs in MANUAL_NOADJUST.items():
-        demap.setdefault(sym, set()).update(exs)
+        split_dates = {int(k) for k in cmap.get(sym, {})}
+        demap.setdefault(sym, set()).update(e for e in exs if int(e) not in split_dates)
     out = {
         "factors":  {sym: sorted([k, v] for k, v in d.items()) for sym, d in cmap.items()},
         "noadjust": {sym: sorted(s) for sym, s in demap.items()},

@@ -87,6 +87,11 @@ def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
     across the ex-date) and compare it to the official one; if they disagree we rescale the pre-ex
     history by correct_f/applied_f. Idempotent: once correct, applied_f == correct_f so it no-ops."""
     def od(y): return datetime.date(y // 10000, y // 100 % 100, y % 100).toordinal()
+    # Normally only the last ~4 weeks (fresh actions the daily run might have mis-inferred before NSE
+    # published them). SF_HEAL_WINDOW=<days> forces a one-time FULL-history reconciliation — needed when
+    # corp_actions.json gains factors that were historically missing/mis-inferred (e.g. the "To Re.1"
+    # face-value-split parser fix), so the whole back-history gets re-reconciled against the official set.
+    window_days = int(os.environ.get("SF_HEAL_WINDOW", window_days))
     cutoff = od(end_ymd) - window_days
     events = []   # (sym, exYmd, official_split_bonus_factor_or_None, is_demerger)
     for sym, fl in CA_OFF.items():
