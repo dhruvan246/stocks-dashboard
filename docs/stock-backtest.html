@@ -206,6 +206,7 @@ async function loadSF(){
     const endOff=Math.floor((Date.parse((D.end||'2024-01-01')+'T00:00:00Z')/1000 - ts)/DAY);
     SF={meta, series:ser, turn, startTs:ts, endOff, start:D.start, end:D.end,
         nDead:Object.values(meta).filter(m=>!m.alive).length, nTot:Object.keys(meta).length};
+    SNAP_DATAVER=SF.end||SNAP_DATAVER;                        // authoritative data version for snapshot keys (see snapKey)
     $('runMsg').textContent=''; return true;
   }catch(e){ $('runMsg').textContent='Could not load sf_stock_data.bin — the survivorship-free build may still be running.'; console.error(e); return false; }
 }
@@ -378,14 +379,22 @@ function stratIdentity(c){
 }
 // ---- result SNAPSHOTS: store the full computed result once so re-opening is INSTANT (no 17 MB load,
 //      no recompute). Keyed by strategy identity + window + method, so it matches what the 👁 fetches. ----
-function snapKey(c){ return stratIdentity(c)+'||'+(c.start||'')+'||'+(c.method||''); }
+// The key ALSO carries a version stamp = engine version + data date. So the moment the engine logic
+// changes (bump ENGINE_VER) OR a new daily dataset lands (SNAP_DATAVER rolls to the latest data `end`),
+// every key changes → the old snapshot is no longer found → the next view recomputes with the CURRENT
+// code + data and re-caches. Without this stamp a changed engine or a refreshed dataset would keep
+// serving a stale pre-computed result forever.
+const ENGINE_VER='e1';        // ⬆️ BUMP this whenever simulate()/engine logic changes → invalidates all snapshots
+let SNAP_DATAVER='';          // latest data date (data `end`); set from SF.end once loaded, else sf_meta.json
+async function ensureSnapVer(){ if(SNAP_DATAVER) return SNAP_DATAVER; try{ SNAP_DATAVER=(await (await fetch('./sf_meta.json',{cache:'no-cache'})).json()).end||''; }catch(e){} return SNAP_DATAVER; }
+function snapKey(c){ return stratIdentity(c)+'||'+(c.start||'')+'||'+(c.method||'')+'||v='+ENGINE_VER+':'+SNAP_DATAVER; }
 function buildSnapshot(res){
   const s={};
   ['cagr','finalV','maxDD','vol','winRate','benchCagr','years','fLabel','dispCols','equity','bench','bench500','latest','latestCash','rebs','trades','cfg'].forEach(k=>{ if(res[k]!==undefined) s[k]=res[k]; });
   if(res.latest && res.latest._cashWt!=null) s.latestCashWt=res.latest._cashWt;   // arrays drop non-index props in JSON — carry it explicitly
   return s;
 }
-async function saveSnapshot(cfg,res){ try{ if(window.btSync&&btSync.snapSet) await btSync.snapSet(snapKey(cfg), buildSnapshot(res)); }catch(e){} }
+async function saveSnapshot(cfg,res){ try{ await ensureSnapVer(); if(window.btSync&&btSync.snapSet) await btSync.snapSet(snapKey(cfg), buildSnapshot(res)); }catch(e){} }
 // Render a stored snapshot straight onto the page — no data load, no simulate(). Everything draws
 // from the saved result; only the live "qualifying stocks" chart is unavailable (needs raw prices).
 function renderSnapshotPage(snap, cfg){
@@ -1038,14 +1047,15 @@ async function bakeAll(){
   const ip=$('introP'); if(ip) ip.style.display='none';
   const h1=document.querySelector('h1'); if(h1) h1.textContent='🍪 Baking snapshots';
   try{
+    await ensureSnapVer();                                   // guarantee the version stamp is set before any snapKey()
     try{ await btSync.pullStrategies(); }catch(e){}
     let HIST=[]; try{ HIST=await btSync.pull()||[]; }catch(e){}
     const strats=loadLS('bt_strategies');
     // every distinct window (identity + start + method) across saved strategies AND their history runs —
-    // exactly the set the 👁 can open. Keyed identically to snapKey so the eye finds each one.
+    // exactly the set the 👁 can open. Keyed via snapKey (incl. the version stamp) so the eye finds each one.
     const ids=new Set(strats.map(s=>stratIdentity(s.cfg)));
     const byKey=new Map();
-    const add=cfg=>{ if(!cfg||!ids.has(stratIdentity(cfg)))return; const wk=stratIdentity(cfg)+'||'+(cfg.start||'')+'||'+(cfg.method||''); if(!byKey.has(wk)) byKey.set(wk,cfg); };
+    const add=cfg=>{ if(!cfg||!ids.has(stratIdentity(cfg)))return; const wk=snapKey(cfg); if(!byKey.has(wk)) byKey.set(wk,cfg); };
     for(const h of HIST) add(h.cfg);
     for(const s of strats) add(s.cfg);
     const jobs=[...byKey.entries()];
@@ -1095,6 +1105,7 @@ async function bootBacktest(){
     if(new URLSearchParams(location.search).get('bake')){ await load(); await bakeAll(); return; }
     const raw=JSON.parse(localStorage.getItem('bt_load')||'null');
     if(raw && raw.view==='snapshot' && raw.cfg){
+      await ensureSnapVer();                                              // version stamp must be set before the lookup
       const snap=(window.btSync&&btSync.snapGet)? await btSync.snapGet(snapKey(raw.cfg)) : null;
       if(snap){ localStorage.removeItem('bt_load'); renderSnapshotPage(snap, raw.cfg); return; }
       raw.view='result'; localStorage.setItem('bt_load', JSON.stringify(raw));   // no snapshot yet → recompute once (and cache it)

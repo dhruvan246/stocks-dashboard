@@ -1,0 +1,45 @@
+name: Bake backtest snapshots
+
+# Pre-warms every strategy's result snapshot (Supabase bt_snapshots) AFTER the daily data refresh.
+# The daily refresh rolls the data date forward, which changes every snapKey() (see stock-backtest.html),
+# so yesterday's snapshots go stale. The page self-heals on first view, but this makes the FIRST view
+# instant too by recomputing all snapshots headlessly via the page's own ?bake=all mode.
+#
+# Not correctness-critical: if this job fails, the page still self-heals (a first view recomputes and
+# re-caches). It only removes the one-time slow recompute.
+
+on:
+  workflow_run:
+    workflows: ["Daily backtest data refresh"]
+    types: [completed]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bake-snapshots
+  cancel-in-progress: true
+
+jobs:
+  bake:
+    # Manual runs always; auto runs only after the data refresh actually SUCCEEDED.
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Playwright (chromium)
+        run: |
+          npm install playwright@^1.48
+          npx playwright install --with-deps chromium
+
+      - name: Bake snapshots headlessly
+        run: node scripts/bake_snapshots.mjs
