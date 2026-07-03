@@ -146,6 +146,38 @@ def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
     return healed
 
 
+# HAND-VERIFIED one-off rights adjustments. POLICY is raw NSE tape (rights are NOT adjusted — see the
+# project-stocks-price-verification memory / build note), because a blanket rights adjustment wrongly
+# pulls low-priced pre-rights lows across the "2x above 52w-low" filter (PNBHOUSING/SUZLON). But
+# Trendlyne/StockView DO carry a rights-adjusted series for a FEW specific stocks, so to match the
+# reference exactly on those cells we scale their PRE-ex prices by the TERP factor here — per stock,
+# never blanket. Each entry: (ticker, ex_ymd, terp_factor, raw_ex_drop_ratio).
+#   SAMMAANCAP (ex-IBULHSGFIN): rights 1:2 @ Rs150 ex 2024-02-01. TERP=0.8914; raw ex-date close 193.90
+#   / prev 222.50 = 0.8714. Verified vs Trendlyne (d52 9.63, d52low 131.15) — raw would show 19.44 /
+#   106.05 and drop it from the Feb-2024 picks. No F&O / split / ISIN-change rule distinguishes it.
+MANUAL_RIGHTS = [("SAMMAANCAP", 20240201, 0.8914, 0.8714)]
+
+def apply_manual_rights(data):
+    """Scale each MANUAL_RIGHTS stock's pre-ex prices by its TERP factor. Idempotent WITHOUT a marker:
+    the ex-date ratio in the series is `raw_drop` before adjustment and `raw_drop/factor` after, so we
+    re-apply only when the current ratio is still closer to the raw drop. Scale-invariant, so a later
+    split/bonus re-anchoring the whole series won't fool it or double-apply."""
+    n = 0
+    for sym, ex, factor, raw_drop in MANUAL_RIGHTS:
+        e = data.get(sym)
+        if not e or not e.get("d"): continue
+        ds, c = e["d"], e["c"]
+        j = next((k for k in range(len(ds)) if ds[k] >= ex), None)   # first day on/after ex
+        if j is None or j < 1 or not c[j - 1] or not c[j]: continue
+        cur = c[j] / c[j - 1]                    # ex-date ratio currently baked into the series
+        if abs(cur - raw_drop) < abs(cur - raw_drop / factor):   # still ~raw drop -> not yet applied
+            for key in ("c", "h", "l", "op", "vw"):
+                if key in e: e[key] = [round(x * factor, 2) for x in e[key][:j]] + e[key][j:]
+            n += 1
+            print("  MANUAL-RIGHTS %s ex %d x%.4f (%d pre-ex points -> Trendlyne parity)" % (sym, ex, factor, j))
+    return n
+
+
 def main():
     if os.path.exists(MARK): os.remove(MARK)
     D = load_base()
@@ -221,6 +253,7 @@ def main():
                             on[f] = [oo[f][i] for i in idx] + on[f]
                 data.pop(old, None); meta.pop(old, None); merged += 1
                 print("  MANUAL RENAME MERGE %s -> %s (%d pts prepended, adj=%.4f)" % (old, new, len(idx), adj))
+    mr = apply_manual_rights(data)   # hand-verified per-stock rights adjustments to match Trendlyne
     for day in days:
         rows = B.fetch_day(day, j)
         if not rows:
@@ -299,8 +332,8 @@ def main():
     # refreshes the on-disk bin but does NOT publish the release, bump clients, or commit a marker.
     blob = gzip.compress(json.dumps(D, separators=(",", ":")).encode(), 6)
     open(OUT, "wb").write(blob)
-    if not appended and not healed and not merged:
-        print("No new day / heal / merge — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
+    if not appended and not healed and not merged and not mr:
+        print("No new day / heal / merge / manual-rights — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
     open(MARK, "w").write(D["end"])
     # tiny version marker — committed daily, lets the browser cache the big bin in IndexedDB
     # keyed to this `end` and skip re-downloading 80 MB until the data actually changes.
