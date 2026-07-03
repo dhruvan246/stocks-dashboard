@@ -145,6 +145,34 @@ def parse_pdf(fp):
                 cur[mode].append(m.group(1))
     return [b for b in blocks if (b["excluded"] or b["included"]) and b["eff"]]
 
+# Manual corrections for reconstitution notices whose non-standard layout parse_pdf can't read.
+# Each: (index, eff, {remove from excluded}, {add to excluded}, {remove from included}, {add to included}).
+#  - ind_prs25092024 (eff 2024-09-30): a "revocation table" (Index|Security|Symbol|Remarks), NOT the
+#    standard "being excluded/included:" lists the parser keys on. It REVOKED Vodafone Idea's (IDEA)
+#    exclusion from the 2024-09-30 review (ind_prs23082024) and EXCLUDED Prism Johnson (PRSMJOHNSN)
+#    in its place. Un-patched, IDEA carries a phantom exclusion (harmless — it's in today's anchor, so
+#    the backward walk just re-adds it) but PRSMJOHNSN's REAL removal is missing, so reconstruct()
+#    never re-adds it and it vanishes from every pre-2024-09 snapshot despite being a genuine Nifty 500
+#    member 2020-2024. Verified from the PR text: net 27 out / 27 in on 2024-09-30. 2026-07-03.
+MANUAL_CHANGELOG_FIXES = [
+    ("Nifty 500", "2024-09-30", {"IDEA"}, {"PRSMJOHNSN"}, set(), set()),
+]
+
+def apply_manual_fixes(changelog):
+    for idx, eff, rmx, adx, rmi, adi in MANUAL_CHANGELOG_FIXES:
+        events = [c for c in changelog.get(idx, []) if c["eff"] == eff]
+        if not events:
+            print(f"  MANUAL FIX skipped: no {idx} event on {eff}"); continue
+        for c in events:                                   # drop revoked-exclusion tickers everywhere
+            c["excluded"] = [s for s in c["excluded"] if s not in rmx]
+            c["included"] = [s for s in c["included"] if s not in rmi]
+        first = events[0]                                  # add the real change once
+        for s in adx:
+            if s not in first["excluded"]: first["excluded"].append(s)
+        for s in adi:
+            if s not in first["included"]: first["included"].append(s)
+        print(f"  MANUAL FIX {idx} {eff}: -excl{sorted(rmx)} +excl{sorted(adx)}")
+
 def main():
     known = set(FILES)
     stems = list(dict.fromkeys(FILES + recent_stems()))   # hand-maintained history + auto-probed recent
@@ -157,6 +185,7 @@ def main():
         for b in parse_pdf(fp):
             changelog.setdefault(b["index"], []).append({"eff": b["eff"], "excluded": b["excluded"], "included": b["included"], "src": stem})
     print(f"Have {ok}/{len(FILES)} PDFs (missing {miss})")
+    apply_manual_fixes(changelog)
     for idx in sorted(changelog):
         ch = changelog[idx]; ch.sort(key=lambda x: x["eff"])
         nx = sum(len(c["excluded"]) for c in ch); ni = sum(len(c["included"]) for c in ch)
