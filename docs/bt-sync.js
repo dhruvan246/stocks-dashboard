@@ -23,10 +23,20 @@
     } catch (e) { console.warn('bt pull', e && e.message || e); return _local(); }
   }
   // Write the shared history — open (anyone can add; the owner can also erase via the UI).
+  // push() REWRITES the whole array — use it only for owner erase/clear/reorder. For a plain
+  // ADD use append() below, which is race-free.
   async function push() {
     const sb = client(); if (!sb) return false;
     try { const { data, error } = await sb.rpc('bt_owner_set', { secret: WRITE, payload: _local() }); if (error) throw error; return data === true; }
     catch (e) { console.warn('bt push', e && e.message || e); return false; }
+  }
+  // Race-free single-item ADD: the server reads+prepends+caps the shared array under a lock, so two
+  // visitors saving at the same instant can't clobber each other (whole-array push() could). The caller
+  // keeps the local mirror. If bt_append isn't deployed yet, fall back to the old whole-array push().
+  async function append(item) {
+    const sb = client(); if (!sb) return false;
+    try { const { data, error } = await sb.rpc('bt_append', { secret: WRITE, item: item, cap: CAP }); if (error) throw error; return data === true; }
+    catch (e) { console.warn('bt append → push fallback', e && e.message || e); return push(); }
   }
   // ---- Shared SAVED STRATEGIES (OPEN to add: every visitor reads AND publishes; erase is owner-only in the UI, like history) ----
   const STRAT_KEY = 'bt_strategies';
@@ -47,6 +57,13 @@
     try { const { data, error } = await sb.rpc('bt_strats_set', { secret: WRITE, payload: _localStr() }); if (error) throw error; return data === true; }
     catch (e) { console.warn('strat push', e && e.message || e); return false; }
   }
+  // Race-free single-strategy ADD (mirror of append() for the strategies list); whole-array
+  // pushStrategies() fallback if bt_strats_append isn't deployed yet.
+  async function appendStrategy(item) {
+    const sb = client(); if (!sb) return false;
+    try { const { data, error } = await sb.rpc('bt_strats_append', { secret: WRITE, item: item, cap: CAP }); if (error) throw error; return data === true; }
+    catch (e) { console.warn('strat append → push fallback', e && e.message || e); return pushStrategies(); }
+  }
   // ---- Full-result SNAPSHOTS (one row per run, fetched on demand — kept OUT of the whole-array
   //      history push so a heavy snapshot never bloats history sync). Backed by bt_snapshots table. ----
   async function snapGet(id) {
@@ -59,7 +76,7 @@
     try { const { data, error } = await sb.rpc('bt_snap_set', { secret: WRITE, snap_id: id, payload }); if (error) throw error; return data === true; }
     catch (e) { console.warn('snap set', e && e.message || e); return false; }
   }
-  g.btSync = { pull, push, pullStrategies, pushStrategies, snapGet, snapSet, isOwner: () => !!ownerKey(), configured: () => !!client(),
+  g.btSync = { pull, push, append, pullStrategies, pushStrategies, appendStrategy, snapGet, snapSet, isOwner: () => !!ownerKey(), configured: () => !!client(),
     setOwnerKey: k => { try { k ? localStorage.setItem(OWNER_KEY, k) : localStorage.removeItem(OWNER_KEY); } catch (e) {} } };
   // Owner-UI unlock: open any page with ?ownerkey=YOURKEY once on a PC to reveal the Delete/Clear controls there.
   try {
