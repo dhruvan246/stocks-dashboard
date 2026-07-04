@@ -92,13 +92,13 @@
     var st = document.createElement('style'); st.id = 'sw-nav-css';
     st.textContent =
       '.sw-nav{display:flex;align-items:center;gap:8px;margin-left:auto;overflow:visible!important;}' +
-      '.sw-cta{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font-size:13px;font-weight:600;padding:7px 12px;border-radius:var(--radius-sm);background:var(--accent-soft);color:var(--accent);text-decoration:none;transition:var(--tr);}' +
-      '.sw-cta:hover,.sw-cta.active{background:var(--accent);color:#fff;}' +
+      '.sw-cta{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font-size:13px;font-weight:600;padding:7px 12px;border-radius:var(--radius-sm);background:linear-gradient(120deg,var(--accent),var(--accent-2));background-size:180% 180%;color:#fff;text-decoration:none;box-shadow:0 6px 16px -6px var(--glow);transition:transform var(--tr),box-shadow var(--tr),background-position .4s ease;}' +
+      '.sw-cta:hover,.sw-cta.active{background-position:100% 50%;transform:translateY(-1px);box-shadow:0 10px 24px -8px var(--glow);}' +
       '.sw-menu{position:relative;}' +
       '.sw-menu-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:7px 12px;border-radius:var(--radius-sm);border:1px solid var(--border-strong);background:var(--surface);color:var(--text);cursor:pointer;transition:var(--tr);}' +
-      '.sw-menu-btn:hover{background:var(--surface-2);}' +
-      '.sw-menu-panel{position:absolute;right:0;top:calc(100% + 8px);min-width:252px;max-width:84vw;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);box-shadow:var(--shadow-lg);padding:7px;display:none;z-index:60;max-height:78vh;overflow:auto;}' +
-      '.sw-menu-panel.open{display:block;}' +
+      '.sw-menu-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}' +
+      '.sw-menu-panel{position:absolute;right:0;top:calc(100% + 8px);min-width:252px;max-width:84vw;background:color-mix(in srgb,var(--surface) 88%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:var(--radius-sm);box-shadow:var(--shadow-lg);padding:7px;display:none;z-index:60;max-height:78vh;overflow:auto;}' +
+      '.sw-menu-panel.open{display:block;animation:sw-pop .16s ease;}' +
       '.sw-menu-group{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);padding:9px 10px 4px;}' +
       '.sw-menu-link{display:flex;align-items:center;gap:9px;font-size:14px;font-weight:500;padding:8px 10px;border-radius:9px;color:var(--text);text-decoration:none;transition:var(--tr);}' +
       '.sw-menu-link:hover{background:var(--surface-2);}' +
@@ -166,7 +166,55 @@
     } catch (e) { nav.style.visibility = 'visible'; }
   }
 
-  function init() { buildNav(); build(); }
+  // =========================================================================
+  // SITE FOOTER — injected on every page so all pages share one footer with
+  // the same links as the header Menu. Replaces any hardcoded <footer> and
+  // keeps its old text as a fine-print credits line.
+  // =========================================================================
+  function buildFooter() {
+    if (document.querySelector('.sw-footer')) return;
+    var old = document.querySelector('footer');
+    var credits = old ? old.textContent.replace(/\s+/g, ' ').trim() : '';
+    var link = function (it) {
+      var ext = it[0].indexOf('http') === 0;
+      return '<a class="sw-f-link" href="' + esc(it[0]) + '"' + (ext ? ' target="_blank" rel="noopener"' : '') + '>' +
+        '<span aria-hidden="true">' + it[1] + '</span>' + esc(it[2]) + (ext ? ' ↗' : '') + '</a>';
+    };
+    var cols = NAV_GROUPS.map(function (g) {
+      return '<div class="sw-f-col"><div class="sw-f-h">' + esc(g.g) + '</div>' + g.items.map(link).join('') + '</div>';
+    }).join('') +
+      '<div class="sw-f-col"><div class="sw-f-h">Tools</div>' +
+        link(NAV_CTA) +
+        link(['./saved-strategies.html', '⭐', 'Saved strategies']) +
+        link(['./backtest-history.html', '🕘', 'Backtest history']) +
+      '</div>';
+    var f = document.createElement('footer');
+    f.className = 'sw-footer';
+    f.innerHTML =
+      '<div class="sw-footer-in">' +
+        '<div class="sw-f-brand"><span class="sw-f-logo" aria-hidden="true">SW</span><div>' +
+          '<div class="sw-f-name">STOCKS<span>WORLD</span></div>' +
+          '<p class="sw-f-tag">Indian markets, decoded — live dashboards for stocks, sectors and mutual funds, plus a strategy backtester over 25+ years of data.</p>' +
+        '</div></div>' +
+        '<div class="sw-f-cols">' + cols + '</div>' +
+      '</div>' +
+      '<div class="sw-f-bar"><div class="sw-f-bar-in">' +
+        '<span>© ' + new Date().getFullYear() + ' STOCKSWORLD · For education &amp; research — not investment advice.</span>' +
+        (credits ? '<span>' + esc(credits) + '</span>' : '') +
+      '</div></div>';
+    if (old && old.parentNode) { old.parentNode.replaceChild(f, old); }
+    else { document.body.appendChild(f); }
+  }
+
+  // header drops a stronger shadow once the page is scrolled
+  function watchHeader() {
+    var h = document.querySelector('header'); if (!h) return;
+    var on = function () { h.classList.toggle('sw-scrolled', (window.scrollY || document.documentElement.scrollTop || 0) > 8); };
+    window.addEventListener('scroll', on, { passive: true });
+    on();
+  }
+
+  function init() { buildNav(); buildFooter(); build(); watchHeader(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();

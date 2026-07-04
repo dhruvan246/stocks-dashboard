@@ -262,6 +262,131 @@ html[data-theme] table{ -webkit-overflow-scrolling:touch; }
   html[data-theme] .sw-theme-switch button{ min-height:0; }   /* pill buttons keep their own size */
 }
 
+/* =========================================================================
+ * V2 VISUAL OVERHAUL — aurora background, entrance animations, hover lifts,
+ * animated logo, header scroll shadow, and the uniform injected footer
+ * (theme.js builds the footer markup on every page). All motion is killed
+ * under prefers-reduced-motion at the bottom of this section.
+ * ========================================================================= */
+
+/* ------------------------------ keyframes -------------------------------- */
+@keyframes sw-rise{ from{ opacity:0; transform:translateY(12px); } to{ opacity:1; transform:none; } }
+@keyframes sw-grad{ 0%{ background-position:0% 50%; } 50%{ background-position:100% 50%; } 100%{ background-position:0% 50%; } }
+@keyframes sw-float-a{ from{ transform:translate3d(0,0,0) scale(1); } to{ transform:translate3d(7vw,5vh,0) scale(1.18); } }
+@keyframes sw-float-b{ from{ transform:translate3d(0,0,0) scale(1.12); } to{ transform:translate3d(-6vw,-4vh,0) scale(.94); } }
+@keyframes sw-pop{ from{ opacity:0; transform:translateY(-8px) scale(.97); } to{ opacity:1; transform:none; } }
+
+/* full-height column so the injected footer always sits at the page bottom */
+html[data-theme] body{ display:flex; flex-direction:column; min-height:100vh; }
+
+/* --------------- aurora: two accent blobs drifting behind content --------- */
+html[data-theme]{ --aurora:.13; }
+html[data-theme="soft"]{ --aurora:.16; }
+html[data-theme="dark"]{ --aurora:.22; }
+html[data-theme] body::before, html[data-theme] body::after{
+  content:''; position:fixed; z-index:-1; width:46vw; height:46vw; min-width:340px; min-height:340px;
+  border-radius:50%; pointer-events:none; filter:blur(80px); opacity:var(--aurora);
+}
+html[data-theme] body::before{
+  left:-14vw; top:-16vh;
+  background:radial-gradient(circle at 32% 32%, var(--accent), transparent 66%);
+  animation:sw-float-a 26s ease-in-out infinite alternate;
+}
+html[data-theme] body::after{
+  right:-12vw; top:34vh;
+  background:radial-gradient(circle at 68% 40%, var(--accent-2), transparent 66%);
+  animation:sw-float-b 34s ease-in-out infinite alternate;
+}
+
+/* --------- entrance: content + cards rise in with a gentle stagger -------- */
+html[data-theme] main > *, html[data-theme] section, html[data-theme] .card{
+  animation:sw-rise .5s cubic-bezier(.22,1,.36,1) backwards;
+}
+html[data-theme] main > *:nth-child(2), html[data-theme] .card:nth-child(2){ animation-delay:.05s; }
+html[data-theme] main > *:nth-child(3), html[data-theme] .card:nth-child(3){ animation-delay:.1s; }
+html[data-theme] main > *:nth-child(4), html[data-theme] .card:nth-child(4){ animation-delay:.15s; }
+html[data-theme] main > *:nth-child(5), html[data-theme] .card:nth-child(5){ animation-delay:.2s; }
+html[data-theme] main > *:nth-child(n+6), html[data-theme] .card:nth-child(n+6){ animation-delay:.25s; }
+
+/* --------------- cards: lift + accent-tinted border on hover -------------- */
+html[data-theme] .card{ transition:transform var(--tr), box-shadow var(--tr), border-color var(--tr), background-color var(--tr); }
+html[data-theme] .card:hover{
+  transform:translateY(-2px);
+  border-color:color-mix(in srgb, var(--accent) 28%, var(--border)) !important;
+}
+
+/* ------ header: animated gradient logo badge + wordmark, scroll shadow ---- */
+html[data-theme] header .group > span:first-child{
+  background:linear-gradient(120deg, var(--accent), var(--accent-2), var(--accent)) !important;
+  background-size:220% 220% !important;
+  animation:sw-grad 7s ease infinite;
+  box-shadow:0 6px 18px -6px var(--glow);
+}
+html[data-theme] header .tracking-tight > .text-indigo-600{
+  background:linear-gradient(90deg, var(--accent), var(--accent-2));
+  -webkit-background-clip:text; background-clip:text; color:transparent !important;
+}
+html[data-theme] header.sw-scrolled{ box-shadow:0 12px 32px -18px rgba(8, 12, 30, .38) !important; }
+
+/* ------------------------- tables: soft row hover ------------------------- */
+html[data-theme] tbody tr{ transition:background-color .14s ease; }
+html[data-theme] tbody tr:hover{ background-color:color-mix(in srgb, var(--accent) 5%, transparent); }
+
+/* -------------------- keyboard focus ring (accessibility) ----------------- */
+html[data-theme] :focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+/* ---------------- uniform footer (markup injected by theme.js) ------------ */
+html[data-theme] .sw-footer{
+  margin-top:auto; position:relative; border-top:1px solid var(--border);
+  background:color-mix(in srgb, var(--surface) 72%, transparent);
+  -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
+  animation:none;   /* footer is below the fold; entrance anim would be wasted */
+}
+html[data-theme] .sw-footer::before{
+  content:''; position:absolute; top:-1px; left:0; right:0; height:2px;
+  background:linear-gradient(90deg, transparent, var(--accent), var(--accent-2), transparent); opacity:.7;
+}
+.sw-footer-in{ max-width:80rem; margin:0 auto; padding:34px 24px 20px; display:flex; flex-wrap:wrap; gap:28px 56px; }
+.sw-f-brand{ display:flex; gap:12px; align-items:flex-start; max-width:340px; }
+.sw-f-logo{
+  width:38px; height:38px; border-radius:12px; flex:0 0 auto;
+  display:inline-flex; align-items:center; justify-content:center;
+  color:#fff; font-weight:800; font-size:13px;
+  background:linear-gradient(120deg, var(--accent), var(--accent-2)); background-size:200% 200%;
+  animation:sw-grad 7s ease infinite; box-shadow:0 6px 18px -6px var(--glow);
+}
+.sw-f-name{ font-weight:800; letter-spacing:-.02em; color:var(--text); }
+html[data-theme] .sw-f-name span{
+  background:linear-gradient(90deg, var(--accent), var(--accent-2));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.sw-f-tag{ font-size:12.5px; color:var(--text-muted); margin-top:4px; line-height:1.55; }
+.sw-f-cols{ display:flex; flex-wrap:wrap; gap:8px 44px; }
+.sw-f-col{ min-width:132px; }
+.sw-f-h{ font-size:10.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-faint); margin-bottom:8px; }
+.sw-f-link{
+  display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--text-muted);
+  text-decoration:none; padding:4.5px 0; transition:color var(--tr), transform var(--tr);
+}
+.sw-f-link:hover{ color:var(--accent); transform:translateX(3px); }
+.sw-f-bar{ border-top:1px solid var(--border); }
+.sw-f-bar-in{
+  max-width:80rem; margin:0 auto; padding:14px 24px; display:flex; flex-wrap:wrap;
+  gap:6px 18px; align-items:center; justify-content:space-between;
+  font-size:11.5px; color:var(--text-faint);
+}
+
+/* --------------------------- motion guards ------------------------------- */
+@media (max-width:640px){
+  /* battery: park the aurora on phones */
+  html[data-theme] body::before, html[data-theme] body::after{ animation:none; }
+}
+@media (prefers-reduced-motion:reduce){
+  html[data-theme] *, html[data-theme] *::before, html[data-theme] *::after{
+    animation:none !important; transition:none !important;
+  }
+}
+
 /* backtest "Filter criteria" rows: the factor <select> has very long option labels, and a
    flex child won't shrink below its content (min-width:auto), so the row overflowed the screen
    on mobile. Let the selects shrink; on phones, wrap so the factor dropdown gets its own line. */
