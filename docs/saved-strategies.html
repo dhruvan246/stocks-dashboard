@@ -186,7 +186,7 @@ function detailCard(b) {
   const dd = (m.maxDD != null) ? `<span class="font-bold neg">-${(+m.maxDD).toFixed(1)}%</span>` : '<span class="text-slate-400">—</span>';
   const fin = (m.finalV != null) ? `₹1L → ${fmtINR(m.finalV)}` : '&nbsp;';
   const meth = c.method ? `<span class="text-[10px] font-semibold text-slate-500 bg-slate-100 rounded px-1.5 py-0.5 ml-1">${c.method === 'hold' ? 'hold' : 'reset'}</span>` : '';
-  return `<div class="bg-white border border-slate-200 rounded-lg p-3" data-variant="${b.id}">
+  return `<div class="bg-white border border-slate-200 rounded-lg p-3" data-variant="${esc(b.id)}">
     <div class="text-[11px] font-semibold text-slate-700">📅 ${esc(c.start)} → ${esc(windowEnd(c))}${meth}</div>
     <div class="flex items-center justify-between mt-1.5">
       <div class="text-sm">CAGR: ${cagr}</div>
@@ -194,8 +194,8 @@ function detailCard(b) {
     </div>
     <div class="text-[10px] text-slate-400 mt-0.5">${fin}</div>
     <div class="grid grid-cols-2 gap-2 mt-2">
-      <button class="px-2 py-1.5 rounded-lg text-[11px] font-semibold bg-blue-600 text-white hover:bg-blue-700" data-picks="${b.id}">🎯 Today's Picks</button>
-      <button class="px-2 py-1.5 rounded-lg text-[11px] font-semibold bg-slate-800 text-white hover:bg-slate-900" data-bt="${b.id}">📈 Backtest</button>
+      <button class="px-2 py-1.5 rounded-lg text-[11px] font-semibold bg-blue-600 text-white hover:bg-blue-700" data-picks="${esc(b.id)}">🎯 Today's Picks</button>
+      <button class="px-2 py-1.5 rounded-lg text-[11px] font-semibold bg-slate-800 text-white hover:bg-slate-900" data-bt="${esc(b.id)}">📈 Backtest</button>
     </div>
   </div>`;
 }

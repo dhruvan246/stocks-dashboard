@@ -231,29 +231,33 @@ async function ensureFull(statusFn) {
   return FULL_LOADED;
 }
 
-// Return the set of NSE symbols that were in `indexName` on/before `dateISO`.
-// Snapshots are stored ascending by effectiveDate; each snapshot represents the
-// membership IMMEDIATELY BEFORE its effectiveDate. So we want the first
-// snapshot whose effectiveDate is strictly GREATER than the user's date —
-// because that snapshot's set covers the period (prev event, this event).
+// Return the set of NSE symbols that were in `indexName` on `dateISO`.
+// Snapshots are stored ascending by effectiveDate and each snapshot is the
+// membership FROM its effectiveDate onward (see build_n500_membership.py) —
+// so pick the LAST snapshot with effectiveDate <= the user's date, exactly
+// like the backtest engine's lastSnap(). Dates before the first capture fall
+// back to the earliest snapshot (nearest in time).
 function getIndexMembersAt(indexName, dateISO) {
   const snaps = INDICES_HISTORY[indexName];
   if (!snaps || !snaps.length) return null; // no history → fall back to current
+  let best = null;
   for (const s of snaps) {
-    if (s.effectiveDate > dateISO) return new Set(s.symbols);
+    if (s.effectiveDate <= dateISO) best = s;
+    else break;
   }
-  return new Set(snaps[snaps.length - 1].symbols); // after all events → latest
+  return new Set((best || snaps[0]).symbols);
 }
 
-// F&O membership at a given date. If we have history snapshots, look them up
-// the same way as indices. Otherwise (and for now this is the common case)
-// fall back to today's NSE F&O list.
+// F&O membership at a given date — same lastSnap convention as indices.
+// Without history snapshots, fall back to today's NSE F&O list.
 function getFnoMembersAt(dateISO) {
   if (FNO_HISTORY && FNO_HISTORY.length) {
+    let best = null;
     for (const s of FNO_HISTORY) {
-      if (s.effectiveDate > dateISO) return new Set(s.symbols);
+      if (s.effectiveDate <= dateISO) best = s;
+      else break;
     }
-    return new Set(FNO_HISTORY[FNO_HISTORY.length - 1].symbols);
+    return new Set((best || FNO_HISTORY[0]).symbols);
   }
   return FNO_TODAY;
 }

@@ -8,7 +8,7 @@
  * Data source is always survivorship-free (NSE bhavcopy incl. delisted names).
  * ========================================================================== */
 const DAY = 86400;
-let META = {}, SERIES = {}, IDXH = {}, FNOH = [], START_TS = 0, NIFTY = {};
+let META = {}, SERIES = {}, IDXH = {}, FNOH = [], START_TS = 0, NIFTY = {}, NIFTY500 = {};
 let SF = null, TURN = {}, SF_END_OFF = Infinity;
 const DATA_MODE = 'sf';                       // survivorship-free only
 const TURN_OPTS = [['100', '≥₹1 Cr'], ['500', '≥₹5 Cr'], ['2000', '≥₹20 Cr'], ['10000', '≥₹100 Cr']]; // daily turnover (₹ lacs)
@@ -69,6 +69,7 @@ async function loadCore() {
   const D = await gunzipJSON('./stock_data.bin');   // browser-cached (ETag); no cache-buster → instant on repeat loads
   IDXH = D.indicesHistory || {}; FNOH = D.fnoHistory || []; START_TS = D.startTs;
   try { NIFTY = (await (await fetch('./nifty.json')).json()).px || {}; } catch (e) { NIFTY = {}; }
+  try { NIFTY500 = (await (await fetch('./nifty500.json')).json()).px || {}; } catch (e) { NIFTY500 = {}; }
 }
 // Release asset FIRST — refreshed DAILY by the refresh-backtest-data workflow (no repo bloat).
 // The in-repo copy is the offline/older fallback. Release URLs aren't browser-cacheable, so we
@@ -374,7 +375,11 @@ function simulate(cfg) {
   const N = cfg.topN;
   let pos = {}, cash = 0, started = false; const equity = [], rebs = [], trades = []; let entryInfo = {}, lastRebVal = cfg.capital, monthsSinceReb = 1e9, latest = [], latestCash = 0;
   const mark = off => { let v = cash; for (const t in pos) { const p = markPrice(t, off); if (p != null) v += pos[t] * p; } return v; };
-  const fLabel = { changePercent: 'Chg%', rsi: 'RSI', d52: '52wHi%', d52_low_pct: '52wLo%', indRank: 'IndRank', mcap: 'Mcap', hist_mcap: 'HMcap' }[cfg.sortBy] || FIELD_LABEL[cfg.sortBy] || cfg.sortBy;
+  const SHORT = { changePercent: 'Chg%', rsi: 'RSI', d52: '52wHi%', d52_low_pct: '52wLo%', indRank: 'IndRank', mcap: 'Mcap', hist_mcap: 'HMcap', profitYoyPct: 'NP-YoY%', profitBase: 'NP-base' };
+  const fLabel = SHORT[cfg.sortBy] || FIELD_LABEL[cfg.sortBy] || cfg.sortBy;
+  // columns to surface in the rebalance log = the sort field + every active filter field (deduped, in order)
+  const dispFields = [...new Set([cfg.sortBy, ...(cfg.filters || []).map(f => f.field)])];
+  const dispCols = dispFields.map(f => ({ field: f, label: SHORT[f] || FIELD_LABEL[f] || f }));
   for (let mi = 0; mi < months.length; mi++) {
     const md = months[mi], off = snapTD(dayOff(md));
     const mv = started ? mark(off) : cfg.capital;
@@ -383,6 +388,7 @@ function simulate(cfg) {
     const isReb = (mi === 0) || (monthsSinceReb >= cfg.freq);
     if (isReb) {
       let rows = factorsAt(off, cfg).filter(r => r.rsi != null && passFilters(r, cfg.filters));
+      rows = rows.filter(r => fieldVal(r, cfg.sortBy) != null);   // can't rank a stock on a factor it's missing (keep in sync with stock-backtest.html)
       rows.sort((a, b) => { const x = fieldVal(a, cfg.sortBy), y = fieldVal(b, cfg.sortBy); return cfg.dir === 'high' ? y - x : x - y; });
       const target = rows.slice(0, N); const tmap = {}; target.forEach(r => tmap[r.tkr] = r); const tset = new Set(target.map(r => r.tkr));
       for (const t of Object.keys(pos)) { if (!tset.has(t)) { const e = entryInfo[t]; if (e) { const mp = markPrice(t, off); const xp = (mp == null ? e.price : mp);
@@ -409,7 +415,8 @@ function simulate(cfg) {
       const now = mark(off); latestCash = cash;
       const holds = Object.keys(pos).map(t => { const p = markPrice(t, off), v = p ? pos[t] * p : 0, r = tmap[t] || {};
         return { sym: META[t].symbol, ind: (META[t].industry || META[t].sector || 'Other'), wt: now ? v / now * 100 : 0, val: v,
-                 isNew: wasEntry.has(t), factor: fieldVal(r, cfg.sortBy), rsi: r.rsi, chg: r.chg, d52: r.d52, mcap: r.mcap }; }).sort((a, b) => b.wt - a.wt);
+                 isNew: wasEntry.has(t), factor: fieldVal(r, cfg.sortBy), rsi: r.rsi, chg: r.chg, d52: r.d52, mcap: r.mcap,
+                 fv: Object.fromEntries(dispFields.map(f => [f, fieldVal(r, f)])) }; }).sort((a, b) => b.wt - a.wt);
       rebs.push({ date: md, val: now, ret: started ? (mv / (lastRebVal || 1) - 1) * 100 : 0, cash, cashWt: now ? cash / now * 100 : 0, nNew: wasEntry.size, holds });
       lastRebVal = mv > 0 ? mv : cfg.capital; monthsSinceReb = 0;
       latest = holds.slice(); latest._cashWt = now ? cash / now * 100 : 0; latest._cash = cash;
@@ -417,22 +424,27 @@ function simulate(cfg) {
   }
   { const lastOff = dayOff(cfg.end); for (const t in entryInfo) { const e = entryInfo[t]; const mp = markPrice(t, lastOff); const xp = (mp == null ? e.price : mp);
     trades.push({ sym: META[t].symbol, entryDate: e.date, exitDate: cfg.end, entryPrice: e.price, exitPrice: xp, retPct: (xp / e.price - 1) * 100, factor: e.factor, rsi: e.rsi, held: true }); } }
+  // benchmark (Nifty 50) + Nifty 500 (headline benchmark — the backtest universe); keep in sync with stock-backtest.html
   const bench = []; const startN = nearestNifty(cfg.start);
   if (startN) for (const [d] of equity) { const nv = nearestNifty(d); bench.push([d, nv ? cfg.capital * nv / startN : null]); }
+  const bench500 = []; const startN5 = nearestIdx(NIFTY500, cfg.start);
+  if (startN5) for (const [d] of equity) { const nv = nearestIdx(NIFTY500, d); bench500.push([d, nv ? cfg.capital * nv / startN5 : null]); }
   const years = (Date.parse(cfg.end) - Date.parse(cfg.start)) / (365.25 * 864e5);
   const finalV = equity[equity.length - 1][1];
   const cagr = years > 0 ? (Math.pow(finalV / cfg.capital, 1 / years) - 1) * 100 : 0;
-  const benchFinal = bench.length ? bench[bench.length - 1][1] : null;
+  const benchSeries = (bench500.length ? bench500 : bench);
+  const benchFinal = benchSeries.length ? benchSeries[benchSeries.length - 1][1] : null;
   const benchCagr = (benchFinal && years > 0) ? (Math.pow(benchFinal / cfg.capital, 1 / years) - 1) * 100 : null;
   const rets = []; for (let i = 1; i < equity.length; i++) { if (equity[i - 1][1] > 0) rets.push(equity[i][1] / equity[i - 1][1] - 1); }
   const mean = rets.reduce((a, b) => a + b, 0) / (rets.length || 1);
   const vol = Math.sqrt(rets.reduce((a, b) => a + (b - mean) ** 2, 0) / (rets.length || 1) * 12) * 100;
   const periodRebs = rebs.slice(1); const wins = periodRebs.filter(r => r.ret > 0).length;
   trades.sort((a, b) => a.entryDate < b.entryDate ? 1 : -1);
-  return { equity, bench, rebs, trades, latest, latestCash, cfg, years, finalV, cagr, benchCagr, vol, fLabel,
+  return { equity, bench, bench500, rebs, trades, latest, latestCash, cfg, years, finalV, cagr, benchCagr, vol, fLabel, dispCols,
            maxDD: maxDrawdown(equity), winRate: periodRebs.length ? 100 * wins / periodRebs.length : 0 };
 }
-function nearestNifty(dstr) { if (NIFTY[dstr]) return NIFTY[dstr]; let d = new Date(dstr + 'T00:00:00Z'); for (let i = 0; i < 7; i++) { d.setUTCDate(d.getUTCDate() - 1); const k = d.toISOString().slice(0, 10); if (NIFTY[k]) return NIFTY[k]; } return null; }
+function nearestIdx(map, dstr) { if (map[dstr]) return map[dstr]; let d = new Date(dstr + 'T00:00:00Z'); for (let i = 0; i < 7; i++) { d.setUTCDate(d.getUTCDate() - 1); const k = d.toISOString().slice(0, 10); if (map[k]) return map[k]; } return null; }
+function nearestNifty(dstr) { return nearestIdx(NIFTY, dstr); }
 function maxDrawdown(eq) { let peak = -1, mdd = 0; for (const [, v] of eq) { if (v > peak) peak = v; else if (peak > 0) { const dd = (peak - v) / peak * 100; if (dd > mdd) mdd = dd; } } return mdd; }
 
 /* ---- config labels + localStorage ---- */

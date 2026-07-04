@@ -237,7 +237,7 @@ function render(){
   renderFunds();
 }
 function renderFunds(){
-  const arr=(typeof FUND!=='undefined'&&FUND[TKR])?FUND[TKR]:null;
+  const arr=(typeof fundFor==='function')?fundFor(TKR):((typeof FUND!=='undefined'&&FUND[TKR])?FUND[TKR]:null);   // fundFor() follows ticker-rename aliases (TATAMOTORS→TMPV, …)
   if(!arr||!arr.length){ $('funds').innerHTML='<span class="text-slate-400">No quarterly earnings on file for this stock.</span>'; return; }
   const rows=arr.slice(-12);   // last 12 quarters
   const val=q=>q[3]!=null?q[3]:(q[1]!=null?q[1]:null);   // con else std (₹ cr)

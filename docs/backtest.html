@@ -523,11 +523,18 @@ function equityChart(a,b,la='strategy',lb='buy &amp; hold'){
   for(let k=0;k<=2;k++){const v=minV+(maxV-minV)*k/2; const yy=y(v);
     ylab+=`<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="#f1f5f9"/>`+
           `<text x="${PL-4}" y="${(yy+3).toFixed(1)}" font-size="10" fill="#94a3b8" text-anchor="end">${fmtShort(v)}</text>`;}
+  // hover: one transparent column per point with a native tooltip (date + both series values)
+  let hits='';
+  const colW=(W-PL-PR)/Math.max(1,a.length-1);
+  const plain=s=>String(s).replace(/&amp;/g,'&').replace(/<[^>]*>/g,'');
+  a.forEach((p,i)=>{ const bv=(b[i]&&b[i][1]!=null)?b[i][1]:null;
+    const bx=Math.max(PL, x(p[0])-colW/2);
+    hits+=`<rect x="${bx.toFixed(1)}" y="${PT}" width="${colW.toFixed(1)}" height="${(H-PT-PB).toFixed(1)}" fill="transparent"><title>${intToYmd(HIST.dates[p[0]])} · ${plain(la)}: ${fmtShort(p[1])}${bv!=null?' · '+plain(lb)+': '+fmtShort(bv):''}</title></rect>`;});
   return `<div class="card p-4 mt-3"><div class="text-xs font-semibold text-slate-600 mb-2">Portfolio value over time
-     <span class="text-blue-600">— ${la}</span> <span class="text-slate-400">— ${lb}</span></div>
+     <span class="text-blue-600">— ${la}</span> <span class="text-slate-400">— ${lb}</span> <span class="text-slate-400 font-normal">· hover for values</span></div>
      <svg viewBox="0 0 ${W} ${H}" class="w-full">${ylab}${ticks}
      <path d="${path(b)}" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
-     <path d="${path(a)}" fill="none" stroke="#2563eb" stroke-width="2"/></svg></div>`;
+     <path d="${path(a)}" fill="none" stroke="#2563eb" stroke-width="2"/>${hits}</svg></div>`;
 }
 
 // ---- rebalance frequencies (shared with rotation) ----

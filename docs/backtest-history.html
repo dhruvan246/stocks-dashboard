@@ -46,10 +46,14 @@
 <script>
 'use strict';
 const $=id=>document.getElementById(id);
-function load(){try{return JSON.parse(localStorage.getItem('bt_history')||'[]');}catch(e){return[];}}
+function load(){try{const a=JSON.parse(localStorage.getItem('bt_history')||'[]');return Array.isArray(a)?a.filter(x=>x&&typeof x==='object'&&x.id):[];}catch(e){return[];}}
 function save(v){localStorage.setItem('bt_history',JSON.stringify(v)); if(window.btSync)btSync.push();}
-const fmtINR=n=>n==null?'—':'₹'+Math.round(n).toLocaleString('en-IN');
-const pct=n=>n==null?'—':(n>=0?'+':'')+n.toFixed(2)+'%';
+// The shared history is world-writable — treat EVERY field of a pulled entry as untrusted:
+// esc() before injecting into HTML, and never call number methods without a finite check.
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num=v=>(typeof v==='number'&&isFinite(v))?v:null;
+const fmtINR=n=>num(n)==null?'—':'₹'+Math.round(n).toLocaleString('en-IN');
+const pct=n=>num(n)==null?'—':(n>=0?'+':'')+n.toFixed(2)+'%';
 const fdate=ts=>{const d=new Date(ts);return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});};
 
 function render(){
@@ -59,23 +63,23 @@ function render(){
     <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>
       <th class="text-left py-2 px-3">Saved</th><th class="text-left px-3">Strategy</th><th class="text-left px-3">Period</th>
       <th class="text-right px-3">CAGR</th><th class="text-right px-3">vs Nifty</th><th class="text-right px-3">Max DD</th><th class="text-right px-3">Final ₹1L</th><th class="px-3"></th></tr></thead>
-    <tbody>${items.map(it=>{const m=it.m,c=it.cfg,beat=m.benchCagr!=null&&m.cagr>=m.benchCagr;const hasY=it.yby&&it.yby.length;
-      return `<tr class="border-b border-slate-50 hover:bg-slate-50 ${hasY?'cursor-pointer':''}" ${hasY?`data-exp="${it.id}"`:''}>
+    <tbody>${items.map(it=>{const m=it.m||{},c=it.cfg||{},beat=num(m.benchCagr)!=null&&num(m.cagr)!=null&&m.cagr>=m.benchCagr;const hasY=Array.isArray(it.yby)&&it.yby.length;
+      return `<tr class="border-b border-slate-50 hover:bg-slate-50 ${hasY?'cursor-pointer':''}" ${hasY?`data-exp="${esc(it.id)}"`:''}>
         <td class="px-3 py-2 text-xs text-slate-500 whitespace-nowrap">${hasY?'<span class="exparrow inline-block w-3 text-slate-400">▸</span> ':'<span class="inline-block w-3"></span> '}${fdate(it.ts)}</td>
-        <td class="px-3 font-medium">${it.label||''}</td>
-        <td class="px-3 text-xs text-slate-500 whitespace-nowrap">${c.start} → ${c.end}</td>
-        <td class="text-right px-3 ${m.cagr>=0?'pos':'neg'}">${pct(m.cagr)}</td>
-        <td class="text-right px-3 text-xs ${beat?'pos':'neg'}">${m.benchCagr!=null?pct(m.benchCagr):'—'}</td>
-        <td class="text-right px-3 neg">-${m.maxDD.toFixed(2)}%</td>
+        <td class="px-3 font-medium">${esc(it.label||'')}</td>
+        <td class="px-3 text-xs text-slate-500 whitespace-nowrap">${esc(c.start||'?')} → ${esc(c.end||'?')}</td>
+        <td class="text-right px-3 ${(num(m.cagr)||0)>=0?'pos':'neg'}">${pct(m.cagr)}</td>
+        <td class="text-right px-3 text-xs ${beat?'pos':'neg'}">${pct(m.benchCagr)}</td>
+        <td class="text-right px-3 neg">${num(m.maxDD)!=null?'-'+m.maxDD.toFixed(2)+'%':'—'}</td>
         <td class="text-right px-3">${fmtINR(m.finalV)}</td>
         <td class="px-3 whitespace-nowrap text-right">
-          <button class="text-blue-600 hover:underline text-xs font-semibold" data-load="${it.id}">Load</button>
-          ${OWNER?`<button class="text-red-500 hover:underline text-xs ml-2" data-del="${it.id}">Delete</button>`:''}</td></tr>${hasY?`
-      <tr id="exp_${it.id}" style="display:none"><td colspan="8" class="px-3 pb-3 bg-slate-50">
+          <button class="text-blue-600 hover:underline text-xs font-semibold" data-load="${esc(it.id)}">Load</button>
+          ${OWNER?`<button class="text-red-500 hover:underline text-xs ml-2" data-del="${esc(it.id)}">Delete</button>`:''}</td></tr>${hasY?`
+      <tr id="exp_${esc(it.id)}" style="display:none"><td colspan="8" class="px-3 pb-3 bg-slate-50">
         <div class="text-[11px] uppercase text-slate-500 mb-1 pt-1">📅 Calendar-year returns — strategy vs Nifty</div>
-        <div class="overflow-x-auto"><table class="text-xs"><thead><tr><th class="px-2 text-left"></th>${it.yby.map(y=>`<th class="px-2 py-0.5 text-right">${y[0]}</th>`).join('')}</tr></thead><tbody>
-          <tr><td class="px-2 text-blue-700 font-semibold whitespace-nowrap">Strategy</td>${it.yby.map(y=>`<td class="px-2 text-right ${y[1]>=0?'pos':'neg'}">${pct(y[1])}</td>`).join('')}</tr>
-          <tr><td class="px-2 text-amber-600 font-semibold whitespace-nowrap">Nifty 500</td>${it.yby.map(y=>`<td class="px-2 text-right ${y[2]>=0?'pos':'neg'}">${y[2]!=null?pct(y[2]):'—'}</td>`).join('')}</tr>
+        <div class="overflow-x-auto"><table class="text-xs"><thead><tr><th class="px-2 text-left"></th>${it.yby.map(y=>`<th class="px-2 py-0.5 text-right">${esc(y&&y[0])}</th>`).join('')}</tr></thead><tbody>
+          <tr><td class="px-2 text-blue-700 font-semibold whitespace-nowrap">Strategy</td>${it.yby.map(y=>`<td class="px-2 text-right ${(num(y&&y[1])||0)>=0?'pos':'neg'}">${pct(y&&y[1])}</td>`).join('')}</tr>
+          <tr><td class="px-2 text-amber-600 font-semibold whitespace-nowrap">Nifty 500</td>${it.yby.map(y=>`<td class="px-2 text-right ${(num(y&&y[2])||0)>=0?'pos':'neg'}">${pct(y&&y[2])}</td>`).join('')}</tr>
         </tbody></table></div></td></tr>`:''}`;}).join('')}
     </tbody></table></div>`;
   $('list').querySelectorAll('[data-exp]').forEach(row=>row.addEventListener('click',e=>{ if(e.target.closest('button'))return; const d=$('exp_'+row.dataset.exp); if(!d)return; const open=d.style.display==='none'; d.style.display=open?'table-row':'none'; const ar=row.querySelector('.exparrow'); if(ar)ar.textContent=open?'▾':'▸'; }));
