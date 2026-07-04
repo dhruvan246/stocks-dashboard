@@ -124,6 +124,10 @@
     { g: 'Funds', items: [
       ['./mutual-funds.html',                       '💰', 'Mutual Funds'],
       ['https://dhruvan246.github.io/fno-dashboard/', '🎯', 'F&O']
+    ] },
+    { g: 'Tools', items: [
+      ['./saved-strategies.html', '⭐', 'Saved strategies'],
+      ['./backtest-history.html', '🕘', 'Backtest history']
     ] }
   ];
   var NAV_CTA = ['./stock-backtest.html', '🧪', 'Create a strategy'];
@@ -181,13 +185,9 @@
         '<span aria-hidden="true">' + it[1] + '</span>' + esc(it[2]) + (ext ? ' ↗' : '') + '</a>';
     };
     var cols = NAV_GROUPS.map(function (g) {
-      return '<div class="sw-f-col"><div class="sw-f-h">' + esc(g.g) + '</div>' + g.items.map(link).join('') + '</div>';
-    }).join('') +
-      '<div class="sw-f-col"><div class="sw-f-h">Tools</div>' +
-        link(NAV_CTA) +
-        link(['./saved-strategies.html', '⭐', 'Saved strategies']) +
-        link(['./backtest-history.html', '🕘', 'Backtest history']) +
-      '</div>';
+      var items = g.g === 'Tools' ? [NAV_CTA].concat(g.items) : g.items;
+      return '<div class="sw-f-col"><div class="sw-f-h">' + esc(g.g) + '</div>' + items.map(link).join('') + '</div>';
+    }).join('');
     var f = document.createElement('footer');
     f.className = 'sw-footer';
     f.innerHTML =
