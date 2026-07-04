@@ -9,6 +9,9 @@ name: Weekly index membership refresh
 on:
   schedule:
     - cron: "30 16 * * 6"   # Saturday 22:00 IST
+  # External trigger (cron-job.org) — reliable timing; native cron above stays as backup.
+  repository_dispatch:
+    types: [membership-refresh]
   workflow_dispatch: {}
   push:
     paths:
