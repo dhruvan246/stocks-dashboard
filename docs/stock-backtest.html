@@ -384,7 +384,7 @@ function stratIdentity(c){
 // every key changes → the old snapshot is no longer found → the next view recomputes with the CURRENT
 // code + data and re-caches. Without this stamp a changed engine or a refreshed dataset would keep
 // serving a stale pre-computed result forever.
-const ENGINE_VER='e1';        // ⬆️ BUMP this whenever simulate()/engine logic changes → invalidates all snapshots
+const ENGINE_VER='e2';        // ⬆️ BUMP this whenever simulate()/engine logic changes → invalidates all snapshots
 let SNAP_DATAVER='';          // latest data date (data `end`); set from SF.end once loaded, else sf_meta.json
 async function ensureSnapVer(){ if(SNAP_DATAVER) return SNAP_DATAVER; try{ SNAP_DATAVER=(await (await fetch('./sf_meta.json',{cache:'no-cache'})).json()).end||''; }catch(e){} return SNAP_DATAVER; }
 function snapKey(c){ return stratIdentity(c)+'||'+(c.start||'')+'||'+(c.method||'')+'||v='+ENGINE_VER+':'+SNAP_DATAVER; }
@@ -608,6 +608,7 @@ function factorsAt(off, cfg){
   const rows=[];
   for(const tkr in SERIES){
     const m=META[tkr]; if(!m) continue;
+    if(m.symbol.includes('DVR')) continue;   // skip differential-voting-rights shares (TATAMTRDVR etc.) — secondary security of a company already in the universe via its ordinary; avoids double-counting. Matches StockView's own dedup (members_on drops the DVR, keeps TMPV). (Sync: backtest-engine.js)
     if(members && !members.has(m.symbol)) continue;
     const price=priceAt(tkr,off); const p0=priceAt(tkr,lookOff);
     if(price==null||p0==null||p0<=0) continue;
