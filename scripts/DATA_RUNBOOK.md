@@ -418,3 +418,50 @@ context. `ctx_period()` reads the context block first, then falls back to those 
 0 symbols — the bug that capped history at 2022). Dec-2022 has a thinner cache (~1,100 vs ~1,800) — robust median, fine.
 - Tunables: chart START quarter = `y, m = 2019, 3` in `build_results_season.py`; `TURN_FLOOR_CR` there (1.0 → ~1,290
   reporters); colours/labels in `renderResultsSeason()` inside `docs/results-season.html`.
+
+---
+
+## 12. 15:30 FILING-TIME GATE  (no same-day look-ahead; done 2026-07-08)
+The backtest rebalances at the **15:30 close** and checks availability as `annDate <= rebalanceDate` at DATE
+granularity (`profitAt`, `docs/backtest-engine.js` ~L242 AND self-contained `docs/stock-backtest.html` ~L566 — keep
+in sync). So a result **broadcast after 15:30 on the rebalance day** was wrongly treated as available that day =
+same-day look-ahead. Fix is **data-side, no engine change**: bump such a filing's ann-date to the next trading day,
+so the existing `<=` check is correct. Proof case: **JSL (Jindal Stainless) Sep-2020** filed 2020-10-30 **17:08**
+→ before the fix it was picked in Oct-2020 on a +116% YoY; after, it falls back to the Jun-2020 COVID loss and is
+excluded. (memory: project-stocks-1530-gate)
+
+**Scope = month-end trading days only.** The look-ahead only bites when a filing's ann-date == a monthly-rebalance
+date (last trading day of the month). ~3,760 fundamentals filings land on one; timing them decides the bump.
+
+**Source of filing TIME:** BSE `AnnSubCategoryGetData` `NEWS_DT` (full timestamp, e.g. `2020-10-30T17:08:23.81`).
+Query **per-DATE** (all `strCat=Result` announcements that day, 50/page, page to `Table1[0].ROWCNT`), NOT per-stock
+— only ~80 distinct month-end dates carry filings, so it's ~300 requests. NSE `integrated-filing-results`
+`broadcast_Date` ALSO carries the time (`"16-Jan-2025 20:20"`) but the endpoint serves only ~the current day, so
+it's useless for history — BSE is the historical source.
+
+**Tools (persisted, `scripts/_*` intermediates are gitignored):**
+1. `python scripts/fetch_filing_times.py` — per-date BSE fetch → `scripts/_filing_times.json`
+   `{date:{scripcode:[NEWS_DT,…]}}` (resumable; needs `_gate_dates.json` = distinct month-end dates with filings).
+2. `python scripts/gate_1530.py` (dry) / `--apply` — for each `(sym,date)` event resolve SYM→scripcode via
+   `bse_scrips.json['by_id']`; **bump iff the MIN BSE broadcast time that day > 15:30** (every result post-close);
+   bump target = next day in `_trading_days.json`. **Conservative:** no BSE record, any broadcast ≤15:30, or no
+   scripcode ⇒ leave as-is (never wrongly excludes a legit pick). Rewrites ann-date cells (idx2/idx4) ONLY, in
+   BOTH `docs/sf_fundamentals.json` AND `scripts/fundamentals.json`; audit log → `scripts/_gate_bumps.json`.
+   To rebuild the calendar/events first: from LIVE sf-data (§7.0) build `_trading_days.json` + `_me_days.json`
+   (last trading day per YYYYMM), then scan fundamentals for annStd/annCon ∈ month-ends → `_gate_events.json`+`_gate_dates.json`.
+
+**First run (2026-07-08):** 3,760 events → **1,000 bumped** (1,855 ann-cells across std+con), 703 confirmed
+before-close (kept), 1,608 no same-date BSE record (mostly a BSE-vs-NSE date mismatch where BSE broadcast
+EARLIER = result was public earlier = correctly NOT a look-ahead, e.g. MARUTI our-date 30-Oct filed BSE 29-Oct),
+449 no BSE scripcode (tiny/delisted). 962/1000 bumps were 15:46+ (well post-close); only 38 in the 15:31–15:45
+straddle. Spot-checked 27 large-caps — all genuine (RELIANCE 18:42, ITC 19:46, TCS 16:36, JSL 17:08…).
+
+**Going forward (automatic):** `update_fundamentals.py` now gates at ingestion via `gated_ann(broadcast_Date)` —
+if the NSE broadcast time > 15:30, the stored ann-date is the next weekday (engine-equivalent to next trading day,
+since rebalances are always trading days). So new after-close filings need no re-run. Applies to ALL filings (not
+just month-end), which also future-proofs weekly/daily frequencies.
+
+**Residual (documented, low-risk):** NSE-only historical filings with no BSE same-date record can't be timed
+retroactively (NSE history endpoint is real-time only) → left un-bumped = status-quo conservative. **VALIDATE**
+further by re-running the 2020-21 StockView comparison (memory project-stocks-stockview-comparison) — JSL should
+drop from Oct-2020; nothing legitimately pre-15:30 should disappear (by construction, before-close filings are never bumped).

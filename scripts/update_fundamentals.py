@@ -22,10 +22,33 @@ TWO KNOWN BLIND SPOTS (fill manually when they show gaps):
 
 Run: python -X utf8 update_fundamentals.py
 """
-import os, sys, json, datetime
+import os, sys, json, datetime, re
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import build_fundamentals as B   # reuse _get / nse_jar / iso / xbrl_profit / MIN_QE
+
+
+def gated_ann(bstr):
+    """15:30 IST availability gate (memory project-stocks-1530-gate).
+
+    NSE `broadcast_Date` looks like "16-Jan-2025 20:20" — it carries the filing
+    TIME. The backtest rebalances at the 15:30 close and checks `annDate <= rebalanceDate`
+    at DATE granularity, so a result broadcast AFTER 15:30 on a rebalance day would be
+    wrongly treated as available that day (same-day look-ahead). So: if the broadcast
+    time is after 15:30, the result is only actionable from the NEXT trading day — return
+    that date. (Next *weekday* is engine-equivalent to next *trading day* here: rebalance
+    dates are always trading days, so a `<=` test against one never lands on a skipped
+    weekend/holiday.) Returns YYYYMMDD str, or "99999999" when no date is present."""
+    d = B.iso(bstr)                       # YYYYMMDD (date part) or None
+    if not d:
+        return "99999999"
+    m = re.search(r'\b(\d{1,2}):(\d{2})\b', bstr or '')
+    if m and int(m.group(1)) * 60 + int(m.group(2)) > 15 * 60 + 30:
+        nd = datetime.date(int(d[:4]), int(d[4:6]), int(d[6:])) + datetime.timedelta(days=1)
+        while nd.weekday() >= 5:          # skip Sat/Sun
+            nd += datetime.timedelta(days=1)
+        return nd.strftime("%Y%m%d")
+    return d
 from build_revop import xbrl_revop   # revenue + operating profit from the SAME filing XBRL
 
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE)
@@ -62,7 +85,7 @@ def main():
         if not sym or not qe or not xb.startswith("http") or int(qe) < B.MIN_QE: continue
         if "governance" in (r.get("type", "") or "").lower(): continue   # Governance filing has no P&L
         byq.setdefault((sym, qe), []).append(
-            {"ann": B.iso(r.get("broadcast_Date")) or "99999999", "xbrl": xb, "basis": r.get("consolidated", "")})
+            {"ann": gated_ann(r.get("broadcast_Date")), "xbrl": xb, "basis": r.get("consolidated", "")})
 
     changed = newsyms = revop_changed = 0
     for (sym, qe), filings in byq.items():
