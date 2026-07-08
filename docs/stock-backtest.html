@@ -70,7 +70,7 @@
       <div><label class="lbl">Sort by</label><select id="cSort" class="inp w-full"></select></div>
       <div><label class="lbl">Direction</label><select id="cDir" class="inp w-full"><option value="high" selected>Prefer High</option><option value="low">Prefer Low</option></select></div>
       <div><label class="lbl">Earnings basis</label><select id="cEarn" class="inp w-full"><option value="con" selected>Consolidated</option><option value="std">Standalone</option></select></div>
-      <div><label class="lbl">Holdings (top-N)</label><input id="cTopN" type="number" value="10" min="1" max="50" class="inp w-full"/></div>
+      <div><label class="lbl">Holdings (top-N)</label><input id="cTopN" type="number" value="10" min="1" max="1000" class="inp w-full"/></div>
       <div><label class="lbl">Capital (₹)</label><input id="cCap" type="number" value="100000" class="inp w-full"/></div>
       <div class="col-span-2"><label class="lbl">Rebalance method</label><select id="cMethod" class="inp w-full">
         <option value="hold" selected>Hold winners · replace only exits (fund new at avg-exit value, rest → cash)</option>
@@ -343,7 +343,7 @@ function readCfg(){
   return {
     start:$('cFrom').value, end:$('cTo').value, mcapFloor:isCap?+u.slice(5):0,
     indexName:isCap?'':u, freq:+$('cFreq').value, lookback:+$('cLook').value,
-    sortBy:$('cSort').value, dir:$('cDir').value, topN:Math.max(1,Math.min(50,+$('cTopN').value||10)),
+    sortBy:$('cSort').value, dir:$('cDir').value, topN:Math.max(1,+$('cTopN').value||10),
     capital:+$('cCap').value||100000, method:$('cMethod').value, filters:readFilters(), mode:DATA_MODE,
     earnBasis:($('cEarn')&&$('cEarn').value)||'con'
   };
@@ -845,7 +845,8 @@ function render(r,cfg){
   // ----- trade log (moved to the very end) -----
   const tr=r.trades; const winsT=tr.filter(t=>t.retPct>0).length;
   const avgT=tr.length?tr.reduce((s,t)=>s+t.retPct,0)/tr.length:0;
-  html+=`<div class="card p-4"><div class="text-sm font-semibold text-slate-700 mb-2">📒 Trade log <span class="text-slate-400 font-normal">— ${tr.length} round-trips · ${tr.length?Math.round(100*winsT/tr.length):0}% winners · avg ${pct(avgT)} · shows the ${r.fLabel} at entry (why it was picked)</span></div>
+  html+=`<div class="card p-4"><div class="flex flex-wrap items-center justify-between gap-2 mb-2"><div class="text-sm font-semibold text-slate-700">📒 Trade log <span class="text-slate-400 font-normal">— ${tr.length} round-trips · ${tr.length?Math.round(100*winsT/tr.length):0}% winners · avg ${pct(avgT)} · shows the ${r.fLabel} at entry (why it was picked)</span></div>
+      <button id="dlTradeCsv" class="shrink-0 inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-700">⬇️ Download CSV</button></div>
     <div class="overflow-x-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b bg-white"><tr>
       <th class="text-left py-1 px-2">#</th><th class="text-left px-2">Stock</th><th class="text-left px-2">Entry</th><th class="text-right px-2">Entry ₹</th><th class="text-left px-2">Exit</th><th class="text-right px-2">Exit ₹</th><th class="text-right px-2">Return</th><th class="text-right px-2">${r.fLabel}@entry</th><th class="text-right px-2">RSI@entry</th></tr></thead><tbody id="tradeBody"></tbody></table></div>
     <div id="tradePager" class="flex flex-wrap items-center justify-center gap-1 mt-3 text-xs"></div></div>`;
@@ -854,6 +855,8 @@ function render(r,cfg){
   drawPeriodReturns(r);
   setupQual(cfg);
   TRADE_PAGE=0; renderTradePage(0);
+  const dc=$('dlTradeCsv');
+  if(dc) dc.onclick=()=>downloadTradeCsv(r,cfg);
   const ss=$('btSaveStrat');
   if(ss) ss.onclick=saveStrategy;
   // From the instant snapshot view → load the engine on demand and open the editable builder (tweak & re-run).
@@ -889,6 +892,23 @@ function renderTradePage(p){
   pg.innerHTML=mk('‹ Prev',TRADE_PAGE-1,TRADE_PAGE===0,false)+nums+mk('Next ›',TRADE_PAGE+1,TRADE_PAGE===np-1,false)+
     `<span class="text-slate-400 ml-2 w-full sm:w-auto text-center">${tr.length} trades · showing ${a+1}–${b} (page ${TRADE_PAGE+1}/${np})</span>`;
   pg.querySelectorAll('.tpBtn').forEach(el=>{ if(!el.disabled) el.onclick=()=>renderTradePage(+el.dataset.pg); });
+}
+// ---- download the full trade log as CSV ----
+function downloadTradeCsv(r,cfg){
+  const q=v=>{ if(v==null) return ''; const s=String(v); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; };
+  const flabel=(r.fLabel||'Factor')+'@entry';
+  const head=['#','Stock','Held','Entry Date','Entry Price','Exit Date','Exit Price','Return %',flabel,'RSI@entry'];
+  const rows=r.trades.map((t,i)=>[i+1,t.sym,t.held?'HELD':'',t.entryDate,t.entryPrice,t.exitDate,t.exitPrice,
+    t.retPct!=null?t.retPct.toFixed(2):'',t.factor!=null?t.factor:'',t.rsi!=null?t.rsi.toFixed(2):'']);
+  const csv=[head,...rows].map(row=>row.map(q).join(',')).join('\r\n');
+  const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const tag=(cfg&&cfg.sortBy?cfg.sortBy:'backtest').replace(/[^a-z0-9]+/gi,'-');
+  const dates=(cfg?`_${cfg.start||''}_${cfg.end||''}`:'');
+  a.href=url; a.download=`trade-log_${tag}${dates}.csv`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 // ---- live feed (shares the Cloudflare Worker URL configured on the Strategies page) ----
 function setWorkerUrl(){
