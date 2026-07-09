@@ -183,6 +183,40 @@ def main():
         H[idx] = sorted(kept_old + new_snaps, key=lambda s: s["effectiveDate"])
         print(f"{idx}: {len(kept_old)} scrapbook (pre-{earliest}) + {len(new_snaps)} accurate = {len(H[idx])} snapshots")
 
+    # --- PHANTOM FLOOR (listing-date, 2026-07-09) ---------------------------------------------------
+    # The backward-walk over-extends a stock into snapshots BEFORE it actually joined Nifty 500 whenever
+    # its ENTRY event is missing from the changelog (entered via a sub-index add the N500 list didn't
+    # restate, or a COVID-deferred / unparsed reconstitution). The UNAMBIGUOUS, symbol-safe correction:
+    # a stock cannot be an index constituent before it started trading. Drop any N500 snapshot entry whose
+    # stock has NO price history on-or-before that snapshot's date (catches pre-listing phantoms like
+    # SUMICHEM shown in 2017 / RBA / POLYCAB / HDFCAMC pre-IPO). We do NOT floor already-listed names
+    # (NESTLEIND, ALKYLAMINE) — that needs true membership dates we don't reliably have, so it's left as-is
+    # rather than risk false drops off the incomplete pre-2020 archived lists. sf series merge pre-rename
+    # history by ISIN, so first-trade-date == the company's real listing (ETERNAL == Zomato 2021, etc.).
+    import gzip as _gz
+    try:
+        _sf = json.loads(_gz.decompress(open(os.path.join(ROOT, "docs", "sf_stock_data.bin"), "rb").read()))["data"]
+    except Exception as _e:
+        _sf = None; print("  PHANTOM FLOOR skipped (no sf_stock_data.bin):", _e)
+    if _sf is not None and "Nifty 500" in H:
+        first_trade = {s: str(o["d"][0]) for s, o in _sf.items() if o.get("d")}   # YYYYMMDD
+        dropped = {}
+        for snap in H["Nifty 500"]:
+            if snap["effectiveDate"] < "2011-01-01": continue   # pre-dataset — data coverage incomplete
+            dint = snap["effectiveDate"].replace("-", "")
+            keep = []
+            for sym in snap["symbols"]:
+                ft = first_trade.get(sym)
+                if ft is not None and ft > dint:                # not yet trading => impossible => phantom
+                    dropped.setdefault(sym, []).append(snap["effectiveDate"])
+                else:
+                    keep.append(sym)
+            snap["symbols"] = keep
+        json.dump({k: v for k, v in sorted(dropped.items())},
+                  open(os.path.join(HERE, "_phantom_dropped.json"), "w"), indent=0)
+        print("  PHANTOM FLOOR (listing): dropped %d pre-listing rows across %d stocks (see _phantom_dropped.json)"
+              % (sum(len(v) for v in dropped.values()), len(dropped)))
+
     # --- DERIVE the cleanly-partitionable sub-indices from the VALIDATED Nifty 500 -----------------
     # NSE methodology: Nifty 500 = Nifty 100 (+) Midcap 150 (+) Smallcap 250 (disjoint by mcap rank),
     # and MidSmallcap 400 = Nifty 500 - Nifty 100. Nifty 500 is validated 100% vs archived lists and
