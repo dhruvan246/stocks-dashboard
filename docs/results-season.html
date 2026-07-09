@@ -50,6 +50,21 @@
       </span>
       <span id="rsUniverse" class="text-xs text-slate-400"></span>
     </div>
+    <div class="mt-2 flex flex-wrap items-center gap-2">
+      <label class="text-xs font-semibold text-slate-600 uppercase tracking-wide">Period</label>
+      <span class="inline-flex rounded-lg border border-slate-300 overflow-hidden" role="group" aria-label="Time range">
+        <button id="rsP_1y"  type="button" class="px-3 py-1.5 text-xs font-semibold">1 Year</button>
+        <button id="rsP_3y"  type="button" class="px-3 py-1.5 text-xs font-semibold border-l border-slate-300">3 Years</button>
+        <button id="rsP_5y"  type="button" class="px-3 py-1.5 text-xs font-semibold border-l border-slate-300">5 Years</button>
+        <button id="rsP_all" type="button" class="px-3 py-1.5 text-xs font-semibold border-l border-slate-300">All time</button>
+        <button id="rsP_custom" type="button" class="px-3 py-1.5 text-xs font-semibold border-l border-slate-300">Custom</button>
+      </span>
+      <span id="rsCustomRange" class="hidden inline-flex items-center gap-1.5 ml-1">
+        <select id="rsCFrom" class="border border-slate-300 rounded-lg px-2 py-1.5 text-xs bg-white focus:ring-2 focus:ring-blue-500"></select>
+        <span class="text-xs text-slate-400">to</span>
+        <select id="rsCTo" class="border border-slate-300 rounded-lg px-2 py-1.5 text-xs bg-white focus:ring-2 focus:ring-blue-500"></select>
+      </span>
+    </div>
   </div>
 
   <div id="rsStatus" class="text-sm text-slate-500 py-10 text-center">Loading results-season data&hellip;</div>
@@ -94,6 +109,24 @@
 let RS_ALL = { universes: [] };   // full payload
 let CUR = { quarters: [] };        // currently-selected universe
 let MODE = 'median';               // 'median' (typical company, consolidated) or 'total' (aggregate, standalone)
+let PERIOD = 'all';                // '1y' | '3y' | '5y' | 'all' | 'custom' — how many quarters to show
+let CFROM = null, CTO = null;      // custom-range quarter bounds (qe ints)
+
+// Filter CUR.quarters down to the selected period (relative to that universe's OWN latest quarter,
+// so banks whose latest is Mar still window correctly). 'all' = every quarter (default, unchanged).
+function visibleQuarters(){
+  const qs = CUR.quarters || [];
+  if (!qs.length || PERIOD === 'all') return qs;
+  if (PERIOD === 'custom'){
+    const lo = CFROM != null ? CFROM : qs[0].qe, hi = CTO != null ? CTO : qs[qs.length-1].qe;
+    return qs.filter(q => q.qe >= lo && q.qe <= hi);
+  }
+  const yrs = { '1y':1, '3y':3, '5y':5 }[PERIOD] || 100;
+  const latest = qs.reduce((m,q) => q.qe > m ? q.qe : m, 0);
+  const cutoff = latest - yrs*10000;   // e.g. 1Y from Jun-2026 (20260630) → >20250630 = last 4 quarters
+  return qs.filter(q => q.qe > cutoff);
+}
+
 function mval(m){ return m ? m[MODE] : null; }               // the value for the current mode (null if metric absent)
 function mn(m){ return m ? (MODE === 'median' ? m.n : m.tn) : null; }  // the company count for the current mode
 
@@ -102,7 +135,7 @@ function pctCls(v){ return v >= 0 ? 'text-green-700' : 'text-red-700'; }
 
 function renderResultsSeason() {
   const root = document.getElementById('rsChart');
-  const Q = (CUR.quarters || []).filter(q =>
+  const Q = visibleQuarters().filter(q =>
       mval(q.rev) !== null || mval(q.op) !== null || mval(q.pat) !== null);
   if (!root) return;
   if (!Q.length) { root.innerHTML = '<p style="color:#64748b;font-size:13px;padding:1rem">No comparable data for this universe.</p>'; return; }
@@ -185,7 +218,7 @@ function renderResultsTable() {
   if (!tb) return;
   const cell = m => mval(m) === null ? '<span class="text-slate-300">—</span>'
     : '<span class="' + pctCls(mval(m)) + ' font-medium tabular-nums">' + pct(mval(m)) + '</span>';
-  tb.innerHTML = (CUR.quarters || []).slice().reverse().map(q =>
+  tb.innerHTML = visibleQuarters().slice().reverse().map(q =>
     '<tr class="hover:bg-slate-50">' +
       '<td class="px-4 py-2 font-semibold text-slate-700">' + q.label + (q.partial ? ' <span class="text-amber-600 font-medium">· in progress</span>' : '') + '</td>' +
       '<td class="px-4 py-2 text-right text-slate-600 tabular-nums">' + q.reported.toLocaleString('en-IN') + '</td>' +
@@ -199,6 +232,30 @@ function renderResultsTable() {
 function selectUniverse(key) {
   const uvs = RS_ALL.universes || [];
   CUR = uvs.find(function (u) { return u.key === key; }) || uvs[0] || { quarters: [] };
+  populateCustom();
+  renderResultsSeason();
+  renderResultsTable();
+}
+
+// Fill the custom-range dropdowns with this universe's quarters; reset bounds to the full span.
+function populateCustom() {
+  const cf = document.getElementById('rsCFrom'), ct = document.getElementById('rsCTo');
+  if (!cf || !ct) return;
+  const qs = CUR.quarters || [];
+  const opts = qs.map(function (q) { return '<option value="' + q.qe + '">' + q.label + '</option>'; }).join('');
+  cf.innerHTML = opts; ct.innerHTML = opts;
+  if (qs.length) { CFROM = qs[0].qe; CTO = qs[qs.length - 1].qe; cf.value = CFROM; ct.value = CTO; }
+}
+
+function setPeriod(p) {
+  PERIOD = p;
+  ['1y', '3y', '5y', 'all', 'custom'].forEach(function (k, i) {
+    const b = document.getElementById('rsP_' + k);
+    if (b) b.className = 'px-3 py-1.5 text-xs font-semibold' + (i ? ' border-l border-slate-300' : '') +
+      (k === p ? ' bg-blue-600 text-white' : ' bg-white text-slate-600 hover:bg-slate-50');
+  });
+  const cr = document.getElementById('rsCustomRange');
+  if (cr) cr.classList.toggle('hidden', p !== 'custom');
   renderResultsSeason();
   renderResultsTable();
 }
@@ -228,8 +285,14 @@ fetch('./results_season.json')
     sel.addEventListener('change', function () { selectUniverse(sel.value); });
     document.getElementById('rsModeMedian').addEventListener('click', function () { setMode('median'); });
     document.getElementById('rsModeTotal').addEventListener('click', function () { setMode('total'); });
+    [['rsP_1y','1y'],['rsP_3y','3y'],['rsP_5y','5y'],['rsP_all','all'],['rsP_custom','custom']].forEach(function (pair) {
+      document.getElementById(pair[0]).addEventListener('click', function () { setPeriod(pair[1]); });
+    });
+    document.getElementById('rsCFrom').addEventListener('change', function () { CFROM = +this.value; renderResultsSeason(); renderResultsTable(); });
+    document.getElementById('rsCTo').addEventListener('change', function () { CTO = +this.value; renderResultsSeason(); renderResultsTable(); });
     selectUniverse(sel.value);
     setMode('median');   // initial button styling + render
+    setPeriod('all');    // initial period-button styling (default = every quarter)
     document.getElementById('rsStatus').classList.add('hidden');
     document.getElementById('rsWrap').classList.remove('hidden');
   })
