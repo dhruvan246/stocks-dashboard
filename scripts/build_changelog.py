@@ -115,9 +115,29 @@ def to_iso(d):
 
 # index heading on its own line, numbered OR lettered: "1) Nifty Alpha 50", "c) Nifty 500"
 HEAD_RE = re.compile(r"^\s*(?:\d+|[a-zA-Z])[\)\.]\s*((?:nifty|cnx)[\w &\-]*?)\s*$", re.I)
-# a data row: serial number, company name, then the all-caps symbol as the LAST token.
-# Requiring the leading serial number rejects boilerplate + page-break noise.
-ROW_RE = re.compile(r"^\s*\d{1,3}\s+\S.*?\s([A-Z][A-Z0-9&\-]{1,14})\s*$")
+# A data row = serial number, company name, then the ticker as the LAST whitespace token.
+# The ticker is extracted by taking the last token and VALIDATING it (O(n), no regex backtracking):
+#   - 2-15 chars of [A-Z0-9&-], MUST contain >=1 letter  => allows digit-leading symbols like
+#     360ONE / 8KMILES / 3MINDIA / 5PAISA / 63MOONS (the old `[A-Z]`-first regex silently dropped
+#     these), and & / - (M&MFIN, BAJAJ-AUTO, L&TFH); rejects pure numbers ("501 securities.").
+# Plus a WRAPPED-ROW fallback: long company names wrap so the ticker lands on the next line
+#   ("16 Johnson Controls - Hitachi Air Conditioning India" / "Ltd. JCHAC"). When a serial-line has
+#   no valid last-token ticker, merge following non-serial continuation lines (<=3) until one appears.
+# (Both fixes validated over all cached PDFs: 0 regressions, recovers JCHAC/8KMILES/360ONE. 2026-07-09)
+SERIAL_RE = re.compile(r"^\s*\d{1,3}\s+\S")
+ROWSER_RE = re.compile(r"^\s*(\d{1,3})\s+(.+)$")
+TICK_RE = re.compile(r"[A-Z0-9&\-]{2,15}")
+STOP = ("NSE", "EQ", "BE", "NIFTY", "CNX")
+def _ticker(tok):
+    if not tok or not TICK_RE.fullmatch(tok): return None
+    if not any(c.isalpha() for c in tok): return None
+    if tok in STOP or tok.startswith("DUMMY"): return None
+    return tok
+def _row_ticker(line):
+    m = ROWSER_RE.match(line.strip())
+    if not m: return None
+    toks = m.group(2).split()
+    return _ticker(toks[-1]) if toks else None
 
 def parse_pdf(fp):
     try:
@@ -126,23 +146,33 @@ def parse_pdf(fp):
         return []
     md = DATE_RE.search(txt); eff_default = to_iso(md.group(1)) if md else None
     cur = None; mode = None; blocks = []
-    for ln in txt.splitlines():
+    lines = txt.splitlines(); i = 0; n = len(lines)
+    while i < n:
+        ln = lines[i]
         h = HEAD_RE.match(ln)
         if h:
             ci = canon_index(h.group(1))
             cur = {"index": ci, "eff": eff_default, "excluded": [], "included": []} if ci else None
             if cur: blocks.append(cur)
-            mode = None
-            continue
-        if cur is None: continue
+            mode = None; i += 1; continue
         low = ln.lower()
-        if "exclud" in low: mode = "excluded"; continue
-        if "includ" in low: mode = "included"; continue
-        if "no change" in low or "no replacement" in low: mode = None; continue
-        if mode:
-            m = ROW_RE.match(ln)
-            if m and m.group(1) not in ("NSE","EQ","BE","NIFTY","CNX") and not m.group(1).startswith("DUMMY"):
-                cur[mode].append(m.group(1))
+        if "exclud" in low: mode = "excluded"; i += 1; continue
+        if "includ" in low: mode = "included"; i += 1; continue
+        if "no change" in low or "no replacement" in low: mode = None; i += 1; continue
+        if mode and cur is not None:
+            t = _row_ticker(ln)                                    # single-line row
+            if t:
+                cur[mode].append(t); i += 1; continue
+            if SERIAL_RE.match(ln):                                # wrapped-row fallback
+                merged = ln.strip(); j = i + 1
+                while j < n and j <= i + 3 and not SERIAL_RE.match(lines[j]) and not HEAD_RE.match(lines[j]) \
+                        and "exclud" not in lines[j].lower() and "includ" not in lines[j].lower():
+                    merged += " " + lines[j].strip()
+                    t2 = _row_ticker(merged)
+                    if t2:
+                        cur[mode].append(t2); break
+                    j += 1
+        i += 1
     return [b for b in blocks if (b["excluded"] or b["included"]) and b["eff"]]
 
 # Manual corrections for reconstitution notices whose non-standard layout parse_pdf can't read.
