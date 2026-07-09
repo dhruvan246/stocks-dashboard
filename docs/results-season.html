@@ -109,7 +109,7 @@
 let RS_ALL = { universes: [] };   // full payload
 let CUR = { quarters: [] };        // currently-selected universe
 let MODE = 'median';               // 'median' (typical company, consolidated) or 'total' (aggregate, standalone)
-let PERIOD = 'all';                // '1y' | '3y' | '5y' | 'all' | 'custom' — how many quarters to show
+let PERIOD = '3y';                 // '1y' | '3y' | '5y' | 'all' | 'custom' — how many quarters to show (default 3Y)
 let CFROM = null, CTO = null;      // custom-range quarter bounds (qe ints)
 
 // Filter CUR.quarters down to the selected period (relative to that universe's OWN latest quarter,
@@ -292,7 +292,7 @@ fetch('./results_season.json')
     document.getElementById('rsCTo').addEventListener('change', function () { CTO = +this.value; renderResultsSeason(); renderResultsTable(); });
     selectUniverse(sel.value);
     setMode('median');   // initial button styling + render
-    setPeriod('all');    // initial period-button styling (default = every quarter)
+    setPeriod('3y');     // initial period-button styling (default = last 3 years / 12 quarters)
     document.getElementById('rsStatus').classList.add('hidden');
     document.getElementById('rsWrap').classList.remove('hidden');
   })
