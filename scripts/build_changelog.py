@@ -24,7 +24,7 @@ FILES = """
 07122023 09112023 17102023 15092023 23082023 17082023 24072023 04072023 27062023 09062023 19042023_1 06032023 21022023 17022023_1 09022023_1
 22122022 06122022 20102022 20102022_1 16092022 01092022 23082022 26072022 11072022 15062022 24052022 06042022 05042022 05042022_1 08032022 24022022_1
 08122021 22102021 08102021 20092021 15092021 23082021 15062021 22042021 10032021 23022021
-11122020 18112020 26102020 30092020 07092020 20082020 02072020_1 12032020 18022020 09012020
+11122020 18112020 26102020 30092020 07092020 20082020 02072020_1 10062020 12032020 18022020 09012020
 19122019 18122019 16122019 28112019 17092019 17092019_1 13032019
 24092018 31082018 01082018 15062018 15062018_1 06032018
 29082017 27042017 07032017
@@ -186,6 +186,12 @@ def parse_pdf(fp):
 #    member 2020-2024. Verified from the PR text: net 27 out / 27 in on 2024-09-30. 2026-07-03.
 MANUAL_CHANGELOG_FIXES = [
     ("Nifty 500", "2024-09-30", {"IDEA"}, {"PRSMJOHNSN"}, set(), set()),
+    #  - ind_prs10062020 (eff 2020-06-26, the COVID re-done reconstitution): IRCTC & SWSOLAR are missing
+    #    from the parsed N500 include list (very long company names — rows lost across a page break in the
+    #    pypdf text layer). PROOF they entered on 2020-06-26: both are in the 2020-07-25 archived NSE CSV
+    #    (Wayback checkpoint) and NO other event exists between 2020-06-26 and 2020-07-25; their only other
+    #    add (Feb-18-2020) was nulled. Without this they phantom-extend back to listing (Jan-May 2020). 2026-07-10.
+    ("Nifty 500", "2020-06-26", set(), set(), set(), {"IRCTC", "SWSOLAR"}),
 ]
 
 def apply_manual_fixes(changelog):
@@ -215,6 +221,26 @@ def main():
         for b in parse_pdf(fp):
             changelog.setdefault(b["index"], []).append({"eff": b["eff"], "excluded": b["excluded"], "included": b["included"], "src": stem})
     print(f"Have {ok}/{len(FILES)} PDFs (missing {miss})")
+    # --- COVID-2020 NULLED RECONSTITUTION (verified from primary sources 2026-07-10) ---------------
+    # The Feb-18 + Mar-12 (+Mar-19) reshuffle (eff 2020-03-27) was DEFERRED on Mar-23 (ind_prs23032020)
+    # and declared "shall stand null" by ind_prs13052020 — EXCEPT Nifty 50 & Nifty Bank, which were
+    # rebalanced EARLY effective 2020-03-19 (Yes Bank Reconstruction Scheme). The reconstitution was
+    # re-announced FRESH with UPDATED lists via ind_prs10062020, effective 2020-06-26 (stem in FILES).
+    # So: DROP every parsed event from srcs 18022020/12032020 except Nifty 50/Nifty Bank from 18022020,
+    # which are redated to 2020-03-19. (Without this, ALKYLAMINE/DHANUKA/GMMPFAUDLR/SUMICHEM etc. appear
+    # in Nifty 500 from 2020-03-27 though they only entered 2020-06-26 — caught by a StockView cross-check.)
+    nulled = 0
+    for idx in list(changelog):
+        kept = []
+        for c in changelog[idx]:
+            if c["src"] in ("18022020", "12032020"):
+                if idx in ("Nifty 50", "Nifty Bank") and c["src"] == "18022020":
+                    c = dict(c, eff="2020-03-19")
+                else:
+                    nulled += 1; continue
+            kept.append(c)
+        changelog[idx] = kept
+    print(f"  COVID-2020 null: dropped {nulled} never-effective events (Feb/Mar-2020, superseded by 10062020 eff 2020-06-26)")
     apply_manual_fixes(changelog)
     for idx in sorted(changelog):
         ch = changelog[idx]; ch.sort(key=lambda x: x["eff"])

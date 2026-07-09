@@ -373,6 +373,17 @@ V-recovery (Jun-2021: +48%)**. ⚠️ MOVED OFF the Stocks dashboard → its own
   aggregate EBIT reads HIGHER than EBITDA (base effect: smaller denominator → bigger %, N500 12.9 vs 9.8), which looks
   broken as a bar. Chart bars stay **Revenue / EBITDA / PAT**; the table adds EBIT for completeness. `sf_revop` row is now
   **9 elems** `[revStd,revCon,opStd,opCon,patStd,patCon,fin,ebitStd,ebitCon]` — readers pad legacy 7-elem rows.
+- **⚠️ COVID-2020 RECONSTITUTION WAS NULLED (2026-07-10, verified from press releases — don't reintroduce):**
+  the Mar-2020 reshuffle (announced 18-Feb/12-Mar/19-Mar, eff 2020-03-27) was deferred (ind_prs23032020) and
+  declared **"shall stand null"** (ind_prs13052020) — EXCEPT Nifty 50/Bank (rebalanced early eff 2020-03-19,
+  Yes Bank scheme). The REAL reconstitution is **ind_prs10062020, eff 2020-06-26**, with UPDATED lists
+  (adds ALKYLAMINE/DHANUKA/GMMPFAUDLR/SUMICHEM/ABB/CSBBANK/…; keeps BLISSGVS/IFCI/NFL). `build_changelog.py`
+  has stem 10062020 in FILES + a COVID-null pass dropping 18022020/12032020 events (Nifty 50/Bank redated
+  2020-03-19). Do NOT add stem 19032020 (nulled too). Found via the StockView cross-audit.
+- **⚠️ web.archive.org: curl/PowerShell BLOCKED but the claude-in-chrome BROWSER reaches it** (navigate, then
+  page-context fetch to `/cdx/search/cdx` works). ind_nifty500list.csv has only ONE 2020 snapshot (2020-07-25).
+  To hunt a missing press release: probe every weekday stem `ind_prs<DDMMYYYY>[_1|_2].pdf` on live niftyindices
+  (GOTCHA: generating stems with python on Windows emits CRLF — `tr -d '\r'` or every URL silently 404s).
 - **⚠️ MEMBERSHIP COMPLETENESS (2026-07-01 — user: "fetch every rebalance, none missed"):** `indices_history.json`
   is reconstructed from **niftyindices reconstitution press-release PDFs** (`ind_prs<DDMMYYYY>.pdf`), parsed by
   **`build_changelog.py`** → `_changelog.json` (per-index add/drop events), then **`build_membership_v2.py`** walks
