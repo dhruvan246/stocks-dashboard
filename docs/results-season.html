@@ -153,7 +153,7 @@ function renderResultsSeason() {
   }
   Q.forEach((q, i) => {
     const gx = M.l + i * groupW, cx = (gx + groupW / 2).toFixed(1);
-    let gt = esc(q.label) + ' — ' + cf(q.reported) + ' companies reported';
+    let gt = esc(q.label) + ' — ' + cf(q.reported) + ' companies reported' + (q.partial ? ' (in progress — preliminary, few reporters so far)' : '');
     METRICS.forEach(mm => { if (mval(q[mm.key]) !== null) gt += ' · ' + mm.name + ' ' + fmt(mval(q[mm.key])); });
     g += '<rect x="' + gx + '" y="' + plotTop + '" width="' + groupW + '" height="' + (plotBot - plotTop) +
          '" fill="transparent"><title>' + gt + '</title></rect>';
@@ -163,14 +163,14 @@ function renderResultsSeason() {
       const bx = x0 + j * (bw + gap), yv = y(v);
       const top = Math.min(yv, zeroY), hh = Math.max(0.5, Math.abs(zeroY - yv));
       g += '<rect x="' + bx.toFixed(1) + '" y="' + top.toFixed(1) + '" width="' + bw + '" height="' + hh.toFixed(1) +
-           '" rx="2" fill="' + mm.color + '"><title>' + esc(q.label) + ' · ' + mm.name + ': ' + fmt(v) +
+           '" rx="2" fill="' + mm.color + '"' + (q.partial ? ' fill-opacity="0.4"' : '') + '><title>' + esc(q.label) + ' · ' + mm.name + ': ' + fmt(v) +
            ' (' + (MODE === 'median' ? 'median of ' : 'total of ') + cf(mn(q[mm.key])) + ' companies)</title></rect>';
       const pos = v >= 0, lx = (bx + bw / 2).toFixed(1), ly = (pos ? yv - 3 : yv + 3).toFixed(1);
       g += '<text x="' + lx + '" y="' + ly + '" transform="rotate(-90 ' + lx + ' ' + ly + ')" text-anchor="' +
            (pos ? 'start' : 'end') + '" font-size="9.5" font-weight="600" fill="' + mm.color + '" pointer-events="none">' + fmt(v) + '</text>';
     });
-    g += '<text x="' + cx + '" y="' + (plotBot + 17) + '" text-anchor="middle" font-size="11" font-weight="600" fill="#cbd5e1" pointer-events="none">' + esc(q.label) + '</text>' +
-         '<text x="' + cx + '" y="' + (plotBot + 31) + '" text-anchor="middle" font-size="9.5" fill="#64748b" pointer-events="none">' + cf(q.reported) + ' Results</text>';
+    g += '<text x="' + cx + '" y="' + (plotBot + 17) + '" text-anchor="middle" font-size="11" font-weight="600" fill="' + (q.partial ? '#f59e0b' : '#cbd5e1') + '" pointer-events="none">' + esc(q.label) + '</text>' +
+         '<text x="' + cx + '" y="' + (plotBot + 31) + '" text-anchor="middle" font-size="9.5" fill="' + (q.partial ? '#f59e0b' : '#64748b') + '" pointer-events="none">' + (q.partial ? cf(q.reported) + ' • in progress' : cf(q.reported) + ' Results') + '</text>';
   });
   // Few quarters: scale to fill the card. Many quarters: render at natural size and let the
   // wrapper (#rsChart, overflow-x-auto) scroll, so bars + value labels stay readable.
@@ -187,7 +187,7 @@ function renderResultsTable() {
     : '<span class="' + pctCls(mval(m)) + ' font-medium tabular-nums">' + pct(mval(m)) + '</span>';
   tb.innerHTML = (CUR.quarters || []).slice().reverse().map(q =>
     '<tr class="hover:bg-slate-50">' +
-      '<td class="px-4 py-2 font-semibold text-slate-700">' + q.label + '</td>' +
+      '<td class="px-4 py-2 font-semibold text-slate-700">' + q.label + (q.partial ? ' <span class="text-amber-600 font-medium">· in progress</span>' : '') + '</td>' +
       '<td class="px-4 py-2 text-right text-slate-600 tabular-nums">' + q.reported.toLocaleString('en-IN') + '</td>' +
       '<td class="px-4 py-2 text-right">' + cell(q.rev) + '</td>' +
       '<td class="px-4 py-2 text-right">' + cell(q.op) + '</td>' +

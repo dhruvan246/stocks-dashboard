@@ -84,12 +84,12 @@ def consistent(cur, base):
 MIN_N = 5   # don't publish a median computed over fewer than this many companies (not robust)
 
 
-def median_yoy(pairs):
+def median_yoy(pairs, min_n=MIN_N):
     ys = [(cv - bv) / bv * 100.0 for cv, bv in pairs if bv is not None and bv > 0 and cv is not None]
-    return (round(statistics.median(ys), 1) if len(ys) >= MIN_N else None), len(ys)
+    return (round(statistics.median(ys), 1) if len(ys) >= min_n else None), len(ys)
 
 
-def agg_total(pairs):
+def agg_total(pairs, min_n=MIN_N):
     """Aggregate (total-based, Trendlyne-style) growth: sum(now)/sum(ago)-1, on the pairs given
     (STANDALONE basis). Aggregate only companies PROFITABLE IN BOTH periods (base AND current > 0) —
     a loss/near-zero base blows the ratio up (mid/small-cap PAT read 72%), and filtering base-only made
@@ -98,10 +98,10 @@ def agg_total(pairs):
     pairs = [(n, a) for n, a in pairs if a > 0 and n > 0]
     sn = sum(n for n, a in pairs)
     sa = sum(a for n, a in pairs)
-    return (round((sn / sa - 1) * 100, 1) if (sa > 0 and len(pairs) >= MIN_N) else None), len(pairs)
+    return (round((sn / sa - 1) * 100, 1) if (sa > 0 and len(pairs) >= min_n) else None), len(pairs)
 
 
-def agg_quarter(members, qe, pat, revop):
+def agg_quarter(members, qe, pat, revop, min_n=MIN_N):
     """Return (quarter-dict, reported). Each metric carries BOTH:
       median  = median of per-company YoY (consolidated-preferred, positive base) — 'typical company'
       total   = aggregate sum(now)/sum(ago)-1 on STANDALONE basis — the index P&L (matches Trendlyne)."""
@@ -144,10 +144,10 @@ def agg_quarter(members, qe, pat, revop):
                     op_tot.append((cq[2], bq[2]))
                 if ce_s is not None and be_s is not None:     # standalone EBIT
                     ebit_tot.append((ce_s, be_s))
-    rev_m, rev_n = median_yoy(rev_pairs);   rev_t, rev_tn = agg_total(rev_tot)
-    op_m, op_n = median_yoy(op_pairs);       op_t, op_tn = agg_total(op_tot)
-    ebit_m, ebit_n = median_yoy(ebit_pairs); ebit_t, ebit_tn = agg_total(ebit_tot)
-    pat_m, pat_n = median_yoy(pat_pairs);    pat_t, pat_tn = agg_total(pat_tot)
+    rev_m, rev_n = median_yoy(rev_pairs, min_n);   rev_t, rev_tn = agg_total(rev_tot, min_n)
+    op_m, op_n = median_yoy(op_pairs, min_n);       op_t, op_tn = agg_total(op_tot, min_n)
+    ebit_m, ebit_n = median_yoy(ebit_pairs, min_n); ebit_t, ebit_tn = agg_total(ebit_tot, min_n)
+    pat_m, pat_n = median_yoy(pat_pairs, min_n);    pat_t, pat_tn = agg_total(pat_tot, min_n)
     return {"qe": qe, "label": quarter_label(qe), "reported": reported,
             "rev": {"median": rev_m, "n": rev_n, "total": rev_t, "tn": rev_tn},
             "op": {"median": op_m, "n": op_n, "total": op_t, "tn": op_tn},
@@ -187,13 +187,25 @@ def main():
 
     def build(label, key, note, member_fn, min_rep):
         qs = []
+        included = set()
+        last_qe = last_members = None      # newest quarter with any reporter (cand is chronological)
         for qe in cand:
             members = member_fn(qe)
             if not members:
                 continue
-            row, reported = agg_quarter(members, qe, pat, revop)
+            row, reported = agg_quarter(members, qe, pat, revop)   # robust MIN_N floor (unchanged)
+            if reported > 0:
+                last_qe, last_members = qe, members
             if reported >= min_rep:
-                qs.append(row)
+                qs.append(row); included.add(qe)
+        # Show the CURRENT in-progress quarter from its very first filing — below the publish gate,
+        # computed over whatever small sample exists (min_n=1), flagged partial so the UI marks it
+        # "in progress" and a reader doesn't mistake a few-company median for the final market figure.
+        if last_qe is not None and last_qe not in included:
+            row, reported = agg_quarter(last_members, last_qe, pat, revop, min_n=1)
+            row["partial"] = True
+            qs.append(row)
+        qs.sort(key=lambda r: r["qe"])
         return {"key": key, "label": label, "note": note, "quarters": qs}
 
     universes = []
