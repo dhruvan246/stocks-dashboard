@@ -2,10 +2,12 @@ name: Daily fundamentals refresh
 
 on:
   schedule:
-    # 15:45 UTC = 21:15 IST, weekdays — after companies broadcast quarterly results
-    # (filings land through the evening). Self-heals: the updater scans a 21-day
-    # window each run, so a skipped day is caught up by the next.
-    - cron: "45 15 * * 1-5"
+    # 15:45 UTC = 21:15 IST, EVERY day — companies broadcast results on weekends too
+    # (board meetings are held on Saturdays/Sundays during earnings season), so a
+    # weekday-only cron left Sat/Sun filings sitting until Monday night.
+    # Self-heals anyway: the updater scans a 120-day window each run, so a skipped
+    # day is caught up by the next.
+    - cron: "45 15 * * *"
   # Optional external trigger (cron-job.org) — SEPARATE event type from the
   # stock/MF/FII/backtest-data jobs. POST /repos/dhruvan246/stocks-dashboard/dispatches
   # with {"event_type":"fundamentals-refresh"}
@@ -53,8 +55,9 @@ jobs:
       # Rebuild the Results Season chart payload from the just-updated net profit + rev/op. The
       # aggregator keys every filing by its OWN quarter-end, so a late filing (e.g. a March quarter
       # declared in July) lands in the March column, and a brand-new quarter (June) appears as its own
-      # column once >=200 universe companies have reported it. Universe (turnover floor) is read from
-      # the committed sf_stock_data.bin (stable; fine if a little stale).
+      # column from its VERY FIRST filing, flagged partial (rendered "in progress" until enough
+      # companies report). Universe (turnover floor) is read from the committed sf_stock_data.bin
+      # (stable; fine if a little stale).
       - name: Rebuild Results Season chart data
         if: ${{ hashFiles('docs/.fund_updated') != '' }}
         run: python3 scripts/build_results_season.py
