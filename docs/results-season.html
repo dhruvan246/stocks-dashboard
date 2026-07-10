@@ -73,7 +73,7 @@
     <div class="rounded-xl shadow-sm border border-slate-700 bg-slate-900 text-slate-100 overflow-hidden">
       <div class="px-6 py-4 border-b border-slate-700 flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 class="text-sm font-bold uppercase tracking-wide text-white flex items-center gap-2">📊 Median YoY growth by quarter</h2>
+          <h2 class="text-sm font-bold uppercase tracking-wide text-white flex items-center gap-2">📊 <span id="rsChartTitle">Total YoY growth by quarter</span></h2>
           <p class="text-[11px] text-slate-400 mt-1" id="rsAsOf"></p>
         </div>
         <div id="rsLegend" class="flex items-center gap-3 sm:gap-4 text-[11px] font-medium shrink-0"></div>
@@ -85,7 +85,7 @@
     </div>
 
     <div class="card mt-4 overflow-hidden">
-      <div class="px-4 py-3 border-b border-slate-200 text-sm font-semibold text-slate-700">Quarter detail <span class="text-[11px] font-normal text-slate-400">(median YoY %; hover the chart for sample sizes)</span></div>
+      <div class="px-4 py-3 border-b border-slate-200 text-sm font-semibold text-slate-700">Quarter detail <span class="text-[11px] font-normal text-slate-400">(YoY %, follows the Median/Total toggle; hover the chart for sample sizes)</span></div>
       <div class="overflow-x-auto">
         <table class="w-full text-sm">
           <thead class="bg-slate-50 text-slate-500 text-xs uppercase">
@@ -108,7 +108,7 @@
 <script>
 let RS_ALL = { universes: [] };   // full payload
 let CUR = { quarters: [] };        // currently-selected universe
-let MODE = 'median';               // 'median' (typical company, consolidated) or 'total' (aggregate, standalone)
+let MODE = 'total';                // 'median' (typical company, consolidated) or 'total' (aggregate, standalone — Trendlyne-style, default)
 let PERIOD = '3y';                 // '1y' | '3y' | '5y' | 'all' | 'custom' — how many quarters to show (default 3Y)
 let CFROM = null, CTO = null;      // custom-range quarter bounds (qe ints)
 
@@ -267,6 +267,8 @@ function setMode(m) {
     btn.className = 'px-3 py-1.5' + extra + (on ? ' bg-blue-600 text-white' : ' bg-white text-slate-600 hover:bg-slate-50');
   };
   if (mb && tb) { paint(mb, m === 'median', ''); paint(tb, m === 'total', ' border-l border-slate-300'); }
+  const ct = document.getElementById('rsChartTitle');
+  if (ct) ct.textContent = (m === 'median' ? 'Median' : 'Total') + ' YoY growth by quarter';
   renderResultsSeason();
   renderResultsTable();
 }
@@ -291,7 +293,7 @@ fetch('./results_season.json')
     document.getElementById('rsCFrom').addEventListener('change', function () { CFROM = +this.value; renderResultsSeason(); renderResultsTable(); });
     document.getElementById('rsCTo').addEventListener('change', function () { CTO = +this.value; renderResultsSeason(); renderResultsTable(); });
     selectUniverse(sel.value);
-    setMode('median');   // initial button styling + render
+    setMode('total');    // initial button styling + render (Total = Trendlyne-comparable default)
     setPeriod('3y');     // initial period-button styling (default = last 3 years / 12 quarters)
     document.getElementById('rsStatus').classList.add('hidden');
     document.getElementById('rsWrap').classList.remove('hidden');
