@@ -160,7 +160,24 @@ def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
 #   SAMMAANCAP (ex-IBULHSGFIN): rights 1:2 @ Rs150 ex 2024-02-01. TERP=0.8914; raw ex-date close 193.90
 #   / prev 222.50 = 0.8714. Verified vs Trendlyne (d52 9.63, d52low 131.15) — raw would show 19.44 /
 #   106.05 and drop it from the Feb-2024 picks. No F&O / split / ISIN-change rule distinguishes it.
-MANUAL_RIGHTS = [("SAMMAANCAP", 20240201, 0.8914, 0.8714)]
+MANUAL_RIGHTS = [
+    ("SAMMAANCAP", 20240201, 0.8914, 0.8714),
+    # --- 2026-07-10: six rights events surfaced by the StockView reconciliation (their d52 = textbook
+    # TERP, verified to the decimal) + M&MFIN's 2nd rights nobody flagged. All ex-dates NSE-official
+    # (corporates-corporateActions API); factor = TERP/cum-close from raw prices; raw_drop = the ex-day
+    # close ratio CURRENTLY in the series (idempotence anchor). Dates below = the actual ex-TRADING day
+    # (first session whose price is ex-rights), which for M&MFIN-2020 is 23-Jul (NSE exDate 22-Jul).
+    # M&MFIN 2020 rights 1:1 @ Rs50: the >25% ex-drop was mis-baked as a 2/3 split-inference at build
+    # time; true TERP factor 0.6083, so this entry holds the residual CORRECTION 0.6083/(2/3)=0.9125
+    # against the already-scaled series (current ex ratio 0.9659 -> 1.0585 once applied).
+    ("M&MFIN",     20200723, 0.9125, 0.9659),
+    ("CGCL",       20230217, 0.9459, 0.9350),   # Rights 11:64 @ 475, cum 752.44 -> TERP 711.75
+    ("PNBHOUSING", 20230405, 0.8282, 0.8563),   # Rights 29:54 @ 275, cum 540.90 -> TERP 448.00
+    ("SOBHA",      20240619, 0.9733, 0.9347),   # Rights 6:47 @ 1651, cum 2159.70 -> TERP 2102.11
+    ("UPL",        20241126, 0.9592, 0.9705),   # Rights 1:8  @ 360,  cum 568.55 -> TERP 545.38
+    ("M&MFIN",     20250514, 0.9731, 1.0131),   # Rights 1:8  @ 194,  cum 256.30 -> TERP 249.42 (2nd rights)
+    ("ADANIENT",   20251117, 0.9695, 0.9782),   # Rights 3:25 @ 1800, cum 2516.80 -> TERP 2440.00
+]
 
 def apply_manual_rights(data):
     """Scale each MANUAL_RIGHTS stock's pre-ex prices by its TERP factor. Idempotent WITHOUT a marker:
