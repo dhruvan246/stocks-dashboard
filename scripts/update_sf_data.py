@@ -178,6 +178,20 @@ MANUAL_RIGHTS = [
     ("M&MFIN",     20250514, 0.9731, 1.0131),   # Rights 1:8  @ 194,  cum 256.30 -> TERP 249.42 (2nd rights)
     ("ADANIENT",   20251117, 0.9695, 0.9782),   # Rights 3:25 @ 1800, cum 2516.80 -> TERP 2440.00
 ]
+# --- 2026-07-10: POLICY WIDENED (user) — TERP-adjust EVERY parseable rights issue, so d52 is correct at ANY
+# filter threshold (10, 25, ...), not just the cells hand-flagged above. scripts/rights_terp.json holds the
+# generated entries (202: all NSE rights 2014→date with parseable terms × price data; same tuple format),
+# built by the rights sweep from the official corporates-corporateActions feed + TERP vs raw cum-close.
+# Skipped there (documented in the sweep): partly-paid (ABFRL/TATASTEEL — different economics), unparseable
+# subjects, and deep-discount events whose ex-drop the old build already baked as a split-inference (all
+# non-N500 microcaps except IDEA-2019/NCC-2014, hand-verified immaterial: d52 nowhere near any threshold).
+# Regenerate after new rights: re-run the sweep (memory: project-stocks-stockview-comparison).
+try:
+    _rt = json.load(open(os.path.join(ROOT, "scripts", "rights_terp.json")))
+    _seen = {(s, e) for s, e, _f, _r in MANUAL_RIGHTS}
+    MANUAL_RIGHTS += [tuple(x) for x in _rt if (x[0], x[1]) not in _seen]
+except Exception as _e:
+    print("  (rights_terp.json not loaded: %s)" % _e)
 
 def apply_manual_rights(data):
     """Scale each MANUAL_RIGHTS stock's pre-ex prices by its TERP factor. Idempotent WITHOUT a marker:
