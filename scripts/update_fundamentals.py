@@ -80,14 +80,16 @@ def main():
             "&from_date=%s&to_date=%s" % (frm, to))
     rows = []
     try:
-        page = 1
+        page, total = 1, 0
         while True:
             jb = json.loads(B._get(base + "&page=%d&size=500" % page, headers=h, jar=jar, timeout=60))
             if isinstance(jb, list):           # defensive: pre-pagination shape (no envelope)
                 rows = jb; break
             d = jb.get("data", []) or []
             rows.extend(d)
-            total = jb.get("totalCount") or 0
+            # totalCount FLAPS between responses (observed 30080 → 12 mid-fetch) — trust the MAX
+            # seen, never the latest, else a flaky envelope ends the loop early and drops filings.
+            total = max(total, jb.get("totalCount") or 0)
             if not d or len(rows) >= total or page > 60:   # page cap = hard stop against a bad envelope
                 break
             page += 1
