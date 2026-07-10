@@ -109,7 +109,7 @@
 let RS_ALL = { universes: [] };   // full payload
 let CUR = { quarters: [] };        // currently-selected universe
 let MODE = 'total';                // 'median' (typical company, consolidated) or 'total' (aggregate, standalone — Trendlyne-style, default)
-let PERIOD = '3y';                 // '1y' | '3y' | '5y' | 'all' | 'custom' — how many quarters to show (default 3Y)
+let PERIOD = '1y';                 // '1y' | '3y' | '5y' | 'all' | 'custom' — how many quarters to show (default 1Y)
 let CFROM = null, CTO = null;      // custom-range quarter bounds (qe ints)
 
 // Filter CUR.quarters down to the selected period (relative to that universe's OWN latest quarter,
@@ -289,7 +289,9 @@ fetch('./results_season.json')
     sel.innerHTML = uvs.map(function (u) {
       return '<option value="' + u.key + '">' + u.label + '</option>';
     }).join('');
-    sel.value = RS_ALL.defaultUniverse || uvs[0].key;
+    // Default universe = Nifty 500 (set here, not in the JSON — the JSON is regenerated daily).
+    sel.value = uvs.some(function (u) { return u.key === 'Nifty 500'; }) ? 'Nifty 500'
+              : (RS_ALL.defaultUniverse || uvs[0].key);
     sel.addEventListener('change', function () { selectUniverse(sel.value); });
     document.getElementById('rsModeMedian').addEventListener('click', function () { setMode('median'); });
     document.getElementById('rsModeTotal').addEventListener('click', function () { setMode('total'); });
@@ -303,7 +305,7 @@ fetch('./results_season.json')
     document.getElementById('rsWrap').classList.remove('hidden');
     selectUniverse(sel.value);
     setMode('total');    // initial button styling + render (Total = Trendlyne-comparable default)
-    setPeriod('3y');     // initial period-button styling (default = last 3 years / 12 quarters)
+    setPeriod('1y');     // initial period-button styling (default = last 1 year / 4 quarters)
     let rsRz;            // re-fit the chart width when the window is resized
     window.addEventListener('resize', function () { clearTimeout(rsRz); rsRz = setTimeout(renderResultsSeason, 150); });
   })
