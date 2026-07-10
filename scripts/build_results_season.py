@@ -187,24 +187,26 @@ def main():
 
     def build(label, key, note, member_fn, min_rep):
         qs = []
-        included = set()
-        last_qe = last_members = None      # newest quarter with any reporter (cand is chronological)
+        last_qe = last_members = None; last_rep = 0   # newest quarter with any reporter (cand is chronological)
         for qe in cand:
             members = member_fn(qe)
             if not members:
                 continue
             row, reported = agg_quarter(members, qe, pat, revop)   # robust MIN_N floor (unchanged)
             if reported > 0:
-                last_qe, last_members = qe, members
+                last_qe, last_members, last_rep = qe, members, reported
             if reported >= min_rep:
-                qs.append(row); included.add(qe)
-        # Show the CURRENT in-progress quarter from its very first filing — below the publish gate,
-        # computed over whatever small sample exists (min_n=1), flagged partial so the UI marks it
-        # "in progress" and a reader doesn't mistake a few-company median for the final market figure.
-        if last_qe is not None and last_qe not in included:
-            row, reported = agg_quarter(last_members, last_qe, pat, revop, min_n=1)
+                qs.append(row)
+        # The CURRENT quarter shows from its very first filing and stays "in progress" until HALF
+        # the universe has reported. Crossing min_rep alone isn't enough: early reporters are
+        # bank-heavy, so an index can pass the gate (e.g. 6 of 500) while rev/EBITDA still have
+        # fewer than MIN_N non-financial samples — the medians suppress to null and the chart
+        # renders blank bars with no in-progress tag (live bug, Nifty 500 Q1FY27). While partial,
+        # recompute over whatever sample exists (min_n=1) and flag it for the dimmed/amber UI.
+        if last_qe is not None and last_rep < 0.5 * len(last_members):
+            row, _ = agg_quarter(last_members, last_qe, pat, revop, min_n=1)
             row["partial"] = True
-            qs.append(row)
+            qs = [r for r in qs if r["qe"] != last_qe] + [row]
         qs.sort(key=lambda r: r["qe"])
         return {"key": key, "label": label, "note": note, "quarters": qs}
 
