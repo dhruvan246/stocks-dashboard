@@ -12,8 +12,8 @@ Universes:
 
 Bases:
   PAT  -> sf_fundamentals.json (owners-attributable consolidated where filed, else standalone).
-  Rev / Operating profit -> sf_revop.json. Banks/NBFCs EXCLUDED per metric (no comparable revenue /
-          operating profit) — so financial-heavy sectoral indexes show PAT only.
+  Rev / Operating profit -> sf_revop.json. Banks/NBFCs INCLUDED (bank rev = interest earned, op =
+          pre-provision operating profit; NBFC rev = core revenue, op = EBITDA) — matches Trendlyne.
 YoY needs the year-ago quarter on the SAME basis with a POSITIVE base.
 
 Out: docs/results_season.json = { defaultUniverse, basis, dataAsOf, universes:[{key,label,note,quarters}] }
@@ -89,9 +89,14 @@ def median_yoy(pairs, min_n=MIN_N):
     return (round(statistics.median(ys), 1) if len(ys) >= min_n else None), len(ys)
 
 
+def _cpref(con, std):
+    """Consolidated-preferred pick: con where filed, else standalone."""
+    return con if con is not None else std
+
+
 def agg_total(pairs, min_n=MIN_N):
     """Aggregate (total-based, Trendlyne-style) growth: sum(now)/sum(ago)-1, on the pairs given
-    (STANDALONE basis). Aggregate only companies PROFITABLE IN BOTH periods (base AND current > 0) —
+    (CONSOLIDATED-preferred basis, Trendlyne-match). Aggregate only companies PROFITABLE IN BOTH periods (base AND current > 0) —
     a loss/near-zero base blows the ratio up (mid/small-cap PAT read 72%), and filtering base-only made
     it swing the other way (Nifty 500 PAT 1.9%, Smallcap -15%). Both>0 is the standard stable 'total
     profit growth'. Revenue/op are unaffected (both always > 0)."""
@@ -104,11 +109,11 @@ def agg_total(pairs, min_n=MIN_N):
 def agg_quarter(members, qe, pat, revop, min_n=MIN_N, include_fin=False):
     """Return (quarter-dict, reported). Each metric carries BOTH:
       median  = median of per-company YoY (consolidated-preferred, positive base) — 'typical company'
-      total   = aggregate sum(now)/sum(ago)-1 on STANDALONE basis — the index P&L (matches Trendlyne)."""
+      total   = aggregate sum(now)/sum(ago)-1 on CONSOLIDATED-preferred basis — the index P&L (matches Trendlyne)."""
     ya = yago(qe)
     reported = 0
     pat_pairs, rev_pairs, op_pairs, ebit_pairs = [], [], [], []   # median (con-pref, positive base)
-    pat_tot, rev_tot, op_tot, ebit_tot = [], [], [], []           # total (standalone, all-with-both)
+    pat_tot, rev_tot, op_tot, ebit_tot = [], [], [], []           # total (con-preferred, both>0)
     for s in members:
         pq = pat.get(s)
         if pq:
@@ -120,16 +125,19 @@ def agg_quarter(members, qe, pat, revop, min_n=MIN_N, include_fin=False):
                     pr = consistent(cur_pat, base_pat)
                     if pr:
                         pat_pairs.append(pr)
-                    if cur_pat[0] is not None and base_pat[0] is not None:   # standalone PAT
-                        pat_tot.append((cur_pat[0], base_pat[0]))
+                    # TOTAL is CONSOLIDATED-preferred (con where filed, else std) — Trendlyne's
+                    # result-analysis cards + per-stock table use consolidated (TCS Q1FY27 rev
+                    # 72,275 = con, not std 59,553); con-preferred reconciles to their cards to the
+                    # decimal, standalone did not.
+                    cp, bp = _cpref(cur_pat[1], cur_pat[0]), _cpref(base_pat[1], base_pat[0])
+                    if cp is not None and bp is not None:
+                        pat_tot.append((cp, bp))
         rv = revop.get(s)
         if rv:
             cq, bq = rv.get(str(qe)), rv.get(str(ya))
-            # Financials are EXCLUDED from mixed universes' rev/op (their interest income /
-            # pre-provision profit isn't comparable to industrial revenue/EBITDA — and Trendlyne's
-            # index growth cards exclude them too, verified arithmetically on Q1FY27 Nifty 500).
-            # Bank-only universes (Nifty Bank / PSU Bank) pass include_fin=True: there the bank
-            # definitions (rev = interest earned, op = pre-provision profit) are homogeneous.
+            # Financials INCLUDED when include_fin (banks: rev = interest earned, op = pre-provision;
+            # NBFCs: core rev + EBITDA) — matches Trendlyne's index cards. Mixed universes without the
+            # flag exclude them (industrial rev/EBITDA aren't comparable to bank interest income).
             if cq and bq and (include_fin or (not cq[6] and not bq[6])):
                 pr = consistent((cq[0], cq[1]), (bq[0], bq[1]))
                 if pr:
@@ -143,12 +151,15 @@ def agg_quarter(members, qe, pat, revop, min_n=MIN_N, include_fin=False):
                 pe = consistent((ce_s, ce_c), (be_s, be_c))
                 if pe:
                     ebit_pairs.append(pe)
-                if cq[0] is not None and bq[0] is not None:   # standalone revenue
-                    rev_tot.append((cq[0], bq[0]))
-                if cq[2] is not None and bq[2] is not None:   # standalone EBITDA
-                    op_tot.append((cq[2], bq[2]))
-                if ce_s is not None and be_s is not None:     # standalone EBIT
-                    ebit_tot.append((ce_s, be_s))
+                cr_r, br_r = _cpref(cq[1], cq[0]), _cpref(bq[1], bq[0])          # revenue con-pref
+                if cr_r is not None and br_r is not None:
+                    rev_tot.append((cr_r, br_r))
+                cr_o, br_o = _cpref(cq[3], cq[2]), _cpref(bq[3], bq[2])          # EBITDA con-pref
+                if cr_o is not None and br_o is not None:
+                    op_tot.append((cr_o, br_o))
+                cr_e, br_e = _cpref(ce_c, ce_s), _cpref(be_c, be_s)             # EBIT con-pref
+                if cr_e is not None and br_e is not None:
+                    ebit_tot.append((cr_e, br_e))
     rev_m, rev_n = median_yoy(rev_pairs, min_n);   rev_t, rev_tn = agg_total(rev_tot, min_n)
     op_m, op_n = median_yoy(op_pairs, min_n);       op_t, op_tn = agg_total(op_tot, min_n)
     ebit_m, ebit_n = median_yoy(ebit_pairs, min_n); ebit_t, ebit_tn = agg_total(ebit_tot, min_n)
@@ -215,26 +226,31 @@ def main():
         qs.sort(key=lambda r: r["qe"])
         return {"key": key, "label": label, "note": note, "quarters": qs, "fin": include_fin}
 
+    # Financials are INCLUDED in every universe's rev/op totals (bank rev = interest earned, op =
+    # pre-provision operating profit; NBFC rev = core revenue, op = EBITDA) — matches Trendlyne's
+    # index result-analysis cards to the paisa (Nifty 500 Q1FY27: rev 13.8, oper profit 13.3).
+    # Verified 2026-07-10. The op bar for a mixed universe therefore sums industrial EBITDA with
+    # bank pre-provision profit — that aggregate == Trendlyne's "Oper Profit" card (their separate
+    # "EBIDT" card is a proprietary before-depreciation calc we don't reproduce).
     universes = []
     # 1) the liquid universe (default)
     universes.append(build(
         "All liquid stocks (₹1cr+/day)", "liquid",
         "Currently-listed companies trading ≥ ₹1 cr/day (median, ~250 sessions) — %d names." % len(U),
-        lambda qe: U, 200))
-    # 2) every index, point-in-time membership. Bank-only indexes aggregate the BANK definitions
-    # (rev = interest earned, op = pre-provision operating profit) — homogeneous within them.
+        lambda qe: U, 200, include_fin=True))
+    # 2) every index, point-in-time membership
     FIN_UNIVERSES = {"Nifty Bank", "Nifty PSU Bank"}
     for index, snaps in indices.items():
         if not isinstance(snaps, list) or not snaps:
             continue
-        fin_u = index in FIN_UNIVERSES
         note = ("Point-in-time %s members at each quarter's rebalance (survivorship-free)."
-                " Revenue = interest earned; EBITDA bar = operating profit before provisions." % index
-                if fin_u else
-                "Point-in-time %s members at each quarter's rebalance (survivorship-free)." % index)
+                " Revenue = interest earned; the EBITDA bar = operating profit before provisions." % index
+                if index in FIN_UNIVERSES else
+                "Point-in-time %s members at each quarter's rebalance (survivorship-free)."
+                " Banks/NBFCs are included: their revenue = interest earned, operating profit = pre-provision." % index)
         universes.append(build(
             index, index, note,
-            (lambda snps: (lambda qe: snap_as_of(snps, iso(qe))))(snaps), 5, include_fin=fin_u))
+            (lambda snps: (lambda qe: snap_as_of(snps, iso(qe))))(snaps), 5, include_fin=True))
 
     universes = [u for u in universes if u["quarters"]]
     for u in universes:
@@ -244,9 +260,10 @@ def main():
 
     payload = {
         "defaultUniverse": "liquid",
-        "basis": "Median YoY vs the year-ago quarter (positive base). PAT = consolidated owners-attributable "
-                 "where filed, else standalone. Revenue & Operating profit exclude banks/NBFCs. Index universes "
-                 "use point-in-time membership (whoever was in the index at each quarter's rebalance).",
+        "basis": "YoY vs the year-ago quarter (positive base). PAT = consolidated owners-attributable where "
+                 "filed, else standalone. Total = consolidated-preferred aggregate (matches Trendlyne). Revenue "
+                 "& Operating profit include banks/NBFCs (bank rev = interest earned, op = pre-provision profit). "
+                 "Index universes use point-in-time membership (whoever was in the index at each quarter's rebalance).",
         "dataAsOf": end,
         "universes": universes,
     }
