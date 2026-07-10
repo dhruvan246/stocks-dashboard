@@ -70,14 +70,30 @@ def main():
     today = datetime.date.today()
     frm = (today - datetime.timedelta(days=WINDOW_DAYS)).strftime("%d-%m-%Y")
     to = today.strftime("%d-%m-%Y")
-    url = ("https://www.nseindia.com/api/integrated-filing-results?index=equities&period=Quarterly"
-           "&from_date=%s&to_date=%s" % (frm, to))
+    # ⚠️ The endpoint PAGINATES and defaults to only 20 rows (size=20), even though a peak
+    # earnings day carries 80+ filings and the 120-day window holds thousands (totalCount says so).
+    # Without paging, the cron silently saw only the latest 20 filings and dropped the rest — so on
+    # a heavy results day most companies (e.g. MAHABANK/ELECON on 2026-07-10) never got fetched.
+    # Page through with a large size until we've pulled totalCount rows. Downstream dedups by
+    # (sym, qe), so any page overlap is harmless.
+    base = ("https://www.nseindia.com/api/integrated-filing-results?index=equities&period=Quarterly"
+            "&from_date=%s&to_date=%s" % (frm, to))
+    rows = []
     try:
-        jb = json.loads(B._get(url, headers=h, jar=jar, timeout=40))
-        rows = jb if isinstance(jb, list) else jb.get("data", [])
+        page = 1
+        while True:
+            jb = json.loads(B._get(base + "&page=%d&size=500" % page, headers=h, jar=jar, timeout=60))
+            if isinstance(jb, list):           # defensive: pre-pagination shape (no envelope)
+                rows = jb; break
+            d = jb.get("data", []) or []
+            rows.extend(d)
+            total = jb.get("totalCount") or 0
+            if not d or len(rows) >= total or page > 60:   # page cap = hard stop against a bad envelope
+                break
+            page += 1
     except Exception as e:
         print("recent-filings fetch failed:", e); return
-    print("filings in last %d days: %d" % (WINDOW_DAYS, len(rows)))
+    print("filings in last %d days: %d (%d pages)" % (WINDOW_DAYS, len(rows), page))
 
     byq = {}
     for r in rows:

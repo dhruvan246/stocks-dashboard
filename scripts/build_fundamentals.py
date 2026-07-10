@@ -82,11 +82,15 @@ def xbrl_profit(xml, basis_hint=None):
     std = con = None
     one, one_nat = plp.get("OneD"), nat.get("OneD", "") or hint
     if one is not None:
-        if "consol" in one_nat: con = attr.get("OneD", one)   # consolidated -> attributable to owners
+        # consolidated -> attributable to owners, BUT fall back to the total ProfitLossForPeriod when
+        # the owners tag is missing OR zero. Some filers (e.g. ELECON Q1FY27) tag
+        # ProfitOrLossAttributableToOwnersOfParent=0 and put the real profit only in the total; a
+        # plain .get(key, default) returns that 0.0 → con wrongly 0. `or one` treats 0 as absent.
+        if "consol" in one_nat: con = attr.get("OneD") or one
         else: std = one                                  # standalone or unlabelled
     four, four_nat = plp.get("FourD"), nat.get("FourD", "") or hint
     if four is not None and four_nat != one_nat:         # combined filing: other basis, current Q
-        if "consol" in four_nat: con = con if con is not None else attr.get("FourD", four)
+        if "consol" in four_nat: con = con if con is not None else (attr.get("FourD") or four)
         else: std = std if std is not None else four
     return std, con
 
@@ -103,7 +107,9 @@ def integrated_profit(xml, con=False):
     if con:
         m = re.search(r'ProfitOrLossAttributableToOwnersOfParent contextRef="OneD"[^>]*>([-0-9.eE+]+)<', xml)
         if m:
-            try: return round(float(m.group(1)) / 1e7, 2)
+            try:
+                v = round(float(m.group(1)) / 1e7, 2)
+                if v: return v          # fall through to the total below if the owners tag is 0 (mistag)
             except Exception: pass
     m = re.search(r'ProfitLossFor(?:The)?Period contextRef="OneD"[^>]*>([-0-9.eE+]+)<', xml)
     if not m:   # insurers: general -> ProfitLossAfterTax; life -> ProfitLossAfterTaxAndExtraordinaryItems
