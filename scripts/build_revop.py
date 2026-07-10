@@ -78,7 +78,13 @@ def ctx_period(xml, cid):
 TAGS = ("RevenueFromOperations", "OtherIncome", "FinanceCosts",
         "DepreciationDepletionAndAmortisationExpense",
         "ProfitBeforeExceptionalItemsAndTax", "ProfitBeforeTax",
-        "ProfitLossForPeriod", "ProfitOrLossAttributableToOwnersOfParent")
+        "ProfitLossForPeriod", "ProfitOrLossAttributableToOwnersOfParent",
+        # bank / NBFC formats (Trendlyne-parity, 2026-07-10)
+        "ProfitLossForThePeriod",                    # banks tag PAT with 'The'
+        "InterestEarned",                            # bank operating revenue (TL's bank Revenue col)
+        "OperatingProfitBeforeProvisionAndContingencies",   # bank pre-provision profit (TL's bank Op Profit)
+        "ProfitLossAfterTaxesMinorityInterestAndShareOfProfitLossOfAssociates",  # bank con bottom line
+        "OtherRevenueFromOperations")                # NBFC: excluded from core revenue (TL-verified LTF)
 RE_TAG = {t: {c: re.compile(r'<in-(?:bse-fin|capmkt):' + t + r' contextRef="' + c + r'"[^>]*>([-0-9.eE+]+)<')
               for c in ("OneD", "FourD")} for t in TAGS}
 
@@ -102,18 +108,43 @@ def fnum(xml, tag, ctx):
 
 def metrics_for(xml, ctx):
     """Reconstruct (revenue_cr, ebitda_cr, ebit_cr, pat_total_cr, pat_owners_cr) for one context.
-    Returns rupee->crore values; revenue/op are None when the inputs aren't industrial.
-      op   = EBITDA  = PBET + FinanceCosts + Depreciation - OtherIncome  (= Trendlyne 'EBIDT')
-      ebit = EBIT    = PBET + FinanceCosts - OtherIncome  (after depreciation; ~ Trendlyne 'Oper Profit')"""
+    Returns rupee->crore values. Three formats (all Trendlyne-verified to the paisa, 2026-07-10):
+      Industrial: op = EBITDA = PBET + FinanceCosts + Depreciation - OtherIncome (= TL 'EBIDT');
+                  ebit = op - Depreciation.
+      BANK (InterestEarned + OperatingProfitBeforeProvisionAndContingencies): rev = InterestEarned,
+                  op = pre-provision operating profit (both = TL's bank columns), ebit = None;
+                  owners = ProfitLossAfterTaxesMinorityInterestAndShareOfProfitLossOfAssociates —
+                  the con P&L bottom row incl. associates (TL's Net Profit; the plain PAT tag
+                  EXCLUDES RRB-associate share, MAHABANK Q1FY27 2020.54 vs 2023.32).
+      NBFC Ind-AS (InterestEarned, no bank op tag): rev = RevenueFromOperations - OtherRevenueFromOperations
+                  (LTF 5212.92), op = PBET + FC + Dep - OI - OtherRevFromOps (LTF 3238.64), ebit = None."""
+    pat = fnum(xml, "ProfitLossForPeriod", ctx)
+    if pat is None:
+        pat = fnum(xml, "ProfitLossForThePeriod", ctx)   # banks tag with 'The'
+    owners = fnum(xml, "ProfitOrLossAttributableToOwnersOfParent", ctx)
+    if owners is None:
+        owners = fnum(xml, "ProfitLossAfterTaxesMinorityInterestAndShareOfProfitLossOfAssociates", ctx)
+    ie = fnum(xml, "InterestEarned", ctx)
+    bank_op = fnum(xml, "OperatingProfitBeforeProvisionAndContingencies", ctx)
+    if ie is not None and bank_op is not None:            # bank format
+        return (ie / CR, bank_op / CR, None,
+                pat / CR if pat is not None else None,
+                owners / CR if owners is not None else None)
     rev = fnum(xml, "RevenueFromOperations", ctx)
+    orfo = fnum(xml, "OtherRevenueFromOperations", ctx) or 0.0
     oi = fnum(xml, "OtherIncome", ctx) or 0.0
     fc = fnum(xml, "FinanceCosts", ctx) or 0.0
     dep = fnum(xml, "DepreciationDepletionAndAmortisationExpense", ctx) or 0.0
     pbet = fnum(xml, "ProfitBeforeExceptionalItemsAndTax", ctx)
     if pbet is None:
         pbet = fnum(xml, "ProfitBeforeTax", ctx)
-    pat = fnum(xml, "ProfitLossForPeriod", ctx)
-    owners = fnum(xml, "ProfitOrLossAttributableToOwnersOfParent", ctx)
+    if ie is not None:                                    # NBFC Ind-AS format
+        nrev = (rev - orfo) if rev is not None else None
+        nop = (pbet + fc + dep - oi - orfo) if pbet is not None else None
+        return (nrev / CR if nrev is not None else None,
+                nop / CR if nop is not None else None, None,
+                pat / CR if pat is not None else None,
+                owners / CR if owners is not None else None)
     op = (pbet + fc + dep - oi) if (pbet is not None) else None
     ebit = (pbet + fc - oi) if (pbet is not None) else None
     return (rev / CR if rev is not None else None,
@@ -130,7 +161,9 @@ def xbrl_revop(xml, basis_hint=None):
     fetches for PAT, no disk cache needed.
       op   = EBITDA = PBET + FinanceCosts + Depreciation - OtherIncome  (= Trendlyne 'EBIDT')
       ebit = EBIT   = PBET + FinanceCosts - OtherIncome  (after depreciation; ~ Trendlyne 'Oper Profit')
-    Banks/NBFCs (InterestEarned) -> rev/op/ebit None (not comparable), fin=1."""
+    Banks/NBFCs (InterestEarned) keep fin=1 AND now carry their own rev/op (bank: interest earned +
+    pre-provision profit; NBFC: core revenue + EBITDA — see metrics_for). Consumers decide whether to
+    mix them with industrials (Results Season only aggregates fin rev/op inside bank universes)."""
     nat = {}
     for m in re.finditer(r'NatureOfReportStandaloneConsolidated contextRef="([^"]+)"[^>]*>([^<]+)<', xml):
         nat[m.group(1)] = m.group(2).strip().lower()
@@ -151,8 +184,6 @@ def xbrl_revop(xml, basis_hint=None):
             rev_con, op_con, ebit_con = rev, op, ebit
         elif "consol" not in four_nat and rev_std is None:
             rev_std, op_std, ebit_std = rev, op, ebit
-    if fin:
-        rev_std = op_std = ebit_std = rev_con = op_con = ebit_con = None
     r2 = lambda x: round(x, 2) if x is not None else None
     return r2(rev_std), r2(op_std), r2(ebit_std), r2(rev_con), r2(op_con), r2(ebit_con), fin
 

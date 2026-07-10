@@ -79,6 +79,13 @@ def xbrl_profit(xml, basis_hint=None):
         if m.group(1) not in attr:
             try: attr[m.group(1)] = round(float(m.group(2)) / 1e7, 2)
             except Exception: pass
+    bank = {}   # bank-format con bottom line: PAT + share of associates - minority. The bank PAT tag
+    # EXCLUDES RRB-associate share (MAHABANK Q1FY27: PAT 2020.54 vs bottom line 2023.32; year-ago
+    # 1593.09 vs 1504.37 after the RRB amalgamation hit) — this row is what Trendlyne reports.
+    for m in re.finditer(r'<in-(?:bse-fin|capmkt):ProfitLossAfterTaxesMinorityInterestAndShareOfProfitLossOfAssociates contextRef="([^"]+)"[^>]*>([^<]+)<', xml):
+        if m.group(1) not in bank:
+            try: bank[m.group(1)] = round(float(m.group(2)) / 1e7, 2)
+            except Exception: pass
     std = con = None
     one, one_nat = plp.get("OneD"), nat.get("OneD", "") or hint
     if one is not None:
@@ -86,11 +93,11 @@ def xbrl_profit(xml, basis_hint=None):
         # the owners tag is missing OR zero. Some filers (e.g. ELECON Q1FY27) tag
         # ProfitOrLossAttributableToOwnersOfParent=0 and put the real profit only in the total; a
         # plain .get(key, default) returns that 0.0 → con wrongly 0. `or one` treats 0 as absent.
-        if "consol" in one_nat: con = attr.get("OneD") or one
+        if "consol" in one_nat: con = attr.get("OneD") or bank.get("OneD") or one
         else: std = one                                  # standalone or unlabelled
     four, four_nat = plp.get("FourD"), nat.get("FourD", "") or hint
     if four is not None and four_nat != one_nat:         # combined filing: other basis, current Q
-        if "consol" in four_nat: con = con if con is not None else (attr.get("FourD") or four)
+        if "consol" in four_nat: con = con if con is not None else (attr.get("FourD") or bank.get("FourD") or four)
         else: std = std if std is not None else four
     return std, con
 
@@ -110,6 +117,13 @@ def integrated_profit(xml, con=False):
             try:
                 v = round(float(m.group(1)) / 1e7, 2)
                 if v: return v          # fall through to the total below if the owners tag is 0 (mistag)
+            except Exception: pass
+        # bank-format con bottom line (PAT + associates - minority) — see xbrl_profit
+        m = re.search(r'ProfitLossAfterTaxesMinorityInterestAndShareOfProfitLossOfAssociates contextRef="OneD"[^>]*>([-0-9.eE+]+)<', xml)
+        if m:
+            try:
+                v = round(float(m.group(1)) / 1e7, 2)
+                if v: return v
             except Exception: pass
     m = re.search(r'ProfitLossFor(?:The)?Period contextRef="OneD"[^>]*>([-0-9.eE+]+)<', xml)
     if not m:   # insurers: general -> ProfitLossAfterTax; life -> ProfitLossAfterTaxAndExtraordinaryItems

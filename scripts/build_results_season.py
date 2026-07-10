@@ -101,7 +101,7 @@ def agg_total(pairs, min_n=MIN_N):
     return (round((sn / sa - 1) * 100, 1) if (sa > 0 and len(pairs) >= min_n) else None), len(pairs)
 
 
-def agg_quarter(members, qe, pat, revop, min_n=MIN_N):
+def agg_quarter(members, qe, pat, revop, min_n=MIN_N, include_fin=False):
     """Return (quarter-dict, reported). Each metric carries BOTH:
       median  = median of per-company YoY (consolidated-preferred, positive base) — 'typical company'
       total   = aggregate sum(now)/sum(ago)-1 on STANDALONE basis — the index P&L (matches Trendlyne)."""
@@ -125,7 +125,12 @@ def agg_quarter(members, qe, pat, revop, min_n=MIN_N):
         rv = revop.get(s)
         if rv:
             cq, bq = rv.get(str(qe)), rv.get(str(ya))
-            if cq and bq and not cq[6] and not bq[6]:         # both non-financial
+            # Financials are EXCLUDED from mixed universes' rev/op (their interest income /
+            # pre-provision profit isn't comparable to industrial revenue/EBITDA — and Trendlyne's
+            # index growth cards exclude them too, verified arithmetically on Q1FY27 Nifty 500).
+            # Bank-only universes (Nifty Bank / PSU Bank) pass include_fin=True: there the bank
+            # definitions (rev = interest earned, op = pre-provision profit) are homogeneous.
+            if cq and bq and (include_fin or (not cq[6] and not bq[6])):
                 pr = consistent((cq[0], cq[1]), (bq[0], bq[1]))
                 if pr:
                     rev_pairs.append(pr)
@@ -185,14 +190,14 @@ def main():
                 chosen = snp
         return {rename.get(s, s) for s in chosen["symbols"]} if chosen else set()
 
-    def build(label, key, note, member_fn, min_rep):
+    def build(label, key, note, member_fn, min_rep, include_fin=False):
         qs = []
         last_qe = last_members = None; last_rep = 0   # newest quarter with any reporter (cand is chronological)
         for qe in cand:
             members = member_fn(qe)
             if not members:
                 continue
-            row, reported = agg_quarter(members, qe, pat, revop)   # robust MIN_N floor (unchanged)
+            row, reported = agg_quarter(members, qe, pat, revop, include_fin=include_fin)   # robust MIN_N floor
             if reported > 0:
                 last_qe, last_members, last_rep = qe, members, reported
             if reported >= min_rep:
@@ -204,11 +209,11 @@ def main():
         # renders blank bars with no in-progress tag (live bug, Nifty 500 Q1FY27). While partial,
         # recompute over whatever sample exists (min_n=1) and flag it for the dimmed/amber UI.
         if last_qe is not None and last_rep < 0.5 * len(last_members):
-            row, _ = agg_quarter(last_members, last_qe, pat, revop, min_n=1)
+            row, _ = agg_quarter(last_members, last_qe, pat, revop, min_n=1, include_fin=include_fin)
             row["partial"] = True
             qs = [r for r in qs if r["qe"] != last_qe] + [row]
         qs.sort(key=lambda r: r["qe"])
-        return {"key": key, "label": label, "note": note, "quarters": qs}
+        return {"key": key, "label": label, "note": note, "quarters": qs, "fin": include_fin}
 
     universes = []
     # 1) the liquid universe (default)
@@ -216,14 +221,20 @@ def main():
         "All liquid stocks (₹1cr+/day)", "liquid",
         "Currently-listed companies trading ≥ ₹1 cr/day (median, ~250 sessions) — %d names." % len(U),
         lambda qe: U, 200))
-    # 2) every index, point-in-time membership
+    # 2) every index, point-in-time membership. Bank-only indexes aggregate the BANK definitions
+    # (rev = interest earned, op = pre-provision operating profit) — homogeneous within them.
+    FIN_UNIVERSES = {"Nifty Bank", "Nifty PSU Bank"}
     for index, snaps in indices.items():
         if not isinstance(snaps, list) or not snaps:
             continue
+        fin_u = index in FIN_UNIVERSES
+        note = ("Point-in-time %s members at each quarter's rebalance (survivorship-free)."
+                " Revenue = interest earned; EBITDA bar = operating profit before provisions." % index
+                if fin_u else
+                "Point-in-time %s members at each quarter's rebalance (survivorship-free)." % index)
         universes.append(build(
-            index, index,
-            "Point-in-time %s members at each quarter's rebalance (survivorship-free)." % index,
-            (lambda snps: (lambda qe: snap_as_of(snps, iso(qe))))(snaps), 5))
+            index, index, note,
+            (lambda snps: (lambda qe: snap_as_of(snps, iso(qe))))(snaps), 5, include_fin=fin_u))
 
     universes = [u for u in universes if u["quarters"]]
     for u in universes:

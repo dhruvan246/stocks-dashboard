@@ -154,7 +154,10 @@ function renderResultsSeason() {
   if (foot) foot.textContent = (MODE === 'median'
       ? 'MEDIAN — the typical company’s YoY growth (consolidated where filed, else standalone); half of members grew faster, half slower. '
       : 'TOTAL — aggregate YoY growth = sum of all members this year ÷ sum last year, standalone basis (matches Trendlyne’s result-analysis; dominated by the largest companies). ')
-    + 'EBITDA (Trendlyne “EBIDT”) is before depreciation; Oper Profit is after. Both exclude banks/NBFCs. Point-in-time index membership. YoY vs the year-ago quarter.';
+    + (CUR.fin
+        ? 'Bank universe: Revenue = interest earned; the EBITDA bar = operating profit before provisions & contingencies (Trendlyne’s bank columns). '
+        : 'EBITDA (Trendlyne “EBIDT”) is before depreciation; Oper Profit is after. Banks/NBFCs are excluded from Revenue & EBITDA in mixed universes. ')
+    + 'Point-in-time index membership. YoY vs the year-ago quarter.';
   const leg  = document.getElementById('rsLegend');
   if (leg) leg.innerHTML = METRICS.map(mm =>
     '<span class="inline-flex items-center gap-1.5"><span style="width:10px;height:10px;border-radius:2px;background:' +
