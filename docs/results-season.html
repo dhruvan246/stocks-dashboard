@@ -168,7 +168,12 @@ function renderResultsSeason() {
   const range = (dMax - dMin) || 1;
 
   const n = Q.length, M = { l: 40, r: 14, t: 26, b: 48 };
-  const groupW = 66, bw = 15, gap = 3;   // 3 bars/group: totW = 3*15 + 2*3 = 51 < 66
+  // Uniform chart size for every period: the SVG always renders 312px tall. Few quarters →
+  // widen each group so the bars fill the card; many quarters → natural width + horizontal scroll.
+  const avail = Math.max(720, root.clientWidth || 0);
+  const innerAvail = avail - M.l - M.r, minGroupW = 66;
+  const groupW = n * minGroupW <= innerAvail ? innerAvail / n : minGroupW;
+  const bw = Math.max(15, Math.min(30, Math.round(groupW * 0.2))), gap = Math.max(3, Math.round(bw * 0.2));
   const W = M.l + n * groupW + M.r, H = 312;
   const plotTop = M.t, plotBot = H - M.b;
   const y = v => plotTop + (dMax - v) / range * (plotBot - plotTop);
@@ -205,12 +210,10 @@ function renderResultsSeason() {
     g += '<text x="' + cx + '" y="' + (plotBot + 17) + '" text-anchor="middle" font-size="11" font-weight="600" fill="' + (q.partial ? '#f59e0b' : '#cbd5e1') + '" pointer-events="none">' + esc(q.label) + '</text>' +
          '<text x="' + cx + '" y="' + (plotBot + 31) + '" text-anchor="middle" font-size="9.5" fill="' + (q.partial ? '#f59e0b' : '#64748b') + '" pointer-events="none">' + (q.partial ? cf(q.reported) + ' • in progress' : cf(q.reported) + ' Results') + '</text>';
   });
-  // Few quarters: scale to fill the card. Many quarters: render at natural size and let the
-  // wrapper (#rsChart, overflow-x-auto) scroll, so bars + value labels stay readable.
-  var svgStyle = W > 1180 ? ('width:' + W + 'px;max-width:none;height:auto;display:block')
-                          : ('width:100%;height:auto;display:block;min-width:720px');
-  root.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="xMidYMid meet" ' +
-    'style="' + svgStyle + '" font-family="Inter,sans-serif">' + g + '</svg>';
+  // Fixed pixel size (no viewBox scaling) so every period renders at the same height; the
+  // wrapper (#rsChart, overflow-x-auto) scrolls horizontally when W exceeds the card.
+  root.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" ' +
+    'style="max-width:none;display:block" font-family="Inter,sans-serif">' + g + '</svg>';
 }
 
 function renderResultsTable() {
@@ -292,11 +295,14 @@ fetch('./results_season.json')
     });
     document.getElementById('rsCFrom').addEventListener('change', function () { CFROM = +this.value; renderResultsSeason(); renderResultsTable(); });
     document.getElementById('rsCTo').addEventListener('change', function () { CTO = +this.value; renderResultsSeason(); renderResultsTable(); });
+    // Unhide BEFORE the first render so the chart can measure its container width.
+    document.getElementById('rsStatus').classList.add('hidden');
+    document.getElementById('rsWrap').classList.remove('hidden');
     selectUniverse(sel.value);
     setMode('total');    // initial button styling + render (Total = Trendlyne-comparable default)
     setPeriod('3y');     // initial period-button styling (default = last 3 years / 12 quarters)
-    document.getElementById('rsStatus').classList.add('hidden');
-    document.getElementById('rsWrap').classList.remove('hidden');
+    let rsRz;            // re-fit the chart width when the window is resized
+    window.addEventListener('resize', function () { clearTimeout(rsRz); rsRz = setTimeout(renderResultsSeason, 150); });
   })
   .catch(e => {
     document.getElementById('rsStatus').textContent = 'Could not load results-season data (' + e.message + ').';
