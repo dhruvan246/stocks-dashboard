@@ -40,7 +40,13 @@ for sym,arr in live.items():
                 a=OWN.get("%s|%d"%(_old,r[0]))
                 if a is not None: ren=True; break
         if a is None: continue
-        if abs(a)<0.005 and abs(r[3])>2: continue   # XBRL owners=0 mis-tag guard
+        # XBRL owners=0 mis-tag guard: some filers tag ProfitOrLossAttributableToOwnersOfParent=0
+        # with the real profit only in the total — and _reattr_owners.json (built from those same
+        # XBRLs) carries the poisoned 0.0. NEVER let a ~0 cache value zero out a nonzero stored con
+        # (the old `abs(r[3])>2` version only protected >2cr cells, so it re-zeroed ~139 microcap
+        # quarters every night, undoing corrections). A genuine owners=0.00-exact alongside a nonzero
+        # stored con is implausible; keeping the stored value is the safer error.
+        if abs(a)<0.005 and abs(r[3])>=0.005: continue
         if abs(a-r[3])>0.005:
             r[3]=a
             if ren: src_ren+=1
