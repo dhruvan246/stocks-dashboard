@@ -40,7 +40,7 @@
 <main class="max-w-screen-lg mx-auto px-4 py-6">
   <div class="mb-4">
     <h1 class="text-xl font-bold text-slate-900">Results season &mdash; quarterly earnings pulse</h1>
-    <p class="text-sm text-slate-500 mt-0.5">Year-on-year growth of companies that declared results each quarter — Revenue, EBITDA (= Trendlyne’s EBIDT) and PAT on the chart; the detail table also lists after-depreciation Operating Profit (EBIT).</p>
+    <p class="text-sm text-slate-500 mt-0.5">Year-on-year growth of companies that declared results each quarter — Revenue, Operating Profit (= Trendlyne’s “Oper Profit”) and PAT on the chart; the detail table also lists after-depreciation EBIT.</p>
     <div class="mt-3 flex flex-wrap items-center gap-2">
       <label for="rsUniverseSelect" class="text-xs font-semibold text-slate-600 uppercase tracking-wide">Universe</label>
       <select id="rsUniverseSelect" class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 max-w-full"></select>
@@ -93,8 +93,8 @@
               <th class="px-4 py-2 text-left font-semibold">Quarter</th>
               <th class="px-4 py-2 text-right font-semibold">Results</th>
               <th class="px-4 py-2 text-right font-semibold">Revenue</th>
-              <th class="px-4 py-2 text-right font-semibold" title="EBITDA — Trendlyne’s ‘EBIDT’ card">EBITDA</th>
-              <th class="px-4 py-2 text-right font-semibold" title="Operating profit after depreciation — Trendlyne’s ‘Oper Profit’ card">Oper Profit</th>
+              <th class="px-4 py-2 text-right font-semibold" title="Operating profit = PBET + depreciation + finance − other income (banks: pre-provision profit). Matches Trendlyne’s ‘Oper Profit’ card to the paisa.">Operating Profit</th>
+              <th class="px-4 py-2 text-right font-semibold" title="EBIT — operating profit after depreciation">EBIT</th>
               <th class="px-4 py-2 text-right font-semibold">PAT</th>
             </tr>
           </thead>
@@ -140,23 +140,23 @@ function renderResultsSeason() {
   if (!root) return;
   if (!Q.length) { root.innerHTML = '<p style="color:#64748b;font-size:13px;padding:1rem">No comparable data for this universe.</p>'; return; }
 
-  // Chart bars: Revenue, EBITDA (= Trendlyne 'EBIDT', which it matches), PAT. After-dep EBIT is
-  // NOT a bar — it's in the detail table only (Trendlyne's 'Oper Profit' card is proprietary/not
-  // reproducible, and aggregate EBIT reads higher than EBITDA which looks broken as a bar).
+  // Chart bars: Revenue, Operating Profit, PAT. The 'op' metric (PBET + depreciation + finance
+  // − other income; pre-provision profit for banks) IS Trendlyne's "Oper Profit" card — verified
+  // to the paisa per stock (their Operating-Profit-Qtr column == our op level). The after-dep EBIT
+  // ('ebit') is a secondary table column only.
   const METRICS = [
-    { key: 'rev', name: 'Revenue', color: '#38bdf8' },
-    { key: 'op',  name: 'EBITDA',  color: '#34d399' },
-    { key: 'pat', name: 'PAT',     color: '#fbbf24' },
+    { key: 'rev', name: 'Revenue',          color: '#38bdf8' },
+    { key: 'op',  name: 'Operating Profit', color: '#34d399' },
+    { key: 'pat', name: 'PAT',              color: '#fbbf24' },
   ];
   const uni  = document.getElementById('rsUniverse'); if (uni)  uni.textContent  = CUR.note || '';
   const asof = document.getElementById('rsAsOf');     if (asof) asof.textContent  = (CUR.label || '') + (RS_ALL.dataAsOf ? ' · prices as of ' + RS_ALL.dataAsOf : '');
   const foot = document.getElementById('rsFootnote');
   if (foot) foot.textContent = (MODE === 'median'
       ? 'MEDIAN — the typical company’s YoY growth (consolidated where filed, else standalone); half of members grew faster, half slower. '
-      : 'TOTAL — aggregate YoY growth = sum of all members this year ÷ sum last year, standalone basis (matches Trendlyne’s result-analysis; dominated by the largest companies). ')
-    + 'Financials are included: banks’ Revenue = interest earned and operating profit = pre-provision profit; '
-    + 'industrials’ operating bar = EBITDA. This aggregate matches Trendlyne’s Revenue & Oper-Profit cards '
-    + '(their separate “EBIDT” card is a proprietary before-depreciation calc). Point-in-time index membership. YoY vs the year-ago quarter.';
+      : 'TOTAL — aggregate YoY growth = sum of all members this year ÷ sum last year, consolidated-preferred (matches Trendlyne’s result-analysis; dominated by the largest companies). ')
+    + 'Operating Profit = PBET + depreciation + finance − other income (banks: pre-provision profit) — this is Trendlyne’s “Oper Profit” card, matched to the paisa. '
+    + 'Financials are included (banks’ Revenue = interest earned). The detail table adds after-depreciation EBIT. Point-in-time index membership. YoY vs the year-ago quarter.';
   const leg  = document.getElementById('rsLegend');
   if (leg) leg.innerHTML = METRICS.map(mm =>
     '<span class="inline-flex items-center gap-1.5"><span style="width:10px;height:10px;border-radius:2px;background:' +
