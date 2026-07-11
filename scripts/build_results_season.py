@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """Aggregate the 'results season' chart payload: per quarter, the YoY % across reporting companies
-for Revenue, EBITDA (= Trendlyne 'EBIDT'), Operating Profit (EBIT, after depreciation ~ Trendlyne
-'Oper Profit') and PAT, + the count that declared results — for MANY universes: an 'all liquid' set
-PLUS every NSE index (point-in-time membership). Each metric carries BOTH median and total.
+for Revenue, Operating Profit (op = PBET+FC+Dep−OI = Trendlyne's 'Oper Profit', paisa-matched — NOT
+their proprietary 'EBIDT') and PAT, + a detail-table EBIT (= op − Dep), + the count that declared
+results — for MANY universes: an 'all liquid' set PLUS every NSE index (point-in-time membership).
+Each metric carries BOTH median and total.
 
 Universes:
   - "liquid": currently-listed companies with median daily turnover >= Rs 1 cr (~250 sessions).
@@ -244,7 +245,7 @@ def main():
         if not isinstance(snaps, list) or not snaps:
             continue
         note = ("Point-in-time %s members at each quarter's rebalance (survivorship-free)."
-                " Revenue = interest earned; the EBITDA bar = operating profit before provisions." % index
+                " Revenue = interest earned; the Operating Profit bar = pre-provision operating profit." % index
                 if index in FIN_UNIVERSES else
                 "Point-in-time %s members at each quarter's rebalance (survivorship-free)."
                 " Banks/NBFCs are included: their revenue = interest earned, operating profit = pre-provision." % index)

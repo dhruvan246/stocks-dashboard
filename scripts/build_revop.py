@@ -107,10 +107,12 @@ def fnum(xml, tag, ctx):
 
 
 def metrics_for(xml, ctx):
-    """Reconstruct (revenue_cr, ebitda_cr, ebit_cr, pat_total_cr, pat_owners_cr) for one context.
-    Returns rupee->crore values. Three formats (all Trendlyne-verified to the paisa, 2026-07-10):
-      Industrial: op = EBITDA = PBET + FinanceCosts + Depreciation - OtherIncome (= TL 'EBIDT');
-                  ebit = op - Depreciation.
+    """Reconstruct (revenue_cr, op_cr, ebit_cr, pat_total_cr, pat_owners_cr) for one context.
+    Returns rupee->crore values. Three formats (all Trendlyne-verified to the paisa, 2026-07-11):
+      Industrial: op   = PBET + FinanceCosts + Depreciation - OtherIncome  (= Trendlyne 'Oper Profit',
+                         matched per-stock to the paisa — NOT their 'EBIDT', which is a proprietary calc we
+                         do NOT reproduce; see DATA_RUNBOOK §11);
+                  ebit = op - Depreciation (after-depreciation operating profit).
       BANK (InterestEarned + OperatingProfitBeforeProvisionAndContingencies): rev = InterestEarned,
                   op = pre-provision operating profit (both = TL's bank columns), ebit = None;
                   owners = ProfitLossAfterTaxesMinorityInterestAndShareOfProfitLossOfAssociates —
@@ -127,7 +129,7 @@ def metrics_for(xml, ctx):
     ie = fnum(xml, "InterestEarned", ctx)
     bank_op = fnum(xml, "OperatingProfitBeforeProvisionAndContingencies", ctx)
     if ie is not None and bank_op is not None:            # bank format
-        return (ie / CR, bank_op / CR, None,
+        return (ie / CR, bank_op / CR, None,              # ebit not reproduced for banks
                 pat / CR if pat is not None else None,
                 owners / CR if owners is not None else None)
     rev = fnum(xml, "RevenueFromOperations", ctx)
@@ -142,7 +144,7 @@ def metrics_for(xml, ctx):
         nrev = (rev - orfo) if rev is not None else None
         nop = (pbet + fc + dep - oi - orfo) if pbet is not None else None
         return (nrev / CR if nrev is not None else None,
-                nop / CR if nop is not None else None, None,
+                nop / CR if nop is not None else None, None,   # ebit not reproduced for NBFCs
                 pat / CR if pat is not None else None,
                 owners / CR if owners is not None else None)
     op = (pbet + fc + dep - oi) if (pbet is not None) else None
@@ -159,11 +161,13 @@ def xbrl_revop(xml, basis_hint=None):
     from ONE filing, mirroring build_fundamentals.xbrl_profit's OneD/FourD + NatureOfReport logic — so
     the daily incremental updater can read revenue + operating profit straight from the XBRL it already
     fetches for PAT, no disk cache needed.
-      op   = EBITDA = PBET + FinanceCosts + Depreciation - OtherIncome  (= Trendlyne 'EBIDT')
-      ebit = EBIT   = PBET + FinanceCosts - OtherIncome  (after depreciation; ~ Trendlyne 'Oper Profit')
-    Banks/NBFCs (InterestEarned) keep fin=1 AND now carry their own rev/op (bank: interest earned +
-    pre-provision profit; NBFC: core revenue + EBITDA — see metrics_for). Consumers decide whether to
-    mix them with industrials (Results Season only aggregates fin rev/op inside bank universes)."""
+      op   = PBET + FinanceCosts + Depreciation - OtherIncome  (= Trendlyne 'Oper Profit', paisa-matched;
+             NOT their 'EBIDT' card, which is proprietary/irreproducible — see DATA_RUNBOOK §11)
+      ebit = PBET + FinanceCosts - OtherIncome  (after depreciation)
+    Banks/NBFCs (InterestEarned) keep fin=1 AND carry their own rev/op (bank: interest earned +
+    pre-provision profit; NBFC: core revenue + operating profit — see metrics_for); ebit None for them.
+    Consumers decide whether to mix them with industrials (Results Season only aggregates fin rev/op
+    inside bank universes)."""
     nat = {}
     for m in re.finditer(r'NatureOfReportStandaloneConsolidated contextRef="([^"]+)"[^>]*>([^<]+)<', xml):
         nat[m.group(1)] = m.group(2).strip().lower()
@@ -263,7 +267,7 @@ def main():
     total = len(files)
 
     data = {}   # sym -> { qe(str) -> [revStd,revCon,opStd,opCon,patStd,patCon,fin,ebitStd,ebitCon] }
-                #   op* = EBITDA (Trendlyne EBIDT); ebit* = after-dep operating profit (~Oper Profit)
+                #   op* = Trendlyne 'Oper Profit' (paisa-matched); ebit* = after-dep operating profit
     fin_seen = {}  # (sym,qe) -> fin
     start_i = 0
     if not fresh and not limit and os.path.exists(PROG):

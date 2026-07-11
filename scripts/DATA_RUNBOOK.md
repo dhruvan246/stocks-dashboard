@@ -363,16 +363,25 @@ V-recovery (Jun-2021: +48%)**. ⚠️ MOVED OFF the Stocks dashboard → its own
   reads −5.8% purely because **ITC's standalone base had a huge ITC-Hotels demerger gain** (₹19.6k→5.1k cr), Bharti/
   Reliance-standalone similar. That's exactly why Trendlyne shows profit COUNTS, not a total-PAT%. Total Revenue + Total
   Op (EBITDA) ARE reliable (Nifty 500 9.6%/9.8% ≈ Trendlyne 9.0%/9.9%); for PROFIT, use the Median or a pos/neg count.
-- **EBITDA vs EBIT vs Trendlyne's two op cards (2026-07-01, user: "midsmall op profit is 12.1"):** Trendlyne shows
-  TWO operating-profit cards — **EBIDT** and **Oper Profit**. Our chart's op bar = **EBITDA** (`op*`, idx2/3 =
-  PBET+FC+Dep−OI) and it matches **EBIDT** to the decimal (N500 total 9.8 vs 9.9). Their **Oper Profit** card (N500 8.1 /
-  MidSmall 12.1) is **NOT reproducible** — exhaustively tested every metric×filter×basis: no single formula fits BOTH
-  (N500 8.1 ≈ our total-EBITDA-all 8.6; MidSmall 12.1 ≈ our *median* EBITDA 11.4 — different aggregations). It's a
-  proprietary calc that smooths cyclical outliers (HPCL/refiners inflate our honest MidSmall total to 19.2). We DID add
-  **after-dep EBIT** (`ebit*`, idx7/8 = PBET+FC−OI) to `sf_revop.json` + a **detail-table column** (NOT a chart bar):
-  aggregate EBIT reads HIGHER than EBITDA (base effect: smaller denominator → bigger %, N500 12.9 vs 9.8), which looks
-  broken as a bar. Chart bars stay **Revenue / EBITDA / PAT**; the table adds EBIT for completeness. `sf_revop` row is now
-  **9 elems** `[revStd,revCon,opStd,opCon,patStd,patCon,fin,ebitStd,ebitCon]` — readers pad legacy 7-elem rows.
+- **⚠️ CORRECTED 2026-07-11 — `op` = Trendlyne 'Oper Profit', NOT 'EBIDT' (the 2026-07-01 note below was WRONG):**
+  Trendlyne shows TWO operating-profit cards — **EBIDT** (EBITDA, incl. other income) and **Oper Profit**. The old note
+  guessed our `op` (idx2/3 = PBET+FC+Dep−OI) matched **EBIDT** from an *ambiguous* Q4FY26 quarter where the two cards were
+  ~1pp apart. **Live per-stock verification (2026-07-11, via the user's logged-in Trendlyne)** settles it to the PAISA:
+  Trendlyne's per-stock **"Operating Profit Qtr"** column == our `op` exactly (INDIANB 5588.06, LTF 3238.64, TCS 18556),
+  and its aggregate == the **"Total Oper Profit Growth"** card (Midcap100 19.1 = our 19.1; N500 Q1FY27 13.3 = our 13.3;
+  7/7 indexes exact). So `op` = **Oper Profit**, full stop.
+  - **⚠️ EBIDT is NOT reproducible (2026-07-11, tried and reverted — don't re-attempt):** Trendlyne's **EBIDT** card is a
+    genuine-EBITDA-flavoured number but a PROPRIETARY backend calc — Trendlyne does not even expose a quarterly EBIDT row
+    per stock (its P&L is Rev · OpExp · OpProfit · Dep · Interest · PBT · Tax · NetProfit — no EBIDT line). Attempted
+    `ebidt = PBET+FC+Dep (= op + OtherIncome)`; the **single-stock proof kills it**: Nifty 50 = TCS only, our ebidt YoY
+    **8.6%** vs Trendlyne's EBIDT card **5.0%**; no combination of TCS's P&L (con OR std, ±dep, ±other income, PBT vs PBET)
+    hits 5.0 (rev 13.9 / op 10.0 / ebit 11.6 / ebidt 8.6 / pat 4.6 — none = 5.0). Gap holds across indexes (N500 8.7 vs 11.0,
+    N200 8.6 vs 9.8). So we can match Trendlyne on **Revenue + Oper Profit + PAT**, NOT EBIDT.
+  - **Fully reverted (2026-07-11, per user):** built an `ebidt`=op+OI field + EBITDA column, then removed ALL of it once the
+    single-stock proof showed it ≠ Trendlyne's EBIDT. `sf_revop` stays **9 elems** `[revStd,revCon,opStd,opCon,patStd,patCon,
+    fin,ebitStd,ebitCon]` (readers pad legacy 7-elem). No `ebidt` in the code, data, or UI. **Don't re-add an EBITDA column
+    expecting Trendlyne parity — it's proprietary/irreproducible.** Chart bars: **Revenue / Operating Profit / PAT**; detail
+    table: Revenue · Operating Profit · EBIT · PAT.
 - **⚠️ COVID-2020 RECONSTITUTION WAS NULLED (2026-07-10, verified from press releases — don't reintroduce):**
   the Mar-2020 reshuffle (announced 18-Feb/12-Mar/19-Mar, eff 2020-03-27) was deferred (ind_prs23032020) and
   declared **"shall stand null"** (ind_prs13052020) — EXCEPT Nifty 50/Bank (rebalanced early eff 2020-03-19,
@@ -404,9 +413,11 @@ V-recovery (Jun-2021: +48%)**. ⚠️ MOVED OFF the Stocks dashboard → its own
   band, which isn't a set operation) — those keep a small early-2020 over-count (a few EXTRA, not missing; immaterial).
 - **PAT** = `docs/sf_fundamentals.json` (owners-attributable con where filed, else std — same basis as the backtest,
   memory project-stocks-profit-basis). **Revenue + Operating Profit** live in a PARALLEL dataset
-  `docs/sf_revop.json` = `{SYM:{QE:[revStd,revCon,opStd,opCon,patStd,patCon,fin]}}`, derived from the SAME NSE XBRL:
-  **Operating Profit = ProfitBeforeExceptionalItemsAndTax + FinanceCosts + Depreciation − OtherIncome** (EBITDA
-  ex-other-income — Trendlyne's "Operating Profit"). Banks/NBFCs (`InterestEarned`) excluded from Rev/Op (kept in PAT).
+  `docs/sf_revop.json` = `{SYM:{QE:[revStd,revCon,opStd,opCon,patStd,patCon,fin,ebitStd,ebitCon]}}`
+  (9 elems; readers pad legacy 7-elem rows), derived from the SAME NSE XBRL:
+  **Operating Profit = ProfitBeforeExceptionalItemsAndTax + FinanceCosts + Depreciation − OtherIncome** (= Trendlyne's
+  "Oper Profit", paisa-matched per-stock — NOT their proprietary "EBIDT"); **EBIT = op − Depreciation** (idx7/8).
+  Banks/NBFCs (`InterestEarned`) excluded from Rev/Op (kept in PAT); their EBIT blank.
 
 **SELF-UPDATES DAILY** — wired into `.github/workflows/refresh-fundamentals.yml` (21:15 IST weekdays):
 1. `update_fundamentals.py` scans NSE integrated-filing-results for the last 120 days (ALL companies, one call) and,
