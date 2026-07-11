@@ -57,10 +57,10 @@
     </div>
 
     <div class="card p-4">
-      <div class="text-sm font-semibold text-slate-700 mb-2">Recent months <span class="text-[11px] font-normal text-slate-400">(newest first)</span></div>
-      <div class="overflow-x-auto">
+      <div class="text-sm font-semibold text-slate-700 mb-2">Monthly history <span class="text-[11px] font-normal text-slate-400">(newest first — full history, scroll for more)</span></div>
+      <div class="overflow-auto" style="max-height:480px">
         <table class="w-full text-sm">
-          <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>
+          <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200 sticky top-0 bg-white"><tr>
             <th class="text-left py-2 px-1">Month</th>
             <th class="text-right px-1">Traded value (₹ cr)</th>
             <th class="text-right px-1">vs prev month</th>
@@ -194,7 +194,7 @@ function attachHover(){
 function renderTable(){
   const v=DATA.value, m=DATA.months, ma=DATA.ma, last=v.length-1, partial=!!DATA.partialLast;
   const rows=[];
-  for(let i=last; i>=0 && rows.length<24; i--){
+  for(let i=last; i>=0; i--){
     const isP = partial && i===last;
     const mom = isP ? null : pct(v[i], i>0?v[i-1]:null), vsAvg = isP ? null : pct(v[i], ma[i]);
     rows.push(`<tr class="border-b border-slate-50">
