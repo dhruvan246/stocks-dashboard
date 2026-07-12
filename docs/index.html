@@ -215,8 +215,11 @@
       });
   }
 
-  // 2) live intraday quote from Yahoo, tunnelled through a CORS proxy chain
+  // 2) live intraday quote from Yahoo — OUR Cloudflare Worker first (reliable, cached),
+  //    then the public CORS-proxy chain as fallback (see scripts/LIVE_FEED_SETUP.md)
+  var WORKER = 'https://stocksworld-quotes.dhruvan2510.workers.dev';
   var PROXIES = [
+    function (u) { var m = /chart\/([^?]+)/.exec(u); return { url: WORKER + '/?chart=' + (m ? m[1] : ''), wrap: false }; },
     function (u) { return { url: 'https://corsproxy.io/?url=' + encodeURIComponent(u), wrap: false }; },
     function (u) { return { url: 'https://api.allorigins.win/get?url=' + encodeURIComponent(u), wrap: true }; }
   ];
@@ -281,6 +284,7 @@
     'bank-credit.html':       'RBI bank-loan growth y/y, tracked fortnightly.',
     'market-mood.html':       'Nifty 500 monthly turnover & breadth — the mood of the market.',
     'results-season.html':    'Median quarterly YoY revenue, op-profit & PAT trends.',
+    'quarterly-results.html': 'Season scoreboard, live declared feed, results calendar & every company’s numbers.',
     'announcements.html':     'Every NSE filing of the last month — filter by symbol, date & category.',
     'mutual-funds.html':      'Browse and compare funds by returns, category and rating.',
     'stock-backtest.html':    'Backtest factor strategies over 25+ years of Indian market data.',

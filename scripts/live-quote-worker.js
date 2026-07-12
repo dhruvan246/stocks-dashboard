@@ -1,23 +1,26 @@
 /* =============================================================================
- * STOCKSWORLD — live quote proxy (Cloudflare Worker)
+ * STOCKSWORLD — live data proxy (Cloudflare Worker)
  *
  * WHY THIS EXISTS
- *   The dashboard is a static GitHub Pages site, so it can't fetch live quotes
- *   itself: quote endpoints block cross-origin browser calls (CORS). This tiny
- *   Worker runs on Cloudflare's free tier, fetches prices server-side, and
- *   returns them to the page with CORS enabled.
+ *   The dashboard is a static GitHub Pages site, so it can't fetch live data
+ *   itself: quote/announcement endpoints block cross-origin browser calls
+ *   (CORS). This tiny Worker runs on Cloudflare's free tier, fetches
+ *   server-side, and returns the data to the page with CORS enabled.
  *
- * SOURCE
- *   Yahoo Finance NSE feed (query1.finance.yahoo.com). Free, no account, works
- *   from Cloudflare's IPs. NOTE: free Yahoo NSE data is ~15 min delayed — fine
- *   for placing limit orders, NOT tick-by-tick. For true real-time, swap the
- *   fetch below for a broker API (Dhan / Angel One / Upstox / Zerodha).
+ * ROUTES
+ *   GET ?symbols=RELIANCE,TCS      -> live quotes (Yahoo NSE feed, ~15 min delayed)
+ *        {"asOf":<ms>,"source":"yahoo-nse","data":{"RELIANCE":{"ltp":..,"prevClose":..},...}}
+ *        Index symbols work too (no .NS appended): ?symbols=^NSEI,^CRSLDX,^NSEBANK,^INDIAVIX
+ *   GET ?chart=^NSEI               -> verbatim Yahoo intraday chart JSON (1m/1d) for ONE
+ *        symbol — used by the home-page ticker (price + prevClose + sparkline series).
+ *        Whitelisted passthrough (only the Yahoo chart endpoint), cached 30 s per symbol.
+ *   GET ?announcements=1           -> today+yesterday NSE corporate announcements
+ *        {"asOf":<ms>,"source":"nse","rows":[[symbol,company,"YYYY-MM-DD HH:MM:SS",
+ *          subject,caption,file],...]}   (same row shape as docs/announcements.json;
+ *        `file` has the nsearchives /corporate/ prefix stripped)
+ *        Cached in the Worker for 90 s — many visitors still mean ~1 NSE call/min.
  *
- * USAGE (from the page)
- *   GET  https://<your-worker>.workers.dev/?symbols=RELIANCE,TCS,INFY
- *   ->   {"asOf":<ms>,"source":"yahoo-nse","data":{"RELIANCE":{"ltp":2945.6,"prevClose":2930.1}, ...}}
- *
- * DEPLOY:  see scripts/LIVE_FEED_SETUP.md
+ * DEPLOY:  see scripts/LIVE_FEED_SETUP.md  (paste this whole file over the old one)
  * ========================================================================== */
 
 const CORS = {
@@ -26,21 +29,32 @@ const CORS = {
   'Access-Control-Allow-Headers': '*',
 };
 
+const NSE_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36';
+const PDF_PREFIX = 'https://nsearchives.nseindia.com/corporate/';
+const MON = { jan:1, feb:2, mar:3, apr:4, may:5, jun:6, jul:7, aug:8, sep:9, oct:10, nov:11, dec:12 };
+let ANN_CACHE = { ts: 0, body: null };         // per-isolate cache, 90 s
+const CHART_CACHE = new Map();                 // sym -> { ts, text }, 30 s
+
 export default {
   async fetch(request) {
     if (request.method === 'OPTIONS') return new Response(null, { headers: CORS });
 
     const url = new URL(request.url);
+    if (url.searchParams.get('announcements')) return announcements();
+    const chart = url.searchParams.get('chart');
+    if (chart) return chartPassthrough(chart);
+
     const symbols = (url.searchParams.get('symbols') || '')
       .split(',').map(s => s.trim().toUpperCase()).filter(Boolean).slice(0, 30); // cap per call
 
-    if (!symbols.length) return json({ error: 'pass ?symbols=RELIANCE,TCS' }, 400);
+    if (!symbols.length) return json({ error: 'pass ?symbols=RELIANCE,TCS or ?announcements=1' }, 400);
 
     const data = {};
     await Promise.all(symbols.map(async sym => {
       try {
+        const ysym = sym.startsWith('^') ? sym : sym + '.NS';   // indices (^NSEI…) have no .NS suffix
         const r = await fetch(
-          `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}.NS?interval=1d&range=1d`,
+          `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ysym)}?interval=1d&range=1d`,
           { headers: { 'User-Agent': 'Mozilla/5.0', 'Accept': 'application/json' } }
         );
         if (!r.ok) return;
@@ -58,6 +72,110 @@ export default {
     return json({ asOf: Date.now(), source: 'yahoo-nse', data });
   },
 };
+
+/* ------- verbatim Yahoo intraday chart for ONE symbol (home-page ticker) --- */
+
+async function chartPassthrough(sym) {
+  sym = String(sym).trim().toUpperCase();
+  if (!/^[\^]?[A-Z0-9.\-&]{1,20}$/.test(sym)) return json({ error: 'bad symbol' }, 400);
+  const now = Date.now();
+  const hit = CHART_CACHE.get(sym);
+  if (hit && now - hit.ts < 30_000) return new Response(hit.text, { headers: { ...CORS, 'content-type': 'application/json' } });
+  const r = await fetch(
+    `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?interval=1m&range=1d`,
+    { headers: { 'User-Agent': 'Mozilla/5.0', 'Accept': 'application/json' } }
+  );
+  if (!r.ok) return json({ error: 'yahoo HTTP ' + r.status }, 502);
+  const text = await r.text();
+  CHART_CACHE.set(sym, { ts: now, text });
+  if (CHART_CACHE.size > 50) CHART_CACHE.delete(CHART_CACHE.keys().next().value);
+  return new Response(text, { headers: { ...CORS, 'content-type': 'application/json' } });
+}
+
+/* ---------------- NSE corporate announcements (today + yesterday IST) ------ */
+
+async function announcements() {
+  const now = Date.now();
+  if (ANN_CACHE.body && now - ANN_CACHE.ts < 90_000) return json(ANN_CACHE.body);
+  try {
+    // 1) visit the NSE homepage like a browser to collect session cookies
+    const home = await fetch('https://www.nseindia.com/', {
+      headers: { 'User-Agent': NSE_UA, 'Accept': 'text/html,application/xhtml+xml' },
+      redirect: 'follow',
+    });
+    const cookie = cookieHeader(home);
+
+    // 2) query today + yesterday (IST clock) so late-evening filings are covered
+    const ist = new Date(now + 330 * 60000);
+    const from = ddmmyyyy(new Date(ist.getTime() - 86400000));
+    const to = ddmmyyyy(ist);
+    const r = await fetch(
+      `https://www.nseindia.com/api/corporate-announcements?index=equities&from_date=${from}&to_date=${to}`,
+      { headers: {
+          'User-Agent': NSE_UA,
+          'Accept': 'application/json, text/plain, */*',
+          'Referer': 'https://www.nseindia.com/companies-listing/corporate-filings-announcements',
+          ...(cookie ? { 'Cookie': cookie } : {}),
+        } }
+    );
+    if (!r.ok) return json({ error: 'NSE HTTP ' + r.status, rows: [] }, 502);
+    const j = await r.json();
+
+    const rows = [];
+    for (const rec of (Array.isArray(j) ? j : [])) {
+      const sym = String(rec.symbol || '').trim().toUpperCase();
+      const dt = parseDt(rec);
+      if (!sym || !dt) continue;
+      let cap = String(rec.attchmntText || '').replace(/\s+/g, ' ').trim();
+      if (cap.length > 500) cap = cap.slice(0, 499).replace(/\s+$/, '') + '…';
+      let f = String(rec.attchmntFile || '').trim();
+      if (f.startsWith(PDF_PREFIX)) f = f.slice(PDF_PREFIX.length);
+      rows.push([
+        sym,
+        String(rec.sm_name || '').replace(/\s+/g, ' ').trim(),
+        dt,
+        String(rec.desc || '').replace(/\s+/g, ' ').trim() || 'Others',
+        cap,
+        f,
+      ]);
+    }
+    rows.sort((a, b) => (a[2] < b[2] ? 1 : a[2] > b[2] ? -1 : 0));
+
+    const body = { asOf: now, source: 'nse', rows };
+    ANN_CACHE = { ts: now, body };
+    return json(body);
+  } catch (e) {
+    return json({ error: String((e && e.message) || e), rows: [] }, 502);
+  }
+}
+
+function cookieHeader(res) {
+  let list = [];
+  if (typeof res.headers.getSetCookie === 'function') list = res.headers.getSetCookie();
+  else {
+    const raw = res.headers.get('set-cookie');
+    // split a combined Set-Cookie header only on commas that start a new cookie
+    if (raw) list = raw.split(/,(?=\s*[A-Za-z0-9_\-^]+=)/);
+  }
+  return list.map(c => c.split(';')[0].trim()).filter(Boolean).join('; ');
+}
+
+function ddmmyyyy(d) {
+  // d is already shifted to IST; read the UTC fields to get the IST clock
+  const p = n => String(n).padStart(2, '0');
+  return p(d.getUTCDate()) + '-' + p(d.getUTCMonth() + 1) + '-' + d.getUTCFullYear();
+}
+
+function parseDt(rec) {
+  // sort_date "2026-07-12 15:35:30" or an_dt "12-Jul-2026 15:35:30" -> "YYYY-MM-DD HH:MM:SS"
+  let m = /^(\d{4}-\d{2}-\d{2})[ T]?(\d{2}:\d{2}(:\d{2})?)?/.exec(String(rec.sort_date || ''));
+  if (m) return m[1] + ' ' + ((m[2] || '00:00') + ':00').slice(0, 8);
+  m = /^(\d{2})-([A-Za-z]{3})-(\d{4})\s*(\d{2}:\d{2}(:\d{2})?)?/.exec(String(rec.an_dt || ''));
+  if (!m) return null;
+  const mo = MON[m[2].toLowerCase()];
+  if (!mo) return null;
+  return m[3] + '-' + String(mo).padStart(2, '0') + '-' + m[1] + ' ' + ((m[4] || '00:00') + ':00').slice(0, 8);
+}
 
 function json(obj, status = 200) {
   return new Response(JSON.stringify(obj), { status, headers: { ...CORS, 'content-type': 'application/json' } });

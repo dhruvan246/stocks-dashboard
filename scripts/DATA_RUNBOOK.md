@@ -499,9 +499,10 @@ drop from Oct-2020; nothing legitimately pre-15:30 should disappear (by construc
   close. Two-layer render: (1) seed instantly from the committed daily-close JSONs (`nifty.json` /
   `nifty500.json` / `nifty_bank.json` / `india_vix.json`) so it's never blank; (2) then fetch live Yahoo quotes
   (`^NSEI/^CRSLDX/^NSEBANK/^INDIAVIX`, `interval=1m&range=1d`) and repaint. GitHub Pages is static + Yahoo blocks
-  browser CORS, so the live call tunnels through a CORS-proxy CHAIN: `corsproxy.io/?url=` →
-  `api.allorigins.win/get?url=` (both verified working 2026-07-12; direct Yahoo, thingproxy, codetabs,
-  cors.eu.org all CORS-fail from the browser). Polls every 45s ONLY Mon–Fri 09:15–15:30 IST and only when the
+  browser CORS, so the live call tunnels through a CORS-proxy CHAIN — **since 2026-07-12 the FIRST hop is our own
+  Cloudflare Worker** (`stocksworld-quotes.dhruvan2510.workers.dev/?chart=<sym>` — verbatim Yahoo chart passthrough,
+  30 s cache, scripts/live-quote-worker.js), then `corsproxy.io/?url=` → `api.allorigins.win/get?url=` as fallbacks
+  (both verified working 2026-07-12; direct Yahoo, thingproxy, codetabs, cors.eu.org all CORS-fail from the browser). Polls every 45s ONLY Mon–Fri 09:15–15:30 IST and only when the
   tab is visible; shows "● LIVE" when open, "AT CLOSE" otherwise. If every proxy is down it silently keeps the
   daily-close seed. Weekly RSI is computed from the JSON history (barely moves intraday) and cached. If the
   proxies ever die, stand up your own CORS shim (Cloudflare Worker / Supabase edge fn) in front of Yahoo and put
@@ -518,8 +519,10 @@ drop from Oct-2020; nothing legitimately pre-15:30 should disappear (by construc
 ---
 
 ## 14. CORPORATE ANNOUNCEMENTS BROWSER  (docs/announcements.html — "Announcements" nav, built 2026-07-12)
-NSE corporate-announcements browser (reference-style: symbol + date-range + category-chip filters over a
-table with caption + PDF links). Hand-maintained page; data = **`docs/announcements.json`** (rolling ~31 days,
+NSE corporate-announcements browser. **Own design (user asked NOT to copy the reference site): a left
+CATEGORY SIDEBAR** (All + ~33 buckets with counts, single-select, sticky; <768px it becomes a dropdown)
++ symbol/date toolbar over a table (Stock+company / Date / raw Announcement type / Caption / PDF).
+Hand-maintained page; data = **`docs/announcements.json`** (rolling ~31 days,
 ~15k rows, ~4.7 MB raw — Pages gzips it on the wire; fetched WITHOUT a cache-buster per §9).
 - **Fetch:** `python -X utf8 scripts/fetch_announcements.py` — reuses `build_fundamentals`'s CI-proven NSE
   session (plain urllib + Chrome UA + `nse_jar()` cookie warmup, NOT curl_cffi) against
@@ -533,9 +536,60 @@ table with caption + PDF links). Hand-maintained page; data = **`docs/announceme
   same reset-hard commit-retry loop as FII/DII, commits ONLY `docs/announcements.json`, dispatches pages.yml.
   Manual: `gh workflow run refresh-announcements.yml` or repository_dispatch `announcements-refresh`.
 - **Categories:** NSE's raw `desc` subject (~109 values incl. long tail) is bucketed CLIENT-SIDE into ~33 clean
-  chips by `CATRULES` (ordered regex list in announcements.html; first match wins, default "Others"). The raw
-  desc still shows in the "Announcement type" column. New NSE subjects fall into Others until a rule is added.
+  sidebar buckets by `CATRULES` (ordered regex list in announcements.html; first match wins, default "Others").
+  The raw desc still shows in the "Announcement type" column. New NSE subjects fall into Others until a rule is
+  added. Sidebar rebuilds idempotently (`buildSidebar()`) when the live top-up adds rows/categories.
 - **Page style gotcha:** custom classes (.chip/.catpill/.docbtn) are styled with **theme vars**
   (`var(--surface-2)/--accent/…`) so Light/Dark/Soft work; Tailwind OPACITY variants (`bg-slate-100/80`)
   are NOT covered by theme.css's dark overrides (it matches exact class names) — use the plain class.
 - Symbol cell links to `./stock.html?sym=` ; nav entry in theme.js NAV_GROUPS (+ DESC line in index.html).
+- **LIVE top-up (2026-07-12):** the page also polls our Cloudflare Worker
+  (`stocksworld-quotes.dhruvan2510.workers.dev/?announcements=1`, hardcoded `WORKER` const) every 60 s for
+  today+yesterday's filings — merged/deduped over the file rows (extends the To-date past the committed file),
+  "● LIVE HH:MM IST" badge on success, SILENT no-op if the Worker/NSE is down (file data remains). Worker source =
+  `scripts/live-quote-worker.js` (3 routes: ?symbols= quotes, ?chart= home ticker, ?announcements=1; NSE cookie
+  warmup + 90 s cache inside the Worker). **NSE-from-Cloudflare VERIFIED WORKING 2026-07-12** (500 rows, filings
+  minutes old); if NSE ever starts 403-ing, the live layer just never lights up (page still fine on file data).
+  **Deploy (proven 2026-07-12):** the CF dashboard quick-edit iframe is cross-origin — browser automation CANNOT
+  type into it; deploy via the dash API from a logged-in dash tab instead, and it's TWO steps under CF's versions
+  model: PUT `/api/v4/accounts/<acct>/workers/scripts/stocksworld-quotes` (multipart metadata{main_module:
+  'worker.js', compatibility_date} + worker.js module part — creates a VERSION, does NOT go live) then POST
+  `…/scripts/stocksworld-quotes/deployments {strategy:'percentage', versions:[{percentage:100, version_id}]}`.
+  Needs the user's explicit deploy authorization (auto-mode blocks it otherwise). Manual fallback: paste the file
+  in the quick editor + Deploy (LIVE_FEED_SETUP.md).
+
+---
+
+## 15. QUARTERLY RESULTS DASHBOARD  (docs/quarterly-results.html — "Quarterly Results" nav, built 2026-07-12)
+Best-of-breed results hub (features merged from a ~40-site survey: ValuePicker/Trendlyne/Screener/Tijori/
+MarketsMojo/Moneycontrol/StockEdge/Investing.com/EarningsWhispers/Nasdaq/FactSet…). Four tabs:
+**Season Overview** (scoreboard tiles + breadth + 5-season strip + sector heatmap/scorecard + movers incl.
+result-day reaction), **All Results** (sortable per-company table: Rev/OP/OPM Δbps/PAT std+con auto-basis,
+YoY+QoQ, rule-based verdict dot, reaction %, since-result drift; screen chips: turnaround LP/PL, margin
++200bps, record PAT, 4-qtr streak, reacted ±5%; CSV export; watchlist ★ localStorage `qr_watch`),
+**Just Declared** (filing feed w/ PDF + growth badges, LIVE top-up via the same Cloudflare Worker
+`?announcements=1` every 60 s), **Calendar** (upcoming results: NSE-confirmed ✓ + cadence-PREDICTED "est."
+dates). Deep links: `?tab=results|feed|calendar&sym=TCS`.
+
+**Three data files, three refresh paths (page fetches only these — no big bins):**
+1. `docs/quarterly_results.json` (~1.8 MB raw) ← **`scripts/build_quarterly_results.py`** — per company:
+   `{n,s,i,m,f,x,e,q[13]}`; q rows `[revS,opS,patS,revC,opC,patC,ann,rx,sr]` for the last 13 QEs.
+   Sources: sf_revop (Rev/OP), **sf_fundamentals for PAT (owners basis — NEVER revop's pat)**, ann = min(std,con)
+   date (15:30-gated ⇒ reaction day = ann day, look-ahead-clean), `rx` = close(ann)/close(prev)−1 from the price
+   bin (env `SF_BIN`; CI downloads the fresh `data` release asset — committed docs bin is STALE §0), `sr` = drift
+   ann-close→asof (anns ≤140 d only), `x` bitmask 1=N50 2=N100 4=N500 8=Mid150 16=Sml250 32=F&O (latest
+   snapshots of indices_history/fno_history), `e` = predicted next result date (median historical filing lag,
+   same-quarter-month preferred), mcap/names from dash_slim, sector = classification macro (Unknown→Others),
+   `f`=1 bank/NBFC (revop fin flag; page hides OP/OPM for them). Rebuilt EVERY `refresh-fundamentals.yml` run
+   (drift moves daily), committed when changed. Local run: merge live sf parts → `SF_BIN=... python -X utf8
+   scripts/build_quarterly_results.py`.
+2. `docs/results_feed.json` (tiny) ← written by `fetch_announcements.py` (same run): results-filing rows only
+   (`Outcome of Board Meeting` + "financial results" caption, or `Financial Result*` category), with parsed
+   quarter-end. Refreshes 4×/day with announcements.
+3. `docs/results_calendar.json` (tiny) ← **`scripts/fetch_results_calendar.py`** — NSE `/api/event-calendar`
+   (−3d..+75d), result-purpose rows only; ABORT-guard keeps the old file on a broken fetch. Same workflow.
+- Growth math is CLIENT-side, always same-basis both periods (con preferred, else std; LP/PL/LL flags when the
+  base is ≤0 — never a % off a negative base). Verdict dot = rule score (PAT YoY, Rev YoY, ΔOPM), transparent.
+- Universe filter = CURRENT index membership (a display filter, not point-in-time — backtests stay elsewhere).
+- ⚠️ Weekend/post-close filings carry NEXT-trading-day ann (the §12 gate) — the table "Date" column shows that
+  tradable date (can read a day ahead of the filing timestamp shown in the feed tab; intentional).

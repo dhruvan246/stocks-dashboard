@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>STOCKSWORLD · Announcements</title>
-<meta name="description" content="NSE corporate announcements browser — every exchange filing of the last month, filterable by symbol, date range and category: results, dividends, buybacks, spurt in volume, rating updates and more." />
+<meta name="description" content="NSE corporate announcements browser — every exchange filing of the last month, organised by category: results, dividends, buybacks, spurt in volume, rating updates and more. Live during the day." />
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
@@ -14,15 +14,14 @@
   th[data-s]{cursor:pointer;user-select:none;white-space:nowrap}
   th[data-s]:hover{color:#2563eb}
   /* theme-variable styling so Light / Dark / Soft all work (theme.css defines the vars) */
-  .chip{display:inline-flex;align-items:center;font-size:11px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;
-        padding:6px 12px;border-radius:9999px;cursor:pointer;user-select:none;white-space:nowrap;
-        background:var(--surface-2,#f1f5f9);color:var(--text-muted,#334155);border:1px solid var(--border,#e2e8f0);
-        transition:background .12s,color .12s,border-color .12s}
-  .chip:hover{background:var(--accent-soft,#e2e8f0);color:var(--accent,#334155);border-color:var(--accent,#cbd5e1)}
-  .chip.on{background:var(--accent,#2563eb);color:#fff;border-color:var(--accent,#2563eb)}
-  .catpill{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
-           padding:3px 10px;border-radius:9999px;background:var(--surface-2,#f1f5f9);color:var(--text-muted,#475569);
-           border:1px solid var(--border,#e2e8f0);white-space:nowrap}
+  .catlink{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;text-align:left;
+           padding:7px 11px;border-radius:9px;border:0;background:none;cursor:pointer;
+           font-size:12.5px;font-weight:600;color:var(--text-muted,#475569);transition:background .12s,color .12s}
+  .catlink:hover{background:var(--surface-2,#f1f5f9);color:var(--text,#0f172a)}
+  .catlink.on{background:var(--accent-soft,#eff6ff);color:var(--accent,#1d4ed8)}
+  .catn{font-size:10.5px;font-weight:700;padding:1px 8px;border-radius:9999px;flex:none;
+        background:var(--surface-2,#f1f5f9);color:var(--text-faint,#94a3b8)}
+  .catlink.on .catn{background:var(--accent,#2563eb);color:#fff}
   .docbtn{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:4px 10px;border-radius:.5rem;
           background:var(--accent-soft,#eff6ff);color:var(--accent,#1d4ed8);border:1px solid var(--border-strong,#bfdbfe);white-space:nowrap;
           transition:border-color .12s}
@@ -47,61 +46,73 @@
 <main class="max-w-screen-xl mx-auto px-4 py-6">
   <div class="mb-4">
     <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Corporate Announcements <span class="text-slate-400 font-semibold text-base">· NSE</span></h1>
-    <p class="text-sm text-slate-500 mt-1">Every exchange filing of the last month — results, dividends, buybacks, order wins, spurt in volume, rating updates and more. Filter by symbol, date range or category; click <b>PDF</b> to open the actual filing.</p>
+    <p class="text-sm text-slate-500 mt-1">Every exchange filing of the last month, organised by category. Pick a category on the left (Spurt in Volume, Dividend, Buyback…) to see every stock under it; narrow further by symbol or dates. Click <b>PDF</b> for the actual filing.</p>
   </div>
 
   <div id="status" class="text-sm text-slate-500 py-10 text-center">Loading announcements…</div>
 
-  <div id="content" class="hidden">
+  <div id="content" class="md:flex gap-4 items-start" style="display:none">
 
-    <!-- Filter bar -->
-    <div class="card p-4 mb-4">
-      <div class="flex flex-wrap items-end gap-3">
-        <div>
-          <label class="block text-[10px] uppercase tracking-wide text-slate-500 mb-1" for="fSym">Symbol / company</label>
-          <input id="fSym" type="text" placeholder="E.G. RELIANCE" autocomplete="off" spellcheck="false"
-                 class="w-44 px-3 py-2 rounded-lg border border-slate-300 bg-white text-sm font-semibold uppercase placeholder:normal-case placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        </div>
-        <div>
-          <label class="block text-[10px] uppercase tracking-wide text-slate-500 mb-1" for="fFrom">From</label>
-          <input id="fFrom" type="date" class="px-3 py-2 rounded-lg border border-slate-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        </div>
-        <div>
-          <label class="block text-[10px] uppercase tracking-wide text-slate-500 mb-1" for="fTo">To</label>
-          <input id="fTo" type="date" class="px-3 py-2 rounded-lg border border-slate-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        </div>
-        <button id="bApply" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold shadow-sm transition">Apply Filter</button>
-        <button id="bReset" class="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition">Reset</button>
-        <button id="bClear" class="hidden px-4 py-2 rounded-lg border border-blue-300 text-blue-700 bg-white hover:bg-blue-50 text-sm font-semibold transition"></button>
-      </div>
-      <div class="mt-4">
-        <div class="text-[10px] uppercase tracking-wide text-slate-500 mb-2">Category filter <span class="normal-case text-slate-400">(optional — click to toggle, combines with the other filters)</span></div>
-        <div id="chips" class="flex flex-wrap gap-2"></div>
-      </div>
-    </div>
+    <!-- Category sidebar -->
+    <aside class="hidden md:block w-60 shrink-0 card p-2 sticky top-[4.25rem] max-h-[calc(100vh-5.5rem)] overflow-y-auto">
+      <div class="px-2.5 pt-2 pb-1 text-[10px] uppercase tracking-wide text-slate-500 font-bold">Categories</div>
+      <nav id="catList" class="space-y-0.5 pb-1"></nav>
+    </aside>
 
-    <!-- Results table -->
-    <div class="card p-4 mb-4">
-      <div id="count" class="text-sm font-semibold text-slate-700 mb-2"></div>
-      <div class="overflow-x-auto rounded-lg border border-slate-100">
-        <table class="w-full text-sm min-w-[900px]">
-          <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200 bg-slate-100"><tr>
-            <th data-s="s"   class="text-left py-2.5 px-3">Symbol ⇅</th>
-            <th data-s="dt"  class="text-left px-3">Date ⇅</th>
-            <th data-s="cat" class="text-left px-3">Category ⇅</th>
-            <th data-s="type" class="text-left px-3">Announcement type ⇅</th>
-            <th class="text-left px-3 w-[42%]">Caption</th>
-            <th class="text-right px-3">Doc</th>
-          </tr></thead>
-          <tbody id="tbody" class="divide-y divide-slate-100"></tbody>
-        </table>
-      </div>
-      <div class="text-center mt-3">
-        <button id="bMore" class="hidden px-5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition">Load more ↓</button>
-      </div>
-    </div>
+    <section class="flex-1 min-w-0">
 
-    <p class="text-[11px] text-slate-500">Source: NSE corporate announcements (equities) · rolling last ~31 days · <span id="updated"></span> · auto-refreshes ~4× a day. Category is our grouping of NSE's announcement subject (shown in "Announcement type").</p>
+      <!-- Mobile category picker -->
+      <div class="md:hidden mb-3">
+        <select id="catSelect" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 bg-white text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"></select>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="card p-3 mb-3">
+        <div class="flex flex-wrap items-end gap-2.5">
+          <div>
+            <label class="block text-[10px] uppercase tracking-wide text-slate-500 mb-1" for="fSym">Symbol / company</label>
+            <input id="fSym" type="text" placeholder="e.g. RELIANCE" autocomplete="off" spellcheck="false"
+                   class="w-40 px-3 py-2 rounded-lg border border-slate-300 bg-white text-sm font-semibold uppercase placeholder:normal-case placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div>
+            <label class="block text-[10px] uppercase tracking-wide text-slate-500 mb-1" for="fFrom">From</label>
+            <input id="fFrom" type="date" class="px-3 py-2 rounded-lg border border-slate-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div>
+            <label class="block text-[10px] uppercase tracking-wide text-slate-500 mb-1" for="fTo">To</label>
+            <input id="fTo" type="date" class="px-3 py-2 rounded-lg border border-slate-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <button id="bApply" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold shadow-sm transition">Apply</button>
+          <button id="bReset" class="px-3.5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition">Reset</button>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="card p-4 mb-3">
+        <div class="flex items-center flex-wrap gap-x-3 gap-y-1 mb-2">
+          <div id="catTitle" class="text-base font-extrabold text-slate-900"></div>
+          <div id="count" class="text-xs font-semibold text-slate-500"></div>
+          <span id="liveBadge" class="hidden text-[11px] font-bold tracking-wide ml-auto" style="color:var(--pos,#15803d)"></span>
+        </div>
+        <div class="overflow-x-auto rounded-lg border border-slate-100">
+          <table class="w-full text-sm min-w-[820px]">
+            <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200 bg-slate-100"><tr>
+              <th data-s="s"    class="text-left py-2.5 px-3">Stock ⇅</th>
+              <th data-s="dt"   class="text-left px-3">Date ⇅</th>
+              <th data-s="type" class="text-left px-3">Announcement type ⇅</th>
+              <th class="text-left px-3 w-[46%]">Caption</th>
+              <th class="text-right px-3">Doc</th>
+            </tr></thead>
+            <tbody id="tbody" class="divide-y divide-slate-100"></tbody>
+          </table>
+        </div>
+        <div class="text-center mt-3">
+          <button id="bMore" class="hidden px-5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition">Load more ↓</button>
+        </div>
+      </div>
+
+      <p class="text-[11px] text-slate-500">Source: NSE corporate announcements (equities) · rolling last ~31 days · <span id="updated"></span> · refreshes ~4× a day, plus a live top-up of today's filings (~every minute) via our Cloudflare relay when available. Categories are our grouping of NSE's raw announcement subjects.</p>
+    </section>
   </div>
 </main>
 
@@ -154,8 +165,15 @@ function bucketOf(desc){
 }
 
 let DATA = null, ROWS = [];
-const state = { sym:'', from:'', to:'', cats:new Set(), sortK:'dt', sortDir:-1, limit:100 };
+const state = { sym:'', from:'', to:'', cat:'', sortK:'dt', sortDir:-1, limit:100 };
 let filtered = [];
+
+function mapRow(a){
+  return { s: a[0], co: a[1], coU: (a[1] || '').toUpperCase(),
+           dt: a[2], date: a[2].slice(0, 10), time: a[2].slice(11, 16),
+           cat: bucketOf(a[3]), type: a[3], cap: a[4], f: a[5] };
+}
+const rowKey = a => a[0] + '|' + a[2] + '|' + a[3] + '|' + a[5];
 
 function docCell(f){
   if (!f) return '<span class="text-slate-300">—</span>';
@@ -171,17 +189,18 @@ function renderRows(){
   for (let i = 0; i < upto; i++){
     const r = filtered[i];
     h += '<tr class="align-top hover:bg-slate-50">' +
-      '<td class="py-3 px-3"><a class="font-bold text-blue-700 hover:underline" href="./stock.html?sym=' + encodeURIComponent(r.s) + '" title="' + esc(r.co) + '">' + esc(r.s) + '</a></td>' +
+      '<td class="py-3 px-3"><a class="font-bold text-blue-700 hover:underline" href="./stock.html?sym=' + encodeURIComponent(r.s) + '">' + esc(r.s) + '</a>' +
+        '<div class="text-[10.5px] text-slate-400 leading-tight max-w-[150px] truncate" title="' + esc(r.co) + '">' + esc(r.co) + '</div></td>' +
       '<td class="py-3 px-3 whitespace-nowrap text-slate-600">' + r.date + '<div class="text-[10px] text-slate-400">' + r.time + '</div></td>' +
-      '<td class="py-3 px-3"><span class="catpill">' + esc(r.cat) + '</span></td>' +
-      '<td class="py-3 px-3 text-[12px] text-slate-500 max-w-[180px]">' + esc(r.type) + '</td>' +
+      '<td class="py-3 px-3 text-[12px] text-slate-500 max-w-[190px]" title="' + esc(r.cat) + '">' + esc(r.type) + '</td>' +
       '<td class="py-3 px-3 text-[13px] leading-relaxed text-slate-600">' + esc(r.cap) + '</td>' +
       '<td class="py-3 px-3 text-right">' + docCell(r.f) + '</td></tr>';
   }
-  if (!upto) h = '<tr><td colspan="6" class="py-10 text-center text-slate-400 text-sm">No announcements match these filters.</td></tr>';
+  if (!upto) h = '<tr><td colspan="5" class="py-10 text-center text-slate-400 text-sm">No announcements match these filters.</td></tr>';
   $('tbody').innerHTML = h;
-  $('count').textContent = 'Showing ' + upto.toLocaleString('en-IN') + ' of ' + filtered.length.toLocaleString('en-IN') +
-    ' announcements · ' + state.from + ' → ' + state.to;
+  $('catTitle').textContent = state.cat || 'All announcements';
+  $('count').textContent = 'showing ' + upto.toLocaleString('en-IN') + ' of ' + filtered.length.toLocaleString('en-IN') +
+    ' · ' + state.from + ' → ' + state.to;
   $('bMore').classList.toggle('hidden', upto >= filtered.length);
 }
 
@@ -189,7 +208,7 @@ function applyFilters(){
   const q = state.sym;
   filtered = ROWS.filter(r =>
     r.date >= state.from && r.date <= state.to &&
-    (!state.cats.size || state.cats.has(r.cat)) &&
+    (!state.cat || r.cat === state.cat) &&
     (!q || r.s.indexOf(q) === 0 || r.coU.indexOf(q) >= 0));
   const k = state.sortK, d = state.sortDir;
   filtered.sort((a,b) => (a[k] < b[k] ? -d : a[k] > b[k] ? d : (a.dt < b.dt ? 1 : -1)));
@@ -197,26 +216,26 @@ function applyFilters(){
   renderRows();
 }
 
-function buildChips(){
-  const present = new Map();
-  for (const r of ROWS) present.set(r.cat, (present.get(r.cat) || 0) + 1);
-  const names = [...present.keys()].sort((a,b) => (a === 'Others') - (b === 'Others') || a.localeCompare(b));
-  $('chips').innerHTML = names.map(n =>
-    '<button type="button" class="chip" data-c="' + esc(n) + '" aria-pressed="false" title="' + present.get(n).toLocaleString('en-IN') + ' announcements">' + esc(n) + '</button>').join('');
-  $('chips').addEventListener('click', e => {
-    const el = e.target.closest('.chip'); if (!el) return;
-    const c = el.getAttribute('data-c');
-    state.cats.has(c) ? state.cats.delete(c) : state.cats.add(c);
-    el.setAttribute('aria-pressed', el.classList.toggle('on') ? 'true' : 'false');
-    updateClearBtn();
-    applyFilters();
-  });
+/* ---- category sidebar (desktop) + dropdown (mobile) ---- */
+function catCounts(){
+  const m = new Map();
+  for (const r of ROWS) m.set(r.cat, (m.get(r.cat) || 0) + 1);
+  return [...m.entries()].sort((a,b) => (a[0] === 'Others') - (b[0] === 'Others') || a[0].localeCompare(b[0]));
 }
-
-function updateClearBtn(){
-  const n = state.cats.size;
-  $('bClear').classList.toggle('hidden', !n);
-  $('bClear').textContent = 'Clear ' + n + ' filter' + (n > 1 ? 's' : '');
+function buildSidebar(){    // idempotent — re-run when live rows add categories/counts
+  const cats = catCounts();
+  const item = (name, n, label) =>
+    '<button type="button" class="catlink' + (state.cat === name ? ' on' : '') + '" data-c="' + esc(name) + '">' +
+    '<span class="truncate">' + esc(label || name) + '</span><span class="catn">' + n.toLocaleString('en-IN') + '</span></button>';
+  $('catList').innerHTML = item('', ROWS.length, 'All announcements') + cats.map(([c, n]) => item(c, n)).join('');
+  $('catSelect').innerHTML = '<option value="">All announcements (' + ROWS.length.toLocaleString('en-IN') + ')</option>' +
+    cats.map(([c, n]) => '<option value="' + esc(c) + '"' + (state.cat === c ? ' selected' : '') + '>' + esc(c) + ' (' + n.toLocaleString('en-IN') + ')</option>').join('');
+}
+function selectCat(c){
+  state.cat = c || '';
+  document.querySelectorAll('.catlink').forEach(el => el.classList.toggle('on', el.getAttribute('data-c') === state.cat));
+  if ($('catSelect').value !== state.cat) $('catSelect').value = state.cat;
+  applyFilters();
 }
 
 function readInputs(){
@@ -226,6 +245,11 @@ function readInputs(){
 }
 
 function wire(){
+  $('catList').addEventListener('click', e => {
+    const el = e.target.closest('.catlink'); if (!el) return;
+    selectCat(el.getAttribute('data-c'));
+  });
+  $('catSelect').addEventListener('change', () => selectCat($('catSelect').value));
   $('bApply').addEventListener('click', () => { readInputs(); applyFilters(); });
   let deb;
   $('fSym').addEventListener('input', () => { clearTimeout(deb); deb = setTimeout(() => { readInputs(); applyFilters(); }, 160); });
@@ -234,14 +258,7 @@ function wire(){
   $('fTo').addEventListener('change', () => { readInputs(); applyFilters(); });
   $('bReset').addEventListener('click', () => {
     $('fSym').value = ''; $('fFrom').value = DATA.from; $('fTo').value = DATA.to;
-    state.cats.clear();
-    document.querySelectorAll('.chip.on').forEach(el => el.classList.remove('on'));
-    updateClearBtn(); readInputs(); applyFilters();
-  });
-  $('bClear').addEventListener('click', () => {
-    state.cats.clear();
-    document.querySelectorAll('.chip.on').forEach(el => el.classList.remove('on'));
-    updateClearBtn(); applyFilters();
+    readInputs(); selectCat('');
   });
   $('bMore').addEventListener('click', () => { state.limit += 200; renderRows(); });
   document.querySelectorAll('th[data-s]').forEach(th => th.addEventListener('click', () => {
@@ -251,22 +268,54 @@ function wire(){
   }));
 }
 
+/* live top-up of today's filings via our Cloudflare Worker (scripts/live-quote-worker.js).
+   Fully optional: if the Worker isn't deployed or NSE blocks it, this silently no-ops and
+   the page just shows the 4×/day file data. */
+const WORKER = 'https://stocksworld-quotes.dhruvan2510.workers.dev';
+let liveKeys = null;
+async function liveTopUp(){
+  try {
+    const res = await fetch(WORKER + '/?announcements=1', { cache: 'no-store' });
+    if (!res.ok) return;
+    const j = await res.json();
+    if (!Array.isArray(j.rows) || !j.rows.length) return;
+    let added = 0, maxDate = DATA.to;
+    for (const a of j.rows){
+      const k = rowKey(a);
+      if (liveKeys.has(k)) continue;
+      liveKeys.add(k); ROWS.push(mapRow(a)); added++;
+      const d = a[2].slice(0, 10); if (d > maxDate) maxDate = d;
+    }
+    const ist = new Date(Date.now() + (new Date().getTimezoneOffset() * 60000) + 5.5 * 3600000);
+    $('liveBadge').textContent = '● LIVE · ' + ('0' + ist.getHours()).slice(-2) + ':' + ('0' + ist.getMinutes()).slice(-2) + ' IST';
+    $('liveBadge').classList.remove('hidden');
+    if (added){
+      if (maxDate > DATA.to){                       // live rows can be newer than the committed file
+        const wasDefault = $('fTo').value === DATA.to;
+        DATA.to = maxDate; $('fTo').max = maxDate; $('fFrom').max = maxDate;
+        if (wasDefault) $('fTo').value = maxDate;
+      }
+      buildSidebar(); readInputs(); applyFilters();
+    }
+  } catch (e) { /* keep file data */ }
+}
+
 async function load(){
   try {
     const res = await fetch('./announcements.json');   // plain URL — Pages ETag keeps it fresh (runbook §9)
     if (!res.ok) throw new Error('HTTP ' + res.status);
     DATA = await res.json();
-    ROWS = DATA.rows.map(a => ({
-      s: a[0], co: a[1], coU: (a[1] || '').toUpperCase(),
-      dt: a[2], date: a[2].slice(0, 10), time: a[2].slice(11, 16),
-      cat: bucketOf(a[3]), type: a[3], cap: a[4], f: a[5]
-    }));
+    ROWS = DATA.rows.map(mapRow);
+    liveKeys = new Set(DATA.rows.map(rowKey));
     $('fFrom').value = DATA.from; $('fFrom').min = DATA.from; $('fFrom').max = DATA.to;
     $('fTo').value = DATA.to;     $('fTo').min = DATA.from;   $('fTo').max = DATA.to;
     $('updated').textContent = 'Updated ' + DATA.updated;
-    buildChips(); wire(); readInputs(); applyFilters();
+    buildSidebar(); wire(); readInputs(); applyFilters();
     $('status').classList.add('hidden');
-    $('content').classList.remove('hidden');
+    $('content').style.display = '';
+    liveTopUp();
+    setInterval(() => { if (!document.hidden) liveTopUp(); }, 60000);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) liveTopUp(); });
   } catch (e) {
     $('status').innerHTML = 'Could not load announcements data (' + esc(e.message) + '). Please try again in a minute.';
   }
