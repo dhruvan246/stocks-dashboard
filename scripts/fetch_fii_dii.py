@@ -25,6 +25,8 @@ OUT = os.path.join(ROOT, "docs", "fii_dii.json")       # cash segment (recent + 
 OUT_FO = os.path.join(ROOT, "docs", "fii_fo.json")     # derivatives net positions (2012 -> today)
 OUT_NIFTY = os.path.join(ROOT, "docs", "nifty.json")   # Nifty 50 close history (for chart overlays)
 OUT_NIFTY500 = os.path.join(ROOT, "docs", "nifty500.json")  # Nifty 500 close history (backtest calendar-year benchmark)
+OUT_BANK = os.path.join(ROOT, "docs", "nifty_bank.json")   # Nifty Bank close history (home-page ticker)
+OUT_VIX = os.path.join(ROOT, "docs", "india_vix.json")     # India VIX close history (home-page ticker)
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
 
 
@@ -226,16 +228,17 @@ def update_nifty():
     print("  nifty.json: %d points (+%d)" % (len(px), len(px) - n0))
 
 
-def update_nifty500():
-    """Keep docs/nifty500.json current from Yahoo's Nifty 500 index (^CRSLDX). Merges new
-    daily closes; preserves history on fetch failure. Used as the backtest calendar-year benchmark."""
+def update_yahoo_index(out_path, yahoo_symbol, label):
+    """Keep a docs/<index>.json close-history current from a Yahoo index symbol. Merges new
+    daily closes; preserves existing history on fetch failure. yahoo_symbol is URL-encoded
+    (e.g. '%5ECRSLDX' for ^CRSLDX)."""
     try:
-        px = json.load(open(OUT_NIFTY500, encoding="utf-8")).get("px", {})
+        px = json.load(open(out_path, encoding="utf-8")).get("px", {})
     except Exception:
         px = {}
     n0 = len(px)
     try:
-        url = ("https://query1.finance.yahoo.com/v8/finance/chart/%5ECRSLDX"
+        url = ("https://query1.finance.yahoo.com/v8/finance/chart/" + yahoo_symbol +
                "?period1=1325376000&period2=" + str(int(time.time())) + "&interval=1d")
         j = json.loads(_get(url, headers={"User-Agent": UA}))
         res = j["chart"]["result"][0]
@@ -244,17 +247,19 @@ def update_nifty500():
                 continue
             px[time.strftime("%Y-%m-%d", time.gmtime(t))] = round(c, 2)
     except Exception as e:
-        print("  nifty500.json: fetch failed (%s) — keeping existing" % e)
+        print("  %s: fetch failed (%s) — keeping existing" % (label, e))
     json.dump({"updated": time.strftime("%Y-%m-%dT%H:%M:%S"), "px": px},
-              open(OUT_NIFTY500, "w", encoding="utf-8"), separators=(",", ":"))
-    print("  nifty500.json: %d points (+%d)" % (len(px), len(px) - n0))
+              open(out_path, "w", encoding="utf-8"), separators=(",", ":"))
+    print("  %s: %d points (+%d)" % (label, len(px), len(px) - n0))
 
 
 def main():
     dates = update_cash()
     update_fo(dates)
     update_nifty()
-    update_nifty500()
+    update_yahoo_index(OUT_NIFTY500, "%5ECRSLDX", "nifty500.json")   # ^CRSLDX  — Nifty 500
+    update_yahoo_index(OUT_BANK, "%5ENSEBANK", "nifty_bank.json")    # ^NSEBANK — Nifty Bank
+    update_yahoo_index(OUT_VIX, "%5EINDIAVIX", "india_vix.json")     # ^INDIAVIX — India VIX
 
 
 if __name__ == "__main__":

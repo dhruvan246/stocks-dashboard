@@ -132,6 +132,10 @@
   ];
   var NAV_CTA = ['./stock-backtest.html', '🧪', 'Create a strategy'];
 
+  // Expose the nav as the single source of truth so the home page (index.html) can
+  // render its tile grid from the same list — add a page above and it shows up there too.
+  try { window.SW_NAV = { groups: NAV_GROUPS, cta: NAV_CTA }; } catch (e) {}
+
   function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
 
   function buildNav() {

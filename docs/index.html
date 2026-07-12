@@ -1,3 +1,246 @@
-<!doctype html>
-<meta http-equiv="refresh" content="0; url=./nse-bse-dashboard.html">
-<a href="./nse-bse-dashboard.html">Go to dashboard</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Indian markets, decoded</title>
+<meta name="description" content="Live dashboards for Indian stocks, sectors and mutual funds, plus a strategy backtester over 25+ years of data." />
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{ --up:#059669; --up-soft:rgba(5,150,105,.10); --down:#dc2626; --down-soft:rgba(220,38,38,.10); }
+  html[data-theme="dark"]{ --up:#34d399; --up-soft:rgba(52,211,153,.14); --down:#f87171; --down-soft:rgba(248,113,113,.14); }
+  *{box-sizing:border-box;}
+  body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;margin:0;color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background:
+     radial-gradient(60% 55% at 15% 8%,color-mix(in srgb,var(--accent) 12%,transparent),transparent 60%),
+     radial-gradient(55% 50% at 88% 4%,color-mix(in srgb,var(--accent-2) 12%,transparent),transparent 60%),
+     radial-gradient(50% 45% at 50% 100%,color-mix(in srgb,var(--accent) 7%,transparent),transparent 60%);}
+  a{text-decoration:none;color:inherit;}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px;}
+
+  /* header — theme.js injects the Menu into <nav> and the theme pill into header>div */
+  header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--surface) 82%,transparent);
+    -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);transition:box-shadow var(--tr);}
+  header.sw-scrolled{box-shadow:var(--shadow);}
+  .hd{display:flex;align-items:center;gap:12px;height:60px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.02em;font-size:18px;color:var(--text);}
+  .logo .mark{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:#fff;font-size:12px;font-weight:800;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 6px 16px -6px var(--glow);}
+  .logo em{font-style:normal;color:var(--accent);}
+
+  /* hero */
+  .hero{padding:38px 0 6px;text-align:center;}
+  .eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--accent);
+    background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);padding:5px 12px;border-radius:999px;margin-bottom:16px;}
+  .live-dot{width:7px;height:7px;border-radius:50%;background:var(--up);box-shadow:0 0 0 0 var(--up-soft);animation:pulse 2s infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 var(--up-soft);}70%{box-shadow:0 0 0 7px transparent;}100%{box-shadow:0 0 0 0 transparent;}}
+  h1{font-size:clamp(28px,4.4vw,42px);line-height:1.08;letter-spacing:-.03em;font-weight:800;margin:0;}
+  h1 .grad{background:linear-gradient(120deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .sub{margin:14px auto 0;max-width:560px;color:var(--text-muted);font-size:15px;line-height:1.5;}
+
+  /* index ticker */
+  .indices{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:30px 0 6px;}
+  .ix{position:relative;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 16px 14px;
+    box-shadow:var(--shadow);overflow:hidden;transition:transform var(--tr),box-shadow var(--tr);}
+  .ix:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);}
+  .ix .nm{font-size:12.5px;font-weight:700;color:var(--text-muted);}
+  .ix .px{font-size:24px;font-weight:800;letter-spacing:-.02em;margin-top:6px;min-height:29px;}
+  .ix .chg{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:700;margin-top:8px;padding:3px 9px;border-radius:999px;min-height:22px;}
+  .up{color:var(--up);background:var(--up-soft);}
+  .down{color:var(--down);background:var(--down-soft);}
+  .ix .rsi{margin-top:11px;font-size:11px;color:var(--text-faint);display:flex;align-items:center;gap:6px;min-height:16px;}
+  .pill{font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px;background:var(--surface-3);color:var(--text-muted);}
+  .spark{position:absolute;right:0;bottom:0;width:96px;height:44px;opacity:.85;}
+  .skeleton{color:transparent;background:var(--surface-3);border-radius:6px;animation:sk 1.2s ease-in-out infinite;}
+  @keyframes sk{50%{opacity:.5;}}
+
+  /* sections + tiles */
+  .sec-h{display:flex;align-items:baseline;justify-content:space-between;margin:40px 0 16px;}
+  .sec-h h2{font-size:19px;font-weight:800;letter-spacing:-.02em;margin:0;}
+  .sec-h .grp{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-faint);}
+  .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .tile{display:flex;gap:13px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    padding:16px;box-shadow:var(--shadow);transition:transform var(--tr),box-shadow var(--tr),border-color var(--tr);}
+  .tile:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:color-mix(in srgb,var(--accent) 40%,var(--border));}
+  .tile .ic{flex:none;width:42px;height:42px;border-radius:11px;display:grid;place-items:center;font-size:20px;background:var(--accent-soft);}
+  .tile .tt{font-size:15px;font-weight:700;letter-spacing:-.01em;display:flex;align-items:center;gap:6px;color:var(--text);}
+  .tile .tt .arrow{color:var(--text-faint);font-size:13px;transition:transform var(--tr);}
+  .tile:hover .tt .arrow{transform:translate(3px,-3px);color:var(--accent);}
+  .tile .td{font-size:12.5px;color:var(--text-muted);line-height:1.45;margin-top:4px;}
+
+  main{padding-bottom:20px;}
+  @media (max-width:860px){.indices{grid-template-columns:repeat(2,1fr);}.tiles{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:520px){.indices{grid-template-columns:1fr 1fr;}.tiles{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap hd">
+    <a class="logo" href="./index.html"><span class="mark">SW</span>STOCKS<em>WORLD</em></a>
+    <nav></nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero">
+    <span class="eyebrow"><span class="live-dot"></span> Live · NSE &amp; BSE</span>
+    <h1>Indian markets, <span class="grad">decoded.</span></h1>
+    <p class="sub">Live dashboards for stocks, sectors and mutual funds — plus a strategy backtester over 25+ years of data.</p>
+  </section>
+
+  <!-- INDEX TICKER — populated from docs/*.json by JS below -->
+  <section class="indices" id="indices">
+    <div class="ix" data-src="nifty.json"       data-name="NIFTY 50"   data-kind="index"></div>
+    <div class="ix" data-src="nifty500.json"    data-name="NIFTY 500"  data-kind="index"></div>
+    <div class="ix" data-src="nifty_bank.json"  data-name="NIFTY BANK" data-kind="index"></div>
+    <div class="ix" data-src="india_vix.json"   data-name="INDIA VIX"  data-kind="vix"></div>
+  </section>
+
+  <!-- TILE GRID — rendered from window.SW_NAV (single source of truth in theme.js) -->
+  <div id="tileSections"></div>
+
+</main>
+
+<footer>
+  Data sourced from NSE/BSE &amp; Yahoo Finance. For education &amp; research only — not investment advice.
+  Investments in securities are subject to market risks; read all related documents carefully before investing.
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  // ---- index ticker ----------------------------------------------------------
+  var fmt = function (n) { return n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
+
+  // Wilder RSI(14) on a close array
+  function rsi(closes, period) {
+    period = period || 14;
+    if (closes.length <= period) return null;
+    var gain = 0, loss = 0, i;
+    for (i = 1; i <= period; i++) {
+      var d = closes[i] - closes[i - 1];
+      if (d >= 0) gain += d; else loss -= d;
+    }
+    gain /= period; loss /= period;
+    for (i = period + 1; i < closes.length; i++) {
+      var ch = closes[i] - closes[i - 1];
+      gain = (gain * (period - 1) + (ch > 0 ? ch : 0)) / period;
+      loss = (loss * (period - 1) + (ch < 0 ? -ch : 0)) / period;
+    }
+    if (loss === 0) return 100;
+    return 100 - 100 / (1 + gain / loss);
+  }
+
+  // resample a {date:close} map to one close per ISO week (last trading day of week)
+  function weekly(px) {
+    var dates = Object.keys(px).sort();
+    var out = [], lastKey = null;
+    dates.forEach(function (d) {
+      var dt = new Date(d + 'T00:00:00Z');
+      var day = dt.getUTCDay(), monday = new Date(dt);
+      monday.setUTCDate(dt.getUTCDate() - ((day + 6) % 7));
+      var key = monday.toISOString().slice(0, 10);
+      if (key === lastKey) out[out.length - 1] = px[d];
+      else { out.push(px[d]); lastKey = key; }
+    });
+    return out;
+  }
+
+  function spark(closes, up) {
+    var pts = closes.slice(-30);
+    if (pts.length < 2) return '';
+    var lo = Math.min.apply(null, pts), hi = Math.max.apply(null, pts), rng = hi - lo || 1;
+    var W = 96, H = 44, pad = 6;
+    var s = pts.map(function (v, i) {
+      var x = (i / (pts.length - 1)) * W;
+      var y = H - pad - ((v - lo) / rng) * (H - 2 * pad);
+      return x.toFixed(1) + ',' + y.toFixed(1);
+    }).join(' ');
+    var col = up ? 'var(--up)' : 'var(--down)';
+    return '<svg class="spark" viewBox="0 0 96 44" preserveAspectRatio="none"><polyline fill="none" stroke="' +
+      col + '" stroke-width="2" points="' + s + '"/></svg>';
+  }
+
+  function render(el) {
+    var name = el.getAttribute('data-name'), kind = el.getAttribute('data-kind');
+    el.innerHTML = '<div class="nm">' + name + '</div>' +
+      '<div class="px skeleton">00,000.00</div><div class="chg skeleton">0.00%</div><div class="rsi skeleton">RSI</div>';
+    fetch('./' + el.getAttribute('data-src'), { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        var px = j.px || {}, dates = Object.keys(px).sort();
+        if (dates.length < 2) throw new Error('no data');
+        var last = px[dates[dates.length - 1]], prev = px[dates[dates.length - 2]];
+        var chg = ((last - prev) / prev) * 100, up = chg >= 0;
+        var closes = dates.map(function (d) { return px[d]; });
+        var meta;
+        if (kind === 'vix') {
+          var lvl = last < 13 ? ['Low', 'calm'] : last < 20 ? ['Moderate', ''] : ['High', 'fear'];
+          meta = 'Volatility <span class="pill">' + lvl[0] + '</span>';
+        } else {
+          var w = rsi(weekly(px), 14);
+          var tag = w == null ? '' : w >= 70 ? 'Overbought' : w <= 30 ? 'Oversold' : 'Neutral';
+          meta = w == null ? '&nbsp;' : 'RSI(14)W ' + w.toFixed(1) + ' <span class="pill">' + tag + '</span>';
+        }
+        // VIX rising = risk-off, so paint its chip by convention but keep arrow honest
+        el.innerHTML = '<div class="nm">' + name + '</div>' +
+          '<div class="px">' + fmt(last) + '</div>' +
+          '<div class="chg ' + (up ? 'up' : 'down') + '">' + (up ? '▲' : '▼') + ' ' + Math.abs(chg).toFixed(2) + '%</div>' +
+          '<div class="rsi">' + meta + '</div>' + spark(closes, up);
+      })
+      .catch(function () {
+        el.innerHTML = '<div class="nm">' + name + '</div><div class="px" style="font-size:15px;color:var(--text-faint)">—</div>' +
+          '<div class="rsi">data unavailable</div>';
+      });
+  }
+  document.querySelectorAll('#indices .ix').forEach(render);
+
+  // ---- tile grid from the shared nav ----------------------------------------
+  var DESC = {
+    'nse-bse-dashboard.html': 'NSE/BSE dashboard — prices, 52-week highs, delivery & fundamentals.',
+    'sectors.html':           'Sector & industry index browser with performance and constituents.',
+    'fii-dii.html':           'Foreign & domestic institutional flows, day by day.',
+    'bank-credit.html':       'RBI bank-loan growth y/y, tracked fortnightly.',
+    'market-mood.html':       'Nifty 500 monthly turnover & breadth — the mood of the market.',
+    'results-season.html':    'Median quarterly YoY revenue, op-profit & PAT trends.',
+    'mutual-funds.html':      'Browse and compare funds by returns, category and rating.',
+    'stock-backtest.html':    'Backtest factor strategies over 25+ years of Indian market data.',
+    'saved-strategies.html':  'Curated, shareable strategies ready to run.',
+    'backtest-history.html':  'Every backtest run, saved and open to the community.'
+  };
+  var SUB = { Markets: 'Live dashboards', Funds: 'Beyond equities', Tools: 'Build your edge' };
+  var EXT = { 'fno-dashboard': 'Futures & options — OI buildup, PCR and rollover trends.' };
+
+  function descFor(href) {
+    var file = href.replace(/^\.\//, '').split('/').pop().toLowerCase();
+    if (DESC[file]) return DESC[file];
+    for (var k in EXT) if (href.indexOf(k) >= 0) return EXT[k];
+    return '';
+  }
+  function tile(it) {
+    var href = it[0], ext = href.indexOf('http') === 0;
+    return '<a class="tile" href="' + href + '"' + (ext ? ' target="_blank" rel="noopener"' : '') + '>' +
+      '<div class="ic">' + it[1] + '</div><div>' +
+      '<div class="tt">' + it[2] + '<span class="arrow">↗</span></div>' +
+      '<div class="td">' + descFor(href) + '</div></div></a>';
+  }
+  var nav = window.SW_NAV;
+  if (nav) {
+    var html = '';
+    nav.groups.forEach(function (g) {
+      var items = g.g === 'Tools' ? [nav.cta].concat(g.items) : g.items;
+      html += '<div class="sec-h"><h2>' + g.g + '</h2><span class="grp">' + (SUB[g.g] || '') + '</span></div>' +
+        '<section class="tiles">' + items.map(tile).join('') + '</section>';
+    });
+    document.getElementById('tileSections').innerHTML = html;
+  }
+})();
+</script>
+</body>
+</html>
