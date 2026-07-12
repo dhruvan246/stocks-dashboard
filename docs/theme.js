@@ -120,6 +120,7 @@
       ['./bank-credit.html',       '🏦', 'Banking Growth'],
       ['./market-mood.html',       '🌡️', 'Market Mood'],
       ['./results-season.html',    '📊', 'Results Season'],
+      ['./quarterly-results.html', '🧾', 'Quarterly Results'],
       ['./announcements.html',     '📢', 'Announcements']
     ] },
     { g: 'Funds', items: [

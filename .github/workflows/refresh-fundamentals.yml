@@ -62,27 +62,45 @@ jobs:
         if: ${{ hashFiles('docs/.fund_updated') != '' }}
         run: python3 scripts/build_results_season.py
 
-      - name: Commit updated fundamentals + results-season (only if new earnings landed)
+      # Quarterly Results page payload — rebuilt EVERY run (not just when new earnings land):
+      # result-day reactions and since-result drift move with prices daily. Reactions need the
+      # FRESH price bin (the committed docs bin is a stale snapshot — runbook §0), so pull the
+      # `data` release asset like refresh-market-mood does. Non-fatal on download failure.
+      - name: Rebuild Quarterly Results payload (fresh prices)
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if [ ! -f docs/.fund_updated ]; then
-            echo "No new earnings — nothing to commit"
-            exit 0
+          mkdir -p /tmp/qr
+          if gh release download data --pattern 'sf_stock_data.bin' --dir /tmp/qr --clobber; then
+            SF_BIN=/tmp/qr/sf_stock_data.bin python3 -X utf8 scripts/build_quarterly_results.py
+          else
+            echo "(release download failed — building from committed bin; reactions may lag)"
+            python3 -X utf8 scripts/build_quarterly_results.py
           fi
+
+      - name: Commit updated fundamentals + results pages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          FUND=0; [ -f docs/.fund_updated ] && FUND=1
           cp docs/sf_fundamentals.json /tmp/sf_fundamentals.json
           cp docs/sf_revop.json        /tmp/sf_revop.json
           cp docs/results_season.json  /tmp/results_season.json
+          cp docs/quarterly_results.json /tmp/quarterly_results.json
           for attempt in 1 2 3 4 5; do
             git fetch origin main && git reset --hard origin/main
-            cp /tmp/sf_fundamentals.json docs/sf_fundamentals.json
-            cp /tmp/sf_revop.json        docs/sf_revop.json
-            cp /tmp/results_season.json  docs/results_season.json
-            git add docs/sf_fundamentals.json docs/sf_revop.json docs/results_season.json
+            if [ "$FUND" = "1" ]; then
+              cp /tmp/sf_fundamentals.json docs/sf_fundamentals.json
+              cp /tmp/sf_revop.json        docs/sf_revop.json
+              cp /tmp/results_season.json  docs/results_season.json
+              git add docs/sf_fundamentals.json docs/sf_revop.json docs/results_season.json
+            fi
+            cp /tmp/quarterly_results.json docs/quarterly_results.json
+            git add docs/quarterly_results.json
             if git diff --cached --quiet; then echo "no diff"; exit 0; fi
-            git commit -m "Daily fundamentals + results-season refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            git commit -m "Daily fundamentals + results refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
             if git push origin HEAD:main; then echo "pushed (attempt #$attempt)"; gh workflow run pages.yml || echo "(pages deploy dispatch failed)"; exit 0; fi
             sleep $(( attempt * 3 ))
           done

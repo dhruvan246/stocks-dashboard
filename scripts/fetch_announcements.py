@@ -102,5 +102,36 @@ def main():
     for c, n in sorted(cats.items(), key=lambda kv: -kv[1])[:40]:
         print("  %5d  %s" % (n, c))
 
+    write_results_feed(allrows)
+
+# --- Results feed (docs/results_feed.json) — the tiny slice the Quarterly Results page polls ---
+FEED_OUT = os.path.join(HERE_DIR, "..", "docs", "results_feed.json") if False else None  # set below
+RESULT_CAP_RE = re.compile(r"financial\s+results?\s+for\s+the\s+(?:period|quarter|year)|"
+                           r"submitted.{0,40}financial\s+results?", re.I)
+RESULT_CAT_RE = re.compile(r"^financial\s+result", re.I)
+QE_RE = re.compile(r"(?:period|quarter|year)\s+ended\s+([A-Za-z]{3})[a-z]*\s+(\d{1,2}),?\s+(\d{4})", re.I)
+
+def write_results_feed(allrows):
+    """Slice results-filing announcements into a small standalone JSON (same schema, + parsed
+    quarter-end when the caption states it). Kept tiny so the page can poll it cheaply."""
+    feed = []
+    for r in allrows:
+        cat, cap = r[3], r[4] or ""
+        if not (RESULT_CAT_RE.search(cat) or
+                (cat == "Outcome of Board Meeting" and RESULT_CAP_RE.search(cap))):
+            continue
+        qe = 0
+        m = QE_RE.search(cap)
+        if m:
+            mo = MON.get(m.group(1).lower())
+            if mo: qe = int(m.group(3)) * 10000 + mo * 100 + int(m.group(2))
+        feed.append([r[0], r[1], r[2], qe, (cap[:220] + "…") if len(cap) > 221 else cap, r[5]])
+    feed.sort(key=lambda r: (r[2], r[0]), reverse=True)
+    outp = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "docs", "results_feed.json")
+    ist = datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)
+    json.dump({"updated": ist.strftime("%Y-%m-%d %H:%M IST"), "rows": feed},
+              open(outp, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
+    print("WROTE %s: %d results-feed rows" % (os.path.normpath(outp), len(feed)))
+
 if __name__ == "__main__":
     main()

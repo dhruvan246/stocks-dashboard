@@ -34,8 +34,13 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Fetch NSE corporate announcements (rolling ~31 days)
+      - name: Fetch NSE corporate announcements (rolling ~31 days) + results feed
         run: python3 -X utf8 scripts/fetch_announcements.py
+
+      # Upcoming results calendar (board meetings with a "Financial Results" purpose) for the
+      # Quarterly Results page. Non-fatal: a failed fetch keeps the previous calendar.
+      - name: Fetch NSE results calendar
+        run: python3 -X utf8 scripts/fetch_results_calendar.py || echo "(calendar fetch failed — keeping previous file)"
 
       - name: Commit updated announcements
         env:
@@ -46,12 +51,16 @@ jobs:
 
           mkdir -p /tmp/ann/docs
           cp docs/announcements.json /tmp/ann/docs/
+          cp docs/results_feed.json     /tmp/ann/docs/ 2>/dev/null || true
+          cp docs/results_calendar.json /tmp/ann/docs/ 2>/dev/null || true
 
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
             cp /tmp/ann/docs/announcements.json docs/announcements.json
-            git add docs/announcements.json
+            cp /tmp/ann/docs/results_feed.json     docs/results_feed.json     2>/dev/null || true
+            cp /tmp/ann/docs/results_calendar.json docs/results_calendar.json 2>/dev/null || true
+            git add docs/announcements.json docs/results_feed.json docs/results_calendar.json
 
             if git diff --cached --quiet; then
               echo "No new announcements — nothing to commit"
