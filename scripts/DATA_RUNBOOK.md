@@ -493,9 +493,19 @@ drop from Oct-2020; nothing legitimately pre-15:30 should disappear (by construc
 ## 13. HOME PAGE  (docs/index.html — the site landing page, built 2026-07-12)
 `index.html` is now a real landing page (was a 1-line redirect to the dashboard). Two parts, ValuePicker-style:
 - **Index ticker** (top): Nifty 50 / Nifty 500 / Nifty Bank / India VIX — price, day-change %, weekly RSI(14),
-  30-pt sparkline. Rendered CLIENT-SIDE from `docs/*.json` (`nifty.json`, `nifty500.json`, `nifty_bank.json`,
-  `india_vix.json`). VIX card shows a volatility band (Low/Moderate/High) instead of RSI. Change % = last two
-  daily closes; a DOWN VIX day correctly shows ▼ (don't "fix" it to match ValuePicker, which mislabels VIX up).
+  sparkline. VIX card shows a volatility band (Low/Moderate/High) instead of RSI. A DOWN VIX day correctly
+  shows ▼ (don't "fix" it to match ValuePicker, which mislabels VIX up).
+- **LIVE intraday (added 2026-07-12):** the ticker is genuinely live during market hours, not just the daily
+  close. Two-layer render: (1) seed instantly from the committed daily-close JSONs (`nifty.json` /
+  `nifty500.json` / `nifty_bank.json` / `india_vix.json`) so it's never blank; (2) then fetch live Yahoo quotes
+  (`^NSEI/^CRSLDX/^NSEBANK/^INDIAVIX`, `interval=1m&range=1d`) and repaint. GitHub Pages is static + Yahoo blocks
+  browser CORS, so the live call tunnels through a CORS-proxy CHAIN: `corsproxy.io/?url=` →
+  `api.allorigins.win/get?url=` (both verified working 2026-07-12; direct Yahoo, thingproxy, codetabs,
+  cors.eu.org all CORS-fail from the browser). Polls every 45s ONLY Mon–Fri 09:15–15:30 IST and only when the
+  tab is visible; shows "● LIVE" when open, "AT CLOSE" otherwise. If every proxy is down it silently keeps the
+  daily-close seed. Weekly RSI is computed from the JSON history (barely moves intraday) and cached. If the
+  proxies ever die, stand up your own CORS shim (Cloudflare Worker / Supabase edge fn) in front of Yahoo and put
+  it first in the `PROXIES` chain in index.html.
 - **Tile grid** (below): every page as a card. Rendered from `window.SW_NAV` (exported by `theme.js`) so it stays
   in sync with the ONE nav source of truth — add a page in `theme.js` `NAV_GROUPS` and it appears here too. Only
   the per-tile description lives in index.html (`DESC`/`EXT` maps, keyed by filename); a new page gets a blank

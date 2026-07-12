@@ -95,10 +95,10 @@
 
   <!-- INDEX TICKER — populated from docs/*.json by JS below -->
   <section class="indices" id="indices">
-    <div class="ix" data-src="nifty.json"       data-name="NIFTY 50"   data-kind="index"></div>
-    <div class="ix" data-src="nifty500.json"    data-name="NIFTY 500"  data-kind="index"></div>
-    <div class="ix" data-src="nifty_bank.json"  data-name="NIFTY BANK" data-kind="index"></div>
-    <div class="ix" data-src="india_vix.json"   data-name="INDIA VIX"  data-kind="vix"></div>
+    <div class="ix" data-src="nifty.json"       data-ysym="%5ENSEI"     data-name="NIFTY 50"   data-kind="index"></div>
+    <div class="ix" data-src="nifty500.json"    data-ysym="%5ECRSLDX"   data-name="NIFTY 500"  data-kind="index"></div>
+    <div class="ix" data-src="nifty_bank.json"  data-ysym="%5ENSEBANK"  data-name="NIFTY BANK" data-kind="index"></div>
+    <div class="ix" data-src="india_vix.json"   data-ysym="%5EINDIAVIX" data-name="INDIA VIX"  data-kind="vix"></div>
   </section>
 
   <!-- TILE GRID — rendered from window.SW_NAV (single source of truth in theme.js) -->
@@ -167,39 +167,111 @@
       col + '" stroke-width="2" points="' + s + '"/></svg>';
   }
 
-  function render(el) {
-    var name = el.getAttribute('data-name'), kind = el.getAttribute('data-kind');
-    el.innerHTML = '<div class="nm">' + name + '</div>' +
+  // metadata line (weekly RSI for indices, volatility band for VIX). RSI is cached
+  // from the daily JSON history (it barely moves intraday); VIX band tracks live price.
+  function metaLine(el, price) {
+    if (el.getAttribute('data-kind') === 'vix') {
+      var lvl = price < 13 ? 'Low' : price < 20 ? 'Moderate' : 'High';
+      return 'Volatility <span class="pill">' + lvl + '</span>';
+    }
+    var w = el._rsi;
+    if (w == null) return '&nbsp;';
+    var tag = w >= 70 ? 'Overbought' : w <= 30 ? 'Oversold' : 'Neutral';
+    return 'RSI(14)W ' + w.toFixed(1) + ' <span class="pill">' + tag + '</span>';
+  }
+  function badge(live) {
+    return live
+      ? '<span style="margin-left:6px;font-size:9px;font-weight:800;letter-spacing:.04em;color:var(--up)">● LIVE</span>'
+      : '<span style="margin-left:6px;font-size:9px;font-weight:700;letter-spacing:.04em;color:var(--text-faint)">AT CLOSE</span>';
+  }
+  function paint(el, price, prevClose, series, live) {
+    if (price == null || prevClose == null) return;
+    var chg = ((price - prevClose) / prevClose) * 100, up = chg >= 0;
+    el.innerHTML =
+      '<div class="nm">' + el.getAttribute('data-name') + badge(live) + '</div>' +
+      '<div class="px">' + fmt(price) + '</div>' +
+      '<div class="chg ' + (up ? 'up' : 'down') + '">' + (up ? '▲' : '▼') + ' ' + Math.abs(chg).toFixed(2) + '%</div>' +
+      '<div class="rsi">' + metaLine(el, price) + '</div>' +
+      spark(series && series.length > 1 ? series : el._daily || [], up);
+  }
+
+  // 1) seed from the committed daily-close JSON — always available, never blank
+  function loadStatic(el) {
+    el.innerHTML = '<div class="nm">' + el.getAttribute('data-name') + '</div>' +
       '<div class="px skeleton">00,000.00</div><div class="chg skeleton">0.00%</div><div class="rsi skeleton">RSI</div>';
-    fetch('./' + el.getAttribute('data-src'), { cache: 'no-store' })
+    return fetch('./' + el.getAttribute('data-src'), { cache: 'no-store' })
       .then(function (r) { return r.json(); })
       .then(function (j) {
         var px = j.px || {}, dates = Object.keys(px).sort();
-        if (dates.length < 2) throw new Error('no data');
+        if (dates.length < 2) throw 0;
+        el._daily = dates.map(function (d) { return px[d]; });
+        el._rsi = el.getAttribute('data-kind') === 'vix' ? null : rsi(weekly(px), 14);
         var last = px[dates[dates.length - 1]], prev = px[dates[dates.length - 2]];
-        var chg = ((last - prev) / prev) * 100, up = chg >= 0;
-        var closes = dates.map(function (d) { return px[d]; });
-        var meta;
-        if (kind === 'vix') {
-          var lvl = last < 13 ? ['Low', 'calm'] : last < 20 ? ['Moderate', ''] : ['High', 'fear'];
-          meta = 'Volatility <span class="pill">' + lvl[0] + '</span>';
-        } else {
-          var w = rsi(weekly(px), 14);
-          var tag = w == null ? '' : w >= 70 ? 'Overbought' : w <= 30 ? 'Oversold' : 'Neutral';
-          meta = w == null ? '&nbsp;' : 'RSI(14)W ' + w.toFixed(1) + ' <span class="pill">' + tag + '</span>';
-        }
-        // VIX rising = risk-off, so paint its chip by convention but keep arrow honest
-        el.innerHTML = '<div class="nm">' + name + '</div>' +
-          '<div class="px">' + fmt(last) + '</div>' +
-          '<div class="chg ' + (up ? 'up' : 'down') + '">' + (up ? '▲' : '▼') + ' ' + Math.abs(chg).toFixed(2) + '%</div>' +
-          '<div class="rsi">' + meta + '</div>' + spark(closes, up);
+        paint(el, last, prev, null, false);
       })
       .catch(function () {
-        el.innerHTML = '<div class="nm">' + name + '</div><div class="px" style="font-size:15px;color:var(--text-faint)">—</div>' +
-          '<div class="rsi">data unavailable</div>';
+        el.innerHTML = '<div class="nm">' + el.getAttribute('data-name') + '</div>' +
+          '<div class="px" style="font-size:15px;color:var(--text-faint)">—</div><div class="rsi">data unavailable</div>';
       });
   }
-  document.querySelectorAll('#indices .ix').forEach(render);
+
+  // 2) live intraday quote from Yahoo, tunnelled through a CORS proxy chain
+  var PROXIES = [
+    function (u) { return { url: 'https://corsproxy.io/?url=' + encodeURIComponent(u), wrap: false }; },
+    function (u) { return { url: 'https://api.allorigins.win/get?url=' + encodeURIComponent(u), wrap: true }; }
+  ];
+  function fetchLive(sym) {
+    var y = 'https://query1.finance.yahoo.com/v8/finance/chart/' + sym + '?interval=1m&range=1d';
+    var i = 0;
+    function tryNext() {
+      if (i >= PROXIES.length) return Promise.reject('all proxies failed');
+      var p = PROXIES[i++](y);
+      return fetch(p.url, { cache: 'no-store' })
+        .then(function (r) { if (!r.ok) throw 0; return r.text(); })
+        .then(function (t) {
+          var j = JSON.parse(p.wrap ? JSON.parse(t).contents : t);
+          var res = j.chart.result[0], m = res.meta;
+          var series = [];
+          if (res.timestamp && res.indicators && res.indicators.quote) {
+            var cl = res.indicators.quote[0].close || [];
+            for (var k = 0; k < cl.length; k++) if (cl[k] != null) series.push(cl[k]);
+          }
+          var price = m.regularMarketPrice, prev = m.chartPreviousClose != null ? m.chartPreviousClose : m.previousClose;
+          if (price == null || prev == null) throw 0;
+          return { price: price, prev: prev, series: series };
+        })
+        .catch(function () { return tryNext(); });
+    }
+    return tryNext();
+  }
+  function refreshLive(el) {
+    return fetchLive(el.getAttribute('data-ysym'))
+      .then(function (q) { paint(el, q.price, q.prev, q.series, marketOpen()); })
+      .catch(function () { /* keep last good paint */ });
+  }
+
+  // NSE cash hours: Mon–Fri 09:15–15:30 IST (small pad). IST = UTC+5:30.
+  function marketOpen() {
+    var ist = new Date(Date.now() + (new Date().getTimezoneOffset() * 60000) + 5.5 * 3600000);
+    var day = ist.getDay(), mins = ist.getHours() * 60 + ist.getMinutes();
+    return day >= 1 && day <= 5 && mins >= 9 * 60 && mins <= 15 * 60 + 45;
+  }
+
+  var cards = [].slice.call(document.querySelectorAll('#indices .ix'));
+  var timer = null;
+  function pollOnce() { cards.forEach(refreshLive); }
+  function startPolling() {
+    if (timer) return;
+    timer = setInterval(function () {
+      if (document.hidden) return;              // pause when tab not visible
+      if (marketOpen()) pollOnce();             // live updates only during market hours
+    }, 45000);
+  }
+  Promise.all(cards.map(loadStatic)).then(function () {
+    pollOnce();          // one live fetch on load (shows last traded price even when closed)
+    startPolling();
+  });
+  document.addEventListener('visibilitychange', function () { if (!document.hidden && marketOpen()) pollOnce(); });
 
   // ---- tile grid from the shared nav ----------------------------------------
   var DESC = {
