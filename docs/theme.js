@@ -119,7 +119,8 @@
       ['./fii-dii.html',           '🌐', 'FII/DII'],
       ['./bank-credit.html',       '🏦', 'Banking Growth'],
       ['./market-mood.html',       '🌡️', 'Market Mood'],
-      ['./results-season.html',    '📊', 'Results Season']
+      ['./results-season.html',    '📊', 'Results Season'],
+      ['./announcements.html',     '📢', 'Announcements']
     ] },
     { g: 'Funds', items: [
       ['./mutual-funds.html',                       '💰', 'Mutual Funds'],

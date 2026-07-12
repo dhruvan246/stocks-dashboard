@@ -514,3 +514,28 @@ drop from Oct-2020; nothing legitimately pre-15:30 should disappear (by construc
   `update_yahoo_index()` (same Yahoo path as nifty500's ^CRSLDX), history to 2012, refreshed by the daily
   `refresh-fii-dii.yml` (both files added to its cp/git-add list). Fill-only merge; keeps history on fetch fail.
 - **NOT built from a template** — edit `index.html` directly (unlike nse-bse-dashboard.html / mutual-funds.html).
+
+---
+
+## 14. CORPORATE ANNOUNCEMENTS BROWSER  (docs/announcements.html — "Announcements" nav, built 2026-07-12)
+NSE corporate-announcements browser (reference-style: symbol + date-range + category-chip filters over a
+table with caption + PDF links). Hand-maintained page; data = **`docs/announcements.json`** (rolling ~31 days,
+~15k rows, ~4.7 MB raw — Pages gzips it on the wire; fetched WITHOUT a cache-buster per §9).
+- **Fetch:** `python -X utf8 scripts/fetch_announcements.py` — reuses `build_fundamentals`'s CI-proven NSE
+  session (plain urllib + Chrome UA + `nse_jar()` cookie warmup, NOT curl_cffi) against
+  `/api/corporate-announcements?index=equities&from_date=&to_date=` in **7-day chunks** (5 calls/run).
+  Self-healing: **merges with the existing file** (a failed chunk keeps yesterday's rows), trims to the
+  31-day window, and **ABORTS below 200 rows** (never clobbers good data with a broken fetch).
+  Schema: `{updated,from,to,rows:[[symbol,company,"YYYY-MM-DD HH:MM:SS",category,caption,file],…]}`;
+  captions capped at 500 chars; `file` has the `https://nsearchives.nseindia.com/corporate/` prefix stripped
+  (page re-adds it; non-matching URLs kept absolute).
+- **Auto-refresh:** `.github/workflows/refresh-announcements.yml` — daily ~4×/day IST (08:30/14:00/18:00/21:30),
+  same reset-hard commit-retry loop as FII/DII, commits ONLY `docs/announcements.json`, dispatches pages.yml.
+  Manual: `gh workflow run refresh-announcements.yml` or repository_dispatch `announcements-refresh`.
+- **Categories:** NSE's raw `desc` subject (~109 values incl. long tail) is bucketed CLIENT-SIDE into ~33 clean
+  chips by `CATRULES` (ordered regex list in announcements.html; first match wins, default "Others"). The raw
+  desc still shows in the "Announcement type" column. New NSE subjects fall into Others until a rule is added.
+- **Page style gotcha:** custom classes (.chip/.catpill/.docbtn) are styled with **theme vars**
+  (`var(--surface-2)/--accent/…`) so Light/Dark/Soft work; Tailwind OPACITY variants (`bg-slate-100/80`)
+  are NOT covered by theme.css's dark overrides (it matches exact class names) — use the plain class.
+- Symbol cell links to `./stock.html?sym=` ; nav entry in theme.js NAV_GROUPS (+ DESC line in index.html).

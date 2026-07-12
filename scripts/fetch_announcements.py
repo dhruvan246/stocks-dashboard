@@ -1,0 +1,106 @@
+# -*- coding: utf-8 -*-
+"""Fetch NSE corporate announcements (equities, ALL symbols) for a rolling window and write
+docs/announcements.json for the Announcements page. Reuses build_fundamentals' CI-proven NSE
+session (plain urllib + Chrome UA + cookie warmup — same as the daily fundamentals cron).
+
+- Window: last WINDOW_DAYS days, fetched in CHUNK_DAYS chunks (small chunks keep each
+  response modest and let one bad chunk fail without losing the run).
+- Self-healing: merges with the existing file (a failed chunk today keeps yesterday's rows),
+  then trims to the window. Refuses to overwrite good data if the result looks broken (<MIN_ROWS).
+- Output schema (compact arrays):
+  {"updated","from","to","rows":[[symbol, company, "YYYY-MM-DD HH:MM:SS", category, caption, file], ...]}
+  `file` is the attachment with the common "https://nsearchives.nseindia.com/corporate/" prefix
+  stripped (the page re-adds it); other/absolute URLs are kept as-is.
+
+Run: python -X utf8 scripts/fetch_announcements.py
+"""
+import os, sys, json, datetime, re
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import build_fundamentals as B  # _get / nse_jar / UA
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+OUT = os.path.join(HERE, "..", "docs", "announcements.json")
+WINDOW_DAYS = 31
+CHUNK_DAYS = 7
+MIN_ROWS = 200          # a 31-day window always has thousands; fewer = broken fetch, keep old file
+CAPTION_MAX = 500
+PDF_PREFIX = "https://nsearchives.nseindia.com/corporate/"
+MON = {"jan":1,"feb":2,"mar":3,"apr":4,"may":5,"jun":6,"jul":7,"aug":8,"sep":9,"oct":10,"nov":11,"dec":12}
+
+def ddmmyyyy(d): return "%02d-%02d-%04d" % (d.day, d.month, d.year)
+
+def parse_dt(rec):
+    """an_dt '11-Jul-2026 18:07:44' or sort_date '2026-07-11 18:07:44' -> ISO 'YYYY-MM-DD HH:MM:SS'."""
+    s = str(rec.get("sort_date") or "")
+    m = re.match(r"(\d{4}-\d{2}-\d{2})[ T]?(\d{2}:\d{2}(:\d{2})?)?", s)
+    if m: return m.group(1) + " " + ((m.group(2) or "00:00") + ":00")[:8]
+    s = str(rec.get("an_dt") or "")
+    m = re.match(r"(\d{2})-([A-Za-z]{3})-(\d{4})\s*(\d{2}:\d{2}(:\d{2})?)?", s)
+    if not m: return None
+    mo = MON.get(m.group(2).lower())
+    if not mo: return None
+    return "%s-%02d-%s %s" % (m.group(3), mo, m.group(1), ((m.group(4) or "00:00") + ":00")[:8])
+
+def key_of(r): return "|".join((r[0], r[2], r[3], r[5]))
+
+def main():
+    today = datetime.date.today()
+    start = today - datetime.timedelta(days=WINDOW_DAYS - 1)
+    jar = B.nse_jar()
+    hdr = {"User-Agent": B.UA, "Accept": "application/json, text/plain, */*",
+           "Referer": "https://www.nseindia.com/companies-listing/corporate-filings-announcements"}
+    rows, errs = {}, 0
+    d = start
+    while d <= today:
+        e = min(d + datetime.timedelta(days=CHUNK_DAYS - 1), today)
+        url = ("https://www.nseindia.com/api/corporate-announcements?index=equities"
+               "&from_date=%s&to_date=%s" % (ddmmyyyy(d), ddmmyyyy(e)))
+        try:
+            j = json.loads(B._get(url, headers=hdr, jar=jar, timeout=90))
+        except Exception as ex:
+            print("ERR chunk %s..%s: %s" % (d, e, ex)); errs += 1; j = []
+        n = 0
+        for rec in (j if isinstance(j, list) else []):
+            sym = str(rec.get("symbol") or "").strip().upper()
+            dt = parse_dt(rec)
+            if not sym or not dt: continue
+            cat = re.sub(r"\s+", " ", str(rec.get("desc") or "")).strip() or "Others"
+            cap = re.sub(r"\s+", " ", str(rec.get("attchmntText") or "")).strip()
+            if len(cap) > CAPTION_MAX: cap = cap[:CAPTION_MAX - 1].rstrip() + "…"
+            f = str(rec.get("attchmntFile") or "").strip()
+            if f.startswith(PDF_PREFIX): f = f[len(PDF_PREFIX):]
+            co = re.sub(r"\s+", " ", str(rec.get("sm_name") or "")).strip()
+            r = [sym, co, dt, cat, cap, f]
+            rows[key_of(r)] = r; n += 1
+        print("chunk %s..%s -> %d recs" % (d, e, n))
+        d = e + datetime.timedelta(days=1)
+
+    fresh = len(rows)
+    # merge yesterday's file so a partially-failed fetch never loses rows
+    if os.path.exists(OUT):
+        try:
+            for r in json.load(open(OUT, encoding="utf-8")).get("rows", []):
+                if isinstance(r, list) and len(r) == 6: rows.setdefault(key_of(r), r)
+        except Exception as ex:
+            print("WARN old file unreadable:", ex)
+
+    lo = start.isoformat()
+    allrows = [r for r in rows.values() if r[2][:10] >= lo]
+    allrows.sort(key=lambda r: (r[2], r[0]), reverse=True)
+    if len(allrows) < MIN_ROWS:
+        print("ABORT: only %d rows (fresh %d, errs %d) — keeping existing file" % (len(allrows), fresh, errs))
+        sys.exit(1)
+
+    ist = datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)
+    out = {"updated": ist.strftime("%Y-%m-%d %H:%M IST"), "from": lo, "to": today.isoformat(), "rows": allrows}
+    json.dump(out, open(OUT, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
+
+    cats = {}
+    for r in allrows: cats[r[3]] = cats.get(r[3], 0) + 1
+    print("WROTE %s: %d rows (%d fresh), %d categories, %.1f MB" %
+          (os.path.normpath(OUT), len(allrows), fresh, len(cats), os.path.getsize(OUT) / 1e6))
+    for c, n in sorted(cats.items(), key=lambda kv: -kv[1])[:40]:
+        print("  %5d  %s" % (n, c))
+
+if __name__ == "__main__":
+    main()

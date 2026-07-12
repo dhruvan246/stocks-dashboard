@@ -1,0 +1,71 @@
+name: Refresh announcements
+
+on:
+  schedule:
+    # ~4×/day IST: 08:30, 14:00, 18:00, 21:30 — filings arrive all day, with the
+    # big flood after market close. Runs daily (weekend board meetings exist).
+    # GitHub cron is best-effort; the fetch self-heals (31-day window, merge-based).
+    - cron: "0 3 * * *"
+    - cron: "30 8 * * *"
+    - cron: "30 12 * * *"
+    - cron: "0 16 * * *"
+  repository_dispatch:
+    types: [announcements-refresh]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  actions: write   # dispatch pages.yml after a change so the data publishes itself
+
+concurrency:
+  group: refresh-announcements
+  cancel-in-progress: false
+
+jobs:
+  refresh-announcements:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Fetch NSE corporate announcements (rolling ~31 days)
+        run: python3 -X utf8 scripts/fetch_announcements.py
+
+      - name: Commit updated announcements
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          mkdir -p /tmp/ann/docs
+          cp docs/announcements.json /tmp/ann/docs/
+
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/ann/docs/announcements.json docs/announcements.json
+            git add docs/announcements.json
+
+            if git diff --cached --quiet; then
+              echo "No new announcements — nothing to commit"
+              exit 0
+            fi
+
+            git commit -m "Announcements refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then
+              echo "Pushed on attempt #$attempt"
+              gh workflow run pages.yml || echo "(pages deploy dispatch failed — will publish on next push)"
+              exit 0
+            fi
+            echo "Push attempt #$attempt rejected; resetting and retrying"
+            sleep $(( attempt * 3 ))
+          done
+          echo "Failed to push after 5 attempts"
+          exit 1

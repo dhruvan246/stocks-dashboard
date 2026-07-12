@@ -13,16 +13,20 @@
   .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
   th[data-s]{cursor:pointer;user-select:none;white-space:nowrap}
   th[data-s]:hover{color:#2563eb}
+  /* theme-variable styling so Light / Dark / Soft all work (theme.css defines the vars) */
   .chip{display:inline-flex;align-items:center;font-size:11px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;
         padding:6px 12px;border-radius:9999px;cursor:pointer;user-select:none;white-space:nowrap;
-        background:#f1f5f9;color:#334155;border:1px solid #e2e8f0;transition:background .12s,color .12s,border-color .12s}
-  .chip:hover{background:#e2e8f0}
-  .chip.on{background:#2563eb;color:#fff;border-color:#2563eb}
+        background:var(--surface-2,#f1f5f9);color:var(--text-muted,#334155);border:1px solid var(--border,#e2e8f0);
+        transition:background .12s,color .12s,border-color .12s}
+  .chip:hover{background:var(--accent-soft,#e2e8f0);color:var(--accent,#334155);border-color:var(--accent,#cbd5e1)}
+  .chip.on{background:var(--accent,#2563eb);color:#fff;border-color:var(--accent,#2563eb)}
   .catpill{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
-           padding:3px 10px;border-radius:9999px;background:#f1f5f9;color:#475569;white-space:nowrap}
+           padding:3px 10px;border-radius:9999px;background:var(--surface-2,#f1f5f9);color:var(--text-muted,#475569);
+           border:1px solid var(--border,#e2e8f0);white-space:nowrap}
   .docbtn{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:4px 10px;border-radius:.5rem;
-          background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;white-space:nowrap}
-  .docbtn:hover{background:#dbeafe}
+          background:var(--accent-soft,#eff6ff);color:var(--accent,#1d4ed8);border:1px solid var(--border-strong,#bfdbfe);white-space:nowrap;
+          transition:border-color .12s}
+  .docbtn:hover{border-color:var(--accent,#93c5fd)}
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
@@ -81,7 +85,7 @@
       <div id="count" class="text-sm font-semibold text-slate-700 mb-2"></div>
       <div class="overflow-x-auto rounded-lg border border-slate-100">
         <table class="w-full text-sm min-w-[900px]">
-          <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200 bg-slate-100/80"><tr>
+          <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200 bg-slate-100"><tr>
             <th data-s="s"   class="text-left py-2.5 px-3">Symbol ⇅</th>
             <th data-s="dt"  class="text-left px-3">Date ⇅</th>
             <th data-s="cat" class="text-left px-3">Category ⇅</th>
@@ -166,7 +170,7 @@ function renderRows(){
   let h = '';
   for (let i = 0; i < upto; i++){
     const r = filtered[i];
-    h += '<tr class="align-top hover:bg-slate-50/70">' +
+    h += '<tr class="align-top hover:bg-slate-50">' +
       '<td class="py-3 px-3"><a class="font-bold text-blue-700 hover:underline" href="./stock.html?sym=' + encodeURIComponent(r.s) + '" title="' + esc(r.co) + '">' + esc(r.s) + '</a></td>' +
       '<td class="py-3 px-3 whitespace-nowrap text-slate-600">' + r.date + '<div class="text-[10px] text-slate-400">' + r.time + '</div></td>' +
       '<td class="py-3 px-3"><span class="catpill">' + esc(r.cat) + '</span></td>' +
@@ -198,12 +202,12 @@ function buildChips(){
   for (const r of ROWS) present.set(r.cat, (present.get(r.cat) || 0) + 1);
   const names = [...present.keys()].sort((a,b) => (a === 'Others') - (b === 'Others') || a.localeCompare(b));
   $('chips').innerHTML = names.map(n =>
-    '<span class="chip" data-c="' + esc(n) + '" title="' + present.get(n).toLocaleString('en-IN') + ' announcements">' + esc(n) + '</span>').join('');
+    '<button type="button" class="chip" data-c="' + esc(n) + '" aria-pressed="false" title="' + present.get(n).toLocaleString('en-IN') + ' announcements">' + esc(n) + '</button>').join('');
   $('chips').addEventListener('click', e => {
     const el = e.target.closest('.chip'); if (!el) return;
     const c = el.getAttribute('data-c');
     state.cats.has(c) ? state.cats.delete(c) : state.cats.add(c);
-    el.classList.toggle('on');
+    el.setAttribute('aria-pressed', el.classList.toggle('on') ? 'true' : 'false');
     updateClearBtn();
     applyFilters();
   });
