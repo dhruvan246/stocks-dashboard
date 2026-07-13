@@ -105,11 +105,37 @@ def main():
     write_results_feed(allrows)
 
 # --- Results feed (docs/results_feed.json) — the tiny slice the Quarterly Results page polls ---
-FEED_OUT = os.path.join(HERE_DIR, "..", "docs", "results_feed.json") if False else None  # set below
 RESULT_CAP_RE = re.compile(r"financial\s+results?\s+for\s+the\s+(?:period|quarter|year)|"
                            r"submitted.{0,40}financial\s+results?", re.I)
 RESULT_CAT_RE = re.compile(r"^financial\s+result", re.I)
-QE_RE = re.compile(r"(?:period|quarter|year)\s+ended\s+([A-Za-z]{3})[a-z]*\s+(\d{1,2}),?\s+(\d{4})", re.I)
+# ⚠️ A results filing in Jul/Aug/Sep is often a LATE March (Q4/annual) result, not the current June
+# quarter — so read the reporting period per filing and ANCHOR on an "ended" clause (never assume the
+# current season). Snap to a quarter-end month; 0 (no badge) when the period isn't stated.
+_DAY_LAST = {3: 31, 6: 30, 9: 30, 12: 31}
+_ENDED_RE = re.compile(r"end(?:ed|ing)\s+(?:on\s+)?(.{0,30}?\d{4})", re.I)
+_DMY_RE = re.compile(r"(\d{1,2})(?:st|nd|rd|th)?[\s,]+([A-Za-z]{3,9})[,\s]+(\d{4})", re.I)
+_MDY_RE = re.compile(r"([A-Za-z]{3,9})\s+(\d{1,2}),?\s+(\d{4})", re.I)
+_NUM_RE = re.compile(r"(\d{1,2})[.\-/](\d{1,2})[.\-/](\d{4})")
+
+def _qe_mk(mo, y): return (y * 10000 + mo * 100 + _DAY_LAST[mo]) if mo in _DAY_LAST else 0
+
+def parse_qe(*texts):
+    h = " ".join(str(t or "") for t in texts)
+    for mm in _ENDED_RE.finditer(h):
+        seg = mm.group(1)
+        m = _DMY_RE.search(seg)
+        if m:
+            qe = _qe_mk(MON.get(m.group(2).lower()[:3], 0), int(m.group(3)))
+            if qe: return qe
+        m = _MDY_RE.search(seg)
+        if m:
+            qe = _qe_mk(MON.get(m.group(1).lower()[:3], 0), int(m.group(3)))
+            if qe: return qe
+        m = _NUM_RE.search(seg)
+        if m:
+            qe = _qe_mk(int(m.group(2)), int(m.group(3)))
+            if qe: return qe
+    return 0
 
 def write_results_feed(allrows):
     """Slice results-filing announcements into a small standalone JSON (same schema, + parsed
@@ -120,11 +146,7 @@ def write_results_feed(allrows):
         if not (RESULT_CAT_RE.search(cat) or
                 (cat == "Outcome of Board Meeting" and RESULT_CAP_RE.search(cap))):
             continue
-        qe = 0
-        m = QE_RE.search(cap)
-        if m:
-            mo = MON.get(m.group(1).lower())
-            if mo: qe = int(m.group(3)) * 10000 + mo * 100 + int(m.group(2))
+        qe = parse_qe(cap)
         feed.append([r[0], r[1], r[2], qe, (cap[:220] + "…") if len(cap) > 221 else cap, r[5]])
     feed.sort(key=lambda r: (r[2], r[0]), reverse=True)
     outp = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "docs", "results_feed.json")

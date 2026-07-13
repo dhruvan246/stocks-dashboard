@@ -28,22 +28,35 @@ CAL = os.path.join(DOCS, "results_calendar.json")
 FEED_WINDOW_DAYS = 31
 BSE_ATT = "https://www.bseindia.com/xml-data/corpfiling/AttachLive/"
 MON = {"jan":1,"feb":2,"mar":3,"apr":4,"may":5,"jun":6,"jul":7,"aug":8,"sep":9,"sept":9,"oct":10,"nov":11,"dec":12}
-QE_HEAD = re.compile(r"(?:quarter|period|year|qtr)\s+ended\s+(?:on\s+)?(\d{1,2})(?:st|nd|rd|th)?[\s,]+([A-Za-z]{3,9})[,\s]+(\d{4})", re.I)
-QE_HEAD2 = re.compile(r"([A-Za-z]{3,9})\s+(\d{1,2}),?\s+(\d{4})", re.I)
-DAY_LAST = {3:31, 6:30, 9:30, 12:31}
+# ⚠️ A results filing in Jul/Aug/Sep is very often a LATE March (Q4/annual) result, NOT the current
+# June quarter — of BSE result filings in a recent 30-day window, 72 said March vs 31 June. So NEVER
+# assume the current season: read the reporting period per filing, snapped to a quarter-end month, and
+# ANCHOR strictly on an "ended/ending" clause so a board-meeting date ("held on July 1, 2026") can't leak in.
+DAY_LAST = {3: 31, 6: 30, 9: 30, 12: 31}
+ENDED_RE = re.compile(r"end(?:ed|ing)\s+(?:on\s+)?(.{0,30}?\d{4})", re.I)
+DMY_RE = re.compile(r"(\d{1,2})(?:st|nd|rd|th)?[\s,]+([A-Za-z]{3,9})[,\s]+(\d{4})", re.I)   # 31st March 2026
+MDY_RE = re.compile(r"([A-Za-z]{3,9})\s+(\d{1,2}),?\s+(\d{4})", re.I)                        # March 31, 2026
+NUM_RE = re.compile(r"(\d{1,2})[.\-/](\d{1,2})[.\-/](\d{4})")                                # 31.03.2026
 
-def qe_from_head(h):
-    """Parse the reporting quarter-end (int YYYYMMDD, snapped to a quarter month) from a headline."""
-    h = str(h or "")
-    for rgx, order in ((QE_HEAD, "dmy"), (QE_HEAD2, "mdy")):
-        m = rgx.search(h)
-        if not m: continue
-        try:
-            if order == "dmy": mo = MON.get(m.group(2).lower()[:3]); y = int(m.group(3))
-            else: mo = MON.get(m.group(1).lower()[:3]); y = int(m.group(3))
-        except Exception: continue
-        if not mo or mo not in DAY_LAST: continue
-        return y * 10000 + mo * 100 + DAY_LAST[mo]
+def _mk(mo, y):
+    return (y * 10000 + mo * 100 + DAY_LAST[mo]) if (mo in DAY_LAST) else 0
+
+def _seg_qe(seg):
+    m = DMY_RE.search(seg)
+    if m: return _mk(MON.get(m.group(2).lower()[:3], 0), int(m.group(3)))
+    m = MDY_RE.search(seg)
+    if m: return _mk(MON.get(m.group(1).lower()[:3], 0), int(m.group(3)))
+    m = NUM_RE.search(seg)
+    if m: return _mk(int(m.group(2)), int(m.group(3)))     # dd.mm.yyyy
+    return 0
+
+def qe_from_head(*texts):
+    """Reporting quarter-end (int YYYYMMDD) parsed from an 'ended <date>' clause in the filing text.
+    Returns 0 when the period isn't stated — the page then shows NO quarter badge (never a wrong one)."""
+    h = " ".join(str(t or "") for t in texts)
+    for m in ENDED_RE.finditer(h):
+        qe = _seg_qe(m.group(1))
+        if qe: return qe
     return 0
 
 def parse_dt(s):
@@ -113,7 +126,7 @@ def main():
         cap = re.sub(r"\s+", " ", str(r.get("HEADLINE") or r.get("NEWSSUB") or "")).strip()
         if len(cap) > 220: cap = cap[:219] + "…"
         feed.setdefault("rows", []).append([sym, re.sub(r"\s+", " ", str(r.get("SLONGNAME") or sym)).strip(),
-                                            dt, qe_from_head(r.get("HEADLINE")), cap, file])
+                                            dt, qe_from_head(r.get("HEADLINE"), r.get("NEWSSUB")), cap, file])
         added += 1
     # trim to window + sort newest-first
     lo_iso = lo.isoformat()

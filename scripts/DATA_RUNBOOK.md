@@ -604,3 +604,10 @@ dates). Deep links: `?tab=results|feed|calendar&sym=TCS`.
   and render as non-clickable feed/calendar entries (no CO metadata → no growth badge/reaction, by design). First
   run added ~142 feed + ~76 calendar BSE rows. To get NUMBERS for BSE-only names would need a BSE price+XBRL
   pipeline (deferred — user chose feed+calendar coverage only).
+- ⚠️ **ALWAYS parse the quarter PER FILING — never assume the current season.** A results filing in Jul/Aug/Sep
+  is very often a LATE March (Q4/annual) result, not the June quarter (in a recent 30-day BSE window: 91 March
+  vs 32 June filings). `parse_qe()` (fetch_announcements.py) / `qe_from_head()` (fetch_bse_results.py) ANCHOR on
+  an "ended/ending <date>" clause (DMY/MDY/dd.mm.yyyy), snap to a quarter-end month, and return 0 (⇒ NO badge on
+  the page, never a wrong one) when the period isn't stated — so a board-meeting date like "held on July 1, 2026"
+  can't be mistaken for a quarter. The feed's growth badge keys off this qe, so it shows the March column's YoY
+  for a March filing. BSE `QUARTER_ID` is always null — useless, must parse the headline+NEWSSUB.
