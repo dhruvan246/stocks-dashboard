@@ -48,6 +48,11 @@ jobs:
       - name: Merge BSE results into feed + calendar
         run: python3 -X utf8 scripts/fetch_bse_results.py || echo "(BSE merge failed — keeping NSE-only files)"
 
+      # Discovery buckets (docs/discovery.json) — recomputed from the fresh announcements +
+      # committed fundamentals/price/classification files. Non-fatal: keeps the previous file.
+      - name: Build Discovery buckets
+        run: python3 -X utf8 scripts/build_discovery.py || echo "(discovery build failed — keeping previous file)"
+
       - name: Commit updated announcements
         env:
           GH_TOKEN: ${{ github.token }}
@@ -59,6 +64,7 @@ jobs:
           cp docs/announcements.json /tmp/ann/docs/
           cp docs/results_feed.json     /tmp/ann/docs/ 2>/dev/null || true
           cp docs/results_calendar.json /tmp/ann/docs/ 2>/dev/null || true
+          cp docs/discovery.json        /tmp/ann/docs/ 2>/dev/null || true
 
           for attempt in 1 2 3 4 5; do
             git fetch origin main
@@ -66,7 +72,8 @@ jobs:
             cp /tmp/ann/docs/announcements.json docs/announcements.json
             cp /tmp/ann/docs/results_feed.json     docs/results_feed.json     2>/dev/null || true
             cp /tmp/ann/docs/results_calendar.json docs/results_calendar.json 2>/dev/null || true
-            git add docs/announcements.json docs/results_feed.json docs/results_calendar.json
+            cp /tmp/ann/docs/discovery.json        docs/discovery.json        2>/dev/null || true
+            git add docs/announcements.json docs/results_feed.json docs/results_calendar.json docs/discovery.json
 
             if git diff --cached --quiet; then
               echo "No new announcements — nothing to commit"

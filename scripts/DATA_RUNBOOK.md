@@ -624,3 +624,24 @@ dates). Deep links: `?tab=results|feed|calendar&sym=TCS`.
   the page, never a wrong one) when the period isn't stated — so a board-meeting date like "held on July 1, 2026"
   can't be mistaken for a quarter. The feed's growth badge keys off this qe, so it shows the March column's YoY
   for a March filing. BSE `QUARTER_ID` is always null — useless, must parse the headline+NEWSSUB.
+---
+
+## 16. DISCOVERY BUCKETS  (docs/discovery.html — "Discovery" nav, built 2026-07-13)
+Sovrenn-Discovery-style **auto-computed trigger buckets** (concept inspired by sovrenn.com/discovery, which
+hand-curates; ours are 100% computed — no curation, no paywall). ~57 buckets in 5 groups, each with its own
+shareable URL (`discovery.html#b=<key>`).
+- **Data = `docs/discovery.json`** (~0.9 MB raw), built by **`scripts/build_discovery.py`** from files the site
+  already maintains — NO new fetchers: `announcements.json` (trigger buckets: order wins/capacity/M&A/fund
+  raising/open offers/buybacks/dividends/ratings/investor meets/spurts/red flags — grouped BY STOCK with count +
+  latest caption + PDF), `sf_revop.json` (**Excellent Results per quarter Mar-2019→date**: PAT YoY ≥25% + rev
+  support, PAT≥2cr, positive base, con-preferred; + Weak Results for the newest quarter with ≥30 rows),
+  `dash_slim.bin` meta (names/mcap/d52 → Near-52w-High ≥−2%, 30%+-Off-High, **P/E<30** = mcap/TTM-PAT with
+  4 recent quarters), `sector_classification.json` (12 theme buckets).
+- **⚠️ Theme buckets need SEEDS:** BSE taxonomy ≠ themes (Suzlon=Heavy Electrical, RVNL=Civil Construction,
+  IREDA=Finance) — `THEMES` in build_discovery.py = regex + hand-seeded symbol list per cross-cutting theme
+  (green/rail/EMS/defence). To grow a theme, add symbols to its seed string.
+- **Refresh:** wired into `refresh-announcements.yml` (~4×/day, after the announcements fetch; non-fatal,
+  commits `docs/discovery.json` alongside). Fundamentals/price inputs are the committed daily files — good enough.
+- Mcap floor ₹50 cr for price/sector buckets; px buckets capped at 500 rows; sector buckets at 80 (by mcap).
+- NOT automatable from our data (deliberately absent): revenue-guidance buckets, star-investor holdings,
+  bulk-deal/promoter-buying (needs new NSE insider/bulk-deal fetchers — candidate future work).

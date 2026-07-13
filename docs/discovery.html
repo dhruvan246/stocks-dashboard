@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Discovery</title>
+<meta name="description" content="Discovery — auto-computed stock buckets from NSE filings and market data: order wins, fund raising, excellent results by quarter, breakouts, corrections, sector themes. No hand-picking, no paywall." />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<style>
+  body { font-feature-settings: "tnum" 1; }
+  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
+  .bkt{cursor:pointer;transition:transform var(--tr,.15s),box-shadow var(--tr,.15s),border-color var(--tr,.15s)}
+  .bkt:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg,0 10px 30px -12px rgba(0,0,0,.25));border-color:var(--accent,#2563eb)}
+  .gpill{display:inline-flex;align-items:center;font-size:12px;font-weight:700;padding:6px 14px;border-radius:9999px;cursor:pointer;user-select:none;
+         background:var(--surface-2,#f1f5f9);color:var(--text-muted,#334155);border:1px solid var(--border,#e2e8f0);transition:background .12s,color .12s}
+  .gpill:hover{border-color:var(--accent,#94a3b8)}
+  .gpill.on{background:var(--accent,#2563eb);color:#fff;border-color:var(--accent,#2563eb)}
+  .cnt{display:inline-block;font-size:11px;font-weight:800;padding:2px 9px;border-radius:9999px;background:var(--accent-soft,#eff6ff);color:var(--accent,#1d4ed8)}
+  .docbtn{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:4px 10px;border-radius:.5rem;
+          background:var(--accent-soft,#eff6ff);color:var(--accent,#1d4ed8);border:1px solid var(--border-strong,#bfdbfe);white-space:nowrap}
+  .pos{color:#15803d;font-weight:600}.neg{color:#b91c1c;font-weight:600}
+  html[data-theme="dark"] .pos{color:#6ee7b7}html[data-theme="dark"] .neg{color:#fca5a5}
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav class="flex items-center gap-1 overflow-x-auto">
+      <a href="./nse-bse-dashboard.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">📈<span class="hidden sm:inline">Stocks</span></a>
+      <a href="./stock-backtest.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition shrink-0">🧪<span class="hidden sm:inline">Create a Strategy</span></a>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-screen-xl mx-auto px-4 py-6">
+
+  <!-- ================= bucket grid view ================= -->
+  <div id="gridView">
+    <div class="mb-4">
+      <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Discovery <span class="text-slate-400 font-semibold text-base">· fundamental triggers</span></h1>
+      <p class="text-sm text-slate-500 mt-1">Stocks grouped by what's actually happening to them — order wins, fund raises, great or weak results, breakouts, sector themes. Every bucket is <b>computed automatically from exchange filings and market data</b> (nothing hand-picked) and refreshes through the day. <span id="updated" class="text-slate-400"></span></p>
+    </div>
+
+    <div id="status" class="text-sm text-slate-500 py-10 text-center">Loading buckets…</div>
+
+    <div id="controls" class="hidden mb-4 flex flex-wrap items-center gap-2">
+      <div id="gpills" class="flex flex-wrap gap-2"></div>
+      <input id="q" type="text" placeholder="Search buckets…" autocomplete="off"
+             class="ml-auto w-48 px-3 py-2 rounded-lg border border-slate-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    </div>
+    <div id="groups"></div>
+  </div>
+
+  <!-- ================= bucket detail view ================= -->
+  <div id="detailView" class="hidden">
+    <button id="back" class="mb-4 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition">← All buckets</button>
+    <div class="mb-4">
+      <h1 id="dTitle" class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight"></h1>
+      <p id="dDesc" class="text-sm text-slate-500 mt-1"></p>
+    </div>
+    <div class="card p-4 mb-4">
+      <div id="dCount" class="text-sm font-semibold text-slate-700 mb-2"></div>
+      <div class="overflow-x-auto rounded-lg border border-slate-100">
+        <table class="w-full text-sm min-w-[760px]">
+          <thead id="dHead" class="text-[11px] uppercase text-slate-500 border-b border-slate-200 bg-slate-100"></thead>
+          <tbody id="dBody" class="divide-y divide-slate-100"></tbody>
+        </table>
+      </div>
+      <div class="text-center mt-3"><button id="dMore" class="hidden px-5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition">Load more ↓</button></div>
+    </div>
+  </div>
+
+  <p class="text-[11px] text-slate-500 mt-2">Buckets are screens computed from public NSE/BSE data — announcements (last ~31 days), quarterly filings and daily prices. For research &amp; education only, not recommendations. Results buckets: PAT is owners-attributable, consolidated preferred.</p>
+</main>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const PDF_PREFIX = 'https://nsearchives.nseindia.com/corporate/';
+const inr = n => n == null ? '—' : Number(n).toLocaleString('en-IN');
+const pct = (n, signed) => n == null ? '—' : '<span class="' + (n >= 0 ? 'pos' : 'neg') + '">' + (signed && n > 0 ? '+' : '') + n.toFixed(1) + '%</span>';
+const slink = (sym, name) => '<a class="font-bold text-blue-700 hover:underline" href="./stock.html?sym=' + encodeURIComponent(sym) + '" title="' + esc(name || '') + '">' + esc(sym) + '</a>' +
+                             (name ? '<div class="text-[11px] text-slate-400 font-normal max-w-[180px] truncate">' + esc(name) + '</div>' : '');
+
+let DATA = null, BUCKETS = {}, curGroup = 'All', shown = 100, curB = null;
+
+const GROUP_ICON = { 'Triggers (last 31 days)': '⚡', 'Price & Value': '📉', 'Results — computed from filings': '📊', 'Results history': '🕘', 'Sector themes': '🏭' };
+
+function renderGrid(){
+  const q = $('q').value.trim().toLowerCase();
+  let h = '';
+  for (const g of DATA.groups){
+    if (curGroup !== 'All' && g.g !== curGroup) continue;
+    const bks = g.buckets.filter(b => !q || b.t.toLowerCase().includes(q));
+    if (!bks.length) continue;
+    h += '<div class="mt-6 mb-3 flex items-baseline gap-2"><span aria-hidden="true">' + (GROUP_ICON[g.g] || '📦') + '</span>' +
+         '<h2 class="text-base font-extrabold text-slate-800">' + esc(g.g) + '</h2>' +
+         '<span class="text-[11px] text-slate-400 font-semibold">' + bks.length + ' buckets</span></div>' +
+         '<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">';
+    for (const b of bks){
+      h += '<div class="card bkt p-4" data-k="' + esc(b.k) + '" role="button" tabindex="0">' +
+        '<div class="flex items-start justify-between gap-2">' +
+          '<div class="text-[15px] font-bold text-slate-800 leading-snug">' + esc(b.t) + '</div>' +
+          '<span class="cnt shrink-0">' + inr(b.n) + '</span></div>' +
+        '<div class="text-[12.5px] text-slate-500 mt-1.5 leading-relaxed">' + esc(b.d) + '</div></div>';
+    }
+    h += '</div>';
+  }
+  $('groups').innerHTML = h || '<div class="text-sm text-slate-400 py-10 text-center">No buckets match.</div>';
+}
+
+const HEADS = {
+  ann: '<tr><th class="text-left py-2.5 px-3">Stock</th><th class="text-left px-3">Latest</th><th class="text-right px-3">Filings</th><th class="text-left px-3 w-[48%]">What happened</th><th class="text-right px-3">Doc</th></tr>',
+  res: '<tr><th class="text-left py-2.5 px-3">Stock</th><th class="text-right px-3">PAT (₹ cr)</th><th class="text-right px-3">Year ago</th><th class="text-right px-3">PAT YoY</th><th class="text-right px-3">Revenue YoY</th></tr>',
+  px:  '<tr><th class="text-left py-2.5 px-3">Stock</th><th class="text-right px-3">Mcap (₹ cr)</th><th class="text-right px-3">Price</th><th class="text-right px-3">vs 52-wk high</th><th class="text-right px-3">P/E (TTM)</th></tr>',
+  sec: '<tr><th class="text-left py-2.5 px-3">Stock</th><th class="text-right px-3">Mcap (₹ cr)</th><th class="text-right px-3">vs 52-wk high</th><th class="text-left px-3">Sub-industry</th></tr>'
+};
+
+function rowHtml(b, r){
+  if (b.type === 'ann'){
+    const doc = r[5] ? '<a class="docbtn" href="' + esc(encodeURI(r[5].indexOf('http') === 0 ? r[5] : PDF_PREFIX + r[5])) + '" target="_blank" rel="noopener">📄</a>' : '<span class="text-slate-300">—</span>';
+    return '<td class="py-2.5 px-3">' + slink(r[0], r[1]) + '</td><td class="py-2.5 px-3 whitespace-nowrap text-slate-600">' + r[3] + '</td>' +
+           '<td class="py-2.5 px-3 text-right text-slate-600">' + r[2] + '</td><td class="py-2.5 px-3 text-[12.5px] text-slate-600 leading-relaxed">' + esc(r[4]) + '</td>' +
+           '<td class="py-2.5 px-3 text-right">' + doc + '</td>';
+  }
+  if (b.type === 'res')
+    return '<td class="py-2.5 px-3">' + slink(r[0], r[1]) + '</td><td class="py-2.5 px-3 text-right">' + inr(r[2]) + '</td>' +
+           '<td class="py-2.5 px-3 text-right text-slate-500">' + inr(r[3]) + '</td><td class="py-2.5 px-3 text-right">' + pct(r[4], true) + '</td>' +
+           '<td class="py-2.5 px-3 text-right">' + pct(r[5], true) + '</td>';
+  if (b.type === 'px')
+    return '<td class="py-2.5 px-3">' + slink(r[0], r[1]) + '</td><td class="py-2.5 px-3 text-right">' + inr(r[2]) + '</td>' +
+           '<td class="py-2.5 px-3 text-right">' + inr(r[3]) + '</td><td class="py-2.5 px-3 text-right">' + pct(r[4]) + '</td>' +
+           '<td class="py-2.5 px-3 text-right text-slate-600">' + (r[5] == null ? '—' : r[5]) + '</td>';
+  return '<td class="py-2.5 px-3">' + slink(r[0], r[1]) + '</td><td class="py-2.5 px-3 text-right">' + inr(r[2]) + '</td>' +
+         '<td class="py-2.5 px-3 text-right">' + pct(r[3]) + '</td><td class="py-2.5 px-3 text-[12px] text-slate-500">' + esc(r[4]) + '</td>';
+}
+
+function renderDetailRows(){
+  const upto = Math.min(shown, curB.rows.length);
+  let h = '';
+  for (let i = 0; i < upto; i++) h += '<tr class="align-top hover:bg-slate-50">' + rowHtml(curB, curB.rows[i]) + '</tr>';
+  $('dBody').innerHTML = h;
+  $('dCount').textContent = 'Showing ' + upto.toLocaleString('en-IN') + ' of ' + curB.rows.length.toLocaleString('en-IN') + ' stocks';
+  $('dMore').classList.toggle('hidden', upto >= curB.rows.length);
+}
+
+function openBucket(k, push){
+  const b = BUCKETS[k]; if (!b) return;
+  curB = b; shown = 100;
+  $('dTitle').textContent = b.t;
+  $('dDesc').textContent = b.d;
+  $('dHead').innerHTML = HEADS[b.type] || HEADS.sec;
+  renderDetailRows();
+  $('gridView').classList.add('hidden');
+  $('detailView').classList.remove('hidden');
+  if (push !== false) location.hash = 'b=' + encodeURIComponent(k);
+  window.scrollTo(0, 0);
+}
+function closeBucket(push){
+  $('detailView').classList.add('hidden');
+  $('gridView').classList.remove('hidden');
+  if (push !== false && location.hash) history.pushState('', '', location.pathname);
+}
+function applyHash(){
+  const m = /b=([^&]+)/.exec(location.hash);
+  if (m && BUCKETS[decodeURIComponent(m[1])]) openBucket(decodeURIComponent(m[1]), false);
+  else closeBucket(false);
+}
+
+async function load(){
+  try {
+    const res = await fetch('./discovery.json');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    DATA = await res.json();
+    for (const g of DATA.groups) for (const b of g.buckets) BUCKETS[b.k] = b;
+    $('updated').textContent = 'Updated ' + DATA.updated + '.';
+    const names = ['All'].concat(DATA.groups.map(g => g.g));
+    $('gpills').innerHTML = names.map(n =>
+      '<button type="button" class="gpill' + (n === 'All' ? ' on' : '') + '" data-g="' + esc(n) + '">' + esc(n === 'All' ? 'All' : n) + '</button>').join('');
+    $('gpills').addEventListener('click', e => {
+      const el = e.target.closest('.gpill'); if (!el) return;
+      curGroup = el.getAttribute('data-g');
+      document.querySelectorAll('.gpill').forEach(p => p.classList.toggle('on', p === el));
+      renderGrid();
+    });
+    $('q').addEventListener('input', renderGrid);
+    $('groups').addEventListener('click', e => {
+      const el = e.target.closest('.bkt'); if (el) openBucket(el.getAttribute('data-k'));
+    });
+    $('groups').addEventListener('keydown', e => {
+      const el = e.target.closest('.bkt'); if (el && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openBucket(el.getAttribute('data-k')); }
+    });
+    $('back').addEventListener('click', () => closeBucket());
+    $('dMore').addEventListener('click', () => { shown += 200; renderDetailRows(); });
+    window.addEventListener('hashchange', applyHash);
+    renderGrid();
+    $('status').classList.add('hidden');
+    $('controls').classList.remove('hidden');
+    applyHash();
+  } catch (e) {
+    $('status').innerHTML = 'Could not load discovery data (' + esc(e.message) + '). Please try again in a minute.';
+  }
+}
+load();
+</script>
+</body>
+</html>
