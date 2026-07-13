@@ -227,7 +227,68 @@
     on();
   }
 
-  function init() { buildNav(); buildFooter(); build(); watchHeader(); }
+  // =========================================================================
+  // RESPONSIVE TABLES — reflow wide data tables into stacked label/value cards
+  // on phones. We tag every wide table (>=4 cols, header has no colspan) with
+  // .sw-cardify and stamp each body cell with data-label = its column header;
+  // the CSS above (theme.css @media max-width:640px) does the rest. A
+  // MutationObserver re-runs it so JS-rendered / sorted tables stay labelled.
+  // =========================================================================
+  function headerLabels(table) {
+    var thead = table.tHead;
+    if (!thead || !thead.rows.length) return null;
+    var hrow = thead.rows[thead.rows.length - 1];          // last header row holds the column labels
+    var cells = hrow.cells;
+    if (cells.length < 4) return null;                     // small tables already fit — leave them
+    for (var i = 0; i < cells.length; i++) { if (cells[i].colSpan > 1) return null; }  // skip grouped headers
+    var out = [];
+    for (var j = 0; j < cells.length; j++) {
+      var clone = cells[j].cloneNode(true);
+      clone.querySelectorAll('br').forEach(function (n) { n.replaceWith(' '); });
+      clone.querySelectorAll('.sort-ind').forEach(function (n) { n.remove(); });
+      out.push((clone.textContent || '').replace(/\s+/g, ' ').trim());
+    }
+    return out;
+  }
+  function cardifyTable(table) {
+    var labels = headerLabels(table);
+    if (!labels) { table.classList.remove('sw-cardify'); return; }
+    table.classList.add('sw-cardify');
+    for (var b = 0; b < table.tBodies.length; b++) {
+      var rows = table.tBodies[b].rows;
+      for (var r = 0; r < rows.length; r++) {
+        var cells = rows[r].cells;
+        if (cells.length === 1 && cells[0].colSpan > 1) continue;   // placeholder / empty-state row
+        for (var c = 0; c < cells.length; c++) {
+          if (!cells[c].hasAttribute('data-label')) cells[c].setAttribute('data-label', labels[c] || '');
+        }
+      }
+    }
+  }
+  function cardifyAll() {
+    var t = document.querySelectorAll('table');
+    for (var i = 0; i < t.length; i++) { try { cardifyTable(t[i]); } catch (e) {} }
+  }
+  function watchTables() {
+    cardifyAll();
+    if (!('MutationObserver' in window)) return;
+    var timer = null;
+    new MutationObserver(function (muts) {
+      for (var i = 0; i < muts.length; i++) {
+        var added = muts[i].addedNodes; if (!added || !added.length) continue;
+        for (var j = 0; j < added.length; j++) {
+          var n = added[j]; if (n.nodeType !== 1) continue;
+          if ((n.matches && n.matches('table,tbody,tr,td,th')) || (n.querySelector && n.querySelector('table,tr'))) {
+            if (timer) clearTimeout(timer);
+            timer = setTimeout(cardifyAll, 80);            // debounce: run once after rows settle
+            return;
+          }
+        }
+      }
+    }).observe(document.body, { childList: true, subtree: true });
+  }
+
+  function init() { buildNav(); buildFooter(); build(); watchHeader(); watchTables(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();

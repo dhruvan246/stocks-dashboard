@@ -262,6 +262,51 @@ html[data-theme] table{ -webkit-overflow-scrolling:touch; }
   html[data-theme] .sw-theme-switch button{ min-height:0; }   /* pill buttons keep their own size */
 }
 
+/* ------------------- responsive tables → cards on phones -------------------
+ * theme.js tags every WIDE data table (>=4 columns, no grouped/colspan header)
+ * with .sw-cardify and stamps each body cell with data-label = its column
+ * header. Below 640px we hide the header row and render each <tr> as a card of
+ * label / value lines, so dense financial tables never scroll sideways.
+ * Desktop is completely untouched (rules live only inside this media query). */
+@media (max-width:640px){
+  html[data-theme] table.sw-cardify{ display:block; width:100%; border:0; }
+  /* keep the header for screen-readers but take it out of the visual flow */
+  html[data-theme] table.sw-cardify thead{
+    position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+    overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
+  }
+  html[data-theme] table.sw-cardify tbody{ display:block; }
+  html[data-theme] table.sw-cardify tbody tr{
+    display:block; margin:0 0 10px; padding:4px 13px;
+    border:1px solid var(--border) !important; border-radius:var(--radius-sm);
+    background:var(--surface) !important; box-shadow:var(--shadow);
+  }
+  html[data-theme] table.sw-cardify tbody tr:hover{ background:var(--surface) !important; }
+  html[data-theme] table.sw-cardify tbody td,
+  html[data-theme] table.sw-cardify tbody th{
+    display:flex; align-items:center; justify-content:space-between; gap:14px;
+    min-width:0; width:auto !important; max-width:none !important;
+    padding:7px 0 !important; text-align:right !important;
+    white-space:normal !important; border:0 !important;
+  }
+  html[data-theme] table.sw-cardify tbody td:not(:last-child),
+  html[data-theme] table.sw-cardify tbody th:not(:last-child){
+    border-bottom:1px solid var(--border) !important;
+  }
+  html[data-theme] table.sw-cardify tbody td::before,
+  html[data-theme] table.sw-cardify tbody th::before{
+    content:attr(data-label); flex:0 0 41%; text-align:left;
+    font-weight:600; color:var(--text-muted);
+    text-transform:none; letter-spacing:0; font-size:12px; line-height:1.3;
+  }
+  /* cells with no label (empty-state / full-width placeholder) span the card */
+  html[data-theme] table.sw-cardify tbody td:not([data-label])::before,
+  html[data-theme] table.sw-cardify tbody td[data-label=""]::before,
+  html[data-theme] table.sw-cardify tbody th[data-label=""]::before{ content:none; }
+  html[data-theme] table.sw-cardify tbody td[colspan]{ justify-content:center; text-align:center !important; }
+  html[data-theme] table.sw-cardify tbody td[colspan]::before{ content:none; }
+}
+
 /* =========================================================================
  * V2 VISUAL OVERHAUL — aurora background, entrance animations, hover lifts,
  * animated logo, header scroll shadow, and the uniform injected footer
