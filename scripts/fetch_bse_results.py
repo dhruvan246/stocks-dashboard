@@ -85,6 +85,13 @@ def load(p, default):
     try: return json.load(open(p, encoding="utf-8"))
     except Exception: return default
 
+def nname(s):
+    """Normalized company name for cross-exchange dedup: 'Indbank Merchant Banking Services Ltd'
+    == 'INDBANK MERCHANT BANKING SERVICES LIMITED' (a dual-listed co can reach us with a DIFFERENT
+    fallback ticker from BSE, e.g. INDBNK vs NSE's INDBANK — symbol dedup alone double-counts it)."""
+    s = re.sub(r"[^a-z0-9]", "", str(s or "").lower())
+    return re.sub(r"(limited|ltd)$", "", s)
+
 def main():
     by_id = json.load(open(os.path.join(HERE, "bse_scrips.json"), encoding="utf-8"))["by_id"]
     rev = {int(v): k for k, v in by_id.items()}          # scripcode -> NSE symbol
@@ -112,6 +119,7 @@ def main():
 
     feed = load(FEED, {"updated": "", "rows": []})
     have = set((r[0], r[2][:10]) for r in feed.get("rows", []) if isinstance(r, list) and len(r) >= 3)
+    have_names = set(nname(r[1]) for r in feed.get("rows", []) if isinstance(r, list) and len(r) >= 2)
     added = 0
     for r in bse_rows:
         try: sc = int(r.get("SCRIP_CD"))
@@ -120,7 +128,10 @@ def main():
         if not dt: continue
         sym = rev.get(sc) or ticker_from_url(r.get("NSURL"), r.get("SLONGNAME"))
         if (sym, dt[:10]) in have: continue           # already carried by the NSE feed
-        have.add((sym, dt[:10]))
+        # a dual-listed co can reach us under a DIFFERENT ticker than the NSE row (INDBNK vs
+        # INDBANK, resolver or fallback) — dedup by normalized company name too, unconditionally
+        if nname(r.get("SLONGNAME")) in have_names: continue
+        have.add((sym, dt[:10])); have_names.add(nname(r.get("SLONGNAME")))
         att = str(r.get("ATTACHMENTNAME") or "").strip()
         file = (BSE_ATT + att) if att else ""
         cap = re.sub(r"\s+", " ", str(r.get("HEADLINE") or r.get("NEWSSUB") or "")).strip()
@@ -145,6 +156,7 @@ def main():
     cal = load(CAL, None)
     if cal and isinstance(fr, list) and fr:
         chave = set((r[0], r[2]) for r in cal.get("rows", []) if isinstance(r, list) and len(r) >= 3)
+        cnames = set(nname(r[1]) for r in cal.get("rows", []) if isinstance(r, list) and len(r) >= 2)
         cadd = 0
         for r in fr:
             d = parse_cal_date(r.get("meeting_date"))
@@ -153,7 +165,8 @@ def main():
             except Exception: sc = None
             sym = (sc and rev.get(sc)) or str(r.get("short_name") or "").strip().upper() or ticker_from_url(r.get("URL"), r.get("Long_Name"))
             if (sym, d) in chave: continue
-            chave.add((sym, d))
+            if nname(r.get("Long_Name")) in cnames: continue
+            chave.add((sym, d)); cnames.add(nname(r.get("Long_Name")))
             cal.setdefault("rows", []).append([sym, re.sub(r"\s+", " ", str(r.get("Long_Name") or sym)).strip(),
                                                d, "Financial Results"])
             cadd += 1

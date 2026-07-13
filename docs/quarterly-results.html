@@ -408,14 +408,15 @@ function renderOverview(){
   // haven't been parsed yet (our XBRL sync runs nightly, so a same-day filing shows here before its
   // numbers land). Bridges the gap between the live filing feed and the numbers scoreboard.
   const qe=QTRS[qi], haveNums=new Set(rows.map(r=>r.sym)), pendSet=new Set();
-  FEEDROWS.forEach(r=>{ if(r[3]===qe && !haveNums.has(r[0]) && coPass(r[0])) pendSet.add(r[0]); });
+  // dual-listed cos can appear in the feed under a BSE ticker (INDBNK) while their numbers sit
+  // under the NSE symbol (INDBANK) — also match by normalized company name to avoid double-count
+  const normN=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'').replace(/(limited|ltd)$/,'');
+  const haveNames=new Set(rows.map(r=>normN(r.c.n)));
+  FEEDROWS.forEach(r=>{ if(r[3]===qe && !haveNums.has(r[0]) && !haveNames.has(normN(r[1])) && coPass(r[0])) pendSet.add(r[0]); });
   const pending=pendSet.size, declared=rows.length+pending;
-  const pctRep=expected.size? Math.round(declared/expected.size*100):0;
   $('tiles').innerHTML=
     tile('Declared', declared.toLocaleString('en-IN'),
-         rows.length.toLocaleString('en-IN')+' with numbers'+(pending? ' · +'+pending+' filed, parsing tonight':'')+
-         ' · of ~'+expected.size.toLocaleString('en-IN')+' expected'+
-         '<div class="h-1.5 mt-1 rounded-full" style="background:var(--surface-2,#e2e8f0)"><div class="h-1.5 rounded-full" style="width:'+Math.min(100,pctRep)+'%;background:var(--accent,#2563eb)"></div></div>')+
+         rows.length.toLocaleString('en-IN')+' with numbers'+(pending? ' · +'+pending+' filed, numbers coming':''))+
     tile('Median revenue growth', fmtPct(median(revs)), ST.mode==='yoy'?'vs year-ago quarter':'vs previous quarter', pctCls(median(revs)))+
     tile('Median PAT growth', fmtPct(median(pats)), (pUp+pDn)?(pUp+' up · '+pDn+' down'):'', pctCls(median(pats)))+
     tile('PAT growers', (pUp+pDn)? Math.round(pUp/(pUp+pDn)*100)+'%' :'—', pUp+' of '+(pUp+pDn)+' with a comparable base', pUp>=pDn?'pos':'neg')+
