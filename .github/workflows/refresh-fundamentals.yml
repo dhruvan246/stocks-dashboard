@@ -2,12 +2,13 @@ name: Daily fundamentals refresh
 
 on:
   schedule:
-    # 15:45 UTC = 21:15 IST, EVERY day — companies broadcast results on weekends too
-    # (board meetings are held on Saturdays/Sundays during earnings season), so a
-    # weekday-only cron left Sat/Sun filings sitting until Monday night.
-    # Self-heals anyway: the updater scans a 120-day window each run, so a skipped
-    # day is caught up by the next.
-    - cron: "45 15 * * *"
+    # HOURLY at :45 from 04:45–17:45 UTC = 10:15–23:15 IST, EVERY day (weekend board
+    # meetings exist) — so a company's numbers appear within ~an hour of its XBRL landing,
+    # not the next night. Self-heals: the updater scans a 120-day window each run.
+    # The 15:45 UTC (21:15 IST) run is the FULL nightly one — it always rebuilds the
+    # Quarterly Results payload (price reactions/drift) even with no new filings; other
+    # hours rebuild it only when new earnings actually landed (keeps git history lean).
+    - cron: "45 4-17 * * *"
   # Optional external trigger (cron-job.org) — SEPARATE event type from the
   # stock/MF/FII/backtest-data jobs. POST /repos/dhruvan246/stocks-dashboard/dispatches
   # with {"event_type":"fundamentals-refresh"}
@@ -70,6 +71,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          # Hourly runs rebuild only when new earnings landed; the 15:xx UTC (21:xx IST)
+          # run always rebuilds so reactions/drift track daily prices (published ~20:45 IST).
+          if [ ! -f docs/.fund_updated ] && [ "$(date -u +%H)" != "15" ]; then
+            echo "No new earnings this hour — skipping payload rebuild"
+            exit 0
+          fi
           mkdir -p /tmp/qr
           if gh release download data --pattern 'sf_stock_data.bin' --dir /tmp/qr --clobber; then
             SF_BIN=/tmp/qr/sf_stock_data.bin python3 -X utf8 scripts/build_quarterly_results.py

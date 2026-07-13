@@ -588,6 +588,19 @@ dates). Deep links: `?tab=results|feed|calendar&sym=TCS`.
    quarter-end. Refreshes 4×/day with announcements.
 3. `docs/results_calendar.json` (tiny) ← **`scripts/fetch_results_calendar.py`** — NSE `/api/event-calendar`
    (−3d..+75d), result-purpose rows only; ABORT-guard keeps the old file on a broken fetch. Same workflow.
+
+**Refresh cadence (hourly since 2026-07-13):**
+- **`refresh-results-hourly.yml`** — hourly 08:30–00:30 IST: runs the 3 fetchers but commits ONLY the two
+  small side-files (feed+calendar), NEVER the 4.7 MB announcements.json (git-bloat guard; that big file
+  stays on the 4×/day refresh-announcements.yml).
+- **`refresh-fundamentals.yml`** — cron `45 4-17 * * *` = hourly 10:15–23:15 IST daily. Numbers (XBRL parse)
+  land within ~1 h of filing. The quarterly_results.json BAKER (90 MB asset download + rebuild) is GATED:
+  runs only when `.fund_updated` exists OR at the 15:xx UTC (21:xx IST) full nightly run (which always
+  rebuilds so reactions/drift track the daily prices published 20:45 IST). Don't un-gate it — hourly 1.8 MB
+  commits would bloat history for nothing.
+- The page's Declared tile = with-numbers + feed-only filers ("+K filed, numbers coming"), deduped against
+  numbers by SYMBOL and by normalized COMPANY NAME (dual-listed cos arrive under different tickers per
+  exchange, e.g. a BSE fallback ticker; NB INDBNK=Ind Bank Housing is a DIFFERENT co from INDBANK).
 - Growth math is CLIENT-side, always same-basis both periods (con preferred, else std; LP/PL/LL flags when the
   base is ≤0 — never a % off a negative base). Verdict dot = rule score (PAT YoY, Rev YoY, ΔOPM), transparent.
 - Universe filter = CURRENT index membership (a display filter, not point-in-time — backtests stay elsewhere).
