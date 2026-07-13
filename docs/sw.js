@@ -6,12 +6,12 @@
  *     requests (the sf-data repo, Supabase, the live-quote Worker) — those stay network-only
  *     so data is always fresh and the cache never bloats.
  * Bump CACHE when the shell asset list changes. */
-const CACHE = 'sw-shell-v3';
+const CACHE = 'sw-shell-v4';
 const SHELL = [
-  './', './nse-bse-dashboard.html', './stock-backtest.html', './saved-strategies.html',
+  './', './index.html', './nse-bse-dashboard.html', './stock-backtest.html', './saved-strategies.html',
   './backtest-history.html', './strategy-backtest.html', './mutual-funds.html', './fii-dii.html',
   './backtest.html', './sectors.html', './market-mood.html', './bank-credit.html',
-  './results-season.html', './stock.html',
+  './results-season.html', './stock.html', './announcements.html', './quarterly-results.html',
   './theme.css', './theme.js', './backtest-engine.js', './bt-sync.js', './manifest.webmanifest',
   './icon-192.png', './icon-512.png', './icon-512-maskable.png', './apple-touch-icon.png'
 ];
@@ -46,7 +46,7 @@ self.addEventListener('fetch', function (e) {
       return caches.match(req).then(function (m) {
         if (m) return m;
         const wantsHTML = req.mode === 'navigate' || (req.headers.get('accept') || '').indexOf('text/html') >= 0;
-        return wantsHTML ? caches.match('./nse-bse-dashboard.html') : undefined;
+        return wantsHTML ? caches.match('./index.html') : undefined;
       });
     })
   );
