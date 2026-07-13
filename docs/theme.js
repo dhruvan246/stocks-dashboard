@@ -37,6 +37,13 @@
     head('meta', { name: 'apple-mobile-web-app-title', content: 'STOCKSWORLD' });
     setThemeColor(norm(saved()));
     if ('serviceWorker' in navigator) {
+      // When a new SW activates and claims the page (after a shell bump), reload once so the
+      // installed app immediately swaps in the fresh (mobile-responsive) pages instead of the
+      // stale cached desktop layout. Guarded so it only ever reloads a single time.
+      var swReloaded = false;
+      navigator.serviceWorker.addEventListener('controllerchange', function () {
+        if (swReloaded) return; swReloaded = true; window.location.reload();
+      });
       window.addEventListener('load', function () { navigator.serviceWorker.register('./sw.js').catch(function () {}); });
     }
   })();
