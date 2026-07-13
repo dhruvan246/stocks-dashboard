@@ -42,6 +42,12 @@ jobs:
       - name: Fetch NSE results calendar
         run: python3 -X utf8 scripts/fetch_results_calendar.py || echo "(calendar fetch failed — keeping previous file)"
 
+      # Merge BSE-listed result filings + forthcoming dates on top (covers BSE-only names → ~all
+      # listed companies, like the big sites). Additive + self-healing; a BSE failure leaves the
+      # NSE feed/calendar untouched.
+      - name: Merge BSE results into feed + calendar
+        run: python3 -X utf8 scripts/fetch_bse_results.py || echo "(BSE merge failed — keeping NSE-only files)"
+
       - name: Commit updated announcements
         env:
           GH_TOKEN: ${{ github.token }}

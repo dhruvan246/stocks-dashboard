@@ -593,3 +593,14 @@ dates). Deep links: `?tab=results|feed|calendar&sym=TCS`.
 - Universe filter = CURRENT index membership (a display filter, not point-in-time — backtests stay elsewhere).
 - ⚠️ Weekend/post-close filings carry NEXT-trading-day ann (the §12 gate) — the table "Date" column shows that
   tradable date (can read a day ahead of the filing timestamp shown in the feed tab; intentional).
+- **NSE + BSE COVERAGE (feed + calendar; 2026-07-13):** the Overview scoreboard + All Results TABLE stay
+  NSE-sourced (~2,464 alive names — every liquid stock; we have no BSE prices/financials for BSE-only micro-caps).
+  But the **Just Declared feed** and **Calendar** span BOTH exchanges via **`scripts/fetch_bse_results.py`**, run
+  in refresh-announcements.yml AFTER the NSE fetchers: BSE result filings from `AnnSubCategoryGetData?strCat=Result`
+  (paginated, 31-day window) → merged into results_feed.json; BSE forthcoming dates from
+  `Corpforthresults?strCategory=Result` → merged into results_calendar.json. ADDITIVE + self-healing (a BSE
+  failure leaves the NSE files intact); de-duped by (sym,date) so a dual-listed co is carried once (NSE preferred).
+  SCRIP_CD→NSE sym via `bse_scrips.json['by_id']` reversed; BSE-only names use the BSE ticker (URL slug/short_name)
+  and render as non-clickable feed/calendar entries (no CO metadata → no growth badge/reaction, by design). First
+  run added ~142 feed + ~76 calendar BSE rows. To get NUMBERS for BSE-only names would need a BSE price+XBRL
+  pipeline (deferred — user chose feed+calendar coverage only).
