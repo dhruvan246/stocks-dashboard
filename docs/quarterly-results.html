@@ -404,10 +404,17 @@ function renderOverview(){
   const pDn=rows.filter(r=>(r[gKey]!=null&&r[gKey]<0)||r[fKey]==='PL'||r[fKey]==='LL').length;
   const rUp=revs.filter(v=>v>0).length, rDn=revs.filter(v=>v<0).length;
   const lp=rows.filter(r=>r[fKey]==='LP').length;
-  const pctRep=expected.size? Math.round(rows.length/expected.size*100):0;
+  // "Declared" = companies with parsed numbers + those we've SEEN FILE (in the feed) but whose numbers
+  // haven't been parsed yet (our XBRL sync runs nightly, so a same-day filing shows here before its
+  // numbers land). Bridges the gap between the live filing feed and the numbers scoreboard.
+  const qe=QTRS[qi], haveNums=new Set(rows.map(r=>r.sym)), pendSet=new Set();
+  FEEDROWS.forEach(r=>{ if(r[3]===qe && !haveNums.has(r[0]) && coPass(r[0])) pendSet.add(r[0]); });
+  const pending=pendSet.size, declared=rows.length+pending;
+  const pctRep=expected.size? Math.round(declared/expected.size*100):0;
   $('tiles').innerHTML=
-    tile('Reported', rows.length.toLocaleString('en-IN'),
-         'of ~'+expected.size.toLocaleString('en-IN')+' expected · '+pctRep+'%'+
+    tile('Declared', declared.toLocaleString('en-IN'),
+         rows.length.toLocaleString('en-IN')+' with numbers'+(pending? ' · +'+pending+' filed, parsing tonight':'')+
+         ' · of ~'+expected.size.toLocaleString('en-IN')+' expected'+
          '<div class="h-1.5 mt-1 rounded-full" style="background:var(--surface-2,#e2e8f0)"><div class="h-1.5 rounded-full" style="width:'+Math.min(100,pctRep)+'%;background:var(--accent,#2563eb)"></div></div>')+
     tile('Median revenue growth', fmtPct(median(revs)), ST.mode==='yoy'?'vs year-ago quarter':'vs previous quarter', pctCls(median(revs)))+
     tile('Median PAT growth', fmtPct(median(pats)), (pUp+pDn)?(pUp+' up · '+pDn+' down'):'', pctCls(median(pats)))+
@@ -499,7 +506,7 @@ function renderOverview(){
     mv('💚 Market loved it (result-day move)',rbest,v=>fmtPct(v))+
     mv('💔 Market hated it',rworst,v=>fmtPct(v));
   $('movers').querySelectorAll('[data-open]').forEach(el=>el.onclick=()=>openModal(el.getAttribute('data-open')));
-  $('fCount').textContent=rows.length.toLocaleString('en-IN')+' companies reported · '+qlabel(QTRS[qi],true);
+  $('fCount').textContent=declared.toLocaleString('en-IN')+' declared'+(pending?' ('+rows.length+' with numbers)':'')+' · '+qlabel(QTRS[qi],true);
 }
 
 /* ---------- render: results table ---------- */
