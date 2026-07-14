@@ -543,6 +543,42 @@ Hand-maintained page; data = **`docs/announcements.json`** (rolling ~31 days,
   (`var(--surface-2)/--accent/…`) so Light/Dark/Soft work; Tailwind OPACITY variants (`bg-slate-100/80`)
   are NOT covered by theme.css's dark overrides (it matches exact class names) — use the plain class.
 - Symbol cell links to `./stock.html?sym=` ; nav entry in theme.js NAV_GROUPS (+ DESC line in index.html).
+
+---
+
+## 17. BSE-ONLY STOCK COVERAGE  (docs/bse_*.* — built 2026-07-13)
+Our core price/fundamentals dataset is NSE-keyed, so ~2,678 **BSE-listed-only** stocks (ISIN not on NSE —
+e.g. Cella Space 532701, NSDL) were entirely absent. NSE 2,385 + BSE-only 2,678 ≈ the "~5,000 stocks"
+users compare against (Screener covers BSE-only; we didn't). This pipeline adds them as first-class rows on
+the Quarterly Results page. **4 scripts + `.github/workflows/refresh-bse.yml` (22:10 IST daily):**
+- **`build_bse_universe.py` → `docs/bse_universe.json`** — BSE bulk `ListofScripData` (all active equity,
+  one call: SCRIP_CD, scrip_id, ISIN, GROUP, FACE_VALUE, **Mktcap**) MINUS the NSE `EQUITY_L.csv` ISIN set =
+  BSE-only. Rows `[scrip_cd, ticker, name, isin, group, faceval, mcap_cr, sector]`, biggest-mcap-first. Sector
+  from BSE `ComHeadernew` (`Industry`), budgeted per run + cached in `scripts/_bse_sectors.json`. Weekly (Sun).
+- **`fetch_bse_bhav.py` → `docs/bse_prices.bin`** (gzipped `{end, px:{scrip:{d,c,v}}}`) — BSE **UDiFF** equity
+  bhavcopy `BhavCopy_BSE_CM_0_0_0_<YYYYMMDD>_F_0000.CSV` (cols ISIN/TckrSymb/**ClsPric**/TtlTradgVol, ~4,900/day).
+  Resumable, SORT-MERGES (backfill can add dates OLDER than existing — don't revert to append-only). Daily.
+- **`fetch_bse_fund.py` → `docs/bse_fundamentals.json`** (`{px:{scrip:{QE:{rev,pat,ann,basis}}}}`) — quarterly
+  Rev/PAT. **⚠️ The BSE `FinancialResult` API is ENTITY-POISONED for many scrips** (returns **BSE Ltd's** numbers
+  — the FORCEMOT pattern; proven on Cella Space: its "result zip" was BSE Ltd's auditor report). So we DON'T use
+  it. Instead per scrip: `AnnSubCategoryGetData` (strCat=-1) → pick result/board-outcome filings WITH an
+  attachment → `AttachLive/AttachHis/<guid>.pdf` → **OCR** (rapidocr; small BSE cos file SCANNED PDFs, no text
+  layer) → **IDENTITY-GUARD** (company name tokens must appear on the page) → parse P&L rows. OCR ~15s/page ⇒
+  SLOW ⇒ bounded+resumable grind (`--budget N --max-minutes M`, ledger `scripts/_bse_fund_done.json`), biggest
+  first, walks ~600 liquid names over days then new filings only. **Validated: Cella Space Q1FY27 PAT 7.29 = exact
+  vs Screener.** (Revenue is Revenue-from-Operations; Screener may show Total Income — small definitional diff.)
+- **`build_bse_results.py` → `docs/bse_results.json`** — joins the 3 files into a SLIM payload in the SAME
+  `co` shape as `quarterly_results.json` (q-array `[revS,opS,patS,revC,opC,patC,ann,rx,sr]`, std=con since BSE
+  small-caps are standalone, op=null; `bse:1` flag; reactions precomputed from bse_prices so the browser doesn't
+  need the price bin). Quarters list READ FROM quarterly_results.json so indices align.
+- **Page integration (quarterly-results.html):** `load()` fetches `bse_results.json` and merges `bse.co` into
+  `CO` (only if `bse.quarters`==`qr.quarters`; NEVER shadows an NSE symbol). Universe filters **`nse`/`bse`**
+  ("NSE-listed only"/"BSE-listed only"), a **BSE badge**, BSE-page links (no stock.html for BSE-only). `c.bse`
+  flag + `c.cd`=BSE scripcode.
+- **⚠️ State files `scripts/_bse_fund_done.json` + `_bse_sectors.json` are force-tracked** (gitignore `_*` hid
+  them — negations added). CI needs the resume ledger to persist, else it re-grinds from scratch.
+- **YoY limitation (v1):** the fund grind fetches only ~recent filings (`--months 5`), so BSE-only YoY often
+  shows "—" (no year-ago base). Deepen by raising `--months` + fetching older announcements if wanted.
 - **LIVE top-up (2026-07-12):** the page also polls our Cloudflare Worker
   (`stocksworld-quotes.dhruvan2510.workers.dev/?announcements=1`, hardcoded `WORKER` const) every 60 s for
   today+yesterday's filings — merged/deduped over the file rows (extends the To-date past the committed file),
