@@ -225,12 +225,12 @@ def main():
             done.add(code); fails.pop(code, None)
         else:
             print("  · %s %-12s (no anchored result)" % (code, tkr))
-            # A DECLARED scrip whose OCR failed is likely a transient/parse miss — retry it on the next
-            # few runs instead of burying it in `done` forever. Give up (mark done) after MAX_FAIL tries.
-            if code in declared:
-                fails[code] = fails.get(code, 0) + 1
-                if fails[code] >= MAX_FAIL: done.add(code)
-            else:
+            # Record the failed attempt for EVERY scrip (declared or targeted) — this count drives the
+            # page's "filing available — PDF only" label once a filed co has resisted parsing (fail>=2),
+            # so users know its number isn't merely queued. A DECLARED scrip keeps retrying up to
+            # MAX_FAIL runs (transient/parse miss); a non-declared one is done after this attempt.
+            fails[code] = fails.get(code, 0) + 1
+            if code not in declared or fails[code] >= MAX_FAIL:
                 done.add(code)
         if spent % 10 == 0:
             ist = datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)

@@ -21,7 +21,9 @@ QR = os.path.join(D, "quarterly_results.json")
 UNIV = os.path.join(D, "bse_universe.json")
 FUND = os.path.join(D, "bse_fundamentals.json")
 PX = os.path.join(D, "bse_prices.bin")
+FAILS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "_bse_fund_fail.json")
 OUT = os.path.join(D, "bse_results.json")
+PDF_ONLY_MIN = 2                 # fail attempts before a filed co is flagged "PDF only" (not parseable)
 
 FIN_SECTORS = {"Finance", "Banks", "Bank", "Financial Services", "NBFC"}
 
@@ -76,11 +78,23 @@ def main():
                    "m": mc, "f": f, "x": 0, "e": "", "bse": 1,
                    "cd": int(scrip), "q": q}
 
+    # "PDF only": BSE tickers that FILED a result but resisted OCR ≥ PDF_ONLY_MIN times — their number
+    # isn't merely queued (scanned/odd-layout PDF), so the page labels them honestly instead of "coming".
+    pdf_only = []
+    try:
+        fails = json.load(open(FAILS))
+        for code, n in fails.items():
+            if n >= PDF_ONLY_MIN and str(code) in univ:
+                tkr = (univ[str(code)][1] or "").upper()
+                if tkr and tkr not in co and tkr not in nse_syms: pdf_only.append(tkr)
+    except Exception:
+        pass
+
     ist = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=5, minutes=30)
     out = {"updated": ist.strftime("%Y-%m-%d %H:%M IST"), "asof": qr.get("asof"),
-           "quarters": quarters, "count": len(co), "co": co}
+           "quarters": quarters, "count": len(co), "co": co, "pdf_only": sorted(set(pdf_only))}
     json.dump(out, open(OUT, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
-    print("WROTE %s: %d BSE-only companies with numbers" % (os.path.normpath(OUT), len(co)))
+    print("WROTE %s: %d BSE-only companies with numbers, %d PDF-only" % (os.path.normpath(OUT), len(co), len(pdf_only)))
 
 if __name__ == "__main__":
     main()

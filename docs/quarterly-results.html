@@ -234,7 +234,7 @@ const PDF_PREFIX = 'https://nsearchives.nseindia.com/corporate/';
 const WORKER = 'https://stocksworld-quotes.dhruvan2510.workers.dev';
 const MONTHS = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-let QR=null, CAL=null, FEED=null, QTRS=[], CO=null, BSE_COUNT=0;
+let QR=null, CAL=null, FEED=null, QTRS=[], CO=null, BSE_COUNT=0, PDF_ONLY=new Set();
 const ST = { tab:'overview', qi:0, mode:'yoy', basis:'auto', uni:'all', mcap:'all', sector:'all',
              search:'', screen:'all', heat:'pat', cal:'conf', sort:{k:'ann',dir:-1}, shown:100 };
 let WATCH = new Set(); try{ WATCH = new Set(JSON.parse(localStorage.getItem('qr_watch')||'[]')); }catch(e){}
@@ -590,12 +590,17 @@ function renderResults(){
   const shown=rows.slice(0,ST.shown);
   const pendHtml=pend.map(r=>{
     const c=CO[r[0]], pdf=r[5]?(String(r[5]).indexOf('http')===0?r[5]:PDF_PREFIX+r[5]):'';
-    return '<tr class="bg-amber-50/40'+(c?' hover:bg-amber-50 cursor-pointer':'')+'"'+(c?' data-open="'+esc(r[0])+'"':'')+'>'+
+    const pdfOnly=PDF_ONLY.has(r[0]);
+    const msg=pdfOnly
+      ? '📄 Filing available — numbers not machine-readable (see PDF)'
+      : '⏳ Result filed — numbers being parsed';
+    const cls=pdfOnly?'text-slate-500':'text-amber-700';
+    return '<tr class="'+(pdfOnly?'bg-slate-50/60':'bg-amber-50/40')+(c?' hover:bg-slate-100 cursor-pointer':'')+'"'+(c?' data-open="'+esc(r[0])+'"':'')+'>'+
       '<td class="pl-3 pr-1"><span class="star'+(WATCH.has(r[0])?' on':'')+'" data-star="'+esc(r[0])+'" title="Watchlist">★</span></td>'+
       '<td class="px-2 py-2"><div class="font-extrabold text-slate-900 leading-tight">'+esc(r[0])+(c&&c.bse?' <span class="badge" title="Listed on BSE only">BSE</span>':'')+'</div>'+
         '<div class="text-[10.5px] text-slate-400 truncate max-w-[190px]">'+esc(r[1])+'</div></td>'+
       '<td class="text-right px-2 text-slate-500 font-semibold whitespace-nowrap">'+(c&&c.m?fmtCr(c.m):'—')+'</td>'+
-      '<td colspan="8" class="px-2 text-[11px] text-amber-700 italic">⏳ Result filed — numbers being parsed'+(pdf?' · <a href="'+esc(pdf)+'" target="_blank" rel="noopener" class="underline font-semibold not-italic" onclick="event.stopPropagation()">filing PDF ↗</a>':'')+'</td>'+
+      '<td colspan="8" class="px-2 text-[11px] '+cls+' italic">'+msg+(pdf?' · <a href="'+esc(pdf)+'" target="_blank" rel="noopener" class="underline font-semibold not-italic" onclick="event.stopPropagation()">filing PDF ↗</a>':'')+'</td>'+
       '<td class="text-right px-2 text-slate-500 font-semibold whitespace-nowrap">'+fmtDate8(+((r[2].slice(0,10)).replace(/-/g,'')))+'</td>'+
       '<td colspan="2" class="text-right px-2 text-slate-300">—</td></tr>';
   }).join('');
@@ -889,6 +894,7 @@ async function load(){
       let added=0; for(const k in bse.co){ if(!CO[k]){ CO[k]=bse.co[k]; added++; } }
       BSE_COUNT=added;
     }
+    if(bse&&bse.pdf_only) PDF_ONLY=new Set(bse.pdf_only);   // filed but not machine-readable → label honestly
     FEEDROWS=(feed&&feed.rows||[]).slice();
     liveKeys=new Set(FEEDROWS.map(feedKey));
     $('updatedBox').innerHTML='Numbers '+esc(qr.updated)+'<br>Prices as of '+esc(qr.asof);
