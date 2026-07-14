@@ -4,7 +4,8 @@
 ("X has informed the Exchange about Bagging/Receiving of orders/contracts").
 
   in : docs/announcements.json  (order/contract rows -> attachment PDF)
-  out: docs/order_values.json   {updated, vals:{<file>: "<value string>"}}
+  out: docs/order_values.json   {updated, vals:{<file>: {"t":"<display>","cr":<₹ crore|null>}}}
+                                 (a "" value means "checked, no value found" — avoids re-fetching)
 
 The cache is keyed by the attachment `file` (unique per filing) and is INCREMENTAL + committed:
 each run only downloads PDFs it hasn't seen, then prunes entries whose file left the window.
@@ -51,7 +52,10 @@ def _cur_from(ccy):
     if "eur" in c or "€" in ccy: return "€"
     return "₹"
 
+FX_USD = 86.0   # ₹/US$ — approximate; only used to size the "× annual sales" heuristic
+
 def fmt_amt(v, approx, cur):
+    """v is in the currency's base unit (rupees for ₹, dollars for US$)."""
     if cur != "₹":
         if v >= 1e9: return "%s%s %s bn" % (approx, cur, ("%.2f" % (v/1e9)).rstrip("0").rstrip("."))
         if v >= 1e6: return "%s%s %s mn" % (approx, cur, ("%.2f" % (v/1e6)).rstrip("0").rstrip("."))
@@ -60,10 +64,17 @@ def fmt_amt(v, approx, cur):
     if cr >= 1: return "%s₹ %s cr" % (approx, ("%.2f" % cr).rstrip("0").rstrip("."))
     return "%s₹ %.2f lakh" % (approx, v/1e5)
 
+def _inr_cr(v_base, cur):
+    """Convert a base-unit amount to ₹ crore (None for currencies we don't convert)."""
+    if cur == "₹":  return round(v_base / 1e7, 2)
+    if cur == "US$": return round(v_base * FX_USD / 1e7, 2)
+    return None
+
 def extract(txt):
+    """Return (display_string, inr_crore|None) for the best order value found, or None."""
     txt = re.sub(r"\s+", " ", txt or "")
     if len(txt) < 40: return None                      # scanned / empty PDF
-    best, best_score = None, 1.0                        # require a minimum signal
+    best, best_cr, best_score = None, None, 1.0         # require a minimum signal
     # 1) amount + unit word
     for m in MONEY.finditer(txt):
         ccy, amt, unit = (m.group(1) or "").strip(), m.group(2), m.group(4).lower()
@@ -72,18 +83,19 @@ def extract(txt):
         if NEG.search(ctx): continue
         cur = _cur_from(ccy)
         if cur == "₹" and USD_TRAIL.match(txt[e:e+12]): cur = "US$"   # "35.42 Million USD"
-        score = 3 if KEYS.search(ctx) else 0
-        try:
-            v = float(amt.replace(",", ""))
-            mult = {"cr":1e7,"crore":1e7,"crores":1e7,"lakh":1e5,"lakhs":1e5,"lac":1e5,"lacs":1e5,
-                    "mn":1e6,"million":1e6,"bn":1e9,"billion":1e9}.get(unit, 1e7)
-            score += min(v*mult/1e7, 5)/5.0
-        except: pass
+        try: v = float(amt.replace(",", ""))
+        except: continue
+        mult = {"cr":1e7,"crore":1e7,"crores":1e7,"lakh":1e5,"lakhs":1e5,"lac":1e5,"lacs":1e5,
+                "mn":1e6,"million":1e6,"bn":1e9,"billion":1e9}.get(unit, 1e7)
+        base = v * (mult if cur == "₹" else (1e6 if unit.startswith(("mn","mil")) else
+               (1e9 if unit.startswith(("bn","bil")) else 1)))   # US$ base = dollars
+        score = (3 if KEYS.search(ctx) else 0) + min(v*mult/1e7, 5)/5.0
         if score > best_score:
             best_score = score
             approx = "~" if ccy.startswith("~") else ""
             best = "%s%s %s %s" % (approx, cur, amt, "cr" if unit.startswith("cr") else
                    ("lakh" if unit.startswith(("lac","lakh")) else ("mn" if unit.startswith(("mn","mil")) else "bn")))
+            best_cr = _inr_cr(base, cur)
     # 2) currency-prefixed full-digit amount (no unit word)
     for m in MONEY2.finditer(txt):
         ccy, amt = m.group(2), m.group(3)
@@ -98,7 +110,9 @@ def extract(txt):
         score += min(v/1e7, 5)/5.0
         if score > best_score:
             best_score = score
-            best = fmt_amt(v, "~" if m.group(1).strip() else "", _cur_from(ccy))
+            cur = _cur_from(ccy)
+            best = fmt_amt(v, "~" if m.group(1).strip() else "", cur)
+            best_cr = _inr_cr(v, cur)
     # 3) numeric figure right before a spelled-out "(Rupees … )" / "(… Crore …)" clause
     for m in MONEY3.finditer(txt):
         try: v = float(m.group(2).replace(",", "").replace(" ", ""))
@@ -110,7 +124,8 @@ def extract(txt):
         if score > best_score:
             best_score = score
             best = fmt_amt(v, "~" if (m.group(1) or "").strip() else "", "₹")
-    return best
+            best_cr = round(v/1e7, 2)
+    return (best, best_cr) if best else None
 
 # ---- driver ----------------------------------------------------------------
 def main():
@@ -138,8 +153,8 @@ def main():
             txt = "".join(p.get_text() for p in fitz.open(stream=raw, filetype="pdf"))
             val = extract(txt)
             if val:
-                cache[f] = val; ok += 1
-                if i <= 60 or i % 10 == 0: print("  OK   %-55s %s" % (f[:55], val))
+                cache[f] = {"t": val[0], "cr": val[1]}; ok += 1   # display string + ₹ crore (or null)
+                if i <= 60 or i % 10 == 0: print("  OK   %-55s %-14s %s" % (f[:55], val[0], val[1]))
             else:
                 cache[f] = ""; miss += 1                 # remember "checked, no value" (avoids re-fetch)
         except Exception as ex:

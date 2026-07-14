@@ -71,16 +71,6 @@ ANN_BUCKETS = [
      re.compile(r"insolvency|default|fraud|arrest|action\(s\)|statutory auditor|suspension of trading|penalt|one time settlement", re.I)),
 ]
 
-# For the Order Wins bucket, show the extracted order VALUE in "What happened" instead of NSE's
-# generic boilerplate ("… informed the Exchange about Bagging/Receiving of orders/contracts").
-def order_caption(cap, f):
-    val = ORDVALS.get(f)
-    if not val: return cap                                   # scanned / undisclosed -> keep caption
-    if (not cap) or ("informed the exchange" in cap.lower()):
-        return "Order win — " + val                          # replace the boilerplate
-    if re.search(r"\d", cap): return cap                     # caption already carries the numbers
-    return cap.rstrip(". ") + " — " + val
-
 def build_ann_buckets():
     per = {k: {} for k, *_ in [(b[0],) for b in ANN_BUCKETS]}
     for r in ann.get("rows", []):
@@ -96,14 +86,48 @@ def build_ann_buckets():
                 break
     out = []
     for key, t, d, _rx in ANN_BUCKETS:
-        def _cap(s):
-            c = order_caption(s["cap"], s["f"]) if key == "orders" else s["cap"]
-            return (c[:179] + "…") if len(c) > 180 else c
-        rows = [[sym, nameof(sym, s["co"]), s["n"], s["dt"][:10], _cap(s), s["f"]]
+        if key == "orders":
+            out.append(build_orders_bucket(per["orders"], t)); continue
+        rows = [[sym, nameof(sym, s["co"]), s["n"], s["dt"][:10],
+                 (s["cap"][:179] + "…") if len(s["cap"]) > 180 else s["cap"], s["f"]]
                 for sym, s in per[key].items()]
         rows.sort(key=lambda x: x[3], reverse=True)
         out.append({"k": key, "t": t, "d": d, "type": "ann", "n": len(rows), "rows": rows})
     return out
+
+# The Order Wins bucket gets its own richer layout (like the reference sites): market cap, TTM P/E,
+# date, and a remark stating the order value and how many times the company's trailing-12-month
+# sales it represents. type 'ord' rows: [sym, name, mcap|null, pe|null, date, remark, file]
+def _ordval(f):
+    v = ORDVALS.get(f)
+    if isinstance(v, dict): return v.get("t"), v.get("cr")     # {"t":display,"cr":₹crore}
+    return (v, None) if v else (None, None)                    # legacy string / "" / missing
+
+def build_orders_bucket(per, t):
+    rows = []
+    for sym, s in per.items():
+        m = META.get(sym) or {}
+        mc = round(m["mcap"], 1) if m.get("mcap") else None
+        tp = ttm_pat(sym)
+        pe = round(mc / tp, 1) if (mc and tp and tp > 0) else None
+        disp, cr = _ordval(s["f"])
+        rev = ttm_rev(sym)
+        if disp:
+            remark = disp + " order"
+            if cr and rev:
+                ratio = cr / rev
+                remark += " · " + ("%.1f× annual sales" % ratio if ratio >= 1 else
+                          ("%d%% of annual sales" % round(ratio * 100) if ratio >= 0.01 else
+                           "<1% of annual sales"))
+        else:
+            cap = s["cap"] or ""
+            remark = ("Order received" if ("informed the exchange" in cap.lower() or not cap)
+                      else ((cap[:179] + "…") if len(cap) > 180 else cap))
+        rows.append([sym, nameof(sym, s["co"]), mc, pe, s["dt"][:10], remark, s["f"]])
+    rows.sort(key=lambda x: x[4], reverse=True)
+    return {"k": "orders", "t": t, "type": "ord", "n": len(rows), "rows": rows,
+            "d": "New order wins in the last month — order value and how many times the company's "
+                 "trailing-12-month sales it represents (with market cap & TTM P/E)."}
 
 # ------------------------------------------- 2) results buckets (computed, per quarter)
 def prev_qe(qe):
@@ -175,6 +199,22 @@ def ttm_pat(sym):
         if v is None: return None
         tot += v
     return tot
+
+# TTM revenue (trailing 4 quarters) — denominator for the "N× annual sales" order comparison
+def ttm_rev(sym):
+    qmap = revop.get(sym)
+    if not qmap: return None
+    qes = sorted(int(q) for q in qmap)
+    if len(qes) < 4: return None
+    last4 = qes[-4:]
+    today = int(datetime.date.today().strftime("%Y%m%d"))
+    if last4[-1] < today - 10000 + 3000: return None   # latest quarter older than ~9 months -> stale
+    tot = 0.0
+    for q in last4:
+        v = pick(qmap[str(q)] if str(q) in qmap else qmap[q], 1, 0)
+        if v is None or v < 0: return None
+        tot += v
+    return tot if tot > 0 else None
 
 # ------------------------------------------- 3) price buckets (from slim meta)
 def build_price_buckets():
