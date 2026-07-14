@@ -34,27 +34,40 @@ def target_qe():
     return int(qr["quarters"][0])
 
 def nse_declared(qe):
-    """NSE symbols that filed a result for `qe` (integrated-filing-results, current season)."""
+    """NSE symbols that filed a result for `qe` (integrated-filing-results, paginated, same call as
+    update_fundamentals.py). Window = the ~150 days after quarter-end (when results are filed)."""
+    y, m = qe // 10000, (qe // 100) % 100
+    lo = datetime.date(y, m, 28)
+    hi = min(datetime.date.today(), lo + datetime.timedelta(days=150))
     jar = NB.nse_jar()
     hdr = {"User-Agent": NB.UA, "Accept": "application/json",
            "Referer": "https://www.nseindia.com/companies-listing/corporate-filings-financial-results"}
-    out = {}
-    url = "https://www.nseindia.com/api/integrated-filing-results?index=equities&period_ended=&from_date=&to_date="
+    base = ("https://www.nseindia.com/api/integrated-filing-results?index=equities&period=Quarterly"
+            "&from_date=%s&to_date=%s" % (lo.strftime("%d-%m-%Y"), hi.strftime("%d-%m-%Y")))
+    out = set(); page = 1; total = 0
     try:
-        j = json.loads(NB._get(url, headers=hdr, jar=jar, timeout=90))
-        rows = j if isinstance(j, list) else j.get("data", [])
-    except Exception as ex:
-        print("NSE declared fetch ERR:", str(ex)[:80]); rows = []
-    for r in rows:
-        sym = str(r.get("symbol") or "").strip().upper()
-        qd = str(r.get("qe_Date") or r.get("period") or "")
-        m = re.search(r"(\d{2})-(\w{3})-(\d{4})", qd)
-        if sym and m:
+        while True:
+            jb = json.loads(NB._get(base + "&page=%d&size=500" % page, headers=hdr, jar=jar, timeout=60))
+            rows = jb if isinstance(jb, list) else (jb.get("data", []) or [])
             MON = {"jan":1,"feb":2,"mar":3,"apr":4,"may":5,"jun":6,"jul":7,"aug":8,"sep":9,"oct":10,"nov":11,"dec":12}
-            mo = MON.get(m.group(2).lower(), 0)
-            qi = int(m.group(3)) * 10000 + mo * 100 + int(m.group(1))
-            if qi == qe: out[sym] = True
-    return set(out)
+            for r in rows:
+                sym = str(r.get("symbol") or "").strip().upper()
+                qd = str(r.get("qe_Date") or "")
+                m = re.match(r"(\d{1,2})-([A-Za-z]{3})-(\d{4})", qd)   # NSE format: 30-JUN-2026
+                if not (sym and m): continue
+                qi = int(m.group(3)) * 10000 + MON.get(m.group(2).lower(), 0) * 100 + int(m.group(1))
+                if qi != qe: continue
+                # match update_fundamentals' filter: only filings with a parseable XBRL P&L (not
+                # governance/segment-only) count as "should be covered" — else we overstate the gap.
+                if not str(r.get("xbrl") or "").startswith("http"): continue
+                if "governance" in (str(r.get("type") or "")).lower(): continue
+                out.add(sym)
+            if not isinstance(jb, list): total = max(total, jb.get("totalCount") or 0)
+            if isinstance(jb, list) or not rows or page > 60: break
+            page += 1
+    except Exception as ex:
+        print("NSE declared fetch ERR:", str(ex)[:80])
+    return out
 
 def bse_declared(qe, univ_codes):
     """BSE-only scripcodes that filed a result for the quarter (strCat=Result over a wide window)."""
@@ -88,9 +101,11 @@ def main():
     bf = load(os.path.join(DOCS, "bse_fundamentals.json"), {"px": {}}).get("px", {})
     univ = {str(r[0]): r for r in load(os.path.join(DOCS, "bse_universe.json"), {"rows": []})["rows"]}
 
-    # covered
-    nse_cov = set(s for s, qs in sf.items() if any(row and int(row[0]) == qe and row[1] is not None
-                  for row in (qs.values() if isinstance(qs, dict) else [])))
+    # covered — sf_fundamentals[SYM] is a LIST of [qe, std, annStd, con, annCon] rows
+    def rows_of(qs): return qs if isinstance(qs, list) else list(qs.values())
+    nse_cov = set(s for s, qs in sf.items() if any(
+        isinstance(row, list) and row and int(row[0]) == qe and len(row) > 1 and
+        (row[1] is not None or (len(row) > 3 and row[3] is not None)) for row in rows_of(qs)))
     bse_cov = set(c for c, qs in bf.items() if str(qe) in qs)
     print("COVERED: NSE %d, BSE-only %d" % (len(nse_cov), len(bse_cov)))
 
