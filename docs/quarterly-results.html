@@ -567,8 +567,38 @@ function renderResults(){
   $('screenChips').querySelectorAll('[data-sc]').forEach(b=>b.onclick=()=>{ ST.screen=b.getAttribute('data-sc'); ST.shown=100; render(); });
   let rows=filtered(ST.qi).filter(screenPass);
   rows=sortRows(rows);
-  $('fCount').textContent=rows.length.toLocaleString('en-IN')+' companies · '+qlabel(QTRS[ST.qi],true);
+  // PENDING: companies that filed a result for this quarter but whose numbers aren't parsed yet
+  // (BSE OCR pending / NSE XBRL not yet posted). Show them as "numbers coming" rows so the
+  // Declared count fully reconciles here — nothing is hidden. Only when no numbers-based screen is on.
+  const qeSel=QTRS[ST.qi], haveNums=new Set(recsFor(ST.qi).map(r=>r.sym));
+  const nrmN=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'').replace(/(limited|ltd)$/,'');
+  const haveNm=new Set(recsFor(ST.qi).map(r=>nrmN(r.c.n)));
+  let pend=[];
+  if(ST.screen==='all'){
+    const seen=new Set();
+    FEEDROWS.forEach(r=>{
+      if(r[3]!==qeSel||haveNums.has(r[0])||haveNm.has(nrmN(r[1]))||seen.has(r[0]))return;
+      if(CO[r[0]]?!coPass(r[0]):(ST.uni!=='all'&&ST.uni!=='bse'&&ST.uni!=='nse'||ST.sector!=='all'||ST.mcap!=='all'))return;
+      if(ST.uni==='bse'&&!(CO[r[0]]&&CO[r[0]].bse))return;
+      if(ST.uni==='nse'&&CO[r[0]]&&CO[r[0]].bse)return;
+      if(ST.search&&normSearch(r[0]).indexOf(normSearch(ST.search))<0&&normSearch(r[1]).indexOf(normSearch(ST.search))<0)return;
+      seen.add(r[0]); pend.push(r);
+    });
+    pend.sort((a,b)=>(b[2]>a[2]?1:-1));
+  }
+  $('fCount').textContent=rows.length.toLocaleString('en-IN')+' with numbers'+(pend.length?' · +'+pend.length+' filed, numbers coming':'')+' · '+qlabel(QTRS[ST.qi],true);
   const shown=rows.slice(0,ST.shown);
+  const pendHtml=pend.map(r=>{
+    const c=CO[r[0]], pdf=r[5]?(String(r[5]).indexOf('http')===0?r[5]:PDF_PREFIX+r[5]):'';
+    return '<tr class="bg-amber-50/40'+(c?' hover:bg-amber-50 cursor-pointer':'')+'"'+(c?' data-open="'+esc(r[0])+'"':'')+'>'+
+      '<td class="pl-3 pr-1"><span class="star'+(WATCH.has(r[0])?' on':'')+'" data-star="'+esc(r[0])+'" title="Watchlist">★</span></td>'+
+      '<td class="px-2 py-2"><div class="font-extrabold text-slate-900 leading-tight">'+esc(r[0])+(c&&c.bse?' <span class="badge" title="Listed on BSE only">BSE</span>':'')+'</div>'+
+        '<div class="text-[10.5px] text-slate-400 truncate max-w-[190px]">'+esc(r[1])+'</div></td>'+
+      '<td class="text-right px-2 text-slate-500 font-semibold whitespace-nowrap">'+(c&&c.m?fmtCr(c.m):'—')+'</td>'+
+      '<td colspan="8" class="px-2 text-[11px] text-amber-700 italic">⏳ Result filed — numbers being parsed'+(pdf?' · <a href="'+esc(pdf)+'" target="_blank" rel="noopener" class="underline font-semibold not-italic" onclick="event.stopPropagation()">filing PDF ↗</a>':'')+'</td>'+
+      '<td class="text-right px-2 text-slate-500 font-semibold whitespace-nowrap">'+fmtDate8(+((r[2].slice(0,10)).replace(/-/g,'')))+'</td>'+
+      '<td colspan="2" class="text-right px-2 text-slate-300">—</td></tr>';
+  }).join('');
   $('resRows').innerHTML=shown.map(r=>{
     const c=r.c, due=(c.e&&!c.q[0])?'<span class="badge ml-1" title="Next result expected '+esc(c.e)+'">📅</span>':'';
     return '<tr class="hover:bg-slate-50 cursor-pointer" data-open="'+esc(r.sym)+'">'+
@@ -587,7 +617,7 @@ function renderResults(){
     '<td class="text-right px-2 text-slate-500 font-semibold whitespace-nowrap">'+fmtDate8(r.ann)+'</td>'+
     '<td class="text-right px-2 font-bold '+pctCls(r.rx)+'">'+fmtPct(r.rx)+'</td>'+
     '<td class="text-right px-2 font-bold '+pctCls(r.sr)+'" title="Drift from result-day close to '+esc(QR.asof)+'">'+fmtPct(r.sr)+'</td></tr>';
-  }).join('') || '<tr><td colspan="14" class="py-8 text-center text-slate-400 text-sm">Nothing matches — relax the filters or pick an earlier quarter.</td></tr>';
+  }).join('')+pendHtml || '<tr><td colspan="14" class="py-8 text-center text-slate-400 text-sm">Nothing matches — relax the filters or pick an earlier quarter.</td></tr>';
   $('bMore').classList.toggle('hidden', rows.length<=ST.shown);
   $('bMore').onclick=()=>{ ST.shown+=200; renderResults(); };
   $('resRows').querySelectorAll('[data-open]').forEach(tr=>tr.onclick=e=>{
