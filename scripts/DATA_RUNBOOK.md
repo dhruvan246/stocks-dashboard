@@ -564,9 +564,18 @@ the Quarterly Results page. **4 scripts + `.github/workflows/refresh-bse.yml` (2
   it. Instead per scrip: `AnnSubCategoryGetData` (strCat=-1) → pick result/board-outcome filings WITH an
   attachment → `AttachLive/AttachHis/<guid>.pdf` → **OCR** (rapidocr; small BSE cos file SCANNED PDFs, no text
   layer) → **IDENTITY-GUARD** (company name tokens must appear on the page) → parse P&L rows. OCR ~15s/page ⇒
-  SLOW ⇒ bounded+resumable grind (`--budget N --max-minutes M`, ledger `scripts/_bse_fund_done.json`), biggest
-  first, walks ~600 liquid names over days then new filings only. **Validated: Cella Space Q1FY27 PAT 7.29 = exact
-  vs Screener.** (Revenue is Revenue-from-Operations; Screener may show Total Income — small definitional diff.)
+  SLOW ⇒ bounded+resumable grind (`--budget N --max-minutes M`, ledger `scripts/_bse_fund_done.json`).
+  **⚠️ ORDER = DECLARED-FIRST, then mcap desc, floor 0** (was mcap-only + floor 100 → 782 already-declared
+  sub-₹100cr cos were being SKIPPED — user wanted ALL results incl. <100cr). `declared_recently()` scans the
+  strCat=Result feed (last ~110d) → those scrips grind FIRST at ANY mcap; the `--min-mcap` floor now applies
+  ONLY to non-declared names. Workflow runs `--min-mcap 0` TWICE daily (12:10 + 22:10 IST) so the whole
+  ~2,678 universe is covered in ~1-2 wks, real declarers first. **Validated: Cella Space Q1FY27 PAT 7.29 =
+  exact vs Screener.** (Revenue is Revenue-from-Operations; Screener may show Total Income — small diff.)
+  **⚠️ FEED INJECTION (fetch_bse_results.py step 1b):** BSE lets small cos file the result under "Board
+  Meeting"/"Company Update" (NOT strCat=Result) — e.g. Cella Space → it never reached the Just-Declared feed
+  via the category scan. So after the strCat=Result merge, we ALSO inject feed rows from `bse_fundamentals.json`
+  (anything with an ann date in the 31d window = a confirmed declared result). That's why odd-category filers
+  still appear in Just Declared once the grind has confirmed them.
 - **`build_bse_results.py` → `docs/bse_results.json`** — joins the 3 files into a SLIM payload in the SAME
   `co` shape as `quarterly_results.json` (q-array `[revS,opS,patS,revC,opC,patC,ann,rx,sr]`, std=con since BSE
   small-caps are standalone, op=null; `bse:1` flag; reactions precomputed from bse_prices so the browser doesn't

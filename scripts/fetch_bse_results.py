@@ -59,6 +59,14 @@ def qe_from_head(*texts):
         if qe: return qe
     return 0
 
+def qlabel(qe):
+    """20260630 -> 'Q1 FY27'. Jun/Sep/Dec belong to the NEXT fiscal year, Mar to the same."""
+    y, m = qe // 10000, (qe // 100) % 100
+    qm = {6: ("Q1", 1), 9: ("Q2", 1), 12: ("Q3", 1), 3: ("Q4", 0)}
+    if m not in qm: return "%d-%02d" % (y, m)
+    q, add = qm[m]
+    return "%s FY%02d" % (q, (y + add) % 100)
+
 def parse_dt(s):
     """'2026-07-11T15:54:42.027' -> 'YYYY-MM-DD HH:MM:SS'."""
     m = re.match(r"(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2}:\d{2})", str(s or ""))
@@ -139,6 +147,37 @@ def main():
         feed.setdefault("rows", []).append([sym, re.sub(r"\s+", " ", str(r.get("SLONGNAME") or sym)).strip(),
                                             dt, qe_from_head(r.get("HEADLINE"), r.get("NEWSSUB")), cap, file])
         added += 1
+    # ---- 1b. inject BSE-only results we've CONFIRMED via OCR (bse_fundamentals.json) ----
+    # BSE lets small cos file the result under "Board Meeting"/"Company Update" (not the Result
+    # category the scan above uses) — e.g. Cella Space. Those never reach the feed via strCat=Result.
+    # But the numbers grind opened the filing, verified identity + the P&L, and recorded the ann date,
+    # so anything in bse_fundamentals with an ann date in the window is a genuine declared result → add it.
+    fadd = 0
+    try:
+        univ = {str(r[0]): r for r in load(os.path.join(DOCS, "bse_universe.json"), {"rows": []})["rows"]}
+        fund = load(os.path.join(DOCS, "bse_fundamentals.json"), {"px": {}}).get("px", {})
+        lo_i = int(lo.strftime("%Y%m%d"))
+        for code, qs in fund.items():
+            u = univ.get(code)
+            if not u: continue
+            scrip, tkr, name = u[0], (u[1] or "").upper(), u[2]
+            if not tkr: continue
+            for qe, rec in qs.items():
+                ann = rec.get("ann") or 0
+                if ann < lo_i: continue                      # only recent (in the feed window)
+                dt = "%s-%s-%s 17:30:00" % (str(ann)[:4], str(ann)[4:6], str(ann)[6:8])
+                if (tkr, dt[:10]) in have or nname(name) in have_names: continue
+                have.add((tkr, dt[:10])); have_names.add(nname(name))
+                pat = rec.get("pat"); revv = rec.get("rev")
+                cap = "%s results: PAT ₹%s cr" % (qlabel(int(qe)), ("%.2f" % pat) if pat is not None else "—")
+                if revv is not None: cap += " · Revenue ₹%.2f cr" % revv
+                file = "https://www.bseindia.com/stock-share-price/x/x/%s/" % scrip
+                feed.setdefault("rows", []).append([tkr, re.sub(r"\s+", " ", str(name)).strip(), dt, int(qe), cap, file])
+                fadd += 1
+        if fadd: print("results_feed.json: +%d BSE-only confirmed-result rows (from bse_fundamentals)" % fadd)
+    except Exception as ex:
+        print("BSE fundamentals->feed inject skipped:", str(ex)[:80])
+
     # trim to window + sort newest-first
     lo_iso = lo.isoformat()
     feed["rows"] = sorted((r for r in feed["rows"] if r[2][:10] >= lo_iso),

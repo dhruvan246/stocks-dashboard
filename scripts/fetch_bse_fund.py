@@ -81,6 +81,28 @@ def parse_pl(boxes):
             pat = row_first_num(boxes, b)
     return rev, pat, unit
 
+def declared_recently(op, univ_codes, days=110):
+    """BSE-only scrips that filed a result (strCat=Result) in the last `days` — grind these FIRST,
+    at any market cap, so already-declared results get numbers before the long mcap tail."""
+    today = datetime.date.today(); lo = today - datetime.timedelta(days=days)
+    got = set(); cur = lo
+    while cur <= today:
+        hi = min(cur + datetime.timedelta(days=9), today)
+        F, T = cur.strftime("%Y%m%d"), hi.strftime("%Y%m%d")
+        page = 1
+        while page <= 40:
+            url = ("https://api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryGetData/w?pageno=%d&strCat=Result"
+                   "&strPrevDate=%s&strToDate=%s&strScrip=&strSearch=P&strType=C&subcategory=-1" % (page, F, T))
+            try: tab = json.loads(B.get(op, url)).get("Table", []) or []
+            except Exception: break
+            if not tab: break
+            for r in tab:
+                sc = str(r.get("SCRIP_CD") or "")
+                if sc in univ_codes: got.add(sc)
+            page += 1; time.sleep(0.15)
+        cur = hi + datetime.timedelta(days=1)
+    return got
+
 def scrip_announcements(op, code, months):
     hi = datetime.date.today(); lo = hi - datetime.timedelta(days=30 * months)
     url = ("https://api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryGetData/w?pageno=1&strCat=-1"
@@ -153,6 +175,17 @@ def main():
     done = set(json.load(open(DONE))) if os.path.exists(DONE) else set()
 
     op = B.session(); time.sleep(1)
+
+    # DECLARED-FIRST: scrips that filed a result recently are ground first at ANY market cap, so
+    # already-declared results (incl. sub-₹100cr names the mcap floor would skip) get numbers first.
+    declared = set()
+    if only is None and "--no-declared-first" not in sys.argv:
+        declared = declared_recently(op, set(str(r[0]) for r in univ))
+        print("declared recently (BSE-only):", len(declared))
+    def prio(r):
+        return (0 if str(r[0]) in declared else 1, -r[6])       # declared first, then mcap desc
+    univ.sort(key=prio)
+
     spent = 0
     for r in univ:
         code, tkr, name, isin, grp, fv, mc, sec = r
@@ -160,7 +193,9 @@ def main():
         if only is not None:
             if code not in only and tkr not in only: continue
         else:
-            if code in done or mc < min_mcap: continue
+            # skip done; apply the mcap floor ONLY to non-declared names (declared always qualify)
+            if code in done: continue
+            if code not in declared and mc < min_mcap: continue
         if spent >= budget or (time.time() - t_start) / 60 >= max_min: break
         spent += 1
         try:

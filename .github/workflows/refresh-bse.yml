@@ -7,7 +7,8 @@ name: Refresh BSE-only coverage
 
 on:
   schedule:
-    - cron: "40 16 * * *"   # 22:10 IST daily (after BSE bhavcopy is published)
+    - cron: "40 16 * * *"   # 22:10 IST daily (after BSE bhavcopy is published) — full run (prices+numbers)
+    - cron: "40 6 * * *"    # 12:10 IST daily — extra numbers-grind pass to cover the sub-₹100cr tail faster
   repository_dispatch:
     types: [bse-refresh]
   workflow_dispatch:
@@ -48,7 +49,7 @@ jobs:
         run: python3 -X utf8 scripts/fetch_bse_bhav.py || echo "(bhavcopy append failed — keeping existing)"
 
       - name: OCR quarterly numbers (bounded, resumable)
-        run: python3 -X utf8 scripts/fetch_bse_fund.py --budget ${{ github.event.inputs.fund_budget || '120' }} --min-mcap 100 --months 5 --max-minutes 60 || echo "(fund grind failed — keeping existing)"
+        run: python3 -X utf8 scripts/fetch_bse_fund.py --budget ${{ github.event.inputs.fund_budget || '150' }} --min-mcap 0 --months 5 --max-minutes 75 || echo "(fund grind failed — keeping existing)"
 
       - name: Rebuild BSE results payload
         run: python3 -X utf8 scripts/build_bse_results.py
