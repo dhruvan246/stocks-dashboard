@@ -1,0 +1,80 @@
+name: Refresh BSE-only coverage
+
+# BSE-listed-only stocks (not on NSE) — universe + daily closes + quarterly numbers, then the slim
+# bse_results.json the Quarterly Results page merges. The numbers are OCR'd from each company's own
+# filing (slow), so the fundamentals grind runs a bounded budget per day and is resumable — it walks
+# the ~600 liquid BSE-only names over several days, then just picks up new filings.
+
+on:
+  schedule:
+    - cron: "40 16 * * *"   # 22:10 IST daily (after BSE bhavcopy is published)
+  repository_dispatch:
+    types: [bse-refresh]
+  workflow_dispatch:
+    inputs:
+      fund_budget:
+        description: "How many scrips to OCR this run"
+        default: "120"
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: refresh-bse
+  cancel-in-progress: false
+
+jobs:
+  refresh-bse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: pip install -q pymupdf rapidocr-onnxruntime onnxruntime numpy
+
+      - name: Refresh BSE-only universe weekly (sector top-up)
+        run: |
+          # Sundays: refresh the universe (new listings, more sectors). Other days keep it.
+          if [ "$(date -u +%u)" = "7" ] || [ ! -f docs/bse_universe.json ]; then
+            python3 -X utf8 scripts/build_bse_universe.py --sector-budget 400 || echo "(universe refresh failed — keeping existing)"
+          fi
+
+      - name: Append today's BSE closes (bhavcopy)
+        run: python3 -X utf8 scripts/fetch_bse_bhav.py || echo "(bhavcopy append failed — keeping existing)"
+
+      - name: OCR quarterly numbers (bounded, resumable)
+        run: python3 -X utf8 scripts/fetch_bse_fund.py --budget ${{ github.event.inputs.fund_budget || '120' }} --min-mcap 100 --months 5 --max-minutes 60 || echo "(fund grind failed — keeping existing)"
+
+      - name: Rebuild BSE results payload
+        run: python3 -X utf8 scripts/build_bse_results.py
+
+      - name: Commit BSE data (only if changed)
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for f in docs/bse_universe.json docs/bse_fundamentals.json docs/bse_prices.bin docs/bse_results.json scripts/_bse_fund_done.json scripts/_bse_sectors.json; do
+            cp "$f" "/tmp/$(basename $f)" 2>/dev/null || true
+          done
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            for f in docs/bse_universe.json docs/bse_fundamentals.json docs/bse_prices.bin docs/bse_results.json scripts/_bse_fund_done.json scripts/_bse_sectors.json; do
+              cp "/tmp/$(basename $f)" "$f" 2>/dev/null || true
+            done
+            git add docs/bse_universe.json docs/bse_fundamentals.json docs/bse_prices.bin docs/bse_results.json scripts/_bse_fund_done.json scripts/_bse_sectors.json
+            if git diff --cached --quiet; then echo "No BSE changes"; exit 0; fi
+            git commit -m "BSE-only coverage refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then exit 0; fi
+            echo "push #$attempt rejected; retry"; sleep $((attempt*3))
+          done
+          echo "push failed"; exit 1
+
+      - name: Publish to Pages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml || echo "(pages dispatch failed — next push publishes)"

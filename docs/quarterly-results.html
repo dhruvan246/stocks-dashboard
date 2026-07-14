@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>STOCKSWORLD · Quarterly Results</title>
-<meta name="description" content="India's quarterly results dashboard — season scoreboard, live just-declared feed, upcoming results calendar (confirmed + predicted dates), sector heatmap, turnaround screens and result-day price reaction for every NSE company." />
+<meta name="description" content="India's quarterly results dashboard — season scoreboard, live just-declared feed, upcoming results calendar (confirmed + predicted dates), sector heatmap, turnaround screens and result-day price reaction for every NSE and BSE-listed company." />
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
@@ -105,6 +105,8 @@
           <option value="m150">Nifty Midcap 150</option>
           <option value="s250">Nifty Smallcap 250</option>
           <option value="fno">F&amp;O stocks</option>
+          <option value="nse">NSE-listed only</option>
+          <option value="bse">BSE-listed only</option>
           <option value="watch">⭐ My watchlist</option>
         </select>
         <select id="selMcap" class="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs font-bold focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -232,7 +234,7 @@ const PDF_PREFIX = 'https://nsearchives.nseindia.com/corporate/';
 const WORKER = 'https://stocksworld-quotes.dhruvan2510.workers.dev';
 const MONTHS = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-let QR=null, CAL=null, FEED=null, QTRS=[], CO=null;
+let QR=null, CAL=null, FEED=null, QTRS=[], CO=null, BSE_COUNT=0;
 const ST = { tab:'overview', qi:0, mode:'yoy', basis:'auto', uni:'all', mcap:'all', sector:'all',
              search:'', screen:'all', heat:'pat', cal:'conf', sort:{k:'ann',dir:-1}, shown:100 };
 let WATCH = new Set(); try{ WATCH = new Set(JSON.parse(localStorage.getItem('qr_watch')||'[]')); }catch(e){}
@@ -345,6 +347,8 @@ const UNIBIT={n50:1,n100:2,n500:4,m150:8,s250:16,fno:32};
 function passFilters(r){
   const c=r.c;
   if(ST.uni==='watch'){ if(!WATCH.has(r.sym)) return false; }
+  else if(ST.uni==='bse'){ if(!c.bse) return false; }
+  else if(ST.uni==='nse'){ if(c.bse) return false; }
   else if(ST.uni!=='all'){ if(!(c.x & UNIBIT[ST.uni])) return false; }
   if(ST.mcap!=='all'){
     const m=c.m||0;
@@ -567,7 +571,7 @@ function renderResults(){
     const c=r.c, due=(c.e&&!c.q[0])?'<span class="badge ml-1" title="Next result expected '+esc(c.e)+'">📅</span>':'';
     return '<tr class="hover:bg-slate-50 cursor-pointer" data-open="'+esc(r.sym)+'">'+
     '<td class="pl-3 pr-1"><span class="star'+(WATCH.has(r.sym)?' on':'')+'" data-star="'+esc(r.sym)+'" title="Watchlist">★</span></td>'+
-    '<td class="px-2 py-2"><div class="font-extrabold text-slate-900 leading-tight">'+esc(r.sym)+(c.f?' <span class="badge" title="Bank/NBFC — revenue = total income; operating margin not comparable">🏦</span>':'')+due+'</div>'+
+    '<td class="px-2 py-2"><div class="font-extrabold text-slate-900 leading-tight">'+esc(r.sym)+(c.bse?' <span class="badge" title="Listed on BSE only — not on NSE">BSE</span>':'')+(c.f?' <span class="badge" title="Bank/NBFC — revenue = total income; operating margin not comparable">🏦</span>':'')+due+'</div>'+
       '<div class="text-[10.5px] text-slate-400 truncate max-w-[190px]">'+esc(c.n)+' · '+esc(c.s)+'</div></td>'+
     '<td class="text-right px-2 text-slate-500 font-semibold whitespace-nowrap">'+(c.m?fmtCr(c.m):'—')+'</td>'+
     '<td class="text-right px-2 font-bold text-slate-800">'+fmtCr(r.rev)+'</td>'+
@@ -751,9 +755,10 @@ function openModal(sym){
     '<div class="flex items-start justify-between gap-3 flex-wrap">'+
       '<div><div class="flex items-center gap-2 flex-wrap"><h3 class="text-lg font-extrabold text-slate-900">'+esc(sym)+'</h3>'+
         '<span class="star text-lg'+(WATCH.has(sym)?' on':'')+'" id="mStar">★</span>'+
+        (c.bse?'<span class="badge" title="Listed on BSE only — not on NSE">BSE only</span>':'')+
         (c.f?'<span class="badge">🏦 Bank/NBFC</span>':'')+
         ((c.x&1)?'<span class="badge">Nifty 50</span>':(c.x&4)?'<span class="badge">Nifty 500</span>':'')+((c.x&32)?'<span class="badge">F&O</span>':'')+'</div>'+
-        '<div class="text-xs text-slate-500 mt-0.5">'+esc(c.n)+' · '+esc(c.s)+(c.i&&c.i!==c.s?' · '+esc(c.i):'')+(c.m?' · MCap ₹'+fmtMcap(c.m):'')+'</div></div>'+
+        '<div class="text-xs text-slate-500 mt-0.5">'+esc(c.n)+' · '+esc(c.s)+(c.i&&c.i!==c.s?' · '+esc(c.i):'')+(c.m?' · MCap ₹'+fmtMcap(c.m):'')+(c.cd?' · BSE '+c.cd:'')+'</div></div>'+
       '<button id="mClose" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold">✕</button></div>'+
     '<div class="grid sm:grid-cols-3 gap-2.5 mt-4">'+
       '<div class="tile"><div class="text-[10px] uppercase font-bold text-slate-500">'+(c.f?'Total income':'Revenue')+' trend</div>'+svgBars(revSeq,260,54,v=>'₹'+fmtCr(v)+' cr')+'</div>'+
@@ -766,9 +771,11 @@ function openModal(sym){
     '<div class="text-[10.5px] text-slate-400 mt-1.5">₹ crore · consolidated preferred (owners-attributable PAT) · sub-figures = YoY growth · Reaction = result-day price move</div>'+
     '<div class="flex flex-wrap gap-2 mt-4">'+
       (feedRow?'<a class="docbtn" target="_blank" rel="noopener" href="'+esc(feedRow[5].indexOf('http')===0?feedRow[5]:PDF_PREFIX+feedRow[5])+'">Latest filing PDF ↗</a>':'')+
-      '<a class="docbtn" href="./stock.html?sym='+encodeURIComponent(sym)+'">Price chart & profile →</a>'+
-      '<a class="docbtn" href="./announcements.html">All announcements →</a>'+
-      '<a class="docbtn" target="_blank" rel="noopener" href="https://www.nseindia.com/get-quotes/equity?symbol='+encodeURIComponent(sym)+'">NSE page ↗</a></div>'+
+      (c.bse
+        ? '<a class="docbtn" target="_blank" rel="noopener" href="https://www.bseindia.com/stock-share-price/x/x/'+encodeURIComponent(c.cd||'')+'/">BSE page ↗</a>'
+        : '<a class="docbtn" href="./stock.html?sym='+encodeURIComponent(sym)+'">Price chart & profile →</a>'+
+          '<a class="docbtn" target="_blank" rel="noopener" href="https://www.nseindia.com/get-quotes/equity?symbol='+encodeURIComponent(sym)+'">NSE page ↗</a>')+
+      '<a class="docbtn" href="./announcements.html">All announcements →</a></div>'+
     '</div>';
   $('modalBg').style.display='flex';
   $('mClose').onclick=closeModal;
@@ -837,12 +844,19 @@ function wire(){
 
 async function load(){
   try{
-    const [qr,cal,feed]=await Promise.all([
+    const [qr,cal,feed,bse]=await Promise.all([
       fetch('./quarterly_results.json').then(r=>{ if(!r.ok) throw new Error('quarterly_results HTTP '+r.status); return r.json(); }),
       fetch('./results_calendar.json?t='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null),
-      fetch('./results_feed.json?t='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null)
+      fetch('./results_feed.json?t='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null),
+      fetch('./bse_results.json').then(r=>r.ok?r.json():null).catch(()=>null)   // BSE-listed-only companies
     ]);
     QR=qr; CAL=cal; FEED=feed; QTRS=qr.quarters; CO=qr.co;
+    // Merge BSE-only companies (not on NSE) as first-class rows. Their q-arrays are pre-aligned to
+    // qr.quarters by build_bse_results.py; never shadow an existing NSE symbol.
+    if(bse&&bse.co&&JSON.stringify(bse.quarters)===JSON.stringify(qr.quarters)){
+      let added=0; for(const k in bse.co){ if(!CO[k]){ CO[k]=bse.co[k]; added++; } }
+      BSE_COUNT=added;
+    }
     FEEDROWS=(feed&&feed.rows||[]).slice();
     liveKeys=new Set(FEEDROWS.map(feedKey));
     $('updatedBox').innerHTML='Numbers '+esc(qr.updated)+'<br>Prices as of '+esc(qr.asof);
