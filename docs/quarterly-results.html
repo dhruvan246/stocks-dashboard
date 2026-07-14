@@ -262,6 +262,8 @@ function fmtMcap(v){ return v>=100000 ? (v/100000).toFixed(2)+' L cr' : Math.rou
 function fmtDate8(a){ if(!a) return '—'; const s=String(a); return s.slice(6,8)+' '+MONTHS[+s.slice(4,6)]+' '+s.slice(2,4); }
 function isoNice(iso){ const d=new Date(iso+'T00:00:00'); return d.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'}); }
 function median(arr){ if(!arr.length) return null; const a=[...arr].sort((x,y)=>x-y); const m=a.length>>1; return a.length%2? a[m] : (a[m-1]+a[m])/2; }
+/* search match ignoring case, spaces and punctuation: "cellaspace" matches "Cella Space Ltd" */
+function normSearch(s){ return String(s||'').toUpperCase().replace(/[^A-Z0-9]/g,''); }
 
 /* ---------- growth engine ---------- */
 /* q row layout: [revS,opS,patS,revC,opC,patC,ann,rx,sr] */
@@ -358,8 +360,8 @@ function passFilters(r){
   }
   if(ST.sector!=='all'&&c.s!==ST.sector) return false;
   if(ST.search){
-    const q=ST.search.toUpperCase();
-    if(r.sym.indexOf(q)<0 && c.n.toUpperCase().indexOf(q)<0) return false;
+    const q=normSearch(ST.search);
+    if(normSearch(r.sym).indexOf(q)<0 && normSearch(c.n).indexOf(q)<0) return false;
   }
   return true;
 }
@@ -613,7 +615,7 @@ function renderFeed(){
   $('feedChips').querySelectorAll('[data-fd]').forEach(b=>b.onclick=()=>{ feedDays=b.getAttribute('data-fd'); renderFeed(); });
   const cut=new Date(Date.now()-(+feedDays)*864e5).toISOString().slice(0,10);
   const rows=FEEDROWS.filter(r=>r[2].slice(0,10)>=cut && (coPass(r[0])||!CO[r[0]]&&ST.uni==='all'&&ST.sector==='all'&&ST.mcap==='all'))
-                     .filter(r=>!ST.search||r[0].indexOf(ST.search.toUpperCase())>=0||r[1].toUpperCase().indexOf(ST.search.toUpperCase())>=0);
+                     .filter(r=>!ST.search||normSearch(r[0]).indexOf(normSearch(ST.search))>=0||normSearch(r[1]).indexOf(normSearch(ST.search))>=0);
   $('feedCount').textContent=rows.length+' filings';
   const today=new Date().toISOString().slice(0,10), yest=new Date(Date.now()-864e5).toISOString().slice(0,10);
   const groups={};
@@ -658,7 +660,7 @@ function renderCalendar(){
     const [d,purpose,co]=confBy[sym];
     if(d<today||d>horizon) continue;
     if(CO[sym]? !coPass(sym) : (ST.uni!=='all'||ST.sector!=='all'||ST.mcap!=='all')) continue;
-    if(ST.search&&sym.indexOf(ST.search.toUpperCase())<0&&(co||'').toUpperCase().indexOf(ST.search.toUpperCase())<0) continue;
+    if(ST.search&&normSearch(sym).indexOf(normSearch(ST.search))<0&&normSearch(co).indexOf(normSearch(ST.search))<0) continue;
     items.push({d,sym,co:co||(CO[sym]&&CO[sym].n)||sym,conf:true,purpose});
   }
   if(ST.cal==='both'){
@@ -667,7 +669,7 @@ function renderCalendar(){
       if(!c.e||confBy[sym]) continue;
       if(c.e<today||c.e>horizon) continue;
       if(!coPass(sym)) continue;
-      if(ST.search&&sym.indexOf(ST.search.toUpperCase())<0&&c.n.toUpperCase().indexOf(ST.search.toUpperCase())<0) continue;
+      if(ST.search&&normSearch(sym).indexOf(normSearch(ST.search))<0&&normSearch(c.n).indexOf(normSearch(ST.search))<0) continue;
       items.push({d:c.e,sym,co:c.n,conf:false,purpose:'Predicted from past reporting dates'});
     }
   }
