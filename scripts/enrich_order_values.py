@@ -103,6 +103,10 @@ def extract(txt):
         except: continue
         if v < 100000: continue
         s, e = m.start(), m.end()
+        # a bare "$" preceded by a letter is a FOREIGN dollar (GYD$, A$, S$, C$, HK$) — skip it,
+        # so a parenthetical like "(35.42 Million USD)" wins instead of a huge GYD figure
+        ds = m.start(2)
+        if ccy == "$" and ds > 0 and txt[ds-1].isalpha() and txt[ds-2:ds].upper() != "US": continue
         ctx = txt[max(0, s-90):e+50]
         if NEG.search(ctx): continue
         score = 1.0 + (3 if KEYS.search(ctx) else 0)

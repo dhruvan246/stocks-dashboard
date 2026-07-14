@@ -123,7 +123,7 @@ def build_orders_bucket(per, t):
             cap = s["cap"] or ""
             remark = ("Order received" if ("informed the exchange" in cap.lower() or not cap)
                       else ((cap[:179] + "…") if len(cap) > 180 else cap))
-        rows.append([sym, nameof(sym, s["co"]), mc, pe, s["dt"][:10], remark, s["f"]])
+        rows.append([sym, nameof(sym, s["co"]), mc, pe, s["dt"][:10], remark, s["f"], cr])
     rows.sort(key=lambda x: x[4], reverse=True)
     return {"k": "orders", "t": t, "type": "ord", "n": len(rows), "rows": rows,
             "d": "New order wins in the last month — order value and how many times the company's "

@@ -65,6 +65,33 @@
       <h1 id="dTitle" class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight"></h1>
       <p id="dDesc" class="text-sm text-slate-500 mt-1"></p>
     </div>
+    <!-- filters + sort (Order Wins only) -->
+    <div id="ordCtl" class="hidden card p-3 mb-4 flex flex-wrap items-center gap-x-5 gap-y-2">
+      <label class="flex items-center gap-2 text-[13px] font-semibold text-slate-600">Market Cap
+        <select id="fMcap" class="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-slate-700 text-[13px] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="all">All</option>
+          <option value="lt500">Under ₹500 cr</option>
+          <option value="500-2000">₹500 – 2,000 cr</option>
+          <option value="2000-10000">₹2,000 – 10,000 cr</option>
+          <option value="gt10000">Over ₹10,000 cr</option>
+        </select></label>
+      <label class="flex items-center gap-2 text-[13px] font-semibold text-slate-600">P/E (TTM)
+        <select id="fPe" class="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-slate-700 text-[13px] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="all">All</option>
+          <option value="lt15">Under 15</option>
+          <option value="15-30">15 – 30</option>
+          <option value="30-60">30 – 60</option>
+          <option value="gt60">Over 60</option>
+          <option value="na">Loss / NA</option>
+        </select></label>
+      <label class="flex items-center gap-2 text-[13px] font-semibold text-slate-600 ml-auto">Sort by
+        <select id="fSort" class="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-slate-700 text-[13px] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="date">Latest first</option>
+          <option value="ordval">Largest order</option>
+          <option value="mcap">Largest market cap</option>
+          <option value="pe">Lowest P/E</option>
+        </select></label>
+    </div>
     <div class="card p-4 mb-4">
       <div id="dCount" class="text-sm font-semibold text-slate-700 mb-2"></div>
       <div class="overflow-x-auto rounded-lg border border-slate-100">
@@ -152,13 +179,45 @@ function rowHtml(b, r){
          '<td class="py-2.5 px-3 text-right">' + pct(r[3]) + '</td><td class="py-2.5 px-3 text-[12px] text-slate-500">' + esc(r[4]) + '</td>';
 }
 
+// Order Wins filters/sort. ord row: [sym,name,mcap,pe,date,remark,file,orderCr]
+function ordFilter(r){
+  const mc = r[2], pe = r[3];
+  switch ($('fMcap').value){
+    case 'lt500':      if (!(mc != null && mc < 500)) return false; break;
+    case '500-2000':   if (!(mc != null && mc >= 500 && mc < 2000)) return false; break;
+    case '2000-10000': if (!(mc != null && mc >= 2000 && mc < 10000)) return false; break;
+    case 'gt10000':    if (!(mc != null && mc >= 10000)) return false; break;
+  }
+  switch ($('fPe').value){
+    case 'lt15':  if (!(pe != null && pe < 15)) return false; break;
+    case '15-30': if (!(pe != null && pe >= 15 && pe < 30)) return false; break;
+    case '30-60': if (!(pe != null && pe >= 30 && pe < 60)) return false; break;
+    case 'gt60':  if (!(pe != null && pe >= 60)) return false; break;
+    case 'na':    if (pe != null) return false; break;
+  }
+  return true;
+}
+const _num = (v, dir) => v == null ? (dir < 0 ? -Infinity : Infinity) : v;   // nulls sort last
+function ordSort(a, b){
+  switch ($('fSort').value){
+    case 'ordval': return _num(b[7], -1) - _num(a[7], -1);
+    case 'mcap':   return _num(b[2], -1) - _num(a[2], -1);
+    case 'pe':     return _num(a[3], 1) - _num(b[3], 1);
+    default:       return a[4] < b[4] ? 1 : a[4] > b[4] ? -1 : 0;   // date desc
+  }
+}
+function viewRows(){
+  if (curB.type !== 'ord') return curB.rows;
+  return curB.rows.filter(ordFilter).sort(ordSort);
+}
 function renderDetailRows(){
-  const upto = Math.min(shown, curB.rows.length);
+  const rows = viewRows();
+  const upto = Math.min(shown, rows.length);
   let h = '';
-  for (let i = 0; i < upto; i++) h += '<tr class="align-top hover:bg-slate-50">' + rowHtml(curB, curB.rows[i]) + '</tr>';
+  for (let i = 0; i < upto; i++) h += '<tr class="align-top hover:bg-slate-50">' + rowHtml(curB, rows[i]) + '</tr>';
   $('dBody').innerHTML = h;
-  $('dCount').textContent = 'Showing ' + upto.toLocaleString('en-IN') + ' of ' + curB.rows.length.toLocaleString('en-IN') + ' stocks';
-  $('dMore').classList.toggle('hidden', upto >= curB.rows.length);
+  $('dCount').textContent = 'Showing ' + upto.toLocaleString('en-IN') + ' of ' + rows.length.toLocaleString('en-IN') + ' stocks';
+  $('dMore').classList.toggle('hidden', upto >= rows.length);
 }
 
 function openBucket(k, push){
@@ -167,6 +226,9 @@ function openBucket(k, push){
   $('dTitle').textContent = b.t;
   $('dDesc').textContent = b.d;
   $('dHead').innerHTML = HEADS[b.type] || HEADS.sec;
+  const isOrd = b.type === 'ord';
+  $('ordCtl').classList.toggle('hidden', !isOrd);
+  if (isOrd){ $('fMcap').value = 'all'; $('fPe').value = 'all'; $('fSort').value = 'date'; }
   renderDetailRows();
   $('gridView').classList.add('hidden');
   $('detailView').classList.remove('hidden');
@@ -209,6 +271,7 @@ async function load(){
     });
     $('back').addEventListener('click', () => closeBucket());
     $('dMore').addEventListener('click', () => { shown += 200; renderDetailRows(); });
+    ['fMcap', 'fPe', 'fSort'].forEach(id => $(id).addEventListener('change', () => { shown = 100; renderDetailRows(); }));
     window.addEventListener('hashchange', applyHash);
     renderGrid();
     $('status').classList.add('hidden');
