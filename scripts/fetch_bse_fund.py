@@ -27,6 +27,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "..", "docs", "bse_fundamentals.json")
 UNIV = os.path.join(HERE, "..", "docs", "bse_universe.json")
 DONE = os.path.join(HERE, "_bse_fund_done.json")
+FAILS = os.path.join(HERE, "_bse_fund_fail.json")
+MAX_FAIL = 3                       # retry a declared-but-unparsed scrip this many runs before giving up
 OCR = RapidOCR()
 MON = {"jan":1,"feb":2,"mar":3,"apr":4,"may":5,"jun":6,"jul":7,"aug":8,"sep":9,"sept":9,"oct":10,"nov":11,"dec":12}
 DAY_LAST = {3:31, 6:30, 9:30, 12:31}
@@ -56,6 +58,12 @@ def qe_from_text(blob):
 def ocr_boxes(png):
     res, _ = OCR(png)
     return [{"t": t, "x": sum(p[0] for p in b) / 4, "y": sum(p[1] for p in b) / 4} for b, t, sc in (res or [])]
+
+def page_boxes(page):
+    """OCR boxes for a page. (A PDF text-layer fast-path was tried but its column geometry differs from
+    OCR's and mis-picked P&L cells — e.g. UNIABEXAL PAT 299.3 vs the correct −0.38 — so we OCR uniformly
+    for accuracy. Speed instead comes from capping filings/pages and a per-scrip deadline.)"""
+    return ocr_boxes(page.get_pixmap(dpi=185).tobytes("png"))
 
 def row_first_num(boxes, label_box):
     """First numeric value to the right of a label box, on the same row."""
@@ -128,18 +136,21 @@ def fetch_pdf(op, att):
         except Exception: pass
     return None
 
-def extract(op, code, name, months):
-    """Return {QE: {rev,pat,ann,basis}} for a scrip from its own filings, identity-guarded."""
+def extract(op, code, name, months, deadline=None):
+    """Return {QE: {rev,pat,ann,basis}} for a scrip from its own filings, identity-guarded.
+    `deadline` (epoch secs) caps per-scrip work so one heavy filer can't starve a bounded run."""
     toks = [w for w in re.split(r"[^A-Za-z]+", name.upper()) if len(w) >= 4][:2]
     res = {}
-    for annd, att, hd in scrip_announcements(op, code, months)[:4]:
+    for annd, att, hd in scrip_announcements(op, code, months)[:3]:
+        if deadline and time.time() > deadline: break
         raw = fetch_pdf(op, att)
         if not raw: continue
         try: doc = fitz.open(stream=raw, filetype="pdf")
         except Exception: continue
         qe = 0; rev = pat = None; unit = None; ident = False
         for pi in range(min(len(doc), 6)):
-            boxes = ocr_boxes(doc[pi].get_pixmap(dpi=200).tobytes("png"))
+            if deadline and time.time() > deadline: break
+            boxes = page_boxes(doc[pi])                 # text layer if present, else OCR
             blob = " ".join(b["t"] for b in boxes)
             up = blob.upper()
             if not ident and (any(tk in up for tk in toks) if toks else True): ident = True
@@ -173,6 +184,7 @@ def main():
     univ.sort(key=lambda r: r[6], reverse=True)                # biggest mcap first
     data = json.loads(open(OUT, encoding="utf-8").read()) if os.path.exists(OUT) else {"px": {}}
     done = set(json.load(open(DONE))) if os.path.exists(DONE) else set()
+    fails = json.load(open(FAILS)) if os.path.exists(FAILS) else {}   # code -> retry count (declared misses)
 
     op = B.session(); time.sleep(1)
 
@@ -199,7 +211,7 @@ def main():
         if spent >= budget or (time.time() - t_start) / 60 >= max_min: break
         spent += 1
         try:
-            recs = extract(op, code, name, months)
+            recs = extract(op, code, name, months, deadline=time.time() + 120)   # ≤2 min/scrip
         except Exception as ex:
             print("  %s %s ERR %s" % (code, tkr, str(ex)[:60])); recs = {}
         if recs:
@@ -210,14 +222,21 @@ def main():
             data["px"][code] = cur
             latest = max(recs)
             print("  ✓ %s %-12s %s PAT=%s rev=%s" % (code, tkr, latest, recs[latest]["pat"], recs[latest].get("rev")))
+            done.add(code); fails.pop(code, None)
         else:
             print("  · %s %-12s (no anchored result)" % (code, tkr))
-        done.add(code)
+            # A DECLARED scrip whose OCR failed is likely a transient/parse miss — retry it on the next
+            # few runs instead of burying it in `done` forever. Give up (mark done) after MAX_FAIL tries.
+            if code in declared:
+                fails[code] = fails.get(code, 0) + 1
+                if fails[code] >= MAX_FAIL: done.add(code)
+            else:
+                done.add(code)
         if spent % 10 == 0:
             ist = datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)
             data["updated"] = ist.strftime("%Y-%m-%d %H:%M IST")
             json.dump(data, open(OUT, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
-            json.dump(sorted(done), open(DONE, "w"))
+            json.dump(sorted(done), open(DONE, "w")); json.dump(fails, open(FAILS, "w"))
             time.sleep(0.2)
     ist = datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)
     data["updated"] = ist.strftime("%Y-%m-%d %H:%M IST")

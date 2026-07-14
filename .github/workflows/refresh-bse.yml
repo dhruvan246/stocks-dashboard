@@ -58,16 +58,16 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          for f in docs/bse_universe.json docs/bse_fundamentals.json docs/bse_prices.bin docs/bse_results.json scripts/_bse_fund_done.json scripts/_bse_sectors.json; do
+          for f in docs/bse_universe.json docs/bse_fundamentals.json docs/bse_prices.bin docs/bse_results.json scripts/_bse_fund_done.json scripts/_bse_fund_fail.json scripts/_bse_sectors.json; do
             cp "$f" "/tmp/$(basename $f)" 2>/dev/null || true
           done
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
-            for f in docs/bse_universe.json docs/bse_fundamentals.json docs/bse_prices.bin docs/bse_results.json scripts/_bse_fund_done.json scripts/_bse_sectors.json; do
+            for f in docs/bse_universe.json docs/bse_fundamentals.json docs/bse_prices.bin docs/bse_results.json scripts/_bse_fund_done.json scripts/_bse_fund_fail.json scripts/_bse_sectors.json; do
               cp "/tmp/$(basename $f)" "$f" 2>/dev/null || true
             done
-            git add docs/bse_universe.json docs/bse_fundamentals.json docs/bse_prices.bin docs/bse_results.json scripts/_bse_fund_done.json scripts/_bse_sectors.json
+            git add docs/bse_universe.json docs/bse_fundamentals.json docs/bse_prices.bin docs/bse_results.json scripts/_bse_fund_done.json scripts/_bse_fund_fail.json scripts/_bse_sectors.json
             if git diff --cached --quiet; then echo "No BSE changes"; exit 0; fi
             git commit -m "BSE-only coverage refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
             if git push origin HEAD:main; then exit 0; fi

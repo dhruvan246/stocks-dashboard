@@ -70,13 +70,16 @@ def nse_declared(qe):
     return out
 
 def bse_declared(qe, univ_codes):
-    """BSE-only scripcodes that filed a result for the quarter (strCat=Result over a wide window)."""
+    """BSE-only scripcodes that filed a result FOR quarter `qe`. ⚠️ BSE companies file late — a MARCH
+    result often lands in Jul/Aug/Sep — so we must read the reporting period from each filing's headline
+    (via fetch_bse_results.qe_from_head), NOT assume the filing date maps to the quarter. Headlines that
+    don't state a period are counted as `unknown` (returned separately), never silently as `qe`."""
+    import fetch_bse_results as FR
     y, m = qe // 10000, (qe // 100) % 100
-    # results for a quarter are filed in the ~4 months after quarter-end
-    lo = datetime.date(y, m, 28) if m != 12 else datetime.date(y, 12, 28)
-    hi = min(datetime.date.today(), lo + datetime.timedelta(days=140))
+    lo = datetime.date(y, m, 28)
+    hi = min(datetime.date.today(), lo + datetime.timedelta(days=150))
     op = B.session(); time.sleep(1)
-    got = set(); cur = lo
+    got = set(); unknown = set(); cur = lo
     while cur <= hi:
         chi = min(cur + datetime.timedelta(days=9), hi)
         F, T = cur.strftime("%Y%m%d"), chi.strftime("%Y%m%d")
@@ -89,10 +92,15 @@ def bse_declared(qe, univ_codes):
             if not tab: break
             for r in tab:
                 sc = str(r.get("SCRIP_CD") or "")
-                if sc in univ_codes: got.add(sc)
+                if sc not in univ_codes: continue
+                pq = FR.qe_from_head(r.get("HEADLINE"), r.get("NEWSSUB"))
+                if pq == qe: got.add(sc)
+                elif pq == 0: unknown.add(sc)     # period not stated in headline
             page += 1; time.sleep(0.15)
         cur = chi + datetime.timedelta(days=1)
-    return got
+    got_codes = got
+    unknown -= got_codes                          # a scrip with one dated filing counts as known
+    return got_codes, unknown
 
 def main():
     qe = target_qe()
@@ -109,10 +117,14 @@ def main():
     bse_cov = set(c for c, qs in bf.items() if str(qe) in qs)
     print("COVERED: NSE %d, BSE-only %d" % (len(nse_cov), len(bse_cov)))
 
-    # declared (authoritative)
+    # declared (authoritative) — BSE quarter parsed from each filing's headline (late March filers
+    # must NOT be miscounted as the June quarter). `unknown` = filed a result but headline didn't
+    # state the period; we grind those too but don't assert they're for `qe`.
     nse_dec = nse_declared(qe)
-    bse_dec = bse_declared(qe, set(univ)) | set(bf.keys())     # ∪ confirmed odd-category filers
-    print("DECLARED (feeds): NSE %d, BSE-only %d" % (len(nse_dec), len(bse_dec)))
+    bse_dec, bse_unknown = bse_declared(qe, set(univ))
+    bse_dec |= set(c for c in bf if str(qe) in bf[c])          # ∪ confirmed odd-category filers for qe
+    print("DECLARED for %d: NSE %d, BSE-only %d (+%d BSE undated-period filings)"
+          % (qe, len(nse_dec), len(bse_dec), len(bse_unknown)))
 
     nse_miss = sorted(nse_dec - nse_cov)
     bse_miss = sorted(bse_dec - bse_cov, key=lambda c: -(univ.get(c, [0]*7)[6] or 0))
