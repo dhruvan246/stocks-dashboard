@@ -139,7 +139,19 @@ def parse_qe(*texts):
 
 def write_results_feed(allrows):
     """Slice results-filing announcements into a small standalone JSON (same schema, + parsed
-    quarter-end when the caption states it). Kept tiny so the page can poll it cheaply."""
+    quarter-end when the caption states it). Kept tiny so the page can poll it cheaply.
+
+    ⚠️ This rebuilds the NSE rows from scratch. BSE rows are added AFTERWARD by fetch_bse_results.py,
+    so we must PRESERVE the existing BSE rows here — else, on any run where the (flaky) BSE fetch fails,
+    the committed feed would silently lose every BSE company. A BSE row is identified by its filing URL
+    (bseindia.com). De-dup NSE vs preserved by (symbol, date)."""
+    outp = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "docs", "results_feed.json")
+    try:
+        prev = json.load(open(outp, encoding="utf-8")).get("rows", [])
+    except Exception:
+        prev = []
+    kept_bse = [r for r in prev if isinstance(r, list) and len(r) >= 6 and "bseindia.com" in str(r[5])]
+
     feed = []
     for r in allrows:
         cat, cap = r[3], r[4] or ""
@@ -148,12 +160,17 @@ def write_results_feed(allrows):
             continue
         qe = parse_qe(cap)
         feed.append([r[0], r[1], r[2], qe, (cap[:220] + "…") if len(cap) > 221 else cap, r[5]])
+    have = set((r[0], r[2][:10]) for r in feed)
+    for r in kept_bse:                                   # re-add surviving BSE rows the NSE set lacks
+        if (r[0], r[2][:10]) not in have: feed.append(r)
+    # trim to a rolling 31-day window (matches fetch_bse_results) so preserved BSE rows don't accrete
+    cut = (datetime.date.today() - datetime.timedelta(days=31)).isoformat()
+    feed = [r for r in feed if r[2][:10] >= cut]
     feed.sort(key=lambda r: (r[2], r[0]), reverse=True)
-    outp = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "docs", "results_feed.json")
     ist = datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)
     json.dump({"updated": ist.strftime("%Y-%m-%d %H:%M IST"), "rows": feed},
               open(outp, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
-    print("WROTE %s: %d results-feed rows" % (os.path.normpath(outp), len(feed)))
+    print("WROTE %s: %d results-feed rows (%d preserved BSE)" % (os.path.normpath(outp), len(feed), len(kept_bse)))
 
 if __name__ == "__main__":
     main()
