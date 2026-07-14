@@ -48,6 +48,12 @@ jobs:
       - name: Merge BSE results into feed + calendar
         run: python3 -X utf8 scripts/fetch_bse_results.py || echo "(BSE merge failed — keeping NSE-only files)"
 
+      # Order-value cache (docs/order_values.json) — extracts "₹1,180 cr" from each order-win PDF so
+      # the Discovery "Order Wins" bucket shows the value, not NSE's generic caption. Incremental
+      # (only fetches new PDFs). Non-fatal: a failure just leaves last run's values in place.
+      - name: Extract order values from PDFs
+        run: python3 -X utf8 scripts/enrich_order_values.py || echo "(order-value extraction failed — keeping previous cache)"
+
       # Discovery buckets (docs/discovery.json) — recomputed from the fresh announcements +
       # committed fundamentals/price/classification files. Non-fatal: keeps the previous file.
       - name: Build Discovery buckets
@@ -65,6 +71,7 @@ jobs:
           cp docs/results_feed.json     /tmp/ann/docs/ 2>/dev/null || true
           cp docs/results_calendar.json /tmp/ann/docs/ 2>/dev/null || true
           cp docs/discovery.json        /tmp/ann/docs/ 2>/dev/null || true
+          cp docs/order_values.json     /tmp/ann/docs/ 2>/dev/null || true
 
           for attempt in 1 2 3 4 5; do
             git fetch origin main
@@ -73,7 +80,8 @@ jobs:
             cp /tmp/ann/docs/results_feed.json     docs/results_feed.json     2>/dev/null || true
             cp /tmp/ann/docs/results_calendar.json docs/results_calendar.json 2>/dev/null || true
             cp /tmp/ann/docs/discovery.json        docs/discovery.json        2>/dev/null || true
-            git add docs/announcements.json docs/results_feed.json docs/results_calendar.json docs/discovery.json
+            cp /tmp/ann/docs/order_values.json     docs/order_values.json     2>/dev/null || true
+            git add docs/announcements.json docs/results_feed.json docs/results_calendar.json docs/discovery.json docs/order_values.json
 
             if git diff --cached --quiet; then
               echo "No new announcements — nothing to commit"

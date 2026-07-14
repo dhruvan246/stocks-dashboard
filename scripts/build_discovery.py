@@ -29,6 +29,11 @@ FIRST_RES_QE = 20190331  # earliest results bucket
 
 # ---------------------------------------------------------------- inputs
 ann = json.load(open(dp("announcements.json"), encoding="utf-8"))
+# order-value strings extracted from the order-win PDFs (enrich_order_values.py), keyed by attachment file
+try:
+    ORDVALS = json.load(open(dp("order_values.json"), encoding="utf-8")).get("vals", {})
+except Exception:
+    ORDVALS = {}
 revop = json.load(open(dp("sf_revop.json"), encoding="utf-8"))
 slim = json.loads(gzip.decompress(open(dp("dash_slim.bin"), "rb").read()))
 classif = json.load(open(dp("sector_classification.json"), encoding="utf-8"))
@@ -66,6 +71,16 @@ ANN_BUCKETS = [
      re.compile(r"insolvency|default|fraud|arrest|action\(s\)|statutory auditor|suspension of trading|penalt|one time settlement", re.I)),
 ]
 
+# For the Order Wins bucket, show the extracted order VALUE in "What happened" instead of NSE's
+# generic boilerplate ("… informed the Exchange about Bagging/Receiving of orders/contracts").
+def order_caption(cap, f):
+    val = ORDVALS.get(f)
+    if not val: return cap                                   # scanned / undisclosed -> keep caption
+    if (not cap) or ("informed the exchange" in cap.lower()):
+        return "Order win — " + val                          # replace the boilerplate
+    if re.search(r"\d", cap): return cap                     # caption already carries the numbers
+    return cap.rstrip(". ") + " — " + val
+
 def build_ann_buckets():
     per = {k: {} for k, *_ in [(b[0],) for b in ANN_BUCKETS]}
     for r in ann.get("rows", []):
@@ -81,8 +96,10 @@ def build_ann_buckets():
                 break
     out = []
     for key, t, d, _rx in ANN_BUCKETS:
-        rows = [[sym, nameof(sym, s["co"]), s["n"], s["dt"][:10],
-                 (s["cap"][:179] + "…") if len(s["cap"]) > 180 else s["cap"], s["f"]]
+        def _cap(s):
+            c = order_caption(s["cap"], s["f"]) if key == "orders" else s["cap"]
+            return (c[:179] + "…") if len(c) > 180 else c
+        rows = [[sym, nameof(sym, s["co"]), s["n"], s["dt"][:10], _cap(s), s["f"]]
                 for sym, s in per[key].items()]
         rows.sort(key=lambda x: x[3], reverse=True)
         out.append({"k": key, "t": t, "d": d, "type": "ann", "n": len(rows), "rows": rows})
