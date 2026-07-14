@@ -210,12 +210,12 @@
     <section id="tab-calendar" style="display:none">
       <div class="flex flex-wrap items-center gap-2 mb-3">
         <span class="seg" id="segCal">
-          <button data-v="both" class="on">Confirmed + predicted</button><button data-v="conf">Confirmed only</button>
+          <button data-v="conf" class="on">Confirmed only</button><button data-v="both">Confirmed + predicted</button>
         </span>
         <span class="text-[11px] text-slate-500">✓ = board-meeting date filed with NSE · <span class="badge estpill">est.</span> = our prediction from the company's past reporting dates</span>
       </div>
       <div id="calList" class="space-y-4"></div>
-      <p class="text-[11px] text-slate-500 mt-3">Confirmed dates from the NSE + BSE event calendars (refreshes ~4×/day) · predictions use each company's median filing lag over the past year · <span id="calUpd"></span></p>
+      <p class="text-[11px] text-slate-500 mt-3">Confirmed dates from the NSE + BSE event calendars (refreshes hourly) · predictions use each company's median filing lag over the past year · <span id="calUpd"></span></p>
     </section>
 
   </div>
@@ -234,7 +234,7 @@ const MONTHS = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','
 
 let QR=null, CAL=null, FEED=null, QTRS=[], CO=null;
 const ST = { tab:'overview', qi:0, mode:'yoy', basis:'auto', uni:'all', mcap:'all', sector:'all',
-             search:'', screen:'all', heat:'pat', cal:'both', sort:{k:'ann',dir:-1}, shown:100 };
+             search:'', screen:'all', heat:'pat', cal:'conf', sort:{k:'ann',dir:-1}, shown:100 };
 let WATCH = new Set(); try{ WATCH = new Set(JSON.parse(localStorage.getItem('qr_watch')||'[]')); }catch(e){}
 const saveWatch = () => { try{ localStorage.setItem('qr_watch', JSON.stringify([...WATCH])); }catch(e){} };
 
