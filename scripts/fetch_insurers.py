@@ -87,8 +87,10 @@ _RESULT_HIT = re.compile(r"(financial result|outcome of board meeting|board meet
 # --- P&L row parsing ---
 _NUM = re.compile(r"^\(?-?[\d,]+\.?\d*\)?$")
 _OWN = re.compile(r"(owners|equity ?holders|equityholders|attributab)", re.I)
-_PAT_ROW = re.compile(r"profit\s*/?\s*\(?\s*loss\)?\s*(after tax|for the (period|quarter|year))"
-                      r"|profit after tax|profit for the (period|quarter|year)", re.I)
+# Lenient: "profit ... after tax" / "profit ... for the period" with anything (bounded) in between, so
+# OCR-mangled labels like "Profit I (loss) after tax" (the "/" read as "I") still match. "before tax" is
+# vetoed by _BAD_ROW first, so this won't grab pre-tax rows.
+_PAT_ROW = re.compile(r"profit.{0,25}after tax|profit.{0,22}for the (period|quarter|year)", re.I)
 _BAD_ROW = re.compile(r"before tax|comprehensive|segment|exceptional|carried to|balance sheet|margin"
                       r"|operating|per share|earnings per|eps|ratio|nominal|paid.?up|dividend"
                       r"|non-controlling|minority|reserve", re.I)
