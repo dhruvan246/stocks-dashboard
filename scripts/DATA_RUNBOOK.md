@@ -311,6 +311,16 @@ Use FILE scripts, not `node -e` (shell quoting mangles the URL). Pull→prepend�
   backtest numbers. A real Run inherently needs the full survivorship-free prices; that load is unavoidable.
 - saved-strategies boot now MERGES local `bt_history` the shared pull didn't return yet (sync lag / paused Supabase)
   and re-appends it, so a just-run window shows even before the shared history catches up.
+- **⚠️ SAVED-STRATEGIES UI REDESIGN (2026-07-15, commit 127e4f7) — Trendlyne-style, rows DON'T expand.** The table
+  columns are **Strategy · CAGR · Backtests(👁) · Today's Picks(🎯) · ☆ · 🗑**. Clicking a row or the 👁 opens
+  `strategy-backtest.html?id=`; the 🎯 column opens the Today's-Picks modal directly (openPicks(strategy.id)). The old
+  click-to-expand detail-cards + ▸/▾ arrow are GONE (`detailCard()` is now dead code; `data-openrow` drives row-open).
+  Don't reintroduce the expansion. **`strategy-backtest.html`** is now the drill-in page: TOP = an EDITABLE "Run a new
+  backtest" form pre-filled from the strategy (freq/dates/universe/sort/dir/topN/capital/method/earnBasis; sort options
+  from engine `FIELDS`, universe from `TURN_OPTS`; filters carried through, edited in the full builder via "edit filters →");
+  BELOW = the existing "Run history" table. ▶ Run Backtest hands the (edited) cfg to `stock-backtest.html` via
+  **`bt_load {view:'run'}`** — a NEW mode = auto-run AND record to History (NOT view-only), so the result nests back under
+  the strategy. `readForm()` PRESERVES `lookback` + `filters` so identity holds (see the lookback gotcha above).
 
 ---
 
@@ -794,3 +804,26 @@ shareable URL (`discovery.html#b=<key>`).
 - Mcap floor ₹50 cr for price/sector buckets; px buckets capped at 500 rows; sector buckets at 80 (by mcap).
 - NOT automatable from our data (deliberately absent): revenue-guidance buckets, star-investor holdings,
   bulk-deal/promoter-buying (needs new NSE insider/bulk-deal fetchers — candidate future work).
+
+## 18. DATA HEALTH MONITORING + COMMIT GUARDS  (docs/status.html — "Data health" nav, built 2026-07-16)
+
+- **Manifest = single source of truth:** `docs/feeds.json` — every feed → producing workflow → consuming
+  pages, plus per-feed `max_age_hours` (null = static/reference file), `min_bytes`, `min_ratio` (guard's
+  shrink floor; 0 = feed legitimately shrinks, e.g. rolling results_feed). Add a new feed = add one entry here.
+- **Nightly monitor:** `feed-monitor.yml` (21:30 UTC = 03:00 IST, after all daily jobs) runs
+  `scripts/check_feeds.py`: exists + min_bytes + JSON-parses + last-commit age ≤ max_age (age via GitHub
+  API in CI — shallow checkout has no history; local runs use `git log`). Also checks INFRA: `data` release
+  asset age, `sf-data` repo head age, Supabase `bt_public` RPC alive (the daily backup workflow is what keeps
+  Supabase awake — if red, restore project in Supabase dashboard, free tier can't be woken by API).
+  Writes `docs/status.json` → rendered by **docs/status.html**; opens/updates ONE GitHub issue titled
+  "Data feed alert" when anything is red, auto-closes it when all green again.
+- **Commit guards:** every feed-committing workflow (11 of them) runs `scripts/guard_feed.py` right before
+  its commit step: any modified docs/scripts .json/.bin/.html must parse (json), be ≥ min_bytes, and not
+  shrink below min_ratio × committed size — else the step FAILS (visible red run; previous good data stays
+  live). False trip on a legitimate shrink → raise that file's `min_ratio`/`min_bytes` in feeds.json.
+- **Gotcha — mf_funds.json is MANUAL:** the MF-backtest NAV data (`docs/mf_funds.json`, backtest.html) has
+  no workflow; last built 2026-06-06 via fetch_mf_returns.py. Refresh by hand when the MF backtest looks stale.
+- **Archive sweep 2026-07-16:** ~1,839 one-off `_*.py` backfill scripts (all untracked, never committed)
+  moved to `scripts/archive/` (gitignored); 35 still-referenced `_*` tools kept in scripts/ (resweep loop,
+  membership history, FM vision helpers). 81 scratch PNGs deleted. If an old procedure references a missing
+  `_*.py`, look in scripts/archive/ first.
