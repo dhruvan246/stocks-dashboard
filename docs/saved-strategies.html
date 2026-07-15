@@ -59,10 +59,23 @@
     </label>
     <button id="cCompute" class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-700">Compute</button>
     <span id="cProgress" class="text-[11px] text-slate-400">pick a range (and optionally a stock count) and hit Compute — each strategy runs a real backtest over exactly this window</span>
+    <div class="w-full h-1 bg-slate-100 rounded overflow-hidden"><div id="cBar" class="h-full bg-indigo-500 transition-all" style="width:0%"></div></div>
   </div>
   <div id="status" class="text-xs text-slate-500 mb-3"></div>
   <div id="list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
 </main>
+
+<!-- Lightweight "computing" overlay for the custom-period compare (determinate, not a spinner: the
+     count/bar advance each time a strategy finishes — a spinner can't animate through simulate()'s
+     synchronous blocks anyway). -->
+<div id="cOverlay" class="hidden fixed inset-0 z-40 bg-slate-900/25 backdrop-blur-[1px] flex items-start justify-center pt-32 pointer-events-none">
+  <div class="bg-white shadow-xl rounded-xl border border-slate-200 px-5 py-4 text-center w-72">
+    <div class="text-2xl mb-1">⏳</div>
+    <div id="cOvText" class="text-sm font-semibold text-slate-800">Computing…</div>
+    <div class="w-full h-1.5 bg-slate-100 rounded overflow-hidden mt-2.5"><div id="cOvBar" class="h-full bg-indigo-500 transition-all" style="width:0%"></div></div>
+    <div class="text-[11px] text-slate-400 mt-1.5">running a real backtest for each strategy</div>
+  </div>
+</div>
 
 <!-- Today's Picks modal -->
 <div id="modal" class="hidden fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm overflow-y-auto p-3 sm:p-6">
@@ -374,15 +387,21 @@ async function computeAllPerf() {
 
 /* ---------- custom-period compare: run a REAL backtest for every strategy over one chosen window,
    then re-sort the list best-first by that window's CAGR (loads the engine on demand, once). ---------- */
+function setComputeUI(on, txt, frac) {
+  $('cOverlay').classList.toggle('hidden', !on);
+  $('cCompute').disabled = on;
+  const w = Math.round((frac || 0) * 100) + '%';
+  $('cBar').style.width = w; $('cOvBar').style.width = w;
+  if (txt != null) { $('cProgress').textContent = txt; $('cOvText').textContent = txt; }
+}
 async function computeCustom() {
   const items = strategies();
   if (!items.length) { $('cProgress').textContent = 'No saved strategies to compare.'; return; }
-  $('cProgress').textContent = 'Loading market data…';
-  $('cCompute').disabled = true;
-  if (!await ensureEngine()) { $('cProgress').textContent = 'Couldn’t load market data — try again.'; $('cCompute').disabled = false; return; }
+  setComputeUI(true, 'Loading market data…', 0);
+  if (!await ensureEngine()) { setComputeUI(false, 'Couldn’t load market data — try again.', 0); return; }
   const from = clampDate($('cFrom').value || SF.start, SF.start, SF.end);
   const to   = clampDate($('cTo').value   || SF.end,   SF.start, SF.end);
-  if (from >= to) { $('cProgress').textContent = 'Pick From earlier than To.'; $('cCompute').disabled = false; return; }
+  if (from >= to) { setComputeUI(false, 'Pick From earlier than To.', 0); return; }
   $('cFrom').value = from; $('cTo').value = to;                 // reflect clamping to available data
   // Optional Top-N override: force this qualifying count on EVERY strategy. Blank/invalid → each keeps its own saved count.
   const nRaw = parseInt($('cTopN').value, 10);
@@ -390,8 +409,9 @@ async function computeCustom() {
   CUSTOM.clear(); CUSTOM_WIN = { start: from, end: to, topN };
   const groups = [...buildGroups(items).values()];
   let done = 0;
+  setComputeUI(true, `0/${groups.length} — this can take a minute…`, 0);
   for (const g of groups) {
-    await new Promise(r => setTimeout(r, 0));                   // yield so the UI stays responsive
+    await new Promise(r => setTimeout(r, 0));                   // yield so the overlay/bar can paint before the next (blocking) backtest
     const cap = g.rep.cfg.capital || 100000;
     const c = { ...g.rep.cfg, start: from, end: to, capital: cap };
     if (topN != null) c.topN = topN;                           // override the qualifying count when set
@@ -400,11 +420,10 @@ async function computeCustom() {
       CUSTOM.set(identityKey(g.rep.cfg), { cagr: res.cagr, ret: (res.finalV / cap - 1) * 100, maxDD: res.maxDD, finalV: res.finalV, topN: c.topN, start: from, end: to });
     } catch (e) { /* leave this strategy uncomputed (shows "no data") */ }
     done++;
-    $('cProgress').textContent = `${done}/${groups.length} done`;
+    setComputeUI(true, `${done}/${groups.length} — this can take a minute…`, done / groups.length);
     if (done % 3 === 0) render();                               // stream results in as they land
   }
-  $('cProgress').textContent = `${done}/${groups.length} done · sorted best-first over ${from} → ${to}${topN != null ? ` · top-${topN}` : ' · each strategy’s own stock count'}`;
-  $('cCompute').disabled = false;
+  setComputeUI(false, `${done}/${groups.length} done · sorted best-first over ${from} → ${to}${topN != null ? ` · top-${topN}` : ' · each strategy’s own stock count'}`, 1);
   render();
 }
 
