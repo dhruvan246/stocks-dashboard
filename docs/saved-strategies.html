@@ -54,8 +54,11 @@
     <input id="cFrom" type="date" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-sm"/>
     <span class="text-slate-400">→</span>
     <input id="cTo" type="date" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-sm"/>
+    <label class="text-[11px] font-semibold text-slate-500 ml-1">Stocks
+      <input id="cTopN" type="number" min="1" max="50" placeholder="saved" title="Qualifying count (Top-N) to force on every strategy. Leave blank to use each strategy's own saved count." class="ml-1 border border-slate-300 rounded-lg px-2 py-1.5 text-sm w-20"/>
+    </label>
     <button id="cCompute" class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-700">Compute</button>
-    <span id="cProgress" class="text-[11px] text-slate-400">pick a range and hit Compute — each strategy runs a real backtest over exactly this window</span>
+    <span id="cProgress" class="text-[11px] text-slate-400">pick a range (and optionally a stock count) and hit Compute — each strategy runs a real backtest over exactly this window</span>
   </div>
   <div id="status" class="text-xs text-slate-500 mb-3"></div>
   <div id="list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
@@ -270,7 +273,7 @@ function render() {
   const colspan = OWNER ? 6 : 5;
   const header = `<thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
     <th class="text-left font-semibold px-4 py-2.5">Strategy</th>
-    <th class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">${VIEW === 'custom' ? (CUSTOM_WIN ? `CAGR · ${CUSTOM_WIN.start} → ${CUSTOM_WIN.end} ▾` : 'CAGR · window ▾') : `CAGR${VIEW === 'best' ? ' ▾' : ''}`}</th>
+    <th class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">${VIEW === 'custom' ? (CUSTOM_WIN ? `CAGR · ${CUSTOM_WIN.start} → ${CUSTOM_WIN.end}${CUSTOM_WIN.topN != null ? ` · top-${CUSTOM_WIN.topN}` : ''} ▾` : 'CAGR · window ▾') : `CAGR${VIEW === 'best' ? ' ▾' : ''}`}</th>
     <th class="text-center font-semibold px-3 py-2.5 whitespace-nowrap">Backtests</th>
     <th class="px-2 py-2.5"></th>
     ${OWNER ? '<th class="px-2 py-2.5"></th>' : ''}
@@ -285,7 +288,7 @@ function render() {
       const cr = CUSTOM.get(identityKey(c));
       cagrCell = cr && cr.cagr != null
         ? `<span class="font-bold ${cr.cagr >= 0 ? 'pos' : 'neg'}">${pct(cr.cagr)}</span>
-           <span class="block text-[10px] text-slate-400 mt-0.5">ret ${pct(cr.ret)} · DD -${cr.maxDD.toFixed(1)}%</span>`
+           <span class="block text-[10px] text-slate-400 mt-0.5">ret ${pct(cr.ret)} · DD -${cr.maxDD.toFixed(1)}%${cr.topN != null ? ` · top-${cr.topN}` : ''}</span>`
         : (CUSTOM_WIN ? '<span class="text-slate-300 text-xs">no data</span>' : '<span class="text-slate-400 text-xs">not computed</span>');
     }
     return `<tr class="border-b border-slate-100 hover:bg-slate-50 cursor-pointer" data-toggle="r${gi}">
@@ -381,22 +384,26 @@ async function computeCustom() {
   const to   = clampDate($('cTo').value   || SF.end,   SF.start, SF.end);
   if (from >= to) { $('cProgress').textContent = 'Pick From earlier than To.'; $('cCompute').disabled = false; return; }
   $('cFrom').value = from; $('cTo').value = to;                 // reflect clamping to available data
-  CUSTOM.clear(); CUSTOM_WIN = { start: from, end: to };
+  // Optional Top-N override: force this qualifying count on EVERY strategy. Blank/invalid → each keeps its own saved count.
+  const nRaw = parseInt($('cTopN').value, 10);
+  const topN = (Number.isFinite(nRaw) && nRaw >= 1) ? Math.min(50, nRaw) : null;
+  CUSTOM.clear(); CUSTOM_WIN = { start: from, end: to, topN };
   const groups = [...buildGroups(items).values()];
   let done = 0;
   for (const g of groups) {
     await new Promise(r => setTimeout(r, 0));                   // yield so the UI stays responsive
     const cap = g.rep.cfg.capital || 100000;
     const c = { ...g.rep.cfg, start: from, end: to, capital: cap };
+    if (topN != null) c.topN = topN;                           // override the qualifying count when set
     try {
       const res = simulate(c);
-      CUSTOM.set(identityKey(g.rep.cfg), { cagr: res.cagr, ret: (res.finalV / cap - 1) * 100, maxDD: res.maxDD, finalV: res.finalV, start: from, end: to });
+      CUSTOM.set(identityKey(g.rep.cfg), { cagr: res.cagr, ret: (res.finalV / cap - 1) * 100, maxDD: res.maxDD, finalV: res.finalV, topN: c.topN, start: from, end: to });
     } catch (e) { /* leave this strategy uncomputed (shows "no data") */ }
     done++;
     $('cProgress').textContent = `${done}/${groups.length} done`;
     if (done % 3 === 0) render();                               // stream results in as they land
   }
-  $('cProgress').textContent = `${done}/${groups.length} done · sorted best-first over ${from} → ${to}`;
+  $('cProgress').textContent = `${done}/${groups.length} done · sorted best-first over ${from} → ${to}${topN != null ? ` · top-${topN}` : ' · each strategy’s own stock count'}`;
   $('cCompute').disabled = false;
   render();
 }
