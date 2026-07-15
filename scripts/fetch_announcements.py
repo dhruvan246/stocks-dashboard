@@ -151,6 +151,12 @@ def write_results_feed(allrows):
     except Exception:
         prev = []
     kept_bse = [r for r in prev if isinstance(r, list) and len(r) >= 6 and "bseindia.com" in str(r[5])]
+    # Quarter corrections: NSE sometimes captions a late Q4/annual filing as the current quarter. The
+    # daily vision-prep reads the filing PDF's real period and records "SYM|YYYY-MM-DD" -> real qe here.
+    try:
+        qfix = json.load(open(os.path.join(os.path.dirname(outp), "feed_qe_fix.json"), encoding="utf-8"))
+    except Exception:
+        qfix = {}
 
     feed = []
     for r in allrows:
@@ -158,7 +164,7 @@ def write_results_feed(allrows):
         if not (RESULT_CAT_RE.search(cat) or
                 (cat == "Outcome of Board Meeting" and RESULT_CAP_RE.search(cap))):
             continue
-        qe = parse_qe(cap)
+        qe = qfix.get("%s|%s" % (r[0], str(r[2])[:10])) or parse_qe(cap)
         feed.append([r[0], r[1], r[2], qe, (cap[:220] + "…") if len(cap) > 221 else cap, r[5]])
     have = set((r[0], r[2][:10]) for r in feed)
     for r in kept_bse:                                   # re-add surviving BSE rows the NSE set lacks
