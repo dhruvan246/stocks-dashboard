@@ -667,9 +667,23 @@ $('mAlsoToggle').onclick = () => { const a = $('mAlso'); a.classList.toggle('hid
 
 (async function boot() {
   const localBefore = loadLS('bt_strategies');                          // snapshot before the shared pull replaces local
+  const localHistBefore = loadLS('bt_history');                         // ditto for history — btSync.pull() overwrites local with the shared array
   if (window.btSync) {
     try { await btSync.pullStrategies(); } catch (e) {}                 // shared strategy definitions (replaces local with the shared list)
     try { HIST = await btSync.pull() || []; } catch (e) { HIST = []; }  // shared backtest history (all windows)
+  } else { HIST = localHistBefore; }
+  // Surface any backtest run recorded on THIS browser that the shared pull didn't return yet (sync lag,
+  // or the DB was paused/unreachable when the run auto-saved). Without this, a window you JUST ran can be
+  // missing from its strategy's expanded list until the shared history catches up. Merge local-only runs
+  // in and re-publish them so they persist for everyone (self-heals a failed earlier append).
+  {
+    const haveH = new Set(HIST.map(h => h && h.id));
+    const histLocalOnly = localHistBefore.filter(h => h && h.id && !haveH.has(h.id));
+    if (histLocalOnly.length) {
+      HIST = HIST.concat(histLocalOnly);
+      saveLS('bt_history', HIST);                                       // re-persist so a paused-DB run survives the pull
+      if (window.btSync) for (const h of histLocalOnly) { try { await btSync.append(h); } catch (e) {} }
+    }
   }
   // Preserve strategies saved locally on THIS browser that the shared list doesn't have (saved while not the
   // owner, so never published) — otherwise the pull silently drops them and a just-created strategy vanishes.

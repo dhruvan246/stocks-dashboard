@@ -335,19 +335,26 @@ function monthsBetween(start,end){
 }
 
 // ---- config read / apply / labels (shared with history & strategies pages) ----
+// `lookback` isn't a form control — it's carried invisibly from a loaded strategy (it sets the live
+// Today's-Picks return window AND is part of the strategy identity, so a re-run MUST preserve it or it
+// splits into a separate strategy that won't nest under the saved row). null on a fresh/direct build.
+let CUR_LOOKBACK=null;
 function readCfg(){
   // unified Universe value: "" = all, "mcap:<n>" = size floor, anything else = index/F&O membership
   const u=$('cIndex').value||''; const isCap=u.slice(0,5)==='mcap:';
-  return {
+  const cfg={
     start:$('cFrom').value, end:$('cTo').value, mcapFloor:isCap?+u.slice(5):0,
     indexName:isCap?'':u, freq:+$('cFreq').value,
     sortBy:$('cSort').value, dir:$('cDir').value, topN:Math.max(1,+$('cTopN').value||10),
     capital:+$('cCap').value||100000, method:$('cMethod').value, filters:readFilters(), mode:DATA_MODE,
     earnBasis:($('cEarn')&&$('cEarn').value)||'con'
   };
+  if(CUR_LOOKBACK!=null) cfg.lookback=CUR_LOOKBACK;   // preserve a loaded strategy's lookback so re-runs keep its identity
+  return cfg;
 }
 async function applyCfg(c){
   if(!c) return;
+  CUR_LOOKBACK = (c.lookback!=null) ? c.lookback : null;   // remember the loaded strategy's lookback (see readCfg) so a re-run nests under the same strategy
   if(DATA_MODE!=='sf') await setMode('sf');   // always survivorship-free
   // map saved {indexName, mcapFloor} onto the unified Universe value (index wins if both set)
   $('cFrom').value=c.start; $('cTo').value=(typeof SF!=='undefined'&&SF&&SF.end)?SF.end:c.end;   // TO always rolls to the latest available date
@@ -374,6 +381,37 @@ function saveLS(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 function stratIdentity(c){
   const f=(c.filters||[]).map(x=>x.field+x.op+x.val).sort().join(',');
   return [c.indexName||'', c.mcapFloor||0, c.freq, c.topN, c.sortBy, c.dir, c.lookback||1, c.earnBasis||'con', f].join('|');
+}
+// "Is this strategy already in the Saved Strategies list?" — used to hide a duplicate Save button
+// (a saved strategy re-opened & re-run should NOT re-offer "Save as Strategy"). Mirrors identityKey()
+// in saved-strategies.html: excludes the date window AND topN (a row groups its stock-count variants),
+// and treats `<`≡`<=` / `>`≡`>=` so a boundary-only difference isn't seen as a new strategy.
+function savedIdentity(c){
+  const normOp=op=>({'<=':'<','>=':'>'}[op]||op);
+  const f=(c.filters||[]).map(x=>x.field+normOp(x.op)+x.val).sort().join(',');
+  return [c.indexName||'', c.mcapFloor||0, c.freq, c.sortBy, c.dir, c.lookback||1, c.earnBasis||'con', f].join('|');
+}
+function isAlreadySaved(cfg){
+  try{ const k=savedIdentity(cfg); return loadLS('bt_strategies').some(x=>x&&x.cfg&&savedIdentity(x.cfg)===k); }catch(e){ return false; }
+}
+// From the instant snapshot view, "🔧 Edit & re-run" opens the editable builder INSTANTLY (no data
+// download) — the form is populated from the saved config and the heavy market data loads only when
+// the user actually clicks ▶ Run Backtest (ensureData in run()).
+async function openEditor(cfg){
+  window.__snapshotMode=false;
+  window.__loadedSaved = isAlreadySaved(cfg);
+  await initUIStatic();          // build the form controls instantly (static — no market data)
+  await applyCfg(cfg);           // fill in the saved parameters (no data load: DATA_MODE is already 'sf')
+  const rb=$('run'); rb.textContent='▶ Run Backtest';
+  rb.className='bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-5 py-2 text-sm font-semibold shadow-sm';
+  rb.onclick=run;
+  const cc=$('cfgCard'); if(cc) cc.style.display='';
+  const ip=$('introP'); if(ip) ip.style.display='none';
+  const h1=document.querySelector('h1'); if(h1) h1.textContent='📈 Backtest';
+  const hint=$('saveHint'); if(hint) hint.style.display='none';
+  $('out').innerHTML='';
+  $('runMsg').textContent='Adjust the parameters and click ▶ Run Backtest.';
+  try{ window.scrollTo({top:0,behavior:'smooth'}); }catch(e){ window.scrollTo(0,0); }
 }
 // ---- result SNAPSHOTS: store the full computed result once so re-opening is INSTANT (no 17 MB load,
 //      no recompute). Keyed by strategy identity + window + method, so it matches what the 👁 fetches. ----
@@ -415,9 +453,37 @@ async function loadFund(){
 }
 // ---- the engine ----
 let LAST_RUN=null;
+// Lazily load the heavy market data (only when a real Run is actually requested). The editable
+// builder is shown instantly with NO data (initUIStatic/openEditor); the ~17 MB membership file +
+// the survivorship-free price parts download only here, once, on the first Run — matching the
+// "slim first paint, heavy data on demand" pattern used across the site (DATA_RUNBOOK §9).
+async function ensureData(){
+  if(SF) return true;
+  // Index/F&O membership + startTs come from stock_data.bin (SURV); prices come from the sf-data
+  // parts via setMode('sf'). (SF mode overwrites SURV's price series, so only its membership is used.)
+  if(!SURV || !SURV.startTs){
+    try{
+      const buf=await (await fetch('./stock_data.bin')).arrayBuffer();
+      const stream=new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'));
+      const D=JSON.parse(await new Response(stream).text());
+      SURV={meta:D.meta, series:D.series, idxh:D.indicesHistory||{}, fnoh:D.fnoHistory||[], startTs:D.startTs};
+      START_TS=D.startTs;
+    }catch(e){ $('runMsg').textContent='Could not load market data — please try again.'; console.error(e); return false; }
+    try{ if(!NIFTY||!Object.keys(NIFTY).length) NIFTY=(await (await fetch('./nifty.json')).json()).px||{}; }catch(e){}
+    try{ if(!NIFTY500||!Object.keys(NIFTY500).length) NIFTY500=(await (await fetch('./nifty500.json')).json()).px||{}; }catch(e){}
+  }
+  await setMode('sf');   // loads the sf-data price parts → sets SERIES/META/TURN/IDXH/FNOH/SF_END_OFF
+  return !!SF;
+}
 async function run(){
   const cfg=readCfg();
   if(!cfg.start||!cfg.end||cfg.start>=cfg.end){ $('runMsg').textContent='Pick a valid date range.'; return; }
+  window.__loadedSaved = isAlreadySaved(cfg);   // is this the config of an already-saved strategy? (hides a duplicate Save button)
+  if(!SF){                                       // data deferred until a real Run — load it once now
+    $('runMsg').textContent='Loading price history (one-time, ~17 MB)…';
+    if(!await ensureData()) return;
+    $('cFrom').value=cfg.start; $('cTo').value=cfg.end;   // setMode's updateModeUI resets the dates — restore the user's window
+  }
   if(needsFund(cfg)){ $('runMsg').textContent='Loading earnings data…'; await loadFund();
     if(!Object.keys(FUND).length){ $('runMsg').textContent='Earnings data not available yet — try a non-fundamental factor.'; return; } }
   $('runMsg').textContent='Running…';
@@ -789,7 +855,9 @@ function render(r,cfg){
       ${window.__snapshotMode?'<span class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700">⚡ Instant saved result</span>':''}
       ${window.__snapshotMode?'<button id="btEditRerun" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-700" title="Loads market data so you can change parameters and recompute">🔧 Edit &amp; re-run</button>':''}
       ${(window.__snapshotMode||window.__viewOnly)?'':'<span class="inline-flex items-center gap-1 text-xs font-semibold text-green-700">✓ Auto-saved to History</span>'}
-      ${(window.__snapshotMode||window.__viewOnly)?'':'<button id="btSaveStrat" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500 text-white hover:bg-amber-600">⭐ Save as Strategy</button>'}
+      ${(window.__snapshotMode||window.__viewOnly)?'' : (window.__loadedSaved
+        ? '<span class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700" title="This window is recorded under the strategy in Saved Strategies">✓ In Saved Strategies</span><a href="./saved-strategies.html" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-700">⭐ View strategy →</a>'
+        : '<button id="btSaveStrat" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500 text-white hover:bg-amber-600">⭐ Save as Strategy</button>')}
       <span id="saveMsg" class="text-xs text-green-700"></span>
       <a href="./backtest-history.html" class="text-xs text-indigo-600 hover:underline ml-auto">View history →</a>
     </div>`;
@@ -857,9 +925,10 @@ function render(r,cfg){
   if(dc) dc.onclick=()=>downloadTradeCsv(r,cfg);
   const ss=$('btSaveStrat');
   if(ss) ss.onclick=saveStrategy;
-  // From the instant snapshot view → load the engine on demand and open the editable builder (tweak & re-run).
+  // From the instant snapshot view → open the editable builder INSTANTLY (no data download); the
+  // heavy market data loads only when the user actually clicks ▶ Run Backtest (ensureData in run()).
   const er=$('btEditRerun');
-  if(er) er.onclick=()=>{ try{ localStorage.setItem('bt_load', JSON.stringify({cfg, saved:null})); }catch(e){} location.reload(); };
+  if(er) er.onclick=()=>openEditor(cfg);
   const gl=$('btGoLive'), gc=$('btLiveCfg');
   if(gl) gl.onclick=goLive;
   if(gc) gc.onclick=setWorkerUrl;
