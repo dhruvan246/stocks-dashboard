@@ -901,15 +901,20 @@ async function load(){
     // NSE vision overlay: fill a company's quarter cell ONLY when it has no parsed number yet, so the
     // authoritative XBRL always supersedes the vision estimate the moment it lands. q row layout:
     // [revS,opS,patS,revC,opC,patC,ann,rx,sr].
+    FEEDROWS=(feed&&feed.rows||[]).slice();
     if(vfill){ const qix={}; QTRS.forEach((q,i)=>qix[q]=i);
-      for(const sym in vfill){ const c=CO[sym]; if(!c) continue;
+      const fname={}; FEEDROWS.forEach(r=>{ if(!fname[r[0]]) fname[r[0]]=r[1]; });
+      for(const sym in vfill){ let c=CO[sym];
+        if(!c){                                             // orphan: NSE filer with no price-universe row
+          if(!fname[sym]) continue;                         // need a display name (from the feed)
+          c=CO[sym]={ n:fname[sym], s:'', m:0, orphan:1, q:QTRS.map(()=>null) }; BSE_COUNT+=0;
+        }
         for(const qk in vfill[sym]){ const qi=qix[+qk]; if(qi==null) continue;
           const cur=c.q[qi], has=cur&&(cur[2]!=null||cur[5]!=null);
           if(has) continue;                                 // real number present → don't overlay
           const f=vfill[sym][qk], rev=f.rev==null?null:+f.rev, pat=f.pat==null?null:+f.pat, op=f.op==null?null:+f.op;
           c.q[qi]=[rev,op,pat,rev,op,pat,+qk===20260630?20260715:0,null,null]; c.vfill=1;
         } } }
-    FEEDROWS=(feed&&feed.rows||[]).slice();
     liveKeys=new Set(FEEDROWS.map(feedKey));
     $('updatedBox').innerHTML='Numbers '+esc(qr.updated)+'<br>Prices as of '+esc(qr.asof);
     if(feed) $('feedUpd').textContent='feed updated '+feed.updated;

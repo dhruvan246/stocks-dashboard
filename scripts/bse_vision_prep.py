@@ -45,9 +45,13 @@ def find_pending(limit):
             scrip = str(univ[sym][0])
             if scrip in bf and str(qe) in bf[scrip]: continue
             if scrip not in bse: bse[scrip] = (sym, univ[sym][2], univ[sym][6])
-        elif sym in CO and not CO[sym].get("bse"):            # NSE name
+        elif sym in CO and not CO[sym].get("bse"):            # NSE name with a price-universe row
             if sym in nse_have or (sym in vf and str(qe) in vf.get(sym, {})): continue
             nse.append((sym, CO[sym]["n"], CO[sym].get("m") or 0, r[5], r[2][:10]))
+        elif sym not in CO:                                   # orphan NSE (no price row, not BSE-listed)
+            if sym in vf and str(qe) in vf.get(sym, {}): continue
+            if any(x[0] == sym for x in nse): continue
+            nse.append((sym, r[1], 0, r[5], r[2][:10]))
     nse.sort(key=lambda x: -(x[2] or 0))
     bse_ord = sorted(bse.items(), key=lambda kv: -(kv[1][2] or 0))
     return qe, nse[:limit], bse_ord[:limit]
