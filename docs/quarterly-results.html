@@ -420,9 +420,10 @@ function renderOverview(){
   const haveNames=new Set(rows.map(r=>normN(r.c.n)));
   FEEDROWS.forEach(r=>{ if(r[3]===qe && !haveNums.has(r[0]) && !haveNames.has(normN(r[1])) && coPass(r[0])) pendSet.add(r[0]); });
   const pending=pendSet.size, declared=rows.length+pending;
+  let pdfOnly=0; pendSet.forEach(s=>{ if(PDF_ONLY.has(s)) pdfOnly++; }); const coming=pending-pdfOnly;
   $('tiles').innerHTML=
     tile('Declared', declared.toLocaleString('en-IN'),
-         rows.length.toLocaleString('en-IN')+' with numbers'+(pending? ' · +'+pending+' filed, numbers coming':''))+
+         rows.length.toLocaleString('en-IN')+' with numbers'+(coming? ' · +'+coming+' coming':'')+(pdfOnly? ' · '+pdfOnly+' filing-only':''))+
     tile('Median revenue growth', fmtPct(median(revs)), ST.mode==='yoy'?'vs year-ago quarter':'vs previous quarter', pctCls(median(revs)))+
     tile('Median PAT growth', fmtPct(median(pats)), (pUp+pDn)?(pUp+' up · '+pDn+' down'):'', pctCls(median(pats)))+
     tile('PAT growers', (pUp+pDn)? Math.round(pUp/(pUp+pDn)*100)+'%' :'—', pUp+' of '+(pUp+pDn)+' with a comparable base', pUp>=pDn?'pos':'neg')+
@@ -586,7 +587,8 @@ function renderResults(){
     });
     pend.sort((a,b)=>(b[2]>a[2]?1:-1));
   }
-  $('fCount').textContent=rows.length.toLocaleString('en-IN')+' with numbers'+(pend.length?' · +'+pend.length+' filed, numbers coming':'')+' · '+qlabel(QTRS[ST.qi],true);
+  const nPdf=pend.filter(r=>PDF_ONLY.has(r[0])).length, nComing=pend.length-nPdf;
+  $('fCount').textContent=rows.length.toLocaleString('en-IN')+' with numbers'+(nComing?' · +'+nComing+' numbers coming':'')+(nPdf?' · '+nPdf+' filing-only (PDF)':'')+' · '+qlabel(QTRS[ST.qi],true);
   const shown=rows.slice(0,ST.shown);
   const pendHtml=pend.map(r=>{
     const c=CO[r[0]], pdf=r[5]?(String(r[5]).indexOf('http')===0?r[5]:PDF_PREFIX+r[5]):'';
