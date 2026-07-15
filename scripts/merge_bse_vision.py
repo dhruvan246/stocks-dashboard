@@ -13,6 +13,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 FUND = os.path.join(HERE, "..", "docs", "bse_fundamentals.json")
 FAILS = os.path.join(HERE, "_bse_fund_fail.json")
 DONE = os.path.join(HERE, "_bse_fund_done.json")
+VFILLS = os.path.join(HERE, "..", "docs", "vision_fills.json")   # NSE overlay the page applies to empty cells
 # nominal ann dates (filing months): current quarter shows this; year-ago ann unused for YoY
 ANN = {"20260630": 20260715, "20260331": 20260615, "20250630": 0}
 
@@ -28,25 +29,35 @@ def main():
     px = data["px"]
     fails = json.load(open(FAILS)) if os.path.exists(FAILS) else {}
     done = set(json.load(open(DONE))) if os.path.exists(DONE) else set()
-    n = 0
+    vfills = json.load(open(VFILLS, encoding="utf-8")) if os.path.exists(VFILLS) else {}
+    nb = nn = 0
     for it in items:
         if not it.get("ok"): continue
-        scrip = str(it["scrip"]); basis = it.get("basis", "S") or "S"
-        j26 = it.get("jun2026") or {}
+        basis = it.get("basis", "S") or "S"
+        sym = (it.get("ticker") or it.get("sym") or "").upper()
+        j26 = it.get("jun2026") or {}; j25 = it.get("jun2025") or {}
         if j26.get("pat") is None and j26.get("rev") is None: continue
-        put(px, scrip, "20260630", j26, basis)
-        j25 = it.get("jun2025") or {}
-        if j25.get("pat") is not None or j25.get("rev") is not None:
-            put(px, scrip, "20250630", j25, basis)
-        fails.pop(scrip, None)                 # no longer a parse failure → drops from pdf_only
-        done.add(scrip)
-        n += 1
-        print("  ✓ %s (%s) Jun26 rev=%s pat=%s | Jun25 rev=%s pat=%s"
-              % (it["ticker"], scrip, j26.get("rev"), j26.get("pat"), j25.get("rev"), j25.get("pat")))
+        # NSE entries (exch=="NSE", or no BSE scrip) → overlay file the page applies only to EMPTY cells,
+        # so real XBRL always supersedes this vision estimate once it lands. BSE-only → bse_fundamentals.
+        if str(it.get("exch", "")).upper() == "NSE" or not str(it.get("scrip") or "").strip():
+            e = vfills.setdefault(sym, {})
+            e["20260630"] = {k: v for k, v in {"rev": j26.get("rev"), "pat": j26.get("pat"), "basis": basis, "src": "vision"}.items() if v is not None}
+            if j25.get("pat") is not None or j25.get("rev") is not None:
+                e["20250630"] = {k: v for k, v in {"rev": j25.get("rev"), "pat": j25.get("pat"), "basis": basis, "src": "vision"}.items() if v is not None}
+            nn += 1
+            print("  ✓ NSE %-11s Jun26 rev=%s pat=%s (overlay)" % (sym, j26.get("rev"), j26.get("pat")))
+        else:
+            scrip = str(it["scrip"])
+            put(px, scrip, "20260630", j26, basis)
+            if j25.get("pat") is not None or j25.get("rev") is not None:
+                put(px, scrip, "20250630", j25, basis)
+            fails.pop(scrip, None); done.add(scrip); nb += 1
+            print("  ✓ BSE %-11s (%s) Jun26 rev=%s pat=%s" % (sym, scrip, j26.get("rev"), j26.get("pat")))
     json.dump(data, open(FUND, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
     json.dump(fails, open(FAILS, "w"))
     json.dump(sorted(done), open(DONE, "w"))
-    print("Merged %d companies into bse_fundamentals.json" % n)
+    json.dump(vfills, open(VFILLS, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
+    print("Merged %d BSE-only into bse_fundamentals.json, %d NSE into vision_fills.json" % (nb, nn))
 
 if __name__ == "__main__":
     main()

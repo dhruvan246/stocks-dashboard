@@ -883,11 +883,12 @@ function wire(){
 
 async function load(){
   try{
-    const [qr,cal,feed,bse]=await Promise.all([
+    const [qr,cal,feed,bse,vfill]=await Promise.all([
       fetch('./quarterly_results.json').then(r=>{ if(!r.ok) throw new Error('quarterly_results HTTP '+r.status); return r.json(); }),
       fetch('./results_calendar.json?t='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null),
       fetch('./results_feed.json?t='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null),
-      fetch('./bse_results.json').then(r=>r.ok?r.json():null).catch(()=>null)   // BSE-listed-only companies
+      fetch('./bse_results.json').then(r=>r.ok?r.json():null).catch(()=>null),  // BSE-listed-only companies
+      fetch('./vision_fills.json?t='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null)  // NSE vision overlay (fills gaps until XBRL lands)
     ]);
     QR=qr; CAL=cal; FEED=feed; QTRS=qr.quarters; CO=qr.co;
     // Merge BSE-only companies (not on NSE) as first-class rows. Their q-arrays are pre-aligned to
@@ -897,6 +898,17 @@ async function load(){
       BSE_COUNT=added;
     }
     if(bse&&bse.pdf_only) PDF_ONLY=new Set(bse.pdf_only);   // filed but not machine-readable → label honestly
+    // NSE vision overlay: fill a company's quarter cell ONLY when it has no parsed number yet, so the
+    // authoritative XBRL always supersedes the vision estimate the moment it lands. q row layout:
+    // [revS,opS,patS,revC,opC,patC,ann,rx,sr].
+    if(vfill){ const qix={}; QTRS.forEach((q,i)=>qix[q]=i);
+      for(const sym in vfill){ const c=CO[sym]; if(!c) continue;
+        for(const qk in vfill[sym]){ const qi=qix[+qk]; if(qi==null) continue;
+          const cur=c.q[qi], has=cur&&(cur[2]!=null||cur[5]!=null);
+          if(has) continue;                                 // real number present → don't overlay
+          const f=vfill[sym][qk], rev=f.rev==null?null:+f.rev, pat=f.pat==null?null:+f.pat;
+          c.q[qi]=[rev,null,pat,rev,null,pat,20260715,null,null]; c.vfill=1;
+        } } }
     FEEDROWS=(feed&&feed.rows||[]).slice();
     liveKeys=new Set(FEEDROWS.map(feedKey));
     $('updatedBox').innerHTML='Numbers '+esc(qr.updated)+'<br>Prices as of '+esc(qr.asof);
