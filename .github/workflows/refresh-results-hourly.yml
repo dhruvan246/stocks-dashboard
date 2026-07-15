@@ -45,6 +45,9 @@ jobs:
       - name: Merge BSE results into feed + calendar
         run: python3 -X utf8 scripts/fetch_bse_results.py || echo "(BSE merge failed — keeping NSE-only)"
 
+      - name: Guard — refuse to commit a broken or shrunken feed
+        run: python3 scripts/guard_feed.py
+
       - name: Commit feed + calendar (only if changed)
         id: commit
         run: |

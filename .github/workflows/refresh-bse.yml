@@ -58,6 +58,9 @@ jobs:
       - name: Rebuild BSE results payload
         run: python3 -X utf8 scripts/build_bse_results.py
 
+      - name: Guard — refuse to commit a broken or shrunken feed
+        run: python3 scripts/guard_feed.py
+
       - name: Commit BSE data (only if changed)
         run: |
           git config user.name  "github-actions[bot]"

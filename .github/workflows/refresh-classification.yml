@@ -33,6 +33,9 @@ jobs:
       - name: Fetch BSE 5-level classification
         run: python3 scripts/fetch_classification.py
 
+      - name: Guard — refuse to commit a broken or shrunken feed
+        run: python3 scripts/guard_feed.py
+
       - name: Commit if changed
         run: |
           git config user.name  "github-actions[bot]"

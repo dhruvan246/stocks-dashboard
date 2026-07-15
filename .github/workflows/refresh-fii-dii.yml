@@ -41,6 +41,9 @@ jobs:
       - name: Fetch latest FII/DII activity
         run: python3 scripts/fetch_fii_dii.py
 
+      - name: Guard — refuse to commit a broken or shrunken feed
+        run: python3 scripts/guard_feed.py
+
       - name: Commit updated FII/DII history
         env:
           GH_TOKEN: ${{ github.token }}

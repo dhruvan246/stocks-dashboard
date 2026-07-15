@@ -130,6 +130,9 @@ jobs:
             python3 -X utf8 scripts/build_quarterly_results.py
           fi
 
+      - name: Guard — refuse to commit a broken or shrunken feed
+        run: python3 scripts/guard_feed.py
+
       - name: Commit updated fundamentals + results pages
         env:
           GH_TOKEN: ${{ github.token }}

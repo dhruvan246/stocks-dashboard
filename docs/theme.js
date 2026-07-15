@@ -137,7 +137,8 @@
     ] },
     { g: 'Tools', items: [
       ['./saved-strategies.html', '⭐', 'Saved strategies'],
-      ['./backtest-history.html', '🕘', 'Backtest history']
+      ['./backtest-history.html', '🕘', 'Backtest history'],
+      ['./status.html',           '🩺', 'Data health']
     ] }
   ];
   var NAV_CTA = ['./stock-backtest.html', '🧪', 'Create a strategy'];

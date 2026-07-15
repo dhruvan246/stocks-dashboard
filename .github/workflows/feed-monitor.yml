@@ -1,0 +1,90 @@
+name: Feed monitor (nightly data health)
+
+on:
+  schedule:
+    # 21:30 UTC = 03:00 IST — after every daily refresh job (last is the
+    # backtest-history backup at 19:30 UTC) so the night's commits are in.
+    - cron: "30 21 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  issues: write
+  actions: write   # dispatch pages.yml so status.html publishes itself
+
+concurrency:
+  group: feed-monitor
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Check every feed against docs/feeds.json
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/check_feeds.py
+
+      - name: Commit docs/status.json (reset-and-replay like the other refresh jobs)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp docs/status.json /tmp/status.json
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/status.json docs/status.json
+            git add docs/status.json
+            if git diff --cached --quiet; then echo "status unchanged"; exit 0; fi
+            git commit -m "Feed monitor: nightly health check $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then
+              gh workflow run pages.yml || echo "(pages dispatch failed — publishes on next push)"
+              exit 0
+            fi
+            echo "push #$attempt rejected; retrying"; sleep $(( attempt * 3 ))
+          done
+          echo "failed to push status.json after 5 attempts"; exit 1
+
+      - name: Open or update the alert issue when something is unhealthy
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'EOF'
+          import json
+          s = json.load(open('docs/status.json'))
+          bad = [f for f in s['feeds'] if f['status'] != 'ok']
+          if not bad:
+              print('all healthy — no alert'); raise SystemExit(0)
+          lines = [f"Nightly feed monitor found **{len(bad)}** unhealthy item(s) "
+                   f"({s['generated_utc']}):", ""]
+          for f in bad:
+              wf = f.get('workflow') or 'manual'
+              lines.append(f"- **{f['name']}** (`{f['file']}`) — `{f['status']}` — {f['detail']} — workflow: `{wf}`")
+          lines += ["", "Live board: https://dhruvan246.github.io/stocks-dashboard/status.html",
+                    "", "_This issue auto-closes the night everything is green again._"]
+          open('/tmp/alert.md', 'w').write('\n'.join(lines))
+          open('/tmp/alert_count', 'w').write(str(len(bad)))
+          EOF
+          if [ ! -f /tmp/alert_count ]; then
+            # everything green — close any open alert from earlier
+            NUM=$(gh issue list --state open --search "Data feed alert in:title" --json number --jq '.[0].number' 2>/dev/null || true)
+            if [ -n "$NUM" ]; then
+              gh issue close "$NUM" --comment "All feeds healthy again — closing. ✅"
+            fi
+            exit 0
+          fi
+          N=$(cat /tmp/alert_count)
+          NUM=$(gh issue list --state open --search "Data feed alert in:title" --json number --jq '.[0].number' 2>/dev/null || true)
+          if [ -n "$NUM" ]; then
+            gh issue comment "$NUM" --body-file /tmp/alert.md
+            echo "updated existing alert issue #$NUM"
+          else
+            gh issue create --title "⚠️ Data feed alert — $N item(s) unhealthy" --body-file /tmp/alert.md
+            echo "opened new alert issue"
+          fi

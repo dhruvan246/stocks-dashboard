@@ -38,6 +38,9 @@ jobs:
       - name: Fetch latest bank loan growth (stdlib only — no deps)
         run: python3 scripts/fetch_bank_credit.py
 
+      - name: Guard — refuse to commit a broken or shrunken feed
+        run: python3 scripts/guard_feed.py
+
       - name: Commit updated bank-credit history
         env:
           GH_TOKEN: ${{ github.token }}

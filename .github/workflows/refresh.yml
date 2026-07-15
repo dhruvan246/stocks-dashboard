@@ -62,6 +62,9 @@ jobs:
       - name: Build dashboard HTML
         run: python3 scripts/build_compressed.py
 
+      - name: Guard — refuse to commit a broken or shrunken feed
+        run: python3 scripts/guard_feed.py
+
       - name: Commit updated dashboard
         run: |
           git config user.name  "github-actions[bot]"

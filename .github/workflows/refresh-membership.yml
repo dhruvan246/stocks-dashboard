@@ -57,6 +57,9 @@ jobs:
       - name: Detect phantom corporate actions (crashes mis-read as splits)
         run: python3 scripts/audit_phantom_ca.py 120 || echo "phantom-CA scan failed — keeping existing list"
 
+      - name: Guard — refuse to commit a broken or shrunken feed
+        run: python3 scripts/guard_feed.py
+
       - name: Commit if membership changed
         run: |
           git config user.name  "github-actions[bot]"

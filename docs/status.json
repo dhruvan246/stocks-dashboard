@@ -1,0 +1,496 @@
+{
+ "generated_utc": "2026-07-15T19:11:17Z",
+ "ok": true,
+ "checked": 36,
+ "bad": [],
+ "feeds": [
+  {
+   "file": "announcements.json",
+   "name": "NSE announcements (rolling 31d)",
+   "workflow": "refresh-announcements.yml",
+   "cadence": "4x/day",
+   "pages": [
+    "announcements.html"
+   ],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": 5107660,
+   "age_hours": 1.9
+  },
+  {
+   "file": "discovery.json",
+   "name": "Smart Money Picks buckets",
+   "workflow": "refresh-announcements.yml",
+   "cadence": "4x/day",
+   "pages": [
+    "discovery.html"
+   ],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": 959272,
+   "age_hours": 1.9
+  },
+  {
+   "file": "order_values.json",
+   "name": "Order-win values (enriched)",
+   "workflow": "refresh-announcements.yml",
+   "cadence": "daily",
+   "pages": [
+    "discovery.html"
+   ],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": 14755,
+   "age_hours": 22.3
+  },
+  {
+   "file": "order_shares.json",
+   "name": "Order-win share counts",
+   "workflow": "refresh-announcements.yml",
+   "cadence": "daily",
+   "pages": [
+    "discovery.html"
+   ],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": 415,
+   "age_hours": 1.9
+  },
+  {
+   "file": "results_feed.json",
+   "name": "Live declared-results feed",
+   "workflow": "refresh-results-hourly.yml",
+   "cadence": "hourly 08:30-00:30",
+   "pages": [
+    "quarterly-results.html"
+   ],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": 54264,
+   "age_hours": 0.2
+  },
+  {
+   "file": "results_calendar.json",
+   "name": "Results calendar",
+   "workflow": "refresh-results-hourly.yml",
+   "cadence": "hourly 08:30-00:30",
+   "pages": [
+    "quarterly-results.html"
+   ],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": 30901,
+   "age_hours": 0.2
+  },
+  {
+   "file": "quarterly_results.json",
+   "name": "Quarterly results table",
+   "workflow": "refresh-fundamentals.yml",
+   "cadence": "hourly 10:15-23:15",
+   "pages": [
+    "quarterly-results.html"
+   ],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": 1790580,
+   "age_hours": 2.3
+  },
+  {
+   "file": "sf_fundamentals.json",
+   "name": "Backtest fundamentals (owners PAT)",
+   "workflow": "refresh-fundamentals.yml",
+   "cadence": "hourly (season)",
+   "pages": [
+    "stock-backtest.html"
+   ],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": 2976193,
+   "age_hours": 0.3
+  },
+  {
+   "file": "sf_revop.json",
+   "name": "Revenue + operating profit (XBRL)",
+   "workflow": "refresh-fundamentals.yml",
+   "cadence": "hourly (season)",
+   "pages": [],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": 3721228,
+   "age_hours": 4.0
+  },
+  {
+   "file": "results_season.json",
+   "name": "Results Season medians",
+   "workflow": "refresh-fundamentals.yml",
+   "cadence": "daily",
+   "pages": [
+    "results-season.html"
+   ],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": 208902,
+   "age_hours": 0.3
+  },
+  {
+   "file": "fii_dii.json",
+   "name": "FII/DII cash flows",
+   "workflow": "refresh-fii-dii.yml",
+   "cadence": "weekdays 20:15 IST",
+   "pages": [
+    "fii-dii.html"
+   ],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": 6258,
+   "age_hours": 3.0
+  },
+  {
+   "file": "fii_fo.json",
+   "name": "FII derivatives stats",
+   "workflow": "refresh-fii-dii.yml",
+   "cadence": "weekdays 20:15 IST",
+   "pages": [
+    "fii-dii.html"
+   ],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": 1351955,
+   "age_hours": 3.0
+  },
+  {
+   "file": "nifty.json",
+   "name": "Nifty 50 index history",
+   "workflow": "refresh-fii-dii.yml",
+   "cadence": "weekdays 20:15 IST",
+   "pages": [
+    "index.html",
+    "fii-dii.html",
+    "bank-credit.html",
+    "sectors.html",
+    "stock-backtest.html"
+   ],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": 75200,
+   "age_hours": 3.0
+  },
+  {
+   "file": "nifty500.json",
+   "name": "Nifty 500 index history",
+   "workflow": "refresh-fii-dii.yml",
+   "cadence": "weekdays 20:15 IST",
+   "pages": [
+    "index.html",
+    "stock-backtest.html"
+   ],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": 74671,
+   "age_hours": 3.0
+  },
+  {
+   "file": "nifty_bank.json",
+   "name": "Nifty Bank index history",
+   "workflow": "refresh-fii-dii.yml",
+   "cadence": "weekdays 20:15 IST",
+   "pages": [
+    "index.html"
+   ],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": 76844,
+   "age_hours": 3.0
+  },
+  {
+   "file": "india_vix.json",
+   "name": "India VIX history",
+   "workflow": "refresh-fii-dii.yml",
+   "cadence": "weekdays 20:15 IST",
+   "pages": [
+    "index.html"
+   ],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": 67325,
+   "age_hours": 3.0
+  },
+  {
+   "file": "nifty500_turnover.json",
+   "name": "Market Mood monthly turnover",
+   "workflow": "refresh-market-mood.yml",
+   "cadence": "weekdays 21:35 IST",
+   "pages": [
+    "market-mood.html"
+   ],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": 5176,
+   "age_hours": 3.1
+  },
+  {
+   "file": "bank_credit.json",
+   "name": "RBI bank loan growth (y/y)",
+   "workflow": "refresh-bank-credit.yml",
+   "cadence": "Tue+Sat (fortnightly data)",
+   "pages": [
+    "bank-credit.html"
+   ],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": 24827,
+   "age_hours": 27.0
+  },
+  {
+   "file": "sector_classification.json",
+   "name": "BSE 5-level sector classification",
+   "workflow": "refresh-classification.yml",
+   "cadence": "weekly Sat",
+   "pages": [
+    "sectors.html"
+   ],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": 798706,
+   "age_hours": 97.1
+  },
+  {
+   "file": "bse_universe.json",
+   "name": "BSE-only stock universe",
+   "workflow": "refresh-bse.yml",
+   "cadence": "2x/day",
+   "pages": [],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": 219952,
+   "age_hours": 34.3
+  },
+  {
+   "file": "bse_fundamentals.json",
+   "name": "BSE-only fundamentals (OCR grind)",
+   "workflow": "refresh-bse.yml",
+   "cadence": "2x/day",
+   "pages": [],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": 8058,
+   "age_hours": 0.1
+  },
+  {
+   "file": "bse_results.json",
+   "name": "BSE-only quarterly results",
+   "workflow": "refresh-bse.yml",
+   "cadence": "2x/day",
+   "pages": [
+    "quarterly-results.html"
+   ],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": 20878,
+   "age_hours": 0.1
+  },
+  {
+   "file": "bse_prices.bin",
+   "name": "BSE-only price history",
+   "workflow": "refresh-bse.yml",
+   "cadence": "2x/day",
+   "pages": [
+    "quarterly-results.html"
+   ],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": 3743744,
+   "age_hours": 0.1
+  },
+  {
+   "file": "sf_meta.json",
+   "name": "Backtest data version marker",
+   "workflow": "refresh-backtest-data.yml",
+   "cadence": "weekdays 20:45 IST",
+   "pages": [
+    "stock-backtest.html",
+    "strategy-backtest.html"
+   ],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": 21,
+   "age_hours": 3.9
+  },
+  {
+   "file": "stock_data.bin",
+   "name": "Dashboard price + membership bin",
+   "workflow": "refresh-membership.yml",
+   "cadence": "weekly Sat",
+   "pages": [
+    "nse-bse-dashboard.html",
+    "sectors.html",
+    "stock-backtest.html"
+   ],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": 17531667,
+   "age_hours": 97.6
+  },
+  {
+   "file": "mutual-funds.html",
+   "name": "Mutual funds page (baked)",
+   "workflow": "refresh-mf.yml",
+   "cadence": "weekdays 22:00 IST",
+   "pages": [],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": 546530,
+   "age_hours": 1.1
+  },
+  {
+   "file": "nse-bse-dashboard.html",
+   "name": "Stocks dashboard page (baked)",
+   "workflow": "refresh.yml",
+   "cadence": "weekdays 3x eve",
+   "pages": [],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": 61456,
+   "age_hours": 6.2
+  },
+  {
+   "file": "vision_fills.json",
+   "name": "Vision-filled result cells",
+   "workflow": "refresh-fundamentals.yml",
+   "cadence": "event-driven",
+   "pages": [
+    "quarterly-results.html"
+   ],
+   "static": true,
+   "status": "ok",
+   "detail": "",
+   "bytes": 2878,
+   "age_hours": null
+  },
+  {
+   "file": "feed_qe_fix.json",
+   "name": "Feed quarter-mislabel self-heals",
+   "workflow": "refresh-announcements.yml",
+   "cadence": "event-driven",
+   "pages": [],
+   "static": true,
+   "status": "ok",
+   "detail": "",
+   "bytes": 96,
+   "age_hours": null
+  },
+  {
+   "file": "mf_funds.json",
+   "name": "MF backtest NAV data (manual)",
+   "workflow": null,
+   "cadence": "manual",
+   "pages": [
+    "backtest.html"
+   ],
+   "static": true,
+   "status": "ok",
+   "detail": "",
+   "bytes": 860376,
+   "age_hours": null
+  },
+  {
+   "file": "known_fundamental_gaps.json",
+   "name": "Known unrecoverable gaps (reference)",
+   "workflow": null,
+   "cadence": "manual",
+   "pages": [],
+   "static": true,
+   "status": "ok",
+   "detail": "",
+   "bytes": 15425,
+   "age_hours": null
+  },
+  {
+   "file": "nifty500_members_2025.json",
+   "name": "Nifty 500 members snapshot (reference)",
+   "workflow": null,
+   "cadence": "manual",
+   "pages": [],
+   "static": true,
+   "status": "ok",
+   "detail": "",
+   "bytes": 16484,
+   "age_hours": null
+  },
+  {
+   "file": "reconstruction_candidates.json",
+   "name": "Reconstruction candidates (reference)",
+   "workflow": null,
+   "cadence": "manual",
+   "pages": [],
+   "static": true,
+   "status": "ok",
+   "detail": "",
+   "bytes": 8515,
+   "age_hours": null
+  },
+  {
+   "file": "release_asset",
+   "name": "Backtest dataset (release asset)",
+   "workflow": "refresh-backtest-data.yml",
+   "cadence": "infra",
+   "pages": [],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": 114886931,
+   "age_hours": 3.9
+  },
+  {
+   "file": "repo_head",
+   "name": "sf-data split parts (Pages repo)",
+   "workflow": "refresh-backtest-data.yml",
+   "cadence": "infra",
+   "pages": [],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": null,
+   "age_hours": 3.9
+  },
+  {
+   "file": "supabase_rpc",
+   "name": "Supabase shared history (alive)",
+   "workflow": "backup-backtest-history.yml",
+   "cadence": "infra",
+   "pages": [],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": null,
+   "age_hours": null
+  }
+ ]
+}

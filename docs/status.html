@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Data health</title>
+<meta name="description" content="Live health board for every auto-refreshed data feed powering the dashboards — green means fresh, red means a pipeline needs attention." />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<style>
+  body { font-feature-settings: "tnum" 1; }
+  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
+  .dot{width:.65rem;height:.65rem;border-radius:9999px;flex:none}
+  .dot.ok{background:#22c55e;box-shadow:0 0 0 3px #dcfce7}
+  .dot.bad{background:#ef4444;box-shadow:0 0 0 3px #fee2e2;animation:pulse 1.6s infinite}
+  .dot.na{background:#cbd5e1;box-shadow:0 0 0 3px #f1f5f9}
+  @keyframes pulse{50%{opacity:.45}}
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-lg mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav class="flex items-center gap-1 overflow-x-auto"></nav>
+  </div>
+</header>
+
+<main class="max-w-screen-lg mx-auto px-4 py-6">
+  <div class="mb-4">
+    <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Data health</h1>
+    <p class="text-sm text-slate-500 mt-1">Every auto-refreshed feed behind the dashboards, checked nightly at <b>~03:00 IST</b>. Green = fresh and sane. Red = a pipeline needs attention (an alert issue is opened automatically on GitHub).</p>
+  </div>
+
+  <div id="banner" class="card p-4 mb-5 text-sm text-slate-500">Loading health board…</div>
+
+  <div id="sections"></div>
+
+  <p class="text-[11px] text-slate-400 mt-6">Checks: file exists · valid JSON · not suspiciously small · last update within each feed's expected cadence (see <code>docs/feeds.json</code>). Workflows also refuse to commit a feed that shrank drastically or fails to parse (<code>scripts/guard_feed.py</code>).</p>
+</main>
+
+<script>
+(function () {
+  var WF = 'https://github.com/dhruvan246/stocks-dashboard/actions/workflows/';
+
+  function fmtBytes(b) {
+    if (b == null) return '';
+    if (b >= 1048576) return (b / 1048576).toFixed(1) + ' MB';
+    if (b >= 1024) return (b / 1024).toFixed(0) + ' KB';
+    return b + ' B';
+  }
+  function fmtAge(h) {
+    if (h == null) return '';
+    if (h < 48) return h.toFixed(0) + ' h ago';
+    return (h / 24).toFixed(1) + ' d ago';
+  }
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+
+  function row(f) {
+    var ok = f.status === 'ok';
+    var dotCls = ok ? (f.static ? 'na' : 'ok') : 'bad';
+    var right = '<div class="text-right shrink-0">' +
+      '<div class="text-xs font-semibold ' + (ok ? 'text-slate-600' : 'text-red-600') + '">' +
+      (ok ? (f.static ? 'static' : esc(fmtAge(f.age_hours)) || 'fresh') : esc(f.status)) + '</div>' +
+      '<div class="text-[11px] text-slate-400">' + esc(fmtBytes(f.bytes)) + '</div></div>';
+    var wf = f.workflow
+      ? ' · <a class="text-indigo-500 hover:underline" target="_blank" rel="noopener" href="' + WF + esc(f.workflow) + '">' + esc(f.workflow.replace('.yml', '')) + '</a>'
+      : '';
+    return '<div class="flex items-center gap-3 px-4 py-2.5 border-b border-slate-100 last:border-0' + (ok ? '' : ' bg-red-50/60') + '">' +
+      '<span class="dot ' + dotCls + '"></span>' +
+      '<div class="min-w-0 flex-1">' +
+        '<div class="text-sm font-semibold text-slate-800 truncate">' + esc(f.name) + '</div>' +
+        '<div class="text-[11px] text-slate-400 truncate"><code>' + esc(f.file) + '</code>' + wf +
+        (f.detail ? ' · <span class="text-red-500">' + esc(f.detail) + '</span>' : '') + '</div>' +
+      '</div>' + right + '</div>';
+  }
+
+  function section(title, feeds) {
+    if (!feeds.length) return '';
+    return '<div class="mb-5"><div class="text-[11px] uppercase tracking-wide text-slate-500 font-bold mb-2">' + esc(title) + '</div>' +
+      '<div class="card overflow-hidden">' + feeds.map(row).join('') + '</div></div>';
+  }
+
+  fetch('./status.json', { cache: 'no-store' })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (s) {
+      var bad = s.feeds.filter(function (f) { return f.status !== 'ok'; });
+      var when = new Date(s.generated_utc).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' });
+      document.getElementById('banner').innerHTML = bad.length === 0
+        ? '<div class="flex items-center gap-3"><span class="dot ok"></span><div><div class="font-bold text-emerald-700">All systems green — ' + s.checked + '/' + s.checked + ' healthy</div><div class="text-xs text-slate-400">Last checked ' + esc(when) + ' IST</div></div></div>'
+        : '<div class="flex items-center gap-3"><span class="dot bad"></span><div><div class="font-bold text-red-600">' + bad.length + ' of ' + s.checked + ' unhealthy</div><div class="text-xs text-slate-400">Last checked ' + esc(when) + ' IST · an alert issue is open on GitHub</div></div></div>';
+
+      var auto = [], infra = [], ref = [];
+      s.feeds.forEach(function (f) {
+        if (f.cadence === 'infra') infra.push(f);
+        else if (f.static) ref.push(f);
+        else auto.push(f);
+      });
+      var order = function (a, b) { return (a.status === 'ok') - (b.status === 'ok'); };
+      auto.sort(order); infra.sort(order); ref.sort(order);
+      document.getElementById('sections').innerHTML =
+        section('Auto-refreshed feeds', auto) +
+        section('Infrastructure', infra) +
+        section('Reference files (manual)', ref);
+    })
+    .catch(function (e) {
+      document.getElementById('banner').innerHTML =
+        '<div class="text-sm text-slate-500">No health data yet — the monitor runs nightly at ~03:00 IST (or trigger <a class="text-indigo-500 hover:underline" target="_blank" rel="noopener" href="' + WF + 'feed-monitor.yml">feed-monitor</a> manually).</div>';
+    });
+})();
+</script>
+</body>
+</html>

@@ -64,6 +64,9 @@ jobs:
       - name: Build Discovery buckets
         run: python3 -X utf8 scripts/build_discovery.py || echo "(discovery build failed — keeping previous file)"
 
+      - name: Guard — refuse to commit a broken or shrunken feed
+        run: python3 scripts/guard_feed.py
+
       - name: Commit updated announcements
         env:
           GH_TOKEN: ${{ github.token }}
