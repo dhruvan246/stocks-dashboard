@@ -63,6 +63,15 @@ IDENTITY: if these images are NOT %(company)s or you can't find the Shareholders
 company_matches=false (or ok=false) and null every figure. Losses are negative. Return ONLY the JSON."""
 
 
+def _reason(body_txt):
+    """Pull the human-readable status/message out of a Gemini error JSON body (for the CI log)."""
+    try:
+        e = json.loads(body_txt).get("error", {})
+        return "%s: %s" % (e.get("status", "?"), (e.get("message", "") or "")[:140])
+    except Exception:
+        return (body_txt or "")[:140]
+
+
 def _key():
     return os.environ.get("GEMINI_API_KEY")
 
@@ -82,7 +91,7 @@ def read_insurer(company, cur_label, yago_label, pngs, with_subsidiary=True):
     }
     data = json.dumps(body).encode()
     d = None
-    for attempt in range(4):                     # retry 429s (free-tier per-minute limit) with backoff
+    for attempt in range(2):                     # fail-fast: 1 retry only, capped backoff (never hang CI)
         wait = _MIN_INTERVAL - (time.time() - _PACE["last"])   # pace: keep calls >= _MIN_INTERVAL apart
         if wait > 0:
             time.sleep(wait)
@@ -96,17 +105,15 @@ def read_insurer(company, cur_label, yago_label, pngs, with_subsidiary=True):
             d = json.loads(txt)
             break
         except urllib.error.HTTPError as ex:
-            if ex.code == 429 and attempt < 3:
-                delay = 20 * (attempt + 1)
-                try:                             # honour the API's suggested retryDelay if present
-                    m = re.search(r'"retryDelay":\s*"(\d+)s"', ex.read().decode("utf-8", "replace"))
-                    if m:
-                        delay = max(delay, int(m.group(1)) + 2)
-                except Exception:
-                    pass
-                print("    gemini 429 — backing off %ds (try %d/3)" % (delay, attempt + 1))
+            body_txt = ""
+            try: body_txt = ex.read().decode("utf-8", "replace")
+            except Exception: pass
+            if ex.code == 429 and attempt == 0:
+                m = re.search(r'"retryDelay":\s*"(\d+)s"', body_txt)
+                delay = min(int(m.group(1)) + 2, 15) if m else 12   # capped so the run can't hang
+                print("    gemini 429 — retry in %ds. reason: %s" % (delay, _reason(body_txt)))
                 time.sleep(delay); continue
-            print("    gemini err:", ("HTTP %d" % ex.code)); return None
+            print("    gemini err: HTTP %d — %s" % (ex.code, _reason(body_txt))); return None
         except Exception as ex:
             print("    gemini err:", str(ex)[:110]); return None
     if d is None:
