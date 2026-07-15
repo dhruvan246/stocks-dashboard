@@ -307,11 +307,18 @@ def _profit_rows(words):
     return out
 
 
+_PL_PAGE_HINT = re.compile(r"shareholder|profit.{0,25}after tax|profit and loss account|profit & loss"
+                           r"|revenue account|premium (earned|income)", re.I)
+_DEC2 = re.compile(r"\d[\d,]*\.\d\d")
+
+
 def rows_from_pdf(pdf, ident_tokens, ocr=False):
     """Parse a filing -> [(isConsolidated, isOwnersRow, [nums]), ...]. None on identity mismatch.
-    ocr=False (default, fast): text layer only — image pages are skipped (they're charts/annexures in a
-    typeset filing). ocr=True: also OCR the image pages (free rapidocr) — used as a second pass only when
-    the text layer yielded no anchor, i.e. a genuinely SCANNED filing (LIC's annual)."""
+    ocr=False (default, fast): text layer only — image pages are skipped (charts/annexures in a typeset
+    filing). ocr=True (second pass, only when the text layer yielded no anchor): render + OCR (free
+    rapidocr) BOTH fully-image pages AND mixed pages that look like a P&L (a P&L hint but almost no decimal
+    figures in the text = the numbers live in an image), so scanned/image P&L tables (ICICIGI, STARHEALTH,
+    LIC) get read. Capped to keep CI time bounded."""
     try:
         doc = fitz.open(stream=pdf, filetype="pdf")
     except Exception:
@@ -324,17 +331,21 @@ def rows_from_pdf(pdf, ident_tokens, ocr=False):
             return None
     rows = []
     con = False           # insurer filings lead with standalone; anchoring corrects any mis-tag anyway
-    ocr_used = 0
+    ocr_used = 0; OCR_CAP = 14
     for p in range(N):
-        low = texts[p].lower()
+        t = texts[p]; low = t.lower()
         if "consolidated" in low:
             con = True
         elif re.search(r"standalone\s+(statement|financial|results|unaudited|audited|ind)", low) and "consolidated" not in low:
             con = False
-        if texts[p].strip():
-            words = doc[p].get_text("words")
-        elif ocr and ocr_used < 20:
+        do_ocr = ocr and ocr_used < OCR_CAP and (
+            not t.strip()                                              # fully-image page
+            or (_PL_PAGE_HINT.search(t) and len(_DEC2.findall(t)) < 6)  # P&L-hint page, figures in an image
+        )
+        if do_ocr:
             words = _ocr_words(doc[p]); ocr_used += 1
+        elif t.strip():
+            words = doc[p].get_text("words")
         else:
             continue
         for isown, nums in _profit_rows(words):
@@ -417,12 +428,10 @@ def extract(pdf, cfg, docs, sym, qe):
     # For insurers WITH subsidiaries, the owners-consolidated value differs from standalone — require a
     # consolidated-page row so a look-alike standalone number can't be filled as con.
     a = anchor_series(rows, cprev_con, cyago_con, prefer_con=True, require_con=cfg["sub"])
-    if not a:
-        # Text layer yielded no anchor — retry with OCR on image pages (scanned filings, e.g. LIC).
-        rows_ocr = rows_from_pdf(pdf, cfg["ident"], ocr=True)
-        if rows_ocr:
-            rows = rows_ocr
-            a = anchor_series(rows, cprev_con, cyago_con, prefer_con=True, require_con=cfg["sub"])
+    # NOTE: an OCR second pass was tried for the scanned/broken-text filings (ICICIGI/STARHEALTH/LIC) and
+    # REVERTED — it added ~60s/insurer of CI OCR for no recovery: those filings either bury the figure on a
+    # non-PAT row, mangle the PAT digits into separate tokens, or (with-sub) never print the computed owners
+    # total. They stay MANUAL (see INSURER_EXTRACTION_PLAYBOOK.md). Keep the read pure-text and fast.
     if not a:
         return None
     out = {"cur_con": a["cur"], "yago_con": a["yago"], "div": a["div"], "cur_std": None}

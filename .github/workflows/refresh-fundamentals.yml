@@ -61,7 +61,7 @@ jobs:
         run: |
           VQ="${{ github.event.inputs.insurer_verify_quarter }}"
           if [ -n "$VQ" ]; then
-            pip install -q pymupdf curl_cffi rapidocr-onnxruntime onnxruntime numpy
+            pip install -q pymupdf curl_cffi
             echo "DIAGNOSTIC: verifying insurer reads for $VQ (no write)"
             python3 -X utf8 scripts/fetch_insurers.py --verify "$VQ"; exit 0
           fi
@@ -73,7 +73,7 @@ jobs:
           [ "$EV" = "schedule" ] && [ "$(date -u +%H)" = "15" ] && RUN=1
           [ "$EV" = "repository_dispatch" ] && [ "$ACTION" = "insurer-refresh" ] && RUN=1
           if [ "$RUN" != "1" ]; then echo "Not an insurer-fill trigger ($EV/$ACTION) — skipping"; exit 0; fi
-          pip install -q pymupdf curl_cffi rapidocr-onnxruntime onnxruntime numpy
+          pip install -q pymupdf curl_cffi
           python3 -X utf8 scripts/fetch_insurers.py || echo "(insurer fill failed — keeping existing; insurers stay gapped this run)"
 
       # Backstop: any quarter that lands without a filing date (Screener backfills, integrated
