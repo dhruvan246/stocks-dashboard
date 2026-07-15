@@ -282,6 +282,11 @@ html[data-theme] table{ -webkit-overflow-scrolling:touch; }
     background:var(--surface) !important; box-shadow:var(--shadow);
   }
   html[data-theme] table.sw-cardify tbody tr:hover{ background:var(--surface) !important; }
+  /* cardify's display:block must NOT un-hide collapsed rows/cells: Tailwind
+   * .hidden has lower specificity than the tr/td rules above, so re-assert it.
+   * Keeps expand/detail rows (Saved Strategies etc.) collapsed until tapped. */
+  html[data-theme] table.sw-cardify .hidden,
+  html[data-theme] table.sw-cardify [hidden]{ display:none !important; }
   html[data-theme] table.sw-cardify tbody td,
   html[data-theme] table.sw-cardify tbody th{
     display:flex; align-items:center; justify-content:space-between; gap:14px;
