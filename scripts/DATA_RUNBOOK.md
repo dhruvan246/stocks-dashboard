@@ -894,3 +894,9 @@ only through SECURITY DEFINER RPCs; daily GitHub backups = recovery). **Schema: 
 - `sw_kv_ok()` is the key whitelist — adding a new kv doc = add the key there + re-run the SQL file.
 - Until the SQL is deployed every feature silently runs browser-local (by design); analytics shows "no visits yet".
 - log-picks CI exits 1 only on "LogPicks error" (a real logging failure), not on partial anything.
+- **⚠️ Postgres function gotcha (cost 2 deploy cycles 2026-07-16):** RPC parameter names must match what
+  the site sends (`{"page":…}`, `{"k":…}`), but a plpgsql function whose parameter shares a TABLE column
+  name breaks its own DML — bare refs are 42702-ambiguous, and `#variable_conflict use_variable` then
+  hijacks `ON CONFLICT (k)` targets (42P10). Fix pattern (used by sw_kv_set / sw_pv_hit): write such
+  upsert RPCs as **LANGUAGE SQL** — there columns win over parameters, and `fnname.param` pins the
+  parameter side. plpgsql is fine when no param name collides with a column (sw_picks_set: day_in/sid).
