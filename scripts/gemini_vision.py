@@ -14,9 +14,11 @@ Public: read_insurer(company, cur_label, yago_label, pngs, with_subsidiary)
     -> {"ok","company_matches","has_subsidiary","cur":{"con","std"},"yago":{"con","std"},"note"} | None
        (all PAT in Rs CRORE, owner-attributable for con)
 """
-import os, json, base64, urllib.request
+import os, json, base64, urllib.request, urllib.error, time, re
 
 _MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
+_PACE = {"last": 0.0}          # min spacing between calls to stay under the free-tier per-minute limit
+_MIN_INTERVAL = 5.0
 _URL = "https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent?key=%s"
 
 _SCHEMA = {
@@ -78,15 +80,36 @@ def read_insurer(company, cur_label, yago_label, pngs, with_subsidiary=True):
         "generationConfig": {"temperature": 0, "response_mime_type": "application/json",
                              "response_schema": _SCHEMA},
     }
-    req = urllib.request.Request(_URL % (_MODEL, key), data=json.dumps(body).encode(),
-                                 headers={"Content-Type": "application/json"}, method="POST")
-    try:
-        raw = urllib.request.urlopen(req, timeout=90).read()
-        resp = json.loads(raw)
-        txt = resp["candidates"][0]["content"]["parts"][0]["text"]
-        d = json.loads(txt)
-    except Exception as ex:
-        print("    gemini err:", str(ex)[:110])
+    data = json.dumps(body).encode()
+    d = None
+    for attempt in range(4):                     # retry 429s (free-tier per-minute limit) with backoff
+        wait = _MIN_INTERVAL - (time.time() - _PACE["last"])   # pace: keep calls >= _MIN_INTERVAL apart
+        if wait > 0:
+            time.sleep(wait)
+        _PACE["last"] = time.time()
+        req = urllib.request.Request(_URL % (_MODEL, key), data=data,
+                                     headers={"Content-Type": "application/json"}, method="POST")
+        try:
+            raw = urllib.request.urlopen(req, timeout=90).read()
+            resp = json.loads(raw)
+            txt = resp["candidates"][0]["content"]["parts"][0]["text"]
+            d = json.loads(txt)
+            break
+        except urllib.error.HTTPError as ex:
+            if ex.code == 429 and attempt < 3:
+                delay = 20 * (attempt + 1)
+                try:                             # honour the API's suggested retryDelay if present
+                    m = re.search(r'"retryDelay":\s*"(\d+)s"', ex.read().decode("utf-8", "replace"))
+                    if m:
+                        delay = max(delay, int(m.group(1)) + 2)
+                except Exception:
+                    pass
+                print("    gemini 429 — backing off %ds (try %d/3)" % (delay, attempt + 1))
+                time.sleep(delay); continue
+            print("    gemini err:", ("HTTP %d" % ex.code)); return None
+        except Exception as ex:
+            print("    gemini err:", str(ex)[:110]); return None
+    if d is None:
         return None
     return {"ok": bool(d.get("ok")), "company_matches": bool(d.get("company_matches")),
             "has_subsidiary": bool(d.get("has_subsidiary")),

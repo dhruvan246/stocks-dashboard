@@ -577,8 +577,9 @@ def process(sym, targets, o, docs, src, verify=False):
                 picked = (annd, r); break
         if not picked and seen:
             # FREE Gemini-vision fallback for the text-resistant insurers (scanned / computed-owners).
-            # Only runs when text failed; anchor-verified. Try the likeliest results filings.
-            for annd, pdf in seen[:3]:
+            # Only runs when text failed; anchor-verified. Try the 2 likeliest results filings (paced +
+            # 429-backed-off inside gemini_vision to respect the free-tier per-minute limit).
+            for annd, pdf in seen[:2]:
                 r = gemini_extract(pdf, cfg, docs, sym, qe)
                 if r:
                     picked = (annd, r); break
