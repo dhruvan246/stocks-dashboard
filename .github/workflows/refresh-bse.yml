@@ -36,7 +36,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install deps
-        run: pip install -q pymupdf rapidocr-onnxruntime onnxruntime numpy
+        run: pip install -q pymupdf rapidocr-onnxruntime onnxruntime numpy anthropic
 
       - name: Refresh BSE-only universe weekly (sector top-up)
         run: |
@@ -48,7 +48,11 @@ jobs:
       - name: Append today's BSE closes (bhavcopy)
         run: python3 -X utf8 scripts/fetch_bse_bhav.py || echo "(bhavcopy append failed — keeping existing)"
 
-      - name: OCR quarterly numbers (bounded, resumable)
+      - name: OCR + vision quarterly numbers (bounded, resumable)
+        env:
+          # Optional: when set, scanned filings OCR can't read are filled via the Anthropic vision API
+          # (a few cents per company). Unset → grind stays OCR-only and those rows show "filing PDF only".
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python3 -X utf8 scripts/fetch_bse_fund.py --budget ${{ github.event.inputs.fund_budget || '150' }} --min-mcap 0 --months 5 --max-minutes 75 || echo "(fund grind failed — keeping existing)"
 
       - name: Rebuild BSE results payload

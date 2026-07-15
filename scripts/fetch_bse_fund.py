@@ -168,7 +168,43 @@ def extract(op, code, name, months, deadline=None):
             # keep the most recent filing per quarter-end
             if qe not in res or anni >= res[qe].get("ann", 0):
                 res[qe] = rec
+    # VISION FALLBACK: OCR found nothing anchored → render the P&L pages and ask the vision API (CI has
+    # no Claude, so this is what fills scanned filings unattended). No-op when ANTHROPIC_API_KEY is unset.
+    if not res and (deadline is None or time.time() < deadline):
+        try:
+            import bse_vision_api
+            pngs = _render_pl_pngs(op, code)
+            if pngs:
+                v = bse_vision_api.vision_extract(name, pngs)
+                if v and v.get("ok"):
+                    basis = v.get("basis", "S")
+                    for qe, key in ((20260630, "jun2026"), (20250630, "jun2025")):
+                        d = v.get(key) or {}
+                        if d.get("pat") is not None or d.get("rev") is not None:
+                            rec = {"pat": (round(float(d["pat"]), 2) if d.get("pat") is not None else None),
+                                   "ann": (20260715 if qe == 20260630 else 0), "basis": basis, "src": "vision"}
+                            if d.get("rev") is not None: rec["rev"] = round(float(d["rev"]), 2)
+                            res[qe] = rec
+        except Exception as ex:
+            print("    vision fallback err:", str(ex)[:70])
     return res
+
+def _render_pl_pngs(op, code):
+    """Render the P&L-bearing pages of a scrip's latest result filing to PNGs (for the vision fallback)."""
+    import bse_render
+    pngs = []
+    for annd, att, hd in scrip_announcements(op, code, 5)[:1]:
+        raw = fetch_pdf(op, att)
+        if not raw: continue
+        try: doc = fitz.open(stream=raw, filetype="pdf")
+        except Exception: continue
+        for pi in range(min(len(doc), 8)):
+            txt = doc[pi].get_text()
+            if txt.strip() and not bse_render.PL_HINT.search(txt): continue
+            pngs.append(doc[pi].get_pixmap(dpi=200).tobytes("png"))
+            if len(pngs) >= 4: break
+        if pngs: break
+    return pngs
 
 def main():
     budget = int(sys.argv[sys.argv.index("--budget") + 1]) if "--budget" in sys.argv else 60

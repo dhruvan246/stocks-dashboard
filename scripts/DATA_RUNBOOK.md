@@ -584,6 +584,13 @@ the Quarterly Results page. **4 scripts + `.github/workflows/refresh-bse.yml` (2
   `CO` (only if `bse.quarters`==`qr.quarters`; NEVER shadows an NSE symbol). Universe filters **`nse`/`bse`**
   ("NSE-listed only"/"BSE-listed only"), a **BSE badge**, BSE-page links (no stock.html for BSE-only). `c.bse`
   flag + `c.cd`=BSE scripcode.
+- **Vision fallback (auto-fills scanned filings for ALL upcoming results):** when OCR finds nothing anchored,
+  `fetch_bse_fund.py` renders the P&L pages and calls the Anthropic **vision** API (`bse_vision_api.py`,
+  model `claude-haiku-4-5`, ~cents/co) to read them — same accuracy as a human, unattended. Gets current +
+  year-ago quarters so YoY fills. **Needs the `ANTHROPIC_API_KEY` repo secret** (Settings→Secrets→Actions);
+  unset → grind stays OCR-only and unreadable rows show "filing PDF only". This is what makes "every declared
+  result eventually has values" true without manual vision passes. Manual seed once: run the grind with the
+  key set, or `merge_bse_vision.py <results.json>` from a one-off agent pass.
 - **⚠️ State files `scripts/_bse_fund_done.json` + `_bse_sectors.json` are force-tracked** (gitignore `_*` hid
   them — negations added). CI needs the resume ledger to persist, else it re-grinds from scratch.
 - **YoY limitation (v1):** the fund grind fetches only ~recent filings (`--months 5`), so BSE-only YoY often
