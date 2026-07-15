@@ -62,11 +62,26 @@ def render_pdf_pages(raw):
         if len(out) >= 4: break
     return out
 
+def enrich_scrips(limit):
+    """BSE-only companies we already cover but that are MISSING the year-ago quarter (filled by the
+    fast OCR pass, which only grabbed the current quarter) — re-render so vision can add YoY/QoQ."""
+    bf = json.load(open(os.path.join(D, "bse_fundamentals.json"), encoding="utf-8"))["px"]
+    univ = {str(r[0]): r for r in json.load(open(os.path.join(D, "bse_universe.json"), encoding="utf-8"))["rows"]}
+    out = []
+    for scrip, qs in bf.items():
+        if "20260630" in qs and "20250630" not in qs and scrip in univ:   # has current, missing year-ago
+            r = univ[scrip]; out.append((scrip, (r[1].upper(), r[2], r[6])))
+    out.sort(key=lambda kv: -(kv[1][2] or 0))
+    return out[:limit]
+
 def main():
     limit = int(sys.argv[sys.argv.index("--limit") + 1]) if "--limit" in sys.argv else 25
     outdir = sys.argv[sys.argv.index("--outdir") + 1] if "--outdir" in sys.argv else os.path.join(os.environ.get("TEMP", "/tmp"), "bse_pending")
     os.makedirs(outdir, exist_ok=True)
-    qe, nse, bse = find_pending(limit)
+    if "--enrich" in sys.argv:                       # re-render already-covered names missing year-ago
+        qe, nse, bse = 20260630, [], enrich_scrips(limit)
+    else:
+        qe, nse, bse = find_pending(limit)
     print("target quarter %d — pending: %d NSE, %d BSE-only" % (qe, len(nse), len(bse)))
     manifest = []
 
