@@ -259,6 +259,7 @@ async function initUI(){
   try{ const raw=JSON.parse(localStorage.getItem('bt_load')||'null'); if(raw){ localStorage.removeItem('bt_load'); localStorage.removeItem('bt_loadrun');
     const c = (raw && raw.cfg) ? raw.cfg : raw; const saved = (raw && raw.cfg) ? raw.saved : null;   // {cfg, saved} (new) or bare cfg (back-compat)
     const resultOnly = !!(raw && raw.view==='result');   // opened via the 👁 on the Strategy page → show ONLY the full result, no config form
+    const runNow = !!(raw && raw.view==='run');           // "Run Backtest" from the Strategy page → auto-run AND record to History (nests under the strategy)
     await applyCfg(c);
     // "Run" mode: primary button → ▶ Run Backtest, heading reflects it, create-hint hidden. We do NOT auto-run.
     const rb=$('run'); rb.textContent='▶ Run Backtest'; rb.className='bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-5 py-2 text-sm font-semibold shadow-sm'; rb.onclick=run;
@@ -271,6 +272,7 @@ async function initUI(){
       if(h1) h1.textContent='📊 Backtest result';
       run();
     }
+    else if(runNow){ run(); }   // auto-run AND save to History (NOT view-only) — the run then nests under its strategy
     // Show the SAVED result instantly (no recompute). The full equity curve / rebalance log / picks aren't
     // stored, so they appear only when the user clicks ▶ Run Backtest.
     else if(saved && saved.m && saved.m.cagr!=null) renderSaved(saved, c);

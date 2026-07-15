@@ -16,6 +16,9 @@
   .pos{color:#15803d}.neg{color:#b91c1c}
   .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
   .pcell{background:#f8fafc;border-radius:.6rem;padding:.55rem .8rem}
+  .lbl{display:block;font-size:11px;font-weight:600;color:#64748b;margin-bottom:4px}
+  .inp{width:100%;padding:.5rem .6rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:14px;background:#fff;color:#0f172a}
+  .inp:focus{outline:none;border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.15)}
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
@@ -56,6 +59,7 @@ const SORTL = { changePercent: 'Change % desc', rsi: 'RSI', d52: '% from 52w Hig
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 let HIST = [];
+let SF_END = '';   // latest data date (tiny sf_meta.json) → default End date for the run form
 // --- identity + backtest lookup: IDENTICAL semantics to saved-strategies.html so a strategy
 //     resolves to exactly the same set of runs there and here. ---
 function identityKey(c) {
@@ -87,28 +91,79 @@ function backtestsFor(savedVars) {
   return [...byWin.values()].sort((a, b) => (a.cfg.start || '').localeCompare(b.cfg.start || '') || (a.cfg.method || '').localeCompare(b.cfg.method || ''));
 }
 
+// Universe dropdown options — index constituents + daily-turnover buckets + F&O (mirrors the builder).
+function uniOptionsHTML() {
+  const indices = ['Nifty 50', 'Nifty 100', 'Nifty 200', 'Nifty 500', 'Nifty Midcap 150', 'Nifty Smallcap 250'];
+  let h = `<option value="">All stocks</option>`;
+  h += `<optgroup label="Index constituents">` + indices.map(k => `<option value="${k}">${k}</option>`).join('') + `</optgroup>`;
+  h += `<optgroup label="Min daily turnover">` + (typeof TURN_OPTS !== 'undefined' ? TURN_OPTS : [['500', '≥₹5 Cr']]).map(([v, l]) => `<option value="mcap:${v}">${l}</option>`).join('') + `</optgroup>`;
+  h += `<optgroup label="Derivatives"><option value="__FNO__">F&O stocks</option></optgroup>`;
+  return h;
+}
+function uniValue(c) { return c.indexName ? c.indexName : (c.mcapFloor ? 'mcap:' + c.mcapFloor : ''); }
+const sortOptionsHTML = () => (typeof FIELDS !== 'undefined' ? FIELDS : []).map(f => `<option value="${f.v}">${esc(f.l)}</option>`).join('');
+const sel = (id, opts, val) => `<select id="${id}" class="inp">${opts}</select>`;   // value set after insert
+
+// TOP panel: an editable "Run a new backtest" form, pre-filled from the saved strategy (Trendlyne-style).
+// Market data isn't loaded here — Run hands the (possibly edited) config to the fast builder, which loads
+// data only when it runs, records the result to History, and it then nests back under this strategy's Run history.
 function paramsCard(c) {
-  const row = (label, val) => `<div class="pcell"><div class="text-[11px] text-slate-500">${label}</div><div class="text-sm font-semibold text-slate-800">${val}</div></div>`;
-  const sortTxt = (SORTL[c.sortBy] || c.sortBy) + (c.dir === 'high' ? ' (prefer high)' : ' (prefer low)');
-  const meth = c.method === 'reset' ? 'Reset to equal-weight' : 'Hold winners · replace exits';
-  const earn = c.earnBasis === 'std' ? 'Standalone' : 'Consolidated';
-  return `<div class="card p-5 mb-5">
-    <div class="flex items-center justify-between mb-3">
-      <div class="text-xs font-semibold uppercase tracking-wide text-slate-500">Parameters</div>
-      <button id="runBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2 text-sm font-semibold shadow-sm transition">▶ Run / new backtest</button>
+  const filt = filterExpr(c) || 'none';
+  return `<div class="card p-5 mb-6">
+    <div class="flex items-center justify-between flex-wrap gap-2 mb-4">
+      <div class="text-base font-bold text-slate-900">Run a new backtest</div>
+      <span class="text-[11px] font-semibold text-slate-500 bg-slate-100 rounded-full px-2.5 py-1">pre-filled from this strategy — tweak &amp; run</span>
     </div>
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5">
-      ${row('Universe', esc(universeLabel(c)))}
-      ${row('Rebalance', FREQ[c.freq] || c.freq + 'mo')}
-      ${row('Lookback', (c.lookback || 1) + ' month' + ((c.lookback || 1) > 1 ? 's' : ''))}
-      ${row('Holdings', 'Top ' + c.topN)}
-      ${row('Sort by', esc(sortTxt))}
-      ${row('Earnings basis', earn)}
-      ${row('Capital', fmtINR(c.capital || 100000))}
-      ${row('Rebalance method', meth)}
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
+      <div><label class="lbl">Rebalance frequency</label><select id="fFreq" class="inp"><option value="1">Monthly</option><option value="3">Quarterly</option><option value="6">Half-yearly</option><option value="12">Yearly</option></select></div>
+      <div><label class="lbl">Start date</label><input id="fFrom" type="date" class="inp"></div>
+      <div><label class="lbl">End date</label><input id="fTo" type="date" class="inp"></div>
     </div>
-    <div class="mt-3 text-[12px] text-slate-600"><span class="font-semibold text-slate-500">Filters:</span> <span class="mono">${esc(filterExpr(c) || 'none')}</span></div>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
+      <div><label class="lbl">Universe</label><select id="fUni" class="inp">${uniOptionsHTML()}</select></div>
+      <div><label class="lbl">Sort by</label><select id="fSort" class="inp">${sortOptionsHTML()}</select></div>
+      <div><label class="lbl">Direction</label><select id="fDir" class="inp"><option value="high">Prefer High</option><option value="low">Prefer Low</option></select></div>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+      <div><label class="lbl">Holdings (top-N)</label><input id="fTopN" type="number" min="1" max="1000" class="inp"></div>
+      <div><label class="lbl">Capital (₹)</label><input id="fCap" type="number" class="inp"></div>
+      <div><label class="lbl">Rebalance method</label><select id="fMethod" class="inp"><option value="reset">Reset to equal-weight</option><option value="hold">Hold winners · replace exits</option></select></div>
+      <div><label class="lbl">Earnings basis</label><select id="fEarn" class="inp"><option value="con">Consolidated</option><option value="std">Standalone</option></select></div>
+    </div>
+    <div class="flex items-center justify-between flex-wrap gap-2 border-t border-slate-100 pt-3">
+      <div class="text-[12px] text-slate-600 min-w-0"><span class="font-semibold text-slate-500">Filters:</span> <span class="mono break-words">${esc(filt)}</span> <a href="./stock-backtest.html" id="editFilters" class="text-indigo-600 hover:underline whitespace-nowrap">edit filters →</a></div>
+      <button id="runBtn" class="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-5 py-2.5 text-sm font-semibold shadow-sm transition shrink-0">▶ Run Backtest</button>
+    </div>
+    <div id="runNote" class="text-[11px] text-slate-400 mt-2">Market data loads only when you run.</div>
   </div>`;
+}
+// Fill the form controls from the strategy config (called after the HTML is inserted).
+function fillForm(c) {
+  $('fFreq').value = c.freq || 1;
+  $('fFrom').value = c.start || '2020-03-31';
+  $('fTo').value = (SF_END || c.end || '');
+  $('fUni').value = uniValue(c);
+  $('fSort').value = c.sortBy; if ($('fSort').value !== c.sortBy) { const o = document.createElement('option'); o.value = c.sortBy; o.textContent = SORTL[c.sortBy] || c.sortBy; $('fSort').appendChild(o); $('fSort').value = c.sortBy; }
+  $('fDir').value = c.dir || 'high';
+  $('fTopN').value = c.topN || 5;
+  $('fCap').value = c.capital || 100000;
+  $('fMethod').value = c.method || 'reset';
+  $('fEarn').value = c.earnBasis || 'con';
+}
+// Read the (edited) form back into a full config, PRESERVING the strategy's filters + lookback.
+function readForm(base) {
+  const u = $('fUni').value || '', isCap = u.slice(0, 5) === 'mcap:';
+  const cfg = {
+    ...base,
+    start: $('fFrom').value, end: $('fTo').value,
+    freq: +$('fFreq').value, indexName: isCap ? '' : u, mcapFloor: isCap ? +u.slice(5) : 0,
+    sortBy: $('fSort').value, dir: $('fDir').value,
+    topN: Math.max(1, +$('fTopN').value || 5), capital: +$('fCap').value || 100000,
+    method: $('fMethod').value, earnBasis: $('fEarn').value,
+    filters: (base.filters || []).slice(), mode: 'sf'
+  };
+  if (base.lookback != null) cfg.lookback = base.lookback;   // keep identity (see stock-backtest CUR_LOOKBACK)
+  return cfg;
 }
 
 function historyTable(list) {
@@ -146,12 +201,18 @@ function renderStrategy(strat, list) {
   $('title').textContent = strat.name || 'Strategy';
   $('subtitle').innerHTML = `${esc(universeLabel(c))} · ${FREQ[c.freq] || c.freq + 'mo'} · Top ${c.topN} · ${esc(SORTL[c.sortBy] || c.sortBy)} ${c.dir === 'high' ? '↓' : '↑'}`;
   $('body').innerHTML = paramsCard(c) + historyTable(list);
+  fillForm(c);   // populate the editable form from the strategy config
 
-  // Top button → open the strategy in the full builder/engine (normal mode: tweak dates & run)
+  // Run Backtest → hand the (edited) config to the fast builder, which auto-runs, records the result to
+  // History, and it then nests back here under Run history. view:'run' = auto-run AND save (not view-only).
   $('runBtn').onclick = () => {
-    localStorage.setItem('bt_load', JSON.stringify({ cfg: c, saved: null }));
+    const cfg = readForm(c);
+    if (!cfg.start || !cfg.end || cfg.start >= cfg.end) { $('runNote').innerHTML = '<span class="neg">Pick a valid date range.</span>'; return; }
+    localStorage.setItem('bt_load', JSON.stringify({ cfg, saved: null, view: 'run' }));
     location.href = './stock-backtest.html';
   };
+  // "edit filters →" carries the current form state into the full builder (filters are edited there)
+  const ef = $('editFilters'); if (ef) ef.onclick = (e) => { e.preventDefault(); localStorage.setItem('bt_load', JSON.stringify({ cfg: readForm(c), saved: null })); location.href = './stock-backtest.html'; };
   // Each eye → open the saved result. 'snapshot' mode renders the stored full result INSTANTLY
   // (no 17 MB load, no recompute); if no snapshot exists yet it falls back to a one-time recompute
   // that then caches the snapshot, so the next open is instant.
@@ -171,6 +232,7 @@ function renderNotFound() {
 (async function boot() {
   const params = new URLSearchParams(location.search);
   const id = params.get('id'), kParam = params.get('k');
+  try { SF_END = (await (await fetch('./sf_meta.json')).json()).end || ''; } catch (e) {}   // tiny; default End date
   if (window.btSync) {
     try { await btSync.pullStrategies(); } catch (e) {}
     try { HIST = await btSync.pull() || []; } catch (e) { HIST = []; }

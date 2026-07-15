@@ -40,7 +40,7 @@
     <h1 class="text-xl md:text-2xl font-bold text-slate-900">⭐ Saved Strategies</h1>
     <button id="clearAll" class="text-xs text-red-600 hover:underline font-semibold">Clear all</button>
   </div>
-  <p class="text-xs text-slate-500 mb-4">Strategies you saved from backtests. Each card shows its survivorship-free performance. Click <b>Today's Picks</b> for the live deployment basket, or <b>Backtest</b> to view its full saved result instantly. <a href="./stock-backtest.html" class="text-indigo-600 hover:underline">← back to Backtest</a></p>
+  <p class="text-xs text-slate-500 mb-4">Strategies you saved from backtests, ranked by survivorship-free CAGR. Click <b>🎯 Picks</b> for the live deployment basket, or <b>👁</b> (or the row) to open the strategy page — parameters to re-run &amp; its full run history. <a href="./stock-backtest.html" class="text-indigo-600 hover:underline">← back to Backtest</a></p>
   <div class="flex items-center gap-1.5 mb-3 flex-wrap">
     <button id="tabBest" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">🏆 Best return</button>
     <button id="tabNew" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">🆕 New</button>
@@ -291,14 +291,13 @@ function render() {
     }
   }
   $('list').className = 'card overflow-x-auto';
-  const colspan = OWNER ? 6 : 5;
   const header = `<thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
     <th class="text-left font-semibold px-4 py-2.5">Strategy</th>
     <th class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">${VIEW === 'custom' ? (CUSTOM_WIN ? `Return · ${CUSTOM_WIN.start} → ${CUSTOM_WIN.end}${CUSTOM_WIN.topN != null ? ` · top-${CUSTOM_WIN.topN}` : ''} ▾` : 'Return · window ▾') : `CAGR${VIEW === 'best' ? ' ▾' : ''}`}</th>
     <th class="text-center font-semibold px-3 py-2.5 whitespace-nowrap">Backtests</th>
+    <th class="text-center font-semibold px-3 py-2.5 whitespace-nowrap">Today's Picks</th>
     <th class="px-2 py-2.5"></th>
     ${OWNER ? '<th class="px-2 py-2.5"></th>' : ''}
-    <th class="px-2 py-2.5"></th>
   </tr></thead>`;
   const body = rows.map((g, gi) => {
     const it = g.rep, c = it.cfg;
@@ -314,7 +313,7 @@ function render() {
            <span class="block text-[10px] text-slate-400 mt-0.5">CAGR ${pct(cr.cagr)} · DD -${cr.maxDD.toFixed(1)}%${cr.topN != null ? ` · top-${cr.topN}` : ''}</span>`
         : (CUSTOM_WIN ? '<span class="text-slate-300 text-xs">no data</span>' : '<span class="text-slate-400 text-xs">not computed</span>');
     }
-    return `<tr class="border-b border-slate-100 hover:bg-slate-50 cursor-pointer" data-toggle="r${gi}">
+    return `<tr class="border-b border-slate-100 hover:bg-slate-50 cursor-pointer" data-openrow="${esc(it.id)}" title="Open strategy page">
       <td class="px-4 py-3">
         <div class="flex items-center gap-3">
           <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">📈</span>
@@ -325,26 +324,22 @@ function render() {
         </div>
       </td>
       <td class="px-3 py-3 text-right text-sm whitespace-nowrap">${cagrCell}</td>
-      <td class="px-3 py-3 text-center"><button class="text-slate-400 hover:text-indigo-600 text-base leading-none" data-open="${esc(it.id)}" title="Open ${n} backtest${n > 1 ? 's' : ''}">👁</button></td>
+      <td class="px-3 py-3 text-center"><button class="text-slate-400 hover:text-indigo-600 text-base leading-none" data-open="${esc(it.id)}" title="Open strategy page — parameters + run history (${n} backtest${n > 1 ? 's' : ''})">👁</button></td>
+      <td class="px-3 py-3 text-center"><button class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-700 transition" data-picks="${esc(it.id)}" title="Today's live picks basket for this strategy">🎯 Picks</button></td>
       <td class="px-2 py-3 text-center"><button class="text-base leading-none transition" data-favtoggle="${esc(identityKey(c))}" title="${favs.has(identityKey(c)) ? 'Remove from favourites' : 'Add to favourites'}">${favs.has(identityKey(c)) ? '⭐' : '☆'}</button></td>
       ${OWNER ? `<td class="px-2 py-3 text-center"><button class="text-slate-300 hover:text-red-500 text-sm" data-delgroup="${esc(identityKey(c))}" title="Delete strategy">🗑️</button></td>` : ''}
-      <td class="px-2 py-3 text-right"><span data-arrow class="text-slate-400 select-none text-xs">▸</span></td>
-    </tr>
-    <tr class="hidden" data-detail="r${gi}"><td colspan="${colspan}" class="px-4 pb-4 bg-slate-50/60">
-      <div class="text-[11px] text-slate-500 mb-2 mono break-words">Filters: ${esc(expr)} &nbsp;·&nbsp; Sort: ${SORTL[c.sortBy] || c.sortBy} ${c.dir === 'high' ? 'desc' : 'asc'}</div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">${list.map(b => detailCard(b)).join('')}</div>
-    </td></tr>`;
+    </tr>`;
   }).join('');
   $('list').innerHTML = `<table class="w-full text-sm border-collapse">${header}<tbody>${body}</tbody></table>`;
   // wiring
   $('list').querySelectorAll('[data-favtoggle]').forEach(b => b.onclick = (e) => {
     e.stopPropagation(); toggleFav(b.dataset.favtoggle);
   });
-  $('list').querySelectorAll('[data-toggle]').forEach(b => b.onclick = (e) => {
-    if (e.target.closest('[data-delgroup]') || e.target.closest('[data-favtoggle]')) return;
-    const box = $('list').querySelector('[data-detail="' + b.dataset.toggle + '"]');
-    const arrow = b.querySelector('[data-arrow]'); const hidden = box.classList.toggle('hidden');
-    if (arrow) arrow.textContent = hidden ? '▸' : '▾';
+  // Row click opens the strategy page (parameters + run history). Inner buttons (👁, 🎯, ☆, 🗑)
+  // handle their own clicks — don't also navigate when one of them is pressed.
+  $('list').querySelectorAll('[data-openrow]').forEach(tr => tr.onclick = (e) => {
+    if (e.target.closest('button')) return;
+    location.href = './strategy-backtest.html?id=' + encodeURIComponent(tr.dataset.openrow);
   });
   $('list').querySelectorAll('[data-delgroup]').forEach(b => b.onclick = (e) => {
     e.stopPropagation(); const k = b.dataset.delgroup;
@@ -704,7 +699,7 @@ $('mAlsoToggle').onclick = () => { const a = $('mAlso'); a.classList.toggle('hid
   if (!strategies().length) { $('status').textContent = ''; return; }
   // Don't eager-load the 17 MB + 90 MB engine — the list + 👁 results work from saved data alone.
   // Market data loads on demand only when you open Today's Picks (ensureEngine), so first paint is instant.
-  $('status').textContent = 'Click a strategy to see its backtests. Today’s Picks loads live data on demand.';
+  $('status').textContent = 'Click a strategy (or 👁) to open its page. 🎯 Picks loads live data on demand.';
 })();
 </script>
 </body>
