@@ -17,8 +17,21 @@ VFILLS = os.path.join(HERE, "..", "docs", "vision_fills.json")   # NSE overlay t
 # nominal ann dates (filing months): current quarter shows this; year-ago ann unused for YoY
 ANN = {"20260630": 20260715, "20260331": 20260615, "20250630": 0}
 
-def put(px, scrip, qe, rec, basis):
-    d = {"pat": rec.get("pat"), "ann": ANN.get(qe, 0), "basis": basis, "src": "vision"}
+def feed_ann():
+    """Real filing date (YYYYMMDD int) per ticker from the results feed — so the result-day price
+    reaction computes off the actual announcement day, not a hardcoded date."""
+    try:
+        rows = json.load(open(os.path.join(HERE, "..", "docs", "results_feed.json"), encoding="utf-8"))["rows"]
+    except Exception:
+        return {}
+    out = {}
+    for r in rows:
+        d = int(r[2][:10].replace("-", ""))
+        if r[0] not in out or d > out[r[0]]: out[r[0]] = d
+    return out
+
+def put(px, scrip, qe, rec, basis, ann=None):
+    d = {"pat": rec.get("pat"), "ann": ann or ANN.get(qe, 0), "basis": basis, "src": "vision"}
     if rec.get("rev") is not None: d["rev"] = round(float(rec["rev"]), 2)
     if d["pat"] is not None: d["pat"] = round(float(d["pat"]), 2)
     px.setdefault(scrip, {})[qe] = d
@@ -30,6 +43,7 @@ def main():
     fails = json.load(open(FAILS)) if os.path.exists(FAILS) else {}
     done = set(json.load(open(DONE))) if os.path.exists(DONE) else set()
     vfills = json.load(open(VFILLS, encoding="utf-8")) if os.path.exists(VFILLS) else {}
+    fann = feed_ann()
     nb = nn = 0
     for it in items:
         if not it.get("ok"): continue
@@ -48,7 +62,8 @@ def main():
             print("  ✓ NSE %-11s Jun26 rev=%s pat=%s (overlay)" % (sym, j26.get("rev"), j26.get("pat")))
         else:
             scrip = str(it["scrip"])
-            put(px, scrip, "20260630", j26, basis)
+            ann = fann.get(sym)                       # real filing date → reaction computes
+            put(px, scrip, "20260630", j26, basis, ann=ann)
             if j25.get("pat") is not None or j25.get("rev") is not None:
                 put(px, scrip, "20250630", j25, basis)
             fails.pop(scrip, None); done.add(scrip); nb += 1
