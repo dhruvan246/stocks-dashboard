@@ -260,8 +260,15 @@ def _ocr_words(page):
     return words
 
 
+def _isnum(w):
+    return bool(_NUM.match(w[4].replace(",", "")))
+
+
 def _profit_rows(words):
-    """Group words into lines; return [(isOwnersRow, [numbers left->right]), ...] for PAT-ish rows."""
+    """Group words into lines; return [(isOwnersRow, [numbers left->right]), ...] for PAT-ish rows.
+    When a P&L label row carries too few numbers on its own baseline (some filings put the figure cells
+    on a slightly different baseline than the label), BAND-MERGE the numeric cells within +/-8pt to the
+    right — recovers filings where a strict same-line group misses the columns (ICICIGI/GODIGIT)."""
     if not words:
         return []
     ws = sorted(words, key=lambda w: (round(w[1]), w[0]))
@@ -274,18 +281,24 @@ def _profit_rows(words):
         cy = w[1]
     if cur:
         lines.append(cur)
+    numw = [w for w in words if _isnum(w)]        # all numeric cells, for the band-merge fallback
     out = []
     for ln in lines:
         cells = sorted(ln, key=lambda w: w[0])
         label = " ".join(w[4] for w in cells).lower()
         if _BAD_ROW.search(label):
             continue
-        isown = bool(_OWN.search(label))
-        ispft = bool(_PAT_ROW.search(label))
-        if not (isown or ispft):
+        if not (_OWN.search(label) or _PAT_ROW.search(label)):
             continue
-        nums = [_tv(w[4]) for w in cells if _NUM.match(w[4].replace(",", ""))]
+        isown = bool(_OWN.search(label))
+        nums = [_tv(w[4]) for w in cells if _isnum(w)]
         nums = [v for v in nums if v is not None]
+        if len(nums) < 3:
+            ly = sum(w[1] for w in ln) / len(ln)              # label baseline
+            lx = max((w[2] for w in cells if not _isnum(w)), default=cells[0][0])   # right edge of the TEXT label
+            band = sorted([w for w in numw if abs((w[1] + w[3]) / 2 - ly) <= 8 and w[0] > lx - 2],
+                          key=lambda w: w[0])
+            nums = [v for v in (_tv(w[4]) for w in band) if v is not None]
         if len(nums) < 3:
             continue
         out.append((isown, nums))
@@ -334,7 +347,10 @@ def double_anchor(nums, cprev, cyago):
     positions. So we scan for any adjacent pair matching (prev, yago) under one unit scale and take the
     value immediately to its left as the current quarter. Requires BOTH neighbours to match — a
     mis-grouped/garbled row essentially cannot pass. Returns None if nothing anchors."""
-    if cprev is None or cyago is None or abs(cprev) < 3 or abs(cyago) < 3:
+    # Need both neighbours known and at least ONE of them substantial (a strong anchor) — this still
+    # matches BOTH columns, so a near-zero year-ago (e.g. STARHEALTH Mar-25 = 0.51cr) doesn't block a
+    # fill when the preceding quarter is a distinctive value.
+    if cprev is None or cyago is None or (abs(cprev) < 3 and abs(cyago) < 3):
         return None
 
     def close(a, b):
