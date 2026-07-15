@@ -303,7 +303,13 @@ html[data-theme] table{ -webkit-overflow-scrolling:touch; }
   html[data-theme] table.sw-cardify tbody td:not([data-label])::before,
   html[data-theme] table.sw-cardify tbody td[data-label=""]::before,
   html[data-theme] table.sw-cardify tbody th[data-label=""]::before{ content:none; }
-  html[data-theme] table.sw-cardify tbody td[colspan]{ justify-content:center; text-align:center !important; }
+  /* colspan cells hold complex content (expand/detail rows, nested grids, empty
+   * states, charts) — keep them normal full-width BLOCKS, never flex label/value
+   * rows, so the content inside flows and reflows on its own. */
+  html[data-theme] table.sw-cardify tbody td[colspan]{
+    display:block !important; width:100% !important;
+    text-align:left !important; padding:6px 2px !important;
+  }
   html[data-theme] table.sw-cardify tbody td[colspan]::before{ content:none; }
 }
 
