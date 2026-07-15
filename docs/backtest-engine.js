@@ -13,7 +13,6 @@ let SF = null, TURN = {}, SF_END_OFF = Infinity;
 const DATA_MODE = 'sf';                       // survivorship-free only
 const TURN_OPTS = [['100', '≥₹1 Cr'], ['500', '≥₹5 Cr'], ['2000', '≥₹20 Cr'], ['10000', '≥₹100 Cr']]; // daily turnover (₹ lacs)
 const FIELDS = [
-  { v: 'changePercent', l: 'Change % (lookback)' },
   { v: 'rsi', l: 'RSI(14)' },
   { v: 'd52', l: 'Distance from 52w High % (high 100, price 95 → 5; near-high = ≤ 10)' },
   { v: 'd52_low_pct', l: 'Distance from 52w Low % (% above the low)' },
@@ -24,6 +23,7 @@ const FIELDS = [
   { v: 'profitYoyPct', l: 'Net Profit Qtr Growth YoY % (point-in-time earnings)' },
   { v: 'profitBase', l: 'Net Profit Yr-ago Qtr ₹Cr (YoY base)' },
   // --- extended technical factors (close + turnover + Nifty derived) ---
+  { v: 'ret1m', l: 'Return — 1 month %' },
   { v: 'ret3m', l: 'Return — 3 month %' },
   { v: 'ret6m', l: 'Return — 6 month %' },
   { v: 'ret12m', l: 'Return — 12 month %' },
@@ -206,7 +206,7 @@ function computeTech(tkr, off, px) {
       const v5 = avg(7), v90 = avg(90); volSurge = v90 > 0 ? v5 / v90 : null; }
     if (s && s.dv) { const lo = off - 28; let i = idxLE(s.d, off), sum = 0, n = 0; for (let k = i; k >= 0 && s.d[k] >= lo; k--) { if (s.dv[k] > 0) { sum += s.dv[k]; n++; } } delivPct = n ? sum / n : null; } }
   return {
-    ret3m: r3, ret6m: r6, ret12m: r12,
+    ret1m: r1, ret3m: r3, ret6m: r6, ret12m: r12,
     rsNifty: (r6 != null && nr6 != null) ? r6 - nr6 : null,
     accel: (r1 != null && r1p != null) ? r1 - r1p : null,
     dma50: (s50 && px) ? (px / s50 - 1) * 100 : null,
@@ -218,7 +218,7 @@ function computeTech(tkr, off, px) {
   };
 }
 // extended factors are EXPENSIVE — only compute them when the strategy actually uses one
-const EXT_FIELDS = new Set(['ret3m','ret6m','ret12m','rsNifty','accel','dma50','dma200','rangePos','daysHigh','vol','riskMom','beta','mdd6','upPct','turnover','turnSurge','volSurge','delivPct','macd','stoch','bollB','composite']);
+const EXT_FIELDS = new Set(['ret1m','ret3m','ret6m','ret12m','rsNifty','accel','dma50','dma200','rangePos','daysHigh','vol','riskMom','beta','mdd6','upPct','turnover','turnSurge','volSurge','delivPct','macd','stoch','bollB','composite']);
 function needsTech(cfg) { return EXT_FIELDS.has(cfg.sortBy) || (cfg.filters || []).some(f => EXT_FIELDS.has(f.field)); }
 
 // ---- Fundamentals: point-in-time quarterly net profit (StockView's profitYoyPct/profitBase) ----
@@ -282,7 +282,7 @@ async function loadFund() {
 }
 
 function factorsAt(off, cfg) {
-  const lookOff = off - Math.round(cfg.lookback * 30.44);
+  const lookOff = off - 30;   // fixed 1-month window for r.chg (industry-momentum rank + legacy changePercent strategies)
   const members = cfg.indexName ? membersAsOf(cfg.indexName, isoOff(off)) : null;
   const useTech = needsTech(cfg);
   const useFund = needsFund(cfg); const fundDate = useFund ? dateIntOff(off) : 0; const basis = cfg.earnBasis || 'con';

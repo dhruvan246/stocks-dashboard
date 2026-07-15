@@ -65,8 +65,6 @@
       <div><label class="lbl">Universe</label><select id="cIndex" class="inp w-full"></select></div>
       <div><label class="lbl">Rebalance</label><select id="cFreq" class="inp w-full">
         <option value="1">Monthly</option><option value="3" selected>Quarterly</option><option value="6">Half-yearly</option><option value="12">Yearly</option></select></div>
-      <div><label class="lbl">Lookback (Change %)</label><select id="cLook" class="inp w-full">
-        <option value="1" selected>1 month</option><option value="3">3 months</option><option value="6">6 months</option><option value="12">12 months</option></select></div>
       <div><label class="lbl">Sort by</label><select id="cSort" class="inp w-full"></select></div>
       <div><label class="lbl">Direction</label><select id="cDir" class="inp w-full"><option value="high" selected>Prefer High</option><option value="low">Prefer Low</option></select></div>
       <div><label class="lbl">Earnings basis</label><select id="cEarn" class="inp w-full"><option value="con" selected>Consolidated</option><option value="std">Standalone</option></select></div>
@@ -103,7 +101,6 @@ let META={}, SERIES={}, IDXH={}, FNOH=[], START_TS=0, NIFTY={}, NIFTY500={};
 let SURV=null, SF=null, DATA_MODE='surv', TURN={}, SF_END_OFF=Infinity;
 const TURN_OPTS=[['100','≥₹1 Cr'],['500','≥₹5 Cr'],['2000','≥₹20 Cr'],['10000','≥₹100 Cr']]; // daily turnover (₹ lacs)
 const FIELDS=[
-  {v:'changePercent',l:'Change % (lookback)'},
   {v:'rsi',l:'RSI(14)'},
   {v:'d52',l:'Distance from 52w High % (high 100, price 95 → 5; near-high = ≤ 10)'},
   {v:'d52_low_pct',l:'Distance from 52w Low % (% above the low)'},
@@ -112,6 +109,7 @@ const FIELDS=[
   {v:'hist_mcap',l:'Historical Mcap (₹Cr, approx)'},
   {v:'profitYoyPct',l:'Net Profit Qtr Growth YoY % (point-in-time earnings)'},
   {v:'profitBase',l:'Net Profit Yr-ago Qtr ₹Cr (YoY base)'},
+  {v:'ret1m',l:'Return — 1 month %'},
   {v:'ret3m',l:'Return — 3 month %'},
   {v:'ret6m',l:'Return — 6 month %'},
   {v:'ret12m',l:'Return — 12 month %'},
@@ -342,7 +340,7 @@ function readCfg(){
   const u=$('cIndex').value||''; const isCap=u.slice(0,5)==='mcap:';
   return {
     start:$('cFrom').value, end:$('cTo').value, mcapFloor:isCap?+u.slice(5):0,
-    indexName:isCap?'':u, freq:+$('cFreq').value, lookback:+$('cLook').value,
+    indexName:isCap?'':u, freq:+$('cFreq').value,
     sortBy:$('cSort').value, dir:$('cDir').value, topN:Math.max(1,+$('cTopN').value||10),
     capital:+$('cCap').value||100000, method:$('cMethod').value, filters:readFilters(), mode:DATA_MODE,
     earnBasis:($('cEarn')&&$('cEarn').value)||'con'
@@ -354,7 +352,7 @@ async function applyCfg(c){
   // map saved {indexName, mcapFloor} onto the unified Universe value (index wins if both set)
   $('cFrom').value=c.start; $('cTo').value=(typeof SF!=='undefined'&&SF&&SF.end)?SF.end:c.end;   // TO always rolls to the latest available date
   $('cIndex').value = c.indexName ? c.indexName : (c.mcapFloor ? 'mcap:'+c.mcapFloor : '');
-  $('cFreq').value=c.freq; $('cLook').value=c.lookback; $('cSort').value=c.sortBy; $('cDir').value=c.dir;
+  $('cFreq').value=c.freq; $('cSort').value=c.sortBy; $('cDir').value=c.dir;
   $('cTopN').value=c.topN; $('cCap').value=c.capital; $('cMethod').value=c.method;
   if($('cEarn')) $('cEarn').value=c.earnBasis||'con';
   document.querySelectorAll('.fRow').forEach(r=>r.remove());
@@ -532,7 +530,7 @@ function computeTech(tkr, off, px){
     if(s&&s.v){ const avg=(days)=>{ const lo=off-days; let i=idxLE(s.d,off),sum=0,n=0; for(let k=i;k>=0&&s.d[k]>=lo;k--){ sum+=s.v[k]; n++; } return n?sum/n:0; };
       const v5=avg(7), v90=avg(90); volSurge=v90>0?v5/v90:null; }
     if(s&&s.dv){ const lo=off-28; let i=idxLE(s.d,off),sum=0,n=0; for(let k=i;k>=0&&s.d[k]>=lo;k--){ if(s.dv[k]>0){ sum+=s.dv[k]; n++; } } delivPct=n?sum/n:null; } }
-  return { ret3m:r3, ret6m:r6, ret12m:r12, rsNifty:(r6!=null&&nr6!=null)?r6-nr6:null, accel:(r1!=null&&r1p!=null)?r1-r1p:null,
+  return { ret1m:r1, ret3m:r3, ret6m:r6, ret12m:r12, rsNifty:(r6!=null&&nr6!=null)?r6-nr6:null, accel:(r1!=null&&r1p!=null)?r1-r1p:null,
     dma50:(s50&&px)?(px/s50-1)*100:null, dma200:(s200&&px)?(px/s200-1)*100:null,
     rangePos:(hl&&hl.hi>hl.low)?(px-hl.low)/(hl.hi-hl.low)*100:null, daysHigh, vol,
     riskMom:(r3!=null&&vol)?r3/vol:null, beta, mdd6:mdd,
@@ -540,7 +538,7 @@ function computeTech(tkr, off, px){
     turnover:turnAvgAt(tkr,off,20), turnSurge:t90>0?t5/t90:null, volSurge, delivPct, macd, stoch, bollB };
 }
 // extended factors are EXPENSIVE — only compute them when the strategy actually uses one
-const EXT_FIELDS=new Set(['ret3m','ret6m','ret12m','rsNifty','accel','dma50','dma200','rangePos','daysHigh','vol','riskMom','beta','mdd6','upPct','turnover','turnSurge','volSurge','delivPct','macd','stoch','bollB','composite']);
+const EXT_FIELDS=new Set(['ret1m','ret3m','ret6m','ret12m','rsNifty','accel','dma50','dma200','rangePos','daysHigh','vol','riskMom','beta','mdd6','upPct','turnover','turnSurge','volSurge','delivPct','macd','stoch','bollB','composite']);
 function needsTech(cfg){ return EXT_FIELDS.has(cfg.sortBy) || (cfg.filters||[]).some(f=>EXT_FIELDS.has(f.field)); }
 
 // ---- Fundamentals: point-in-time quarterly net profit (StockView's profitYoyPct/profitBase) ----
@@ -601,7 +599,7 @@ function profitMetrics(sym, dateInt, basis){
 }
 function factorsAt(off, cfg){
   // returns map symbol-> {tkr, sym, name, ind, chg, rsi, d52, d52low, mcap, histMcap, price}
-  const lookOff=off - Math.round(cfg.lookback*30.44);
+  const lookOff=off - 30;   // fixed 1-month window for r.chg (industry-momentum rank + legacy changePercent strategies)
   const members = cfg.indexName ? membersAsOf(cfg.indexName, isoOff(off)) : null;
   const useTech=needsTech(cfg);
   const useFund=needsFund(cfg); const fundDate=useFund?dateIntOff(off):0; const basis=cfg.earnBasis||'con';
