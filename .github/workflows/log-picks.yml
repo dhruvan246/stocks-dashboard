@@ -14,6 +14,7 @@ on:
 
 permissions:
   contents: write
+  actions: write   # dispatch pages.yml after committing (bot pushes don't auto-trigger it)
 
 concurrency:
   group: log-picks
@@ -42,6 +43,8 @@ jobs:
         run: node scripts/log_picks.mjs
 
       - name: Commit live_tracking.json (reset-and-replay on push conflict)
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -54,7 +57,8 @@ jobs:
             git add docs/live_tracking.json
             if git diff --cached --quiet; then echo "No change"; exit 0; fi
             git commit -m "Daily strategy picks log $(TZ=Asia/Kolkata date +'%Y-%m-%d')"
-            if git push origin HEAD:main; then echo "Pushed on attempt #$attempt"; exit 0; fi
+            # bot pushes don't fire the push-triggered Pages deploy — dispatch it explicitly
+            if git push origin HEAD:main; then echo "Pushed on attempt #$attempt"; gh workflow run pages.yml || echo "(pages dispatch failed)"; exit 0; fi
             echo "Push #$attempt rejected; retrying"; sleep $(( attempt * 3 ))
           done
           echo "Failed to push after 5 attempts"; exit 1
