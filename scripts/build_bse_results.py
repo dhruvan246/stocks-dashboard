@@ -67,10 +67,10 @@ def main():
         for qe, rec in qs.items():
             qi = qidx.get(int(qe))
             if qi is None: continue
-            rev = rec.get("rev"); pat = rec.get("pat"); ann = rec.get("ann") or 0
+            rev = rec.get("rev"); pat = rec.get("pat"); op = rec.get("op"); ann = rec.get("ann") or 0
             rx, sr = reaction(series, ann) if ann else (None, None)
-            # std and con slots both carry the (standalone) value; op left null
-            q[qi] = [rev, None, pat, rev, None, pat, ann or None, rx, sr]
+            # std and con slots both carry the (standalone) value; op filled when the filing reports it
+            q[qi] = [rev, op, pat, rev, op, pat, ann or None, rx, sr]
             any_num = True
         if not any_num: continue
         f = 1 if (sec in FIN_SECTORS) else 0

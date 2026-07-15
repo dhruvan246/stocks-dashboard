@@ -906,8 +906,8 @@ async function load(){
         for(const qk in vfill[sym]){ const qi=qix[+qk]; if(qi==null) continue;
           const cur=c.q[qi], has=cur&&(cur[2]!=null||cur[5]!=null);
           if(has) continue;                                 // real number present → don't overlay
-          const f=vfill[sym][qk], rev=f.rev==null?null:+f.rev, pat=f.pat==null?null:+f.pat;
-          c.q[qi]=[rev,null,pat,rev,null,pat,20260715,null,null]; c.vfill=1;
+          const f=vfill[sym][qk], rev=f.rev==null?null:+f.rev, pat=f.pat==null?null:+f.pat, op=f.op==null?null:+f.op;
+          c.q[qi]=[rev,op,pat,rev,op,pat,+qk===20260630?20260715:0,null,null]; c.vfill=1;
         } } }
     FEEDROWS=(feed&&feed.rows||[]).slice();
     liveKeys=new Set(FEEDROWS.map(feedKey));

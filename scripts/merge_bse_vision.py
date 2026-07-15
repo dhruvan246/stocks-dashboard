@@ -30,10 +30,14 @@ def feed_ann():
         if r[0] not in out or d > out[r[0]]: out[r[0]] = d
     return out
 
+QMAP = [("jun2026", "20260630"), ("mar2026", "20260331"), ("jun2025", "20250630")]
+
+def _num(v): return round(float(v), 2) if v is not None else None
+
 def put(px, scrip, qe, rec, basis, ann=None):
-    d = {"pat": rec.get("pat"), "ann": ann or ANN.get(qe, 0), "basis": basis, "src": "vision"}
-    if rec.get("rev") is not None: d["rev"] = round(float(rec["rev"]), 2)
-    if d["pat"] is not None: d["pat"] = round(float(d["pat"]), 2)
+    d = {"pat": _num(rec.get("pat")), "ann": ann or ANN.get(qe, 0), "basis": basis, "src": "vision"}
+    if rec.get("rev") is not None: d["rev"] = _num(rec["rev"])
+    if rec.get("op") is not None: d["op"] = _num(rec["op"])
     px.setdefault(scrip, {})[qe] = d
 
 def main():
@@ -49,25 +53,27 @@ def main():
         if not it.get("ok"): continue
         basis = it.get("basis", "S") or "S"
         sym = (it.get("ticker") or it.get("sym") or "").upper()
-        j26 = it.get("jun2026") or {}; j25 = it.get("jun2025") or {}
+        j26 = it.get("jun2026") or {}
         if j26.get("pat") is None and j26.get("rev") is None: continue
         # NSE entries (exch=="NSE", or no BSE scrip) → overlay file the page applies only to EMPTY cells,
         # so real XBRL always supersedes this vision estimate once it lands. BSE-only → bse_fundamentals.
         if str(it.get("exch", "")).upper() == "NSE" or not str(it.get("scrip") or "").strip():
             e = vfills.setdefault(sym, {})
-            e["20260630"] = {k: v for k, v in {"rev": j26.get("rev"), "pat": j26.get("pat"), "basis": basis, "src": "vision"}.items() if v is not None}
-            if j25.get("pat") is not None or j25.get("rev") is not None:
-                e["20250630"] = {k: v for k, v in {"rev": j25.get("rev"), "pat": j25.get("pat"), "basis": basis, "src": "vision"}.items() if v is not None}
+            for key, qe in QMAP:
+                q = it.get(key) or {}
+                if q.get("pat") is None and q.get("rev") is None and q.get("op") is None: continue
+                e[qe] = {k: v for k, v in {"rev": _num(q.get("rev")), "op": _num(q.get("op")),
+                          "pat": _num(q.get("pat")), "basis": basis, "src": "vision"}.items() if v is not None}
             nn += 1
-            print("  ✓ NSE %-11s Jun26 rev=%s pat=%s (overlay)" % (sym, j26.get("rev"), j26.get("pat")))
+            print("  ✓ NSE %-11s Jun26 rev=%s pat=%s op=%s (overlay)" % (sym, j26.get("rev"), j26.get("pat"), j26.get("op")))
         else:
-            scrip = str(it["scrip"])
-            ann = fann.get(sym)                       # real filing date → reaction computes
-            put(px, scrip, "20260630", j26, basis, ann=ann)
-            if j25.get("pat") is not None or j25.get("rev") is not None:
-                put(px, scrip, "20250630", j25, basis)
+            scrip = str(it["scrip"]); ann = fann.get(sym)   # real filing date → reaction computes
+            for key, qe in QMAP:
+                q = it.get(key) or {}
+                if q.get("pat") is None and q.get("rev") is None and q.get("op") is None: continue
+                put(px, scrip, qe, q, basis, ann=(ann if qe == "20260630" else None))
             fails.pop(scrip, None); done.add(scrip); nb += 1
-            print("  ✓ BSE %-11s (%s) Jun26 rev=%s pat=%s" % (sym, scrip, j26.get("rev"), j26.get("pat")))
+            print("  ✓ BSE %-11s (%s) Jun26 rev=%s pat=%s op=%s" % (sym, scrip, j26.get("rev"), j26.get("pat"), j26.get("op")))
     json.dump(data, open(FUND, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
     json.dump(fails, open(FAILS, "w"))
     json.dump(sorted(done), open(DONE, "w"))
