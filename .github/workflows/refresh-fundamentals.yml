@@ -50,34 +50,30 @@ jobs:
 
       # INSURERS (LICI/SBILIFE/HDFCLIFE/ICICIPRULI/ICICIGI/GICRE/NIACL/STARHEALTH/GODIGIT/NIVABUPA/MFSL)
       # file IRDAI-format results the XBRL parser above can't read, so they used to need the manual
-      # INSURER_EXTRACTION_PLAYBOOK. fetch_insurers.py now fills them unattended: it finds each insurer's
-      # newly-filed quarter, reads Profit-after-tax off the Shareholders' P&L via the vision API, and
-      # ANCHOR-VERIFIES it against our stored year-ago value before writing (never an unanchored guess).
-      # Once daily (the 15:xx UTC / 21:15 IST full run) — 11 companies filing ~once a quarter don't need
-      # hourly polling; fill-only + a 5-month discovery window self-heal a missed day. Needs pymupdf +
-      # anthropic (vision) + curl_cffi (NSE fallback for LIC's cover-only BSE filing). Non-fatal.
-      - name: Auto-fill insurer net profit (IRDAI-format, vision + year-ago anchor)
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      # INSURER_EXTRACTION_PLAYBOOK. fetch_insurers.py now fills them unattended and FREE (no paid API):
+      # it finds each insurer's newly-filed quarter, text-extracts Profit-after-tax off the Shareholders'
+      # P&L, and DOUBLE-ANCHORS it (preceding-quarter AND year-ago columns must both match our stored con
+      # series under one unit scale) before writing — never an unanchored guess. Runs only once daily
+      # (see gate) since 11 companies filing ~once a quarter don't need hourly polling; fill-only + a
+      # 5-month discovery window self-heal a missed day. Deps: pymupdf + curl_cffi (NSE fallback) +
+      # rapidocr/onnxruntime/numpy (free OCR for the rare scanned filing, e.g. LIC). Non-fatal.
+      - name: Auto-fill insurer net profit (IRDAI-format, free text + double-anchor)
         run: |
-          # Only the nightly full run (15:xx UTC = 21:15 IST) or a manual/dispatch trigger — not every
-          # hour (a single cron string can't self-identify the hour, so gate on the clock like the
-          # payload rebuild does). Install deps only when we're actually going to run.
           VQ="${{ github.event.inputs.insurer_verify_quarter }}"
           if [ -n "$VQ" ]; then
-            pip install -q pymupdf anthropic curl_cffi
+            pip install -q pymupdf curl_cffi rapidocr-onnxruntime onnxruntime numpy
             echo "DIAGNOSTIC: verifying insurer reads for $VQ (no write)"
             python3 -X utf8 scripts/fetch_insurers.py --verify "$VQ"; exit 0
           fi
-          # Run insurers only on: manual dispatch, the daily cron-job.org "insurer-refresh"
-          # trigger, or the 21:15 IST (15:xx UTC) nightly schedule. Skip on every other trigger
-          # (hourly schedule, fundamentals-refresh) so we don't re-fetch/re-vision 11 insurers hourly.
+          # Run insurers only on: manual dispatch, the daily cron-job.org "insurer-refresh" trigger, or
+          # the 21:15 IST (15:xx UTC) nightly schedule. Skip on every other trigger (hourly schedule,
+          # fundamentals-refresh) so we don't re-fetch/re-parse 11 insurers every hour.
           EV="${{ github.event_name }}"; ACTION="${{ github.event.action }}"; RUN=0
           [ "$EV" = "workflow_dispatch" ] && RUN=1
           [ "$EV" = "schedule" ] && [ "$(date -u +%H)" = "15" ] && RUN=1
           [ "$EV" = "repository_dispatch" ] && [ "$ACTION" = "insurer-refresh" ] && RUN=1
           if [ "$RUN" != "1" ]; then echo "Not an insurer-fill trigger ($EV/$ACTION) — skipping"; exit 0; fi
-          pip install -q pymupdf anthropic curl_cffi
+          pip install -q pymupdf curl_cffi rapidocr-onnxruntime onnxruntime numpy
           python3 -X utf8 scripts/fetch_insurers.py || echo "(insurer fill failed — keeping existing; insurers stay gapped this run)"
 
       # Backstop: any quarter that lands without a filing date (Screener backfills, integrated
