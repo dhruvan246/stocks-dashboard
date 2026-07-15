@@ -14,7 +14,11 @@ on:
   # with {"event_type":"fundamentals-refresh"}
   repository_dispatch:
     types: [fundamentals-refresh]
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      insurer_verify_quarter:
+        description: "Diagnostic: re-read insurers for this quarter-end (YYYYMMDD) and print vision-vs-stored WITHOUT writing. Blank = normal gap-fill."
+        default: ""
 
 permissions:
   contents: write
@@ -39,6 +43,33 @@ jobs:
 
       - name: Pull newly-filed quarterly results into sf_fundamentals.json
         run: python3 scripts/update_fundamentals.py
+
+      # INSURERS (LICI/SBILIFE/HDFCLIFE/ICICIPRULI/ICICIGI/GICRE/NIACL/STARHEALTH/GODIGIT/NIVABUPA/MFSL)
+      # file IRDAI-format results the XBRL parser above can't read, so they used to need the manual
+      # INSURER_EXTRACTION_PLAYBOOK. fetch_insurers.py now fills them unattended: it finds each insurer's
+      # newly-filed quarter, reads Profit-after-tax off the Shareholders' P&L via the vision API, and
+      # ANCHOR-VERIFIES it against our stored year-ago value before writing (never an unanchored guess).
+      # Once daily (the 15:xx UTC / 21:15 IST full run) — 11 companies filing ~once a quarter don't need
+      # hourly polling; fill-only + a 5-month discovery window self-heal a missed day. Needs pymupdf +
+      # anthropic (vision) + curl_cffi (NSE fallback for LIC's cover-only BSE filing). Non-fatal.
+      - name: Auto-fill insurer net profit (IRDAI-format, vision + year-ago anchor)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          # Only the nightly full run (15:xx UTC = 21:15 IST) or a manual/dispatch trigger — not every
+          # hour (a single cron string can't self-identify the hour, so gate on the clock like the
+          # payload rebuild does). Install deps only when we're actually going to run.
+          VQ="${{ github.event.inputs.insurer_verify_quarter }}"
+          if [ -n "$VQ" ]; then
+            pip install -q pymupdf anthropic curl_cffi
+            echo "DIAGNOSTIC: verifying insurer reads for $VQ (no write)"
+            python3 -X utf8 scripts/fetch_insurers.py --verify "$VQ"; exit 0
+          fi
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "$(date -u +%H)" != "15" ]; then
+            echo "Not the nightly run — skipping insurer fill"; exit 0
+          fi
+          pip install -q pymupdf anthropic curl_cffi
+          python3 -X utf8 scripts/fetch_insurers.py || echo "(insurer fill failed — keeping existing; insurers stay gapped this run)"
 
       # Backstop: any quarter that lands without a filing date (Screener backfills, integrated
       # rows with broadcast_Date=None) gets the SEBI deadline so the point-in-time screen can use
