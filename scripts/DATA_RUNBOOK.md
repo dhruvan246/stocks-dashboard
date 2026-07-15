@@ -112,35 +112,33 @@ Fill the recent quarters so `ttm_pat` (4 consecutive qtrs in `sf_revop`) populat
 
 ---
 
-## 3. INSURERS  (IRDAI-format — the XBRL cron can't parse them; now AUTO-filled by vision)  ★ automated 2026-07-15 ★
+## 3. INSURERS  (IRDAI-format — XBRL can't parse them; PARTIALLY auto-filled FREE)  ★ free text-anchor, 2026-07-15 ★
 LICI, SBILIFE, HDFCLIFE, ICICIPRULI, ICICIGI, GICRE, NIACL, STARHEALTH, GODIGIT, NIVABUPA, MFSL file
-IRDAI format (Policyholders' Revenue A/c + Shareholders' P&L, "Premium earned"/"Income from investments")
-→ the standard XBRL P&L parser gives them NOTHING. They used to be the last MANUAL gap in the daily fill.
+IRDAI format (Policyholders' Revenue A/c + Shareholders' P&L) → the standard XBRL P&L parser gives them
+NOTHING. **User can't pay for a vision API**, so `scripts/fetch_insurers.py` uses a FREE text-anchor method
+(no API key, no cost): discover newly-filed quarter from BSE announcements (`is_result_filing()`, board-
+outcome-aware) → fetch the **earliest** result filing after quarter-end first (BSE; NSE curl_cffi fallback
+for LIC's cover-only BSE attachment) → TEXT-extract the Shareholders' P&L rows (PyMuPDF words + band-merge;
+free rapidocr fallback for fully-image pages) → **SLIDING DOUBLE-ANCHOR**: scan the row for where the
+preceding-quarter AND year-ago columns sit adjacently (handles a leading serial cell), both must match our
+stored con series within max(3%,₹2cr) under one scale ÷1/÷100/÷10; with-sub insurers require a
+consolidated-page row. **Fill-only; NEVER writes a wrong value — worst case SKIPS.** Runs in
+`refresh-fundamentals.yml` (nightly 21:15 IST + `insurer-refresh` repository_dispatch). Deps installed
+in-step: pymupdf + curl_cffi + rapidocr-onnxruntime/onnxruntime/numpy. Validate: dispatch input
+`insurer_verify_quarter=YYYYMMDD`, or `python -X utf8 scripts/fetch_insurers.py --verify 20260331`.
 
-**Now automatic:** `scripts/fetch_insurers.py` runs in `refresh-fundamentals.yml` on the **nightly full run
-(15:xx UTC / 21:15 IST)**. Per insurer it: (1) DISCOVERS the newly-filed quarter from BSE announcements
-(board-outcome-aware — insurers file results as "Outcome of Board Meeting", which `bse_vision.is_result`
-misses, so `is_result_filing()` accepts either); (2) FETCHES the filing — BSE announcement attachment
-(genuine company PDF, NOT the poisoned FinancialResult API), with an **NSE curl_cffi fallback** because
-LIC's BSE board-outcome attachment is only a 2-page cover letter (the P&L lives on NSE); (3) RENDERS the
-Shareholders' P&L page(s) — typeset filings pick the "strong" P&L text pages, **scanned** filings (LIC's
-annual filing is image-only, 24pp) send ALL image statement pages (cap 16) since the consolidated PAT is
-buried deep after the auditor reports and off-by-one page-picks miss it; (4) READS Profit-after-tax via
-the **vision API** (`insurer_vision.py`, Haiku, encodes the playbook: Shareholders' A/c PAT, owner-
-attributable con, unit disambiguation) for BOTH the current and year-ago quarter; (5) **ANCHOR-VERIFIES**
-— the read year-ago value must match our stored same-quarter-last-year con within max(3%, ₹5cr) AND the
-current value must be in the insurer's plausible range, else it's SKIPPED (never an unanchored guess);
-(6) APPLIES fill-only to `docs/sf_fundamentals.json` (+ `scripts/fundamentals.json`), con=idx3/date=idx4,
-std=con for no-subsidiary insurers. Needs the `ANTHROPIC_API_KEY` secret + pymupdf/anthropic/curl_cffi
-(installed in-step). No key ⇒ graceful no-op (insurers just stay gapped, as before).
-- **Validate the reader against a known quarter:** dispatch `refresh-fundamentals.yml` with input
-  `insurer_verify_quarter=YYYYMMDD` → prints vision-vs-stored for all 11, writes NOTHING. Or locally:
-  `python -X utf8 scripts/fetch_insurers.py --verify 20260331` (needs the key set).
-- **Residual manual cases** (rare): if an insurer's read never anchors (a genuine restatement of the
-  year-ago base, or LIC's scanned consolidated PAT page not among the 16 sent), it stays gapped and
-  flagged in `scripts/_insurer_log.json` → fall back to the manual method below.
+**COVERAGE (offline-validated Mar-2026) — 4 of 11 auto-fill, the rest stay MANUAL:**
+- ✅ **SBILIFE, NIVABUPA, HDFCLIFE, GODIGIT** — read exactly, free.
+- ❌ **ICICIGI, STARHEALTH** — P&L table is a scanned image / corrupt-OCR text layer (value absent from the
+  text). The rapidocr fallback only fires on FULLY-image pages, so their mixed text+image P&L pages aren't
+  reached → not recovered without a render-and-OCR-the-P&L-page upgrade.
+- ❌ **GICRE, NIACL, ICICIPRULI, MFSL** — HARD WALL: the stored **owners-attributable con is hand-COMPUTED**
+  (total PAT + minority + associate; MFSL = continuing+discontinued) and is **never printed as a single
+  number** in the filing, so double-anchor can't find it. The parser sees only the STANDALONE row (con≠std),
+  which require_con correctly rejects. **These are exactly the insurers the manual playbook exists for.**
+- So getting all 11 free is NOT achievable with reasonable effort. Fill the 7 by hand each quarter via:
 
-**Manual method (fallback only)** — correct page/row, owners-attributable, unit disambiguation, verify:
+**Manual method (still needed for the 7)** — correct page/row, owners-attributable, unit disambiguation, verify:
 → **`scripts/INSURER_EXTRACTION_PLAYBOOK.md`** (memory: project-stocks-insurer-extraction).
 
 ---
