@@ -127,7 +127,7 @@
       ['./bank-credit.html',       '🏦', 'Banking Growth'],
       ['./market-mood.html',       '🌡️', 'Market Mood'],
       ['./results-season.html',    '📊', 'Results Season'],
-      ['./discovery.html',         '🧭', 'Discovery'],
+      ['./discovery.html',         '💸', 'Smart Money Picks'],
       ['./quarterly-results.html', '🧾', 'Quarterly Results'],
       ['./announcements.html',     '📢', 'Announcements']
     ] },
