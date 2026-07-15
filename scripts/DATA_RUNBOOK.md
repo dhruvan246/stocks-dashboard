@@ -821,8 +821,12 @@ shareable URL (`discovery.html#b=<key>`).
   its commit step: any modified docs/scripts .json/.bin/.html must parse (json), be ≥ min_bytes, and not
   shrink below min_ratio × committed size — else the step FAILS (visible red run; previous good data stays
   live). False trip on a legitimate shrink → raise that file's `min_ratio`/`min_bytes` in feeds.json.
-- **Gotcha — mf_funds.json is MANUAL:** the MF-backtest NAV data (`docs/mf_funds.json`, backtest.html) has
-  no workflow; last built 2026-06-06 via fetch_mf_returns.py. Refresh by hand when the MF backtest looks stale.
+- **Fixed 2026-07-16 — mf_funds.json/mf_history.bin were built nightly then DISCARDED:** fetch_mf_returns.py
+  always rebuilt `docs/mf_funds.json` + `docs/mf_history.bin` (+ gold via add_gold_instrument) in refresh-mf.yml,
+  but the commit step's reset-and-replay only carried mutual-funds.html + scripts/mutual_funds.json, so the fresh
+  backtest files were thrown away every night (mf_funds.json frozen at 2026-06-06). Fix = carry both docs files
+  (+ scripts/gold_inr.json cache) through /tmp in the commit step. Lesson: in reset-and-replay commit steps, EVERY
+  file the fetch step writes must be in the cp-to-/tmp + cp-back + git-add lists, or it silently never publishes.
 - **Archive sweep 2026-07-16:** ~1,839 one-off `_*.py` backfill scripts (all untracked, never committed)
   moved to `scripts/archive/` (gitignored); 35 still-referenced `_*` tools kept in scripts/ (resweep loop,
   membership history, FM vision helpers). 81 scratch PNGs deleted. If an old procedure references a missing

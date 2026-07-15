@@ -57,14 +57,20 @@ jobs:
           # our freshly built files on top (overwrite, no merge), commit, push.
           mkdir -p /tmp/mf/docs /tmp/mf/scripts
           cp docs/mutual-funds.html    /tmp/mf/docs/
+          cp docs/mf_funds.json        /tmp/mf/docs/
+          cp docs/mf_history.bin       /tmp/mf/docs/
           cp scripts/mutual_funds.json /tmp/mf/scripts/
+          cp scripts/gold_inr.json     /tmp/mf/scripts/ 2>/dev/null || true
 
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
             cp /tmp/mf/docs/mutual-funds.html    docs/mutual-funds.html
+            cp /tmp/mf/docs/mf_funds.json        docs/mf_funds.json
+            cp /tmp/mf/docs/mf_history.bin       docs/mf_history.bin
             cp /tmp/mf/scripts/mutual_funds.json scripts/mutual_funds.json
-            git add docs/mutual-funds.html scripts/mutual_funds.json
+            cp /tmp/mf/scripts/gold_inr.json     scripts/gold_inr.json 2>/dev/null || true
+            git add docs/mutual-funds.html docs/mf_funds.json docs/mf_history.bin scripts/mutual_funds.json scripts/gold_inr.json
 
             if git diff --cached --quiet; then
               echo "Remote already has identical mutual fund data — nothing to commit"
