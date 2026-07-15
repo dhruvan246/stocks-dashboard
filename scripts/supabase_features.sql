@@ -43,6 +43,7 @@ $$;
 
 create or replace function sw_kv_set(secret text, k text, payload jsonb) returns boolean
 language plpgsql security definer as $$
+#variable_conflict use_variable
 begin
   if secret <> 'sw_owner_8Kq2Lm9Xp4Rt7v' or not sw_kv_ok(k) then return false; end if;
   if pg_column_size(payload) > 2000000 then return false; end if;  -- 2 MB sanity cap
@@ -56,6 +57,7 @@ end $$;
 create or replace function sw_kv_append(secret text, k text, item jsonb, cap int default 500)
 returns boolean
 language plpgsql security definer as $$
+#variable_conflict use_variable
 declare cur jsonb; merged jsonb;
 begin
   if secret <> 'sw_owner_8Kq2Lm9Xp4Rt7v' or not sw_kv_ok(k) then return false; end if;
@@ -83,6 +85,7 @@ alter table sw_page_views enable row level security;
 -- Open increment (that's the point — every visit counts). IST day boundary.
 create or replace function sw_pv_hit(page text) returns boolean
 language plpgsql security definer as $$
+#variable_conflict use_variable
 begin
   if page is null or length(page) < 1 or length(page) > 80 then return false; end if;
   insert into sw_page_views (day, page, hits)
@@ -113,6 +116,7 @@ alter table sw_picks_log enable row level security;
 create or replace function sw_picks_set(secret text, day_in date, sid text, payload jsonb)
 returns boolean
 language plpgsql security definer as $$
+#variable_conflict use_variable
 begin
   if secret <> 'sw_owner_8Kq2Lm9Xp4Rt7v' then return false; end if;
   if sid is null or length(sid) > 120 or day_in is null then return false; end if;
