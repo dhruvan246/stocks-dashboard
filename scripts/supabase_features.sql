@@ -41,16 +41,22 @@ language sql security definer stable as $$
   select payload from sw_kv where sw_kv.k = sw_kv_get.k
 $$;
 
+-- LANGUAGE SQL on purpose: in SQL functions a name that could be a column OR a
+-- parameter resolves to the COLUMN, so `on conflict (k)` / the insert column list
+-- stay column references while sw_kv_set.k etc. pin the parameters. (plpgsql
+-- versions of this hit 42702-ambiguous / 42P10-bad-conflict-target instead.)
 create or replace function sw_kv_set(secret text, k text, payload jsonb) returns boolean
-language plpgsql security definer as $$
-#variable_conflict use_variable
-begin
-  if secret <> 'sw_owner_8Kq2Lm9Xp4Rt7v' or not sw_kv_ok(k) then return false; end if;
-  if pg_column_size(payload) > 2000000 then return false; end if;  -- 2 MB sanity cap
-  insert into sw_kv as t (k, payload, updated_at) values (k, payload, now())
+language sql security definer as $$
+  insert into sw_kv (k, payload, updated_at)
+  select sw_kv_set.k, sw_kv_set.payload, now()
+  where sw_kv_set.secret = 'sw_owner_8Kq2Lm9Xp4Rt7v'
+    and sw_kv_ok(sw_kv_set.k)
+    and pg_column_size(sw_kv_set.payload) <= 2000000       -- 2 MB sanity cap
   on conflict (k) do update set payload = excluded.payload, updated_at = now();
-  return true;
-end $$;
+  select sw_kv_set.secret = 'sw_owner_8Kq2Lm9Xp4Rt7v'
+     and sw_kv_ok(sw_kv_set.k)
+     and pg_column_size(sw_kv_set.payload) <= 2000000;
+$$;
 
 -- Race-free single-item PREPEND (same advisory-lock pattern as bt_append):
 -- concurrent adds from two devices serialize server-side, nobody's entry lost.
@@ -83,16 +89,15 @@ create table if not exists sw_page_views (
 alter table sw_page_views enable row level security;
 
 -- Open increment (that's the point — every visit counts). IST day boundary.
+-- LANGUAGE SQL for the same column-vs-parameter reason as sw_kv_set above.
 create or replace function sw_pv_hit(page text) returns boolean
-language plpgsql security definer as $$
-#variable_conflict use_variable
-begin
-  if page is null or length(page) < 1 or length(page) > 80 then return false; end if;
+language sql security definer as $$
   insert into sw_page_views (day, page, hits)
-  values ((now() at time zone 'Asia/Kolkata')::date, page, 1)
+  select (now() at time zone 'Asia/Kolkata')::date, sw_pv_hit.page, 1
+  where sw_pv_hit.page is not null and length(sw_pv_hit.page) between 1 and 80
   on conflict (day, page) do update set hits = sw_page_views.hits + 1;
-  return true;
-end $$;
+  select sw_pv_hit.page is not null and length(sw_pv_hit.page) between 1 and 80;
+$$;
 
 create or replace function sw_pv_stats(days int default 90) returns jsonb
 language sql security definer stable as $$
