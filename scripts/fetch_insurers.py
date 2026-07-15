@@ -66,7 +66,7 @@ INSURERS = {
     "LICI":       {"ident": ["LIFE INSURANCE CORPORATION"],            "range": (200, 25000),  "sub": True},
     "SBILIFE":    {"ident": ["SBI LIFE"],                              "range": (30, 2000),    "sub": False},
     "HDFCLIFE":   {"ident": ["HDFC LIFE"],                             "range": (80, 900),     "sub": True},
-    "ICICIPRULI": {"ident": ["ICICI PRUDENTIAL"],                     "range": (80, 1200),    "sub": False},
+    "ICICIPRULI": {"ident": ["ICICI PRUDENTIAL"],                     "range": (80, 1200),    "sub": True},
     "ICICIGI":    {"ident": ["ICICI LOMBARD"],                        "range": (30, 1800),    "sub": False},
     "GICRE":      {"ident": ["GENERAL INSURANCE CORPORATION", "GIC"], "range": (10, 4500),    "sub": True},
     "NIACL":      {"ident": ["NEW INDIA ASSURANCE"],                  "range": (-200, 2500),  "sub": True},
@@ -433,7 +433,11 @@ def process(sym, targets, o, docs, src, verify=False):
 
     for qe in sorted(targets, reverse=True):
         def candidate_pdfs():
-            for annd, att, sub in [(a, att, sub) for (a, att, sub) in filings if qe_from_ann(a) == qe][:4]:
+            # Try the actual RESULTS filing first: it's the EARLIEST result-tagged announcement after the
+            # quarter-end (mid-Apr for Q4), not the newest (newest = June AGM notices / annual reports with
+            # no clean quarterly P&L). Sort ascending, take up to 6, then fall back to NSE.
+            cand = sorted([(a, att, sub) for (a, att, sub) in filings if qe_from_ann(a) == qe])
+            for annd, att, sub in cand[:6]:
                 pdf = fetch_pdf(o, att); time.sleep(1.0)
                 if pdf:
                     yield annd, pdf
