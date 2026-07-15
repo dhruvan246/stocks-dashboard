@@ -34,6 +34,12 @@ try:
     ORDVALS = json.load(open(dp("order_values.json"), encoding="utf-8")).get("vals", {})
 except Exception:
     ORDVALS = {}
+# shares outstanding for order-win names missing a market cap (enrich_order_shares.py) — mcap is
+# recomputed here as shares × latest price so it stays fresh without re-fetching the XBRL
+try:
+    ORDSHARES = json.load(open(dp("order_shares.json"), encoding="utf-8")).get("shares", {})
+except Exception:
+    ORDSHARES = {}
 revop = json.load(open(dp("sf_revop.json"), encoding="utf-8"))
 slim = json.loads(gzip.decompress(open(dp("dash_slim.bin"), "rb").read()))
 classif = json.load(open(dp("sector_classification.json"), encoding="utf-8"))
@@ -108,6 +114,8 @@ def build_orders_bucket(per, t):
     for sym, s in per.items():
         m = META.get(sym) or {}
         mc = round(m["mcap"], 1) if m.get("mcap") else None
+        if mc is None and ORDSHARES.get(sym) and m.get("latest"):   # computed fallback mcap
+            mc = round(ORDSHARES[sym] * m["latest"] / 1e7, 1)
         tp = ttm_pat(sym)
         pe = round(mc / tp, 1) if (mc and tp and tp > 0) else None
         disp, cr = _ordval(s["f"])

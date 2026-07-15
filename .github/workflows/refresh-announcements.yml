@@ -54,6 +54,11 @@ jobs:
       - name: Extract order values from PDFs
         run: python3 -X utf8 scripts/enrich_order_values.py || echo "(order-value extraction failed — keeping previous cache)"
 
+      # Shares outstanding for order-win names that lack a market cap (computed mcap = shares × price).
+      # Incremental; non-fatal.
+      - name: Fill market-cap gap for order names
+        run: python3 -X utf8 scripts/enrich_order_shares.py || echo "(share-count extraction failed — keeping previous cache)"
+
       # Discovery buckets (docs/discovery.json) — recomputed from the fresh announcements +
       # committed fundamentals/price/classification files. Non-fatal: keeps the previous file.
       - name: Build Discovery buckets
@@ -72,6 +77,7 @@ jobs:
           cp docs/results_calendar.json /tmp/ann/docs/ 2>/dev/null || true
           cp docs/discovery.json        /tmp/ann/docs/ 2>/dev/null || true
           cp docs/order_values.json     /tmp/ann/docs/ 2>/dev/null || true
+          cp docs/order_shares.json     /tmp/ann/docs/ 2>/dev/null || true
 
           for attempt in 1 2 3 4 5; do
             git fetch origin main
@@ -81,7 +87,8 @@ jobs:
             cp /tmp/ann/docs/results_calendar.json docs/results_calendar.json 2>/dev/null || true
             cp /tmp/ann/docs/discovery.json        docs/discovery.json        2>/dev/null || true
             cp /tmp/ann/docs/order_values.json     docs/order_values.json     2>/dev/null || true
-            git add docs/announcements.json docs/results_feed.json docs/results_calendar.json docs/discovery.json docs/order_values.json
+            cp /tmp/ann/docs/order_shares.json     docs/order_shares.json     2>/dev/null || true
+            git add docs/announcements.json docs/results_feed.json docs/results_calendar.json docs/discovery.json docs/order_values.json docs/order_shares.json
 
             if git diff --cached --quiet; then
               echo "No new announcements — nothing to commit"
