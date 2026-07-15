@@ -26,11 +26,32 @@ Run:
   python -X utf8 scripts/fetch_insurers.py --only HDFCLIFE,GICRE
   python -X utf8 scripts/fetch_insurers.py --verify 20260331   # re-read a KNOWN quarter, print vs stored, DO NOT write
 """
-import os, sys, re, json, time, argparse
+import os, sys, re, json, time, argparse, urllib.request, http.cookiejar, gzip
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import bse_vision as V
 import insurer_vision as IV
 import fitz
+
+# Minimal BSE fetch (stdlib) — replicated from bse_vision.session/get so we don't drag in its heavy
+# numpy/cv2/rapidocr imports (this runs in the lean fundamentals CI, not the OCR grind).
+_UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+       "Chrome/120 Safari/537.36")
+
+
+def bse_session():
+    o = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
+    try:
+        o.open(urllib.request.Request("https://www.bseindia.com/", headers={"User-Agent": _UA}), timeout=30).read()
+    except Exception:
+        pass
+    return o
+
+
+def bse_get(o, u, b=False):
+    r = o.open(urllib.request.Request(u, headers={"User-Agent": _UA, "Referer": "https://www.bseindia.com/"}), timeout=60)
+    raw = r.read()
+    if r.headers.get("Content-Encoding") == "gzip":
+        raw = gzip.decompress(raw)
+    return raw if b else raw.decode("utf-8", "replace")
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DOCS_FUND = os.path.join(HERE, "..", "docs", "sf_fundamentals.json")
@@ -106,7 +127,7 @@ def datebound(o, code, lo, hi):
         u = ("https://api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryGetData/w?pageno=%d&strCat=-1"
              "&strPrevDate=%s&strScrip=%s&strSearch=P&strToDate=%s&strType=C" % (pg, lo, code, hi))
         try:
-            rows = json.loads(V.get(o, u)).get("Table", [])
+            rows = json.loads(bse_get(o, u)).get("Table", [])
         except Exception:
             break
         for r in rows:
@@ -121,7 +142,7 @@ def datebound(o, code, lo, hi):
 def fetch_pdf(o, att):
     for base in ("AttachHis", "AttachLive"):
         try:
-            d = V.get(o, "https://www.bseindia.com/xml-data/corpfiling/%s/%s" % (base, att), b=True)
+            d = bse_get(o, "https://www.bseindia.com/xml-data/corpfiling/%s/%s" % (base, att), b=True)
             if d[:4] == b"%PDF":
                 return d
         except Exception:
@@ -364,7 +385,7 @@ def main():
 
     docs = load_fund(DOCS_FUND)
     src  = load_fund(SRC_FUND) if os.path.exists(SRC_FUND) else docs
-    o = V.session(); time.sleep(0.5)
+    o = bse_session(); time.sleep(0.5)
 
     only = set(x.strip().upper() for x in args.only.split(",") if x.strip())
     syms = [s for s in INSURERS if (not only or s in only)]

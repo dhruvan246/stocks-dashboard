@@ -1,5 +1,11 @@
 # Insurer quarterly net-profit extraction — PLAYBOOK
 
+> ⚠️ **AS OF 2026-07-15 THIS IS AUTOMATED — use it only as a fallback.** `scripts/fetch_insurers.py`
+> (wired into `refresh-fundamentals.yml`, nightly) fills insurers unattended via the vision API with a
+> year-ago anchor guard (DATA_RUNBOOK §3). This playbook is now the MANUAL fallback for the rare cell
+> the automation can't anchor (genuine year-ago restatement, or LIC's scanned consolidated PAT page
+> missed). The row/basis/unit/verify rules below are exactly what the automated reader encodes.
+
 **Why this exists:** the daily cron (`update_fundamentals.py`) parses NSE's standard XBRL P&L
 (`xbrl_profit`), which expects "Revenue from operations" / "Profit for the period". **Insurers file
 IRDAI-format results** (Policyholders' **Revenue A/c** + Shareholders' **Profit & Loss A/c**, with

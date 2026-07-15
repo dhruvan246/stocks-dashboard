@@ -112,10 +112,35 @@ Fill the recent quarters so `ttm_pat` (4 consecutive qtrs in `sf_revop`) populat
 
 ---
 
-## 3. INSURERS  (IRDAI-format — the cron CAN'T parse them)
+## 3. INSURERS  (IRDAI-format — the XBRL cron can't parse them; now AUTO-filled by vision)  ★ automated 2026-07-15 ★
 LICI, SBILIFE, HDFCLIFE, ICICIPRULI, ICICIGI, GICRE, NIACL, STARHEALTH, GODIGIT, NIVABUPA, MFSL file
-IRDAI format → XBRL cron gives them NOTHING. Whenever an insurer shows a fundamentals gap, follow the
-dedicated playbook (correct page/row, owners-attributable, unit disambiguation, verify, apply):
+IRDAI format (Policyholders' Revenue A/c + Shareholders' P&L, "Premium earned"/"Income from investments")
+→ the standard XBRL P&L parser gives them NOTHING. They used to be the last MANUAL gap in the daily fill.
+
+**Now automatic:** `scripts/fetch_insurers.py` runs in `refresh-fundamentals.yml` on the **nightly full run
+(15:xx UTC / 21:15 IST)**. Per insurer it: (1) DISCOVERS the newly-filed quarter from BSE announcements
+(board-outcome-aware — insurers file results as "Outcome of Board Meeting", which `bse_vision.is_result`
+misses, so `is_result_filing()` accepts either); (2) FETCHES the filing — BSE announcement attachment
+(genuine company PDF, NOT the poisoned FinancialResult API), with an **NSE curl_cffi fallback** because
+LIC's BSE board-outcome attachment is only a 2-page cover letter (the P&L lives on NSE); (3) RENDERS the
+Shareholders' P&L page(s) — typeset filings pick the "strong" P&L text pages, **scanned** filings (LIC's
+annual filing is image-only, 24pp) send ALL image statement pages (cap 16) since the consolidated PAT is
+buried deep after the auditor reports and off-by-one page-picks miss it; (4) READS Profit-after-tax via
+the **vision API** (`insurer_vision.py`, Haiku, encodes the playbook: Shareholders' A/c PAT, owner-
+attributable con, unit disambiguation) for BOTH the current and year-ago quarter; (5) **ANCHOR-VERIFIES**
+— the read year-ago value must match our stored same-quarter-last-year con within max(3%, ₹5cr) AND the
+current value must be in the insurer's plausible range, else it's SKIPPED (never an unanchored guess);
+(6) APPLIES fill-only to `docs/sf_fundamentals.json` (+ `scripts/fundamentals.json`), con=idx3/date=idx4,
+std=con for no-subsidiary insurers. Needs the `ANTHROPIC_API_KEY` secret + pymupdf/anthropic/curl_cffi
+(installed in-step). No key ⇒ graceful no-op (insurers just stay gapped, as before).
+- **Validate the reader against a known quarter:** dispatch `refresh-fundamentals.yml` with input
+  `insurer_verify_quarter=YYYYMMDD` → prints vision-vs-stored for all 11, writes NOTHING. Or locally:
+  `python -X utf8 scripts/fetch_insurers.py --verify 20260331` (needs the key set).
+- **Residual manual cases** (rare): if an insurer's read never anchors (a genuine restatement of the
+  year-ago base, or LIC's scanned consolidated PAT page not among the 16 sent), it stays gapped and
+  flagged in `scripts/_insurer_log.json` → fall back to the manual method below.
+
+**Manual method (fallback only)** — correct page/row, owners-attributable, unit disambiguation, verify:
 → **`scripts/INSURER_EXTRACTION_PLAYBOOK.md`** (memory: project-stocks-insurer-extraction).
 
 ---
