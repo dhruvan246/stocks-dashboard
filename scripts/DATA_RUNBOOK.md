@@ -93,6 +93,23 @@ Overwriting a value the series already has (digit transposition etc.) — proven
 - **Durability:** insurer std cells are clobber-safe (XBRL cron skips insurers; BSE backfill is
   fill-only on non-null), so a correction sticks.
 
+### 2c. ORDER-WINS TTM-P/E QUARTER-GAP BACKFILL  (recent-to-NSE names; done 2026-07-15)
+Fill the recent quarters so `ttm_pat` (4 consecutive qtrs in `sf_revop`) populates the Order-Wins P/E.
+(There is NO `scripts/_autorun_plan.md` — that path in old prompts is stale. Use this.)
+- **These BSE result PDFs usually have a real TEXT LAYER** → direct PyMuPDF text extraction is exact
+  and ~100× faster than `bse_vision.py`'s 14-page OCR (which crawls). Use text; render+vision ONLY for
+  scanned PDFs (image pages, `get_text()` empty). Reusable scratch scripts: `scripts/_ord_text.py`
+  (text extract + row crop), `_ord_render.py`/`_ord_render2.py` (render P&L page, OCR-locate if scanned),
+  `_ord_apply.py` (fill-only merge → `sf_revop` idx0/1=rev, idx4=patStd, idx5=patCon + both fundamentals.json).
+- **ONE page per company:** the **Dec-2025 filing** shows Dec(col1)+Sep(col2)+9M(col4) → derive Jun = 9M−Sep−Dec.
+  A co needing only Jun: its **Sep filing** shows Sep(col1)+Jun(col2)+H1. Anchor EVERY value by the 9M/H1 sum
+  reconciliation (paisa-exact) and cross-check the overlap quarter vs the NSE-stored cell.
+- **Consolidated owners** = "Net Profit attributable to Owners" row if present, else total NP − NCI.
+- **Legit residuals (never re-attempt — the quarters were never filed):** half-yearly reporters (RMC), and
+  co's listed too recently whose earlier quarters are pre-IPO / pre-mainboard-migration (SOLEX, KRISHNADEF,
+  OMPOWER, SAIPARENT, INNOVISION) — verify via NSE `corporate-announcements` (curl_cffi) earliest results date.
+  memory: [[project-stocks-orderwins-pe-backfill]].
+
 ---
 
 ## 3. INSURERS  (IRDAI-format — the cron CAN'T parse them)
