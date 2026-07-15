@@ -9,11 +9,15 @@ on:
     # Quarterly Results payload (price reactions/drift) even with no new filings; other
     # hours rebuild it only when new earnings actually landed (keeps git history lean).
     - cron: "45 4-17 * * *"
-  # Optional external trigger (cron-job.org) — SEPARATE event type from the
+  # Optional external triggers (cron-job.org) — SEPARATE event types from the
   # stock/MF/FII/backtest-data jobs. POST /repos/dhruvan246/stocks-dashboard/dispatches
-  # with {"event_type":"fundamentals-refresh"}
+  # with {"event_type":"fundamentals-refresh"} for the full pipeline, or
+  # {"event_type":"insurer-refresh"} for a DAILY run that ALSO fills insurers (IRDAI-format
+  # vision fill). The insurer step runs only on insurer-refresh, the 21:15 IST schedule, or a
+  # manual dispatch — NOT on fundamentals-refresh — so an hourly fundamentals trigger doesn't
+  # re-fetch/re-vision the 11 insurers every hour.
   repository_dispatch:
-    types: [fundamentals-refresh]
+    types: [fundamentals-refresh, insurer-refresh]
   workflow_dispatch:
     inputs:
       insurer_verify_quarter:
@@ -65,9 +69,14 @@ jobs:
             echo "DIAGNOSTIC: verifying insurer reads for $VQ (no write)"
             python3 -X utf8 scripts/fetch_insurers.py --verify "$VQ"; exit 0
           fi
-          if [ "${{ github.event_name }}" = "schedule" ] && [ "$(date -u +%H)" != "15" ]; then
-            echo "Not the nightly run — skipping insurer fill"; exit 0
-          fi
+          # Run insurers only on: manual dispatch, the daily cron-job.org "insurer-refresh"
+          # trigger, or the 21:15 IST (15:xx UTC) nightly schedule. Skip on every other trigger
+          # (hourly schedule, fundamentals-refresh) so we don't re-fetch/re-vision 11 insurers hourly.
+          EV="${{ github.event_name }}"; ACTION="${{ github.event.action }}"; RUN=0
+          [ "$EV" = "workflow_dispatch" ] && RUN=1
+          [ "$EV" = "schedule" ] && [ "$(date -u +%H)" = "15" ] && RUN=1
+          [ "$EV" = "repository_dispatch" ] && [ "$ACTION" = "insurer-refresh" ] && RUN=1
+          if [ "$RUN" != "1" ]; then echo "Not an insurer-fill trigger ($EV/$ACTION) — skipping"; exit 0; fi
           pip install -q pymupdf anthropic curl_cffi
           python3 -X utf8 scripts/fetch_insurers.py || echo "(insurer fill failed — keeping existing; insurers stay gapped this run)"
 
