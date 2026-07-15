@@ -294,7 +294,7 @@ function render() {
   const colspan = OWNER ? 6 : 5;
   const header = `<thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
     <th class="text-left font-semibold px-4 py-2.5">Strategy</th>
-    <th class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">${VIEW === 'custom' ? (CUSTOM_WIN ? `CAGR · ${CUSTOM_WIN.start} → ${CUSTOM_WIN.end}${CUSTOM_WIN.topN != null ? ` · top-${CUSTOM_WIN.topN}` : ''} ▾` : 'CAGR · window ▾') : `CAGR${VIEW === 'best' ? ' ▾' : ''}`}</th>
+    <th class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">${VIEW === 'custom' ? (CUSTOM_WIN ? `Return · ${CUSTOM_WIN.start} → ${CUSTOM_WIN.end}${CUSTOM_WIN.topN != null ? ` · top-${CUSTOM_WIN.topN}` : ''} ▾` : 'Return · window ▾') : `CAGR${VIEW === 'best' ? ' ▾' : ''}`}</th>
     <th class="text-center font-semibold px-3 py-2.5 whitespace-nowrap">Backtests</th>
     <th class="px-2 py-2.5"></th>
     ${OWNER ? '<th class="px-2 py-2.5"></th>' : ''}
@@ -310,8 +310,8 @@ function render() {
     if (VIEW === 'custom') {
       const cr = CUSTOM.get(identityKey(c));
       cagrCell = cr && cr.cagr != null
-        ? `<span class="font-bold ${cr.cagr >= 0 ? 'pos' : 'neg'}">${pct(cr.cagr)}</span>
-           <span class="block text-[10px] text-slate-400 mt-0.5">ret ${pct(cr.ret)} · DD -${cr.maxDD.toFixed(1)}%${cr.topN != null ? ` · top-${cr.topN}` : ''}</span>`
+        ? `<span class="font-bold ${cr.ret >= 0 ? 'pos' : 'neg'}">${pct(cr.ret)}</span>
+           <span class="block text-[10px] text-slate-400 mt-0.5">CAGR ${pct(cr.cagr)} · DD -${cr.maxDD.toFixed(1)}%${cr.topN != null ? ` · top-${cr.topN}` : ''}</span>`
         : (CUSTOM_WIN ? '<span class="text-slate-300 text-xs">no data</span>' : '<span class="text-slate-400 text-xs">not computed</span>');
     }
     return `<tr class="border-b border-slate-100 hover:bg-slate-50 cursor-pointer" data-toggle="r${gi}">
