@@ -43,9 +43,28 @@ jobs:
           }
           snap bt_public        "backups/bt_history_${DAY}.json"
           snap bt_strats_public "backups/bt_strategies_${DAY}.json"
+          # site-features data (watchlist/triage/settings/insurer inbox + picks log; sw_kv payloads
+          # are arrays, so the same non-empty check applies). Fine if a call 404s pre-schema-deploy —
+          # snap() just skips it.
+          snapArgs () {
+            curl -sS -X POST "$API/rpc/$1" -H "apikey: $KEY" -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" -d "$2" -o "$3"
+            if python3 -c "import json,sys; d=json.load(open('$3')); sys.exit(0 if isinstance(d,list) and len(d)>0 else 1)" 2>/dev/null; then
+              echo "Backed up $(python3 -c "import json;print(len(json.load(open('$3'))))") -> $3"
+            else
+              echo "$3: empty/invalid — skipping (keeping existing)"; rm -f "$3"
+            fi
+          }
+          for K in WATCHLIST TRIAGE SETTINGS INSURER_INBOX; do
+            snapArgs sw_kv_get "{\"k\":\"$K\"}" "backups/sw_kv_${K}_${DAY}.json"
+          done
+          snapArgs sw_picks_get '{"days":3650}' "backups/sw_picks_${DAY}.json"
           # keep only the 7 most-recent daily snapshots of each
           ls -1 backups/bt_history_*.json    2>/dev/null | sort | head -n -7 | xargs -r rm -f
           ls -1 backups/bt_strategies_*.json 2>/dev/null | sort | head -n -7 | xargs -r rm -f
+          for K in WATCHLIST TRIAGE SETTINGS INSURER_INBOX; do
+            ls -1 backups/sw_kv_${K}_*.json  2>/dev/null | sort | head -n -7 | xargs -r rm -f
+          done
+          ls -1 backups/sw_picks_*.json      2>/dev/null | sort | head -n -7 | xargs -r rm -f
 
       - name: Commit (reset-and-replay on push conflict, like the other refresh jobs)
         run: |
@@ -57,7 +76,7 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
             mkdir -p backups
-            rm -f backups/bt_history_*.json
+            rm -f backups/bt_history_*.json backups/bt_strategies_*.json backups/sw_kv_*.json backups/sw_picks_*.json
             cp /tmp/btb/*.json backups/ 2>/dev/null || true
             git add backups
             if git diff --cached --quiet; then echo "No backup change"; exit 0; fi

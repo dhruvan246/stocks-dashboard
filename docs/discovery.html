@@ -22,6 +22,13 @@
           background:var(--accent-soft,#eff6ff);color:var(--accent,#1d4ed8);border:1px solid var(--border-strong,#bfdbfe);white-space:nowrap}
   .pos{color:#15803d;font-weight:600}.neg{color:#b91c1c;font-weight:600}
   html[data-theme="dark"] .pos{color:#6ee7b7}html[data-theme="dark"] .neg{color:#fca5a5}
+  /* triage marks: 👍 interesting / 👎 rejected */
+  .tribtn{cursor:pointer;user-select:none;font-size:12px;opacity:.28;padding:0 2px;display:inline-block;transition:opacity .12s,transform .12s;filter:grayscale(1)}
+  .tribtn:hover{opacity:.9;transform:scale(1.25);filter:none}
+  .tribtn.on{opacity:1;filter:none}
+  tr.tri-in>td:first-child{box-shadow:inset 3px 0 0 #10b981}
+  tr.tri-out{opacity:.42}
+  tr.tri-out:hover{opacity:.85}
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
@@ -93,7 +100,12 @@
         </select></label>
     </div>
     <div class="card p-4 mb-4">
-      <div id="dCount" class="text-sm font-semibold text-slate-700 mb-2"></div>
+      <div class="flex flex-wrap items-center gap-3 mb-2">
+        <div id="dCount" class="text-sm font-semibold text-slate-700"></div>
+        <label class="ml-auto flex items-center gap-1.5 text-[12px] font-semibold text-slate-500 cursor-pointer" title="Marks you make with 👍/👎 are remembered — 👎 rows fade out (or hide entirely with this on)">
+          <input id="triHide" type="checkbox" class="accent-blue-600"> Hide 👎 rejected
+        </label>
+      </div>
       <div class="overflow-x-auto rounded-lg border border-slate-100">
         <table class="w-full text-sm min-w-[760px]">
           <thead id="dHead" class="text-[11px] uppercase text-slate-500 border-b border-slate-200 bg-slate-100"></thead>
@@ -114,8 +126,35 @@ const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>
 const PDF_PREFIX = 'https://nsearchives.nseindia.com/corporate/';
 const inr = n => n == null ? '—' : Number(n).toLocaleString('en-IN');
 const pct = (n, signed) => n == null ? '—' : '<span class="' + (n >= 0 ? 'pos' : 'neg') + '">' + (signed && n > 0 ? '+' : '') + n.toFixed(1) + '%</span>';
-const slink = (sym, name) => '<a class="font-bold text-blue-700 hover:underline" href="./stock.html?sym=' + encodeURIComponent(sym) + '" title="' + esc(name || '') + '">' + esc(sym) + '</a>' +
+const slink = (sym, name) => '<span class="sw-star" data-sym="' + esc(sym) + '"></span> ' +
+                             '<a class="font-bold text-blue-700 hover:underline" href="./stock.html?sym=' + encodeURIComponent(sym) + '" title="' + esc(name || '') + '">' + esc(sym) + '</a>' +
+                             '<span class="whitespace-nowrap ml-1"><span class="tribtn' + (TRI[sym] === 'in' ? ' on' : '') + '" data-tri="' + esc(sym) + '" data-v="in" title="Mark interesting">👍</span>' +
+                             '<span class="tribtn' + (TRI[sym] === 'out' ? ' on' : '') + '" data-tri="' + esc(sym) + '" data-v="out" title="Reject — fades (or hides) this stock everywhere on this page">👎</span></span>' +
                              (name ? '<div class="text-[11px] text-slate-400 font-normal max-w-[180px] truncate">' + esc(name) + '</div>' : '');
+
+/* ---- triage: 👍 interesting / 👎 rejected, remembered across visits.
+   Owner browsers sync through Supabase kv 'TRIAGE' (all devices); everyone else
+   keeps a private browser-local list — same model as the watchlist. ---- */
+let TRI = {};                                   // sym -> 'in' | 'out'
+let triHide = false; try { triHide = localStorage.getItem('sw_triage_hide') === '1'; } catch (e) {}
+const triOwner = () => !!(window.swSync && swSync.isOwner());
+async function triLoad(){
+  let arr = null;
+  if (triOwner()) arr = await swSync.kvGet('TRIAGE');
+  else { try { arr = JSON.parse(localStorage.getItem('sw_triage_local') || '[]'); } catch (e) { arr = []; } }
+  TRI = {}; (Array.isArray(arr) ? arr : []).forEach(e => { if (e && e.s && e.st) TRI[e.s] = e.st; });
+  if (curB) renderDetailRows();
+}
+async function triSave(){
+  const arr = Object.keys(TRI).map(s => ({ s, st: TRI[s], ts: Date.now() }));
+  if (triOwner()) await swSync.kvSet('TRIAGE', arr);
+  else try { localStorage.setItem('sw_triage_local', JSON.stringify(arr)); } catch (e) {}
+}
+function triToggle(sym, v){
+  TRI[sym] === v ? delete TRI[sym] : TRI[sym] = v;    // click again to clear
+  renderDetailRows(); triSave();
+}
+(function triBoot(){ window.swSync ? triLoad() : setTimeout(triBoot, 250); })();
 
 let DATA = null, BUCKETS = {}, curGroup = 'All', shown = 100, curB = null;
 
@@ -208,16 +247,22 @@ function ordSort(a, b){
   }
 }
 function viewRows(){
-  if (curB.type !== 'ord') return curB.rows;
-  return curB.rows.filter(ordFilter).sort(ordSort);
+  let rows = curB.type === 'ord' ? curB.rows.filter(ordFilter).sort(ordSort) : curB.rows;
+  if (triHide) rows = rows.filter(r => TRI[r[0]] !== 'out');
+  return rows;
 }
 function renderDetailRows(){
   const rows = viewRows();
   const upto = Math.min(shown, rows.length);
   let h = '';
-  for (let i = 0; i < upto; i++) h += '<tr class="align-top hover:bg-slate-50">' + rowHtml(curB, rows[i]) + '</tr>';
+  for (let i = 0; i < upto; i++){
+    const st = TRI[rows[i][0]];
+    h += '<tr class="align-top hover:bg-slate-50' + (st === 'in' ? ' tri-in' : st === 'out' ? ' tri-out' : '') + '">' + rowHtml(curB, rows[i]) + '</tr>';
+  }
   $('dBody').innerHTML = h;
-  $('dCount').textContent = 'Showing ' + upto.toLocaleString('en-IN') + ' of ' + rows.length.toLocaleString('en-IN') + ' stocks';
+  if (window.swWatch) swWatch.paintAll($('dBody'));
+  const hid = triHide ? Object.keys(TRI).filter(s => TRI[s] === 'out').length : 0;
+  $('dCount').textContent = 'Showing ' + upto.toLocaleString('en-IN') + ' of ' + rows.length.toLocaleString('en-IN') + ' stocks' + (hid ? ' (👎 hidden)' : '');
   $('dMore').classList.toggle('hidden', upto >= rows.length);
 }
 
@@ -272,6 +317,17 @@ async function load(){
     });
     $('back').addEventListener('click', () => closeBucket());
     $('dMore').addEventListener('click', () => { shown += 200; renderDetailRows(); });
+    $('triHide').checked = triHide;
+    $('triHide').addEventListener('change', () => {
+      triHide = $('triHide').checked;
+      try { localStorage.setItem('sw_triage_hide', triHide ? '1' : ''); } catch (e) {}
+      shown = 100; renderDetailRows();
+    });
+    $('dBody').addEventListener('click', e => {
+      const t = e.target.closest('.tribtn'); if (!t) return;
+      e.preventDefault(); e.stopPropagation();
+      triToggle(t.getAttribute('data-tri'), t.getAttribute('data-v'));
+    });
     ['fMcap', 'fPe', 'fSort'].forEach(id => $(id).addEventListener('change', () => { shown = 100; renderDetailRows(); }));
     window.addEventListener('hashchange', applyHash);
     renderGrid();

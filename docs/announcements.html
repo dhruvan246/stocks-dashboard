@@ -189,7 +189,7 @@ function renderRows(){
   for (let i = 0; i < upto; i++){
     const r = filtered[i];
     h += '<tr class="align-top hover:bg-slate-50">' +
-      '<td class="py-3 px-3"><a class="font-bold text-blue-700 hover:underline" href="./stock.html?sym=' + encodeURIComponent(r.s) + '">' + esc(r.s) + '</a>' +
+      '<td class="py-3 px-3"><span class="sw-star" data-sym="' + esc(r.s) + '"></span> <a class="font-bold text-blue-700 hover:underline" href="./stock.html?sym=' + encodeURIComponent(r.s) + '">' + esc(r.s) + '</a>' +
         '<div class="text-[10.5px] text-slate-400 leading-tight max-w-[150px] truncate" title="' + esc(r.co) + '">' + esc(r.co) + '</div></td>' +
       '<td class="py-3 px-3 whitespace-nowrap text-slate-600">' + r.date + '<div class="text-[10px] text-slate-400">' + r.time + '</div></td>' +
       '<td class="py-3 px-3 text-[12px] text-slate-500 max-w-[190px]" title="' + esc(r.cat) + '">' + esc(r.type) + '</td>' +

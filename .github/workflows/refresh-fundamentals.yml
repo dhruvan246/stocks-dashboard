@@ -78,6 +78,13 @@ jobs:
           pip install -q pymupdf curl_cffi
           python3 -X utf8 scripts/fetch_insurers.py || echo "(insurer fill failed — keeping existing; insurers stay gapped this run)"
 
+      # Manual insurer PAT entries typed on docs/insurer-inbox.html (Supabase kv INSURER_INBOX).
+      # Cheap (1 HTTP call when idle) so it runs on EVERY trigger — a number typed on the phone
+      # right after a result lands is filed within the hour, not at night. Validated hard
+      # (insurer whitelist + plausible-range gate) and fill-only unless the entry says overwrite.
+      - name: Apply insurer-inbox manual entries
+        run: python3 -X utf8 scripts/apply_insurer_inbox.py || echo "(insurer inbox failed — entries stay pending)"
+
       # Backstop: any quarter that lands without a filing date (Screener backfills, integrated
       # rows with broadcast_Date=None) gets the SEBI deadline so the point-in-time screen can use
       # it (a null date silently drops the quarter -> stale fallback, which wrongly excluded AIIL).

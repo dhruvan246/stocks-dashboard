@@ -660,6 +660,89 @@ $('mLiveCfg').onclick = setWorkerUrl;
 $('hCompute').onclick = runHold;
 $('mAlsoToggle').onclick = () => { const a = $('mAlso'); a.classList.toggle('hidden'); $('mAlsoToggle').innerHTML = $('mAlsoToggle').innerHTML.replace(a.classList.contains('hidden') ? '▾' : '▸', a.classList.contains('hidden') ? '▸' : '▾'); };
 
+/* ---------- ?logpicks=1 — headless daily picks-logger (driven by scripts/log_picks.mjs) ----------
+   For every unique saved strategy: compute TODAY'S top-N picks at the data end-date with entry
+   prices, upsert them into Supabase sw_picks_log (one row per data-day per strategy — the
+   append-only paper-trade memory), then rebuild the full forward-tracking NAV series from the
+   whole log and expose it as window.__SW_TRACK for the driver to save as docs/live_tracking.json.
+   Completion signal (bake-style): a #logpicksOut div whose text ends '✅ LogPicks done' / 'LogPicks error'. */
+function hash36(str){ let h = 5381; for (let i = 0; i < str.length; i++) h = (h * 33 + str.charCodeAt(i)) >>> 0; return h.toString(36); }
+function summarizeCfg(c){ return { sortBy: c.sortBy, dir: c.dir, topN: c.topN, freq: c.freq, indexName: c.indexName || '',
+  mcapFloor: c.mcapFloor || 0, lookback: c.lookback || 1, earnBasis: c.earnBasis || 'con',
+  filters: (c.filters || []).map(f => f.field + ' ' + f.op + ' ' + f.val) }; }
+function buildTracking(logs, byId){
+  const bySid = {};
+  (logs || []).forEach(r => { if (r && r.sid && r.p) (bySid[r.sid] = bySid[r.sid] || []).push(r); });
+  const cfgBySid = {}; Object.keys(byId).forEach(k => cfgBySid['st' + hash36(k)] = byId[k]);
+  const mkey = d => (+d.slice(0, 4)) * 12 + (+d.slice(5, 7) - 1);
+  const niftyDays = new Set(), strats = [];
+  for (const sid of Object.keys(bySid)){
+    const rows = bySid[sid].sort((a, b) => a.day < b.day ? -1 : 1);
+    const freq = Math.max(1, (rows[rows.length - 1].p.f | 0) || 1);   // rebalance every `freq` months
+    let nav = 100, hold = null, lastBucket = -1;
+    const series = [];
+    for (const r of rows){
+      const off = dayOff(r.day);
+      if (hold){ let v = 0; for (const h of hold){ let px = markPrice(h.t, off); if (px == null) px = h.lp; else h.lp = px; v += h.u * px; } nav = v; }
+      const bucket = Math.floor(mkey(r.day) / freq);
+      const picks = r.p.picks || [];
+      if (bucket !== lastBucket && picks.length){                     // rotate into that day's picks at logged prices
+        const per = nav / picks.length;
+        hold = picks.filter(p => p.p > 0).map(p => ({ t: p.t, u: per / p.p, lp: p.p }));
+        lastBucket = bucket;
+      }
+      series.push([r.day, Math.round(nav * 1000) / 1000]);
+      niftyDays.add(r.day);
+    }
+    const last = rows[rows.length - 1];
+    strats.push({ sid, name: last.p.n || 'Strategy', freq, topN: last.p.tn || (last.p.picks || []).length,
+      cfg: cfgBySid[sid] ? summarizeCfg(cfgBySid[sid].cfg) : null,
+      since: rows[0].day, points: series.length, nav: series,
+      ret: Math.round((nav - 100) * 100) / 100,
+      latest: { day: last.day, picks: (last.p.picks || []).map(p => ({ s: p.s, p: p.p })) } });
+  }
+  const niftyPx = {};
+  niftyDays.forEach(d => { const v = nearestNifty(d); if (v) niftyPx[d] = Math.round(v * 100) / 100; });
+  strats.sort((a, b) => b.ret - a.ret);
+  return { updated: (typeof SF !== 'undefined' && SF && SF.end) || '', strategies: strats, niftyPx };
+}
+async function runLogPicks(){
+  const out = document.createElement('div'); out.id = 'logpicksOut';
+  out.style.cssText = 'position:fixed;bottom:8px;left:8px;z-index:99;background:#0f172a;color:#a5f3fc;font:12px monospace;padding:8px 12px;border-radius:8px;max-width:92vw';
+  document.body.appendChild(out);
+  const say = t => { out.textContent = t; console.log('[logpicks]', t); };
+  try {
+    say('waiting for sync layer…');
+    for (let i = 0; i < 150 && !window.swSync; i++) await new Promise(r => setTimeout(r, 200));
+    if (!window.swSync) throw new Error('swSync never loaded');
+    say('loading engine + market data…');
+    await ensureEngine();
+    const byId = {};                                                   // canonical variant per identity = longest window
+    for (const s of strategies()){
+      if (!s || !s.cfg) continue;
+      const k = identityKey(s.cfg);
+      if (!byId[k] || (s.cfg.start || '9999') < (byId[k].cfg.start || '9999')) byId[k] = s;
+    }
+    const ids = Object.keys(byId), day = SF.end;
+    let done = 0, fails = 0;
+    for (const k of ids){
+      const s = byId[k], sid = 'st' + hash36(k);
+      try {
+        const picks = screenAsOf(s.cfg, day).slice(0, s.cfg.topN || 5)
+          .map(r => ({ s: r.sym, t: r.tkr, p: Math.round(r.price * 100) / 100 }));
+        const ok = await swSync.picksSet(day, sid, { n: s.name || 'Strategy', f: s.cfg.freq || 1, tn: s.cfg.topN || 5, picks });
+        if (ok !== true) fails++;
+      } catch (e) { fails++; console.warn('logpicks fail', s && s.name, e); }
+      done++; say('logging picks ' + done + '/' + ids.length + (fails ? ' (' + fails + ' failed)' : ''));
+    }
+    say('rebuilding tracking series from the full log…');
+    const logs = await swSync.picksGet(null, 800);
+    window.__SW_TRACK = buildTracking(logs, byId);
+    say(fails ? 'LogPicks error: ' + fails + '/' + ids.length + ' strategies failed to log' :
+                '✅ LogPicks done — ' + ids.length + ' strategies @ ' + day);
+  } catch (e) { say('LogPicks error: ' + (e && e.message || e)); }
+}
+
 (async function boot() {
   const localBefore = loadLS('bt_strategies');                          // snapshot before the shared pull replaces local
   const localHistBefore = loadLS('bt_history');                         // ditto for history — btSync.pull() overwrites local with the shared array
@@ -685,6 +768,7 @@ $('mAlsoToggle').onclick = () => { const a = $('mAlso'); a.classList.toggle('hid
   const pulled = loadLS('bt_strategies'); const have = new Set(pulled.map(s => s.id));
   const localOnly = localBefore.filter(s => s && s.local && !have.has(s.id));
   if (localOnly.length) { saveLS('bt_strategies', pulled.concat(localOnly)); if (window.btSync) { try { await btSync.pushStrategies(); } catch (e) {} } }   // publish local-only strategies (open list; self-heals an earlier failed publish)
+  if (new URLSearchParams(location.search).get('logpicks')) { await runLogPicks(); return; }   // headless daily picks-logger — skips the UI
   $('tabBest').onclick   = () => setView('best');
   $('tabNew').onclick    = () => setView('new');
   $('tabCustom').onclick = () => setView('custom');

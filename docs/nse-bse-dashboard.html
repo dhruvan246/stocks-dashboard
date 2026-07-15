@@ -126,6 +126,11 @@
         <button class="preset-btn text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 py-1 font-medium" data-since-1996="1">Since 1996</button>
         <button class="preset-btn text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 py-1 font-medium" data-ytd="1">YTD</button>
       </div>
+      <div class="flex flex-wrap items-center gap-2 mt-3 pt-3 border-t border-slate-100">
+        <span class="text-[11px] font-bold uppercase tracking-wide text-slate-400">My screens</span>
+        <span id="msList" class="flex flex-wrap gap-2"></span>
+        <button id="msSave" class="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-full px-3 py-1 font-semibold" title="Save the current filter combination (dates, mcap, index, F&amp;O, industry) under a name — synced to your other devices">+ Save current filters</button>
+      </div>
     </div>
   </section>
 
@@ -588,7 +593,7 @@ function renderResults(results) {
       out.push(
         '<tr class="hover:bg-slate-50 transition' + (r.noData ? ' bg-slate-50/40' : '') + '">' +
         '<td class="px-4 py-3 text-slate-400 text-xs">' + (i + 1) + '</td>' +
-        '<td class="px-4 py-3"><a ' + linkAttrs + ' class="font-semibold text-slate-800 hover:text-blue-600 hover:underline">' + r.symbol + '</a> <a ' + screenerAttrs + ' class="text-slate-300 hover:text-blue-600 text-[10px] align-super">↗</a></td>' +
+        '<td class="px-4 py-3"><span class="sw-star" data-sym="' + r.symbol + '"></span> <a ' + linkAttrs + ' class="font-semibold text-slate-800 hover:text-blue-600 hover:underline">' + r.symbol + '</a> <a ' + screenerAttrs + ' class="text-slate-300 hover:text-blue-600 text-[10px] align-super">↗</a></td>' +
         '<td class="px-4 py-3"><a ' + linkAttrs + ' class="text-slate-700 hover:text-blue-600 hover:underline">' + r.name + '</a></td>' +
         '<td class="px-4 py-3"><span class="text-xs bg-slate-100 text-slate-600 rounded-md px-2 py-0.5">' + r.sector + '</span></td>' +
         '<td class="px-4 py-3 text-right text-slate-700 tabular-nums">' + mcap + '</td>' +
@@ -1004,6 +1009,54 @@ document.querySelectorAll('.preset-btn').forEach(btn => {
     document.getElementById('fromDate').value = from.toISOString().split('T')[0];
   });
 });
+
+/* ---- "My screens": named saved filter-sets (localStorage sw_dash_presets, synced across
+        devices through theme.js's settings sync when the browser is owner-unlocked) ---- */
+function msAll() { try { return JSON.parse(localStorage.getItem('sw_dash_presets') || '[]'); } catch (e) { return []; } }
+function msStore(a) {
+  try { localStorage.setItem('sw_dash_presets', JSON.stringify(a)); } catch (e) {}
+  if (window.swSync) try { swSync.pushSettings(); } catch (e) {}   // sync now, not just on page-leave
+  msRender();
+}
+function msCapture() {
+  return { from: document.getElementById('fromDate').value, to: document.getElementById('toDate').value,
+           mcap: Array.from(document.querySelectorAll('.mcap-cb')).filter(c => c.checked).map(c => c.dataset.bucket),
+           idx: document.getElementById('indexFilter').value, fno: document.getElementById('fnoFilter').value,
+           sec: document.getElementById('sectorFilter').value };
+}
+function msApply(p) {
+  if (p.from) document.getElementById('fromDate').value = p.from;
+  if (p.to)   document.getElementById('toDate').value   = p.to;
+  document.querySelectorAll('.mcap-cb').forEach(c => c.checked = (p.mcap || []).indexOf(c.dataset.bucket) >= 0);
+  if (typeof updateMcapLabel === 'function') updateMcapLabel();
+  document.getElementById('indexFilter').value  = p.idx || 'all';
+  document.getElementById('fnoFilter').value    = p.fno || 'all';
+  document.getElementById('sectorFilter').value = p.sec || 'all';
+  loadData();
+}
+function msRender() {
+  const list = msAll();
+  document.getElementById('msList').innerHTML = list.map(function (p, i) {
+    return '<span class="inline-flex items-center gap-1 text-xs bg-slate-100 hover:bg-indigo-100 text-slate-700 rounded-full pl-3 pr-1.5 py-1 font-medium cursor-pointer" data-ms="' + i + '" title="Apply this screen">' +
+      p.name.replace(/&/g, '&amp;').replace(/</g, '&lt;') +
+      '<button class="text-slate-400 hover:text-rose-600 font-bold px-0.5" data-msdel="' + i + '" title="Delete this screen">×</button></span>';
+  }).join('') || '<span class="text-[11px] text-slate-400">none yet — set your filters, then save them here</span>';
+}
+document.getElementById('msSave').addEventListener('click', function () {
+  const name = prompt('Name this screen (e.g. "Smallcap N500 momentum"):');
+  if (!name || !name.trim()) return;
+  const list = msAll().filter(function (p) { return p.name !== name.trim(); });
+  list.unshift(Object.assign({ name: name.trim() }, msCapture()));
+  msStore(list.slice(0, 30));
+});
+document.getElementById('msList').addEventListener('click', function (e) {
+  const del = e.target.closest('[data-msdel]');
+  if (del) { const l = msAll(); l.splice(+del.getAttribute('data-msdel'), 1); msStore(l); e.stopPropagation(); return; }
+  const chip = e.target.closest('[data-ms]');
+  if (chip) msApply(msAll()[+chip.getAttribute('data-ms')]);
+});
+msRender();
+setTimeout(msRender, 2500);   // re-render once the settings sync may have pulled newer presets
 
 loadAndInit();
 </script>

@@ -841,3 +841,56 @@ shareable URL (`discovery.html#b=<key>`).
   moved to `scripts/archive/` (gitignored); 35 still-referenced `_*` tools kept in scripts/ (resweep loop,
   membership history, FM vision helpers). 81 scratch PNGs deleted. If an old procedure references a missing
   `_*.py`, look in scripts/archive/ first.
+
+---
+
+## 19. SITE FEATURES ON SUPABASE  (watchlist / triage / settings-sync / insurer inbox / page stats / LIVE TRACKING — built 2026-07-16)
+Six user-state features on the SAME free Supabase project (`nebjnsndgrhumnkuipqy`) and security model as the
+backtest history (public reads; writes carry the public token `sw_owner_8Kq2Lm9Xp4Rt7v`; RLS on, tables reachable
+only through SECURITY DEFINER RPCs; daily GitHub backups = recovery). **Schema: `scripts/supabase_features.sql`
+— deploy/extend by pasting the whole file in Supabase dashboard → SQL Editor → Run (idempotent).**
+
+**Plumbing (every page gets it automatically):**
+- `docs/sw-sync.js` — tiny fetch-based RPC client (NO supabase-js): `swSync.kvGet/kvSet/kvAppend` (kv docs
+  WATCHLIST/TRIAGE/SETTINGS/INSURER_INBOX/PRESETS, whitelisted in `sw_kv_ok()`), `pvHit/pvStats` (page-view
+  counter, auto-pings once per session per page), `picksSet/picksGet` (forward-tracking log), plus
+  `syncSettings/pushSettings` (cross-device localStorage sync — key list lives in theme.js `loadFeatures()`).
+  Offline/pre-deploy it mirrors to localStorage with a dirty-flag that self-heals on the next reachable load.
+- `docs/sw-watchlist.js` — site-wide ⭐ stars: any page renders `<span class="sw-star" data-sym="X"></span>`
+  and this file paints/toggles/syncs it (MutationObserver + one delegated click handler).
+- `docs/theme.js` `loadFeatures()` injects both scripts on EVERY page (order matters: sw-sync first).
+- **OWNER vs visitor:** owner browsers (unlocked once via `?ownerkey=…`, same `bt_owner_key` as backtests) read/
+  write the SHARED kv docs = cross-device sync. Non-owner visitors get private browser-local lists (never pushed)
+  so strangers can't scribble on the owner's watchlist. INSURER_INBOX appends + pv hits are open to everyone.
+
+**Features & where:**
+- **Watchlist** `docs/watchlist.html` (+ stars on dashboard/discovery/announcements/quarterly-results): entries
+  `{s,note,ts,nts}` in kv WATCHLIST; notes edited on the watchlist page. quarterly-results' old `qr_watch` stars
+  are BRIDGED two-way into it (one-time seed guarded by `qr_watch_migrated`).
+- **Discovery triage** (`discovery.html`): 👍/👎 per stock in kv TRIAGE (`{s,st:'in'|'out',ts}`), rejected rows
+  fade, "Hide 👎 rejected" toggle (`sw_triage_hide`, settings-synced).
+- **Settings sync**: theme, sector watch, fav strategies, worker URL, dashboard "My screens"
+  (`sw_dash_presets`, UI in build_compressed.py template — EDIT THE TEMPLATE, docs copy was hand-mirrored once),
+  rotations. Pull-on-load / push-on-pagehide (owner only).
+- **Insurer inbox** `docs/insurer-inbox.html` → kv INSURER_INBOX → `scripts/apply_insurer_inbox.py` in
+  refresh-fundamentals.yml (EVERY trigger; stdlib-only, validates vs the same INSURERS ranges as
+  fetch_insurers.py — keep the two dicts in sync), fill-only unless `force`, touches `.fund_updated`,
+  writes ✅/✖ statuses back so the page shows them.
+- **Page stats** `docs/analytics.html` ← `sw_pv_stats` (table `sw_page_views`, IST day). Real visits keep the
+  free project awake (plus the daily backup ping).
+- **LIVE TRACKING (paper-trade forward)** `docs/live-tracking.html` ← `docs/live_tracking.json`, baked daily by
+  `.github/workflows/log-picks.yml` → `scripts/log_picks.mjs` → drives
+  `saved-strategies.html?logpicks=1` (bake-style: DOM signal `#logpicksOut` "✅ LogPicks done"/"LogPicks error").
+  That mode: per unique saved strategy (identityKey; canonical variant = longest window; sid = `'st'+hash36(key)`)
+  logs `{n,f:freqMonths,tn:topN,picks:[{s,t,p}]}` into `sw_picks_log` upserted on (data-day SF.end, sid) — then
+  rebuilds NAV: value holdings daily via `markPrice` (delisting→0), rotate into that day's logged picks when the
+  `floor(monthKey/freq)` bucket changes, Nifty benchmark from `nearestNifty`. Chains off "Bake backtest snapshots"
+  success. A missed day = one fewer NAV point (fine). Picks depend on cfg+topN, NOT the backtest window.
+- **Backups:** backup-backtest-history.yml also snapshots the 4 kv docs + sw_picks_get daily (7-day window,
+  non-empty guard). Restore = `bt_restore.py`-style REST push of the JSON back into the RPCs.
+
+**Gotchas:**
+- sw_kv whole-doc writes are last-write-wins across devices (fine for one owner; appends are race-free serverside).
+- `sw_kv_ok()` is the key whitelist — adding a new kv doc = add the key there + re-run the SQL file.
+- Until the SQL is deployed every feature silently runs browser-local (by design); analytics shows "no visits yet".
+- log-picks CI exits 1 only on "LogPicks error" (a real logging failure), not on partial anything.

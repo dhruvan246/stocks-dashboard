@@ -238,7 +238,38 @@ let QR=null, CAL=null, FEED=null, QTRS=[], CO=null, BSE_COUNT=0, PDF_ONLY=new Se
 const ST = { tab:'overview', qi:0, mode:'yoy', basis:'auto', uni:'all', mcap:'all', sector:'all',
              search:'', screen:'all', heat:'pat', cal:'conf', sort:{k:'ann',dir:-1}, shown:100 };
 let WATCH = new Set(); try{ WATCH = new Set(JSON.parse(localStorage.getItem('qr_watch')||'[]')); }catch(e){}
-const saveWatch = () => { try{ localStorage.setItem('qr_watch', JSON.stringify([...WATCH])); }catch(e){} };
+/* Stars here are BRIDGED to the site-wide synced ⭐ Watchlist (sw-watchlist.js):
+   toggling a star on this page adds/removes it there too, and vice versa.
+   qr_watch stays as a local mirror (and one-time seed for pre-bridge stars). */
+const saveWatch = () => {
+  try{ localStorage.setItem('qr_watch', JSON.stringify([...WATCH])); }catch(e){}
+  try{
+    if(!window.swWatch || !swWatch.list()) return;
+    const cur = new Set(swWatch.list().map(e=>e.s));
+    WATCH.forEach(s=>{ if(!cur.has(s)) swWatch.toggle(s); });
+    cur.forEach(s=>{ if(!WATCH.has(s)) swWatch.toggle(s); });
+  }catch(e){}
+};
+const paintStars = () => document.querySelectorAll('[data-star]').forEach(el=>el.classList.toggle('on', WATCH.has(el.getAttribute('data-star'))));
+(function bridgeWatch(){
+  if(!window.swWatch){ setTimeout(bridgeWatch, 250); return; }
+  swWatch.load().then(()=>{
+    try{
+      if(!localStorage.getItem('qr_watch_migrated')){           // one-time: old local stars → shared list
+        [...WATCH].forEach(s=>{ if(!swWatch.has(s)) swWatch.toggle(s); });
+        localStorage.setItem('qr_watch_migrated','1');
+      }
+    }catch(e){}
+    WATCH = new Set(swWatch.list().map(e=>e.s));
+    try{ localStorage.setItem('qr_watch', JSON.stringify([...WATCH])); }catch(e){}
+    paintStars();
+  });
+  document.addEventListener('sw-watch-change', ()=>{
+    WATCH = new Set(swWatch.list().map(e=>e.s));
+    try{ localStorage.setItem('qr_watch', JSON.stringify([...WATCH])); }catch(e){}
+    paintStars();
+  });
+})();
 
 /* ---------- formatting ---------- */
 function qlabel(qe, long){

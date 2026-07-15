@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Page Stats</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; font-feature-settings:"tnum" 1; }
+  .tip{position:fixed;z-index:60;pointer-events:none;background:#0f172a;color:#f8fafc;font-size:12px;font-weight:600;
+       padding:6px 9px;border-radius:8px;box-shadow:0 8px 24px -8px rgba(0,0,0,.4);opacity:0;transition:opacity .08s}
+  .bar{fill:#4f46e5}.bar:hover{fill:#4338ca}
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-lg mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav class="flex items-center gap-1 overflow-x-auto">
+      <a href="./analytics.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow transition">👀<span class="hidden sm:inline">Page Stats</span></a>
+      <a href="./status.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">🩺<span class="hidden sm:inline">Data health</span></a>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-screen-lg mx-auto px-4 py-6">
+  <div class="mb-4">
+    <h1 class="text-xl font-bold text-slate-900">👀 Page stats</h1>
+    <p class="text-sm text-slate-500 mt-0.5">One count per visit per page (per browser session) — enough to see what's used, nothing personal. Also keeps the free database awake.</p>
+  </div>
+
+  <div id="status" class="text-sm text-slate-500 py-8 text-center">Loading…</div>
+
+  <div id="wrap" class="hidden">
+    <div class="grid grid-cols-3 gap-3 mb-5">
+      <div class="bg-white border border-slate-200 rounded-xl p-4"><div class="text-[11px] font-bold uppercase tracking-wide text-slate-400">Today</div><div id="kToday" class="text-2xl font-extrabold text-slate-900 mt-1">—</div></div>
+      <div class="bg-white border border-slate-200 rounded-xl p-4"><div class="text-[11px] font-bold uppercase tracking-wide text-slate-400">Last 7 days</div><div id="k7" class="text-2xl font-extrabold text-slate-900 mt-1">—</div></div>
+      <div class="bg-white border border-slate-200 rounded-xl p-4"><div class="text-[11px] font-bold uppercase tracking-wide text-slate-400">Last 30 days</div><div id="k30" class="text-2xl font-extrabold text-slate-900 mt-1">—</div></div>
+    </div>
+
+    <div class="bg-white border border-slate-200 rounded-xl p-4 mb-5">
+      <div class="text-sm font-bold text-slate-700 mb-3">Daily visits — all pages</div>
+      <div class="overflow-x-auto"><svg id="daily" width="100%" height="160" role="img" aria-label="Daily total page views"></svg></div>
+    </div>
+
+    <div class="bg-white border border-slate-200 rounded-xl p-4">
+      <div class="flex flex-wrap items-center gap-2 mb-3">
+        <div class="text-sm font-bold text-slate-700">Visits by page</div>
+        <span class="inline-flex rounded-lg border border-slate-300 overflow-hidden text-xs font-semibold ml-auto" role="group">
+          <button data-w="7"  class="wbtn px-3 py-1.5">7d</button>
+          <button data-w="30" class="wbtn px-3 py-1.5 border-l border-slate-300">30d</button>
+          <button data-w="90" class="wbtn px-3 py-1.5 border-l border-slate-300">90d</button>
+        </span>
+      </div>
+      <div id="pages"></div>
+    </div>
+  </div>
+</main>
+<div id="tip" class="tip"></div>
+
+<script>
+(function(){
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const fmt = n => Number(n).toLocaleString('en-IN');
+  let ROWS = [], WIN = 30;
+
+  const tip = $('tip');
+  function showTip(ev, html){ tip.innerHTML = html; tip.style.opacity = 1;
+    const x = Math.min(ev.clientX + 14, innerWidth - tip.offsetWidth - 8), y = Math.min(ev.clientY + 14, innerHeight - tip.offsetHeight - 8);
+    tip.style.left = x + 'px'; tip.style.top = y + 'px'; }
+  const hideTip = () => tip.style.opacity = 0;
+
+  const dayLabel = d => new Date(d + 'T00:00:00').toLocaleDateString('en-IN', { day:'numeric', month:'short' });
+
+  function renderDaily(){
+    const byDay = {};
+    ROWS.forEach(r => byDay[r.day] = (byDay[r.day] || 0) + r.hits);
+    const days = Object.keys(byDay).sort().slice(-60);
+    if (!days.length) return;
+    const W = Math.max(560, days.length * 14), H = 160, PB = 22, PT = 8;
+    const max = Math.max(...days.map(d => byDay[d]), 1);
+    const bw = Math.max(4, Math.floor(W / days.length) - 2);   // 2px surface gap between bars
+    let h = '';
+    days.forEach((d, i) => {
+      const v = byDay[d], bh = Math.max(2, Math.round((H - PB - PT) * v / max));
+      const x = Math.round(i * (W / days.length)) + 1, y = H - PB - bh;
+      h += '<rect class="bar" x="' + x + '" y="' + y + '" width="' + bw + '" height="' + bh + '" rx="3" data-d="' + d + '" data-v="' + v + '"></rect>';
+      if (i % Math.ceil(days.length / 8) === 0)
+        h += '<text x="' + (x + bw / 2) + '" y="' + (H - 6) + '" text-anchor="middle" font-size="10" fill="#94a3b8">' + dayLabel(d) + '</text>';
+    });
+    const svg = $('daily');
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H); svg.style.minWidth = W + 'px';
+    svg.innerHTML = h;
+    svg.addEventListener('mousemove', ev => { const b = ev.target.closest('.bar');
+      b ? showTip(ev, dayLabel(b.getAttribute('data-d')) + ' — <b>' + fmt(b.getAttribute('data-v')) + '</b> visits') : hideTip(); });
+    svg.addEventListener('mouseleave', hideTip);
+  }
+
+  function renderPages(){
+    const cut = new Date(Date.now() - WIN * 864e5).toISOString().slice(0, 10);
+    const byPage = {};
+    ROWS.forEach(r => { if (r.day >= cut) byPage[r.page] = (byPage[r.page] || 0) + r.hits; });
+    const pages = Object.keys(byPage).sort((a, b) => byPage[b] - byPage[a]);
+    const max = Math.max(...pages.map(p => byPage[p]), 1);
+    $('pages').innerHTML = pages.map(p =>
+      '<div class="flex items-center gap-3 py-1.5" title="' + esc(p) + '">' +
+        '<div class="w-44 sm:w-56 text-[13px] font-semibold text-slate-700 truncate text-right shrink-0">' + esc(p.replace('.html','')) + '</div>' +
+        '<div class="flex-1 h-5 bg-slate-100 rounded overflow-hidden"><div class="h-full rounded" style="width:' + Math.max(2, Math.round(100 * byPage[p] / max)) + '%;background:#4f46e5"></div></div>' +
+        '<div class="w-14 text-right text-[13px] font-bold text-slate-800 shrink-0">' + fmt(byPage[p]) + '</div>' +
+      '</div>').join('') || '<div class="text-sm text-slate-400 py-6 text-center">No visits in this window yet.</div>';
+    document.querySelectorAll('.wbtn').forEach(b => {
+      const on = +b.getAttribute('data-w') === WIN;
+      b.className = 'wbtn px-3 py-1.5' + (b.getAttribute('data-w') !== '7' ? ' border-l border-slate-300' : '') + (on ? ' bg-indigo-600 text-white' : ' bg-white text-slate-600 hover:bg-slate-50');
+    });
+  }
+
+  function kpis(){
+    const today = new Date(Date.now() + 5.5 * 36e5).toISOString().slice(0, 10); // IST-ish day
+    const cut7 = new Date(Date.now() - 7 * 864e5).toISOString().slice(0, 10);
+    const cut30 = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10);
+    let t = 0, s7 = 0, s30 = 0;
+    ROWS.forEach(r => { if (r.day === today) t += r.hits; if (r.day >= cut7) s7 += r.hits; if (r.day >= cut30) s30 += r.hits; });
+    $('kToday').textContent = fmt(t); $('k7').textContent = fmt(s7); $('k30').textContent = fmt(s30);
+  }
+
+  async function boot(){
+    if (!window.swSync){ setTimeout(boot, 150); return; }
+    try {
+      const rows = await swSync.pvStats(90);
+      ROWS = Array.isArray(rows) ? rows : [];
+      if (!ROWS.length){ $('status').textContent = 'No visits recorded yet — counts start once the database schema is deployed. Browse a few pages and come back.'; return; }
+      $('status').classList.add('hidden'); $('wrap').classList.remove('hidden');
+      kpis(); renderDaily(); renderPages();
+      document.querySelectorAll('.wbtn').forEach(b => b.addEventListener('click', () => { WIN = +b.getAttribute('data-w'); renderPages(); }));
+    } catch (e) {
+      $('status').textContent = /404/.test(e && e.message) ?
+        'Counting starts once the database schema is deployed (scripts/supabase_features.sql) — browse a few pages after that and come back.' :
+        'Could not load stats (' + (e && e.message || e) + ').';
+    }
+  }
+  document.readyState === 'loading' ? addEventListener('DOMContentLoaded', boot) : boot();
+})();
+</script>
+</body>
+</html>

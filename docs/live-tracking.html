@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Live Tracking</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; font-feature-settings:"tnum" 1; }
+  .tip{position:fixed;z-index:60;pointer-events:none;background:#0f172a;color:#f8fafc;font-size:12px;font-weight:600;
+       padding:6px 9px;border-radius:8px;box-shadow:0 8px 24px -8px rgba(0,0,0,.4);opacity:0;transition:opacity .08s;line-height:1.5}
+  .pos{color:#15803d;font-weight:700}.neg{color:#b91c1c;font-weight:700}
+  html[data-theme="dark"] .pos{color:#6ee7b7}html[data-theme="dark"] .neg{color:#fca5a5}
+  tr.sel td{background:#eef2ff}
+  .chip{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:9999px;background:#f1f5f9;color:#334155;margin:1px 2px 1px 0}
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-lg mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav class="flex items-center gap-1 overflow-x-auto">
+      <a href="./saved-strategies.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">⭐<span class="hidden sm:inline">Saved strategies</span></a>
+      <a href="./live-tracking.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow transition">📡<span class="hidden sm:inline">Live tracking</span></a>
+      <a href="./stock-backtest.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition shrink-0">🧪<span class="hidden sm:inline">Create a Strategy</span></a>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-screen-lg mx-auto px-4 py-6">
+  <div class="mb-4">
+    <h1 class="text-xl font-bold text-slate-900">📡 Live tracking — strategies paper-traded forward</h1>
+    <p class="text-sm text-slate-500 mt-1">A backtest looks backwards; this looks forwards. Every day a robot writes down each saved
+    strategy's picks <b>at that day's real closing prices</b> and holds them like a real portfolio (rotating at the strategy's own
+    rebalance rhythm). No hindsight, no curve-fitting — this is the honest out-of-sample number. <span id="upd" class="text-slate-400"></span></p>
+  </div>
+
+  <div id="status" class="text-sm text-slate-500 py-10 text-center bg-white border border-dashed border-slate-300 rounded-xl">Loading…</div>
+
+  <div id="wrap" class="hidden">
+    <div class="bg-white border border-slate-200 rounded-xl p-4 mb-4">
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mb-1">
+        <div id="cTitle" class="text-sm font-bold text-slate-800"></div>
+        <div class="ml-auto flex items-center gap-4 text-[11px] font-semibold text-slate-500">
+          <span class="inline-flex items-center gap-1.5"><span style="width:14px;height:0;border-top:2.5px solid #4f46e5;display:inline-block"></span> Strategy (NAV, base 100)</span>
+          <span class="inline-flex items-center gap-1.5"><span style="width:14px;height:0;border-top:2px dashed #94a3b8;display:inline-block"></span> Nifty 50 (rebased)</span>
+        </div>
+      </div>
+      <div id="cCfg" class="text-[11px] text-slate-400 mb-2"></div>
+      <div class="overflow-x-auto"><svg id="chart" width="100%" height="240" role="img" aria-label="Strategy NAV vs Nifty 50, rebased to 100"></svg></div>
+      <div id="cNote" class="text-[11px] text-slate-400 mt-1"></div>
+    </div>
+
+    <div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+      <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200 bg-slate-100">
+          <tr><th class="text-left py-2.5 px-3">Strategy</th><th class="text-right px-3">Tracked since</th>
+              <th class="text-right px-3">Days</th><th class="text-right px-3">Live return</th>
+              <th class="text-right px-3">Nifty 50</th><th class="text-right px-3">Alpha</th>
+              <th class="text-left px-3 w-[30%]">Latest picks</th></tr>
+        </thead>
+        <tbody id="rows" class="divide-y divide-slate-100"></tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+</main>
+<div id="tip" class="tip"></div>
+
+<script>
+(function(){
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const fmtP = v => v == null ? '—' : '<span class="' + (v >= 0 ? 'pos' : 'neg') + '">' + (v > 0 ? '+' : '') + v.toFixed(2) + '%</span>';
+  const fmtD = d => new Date(d + 'T00:00:00').toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'2-digit' });
+  const FREQL = { 1:'monthly', 3:'quarterly', 6:'half-yearly', 12:'yearly' };
+  let T = null, SEL = null;
+
+  const tip = $('tip');
+  function showTip(x, y, html){ tip.innerHTML = html; tip.style.opacity = 1;
+    tip.style.left = Math.min(x + 14, innerWidth - tip.offsetWidth - 8) + 'px';
+    tip.style.top  = Math.min(y + 14, innerHeight - tip.offsetHeight - 8) + 'px'; }
+  const hideTip = () => tip.style.opacity = 0;
+
+  function niftyRet(s){ // Nifty over the same window as the strategy's tracking
+    const a = T.niftyPx[s.since], b = T.niftyPx[s.latest.day];
+    return (a && b) ? (b / a - 1) * 100 : null;
+  }
+
+  function drawChart(s){
+    SEL = s.sid;
+    $('cTitle').textContent = s.name;
+    const cfgBits = s.cfg ? [ s.cfg.sortBy + ' (' + s.cfg.dir + ')', 'top ' + (s.topN || s.cfg.topN), (FREQL[s.freq] || s.freq + 'mo') + ' rebalance',
+      s.cfg.indexName || null ].concat(s.cfg.filters || []).filter(Boolean) : ['top ' + s.topN, (FREQL[s.freq] || s.freq + 'mo') + ' rebalance'];
+    $('cCfg').textContent = cfgBits.join(' · ');
+    const nav = s.nav, n0 = T.niftyPx[s.since];
+    const nifty = nav.map(([d]) => [d, n0 && T.niftyPx[d] ? 100 * T.niftyPx[d] / n0 : null]);
+    const W = 720, H = 240, L = 42, R = 14, Tp = 10, B = 24;
+    const xs = i => L + (nav.length === 1 ? (W - L - R) / 2 : i * (W - L - R) / (nav.length - 1));
+    let vals = nav.map(p => p[1]).concat(nifty.map(p => p[1]).filter(v => v != null));
+    let lo = Math.min(...vals), hi = Math.max(...vals);
+    if (hi - lo < 2){ lo -= 1; hi += 1; } const pad = (hi - lo) * 0.08; lo -= pad; hi += pad;
+    const ys = v => Tp + (H - Tp - B) * (1 - (v - lo) / (hi - lo));
+    let g = '';
+    for (let i = 0; i <= 4; i++){ const v = lo + (hi - lo) * i / 4, y = ys(v);
+      g += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y + '" y2="' + y + '" stroke="#f1f5f9" stroke-width="1"/>' +
+           '<text x="' + (L - 6) + '" y="' + (y + 3.5) + '" text-anchor="end" font-size="10" fill="#94a3b8">' + v.toFixed(0) + '</text>'; }
+    const path = arr => arr.map((p, i) => p[1] == null ? '' : (i && arr[i-1][1] != null ? 'L' : 'M') + xs(i).toFixed(1) + ' ' + ys(p[1]).toFixed(1)).join(' ');
+    g += '<path d="' + path(nifty) + '" fill="none" stroke="#94a3b8" stroke-width="2" stroke-dasharray="5 4"/>';
+    g += '<path d="' + path(nav)   + '" fill="none" stroke="#4f46e5" stroke-width="2.5" stroke-linejoin="round"/>';
+    const lastN = nifty[nifty.length - 1];
+    if (lastN && lastN[1] != null) g += '<text x="' + (W - R - 2) + '" y="' + (ys(lastN[1]) - 5) + '" text-anchor="end" font-size="10" font-weight="700" fill="#94a3b8">Nifty 50</text>';
+    // date ticks
+    const step = Math.max(1, Math.ceil(nav.length / 7));
+    nav.forEach(([d], i) => { if (i % step === 0 || i === nav.length - 1)
+      g += '<text x="' + xs(i) + '" y="' + (H - 7) + '" text-anchor="middle" font-size="10" fill="#94a3b8">' + fmtD(d) + '</text>'; });
+    g += '<line id="xh" y1="' + Tp + '" y2="' + (H - B) + '" stroke="#cbd5e1" stroke-width="1" visibility="hidden"/>';
+    g += '<circle id="dot" r="4" fill="#4f46e5" stroke="#fff" stroke-width="2" visibility="hidden"/>';
+    const svg = $('chart');
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H); svg.style.minWidth = '560px';
+    svg.innerHTML = g;
+    $('cNote').textContent = s.points < 15 ? 'Tracking just started (' + s.points + ' trading day' + (s.points > 1 ? 's' : '') + ' so far) — the curve gets meaningful after a few weeks. New picks are logged every trading day ~22:00 IST.' : '';
+    svg.onmousemove = ev => {
+      const r = svg.getBoundingClientRect();
+      const fx = (ev.clientX - r.left) * W / r.width;
+      const i = Math.max(0, Math.min(nav.length - 1, Math.round((fx - L) / ((W - L - R) / Math.max(1, nav.length - 1)))));
+      const x = xs(i), [d, v] = nav[i], nv = nifty[i][1];
+      const xh = svg.querySelector('#xh'), dot = svg.querySelector('#dot');
+      xh.setAttribute('x1', x); xh.setAttribute('x2', x); xh.setAttribute('visibility', 'visible');
+      dot.setAttribute('cx', x); dot.setAttribute('cy', ys(v)); dot.setAttribute('visibility', 'visible');
+      showTip(ev.clientX, ev.clientY, fmtD(d) + '<br>Strategy: <b>' + v.toFixed(2) + '</b> (' + (v >= 100 ? '+' : '') + (v - 100).toFixed(2) + '%)' +
+        (nv != null ? '<br>Nifty 50: <b>' + nv.toFixed(2) + '</b> (' + (nv >= 100 ? '+' : '') + (nv - 100).toFixed(2) + '%)' : ''));
+    };
+    svg.onmouseleave = () => { hideTip(); const xh = svg.querySelector('#xh'), dot = svg.querySelector('#dot');
+      if (xh) xh.setAttribute('visibility', 'hidden'); if (dot) dot.setAttribute('visibility', 'hidden'); };
+    document.querySelectorAll('#rows tr').forEach(tr => tr.classList.toggle('sel', tr.getAttribute('data-sid') === SEL));
+  }
+
+  function render(){
+    const list = T.strategies;
+    $('rows').innerHTML = list.map(s => {
+      const nr = niftyRet(s), alpha = nr == null ? null : s.ret - nr;
+      return '<tr class="hover:bg-slate-50 cursor-pointer" data-sid="' + esc(s.sid) + '">' +
+        '<td class="py-2.5 px-3"><div class="font-bold text-slate-900">' + esc(s.name) + '</div>' +
+          '<div class="text-[10.5px] text-slate-400">' + (FREQL[s.freq] || s.freq + 'mo') + ' · top ' + (s.topN || '?') + '</div></td>' +
+        '<td class="text-right px-3 whitespace-nowrap text-slate-500">' + fmtD(s.since) + '</td>' +
+        '<td class="text-right px-3 text-slate-500">' + s.points + '</td>' +
+        '<td class="text-right px-3">' + fmtP(s.ret) + '</td>' +
+        '<td class="text-right px-3">' + fmtP(nr) + '</td>' +
+        '<td class="text-right px-3">' + fmtP(alpha) + '</td>' +
+        '<td class="px-3 py-2">' + s.latest.picks.map(p => '<a class="chip hover:bg-indigo-100" href="./stock.html?sym=' + encodeURIComponent(p.s) + '" title="entry ₹' + p.p + '">' + esc(p.s) + '</a>').join('') + '</td></tr>';
+    }).join('');
+    document.querySelectorAll('#rows tr').forEach(tr => tr.addEventListener('click', ev => {
+      if (ev.target.closest('a')) return;
+      const s = list.find(x => x.sid === tr.getAttribute('data-sid'));
+      if (s) drawChart(s);
+    }));
+    if (list.length) drawChart(list[0]);
+  }
+
+  async function boot(){
+    try {
+      const r = await fetch('./live_tracking.json?t=' + Date.now());
+      if (!r.ok) throw 0;
+      T = await r.json();
+      if (!T || !Array.isArray(T.strategies) || !T.strategies.length) throw 0;
+      $('upd').textContent = 'Data day: ' + T.updated + '.';
+      $('status').classList.add('hidden'); $('wrap').classList.remove('hidden');
+      render();
+    } catch (e) {
+      $('status').innerHTML = '📡 Tracking hasn\'t produced its first log yet.<br><span class="text-[12px]">The robot runs every evening after the market data refresh (~22:00 IST) — check back tomorrow.</span>';
+    }
+  }
+  document.readyState === 'loading' ? addEventListener('DOMContentLoaded', boot) : boot();
+})();
+</script>
+</body>
+</html>

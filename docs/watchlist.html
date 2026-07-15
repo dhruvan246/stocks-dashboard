@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Watchlist</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; font-feature-settings:"tnum" 1; }
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-lg mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav class="flex items-center gap-1 overflow-x-auto">
+      <a href="./nse-bse-dashboard.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">📈<span class="hidden sm:inline">Stocks</span></a>
+      <a href="./watchlist.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow transition">⭐<span class="hidden sm:inline">Watchlist</span></a>
+      <a href="./discovery.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">🔎<span class="hidden sm:inline">Discovery</span></a>
+      <a href="./quarterly-results.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">📋<span class="hidden sm:inline">Results</span></a>
+      <a href="./stock-backtest.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition shrink-0">🧪<span class="hidden sm:inline">Create a Strategy</span></a>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-screen-lg mx-auto px-4 py-6">
+  <div class="mb-4 flex flex-wrap items-end justify-between gap-3">
+    <div>
+      <h1 class="text-xl font-bold text-slate-900">⭐ Watchlist</h1>
+      <p class="text-sm text-slate-500 mt-0.5">Star stocks anywhere on the site — they collect here, with your notes.</p>
+    </div>
+    <div id="wlSyncBadge" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-200 text-slate-600">…</div>
+  </div>
+
+  <div class="bg-white border border-slate-200 rounded-xl p-4 mb-4 flex flex-wrap items-center gap-2">
+    <input id="wlAdd" type="text" placeholder="Add a symbol, e.g. RELIANCE" autocomplete="off"
+           class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm uppercase focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-56 max-w-full" />
+    <button id="wlAddBtn" class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-700 transition">+ Add</button>
+    <span class="text-xs text-slate-400">or tap the ☆ next to any stock on Discovery, Results or Announcements</span>
+  </div>
+
+  <div id="wlList" class="space-y-2"></div>
+  <div id="wlEmpty" class="hidden text-center text-slate-400 text-sm py-12 bg-white border border-dashed border-slate-300 rounded-xl">
+    Nothing starred yet. Tap the ☆ next to any stock, or add one above.
+  </div>
+</main>
+
+<script>
+(function(){
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const fmtD = ts => ts ? new Date(ts).toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}) : '';
+
+  function badge(){
+    const b = $('wlSyncBadge');
+    if (window.swWatch && swWatch.isOwner()) { b.textContent = '🔄 synced across your devices'; b.className = 'text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700'; }
+    else { b.textContent = '💾 saved in this browser only'; b.className = 'text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-100 text-amber-700'; b.title = 'Open any page once with ?ownerkey=YOUR-KEY to sync this list across devices.'; }
+  }
+
+  function row(e){
+    return '<div class="bg-white border border-slate-200 rounded-xl p-3.5 flex flex-wrap gap-x-4 gap-y-2 items-start" data-row="'+esc(e.s)+'">' +
+      '<div class="flex items-center gap-2 min-w-[10rem]">' +
+        '<span class="sw-star" data-sym="'+esc(e.s)+'"></span>' +
+        '<span class="font-bold text-slate-900">'+esc(e.s)+'</span>' +
+      '</div>' +
+      '<div class="flex-1 min-w-[14rem]">' +
+        '<textarea data-note="'+esc(e.s)+'" rows="1" placeholder="Add a note… (why it’s interesting, what to watch)" ' +
+          'class="w-full border border-slate-200 rounded-lg px-2.5 py-1.5 text-sm text-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-y">'+esc(e.note)+'</textarea>' +
+      '</div>' +
+      '<div class="flex items-center gap-3 text-xs text-slate-400 shrink-0 pt-1.5">' +
+        '<span title="Added on">'+fmtD(e.ts)+'</span>' +
+        '<button data-del="'+esc(e.s)+'" title="Remove" class="text-slate-400 hover:text-rose-600 text-base leading-none">🗑</button>' +
+      '</div>' +
+    '</div>';
+  }
+
+  let noteTimers = {};
+  function render(){
+    const l = window.swWatch ? swWatch.list() : [];
+    $('wlList').innerHTML = l.map(row).join('');
+    $('wlEmpty').classList.toggle('hidden', l.length > 0);
+    if (window.swWatch) swWatch.paintAll($('wlList'));
+    badge();
+  }
+
+  function boot(){
+    if (!window.swWatch) { setTimeout(boot, 150); return; }
+    swWatch.load().then(render);
+    document.addEventListener('sw-watch-change', render);
+
+    $('wlAddBtn').addEventListener('click', add);
+    $('wlAdd').addEventListener('keydown', ev => { if (ev.key === 'Enter') add(); });
+    function add(){
+      const s = ($('wlAdd').value || '').trim().toUpperCase().replace(/[^A-Z0-9&\-]/g, '');
+      if (!s) return;
+      $('wlAdd').value = '';
+      if (!swWatch.has(s)) swWatch.toggle(s);
+    }
+
+    // notes: save 800ms after typing stops (and on blur)
+    $('wlList').addEventListener('input', ev => {
+      const t = ev.target.closest('textarea[data-note]'); if (!t) return;
+      const s = t.getAttribute('data-note');
+      clearTimeout(noteTimers[s]);
+      noteTimers[s] = setTimeout(() => swWatch.setNote(s, t.value), 800);
+    });
+    $('wlList').addEventListener('focusout', ev => {
+      const t = ev.target.closest('textarea[data-note]'); if (!t) return;
+      const s = t.getAttribute('data-note');
+      clearTimeout(noteTimers[s]);
+      const e = swWatch.entry(s);
+      if (!e || (e.note || '') !== t.value) swWatch.setNote(s, t.value);
+    });
+    // deletes
+    $('wlList').addEventListener('click', ev => {
+      const b = ev.target.closest('button[data-del]'); if (!b) return;
+      swWatch.remove(b.getAttribute('data-del'));
+    });
+  }
+  document.readyState === 'loading' ? addEventListener('DOMContentLoaded', boot) : boot();
+})();
+</script>
+</body>
+</html>

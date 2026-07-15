@@ -1,0 +1,60 @@
+name: Log strategy picks (forward-tracking)
+
+# Paper-trades every saved strategy forward, daily: logs each one's Today's Picks
+# (with entry prices) into Supabase sw_picks_log and bakes the accumulated
+# performance into docs/live_tracking.json for the Live Tracking page.
+# Chains off the snapshot bake (which already waits for the day's data to publish).
+# Missing a day is fine — the NAV walk just has one fewer point.
+
+on:
+  workflow_run:
+    workflows: ["Bake backtest snapshots"]
+    types: [completed]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: log-picks
+  cancel-in-progress: true
+
+jobs:
+  log:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Playwright (chromium)
+        run: |
+          npm install playwright@^1.48
+          npx playwright install --with-deps chromium
+
+      - name: Log picks + bake live_tracking.json
+        run: node scripts/log_picks.mjs
+
+      - name: Commit live_tracking.json (reset-and-replay on push conflict)
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          [ -f docs/live_tracking.json ] || { echo "nothing to commit"; exit 0; }
+          cp docs/live_tracking.json /tmp/live_tracking.json
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/live_tracking.json docs/live_tracking.json
+            git add docs/live_tracking.json
+            if git diff --cached --quiet; then echo "No change"; exit 0; fi
+            git commit -m "Daily strategy picks log $(TZ=Asia/Kolkata date +'%Y-%m-%d')"
+            if git push origin HEAD:main; then echo "Pushed on attempt #$attempt"; exit 0; fi
+            echo "Push #$attempt rejected; retrying"; sleep $(( attempt * 3 ))
+          done
+          echo "Failed to push after 5 attempts"; exit 1

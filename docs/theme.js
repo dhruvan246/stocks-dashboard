@@ -13,13 +13,13 @@
   var KEYS = META.map(function (m) { return m.k; });
 
   function saved() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
-  function norm(t) { return KEYS.indexOf(t) >= 0 ? t : 'light'; }
+  function norm(t) { return KEYS.indexOf(t) >= 0 ? t : 'dark'; }   /* v3: dark is the default */
 
   // 1) apply ASAP — runs during <head> parse, before the body is painted
   document.documentElement.setAttribute('data-theme', norm(saved()));
 
   // ---- PWA wiring: manifest, app icons, Android status-bar colour, service worker ----
-  var THEME_COLOR = { light: '#ffffff', dark: '#0f1423', soft: '#fffdfb' };
+  var THEME_COLOR = { light: '#ffffff', dark: '#070b14', soft: '#fffdfb' };
   function head(tag, attrs) {
     var key = attrs.rel ? 'rel' : 'name';
     var el = document.head.querySelector(tag + '[' + key + '="' + attrs[key] + '"]');
@@ -122,6 +122,7 @@
   var NAV_GROUPS = [
     { g: 'Markets', items: [
       ['./nse-bse-dashboard.html', '📈', 'Stocks'],
+      ['./watchlist.html',         '📌', 'Watchlist'],
       ['./sectors.html',           '🔥', 'Sectors'],
       ['./fii-dii.html',           '🌐', 'FII/DII'],
       ['./bank-credit.html',       '🏦', 'Banking Growth'],
@@ -137,7 +138,10 @@
     ] },
     { g: 'Tools', items: [
       ['./saved-strategies.html', '⭐', 'Saved strategies'],
+      ['./live-tracking.html',    '📡', 'Live tracking'],
       ['./backtest-history.html', '🕘', 'Backtest history'],
+      ['./insurer-inbox.html',    '📥', 'Insurer inbox'],
+      ['./analytics.html',        '👀', 'Page stats'],
       ['./status.html',           '🩺', 'Data health']
     ] }
   ];
@@ -290,7 +294,25 @@
     }).observe(document.body, { childList: true, subtree: true });
   }
 
-  function init() { buildNav(); buildFooter(); build(); watchHeader(); watchTables(); }
+  // Load the site-features layer on every page: sw-sync.js (Supabase kv/analytics)
+  // then sw-watchlist.js (star buttons). Order matters — the watchlist decides
+  // local-vs-synced mode by asking swSync. Both are tiny and fail-safe offline.
+  function loadFeatures() {
+    try {
+      if (window.swSync) return; // page included it explicitly
+      var s1 = document.createElement('script'); s1.src = './sw-sync.js';
+      s1.onload = function () {
+        var s2 = document.createElement('script'); s2.src = './sw-watchlist.js';
+        document.head.appendChild(s2);
+        // cross-device preference sync (owner browsers push; everyone pulls)
+        try { window.swSync.syncSettings(['sw_theme', 'sw_sec_watch', 'bt_fav_strategies',
+          'live_worker_url', 'savedRotations', 'savedCatRot', 'savedBOB', 'sw_dash_presets', 'sw_triage_hide']); } catch (e) {}
+      };
+      document.head.appendChild(s1);
+    } catch (e) {}
+  }
+
+  function init() { buildNav(); buildFooter(); build(); watchHeader(); watchTables(); loadFeatures(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();

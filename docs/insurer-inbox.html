@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Insurer Inbox</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style> body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; font-feature-settings:"tnum" 1; } </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-lg mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav class="flex items-center gap-1 overflow-x-auto">
+      <a href="./quarterly-results.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">🧾<span class="hidden sm:inline">Quarterly Results</span></a>
+      <a href="./insurer-inbox.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow transition">📥<span class="hidden sm:inline">Insurer Inbox</span></a>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-screen-md mx-auto px-4 py-6">
+  <div class="mb-4">
+    <h1 class="text-xl font-bold text-slate-900">📥 Insurer inbox — drop a PAT, the robot files it</h1>
+    <p class="text-sm text-slate-500 mt-1">For the insurers the auto-reader can't parse (scanned IRDAI filings). Type the quarterly
+    <b>net profit</b> from the company's results PDF here; the nightly fundamentals refresh picks it up, sanity-checks it and
+    files it into the site's data. Entries are <b>fill-only</b> — they never overwrite a number that already exists (tick
+    “overwrite” for a correction).</p>
+  </div>
+
+  <div class="bg-white border border-slate-200 rounded-xl p-4 mb-5">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-semibold text-slate-600">Insurer
+        <select id="fSym" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-blue-500"></select>
+      </label>
+      <label class="text-sm font-semibold text-slate-600">Quarter ended
+        <select id="fQe" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-blue-500"></select>
+      </label>
+      <label class="text-sm font-semibold text-slate-600">Net profit — consolidated, ₹ crore
+        <input id="fCon" type="number" step="0.01" inputmode="decimal" placeholder="e.g. 546.12"
+               class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500" />
+        <span class="block text-[11px] text-slate-400 font-normal mt-0.5">Owners/shareholders-attributable if the filing shows both. Negative allowed for a loss.</span>
+      </label>
+      <label class="text-sm font-semibold text-slate-600">Announced on
+        <input id="fAnn" type="date" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-blue-500" />
+        <span class="block text-[11px] text-slate-400 font-normal mt-0.5">The result date (defaults to today).</span>
+      </label>
+    </div>
+    <div class="flex flex-wrap items-center gap-4 mt-4">
+      <label class="flex items-center gap-2 text-sm text-slate-600"><input id="fForce" type="checkbox" class="accent-rose-600"> overwrite if a value already exists (correction)</label>
+      <button id="fSend" class="ml-auto px-5 py-2 rounded-lg text-sm font-bold bg-indigo-600 text-white hover:bg-indigo-700 transition">Submit →</button>
+    </div>
+    <div id="fMsg" class="hidden mt-3 text-sm rounded-lg px-3 py-2"></div>
+  </div>
+
+  <div class="flex items-center justify-between mb-2">
+    <h2 class="text-sm font-bold text-slate-700 uppercase tracking-wide">Inbox</h2>
+    <span class="text-[11px] text-slate-400">newest first · statuses update after each nightly refresh</span>
+  </div>
+  <div id="list" class="space-y-2"></div>
+  <div id="empty" class="hidden text-center text-slate-400 text-sm py-10 bg-white border border-dashed border-slate-300 rounded-xl">Inbox is empty.</div>
+</main>
+
+<script>
+(function(){
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  // Same list + plausible quarterly-PAT ranges (₹ cr) as scripts/fetch_insurers.py.
+  // The CI applier re-validates server-side; this is just instant feedback.
+  const INSURERS = {
+    LICI:{r:[200,25000]}, SBILIFE:{r:[30,2000]}, HDFCLIFE:{r:[80,900]}, ICICIPRULI:{r:[80,1200]},
+    ICICIGI:{r:[30,1800]}, GICRE:{r:[10,4500]}, NIACL:{r:[-200,2500]}, STARHEALTH:{r:[5,900]},
+    GODIGIT:{r:[10,400]}, NIVABUPA:{r:[-200,500]}, MFSL:{r:[-150,500]}
+  };
+
+  function quarters(){ // last 8 quarter-ends, newest first
+    const out = [], d = new Date();
+    let y = d.getFullYear(), m = d.getMonth() + 1;
+    const ends = [3,6,9,12];
+    let qm = ends.filter(e => e <= m).pop(); if (!qm){ qm = 12; y--; }
+    for (let i = 0; i < 8; i++){
+      const dd = { 3:31, 6:30, 9:30, 12:31 }[qm];
+      out.push(y * 10000 + qm * 100 + dd);
+      qm -= 3; if (qm <= 0){ qm = 12; y--; }
+    }
+    return out;
+  }
+  const qlabel = qe => { const y = Math.floor(qe/10000), m = Math.floor(qe/100)%100;
+    return ({3:'Mar',6:'Jun',9:'Sep',12:'Dec'})[m] + ' ' + y + ' (Q' + ({6:1,9:2,12:3,3:4})[m] + ' FY' + String((m>=4?y+1:y)%100).padStart(2,'0') + ')'; };
+
+  function msg(t, ok){
+    const m = $('fMsg'); m.textContent = t;
+    m.className = 'mt-3 text-sm rounded-lg px-3 py-2 ' + (ok ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200');
+    m.classList.remove('hidden');
+  }
+
+  function chip(e){
+    if (e.applied)  return '<span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700" title="Filed into the data on '+esc(e.applied)+'">✅ applied</span>';
+    if (e.rejected) return '<span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-rose-100 text-rose-700" title="'+esc(e.rejected)+'">✖ rejected</span>';
+    return '<span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">⏳ pending — applies on the next nightly refresh</span>';
+  }
+  function render(items){
+    const l = Array.isArray(items) ? items : [];
+    $('list').innerHTML = l.map(e =>
+      '<div class="bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">' +
+        '<b class="text-slate-900">' + esc(e.sym) + '</b>' +
+        '<span class="text-slate-500">' + qlabel(e.qe) + '</span>' +
+        '<span class="font-bold ' + (e.con < 0 ? 'text-rose-700' : 'text-slate-800') + '">₹ ' + esc(e.con) + ' cr</span>' +
+        (e.force ? '<span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-orange-100 text-orange-700">overwrite</span>' : '') +
+        '<span class="ml-auto"></span>' + chip(e) +
+        '<span class="text-[11px] text-slate-400 w-full sm:w-auto">added ' + new Date(e.ts).toLocaleDateString('en-IN', {day:'numeric',month:'short'}) + (e.rejected ? ' — ' + esc(e.rejected) : '') + '</span>' +
+      '</div>').join('');
+    $('empty').classList.toggle('hidden', l.length > 0);
+  }
+
+  async function refresh(){ if (window.swSync) render(await swSync.kvGet('INSURER_INBOX')); }
+
+  function boot(){
+    if (!window.swSync){ setTimeout(boot, 150); return; }
+    $('fSym').innerHTML = Object.keys(INSURERS).map(s => '<option>' + s + '</option>').join('');
+    $('fQe').innerHTML = quarters().map(q => '<option value="' + q + '">' + qlabel(q) + '</option>').join('');
+    $('fAnn').value = new Date().toISOString().slice(0, 10);
+    refresh();
+
+    $('fSend').addEventListener('click', async () => {
+      const sym = $('fSym').value, qe = +$('fQe').value, con = parseFloat($('fCon').value), ann = $('fAnn').value;
+      if (!isFinite(con)) return msg('Enter the net profit in ₹ crore (e.g. 546.12).', false);
+      const r = INSURERS[sym].r;
+      if (con < r[0] * 3 - 2000 || con > r[1] * 3) return msg('₹' + con + ' cr looks far outside ' + sym + "'s plausible quarterly range (" + r[0] + '…' + r[1] + '). Check the unit — the form wants ₹ crore, not lakh.', false);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(ann)) return msg('Pick the announcement date.', false);
+      const entry = { sym, qe, con: Math.round(con * 100) / 100, ann: ann.replace(/-/g, ''), force: $('fForce').checked || undefined, ts: Date.now() };
+      $('fSend').disabled = true; $('fSend').textContent = 'Sending…';
+      const ok = await swSync.kvAppend('INSURER_INBOX', entry, 200);
+      $('fSend').disabled = false; $('fSend').textContent = 'Submit →';
+      if (ok){ msg('Queued ✔ — ' + sym + ' ' + qlabel(qe) + ' = ₹' + entry.con + ' cr. It will be validated and filed on the next nightly refresh (~21:15 IST).', true); $('fCon').value = ''; $('fForce').checked = false; refresh(); }
+      else msg('Could not reach the database — saved locally and will retry when you next open this page online.', false);
+    });
+  }
+  document.readyState === 'loading' ? addEventListener('DOMContentLoaded', boot) : boot();
+})();
+</script>
+</body>
+</html>
