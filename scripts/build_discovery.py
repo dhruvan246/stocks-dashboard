@@ -114,8 +114,13 @@ def build_orders_bucket(per, t):
     for sym, s in per.items():
         m = META.get(sym) or {}
         mc = round(m["mcap"], 1) if m.get("mcap") else None
-        if mc is None and ORDSHARES.get(sym) and m.get("latest"):   # computed fallback mcap
-            mc = round(ORDSHARES[sym] * m["latest"] / 1e7, 1)
+        if mc is None and ORDSHARES.get(sym):                       # computed fallback mcap = shares × price
+            sh = ORDSHARES[sym]
+            shares, cpx = (sh.get("sh"), sh.get("px")) if isinstance(sh, dict) else (sh, None)
+            px = m.get("latest") or cpx                             # our price, else the cached (Yahoo) one
+            if shares and px:
+                cand = round(shares * px / 1e7, 1)
+                if cand >= 5: mc = cand                             # guard bad share-count parses (< ₹5 cr is implausible)
         tp = ttm_pat(sym)
         pe = round(mc / tp, 1) if (mc and tp and tp > 0) else None
         disp, cr = _ordval(s["f"])
