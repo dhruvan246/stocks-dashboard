@@ -49,15 +49,17 @@ jobs:
         run: python3 scripts/update_fundamentals.py
 
       # INSURERS (LICI/SBILIFE/HDFCLIFE/ICICIPRULI/ICICIGI/GICRE/NIACL/STARHEALTH/GODIGIT/NIVABUPA/MFSL)
-      # file IRDAI-format results the XBRL parser above can't read, so they used to need the manual
-      # INSURER_EXTRACTION_PLAYBOOK. fetch_insurers.py now fills them unattended and FREE (no paid API):
-      # it finds each insurer's newly-filed quarter, text-extracts Profit-after-tax off the Shareholders'
-      # P&L, and DOUBLE-ANCHORS it (preceding-quarter AND year-ago columns must both match our stored con
-      # series under one unit scale) before writing — never an unanchored guess. Runs only once daily
-      # (see gate) since 11 companies filing ~once a quarter don't need hourly polling; fill-only + a
-      # 5-month discovery window self-heal a missed day. Deps: pymupdf + curl_cffi (NSE fallback) +
-      # rapidocr/onnxruntime/numpy (free OCR for the rare scanned filing, e.g. LIC). Non-fatal.
-      - name: Auto-fill insurer net profit (IRDAI-format, free text + double-anchor)
+      # file IRDAI-format results the XBRL parser above can't read. fetch_insurers.py fills them unattended:
+      # (1) text-extract Profit-after-tax off the Shareholders' P&L + DOUBLE-ANCHOR (preceding-quarter AND
+      # year-ago columns must both match our stored con series) — free, handles the clean filings; (2) for
+      # the text-resistant ones (scanned tables / computed owners-profit), a FREE **Gemini vision** fallback
+      # (GEMINI_API_KEY, Google AI Studio free tier — no billing) reads the P&L page, still ANCHOR-VERIFIED
+      # against the stored year-ago value. NEVER writes an unanchored guess. Runs once daily (see gate);
+      # fill-only + 5-month window self-heal a missed day. Deps: pymupdf + curl_cffi (both stdlib-light;
+      # Gemini is called over plain HTTPS). No GEMINI_API_KEY ⇒ text-only (the 4 clean insurers still fill).
+      - name: Auto-fill insurer net profit (IRDAI-format, free text + double-anchor + Gemini vision)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           VQ="${{ github.event.inputs.insurer_verify_quarter }}"
           if [ -n "$VQ" ]; then

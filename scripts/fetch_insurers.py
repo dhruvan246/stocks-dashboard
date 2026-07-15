@@ -32,6 +32,9 @@ Run:
 import os, sys, re, json, time, argparse, urllib.request, http.cookiejar, gzip
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import fitz
+import gemini_vision as GV   # FREE Gemini vision fallback (no billing) for text-resistant insurers
+
+MON = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
 _UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
        "Chrome/120 Safari/537.36")
@@ -419,6 +422,60 @@ def set_cell(fund, sym, qe, con, con_ann, std=None, std_ann=None):
     return changed
 
 
+def qe_label(qe):
+    return "quarter ended %d %s %d" % (qe % 100, MON[(qe // 100) % 100], qe // 10000)
+
+
+def anchored(read_v, stored_v):
+    """True if a vision-read value matches a stored value within max(3%, Rs 5cr)."""
+    if read_v is None or stored_v is None:
+        return False
+    return abs(read_v - stored_v) <= max(abs(stored_v) * 0.03, 5.0)
+
+
+def render_pl_pngs(pdf, ident_tokens):
+    """Render the P&L page(s) of a filing to PNG for the vision read. Identity-guarded. Picks P&L-hint
+    pages (typeset) plus any image pages (scanned), spread to at most 6."""
+    try:
+        doc = fitz.open(stream=pdf, filetype="pdf")
+    except Exception:
+        return None
+    N = min(len(doc), 50)
+    texts = [doc[p].get_text() for p in range(N)]
+    full = " ".join(texts)
+    if ident_tokens and full.strip() and not any(t.upper() in full.upper() for t in ident_tokens):
+        return None
+    pages = [p for p in range(N) if _PL_PAGE_HINT.search(texts[p])
+             or (not texts[p].strip() and doc[p].get_images())]
+    if not pages:
+        return None
+    if len(pages) > 6:                                   # even spread across the P&L/image pages
+        pages = [pages[round(i * (len(pages) - 1) / 5)] for i in range(6)]
+    return [doc[p].get_pixmap(dpi=160).tobytes("png") for p in sorted(set(pages))]
+
+
+def gemini_extract(pdf, cfg, docs, sym, qe):
+    """FREE Gemini-vision read of the P&L, ANCHOR-VERIFIED against our stored year-ago con (and std).
+    Returns {cur_con, cur_std, yago_con, via:'gemini'} or None. Used only when text parsing failed."""
+    pngs = render_pl_pngs(pdf, cfg["ident"])
+    if not pngs:
+        return None
+    v = GV.read_insurer(sym, qe_label(qe), qe_label(qe - 10000), pngs, cfg["sub"])
+    if not v or not (v.get("ok") and v.get("company_matches")):
+        return None
+    cur_con = v["cur"]["con"]; yago_con = v["yago"]["con"]
+    stored_yago = conval(docs, sym, qe - 10000)
+    # The vision year-ago MUST match our stored year-ago con — else it's an unverified guess: skip.
+    if not (anchored(yago_con, stored_yago) or stored_yago is None):
+        return None
+    out = {"cur_con": cur_con, "yago_con": yago_con, "cur_std": None, "via": "gemini"}
+    if not cfg["sub"]:
+        out["cur_std"] = cur_con
+    elif v["cur"]["std"] is not None and anchored(v["yago"]["std"], stdval(docs, sym, qe - 10000)):
+        out["cur_std"] = v["cur"]["std"]
+    return out
+
+
 def extract(pdf, cfg, docs, sym, qe):
     """Return {cur_con, yago_con, cur_std, div} for quarter `qe` from a filing, or None if unanchored."""
     cprev_con = conval(docs, sym, prevq(qe)); cyago_con = conval(docs, sym, qe - 10000)
@@ -471,14 +528,21 @@ def process(sym, targets, o, docs, src, verify=False):
             for annd, pdf in nse_result_pdfs(sym, qe):
                 yield annd, pdf
 
-        picked = None; saw_pdf = False
+        picked = None; seen = []
         for annd, pdf in candidate_pdfs():
-            saw_pdf = True
-            r = extract(pdf, cfg, docs, sym, qe)
+            seen.append((annd, pdf))
+            r = extract(pdf, cfg, docs, sym, qe)          # fast text double-anchor
             if r:
                 picked = (annd, r); break
+        if not picked and seen:
+            # FREE Gemini-vision fallback for the text-resistant insurers (scanned / computed-owners).
+            # Only runs when text failed; anchor-verified. Try the likeliest results filings.
+            for annd, pdf in seen[:3]:
+                r = gemini_extract(pdf, cfg, docs, sym, qe)
+                if r:
+                    picked = (annd, r); break
         if not picked:
-            results.append({"sym": sym, "qe": qe, "status": "no-filing" if not saw_pdf else "unanchored"})
+            results.append({"sym": sym, "qe": qe, "status": "no-filing" if not seen else "unanchored"})
             continue
 
         annd, r = picked
@@ -488,7 +552,7 @@ def process(sym, targets, o, docs, src, verify=False):
         accept = range_ok            # a double-anchored value that's also in-range
         rec = {"sym": sym, "qe": qe, "ann": annd, "cur_con": cur_con, "std_fill": (cur_std if accept else None),
                "yago_con": r["yago_con"], "stored_yago": conval(docs, sym, qe - 10000),
-               "range_ok": range_ok, "accept": bool(accept),
+               "via": r.get("via", "text"), "range_ok": range_ok, "accept": bool(accept),
                "status": "OK" if accept else "out-of-range"}
         results.append(rec)
         if accept and not verify:
@@ -547,8 +611,8 @@ def main():
                 rc = r.get("cur_con")
                 match = "match" if (rc is not None and stored is not None
                                     and abs(rc - stored) <= max(abs(stored) * 0.01, 1.0)) else "DIFF"
-                print("  %-11s %d  read_con=%-9s stored_con=%-9s  -> %s  [%s]"
-                      % (r["sym"], r["qe"], rc, stored, r["status"],
+                print("  %-11s %d  read_con=%-9s stored_con=%-9s  via=%-6s -> %s  [%s]"
+                      % (r["sym"], r["qe"], rc, stored, r.get("via", "-"), r["status"],
                          match if r["status"] == "OK" else "-"))
             else:
                 print("  %-11s %d  con=%-9s std=%-9s range=%s -> %s%s"
