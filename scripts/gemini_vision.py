@@ -16,7 +16,7 @@ Public: read_insurer(company, cur_label, yago_label, pngs, with_subsidiary)
 """
 import os, json, base64, urllib.request, urllib.error, time, re
 
-_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
+_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash-lite")
 _PACE = {"last": 0.0}          # min spacing between calls to stay under the free-tier per-minute limit
 _MIN_INTERVAL = 5.0
 _URL = "https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent?key=%s"
