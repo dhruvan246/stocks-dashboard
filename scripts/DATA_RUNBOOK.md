@@ -273,6 +273,25 @@ Use FILE scripts, not `node -e` (shell quoting mangles the URL). Pull→prepend�
   **History** filtered by `isRealRun` (rebs≥3 AND window≥90d — excludes degenerate junk like a 428% 1-rebalance run).
   So a NEW backtest of a saved strategy (which autosaves to History) auto-appears under it. Don't revert to
   sourcing windows only from the strategy list — that hid freshly-run backtests.
+- **⚠️ STRATEGY IDENTITY INCLUDES `lookback` — and `readCfg()` used to DROP it (fixed 2026-07-15, commit c6298f8).**
+  `identityKey`/`stratIdentity` key on `c.lookback||1`, but `stock-backtest.html`'s `readCfg()` had NO lookback
+  field (there's no form control for it) → EVERY re-run produced `lookback=1`. So re-running a strategy saved with
+  `lookback=6` (e.g. the grid-search-saved "Return — 6 month %" rows) yielded identity `…|1|…` ≠ the saved `…|6|…`,
+  and the run **never nested** under its row (the user's +74% 2020 window silently vanished from strategy #5). Fix:
+  `readCfg()` now carries the loaded strategy's lookback via a `CUR_LOOKBACK` module var set in `applyCfg()`.
+  `lookback` does NOT affect `simulate()` (it's ONLY identity + the live Today's-Picks return window in
+  saved-strategies.html ~L508); still, KEEP it in identity and KEEP readCfg preserving it — dropping it from identity
+  would merge genuinely-distinct lookback rows. If a re-run ever "doesn't nest", check lookback parity FIRST.
+- **BACKTEST PAGE PERF — the editable builder loads ZERO market data (deferred, 2026-07-15).** `stock-backtest.html`
+  shows the builder instantly (`initUIStatic`/`openEditor`, dates from tiny `sf_meta.json`); the ~17 MB `stock_data.bin`
+  (needed ONLY for index/F&O membership + startTs — SF mode overwrites its prices) + the sf-data price parts load
+  lazily in `ensureData()` on the FIRST ▶ Run. "Edit & re-run" from a snapshot no longer reloads/front-loads 17 MB —
+  it calls `openEditor(cfg)` (instant form, no fetch). ⚠️ Do NOT source membership from `dash_slim.bin` to save the
+  17 MB: the live slim file lags `stock_data.bin` (checked 2026-07-15: fnoHistory 76 vs 77 snaps, different indices —
+  it's rebuilt only by the dashboard build, not the weekly membership refresh) → would silently change recent-rebalance
+  backtest numbers. A real Run inherently needs the full survivorship-free prices; that load is unavoidable.
+- saved-strategies boot now MERGES local `bt_history` the shared pull didn't return yet (sync lag / paused Supabase)
+  and re-appends it, so a just-run window shows even before the shared history catches up.
 
 ---
 
