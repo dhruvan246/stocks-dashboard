@@ -136,10 +136,29 @@ in-step: pymupdf + curl_cffi + rapidocr-onnxruntime/onnxruntime/numpy. Validate:
   (total PAT + minority + associate; MFSL = continuing+discontinued) and is **never printed as a single
   number** in the filing, so double-anchor can't find it. The parser sees only the STANDALONE row (con≠std),
   which require_con correctly rejects. **These are exactly the insurers the manual playbook exists for.**
-- So getting all 11 free is NOT achievable with reasonable effort. Fill the 7 by hand each quarter via:
+- So getting all 11 free is NOT achievable with reasonable effort. Fill the residual by hand each quarter via:
 
-**Manual method (still needed for the 7)** — correct page/row, owners-attributable, unit disambiguation, verify:
+**Manual method** — correct page/row, owners-attributable, unit disambiguation, verify:
 → **`scripts/INSURER_EXTRACTION_PLAYBOOK.md`** (memory: project-stocks-insurer-extraction).
+
+**ROBUSTNESS UPGRADES (2026-07-16) — so results-season.html never silently undercounts an index:**
+1. **Free Gemini-vision fallback is WIRED but needs a secret.** `fetch_insurers.py` → `gemini_extract()` (via
+   `gemini_vision.py`, Google AI Studio FREE tier ~1500/day, we use ~7/qtr) renders the P&L page and reads it,
+   still ANCHOR-VERIFIED against stored year-ago con. It only runs when `GEMINI_API_KEY` is in the env.
+   ⚠️ **The repo has NO `GEMINI_API_KEY` secret yet** (only SF_DATA_TOKEN) → scanned insurers ICICIGI/STARHEALTH
+   have never auto-filled. **FIX = add a free key:** create at https://aistudio.google.com/apikey (no billing),
+   then `gh secret set GEMINI_API_KEY` (or GitHub UI → Settings → Secrets → Actions). Then the nightly job
+   auto-fills the scanned insurers unattended.
+2. **STANDALONE-ONLY fallback (code, done).** `extract()` now handles a with-sub insurer that filed ONLY
+   standalone this quarter (ICICIPRULI Q1–Q3 — consolidated published annually only): if the filing has NO
+   "consolidated" text at all AND the standalone row double-anchors AND the insurer's con has historically
+   tracked std (median ≤1.5%, max ≤4% — `_con_tracks_std`; ONLY ICICIPRULI passes), fill con=std. Never fires
+   when a real consolidated page exists (Q4) or for insurers whose con truly diverges (NIACL/HDFCLIFE/MFSL/LICI).
+3. **SAFETY-NET monitor (code, done).** `scripts/check_season_coverage.py` runs in refresh-fundamentals.yml
+   after build_results_season: for the live quarter it compares each index's DECLARED members (in
+   results_feed.json) vs PARSED members (PAT in sf_fundamentals) and prints/writes `docs/_season_coverage.json`
+   any gap. So a declared-but-unparsed member (for Nifty 500 or ANY index) shows in the CI log immediately
+   instead of being found later against a reference. A gap persisting >~1 day = fill it by hand.
 
 ---
 

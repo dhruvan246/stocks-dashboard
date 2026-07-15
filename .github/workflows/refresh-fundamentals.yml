@@ -101,6 +101,13 @@ jobs:
         if: ${{ hashFiles('docs/.fund_updated') != '' }}
         run: python3 scripts/build_results_season.py
 
+      # SAFETY NET: for every index on results-season.html, flag any member that has DECLARED results
+      # for the live quarter but whose numbers aren't parsed into the chart yet (the 22-vs-25 gap). Prints
+      # to the CI log the moment a gap appears and writes docs/_season_coverage.json. Never fails the run.
+      - name: Check Results Season coverage (declared vs parsed)
+        if: ${{ hashFiles('docs/.fund_updated') != '' }}
+        run: python3 -X utf8 scripts/check_season_coverage.py || echo "(coverage check errored — non-fatal)"
+
       # Quarterly Results page payload — rebuilt EVERY run (not just when new earnings land):
       # result-day reactions and since-result drift move with prices daily. Reactions need the
       # FRESH price bin (the committed docs bin is a stale snapshot — runbook §0), so pull the
@@ -133,6 +140,7 @@ jobs:
           cp docs/sf_fundamentals.json /tmp/sf_fundamentals.json
           cp docs/sf_revop.json        /tmp/sf_revop.json
           cp docs/results_season.json  /tmp/results_season.json
+          [ -f docs/_season_coverage.json ] && cp docs/_season_coverage.json /tmp/_season_coverage.json
           cp docs/quarterly_results.json /tmp/quarterly_results.json
           for attempt in 1 2 3 4 5; do
             git fetch origin main && git reset --hard origin/main
@@ -140,6 +148,7 @@ jobs:
               cp /tmp/sf_fundamentals.json docs/sf_fundamentals.json
               cp /tmp/sf_revop.json        docs/sf_revop.json
               cp /tmp/results_season.json  docs/results_season.json
+              [ -f /tmp/_season_coverage.json ] && cp /tmp/_season_coverage.json docs/_season_coverage.json && git add docs/_season_coverage.json
               git add docs/sf_fundamentals.json docs/sf_revop.json docs/results_season.json
             fi
             cp /tmp/quarterly_results.json docs/quarterly_results.json

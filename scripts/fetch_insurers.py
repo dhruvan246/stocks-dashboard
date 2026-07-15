@@ -476,6 +476,37 @@ def gemini_extract(pdf, cfg, docs, sym, qe):
     return out
 
 
+def _has_consolidated(pdf):
+    """True if the filing contains ANY consolidated statement (the word 'consolidated' appears). A genuine
+    consolidated P&L page mentions it many times; a standalone-only quarterly filing has ZERO occurrences
+    (verified: ICICIPRULI Q1FY27 = 0 hits)."""
+    try:
+        doc = fitz.open(stream=pdf, filetype="pdf")
+    except Exception:
+        return True                                        # unreadable -> assume con exists (don't fall back)
+    for p in range(min(len(doc), 60)):
+        if "consolidated" in doc[p].get_text().lower():
+            return True
+    return False
+
+
+def _con_tracks_std(docs, sym, qe):
+    """True if this insurer's owners-consolidated has historically equalled standalone to within a tight
+    band (median <=1.5%, max <=4% over >=4 quarters, excluding `qe`). Only such insurers may be filled
+    con=std from a standalone-only filing. Calibrated so ONLY ICICIPRULI passes among the with-sub set
+    (NIACL median 3.6%, HDFCLIFE max 41%, MFSL/LICI/GICRE all diverge -> correctly excluded)."""
+    diffs = []
+    for r in docs.get(sym, []):
+        q, std, _, con, _ = r
+        if q != qe and std not in (None, 0) and con is not None:
+            diffs.append(abs(con - std) / abs(std) * 100)
+    if len(diffs) < 4:
+        return False
+    diffs.sort()
+    median = diffs[len(diffs) // 2]
+    return median <= 1.5 and max(diffs) <= 4.0
+
+
 def extract(pdf, cfg, docs, sym, qe):
     """Return {cur_con, yago_con, cur_std, div} for quarter `qe` from a filing, or None if unanchored."""
     cprev_con = conval(docs, sym, prevq(qe)); cyago_con = conval(docs, sym, qe - 10000)
@@ -486,10 +517,20 @@ def extract(pdf, cfg, docs, sym, qe):
     # consolidated-page row so a look-alike standalone number can't be filled as con.
     a = anchor_series(rows, cprev_con, cyago_con, prefer_con=True, require_con=cfg["sub"])
     # NOTE: an OCR second pass was tried for the scanned/broken-text filings (ICICIGI/STARHEALTH/LIC) and
-    # REVERTED — it added ~60s/insurer of CI OCR for no recovery: those filings either bury the figure on a
-    # non-PAT row, mangle the PAT digits into separate tokens, or (with-sub) never print the computed owners
-    # total. They stay MANUAL (see INSURER_EXTRACTION_PLAYBOOK.md). Keep the read pure-text and fast.
+    # REVERTED — it added ~60s/insurer of CI OCR for no recovery. Those SCANNED filings are handled by the
+    # anchor-verified free Gemini-vision fallback in process() (needs GEMINI_API_KEY). Keep this read fast.
     if not a:
+        # STANDALONE-ONLY FALLBACK: a with-sub insurer that filed ONLY standalone this quarter (e.g.
+        # ICICIPRULI Q1–Q3 — its consolidated results are published annually only). If the filing carries
+        # NO consolidated statement at all AND the standalone row double-anchors AND this insurer's con has
+        # historically tracked std tightly, fill con=std. Cannot fire when a real consolidated page exists
+        # (it would have anchored above, and _has_consolidated would be True), nor for insurers whose con
+        # genuinely diverges from std (_con_tracks_std excludes them).
+        if cfg["sub"] and _con_tracks_std(docs, sym, qe) and not _has_consolidated(pdf):
+            s = anchor_series(rows, stdval(docs, sym, prevq(qe)), stdval(docs, sym, qe - 10000), prefer_con=False)
+            if s:
+                return {"cur_con": s["cur"], "yago_con": s["yago"], "div": s["div"],
+                        "cur_std": s["cur"], "via": "std-only"}
         return None
     out = {"cur_con": a["cur"], "yago_con": a["yago"], "div": a["div"], "cur_std": None}
     # std: no-sub -> std==con; with-sub -> only when it independently double-anchors on stored std.
