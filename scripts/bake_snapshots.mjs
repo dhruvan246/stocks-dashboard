@@ -106,9 +106,11 @@ async function main() {
   }
 
   if (done) { console.log('[bake] done — all snapshots pre-warmed'); return; }
-  // Non-critical: the page self-heals each snapshot on a first view. Exit 1 so the failure stays visible.
-  console.error('[bake] not all snapshots baked within the retry budget (non-critical — page self-heals on first view)');
-  process.exit(1);
+  // Non-critical: the page self-heals each snapshot on a first view, so a partial bake (budget
+  // exhausted before every snapshot warmed) is NOT a failure — exit 0 so it doesn't email on every
+  // run. Genuine problems ("Bake error" above, or a fatal throw below) still exit 1 and stay visible.
+  console.warn('[bake] partial bake — some snapshots not pre-warmed within the retry budget (non-critical — page self-heals on first view)');
+  return;
 }
 
 main().catch(e => { console.error('[bake] fatal:', e && e.message || e); process.exit(1); });
