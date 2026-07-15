@@ -728,6 +728,15 @@ dates). Deep links: `?tab=results|feed|calendar&sym=TCS`.
   applies that override every hourly rebuild → the row re-files under its true quarter and drops out of pending.
   No API/vision cost (pure text+regex). The routine commits feed_qe_fix.json + results_feed.json. Keyed by
   sym+date so a genuine later June filing (different date) is never wrongly re-tagged.
+- **Price-universe ORPHANS (tiny NSE filers absent from sf_stock_data.bin) now show as lightweight rows.**
+  Micro NSE names (e.g. OASIS/Oasis Tradelink, BETALA/Betala Global Securities) file real results but have
+  no `co` entry (not in the price bin, no parsed XBRL) → they used to hang as "numbers being parsed" forever.
+  Fix: `bse_vision_prep.find_pending` now has an `elif sym not in CO` branch that renders orphan feed filings
+  for the vision routine (name from the feed row, mcap 0); `merge_bse_vision` already routes NSE reads →
+  `vision_fills.json`; the page's overlay (`load()`) SYNTHESIZES a minimal `CO[sym]={n,s:'',m:0,orphan:1,q:[…]}`
+  from the feed name + vision numbers when `!CO[sym]`, so PAT/rev display (no price/reaction/sector — orphans
+  can't participate in those). Modal is orphan-safe (falls through the non-`bse` branch = NSE links). Bounded:
+  ~0–2 orphans per quarter. Values still ₹ crore, so sub-crore micro filers round near 0.
 ---
 
 ## 16. DISCOVERY BUCKETS  (docs/discovery.html — "Discovery" nav, built 2026-07-13)
