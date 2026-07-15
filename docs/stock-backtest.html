@@ -396,25 +396,6 @@ function savedIdentity(c){
 function isAlreadySaved(cfg){
   try{ const k=savedIdentity(cfg); return loadLS('bt_strategies').some(x=>x&&x.cfg&&savedIdentity(x.cfg)===k); }catch(e){ return false; }
 }
-// From the instant snapshot view, "🔧 Edit & re-run" opens the editable builder INSTANTLY (no data
-// download) — the form is populated from the saved config and the heavy market data loads only when
-// the user actually clicks ▶ Run Backtest (ensureData in run()).
-async function openEditor(cfg){
-  window.__snapshotMode=false;
-  window.__loadedSaved = isAlreadySaved(cfg);
-  await initUIStatic();          // build the form controls instantly (static — no market data)
-  await applyCfg(cfg);           // fill in the saved parameters (no data load: DATA_MODE is already 'sf')
-  const rb=$('run'); rb.textContent='▶ Run Backtest';
-  rb.className='bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-5 py-2 text-sm font-semibold shadow-sm';
-  rb.onclick=run;
-  const cc=$('cfgCard'); if(cc) cc.style.display='';
-  const ip=$('introP'); if(ip) ip.style.display='none';
-  const h1=document.querySelector('h1'); if(h1) h1.textContent='📈 Backtest';
-  const hint=$('saveHint'); if(hint) hint.style.display='none';
-  $('out').innerHTML='';
-  $('runMsg').textContent='Adjust the parameters and click ▶ Run Backtest.';
-  try{ window.scrollTo({top:0,behavior:'smooth'}); }catch(e){ window.scrollTo(0,0); }
-}
 // ---- result SNAPSHOTS: store the full computed result once so re-opening is INSTANT (no 17 MB load,
 //      no recompute). Keyed by strategy identity + window + method, so it matches what the 👁 fetches. ----
 // The key ALSO carries a version stamp = engine version + data date. So the moment the engine logic
@@ -455,10 +436,10 @@ async function loadFund(){
 }
 // ---- the engine ----
 let LAST_RUN=null;
-// Lazily load the heavy market data (only when a real Run is actually requested). The editable
-// builder is shown instantly with NO data (initUIStatic/openEditor); the ~17 MB membership file +
-// the survivorship-free price parts download only here, once, on the first Run — matching the
-// "slim first paint, heavy data on demand" pattern used across the site (DATA_RUNBOOK §9).
+// Lazily load the heavy market data (only when a real Run is actually requested). A direct visit shows
+// the builder instantly with NO data (initUIStatic); the ~17 MB membership file + the survivorship-free
+// price parts download only here, once, on the first Run — matching the "slim first paint, heavy data on
+// demand" pattern used across the site (DATA_RUNBOOK §9).
 async function ensureData(){
   if(SF) return true;
   // Index/F&O membership + startTs come from stock_data.bin (SURV); prices come from the sf-data
@@ -855,7 +836,6 @@ function render(r,cfg){
   html+=`<div class="card p-3 mb-4 flex flex-wrap items-center gap-2">
       <span class="text-xs text-slate-500 mr-1">${strategyLabel(cfg)}</span>
       ${window.__snapshotMode?'<span class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700">⚡ Instant saved result</span>':''}
-      ${window.__snapshotMode?'<button id="btEditRerun" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-700" title="Loads market data so you can change parameters and recompute">🔧 Edit &amp; re-run</button>':''}
       ${(window.__snapshotMode||window.__viewOnly)?'':'<span class="inline-flex items-center gap-1 text-xs font-semibold text-green-700">✓ Auto-saved to History</span>'}
       ${(window.__snapshotMode||window.__viewOnly)?'' : (window.__loadedSaved
         ? '<span class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700" title="This window is recorded under the strategy in Saved Strategies">✓ In Saved Strategies</span><a href="./saved-strategies.html" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-700">⭐ View strategy →</a>'
@@ -927,10 +907,6 @@ function render(r,cfg){
   if(dc) dc.onclick=()=>downloadTradeCsv(r,cfg);
   const ss=$('btSaveStrat');
   if(ss) ss.onclick=saveStrategy;
-  // From the instant snapshot view → open the editable builder INSTANTLY (no data download); the
-  // heavy market data loads only when the user actually clicks ▶ Run Backtest (ensureData in run()).
-  const er=$('btEditRerun');
-  if(er) er.onclick=()=>openEditor(cfg);
   const gl=$('btGoLive'), gc=$('btLiveCfg');
   if(gl) gl.onclick=goLive;
   if(gc) gc.onclick=setWorkerUrl;
