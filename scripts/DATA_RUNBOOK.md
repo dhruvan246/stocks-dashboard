@@ -693,6 +693,16 @@ dates). Deep links: `?tab=results|feed|calendar&sym=TCS`.
   the page, never a wrong one) when the period isn't stated — so a board-meeting date like "held on July 1, 2026"
   can't be mistaken for a quarter. The feed's growth badge keys off this qe, so it shows the March column's YoY
   for a March filing. BSE `QUARTER_ID` is always null — useless, must parse the headline+NEWSSUB.
+- ⚠️ **NSE CAPTION CAN LIE about the quarter → `docs/feed_qe_fix.json` self-heals it.** Some late Q4/annual
+  filers (SUPREMEINF/ESSENTIA/VIKASECO, Jul-2026) get an NSE announcement captioned *"financial results for the
+  period ended Jun 30, 2026"* while the attached PDF is audited results for the quarter **ended March 31, 2026**.
+  `parse_qe(caption)` faithfully returns the wrong June quarter → a phantom "⏳ numbers being parsed" June row that
+  never fills (its real March numbers already exist). Fix: `bse_vision_prep.py` (the daily vision routine's prep)
+  reads the **filing PDF's** own period via `pdf_period()` (text-layer → `parse_qe`); if it ≠ the caption quarter it
+  records `"SYM|YYYY-MM-DD" -> real_qe` in `docs/feed_qe_fix.json`. `write_results_feed()` (fetch_announcements.py)
+  applies that override every hourly rebuild → the row re-files under its true quarter and drops out of pending.
+  No API/vision cost (pure text+regex). The routine commits feed_qe_fix.json + results_feed.json. Keyed by
+  sym+date so a genuine later June filing (different date) is never wrongly re-tagged.
 ---
 
 ## 16. DISCOVERY BUCKETS  (docs/discovery.html — "Discovery" nav, built 2026-07-13)
