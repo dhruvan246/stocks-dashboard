@@ -69,26 +69,28 @@ html[data-theme="soft"]{
 }
 
 /* -------------------------------- DARK ------------------------------------ */
+/* v3 "modern analytics" palette (ValuePicker-grade): near-black navy, blue/violet
+ * accents, calmer surfaces. Rolled out 2026-07-16 as the DEFAULT theme. */
 html[data-theme="dark"]{
   --app-bg:
-    radial-gradient(1200px 680px at 8% -12%, #1a2150 0%, transparent 55%),
-    radial-gradient(1000px 620px at 114% -4%, #2a1b4d 0%, transparent 52%),
-    #0a0e19;
-  --surface:#131a2b;
-  --surface-2:#1a2236;
-  --surface-3:#232d45;
-  --border:#283350;
-  --border-strong:#384568;
-  --text:#e8ecf7;
-  --text-muted:#a4b0c8;
-  --text-faint:#6e7c98;
-  --accent:#818cf8; --accent-2:#a78bfa;
-  --accent-soft: rgba(129, 140, 248, .16);
-  --shadow: 0 1px 2px rgba(0, 0, 0, .40), 0 14px 36px -16px rgba(0, 0, 0, .72);
-  --shadow-lg: 0 24px 64px -22px rgba(0, 0, 0, .82);
-  --header-bg: rgba(15, 20, 35, .68);
-  --pos:#34d399; --neg:#fb7185;
-  --glow: rgba(129, 140, 248, .55);
+    radial-gradient(1100px 560px at 14% -12%, rgba(59, 130, 246, .10) 0%, transparent 60%),
+    radial-gradient(900px 540px at 96% -8%, rgba(139, 92, 246, .09) 0%, transparent 55%),
+    #070b14;
+  --surface:#0d1322;
+  --surface-2:#111930;
+  --surface-3:#182138;
+  --border:#1d2740;
+  --border-strong:#2b3757;
+  --text:#e7ecf7;
+  --text-muted:#93a0bb;
+  --text-faint:#5f6d8a;
+  --accent:#3b82f6; --accent-2:#8b5cf6;
+  --accent-soft: rgba(59, 130, 246, .14);
+  --shadow: 0 1px 2px rgba(0, 0, 0, .45), 0 14px 36px -16px rgba(0, 0, 0, .75);
+  --shadow-lg: 0 24px 64px -22px rgba(0, 0, 0, .85);
+  --header-bg: rgba(9, 13, 23, .78);
+  --pos:#34d399; --neg:#f87171;
+  --glow: rgba(59, 130, 246, .50);
 }
 
 /* ------------------------------- base ------------------------------------- */
@@ -181,7 +183,7 @@ html[data-theme] .hover\:text-slate-900:hover, html[data-theme] .hover\:text-sla
  * accent text → brighter; pastel borders → subtle. Solid -600 accent buttons
  * are left alone (they pop on dark).
  * ========================================================================= */
-html[data-theme="dark"] .text-indigo-600, html[data-theme="dark"] .text-indigo-700{ color:#a5b4fc !important; }
+html[data-theme="dark"] .text-indigo-600, html[data-theme="dark"] .text-indigo-700{ color:#93c5fd !important; }
 html[data-theme="dark"] .text-blue-600, html[data-theme="dark"] .text-blue-700{ color:#93c5fd !important; }
 html[data-theme="dark"] .text-violet-700{ color:#c4b5fd !important; }
 html[data-theme="dark"] .text-emerald-600, html[data-theme="dark"] .text-emerald-700{ color:#6ee7b7 !important; }
@@ -338,7 +340,7 @@ html[data-theme] body{ display:flex; flex-direction:column; min-height:100vh; }
 /* --------------- aurora: two accent blobs drifting behind content --------- */
 html[data-theme]{ --aurora:.13; }
 html[data-theme="soft"]{ --aurora:.16; }
-html[data-theme="dark"]{ --aurora:.22; }
+html[data-theme="dark"]{ --aurora:.14; }   /* v3: calmer — the app-bg radials already glow */
 html[data-theme] body::before, html[data-theme] body::after{
   content:''; position:fixed; z-index:-1; width:46vw; height:46vw; min-width:340px; min-height:340px;
   border-radius:50%; pointer-events:none; filter:blur(80px); opacity:var(--aurora);
@@ -442,6 +444,67 @@ html[data-theme] .sw-f-name span{
     animation:none !important; transition:none !important;
   }
 }
+
+/* =========================================================================
+ * V3 SHARED COMPONENTS — modern-analytics building blocks (stat cards, pill
+ * chips, verdict badges, grouped-header bands, mini bars, stacked cells).
+ * Token-driven, so they work on every theme; designed on dark. Pages adopt
+ * them by using the class names — nothing renders until markup opts in.
+ * ========================================================================= */
+/* KPI stat card: <div class="sw-stat"><div class="sw-lb">Label</div>
+   <div class="sw-v pos">1,204</div><div class="sw-d">detail</div></div> */
+html[data-theme] .sw-stat{
+  background:linear-gradient(180deg, var(--surface-2), var(--surface));
+  border:1px solid var(--border); border-radius:var(--radius-lg);
+  padding:18px 20px; box-shadow:var(--shadow);
+}
+html[data-theme] .sw-stat .sw-lb{
+  font-size:10.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-faint);
+}
+html[data-theme] .sw-stat .sw-v{
+  font-size:30px; font-weight:800; letter-spacing:-.03em; margin-top:9px;
+  font-variant-numeric:tabular-nums; color:var(--text);
+}
+html[data-theme] .sw-stat .sw-v.pos{ color:var(--pos) !important; }
+html[data-theme] .sw-stat .sw-v.neg{ color:var(--neg) !important; }
+html[data-theme] .sw-stat .sw-d{ font-size:11px; color:var(--text-faint); margin-top:7px; }
+
+/* pill chip / verdict badge: <span class="sw-chip pos"><span class="sw-dot"></span>Beat</span>
+   variants: pos (green) · neg (red) · warn (amber) · mut (neutral) */
+html[data-theme] .sw-chip{
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:11px; font-weight:700; padding:4px 11px; border-radius:999px;
+  color:var(--text-muted); background:var(--surface-2); border:1px solid var(--border);
+  white-space:nowrap;
+}
+html[data-theme] .sw-chip .sw-dot{ width:6px; height:6px; border-radius:50%; background:currentColor; flex:none; }
+html[data-theme] .sw-chip.pos{ color:var(--pos); background:color-mix(in srgb, var(--pos) 12%, transparent); border-color:color-mix(in srgb, var(--pos) 30%, transparent); }
+html[data-theme] .sw-chip.neg{ color:var(--neg); background:color-mix(in srgb, var(--neg) 12%, transparent); border-color:color-mix(in srgb, var(--neg) 30%, transparent); }
+html[data-theme] .sw-chip.warn{ color:#fbbf24; background:rgba(251,191,36,.13); border-color:rgba(251,191,36,.3); }
+
+/* grouped table-header band: <th colspan="2" class="sw-gh sw-gh-b">REVENUE</th>
+   colours: -b blue · -g green · -v violet */
+html[data-theme] th.sw-gh{
+  position:relative; padding:10px 14px 4px; text-align:left;
+  font-size:9.5px; font-weight:800; letter-spacing:.12em; text-transform:uppercase;
+}
+html[data-theme] th.sw-gh::before{
+  content:''; position:absolute; top:0; left:10px; right:10px; height:2px; border-radius:2px;
+}
+html[data-theme] th.sw-gh-b{ color:#60a5fa; } html[data-theme] th.sw-gh-b::before{ background:linear-gradient(90deg, rgba(96,165,250,.7), transparent); }
+html[data-theme] th.sw-gh-g{ color:var(--pos); } html[data-theme] th.sw-gh-g::before{ background:linear-gradient(90deg, rgba(52,211,153,.7), transparent); }
+html[data-theme] th.sw-gh-v{ color:#a78bfa; } html[data-theme] th.sw-gh-v::before{ background:linear-gradient(90deg, rgba(167,139,250,.7), transparent); }
+
+/* mini progress bar under a number: <div class="sw-minibar"><i style="width:64%"></i></div> */
+html[data-theme] .sw-minibar{
+  width:56px; height:3px; border-radius:3px; background:var(--surface-3);
+  margin-top:5px; overflow:hidden;
+}
+html[data-theme] .sw-minibar i{ display:block; height:100%; border-radius:3px; background:var(--accent); }
+
+/* stacked table cell: <div class="sw-cellmain">TCS</div><div class="sw-cellsub">Tata Consultancy…</div> */
+html[data-theme] .sw-cellmain{ font-weight:700; font-size:13.5px; color:var(--text); }
+html[data-theme] .sw-cellsub{ font-size:11px; color:var(--text-faint); margin-top:2px; font-weight:500; }
 
 /* backtest "Filter criteria" rows: the factor <select> has very long option labels, and a
    flex child won't shrink below its content (min-width:auto), so the row overflowed the screen
