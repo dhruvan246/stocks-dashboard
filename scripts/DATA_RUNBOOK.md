@@ -311,6 +311,16 @@ Use FILE scripts, not `node -e` (shell quoting mangles the URL). Pull→prepend�
   backtest numbers. A real Run inherently needs the full survivorship-free prices; that load is unavoidable.
 - saved-strategies boot now MERGES local `bt_history` the shared pull didn't return yet (sync lag / paused Supabase)
   and re-appends it, so a just-run window shows even before the shared history catches up.
+- **🕘 REWIND (2026-07-15, commit 63aa8d6) — point-in-time "qualifying stocks as of a date" (Trendlyne Screener Rewind
+  analogue).** Lives in `strategy-backtest.html` as a card between the run form and Run history: a date picker (back to
+  the data start) → lists EVERY stock that passed the strategy's filters on that day, ranked by its sort factor, Top-N
+  marked ⭐. Powered by `backtest-engine.js` **`screenAsOf(cfg, dateStr)`** (returns the full ranked qualifying rows) +
+  `fieldVal(r, sortBy)` for the metric column; the ~17 MB+ market data loads lazily on first Rewind via `loadEngineData`
+  (local `ensureEngine`). The SAME feature ALSO already exists in the **Today's Picks modal** (saved-strategies.html):
+  its "📅 As of date" picker + "Also qualifying" section = picks + full qualifying list as of any date. ⚠️ **GOTCHA that
+  blanked the page once:** `stockHref`/`stockLink` are already defined in `backtest-engine.js` — a `const stockHref` in a
+  page that loads the engine throws "already declared" and kills the whole inline script (empty body). Reuse the engine's
+  helpers; don't redeclare engine globals (pct, fmtINR, FIELDS, TURN_OPTS, simulate, screenAsOf, stockHref/Link, etc.).
 - **⚠️ SAVED-STRATEGIES UI REDESIGN (2026-07-15, commit 127e4f7) — Trendlyne-style, rows DON'T expand.** The table
   columns are **Strategy · CAGR · Backtests(👁) · Today's Picks(🎯) · ☆ · 🗑**. Clicking a row or the 👁 opens
   `strategy-backtest.html?id=`; the 🎯 column opens the Today's-Picks modal directly (openPicks(strategy.id)). The old
