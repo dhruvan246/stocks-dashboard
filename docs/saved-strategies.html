@@ -156,12 +156,19 @@ function clampDate(d, lo, hi) { return d < lo ? lo : d > hi ? hi : d; }
    pulled from the shared Backtest History — each showing its saved CAGR/MaxDD + Picks/Backtest.
    Any future run of the same strategy lands in History and auto-appears under its row. */
 function identityKey(c) {
-  // Identity = what picks the SAME stocks. Excludes `method` (hold/reset is execution-only — it
-  // changes rebalance weighting, not the selection) so the two rebalance variants are ONE strategy,
-  // shown as one row with both runs nested inside. Also excludes start/end (the window).
-  const f = (c.filters || []).map(x => x.field + x.op + x.val).sort().join(',');
-  return [c.indexName || '', c.mcapFloor || 0, c.freq, c.topN, c.sortBy, c.dir, c.lookback || 1, c.earnBasis || 'con', f].join('|');
+  // Identity = the SELECTION RULE. Excludes `method` (hold/reset is execution-only), start/end (the
+  // window), AND `topN` (the stock count is a variation, like the window — a strategy saved at 3, 5
+  // and 50 stocks is ONE strategy shown as one row, with the counts nested inside). The variant-level
+  // key (winKey) carries start+method+topN so those runs stay individually addressable.
+  // Treat boundary-only operator differences as the same rule: `<`≡`<=`, `>`≡`>=` (same field, value
+  // and direction). This keeps two strategies that differ only by a `<` vs `<=` from splitting into
+  // separate rows, while opposite directions (`>0` vs `<0`) or different values stay distinct.
+  const normOp = op => ({ '<=': '<', '>=': '>' }[op] || op);
+  const f = (c.filters || []).map(x => x.field + normOp(x.op) + x.val).sort().join(',');
+  return [c.indexName || '', c.mcapFloor || 0, c.freq, c.sortBy, c.dir, c.lookback || 1, c.earnBasis || 'con', f].join('|');
 }
+// Variant identity within one strategy = window + rebalance method + stock count.
+function winKey(c) { return (c.start || '') + '|' + (c.method || '') + '|' + (c.topN != null ? c.topN : ''); }
 function windowEnd(c) { return (typeof SF !== 'undefined' && SF && SF.end) ? SF.end : (c.end || 'today'); }
 let HIST = [];                 // shared backtest history — used only to look up each saved window's metrics
 const DETAIL = {};             // id -> {id,name,cfg} for each backtest shown, so Picks/Backtest can resolve it
@@ -169,11 +176,11 @@ const DETAIL = {};             // id -> {id,name,cfg} for each backtest shown, s
 // Metrics for a window come from the matching history run (same strategy + same start + same method),
 // so a degenerate short-window run by someone else can't inflate a strategy's shown CAGR or its sort.
 function metricsFor(cfg) {
-  const k = identityKey(cfg), s = cfg.start || '', mth = cfg.method || '';
+  const k = identityKey(cfg), wk = winKey(cfg);
   let best = null;
   for (const h of HIST) {
     if (!h.cfg || identityKey(h.cfg) !== k) continue;
-    if ((h.cfg.start || '') !== s || (h.cfg.method || '') !== mth) continue;
+    if (winKey(h.cfg) !== wk) continue;                 // same window + method + stock count
     if (h.m && h.m.cagr != null && (!best || (h.ts || 0) > (best.ts || 0))) best = h;
   }
   return best ? best.m : null;
@@ -186,14 +193,14 @@ function backtestsFor(savedVars) {
   if (!savedVars.length) return [];
   const k = identityKey(savedVars[0].cfg), byWin = new Map();
   const consider = (id, c, name, m, ts) => {
-    const wk = (c.start || '') + '|' + (c.method || '');
+    const wk = winKey(c);                                         // window + method + stock count
     const score = (m && m.cagr != null ? 1e15 : 0) + (ts || 0);   // prefer entries WITH metrics, then newest
     const prev = byWin.get(wk);
     if (!prev || score > prev._score) byWin.set(wk, { id, cfg: c, name, m: m || {}, _score: score });
   };
   for (const h of HIST) if (h.cfg && identityKey(h.cfg) === k) consider(h.id, h.cfg, h.label || h.name, h.m, h.ts);
   for (const v of savedVars) consider(v.id, v.cfg, v.name, metricsFor(v.cfg), v.ts);   // safety net for saved windows
-  return [...byWin.values()].sort((a, b) => (a.cfg.start || '').localeCompare(b.cfg.start || '') || (a.cfg.method || '').localeCompare(b.cfg.method || ''));
+  return [...byWin.values()].sort((a, b) => (a.cfg.start || '').localeCompare(b.cfg.start || '') || (a.cfg.method || '').localeCompare(b.cfg.method || '') || ((a.cfg.topN || 0) - (b.cfg.topN || 0)));
 }
 // Headline CAGR for the column + sort = the LONGEST-window run (most representative full-period number),
 // so a short lucky window can't jump a strategy to the top.
@@ -213,8 +220,9 @@ function detailCard(b) {
   const dd = (m.maxDD != null) ? `<span class="font-bold neg">-${(+m.maxDD).toFixed(1)}%</span>` : '<span class="text-slate-400">—</span>';
   const fin = (m.finalV != null) ? `₹1L → ${fmtINR(m.finalV)}` : '&nbsp;';
   const meth = c.method ? `<span class="text-[10px] font-semibold text-slate-500 bg-slate-100 rounded px-1.5 py-0.5 ml-1">${c.method === 'hold' ? 'hold' : 'reset'}</span>` : '';
+  const nTag = c.topN != null ? `<span class="text-[10px] font-semibold text-indigo-600 bg-indigo-50 rounded px-1.5 py-0.5 ml-1">top-${c.topN}</span>` : '';
   return `<div class="bg-white border border-slate-200 rounded-lg p-3" data-variant="${esc(b.id)}">
-    <div class="text-[11px] font-semibold text-slate-700">📅 ${esc(c.start)} → ${esc(windowEnd(c))}${meth}</div>
+    <div class="text-[11px] font-semibold text-slate-700">📅 ${esc(c.start)} → ${esc(windowEnd(c))}${nTag}${meth}</div>
     <div class="flex items-center justify-between mt-1.5">
       <div class="text-sm">CAGR: ${cagr}</div>
       <div class="text-sm">MaxDD: ${dd}</div>
@@ -253,7 +261,7 @@ function buildGroups(items) {
     if (!groups.has(k)) groups.set(k, { rep: it, vars: new Map() });
     const g = groups.get(k);
     if ((it.ts || 0) > (g.rep.ts || 0)) g.rep = it;
-    const vk = (it.cfg.start || '') + '|' + (it.cfg.method || '');
+    const vk = winKey(it.cfg);
     const prev = g.vars.get(vk);
     if (!prev || (it.ts || 0) > (prev.ts || 0)) g.vars.set(vk, it);
   }
@@ -296,6 +304,8 @@ function render() {
     const it = g.rep, c = it.cfg;
     const expr = filterExpr(c) || 'no filters';
     const list = g.list, n = list.length, best = g.cagr;
+    const counts = [...new Set([...g.vars.values()].map(v => v.cfg.topN).filter(v => v != null))].sort((a, b) => a - b);
+    const countLabel = (counts.length ? counts.join('/') : c.topN) + ' stocks';
     let cagrCell = isFinite(best) ? `<span class="font-bold ${best >= 0 ? 'pos' : 'neg'}">${pct(best)}</span>` : '<span class="text-slate-400">—</span>';
     if (VIEW === 'custom') {
       const cr = CUSTOM.get(identityKey(c));
@@ -310,7 +320,7 @@ function render() {
           <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">📈</span>
           <span class="min-w-0">
             <span class="block font-semibold text-indigo-700 leading-snug">${esc(it.name)}</span>
-            <span class="block text-[11px] text-slate-500 truncate">${esc(universeLabel(c))} · ${FREQ[c.freq] || c.freq + 'mo'} · ${c.topN} stocks · ${SORTL[c.sortBy] || c.sortBy} ${c.dir === 'high' ? '↓' : '↑'}</span>
+            <span class="block text-[11px] text-slate-500 truncate">${esc(universeLabel(c))} · ${FREQ[c.freq] || c.freq + 'mo'} · ${countLabel} · ${SORTL[c.sortBy] || c.sortBy} ${c.dir === 'high' ? '↓' : '↑'}</span>
           </span>
         </div>
       </td>
@@ -344,8 +354,8 @@ function render() {
   $('list').querySelectorAll('[data-bt]').forEach(b => b.onclick = () => {
     const it = DETAIL[b.dataset.bt] || strategies().find(x => x.id === b.dataset.bt); if (!it) return;
     // find the matching saved history run for this exact window → its stored result is shown instantly (no re-run)
-    const k = identityKey(it.cfg), st = it.cfg.start || '', mth = it.cfg.method || ''; let h = null;
-    for (const x of HIST) { if (x.cfg && identityKey(x.cfg) === k && (x.cfg.start || '') === st && (x.cfg.method || '') === mth && x.m && x.m.cagr != null) { if (!h || (x.ts || 0) > (h.ts || 0)) h = x; } }
+    const k = identityKey(it.cfg), wk = winKey(it.cfg); let h = null;
+    for (const x of HIST) { if (x.cfg && identityKey(x.cfg) === k && winKey(x.cfg) === wk && x.m && x.m.cagr != null) { if (!h || (x.ts || 0) > (h.ts || 0)) h = x; } }
     const saved = h ? { m: h.m, yby: h.yby, label: h.label } : null;
     // 📈 opens the stored result SNAPSHOT instantly — no 17 MB + 90 MB engine download. If no snapshot
     // exists yet it falls back to a one-time recompute that caches it, so the next open is instant too.
