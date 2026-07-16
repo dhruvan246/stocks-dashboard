@@ -153,7 +153,8 @@ def main():
         print("REFUSING to write: merged %d rows < 60%% of previous %d" % (len(rows), old_n), flush=True); sys.exit(1)
 
     allr = sorted(rows.values(), key=lambda r: (r[0], r[2], r[1], r[4]), reverse=True)
-    out = {"updated": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
+    ist = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=5, minutes=30)
+    out = {"updated": ist.strftime("%Y-%m-%d %H:%M"),
            "from": lo, "to": today.isoformat(), "rows": allr}
     with open(OUT, "w", encoding="utf-8") as f:
         json.dump(out, f, separators=(",", ":"), ensure_ascii=False)
