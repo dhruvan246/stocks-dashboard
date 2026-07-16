@@ -462,8 +462,10 @@ V-recovery (Jun-2021: +48%)**. ⚠️ MOVED OFF the Stocks dashboard → its own
   — banks have no comparable rev/op, and `MIN_N=5` suppresses medians over <5 cos. `build_results_season.py` emits
   `{defaultUniverse, dataAsOf, universes:[{key,label,note,quarters:[{...,rev:{median,n,total,tn},op,ebit,pat}]}]}`.
 - **MEDIAN ↔ TOTAL toggle (2026-07-01, user compared to Trendlyne):** each metric carries BOTH `median` (per-company
-  YoY, consolidated-preferred, positive base — "typical company") AND `total` (aggregate Σnow/Σago−1, **STANDALONE**).
-  Trendlyne's result-analysis page shows the **TOTAL, standalone** number — verified: our total = Nifty 500 Q4FY26 rev
+  YoY, consolidated-preferred, positive base — "typical company") AND `total` (aggregate Σnow/Σago−1,
+  **CONSOLIDATED-preferred** — the old "standalone" wording here was stale; con-pref is what reconciles to TL's
+  cards, see the agg_quarter comment in build_results_season.py).
+  Trendlyne's result-analysis page shows the **TOTAL** number — verified: our total = Nifty 500 Q4FY26 rev
   **9.6%** / op **8.6%** vs Trendlyne **9.0% / 8.1%** (residual = live-vs-frozen reporting cut-off). The median reads
   HIGHER (rev 13.8%) because it's equal-weight (giants that grow slower don't dominate). Page has a Median/Total toggle.
   `agg_total()` sums only companies **profitable in BOTH periods** (base AND current > 0) — a loss/near-zero base blows
@@ -550,11 +552,20 @@ V-recovery (Jun-2021: +48%)**. ⚠️ MOVED OFF the Stocks dashboard → its own
 - **In-progress quarter membership = LATEST index snapshot** (build_results_season member_fn_live) —
   reconstitutions land mid-season (ICICIAMC entered N500 2026-07-17) and Trendlyne counts current members;
   completed quarters keep the point-in-time quarter-end snapshot.
-- **Known LIVE-quarter residuals vs TL (Jun-2026, don't chase):** MRPL revenue — XBRL RevenueFromOperations is
-  gross (41,609), TL nets excise off the PDF (38,254), no excise tag exists, op matches exactly; HDBFS — TL didn't
-  subtract OtherRevenueFromOperations for it (but did for LTF via con−orfo=5212.92 exact) — TL follows each PDF's
-  own presentation, our NBFC rule stays; life-insurer op formula (above). Post-fix Jun-2026 N500: rev 18.9 vs TL
-  19.4, op 15.2 vs 16.8 (life-op residual), same 25 companies.
+- **Known LIVE-quarter residuals vs TL (Jun-2026; re-bridged 2026-07-16 over the SAME 35 declared cos):**
+  N500 totals ours rev 19.4 / op 17.4 vs TL cards 19.9 / 20.7. **REV bridge (+0.5pp, fully explained):** MRPL +0.30
+  (XBRL RevenueFromOperations is gross 41,609/20,988 = +98%, TL nets excise off the PDF 38,254/17,356 = +120%, no
+  excise tag exists — keep); HDBFS +0.10 (**OUR DEFECT, fixable**: current qtrs are net-of-ORFO but the IPO-backfilled
+  Jun-2025 base 4,465.44 is the PDF's GROSS number → we show +2.7% vs true ~+10.6%; rewrite the base net-of-ORFO,
+  op base 2,523.6 too); PIRAMALFIN +0.06 (merged entity, NO Jun-2025 base yet — needs the comparative-column
+  backfill); ICICIAMC +0.01 (base 1,330.67 vs TL 1,313). **OP bridge 17.4 → 19.3 (= Σ of TL's own table):** HDBFS
+  +0.56 (same); HDFCLIFE +0.52 + ICICIPRULI +0.26 (TL life-insurer op irreproducible — above); BHEL +0.49 (our
+  Jun-2025 op base is **−537** (huge other income year-ago; formula-consistent, keep) → both>0 rule drops BHEL from
+  our Σ, TL carries +171 → +194%); PIRAMALFIN +0.07. ⚠️ **TL's OP CARD (20.7) ≠ Σ of TL's OWN 35-row table (19.34)**
+  that day — no subset of their rows reproduces 20.7 (excl banks+insurers is closest, 20.55); their REV card DOES
+  equal their table Σ (19.91) — so past 19.3 the op card is TL-internal/proprietary (like EBIDT), don't chase.
+  **Page-default gotcha when a user compares:** our page opens on "All liquid" + MEDIAN (13.9/15.8 that day) —
+  switch universe to **Nifty 500** AND toggle **TOTAL** before comparing to TL's cards.
 
 **SELF-UPDATES DAILY** — wired into `.github/workflows/refresh-fundamentals.yml` (21:15 IST weekdays):
 1. `update_fundamentals.py` scans NSE integrated-filing-results for the last 120 days (ALL companies, one call) and,
