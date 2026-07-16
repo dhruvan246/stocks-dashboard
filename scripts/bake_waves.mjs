@@ -18,7 +18,9 @@ const SFDATA = 'https://dhruvan246.github.io/sf-data';
 const BAKE_URL = `${BASE}/saved-strategies.html?bakewaves=1`;
 
 const PAGES_WAIT_MS = 8 * 60 * 1000;    // max wait for both GitHub Pages deploys to publish the new data date
-const BAKE_WAIT_MS  = 30 * 60 * 1000;   // budget for the whole bake (all four waves × all strategies)
+const BAKE_WAIT_MS  = 32 * 60 * 1000;   // overall budget across all batches
+const PER_ITER_MS   = 6 * 60 * 1000;    // per-batch wait (one fresh browser before it's killed/finishes)
+const MAX_ITERS     = 10;               // reload in a fresh browser this many times at most (each resumes)
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 async function fetchEnd(url) {
@@ -43,13 +45,13 @@ async function waitForPages() {
   return '';
 }
 
-async function main() {
-  const dataEnd = await waitForPages();
-  console.log(`[bake-waves] starting against data end=${dataEnd || '(unknown)'}`);
+// One batch in a FRESH browser (resets memory). The page resumes — it skips waves already saved for the
+// current data date and bakes the next one, saving after each — so batches are additive.
+async function bakeOnce(budgetMs) {
   const browser = await chromium.launch({
     args: ['--no-sandbox', '--disable-dev-shm-usage', '--js-flags=--max-old-space-size=4096'],
   });
-  let status = '(no status)', done = false;
+  let status = '(no status)', done = false, crashed = false;
   try {
     const page = await browser.newPage();
     page.on('console', m => console.log('[page]', m.text()));
@@ -59,23 +61,42 @@ async function main() {
       await page.waitForFunction(() => {
         const o = document.getElementById('bakeOut');
         return o && (/✅ Done/.test(o.textContent) || /Bake error/.test(o.textContent));
-      }, { timeout: BAKE_WAIT_MS, polling: 5000 });
-    } catch { /* budget exhausted */ }
+      }, { timeout: budgetMs, polling: 5000 });
+    } catch { /* per-batch timeout OR context destroyed by a crash */ }
     try {
       status = await page.evaluate(() => {
         const o = document.getElementById('bakeOut');
         return o ? o.textContent.replace(/\s+/g, ' ').trim() : '(no #bakeOut element)';
       });
       done = /✅ Done/.test(status);
-    } catch { status = '(browser crashed mid-bake)'; }
+    } catch { status = '(browser crashed mid-bake)'; crashed = true; }
+  } catch (e) {
+    status = `(launch/nav failed: ${e && e.message || e})`; crashed = true;
   } finally {
     try { await browser.close(); } catch {}
   }
-  console.log(`[bake-waves] ${status}`);
+  return { status, done, crashed };
+}
+
+async function main() {
+  const dataEnd = await waitForPages();
+  console.log(`[bake-waves] starting against data end=${dataEnd || '(unknown)'}`);
+  const deadline = Date.now() + BAKE_WAIT_MS;
+  let done = false, prevStatus = '';
+  for (let iter = 1; iter <= MAX_ITERS && Date.now() < deadline; iter++) {
+    const budget = Math.max(30000, Math.min(PER_ITER_MS, deadline - Date.now()));
+    const { status, done: d, crashed } = await bakeOnce(budget);
+    console.log(`[bake-waves] batch ${iter}: ${status}`);
+    if (d) { done = true; break; }
+    if (/Bake error/.test(status)) { console.error('[bake-waves] page reported a bake error'); process.exit(1); }
+    // Stall guard: identical readable status two batches running = stuck on the same wave (not progressing).
+    // Crashes read no status and keep looping (they DO progress via the incremental per-wave save).
+    if (!crashed && status === prevStatus) { console.warn('[bake-waves] no progress across two batches — stopping'); break; }
+    if (!crashed) prevStatus = status;
+  }
   if (done) { console.log('[bake-waves] done — wave snapshot saved'); return; }
-  if (/Bake error/.test(status)) { console.error('[bake-waves] page reported a bake error'); process.exit(1); }
   // Non-critical: the page falls back to the full-history CAGR ranking if the snapshot is missing/stale.
-  console.warn('[bake-waves] did not finish within budget (non-critical — page falls back to CAGR ranking)');
+  console.warn('[bake-waves] partial/incomplete within budget (non-critical — page falls back / uses partial snapshot)');
 }
 
 main().catch(e => { console.error('[bake-waves] fatal:', e && e.message || e); process.exit(1); });

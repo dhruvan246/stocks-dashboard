@@ -512,17 +512,22 @@ function runPreset(key) {
     $('waveSnapInfo').textContent = WAVE_SNAP && WAVE_SNAP.date ? `snapshot ${WAVE_SNAP.date}` : '';
   }
 }
-/* Compute all waves for every strategy and persist ONE snapshot to Supabase (bt_snapshots id 'waves')
-   via the public write token in bt-sync.js — no owner secret needed, same path as the ?bake=all baker.
-   Called by the owner's ↻ button and by the headless ?bakewaves=1 mode. */
+/* Compute all waves for every strategy and persist a snapshot to Supabase (bt_snapshots id 'waves') via
+   the public write token in bt-sync.js — no owner secret. Saves INCREMENTALLY after each wave and
+   RESUMES (skips waves already baked for the current data date), so a killed/timed-out bake still makes
+   progress and re-running finishes it. Called by the owner's ↻ button and headless ?bakewaves=1. */
 async function computeAndSaveWaves(headless) {
-  const setMsg = m => { $('waveSnapInfo').textContent = m; if (headless) { let o = $('bakeOut'); if (!o) { o = document.createElement('div'); o.id = 'bakeOut'; document.body.appendChild(o); } o.textContent = m; } };
+  const setOut = m => { let o = $('bakeOut'); if (!o) { o = document.createElement('div'); o.id = 'bakeOut'; document.body.appendChild(o); } o.textContent = m; };
+  const setMsg = m => { $('waveSnapInfo').textContent = m; if (headless) setOut(m); };
   setComputeUI(true, 'Loading market data…', 0); setMsg('Loading market data…');
-  if (!await ensureEngine()) { setComputeUI(false, 'Couldn’t load market data.', 0); setMsg('Bake error: market data'); return false; }
-  const payload = { date: SF.end };
+  if (!await ensureEngine()) { setComputeUI(false, 'Couldn’t load market data.', 0); if (headless) setOut('Bake error: market data'); return false; }
   const today = SF.end;
+  const baked = key => WAVE_SNAP && WAVE_SNAP[key] && WAVE_SNAP[key].results && Object.keys(WAVE_SNAP[key].results).length;
+  // resume: reuse already-baked waves that match the current data date
+  const payload = (WAVE_SNAP && WAVE_SNAP.date === today) ? Object.assign({}, WAVE_SNAP) : { date: today };
   for (let wi = 0; wi < WAVE_ORDER.length; wi++) {
     const key = WAVE_ORDER[wi], p = PERIOD_PRESETS[key];
+    if (payload.date === today && payload[key] && payload[key].results && Object.keys(payload[key].results).length) continue;   // already baked this run/date
     const from = clampDate(p.from, SF.start, SF.end);
     const to   = clampDate(p.to || today, SF.start, SF.end);
     const results = await computeWindow(from, to, null, (done, total) => {
@@ -531,15 +536,15 @@ async function computeAndSaveWaves(headless) {
       setMsg(`Baking ${key} ${done}/${total} (${wi + 1}/${WAVE_ORDER.length} waves)`);
     });
     payload[key] = { start: from, end: to, topN: null, results };
+    try { await btSync.snapSet('waves', payload); } catch (e) { /* keep going; retried next run */ }   // incremental save after each wave
+    WAVE_SNAP = payload;
   }
-  let saved = false;
-  try { saved = await btSync.snapSet('waves', payload); } catch (e) { saved = false; }
-  WAVE_SNAP = payload;
+  const complete = WAVE_ORDER.every(baked);
   setComputeUI(false, '', 1);
-  setMsg(saved ? `✅ snapshot saved ${payload.date}` : 'computed, but save failed (not owner?)');
-  if (headless) { let o = $('bakeOut'); if (!o) { o = document.createElement('div'); o.id = 'bakeOut'; document.body.appendChild(o); } o.textContent = saved ? '✅ Done · waves baked ' + payload.date : 'Bake error: save failed'; }
+  setMsg(complete ? `✅ snapshot ${payload.date}` : `partial snapshot ${payload.date}`);
+  if (headless) setOut(complete ? '✅ Done · waves baked ' + payload.date : 'partial — re-run to finish (' + WAVE_ORDER.filter(baked).length + '/' + WAVE_ORDER.length + ' waves)');
   if (VIEW === 'best') { highlightWave(BEST_WAVE); loadWaveIntoCustom(BEST_WAVE); render(); }
-  return saved;
+  return complete;
 }
 
 /* ---------- lazy engine load: the 17 MB + 90 MB market data loads ONLY when Today's Picks needs it,
