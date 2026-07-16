@@ -63,6 +63,21 @@ def main():
     asof_int = int(asof.replace("-", "")) if asof else 0
     print("price bin:", bin_path, "end =", asof)
 
+    # Re-key the price bin to CURRENT tickers. The bin lags a rename (it is refreshed on its own
+    # cadence) so it can still hold the OLD key, while DATA_RUNBOOK §30 step 4 has already moved the
+    # fundamentals/revop rows to the NEW one. `syms` below comes from those files, so the new key finds
+    # no series and the company is SKIPPED OFF THE PAGE ALTOGETHER (GUJENERGY, ONIDA — 2026-07-17).
+    # Fill-only: a real current-key series always wins, so this self-disarms once the bin catches up.
+    carried = 0
+    for _old, _new in (jload(os.path.join(HERE, "_rename_map.json")) or {}).items():
+        if _old in px and _new not in px:
+            px[_new] = px[_old]
+            if _old in bmeta and _new not in bmeta:
+                bmeta[_new] = bmeta[_old]
+            carried += 1
+    if carried:
+        print("carried %d renamed price series onto their current ticker (bin lags _rename_map)" % carried)
+
     slim_meta = {}
     slim_p = os.path.join(DOCS, "dash_slim.bin")
     if os.path.exists(slim_p):
