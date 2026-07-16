@@ -86,7 +86,14 @@ MIN_N = 5   # don't publish a median computed over fewer than this many companie
 
 
 def median_yoy(pairs, min_n=MIN_N):
-    ys = [(cv - bv) / bv * 100.0 for cv, bv in pairs if bv is not None and bv > 0 and cv is not None]
+    """Per-company YoY %, Trendlyne's convention: (cur - base) / ABS(base).
+
+    Dividing by |base| is what makes a swing from a LOSS to a profit read POSITIVE instead of
+    sign-flipping — BHEL Q1FY27 gives (503.86 - -537.14)/537.14 = +193.80%, exactly the figure
+    Trendlyne prints. This MIRRORS profitAt() in docs/stock-backtest.html + docs/backtest-engine.js
+    (`yoy: (c-b)/Math.abs(b)*100`), which has always used it — the old `bv > 0` test here silently
+    DROPPED every loss-base turnaround from the median instead. base == 0 is still skipped (÷0)."""
+    ys = [(cv - bv) / abs(bv) * 100.0 for cv, bv in pairs if bv is not None and bv != 0 and cv is not None]
     return (round(statistics.median(ys), 1) if len(ys) >= min_n else None), len(ys)
 
 
@@ -95,24 +102,40 @@ def _cpref(con, std):
     return con if con is not None else std
 
 
-def agg_total(pairs, min_n=MIN_N):
-    """Aggregate (total-based, Trendlyne-style) growth: sum(now)/sum(ago)-1, on the pairs given
-    (CONSOLIDATED-preferred basis, Trendlyne-match). Aggregate only companies PROFITABLE IN BOTH periods (base AND current > 0) —
-    a loss/near-zero base blows the ratio up (mid/small-cap PAT read 72%), and filtering base-only made
-    it swing the other way (Nifty 500 PAT 1.9%, Smallcap -15%). Both>0 is the standard stable 'total
-    profit growth'.
+def agg_total(pairs, min_n=MIN_N, drop_nonpos=False):
+    """Index TOTAL growth, Trendlyne's rule: sum(now)/sum(ago)-1 over EVERY company that reported BOTH
+    periods, negative bases INCLUDED (CONSOLIDATED-preferred basis).
 
-    ⚠️ NOTE (2026-07-17): the old claim here that "revenue/op are unaffected (both always > 0)" is FALSE.
-    OP CAN HAVE A NEGATIVE BASE — BHEL Q1FY27's year-ago op is -537.14 (a genuine loss quarter, PAT -455),
-    so this filter silently DROPS it from the op total, which is why our Nifty 500 Jun-2026 op total reads
-    18.07% vs Trendlyne's 20.70%: TL sums every company in, negative bases included (their per-company % on
-    a negative base is (cur-base)/abs(base) — that's their +193.80% for BHEL, off the SAME -537.14 base we
-    hold). Including it takes our op total to 19.90%. Left as-is deliberately: flipping the rule would also
-    move TOTAL PAT on every index/quarter, where both>0 was an explicit choice. See DATA_RUNBOOK §11."""
-    pairs = [(n, a) for n, a in pairs if a > 0 and n > 0]
+    A negative base is REAL, not noise: BHEL's Q1FY26 op is -537.14 off a genuine loss quarter (PAT -455),
+    and it is the same -537.14 Trendlyne holds. VERIFIED 2026-07-17 — TL's Nifty-500 Q1FY27 "Total Oper
+    Profit Growth" card (20.70%) reproduces to the decimal as the sum of their own 35 printed rows ONLY
+    with BHEL's base kept negative; back-deriving it as positive is what made it look like their card
+    disagreed with their table.
+
+    ⚠️ This REPLACES an old `base AND current > 0` filter, whose docstring wrongly claimed "revenue/op are
+    unaffected (both always > 0)" — BHEL disproves that. The filter silently dropped such companies and
+    read 18.07% for that same cell (vs 19.90% here). It was originally added because total PAT with loss
+    bases looked implausible (MidSmallcap400 read 72%) — but that number is the arithmetic truth (an index
+    whose members collectively earned less last year BECAUSE of losses really did grow that much), and
+    Trendlyne itself never publishes a total-PAT % — it shows profit COUNTS. Prefer the median (or the
+    counts) for profit; see DATA_RUNBOOK §11.
+
+    drop_nonpos=True is used for PAT ONLY (see agg_quarter): net profit is a RESIDUAL that cancels to
+    ~zero at index level, so summing losses in makes sum(ago) collapse and the ratio explode
+    (Smallcap-250 Mar-2021 read 9841%). Trendlyne itself never publishes a total-PAT % for exactly this
+    reason — it shows profit COUNTS. Revenue/op are gross aggregates and stay stable, so they follow
+    TL's rule. DEGENERACY GUARD (all metrics): even summing everything, sum(ago) can be a near-zero
+    residue of cancelling signs (Consumer Durables Jun-2021 op, a COVID-shut base) — a % off that is
+    noise, not information, so require sum(ago) to be a real fraction of sum(|ago|) and return None
+    otherwise (an honest gap in the chart beats a 2825% bar). See DATA_RUNBOOK §11."""
+    pairs = [(n, a) for n, a in pairs if n is not None and a is not None]
+    if drop_nonpos:
+        pairs = [(n, a) for n, a in pairs if n > 0 and a > 0]
     sn = sum(n for n, a in pairs)
     sa = sum(a for n, a in pairs)
-    return (round((sn / sa - 1) * 100, 1) if (sa > 0 and len(pairs) >= min_n) else None), len(pairs)
+    sabs = sum(abs(a) for n, a in pairs)
+    ok = sa > 0 and len(pairs) >= min_n and sa >= 0.25 * sabs
+    return (round((sn / sa - 1) * 100, 1) if ok else None), len(pairs)
 
 
 def agg_quarter(members, qe, pat, revop, min_n=MIN_N, include_fin=False):
@@ -172,7 +195,7 @@ def agg_quarter(members, qe, pat, revop, min_n=MIN_N, include_fin=False):
     rev_m, rev_n = median_yoy(rev_pairs, min_n);   rev_t, rev_tn = agg_total(rev_tot, min_n)
     op_m, op_n = median_yoy(op_pairs, min_n);       op_t, op_tn = agg_total(op_tot, min_n)
     ebit_m, ebit_n = median_yoy(ebit_pairs, min_n); ebit_t, ebit_tn = agg_total(ebit_tot, min_n)
-    pat_m, pat_n = median_yoy(pat_pairs, min_n);    pat_t, pat_tn = agg_total(pat_tot, min_n)
+    pat_m, pat_n = median_yoy(pat_pairs, min_n);    pat_t, pat_tn = agg_total(pat_tot, min_n, drop_nonpos=True)
     return {"qe": qe, "label": quarter_label(qe), "reported": reported,
             "rev": {"median": rev_m, "n": rev_n, "total": rev_t, "tn": rev_tn},
             "op": {"median": op_m, "n": op_n, "total": op_t, "tn": op_tn},

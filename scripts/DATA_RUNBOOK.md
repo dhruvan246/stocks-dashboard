@@ -593,6 +593,22 @@ V-recovery (Jun-2021: +48%)**. ⚠️ MOVED OFF the Stocks dashboard → its own
   (op = PBET+FC+Dep−OtherIncome; con = 222.67+1491.71+57.10−50.86 = 1720.62). TL's implied base 2639.29/1720.69 ✓.
   ⚠️ **PEL's own stored Jun-2025 (rev 2642.67) is the PRE-merger entity's originally-reported figure — do NOT lift it**;
   the PDF comparative (2639.25) is what the merged entity restates and what TL reads. (PAT base already existed.)
+- **⚠️ NEGATIVE-BASE CONVENTION — aligned to Trendlyne + our own backtest (2026-07-17, user-directed):**
+  the site was internally inconsistent: `docs/stock-backtest.html` + `docs/backtest-engine.js` (`profitYoyPct`) have
+  ALWAYS used **`(cur−base)/ABS(base)`** ("divide by |base| so loss→profit reads positive") = Trendlyne's exact rule,
+  while `build_results_season.py` required a POSITIVE base and silently dropped those companies. Now aligned:
+  - **`median_yoy()` = `(cur−base)/abs(base)`, skip base==0 only** (was `base > 0`). BHEL Q1FY27 = +193.80% —
+    the exact figure TL prints — instead of vanishing. Mirrors `profitAt()`; keep the three in sync.
+  - **`agg_total()` sums EVERY company that reported both periods, negative bases INCLUDED** (was both>0). Nifty 500
+    Jun-2026 op **18.07 → 19.90** vs TL's card 20.70 (residual = the two life insurers). Revenue is unaffected
+    (no negative revenue bases exist).
+  - **`drop_nonpos=True` for PAT ONLY.** Net profit is a RESIDUAL that cancels toward zero at index level, so summing
+    losses in collapses Σbase and the ratio explodes — measured: **201 of 809 total-PAT cells moved >25pp,
+    Smallcap-250 Mar-2021 read 9,841%**. TL never publishes a total-PAT card *for this very reason* (it shows profit
+    COUNTS), so there is nothing to match. PAT totals stay byte-identical to the old rule.
+  - **DEGENERACY GUARD (all metrics): `Σbase >= 0.25 × Σ|base|`, else None.** Even summing everything, a COVID-shut
+    base can leave Σbase a near-zero residue of cancelling signs (Consumer Durables Jun-2021 op read 2,825%). Cost:
+    2 op + 6 ebit cells blanked out of 809; `|>300%|` op cells 3 → 1 (Nifty Metal Jun-2021 338.6% is real, kept).
 - **⚠️ NEVER back-derive a TL base as `cur/(1+g/100)` — TL uses `(cur−base)/ABS(base)` when the base is NEGATIVE.**
   That mistake invented two phantom findings on 2026-07-16 (both since disproved): "TL's BHEL base is +171" and "TL's
   op CARD ≠ Σ of TL's own table". **Decode the sign from TL's own margin columns instead:** BHEL Q1FY27 margin 6.55%
@@ -604,15 +620,8 @@ V-recovery (Jun-2021: +48%)**. ⚠️ MOVED OFF the Stocks dashboard → its own
   - **REV −0.3pp:** MRPL +0.30 (XBRL RevenueFromOperations is gross 41,609/20,988 = +98%, TL nets excise off the PDF
     38,254/17,356 = +120%, no excise tag exists — keep); ICICIAMC +0.01 (**OURS IS RIGHT** — base 1,330.67 IS the
     PDF's printed Jun-25 column, 13,306.7 million ÷ 10; TL's implied 1,313.4 is off. Don't "fix" toward TL).
-  - **OP −2.6pp = 1.83 (BHEL convention) + 0.80 (life insurers):**
-    - **BHEL +1.83pp is a CONVENTION difference, not data.** TL sums ALL 35 into the index total including BHEL's
-      NEGATIVE base; `agg_total()`'s both>0 rule DROPS it. Adopt TL's rule and our op total goes **18.07 → 19.90**
-      (TL's card 20.70 = Σ of their 35 rows with BHEL's base negative — verified to the decimal).
-      ⚠️ **`agg_total`'s docstring claim "Revenue/op are unaffected (both always > 0)" is FALSE** — BHEL Q1FY27 is a
-      live counter-example (op base −537.14 on a genuine loss quarter, PAT −455). Changing the rule is a product
-      decision (it also moves TOTAL PAT everywhere, where both>0 was chosen deliberately) — **ask the user first**;
-      the safe form is Σcur/Σbase over all cos with both values present, guarded on Σbase > 0.
-    - **HDFCLIFE +0.52 / ICICIPRULI +0.26** — life-insurer op irreproducible (above). Their rev + PAT are exact.
+  - **OP −0.8pp (was −2.6pp before the 2026-07-17 convention fix, below) = HDFCLIFE +0.52 / ICICIPRULI +0.26**,
+    life-insurer op irreproducible (above). Their rev + PAT are exact. Nothing else is left.
   - **EMMVEE** (op base 350.49 vs TL's implied 347.4, ~0.01pp): **OURS IS RIGHT** — derived from EMMVEE's own PDF
     comparative, PBT 240.19 + FC 53.11 + Dep 71.59 − OI 14.40 = 350.49 (lakh ÷ 100); our current op 548.10 = TL exact.
   **Page-default gotcha when a user compares:** our page opens on "All liquid" + **MEDIAN** — switch the universe to
