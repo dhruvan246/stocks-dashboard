@@ -47,14 +47,16 @@
     <button id="tabCustom" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">🗓️ Custom period</button>
     <button id="tabFav" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">⭐ Favourites</button>
   </div>
-  <!-- Always-visible market-cycle presets: click one → every strategy is backtested over that exact window
-       and the list re-sorts best-first. -->
-  <div class="flex items-center gap-2 flex-wrap mb-3">
-    <span class="text-[11px] font-bold uppercase tracking-wide text-slate-500">Compare over</span>
+  <!-- Best-return market-cycle presets (shown only on the Best-return tab). Results are precomputed and
+       stored as a Supabase snapshot, so clicking a wave loads instantly. -->
+  <div id="waveRow" class="hidden items-center gap-2 flex-wrap mb-3">
+    <span class="text-[11px] font-bold uppercase tracking-wide text-slate-500">Best return over</span>
     <button data-preset="w1" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">🌊 Wave 1 <span class="opacity-60">Mar’20–Sep’21</span></button>
     <button data-preset="w2" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">🌊 Wave 2 <span class="opacity-60">Mar’23–Mar’24</span></button>
     <button data-preset="w3" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">🌊 Wave 3 <span class="opacity-60">Mar’26–date</span></button>
     <button data-preset="cycle" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">🔄 Entire cycle <span class="opacity-60">Mar’20–date</span></button>
+    <span id="waveSnapInfo" class="text-[11px] text-slate-400 ml-auto"></span>
+    <button id="waveUpdate" class="hidden text-[11px] font-semibold text-indigo-600 hover:underline">↻ Update snapshot</button>
   </div>
   <!-- Custom-period compare bar: pick any window, hit Compute → every strategy runs a real backtest over
        exactly that window and the list re-sorts best-first by that window's CAGR. -->
@@ -254,9 +256,31 @@ function loadFavs() { try { return new Set(JSON.parse(localStorage.getItem('bt_f
 function saveFavs(s) { localStorage.setItem('bt_fav_strategies', JSON.stringify([...s])); }
 function toggleFav(k) { const s = loadFavs(); s.has(k) ? s.delete(k) : s.add(k); saveFavs(s); render(); }
 
-let VIEW = 'best';   // 'best' = sort by headline CAGR (default), 'new' = most recently saved first, 'fav' = favourites, 'custom' = sort by a computed custom-window CAGR
-const CUSTOM = new Map();   // identityKey -> {cagr, ret, maxDD, finalV, start, end} for the current custom window
-let CUSTOM_WIN = null;      // {start,end} the window CUSTOM was computed over
+let VIEW = 'best';   // 'best' = Best return (over the selected wave, from snapshot), 'new', 'fav', 'custom'
+const CUSTOM = new Map();   // identityKey -> {cagr, ret, maxDD, finalV, start, end} for the active window (wave or custom)
+let CUSTOM_WIN = null;      // {start,end,topN,wave?} the window CUSTOM currently holds
+let BEST_WAVE = 'w1';       // which market-cycle wave the Best-return tab is showing
+let WAVE_SNAP = null;       // { date, w1:{start,end,topN,results:{idKey:{ret,cagr,maxDD,topN}}}, w2, w3, cycle }
+// True when the list should show per-window RETURN results (Custom tab, or Best tab with a wave loaded).
+function windowMode() { return VIEW === 'custom' || (VIEW === 'best' && CUSTOM_WIN && CUSTOM_WIN.wave && CUSTOM.size > 0); }
+// Load a wave's precomputed results (from the snapshot) into CUSTOM so render() shows them. Returns false if absent.
+function loadWaveIntoCustom(key) {
+  const w = WAVE_SNAP && WAVE_SNAP[key];
+  CUSTOM.clear();
+  if (w && w.results) {
+    for (const k in w.results) CUSTOM.set(k, w.results[k]);
+    CUSTOM_WIN = { start: w.start, end: w.end, topN: w.topN != null ? w.topN : null, wave: key };
+    return true;
+  }
+  CUSTOM_WIN = { start: (PERIOD_PRESETS[key] || {}).from, end: 'date', topN: null, wave: key };   // marker only; no data
+  return false;
+}
+function highlightWave(key) {
+  document.querySelectorAll('.preset').forEach(b => {
+    const on = b.dataset.preset === key;
+    b.classList.toggle('!bg-indigo-600', on); b.classList.toggle('!text-white', on);
+  });
+}
 function setView(v){
   VIEW = v;
   const on = 'bg-indigo-600 text-white shadow', off = 'bg-slate-100 text-slate-600 hover:bg-slate-200';
@@ -266,6 +290,14 @@ function setView(v){
   $('tabFav').className    = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition ' + (v === 'fav'    ? on : off);
   $('customBar').classList.toggle('hidden', v !== 'custom');
   $('customBar').classList.toggle('flex',  v === 'custom');
+  $('waveRow').classList.toggle('hidden', v !== 'best');
+  $('waveRow').classList.toggle('flex',  v === 'best');
+  if (v === 'best') {
+    highlightWave(BEST_WAVE);
+    const has = loadWaveIntoCustom(BEST_WAVE);
+    $('waveSnapInfo').textContent = has ? (WAVE_SNAP && WAVE_SNAP.date ? `snapshot ${WAVE_SNAP.date}` : '')
+      : (WAVE_SNAP ? 'this wave not baked' : 'not baked yet — showing full-history CAGR');
+  }
   render();
 }
 // Group saved entries by strategy identity → one entry each; its backtests = its saved windows
@@ -294,11 +326,12 @@ function render() {
   const groups = buildGroups(items);
   const favs = loadFavs();
   // sort: 'new' = most-recently-saved; 'custom' = by the computed custom-window CAGR (uncomputed sink to the bottom); else headline CAGR
-  const cKey = g => { const r = CUSTOM.get(identityKey(g.rep.cfg)); return (r && r.cagr != null) ? r.cagr : -Infinity; };
+  const wmode = windowMode();
+  const cKey = g => { const r = CUSTOM.get(identityKey(g.rep.cfg)); return (r && r.cagr != null) ? r.ret : -Infinity; };
   let rows = [...groups.values()].sort((a, b) =>
-    VIEW === 'new'    ? ((b.rep.ts || 0) - (a.rep.ts || 0)) :
-    VIEW === 'custom' ? (cKey(b) - cKey(a)) :
-                        (b.cagr - a.cagr));
+    VIEW === 'new' ? ((b.rep.ts || 0) - (a.rep.ts || 0)) :
+    wmode          ? (cKey(b) - cKey(a)) :
+                     (b.cagr - a.cagr));
   if (VIEW === 'fav') {
     rows = rows.filter(g => favs.has(identityKey(g.rep.cfg)));
     if (!rows.length) {
@@ -309,7 +342,7 @@ function render() {
   $('list').className = 'card overflow-x-auto';
   const header = `<thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
     <th class="text-left font-semibold px-4 py-2.5">Strategy</th>
-    <th class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">${VIEW === 'custom' ? (CUSTOM_WIN ? `Return · ${CUSTOM_WIN.start} → ${CUSTOM_WIN.end}${CUSTOM_WIN.topN != null ? ` · top-${CUSTOM_WIN.topN}` : ''} ▾` : 'Return · window ▾') : `CAGR${VIEW === 'best' ? ' ▾' : ''}`}</th>
+    <th class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">${wmode ? (CUSTOM_WIN ? `Return · ${CUSTOM_WIN.start} → ${CUSTOM_WIN.end}${CUSTOM_WIN.topN != null ? ` · top-${CUSTOM_WIN.topN}` : ''} ▾` : 'Return · window ▾') : `CAGR${VIEW === 'best' ? ' ▾' : ''}`}</th>
     <th class="text-center font-semibold px-3 py-2.5 whitespace-nowrap">Backtests</th>
     <th class="text-center font-semibold px-3 py-2.5 whitespace-nowrap">Today's Picks</th>
     <th class="px-2 py-2.5"></th>
@@ -322,7 +355,7 @@ function render() {
     const counts = [...new Set([...g.vars.values()].map(v => v.cfg.topN).filter(v => v != null))].sort((a, b) => a - b);
     const countLabel = (counts.length ? counts.join('/') : c.topN) + ' stocks';
     let cagrCell = isFinite(best) ? `<span class="font-bold ${best >= 0 ? 'pos' : 'neg'}">${pct(best)}</span>` : '<span class="text-slate-400">—</span>';
-    if (VIEW === 'custom') {
+    if (wmode) {
       const cr = CUSTOM.get(identityKey(c));
       cagrCell = cr && cr.cagr != null
         ? `<span class="font-bold ${cr.ret >= 0 ? 'pos' : 'neg'}">${pct(cr.ret)}</span>
@@ -415,6 +448,27 @@ function setComputeUI(on, txt, frac) {
   $('cBar').style.width = w; $('cOvBar').style.width = w;
   if (txt != null) { $('cProgress').textContent = txt; $('cOvText').textContent = txt; }
 }
+// Core: backtest EVERY strategy over [from,to] (optional Top-N override). Returns a results object
+// { idKey: {ret,cagr,maxDD,finalV,topN} }. onProgress(done,total) drives the overlay. Engine must be loaded.
+async function computeWindow(from, to, topN, onProgress, sink) {
+  const groups = [...buildGroups(strategies()).values()];
+  const out = {}; let done = 0;
+  for (const g of groups) {
+    await new Promise(r => setTimeout(r, 0));                   // yield so the overlay can paint before the next (blocking) backtest
+    const cap = g.rep.cfg.capital || 100000;
+    const c = { ...g.rep.cfg, start: from, end: to, capital: cap };
+    if (topN != null) c.topN = topN;
+    try {
+      const res = simulate(c);
+      const row = { ret: (res.finalV / cap - 1) * 100, cagr: res.cagr, maxDD: res.maxDD, finalV: res.finalV, topN: c.topN };
+      out[identityKey(g.rep.cfg)] = row;
+      if (sink) sink.set(identityKey(g.rep.cfg), row);
+    } catch (e) { /* leave uncomputed */ }
+    done++;
+    if (onProgress) onProgress(done, groups.length);
+  }
+  return out;
+}
 async function computeCustom() {
   const items = strategies();
   if (!items.length) { $('cProgress').textContent = 'No saved strategies to compare.'; return; }
@@ -424,27 +478,14 @@ async function computeCustom() {
   const to   = clampDate($('cTo').value   || SF.end,   SF.start, SF.end);
   if (from >= to) { setComputeUI(false, 'Pick From earlier than To.', 0); return; }
   $('cFrom').value = from; $('cTo').value = to;                 // reflect clamping to available data
-  // Optional Top-N override: force this qualifying count on EVERY strategy. Blank/invalid → each keeps its own saved count.
   const nRaw = parseInt($('cTopN').value, 10);
   const topN = (Number.isFinite(nRaw) && nRaw >= 1) ? Math.min(50, nRaw) : null;
   CUSTOM.clear(); CUSTOM_WIN = { start: from, end: to, topN };
-  const groups = [...buildGroups(items).values()];
-  let done = 0;
-  setComputeUI(true, `0/${groups.length} — this can take a minute…`, 0);
-  for (const g of groups) {
-    await new Promise(r => setTimeout(r, 0));                   // yield so the overlay/bar can paint before the next (blocking) backtest
-    const cap = g.rep.cfg.capital || 100000;
-    const c = { ...g.rep.cfg, start: from, end: to, capital: cap };
-    if (topN != null) c.topN = topN;                           // override the qualifying count when set
-    try {
-      const res = simulate(c);
-      CUSTOM.set(identityKey(g.rep.cfg), { cagr: res.cagr, ret: (res.finalV / cap - 1) * 100, maxDD: res.maxDD, finalV: res.finalV, topN: c.topN, start: from, end: to });
-    } catch (e) { /* leave this strategy uncomputed (shows "no data") */ }
-    done++;
-    setComputeUI(true, `${done}/${groups.length} — this can take a minute…`, done / groups.length);
+  await computeWindow(from, to, topN, (done, total) => {
+    setComputeUI(true, `${done}/${total} — this can take a minute…`, done / total);
     if (done % 3 === 0) render();                               // stream results in as they land
-  }
-  setComputeUI(false, `${done}/${groups.length} done · sorted best-first over ${from} → ${to}${topN != null ? ` · top-${topN}` : ' · each strategy’s own stock count'}`, 1);
+  }, CUSTOM);
+  setComputeUI(false, `sorted best-first over ${from} → ${to}${topN != null ? ` · top-${topN}` : ' · each strategy’s own stock count'}`, 1);
   render();
 }
 // One-click market-cycle presets. `to: null` = latest available data date (SF.end / today after clamping).
@@ -454,17 +495,51 @@ const PERIOD_PRESETS = {
   w3:    { from: '2026-03-31', to: null },
   cycle: { from: '2020-03-31', to: null },
 };
+const WAVE_ORDER = ['w1', 'w2', 'w3', 'cycle'];
+// Best-return wave click: instant from the snapshot. If a wave has no snapshot yet, the owner can bake it.
 function runPreset(key) {
-  const p = PERIOD_PRESETS[key]; if (!p) return;
-  const t = new Date(), today = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
-  if (VIEW !== 'custom') setView('custom');                        // results render with the per-window column
-  $('cFrom').value = p.from; $('cTo').value = p.to || today;
-  $('cTopN').value = '';                                           // presets compare each strategy at its own saved stock count
-  document.querySelectorAll('.preset').forEach(b => {
-    const on = b.dataset.preset === key;
-    b.classList.toggle('!bg-indigo-600', on); b.classList.toggle('!text-white', on);
-  });
-  computeCustom();
+  if (!PERIOD_PRESETS[key]) return;
+  BEST_WAVE = key;
+  highlightWave(key);
+  const has = loadWaveIntoCustom(key);
+  render();
+  if (!has) {
+    const owner = !!(window.btSync && btSync.isOwner());
+    $('waveSnapInfo').innerHTML = owner
+      ? 'This wave isn’t baked yet — click <b>↻ Update snapshot</b>.'
+      : 'This wave isn’t baked yet.';
+  } else {
+    $('waveSnapInfo').textContent = WAVE_SNAP && WAVE_SNAP.date ? `snapshot ${WAVE_SNAP.date}` : '';
+  }
+}
+/* Compute all waves for every strategy and persist ONE snapshot to Supabase (bt_snapshots id 'waves')
+   via the public write token in bt-sync.js — no owner secret needed, same path as the ?bake=all baker.
+   Called by the owner's ↻ button and by the headless ?bakewaves=1 mode. */
+async function computeAndSaveWaves(headless) {
+  const setMsg = m => { $('waveSnapInfo').textContent = m; if (headless) { let o = $('bakeOut'); if (!o) { o = document.createElement('div'); o.id = 'bakeOut'; document.body.appendChild(o); } o.textContent = m; } };
+  setComputeUI(true, 'Loading market data…', 0); setMsg('Loading market data…');
+  if (!await ensureEngine()) { setComputeUI(false, 'Couldn’t load market data.', 0); setMsg('Bake error: market data'); return false; }
+  const payload = { date: SF.end };
+  const today = SF.end;
+  for (let wi = 0; wi < WAVE_ORDER.length; wi++) {
+    const key = WAVE_ORDER[wi], p = PERIOD_PRESETS[key];
+    const from = clampDate(p.from, SF.start, SF.end);
+    const to   = clampDate(p.to || today, SF.start, SF.end);
+    const results = await computeWindow(from, to, null, (done, total) => {
+      const frac = (wi + done / total) / WAVE_ORDER.length;
+      setComputeUI(true, `Baking ${key} — ${done}/${total} strategies…`, frac);
+      setMsg(`Baking ${key} ${done}/${total} (${wi + 1}/${WAVE_ORDER.length} waves)`);
+    });
+    payload[key] = { start: from, end: to, topN: null, results };
+  }
+  let saved = false;
+  try { saved = await btSync.snapSet('waves', payload); } catch (e) { saved = false; }
+  WAVE_SNAP = payload;
+  setComputeUI(false, '', 1);
+  setMsg(saved ? `✅ snapshot saved ${payload.date}` : 'computed, but save failed (not owner?)');
+  if (headless) { let o = $('bakeOut'); if (!o) { o = document.createElement('div'); o.id = 'bakeOut'; document.body.appendChild(o); } o.textContent = saved ? '✅ Done · waves baked ' + payload.date : 'Bake error: save failed'; }
+  if (VIEW === 'best') { highlightWave(BEST_WAVE); loadWaveIntoCustom(BEST_WAVE); render(); }
+  return saved;
 }
 
 /* ---------- lazy engine load: the 17 MB + 90 MB market data loads ONLY when Today's Picks needs it,
@@ -784,6 +859,7 @@ async function runLogPicks(){
   if (window.btSync) {
     try { await btSync.pullStrategies(); } catch (e) {}                 // shared strategy definitions (replaces local with the shared list)
     try { HIST = await btSync.pull() || []; } catch (e) { HIST = []; }  // shared backtest history (all windows)
+    try { WAVE_SNAP = await btSync.snapGet('waves'); } catch (e) { WAVE_SNAP = null; }   // precomputed wave results
   } else { HIST = localHistBefore; }
   // Surface any backtest run recorded on THIS browser that the shared pull didn't return yet (sync lag,
   // or the DB was paused/unreachable when the run auto-saved). Without this, a window you JUST ran can be
@@ -804,10 +880,12 @@ async function runLogPicks(){
   const localOnly = localBefore.filter(s => s && s.local && !have.has(s.id));
   if (localOnly.length) { saveLS('bt_strategies', pulled.concat(localOnly)); if (window.btSync) { try { await btSync.pushStrategies(); } catch (e) {} } }   // publish local-only strategies (open list; self-heals an earlier failed publish)
   if (new URLSearchParams(location.search).get('logpicks')) { await runLogPicks(); return; }   // headless daily picks-logger — skips the UI
+  if (new URLSearchParams(location.search).get('bakewaves')) { await computeAndSaveWaves(true); return; }   // headless wave-snapshot baker
   $('tabBest').onclick   = () => setView('best');
   $('tabNew').onclick    = () => setView('new');
   $('tabCustom').onclick = () => setView('custom');
   $('tabFav').onclick    = () => setView('fav');
+  if (window.btSync && btSync.isOwner()) { $('waveUpdate').classList.remove('hidden'); $('waveUpdate').onclick = () => computeAndSaveWaves(false); }
   // default the custom window to 2021-01-01 → today (Compute clamps to the data range)
   const t = new Date(), today = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
   if (!$('cFrom').value) $('cFrom').value = '2021-01-01';

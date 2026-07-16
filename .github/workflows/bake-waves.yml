@@ -1,0 +1,44 @@
+name: Bake wave snapshot
+
+# Precomputes the Best-return WAVE snapshot (Supabase bt_snapshots id 'waves') AFTER the daily data
+# refresh — every strategy's return over Wave 1/2/3 + Entire cycle. The page loads it instantly
+# (snapGet); the "…–date" waves move as the data date rolls forward, so this re-bakes daily.
+#
+# Not correctness-critical: if this job fails, the Best-return tab falls back to the full-history CAGR
+# ranking. It only makes the wave view instant.
+
+on:
+  workflow_run:
+    workflows: ["Daily backtest data refresh"]
+    types: [completed]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bake-waves
+  cancel-in-progress: true
+
+jobs:
+  bake:
+    # Manual runs always; auto runs only after the data refresh actually SUCCEEDED.
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Playwright (chromium)
+        run: |
+          npm install playwright@^1.48
+          npx playwright install --with-deps chromium
+
+      - name: Bake wave snapshot headlessly
+        run: node scripts/bake_waves.mjs
