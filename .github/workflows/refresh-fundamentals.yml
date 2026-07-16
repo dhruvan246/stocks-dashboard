@@ -100,7 +100,10 @@ jobs:
           [ "$EV" = "repository_dispatch" ] && [ "$ACTION" = "insurer-refresh" ] && RUN=1
           if [ "$RUN" != "1" ]; then echo "Not a nightly trigger ($EV/$ACTION) — skipping IPO-base fill"; exit 0; fi
           pip install -q pymupdf
-          python3 -X utf8 scripts/backfill_ipo_bases.py --limit 40 || echo "(IPO-base fill failed — bases stay gapped this run)"
+          # --max-minutes keeps the step well inside the job's 20-min timeout so the commit step
+          # ALWAYS runs; --vision-cap protects the shared Gemini free-tier daily quota (insurers
+          # use the same key; quota-dead is detected and re-queued without burning attempts).
+          python3 -X utf8 scripts/backfill_ipo_bases.py --limit 40 --max-minutes 9 --vision-cap 60 || echo "(IPO-base fill failed — bases stay gapped this run)"
 
       # Backstop: any quarter that lands without a filing date (Screener backfills, integrated
       # rows with broadcast_Date=None) gets the SEBI deadline so the point-in-time screen can use

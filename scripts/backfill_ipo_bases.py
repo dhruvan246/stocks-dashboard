@@ -42,7 +42,7 @@ Out of scope (documented): BSE-only listings (no NSE announcements; the BSE OCR 
 operating-profit bases (needs 4-row derivation; rev+PAT cover the site's YoY), quarters no filing
 ever printed (company listed too recently to have filed — fills arrive with its next filing).
 """
-import os, sys, re, json, datetime, argparse, urllib.request
+import os, sys, re, json, time, datetime, argparse, urllib.request
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import build_fundamentals as B
@@ -398,8 +398,15 @@ def render_pngs(pdf, ident_tokens):
         pages = [pages[round(i * (len(pages) - 1) / 5)] for i in range(6)]
     return [doc[p].get_pixmap(dpi=160).tobytes("png") for p in sorted(set(pages))]
 
+VISION_LEFT = [60]     # per-run cap on Gemini calls — keeps the shared free-tier daily quota alive
+                       # for the insurer step and for tomorrow's run (~200 RPD on flash free tier)
+
+def vision_ok():
+    return os.environ.get("GEMINI_API_KEY") and not GV.quota_dead() and VISION_LEFT[0] > 0
+
 def vision_extract(pdf, company, sym, qe, fund, ident_tokens):
-    if not os.environ.get("GEMINI_API_KEY"): return None
+    if not vision_ok(): return None
+    VISION_LEFT[0] -= 1
     pngs = render_pngs(pdf, ident_tokens)
     if not pngs: return None
     r = GV.read_corp_results(company or sym, qe_label(qe), qe_label(prevq(qe)), qe_label(yago(qe)), pngs)
@@ -461,6 +468,8 @@ def main():
     ap.add_argument("--only", default="")
     ap.add_argument("--days", type=int, default=RECENT_DAYS)
     ap.add_argument("--limit", type=int, default=0, help="max symbols to WORK (fetch PDFs for) this run; 0 = no cap")
+    ap.add_argument("--max-minutes", type=float, default=0, help="stop cleanly after this many minutes (CI job-timeout safety); 0 = no cap")
+    ap.add_argument("--vision-cap", type=int, default=60, help="max Gemini calls this run (protects the shared free-tier daily quota)")
     ap.add_argument("--reapply", action="store_true", help="re-assert the fill ledger (after a full rebuild)")
     ap.add_argument("--audit", action="store_true", help="re-extract every text-sourced ledger cell and fix/revert mismatches")
     args = ap.parse_args()
@@ -562,6 +571,8 @@ def main():
     print("new-listing candidates (earliest quarter >= %d): %d" % (cutoff, len(cands)))
 
     jar = B.nse_jar()
+    VISION_LEFT[0] = args.vision_cap
+    t0 = time.time()
     filled = skipped = worked = 0
     flushed = [0]
     def flush():
@@ -589,11 +600,13 @@ def main():
         def _capped(qe):
             sk = skips.get("%s|%d" % (sym, qe), {})
             if sk.get("why") == "vision":
-                return not os.environ.get("GEMINI_API_KEY")
+                return not vision_ok()          # vision-queued: actionable only while Gemini is available
             return sk.get("n", 0) >= SKIP_CAP
         if all(_capped(qe) for qe in plan): continue      # nothing actionable this run
         if args.limit and worked >= args.limit:
             print("(--limit %d reached — remaining symbols next run)" % args.limit); break
+        if args.max_minutes and (time.time() - t0) > args.max_minutes * 60:
+            print("(--max-minutes %.0f reached — stopping cleanly, remaining symbols next run)" % args.max_minutes); break
         worked += 1
         irows = integrated_rows(sym, jar)
         company = next((r.get("cmName") or r.get("smName") for r in irows if r.get("cmName") or r.get("smName")), sym)
@@ -649,8 +662,13 @@ def main():
                     got = {b: {"pat": v[b], "rev": {}, "div": None} for b in v}
                     via, used_url = "gemini", url; break
             if not got:
-                why = "vision" if not os.environ.get("GEMINI_API_KEY") else "no anchor (text+vision)"
-                skips[skey_base] = {"n": sk.get("n", 0) + 1, "why": why, "last": today}
+                if not vision_ok():
+                    # vision never actually looked (no key / quota dead / cap spent) — re-queue
+                    # WITHOUT burning an attempt, else quota-dead nights perma-skip real cells
+                    why, n = "vision", sk.get("n", 0)
+                else:
+                    why, n = "no anchor (text+vision)", sk.get("n", 0) + 1
+                skips[skey_base] = {"n": n, "why": why, "last": today}
                 skipped += 1
                 print("  %d: SKIP — %s" % (qe, why)); continue
 

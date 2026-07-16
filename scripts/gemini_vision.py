@@ -76,10 +76,19 @@ def _key():
     return os.environ.get("GEMINI_API_KEY")
 
 
+_QUOTA = {"dead": False}   # set when the free-tier daily quota is exhausted (429 after retry)
+
+
+def quota_dead():
+    """True once the daily quota is exhausted — callers should stop queuing vision work
+    (and NOT count the miss as a real extraction attempt)."""
+    return _QUOTA["dead"]
+
+
 def _post(body):
     """Paced, 429-retrying Gemini POST -> parsed JSON dict from the model, or None."""
     key = _key()
-    if not key:
+    if not key or _QUOTA["dead"]:
         return None
     data = json.dumps(body).encode()
     for attempt in range(2):                     # fail-fast: 1 retry only, capped backoff (never hang CI)
@@ -103,6 +112,9 @@ def _post(body):
                 delay = min(int(m.group(1)) + 2, 15) if m else 12   # capped so the run can't hang
                 print("    gemini 429 — retry in %ds. reason: %s" % (delay, _reason(body_txt)))
                 time.sleep(delay); continue
+            if ex.code == 429:                       # 429 again after backoff = DAILY quota exhausted
+                _QUOTA["dead"] = True                # -> stop all further vision calls this run
+                print("    gemini DAILY QUOTA EXHAUSTED — vision disabled for the rest of this run")
             print("    gemini err: HTTP %d — %s" % (ex.code, _reason(body_txt))); return None
         except Exception as ex:
             print("    gemini err:", str(ex)[:110]); return None
