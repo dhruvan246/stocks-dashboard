@@ -118,6 +118,10 @@ print(f"  Raw {len(raw)/1024:.1f} KB → gzip {len(gz)/1024:.1f} KB → b64 {len
 # We just embed it. If absent (build without a fresh fetch), the date filter is
 # disabled.
 # ---------------------------------------------------------------------------
+def _ymd(n):
+    s = str(n)
+    return f"{s[:4]}-{s[4:6]}-{s[6:8]}"
+
 HISTSRC = ROOT / "scripts" / "mf_history.b64"
 if HISTSRC.exists():
     hist_b64 = HISTSRC.read_text(encoding="utf-8").strip()
@@ -127,7 +131,14 @@ if HISTSRC.exists():
     hist_gz = base64.b64decode(hist_b64)
     (OUT.parent / "mf_history.bin").write_bytes(hist_gz)
     print(f"  History: wrote external mf_history.bin ({len(hist_gz)/1024/1024:.1f} MB, lazy-loaded)")
+    # The page needs the covered date span up front to bound the date pickers, but the history
+    # itself only loads on first use — so bake the span in here rather than after the fetch.
+    _hd = json.loads(gzip.decompress(hist_gz))["dates"]
+    hist_lo, hist_hi = _ymd(_hd[0]), _ymd(_hd[-1])
+    del _hd
+    print(f"  History: covers {hist_lo} → {hist_hi}")
 else:
+    hist_lo = hist_hi = ""
     print("  History: scripts/mf_history.b64 not found — custom date filter disabled")
 
 gen = datetime.now().strftime("%d %b %Y %H:%M")
@@ -229,11 +240,11 @@ HTML = r"""<!DOCTYPE html>
       <div class="text-xs font-semibold text-amber-700 pb-2">&#128197; Custom return window:</div>
       <div>
         <label class="block text-xs font-medium text-slate-600 mb-1">From (date)</label>
-        <input type="date" id="fromDate" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500"/>
+        <input type="date" id="fromDate" min="__HIST_LO__" max="__HIST_HI__" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500"/>
       </div>
       <div>
         <label class="block text-xs font-medium text-slate-600 mb-1">To (date)</label>
-        <input type="date" id="toDate" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500"/>
+        <input type="date" id="toDate" min="__HIST_LO__" max="__HIST_HI__" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500"/>
       </div>
       <div>
         <label class="block text-xs font-medium text-slate-600 mb-1">Show as</label>
@@ -244,6 +255,7 @@ HTML = r"""<!DOCTYPE html>
       </div>
       <button id="clearDates" class="text-sm text-slate-600 hover:text-amber-600 pb-2">Clear</button>
       <div id="rangeInfo" class="text-xs text-slate-500 pb-2"></div>
+      <div id="custWarn" class="hidden basis-full text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2"></div>
     </div>
   </div>
 
@@ -409,10 +421,12 @@ function ymdToInt(s) { return parseInt(s.replace(/-/g, ''), 10); }      // "2020
 function intToYmd(n) { const s = '' + n; return s.slice(0,4)+'-'+s.slice(4,6)+'-'+s.slice(6,8); }
 function ymdToDate(n) { const s = '' + n; return new Date(+s.slice(0,4), +s.slice(4,6) - 1, +s.slice(6,8)); }
 
-// nearest trading day on/before target (binary search the shared date axis)
+// nearest trading day on/before target (binary search the shared date axis).
+// A target before the axis starts clamps to the first day rather than failing: otherwise every
+// NAV lookup returns null and the whole Custom column blanks out.
 function dateToIdx(ymd) {
   const A = HIST.dates;
-  if (ymd < A[0]) return -1;
+  if (ymd <= A[0]) return 0;
   if (ymd >= A[A.length - 1]) return A.length - 1;
   let lo = 0, hi = A.length - 1;
   while (lo < hi) { const mid = (lo + hi + 1) >> 1; if (A[mid] <= ymd) lo = mid; else hi = mid - 1; }
@@ -551,10 +565,14 @@ function recomputeCust() {
       n++;
     } else r.cust = null;
   }
-  if (sub) sub.textContent = f + ' → ' + t + (useCagr ? ' · CAGR' : ' · abs');
+  // dateToIdx clamps to the axis, so say so when the window asked for more than we hold
+  const af = intToYmd(HIST.dates[fi]), at = intToYmd(HIST.dates[ti]);
+  const clipped = (ymdToInt(f) < HIST.dates[0]) || (ymdToInt(t) > HIST.dates[HIST.dates.length - 1]);
+  if (sub) sub.textContent = af + ' → ' + at + (useCagr ? ' · CAGR' : ' · abs');
   info.textContent = n.toLocaleString() + ' funds · '
     + (useCagr ? 'annualized CAGR over ' + yf.toFixed(1) + 'y'
-               : 'absolute % over the window' + (mode === 'cagr' ? ' (<1y, not annualized)' : ''));
+               : 'absolute % over the window' + (mode === 'cagr' ? ' (<1y, not annualized)' : ''))
+    + (clipped ? ' · window clipped to available NAV data (' + af + ' → ' + at + ')' : '');
 }
 
 function badgeClass(g) {
@@ -679,6 +697,22 @@ function render() {
     document.getElementById('statCagr').textContent = '—';
     document.getElementById('statBest').textContent = '—';
   }
+  custHint();
+}
+
+// A window can be perfectly valid yet blank out every visible row — most often because the From
+// date predates 2013 while the plan filter is on Direct (direct plans only exist from Jan 2013),
+// or because every fund in the current filter launched later. Say which, instead of a bare "—".
+function custHint() {
+  const el = document.getElementById('custWarn');
+  if (!el) return;
+  if (!FROM || !TO || !HIST || SHOWN.some(r => r.cust != null)) { el.textContent = ''; el.classList.add('hidden'); return; }
+  const plan = document.getElementById('planFilter').value;
+  const anyPlan = ALL.some(r => r.cust != null && (r.plan || 'Direct') !== plan);
+  el.textContent = (plan === 'Direct' && anyPlan && FROM < '2013-01-01')
+    ? '⚠ No Direct-plan fund existed on ' + FROM + ' — direct plans only start from Jan 2013. Switch Plan to Regular, or pick a later From date.'
+    : '⚠ No fund in the current filter has NAV going back to ' + FROM + ' — pick a later From date or widen the filters.';
+  el.classList.remove('hidden');
 }
 
 // Wire events
@@ -751,6 +785,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </body>
 </html>
 """
-HTML = HTML.replace("__B64__", b64).replace("__GEN__", gen)
+HTML = (HTML.replace("__B64__", b64).replace("__GEN__", gen)
+            .replace("__HIST_LO__", hist_lo).replace("__HIST_HI__", hist_hi))
 OUT.write_text(HTML, encoding="utf-8")
 print(f"Wrote {OUT} ({OUT.stat().st_size / 1024:.1f} KB)")
