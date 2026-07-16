@@ -1267,3 +1267,26 @@ Trendlyne reads). `scripts/backfill_ipo_bases.py` automates the fill:
   recently — the next filing carries them a quarter later); BSE-only listings (§17 OCR grind owns
   those); operating-profit bases (rev+PAT cover the site's YoY; op needs a 4-row derivation —
   extend only if the Results Season chart ever needs a new IPO pre-N500-entry).
+
+---
+
+## 27. IPOs & LISTINGS  (docs/ipos.html — "IPOs & Listings" nav, built 2026-07-16, SELF-UPDATING)
+**The primary-market calendar:** issues open now (with LIVE subscription multiples), upcoming issues,
+and the last 6 months of listings with performance vs issue price.
+
+- **Fetcher:** `scripts/fetch_ipos.py` → `docs/ipos.json` (~6 KB) — STATELESS full-snapshot rebuild
+  each run from three NSE APIs (urllib+jar session): `all-upcoming-issues?category=ipo`,
+  `ipo-current-issue` (adds `noOfTime` = subscription ×, category Total), `public-past-issues`
+  (~1.4k-row archive). Current px + mcap for listed names joined from dash_slim meta
+  (⚠️ '.NS'-key gotcha, §26; a 1-2 day price lag for brand-new listings is normal — shows "—").
+- **securityType filter:** keep EQ + **BE (new mainboard names often list in the T2T series)** + SME;
+  drop N0/Z9/RR/DEBT/IV (NCD/REIT/InvIT tranches — they'd pollute the table as phantom "Main" rows).
+  Board chip: SME vs Main. SME names aren't in the site price universe (issue details only).
+- **Refresh:** `.github/workflows/refresh-ipos.yml` — 08:40 IST Mon-Sat (new announcements +
+  yesterday's listings) + 18:40 IST weekdays (subscription top-up). Guard note: the upcoming list
+  legitimately shrinks to ~0 in dry weeks (min_bytes 2000, min_ratio 0.5 in feeds.json).
+- **Downstream hook:** ipos.json `listed` is a clean machine-readable new-listings ledger — the §25
+  IPO year-ago-base backfill (and any future "flag recent-to-NSE names" tooling) can consume it
+  instead of re-scraping.
+- **Page:** issue cards (subscription progress bar) + listings table (board filter, best/worst since
+  issue). sw.js SHELL + CACHE v30→v31.

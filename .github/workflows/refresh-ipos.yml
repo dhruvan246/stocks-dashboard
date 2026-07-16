@@ -1,0 +1,84 @@
+name: Refresh IPOs & listings
+
+# NSE's public-issues APIs are small snapshots (upcoming issues, open issues with
+# live subscription, past-issues archive) — fetch_ipos.py rebuilds docs/ipos.json
+# statelessly each run. Morning run catches new announcements + yesterday's
+# listings; the weekday-evening run refreshes subscription multiples for open
+# issues (they move all day).
+
+on:
+  schedule:
+    - cron: "10 3 * * 1-6"    # 08:40 IST Mon-Sat — morning refresh
+    - cron: "10 13 * * 1-5"   # 18:40 IST weekdays — subscription top-up
+  repository_dispatch:
+    types: [ipos-refresh]
+  workflow_dispatch: {}
+  # Bootstrap/self-test: also run when the fetcher or this workflow changes.
+  push:
+    paths:
+      - "scripts/fetch_ipos.py"
+      - ".github/workflows/refresh-ipos.yml"
+
+permissions:
+  contents: write
+  actions: write   # dispatch pages.yml after a bot commit (loop guard blocks auto-trigger)
+
+concurrency:
+  group: refresh-ipos
+  cancel-in-progress: false
+
+jobs:
+  refresh-ipos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Fetch IPO pipeline (upcoming + open + recent listings)
+        run: python3 -X utf8 scripts/fetch_ipos.py
+
+      # ⚠️ reset-and-replay gotcha (runbook §18): every file the fetch step writes
+      # must ride the cp-to-/tmp + cp-back + git-add lists below.
+      - name: Guard — refuse to commit a broken or shrunken feed
+        run: python3 scripts/guard_feed.py
+
+      - name: Commit updated IPO feed (only if changed)
+        id: commit
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp docs/ipos.json /tmp/ipos.json
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/ipos.json docs/ipos.json
+            git add docs/ipos.json
+            if git diff --cached --quiet; then
+              echo "IPO feed unchanged — nothing to commit"
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            git commit -m "IPO feed refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then
+              echo "Pushed on attempt #$attempt"
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "Push attempt #$attempt rejected; resetting and retrying"
+            sleep $(( attempt * 3 ))
+          done
+          echo "Failed to push after 5 attempts"
+          exit 1
+
+      # Bot commits can't auto-trigger pages.yml — dispatch it explicitly on change.
+      - name: Publish to Pages (only when the feed changed)
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml

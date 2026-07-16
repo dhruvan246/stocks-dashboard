@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · IPOs & Listings</title>
+<meta name="description" content="IPO calendar for NSE — issues open now with live subscription, upcoming issues, and every recent listing with its performance since the issue price." />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<style>
+  body { font-feature-settings: "tnum" 1; }
+  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
+  .pos{color:#15803d;font-weight:600}.neg{color:#b91c1c;font-weight:600}
+  html[data-theme="dark"] .pos{color:#6ee7b7}html[data-theme="dark"] .neg{color:#fca5a5}
+  .chip{display:inline-block;font-size:10px;font-weight:800;padding:2px 8px;border-radius:9999px;white-space:nowrap}
+  .chip.main{background:#e0e7ff;color:#4338ca}.chip.sme{background:#fef3c7;color:#b45309}
+  .chip.open{background:#dcfce7;color:#15803d}.chip.soon{background:#f1f5f9;color:#475569}
+  html[data-theme="dark"] .chip.main{background:rgba(99,102,241,.18);color:#a5b4fc}
+  html[data-theme="dark"] .chip.sme{background:rgba(245,158,11,.16);color:#fcd34d}
+  html[data-theme="dark"] .chip.open{background:rgba(16,185,129,.18);color:#6ee7b7}
+  html[data-theme="dark"] .chip.soon{background:rgba(148,163,184,.14);color:#cbd5e1}
+  .subbar{height:6px;border-radius:9999px;background:var(--surface-2,#f1f5f9);overflow:hidden}
+  .subbar>div{height:100%;border-radius:9999px;background:linear-gradient(90deg,#4f46e5,#8b5cf6)}
+  .vbtn{padding:6px 14px;border-radius:9999px;font-size:12px;font-weight:700;cursor:pointer;user-select:none;
+        background:var(--surface-2,#f1f5f9);color:var(--text-muted,#334155);border:1px solid var(--border,#e2e8f0)}
+  .vbtn.on{background:var(--accent,#2563eb);color:#fff;border-color:var(--accent,#2563eb)}
+  select,input[type=text]{background:#fff;border:1px solid #cbd5e1;border-radius:.5rem;font-size:13px;padding:7px 10px}
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav class="flex items-center gap-1 overflow-x-auto">
+      <a href="./quarterly-results.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">🧾<span class="hidden sm:inline">Quarterly Results</span></a>
+      <a href="./stock-backtest.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition shrink-0">🧪<span class="hidden sm:inline">Create a Strategy</span></a>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-screen-xl mx-auto px-4 py-6">
+  <div class="mb-4">
+    <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">IPOs &amp; Listings <span class="text-slate-400 font-semibold text-base">· the primary-market calendar</span></h1>
+    <p class="text-sm text-slate-500 mt-1">Issues you can bid on right now (with live subscription numbers), what's opening next, and how every recent listing has fared against its issue price. <span id="updated" class="text-slate-400"></span></p>
+  </div>
+
+  <div id="status" class="text-sm text-slate-500 py-10 text-center">Loading IPO data…</div>
+
+  <div id="content" class="hidden">
+    <h2 class="text-base font-extrabold text-slate-800 mb-2">🪔 Open &amp; upcoming issues</h2>
+    <div id="issues" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-7"></div>
+
+    <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+      <h2 class="text-base font-extrabold text-slate-800">📈 Recently listed <span class="text-[11px] font-semibold text-slate-400">(last 6 months)</span></h2>
+      <div class="flex flex-wrap items-center gap-2">
+        <input id="q" type="text" placeholder="Search…" autocomplete="off" class="w-40" />
+        <select id="fBoard"><option value="all">Mainboard + SME</option><option value="Main">Mainboard only</option><option value="SME">SME only</option></select>
+        <select id="fSort"><option value="date">Newest first</option><option value="gain">Best since issue</option><option value="loss">Worst since issue</option></select>
+      </div>
+    </div>
+    <div class="card overflow-x-auto">
+      <table class="w-full text-sm min-w-[760px]">
+        <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200 bg-slate-50/60"><tr>
+          <th class="text-left py-2.5 px-3">Listed</th><th class="text-left px-3">Stock</th><th class="text-center px-3">Board</th>
+          <th class="text-right px-3">Issue price</th><th class="text-right px-3">Now</th><th class="text-right px-3">Since issue</th><th class="text-right px-3">Mcap (₹ cr)</th>
+        </tr></thead>
+        <tbody id="tBody"></tbody>
+      </table>
+      <div class="p-3 text-xs text-slate-500"><span id="count"></span></div>
+    </div>
+
+    <p class="text-[11px] text-slate-500 mt-5">Source: NSE public-issues data, refreshed twice daily (mornings + weekday evenings, when subscription numbers update). "×" on an open issue = total bids ÷ shares offered so far. Mainboard includes stocks that start trading in the trade-for-trade (BE) series. Current prices come from the site's daily price data, so a stock listed in the last day or two may briefly show "—". SME stocks aren't in the site's price universe and show issue details only. Educational only — not investment advice.</p>
+  </div>
+</main>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const fmtD = iso => { if(!iso) return '—'; const p = iso.split('-'); return (+p[2]) + ' ' + MON[+p[1]-1] + " '" + p[0].slice(2); };
+const inr = n => n == null ? '—' : Number(n).toLocaleString('en-IN');
+const pctc = v => v == null ? '<span class="text-slate-300">—</span>' : '<span class="' + (v >= 0 ? 'pos':'neg') + '">' + (v > 0 ? '+' : '') + v.toFixed(0) + '%</span>';
+const slink = (sym, name, board) => (board === 'Main' ? '<span class="sw-star" data-sym="' + esc(sym) + '"></span> ' +
+    '<a class="font-bold text-blue-700 hover:underline" href="./stock.html?sym=' + encodeURIComponent(sym) + '" title="' + esc(name) + '">' + esc(sym) + '</a>'
+  : '<span class="font-bold text-slate-700">' + esc(sym) + '</span>') +
+  '<div class="text-[11px] text-slate-400 font-normal max-w-[220px] truncate">' + esc(name) + '</div>';
+
+let DATA = null;
+const todayISO = new Date().toISOString().slice(0,10);
+
+async function load(){
+  try { DATA = await (await fetch('./ipos.json?t=' + Date.now())).json(); }
+  catch(e){ $('status').textContent = 'Could not load ipos.json — run scripts/fetch_ipos.py first.'; return; }
+  if (!DATA){ $('status').textContent = 'No IPO data yet.'; return; }
+  $('updated').textContent = '· updated ' + DATA.updated + ' IST';
+  $('status').classList.add('hidden'); $('content').classList.remove('hidden');
+  renderIssues(); renderListed();
+  ['q','fBoard','fSort'].forEach(id => $(id).addEventListener(id==='q'?'input':'change', renderListed));
+}
+
+function issueCard(r){
+  const [sym, name, board, open, close, band, shares, status, sub] = r;
+  const isOpen = open && close && open <= todayISO && todayISO <= close;
+  const upper = band ? +((band.match(/[\d.]+(?!.*[\d.])/) || [0])[0]) : 0;   // last number in the band
+  const sizeCr = (shares && upper) ? shares * upper / 1e7 : null;
+  return '<div class="card p-4">' +
+    '<div class="flex items-start justify-between gap-2">' +
+      '<div><div class="text-[15px] font-bold text-slate-800 leading-snug">' + esc(name || sym) + '</div>' +
+      '<div class="text-[11px] text-slate-400 font-semibold mt-0.5">' + esc(sym) + '</div></div>' +
+      '<div class="flex flex-col items-end gap-1"><span class="chip ' + (board==='SME'?'sme">SME':'main">Mainboard') + '</span>' +
+      '<span class="chip ' + (isOpen ? 'open">OPEN NOW' : 'soon">' + (open && open > todayISO ? 'Opens ' + fmtD(open) : esc(status || '—'))) + '</span></div></div>' +
+    '<div class="grid grid-cols-2 gap-2 mt-3 text-[12.5px] text-slate-600">' +
+      '<div><span class="text-slate-400">Price band</span><br><b>' + esc(band || '—') + '</b></div>' +
+      '<div><span class="text-slate-400">Issue size</span><br><b>' + (sizeCr ? '≈ ₹' + Math.round(sizeCr).toLocaleString('en-IN') + ' cr' : '—') + '</b></div>' +
+      '<div><span class="text-slate-400">Opens</span><br><b>' + fmtD(open) + '</b></div>' +
+      '<div><span class="text-slate-400">Closes</span><br><b>' + fmtD(close) + '</b></div></div>' +
+    (sub != null ?
+      '<div class="mt-3"><div class="flex justify-between text-[11px] mb-1"><span class="text-slate-400 font-semibold">Subscribed</span>' +
+      '<b class="' + (sub >= 1 ? 'pos' : 'text-slate-600') + '">' + sub.toFixed(2) + '×</b></div>' +
+      '<div class="subbar"><div style="width:' + Math.min(100, sub * 100) + '%"></div></div></div>' : '') +
+    '</div>';
+}
+
+function renderIssues(){
+  const rows = DATA.upcoming || [];
+  $('issues').innerHTML = rows.length ? rows.map(issueCard).join('')
+    : '<div class="text-sm text-slate-400 py-6">No open or announced issues right now.</div>';
+}
+
+function renderListed(){
+  const q = $('q').value.trim().toLowerCase(), board = $('fBoard').value, sort = $('fSort').value;
+  const gain = r => (r[4] && r[5]) ? (r[5] - r[4]) / r[4] * 100 : null;
+  let rows = (DATA.listed || []).filter(r =>
+    (board === 'all' || r[2] === board) &&
+    (!q || r[0].toLowerCase().includes(q) || r[1].toLowerCase().includes(q)));
+  if (sort === 'gain') rows = rows.slice().sort((a,b) => (gain(b) ?? -1e9) - (gain(a) ?? -1e9));
+  else if (sort === 'loss') rows = rows.slice().sort((a,b) => (gain(a) ?? 1e9) - (gain(b) ?? 1e9));
+  let h = '';
+  for (const r of rows){
+    const g = gain(r);
+    h += '<tr class="border-b border-slate-50 align-top hover:bg-slate-50">' +
+      '<td class="py-2.5 px-3 whitespace-nowrap text-slate-600">' + fmtD(r[3]) + '</td>' +
+      '<td class="py-2.5 px-3">' + slink(r[0], r[1], r[2]) + '</td>' +
+      '<td class="py-2.5 px-3 text-center"><span class="chip ' + (r[2]==='SME'?'sme">SME':'main">Main') + '</span></td>' +
+      '<td class="py-2.5 px-3 text-right">' + inr(r[4]) + '</td>' +
+      '<td class="py-2.5 px-3 text-right">' + inr(r[5]) + '</td>' +
+      '<td class="py-2.5 px-3 text-right font-semibold">' + pctc(g) + '</td>' +
+      '<td class="py-2.5 px-3 text-right text-slate-600">' + inr(r[6]) + '</td></tr>';
+  }
+  $('tBody').innerHTML = h || '<tr><td colspan="7" class="py-10 text-center text-sm text-slate-400">Nothing matches.</td></tr>';
+  if (window.swWatch) swWatch.paintAll($('tBody'));
+  $('count').textContent = rows.length.toLocaleString('en-IN') + ' listings in the last 6 months';
+}
+
+load();
+</script>
+</body>
+</html>

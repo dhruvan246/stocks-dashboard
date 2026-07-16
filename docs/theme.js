@@ -150,6 +150,7 @@
       ['./deals.html',             '🐋', 'Bulk/Block Deals'],
       ['./insider.html',           '🕵️', 'Insider Trades'],
       ['./delivery.html',          '📦', 'Delivery Spikes'],
+      ['./ipos.html',              '🚀', 'IPOs & Listings'],
       ['./quarterly-results.html', '🧾', 'Quarterly Results'],
       ['./announcements.html',     '📢', 'Announcements']
     ] },
