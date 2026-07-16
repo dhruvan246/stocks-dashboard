@@ -337,6 +337,10 @@ function monthsBetween(start,end){
 }
 
 // ---- config read / apply / labels (shared with history & strategies pages) ----
+// `lookback` isn't a form control — it's carried invisibly from a loaded strategy (it sets the live
+// Today's-Picks return window AND is part of the strategy identity, so a re-run MUST preserve it or it
+// splits into a separate strategy that won't nest under the saved row). null on a fresh/direct build.
+let CUR_LOOKBACK=null;
 function readCfg(){
   // unified Universe value: "" = all, "mcap:<n>" = size floor, anything else = index/F&O membership
   const u=$('cIndex').value||''; const isCap=u.slice(0,5)==='mcap:';
@@ -347,10 +351,12 @@ function readCfg(){
     capital:+$('cCap').value||100000, method:$('cMethod').value, filters:readFilters(), mode:DATA_MODE,
     earnBasis:($('cEarn')&&$('cEarn').value)||'con'
   };
+  if(CUR_LOOKBACK!=null) cfg.lookback=CUR_LOOKBACK;   // preserve a loaded strategy's lookback so re-runs keep its identity
   return cfg;
 }
 async function applyCfg(c){
   if(!c) return;
+  CUR_LOOKBACK = (c.lookback!=null) ? c.lookback : null;   // remember the loaded strategy's lookback (see readCfg) so a re-run nests under the same strategy
   if(DATA_MODE!=='sf') await setMode('sf');   // always survivorship-free
   // map saved {indexName, mcapFloor} onto the unified Universe value (index wins if both set)
   $('cFrom').value=c.start; $('cTo').value=(typeof SF!=='undefined'&&SF&&SF.end)?SF.end:c.end;   // TO always rolls to the latest available date
@@ -376,7 +382,7 @@ function saveLS(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 // MUST stay identical to identityKey() in saved-strategies.html so a run nests under the right strategy.
 function stratIdentity(c){
   const f=(c.filters||[]).map(x=>x.field+x.op+x.val).sort().join(',');
-  return [c.indexName||'', c.mcapFloor||0, c.freq, c.topN, c.sortBy, c.dir, c.earnBasis||'con', f].join('|');
+  return [c.indexName||'', c.mcapFloor||0, c.freq, c.topN, c.sortBy, c.dir, c.lookback||1, c.earnBasis||'con', f].join('|');
 }
 // "Is this strategy already in the Saved Strategies list?" — used to hide a duplicate Save button
 // (a saved strategy re-opened & re-run should NOT re-offer "Save as Strategy"). Mirrors identityKey()
@@ -385,7 +391,7 @@ function stratIdentity(c){
 function savedIdentity(c){
   const normOp=op=>({'<=':'<','>=':'>'}[op]||op);
   const f=(c.filters||[]).map(x=>x.field+normOp(x.op)+x.val).sort().join(',');
-  return [c.indexName||'', c.mcapFloor||0, c.freq, c.sortBy, c.dir, c.earnBasis||'con', f].join('|');
+  return [c.indexName||'', c.mcapFloor||0, c.freq, c.sortBy, c.dir, c.lookback||1, c.earnBasis||'con', f].join('|');
 }
 function isAlreadySaved(cfg){
   try{ const k=savedIdentity(cfg); return loadLS('bt_strategies').some(x=>x&&x.cfg&&savedIdentity(x.cfg)===k); }catch(e){ return false; }

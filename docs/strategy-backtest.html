@@ -64,7 +64,7 @@ let SF_END = '';   // latest data date (tiny sf_meta.json) → default End date 
 //     resolves to exactly the same set of runs there and here. ---
 function identityKey(c) {
   const f = (c.filters || []).map(x => x.field + x.op + x.val).sort().join(',');
-  return [c.indexName || '', c.mcapFloor || 0, c.freq, c.topN, c.sortBy, c.dir, c.earnBasis || 'con', f].join('|');
+  return [c.indexName || '', c.mcapFloor || 0, c.freq, c.topN, c.sortBy, c.dir, c.lookback || 1, c.earnBasis || 'con', f].join('|');
 }
 function windowEnd(c) { return (typeof SF !== 'undefined' && SF && SF.end) ? SF.end : (c.end || 'today'); }
 function metricsFor(cfg) {
@@ -150,7 +150,7 @@ function fillForm(c) {
   $('fMethod').value = c.method || 'reset';
   $('fEarn').value = c.earnBasis || 'con';
 }
-// Read the (edited) form back into a full config, PRESERVING the strategy's filters.
+// Read the (edited) form back into a full config, PRESERVING the strategy's filters + lookback.
 function readForm(base) {
   const u = $('fUni').value || '', isCap = u.slice(0, 5) === 'mcap:';
   const cfg = {
@@ -162,7 +162,7 @@ function readForm(base) {
     method: $('fMethod').value, earnBasis: $('fEarn').value,
     filters: (base.filters || []).slice(), mode: 'sf'
   };
-  delete cfg.lookback;   // `lookback` is a dead field — never carry it (the engine ignores it)
+  if (base.lookback != null) cfg.lookback = base.lookback;   // keep identity (see stock-backtest CUR_LOOKBACK)
   return cfg;
 }
 
