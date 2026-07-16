@@ -876,6 +876,12 @@ shareable URL (`discovery.html#b=<key>`).
   backtest files were thrown away every night (mf_funds.json frozen at 2026-06-06). Fix = carry both docs files
   (+ scripts/gold_inr.json cache) through /tmp in the commit step. Lesson: in reset-and-replay commit steps, EVERY
   file the fetch step writes must be in the cp-to-/tmp + cp-back + git-add lists, or it silently never publishes.
+- **Same bug again 2026-07-16 — docs/dash_slim.bin (refresh.yml):** built by build_compressed.py every run but the
+  commit step only carried nse-bse-dashboard.html → frozen at 2026-06-30 while sectors.html default views +
+  build_discovery/enrich_order_shares/build_quarterly_results (they read the COMMITTED copy in CI) used June-30
+  prices. Fix = carry it through /tmp; committed only when data really changed via `scripts/dash_slim_same.py`
+  (ignores generatedAt; FAIL-OPEN — any compare error commits) so identical same-day re-runs don't add ~2 MB each.
+  ⚠️ docs/stock_data.bin (17 MB) is the DELIBERATE exception: weekly via refresh-membership.yml, never 3x/day.
 - **Archive sweep 2026-07-16:** ~1,839 one-off `_*.py` backfill scripts (all untracked, never committed)
   moved to `scripts/archive/` (gitignored); 35 still-referenced `_*` tools kept in scripts/ (resweep loop,
   membership history, FM vision helpers). 81 scratch PNGs deleted. If an old procedure references a missing

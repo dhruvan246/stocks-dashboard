@@ -70,17 +70,32 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # Save the newly built dashboard outside the working tree first.
+          # Save the newly built files outside the working tree first.
           # We use a "reset-and-replay" strategy on push conflicts: pull latest
-          # main, drop our new dashboard on top (overwrite, no merge), commit,
+          # main, drop our new files on top (overwrite, no merge), commit,
           # push. Avoids content-merge conflicts on the binary-ish HTML.
+          # NOTE (runbook section 18): EVERY file the build step writes must be
+          # carried through /tmp here, or reset-and-replay silently discards it.
+          # docs/stock_data.bin (17 MB) is the deliberate exception — it is
+          # committed weekly by refresh-membership.yml to cap repo growth.
           cp docs/nse-bse-dashboard.html /tmp/new_dashboard.html
+          cp docs/dash_slim.bin          /tmp/new_dash_slim.bin
 
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
             cp /tmp/new_dashboard.html docs/nse-bse-dashboard.html
             git add docs/nse-bse-dashboard.html
+
+            # dash_slim.bin (~2 MB) backs sectors.html + the dashboard's first
+            # paint, and CI builders (build_discovery, enrich_order_shares,
+            # build_quarterly_results) read the COMMITTED copy. Commit it only
+            # when its data really changed (new trading day / corrected close);
+            # identical same-day re-runs skip it to limit git-history growth.
+            if ! python3 scripts/dash_slim_same.py /tmp/new_dash_slim.bin docs/dash_slim.bin; then
+              cp /tmp/new_dash_slim.bin docs/dash_slim.bin
+              git add docs/dash_slim.bin
+            fi
 
             if git diff --cached --quiet; then
               echo "Remote already has identical dashboard — nothing to commit"
