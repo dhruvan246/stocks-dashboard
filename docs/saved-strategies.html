@@ -165,7 +165,10 @@ function identityKey(c) {
   // separate rows, while opposite directions (`>0` vs `<0`) or different values stay distinct.
   const normOp = op => ({ '<=': '<', '>=': '>' }[op] || op);
   const f = (c.filters || []).map(x => x.field + normOp(x.op) + x.val).sort().join(',');
-  return [c.indexName || '', c.mcapFloor || 0, c.freq, c.sortBy, c.dir, c.lookback || 1, c.earnBasis || 'con', f].join('|');
+  // `lookback` is intentionally excluded: the engine screens on a fixed 1-month change window and never
+  // reads cfg.lookback (backtest-engine.js:285), so two strategies differing only in lookback pick the
+  // SAME stocks and are one strategy. (lookback only tweaks a display column in the live Picks modal.)
+  return [c.indexName || '', c.mcapFloor || 0, c.freq, c.sortBy, c.dir, c.earnBasis || 'con', f].join('|');
 }
 // Variant identity within one strategy = window + rebalance method + stock count.
 function winKey(c) { return (c.start || '') + '|' + (c.method || '') + '|' + (c.topN != null ? c.topN : ''); }
