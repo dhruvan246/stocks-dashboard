@@ -174,6 +174,17 @@ in-step: pymupdf + curl_cffi + rapidocr-onnxruntime/onnxruntime/numpy. Validate:
     (decode the `__B64__` / `histData` inline blobs), drop them in `scripts/`, run the build, verify in a
     browser, then `git checkout` any tracked source you overwrote. Windows: prefix `PYTHONUTF8=1` (the build
     `print()`s a `→`). See §9.
+  → `scripts/mf_history.b64` (gitignored, CI-only, from fetch_mf_returns.py) is just base64 of the tracked
+    `docs/mf_history.bin` — rebuild it in one line rather than re-fetching ~5k schemes:
+    `python -c "import base64,pathlib;pathlib.Path('scripts/mf_history.b64').write_text(base64.b64encode(pathlib.Path('docs/mf_history.bin').read_bytes()).decode())"`
+    Without it the build still emits a working page but silently drops the date-picker bounds.
+  → **Custom-window column gotchas** (fixed 2026-07-16, `dateToIdx`/`custHint`): the NAV axis starts
+    **2006-04-01**; a From date before it used to return idx `-1` → every fund null → "0 funds" and an
+    all-dash column. It now clamps to day 0 and the inputs carry baked `min`/`max`. Separately, a *valid*
+    window still blanks EVERY visible row when From predates **2013** and the plan filter is on Direct
+    (direct plans only exist from Jan-2013; only 3 schemes have NAV back to 2006, all Regular) — `custHint()`
+    explains that instead of showing a silently empty column. Blanks for young funds are CORRECT, not a bug:
+    only ~1,811 of 5,021 schemes have 5y+ of NAV, so a 5y window legitimately fills ~1,632.
 - **Hand-maintained pages** (edit directly): `stock-backtest.html`, `saved-strategies.html`,
   `backtest-history.html`, `stock.html`, `fii-dii.html`, plus shared `theme.css`, `theme.js`, `bt-sync.js`, `backtest-engine.js`.
   NOTE: `stock-backtest.html` is self-contained (its own engine) and does NOT load `backtest-engine.js` —
