@@ -323,13 +323,20 @@ def _close(a, b, tol_pct=0.03, tol_abs=2.0):
 
 def columns_for(page, qe):
     """Column-index map {'cur': i, 'prec': i|None, 'yago': i|None} by FIRST-occurrence of each header
-    date (3-month columns precede YTD/FY in the SEBI format, so leftmost wins)."""
+    date (3-month columns precede YTD/FY in the SEBI format, so leftmost wins).
+    ORDERING GUARD (VIKRAMSOLR lesson #2 — a filing whose header MISPRINTS the preceding-quarter date
+    makes 'first occurrence' land on the FY column): structurally, cur < prec < yago < YTD/FY. A
+    'prec' at/right of 'yago', or a 'yago' at/left of 'cur', is impossible — drop that column."""
     first = {}
     for i, (x, d) in enumerate(page["dates"]):
         first.setdefault(d, i)
     cur = first.get(qe)
     if cur is None: return None
-    return {"cur": cur, "prec": first.get(prevq(qe)), "yago": first.get(yago(qe))}
+    prec, yg = first.get(prevq(qe)), first.get(yago(qe))
+    if yg is not None and (yg <= cur or yg > cur + 2): yg = None   # yago lives in the 3m block: cur+1 / cur+2
+    if prec is not None and (prec <= cur or (yg is not None and prec >= yg)): prec = None
+    if prec is not None and yg is None and prec != cur + 1: prec = None   # prec must adjoin cur when yago absent
+    return {"cur": cur, "prec": prec, "yago": yg}
 
 def extract_anchored(pages, qe, want_con, cur_pat, prec_pat, cur_rev):
     """Try every parsed page/row of the wanted basis; return

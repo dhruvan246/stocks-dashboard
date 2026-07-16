@@ -1286,12 +1286,17 @@ Trendlyne reads). `scripts/backfill_ipo_bases.py` automates the fill:
 - **⚠️ Column-mapping failure class (caught 2026-07-16, day one):** when a header DATE fails to
   parse (OCR'd `31032025`, split tokens), "first occurrence of the year-ago date" can land on the
   **FY column** — VIKRAMSOLR prec got 139.1 (FY) instead of 82.84; AEPL yago got the ANNUAL 7.68.
-  The cur-anchor does NOT protect comparatives. Guard (in `_map_columns`): any figure cell inside
-  the column zone that maps to no header date REJECTS the row → page falls through to vision. This
-  is deliberately strict — messy-but-correct pages also get rejected/reverted and re-fill via
+  The cur-anchor does NOT protect comparatives. TWO guards: (1) `_map_columns` — any figure cell
+  inside the column zone that maps to no header date REJECTS the row; (2) `columns_for` ORDERING —
+  some filings MISPRINT the preceding-quarter header date (VIKRAMSOLR's col2 literally says
+  30.06.2025 twice), sending "first occurrence" to the FY column even when every cell maps; so
+  structurally require cur < prec < yago ≤ cur+2 (the 3m block), else drop that column. This is
+  deliberately strict — messy-but-correct pages also get rejected/reverted and re-fill via
   Gemini. After ANY parser change run **`--audit`**: re-extracts every text-sourced ledger cell
   from its recorded src PDF and fixes/reverts mismatches (circular-anchor-aware: won't anchor on a
-  preceding value the script itself wrote).
+  preceding value the script itself wrote). ⚠️ Cross-session gotcha: another session's `git commit`
+  can sweep your pre-audit staged data to origin — after any conflicted rebase, `--reapply` alone
+  is NOT enough (fill-only can't blank); re-run `--audit` or scrub reverted values explicitly.
 - **Structural residuals (don't chase):** quarters NO filing ever printed (company listed too
   recently — the next filing carries them a quarter later); BSE-only listings (§17 OCR grind owns
   those); operating-profit bases (rev+PAT cover the site's YoY; op needs a 4-row derivation —
