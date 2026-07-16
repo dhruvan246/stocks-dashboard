@@ -47,18 +47,19 @@
     <button id="tabCustom" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">🗓️ Custom period</button>
     <button id="tabFav" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">⭐ Favourites</button>
   </div>
+  <!-- Always-visible market-cycle presets: click one → every strategy is backtested over that exact window
+       and the list re-sorts best-first. -->
+  <div class="flex items-center gap-2 flex-wrap mb-3">
+    <span class="text-[11px] font-bold uppercase tracking-wide text-slate-500">Compare over</span>
+    <button data-preset="w1" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">🌊 Wave 1 <span class="opacity-60">Mar’20–Sep’21</span></button>
+    <button data-preset="w2" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">🌊 Wave 2 <span class="opacity-60">Mar’23–Mar’24</span></button>
+    <button data-preset="w3" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">🌊 Wave 3 <span class="opacity-60">Mar’26–date</span></button>
+    <button data-preset="cycle" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">🔄 Entire cycle <span class="opacity-60">Mar’20–date</span></button>
+  </div>
   <!-- Custom-period compare bar: pick any window, hit Compute → every strategy runs a real backtest over
        exactly that window and the list re-sorts best-first by that window's CAGR. -->
   <div id="customBar" class="hidden items-center gap-2.5 flex-wrap bg-white border border-slate-200 rounded-lg px-3 py-2.5 mb-3">
-    <!-- one-click market-cycle presets: click → every strategy is backtested over that window, sorted best-first -->
-    <div class="w-full flex items-center gap-2 flex-wrap">
-      <span class="text-[11px] font-bold uppercase tracking-wide text-slate-500">Quick period</span>
-      <button data-preset="w1" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">🌊 Wave 1 <span class="opacity-60">Mar’20–Sep’21</span></button>
-      <button data-preset="w2" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">🌊 Wave 2 <span class="opacity-60">Mar’23–Mar’24</span></button>
-      <button data-preset="w3" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">🌊 Wave 3 <span class="opacity-60">Mar’26–date</span></button>
-      <button data-preset="cycle" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">🔄 Entire cycle <span class="opacity-60">Mar’20–date</span></button>
-    </div>
-    <span class="text-[11px] font-bold uppercase tracking-wide text-slate-500">Or a custom window</span>
+    <span class="text-[11px] font-bold uppercase tracking-wide text-slate-500">Custom window</span>
     <input id="cFrom" type="date" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-sm"/>
     <span class="text-slate-400">→</span>
     <input id="cTo" type="date" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-sm"/>
@@ -456,10 +457,13 @@ const PERIOD_PRESETS = {
 function runPreset(key) {
   const p = PERIOD_PRESETS[key]; if (!p) return;
   const t = new Date(), today = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
+  if (VIEW !== 'custom') setView('custom');                        // results render with the per-window column
   $('cFrom').value = p.from; $('cTo').value = p.to || today;
   $('cTopN').value = '';                                           // presets compare each strategy at its own saved stock count
-  document.querySelectorAll('.preset').forEach(b => b.classList.toggle('!bg-indigo-600', b.dataset.preset === key));
-  document.querySelectorAll('.preset').forEach(b => b.classList.toggle('!text-white', b.dataset.preset === key));
+  document.querySelectorAll('.preset').forEach(b => {
+    const on = b.dataset.preset === key;
+    b.classList.toggle('!bg-indigo-600', on); b.classList.toggle('!text-white', on);
+  });
   computeCustom();
 }
 
