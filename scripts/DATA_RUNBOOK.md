@@ -979,8 +979,14 @@ that's the routine's contribution made visible (43/91 on 2026-07-16).
 `docs/results_coverage.json`), AND into the `bse-vision-fill` scheduled routine's step 5 so the page reflects
 a fill immediately instead of waiting for the next hour.
 
+**PRIVATE (owner-only).** Listed in `theme.js` PRIVATE_PAGES → hidden from nav/footer/home tiles, and the page
+itself renders the standard `swLock()` 🔒 curtain unless this browser holds `bt_owner_key` (unlock once via
+`?ownerkey=…`). Same client-side curtain as status/analytics/watchlist — GitHub Pages has no real auth, so
+`results_coverage.json` remains fetchable by direct URL (it's only counts of public filings). Make it public
+again by removing it from PRIVATE_PAGES + deleting the swLock block.
+
 **Gotchas:**
-- Adding the page = new SHELL entry in `docs/sw.js` + **bump `CACHE`** (v22→v23 here) or the PWA serves the
-  stale shell/theme.js. Nav is one line in `theme.js` NAV_GROUPS (Tools) — don't hand-edit each page.
+- Adding the page = new SHELL entry in `docs/sw.js` + **bump `CACHE`** (v22→v23, then v24 for the private
+  flip) or the PWA serves the stale shell/theme.js — a stale theme.js would keep showing the nav link. Nav is one line in `theme.js` NAV_GROUPS (Tools) — don't hand-edit each page.
 - `declared` counts unique COMPANIES, not feed rows — a raw `len(rows)` on the feed reads 1 higher when a
   company files twice (93 rows vs 92 companies on 2026-07-16).
