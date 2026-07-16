@@ -58,6 +58,9 @@ Pipeline (the workflow, in order — to run by hand do the same):
    continuity at the join + the announcement, then MANUAL_MERGE in update_sf_data.py; false positive →
    ack in `scripts/_rename_ack.json` {"OLD|NEW":"why"}. Merged pairs unflag themselves (old symbol
    leaves the bin). Also check the fundamentals/membership side for the pair (apply_owners_full REV map).
+   Full fix sweep for a confirmed pair (MANUAL_MERGE + fundamentals key-move + fno/membership/side-files):
+   **§30**. Note the ISIN may be UNCHANGED yet still strand the history — GUJENERGY's day-1 bhavcopy row
+   simply carried no ISIN, so the auto-merge had nothing to match on.
 4. `python3 scripts/split_sf_data.py` → force-push `sf_stock_data_1.bin`+`_2.bin`+`sf_meta.json` to the
    **sf-data** Pages repo (secret `SF_DATA_TOKEN`). Browser loads from there (same origin, no CORS).
 5. Commit ONLY `docs/sf_meta.json` (≈20-byte version marker) — clients re-download when `{end}` bumps.
@@ -1427,3 +1430,36 @@ ordered by ex-date, dividends enriched with yield vs latest close.
 - **Page:** Upcoming (default) / Past-30d views, kind + min-yield filters, day-boundary rules in the
   table (first row of each date bolded). sw.js SHELL + CACHE (rode v34→v35 amid the monthly-returns
   page's bumps — three sessions shared this file today).
+
+---
+
+## 30. TICKER RENAME with orphaned history  (GUJGASLTD→GUJENERGY playbook, 2026-07-17)
+A renamed NSE symbol whose Day-1 bhavcopy row carried **no ISIN** starts a fresh stub series in
+`sf_stock_data.bin` (the ISIN auto-merge in `update_sf_data.py` can't fire) — symptom: old symbol
+`alive=True` frozen at the rename date + a new short series with meta `name=SYMBOL, ind=Unknown, no isin`.
+Fix sweep (all steps, in order — verify against the LIVE release asset, never the committed docs bin):
+1. **Verify** it's a rename: `https://nsearchives.nseindia.com/content/equities/symbolchange.csv` (no
+   cookies needed) + `EQUITY_L.csv` (current ISIN; listing date stays the ORIGINAL one). Confirm join
+   continuity (old last close vs new first open ~±5%) and check `corp_actions.json` for the new symbol:
+   factors with **ex < join** are the old company's history (adj stays 1) — only ex-dates AFTER the old
+   series' end scale the prepend; scheme demergers show up as `noadjust` (drop is kept, correct).
+2. `scripts/update_sf_data.py` **MANUAL_MERGE** += `{"NEW": "OLD"}` (loop also carries old meta
+   name/ind/isin onto placeholder stubs). Publishes on the next nightly run (`merged` counts as a change);
+   force with `gh workflow run refresh-backtest-data.yml` and grep the log for `MANUAL RENAME MERGE`.
+3. **Refresh `scripts/symchg.csv`** from the URL above (drop-in same format) → membership/canon()
+   stitches on the next weekly rebuild (indicesHistory in stock_data.bin self-heals from this too).
+4. **Fundamentals under the NEW key** (ETERNAL/LTM precedent — old key deleted): in
+   `docs/sf_fundamentals.json` + `scripts/fundamentals.json` + `docs/sf_revop.json` +
+   `scripts/revop_fundamentals.json`, assert overlap rows equal, then `d[NEW]=d.pop(OLD)`
+   (the OLD rows win — true announce dates; the new-key rows are IPO-base backfills/deadline-stamped).
+5. `scripts/apply_owners_full.py` **ALIAS** += `"OLD":"NEW"` (_reattr_owners stays keyed by OLD).
+6. `scripts/bse_scrips.json` `by_id`: rename key (scrip code unchanged; `by_isin` already fine).
+7. `scripts/fno_history.json` **+ `docs/stock_data.bin` `fnoHistory`**: replace OLD→NEW in every
+   snapshot (convention = canonical CURRENT symbols, see LTM in 2021 snaps; membership rebuilds
+   PRESERVE fnoHistory so the bin must be patched by hand, gzip level 9).
+8. **Leave alone:** `ipo_base_fills.json` (fill-only reapply → harmless no-op once cells are non-null),
+   `_reattr_owners.json` (OLD-key convention), `shp_history.json` (SHP fetcher already migrates),
+   stock_data.bin `.NS` series (self-consolidates from the EQUITY_L universe on its own refresh).
+GUJENERGY specifics: rename eff 2026-07-01 (Gujarat Gas→Gujarat Energy Ltd, GSPL scheme), ISIN
+INE844O01030 unchanged, join 327.05→340.00 continuous, 2026-07-02 −11.75% = scheme-demerger ex-date
+(kept via NSE noadjust), 2019 split factor keyed under GUJENERGY is pre-join → adj=1.

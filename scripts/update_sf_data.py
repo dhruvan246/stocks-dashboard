@@ -268,10 +268,16 @@ def main():
     MANUAL_MERGE = {"PCBL": "PHILIPCARB",   # INE602A01023 -> INE602A01031 (Jan 2022, prices continuous)
                     "PATANJALI": "RUCHI",   # Ruchi Soya relisted as RUCHI (2020-01) -> PATANJALI (2022-07); ISIN changed at IBC
                     "RBA": "BURGERKING",    # Burger King India -> Restaurant Brands Asia (2022-02)
-                    "LTM": "LTIM"}          # L&T Infotech (LTIM series 2016-2022) -> LTIMindtree (LTM 2022-12);
+                    "LTM": "LTIM",          # L&T Infotech (LTIM series 2016-2022) -> LTIMindtree (LTM 2022-12);
                                             # Nifty-500 membership + fundamentals use LTM, so the pre-2022 price
                                             # history (under LTIM) was orphaned -> LTM missing 2020-2022. Prices
                                             # continuous at the join (5065.75 -> 4975.40, no split); no LTM CAs.
+                    "GUJENERGY": "GUJGASLTD"}  # Gujarat Gas -> Gujarat Energy Ltd, symbol change eff 2026-07-01 (NSE
+                                            # symbolchange.csv). ISIN INE844O01030 UNCHANGED, but the Jul-1 bhavcopy row
+                                            # carried no ISIN so the stub was created isin-less and the auto-merge never
+                                            # fired. Prices continuous at the join (327.05 -> 340.00, no ratio); the -12%
+                                            # 2026-07-02 scheme-demerger ex-date is kept via NSE noadjust, and the 2019
+                                            # split factor now keyed under GUJENERGY has ex < join, so adj stays 1.
     merged = 0
     for new, old in MANUAL_MERGE.items():
         on = data.get(new); oo = data.get(old)
@@ -291,6 +297,15 @@ def main():
                             on[f] = [round(oo[f][i] * adj, 2) for i in idx] + on[f]
                         else:
                             on[f] = [oo[f][i] for i in idx] + on[f]
+                # The new ticker's stub meta is a placeholder (name=symbol, ind=Unknown, often no ISIN —
+                # that missing ISIN is usually WHY the auto-merge couldn't fire). Carry the predecessor's
+                # company attributes over so the merged series keeps its industry/ISIN (ISIN only when the
+                # stub has none: verified unchanged for GUJENERGY vs EQUITY_L; changed-ISIN pairs like
+                # PATANJALI already carry their new ISIN from the daily appends, so this never clobbers).
+                om = meta.get(old) or {}; nm = meta.setdefault(new, {})
+                if nm.get("name") in (None, new) and om.get("name"): nm["name"] = om["name"]
+                if nm.get("ind") in (None, "Unknown") and om.get("ind"): nm["ind"] = om["ind"]
+                if not nm.get("isin") and om.get("isin"): nm["isin"] = om["isin"]
                 data.pop(old, None); meta.pop(old, None); merged += 1
                 print("  MANUAL RENAME MERGE %s -> %s (%d pts prepended, adj=%.4f)" % (old, new, len(idx), adj))
     mr = apply_manual_rights(data)   # hand-verified per-stock rights adjustments to match Trendlyne
