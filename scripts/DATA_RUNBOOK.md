@@ -1310,3 +1310,38 @@ and the last 6 months of listings with performance vs issue price.
   instead of re-scraping.
 - **Page:** issue cards (subscription progress bar) + listings table (board filter, best/worst since
   issue). sw.js SHELL + CACHE v30→v31.
+
+## 28. INDEX MONTHLY RETURNS  (docs/monthly-returns.html — "Monthly Returns" nav, built 2026-07-16, SELF-UPDATING)
+**The heatmap page:** month-by-month % returns for 32 NSE indices (10 broad / 16 sectoral / 6 thematic)
+with the year's return in the last column — plus the extras: FY (Apr–Mar) view, "vs Nifty 50" alpha
+mode, per-index seasonality (avg + hit-rate per calendar month), live MTD cell, sortable columns.
+
+- **Feed:** `docs/index_monthly.json` (~82 KB) — month-end CLOSES (not returns) per index per year:
+  `{indices:[{key,label,grp,closes:{"2003":[12 nums|null]}}], asof, updated}`. The page computes all
+  returns client-side (MoM, CY/FY annual, alpha, seasonality) so one small file powers every view.
+- **History backfill (one-time, done 2026-07-16):** niftyindices.com `POST /BackPage/
+  getHistoricaldatatabletoString` with `{"cinfo":"{'name':'NIFTY 50','startDate':'01-Nov-1995',
+  'endDate':'31-Jul-2026','indexName':'NIFTY 50'}"}` → full daily history in ONE call (multi-decade
+  ranges allowed), reduced to month-end closes. ⚠️ That endpoint is bot-walled for python (HTML/403)
+  — it works ONLY as a **browser page-context XHR** (load niftyindices.com in the pane, sync XHR in
+  an IIFE via javascript_tool). Pre-launch history is back-computed by NSE with CLOSE-only rows
+  (OPEN=HIGH=LOW=CLOSE). Base anchors verified: Nifty 50 Dec-2007 6138.60 / Mar-2020 8597.75; Midcap
+  100 base 1000 @ 01-Jan-2003, 2003 low 894.69 (31-Mar). Re-run recipe + endpoint discovery notes:
+  memory `project-stocks-index-history-source`.
+- **Daily top-up:** `scripts/fetch_index_monthly.py` reads `liveindexsa.niftyindices.com/jsonfiles/
+  LiveIndicesWatch.json` (Azure CDN, NO bot wall, plain python works) and writes each index's `last`
+  into its (year,month) cell. The target month comes from the row's own `timeVal` ("16-Jul-2026
+  15:30") — NEVER the wall clock — so the 08:40 catch-up run on the 1st can't poison the new month.
+  Live-name ALIASES (live watch spells 6 differently): SMALLCAP 100/250→SMLCAP, MICROCAP 250→
+  MICROCAP250, PRIVATE BANK→PVT BANK, INDIA DEFENCE→IND DEFENCE, INDIA CONSUMPTION→CONSUMPTION.
+  Fail-soft: live fetch error leaves the file untouched.
+- **Refresh:** `.github/workflows/refresh-index-monthly.yml` — 21:20 IST weekdays + 08:40 IST
+  Tue-Sat catch-up; guard_feed + single-file /tmp commit pattern; in feeds.json (min_ratio 0.9).
+- **Page details:** heatmap = diverging fills (emerald/rose rgba, alpha ∝ |ret|/cap, cap 8% monthly /
+  35% annual, tighter in alpha mode) with the NUMBER printed in every cell (color never the only
+  channel); custom hover tooltip shows from→to index LEVELS; annual `*` = index didn't exist the
+  full year (measured from first data). **Cardify opt-out trick:** thead's LAST row is a full-width
+  colspan note row → theme.js headerLabels() bails, so the matrix keeps horizontal scroll on phones
+  (sticky first column) instead of card-stacking 14 numbers. sw.js SHELL + CACHE v33→v34.
+- **Sanity anchors:** CY2008 Nifty 50 −51.8% / CY2017 +28.6% / CY2023 +20.0%; Midcap 100 CY2023
+  +46.6%; IT CY2020 +54.9%, CY1999 +491.9%, 2008 −54.6%; Bank CY2020 −2.8%.

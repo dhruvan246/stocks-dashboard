@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Monthly Returns</title>
+<meta name="description" content="Month-by-month returns heatmap for every NSE index — broad, sectoral and thematic — with annual returns, financial-year view, vs-Nifty alpha mode and per-index seasonality stats." />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<style>
+  body { font-feature-settings: "tnum" 1; }
+  :root { --mrc:#ffffff; --mrline:#e2e8f0; }
+  html[data-theme="dark"] { --mrc:#0f172a; --mrline:#293548; }
+  .card{background:var(--mrc);border:1px solid var(--mrline);border-radius:.75rem}
+  .pos{color:#15803d;font-weight:600}.neg{color:#b91c1c;font-weight:600}
+  html[data-theme="dark"] .pos{color:#6ee7b7}html[data-theme="dark"] .neg{color:#fca5a5}
+  .vbtn{padding:6px 14px;border-radius:9999px;font-size:12px;font-weight:700;cursor:pointer;user-select:none;white-space:nowrap;
+        background:var(--surface-2,#f1f5f9);color:var(--text-muted,#334155);border:1px solid var(--border,#e2e8f0)}
+  .vbtn.on{background:var(--accent,#2563eb);color:#fff;border-color:var(--accent,#2563eb)}
+  select{background:var(--mrc);border:1px solid #cbd5e1;border-radius:.5rem;font-size:13px;padding:7px 10px;max-width:230px}
+  html[data-theme="dark"] select{border-color:#374151}
+
+  /* ---- heatmap table ---- */
+  .hm{border-collapse:separate;border-spacing:0;width:100%}
+  .hm th,.hm td{padding:5px 6px;text-align:right;font-size:12px;border-bottom:1px solid var(--mrline);white-space:nowrap}
+  .hm thead th{font-size:10px;text-transform:uppercase;letter-spacing:.02em;color:#64748b;cursor:pointer;user-select:none;position:sticky;top:0;background:var(--mrc);z-index:3}
+  .hm thead th.noclick{cursor:default}
+  .hm th:first-child,.hm td:first-child{position:sticky;left:0;background:var(--mrc);z-index:2;text-align:left;min-width:168px;box-shadow:2px 0 0 var(--mrline)}
+  .hm thead th:first-child{z-index:4}
+  .hm td{font-variant-numeric:tabular-nums}
+  .hm td.hv{cursor:default}
+  .hm td.ann{font-weight:800;border-left:2px solid var(--mrline)}
+  .hm td.inkw{color:#fff}
+  .hm td.mtd{outline:1.5px dashed rgba(100,116,139,.55);outline-offset:-2px}
+  .hm tr.grp td{background:var(--surface-2,#f1f5f9);font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding:4px 8px}
+  .hm tr.grp td.g-broad{color:#1d4ed8}.hm tr.grp td.g-sector{color:#6d28d9}.hm tr.grp td.g-theme{color:#b45309}
+  html[data-theme="dark"] .hm tr.grp td{background:#1b2537}
+  html[data-theme="dark"] .hm tr.grp td.g-broad{color:#93c5fd}
+  html[data-theme="dark"] .hm tr.grp td.g-sector{color:#c4b5fd}
+  html[data-theme="dark"] .hm tr.grp td.g-theme{color:#fcd34d}
+  .hm tfoot td{font-size:11px;color:#64748b;border-top:2px solid var(--mrline);border-bottom:0;font-weight:700}
+  .hm a.ix{color:#1d4ed8;font-weight:700;cursor:pointer}
+  .hm a.ix:hover{text-decoration:underline}
+  html[data-theme="dark"] .hm a.ix{color:#93c5fd}
+  .sub-note td{font-size:10px !important;color:#94a3b8 !important;text-transform:none !important;letter-spacing:0;cursor:default !important;text-align:left;border-bottom:1px solid var(--mrline)}
+  .chipmtd{display:inline-block;font-size:9px;font-weight:800;padding:0 5px;border-radius:9999px;background:#fef3c7;color:#92400e;margin-left:3px}
+  html[data-theme="dark"] .chipmtd{background:rgba(245,158,11,.2);color:#fcd34d}
+  .lgd{height:10px;width:150px;border-radius:9999px;background:linear-gradient(90deg,rgba(244,63,94,.8),rgba(244,63,94,.08) 46%,rgba(100,116,139,.06) 50%,rgba(16,185,129,.08) 54%,rgba(16,185,129,.8))}
+  #tip{position:fixed;z-index:60;pointer-events:none;background:#0f172a;color:#f1f5f9;border:1px solid #334155;border-radius:.5rem;
+       padding:7px 10px;font-size:12px;line-height:1.45;box-shadow:0 8px 24px rgba(0,0,0,.35);max-width:270px;display:none}
+  #tip b{color:#fff}
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav class="flex items-center gap-1 overflow-x-auto">
+      <a href="./sectors.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">🔥<span class="hidden sm:inline">Sectors</span></a>
+      <a href="./market-mood.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">🌡️<span class="hidden sm:inline">Market Mood</span></a>
+      <a href="./stock-backtest.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition shrink-0">🧪<span class="hidden sm:inline">Create a Strategy</span></a>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-screen-2xl mx-auto px-4 py-6">
+  <div class="mb-4">
+    <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Monthly Returns <span class="text-slate-400 font-semibold text-base">· every index, month by month</span></h1>
+    <p class="text-sm text-slate-500 mt-1">Month-end to month-end % returns for <b>32 NSE indices</b> — broad, sectoral and thematic — with the year's return in the last column. Extras you won't find elsewhere: a <b>financial-year (Apr–Mar) view</b>, a <b>“vs Nifty 50” alpha mode</b>, per-index <b>seasonality stats</b> (average &amp; hit-rate per calendar month) and a <b>live MTD</b> cell for the running month. <span id="updated" class="text-slate-400"></span></p>
+  </div>
+
+  <div id="status" class="text-sm text-slate-500 py-10 text-center">Loading index history…</div>
+
+  <div id="content" class="hidden">
+    <div id="cards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"></div>
+
+    <div class="mb-3 flex flex-wrap items-center gap-2">
+      <div class="flex gap-1.5">
+        <span id="vYear" class="vbtn on">All indexes</span>
+        <span id="vSeas" class="vbtn">One index · seasonality</span>
+      </div>
+      <select id="selYear"></select>
+      <select id="selIdx" class="hidden"></select>
+      <div class="flex gap-1.5">
+        <span id="tCY" class="vbtn on" title="Calendar year: Jan–Dec, annual = Dec vs previous Dec">CY</span>
+        <span id="tFY" class="vbtn" title="Financial year: Apr–Mar, annual = Mar vs previous Mar">FY</span>
+      </div>
+      <span id="tAlpha" class="vbtn" title="Every cell becomes the index's return MINUS Nifty 50's return for the same month">vs Nifty 50</span>
+      <div id="grpChips" class="flex gap-1.5">
+        <span data-g="all" class="vbtn gch on">All</span>
+        <span data-g="broad" class="vbtn gch">Broad</span>
+        <span data-g="sector" class="vbtn gch">Sectors</span>
+        <span data-g="theme" class="vbtn gch">Themes</span>
+      </div>
+      <div class="flex items-center gap-2 ml-auto text-[11px] text-slate-500">
+        <span id="lgL">−8%</span><div class="lgd"></div><span id="lgR">+8%</span>
+      </div>
+    </div>
+
+    <div id="seasLine" class="hidden text-sm text-slate-600 mb-2"></div>
+
+    <div class="card overflow-x-auto">
+      <table class="hm" id="tbl">
+        <thead id="tHead"></thead>
+        <tbody id="tBody"></tbody>
+        <tfoot id="tFoot"></tfoot>
+      </table>
+    </div>
+
+    <p class="text-[11px] text-slate-500 mt-5">Every cell is the index's <b>% change from the previous month-end close to that month-end close</b> (price index — dividends not included). The last column is the year's return: <b>CY</b> = Dec close vs previous Dec close, <b>FY</b> = Mar close vs previous Mar close; for the running year it's the year-to-date return and the current month (dashed cell) updates live with every trading day until the month closes. <b>*</b> marks a year where the index didn't exist for the full period (return measured from its first available month). <b>vs Nifty 50</b> subtracts Nifty 50's same-month return from every cell, turning the heatmap into relative-strength (alpha). In the seasonality view the footer shows, for each calendar month, the <b>average</b> return across all years and the <b>hit rate</b> — the share of years that month closed positive. History: NSE's official index archive back to each index's base date (Nifty 50 &amp; Nifty 500 from 1995, Nifty IT from 1996, most sectoral indexes from the early 2000s; back-computed by NSE before an index's launch date). Current month topped up on trading evenings from NSE's live index feed. Educational only — not investment advice.</p>
+  </div>
+</main>
+
+<div id="tip"></div>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const MONC = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const GRP_LBL = { broad:'Broad market', sector:'Sectoral', theme:'Thematic' };
+const inr = n => n == null ? '—' : Number(n).toLocaleString('en-IN', { maximumFractionDigits: 2 });
+
+let FEED = null, IDX = [], BY = {}, N50 = null;
+let view = 'year', fy = false, alpha = false, grp = 'all';
+let selYear = null, selIdx = 'NIFTY 50';
+let sortCol = null, sortDir = -1;
+
+/* ---------- data model ---------- */
+function cl(ix, y, m){ const a = ix.closes[y]; const v = a ? a[m-1] : null; return (v == null) ? null : v; }
+function prevYM(y, m){ return m === 1 ? [y-1, 12] : [y, m-1]; }
+function ret(ix, y, m){
+  const c = cl(ix, y, m); if (c == null) return null;
+  const p = prevYM(y, m), b = cl(ix, p[0], p[1]);
+  return b ? (c/b*100 - 100) : null;
+}
+function retCell(ix, y, m){           // mode-aware cell value
+  const r = ret(ix, y, m);
+  if (!alpha) return r;
+  if (r == null) return null;
+  const rn = ret(N50, y, m);
+  return rn == null ? null : r - rn;
+}
+function monthsFor(Y){                 // 12 column slots for the row-year Y
+  const out = [];
+  for (let i = 0; i < 12; i++){
+    const y = fy ? (i < 9 ? Y-1 : Y) : Y;
+    const m = fy ? (i < 9 ? i+4 : i-8) : i+1;
+    out.push({ y: y, m: m, label: fy ? MONC[m-1] + "’" + String(y).slice(2) : MONC[i] });
+  }
+  return out;
+}
+function annualRaw(ix, Y){             // {v, partial, from, to, fromYM, toYM} | null
+  const slots = monthsFor(Y);
+  const first = slots[0], base0 = prevYM(first.y, first.m);
+  let base = cl(ix, base0[0], base0[1]), baseYM = base0;
+  let last = null, lastYM = null, any = false;
+  for (const s of slots){
+    const c = cl(ix, s.y, s.m);
+    if (c != null){ last = c; lastYM = [s.y, s.m]; any = true; }
+  }
+  if (!any) return null;
+  let partial = false;
+  if (base == null){                   // index born mid-year: measure from its first month
+    for (const s of slots){ const c = cl(ix, s.y, s.m); if (c != null){ base = c; baseYM = [s.y, s.m]; break; } }
+    partial = true;
+    if (baseYM[0] === lastYM[0] && baseYM[1] === lastYM[1]) return null;
+  }
+  return { v: last/base*100 - 100, partial: partial, from: base, to: last, fromYM: baseYM, toYM: lastYM };
+}
+function annualCell(ix, Y){            // mode-aware annual
+  const a = annualRaw(ix, Y); if (!a) return null;
+  if (!alpha) return a;
+  const n = annualRaw(N50, Y); if (!n) return null;
+  return { v: a.v - n.v, partial: a.partial || n.partial, from: a.from, to: a.to, fromYM: a.fromYM, toYM: a.toYM };
+}
+function yearsAll(){
+  const s = new Set();
+  IDX.forEach(ix => Object.keys(ix.closes).forEach(y => {
+    if (!fy) { s.add(+y); return; }
+    const arr = ix.closes[y];
+    for (let m = 1; m <= 12; m++) if (arr[m-1] != null) s.add(m <= 3 ? +y : +y + 1);
+  }));
+  return [...s].sort((a,b) => b-a);
+}
+function yearsOf(ix){
+  const s = new Set();
+  Object.keys(ix.closes).forEach(y => {
+    const arr = ix.closes[y];
+    for (let m = 1; m <= 12; m++) if (arr[m-1] != null) s.add(fy ? (m <= 3 ? +y : +y+1) : +y);
+  });
+  return [...s].sort((a,b) => b-a);
+}
+function asofYM(){ const p = FEED.asof.split('-'); return { y: +p[0], m: +p[1], d: +p[2] }; }
+function isMTD(y, m){ const a = asofYM(); return y === a.y && m === a.m; }
+function curYear(){ const a = asofYM(); return fy ? (a.m <= 3 ? a.y : a.y + 1) : a.y; }
+function yLbl(Y){ return fy ? 'FY' + String(Y).slice(2) : String(Y); }
+
+/* ---------- painting ---------- */
+function caps(){ return { m: alpha ? 6 : 8, a: alpha ? 25 : 35 }; }
+function cellHtml(v, cap, extra, tipAttrs){
+  if (v == null) return '<td class="text-slate-300 ' + (extra||'') + '">–</td>';
+  const a = Math.min(Math.abs(v)/cap, 1) * 0.72 + 0.05;
+  const ink = a > 0.55 ? ' inkw' : '';
+  const txt = Math.abs(v) >= 100 ? v.toFixed(0) : v.toFixed(1);
+  return '<td class="hv' + ink + ' ' + (extra||'') + '" style="background:rgba(' + (v >= 0 ? '16,185,129' : '244,63,94') + ',' + a.toFixed(3) + ')" ' + (tipAttrs||'') + '>' + txt + '</td>';
+}
+function fmtPct(v, dp){ return v == null ? '—' : (v > 0 ? '+' : '') + v.toFixed(dp == null ? 1 : dp) + '%'; }
+
+/* ---------- year view ---------- */
+function renderYear(){
+  const Y = selYear, slots = monthsFor(Y), cap = caps(), curY = curYear();
+  const showAlphaCol = !alpha;
+  const nCols = 14 + (showAlphaCol ? 1 : 0);
+  const annLbl = (Y === curY ? (fy ? 'FYTD' : 'YTD') : 'Annual');
+  let h1 = '<tr><th class="noclick" data-s="name">Index</th>';
+  slots.forEach((s, i) => {
+    h1 += '<th data-s="' + i + '">' + s.label + (isMTD(s.y, s.m) ? '<span class="chipmtd">MTD</span>' : '') + arrow(i) + '</th>';
+  });
+  h1 += '<th data-s="12" class="ann">' + annLbl + arrow(12) + '</th>';
+  if (showAlphaCol) h1 += '<th data-s="13" title="Annual return minus Nifty 50’s annual return">α vs N50' + arrow(13) + '</th>';
+  h1 += '</tr>';
+  const note = '<tr class="sub-note"><td colspan="' + nCols + '">% return · month-end close → month-end close · click an index for its full seasonality · click a column to sort · hover any cell for the actual levels</td></tr>';
+  $('tHead').innerHTML = h1 + note;
+  $('tHead').querySelectorAll('th[data-s]').forEach(th => th.onclick = () => clickSort(th.getAttribute('data-s')));
+
+  const rows = [];
+  IDX.forEach(ix => {
+    if (grp !== 'all' && ix.grp !== grp) return;
+    const vals = slots.map(s => retCell(ix, s.y, s.m));
+    if (vals.every(v => v == null)) return;
+    const ann = annualCell(ix, Y);
+    const alphaAnn = showAlphaCol ? (function(){ const a = annualRaw(ix, Y), n = annualRaw(N50, Y); return (a && n) ? a.v - n.v : null; })() : null;
+    rows.push({ ix: ix, vals: vals, ann: ann, alphaAnn: alphaAnn });
+  });
+  if (sortCol != null){
+    const key = r => sortCol === 12 ? (r.ann ? r.ann.v : null) : sortCol === 13 ? r.alphaAnn : r.vals[sortCol];
+    rows.sort((a, b) => {
+      const ka = key(a), kb = key(b);
+      if (ka == null && kb == null) return 0;
+      if (ka == null) return 1; if (kb == null) return -1;
+      return sortDir * (kb - ka);
+    });
+  }
+  let html = '', lastGrp = null;
+  rows.forEach(r => {
+    if (sortCol == null && r.ix.grp !== lastGrp){
+      lastGrp = r.ix.grp;
+      html += '<tr class="grp"><td colspan="' + nCols + '" class="g-' + r.ix.grp + '">' + GRP_LBL[r.ix.grp] + '</td></tr>';
+    }
+    html += '<tr><td><a class="ix" data-i="' + esc(r.ix.key) + '">' + esc(r.ix.label) + '</a></td>';
+    r.vals.forEach((v, i) => {
+      const s = slots[i];
+      html += cellHtml(v, cap.m, isMTD(s.y, s.m) ? 'mtd' : '', tipA(r.ix.key, s.y, s.m));
+    });
+    html += r.ann == null ? '<td class="ann text-slate-300">–</td>'
+      : cellHtml(r.ann.v, cap.a, 'ann', 'data-i="' + esc(r.ix.key) + '" data-ann="' + Y + '"').replace('>', '>' + (r.ann.partial ? '<span class="text-[9px] align-top">*</span>' : ''));
+    if (showAlphaCol) html += r.alphaAnn == null ? '<td class="text-slate-300">–</td>' : '<td class="hv ' + (r.alphaAnn >= 0 ? 'pos' : 'neg') + '">' + (r.alphaAnn > 0 ? '+' : '') + r.alphaAnn.toFixed(1) + '</td>';
+    html += '</tr>';
+  });
+  $('tBody').innerHTML = html;
+  $('tFoot').innerHTML = '';
+  $('tBody').querySelectorAll('a.ix').forEach(a => a.onclick = () => { selIdx = a.getAttribute('data-i'); setView('seas'); });
+
+  const withAnn = rows.filter(r => r.ann != null).map(r => ({ l: r.ix.label, v: r.ann.v })).sort((a,b) => b.v - a.v);
+  const med = withAnn.length ? withAnn[Math.floor(withAnn.length/2)].v : null;
+  const n50a = annualCell(N50, Y);
+  const t = yLbl(Y) + (Y === curY ? ' YTD' : '');
+  $('cards').innerHTML =
+      cardHtml('Best · ' + t, withAnn.length ? esc(withAnn[0].l) : '—', withAnn.length ? fmtPct(withAnn[0].v) : '', 'pos')
+    + cardHtml('Worst · ' + t, withAnn.length ? esc(withAnn[withAnn.length-1].l) : '—', withAnn.length ? fmtPct(withAnn[withAnn.length-1].v) : '', 'neg')
+    + cardHtml('Median index · ' + t, fmtPct(med), (alpha ? 'alpha vs Nifty 50' : 'across ' + withAnn.length + ' indices'), med != null && med >= 0 ? 'pos' : 'neg')
+    + cardHtml('Nifty 50 · ' + t, n50a ? fmtPct(n50a.v) : '—', alpha ? 'by definition 0 in alpha mode' : (n50a ? inr(n50a.from) + ' → ' + inr(n50a.to) : ''), n50a && n50a.v >= 0 ? 'pos' : 'neg');
+}
+function cardHtml(t, v, sub, cls){
+  return '<div class="card p-3"><div class="text-[10px] uppercase text-slate-500">' + t + '</div><div class="text-lg font-bold ' + (cls||'') + '">' + v + '</div><div class="text-[11px] text-slate-400">' + (sub||'') + '</div></div>';
+}
+function arrow(i){ return sortCol === (i === 'name' ? null : +i) ? (sortDir < 0 ? ' ▼' : ' ▲') : ''; }
+function clickSort(s){
+  if (s === 'name'){ sortCol = null; render(); return; }
+  const c = +s;
+  if (sortCol === c){ if (sortDir < 0) sortDir = 1; else { sortCol = null; sortDir = -1; } }
+  else { sortCol = c; sortDir = -1; }
+  render();
+}
+
+/* ---------- seasonality view ---------- */
+function renderSeas(){
+  const ix = BY[selIdx], cap = caps(), curY = curYear();
+  const years = yearsOf(ix);
+  const colL = fy ? MONC.slice(3).concat(MONC.slice(0,3)) : MONC;
+  let h1 = '<tr><th class="noclick">Year</th>';
+  colL.forEach(l => h1 += '<th class="noclick">' + l + '</th>');
+  h1 += '<th class="ann noclick">Annual</th></tr>';
+  $('tHead').innerHTML = h1 + '<tr class="sub-note"><td colspan="14">% return per month · ' + (fy ? 'FY rows run Apr → Mar' : 'calendar years') + ' · footer = the month’s average return and how often it closed positive · hover for levels</td></tr>';
+
+  let html = '';
+  years.forEach(Y => {
+    const slots = monthsFor(Y);
+    const ann = annualCell(ix, Y);
+    html += '<tr><td class="font-bold">' + yLbl(Y) + (Y === curY ? '<span class="chipmtd">live</span>' : '') + '</td>';
+    slots.forEach(s => html += cellHtml(retCell(ix, s.y, s.m), cap.m, isMTD(s.y, s.m) ? 'mtd' : '', tipA(ix.key, s.y, s.m)));
+    html += ann == null ? '<td class="ann text-slate-300">–</td>'
+      : cellHtml(ann.v, cap.a, 'ann', 'data-i="' + esc(ix.key) + '" data-ann="' + Y + '"').replace('>', '>' + (ann.partial ? '<span class="text-[9px] align-top">*</span>' : ''));
+    html += '</tr>';
+  });
+  $('tBody').innerHTML = html;
+
+  // footer seasonality stats per column (current MTD month excluded from stats)
+  const stats = colL.map((_, i) => {
+    const vs = [];
+    years.forEach(Y => {
+      const s = monthsFor(Y)[i];
+      if (isMTD(s.y, s.m)) return;
+      const v = retCell(ix, s.y, s.m);
+      if (v != null) vs.push(v);
+    });
+    if (!vs.length) return null;
+    const avg = vs.reduce((a,b) => a+b, 0) / vs.length;
+    const hit = vs.filter(v => v > 0).length / vs.length * 100;
+    return { avg: avg, hit: hit, best: Math.max.apply(null, vs), worst: Math.min.apply(null, vs), n: vs.length };
+  });
+  const frow = (lbl, f, cls) => '<tr><td>' + lbl + '</td>' + stats.map(s => s ? '<td class="' + (cls ? cls(s) : '') + '">' + f(s) + '</td>' : '<td>–</td>').join('') + '<td class="ann"></td></tr>';
+  $('tFoot').innerHTML =
+      frow('Avg %', s => (s.avg > 0 ? '+' : '') + s.avg.toFixed(1), s => s.avg >= 0 ? 'pos' : 'neg')
+    + frow('Hit rate', s => s.hit.toFixed(0) + '%', s => s.hit >= 60 ? 'pos' : s.hit <= 40 ? 'neg' : '')
+    + frow('Best', s => '+' + s.best.toFixed(1), () => 'pos')
+    + frow('Worst', s => s.worst.toFixed(1), () => 'neg');
+
+  // header stat line + cards
+  let f0 = null, l1 = null;
+  Object.keys(ix.closes).sort().forEach(y => { for (let m = 1; m <= 12; m++){ const c = ix.closes[y][m-1]; if (c != null){ if (!f0) f0 = { y:+y, m:m, c:c }; l1 = { y:+y, m:m, c:c }; } } });
+  const yrs = (l1.y*12 + l1.m - f0.y*12 - f0.m) / 12;
+  const cagr = yrs > 1 ? (Math.pow(l1.c/f0.c, 1/yrs) - 1) * 100 : null;
+  const annAll = years.map(Y => ({ Y: Y, a: annualRaw(ix, Y) })).filter(x => x.a && !x.a.partial && x.Y !== curY);
+  const bestY = annAll.slice().sort((a,b) => b.a.v - a.a.v)[0], worstY = annAll.slice().sort((a,b) => a.a.v - b.a.v)[0];
+  let posM = 0, totM = 0;
+  years.forEach(Y => monthsFor(Y).forEach(s => { if (isMTD(s.y, s.m)) return; const v = ret(ix, s.y, s.m); if (v != null){ totM++; if (v > 0) posM++; } }));
+  $('seasLine').innerHTML = '<b>' + esc(ix.label) + '</b> · data since ' + MONC[f0.m-1] + ' ' + f0.y + ' (' + inr(f0.c) + ') · now ' + inr(l1.c) + (alpha ? ' · <b>showing alpha vs Nifty 50</b>' : '');
+  $('seasLine').classList.remove('hidden');
+  $('cards').innerHTML =
+      cardHtml('CAGR since ' + f0.y, cagr == null ? '—' : fmtPct(cagr), inr(f0.c) + ' → ' + inr(l1.c), cagr >= 0 ? 'pos' : 'neg')
+    + cardHtml('Best year', bestY ? yLbl(bestY.Y) : '—', bestY ? fmtPct(bestY.a.v) : '', 'pos')
+    + cardHtml('Worst year', worstY ? yLbl(worstY.Y) : '—', worstY ? fmtPct(worstY.a.v) : '', 'neg')
+    + cardHtml('Positive months', totM ? Math.round(posM/totM*100) + '%' : '—', posM + ' of ' + totM + ' months closed up', '');
+}
+
+/* ---------- tooltip ---------- */
+function tipA(key, y, m){ return 'data-i="' + esc(key) + '" data-y="' + y + '" data-m="' + m + '"'; }
+function tipHtml(td){
+  const ix = BY[td.getAttribute('data-i')]; if (!ix) return null;
+  if (td.hasAttribute('data-ann')){
+    const Y = +td.getAttribute('data-ann'), a = annualRaw(ix, Y);
+    if (!a) return null;
+    let s = '<b>' + esc(ix.label) + '</b> · ' + yLbl(Y) + (Y === curYear() ? ' (year in progress)' : '') + (a.partial ? ' · from first data' : '') +
+            '<br>' + fmtPct(a.v) + ' · ' + inr(a.from) + ' → ' + inr(a.to);
+    if (alpha){ const n = annualRaw(N50, Y); if (n) s += '<br>Nifty 50: ' + fmtPct(n.v) + ' · α ' + fmtPct(a.v - n.v); }
+    return s;
+  }
+  const y = +td.getAttribute('data-y'), m = +td.getAttribute('data-m');
+  const r = ret(ix, y, m); if (r == null) return null;
+  const p = prevYM(y, m);
+  let s = '<b>' + esc(ix.label) + '</b> · ' + MONC[m-1] + ' ' + y + (isMTD(y, m) ? ' (MTD · till ' + asofYM().d + ' ' + MONC[m-1] + ')' : '') +
+          '<br>' + fmtPct(r) + ' · ' + inr(cl(ix, p[0], p[1])) + ' → ' + inr(cl(ix, y, m));
+  if (alpha){ const n = ret(N50, y, m); if (n != null) s += '<br>Nifty 50: ' + fmtPct(n) + ' · α ' + fmtPct(r - n); }
+  return s;
+}
+function wireTip(){
+  const tip = $('tip');
+  document.addEventListener('mouseover', e => {
+    const td = e.target.closest ? e.target.closest('td[data-i]') : null;
+    if (!td){ tip.style.display = 'none'; return; }
+    const h = tipHtml(td);
+    if (!h){ tip.style.display = 'none'; return; }
+    tip.innerHTML = h; tip.style.display = 'block';
+    const r = td.getBoundingClientRect(), w = tip.offsetWidth || 240;
+    let x = r.left + r.width/2 - w/2;
+    x = Math.max(8, Math.min(x, window.innerWidth - w - 8));
+    let ty = r.top - tip.offsetHeight - 8;
+    if (ty < 60) ty = r.bottom + 8;
+    tip.style.left = x + 'px'; tip.style.top = ty + 'px';
+  });
+  document.addEventListener('scroll', () => { tip.style.display = 'none'; }, true);
+}
+
+/* ---------- controls / state ---------- */
+function populateYearSel(){
+  const ys = yearsAll(), sel = $('selYear');
+  sel.innerHTML = ys.map(y => '<option value="' + y + '">' + yLbl(y) + '</option>').join('');
+  if (selYear == null || ys.indexOf(selYear) < 0) selYear = ys[0];
+  sel.value = selYear;
+}
+function populateIdxSel(){
+  const groups = ['broad','sector','theme'];
+  $('selIdx').innerHTML = groups.map(g =>
+    '<optgroup label="' + GRP_LBL[g] + '">' +
+    IDX.filter(ix => ix.grp === g).map(ix => '<option value="' + esc(ix.key) + '">' + esc(ix.label) + '</option>').join('') +
+    '</optgroup>').join('');
+  $('selIdx').value = selIdx;
+}
+function setView(v){
+  view = v; sortCol = null; sortDir = -1;
+  $('vYear').classList.toggle('on', v === 'year');
+  $('vSeas').classList.toggle('on', v === 'seas');
+  $('selIdx').classList.toggle('hidden', v !== 'seas');
+  $('selYear').classList.toggle('hidden', v !== 'year');
+  $('grpChips').classList.toggle('hidden', v !== 'seas' ? false : true);
+  $('seasLine').classList.toggle('hidden', v !== 'seas');
+  render();
+}
+function render(){
+  const cap = caps();
+  $('lgL').textContent = '−' + cap.m + '%'; $('lgR').textContent = '+' + cap.m + '%';
+  if (view === 'year') renderYear(); else renderSeas();
+  try { location.hash = view === 'seas' ? 'i=' + encodeURIComponent(selIdx) + (fy ? '&fy=1' : '') + (alpha ? '&a=1' : '')
+                                        : 'y=' + selYear + (fy ? '&fy=1' : '') + (alpha ? '&a=1' : '') + (grp !== 'all' ? '&g=' + grp : ''); } catch (e) {}
+}
+
+async function load(){
+  try { FEED = await (await fetch('./index_monthly.json?t=' + Date.now())).json(); }
+  catch (e){ $('status').textContent = 'Could not load index_monthly.json.'; return; }
+  IDX = FEED.indices; IDX.forEach(ix => BY[ix.key] = ix); N50 = BY['NIFTY 50'];
+  const a = asofYM();
+  $('updated').textContent = '· data till ' + a.d + ' ' + MONC[a.m-1] + ' ' + a.y + ' · current month updates every trading evening.';
+
+  try {                                                    // restore state from URL hash
+    const h = new URLSearchParams(location.hash.replace(/^#/, ''));
+    if (h.get('fy') === '1') fy = true;
+    if (h.get('a') === '1') alpha = true;
+    if (h.get('g')) grp = h.get('g');
+    if (h.get('y')) selYear = +h.get('y');
+    if (h.get('i') && BY[h.get('i')]){ selIdx = h.get('i'); view = 'seas'; }
+  } catch (e) {}
+  $('tFY').classList.toggle('on', fy); $('tCY').classList.toggle('on', !fy);
+  $('tAlpha').classList.toggle('on', alpha);
+  document.querySelectorAll('.gch').forEach(c => c.classList.toggle('on', c.getAttribute('data-g') === grp));
+
+  populateYearSel(); populateIdxSel();
+  $('status').classList.add('hidden'); $('content').classList.remove('hidden');
+
+  $('vYear').onclick = () => setView('year');
+  $('vSeas').onclick = () => setView('seas');
+  $('selYear').onchange = () => { selYear = +$('selYear').value; sortCol = null; render(); };
+  $('selIdx').onchange = () => { selIdx = $('selIdx').value; render(); };
+  $('tCY').onclick = () => { if (!fy) return; fy = false; flipFY(); };
+  $('tFY').onclick = () => { if (fy) return; fy = true; flipFY(); };
+  $('tAlpha').onclick = () => { alpha = !alpha; $('tAlpha').classList.toggle('on', alpha); render(); };
+  document.querySelectorAll('.gch').forEach(c => c.onclick = () => {
+    grp = c.getAttribute('data-g');
+    document.querySelectorAll('.gch').forEach(x => x.classList.toggle('on', x === c));
+    sortCol = null; render();
+  });
+  wireTip();
+  setView(view);
+}
+function flipFY(){
+  $('tCY').classList.toggle('on', !fy); $('tFY').classList.toggle('on', fy);
+  selYear = null; populateYearSel(); sortCol = null; render();
+}
+load();
+</script>
+</body>
+</html>

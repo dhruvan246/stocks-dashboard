@@ -145,6 +145,7 @@
       ['./shareholding.html',      '🏛️', 'FII/DII Holdings'],
       ['./bank-credit.html',       '🏦', 'Banking Growth'],
       ['./market-mood.html',       '🌡️', 'Market Mood'],
+      ['./monthly-returns.html',   '🗓️', 'Monthly Returns'],
       ['./results-season.html',    '📊', 'Results Season'],
       ['./discovery.html',         '💸', 'Smart Money Picks'],
       ['./deals.html',             '🐋', 'Bulk/Block Deals'],
