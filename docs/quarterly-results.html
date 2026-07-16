@@ -198,7 +198,7 @@
           <button id="bCsv" class="ml-auto px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition">⬇ Export CSV</button>
         </div>
       </div>
-      <p class="text-[11px] text-slate-500 mt-2">₹ crore · YoY/QoQ computed on the same reporting basis both periods (consolidated preferred) · <b>LP</b> = loss→profit, <b>PL</b> = profit→loss, <b>LL</b> = still loss-making · banks/NBFCs show total income &amp; PAT only.</p>
+      <p class="text-[11px] text-slate-500 mt-2">₹ crore · YoY/QoQ computed on the same reporting basis both periods (consolidated preferred) · when the year-ago quarter was a <b>loss</b>, growth is measured against its absolute value (so a turnaround reads positive, e.g. BHEL −455 → +377 = +182.7%) · <b>LP</b> = loss→profit, <b>PL</b> = profit→loss, <b>LL</b> = still loss-making (an <b>LL</b> counts as profit-<i>down</i> however small its loss got) · banks/NBFCs show total income &amp; PAT only.</p>
     </section>
 
     <!-- ============ FEED ============ -->
@@ -315,11 +315,21 @@ function growth(qarr, qi, metric, lag){           // same-basis growth; returns 
     const cv=cur[ix[b]], bv=base[ix[b]];
     if(cv==null||bv==null) continue;
     if(bv>0)  return {pct:(cv/bv-1)*100, cur:cv, base:bv};
-    if(bv<0)  return {pct:null, flag: cv>=0?'LP':'LL', cur:cv, base:bv};
-    return null;
+    // NEGATIVE base (22% of all PAT YoY cells — not an edge case): divide by |base|, so a
+    // loss→profit swing reads POSITIVE. Same rule as Trendlyne, profitAt() in stock-backtest.html /
+    // backtest-engine.js, and build_results_season/build_discovery — BHEL Q1FY27 = +182.7%, MRPL
+    // = +449.4%, both exactly TL's printed figures. NEVER divide straight through: that sign-flips
+    // a turnaround to -182.7%. The LP/LL/PL flag rides ALONGSIDE the number (it says something the
+    // % can't — that the base was a loss), and the counts/filters keep keying off it.
+    if(bv<0)  return {pct:(cv-bv)/Math.abs(bv)*100, flag: cv>=0?'LP':'LL', cur:cv, base:bv};
+    return null;   // base == 0 -> ÷0
   }
   return null;
 }
+// "Profit up" = grew from a profitable base, OR turned a loss into a profit (LP). A SHRINKING LOSS
+// (LL) now computes a POSITIVE % against |base| — but it is not profit growth, so it must stay out of
+// the up-counts/filters/streaks, where it would otherwise be counted as BOTH up and down.
+function isUp(pct, flag){ return flag==='LP' || (pct!=null && pct>0 && !flag); }
 function patFlag(g){                              // profit→loss detection needs cur sign too
   if(!g) return null;
   if(g.flag) return g.flag;
@@ -357,7 +367,7 @@ function recsFor(qi){
       for(let k=0;k<c.q.length;k++){ if(k===qi) continue; const [p]=pick(c.q[k],'pat'); if(p!=null&&p>=pat){rec=false;break;} } }
     // 4-quarter YoY growth streak
     let streak=true;
-    for(let k=0;k<4;k++){ const g=growth(c.q,qi+k,'pat',4); if(!(g&&((g.pct!=null&&g.pct>0)||g.flag==='LP'))){streak=false;break;} }
+    for(let k=0;k<4;k++){ const g=growth(c.q,qi+k,'pat',4); if(!(g&&isUp(g.pct,g.flag))){streak=false;break;} }
     const pf=patFlag(gy);
     // verdict score (YoY, fundamentals only)
     let score=0, scoreable=false;
@@ -437,8 +447,8 @@ function renderOverview(){
   const pats=rows.map(r=>r[gKey]).filter(v=>v!=null);
   const revs=rows.map(r=>r[rKey]).filter(v=>v!=null);
   const rxs=rows.map(r=>r.rx).filter(v=>v!=null);
-  const pUp=rows.filter(r=>(r[gKey]!=null&&r[gKey]>0)||r[fKey]==='LP').length;
-  const pDn=rows.filter(r=>(r[gKey]!=null&&r[gKey]<0)||r[fKey]==='PL'||r[fKey]==='LL').length;
+  const pUp=rows.filter(r=>isUp(r[gKey],r[fKey])).length;
+  const pDn=rows.filter(r=>(r[gKey]!=null&&r[gKey]<0&&!r[fKey])||r[fKey]==='PL'||r[fKey]==='LL').length;
   const rUp=revs.filter(v=>v>0).length, rDn=revs.filter(v=>v<0).length;
   const lp=rows.filter(r=>r[fKey]==='LP').length;
   // "Declared" = companies with parsed numbers + those we've SEEN FILE (in the feed) but whose numbers
@@ -496,7 +506,7 @@ function renderOverview(){
   prev.forEach(r=>{ prevBy[r.c.s]=(prevBy[r.c.s]||0)+1; });
   const secs=Object.keys(by).map(s=>{
     const rr=by[s];
-    const pu=rr.filter(r=>(r[gKey]!=null&&r[gKey]>0)||r[fKey]==='LP').length;
+    const pu=rr.filter(r=>isUp(r[gKey],r[fKey])).length;
     const pn=rr.filter(r=>r[gKey]!=null||r[fKey]).length;
     return { s, n:rr.length, exp:Math.max(prevBy[s]||0, rr.length),
       mr:median(rr.map(r=>r[rKey]).filter(v=>v!=null)),
@@ -533,7 +543,7 @@ function renderOverview(){
       (arr.length? arr.map(([r,v])=>'<div class="mrow" data-open="'+esc(r.sym)+'"><span class="min-w-0"><b>'+esc(r.sym)+'</b> <span class="text-slate-400 text-[10.5px] hidden sm:inline">'+esc(r.c.n.slice(0,26))+'</span></span><b class="'+pctCls(v)+'">'+fmt(v)+'</b></div>').join('')
        : '<div class="text-slate-400 text-xs py-3 text-center">—</div>')+'</div>';
   };
-  const base=rows.filter(r=>r[gKey]!=null && Math.abs(r.pat||0)>=1 && (r.c.m||0)>=100);
+  const base=rows.filter(r=>r[gKey]!=null && !r[fKey] && Math.abs(r.pat||0)>=1 && (r.c.m||0)>=100);
   const grow=base.filter(r=>r[gKey]>0).sort((a,b)=>b[gKey]-a[gKey]).slice(0,10).map(r=>[r,r[gKey]]);
   const fall=base.filter(r=>r[gKey]<0).sort((a,b)=>a[gKey]-b[gKey]).slice(0,10).map(r=>[r,r[gKey]]);
   const rxr=rows.filter(r=>r.rx!=null);
@@ -557,7 +567,7 @@ const SCREENS=[
 function screenPass(r){
   const gKey=ST.mode==='yoy'?'py':'pq', fKey=ST.mode==='yoy'?'pfY':'pfQ';
   switch(ST.screen){
-    case 'grow': return (r[gKey]!=null&&r[gKey]>0)||r[fKey]==='LP';
+    case 'grow': return isUp(r[gKey],r[fKey]);
     case 'rocket': return r[gKey]!=null&&r[gKey]>20&&r[ST.mode==='yoy'?'ry':'rq']!=null&&r[ST.mode==='yoy'?'ry':'rq']>20;
     case 'turn': return r[fKey]==='LP';
     case 'slump': return r[fKey]==='PL';
@@ -591,8 +601,13 @@ function vdot(r){
   return '<span class="vdot" style="background:'+c+'" title="'+t+' quarter (rule-based: PAT/revenue growth + margin change)"></span>';
 }
 function gcell(pct,flag,dp){
-  if(flag) return '<span class="'+(flag==='LP'?'pos':'neg')+' font-extrabold text-[11px]" title="'+(flag==='LP'?'Loss → Profit':flag==='PL'?'Profit → Loss':'Loss both periods')+'">'+flag+'</span>';
-  return '<span class="font-bold '+pctCls(pct)+'">'+fmtPct(pct)+'</span>';
+  // Show the % AND the flag: the number is the Trendlyne-comparable growth, the flag says the base
+  // was a loss (which the % alone can't convey — +182.7% off -455cr is a turnaround, not a beat).
+  const tag = flag ? ' <span class="'+(flag==='LP'?'pos':'neg')+' font-extrabold text-[10px]" title="'
+      +(flag==='LP'?'Loss → Profit (year-ago quarter was a loss; growth vs |base|)'
+        :flag==='PL'?'Profit → Loss':'Loss both periods (growth vs |base|)')+'">'+flag+'</span>' : '';
+  if(pct==null) return tag || '<span class="font-bold '+pctCls(pct)+'">'+fmtPct(pct)+'</span>';
+  return '<span class="font-bold '+pctCls(flag==='LP'?1:flag==='LL'||flag==='PL'?-1:pct)+'">'+fmtPct(pct)+'</span>'+tag;
 }
 function renderResults(){
   $('screenChips').innerHTML=SCREENS.map(([k,l])=>'<button class="chip'+(ST.screen===k?' on':'')+'" data-sc="'+k+'">'+l+'</button>').join('');

@@ -171,9 +171,15 @@ def build_results_buckets():
             if not cur or not ago: continue
             pat, patA = pick(cur, 5, 4), pick(ago, 5, 4)
             rev, revA = pick(cur, 1, 0), pick(ago, 1, 0)
-            if pat is None or patA is None or patA <= 0: continue
-            patY = (pat / patA - 1) * 100
-            revY = (rev / revA - 1) * 100 if (rev and revA and revA > 0) else None
+            # NEGATIVE year-ago base is NOT an edge case — 22% of all PAT YoY cells. Use Trendlyne's
+            # (and our backtest's) rule: (cur - base)/ABS(base), so a LOSS->PROFIT turnaround reads
+            # POSITIVE and lands in Excellent Results instead of being skipped. The old `patA <= 0:
+            # continue` dropped every one of them from the bucket they most belong in (BHEL Q1FY27:
+            # -455.5 -> +376.71 = +182.7%, exactly TL's figure). Dividing straight through would
+            # SIGN-FLIP it to -182.7% and file it under Weak — never do that. base == 0 skipped (÷0).
+            if pat is None or patA is None or patA == 0: continue
+            patY = (pat - patA) / abs(patA) * 100
+            revY = (rev - revA) / abs(revA) * 100 if (rev is not None and revA) else None
             if pat >= RES_MIN_PAT and patY >= 25 and (revY is None or revY >= 10) and (revY is not None or patY >= 40):
                 rows.append([sym, nameof(sym), round(pat, 1), round(patA, 1), round(patY, 1), round(revY, 1) if revY is not None else None])
             elif patY <= -30 or pat < 0:
@@ -181,7 +187,7 @@ def build_results_buckets():
         rows.sort(key=lambda x: -x[4])
         if len(rows) >= 5:
             buckets.append({"k": "res%d" % qe, "t": "Excellent Results (%s)" % qlabel(qe),
-                            "d": "PAT up ≥25% YoY (with revenue support), computed from filings — not hand-picked.",
+                            "d": "PAT up ≥25% YoY (with revenue support), incl. loss→profit turnarounds — computed from filings, not hand-picked.",
                             "type": "res", "n": len(rows), "rows": rows})
         weak_by_qe[qe] = weak
     # Weak Results: attach to the newest quarter with real coverage (early in a season the
@@ -192,7 +198,7 @@ def build_results_buckets():
             weak.sort(key=lambda x: x[4])
             buckets.insert(1 if buckets else 0,
                            {"k": "weak%d" % qe, "t": "Weak Results (%s)" % qlabel(qe),
-                            "d": "PAT down ≥30% YoY or in loss against a profitable base quarter.",
+                            "d": "PAT down ≥30% YoY, or loss-making this quarter.",
                             "type": "res", "n": len(weak), "rows": weak})
             break
     return buckets
