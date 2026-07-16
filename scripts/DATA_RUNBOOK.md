@@ -1078,6 +1078,20 @@ pages cross-link.
   implies no feed/meta rebuild) then **`python scripts/_shp_merge_stage.py`** once the other writer exits
   (fill-only + newer-submission-wins + shrink-ABORT). CI is safe (workflow `concurrency` group).
 
+### 22d. FII/DII FACTORS IN THE STRATEGY BUILDER  (added 2026-07-16)
+**`fiiPct` / `fiiChgPp` / `diiPct` / `diiChgPp`** are sort+filter factors in BOTH engines
+(stock-backtest.html self-contained + backtest-engine.js shared — the §"engines-sync" checklist was
+followed: FIELDS + SHP_FIELDS/needsShp + factorsAt block + loadShp in run()/loadEngineData/both bake
+paths + SORTL labels in saved-strategies.html). Data = **`docs/shp_engine.json`**
+(`{SYM:[[qeInt,fii,dii,subInt],…]}`, ALL quarters, built by fetch_shareholding.build_engine_feed,
+committed by refresh-shareholding.yml, ~1.6 MB raw, lazy-loaded only when an SHP factor is used).
+Point-in-time semantics in `shpAt()`: latest quarter with **subInt ≤ as-of date**; QoQ change only vs
+the CALENDAR-previous quarter whose own sub ≤ date (gaps/late-filers → null), and **never across the
+Sep-2022 format boundary** (cur qe 20220930 → change null; §22b). Renamed tickers: loadShp merges the
+old-name filings into the current key via FUND_ALIAS (filings were made under the name of the day).
+History starts Sep-2019 → fii/diiChgPp usable from ~Dec-2019 rebalances; before that the factor is
+null and stocks drop out of SHP-sorted screens (correct, not a bug).
+
 ### 22c. FII/DII ACCUMULATION BACKTEST  (CHAT-DRIVEN — the on-page section was REMOVED)
 **⚠️ 2026-07-16: the user removed the backtest UI from shareholding.html ("I'll perform backtest in
 chat") — do NOT re-add the section.** What remains: `scripts/build_shp_backtest.py` (kept, run on

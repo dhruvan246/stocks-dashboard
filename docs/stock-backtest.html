@@ -109,6 +109,10 @@ const FIELDS=[
   {v:'hist_mcap',l:'Historical Mcap (₹Cr, approx)'},
   {v:'profitYoyPct',l:'Net Profit Qtr Growth YoY % (point-in-time earnings)'},
   {v:'profitBase',l:'Net Profit Yr-ago Qtr ₹Cr (YoY base)'},
+  {v:'fiiPct',l:'FII holding % (latest filed quarter)'},
+  {v:'fiiChgPp',l:'FII holding change QoQ (percentage points)'},
+  {v:'diiPct',l:'DII holding % (latest filed quarter)'},
+  {v:'diiChgPp',l:'DII holding change QoQ (percentage points)'},
   {v:'ret1m',l:'Return — 1 month %'},
   {v:'ret3m',l:'Return — 3 month %'},
   {v:'ret6m',l:'Return — 6 month %'},
@@ -434,6 +438,19 @@ async function loadFund(){
   try{ FUND=await (await fetch('./sf_fundamentals.json')).json(); console.log('fundamentals:', Object.keys(FUND).length, 'symbols'); }
   catch(e){ console.warn('no fundamentals data', e); FUND={}; }
 }
+// shareholding pattern (FII/DII %) — loaded lazily, only when an SHP factor is used
+async function loadShp(){
+  if(Object.keys(SHPD).length) return;
+  try{ SHPD=await (await fetch('./shp_engine.json')).json(); console.log('shareholding:', Object.keys(SHPD).length, 'symbols'); }
+  catch(e){ console.warn('no shareholding data', e); SHPD={}; return; }
+  // merge renamed tickers' eras under the CURRENT key (filings were made under the old name then)
+  for(const old in FUND_ALIAS){
+    if(!SHPD[old]) continue;
+    const nw=FUND_ALIAS[old], by={};
+    (SHPD[nw]||[]).concat(SHPD[old]).forEach(q=>{ if(!by[q[0]]||q[3]>by[q[0]][3]) by[q[0]]=q; });
+    SHPD[nw]=Object.values(by).sort((a,b)=>a[0]-b[0]);
+  }
+}
 // ---- the engine ----
 let LAST_RUN=null;
 // Lazily load the heavy market data (only when a real Run is actually requested). A direct visit shows
@@ -469,6 +486,8 @@ async function run(){
   }
   if(needsFund(cfg)){ $('runMsg').textContent='Loading earnings data…'; await loadFund();
     if(!Object.keys(FUND).length){ $('runMsg').textContent='Earnings data not available yet — try a non-fundamental factor.'; return; } }
+  if(needsShp(cfg)){ $('runMsg').textContent='Loading shareholding data…'; await loadShp();
+    if(!Object.keys(SHPD).length){ $('runMsg').textContent='Shareholding data not available yet — try another factor.'; return; } }
   $('runMsg').textContent='Running…';
   setTimeout(()=>{ try{ const res=simulate(cfg); LAST_RUN={cfg,res}; render(res,cfg); $('runMsg').textContent=''; saveSnapshot(cfg,res); autoSaveHistory().then(autoSaveStrategy); }
     catch(e){ $('runMsg').textContent='Error: '+e.message; console.error(e); } }, 30);
@@ -603,6 +622,27 @@ function dateIntOff(off){ return parseInt(isoOff(off).replace(/-/g,''),10); }
 // old-name era and drop out of profit screens. Keep in sync with backtest-engine.js. Src: _rename_map.json.
 const FUND_ALIAS = {"ADANITRANS":"ADANIENSOL","AEGISCHEM":"AEGISLOG","AKZOINDIA":"JSWDULUX","ALSTOMT&D":"GVT&D","AMARAJABAT":"ARE&M","BAJAJCORP":"BAJAJCON","BHUSANSTL":"TATASTLBSL","CADILAHC":"ZYDUSLIFE","CENTURYTEX":"ABREL","CLNINDIA":"SUDARCOLOR","CROMPGREAV":"CGPOWER","ESSELPACK":"EPL","FCEL":"FCONSUMER","FINANTECH":"63MOONS","FRL":"FEL","GATI":"ACLGATI","GEPIL":"GVPIL","GET&D":"GVT&D","GLS":"ALIVUS","GMRINFRA":"GMRAIRPORT","GUJFLUORO":"GFLLIMITED","HOTELEELA":"HLVLTD","HSIL":"AGI","IBREALEST":"EMBDL","IBULHSGFIN":"SAMMAANCAP","IBULISL":"IBULLSLTD","IDFCBANK":"IDFCFIRSTB","IIFLWAM":"360ONE","INEOSSTYRO":"STYRENIX","INFIBEAM":"CCAVENUE","INFRATEL":"INDUSTOWER","IPAPPM":"ANDHRAPAP","ITDCEM":"CEMPRO","JCHAC":"BOSCH-HCIL","JUBILANT":"JUBLPHARMA","KALPATPOWR":"KPIL","KPIT":"BSOFT","KSBPUMPS":"KSB","L&TFH":"LTF","LAXMIMACH":"LMW","LTI":"LTM","LTIM":"LTM","MAGMA":"POONAWALLA","MAHINDCIE":"CIEINDIA","MAX":"MFSL","MCDOWELL-N":"UNITDSPR","MINDAIND":"UNOMINDA","MOTHERSUMI":"MOTHERSON","NBVENTURES":"NAVA","NIITTECH":"COFORGE","PIPAVAVDOC":"RNAVAL","PRISMCEM":"PRSMJOHNSN","PVR":"PVRINOX","RDEL":"RNAVAL","SEINV":"PAISALO","SEQUENT":"VIYASH","SKSMICRO":"BHARATFIN","SMLISUZU":"SMLMAH","SRTRANSFIN":"SHRIRAMFIN","SSLT":"VEDL","STRTECH":"STLTECH","SUNCLAYLTD":"TVSHLTD","SUVENPHAR":"COHANCE","SWANENERGY":"SWANCORP","TATAGLOBAL":"TATACONSUM","TATAMOTORS":"TMPV","TATASPONGE":"TATASTLLP","TIDEWATER":"VEEDOL","WABCOINDIA":"ZFCVINDIA","WELSPUNIND":"WELSPUNLIV","ZOMATO":"ETERNAL"};
 function fundFor(sym){ return FUND[sym] || (FUND_ALIAS[sym] ? FUND[FUND_ALIAS[sym]] : null) || null; }
+// ---- Shareholding pattern: point-in-time FII/DII holding % (quarterly SHP filings) ----
+// SHPD = { SYM: [ [qEndYYYYMMDD, fii%, dii%, subYYYYMMDD], ... sorted by qEnd ] } — a quarter is
+// only visible from its ACTUAL filing date (no look-ahead). Keep in sync with backtest-engine.js.
+let SHPD={};
+const SHP_FIELDS=new Set(['fiiPct','fiiChgPp','diiPct','diiChgPp']);
+function needsShp(cfg){ return SHP_FIELDS.has(cfg.sortBy) || (cfg.filters||[]).some(f=>SHP_FIELDS.has(f.field)); }
+function prevQeInt(qe){ let y=Math.floor(qe/10000), m=Math.floor(qe/100)%100-3; if(m<=0){y--;m+=12;} return y*10000+m*100+{3:31,6:30,9:30,12:31}[m]; }
+function shpAt(sym, dateInt){
+  const arr=SHPD[sym] || (FUND_ALIAS[sym] ? SHPD[FUND_ALIAS[sym]] : null); if(!arr||!arr.length) return null;
+  let ci=-1; for(let i=arr.length-1;i>=0;i--){ if(arr[i][3]<=dateInt){ ci=i; break; } }
+  if(ci<0) return null;
+  const cur=arr[ci];
+  // QoQ change vs the CALENDAR-previous quarter only (gaps break it), and NEVER across the
+  // Sep-2022 SEBI format change (DR blocks were reclassified into FII/DII — not a stake change).
+  let dfii=null, ddii=null;
+  if(cur[0]!==20220930){
+    const pq=prevQeInt(cur[0]);
+    for(let i=ci-1;i>=0;i--){ const q=arr[i]; if(q[0]===pq){ if(q[3]<=dateInt){ dfii=+(cur[1]-q[1]).toFixed(2); ddii=+(cur[2]-q[2]).toFixed(2); } break; } if(q[0]<pq) break; }
+  }
+  return {fii:cur[1], dii:cur[2], dfii, ddii};
+}
 // As-of `dateInt`, return {cur, base, yoy} for the latest quarter whose result was ANNOUNCED by then,
 // vs the same quarter a year earlier. basis 'con' falls back to 'std' (cos w/o subsidiaries file only standalone).
 function profitAt(sym, dateInt, basis){
@@ -652,6 +692,7 @@ function factorsAt(off, cfg){
   const members = cfg.indexName ? membersAsOf(cfg.indexName, isoOff(off)) : null;
   const useTech=needsTech(cfg);
   const useFund=needsFund(cfg); const fundDate=useFund?dateIntOff(off):0; const basis=cfg.earnBasis||'con';
+  const useShp=needsShp(cfg); const shpDate=useShp?dateIntOff(off):0;
   const rows=[];
   for(const tkr in SERIES){
     const m=META[tkr]; if(!m) continue;
@@ -676,6 +717,9 @@ function factorsAt(off, cfg){
       r.profitYoyPct=pf?pf.yoy:null; r.profitBase=pf?pf.base:null;
       r.profitAccel=pf?pf.accel:null; r.profitTTM=pf?pf.ttm:null; r.profitStreak=pf?pf.streak:null;
       if(pf&&pf.resultDate){ const ds=''+pf.resultDate, ro=dayOff(ds.slice(0,4)+'-'+ds.slice(4,6)+'-'+ds.slice(6,8)); const pr=priceAt(tkr,ro); r.postDrift=(pr!=null&&pr>0)?(price/pr-1)*100:null; } else r.postDrift=null; }
+    if(useShp){ const sh=shpAt(m.symbol, shpDate);
+      r.fiiPct=sh?sh.fii:null; r.fiiChgPp=sh?sh.dfii:null;
+      r.diiPct=sh?sh.dii:null; r.diiChgPp=sh?sh.ddii:null; }
     rows.push(r);
   }
   // industry momentum rank (deciles by avg chg)
@@ -1129,6 +1173,7 @@ async function bakeAll(){
     const clamp=d=>d<SF.start?SF.start:(d>SF.end?SF.end:d);
     log(`<div class="card p-4">Found ${jobs.length} backtests across ${ids.size} strategies. Loading earnings data…</div>`);
     if(jobs.some(([k,c])=>needsFund(c))) await loadFund();
+    if(jobs.some(([k,c])=>needsShp(c))) await loadShp();
     let done=0,ok=0,skip=0,fail=0; const t0=Date.now();
     for(const [wk,cfg0] of jobs){
       done++;
@@ -1138,6 +1183,7 @@ async function bakeAll(){
         const c={...cfg0}; c.end=c.end||SF.end; c.start=c.start||SF.start; c.start=clamp(c.start); c.end=clamp(c.end);
         if(c.start>=c.end){ fail++; continue; }
         if(needsFund(c)) await loadFund();
+        if(needsShp(c)) await loadShp();
         log(bakeProg(done,jobs.length,ok,skip,fail,cfg0,'computing'));
         await new Promise(r=>setTimeout(r,20));            // yield so the progress bar paints before the (blocking) sim
         const res=simulate(c);

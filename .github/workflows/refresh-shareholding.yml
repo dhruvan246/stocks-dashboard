@@ -51,7 +51,7 @@ jobs:
           # ⚠️ reset-and-replay: EVERY file the fetch step writes must ride the
           # cp-to-/tmp + cp-back + git-add lists (DATA_RUNBOOK §18 gotcha).
           mkdir -p /tmp/shp/docs /tmp/shp/scripts
-          cp docs/shareholding.json docs/shp_meta.json /tmp/shp/docs/
+          cp docs/shareholding.json docs/shp_meta.json docs/shp_engine.json /tmp/shp/docs/
           cp scripts/shp_history.json /tmp/shp/scripts/
 
           for attempt in 1 2 3 4 5; do
@@ -59,8 +59,9 @@ jobs:
             git reset --hard origin/main
             cp /tmp/shp/docs/shareholding.json docs/shareholding.json
             cp /tmp/shp/docs/shp_meta.json     docs/shp_meta.json
+            cp /tmp/shp/docs/shp_engine.json   docs/shp_engine.json
             cp /tmp/shp/scripts/shp_history.json scripts/shp_history.json
-            git add docs/shareholding.json docs/shp_meta.json scripts/shp_history.json
+            git add docs/shareholding.json docs/shp_meta.json docs/shp_engine.json scripts/shp_history.json
 
             if git diff --cached --quiet; then
               echo "No new shareholding data — nothing to commit"

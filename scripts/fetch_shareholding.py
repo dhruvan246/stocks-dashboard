@@ -339,6 +339,28 @@ def build_feed():
           (os.path.normpath(OUT), len(rows), len(quarters), os.path.getsize(OUT) / 1e3))
     return True
 
+def build_engine_feed():
+    """docs/shp_engine.json — the backtest engines' point-in-time FII/DII series:
+    {SYM: [[qeInt, fii, dii, subInt], ...] sorted by quarter}. ALL quarters (not the page's 8);
+    the engines gate on subInt <= rebalance date so there is no look-ahead."""
+    hist = load_hist()
+    out = {}
+    for sym, qs in hist.items():
+        if sym.startswith("_") or not isinstance(qs, dict): continue
+        rows = []
+        for qe, c in qs.items():
+            try:
+                rows.append([int(qe.replace("-", "")), c[1], c[2], int(str(c[5]).replace("-", ""))])
+            except (ValueError, TypeError, IndexError):
+                continue
+        if rows: out[sym] = sorted(rows)
+    ep = os.path.join(HERE, "..", "docs", "shp_engine.json")
+    if len(out) < MIN_FEED_ROWS and os.path.exists(ep) and os.path.getsize(ep) > 200000:
+        print("ABORT engine feed: only %d symbols — keeping existing shp_engine.json" % len(out))
+        return
+    json.dump(out, open(ep, "w", encoding="utf-8"), separators=(",", ":"))
+    print("WROTE %s: %d symbols, %.0f KB" % (os.path.normpath(ep), len(out), os.path.getsize(ep) / 1e3))
+
 def write_meta(stats):
     """Tiny always-changing marker so feeds.json can watch pipeline liveness cheaply."""
     ist = datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)
@@ -355,6 +377,7 @@ if __name__ == "__main__":
         print("history file:", HIST)
     if "--feed-only" in args:
         build_feed()
+        build_engine_feed()
     else:
         n = TOPUP_QES
         if "--backfill" in args:
@@ -369,4 +392,5 @@ if __name__ == "__main__":
             print("(staging run — docs feed/meta NOT rebuilt)")
         else:
             build_feed()
+            build_engine_feed()
             write_meta(stats)

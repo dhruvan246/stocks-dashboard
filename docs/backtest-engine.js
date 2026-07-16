@@ -22,6 +22,11 @@ const FIELDS = [
   // --- fundamentals: point-in-time quarterly net profit (XBRL) ---
   { v: 'profitYoyPct', l: 'Net Profit Qtr Growth YoY % (point-in-time earnings)' },
   { v: 'profitBase', l: 'Net Profit Yr-ago Qtr ₹Cr (YoY base)' },
+  // --- shareholding pattern: point-in-time FII/DII holding (quarterly SHP filings) ---
+  { v: 'fiiPct', l: 'FII holding % (latest filed quarter)' },
+  { v: 'fiiChgPp', l: 'FII holding change QoQ (percentage points)' },
+  { v: 'diiPct', l: 'DII holding % (latest filed quarter)' },
+  { v: 'diiChgPp', l: 'DII holding change QoQ (percentage points)' },
   // --- extended technical factors (close + turnover + Nifty derived) ---
   { v: 'ret1m', l: 'Return — 1 month %' },
   { v: 'ret3m', l: 'Return — 3 month %' },
@@ -130,6 +135,7 @@ async function loadEngineData(onProgress) {
   onProgress && onProgress('Loading survivorship-free data (~17 MB)…');
   await loadSF(); activateSF();
   await loadFund();   // point-in-time quarterly net profit (small file; enables profit factors)
+  await loadShp();    // point-in-time FII/DII holdings (small file; enables shareholding factors)
   onProgress && onProgress('');
 }
 
@@ -281,11 +287,46 @@ async function loadFund() {
   try { FUND = await (await fetch('./sf_fundamentals.json')).json(); } catch (e) { console.warn('no fundamentals data', e); FUND = {}; }
 }
 
+// ---- Shareholding pattern: point-in-time FII/DII holding % (quarterly SHP filings) ----
+// SHPD = { SYM: [ [qEndYYYYMMDD, fii%, dii%, subYYYYMMDD], ... sorted by qEnd ] } — sub is the
+// filing's ACTUAL submission date; a quarter is only visible once filed (no look-ahead).
+// Keep in sync with stock-backtest.html (self-contained copy). Data: docs/shp_engine.json (runbook §22d).
+let SHPD = {};
+const SHP_FIELDS = new Set(['fiiPct', 'fiiChgPp', 'diiPct', 'diiChgPp']);
+function needsShp(cfg) { return SHP_FIELDS.has(cfg.sortBy) || (cfg.filters || []).some(f => SHP_FIELDS.has(f.field)); }
+async function loadShp() {
+  if (Object.keys(SHPD).length) return;
+  try { SHPD = await (await fetch('./shp_engine.json')).json(); } catch (e) { console.warn('no shareholding data', e); SHPD = {}; return; }
+  // merge renamed tickers' eras under the CURRENT key (filings were made under the old name then)
+  for (const old in FUND_ALIAS) {
+    if (!SHPD[old]) continue;
+    const nw = FUND_ALIAS[old], by = {};
+    (SHPD[nw] || []).concat(SHPD[old]).forEach(q => { if (!by[q[0]] || q[3] > by[q[0]][3]) by[q[0]] = q; });
+    SHPD[nw] = Object.values(by).sort((a, b) => a[0] - b[0]);
+  }
+}
+function prevQeInt(qe) { let y = Math.floor(qe / 10000), m = Math.floor(qe / 100) % 100 - 3; if (m <= 0) { y--; m += 12; } return y * 10000 + m * 100 + { 3: 31, 6: 30, 9: 30, 12: 31 }[m]; }
+function shpAt(sym, dateInt) {
+  const arr = SHPD[sym] || (FUND_ALIAS[sym] ? SHPD[FUND_ALIAS[sym]] : null); if (!arr || !arr.length) return null;
+  let ci = -1; for (let i = arr.length - 1; i >= 0; i--) { if (arr[i][3] <= dateInt) { ci = i; break; } }
+  if (ci < 0) return null;
+  const cur = arr[ci];
+  // QoQ change vs the CALENDAR-previous quarter only (gaps break it), and NEVER across the
+  // Sep-2022 SEBI format change (DR blocks were reclassified into FII/DII — not a stake change).
+  let dfii = null, ddii = null;
+  if (cur[0] !== 20220930) {
+    const pq = prevQeInt(cur[0]);
+    for (let i = ci - 1; i >= 0; i--) { const q = arr[i]; if (q[0] === pq) { if (q[3] <= dateInt) { dfii = +(cur[1] - q[1]).toFixed(2); ddii = +(cur[2] - q[2]).toFixed(2); } break; } if (q[0] < pq) break; }
+  }
+  return { fii: cur[1], dii: cur[2], dfii, ddii };
+}
+
 function factorsAt(off, cfg) {
   const lookOff = off - 30;   // fixed 1-month window for r.chg (industry-momentum rank + legacy changePercent strategies)
   const members = cfg.indexName ? membersAsOf(cfg.indexName, isoOff(off)) : null;
   const useTech = needsTech(cfg);
   const useFund = needsFund(cfg); const fundDate = useFund ? dateIntOff(off) : 0; const basis = cfg.earnBasis || 'con';
+  const useShp = needsShp(cfg); const shpDate = useShp ? dateIntOff(off) : 0;
   const rows = [];
   for (const tkr in SERIES) {
     const m = META[tkr]; if (!m) continue;
@@ -305,6 +346,9 @@ function factorsAt(off, cfg) {
       r.profitYoyPct = pf ? pf.yoy : null; r.profitBase = pf ? pf.base : null;
       r.profitAccel = pf ? pf.accel : null; r.profitTTM = pf ? pf.ttm : null; r.profitStreak = pf ? pf.streak : null;
       if (pf && pf.resultDate) { const ds = '' + pf.resultDate, ro = dayOff(ds.slice(0, 4) + '-' + ds.slice(4, 6) + '-' + ds.slice(6, 8)); const pr = priceAt(tkr, ro); r.postDrift = (pr != null && pr > 0) ? (price / pr - 1) * 100 : null; } else r.postDrift = null; }
+    if (useShp) { const sh = shpAt(m.symbol, shpDate);
+      r.fiiPct = sh ? sh.fii : null; r.fiiChgPp = sh ? sh.dfii : null;
+      r.diiPct = sh ? sh.dii : null; r.diiChgPp = sh ? sh.ddii : null; }
     rows.push(r);
   }
   const byInd = {}; rows.forEach(r => { (byInd[r.ind] = byInd[r.ind] || []).push(r.chg); });
