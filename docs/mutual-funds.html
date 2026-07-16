@@ -307,6 +307,17 @@ function navAtIdx(code, gi) {           // NAV (paise) of fund `code` at axis in
   if (k < 0 || k >= d.nav.length) return null;
   return d.nav[k];
 }
+// Most funds post NAV a day or two behind the newest fund on the shared axis, so an exact-day
+// lookup at the To end blanks nearly every row. Fall back to the fund's latest NAV within
+// `back` axis days; beyond that the fund is genuinely dead/dormant and null is right.
+function navAtOrBefore(code, gi, back) {
+  const d = decoded(code);
+  if (!d) return null;
+  const last = d.start + d.nav.length - 1;
+  const g = Math.min(gi, last);
+  if (g < d.start || gi - g > (back || 0)) return null;
+  return d.nav[g - d.start];
+}
 
 // ---- per-fund detail: monthly / trailing / forward return calendars ----
 function fundRange(code){ const d=decoded(code); if(!d) return null; return [HIST.dates[d.start], HIST.dates[d.start+d.nav.length-1]]; }
@@ -414,7 +425,7 @@ function recomputeCust() {
   const useCagr = (mode === 'cagr' && yf >= 1);   // don't annualize sub-1-year windows
   let n = 0;
   for (const r of ALL) {
-    const nf = navAtIdx(r.code, fi), nt = navAtIdx(r.code, ti);  // paise; ratio cancels /100
+    const nf = navAtIdx(r.code, fi), nt = navAtOrBefore(r.code, ti, 10);  // paise; ratio cancels /100
     if (nf != null && nt != null && nf > 0) {
       r.cust = useCagr ? (Math.pow(nt / nf, 1 / yf) - 1) * 100 : (nt - nf) / nf * 100;
       n++;
