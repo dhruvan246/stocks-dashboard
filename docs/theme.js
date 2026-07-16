@@ -146,6 +146,7 @@
       ['./market-mood.html',       '🌡️', 'Market Mood'],
       ['./results-season.html',    '📊', 'Results Season'],
       ['./discovery.html',         '💸', 'Smart Money Picks'],
+      ['./deals.html',             '🐋', 'Bulk/Block Deals'],
       ['./quarterly-results.html', '🧾', 'Quarterly Results'],
       ['./announcements.html',     '📢', 'Announcements']
     ] },

@@ -1021,3 +1021,35 @@ advancers/decliners — all in one hover tooltip + 4 stat cards.
 - **Page:** breadth section between the turnover chart and the monthly-history table; separate range state
   (6M/1Y/3Y/5Y/All → 126/250/750/1250/all sessions); section hides itself silently if the json is missing.
   Editing market-mood.html = bump `docs/sw.js` CACHE (did v24→v25).
+
+---
+
+## 22. BULK & BLOCK DEALS  (docs/deals.html — "Bulk/Block Deals" nav, built 2026-07-16, SELF-UPDATING)
+**The smart-money tape:** every NSE bulk deal (>0.5% of equity traded by one client in a day) and block
+deal (negotiated block-window trades), rolling ~92-day window, with a per-stock net-buying view + two
+Discovery buckets ("Smart money (bulk & block deals)" group, type `deal`).
+
+- **Fetcher:** `scripts/fetch_deals.py` → `docs/deals.json`
+  (`rows:[[date,kind B|K,sym,name,client,side B|S,qty,price],...]`; value ₹cr = qty·price/1e7 client-side).
+  Sources, each latest-day-only and non-fatal: (1)+(2) `nsearchives.../content/equities/bulk.csv` +
+  `block.csv` (plain UA; block.csv says "NO RECORDS" on no-block days), (3)
+  `/api/snapshot-capital-market-largedeal` via the announcements cron's urllib+cookie-warmup session
+  (`build_fundamentals` `_get`/`nse_jar`; its BLOCK section can carry an older date than bulk — merge by
+  date handles it), (4) opportunistic `/api/historical/bulk-deals`+`block-deals` via curl_cffi.
+  **⚠️ The historical API 503s even with TLS impersonation (Akamai, checked 2026-07-16)** — so there is NO
+  deep backfill; the window GROWS ORGANICALLY one trading day at a time from the seed (2026-07-14/15).
+  Don't burn time re-attempting the historical route; the attempt is already wired in and self-heals if
+  NSE ever unblocks it. Dedup key = (date,kind,sym,CLIENT,side,qty,price) — company NAME is excluded
+  (CSV says "India Tourism Development…", API says "India Tour. Dev. Co."; CSV parsed first so its name wins).
+- **Never-shrink guard:** refuses to write if the merge lost >40% of existing rows; exits 1 (red run) only
+  when EVERY source failed.
+- **Refresh:** `.github/workflows/refresh-deals.yml` — 21:30 IST weekdays (deals publish ~18:00-18:30 IST)
+  **+ 08:45 IST Tue-Sat catch-up**: the archives CSVs keep serving the PREVIOUS trading day until the next
+  evening, so a missed evening cron self-heals next morning. Commit = reset-and-replay carrying deals.json
+  (§18 gotcha). Push-path self-test on the fetcher/workflow. Feed in feeds.json (max_age 110h).
+- **Discovery wiring:** `build_discovery.py build_deal_buckets()` (deal7/deal30, buys ≥₹5 cr, net = buys −
+  sells, top-100); returns [] if deals.json is missing so the group just disappears — discovery.html has the
+  matching `deal` HEADS/rowHtml branch + 🐋 GROUP_ICON.
+- **Page:** deals.html — stat cards (latest day), All-deals/By-stock views, filters (search stock OR client —
+  clicking a client name filters to them, kind, side, min value, period), theme.js auto-cardify on mobile.
+  New page = sw.js SHELL entry + CACHE bump (rode v26→v27 with the shareholding page).

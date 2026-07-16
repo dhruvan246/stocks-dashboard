@@ -295,12 +295,54 @@ def build_sector_buckets():
                     "type": "sec", "n": len(rows), "rows": rows})
     return out
 
+def build_deal_buckets():
+    """Smart-money buckets from docs/deals.json (fetch_deals.py, refresh-deals.yml).
+    type 'deal' rows: [sym, name, netCr, buyCr, distinctBuyers, lastDate, topBuyer].
+    The feed may not exist yet on a fresh checkout — return [] and the group is skipped."""
+    try:
+        deals = json.load(open(dp("deals.json"), encoding="utf-8"))
+        drows, dto = deals.get("rows") or [], deals.get("to")
+        end = datetime.date.fromisoformat(dto)
+    except Exception:
+        return []
+    out = []
+    for key, days, minbuy in (("deal7", 7, 5.0), ("deal30", 30, 5.0)):
+        lo = (end - datetime.timedelta(days=days - 1)).isoformat()
+        agg = {}
+        for r in drows:
+            if r[0] < lo: continue
+            a = agg.setdefault(r[2], {"name": r[3], "buy": 0.0, "sell": 0.0, "buyers": {}, "last": ""})
+            v = r[6] * r[7] / 1e7
+            if r[5] == "B":
+                a["buy"] += v
+                c = r[4].upper()
+                a["buyers"][c] = a["buyers"].get(c, 0.0) + v
+            else:
+                a["sell"] += v
+            if r[0] > a["last"]: a["last"] = r[0]
+        rows = []
+        for sym, a in agg.items():
+            if a["buy"] < minbuy: continue
+            m = META.get(sym)
+            top = max(a["buyers"], key=a["buyers"].get) if a["buyers"] else ""
+            rows.append([sym, (m or {}).get("name") or a["name"], round(a["buy"] - a["sell"], 2),
+                         round(a["buy"], 2), len(a["buyers"]), a["last"], top.title()])
+        rows.sort(key=lambda x: -x[2])
+        rows = rows[:100]
+        out.append({"k": key, "t": "Bulk/block buying (last %dd)" % days,
+                    "d": "Stocks where big investors bought ≥₹%d cr via NSE bulk or block deals in the last %d days. Net = disclosed buys − sells; largest net buying first." % (int(minbuy), days),
+                    "type": "deal", "n": len(rows), "rows": rows})
+    return [b for b in out if b["n"]]
+
+
 # ---------------------------------------------------------------- assemble
 def main():
     res = build_results_buckets()
     latest = [b for b in res if not b["k"].startswith("res") or res and b["k"] in (res[0]["k"],)]
+    deal = build_deal_buckets()
     groups = [
         {"g": "Triggers (last 31 days)", "buckets": build_ann_buckets()},
+      ] + ([{"g": "Smart money (bulk & block deals)", "buckets": deal}] if deal else []) + [
         {"g": "Price & Value",           "buckets": build_price_buckets()},
         {"g": "Results — computed from filings", "buckets": res[:3]},
         {"g": "Results history",         "buckets": res[3:]},

@@ -1,0 +1,85 @@
+name: Refresh bulk & block deals
+
+# NSE publishes each trading day's bulk/block deals ~18:00-18:30 IST. The evening
+# run (21:30 IST) grabs them; the next-morning run (08:45 IST Tue-Sat) is a
+# catch-up — the archives CSVs keep serving the PREVIOUS trading day until the
+# next evening, so a missed/failed evening run self-heals the following morning.
+# Every source in fetch_deals.py carries only the latest day; the rolling ~92-day
+# window accumulates day by day (docs/deals.json merges + self-heals).
+
+on:
+  schedule:
+    - cron: "0 16 * * 1-5"   # 21:30 IST weekdays — evening grab
+    - cron: "15 3 * * 2-6"   # 08:45 IST Tue-Sat — catch-up for a missed evening
+  repository_dispatch:
+    types: [deals-refresh]
+  workflow_dispatch: {}
+  # Bootstrap/self-test: also run when the fetcher or this workflow changes.
+  push:
+    paths:
+      - "scripts/fetch_deals.py"
+      - ".github/workflows/refresh-deals.yml"
+
+permissions:
+  contents: write
+  actions: write   # dispatch pages.yml after a bot commit (loop guard blocks auto-trigger)
+
+concurrency:
+  group: refresh-deals
+  cancel-in-progress: false
+
+jobs:
+  refresh-deals:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Fetch NSE bulk + block deals (rolling window)
+        run: python3 -X utf8 scripts/fetch_deals.py
+
+      # ⚠️ reset-and-replay gotcha (runbook §18): every file the fetch step writes
+      # must ride the cp-to-/tmp + cp-back + git-add lists below.
+      - name: Guard — refuse to commit a broken or shrunken feed
+        run: python3 scripts/guard_feed.py
+
+      - name: Commit updated deals feed (only if changed)
+        id: commit
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp docs/deals.json /tmp/deals.json
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/deals.json docs/deals.json
+            git add docs/deals.json
+            if git diff --cached --quiet; then
+              echo "Deals feed unchanged — nothing to commit"
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            git commit -m "Bulk/block deals refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then
+              echo "Pushed on attempt #$attempt"
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "Push attempt #$attempt rejected; resetting and retrying"
+            sleep $(( attempt * 3 ))
+          done
+          echo "Failed to push after 5 attempts"
+          exit 1
+
+      # Bot commits can't auto-trigger pages.yml — dispatch it explicitly on change.
+      - name: Publish to Pages (only when the feed changed)
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml
