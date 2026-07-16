@@ -15,12 +15,15 @@ import { chromium } from 'playwright';
 
 const BASE   = 'https://dhruvan246.github.io/stocks-dashboard';
 const SFDATA = 'https://dhruvan246.github.io/sf-data';
-const BAKE_URL = `${BASE}/saved-strategies.html?bakewaves=1`;
+// One SESSION per run: every batch below reuses it so they resume each other's progress. A new run
+// (the next daily bake) gets a new session → the page recomputes every wave fresh against that day's data.
+const SESSION  = process.env.GITHUB_RUN_ID || String(Date.now());
+const BAKE_URL = `${BASE}/saved-strategies.html?bakewaves=1&session=${SESSION}`;
 
 const PAGES_WAIT_MS = 8 * 60 * 1000;    // max wait for both GitHub Pages deploys to publish the new data date
-const BAKE_WAIT_MS  = 32 * 60 * 1000;   // overall budget across all batches
-const PER_ITER_MS   = 6 * 60 * 1000;    // per-batch wait (one fresh browser before it's killed/finishes)
-const MAX_ITERS     = 10;               // reload in a fresh browser this many times at most (each resumes)
+const BAKE_WAIT_MS  = 40 * 60 * 1000;   // overall budget across all batches (the 6-yr cycle wave is ~40s/strategy)
+const PER_ITER_MS   = 9 * 60 * 1000;    // per-batch wait (one fresh browser before it's killed/finishes)
+const MAX_ITERS     = 14;               // reload in a fresh browser this many times at most (each resumes)
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 async function fetchEnd(url) {

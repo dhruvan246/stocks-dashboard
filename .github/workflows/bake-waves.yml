@@ -7,9 +7,11 @@ name: Bake wave snapshot
 # Not correctness-critical: if this job fails, the Best-return tab falls back to the full-history CAGR
 # ranking. It only makes the wave view instant.
 
+# Wave returns depend on BOTH the price data AND the fundamentals, so re-bake after either refresh —
+# whichever lands last wins (the concurrency group cancels an in-flight bake so the freshest data is used).
 on:
   workflow_run:
-    workflows: ["Daily backtest data refresh"]
+    workflows: ["Daily backtest data refresh", "Daily fundamentals refresh"]
     types: [completed]
   workflow_dispatch: {}
 
@@ -22,10 +24,10 @@ concurrency:
 
 jobs:
   bake:
-    # Manual runs always; auto runs only after the data refresh actually SUCCEEDED.
+    # Manual runs always; auto runs only after the upstream refresh actually SUCCEEDED.
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 55
     steps:
       - name: Checkout
         uses: actions/checkout@v5
