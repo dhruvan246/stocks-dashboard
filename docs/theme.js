@@ -89,10 +89,12 @@
   }
 
   // =========================================================================
-  // SITE NAV — one collapsible "Menu" dropdown, defined ONCE here so every page
-  // (and the two generated templates) shares it. Add a section = one line below.
-  // The hardcoded <nav> on each page is replaced on load; an early CSS rule hides
-  // it until then so the old crowded row never flashes.
+  // SITE NAV — Markets / Funds / Tools as top-level items, each opening its own
+  // dropdown on hover (click/tap also toggles). On phones (no hover) the three
+  // collapse into one ☰ "Menu" whose groups are collapsible accordions.
+  // Defined ONCE here so every page (and the two generated templates) shares it.
+  // Add a section = one line below. The hardcoded <nav> on each page is replaced
+  // on load; an early CSS rule hides it until then so the old row never flashes.
   // =========================================================================
   (function injectNavCSS() {
     if (document.getElementById('sw-nav-css')) return;
@@ -101,17 +103,32 @@
       '.sw-nav{display:flex;align-items:center;gap:8px;margin-left:auto;overflow:visible!important;}' +
       '.sw-cta{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font-size:13px;font-weight:600;padding:7px 12px;border-radius:var(--radius-sm);background:linear-gradient(120deg,var(--accent),var(--accent-2));background-size:180% 180%;color:#fff;text-decoration:none;box-shadow:0 6px 16px -6px var(--glow);transition:transform var(--tr),box-shadow var(--tr),background-position .4s ease;}' +
       '.sw-cta:hover,.sw-cta.active{background-position:100% 50%;transform:translateY(-1px);box-shadow:0 10px 24px -8px var(--glow);}' +
-      '.sw-menu{position:relative;}' +
+      '.sw-group{position:relative;}' +
+      '.sw-group-btn{display:inline-flex;align-items:center;gap:5px;font-size:13.5px;font-weight:600;padding:7px 11px;border-radius:var(--radius-sm);border:1px solid transparent;background:transparent;color:var(--text-muted);cursor:pointer;transition:var(--tr);white-space:nowrap;}' +
+      '.sw-group-btn:hover,.sw-group.open>.sw-group-btn{color:var(--accent);background:var(--accent-soft);}' +
+      '.sw-group-btn.active{color:var(--accent);}' +
+      '.sw-caret{font-size:9px;opacity:.75;transition:transform .18s ease;}' +
+      '.sw-group.open .sw-caret,.sw-menu-gbtn.open .sw-caret{transform:rotate(180deg);}' +
+      '.sw-group-panel{position:absolute;left:0;top:calc(100% + 8px);min-width:238px;max-width:84vw;background:color-mix(in srgb,var(--surface) 88%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:var(--radius-sm);box-shadow:var(--shadow-lg);padding:7px;display:none;z-index:60;max-height:78vh;overflow:auto;}' +
+      '.sw-group-panel::before{content:"";position:absolute;left:0;right:0;top:-10px;height:10px;}' +
+      '.sw-group.open>.sw-group-panel{display:block;animation:sw-pop .16s ease;}' +
+      '.sw-group.align-r .sw-group-panel{left:auto;right:0;}' +
+      '.sw-menu{position:relative;display:none;}' +
       '.sw-menu-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:7px 12px;border-radius:var(--radius-sm);border:1px solid var(--border-strong);background:var(--surface);color:var(--text);cursor:pointer;transition:var(--tr);}' +
       '.sw-menu-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}' +
       '.sw-menu-panel{position:absolute;right:0;top:calc(100% + 8px);min-width:252px;max-width:84vw;background:color-mix(in srgb,var(--surface) 88%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:var(--radius-sm);box-shadow:var(--shadow-lg);padding:7px;display:none;z-index:60;max-height:78vh;overflow:auto;}' +
       '.sw-menu-panel.open{display:block;animation:sw-pop .16s ease;}' +
-      '.sw-menu-group{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);padding:9px 10px 4px;}' +
+      '.sw-menu-gbtn{display:flex;width:100%;align-items:center;gap:8px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);padding:9px 10px 6px;background:none;border:0;cursor:pointer;text-align:left;}' +
+      '.sw-menu-gbtn:hover{color:var(--accent);}' +
+      '.sw-menu-gbtn .sw-caret{margin-left:auto;font-size:8px;}' +
+      '.sw-menu-sec{display:none;}' +
+      '.sw-menu-sec.open{display:block;}' +
       '.sw-menu-link{display:flex;align-items:center;gap:9px;font-size:14px;font-weight:500;padding:8px 10px;border-radius:9px;color:var(--text);text-decoration:none;transition:var(--tr);}' +
       '.sw-menu-link:hover{background:var(--surface-2);}' +
       '.sw-menu-link.active{background:var(--accent-soft);color:var(--accent);}' +
       '.sw-mi-ic{font-size:15px;width:20px;text-align:center;display:inline-block;}' +
       '.sw-mi-ext{margin-left:auto;color:var(--text-faint);font-size:12px;}' +
+      '@media (max-width:760px){.sw-group{display:none;}.sw-menu{display:block;}}' +
       '@media (max-width:430px){.sw-cta .sw-cta-lb{display:none;}}' +
       '@media (max-width:520px){.sw-menu-panel{position:fixed;left:10px;right:10px;top:60px;min-width:0;max-width:none;}}' +
       'header nav:not(.sw-nav){visibility:hidden;}';
@@ -181,18 +198,67 @@
           '<span class="sw-mi-ic" aria-hidden="true">' + ic + '</span>' + esc(lb) +
           (ext ? '<span class="sw-mi-ext" aria-hidden="true">↗</span>' : '') + '</a>';
       };
-      var groups = NAV_GROUPS.map(function (grp) {
-        return '<div class="sw-menu-group">' + esc(grp.g) + '</div>' + grp.items.map(link).join('');
+      var caret = '<span class="sw-caret" aria-hidden="true">▾</span>';
+      var activeGi = -1; // which group holds the current page (for highlight / default-open)
+      NAV_GROUPS.forEach(function (grp, gi) {
+        if (activeGi < 0 && grp.items.some(function (it) { return isActive(it[0]); })) activeGi = gi;
+      });
+
+      // Desktop: one hover dropdown per group (Markets / Funds / Tools)
+      var groupsHtml = NAV_GROUPS.map(function (grp, gi) {
+        return '<div class="sw-group' + (gi === NAV_GROUPS.length - 1 ? ' align-r' : '') + '">' +
+          '<button class="sw-group-btn' + (gi === activeGi ? ' active' : '') + '" type="button" aria-haspopup="true" aria-expanded="false">' +
+            esc(grp.g) + caret + '</button>' +
+          '<div class="sw-group-panel" role="menu">' + grp.items.map(link).join('') + '</div>' +
+        '</div>';
       }).join('');
+
+      // Phones (no hover): ☰ menu with the same groups as collapsible accordions
+      var mobHtml = NAV_GROUPS.map(function (grp, gi) {
+        var open = gi === activeGi || (activeGi < 0 && gi === 0);
+        return '<button class="sw-menu-gbtn' + (open ? ' open' : '') + '" type="button" aria-expanded="' + (open ? 'true' : 'false') + '">' +
+            esc(grp.g) + caret + '</button>' +
+          '<div class="sw-menu-sec' + (open ? ' open' : '') + '" role="group">' + grp.items.map(link).join('') + '</div>';
+      }).join('');
+
       var cta = '<a class="sw-cta' + (isActive(NAV_CTA[0]) ? ' active' : '') + '" href="' + esc(NAV_CTA[0]) + '">' +
         '<span aria-hidden="true">' + NAV_CTA[1] + '</span><span class="sw-cta-lb">' + esc(NAV_CTA[2]) + '</span></a>';
       nav.className = 'sw-nav';
-      nav.innerHTML = cta +
+      nav.innerHTML = groupsHtml + cta +
         '<div class="sw-menu">' +
           '<button class="sw-menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Open sections menu">' +
             '<span aria-hidden="true">☰</span><span class="sw-menu-btn-lb">Menu</span></button>' +
-          '<div class="sw-menu-panel" role="menu">' + groups + '</div>' +
+          '<div class="sw-menu-panel" role="menu">' + mobHtml + '</div>' +
         '</div>';
+
+      // Desktop dropdowns: open on hover (small leave-delay so the pointer can
+      // travel into the panel); click/tap toggles too. One open at a time.
+      var groups = nav.querySelectorAll('.sw-group');
+      var closeGroups = function (except) {
+        groups.forEach(function (g) {
+          if (g === except) return;
+          g.classList.remove('open');
+          g.querySelector('.sw-group-btn').setAttribute('aria-expanded', 'false');
+        });
+      };
+      var canHover = false; try { canHover = window.matchMedia('(hover:hover)').matches; } catch (e) {}
+      groups.forEach(function (g) {
+        var b = g.querySelector('.sw-group-btn'), t = null;
+        var set = function (open) { g.classList.toggle('open', open); b.setAttribute('aria-expanded', open ? 'true' : 'false'); };
+        b.addEventListener('click', function (e) {
+          e.stopPropagation();
+          // On hover devices the menu is already open from the hover — a click must
+          // not re-toggle it shut. Touch (no hover) gets a plain open/close toggle.
+          var open = canHover ? true : !g.classList.contains('open');
+          closeGroups(g); set(open);
+        });
+        if (canHover) {
+          g.addEventListener('mouseenter', function () { if (t) clearTimeout(t); closeGroups(g); set(true); });
+          g.addEventListener('mouseleave', function () { if (t) clearTimeout(t); t = setTimeout(function () { set(false); }, 140); });
+        }
+      });
+
+      // ☰ menu + its collapsible group sections
       var btn = nav.querySelector('.sw-menu-btn'), panel = nav.querySelector('.sw-menu-panel');
       var close = function () { panel.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); };
       btn.addEventListener('click', function (e) {
@@ -200,8 +266,18 @@
         var open = panel.classList.toggle('open');
         btn.setAttribute('aria-expanded', open ? 'true' : 'false');
       });
-      document.addEventListener('click', function (e) { if (!nav.contains(e.target)) close(); });
-      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+      panel.querySelectorAll('.sw-menu-gbtn').forEach(function (gb) {
+        gb.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var sec = gb.nextElementSibling;
+          var open = !sec.classList.contains('open');
+          sec.classList.toggle('open', open);
+          gb.classList.toggle('open', open);
+          gb.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      });
+      document.addEventListener('click', function (e) { if (!nav.contains(e.target)) { close(); closeGroups(); } });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { close(); closeGroups(); } });
     } catch (e) { nav.style.visibility = 'visible'; }
   }
 
