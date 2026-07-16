@@ -147,6 +147,22 @@
   ];
   var NAV_CTA = ['./stock-backtest.html', '🧪', 'Create a strategy'];
 
+  // ---- PRIVATE pages: the owner's personal tools. Hidden from the menu, footer
+  // and home tiles unless THIS browser holds the owner key (unlocked once via
+  // ?ownerkey=…, same key as the backtest pages); the pages themselves also show
+  // a 🔒 to non-owners. This is a client-side curtain (GitHub Pages has no real
+  // auth) — someone with the direct URL still reaches the lock screen.
+  // Make a page public again by removing it from this list.
+  try { // accept ?ownerkey= here too, so the unlock visit already shows the full nav
+    var _u = new URL(location.href), _ok = _u.searchParams.get('ownerkey');
+    if (_ok) { localStorage.setItem('bt_owner_key', _ok); _u.searchParams.delete('ownerkey'); history.replaceState(null, '', _u.pathname + _u.search + _u.hash); }
+  } catch (e) {}
+  var PRIVATE_PAGES = ['watchlist.html', 'live-tracking.html', 'insurer-inbox.html', 'analytics.html', 'status.html'];
+  var IS_OWNER = false; try { IS_OWNER = !!localStorage.getItem('bt_owner_key'); } catch (e) {}
+  if (!IS_OWNER) NAV_GROUPS.forEach(function (g) {
+    g.items = g.items.filter(function (it) { return PRIVATE_PAGES.indexOf(it[0].replace('./', '')) < 0; });
+  });
+
   // Expose the nav as the single source of truth so the home page (index.html) can
   // render its tile grid from the same list — add a page above and it shows up there too.
   try { window.SW_NAV = { groups: NAV_GROUPS, cta: NAV_CTA }; } catch (e) {}

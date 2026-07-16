@@ -900,3 +900,11 @@ only through SECURITY DEFINER RPCs; daily GitHub backups = recovery). **Schema: 
   hijacks `ON CONFLICT (k)` targets (42P10). Fix pattern (used by sw_kv_set / sw_pv_hit): write such
   upsert RPCs as **LANGUAGE SQL** — there columns win over parameters, and `fnname.param` pins the
   parameter side. plpgsql is fine when no param name collides with a column (sw_picks_set: day_in/sid).
+- **Private (owner-only) pages — added 2026-07-16:** watchlist / live-tracking / insurer-inbox / analytics
+  are hidden from the Menu, footer and home tiles for non-owner browsers and render a 🔒 lock card if opened
+  directly. Mechanism: `PRIVATE_PAGES` list in theme.js (filters NAV_GROUPS before `window.SW_NAV` export;
+  theme.js also accepts `?ownerkey=` itself so the unlock visit shows the full nav) + a `SW_OWNER`/`swLock()`
+  gate at each page's boot. Owner = browser holding `bt_owner_key` (same `?ownerkey=…` unlock as backtests).
+  Make a page public again: remove it from PRIVATE_PAGES + delete the gate lines in its boot. ⚠️ This is a
+  client-side curtain, NOT auth (GitHub Pages can't do logins): the HTML/JSON stay fetchable by URL and the
+  Supabase kv reads are public — fine for hobby scale, revisit if real secrecy is ever needed.
