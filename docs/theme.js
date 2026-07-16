@@ -159,6 +159,7 @@
       ['./backtest-history.html', '🕘', 'Backtest history'],
       ['./insurer-inbox.html',    '📥', 'Insurer inbox'],
       ['./analytics.html',        '👀', 'Page stats'],
+      ['./results-coverage.html', '✅', 'Results coverage'],
       ['./status.html',           '🩺', 'Data health']
     ] }
   ];

@@ -6,13 +6,14 @@
  *     requests (the sf-data repo, Supabase, the live-quote Worker) — those stay network-only
  *     so data is always fresh and the cache never bloats.
  * Bump CACHE when the shell asset list changes. */
-const CACHE = 'sw-shell-v22';
+const CACHE = 'sw-shell-v23';
 const SHELL = [
   './', './index.html', './nse-bse-dashboard.html', './stock-backtest.html', './saved-strategies.html',
   './backtest-history.html', './strategy-backtest.html', './mutual-funds.html', './fii-dii.html',
   './backtest.html', './sectors.html', './market-mood.html', './bank-credit.html',
   './results-season.html', './stock.html', './announcements.html', './quarterly-results.html', './status.html',
   './discovery.html', './watchlist.html', './live-tracking.html', './insurer-inbox.html', './analytics.html',
+  './results-coverage.html',
   './theme.css', './theme.js', './backtest-engine.js', './bt-sync.js', './sw-sync.js', './sw-watchlist.js',
   './manifest.webmanifest',
   './icon-192.png', './icon-512.png', './icon-512-maskable.png', './apple-touch-icon.png'

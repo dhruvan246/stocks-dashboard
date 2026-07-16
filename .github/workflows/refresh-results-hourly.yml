@@ -48,6 +48,11 @@ jobs:
       - name: Guard — refuse to commit a broken or shrunken feed
         run: python3 scripts/guard_feed.py
 
+      # Recount declared-vs-filled off the fresh feed (pure JSON, no heavy deps) so the
+      # Results coverage page tracks the feed hour by hour.
+      - name: Build results coverage
+        run: python3 -X utf8 scripts/build_results_coverage.py || echo "(coverage build failed — keeping previous)"
+
       - name: Commit feed + calendar (only if changed)
         id: commit
         run: |
@@ -55,12 +60,14 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           cp docs/results_feed.json     /tmp/results_feed.json
           cp docs/results_calendar.json /tmp/results_calendar.json
+          cp docs/results_coverage.json /tmp/results_coverage.json
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
             cp /tmp/results_feed.json     docs/results_feed.json
             cp /tmp/results_calendar.json docs/results_calendar.json
-            git add docs/results_feed.json docs/results_calendar.json
+            cp /tmp/results_coverage.json docs/results_coverage.json
+            git add docs/results_feed.json docs/results_calendar.json docs/results_coverage.json
             if git diff --cached --quiet; then
               echo "No new result filings — nothing to commit"
               echo "changed=false" >> "$GITHUB_OUTPUT"

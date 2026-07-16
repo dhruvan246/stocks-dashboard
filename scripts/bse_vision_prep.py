@@ -18,43 +18,13 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import fitz, bse_render
 import bse_fetch as B
 import fetch_announcements as FA
+from results_pending import find_pending      # shared with build_results_coverage.py
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 D = os.path.join(HERE, "..", "docs")
 NSE_PDF = "https://nsearchives.nseindia.com/corporate/"
 
 def norm(s): return re.sub(r"(limited|ltd)$", "", re.sub(r"[^a-z0-9]", "", str(s).lower()))
-def rows_of(qs): return qs if isinstance(qs, list) else list(qs.values())
-
-def find_pending(limit):
-    qr = json.load(open(os.path.join(D, "quarterly_results.json"), encoding="utf-8"))
-    qe = qr["quarters"][0]; CO = qr["co"]
-    feed = json.load(open(os.path.join(D, "results_feed.json"), encoding="utf-8"))["rows"]
-    univ = {r[1].upper(): r for r in json.load(open(os.path.join(D, "bse_universe.json"), encoding="utf-8"))["rows"]}
-    bf = json.load(open(os.path.join(D, "bse_fundamentals.json"), encoding="utf-8"))["px"] if os.path.exists(os.path.join(D, "bse_fundamentals.json")) else {}
-    sf = json.load(open(os.path.join(D, "sf_fundamentals.json"), encoding="utf-8"))
-    try: vf = json.load(open(os.path.join(D, "vision_fills.json"), encoding="utf-8"))
-    except Exception: vf = {}
-    nse_have = set(s for s, qs in sf.items() if any(isinstance(r, list) and r and int(r[0]) == qe
-                   and (r[1] is not None or (len(r) > 3 and r[3] is not None)) for r in rows_of(qs)))
-    nse, bse = [], {}
-    for r in feed:
-        if r[3] != qe: continue
-        sym = r[0].upper()
-        if sym in univ:                                       # BSE-only name
-            scrip = str(univ[sym][0])
-            if scrip in bf and str(qe) in bf[scrip]: continue
-            if scrip not in bse: bse[scrip] = (sym, univ[sym][2], univ[sym][6])
-        elif sym in CO and not CO[sym].get("bse"):            # NSE name with a price-universe row
-            if sym in nse_have or (sym in vf and str(qe) in vf.get(sym, {})): continue
-            nse.append((sym, CO[sym]["n"], CO[sym].get("m") or 0, r[5], r[2][:10]))
-        elif sym not in CO:                                   # orphan NSE (no price row, not BSE-listed)
-            if sym in vf and str(qe) in vf.get(sym, {}): continue
-            if any(x[0] == sym for x in nse): continue
-            nse.append((sym, r[1], 0, r[5], r[2][:10]))
-    nse.sort(key=lambda x: -(x[2] or 0))
-    bse_ord = sorted(bse.items(), key=lambda kv: -(kv[1][2] or 0))
-    return qe, nse[:limit], bse_ord[:limit]
 
 def render_pdf_pages(raw):
     try: doc = fitz.open(stream=raw, filetype="pdf")

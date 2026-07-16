@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Results coverage</title>
+<meta name="description" content="How many companies declared results this quarter, how many we have numbers for, and exactly which ones are still missing." />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; font-feature-settings:"tnum" 1; }
+  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
+  .pill{display:inline-flex;align-items:center;gap:.3rem;padding:.15rem .5rem;border-radius:9999px;font-size:11px;font-weight:700;white-space:nowrap}
+  .pill.pending{background:#fef3c7;color:#92400e}
+  .pill.no_pdf{background:#fee2e2;color:#991b1b}
+  .pill.filled{background:#dcfce7;color:#166534}
+  .bar{height:.6rem;border-radius:9999px;background:#e2e8f0;overflow:hidden;display:flex}
+  .bar > span{display:block;height:100%}
+  .scrollbar::-webkit-scrollbar{height:8px}
+  .scrollbar::-webkit-scrollbar-thumb{background:#475569;border-radius:4px}
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-lg mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav class="flex items-center gap-1 overflow-x-auto"></nav>
+  </div>
+</header>
+
+<main class="max-w-screen-lg mx-auto px-4 py-6">
+  <div class="mb-4">
+    <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Results coverage <span id="qlabel" class="text-indigo-600"></span></h1>
+    <p class="text-sm text-slate-500 mt-1">Every company that has declared a result this quarter, and whether we actually have its <b>numbers</b> yet. The gap is filled automatically — the XBRL crons handle most names, and a scheduled vision routine reads the rest straight off the filing PDF twice a day.</p>
+  </div>
+
+  <div id="banner" class="card p-4 mb-5 text-sm text-slate-500">Loading coverage…</div>
+
+  <div id="body" class="hidden">
+    <!-- stat cards -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+      <div class="card p-4" title="Companies whose result filing has landed in the feed this quarter">
+        <div class="text-[11px] font-bold uppercase tracking-wide text-slate-400">Declared</div>
+        <div id="sDeclared" class="text-2xl font-extrabold text-slate-900 mt-1">–</div>
+        <div class="text-[11px] text-slate-400 mt-0.5">results filed this quarter</div>
+      </div>
+      <div class="card p-4" title="Declared companies whose revenue/profit figures we hold">
+        <div class="text-[11px] font-bold uppercase tracking-wide text-slate-400">Filled</div>
+        <div id="sFilled" class="text-2xl font-extrabold text-emerald-600 mt-1">–</div>
+        <div id="sFilledPct" class="text-[11px] text-slate-400 mt-0.5">–</div>
+      </div>
+      <div class="card p-4" title="Declared, but we have no numbers yet — the routine's to-do list">
+        <div class="text-[11px] font-bold uppercase tracking-wide text-slate-400">Not filled</div>
+        <div id="sOpen" class="text-2xl font-extrabold text-amber-600 mt-1">–</div>
+        <div id="sOpenSub" class="text-[11px] text-slate-400 mt-0.5">–</div>
+      </div>
+      <div class="card p-4" title="Of the filled ones, how many were read off the PDF by the vision routine rather than parsed from XBRL">
+        <div class="text-[11px] font-bold uppercase tracking-wide text-slate-400">Via vision</div>
+        <div id="sVision" class="text-2xl font-extrabold text-indigo-600 mt-1">–</div>
+        <div class="text-[11px] text-slate-400 mt-0.5">filled from the filing PDF</div>
+      </div>
+    </div>
+
+    <!-- progress -->
+    <div class="card p-4 mb-5">
+      <div class="flex items-baseline justify-between mb-2">
+        <div class="text-sm font-bold text-slate-700">Coverage</div>
+        <div id="pctBig" class="text-sm font-extrabold text-slate-900">–</div>
+      </div>
+      <div id="bar" class="bar"></div>
+      <div class="flex flex-wrap gap-4 mt-3 text-[11px] text-slate-500">
+        <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:#22c55e"></span>Filled</span>
+        <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:#f59e0b"></span>Pending — routine will fill</span>
+        <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:#ef4444"></span>No PDF — needs XBRL</span>
+      </div>
+      <div id="exch" class="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-slate-100"></div>
+    </div>
+
+    <!-- open list -->
+    <div class="mb-2 flex items-baseline justify-between gap-3">
+      <h2 class="text-sm font-bold text-slate-700">Still missing numbers</h2>
+      <span id="openCount" class="text-[11px] text-slate-400"></span>
+    </div>
+    <div id="openWrap" class="card overflow-x-auto scrollbar"></div>
+
+    <p class="text-[11px] text-slate-400 mt-6">
+      <b>Pending</b> = the filing has an attachment, so the vision routine will read it on its next run (03:00 PM / 11:00 PM IST).
+      <b>No PDF</b> = the filing carried no attachment to read; these can only be filled when the exchange posts the XBRL.
+      Vision-read figures for NSE names are an overlay applied only to empty cells — real XBRL always supersedes them.
+      Counts come from the same module the routine uses to pick its work (<code>scripts/results_pending.py</code>), so this page and the routine can never disagree.
+      See also <a href="./quarterly-results.html" class="text-indigo-600 hover:underline font-semibold">Quarterly Results</a> and <a href="./status.html" class="text-indigo-600 hover:underline font-semibold">Data health</a>.
+    </p>
+  </div>
+</main>
+
+<script>
+(function () {
+  function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');}
+  function fmtCr(v){
+    if (!v) return '–';
+    if (v >= 100000) return '₹' + (v/100000).toFixed(2) + ' L cr';
+    if (v >= 1000)   return '₹' + (v/1000).toFixed(1) + 'k cr';
+    return '₹' + v.toFixed(0) + ' cr';
+  }
+  var LBL = { pending:'Pending', no_pdf:'No PDF', filled:'Filled' };
+
+  fetch('./results_coverage.json', {cache:'no-store'})
+    .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+    .then(render)
+    .catch(function(e){
+      document.getElementById('banner').innerHTML =
+        '<span class="text-rose-600 font-semibold">Could not load coverage data.</span> <span class="text-slate-400">'+esc(e.message)+'</span>';
+    });
+
+  function render(d) {
+    var s = d.stat, total = s.declared || 1;
+    document.getElementById('qlabel').textContent = '· ' + d.qlabel;
+    document.getElementById('banner').className = 'card p-3 mb-5 text-xs text-slate-500 flex flex-wrap items-center gap-x-2 gap-y-1';
+    document.getElementById('banner').innerHTML =
+      '<b class="text-slate-700">' + esc(d.qlabel) + '</b><span class="text-slate-300">·</span>' +
+      'quarter ending ' + esc(String(d.qe).replace(/(\d{4})(\d{2})(\d{2})/, '$3-$2-$1')) +
+      '<span class="text-slate-300">·</span>rebuilt hourly with the results feed' +
+      '<span class="text-slate-300">·</span>updated ' + esc(d.updated);
+    document.getElementById('body').classList.remove('hidden');
+
+    document.getElementById('sDeclared').textContent = s.declared;
+    document.getElementById('sFilled').textContent   = s.filled;
+    document.getElementById('sOpen').textContent     = s.open;
+    document.getElementById('sVision').textContent   = s.vision;
+    var pct = (s.filled / total * 100);
+    document.getElementById('sFilledPct').textContent = pct.toFixed(1) + '% of declared';
+    document.getElementById('sOpenSub').textContent =
+      s.open === 0 ? 'fully caught up 🎉' : (s.pending + ' pending · ' + s.no_pdf + ' no PDF');
+    document.getElementById('pctBig').textContent = pct.toFixed(1) + '% filled';
+
+    var seg = [['#22c55e', s.filled, 'Filled'], ['#f59e0b', s.pending, 'Pending'], ['#ef4444', s.no_pdf, 'No PDF']];
+    document.getElementById('bar').innerHTML = seg.filter(function(x){return x[1];}).map(function(x){
+      return '<span style="background:'+x[0]+';width:'+(x[1]/total*100)+'%" title="'+x[2]+': '+x[1]+' of '+s.declared+'"></span>';
+    }).join('');
+
+    document.getElementById('exch').innerHTML = ['NSE','BSE'].map(function(k){
+      var e = d.byExch[k] || {declared:0,filled:0,open:0};
+      var p = e.declared ? (e.filled/e.declared*100) : 0;
+      return '<div title="'+k+': '+e.filled+' of '+e.declared+' declared results have numbers">' +
+        '<div class="flex items-baseline justify-between"><span class="text-xs font-bold text-slate-600">'+k+
+        (k==='BSE'?'<span class="font-normal text-slate-400"> only</span>':'')+'</span>' +
+        '<span class="text-xs font-extrabold '+(e.open?'text-amber-600':'text-emerald-600')+'">'+e.filled+'/'+e.declared+'</span></div>' +
+        '<div class="bar mt-1.5"><span style="background:#22c55e;width:'+p+'%"></span></div></div>';
+    }).join('');
+
+    var rows = d.rows || [];
+    document.getElementById('openCount').textContent =
+      rows.length ? rows.length + ' compan' + (rows.length===1?'y':'ies') + ' · biggest first' : '';
+    var wrap = document.getElementById('openWrap');
+    if (!rows.length) {
+      wrap.innerHTML = '<div class="p-8 text-center"><div class="text-3xl mb-2">✅</div>' +
+        '<div class="text-sm font-bold text-slate-700">Every declared result has numbers</div>' +
+        '<div class="text-xs text-slate-400 mt-1">Nothing outstanding for ' + esc(d.qlabel) + '.</div></div>';
+      return;
+    }
+    wrap.innerHTML =
+      '<table class="w-full text-sm"><thead><tr class="text-[11px] uppercase tracking-wide text-slate-400 border-b border-slate-200">' +
+      '<th class="text-left font-bold px-3 py-2">Company</th>' +
+      '<th class="text-left font-bold px-3 py-2">Exch</th>' +
+      '<th class="text-right font-bold px-3 py-2">M-cap</th>' +
+      '<th class="text-left font-bold px-3 py-2">Declared</th>' +
+      '<th class="text-left font-bold px-3 py-2">Status</th>' +
+      '</tr></thead><tbody>' +
+      rows.map(function(r){
+        return '<tr class="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition">' +
+          '<td class="px-3 py-2"><a href="./stock.html?s='+encodeURIComponent(r[0])+'" class="font-bold text-slate-900 hover:text-indigo-600">'+esc(r[0])+'</a>' +
+            '<div class="text-[11px] text-slate-400">'+esc(r[1])+'</div></td>' +
+          '<td class="px-3 py-2 text-xs font-semibold text-slate-500">'+esc(r[2])+'</td>' +
+          '<td class="px-3 py-2 text-right tabular-nums text-slate-600">'+fmtCr(r[3])+'</td>' +
+          '<td class="px-3 py-2 text-xs text-slate-500">'+esc(r[4])+'</td>' +
+          '<td class="px-3 py-2"><span class="pill '+esc(r[5])+'">'+esc(LBL[r[5]]||r[5])+'</span></td>' +
+        '</tr>';
+      }).join('') + '</tbody></table>';
+  }
+})();
+</script>
+</body>
+</html>

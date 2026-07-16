@@ -826,7 +826,7 @@ dates). Deep links: `?tab=results|feed|calendar&sym=TCS`.
 - **Price-universe ORPHANS (tiny NSE filers absent from sf_stock_data.bin) now show as lightweight rows.**
   Micro NSE names (e.g. OASIS/Oasis Tradelink, BETALA/Betala Global Securities) file real results but have
   no `co` entry (not in the price bin, no parsed XBRL) → they used to hang as "numbers being parsed" forever.
-  Fix: `bse_vision_prep.find_pending` now has an `elif sym not in CO` branch that renders orphan feed filings
+  Fix: `results_pending.classify` (shared module; see §20) has an `elif sym not in CO` branch that renders orphan feed filings
   for the vision routine (name from the feed row, mcap 0); `merge_bse_vision` already routes NSE reads →
   `vision_fills.json`; the page's overlay (`load()`) SYNTHESIZES a minimal `CO[sym]={n,s:'',m:0,orphan:1,q:[…]}`
   from the feed name + vision numbers when `!CO[sym]`, so PAT/rev display (no price/reaction/sector — orphans
@@ -947,3 +947,40 @@ only through SECURITY DEFINER RPCs; daily GitHub backups = recovery). **Schema: 
   Make a page public again: remove it from PRIVATE_PAGES + delete the gate lines in its boot. ⚠️ This is a
   client-side curtain, NOT auth (GitHub Pages can't do logins): the HTML/JSON stay fetchable by URL and the
   Supabase kv reads are public — fine for hobby scale, revisit if real secrecy is ever needed.
+
+---
+
+## 20. RESULTS COVERAGE DASHBOARD  (docs/results-coverage.html — "Results coverage" nav, built 2026-07-16)
+**"How many results were declared this quarter, how many are filled, how many aren't."** The observability
+layer over the vision routine — before this, a stuck/behind routine was invisible until someone noticed an
+empty cell on Quarterly Results.
+
+**Single source of truth — `scripts/results_pending.py`.** The counts on the page and the work the scheduled
+vision routine picks up come from the SAME `classify()` call, so they can never drift. Pure JSON, no
+fitz/network imports, so it's safe in a light CI step. `bse_vision_prep.py` imports `find_pending` from it
+(that logic used to live inside bse_vision_prep — do NOT re-inline it).
+
+`classify()` walks `results_feed.json` for the current quarter (`quarterly_results.json.quarters[0]`),
+dedups by symbol (the feed can carry >1 filing per company), and buckets each declared company:
+- `filled`  — numbers exist (XBRL/OCR cron, or an earlier vision fill: `sf_fundamentals` row w/ rev or pat,
+              `vision_fills[sym][qe]`, or `bse_fundamentals.px[scrip][qe]`)
+- `pending` — no numbers + an attachment exists → the routine WILL fill it on its next run
+- `no_pdf`  — no numbers + NO attachment to render (NSE only; BSE-only names look their attachment up live
+              by scrip, so a missing feed filename doesn't block them). The routine CANNOT fill these —
+              they need the XBRL cron. If this count grows, that's a real gap, not a routine failure.
+- `bse_dup` — NSE-side row flagged also-BSE-listed; handled by the BSE pipeline, excluded from "open".
+
+**Build:** `python -X utf8 scripts/build_results_coverage.py` → `docs/results_coverage.json`
+(`stat{declared,filled,pending,no_pdf,open,vision}`, `byExch{NSE,BSE}`, `rows` = the not-filled list,
+biggest-mcap first). `stat.vision` = how many of the FILLED came from the vision routine rather than XBRL —
+that's the routine's contribution made visible (43/91 on 2026-07-16).
+
+**Refresh:** wired into `refresh-results-hourly.yml` (rebuilds hourly right after the feed, commits
+`docs/results_coverage.json`), AND into the `bse-vision-fill` scheduled routine's step 5 so the page reflects
+a fill immediately instead of waiting for the next hour.
+
+**Gotchas:**
+- Adding the page = new SHELL entry in `docs/sw.js` + **bump `CACHE`** (v22→v23 here) or the PWA serves the
+  stale shell/theme.js. Nav is one line in `theme.js` NAV_GROUPS (Tools) — don't hand-edit each page.
+- `declared` counts unique COMPANIES, not feed rows — a raw `len(rows)` on the feed reads 1 higher when a
+  company files twice (93 rows vs 92 companies on 2026-07-16).
