@@ -517,6 +517,34 @@ V-recovery (Jun-2021: +48%)**. ⚠️ MOVED OFF the Stocks dashboard → its own
   "Oper Profit", paisa-matched per-stock — NOT their proprietary "EBIDT"); **EBIT = op − Depreciation** (idx7/8).
   Banks/NBFCs (`InterestEarned`) excluded from Rev/Op (kept in PAT); their EBIT blank.
 
+- **INSURERS INCLUDED (2026-07-16, Trendlyne-parity):** insurers DO file XBRL since integrated filing
+  (`INTEGRATED_FILING_LI_*` life / `_GI_*` general, in-capmkt ns, ~Mar-2025+; 11 insurers backfilled from the
+  cache via `backfill_insurer_revop.py`, re-runnable). `build_revop.metrics_for` has LI/GI branches:
+  **rev = NetPremiumIncome + IncomeFromInvestmentsNet + InvestmentIncome** (LI) or **PremiumEarned + InvNet +
+  ShareholdersAccountIncomeFromInvestments** (GI) — **EXACT vs Trendlyne's 'Operating Revenue'** (HDFCLIFE con
+  33758.51, ICICIPRULI 28512.71, ICICIGI 7088.22 all verified to the paisa). **op**: GI = rev − OperatingExpenses −
+  NonOperatingExpense (EXACT, ICICIGI 522.10); LI = PBT − other income both accounts (**CLOSE, NOT exact** — TL's
+  life-insurer op is PBT−OI off their own PDF-parsed rows and is wildly volatile per their own quarterly table
+  (HDFCLIFE op: 505.8 / 121.8 / 148.9 / −46.5 across FY26) — irreproducible like their EBIDT; ours is the sane
+  version). Insurer PAT also auto-parses now (`build_fundamentals.xbrl_profit` insurer-tag fallback:
+  ProfitLossAfterTaxAndExtraordinaryItems / ProfitLossAfterTax — HDFCLIFE con 611.19 = TL exact). fin=1.
+  **⚠️ the updater's old `er[6]` fin-flag skip was REMOVED** — it permanently blocked an insurer/bank's second
+  basis (HDFCLIFE con stayed None once std was stored).
+- **Recent-IPO year-ago bases (Jun-2025 for GROWW/EMMVEE/ICICIAMC done 2026-07-16):** NSE XBRLs carry ONLY the
+  current quarter (no comparative context), so a newly-listed name has no year-ago base → excluded from YoY until
+  backfilled. Trendlyne reads the year-ago COMPARATIVE COLUMN printed in the same results PDF. To backfill: pull
+  `pdf_attach` from integrated-filing-results (or the corporate-announcements attachment when 0 bytes), read the
+  year-ago column (mind units: GROWW cr, EMMVEE lakh, ICICIAMC million), compute op = PBT+FC+Dep−OI, write the
+  cell into sf_revop.json + revop_fundamentals.json. NSE symbol gotcha: ICICI Pru AMC = **ICICIAMC** (not ICICIPRAMC).
+- **In-progress quarter membership = LATEST index snapshot** (build_results_season member_fn_live) —
+  reconstitutions land mid-season (ICICIAMC entered N500 2026-07-17) and Trendlyne counts current members;
+  completed quarters keep the point-in-time quarter-end snapshot.
+- **Known LIVE-quarter residuals vs TL (Jun-2026, don't chase):** MRPL revenue — XBRL RevenueFromOperations is
+  gross (41,609), TL nets excise off the PDF (38,254), no excise tag exists, op matches exactly; HDBFS — TL didn't
+  subtract OtherRevenueFromOperations for it (but did for LTF via con−orfo=5212.92 exact) — TL follows each PDF's
+  own presentation, our NBFC rule stays; life-insurer op formula (above). Post-fix Jun-2026 N500: rev 18.9 vs TL
+  19.4, op 15.2 vs 16.8 (life-op residual), same 25 companies.
+
 **SELF-UPDATES DAILY** — wired into `.github/workflows/refresh-fundamentals.yml` (21:15 IST weekdays):
 1. `update_fundamentals.py` scans NSE integrated-filing-results for the last 120 days (ALL companies, one call) and,
    for each new filing, reads net profit (→`sf_fundamentals.json`) AND rev/op via `build_revop.xbrl_revop(xml)`

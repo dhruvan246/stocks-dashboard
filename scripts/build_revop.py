@@ -84,7 +84,21 @@ TAGS = ("RevenueFromOperations", "OtherIncome", "FinanceCosts",
         "InterestEarned",                            # bank operating revenue (TL's bank Revenue col)
         "OperatingProfitBeforeProvisionAndContingencies",   # bank pre-provision profit (TL's bank Op Profit)
         "ProfitLossAfterTaxesMinorityInterestAndShareOfProfitLossOfAssociates",  # bank con bottom line
-        "OtherRevenueFromOperations")                # NBFC: excluded from core revenue (TL-verified LTF)
+        "OtherRevenueFromOperations",                # NBFC: excluded from core revenue (TL-verified LTF)
+        # insurer formats (IRDAI, INTEGRATED_FILING_LI / _GI; Trendlyne-parity 2026-07-16)
+        "NetPremiumIncome",                          # LIFE: policyholders' net premium
+        "IncomeFromInvestmentsNet",                  # LIFE+GI: policyholders' investment income
+        "InvestmentIncome",                          # LIFE: shareholders' investment income
+        "PolicyholdersAccountOtherIncome",           # LIFE: other income (excluded from rev AND op)
+        "ShareholdersAccountOtherIncome",            # LIFE: other income (excluded from op)
+        "ProfitLossAfterTaxAndExtraordinaryItems",   # LIFE: PAT
+        "ProfitLossBeforeTax",                       # LIFE: PBT (both accounts combined)
+        "PremiumEarned",                             # GI: net earned premium
+        "ShareholdersAccountIncomeFromInvestments",  # GI: shareholders' investment income
+        "OperatingExpenses",                         # GI: total policyholders'-account expenses
+        "NonOperatingExpense",                       # GI: shareholders'-account net expense
+        "ProfitOrLossBeforeTax",                     # GI: PBT ('Or' variant)
+        "ProfitLossAfterTax")                        # GI: PAT
 RE_TAG = {t: {c: re.compile(r'<in-(?:bse-fin|capmkt):' + t + r' contextRef="' + c + r'"[^>]*>([-0-9.eE+]+)<')
               for c in ("OneD", "FourD")} for t in TAGS}
 
@@ -120,6 +134,40 @@ def metrics_for(xml, ctx):
                   EXCLUDES RRB-associate share, MAHABANK Q1FY27 2020.54 vs 2023.32).
       NBFC Ind-AS (InterestEarned, no bank op tag): rev = RevenueFromOperations - OtherRevenueFromOperations
                   (LTF 5212.92), op = PBET + FC + Dep - OI - OtherRevFromOps (LTF 3238.64), ebit = None."""
+    # LIFE INSURER (IRDAI 'LI' format, e.g. HDFCLIFE/ICICIPRULI/SBILIFE/LICI):
+    #   rev = NetPremiumIncome + IncomeFromInvestmentsNet (policyholders) + InvestmentIncome
+    #         (shareholders) — matches Trendlyne's 'Operating Revenue' to the paisa (HDFCLIFE
+    #         Q1FY27 con 33758.51, std 33545.32; ICICIPRULI std 28512.71 — all verified exact).
+    #   op  = ProfitLossBeforeTax − other income (both accounts). Trendlyne's insurer op is
+    #         PBT − their 'Other Income' row; their OI/PBT come from the PDF and differ from the
+    #         XBRL by small regroupings (HDFCLIFE std: TL 505.8 vs this 532.2), so op is CLOSE
+    #         but not paisa-exact for life insurers — rev and PAT are exact.
+    npi = fnum(xml, "NetPremiumIncome", ctx)
+    if npi is not None:
+        inv = fnum(xml, "IncomeFromInvestmentsNet", ctx) or 0.0
+        shinv = fnum(xml, "InvestmentIncome", ctx) or 0.0
+        rev = npi + inv + shinv
+        pbt = fnum(xml, "ProfitLossBeforeTax", ctx)
+        oi = ((fnum(xml, "PolicyholdersAccountOtherIncome", ctx) or 0.0)
+              + (fnum(xml, "ShareholdersAccountOtherIncome", ctx) or 0.0))
+        op = (pbt - oi) if pbt is not None else None
+        pat = fnum(xml, "ProfitLossAfterTaxAndExtraordinaryItems", ctx)
+        return (rev / CR, op / CR if op is not None else None, None,
+                pat / CR if pat is not None else None, None)
+    # GENERAL INSURER (IRDAI 'GI' format, e.g. ICICIGI/GODIGIT/STARHEALTH/NIACL):
+    #   rev = PremiumEarned + IncomeFromInvestmentsNet + ShareholdersAccountIncomeFromInvestments
+    #   op  = rev − OperatingExpenses − NonOperatingExpense
+    #   Both verified EXACT vs Trendlyne (ICICIGI Q1FY27: rev 7088.22, op 522.10).
+    pe = fnum(xml, "PremiumEarned", ctx)
+    if pe is not None:
+        rev = (pe + (fnum(xml, "IncomeFromInvestmentsNet", ctx) or 0.0)
+               + (fnum(xml, "ShareholdersAccountIncomeFromInvestments", ctx) or 0.0))
+        opexp = fnum(xml, "OperatingExpenses", ctx)
+        nonop = fnum(xml, "NonOperatingExpense", ctx) or 0.0
+        op = (rev - opexp - nonop) if opexp is not None else None
+        pat = fnum(xml, "ProfitLossAfterTax", ctx)
+        return (rev / CR, op / CR if op is not None else None, None,
+                pat / CR if pat is not None else None, None)
     pat = fnum(xml, "ProfitLossForPeriod", ctx)
     if pat is None:
         pat = fnum(xml, "ProfitLossForThePeriod", ctx)   # banks tag with 'The'
@@ -172,7 +220,7 @@ def xbrl_revop(xml, basis_hint=None):
     for m in re.finditer(r'NatureOfReportStandaloneConsolidated contextRef="([^"]+)"[^>]*>([^<]+)<', xml):
         nat[m.group(1)] = m.group(2).strip().lower()
     hint = (basis_hint or "").lower()
-    fin = 1 if "InterestEarned" in xml else 0
+    fin = 1 if ("InterestEarned" in xml or "NetPremiumIncome" in xml or "PremiumEarned" in xml) else 0
     rev_std = op_std = ebit_std = rev_con = op_con = ebit_con = None
     one_nat = nat.get("OneD", "") or hint
     rev, op, ebit, _, _ = metrics_for(xml, "OneD")
@@ -217,7 +265,9 @@ def parse_file(path, fname):
     if not sm:
         return None
     sym = sm.group(1).strip().upper()
-    fin = 1 if ("InterestEarned" in xml or fname.startswith("BANKING") or "NBFC" in fname) else 0
+    fin = 1 if ("InterestEarned" in xml or "NetPremiumIncome" in xml or "PremiumEarned" in xml
+                or fname.startswith("BANKING") or "NBFC" in fname
+                or "_LI_" in fname or "_GI_" in fname) else 0
 
     one_nat = (RE_NAT["OneD"].search(xml) or [None, ""])
     one_nat = one_nat.group(1).strip().lower() if hasattr(one_nat, "group") else ""

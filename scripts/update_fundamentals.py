@@ -117,8 +117,11 @@ def main():
             # already known (a bank is "known" once flagged fin). Keeps the wide window cheap.
             pat_have = ((is_con and (con is not None or (existing and existing[3] is not None))) or
                         (not is_con and (std is not None or (existing and existing[1] is not None))))
-            rev_have = ((is_con and (rCon is not None or rFin or (er and (er[1] is not None or er[6])))) or
-                        (not is_con and (rStd is not None or rFin or (er and (er[0] is not None or er[6])))))
+            # NB: no `er[6]` (fin-flag) shortcut here — banks/NBFCs/insurers all carry per-basis
+            # rev/op since 2026-07, so "flagged fin" no longer means "nothing to extract"; the old
+            # shortcut left e.g. HDFCLIFE's consolidated cell permanently None once std was stored.
+            rev_have = ((is_con and (rCon is not None or (er and er[1] is not None))) or
+                        (not is_con and (rStd is not None or (er and er[0] is not None))))
             if pat_have and rev_have:
                 continue
             try:

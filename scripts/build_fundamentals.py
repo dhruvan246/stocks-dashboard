@@ -74,6 +74,20 @@ def xbrl_profit(xml, basis_hint=None):
     for m in re.finditer(r'<in-(?:bse-fin|capmkt):ProfitLossFor(?:The)?Period contextRef="([^"]+)"[^>]*>([^<]+)<', xml):
         if m.group(1) not in plp:
             plp[m.group(1)] = round(float(m.group(2)) / 1e7, 2)   # rupees -> crore
+    # INSURERS (IRDAI integrated-filing LI/GI XBRL, 2025+) tag PAT differently — read it so the
+    # daily updater fills insurer quarters automatically (verified vs Trendlyne: HDFCLIFE Q1FY27
+    # con 611.19, std 611.42; ICICIGI std 403.17; ICICIPRULI std 386.18). Life insurers:
+    # ProfitLossAfterTaxAndExtraordinaryItems; general insurers: ProfitLossAfterTax (exact tag —
+    # the regex boundary ' contextRef' keeps it from matching the ...AndExtraordinaryItems or
+    # bank ...AfterTaxesMinorityInterest variants).
+    if not plp:
+        for t in ("ProfitLossAfterTaxAndExtraordinaryItems", "ProfitLossAfterTax"):
+            for m in re.finditer(r'<in-(?:bse-fin|capmkt):' + t + r' contextRef="([^"]+)"[^>]*>([^<]+)<', xml):
+                if m.group(1) not in plp:
+                    try: plp[m.group(1)] = round(float(m.group(2)) / 1e7, 2)
+                    except Exception: pass
+            if plp:
+                break
     attr = {}                                            # owners' share (consolidated only)
     for m in re.finditer(r'<in-(?:bse-fin|capmkt):ProfitOrLossAttributableToOwnersOfParent contextRef="([^"]+)"[^>]*>([^<]+)<', xml):
         if m.group(1) not in attr:

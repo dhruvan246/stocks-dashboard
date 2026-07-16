@@ -202,7 +202,7 @@ def main():
                 chosen = snp
         return {rename.get(s, s) for s in chosen["symbols"]} if chosen else set()
 
-    def build(label, key, note, member_fn, min_rep, include_fin=False):
+    def build(label, key, note, member_fn, min_rep, include_fin=False, member_fn_live=None):
         qs = []
         last_qe = last_members = None; last_rep = 0   # newest quarter with any reporter (cand is chronological)
         for qe in cand:
@@ -221,7 +221,12 @@ def main():
         # renders blank bars with no in-progress tag (live bug, Nifty 500 Q1FY27). While partial,
         # recompute over whatever sample exists (min_n=1) and flag it for the dimmed/amber UI.
         if last_qe is not None and last_rep < 0.5 * len(last_members):
-            row, _ = agg_quarter(last_members, last_qe, pat, revop, min_n=1, include_fin=include_fin)
+            # In-progress quarter: use the LATEST index snapshot, not the quarter-end one —
+            # reconstitutions land DURING the reporting season (ICICIAMC entered Nifty 500 on
+            # 2026-07-17, mid-Q1FY27 season) and Trendlyne's live dashboard counts current
+            # members. Finished quarters keep point-in-time membership (survivorship-free).
+            live_members = member_fn_live(last_qe) if member_fn_live else last_members
+            row, _ = agg_quarter(live_members, last_qe, pat, revop, min_n=1, include_fin=include_fin)
             row["partial"] = True
             qs = [r for r in qs if r["qe"] != last_qe] + [row]
         qs.sort(key=lambda r: r["qe"])
@@ -251,7 +256,8 @@ def main():
                 " Banks/NBFCs are included: their revenue = interest earned, operating profit = pre-provision." % index)
         universes.append(build(
             index, index, note,
-            (lambda snps: (lambda qe: snap_as_of(snps, iso(qe))))(snaps), 5, include_fin=True))
+            (lambda snps: (lambda qe: snap_as_of(snps, iso(qe))))(snaps), 5, include_fin=True,
+            member_fn_live=(lambda snps: (lambda qe: snap_as_of(snps, "9999-99-99")))(snaps)))
 
     universes = [u for u in universes if u["quarters"]]
     for u in universes:
