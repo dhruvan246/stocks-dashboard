@@ -100,7 +100,15 @@ def agg_total(pairs, min_n=MIN_N):
     (CONSOLIDATED-preferred basis, Trendlyne-match). Aggregate only companies PROFITABLE IN BOTH periods (base AND current > 0) —
     a loss/near-zero base blows the ratio up (mid/small-cap PAT read 72%), and filtering base-only made
     it swing the other way (Nifty 500 PAT 1.9%, Smallcap -15%). Both>0 is the standard stable 'total
-    profit growth'. Revenue/op are unaffected (both always > 0)."""
+    profit growth'.
+
+    ⚠️ NOTE (2026-07-17): the old claim here that "revenue/op are unaffected (both always > 0)" is FALSE.
+    OP CAN HAVE A NEGATIVE BASE — BHEL Q1FY27's year-ago op is -537.14 (a genuine loss quarter, PAT -455),
+    so this filter silently DROPS it from the op total, which is why our Nifty 500 Jun-2026 op total reads
+    18.07% vs Trendlyne's 20.70%: TL sums every company in, negative bases included (their per-company % on
+    a negative base is (cur-base)/abs(base) — that's their +193.80% for BHEL, off the SAME -537.14 base we
+    hold). Including it takes our op total to 19.90%. Left as-is deliberately: flipping the rule would also
+    move TOTAL PAT on every index/quarter, where both>0 was an explicit choice. See DATA_RUNBOOK §11."""
     pairs = [(n, a) for n, a in pairs if a > 0 and n > 0]
     sn = sum(n for n, a in pairs)
     sa = sum(a for n, a in pairs)

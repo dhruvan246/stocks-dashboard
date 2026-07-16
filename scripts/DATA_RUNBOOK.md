@@ -593,17 +593,28 @@ V-recovery (Jun-2021: +48%)**. ⚠️ MOVED OFF the Stocks dashboard → its own
   (op = PBET+FC+Dep−OtherIncome; con = 222.67+1491.71+57.10−50.86 = 1720.62). TL's implied base 2639.29/1720.69 ✓.
   ⚠️ **PEL's own stored Jun-2025 (rev 2642.67) is the PRE-merger entity's originally-reported figure — do NOT lift it**;
   the PDF comparative (2639.25) is what the merged entity restates and what TL reads. (PAT base already existed.)
-- **Known LIVE-quarter residuals vs TL (Jun-2026; re-bridged 2026-07-17 POST-fix, SAME 35 declared cos):**
-  N500 totals ours **rev 19.6 / op 18.1** vs TL cards **19.9 / 20.7** — **29 of 35 companies now agree within 0.3pp on
-  BOTH** metrics. **REV (−0.3pp, fully explained):** MRPL +0.30 (XBRL RevenueFromOperations is gross 41,609/20,988 =
-  +98%, TL nets excise off the PDF 38,254/17,356 = +120%, no excise tag exists — keep); ICICIAMC +0.01 (base 1,330.67
-  vs TL 1,313). **OP (−2.6pp): only ~1.3pp is OURS** — BHEL +0.49, HDFCLIFE +0.52 + ICICIPRULI +0.26 (life-insurer op
-  irreproducible, above). ⚠️ The other **~1.4pp is INSIDE Trendlyne: their OP CARD (20.7) ≠ Σ of their OWN 35-row
-  table (19.34)**, and no subset of their rows reproduces 20.7 (excl banks+insurers is closest at 20.55); their REV
-  card DOES equal their table Σ (19.91). So past 19.3 the op card is TL-internal/proprietary (like EBIDT) — don't chase.
-  - **BHEL:** Jun-2025 was a genuine LOSS quarter (PAT −455) so our op base **−537.14** is formula-consistent — our
-    Jun-2026 rev/op/PAT (7697.72 / 503.86 / 376.71) all match TL to the paisa — and `agg_total`'s both>0 rule drops it
-    from our Σ; TL carries a POSITIVE +171 base (→ +194%). Their base differs, not our formula. Low value to chase.
+- **⚠️ NEVER back-derive a TL base as `cur/(1+g/100)` — TL uses `(cur−base)/ABS(base)` when the base is NEGATIVE.**
+  That mistake invented two phantom findings on 2026-07-16 (both since disproved): "TL's BHEL base is +171" and "TL's
+  op CARD ≠ Σ of TL's own table". **Decode the sign from TL's own margin columns instead:** BHEL Q1FY27 margin 6.55%
+  with "Margin% YoY Change" +16.34 → base margin = **−9.79%** × base rev 5487 = **−537.4 = our −537.14**. Their
+  +193.80% is exactly (503.86−(−537.14))/537.14. **TL's base IS ours**; BHEL is NOT a data difference.
+- **Known LIVE-quarter residuals vs TL (Jun-2026; re-bridged 2026-07-17 POST-ORFO-fix, SAME 35 declared cos):**
+  N500 totals ours **rev 19.6 / op 18.1** vs TL cards **19.9 / 20.7**; **29 of 35 companies agree within 0.3pp on
+  BOTH**. Every pp is now accounted for — no mystery left:
+  - **REV −0.3pp:** MRPL +0.30 (XBRL RevenueFromOperations is gross 41,609/20,988 = +98%, TL nets excise off the PDF
+    38,254/17,356 = +120%, no excise tag exists — keep); ICICIAMC +0.01 (**OURS IS RIGHT** — base 1,330.67 IS the
+    PDF's printed Jun-25 column, 13,306.7 million ÷ 10; TL's implied 1,313.4 is off. Don't "fix" toward TL).
+  - **OP −2.6pp = 1.83 (BHEL convention) + 0.80 (life insurers):**
+    - **BHEL +1.83pp is a CONVENTION difference, not data.** TL sums ALL 35 into the index total including BHEL's
+      NEGATIVE base; `agg_total()`'s both>0 rule DROPS it. Adopt TL's rule and our op total goes **18.07 → 19.90**
+      (TL's card 20.70 = Σ of their 35 rows with BHEL's base negative — verified to the decimal).
+      ⚠️ **`agg_total`'s docstring claim "Revenue/op are unaffected (both always > 0)" is FALSE** — BHEL Q1FY27 is a
+      live counter-example (op base −537.14 on a genuine loss quarter, PAT −455). Changing the rule is a product
+      decision (it also moves TOTAL PAT everywhere, where both>0 was chosen deliberately) — **ask the user first**;
+      the safe form is Σcur/Σbase over all cos with both values present, guarded on Σbase > 0.
+    - **HDFCLIFE +0.52 / ICICIPRULI +0.26** — life-insurer op irreproducible (above). Their rev + PAT are exact.
+  - **EMMVEE** (op base 350.49 vs TL's implied 347.4, ~0.01pp): **OURS IS RIGHT** — derived from EMMVEE's own PDF
+    comparative, PBT 240.19 + FC 53.11 + Dep 71.59 − OI 14.40 = 350.49 (lakh ÷ 100); our current op 548.10 = TL exact.
   **Page-default gotcha when a user compares:** our page opens on "All liquid" + **MEDIAN** — switch the universe to
   **Nifty 500** AND toggle **TOTAL** before comparing to TL's cards, or the numbers look wrong for no reason.
 
