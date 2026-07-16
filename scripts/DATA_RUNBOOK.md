@@ -50,7 +50,14 @@ Pipeline (the workflow, in order — to run by hand do the same):
 1. `python3 scripts/build_corp_actions.py` — refresh official split/bonus ratios (exact ex-date factors).
 2. `python3 scripts/update_sf_data.py` — append missing trading days to `docs/sf_stock_data.bin`
    (writes `docs/.sf_updated` and bumps `docs/sf_meta.json {end}` only when it actually appended).
-3. Publish `docs/sf_stock_data.bin` as the GitHub Release asset **`data`** (`gh release upload data … --clobber`).
+2b. `python3 scripts/detect_renames.py` — **rename TRIPWIRE**: same-ISIN renames auto-merge in step 2,
+   but an ISIN-CHANGED rename (GUJGASLTD→GUJENERGY, MIRCELECTR→ONIDA, LYPSAGEMS→AURUS, the 9 Axis
+   ETFs 2026-07-03) starts a FRESH series with the history stranded on the dead ticker. Detects via
+   NSE symbolchange.csv + company-name match on (new series ↔ just-ended series); prints ⚠️ lines and
+   writes `scripts/_rename_suspects.json` (committed with the marker). Each suspect → verify price
+   continuity at the join + the announcement, then MANUAL_MERGE in update_sf_data.py; false positive →
+   ack in `scripts/_rename_ack.json` {"OLD|NEW":"why"}. Merged pairs unflag themselves (old symbol
+   leaves the bin). Also check the fundamentals/membership side for the pair (apply_owners_full REV map).
 4. `python3 scripts/split_sf_data.py` → force-push `sf_stock_data_1.bin`+`_2.bin`+`sf_meta.json` to the
    **sf-data** Pages repo (secret `SF_DATA_TOKEN`). Browser loads from there (same origin, no CORS).
 5. Commit ONLY `docs/sf_meta.json` (≈20-byte version marker) — clients re-download when `{end}` bumps.

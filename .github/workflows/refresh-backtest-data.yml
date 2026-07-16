@@ -48,6 +48,14 @@ jobs:
       - name: Append missing trading days to sf_stock_data.bin
         run: python3 scripts/update_sf_data.py
 
+      # TRIPWIRE: an ISIN-changed rename (GUJGASLTD->GUJENERGY class) starts a FRESH series the
+      # ISIN auto-merge can't catch — the stock looks like a days-old IPO with its history
+      # stranded on the dead ticker. Detect via NSE's symbolchange.csv + company-name match and
+      # report loudly; each suspect needs a hand-verified MANUAL_MERGE (update_sf_data.py).
+      # Report-only, never fails the run; suppression via scripts/_rename_ack.json.
+      - name: Detect unmerged ticker renames (ISIN-changed)
+        run: python3 -X utf8 scripts/detect_renames.py || echo "(rename tripwire errored — non-fatal)"
+
       # The 80+ MB dataset is published as a RELEASE ASSET (replaced in place),
       # NOT committed — committing it daily would grow the repo by ~2.5 GB/month.
       # The backtest pages fetch the release URL first and fall back to the
@@ -102,10 +110,12 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           cp docs/sf_meta.json /tmp/sf_meta.json     # preserve the updater's fresh marker across reset
+          [ -f scripts/_rename_suspects.json ] && cp scripts/_rename_suspects.json /tmp/_rename_suspects.json
           for attempt in 1 2 3 4 5; do
             git fetch origin main && git reset --hard origin/main
             cp /tmp/sf_meta.json docs/sf_meta.json
             git add docs/sf_meta.json
+            [ -f /tmp/_rename_suspects.json ] && cp /tmp/_rename_suspects.json scripts/_rename_suspects.json && git add -f scripts/_rename_suspects.json
             if git diff --cached --quiet; then echo "marker unchanged"; exit 0; fi
             git commit -m "Backtest data version marker $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
             if git push origin HEAD:main; then echo "pushed marker (attempt #$attempt)"; exit 0; fi
