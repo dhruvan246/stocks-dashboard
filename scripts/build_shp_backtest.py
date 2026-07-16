@@ -54,17 +54,24 @@ MIN_HOLD = 5         # a rebalance needs this many qualifiers, else hold cash (f
 REB_LAG_DAYS = 22    # rebalance this many calendar days after quarter end
 PICKS_CAP = 60       # picks stored per rebalance (page shows them)
 
+# (key, label, metric, sign, K, topN, rank) — rank "pg" re-sorts qualifiers by point-in-time
+# owners-PAT YoY growth (latest quarter ANNOUNCED by the rebalance day vs its year-ago, same
+# basis, positive base) and takes topN. rank None = sort by streak size.
 VARIANTS = [
-    ("fii2",      "FII raising 2 qtrs",        "fii", +1, 2, None),
-    ("fii3",      "FII raising 3 qtrs",        "fii", +1, 3, None),
-    ("fii2top20", "FII raising 2 qtrs · Top 20","fii", +1, 2, 20),
-    ("dii2",      "DII raising 2 qtrs",        "dii", +1, 2, None),
-    ("both2",     "FII & DII both raising 2q", "both", +1, 2, None),
-    ("fiicut2",   "FII cutting 2 qtrs (inverse)","fii", -1, 2, None),
+    ("fii2",      "FII raising 2 qtrs",        "fii", +1, 2, None, None),
+    ("fii3",      "FII raising 3 qtrs",        "fii", +1, 3, None, None),
+    ("fii2top20", "FII raising 2 qtrs · Top 20","fii", +1, 2, 20,  None),
+    ("dii2",      "DII raising 2 qtrs",        "dii", +1, 2, None, None),
+    ("dii2pg5",   "DII raising 2q → Top 5 profit growth", "dii", +1, 2, 5, "pg"),
+    ("fii2pg5",   "FII raising 2q → Top 5 profit growth", "fii", +1, 2, 5, "pg"),
+    ("pg5",       "Top 5 profit growth (no holding filter)", "ew", +1, 2, 5, "pg"),
+    ("both2",     "FII & DII both raising 2q", "both", +1, 2, None, None),
+    ("fiicut2",   "FII cutting 2 qtrs (inverse)","fii", -1, 2, None, None),
     # the FAIR yardstick: any equal-weight N500 basket beat the cap-weighted index in 2020-26,
     # so a signal only "works" if it also beats THIS baseline (same dates, same equal weighting).
-    ("ewall",     "Every N500 stock (equal-weight)", "ew", +1, 2, None),
+    ("ewall",     "Every N500 stock (equal-weight)", "ew", +1, 2, None, None),
 ]
+FUND = os.path.join(ROOT, "docs", "sf_fundamentals.json")
 
 def load_bin():
     D = json.loads(gzip.decompress(open(BIN, "rb").read()))
@@ -99,6 +106,36 @@ def main():
     # benchmark: iso -> level
     bpx = json.load(open(BENCH, encoding="utf-8"))["px"]
     bkeys = sorted(bpx)
+
+    # fundamentals: SYM -> [[qe, std, annStd, conOwners, annCon] ...] (ann dates 15:30-gated)
+    fund = json.load(open(FUND, encoding="utf-8"))
+    try:
+        ren_f = json.load(open(RENAME, encoding="utf-8"))
+    except Exception:
+        ren_f = {}
+    def fund_rows(sym):
+        s, seen = sym, set()
+        while s not in fund and s in ren_f and s not in seen:
+            seen.add(s); s = ren_f[s]
+        return fund.get(s) or fund.get(sym)
+
+    def profit_yoy(sym, reb_int):
+        """Owners-PAT YoY % for the latest quarter ANNOUNCED by reb day (same basis both
+        periods, positive base) — the engine's profitYoyPct convention. None if unavailable."""
+        rows = fund_rows(sym)
+        if not rows: return None
+        by_qe = {r[0]: r for r in rows}
+        for r in sorted(rows, key=lambda r: -r[0]):
+            announced = False
+            for vi, ai in ((3, 4), (1, 2)):          # con(owners) first, else std — same basis both periods
+                v, a = r[vi], r[ai]
+                if v is None or not a or a > reb_int: continue
+                announced = True
+                b = by_qe.get(r[0] - 10000)
+                if b and b[vi] is not None and b[vi] > 0:
+                    return (v - b[vi]) / b[vi] * 100.0
+            if announced: return None                # latest reported quarter has no clean base -> excluded
+        return None
 
     # global daily axis (int dates) from the benchmark (dense, matches NSE calendar)
     axis = [int(k.replace("-", "")) for k in bkeys]
@@ -187,7 +224,7 @@ def main():
     # ---- simulate each variant over the common axis ----
     first_qi = None  # first quarter index usable by the deepest variant runs per-variant instead
     results = []
-    for key, label, metric, sign, K, topn in VARIANTS:
+    for key, label, metric, sign, K, topn, rank in VARIANTS:
         navs, navd = [], []
         holdings = None   # list of (bk, entry_close, weight_value)
         nav = 100.0
@@ -202,6 +239,15 @@ def main():
                 if q == qes[qi]: qe, reb = q, r
             if not qe or reb > today_int: continue
             qual = qualifiers(qe, metric, sign, K, reb)
+            pgmap = {}
+            if rank == "pg":
+                ranked = []
+                for s, bk, c in qual:
+                    pg = profit_yoy(sym=s, reb_int=reb)
+                    if pg is None: continue
+                    pgmap[s] = round(pg, 1); ranked.append((s, bk, c, pg))
+                ranked.sort(key=lambda t: -t[3])
+                qual = [(s, bk, c) for s, bk, c, pg in ranked]
             if topn: qual = qual[:topn]
             if not started and len(qual) < MIN_HOLD: continue
             # mark existing book to this reb day, realize NAV
@@ -217,9 +263,9 @@ def main():
                 per_reb_returns.append((rr, (b1 / b0 - 1) if (b0 and b1) else None))
             started = True
             # per-pick forward return needs next reb; fill later (baseline stores no picks — no signal)
-            picks = [] if metric == "ew" else [[s, c] for s, bk, c in qual[:PICKS_CAP]]
+            picks = [] if (metric == "ew" and not rank) else [[s, c] for s, bk, c in qual[:PICKS_CAP]]
             rebal_rows.append({"qe": qe, "date": iso_of(reb), "n": len(qual), "picks": picks,
-                               "_qual": [(s, bk, c) for s, bk, c in qual]})
+                               "_qual": [(s, bk, c) for s, bk, c in qual], "_pg": pgmap})
             held_counts.append(len(qual))
             if len(qual) >= max(1, MIN_HOLD if not topn else 1):
                 w = nav / len(qual)
@@ -263,13 +309,14 @@ def main():
                     bk = res(p[0])
                     c0, c1 = close_at(bk, r0), close_at(bk, r1)
                     p.append(round((c1 / c0 - 1) * 100, 1) if (c0 and c1) else None)
+                    if row["_pg"]: p.append(row["_pg"].get(p[0]))   # [sym, cum, ret, pgYoY%]
                 if "ret" not in row:
                     tot = nav_out[-1]
                     base_n = nav_at_reb.get(r0)
                     row["ret"] = round((tot / base_n - 1) * 100, 2) if base_n else None
                     b0, b1 = bpx.get(row["date"]), bpx.get(iso_of(r1))
                     row["bret"] = round((b1 / b0 - 1) * 100, 2) if (b0 and b1) else None
-                del row["_qual"]
+                del row["_qual"]; del row["_pg"]
 
         # stats
         stats = {}
@@ -295,13 +342,18 @@ def main():
         # next-rebalance preview from the newest (possibly still-filing) quarter
         nxt = None
         qi = len(qes) - 1
-        if qi >= K and metric != "ew":
+        if qi >= K and not (metric == "ew" and not rank):
             qe = qes[qi]
             d = datetime.date.fromisoformat(qe) + datetime.timedelta(days=REB_LAG_DAYS)
             while d.weekday() >= 5: d += datetime.timedelta(days=1)   # next weekday (informational)
             nreb = int(d.strftime("%Y%m%d"))                          # may be beyond the price axis (future)
             if nreb > today_int:
                 qual = qualifiers(qe, metric, sign, K, today_int + 1)  # filings known today
+                if rank == "pg":
+                    ranked = [(s, bk, c, profit_yoy(s, today_int + 1)) for s, bk, c in qual]
+                    ranked = [t for t in ranked if t[3] is not None]
+                    ranked.sort(key=lambda t: -t[3])
+                    qual = [(s, bk, c) for s, bk, c, pg in ranked]
                 if topn: qual = qual[:topn]
                 nxt = {"qe": qe, "date": d.isoformat(), "forming": True, "n": len(qual),
                        "picks": [[s, c] for s, bk, c in qual[:PICKS_CAP]]}

@@ -322,6 +322,7 @@ function renderRebs(v){
       '<tr class="hidden" id="btx'+i+'"><td colspan="7" class="px-3 pb-3 pt-1 bg-slate-50/60">'+
         r.picks.map(p=>'<a class="pickchip" href="./stock.html?sym='+encodeURIComponent(p[0])+'">'+esc(p[0])+
           ' <span class="text-slate-400">+'+p[1].toFixed(1)+'pp</span>'+
+          (p.length>3&&p[3]!=null?' <span class="text-slate-400">· PAT '+fmtSign(p[3],0)+'%</span>':'')+
           (p[2]==null?'':' <b class="'+(p[2]>=0?'pos':'neg')+'">'+fmtSign(p[2])+'%</b>')+'</a>').join('')+
         (r.picks.length===0?'<div class="text-[11px] text-slate-400 mt-1">All '+r.n+' point-in-time Nifty 500 members held equal-weight — the no-signal baseline.</div>':
          r.n>r.picks.length?'<div class="text-[11px] text-slate-400 mt-1">Showing the '+r.picks.length+' biggest stake-raises of '+r.n+' holdings (all held equal-weight).</div>':'')+
