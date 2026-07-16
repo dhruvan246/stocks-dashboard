@@ -1463,6 +1463,11 @@ Fix sweep (all steps, in order — verify against the LIVE release asset, never 
    `docs/sf_fundamentals.json` + `scripts/fundamentals.json` + `docs/sf_revop.json` +
    `scripts/revop_fundamentals.json`, assert overlap rows equal, then `d[NEW]=d.pop(OLD)`
    (the OLD rows win — true announce dates; the new-key rows are IPO-base backfills/deadline-stamped).
+4b. `scripts/_rename_map.json` += `{"OLD":"NEW"}` — the old-ticker→bin-key bridge for point-in-time
+   N500 master-history joins (build_shp_backtest / build_results_season / market-mood) and FUND_ALIAS
+   regeneration. Without it a renamed ex-member silently drops out of those builds once the old key
+   leaves the bin (GUJGASLTD sat in 11 N500 snapshots and this step was missed on day one — fixed with
+   the 2026-07-17 batch). A full rebuild regenerates the file, but the entry is needed until then.
 5. `scripts/apply_owners_full.py` **ALIAS** += `"OLD":"NEW"` (_reattr_owners stays keyed by OLD).
 6. `scripts/bse_scrips.json` `by_id`: rename key (scrip code unchanged; `by_isin` already fine).
 7. `scripts/fno_history.json` **+ `docs/stock_data.bin` `fnoHistory`**: replace OLD→NEW in every
@@ -1474,3 +1479,12 @@ Fix sweep (all steps, in order — verify against the LIVE release asset, never 
 GUJENERGY specifics: rename eff 2026-07-01 (Gujarat Gas→Gujarat Energy Ltd, GSPL scheme), ISIN
 INE844O01030 unchanged, join 327.05→340.00 continuous, 2026-07-02 −11.75% = scheme-demerger ex-date
 (kept via NSE noadjust), 2019 split factor keyed under GUJENERGY is pre-join → adj=1.
+Batch 2026-07-17 (rest of the day-one tripwire catch, merged the same way): MIRCELECTR→ONIDA
+(2026-06-19, history to 1996) and LYPSAGEMS→AURUS (2026-07-14, to 2013) — full sweep incl. BSE scrip
+key + ALIAS; ⚠️ ONIDA's post-rename re-parse had stored the **H1-FY26 cumulative as the Sep-25
+"quarter"** (rev 304.16=140.85+163.31, pat −14.27=−12.49+−1.78) — dropped for the at-filing-time
+MIRCELECTR rows (true Sep-25 pat −1.78); always prefer the OLD key's rows on overlap. Plus the 9 Axis
+ETF renames of 2026-07-03 (AXISTECETF→ITAXIS, AXISNIFTY→NIFTYAXIS, AXISBNKETF→BNKETFAXIS,
+AXISHCETF→HEALTHAXIS, AXISCETF→CONSUMAXIS, AXSENSEX→SENSEXAXIS, AXISGOLD→GOLDAXIS,
+AXISVALUE→VALUEAXIS, AXISILVER→SILVERAXIS): price+_rename_map only — no fundamentals/BSE/F&O side
+(verified absent), steps 4–7 n/a. All 11 joins 0.95–1.05, adj=1.

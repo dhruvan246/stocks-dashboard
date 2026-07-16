@@ -272,12 +272,21 @@ def main():
                                             # Nifty-500 membership + fundamentals use LTM, so the pre-2022 price
                                             # history (under LTIM) was orphaned -> LTM missing 2020-2022. Prices
                                             # continuous at the join (5065.75 -> 4975.40, no split); no LTM CAs.
-                    "GUJENERGY": "GUJGASLTD"}  # Gujarat Gas -> Gujarat Energy Ltd, symbol change eff 2026-07-01 (NSE
+                    "GUJENERGY": "GUJGASLTD",  # Gujarat Gas -> Gujarat Energy Ltd, symbol change eff 2026-07-01 (NSE
                                             # symbolchange.csv). ISIN INE844O01030 UNCHANGED, but the Jul-1 bhavcopy row
                                             # carried no ISIN so the stub was created isin-less and the auto-merge never
                                             # fired. Prices continuous at the join (327.05 -> 340.00, no ratio); the -12%
                                             # 2026-07-02 scheme-demerger ex-date is kept via NSE noadjust, and the 2019
                                             # split factor now keyed under GUJENERGY has ex < join, so adj stays 1.
+                    # --- rest of the 2026-07 tripwire batch (same ISIN-less day-one stub disease, ISINs
+                    # unchanged per EQUITY_L). All verified: official symbolchange.csv pair + price-continuous
+                    # join (ratio 0.95-1.05, no split-like jump) + no official CAs on the new tickers (adj=1).
+                    "ONIDA": "MIRCELECTR",  # Mirc Electronics -> Onida Electronics (2026-06-19; 38.22 -> 40.10)
+                    "AURUS": "LYPSAGEMS",   # Lypsa Gems -> Aurus Gem Corporation (2026-07-14; 4.63 -> 4.41)
+                    # Axis MF's 9 ETF ticker renames of 2026-07-03 (NAV-continuous at the join):
+                    "ITAXIS": "AXISTECETF", "NIFTYAXIS": "AXISNIFTY", "BNKETFAXIS": "AXISBNKETF",
+                    "HEALTHAXIS": "AXISHCETF", "CONSUMAXIS": "AXISCETF", "SENSEXAXIS": "AXSENSEX",
+                    "GOLDAXIS": "AXISGOLD", "VALUEAXIS": "AXISVALUE", "SILVERAXIS": "AXISILVER"}
     merged = 0
     for new, old in MANUAL_MERGE.items():
         on = data.get(new); oo = data.get(old)
@@ -306,6 +315,10 @@ def main():
                 if nm.get("name") in (None, new) and om.get("name"): nm["name"] = om["name"]
                 if nm.get("ind") in (None, "Unknown") and om.get("ind"): nm["ind"] = om["ind"]
                 if not nm.get("isin") and om.get("isin"): nm["isin"] = om["isin"]
+                # repoint the ISIN index at the survivor so same-ISIN auto-merge protection covers
+                # any FUTURE rename of this security within the same run (the index was built from
+                # pre-merge meta and would otherwise still point at the just-deleted old symbol)
+                if nm.get("isin"): isin2sym[nm["isin"]] = new
                 data.pop(old, None); meta.pop(old, None); merged += 1
                 print("  MANUAL RENAME MERGE %s -> %s (%d pts prepended, adj=%.4f)" % (old, new, len(idx), adj))
     mr = apply_manual_rights(data)   # hand-verified per-stock rights adjustments to match Trendlyne
