@@ -543,10 +543,10 @@ V-recovery (Jun-2021: +48%)**. ⚠️ MOVED OFF the Stocks dashboard → its own
   basis (HDFCLIFE con stayed None once std was stored).
 - **Recent-IPO year-ago bases (Jun-2025 for GROWW/EMMVEE/ICICIAMC done 2026-07-16):** NSE XBRLs carry ONLY the
   current quarter (no comparative context), so a newly-listed name has no year-ago base → excluded from YoY until
-  backfilled. Trendlyne reads the year-ago COMPARATIVE COLUMN printed in the same results PDF. To backfill: pull
-  `pdf_attach` from integrated-filing-results (or the corporate-announcements attachment when 0 bytes), read the
-  year-ago column (mind units: GROWW cr, EMMVEE lakh, ICICIAMC million), compute op = PBT+FC+Dep−OI, write the
-  cell into sf_revop.json + revop_fundamentals.json. NSE symbol gotcha: ICICI Pru AMC = **ICICIAMC** (not ICICIPRAMC).
+  backfilled. Trendlyne reads the year-ago COMPARATIVE COLUMN printed in the same results PDF. **NOW AUTOMATED —
+  §25 (`backfill_ipo_bases.py`, nightly, PAT + revenue)**; only OP bases (op = PBT+FC+Dep−OI) still need the manual
+  read when a fresh IPO must feed this chart (mind units: GROWW cr, EMMVEE lakh, ICICIAMC million); write those into
+  sf_revop.json + revop_fundamentals.json. NSE symbol gotcha: ICICI Pru AMC = **ICICIAMC** (not ICICIPRAMC).
 - **In-progress quarter membership = LATEST index snapshot** (build_results_season member_fn_live) —
   reconstitutions land mid-season (ICICIAMC entered N500 2026-07-17) and Trendlyne counts current members;
   completed quarters keep the point-in-time quarter-end snapshot.
@@ -1137,3 +1137,45 @@ Discovery buckets ("Smart money (bulk & block deals)" group, type `deal`).
   latest broadcast day. sw.js SHELL + CACHE v28→v29.
 
 
+
+
+## 25. NEW-LISTING (IPO) YEAR-AGO BASE BACKFILL  (built 2026-07-16, SELF-UPDATING)
+Every IPO / NSE-migration / demerger listing enters sf_fundamentals.json with quarters but NO
+year-ago (and often no preceding) quarters — NSE XBRLs carry ONLY the current period — so
+**profit-growth YoY% is blank** until the bases exist. The bases are public anyway: every results
+PDF prints them as COMPARATIVE COLUMNS (3m preceding / 3m year-ago / YTD / FY — the columns
+Trendlyne reads). `scripts/backfill_ipo_bases.py` automates the fill:
+- **Candidates:** symbols whose EARLIEST stored quarter is within ~16 months (`--days 480`), i.e.
+  new-to-data names (IPO or migration — both have the same gap). Insurers excluded (§3 owns them).
+  A stock with NO stored quarters yet is NOT a candidate — there is nothing to anchor against; it
+  becomes fillable the day its first filing lands (update_fundamentals catches that filing).
+- **Sources per target cell:** the missing quarter T is read from the filing PDF of T+1q (its
+  "preceding 3 months" column) or T+4q (its "year-ago 3 months" column). PDFs: integrated-filing
+  `pdf_attach` when non-null, else the corporate-announcements attachment (index=equities, then
+  =sme for pre-migration SME filings), result-filtered, identity-guarded (company name must appear
+  in the PDF text).
+- **ANCHOR (never guesses):** text layer (PyMuPDF) → parse header DATES (incl. bare `31032026`) →
+  map the "Profit after tax"/owners and "Revenue from operations" row numbers to columns by
+  x-position → accept ONLY when, under one unit scale (cr/million/lakh/thousand/rupees), the
+  CURRENT column == our stored XBRL value (and the PRECEDING column too when stored) within
+  max(3%, ₹2cr). First-occurrence rule picks the 3m column when the same date also heads a YTD/FY
+  column. Scanned/garbled filings (DTIL, ONIDA style OCR junk `(@,736)`) fail the anchor → FREE
+  Gemini vision (`gemini_vision.read_corp_results`, GEMINI_API_KEY) reads cur/prec/yago std+con —
+  then the SAME cur-anchor gate applies before anything is written.
+- **Writes (fill-only):** PAT → docs/sf_fundamentals.json + scripts/fundamentals.json (ann=None →
+  `fill_ann_dates.py` stamps the SEBI deadline in the next workflow step); revenue + PAT mirror →
+  docs/sf_revop.json + scripts/revop_fundamentals.json. Ledger `scripts/ipo_base_fills.json`
+  records every cell (src PDF, source quarter, via text/gemini) — **after any full rebuild run
+  `--reapply`** to re-assert the ledger. Failures in `scripts/_ipo_base_skips.json` (cap 5
+  attempts; `why:"vision"` entries retry whenever a GEMINI_API_KEY is present).
+- **Cron:** wired into refresh-fundamentals.yml (nightly 21:15 IST gate, same as insurers) with
+  `--limit 40` per run — the 2026-07 first-time backlog (~200 recent listings, 711 cells) drains
+  over ~5 nights; steady state is a trickle. Commit step carries ipo_base_fills.json +
+  _ipo_base_skips.json (reset-and-replay §18 gotcha); the big scripts/ mirrors are NOT committed
+  from CI (same convention as the insurer filler).
+- **Local:** `python -X utf8 scripts/backfill_ipo_bases.py --dry-run --only SYM1,SYM2` to preview;
+  `--only` bypasses the recency cutoff. No local GEMINI key → scanned filings queue as
+  `why:"vision"` and drain in CI.
+- **Structural residuals (don't chase):** quarters NO filing ever printed (company listed too
+  recently — the next filing carries them a quarter later); BSE-only listings (§17 OCR grind owns
+  those); operating-profit bases (rev+PAT cover the site's YoY; op needs a 4-row derivation —

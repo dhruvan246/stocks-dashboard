@@ -85,6 +85,23 @@ jobs:
       - name: Apply insurer-inbox manual entries
         run: python3 -X utf8 scripts/apply_insurer_inbox.py || echo "(insurer inbox failed — entries stay pending)"
 
+      # NEW-LISTING year-ago bases: a fresh IPO/migration files XBRLs that carry ONLY the current
+      # quarter, so its profit-growth YoY% stays blank. backfill_ipo_bases.py reads the COMPARATIVE
+      # COLUMNS printed in the company's own results PDF (text layer first, free Gemini vision for
+      # scanned filings), ANCHOR-VERIFIED against our stored XBRL values — never an unanchored guess.
+      # Nightly-gated like the insurer step; --limit keeps a first-time backlog inside the timeout.
+      - name: Backfill new-listing year-ago bases (comparative columns, anchored)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          EV="${{ github.event_name }}"; ACTION="${{ github.event.action }}"; RUN=0
+          [ "$EV" = "workflow_dispatch" ] && RUN=1
+          [ "$EV" = "schedule" ] && [ "$(date -u +%H)" = "15" ] && RUN=1
+          [ "$EV" = "repository_dispatch" ] && [ "$ACTION" = "insurer-refresh" ] && RUN=1
+          if [ "$RUN" != "1" ]; then echo "Not a nightly trigger ($EV/$ACTION) — skipping IPO-base fill"; exit 0; fi
+          pip install -q pymupdf
+          python3 -X utf8 scripts/backfill_ipo_bases.py --limit 40 || echo "(IPO-base fill failed — bases stay gapped this run)"
+
       # Backstop: any quarter that lands without a filing date (Screener backfills, integrated
       # rows with broadcast_Date=None) gets the SEBI deadline so the point-in-time screen can use
       # it (a null date silently drops the quarter -> stale fallback, which wrongly excluded AIIL).
@@ -152,6 +169,9 @@ jobs:
           cp docs/results_season.json  /tmp/results_season.json
           [ -f docs/_season_coverage.json ] && cp docs/_season_coverage.json /tmp/_season_coverage.json
           cp docs/quarterly_results.json /tmp/quarterly_results.json
+          # IPO-base fill ledger + skip tracker (small; the big scripts/ mirrors are NOT committed from CI)
+          [ -f scripts/ipo_base_fills.json ] && cp scripts/ipo_base_fills.json /tmp/ipo_base_fills.json
+          [ -f scripts/_ipo_base_skips.json ] && cp scripts/_ipo_base_skips.json /tmp/_ipo_base_skips.json
           for attempt in 1 2 3 4 5; do
             git fetch origin main && git reset --hard origin/main
             if [ "$FUND" = "1" ]; then
@@ -159,10 +179,12 @@ jobs:
               cp /tmp/sf_revop.json        docs/sf_revop.json
               cp /tmp/results_season.json  docs/results_season.json
               [ -f /tmp/_season_coverage.json ] && cp /tmp/_season_coverage.json docs/_season_coverage.json && git add docs/_season_coverage.json
+              [ -f /tmp/ipo_base_fills.json ] && cp /tmp/ipo_base_fills.json scripts/ipo_base_fills.json && git add scripts/ipo_base_fills.json
               git add docs/sf_fundamentals.json docs/sf_revop.json docs/results_season.json
             fi
             cp /tmp/quarterly_results.json docs/quarterly_results.json
             git add docs/quarterly_results.json
+            [ -f /tmp/_ipo_base_skips.json ] && cp /tmp/_ipo_base_skips.json scripts/_ipo_base_skips.json && git add scripts/_ipo_base_skips.json
             if git diff --cached --quiet; then echo "no diff"; exit 0; fi
             git commit -m "Daily fundamentals + results refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
             if git push origin HEAD:main; then echo "pushed (attempt #$attempt)"; gh workflow run pages.yml || echo "(pages deploy dispatch failed)"; exit 0; fi
