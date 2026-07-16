@@ -52,7 +52,7 @@
   <div id="waveRow" class="hidden items-center gap-2 flex-wrap mb-3">
     <span class="text-[11px] font-bold uppercase tracking-wide text-slate-500">Best return over</span>
     <button data-preset="w1" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">🌊 Wave 1 <span class="opacity-60">Mar’20–Sep’21</span></button>
-    <button data-preset="w2" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">🌊 Wave 2 <span class="opacity-60">Mar’23–Mar’24</span></button>
+    <button data-preset="w2" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">🌊 Wave 2 <span class="opacity-60">Mar’23–Sep’24</span></button>
     <button data-preset="w3" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">🌊 Wave 3 <span class="opacity-60">Mar’26–date</span></button>
     <button data-preset="cycle" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">🔄 Entire cycle <span class="opacity-60">Mar’20–date</span></button>
     <span id="waveSnapInfo" class="text-[11px] text-slate-400 ml-auto"></span>
@@ -499,7 +499,7 @@ async function computeCustom() {
 // One-click market-cycle presets. `to: null` = latest available data date (SF.end / today after clamping).
 const PERIOD_PRESETS = {
   w1:    { from: '2020-03-31', to: '2021-09-30' },
-  w2:    { from: '2023-03-31', to: '2024-03-30' },
+  w2:    { from: '2023-03-31', to: '2024-09-30' },
   w3:    { from: '2026-03-31', to: null },
   cycle: { from: '2020-03-31', to: null },
 };
@@ -531,35 +531,45 @@ async function computeAndSaveWaves(headless) {
   if (!await ensureEngine()) { setComputeUI(false, 'Couldn’t load market data.', 0); if (headless) setOut('Bake error: market data'); return false; }
   const today = SF.end;
   const groupCountAll = buildGroups(strategies()).size;
-  const baked = key => WAVE_SNAP && WAVE_SNAP[key] && WAVE_SNAP[key].results && Object.keys(WAVE_SNAP[key].results).length >= groupCountAll;
-  // Bake SESSION: all batches of one CI run share it (?session=<run id>) so they resume each other.
-  // A new run — i.e. the next daily bake, or an owner ↻ click — gets a NEW session and therefore
-  // recomputes EVERY wave from scratch. That's deliberate: fundamentals/data fixes can change results
-  // even when the price data-date hasn't moved, so a day's bake must never reuse yesterday's numbers.
+  // Bake SESSION: all batches of one CI run share it (?session=<run id>) so they resume each other. A new
+  // run — the next daily bake, or an owner ↻ click — gets a NEW session and recomputes EVERY wave from
+  // scratch. That's deliberate: fundamentals/data fixes change results even when the price data-date
+  // hasn't moved, so a day's bake must never reuse yesterday's numbers.
   const session = new URLSearchParams(location.search).get('session') || String(Date.now());
-  const canResume = WAVE_SNAP && WAVE_SNAP.bakeSession === session;
-  const payload = canResume ? Object.assign({}, WAVE_SNAP) : { date: today, bakeSession: session };
+  // Start from the LIVE snapshot so previously-good results stay visible while the new ones bake — a
+  // fresh wave is computed into `pending` and only PROMOTED over `results` once it's complete. So an
+  // interrupted or failed bake never destroys the numbers the page is already serving.
+  const payload = (WAVE_SNAP && typeof WAVE_SNAP === 'object') ? Object.assign({}, WAVE_SNAP) : {};
+  payload.bakeSession = session;
+  const freshDone = key => payload[key] && payload[key].sess === session &&
+                           payload[key].results && Object.keys(payload[key].results).length >= groupCountAll;
   for (let wi = 0; wi < WAVE_ORDER.length; wi++) {
     const key = WAVE_ORDER[wi], p = PERIOD_PRESETS[key];
+    if (freshDone(key)) continue;                                // already recomputed in THIS session
     const from = clampDate(p.from, SF.start, SF.end);
     const to   = clampDate(p.to || today, SF.start, SF.end);
-    const groupCount = buildGroups(strategies()).size;
-    // fully baked already (all strategies present)? skip. Otherwise resume from the partial results.
-    const prior = (payload[key] && payload[key].results) ? payload[key].results : null;
-    if (prior && Object.keys(prior).length >= groupCount) continue;
-    const saveChunk = async out => { payload[key] = { start: from, end: to, topN: null, results: out }; try { await btSync.snapSet('waves', payload); } catch (e) {} WAVE_SNAP = payload; };
+    // resume this session's partial work for this wave (kept beside the live results, not over them)
+    const prior = (payload[key] && payload[key].pendingSess === session) ? payload[key].pending : null;
+    const saveChunk = async out => {
+      payload[key] = Object.assign({}, payload[key], { pending: out, pendingSess: session });
+      try { await btSync.snapSet('waves', payload); } catch (e) {}
+      WAVE_SNAP = payload;
+    };
     const results = await computeWindow(from, to, null, (done, total) => {
       const frac = (wi + done / total) / WAVE_ORDER.length;
       setComputeUI(true, `Baking ${key} — ${done}/${total} strategies…`, frac);
       setMsg(`Baking ${key} ${done}/${total} (${wi + 1}/${WAVE_ORDER.length} waves)`);
     }, null, prior, saveChunk);
-    await saveChunk(results);                                   // final save for this wave (also covers <8-strategy tails)
+    // promote: this wave is complete → it becomes the live results, pending dropped
+    payload[key] = { start: from, end: to, topN: null, results, sess: session };
+    payload.date = today;
+    try { await btSync.snapSet('waves', payload); } catch (e) {}
     WAVE_SNAP = payload;
   }
-  const complete = WAVE_ORDER.every(baked);
+  const complete = WAVE_ORDER.every(freshDone);
   setComputeUI(false, '', 1);
   setMsg(complete ? `✅ snapshot ${payload.date}` : `partial snapshot ${payload.date}`);
-  if (headless) setOut(complete ? '✅ Done · waves baked ' + payload.date : 'partial — re-run to finish (' + WAVE_ORDER.filter(baked).length + '/' + WAVE_ORDER.length + ' waves)');
+  if (headless) setOut(complete ? '✅ Done · waves baked ' + payload.date : 'partial — re-run to finish (' + WAVE_ORDER.filter(freshDone).length + '/' + WAVE_ORDER.length + ' waves)');
   if (VIEW === 'best') { highlightWave(BEST_WAVE); loadWaveIntoCustom(BEST_WAVE); render(); }
   return complete;
 }
