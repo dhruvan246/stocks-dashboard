@@ -25,6 +25,15 @@
   th.sortable:hover{color:#4f46e5}
   #tip{position:fixed;z-index:60;pointer-events:none;background:#0f172a;color:#f8fafc;border-radius:8px;
        padding:6px 9px;font-size:11px;line-height:1.5;box-shadow:0 6px 20px rgba(0,0,0,.35);display:none;max-width:260px}
+  .streak{display:inline-block;padding:0 5px;border-radius:6px;background:rgba(217,119,6,.14);color:#b45309;font-size:9.5px;font-weight:800}
+  .btchip{display:inline-flex;flex-direction:column;align-items:flex-start;gap:1px;padding:7px 12px;border-radius:12px;
+          border:1px solid #e2e8f0;background:#fff;cursor:pointer;transition:all .15s;min-width:118px}
+  .btchip:hover{border-color:#a5b4fc}
+  .btchip.on{border-color:#6366f1;background:linear-gradient(180deg,rgba(99,102,241,.10),rgba(99,102,241,.03));box-shadow:0 2px 10px rgba(79,70,229,.18)}
+  .btchip .l{font-size:11.5px;font-weight:700;color:#334155}
+  .btchip .v{font-size:15px;font-weight:800}
+  .pickchip{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;
+            border:1px solid #e2e8f0;background:var(--surface-2,#f8fafc);margin:2px}
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
@@ -94,6 +103,43 @@
       </div>
     </div>
 
+    <!-- ===================== BACKTEST ===================== -->
+    <div id="btwrap" class="hidden mt-9">
+      <div class="mb-3">
+        <h2 class="text-lg font-bold text-slate-900">Does buying FII/DII accumulation actually work? — backtest</h2>
+        <p class="text-sm text-slate-500 mt-0.5">Each quarter, buy every Nifty 500 stock whose institutional stake rose for K quarters in a row, equal-weight, and rotate after the next filing season. Point-in-time rules (no look-ahead, no survivorship bias) — details in the note below. <span id="btupdated" class="text-slate-400"></span></p>
+      </div>
+      <div id="btchips" class="flex flex-wrap gap-2 mb-4"></div>
+      <div id="btcards" class="grid grid-cols-2 md:grid-cols-6 gap-3 mb-4"></div>
+      <div class="card p-4 mb-4">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+          <div class="text-sm font-semibold text-slate-700" id="btchartTitle">Growth of ₹100 <span class="text-slate-400 font-normal">(hover for values)</span></div>
+          <div class="flex flex-wrap gap-4 text-xs text-slate-600">
+            <span class="inline-flex items-center gap-1.5"><span class="inline-block w-3.5 h-[3px] rounded" style="background:#6366f1"></span>Strategy</span>
+            <span class="inline-flex items-center gap-1.5"><span class="inline-block w-3.5 h-0 border-t-2 border-dashed" style="border-color:#94a3b8"></span>Nifty 500</span>
+            <span class="inline-flex items-center gap-1.5"><span class="inline-block w-2 h-2 rounded-full" style="background:#6366f1"></span>rebalance</span>
+          </div>
+        </div>
+        <div id="btchart" class="overflow-x-auto"></div>
+      </div>
+      <div id="btnext" class="card p-4 mb-4 hidden"></div>
+      <div class="card p-0 overflow-hidden mb-2">
+        <div class="px-4 pt-3 pb-1 text-sm font-semibold text-slate-700">Every rebalance <span class="text-[11px] font-normal text-slate-400">(click a row to see all picks with their next-quarter return)</span></div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>
+              <th class="text-left py-2 px-3">Signal quarter</th><th class="text-left px-2">Bought on</th>
+              <th class="text-right px-2">Stocks</th><th class="text-right px-2">Strategy qtr %</th>
+              <th class="text-right px-2">Nifty 500 %</th><th class="text-right px-2">Excess</th>
+              <th class="text-left px-2">Top picks (fwd return)</th>
+            </tr></thead>
+            <tbody id="btrebs"></tbody>
+          </table>
+        </div>
+      </div>
+      <p class="text-[11px] text-slate-500 mb-2" id="btfoot"></p>
+    </div>
+
     <p class="text-[11px] text-slate-500 mt-5" id="foot">
       Source: NSE shareholding-pattern XBRL filings (SEBI format). <b>FII</b> = Institutions (Foreign): FPI category I+II, foreign direct investment &amp; other foreign institutions. <b>DII</b> = Institutions (Domestic): mutual funds, insurance, banks, pension/provident, AIFs etc. <b>MF</b> = mutual funds alone (a subset of DII). Δ columns are the change in <b>percentage points (pp)</b> vs the company's previous filed quarter. Holdings are disclosed <b>quarterly</b> (within 21 days of quarter end) — companies file on different days, so new rows appear here every day during filing season; this page refreshes twice daily. Educational only — not investment advice.
     </p>
@@ -111,6 +157,8 @@ const PAGE=300;
 let mode='all', sortK='sub', sortDir=-1;
 
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+const adjQ = (older,newer) => { const a=older.split('-'),b=newer.split('-');
+  return (+b[0]*12 + +b[1]) - (+a[0]*12 + +a[1]) === 3; };
 const qLabel = iso => { const p=iso.split('-'); return MONS[+p[1]-1]+" '"+p[0].slice(2); };
 const dLabel = iso => { if(!iso) return ''; const p=iso.split('-'); return (+p[2])+' '+MONS[+p[1]-1]; };
 const fmtMc = m => !m ? '—' : m>=1e5 ? (m/1e5).toFixed(1)+' L' : Math.round(m).toLocaleString('en-IN');
@@ -136,7 +184,14 @@ function load(){
       const c=cells[li], p=pi>=0?cells[pi]:null;
       const sub=c[5]||'';
       const ageDays = sub ? Math.round((today - new Date(sub+'T00:00:00'))/864e5) : 999;
-      return { s:r[0], n:r[1], m:r[2]||0, sec:r[3]||'', cells,
+      // FII raising streak: consecutive CALENDAR quarters (from the latest cell) with ΔFII >= +0.05pp
+      let streak=0;
+      for(let i=li;i+1<cells.length;i++){
+        if(!cells[i]||!cells[i+1]) break;
+        if(!adjQ(QUARTERS[i+1],QUARTERS[i])) break;
+        if(cells[i][1]-cells[i+1][1] >= 0.05) streak++; else break;
+      }
+      return { s:r[0], n:r[1], m:r[2]||0, sec:r[3]||'', cells, streak,
         qi:li, q:QUARTERS[li], pq:pi>=0?QUARTERS[pi]:null, sub, ageDays,
         prom:c[0], fii:c[1], dii:c[2], mf:c[3], ins:c[4],
         dprom:p?+(c[0]-p[0]).toFixed(2):null, dfii:p?+(c[1]-p[1]).toFixed(2):null,
@@ -145,7 +200,137 @@ function load(){
 
     buildCards(); buildChips(); buildSectors(); apply();
     $('status').classList.add('hidden'); $('content').classList.remove('hidden');
+    loadBacktest();
   }).catch(()=>{ $('status').textContent='Could not load shareholding data — try again in a minute.'; });
+}
+
+// =================== BACKTEST SECTION ===================
+let BT=null, btKey='fii2', BMAP=null;
+const fmtSign = (v,dp) => v==null?'—':(v>0?'+':'')+v.toFixed(dp==null?1:dp);
+const dLong = iso => { const p=iso.split('-'); return (+p[2])+' '+MONS[+p[1]-1]+" '"+p[0].slice(2); };
+const isoOf = di => { const s=''+di; return s.slice(0,4)+'-'+s.slice(4,6)+'-'+s.slice(6); };
+
+function loadBacktest(){
+  fetch('./shp_backtest.json').then(r=>{ if(!r.ok) throw 0; return r.json(); }).then(j=>{
+    BT=j;
+    BMAP=new Map(); (j.bench.dates||[]).forEach((d,i)=>BMAP.set(d, j.bench.nav[i]));
+    const ok=j.variants.filter(v=>v.nav && v.nav.length>10);
+    if(!ok.length) return;
+    if(!ok.find(v=>v.key===btKey)) btKey=ok[0].key;
+    $('btupdated').textContent='Updated '+j.updated+' · prices to '+j.binEnd+'.';
+    $('btfoot').innerHTML='<b>How to read this fairly:</b> every strategy here holds an <i>equal-weight</i> basket, while Nifty 500 is cap-weighted — and equal-weighting alone beat the index over this period. So compare each strategy against the <b>“Every N500 stock (equal-weight)”</b> chip (same construction, no signal): only performance <i>above that</i> comes from the FII/DII signal itself. The inverse chip (FII cutting) is included as a control — if it does as well as FII raising, the signal isn’t adding information. Also note the quarters-in-cash effect: streaks can’t cross the Sep-2022 SEBI format change (holdings were reclassified, e.g. ADR blocks folded into FII/DII), so those rebalances hold cash.<br><br><b>Method (point-in-time, survivorship-free):</b> universe = Nifty 500 members <i>as of each rebalance date</i> (historical membership snapshots, so today’s winners aren’t back-projected). A quarter’s holdings count only from the company’s <i>actual filing date</i>; the portfolio is bought on the first trading day ≥ quarter-end + '+BT.params.rebLagDays+' days (SEBI’s filing deadline is 21), equal-weight, and rotated at the next such day. A raise = ≥ +'+BT.params.minStep+' pp vs the previous quarter, each quarter of the streak, with the latest stake ≥ '+BT.params.minLevel+'%. Delisted stocks exit at their last traded price. No transaction costs or slippage; price returns only (dividends excluded on both sides, benchmark = Nifty 500 price index). Filing revisions carry the revised submission date, so a handful of late-revised patterns are conservatively excluded from their quarter’s signal. Educational only — not investment advice.';
+    renderBT();
+    $('btwrap').classList.remove('hidden');
+  }).catch(()=>{});
+}
+
+function benchAt(di){ return BMAP ? BMAP.get(di) : null; }
+
+function renderBT(){
+  const vs=BT.variants;
+  $('btchips').innerHTML = vs.map(v=>{
+    const has=v.nav && v.nav.length>10, c=v.stats.cagr;
+    return '<button class="btchip'+(v.key===btKey?' on':'')+(has?'':' opacity-50')+'" data-k="'+v.key+'" '+(has?'':'disabled')+'>' +
+      '<span class="l">'+esc(v.label)+'</span>' +
+      '<span class="v '+(has?(c>=(v.stats.cagrBench??0)?'pos':'neg'):'text-slate-400')+'">'+(has?c.toFixed(1)+'%':'soon')+'</span></button>';
+  }).join('');
+  $('btchips').querySelectorAll('.btchip').forEach(b=>b.onclick=()=>{ btKey=b.dataset.k; renderBT(); });
+
+  const v=vs.find(x=>x.key===btKey); if(!v||!v.nav.length) return;
+  const s=v.stats;
+  const ew=vs.find(x=>x.key==='ewall');
+  const ewNote = (ew && ew.stats && ew.key!==v.key) ? ' · every-N500-equal-weight: '+ew.stats.cagr.toFixed(1)+'%' : '';
+  const card=(l,val,sub,cls)=>'<div class="card p-3"><div class="text-[10.5px] uppercase tracking-wide text-slate-400 font-semibold">'+l+'</div>'+
+    '<div class="text-lg font-extrabold mt-0.5 '+(cls||'text-slate-900')+'">'+val+'</div>'+
+    '<div class="text-[10.5px] text-slate-500">'+sub+'</div></div>';
+  $('btcards').innerHTML =
+    card('CAGR','<span class="'+(s.cagr>=s.cagrBench?'pos':'neg')+'">'+s.cagr.toFixed(1)+'%</span>','Nifty 500: '+ (s.cagrBench==null?'—':s.cagrBench.toFixed(1)+'%')+ewNote) +
+    card('₹100 became','₹'+(100+s.tot).toFixed(0), 'since '+dLong(isoOf(v.dates[0]))) +
+    card('Max drawdown', s.mdd.toFixed(1)+'%', 'worst peak-to-trough') +
+    card('Beats index', (s.winPct==null?'—':s.winPct.toFixed(0)+'%'), 'of quarters') +
+    card('Avg holdings', s.avgHold, 'stocks per quarter') +
+    card('Rebalances', s.rebs, 'since '+qLabel(v.rebals[0].qe));
+  drawCurve(v); renderNext(v); renderRebs(v);
+}
+
+function drawCurve(v){
+  const W=920,H=290,L=46,R=12,T=12,B=26;
+  const bref=benchAt(v.dates[0]);
+  const bn=v.dates.map(d=>{ const b=benchAt(d); return (b&&bref)? b/bref*100 : null; });
+  let lo=1e9,hi=-1e9;
+  v.nav.forEach(x=>{ lo=Math.min(lo,x); hi=Math.max(hi,x); });
+  bn.forEach(x=>{ if(x!=null){ lo=Math.min(lo,x); hi=Math.max(hi,x);} });
+  lo=Math.floor(lo/10)*10; hi=Math.ceil(hi/10)*10;
+  const X=i=>L+(W-L-R)*i/(v.dates.length-1), Y=val=>T+(H-T-B)*(1-(val-lo)/(hi-lo));
+  const path=arr=>arr.map((x,i)=>x==null?'':((i&&arr[i-1]!=null?'L':'M')+X(i).toFixed(1)+' '+Y(x).toFixed(1))).join(' ');
+  // year ticks
+  let ticks='';
+  for(let i=1;i<v.dates.length;i++){
+    if((''+v.dates[i]).slice(0,4)!==(''+v.dates[i-1]).slice(0,4)){
+      ticks+='<line x1="'+X(i).toFixed(1)+'" y1="'+T+'" x2="'+X(i).toFixed(1)+'" y2="'+(H-B)+'" stroke="var(--border,#e2e8f0)" stroke-dasharray="2,4"/>'+
+             '<text x="'+X(i).toFixed(1)+'" y="'+(H-8)+'" font-size="10" fill="#94a3b8" text-anchor="middle">'+(''+v.dates[i]).slice(0,4)+'</text>';
+    }
+  }
+  let grid='';
+  for(let g=0;g<5;g++){ const val=lo+(hi-lo)*g/4, y=Y(val);
+    grid+='<line x1="'+L+'" y1="'+y.toFixed(1)+'" x2="'+(W-R)+'" y2="'+y.toFixed(1)+'" stroke="var(--border,#eef2f7)"/>'+
+          '<text x="'+(L-6)+'" y="'+(y+3.5).toFixed(1)+'" font-size="10" fill="#94a3b8" text-anchor="end">'+Math.round(val)+'</text>'; }
+  const rebIdx=new Set(v.rebals.map(r=>{ const t=+r.date.replace(/-/g,''); let k=v.dates.findIndex(d=>d>=t); return k<0?v.dates.length-1:k; }));
+  const dots=[...rebIdx].map(i=>'<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(v.nav[i]).toFixed(1)+'" r="2.6" fill="#6366f1"/>').join('');
+  $('btchart').innerHTML='<svg id="btsvg" width="100%" viewBox="0 0 '+W+' '+H+'" style="min-width:640px;cursor:crosshair">'+grid+ticks+
+    '<path d="'+path(bn)+'" fill="none" stroke="#94a3b8" stroke-width="1.6" stroke-dasharray="5,4"/>'+
+    '<path d="'+path(v.nav)+'" fill="none" stroke="#6366f1" stroke-width="2.2"/>'+dots+
+    '<line id="btcross" x1="0" y1="'+T+'" x2="0" y2="'+(H-B)+'" stroke="#6366f1" stroke-opacity=".35" style="display:none"/></svg>';
+  const svg=$('btsvg');
+  svg.addEventListener('mousemove', e=>{
+    const bb=svg.getBoundingClientRect();
+    const fx=(e.clientX-bb.left)/bb.width*W;
+    let i=Math.round((fx-L)/(W-L-R)*(v.dates.length-1));
+    i=Math.max(0,Math.min(v.dates.length-1,i));
+    const cross=document.getElementById('btcross');
+    cross.setAttribute('x1',X(i)); cross.setAttribute('x2',X(i)); cross.style.display='';
+    const b=bn[i];
+    tip.innerHTML='<b>'+dLong(isoOf(v.dates[i]))+'</b><br>Strategy <b style="color:#a5b4fc">₹'+v.nav[i].toFixed(1)+'</b> ('+fmtSign(v.nav[i]-100)+'%)'+
+      (b!=null?'<br>Nifty 500 <b style="color:#cbd5e1">₹'+b.toFixed(1)+'</b> ('+fmtSign(b-100)+'%)':'');
+    tip.style.display='block';
+    tip.style.left=Math.min(window.innerWidth-270,e.clientX+14)+'px'; tip.style.top=(e.clientY+14)+'px';
+  });
+  svg.addEventListener('mouseleave', ()=>{ tip.style.display='none'; document.getElementById('btcross').style.display='none'; });
+}
+
+function renderNext(v){
+  const n=v.next;
+  if(!n||!n.picks||!n.picks.length){ $('btnext').classList.add('hidden'); return; }
+  const chips=n.picks.slice(0,36).map(p=>'<a class="pickchip" href="./stock.html?sym='+encodeURIComponent(p[0])+'">'+esc(p[0])+' <span class="'+(p[1]>=0?'pos':'neg')+'">'+fmtSign(p[1],2)+'</span></a>').join('');
+  $('btnext').innerHTML='<div class="text-sm font-semibold text-slate-700">🔮 Next rebalance — '+dLong(n.date)+' <span class="text-[11px] font-normal text-slate-400">forming from '+qLabel(n.qe)+' filings received so far ('+n.n+' qualify; the list grows daily as more companies file)</span></div>'+
+    '<div class="mt-2">'+chips+(n.n>36?'<span class="text-[11px] text-slate-400 ml-1">+'+(n.n-36)+' more</span>':'')+'</div>';
+  $('btnext').classList.remove('hidden');
+}
+
+function renderRebs(v){
+  $('btrebs').innerHTML = v.rebals.map((r,i)=>{
+    const ex=(r.ret!=null&&r.bret!=null)?r.ret-r.bret:null;
+    const prev=r.picks.slice(0,6).map(p=>'<span class="'+(p[2]==null?'text-slate-400':p[2]>=0?'pos':'neg')+'">'+esc(p[0])+(p[2]==null?'':' '+fmtSign(p[2]))+'</span>').join(', ');
+    return '<tr class="border-b border-slate-100 hover:bg-indigo-50/40 cursor-pointer" data-r="'+i+'">'+
+      '<td class="py-2 px-3"><span class="qchip">'+qLabel(r.qe)+'</span></td>'+
+      '<td class="px-2 text-slate-600">'+dLong(r.date)+'</td>'+
+      '<td class="text-right px-2 font-semibold">'+r.n+'</td>'+
+      '<td class="text-right px-2 '+(r.ret==null?'':r.ret>=0?'pos':'neg')+'">'+(r.ret==null?'live':fmtSign(r.ret)+'%')+'</td>'+
+      '<td class="text-right px-2 text-slate-600">'+(r.bret==null?'—':fmtSign(r.bret)+'%')+'</td>'+
+      '<td class="text-right px-2">'+(ex==null?'—':'<span class="pill '+(ex>=0?'up':'dn')+'">'+fmtSign(ex)+'</span>')+'</td>'+
+      '<td class="px-2 text-[11.5px]">'+prev+(r.picks.length>6?' <span class="text-slate-400">+'+(r.n-6)+' more ▾</span>':'')+'</td></tr>'+
+      '<tr class="hidden" id="btx'+i+'"><td colspan="7" class="px-3 pb-3 pt-1 bg-slate-50/60">'+
+        r.picks.map(p=>'<a class="pickchip" href="./stock.html?sym='+encodeURIComponent(p[0])+'">'+esc(p[0])+
+          ' <span class="text-slate-400">+'+p[1].toFixed(1)+'pp</span>'+
+          (p[2]==null?'':' <b class="'+(p[2]>=0?'pos':'neg')+'">'+fmtSign(p[2])+'%</b>')+'</a>').join('')+
+        (r.picks.length===0?'<div class="text-[11px] text-slate-400 mt-1">All '+r.n+' point-in-time Nifty 500 members held equal-weight — the no-signal baseline.</div>':
+         r.n>r.picks.length?'<div class="text-[11px] text-slate-400 mt-1">Showing the '+r.picks.length+' biggest stake-raises of '+r.n+' holdings (all held equal-weight).</div>':'')+
+      '</td></tr>';
+  }).join('');
+  $('btrebs').querySelectorAll('tr[data-r]').forEach(tr=>tr.addEventListener('click', e=>{
+    if(e.target.closest('a')) return;
+    document.getElementById('btx'+tr.dataset.r).classList.toggle('hidden');
+  }));
 }
 
 function buildCards(){
@@ -237,7 +422,8 @@ function rowHtml(r, idx){
   return '<tr class="border-b border-slate-100 hover:bg-indigo-50/40 transition">' +
     '<td class="py-2 px-3"><div class="flex items-center gap-1.5"><span class="sw-star" data-sym="'+esc(r.s)+'"></span>' +
       '<a class="font-bold text-indigo-700 hover:underline" href="./stock.html?sym='+encodeURIComponent(r.s)+'">'+esc(r.s)+'</a>' +
-      (isNew?' <span class="newbadge">NEW</span>':'')+'</div>' +
+      (isNew?' <span class="newbadge">NEW</span>':'') +
+      (r.streak>=2?' <span class="streak" title="FII stake raised '+r.streak+' quarters in a row">🔥×'+r.streak+'</span>':'')+'</div>' +
       '<div class="text-[11px] text-slate-400 truncate" style="max-width:210px">'+esc(r.n)+(r.sec?' · '+esc(r.sec):'')+'</div></td>' +
     '<td class="text-right px-2 text-slate-600">'+fmtMc(r.m)+'</td>' +
     '<td class="px-2"><span class="qchip">'+qLabel(r.q)+'</span><div class="text-[11px] text-slate-400 mt-0.5">filed '+dLabel(r.sub)+'</div></td>' +

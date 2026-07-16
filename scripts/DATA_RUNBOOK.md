@@ -1020,18 +1020,27 @@ pages cross-link.
      prom+pub ∈ [98,102]. Only the post-2021 SEBI format has the Domestic/Foreign split — unanchored/old
      filings are SKIPPED (logged), never guessed (~1% of a season).
   3. Merge newest-submission-wins into **`scripts/shp_history.json`** (tracked):
-     `{"_names":{SYM:name}, SYM:{QE:[prom,fii,dii,mf,ins,"sub-date"]}}`. Revisions re-file the same (sym,QE)
-     with a later submissionDate and auto-replace. History write ABORTs if cells would shrink.
+     `{"_names":{SYM:name}, SYM:{QE:[prom,fii,dii,mf,ins,"sub-date",nsh?]}}`. **nsh = total no. of
+     shareholders** (NumberOfShareholders fact, ShareholdingPatternMember context) — OPTIONAL 7th slot,
+     appended only when the filing carries it; readers index 0-5 + optional 6. The 8 feed quarters were
+     `--reparse`d 2026-07-16 (15.5k/20.5k cells have counts); older quarters gain nsh via the staged deep
+     backfill. Revisions re-file the same (sym,QE) with a later submissionDate and auto-replace. History
+     write ABORTs if cells would shrink.
   4. Build **`docs/shareholding.json`** (page feed: last 8 QEs, aligned cell arrays, name/mcap from
      dash_slim + sector macro from sector_classification; ABORT if <500 rows) + **`docs/shp_meta.json`**
      (tiny heartbeat, changes every run — feeds.json watches THIS for liveness at 36h; shareholding.json
      itself has max_age null because off-season it legitimately never changes).
 - **Runs:** default = top-up last 3 QEs (current season + late filers/revisions of 2 back, only new/revised
-  XBRLs re-fetched); `--backfill N` = deep fill; `--feed-only` = rebuild docs feed, no network.
-  Initial backfill 2026-07-16: 4 quarters (Sep-25→Jun-26), ~7k XBRLs, ~45 min, 6 threads.
+  XBRLs re-fetched); `--backfill N` = deep fill; `--quarters <QE,QE,…>` = explicit list; `--reparse` =
+  re-fetch even unchanged filings (schema upgrades, e.g. adding nsh); `--feed-only` = rebuild docs feed,
+  no network. Initial backfill 2026-07-16: 4 quarters (Sep-25→Jun-26), ~7k XBRLs, ~45 min, 6 threads.
 - **Auto-refresh:** `.github/workflows/refresh-shareholding.yml` — cron 12:40 + 20:40 IST **daily incl.
   weekends** (filings land any day); reset-and-replay commit carries shareholding.json + shp_meta.json +
   shp_history.json through /tmp (§18 gotcha); guard_feed before commit; dispatches pages.yml.
+- **Per-stock view: `docs/stock.html` "Shareholding pattern" section** — quarterly table from
+  shareholding.json (Promoters / FIIs / DIIs w/ +/− MF-insurance expander / Public&others=100−prom−fii−dii /
+  No.-of-shareholders row that auto-hides while counts are absent); quarters oldest→newest, leading
+  never-filed quarters trimmed; FUND_ALIAS fallback for renamed tickers.
 - **Page `docs/shareholding.html`** (hand-maintained): stat cards (season filings / FII raised-vs-cut /
   DII raised-vs-cut / top FII add ≥₹500cr), filter chips (FII/DII raising/cutting, both, promoter, filed
   this week), min-move pp + mcap + sector filters, sortable columns, FII+DII sparkline w/ hover tooltip,
@@ -1040,6 +1049,60 @@ pages cross-link.
 - **Gotchas:** master `date` fields are as-on dates — a Jul window returns only event SHPs, NOT the June
   quarter (query from=to=QE instead). GAYAPROJ-style +16pp FII jumps are usually restructuring allotments —
   real filing data, not bugs. BSE-only stocks (no NSE listing) have no SHP here (future work, BSE source).
+
+### 22b. DEEP HISTORY (2019-09-30 →) + the OLD XBRL FORMAT  (built 2026-07-16/17)
+- **Format boundary = Sep-2022.** Quarters ≥ 2022-09-30 file the new taxonomy (InstitutionsDomestic/
+  ForeignMember, values as FRACTIONS). Quarters ≤ 2022-06-30 file ONE `InstitutionsMember` bucket with
+  per-type rows, values in PERCENT: FII_old = `InstitutionsForeignPortfolioInvestorMember` (+FVCI),
+  DII_old = MF(`MutualFundsOrUtiMember`, lowercase-ti!) + AIF + VCF + `FinancialInstitutionOrBanksMember`
+  + insurance + PF + **OtherInstitutions**. Parse gate: reconcile fii+dii vs the InstitutionsMember total
+  (±0.35) — and NEVER zero-default when neither format's members are present (old files would otherwise
+  poison fii=0/dii=0; that near-miss is why parse_shp requires explicit format evidence).
+- **`OLD_OTHER_TO_DII = True` is CALIBRATED, don't flip it:** on the Jun→Sep-2022 seam (150 largest
+  stocks, old parsed both ways vs stored new-format Sep-2022), median |seam| = 1.25pp with Other→DII vs
+  1.83 with Other→FII; per-stock it's not close (HEROMOTOCO 2.36 vs 30.52 — its 14pp "other institutions"
+  is clearly domestic). Residual seam ≈ genuine QoQ drift + definitional noise; documented, not fixable.
+- **⚠️ The Jun→Sep-2022 DELTA is NOT a stake change for DR-heavy stocks.** The new format dissolved the
+  old separate "Overseas Depositories" bucket into the investor categories (SEBI look-through): INFY's
+  14.2% ADR block "appears" inside FII/DII at Sep-2022 (dii 18.87→32.38 — a reclassification, both values
+  as-filed and individually correct). Any quarter-over-quarter analysis MUST skip that leg — the backtest
+  hard-excludes it (`FORMAT_BOUNDARY` in build_shp_backtest.py; streaks crossing it break, cash quarter).
+- **Employee-trust partition fix:** big-ESOP/no-promoter cos (M&M 3.73%, ETERNAL 4.73%) fail a naive
+  prom+pub≈100 check → the gate allows prom+pub+max(npnp,trust) ≈ 100. Fixed the ~1-8%/qtr skip rate.
+- **⚠️ TWO CONCURRENT WRITERS CORRUPT shp_history.json (bit us 2026-07-16):** two sessions ran fetchers
+  simultaneously → (a) both used the same `.tmp` path — one's os.replace stole the other's file
+  (FileNotFoundError / WinError 5), (b) whole-file flushes from a stale in-memory copy REVERTED the other
+  writer's freshly-added quarters, (c) a mid-write read produced a torn JSON. Mitigations now in code:
+  pid-suffixed tmp + retry-on-PermissionError in save_hist (Windows readers block os.replace). For any
+  big backfill while another writer may run: use **`--hist scripts/shp_history_stage.json`** (staging file,
+  implies no feed/meta rebuild) then **`python scripts/_shp_merge_stage.py`** once the other writer exits
+  (fill-only + newer-submission-wins + shrink-ABORT). CI is safe (workflow `concurrency` group).
+
+### 22c. FII/DII ACCUMULATION BACKTEST  (page section + docs/shp_backtest.json)
+**The user's hypothesis ("stocks where FII raises stake every quarter keep rising") tested properly.**
+- **Builder `scripts/build_shp_backtest.py`** (SF_BIN env = fresh survivorship-free bin; local dev merges
+  the live sf-data parts per §7.0). Point-in-time rules: universe = Nifty 500 members as of each rebalance
+  (`_n500_master_history.json` nearest-prior snapshot; filing-time tickers → bin keys via `_rename_map.json`
+  transitively); a quarter's cell counts only if its ACTUAL submission date ≤ rebalance day; rebalance =
+  first trading day ≥ QE+22d (SEBI deadline 21d); signal = ΔFII (or ΔDII/both) ≥ +0.05pp in EACH of K
+  consecutive CALENDAR quarters (gaps break streaks — never "previous available quarter") + latest stake
+  ≥1% (cut-variants: the PRE-streak stake ≥1%); equal-weight, rotate quarterly, delisted exits at last
+  close, no costs, price-only both sides (bench = docs/nifty500.json). 6 precomputed variants:
+  fii2/fii3/fii2top20/dii2/both2/fiicut2 + a "next rebalance (forming)" preview from the in-progress
+  quarter's filings-so-far. Output includes daily NAV curves, per-rebalance picks w/ forward returns.
+- **Page:** backtest section at the bottom of shareholding.html (variant chips w/ CAGR, stat cards, SVG
+  equity curve w/ crosshair tooltip + rebalance dots, next-rebalance preview chips, expandable
+  per-rebalance picks table). Main table rows get a 🔥×N badge for live FII streaks (calendar-adjacent).
+- **Refresh:** evening refresh-shareholding.yml run (cron moved 15:10→16:10 UTC = 21:40 IST, AFTER the
+  20:45 IST price publish) downloads the `data` release asset and rebuilds shp_backtest.json; the morning
+  run skips it (step `if: github.event.schedule == '10 16 * * *' || github.event_name != 'schedule'`).
+  Feed monitored (max_age 100h — weekend runs produce no commit when prices didn't move).
+- **VERDICT (as of 2026-07-16, Jul-2020→date, don't oversell the signal):** FII-raising-2q 24.0% CAGR,
+  DII 21.3%, both 21.2%, FII-3q 17.6%, **FII-CUTTING (control) 24.4%**, every-N500-equal-weight baseline
+  **23.8%**, Nifty 500 (cap-wt) 17.1%. So the entire "outperformance" = the equal-weight/size effect;
+  the FII direction adds ~nothing at quarterly granularity with a 3-week filing lag (signal ≈ control ≈
+  baseline), and longer streaks HURT. The `ewall` baseline chip exists precisely so the page says this
+  itself — keep it when adding variants.
 
 ---
 
@@ -1136,8 +1199,32 @@ Discovery buckets ("Smart money (bulk & block deals)" group, type `deal`).
   filters open it up to everyone/all modes. Person name click-through, By-stock net view, cards for the
   latest broadcast day. sw.js SHELL + CACHE v28→v29.
 
+---
 
+## 26. DELIVERY SPIKES  (docs/delivery.html — "Delivery Spikes" nav, built 2026-07-16, SELF-UPDATING)
+**Conviction-accumulation screen:** stocks whose DELIVERED quantity jumped to ≥3× their own 20-session
+median with delivery ≥30% of volume, ≥₹1 cr delivered and price up ≥1% — computed daily for the whole
+mainboard (mcap ≥₹100 cr), plus a "Delivery spikes (last 5 sessions)" Discovery bucket (type `spike`,
+"Smart money" group — the group was RENAMED from "Smart money (deals & insiders)" when this 3rd tape
+joined; the GROUP_ICON key in discovery.html must match the group string exactly).
 
+- **Source:** `nsearchives.../products/content/sec_bhavdata_full_DDMMYYYY.csv` — ONE FILE PER DATE
+  (~19:00 IST trading days; plain UA). Dated URLs = the pipeline SELF-HEALS: each run walks forward
+  from the last stored session and fetches whatever is missing (holidays skip). cols incl. CLOSE_PRICE,
+  DELIV_QTY, DELIV_PER (space-padded; '-' when N/A); SERIES filter 'EQ'.
+- **Fetcher:** `scripts/fetch_delivery.py` → TWO files (both must ride the commit step, §18):
+  `docs/delivery_hist.json` (state: last 45 sessions × ~2.5k stocks [close,dq,dpct]; ~2.3 MB) and
+  `docs/delivery.json` (page feed: `spikes` rows [date,sym,name,close,chg%,delivCr,dpct,avg20pct,qmult]
+  + `today` top-400 by delivered value; ~165 KB). Names/mcap from dash_slim meta —
+  **⚠️ slim meta is keyed 'RELIANCE.NS' (Yahoo suffix), re-key by bare symbol or every lookup misses**
+  (this bug made spikes silently empty on first run). Prices are UNADJUSTED closes — corp-action days
+  self-exclude via the price-up filter. First run with no state seeds ~45 sessions (~60 fetches).
+- **Refresh:** `.github/workflows/refresh-delivery.yml` — 21:15 IST weekdays + 08:35 IST Tue-Sat
+  catch-up. Both jsons in feeds.json (delivery_hist monitored with pages:[]).
+- **Sanity anchors (2026-07-16 seed):** ~41 spikes/session; that day: DIXON ₹1,322 cr at 5.9×,
+  RKFORGE 49.8×; repeat-stocks view topped by BUILDPRO (5 spikes/10 sessions).
+- **Page:** 3 views (Spikes / Repeat stocks / Biggest today), filters (value, multiple, sessions,
+  search), sw.js SHELL + CACHE v29→v30.
 
 ## 25. NEW-LISTING (IPO) YEAR-AGO BASE BACKFILL  (built 2026-07-16, SELF-UPDATING)
 Every IPO / NSE-migration / demerger listing enters sf_fundamentals.json with quarters but NO
@@ -1179,3 +1266,4 @@ Trendlyne reads). `scripts/backfill_ipo_bases.py` automates the fill:
 - **Structural residuals (don't chase):** quarters NO filing ever printed (company listed too
   recently — the next filing carries them a quarter later); BSE-only listings (§17 OCR grind owns
   those); operating-profit bases (rev+PAT cover the site's YoY; op needs a 4-row derivation —
+  extend only if the Results Season chart ever needs a new IPO pre-N500-entry).
