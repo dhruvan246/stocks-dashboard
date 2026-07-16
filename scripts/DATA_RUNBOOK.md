@@ -1283,6 +1283,15 @@ Trendlyne reads). `scripts/backfill_ipo_bases.py` automates the fill:
 - **Local:** `python -X utf8 scripts/backfill_ipo_bases.py --dry-run --only SYM1,SYM2` to preview;
   `--only` bypasses the recency cutoff. No local GEMINI key → scanned filings queue as
   `why:"vision"` and drain in CI.
+- **⚠️ Column-mapping failure class (caught 2026-07-16, day one):** when a header DATE fails to
+  parse (OCR'd `31032025`, split tokens), "first occurrence of the year-ago date" can land on the
+  **FY column** — VIKRAMSOLR prec got 139.1 (FY) instead of 82.84; AEPL yago got the ANNUAL 7.68.
+  The cur-anchor does NOT protect comparatives. Guard (in `_map_columns`): any figure cell inside
+  the column zone that maps to no header date REJECTS the row → page falls through to vision. This
+  is deliberately strict — messy-but-correct pages also get rejected/reverted and re-fill via
+  Gemini. After ANY parser change run **`--audit`**: re-extracts every text-sourced ledger cell
+  from its recorded src PDF and fixes/reverts mismatches (circular-anchor-aware: won't anchor on a
+  preceding value the script itself wrote).
 - **Structural residuals (don't chase):** quarters NO filing ever printed (company listed too
   recently — the next filing carries them a quarter later); BSE-only listings (§17 OCR grind owns
   those); operating-profit bases (rev+PAT cover the site's YoY; op needs a 4-row derivation —

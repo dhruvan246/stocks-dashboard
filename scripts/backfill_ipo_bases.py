@@ -270,15 +270,20 @@ def _metric_rows(lines, all_words):
     return out
 
 def _map_columns(dates, cells):
-    """Assign each numeric cell to the nearest date column (unique). None on ambiguity."""
+    """Assign each numeric cell to the nearest date column (unique). None on ambiguity — INCLUDING
+    any figure cell inside the column zone that maps to no header date. (VIKRAMSOLR lesson: a header
+    date that fails to parse must reject the row, not silently shift 'preceding' onto the FY column.)"""
     if not dates or not cells: return None
     xs = [x for x, _ in dates]
     gaps = [b - a for a, b in zip(xs, xs[1:])] or [120.0]
     tol = max(28.0, min(gaps) * 0.6)
+    col_zone = min(xs) - tol                             # figures start at the first header column
     used = {}
     for x, v in cells:
         j = min(range(len(dates)), key=lambda i: abs(dates[i][0] - x))
-        if abs(dates[j][0] - x) > tol: continue          # stray token (label-embedded number)
+        if abs(dates[j][0] - x) > tol:
+            if x > col_zone: return None                 # unaccounted figure column — unsafe mapping
+            continue                                     # left-side stray (label-embedded number)
         if j in used: return None                        # two numbers claim one column — ambiguous
         used[j] = v
     return used or None
@@ -400,6 +405,23 @@ def vision_extract(pdf, company, sym, qe, fund, ident_tokens):
         out[basis] = {"prec": r["prec"].get(basis), "yago": r["yago"].get(basis)}
     return out or None
 
+# ---------- audit setters (overwrite/clear — used ONLY by --audit) ----------
+def set_pat(funds, sym, qe, basis, val):
+    i = 1 if basis == "std" else 3
+    for fund in funds:
+        row = next((r for r in fund.get(sym, []) if r[0] == qe), None)
+        if row is None: continue
+        row[i] = round(val, 2) if val is not None else None
+        if val is None: row[i + 1] = None          # clear the stamped deadline too
+
+def set_rev(revops, sym, qe, basis, rev="keep", pat="keep"):
+    ri, pi = (0, 4) if basis == "std" else (1, 5)
+    for revop in revops:
+        rr = (revop.get(sym) or {}).get(str(qe))
+        if not rr: continue
+        if rev != "keep": rr[ri] = round(rev, 2) if rev is not None else None
+        if pat != "keep": rr[pi] = round(pat, 2) if pat is not None else None
+
 # ---------- fill helpers (fill-only, both mirrors) ----------
 def fill_pat(funds, sym, qe, basis, val):
     changed = False
@@ -433,6 +455,7 @@ def main():
     ap.add_argument("--days", type=int, default=RECENT_DAYS)
     ap.add_argument("--limit", type=int, default=0, help="max symbols to WORK (fetch PDFs for) this run; 0 = no cap")
     ap.add_argument("--reapply", action="store_true", help="re-assert the fill ledger (after a full rebuild)")
+    ap.add_argument("--audit", action="store_true", help="re-extract every text-sourced ledger cell and fix/revert mismatches")
     args = ap.parse_args()
 
     fund_docs = json.load(open(DOCS_FUND))
@@ -458,6 +481,67 @@ def main():
         print("reapplied ledger: %d PAT cells re-asserted" % n)
         if not args.dry_run and n:
             _write_all(funds, revops); open(FLAG, "w").write(today)
+        return
+
+    if args.audit:
+        jar = B.nse_jar()
+        ok = fixed = reverted = 0
+        for sym in sorted(ledger):
+            cells = ledger[sym]
+            by_src = {}
+            for qs, c in cells.items():
+                if c.get("via") == "text" and c.get("srcQe"):
+                    by_src.setdefault(c["srcQe"], []).append((int(qs), c))
+            if not by_src: continue
+            irows = integrated_rows(sym, jar)
+            company = next((r.get("cmName") or r.get("smName") for r in irows if r.get("cmName") or r.get("smName")), sym)
+            ident = [w for w in re.split(r"[^A-Za-z]+", company or "") if len(w) > 3][:2] or [sym]
+            for srcqe, tgts in sorted(by_src.items()):
+                url = tgts[0][1].get("src")
+                pdf = fetch_pdf(url) if url else None
+                pages = parse_pdf_text(pdf, ident) if pdf else None
+                cs, cc = pat_stored(fund_docs, sym, srcqe)
+                # circular-anchor guard: don't anchor on a preceding value WE wrote
+                self_prec = str(prevq(srcqe)) in cells
+                ps, pc = (None, None) if self_prec else pat_stored(fund_docs, sym, prevq(srcqe))
+                rs, rc = rev_stored(revop_docs, sym, srcqe)
+                res = {}
+                for basis, cur, prec, crev in (("std", cs, ps, rs), ("con", cc, pc, rc)):
+                    res[basis] = extract_anchored(pages, srcqe, basis == "con", cur, prec, crev) if pages else None
+                for t, c in tgts:
+                    key = "prec" if t == prevq(srcqe) else "yago"
+                    for basis in ("std", "con"):
+                        a = res.get(basis)
+                        bk, rk = "pat" + basis.capitalize(), "rev" + basis.capitalize()
+                        for _k in (bk, rk):                    # scrub legacy None-valued keys
+                            if c.get(_k, "x") is None: c.pop(_k)
+                        if bk in c:
+                            new = a["pat"].get(key) if a else None
+                            if new is not None and abs(new - c[bk]) <= 0.011: ok += 1
+                            elif new is not None:
+                                print("  AUDIT FIX %s %d %s pat: %s -> %s" % (sym, t, basis, c[bk], new))
+                                set_pat(funds, sym, t, basis, new); set_rev(revops, sym, t, basis, "keep", new)
+                                c[bk] = new; fixed += 1
+                            else:
+                                print("  AUDIT REVERT %s %d %s pat: %s -> blank (re-queued)" % (sym, t, basis, c[bk]))
+                                set_pat(funds, sym, t, basis, None); set_rev(revops, sym, t, basis, "keep", None)
+                                c.pop(bk); reverted += 1
+                        if rk in c:
+                            rnew = (a["rev"].get(key) if a else None)
+                            if rnew is not None and abs(rnew - c[rk]) <= 0.011: ok += 1
+                            elif rnew is not None:
+                                print("  AUDIT FIX %s %d %s rev: %s -> %s" % (sym, t, basis, c[rk], rnew))
+                                set_rev(revops, sym, t, basis, rnew, "keep"); c[rk] = rnew; fixed += 1
+                            else:
+                                print("  AUDIT REVERT %s %d %s rev: %s -> blank" % (sym, t, basis, c[rk]))
+                                set_rev(revops, sym, t, basis, None, "keep"); c.pop(rk); reverted += 1
+            for qs in [q for q, c in cells.items() if not any(k.startswith(("pat", "rev")) for k in c)]:
+                cells.pop(qs)
+        print("AUDIT DONE. ok=%d fixed=%d reverted=%d" % (ok, fixed, reverted))
+        if not args.dry_run and (fixed or reverted):
+            _write_all(funds, revops)
+            json.dump(ledger, open(LEDGER, "w"), separators=(",", ":"))
+            open(FLAG, "w").write(today)
         return
 
     cutoff = int((datetime.date.today() - datetime.timedelta(days=args.days)).strftime("%Y%m%d"))
@@ -579,7 +663,7 @@ def main():
                     ch1 = fill_pat(funds, sym, t, basis, pv) if pv is not None else False
                     ch2 = fill_rev(revops, sym, t, basis, rv, pv)
                     if ch1 or ch2:
-                        cell["pat" + basis.capitalize()] = pv
+                        if pv is not None: cell["pat" + basis.capitalize()] = pv
                         if rv is not None: cell["rev" + basis.capitalize()] = rv
                         any_fill = True
                 if any_fill:
