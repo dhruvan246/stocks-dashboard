@@ -84,7 +84,7 @@ TAGS = ("RevenueFromOperations", "OtherIncome", "FinanceCosts",
         "InterestEarned",                            # bank operating revenue (TL's bank Revenue col)
         "OperatingProfitBeforeProvisionAndContingencies",   # bank pre-provision profit (TL's bank Op Profit)
         "ProfitLossAfterTaxesMinorityInterestAndShareOfProfitLossOfAssociates",  # bank con bottom line
-        "OtherRevenueFromOperations",                # NBFC: excluded from core revenue (TL-verified LTF)
+        "OtherRevenueFromOperations",                # NBFC: a COMPONENT INSIDE RevenueFromOperations (see orfo_other_income)
         # insurer formats (IRDAI, INTEGRATED_FILING_LI / _GI; Trendlyne-parity 2026-07-16)
         "NetPremiumIncome",                          # LIFE: policyholders' net premium
         "IncomeFromInvestmentsNet",                  # LIFE+GI: policyholders' investment income
@@ -120,6 +120,55 @@ def fnum(xml, tag, ctx):
         return None
 
 
+# --- NBFC "other revenue from operations" ------------------------------------------------
+# Each component of that line hangs off DetailsOfOtherRevenueFromOperationsAxis in its OWN
+# context, named after the parent basis context: OneD -> OneRevenue1D, OneRevenue2D, ...
+# (FourD -> FourRevenue<n>D). Matching on the context NAME — not the period — keeps the two
+# bases apart in a combined std+con filing, where OneD and FourD share the same dates.
+RE_CTX_BLOCK = re.compile(r'<xbrli:context id="([^"]+)"[^>]*>(.*?)</xbrli:context>', re.DOTALL)
+RE_ORFO_CID = {c: re.compile(r'^' + c[:-1] + r'Revenue\d+D$') for c in ("OneD", "FourD")}
+ORFO_AXIS = "DetailsOfOtherRevenueFromOperationsAxis"
+
+
+def _labelled_other_income(desc):
+    """True only when the filer's own label for the component IS 'other income'.
+    Deliberately strict: 'Other operating income' and 'Other financial charges' are REVENUE."""
+    return " ".join(re.sub(r"[^a-z ]", " ", (desc or "").lower()).split()) in ("other income", "other incomes")
+
+
+def orfo_other_income(xml, ctx):
+    """Rupees of OtherRevenueFromOperations that the FILER ITSELF labels 'Other income'.
+
+    OtherRevenueFromOperations is a COMPONENT INSIDE RevenueFromOperations, not an addition to
+    it — every NBFC filing satisfies Income == RevenueFromOperations + OtherIncome with it
+    already inside. So netting it off revenue wholesale DELETES real revenue (HDBFS Q1FY27's
+    351.33 is 'Other financial charges', PIRAMALFIN's 99.61 is 'Other operating income').
+    But some filers mis-slot their other income into that line and leave OtherIncome=0 — LTF's
+    Q1FY27 CONSOLIDATED filing tags 30.39 labelled literally 'Other Income' while its own
+    STANDALONE filing tags the same ~30cr as OtherIncome and keeps it out of revenue. Trendlyne
+    reads the PDF and excludes exactly that case. So exclude only what the filer calls other
+    income — mirroring the industrial rule, where op already nets OtherIncome off.
+    (The old blanket subtraction was reverse-engineered from LTF alone and silently understated
+    every other NBFC's revenue AND operating profit by the same amount — DATA_RUNBOOK §11.)"""
+    if ORFO_AXIS not in xml:
+        return 0.0
+    tot = 0.0
+    for cid, body in RE_CTX_BLOCK.findall(xml):
+        if ORFO_AXIS not in body or not RE_ORFO_CID[ctx].match(cid):
+            continue
+        esc = re.escape(cid)
+        mv = re.search(r'<in-(?:bse-fin|capmkt):OtherRevenueFromOperations contextRef="' + esc
+                       + r'"[^>]*>([-0-9.eE+]+)<', xml)
+        md = re.search(r'<in-(?:bse-fin|capmkt):DescriptionOfOtherRevenueFromOperations contextRef="' + esc
+                       + r'"[^>]*>([^<]*)<', xml)
+        if mv and md and _labelled_other_income(md.group(1)):
+            try:
+                tot += float(mv.group(1))
+            except Exception:
+                pass
+    return tot
+
+
 def metrics_for(xml, ctx):
     """Reconstruct (revenue_cr, op_cr, ebit_cr, pat_total_cr, pat_owners_cr) for one context.
     Returns rupee->crore values. Three formats (all Trendlyne-verified to the paisa, 2026-07-11):
@@ -132,8 +181,10 @@ def metrics_for(xml, ctx):
                   owners = ProfitLossAfterTaxesMinorityInterestAndShareOfProfitLossOfAssociates —
                   the con P&L bottom row incl. associates (TL's Net Profit; the plain PAT tag
                   EXCLUDES RRB-associate share, MAHABANK Q1FY27 2020.54 vs 2023.32).
-      NBFC Ind-AS (InterestEarned, no bank op tag): rev = RevenueFromOperations - OtherRevenueFromOperations
-                  (LTF 5212.92), op = PBET + FC + Dep - OI - OtherRevFromOps (LTF 3238.64), ebit = None."""
+      NBFC Ind-AS (InterestEarned, no bank op tag): rev = RevenueFromOperations, op = PBET + FC + Dep - OI,
+                  ebit = None — each MINUS only the OtherRevenueFromOperations components the filer itself
+                  labels 'Other income' (see orfo_other_income; LTF con 5212.92 / 3238.64, HDBFS 4937.90 /
+                  2863.20, PIRAMALFIN con 3368.27 / 2072.74 — all Trendlyne-exact)."""
     # LIFE INSURER (IRDAI 'LI' format, e.g. HDFCLIFE/ICICIPRULI/SBILIFE/LICI):
     #   rev = NetPremiumIncome + IncomeFromInvestmentsNet (policyholders) + InvestmentIncome
     #         (shareholders) — matches Trendlyne's 'Operating Revenue' to the paisa (HDFCLIFE
@@ -181,7 +232,6 @@ def metrics_for(xml, ctx):
                 pat / CR if pat is not None else None,
                 owners / CR if owners is not None else None)
     rev = fnum(xml, "RevenueFromOperations", ctx)
-    orfo = fnum(xml, "OtherRevenueFromOperations", ctx) or 0.0
     oi = fnum(xml, "OtherIncome", ctx) or 0.0
     fc = fnum(xml, "FinanceCosts", ctx) or 0.0
     dep = fnum(xml, "DepreciationDepletionAndAmortisationExpense", ctx) or 0.0
@@ -189,8 +239,9 @@ def metrics_for(xml, ctx):
     if pbet is None:
         pbet = fnum(xml, "ProfitBeforeTax", ctx)
     if ie is not None:                                    # NBFC Ind-AS format
-        nrev = (rev - orfo) if rev is not None else None
-        nop = (pbet + fc + dep - oi - orfo) if pbet is not None else None
+        oir = orfo_other_income(xml, ctx)   # only the part the filer labels 'Other income'
+        nrev = (rev - oir) if rev is not None else None
+        nop = (pbet + fc + dep - oi - oir) if pbet is not None else None
         return (nrev / CR if nrev is not None else None,
                 nop / CR if nop is not None else None, None,   # ebit not reproduced for NBFCs
                 pat / CR if pat is not None else None,
