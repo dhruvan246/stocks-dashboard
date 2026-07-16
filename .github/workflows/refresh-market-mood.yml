@@ -1,4 +1,4 @@
-name: Refresh Market Mood (Nifty 500 monthly turnover)
+name: Refresh Market Mood (Nifty 500 turnover + breadth)
 
 on:
   schedule:
@@ -13,10 +13,11 @@ on:
   repository_dispatch:
     types: [market-mood-refresh]
   workflow_dispatch: {}
-  # Bootstrap/self-test: also run when the builder or this workflow changes.
+  # Bootstrap/self-test: also run when the builders or this workflow change.
   push:
     paths:
       - "scripts/build_nifty500_turnover.py"
+      - "scripts/build_market_breadth.py"
       - ".github/workflows/refresh-market-mood.yml"
 
 permissions:
@@ -55,29 +56,35 @@ jobs:
       - name: Rebuild Nifty 500 monthly turnover
         run: python3 -X utf8 scripts/build_nifty500_turnover.py
 
-      # Commit ONLY docs/nifty500_turnover.json (the freshly built bin is
-      # discarded by the reset). Same concurrent-writer-safe retry loop the
-      # other refreshers use.
+      - name: Rebuild Nifty 500 market breadth
+        run: python3 -X utf8 scripts/build_market_breadth.py
+
+      # Commit BOTH built feeds (the freshly downloaded bin is discarded by the
+      # reset). ⚠️ reset-and-replay gotcha (runbook §18): every file the build
+      # steps write MUST ride the cp-to-/tmp + cp-back + git-add lists below,
+      # or it is silently thrown away every run (the mf_funds/dash_slim bug).
       - name: Guard — refuse to commit a broken or shrunken feed
         run: python3 scripts/guard_feed.py
 
-      - name: Commit updated turnover series (only if changed)
+      - name: Commit updated turnover + breadth series (only if changed)
         id: commit
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           cp docs/nifty500_turnover.json /tmp/nifty500_turnover.json
+          cp docs/market_breadth.json    /tmp/market_breadth.json
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
             cp /tmp/nifty500_turnover.json docs/nifty500_turnover.json
-            git add docs/nifty500_turnover.json
+            cp /tmp/market_breadth.json    docs/market_breadth.json
+            git add docs/nifty500_turnover.json docs/market_breadth.json
             if git diff --cached --quiet; then
-              echo "Turnover series unchanged — nothing to commit"
+              echo "Turnover + breadth series unchanged — nothing to commit"
               echo "changed=false" >> "$GITHUB_OUTPUT"
               exit 0
             fi
-            git commit -m "Market Mood: refresh Nifty 500 monthly turnover $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            git commit -m "Market Mood: refresh turnover + breadth $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
             if git push origin HEAD:main; then
               echo "Pushed on attempt #$attempt"
               echo "changed=true" >> "$GITHUB_OUTPUT"

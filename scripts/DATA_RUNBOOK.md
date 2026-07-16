@@ -996,3 +996,28 @@ again by removing it from PRIVATE_PAGES + deleting the swLock block.
   flip) or the PWA serves the stale shell/theme.js — a stale theme.js would keep showing the nav link. Nav is one line in `theme.js` NAV_GROUPS (Tools) — don't hand-edit each page.
 - `declared` counts unique COMPANIES, not feed rows — a raw `len(rows)` on the feed reads 1 higher when a
   company files twice (93 rows vs 92 companies on 2026-07-16).
+
+---
+
+## 21. MARKET BREADTH  (Market Mood page section — built 2026-07-16, SELF-UPDATING)
+**Daily Nifty 500 breadth on docs/market-mood.html:** % of members above their 200-DMA (chart w/ 20/80
+zones), new 52-week highs vs lows (bar chart, auto-aggregates to N-day totals on long ranges), plus
+advancers/decliners — all in one hover tooltip + 4 stat cards.
+
+- **Builder:** `scripts/build_market_breadth.py` → `docs/market_breadth.json` (~63 KB). Same inputs as the
+  turnover build: the FRESH `sf_stock_data.bin` (workflow downloads the `data` release asset; locally use
+  `SF_BIN=<path> python -X utf8 scripts/build_market_breadth.py` — NEVER build from the frozen docs copy, §0)
+  + point-in-time membership from `scripts/_n500_master_history.json` (nearest-prior snapshot per date).
+- **Conventions:** closes are the bin's corp-action-adjusted `c`. DAILY ERA ONLY (`dailyFrom` 2018-01-01 —
+  pre-2018 is weekly-sampled, a 200-"day" MA there would span years), so the series starts when the 52w
+  window fills for ≥300 members = 2019-01-08. Windows are observation-based (200 / 252 of the symbol's own
+  sessions, incl. today; new high = close equals the 252-session max, ties count). adv/dec = vs the member's
+  own previous observed close (flats count as neither). Glitch dates w/ <50 member observations dropped.
+- **Refresh:** wired into `refresh-market-mood.yml` (weekdays 21:35 IST, right after the turnover build; the
+  commit step carries BOTH jsons through /tmp — reset-and-replay gotcha §18). Push-path self-test: pushing
+  the builder or workflow re-runs it. Feed monitored via feeds.json (max_age 110h, min_ratio 0.9).
+- **Sanity anchors (re-check after any rebuild):** pct200 min = 2.9% on 2020-03-23 (COVID bottom, 344 new
+  52w lows that day); max = 98.5% on 2020-12-16; most new highs 101 on 2024-01-04.
+- **Page:** breadth section between the turnover chart and the monthly-history table; separate range state
+  (6M/1Y/3Y/5Y/All → 126/250/750/1250/all sessions); section hides itself silently if the json is missing.
+  Editing market-mood.html = bump `docs/sw.js` CACHE (did v24→v25).
