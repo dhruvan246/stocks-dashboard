@@ -36,21 +36,8 @@ jobs:
       - name: Fetch new/revised shareholding filings (last 3 quarter-ends)
         run: python3 -X utf8 scripts/fetch_shareholding.py
 
-      # Evening run only: rebuild the FII/DII-accumulation backtest with fresh prices
-      # (the survivorship-free bin published by the 20:45 IST price refresh).
-      - name: Rebuild shareholding backtest (evening / manual runs)
-        if: github.event.schedule == '10 16 * * *' || github.event_name != 'schedule'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          mkdir -p /tmp/shpbt
-          if gh release download data --pattern 'sf_stock_data.bin' --dir /tmp/shpbt --clobber; then
-            SF_BIN=/tmp/shpbt/sf_stock_data.bin python3 -X utf8 scripts/build_shp_backtest.py
-          else
-            echo "(release download failed — building from committed bin; curve tail may lag)"
-            python3 -X utf8 scripts/build_shp_backtest.py
-          fi
-
+      # NOTE: the on-page backtest section was REMOVED per user preference (2026-07-16) —
+      # backtests run on demand in chat via scripts/build_shp_backtest.py (runbook §22c).
       - name: Guard — refuse to commit a broken or shrunken feed
         run: python3 scripts/guard_feed.py
 
@@ -64,7 +51,7 @@ jobs:
           # ⚠️ reset-and-replay: EVERY file the fetch step writes must ride the
           # cp-to-/tmp + cp-back + git-add lists (DATA_RUNBOOK §18 gotcha).
           mkdir -p /tmp/shp/docs /tmp/shp/scripts
-          cp docs/shareholding.json docs/shp_meta.json docs/shp_backtest.json /tmp/shp/docs/
+          cp docs/shareholding.json docs/shp_meta.json /tmp/shp/docs/
           cp scripts/shp_history.json /tmp/shp/scripts/
 
           for attempt in 1 2 3 4 5; do
@@ -72,9 +59,8 @@ jobs:
             git reset --hard origin/main
             cp /tmp/shp/docs/shareholding.json docs/shareholding.json
             cp /tmp/shp/docs/shp_meta.json     docs/shp_meta.json
-            cp /tmp/shp/docs/shp_backtest.json docs/shp_backtest.json
             cp /tmp/shp/scripts/shp_history.json scripts/shp_history.json
-            git add docs/shareholding.json docs/shp_meta.json docs/shp_backtest.json scripts/shp_history.json
+            git add docs/shareholding.json docs/shp_meta.json scripts/shp_history.json
 
             if git diff --cached --quiet; then
               echo "No new shareholding data — nothing to commit"

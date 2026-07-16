@@ -1078,7 +1078,13 @@ pages cross-link.
   implies no feed/meta rebuild) then **`python scripts/_shp_merge_stage.py`** once the other writer exits
   (fill-only + newer-submission-wins + shrink-ABORT). CI is safe (workflow `concurrency` group).
 
-### 22c. FII/DII ACCUMULATION BACKTEST  (page section + docs/shp_backtest.json)
+### 22c. FII/DII ACCUMULATION BACKTEST  (CHAT-DRIVEN — the on-page section was REMOVED)
+**⚠️ 2026-07-16: the user removed the backtest UI from shareholding.html ("I'll perform backtest in
+chat") — do NOT re-add the section.** What remains: `scripts/build_shp_backtest.py` (kept, run on
+demand for chat experiments — merge live sf parts per §7.0 first, add/edit VARIANTS tuples, read the
+printed CAGR table; docs/shp_backtest.json is NOT committed/published anymore, its feeds.json entry
+and the workflow's evening rebuild step were removed), and the 🔥×N FII-streak badges in the main
+table (still live, calendar-adjacent raises). The findings below stand — cite them before re-running.
 **The user's hypothesis ("stocks where FII raises stake every quarter keep rising") tested properly.**
 - **Builder `scripts/build_shp_backtest.py`** (SF_BIN env = fresh survivorship-free bin; local dev merges
   the live sf-data parts per §7.0). Point-in-time rules: universe = Nifty 500 members as of each rebalance
