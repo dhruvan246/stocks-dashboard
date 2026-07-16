@@ -16,13 +16,16 @@ Pipeline (DATA_RUNBOOK.md section 22):
      Only the NEW (post-2021) format has the Domestic/Foreign split — unparseable filings are
      skipped and logged, never guessed.
   3. Merge fill-or-newer-submission-wins into scripts/shp_history.json:
-       {"_names": {SYM: co-name}, SYM: {"YYYY-MM-DD"(QE): [prom, fii, dii, mf, ins, "sub-date"]}}
+       {"_names": {SYM: co-name}, SYM: {"YYYY-MM-DD"(QE): [prom, fii, dii, mf, ins, "sub-date", nsh?]}}
+     nsh = total number of shareholders (ShareholdingPatternMember context), appended only when
+     the filing carries it — cells written before 2026-07-16 have 6 slots, readers index 0-5 + optional 6.
   4. Build docs/shareholding.json (slim page feed, aligned quarter arrays + mcap/sector join)
      and docs/shp_meta.json (tiny freshness marker committed every run, feeds.json watches it).
 
 Runs:
   python -X utf8 scripts/fetch_shareholding.py                # daily top-up (last 3 QEs, new/revised only)
   python -X utf8 scripts/fetch_shareholding.py --backfill 4   # one-time deep fill (most-recent quarter first)
+  python -X utf8 scripts/fetch_shareholding.py --backfill 4 --reparse  # re-fetch even unchanged filings (schema upgrades)
   python -X utf8 scripts/fetch_shareholding.py --feed-only    # rebuild docs feed from history, no network
 
 Self-healing: a failed master call skips that quarter (history keeps yesterday's cells); XBRL
@@ -53,7 +56,11 @@ REF = "https://www.nseindia.com/companies-listing/corporate-filings-shareholding
 MON = {"JAN": 1, "FEB": 2, "MAR": 3, "APR": 4, "MAY": 5, "JUN": 6,
        "JUL": 7, "AUG": 8, "SEP": 9, "OCT": 10, "NOV": 11, "DEC": 12}
 
-# XBRL category member -> output slot
+# XBRL category member -> output slot.
+# NEW format (quarters >= 2022-09-30): explicit Institutions (Domestic) / (Foreign) split.
+# OLD format (<= 2022-06-30): ONE InstitutionsMember bucket with per-type rows (values in
+# PERCENT, not fractions) — FII = the Institutions FPI row (+FVCI), DII = the domestic rows.
+# OtherInstitutionsMember assignment was CALIBRATED on the Jun→Sep-2022 seam (see runbook §22).
 MEMBERS = {
     "ShareholdingOfPromoterAndPromoterGroupMember": "prom",
     "PublicShareholdingMember": "pub",
@@ -62,7 +69,26 @@ MEMBERS = {
     "MutualFundsOrUTIMember": "mf",
     "InsuranceCompaniesMember": "ins",
     "ShareholdingPatternMember": "total",
+    # old-format members (collected when present; combined in parse_shp)
+    "InstitutionsMember": "o_inst",
+    "InstitutionsForeignPortfolioInvestorMember": "o_fpi",
+    "ForeignVentureCapitalInvestorsMember": "o_fvci",
+    "MutualFundsOrUtiMember": "o_mf",          # note Uti vs UTI casing difference
+    "AlternativeInvestmentFundsMember": "o_aif",
+    "VentureCapitalFundsMember": "o_vcf",
+    "FinancialInstitutionOrBanksMember": "o_bank",
+    "ProvidentFundsOrPensionFundsMember": "o_pf",
+    "OtherInstitutionsMember": "o_other",
+    # non-promoter-non-public bucket (employee benefit trusts / DR custodians) — sits OUTSIDE
+    # "public" in the SEBI partition. Needed so no-promoter companies with a big ESOP trust
+    # (ETERNAL 4.73%, SWIGGY, ...) pass the partition sanity instead of being skipped.
+    "SharesHeldByNonPromoterNonPublicShareholdersMember": "npnp",
+    "EmployeeBenefitsTrustsMember": "trust",
+    "SharesHeldByEmployeeTrustsMember": "trust",   # old-format name
 }
+# Where does the old format's "Other institutions" row belong? True → DII, False → FII.
+# Calibrated 2026-07-17 on the format-boundary seam (Jun-2022 old vs Sep-2022 new, all stocks).
+OLD_OTHER_TO_DII = True
 
 def iso_date(s):
     """'15-JUL-2026' / '15-Jul-2026 15:04:38' -> '2026-07-15' (None if unparseable)."""
@@ -98,9 +124,17 @@ def cells_of(h):
 _flush_lock = threading.Lock()
 def save_hist(h):
     with _flush_lock:
-        tmp = HIST + ".tmp"
+        tmp = HIST + ".tmp.%d" % os.getpid()   # pid-suffixed: concurrent runs must not steal each other's tmp
         json.dump(h, open(tmp, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
-        os.replace(tmp, HIST)
+        # Windows: os.replace fails (WinError 5) while ANY other process holds the target
+        # open for reading (a builder/page-feed run loading the json). Retry briefly.
+        for i in range(12):
+            try:
+                os.replace(tmp, HIST)
+                return
+            except PermissionError:
+                time.sleep(1 + i)
+        os.replace(tmp, HIST)  # last try — surface the error if it truly won't release
 
 # ------------------------------------------------------------------ NSE fetch
 def fetch_master(jar, qe_iso):
@@ -146,8 +180,17 @@ def parse_shp(txt, qe_iso):
         ctx[c.get("id")] = mems[0] if (not typed and len(mems) == 1) else None
 
     vals = {}
+    nsh = None  # total no. of shareholders (whole-company context)
     for f in root.iter():
-        if strip(f.tag) != "ShareholdingAsAPercentageOfTotalNumberOfShares": continue
+        tag = strip(f.tag)
+        if tag == "NumberOfShareholders":
+            if (ctx.get(f.get("contextRef")) or "") == "ShareholdingPatternMember":
+                try:
+                    nsh = int(float(str(f.text).strip()))
+                except (TypeError, ValueError):
+                    pass
+            continue
+        if tag != "ShareholdingAsAPercentageOfTotalNumberOfShares": continue
         slot = MEMBERS.get(ctx.get(f.get("contextRef")) or "")
         if not slot: continue
         try:
@@ -159,23 +202,44 @@ def parse_shp(txt, qe_iso):
     if not vals: return None
     prom, pub = vals.get("prom"), vals.get("pub")
     if prom is None and pub is None: return None
-    # scale anchor: total ≈ 1 (fractions, the norm) or ≈ 100 (percent filers)
+    # scale anchor: total ≈ 1 (fractions, new format) or ≈ 100 (percent, old format + some filers)
     anchor = vals.get("total")
     if anchor is None: anchor = (prom or 0) + (pub or 0)
     if 0.90 <= anchor <= 1.10: scale = 100.0
     elif 90.0 <= anchor <= 110.0: scale = 1.0
     else: return None
+
+    is_new = ("fii" in vals) or ("dii" in vals)          # explicit Domestic/Foreign facts
+    is_old = (not is_new) and ("o_inst" in vals)         # single Institutions bucket
+    if not (is_new or is_old): return None               # unknown vintage — SKIP, never zero-fill
+
     prom = (prom or 0) * scale
     pub = (pub if pub is not None else max(0.0, 100.0 - prom)) * (scale if vals.get("pub") is not None else 1)
     out = {"prom": prom, "pub": pub}
-    for k in ("fii", "dii", "mf", "ins"):
-        out[k] = (vals.get(k) or 0.0) * scale
+    if is_new:
+        for k in ("fii", "dii", "mf", "ins"):
+            out[k] = (vals.get(k) or 0.0) * scale
+    else:
+        g = lambda k: (vals.get(k) or 0.0) * scale
+        fii = g("o_fpi") + g("o_fvci")
+        dii = g("o_mf") + g("o_aif") + g("o_vcf") + g("o_bank") + g("ins") + g("o_pf")
+        other = g("o_other")
+        if OLD_OTHER_TO_DII: dii += other
+        else: fii += other
+        # old bucket must reconcile: fii+dii ≈ total Institutions (± rounding)
+        if abs((fii + dii) - g("o_inst")) > 0.35: return None
+        out.update({"fii": fii, "dii": dii, "mf": g("o_mf"), "ins": g("ins")})
     if out["fii"] + out["dii"] > out["pub"] + 2.0: return None      # institutions can't exceed public
-    if not (98.0 <= out["prom"] + out["pub"] <= 102.0): return None  # partition sanity (emp trusts ≤~2%)
-    return {k: round(v, 2) for k, v in out.items()}
+    # partition sanity: promoter + public + non-promoter-non-public ≈ 100. The third bucket
+    # (ESOP trusts / DR custodians) can be large for no-promoter companies (ETERNAL 4.73%).
+    extra = max(vals.get("npnp") or 0.0, vals.get("trust") or 0.0) * scale
+    if not (98.0 <= out["prom"] + out["pub"] + extra <= 102.0): return None
+    out = {k: round(v, 2) for k, v in out.items()}
+    if nsh and nsh > 0: out["nsh"] = nsh
+    return out
 
 # ------------------------------------------------------------------ main fetch
-def refresh_quarters(qes):
+def refresh_quarters(qes, reparse=False):
     jar = B.nse_jar()
     hist = load_hist()
     names = hist.setdefault("_names", {})
@@ -197,7 +261,7 @@ def refresh_quarters(qes):
         todo = []
         for sym, r in best.items():
             have = (hist.get(sym) or {}).get(qe)
-            if have and str(have[5]) >= r["sub"]: continue  # already have this or a newer submission
+            if have and str(have[5]) >= r["sub"] and not reparse: continue  # already have this or newer
             todo.append((sym, r))
         print("%s: %d filings, %d new/revised to parse" % (qe, len(best), len(todo)))
         stats.append((qe, len(best), len(todo)))
@@ -214,8 +278,9 @@ def refresh_quarters(qes):
             for fut in as_completed([ex.submit(work, it) for it in todo]):
                 sym, r, res = fut.result()
                 if isinstance(res, dict):
-                    hist.setdefault(sym, {})[qe] = [res["prom"], res["fii"], res["dii"],
-                                                    res["mf"], res["ins"], r["sub"]]
+                    cell = [res["prom"], res["fii"], res["dii"], res["mf"], res["ins"], r["sub"]]
+                    if res.get("nsh"): cell.append(res["nsh"])
+                    hist.setdefault(sym, {})[qe] = cell
                     if r["name"]: names[sym] = r["name"]
                     done += 1
                     if done % FLUSH_EVERY == 0:
@@ -285,14 +350,23 @@ def write_meta(stats):
 
 if __name__ == "__main__":
     args = sys.argv[1:]
+    if "--hist" in args:   # write to an alternate history file (staging for conflict-free backfills)
+        HIST = os.path.abspath(args[args.index("--hist") + 1])
+        print("history file:", HIST)
     if "--feed-only" in args:
         build_feed()
     else:
         n = TOPUP_QES
         if "--backfill" in args:
             n = int(args[args.index("--backfill") + 1])
-        qes = last_qes(n)
+        if "--quarters" in args:
+            qes = [q.strip() for q in args[args.index("--quarters") + 1].split(",") if q.strip()]
+        else:
+            qes = last_qes(n)
         print("quarter-ends:", ", ".join(qes))
-        stats = refresh_quarters(qes)
-        build_feed()
-        write_meta(stats)
+        stats = refresh_quarters(qes, reparse="--reparse" in args)
+        if "--hist" in args:
+            print("(staging run — docs feed/meta NOT rebuilt)")
+        else:
+            build_feed()
+            write_meta(stats)
