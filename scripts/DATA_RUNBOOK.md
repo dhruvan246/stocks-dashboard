@@ -1482,6 +1482,19 @@ Fix sweep (all steps, in order — verify against the LIVE release asset, never 
 7. `scripts/fno_history.json` **+ `docs/stock_data.bin` `fnoHistory`**: replace OLD→NEW in every
    snapshot (convention = canonical CURRENT symbols, see LTM in 2021 snaps; membership rebuilds
    PRESERVE fnoHistory so the bin must be patched by hand, gzip level 9).
+7b. **⚠️ THE BIN LAGS THE KEY-MOVE — any builder that joins the bin to fundamentals must bridge the gap
+   (found 2026-07-17, one day after the GUJENERGY sweep).** Step 4 moves the rows to the NEW key
+   immediately, but the committed `docs/sf_stock_data.bin` still holds the OLD key until step 2's
+   MANUAL_MERGE publishes. In that window the two files share NO key and the company silently vanishes:
+   - `build_results_season.build_liquid_universe()` added the RAW bin symbol → the renamed co left the
+     "All liquid" universe for ALL 29 quarters (index membership was fine — `snap_as_of` already maps).
+     FIXED: `U.add(rename.get(s, s))`. Recovered GUJENERGY + ONIDA + RNAVAL.
+   - `build_quarterly_results.py` keys `syms` off fundamentals, so `px.get(sym)` missed and
+     `if pdata is None: continue` dropped the co **off the page entirely** (2325 → 2328 cos).
+     FIXED: forward-carry `px[new] = px[old]` for every `_rename_map` pair, fill-only.
+   Both are fill-only/identity-preferring, so they self-disarm once the bin catches up. **After ANY future
+   rename, re-check every bin↔fundamentals join** (`grep -l sf_stock_data.bin scripts/*.py`) — a renamed
+   co disappearing is SILENT, there is no error.
 8. **Leave alone:** `ipo_base_fills.json` (fill-only reapply → harmless no-op once cells are non-null),
    `_reattr_owners.json` (OLD-key convention), `shp_history.json` (SHP fetcher already migrates),
    stock_data.bin `.NS` series (self-consolidates from the EQUITY_L universe on its own refresh).
