@@ -1,0 +1,77 @@
+name: Daily shareholding (FII/DII holdings) refresh
+
+on:
+  schedule:
+    # Twice daily INCLUDING weekends — SHP filings land any day (quarterly deadline
+    # can fall on a weekend). 07:10 UTC = 12:40 IST midday sweep; 15:10 UTC = 20:40 IST
+    # evening sweep. Off-season runs are cheap (3 master calls, zero XBRLs).
+    - cron: "10 7 * * *"
+    - cron: "10 15 * * *"
+  repository_dispatch:
+    types: [shareholding-refresh]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  actions: write   # dispatch pages.yml after a change so the data publishes itself
+
+concurrency:
+  group: refresh-shareholding
+  cancel-in-progress: false
+
+jobs:
+  refresh-shareholding:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Fetch new/revised shareholding filings (last 3 quarter-ends)
+        run: python3 -X utf8 scripts/fetch_shareholding.py
+
+      - name: Guard — refuse to commit a broken or shrunken feed
+        run: python3 scripts/guard_feed.py
+
+      - name: Commit updated shareholding data
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # ⚠️ reset-and-replay: EVERY file the fetch step writes must ride the
+          # cp-to-/tmp + cp-back + git-add lists (DATA_RUNBOOK §18 gotcha).
+          mkdir -p /tmp/shp/docs /tmp/shp/scripts
+          cp docs/shareholding.json docs/shp_meta.json /tmp/shp/docs/
+          cp scripts/shp_history.json /tmp/shp/scripts/
+
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/shp/docs/shareholding.json docs/shareholding.json
+            cp /tmp/shp/docs/shp_meta.json     docs/shp_meta.json
+            cp /tmp/shp/scripts/shp_history.json scripts/shp_history.json
+            git add docs/shareholding.json docs/shp_meta.json scripts/shp_history.json
+
+            if git diff --cached --quiet; then
+              echo "No new shareholding data — nothing to commit"
+              exit 0
+            fi
+
+            git commit -m "Shareholding refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then
+              echo "Pushed on attempt #$attempt"
+              gh workflow run pages.yml || echo "(pages deploy dispatch failed — will publish on next push)"
+              exit 0
+            fi
+            echo "Push attempt #$attempt rejected; resetting and retrying"
+            sleep $(( attempt * 3 ))
+          done
+          echo "Failed to push after 5 attempts"
+          exit 1

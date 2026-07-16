@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · FII/DII Holdings</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<style>
+  body { font-feature-settings: "tnum" 1; }
+  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
+  .pos{color:#15803d;font-weight:600} .neg{color:#b91c1c;font-weight:600}
+  .pill{display:inline-flex;align-items:center;gap:2px;padding:1px 7px;border-radius:999px;font-size:11px;font-weight:700;white-space:nowrap}
+  .pill.up{background:rgba(21,128,61,.12);color:#15803d}
+  .pill.dn{background:rgba(185,28,28,.10);color:#b91c1c}
+  .pill.fl{background:var(--surface-2,#f1f5f9);color:#64748b;font-weight:600}
+  .chip{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:999px;font-size:12px;font-weight:600;
+        border:1px solid #e2e8f0;background:#fff;color:#475569;cursor:pointer;white-space:nowrap;transition:all .15s}
+  .chip:hover{border-color:#a5b4fc;color:#3730a3}
+  .chip.on{background:linear-gradient(90deg,#4f46e5,#6d28d9);border-color:transparent;color:#fff;box-shadow:0 2px 8px rgba(79,70,229,.35)}
+  .newbadge{display:inline-block;padding:1px 6px;border-radius:6px;background:linear-gradient(90deg,#059669,#0d9488);color:#fff;font-size:9px;font-weight:800;letter-spacing:.4px}
+  .qchip{display:inline-block;padding:1px 7px;border-radius:6px;background:var(--surface-2,#eef2ff);color:#4338ca;font-size:10.5px;font-weight:700}
+  th.sortable{cursor:pointer;user-select:none}
+  th.sortable:hover{color:#4f46e5}
+  #tip{position:fixed;z-index:60;pointer-events:none;background:#0f172a;color:#f8fafc;border-radius:8px;
+       padding:6px 9px;font-size:11px;line-height:1.5;box-shadow:0 6px 20px rgba(0,0,0,.35);display:none;max-width:260px}
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav class="flex items-center gap-1 overflow-x-auto"></nav>
+  </div>
+</header>
+
+<main class="max-w-screen-xl mx-auto px-4 py-6">
+  <div class="mb-4 flex flex-wrap items-start justify-between gap-3">
+    <div>
+      <h1 class="text-xl font-bold text-slate-900">FII / DII holdings — who's raising stake in which stock</h1>
+      <p class="text-sm text-slate-500 mt-0.5">Foreign &amp; domestic institutional holding per stock from quarterly shareholding-pattern filings — refreshed daily as companies file (new filings land here every day during season). <span id="updated" class="text-slate-400"></span></p>
+    </div>
+    <a href="./fii-dii.html" class="chip shrink-0">🌐 Daily FII/DII buy-sell flows →</a>
+  </div>
+
+  <div id="status" class="text-sm text-slate-500">Loading shareholding data…</div>
+
+  <div id="content" class="hidden">
+    <div id="cards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"></div>
+
+    <div class="card p-3 mb-4">
+      <div class="flex flex-wrap items-center gap-2" id="chips"></div>
+      <div class="flex flex-wrap items-center gap-2 mt-2.5">
+        <input id="q" type="search" placeholder="Search stock…" class="border border-slate-200 rounded-lg px-3 py-1.5 text-sm w-44 bg-white" />
+        <select id="minmove" class="border border-slate-200 rounded-lg px-2 py-1.5 text-xs bg-white">
+          <option value="0">Any move</option><option value="0.25">≥ 0.25 pp</option>
+          <option value="0.5">≥ 0.5 pp</option><option value="1">≥ 1 pp</option><option value="2">≥ 2 pp</option>
+        </select>
+        <select id="minmcap" class="border border-slate-200 rounded-lg px-2 py-1.5 text-xs bg-white">
+          <option value="0">All sizes</option><option value="500">Mcap &gt; ₹500 cr</option>
+          <option value="1000">&gt; ₹1,000 cr</option><option value="10000">&gt; ₹10,000 cr</option><option value="50000">&gt; ₹50,000 cr</option>
+        </select>
+        <select id="sector" class="border border-slate-200 rounded-lg px-2 py-1.5 text-xs bg-white"><option value="">All sectors</option></select>
+        <span id="count" class="text-xs text-slate-400 ml-auto"></span>
+        <button id="csv" class="chip">⬇ CSV</button>
+      </div>
+    </div>
+
+    <div class="card p-0 overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm" id="tbl">
+          <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200 bg-slate-50/70"><tr>
+            <th class="text-left py-2.5 px-3">Stock</th>
+            <th class="text-right px-2 sortable" data-k="m">Mcap ₹cr</th>
+            <th class="text-left px-2 sortable" data-k="sub">Quarter · filed</th>
+            <th class="text-right px-2 sortable" data-k="fii">FII %</th>
+            <th class="text-right px-2 sortable" data-k="dfii">FII Δ</th>
+            <th class="text-right px-2 sortable" data-k="dii">DII %</th>
+            <th class="text-right px-2 sortable" data-k="ddii">DII Δ</th>
+            <th class="text-right px-2 sortable" data-k="dmf">MF Δ</th>
+            <th class="text-right px-2 sortable" data-k="dprom">Promoter Δ</th>
+            <th class="text-center px-2">FII/DII trend</th>
+          </tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+      <div class="p-3 text-center border-t border-slate-100">
+        <button id="more" class="chip hidden">Show more ↓</button>
+      </div>
+    </div>
+
+    <p class="text-[11px] text-slate-500 mt-5" id="foot">
+      Source: NSE shareholding-pattern XBRL filings (SEBI format). <b>FII</b> = Institutions (Foreign): FPI category I+II, foreign direct investment &amp; other foreign institutions. <b>DII</b> = Institutions (Domestic): mutual funds, insurance, banks, pension/provident, AIFs etc. <b>MF</b> = mutual funds alone (a subset of DII). Δ columns are the change in <b>percentage points (pp)</b> vs the company's previous filed quarter. Holdings are disclosed <b>quarterly</b> (within 21 days of quarter end) — companies file on different days, so new rows appear here every day during filing season; this page refreshes twice daily. Educational only — not investment advice.
+    </p>
+  </div>
+</main>
+
+<div id="tip"></div>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const MONS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+let QUARTERS=[], ROWS=[], VIEW=[], shown=0;
+const PAGE=300;
+let mode='all', sortK='sub', sortDir=-1;
+
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+const qLabel = iso => { const p=iso.split('-'); return MONS[+p[1]-1]+" '"+p[0].slice(2); };
+const dLabel = iso => { if(!iso) return ''; const p=iso.split('-'); return (+p[2])+' '+MONS[+p[1]-1]; };
+const fmtMc = m => !m ? '—' : m>=1e5 ? (m/1e5).toFixed(1)+' L' : Math.round(m).toLocaleString('en-IN');
+const fmtPct = v => v==null ? '—' : v.toFixed(2);
+
+function pill(d){
+  if(d==null) return '<span class="pill fl">first</span>';
+  if(Math.abs(d)<0.005) return '<span class="pill fl">0.00</span>';
+  return d>0 ? '<span class="pill up">▲ +'+d.toFixed(2)+'</span>'
+             : '<span class="pill dn">▼ −'+Math.abs(d).toFixed(2)+'</span>';
+}
+
+function load(){
+  fetch('./shareholding.json').then(r=>{ if(!r.ok) throw 0; return r.json(); }).then(j=>{
+    QUARTERS = j.quarters||[];
+    $('updated').textContent = j.updated ? 'Updated '+j.updated+'.' : '';
+    const today = new Date(); today.setHours(0,0,0,0);
+    ROWS = (j.rows||[]).map(r=>{
+      const cells = r[4]||[];
+      let li=-1, pi=-1;
+      for(let i=0;i<cells.length;i++){ if(cells[i]){ if(li<0) li=i; else { pi=i; break; } } }
+      if(li<0) return null;
+      const c=cells[li], p=pi>=0?cells[pi]:null;
+      const sub=c[5]||'';
+      const ageDays = sub ? Math.round((today - new Date(sub+'T00:00:00'))/864e5) : 999;
+      return { s:r[0], n:r[1], m:r[2]||0, sec:r[3]||'', cells,
+        qi:li, q:QUARTERS[li], pq:pi>=0?QUARTERS[pi]:null, sub, ageDays,
+        prom:c[0], fii:c[1], dii:c[2], mf:c[3], ins:c[4],
+        dprom:p?+(c[0]-p[0]).toFixed(2):null, dfii:p?+(c[1]-p[1]).toFixed(2):null,
+        ddii:p?+(c[2]-p[2]).toFixed(2):null, dmf:p?+(c[3]-p[3]).toFixed(2):null };
+    }).filter(Boolean);
+
+    buildCards(); buildChips(); buildSectors(); apply();
+    $('status').classList.add('hidden'); $('content').classList.remove('hidden');
+  }).catch(()=>{ $('status').textContent='Could not load shareholding data — try again in a minute.'; });
+}
+
+function buildCards(){
+  const season = QUARTERS[0], sr = ROWS.filter(r=>r.q===season);
+  const up = sr.filter(r=>r.dfii>0.005).length, dn = sr.filter(r=>r.dfii<-0.005).length;
+  const dup = sr.filter(r=>r.ddii>0.005).length, ddn = sr.filter(r=>r.ddii<-0.005).length;
+  const week = ROWS.filter(r=>r.ageDays<=7).length;
+  let top=null; sr.forEach(r=>{ if(r.dfii!=null && (!top||r.dfii>top.dfii) && r.m>=500) top=r; });
+  const card = (lbl,val,sub,cls) =>
+    '<div class="card p-3.5"><div class="text-[11px] uppercase tracking-wide text-slate-400 font-semibold">'+lbl+'</div>' +
+    '<div class="text-xl font-extrabold mt-1 '+(cls||'text-slate-900')+'">'+val+'</div>' +
+    '<div class="text-[11px] text-slate-500 mt-0.5">'+sub+'</div></div>';
+  $('cards').innerHTML =
+    card(qLabel(season)+' filings in', sr.length.toLocaleString('en-IN'),
+         week.toLocaleString('en-IN')+' filed in the last 7 days') +
+    card('FII raised stake in', '<span class="pos">'+up+'</span> <span class="text-sm font-semibold text-slate-400">vs cut in '+dn+'</span>',
+         'of '+qLabel(season)+' filings so far') +
+    card('DII raised stake in', '<span class="pos">'+dup+'</span> <span class="text-sm font-semibold text-slate-400">vs cut in '+ddn+'</span>',
+         'mutual funds, insurers, banks…') +
+    (top ? card('Top FII add ('+qLabel(season)+')', esc(top.s),
+         '<span class="pos">+'+top.dfii.toFixed(2)+' pp</span> → '+top.fii.toFixed(2)+'% · mcap ≥ ₹500 cr') :
+         card('Top FII add','—','awaiting filings'));
+}
+
+const CHIP_DEFS = [
+  ['all','All stocks'], ['fiiup','🟢 FII raising'], ['fiidn','🔴 FII cutting'],
+  ['diiup','🟢 DII raising'], ['diidn','🔴 DII cutting'], ['bothup','💪 Both raising'],
+  ['promup','🏠 Promoter raising'], ['fresh','🆕 Filed this week']
+];
+function buildChips(){
+  $('chips').innerHTML = CHIP_DEFS.map(c=>'<button class="chip'+(mode===c[0]?' on':'')+'" data-m="'+c[0]+'">'+c[1]+'</button>').join('');
+  $('chips').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{ mode=b.dataset.m; buildChips(); apply(); });
+}
+function buildSectors(){
+  const secs=[...new Set(ROWS.map(r=>r.sec).filter(Boolean))].sort();
+  $('sector').innerHTML='<option value="">All sectors</option>'+secs.map(s=>'<option>'+esc(s)+'</option>').join('');
+}
+
+function apply(){
+  const q=($('q').value||'').trim().toUpperCase();
+  const mm=+$('minmove').value, mc=+$('minmcap').value, sec=$('sector').value;
+  VIEW = ROWS.filter(r=>{
+    if(q && r.s.indexOf(q)<0 && r.n.toUpperCase().indexOf(q)<0) return false;
+    if(mc && r.m<mc) return false;
+    if(sec && r.sec!==sec) return false;
+    if(mode==='fiiup' && !(r.dfii>0.005)) return false;
+    if(mode==='fiidn' && !(r.dfii<-0.005)) return false;
+    if(mode==='diiup' && !(r.ddii>0.005)) return false;
+    if(mode==='diidn' && !(r.ddii<-0.005)) return false;
+    if(mode==='bothup' && !(r.dfii>0.005 && r.ddii>0.005)) return false;
+    if(mode==='promup' && !(r.dprom>0.005)) return false;
+    if(mode==='fresh' && r.ageDays>7) return false;
+    if(mm){
+      const rel = mode==='diiup'||mode==='diidn' ? r.ddii : mode==='promup' ? r.dprom :
+                  mode==='fiiup'||mode==='fiidn' ? r.dfii :
+                  Math.max(Math.abs(r.dfii||0), Math.abs(r.ddii||0));
+      if(Math.abs(rel||0) < mm) return false;
+    }
+    return true;
+  });
+  const dir=sortDir, k=sortK;
+  VIEW.sort((a,b)=>{
+    let x=a[k], y=b[k];
+    if(k==='sub'){ x=a.sub||''; y=b.sub||''; return x<y?-dir:x>y?dir:(b.m-a.m); }
+    x=x==null?-1e9:x; y=y==null?-1e9:y;
+    return (y-x)*(-dir) || (b.m-a.m);
+  });
+  shown=0; $('tbody').innerHTML=''; renderMore();
+  $('count').textContent = VIEW.length.toLocaleString('en-IN')+' stocks';
+}
+
+function sparkSvg(r, idx){
+  const pts=[]; // oldest -> newest
+  for(let i=QUARTERS.length-1;i>=0;i--){ const c=r.cells[i]; if(c) pts.push({q:QUARTERS[i], fii:c[1], dii:c[2]}); }
+  if(pts.length<2) return '<span class="text-slate-300 text-xs">—</span>';
+  const W=110,H=34,P=3, n=pts.length;
+  let mx=0; pts.forEach(p=>{ mx=Math.max(mx,p.fii,p.dii); }); mx=Math.max(mx,0.5);
+  const X=i=>P+i*(W-2*P)/(n-1), Y=v=>H-P-(v/mx)*(H-2*P);
+  const line=key=>pts.map((p,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(p[key]).toFixed(1)).join(' ');
+  return '<svg class="spark" data-i="'+idx+'" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" style="cursor:crosshair">' +
+    '<path d="'+line('fii')+'" fill="none" stroke="#6366f1" stroke-width="1.8"/>' +
+    '<path d="'+line('dii')+'" fill="none" stroke="#d97706" stroke-width="1.8" stroke-dasharray="1,0"/>' +
+    pts.map((p,i)=>'<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(p.fii).toFixed(1)+'" r="1.6" fill="#6366f1"/>').join('') +
+    '</svg>';
+}
+
+function rowHtml(r, idx){
+  const isNew = r.ageDays<=3;
+  return '<tr class="border-b border-slate-100 hover:bg-indigo-50/40 transition">' +
+    '<td class="py-2 px-3"><div class="flex items-center gap-1.5"><span class="sw-star" data-sym="'+esc(r.s)+'"></span>' +
+      '<a class="font-bold text-indigo-700 hover:underline" href="./stock.html?sym='+encodeURIComponent(r.s)+'">'+esc(r.s)+'</a>' +
+      (isNew?' <span class="newbadge">NEW</span>':'')+'</div>' +
+      '<div class="text-[11px] text-slate-400 truncate" style="max-width:210px">'+esc(r.n)+(r.sec?' · '+esc(r.sec):'')+'</div></td>' +
+    '<td class="text-right px-2 text-slate-600">'+fmtMc(r.m)+'</td>' +
+    '<td class="px-2"><span class="qchip">'+qLabel(r.q)+'</span><div class="text-[11px] text-slate-400 mt-0.5">filed '+dLabel(r.sub)+'</div></td>' +
+    '<td class="text-right px-2 font-semibold text-slate-800">'+fmtPct(r.fii)+'</td>' +
+    '<td class="text-right px-2">'+pill(r.dfii)+'</td>' +
+    '<td class="text-right px-2 font-semibold text-slate-800">'+fmtPct(r.dii)+'</td>' +
+    '<td class="text-right px-2">'+pill(r.ddii)+'</td>' +
+    '<td class="text-right px-2">'+pill(r.dmf)+'</td>' +
+    '<td class="text-right px-2">'+pill(r.dprom)+'</td>' +
+    '<td class="text-center px-2">'+sparkSvg(r, idx)+'</td></tr>';
+}
+
+function renderMore(){
+  const next=VIEW.slice(shown, shown+PAGE);
+  $('tbody').insertAdjacentHTML('beforeend', next.map((r,i)=>rowHtml(r, shown+i)).join(''));
+  shown+=next.length;
+  $('more').classList.toggle('hidden', shown>=VIEW.length);
+  $('more').textContent='Show more ↓ ('+(VIEW.length-shown).toLocaleString('en-IN')+' left)';
+}
+
+// ---- hover tooltip (sparklines + delta context) ----
+const tip=$('tip');
+document.addEventListener('mousemove', e=>{
+  const sv=e.target.closest && e.target.closest('svg.spark');
+  if(!sv){ tip.style.display='none'; return; }
+  const r=VIEW[+sv.dataset.i]; if(!r){ tip.style.display='none'; return; }
+  const pts=[]; for(let i=QUARTERS.length-1;i>=0;i--){ const c=r.cells[i]; if(c) pts.push({q:QUARTERS[i],c}); }
+  const bb=sv.getBoundingClientRect();
+  const fr=Math.min(pts.length-1, Math.max(0, Math.round((e.clientX-bb.left-3)/(bb.width-6)*(pts.length-1))));
+  const p=pts[fr];
+  tip.innerHTML='<b>'+esc(r.s)+'</b> · '+qLabel(p.q)+
+    '<br>FII <b style="color:#a5b4fc">'+p.c[1].toFixed(2)+'%</b> · DII <b style="color:#fbbf24">'+p.c[2].toFixed(2)+'%</b>'+
+    '<br>MF '+p.c[3].toFixed(2)+'% · Prom '+p.c[0].toFixed(2)+'%';
+  tip.style.display='block';
+  tip.style.left=Math.min(window.innerWidth-270, e.clientX+14)+'px';
+  tip.style.top=(e.clientY+14)+'px';
+});
+
+// ---- controls ----
+['q','minmove','minmcap','sector'].forEach(id=>{ $(id).addEventListener('input', apply); });
+$('more').onclick=renderMore;
+document.querySelectorAll('th.sortable').forEach(th=>{
+  th.onclick=()=>{
+    const k=th.dataset.k;
+    if(sortK===k) sortDir=-sortDir; else { sortK=k; sortDir=-1; }
+    apply();
+  };
+});
+$('csv').onclick=()=>{
+  const head='symbol,name,mcap_cr,sector,quarter,filed,fii_pct,fii_chg_pp,dii_pct,dii_chg_pp,mf_pct,mf_chg_pp,promoter_pct,promoter_chg_pp\n';
+  const body=VIEW.map(r=>[r.s,'"'+r.n.replace(/"/g,"'")+'"',r.m,'"'+r.sec+'"',r.q,r.sub,r.fii,r.dfii==null?'':r.dfii,r.dii,
+    r.ddii==null?'':r.ddii,r.mf,r.dmf==null?'':r.dmf,r.prom,r.dprom==null?'':r.dprom].join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([head+body],{type:'text/csv'})); a.download='fii_dii_holdings.csv'; a.click();
+};
+
+load();
+</script>
+</body>
+</html>

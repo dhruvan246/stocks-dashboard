@@ -142,6 +142,7 @@
       ['./watchlist.html',         '📌', 'Watchlist'],
       ['./sectors.html',           '🔥', 'Sectors'],
       ['./fii-dii.html',           '🌐', 'FII/DII'],
+      ['./shareholding.html',      '🏛️', 'FII/DII Holdings'],
       ['./bank-credit.html',       '🏦', 'Banking Growth'],
       ['./market-mood.html',       '🌡️', 'Market Mood'],
       ['./results-season.html',    '📊', 'Results Season'],

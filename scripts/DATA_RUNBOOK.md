@@ -999,6 +999,50 @@ again by removing it from PRIVATE_PAGES + deleting the swLock block.
 
 ---
 
+## 22. FII/DII HOLDINGS PER STOCK  (docs/shareholding.html — "FII/DII Holdings" nav, built 2026-07-16)
+**Per-stock institutional holding % + QoQ change from NSE quarterly shareholding-pattern (SHP) filings,
+refreshed 2×/day as companies file** (companies file on different days within 21d of quarter end, so new
+rows land daily during season). Distinct from `fii-dii.html` (market-level daily buy/sell FLOWS) — the two
+pages cross-link.
+
+- **Fetcher = `scripts/fetch_shareholding.py`** (stdlib-only; reuses build_fundamentals' NSE session):
+  1. Master list per quarter-end: `/api/corporate-share-holdings-master?index=equities&from_date=<QE>&to_date=<QE>`
+     — ⚠️ the window filters on the pattern's **AS-ON date**, so from=to=quarter-end returns EVERY company's
+     filing for that quarter in ONE call (~2,300/qtr). Mid-quarter as-on dates = event-based SHPs (capital
+     changes) — deliberately NOT tracked (quarter-end series only, Trendlyne-comparable).
+  2. Each master row carries an **`xbrl` url** (nsearchives, ~150-500 KB) → parse category facts
+     `ShareholdingAsAPercentageOfTotalNumberOfShares` per context member (contexts with exactly one
+     explicitMember, no typedMember — typed = the named >1% shareholders):
+     **FII = InstitutionsForeignMember** (FPI I+II + FDI + other foreign), **DII = InstitutionsDomesticMember**
+     (MF+insurance+banks+PF+AIF…), MF = MutualFundsOrUTIMember, ins = InsuranceCompaniesMember,
+     prom = ShareholdingOfPromoterAndPromoterGroupMember, pub = PublicShareholdingMember. Values are pure
+     FRACTIONS (0.1867 = 18.67%); scale-anchored via total/prom+pub ≈ 1-or-100; sanity: fii+dii ≤ pub+2,
+     prom+pub ∈ [98,102]. Only the post-2021 SEBI format has the Domestic/Foreign split — unanchored/old
+     filings are SKIPPED (logged), never guessed (~1% of a season).
+  3. Merge newest-submission-wins into **`scripts/shp_history.json`** (tracked):
+     `{"_names":{SYM:name}, SYM:{QE:[prom,fii,dii,mf,ins,"sub-date"]}}`. Revisions re-file the same (sym,QE)
+     with a later submissionDate and auto-replace. History write ABORTs if cells would shrink.
+  4. Build **`docs/shareholding.json`** (page feed: last 8 QEs, aligned cell arrays, name/mcap from
+     dash_slim + sector macro from sector_classification; ABORT if <500 rows) + **`docs/shp_meta.json`**
+     (tiny heartbeat, changes every run — feeds.json watches THIS for liveness at 36h; shareholding.json
+     itself has max_age null because off-season it legitimately never changes).
+- **Runs:** default = top-up last 3 QEs (current season + late filers/revisions of 2 back, only new/revised
+  XBRLs re-fetched); `--backfill N` = deep fill; `--feed-only` = rebuild docs feed, no network.
+  Initial backfill 2026-07-16: 4 quarters (Sep-25→Jun-26), ~7k XBRLs, ~45 min, 6 threads.
+- **Auto-refresh:** `.github/workflows/refresh-shareholding.yml` — cron 12:40 + 20:40 IST **daily incl.
+  weekends** (filings land any day); reset-and-replay commit carries shareholding.json + shp_meta.json +
+  shp_history.json through /tmp (§18 gotcha); guard_feed before commit; dispatches pages.yml.
+- **Page `docs/shareholding.html`** (hand-maintained): stat cards (season filings / FII raised-vs-cut /
+  DII raised-vs-cut / top FII add ≥₹500cr), filter chips (FII/DII raising/cutting, both, promoter, filed
+  this week), min-move pp + mcap + sector filters, sortable columns, FII+DII sparkline w/ hover tooltip,
+  Δ pills vs the stock's PREVIOUS filed quarter ("first" pill when no prior), NEW badge ≤3d, CSV export,
+  sw-star watchlist, theme.js auto-cardify on mobile. Row cap 300 + "Show more".
+- **Gotchas:** master `date` fields are as-on dates — a Jul window returns only event SHPs, NOT the June
+  quarter (query from=to=QE instead). GAYAPROJ-style +16pp FII jumps are usually restructuring allotments —
+  real filing data, not bugs. BSE-only stocks (no NSE listing) have no SHP here (future work, BSE source).
+
+---
+
 ## 21. MARKET BREADTH  (Market Mood page section — built 2026-07-16, SELF-UPDATING)
 **Daily Nifty 500 breadth on docs/market-mood.html:** % of members above their 200-DMA (chart w/ 20/80
 zones), new 52-week highs vs lows (bar chart, auto-aggregates to N-day totals on long ranges), plus
