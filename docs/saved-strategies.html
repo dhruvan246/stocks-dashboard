@@ -503,9 +503,9 @@ function liveMetrics(r, ltp) {
   const rawLast = META[tkr] && META[tkr].raw; if (!rawLast || !r.price) return null;
   const off = dayOff(SF.end);
   const liveAdj = r.price * (ltp / rawLast);                       // live price in the adjusted series' units
-  const lookOff = off - Math.round((CUR.cfg.lookback || 0) * 30.44);
+  const lookOff = off - 30;                                        // fixed 1-month window, matching the engine's r.chg (backtest-engine.js:285)
   const p0 = priceAt(tkr, lookOff);
-  const chg = (p0 && p0 > 0) ? (liveAdj / p0 - 1) * 100 : r.chg;   // return over the strategy's lookback window
+  const chg = (p0 && p0 > 0) ? (liveAdj / p0 - 1) * 100 : r.chg;   // 1-month change off the live price
   const hl = hl52(tkr, off);                                       // fold the live print into the 52w high/low
   const hi = Math.max(hl ? hl.hi : liveAdj, liveAdj), low = Math.min(hl ? hl.low : liveAdj, liveAdj);
   return { chg, d52: (hi - liveAdj) / hi * 100, d52low: (liveAdj - low) / low * 100, rsi: rsiLive(tkr, off, Math.round(liveAdj * 100)) };
@@ -771,6 +771,13 @@ async function runLogPicks(){
   const pulled = loadLS('bt_strategies'); const have = new Set(pulled.map(s => s.id));
   const localOnly = localBefore.filter(s => s && s.local && !have.has(s.id));
   if (localOnly.length) { saveLS('bt_strategies', pulled.concat(localOnly)); if (window.btSync) { try { await btSync.pushStrategies(); } catch (e) {} } }   // publish local-only strategies (open list; self-heals an earlier failed publish)
+  // One-time cleanup: `lookback` is a dead field (the engine never reads it — backtest-engine.js:285),
+  // so strip it from every saved strategy. Republish once (owner) so the shared list is clean for everyone.
+  {
+    const cur = strategies(); let stripped = 0;
+    for (const s of cur) { if (s && s.cfg && 'lookback' in s.cfg) { delete s.cfg.lookback; stripped++; } }
+    if (stripped) { saveLS('bt_strategies', cur); if (window.btSync) { try { await btSync.pushStrategies(); } catch (e) {} } }
+  }
   if (new URLSearchParams(location.search).get('logpicks')) { await runLogPicks(); return; }   // headless daily picks-logger — skips the UI
   $('tabBest').onclick   = () => setView('best');
   $('tabNew').onclick    = () => setView('new');
