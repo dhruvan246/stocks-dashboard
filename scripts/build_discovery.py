@@ -335,14 +335,55 @@ def build_deal_buckets():
     return [b for b in out if b["n"]]
 
 
+def build_insider_buckets():
+    """Promoter-buying bucket from docs/insider.json (fetch_insider.py, refresh-insider.yml).
+    Reuses the 'deal' row type: [sym, name, netCr, buyCr, people, lastDate, topPerson].
+    Market purchases/sales by Promoters only (cat P, mode MP/MS) — ESOP, gifts, off-market
+    inter-se transfers etc. are excluded so the signal stays clean."""
+    try:
+        ins = json.load(open(dp("insider.json"), encoding="utf-8"))
+        irows, ito = ins.get("rows") or [], ins.get("to")
+        end = datetime.date.fromisoformat(ito)
+    except Exception:
+        return []
+    out = []
+    for key, days, minbuy in (("pit30", 30, 0.25),):
+        lo = (end - datetime.timedelta(days=days - 1)).isoformat()
+        agg = {}
+        for r in irows:
+            if r[0] < lo or r[4] != "P" or r[8] not in ("MP", "MS"): continue
+            a = agg.setdefault(r[1], {"name": r[2], "buy": 0.0, "sell": 0.0, "ppl": {}, "last": ""})
+            v = (r[7] or 0) / 1e7
+            if r[8] == "MP":
+                a["buy"] += v
+                p = r[3].upper()
+                a["ppl"][p] = a["ppl"].get(p, 0.0) + v
+            else:
+                a["sell"] += v
+            if r[0] > a["last"]: a["last"] = r[0]
+        rows = []
+        for sym, a in agg.items():
+            if a["buy"] < minbuy: continue
+            m = META.get(sym)
+            top = max(a["ppl"], key=a["ppl"].get) if a["ppl"] else ""
+            rows.append([sym, (m or {}).get("name") or a["name"], round(a["buy"] - a["sell"], 2),
+                         round(a["buy"], 2), len(a["ppl"]), a["last"], top.title()])
+        rows.sort(key=lambda x: -x[2])
+        rows = rows[:150]
+        out.append({"k": key, "t": "Promoters buying (last %dd)" % days,
+                    "d": "Stocks whose PROMOTERS bought ≥₹25 lakh of their own shares on the market in the last %d days (SEBI PIT Reg 7(2) disclosures). Net = promoter market buys − sells. Promoter buying is one of the strongest conviction signals." % days,
+                    "type": "deal", "n": len(rows), "rows": rows})
+    return [b for b in out if b["n"]]
+
+
 # ---------------------------------------------------------------- assemble
 def main():
     res = build_results_buckets()
     latest = [b for b in res if not b["k"].startswith("res") or res and b["k"] in (res[0]["k"],)]
-    deal = build_deal_buckets()
+    deal = build_insider_buckets() + build_deal_buckets()
     groups = [
         {"g": "Triggers (last 31 days)", "buckets": build_ann_buckets()},
-      ] + ([{"g": "Smart money (bulk & block deals)", "buckets": deal}] if deal else []) + [
+      ] + ([{"g": "Smart money (deals & insiders)", "buckets": deal}] if deal else []) + [
         {"g": "Price & Value",           "buckets": build_price_buckets()},
         {"g": "Results — computed from filings", "buckets": res[:3]},
         {"g": "Results history",         "buckets": res[3:]},

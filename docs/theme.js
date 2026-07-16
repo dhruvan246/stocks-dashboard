@@ -148,6 +148,7 @@
       ['./results-season.html',    '📊', 'Results Season'],
       ['./discovery.html',         '💸', 'Smart Money Picks'],
       ['./deals.html',             '🐋', 'Bulk/Block Deals'],
+      ['./insider.html',           '🕵️', 'Insider Trades'],
       ['./quarterly-results.html', '🧾', 'Quarterly Results'],
       ['./announcements.html',     '📢', 'Announcements']
     ] },

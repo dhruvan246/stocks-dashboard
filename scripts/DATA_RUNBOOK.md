@@ -1068,7 +1068,8 @@ advancers/decliners — all in one hover tooltip + 4 stat cards.
 
 ---
 
-## 22. BULK & BLOCK DEALS  (docs/deals.html — "Bulk/Block Deals" nav, built 2026-07-16, SELF-UPDATING)
+## 23. BULK & BLOCK DEALS  (docs/deals.html — "Bulk/Block Deals" nav, built 2026-07-16, SELF-UPDATING)
+<!-- renumbered from 22 (two sections were both born §22 the same day; FII/DII holdings kept it) -->
 **The smart-money tape:** every NSE bulk deal (>0.5% of equity traded by one client in a day) and block
 deal (negotiated block-window trades), rolling ~92-day window, with a per-stock net-buying view + two
 Discovery buckets ("Smart money (bulk & block deals)" group, type `deal`).
@@ -1097,3 +1098,40 @@ Discovery buckets ("Smart money (bulk & block deals)" group, type `deal`).
 - **Page:** deals.html — stat cards (latest day), All-deals/By-stock views, filters (search stock OR client —
   clicking a client name filters to them, kind, side, min value, period), theme.js auto-cardify on mobile.
   New page = sw.js SHELL entry + CACHE bump (rode v26→v27 with the shareholding page).
+
+---
+
+## 24. INSIDER TRADES  (docs/insider.html — "Insider Trades" nav, built 2026-07-16, SELF-UPDATING)
+**SEBI PIT Reg 7(2) disclosures** — promoters/directors/KMP buying-selling their own company — rolling
+~92-day `docs/insider.json` + a "Promoters buying (30d)" Discovery bucket (reuses the `deal` row type).
+
+- **⚠️ THE API LANDSCAPE (verified 2026-07-16 — don't re-derive):**
+  - **PIT moved to XBRL submissions in Apr-2026** ("PIT V2.0 (30-04-2026)" in the XML header). The
+    legacy dataset behind `/api/corporates-pit` FROZE ~2026-04-21: its market-wide query returns
+    `{"data":[]}` for EVERY variant (urllib session, curl_cffi impersonation, csv=true, param renames,
+    date formats, no-params, sme); its symbol query returns only the company's pre-freeze latest ≤20
+    (newest-first, `pageno` ignored, adding dates zeroes it). Useless for current data.
+  - **The live source is `/api/corporates-pit-gg?index=equities`** (found in the page bundle
+    `/dist/js/sections/corporate-filings.js`) — a filing INDEX over roughly the trailing ~75 days:
+    appId, symbol, broadcastDateTime, xmlFileName (the XBRL on nsearchives), typeOfSubmission,
+    prevAppId. **No transaction numbers** — those live in each filing's XBRL. Its own from_date/
+    to_date params misbehave → always take the full default index and dedup.
+  - Neighbouring endpoints in the same bundle if ever wanted: `corporate-sast-reg29`,
+    `corporate-pledgedata-sast3132`, `corporate-IT-PIT-Annual`, `TradingPlandata`,
+    `OffmarketTranctiondata` (sic), `corporates-corporateActions?index=equities`.
+- **Fetcher:** `scripts/fetch_insider.py` — pulls the -gg index, fetches ONLY new filings' XBRLs
+  (meta.seen appIds; failures retry next run; revised filings replace the original's rows via
+  prevAppId), parses each `Disclosure<N>` context (taxonomy `in-bse-co`; note the tag typo
+  `SecuritiesHeldPostAcquistion…` — match loosely). Equity-share rows only.
+  Row: [bcast date, sym, company, person, cat P/D/K/O, side B/S/P/R/I/O, qty, val ₹ (RUPEES — page
+  divides by 1e7), mode MP/MS/ES/OM/PF/RI/GF/PL/RV/IV/BB/OT, pctPost, key `g<appId>#<ctx>`].
+  Seed 2026-07-16 also merged a one-time legacy-API sweep for the pre-May sliver (legacy `did` keys).
+- **Refresh:** `.github/workflows/refresh-insider.yml` — 21:45 IST weekdays + 09:00 IST Tue-Sat
+  (index + a few dozen XBRLs ≈ 2 min). Commit = reset-and-replay carrying insider.json (§18 gotcha).
+- **Discovery:** `build_insider_buckets()` in build_discovery.py — "Promoters buying (last 30d)": cat P,
+  mode MP/MS ONLY (ESOP/off-market/pledges excluded to keep the signal clean), buys ≥₹25 lakh, net =
+  MP − MS, type `deal` rows (shared renderer). Group renamed "Smart money (deals & insiders)" —
+  the GROUP_ICON key in discovery.html must match the group string exactly.
+- **Page:** insider.html — defaults to **Promoters + market deals only + last 30d** (the signal view);
+  filters open it up to everyone/all modes. Person name click-through, By-stock net view, cards for the
+  latest broadcast day. sw.js SHELL + CACHE v28→v29.

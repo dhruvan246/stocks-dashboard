@@ -1,0 +1,84 @@
+name: Refresh insider trades (PIT)
+
+# PIT disclosures moved to XBRL submissions in Apr-2026 (the legacy corporates-pit
+# API is frozen — see DATA_RUNBOOK §24). fetch_insider.py reads the filing INDEX
+# (/api/corporates-pit-gg, ~75-day window) and fetches+parses only NEW filings'
+# XBRL XMLs from nsearchives (a few dozen per day, ~2 min). Two runs a day:
+# evening (21:45 IST) + morning (09:00 IST Tue-Sat) for late-evening broadcasts.
+
+on:
+  schedule:
+    - cron: "15 16 * * 1-5"   # 21:45 IST weekdays
+    - cron: "30 3 * * 2-6"    # 09:00 IST Tue-Sat
+  repository_dispatch:
+    types: [insider-refresh]
+  workflow_dispatch: {}
+  # Bootstrap/self-test: also run when the fetcher or this workflow changes.
+  push:
+    paths:
+      - "scripts/fetch_insider.py"
+      - ".github/workflows/refresh-insider.yml"
+
+permissions:
+  contents: write
+  actions: write   # dispatch pages.yml after a bot commit (loop guard blocks auto-trigger)
+
+concurrency:
+  group: refresh-insider
+  cancel-in-progress: false
+
+jobs:
+  refresh-insider:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Fetch NSE insider-trading disclosures (PIT XBRL index + new filings)
+        run: python3 -X utf8 scripts/fetch_insider.py
+
+      # ⚠️ reset-and-replay gotcha (runbook §18): every file the fetch step writes
+      # must ride the cp-to-/tmp + cp-back + git-add lists below.
+      - name: Guard — refuse to commit a broken or shrunken feed
+        run: python3 scripts/guard_feed.py
+
+      - name: Commit updated insider feed (only if changed)
+        id: commit
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp docs/insider.json /tmp/insider.json
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/insider.json docs/insider.json
+            git add docs/insider.json
+            if git diff --cached --quiet; then
+              echo "Insider feed unchanged — nothing to commit"
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            git commit -m "Insider trades refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then
+              echo "Pushed on attempt #$attempt"
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "Push attempt #$attempt rejected; resetting and retrying"
+            sleep $(( attempt * 3 ))
+          done
+          echo "Failed to push after 5 attempts"
+          exit 1
+
+      # Bot commits can't auto-trigger pages.yml — dispatch it explicitly on change.
+      - name: Publish to Pages (only when the feed changed)
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml
