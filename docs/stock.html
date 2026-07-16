@@ -101,7 +101,16 @@
     <div id="funds" class="overflow-x-auto text-sm">—</div>
   </div>
 
-  <p class="text-[11px] text-slate-400">Data: survivorship-free daily history (1996→latest), point-in-time quarterly earnings, NSE/BSE. Prices are split/bonus-adjusted close; "Last close" shows the raw traded price. Not investment advice.</p>
+  <!-- shareholding pattern -->
+  <div class="card p-4">
+    <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+      <div class="text-sm font-semibold text-slate-700">🏛️ Shareholding pattern <span class="text-slate-400 font-normal">— quarterly filings, % of total shares</span></div>
+      <a href="./shareholding.html" class="text-xs font-semibold text-indigo-600 hover:underline">Compare all stocks →</a>
+    </div>
+    <div id="shp" class="overflow-x-auto text-sm"><span class="text-slate-400">Loading shareholding pattern…</span></div>
+  </div>
+
+  <p class="text-[11px] text-slate-400">Data: survivorship-free daily history (1996→latest), point-in-time quarterly earnings, quarterly shareholding patterns, NSE/BSE. Prices are split/bonus-adjusted close; "Last close" shows the raw traded price. Not investment advice.</p>
 </main>
 
 <script src="./backtest-engine.js"></script>
@@ -250,6 +259,46 @@ function renderFunds(){
   </tbody></table>`;
 }
 
+/* ---------- shareholding pattern (NSE quarterly SHP filings, docs/shareholding.json) ---------- */
+const SHP_MONS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const shpQ=iso=>SHP_MONS[+iso.slice(5,7)-1]+' '+iso.slice(0,4);
+async function loadSHP(){
+  const el=$('shp');
+  try{
+    const j=await(await fetch('./shareholding.json')).json();
+    const rows=j.rows||[];
+    const alias=(typeof FUND_ALIAS!=='undefined'&&FUND_ALIAS&&FUND_ALIAS[SYM])||null;
+    const row=rows.find(r=>r[0]===SYM)||(alias?rows.find(r=>r[0]===alias):null);
+    if(!row){ el.innerHTML='<span class="text-slate-400">No NSE quarterly shareholding-pattern filing on file for this stock (BSE-only listings and pre-2021-format filers aren’t covered yet).</span>'; return; }
+    const cells=row[4]||[];
+    // feed quarters are newest-first; display oldest -> newest, trimming leading never-filed quarters
+    let idx=j.quarters.map((q,i)=>i).reverse();
+    while(idx.length&&!cells[idx[0]]) idx.shift();
+    if(!idx.length){ el.innerHTML='<span class="text-slate-400">No parsed shareholding filings yet for this stock.</span>'; return; }
+    const v=(i,k)=>{ const c=cells[i]; return (c&&c[k]!=null)?c[k]:null; };
+    const pubO=i=>{ const c=cells[i]; return c?Math.max(0,+(100-c[0]-c[1]-c[2]).toFixed(2)):null; };
+    const tr=(lbl,get,cls,raw)=>'<tr class="border-b border-slate-50 '+(cls||'')+'"><td class="py-1.5 pr-2 font-medium whitespace-nowrap">'+lbl+'</td>'+
+      idx.map(i=>{ const x=get(i); return '<td class="text-right px-2 py-1.5 whitespace-nowrap">'+(x==null?'<span class="text-slate-300">—</span>':(raw?x:x.toFixed(2)+'%'))+'</td>'; }).join('')+'</tr>';
+    let h='<table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr><th class="text-left py-1 pr-2">Holder</th>'+
+      idx.map(i=>'<th class="text-right px-2 py-1 whitespace-nowrap">'+shpQ(j.quarters[i])+'</th>').join('')+'</tr></thead><tbody>';
+    h+=tr('Promoters',i=>v(i,0));
+    h+=tr('FIIs',i=>v(i,1));
+    h+=tr('DIIs <button id="diiTg" class="ml-1 w-4 h-4 inline-flex items-center justify-center rounded border border-slate-300 text-slate-500 text-[10px] leading-none align-middle" title="Show mutual fund / insurance split">+</button>',i=>v(i,2));
+    h+=tr('<span class="pl-4">Mutual funds</span>',i=>v(i,3),'shp-sub hidden text-slate-500');
+    h+=tr('<span class="pl-4">Insurance</span>',i=>v(i,4),'shp-sub hidden text-slate-500');
+    h+=tr('Public &amp; others',i=>pubO(i));
+    if(idx.some(i=>v(i,6)!=null))
+      h+=tr('No. of shareholders',i=>{ const n=v(i,6); return n==null?null:(+n).toLocaleString('en-IN'); },'text-slate-500',true);
+    h+='</tbody></table>';
+    let sub=null; for(let k=idx.length-1;k>=0&&!sub;k--){ const c=cells[idx[k]]; if(c&&c[5]) sub=c[5]; }
+    el.innerHTML=h+'<div class="text-[11px] text-slate-400 mt-2">'+(sub?('Latest filing submitted '+sub+' · '):'')+
+      'Source: NSE quarterly shareholding-pattern (SHP) XBRL. FII = foreign institutions (FPI, FDI); DII = domestic institutions (MF, insurance, banks, PF, AIF); Public &amp; others = balance incl. employee trusts. <a class="text-indigo-500 hover:underline" href="./fii-dii.html">Daily FII/DII flows →</a></div>';
+    const tg=$('diiTg');
+    if(tg) tg.onclick=()=>{ const open=tg.textContent.trim()==='−'; tg.textContent=open?'+':'−';
+      el.querySelectorAll('.shp-sub').forEach(r=>r.classList.toggle('hidden',open)); };
+  }catch(e){ el.innerHTML='<span class="text-slate-400">Shareholding data unavailable right now.</span>'; }
+}
+
 /* ---------- boot ---------- */
 $('sForm').onsubmit=e=>{ e.preventDefault(); const v=$('sSearch').value.trim().toUpperCase(); if(v) location.href='./stock.html?sym='+encodeURIComponent(v); };
 (async function boot(){
@@ -260,6 +309,7 @@ $('sForm').onsubmit=e=>{ e.preventDefault(); const v=$('sSearch').value.trim().t
   TKR=SYM;
   try{ render(); }catch(e){ fail('Render error: '+(e&&e.message||e)); console.error(e); return; }
   $('ov').style.display='none';
+  loadSHP();
 })();
 </script>
 </body>
