@@ -449,11 +449,18 @@ function setComputeUI(on, txt, frac) {
   if (txt != null) { $('cProgress').textContent = txt; $('cOvText').textContent = txt; }
 }
 // Core: backtest EVERY strategy over [from,to] (optional Top-N override). Returns a results object
-// { idKey: {ret,cagr,maxDD,finalV,topN} }. onProgress(done,total) drives the overlay. Engine must be loaded.
-async function computeWindow(from, to, topN, onProgress, sink) {
+// { idKey: {ret,cagr,maxDD,finalV,topN} }. onProgress(done,total) drives the overlay; `sink` (a Map) is
+// filled live for streaming. `existing` pre-seeds already-computed strategies (within-wave RESUME — they
+// are skipped). `onChunk(out)` is awaited every ~8 fresh computes for incremental persistence.
+async function computeWindow(from, to, topN, onProgress, sink, existing, onChunk) {
   const groups = [...buildGroups(strategies()).values()];
-  const out = {}; let done = 0;
+  const out = existing ? Object.assign({}, existing) : {};
+  let done = 0, sinceSave = 0;
+  if (sink) for (const k in out) sink.set(k, out[k]);
   for (const g of groups) {
+    const idk = identityKey(g.rep.cfg);
+    done++;
+    if (out[idk]) { if (onProgress) onProgress(done, groups.length); continue; }   // resume: already computed
     await new Promise(r => setTimeout(r, 0));                   // yield so the overlay can paint before the next (blocking) backtest
     const cap = g.rep.cfg.capital || 100000;
     const c = { ...g.rep.cfg, start: from, end: to, capital: cap };
@@ -461,10 +468,10 @@ async function computeWindow(from, to, topN, onProgress, sink) {
     try {
       const res = simulate(c);
       const row = { ret: (res.finalV / cap - 1) * 100, cagr: res.cagr, maxDD: res.maxDD, finalV: res.finalV, topN: c.topN };
-      out[identityKey(g.rep.cfg)] = row;
-      if (sink) sink.set(identityKey(g.rep.cfg), row);
+      out[idk] = row;
+      if (sink) sink.set(idk, row);
+      if (onChunk && ++sinceSave >= 8) { sinceSave = 0; try { await onChunk(out); } catch (e) {} }
     } catch (e) { /* leave uncomputed */ }
-    done++;
     if (onProgress) onProgress(done, groups.length);
   }
   return out;
@@ -522,21 +529,25 @@ async function computeAndSaveWaves(headless) {
   setComputeUI(true, 'Loading market data…', 0); setMsg('Loading market data…');
   if (!await ensureEngine()) { setComputeUI(false, 'Couldn’t load market data.', 0); if (headless) setOut('Bake error: market data'); return false; }
   const today = SF.end;
-  const baked = key => WAVE_SNAP && WAVE_SNAP[key] && WAVE_SNAP[key].results && Object.keys(WAVE_SNAP[key].results).length;
+  const groupCountAll = buildGroups(strategies()).size;
+  const baked = key => WAVE_SNAP && WAVE_SNAP[key] && WAVE_SNAP[key].results && Object.keys(WAVE_SNAP[key].results).length >= groupCountAll;
   // resume: reuse already-baked waves that match the current data date
   const payload = (WAVE_SNAP && WAVE_SNAP.date === today) ? Object.assign({}, WAVE_SNAP) : { date: today };
   for (let wi = 0; wi < WAVE_ORDER.length; wi++) {
     const key = WAVE_ORDER[wi], p = PERIOD_PRESETS[key];
-    if (payload.date === today && payload[key] && payload[key].results && Object.keys(payload[key].results).length) continue;   // already baked this run/date
     const from = clampDate(p.from, SF.start, SF.end);
     const to   = clampDate(p.to || today, SF.start, SF.end);
+    const groupCount = buildGroups(strategies()).size;
+    // fully baked already (all strategies present)? skip. Otherwise resume from the partial results.
+    const prior = (payload[key] && payload[key].results) ? payload[key].results : null;
+    if (prior && Object.keys(prior).length >= groupCount) continue;
+    const saveChunk = async out => { payload[key] = { start: from, end: to, topN: null, results: out }; try { await btSync.snapSet('waves', payload); } catch (e) {} WAVE_SNAP = payload; };
     const results = await computeWindow(from, to, null, (done, total) => {
       const frac = (wi + done / total) / WAVE_ORDER.length;
       setComputeUI(true, `Baking ${key} — ${done}/${total} strategies…`, frac);
       setMsg(`Baking ${key} ${done}/${total} (${wi + 1}/${WAVE_ORDER.length} waves)`);
-    });
-    payload[key] = { start: from, end: to, topN: null, results };
-    try { await btSync.snapSet('waves', payload); } catch (e) { /* keep going; retried next run */ }   // incremental save after each wave
+    }, null, prior, saveChunk);
+    await saveChunk(results);                                   // final save for this wave (also covers <8-strategy tails)
     WAVE_SNAP = payload;
   }
   const complete = WAVE_ORDER.every(baked);
