@@ -376,14 +376,41 @@ def build_insider_buckets():
     return [b for b in out if b["n"]]
 
 
+def build_spike_buckets():
+    """Delivery-spike bucket from docs/delivery.json (fetch_delivery.py, refresh-delivery.yml).
+    type 'spike' rows: [sym, name, spikeCount, totDelivCr, bestMult, lastDate]."""
+    try:
+        dl = json.load(open(dp("delivery.json"), encoding="utf-8"))
+        sp = dl.get("spikes") or []
+    except Exception:
+        return []
+    sess = sorted({r[0] for r in sp}, reverse=True)[:5]
+    if not sess: return []
+    lo = sess[-1]
+    agg = {}
+    for r in sp:
+        if r[0] < lo: continue
+        a = agg.setdefault(r[1], {"name": r[2], "n": 0, "cr": 0.0, "best": 0.0, "last": 0})
+        a["n"] += 1; a["cr"] += r[5]
+        if r[8] > a["best"]: a["best"] = r[8]
+        if r[0] > a["last"]: a["last"] = r[0]
+    fmt = lambda ymd: "%04d-%02d-%02d" % (ymd // 10000, ymd // 100 % 100, ymd % 100)
+    rows = [[s, a["name"], a["n"], round(a["cr"], 1), a["best"], fmt(a["last"])] for s, a in agg.items()]
+    rows.sort(key=lambda x: (-x[2], -x[3]))
+    rows = rows[:100]
+    return [{"k": "spike5", "t": "Delivery spikes (last 5 sessions)",
+             "d": "Stocks whose DELIVERED quantity jumped to ≥3× their own 20-session baseline with delivery ≥30%, ≥₹1 cr delivered and price up — repeated spikes suggest steady accumulation. Full detail on the Delivery Spikes page.",
+             "type": "spike", "n": len(rows), "rows": rows}] if rows else []
+
+
 # ---------------------------------------------------------------- assemble
 def main():
     res = build_results_buckets()
     latest = [b for b in res if not b["k"].startswith("res") or res and b["k"] in (res[0]["k"],)]
-    deal = build_insider_buckets() + build_deal_buckets()
+    deal = build_insider_buckets() + build_deal_buckets() + build_spike_buckets()
     groups = [
         {"g": "Triggers (last 31 days)", "buckets": build_ann_buckets()},
-      ] + ([{"g": "Smart money (deals & insiders)", "buckets": deal}] if deal else []) + [
+      ] + ([{"g": "Smart money", "buckets": deal}] if deal else []) + [
         {"g": "Price & Value",           "buckets": build_price_buckets()},
         {"g": "Results — computed from filings", "buckets": res[:3]},
         {"g": "Results history",         "buckets": res[3:]},

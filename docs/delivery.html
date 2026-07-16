@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Delivery Spikes</title>
+<meta name="description" content="NSE delivery spikes — stocks where delivered quantity jumped to multiples of their own baseline with the price up: quiet accumulation made visible." />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<style>
+  body { font-feature-settings: "tnum" 1; }
+  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
+  .pos{color:#15803d;font-weight:600}.neg{color:#b91c1c;font-weight:600}
+  html[data-theme="dark"] .pos{color:#6ee7b7}html[data-theme="dark"] .neg{color:#fca5a5}
+  .chip{display:inline-block;font-size:10px;font-weight:800;padding:2px 8px;border-radius:9999px;white-space:nowrap}
+  .chip.mult{background:#ede9fe;color:#6d28d9}
+  html[data-theme="dark"] .chip.mult{background:rgba(139,92,246,.18);color:#c4b5fd}
+  .vbtn{padding:6px 14px;border-radius:9999px;font-size:12px;font-weight:700;cursor:pointer;user-select:none;
+        background:var(--surface-2,#f1f5f9);color:var(--text-muted,#334155);border:1px solid var(--border,#e2e8f0)}
+  .vbtn.on{background:var(--accent,#2563eb);color:#fff;border-color:var(--accent,#2563eb)}
+  select,input[type=text]{background:#fff;border:1px solid #cbd5e1;border-radius:.5rem;font-size:13px;padding:7px 10px}
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav class="flex items-center gap-1 overflow-x-auto">
+      <a href="./deals.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">🐋<span class="hidden sm:inline">Bulk/Block Deals</span></a>
+      <a href="./insider.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">🕵️<span class="hidden sm:inline">Insider Trades</span></a>
+      <a href="./stock-backtest.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition shrink-0">🧪<span class="hidden sm:inline">Create a Strategy</span></a>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-screen-xl mx-auto px-4 py-6">
+  <div class="mb-4">
+    <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Delivery Spikes <span class="text-slate-400 font-semibold text-base">· quiet accumulation made visible</span></h1>
+    <p class="text-sm text-slate-500 mt-1">Stocks where the <b>delivered quantity</b> (shares actually taken home, not day-traded) jumped to a multiple of the stock's own 20-session baseline — with delivery ≥30% of volume, ≥₹1 cr delivered and the <b>price up</b> on the day. That combination usually means somebody is accumulating. <span id="updated" class="text-slate-400"></span></p>
+  </div>
+
+  <div id="status" class="text-sm text-slate-500 py-10 text-center">Loading delivery data…</div>
+
+  <div id="content" class="hidden">
+    <div id="cards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"></div>
+
+    <div class="mb-3 flex flex-wrap items-center gap-2">
+      <div class="flex gap-1.5">
+        <span id="vSpikes" class="vbtn on">Spikes</span>
+        <span id="vStocks" class="vbtn">Repeat stocks</span>
+        <span id="vToday" class="vbtn">Biggest today</span>
+      </div>
+      <input id="q" type="text" placeholder="Search stock…" autocomplete="off" class="w-44" />
+      <select id="fVal"><option value="1">≥ ₹1 cr</option><option value="5">≥ ₹5 cr</option><option value="10">≥ ₹10 cr</option><option value="25">≥ ₹25 cr</option></select>
+      <select id="fMult"><option value="0">Any spike</option><option value="5">≥ 5× baseline</option><option value="10">≥ 10× baseline</option></select>
+      <select id="fDays"><option value="1">Latest session</option><option value="5">Last 5 sessions</option><option value="10" selected>Last 10 sessions</option><option value="0">Full window</option></select>
+      <select id="fSort"><option value="date">Newest first</option><option value="val">Biggest value</option><option value="mult">Highest multiple</option></select>
+    </div>
+
+    <div class="card overflow-x-auto">
+      <table class="w-full text-sm min-w-[860px]">
+        <thead id="tHead" class="text-[11px] uppercase text-slate-500 border-b border-slate-200 bg-slate-50/60"></thead>
+        <tbody id="tBody"></tbody>
+      </table>
+      <div class="p-3 flex items-center justify-between text-xs text-slate-500">
+        <span id="count"></span>
+        <button id="more" class="hidden px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition">Show more</button>
+      </div>
+    </div>
+
+    <p class="text-[11px] text-slate-500 mt-5">Source: NSE daily full bhavcopy (delivery columns), one file per trading day, refreshed every trading evening (~21:15 IST) plus a next-morning catch-up — missed days self-heal because each date has its own file. Universe: NSE mainboard, market cap ≥ ₹100 cr. Baseline = the stock's own median delivered quantity over the prior 20 sessions (needs ≥10 sessions of history, so recent listings appear after ~2 weeks). Delivered value = close × delivered quantity. Prices are unadjusted — a corporate-action day disqualifies itself via the price filter. A spike is interest, not proof: check who's buying on the Bulk/Block Deals and Insider Trades pages. Educational only — not investment advice.</p>
+  </div>
+</main>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const fmtD8 = d => { const s=''+d; return (+s.slice(6))+' '+MON[+s.slice(4,6)-1]+" '"+s.slice(2,4); };
+const inr = n => n == null ? '—' : Number(n).toLocaleString('en-IN');
+const crf = v => v == null ? '—' : v >= 100 ? Math.round(v).toLocaleString('en-IN') : v >= 10 ? v.toFixed(1) : v.toFixed(2);
+const pctc = v => v == null ? '—' : '<span class="' + (v >= 0 ? 'pos':'neg') + '">' + (v > 0 ? '+' : '') + v.toFixed(1) + '%</span>';
+const slink = (sym, name) => '<span class="sw-star" data-sym="' + esc(sym) + '"></span> ' +
+  '<a class="font-bold text-blue-700 hover:underline" href="./stock.html?sym=' + encodeURIComponent(sym) + '" title="' + esc(name || '') + '">' + esc(sym) + '</a>' +
+  (name ? '<div class="text-[11px] text-slate-400 font-normal max-w-[190px] truncate">' + esc(name) + '</div>' : '');
+
+let DATA = null, view = 'spikes', shown = 250;
+
+async function load(){
+  try { DATA = await (await fetch('./delivery.json?t=' + Date.now())).json(); }
+  catch(e){ $('status').textContent = 'Could not load delivery.json — run scripts/fetch_delivery.py first.'; return; }
+  if (!DATA || !DATA.spikes){ $('status').textContent = 'No delivery data yet.'; return; }
+  $('updated').textContent = '· window ' + fmtD8(+DATA.from) + ' → ' + fmtD8(+DATA.to) + ' · updated ' + DATA.updated + ' IST';
+  $('status').classList.add('hidden'); $('content').classList.remove('hidden');
+  renderCards(); render();
+  ['q','fVal','fMult','fDays','fSort'].forEach(id => $(id).addEventListener(id==='q'?'input':'change', () => { shown = 250; render(); }));
+  $('vSpikes').onclick = () => setView('spikes');
+  $('vStocks').onclick = () => setView('stocks');
+  $('vToday').onclick = () => setView('today');
+  $('more').onclick = () => { shown += 250; render(); };
+}
+
+function setView(v){ view = v; shown = 250;
+  ['vSpikes','vStocks','vToday'].forEach(id => $(id).classList.remove('on'));
+  $(v==='spikes'?'vSpikes':v==='stocks'?'vStocks':'vToday').classList.add('on'); render(); }
+
+function renderCards(){
+  const last = +DATA.to, rows = DATA.spikes.filter(r => r[0] === last);
+  const tot = rows.reduce((s,r) => s + r[5], 0);
+  const big = rows[0], hi = rows.slice().sort((a,b) => b[8]-a[8])[0];
+  const card = (t,v,sub,cls) => '<div class="card p-3"><div class="text-[10px] uppercase text-slate-500">' + t + '</div><div class="text-lg font-bold ' + (cls||'') + '">' + v + '</div><div class="text-[11px] text-slate-400">' + sub + '</div></div>';
+  $('cards').innerHTML =
+     card('Spikes · ' + fmtD8(last), rows.length, 'stocks with a delivery spike')
+    + card('Delivered in spikes', '₹' + crf(tot) + ' cr', 'on ' + fmtD8(last), 'pos')
+    + card('Biggest spike', big ? esc(big[1]) : '—', big ? '₹' + crf(big[5]) + ' cr delivered · ' + big[8] + '× baseline' : 'no spikes this session')
+    + card('Highest multiple', hi ? esc(hi[1]) : '—', hi ? hi[8] + '× its 20-session baseline' : '');
+}
+
+function sessCut(days){
+  const ds = [...new Set(DATA.spikes.map(r => r[0]))].sort((a,b)=>b-a);
+  return days ? (ds[Math.min(days, ds.length) - 1] || 0) : 0;
+}
+
+function filtered(){
+  const q = $('q').value.trim().toLowerCase(), minV = +$('fVal').value, minM = +$('fMult').value, lo = sessCut(+$('fDays').value);
+  return DATA.spikes.filter(r =>
+    (!q || r[1].toLowerCase().includes(q) || r[2].toLowerCase().includes(q)) &&
+    r[5] >= minV && r[8] >= minM && (!lo || r[0] >= lo));
+}
+
+const HEAD_SPIKES = '<tr><th class="text-left py-2.5 px-3">Date</th><th class="text-left px-3">Stock</th><th class="text-right px-3">Close</th><th class="text-right px-3">Day chg</th><th class="text-right px-3">Delivered (₹ cr)</th><th class="text-right px-3">Delivery %</th><th class="text-right px-3">Usual %</th><th class="text-center px-3">vs baseline</th></tr>';
+const HEAD_STOCKS = '<tr><th class="text-left py-2.5 px-3">Stock</th><th class="text-right px-3">Spikes</th><th class="text-right px-3">Delivered across spikes (₹ cr)</th><th class="text-right px-3">Best multiple</th><th class="text-right px-3">Latest spike</th></tr>';
+const HEAD_TODAY = '<tr><th class="text-left py-2.5 px-3">Stock</th><th class="text-right px-3">Close</th><th class="text-right px-3">Day chg</th><th class="text-right px-3">Delivered (₹ cr)</th><th class="text-right px-3">Delivery %</th></tr>';
+
+function render(){ view==='spikes' ? renderSpikes() : view==='stocks' ? renderStocks() : renderToday(); }
+
+function renderSpikes(){
+  const sort = $('fSort').value;
+  const rows = filtered().slice();
+  if (sort === 'val') rows.sort((a,b) => b[5]-a[5]);
+  else if (sort === 'mult') rows.sort((a,b) => b[8]-a[8]);
+  $('tHead').innerHTML = HEAD_SPIKES;
+  const upto = Math.min(shown, rows.length);
+  let h = '';
+  for (let i = 0; i < upto; i++){ const r = rows[i];
+    h += '<tr class="border-b border-slate-50 align-top hover:bg-slate-50">'
+      + '<td class="py-2.5 px-3 whitespace-nowrap text-slate-600">' + fmtD8(r[0]) + '</td>'
+      + '<td class="py-2.5 px-3">' + slink(r[1], r[2]) + '</td>'
+      + '<td class="py-2.5 px-3 text-right">' + inr(r[3]) + '</td>'
+      + '<td class="py-2.5 px-3 text-right">' + pctc(r[4]) + '</td>'
+      + '<td class="py-2.5 px-3 text-right font-semibold">' + crf(r[5]) + '</td>'
+      + '<td class="py-2.5 px-3 text-right">' + (r[6] == null ? '—' : r[6].toFixed(1) + '%') + '</td>'
+      + '<td class="py-2.5 px-3 text-right text-slate-500">' + (r[7] == null ? '—' : r[7].toFixed(1) + '%') + '</td>'
+      + '<td class="py-2.5 px-3 text-center"><span class="chip mult">' + r[8] + '×</span></td></tr>';
+  }
+  finish(h, upto, rows.length, 'spikes');
+}
+
+function renderStocks(){
+  const agg = {};
+  for (const r of filtered()){
+    const a = agg[r[1]] || (agg[r[1]] = { name:r[2], n:0, cr:0, best:0, last:0 });
+    a.n++; a.cr += r[5]; if (r[8] > a.best) a.best = r[8]; if (r[0] > a.last) a.last = r[0];
+  }
+  const rows = Object.entries(agg).map(([s,a]) => [s, a.name, a.n, a.cr, a.best, a.last])
+                     .sort((a,b) => b[2] - a[2] || b[3] - a[3]);
+  $('tHead').innerHTML = HEAD_STOCKS;
+  const upto = Math.min(shown, rows.length);
+  let h = '';
+  for (let i = 0; i < upto; i++){ const r = rows[i];
+    h += '<tr class="border-b border-slate-50 align-top hover:bg-slate-50">'
+      + '<td class="py-2.5 px-3">' + slink(r[0], r[1]) + '</td>'
+      + '<td class="py-2.5 px-3 text-right font-semibold">' + r[2] + '</td>'
+      + '<td class="py-2.5 px-3 text-right">' + crf(r[3]) + '</td>'
+      + '<td class="py-2.5 px-3 text-right"><span class="chip mult">' + r[4] + '×</span></td>'
+      + '<td class="py-2.5 px-3 text-right whitespace-nowrap text-slate-600">' + fmtD8(r[5]) + '</td></tr>';
+  }
+  finish(h, upto, rows.length, 'stocks');
+}
+
+function renderToday(){
+  const q = $('q').value.trim().toLowerCase(), minV = +$('fVal').value;
+  const rows = (DATA.today || []).filter(r =>
+    (!q || r[0].toLowerCase().includes(q) || r[1].toLowerCase().includes(q)) && (r[4] || 0) >= minV);
+  $('tHead').innerHTML = HEAD_TODAY;
+  const upto = Math.min(shown, rows.length);
+  let h = '';
+  for (let i = 0; i < upto; i++){ const r = rows[i];
+    h += '<tr class="border-b border-slate-50 align-top hover:bg-slate-50">'
+      + '<td class="py-2.5 px-3">' + slink(r[0], r[1]) + '</td>'
+      + '<td class="py-2.5 px-3 text-right">' + inr(r[2]) + '</td>'
+      + '<td class="py-2.5 px-3 text-right">' + pctc(r[3]) + '</td>'
+      + '<td class="py-2.5 px-3 text-right font-semibold">' + crf(r[4]) + '</td>'
+      + '<td class="py-2.5 px-3 text-right">' + (r[5] == null ? '—' : r[5].toFixed(1) + '%') + '</td></tr>';
+  }
+  finish(h, upto, rows.length, 'stocks · ' + fmtD8(+DATA.to));
+}
+
+function finish(h, upto, total, unit){
+  $('tBody').innerHTML = h || '<tr><td colspan="8" class="py-10 text-center text-sm text-slate-400">Nothing matches these filters.</td></tr>';
+  if (window.swWatch) swWatch.paintAll($('tBody'));
+  $('count').textContent = 'Showing ' + upto.toLocaleString('en-IN') + ' of ' + total.toLocaleString('en-IN') + ' ' + unit;
+  $('more').classList.toggle('hidden', upto >= total);
+}
+
+load();
+</script>
+</body>
+</html>

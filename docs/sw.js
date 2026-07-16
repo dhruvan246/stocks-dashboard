@@ -6,13 +6,13 @@
  *     requests (the sf-data repo, Supabase, the live-quote Worker) — those stay network-only
  *     so data is always fresh and the cache never bloats.
  * Bump CACHE when the shell asset list changes. */
-const CACHE = 'sw-shell-v29';
+const CACHE = 'sw-shell-v30';
 const SHELL = [
   './', './index.html', './nse-bse-dashboard.html', './stock-backtest.html', './saved-strategies.html',
   './backtest-history.html', './strategy-backtest.html', './mutual-funds.html', './fii-dii.html',
   './backtest.html', './sectors.html', './market-mood.html', './bank-credit.html', './shareholding.html',
   './results-season.html', './stock.html', './announcements.html', './quarterly-results.html', './status.html',
-  './discovery.html', './deals.html', './insider.html', './watchlist.html', './live-tracking.html', './insurer-inbox.html', './analytics.html',
+  './discovery.html', './deals.html', './insider.html', './delivery.html', './watchlist.html', './live-tracking.html', './insurer-inbox.html', './analytics.html',
   './results-coverage.html',
   './theme.css', './theme.js', './backtest-engine.js', './bt-sync.js', './sw-sync.js', './sw-watchlist.js',
   './manifest.webmanifest',

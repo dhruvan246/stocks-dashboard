@@ -149,6 +149,7 @@
       ['./discovery.html',         '💸', 'Smart Money Picks'],
       ['./deals.html',             '🐋', 'Bulk/Block Deals'],
       ['./insider.html',           '🕵️', 'Insider Trades'],
+      ['./delivery.html',          '📦', 'Delivery Spikes'],
       ['./quarterly-results.html', '🧾', 'Quarterly Results'],
       ['./announcements.html',     '📢', 'Announcements']
     ] },

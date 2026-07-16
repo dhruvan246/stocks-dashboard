@@ -1,0 +1,86 @@
+name: Refresh delivery spikes
+
+# NSE publishes the full bhavcopy (with delivery columns) as ONE FILE PER DATE on
+# the archives host (~19:00 IST on trading days). fetch_delivery.py walks forward
+# from the last stored session and fetches whatever dates are missing — so a
+# missed run self-heals on the next one by construction (dated URLs, unlike the
+# deals CSVs which only serve the latest day). Evening run + morning catch-up.
+
+on:
+  schedule:
+    - cron: "45 15 * * 1-5"   # 21:15 IST weekdays — evening grab
+    - cron: "5 3 * * 2-6"     # 08:35 IST Tue-Sat — catch-up for a missed evening
+  repository_dispatch:
+    types: [delivery-refresh]
+  workflow_dispatch: {}
+  # Bootstrap/self-test: also run when the fetcher or this workflow changes.
+  push:
+    paths:
+      - "scripts/fetch_delivery.py"
+      - ".github/workflows/refresh-delivery.yml"
+
+permissions:
+  contents: write
+  actions: write   # dispatch pages.yml after a bot commit (loop guard blocks auto-trigger)
+
+concurrency:
+  group: refresh-delivery
+  cancel-in-progress: false
+
+jobs:
+  refresh-delivery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Fetch missing bhavcopy days + recompute delivery spikes
+        run: python3 -X utf8 scripts/fetch_delivery.py
+
+      # ⚠️ reset-and-replay gotcha (runbook §18): every file the fetch step writes
+      # must ride the cp-to-/tmp + cp-back + git-add lists below (BOTH jsons).
+      - name: Guard — refuse to commit a broken or shrunken feed
+        run: python3 scripts/guard_feed.py
+
+      - name: Commit updated delivery feeds (only if changed)
+        id: commit
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp docs/delivery.json      /tmp/delivery.json
+          cp docs/delivery_hist.json /tmp/delivery_hist.json
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/delivery.json      docs/delivery.json
+            cp /tmp/delivery_hist.json docs/delivery_hist.json
+            git add docs/delivery.json docs/delivery_hist.json
+            if git diff --cached --quiet; then
+              echo "Delivery feeds unchanged — nothing to commit"
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            git commit -m "Delivery spikes refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then
+              echo "Pushed on attempt #$attempt"
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "Push attempt #$attempt rejected; resetting and retrying"
+            sleep $(( attempt * 3 ))
+          done
+          echo "Failed to push after 5 attempts"
+          exit 1
+
+      # Bot commits can't auto-trigger pages.yml — dispatch it explicitly on change.
+      - name: Publish to Pages (only when the feeds changed)
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml

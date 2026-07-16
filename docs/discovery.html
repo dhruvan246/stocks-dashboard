@@ -158,7 +158,7 @@ function triToggle(sym, v){
 
 let DATA = null, BUCKETS = {}, curGroup = 'All', shown = 100, curB = null;
 
-const GROUP_ICON = { 'Triggers (last 31 days)': '⚡', 'Smart money (deals & insiders)': '🐋', 'Price & Value': '📉', 'Results — computed from filings': '📊', 'Results history': '🕘', 'Sector themes': '🏭' };
+const GROUP_ICON = { 'Triggers (last 31 days)': '⚡', 'Smart money': '🐋', 'Price & Value': '📉', 'Results — computed from filings': '📊', 'Results history': '🕘', 'Sector themes': '🏭' };
 
 function renderGrid(){
   const q = $('q').value.trim().toLowerCase();
@@ -189,6 +189,7 @@ const HEADS = {
   res: '<tr><th class="text-left py-2.5 px-3">Stock</th><th class="text-right px-3">PAT (₹ cr)</th><th class="text-right px-3">Year ago</th><th class="text-right px-3">PAT YoY</th><th class="text-right px-3">Revenue YoY</th></tr>',
   px:  '<tr><th class="text-left py-2.5 px-3">Stock</th><th class="text-right px-3">Mcap (₹ cr)</th><th class="text-right px-3">Price</th><th class="text-right px-3">vs 52-wk high</th><th class="text-right px-3">P/E (TTM)</th></tr>',
   deal:'<tr><th class="text-left py-2.5 px-3">Stock</th><th class="text-right px-3">Net bought (₹ cr)</th><th class="text-right px-3">Bought (₹ cr)</th><th class="text-right px-3">Buyers</th><th class="text-left px-3">Latest</th><th class="text-left px-3 w-[30%]">Biggest buyer</th></tr>',
+  spike:'<tr><th class="text-left py-2.5 px-3">Stock</th><th class="text-right px-3">Spikes</th><th class="text-right px-3">Delivered (₹ cr)</th><th class="text-right px-3">Best multiple</th><th class="text-left px-3">Latest</th></tr>',
   sec: '<tr><th class="text-left py-2.5 px-3">Stock</th><th class="text-right px-3">Mcap (₹ cr)</th><th class="text-right px-3">vs 52-wk high</th><th class="text-left px-3">Sub-industry</th></tr>'
 };
 
@@ -216,6 +217,14 @@ function rowHtml(b, r){
            '<td class="py-2.5 px-3 text-right">' + r[4] + '</td>' +
            '<td class="py-2.5 px-3 whitespace-nowrap text-slate-600">' + esc(r[5]) + '</td>' +
            '<td class="py-2.5 px-3 text-[12px] text-slate-500">' + esc(r[6]) + '</td>';
+  }
+  if (b.type === 'spike'){
+    const f = v => v == null ? '—' : (v >= 100 ? Math.round(v).toLocaleString('en-IN') : v.toFixed(1));
+    return '<td class="py-2.5 px-3">' + slink(r[0], r[1]) + '</td>' +
+           '<td class="py-2.5 px-3 text-right font-semibold">' + r[2] + '</td>' +
+           '<td class="py-2.5 px-3 text-right">' + f(r[3]) + '</td>' +
+           '<td class="py-2.5 px-3 text-right text-slate-600">' + r[4] + '×</td>' +
+           '<td class="py-2.5 px-3 whitespace-nowrap text-slate-600">' + esc(r[5]) + '</td>';
   }
   if (b.type === 'res')
     return '<td class="py-2.5 px-3">' + slink(r[0], r[1]) + '</td><td class="py-2.5 px-3 text-right">' + inr(r[2]) + '</td>' +

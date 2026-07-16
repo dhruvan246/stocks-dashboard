@@ -1135,3 +1135,5 @@ Discovery buckets ("Smart money (bulk & block deals)" group, type `deal`).
 - **Page:** insider.html — defaults to **Promoters + market deals only + last 30d** (the signal view);
   filters open it up to everyone/all modes. Person name click-through, By-stock net view, cards for the
   latest broadcast day. sw.js SHELL + CACHE v28→v29.
+
+
