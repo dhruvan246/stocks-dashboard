@@ -202,15 +202,22 @@ function backtestsFor(savedVars) {
   for (const v of savedVars) consider(v.id, v.cfg, v.name, metricsFor(v.cfg), v.ts);   // safety net for saved windows
   return [...byWin.values()].sort((a, b) => (a.cfg.start || '').localeCompare(b.cfg.start || '') || (a.cfg.method || '').localeCompare(b.cfg.method || '') || ((a.cfg.topN || 0) - (b.cfg.topN || 0)));
 }
-// Headline CAGR for the column + sort = the LONGEST-window run (most representative full-period number),
-// so a short lucky window can't jump a strategy to the top.
+// Headline CAGR for the column + sort. Per STOCK-COUNT variant we take its LONGEST-window run (so a
+// short lucky window can't inflate that variant), then use the BEST variant as the group's headline.
+// Without the per-variant split, merging counts (top-3/5/50 into one row) would let one variant's long
+// but weak window (e.g. a top-5 11-yr run at 24%) bury another variant's strong full period (top-3 at
+// 74%) — the headline would collapse even though the strategy at its best count is excellent.
 function canonicalCagr(list) {
-  let best = null, bestDur = -1;
+  const byN = new Map();                                   // topN -> {dur, cagr} of that variant's longest-window run
   for (const b of list) {
     const m = b.m || {}, c = b.cfg; if (m.cagr == null) continue;
     const dur = (c.start && c.end) ? (Date.parse(c.end) - Date.parse(c.start)) : 0;
-    if (dur > bestDur || (dur === bestDur && best != null && m.cagr > best)) { bestDur = dur; best = m.cagr; }
+    const key = c.topN != null ? c.topN : '';
+    const prev = byN.get(key);
+    if (!prev || dur > prev.dur || (dur === prev.dur && m.cagr > prev.cagr)) byN.set(key, { dur, cagr: m.cagr });
   }
+  let best = null;
+  for (const v of byN.values()) if (best == null || v.cagr > best) best = v.cagr;
   return best != null ? best : -Infinity;
 }
 function detailCard(b) {
