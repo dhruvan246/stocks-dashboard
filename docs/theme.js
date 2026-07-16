@@ -152,6 +152,7 @@
       ['./insider.html',           '🕵️', 'Insider Trades'],
       ['./delivery.html',          '📦', 'Delivery Spikes'],
       ['./ipos.html',              '🚀', 'IPOs & Listings'],
+      ['./actions.html',           '📅', 'Ex-Dates Calendar'],
       ['./quarterly-results.html', '🧾', 'Quarterly Results'],
       ['./announcements.html',     '📢', 'Announcements']
     ] },

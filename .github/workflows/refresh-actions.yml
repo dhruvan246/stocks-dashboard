@@ -1,0 +1,83 @@
+name: Refresh ex-dates calendar
+
+# NSE corporate-actions filings (dividends/bonus/split/rights/buyback ex-dates).
+# fetch_actions.py rebuilds docs/actions.json statelessly each run over a
+# last-30d + next-75d window. Morning run refreshes the calendar; the weekday
+# evening run catches actions announced with board-meeting outcomes that day.
+
+on:
+  schedule:
+    - cron: "0 3 * * 1-6"     # 08:30 IST Mon-Sat — morning calendar refresh
+    - cron: "20 13 * * 1-5"   # 18:50 IST weekdays — evening announcements top-up
+  repository_dispatch:
+    types: [actions-refresh]
+  workflow_dispatch: {}
+  # Bootstrap/self-test: also run when the fetcher or this workflow changes.
+  push:
+    paths:
+      - "scripts/fetch_actions.py"
+      - ".github/workflows/refresh-actions.yml"
+
+permissions:
+  contents: write
+  actions: write   # dispatch pages.yml after a bot commit (loop guard blocks auto-trigger)
+
+concurrency:
+  group: refresh-actions
+  cancel-in-progress: false
+
+jobs:
+  refresh-actions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Fetch corporate-actions calendar
+        run: python3 -X utf8 scripts/fetch_actions.py
+
+      # ⚠️ reset-and-replay gotcha (runbook §18): every file the fetch step writes
+      # must ride the cp-to-/tmp + cp-back + git-add lists below.
+      - name: Guard — refuse to commit a broken or shrunken feed
+        run: python3 scripts/guard_feed.py
+
+      - name: Commit updated calendar (only if changed)
+        id: commit
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp docs/actions.json /tmp/actions.json
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/actions.json docs/actions.json
+            git add docs/actions.json
+            if git diff --cached --quiet; then
+              echo "Calendar unchanged — nothing to commit"
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            git commit -m "Ex-dates calendar refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then
+              echo "Pushed on attempt #$attempt"
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "Push attempt #$attempt rejected; resetting and retrying"
+            sleep $(( attempt * 3 ))
+          done
+          echo "Failed to push after 5 attempts"
+          exit 1
+
+      # Bot commits can't auto-trigger pages.yml — dispatch it explicitly on change.
+      - name: Publish to Pages (only when the calendar changed)
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml

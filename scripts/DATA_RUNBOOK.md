@@ -1345,3 +1345,23 @@ mode, per-index seasonality (avg + hit-rate per calendar month), live MTD cell, 
   (sticky first column) instead of card-stacking 14 numbers. sw.js SHELL + CACHE v33→v34.
 - **Sanity anchors:** CY2008 Nifty 50 −51.8% / CY2017 +28.6% / CY2023 +20.0%; Midcap 100 CY2023
   +46.6%; IT CY2020 +54.9%, CY1999 +491.9%, 2008 −54.6%; Bank CY2020 −2.8%.
+
+---
+
+## 29. EX-DATES CALENDAR  (docs/actions.html — "Ex-Dates Calendar" nav, built 2026-07-16, SELF-UPDATING)
+**Forward corporate-actions calendar:** every announced dividend/bonus/split/rights/buyback on NSE,
+ordered by ex-date, dividends enriched with yield vs latest close.
+
+- **Fetcher:** `scripts/fetch_actions.py` → `docs/actions.json` (~40 KB) — STATELESS rebuild from
+  `/api/corporates-corporateActions?index=equities&from_date=&to_date=` (urllib+jar session).
+  ⚠️ No params = only ~today's ex-dates (~20 rows) — ALWAYS pass the window (last 30d + next 75d;
+  the far end fills in as companies file, actions are announced ~2-4 weeks ahead). The response can
+  be a bare LIST or {data:[...]} — handle both. kind parsed from `subject` (D/B/S/R/BB/O); dividend
+  amount regex `r[se]\.?\s*(\d+(?:\.\d+)?)` (subjects write "Rs 2" and "Rs. 11.25"); yield = amt /
+  dash_slim latest ('.NS'-key gotcha §26). Dedup (exDate, sym, subject).
+- **Refresh:** `.github/workflows/refresh-actions.yml` — 08:30 IST Mon-Sat + 18:50 IST weekdays
+  (board-meeting outcomes announce actions in the evening). feeds.json min_ratio 0.3 — the calendar
+  legitimately shrinks a lot outside dividend season, don't tighten.
+- **Page:** Upcoming (default) / Past-30d views, kind + min-yield filters, day-boundary rules in the
+  table (first row of each date bolded). sw.js SHELL + CACHE (rode v34→v35 amid the monthly-returns
+  page's bumps — three sessions shared this file today).
