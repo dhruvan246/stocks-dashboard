@@ -2,13 +2,24 @@ name: Daily fundamentals refresh
 
 on:
   schedule:
-    # HOURLY at :45 from 04:45–17:45 UTC = 10:15–23:15 IST, EVERY day (weekend board
-    # meetings exist) — so a company's numbers appear within ~an hour of its XBRL landing,
-    # not the next night. Self-heals: the updater scans a 120-day window each run.
-    # The 15:45 UTC (21:15 IST) run is the FULL nightly one — it always rebuilds the
-    # Quarterly Results payload (price reactions/drift) even with no new filings; other
-    # hours rebuild it only when new earnings actually landed (keeps git history lean).
-    - cron: "45 4-17 * * *"
+    # EVERY 15 MIN from 04:00–14:45 UTC = 09:30–20:15 IST, EVERY day (weekend board
+    # meetings exist) — so a company's numbers appear within ~15 min of its XBRL landing.
+    # This span covers the whole results-filing window (filings cluster 15:00–20:00 IST).
+    # Was hourly at :45, but GitHub's scheduler DRIFTS under load (observed 2026-07-17:
+    # a :45 cron fired at 07:02 / 09:29 / 11:08 UTC — gaps of 1.5–2.5 h, not 1 h). Firing
+    # 4× an hour means a dropped/late slot no longer costs an hour. Idle runs are ~40 s
+    # (the updater skips iXBRL for quarters already stored) and the 1.8 MB Quarterly
+    # Results baker stays GATED on docs/.fund_updated, so density costs ~nothing and
+    # does NOT bloat git history. Actions minutes are free (public repo).
+    - cron: "*/15 4-14 * * *"
+    # 15:45 UTC (21:15 IST) — the FULL nightly run: insurer vision fill + IPO-base fill +
+    # an UNGATED baker rebuild (so reactions/drift track the 20:45 IST prices). It gets
+    # hours 15 AND 16 UTC to itself — no dense cron there — because the steps below detect
+    # it by wall-clock hour, and a run that drifts past the hour boundary must still count
+    # as the nightly (see the 15|16 gate). Don't add a cron in hour 15/16.
+    - cron: "45 15 * * *"
+    # 17:45 UTC (23:15 IST) — final light top-up for late-evening filings.
+    - cron: "45 17 * * *"
   # Optional external triggers (cron-job.org) — SEPARATE event types from the
   # stock/MF/FII/backtest-data jobs. POST /repos/dhruvan246/stocks-dashboard/dispatches
   # with {"event_type":"fundamentals-refresh"} for the full pipeline, or
@@ -68,11 +79,15 @@ jobs:
             python3 -X utf8 scripts/fetch_insurers.py --verify "$VQ"; exit 0
           fi
           # Run insurers only on: manual dispatch, the daily cron-job.org "insurer-refresh" trigger, or
-          # the 21:15 IST (15:xx UTC) nightly schedule. Skip on every other trigger (hourly schedule,
-          # fundamentals-refresh) so we don't re-fetch/re-parse 11 insurers every hour.
+          # the 21:15 IST nightly schedule. Skip on every other trigger (the 15-min schedule,
+          # fundamentals-refresh) so we don't re-fetch/re-parse 11 insurers four times an hour.
+          # ⚠️ Hour 15 OR 16 UTC both count as nightly: the "45 15" cron can DRIFT past the hour
+          # boundary (GitHub fired a :45 cron at :02–:29 past on 2026-07-17), and an exact
+          # "=15" test would then silently skip the nightly for that whole day. Only the one
+          # nightly cron lives in hours 15–16, so the wider window can't double-fire.
           EV="${{ github.event_name }}"; ACTION="${{ github.event.action }}"; RUN=0
           [ "$EV" = "workflow_dispatch" ] && RUN=1
-          [ "$EV" = "schedule" ] && [ "$(date -u +%H)" = "15" ] && RUN=1
+          [ "$EV" = "schedule" ] && case "$(date -u +%H)" in 15|16) RUN=1;; esac
           [ "$EV" = "repository_dispatch" ] && [ "$ACTION" = "insurer-refresh" ] && RUN=1
           if [ "$RUN" != "1" ]; then echo "Not an insurer-fill trigger ($EV/$ACTION) — skipping"; exit 0; fi
           pip install -q pymupdf curl_cffi
@@ -96,7 +111,8 @@ jobs:
         run: |
           EV="${{ github.event_name }}"; ACTION="${{ github.event.action }}"; RUN=0
           [ "$EV" = "workflow_dispatch" ] && RUN=1
-          [ "$EV" = "schedule" ] && [ "$(date -u +%H)" = "15" ] && RUN=1
+          # Hour 15 OR 16 UTC — drift-tolerant, same reasoning as the insurer gate above.
+          [ "$EV" = "schedule" ] && case "$(date -u +%H)" in 15|16) RUN=1;; esac
           [ "$EV" = "repository_dispatch" ] && [ "$ACTION" = "insurer-refresh" ] && RUN=1
           if [ "$RUN" != "1" ]; then echo "Not a nightly trigger ($EV/$ACTION) — skipping IPO-base fill"; exit 0; fi
           pip install -q pymupdf
@@ -153,10 +169,13 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # Hourly runs rebuild only when new earnings landed; the 15:xx UTC (21:xx IST)
-          # run always rebuilds so reactions/drift track daily prices (published ~20:45 IST).
-          if [ ! -f docs/.fund_updated ] && [ "$(date -u +%H)" != "15" ]; then
-            echo "No new earnings this hour — skipping payload rebuild"
+          # 15-min runs rebuild only when new earnings landed (else a 1.8 MB commit 4×/hour
+          # for nothing); the nightly run always rebuilds so reactions/drift track daily
+          # prices (published ~20:45 IST). Hour 15 OR 16 UTC = nightly, drift-tolerant —
+          # same reasoning as the insurer/IPO-base gates above.
+          NIGHTLY=0; case "$(date -u +%H)" in 15|16) NIGHTLY=1;; esac
+          if [ ! -f docs/.fund_updated ] && [ "$NIGHTLY" != "1" ]; then
+            echo "No new earnings this run — skipping payload rebuild"
             exit 0
           fi
           mkdir -p /tmp/qr
