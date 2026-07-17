@@ -1777,3 +1777,34 @@ caught the same night, not days later. `scripts/tl_reconcile.py` (pure stdlib):
 - tl_reconcile.json is in feeds.json (max_age 54h) so the yardstick itself is monitored.
 - Numbers for healed filings arrive via the normal XBRL/vision machinery — this job only guarantees
   the DECLARED set is complete; it never scrapes Trendlyne's numbers.
+
+## 32. HISTORICAL INDEX/F&O MEMBERSHIP from WAYBACK — the MONEYCONTROL trick (2026-07-17)
+
+**When NSE/niftyindices has no archived list for an era, moneycontrol's Wayback captures usually do.**
+Found during the 2008-2015 Nifty-500 hunt: official full-list captures exist at only 5 dates ≤2015 (CDX-proven
+exhaustively — no nseindia/iisl/niftyindices path has more), but MC's index-composition page has ~80 captures
+2001→2025 with FULL single-page tables (~500 rows, name+industry+mktcap; pre-2013 incl. index weight).
+
+Recipe (all steps have working scripts in scripts/, see memory project-stocks-n500-membership-history):
+1. CDX-enumerate: `web.archive.org/cdx/search/cdx?url=moneycontrol.com/stocks/marketstats/indexcomp.php&matchType=prefix&output=json&filter=statuscode:200&collapse=timestamp:8`
+   — filter querystring for the index you want (`index=7` = CNX/Nifty 500). Other indexes have other ids.
+2. Fetch each capture RAW: curl_cffi impersonate=chrome + `Accept-Encoding: identity`; for wayback use the
+   `id_` URL form; if bytes start `\x1f\x8b` gunzip manually (wayback sometimes mislabels).
+3. Parse era-aware (3 markups): 2003-10 = plain `<a>` in rows; 2011-22 = `stockpricequote` hrefs with the name
+   NESTED in `<b>` (strip inner tags, don't require `[^<]`); 2004-05 = `onclick=open_pricechart` anchors.
+4. Resolve NAMES→symbols against era lists (constituent CSVs + Wayback EQUITY_L 2010/2011 + symchg.csv rename
+   chain + evidence-backed MANUAL map). NEVER guess a binding; verify vs era bhavcopy/symchg. ⚠️ Match the
+   TARGET file's symbol convention: _full_union_2015_v3 keys by CURRENT symbols (BAJAJ-AUTO/ARE&M), the 2008
+   union by ERA symbols — resolving to the wrong era manufactures phantom diffs (41-50/capture seen).
+5. Treat MC lists as SOFT checkpoints (3rd-party, may lag NSE by days, 475-528 row jitter) vs hard NSE anchors.
+
+Gotchas that cost time: don't CDX only `.csv` — the same NSE list lived at `.htm`/`.xls` (2002-2006 full lists
+found that way, saved scripts/_n500_pre2008/); the 2008 `.htm` "gzip-corrupt" wayback capture is really PLAIN
+HTML mislabeled by wayback (fetch raw, skip auto-decode) but is an 11KB shell; TZ= doesn't work in Git Bash.
+
+Membership-hunt asset inventory (untracked, scripts/): _n500_mc_caps/ (85 raw MC captures), _n500_mc_parsed.json
+(74 full lists), _n500_pre2008/ (28 official 2002-06 lists), _n500_rawcsv/ (official CSVs + era EQUITY_L),
+_prs_hunt_0814/_0814b/_0607/ (205 press-release PDFs 2006-2014), parsers _n500_parse_era0814/_sym0814,
+resolver _n500_resolve_names.py, builder _n500_build_0814.py, output _full_union_2008_v1.json (798, era syms).
+OPEN: ~15-25 verified-candidate transient members (EVEREADY/GEOJIT/KEMROCK/ESSARPORTS class) not yet added;
+MC-checkpoint integration + drift re-grade pending (memory has the step list).
