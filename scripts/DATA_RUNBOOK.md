@@ -1075,6 +1075,36 @@ the Quarterly Results page. **4 scripts + `.github/workflows/refresh-bse.yml` (2
   unset → grind stays OCR-only and unreadable rows show "filing PDF only". This is what makes "every declared
   result eventually has values" true without manual vision passes. Manual seed once: run the grind with the
   key set, or `merge_bse_vision.py <results.json>` from a one-off agent pass.
+- **⚠️ NEVER match a BSE announcement on HEADLINE alone — match `HEADLINE + " " + NEWSSUB`** (fixed
+  2026-07-17 in `bse_render.announcements`). BSE's HEADLINE is frequently content-free while **NEWSSUB carries
+  the real description**: GYANDEV 530141 filed its Jun-2026 quarter under the headline *"Please refer the
+  attachment"* (NEWSSUB: *"Unaudited Financial Results For The Quarter Ended 30.06.2026"*), NAM 538395 under
+  *"Pursuant to provision of Regulation 30 & 33 of SEBI (LODR)"*. Headline-only matching dropped both real
+  filings → the renderer fell back to an OLDER quarter's PDF → the routine reported "they only filed Q4" for
+  two companies that had filed **that morning** (the user caught this; the data said otherwise). Note
+  `fetch_bse_results.qe_from_head()` already read both fields — the feed knew the true quarter while the
+  renderer didn't, so **a feed-vs-renderer disagreement means the RENDERER is wrong, not the feed.**
+- **⚠️ Order candidates NEWEST-FIRST; a relevance rank may only break a SAME-DAY tie.** Ranking across dates
+  pulls an older, tidily-titled *"Financial Results for the year ended…"* ahead of today's vaguely-titled real
+  filing (this exact bug sent GYANDEV to its 2026-05-30 Q4 PDF). The case rank exists for — a CFO notice filed
+  the same day as the results (INTEGRAEN 505358, whose real filing was 2 rows below a *"Chief Financial
+  Officer"* notice that `RESULT_HEAD`'s bare `financial` matched) — is same-day, so a tie-break suffices.
+  `NOT_RESULT` (CFO/KMP/AGM/newspaper/trading-window…) must only apply when nothing says "financial results",
+  else a combined results+appointment filing gets excluded.
+- **⚠️ `render_pdf_pages` picks P&L pages by NUMERIC DENSITY, not by position** (`bse_vision_prep.py`). The
+  table can sit deep behind a long auditors' report (CENTRALBK Q1FY27: consolidated P&L on **page 10 of 31**),
+  and `PL_HINT` matches auditor prose too ("net profit/(loss) after tax"), so a first-N-pages/first-4-hits scan
+  renders the review report and never reaches the numbers. Real tables run **49-196 numeric tokens/page** vs
+  **≤32** for prose. A text-less **scanned** page scores `SCAN_SCORE=40` — deliberately BETWEEN the two: worth a
+  look, but it must never outrank a confirmed table (scoring blanks first rendered 4 blank pages and skipped
+  BOTH of TELGE's tables on pages 4 and 11). Symptom to distrust: a vision agent reporting *"the attachment is
+  only the auditor's report, no P&L"* usually means **the renderer missed the table**, not that it's absent.
+- **⚠️ UNIT: thousands → crore is ÷10,000, NOT ÷100,000** (1 crore = 10^7 rupees). The scheduled task's own
+  extraction rules carried ÷100000 until 2026-07-17 — 10x wrong, silently understating every
+  thousands-denominated filing (GYANDEV Q1FY27 PAT read −0.0041 cr; true value **−0.057 cr**). Lakhs ÷100,
+  millions ÷10, absolute rupees ÷10^7. **Cross-check whenever EPS + paid-up capital are printed:**
+  PAT ÷ (paid-up capital ÷ face value) must equal the printed EPS — GYANDEV: 30,000 thousand ÷ ₹10 =
+  3,000,000 shares; −0.057 cr ÷ 3M = −0.19 = printed EPS ✓. A power-of-ten miss = wrong divisor.
 - **⚠️ State files `scripts/_bse_fund_done.json` + `_bse_sectors.json` are force-tracked** (gitignore `_*` hid
   them — negations added). CI needs the resume ledger to persist, else it re-grinds from scratch.
 - **YoY limitation (v1):** the fund grind fetches only ~recent filings (`--months 5`), so BSE-only YoY often
