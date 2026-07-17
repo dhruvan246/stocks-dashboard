@@ -26,16 +26,30 @@ NSE_PDF = "https://nsearchives.nseindia.com/corporate/"
 
 def norm(s): return re.sub(r"(limited|ltd)$", "", re.sub(r"[^a-z0-9]", "", str(s).lower()))
 
+# The results table can sit deep in a filing — banks bury it behind a 8-10 page joint-auditors' report —
+# and PL_HINT matches those auditor pages too ("net profit/(loss) after tax"). Scanning only the first 8
+# pages and keeping the first 4 hits therefore rendered the review report and never reached the numbers
+# (CENTRALBK Q1FY27: consolidated table on page 10 of 31). Scan wider and rank by NUMERIC DENSITY: a real
+# results table is wall-to-wall figures (98-196 numeric tokens/page) while prose pages that merely mention
+# profit have far fewer (<=32), so the table wins regardless of where in the filing it sits.
+NUM_TOK = re.compile(r"\d[\d,]{2,}")
+
 def render_pdf_pages(raw):
     try: doc = fitz.open(stream=raw, filetype="pdf")
     except Exception: return []
-    out = []
-    for pi in range(min(len(doc), 8)):
+    cands = []
+    for pi in range(min(len(doc), 24)):
         txt = doc[pi].get_text()
-        if txt.strip() and not bse_render.PL_HINT.search(txt): continue
-        out.append(doc[pi].get_pixmap(dpi=200).tobytes("png"))
-        if len(out) >= 4: break
-    return out
+        if not txt.strip():
+            score = 10000 - pi                      # scanned page — no text to judge, must look at it
+        elif bse_render.PL_HINT.search(txt):
+            score = len(NUM_TOK.findall(txt))       # P&L-ish prose vs an actual table of numbers
+        else:
+            continue
+        cands.append((-score, pi))
+    cands.sort()
+    keep = sorted(pi for _, pi in cands[:4])
+    return [doc[pi].get_pixmap(dpi=200).tobytes("png") for pi in keep]
 
 def pdf_period(raw):
     """Read the reporting quarter the FILING itself states (not the — sometimes wrong — NSE caption).
