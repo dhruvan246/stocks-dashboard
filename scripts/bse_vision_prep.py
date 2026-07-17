@@ -126,7 +126,9 @@ def main():
         op = B.session(); time.sleep(1)
         for scrip, (tkr, name, mcap) in bse:
             pngs = []
-            for annd, att, hd in bse_render.announcements(op, scrip)[:1]:
+            # try the next-best announcement when one yields no P&L pages (a board-outcome cover letter
+            # often has none) — costs extra BSE hits only on the names that would otherwise stay empty
+            for annd, att, hd in bse_render.announcements(op, scrip)[:3]:
                 raw = bse_render.fetch_pdf(op, att)
                 if not raw: continue
                 for i, png in enumerate(render_pdf_pages(raw)):

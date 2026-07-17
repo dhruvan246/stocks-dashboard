@@ -14,6 +14,21 @@ import fitz
 RESULT_HEAD = re.compile(r"result|outcome of (the )?board|financial", re.I)
 PL_HINT = re.compile(r"profit|revenue from oper|total income|earnings per", re.I)
 
+# RESULT_HEAD's bare "financial" also matches "Chief Financial Officer", "financial year", etc, so a CFO
+# appointment filed the same day as the results outranked them and — with callers taking only the newest
+# match — the real P&L was never fetched (INTEGRAEN Q1FY27). Drop those, and rank an explicit results
+# headline above a bare board-outcome cover letter, which often carries no P&L of its own.
+NOT_RESULT = re.compile(r"chief financial officer|\bcfo\b|key managerial|annual report|annual general meeting"
+                        r"|newspaper (publication|advertisement)|trading window|book closure"
+                        r"|certificate under regulation|resignation|appointment", re.I)
+STRONG_RESULT = re.compile(r"financial results?|results? for the (quarter|period|half|year)", re.I)
+BOARD_OUTCOME = re.compile(r"outcome of (the )?board", re.I)
+
+def _rank(hd):
+    if STRONG_RESULT.search(hd): return 0      # "Unaudited Financial Results for the quarter ended ..."
+    if BOARD_OUTCOME.search(hd): return 1      # cover letter — may or may not embed the statement
+    return 2
+
 def announcements(op, code, months=5):
     hi = datetime.date.today(); lo = hi - datetime.timedelta(days=30 * months)
     url = ("https://api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryGetData/w?pageno=1&strCat=-1"
@@ -23,8 +38,10 @@ def announcements(op, code, months=5):
         tab = __import__("json").loads(B.get(op, url)).get("Table", []) or []
     except Exception:
         return []
-    return [(str(r.get("NEWS_DT") or "")[:10], r.get("ATTACHMENTNAME"), str(r.get("HEADLINE") or ""))
-            for r in tab if r.get("ATTACHMENTNAME") and RESULT_HEAD.search(str(r.get("HEADLINE") or ""))]
+    rows = [(str(r.get("NEWS_DT") or "")[:10], r.get("ATTACHMENTNAME"), str(r.get("HEADLINE") or ""))
+            for r in tab if r.get("ATTACHMENTNAME") and RESULT_HEAD.search(str(r.get("HEADLINE") or ""))
+            and not NOT_RESULT.search(str(r.get("HEADLINE") or ""))]
+    return sorted(rows, key=lambda t: _rank(t[2]))      # stable: newest-first order kept within each rank
 
 def fetch_pdf(op, att):
     for base in ("https://www.bseindia.com/xml-data/corpfiling/AttachLive/",
