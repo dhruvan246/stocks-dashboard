@@ -152,6 +152,7 @@
       ] },
       { sub: 'Flows & Ownership', items: [
         ['./fii-dii.html',           '🌐', 'FII/DII'],
+        ['./shareholding.html',      '🏛️', 'FII/DII Holdings'],
         ['./deals.html',             '🐋', 'Bulk/Block Deals'],
         ['./insider.html',           '🕵️', 'Insider Trades'],
         ['./delivery.html',          '📦', 'Delivery Spikes'],
@@ -329,9 +330,16 @@
       return '<a class="sw-f-link" href="' + esc(it[0]) + '"' + (ext ? ' target="_blank" rel="noopener"' : '') + '>' +
         '<span aria-hidden="true">' + it[1] + '</span>' + esc(it[2]) + (ext ? ' ↗' : '') + '</a>';
     };
+    var fcol = function (head, items) {
+      if (!items.length) return '';
+      return '<div class="sw-f-col"><div class="sw-f-h">' + esc(head) + '</div>' + items.map(link).join('') + '</div>';
+    };
+    // Groups with column sub-sections (Markets) expand into one footer column
+    // each, so the sitemap reads in tidy stacks instead of a single tall list.
     var cols = NAV_GROUPS.map(function (g) {
+      if (g.cols) return g.cols.map(function (c) { return fcol(c.sub, c.items); }).join('');
       var items = g.g === 'Tools' ? [NAV_CTA].concat(g.items) : g.items;
-      return '<div class="sw-f-col"><div class="sw-f-h">' + esc(g.g) + '</div>' + items.map(link).join('') + '</div>';
+      return fcol(g.g, items);
     }).join('');
     var f = document.createElement('footer');
     f.className = 'sw-footer';
