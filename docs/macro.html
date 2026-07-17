@@ -73,6 +73,22 @@
   .rot-bar.neg{ background:color-mix(in srgb,var(--neg) 72%,transparent); }
   .rot-row.nifty .rot-bar{ background:linear-gradient(135deg,var(--accent),var(--accent-2)); }
   .rot-v{ font-size:12px; font-weight:700; text-align:right; font-variant-numeric:tabular-nums; }
+
+  /* ---- regime gauge + weekly movers ---- */
+  .rg-head{ display:flex; align-items:baseline; gap:10px; margin-top:6px; }
+  .rg-score{ font-size:34px; font-weight:800; letter-spacing:-.02em; color:var(--text); }
+  .rg-band{ font-size:13px; font-weight:800; }
+  .rg-meter{ position:relative; height:8px; border-radius:999px; margin:10px 0 4px;
+    background:linear-gradient(90deg, color-mix(in srgb,var(--neg) 55%,transparent), color-mix(in srgb,var(--text-faint) 28%,transparent) 50%, color-mix(in srgb,var(--pos) 55%,transparent)); }
+  .rg-meter i{ position:absolute; top:50%; transform:translate(-50%,-50%); width:14px; height:14px; border-radius:50%;
+    background:var(--surface); border:3px solid var(--accent); box-shadow:var(--shadow-lg); }
+  .rg-chips{ display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+  .rg-chip{ font-size:11px; font-weight:700; padding:3px 9px; border-radius:999px; border:1px solid var(--border); background:var(--surface-2); color:var(--text-muted); }
+  .rg-chip b{ color:var(--text); }
+  .mv-row{ display:flex; align-items:center; gap:8px; padding:5px 0; border-bottom:1px dashed var(--border); font-size:12.5px; }
+  .mv-row:last-child{ border-bottom:none; }
+  .mv-lb{ font-weight:600; color:var(--text-muted); flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .mv-val{ font-weight:700; color:var(--text); }
   @media (max-width:640px){
     .rot-row{ grid-template-columns:104px 1fr 54px; gap:7px; }
     .rot-lb{ font-size:11px; }
@@ -103,6 +119,14 @@
   <div id="content" class="hidden">
     <!-- pulse strip -->
     <div id="pulse" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 mb-5"></div>
+
+    <!-- regime gauge + weekly movers -->
+    <div class="card p-4 mb-5" id="regimeCard" style="display:none">
+      <div class="grid md:grid-cols-2 gap-x-8 gap-y-5">
+        <div id="regime"></div>
+        <div id="movers"></div>
+      </div>
+    </div>
 
     <!-- controls -->
     <div class="flex items-center justify-between gap-3 flex-wrap mb-4">
@@ -177,7 +201,7 @@ function fmtVal(cfg, v){
 /* ---------- series store ---------- */
 // each: {label, sub, unit, fmt, grp, kind:'line'|'bars', agg:'sum'|'avg', inv?:true, arr:[[iso,val]...] asc}
 const S = {};
-const GROUPS = [ ['all','All'], ['mkt','Markets'], ['flow','Flows'], ['val','Valuation'], ['rates','Rates & FX'], ['eco','Economy'], ['cmd','Commodities'] ];
+const GROUPS = [ ['all','All'], ['mkt','Markets'], ['flow','Flows'], ['val','Valuation'], ['rates','Rates & FX'], ['glb','Global'], ['eco','Economy'], ['earn','Earnings'], ['cmd','Commodities'] ];
 const GLABEL = Object.fromEntries(GROUPS);
 let GRP = 'all';
 const ORDER = [];   // tile order
@@ -239,9 +263,9 @@ function downsample(pts, target){
 
 /* ================= LOAD ================= */
 async function load(){
-  let macro, vix, nifty, breadth, fii, bank, idx;
+  let macro, vix, nifty, breadth, fii, bank, idx, fo, rs;
   try{
-    [macro,vix,nifty,breadth,fii,bank,idx] = await Promise.all([
+    [macro,vix,nifty,breadth,fii,bank,idx,fo,rs] = await Promise.all([
       fetch('./macro.json').then(r=>r.json()),
       fetch('./india_vix.json').then(r=>r.json()).catch(()=>({px:{}})),
       fetch('./nifty.json').then(r=>r.json()).catch(()=>({px:{}})),
@@ -249,6 +273,8 @@ async function load(){
       fetch('./fii_dii.json').then(r=>r.json()).catch(()=>({rows:[]})),
       fetch('./bank_credit.json').then(r=>r.json()).catch(()=>({rows:[]})),
       fetch('./index_monthly.json').then(r=>r.json()).catch(()=>null),
+      fetch('./fii_fo.json').then(r=>r.json()).catch(()=>null),
+      fetch('./results_season.json').then(r=>r.json()).catch(()=>null),
     ]);
   }catch(e){ $('status').textContent = 'Could not load macro data. '+e; return; }
 
@@ -258,7 +284,7 @@ async function load(){
 
   // --- Markets ---
   reg('nifty', { label:'Nifty 50', sub:'NSE', grp:'mkt', kind:'line', fmt:'int', deltaPct:true, arr:mkArr(nifty.px||{}) });
-  reg('vix',   { label:'India VIX', sub:'fear gauge — NSE', grp:'mkt', kind:'line', fmt:'n2', arr:mkArr(vix.px||{}) });
+  reg('vix',   { label:'India VIX', sub:'fear gauge — NSE', grp:'mkt', kind:'line', fmt:'n2', inv:true, arr:mkArr(vix.px||{}) });
   if(breadth && breadth.dates){
     const D = breadth.dates.map(fromInt);
     const g = f => D.map((d,i)=>[d, f(i)]);
@@ -282,50 +308,131 @@ async function load(){
   // --- Rates & FX ---
   reg('repo',    { label:'RBI repo rate', sub:'% — RBI', grp:'rates', kind:'line', fmt:'n2', unit:'%', arr:fromMacro('repo') });
   reg('india10y',{ label:'India 10Y G-Sec', sub:'% — FRED, monthly', grp:'rates', kind:'line', fmt:'n2', unit:'%', arr:fromMacro('india10y') });
-  reg('us10y',   { label:'US 10Y yield', sub:'% — Yahoo', grp:'rates', kind:'line', fmt:'n2', unit:'%', arr:fromMacro('us10y') });
-  reg('usdinr',  { label:'USD / INR', sub:'Yahoo', grp:'rates', kind:'line', fmt:'n2', arr:fromMacro('usdinr') });
-  reg('dxy',     { label:'US dollar index', sub:'ICE DXY — Yahoo', grp:'rates', kind:'line', fmt:'n2', arr:fromMacro('dxy') });
+  reg('usdinr',  { label:'USD / INR', sub:'Yahoo · up = weaker rupee', grp:'rates', kind:'line', fmt:'n2', inv:true, arr:fromMacro('usdinr') });
+  // --- Global ---
+  reg('us10y',   { label:'US 10Y yield', sub:'% — Yahoo', grp:'glb', kind:'line', fmt:'n2', unit:'%', arr:fromMacro('us10y') });
+  reg('usffr',   { label:'US Fed funds rate', sub:'% — Fed, upper bound', grp:'glb', kind:'line', fmt:'n2', unit:'%', arr:fromMacro('usffr') });
+  reg('uscpi',   { label:'US CPI inflation', sub:'y/y % — BLS', grp:'glb', kind:'line', fmt:'n1', unit:'%', inv:true, arr:fromMacro('uscpi') });
+  reg('dxy',     { label:'US dollar index', sub:'ICE DXY — Yahoo', grp:'glb', kind:'line', fmt:'n2', arr:fromMacro('dxy') });
+  reg('spx',     { label:'S&P 500', sub:'Yahoo', grp:'glb', kind:'line', fmt:'int', deltaPct:true, arr:fromMacro('spx') });
+  reg('nasdaq',  { label:'Nasdaq Composite', sub:'Yahoo', grp:'glb', kind:'line', fmt:'int', deltaPct:true, arr:fromMacro('nasdaq') });
+  reg('nikkei',  { label:'Nikkei 225', sub:'Yahoo', grp:'glb', kind:'line', fmt:'int', deltaPct:true, arr:fromMacro('nikkei') });
+  reg('hsi',     { label:'Hang Seng', sub:'Yahoo', grp:'glb', kind:'line', fmt:'int', deltaPct:true, arr:fromMacro('hsi') });
   // --- Economy (y/y %) ---
   reg('cpi', { label:'CPI inflation', sub:'y/y % — MOSPI, monthly', grp:'eco', kind:'line', fmt:'n1', unit:'%', inv:true, arr:fromMacro('cpi') });
+  reg('wpi', { label:'WPI inflation', sub:'wholesale y/y % — monthly', grp:'eco', kind:'line', fmt:'n1', unit:'%', inv:true, arr:fromMacro('wpi') });
   reg('iip', { label:'Industrial production', sub:'IIP y/y % — MOSPI, monthly', grp:'eco', kind:'line', fmt:'n1', unit:'%', arr:fromMacro('iip') });
+  reg('pmimfg', { label:'Manufacturing PMI', sub:'S&P Global · above 50 = expansion', grp:'eco', kind:'line', fmt:'n1', arr:fromMacro('pmimfg') });
+  reg('pmisvc', { label:'Services PMI', sub:'S&P Global · above 50 = expansion', grp:'eco', kind:'line', fmt:'n1', arr:fromMacro('pmisvc') });
+  reg('trade', { label:'Trade balance', sub:'goods, $ bn per month · negative = deficit', grp:'eco', kind:'line', fmt:'n1', arr:fromMacro('trade') });
   reg('gdp', { label:'GDP growth', sub:'real y/y % — MOSPI (feed paused Nov-24)', grp:'eco', kind:'line', fmt:'n1', unit:'%', arr:fromMacro('gdp') });
   const bankArr = (bank.rows||[]).filter(r=>r.date && r.actual!=null).map(r=>[r.date, r.actual]);
   reg('bankyoy', { label:'Bank credit growth', sub:'y/y % — RBI fortnightly', grp:'eco', kind:'line', fmt:'n1', unit:'%', arr:bankArr });
   reg('depyoy', { label:'Deposit growth', sub:'y/y % — RBI weekly', grp:'eco', kind:'line', fmt:'n1', unit:'%', arr:fromMacro('deposits') });
   reg('m3yoy',  { label:'Money supply M3', sub:'y/y % — RBI weekly', grp:'eco', kind:'line', fmt:'n1', unit:'%', arr:fromMacro('m3') });
   // --- Commodities & external ---
-  reg('forex', { label:'Forex reserves', sub:'$ bn — RBI weekly', grp:'cmd', kind:'line', fmt:'n1', arr:fromMacro('forex') });
-  reg('crude', { label:'Brent crude', sub:'$/bbl — Yahoo', grp:'cmd', kind:'line', fmt:'n1', arr:fromMacro('crude') });
+  reg('crude', { label:'Brent crude', sub:'$/bbl — Yahoo', grp:'cmd', kind:'line', fmt:'n1', inv:true, arr:fromMacro('crude') });
   reg('gold',  { label:'Gold', sub:'₹/10g — Yahoo × USD/INR', grp:'cmd', kind:'line', fmt:'int', deltaPct:true, arr:fromMacro('gold') });
+  reg('silver',{ label:'Silver', sub:'₹/kg — Yahoo × USD/INR', grp:'cmd', kind:'line', fmt:'int', deltaPct:true, arr:fromMacro('silver') });
+  reg('copper',{ label:'Copper', sub:'$/lb — Yahoo · global growth proxy', grp:'cmd', kind:'line', fmt:'n2', arr:fromMacro('copper') });
+  reg('forex', { label:'Forex reserves', sub:'$ bn — RBI weekly', grp:'cmd', kind:'line', fmt:'n1', arr:fromMacro('forex') });
 
   /* --- derived, our own composites --- */
+  const nfArr = mkArr(nifty.px||{});
+  window.__nifty = nfArr;
   // Earnings-yield gap: 100/PE − India 10Y (pp). Positive = equities cheap vs bonds.
   if(S.niftype && S.india10y){
     const arr = S.niftype.arr.map(([d,pe])=>{ const y=nearestLE(S.india10y.arr,d);
       return (pe&&y!=null)? [d, 100/pe - y] : null; }).filter(Boolean);
-    if(arr.length>1){ S.eygap={ label:'Earnings yield − 10Y gap', sub:'100/PE minus India 10Y, pp · bond–equity gauge', grp:'val', kind:'line', fmt:'n2', arr };
-      ORDER.splice(ORDER.indexOf('niftydy')+1, 0, 'eygap'); }
+    if(arr.length>1) S.eygap={ label:'Earnings yield − 10Y gap', sub:'100/PE minus India 10Y, pp · bond–equity gauge', grp:'val', kind:'line', fmt:'n2', arr };
   }
   // India − US 10Y spread (pp)
   if(S.india10y && S.us10y){
     const arr = S.india10y.arr.map(([d,iy])=>{ const uy=nearestLE(S.us10y.arr,d);
       return (iy!=null&&uy!=null)? [d, iy-uy] : null; }).filter(Boolean);
-    if(arr.length>1){ S.spread1010={ label:'India − US 10Y spread', sub:'pp · carry / risk-premium gauge', grp:'rates', kind:'line', fmt:'n2', arr };
-      ORDER.splice(ORDER.indexOf('us10y')+1, 0, 'spread1010'); }
+    if(arr.length>1) S.spread1010={ label:'India − US 10Y spread', sub:'pp · carry / risk-premium gauge', grp:'rates', kind:'line', fmt:'n2', arr };
   }
   // Real policy rate: repo − CPI (pp), on CPI dates
   if(S.repo && S.cpi){
     const arr = S.cpi.arr.map(([d,c])=>{ const r=nearestLE(S.repo.arr,d);
       return (c!=null&&r!=null)? [d, r-c] : null; }).filter(Boolean);
-    if(arr.length>1){ S.realrate={ label:'Real policy rate', sub:'repo minus CPI, pp · positive = restrictive', grp:'rates', kind:'line', fmt:'n1', arr };
-      ORDER.splice(ORDER.indexOf('repo')+1, 0, 'realrate'); }
+    if(arr.length>1) S.realrate={ label:'Real policy rate', sub:'repo minus CPI, pp · positive = restrictive', grp:'rates', kind:'line', fmt:'n1', arr };
+  }
+  // Nifty drawdown from running peak
+  if(nfArr.length>1){
+    let peak=-Infinity;
+    const arr=nfArr.map(([d,v])=>{ peak=Math.max(peak,v); return [d, (v/peak-1)*100]; });
+    S.drawdown={ label:'Nifty drawdown', sub:'% below running peak since 2012 · 0 = at high', grp:'mkt', kind:'line', fmt:'n1', unit:'%', arr };
+  }
+  // Size rotation: Midcap-100 / Smallcap-100 vs Nifty 50, monthly, rebased to 100
+  function idxMonthly(key){
+    const ix=((idx&&idx.indices)||[]).find(i=>i.key===key); if(!ix) return [];
+    const out=[]; const cl=ix.closes||{};
+    Object.keys(cl).sort().forEach(y=>{ cl[y].forEach((v,mi)=>{ if(v!=null) out.push([y+'-'+d2(mi+1)+'-'+d2(lastDay(+y,mi+1)), v]); }); });
+    const lv=((idx&&idx.live)||{})[key]; if(lv&&lv.last!=null&&out.length) out[out.length-1][1]=lv.last;
+    return out;
+  }
+  function ratioSeries(a,b){
+    const out=[]; for(const [d,v] of a){ const bv=nearestLE(b,d); if(bv) out.push([d, v/bv]); }
+    if(!out.length) return out; const b0=out[0][1];
+    return out.map(([d,v])=>[d, v/b0*100]);
+  }
+  const n50m=idxMonthly('NIFTY 50');
+  const midR=ratioSeries(idxMonthly('NIFTY MIDCAP 100'), n50m);
+  if(midR.length>1) S.midratio={ label:'Midcap ÷ Nifty', sub:'ratio rebased to 100 · rising = midcaps leading', grp:'mkt', kind:'line', fmt:'n1', arr:midR };
+  const smlR=ratioSeries(idxMonthly('NIFTY SMALLCAP 100'), n50m);
+  if(smlR.length>1) S.smallratio={ label:'Smallcap ÷ Nifty', sub:'ratio rebased to 100 · rising = smallcaps leading', grp:'mkt', kind:'line', fmt:'n1', arr:smlR };
+  // Gold ÷ Nifty (defensive bid) & Brent in rupees
+  if(S.gold && nfArr.length){
+    const gr=ratioSeries(S.gold.arr, nfArr);
+    if(gr.length>1) S.goldnifty={ label:'Gold ÷ Nifty', sub:'ratio rebased to 100 · rising = defensive bid', grp:'cmd', kind:'line', fmt:'n1', arr:gr };
+  }
+  if(S.crude && S.usdinr){
+    const arr=S.crude.arr.map(([d,v])=>{ const r=nearestLE(S.usdinr.arr,d); return r? [d, v*r]:null; }).filter(Boolean);
+    if(arr.length>1) S.cruderu={ label:'Brent in ₹', sub:"₹/bbl · India's real import cost", grp:'cmd', kind:'line', fmt:'int', deltaPct:true, inv:true, arr };
+  }
+  // FII index-futures positioning (long share of their OI)
+  if(fo && fo.rows && fo.rows.length){
+    const arr=fo.rows.map(r=>{ const fi=r.oi&&r.oi.FII&&r.oi.FII.futIdx; if(!fi) return null;
+      const L=+fi[0]||0, Sh=+fi[1]||0; return (L+Sh>0)? [r.date, 100*L/(L+Sh)] : null; })
+      .filter(Boolean).sort((a,b)=>a[0]<b[0]?-1:1);
+    if(arr.length>1) S.fiifno={ label:'FII index-futures long %', sub:'long share of FII index-futures OI — NSE participant data', grp:'flow', kind:'line', fmt:'n1', unit:'%', arr };
+  }
+  // Buffett indicator: tracked-universe mcap ÷ nominal GDP
+  if(M.mcaptot && M.mcaptot.d && M.gdpn && M.gdpn.d){
+    const mc=mkArr(M.mcaptot.d), gd=mkArr(M.gdpn.d);
+    const arr=mc.map(([d,v])=>{ const g=nearestLE(gd,d); return g? [d, v/g*100]:null; }).filter(Boolean);
+    if(arr.length) S.buffett={ label:'Market cap ÷ GDP', sub:'% · our tracked universe vs FY nominal GDP (MOSPI)', grp:'val', kind:'line', fmt:'n1', unit:'%',
+      note:'New gauge — the market-cap history accumulates daily from Jul 2026.', arr };
+  }
+  // Earnings pulse from our own quarterly-results data (median YoY per quarter)
+  if(rs && rs.universes && rs.universes.length){
+    const uni = rs.universes.find(u=>u.key===rs.defaultUniverse) || rs.universes[0];
+    const qarr = f => (uni.quarters||[]).map(q=>{ const s=String(q.qe);
+      const v=f(q); return v!=null? [s.slice(0,4)+'-'+s.slice(4,6)+'-'+s.slice(6,8), v] : null; }).filter(Boolean);
+    const esub = 'median YoY % per quarter · '+(uni.label||'liquid universe')+' — our results data';
+    const er=qarr(q=>q.rev&&q.rev.median), eo=qarr(q=>q.op&&q.op.median), ep=qarr(q=>q.pat&&q.pat.median);
+    if(er.length>1) S.earnrev={ label:'Revenue growth', sub:esub, grp:'earn', kind:'bars', agg:'sum', bucket:'quarters', fmt:'n1', arr:er };
+    if(eo.length>1) S.earnop={ label:'Operating-profit growth', sub:esub, grp:'earn', kind:'bars', agg:'sum', bucket:'quarters', fmt:'n1', arr:eo };
+    if(ep.length>1) S.earnpat={ label:'Profit (PAT) growth', sub:esub, grp:'earn', kind:'bars', agg:'sum', bucket:'quarters', fmt:'n1', arr:ep };
   }
 
-  window.__nifty = mkArr(nifty.px||{});
+  // final tile order (grouped); only series that actually loaded
+  const TILE_ORDER=['nifty','drawdown','vix','pct200','netadv','net52','midratio','smallratio',
+    'fii','dii','fiifno',
+    'niftype','niftypb','niftydy','eygap','buffett',
+    'repo','realrate','india10y','spread1010','usdinr',
+    'us10y','usffr','uscpi','dxy','spx','nasdaq','nikkei','hsi',
+    'cpi','wpi','iip','gdp','pmimfg','pmisvc','trade','bankyoy','depyoy','m3yoy',
+    'earnrev','earnop','earnpat',
+    'crude','cruderu','gold','silver','copper','goldnifty','forex'];
+  ORDER.length=0; TILE_ORDER.forEach(k=>{ if(S[k]) ORDER.push(k); });
   $('updated').textContent = '· updated '+ (macro.updated? macro.updated.slice(0,10) : '');
-  $('sources').innerHTML = 'Sources: NSE (Nifty, FII/DII, breadth) · niftyindices (Nifty PE/PB/dividend yield) · RBI via mql5 economic calendar (repo rate, deposits, M3, forex, bank credit) · MOSPI via mql5 (CPI, IIP, GDP) · Yahoo Finance (US 10Y, USD/INR, dollar index, Brent, gold) · FRED (India 10Y). Breadth computed in-house from adjusted NSE closes over the point-in-time Nifty 500. Derived panels (earnings-yield gap, 10Y spread, real rate) computed on-page. Not investment advice.';
+  $('sources').innerHTML = 'Sources: NSE (Nifty, FII/DII cash &amp; derivatives, breadth) · niftyindices (Nifty PE/PB/dividend yield) · RBI via mql5 economic calendar (repo, deposits, M3, forex, bank credit) · MOSPI via mql5 (CPI, WPI, IIP, GDP, trade) · S&amp;P Global PMIs, US Fed rate &amp; US CPI via mql5 · Yahoo Finance (yields, USD/INR, dollar index, global indices, Brent, gold, silver, copper) · FRED (India 10Y). Breadth, earnings pulse (median YoY from our quarterly-results data), market-cap÷GDP and all ratio/derived panels computed in-house. The regime score is a simple percentile blend — a compass, not investment advice.';
 
   buildPulse();
+  buildRegime();
+  buildMovers();
   buildPills();
   buildTiles();
   buildHeat();
@@ -408,6 +515,67 @@ function sparkBars(pts){
     '<line x1="0" y1="'+zero+'" x2="'+W+'" y2="'+zero+'" style="stroke:var(--border)" stroke-width="0.6"/>'+r+'</svg>';
 }
 
+/* ================= REGIME GAUGE + WEEKLY MOVERS ================= */
+function pctOf(key){ const c=S[key]; if(!c||!c.arr||c.arr.length<60) return null; return percentile(c.arr, c.arr[c.arr.length-1][1]); }
+function buildRegime(){
+  const comps=[];
+  const pe=pctOf('niftype'); if(pe!=null) comps.push(['Valuation', 100-pe, 'cheaper vs its own history = higher']);
+  const br=pctOf('pct200'); if(br!=null) comps.push(['Breadth', br, 'percentile of % stocks above 200 DMA']);
+  const nf=window.__nifty||[];
+  if(nf.length>200){
+    const rets=[]; for(let i=126;i<nf.length;i++){ const p=nf[i-126][1]; if(p) rets.push(nf[i][1]/p-1); }
+    const cur=rets[rets.length-1]; let n=0; rets.forEach(r=>{ if(r<=cur) n++; });
+    comps.push(['Trend', Math.round(100*n/rets.length), '6-month Nifty return vs its own history']);
+  }
+  if(S.fii && S.fii.arr.length>40){
+    const a=S.fii.arr, sums=[]; for(let i=20;i<a.length;i++){ let t=0; for(let j=i-20;j<=i;j++) t+=a[j][1]; sums.push(t); }
+    const cur=sums[sums.length-1]; let n=0; sums.forEach(x=>{ if(x<=cur) n++; });
+    comps.push(['FII flows', Math.round(100*n/sums.length), '1-month net buying vs the recent window']);
+  }
+  const vx=pctOf('vix'); if(vx!=null) comps.push(['Calm', 100-vx, 'inverse VIX percentile']);
+  if(comps.length<3) return;
+  const score=Math.round(comps.reduce((s,c)=>s+c[1],0)/comps.length);
+  const band= score>=70?['Risk-on','pos']: score>=55?['Constructive','pos']: score>=45?['Neutral','']: score>=30?['Cautious','neg']: ['Risk-off','neg'];
+  $('regime').innerHTML =
+    '<div class="secttl">🧭 Market regime</div>'+
+    '<div class="sectsub">Our blend of five percentile gauges — a compass, not investment advice.</div>'+
+    '<div class="rg-head"><span class="rg-score">'+score+'</span><span class="rg-band '+band[1]+'">'+band[0]+'</span><span class="sectsub">/ 100</span></div>'+
+    '<div class="rg-meter"><i style="left:'+score+'%"></i></div>'+
+    '<div class="flex justify-between sectsub"><span>Risk-off</span><span>Risk-on</span></div>'+
+    '<div class="rg-chips">'+comps.map(c=>'<span class="rg-chip" title="'+c[2]+'">'+c[0]+' <b>'+Math.round(c[1])+'</b></span>').join('')+'</div>';
+  $('regimeCard').style.display='';
+}
+function buildMovers(){
+  let ref='0'; for(const k in S){ const a=S[k].arr; if(a&&a.length && a[a.length-1][0]>ref) ref=a[a.length-1][0]; }
+  const refFresh=new Date(ref); refFresh.setDate(refFresh.getDate()-14);
+  const freshCut=refFresh.toISOString().slice(0,10);
+  const rows=[];
+  for(const k in S){ const c=S[k];
+    if(c.kind!=='line'||!c.arr||c.arr.length<60) continue;
+    const a=c.arr, last=a[a.length-1];
+    if(last[0]<freshCut) continue;               // stale monthly series: its "move" is not from this week
+    const cutD=new Date(last[0]); cutD.setDate(cutD.getDate()-7);
+    const past=nearestLE(a, cutD.toISOString().slice(0,10));
+    if(past==null) continue;
+    const d1=percentile(a,last[1]), d0=percentile(a,past);
+    if(d1==null||d0==null||d1===d0) continue;
+    rows.push({lb:c.label, cur:last[1], cfg:c, d:d1-d0});
+  }
+  rows.sort((a,b)=>Math.abs(b.d)-Math.abs(a.d));
+  const top=rows.slice(0,6);
+  if(!top.length) return;
+  $('movers').innerHTML =
+    '<div class="secttl">⚡ What moved this week</div>'+
+    '<div class="sectsub" style="margin-bottom:4px">'+"Biggest 7-day jumps in each indicator's percentile-in-history."+'</div>'+
+    top.map(r=>{
+      const good=r.cfg.inv? r.d<0 : r.d>0;
+      return '<div class="mv-row"><span class="mv-lb">'+r.lb+'</span>'+
+        '<span class="mv-val">'+fmtVal(r.cfg,r.cur)+(r.cfg.unit==='%'?'%':'')+'</span>'+
+        '<span class="p-chip '+(good?'pos':'neg')+'">'+(r.d>0?'+':'−')+Math.abs(r.d)+' pctl</span></div>';
+    }).join('');
+  $('regimeCard').style.display='';
+}
+
 /* ================= PILLS ================= */
 function buildPills(){
   $('seg').innerHTML = Object.keys(RANGE_MONTHS).map(k=>
@@ -479,7 +647,7 @@ function lineChart(el, cfg){
   let pts=cfg.arr.filter(p=>p[0]>=cut && p[1]!=null && !isNaN(p[1]));
   let fellBack=false;
   if(pts.length<2){ pts=cfg.arr.filter(p=>p[1]!=null&&!isNaN(p[1])); fellBack=true; }
-  if(pts.length<2){ el.innerHTML='<div class="sectsub" style="padding:24px 0">Not enough data yet.</div>'; return; }
+  if(pts.length<2){ el.innerHTML='<div class="sectsub" style="padding:24px 0">'+(cfg.note||'Not enough data yet.')+'</div>'; return; }
   const winVals=pts.map(p=>p[1]);
   const lo=Math.min(...winVals), hi=Math.max(...winVals), med=median(winVals);
   pts=downsample(pts);
@@ -569,7 +737,7 @@ function barChart(el, cfg){
   const foot=document.querySelector('[data-foot="'+cfg2key(cfg)+'"]');
   if(foot){ const vals=m.map(p=>p[1]);
     foot.innerHTML='<span>Lo <b>'+fmtVal(cfg,Math.min(...vals))+'</b></span><span>Med <b>'+fmtVal(cfg,median(vals))+'</b></span><span>Hi <b>'+fmtVal(cfg,Math.max(...vals))+'</b></span>'+
-      '<span class="t-pct">'+m.length+' months</span>'; }
+      '<span class="t-pct">'+m.length+' '+(cfg.bucket||'months')+'</span>'; }
 }
 
 /* ================= QUARTERLY HEAT GRID ================= */
@@ -590,8 +758,12 @@ function buildHeat(){
     S.fii && { label:'FII net', s:'₹ Cr, quarter sum', fmt:flow, get:(qe,prev)=>colVal(S.fii,qe,prev,'sum') },
     S.dii && { label:'DII net', s:'₹ Cr, quarter sum', fmt:flow, get:(qe,prev)=>colVal(S.dii,qe,prev,'sum') },
     S.cpi && { label:'CPI', s:'y/y %, inverted', inv:true, fmt:v=>nf(v,1), get:(qe,prev)=>colVal(S.cpi,qe,prev,'qlast') },
+    S.wpi && { label:'WPI', s:'y/y %, inverted', inv:true, fmt:v=>nf(v,1), get:(qe,prev)=>colVal(S.wpi,qe,prev,'qlast') },
     S.iip && { label:'IIP', s:'y/y %', fmt:v=>nf(v,1), get:(qe,prev)=>colVal(S.iip,qe,prev,'qlast') },
     S.gdp && { label:'GDP', s:'y/y %', fmt:v=>nf(v,1), get:(qe,prev)=>colVal(S.gdp,qe,prev,'qlast') },
+    S.pmimfg && { label:'Mfg PMI', s:'50 = neutral', base:50, fmt:v=>nf(v,1), get:(qe,prev)=>colVal(S.pmimfg,qe,prev,'qlast') },
+    S.pmisvc && { label:'Services PMI', s:'50 = neutral', base:50, fmt:v=>nf(v,1), get:(qe,prev)=>colVal(S.pmisvc,qe,prev,'qlast') },
+    S.trade && { label:'Trade balance', s:'$ bn/month', fmt:v=>nf(v,1), get:(qe,prev)=>colVal(S.trade,qe,prev,'qlast') },
     S.bankyoy && { label:'Bank credit', s:'y/y %', fmt:v=>nf(v,1), get:(qe,prev)=>colVal(S.bankyoy,qe,prev,'qlast') },
     S.depyoy && { label:'Deposits', s:'y/y %', fmt:v=>nf(v,1), get:(qe,prev)=>colVal(S.depyoy,qe,prev,'qlast') },
     S.m3yoy && { label:'M3', s:'y/y %', fmt:v=>nf(v,1), get:(qe,prev)=>colVal(S.m3yoy,qe,prev,'qlast') },
@@ -602,7 +774,8 @@ function buildHeat(){
   ROWS.forEach(row=>{
     const vals=q.map((qe,i)=>row.get(qe, i? q[i-1] : '2000-01-01'));
     if(vals.filter(v=>v!=null).length<2) return;   // hide rows whose feed window hasn't grown yet (FII/DII start Jun'26)
-    const amax=Math.max(...vals.filter(v=>v!=null).map(Math.abs), 1e-9);
+    const base=row.base||0;
+    const amax=Math.max(...vals.filter(v=>v!=null).map(v=>Math.abs(v-base)), 1e-9);
     h+='<div class="lft">'+row.label+'<span class="s">'+row.s+'</span></div>';
     vals.forEach((v,i)=>{
       let bg='transparent';
@@ -610,7 +783,7 @@ function buildHeat(){
         // sign-anchored: positive→pos hue, negative→neg hue (CPI: shade vs row median instead of zero)
         let s, hue;
         if(row.inv){ const med0=median(vals.filter(x=>x!=null)); const dev=v-med0; hue=dev<=0?'pos':'neg'; s=Math.min(1,Math.abs(dev)/Math.max(1e-9,amax-Math.abs(med0))||0); }
-        else { hue=v>=0?'pos':'neg'; s=Math.min(1,Math.abs(v)/amax); }
+        else { const dev=v-base; hue=dev>=0?'pos':'neg'; s=Math.min(1,Math.abs(dev)/amax); }
         bg='color-mix(in srgb, var(--'+hue+') '+(8+Math.round(30*s))+'%, transparent)';
       }
       h+='<div class="cell" data-r="'+row.label+'" data-q="'+labQ(q[i])+'" data-v="'+(v==null?'':row.fmt(v))+'" style="background:'+bg+'">'+(v==null?'<span style="color:var(--text-faint)">·</span>':row.fmt(v))+'</div>';

@@ -1821,7 +1821,23 @@ glance" heat grid (CSS grid, NOT a <table> — keeps theme.js mobile cardify awa
 shading, CPI inverted, rows w/ <2 readings auto-hidden, e.g. FII/DII until the rolling window grows) →
 sector-rotation zero-based horizontal bars w/ dashed Nifty marker + 1M/3M/6M/1Y pills. 3 derived on-page
 series: earnings-yield gap (100/PE − India 10Y), India−US 10Y spread, real policy rate (repo − CPI).
-Data plumbing below is UNCHANGED from v1.
+
+**v2.1 "build all" (2026-07-18):** 🧭 regime gauge (blend of 5 percentiles: valuation=100−PE-pctile,
+breadth=%>200DMA-pctile, trend=6M-Nifty-return-pctile, FII-1M-flow-pctile, calm=100−VIX-pctile → 0-100
+score + band) + ⚡ "what moved this week" (Δ percentile-in-history over 7d; series with last reading
+>14d old are EXCLUDED so stale monthlies can't masquerade as this-week moves) · new tile groups
+Global + Earnings (9 group pills now) · fetch_macro.py additions — mql5 MQ is now {key:(country,slug)}:
+india/wpi-yy, india/trade-balance, india/markit-manufacturing-pmi, india/markit-services-pmi (the
+sp-global-* slugs 404 — markit-* are the live ones), united-states/fed-interest-rate-decision,
+united-states/consumer-price-index-yy; Yahoo: SI=F silver→₹/kg, HG=F copper, ^GSPC, ^IXIC, ^N225,
+^HSI · GDP_NOMINAL seed dict in fetch_macro.py (₹ lakh cr, FY-end dated, FY26=BE — update yearly when
+the provisional estimate lands ~May) + `mcaptot` = daily total mcap summed from dash_slim.bin (it's
+gzip'd JSON; sanity-guarded n≥1500 rows & 100<lakh-cr<5000 so a truncated bin can't poison) → Buffett
+tile mcap÷GDP (133.5% at launch; HISTORY ACCUMULATES from 2026-07-18, tile shows a note until ≥2 pts) ·
+more derived tiles: Nifty drawdown, Midcap-100÷Nifty & Smallcap-100÷Nifty (index_monthly closes,
+rebased 100), Gold÷Nifty, Brent-in-₹, FII index-futures long% (fii_fo.json rows oi.FII.futIdx=[L,S]) ·
+earnings pulse = median rev/op/PAT YoY per quarter from results_season.json defaultUniverse (quarterly
+bars) · heat grid rows += WPI (inverted), Mfg & Services PMI (shaded around base 50), trade balance.
 
 **Data = one new fetcher + reuse of existing feeds.** `scripts/fetch_macro.py` -> `docs/macro.json`
 (15 series, cumulative {date:value} maps, merged & never shrunk — a skipped/partial run self-heals):
