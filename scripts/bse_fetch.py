@@ -15,11 +15,19 @@ Output bse_fundamentals.json: { SYM: [[qEndYYYYMMDD, npStd_cr, annStd, npCon_cr,
 Run:  python -X utf8 bse_fetch.py            # all insurers
       python -X utf8 bse_fetch.py SBILIFE    # one
 """
-import urllib.request, json, gzip, io, zipfile, re, time, random, http.cookiejar, os, sys, fitz
-from rapidocr_onnxruntime import RapidOCR
+import urllib.request, json, gzip, io, zipfile, re, time, random, http.cookiejar, os, sys
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36'
-OCR = RapidOCR()
+# PyMuPDF (fitz) + RapidOCR load LAZILY on first PDF/OCR use: fetch_bse_results.py imports this
+# module for its network helpers alone, from workflows that install neither (a top-level import
+# crashed the BSE feed merge in every such run — silently, behind the workflows' `|| echo` guard).
+OCR = None
+def _ocr():
+    global OCR
+    if OCR is None:
+        from rapidocr_onnxruntime import RapidOCR
+        OCR = RapidOCR()
+    return OCR
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUTF = os.path.join(HERE, "bse_fundamentals.json")
 PACE = 10           # seconds between zip downloads
@@ -72,7 +80,7 @@ def quarters(op, code):
     return sorted(out.items(), reverse=True)
 
 def ocr_boxes(png):
-    res, _ = OCR(png)
+    res, _ = _ocr()(png)
     return [{'t': t, 'x': sum(p[0] for p in b) / 4, 'y': sum(p[1] for p in b) / 4} for b, t, sc in (res or [])]
 
 def net_profit(boxes):
@@ -95,6 +103,7 @@ def pdf_np(op, ziplink, want, expect):
     pick = next((n for n in pdfs if key in n.lower()), None) or \
            next((n for n in pdfs if (('conso' in n.lower()) == (want == 'con'))), None)
     if not pick: return None, False
+    import fitz
     doc = fitz.open(stream=z.read(pick), filetype='pdf')
     ident = False; np = None
     for pi in range(min(len(doc), 3)):

@@ -34,6 +34,12 @@ jobs:
         with:
           python-version: "3.11"
 
+      # PyMuPDF only (small wheel): enrich_order_values.py reads order-win PDFs with it. The OCR
+      # stack (rapidocr/onnxruntime) is NOT needed here — bse_fetch loads it lazily, and the BSE
+      # feed merge below uses just its network helpers.
+      - name: Install PDF reader
+        run: pip install -q pymupdf
+
       - name: Fetch NSE corporate announcements (rolling ~31 days) + results feed
         run: python3 -X utf8 scripts/fetch_announcements.py
 
