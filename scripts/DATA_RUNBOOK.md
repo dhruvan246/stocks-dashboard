@@ -933,15 +933,36 @@ dates). Deep links: `?tab=results|feed|calendar&sym=TCS`.
 3. `docs/results_calendar.json` (tiny) ← **`scripts/fetch_results_calendar.py`** — NSE `/api/event-calendar`
    (−3d..+75d), result-purpose rows only; ABORT-guard keeps the old file on a broken fetch. Same workflow.
 
-**Refresh cadence (hourly since 2026-07-13):**
+**Refresh cadence (every 15 min since 2026-07-17; hourly 2026-07-13→17):**
 - **`refresh-results-hourly.yml`** — hourly 08:30–00:30 IST: runs the 3 fetchers but commits ONLY the two
   small side-files (feed+calendar), NEVER the 4.7 MB announcements.json (git-bloat guard; that big file
   stays on the 4×/day refresh-announcements.yml).
-- **`refresh-fundamentals.yml`** — cron `45 4-17 * * *` = hourly 10:15–23:15 IST daily. Numbers (XBRL parse)
-  land within ~1 h of filing. The quarterly_results.json BAKER (90 MB asset download + rebuild) is GATED:
-  runs only when `.fund_updated` exists OR at the 15:xx UTC (21:xx IST) full nightly run (which always
-  rebuilds so reactions/drift track the daily prices published 20:45 IST). Don't un-gate it — hourly 1.8 MB
-  commits would bloat history for nothing.
+- **`refresh-fundamentals.yml`** — crons `*/15 4-14 * * *` (09:30–20:15 IST, the filing window) +
+  `45 15` (21:15 IST nightly) + `45 17` (23:15 IST late top-up) = 46 runs/day. Numbers (XBRL parse) land
+  within ~15 min of the filing's XBRL appearing. The quarterly_results.json BAKER (90 MB asset download +
+  rebuild) is GATED: runs only when `.fund_updated` exists OR on the nightly run (which always rebuilds so
+  reactions/drift track the daily prices published 20:45 IST). Don't un-gate it — a 1.8 MB commit 4×/hour
+  would bloat history for nothing. Idle runs are ~40 s; Actions minutes are free (public repo).
+- ⚠️ **GITHUB'S SCHEDULER DRIFTS — never rely on a cron firing in its own minute, or even its own hour.**
+  Observed 2026-07-17: a `45 4-17` (hourly-at-:45) cron actually fired at 07:02 / 09:29 / 11:08 UTC — up to
+  44 min late, real gaps of 1.5–2.5 h. Two consequences, both handled — keep them handled:
+  (a) density beats precision — that's why the filing window is `*/15`, so a dropped slot costs 15 min, not
+      an hour (this was the whole reason a dozen large caps sat on "numbers being parsed" for hours on
+      2026-07-17: they filed 15:46–17:44 IST, the last run was 16:38);
+  (b) the nightly-only steps (insurer vision fill / IPO-base backfill / UNGATED baker) detect the nightly run
+      by wall-clock `date -u +%H`, so an exact `= 15` test would SILENTLY SKIP THE ENTIRE NIGHTLY on any day
+      the 15:45 cron drifted to 16:0x. The gates now accept **`15|16`** (`case "$(date -u +%H)" in 15|16)`),
+      and **hours 15–16 UTC are RESERVED — never add a dense cron there** or the heavy steps double-fire.
+  `&& case … esac` is set-e-safe (a non-matching `case` returns 0), so the gates can't abort a step.
+- ⚠️ **"Result filed — numbers being parsed" on the feed is usually NOT a bug.** The feed row comes from the
+  ANNOUNCEMENT PDF; the numbers come from the XBRL `integrated-filing-results` feed — companies post the PDF
+  first, XBRL minutes-to-a-day later. Before debugging, check whether the XBRL exists at all:
+  hit `/api/integrated-filing-results?index=equities&period=Quarterly&from_date=…&to_date=…&size=200` and look
+  for the symbol with a non-null `consolidated` (Consolidated/Standalone). A row with `consolidated=None` is a
+  NON-results part of the integrated filing (governance/deviation) — not parseable, correctly skipped.
+  NB the OLD `/api/corporates-financial-results?symbol=…` endpoint is stale (returns nothing past Dec-2024) —
+  don't diagnose with it. Verified 2026-07-17: RBLBANK/TATVA had no XBRL row, POONAWALLA/CHEMBOND had only a
+  `consolidated=None` row, ~4 h after their PDFs — pipeline correct, nothing to fix.
 - The page's Declared tile = with-numbers + feed-only filers ("+K filed, numbers coming"), deduped against
   numbers by SYMBOL and by normalized COMPANY NAME (dual-listed cos arrive under different tickers per
   exchange, e.g. a BSE fallback ticker; NB INDBNK=Ind Bank Housing is a DIFFERENT co from INDBANK).
@@ -1034,6 +1055,14 @@ shareable URL (`discovery.html#b=<key>`).
   Supabase awake — if red, restore project in Supabase dashboard, free tier can't be woken by API).
   Writes `docs/status.json` → rendered by **docs/status.html**; opens/updates ONE GitHub issue titled
   "Data feed alert" when anything is red, auto-closes it when all green again.
+- **Source-level freshness (`json_rows_age` special, added 2026-07-17):** a source can die INSIDE a feed
+  that still updates (the BSE merge import-crash: NSE rows kept results_feed.json fresh while BSE rows
+  stopped — invisible to whole-file age/size checks). The `json_rows_age` special asserts the newest row
+  whose URL field contains `match` (e.g. "bseindia") is younger than `max_age_hours` (120h — survives
+  holiday clusters). Add one per multi-source feed. PAIRED with a LOUD smoke-import step (NO `|| echo`)
+  in refresh-results-hourly.yml + refresh-announcements.yml: `import bse_fetch, fetch_bse_results` fails
+  the run visibly if a heavy top-level import creeps back. Rule of thumb: `|| echo` is for exchange
+  flakiness, NEVER for code that can be broken — broken code must fail loud.
 - **Commit guards:** every feed-committing workflow (11 of them) runs `scripts/guard_feed.py` right before
   its commit step: any modified docs/scripts .json/.bin/.html must parse (json), be ≥ min_bytes, and not
   shrink below min_ratio × committed size — else the step FAILS (visible red run; previous good data stays
