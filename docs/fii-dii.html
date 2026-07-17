@@ -42,10 +42,10 @@
   <div id="status" class="text-sm text-slate-500">Loading FII/DII data…</div>
 
   <div id="content" class="hidden">
-    <a href="./shareholding.html" class="flex items-center gap-2 mb-4 px-3.5 py-2.5 rounded-xl border border-indigo-200 bg-indigo-50/60 text-sm text-indigo-800 font-semibold hover:bg-indigo-100 transition">🏛️ New: per-stock FII/DII <u>holdings</u> — see exactly which stocks institutions raised or cut, updated daily as filings land <span class="ml-auto">→</span></a>
     <div class="flex flex-wrap gap-1 border-b border-slate-200 mb-4 text-sm">
       <button class="tab active px-3 py-2 border-b-2 border-transparent" data-tab="cash">Cash segment</button>
       <button class="tab px-3 py-2 border-b-2 border-transparent" data-tab="fo">F&amp;O (derivatives)</button>
+      <button class="tab px-3 py-2 border-b-2 border-transparent" data-tab="holdings">🏛️ Holdings (per stock)</button>
     </div>
 
     <!-- ===================== CASH ===================== -->
@@ -147,6 +147,15 @@
       </div>
       </div><!-- /foTablesSection -->
       <p class="text-[11px] text-slate-500 mt-5">F&amp;O participant positions = <b>open interest</b> (no. of contracts). <b>Idx-Fut net</b> = index-futures long − short; a large negative FII number = net short / bearish positioning. Buy/sell table is FII-only derivative turnover value. Source: NSE participant-wise OI + FII derivative-stats reports. <span id="updated"></span></p>
+    </section>
+
+    <!-- ===================== Holdings (per stock) ===================== -->
+    <section id="pane-holdings" class="hidden">
+      <div class="mb-3">
+        <h2 class="text-base font-bold text-slate-900">Per-stock FII / DII holdings <a href="./shareholding.html" class="text-xs font-semibold text-indigo-600 hover:underline align-middle ml-1">open full page ↗</a></h2>
+        <p class="text-xs text-slate-500 mt-0.5">Which stocks institutions raised or cut, from quarterly shareholding-pattern filings — refreshed daily as companies file.</p>
+      </div>
+      <iframe id="shpFrame" title="Per-stock FII/DII holdings" class="w-full border-0 block" style="height:1200px" scrolling="no" loading="lazy"></iframe>
     </section>
   </div>
 </main>
@@ -445,7 +454,12 @@ document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
   t.classList.add('active');
   $('pane-cash').classList.toggle('hidden', t.dataset.tab!=='cash');
   $('pane-fo').classList.toggle('hidden', t.dataset.tab!=='fo');
+  $('pane-holdings').classList.toggle('hidden', t.dataset.tab!=='holdings');
+  // lazy-load the embedded holdings page only when its tab is first opened
+  if(t.dataset.tab==='holdings'){ const f=$('shpFrame'); if(!f.src) f.src='./shareholding.html?embed=1'; }
 }));
+// size the holdings iframe to its content so there's no nested scrollbar
+window.addEventListener('message', e=>{ if(e.data&&e.data.sw_embed_height){ $('shpFrame').style.height=(e.data.sw_embed_height+24)+'px'; } });
 load();
 </script>
 </body>

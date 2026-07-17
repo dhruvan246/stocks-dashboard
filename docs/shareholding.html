@@ -7,7 +7,12 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
+<script>if(new URLSearchParams(location.search).has('embed'))document.documentElement.classList.add('embed');</script>
 <style>
+  /* embed mode: when framed inside the FII/DII dashboard, drop the chrome so it reads as one page */
+  html.embed header, html.embed footer, html.embed .sw-footer, html.embed #shpIntro { display:none !important; }
+  html.embed body { background:transparent !important; min-height:0 !important; }
+  html.embed main { padding:0 !important; max-width:none !important; }
   body { font-feature-settings: "tnum" 1; }
   .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
   .pos{color:#15803d;font-weight:600} .neg{color:#b91c1c;font-weight:600}
@@ -41,7 +46,7 @@
 </header>
 
 <main class="max-w-screen-xl mx-auto px-4 py-6">
-  <div class="mb-4 flex flex-wrap items-start justify-between gap-3">
+  <div id="shpIntro" class="mb-4 flex flex-wrap items-start justify-between gap-3">
     <div>
       <h1 class="text-xl font-bold text-slate-900">FII / DII holdings — who's raising stake in which stock</h1>
       <p class="text-sm text-slate-500 mt-0.5">Foreign &amp; domestic institutional holding per stock from quarterly shareholding-pattern filings — refreshed daily as companies file (new filings land here every day during season). <span id="updated" class="text-slate-400"></span></p>
@@ -307,6 +312,13 @@ $('csv').onclick=()=>{
 };
 
 load();
+
+// embed mode: report our height to the parent dashboard so the iframe can size to content (no nested scrollbar)
+if(document.documentElement.classList.contains('embed')){
+  const postH=()=>{ try{ parent.postMessage({sw_embed_height: document.body.scrollHeight}, '*'); }catch(e){} };
+  new ResizeObserver(postH).observe(document.body);
+  window.addEventListener('load', postH); setTimeout(postH, 300);
+}
 </script>
 </body>
 </html>
