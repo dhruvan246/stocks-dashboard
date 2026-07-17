@@ -84,7 +84,6 @@
     <!-- ===================== F&O ===================== -->
     <section id="pane-fo" class="hidden">
       <div id="foCards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"></div>
-      <div id="foSecBtns" class="flex gap-1 mb-4 text-sm"></div>
       <div id="foChartsSection">
       <div class="flex items-center gap-2 mb-3 text-xs">
         <span class="text-slate-500 font-medium">Chart view:</span>
@@ -106,7 +105,7 @@
         <div id="foRatioChart"></div>
       </div>
       </div><!-- /foChartsSection -->
-      <div id="foTablesSection" class="hidden">
+      <div id="foTablesSection">
       <div class="card p-4 mb-4">
         <div class="text-sm font-semibold text-slate-700 mb-2">FII derivative buy / sell — latest day <span id="foDate1" class="text-slate-400 font-normal"></span> <span class="text-slate-400 font-normal">(₹ crore)</span></div>
         <div class="overflow-x-auto">
@@ -313,11 +312,7 @@ function renderFO(){
    +card('FII F&O net turnover · '+(lastBS?lastBS.date:''), fmtSigned(bsNetTotal)+' cr', 'buy − sell, all instruments', bsNetTotal>=0?'pos':'neg')
    +card('DII Index-Fut net', fmtSigned(diiIdxNet), 'contracts', (diiIdxNet||0)>=0?'pos':'neg');
 
-  // section toggle (charts / tables) — show one group at a time to keep the page short
-  $('foSecBtns').innerHTML = [['charts','📈 Charts'],['tables','📋 Tables']].map(([k,lbl])=>`<button data-sec="${k}" class="px-3 py-1.5 rounded-lg font-semibold transition ${foSection===k?'bg-slate-800 text-white shadow':'bg-slate-100 text-slate-600 hover:bg-slate-200'}">${lbl}</button>`).join('');
-  $('foSecBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{foSection=b.dataset.sec; renderFO();});
-  $('foChartsSection').classList.toggle('hidden', foSection!=='charts');
-  $('foTablesSection').classList.toggle('hidden', foSection!=='tables');
+  // charts and tables are shown together (merged)
 
   // view toggle (overlay / split) — applies to both charts
   $('foViewBtns').innerHTML = [['overlay','Overlay'],['split','Split']].map(([k,lbl])=>`<button data-v="${k}" class="px-2.5 py-1 rounded font-semibold ${foView===k?'bg-blue-600 text-white':'bg-slate-100 text-slate-600'}">${lbl}</button>`).join('');
