@@ -458,6 +458,8 @@ function buildTiles(){
     es.forEach(e=>{ if(e.isIntersecting){ io.unobserve(e.target); drawTile(e.target.getAttribute('data-key')); } });
   }, {rootMargin:'400px'});
   document.querySelectorAll('#tiles .ch').forEach(el=>io.observe(el));
+  // safety net: some webviews never tick IntersectionObserver — draw whatever it hasn't reached
+  setTimeout(()=>{ ORDER.forEach(k=>{ if(!drawn.has(k)) drawTile(k); }); }, 900);
 }
 function rerenderTiles(){ drawn.forEach(k=>{ const el=tileVisible(k); if(el) drawTile(k); }); }
 function tileVisible(k){
@@ -467,7 +469,7 @@ function tileVisible(k){
 function drawTile(k){
   const cfg=S[k]; const el=document.querySelector('#tiles .ch[data-key="'+k+'"]');
   if(!cfg||!el) return;
-  drawn.add(k);
+  drawn.add(k); if(io) io.unobserve(el);
   if(el.parentElement.style.display==='none') return;
   if(cfg.kind==='bars') barChart(el, cfg); else lineChart(el, cfg);
 }
