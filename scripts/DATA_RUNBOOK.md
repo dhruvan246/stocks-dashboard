@@ -624,6 +624,22 @@ V-recovery (Jun-2021: +48%)**. ⚠️ MOVED OFF the Stocks dashboard → its own
     life-insurer op irreproducible (above). Their rev + PAT are exact. Nothing else is left.
   - **EMMVEE** (op base 350.49 vs TL's implied 347.4, ~0.01pp): **OURS IS RIGHT** — derived from EMMVEE's own PDF
     comparative, PBT 240.19 + FC 53.11 + Dep 71.59 − OI 14.40 = 350.49 (lakh ÷ 100); our current op 548.10 = TL exact.
+  - **DEEP RE-VERIFY 2026-07-17 (user challenged "TL is a big firm, can't be wrong") — every claim re-proven from
+    the companies' own Q1FY27 PDFs:** (a) **MRPL: TL CONFIRMED paisa-exact** — the PDF prints an `Excise Duty`
+    expense row (3,354.77 cur / 3,631.80 base); 41,608.96−3,354.77 = 38,254.19 = TL's figure, 20,988.53−3,631.80 =
+    17,356.73 = their implied base. TL right off the PDF, we right off the XBRL (full fact-dump shows NO excise tag;
+    expenses sum exactly with excise inside OtherExpenses). (b) **EMMVEE + ICICIAMC re-proven OURS** — full-page
+    dumps show NO exceptional-items row in either statement (PBT = TotalIncome − TotalExpenses to the paisa:
+    EMMVEE 1,04,222.38−80,203.16 = 24,019.22; ICICIAMC 14,775.2−4,155.6 = 10,619.6); printed Jun-25 comparatives =
+    our bases exactly (35,049.50 lakh op / 13,306.7 mn rev); TL's bases (347.38 / 1,313.35) match NOTHING in the
+    current documents — most plausibly RHP-era restated figures (both are 2025-26 IPOs), i.e. an official-but-
+    superseded source, and TL's CURRENT-quarter values equal ours exactly on both names. (c) **HDFCLIFE — strongest
+    proof: PBT − the rows LABELLED "Other income" in HDFC Life's own PDF = OURS to the paisa on BOTH bases**
+    (con 630.19−9,458L−4,273L = 492.88 cur, 563.58−7,388L−2,123L = 468.47 base; std 626.72−94.49 = 532.23); TL's
+    450.43/156.41 subtract 179.76/407.17 cr that match NO labelled row or combination, and TL's own financials page
+    prints PBT 618.3 vs the PDF's 626.72 (their Total Rev − Op Exp ≠ their own Op Profit row either). (d)
+    **ICICIPRULI**: its statement pages are SCANNED images (pages 1-11 have no text layer — TL's parse is OCR'd on
+    top of the same regrouping); identical LI format to HDFCLIFE, same conclusion.
   **Page-default gotcha when a user compares:** our page opens on "All liquid" + **MEDIAN** — switch the universe to
   **Nifty 500** AND toggle **TOTAL** before comparing to TL's cards, or the numbers look wrong for no reason.
 
