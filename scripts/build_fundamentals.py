@@ -21,6 +21,7 @@ Run:  python -X utf8 build_fundamentals.py [SYM1 SYM2 ...]   (default = a small 
 Cache: scripts/_xbrl_cache/ (gitignored via scripts/_*). Resumable.
 """
 import os, sys, re, json, time, gzip, threading, concurrent.futures, urllib.request, urllib.parse, http.cookiejar
+import scale_fix   # a few filers' XBRL is scaled by 10^k — reviewed ledger, DATA_RUNBOOK §11
 
 MIN_QE = 20170101   # skip quarters ending before this — NSE's XBRL archive is sparse pre-2016
                     # and the backtest default starts 2020 (year-ago bases need ~2018). Cuts the 404 storm.
@@ -180,6 +181,9 @@ def fetch_integrated(sym, jar, skip=()):
         except Exception:
             continue
         np = integrated_profit(xml, con=(key == "con")); ann = iso(r.get("broadcast_Date"))
+        sc = scale_fix.factor(cf)
+        if np is not None and sc:
+            np = round(np / sc, 2)
         if np is not None:
             d[key] = (np, int(ann) if ann else None)
     return byq
@@ -247,6 +251,10 @@ def fetch_symbol(sym, jar):
             except Exception:
                 continue
             s, c = xbrl_profit(xml, basis_hint=f.get("basis"))
+            sc = scale_fix.factor(cf)      # source XBRL scaled by 10^k (the filer's error, not ours)
+            if sc:
+                s = None if s is None else round(s / sc, 2)
+                c = None if c is None else round(c / sc, 2)
             a = None if f["ann"] == "99999999" else int(f["ann"])
             if std is None and s is not None: std, annStd = s, a
             if con is None and c is not None: con, annCon = c, a

@@ -31,6 +31,7 @@ Run:  python -X utf8 build_revop.py [--limit N] [--fresh]
 Resumable: checkpoints to scripts/_revop_progress.json every 10k files.
 """
 import os, re, sys, json, glob, concurrent.futures
+import scale_fix
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 CACHE = os.path.join(HERE, "_xbrl_cache")
@@ -322,8 +323,16 @@ def parse_file(path, fname):
 
     one_nat = (RE_NAT["OneD"].search(xml) or [None, ""])
     one_nat = one_nat.group(1).strip().lower() if hasattr(one_nat, "group") else ""
+    # A few filers' XBRL is scaled by a power of ten — every monetary tag 10^k too big. The file
+    # is wrong, not us, so re-parsing reproduces it; scale_fix.json is the reviewed ledger of
+    # those filings and this is the one place the correction enters (DATA_RUNBOOK §11).
+    sc = scale_fix.factor(fname)
+
+    def _sc(t):
+        return tuple(None if v is None else v / sc for v in t) if sc else t
+
     out = {"std": None, "con": None, "fin": fin, "qe": qe, "sym": sym, "ts": ts_key(fname)}
-    rev, op, ebit, pat, owners = metrics_for(xml, "OneD")
+    rev, op, ebit, pat, owners = _sc(metrics_for(xml, "OneD"))
     one = {"rev": rev, "op": op, "ebit": ebit, "pat": pat, "owners": owners}
     if "consol" in one_nat:
         out["con"] = one
@@ -335,7 +344,7 @@ def parse_file(path, fname):
         four_nat = RE_NAT["FourD"].search(xml)
         four_nat = four_nat.group(1).strip().lower() if four_nat else ""
         if four_nat and four_nat != one_nat:
-            rev, op, ebit, pat, owners = metrics_for(xml, "FourD")
+            rev, op, ebit, pat, owners = _sc(metrics_for(xml, "FourD"))
             d = {"rev": rev, "op": op, "ebit": ebit, "pat": pat, "owners": owners}
             if "consol" in four_nat and out["con"] is None:
                 out["con"] = d

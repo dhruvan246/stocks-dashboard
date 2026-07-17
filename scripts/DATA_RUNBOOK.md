@@ -642,6 +642,45 @@ V-recovery (Jun-2021: +48%)**. ⚠️ MOVED OFF the Stocks dashboard → its own
     top of the same regrouping); identical LI format to HDFCLIFE, same conclusion.
   **Page-default gotcha when a user compares:** our page opens on "All liquid" + **MEDIAN** — switch the universe to
   **Nifty 500** AND toggle **TOTAL** before comparing to TL's cards, or the numbers look wrong for no reason.
+- **⚠️ POWER-OF-TEN SCALE ERRORS IN THE SOURCE XBRL — the filer's bug, not ours (found+FIXED 2026-07-17):**
+  a handful of filings carry **every monetary tag at 10^k times its true value**. Our parsers divide raw rupees by
+  1e7 and are CORRECT, so **a re-parse reproduces the garbage byte-for-byte** (measured: today's `build_revop`
+  reproduces **263/263** cached flagged cells — **zero** stale artifacts). It is therefore NEITHER a live parser bug
+  NOR a stale artifact — don't go looking for one. Proof case **BATAINDIA 20190630**, which filed std and con two
+  minutes apart on 2019-08-02: the std file's `FinanceCosts` is **313510000000** and the con file's is **313510000**
+  — the same real number, one ×1000 (rev/OI/PBET/PAT track it at 999.3/1003.6/998.3/997.6).
+  - **`decimals` is NOT a usable signal:** `digits − |decimals| == 4` in the broken filings AND the good ones (the
+    filer derives it from the broken value). BATAINDIA std says `decimals="-9"`, con `="-6"`. Don't build on it.
+  - **NOT ONLY `sf_revop` — `sf_fundamentals` is hit too** (BATAINDIA `npStd` was 100730.0), and that feeds the PAT
+    median, Discovery, Quarterly Results **and the backtest**. `build_fundamentals` can emit BOTH bases from ONE
+    filing, so a std-only mis-filing also poisons `npCon` (IRCTC 20220930, TTML 20190930).
+  - **THE FIX = `scale_fix.json`, a REVIEWED LEDGER (14 filings), applied by `scale_fix.py`** — at PARSE time in
+    `build_revop.py` + `build_fundamentals.py` (keyed on the cache FILENAME, since the unit of corruption is the
+    FILING, so a full rebuild stays clean) and once to the built JSONs via `python -X utf8 scale_fix.py --apply`
+    (guarded on the recorded `was_*`, hence idempotent). ⚠️ `--apply` skips a cell another source already fixed:
+    **GAEL**'s `npStd` is 14.55 because the BSE gap-backfill overwrote the NSE XBRL's 1455.0 — dividing again would
+    have made it 0.15.
+  - **⚠️ DETECTION IS NOT AUTOMATABLE — every naive rule DELETES REAL DATA (the ORFO lesson again).** "50x the
+    symbol's own median" flags **268** cells of which **~198 are REAL**: collapses (JETAIRWAYS/HDIL — the dead years
+    drag the median to ~0 so the healthy years look like outliers), holding-co shells (BINANIIND/ROLTA/DCM std ≈ 0),
+    mergers (ABCAPITAL std ~100→~4,000 on the Apr-2025 ABFL merger), one-offs (**SIL** Mar-22 rev 429.97 → op 212.44
+    = a textbook ~49% land-sale margin; **SPARC** Mar-26 rev 1853.22 − op 1772.94 = **80.28 of cost, exactly its
+    normal quarterly cost base** — a ÷100 would imply costs of 0.8), and recurring dividends (**MAHSCOOTER** spikes
+    every **September** — the annual Bajaj dividend; RTNINDIA/WESTLIFE every June). Cross-slot agreement doesn't save
+    you either: an investment company has rev == op == pat *by nature*. So `detect_scale_errors.py` only SURFACES
+    suspects — **adjudicate by hand, and only with a hard anchor.**
+  - **ANCHORS, strongest first:** **(a) YTD** — a Q2/Q3/Q4 filing carries its own year-to-date figure, so
+    `(YTD_parsed − quarter_parsed) / Σ(earlier quarters of that FY, from OTHER filings)` **is** the factor, by
+    arithmetic; IRCTC/GAEL/GRAPHITE/TTML land on **exactly 100.000** (IRCTC: 165839.23 − 80580.17 = 85259.06, and
+    its Jun-22 filing says 852.59). **(b) cross-basis** — the other-basis filing minutes later (BATAINDIA, GHCL,
+    BRFL). **(c) neighbours** — only where exactly one power of ten lands every slot in range (SILGO, PBAINFRA).
+  - **⚠️ Don't require ">= N quarters" when sweeping** — that hid **GICL 20250930** (×1e5 on BOTH bases, rendering
+    ₹3,615,270cr of revenue) outright, because GICL has only 4 quarters. Compare to ADJACENT quarters instead.
+  - **KNOWN-UNFIXED (needs its own session, NOT in the ledger):** **QUINT** (Quint Digital, ₹180cr mcap) has ~20
+    quarters of net profit that are systematically mis-scaled (reads 20305 / 761217 / −104086 where truth is ~±5cr)
+    — a whole-filer problem, not one bad filing, so it needs its own root-cause pass. `detect_scale_errors.py` also
+    lists ~251 `sf_fundamentals` np suspects; **most are real one-offs** — AIRFLOA 20240930 (×1e4 on both bases,
+    only 2 quarters, ann=0) is the one clean-looking candidate left.
 
 **SELF-UPDATES DAILY** — wired into `.github/workflows/refresh-fundamentals.yml` (21:15 IST weekdays):
 1. `update_fundamentals.py` scans NSE integrated-filing-results for the last 120 days (ALL companies, one call) and,

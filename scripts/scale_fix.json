@@ -1,0 +1,333 @@
+{
+ "_README": [
+  "Filings whose XBRL is itself scaled by a power of ten -- the filer's own numbers, not a parse bug.",
+  "Our parsers divide raw rupees by 1e7 and are CORRECT; the source file carries every monetary tag",
+  "at 10^k times its true value (BATAINDIA 20190630 std: FinanceCosts 313510000000 vs the same day's",
+  "consolidated filing 313510000 -- identical after /1000). `decimals` is NOT a usable signal:",
+  "digits-|decimals| == 4 in the broken filings AND the good ones, because the filer derives it from",
+  "the broken value.",
+  "",
+  "DETECTION IS NOT AUTOMATABLE, which is why this is a REVIEWED LEDGER and not a heuristic.",
+  "A naive '50x the symbol's own median' test flags 268 cells of which ~198 are REAL: company",
+  "collapses (JETAIRWAYS), holding-co shells whose standalone is ~0 (BINANIIND, ROLTA), mergers",
+  "(ABCAPITAL's 2025 ABFL merger), one-off land sales (SIL Mar-22: rev 429.97 -> op 212.44 is a",
+  "textbook ~49% land-sale margin), licensing income (SPARC Mar-26: rev 1853.22 - op 1772.94 = 80.28",
+  "of cost, exactly its normal quarterly cost base), and recurring dividends (MAHSCOOTER spikes every",
+  "SEPTEMBER -- the annual Bajaj dividend). Auto-'correcting' any of those DELETES REAL DATA, which is",
+  "the same trap the ORFO rule fell into (DATA_RUNBOOK 11).",
+  "",
+  "Each k below is ANCHORED, in order of strength: (a) the filing's own YTD minus the quarter must",
+  "equal the earlier quarters of that FY, which are known from DIFFERENT filings -- IRCTC, GAEL,",
+  "GRAPHITE and TTML come out at EXACTLY 100.000; (b) the same company's other-basis filing for the",
+  "same quarter, filed minutes apart; (c) adjacent quarters, only where exactly one power of ten fits.",
+  "",
+  "Applied at PARSE time by build_revop.py + build_fundamentals.py (keyed on `file`, so a full rebuild",
+  "stays clean), and to the live JSONs once by apply_scale_fix.py (guarded on `was_*`, so it is",
+  "idempotent). Re-detect suspects with detect_scale_errors.py; add an entry only with a real anchor."
+ ],
+ "fixes": [
+  {
+   "sym": "BATAINDIA",
+   "qe": "20190630",
+   "basis": "std",
+   "k": 3,
+   "file": "INDAS_46645_127578_02082019101118_WEB_xml",
+   "why": "FinanceCosts 313510000000 is EXACTLY 1000x the same-day con filing's 313510000; rev/OI/PBET/PAT all ~1000x con (999.3/1003.6/998.3/997.6). Q1 filing so no YTD anchor. std decimals=-9 vs con -6.",
+   "was_revop": {
+    "rev": 882143.0,
+    "op": 242971.0,
+    "pat": 100730.0,
+    "ebit": 169964.0
+   },
+   "fixed_revop": {
+    "rev": 882.14,
+    "op": 242.97,
+    "pat": 100.73,
+    "ebit": 169.96
+   },
+   "was_fund": 100730.0,
+   "fixed_fund": 100.73
+  },
+  {
+   "sym": "BRFL",
+   "qe": "20190930",
+   "basis": "std",
+   "k": 2,
+   "file": "INDAS_50713_168723_14112019072734_WEB_xml",
+   "why": "Cross-basis vs the same-day con filing: rev 91.6x / op 99.4x / pat 100.0x. YTD anchor 95.1 (understated because our Jun-19 revStd is on a slightly different basis). k=2.",
+   "was_revop": {
+    "rev": 9971.0,
+    "op": -59949.0,
+    "pat": -46252.0,
+    "ebit": -63455.0
+   },
+   "fixed_revop": {
+    "rev": 99.71,
+    "op": -599.49,
+    "pat": -462.52,
+    "ebit": -634.55
+   },
+   "was_fund": -46252.0,
+   "fixed_fund": -462.52
+  },
+  {
+   "sym": "GAEL",
+   "qe": "20190930",
+   "basis": "std",
+   "k": 2,
+   "file": "INDAS_49748_163488_09112019062813_WEB_xml",
+   "why": "YTD anchor EXACT: (H1 YTD 101144.00 - Q2 90836.00) / Jun-19 1011.44 = 100.000. Independently, sf_fundamentals npStd 14.55 (BSE-backfilled) == 1455.0/100 exactly.",
+   "was_revop": {
+    "rev": 90836.0,
+    "op": 4498.0,
+    "pat": 1455.0,
+    "ebit": 1943.0
+   },
+   "fixed_revop": {
+    "rev": 908.36,
+    "op": 44.98,
+    "pat": 14.55,
+    "ebit": 19.43
+   },
+   "fund_note": "sf_fundamentals already holds the correct 14.55 (a different source/parser won there) -- do NOT divide it again."
+  },
+  {
+   "sym": "GICL",
+   "qe": "20250930",
+   "basis": "std",
+   "k": 5,
+   "file": "INTEGRATED_FILING_NONINDAS_1575526_14112025065604_WEB_xml",
+   "why": "XBRL RevenueFromOperations = 36152700000000 (3.6e13 rupees = 3,615,270cr) for a company whose adjacent quarters are 34.33 and 39.16. \u00f71e5 lands ALL SIX values on their neighbours: revStd 36.15 (34.33/39.16), revCon 37.57 (35.40/47.31), opStd 3.02 (2.97/3.02), opCon 3.45 (3.18/10.10), npStd 1.82 (1.74/1.73), npCon 1.72 (1.45/6.92). MISSED by the original detector purely because GICL has only 4 quarters and that sweep required >= 6.",
+   "was_revop": {
+    "rev": 3615270.0,
+    "op": 302190.0,
+    "ebit": 302190.0
+   },
+   "fixed_revop": {
+    "rev": 36.15,
+    "op": 3.02,
+    "ebit": 3.02
+   },
+   "was_fund": 181880.0,
+   "fixed_fund": 1.82
+  },
+  {
+   "sym": "GICL",
+   "qe": "20250930",
+   "basis": "con",
+   "k": 5,
+   "file": "INTEGRATED_FILING_NONINDAS_1576583_15112025022609_WEB_xml",
+   "why": "Consolidated half of the same x1e5 mis-filing (rev 37569300000000); see the std entry.",
+   "was_revop": {
+    "rev": 3756930.0,
+    "op": 345160.0,
+    "ebit": 345160.0
+   },
+   "fixed_revop": {
+    "rev": 37.57,
+    "op": 3.45,
+    "ebit": 3.45
+   },
+   "was_fund": 171560.0,
+   "fixed_fund": 1.72
+  },
+  {
+   "sym": "GEEKAYWIRE",
+   "qe": "20220930",
+   "basis": "std",
+   "k": 5,
+   "file": "INDAS_819106_6163_31102022145746_WEB_xml",
+   "why": "YTD anchor: (H1 YTD - Q2) / Jun-22 87.62 = 99999.206 -> k=5. Corrected rev 104.84 sits between Jun-22 87.62 and Dec-22 103.30.",
+   "was_revop": {
+    "rev": 10483661.17,
+    "op": 440014.97,
+    "pat": 324080.95,
+    "ebit": 341029.85
+   },
+   "fixed_revop": {
+    "rev": 104.84,
+    "op": 4.4,
+    "pat": 3.24,
+    "ebit": 3.41
+   },
+   "was_fund": 324080.95,
+   "fixed_fund": 3.24
+  },
+  {
+   "sym": "GHCL",
+   "qe": "20191231",
+   "basis": "std",
+   "k": 2,
+   "file": "INDAS_51644_210183_23012020062516_WEB_xml",
+   "why": "Cross-basis vs the same-day con filing: rev 99.3x / op 102.2x / pat 104.3x. (The YTD ratio reads 206.6 only because our own Jun-19 quarter is missing from the 9M prior sum.)",
+   "was_revop": {
+    "rev": 83462.0,
+    "op": 17791.0,
+    "pat": 10108.0,
+    "ebit": 14558.0
+   },
+   "fixed_revop": {
+    "rev": 834.62,
+    "op": 177.91,
+    "pat": 101.08,
+    "ebit": 145.58
+   },
+   "was_fund": 10108.0,
+   "fixed_fund": 101.08
+  },
+  {
+   "sym": "GRAPHITE",
+   "qe": "20220331",
+   "basis": "std",
+   "k": 2,
+   "file": "INDAS_85225_659643_24052022065001_WEB_xml",
+   "why": "YTD anchor EXACT over THREE prior quarters: (FY YTD 203200.00 - Q4 76700.00) / (Jun+Sep+Dec-21 2032.00) = 100.000.",
+   "was_revop": {
+    "rev": 76700.0,
+    "op": 10700.0,
+    "pat": 12200.0,
+    "ebit": 9500.0
+   },
+   "fixed_revop": {
+    "rev": 767.0,
+    "op": 107.0,
+    "pat": 122.0,
+    "ebit": 95.0
+   },
+   "was_fund": 12200.0,
+   "fixed_fund": 122.0
+  },
+  {
+   "sym": "IRCTC",
+   "qe": "20220930",
+   "basis": "std",
+   "k": 2,
+   "file": "INDAS_876277_6400_15112022145822_WEB_xml",
+   "why": "YTD anchor EXACT: (H1 YTD 165839.23 - Q2 80580.17) / Jun-22 852.59 = 100.000. IRCTC's ANNUAL revenue is ~4,000cr, so an 80,580cr quarter is impossible on its face.",
+   "was_revop": {
+    "rev": 80580.17,
+    "op": 30487.03,
+    "pat": 22603.06,
+    "ebit": 28630.15
+   },
+   "fixed_revop": {
+    "rev": 805.8,
+    "op": 304.87,
+    "pat": 226.03,
+    "ebit": 286.3
+   },
+   "was_fund": 22603.06,
+   "fixed_fund": 226.03
+  },
+  {
+   "sym": "JPPOWER",
+   "qe": "20230331",
+   "basis": "std",
+   "k": 2,
+   "file": "INDAS_91415_839752_09052023083405_xml",
+   "why": "BOTH bases scaled (std+con filed 73 min apart, both x100). Corrected rev 1379.88 sits between Sep-22 1385.37 and Jun-23 1707.82. (YTD ratio reads 137.5 only because our own Dec-22 quarter is missing from the FY prior sum.)",
+   "was_revop": {
+    "rev": 137988.0,
+    "op": 22138.0,
+    "pat": -4139.0,
+    "ebit": 10673.0
+   },
+   "fixed_revop": {
+    "rev": 1379.88,
+    "op": 221.38,
+    "pat": -41.39,
+    "ebit": 106.73
+   },
+   "was_fund": -4139.0,
+   "fixed_fund": -41.39
+  },
+  {
+   "sym": "JPPOWER",
+   "qe": "20230331",
+   "basis": "con",
+   "k": 2,
+   "file": "INDAS_91416_839763_09052023084707_xml",
+   "why": "Consolidated half of the same x100 mis-filing; see the std entry.",
+   "was_revop": {
+    "rev": 137988.0,
+    "op": 22669.0,
+    "pat": -4308.0,
+    "ebit": 11202.0
+   },
+   "fixed_revop": {
+    "rev": 1379.88,
+    "op": 226.69,
+    "pat": -43.08,
+    "ebit": 112.02
+   },
+   "was_fund": -4399.0,
+   "fixed_fund": -43.99
+  },
+  {
+   "sym": "PBAINFRA",
+   "qe": "20200630",
+   "basis": "std",
+   "k": 5,
+   "file": "INDAS_60692_310339_25082020064125_WEB_xml",
+   "why": "Q1 filing, no YTD anchor. Only 1e5 reconciles all slots with the adjacent quarters: rev 2.78 (Mar-20 9.83 / Sep-20 3.46), op 0.21 (-0.40 / 0.27), pat -1.00 (3.31 / -0.65). 1e4 would put rev at 27.78, above the symbol's entire series.",
+   "was_revop": {
+    "rev": 277810.48,
+    "op": 21374.02,
+    "pat": -99775.01,
+    "ebit": -99018.18
+   },
+   "fixed_revop": {
+    "rev": 2.78,
+    "op": 0.21,
+    "pat": -1.0,
+    "ebit": -0.99
+   },
+   "was_fund": -99775.01,
+   "fixed_fund": -1.0
+  },
+  {
+   "sym": "SILGO",
+   "qe": "20210331",
+   "basis": "std",
+   "k": 3,
+   "file": "INDAS_71262_458741_14062021032603_WEB_xml",
+   "why": "Q1 filing and the FIRST quarter we hold, so no YTD and no prior neighbour. The symbol's whole series is 4.82-16.53; only 1e3 lands in it (14.87). 1e2 gives 148.74 (10x the series max), 1e4 gives 1.49.",
+   "was_revop": {
+    "rev": 14873.87,
+    "op": 1526.92,
+    "pat": 876.71,
+    "ebit": 1499.59
+   },
+   "fixed_revop": {
+    "rev": 14.87,
+    "op": 1.53,
+    "pat": 0.88,
+    "ebit": 1.5
+   },
+   "was_fund": 876.71,
+   "fixed_fund": 0.88
+  },
+  {
+   "sym": "TTML",
+   "qe": "20190930",
+   "basis": "std",
+   "k": 2,
+   "file": "INDAS_51156_172784_15112019084402_WEB_xml",
+   "why": "YTD anchor EXACT: (H1 YTD 29345.00 - Q2 27035.00) / Jun-19 293.45 = 100.000. NOTE the corrected PAT -2334.45 is REAL (the Oct-2019 AGR Supreme Court provision), not residual scale noise.",
+   "was_revop": {
+    "rev": 27035.0,
+    "op": 12419.0,
+    "pat": -233445.0,
+    "ebit": 6959.0
+   },
+   "fixed_revop": {
+    "rev": 270.35,
+    "op": 124.19,
+    "pat": -2334.45,
+    "ebit": 69.59
+   },
+   "was_fund": -233445.0,
+   "fixed_fund": -2334.45
+  }
+ ]
+}

@@ -15,7 +15,9 @@ Bases:
   PAT  -> sf_fundamentals.json (owners-attributable consolidated where filed, else standalone).
   Rev / Operating profit -> sf_revop.json. Banks/NBFCs INCLUDED (bank rev = interest earned, op =
           pre-provision operating profit; NBFC rev = core revenue, op = EBITDA) — matches Trendlyne.
-YoY needs the year-ago quarter on the SAME basis with a POSITIVE base.
+YoY needs the year-ago quarter on the SAME basis: consistent() picks con/con where both periods
+filed consolidated, else std/std, and that ONE pair feeds both the median and the total (a base
+may be negative — Trendlyne's (cur-base)/ABS(base) convention, DATA_RUNBOOK §11).
 
 Out: docs/results_season.json = { defaultUniverse, basis, dataAsOf, universes:[{key,label,note,quarters}] }
 Run:  python -X utf8 build_results_season.py
@@ -114,11 +116,6 @@ def median_yoy(pairs, min_n=MIN_N):
     return (round(statistics.median(ys), 1) if len(ys) >= min_n else None), len(ys)
 
 
-def _cpref(con, std):
-    """Consolidated-preferred pick: con where filed, else standalone."""
-    return con if con is not None else std
-
-
 def agg_total(pairs, min_n=MIN_N, drop_nonpos=False):
     """Index TOTAL growth, Trendlyne's rule: sum(now)/sum(ago)-1 over EVERY company that reported BOTH
     periods, negative bases INCLUDED (CONSOLIDATED-preferred basis).
@@ -157,12 +154,14 @@ def agg_total(pairs, min_n=MIN_N, drop_nonpos=False):
 
 def agg_quarter(members, qe, pat, revop, min_n=MIN_N, include_fin=False):
     """Return (quarter-dict, reported). Each metric carries BOTH:
-      median  = median of per-company YoY (consolidated-preferred, positive base) — 'typical company'
-      total   = aggregate sum(now)/sum(ago)-1 on CONSOLIDATED-preferred basis — the index P&L (matches Trendlyne)."""
+      median  = median of per-company YoY — 'typical company'
+      total   = aggregate sum(now)/sum(ago)-1 — the index P&L (matches Trendlyne).
+    Both are built from the SAME consistent() pair, so current and base are always on the same
+    basis (con/con where both filed con, else std/std) — never std-now vs con-year-ago."""
     ya = yago(qe)
     reported = 0
-    pat_pairs, rev_pairs, op_pairs, ebit_pairs = [], [], [], []   # median (con-pref, positive base)
-    pat_tot, rev_tot, op_tot, ebit_tot = [], [], [], []           # total (con-preferred, both>0)
+    pat_pairs, rev_pairs, op_pairs, ebit_pairs = [], [], [], []   # median
+    pat_tot, rev_tot, op_tot, ebit_tot = [], [], [], []           # total (same pairs)
     for s in members:
         pq = pat.get(s)
         if pq:
@@ -171,16 +170,18 @@ def agg_quarter(members, qe, pat, revop, min_n=MIN_N, include_fin=False):
                 reported += 1
                 base_pat = pq.get(ya)
                 if base_pat:
+                    # ONE pair feeds BOTH the median and the total. consistent() is still
+                    # CONSOLIDATED-PREFERRED (con/con where both periods filed con, else std/std) —
+                    # which is what reconciles to Trendlyne's cards (TCS Q1FY27 rev 72,275 = con,
+                    # not std 59,553). The point is that it picks the basis for the PAIR, not for
+                    # each period independently: the old _cpref() ran per period, so a company that
+                    # filed con last year but only std this year was compared std-vs-con —
+                    # ICICIPRULI Jun-2026 (no con XBRL exists) read op 306.56/282.09 = +8.67%
+                    # instead of the true std/std 306.56/292.22 = +4.91%.
                     pr = consistent(cur_pat, base_pat)
                     if pr:
                         pat_pairs.append(pr)
-                    # TOTAL is CONSOLIDATED-preferred (con where filed, else std) — Trendlyne's
-                    # result-analysis cards + per-stock table use consolidated (TCS Q1FY27 rev
-                    # 72,275 = con, not std 59,553); con-preferred reconciles to their cards to the
-                    # decimal, standalone did not.
-                    cp, bp = _cpref(cur_pat[1], cur_pat[0]), _cpref(base_pat[1], base_pat[0])
-                    if cp is not None and bp is not None:
-                        pat_tot.append((cp, bp))
+                        pat_tot.append(pr)
         rv = revop.get(s)
         if rv:
             cq, bq = rv.get(str(qe)), rv.get(str(ya))
@@ -190,25 +191,16 @@ def agg_quarter(members, qe, pat, revop, min_n=MIN_N, include_fin=False):
             if cq and bq and (include_fin or (not cq[6] and not bq[6])):
                 pr = consistent((cq[0], cq[1]), (bq[0], bq[1]))
                 if pr:
-                    rev_pairs.append(pr)
+                    rev_pairs.append(pr); rev_tot.append(pr)
                 po = consistent((cq[2], cq[3]), (bq[2], bq[3]))
                 if po:
-                    op_pairs.append(po)
+                    op_pairs.append(po); op_tot.append(po)
                 # EBIT (after-dep operating profit) lives at idx 7/8 — defensive for legacy 7-elem rows
                 ce_s, ce_c = (cq[7] if len(cq) > 7 else None), (cq[8] if len(cq) > 8 else None)
                 be_s, be_c = (bq[7] if len(bq) > 7 else None), (bq[8] if len(bq) > 8 else None)
                 pe = consistent((ce_s, ce_c), (be_s, be_c))
                 if pe:
-                    ebit_pairs.append(pe)
-                cr_r, br_r = _cpref(cq[1], cq[0]), _cpref(bq[1], bq[0])          # revenue con-pref
-                if cr_r is not None and br_r is not None:
-                    rev_tot.append((cr_r, br_r))
-                cr_o, br_o = _cpref(cq[3], cq[2]), _cpref(bq[3], bq[2])          # EBITDA con-pref
-                if cr_o is not None and br_o is not None:
-                    op_tot.append((cr_o, br_o))
-                cr_e, br_e = _cpref(ce_c, ce_s), _cpref(be_c, be_s)             # EBIT con-pref
-                if cr_e is not None and br_e is not None:
-                    ebit_tot.append((cr_e, br_e))
+                    ebit_pairs.append(pe); ebit_tot.append(pe)
     rev_m, rev_n = median_yoy(rev_pairs, min_n);   rev_t, rev_tn = agg_total(rev_tot, min_n)
     op_m, op_n = median_yoy(op_pairs, min_n);       op_t, op_tn = agg_total(op_tot, min_n)
     ebit_m, ebit_n = median_yoy(ebit_pairs, min_n); ebit_t, ebit_tn = agg_total(ebit_tot, min_n)
