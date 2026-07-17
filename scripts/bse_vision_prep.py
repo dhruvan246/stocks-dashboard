@@ -131,12 +131,26 @@ def main():
             for annd, att, hd in bse_render.announcements(op, scrip)[:3]:
                 raw = bse_render.fetch_pdf(op, att)
                 if not raw: continue
+                # TRIPWIRE: never hand vision a PDF for the wrong quarter. If the filing states a period and
+                # it isn't the one we're filling, we picked the WRONG ANNOUNCEMENT — that is a fetch bug on
+                # our side, NOT evidence the company skipped the quarter. Rendering it anyway is how
+                # GYANDEV/NAM (2026-07-17) got read off their March PDF and reported as "never filed June",
+                # for names that had filed that morning. Skip to the next candidate and say so out loud.
+                # period 0 = scanned/no text layer: we genuinely can't tell, so don't block on it.
+                real = pdf_period(raw)
+                if real and real != qe:
+                    print("  ⚠ BSE %-11s %s: filing states %d, want %d — wrong announcement, trying next"
+                          % (tkr, annd, real, qe))
+                    continue
                 for i, png in enumerate(render_pdf_pages(raw)):
                     p = os.path.join(outdir, "BSE_%s_p%d.png" % (scrip, i)); open(p, "wb").write(png); pngs.append(p)
                 if pngs: break
             if pngs:
                 manifest.append({"exch": "BSE", "sym": tkr, "scrip": scrip, "name": name, "mcap": mcap, "pngs": pngs})
                 print("  rendered BSE %s %-11s (%d pages)" % (scrip, tkr, len(pngs)))
+            else:
+                print("  ✗ BSE %s %-11s: no candidate yielded a %d P&L — NOT proof it didn't file; check "
+                      "the announcement pick (runbook 17) before concluding anything" % (scrip, tkr, qe))
 
     json.dump(manifest, open(os.path.join(outdir, "manifest.json"), "w"))
     print("WROTE %s/manifest.json: %d companies ready to vision-read" % (outdir, len(manifest)))

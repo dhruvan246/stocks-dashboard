@@ -1084,6 +1084,13 @@ the Quarterly Results page. **4 scripts + `.github/workflows/refresh-bse.yml` (2
   two companies that had filed **that morning** (the user caught this; the data said otherwise). Note
   `fetch_bse_results.qe_from_head()` already read both fields — the feed knew the true quarter while the
   renderer didn't, so **a feed-vs-renderer disagreement means the RENDERER is wrong, not the feed.**
+- **🔒 TRIPWIRE (so the above can't silently repeat): `bse_vision_prep` now calls `pdf_period(raw)` on every
+  BSE candidate and REFUSES to render a filing whose stated period ≠ the target quarter** (prints
+  `⚠ <TKR> <date>: filing states <qe>, want <qe> — wrong announcement, trying next`), falling through to the
+  next candidate. Verified: GYANDEV's 2026-05-30 PDF (the one that fooled the routine) reads `20260331` and is
+  skipped, while its real 07-15 filing reads `20260630` and passes. period `0` = scanned/no text layer ⇒ can't
+  tell ⇒ don't block. **A mismatch means WE PICKED THE WRONG ANNOUNCEMENT — it is never evidence the company
+  skipped the quarter.** A name that yields nothing prints an explicit "NOT proof it didn't file" line.
 - **⚠️ Order candidates NEWEST-FIRST; a relevance rank may only break a SAME-DAY tie.** Ranking across dates
   pulls an older, tidily-titled *"Financial Results for the year ended…"* ahead of today's vaguely-titled real
   filing (this exact bug sent GYANDEV to its 2026-05-30 Q4 PDF). The case rank exists for — a CFO notice filed
