@@ -14,20 +14,33 @@ import fitz
 RESULT_HEAD = re.compile(r"result|outcome of (the )?board|financial", re.I)
 PL_HINT = re.compile(r"profit|revenue from oper|total income|earnings per", re.I)
 
-# RESULT_HEAD's bare "financial" also matches "Chief Financial Officer", "financial year", etc, so a CFO
-# appointment filed the same day as the results outranked them and — with callers taking only the newest
-# match — the real P&L was never fetched (INTEGRAEN Q1FY27). Drop those, and rank an explicit results
-# headline above a bare board-outcome cover letter, which often carries no P&L of its own.
+# MATCH ON HEADLINE + NEWSSUB, NEVER HEADLINE ALONE. BSE's HEADLINE is often useless — GYANDEV filed its
+# June quarter under the headline "Please refer the attachment", NAM under "Pursuant to provision of
+# Regulation 30 & 33 of SEBI (LODR)" — while NEWSSUB carries the real description ("Unaudited Financial
+# Results For The Quarter Ended 30.06.2026"). Headline-only matching dropped both real filings, so the
+# renderer fell back to an older quarter's PDF and the names looked like they hadn't reported at all.
+# fetch_bse_results.qe_from_head() already reads both fields, which is why the feed knew better than we did.
+#
+# RESULT_HEAD's bare "financial" also matches "Chief Financial Officer", so a CFO appointment filed the
+# same day as the results could outrank them and — with callers taking only the newest match — the real
+# P&L was never fetched (INTEGRAEN Q1FY27). NOT_RESULT drops those, but only when nothing in the text
+# says "financial results": a single filing that announces results AND an appointment must stay.
 NOT_RESULT = re.compile(r"chief financial officer|\bcfo\b|key managerial|annual report|annual general meeting"
                         r"|newspaper (publication|advertisement)|trading window|book closure"
                         r"|certificate under regulation|resignation|appointment", re.I)
 STRONG_RESULT = re.compile(r"financial results?|results? for the (quarter|period|half|year)", re.I)
-BOARD_OUTCOME = re.compile(r"outcome of (the )?board", re.I)
+BOARD_OUTCOME = re.compile(r"outcome of (the )?board|board meeting outcome", re.I)
 
-def _rank(hd):
-    if STRONG_RESULT.search(hd): return 0      # "Unaudited Financial Results for the quarter ended ..."
-    if BOARD_OUTCOME.search(hd): return 1      # cover letter — may or may not embed the statement
+def _rank(txt):
+    if STRONG_RESULT.search(txt): return 0     # "Unaudited Financial Results for the quarter ended ..."
+    if BOARD_OUTCOME.search(txt): return 1     # cover letter — may or may not embed the statement
     return 2
+
+def _candidate(txt):
+    """True if this announcement could be the results filing. STRONG wins outright so a combined
+    results+appointment filing is never dropped by NOT_RESULT."""
+    if STRONG_RESULT.search(txt): return True
+    return bool(RESULT_HEAD.search(txt)) and not NOT_RESULT.search(txt)
 
 def announcements(op, code, months=5):
     hi = datetime.date.today(); lo = hi - datetime.timedelta(days=30 * months)
@@ -38,10 +51,16 @@ def announcements(op, code, months=5):
         tab = __import__("json").loads(B.get(op, url)).get("Table", []) or []
     except Exception:
         return []
-    rows = [(str(r.get("NEWS_DT") or "")[:10], r.get("ATTACHMENTNAME"), str(r.get("HEADLINE") or ""))
-            for r in tab if r.get("ATTACHMENTNAME") and RESULT_HEAD.search(str(r.get("HEADLINE") or ""))
-            and not NOT_RESULT.search(str(r.get("HEADLINE") or ""))]
-    return sorted(rows, key=lambda t: _rank(t[2]))      # stable: newest-first order kept within each rank
+    rows = []
+    for r in tab:
+        if not r.get("ATTACHMENTNAME"): continue
+        txt = "%s | %s" % (str(r.get("HEADLINE") or ""), str(r.get("NEWSSUB") or ""))
+        if _candidate(txt):
+            rows.append((str(r.get("NEWS_DT") or "")[:10], r["ATTACHMENTNAME"], txt.strip(" |")))
+    # NEWEST FIRST, rank only as a same-day tie-break. Ranking across dates would pull an older quarter's
+    # tidily-titled filing ahead of today's vaguely-titled one — which is exactly how GYANDEV/NAM ended up
+    # rendering their March quarter. Within one date, a real results filing still beats a CFO notice.
+    return sorted(rows, key=lambda t: (t[0], -_rank(t[2])), reverse=True)
 
 def fetch_pdf(op, att):
     for base in ("https://www.bseindia.com/xml-data/corpfiling/AttachLive/",
