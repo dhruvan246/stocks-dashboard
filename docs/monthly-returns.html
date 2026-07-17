@@ -71,7 +71,7 @@
 <main class="max-w-screen-2xl mx-auto px-4 py-6">
   <div class="mb-4">
     <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Monthly Returns <span class="text-slate-400 font-semibold text-base">· every index, month by month</span></h1>
-    <p class="text-sm text-slate-500 mt-1">Month-end to month-end % returns for <b>32 NSE indices</b> — broad, sectoral and thematic — with the year's return in the last column. Extras you won't find elsewhere: a <b>financial-year (Apr–Mar) view</b>, a <b>“vs Nifty 50” alpha mode</b>, per-index <b>seasonality stats</b> (average &amp; hit-rate per calendar month) and a <b>live MTD</b> cell for the running month. <span id="updated" class="text-slate-400"></span></p>
+    <p class="text-sm text-slate-500 mt-1">Month-end to month-end % returns for <b>32 NSE indices</b> — broad, sectoral and thematic — with the year's return in the last column. Extras you won't find elsewhere: a <b>trailing-returns view</b> (1D → 10Y plus distance from the 52-week high), a <b>financial-year (Apr–Mar) view</b>, a <b>“vs Nifty 50” alpha mode</b>, per-index <b>seasonality stats</b> (average &amp; hit-rate per calendar month) and a <b>live MTD</b> cell for the running month. <span id="updated" class="text-slate-400"></span></p>
   </div>
 
   <div id="status" class="text-sm text-slate-500 py-10 text-center">Loading index history…</div>
@@ -82,11 +82,12 @@
     <div class="mb-3 flex flex-wrap items-center gap-2">
       <div class="flex gap-1.5">
         <span id="vYear" class="vbtn on">All indexes</span>
+        <span id="vTrail" class="vbtn">Trailing returns</span>
         <span id="vSeas" class="vbtn">One index · seasonality</span>
       </div>
       <select id="selYear"></select>
       <select id="selIdx" class="hidden"></select>
-      <div class="flex gap-1.5">
+      <div id="cyfy" class="flex gap-1.5">
         <span id="tCY" class="vbtn on" title="Calendar year: Jan–Dec, annual = Dec vs previous Dec">CY</span>
         <span id="tFY" class="vbtn" title="Financial year: Apr–Mar, annual = Mar vs previous Mar">FY</span>
       </div>
@@ -112,7 +113,7 @@
       </table>
     </div>
 
-    <p class="text-[11px] text-slate-500 mt-5">Every cell is the index's <b>% change from the previous month-end close to that month-end close</b> (price index — dividends not included). The last column is the year's return: <b>CY</b> = Dec close vs previous Dec close, <b>FY</b> = Mar close vs previous Mar close; for the running year it's the year-to-date return and the current month (dashed cell) updates live with every trading day until the month closes. <b>*</b> marks a year where the index didn't exist for the full period (return measured from its first available month). <b>vs Nifty 50</b> subtracts Nifty 50's same-month return from every cell, turning the heatmap into relative-strength (alpha). In the seasonality view the footer shows, for each calendar month, the <b>average</b> return across all years and the <b>hit rate</b> — the share of years that month closed positive. History: NSE's official index archive back to each index's base date (Nifty 50 &amp; Nifty 500 from 1995, Nifty IT from 1996, most sectoral indexes from the early 2000s; back-computed by NSE before an index's launch date). Current month topped up on trading evenings from NSE's live index feed. Educational only — not investment advice.</p>
+    <p class="text-[11px] text-slate-500 mt-5">Every cell is the index's <b>% change from the previous month-end close to that month-end close</b> (price index — dividends not included). The last column is the year's return: <b>CY</b> = Dec close vs previous Dec close, <b>FY</b> = Mar close vs previous Mar close; for the running year it's the year-to-date return and the current month (dashed cell) updates live with every trading day until the month closes. <b>*</b> marks a year where the index didn't exist for the full period (return measured from its first available month). <b>vs Nifty 50</b> subtracts Nifty 50's same-month return from every cell, turning the heatmap into relative-strength (alpha). In <b>Trailing returns</b> every cell measures back from the <b>latest close</b>: 1D from the previous close, 1W from the rolling daily window, and 1M/3M/6M/1Y/2Y/3Y/5Y/10Y from the month-end close that many months back (so 1M is the same thing as the running month's MTD); columns marked <b>*</b> are annualised (CAGR), and <b>LTP vs 52W</b> is the distance below the index's 52-week high. NSE's per-index daily archive is bot-walled, so the daily window used by the 1W column builds up one trading evening at a time and that column stays blank until it reaches back a week. In the seasonality view the footer shows, for each calendar month, the <b>average</b> return across all years and the <b>hit rate</b> — the share of years that month closed positive. History: NSE's official index archive back to each index's base date (Nifty 50 &amp; Nifty 500 from 1995, Nifty IT from 1996, most sectoral indexes from the early 2000s; back-computed by NSE before an index's launch date). Current month topped up on trading evenings from NSE's live index feed. Educational only — not investment advice.</p>
   </div>
 </main>
 
@@ -289,6 +290,121 @@ function clickSort(s){
   render();
 }
 
+/* ---------- trailing-returns view ---------- */
+/* n = months of month-end history behind the live level; d = days of the rolling daily window */
+const TRAIL_COLS = [
+  { k:'d52', l:'LTP vs 52w',  cap:25, t:'Latest level vs the index’s 52-week high (0% = sitting at its high)' },
+  { k:'1d',  l:'1D',   d:1,   cap:2,  t:'Today’s close vs the previous close' },
+  { k:'1w',  l:'1W',   d:7,   cap:4,  t:'Latest level vs the close ~7 days back' },
+  { k:'1m',  l:'1M',   n:1,   cap:8,  t:'Latest level vs last month-end close' },
+  { k:'3m',  l:'3M',   n:3,   cap:12, t:'Latest level vs the month-end close 3 months back' },
+  { k:'6m',  l:'6M',   n:6,   cap:18, t:'Latest level vs the month-end close 6 months back' },
+  { k:'1y',  l:'1Y',   n:12,  cap:25, t:'Latest level vs the month-end close 12 months back' },
+  { k:'2y',  l:'2Y*',  n:24,  cap:22, t:'Annualised (CAGR) over 2 years' },
+  { k:'3y',  l:'3Y*',  n:36,  cap:22, t:'Annualised (CAGR) over 3 years' },
+  { k:'5y',  l:'5Y*',  n:60,  cap:22, t:'Annualised (CAGR) over 5 years' },
+  { k:'10y', l:'10Y*', n:120, cap:22, t:'Annualised (CAGR) over 10 years' }
+];
+function liveOf(ix){ return (FEED.live && FEED.live[ix.key]) || null; }
+function lastOf(ix){                     // newest level we have for the index
+  const lv = liveOf(ix); if (lv && lv.last) return lv.last;
+  let out = null;
+  Object.keys(ix.closes).sort().forEach(y => ix.closes[y].forEach(c => { if (c != null) out = c; }));
+  return out;
+}
+function shiftM(n){ const a = asofYM(); let m = a.m - n, y = a.y; while (m <= 0){ m += 12; y -= 1; } return [y, m]; }
+function dailyBase(ix, days){            // close from the rolling daily window, ~days back
+  const D = FEED.daily; if (!D) return null;
+  const a = asofYM(), t = new Date(Date.UTC(a.y, a.m-1, a.d));
+  t.setUTCDate(t.getUTCDate() - days);
+  const tgt = t.toISOString().slice(0, 10);
+  const ds = Object.keys(D).filter(d => d <= tgt).sort();
+  for (let i = ds.length - 1; i >= 0; i--){ const v = D[ds[i]][ix.key]; if (v != null) return { v: v, d: ds[i] }; }
+  return null;
+}
+function trailRaw(ix, col){              // {v, from, to, note} | null
+  const to = lastOf(ix); if (to == null) return null;
+  if (col.k === 'd52'){
+    const lv = liveOf(ix); if (!lv || !lv.yh) return null;
+    return { v: to/lv.yh*100 - 100, from: lv.yh, to: to, note: '52w high' };
+  }
+  if (col.k === '1d'){
+    const lv = liveOf(ix); if (!lv || !lv.prev) return null;
+    return { v: to/lv.prev*100 - 100, from: lv.prev, to: to, note: 'previous close' };
+  }
+  if (col.d){
+    const b = dailyBase(ix, col.d); if (!b || !b.v) return null;
+    return { v: to/b.v*100 - 100, from: b.v, to: to, note: 'close of ' + b.d };
+  }
+  const p = shiftM(col.n), from = cl(ix, p[0], p[1]);
+  if (!from) return null;
+  const r = to/from*100 - 100;
+  const v = col.n >= 24 ? (Math.pow(to/from, 12/col.n) - 1) * 100 : r;
+  return { v: v, from: from, to: to, note: MONC[p[1]-1] + ' ' + p[0] + ' close' + (col.n >= 24 ? ' · total ' + fmtPct(r) : '') };
+}
+function trailCell(ix, col){             // mode-aware (alpha subtracts Nifty 50's same column)
+  const a = trailRaw(ix, col); if (!a) return null;
+  if (!alpha) return a;
+  const n = trailRaw(N50, col); if (!n) return null;
+  return { v: a.v - n.v, from: a.from, to: a.to, note: a.note };
+}
+function renderTrail(){
+  const nCols = TRAIL_COLS.length + 2;
+  let h1 = '<tr><th class="noclick" data-s="name">Index</th><th class="noclick">LTP</th>';
+  TRAIL_COLS.forEach((c, i) => h1 += '<th data-s="' + i + '" title="' + esc(c.t) + '">' + c.l + arrow(i) + '</th>');
+  h1 += '</tr>';
+  const win = FEED.daily ? Object.keys(FEED.daily).length : 0;
+  $('tHead').innerHTML = h1 + '<tr class="sub-note"><td colspan="' + nCols + '">' +
+    (alpha ? 'alpha vs Nifty 50 · ' : '') + '% return to the latest close · <b>*</b> = annualised (CAGR) · click a column to sort · click an index for its seasonality · hover any cell for the levels' +
+    (win < 6 ? ' · <b>1W fills in as the daily window grows (' + win + ' session' + (win === 1 ? '' : 's') + ' so far)</b>' : '') + '</td></tr>';
+  $('tHead').querySelectorAll('th[data-s]').forEach(th => th.onclick = () => clickSort(th.getAttribute('data-s')));
+
+  const rows = [];
+  IDX.forEach(ix => {
+    if (grp !== 'all' && ix.grp !== grp) return;
+    const vals = TRAIL_COLS.map(c => trailCell(ix, c));
+    if (vals.every(v => v == null)) return;
+    rows.push({ ix: ix, vals: vals, ltp: lastOf(ix) });
+  });
+  if (sortCol != null){
+    rows.sort((a, b) => {
+      const ka = a.vals[sortCol] ? a.vals[sortCol].v : null, kb = b.vals[sortCol] ? b.vals[sortCol].v : null;
+      if (ka == null && kb == null) return 0;
+      if (ka == null) return 1; if (kb == null) return -1;
+      return sortDir * (kb - ka);
+    });
+  }
+  let html = '', lastGrp = null;
+  rows.forEach(r => {
+    if (sortCol == null && r.ix.grp !== lastGrp){
+      lastGrp = r.ix.grp;
+      html += '<tr class="grp"><td colspan="' + nCols + '" class="g-' + r.ix.grp + '">' + GRP_LBL[r.ix.grp] + '</td></tr>';
+    }
+    html += '<tr><td><a class="ix" data-i="' + esc(r.ix.key) + '">' + esc(r.ix.label) + '</a></td>' +
+            '<td class="font-semibold">' + inr(r.ltp) + '</td>';
+    r.vals.forEach((v, i) => html += cellHtml(v ? v.v : null, TRAIL_COLS[i].cap, '',
+      'data-i="' + esc(r.ix.key) + '" data-c="' + TRAIL_COLS[i].k + '"'));
+    html += '</tr>';
+  });
+  $('tBody').innerHTML = html;
+  $('tFoot').innerHTML = '';
+  $('tBody').querySelectorAll('a.ix').forEach(a => a.onclick = () => { selIdx = a.getAttribute('data-i'); setView('seas'); });
+
+  const col = k => TRAIL_COLS.filter(c => c.k === k)[0];
+  const rank = k => rows.map(r => ({ l: r.ix.label, v: (r.vals[TRAIL_COLS.indexOf(col(k))] || {}).v }))
+                        .filter(x => x.v != null).sort((a,b) => b.v - a.v);
+  const y1 = rank('1y'), d1 = rank('1d');
+  const n50y = trailCell(N50, col('1y')), n50d = trailCell(N50, col('d52'));
+  $('cards').innerHTML =
+      cardHtml('Best · 1Y', y1.length ? esc(y1[0].l) : '—', y1.length ? fmtPct(y1[0].v) : '', 'pos')
+    + cardHtml('Worst · 1Y', y1.length ? esc(y1[y1.length-1].l) : '—', y1.length ? fmtPct(y1[y1.length-1].v) : '', 'neg')
+    + cardHtml('Best today', d1.length ? esc(d1[0].l) : '—', d1.length ? fmtPct(d1[0].v) : '', 'pos')
+    + cardHtml('Nifty 50 · 1Y', n50y ? fmtPct(n50y.v) : '—', n50d ? fmtPct(n50d.v) + ' from its 52w high' : '', n50y && n50y.v >= 0 ? 'pos' : 'neg');
+
+  $('lgL').textContent = 'weaker';       // each column has its own scale here
+  $('lgR').textContent = 'stronger';
+}
+
 /* ---------- seasonality view ---------- */
 function renderSeas(){
   const ix = BY[selIdx], cap = caps(), curY = curYear();
@@ -354,6 +470,14 @@ function renderSeas(){
 function tipA(key, y, m){ return 'data-i="' + esc(key) + '" data-y="' + y + '" data-m="' + m + '"'; }
 function tipHtml(td){
   const ix = BY[td.getAttribute('data-i')]; if (!ix) return null;
+  if (td.hasAttribute('data-c')){
+    const col = TRAIL_COLS.filter(c => c.k === td.getAttribute('data-c'))[0];
+    const a = trailRaw(ix, col); if (!a) return null;
+    let s = '<b>' + esc(ix.label) + '</b> · ' + col.l.replace('*', '') + (col.n >= 24 ? ' annualised' : '') +
+            '<br>' + fmtPct(a.v) + ' · ' + inr(a.from) + ' → ' + inr(a.to) + '<br>from ' + a.note;
+    if (alpha){ const n = trailRaw(N50, col); if (n) s += '<br>Nifty 50: ' + fmtPct(n.v) + ' · α ' + fmtPct(a.v - n.v); }
+    return s;
+  }
   if (td.hasAttribute('data-ann')){
     const Y = +td.getAttribute('data-ann'), a = annualRaw(ix, Y);
     if (!a) return null;
@@ -406,18 +530,21 @@ function populateIdxSel(){
 function setView(v){
   view = v; sortCol = null; sortDir = -1;
   $('vYear').classList.toggle('on', v === 'year');
+  $('vTrail').classList.toggle('on', v === 'trail');
   $('vSeas').classList.toggle('on', v === 'seas');
   $('selIdx').classList.toggle('hidden', v !== 'seas');
   $('selYear').classList.toggle('hidden', v !== 'year');
-  $('grpChips').classList.toggle('hidden', v !== 'seas' ? false : true);
+  $('cyfy').classList.toggle('hidden', v === 'trail');   // trailing windows aren't CY/FY bound
+  $('grpChips').classList.toggle('hidden', v === 'seas');
   $('seasLine').classList.toggle('hidden', v !== 'seas');
   render();
 }
 function render(){
   const cap = caps();
   $('lgL').textContent = '−' + cap.m + '%'; $('lgR').textContent = '+' + cap.m + '%';
-  if (view === 'year') renderYear(); else renderSeas();
+  if (view === 'year') renderYear(); else if (view === 'trail') renderTrail(); else renderSeas();
   try { location.hash = view === 'seas' ? 'i=' + encodeURIComponent(selIdx) + (fy ? '&fy=1' : '') + (alpha ? '&a=1' : '')
+                      : view === 'trail' ? 't=1' + (alpha ? '&a=1' : '') + (grp !== 'all' ? '&g=' + grp : '')
                                         : 'y=' + selYear + (fy ? '&fy=1' : '') + (alpha ? '&a=1' : '') + (grp !== 'all' ? '&g=' + grp : ''); } catch (e) {}
 }
 
@@ -434,6 +561,7 @@ async function load(){
     if (h.get('a') === '1') alpha = true;
     if (h.get('g')) grp = h.get('g');
     if (h.get('y')) selYear = +h.get('y');
+    if (h.get('t') === '1') view = 'trail';
     if (h.get('i') && BY[h.get('i')]){ selIdx = h.get('i'); view = 'seas'; }
   } catch (e) {}
   $('tFY').classList.toggle('on', fy); $('tCY').classList.toggle('on', !fy);
@@ -444,6 +572,7 @@ async function load(){
   $('status').classList.add('hidden'); $('content').classList.remove('hidden');
 
   $('vYear').onclick = () => setView('year');
+  $('vTrail').onclick = () => setView('trail');
   $('vSeas').onclick = () => setView('seas');
   $('selYear').onchange = () => { selYear = +$('selYear').value; sortCol = null; render(); };
   $('selIdx').onchange = () => { selIdx = $('selIdx').value; render(); };

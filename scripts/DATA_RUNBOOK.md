@@ -1455,10 +1455,23 @@ and the last 6 months of listings with performance vs issue price.
 **The heatmap page:** month-by-month % returns for 32 NSE indices (10 broad / 16 sectoral / 6 thematic)
 with the year's return in the last column — plus the extras: FY (Apr–Mar) view, "vs Nifty 50" alpha
 mode, per-index seasonality (avg + hit-rate per calendar month), live MTD cell, sortable columns.
+THREE views (chips): **All indexes** (the year heatmap) · **Trailing returns** · **One index ·
+seasonality**. All three share the alpha mode and the Broad/Sectors/Themes chips.
 
-- **Feed:** `docs/index_monthly.json` (~82 KB) — month-end CLOSES (not returns) per index per year:
-  `{indices:[{key,label,grp,closes:{"2003":[12 nums|null]}}], asof, updated}`. The page computes all
-  returns client-side (MoM, CY/FY annual, alpha, seasonality) so one small file powers every view.
+- **Feed:** `docs/index_monthly.json` (~85 KB) — month-end CLOSES (not returns) per index per year:
+  `{indices:[{key,label,grp,closes:{"2003":[12 nums|null]}}], asof, updated, live:{}, daily:{}}`.
+  The page computes all returns client-side (MoM, CY/FY annual, alpha, seasonality, trailing) so one
+  small file powers every view.
+- **Trailing-returns view (added 2026-07-17):** rows × LTP · LTP-vs-52w-high · 1D · 1W · 1M · 3M ·
+  6M · 1Y · 2Y* · 3Y* · 5Y* · 10Y* (`*` = annualised CAGR; per-column heat caps, so the legend reads
+  "weaker/stronger" here). Every cell measures back FROM the live level: 1D from `live[key].prev`,
+  52w from `live[key].yh`, 1W from the `daily` window, and the month columns from the month-end
+  close N months back (⇒ 1M ≡ the running month's MTD — a month-end-only history can't do a true
+  trailing month; the tooltip says which base it used). Two side-structures the top-up maintains:
+  `live[key]={last,pc,prev,yh,yl,d}` from the live watch row, and `daily["YYYY-MM-DD"]={key:close}`
+  kept for the last DAILY_KEEP=45 sessions. ⚠️ NSE's per-index DAILY archive is bot-walled (same
+  wall as the historical endpoint), so `daily` **grows organically from 2026-07-17** — the 1W column
+  renders `–` until the window reaches ~7 days back, and the sub-note says so while it's short.
 - **History backfill (one-time, done 2026-07-16):** niftyindices.com `POST /BackPage/
   getHistoricaldatatabletoString` with `{"cinfo":"{'name':'NIFTY 50','startDate':'01-Nov-1995',
   'endDate':'31-Jul-2026','indexName':'NIFTY 50'}"}` → full daily history in ONE call (multi-decade
@@ -1474,7 +1487,8 @@ mode, per-index seasonality (avg + hit-rate per calendar month), live MTD cell, 
   15:30") — NEVER the wall clock — so the 08:40 catch-up run on the 1st can't poison the new month.
   Live-name ALIASES (live watch spells 6 differently): SMALLCAP 100/250→SMLCAP, MICROCAP 250→
   MICROCAP250, PRIVATE BANK→PVT BANK, INDIA DEFENCE→IND DEFENCE, INDIA CONSUMPTION→CONSUMPTION.
-  Fail-soft: live fetch error leaves the file untouched.
+  Fail-soft: live fetch error leaves the file untouched. Same loop also refreshes `live` and appends
+  today's `daily` row (trimmed to the newest 45 dates).
 - **Refresh:** `.github/workflows/refresh-index-monthly.yml` — 21:20 IST weekdays + 08:40 IST
   Tue-Sat catch-up; guard_feed + single-file /tmp commit pattern; in feeds.json (min_ratio 0.9).
 - **Page details:** heatmap = diverging fills (emerald/rose rgba, alpha ∝ |ret|/cap, cap 8% monthly /

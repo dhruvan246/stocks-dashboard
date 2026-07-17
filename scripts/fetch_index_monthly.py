@@ -18,6 +18,14 @@ Safety properties:
   - If the live fetch fails entirely, the file is left untouched (exit 0) so
     history is never lost; guard_feed.py separately blocks shrunken commits.
   - Only the current cell is ever written — history cells never change here.
+
+It also maintains two side-structures the "Trailing returns" view needs, which
+month-end closes alone cannot answer:
+  - feed["live"][key]  = last / %chg / 52w high / 52w low snapshot (1D + 52w cols)
+  - feed["daily"][date] = {key: close} for the last DAILY_KEEP sessions (1W col).
+    NSE's per-index daily archive is bot-walled, so this window grows
+    organically from the first run — the 1W column stays blank until it has a
+    session ~7 days back, exactly like the Deals feed's window.
 """
 import json
 import os
@@ -28,6 +36,7 @@ import datetime as dt
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FEED = os.path.join(ROOT, "docs", "index_monthly.json")
 LIVE_URL = "https://liveindexsa.niftyindices.com/jsonfiles/LiveIndicesWatch.json"
+DAILY_KEEP = 45  # sessions of daily closes kept (≈2 months — enough for the 1W column)
 
 # Feed keys use niftyindices HISTORICAL names; the live watch spells a few differently.
 ALIAS = {
@@ -52,7 +61,16 @@ def main():
         print("live fetch failed, feed left untouched:", repr(e))
         return 0
 
+    def num(r, k):
+        try:
+            v = float(str(r[k]).replace(",", ""))
+            return round(v, 2) if v > 0 else None
+        except (KeyError, ValueError, TypeError):
+            return None
+
     live = {str(r.get("indexName", "")).strip(): r for r in rows}
+    snap = feed.setdefault("live", {})
+    daily = feed.setdefault("daily", {})
     updated, asof = 0, None
     for idx in feed["indices"]:
         r = live.get(idx["key"]) or live.get(ALIAS.get(idx["key"], ""))
@@ -79,9 +97,20 @@ def main():
         dstr = "%04d-%02d-%02d" % (yr, mo, day)
         asof = dstr if asof is None or dstr > asof else asof
 
+        try:
+            pc = float(str(r.get("percChange", "")).replace(",", ""))
+        except (ValueError, TypeError):
+            pc = None
+        snap[idx["key"]] = {"last": round(val, 2), "pc": pc, "prev": num(r, "previousClose"),
+                            "yh": num(r, "yearHigh"), "yl": num(r, "yearLow"), "d": dstr}
+        daily.setdefault(dstr, {})[idx["key"]] = round(val, 2)
+
     if not updated:
         print("nothing updated (no joinable live rows)")
         return 0
+
+    for d in sorted(daily)[:-DAILY_KEEP]:  # trim the rolling window, oldest first
+        daily.pop(d)
 
     feed["asof"] = asof or feed.get("asof")
     ist = dt.timezone(dt.timedelta(hours=5, minutes=30))
