@@ -2,7 +2,43 @@
 
 The canonical *do-exactly-this* guide for fetching / refreshing / backfilling / building the
 data. **Future session: follow these steps, don't re-explore.** Indexed in `MEMORY.md` so it
-loads every session. (README.md is STALE — it describes the old Yahoo pipeline; this is current.)
+loads every session. (README.md is just a short pointer here — this file is the real doc.)
+
+---
+
+## TABLE OF CONTENTS
+- **§0** GOLDEN RULES
+- **§1** DAILY PRICE REFRESH
+- **§2** FUNDAMENTALS BACKFILL
+- **§3** INSURERS
+- **§4** BUILD & DEPLOY
+- **§5** PENDING QUEUE
+- **§6** HISTORICAL MULTI-AGENT BACKFILL
+- **§7** STRATEGY FINDER — find the best strategy over a window
+- **§8** F&O MEMBERSHIP
+- **§9** PAGE-LOAD PERFORMANCE
+- **§10** SECTOR / INDUSTRY INDEX BROWSER
+- **§11** RESULTS SEASON CHART
+- **§12** 15:30 FILING-TIME GATE
+- **§13** HOME PAGE
+- **§14** CORPORATE ANNOUNCEMENTS BROWSER
+- **§15** QUARTERLY RESULTS DASHBOARD
+- **§16** DISCOVERY BUCKETS
+- **§17** BSE-ONLY STOCK COVERAGE
+- **§18** DATA HEALTH MONITORING + COMMIT GUARDS
+- **§19** SITE FEATURES ON SUPABASE
+- **§20** RESULTS COVERAGE DASHBOARD
+- **§21** MARKET BREADTH
+- **§22** FII/DII HOLDINGS PER STOCK
+- **§23** BULK & BLOCK DEALS
+- **§24** INSIDER TRADES
+- **§25** NEW-LISTING (IPO) YEAR-AGO BASE BACKFILL
+- **§26** DELIVERY SPIKES
+- **§27** IPOs & LISTINGS
+- **§28** INDEX MONTHLY RETURNS
+- **§29** EX-DATES CALENDAR
+- **§30** TICKER RENAME with orphaned history
+- **§31** NIGHTLY TRENDLYNE RECONCILE
 
 ---
 
@@ -85,7 +121,8 @@ Trigger manually (today not in yet / missed run):
 
 ## 2. FUNDAMENTALS BACKFILL  (quarterly net-profit gaps)
 Daily cron `update_fundamentals.py` parses NSE XBRL for active names. GAPS (delisted, NSE-unserved,
-pre-IPO) are filled MANUALLY from BSE PDFs via vision. **Full process: `scripts/_autorun_plan.md`.** Short:
+pre-IPO) are filled MANUALLY from BSE PDFs via vision. The steps below ARE the canonical process
+(`scripts/_autorun_plan.md` is an untracked local scratch note — not in the repo, don't point sessions at it):
 1. `python -u scripts/bse_vision.py --targets <file.json> --quarters N --since YYYYMMDD > log 2>&1`
    — targets `[[SYM, scripcode, expect_token], …]`; vision LOCATES the net-profit row, crops hi-res to `scripts/_vp/`.
 2. Agent READS each `_vp/batch_*.png` → first number/row = current-quarter PAT × unit (Lakh ⇒ ÷100 → cr).
@@ -215,7 +252,20 @@ in-step: pymupdf + curl_cffi + rapidocr-onnxruntime/onnxruntime/numpy. Validate:
 ---
 
 ## 5. PENDING QUEUE (remind the user)
-→ memory: project-stocks-pending-queue — apply staged pre-IPO backfill (14 stocks) + fix Adani Hindenburg-era prices.
+Genuinely open items (memory: project-stocks-pending-queue has the full context):
+- **Tier-1 re-sweep IN PROGRESS** — 56 companies / 514 cells left; resume per memory
+  project-stocks-resweep-resume (ledgers `scripts/_wf_skips.json` + `_wf_audit_done.json`).
+- **Bucket B/C/D "unfillable" re-audit** (user asked 2026-06-23 "don't assume, remind me later"):
+  B=110 cos/1188 skip-logged cells (re-verify skips after finder improvements), C=25 recent-IPO
+  pre-listing (re-check RHP Q1-stub method §6), D=5 dead-ends (HEXT/PIRAMALFIN/SPICEJET/IOB/BASF).
+- **KIRLFER con 2022Q2→date** — mixed-basis series; re-extract owners-attributable and overwrite
+  the con==std no-sub fills (details in the pending-queue memory).
+- **Tier-2 re-audit DEFERRED** (user: "tier 2 we will do later") — when resumed, only target
+  mismatch cells, not both-missing pre-listing quarters.
+
+✅ DONE — do NOT re-offer: pre-IPO backfill (14 stocks, 2026-06-19), Adani Hindenburg price fix
+(2026-06-19), dash_slim.bin commit-step fix + its 3 feeds.json entries (fixed by 2026-07-17 —
+refresh.yml now carries it through /tmp and commits on content change).
 
 ---
 
@@ -838,72 +888,6 @@ Hand-maintained page; data = **`docs/announcements.json`** (rolling ~31 days,
 
 ---
 
-## 17. BSE-ONLY STOCK COVERAGE  (docs/bse_*.* — built 2026-07-13)
-Our core price/fundamentals dataset is NSE-keyed, so ~2,678 **BSE-listed-only** stocks (ISIN not on NSE —
-e.g. Cella Space 532701, NSDL) were entirely absent. NSE 2,385 + BSE-only 2,678 ≈ the "~5,000 stocks"
-users compare against (Screener covers BSE-only; we didn't). This pipeline adds them as first-class rows on
-the Quarterly Results page. **4 scripts + `.github/workflows/refresh-bse.yml` (22:10 IST daily):**
-- **`build_bse_universe.py` → `docs/bse_universe.json`** — BSE bulk `ListofScripData` (all active equity,
-  one call: SCRIP_CD, scrip_id, ISIN, GROUP, FACE_VALUE, **Mktcap**) MINUS the NSE `EQUITY_L.csv` ISIN set =
-  BSE-only. Rows `[scrip_cd, ticker, name, isin, group, faceval, mcap_cr, sector]`, biggest-mcap-first. Sector
-  from BSE `ComHeadernew` (`Industry`), budgeted per run + cached in `scripts/_bse_sectors.json`. Weekly (Sun).
-- **`fetch_bse_bhav.py` → `docs/bse_prices.bin`** (gzipped `{end, px:{scrip:{d,c,v}}}`) — BSE **UDiFF** equity
-  bhavcopy `BhavCopy_BSE_CM_0_0_0_<YYYYMMDD>_F_0000.CSV` (cols ISIN/TckrSymb/**ClsPric**/TtlTradgVol, ~4,900/day).
-  Resumable, SORT-MERGES (backfill can add dates OLDER than existing — don't revert to append-only). Daily.
-- **`fetch_bse_fund.py` → `docs/bse_fundamentals.json`** (`{px:{scrip:{QE:{rev,pat,ann,basis}}}}`) — quarterly
-  Rev/PAT. **⚠️ The BSE `FinancialResult` API is ENTITY-POISONED for many scrips** (returns **BSE Ltd's** numbers
-  — the FORCEMOT pattern; proven on Cella Space: its "result zip" was BSE Ltd's auditor report). So we DON'T use
-  it. Instead per scrip: `AnnSubCategoryGetData` (strCat=-1) → pick result/board-outcome filings WITH an
-  attachment → `AttachLive/AttachHis/<guid>.pdf` → **OCR** (rapidocr; small BSE cos file SCANNED PDFs, no text
-  layer) → **IDENTITY-GUARD** (company name tokens must appear on the page) → parse P&L rows. OCR ~15s/page ⇒
-  SLOW ⇒ bounded+resumable grind (`--budget N --max-minutes M`, ledger `scripts/_bse_fund_done.json`).
-  **⚠️ ORDER = DECLARED-FIRST, then mcap desc, floor 0** (was mcap-only + floor 100 → 782 already-declared
-  sub-₹100cr cos were being SKIPPED — user wanted ALL results incl. <100cr). `declared_recently()` scans the
-  strCat=Result feed (last ~110d) → those scrips grind FIRST at ANY mcap; the `--min-mcap` floor now applies
-  ONLY to non-declared names. Workflow runs `--min-mcap 0` TWICE daily (12:10 + 22:10 IST) so the whole
-  ~2,678 universe is covered in ~1-2 wks, real declarers first. **Validated: Cella Space Q1FY27 PAT 7.29 =
-  exact vs Screener.** (Revenue is Revenue-from-Operations; Screener may show Total Income — small diff.)
-  **⚠️ FEED INJECTION (fetch_bse_results.py step 1b):** BSE lets small cos file the result under "Board
-  Meeting"/"Company Update" (NOT strCat=Result) — e.g. Cella Space → it never reached the Just-Declared feed
-  via the category scan. So after the strCat=Result merge, we ALSO inject feed rows from `bse_fundamentals.json`
-  (anything with an ann date in the 31d window = a confirmed declared result). That's why odd-category filers
-  still appear in Just Declared once the grind has confirmed them.
-- **`build_bse_results.py` → `docs/bse_results.json`** — joins the 3 files into a SLIM payload in the SAME
-  `co` shape as `quarterly_results.json` (q-array `[revS,opS,patS,revC,opC,patC,ann,rx,sr]`, std=con since BSE
-  small-caps are standalone, op=null; `bse:1` flag; reactions precomputed from bse_prices so the browser doesn't
-  need the price bin). Quarters list READ FROM quarterly_results.json so indices align.
-- **Page integration (quarterly-results.html):** `load()` fetches `bse_results.json` and merges `bse.co` into
-  `CO` (only if `bse.quarters`==`qr.quarters`; NEVER shadows an NSE symbol). Universe filters **`nse`/`bse`**
-  ("NSE-listed only"/"BSE-listed only"), a **BSE badge**, BSE-page links (no stock.html for BSE-only). `c.bse`
-  flag + `c.cd`=BSE scripcode.
-- **Vision fallback (auto-fills scanned filings for ALL upcoming results):** when OCR finds nothing anchored,
-  `fetch_bse_fund.py` renders the P&L pages and calls the Anthropic **vision** API (`bse_vision_api.py`,
-  model `claude-haiku-4-5`, ~cents/co) to read them — same accuracy as a human, unattended. Gets current +
-  year-ago quarters so YoY fills. **Needs the `ANTHROPIC_API_KEY` repo secret** (Settings→Secrets→Actions);
-  unset → grind stays OCR-only and unreadable rows show "filing PDF only". This is what makes "every declared
-  result eventually has values" true without manual vision passes. Manual seed once: run the grind with the
-  key set, or `merge_bse_vision.py <results.json>` from a one-off agent pass.
-- **⚠️ State files `scripts/_bse_fund_done.json` + `_bse_sectors.json` are force-tracked** (gitignore `_*` hid
-  them — negations added). CI needs the resume ledger to persist, else it re-grinds from scratch.
-- **YoY limitation (v1):** the fund grind fetches only ~recent filings (`--months 5`), so BSE-only YoY often
-  shows "—" (no year-ago base). Deepen by raising `--months` + fetching older announcements if wanted.
-- **LIVE top-up (2026-07-12):** the page also polls our Cloudflare Worker
-  (`stocksworld-quotes.dhruvan2510.workers.dev/?announcements=1`, hardcoded `WORKER` const) every 60 s for
-  today+yesterday's filings — merged/deduped over the file rows (extends the To-date past the committed file),
-  "● LIVE HH:MM IST" badge on success, SILENT no-op if the Worker/NSE is down (file data remains). Worker source =
-  `scripts/live-quote-worker.js` (3 routes: ?symbols= quotes, ?chart= home ticker, ?announcements=1; NSE cookie
-  warmup + 90 s cache inside the Worker). **NSE-from-Cloudflare VERIFIED WORKING 2026-07-12** (500 rows, filings
-  minutes old); if NSE ever starts 403-ing, the live layer just never lights up (page still fine on file data).
-  **Deploy (proven 2026-07-12):** the CF dashboard quick-edit iframe is cross-origin — browser automation CANNOT
-  type into it; deploy via the dash API from a logged-in dash tab instead, and it's TWO steps under CF's versions
-  model: PUT `/api/v4/accounts/<acct>/workers/scripts/stocksworld-quotes` (multipart metadata{main_module:
-  'worker.js', compatibility_date} + worker.js module part — creates a VERSION, does NOT go live) then POST
-  `…/scripts/stocksworld-quotes/deployments {strategy:'percentage', versions:[{percentage:100, version_id}]}`.
-  Needs the user's explicit deploy authorization (auto-mode blocks it otherwise). Manual fallback: paste the file
-  in the quick editor + Deploy (LIVE_FEED_SETUP.md).
-
----
-
 ## 15. QUARTERLY RESULTS DASHBOARD  (docs/quarterly-results.html — "Quarterly Results" nav, built 2026-07-12)
 Best-of-breed results hub (features merged from a ~40-site survey: ValuePicker/Trendlyne/Screener/Tijori/
 MarketsMojo/Moneycontrol/StockEdge/Investing.com/EarningsWhispers/Nasdaq/FactSet…). Four tabs:
@@ -1021,6 +1005,7 @@ dates). Deep links: `?tab=results|feed|calendar&sym=TCS`.
   from the feed name + vision numbers when `!CO[sym]`, so PAT/rev display (no price/reaction/sector — orphans
   can't participate in those). Modal is orphan-safe (falls through the non-`bse` branch = NSE links). Bounded:
   ~0–2 orphans per quarter. Values still ₹ crore, so sub-crore micro filers round near 0.
+
 ---
 
 ## 16. DISCOVERY BUCKETS  (docs/discovery.html — "Discovery" nav, built 2026-07-13)
@@ -1042,6 +1027,74 @@ shareable URL (`discovery.html#b=<key>`).
 - Mcap floor ₹50 cr for price/sector buckets; px buckets capped at 500 rows; sector buckets at 80 (by mcap).
 - NOT automatable from our data (deliberately absent): revenue-guidance buckets, star-investor holdings,
   bulk-deal/promoter-buying (needs new NSE insider/bulk-deal fetchers — candidate future work).
+
+---
+
+## 17. BSE-ONLY STOCK COVERAGE  (docs/bse_*.* — built 2026-07-13)
+Our core price/fundamentals dataset is NSE-keyed, so ~2,678 **BSE-listed-only** stocks (ISIN not on NSE —
+e.g. Cella Space 532701, NSDL) were entirely absent. NSE 2,385 + BSE-only 2,678 ≈ the "~5,000 stocks"
+users compare against (Screener covers BSE-only; we didn't). This pipeline adds them as first-class rows on
+the Quarterly Results page. **4 scripts + `.github/workflows/refresh-bse.yml` (22:10 IST daily):**
+- **`build_bse_universe.py` → `docs/bse_universe.json`** — BSE bulk `ListofScripData` (all active equity,
+  one call: SCRIP_CD, scrip_id, ISIN, GROUP, FACE_VALUE, **Mktcap**) MINUS the NSE `EQUITY_L.csv` ISIN set =
+  BSE-only. Rows `[scrip_cd, ticker, name, isin, group, faceval, mcap_cr, sector]`, biggest-mcap-first. Sector
+  from BSE `ComHeadernew` (`Industry`), budgeted per run + cached in `scripts/_bse_sectors.json`. Weekly (Sun).
+- **`fetch_bse_bhav.py` → `docs/bse_prices.bin`** (gzipped `{end, px:{scrip:{d,c,v}}}`) — BSE **UDiFF** equity
+  bhavcopy `BhavCopy_BSE_CM_0_0_0_<YYYYMMDD>_F_0000.CSV` (cols ISIN/TckrSymb/**ClsPric**/TtlTradgVol, ~4,900/day).
+  Resumable, SORT-MERGES (backfill can add dates OLDER than existing — don't revert to append-only). Daily.
+- **`fetch_bse_fund.py` → `docs/bse_fundamentals.json`** (`{px:{scrip:{QE:{rev,pat,ann,basis}}}}`) — quarterly
+  Rev/PAT. **⚠️ The BSE `FinancialResult` API is ENTITY-POISONED for many scrips** (returns **BSE Ltd's** numbers
+  — the FORCEMOT pattern; proven on Cella Space: its "result zip" was BSE Ltd's auditor report). So we DON'T use
+  it. Instead per scrip: `AnnSubCategoryGetData` (strCat=-1) → pick result/board-outcome filings WITH an
+  attachment → `AttachLive/AttachHis/<guid>.pdf` → **OCR** (rapidocr; small BSE cos file SCANNED PDFs, no text
+  layer) → **IDENTITY-GUARD** (company name tokens must appear on the page) → parse P&L rows. OCR ~15s/page ⇒
+  SLOW ⇒ bounded+resumable grind (`--budget N --max-minutes M`, ledger `scripts/_bse_fund_done.json`).
+  **⚠️ ORDER = DECLARED-FIRST, then mcap desc, floor 0** (was mcap-only + floor 100 → 782 already-declared
+  sub-₹100cr cos were being SKIPPED — user wanted ALL results incl. <100cr). `declared_recently()` scans the
+  strCat=Result feed (last ~110d) → those scrips grind FIRST at ANY mcap; the `--min-mcap` floor now applies
+  ONLY to non-declared names. Workflow runs `--min-mcap 0` TWICE daily (12:10 + 22:10 IST) so the whole
+  ~2,678 universe is covered in ~1-2 wks, real declarers first. **Validated: Cella Space Q1FY27 PAT 7.29 =
+  exact vs Screener.** (Revenue is Revenue-from-Operations; Screener may show Total Income — small diff.)
+  **⚠️ FEED INJECTION (fetch_bse_results.py step 1b):** BSE lets small cos file the result under "Board
+  Meeting"/"Company Update" (NOT strCat=Result) — e.g. Cella Space → it never reached the Just-Declared feed
+  via the category scan. So after the strCat=Result merge, we ALSO inject feed rows from `bse_fundamentals.json`
+  (anything with an ann date in the 31d window = a confirmed declared result). That's why odd-category filers
+  still appear in Just Declared once the grind has confirmed them.
+- **`build_bse_results.py` → `docs/bse_results.json`** — joins the 3 files into a SLIM payload in the SAME
+  `co` shape as `quarterly_results.json` (q-array `[revS,opS,patS,revC,opC,patC,ann,rx,sr]`, std=con since BSE
+  small-caps are standalone, op=null; `bse:1` flag; reactions precomputed from bse_prices so the browser doesn't
+  need the price bin). Quarters list READ FROM quarterly_results.json so indices align.
+- **Page integration (quarterly-results.html):** `load()` fetches `bse_results.json` and merges `bse.co` into
+  `CO` (only if `bse.quarters`==`qr.quarters`; NEVER shadows an NSE symbol). Universe filters **`nse`/`bse`**
+  ("NSE-listed only"/"BSE-listed only"), a **BSE badge**, BSE-page links (no stock.html for BSE-only). `c.bse`
+  flag + `c.cd`=BSE scripcode.
+- **Vision fallback (auto-fills scanned filings for ALL upcoming results):** when OCR finds nothing anchored,
+  `fetch_bse_fund.py` renders the P&L pages and calls the Anthropic **vision** API (`bse_vision_api.py`,
+  model `claude-haiku-4-5`, ~cents/co) to read them — same accuracy as a human, unattended. Gets current +
+  year-ago quarters so YoY fills. **Needs the `ANTHROPIC_API_KEY` repo secret** (Settings→Secrets→Actions);
+  unset → grind stays OCR-only and unreadable rows show "filing PDF only". This is what makes "every declared
+  result eventually has values" true without manual vision passes. Manual seed once: run the grind with the
+  key set, or `merge_bse_vision.py <results.json>` from a one-off agent pass.
+- **⚠️ State files `scripts/_bse_fund_done.json` + `_bse_sectors.json` are force-tracked** (gitignore `_*` hid
+  them — negations added). CI needs the resume ledger to persist, else it re-grinds from scratch.
+- **YoY limitation (v1):** the fund grind fetches only ~recent filings (`--months 5`), so BSE-only YoY often
+  shows "—" (no year-ago base). Deepen by raising `--months` + fetching older announcements if wanted.
+- **LIVE top-up (2026-07-12):** the page also polls our Cloudflare Worker
+  (`stocksworld-quotes.dhruvan2510.workers.dev/?announcements=1`, hardcoded `WORKER` const) every 60 s for
+  today+yesterday's filings — merged/deduped over the file rows (extends the To-date past the committed file),
+  "● LIVE HH:MM IST" badge on success, SILENT no-op if the Worker/NSE is down (file data remains). Worker source =
+  `scripts/live-quote-worker.js` (3 routes: ?symbols= quotes, ?chart= home ticker, ?announcements=1; NSE cookie
+  warmup + 90 s cache inside the Worker). **NSE-from-Cloudflare VERIFIED WORKING 2026-07-12** (500 rows, filings
+  minutes old); if NSE ever starts 403-ing, the live layer just never lights up (page still fine on file data).
+  **Deploy (proven 2026-07-12):** the CF dashboard quick-edit iframe is cross-origin — browser automation CANNOT
+  type into it; deploy via the dash API from a logged-in dash tab instead, and it's TWO steps under CF's versions
+  model: PUT `/api/v4/accounts/<acct>/workers/scripts/stocksworld-quotes` (multipart metadata{main_module:
+  'worker.js', compatibility_date} + worker.js module part — creates a VERSION, does NOT go live) then POST
+  `…/scripts/stocksworld-quotes/deployments {strategy:'percentage', versions:[{percentage:100, version_id}]}`.
+  Needs the user's explicit deploy authorization (auto-mode blocks it otherwise). Manual fallback: paste the file
+  in the quick editor + Deploy (LIVE_FEED_SETUP.md).
+
+---
 
 ## 18. DATA HEALTH MONITORING + COMMIT GUARDS  (docs/status.html — "Data health" nav, built 2026-07-16)
 
@@ -1196,6 +1249,31 @@ again by removing it from PRIVATE_PAGES + deleting the swLock block.
 
 ---
 
+## 21. MARKET BREADTH  (Market Mood page section — built 2026-07-16, SELF-UPDATING)
+**Daily Nifty 500 breadth on docs/market-mood.html:** % of members above their 200-DMA (chart w/ 20/80
+zones), new 52-week highs vs lows (bar chart, auto-aggregates to N-day totals on long ranges), plus
+advancers/decliners — all in one hover tooltip + 4 stat cards.
+
+- **Builder:** `scripts/build_market_breadth.py` → `docs/market_breadth.json` (~63 KB). Same inputs as the
+  turnover build: the FRESH `sf_stock_data.bin` (workflow downloads the `data` release asset; locally use
+  `SF_BIN=<path> python -X utf8 scripts/build_market_breadth.py` — NEVER build from the frozen docs copy, §0)
+  + point-in-time membership from `scripts/_n500_master_history.json` (nearest-prior snapshot per date).
+- **Conventions:** closes are the bin's corp-action-adjusted `c`. DAILY ERA ONLY (`dailyFrom` 2018-01-01 —
+  pre-2018 is weekly-sampled, a 200-"day" MA there would span years), so the series starts when the 52w
+  window fills for ≥300 members = 2019-01-08. Windows are observation-based (200 / 252 of the symbol's own
+  sessions, incl. today; new high = close equals the 252-session max, ties count). adv/dec = vs the member's
+  own previous observed close (flats count as neither). Glitch dates w/ <50 member observations dropped.
+- **Refresh:** wired into `refresh-market-mood.yml` (weekdays 21:35 IST, right after the turnover build; the
+  commit step carries BOTH jsons through /tmp — reset-and-replay gotcha §18). Push-path self-test: pushing
+  the builder or workflow re-runs it. Feed monitored via feeds.json (max_age 110h, min_ratio 0.9).
+- **Sanity anchors (re-check after any rebuild):** pct200 min = 2.9% on 2020-03-23 (COVID bottom, 344 new
+  52w lows that day); max = 98.5% on 2020-12-16; most new highs 101 on 2024-01-04.
+- **Page:** breadth section between the turnover chart and the monthly-history table; separate range state
+  (6M/1Y/3Y/5Y/All → 126/250/750/1250/all sessions); section hides itself silently if the json is missing.
+  Editing market-mood.html = bump `docs/sw.js` CACHE (did v24→v25).
+
+---
+
 ## 22. FII/DII HOLDINGS PER STOCK  (docs/shareholding.html — "FII/DII Holdings" nav, built 2026-07-16)
 **Per-stock institutional holding % + QoQ change from NSE quarterly shareholding-pattern (SHP) filings,
 refreshed 2×/day as companies file** (companies file on different days within 21d of quarter end, so new
@@ -1275,20 +1353,6 @@ pages cross-link.
   implies no feed/meta rebuild) then **`python scripts/_shp_merge_stage.py`** once the other writer exits
   (fill-only + newer-submission-wins + shrink-ABORT). CI is safe (workflow `concurrency` group).
 
-### 22d. FII/DII FACTORS IN THE STRATEGY BUILDER  (added 2026-07-16)
-**`fiiPct` / `fiiChgPp` / `diiPct` / `diiChgPp`** are sort+filter factors in BOTH engines
-(stock-backtest.html self-contained + backtest-engine.js shared — the §"engines-sync" checklist was
-followed: FIELDS + SHP_FIELDS/needsShp + factorsAt block + loadShp in run()/loadEngineData/both bake
-paths + SORTL labels in saved-strategies.html). Data = **`docs/shp_engine.json`**
-(`{SYM:[[qeInt,fii,dii,subInt],…]}`, ALL quarters, built by fetch_shareholding.build_engine_feed,
-committed by refresh-shareholding.yml, ~1.6 MB raw, lazy-loaded only when an SHP factor is used).
-Point-in-time semantics in `shpAt()`: latest quarter with **subInt ≤ as-of date**; QoQ change only vs
-the CALENDAR-previous quarter whose own sub ≤ date (gaps/late-filers → null), and **never across the
-Sep-2022 format boundary** (cur qe 20220930 → change null; §22b). Renamed tickers: loadShp merges the
-old-name filings into the current key via FUND_ALIAS (filings were made under the name of the day).
-History starts Sep-2019 → fii/diiChgPp usable from ~Dec-2019 rebalances; before that the factor is
-null and stocks drop out of SHP-sorted screens (correct, not a bug).
-
 ### 22c. FII/DII ACCUMULATION BACKTEST  (CHAT-DRIVEN — the on-page section was REMOVED)
 **⚠️ 2026-07-16: the user removed the backtest UI from shareholding.html ("I'll perform backtest in
 chat") — do NOT re-add the section.** What remains: `scripts/build_shp_backtest.py` (kept, run on
@@ -1321,30 +1385,19 @@ table (still live, calendar-adjacent raises). The findings below stand — cite 
   baseline), and longer streaks HURT. The `ewall` baseline chip exists precisely so the page says this
   itself — keep it when adding variants.
 
----
-
-## 21. MARKET BREADTH  (Market Mood page section — built 2026-07-16, SELF-UPDATING)
-**Daily Nifty 500 breadth on docs/market-mood.html:** % of members above their 200-DMA (chart w/ 20/80
-zones), new 52-week highs vs lows (bar chart, auto-aggregates to N-day totals on long ranges), plus
-advancers/decliners — all in one hover tooltip + 4 stat cards.
-
-- **Builder:** `scripts/build_market_breadth.py` → `docs/market_breadth.json` (~63 KB). Same inputs as the
-  turnover build: the FRESH `sf_stock_data.bin` (workflow downloads the `data` release asset; locally use
-  `SF_BIN=<path> python -X utf8 scripts/build_market_breadth.py` — NEVER build from the frozen docs copy, §0)
-  + point-in-time membership from `scripts/_n500_master_history.json` (nearest-prior snapshot per date).
-- **Conventions:** closes are the bin's corp-action-adjusted `c`. DAILY ERA ONLY (`dailyFrom` 2018-01-01 —
-  pre-2018 is weekly-sampled, a 200-"day" MA there would span years), so the series starts when the 52w
-  window fills for ≥300 members = 2019-01-08. Windows are observation-based (200 / 252 of the symbol's own
-  sessions, incl. today; new high = close equals the 252-session max, ties count). adv/dec = vs the member's
-  own previous observed close (flats count as neither). Glitch dates w/ <50 member observations dropped.
-- **Refresh:** wired into `refresh-market-mood.yml` (weekdays 21:35 IST, right after the turnover build; the
-  commit step carries BOTH jsons through /tmp — reset-and-replay gotcha §18). Push-path self-test: pushing
-  the builder or workflow re-runs it. Feed monitored via feeds.json (max_age 110h, min_ratio 0.9).
-- **Sanity anchors (re-check after any rebuild):** pct200 min = 2.9% on 2020-03-23 (COVID bottom, 344 new
-  52w lows that day); max = 98.5% on 2020-12-16; most new highs 101 on 2024-01-04.
-- **Page:** breadth section between the turnover chart and the monthly-history table; separate range state
-  (6M/1Y/3Y/5Y/All → 126/250/750/1250/all sessions); section hides itself silently if the json is missing.
-  Editing market-mood.html = bump `docs/sw.js` CACHE (did v24→v25).
+### 22d. FII/DII FACTORS IN THE STRATEGY BUILDER  (added 2026-07-16)
+**`fiiPct` / `fiiChgPp` / `diiPct` / `diiChgPp`** are sort+filter factors in BOTH engines
+(stock-backtest.html self-contained + backtest-engine.js shared — the §"engines-sync" checklist was
+followed: FIELDS + SHP_FIELDS/needsShp + factorsAt block + loadShp in run()/loadEngineData/both bake
+paths + SORTL labels in saved-strategies.html). Data = **`docs/shp_engine.json`**
+(`{SYM:[[qeInt,fii,dii,subInt],…]}`, ALL quarters, built by fetch_shareholding.build_engine_feed,
+committed by refresh-shareholding.yml, ~1.6 MB raw, lazy-loaded only when an SHP factor is used).
+Point-in-time semantics in `shpAt()`: latest quarter with **subInt ≤ as-of date**; QoQ change only vs
+the CALENDAR-previous quarter whose own sub ≤ date (gaps/late-filers → null), and **never across the
+Sep-2022 format boundary** (cur qe 20220930 → change null; §22b). Renamed tickers: loadShp merges the
+old-name filings into the current key via FUND_ALIAS (filings were made under the name of the day).
+History starts Sep-2019 → fii/diiChgPp usable from ~Dec-2019 rebalances; before that the factor is
+null and stocks drop out of SHP-sorted screens (correct, not a bug).
 
 ---
 
@@ -1418,31 +1471,6 @@ Discovery buckets ("Smart money (bulk & block deals)" group, type `deal`).
 
 ---
 
-## 26. DELIVERY SPIKES  (docs/delivery.html — "Delivery Spikes" nav, built 2026-07-16, SELF-UPDATING)
-**Conviction-accumulation screen:** stocks whose DELIVERED quantity jumped to ≥3× their own 20-session
-median with delivery ≥30% of volume, ≥₹1 cr delivered and price up ≥1% — computed daily for the whole
-mainboard (mcap ≥₹100 cr), plus a "Delivery spikes (last 5 sessions)" Discovery bucket (type `spike`,
-"Smart money" group — the group was RENAMED from "Smart money (deals & insiders)" when this 3rd tape
-joined; the GROUP_ICON key in discovery.html must match the group string exactly).
-
-- **Source:** `nsearchives.../products/content/sec_bhavdata_full_DDMMYYYY.csv` — ONE FILE PER DATE
-  (~19:00 IST trading days; plain UA). Dated URLs = the pipeline SELF-HEALS: each run walks forward
-  from the last stored session and fetches whatever is missing (holidays skip). cols incl. CLOSE_PRICE,
-  DELIV_QTY, DELIV_PER (space-padded; '-' when N/A); SERIES filter 'EQ'.
-- **Fetcher:** `scripts/fetch_delivery.py` → TWO files (both must ride the commit step, §18):
-  `docs/delivery_hist.json` (state: last 45 sessions × ~2.5k stocks [close,dq,dpct]; ~2.3 MB) and
-  `docs/delivery.json` (page feed: `spikes` rows [date,sym,name,close,chg%,delivCr,dpct,avg20pct,qmult]
-  + `today` top-400 by delivered value; ~165 KB). Names/mcap from dash_slim meta —
-  **⚠️ slim meta is keyed 'RELIANCE.NS' (Yahoo suffix), re-key by bare symbol or every lookup misses**
-  (this bug made spikes silently empty on first run). Prices are UNADJUSTED closes — corp-action days
-  self-exclude via the price-up filter. First run with no state seeds ~45 sessions (~60 fetches).
-- **Refresh:** `.github/workflows/refresh-delivery.yml` — 21:15 IST weekdays + 08:35 IST Tue-Sat
-  catch-up. Both jsons in feeds.json (delivery_hist monitored with pages:[]).
-- **Sanity anchors (2026-07-16 seed):** ~41 spikes/session; that day: DIXON ₹1,322 cr at 5.9×,
-  RKFORGE 49.8×; repeat-stocks view topped by BUILDPRO (5 spikes/10 sessions).
-- **Page:** 3 views (Spikes / Repeat stocks / Biggest today), filters (value, multiple, sessions,
-  search), sw.js SHELL + CACHE v29→v30.
-
 ## 25. NEW-LISTING (IPO) YEAR-AGO BASE BACKFILL  (built 2026-07-16, SELF-UPDATING)
 Every IPO / NSE-migration / demerger listing enters sf_fundamentals.json with quarters but NO
 year-ago (and often no preceding) quarters — NSE XBRLs carry ONLY the current period — so
@@ -1501,6 +1529,33 @@ Trendlyne reads). `scripts/backfill_ipo_bases.py` automates the fill:
 
 ---
 
+## 26. DELIVERY SPIKES  (docs/delivery.html — "Delivery Spikes" nav, built 2026-07-16, SELF-UPDATING)
+**Conviction-accumulation screen:** stocks whose DELIVERED quantity jumped to ≥3× their own 20-session
+median with delivery ≥30% of volume, ≥₹1 cr delivered and price up ≥1% — computed daily for the whole
+mainboard (mcap ≥₹100 cr), plus a "Delivery spikes (last 5 sessions)" Discovery bucket (type `spike`,
+"Smart money" group — the group was RENAMED from "Smart money (deals & insiders)" when this 3rd tape
+joined; the GROUP_ICON key in discovery.html must match the group string exactly).
+
+- **Source:** `nsearchives.../products/content/sec_bhavdata_full_DDMMYYYY.csv` — ONE FILE PER DATE
+  (~19:00 IST trading days; plain UA). Dated URLs = the pipeline SELF-HEALS: each run walks forward
+  from the last stored session and fetches whatever is missing (holidays skip). cols incl. CLOSE_PRICE,
+  DELIV_QTY, DELIV_PER (space-padded; '-' when N/A); SERIES filter 'EQ'.
+- **Fetcher:** `scripts/fetch_delivery.py` → TWO files (both must ride the commit step, §18):
+  `docs/delivery_hist.json` (state: last 45 sessions × ~2.5k stocks [close,dq,dpct]; ~2.3 MB) and
+  `docs/delivery.json` (page feed: `spikes` rows [date,sym,name,close,chg%,delivCr,dpct,avg20pct,qmult]
+  + `today` top-400 by delivered value; ~165 KB). Names/mcap from dash_slim meta —
+  **⚠️ slim meta is keyed 'RELIANCE.NS' (Yahoo suffix), re-key by bare symbol or every lookup misses**
+  (this bug made spikes silently empty on first run). Prices are UNADJUSTED closes — corp-action days
+  self-exclude via the price-up filter. First run with no state seeds ~45 sessions (~60 fetches).
+- **Refresh:** `.github/workflows/refresh-delivery.yml` — 21:15 IST weekdays + 08:35 IST Tue-Sat
+  catch-up. Both jsons in feeds.json (delivery_hist monitored with pages:[]).
+- **Sanity anchors (2026-07-16 seed):** ~41 spikes/session; that day: DIXON ₹1,322 cr at 5.9×,
+  RKFORGE 49.8×; repeat-stocks view topped by BUILDPRO (5 spikes/10 sessions).
+- **Page:** 3 views (Spikes / Repeat stocks / Biggest today), filters (value, multiple, sessions,
+  search), sw.js SHELL + CACHE v29→v30.
+
+---
+
 ## 27. IPOs & LISTINGS  (docs/ipos.html — "IPOs & Listings" nav, built 2026-07-16, SELF-UPDATING)
 **The primary-market calendar:** issues open now (with LIVE subscription multiples), upcoming issues,
 and the last 6 months of listings with performance vs issue price.
@@ -1521,6 +1576,8 @@ and the last 6 months of listings with performance vs issue price.
   instead of re-scraping.
 - **Page:** issue cards (subscription progress bar) + listings table (board filter, best/worst since
   issue). sw.js SHELL + CACHE v30→v31.
+
+---
 
 ## 28. INDEX MONTHLY RETURNS  (docs/monthly-returns.html — "Monthly Returns" nav, built 2026-07-16, SELF-UPDATING)
 **The heatmap page:** month-by-month % returns for 32 NSE indices (10 broad / 16 sectoral / 6 thematic)
@@ -1661,3 +1718,25 @@ ETF renames of 2026-07-03 (AXISTECETF→ITAXIS, AXISNIFTY→NIFTYAXIS, AXISBNKET
 AXISHCETF→HEALTHAXIS, AXISCETF→CONSUMAXIS, AXSENSEX→SENSEXAXIS, AXISGOLD→GOLDAXIS,
 AXISVALUE→VALUEAXIS, AXISILVER→SILVERAXIS): price+_rename_map only — no fundamentals/BSE/F&O side
 (verified absent), steps 4–7 n/a. All 11 joins 0.95–1.05, adj=1.
+
+---
+
+## 31. NIGHTLY TRENDLYNE RECONCILE  (tl-reconcile.yml 23:45 IST → docs/tl_reconcile.json, built 2026-07-17)
+External yardstick so a silent coverage outage (like §15's import-crash: 121 vs Trendlyne's 144) is
+caught the same night, not days later. `scripts/tl_reconcile.py` (pure stdlib):
+1. OUR declared for the current quarter = numbers (sf_fundamentals + bse_fundamentals + vision_fills)
+   ∪ feed-declared (`results_pending.classify` — the shared classifier, counts can't drift).
+2. TL total from the public dashboard tiles (pos+neg+neutral); TL NAMES from their free calendar API
+   `equity/api/events/calendar-v2/?corporate_actions=BM&start_date=DD/MM/YYYY&end_date=…` (3-day
+   windows under the 200-row curtail, result-purpose only).
+3. Match by NSE symbol → BSE scrip (bse_scrips by_id reversed) → normalized name; unmatched bucket into
+   `other_quarter` (March/annual filers — both sides exclude), `awaiting_filing` (met ≤1 day ago,
+   grace), `actionable` (we likely missed a filing).
+4. Actionable ⇒ SELF-HEAL: re-runs fetch_announcements.py + fetch_bse_results.py (31-day windows make
+   them idempotent), re-diffs, records `healed`.
+5. Workflow commits report + healed feed/calendar (NOT announcements.json — git-bloat guard §15),
+   then opens/updates ONE "Trendlyne reconcile" issue when actionable ≥ 3, auto-closes when clean.
+- TL unreachable ⇒ tl_total=null, actionable=[], exit 0 — their outage must not page us.
+- tl_reconcile.json is in feeds.json (max_age 54h) so the yardstick itself is monitored.
+- Numbers for healed filings arrive via the normal XBRL/vision machinery — this job only guarantees
+  the DECLARED set is complete; it never scrapes Trendlyne's numbers.

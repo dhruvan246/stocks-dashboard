@@ -24,3 +24,9 @@ _strag_*
 
 # One-off backfill/scratch scripts swept out of the way (never tracked)
 scripts/archive/
+
+# CI gating flag — refresh-fundamentals.yml runs the results baker only when this
+# exists in the workspace; committing it would make the gate permanently open
+docs/.fund_updated
+# root-level workflow scratch (the tracked ledgers are scripts/_wf_*.json exceptions above)
+_wf_run.js
