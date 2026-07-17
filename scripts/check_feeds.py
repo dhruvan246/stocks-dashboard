@@ -102,6 +102,26 @@ def check_special(s):
             r["age_hours"] = round(age, 1)
             if age > s["max_age_hours"]:
                 r.update(status="stale", detail=f"last push {age/24:.1f} d ago")
+        elif s["type"] == "json_rows_age":
+            # A SOURCE dying inside a feed that still updates is invisible to whole-file
+            # checks (2026-07-17: the BSE merge import-crashed for days while NSE rows kept
+            # the file fresh). Newest row whose URL field contains `match` must be young.
+            r["file"] = s["file"]
+            with open(os.path.join(DOCS, s["file"]), encoding="utf-8") as fh:
+                rows = json.load(fh)["rows"]
+            dts = [row[s.get("dt_index", 2)] for row in rows
+                   if s["match"].lower() in str(row[s.get("match_index", 5)] or "").lower()]
+            if not dts:
+                r.update(status="missing", detail=f"no rows matching '{s['match']}' at all")
+            else:
+                newest = max(dts)[:19]          # "YYYY-MM-DD HH:MM:SS" IST
+                epoch = time.mktime(time.strptime(newest, "%Y-%m-%d %H:%M:%S")) - time.timezone - 19800
+                age = (NOW - epoch) / 3600
+                r["age_hours"] = round(age, 1)
+                if age > s["max_age_hours"]:
+                    r.update(status="stale",
+                             detail=f"newest '{s['match']}' row is {age/24:.1f} d old "
+                                    f"(limit {s['max_age_hours']/24:.1f} d) — that source has stopped feeding")
         elif s["type"] == "supabase_rpc":
             req = urllib.request.Request(
                 s["url"], data=b"{}", method="POST",

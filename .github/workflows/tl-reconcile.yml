@@ -1,0 +1,103 @@
+# Nightly external yardstick (DATA_RUNBOOK.md §31): compare our declared-results coverage
+# for the current quarter against Trendlyne's public dashboard + calendar, self-heal missed
+# filings by re-running our own fetchers, and raise/auto-close an alert issue on a real gap.
+# Born from the 121-vs-144 gap of 2026-07-17 (BSE merge silently dead for 3 days).
+name: Nightly Trendlyne reconcile
+
+on:
+  schedule:
+    - cron: "15 18 * * *"        # 23:45 IST daily — after the 23:15 fundamentals + 11PM vision runs
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: tl-reconcile
+  cancel-in-progress: false
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      # Same loud tripwire as the feed workflows: the heal path imports these modules.
+      - name: Smoke-import merge modules
+        run: python3 -X utf8 -c "import sys; sys.path.insert(0, 'scripts'); import bse_fetch, fetch_bse_results, results_pending; print('imports OK')"
+
+      - name: Reconcile vs Trendlyne (self-heals via own fetchers)
+        run: python3 -X utf8 scripts/tl_reconcile.py
+
+      - name: Guard — refuse to commit a broken or shrunken feed
+        run: python3 scripts/guard_feed.py
+
+      - name: Commit report + any healed feeds
+        id: commit
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # NOTE: announcements.json is rebuilt by the heal step too but is deliberately NOT
+          # committed here — the 4.7 MB file stays on refresh-announcements.yml (git-bloat guard).
+          for f in tl_reconcile.json results_feed.json results_calendar.json; do
+            cp "docs/$f" "/tmp/$f" 2>/dev/null || true
+          done
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            for f in tl_reconcile.json results_feed.json results_calendar.json; do
+              [ -f "/tmp/$f" ] && cp "/tmp/$f" "docs/$f"
+            done
+            git add docs/tl_reconcile.json docs/results_feed.json docs/results_calendar.json
+            if git diff --cached --quiet; then
+              echo "nothing changed"; echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0
+            fi
+            git commit -m "Trendlyne reconcile $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then
+              echo "changed=true" >> "$GITHUB_OUTPUT"; exit 0
+            fi
+            echo "push attempt #$attempt rejected; retrying"; sleep $(( attempt * 3 ))
+          done
+          echo "failed to push after 5 attempts"; exit 1
+
+      - name: Publish to Pages (only when changed)
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml || echo "(pages dispatch failed — next push publishes)"
+
+      - name: Alert issue — open on a persistent gap, auto-close when clean
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          N=$(python3 -c "import json; j=json.load(open('docs/tl_reconcile.json')); print(len(j['actionable']))")
+          AT=$(python3 -c "import json; j=json.load(open('docs/tl_reconcile.json')); print(j.get('alert_at',3))")
+          NUM=$(gh issue list --state open --search "Trendlyne reconcile in:title" --json number --jq '.[0].number' 2>/dev/null || true)
+          if [ "$N" -ge "$AT" ]; then
+            python3 - <<'PY'
+          import json
+          j = json.load(open('docs/tl_reconcile.json'))
+          lines = ["Our declared count for quarter %s: **%s** vs Trendlyne dashboard: **%s**." % (j['quarter'], j['ours_declared'], j['tl_dashboard']),
+                   "", "Result meetings Trendlyne knows that we still have NO filing for (after a self-heal re-fetch):", ""]
+          lines += ["- **%s** — %s (met %s)" % (a['sym'], a['name'], a['dates'][-1]) for a in j['actionable']]
+          lines += ["", "Runbook §31 has the diagnosis steps. _Auto-closes the night this list is empty._"]
+          open('/tmp/tlgap.md', 'w', encoding='utf-8').write("\n".join(lines))
+          PY
+            if [ -n "$NUM" ]; then
+              gh issue comment "$NUM" --body-file /tmp/tlgap.md && echo "updated issue #$NUM"
+            else
+              gh issue create --title "⚠️ Trendlyne reconcile — $N declared result(s) we're missing" --body-file /tmp/tlgap.md
+            fi
+          elif [ -n "$NUM" ]; then
+            gh issue close "$NUM" --comment "Reconcile clean again ($N actionable) — closing. ✅"
+          else
+            echo "clean ($N actionable) — no issue to manage"
+          fi

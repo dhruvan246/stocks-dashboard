@@ -42,6 +42,13 @@ jobs:
       - name: Fetch NSE results calendar
         run: python3 -X utf8 scripts/fetch_results_calendar.py || echo "(calendar fetch failed — keeping previous)"
 
+      # LOUD tripwire — deliberately NO `|| echo`: if a future edit reintroduces a heavy
+      # top-level import (fitz/RapidOCR/…) into these modules, this fails the run visibly
+      # instead of the merge below silently skipping for weeks (bit us 2026-07-17; the
+      # `|| echo` on the merge step is for EXCHANGE flakiness, not for broken code).
+      - name: Smoke-import BSE merge modules
+        run: python3 -X utf8 -c "import sys; sys.path.insert(0, 'scripts'); import bse_fetch, fetch_bse_results; print('imports OK')"
+
       - name: Merge BSE results into feed + calendar
         run: python3 -X utf8 scripts/fetch_bse_results.py || echo "(BSE merge failed — keeping NSE-only)"
 
