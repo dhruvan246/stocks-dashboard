@@ -635,6 +635,24 @@ V-recovery (Jun-2021: +48%)**. ⚠️ MOVED OFF the Stocks dashboard → its own
     life-insurer op irreproducible (above). Their rev + PAT are exact. Nothing else is left.
   - **EMMVEE** (op base 350.49 vs TL's implied 347.4, ~0.01pp): **OURS IS RIGHT** — derived from EMMVEE's own PDF
     comparative, PBT 240.19 + FC 53.11 + Dep 71.59 − OI 14.40 = 350.49 (lakh ÷ 100); our current op 548.10 = TL exact.
+  - **REFINER EXCISE NETTING (built 2026-07-17, closes the MRPL rev gap):** `scripts/fetch_excise.py` reads the
+    PDF-only "Excise Duty" row (no XBRL tag exists — full fact-dump proof) and nets it off the rev slots for the
+    **VERIFIED-ONLY** symbol list inside it (MRPL today; add IOC/BPCL/HPCL/CPCL **only after** checking TL's own
+    per-stock "Operating Revenue Qtr" for them — the ORFO lesson: never generalize a presentation rule). Anchored:
+    PDF revenue cells must match the STORED gross (±0.5%, unit scales) to map columns; one PDF nets cur+prec+yago.
+    Ledger `scripts/excise_duty.json` {SYM:{QE:{gross,excise,src}}}; apply is idempotent (only rewrites a slot that
+    still equals the ledger gross) — **after any full build_revop rebuild re-run `fetch_excise.py`** (gross comes
+    back). op/EBIT/PAT untouched (excise already sits inside PBET). Horizon `MIN_NET_QE=20220630` (one year before
+    the quarterly-results window, so every YoY/QoQ pair it shows is net/net; older pairs stay gross/gross =
+    self-consistent). ⚠️ The pairs WHOSE BASE SITS BELOW THE HORIZON (the horizon year — for MRPL the Sep-2021→
+    Jun-2022 bars after a free yago-fill extended it) are net-cur-vs-gross-base → they UNDERSTATE that stock's
+    growth in those old bars; ~1/8th of the stock's own contribution, <0.1pp at index level — accepted, don't
+    chase. TWO apply gotchas encoded in fetch_excise.py: (1) column anchoring restricts candidates to
+    [fetch_qe−1y, fetch_qe] — MRPL's revenue was ~28.4k cr in Mar-2026 AND Dec-2023 AND Sep-2022, so an
+    unrestricted unique-match rule skipped exactly those three; (2) the PDF comparative and the stored XBRL can
+    differ by paise-level REVISIONS (Jun-25: 20,988.53 vs 20,988.03) — apply subtracts excise from the STORED
+    value under the anchor tolerance (idempotency-guarded), never replaces it with the PDF figure. Wired into
+    refresh-fundamentals.yml (gated on docs/.fund_updated; ledger rides the /tmp cp-back commit list §18-style).
   - **DEEP RE-VERIFY 2026-07-17 (user challenged "TL is a big firm, can't be wrong") — every claim re-proven from
     the companies' own Q1FY27 PDFs:** (a) **MRPL: TL CONFIRMED paisa-exact** — the PDF prints an `Excise Duty`
     expense row (3,354.77 cur / 3,631.80 base); 41,608.96−3,354.77 = 38,254.19 = TL's figure, 20,988.53−3,631.80 =
@@ -943,6 +961,19 @@ dates). Deep links: `?tab=results|feed|calendar&sym=TCS`.
   and render as non-clickable feed/calendar entries (no CO metadata → no growth badge/reaction, by design). First
   run added ~142 feed + ~76 calendar BSE rows. To get NUMBERS for BSE-only names would need a BSE price+XBRL
   pipeline (deferred — user chose feed+calendar coverage only).
+- ⚠️ **HEAVY-DEP IMPORT CRASH = INVISIBLE BSE OUTAGE (fixed 2026-07-17, keep it fixed).** `fetch_bse_results.py`
+  imports `bse_fetch` for its network helpers only, but bse_fetch used to top-level-import `fitz` + instantiate
+  `RapidOCR()` — neither installed in refresh-announcements/refresh-results-hourly → the BSE merge died on
+  `import` in EVERY CI run (all BSE rows were coming from local/vision-env runs). Triply invisible: the step's
+  `|| echo` kept runs green, the additive feed never shrank (guard_feed floor can't see "stopped growing"),
+  and NSE rows kept refreshing. Found only because Trendlyne showed ~24 more declared results (121 vs 144,
+  2026-07-17) — the whole gap was 3 days of missing BSE micro-cap filings. Fix: bse_fetch loads fitz/RapidOCR
+  LAZILY inside `pdf_np()`/`_ocr()`; refresh-announcements pip-installs `pymupdf` (small) for
+  enrich_order_values, NEVER the OCR stack. Rule: a shared helper imported by lean workflows must keep heavy
+  deps out of module top-level; after touching bse_fetch imports, smoke-test
+  `python -c "import bse_fetch"` with fitz/rapidocr BLOCKED (see the import-blocker snippet in the 2026-07-17
+  commit a626f0e message context). Coverage check: newest `bseindia.com`-URL row in results_feed.json should
+  be <24-48 h old on weekdays during results season.
 - ⚠️ **ALWAYS parse the quarter PER FILING — never assume the current season.** A results filing in Jul/Aug/Sep
   is very often a LATE March (Q4/annual) result, not the June quarter (in a recent 30-day BSE window: 91 March
   vs 32 June filings). `parse_qe()` (fetch_announcements.py) / `qe_from_head()` (fetch_bse_results.py) ANCHOR on
@@ -1483,6 +1514,17 @@ seasonality**. All three share the alpha mode and the Broad/Sectors/Themes chips
   kept for the last DAILY_KEEP=45 sessions. ⚠️ NSE's per-index DAILY archive is bot-walled (same
   wall as the historical endpoint), so `daily` **grows organically from 2026-07-17** — the 1W column
   renders `–` until the window reaches ~7 days back, and the sub-note says so while it's short.
+- **Seeding the `daily` window (skips the week-long wait):** the SAME browser page-context XHR that
+  backfilled the monthly history also returns DAILY rows, so the window can be pre-filled instead of
+  accrued. Load `niftyindices.com/reports/historical-data` in the pane, then in page context loop the
+  32 keys through `POST /BackPage/getHistoricaldatatabletoString` with
+  `{"cinfo":"{'name':KEY,'startDate':'<~60d ago>','endDate':'<today>','indexName':KEY}"}`, reduce each
+  response to `{key:{"YYYY-MM-DD":close}}` (the rows carry `HistoricalDate` "17 Jul 2026" + `CLOSE`),
+  `JSON.stringify` it → save to a file → `python scripts/seed_index_daily.py <file>`. The seeder never
+  overwrites a date the nightly top-up already wrote, ignores unknown keys, and trims to 45 sessions.
+  Keep the dump ≲10 sessions/index if returning it through the tool channel (output gets truncated);
+  the rest accrues nightly anyway. ⚠️ Use the HISTORICAL index names (the `key`s), not the live-watch
+  aliases — this endpoint is the same one the `key`s came from.
 - **History backfill (one-time, done 2026-07-16):** niftyindices.com `POST /BackPage/
   getHistoricaldatatabletoString` with `{"cinfo":"{'name':'NIFTY 50','startDate':'01-Nov-1995',
   'endDate':'31-Jul-2026','indexName':'NIFTY 50'}"}` → full daily history in ONE call (multi-decade

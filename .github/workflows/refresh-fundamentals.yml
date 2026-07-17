@@ -118,6 +118,16 @@ jobs:
       - name: Re-assert owners-attributable consolidated profit (incl. renamed tickers)
         run: python3 scripts/apply_owners_full.py
 
+      # Refiner excise netting (Trendlyne parity, runbook §11): petroleum cos' XBRL revenue is GROSS
+      # (no excise tag exists), the PDF prints the "Excise Duty" row — net it off rev for the VERIFIED
+      # symbol list in fetch_excise.py (anchored to stored gross; ledger scripts/excise_duty.json;
+      # idempotent). Gated on new filings — that's the only time a new refiner quarter can appear.
+      - name: Net refiner excise off revenue (PDF-anchored, verified symbols only)
+        if: ${{ hashFiles('docs/.fund_updated') != '' }}
+        run: |
+          pip install -q pymupdf
+          python3 -X utf8 scripts/fetch_excise.py || echo "(excise netting failed — revenue stays gross this run)"
+
       # Rebuild the Results Season chart payload from the just-updated net profit + rev/op. The
       # aggregator keys every filing by its OWN quarter-end, so a late filing (e.g. a March quarter
       # declared in July) lands in the March column, and a brand-new quarter (June) appears as its own
@@ -175,6 +185,7 @@ jobs:
           # IPO-base fill ledger + skip tracker (small; the big scripts/ mirrors are NOT committed from CI)
           [ -f scripts/ipo_base_fills.json ] && cp scripts/ipo_base_fills.json /tmp/ipo_base_fills.json
           [ -f scripts/_ipo_base_skips.json ] && cp scripts/_ipo_base_skips.json /tmp/_ipo_base_skips.json
+          [ -f scripts/excise_duty.json ] && cp scripts/excise_duty.json /tmp/excise_duty.json
           for attempt in 1 2 3 4 5; do
             git fetch origin main && git reset --hard origin/main
             if [ "$FUND" = "1" ]; then
@@ -183,6 +194,7 @@ jobs:
               cp /tmp/results_season.json  docs/results_season.json
               [ -f /tmp/_season_coverage.json ] && cp /tmp/_season_coverage.json docs/_season_coverage.json && git add docs/_season_coverage.json
               [ -f /tmp/ipo_base_fills.json ] && cp /tmp/ipo_base_fills.json scripts/ipo_base_fills.json && git add scripts/ipo_base_fills.json
+              [ -f /tmp/excise_duty.json ] && cp /tmp/excise_duty.json scripts/excise_duty.json && git add scripts/excise_duty.json
               git add docs/sf_fundamentals.json docs/sf_revop.json docs/results_season.json
             fi
             cp /tmp/quarterly_results.json docs/quarterly_results.json
