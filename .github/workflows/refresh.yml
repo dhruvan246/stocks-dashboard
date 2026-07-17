@@ -43,15 +43,57 @@ jobs:
 
       - name: Download NSE + BSE scrip lists
         run: |
-          curl -s -A "Mozilla/5.0" \
-               "https://archives.nseindia.com/content/equities/EQUITY_L.csv" \
-               -o /tmp/nse.csv
-          curl -s -A "Mozilla/5.0" \
-               -H "Referer: https://www.bseindia.com/" \
-               "https://api.bseindia.com/BseIndiaAPI/api/ListofScripData/w?Group=&Scripcode=&industry=&segment=Equity&status=Active" \
-               -o /tmp/bse.json
-          wc -l /tmp/nse.csv
-          ls -la /tmp/bse.json
+          # Both masters are checked here before anything reads them: `curl -s` exits 0
+          # even when an exchange rejects the request, so a junk body used to land in
+          # these files and surface much later as an opaque JSONDecodeError inside
+          # fetch_all.py / fetch_sectors.py (which both json.load /tmp/bse.json).
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
+
+          # --- NSE equity master (~2,400 lines) ---
+          ok=0
+          for attempt in 1 2 3 4 5 6; do
+            curl -sS --compressed --max-time 90 -A "$UA" \
+                 "https://archives.nseindia.com/content/equities/EQUITY_L.csv" \
+                 -o /tmp/nse.csv || true
+            lines=$(wc -l < /tmp/nse.csv 2>/dev/null || echo 0)
+            if [ "$lines" -ge 1500 ]; then
+              echo "NSE scrip list OK ($lines lines)"
+              ok=1; break
+            fi
+            echo "NSE attempt #$attempt: $lines lines, $(wc -c < /tmp/nse.csv 2>/dev/null || echo 0) bytes — retrying"
+            sleep $((attempt * 15))
+          done
+          if [ "$ok" != 1 ]; then
+            echo "::error::NSE scrip list unavailable after 6 attempts"
+            exit 1
+          fi
+
+          # --- BSE active-equity master (~4,900 scrips) ---
+          # BSE rate-limits by IP: over quota it answers 302 -> error_Bse.html, and that
+          # 162-byte stub is exactly what used to poison /tmp/bse.json (so `-L` would not
+          # help — it would just save the error page instead). Quota refills slowly and a
+          # success seems to buy a cooldown, so retries are spaced 30s and up rather than
+          # hammered. The record-count floor, not the retry, is what guarantees a bad body
+          # never reaches the build.
+          ok=0
+          for attempt in 1 2 3 4 5 6; do
+            code=$(curl -sS --compressed --max-time 90 -A "$UA" \
+                 -H "Referer: https://www.bseindia.com/" \
+                 "https://api.bseindia.com/BseIndiaAPI/api/ListofScripData/w?Group=&Scripcode=&industry=&segment=Equity&status=Active" \
+                 -o /tmp/bse.json -w '%{http_code}') || code=000
+            n=$(python3 -c "import json;d=json.load(open('/tmp/bse.json'));print(len(d) if isinstance(d,list) else 0)" 2>/dev/null || echo 0)
+            if [ "$n" -ge 3000 ]; then
+              echo "BSE scrip list OK ($n scrips)"
+              ok=1; break
+            fi
+            echo "BSE attempt #$attempt: HTTP $code, $(wc -c < /tmp/bse.json 2>/dev/null || echo 0) bytes, $n scrips — retrying. Body starts:"
+            head -c 200 /tmp/bse.json 2>/dev/null || true; echo
+            sleep $((attempt * 30))
+          done
+          if [ "$ok" != 1 ]; then
+            echo "::error::BSE scrip list unavailable after 6 attempts (rate-limited? bodies logged above)"
+            exit 1
+          fi
 
       - name: Fetch price history from Yahoo Finance
         run: python3 scripts/fetch_all.py

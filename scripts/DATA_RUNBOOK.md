@@ -16,6 +16,17 @@ loads every session. (README.md is STALE — it describes the old Yahoo pipeline
   GUID → `corpfiling/AttachLive|AttachHis/<guid>` returns the **genuine** company. So poisoning is endpoint-specific, not
   scrip-specific. ANY BSE fetch must confirm CIN/auditor on the PDF (FM=L34102MH1958/Akurdi; BSE Ltd=L67120MH2005/Batliboi),
   never just the scrip label. Full writeup + the proven backfill recipe: `scripts/FORCEMOT_CONTAMINATION_FINDINGS.md`. (2026-06-22)
+- **⚠️ A 162-byte `/tmp/bse.json` is BSE's rate-limit 302, not a parser bug.** Over its per-IP quota
+  `ListofScripData/w` answers `302 → api.bseindia.com/error_Bse.html` (a 162-byte "Object Moved" stub —
+  the byte count is the fingerprint). `curl -s` **exits 0 on a 302** and saves the stub, so the junk only
+  surfaced downstream as `JSONDecodeError: Expecting value: line 1 column 1` at `fetch_all.py:45`
+  (`fetch_sectors.py:26` json.loads the same file). **`-L` does NOT fix it** — it just saves the error page.
+  Validate the **parsed record count** (healthy ≈ 4,929 scrips / 1.73 MB; floor 3,000), never the exit code.
+  Quota refills slowly and a success buys a cooldown → space retries 30s+, don't hammer; a cookie session
+  does NOT help (it only spends more quota). `refresh.yml` now does 6 spaced retries + the floor, and logs
+  the body on failure. Next lever if 302s ever outlast a whole job: cache the last-good master via
+  `actions/cache` (the universe changes slowly, a day-old copy is harmless). (2026-07-17, memory:
+  project-stocks-bse-scrip-302)
 - **Two pages are GENERATED — edit the TEMPLATE, not the output:**
   `docs/nse-bse-dashboard.html` ← `scripts/build_compressed.py`; `docs/mutual-funds.html` ← `scripts/build_mutualfunds.py`.
   The nightly refresh regenerates the dashboard and **clobbers manual edits to the output**. Edit the
