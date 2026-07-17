@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Macro</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<style>
+  body{ font-feature-settings:"tnum" 1; }
+  /* period selector pills */
+  .segbtn{ font-size:12px; font-weight:700; padding:5px 12px; border-radius:999px; color:var(--text-muted);
+    border:1px solid var(--border); background:var(--surface-2); cursor:pointer; transition:var(--tr); }
+  .segbtn:hover{ color:var(--text); border-color:var(--border-strong); }
+  .segbtn.on{ color:#fff; border-color:transparent; background:linear-gradient(135deg,var(--accent),var(--accent-2)); box-shadow:0 4px 12px -4px var(--glow); }
+  /* macro table */
+  table.mac{ width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums; }
+  table.mac th, table.mac td{ padding:8px 10px; white-space:nowrap; }
+  table.mac thead th{ font-size:10px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--text-faint);
+    text-align:right; border-bottom:1px solid var(--border); position:sticky; top:0; background:var(--surface-2); }
+  table.mac thead th.lft{ text-align:left; }
+  table.mac tbody td{ text-align:right; font-size:13px; color:var(--text); border-bottom:1px solid var(--border); }
+  table.mac tbody td.lft{ text-align:left; }
+  table.mac tbody tr.irow{ cursor:pointer; }
+  table.mac tbody tr.irow:hover{ background:color-mix(in srgb,var(--accent) 6%,transparent); }
+  .ind-name{ font-weight:700; font-size:13px; color:var(--text); display:flex; align-items:center; gap:7px; }
+  .ind-sub{ font-size:10.5px; color:var(--text-faint); font-weight:500; margin-top:1px; }
+  .ind-caret{ font-size:9px; color:var(--text-faint); transition:transform .18s ease; }
+  tr.open .ind-caret{ transform:rotate(90deg); color:var(--accent); }
+  td.tnow{ font-weight:800; }
+  .colnow{ color:var(--accent) !important; }
+  .chart-cell{ padding:0 !important; }
+  .chart-wrap{ padding:14px 12px 8px; background:var(--surface-2); border-bottom:1px solid var(--border); }
+  .mac-tip{ position:fixed; pointer-events:none; z-index:70; background:var(--surface); border:1px solid var(--border-strong);
+    border-radius:10px; box-shadow:var(--shadow-lg); padding:7px 10px; font-size:12px; color:var(--text); opacity:0; transition:opacity .1s; }
+  .mac-tip b{ color:var(--text); } .mac-tip .d{ color:var(--text-faint); font-size:11px; }
+  .secttl{ font-size:15px; font-weight:800; letter-spacing:-.01em; color:var(--text); }
+  .sectsub{ font-size:11.5px; color:var(--text-faint); margin-top:1px; }
+  @media (max-width:640px){
+    table.mac td.qcol, table.mac th.qcol{ display:none; }   /* on phones keep only Today/Yday for density */
+    table.mac th.qkeep, table.mac td.qkeep{ display:table-cell; }
+  }
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav></nav>
+  </div>
+</header>
+
+<main class="max-w-screen-xl mx-auto px-4 py-6 w-full">
+  <div class="mb-4 flex items-start justify-between gap-4 flex-wrap">
+    <div>
+      <h1 class="text-xl font-bold text-slate-900">Macro dashboard</h1>
+      <p class="text-sm text-slate-500 mt-0.5 max-w-2xl">Market strength, valuation, rates and the economy — from official sources (NSE, RBI, MOSPI, niftyindices, Yahoo, FRED). Click any row for its chart. <span id="updated" class="text-slate-400"></span></p>
+    </div>
+    <div id="seg" class="flex items-center gap-1.5 flex-wrap"></div>
+  </div>
+
+  <div id="status" class="text-sm text-slate-500 py-10 text-center">Loading macro data…</div>
+
+  <div id="content" class="hidden">
+    <div id="cards" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6"></div>
+    <div id="sections" class="space-y-5"></div>
+
+    <!-- Sector rotation -->
+    <div class="card p-4 mt-5">
+      <div class="mb-3">
+        <div class="secttl">🔄 Sector rotation</div>
+        <div class="sectsub">NSE sector &amp; thematic indices, price returns. Sorted by 3-month return — what's leading and what's lagging.</div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="mac" id="rotTable">
+          <thead><tr>
+            <th class="lft">Index</th>
+            <th>1M</th><th>3M</th><th>6M</th><th>1Y</th><th>vs Nifty 3M</th>
+          </tr></thead>
+          <tbody id="rotBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <p class="text-[11px] text-slate-500 mt-5 leading-relaxed" id="sources"></p>
+  </div>
+</main>
+
+<div class="mac-tip" id="tip"></div>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const RANGE_MONTHS = { '1M':1, '1Y':12, '3Y':36, '5Y':60, '10Y':120, 'MAX':1e9 };
+let RANGE = '5Y';
+
+// ---------- formatting ----------
+const nf = (v,d=2) => v==null||isNaN(v) ? '—' : Number(v).toFixed(d);
+const fmtInt = v => v==null||isNaN(v) ? '—' : Math.round(v).toLocaleString('en-IN');
+const signK = v => { if(v==null||isNaN(v))return '—'; const s=v<0?'−':'+',a=Math.abs(v);
+  return a>=1e3 ? s+(a/1e3).toFixed(1)+'k' : s+Math.round(a); };
+const flow = v => { if(v==null||isNaN(v))return '—'; const s=v<0?'−':'+',a=Math.abs(v);
+  return a>=1e5 ? s+(a/1e5).toFixed(1)+'L' : a>=1e3 ? s+(a/1e3).toFixed(1)+'k' : s+Math.round(a); };
+const fmtPct = p => p==null||isNaN(p) ? '—' : (p>=0?'+':'−')+Math.abs(p).toFixed(1)+'%';
+const iso = s => s;                              // already iso
+const d2 = n => (n<10?'0':'')+n;
+const fromInt = n => { const s=String(n); return s.slice(0,4)+'-'+s.slice(4,6)+'-'+s.slice(6,8); };
+function labQ(endIso){ const [y,m]=endIso.split('-'); return MON[+m-1]+" '"+y.slice(2); }
+function fmtDate(isoS){ const p=isoS.split('-'); return p.length<3 ? MON[+p[1]-1]+' '+p[0] : (+p[2])+' '+MON[+p[1]-1]+' '+p[0]; }
+
+// ---------- series store ----------
+// each: {label, sub, unit, fmt, mode:'level'|'avg'|'sum', color?:true, arr:[[iso,val]...] sorted asc}
+const S = {};
+function mkArr(mapObj){ return Object.keys(mapObj).sort().map(k=>[k, mapObj[k]]); }
+function nearestLE(arr, dateIso){ // last value with date <= dateIso
+  let lo=0, hi=arr.length-1, res=null;
+  while(lo<=hi){ const mid=(lo+hi)>>1; if(arr[mid][0]<=dateIso){ res=arr[mid][1]; lo=mid+1; } else hi=mid-1; }
+  return res;
+}
+function bucketVals(arr, startEx, endIn){ const out=[]; for(const [d,v] of arr){ if(d>startEx && d<=endIn) out.push(v); } return out; }
+const mean = a => a.length ? a.reduce((x,y)=>x+y,0)/a.length : null;
+const sum  = a => a.length ? a.reduce((x,y)=>x+y,0) : null;
+
+// ---------- quarter columns ----------
+function lastDay(y,m1){ return new Date(Date.UTC(y, m1, 0)).getUTCDate(); }      // m1 = 1-based month
+function quarterEnds(refIso, n){
+  const ends=[]; const [ry,rm]=refIso.split('-').map(Number);
+  for(let y=ry+1; y>=2013; y--){
+    for(const m of [12,9,6,3]){
+      const eiso = y+'-'+d2(m)+'-'+d2(lastDay(y,m));
+      if(eiso <= refIso) ends.push(eiso);
+    }
+  }
+  return ends.slice(0, n);   // most recent first
+}
+
+// ================= LOAD =================
+async function load(){
+  let macro, vix, nifty, breadth, fii, bank, idx;
+  try{
+    [macro,vix,nifty,breadth,fii,bank,idx] = await Promise.all([
+      fetch('./macro.json').then(r=>r.json()),
+      fetch('./india_vix.json').then(r=>r.json()).catch(()=>({px:{}})),
+      fetch('./nifty.json').then(r=>r.json()).catch(()=>({px:{}})),
+      fetch('./market_breadth.json').then(r=>r.json()).catch(()=>null),
+      fetch('./fii_dii.json').then(r=>r.json()).catch(()=>({rows:[]})),
+      fetch('./bank_credit.json').then(r=>r.json()).catch(()=>({rows:[]})),
+      fetch('./index_monthly.json').then(r=>r.json()).catch(()=>null),
+    ]);
+  }catch(e){ $('status').textContent = 'Could not load macro data. '+e; return; }
+
+  const M = macro.series || {};
+  const reg = (key, cfg) => { if(cfg.arr && cfg.arr.length) S[key]=cfg; };
+  const fromMacro = (mk) => (M[mk] && M[mk].d) ? mkArr(M[mk].d) : [];
+
+  // --- Market strength ---
+  reg('vix', { label:'India VIX', sub:'fear gauge — NSE', unit:'', fmt:'n2', mode:'level', arr:mkArr(vix.px||{}) });
+  reg('nifty', { label:'Nifty 50', sub:'NSE', unit:'', fmt:'int', mode:'level', arr:mkArr(nifty.px||{}) });
+  if(breadth && breadth.dates){
+    const D = breadth.dates.map(fromInt);
+    const g = (a,f) => D.map((d,i)=>[d, f(i)]);
+    reg('pct200', { label:'% stocks > 200 DMA', sub:'all NSE, adj. prices', unit:'%', fmt:'n1', mode:'level',
+      arr: g(D, i=>breadth.pct200[i]) });
+    reg('netadv', { label:'Net advances', sub:'advances − declines, avg/day', unit:'', fmt:'signk', mode:'avg', color:true,
+      arr: g(D, i=>breadth.adv[i]-breadth.dec[i]) });
+    reg('net52', { label:'Net new 52-week highs', sub:'highs − lows, avg/day', unit:'', fmt:'signk', mode:'avg', color:true,
+      arr: g(D, i=>breadth.hi[i]-breadth.lo[i]) });
+  }
+  // --- Institutional flows ---
+  const fr = (fii.rows||[]).filter(r=>r.date);
+  reg('fii', { label:'FII net flows', sub:'₹ Cr net per period — NSE', unit:'₹cr', fmt:'flow', mode:'sum', color:true,
+    arr: fr.map(r=>[r.date, r.fiiNet]) });
+  reg('dii', { label:'DII net flows', sub:'₹ Cr net per period — NSE', unit:'₹cr', fmt:'flow', mode:'sum', color:true,
+    arr: fr.map(r=>[r.date, r.diiNet]) });
+  // --- Valuation ---
+  reg('niftype', { label:'Nifty 50 PE', sub:'consolidated — NSE / niftyindices', unit:'', fmt:'n2', mode:'level', arr:fromMacro('niftype') });
+  reg('niftypb', { label:'Nifty 50 PB', sub:'NSE / niftyindices', unit:'', fmt:'n2', mode:'level', arr:fromMacro('niftypb') });
+  reg('niftydy', { label:'Nifty 50 dividend yield', sub:'% — NSE / niftyindices', unit:'%', fmt:'n2', mode:'level', arr:fromMacro('niftydy') });
+  // --- Rates & currency ---
+  reg('repo',   { label:'RBI repo rate', sub:'% — RBI', unit:'%', fmt:'n2', mode:'level', arr:fromMacro('repo') });
+  reg('india10y',{ label:'India 10Y G-Sec yield', sub:'% — FRED, monthly', unit:'%', fmt:'n2', mode:'level', arr:fromMacro('india10y') });
+  reg('us10y',  { label:'US 10Y yield', sub:'% — Yahoo', unit:'%', fmt:'n2', mode:'level', arr:fromMacro('us10y') });
+  reg('usdinr', { label:'USD/INR', sub:'Yahoo', unit:'', fmt:'n2', mode:'level', arr:fromMacro('usdinr') });
+  reg('dxy',    { label:'US dollar index (DXY)', sub:'Yahoo', unit:'', fmt:'n2', mode:'level', arr:fromMacro('dxy') });
+  // --- Economy: growth & inflation (YoY) ---
+  reg('cpi', { label:'CPI inflation', sub:'MOSPI, monthly', unit:'%', fmt:'n1', mode:'qlast', color:'inv', arr:fromMacro('cpi') });
+  reg('iip', { label:'Industrial production (IIP)', sub:'MOSPI, monthly', unit:'%', fmt:'n1', mode:'qlast', color:true, arr:fromMacro('iip') });
+  reg('gdp', { label:'GDP growth', sub:'MOSPI, quarterly (real)', unit:'%', fmt:'n1', mode:'qlast', color:true, arr:fromMacro('gdp') });
+  const bankArr = (bank.rows||[]).filter(r=>r.date && r.actual!=null).map(r=>[r.date, r.actual]);
+  reg('bankyoy', { label:'Bank credit', sub:'RBI, y/y — fortnightly', unit:'%', fmt:'n1', mode:'qlast', color:true, arr:bankArr });
+  reg('depyoy', { label:'Deposit growth', sub:'RBI, y/y — weekly', unit:'%', fmt:'n1', mode:'qlast', color:true, arr:fromMacro('deposits') });
+  reg('m3yoy', { label:'Money supply M3', sub:'RBI, y/y — weekly', unit:'%', fmt:'n1', mode:'qlast', color:true, arr:fromMacro('m3') });
+  // --- Banking, commodities & external (levels) ---
+  reg('forex', { label:'Forex reserves', sub:'$ bn — RBI weekly', unit:'$bn', fmt:'n1', mode:'level', arr:fromMacro('forex') });
+  reg('crude', { label:'Brent crude', sub:'$/bbl — Yahoo', unit:'$', fmt:'n1', mode:'level', arr:fromMacro('crude') });
+  reg('gold',  { label:'Gold', sub:'₹/10g — Yahoo × USD/INR', unit:'₹', fmt:'int', mode:'level', arr:fromMacro('gold') });
+
+  // reference date = latest date present anywhere
+  let ref='0'; for(const k in S){ const a=S[k].arr; if(a.length && a[a.length-1][0]>ref) ref=a[a.length-1][0]; }
+  window.__ref = ref;
+  window.__updated = macro.updated;
+
+  buildCards();
+  buildSections(ref);
+  buildRotation(idx);
+  $('updated').textContent = '· updated '+ (macro.updated? macro.updated.slice(0,10) : ref);
+  $('sources').innerHTML = 'Sources: NSE (Nifty, FII/DII, breadth) · niftyindices (Nifty PE/PB/dividend yield) · RBI via mql5 economic calendar (repo rate, deposits, M3, forex, bank credit) · MOSPI via mql5 (CPI, IIP, GDP) · Yahoo Finance (US 10Y, USD/INR, dollar index, Brent, gold) · FRED (India 10Y). Breadth computed in-house from adjusted NSE closes over the point-in-time Nifty 500. Not investment advice.';
+  $('status').classList.add('hidden'); $('content').classList.remove('hidden');
+}
+
+// ---------- value formatting per series ----------
+function fmtVal(cfg, v){
+  if(v==null||isNaN(v)) return '—';
+  switch(cfg.fmt){
+    case 'int':   return fmtInt(v);
+    case 'n1':    return nf(v,1);
+    case 'n2':    return nf(v,2);
+    case 'signk': return signK(v);
+    case 'flow':  return flow(v);
+    default:      return nf(v,2);
+  }
+}
+function colorClass(cfg, v){
+  if(!cfg.color || v==null||isNaN(v)) return '';
+  const pos = cfg.color==='inv' ? v<0 : v>0;   // for CPI, lower is "good" → invert
+  return v===0 ? '' : (pos ? 'pos' : 'neg');
+}
+
+// ================= SUMMARY CARDS =================
+function card(lb, val, sub, cls){
+  return '<div class="sw-stat"><div class="sw-lb">'+lb+'</div>'+
+    '<div class="sw-v '+(cls||'')+'">'+val+'</div>'+
+    '<div class="sw-d">'+(sub||'')+'</div></div>';
+}
+function latest(key){ const a=S[key]&&S[key].arr; return a&&a.length ? a[a.length-1] : null; }
+function buildCards(){
+  const c=[];
+  let v=latest('vix'); if(v) c.push(card('India VIX', nf(v[1],2), fmtDate(v[0])));
+  v=latest('niftype'); if(v) c.push(card('Nifty PE', nf(v[1],2), fmtDate(v[0])));
+  v=latest('usdinr'); if(v) c.push(card('USD/INR', nf(v[1],2), fmtDate(v[0])));
+  v=latest('india10y')||latest('us10y'); const g=latest('india10y');
+    if(g) c.push(card('India 10Y', nf(g[1],2)+'%', fmtDate(g[0])));
+  // FII net 5D
+  if(S.fii){ const a=S.fii.arr, last5=a.slice(-5); const t=sum(last5.map(x=>x[1]));
+    c.push(card('FII net · 5D', flow(t)+' Cr', 'last 5 sessions', t>=0?'pos':'neg')); }
+  v=latest('pct200'); if(v) c.push(card('% &gt; 200 DMA', nf(v[1],1)+'%', fmtDate(v[0])));
+  $('cards').innerHTML = c.join('');
+}
+
+// ================= SECTION TABLES =================
+const SECTIONS = [
+  { t:'📈 Market strength & sentiment', s:'How strong and broad the market is right now.', rows:['vix','nifty','pct200'], cols:'std' },
+  { t:'📊 Breadth', s:'Daily participation — per-period average of daily counts.', rows:['netadv','net52'], cols:'std' },
+  { t:'💸 Institutional flows', s:'Net foreign & domestic institutional flows (₹ Cr, summed over each period).', rows:['fii','dii'], cols:'std' },
+  { t:'🏷️ Valuation', s:'What the market is paying for earnings, book value and dividends.', rows:['niftype','niftypb','niftydy'], cols:'std' },
+  { t:'🏦 Rates & currency', s:'Policy rate, bond yields and the rupee.', rows:['repo','india10y','us10y','usdinr','dxy'], cols:'std' },
+  { t:'🌱 Economy — growth & inflation', s:'Year-on-year %, latest reading as of each quarter.', rows:['cpi','iip','gdp','bankyoy','depyoy','m3yoy'], cols:'q' },
+  { t:'🛢️ Commodities & external', s:'Reserves, oil and gold.', rows:['forex','crude','gold'], cols:'std' },
+];
+
+function buildSections(ref){
+  const qends = quarterEnds(ref, 12);
+  const html = SECTIONS.map((sec,si)=>{
+    const showTY = sec.cols==='std';                 // Today / Yday columns
+    const heads = ['<th class="lft qkeep">Indicator</th>'];
+    if(showTY){ heads.push('<th class="qkeep colnow">Today</th>','<th class="qkeep">Yday</th>'); }
+    qends.forEach((q,i)=> heads.push('<th class="qcol'+(i===0&&!showTY?' qkeep':'')+'">'+labQ(q)+'</th>'));
+    const body = sec.rows.filter(k=>S[k]).map(k=>rowHtml(k, qends, showTY, si)).join('');
+    if(!body) return '';
+    return '<div class="card p-4"><div class="mb-2"><div class="secttl">'+sec.t+'</div><div class="sectsub">'+sec.s+'</div></div>'+
+      '<div class="overflow-x-auto"><table class="mac" data-sec="'+si+'"><thead><tr>'+heads.join('')+'</tr></thead>'+
+      '<tbody>'+body+'</tbody></table></div></div>';
+  }).join('');
+  $('sections').innerHTML = html;
+  // wire row expand
+  $('sections').querySelectorAll('tr.irow').forEach(tr=>{
+    tr.addEventListener('click', ()=>toggleRow(tr));
+  });
+}
+
+function colVal(cfg, colDate, prevQEnd){
+  if(cfg.mode==='level') return nearestLE(cfg.arr, colDate);
+  const vals = bucketVals(cfg.arr, prevQEnd, colDate);
+  if(cfg.mode==='sum')   return sum(vals);
+  if(cfg.mode==='qlast') return vals.length ? vals[vals.length-1] : null;   // latest reading IN this quarter (blank if none — avoids stale carry-forward)
+  return mean(vals);
+}
+function rowHtml(key, qends, showTY, si){
+  const cfg=S[key], a=cfg.arr;
+  const tds=['<td class="lft qkeep"><div class="ind-name"><span class="ind-caret">▶</span>'+cfg.label+'</div><div class="ind-sub">'+cfg.sub+'</div></td>'];
+  if(showTY){
+    const t=a[a.length-1], y=a[a.length-2];
+    tds.push('<td class="qkeep tnow '+colorClass(cfg,t?t[1]:null)+'"><span class="colnow">'+(t?fmtVal(cfg,t[1]):'—')+'</span></td>');
+    tds.push('<td class="qkeep '+colorClass(cfg,y?y[1]:null)+'">'+(y?fmtVal(cfg,y[1]):'—')+'</td>');
+  }
+  qends.forEach((q,i)=>{
+    const prev = qends[i+1] || '2000-01-01';         // previous quarter end (bucket start)
+    // for level mode the bucket start is irrelevant
+    const v = colVal(cfg, q, prev);
+    const keep = (i===0 && !showTY) ? ' qkeep' : '';
+    tds.push('<td class="qcol'+keep+' '+colorClass(cfg,v)+'">'+fmtVal(cfg,v)+'</td>');
+  });
+  const span = 1 + (showTY?2:0) + qends.length;
+  return '<tr class="irow" data-key="'+key+'" data-span="'+span+'">'+tds.join('')+'</tr>';
+}
+
+function toggleRow(tr){
+  const open = tr.classList.contains('open');
+  // close siblings in same table
+  const tbody=tr.parentNode;
+  tbody.querySelectorAll('tr.open').forEach(o=>{ o.classList.remove('open'); const n=o.nextElementSibling; if(n&&n.classList.contains('chart-row')) n.remove(); });
+  if(open) return;
+  tr.classList.add('open');
+  const key=tr.getAttribute('data-key'), span=tr.getAttribute('data-span');
+  const row=document.createElement('tr'); row.className='chart-row';
+  row.innerHTML='<td class="chart-cell" colspan="'+span+'"><div class="chart-wrap"></div></td>';
+  tr.after(row);
+  renderChart(row.querySelector('.chart-wrap'), key);
+}
+
+// ================= CHART (SVG line + hover) =================
+function rangeCut(){
+  const m=RANGE_MONTHS[RANGE]; if(m>=1e9) return '0';
+  const d=new Date(); d.setMonth(d.getMonth()-m);
+  return d.toISOString().slice(0,10);
+}
+function renderChart(wrap, key){
+  const cfg=S[key]; const cut=rangeCut();
+  let pts=cfg.arr.filter(p=>p[0]>=cut && p[1]!=null && !isNaN(p[1]));
+  if(pts.length<2) pts=cfg.arr.filter(p=>p[1]!=null);      // fallback: whole series
+  if(pts.length<2){ wrap.innerHTML='<div class="sectsub">Not enough data to chart.</div>'; return; }
+  const W = Math.max(320, wrap.clientWidth-24), H=170, PL=8, PR=8, PT=12, PB=20;
+  const xs = i => PL + (W-PL-PR) * (i/(pts.length-1));
+  const vals = pts.map(p=>p[1]); let mn=Math.min(...vals), mx=Math.max(...vals);
+  if(mn===mx){ mn-=1; mx+=1; } const pad=(mx-mn)*0.08; mn-=pad; mx+=pad;
+  const ys = v => PT + (H-PT-PB) * (1-(v-mn)/(mx-mn));
+  let dLine='', dArea='';
+  pts.forEach((p,i)=>{ const x=xs(i).toFixed(1), y=ys(p[1]).toFixed(1); dLine+=(i?'L':'M')+x+' '+y; });
+  dArea = dLine + 'L'+xs(pts.length-1).toFixed(1)+' '+(H-PB)+'L'+xs(0).toFixed(1)+' '+(H-PB)+'Z';
+  const acc = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()||'#3b82f6';
+  const gid='g'+key;
+  const first=pts[0][1], last=pts[pts.length-1][1];
+  const chg = first? ((last-first)/Math.abs(first)*100) : null;
+  const head = '<div class="flex items-center justify-between mb-1 flex-wrap gap-2">'+
+    '<div class="sectsub" style="font-size:12px;color:var(--text-muted)"><b style="color:var(--text)">'+cfg.label+'</b> · '+RANGE+
+    (chg!=null? ' · <span class="'+(chg>=0?'pos':'neg')+'">'+fmtPct(chg)+'</span>':'')+'</div>'+
+    '<div class="sectsub">'+fmtDate(pts[0][0])+' → '+fmtDate(pts[pts.length-1][0])+'</div></div>';
+  const svg = '<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="'+H+'" preserveAspectRatio="none" style="overflow:visible">'+
+    '<defs><linearGradient id="'+gid+'" x1="0" y1="0" x2="0" y2="1">'+
+      '<stop offset="0%" stop-color="'+acc+'" stop-opacity="0.28"/><stop offset="100%" stop-color="'+acc+'" stop-opacity="0"/></linearGradient></defs>'+
+    '<path d="'+dArea+'" fill="url(#'+gid+')"/>'+
+    '<path d="'+dLine+'" fill="none" stroke="'+acc+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>'+
+    '<line id="gl" x1="0" y1="'+PT+'" x2="0" y2="'+(H-PB)+'" stroke="'+acc+'" stroke-width="1" stroke-dasharray="3 3" opacity="0"/>'+
+    '<circle id="gd" r="3.5" fill="'+acc+'" stroke="var(--surface)" stroke-width="1.5" opacity="0"/>'+
+    '<rect id="hit" x="0" y="0" width="'+W+'" height="'+H+'" fill="transparent"/></svg>';
+  wrap.innerHTML = head + svg;
+  // hover
+  const svgEl=wrap.querySelector('svg'), gl=wrap.querySelector('#gl'), gd=wrap.querySelector('#gd'), tip=$('tip');
+  const hit=wrap.querySelector('#hit');
+  function move(ev){
+    const r=svgEl.getBoundingClientRect(); const px=(ev.touches?ev.touches[0].clientX:ev.clientX)-r.left;
+    const frac=Math.max(0,Math.min(1, px/r.width)); const i=Math.round(frac*(pts.length-1));
+    const x=xs(i), y=ys(pts[i][1]);
+    gl.setAttribute('x1',x); gl.setAttribute('x2',x); gl.setAttribute('opacity','.5');
+    gd.setAttribute('cx',x); gd.setAttribute('cy',y); gd.setAttribute('opacity','1');
+    tip.innerHTML='<b>'+fmtVal(cfg,pts[i][1])+(cfg.unit&&cfg.unit[0]!=='₹'&&cfg.unit!=='$bn'&&cfg.unit!=='$'?' '+cfg.unit:'')+'</b><div class="d">'+fmtDate(pts[i][0])+'</div>';
+    tip.style.opacity='1';
+    tip.style.left=Math.min(window.innerWidth-120,(ev.touches?ev.touches[0].clientX:ev.clientX)+14)+'px';
+    tip.style.top=((ev.touches?ev.touches[0].clientY:ev.clientY)-10)+'px';
+  }
+  function out(){ gl.setAttribute('opacity','0'); gd.setAttribute('opacity','0'); tip.style.opacity='0'; }
+  hit.addEventListener('mousemove',move); hit.addEventListener('mouseleave',out);
+  hit.addEventListener('touchmove',move,{passive:true}); hit.addEventListener('touchend',out);
+}
+
+// ================= SECTOR ROTATION =================
+function buildRotation(idx){
+  if(!idx||!idx.indices){ $('rotTable').closest('.card').style.display='none'; return; }
+  const live = idx.live||{};
+  // flat monthly series per index (asc), splice live.last as current point
+  function series(ix){
+    const out=[]; const cl=ix.closes||{};
+    Object.keys(cl).sort().forEach(y=>{ cl[y].forEach((v,mi)=>{ if(v!=null) out.push([+y*12+mi, v]); }); });
+    // refresh the current month's close with the live value (same slot — do NOT append,
+    // or the last two points become near-duplicates and every 1-month return collapses to 0).
+    const lv=live[ix.key]; if(lv && lv.last!=null && out.length) out[out.length-1][1]=lv.last;
+    return out;
+  }
+  function retN(ser, n){ if(ser.length<2)return null; const cur=ser[ser.length-1][1]; const j=ser.length-1-n; if(j<0)return null; const past=ser[j][1]; return past? (cur/past-1)*100:null; }
+  const nifty = idx.indices.find(i=>i.key==='NIFTY 50'); const nser=nifty?series(nifty):[];
+  const n3 = retN(nser,3);
+  const rows = idx.indices.filter(i=>i.grp==='sector'||i.grp==='theme').map(i=>{
+    const s=series(i);
+    return { label:i.label, m1:retN(s,1), m3:retN(s,3), m6:retN(s,6), y1:retN(s,12) };
+  }).filter(r=>r.m3!=null);
+  rows.push({ label:'Nifty 50', m1:retN(nser,1), m3:n3, m6:retN(nser,6), y1:retN(nser,12), isNifty:true });
+  rows.sort((a,b)=> (b.m3??-1e9)-(a.m3??-1e9));
+  const cell = v => '<td class="'+(v>0?'pos':v<0?'neg':'')+'">'+fmtPct(v)+'</td>';
+  $('rotBody').innerHTML = rows.map(r=>{
+    const vsn = (r.m3!=null&&n3!=null)? r.m3-n3 : null;
+    return '<tr'+(r.isNifty?' style="font-weight:700;background:color-mix(in srgb,var(--accent) 7%,transparent)"':'')+'>'+
+      '<td class="lft" style="font-weight:600">'+r.label+'</td>'+
+      cell(r.m1)+cell(r.m3)+cell(r.m6)+cell(r.y1)+
+      '<td class="'+(vsn>0?'pos':vsn<0?'neg':'')+'">'+(vsn==null?'—':(vsn>=0?'+':'−')+Math.abs(vsn).toFixed(1))+'</td></tr>';
+  }).join('');
+}
+
+// ================= PERIOD SELECTOR =================
+function buildSeg(){
+  $('seg').innerHTML = Object.keys(RANGE_MONTHS).map(k=>
+    '<button class="segbtn'+(k===RANGE?' on':'')+'" data-r="'+k+'">'+k+'</button>').join('');
+  $('seg').querySelectorAll('.segbtn').forEach(b=>b.addEventListener('click',()=>{
+    RANGE=b.getAttribute('data-r');
+    $('seg').querySelectorAll('.segbtn').forEach(x=>x.classList.toggle('on', x===b));
+    // re-render any open charts
+    document.querySelectorAll('tr.open').forEach(tr=>{
+      const cr=tr.nextElementSibling; if(cr&&cr.classList.contains('chart-row')) renderChart(cr.querySelector('.chart-wrap'), tr.getAttribute('data-key'));
+    });
+  }));
+}
+buildSeg();
+load();
+</script>
+</body>
+</html>

@@ -138,6 +138,7 @@
   // Single source of truth for the nav. Add deployed pages here.
   var NAV_GROUPS = [
     { g: 'Markets', items: [
+      ['./macro.html',             '🌍', 'Macro'],
       ['./nse-bse-dashboard.html', '📈', 'Stocks'],
       ['./watchlist.html',         '📌', 'Watchlist'],
       ['./sectors.html',           '🔥', 'Sectors'],

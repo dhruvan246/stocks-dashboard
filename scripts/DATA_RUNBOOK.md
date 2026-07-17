@@ -1808,3 +1808,51 @@ _prs_hunt_0814/_0814b/_0607/ (205 press-release PDFs 2006-2014), parsers _n500_p
 resolver _n500_resolve_names.py, builder _n500_build_0814.py, output _full_union_2008_v1.json (798, era syms).
 OPEN: ~15-25 verified-candidate transient members (EVEREADY/GEOJIT/KEMROCK/ESSARPORTS class) not yet added;
 MC-checkpoint integration + drift re-grade pending (memory has the step list).
+
+
+## 33. MACRO DASHBOARD  (docs/macro.html — "Macro" nav, built 2026-07-17, SELF-UPDATING)
+
+A one-page macro board modelled on quantmac's /macro: summary stat cards + grouped indicator
+tables (Market strength / Breadth / Institutional flows / Valuation / Rates & currency / Economy /
+Commodities) with quarter-end period columns, click-a-row-for-chart (SVG line + hover tooltip), a
+1M/1Y/3Y/5Y/10Y/MAX range selector for the charts, and a sector-rotation table.
+
+**Data = one new fetcher + reuse of existing feeds.** `scripts/fetch_macro.py` -> `docs/macro.json`
+(15 series, cumulative {date:value} maps, merged & never shrunk — a skipped/partial run self-heals):
+  - Yahoo chart API: US 10Y (^TNX), USD/INR (INR=X), ICE dollar index (DX-Y.NYB), Brent (BZ=F),
+    gold (GC=F, converted to ₹/10g via same-day USD/INR).
+  - mql5 economic-calendar /export TSV (same source as fetch_bank_credit.py, §): cpi-yy, gdp-yy,
+    industrial-production-yy, rbi-interest-rate-decision (repo), rbi-m3-money-supply-yy,
+    deposit-growth-yy, foreign-exchange-reserves. ⚠️ mql5's **gdp-yy stops at 2024-11** (that slug
+    stopped updating) — the page's economy table uses mode 'qlast' (last reading IN each quarter,
+    blank if none) so stale values are NOT carried forward; GDP simply blanks recent quarters until
+    a fresh source is wired.
+  - FRED CSV: India 10Y G-Sec (INDIRLTLT01STM, monthly). Best-effort — FRED is US-hosted and
+    **unreachable from many non-US IPs (incl. this dev box)**, so it fails locally but works on the
+    GitHub US runner; a failure just keeps the existing series.
+  - NSE allIndices (cookie-primed via build_fundamentals.nse_jar): current Nifty 50 PE/PB/DY,
+    appended daily. 403s locally behind Akamai; fine in CI.
+The page ALSO reads existing feeds directly (not duplicated into macro.json): india_vix.json,
+nifty.json, market_breadth.json (breadth: %>200DMA, net advances=adv−dec, net 52w=hi−lo),
+fii_dii.json (FII/DII net, summed per period), bank_credit.json (bank-credit y/y), index_monthly.json
+(sector rotation — computed from MONTHLY closes with live.last spliced into the current-month slot;
+1W column dropped since index_monthly.daily holds only today).
+
+**Nifty PE/PB/DY history seed (one-time, 2016→date, 2611 daily rows):** python is bot-blocked on
+niftyindices, so it was pulled via the browser page-context. Endpoint (note capital-P **BackPage**,
+the old Backpage.aspx is dead): `POST https://www.niftyindices.com/BackPage/getpepbHistoricaldataDBtoString`
+body `{"cinfo":"{'name':'NIFTY 50','startDate':'01-Jan-2016','endDate':'<today>','indexName':'NIFTY 50'}"}`
+-> `{d:"[{pe,pb,divYield,DATE:'17 Jul 2026'},…]"}`. Merged into macro.json's niftype/niftypb/niftydy.
+Verified vs quantmac to the decimal (Dec-25 PE 22.75 / PB 3.55 / DY 1.28). The nightly fetch appends
+the current value, so history keeps growing without re-seeding.
+
+**Refresh:** refresh-macro.yml, daily 15:10 UTC (20:40 IST), same commit-retry+pages-dispatch pattern
+as bank-credit; guard_feed (feeds.json min_bytes 150000, min_ratio 0.9). Nav = theme.js NAV_GROUPS
+Markets 🌍; SW shell = sw.js v37.
+
+**Known v1 gaps (intentional, honest):** FII/DII quarter columns beyond ~3 months are blank
+(fii_dii.json is a rolling recent window). %>200DMA uses our Nifty-500 universe (≈55%) not
+"all NSE" (≈42%). DXY = ICE index (~100), not FRED's broad trade-weighted index (~120). repo rate
+comes out 5.20 vs RBI's 5.25 (mql5 rounding). mcap/GDP (Buffett) and %>50DMA are NOT built (no feed).
+To rebuild after a full data wipe: run fetch_macro.py (fills everything except deep PE history) then
+re-seed PE via the niftyindices browser call above.
