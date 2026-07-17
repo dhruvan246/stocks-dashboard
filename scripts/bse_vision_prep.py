@@ -32,7 +32,14 @@ def norm(s): return re.sub(r"(limited|ltd)$", "", re.sub(r"[^a-z0-9]", "", str(s
 # (CENTRALBK Q1FY27: consolidated table on page 10 of 31). Scan wider and rank by NUMERIC DENSITY: a real
 # results table is wall-to-wall figures (98-196 numeric tokens/page) while prose pages that merely mention
 # profit have far fewer (<=32), so the table wins regardless of where in the filing it sits.
+#
+# A text-less page is a SCANNED image we can't score — it may be the table or may be a scanned review
+# report. It must sit BETWEEN the two: above prose (we can't rule it out) but below a confirmed table
+# (never crowd out real numbers). TELGE Q1FY27 is the case that pins this down — tables on pages 4 and
+# 11, four blank scanned pages around them; ranking blanks first rendered all four blanks and neither
+# table. In an all-scanned filing every page ties here and doc order is preserved, as before.
 NUM_TOK = re.compile(r"\d[\d,]{2,}")
+SCAN_SCORE = 40        # observed: real tables 49-196 numeric tokens/page, prose <=32
 
 def render_pdf_pages(raw):
     try: doc = fitz.open(stream=raw, filetype="pdf")
@@ -41,7 +48,7 @@ def render_pdf_pages(raw):
     for pi in range(min(len(doc), 24)):
         txt = doc[pi].get_text()
         if not txt.strip():
-            score = 10000 - pi                      # scanned page — no text to judge, must look at it
+            score = SCAN_SCORE                      # scanned page — no text to judge, worth a look
         elif bse_render.PL_HINT.search(txt):
             score = len(NUM_TOK.findall(txt))       # P&L-ish prose vs an actual table of numbers
         else:
