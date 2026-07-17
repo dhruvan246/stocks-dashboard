@@ -1812,10 +1812,16 @@ MC-checkpoint integration + drift re-grade pending (memory has the step list).
 
 ## 33. MACRO DASHBOARD  (docs/macro.html — "Macro" nav, built 2026-07-17, SELF-UPDATING)
 
-A one-page macro board modelled on quantmac's /macro: summary stat cards + grouped indicator
-tables (Market strength / Breadth / Institutional flows / Valuation / Rates & currency / Economy /
-Commodities) with quarter-end period columns, click-a-row-for-chart (SVG line + hover tooltip), a
-1M/1Y/3Y/5Y/10Y/MAX range selector for the charts, and a sector-rotation table.
+**Presentation v2 (2026-07-18, own design — deliberately NOT the quantmac table layout):** chart-first
+"Macro Pulse" board. Pulse strip (6 stat cards w/ sparkline + percentile-in-history rail) → group-filter
+pills (Markets/Flows/Valuation/Rates & FX/Economy/Commodities) + 6M→MAX range pills → ~27 always-visible
+chart tiles (SVG area/line w/ median dashline, monthly diverging pos/neg bars for flows & breadth, hover
+tooltips, Lo/Med/Hi + percentile footer, lazy-rendered via IntersectionObserver) → "Twelve quarters at a
+glance" heat grid (CSS grid, NOT a <table> — keeps theme.js mobile cardify away; per-row zero-anchored
+shading, CPI inverted, rows w/ <2 readings auto-hidden, e.g. FII/DII until the rolling window grows) →
+sector-rotation zero-based horizontal bars w/ dashed Nifty marker + 1M/3M/6M/1Y pills. 3 derived on-page
+series: earnings-yield gap (100/PE − India 10Y), India−US 10Y spread, real policy rate (repo − CPI).
+Data plumbing below is UNCHANGED from v1.
 
 **Data = one new fetcher + reuse of existing feeds.** `scripts/fetch_macro.py` -> `docs/macro.json`
 (15 series, cumulative {date:value} maps, merged & never shrunk — a skipped/partial run self-heals):

@@ -9,37 +9,74 @@
 <script src="./theme.js"></script>
 <style>
   body{ font-feature-settings:"tnum" 1; }
-  /* period selector pills */
+  /* pills (range + group filters + rotation periods) */
   .segbtn{ font-size:12px; font-weight:700; padding:5px 12px; border-radius:999px; color:var(--text-muted);
     border:1px solid var(--border); background:var(--surface-2); cursor:pointer; transition:var(--tr); }
   .segbtn:hover{ color:var(--text); border-color:var(--border-strong); }
   .segbtn.on{ color:#fff; border-color:transparent; background:linear-gradient(135deg,var(--accent),var(--accent-2)); box-shadow:0 4px 12px -4px var(--glow); }
-  /* macro table */
-  table.mac{ width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums; }
-  table.mac th, table.mac td{ padding:8px 10px; white-space:nowrap; }
-  table.mac thead th{ font-size:10px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--text-faint);
-    text-align:right; border-bottom:1px solid var(--border); position:sticky; top:0; background:var(--surface-2); }
-  table.mac thead th.lft{ text-align:left; }
-  table.mac tbody td{ text-align:right; font-size:13px; color:var(--text); border-bottom:1px solid var(--border); }
-  table.mac tbody td.lft{ text-align:left; }
-  table.mac tbody tr.irow{ cursor:pointer; }
-  table.mac tbody tr.irow:hover{ background:color-mix(in srgb,var(--accent) 6%,transparent); }
-  .ind-name{ font-weight:700; font-size:13px; color:var(--text); display:flex; align-items:center; gap:7px; }
-  .ind-sub{ font-size:10.5px; color:var(--text-faint); font-weight:500; margin-top:1px; }
-  .ind-caret{ font-size:9px; color:var(--text-faint); transition:transform .18s ease; }
-  tr.open .ind-caret{ transform:rotate(90deg); color:var(--accent); }
-  td.tnow{ font-weight:800; }
-  .colnow{ color:var(--accent) !important; }
-  .chart-cell{ padding:0 !important; }
-  .chart-wrap{ padding:14px 12px 8px; background:var(--surface-2); border-bottom:1px solid var(--border); }
+
+  /* ---- pulse cards ---- */
+  .pulse .p-lb{ display:flex; align-items:center; justify-content:space-between; gap:6px; font-size:11px;
+    font-weight:700; letter-spacing:.03em; text-transform:uppercase; color:var(--text-faint); }
+  .pulse .p-v{ font-size:22px; font-weight:800; letter-spacing:-.02em; color:var(--text); margin-top:3px; }
+  .p-chip{ font-size:10.5px; font-weight:700; padding:1px 7px; border-radius:999px; border:1px solid var(--border); color:var(--text-muted); white-space:nowrap; }
+  .p-chip.pos{ color:var(--pos); background:color-mix(in srgb,var(--pos) 12%,transparent); border-color:color-mix(in srgb,var(--pos) 28%,transparent); }
+  .p-chip.neg{ color:var(--neg); background:color-mix(in srgb,var(--neg) 12%,transparent); border-color:color-mix(in srgb,var(--neg) 28%,transparent); }
+  .p-rail{ position:relative; height:4px; border-radius:999px; margin-top:8px;
+    background:linear-gradient(90deg, color-mix(in srgb,var(--accent) 30%,transparent), color-mix(in srgb,var(--accent) 8%,transparent)); }
+  .p-rail i{ position:absolute; top:50%; width:9px; height:9px; border-radius:50%; transform:translate(-50%,-50%);
+    background:var(--accent); border:2px solid var(--surface); box-shadow:0 0 0 1px var(--border); }
+  .p-cap{ font-size:10px; color:var(--text-faint); margin-top:6px; }
+
+  /* ---- chart tiles ---- */
+  .tile{ padding:14px 14px 11px; }
+  .t-name{ font-size:13px; font-weight:800; color:var(--text); letter-spacing:-.01em; }
+  .t-sub{ font-size:10.5px; color:var(--text-faint); margin-top:1px; }
+  .gtag{ display:inline-block; font-size:9px; font-weight:800; letter-spacing:.05em; text-transform:uppercase;
+    padding:1px 6px; border-radius:5px; margin-right:6px; vertical-align:1px;
+    color:var(--accent); background:color-mix(in srgb,var(--accent) 10%,transparent); border:1px solid color-mix(in srgb,var(--accent) 22%,transparent); }
+  .t-val{ font-size:16px; font-weight:800; color:var(--text); letter-spacing:-.01em; }
+  .t-foot{ display:flex; align-items:center; gap:12px; margin-top:7px; font-size:10.5px; color:var(--text-faint); flex-wrap:wrap; }
+  .t-foot b{ color:var(--text-muted); font-weight:700; }
+  .t-pct{ margin-left:auto; font-weight:700; color:var(--text-muted); }
+  .ch{ margin-top:8px; min-height:150px; }
+  .ch-dates{ display:flex; justify-content:space-between; font-size:9.5px; color:var(--text-faint); margin-top:2px; }
+
+  /* ---- shared tooltip ---- */
   .mac-tip{ position:fixed; pointer-events:none; z-index:70; background:var(--surface); border:1px solid var(--border-strong);
-    border-radius:10px; box-shadow:var(--shadow-lg); padding:7px 10px; font-size:12px; color:var(--text); opacity:0; transition:opacity .1s; }
+    border-radius:10px; box-shadow:var(--shadow-lg); padding:7px 10px; font-size:12px; color:var(--text); opacity:0; transition:opacity .1s; max-width:240px; }
   .mac-tip b{ color:var(--text); } .mac-tip .d{ color:var(--text-faint); font-size:11px; }
+
   .secttl{ font-size:15px; font-weight:800; letter-spacing:-.01em; color:var(--text); }
   .sectsub{ font-size:11.5px; color:var(--text-faint); margin-top:1px; }
+
+  /* ---- quarterly heat grid (CSS grid, NOT a table — keeps mobile cardify away) ---- */
+  .hm-scroll{ overflow-x:auto; }
+  .hm{ display:grid; grid-template-columns:minmax(168px,1.4fr) repeat(var(--hm-cols,12),minmax(62px,1fr)); min-width:940px; }
+  .hm > div{ padding:7px 8px; font-size:11.5px; text-align:right; border-bottom:1px solid var(--border); white-space:nowrap; }
+  .hm .h{ font-size:9.5px; font-weight:800; letter-spacing:.04em; text-transform:uppercase; color:var(--text-faint); }
+  .hm .lft{ text-align:left; position:sticky; left:0; background:var(--surface); z-index:2;
+    font-weight:700; color:var(--text); font-size:12px; box-shadow:2px 0 0 var(--border); }
+  .hm .lft .s{ display:block; font-size:9.5px; color:var(--text-faint); font-weight:500; }
+  .hm .cell{ font-variant-numeric:tabular-nums; color:var(--text); }
+
+  /* ---- sector rotation bars ---- */
+  .rot-row{ display:grid; grid-template-columns:158px 1fr 62px; align-items:center; gap:10px; padding:4px 0; border-bottom:1px dashed var(--border); }
+  .rot-row:last-child{ border-bottom:none; }
+  .rot-lb{ font-size:12px; font-weight:600; color:var(--text-muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .rot-row.nifty .rot-lb{ color:var(--text); font-weight:800; }
+  .rot-track{ position:relative; height:16px; }
+  .rot-zero{ position:absolute; top:0; bottom:0; width:1px; background:var(--border-strong); }
+  .rot-nmark{ position:absolute; top:-2px; bottom:-2px; width:0; border-left:1.5px dashed var(--accent); opacity:.6; }
+  .rot-bar{ position:absolute; top:3px; height:10px; border-radius:3px; min-width:2px; }
+  .rot-bar.pos{ background:color-mix(in srgb,var(--pos) 72%,transparent); }
+  .rot-bar.neg{ background:color-mix(in srgb,var(--neg) 72%,transparent); }
+  .rot-row.nifty .rot-bar{ background:linear-gradient(135deg,var(--accent),var(--accent-2)); }
+  .rot-v{ font-size:12px; font-weight:700; text-align:right; font-variant-numeric:tabular-nums; }
   @media (max-width:640px){
-    table.mac td.qcol, table.mac th.qcol{ display:none; }   /* on phones keep only Today/Yday for density */
-    table.mac th.qkeep, table.mac td.qkeep{ display:table-cell; }
+    .rot-row{ grid-template-columns:104px 1fr 54px; gap:7px; }
+    .rot-lb{ font-size:11px; }
+    .tile{ padding:12px 12px 10px; }
   }
 </style>
 </head>
@@ -56,35 +93,45 @@
 </header>
 
 <main class="max-w-screen-xl mx-auto px-4 py-6 w-full">
-  <div class="mb-4 flex items-start justify-between gap-4 flex-wrap">
-    <div>
-      <h1 class="text-xl font-bold text-slate-900">Macro dashboard</h1>
-      <p class="text-sm text-slate-500 mt-0.5 max-w-2xl">Market strength, valuation, rates and the economy — from official sources (NSE, RBI, MOSPI, niftyindices, Yahoo, FRED). Click any row for its chart. <span id="updated" class="text-slate-400"></span></p>
-    </div>
-    <div id="seg" class="flex items-center gap-1.5 flex-wrap"></div>
+  <div class="mb-4">
+    <h1 class="text-xl font-bold text-slate-900">Macro Pulse</h1>
+    <p class="text-sm text-slate-500 mt-0.5 max-w-2xl">India's market, valuation, rates, economy and flows — every indicator drawn live, with its position in history. Hover any chart. <span id="updated" class="text-slate-400"></span></p>
   </div>
 
   <div id="status" class="text-sm text-slate-500 py-10 text-center">Loading macro data…</div>
 
   <div id="content" class="hidden">
-    <div id="cards" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6"></div>
-    <div id="sections" class="space-y-5"></div>
+    <!-- pulse strip -->
+    <div id="pulse" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 mb-5"></div>
 
-    <!-- Sector rotation -->
+    <!-- controls -->
+    <div class="flex items-center justify-between gap-3 flex-wrap mb-4">
+      <div id="grpseg" class="flex items-center gap-1.5 flex-wrap"></div>
+      <div id="seg" class="flex items-center gap-1.5 flex-wrap"></div>
+    </div>
+
+    <!-- chart tiles -->
+    <div id="tiles" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3.5"></div>
+
+    <!-- quarterly heat grid -->
     <div class="card p-4 mt-5">
       <div class="mb-3">
-        <div class="secttl">🔄 Sector rotation</div>
-        <div class="sectsub">NSE sector &amp; thematic indices, price returns. Sorted by 3-month return — what's leading and what's lagging.</div>
+        <div class="secttl">🗓️ Twelve quarters at a glance</div>
+        <div class="sectsub">Each row shaded against its own 12-quarter range — green favourable, red adverse (CPI inverted: cooling inflation reads green). Blank = no reading that quarter. GDP feed paused Nov-24.</div>
       </div>
-      <div class="overflow-x-auto">
-        <table class="mac" id="rotTable">
-          <thead><tr>
-            <th class="lft">Index</th>
-            <th>1M</th><th>3M</th><th>6M</th><th>1Y</th><th>vs Nifty 3M</th>
-          </tr></thead>
-          <tbody id="rotBody"></tbody>
-        </table>
+      <div class="hm-scroll"><div class="hm" id="hm"></div></div>
+    </div>
+
+    <!-- sector rotation -->
+    <div class="card p-4 mt-5">
+      <div class="mb-3 flex items-start justify-between gap-3 flex-wrap">
+        <div>
+          <div class="secttl">🔄 Sector rotation</div>
+          <div class="sectsub">NSE sector &amp; thematic indices, price returns from monthly closes. Dashed line = Nifty 50 — bars past it are beating the market.</div>
+        </div>
+        <div id="rotseg" class="flex items-center gap-1.5"></div>
       </div>
+      <div id="rot"></div>
     </div>
 
     <p class="text-[11px] text-slate-500 mt-5 leading-relaxed" id="sources"></p>
@@ -97,10 +144,10 @@
 'use strict';
 const $ = id => document.getElementById(id);
 const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const RANGE_MONTHS = { '1M':1, '1Y':12, '3Y':36, '5Y':60, '10Y':120, 'MAX':1e9 };
+const RANGE_MONTHS = { '6M':6, '1Y':12, '3Y':36, '5Y':60, '10Y':120, 'MAX':1e9 };
 let RANGE = '5Y';
 
-// ---------- formatting ----------
+/* ---------- formatting ---------- */
 const nf = (v,d=2) => v==null||isNaN(v) ? '—' : Number(v).toFixed(d);
 const fmtInt = v => v==null||isNaN(v) ? '—' : Math.round(v).toLocaleString('en-IN');
 const signK = v => { if(v==null||isNaN(v))return '—'; const s=v<0?'−':'+',a=Math.abs(v);
@@ -108,17 +155,35 @@ const signK = v => { if(v==null||isNaN(v))return '—'; const s=v<0?'−':'+',a=
 const flow = v => { if(v==null||isNaN(v))return '—'; const s=v<0?'−':'+',a=Math.abs(v);
   return a>=1e5 ? s+(a/1e5).toFixed(1)+'L' : a>=1e3 ? s+(a/1e3).toFixed(1)+'k' : s+Math.round(a); };
 const fmtPct = p => p==null||isNaN(p) ? '—' : (p>=0?'+':'−')+Math.abs(p).toFixed(1)+'%';
-const iso = s => s;                              // already iso
 const d2 = n => (n<10?'0':'')+n;
 const fromInt = n => { const s=String(n); return s.slice(0,4)+'-'+s.slice(4,6)+'-'+s.slice(6,8); };
 function labQ(endIso){ const [y,m]=endIso.split('-'); return MON[+m-1]+" '"+y.slice(2); }
 function fmtDate(isoS){ const p=isoS.split('-'); return p.length<3 ? MON[+p[1]-1]+' '+p[0] : (+p[2])+' '+MON[+p[1]-1]+' '+p[0]; }
+function labMonth(ym){ const [y,m]=ym.split('-'); return MON[+m-1]+" '"+y.slice(2); }
+const ord = n => { const s=['th','st','nd','rd'], v=n%100; return n+(s[(v-20)%10]||s[v]||s[0]); };
 
-// ---------- series store ----------
-// each: {label, sub, unit, fmt, mode:'level'|'avg'|'sum', color?:true, arr:[[iso,val]...] sorted asc}
+function fmtVal(cfg, v){
+  if(v==null||isNaN(v)) return '—';
+  switch(cfg.fmt){
+    case 'int':   return fmtInt(v);
+    case 'n1':    return nf(v,1);
+    case 'n2':    return nf(v,2);
+    case 'signk': return signK(v);
+    case 'flow':  return flow(v);
+    default:      return nf(v,2);
+  }
+}
+
+/* ---------- series store ---------- */
+// each: {label, sub, unit, fmt, grp, kind:'line'|'bars', agg:'sum'|'avg', inv?:true, arr:[[iso,val]...] asc}
 const S = {};
+const GROUPS = [ ['all','All'], ['mkt','Markets'], ['flow','Flows'], ['val','Valuation'], ['rates','Rates & FX'], ['eco','Economy'], ['cmd','Commodities'] ];
+const GLABEL = Object.fromEntries(GROUPS);
+let GRP = 'all';
+const ORDER = [];   // tile order
+
 function mkArr(mapObj){ return Object.keys(mapObj).sort().map(k=>[k, mapObj[k]]); }
-function nearestLE(arr, dateIso){ // last value with date <= dateIso
+function nearestLE(arr, dateIso){
   let lo=0, hi=arr.length-1, res=null;
   while(lo<=hi){ const mid=(lo+hi)>>1; if(arr[mid][0]<=dateIso){ res=arr[mid][1]; lo=mid+1; } else hi=mid-1; }
   return res;
@@ -126,11 +191,16 @@ function nearestLE(arr, dateIso){ // last value with date <= dateIso
 function bucketVals(arr, startEx, endIn){ const out=[]; for(const [d,v] of arr){ if(d>startEx && d<=endIn) out.push(v); } return out; }
 const mean = a => a.length ? a.reduce((x,y)=>x+y,0)/a.length : null;
 const sum  = a => a.length ? a.reduce((x,y)=>x+y,0) : null;
+const median = a => { if(!a.length) return null; const s=[...a].sort((x,y)=>x-y); const m=s.length>>1; return s.length%2 ? s[m] : (s[m-1]+s[m])/2; };
+function percentile(arr, v){          // share of history <= v, on the full series
+  const vals = arr.map(p=>p[1]).filter(x=>x!=null&&!isNaN(x)); if(!vals.length||v==null) return null;
+  let n=0; for(const x of vals) if(x<=v) n++;
+  return Math.round(100*n/vals.length);
+}
 
-// ---------- quarter columns ----------
-function lastDay(y,m1){ return new Date(Date.UTC(y, m1, 0)).getUTCDate(); }      // m1 = 1-based month
+function lastDay(y,m1){ return new Date(Date.UTC(y, m1, 0)).getUTCDate(); }
 function quarterEnds(refIso, n){
-  const ends=[]; const [ry,rm]=refIso.split('-').map(Number);
+  const ends=[]; const [ry]=refIso.split('-').map(Number);
   for(let y=ry+1; y>=2013; y--){
     for(const m of [12,9,6,3]){
       const eiso = y+'-'+d2(m)+'-'+d2(lastDay(y,m));
@@ -139,8 +209,35 @@ function quarterEnds(refIso, n){
   }
   return ends.slice(0, n);   // most recent first
 }
+function rangeCut(){
+  const m=RANGE_MONTHS[RANGE]; if(m>=1e9) return '0';
+  const d=new Date(); d.setMonth(d.getMonth()-m);
+  return d.toISOString().slice(0,10);
+}
+/* monthly aggregation for bar charts */
+function monthlyAgg(arr, how){
+  const m = new Map();
+  for(const [d,v] of arr){ if(v==null||isNaN(v)) continue; const k=d.slice(0,7);
+    if(!m.has(k)) m.set(k,[]); m.get(k).push(v); }
+  return [...m.entries()].sort((a,b)=>a[0]<b[0]?-1:1)
+    .map(([k,vs])=>[k, how==='sum'?sum(vs):mean(vs)]);
+}
+/* downsample keeping each bucket's min & max, so spikes survive */
+function downsample(pts, target){
+  target = target||240;
+  if(pts.length<=target*1.4) return pts;
+  const bs=Math.ceil(pts.length/(target/2)), out=[];
+  for(let i=0;i<pts.length;i+=bs){
+    const end=Math.min(pts.length,i+bs); let mnI=i,mxI=i;
+    for(let j=i;j<end;j++){ if(pts[j][1]<pts[mnI][1])mnI=j; if(pts[j][1]>pts[mxI][1])mxI=j; }
+    const a=Math.min(mnI,mxI), b=Math.max(mnI,mxI);
+    out.push(pts[a]); if(b!==a) out.push(pts[b]);
+  }
+  if(out[out.length-1][0]!==pts[pts.length-1][0]) out.push(pts[pts.length-1]);
+  return out;
+}
 
-// ================= LOAD =================
+/* ================= LOAD ================= */
 async function load(){
   let macro, vix, nifty, breadth, fii, bank, idx;
   try{
@@ -156,275 +253,441 @@ async function load(){
   }catch(e){ $('status').textContent = 'Could not load macro data. '+e; return; }
 
   const M = macro.series || {};
-  const reg = (key, cfg) => { if(cfg.arr && cfg.arr.length) S[key]=cfg; };
+  const reg = (key, cfg) => { if(cfg.arr && cfg.arr.length){ S[key]=cfg; ORDER.push(key); } };
   const fromMacro = (mk) => (M[mk] && M[mk].d) ? mkArr(M[mk].d) : [];
 
-  // --- Market strength ---
-  reg('vix', { label:'India VIX', sub:'fear gauge — NSE', unit:'', fmt:'n2', mode:'level', arr:mkArr(vix.px||{}) });
-  reg('nifty', { label:'Nifty 50', sub:'NSE', unit:'', fmt:'int', mode:'level', arr:mkArr(nifty.px||{}) });
+  // --- Markets ---
+  reg('nifty', { label:'Nifty 50', sub:'NSE', grp:'mkt', kind:'line', fmt:'int', deltaPct:true, arr:mkArr(nifty.px||{}) });
+  reg('vix',   { label:'India VIX', sub:'fear gauge — NSE', grp:'mkt', kind:'line', fmt:'n2', arr:mkArr(vix.px||{}) });
   if(breadth && breadth.dates){
     const D = breadth.dates.map(fromInt);
-    const g = (a,f) => D.map((d,i)=>[d, f(i)]);
-    reg('pct200', { label:'% stocks > 200 DMA', sub:'all NSE, adj. prices', unit:'%', fmt:'n1', mode:'level',
-      arr: g(D, i=>breadth.pct200[i]) });
-    reg('netadv', { label:'Net advances', sub:'advances − declines, avg/day', unit:'', fmt:'signk', mode:'avg', color:true,
-      arr: g(D, i=>breadth.adv[i]-breadth.dec[i]) });
-    reg('net52', { label:'Net new 52-week highs', sub:'highs − lows, avg/day', unit:'', fmt:'signk', mode:'avg', color:true,
-      arr: g(D, i=>breadth.hi[i]-breadth.lo[i]) });
+    const g = f => D.map((d,i)=>[d, f(i)]);
+    reg('pct200', { label:'% stocks above 200 DMA', sub:'Nifty-500 universe, adjusted closes', grp:'mkt', kind:'line', fmt:'n1', unit:'%',
+      arr: g(i=>breadth.pct200[i]) });
+    reg('netadv', { label:'Net advances', sub:'advances − declines · monthly avg/day', grp:'mkt', kind:'bars', agg:'avg', fmt:'signk',
+      arr: g(i=>breadth.adv[i]-breadth.dec[i]) });
+    reg('net52', { label:'Net new 52-week highs', sub:'highs − lows · monthly avg/day', grp:'mkt', kind:'bars', agg:'avg', fmt:'signk',
+      arr: g(i=>breadth.hi[i]-breadth.lo[i]) });
   }
-  // --- Institutional flows ---
-  const fr = (fii.rows||[]).filter(r=>r.date);
-  reg('fii', { label:'FII net flows', sub:'₹ Cr net per period — NSE', unit:'₹cr', fmt:'flow', mode:'sum', color:true,
+  // --- Flows ---
+  const fr = (fii.rows||[]).filter(r=>r.date).sort((a,b)=>a.date<b.date?-1:1);
+  reg('fii', { label:'FII net flows', sub:'₹ Cr · monthly sum (current month = MTD) — NSE', grp:'flow', kind:'bars', agg:'sum', fmt:'flow',
     arr: fr.map(r=>[r.date, r.fiiNet]) });
-  reg('dii', { label:'DII net flows', sub:'₹ Cr net per period — NSE', unit:'₹cr', fmt:'flow', mode:'sum', color:true,
+  reg('dii', { label:'DII net flows', sub:'₹ Cr · monthly sum (current month = MTD) — NSE', grp:'flow', kind:'bars', agg:'sum', fmt:'flow',
     arr: fr.map(r=>[r.date, r.diiNet]) });
   // --- Valuation ---
-  reg('niftype', { label:'Nifty 50 PE', sub:'consolidated — NSE / niftyindices', unit:'', fmt:'n2', mode:'level', arr:fromMacro('niftype') });
-  reg('niftypb', { label:'Nifty 50 PB', sub:'NSE / niftyindices', unit:'', fmt:'n2', mode:'level', arr:fromMacro('niftypb') });
-  reg('niftydy', { label:'Nifty 50 dividend yield', sub:'% — NSE / niftyindices', unit:'%', fmt:'n2', mode:'level', arr:fromMacro('niftydy') });
-  // --- Rates & currency ---
-  reg('repo',   { label:'RBI repo rate', sub:'% — RBI', unit:'%', fmt:'n2', mode:'level', arr:fromMacro('repo') });
-  reg('india10y',{ label:'India 10Y G-Sec yield', sub:'% — FRED, monthly', unit:'%', fmt:'n2', mode:'level', arr:fromMacro('india10y') });
-  reg('us10y',  { label:'US 10Y yield', sub:'% — Yahoo', unit:'%', fmt:'n2', mode:'level', arr:fromMacro('us10y') });
-  reg('usdinr', { label:'USD/INR', sub:'Yahoo', unit:'', fmt:'n2', mode:'level', arr:fromMacro('usdinr') });
-  reg('dxy',    { label:'US dollar index (DXY)', sub:'Yahoo', unit:'', fmt:'n2', mode:'level', arr:fromMacro('dxy') });
-  // --- Economy: growth & inflation (YoY) ---
-  reg('cpi', { label:'CPI inflation', sub:'MOSPI, monthly', unit:'%', fmt:'n1', mode:'qlast', color:'inv', arr:fromMacro('cpi') });
-  reg('iip', { label:'Industrial production (IIP)', sub:'MOSPI, monthly', unit:'%', fmt:'n1', mode:'qlast', color:true, arr:fromMacro('iip') });
-  reg('gdp', { label:'GDP growth', sub:'MOSPI, quarterly (real)', unit:'%', fmt:'n1', mode:'qlast', color:true, arr:fromMacro('gdp') });
+  reg('niftype', { label:'Nifty 50 PE', sub:'consolidated — niftyindices', grp:'val', kind:'line', fmt:'n2', arr:fromMacro('niftype') });
+  reg('niftypb', { label:'Nifty 50 PB', sub:'niftyindices', grp:'val', kind:'line', fmt:'n2', arr:fromMacro('niftypb') });
+  reg('niftydy', { label:'Nifty dividend yield', sub:'% — niftyindices', grp:'val', kind:'line', fmt:'n2', unit:'%', arr:fromMacro('niftydy') });
+  // --- Rates & FX ---
+  reg('repo',    { label:'RBI repo rate', sub:'% — RBI', grp:'rates', kind:'line', fmt:'n2', unit:'%', arr:fromMacro('repo') });
+  reg('india10y',{ label:'India 10Y G-Sec', sub:'% — FRED, monthly', grp:'rates', kind:'line', fmt:'n2', unit:'%', arr:fromMacro('india10y') });
+  reg('us10y',   { label:'US 10Y yield', sub:'% — Yahoo', grp:'rates', kind:'line', fmt:'n2', unit:'%', arr:fromMacro('us10y') });
+  reg('usdinr',  { label:'USD / INR', sub:'Yahoo', grp:'rates', kind:'line', fmt:'n2', arr:fromMacro('usdinr') });
+  reg('dxy',     { label:'US dollar index', sub:'ICE DXY — Yahoo', grp:'rates', kind:'line', fmt:'n2', arr:fromMacro('dxy') });
+  // --- Economy (y/y %) ---
+  reg('cpi', { label:'CPI inflation', sub:'y/y % — MOSPI, monthly', grp:'eco', kind:'line', fmt:'n1', unit:'%', inv:true, arr:fromMacro('cpi') });
+  reg('iip', { label:'Industrial production', sub:'IIP y/y % — MOSPI, monthly', grp:'eco', kind:'line', fmt:'n1', unit:'%', arr:fromMacro('iip') });
+  reg('gdp', { label:'GDP growth', sub:'real y/y % — MOSPI (feed paused Nov-24)', grp:'eco', kind:'line', fmt:'n1', unit:'%', arr:fromMacro('gdp') });
   const bankArr = (bank.rows||[]).filter(r=>r.date && r.actual!=null).map(r=>[r.date, r.actual]);
-  reg('bankyoy', { label:'Bank credit', sub:'RBI, y/y — fortnightly', unit:'%', fmt:'n1', mode:'qlast', color:true, arr:bankArr });
-  reg('depyoy', { label:'Deposit growth', sub:'RBI, y/y — weekly', unit:'%', fmt:'n1', mode:'qlast', color:true, arr:fromMacro('deposits') });
-  reg('m3yoy', { label:'Money supply M3', sub:'RBI, y/y — weekly', unit:'%', fmt:'n1', mode:'qlast', color:true, arr:fromMacro('m3') });
-  // --- Banking, commodities & external (levels) ---
-  reg('forex', { label:'Forex reserves', sub:'$ bn — RBI weekly', unit:'$bn', fmt:'n1', mode:'level', arr:fromMacro('forex') });
-  reg('crude', { label:'Brent crude', sub:'$/bbl — Yahoo', unit:'$', fmt:'n1', mode:'level', arr:fromMacro('crude') });
-  reg('gold',  { label:'Gold', sub:'₹/10g — Yahoo × USD/INR', unit:'₹', fmt:'int', mode:'level', arr:fromMacro('gold') });
+  reg('bankyoy', { label:'Bank credit growth', sub:'y/y % — RBI fortnightly', grp:'eco', kind:'line', fmt:'n1', unit:'%', arr:bankArr });
+  reg('depyoy', { label:'Deposit growth', sub:'y/y % — RBI weekly', grp:'eco', kind:'line', fmt:'n1', unit:'%', arr:fromMacro('deposits') });
+  reg('m3yoy',  { label:'Money supply M3', sub:'y/y % — RBI weekly', grp:'eco', kind:'line', fmt:'n1', unit:'%', arr:fromMacro('m3') });
+  // --- Commodities & external ---
+  reg('forex', { label:'Forex reserves', sub:'$ bn — RBI weekly', grp:'cmd', kind:'line', fmt:'n1', arr:fromMacro('forex') });
+  reg('crude', { label:'Brent crude', sub:'$/bbl — Yahoo', grp:'cmd', kind:'line', fmt:'n1', arr:fromMacro('crude') });
+  reg('gold',  { label:'Gold', sub:'₹/10g — Yahoo × USD/INR', grp:'cmd', kind:'line', fmt:'int', deltaPct:true, arr:fromMacro('gold') });
 
-  // reference date = latest date present anywhere
-  let ref='0'; for(const k in S){ const a=S[k].arr; if(a.length && a[a.length-1][0]>ref) ref=a[a.length-1][0]; }
-  window.__ref = ref;
-  window.__updated = macro.updated;
+  /* --- derived, our own composites --- */
+  // Earnings-yield gap: 100/PE − India 10Y (pp). Positive = equities cheap vs bonds.
+  if(S.niftype && S.india10y){
+    const arr = S.niftype.arr.map(([d,pe])=>{ const y=nearestLE(S.india10y.arr,d);
+      return (pe&&y!=null)? [d, 100/pe - y] : null; }).filter(Boolean);
+    if(arr.length>1){ S.eygap={ label:'Earnings yield − 10Y gap', sub:'100/PE minus India 10Y, pp · bond–equity gauge', grp:'val', kind:'line', fmt:'n2', arr };
+      ORDER.splice(ORDER.indexOf('niftydy')+1, 0, 'eygap'); }
+  }
+  // India − US 10Y spread (pp)
+  if(S.india10y && S.us10y){
+    const arr = S.india10y.arr.map(([d,iy])=>{ const uy=nearestLE(S.us10y.arr,d);
+      return (iy!=null&&uy!=null)? [d, iy-uy] : null; }).filter(Boolean);
+    if(arr.length>1){ S.spread1010={ label:'India − US 10Y spread', sub:'pp · carry / risk-premium gauge', grp:'rates', kind:'line', fmt:'n2', arr };
+      ORDER.splice(ORDER.indexOf('us10y')+1, 0, 'spread1010'); }
+  }
+  // Real policy rate: repo − CPI (pp), on CPI dates
+  if(S.repo && S.cpi){
+    const arr = S.cpi.arr.map(([d,c])=>{ const r=nearestLE(S.repo.arr,d);
+      return (c!=null&&r!=null)? [d, r-c] : null; }).filter(Boolean);
+    if(arr.length>1){ S.realrate={ label:'Real policy rate', sub:'repo minus CPI, pp · positive = restrictive', grp:'rates', kind:'line', fmt:'n1', arr };
+      ORDER.splice(ORDER.indexOf('repo')+1, 0, 'realrate'); }
+  }
 
-  buildCards();
-  buildSections(ref);
+  window.__nifty = mkArr(nifty.px||{});
+  $('updated').textContent = '· updated '+ (macro.updated? macro.updated.slice(0,10) : '');
+  $('sources').innerHTML = 'Sources: NSE (Nifty, FII/DII, breadth) · niftyindices (Nifty PE/PB/dividend yield) · RBI via mql5 economic calendar (repo rate, deposits, M3, forex, bank credit) · MOSPI via mql5 (CPI, IIP, GDP) · Yahoo Finance (US 10Y, USD/INR, dollar index, Brent, gold) · FRED (India 10Y). Breadth computed in-house from adjusted NSE closes over the point-in-time Nifty 500. Derived panels (earnings-yield gap, 10Y spread, real rate) computed on-page. Not investment advice.';
+
+  buildPulse();
+  buildPills();
+  buildTiles();
+  buildHeat();
   buildRotation(idx);
-  $('updated').textContent = '· updated '+ (macro.updated? macro.updated.slice(0,10) : ref);
-  $('sources').innerHTML = 'Sources: NSE (Nifty, FII/DII, breadth) · niftyindices (Nifty PE/PB/dividend yield) · RBI via mql5 economic calendar (repo rate, deposits, M3, forex, bank credit) · MOSPI via mql5 (CPI, IIP, GDP) · Yahoo Finance (US 10Y, USD/INR, dollar index, Brent, gold) · FRED (India 10Y). Breadth computed in-house from adjusted NSE closes over the point-in-time Nifty 500. Not investment advice.';
   $('status').classList.add('hidden'); $('content').classList.remove('hidden');
 }
 
-// ---------- value formatting per series ----------
-function fmtVal(cfg, v){
-  if(v==null||isNaN(v)) return '—';
-  switch(cfg.fmt){
-    case 'int':   return fmtInt(v);
-    case 'n1':    return nf(v,1);
-    case 'n2':    return nf(v,2);
-    case 'signk': return signK(v);
-    case 'flow':  return flow(v);
-    default:      return nf(v,2);
-  }
-}
-function colorClass(cfg, v){
-  if(!cfg.color || v==null||isNaN(v)) return '';
-  const pos = cfg.color==='inv' ? v<0 : v>0;   // for CPI, lower is "good" → invert
-  return v===0 ? '' : (pos ? 'pos' : 'neg');
-}
+/* ================= SHARED TOOLTIP ================= */
+const tip = { el:null,
+  show(html, x, y){ this.el.innerHTML=html; this.el.style.opacity='1';
+    this.el.style.left=Math.min(window.innerWidth-150, x+14)+'px'; this.el.style.top=Math.max(8,y-12)+'px'; },
+  hide(){ this.el.style.opacity='0'; } };
 
-// ================= SUMMARY CARDS =================
-function card(lb, val, sub, cls){
-  return '<div class="sw-stat"><div class="sw-lb">'+lb+'</div>'+
-    '<div class="sw-v '+(cls||'')+'">'+val+'</div>'+
-    '<div class="sw-d">'+(sub||'')+'</div></div>';
+/* ================= PULSE STRIP ================= */
+function sinceYear(arr){ return arr.length? arr[0][0].slice(0,4) : ''; }
+function deltaChip(cfg, cur, prev){
+  if(cur==null||prev==null) return '';
+  const d = cfg.deltaPct ? (prev? (cur/prev-1)*100 : null) : cur-prev;
+  if(d==null||isNaN(d)) return '';
+  const good = cfg.inv ? d<0 : d>0;
+  const cls = d===0 ? '' : (good?'pos':'neg');
+  const txt = cfg.deltaPct ? fmtPct(d)
+    : (cfg.fmt==='flow'||cfg.fmt==='signk') ? fmtVal(cfg,d)
+    : (d>=0?'+':'−')+Math.abs(d).toFixed(cfg.fmt==='n1'?1:2);
+  return '<span class="p-chip '+cls+'">'+txt+'</span>';
 }
-function latest(key){ const a=S[key]&&S[key].arr; return a&&a.length ? a[a.length-1] : null; }
-function buildCards(){
+function pulseCard(key, opts){
+  const cfg=S[key]; if(!cfg) return '';
+  const a=cfg.arr, t=a[a.length-1], p=a[a.length-2];
+  const val = (opts&&opts.val!=null)? opts.val : t[1];
+  const chip = (opts&&opts.chip!=null)? opts.chip : deltaChip(cfg,t?t[1]:null,p?p[1]:null);
+  const pct = percentile(a, val);
+  const sparkArr = a.slice(-Math.min(a.length, 130));
+  const spark = sparkline(sparkArr, cfg);
+  return '<div class="card p-3.5 pulse">'+
+    '<div class="p-lb"><span>'+(opts&&opts.label||cfg.label)+'</span>'+chip+'</div>'+
+    '<div class="p-v">'+((opts&&opts.vtxt)||fmtVal(cfg,val))+(cfg.unit==='%'?'<span style="font-size:13px;color:var(--text-faint)">%</span>':'')+'</div>'+
+    spark+
+    (pct!=null? '<div class="p-rail"><i style="left:'+pct+'%"></i></div>'+
+      '<div class="p-cap">'+ord(pct)+' pctile since '+sinceYear(a)+' · '+fmtDate(t[0])+'</div>'
+      : '<div class="p-cap">'+fmtDate(t[0])+'</div>')+
+    '</div>';
+}
+function sparkline(pts, cfg){
+  pts = downsample(pts.filter(p=>p[1]!=null&&!isNaN(p[1])), 80);
+  if(pts.length<2) return '<div style="height:30px"></div>';
+  const W=100,H=28;
+  const vals=pts.map(p=>p[1]); let mn=Math.min(...vals), mx=Math.max(...vals); if(mn===mx){mn-=1;mx+=1;}
+  const xs=i=>(W*i/(pts.length-1)).toFixed(1), ys=v=>(2+(H-4)*(1-(v-mn)/(mx-mn))).toFixed(1);
+  let d=''; pts.forEach((p,i)=>{ d+=(i?'L':'M')+xs(i)+' '+ys(p[1]); });
+  return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="30" preserveAspectRatio="none" style="margin-top:6px;display:block">'+
+    '<path d="'+d+'" fill="none" style="stroke:var(--accent)" stroke-width="1.5" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg>';
+}
+function buildPulse(){
   const c=[];
-  let v=latest('vix'); if(v) c.push(card('India VIX', nf(v[1],2), fmtDate(v[0])));
-  v=latest('niftype'); if(v) c.push(card('Nifty PE', nf(v[1],2), fmtDate(v[0])));
-  v=latest('usdinr'); if(v) c.push(card('USD/INR', nf(v[1],2), fmtDate(v[0])));
-  v=latest('india10y')||latest('us10y'); const g=latest('india10y');
-    if(g) c.push(card('India 10Y', nf(g[1],2)+'%', fmtDate(g[0])));
-  // FII net 5D
-  if(S.fii){ const a=S.fii.arr, last5=a.slice(-5); const t=sum(last5.map(x=>x[1]));
-    c.push(card('FII net · 5D', flow(t)+' Cr', 'last 5 sessions', t>=0?'pos':'neg')); }
-  v=latest('pct200'); if(v) c.push(card('% &gt; 200 DMA', nf(v[1],1)+'%', fmtDate(v[0])));
-  $('cards').innerHTML = c.join('');
-}
-
-// ================= SECTION TABLES =================
-const SECTIONS = [
-  { t:'📈 Market strength & sentiment', s:'How strong and broad the market is right now.', rows:['vix','nifty','pct200'], cols:'std' },
-  { t:'📊 Breadth', s:'Daily participation — per-period average of daily counts.', rows:['netadv','net52'], cols:'std' },
-  { t:'💸 Institutional flows', s:'Net foreign & domestic institutional flows (₹ Cr, summed over each period).', rows:['fii','dii'], cols:'std' },
-  { t:'🏷️ Valuation', s:'What the market is paying for earnings, book value and dividends.', rows:['niftype','niftypb','niftydy'], cols:'std' },
-  { t:'🏦 Rates & currency', s:'Policy rate, bond yields and the rupee.', rows:['repo','india10y','us10y','usdinr','dxy'], cols:'std' },
-  { t:'🌱 Economy — growth & inflation', s:'Year-on-year %, latest reading as of each quarter.', rows:['cpi','iip','gdp','bankyoy','depyoy','m3yoy'], cols:'q' },
-  { t:'🛢️ Commodities & external', s:'Reserves, oil and gold.', rows:['forex','crude','gold'], cols:'std' },
-];
-
-function buildSections(ref){
-  const qends = quarterEnds(ref, 12);
-  const html = SECTIONS.map((sec,si)=>{
-    const showTY = sec.cols==='std';                 // Today / Yday columns
-    const heads = ['<th class="lft qkeep">Indicator</th>'];
-    if(showTY){ heads.push('<th class="qkeep colnow">Today</th>','<th class="qkeep">Yday</th>'); }
-    qends.forEach((q,i)=> heads.push('<th class="qcol'+(i===0&&!showTY?' qkeep':'')+'">'+labQ(q)+'</th>'));
-    const body = sec.rows.filter(k=>S[k]).map(k=>rowHtml(k, qends, showTY, si)).join('');
-    if(!body) return '';
-    return '<div class="card p-4"><div class="mb-2"><div class="secttl">'+sec.t+'</div><div class="sectsub">'+sec.s+'</div></div>'+
-      '<div class="overflow-x-auto"><table class="mac" data-sec="'+si+'"><thead><tr>'+heads.join('')+'</tr></thead>'+
-      '<tbody>'+body+'</tbody></table></div></div>';
-  }).join('');
-  $('sections').innerHTML = html;
-  // wire row expand
-  $('sections').querySelectorAll('tr.irow').forEach(tr=>{
-    tr.addEventListener('click', ()=>toggleRow(tr));
-  });
-}
-
-function colVal(cfg, colDate, prevQEnd){
-  if(cfg.mode==='level') return nearestLE(cfg.arr, colDate);
-  const vals = bucketVals(cfg.arr, prevQEnd, colDate);
-  if(cfg.mode==='sum')   return sum(vals);
-  if(cfg.mode==='qlast') return vals.length ? vals[vals.length-1] : null;   // latest reading IN this quarter (blank if none — avoids stale carry-forward)
-  return mean(vals);
-}
-function rowHtml(key, qends, showTY, si){
-  const cfg=S[key], a=cfg.arr;
-  const tds=['<td class="lft qkeep"><div class="ind-name"><span class="ind-caret">▶</span>'+cfg.label+'</div><div class="ind-sub">'+cfg.sub+'</div></td>'];
-  if(showTY){
-    const t=a[a.length-1], y=a[a.length-2];
-    tds.push('<td class="qkeep tnow '+colorClass(cfg,t?t[1]:null)+'"><span class="colnow">'+(t?fmtVal(cfg,t[1]):'—')+'</span></td>');
-    tds.push('<td class="qkeep '+colorClass(cfg,y?y[1]:null)+'">'+(y?fmtVal(cfg,y[1]):'—')+'</td>');
+  c.push(pulseCard('nifty'));
+  c.push(pulseCard('vix'));
+  c.push(pulseCard('niftype', {label:'Nifty PE'}));
+  c.push(pulseCard('india10y', {label:'India 10Y'}));
+  c.push(pulseCard('usdinr', {label:'USD/INR'}));
+  if(S.fii){ const a=S.fii.arr, t5=sum(a.slice(-5).map(x=>x[1]));
+    c.push('<div class="card p-3.5 pulse">'+
+      '<div class="p-lb"><span>FII net · 5D</span></div>'+
+      '<div class="p-v '+(t5>=0?'pos':'neg')+'">'+flow(t5)+'<span style="font-size:13px;color:var(--text-faint)"> Cr</span></div>'+
+      sparkBars(a.slice(-30))+
+      '<div class="p-cap">last 5 sessions · daily bars below</div></div>');
   }
-  qends.forEach((q,i)=>{
-    const prev = qends[i+1] || '2000-01-01';         // previous quarter end (bucket start)
-    // for level mode the bucket start is irrelevant
-    const v = colVal(cfg, q, prev);
-    const keep = (i===0 && !showTY) ? ' qkeep' : '';
-    tds.push('<td class="qcol'+keep+' '+colorClass(cfg,v)+'">'+fmtVal(cfg,v)+'</td>');
-  });
-  const span = 1 + (showTY?2:0) + qends.length;
-  return '<tr class="irow" data-key="'+key+'" data-span="'+span+'">'+tds.join('')+'</tr>';
+  $('pulse').innerHTML = c.filter(Boolean).join('');
+}
+function sparkBars(pts){
+  pts = pts.filter(p=>p[1]!=null&&!isNaN(p[1]));
+  if(!pts.length) return '<div style="height:30px"></div>';
+  const W=100,H=28, mx=Math.max(...pts.map(p=>Math.abs(p[1])))||1;
+  const bw=Math.max(1.2, W/pts.length-0.8), zero=H/2;
+  let r='';
+  pts.forEach((p,i)=>{ const h=Math.max(0.8,(Math.abs(p[1])/mx)*(H/2-1));
+    const x=(W*i/pts.length).toFixed(1), y=p[1]>=0? zero-h : zero;
+    r+='<rect x="'+x+'" y="'+y.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+h.toFixed(1)+'" rx="0.6" style="fill:var(--'+(p[1]>=0?'pos':'neg')+')" opacity="0.85"/>'; });
+  return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="30" preserveAspectRatio="none" style="margin-top:6px;display:block">'+
+    '<line x1="0" y1="'+zero+'" x2="'+W+'" y2="'+zero+'" style="stroke:var(--border)" stroke-width="0.6"/>'+r+'</svg>';
 }
 
-function toggleRow(tr){
-  const open = tr.classList.contains('open');
-  // close siblings in same table
-  const tbody=tr.parentNode;
-  tbody.querySelectorAll('tr.open').forEach(o=>{ o.classList.remove('open'); const n=o.nextElementSibling; if(n&&n.classList.contains('chart-row')) n.remove(); });
-  if(open) return;
-  tr.classList.add('open');
-  const key=tr.getAttribute('data-key'), span=tr.getAttribute('data-span');
-  const row=document.createElement('tr'); row.className='chart-row';
-  row.innerHTML='<td class="chart-cell" colspan="'+span+'"><div class="chart-wrap"></div></td>';
-  tr.after(row);
-  renderChart(row.querySelector('.chart-wrap'), key);
-}
-
-// ================= CHART (SVG line + hover) =================
-function rangeCut(){
-  const m=RANGE_MONTHS[RANGE]; if(m>=1e9) return '0';
-  const d=new Date(); d.setMonth(d.getMonth()-m);
-  return d.toISOString().slice(0,10);
-}
-function renderChart(wrap, key){
-  const cfg=S[key]; const cut=rangeCut();
-  let pts=cfg.arr.filter(p=>p[0]>=cut && p[1]!=null && !isNaN(p[1]));
-  if(pts.length<2) pts=cfg.arr.filter(p=>p[1]!=null);      // fallback: whole series
-  if(pts.length<2){ wrap.innerHTML='<div class="sectsub">Not enough data to chart.</div>'; return; }
-  const W = Math.max(320, wrap.clientWidth-24), H=170, PL=8, PR=8, PT=12, PB=20;
-  const xs = i => PL + (W-PL-PR) * (i/(pts.length-1));
-  const vals = pts.map(p=>p[1]); let mn=Math.min(...vals), mx=Math.max(...vals);
-  if(mn===mx){ mn-=1; mx+=1; } const pad=(mx-mn)*0.08; mn-=pad; mx+=pad;
-  const ys = v => PT + (H-PT-PB) * (1-(v-mn)/(mx-mn));
-  let dLine='', dArea='';
-  pts.forEach((p,i)=>{ const x=xs(i).toFixed(1), y=ys(p[1]).toFixed(1); dLine+=(i?'L':'M')+x+' '+y; });
-  dArea = dLine + 'L'+xs(pts.length-1).toFixed(1)+' '+(H-PB)+'L'+xs(0).toFixed(1)+' '+(H-PB)+'Z';
-  const acc = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()||'#3b82f6';
-  const gid='g'+key;
-  const first=pts[0][1], last=pts[pts.length-1][1];
-  const chg = first? ((last-first)/Math.abs(first)*100) : null;
-  const head = '<div class="flex items-center justify-between mb-1 flex-wrap gap-2">'+
-    '<div class="sectsub" style="font-size:12px;color:var(--text-muted)"><b style="color:var(--text)">'+cfg.label+'</b> · '+RANGE+
-    (chg!=null? ' · <span class="'+(chg>=0?'pos':'neg')+'">'+fmtPct(chg)+'</span>':'')+'</div>'+
-    '<div class="sectsub">'+fmtDate(pts[0][0])+' → '+fmtDate(pts[pts.length-1][0])+'</div></div>';
-  const svg = '<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="'+H+'" preserveAspectRatio="none" style="overflow:visible">'+
-    '<defs><linearGradient id="'+gid+'" x1="0" y1="0" x2="0" y2="1">'+
-      '<stop offset="0%" stop-color="'+acc+'" stop-opacity="0.28"/><stop offset="100%" stop-color="'+acc+'" stop-opacity="0"/></linearGradient></defs>'+
-    '<path d="'+dArea+'" fill="url(#'+gid+')"/>'+
-    '<path d="'+dLine+'" fill="none" stroke="'+acc+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>'+
-    '<line id="gl" x1="0" y1="'+PT+'" x2="0" y2="'+(H-PB)+'" stroke="'+acc+'" stroke-width="1" stroke-dasharray="3 3" opacity="0"/>'+
-    '<circle id="gd" r="3.5" fill="'+acc+'" stroke="var(--surface)" stroke-width="1.5" opacity="0"/>'+
-    '<rect id="hit" x="0" y="0" width="'+W+'" height="'+H+'" fill="transparent"/></svg>';
-  wrap.innerHTML = head + svg;
-  // hover
-  const svgEl=wrap.querySelector('svg'), gl=wrap.querySelector('#gl'), gd=wrap.querySelector('#gd'), tip=$('tip');
-  const hit=wrap.querySelector('#hit');
-  function move(ev){
-    const r=svgEl.getBoundingClientRect(); const px=(ev.touches?ev.touches[0].clientX:ev.clientX)-r.left;
-    const frac=Math.max(0,Math.min(1, px/r.width)); const i=Math.round(frac*(pts.length-1));
-    const x=xs(i), y=ys(pts[i][1]);
-    gl.setAttribute('x1',x); gl.setAttribute('x2',x); gl.setAttribute('opacity','.5');
-    gd.setAttribute('cx',x); gd.setAttribute('cy',y); gd.setAttribute('opacity','1');
-    tip.innerHTML='<b>'+fmtVal(cfg,pts[i][1])+(cfg.unit&&cfg.unit[0]!=='₹'&&cfg.unit!=='$bn'&&cfg.unit!=='$'?' '+cfg.unit:'')+'</b><div class="d">'+fmtDate(pts[i][0])+'</div>';
-    tip.style.opacity='1';
-    tip.style.left=Math.min(window.innerWidth-120,(ev.touches?ev.touches[0].clientX:ev.clientX)+14)+'px';
-    tip.style.top=((ev.touches?ev.touches[0].clientY:ev.clientY)-10)+'px';
-  }
-  function out(){ gl.setAttribute('opacity','0'); gd.setAttribute('opacity','0'); tip.style.opacity='0'; }
-  hit.addEventListener('mousemove',move); hit.addEventListener('mouseleave',out);
-  hit.addEventListener('touchmove',move,{passive:true}); hit.addEventListener('touchend',out);
-}
-
-// ================= SECTOR ROTATION =================
-function buildRotation(idx){
-  if(!idx||!idx.indices){ $('rotTable').closest('.card').style.display='none'; return; }
-  const live = idx.live||{};
-  // flat monthly series per index (asc), splice live.last as current point
-  function series(ix){
-    const out=[]; const cl=ix.closes||{};
-    Object.keys(cl).sort().forEach(y=>{ cl[y].forEach((v,mi)=>{ if(v!=null) out.push([+y*12+mi, v]); }); });
-    // refresh the current month's close with the live value (same slot — do NOT append,
-    // or the last two points become near-duplicates and every 1-month return collapses to 0).
-    const lv=live[ix.key]; if(lv && lv.last!=null && out.length) out[out.length-1][1]=lv.last;
-    return out;
-  }
-  function retN(ser, n){ if(ser.length<2)return null; const cur=ser[ser.length-1][1]; const j=ser.length-1-n; if(j<0)return null; const past=ser[j][1]; return past? (cur/past-1)*100:null; }
-  const nifty = idx.indices.find(i=>i.key==='NIFTY 50'); const nser=nifty?series(nifty):[];
-  const n3 = retN(nser,3);
-  const rows = idx.indices.filter(i=>i.grp==='sector'||i.grp==='theme').map(i=>{
-    const s=series(i);
-    return { label:i.label, m1:retN(s,1), m3:retN(s,3), m6:retN(s,6), y1:retN(s,12) };
-  }).filter(r=>r.m3!=null);
-  rows.push({ label:'Nifty 50', m1:retN(nser,1), m3:n3, m6:retN(nser,6), y1:retN(nser,12), isNifty:true });
-  rows.sort((a,b)=> (b.m3??-1e9)-(a.m3??-1e9));
-  const cell = v => '<td class="'+(v>0?'pos':v<0?'neg':'')+'">'+fmtPct(v)+'</td>';
-  $('rotBody').innerHTML = rows.map(r=>{
-    const vsn = (r.m3!=null&&n3!=null)? r.m3-n3 : null;
-    return '<tr'+(r.isNifty?' style="font-weight:700;background:color-mix(in srgb,var(--accent) 7%,transparent)"':'')+'>'+
-      '<td class="lft" style="font-weight:600">'+r.label+'</td>'+
-      cell(r.m1)+cell(r.m3)+cell(r.m6)+cell(r.y1)+
-      '<td class="'+(vsn>0?'pos':vsn<0?'neg':'')+'">'+(vsn==null?'—':(vsn>=0?'+':'−')+Math.abs(vsn).toFixed(1))+'</td></tr>';
-  }).join('');
-}
-
-// ================= PERIOD SELECTOR =================
-function buildSeg(){
+/* ================= PILLS ================= */
+function buildPills(){
   $('seg').innerHTML = Object.keys(RANGE_MONTHS).map(k=>
     '<button class="segbtn'+(k===RANGE?' on':'')+'" data-r="'+k+'">'+k+'</button>').join('');
   $('seg').querySelectorAll('.segbtn').forEach(b=>b.addEventListener('click',()=>{
     RANGE=b.getAttribute('data-r');
     $('seg').querySelectorAll('.segbtn').forEach(x=>x.classList.toggle('on', x===b));
-    // re-render any open charts
-    document.querySelectorAll('tr.open').forEach(tr=>{
-      const cr=tr.nextElementSibling; if(cr&&cr.classList.contains('chart-row')) renderChart(cr.querySelector('.chart-wrap'), tr.getAttribute('data-key'));
+    rerenderTiles();
+  }));
+  $('grpseg').innerHTML = GROUPS.map(([k,lb])=>
+    '<button class="segbtn'+(k===GRP?' on':'')+'" data-g="'+k+'">'+lb+'</button>').join('');
+  $('grpseg').querySelectorAll('.segbtn').forEach(b=>b.addEventListener('click',()=>{
+    GRP=b.getAttribute('data-g');
+    $('grpseg').querySelectorAll('.segbtn').forEach(x=>x.classList.toggle('on', x===b));
+    document.querySelectorAll('#tiles .tile').forEach(t=>{
+      t.style.display = (GRP==='all'||t.getAttribute('data-grp')===GRP)?'':'none';
     });
+    rerenderTiles();   // newly shown tiles may not be drawn yet
   }));
 }
-buildSeg();
+
+/* ================= CHART TILES ================= */
+const drawn = new Set();
+let io=null;
+function buildTiles(){
+  const html = ORDER.filter(k=>S[k]).map(k=>{
+    const cfg=S[k], a=cfg.arr, t=a[a.length-1], p=a[a.length-2];
+    let vhtml, chip;
+    if(cfg.kind==='bars'){
+      const m=monthlyAgg(a,cfg.agg), lm=m[m.length-1], pm=m[m.length-2];
+      vhtml=fmtVal(cfg,lm?lm[1]:null); chip=deltaChip(cfg, lm?lm[1]:null, pm?pm[1]:null);
+    } else {
+      vhtml=fmtVal(cfg,t?t[1]:null)+(cfg.unit==='%'?'<span style="font-size:11px;color:var(--text-faint)">%</span>':'');
+      chip=deltaChip(cfg,t?t[1]:null,p?p[1]:null);
+    }
+    return '<div class="card tile" data-grp="'+cfg.grp+'" data-key="'+k+'">'+
+      '<div class="flex items-start justify-between gap-2">'+
+        '<div><div class="t-name"><span class="gtag">'+GLABEL[cfg.grp]+'</span>'+cfg.label+'</div>'+
+        '<div class="t-sub">'+cfg.sub+'</div></div>'+
+        '<div class="text-right shrink-0"><div class="t-val">'+vhtml+'</div><div style="margin-top:2px">'+chip+'</div></div>'+
+      '</div>'+
+      '<div class="ch" data-key="'+k+'"></div>'+
+      '<div class="t-foot" data-foot="'+k+'"></div>'+
+    '</div>';
+  }).join('');
+  $('tiles').innerHTML = html;
+  io = new IntersectionObserver(es=>{
+    es.forEach(e=>{ if(e.isIntersecting){ io.unobserve(e.target); drawTile(e.target.getAttribute('data-key')); } });
+  }, {rootMargin:'400px'});
+  document.querySelectorAll('#tiles .ch').forEach(el=>io.observe(el));
+}
+function rerenderTiles(){ drawn.forEach(k=>{ const el=tileVisible(k); if(el) drawTile(k); }); }
+function tileVisible(k){
+  const t=document.querySelector('#tiles .tile[data-key="'+k+'"]');
+  return (t && t.style.display!=='none') ? t.querySelector('.ch') : null;
+}
+function drawTile(k){
+  const cfg=S[k]; const el=document.querySelector('#tiles .ch[data-key="'+k+'"]');
+  if(!cfg||!el) return;
+  drawn.add(k);
+  if(el.parentElement.style.display==='none') return;
+  if(cfg.kind==='bars') barChart(el, cfg); else lineChart(el, cfg);
+}
+
+function lineChart(el, cfg){
+  const cut=rangeCut();
+  let pts=cfg.arr.filter(p=>p[0]>=cut && p[1]!=null && !isNaN(p[1]));
+  let fellBack=false;
+  if(pts.length<2){ pts=cfg.arr.filter(p=>p[1]!=null&&!isNaN(p[1])); fellBack=true; }
+  if(pts.length<2){ el.innerHTML='<div class="sectsub" style="padding:24px 0">Not enough data yet.</div>'; return; }
+  const winVals=pts.map(p=>p[1]);
+  const lo=Math.min(...winVals), hi=Math.max(...winVals), med=median(winVals);
+  pts=downsample(pts);
+  const W=Math.max(280, el.clientWidth||el.parentElement.clientWidth-28), H=150, PL=6, PR=6, PT=10, PB=6;
+  let mn=lo, mx=hi; if(mn===mx){mn-=1;mx+=1;} const pad=(mx-mn)*0.08; mn-=pad; mx+=pad;
+  const xs=i=>PL+(W-PL-PR)*(i/(pts.length-1));
+  const ys=v=>PT+(H-PT-PB)*(1-(v-mn)/(mx-mn));
+  let dL=''; pts.forEach((p,i)=>{ dL+=(i?'L':'M')+xs(i).toFixed(1)+' '+ys(p[1]).toFixed(1); });
+  const dA=dL+'L'+xs(pts.length-1).toFixed(1)+' '+(H-PB)+'L'+xs(0).toFixed(1)+' '+(H-PB)+'Z';
+  const gid='g_'+cfg.label.replace(/\W/g,'');
+  const lastP=pts[pts.length-1];
+  const grid=[0.25,0.5,0.75].map(f=>{ const y=(PT+(H-PT-PB)*f).toFixed(1);
+    return '<line x1="'+PL+'" y1="'+y+'" x2="'+(W-PR)+'" y2="'+y+'" style="stroke:var(--border)" stroke-width="1" stroke-dasharray="1 5" opacity="0.7"/>'; }).join('');
+  const medY=ys(med).toFixed(1);
+  const svg =
+  '<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="'+H+'" preserveAspectRatio="none" style="overflow:visible;display:block">'+
+    '<defs><linearGradient id="'+gid+'" x1="0" y1="0" x2="0" y2="1">'+
+      '<stop offset="0%" style="stop-color:var(--accent)" stop-opacity="0.22"/>'+
+      '<stop offset="100%" style="stop-color:var(--accent)" stop-opacity="0"/></linearGradient></defs>'+
+    grid+
+    '<path d="'+dA+'" fill="url(#'+gid+')"/>'+
+    '<line x1="'+PL+'" y1="'+medY+'" x2="'+(W-PR)+'" y2="'+medY+'" style="stroke:var(--text-faint)" stroke-width="1" stroke-dasharray="2 4" opacity="0.5"/>'+
+    '<path d="'+dL+'" fill="none" style="stroke:var(--accent)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>'+
+    '<circle cx="'+xs(pts.length-1).toFixed(1)+'" cy="'+ys(lastP[1]).toFixed(1)+'" r="3.2" style="fill:var(--accent);stroke:var(--surface)" stroke-width="1.5"/>'+
+    '<line class="gl" x1="0" y1="'+PT+'" x2="0" y2="'+(H-PB)+'" style="stroke:var(--accent)" stroke-width="1" stroke-dasharray="3 3" opacity="0"/>'+
+    '<circle class="gd" r="3.5" style="fill:var(--accent);stroke:var(--surface)" stroke-width="1.5" opacity="0"/>'+
+    '<rect class="hit" x="0" y="0" width="'+W+'" height="'+H+'" fill="transparent"/>'+
+  '</svg>';
+  el.innerHTML = svg + '<div class="ch-dates"><span>'+fmtDate(pts[0][0])+(fellBack?' (full history)':'')+'</span><span>'+fmtDate(lastP[0])+'</span></div>';
+  const foot=document.querySelector('[data-foot="'+cfg2key(cfg)+'"]');
+  if(foot){ const pct=percentile(cfg.arr, cfg.arr[cfg.arr.length-1][1]);
+    foot.innerHTML='<span>Lo <b>'+fmtVal(cfg,lo)+'</b></span><span>Med <b>'+fmtVal(cfg,med)+'</b></span><span>Hi <b>'+fmtVal(cfg,hi)+'</b></span>'+
+      (pct!=null? '<span class="t-pct">'+ord(pct)+' pctile since '+sinceYear(cfg.arr)+'</span>':''); }
+  hoverLine(el, cfg, pts, xs, ys);
+}
+function cfg2key(cfg){ for(const k in S) if(S[k]===cfg) return k; return ''; }
+function hoverLine(el, cfg, pts, xs, ys){
+  const svg=el.querySelector('svg'), gl=el.querySelector('.gl'), gd=el.querySelector('.gd'), hit=el.querySelector('.hit');
+  function move(ev){
+    const r=svg.getBoundingClientRect();
+    const cx=(ev.touches?ev.touches[0].clientX:ev.clientX), cy=(ev.touches?ev.touches[0].clientY:ev.clientY);
+    const frac=Math.max(0,Math.min(1,(cx-r.left)/r.width)); const i=Math.round(frac*(pts.length-1));
+    const x=xs(i), y=ys(pts[i][1]);
+    gl.setAttribute('x1',x); gl.setAttribute('x2',x); gl.setAttribute('opacity','.5');
+    gd.setAttribute('cx',x); gd.setAttribute('cy',y); gd.setAttribute('opacity','1');
+    tip.show('<b>'+fmtVal(cfg,pts[i][1])+(cfg.unit==='%'?'%':'')+'</b><div class="d">'+fmtDate(pts[i][0])+'</div>', cx, cy);
+  }
+  function out(){ gl.setAttribute('opacity','0'); gd.setAttribute('opacity','0'); tip.hide(); }
+  hit.addEventListener('mousemove',move); hit.addEventListener('mouseleave',out);
+  hit.addEventListener('touchmove',move,{passive:true}); hit.addEventListener('touchend',out);
+}
+function barChart(el, cfg){
+  const cut=rangeCut();
+  let m=monthlyAgg(cfg.arr.filter(p=>p[0]>=cut), cfg.agg);
+  if(m.length<2) m=monthlyAgg(cfg.arr, cfg.agg);
+  if(!m.length){ el.innerHTML='<div class="sectsub" style="padding:24px 0">Not enough data yet.</div>'; return; }
+  const W=Math.max(280, el.clientWidth||el.parentElement.clientWidth-28), H=150, PT=10, PB=6;
+  const mx=Math.max(...m.map(p=>Math.abs(p[1])))||1;
+  const plotH=H-PT-PB, zero=PT+plotH*(Math.max(...m.map(p=>p[1]))<=0?0.06: Math.min(...m.map(p=>p[1]))>=0?0.94:
+    (Math.max(...m.map(p=>p[1]))/(Math.max(...m.map(p=>p[1]))-Math.min(...m.map(p=>p[1])))));
+  const scale=Math.max(1e-9, Math.max(Math.max(...m.map(p=>p[1])),0)/Math.max(1e-9,(zero-PT)) ,
+                        Math.max(-Math.min(...m.map(p=>p[1])),0)/Math.max(1e-9,(H-PB-zero)));
+  const bw=Math.max(2, (W-8)/m.length-2);
+  let bars='';
+  m.forEach((p,i)=>{ const v=p[1]; if(v==null) return;
+    const h=Math.max(1, Math.abs(v)/scale);
+    const x=4+((W-8)*i/m.length), y=v>=0? zero-h : zero;
+    bars+='<rect data-i="'+i+'" x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+h.toFixed(1)+'" rx="1.5" style="fill:var(--'+(v>=0?'pos':'neg')+')" opacity="0.82"/>'; });
+  el.innerHTML =
+  '<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="'+H+'" preserveAspectRatio="none" style="display:block">'+
+    '<line x1="0" y1="'+zero.toFixed(1)+'" x2="'+W+'" y2="'+zero.toFixed(1)+'" style="stroke:var(--border-strong)" stroke-width="1"/>'+
+    bars+'<rect class="hit" x="0" y="0" width="'+W+'" height="'+H+'" fill="transparent"/>'+
+  '</svg>'+
+  '<div class="ch-dates"><span>'+labMonth(m[0][0])+'</span><span>'+labMonth(m[m.length-1][0])+'</span></div>';
+  const svg=el.querySelector('svg'), hit=el.querySelector('.hit');
+  const rects=[...svg.querySelectorAll('rect[data-i]')];
+  function move(ev){
+    const r=svg.getBoundingClientRect();
+    const cx=(ev.touches?ev.touches[0].clientX:ev.clientX), cy=(ev.touches?ev.touches[0].clientY:ev.clientY);
+    const i=Math.max(0,Math.min(m.length-1, Math.floor((cx-r.left)/r.width*m.length)));
+    rects.forEach(rc=>rc.setAttribute('opacity', +rc.getAttribute('data-i')===i?'1':'0.45'));
+    tip.show('<b>'+fmtVal(cfg,m[i][1])+'</b><div class="d">'+labMonth(m[i][0])+(cfg.agg==='avg'?' · avg/day':'')+'</div>', cx, cy);
+  }
+  function out(){ rects.forEach(rc=>rc.setAttribute('opacity','0.82')); tip.hide(); }
+  hit.addEventListener('mousemove',move); hit.addEventListener('mouseleave',out);
+  hit.addEventListener('touchmove',move,{passive:true}); hit.addEventListener('touchend',out);
+  const foot=document.querySelector('[data-foot="'+cfg2key(cfg)+'"]');
+  if(foot){ const vals=m.map(p=>p[1]);
+    foot.innerHTML='<span>Lo <b>'+fmtVal(cfg,Math.min(...vals))+'</b></span><span>Med <b>'+fmtVal(cfg,median(vals))+'</b></span><span>Hi <b>'+fmtVal(cfg,Math.max(...vals))+'</b></span>'+
+      '<span class="t-pct">'+m.length+' months</span>'; }
+}
+
+/* ================= QUARTERLY HEAT GRID ================= */
+function colVal(cfg, colDate, prevQEnd, mode){
+  if(mode==='level') return nearestLE(cfg.arr, colDate);
+  const vals=bucketVals(cfg.arr, prevQEnd, colDate);
+  if(mode==='sum') return sum(vals);
+  if(mode==='qlast') return vals.length? vals[vals.length-1] : null;
+  return mean(vals);
+}
+function buildHeat(){
+  let ref='0'; for(const k in S){ const a=S[k].arr; if(a.length && a[a.length-1][0]>ref) ref=a[a.length-1][0]; }
+  const q=quarterEnds(ref, 12).reverse();          // oldest → newest, reading order
+  const nfty=window.__nifty||[];
+  const niftyQ = (qe,prev)=>{ const c=nearestLE(nfty,qe), p=nearestLE(nfty,prev); return (c&&p)? (c/p-1)*100 : null; };
+  const ROWS=[
+    { label:'Nifty 50', s:'quarterly price return', fmt:v=>fmtPct(v), get:(qe,prev)=>niftyQ(qe,prev) },
+    S.fii && { label:'FII net', s:'₹ Cr, quarter sum', fmt:flow, get:(qe,prev)=>colVal(S.fii,qe,prev,'sum') },
+    S.dii && { label:'DII net', s:'₹ Cr, quarter sum', fmt:flow, get:(qe,prev)=>colVal(S.dii,qe,prev,'sum') },
+    S.cpi && { label:'CPI', s:'y/y %, inverted', inv:true, fmt:v=>nf(v,1), get:(qe,prev)=>colVal(S.cpi,qe,prev,'qlast') },
+    S.iip && { label:'IIP', s:'y/y %', fmt:v=>nf(v,1), get:(qe,prev)=>colVal(S.iip,qe,prev,'qlast') },
+    S.gdp && { label:'GDP', s:'y/y %', fmt:v=>nf(v,1), get:(qe,prev)=>colVal(S.gdp,qe,prev,'qlast') },
+    S.bankyoy && { label:'Bank credit', s:'y/y %', fmt:v=>nf(v,1), get:(qe,prev)=>colVal(S.bankyoy,qe,prev,'qlast') },
+    S.depyoy && { label:'Deposits', s:'y/y %', fmt:v=>nf(v,1), get:(qe,prev)=>colVal(S.depyoy,qe,prev,'qlast') },
+    S.m3yoy && { label:'M3', s:'y/y %', fmt:v=>nf(v,1), get:(qe,prev)=>colVal(S.m3yoy,qe,prev,'qlast') },
+  ].filter(Boolean);
+  const el=$('hm'); el.style.setProperty('--hm-cols', q.length);
+  let h='<div class="lft h" style="border-bottom:1px solid var(--border)">Indicator</div>';
+  q.forEach(qe=>{ h+='<div class="h">'+labQ(qe)+'</div>'; });
+  ROWS.forEach(row=>{
+    const vals=q.map((qe,i)=>row.get(qe, i? q[i-1] : '2000-01-01'));
+    if(vals.filter(v=>v!=null).length<2) return;   // hide rows whose feed window hasn't grown yet (FII/DII start Jun'26)
+    const amax=Math.max(...vals.filter(v=>v!=null).map(Math.abs), 1e-9);
+    h+='<div class="lft">'+row.label+'<span class="s">'+row.s+'</span></div>';
+    vals.forEach((v,i)=>{
+      let bg='transparent';
+      if(v!=null){
+        // sign-anchored: positive→pos hue, negative→neg hue (CPI: shade vs row median instead of zero)
+        let s, hue;
+        if(row.inv){ const med0=median(vals.filter(x=>x!=null)); const dev=v-med0; hue=dev<=0?'pos':'neg'; s=Math.min(1,Math.abs(dev)/Math.max(1e-9,amax-Math.abs(med0))||0); }
+        else { hue=v>=0?'pos':'neg'; s=Math.min(1,Math.abs(v)/amax); }
+        bg='color-mix(in srgb, var(--'+hue+') '+(8+Math.round(30*s))+'%, transparent)';
+      }
+      h+='<div class="cell" data-r="'+row.label+'" data-q="'+labQ(q[i])+'" data-v="'+(v==null?'':row.fmt(v))+'" style="background:'+bg+'">'+(v==null?'<span style="color:var(--text-faint)">·</span>':row.fmt(v))+'</div>';
+    });
+  });
+  el.innerHTML=h;
+  el.addEventListener('mousemove', ev=>{
+    const c=ev.target.closest('.cell'); if(!c||!c.getAttribute('data-v')){ tip.hide(); return; }
+    tip.show('<b>'+c.getAttribute('data-v')+'</b><div class="d">'+c.getAttribute('data-r')+' · '+c.getAttribute('data-q')+'</div>', ev.clientX, ev.clientY);
+  });
+  el.addEventListener('mouseleave', ()=>tip.hide());
+}
+
+/* ================= SECTOR ROTATION (bars) ================= */
+let ROTP='3M';
+const ROT_N={'1M':1,'3M':3,'6M':6,'1Y':12};
+let ROTDATA=null;
+function buildRotation(idx){
+  if(!idx||!idx.indices){ $('rot').closest('.card').style.display='none'; return; }
+  const live=idx.live||{};
+  function series(ix){
+    const out=[]; const cl=ix.closes||{};
+    Object.keys(cl).sort().forEach(y=>{ cl[y].forEach((v,mi)=>{ if(v!=null) out.push([+y*12+mi, v]); }); });
+    const lv=live[ix.key]; if(lv && lv.last!=null && out.length) out[out.length-1][1]=lv.last;  // splice, don't append
+    return out;
+  }
+  function retN(ser,n){ if(ser.length<2)return null; const cur=ser[ser.length-1][1]; const j=ser.length-1-n; if(j<0)return null; const past=ser[j][1]; return past? (cur/past-1)*100:null; }
+  const nifty=idx.indices.find(i=>i.key==='NIFTY 50'); const nser=nifty?series(nifty):[];
+  const rows=idx.indices.filter(i=>i.grp==='sector'||i.grp==='theme').map(i=>{
+    const s=series(i);
+    return { label:i.label, r:{ '1M':retN(s,1),'3M':retN(s,3),'6M':retN(s,6),'1Y':retN(s,12) } };
+  });
+  rows.push({ label:'Nifty 50', isNifty:true, r:{ '1M':retN(nser,1),'3M':retN(nser,3),'6M':retN(nser,6),'1Y':retN(nser,12) } });
+  ROTDATA=rows;
+  $('rotseg').innerHTML=Object.keys(ROT_N).map(k=>
+    '<button class="segbtn'+(k===ROTP?' on':'')+'" data-p="'+k+'">'+k+'</button>').join('');
+  $('rotseg').querySelectorAll('.segbtn').forEach(b=>b.addEventListener('click',()=>{
+    ROTP=b.getAttribute('data-p');
+    $('rotseg').querySelectorAll('.segbtn').forEach(x=>x.classList.toggle('on', x===b));
+    renderRotation();
+  }));
+  renderRotation();
+}
+function renderRotation(){
+  const rows=(ROTDATA||[]).filter(r=>r.r[ROTP]!=null).sort((a,b)=>b.r[ROTP]-a.r[ROTP]);
+  if(!rows.length){ $('rot').innerHTML='<div class="sectsub">No data.</div>'; return; }
+  const vals=rows.map(r=>r.r[ROTP]);
+  const mn=Math.min(0,...vals), mx=Math.max(0,...vals), span=(mx-mn)||1;
+  const X=v=>((v-mn)/span*100);
+  const nrow=rows.find(r=>r.isNifty); const nx=nrow? X(nrow.r[ROTP]) : null;
+  $('rot').innerHTML = rows.map(r=>{
+    const v=r.r[ROTP], x0=X(0), xv=X(v);
+    const left=Math.min(x0,xv), wd=Math.max(0.4,Math.abs(xv-x0));
+    return '<div class="rot-row'+(r.isNifty?' nifty':'')+'" data-lb="'+r.label+'">'+
+      '<div class="rot-lb">'+r.label+'</div>'+
+      '<div class="rot-track">'+
+        '<span class="rot-zero" style="left:'+x0+'%"></span>'+
+        (nx!=null&&!r.isNifty? '<span class="rot-nmark" style="left:'+nx+'%"></span>':'')+
+        '<span class="rot-bar '+(v>=0?'pos':'neg')+'" style="left:'+left+'%;width:'+wd+'%"></span>'+
+      '</div>'+
+      '<div class="rot-v '+(v>0?'pos':v<0?'neg':'')+'">'+fmtPct(v)+'</div>'+
+    '</div>';
+  }).join('');
+  const nv=nrow? nrow.r[ROTP] : null;
+  $('rot').querySelectorAll('.rot-row').forEach(el=>{
+    el.addEventListener('mousemove', ev=>{
+      const r=(ROTDATA||[]).find(x=>x.label===el.getAttribute('data-lb')); if(!r) return;
+      const vs=(nv!=null&&r.r[ROTP]!=null&&!r.isNifty)? '<div class="d">vs Nifty ('+ROTP+'): '+fmtPct(r.r[ROTP]-nv)+'</div>':'';
+      tip.show('<b>'+r.label+'</b><div class="d">1M '+fmtPct(r.r['1M'])+' · 3M '+fmtPct(r.r['3M'])+' · 6M '+fmtPct(r.r['6M'])+' · 1Y '+fmtPct(r.r['1Y'])+'</div>'+vs, ev.clientX, ev.clientY);
+    });
+    el.addEventListener('mouseleave', ()=>tip.hide());
+  });
+}
+
+/* ================= boot ================= */
+let rsT=null;
+window.addEventListener('resize', ()=>{ if(rsT)clearTimeout(rsT); rsT=setTimeout(()=>rerenderTiles(), 220); });
+document.addEventListener('DOMContentLoaded', ()=>{ tip.el=$('tip'); });
+tip.el=$('tip');
 load();
 </script>
 </body>
