@@ -113,6 +113,10 @@
       '.sw-group-panel::before{content:"";position:absolute;left:0;right:0;top:-10px;height:10px;}' +
       '.sw-group.open>.sw-group-panel{display:block;animation:sw-pop .16s ease;}' +
       '.sw-group.align-r .sw-group-panel{left:auto;right:0;}' +
+      '.sw-group-panel--mega{display:flex;flex-wrap:wrap;gap:2px 12px;min-width:0;width:612px;max-width:88vw;}' +
+      '.sw-group.open>.sw-group-panel--mega{display:flex;}' +
+      '.sw-mega-col{display:flex;flex-direction:column;flex:1 1 190px;min-width:186px;}' +
+      '.sw-mega-h{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);padding:8px 10px 5px;}' +
       '.sw-menu{position:relative;display:none;}' +
       '.sw-menu-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:7px 12px;border-radius:var(--radius-sm);border:1px solid var(--border-strong);background:var(--surface);color:var(--text);cursor:pointer;transition:var(--tr);}' +
       '.sw-menu-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}' +
@@ -137,25 +141,30 @@
 
   // Single source of truth for the nav. Add deployed pages here.
   var NAV_GROUPS = [
-    { g: 'Markets', items: [
-      ['./macro.html',             '🌍', 'Macro'],
-      ['./nse-bse-dashboard.html', '📈', 'Stocks'],
-      ['./watchlist.html',         '📌', 'Watchlist'],
-      ['./sectors.html',           '🔥', 'Sectors'],
-      ['./fii-dii.html',           '🌐', 'FII/DII'],
-      ['./shareholding.html',      '🏛️', 'FII/DII Holdings'],
-      ['./bank-credit.html',       '🏦', 'Banking Growth'],
-      ['./market-mood.html',       '🌡️', 'Market Mood'],
-      ['./monthly-returns.html',   '🗓️', 'Monthly Returns'],
-      ['./results-season.html',    '📊', 'Results Season'],
-      ['./discovery.html',         '💸', 'Smart Money Picks'],
-      ['./deals.html',             '🐋', 'Bulk/Block Deals'],
-      ['./insider.html',           '🕵️', 'Insider Trades'],
-      ['./delivery.html',          '📦', 'Delivery Spikes'],
-      ['./ipos.html',              '🚀', 'IPOs & Listings'],
-      ['./actions.html',           '📅', 'Ex-Dates Calendar'],
-      ['./quarterly-results.html', '🧾', 'Quarterly Results'],
-      ['./announcements.html',     '📢', 'Announcements']
+    { g: 'Markets', cols: [
+      { sub: 'Overview', items: [
+        ['./nse-bse-dashboard.html', '📈', 'Stocks'],
+        ['./macro.html',             '🌍', 'Macro'],
+        ['./sectors.html',           '🔥', 'Sectors'],
+        ['./market-mood.html',       '🌡️', 'Market Mood'],
+        ['./monthly-returns.html',   '🗓️', 'Monthly Returns'],
+        ['./watchlist.html',         '📌', 'Watchlist']
+      ] },
+      { sub: 'Flows & Ownership', items: [
+        ['./fii-dii.html',           '🌐', 'FII/DII'],
+        ['./deals.html',             '🐋', 'Bulk/Block Deals'],
+        ['./insider.html',           '🕵️', 'Insider Trades'],
+        ['./delivery.html',          '📦', 'Delivery Spikes'],
+        ['./bank-credit.html',       '🏦', 'Banking Growth']
+      ] },
+      { sub: 'Discovery & Filings', items: [
+        ['./discovery.html',         '💸', 'Smart Money Picks'],
+        ['./quarterly-results.html', '🧾', 'Quarterly Results'],
+        ['./results-season.html',    '📊', 'Results Season'],
+        ['./ipos.html',              '🚀', 'IPOs & Listings'],
+        ['./actions.html',           '📅', 'Ex-Dates Calendar'],
+        ['./announcements.html',     '📢', 'Announcements']
+      ] }
     ] },
     { g: 'Funds', items: [
       ['./mutual-funds.html',                       '💰', 'Mutual Funds'],
@@ -173,6 +182,13 @@
   ];
   var NAV_CTA = ['./stock-backtest.html', '🧪', 'Create a strategy'];
 
+  // A group may define column sub-sections (cols) for its desktop mega-panel.
+  // Flatten them into a single items[] so the mobile menu, home tiles and
+  // SW_NAV keep consuming one flat list unchanged.
+  NAV_GROUPS.forEach(function (g) {
+    if (g.cols) g.items = g.cols.reduce(function (a, c) { return a.concat(c.items); }, []);
+  });
+
   // ---- PRIVATE pages: the owner's personal tools. Hidden from the menu, footer
   // and home tiles unless THIS browser holds the owner key (unlocked once via
   // ?ownerkey=…, same key as the backtest pages); the pages themselves also show
@@ -186,7 +202,9 @@
   var PRIVATE_PAGES = ['watchlist.html', 'live-tracking.html', 'insurer-inbox.html', 'analytics.html', 'status.html', 'results-coverage.html'];
   var IS_OWNER = false; try { IS_OWNER = !!localStorage.getItem('bt_owner_key'); } catch (e) {}
   if (!IS_OWNER) NAV_GROUPS.forEach(function (g) {
-    g.items = g.items.filter(function (it) { return PRIVATE_PAGES.indexOf(it[0].replace('./', '')) < 0; });
+    var keep = function (it) { return PRIVATE_PAGES.indexOf(it[0].replace('./', '')) < 0; };
+    if (g.cols) g.cols.forEach(function (c) { c.items = c.items.filter(keep); });
+    g.items = g.items.filter(keep);
   });
 
   // Expose the nav as the single source of truth so the home page (index.html) can
@@ -215,10 +233,17 @@
 
       // Desktop: one hover dropdown per group (Markets / Funds / Tools)
       var groupsHtml = NAV_GROUPS.map(function (grp, gi) {
+        var mega = grp.cols && grp.cols.some(function (c) { return c.items.length; });
+        var inner = mega
+          ? grp.cols.filter(function (c) { return c.items.length; }).map(function (c) {
+              return '<div class="sw-mega-col"><div class="sw-mega-h">' + esc(c.sub) + '</div>' +
+                c.items.map(link).join('') + '</div>';
+            }).join('')
+          : grp.items.map(link).join('');
         return '<div class="sw-group' + (gi === NAV_GROUPS.length - 1 ? ' align-r' : '') + '">' +
           '<button class="sw-group-btn' + (gi === activeGi ? ' active' : '') + '" type="button" aria-haspopup="true" aria-expanded="false">' +
             esc(grp.g) + caret + '</button>' +
-          '<div class="sw-group-panel" role="menu">' + grp.items.map(link).join('') + '</div>' +
+          '<div class="sw-group-panel' + (mega ? ' sw-group-panel--mega' : '') + '" role="menu">' + inner + '</div>' +
         '</div>';
       }).join('');
 
