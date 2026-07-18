@@ -153,7 +153,7 @@
         ['./nse-bse-dashboard.html', '📈', 'Stocks'],
         ['./macro.html',             '🌍', 'Macro'],
         ['./sectors.html',           '🔥', 'Sectors'],
-        ['./market-mood.html',       '🌡️', 'Market Analytics'],
+        ['./monthly-returns.html',   '🗓️', 'Market Analytics'],
         ['./watchlist.html',         '📌', 'Watchlist']
       ] },
       { sub: 'Flows & Ownership', items: [
@@ -187,8 +187,8 @@
   // place, applies everywhere. Private members are hidden from non-owners.
   var PAGE_GROUPS = [
     { g: 'Market Analytics', tabs: [
-      ['./market-mood.html',     '🌡️', 'Market Mood'],
-      ['./monthly-returns.html', '🗓️', 'Monthly Returns']
+      ['./monthly-returns.html', '🗓️', 'Monthly Returns'],
+      ['./market-mood.html',     '🌡️', 'Market Mood']
     ] },
     { g: 'FII/DII', tabs: [
       ['./fii-dii.html',      '🌐', 'Daily Flows'],

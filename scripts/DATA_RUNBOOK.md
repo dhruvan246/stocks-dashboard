@@ -1899,7 +1899,7 @@ data pipeline and feeds.json entry — nothing was moved or redirected**; tabs a
 the pages (fast: slim payloads + SW shell cache). The nav/footer/home-tiles list one entry per group.
 
 Groups (nav entry → members):
-- **Market Analytics** (→ market-mood.html): Market Mood · Monthly Returns
+- **Market Analytics** (→ monthly-returns.html, per user 2026-07-18): Monthly Returns · Market Mood
 - **FII/DII** (→ fii-dii.html): Daily Flows · Stock Holdings (shareholding.html)
 - **Deals & Insiders** (→ deals.html): Bulk/Block Deals · Insider Trades · Delivery Spikes
 - **Corporate Calendar** (→ ipos.html): IPOs & Listings · Ex-Dates (actions.html)
