@@ -877,14 +877,47 @@ async function runLogPicks(){
   } catch (e) { say('LogPicks error: ' + (e && e.message || e)); }
 }
 
+// Wire the tab / preset controls + default the custom window. Split out of boot() so it can
+// run up-front, before any network, so the buttons work the instant the first paint lands.
+function wireUI() {
+  $('tabBest').onclick   = () => setView('best');
+  $('tabNew').onclick    = () => setView('new');
+  $('tabCustom').onclick = () => setView('custom');
+  $('tabFav').onclick    = () => setView('fav');
+  // default the custom window to 2021-01-01 → today (Compute clamps to the data range)
+  const t = new Date(), today = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
+  if (!$('cFrom').value) $('cFrom').value = '2021-01-01';
+  if (!$('cTo').value)   $('cTo').value = today;
+  $('cCompute').onclick = () => { document.querySelectorAll('.preset').forEach(b => b.classList.remove('!bg-indigo-600', '!text-white')); computeCustom(); };
+  document.querySelectorAll('.preset').forEach(b => b.onclick = () => runPreset(b.dataset.preset));
+}
+
 (async function boot() {
+  const params = new URLSearchParams(location.search);
+  const headless = params.get('logpicks') || params.get('bakewaves');   // CI modes render no UI
   const localBefore = loadLS('bt_strategies');                          // snapshot before the shared pull replaces local
   const localHistBefore = loadLS('bt_history');                         // ditto for history — btSync.pull() overwrites local with the shared array
+  const vParam = params.get('view');
+  const initialView = vParam === 'new' ? 'new' : vParam === 'fav' ? 'fav' : vParam === 'custom' ? 'custom' : 'best';
+
+  // ---- INSTANT FIRST PAINT (before any network) --------------------------------
+  // pullStrategies() persists the shared list to localStorage, so every repeat visit
+  // already has the strategies cached. Render them NOW instead of waiting on the three
+  // Supabase round-trips below — otherwise a cold free-tier DB waking up (several
+  // seconds) leaves the page blank even though we have everything needed to paint.
+  // The background pull then refreshes the list in place. Skipped in headless CI modes.
+  if (!headless) {
+    HIST = localHistBefore;                                             // provisional; the shared pull overwrites it
+    wireUI();
+    setView(initialView);
+    $('status').textContent = strategies().length ? 'Syncing latest…' : '';
+  }
+
   if (window.btSync) {
     try { await btSync.pullStrategies(); } catch (e) {}                 // shared strategy definitions (replaces local with the shared list)
     try { HIST = await btSync.pull() || []; } catch (e) { HIST = []; }  // shared backtest history (all windows)
     try { WAVE_SNAP = await btSync.snapGet('waves'); } catch (e) { WAVE_SNAP = null; }   // precomputed wave results
-  } else { HIST = localHistBefore; }
+  } else if (headless) { HIST = localHistBefore; }
   // Surface any backtest run recorded on THIS browser that the shared pull didn't return yet (sync lag,
   // or the DB was paused/unreachable when the run auto-saved). Without this, a window you JUST ran can be
   // missing from its strategy's expanded list until the shared history catches up. Merge local-only runs
@@ -903,25 +936,17 @@ async function runLogPicks(){
   const pulled = loadLS('bt_strategies'); const have = new Set(pulled.map(s => s.id));
   const localOnly = localBefore.filter(s => s && s.local && !have.has(s.id));
   if (localOnly.length) { saveLS('bt_strategies', pulled.concat(localOnly)); if (window.btSync) { try { await btSync.pushStrategies(); } catch (e) {} } }   // publish local-only strategies (open list; self-heals an earlier failed publish)
-  if (new URLSearchParams(location.search).get('logpicks')) { await runLogPicks(); return; }   // headless daily picks-logger — skips the UI
-  if (new URLSearchParams(location.search).get('bakewaves')) { await computeAndSaveWaves(true); return; }   // headless wave-snapshot baker
-  $('tabBest').onclick   = () => setView('best');
-  $('tabNew').onclick    = () => setView('new');
-  $('tabCustom').onclick = () => setView('custom');
-  $('tabFav').onclick    = () => setView('fav');
+  if (params.get('logpicks')) { await runLogPicks(); return; }   // headless daily picks-logger — skips the UI
+  if (params.get('bakewaves')) { await computeAndSaveWaves(true); return; }   // headless wave-snapshot baker
+  // ---- refresh paint with the freshly pulled shared data -----------------------
+  wireUI();   // was wired in the early paint too — idempotent .onclick assignments
   if (window.btSync && btSync.isOwner()) { $('waveUpdate').classList.remove('hidden'); $('waveUpdate').onclick = () => computeAndSaveWaves(false); }
-  // default the custom window to 2021-01-01 → today (Compute clamps to the data range)
-  const t = new Date(), today = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
-  if (!$('cFrom').value) $('cFrom').value = '2021-01-01';
-  if (!$('cTo').value)   $('cTo').value = today;
-  $('cCompute').onclick = () => { document.querySelectorAll('.preset').forEach(b => b.classList.remove('!bg-indigo-600', '!text-white')); computeCustom(); };
-  document.querySelectorAll('.preset').forEach(b => b.onclick = () => runPreset(b.dataset.preset));
-  const vParam = new URLSearchParams(location.search).get('view');
-  setView(vParam === 'new' ? 'new' : vParam === 'fav' ? 'fav' : vParam === 'custom' ? 'custom' : 'best');   // flat list with saved metrics — instant; renders once
-  if (!strategies().length) { $('status').textContent = ''; return; }
+  setView(initialView);   // re-render now that strategies / HIST / WAVE_SNAP reflect the shared pull
   // Don't eager-load the 17 MB + 90 MB engine — the list + 👁 results work from saved data alone.
   // Market data loads on demand only when you open Today's Picks (ensureEngine), so first paint is instant.
-  $('status').textContent = 'Click a strategy (or 👁) to open its page. 🎯 Picks loads live data on demand.';
+  $('status').textContent = strategies().length
+    ? 'Click a strategy (or 👁) to open its page. 🎯 Picks loads live data on demand.'
+    : '';
 })();
 </script>
 </body>
