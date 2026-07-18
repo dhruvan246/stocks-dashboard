@@ -1,0 +1,42 @@
+name: Supabase keep-alive (prevent free-tier pause)
+
+# The shared backtest-history / strategies / site-features DB is on Supabase's FREE
+# tier, which auto-pauses a project after ~7 days with no activity. A cold project
+# takes several seconds to wake up on the next request — which is what made
+# saved-strategies.html feel slow. A light read RPC counts as database activity and
+# resets that idle timer, so this keeps the project permanently warm.
+#
+# Runs twice a day (odd minutes, away from the congested :00 and the 15–16 UTC nightly
+# window). That's ~14 pings inside every 7-day window, so the project stays awake even
+# if GitHub's scheduler drifts or drops most of the runs. It only READS (no commit, no
+# writes) — the exact public RPC every visitor's browser already calls.
+
+on:
+  schedule:
+    - cron: "17 5,17 * * *"   # 05:17 & 17:17 UTC (10:47 & 22:47 IST)
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: supabase-keepalive
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ping the shared DB (read RPC = DB activity, keeps the project awake)
+        run: |
+          API="https://nebjnsndgrhumnkuipqy.supabase.co/rest/v1"
+          KEY="sb_publishable_MDlQwiVc5deii91__UNeDg_z9r4Fk98"   # public publishable key (same as in docs/bt-sync.js)
+          code=$(curl -sS --max-time 60 -o /dev/null -w '%{http_code}' -X POST "$API/rpc/bt_public" \
+            -H "apikey: $KEY" -H "Authorization: Bearer $KEY" \
+            -H "Content-Type: application/json" -d '{}')
+          echo "bt_public keep-alive ping -> HTTP $code"
+          case "$code" in
+            2*) echo "DB responded — project is awake." ;;
+            *)  echo "Unexpected status $code (project may be waking up or the RPC changed)."; exit 1 ;;
+          esac
