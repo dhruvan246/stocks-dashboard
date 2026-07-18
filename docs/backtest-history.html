@@ -82,8 +82,10 @@ const OWNER = !!(window.btSync && btSync.isOwner());
 if($('clearAll') && !OWNER) $('clearAll').style.display='none';   // visitors can add, but not erase via the UI
 $('clearAll').onclick=()=>{ if(confirm('Clear the ENTIRE shared history for everyone?')){ save([]); render(); } };
 
-// auto-load the shared history (everyone), then render
-(async()=>{ if(window.btSync){ try{ await btSync.pull(); }catch(e){} } render(); })();
+// Paint the cached history immediately (pull() persists it to localStorage), THEN refresh from the
+// shared pull — so a cold/slow free-tier DB waking up never leaves the page blank while it responds.
+render();
+(async()=>{ if(window.btSync){ try{ await btSync.pull(); }catch(e){} render(); } })();
 </script>
 </body>
 </html>
