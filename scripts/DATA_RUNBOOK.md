@@ -39,6 +39,9 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§29** EX-DATES CALENDAR
 - **§30** TICKER RENAME with orphaned history
 - **§31** NIGHTLY TRENDLYNE RECONCILE
+- **§32** HISTORICAL INDEX/F&O MEMBERSHIP from WAYBACK
+- **§33** MACRO DASHBOARD
+- **§34** PAGE GROUPS — merged tabbed sections (theme.js)
 
 ---
 
@@ -1883,3 +1886,35 @@ Markets 🌍; SW shell = sw.js v37.
 comes out 5.20 vs RBI's 5.25 (mql5 rounding). mcap/GDP (Buffett) and %>50DMA are NOT built (no feed).
 To rebuild after a full data wipe: run fetch_macro.py (fills everything except deep PE history) then
 re-seed PE via the niftyindices browser call above.
+
+---
+
+## 34. PAGE GROUPS — merged tabbed sections  (theme.js, built 2026-07-18)
+Six former nav entries' worth of sibling pages are presented as ONE tabbed section each. **Everything
+lives in `docs/theme.js`**: the `PAGE_GROUPS` array defines the groups; `buildTabs()` injects a shared
+pill tab strip (`.sw-tabs`, same look as the Quarterly Results tab bar) as the FIRST CHILD of `<main>`
+on every member page; `TAB_PRIMARY` maps each member file to its group's first tab so `buildNav()`
+highlights the single group nav entry from any member. **Member pages keep their own URL, payload,
+data pipeline and feeds.json entry — nothing was moved or redirected**; tabs are plain links between
+the pages (fast: slim payloads + SW shell cache). The nav/footer/home-tiles list one entry per group.
+
+Groups (nav entry → members):
+- **Market Analytics** (→ market-mood.html): Market Mood · Monthly Returns
+- **FII/DII** (→ fii-dii.html): Daily Flows · Stock Holdings (shareholding.html)
+- **Deals & Insiders** (→ deals.html): Bulk/Block Deals · Insider Trades · Delivery Spikes
+- **Corporate Calendar** (→ ipos.html): IPOs & Listings · Ex-Dates (actions.html)
+- **Strategies** (→ saved-strategies.html): Saved Strategies · Backtest History · Live Tracking (owner-only tab)
+- **Owner console** (→ status.html, PRIVATE): Data Health · Results Coverage · Page Stats · Insurer Inbox
+
+Rules:
+- To merge/split/rename a section: edit `PAGE_GROUPS` (+ the matching single entry in `NAV_GROUPS`).
+  Do NOT add per-page tab markup — the strip is injected.
+- PRIVATE members are filtered from the strip for non-owners (`IS_OWNER`/`PRIVATE_PAGES`); a group whose
+  visible tabs drop below 2 renders NO strip (that's why status.html shows nothing to the public).
+- A page in a group should NOT also carry its own top-level tab bar named like the group (in-page tabs
+  like Quarterly Results' are fine — that page is not in any group).
+- Home-tile blurbs for group entries live in index.html `DESC` keyed by the PRIMARY file — describe the
+  whole group there (absorbed pages' DESC keys were removed).
+- The distinct case: **Results Season is a REAL in-page tab** of quarterly-results.html (§11/§15), not a
+  page group — its old page is a redirect stub. Page groups were chosen for the other six merges so the
+  heavy per-page JS (charts/Supabase/backtest engines) never had to be namespaced together.

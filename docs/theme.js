@@ -132,6 +132,13 @@
       '.sw-menu-link.active{background:var(--accent-soft);color:var(--accent);}' +
       '.sw-mi-ic{font-size:15px;width:20px;text-align:center;display:inline-block;}' +
       '.sw-mi-ext{margin-left:auto;color:var(--text-faint);font-size:12px;}' +
+      '.sw-tabs{margin:0 0 14px;}' +
+      '.sw-tabs-in{display:flex;align-items:center;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;}' +
+      '.sw-tabs-in::-webkit-scrollbar{display:none;}' +
+      '.sw-tab{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;padding:8px 15px;border-radius:.65rem;font-size:13.5px;font-weight:800;color:var(--text-muted);text-decoration:none;border:1px solid transparent;transition:var(--tr);}' +
+      '.sw-tab:hover{background:var(--surface-2);color:var(--text);}' +
+      '.sw-tab.on{background:var(--accent-soft);color:var(--accent);border-color:var(--border-strong);}' +
+      '@media (max-width:640px){.sw-tab{padding:7px 11px;font-size:12.5px;}}' +
       '@media (max-width:760px){.sw-group{display:none;}.sw-menu{display:block;}}' +
       '@media (max-width:430px){.sw-cta .sw-cta-lb{display:none;}}' +
       '@media (max-width:520px){.sw-menu-panel{position:fixed;left:10px;right:10px;top:60px;min-width:0;max-width:none;}}' +
@@ -146,23 +153,18 @@
         ['./nse-bse-dashboard.html', '📈', 'Stocks'],
         ['./macro.html',             '🌍', 'Macro'],
         ['./sectors.html',           '🔥', 'Sectors'],
-        ['./market-mood.html',       '🌡️', 'Market Mood'],
-        ['./monthly-returns.html',   '🗓️', 'Monthly Returns'],
+        ['./market-mood.html',       '🌡️', 'Market Analytics'],
         ['./watchlist.html',         '📌', 'Watchlist']
       ] },
       { sub: 'Flows & Ownership', items: [
         ['./fii-dii.html',           '🌐', 'FII/DII'],
-        ['./shareholding.html',      '🏛️', 'FII/DII Holdings'],
-        ['./deals.html',             '🐋', 'Bulk/Block Deals'],
-        ['./insider.html',           '🕵️', 'Insider Trades'],
-        ['./delivery.html',          '📦', 'Delivery Spikes'],
+        ['./deals.html',             '🐋', 'Deals & Insiders'],
         ['./bank-credit.html',       '🏦', 'Banking Growth']
       ] },
       { sub: 'Discovery & Filings', items: [
         ['./discovery.html',         '💸', 'Smart Money Picks'],
         ['./quarterly-results.html', '🧾', 'Quarterly Results'],
-        ['./ipos.html',              '🚀', 'IPOs & Listings'],
-        ['./actions.html',           '📅', 'Ex-Dates Calendar'],
+        ['./ipos.html',              '📅', 'Corporate Calendar'],
         ['./announcements.html',     '📢', 'Announcements']
       ] }
     ] },
@@ -171,16 +173,55 @@
       ['https://dhruvan246.github.io/fno-dashboard/', '🎯', 'F&O']
     ] },
     { g: 'Tools', items: [
-      ['./saved-strategies.html', '⭐', 'Saved strategies'],
-      ['./live-tracking.html',    '📡', 'Live tracking'],
-      ['./backtest-history.html', '🕘', 'Backtest history'],
-      ['./insurer-inbox.html',    '📥', 'Insurer inbox'],
-      ['./analytics.html',        '👀', 'Page stats'],
-      ['./results-coverage.html', '✅', 'Results coverage'],
-      ['./status.html',           '🩺', 'Data health']
+      ['./saved-strategies.html', '⭐', 'Strategies'],
+      ['./status.html',           '🛠️', 'Owner console']
     ] }
   ];
   var NAV_CTA = ['./stock-backtest.html', '🧪', 'Create a strategy'];
+
+  // ---- PAGE GROUPS: sibling pages presented as ONE tabbed section. Each member
+  // page keeps its own URL, payload and data pipeline (so deep links, feeds.json
+  // and the perf story are untouched); buildTabs() injects a shared tab strip at
+  // the top of <main> on every member, and the nav / footer / home tiles list a
+  // single entry per group (the first tab). Merge or split a section here — one
+  // place, applies everywhere. Private members are hidden from non-owners.
+  var PAGE_GROUPS = [
+    { g: 'Market Analytics', tabs: [
+      ['./market-mood.html',     '🌡️', 'Market Mood'],
+      ['./monthly-returns.html', '🗓️', 'Monthly Returns']
+    ] },
+    { g: 'FII/DII', tabs: [
+      ['./fii-dii.html',      '🌐', 'Daily Flows'],
+      ['./shareholding.html', '🏛️', 'Stock Holdings']
+    ] },
+    { g: 'Deals & Insiders', tabs: [
+      ['./deals.html',    '🐋', 'Bulk/Block Deals'],
+      ['./insider.html',  '🕵️', 'Insider Trades'],
+      ['./delivery.html', '📦', 'Delivery Spikes']
+    ] },
+    { g: 'Corporate Calendar', tabs: [
+      ['./ipos.html',    '🚀', 'IPOs & Listings'],
+      ['./actions.html', '📅', 'Ex-Dates']
+    ] },
+    { g: 'Strategies', tabs: [
+      ['./saved-strategies.html', '⭐', 'Saved Strategies'],
+      ['./backtest-history.html', '🕘', 'Backtest History'],
+      ['./live-tracking.html',    '📡', 'Live Tracking']
+    ] },
+    { g: 'Owner console', tabs: [
+      ['./status.html',           '🩺', 'Data Health'],
+      ['./results-coverage.html', '✅', 'Results Coverage'],
+      ['./analytics.html',        '👀', 'Page Stats'],
+      ['./insurer-inbox.html',    '📥', 'Insurer Inbox']
+    ] }
+  ];
+  // member file -> its group's first tab (the file the nav entry points at), so the
+  // nav can highlight the group entry while any member page is open.
+  var TAB_PRIMARY = {};
+  PAGE_GROUPS.forEach(function (g) {
+    var p = g.tabs[0][0].replace('./', '').toLowerCase();
+    g.tabs.forEach(function (t) { TAB_PRIMARY[t[0].replace('./', '').toLowerCase()] = p; });
+  });
 
   // A group may define column sub-sections (cols) for its desktop mega-panel.
   // Flatten them into a single items[] so the mobile menu, home tiles and
@@ -217,6 +258,7 @@
     var nav = document.querySelector('header nav'); if (!nav) return;
     try {
       var here = (location.pathname.split('/').pop() || '').toLowerCase();
+      here = TAB_PRIMARY[here] || here;   // grouped page -> highlight its group's nav entry
       var isActive = function (href) { return href.indexOf('http') !== 0 && href.replace('./', '').toLowerCase() === here; };
       var link = function (it) {
         var href = it[0], ic = it[1], lb = it[2], ext = href.indexOf('http') === 0;
@@ -362,6 +404,40 @@
     else { document.body.appendChild(f); }
   }
 
+  // =========================================================================
+  // PAGE-GROUP TAB STRIP — on any page that belongs to a PAGE_GROUPS entry,
+  // inject pill tabs (same look as the Quarterly Results tab bar) as the first
+  // child of <main>, so the strip inherits the page's own width and padding.
+  // Tabs are plain links between the member pages; the current one is lit.
+  // =========================================================================
+  function buildTabs() {
+    try {
+      var here = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+      var grp = null;
+      PAGE_GROUPS.forEach(function (g) {
+        if (!grp && g.tabs.some(function (t) { return t[0].replace('./', '').toLowerCase() === here; })) grp = g;
+      });
+      if (!grp) return;
+      var tabs = grp.tabs.filter(function (t) { return IS_OWNER || PRIVATE_PAGES.indexOf(t[0].replace('./', '')) < 0; });
+      if (tabs.length < 2) return;
+      var bar = document.createElement('div');
+      bar.className = 'sw-tabs';
+      bar.setAttribute('role', 'navigation');
+      bar.setAttribute('aria-label', grp.g + ' sections');
+      bar.innerHTML = '<div class="sw-tabs-in">' + tabs.map(function (t) {
+        var on = t[0].replace('./', '').toLowerCase() === here;
+        return '<a class="sw-tab' + (on ? ' on' : '') + '" href="' + esc(t[0]) + '"' + (on ? ' aria-current="page"' : '') + '>' +
+          '<span aria-hidden="true">' + t[1] + '</span>' + esc(t[2]) + '</a>';
+      }).join('') + '</div>';
+      var main = document.querySelector('main');
+      if (main) main.insertBefore(bar, main.firstChild);
+      else {
+        var h = document.querySelector('header');
+        if (h && h.parentNode) h.parentNode.insertBefore(bar, h.nextSibling);
+      }
+    } catch (e) {}
+  }
+
   // header drops a stronger shadow once the page is scrolled
   function watchHeader() {
     var h = document.querySelector('header'); if (!h) return;
@@ -449,7 +525,7 @@
     } catch (e) {}
   }
 
-  function init() { buildNav(); buildFooter(); build(); watchHeader(); watchTables(); loadFeatures(); }
+  function init() { buildNav(); buildTabs(); buildFooter(); build(); watchHeader(); watchTables(); loadFeatures(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();
