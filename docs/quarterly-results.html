@@ -48,6 +48,8 @@
   .lnk{color:var(--accent,#1d4ed8);font-weight:700;cursor:pointer}
   .lnk:hover{text-decoration:underline}
   .bar-tip{pointer-events:none}
+  .scrollbar::-webkit-scrollbar{height:8px}
+  .scrollbar::-webkit-scrollbar-thumb{background:#475569;border-radius:4px}
   @media (max-width:640px){ .tabbtn{padding:7px 11px;font-size:12.5px} }
 </style>
 </head>
@@ -85,6 +87,7 @@
       <button class="tabbtn" data-tab="results">📋 All Results</button>
       <button class="tabbtn" data-tab="feed">⚡ Just Declared</button>
       <button class="tabbtn" data-tab="calendar">📅 Calendar</button>
+      <button class="tabbtn" data-tab="season">📈 Season Trends</button>
     </div>
 
     <!-- Controls -->
@@ -136,7 +139,7 @@
           <div id="breadth"></div>
           <h3 class="font-extrabold text-slate-900 text-sm mt-4 mb-1.5">Season trend <span class="text-slate-400 font-semibold text-xs">· median PAT growth of reporters, last 5 quarters</span></h3>
           <div id="seasonStrip"></div>
-          <div class="text-[11px] text-slate-500 mt-1.5">Full multi-year history → <a class="lnk" href="./results-season.html">Results Season chart</a></div>
+          <div class="text-[11px] text-slate-500 mt-1.5">Full multi-year history → <span class="lnk" onclick="setTab('season')">Season Trends</span></div>
         </div>
         <div class="card p-4">
           <div class="flex items-center justify-between mb-2 gap-2 flex-wrap">
@@ -218,6 +221,72 @@
       </div>
       <div id="calList" class="space-y-4"></div>
       <p class="text-[11px] text-slate-500 mt-3">Confirmed dates from the NSE + BSE event calendars (refreshes hourly) · predictions use each company's median filing lag over the past year · <span id="calUpd"></span></p>
+    </section>
+
+    <!-- ============ SEASON TRENDS (multi-year, merged from results-season.html) ============ -->
+    <section id="tab-season" style="display:none">
+      <div class="card p-3 mb-4">
+        <div class="flex flex-wrap items-center gap-2">
+          <label for="rsUniverseSelect" class="text-xs font-semibold text-slate-600 uppercase tracking-wide">Universe</label>
+          <select id="rsUniverseSelect" class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 max-w-full"></select>
+          <span class="inline-flex rounded-lg border border-slate-300 overflow-hidden text-xs font-semibold ml-1" role="group" aria-label="Metric type">
+            <button id="rsModeMedian" type="button" class="px-3 py-1.5" title="Median company's YoY growth (consolidated)">Median</button>
+            <button id="rsModeTotal" type="button" class="px-3 py-1.5 border-l border-slate-300" title="Total / aggregate YoY growth — matches Trendlyne">Total</button>
+          </span>
+          <span id="rsUniverse" class="text-xs text-slate-400"></span>
+        </div>
+        <div class="mt-2 flex flex-wrap items-center gap-2">
+          <label class="text-xs font-semibold text-slate-600 uppercase tracking-wide">Period</label>
+          <span class="inline-flex rounded-lg border border-slate-300 overflow-hidden" role="group" aria-label="Time range">
+            <button id="rsP_1y"  type="button" class="px-3 py-1.5 text-xs font-semibold">1 Year</button>
+            <button id="rsP_3y"  type="button" class="px-3 py-1.5 text-xs font-semibold border-l border-slate-300">3 Years</button>
+            <button id="rsP_5y"  type="button" class="px-3 py-1.5 text-xs font-semibold border-l border-slate-300">5 Years</button>
+            <button id="rsP_all" type="button" class="px-3 py-1.5 text-xs font-semibold border-l border-slate-300">All time</button>
+            <button id="rsP_custom" type="button" class="px-3 py-1.5 text-xs font-semibold border-l border-slate-300">Custom</button>
+          </span>
+          <span id="rsCustomRange" class="hidden inline-flex items-center gap-1.5 ml-1">
+            <select id="rsCFrom" class="border border-slate-300 rounded-lg px-2 py-1.5 text-xs bg-white focus:ring-2 focus:ring-blue-500"></select>
+            <span class="text-xs text-slate-400">to</span>
+            <select id="rsCTo" class="border border-slate-300 rounded-lg px-2 py-1.5 text-xs bg-white focus:ring-2 focus:ring-blue-500"></select>
+          </span>
+        </div>
+      </div>
+
+      <div id="rsStatus" class="text-sm text-slate-500 py-10 text-center">Loading season-trend data&hellip;</div>
+
+      <div id="rsWrap" class="hidden">
+        <div class="rounded-xl shadow-sm border border-slate-700 bg-slate-900 text-slate-100 overflow-hidden">
+          <div class="px-6 py-4 border-b border-slate-700 flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h2 class="text-sm font-bold uppercase tracking-wide text-white flex items-center gap-2">📊 <span id="rsChartTitle">Total YoY growth by quarter</span></h2>
+              <p class="text-[11px] text-slate-400 mt-1" id="rsAsOf"></p>
+            </div>
+            <div id="rsLegend" class="flex items-center gap-3 sm:gap-4 text-[11px] font-medium shrink-0"></div>
+          </div>
+          <div class="px-2 sm:px-5 py-5">
+            <div id="rsChart" class="w-full overflow-x-auto scrollbar"></div>
+            <p class="text-[10px] text-slate-500 mt-3 px-3 leading-relaxed" id="rsFootnote"></p>
+          </div>
+        </div>
+
+        <div class="card mt-4 overflow-hidden">
+          <div class="px-4 py-3 border-b border-slate-200 text-sm font-semibold text-slate-700">Quarter detail <span class="text-[11px] font-normal text-slate-400">(YoY %, follows the Median/Total toggle; hover the chart for sample sizes)</span></div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead class="bg-slate-50 text-slate-500 text-xs uppercase">
+                <tr>
+                  <th class="px-4 py-2 text-left font-semibold">Quarter</th>
+                  <th class="px-4 py-2 text-right font-semibold">Results</th>
+                  <th class="px-4 py-2 text-right font-semibold">Revenue</th>
+                  <th class="px-4 py-2 text-right font-semibold" title="Operating profit = PBET + depreciation + finance − other income (banks: pre-provision profit). Matches Trendlyne’s ‘Oper Profit’ card to the paisa.">Operating Profit</th>
+                  <th class="px-4 py-2 text-right font-semibold">PAT</th>
+                </tr>
+              </thead>
+              <tbody id="rsTableBody" class="divide-y divide-slate-100"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </section>
 
   </div>
@@ -896,16 +965,206 @@ async function liveTopUp(){
   }catch(e){}
 }
 
+/* ---------- render: season trends (multi-year YoY chart, merged from results-season.html) ----------
+   Lazy: results_season.json (~210 KB) is fetched only when the tab is first opened, so the page's
+   first-load bytes are unchanged. State/controls are independent of the quarter/filter card above
+   (which is hidden on this tab — the chart has its own universe/mode/period controls). */
+let RS_DATA=null, RS_CUR={quarters:[]}, RS_MODE='total', RS_PERIOD='1y', RS_CFROM=null, RS_CTO=null;
+let RS_STATE=0, rsRz=null;   // 0 = not loaded, 1 = loading, 2 = ready
+
+function rsQuarters(){
+  const qs=RS_CUR.quarters||[];
+  if(!qs.length||RS_PERIOD==='all') return qs;
+  if(RS_PERIOD==='custom'){
+    const lo=RS_CFROM!=null?RS_CFROM:qs[0].qe, hi=RS_CTO!=null?RS_CTO:qs[qs.length-1].qe;
+    return qs.filter(q=>q.qe>=lo&&q.qe<=hi);
+  }
+  const yrs={'1y':1,'3y':3,'5y':5}[RS_PERIOD]||100;
+  const latest=qs.reduce((m,q)=>q.qe>m?q.qe:m,0);
+  const cutoff=latest-yrs*10000;   // e.g. 1Y from Jun-2026 (20260630) → >20250630 = last 4 quarters
+  return qs.filter(q=>q.qe>cutoff);
+}
+function rsVal(m){ return m?m[RS_MODE]:null; }                       // value for the current mode
+function rsCnt(m){ return m?(RS_MODE==='median'?m.n:m.tn):null; }    // company count for the current mode
+
+function rsRenderChart(){
+  const root=$('rsChart');
+  const Q=rsQuarters().filter(q=>rsVal(q.rev)!==null||rsVal(q.op)!==null||rsVal(q.pat)!==null);
+  if(!root) return;
+  if(!Q.length){ root.innerHTML='<p style="color:#64748b;font-size:13px;padding:1rem">No comparable data for this universe.</p>'; return; }
+
+  // Bars: Revenue, Operating Profit, PAT. 'op' (PBET + depreciation + finance − other income;
+  // pre-provision profit for banks) IS Trendlyne's "Oper Profit" card, matched to the paisa.
+  const METRICS=[
+    { key:'rev', name:'Revenue',          color:'#38bdf8' },
+    { key:'op',  name:'Operating Profit', color:'#34d399' },
+    { key:'pat', name:'PAT',              color:'#fbbf24' },
+  ];
+  const uni=$('rsUniverse'); if(uni) uni.textContent=RS_CUR.note||'';
+  const asof=$('rsAsOf'); if(asof) asof.textContent=(RS_CUR.label||'')+(RS_DATA.dataAsOf?' · prices as of '+RS_DATA.dataAsOf:'');
+  const foot=$('rsFootnote');
+  if(foot) foot.textContent=(RS_MODE==='median'
+      ? 'MEDIAN — the typical company’s YoY growth (consolidated where filed, else standalone); half of members grew faster, half slower. '
+      : 'TOTAL — aggregate YoY growth = sum of all members this year ÷ sum last year, consolidated-preferred (matches Trendlyne’s result-analysis; dominated by the largest companies). ')
+    + 'Operating Profit = PBET + depreciation + finance − other income (banks: pre-provision profit) — this is Trendlyne’s “Oper Profit” card, matched to the paisa. '
+    + 'Financials are included (banks’ Revenue = interest earned). Point-in-time index membership. YoY vs the year-ago quarter.';
+  const leg=$('rsLegend');
+  if(leg) leg.innerHTML=METRICS.map(mm=>
+    '<span class="inline-flex items-center gap-1.5"><span style="width:10px;height:10px;border-radius:2px;background:'+
+    mm.color+'"></span><span class="text-slate-300">'+mm.name+'</span></span>').join('');
+
+  let dMax=0, dMin=0;
+  Q.forEach(q=>METRICS.forEach(mm=>{ const v=rsVal(q[mm.key]);
+    if(v!==null){ if(v>dMax) dMax=v; if(v<dMin) dMin=v; } }));
+  dMax=Math.ceil((dMax+1)/5)*5;
+  dMin=dMin<0?Math.floor((dMin-1)/5)*5:0;
+  const range=(dMax-dMin)||1;
+
+  const n=Q.length, M={l:40,r:14,t:26,b:48};
+  // Uniform chart size for every period: the SVG always renders 312px tall. Few quarters →
+  // widen each group so the bars fill the card; many quarters → natural width + horizontal scroll.
+  const avail=Math.max(720, root.clientWidth||0);
+  const innerAvail=avail-M.l-M.r, minGroupW=66;
+  const groupW=n*minGroupW<=innerAvail?innerAvail/n:minGroupW;
+  const bw=Math.max(15,Math.min(30,Math.round(groupW*0.2))), gap=Math.max(3,Math.round(bw*0.2));
+  const W=M.l+n*groupW+M.r, H=312;
+  const plotTop=M.t, plotBot=H-M.b;
+  const y=v=>plotTop+(dMax-v)/range*(plotBot-plotTop);
+  const zeroY=y(0);
+  const fmt=v=>(v>=0?'+':'')+v.toFixed(1)+'%';
+  const cf=x=>x.toLocaleString('en-IN');
+
+  let g='';
+  for(let t=dMin;t<=dMax+0.001;t+=5){
+    const yy=y(t), zero=t===0;
+    g+='<line x1="'+M.l+'" x2="'+(W-M.r)+'" y1="'+yy.toFixed(1)+'" y2="'+yy.toFixed(1)+
+       '" stroke="'+(zero?'#64748b':'#1e293b')+'" stroke-width="'+(zero?1.2:1)+'" pointer-events="none"/>'+
+       '<text x="'+(M.l-6)+'" y="'+(yy+3).toFixed(1)+'" text-anchor="end" font-size="10" fill="#64748b" pointer-events="none">'+t+'%</text>';
+  }
+  Q.forEach((q,i)=>{
+    const gx=M.l+i*groupW, cx=(gx+groupW/2).toFixed(1);
+    let gt=esc(q.label)+' — '+cf(q.reported)+' companies reported'+(q.partial?' (in progress — preliminary, few reporters so far)':'');
+    METRICS.forEach(mm=>{ if(rsVal(q[mm.key])!==null) gt+=' · '+mm.name+' '+fmt(rsVal(q[mm.key])); });
+    g+='<rect x="'+gx+'" y="'+plotTop+'" width="'+groupW+'" height="'+(plotBot-plotTop)+
+       '" fill="transparent"><title>'+gt+'</title></rect>';
+    const totW=METRICS.length*bw+(METRICS.length-1)*gap, x0=gx+(groupW-totW)/2;
+    METRICS.forEach((mm,j)=>{
+      const v=rsVal(q[mm.key]); if(v===null) return;
+      const bx=x0+j*(bw+gap), yv=y(v);
+      const top=Math.min(yv,zeroY), hh=Math.max(0.5,Math.abs(zeroY-yv));
+      g+='<rect x="'+bx.toFixed(1)+'" y="'+top.toFixed(1)+'" width="'+bw+'" height="'+hh.toFixed(1)+
+         '" rx="2" fill="'+mm.color+'"'+(q.partial?' fill-opacity="0.4"':'')+'><title>'+esc(q.label)+' · '+mm.name+': '+fmt(v)+
+         ' ('+(RS_MODE==='median'?'median of ':'total of ')+cf(rsCnt(q[mm.key]))+' companies)</title></rect>';
+      const pos=v>=0, lx=(bx+bw/2).toFixed(1), ly=(pos?yv-3:yv+3).toFixed(1);
+      g+='<text x="'+lx+'" y="'+ly+'" transform="rotate(-90 '+lx+' '+ly+')" text-anchor="'+
+         (pos?'start':'end')+'" font-size="9.5" font-weight="600" fill="'+mm.color+'" pointer-events="none">'+fmt(v)+'</text>';
+    });
+    g+='<text x="'+cx+'" y="'+(plotBot+17)+'" text-anchor="middle" font-size="11" font-weight="600" fill="'+(q.partial?'#f59e0b':'#cbd5e1')+'" pointer-events="none">'+esc(q.label)+'</text>'+
+       '<text x="'+cx+'" y="'+(plotBot+31)+'" text-anchor="middle" font-size="9.5" fill="'+(q.partial?'#f59e0b':'#64748b')+'" pointer-events="none">'+(q.partial?cf(q.reported)+' • in progress':cf(q.reported)+' Results')+'</text>';
+  });
+  // Fixed pixel size (no viewBox scaling) so every period renders at the same height; the
+  // wrapper (#rsChart, overflow-x-auto) scrolls horizontally when W exceeds the card.
+  root.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" '+
+    'style="max-width:none;display:block" font-family="Inter,sans-serif">'+g+'</svg>';
+}
+
+function rsRenderTable(){
+  const tb=$('rsTableBody');
+  if(!tb) return;
+  const cell=m=>rsVal(m)===null?'<span class="text-slate-300">—</span>'
+    :'<span class="'+pctCls(rsVal(m))+' font-medium tabular-nums">'+fmtPct(rsVal(m))+'</span>';
+  tb.innerHTML=rsQuarters().slice().reverse().map(q=>
+    '<tr class="hover:bg-slate-50">'+
+      '<td class="px-4 py-2 font-semibold text-slate-700">'+q.label+(q.partial?' <span class="text-amber-600 font-medium">· in progress</span>':'')+'</td>'+
+      '<td class="px-4 py-2 text-right text-slate-600 tabular-nums">'+q.reported.toLocaleString('en-IN')+'</td>'+
+      '<td class="px-4 py-2 text-right">'+cell(q.rev)+'</td>'+
+      '<td class="px-4 py-2 text-right">'+cell(q.op)+'</td>'+
+      '<td class="px-4 py-2 text-right">'+cell(q.pat)+'</td>'+
+    '</tr>').join('');
+}
+
+function rsSelectUniverse(key){
+  const uvs=RS_DATA&&RS_DATA.universes||[];
+  RS_CUR=uvs.find(u=>u.key===key)||uvs[0]||{quarters:[]};
+  rsPopulateCustom();
+  rsRenderChart(); rsRenderTable();
+}
+// Fill the custom-range dropdowns with this universe's quarters; reset bounds to the full span.
+function rsPopulateCustom(){
+  const cf=$('rsCFrom'), ct=$('rsCTo');
+  if(!cf||!ct) return;
+  const qs=RS_CUR.quarters||[];
+  const opts=qs.map(q=>'<option value="'+q.qe+'">'+q.label+'</option>').join('');
+  cf.innerHTML=opts; ct.innerHTML=opts;
+  if(qs.length){ RS_CFROM=qs[0].qe; RS_CTO=qs[qs.length-1].qe; cf.value=RS_CFROM; ct.value=RS_CTO; }
+}
+function rsSetPeriod(p){
+  RS_PERIOD=p;
+  ['1y','3y','5y','all','custom'].forEach((k,i)=>{
+    const b=$('rsP_'+k);
+    if(b) b.className='px-3 py-1.5 text-xs font-semibold'+(i?' border-l border-slate-300':'')+
+      (k===p?' bg-blue-600 text-white':' bg-white text-slate-600 hover:bg-slate-50');
+  });
+  const cr=$('rsCustomRange');
+  if(cr) cr.classList.toggle('hidden',p!=='custom');
+  rsRenderChart(); rsRenderTable();
+}
+function rsSetMode(m){
+  RS_MODE=m;
+  const mb=$('rsModeMedian'), tb=$('rsModeTotal');
+  const paint=(btn,on,extra)=>{ btn.className='px-3 py-1.5'+extra+(on?' bg-blue-600 text-white':' bg-white text-slate-600 hover:bg-slate-50'); };
+  if(mb&&tb){ paint(mb,m==='median',''); paint(tb,m==='total',' border-l border-slate-300'); }
+  const ct=$('rsChartTitle');
+  if(ct) ct.textContent=(m==='median'?'Median':'Total')+' YoY growth by quarter';
+  rsRenderChart(); rsRenderTable();
+}
+function rsInit(data){
+  RS_DATA=data;
+  const uvs=data.universes||[];
+  if(!uvs.length) throw new Error('no data');
+  const sel=$('rsUniverseSelect');
+  sel.innerHTML=uvs.map(u=>'<option value="'+esc(u.key)+'">'+esc(u.label)+'</option>').join('');
+  // Default universe = Nifty 500 (set here, not in the JSON — the JSON is regenerated daily).
+  sel.value=uvs.some(u=>u.key==='Nifty 500')?'Nifty 500':(data.defaultUniverse||uvs[0].key);
+  sel.onchange=()=>rsSelectUniverse(sel.value);
+  $('rsModeMedian').onclick=()=>rsSetMode('median');
+  $('rsModeTotal').onclick=()=>rsSetMode('total');
+  [['rsP_1y','1y'],['rsP_3y','3y'],['rsP_5y','5y'],['rsP_all','all'],['rsP_custom','custom']]
+    .forEach(p=>{ $(p[0]).onclick=()=>rsSetPeriod(p[1]); });
+  $('rsCFrom').onchange=function(){ RS_CFROM=+this.value; rsRenderChart(); rsRenderTable(); };
+  $('rsCTo').onchange=function(){ RS_CTO=+this.value; rsRenderChart(); rsRenderTable(); };
+  // Unhide BEFORE the first render so the chart can measure its container width.
+  $('rsStatus').classList.add('hidden');
+  $('rsWrap').classList.remove('hidden');
+  rsSelectUniverse(sel.value);
+  rsSetMode('total');    // initial button styling + render (Total = Trendlyne-comparable default)
+  rsSetPeriod('1y');     // initial period-button styling (default = last 1 year / 4 quarters)
+  window.addEventListener('resize',()=>{ clearTimeout(rsRz);
+    rsRz=setTimeout(()=>{ if(ST.tab==='season'&&RS_STATE===2) rsRenderChart(); },150); });
+}
+function renderSeason(){
+  if(RS_STATE===2){ rsRenderChart(); rsRenderTable(); return; }
+  if(RS_STATE===1) return;
+  RS_STATE=1;
+  fetch('./results_season.json')
+    .then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+    .then(d=>{ RS_STATE=2; rsInit(d); })
+    .catch(e=>{ RS_STATE=0; $('rsStatus').textContent='Could not load season-trend data ('+e.message+') — reopen the tab to retry.'; });
+}
+
 /* ---------- shell ---------- */
 function setTab(t){ ST.tab=t; render(); }
 function render(){
   document.querySelectorAll('#tabs .tabbtn').forEach(b=>b.classList.toggle('on',b.getAttribute('data-tab')===ST.tab));
-  ['overview','results','feed','calendar'].forEach(t=>{ $('tab-'+t).style.display = ST.tab===t?'':'none'; });
-  $('controlsCard').style.display='';
+  ['overview','results','feed','calendar','season'].forEach(t=>{ $('tab-'+t).style.display = ST.tab===t?'':'none'; });
+  // The quarter chips / filter card drive the four company-level tabs; the Season Trends tab
+  // has its own universe/mode/period controls, so the shared card is hidden there.
+  $('controlsCard').style.display = ST.tab==='season' ? 'none' : '';
   renderQChips();
   if(ST.tab==='overview') renderOverview();
   else if(ST.tab==='results') renderResults();
   else if(ST.tab==='feed') renderFeed();
+  else if(ST.tab==='season') renderSeason();
   else renderCalendar();
 }
 function wire(){
@@ -966,7 +1225,7 @@ async function load(){
     if(feed) $('feedUpd').textContent='feed updated '+feed.updated;
     if(cal) $('calUpd').textContent='calendar updated '+cal.updated;
     const p=new URLSearchParams(location.search);
-    if(p.get('tab')&&['overview','results','feed','calendar'].includes(p.get('tab'))) ST.tab=p.get('tab');
+    if(p.get('tab')&&['overview','results','feed','calendar','season'].includes(p.get('tab'))) ST.tab=p.get('tab');
     renderSectorSel(); wire(); render();
     $('status').classList.add('hidden'); $('app').style.display='';
     liveTopUp(); setInterval(()=>{ if(!document.hidden) liveTopUp(); },60000);

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-SAFETY NET for docs/results-season.html — guarantees the page never silently undercounts.
+SAFETY NET for the Season Trends tab of docs/quarterly-results.html (the merged results-season
+chart) — guarantees the chart never silently undercounts.
 
 For the LIVE quarter it compares, per universe on that page (the liquid set + every NSE index, using the
 SAME point-in-time membership build_results_season.py uses):

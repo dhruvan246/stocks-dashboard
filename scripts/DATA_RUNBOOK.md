@@ -199,7 +199,7 @@ in-step: pymupdf + curl_cffi + rapidocr-onnxruntime/onnxruntime/numpy. Validate:
 **Manual method** — correct page/row, owners-attributable, unit disambiguation, verify:
 → **`scripts/INSURER_EXTRACTION_PLAYBOOK.md`** (memory: project-stocks-insurer-extraction).
 
-**ROBUSTNESS UPGRADES (2026-07-16) — so results-season.html never silently undercounts an index:**
+**ROBUSTNESS UPGRADES (2026-07-16) — so the Season Trends chart (quarterly-results.html) never silently undercounts an index:**
 1. **Free Gemini-vision fallback is WIRED but needs a secret.** `fetch_insurers.py` → `gemini_extract()` (via
    `gemini_vision.py`, Google AI Studio FREE tier ~1500/day, we use ~7/qtr) renders the P&L page and reads it,
    still ANCHOR-VERIFIED against stored year-ago con. It only runs when `GEMINI_API_KEY` is in the env.
@@ -514,12 +514,15 @@ view, Top/Bottom movers, search, watchlist (localStorage), equal/mcap toggle, CS
 ---
 
 ## 11. RESULTS SEASON CHART  (Trendlyne-style market earnings pulse; built 2026-06-30, SELF-UPDATING)
-Standalone page **`docs/results-season.html`** (own "Results Season" 📊 nav tab; fetches `results_season.json`
-at runtime). Dark grouped-bar chart: per quarter (**Mar-2019 → latest, 29 quarters**), the MEDIAN YoY % across
+**Lives as the "📈 Season Trends" tab of `docs/quarterly-results.html`** (merged 2026-07-18, per user — was the
+standalone `docs/results-season.html`, which is now a redirect stub to `quarterly-results.html?tab=season`; the
+tab lazy-fetches `results_season.json` ~210 KB only when first opened, so the hub's first-load is unchanged; its
+JS is `rs`-prefixed: `rsRenderChart/rsRenderTable/rsInit…`, reusing the hub's `esc/fmtPct/pctCls`).
+Dark grouped-bar chart: per quarter (**Mar-2019 → latest, 29 quarters**), the MEDIAN YoY % across
 reporting companies for **Revenue, Operating Profit, PAT**, with the reporting count in each x-label. Value labels on
 each bar, hover tooltips, hand-rolled SVG (no chart lib), + a quarter-detail table. For many quarters the SVG renders
 at natural width and the wrapper scrolls (so bars stay readable); it shows the **COVID crash (Jun-2020: PAT −56%) and
-V-recovery (Jun-2021: +48%)**. ⚠️ MOVED OFF the Stocks dashboard → its own page, per user. Nav tab on every page.
+V-recovery (Jun-2021: +48%)**.
 
 - **Universe (user-confirmed = "Trendlyne-match"):** currently-listed (`alive`) names with **median daily
   turnover ≥ ₹1 cr** over the last ~250 sessions (close×volume from `sf_stock_data.bin`). ≈1,434 names →
@@ -781,7 +784,7 @@ those filings don't carry the period inside `<xbrli:context>`; they tag `DateOf{
 context. `ctx_period()` reads the context block first, then falls back to those tags (else 2018-20 silently parse as
 0 symbols — the bug that capped history at 2022). Dec-2022 has a thinner cache (~1,100 vs ~1,800) — robust median, fine.
 - Tunables: chart START quarter = `y, m = 2019, 3` in `build_results_season.py`; `TURN_FLOOR_CR` there (1.0 → ~1,290
-  reporters); colours/labels in `renderResultsSeason()` inside `docs/results-season.html`.
+  reporters); colours/labels in `rsRenderChart()` inside `docs/quarterly-results.html` (Season Trends tab).
 
 ---
 
@@ -890,14 +893,16 @@ Hand-maintained page; data = **`docs/announcements.json`** (rolling ~31 days,
 
 ## 15. QUARTERLY RESULTS DASHBOARD  (docs/quarterly-results.html — "Quarterly Results" nav, built 2026-07-12)
 Best-of-breed results hub (features merged from a ~40-site survey: ValuePicker/Trendlyne/Screener/Tijori/
-MarketsMojo/Moneycontrol/StockEdge/Investing.com/EarningsWhispers/Nasdaq/FactSet…). Four tabs:
+MarketsMojo/Moneycontrol/StockEdge/Investing.com/EarningsWhispers/Nasdaq/FactSet…). Five tabs:
 **Season Overview** (scoreboard tiles + breadth + 5-season strip + sector heatmap/scorecard + movers incl.
 result-day reaction), **All Results** (sortable per-company table: Rev/OP/OPM Δbps/PAT std+con auto-basis,
 YoY+QoQ, rule-based verdict dot, reaction %, since-result drift; screen chips: turnaround LP/PL, margin
 +200bps, record PAT, 4-qtr streak, reacted ±5%; CSV export; watchlist ★ localStorage `qr_watch`),
 **Just Declared** (filing feed w/ PDF + growth badges, LIVE top-up via the same Cloudflare Worker
 `?announcements=1` every 60 s), **Calendar** (upcoming results: NSE-confirmed ✓ + cadence-PREDICTED "est."
-dates). Deep links: `?tab=results|feed|calendar&sym=TCS`.
+dates), **Season Trends** (the §11 multi-year median/total YoY chart, merged here 2026-07-18 — own
+universe/mode/period controls, shared filter card hidden, `results_season.json` lazy-fetched on first open).
+Deep links: `?tab=results|feed|calendar|season&sym=TCS`.
 
 **Three data files, three refresh paths (page fetches only these — no big bins):**
 1. `docs/quarterly_results.json` (~1.8 MB raw) ← **`scripts/build_quarterly_results.py`** — per company:

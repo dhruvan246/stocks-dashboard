@@ -161,7 +161,6 @@
       { sub: 'Discovery & Filings', items: [
         ['./discovery.html',         '💸', 'Smart Money Picks'],
         ['./quarterly-results.html', '🧾', 'Quarterly Results'],
-        ['./results-season.html',    '📊', 'Results Season'],
         ['./ipos.html',              '🚀', 'IPOs & Listings'],
         ['./actions.html',           '📅', 'Ex-Dates Calendar'],
         ['./announcements.html',     '📢', 'Announcements']

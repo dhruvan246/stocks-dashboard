@@ -154,7 +154,7 @@ jobs:
         if: ${{ hashFiles('docs/.fund_updated') != '' }}
         run: python3 scripts/build_results_season.py
 
-      # SAFETY NET: for every index on results-season.html, flag any member that has DECLARED results
+      # SAFETY NET: for every index on the Season Trends tab (quarterly-results.html), flag any member that has DECLARED results
       # for the live quarter but whose numbers aren't parsed into the chart yet (the 22-vs-25 gap). Prints
       # to the CI log the moment a gap appears and writes docs/_season_coverage.json. Never fails the run.
       - name: Check Results Season coverage (declared vs parsed)
