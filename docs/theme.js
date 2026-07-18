@@ -322,8 +322,12 @@
   // =========================================================================
   function buildFooter() {
     if (document.querySelector('.sw-footer')) return;
+    // A page may still ship its own <footer> for page-specific provenance (e.g. the Stocks
+    // dashboard's price-data note) — its text is absorbed as the credits line below. Pages
+    // without one get this site-wide default, so the wording lives in exactly one place.
     var old = document.querySelector('footer');
-    var credits = old ? old.textContent.replace(/\s+/g, ' ').trim() : '';
+    var credits = old ? old.textContent.replace(/\s+/g, ' ').trim()
+      : 'Data sourced from NSE, BSE, AMFI, RBI & Yahoo Finance · Investments in securities are subject to market risks; read all related documents carefully before investing.';
     var link = function (it) {
       var ext = it[0].indexOf('http') === 0;
       return '<a class="sw-f-link" href="' + esc(it[0]) + '"' + (ext ? ' target="_blank" rel="noopener"' : '') + '>' +
