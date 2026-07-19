@@ -79,6 +79,82 @@ def enrich_scrips(limit):
     out.sort(key=lambda kv: -(kv[1][2] or 0))
     return out[:limit]
 
+# NSE rate-limits archive downloads per IP: after a burst it answers 403 (or 429). Before 2026-07-19
+# the prep just printed "fetch err 403" and `continue`d — so one throttle abandoned that name for the
+# whole run, and because the NEXT scheduled run could hit the same wall at the same point, big filers
+# (AXISBANK/KOTAKBANK/PNB/INDIACEM/JKCEMENT, 2026-07-18) sat unfilled across BOTH runs. Fix: never skip
+# on a retryable error — wait (growing backoff), re-warm the NSE session cookie (a fresh jar clears the
+# throttle), and try again. Only a hard 404 / non-retryable status gives up. A 200 that isn't a %PDF
+# (NSE error/te stub) is treated as retryable too.
+def _nse_warm(NB):
+    """Cookie jar warmed on BOTH the home page and the announcements page — nsearchives
+    checks that the session has 'visited' the referer page before it serves an attachment."""
+    jar = NB.nse_jar()   # home + financial-results
+    try:
+        NB._get("https://www.nseindia.com/companies-listing/corporate-filings-announcements",
+                headers={"User-Agent": NB.UA, "Accept": "text/html"}, jar=jar, timeout=20)
+    except Exception:
+        pass
+    return jar
+
+RETRYABLE = {403, 429, 500, 502, 503, 504}
+def _nse_pdf_with_retry(NB, url, hdr, jar_box, sym, tries=3):   # brief ride-out; BSE fallback covers a hard block
+    import urllib.error
+    delay = 5
+    for attempt in range(1, tries + 1):
+        reason = None
+        try:
+            raw = NB._get(url, headers=hdr, jar=jar_box[0], timeout=60, binary=True)
+            if raw and raw[:4] == b"%PDF":
+                return raw
+            reason = "non-PDF (%d bytes)" % (len(raw) if raw else 0)
+        except urllib.error.HTTPError as ex:
+            reason = "HTTP %s" % ex.code
+            if ex.code not in RETRYABLE:
+                print("  NSE %-11s hard %s — not retryable" % (sym, reason)); return None
+        except Exception as ex:
+            reason = type(ex).__name__
+        if attempt < tries:
+            print("  NSE %-11s %s — retry %d/%d in %ds (re-warm cookie)"
+                  % (sym, reason, attempt, tries - 1, delay))
+            time.sleep(delay)
+            try: jar_box[0] = _nse_warm(NB)   # fresh cookies + pause clears NSE's per-IP throttle
+            except Exception: pass
+            delay = min(delay * 2, 60)
+    return None
+
+def _bse_fallback(sym, by_id, op_box, outdir, qe):
+    """When NSE's nsearchives hard-403s a scripted download, a DUAL-LISTED name can be read off
+    BSE (AttachLive/AttachHis) instead — BSE doesn't block us, so this is what actually rescues the
+    big banks/large-caps (AXISBANK/KOTAK/PNB/INDIACEM/JKCEMENT, 2026-07-18) when the NSE fetch fails.
+    Numbers still route to vision_fills as an NSE fill (manifest exch stays 'NSE'); we only borrow the
+    BSE PDF. Returns rendered NSE_<sym>_pN.png paths, or [] (NSE-only SME, or BSE has no matching filing).
+    Same quarter tripwire as the BSE branch: never render a filing whose stated period isn't the target."""
+    scrip = by_id.get(sym)
+    if not scrip:
+        return []                              # NSE-only (e.g. an SME) — no BSE copy exists
+    import bse_fetch as B, bse_render
+    if op_box[0] is None:
+        op_box[0] = B.session(); time.sleep(1)
+    op = op_box[0]
+    try:
+        anns = bse_render.announcements(op, str(scrip))[:4]
+    except Exception as ex:
+        print("  NSE %-11s BSE-fallback error %s" % (sym, type(ex).__name__)); return []
+    for annd, att, hd in anns:
+        raw = bse_render.fetch_pdf(op, att)
+        if not raw:
+            continue
+        real = pdf_period(raw)
+        if real and real != qe:                # wrong quarter's filing — try the next candidate
+            continue
+        pngs = []
+        for i, png in enumerate(render_pdf_pages(raw)):
+            p = os.path.join(outdir, "NSE_%s_p%d.png" % (sym, i)); open(p, "wb").write(png); pngs.append(p)
+        if pngs:
+            return pngs
+    return []
+
 def main():
     limit = int(sys.argv[sys.argv.index("--limit") + 1]) if "--limit" in sys.argv else 25
     outdir = sys.argv[sys.argv.index("--outdir") + 1] if "--outdir" in sys.argv else os.path.join(os.environ.get("TEMP", "/tmp"), "bse_pending")
@@ -94,13 +170,29 @@ def main():
     qfix = {}   # "SYM|YYYY-MM-DD" -> real quarter-end, when NSE's caption quarter is wrong
     if nse:
         import build_fundamentals as NB
-        jar = NB.nse_jar(); hdr = {"User-Agent": NB.UA, "Referer": "https://www.nseindia.com/"}
+        try: by_id = json.load(open(os.path.join(HERE, "bse_scrips.json"), encoding="utf-8"))["by_id"]
+        except Exception: by_id = {}          # SYM -> BSE scrip, for the dual-listed fallback
+        bse_op_box = [None]                    # lazy BSE session, only opened if an NSE fetch fails
+        # nsearchives 403s scripted downloads unless the request looks like a real browser click
+        # from the announcements page (Referer + Sec-Fetch + a session cookie warmed on that page).
+        hdr = {"User-Agent": NB.UA,
+               "Referer": "https://www.nseindia.com/companies-listing/corporate-filings-announcements",
+               "Accept": "application/pdf,*/*", "Accept-Language": "en-US,en;q=0.9",
+               "Sec-Fetch-Site": "same-site", "Sec-Fetch-Mode": "navigate", "Sec-Fetch-Dest": "document"}
+        jar_box = [_nse_warm(NB)]     # mutable holder so a retry can swap in a fresh cookie jar
         for sym, name, mcap, fn, fdate in nse:
             if not fn: continue
             url = fn if str(fn).startswith("http") else NSE_PDF + fn
-            try: raw = NB._get(url, headers=hdr, jar=jar, timeout=60, binary=True)
-            except Exception as ex: print("  NSE %s fetch err %s" % (sym, str(ex)[:40])); continue
-            if not raw or raw[:4] != b"%PDF": continue
+            raw = _nse_pdf_with_retry(NB, url, hdr, jar_box, sym)
+            if not raw:
+                # NSE blocked the download — read the SAME result off BSE (dual-listed names)
+                fb = _bse_fallback(sym, by_id, bse_op_box, outdir, qe)
+                if fb:
+                    manifest.append({"exch": "NSE", "sym": sym, "scrip": "", "name": name, "mcap": mcap, "pngs": fb})
+                    print("  rendered NSE %-11s via BSE fallback (%d pages)" % (sym, len(fb)))
+                else:
+                    print("  NSE %-11s UNFETCHED (NSE 403 + no BSE copy) — left pending" % sym)
+                continue
             real = pdf_period(raw)                             # what the filing itself says
             if real and real != qe:                           # NSE caption mislabelled the quarter
                 qfix["%s|%s" % (sym, fdate)] = real
@@ -111,7 +203,7 @@ def main():
             if pngs:
                 manifest.append({"exch": "NSE", "sym": sym, "scrip": "", "name": name, "mcap": mcap, "pngs": pngs})
                 print("  rendered NSE %-11s (%d pages)" % (sym, len(pngs)))
-            time.sleep(0.4)
+            time.sleep(1.5)   # space downloads out so we don't trip NSE's per-IP rate limit
     # merge quarter corrections into the persistent side-file (write_results_feed applies them hourly)
     fixp = os.path.join(D, "feed_qe_fix.json")
     try: allfix = json.load(open(fixp, encoding="utf-8"))

@@ -1004,6 +1004,22 @@ Deep links: `?tab=results|feed|calendar|season&sym=TCS`.
   applies that override every hourly rebuild → the row re-files under its true quarter and drops out of pending.
   No API/vision cost (pure text+regex). The routine commits feed_qe_fix.json + results_feed.json. Keyed by
   sym+date so a genuine later June filing (different date) is never wrongly re-tagged.
+- ⚠️ **NSE nsearchives 403s scripted PDF downloads → the vision routine falls back to the BSE copy (2026-07-19).**
+  On 2026-07-18 AXISBANK/KOTAKBANK/PNB/JKCEMENT/PSB/INDIACEM filed by ~13:00 IST but sat "numbers being parsed"
+  through the whole day. Root cause (verified): the CI XBRL crons ran fine but NSE hadn't posted the structured
+  XBRL yet (banks file the PDF board-outcome first, XBRL hours-to-a-day later); and the vision safety-net's PDF
+  fetch from `nsearchives.nseindia.com/corporate/<file>` returned **HTTP 403** — NSE hard-blocks scripted archive
+  downloads (persists across cookie re-warm + backoff; even a clean IP via WebFetch 403s, so it is NOT merely a
+  per-IP rate limit). The old code just printed `fetch err 403` and `continue`d, abandoning the name for the whole
+  run; the next scheduled run hit the same wall, so both of 2026-07-18's 15:08 + 23:08 IST runs missed them.
+  **Fix in `bse_vision_prep.py`:** (1) `_nse_pdf_with_retry` — brief backoff + cookie re-warm (rides out a
+  transient throttle, 3 tries); (2) **`_bse_fallback` — when the NSE fetch still fails, read the SAME result off
+  BSE** (`bse_scrips.json['by_id']` gives SYM→scrip; `bse_render.announcements`+`fetch_pdf` with the same
+  quarter tripwire). BSE's AttachLive/His path is NOT blocked, so every dual-listed large-cap is rescued; the
+  numbers still route to `vision_fills.json` (manifest exch stays "NSE"). Only genuinely NSE-only names (SME like
+  GANGAFORGE, not on BSE) can't fall back — those wait for NSE's XBRL. Gentler 1.5 s spacing + browser-ish
+  headers (Sec-Fetch + announcements-page referer/warm) reduce the trip rate. Verified 2026-07-19: all 6
+  dual-listed names rendered via BSE fallback while NSE returned 403.
 - **Price-universe ORPHANS (tiny NSE filers absent from sf_stock_data.bin) now show as lightweight rows.**
   Micro NSE names (e.g. OASIS/Oasis Tradelink, BETALA/Betala Global Securities) file real results but have
   no `co` entry (not in the price bin, no parsed XBRL) → they used to hang as "numbers being parsed" forever.
