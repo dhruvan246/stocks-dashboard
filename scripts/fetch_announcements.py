@@ -22,6 +22,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "..", "docs", "announcements.json")
 WINDOW_DAYS = 31
 CHUNK_DAYS = 7
+INDICES = ("equities", "sme")   # mainboard + SME/Emerge — SME board carries thin-name result filings
 MIN_ROWS = 200          # a 31-day window always has thousands; fewer = broken fetch, keep old file
 CAPTION_MAX = 500
 PDF_PREFIX = "https://nsearchives.nseindia.com/corporate/"
@@ -53,26 +54,30 @@ def main():
     d = start
     while d <= today:
         e = min(d + datetime.timedelta(days=CHUNK_DAYS - 1), today)
-        url = ("https://www.nseindia.com/api/corporate-announcements?index=equities"
-               "&from_date=%s&to_date=%s" % (ddmmyyyy(d), ddmmyyyy(e)))
-        try:
-            j = json.loads(B._get(url, headers=hdr, jar=jar, timeout=90))
-        except Exception as ex:
-            print("ERR chunk %s..%s: %s" % (d, e, ex)); errs += 1; j = []
-        n = 0
-        for rec in (j if isinstance(j, list) else []):
-            sym = str(rec.get("symbol") or "").strip().upper()
-            dt = parse_dt(rec)
-            if not sym or not dt: continue
-            cat = re.sub(r"\s+", " ", str(rec.get("desc") or "")).strip() or "Others"
-            cap = re.sub(r"\s+", " ", str(rec.get("attchmntText") or "")).strip()
-            if len(cap) > CAPTION_MAX: cap = cap[:CAPTION_MAX - 1].rstrip() + "…"
-            f = str(rec.get("attchmntFile") or "").strip()
-            if f.startswith(PDF_PREFIX): f = f[len(PDF_PREFIX):]
-            co = re.sub(r"\s+", " ", str(rec.get("sm_name") or "")).strip()
-            r = [sym, co, dt, cat, cap, f]
-            rows[key_of(r)] = r; n += 1
-        print("chunk %s..%s -> %d recs" % (d, e, n))
+        # NSE files mainboard (index=equities) and SME/Emerge (index=sme) announcements on separate
+        # boards — query BOTH or every SME result filing (VINEETLAB, KARNIKA, …) is invisible to us
+        # and the Trendlyne count reads permanently higher. See DATA_RUNBOOK §14/§31.
+        for idx in INDICES:
+            url = ("https://www.nseindia.com/api/corporate-announcements?index=%s"
+                   "&from_date=%s&to_date=%s" % (idx, ddmmyyyy(d), ddmmyyyy(e)))
+            try:
+                j = json.loads(B._get(url, headers=hdr, jar=jar, timeout=90))
+            except Exception as ex:
+                print("ERR chunk %s..%s [%s]: %s" % (d, e, idx, ex)); errs += 1; j = []
+            n = 0
+            for rec in (j if isinstance(j, list) else []):
+                sym = str(rec.get("symbol") or "").strip().upper()
+                dt = parse_dt(rec)
+                if not sym or not dt: continue
+                cat = re.sub(r"\s+", " ", str(rec.get("desc") or "")).strip() or "Others"
+                cap = re.sub(r"\s+", " ", str(rec.get("attchmntText") or "")).strip()
+                if len(cap) > CAPTION_MAX: cap = cap[:CAPTION_MAX - 1].rstrip() + "…"
+                f = str(rec.get("attchmntFile") or "").strip()
+                if f.startswith(PDF_PREFIX): f = f[len(PDF_PREFIX):]
+                co = re.sub(r"\s+", " ", str(rec.get("sm_name") or "")).strip()
+                r = [sym, co, dt, cat, cap, f]
+                rows[key_of(r)] = r; n += 1
+            print("chunk %s..%s [%s] -> %d recs" % (d, e, idx, n))
         d = e + datetime.timedelta(days=1)
 
     fresh = len(rows)
