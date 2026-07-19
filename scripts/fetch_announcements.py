@@ -23,6 +23,7 @@ OUT = os.path.join(HERE, "..", "docs", "announcements.json")
 WINDOW_DAYS = 31
 CHUNK_DAYS = 7
 INDICES = ("equities", "sme")   # mainboard + SME/Emerge — SME board carries thin-name result filings
+CHUNK_SME = 3                    # SME board: finer chunks — NSE errors a 7-day SME window in peak season
 MIN_ROWS = 200          # a 31-day window always has thousands; fewer = broken fetch, keep old file
 CAPTION_MAX = 500
 PDF_PREFIX = "https://nsearchives.nseindia.com/corporate/"
@@ -61,9 +62,10 @@ def main():
     # short on a given run (intermittent throttle self-heals across runs).
     for idx in INDICES:
         jar = B.nse_jar()               # fresh warmed session per board
+        step = CHUNK_SME if idx == "sme" else CHUNK_DAYS   # SME 3-day (a 7-day peak-season window errors)
         d = start
         while d <= today:
-            e = min(d + datetime.timedelta(days=CHUNK_DAYS - 1), today)
+            e = min(d + datetime.timedelta(days=step - 1), today)
             url = ("https://www.nseindia.com/api/corporate-announcements?index=%s"
                    "&from_date=%s&to_date=%s" % (idx, ddmmyyyy(d), ddmmyyyy(e)))
             j = []
