@@ -14,7 +14,7 @@ session (plain urllib + Chrome UA + cookie warmup — same as the daily fundamen
 
 Run: python -X utf8 scripts/fetch_announcements.py
 """
-import os, sys, json, datetime, re
+import os, sys, json, datetime, re, time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import build_fundamentals as B  # _get / nse_jar / UA
 
@@ -60,10 +60,18 @@ def main():
         for idx in INDICES:
             url = ("https://www.nseindia.com/api/corporate-announcements?index=%s"
                    "&from_date=%s&to_date=%s" % (idx, ddmmyyyy(d), ddmmyyyy(e)))
-            try:
-                j = json.loads(B._get(url, headers=hdr, jar=jar, timeout=90))
-            except Exception as ex:
-                print("ERR chunk %s..%s [%s]: %s" % (d, e, idx, ex)); errs += 1; j = []
+            # ⚠️ NSE throttles the back-to-back second index call and returns an empty [] (NOT an
+            # error) — the sme board silently came back 0 for the very week SME results filed
+            # (MONOPHARMA/VIGOR/JAIPAN, 2026-07). A 7-day window is NEVER genuinely empty, so treat
+            # 0 rows as a throttle and retry after a pause before trusting it.
+            j = []
+            for attempt in range(3):
+                if attempt: time.sleep(2.5 * attempt)
+                try:
+                    j = json.loads(B._get(url, headers=hdr, jar=jar, timeout=90))
+                except Exception as ex:
+                    print("ERR chunk %s..%s [%s] try%d: %s" % (d, e, idx, attempt + 1, ex)); errs += 1; j = []
+                if isinstance(j, list) and j: break     # got rows — good
             n = 0
             for rec in (j if isinstance(j, list) else []):
                 sym = str(rec.get("symbol") or "").strip().upper()
