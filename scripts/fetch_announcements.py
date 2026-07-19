@@ -47,26 +47,28 @@ def key_of(r): return "|".join((r[0], r[2], r[3], r[5]))
 def main():
     today = datetime.date.today()
     start = today - datetime.timedelta(days=WINDOW_DAYS - 1)
-    jar = B.nse_jar()
     hdr = {"User-Agent": B.UA, "Accept": "application/json, text/plain, */*",
            "Referer": "https://www.nseindia.com/companies-listing/corporate-filings-announcements"}
     rows, errs = {}, 0
-    d = start
-    while d <= today:
-        e = min(d + datetime.timedelta(days=CHUNK_DAYS - 1), today)
-        # NSE files mainboard (index=equities) and SME/Emerge (index=sme) announcements on separate
-        # boards — query BOTH or every SME result filing (VINEETLAB, KARNIKA, …) is invisible to us
-        # and the Trendlyne count reads permanently higher. See DATA_RUNBOOK §14/§31.
-        for idx in INDICES:
+    # NSE files mainboard (index=equities) and SME/Emerge (index=sme) announcements on SEPARATE
+    # boards — query BOTH or every SME result filing (VINEETLAB, MONOPHARMA, VIGOR, …) is invisible
+    # to us and the Trendlyne count reads permanently higher. See DATA_RUNBOOK §14/§31.
+    # ⚠️ NSE aggressively throttles the SME endpoint when it's hit right after equities in the SAME
+    # session — it returns a non-JSON body ("Expecting value…") that decodes to nothing. Alternating
+    # equities↔sme per chunk starved the sme board (0 recs for the exact week SME results filed).
+    # So run each board as its OWN pass with its OWN fresh cookie-warmed session, retry throttled
+    # chunks, and lean on the yesterday-file merge below to preserve any board that still comes back
+    # short on a given run (intermittent throttle self-heals across runs).
+    for idx in INDICES:
+        jar = B.nse_jar()               # fresh warmed session per board
+        d = start
+        while d <= today:
+            e = min(d + datetime.timedelta(days=CHUNK_DAYS - 1), today)
             url = ("https://www.nseindia.com/api/corporate-announcements?index=%s"
                    "&from_date=%s&to_date=%s" % (idx, ddmmyyyy(d), ddmmyyyy(e)))
-            # ⚠️ NSE throttles the back-to-back second index call and returns an empty [] (NOT an
-            # error) — the sme board silently came back 0 for the very week SME results filed
-            # (MONOPHARMA/VIGOR/JAIPAN, 2026-07). A 7-day window is NEVER genuinely empty, so treat
-            # 0 rows as a throttle and retry after a pause before trusting it.
             j = []
-            for attempt in range(3):
-                if attempt: time.sleep(2.5 * attempt)
+            for attempt in range(4):
+                if attempt: time.sleep(3 * attempt)     # 3s,6s,9s backoff on a throttled/empty reply
                 try:
                     j = json.loads(B._get(url, headers=hdr, jar=jar, timeout=90))
                 except Exception as ex:
@@ -86,7 +88,8 @@ def main():
                 r = [sym, co, dt, cat, cap, f]
                 rows[key_of(r)] = r; n += 1
             print("chunk %s..%s [%s] -> %d recs" % (d, e, idx, n))
-        d = e + datetime.timedelta(days=1)
+            d = e + datetime.timedelta(days=1)
+            time.sleep(0.6)             # gentle pace within a board
 
     fresh = len(rows)
     # merge yesterday's file so a partially-failed fetch never loses rows
@@ -154,16 +157,19 @@ def write_results_feed(allrows):
     """Slice results-filing announcements into a small standalone JSON (same schema, + parsed
     quarter-end when the caption states it). Kept tiny so the page can poll it cheaply.
 
-    ⚠️ This rebuilds the NSE rows from scratch. BSE rows are added AFTERWARD by fetch_bse_results.py,
-    so we must PRESERVE the existing BSE rows here — else, on any run where the (flaky) BSE fetch fails,
-    the committed feed would silently lose every BSE company. A BSE row is identified by its filing URL
-    (bseindia.com). De-dup NSE vs preserved by (symbol, date)."""
+    ⚠️ This rebuilds the NSE rows from scratch, so it must PRESERVE the existing feed rows — else any
+    run where a fetch comes back short silently drops companies. Two flaky sources make this essential:
+    the BSE fetch (added AFTERWARD by fetch_bse_results.py) and the NSE **SME** board, which NSE throttles
+    to an empty reply at random (dropping SME result filers for a whole window). So we keep ALL prior rows;
+    a fresh row for the same (symbol, date) OVERRIDES the preserved one below, so quarter corrections still
+    win — preservation only backfills what THIS run's fetch missed. The rolling-31d trim stops accretion."""
     outp = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "docs", "results_feed.json")
     try:
         prev = json.load(open(outp, encoding="utf-8")).get("rows", [])
     except Exception:
         prev = []
-    kept_bse = [r for r in prev if isinstance(r, list) and len(r) >= 6 and "bseindia.com" in str(r[5])]
+    kept_prev = [r for r in prev if isinstance(r, list) and len(r) >= 6]
+    n_bse = sum(1 for r in kept_prev if "bseindia.com" in str(r[5]))
     # Quarter corrections: NSE sometimes captions a late Q4/annual filing as the current quarter. The
     # daily vision-prep reads the filing PDF's real period and records "SYM|YYYY-MM-DD" -> real qe here.
     try:
@@ -180,8 +186,8 @@ def write_results_feed(allrows):
         qe = qfix.get("%s|%s" % (r[0], str(r[2])[:10])) or parse_qe(cap)
         feed.append([r[0], r[1], r[2], qe, (cap[:220] + "…") if len(cap) > 221 else cap, r[5]])
     have = set((r[0], r[2][:10]) for r in feed)
-    for r in kept_bse:                                   # re-add surviving BSE rows the NSE set lacks
-        if (r[0], r[2][:10]) not in have: feed.append(r)
+    for r in kept_prev:                                  # backfill any (sym,date) THIS run's fetch missed
+        if (r[0], r[2][:10]) not in have: feed.append(r); have.add((r[0], r[2][:10]))
     # trim to a rolling 31-day window (matches fetch_bse_results) so preserved BSE rows don't accrete
     cut = (datetime.date.today() - datetime.timedelta(days=31)).isoformat()
     feed = [r for r in feed if r[2][:10] >= cut]
@@ -189,7 +195,7 @@ def write_results_feed(allrows):
     ist = datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)
     json.dump({"updated": ist.strftime("%Y-%m-%d %H:%M IST"), "rows": feed},
               open(outp, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
-    print("WROTE %s: %d results-feed rows (%d preserved BSE)" % (os.path.normpath(outp), len(feed), len(kept_bse)))
+    print("WROTE %s: %d results-feed rows (%d preserved: %d BSE)" % (os.path.normpath(outp), len(feed), len(kept_prev), n_bse))
 
 if __name__ == "__main__":
     main()

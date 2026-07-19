@@ -24,7 +24,7 @@ concurrency:
 jobs:
   refresh-announcements:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25   # two NSE boards (equities+sme) each as its own session/pass + throttle retries
     steps:
       - name: Checkout
         uses: actions/checkout@v5
