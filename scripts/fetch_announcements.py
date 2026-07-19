@@ -68,11 +68,16 @@ def main():
             e = min(d + datetime.timedelta(days=step - 1), today)
             url = ("https://www.nseindia.com/api/corporate-announcements?index=%s"
                    "&from_date=%s&to_date=%s" % (idx, ddmmyyyy(d), ddmmyyyy(e)))
+            # Fail FAST on the flaky SME board (short timeout, 2 tries) so a few hanging windows can't
+            # blow the workflow timeout — the preserve-all-rows merge below means whatever SME NSE
+            # refuses this run is captured on a later scheduled run and kept. Equities is reliable, so
+            # it gets the full timeout + tries.
+            tmo, tries = (25, 2) if idx == "sme" else (90, 3)
             j = []
-            for attempt in range(4):
-                if attempt: time.sleep(3 * attempt)     # 3s,6s,9s backoff on a throttled/empty reply
+            for attempt in range(tries):
+                if attempt: time.sleep(2.5)
                 try:
-                    j = json.loads(B._get(url, headers=hdr, jar=jar, timeout=90))
+                    j = json.loads(B._get(url, headers=hdr, jar=jar, timeout=tmo))
                 except Exception as ex:
                     print("ERR chunk %s..%s [%s] try%d: %s" % (d, e, idx, attempt + 1, ex)); errs += 1; j = []
                 if isinstance(j, list) and j: break     # got rows — good
