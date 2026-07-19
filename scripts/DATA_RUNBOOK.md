@@ -874,7 +874,13 @@ Hand-maintained page; data = **`docs/announcements.json`** (rolling ~31 days,
 ~15k rows, ~4.7 MB raw — Pages gzips it on the wire; fetched WITHOUT a cache-buster per §9).
 - **Fetch:** `python -X utf8 scripts/fetch_announcements.py` — reuses `build_fundamentals`'s CI-proven NSE
   session (plain urllib + Chrome UA + `nse_jar()` cookie warmup, NOT curl_cffi) against
-  `/api/corporate-announcements?index=equities&from_date=&to_date=` in **7-day chunks** (5 calls/run).
+  `/api/corporate-announcements?index=<idx>&from_date=&to_date=` in **7-day chunks**, once per
+  index in `INDICES=("equities","sme")` (10 calls/run). **⚠️ NSE files mainboard and SME/Emerge
+  announcements on SEPARATE boards — you MUST query BOTH `index=equities` AND `index=sme` or every
+  SME result filing (VINEETLAB, KARNIKA, VIGOR…) is silently missing from `results_feed.json`, and
+  the Quarterly Results "Declared" tile reads permanently below Trendlyne's whole-universe count
+  (the recurring 171-vs-182 gap of 2026-07-19).** The tl_reconcile heal (§31) re-runs this fetcher,
+  so it inherits SME coverage automatically.
   Self-healing: **merges with the existing file** (a failed chunk keeps yesterday's rows), trims to the
   31-day window, and **ABORTS below 200 rows** (never clobbers good data with a broken fetch).
   Schema: `{updated,from,to,rows:[[symbol,company,"YYYY-MM-DD HH:MM:SS",category,caption,file],…]}`;
