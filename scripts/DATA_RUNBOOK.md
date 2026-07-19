@@ -874,15 +874,24 @@ Hand-maintained page; data = **`docs/announcements.json`** (rolling ~31 days,
 ~15k rows, ~4.7 MB raw — Pages gzips it on the wire; fetched WITHOUT a cache-buster per §9).
 - **Fetch:** `python -X utf8 scripts/fetch_announcements.py` — reuses `build_fundamentals`'s CI-proven NSE
   session (plain urllib + Chrome UA + `nse_jar()` cookie warmup, NOT curl_cffi) against
-  `/api/corporate-announcements?index=<idx>&from_date=&to_date=` in **7-day chunks**, once per
-  index in `INDICES=("equities","sme")` (10 calls/run). **⚠️ NSE files mainboard and SME/Emerge
-  announcements on SEPARATE boards — you MUST query BOTH `index=equities` AND `index=sme` or every
-  SME result filing (VINEETLAB, KARNIKA, VIGOR…) is silently missing from `results_feed.json`, and
-  the Quarterly Results "Declared" tile reads permanently below Trendlyne's whole-universe count
-  (the recurring 171-vs-182 gap of 2026-07-19).** The tl_reconcile heal (§31) re-runs this fetcher,
-  so it inherits SME coverage automatically.
+  `/api/corporate-announcements?index=<idx>&from_date=&to_date=`, once per index in
+  `INDICES=("equities","sme")`. **⚠️ NSE files mainboard and SME/Emerge announcements on SEPARATE
+  boards — you MUST query BOTH `index=equities` AND `index=sme` or every SME result filing
+  (VINEETLAB, KARNIKA, VIGOR, MONOPHARMA…) is silently missing from `results_feed.json`, and the
+  Quarterly Results "Declared" tile reads permanently below Trendlyne's whole-universe count (the
+  recurring 171-vs-182 gap of 2026-07-19).** The tl_reconcile heal (§31) re-runs this fetcher, so it
+  inherits SME coverage automatically. **SME board is FLAKY — three lessons baked into the code:**
+  (1) run each board as its OWN pass with its OWN fresh `nse_jar()` session — NSE throttles `sme` to
+  a non-JSON body when it's hit right after `equities` in one session; (2) query SME in **3-day
+  chunks** (`CHUNK_SME`), not 7 — a 7-day SME window in results-season peak (e.g. 2026-07-10..16)
+  reliably errors to 0, but the same days split fine returned 212/463/229 recs; (3) SME fetch is
+  **fail-fast** (25s timeout, 2 tries) so hanging windows can't blow the 25-min workflow timeout —
+  equities keeps the full 90s/3-try budget. Whatever SME NSE still refuses on a given run is captured
+  on a later scheduled run and KEPT (see preserve-all below), so windows converge across the day.
   Self-healing: **merges with the existing file** (a failed chunk keeps yesterday's rows), trims to the
   31-day window, and **ABORTS below 200 rows** (never clobbers good data with a broken fetch).
+  `write_results_feed` **preserves ALL prior feed rows** (not just BSE) — a fresh `(sym,date)` overrides,
+  so corrections still win, but a throttled SME/BSE run can never DROP a previously-captured result.
   Schema: `{updated,from,to,rows:[[symbol,company,"YYYY-MM-DD HH:MM:SS",category,caption,file],…]}`;
   captions capped at 500 chars; `file` has the `https://nsearchives.nseindia.com/corporate/` prefix stripped
   (page re-adds it; non-matching URLs kept absolute).
