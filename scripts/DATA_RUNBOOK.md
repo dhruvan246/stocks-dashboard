@@ -922,7 +922,14 @@ YoY+QoQ, rule-based verdict dot, reaction %, since-result drift; screen chips: t
 `?announcements=1` every 60 s), **Calendar** (upcoming results: NSE-confirmed ✓ + cadence-PREDICTED "est."
 dates), **Season Trends** (the §11 multi-year median/total YoY chart, merged here 2026-07-18 — own
 universe/mode/period controls, shared filter card hidden, `results_season.json` lazy-fetched on first open).
-Deep links: `?tab=results|feed|calendar|season&sym=TCS`.
+**Season Trends quarter CLICK-THROUGH (2026-07-20):** clicking a quarter (chart bar/hit-area or "Quarter
+detail" table row, "open →") jumps to the All Results tab pinned to that quarter + universe. Only universes
+the main filter's bitmask can express are clickable — `RS2UNI` map in quarterly-results.html: liquid→all,
+Nifty 50/100/500→n50/n100/n500, Midcap 150→m150, Smallcap 250→s250; sectoral/other indices (Nifty Bank…)
+stay tooltip-only (main table has no membership data for them). Quarters older than the main window
+(8 chips = latest 8 QEs) also stay unclickable. The click rewrites the URL via history.replaceState.
+Deep links: `?tab=results|feed|calendar|season&sym=TCS`, plus `?tab=results&qe=YYYYMMDD&uni=n500`
+(quarter-end + universe pre-select — what the click-through writes, so the view is shareable).
 
 **Three data files, three refresh paths (page fetches only these — no big bins):**
 1. `docs/quarterly_results.json` (~1.8 MB raw) ← **`scripts/build_quarterly_results.py`** — per company:

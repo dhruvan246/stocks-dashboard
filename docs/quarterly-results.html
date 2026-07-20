@@ -267,7 +267,7 @@
         </div>
 
         <div class="card mt-4 overflow-hidden">
-          <div class="px-4 py-3 border-b border-slate-200 text-sm font-semibold text-slate-700">Quarter detail <span class="text-[11px] font-normal text-slate-400">(YoY %, follows the Median/Total toggle; hover the chart for sample sizes)</span></div>
+          <div class="px-4 py-3 border-b border-slate-200 text-sm font-semibold text-slate-700">Quarter detail <span class="text-[11px] font-normal text-slate-400">(YoY %, follows the Median/Total toggle; hover the chart for sample sizes · click a quarter to open every company’s numbers)</span></div>
           <div class="overflow-x-auto">
             <table class="w-full text-sm">
               <thead class="bg-slate-50 text-slate-500 text-xs uppercase">
@@ -984,6 +984,24 @@ function rsQuarters(){
 function rsVal(m){ return m?m[RS_MODE]:null; }                       // value for the current mode
 function rsCnt(m){ return m?(RS_MODE==='median'?m.n:m.tn):null; }    // company count for the current mode
 
+/* Quarter click-through: clicking a quarter (chart bar / table row) opens the All Results tab
+   pinned to that quarter + this universe. Only universes the main filter can express (its index
+   bitmask) are clickable; older quarters beyond the main table's window stay tooltip-only. */
+const RS2UNI={ 'liquid':'all','Nifty 50':'n50','Nifty 100':'n100','Nifty 500':'n500',
+               'Nifty Midcap 150':'m150','Nifty Smallcap 250':'s250' };
+function rsClickable(qe){
+  const qi=QTRS.indexOf(qe);
+  return (RS_CUR.key in RS2UNI) && qi>=0 && qi<Math.min(8,QTRS.length-4);
+}
+function rsOpenResults(qe){
+  if(!rsClickable(qe)) return;
+  ST.qi=QTRS.indexOf(qe); ST.uni=RS2UNI[RS_CUR.key]; ST.shown=100;
+  $('selUni').value=ST.uni;
+  try{ history.replaceState(null,'','?tab=results&qe='+qe+'&uni='+ST.uni); }catch(e){}
+  setTab('results');
+  window.scrollTo(0,0);
+}
+
 function rsRenderChart(){
   const root=$('rsChart');
   const Q=rsQuarters().filter(q=>rsVal(q.rev)!==null||rsVal(q.op)!==null||rsVal(q.pat)!==null);
@@ -1040,17 +1058,19 @@ function rsRenderChart(){
   }
   Q.forEach((q,i)=>{
     const gx=M.l+i*groupW, cx=(gx+groupW/2).toFixed(1);
+    const clk=rsClickable(q.qe), clkAttr=clk?' data-qe="'+q.qe+'" style="cursor:pointer"':'';
     let gt=esc(q.label)+' — '+cf(q.reported)+' companies reported'+(q.partial?' (in progress — preliminary, few reporters so far)':'');
     METRICS.forEach(mm=>{ if(rsVal(q[mm.key])!==null) gt+=' · '+mm.name+' '+fmt(rsVal(q[mm.key])); });
-    g+='<rect x="'+gx+'" y="'+plotTop+'" width="'+groupW+'" height="'+(plotBot-plotTop)+
-       '" fill="transparent"><title>'+gt+'</title></rect>';
+    if(clk) gt+=' · click to open every company’s numbers';
+    g+='<rect x="'+gx+'" y="'+plotTop+'" width="'+groupW+'" height="'+(H-plotTop)+
+       '" fill="transparent"'+clkAttr+'><title>'+gt+'</title></rect>';
     const totW=METRICS.length*bw+(METRICS.length-1)*gap, x0=gx+(groupW-totW)/2;
     METRICS.forEach((mm,j)=>{
       const v=rsVal(q[mm.key]); if(v===null) return;
       const bx=x0+j*(bw+gap), yv=y(v);
       const top=Math.min(yv,zeroY), hh=Math.max(0.5,Math.abs(zeroY-yv));
       g+='<rect x="'+bx.toFixed(1)+'" y="'+top.toFixed(1)+'" width="'+bw+'" height="'+hh.toFixed(1)+
-         '" rx="2" fill="'+mm.color+'"'+(q.partial?' fill-opacity="0.4"':'')+'><title>'+esc(q.label)+' · '+mm.name+': '+fmt(v)+
+         '" rx="2" fill="'+mm.color+'"'+(q.partial?' fill-opacity="0.4"':'')+clkAttr+'><title>'+esc(q.label)+' · '+mm.name+': '+fmt(v)+
          ' ('+(RS_MODE==='median'?'median of ':'total of ')+cf(rsCnt(q[mm.key]))+' companies)</title></rect>';
       const pos=v>=0, lx=(bx+bw/2).toFixed(1), ly=(pos?yv-3:yv+3).toFixed(1);
       g+='<text x="'+lx+'" y="'+ly+'" transform="rotate(-90 '+lx+' '+ly+')" text-anchor="'+
@@ -1063,6 +1083,7 @@ function rsRenderChart(){
   // wrapper (#rsChart, overflow-x-auto) scrolls horizontally when W exceeds the card.
   root.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" '+
     'style="max-width:none;display:block" font-family="Inter,sans-serif">'+g+'</svg>';
+  root.querySelectorAll('[data-qe]').forEach(el=>{ el.onclick=()=>rsOpenResults(+el.getAttribute('data-qe')); });
 }
 
 function rsRenderTable(){
@@ -1070,14 +1091,18 @@ function rsRenderTable(){
   if(!tb) return;
   const cell=m=>rsVal(m)===null?'<span class="text-slate-300">—</span>'
     :'<span class="'+pctCls(rsVal(m))+' font-medium tabular-nums">'+fmtPct(rsVal(m))+'</span>';
-  tb.innerHTML=rsQuarters().slice().reverse().map(q=>
-    '<tr class="hover:bg-slate-50">'+
-      '<td class="px-4 py-2 font-semibold text-slate-700">'+q.label+(q.partial?' <span class="text-amber-600 font-medium">· in progress</span>':'')+'</td>'+
+  tb.innerHTML=rsQuarters().slice().reverse().map(q=>{
+    const clk=rsClickable(q.qe);
+    return '<tr'+(clk?' class="hover:bg-slate-50 cursor-pointer" data-qe="'+q.qe+'" title="Open every company’s '+esc(q.label)+' numbers in the All Results tab"'
+                     :' class="hover:bg-slate-50"')+'>'+
+      '<td class="px-4 py-2 font-semibold text-slate-700">'+q.label+(q.partial?' <span class="text-amber-600 font-medium">· in progress</span>':'')+
+        (clk?' <span class="lnk text-[11px]">open →</span>':'')+'</td>'+
       '<td class="px-4 py-2 text-right text-slate-600 tabular-nums">'+q.reported.toLocaleString('en-IN')+'</td>'+
       '<td class="px-4 py-2 text-right">'+cell(q.rev)+'</td>'+
       '<td class="px-4 py-2 text-right">'+cell(q.op)+'</td>'+
       '<td class="px-4 py-2 text-right">'+cell(q.pat)+'</td>'+
-    '</tr>').join('');
+    '</tr>';}).join('');
+  tb.querySelectorAll('[data-qe]').forEach(tr=>tr.onclick=()=>rsOpenResults(+tr.getAttribute('data-qe')));
 }
 
 function rsSelectUniverse(key){
@@ -1226,7 +1251,13 @@ async function load(){
     if(cal) $('calUpd').textContent='calendar updated '+cal.updated;
     const p=new URLSearchParams(location.search);
     if(p.get('tab')&&['overview','results','feed','calendar','season'].includes(p.get('tab'))) ST.tab=p.get('tab');
-    renderSectorSel(); wire(); render();
+    // Deep link: ?tab=results&qe=20260630&uni=n500 pre-selects that quarter + universe
+    // (what the Season Trends quarter click-through writes to the URL, so it's shareable).
+    const uq=p.get('uni');
+    if(uq&&['all','n50','n100','n500','m150','s250','fno','nse','bse','watch'].includes(uq)) ST.uni=uq;
+    const dqi=QTRS.indexOf(+(p.get('qe')||0));
+    if(dqi>=0&&dqi<Math.min(8,QTRS.length-4)) ST.qi=dqi;
+    renderSectorSel(); $('selUni').value=ST.uni; wire(); render();
     $('status').classList.add('hidden'); $('app').style.display='';
     liveTopUp(); setInterval(()=>{ if(!document.hidden) liveTopUp(); },60000);
     const sy=p.get('sym'); if(sy&&CO[sy.toUpperCase()]) openModal(sy.toUpperCase());
