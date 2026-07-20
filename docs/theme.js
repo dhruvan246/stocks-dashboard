@@ -151,6 +151,7 @@
     { g: 'Markets', cols: [
       { sub: 'Overview', items: [
         ['./nse-bse-dashboard.html', '📈', 'Stocks'],
+        ['./movers.html',            '📊', 'Top Movers'],
         ['./macro.html',             '🌍', 'Macro'],
         ['./sectors.html',           '🔥', 'Sectors'],
         ['./monthly-returns.html',   '🗓️', 'Market Analytics'],
@@ -187,6 +188,7 @@
   // place, applies everywhere. Private members are hidden from non-owners.
   var PAGE_GROUPS = [
     { g: 'Market Analytics', tabs: [
+      ['./movers.html',          '📊', 'Top Movers'],
       ['./monthly-returns.html', '🗓️', 'Monthly Returns'],
       ['./market-mood.html',     '🌡️', 'Market Mood']
     ] },

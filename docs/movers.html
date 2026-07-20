@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Top Movers</title>
+<meta name="description" content="NSE top gainers and losers by session, week, month or year — split/bonus/dividend-adjusted, filtered by universe (F&O / Nifty 500), market-cap band and sector, with per-stock sparklines, distance from the 52-week high/low and one-click deep links to full stock pages." />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<style>
+  body { font-feature-settings: "tnum" 1; }
+  :root { --mvc:#ffffff; --mvline:#e2e8f0; --gain:#15803d; --loss:#b91c1c; }
+  html[data-theme="dark"] { --mvc:#0f172a; --mvline:#293548; --gain:#4ade80; --loss:#f87171; }
+  .card{background:var(--mvc);border:1px solid var(--mvline);border-radius:.75rem}
+  .pos{color:var(--gain);font-weight:700}.neg{color:var(--loss);font-weight:700}
+  .vbtn{padding:6px 13px;border-radius:9999px;font-size:12px;font-weight:700;cursor:pointer;user-select:none;white-space:nowrap;
+        background:var(--surface-2,#f1f5f9);color:var(--text-muted,#334155);border:1px solid var(--border,#e2e8f0);transition:var(--tr,.15s)}
+  .vbtn:hover{border-color:var(--accent,#2563eb);color:var(--accent,#2563eb)}
+  .vbtn.on{background:var(--accent,#2563eb);color:#fff;border-color:var(--accent,#2563eb)}
+  select{background:var(--mvc);border:1px solid #cbd5e1;border-radius:.5rem;font-size:12.5px;font-weight:600;padding:6px 9px;color:var(--text,#0f172a)}
+  html[data-theme="dark"] select{border-color:#374151}
+  .flab{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint,#94a3b8)}
+
+  /* stat cards */
+  .stat{background:var(--mvc);border:1px solid var(--mvline);border-radius:.75rem;padding:12px 14px}
+  .stat .v{font-size:22px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums}
+  .stat .l{font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-faint,#94a3b8);margin-top:3px}
+
+  /* sector heatmap chips */
+  .schip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:9999px;font-size:11.5px;font-weight:700;
+         border:1px solid var(--mvline);cursor:pointer;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .schip .sv{font-weight:800}
+
+  /* table */
+  .mv{border-collapse:separate;border-spacing:0;width:100%}
+  .mv th,.mv td{padding:8px 10px;font-size:12.5px;border-bottom:1px solid var(--mvline);white-space:nowrap}
+  .mv thead th{font-size:10px;text-transform:uppercase;letter-spacing:.03em;color:#64748b;position:sticky;top:0;background:var(--mvc);z-index:3;
+               cursor:pointer;user-select:none;text-align:right}
+  .mv thead th.l{text-align:left}.mv thead th.noclick{cursor:default}
+  .mv td{text-align:right;font-variant-numeric:tabular-nums}
+  .mv td.l{text-align:left}
+  .mv tbody tr{cursor:pointer;transition:background .12s}
+  .mv tbody tr:hover{background:var(--surface-2,#f1f5f9)}
+  html[data-theme="dark"] .mv tbody tr:hover{background:#16233b}
+  .mv .sym{font-weight:800;color:var(--accent,#2563eb)}
+  .mv .nm{font-size:11px;color:var(--text-faint,#94a3b8);max-width:230px;overflow:hidden;text-overflow:ellipsis}
+  .sec-chip{display:inline-block;font-size:10px;font-weight:700;padding:1px 7px;border-radius:9999px;background:var(--surface-2,#eef2ff);color:var(--text-muted,#475569)}
+  .chg{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:.5rem;font-weight:800;font-size:12px}
+  .chg.g{background:rgba(22,163,74,.12);color:var(--gain)}
+  .chg.b{background:rgba(220,38,38,.12);color:var(--loss)}
+  .spark{display:block}
+  .rk{color:var(--text-faint,#94a3b8);font-weight:700;font-size:11px}
+  #tip{position:fixed;z-index:80;pointer-events:none;background:#0f172a;color:#f1f5f9;border:1px solid #334155;border-radius:.5rem;
+       padding:7px 10px;font-size:11.5px;line-height:1.5;box-shadow:0 8px 24px rgba(0,0,0,.35);max-width:250px;display:none}
+  #tip b{color:#fff}
+  @media (max-width:640px){ .mv th,.mv td{padding:7px 7px;font-size:12px} .hide-sm{display:none} }
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav></nav>
+  </div>
+</header>
+
+<main class="max-w-screen-2xl mx-auto px-4 py-6">
+  <div class="mb-4">
+    <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Top Movers <span class="text-slate-400 font-semibold text-base">· gainers &amp; losers</span></h1>
+    <p class="text-sm text-slate-500 mt-1">NSE's biggest movers over the <b>session, week, month or year</b> — computed from <b>split/bonus/dividend-adjusted</b> closes so a corporate action never shows up as a fake jump. Filter by <b>universe</b> (F&amp;O / Nifty 500), <b>market-cap band</b> and <b>sector</b>. Each row carries an <b>8-month sparkline</b>, distance from the stock's own <b>52-week high &amp; low</b>, and a one-click deep link to its full page. <span id="updated" class="text-slate-400"></span></p>
+  </div>
+
+  <div id="status" class="text-sm text-slate-500 py-10 text-center">Loading market data…</div>
+
+  <div id="content" class="hidden">
+    <!-- stat cards -->
+    <div id="cards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4"></div>
+
+    <!-- filters -->
+    <div class="card p-3 mb-4 flex flex-wrap items-center gap-x-5 gap-y-3">
+      <div class="flex flex-col gap-1.5">
+        <span class="flab">Window</span>
+        <div class="flex gap-1.5" id="fWindow">
+          <span class="vbtn on" data-w="1D">1D</span>
+          <span class="vbtn" data-w="1W">1W</span>
+          <span class="vbtn" data-w="1M">1M</span>
+          <span class="vbtn" data-w="1Y">1Y</span>
+        </div>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <span class="flab">Universe</span>
+        <div class="flex gap-1.5" id="fUniv">
+          <span class="vbtn on" data-u="all">All</span>
+          <span class="vbtn" data-u="fno">F&amp;O</span>
+          <span class="vbtn" data-u="n500">Nifty 500</span>
+        </div>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <span class="flab">Market cap</span>
+        <div class="flex gap-1.5" id="fCap">
+          <span class="vbtn on" data-c="all">All</span>
+          <span class="vbtn" data-c="large">Large</span>
+          <span class="vbtn" data-c="mid">Mid</span>
+          <span class="vbtn" data-c="small">Small</span>
+        </div>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <span class="flab">Sector</span>
+        <select id="fSector"><option value="all">All sectors</option></select>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <span class="flab">Liquidity floor</span>
+        <select id="fFloor">
+          <option value="100">≥ ₹100 Cr m-cap</option>
+          <option value="0">Include micro-caps</option>
+          <option value="500">≥ ₹500 Cr m-cap</option>
+          <option value="2000">≥ ₹2,000 Cr m-cap</option>
+        </select>
+      </div>
+      <div class="flex flex-col gap-1.5 ml-auto">
+        <span class="flab">&nbsp;</span>
+        <div class="flex gap-1.5 items-center">
+          <input id="fSearch" type="search" placeholder="Search symbol…" class="text-xs px-3 py-1.5 rounded-lg border" style="border-color:var(--mvline);background:var(--mvc);min-width:150px" />
+          <button id="btnCsv" class="vbtn" title="Download the current view as CSV">⬇ CSV</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- sector heatmap -->
+    <div class="mb-4">
+      <div class="flab mb-1.5">Sector pulse <span class="normal-case font-medium text-slate-400" style="letter-spacing:0">· median move over the window (click to filter)</span></div>
+      <div id="sectorPulse" class="flex flex-wrap gap-2"></div>
+    </div>
+
+    <!-- tabs -->
+    <div class="flex items-center gap-1.5 mb-3">
+      <span class="vbtn on" id="tabGain" data-t="gain">▲ Gainers</span>
+      <span class="vbtn" id="tabLose" data-t="lose">▼ Losers</span>
+      <span class="vbtn" id="tabActive" data-t="active">↕ Biggest moves</span>
+      <span class="ml-auto text-xs text-slate-500" id="rowCount"></span>
+    </div>
+
+    <div class="card overflow-x-auto">
+      <table class="mv" id="tbl">
+        <thead>
+          <tr>
+            <th class="l noclick">#</th>
+            <th class="l" data-sort="symbol">Stock</th>
+            <th class="noclick hide-sm">Trend (8&nbsp;mo)</th>
+            <th data-sort="toPrice">Price ₹</th>
+            <th data-sort="changePercent">Change %</th>
+            <th data-sort="d52" class="hide-sm">From 52W&nbsp;high</th>
+            <th data-sort="u52" class="hide-sm">From 52W&nbsp;low</th>
+            <th data-sort="mcap">M-cap ₹Cr</th>
+            <th class="l hide-sm" data-sort="sector">Sector</th>
+          </tr>
+        </thead>
+        <tbody id="tBody"></tbody>
+      </table>
+    </div>
+
+    <p class="text-[11px] text-slate-500 mt-4 leading-relaxed">
+      <b>Change %</b> is measured on split/bonus/dividend-adjusted closes: <b>1D</b> = latest close vs the previous trading close, <b>1W/1M/1Y</b> = latest close vs the adjusted close roughly 7 / 30 / 365 calendar days earlier. <b>1D/1W/1M</b> paint instantly from the slim recent feed (~8 months); picking <b>1Y</b> loads the full price history once. <b>From 52W high / low</b> compares the latest close to the stock's own highest / lowest close in the trailing year (blank until a stock has a full year of history). Market-cap bands: <b>Large</b> ≥ ₹20,000 Cr, <b>Mid</b> ₹5,000–20,000 Cr, <b>Small</b> &lt; ₹5,000 Cr. The <b>liquidity floor</b> hides tiny illiquid tickers by minimum market cap (this feed doesn't carry intraday turnover, so we gate on size rather than a rupee-turnover floor). Prices are end-of-day from official NSE bhavcopies. Educational only — not investment advice.
+    </p>
+  </div>
+</main>
+
+<div id="tip"></div>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const DAY = 86400;
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const inr = n => n == null ? '—' : Number(n).toLocaleString('en-IN', { maximumFractionDigits: 0 });
+const inr2 = n => n == null ? '—' : Number(n).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+let META = {}, SERIES = {}, START_TS = 0, END_TS = 0, END_OFF = 0;
+let FNO = new Set(), N500 = new Set();
+let FULL_LOADED = false, FULL_LOADING = null;
+
+let W = '1D', UNIV = 'all', CAP = 'all', SECTOR = 'all', FLOOR = 100, TAB = 'gain', SORT_KEY = 'changePercent', SORT_DIR = -1;
+let ROWS = [];       // last computed rows (all stocks passing universe/cap/sector/floor)
+
+async function gunzipFetch(url){
+  const buf = await (await fetch(url)).arrayBuffer();
+  const stream = new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'));
+  return JSON.parse(await new Response(stream).text());
+}
+
+async function ensureFull(){
+  if (FULL_LOADED) return;
+  if (!FULL_LOADING) FULL_LOADING = (async () => {
+    const D = await gunzipFetch('./stock_data.bin');
+    SERIES = D.series;              // superset of the slim recent series
+    FULL_LOADED = true;
+  })().catch(e => { FULL_LOADING = null; throw e; });
+  await FULL_LOADING;
+}
+
+// last index i with arr[i] <= target (arr ascending), else -1
+function lastOnOrBefore(arr, target){
+  let lo = 0, hi = arr.length - 1, res = -1;
+  while (lo <= hi){ const m = (lo + hi) >> 1; if (arr[m] <= target){ res = m; lo = m + 1; } else hi = m - 1; }
+  return res;
+}
+
+const WIN_DAYS = { '1W':7, '1M':30, '1Y':365 };
+
+function capBand(mcap){ if (mcap >= 20000) return 'large'; if (mcap >= 5000) return 'mid'; return 'small'; }
+
+// Build ROWS for the current window / universe / cap / sector / floor.
+function compute(){
+  const rows = [];
+  for (const tkr in META){
+    const m = META[tkr];
+    const mcap = m.mcap || 0;
+    if (mcap < FLOOR) continue;
+    if (CAP !== 'all' && capBand(mcap) !== CAP) continue;
+    const base = tkr.endsWith('.NS') ? tkr.slice(0, -3) : tkr;
+    if (UNIV === 'fno'  && !FNO.has(base)) continue;
+    if (UNIV === 'n500' && !N500.has(base)) continue;
+    const indKey = (m.industry && m.industry.trim()) || m.sector || 'Uncategorized';
+    if (SECTOR !== 'all' && indKey !== SECTOR) continue;
+
+    const ser = SERIES[tkr];
+    if (!ser || ser.d.length < 2) continue;
+    const lastIdx = ser.d.length - 1;
+    const toPrice = ser.p[lastIdx] / 100;
+    let iFrom;
+    if (W === '1D'){ iFrom = lastIdx - 1; }
+    else { const target = ser.d[lastIdx] - WIN_DAYS[W]; iFrom = lastOnOrBefore(ser.d, target); if (iFrom === lastIdx) iFrom = lastIdx - 1; }
+    if (iFrom < 0) continue;                       // no prior close in the window
+    const fromPrice = ser.p[iFrom] / 100;
+    if (!fromPrice || !toPrice) continue;
+    const chg = (toPrice - fromPrice) / fromPrice * 100;
+
+    rows.push({
+      tkr, symbol: m.symbol, name: m.name, sector: indKey,
+      mcap, toPrice, changePercent: chg,
+      d52: (typeof m.d52 === 'number') ? m.d52 : null,             // distance below 52w high (<=0)
+      u52: (typeof m.u52 === 'number') ? m.u52 : null,             // distance above 52w low  (>=0)
+      ser
+    });
+  }
+  ROWS = rows;
+}
+
+// distance above 52-week low, if a low was precomputed (else derive from slim series window)
+// META carries h52/d52 (high). We derive the low from the available series as a best-effort.
+function attachLows(){
+  for (const r of ROWS){
+    if (r.u52 != null) continue;
+    const d = r.ser.d, p = r.ser.p;
+    // scan points within ~365 days of the last point
+    const cutoff = d[d.length-1] - 365;
+    let lo = Infinity;
+    for (let i = d.length-1; i >= 0; i--){ if (d[i] < cutoff) break; if (p[i] < lo) lo = p[i]; }
+    if (lo !== Infinity && lo > 0){ r.u52 = (r.toPrice - lo/100) / (lo/100) * 100; }
+  }
+}
+
+function inlineSparkline(ser, up){
+  const p = ser.p, n = p.length;
+  const N = Math.min(60, n);
+  const arr = p.slice(n - N);
+  let mn = Infinity, mx = -Infinity;
+  for (const v of arr){ if (v < mn) mn = v; if (v > mx) mx = v; }
+  const W = 96, H = 26, pad = 2, rng = (mx - mn) || 1;
+  let dpath = '';
+  for (let i = 0; i < N; i++){
+    const x = pad + (W - 2*pad) * (i / (N - 1));
+    const y = pad + (H - 2*pad) * (1 - (arr[i] - mn) / rng);
+    dpath += (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1);
+  }
+  const col = up ? 'var(--gain)' : 'var(--loss)';
+  return '<svg class="spark" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'">'+
+         '<path d="'+dpath+'" fill="none" stroke="'+col+'" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"/></svg>';
+}
+
+function currentView(){
+  let v = ROWS.slice();
+  const q = $('fSearch').value.trim().toLowerCase();
+  if (q) v = v.filter(r => r.symbol.toLowerCase().includes(q) || (r.name||'').toLowerCase().includes(q));
+  if (TAB === 'gain')      { v = v.filter(r => r.changePercent > 0); if (SORT_KEY==='changePercent' && SORT_DIR===-1) {} }
+  else if (TAB === 'lose') { v = v.filter(r => r.changePercent < 0); }
+  // biggest moves = keep all, sorted by abs change
+  if (TAB === 'active') v.sort((a,b) => Math.abs(b.changePercent) - Math.abs(a.changePercent));
+  else v.sort((a,b) => cmp(a,b));
+  return v;
+}
+function cmp(a,b){
+  const k = SORT_KEY;
+  let av = a[k], bv = b[k];
+  if (k === 'symbol' || k === 'sector'){ return SORT_DIR * String(av).localeCompare(String(bv)); }
+  if (av == null || isNaN(av)) return 1; if (bv == null || isNaN(bv)) return -1;
+  return SORT_DIR * (av - bv);   // SORT_DIR: 1 = ascending, -1 = descending
+}
+
+function render(){
+  const v = currentView();
+  const tb = $('tBody');
+  const MAX = 300;
+  const show = v.slice(0, MAX);
+  if (!show.length){ tb.innerHTML = '<tr><td colspan="9" class="text-center text-slate-400 py-14 text-sm">No stocks match these filters.</td></tr>'; }
+  else {
+    const out = [];
+    for (let i = 0; i < show.length; i++){
+      const r = show[i];
+      const up = r.changePercent >= 0;
+      const chgCls = up ? 'g' : 'b';
+      const arw = up ? '▲' : '▼';
+      const sgn = up ? '+' : '';
+      out.push(
+        '<tr data-tkr="'+esc(r.tkr)+'">'+
+        '<td class="l rk">'+(i+1)+'</td>'+
+        '<td class="l"><div class="sym">'+esc(r.symbol)+'</div><div class="nm">'+esc(r.name||'')+'</div></td>'+
+        '<td class="hide-sm">'+inlineSparkline(r.ser, up)+'</td>'+
+        '<td>'+inr2(r.toPrice)+'</td>'+
+        '<td><span class="chg '+chgCls+'">'+arw+' '+sgn+r.changePercent.toFixed(2)+'%</span></td>'+
+        '<td class="hide-sm '+(r.d52!=null?'neg':'')+'">'+(r.d52!=null ? r.d52.toFixed(1)+'%' : '—')+'</td>'+
+        '<td class="hide-sm '+(r.u52!=null?'pos':'')+'">'+(r.u52!=null ? '+'+r.u52.toFixed(1)+'%' : '—')+'</td>'+
+        '<td>'+inr(r.mcap)+'</td>'+
+        '<td class="l hide-sm"><span class="sec-chip">'+esc(r.sector)+'</span></td>'+
+        '</tr>'
+      );
+    }
+    tb.innerHTML = out.join('');
+  }
+  $('rowCount').textContent = v.length.toLocaleString('en-IN') + ' stocks' + (v.length > MAX ? ' · showing top ' + MAX : '');
+}
+
+function renderStats(){
+  const adv = ROWS.filter(r => r.changePercent > 0).length;
+  const dec = ROWS.filter(r => r.changePercent < 0).length;
+  const unch = ROWS.length - adv - dec;
+  const nearHi = ROWS.filter(r => r.d52 != null && r.d52 > -2).length;    // within 2% of 52w high
+  const ad = dec ? (adv / dec) : adv;
+  $('cards').innerHTML =
+    statCard(adv.toLocaleString('en-IN'), 'Advancing', 'var(--gain)') +
+    statCard(dec.toLocaleString('en-IN'), 'Declining', 'var(--loss)') +
+    statCard(ad.toFixed(2), 'Adv / Dec ratio', ad>=1?'var(--gain)':'var(--loss)') +
+    statCard(nearHi.toLocaleString('en-IN'), 'Near 52W high (≤2%)', 'var(--accent,#2563eb)');
+}
+function statCard(v, l, col){ return '<div class="stat"><div class="v" style="color:'+col+'">'+v+'</div><div class="l">'+l+'</div></div>'; }
+
+function renderSectorPulse(){
+  // median change per sector over the current universe/cap/floor (ignores tab & sector filter)
+  const bys = {};
+  for (const r of ROWS){ (bys[r.sector] = bys[r.sector] || []).push(r.changePercent); }
+  const rows = Object.keys(bys).map(s => {
+    const a = bys[s].slice().sort((x,y)=>x-y);
+    const med = a[Math.floor(a.length/2)];
+    return { s, med, n: a.length };
+  }).filter(x => x.n >= 3).sort((a,b) => b.med - a.med);
+  const el = $('sectorPulse');
+  if (!rows.length){ el.innerHTML = '<span class="text-xs text-slate-400">Not enough data.</span>'; return; }
+  el.innerHTML = rows.map(x => {
+    const up = x.med >= 0;
+    const col = up ? 'var(--gain)' : 'var(--loss)';
+    const bg = up ? 'rgba(22,163,74,.10)' : 'rgba(220,38,38,.10)';
+    const on = SECTOR === x.s ? 'box-shadow:0 0 0 2px var(--accent,#2563eb) inset;' : '';
+    return '<span class="schip" data-sec="'+esc(x.s)+'" style="background:'+bg+';color:'+col+';'+on+'">'+
+           esc(x.s)+' <span class="sv">'+(up?'+':'')+x.med.toFixed(2)+'%</span> <span style="color:var(--text-faint,#94a3b8);font-weight:600">'+x.n+'</span></span>';
+  }).join('');
+}
+
+function refresh(){
+  compute();
+  attachLows();
+  renderStats();
+  renderSectorPulse();
+  render();
+}
+
+/* ---------- window switch (lazy-load full history for 1Y) ---------- */
+async function setWindow(w){
+  if (w === W) return;
+  if (w === '1Y' && !FULL_LOADED){
+    $('status').classList.remove('hidden');
+    $('status').textContent = 'Loading full price history for the 1-year window…';
+    $('content').style.opacity = '.5';
+    try { await ensureFull(); }
+    catch(e){ $('status').textContent = 'Could not load full history. Try again.'; return; }
+    $('status').classList.add('hidden');
+    $('content').style.opacity = '1';
+  }
+  W = w;
+  document.querySelectorAll('#fWindow .vbtn').forEach(b => b.classList.toggle('on', b.dataset.w === w));
+  refresh();
+}
+
+/* ---------- events ---------- */
+function wire(){
+  $('fWindow').addEventListener('click', e => { const b = e.target.closest('.vbtn'); if (b) setWindow(b.dataset.w); });
+  $('fUniv').addEventListener('click', e => { const b = e.target.closest('.vbtn'); if (!b) return;
+    UNIV = b.dataset.u; document.querySelectorAll('#fUniv .vbtn').forEach(x=>x.classList.toggle('on',x===b)); refresh(); });
+  $('fCap').addEventListener('click', e => { const b = e.target.closest('.vbtn'); if (!b) return;
+    CAP = b.dataset.c; document.querySelectorAll('#fCap .vbtn').forEach(x=>x.classList.toggle('on',x===b)); refresh(); });
+  $('fSector').addEventListener('change', e => { SECTOR = e.target.value; refresh(); });
+  $('fFloor').addEventListener('change', e => { FLOOR = +e.target.value; refresh(); });
+  $('fSearch').addEventListener('input', render);
+  document.querySelectorAll('[data-t]').forEach(b => b.addEventListener('click', () => {
+    TAB = b.dataset.t; document.querySelectorAll('[data-t]').forEach(x=>x.classList.toggle('on',x===b));
+    // sensible default sort per tab
+    if (TAB === 'gain'){ SORT_KEY='changePercent'; SORT_DIR=-1; }
+    else if (TAB === 'lose'){ SORT_KEY='changePercent'; SORT_DIR=1; }
+    render();
+  }));
+  // header sort
+  document.querySelectorAll('.mv thead th[data-sort]').forEach(th => th.addEventListener('click', () => {
+    const k = th.dataset.sort;
+    if (SORT_KEY === k) SORT_DIR *= -1; else { SORT_KEY = k; SORT_DIR = (k==='symbol'||k==='sector') ? 1 : -1; }
+    render();
+  }));
+  // sector pulse click → filter
+  $('sectorPulse').addEventListener('click', e => { const c = e.target.closest('.schip'); if (!c) return;
+    SECTOR = (SECTOR === c.dataset.sec) ? 'all' : c.dataset.sec; $('fSector').value = SECTOR; refresh(); });
+  // row → stock page
+  $('tBody').addEventListener('click', e => { const tr = e.target.closest('tr[data-tkr]'); if (!tr) return;
+    const sym = (tr.dataset.tkr||'').replace('.NS',''); window.open('./stock.html?symbol=' + encodeURIComponent(sym), '_blank'); });
+  // sparkline hover tooltip
+  const tip = $('tip');
+  $('tBody').addEventListener('mousemove', e => { const tr = e.target.closest('tr[data-tkr]'); if (!tr){ tip.style.display='none'; return; }
+    const r = ROWS.find(x => x.tkr === tr.dataset.tkr); if (!r){ tip.style.display='none'; return; }
+    tip.innerHTML = '<b>'+esc(r.symbol)+'</b> · ₹'+inr2(r.toPrice)+'<br>'+ (r.changePercent>=0?'+':'')+r.changePercent.toFixed(2)+'% ('+W+')'+
+      (r.d52!=null? '<br>'+r.d52.toFixed(1)+'% from 52W high':'') + (r.u52!=null? '<br>+'+r.u52.toFixed(1)+'% from 52W low':'');
+    tip.style.display='block'; tip.style.left = Math.min(e.clientX+14, innerWidth-260)+'px'; tip.style.top=(e.clientY+14)+'px'; });
+  $('tBody').addEventListener('mouseleave', () => { tip.style.display='none'; });
+  $('btnCsv').addEventListener('click', exportCsv);
+}
+
+function exportCsv(){
+  const v = currentView();
+  const head = ['Symbol','Name','Price','Change%('+W+')','From52WHigh%','From52WLow%','MktCapCr','Sector'];
+  const lines = [head.join(',')];
+  for (const r of v){
+    lines.push([r.symbol, '"'+(r.name||'').replace(/"/g,'""')+'"', r.toPrice.toFixed(2), r.changePercent.toFixed(2),
+      r.d52!=null?r.d52.toFixed(2):'', r.u52!=null?r.u52.toFixed(2):'', Math.round(r.mcap), '"'+r.sector+'"'].join(','));
+  }
+  const blob = new Blob([lines.join('\n')], {type:'text/csv'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'movers_'+W+'_'+TAB+'.csv'; a.click(); URL.revokeObjectURL(a.href);
+}
+
+async function init(){
+  try {
+    const D = await gunzipFetch('./dash_slim.bin');
+    META = D.meta; SERIES = D.series; START_TS = D.startTs; END_TS = D.endTs || D.generatedAt;
+    END_OFF = Math.floor((END_TS - START_TS) / DAY);
+    FNO = new Set(D.fnoToday || []);
+    const ih = D.indicesHistory && D.indicesHistory['Nifty 500'];
+    if (ih && ih.length) N500 = new Set(ih[ih.length - 1].symbols);
+
+    // sector dropdown
+    const secs = new Set();
+    for (const t in META){ const m = META[t]; secs.add((m.industry && m.industry.trim()) || m.sector || 'Uncategorized'); }
+    const sel = $('fSector');
+    [...secs].sort().forEach(s => { const o = document.createElement('option'); o.value = s; o.textContent = s; sel.appendChild(o); });
+
+    if (END_TS) $('updated').textContent = 'As of ' + new Date(END_TS*1000).toISOString().slice(0,10) + '.';
+
+    wire();
+    $('status').classList.add('hidden');
+    $('content').classList.remove('hidden');
+    refresh();
+  } catch (e){
+    $('status').textContent = 'Failed to load market data: ' + e.message;
+    console.error(e);
+  }
+}
+init();
+</script>
+</body>
+</html>

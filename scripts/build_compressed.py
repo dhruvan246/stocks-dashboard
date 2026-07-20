@@ -34,12 +34,16 @@ for tkr, pairs in payload["series"].items():
     last_year = [(t, c) for t, c in pairs if t >= year_ago_ts]
     if len(last_year) >= 30 and pairs:
         h52   = max(c for _, c in last_year)
+        l52   = min(c for _, c in last_year)
         last  = pairs[-1][1]
         d52   = (last - h52) / h52 * 100 if h52 else 0
+        u52   = (last - l52) / l52 * 100 if l52 else 0   # distance ABOVE the 52-week low
         meta = payload["meta"].get(tkr)
         if meta is not None:
             meta["h52"]    = round(h52, 2)
+            meta["l52"]    = round(l52, 2)
             meta["d52"]    = round(d52, 2)
+            meta["u52"]    = round(u52, 2)
             meta["latest"] = round(last, 2)
             h52_count += 1
 print(f"52w-high attached to {h52_count} stocks")
