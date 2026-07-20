@@ -155,6 +155,7 @@
         ['./macro.html',             '🌍', 'Macro'],
         ['./global.html',            '🌏', 'Global Markets'],
         ['./sectors.html',           '🔥', 'Sectors'],
+        ['./indices.html',           '📇', 'Indices'],
         ['./monthly-returns.html',   '🗓️', 'Market Analytics'],
         ['./watchlist.html',         '📌', 'Watchlist']
       ] },
@@ -190,6 +191,7 @@
   var PAGE_GROUPS = [
     { g: 'Market Analytics', tabs: [
       ['./movers.html',          '📊', 'Top Movers'],
+      ['./indices.html',         '📇', 'Indices'],
       ['./monthly-returns.html', '🗓️', 'Monthly Returns'],
       ['./market-mood.html',     '🌡️', 'Market Mood']
     ] },

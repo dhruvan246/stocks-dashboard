@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Indian Indices</title>
+<meta name="description" content="Every NSE index — live level, 1D/1W/1M/1Y change, PE/PB/dividend yield, a 30-day sparkline, 52-week-range position, valuation percentile vs the index's own history, relative strength vs Nifty 50, a heatmap view and constituent drill-downs." />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<style>
+  body{font-feature-settings:"tnum" 1;}
+  :root{--ixc:#ffffff;--ixln:#e6ebf3;--ixmut:#64748b;--ixsub:#f8fafc;}
+  html[data-theme="dark"]{--ixc:#0f172a;--ixln:#243044;--ixmut:#8391a8;--ixsub:#131f33;}
+  .card{background:var(--ixc);border:1px solid var(--ixln);border-radius:.85rem;}
+  .pos{color:#15803d;}.neg{color:#b91c1c;}.flat{color:var(--ixmut);}
+  html[data-theme="dark"] .pos{color:#4ade80;}html[data-theme="dark"] .neg{color:#f87171;}
+
+  /* stat cards */
+  .stat{padding:12px 14px;border-radius:.85rem;border:1px solid var(--ixln);background:var(--ixc);}
+  .stat .lb{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ixmut);font-weight:700;}
+  .stat .vl{font-size:20px;font-weight:800;letter-spacing:-.01em;line-height:1.15;margin-top:3px;}
+  .stat .sc{font-size:11.5px;font-weight:600;margin-top:1px;}
+
+  /* pills / toggles */
+  .pill{padding:6px 13px;border-radius:9999px;font-size:12px;font-weight:700;cursor:pointer;user-select:none;white-space:nowrap;
+        background:var(--ixsub);color:var(--ixmut);border:1px solid var(--ixln);transition:.12s;}
+  .pill:hover{color:var(--text,#0f172a);}
+  html[data-theme="dark"] .pill:hover{color:#e2e8f0;}
+  .pill.on{background:var(--accent,#2563eb);color:#fff;border-color:var(--accent,#2563eb);}
+  .gtab{padding:7px 14px;border-radius:.6rem .6rem 0 0;font-size:12.5px;font-weight:700;cursor:pointer;user-select:none;white-space:nowrap;
+        color:var(--ixmut);border:1px solid transparent;border-bottom:2px solid transparent;}
+  .gtab.on{color:var(--accent,#2563eb);border-bottom-color:var(--accent,#2563eb);background:var(--ixsub);}
+  .gtab .ct{font-size:10.5px;opacity:.7;font-weight:700;}
+
+  /* table */
+  .tb{border-collapse:separate;border-spacing:0;width:100%;}
+  .tb th,.tb td{padding:8px 9px;font-size:12.5px;white-space:nowrap;border-bottom:1px solid var(--ixln);text-align:right;}
+  .tb.dense th,.tb.dense td{padding:4px 8px;font-size:11.5px;}
+  .tb thead th{position:sticky;top:0;z-index:3;background:var(--ixc);font-size:10px;text-transform:uppercase;letter-spacing:.03em;
+               color:var(--ixmut);font-weight:800;cursor:pointer;user-select:none;}
+  .tb thead th.noclick{cursor:default;}
+  .tb thead th .ar{opacity:.45;font-size:9px;}
+  .tb th:first-child,.tb td:first-child{text-align:left;position:sticky;left:0;background:var(--ixc);z-index:2;min-width:190px;box-shadow:1px 0 0 var(--ixln);}
+  .tb thead th:first-child{z-index:4;}
+  .tb td{font-variant-numeric:tabular-nums;}
+  .tb tbody tr:hover td{background:var(--ixsub);}
+  .ixname{font-weight:700;color:var(--text,#0f172a);cursor:default;}
+  html[data-theme="dark"] .ixname{color:#e8edf5;}
+  .ixname.link{color:#2563eb;cursor:pointer;}
+  .ixname.link:hover{text-decoration:underline;}
+  html[data-theme="dark"] .ixname.link{color:#7da8ff;}
+  .memchip{display:inline-block;margin-left:6px;font-size:9.5px;font-weight:800;padding:1px 6px;border-radius:9999px;
+           background:var(--ixsub);color:var(--ixmut);border:1px solid var(--ixln);vertical-align:1px;}
+  .lvl{font-weight:700;}
+
+  /* valuation percentile badge */
+  .vbadge{display:inline-block;min-width:30px;padding:1px 5px;border-radius:.4rem;font-size:11px;font-weight:700;color:#fff;}
+  .dash{color:var(--ixmut);}
+
+  /* 52w range bar */
+  .rng{display:inline-flex;align-items:center;gap:6px;}
+  .rngbar{position:relative;width:74px;height:6px;border-radius:9999px;background:linear-gradient(90deg,#fca5a5,#fde68a,#86efac);}
+  html[data-theme="dark"] .rngbar{background:linear-gradient(90deg,#7f1d1d,#78350f,#14532d);}
+  .rngdot{position:absolute;top:50%;width:8px;height:8px;border-radius:50%;background:#0f172a;border:1.5px solid #fff;transform:translate(-50%,-50%);}
+  html[data-theme="dark"] .rngdot{background:#e2e8f0;border-color:#0f172a;}
+  .rngpc{font-size:10.5px;color:var(--ixmut);min-width:26px;text-align:left;}
+
+  /* heatmap */
+  .hmgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:7px;}
+  .hmtile{border-radius:.55rem;padding:9px 10px;color:#fff;cursor:pointer;min-height:60px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;}
+  .hmtile .hn{font-size:11px;font-weight:700;line-height:1.15;text-shadow:0 1px 2px rgba(0,0,0,.28);}
+  .hmtile .hv{font-size:16px;font-weight:800;text-shadow:0 1px 2px rgba(0,0,0,.28);}
+
+  select{background:var(--ixc);border:1px solid var(--ixln);border-radius:.5rem;font-size:12.5px;padding:6px 9px;color:inherit;}
+
+  /* tooltip + modal */
+  #tip{position:fixed;z-index:70;pointer-events:none;background:#0f172a;color:#f1f5f9;border:1px solid #334155;border-radius:.55rem;
+       padding:8px 11px;font-size:12px;line-height:1.5;box-shadow:0 10px 30px rgba(0,0,0,.4);max-width:280px;display:none;}
+  #tip b{color:#fff;}
+  #modal{position:fixed;inset:0;z-index:80;background:rgba(2,6,23,.6);backdrop-filter:blur(3px);display:none;align-items:flex-start;justify-content:center;padding:40px 14px;}
+  #modalCard{background:var(--ixc);border:1px solid var(--ixln);border-radius:.85rem;max-width:640px;width:100%;max-height:82vh;overflow:auto;box-shadow:0 24px 60px rgba(0,0,0,.4);}
+  .mchip{display:inline-block;margin:3px;padding:4px 9px;border-radius:9999px;font-size:12px;font-weight:600;background:var(--ixsub);border:1px solid var(--ixln);}
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav></nav>
+  </div>
+</header>
+
+<main class="max-w-screen-2xl mx-auto px-4 py-6">
+  <div class="mb-4">
+    <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Indian Indices <span class="text-slate-400 font-semibold text-base">· every NSE index, live</span></h1>
+    <p class="text-sm text-slate-500 mt-1">Live level and <b>1D / 1W / 1M / 1Y</b> change for <b id="nCount">every</b> NSE index, with <b>PE, PB &amp; dividend yield</b> where NSE publishes them and a 30-day sparkline. Beyond the basics: a <b>valuation percentile</b> (is this index dear or cheap vs its own history?), a <b>52-week-range</b> position, <b>relative strength vs Nifty 50</b>, a <b>heatmap</b> view, and <b>constituent drill-downs</b> for the indices we track members for. <span id="updated" class="text-slate-400"></span></p>
+  </div>
+
+  <div id="status" class="text-sm text-slate-500 py-10 text-center">Loading indices…</div>
+
+  <div id="content" class="hidden">
+    <!-- stat cards -->
+    <div id="cards" class="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-5"></div>
+
+    <!-- controls -->
+    <div class="flex flex-wrap items-center gap-2 mb-2">
+      <div class="flex gap-1.5">
+        <span id="vTable" class="pill on">▦ Table</span>
+        <span id="vHeat" class="pill">▤ Heatmap</span>
+      </div>
+      <input id="search" type="search" placeholder="Filter indices…" class="pill" style="cursor:text;min-width:150px;color:inherit;" />
+      <div id="heatCtl" class="hidden items-center gap-1.5">
+        <span class="text-[11px] text-slate-500 font-semibold">Colour by</span>
+        <select id="heatMetric">
+          <option value="pc">1D %</option>
+          <option value="w1">1W %</option>
+          <option value="m1">1M %</option>
+          <option value="y1">1Y %</option>
+        </select>
+      </div>
+      <span id="densBtn" class="pill ml-auto" title="Toggle row height">≡ Compact</span>
+    </div>
+
+    <!-- group tabs -->
+    <div id="tabs" class="flex flex-wrap gap-1 border-b border-slate-200 mb-0"></div>
+
+    <!-- table view -->
+    <div id="tableWrap" class="card overflow-x-auto rounded-t-none border-t-0">
+      <table class="tb" id="tbl"><thead id="thead"></thead><tbody id="tbody"></tbody></table>
+    </div>
+
+    <!-- heatmap view -->
+    <div id="heatWrap" class="hidden card p-3">
+      <div id="hmgrid" class="hmgrid"></div>
+      <div class="flex items-center gap-2 mt-3 text-[11px] text-slate-500 justify-center">
+        <span id="hmL">−3%</span>
+        <div style="height:9px;width:200px;border-radius:9999px;background:linear-gradient(90deg,#dc2626,#f8717133 46%,#64748b22 50%,#4ade8033 54%,#16a34a)"></div>
+        <span id="hmR">+3%</span>
+      </div>
+    </div>
+
+    <p class="text-[11px] text-slate-500 mt-5 leading-relaxed">
+      <b>Level</b> and <b>1D %</b> are live from NSE's index feed; <b>1M / 1Y</b> come from NSE's own index-level publication (which also supplies <b>PE / PB / dividend yield</b>) and fall back to our stored history. <b>1W</b> and the <b>30-day sparkline</b> are built from a daily-close window that grows one trading evening at a time — a column reads em-dash until it has enough history, and never stitches across an NSE index rename. <b>Valuation percentile</b> is where today's PE (or PB) sits within that index's <i>own</i> observed range — high (red) = more expensive than usual, low (green) = cheaper; it sharpens as history accrues. <b>52W</b> shows where the level sits between its 52-week low and high. <b>RS</b> is the index's 1-month return minus Nifty 50's (positive = leading the market). PE/PB/dividend yield aren't published for every index (bond, G-Sec and some factor indices omit them). Grouping is a display convenience, not a data value. Educational only — not investment advice.
+    </p>
+  </div>
+</main>
+
+<div id="tip"></div>
+<div id="modal"><div id="modalCard"></div></div>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const fmtN = (v,d=2) => v==null ? '—' : Number(v).toLocaleString('en-IN',{minimumFractionDigits:d,maximumFractionDigits:d});
+const fmtPc = v => v==null ? '<span class="dash">—</span>' : (v>0?'+':'')+v.toFixed(v===0?1:2)+'%';
+const cls = v => v==null?'flat':(v>0?'pos':(v<0?'neg':'flat'));
+
+let DATA=null, VIEW='table', GRP='broad', SORT={key:'pc',dir:-1}, DENSE=false, Q='';
+
+fetch('./indices.json?cb='+Date.now()).then(r=>r.json()).then(d=>{ DATA=d; boot(); })
+  .catch(e=>{ $('status').textContent='Could not load indices.json — '+e; });
+
+function boot(){
+  $('status').classList.add('hidden'); $('content').classList.remove('hidden');
+  $('nCount').textContent = DATA.indices.length + ' NSE indices';
+  const up = DATA.updated ? new Date(DATA.updated) : null;
+  $('updated').textContent = 'As of '+(DATA.asof||'')+(up?' · updated '+up.toLocaleString('en-IN',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short'}):'');
+  buildCards(); buildTabs();
+  // pick the first non-empty group
+  if(!DATA.indices.some(x=>x.g===GRP)) GRP = DATA.groups.find(g=>DATA.indices.some(x=>x.g===g))||GRP;
+  render();
+  wire();
+}
+
+function buildCards(){
+  const ix = DATA.indices;
+  const adv = ix.filter(x=>x.pc>0).length, dec = ix.filter(x=>x.pc<0).length;
+  const withpc = ix.filter(x=>x.pc!=null);
+  const top = withpc.slice().sort((a,b)=>b.pc-a.pc)[0];
+  const bot = withpc.slice().sort((a,b)=>a.pc-b.pc)[0];
+  const n50 = ix.find(x=>x.k==='NIFTY 50');
+  // best/worst group by median 1D
+  const med = arr=>{ const s=arr.filter(v=>v!=null).sort((a,b)=>a-b); return s.length?s[Math.floor(s.length/2)]:null; };
+  let gRows = DATA.groups.map(g=>({g, m:med(ix.filter(x=>x.g===g).map(x=>x.pc))})).filter(r=>r.m!=null);
+  gRows.sort((a,b)=>b.m-a.m);
+  const bestG = gRows[0], worstG = gRows[gRows.length-1];
+  const card=(lb,vl,sc,scc)=>`<div class="stat"><div class="lb">${lb}</div><div class="vl">${vl}</div><div class="sc ${scc||''}">${sc||''}</div></div>`;
+  $('cards').innerHTML =
+    card('Nifty 50', n50?fmtN(n50.last):'—', n50?fmtPc(n50.pc):'', n50?cls(n50.pc):'') +
+    card('Advancing', adv+' <span class="text-slate-400 text-sm font-bold">indices</span>', dec+' declining', 'flat') +
+    card('Top index (1D)', top?`<span class="text-base">${top.n}</span>`:'—', top?fmtPc(top.pc):'', top?cls(top.pc):'') +
+    card('Weakest (1D)', bot?`<span class="text-base">${bot.n}</span>`:'—', bot?fmtPc(bot.pc):'', bot?cls(bot.pc):'') +
+    card('Leading group', bestG?DATA.group_labels[bestG.g]:'—', bestG?('median '+fmtPc(bestG.m)):'', bestG?cls(bestG.m):'');
+}
+
+function buildTabs(){
+  const counts={}; DATA.indices.forEach(x=>counts[x.g]=(counts[x.g]||0)+1);
+  $('tabs').innerHTML = DATA.groups.filter(g=>counts[g]).map(g=>
+    `<span class="gtab ${g===GRP?'on':''}" data-g="${g}">${DATA.group_labels[g]} <span class="ct">${counts[g]}</span></span>`).join('');
+  $('tabs').querySelectorAll('.gtab').forEach(t=>t.onclick=()=>{ GRP=t.dataset.g; buildTabs(); render(); });
+}
+
+// ---- columns
+const COLS = [
+  {k:'n',   t:'Index',   noSort:false, align:'left'},
+  {k:'last',t:'Level'},
+  {k:'pc',  t:'1D %'},
+  {k:'w1',  t:'1W %'},
+  {k:'m1',  t:'1M %'},
+  {k:'y1',  t:'1Y %'},
+  {k:'spark',t:'30D', noSort:true},
+  {k:'pe',  t:'PE'},
+  {k:'pb',  t:'PB'},
+  {k:'dy',  t:'Div %'},
+  {k:'pos52',t:'52W range', noSort:false},
+  {k:'rs1m',t:'RS·1M'},
+];
+
+function rows(){
+  let r = DATA.indices.filter(x=>x.g===GRP);
+  if(Q){ const q=Q.toLowerCase(); r=r.filter(x=>x.n.toLowerCase().includes(q)||x.k.toLowerCase().includes(q)); }
+  const k=SORT.key, dir=SORT.dir;
+  r.sort((a,b)=>{
+    if(k==='n') return dir*a.n.localeCompare(b.n);
+    const av=a[k], bv=b[k];
+    if(av==null&&bv==null) return 0; if(av==null) return 1; if(bv==null) return -1;
+    return dir*(av-bv);
+  });
+  return r;
+}
+
+function valuationBadge(pct){
+  if(pct==null) return '';
+  // 0 (cheap, green) -> 100 (expensive, red)
+  const hue = Math.round((1-pct/100)*130); // 130=green .. 0=red
+  return `<span class="vbadge" style="background:hsl(${hue} 62% 42%)" data-vp="${pct}">${pct}</span>`;
+}
+function rangeBar(x){
+  if(x.pos52==null) return '<span class="dash">—</span>';
+  return `<span class="rng" data-yl="${x.yl}" data-yh="${x.yh}" data-lv="${x.last}" data-p="${x.pos52}">`+
+         `<span class="rngbar"><span class="rngdot" style="left:${x.pos52}%"></span></span>`+
+         `<span class="rngpc">${x.pos52}%</span></span>`;
+}
+function sparkSVG(arr){
+  if(!arr||arr.length<2) return '<span class="dash">—</span>';
+  const w=68,h=20,mn=Math.min(...arr),mx=Math.max(...arr),rg=(mx-mn)||1;
+  const pts=arr.map((v,i)=>[ (i/(arr.length-1))*w, h-2-((v-mn)/rg)*(h-4) ]);
+  const up=arr[arr.length-1]>=arr[0];
+  const d=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+  return `<svg width="${w}" height="${h}" class="inline-block align-middle" data-spark="${arr.join(',')}">`+
+         `<path d="${d}" fill="none" stroke="${up?'#16a34a':'#dc2626'}" stroke-width="1.5" stroke-linejoin="round"/></svg>`;
+}
+
+function render(){
+  if(VIEW==='table') renderTable(); else renderHeat();
+}
+
+function renderTable(){
+  $('tableWrap').classList.remove('hidden'); $('heatWrap').classList.add('hidden'); $('heatCtl').classList.add('hidden'); $('densBtn').classList.remove('hidden');
+  $('thead').innerHTML = '<tr>'+COLS.map(c=>{
+    const on = SORT.key===c.k;
+    const ar = c.noSort?'':`<span class="ar">${on?(SORT.dir<0?'▼':'▲'):'⇅'}</span>`;
+    return `<th class="${c.noSort?'noclick':''}" data-k="${c.k}" style="text-align:${c.align||'right'}">${c.t} ${ar}</th>`;
+  }).join('')+'</tr>';
+  $('tbody').innerHTML = rows().map(x=>{
+    const nameLink = x.members ? 'link' : '';
+    return '<tr data-k="'+encodeURIComponent(x.k)+'">'+
+      `<td><span class="ixname ${nameLink}" data-mem="${x.members?1:0}">${x.n}</span>${x.mem?`<span class="memchip">${x.mem}</span>`:''}</td>`+
+      `<td class="lvl">${fmtN(x.last)}</td>`+
+      `<td class="${cls(x.pc)}">${fmtPc(x.pc)}</td>`+
+      `<td class="${cls(x.w1)}">${fmtPc(x.w1)}</td>`+
+      `<td class="${cls(x.m1)}">${fmtPc(x.m1)}</td>`+
+      `<td class="${cls(x.y1)}">${fmtPc(x.y1)}</td>`+
+      `<td class="text-center">${sparkSVG(x.spark)}</td>`+
+      `<td>${x.pe==null?'<span class="dash">—</span>':fmtN(x.pe,1)+' '+valuationBadge(x.pep)}</td>`+
+      `<td>${x.pb==null?'<span class="dash">—</span>':fmtN(x.pb,2)+' '+valuationBadge(x.pbp)}</td>`+
+      `<td>${x.dy==null?'<span class="dash">—</span>':fmtN(x.dy,2)}</td>`+
+      `<td>${rangeBar(x)}</td>`+
+      `<td class="${cls(x.rs1m)}">${x.rs1m==null?'<span class="dash">—</span>':(x.rs1m>0?'+':'')+x.rs1m.toFixed(2)}</td>`+
+    '</tr>';
+  }).join('');
+  $('tbl').className = 'tb'+(DENSE?' dense':'');
+  $('thead').querySelectorAll('th:not(.noclick)').forEach(th=>th.onclick=()=>{
+    const k=th.dataset.k;
+    if(SORT.key===k) SORT.dir*=-1; else SORT={key:k,dir:k==='n'?1:-1};
+    renderTable();
+  });
+}
+
+function renderHeat(){
+  $('tableWrap').classList.add('hidden'); $('heatWrap').classList.remove('hidden'); $('heatCtl').classList.remove('hidden'); $('heatCtl').classList.add('flex'); $('densBtn').classList.add('hidden');
+  const m = $('heatMetric').value;
+  let r = DATA.indices.filter(x=>x.g===GRP && x[m]!=null);
+  if(Q){ const q=Q.toLowerCase(); r=r.filter(x=>x.n.toLowerCase().includes(q)); }
+  r.sort((a,b)=>b[m]-a[m]);
+  const cap = 3; // ±3% saturates the scale
+  const color = v=>{
+    const t=Math.max(-1,Math.min(1,v/cap));
+    if(t>=0) return `hsl(${142} ${28+Math.round(t*44)}% ${44-Math.round(t*10)}%)`;
+    return `hsl(${0} ${28+Math.round(-t*44)}% ${48-Math.round(-t*12)}%)`;
+  };
+  $('hmgrid').innerHTML = r.map(x=>
+    `<div class="hmtile" data-k="${encodeURIComponent(x.k)}" data-mem="${x.members?1:0}" style="background:${color(x[m])}">`+
+    `<div class="hn">${x.n}</div><div class="hv">${(x[m]>0?'+':'')+x[m].toFixed(2)}%</div></div>`).join('')
+    || '<div class="text-sm text-slate-500 p-4">No indices in this group have a '+m+' value yet.</div>';
+}
+
+// ---- tooltip
+const tip=$('tip');
+function showTip(html,e){ tip.innerHTML=html; tip.style.display='block'; moveTip(e); }
+function moveTip(e){ const p=12,w=tip.offsetWidth,h=tip.offsetHeight; let x=e.clientX+p,y=e.clientY+p;
+  if(x+w>innerWidth) x=e.clientX-w-p; if(y+h>innerHeight) y=e.clientY-h-p; tip.style.left=x+'px'; tip.style.top=y+'px'; }
+function hideTip(){ tip.style.display='none'; }
+
+function wire(){
+  $('vTable').onclick=()=>{ VIEW='table'; $('vTable').classList.add('on'); $('vHeat').classList.remove('on'); render(); };
+  $('vHeat').onclick =()=>{ VIEW='heat';  $('vHeat').classList.add('on'); $('vTable').classList.remove('on'); render(); };
+  $('heatMetric').onchange=render;
+  $('densBtn').onclick=()=>{ DENSE=!DENSE; $('densBtn').classList.toggle('on',DENSE); $('densBtn').textContent=DENSE?'≡ Comfortable':'≡ Compact'; renderTable(); };
+  let t; $('search').oninput=e=>{ clearTimeout(t); t=setTimeout(()=>{ Q=e.target.value.trim(); render(); },120); };
+
+  // delegated hover + click for tooltips / drilldown
+  document.addEventListener('mousemove',e=>{
+    const sp=e.target.closest('[data-spark]'); const rn=e.target.closest('.rng'); const vp=e.target.closest('[data-vp]');
+    if(sp){ const a=sp.dataset.spark.split(',').map(Number); const chg=((a[a.length-1]-a[0])/a[0]*100);
+      showTip(`<b>Last ${a.length} sessions</b><br>${fmtN(a[0])} → ${fmtN(a[a.length-1])}<br><span class="${chg>=0?'pos':'neg'}">${(chg>=0?'+':'')+chg.toFixed(2)}%</span> over window`,e); return; }
+    if(rn){ showTip(`<b>52-week range</b><br>Low ${fmtN(+rn.dataset.yl)} · High ${fmtN(+rn.dataset.yh)}<br>Now ${fmtN(+rn.dataset.lv)} — <b>${rn.dataset.p}%</b> of range`,e); return; }
+    if(vp){ const p=+vp.dataset.vp; const lab=p>=75?'expensive vs its own history':p<=25?'cheap vs its own history':'around its usual';
+      showTip(`<b>Valuation percentile ${p}</b><br>${lab}<br><span style="opacity:.7">100 = dearest ever seen, 0 = cheapest</span>`,e); return; }
+    hideTip();
+  });
+  document.addEventListener('click',e=>{
+    const el=e.target.closest('[data-mem="1"]'); if(!el) return;
+    const tr=el.closest('[data-k]'); if(tr) openMembers(decodeURIComponent(tr.dataset.k));
+  });
+  $('modal').onclick=e=>{ if(e.target.id==='modal'||e.target.dataset.close) $('modal').style.display='none'; };
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') $('modal').style.display='none'; });
+}
+
+function openMembers(key){
+  const x=DATA.indices.find(i=>i.k===key); if(!x||!x.members) return;
+  const syms=x.members;
+  $('modalCard').innerHTML =
+    `<div class="p-4 border-b" style="border-color:var(--ixln)">
+       <div class="flex items-start justify-between gap-3">
+         <div><div class="text-lg font-extrabold">${x.n}</div>
+           <div class="text-xs text-slate-500 mt-0.5">${syms.length} constituents · level ${fmtN(x.last)} <span class="${cls(x.pc)}">${fmtPc(x.pc)}</span></div></div>
+         <span data-close="1" class="pill">✕ Close</span>
+       </div></div>
+     <div class="p-4">${syms.map(s=>`<span class="mchip">${s}</span>`).join('')}
+       <p class="text-[11px] text-slate-400 mt-3">Latest tracked constituents (point-in-time membership from our index-history dataset). Click a name on the table to open its members.</p></div>`;
+  $('modal').style.display='flex';
+}
+</script>
+</body>
+</html>

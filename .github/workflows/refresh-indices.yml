@@ -1,0 +1,87 @@
+name: Refresh indices table
+
+# docs/indices.json powers docs/indices.html (the Indian Indices table). The
+# fetcher (scripts/fetch_index_table.py) reads NSE's live index watch (all ~131
+# indices' level + 1D% + 52w high/low — CDN, no bot wall) and NSE /api/allIndices
+# (PE/PB/dividend yield + 30d/365d change — works from GitHub's IPs) and maintains
+# a rolling daily-close + PE/PB history in docs/indices_hist.json for the 1W column,
+# the 30-day sparkline and the valuation percentile. Both files must be committed
+# so the history persists between runs. Runbook §35.
+
+on:
+  schedule:
+    - cron: "35 15 * * 1-5"   # 21:05 IST weekdays — after the close (final levels + valuation)
+    - cron: "20 3 * * 2-6"    # 08:50 IST Tue-Sat — catch-up for a missed evening
+  repository_dispatch:
+    types: [indices-refresh]
+  workflow_dispatch: {}
+  push:
+    paths:
+      - "scripts/fetch_index_table.py"
+      - ".github/workflows/refresh-indices.yml"
+
+permissions:
+  contents: write
+  actions: write   # dispatch pages.yml after a bot commit (loop guard blocks auto-trigger)
+
+concurrency:
+  group: refresh-indices
+  cancel-in-progress: false
+
+jobs:
+  refresh-indices:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Build the indices table
+        run: python3 -X utf8 scripts/fetch_index_table.py
+
+      - name: Guard — refuse to commit a broken or shrunken feed
+        run: python3 scripts/guard_feed.py
+
+      # ⚠️ reset-and-replay gotcha (runbook §18): every file the fetch step writes
+      # must ride the cp-to-/tmp + cp-back + git-add lists below, or it's built then
+      # discarded by the `git reset --hard`.
+      - name: Commit updated feeds (only if changed)
+        id: commit
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp docs/indices.json      /tmp/indices.json
+          cp docs/indices_hist.json /tmp/indices_hist.json
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/indices.json      docs/indices.json
+            cp /tmp/indices_hist.json docs/indices_hist.json
+            git add docs/indices.json docs/indices_hist.json
+            if git diff --cached --quiet; then
+              echo "Feeds unchanged — nothing to commit"
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            git commit -m "Indices table refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then
+              echo "Pushed on attempt #$attempt"
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "Push attempt #$attempt rejected; resetting and retrying"
+            sleep $(( attempt * 3 ))
+          done
+          echo "Failed to push after 5 attempts"
+          exit 1
+
+      - name: Publish to Pages (only when the feed changed)
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml
