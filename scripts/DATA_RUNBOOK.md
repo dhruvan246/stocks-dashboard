@@ -2051,22 +2051,40 @@ Two live sources:
      60 s always — global markets trade ~24 h).
    * `?announcements=1` — NSE corporate announcements w/ cookie warmup. Users:
      announcements.html, quarterly-results.html LIVE tab.
-   * `?nse=volume-gainers|gainers|loosers` — WHITELISTED NSE live-analysis passthrough
-     (cookie warmup, 60 s cache, volume-gainers data capped 60 rows). Users:
+   * `?nse=volume-gainers|gainers|loosers|fiidii|large-deals` — WHITELISTED NSE
+     live-analysis passthrough (cookie warmup, 60 s cache; array responses ride
+     under `.data`; volume-gainers capped 60 rows). Users:
      **volume.html** ("LIVE volume spurts" card — NSE's intraday feed, ratio vs NSE's
-     1-WEEK avg, deliberately a SEPARATE section from the EOD 20-session table) and
+     1-WEEK avg, deliberately a SEPARATE section from the EOD 20-session table);
      **movers.html** ("LIVE this session" strip — raw NSE gainers/losers chips from the
-     `allSec` bucket; the main table stays corp-action-adjusted EOD). Both market-hours
-     only, hidden otherwise. Schemas verified via `probe-nse-api.yml` (dispatch-only
-     workflow — CI IPs + warmup reach NSE; use it before wiring any new NSE endpoint).
+     `allSec` bucket; the main table stays corp-action-adjusted EOD) — both market-hours
+     only, hidden otherwise;
+     **fii-dii.html** (`fiidii` — the day's PROVISIONAL cash numbers appear ~6pm IST,
+     appended as a live row until the nightly bake catches up; 10-min poll);
+     **deals.html** (`large-deals` — today's bulk/block snapshot lands in the evening,
+     prepended + re-rendered when its as_on_date is newer than the feed; 10-min poll).
+   * `?ipo=SYM` — live subscription for ONE open IPO (ipo-active-category; 60 s cache).
+     User: **ipos.html** — every OPEN issue's ×-subscribed goes live (3-min poll); the
+     baked feed only updates 2×/day, so intraday multiples can differ hugely (CMLL
+     2026-07-20: baked 6.41× vs live 14.04× at 13:27).
+     Schemas verified via `probe-nse-api.yml` (dispatch-only workflow — CI IPs + warmup
+     reach NSE; ALWAYS use it before wiring any new NSE endpoint).
      ⚠️ `/api/equity-stockIndices` (would give live breadth) is blocked even from CI —
-     that's why market-mood breadth has no live version.
+     that's why market-mood breadth has no live version. ⚠️ `/api/corporates-pit` gets
+     bot-walled on wide date windows and PIT filings are XBRL since Apr-2026 (need
+     per-filing parsing) — that's why insider has no live strip.
 
-Deliberately NOT live (EOD/filings by nature — don't "fix"): delivery %, deals,
-insider, market-mood breadth (see above), fii-dii, shareholding, sectors,
-monthly-returns, macro, mutual funds, live-tracking (paper-trades at CLOSES by
-design), quarterly numbers. Movers/volume EOD tables stay EOD — their live strips
-are additive, never replacements (different baselines/adjustment).
+Also CDN-live (no worker): **monthly-returns.html** (FEED.live levels overwritten from
+LiveIndicesWatch at load — keys match verbatim — so MTD/trailing cells read NOW) and
+**macro.html** (live Nifty + India VIX point spliced into the daily series at load via
+worker ?symbols=^NSEI,^INDIAVIX — VIX is NOT in LiveIndicesWatch; weekday guard so a
+weekend load never stamps a Saturday/Sunday date).
+
+Deliberately NOT live (EOD/filings by nature — don't "fix"): delivery %, insider
+(XBRL, see above), market-mood breadth (blocked, see above), shareholding, sectors,
+mutual funds, bank-credit, live-tracking (paper-trades at CLOSES by design),
+quarterly numbers, discovery buckets. Movers/volume EOD tables stay EOD — their live
+strips are additive, never replacements (different baselines/adjustment).
 
 Gotchas:
 - **Worker route missing = silent fallback.** Pages call routes that may not be deployed

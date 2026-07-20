@@ -26,8 +26,14 @@
  *   GET ?nse=volume-gainers        -> whitelisted NSE live-analysis passthrough with
  *        cookie warmup, cached 60 s per key. Keys: volume-gainers (live volume
  *        spurts, used by the Volume Shockers page), gainers / loosers (live top
- *        movers incl. the allSec whole-market bucket, used by the Top Movers page).
- *        Response = NSE's own JSON + {asOf} (volume-gainers data capped at 60 rows).
+ *        movers incl. the allSec whole-market bucket, used by the Top Movers page),
+ *        fiidii (day's provisional FII/DII cash numbers, ~6pm — FII/DII page),
+ *        large-deals (today's bulk/block deals snapshot, evening — Deals page).
+ *        Response = NSE's own JSON + {asOf}; array responses ride under .data
+ *        (volume-gainers data capped at 60 rows).
+ *   GET ?ipo=CMLL                  -> live subscription for ONE open IPO (NSE
+ *        ipo-active-category): {asOf,symbol,updateTime,total,rows} where total =
+ *        overall subscription multiple. Used by the IPOs page. Cached 60 s.
  *
  * DEPLOY:  see scripts/LIVE_FEED_SETUP.md  (paste this whole file over the old one)
  * ========================================================================== */
@@ -55,6 +61,10 @@ const NSE_LIVE = {
                      'https://www.nseindia.com/market-data/top-gainers-losers'],
   'loosers':        ['/api/live-analysis-variations?index=loosers',
                      'https://www.nseindia.com/market-data/top-gainers-losers'],
+  'fiidii':         ['/api/fiidiiTradeReact',
+                     'https://www.nseindia.com/reports/fii-dii'],
+  'large-deals':    ['/api/snapshot-capital-market-largedeal',
+                     'https://www.nseindia.com/market-data/large-deals'],
 };
 
 export default {
@@ -69,6 +79,8 @@ export default {
     if (quotes) return yahooQuotes(quotes);
     const nse = url.searchParams.get('nse');
     if (nse) return nseLive(nse);
+    const ipo = url.searchParams.get('ipo');
+    if (ipo) return ipoSubscription(ipo);
     const filings = url.searchParams.get('filings');
     if (filings) return filingsPassthrough(url, filings);
 
@@ -188,7 +200,9 @@ async function nseLive(key) {
     if (!r.ok) return json({ error: 'NSE HTTP ' + r.status }, 502);
     const j = await r.json();
     if (j && Array.isArray(j.data) && j.data.length > 60) j.data = j.data.slice(0, 60); // volume-gainers: cap payload
-    const text = JSON.stringify({ asOf: now, source: 'nse', ...j });
+    // array responses (fiidii) ride under .data so the envelope stays an object
+    const body = Array.isArray(j) ? { asOf: now, source: 'nse', data: j } : { asOf: now, source: 'nse', ...j };
+    const text = JSON.stringify(body);
     NSE_CACHE.set(key, { ts: now, text });
     return new Response(text, { headers: { ...CORS, 'content-type': 'application/json' } });
   } catch (e) {
@@ -224,6 +238,43 @@ async function filingsPassthrough(url, idx) {
     if (!r.ok) return json({ error: 'NSE HTTP ' + r.status }, 502);
     const text = await r.text();
     if (/^\s*</.test(text)) return json({ error: 'NSE served non-JSON (challenge page)' }, 502);
+    return new Response(text, { headers: { ...CORS, 'content-type': 'application/json' } });
+  } catch (e) {
+    return json({ error: String((e && e.message) || e) }, 502);
+  }
+}
+
+/* ---------------- live IPO subscription for ONE open issue ----------------- */
+
+async function ipoSubscription(sym) {
+  sym = String(sym).trim().toUpperCase();
+  if (!/^[A-Z0-9\-&]{1,20}$/.test(sym)) return json({ error: 'bad symbol' }, 400);
+  const key = 'ipo:' + sym;
+  const now = Date.now();
+  const hit = NSE_CACHE.get(key);
+  if (hit && now - hit.ts < 60_000) return new Response(hit.text, { headers: { ...CORS, 'content-type': 'application/json' } });
+  try {
+    const cookie = await nseCookie();
+    const r = await fetch('https://www.nseindia.com/api/ipo-active-category?symbol=' + encodeURIComponent(sym), {
+      headers: {
+        'User-Agent': NSE_UA,
+        'Accept': 'application/json, text/plain, */*',
+        'Referer': 'https://www.nseindia.com/market-data/all-upcoming-issues-ipo',
+        ...(cookie ? { 'Cookie': cookie } : {}),
+      },
+    });
+    if (!r.ok) return json({ error: 'NSE HTTP ' + r.status }, 502);
+    const j = await r.json();
+    // dataList row 0 is a header row; the Total row has srNo == null
+    const rows = ((j && j.dataList) || []).filter(x => x && x.category && x.srNo !== 'Sr.No.');
+    const total = rows.find(x => x.srNo == null || /^total$/i.test(x.category));
+    const text = JSON.stringify({
+      asOf: now, source: 'nse', symbol: sym,
+      updateTime: (j && j.updateTime) || null,
+      total: total ? parseFloat(total.noOfTotalMeant) : null,
+      rows: rows.map(x => [x.category, x.noOfShareOffered, x.noOfSharesBid, x.noOfTotalMeant]),
+    });
+    NSE_CACHE.set(key, { ts: now, text });
     return new Response(text, { headers: { ...CORS, 'content-type': 'application/json' } });
   } catch (e) {
     return json({ error: String((e && e.message) || e) }, 502);

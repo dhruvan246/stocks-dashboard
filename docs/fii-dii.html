@@ -177,7 +177,36 @@ async function load(){
   $('status').classList.add('hidden'); $('content').classList.remove('hidden');
   renderCards(); renderNetChart(); renderCumChart(); renderTable();
   renderFO();
+  liveFiiDii();
 }
+
+/* ---- live top-up via our Cloudflare Worker (?nse=fiidii): NSE publishes the
+   day's PROVISIONAL cash numbers ~6pm IST — hours before the nightly bake. If
+   the API has a session our baked feed doesn't, append it and re-render.
+   Fails silently (page keeps the baked feed). ---- */
+const WORKER='https://stocksworld-quotes.dhruvan2510.workers.dev';
+const LIVEMON={Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
+async function liveFiiDii(){
+  try{
+    const j=await (await fetch(WORKER+'/?nse=fiidii',{cache:'no-store'})).json();
+    const rows=(j&&j.data)||[];
+    const conv=s=>{const m=/(\d{2})-([A-Za-z]{3})-(\d{4})/.exec(s||'');return m&&LIVEMON[m[2]]?m[3]+'-'+LIVEMON[m[2]]+'-'+m[1]:null;};
+    let dt=null;
+    rows.forEach(r=>{const d=conv(r.date);if(d&&(!dt||d>dt))dt=d;});
+    if(!dt||!ROWS.length||dt<=ROWS[ROWS.length-1].date) return;   // cron already has this session
+    const rec={date:dt,nifty:null};
+    rows.filter(r=>conv(r.date)===dt).forEach(r=>{
+      const buy=+r.buyValue, sell=+r.sellValue, net=+r.netValue;
+      if(/DII/i.test(r.category)){ rec.diiBuy=buy; rec.diiSell=sell; rec.diiNet=net; }
+      else { rec.fiiBuy=buy; rec.fiiSell=sell; rec.fiiNet=net; }
+    });
+    if(rec.fiiNet==null&&rec.diiNet==null) return;
+    ROWS.push(rec);
+    $('updated').innerHTML=' · <span style="color:#16a34a;font-weight:800">● LIVE</span> today ('+dt+') provisional numbers included — NSE publishes ~6pm IST';
+    renderCards(); renderNetChart(); renderCumChart(); renderTable();
+  }catch(e){ /* keep baked feed */ }
+}
+setInterval(()=>{ if(!document.hidden) liveFiiDii(); },600000);
 
 /* ---------------- CASH ---------------- */
 function renderCards(){

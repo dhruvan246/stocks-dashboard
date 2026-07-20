@@ -548,8 +548,36 @@ async function load(){
   try { FEED = await (await fetch('./index_monthly.json?t=' + Date.now())).json(); }
   catch (e){ $('status').textContent = 'Could not load index_monthly.json.'; return; }
   IDX = FEED.indices; IDX.forEach(ix => BY[ix.key] = ix); N50 = BY['NIFTY 50'];
+
+  // Live MTD top-up: same niftyindices CDN feed the evening refresh uses (CORS-open,
+  // keys match FEED.live verbatim). Overwrites each index's live level in place so the
+  // MTD / trailing cells reflect right now, not the last trading evening. Best-effort.
+  let liveTv = '';
+  try {
+    const lj = await (await fetch('https://liveindexsa.niftyindices.com/jsonfiles/LiveIndicesWatch.json?cb=' + Date.now(), {cache:'no-store'})).json();
+    ((lj && lj.data) || []).forEach(rr => {
+      const lv = FEED.live && FEED.live[String(rr.indexName || '').trim()];
+      const last = parseFloat(rr.last), prev = parseFloat(rr.previousClose);
+      if (!lv || !isFinite(last) || last <= 0) return;
+      lv.last = last;
+      if (isFinite(prev) && prev > 0) lv.prev = prev;
+      const dm = /(\d{2})-([A-Za-z]{3})-(\d{4})/.exec(String(rr.timeVal || ''));
+      const MO = {Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
+      if (dm && MO[dm[2]]) lv.d = dm[3] + '-' + MO[dm[2]] + '-' + dm[1];
+      const yh = parseFloat(rr.yearHigh), yl = parseFloat(rr.yearLow);
+      if (isFinite(yh) && yh > 0) lv.yh = yh;
+      if (isFinite(yl) && yl > 0) lv.yl = yl;
+      if (String(rr.timeVal || '') > liveTv) liveTv = String(rr.timeVal);
+    });
+  } catch (e) { /* CDN hiccup — evening-baked live levels stay */ }
+
   const a = asofYM();
   $('updated').textContent = '· data till ' + a.d + ' ' + MONC[a.m-1] + ' ' + a.y + ' · current month updates every trading evening.';
+  if (liveTv){
+    const t = /(\d{1,2}:\d{2})/.exec(liveTv);
+    $('updated').innerHTML = '· data till ' + a.d + ' ' + MONC[a.m-1] + ' ' + a.y +
+      ' · <span style="color:#16a34a;font-weight:800">● LIVE</span> MTD levels' + (t ? ' as of ' + t[1] + ' IST' : '') + '.';
+  }
 
   try {                                                    // restore state from URL hash
     const h = new URLSearchParams(location.hash.replace(/^#/, ''));

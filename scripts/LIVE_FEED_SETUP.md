@@ -43,16 +43,19 @@ To change it later: click the **⚙** next to **Go Live**.
 ---
 
 ## Notes & limits
-- **The same Worker now serves five routes** (since 2026-07-20 — redeploy the whole
+- **The same Worker now serves six routes** (since 2026-07-20 — redeploy the whole
   `scripts/live-quote-worker.js` file to get them): `?symbols=RELIANCE,TCS` (Today's-Picks
-  quotes + Watchlist live prices; index symbols like `^NSEI` work too), `?chart=^NSEI`
-  (home-page live ticker + stock-page live price), `?quotes=^GSPC,GC=F,BTC-USD`
-  (VERBATIM Yahoo symbols — futures/FX/crypto — for the Global Markets page),
-  `?announcements=1` (Announcements + Quarterly-Results live top-up, NSE with cookie
-  warmup + 90 s cache), `?nse=volume-gainers|gainers|loosers` (whitelisted NSE
-  live-analysis passthrough — live volume spurts for the Volume Shockers page and
-  live top movers for the Top Movers page, 60 s cache). The Indices page needs NO
-  worker — it reads the CORS-open `liveindexsa.niftyindices.com` CDN feed directly.
+  quotes + Watchlist live prices + Macro's live Nifty/VIX; index symbols like `^NSEI`
+  work too), `?chart=^NSEI` (home-page live ticker + stock-page live price),
+  `?quotes=^GSPC,GC=F,BTC-USD` (VERBATIM Yahoo symbols — futures/FX/crypto — for the
+  Global Markets page), `?announcements=1` (Announcements + Quarterly-Results live
+  top-up, NSE with cookie warmup + 90 s cache),
+  `?nse=volume-gainers|gainers|loosers|fiidii|large-deals` (whitelisted NSE
+  live-analysis passthrough — live volume spurts for Volume Shockers, live top movers
+  for Top Movers, same-evening provisional FII/DII for the FII/DII page, same-evening
+  bulk/block deals for the Deals page, 60 s cache), and `?ipo=SYM` (live subscription
+  multiple for an open IPO — IPOs page). The Indices and Monthly-Returns pages need
+  NO worker — they read the CORS-open `liveindexsa.niftyindices.com` CDN feed directly.
 - **Free Cloudflare Workers** allow 100,000 requests/day — far more than you'll use.
 - Each **Go Live** click = one request (covers all basket symbols at once).
 - Yahoo NSE data is **~15 min delayed**. The "as of" time shown is when you clicked.

@@ -108,7 +108,35 @@ async function load(){
     const c = e.target.closest('[data-q]'); if (!c) return;
     $('q').value = c.dataset.q; shown = 250; render();
   });
+  liveDeals();
 }
+
+/* ---- live top-up via our Cloudflare Worker (?nse=large-deals): NSE's same-day
+   bulk/block snapshot appears in the evening, hours before our cron bakes it.
+   If the snapshot's day is newer than the feed's newest day, prepend those deals
+   and re-render. Fails silently (page keeps the baked feed). ---- */
+const WORKER = 'https://stocksworld-quotes.dhruvan2510.workers.dev';
+const LIVEMON = {Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
+async function liveDeals(){
+  try {
+    const j = await (await fetch(WORKER + '/?nse=large-deals', {cache:'no-store'})).json();
+    const m = /(\d{2})-([A-Za-z]{3})-(\d{4})/.exec(j && j.as_on_date || '');
+    const day = m && LIVEMON[m[2]] ? m[3] + '-' + LIVEMON[m[2]] + '-' + m[1] : null;
+    if (!day) return;
+    const newest = DATA.rows.length ? DATA.rows.map(r => r[0]).sort().pop() : '';
+    if (day <= newest) return;                       // cron already has this session
+    const map = (arr, kind) => (arr || []).filter(r => r && r.symbol).map(r => [
+      day, kind, String(r.symbol), String(r.name || ''), String(r.clientName || ''),
+      /^B/i.test(r.buySell) ? 'B' : 'S',
+      +String(r.qty).replace(/,/g, '') || 0, +String(r.watp).replace(/,/g, '') || 0 ]);
+    const rows = map(j.BULK_DEALS_DATA, 'B').concat(map(j.BLOCK_DEALS_DATA, 'K'));
+    if (!rows.length) return;
+    DATA.rows = rows.concat(DATA.rows); DATA.to = day;
+    $('updated').innerHTML = ' · <span style="color:#16a34a;font-weight:800">● LIVE</span> today\'s deals (' + fmtD(day) + ') included — NSE evening snapshot';
+    renderCards(); render();
+  } catch (e) { /* keep baked feed */ }
+}
+setInterval(() => { if (!document.hidden) liveDeals(); }, 600000);
 
 function setView(v){ view = v; shown = 250;
   $('vDeals').classList.toggle('on', v==='deals'); $('vStocks').classList.toggle('on', v==='stocks'); render(); }

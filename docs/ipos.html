@@ -98,6 +98,7 @@ async function load(){
   $('updated').textContent = '· updated ' + DATA.updated + ' IST';
   $('status').classList.add('hidden'); $('content').classList.remove('hidden');
   renderIssues(); renderListed();
+  liveSubs();
   ['q','fBoard','fSort'].forEach(id => $(id).addEventListener(id==='q'?'input':'change', renderListed));
 }
 
@@ -129,6 +130,29 @@ function renderIssues(){
   $('issues').innerHTML = rows.length ? rows.map(issueCard).join('')
     : '<div class="text-sm text-slate-400 py-6">No open or announced issues right now.</div>';
 }
+
+/* ---- live subscription via our Cloudflare Worker (?ipo=SYM): NSE's bid data
+   updates all day while an issue is open — the baked feed only refreshes twice
+   a day. Overwrites each open issue's x-subscribed in place and re-renders.
+   Fails silently (cards keep the baked multiple). ---- */
+const WORKER = 'https://stocksworld-quotes.dhruvan2510.workers.dev';
+async function liveSubs(){
+  if (!DATA) return;
+  const open = (DATA.upcoming || []).filter(r => r[3] && r[4] && r[3] <= todayISO && todayISO <= r[4]);
+  if (!open.length) return;
+  let ut = null;
+  await Promise.all(open.map(async r => {
+    try {
+      const j = await (await fetch(WORKER + '/?ipo=' + encodeURIComponent(r[0]), {cache:'no-store'})).json();
+      if (j && j.total != null && isFinite(j.total)){ r[8] = j.total; ut = j.updateTime || ut; }
+    } catch (e) { /* keep baked multiple for this issue */ }
+  }));
+  if (!ut) return;
+  renderIssues();
+  const t = /(\d{1,2}:\d{2})/.exec(ut);
+  $('updated').innerHTML = ' · <span style="color:#16a34a;font-weight:800">● LIVE</span> subscription' + (t ? ' as of ' + t[1] + ' IST' : '') + ' · refreshes every few minutes';
+}
+setInterval(() => { if (!document.hidden) liveSubs(); }, 180000);
 
 function renderListed(){
   const q = $('q').value.trim().toLowerCase(), board = $('fBoard').value, sort = $('fSort').value;

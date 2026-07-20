@@ -263,9 +263,9 @@ function downsample(pts, target){
 
 /* ================= LOAD ================= */
 async function load(){
-  let macro, vix, nifty, breadth, fii, bank, idx, fo, rs;
+  let macro, vix, nifty, breadth, fii, bank, idx, fo, rs, liveq;
   try{
-    [macro,vix,nifty,breadth,fii,bank,idx,fo,rs] = await Promise.all([
+    [macro,vix,nifty,breadth,fii,bank,idx,fo,rs,liveq] = await Promise.all([
       fetch('./macro.json').then(r=>r.json()),
       fetch('./india_vix.json').then(r=>r.json()).catch(()=>({px:{}})),
       fetch('./nifty.json').then(r=>r.json()).catch(()=>({px:{}})),
@@ -275,8 +275,25 @@ async function load(){
       fetch('./index_monthly.json').then(r=>r.json()).catch(()=>null),
       fetch('./fii_fo.json').then(r=>r.json()).catch(()=>null),
       fetch('./results_season.json').then(r=>r.json()).catch(()=>null),
+      // live Nifty + India VIX via our CF Worker (one-shot at load; page keeps
+      // the baked series if the Worker is unreachable)
+      fetch('https://stocksworld-quotes.dhruvan2510.workers.dev/?symbols=^NSEI,^INDIAVIX',{cache:'no-store'})
+        .then(r=>r.json()).catch(()=>null),
     ]);
   }catch(e){ $('status').textContent = 'Could not load macro data. '+e; return; }
+
+  // splice today's live point into the Nifty / VIX daily series so every tile,
+  // gauge and derived series (drawdown, gold÷Nifty, earnings-yield gap…) reads NOW
+  let liveOn = false;
+  try{
+    const q = liveq && liveq.data;
+    const istNow = new Date(Date.now()+330*60000);
+    if(q && istNow.getUTCDay()>=1 && istNow.getUTCDay()<=5){   // weekdays only — never stamp a weekend date
+      const today = istNow.toISOString().slice(0,10);
+      if(q['^NSEI'] && q['^NSEI'].ltp > 0){ (nifty.px||(nifty.px={}))[today] = q['^NSEI'].ltp; liveOn = true; }
+      if(q['^INDIAVIX'] && q['^INDIAVIX'].ltp > 0){ (vix.px||(vix.px={}))[today] = q['^INDIAVIX'].ltp; liveOn = true; }
+    }
+  }catch(e){}
 
   const M = macro.series || {};
   const reg = (key, cfg) => { if(cfg.arr && cfg.arr.length){ S[key]=cfg; ORDER.push(key); } };
@@ -428,6 +445,7 @@ async function load(){
     'crude','cruderu','gold','silver','copper','goldnifty','forex'];
   ORDER.length=0; TILE_ORDER.forEach(k=>{ if(S[k]) ORDER.push(k); });
   $('updated').textContent = '· updated '+ (macro.updated? macro.updated.slice(0,10) : '');
+  if(liveOn) $('updated').innerHTML += ' · <span style="color:#16a34a;font-weight:800">● LIVE</span> Nifty &amp; VIX (Yahoo, ~15-min delay)';
   $('sources').innerHTML = 'Sources: NSE (Nifty, FII/DII cash &amp; derivatives, breadth) · niftyindices (Nifty PE/PB/dividend yield) · RBI via mql5 economic calendar (repo, deposits, M3, forex, bank credit) · MOSPI via mql5 (CPI, WPI, IIP, GDP, trade) · S&amp;P Global PMIs, US Fed rate &amp; US CPI via mql5 · Yahoo Finance (yields, USD/INR, dollar index, global indices, Brent, gold, silver, copper) · FRED (India 10Y). Breadth, earnings pulse (median YoY from our quarterly-results data), market-cap÷GDP and all ratio/derived panels computed in-house. The regime score is a simple percentile blend — a compass, not investment advice.';
 
   buildPulse();
