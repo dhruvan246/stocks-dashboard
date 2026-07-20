@@ -1267,6 +1267,14 @@ only through SECURITY DEFINER RPCs; daily GitHub backups = recovery). **Schema: 
 - `sw_kv_ok()` is the key whitelist — adding a new kv doc = add the key there + re-run the SQL file.
 - Until the SQL is deployed every feature silently runs browser-local (by design); analytics shows "no visits yet".
 - log-picks CI exits 1 only on "LogPicks error" (a real logging failure), not on partial anything.
+- **⚠️ Chain root can silently skip a day (happened 2026-07-18):** the whole chain hangs off
+  "Daily backtest data refresh"; that day BOTH its native cron (best-effort) AND the cron-job.org
+  `backtest-data-refresh` dispatch failed to fire → no bake → no picks log → live-tracking froze
+  over the weekend. Fixed 2026-07-20: the refresh now has an 03:25 UTC Tue-Sat catch-up cron
+  (same pattern as delivery/deals/indices). Safe because the updater appends all missing days and
+  picks upsert on (data-day SF.end, sid) — a redundant run is a no-op. If live-tracking looks
+  stale, check `gh run list --workflow="Daily backtest data refresh"` FIRST, then dispatch it;
+  the chain follows automatically.
 - **⚠️ Postgres function gotcha (cost 2 deploy cycles 2026-07-16):** RPC parameter names must match what
   the site sends (`{"page":…}`, `{"k":…}`), but a plpgsql function whose parameter shares a TABLE column
   name breaks its own DML — bare refs are 42702-ambiguous, and `#variable_conflict use_variable` then
