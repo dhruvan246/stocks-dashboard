@@ -62,7 +62,11 @@ jobs:
           python-version: "3.11"
 
       - name: Pull newly-filed quarterly results into sf_fundamentals.json
-        run: python3 scripts/update_fundamentals.py
+        # curl_cffi = Chrome-TLS fallback transport — 2026-07-20 NSE's Akamai began serving the
+        # bot-challenge page to this API for plain-urllib fingerprints (fails LOUD without it).
+        run: |
+          pip install -q curl_cffi
+          python3 scripts/update_fundamentals.py
 
       # INSURERS (LICI/SBILIFE/HDFCLIFE/ICICIPRULI/ICICIGI/GICRE/NIACL/STARHEALTH/GODIGIT/NIVABUPA/MFSL)
       # file IRDAI-format results the XBRL parser above can't read. fetch_insurers.py fills them unattended:

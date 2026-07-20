@@ -101,27 +101,54 @@ def main():
             print("  (warm page visit failed: %s)" % str(e)[:60])
         return j
 
+    # ⚠️ 2026-07-20: NSE's Akamai began serving the bot-challenge HTML to this API for plain-urllib
+    # TLS fingerprints (page-cookie warmup no longer helps; other endpoints still pass). Fallback
+    # transport: curl_cffi Chrome impersonation — the same trick fetch_insurers uses. Lazy session,
+    # created only when urllib gets blocked.
+    _cffi = {"s": None}
+    def cffi_get(url):
+        if _cffi["s"] is None:
+            from curl_cffi import requests as cr        # ImportError → caller's except logs it
+            s = cr.Session(impersonate="chrome")
+            s.get("https://www.nseindia.com/", timeout=30)
+            s.get("https://www.nseindia.com/companies-listing/corporate-filings-financial-results", timeout=30)
+            _cffi["s"] = s
+        r = _cffi["s"].get(url, headers=h, timeout=150)
+        if r.status_code != 200:
+            _cffi["s"] = None                           # dead session — rebuild on next call
+            raise RuntimeError("curl_cffi HTTP %d" % r.status_code)
+        return r.text
+
     rows = []
+    prefer_cffi = [False]                            # sticky: once cffi is the working transport, lead with it
     for idx in ("equities", "sme"):
         jar = warm_jar()
         base = ("https://www.nseindia.com/api/integrated-filing-results?index=%s&period=Quarterly"
                 "&from_date=%s&to_date=%s" % (idx, frm, to))
         got, page, total, dead = 0, 1, 0, False
         while True:
+            url = base + "&page=%d&size=200" % page
+            # Transport order: urllib twice (2nd with re-warmed jar), then curl_cffi twice. Once
+            # cffi is what worked, START there for every later page (urllib is blocked for the run).
+            plans = ["cffi", "cffi", "urllib", "urllib"] if prefer_cffi[0] else ["urllib", "urllib", "cffi", "cffi"]
             jb = None
-            for attempt in range(4):
+            for attempt, transport in enumerate(plans):
                 if attempt:
-                    print("  [%s] page %d retry %d (fresh warmed session after backoff)" % (idx, page, attempt))
-                    time.sleep(6 * attempt)         # spaced retries — hammering keeps the block alive
-                    jar = warm_jar()
+                    print("  [%s] page %d retry %d via %s" % (idx, page, attempt, transport))
+                    time.sleep(4 * attempt)         # spaced retries — hammering keeps the block alive
                 try:
-                    body = B._get(base + "&page=%d&size=200" % page, headers=h, jar=jar, timeout=150)
+                    if transport == "urllib":
+                        if attempt: jar = warm_jar()
+                        body = B._get(url, headers=h, jar=jar, timeout=150)
+                    else:
+                        body = cffi_get(url)
                     jb = json.loads(body)
+                    prefer_cffi[0] = transport == "cffi"
                     break
                 except json.JSONDecodeError:
-                    print("  [%s] page %d attempt %d: NON-JSON body: %r" % (idx, page, attempt + 1, body[:150]))
+                    print("  [%s] page %d attempt %d [%s]: NON-JSON body: %r" % (idx, page, attempt + 1, transport, body[:150]))
                 except Exception as e:
-                    print("  [%s] page %d attempt %d failed: %s" % (idx, page, attempt + 1, e))
+                    print("  [%s] page %d attempt %d [%s] failed: %s" % (idx, page, attempt + 1, transport, e))
             if jb is None:
                 dead = page == 1                    # page 1 dead = the board yielded nothing at all
                 break                               # deeper page dead = keep what we have (window overlaps self-heal)
