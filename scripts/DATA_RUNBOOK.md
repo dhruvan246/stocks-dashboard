@@ -2067,3 +2067,24 @@ Gotchas:
   during market hours.
 - The SW never caches cross-origin requests (worker/CDN stay network-only) and HTML pages
   are network-first — live-layer edits need no SW cache bump unless the SHELL list changes.
+
+## 37. INDIAN INDICES TABLE  (docs/indices.html — "Indices" nav 📇, built 2026-07-20, SELF-UPDATING)
+
+- **Feed:** `scripts/fetch_index_table.py` (NOT `fetch_indices.py` — that one tags stock
+  membership; name collision avoided) → `docs/indices.json` (slim page payload, every
+  derived field pre-baked) + `docs/indices_hist.json` (SIDE file, never shipped: rolling
+  260-session closes + 750 PE/PB/DY samples per index).
+- **Sources layered best-effort:** liveindexsa `LiveIndicesWatch.json` (CDN, no bot wall,
+  ALWAYS-ON backbone: level/1D%/OHLC/52wHL for ~131 indices) + NSE `/api/allIndices`
+  (PE/PB/DY + perChange30d/365d — works in CI, 403s from many raw IPs; merged via NSE_ALIAS).
+  Keys = raw LiveIndicesWatch `indexName` verbatim.
+- **Window accrues organically** (NSE's per-index daily archive is bot-walled → no backfill):
+  1W % fills after ~a week of runs, 30-day sparkline after a month, valuation percentile
+  sharpens over weeks. Em-dashes in young columns are CORRECT, not a bug. 63/131 have PE
+  (bond/G-Sec/factor indices omit it — also correct).
+- **Refresh:** `refresh-indices.yml` 2x/day (21:05 + 08:50 IST) + push-trigger self-test;
+  commits BOTH json files (reset-and-replay cp-back — §18 gotcha applies). Fail-soft: a
+  dead primary fetch leaves both files untouched (exit 0) so the page keeps yesterday.
+- **feeds.json:** indices.json + indices_hist.json entries exist (guard_feed monitored).
+- **In-browser live top-up:** §36 — the page ALSO fetches LiveIndicesWatch directly
+  (CORS-open) every 60 s during market hours; level/1D%/52w go live, the rest stays baked.
