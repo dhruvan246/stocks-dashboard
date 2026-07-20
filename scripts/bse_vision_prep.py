@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import fitz, bse_render
 import bse_fetch as B
 import fetch_announcements as FA
-from results_pending import find_pending      # shared with build_results_coverage.py
+from results_pending import find_pending, find_unknown_qe   # shared with build_results_coverage.py
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 D = os.path.join(HERE, "..", "docs")
@@ -204,6 +204,52 @@ def main():
                 manifest.append({"exch": "NSE", "sym": sym, "scrip": "", "name": name, "mcap": mcap, "pngs": pngs})
                 print("  rendered NSE %-11s (%d pages)" % (sym, len(pngs)))
             time.sleep(1.5)   # space downloads out so we don't trip NSE's per-IP rate limit
+    # ---- qe==0 feed rows (period unstated in the filing text): resolve the REAL quarter from the
+    # filing PDF itself, and — when it turns out to be the target quarter — render it right away so
+    # the numbers fill in THIS run. Before 2026-07-21 these rows were invisible to every counter and
+    # to this routine (YESBANK filed Sat 2026-07-18 13:41, sat unclassified for 3 days).
+    unknown = find_unknown_qe()
+    if unknown:
+        import build_fundamentals as NBu
+        try: by_idu = json.load(open(os.path.join(HERE, "bse_scrips.json"), encoding="utf-8"))["by_id"]
+        except Exception: by_idu = {}
+        hdru = {"User-Agent": NBu.UA,
+                "Referer": "https://www.nseindia.com/companies-listing/corporate-filings-announcements",
+                "Accept": "application/pdf,*/*", "Accept-Language": "en-US,en;q=0.9",
+                "Sec-Fetch-Site": "same-site", "Sec-Fetch-Mode": "navigate", "Sec-Fetch-Dest": "document"}
+        jaru, opu = [None], [None]
+        for sym, name, mcap, fn, fdate, scrip in unknown:
+            raw = None
+            if fn and "bseindia.com" in str(fn):                    # BSE-sourced feed row
+                if opu[0] is None: opu[0] = B.session(); time.sleep(1)
+                raw = bse_render.fetch_pdf(opu[0], str(fn).rstrip("/").rsplit("/", 1)[-1])
+            elif fn:                                                 # NSE-sourced feed row
+                if jaru[0] is None: jaru[0] = _nse_warm(NBu)
+                url = fn if str(fn).startswith("http") else NSE_PDF + fn
+                raw = _nse_pdf_with_retry(NBu, url, hdru, jaru, sym)
+            if not raw:                                              # last resort: BSE copy, SAME day only
+                sc = str(scrip or by_idu.get(sym) or "")
+                if sc:
+                    if opu[0] is None: opu[0] = B.session(); time.sleep(1)
+                    for annd, att, hd in bse_render.announcements(opu[0], sc)[:4]:
+                        if annd != fdate: continue                   # a different day = a different filing
+                        raw = bse_render.fetch_pdf(opu[0], att)
+                        if raw: break
+            real = pdf_period(raw) if raw else 0
+            if not real:
+                print("  qe? %-11s %s — period unreadable (scanned/blocked), left unclassified" % (sym, fdate))
+                continue
+            qfix["%s|%s" % (sym, fdate)] = real
+            print("  qe? %-11s %s -> %d%s" % (sym, fdate, real, " (target quarter — rendering now)" if real == qe else ""))
+            if real == qe:
+                pngs = []
+                for i, png in enumerate(render_pdf_pages(raw)):
+                    p = os.path.join(outdir, "%s_%s_p%d.png" % ("BSE" if scrip else "NSE", scrip or sym, i))
+                    open(p, "wb").write(png); pngs.append(p)
+                if pngs:
+                    manifest.append({"exch": "BSE" if scrip else "NSE", "sym": sym, "scrip": scrip,
+                                     "name": name, "mcap": mcap, "pngs": pngs})
+
     # merge quarter corrections into the persistent side-file (write_results_feed applies them hourly)
     fixp = os.path.join(D, "feed_qe_fix.json")
     try: allfix = json.load(open(fixp, encoding="utf-8"))

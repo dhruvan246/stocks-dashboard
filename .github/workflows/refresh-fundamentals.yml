@@ -64,6 +64,12 @@ jobs:
       - name: Pull newly-filed quarterly results into sf_fundamentals.json
         # curl_cffi = Chrome-TLS fallback transport — 2026-07-20 NSE's Akamai began serving the
         # bot-challenge page to this API for plain-urllib fingerprints (fails LOUD without it).
+        # continue-on-error (2026-07-21): during the 2026-07-20 lockdown this step failed EVERY run
+        # and took the season/payload bakes down with it, so the Season Trends chart froze at 44
+        # reporters while the vision safety-net kept the page itself current at 62. The bakes below
+        # must run regardless; the LAST step re-raises this failure so the run still goes red.
+        id: xbrl
+        continue-on-error: true
         run: |
           pip install -q curl_cffi
           python3 scripts/update_fundamentals.py
@@ -159,15 +165,16 @@ jobs:
       # column from its VERY FIRST filing, flagged partial (rendered "in progress" until enough
       # companies report). Universe (turnover floor) is read from the committed sf_stock_data.bin
       # (stable; fine if a little stale).
+      # UNGATED (2026-07-21): the chart also consumes vision_fills.json now, which the scheduled
+      # vision routine commits from OUTSIDE this workflow — so a rebuild can be due even when this
+      # run parsed no new XBRL. The build is a cheap JSON aggregation; commit-if-changed below.
       - name: Rebuild Results Season chart data
-        if: ${{ hashFiles('docs/.fund_updated') != '' }}
         run: python3 scripts/build_results_season.py
 
       # SAFETY NET: for every index on the Season Trends tab (quarterly-results.html), flag any member that has DECLARED results
       # for the live quarter but whose numbers aren't parsed into the chart yet (the 22-vs-25 gap). Prints
       # to the CI log the moment a gap appears and writes docs/_season_coverage.json. Never fails the run.
       - name: Check Results Season coverage (declared vs parsed)
-        if: ${{ hashFiles('docs/.fund_updated') != '' }}
         run: python3 -X utf8 scripts/check_season_coverage.py || echo "(coverage check errored — non-fatal)"
 
       # Quarterly Results page payload — rebuilt EVERY run (not just when new earnings land):
@@ -219,12 +226,15 @@ jobs:
             if [ "$FUND" = "1" ]; then
               cp /tmp/sf_fundamentals.json docs/sf_fundamentals.json
               cp /tmp/sf_revop.json        docs/sf_revop.json
-              cp /tmp/results_season.json  docs/results_season.json
-              [ -f /tmp/_season_coverage.json ] && cp /tmp/_season_coverage.json docs/_season_coverage.json && git add docs/_season_coverage.json
               [ -f /tmp/ipo_base_fills.json ] && cp /tmp/ipo_base_fills.json scripts/ipo_base_fills.json && git add scripts/ipo_base_fills.json
               [ -f /tmp/excise_duty.json ] && cp /tmp/excise_duty.json scripts/excise_duty.json && git add scripts/excise_duty.json
-              git add docs/sf_fundamentals.json docs/sf_revop.json docs/results_season.json
+              git add docs/sf_fundamentals.json docs/sf_revop.json
             fi
+            # season chart + coverage commit UNCONDITIONALLY (2026-07-21): they also move when the
+            # vision routine committed new fills — i.e. exactly when no .fund_updated exists
+            cp /tmp/results_season.json  docs/results_season.json
+            git add docs/results_season.json
+            [ -f /tmp/_season_coverage.json ] && cp /tmp/_season_coverage.json docs/_season_coverage.json && git add docs/_season_coverage.json
             cp /tmp/quarterly_results.json docs/quarterly_results.json
             git add docs/quarterly_results.json
             [ -f /tmp/_ipo_base_skips.json ] && cp /tmp/_ipo_base_skips.json scripts/_ipo_base_skips.json && git add scripts/_ipo_base_skips.json
@@ -234,3 +244,11 @@ jobs:
             sleep $(( attempt * 3 ))
           done
           echo "push failed after 5 attempts"; exit 1
+
+      # Re-raise the XBRL fetch failure LAST, so the bakes/commits above still ran but the run
+      # goes red and the outage stays visible (fail-LOUD contract of update_fundamentals.py).
+      - name: Surface XBRL fetch failure
+        if: ${{ steps.xbrl.outcome == 'failure' }}
+        run: |
+          echo "::error::NSE XBRL fetch failed this run (lockdown?) — season/payload bakes still ran"
+          exit 1

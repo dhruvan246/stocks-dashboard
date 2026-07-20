@@ -98,7 +98,9 @@ def our_declared(qe):
     except Exception as e:                       # classifier needs quarterly_results.json
         print("  (results_pending.classify unavailable: %s — feed rows direct)" % e)
         for r in feed:
-            if r[3] == qe:
+            # qe==0 = declared but period-unclassified (resolved by the vision prep within hours) —
+            # still a declared filing, so it must cover the TL meeting or the diff re-flags it nightly
+            if r[3] == qe or r[3] == 0:
                 syms.add(r[0].upper()); names.add(nname(r[1]))
 
     co = (load("quarterly_results.json", {}) or {}).get("co", {})

@@ -223,6 +223,37 @@ def main():
 
     pat = {s: {r[0]: (r[1], r[3]) for r in rows} for s, rows in fund.items()}
 
+    # ---- vision_fills overlay (2026-07-21): during an NSE XBRL outage the vision safety-net keeps
+    # the RESULTS PAGE current, but this chart read only sf_fundamentals/sf_revop — so the season
+    # bar starved at 44 reporters while the page showed 62 (the 2026-07-20 lockdown). Merge the
+    # fills as a FALLBACK for quarters the XBRL stores don't have yet; real XBRL supersedes on its
+    # next parse because we never overwrite an existing cell. Basis-aware: a "C" fill only pairs
+    # against a consolidated year-ago base, "S" only standalone (consistent() picks the pair).
+    try:
+        vfill = json.load(open(os.path.join(ROOT, "docs", "vision_fills.json"), encoding="utf-8"))
+    except Exception:
+        vfill = {}
+    vadd = 0
+    for sym, qmap in vfill.items():
+        for qk, rec in qmap.items():
+            try: qe = int(qk)
+            except Exception: continue
+            basis = rec.get("basis") or ""
+            def slot(v):
+                if v is None: return (None, None)
+                return (None, v) if basis == "C" else ((v, None) if basis == "S" else (v, v))
+            if rec.get("pat") is not None and qe not in pat.setdefault(sym, {}):
+                pat[sym][qe] = slot(rec["pat"]); vadd += 1
+            if (rec.get("rev") is not None or rec.get("op") is not None):
+                qs = revop.setdefault(sym, {})
+                if str(qe) not in qs:
+                    base = qs.get(str(yago(qe)))
+                    fin = (base[6] if isinstance(base, list) and len(base) > 6 else 0) or 0
+                    rs, rc = slot(rec.get("rev")); os_, oc = slot(rec.get("op"))
+                    qs[str(qe)] = [rs, rc, os_, oc, None, None, fin, None, None]
+    if vadd:
+        print("vision_fills overlay: +%d PAT cells the XBRL stores don't have yet" % vadd)
+
     # candidate quarter-ends: Mar-2019 (earliest with a 2018 year-ago base) to latest
     cand = []
     y, m = 2019, 3

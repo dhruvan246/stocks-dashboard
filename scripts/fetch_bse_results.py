@@ -100,6 +100,34 @@ def nname(s):
     s = re.sub(r"[^a-z0-9]", "", str(s or "").lower())
     return re.sub(r"(limited|ltd)$", "", s)
 
+def scan_category(o, cat, F, T, label):
+    """Paged AnnSubCategoryGetData scan for one category over [F, T] (YYYYMMDD strings)."""
+    rows, page, total = [], 1, None
+    while page <= 60:
+        url = ("https://api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryGetData/w?pageno=%d"
+               "&strCat=%s&strPrevDate=%s&strToDate=%s&strScrip=&strSearch=P&strType=C&subcategory=-1"
+               % (page, cat.replace(" ", "%20"), F, T))
+        try:
+            j = json.loads(B.get(o, url)); tab = j.get("Table", []) or []
+            if total is None: total = (j.get("Table1") or [{}])[0].get("ROWCNT", 0)
+        except Exception as ex:
+            print("BSE %s page %d ERR: %s" % (label, page, ex)); break
+        if not tab: break
+        rows.extend(tab)
+        if total and len(rows) >= total: break
+        page += 1; time.sleep(0.4)
+    print("BSE %s filings fetched: %d (reported total %s)" % (label, len(rows), total))
+    return rows
+
+# A result filed ONLY under "Board Meeting / Outcome of Board Meeting" (no Result-category twin) is
+# invisible to the strCat=Result scan. Normally the NSE feed still catches it, but during an NSE
+# announcements outage (2026-07-20: SOBHA 16:28, JPPOWER 19:28) such filings vanished from BOTH
+# sides. Keep a board-outcome row when its text talks about results (JPPOWER-style headline), OR —
+# because SOBHA's headline says nothing but "outcome of Board meeting held on July 20, 2026" —
+# when the company had a RESULT-purpose meeting scheduled that day in results_calendar.json.
+RESULT_LANG = re.compile(r"(?:un-?audited|audited|financial|quarterly)\s+(?:financial\s+)?results?"
+                         r"|results?\s+for\s+the\s+(?:quarter|year|period|half)", re.I)
+
 def main():
     by_id = json.load(open(os.path.join(HERE, "bse_scrips.json"), encoding="utf-8"))["by_id"]
     rev = {int(v): k for k, v in by_id.items()}          # scripcode -> NSE symbol
@@ -109,21 +137,34 @@ def main():
     # ---- 1. result filings feed ----
     lo = today - datetime.timedelta(days=FEED_WINDOW_DAYS - 1)
     F, T = lo.strftime("%Y%m%d"), today.strftime("%Y%m%d")
-    bse_rows, page, total = [], 1, None
-    while page <= 60:
-        url = ("https://api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryGetData/w?pageno=%d"
-               "&strCat=Result&strPrevDate=%s&strToDate=%s&strScrip=&strSearch=P&strType=C&subcategory=-1"
-               % (page, F, T))
-        try:
-            j = json.loads(B.get(o, url)); tab = j.get("Table", []) or []
-            if total is None: total = (j.get("Table1") or [{}])[0].get("ROWCNT", 0)
-        except Exception as ex:
-            print("BSE feed page %d ERR: %s" % (page, ex)); break
-        if not tab: break
-        bse_rows.extend(tab)
-        if total and len(bse_rows) >= total: break
-        page += 1; time.sleep(0.4)
-    print("BSE result filings fetched:", len(bse_rows), "(reported total %s)" % total)
+    bse_rows = scan_category(o, "Result", F, T, "result")
+
+    # ---- 1a. results hiding under "Board Meeting" outcomes (last 7 days; runs 4×/day+hourly,
+    # additive dedup makes the short window converge, and it bounds the page count) ----
+    cal_meet = set()      # (SYM, 'YYYY-MM-DD') and normalized-name keys of result-purpose meetings
+    try:
+        for r in load(CAL, {"rows": []}).get("rows", []):
+            if isinstance(r, list) and len(r) >= 4 and "result" in str(r[3]).lower():
+                cal_meet.add((str(r[0]).upper(), r[2])); cal_meet.add((nname(r[1]), r[2]))
+    except Exception:
+        pass
+    F7 = (today - datetime.timedelta(days=7)).strftime("%Y%m%d")
+    bm_kept = 0
+    for r in scan_category(o, "Board Meeting", F7, T, "board-meeting"):
+        if str(r.get("SUBCATNAME") or "").strip().lower() != "outcome of board meeting":
+            continue
+        txt = " ".join(str(r.get(k) or "") for k in ("HEADLINE", "NEWSSUB", "MORE"))
+        dt = parse_dt(r.get("NEWS_DT") or r.get("DT_TM"))
+        if not dt: continue
+        try: sc = int(r.get("SCRIP_CD"))
+        except Exception: sc = None
+        sym = (sc and rev.get(sc)) or ticker_from_url(r.get("NSURL"), r.get("SLONGNAME"))
+        is_result = bool(RESULT_LANG.search(txt)) or (sym.upper(), dt[:10]) in cal_meet \
+                    or (nname(r.get("SLONGNAME")), dt[:10]) in cal_meet
+        if is_result:
+            r["CATEGORYNAME"] = "Result"      # normalize so the merge below treats it identically
+            bse_rows.append(r); bm_kept += 1
+    print("BSE board-meeting outcomes kept as results: %d" % bm_kept)
 
     feed = load(FEED, {"updated": "", "rows": []})
     have = set((r[0], r[2][:10]) for r in feed.get("rows", []) if isinstance(r, list) and len(r) >= 3)
@@ -145,7 +186,7 @@ def main():
         cap = re.sub(r"\s+", " ", str(r.get("HEADLINE") or r.get("NEWSSUB") or "")).strip()
         if len(cap) > 220: cap = cap[:219] + "…"
         feed.setdefault("rows", []).append([sym, re.sub(r"\s+", " ", str(r.get("SLONGNAME") or sym)).strip(),
-                                            dt, qe_from_head(r.get("HEADLINE"), r.get("NEWSSUB")), cap, file])
+                                            dt, qe_from_head(r.get("HEADLINE"), r.get("NEWSSUB"), r.get("MORE")), cap, file])
         added += 1
     # ---- 1b. inject BSE-only results we've CONFIRMED via OCR (bse_fundamentals.json) ----
     # BSE lets small cos file the result under "Board Meeting"/"Company Update" (not the Result

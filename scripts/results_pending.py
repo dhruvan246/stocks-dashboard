@@ -88,7 +88,39 @@ def classify():
             e["status"] = "no_pdf"
         seen[sym] = e
         out.append(e)
+
+    # qe==0 rows: the filing's stated period couldn't be parsed (headline had no "ended <date>"
+    # clause). Before 2026-07-21 these were counted NOWHERE — not pending, not declared, invisible
+    # to the vision routine AND to tl_reconcile's heal (YESBANK sat unclassified for 3 days).
+    # Emit them as status "unknown_qe" so the coverage page shows them and bse_vision_prep can
+    # resolve the real quarter from the filing PDF (feed_qe_fix.json re-files the row).
+    for r in feed:
+        if r[3] != 0:
+            continue
+        sym = r[0].upper()
+        if sym in seen:
+            continue
+        ann, pdf = r[2][:10], (r[5] or "")
+        if sym in univ:
+            u = univ[sym]
+            e = {"sym": sym, "name": u[2], "exch": "BSE", "scrip": str(u[0]), "mcap": u[6] or 0,
+                 "status": "unknown_qe", "ann": ann, "pdf": pdf}
+        else:
+            c = CO.get(sym)
+            e = {"sym": sym, "name": (c["n"] if c else r[1]), "exch": "NSE", "scrip": "",
+                 "mcap": (c.get("m") if c else 0) or 0, "status": "unknown_qe", "ann": ann, "pdf": pdf}
+        seen[sym] = e
+        out.append(e)
     return qe, out
+
+
+def find_unknown_qe(limit=12):
+    """qe==0 feed rows for bse_vision_prep's quarter-resolution pass — biggest-mcap first."""
+    _, rows = classify()
+    un = [(e["sym"], e["name"], e["mcap"], e["pdf"], e["ann"], e["scrip"])
+          for e in rows if e["status"] == "unknown_qe"]
+    un.sort(key=lambda x: -(x[2] or 0))
+    return un[:limit]
 
 
 def find_pending(limit):

@@ -778,8 +778,15 @@ V-recovery (Jun-2021: +48%)**.
 2. `build_results_season.py` re-aggregates → `docs/results_season.json`. A NEW quarter column auto-appears once
    ≥200 universe companies have reported it; year-ago base must be positive. Reads the daily `docs/` copies (falls back
    to `scripts/` source copies for a local run); turnover universe from the committed (slightly stale, fine) bin.
+   **+ vision_fills overlay (2026-07-21):** it ALSO merges `docs/vision_fills.json` as a fallback for quarters the
+   XBRL stores lack (basis-aware: a "C" fill only pairs with a con base). Without this, an NSE XBRL lockdown
+   (2026-07-20) froze the chart at 44 reporters while the vision-covered page showed 62 — the chart must read every
+   store the page reads. XBRL supersedes on its next parse (existing cells are never overwritten).
 3. Commit step pushes `sf_fundamentals.json` + `sf_revop.json` + `results_season.json` (rebase loop); the page picks
-   up the new JSON on next load.
+   up the new JSON on next load. **The season bake + coverage check + season commit are UNGATED (2026-07-21)** —
+   they run every refresh-fundamentals run (vision fills arrive from OUTSIDE the workflow, so `.fund_updated` can't
+   gate them), and the XBRL fetch step is `continue-on-error` with a final re-raise step, so an NSE lockdown can
+   never starve the downstream bakes again (it still turns the run red, LOUD).
 
 **Occasional FULL rebuild** (only if the daily fill-only drifts or you change the derivation): `python -X utf8
 build_revop.py` re-walks ALL `scripts/_xbrl_cache/` (~102k files, parallel ProcessPool, resumable via
@@ -1024,6 +1031,22 @@ list — what sectoral-index clicks write, so the view is shareable).
   the page, never a wrong one) when the period isn't stated — so a board-meeting date like "held on July 1, 2026"
   can't be mistaken for a quarter. The feed's growth badge keys off this qe, so it shows the March column's YoY
   for a March filing. BSE `QUARTER_ID` is always null — useless, must parse the headline+NEWSSUB.
+- ⚠️ **qe=0 rows (period unstated ANYWHERE in the filing text) are a first-class pipeline state (2026-07-21).**
+  Before, a feed row whose quarter couldn't be parsed was counted NOWHERE — not Declared, not pending, invisible
+  to the vision routine AND to tl_reconcile's heal (YESBANK filed Sat 2026-07-18 13:41 with a bare "Outcome of the
+  Board Meeting…" headline and sat unclassified for 3 days; found only via a manual Trendlyne Nifty-500 diff).
+  Now: `results_pending.classify()` emits them as status `unknown_qe` (visible on the coverage page);
+  `bse_vision_prep` has a resolution pass (`find_unknown_qe`, 12/run mcap-desc) that fetches the filing PDF
+  (NSE-with-retry → BSE fallback; BSE candidates only from the SAME filing date) → `pdf_period()` →
+  `feed_qe_fix.json`, and when the resolved quarter IS the target it renders + fills in the same run;
+  the page counts qe=0 rows as "numbers coming" on the LIVE quarter only, labelled "reporting period being
+  determined"; tl_reconcile counts them as declared coverage. Never treat qe=0 as "assume current quarter" —
+  resolution comes from the PDF, period unknown stays labelled unknown.
+- ⚠️ **BSE results can hide under "Board Meeting / Outcome of Board Meeting" with NO Result-category twin** —
+  fetch_bse_results.py runs a second 7-day scan of that category and keeps outcomes that (a) talk about results
+  (JPPOWER-style headline), OR (b) match a result-purpose date in results_calendar.json for that company
+  (SOBHA 2026-07-20: headline says ONLY "outcome of Board meeting held on July 20, 2026" — the calendar join is
+  the only catch). This is what makes BSE fully redundant with NSE during an NSE announcements outage.
 - ⚠️ **NSE CAPTION CAN LIE about the quarter → `docs/feed_qe_fix.json` self-heals it.** Some late Q4/annual
   filers (SUPREMEINF/ESSENTIA/VIKASECO, Jul-2026) get an NSE announcement captioned *"financial results for the
   period ended Jun 30, 2026"* while the attached PDF is audited results for the quarter **ended March 31, 2026**.
@@ -1857,6 +1880,12 @@ caught the same night, not days later. `scripts/tl_reconcile.py` (pure stdlib):
 - tl_reconcile.json is in feeds.json (max_age 54h) so the yardstick itself is monitored.
 - Numbers for healed filings arrive via the normal XBRL/vision machinery — this job only guarantees
   the DECLARED set is complete; it never scrapes Trendlyne's numbers.
+- qe=0 feed rows count as DECLARED coverage here (2026-07-21) — they're real filings whose period is
+  still being resolved (§15 qe=0 state); without this the diff re-flags them nightly while the vision
+  prep is already on it. Manual exact-diff method (when TL's index count differs from ours): compare our
+  page-equivalent set vs TL's free calendar API result-purpose meetings — but EXCLUDE meetings dated
+  TODAY (scheduled, not yet declared) before comparing counts (the 64-vs-63 audit of 2026-07-21 found
+  YESBANK/SOBHA/JPPOWER this way).
 
 ## 32. HISTORICAL INDEX/F&O MEMBERSHIP from WAYBACK — the MONEYCONTROL trick (2026-07-17)
 

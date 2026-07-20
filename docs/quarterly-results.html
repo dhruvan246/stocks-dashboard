@@ -527,7 +527,9 @@ function renderOverview(){
   // under the NSE symbol (INDBANK) — also match by normalized company name to avoid double-count
   const normN=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'').replace(/(limited|ltd)$/,'');
   const haveNames=new Set(rows.map(r=>normN(r.c.n)));
-  FEEDROWS.forEach(r=>{ if(r[3]===qe && !haveNums.has(r[0]) && !haveNames.has(normN(r[1])) && coPass(r[0])) pendSet.add(r[0]); });
+  // qe===0 feed rows (filing didn't state its period; the vision prep resolves it within hours)
+  // count as pending on the LIVE quarter only — never attributed to a specific quarter, never hidden
+  FEEDROWS.forEach(r=>{ if((r[3]===qe||(qi===0&&r[3]===0)) && !haveNums.has(r[0]) && !haveNames.has(normN(r[1])) && coPass(r[0])) pendSet.add(r[0]); });
   const pending=pendSet.size, declared=rows.length+pending;
   let pdfOnly=0; pendSet.forEach(s=>{ if(PDF_ONLY.has(s)) pdfOnly++; }); const coming=pending-pdfOnly;
   $('tiles').innerHTML=
@@ -692,7 +694,7 @@ function renderResults(){
   if(ST.screen==='all'){
     const seen=new Set();
     FEEDROWS.forEach(r=>{
-      if(r[3]!==qeSel||haveNums.has(r[0])||haveNm.has(nrmN(r[1]))||seen.has(r[0]))return;
+      if((r[3]!==qeSel&&!(ST.qi===0&&r[3]===0))||haveNums.has(r[0])||haveNm.has(nrmN(r[1]))||seen.has(r[0]))return;
       if(CO[r[0]]?!coPass(r[0]):(ST.uni!=='all'&&ST.uni!=='bse'&&ST.uni!=='nse'||ST.sector!=='all'||ST.mcap!=='all'))return;
       if(ST.uni==='bse'&&!(CO[r[0]]&&CO[r[0]].bse))return;
       if(ST.uni==='nse'&&CO[r[0]]&&CO[r[0]].bse)return;
@@ -709,7 +711,8 @@ function renderResults(){
     const pdfOnly=PDF_ONLY.has(r[0]);
     const msg=pdfOnly
       ? '📄 Filing available — numbers not machine-readable (see PDF)'
-      : '⏳ Result filed — numbers being parsed';
+      : (r[3]===0 ? '⏳ Result filed — reporting period being determined'
+                  : '⏳ Result filed — numbers being parsed');
     const cls=pdfOnly?'text-slate-500':'text-amber-700';
     return '<tr class="'+(pdfOnly?'bg-slate-50/60':'bg-amber-50/40')+(c?' hover:bg-slate-100 cursor-pointer':'')+'"'+(c?' data-open="'+esc(r[0])+'"':'')+'>'+
       '<td class="pl-3 pr-1"><span class="star'+(WATCH.has(r[0])?' on':'')+'" data-star="'+esc(r[0])+'" title="Watchlist">★</span></td>'+
