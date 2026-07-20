@@ -1,0 +1,75 @@
+name: Refresh Global Markets
+
+on:
+  schedule:
+    # 02:10 UTC = 07:40 IST — pre-open cue: US overnight close + early Asia.
+    # 16:10 UTC = 21:40 IST — after the Indian close: Europe done, US in session.
+    # The feed is STATELESS (rebuilt each run from ~2y of Yahoo history), so a
+    # skipped or partially-failed run simply self-heals on the next one.
+    - cron: "10 2 * * *"
+    - cron: "10 16 * * *"
+  # Optional external trigger (cron-job.org):
+  #   POST /repos/dhruvan246/stocks-dashboard/dispatches {"event_type":"global-refresh"}
+  repository_dispatch:
+    types: [global-refresh]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  actions: write   # dispatch pages.yml after a change so the data publishes itself
+
+concurrency:
+  group: refresh-global
+  cancel-in-progress: false
+
+jobs:
+  refresh-global:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Fetch global markets (Yahoo — stdlib only)
+        run: python3 scripts/fetch_global.py
+
+      - name: Guard — refuse to commit a broken or shrunken feed
+        run: python3 scripts/guard_feed.py
+
+      - name: Commit updated global data
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          mkdir -p /tmp/glb/docs
+          cp docs/global.json /tmp/glb/docs/
+
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/glb/docs/global.json docs/global.json
+            git add docs/global.json
+
+            if git diff --cached --quiet; then
+              echo "No new global data — nothing to commit"
+              exit 0
+            fi
+
+            git commit -m "Global markets refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then
+              echo "Pushed on attempt #$attempt"
+              gh workflow run pages.yml || echo "(pages deploy dispatch failed — will publish on next push)"
+              exit 0
+            fi
+            echo "Push attempt #$attempt rejected; resetting and retrying"
+            sleep $(( attempt * 3 ))
+          done
+          echo "Failed to push after 5 attempts"
+          exit 1

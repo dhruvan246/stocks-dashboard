@@ -153,6 +153,7 @@
         ['./nse-bse-dashboard.html', '📈', 'Stocks'],
         ['./movers.html',            '📊', 'Top Movers'],
         ['./macro.html',             '🌍', 'Macro'],
+        ['./global.html',            '🌏', 'Global Markets'],
         ['./sectors.html',           '🔥', 'Sectors'],
         ['./monthly-returns.html',   '🗓️', 'Market Analytics'],
         ['./watchlist.html',         '📌', 'Watchlist']
