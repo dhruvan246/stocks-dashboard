@@ -8,6 +8,14 @@ SOURCE (urllib + cookie warmup — the announcements cron's CI-proven session):
   No params = only ~today's ex-dates, so ALWAYS pass the window (PAST_DAYS back for the
   "recent" view + FWD_DAYS forward for the calendar). STATELESS rebuild each run.
 
+FALLBACK (2026-07-20, the day NSE hard-locked /api/* for every non-browser client): BSE's
+forward corp-actions API (DefaultData/w, plain urllib + bseindia.com cookie warmup — the
+CI-proven bse_fetch transport) honors the same Fdate/TDate window; scripcode -> NSE symbol
+via scripts/bse_scrips.json, unmapped (BSE-only) scrips skipped to keep the page's NSE
+universe. Purposes are dividend-heavy ("Final Dividend - Rs. - 1.6400" — note the dash the
+amount regex must allow) but carry splits/bonus/buybacks too. Top-level "src" in the JSON
+says which source built the file.
+
 Enrichment: dividend amount parsed from the subject; yield% = amount / latest close
 (dash_slim meta — ⚠️ '.NS'-keyed, re-key by bare symbol, runbook §26).
 
@@ -46,25 +54,70 @@ def kind_of(subject):
     return "O"
 
 def div_amt(subject):
-    m = re.search(r"r[se]\.?\s*([\d]+(?:\.\d+)?)", str(subject or "").lower())
+    # allow BSE's "Rs. - 1.6400" spelling (dash between Rs. and the amount)
+    m = re.search(r"r[se]\.?\s*-?\s*([\d]+(?:\.\d+)?)", str(subject or "").lower())
     return float(m.group(1)) if m else None
 
-def main():
-    today = datetime.date.today()
-    f = today - datetime.timedelta(days=PAST_DAYS)
-    t = today + datetime.timedelta(days=FWD_DAYS)
+def fetch_nse(f, t):
     jar = B.nse_jar()
     hdr = {"User-Agent": B.UA, "Accept": "application/json, text/plain, */*",
            "Referer": "https://www.nseindia.com/companies-listing/corporate-filings-actions"}
     url = ("https://www.nseindia.com/api/corporates-corporateActions?index=equities"
            "&from_date=%02d-%02d-%04d&to_date=%02d-%02d-%04d" %
            (f.day, f.month, f.year, t.day, t.month, t.year))
+    j = json.loads(B._get(url, headers=hdr, jar=jar, timeout=90))
+    return j if isinstance(j, list) else (j.get("data") or [])
+
+def fetch_bse(f, t):
+    """BSE forward corp-actions -> NSE-shaped rows [{symbol, comp, subject, exDate?, _exISO, recDate?...}].
+    Dates come back numeric (exdate=YYYYMMDD) / '20 Jul 2026' (RD_Date) — pre-ISO them into
+    _exISO/_recISO so the main loop can use them without touching the NSE date parser."""
+    import urllib.request, http.cookiejar
+    def req(u):
+        return urllib.request.Request(u, headers={"User-Agent": B.UA, "Accept": "*/*",
+                "Referer": "https://www.bseindia.com/", "Origin": "https://www.bseindia.com"})
+    op = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
+    try: op.open(req("https://www.bseindia.com/"), timeout=30).read()
+    except Exception: pass
+    url = ("https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?ddlcategorys=E&ddlindustrys="
+           "&scripcode=&segment=0&strSearch=S&Fdate=%s&TDate=%s&Purposecode=" %
+           (f.strftime("%Y%m%d"), t.strftime("%Y%m%d")))
+    r = op.open(req(url), timeout=60); raw = r.read()
+    if r.headers.get("Content-Encoding") == "gzip": raw = gzip.decompress(raw)
+    data = json.loads(raw.decode("utf-8", "replace"))
+    rev = {int(v): k for k, v in
+           json.load(open(os.path.join(HERE, "bse_scrips.json"), encoding="utf-8"))["by_id"].items()}
+    rows, unmapped = [], 0
+    for x in data:
+        sym = rev.get(int(x.get("scrip_code") or 0))
+        if not sym:
+            unmapped += 1; continue
+        ed = str(x.get("exdate") or "").strip()
+        if not re.fullmatch(r"\d{8}", ed): continue
+        rec = None
+        m = re.match(r"^(\d{1,2}) ([A-Za-z]{3})\w* (\d{4})$", str(x.get("RD_Date") or "").strip())
+        if m and MON.get(m.group(2).lower()):
+            rec = "%s-%02d-%02d" % (m.group(3), MON[m.group(2).lower()], int(m.group(1)))
+        rows.append({"symbol": sym, "comp": x.get("long_name"), "subject": x.get("Purpose"),
+                     "_exISO": "%s-%s-%s" % (ed[:4], ed[4:6], ed[6:]), "_recISO": rec})
+    print("BSE fallback: %d rows (%d BSE-only scrips skipped)" % (len(rows), unmapped), flush=True)
+    return rows
+
+def main():
+    today = datetime.date.today()
+    f = today - datetime.timedelta(days=PAST_DAYS)
+    t = today + datetime.timedelta(days=FWD_DAYS)
+    src = "NSE"
     try:
-        j = json.loads(B._get(url, headers=hdr, jar=jar, timeout=90))
+        data = fetch_nse(f, t)
     except Exception as ex:
-        print("fetch FAILED (%s) — keeping the previous file" % ex, flush=True)
-        sys.exit(1)
-    data = j if isinstance(j, list) else (j.get("data") or [])
+        print("NSE fetch FAILED (%s) — trying the BSE calendar" % ex, flush=True)
+        src = "BSE"
+        try:
+            data = fetch_bse(f, t)
+        except Exception as ex2:
+            print("BSE fallback FAILED too (%s) — keeping the previous file" % ex2, flush=True)
+            sys.exit(1)
     if len(data) < MIN_ROWS:
         print("suspiciously few rows (%d) — keeping the previous file" % len(data), flush=True)
         sys.exit(1)
@@ -78,7 +131,7 @@ def main():
 
     rows, seen = [], set()
     for r in data:
-        ex = iso(r.get("exDate"))
+        ex = r.get("_exISO") or iso(r.get("exDate"))
         sym = str(r.get("symbol") or "").strip().upper()
         subject = " ".join(str(r.get("subject") or "").split())
         if not (ex and sym and subject): continue
@@ -90,13 +143,13 @@ def main():
         px = (meta.get(sym) or {}).get("latest")
         yld = round(amt / px * 100, 2) if (amt and px) else None
         rows.append([ex, sym, str(r.get("comp") or "").strip(), k, subject,
-                     iso(r.get("recDate")), amt, yld])
+                     r.get("_recISO") or iso(r.get("recDate")), amt, yld])
     rows.sort(key=lambda r: (r[0], r[1]))
 
     ist = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=5, minutes=30)
     with open(OUT, "w", encoding="utf-8") as fo:
         json.dump({"updated": ist.strftime("%Y-%m-%d %H:%M"), "from": f.isoformat(),
-                   "to": t.isoformat(), "rows": rows}, fo, separators=(",", ":"), ensure_ascii=False)
+                   "to": t.isoformat(), "src": src, "rows": rows}, fo, separators=(",", ":"), ensure_ascii=False)
     n_fut = sum(1 for r in rows if r[0] >= today.isoformat())
     import collections
     kinds = collections.Counter(r[3] for r in rows)
