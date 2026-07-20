@@ -175,7 +175,47 @@ function boot(){
   if(!DATA.indices.some(x=>x.g===GRP)) GRP = DATA.groups.find(g=>DATA.indices.some(x=>x.g===g))||GRP;
   render();
   wire();
+  liveTopUp();
 }
+
+/* ---- live top-up: same niftyindices CDN feed the nightly fetcher uses (CORS-open,
+   no proxy needed). Overwrites level / 1D% / 52w range in place; 1W/1M/1Y, PE/PB/DY,
+   sparkline and valuation percentile stay from the baked feed. ---- */
+const LIVE_URL='https://liveindexsa.niftyindices.com/jsonfiles/LiveIndicesWatch.json';
+function marketOpenIST(){
+  const n=new Date(Date.now()+330*60000);                       // shift to IST, read UTC fields
+  const d=n.getUTCDay(), h=n.getUTCHours()+n.getUTCMinutes()/60;
+  return d>=1&&d<=5&&h>=9&&h<=15.75;
+}
+async function liveTopUp(){
+  if(!DATA) return;
+  try{
+    const j=await (await fetch(LIVE_URL+'?cb='+Date.now(),{cache:'no-store'})).json();
+    const rows=(j&&j.data)||[]; if(!rows.length) return;
+    const by={}; DATA.indices.forEach(x=>{ by[x.k]=x; });
+    let hit=0, tv='';
+    rows.forEach(rr=>{
+      const x=by[String(rr.indexName||'').trim()]; if(!x) return;
+      const last=parseFloat(rr.last), pc=parseFloat(rr.percChange);
+      if(!isFinite(last)||last<=0) return;
+      x.last=last; if(isFinite(pc)) x.pc=pc;
+      const yl=parseFloat(rr.yearLow), yh=parseFloat(rr.yearHigh);
+      if(isFinite(yl)&&isFinite(yh)&&yh>yl){
+        x.yl=yl; x.yh=yh;
+        x.pos52=Math.max(0,Math.min(100,Math.round((last-yl)/(yh-yl)*100)));
+      }
+      if(String(rr.timeVal||'')>tv) tv=String(rr.timeVal);
+      hit++;
+    });
+    if(!hit) return;
+    const t=/(\d{1,2}:\d{2})/.exec(tv);
+    $('updated').innerHTML=' · <span style="color:#16a34a;font-weight:800">● LIVE</span>'+
+      (t?' '+t[1]+' IST':'')+(marketOpenIST()?' · refreshes every minute':' · market closed — last session');
+    buildCards(); render();
+  }catch(e){ /* CDN hiccup — keep the baked numbers silently */ }
+}
+setInterval(()=>{ if(!document.hidden&&marketOpenIST()) liveTopUp(); },60000);
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden&&marketOpenIST()) liveTopUp(); });
 
 function buildCards(){
   const ix = DATA.indices;

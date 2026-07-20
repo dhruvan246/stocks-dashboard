@@ -43,10 +43,14 @@ To change it later: click the **⚙** next to **Go Live**.
 ---
 
 ## Notes & limits
-- **The same Worker now serves three routes** (since 2026-07-12 — redeploy the whole
+- **The same Worker now serves four routes** (since 2026-07-20 — redeploy the whole
   `scripts/live-quote-worker.js` file to get them): `?symbols=RELIANCE,TCS` (Today's-Picks
-  quotes, index symbols like `^NSEI` work too), `?chart=^NSEI` (home-page live ticker),
-  `?announcements=1` (Announcements page live top-up, NSE with cookie warmup + 90 s cache).
+  quotes + Watchlist live prices; index symbols like `^NSEI` work too), `?chart=^NSEI`
+  (home-page live ticker + stock-page live price), `?quotes=^GSPC,GC=F,BTC-USD`
+  (VERBATIM Yahoo symbols — futures/FX/crypto — for the Global Markets page),
+  `?announcements=1` (Announcements + Quarterly-Results live top-up, NSE with cookie
+  warmup + 90 s cache). The Indices page needs NO worker — it reads the CORS-open
+  `liveindexsa.niftyindices.com` CDN feed directly.
 - **Free Cloudflare Workers** allow 100,000 requests/day — far more than you'll use.
 - Each **Go Live** click = one request (covers all basket symbols at once).
 - Yahoo NSE data is **~15 min delayed**. The "as of" time shown is when you clicked.

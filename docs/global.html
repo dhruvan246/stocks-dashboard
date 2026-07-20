@@ -410,6 +410,36 @@
   $('#tfseg').addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b)return; tf=b.getAttribute('data-tf'); buildControls(); render(); });
   $('#viewseg').addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b)return; view=b.getAttribute('data-view'); buildControls(); render(); });
 
+  // ------- live top-up (our Cloudflare Worker, ?quotes= = verbatim Yahoo symbols) ---
+  // Overwrites last price + 1D% + 52w position in place; 1W/1M/YTD/1Y, correlation and
+  // sparklines stay from the baked feed. Fails silently (keeps baked data) if the
+  // Worker is unreachable or doesn't have the ?quotes= route yet.
+  var WORKER='https://stocksworld-quotes.dhruvan2510.workers.dev';
+  function liveTopUp(){
+    if(!ALL.length||document.hidden) return;
+    var syms=ALL.map(function(r){ return r.symbol; }).filter(Boolean);
+    fetch(WORKER+'/?quotes='+encodeURIComponent(syms.join(',')),{cache:'no-store'})
+      .then(function(r){ if(!r.ok) throw 0; return r.json(); })
+      .then(function(d){
+        var q=(d&&d.data)||{}, hit=0;
+        ALL.forEach(function(r){
+          var v=q[r.symbol]; if(!v||v.ltp==null) return;
+          r.last=v.ltp;
+          if(v.prevClose) r.d1=(v.ltp/v.prevClose-1)*100;
+          if(r.lo52!=null&&r.hi52!=null&&r.hi52>r.lo52)
+            r.range_pos=Math.max(0,Math.min(1,(v.ltp-r.lo52)/(r.hi52-r.lo52)));
+          r.stale=false; hit++;
+        });
+        if(!hit) return;
+        var ts=new Date(d.asOf||Date.now());
+        $('#updated').innerHTML='· <span style="color:#16a34a;font-weight:800">● LIVE</span> '+
+          ts.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})+
+          ' <span style="opacity:.65">(Yahoo, ~15-min delay · auto-refresh 60s)</span>';
+        renderHero(); render();
+      })
+      .catch(function(e){ /* keep baked numbers */ });
+  }
+
   // ------- boot -------
   fetch('./global.json?cb='+Date.now()).then(function(r){ return r.json(); }).then(function(d){
     DATA=d;
@@ -420,6 +450,8 @@
     $('#status').classList.add('hidden'); $('#content').classList.remove('hidden');
     buildControls(); renderHero(); renderSessions(); render();
     setInterval(renderSessions, 60000);
+    liveTopUp(); setInterval(liveTopUp, 60000);
+    document.addEventListener('visibilitychange', function(){ if(!document.hidden) liveTopUp(); });
   }).catch(function(e){
     $('#status').textContent='Could not load global markets data. '+e;
   });

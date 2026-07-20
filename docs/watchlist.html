@@ -63,7 +63,8 @@
     return '<div class="bg-white border border-slate-200 rounded-xl p-3.5 flex flex-wrap gap-x-4 gap-y-2 items-start" data-row="'+esc(e.s)+'">' +
       '<div class="flex items-center gap-2 min-w-[10rem]">' +
         '<span class="sw-star" data-sym="'+esc(e.s)+'"></span>' +
-        '<span class="font-bold text-slate-900">'+esc(e.s)+'</span>' +
+        '<a class="font-bold text-slate-900 hover:text-indigo-700" href="./stock.html?sym='+encodeURIComponent(e.s)+'">'+esc(e.s)+'</a>' +
+        '<span class="text-xs font-semibold whitespace-nowrap" data-px="'+esc(e.s)+'"></span>' +
       '</div>' +
       '<div class="flex-1 min-w-[14rem]">' +
         '<textarea data-note="'+esc(e.s)+'" rows="1" placeholder="Add a note… (why it’s interesting, what to watch)" ' +
@@ -83,6 +84,40 @@
     $('wlEmpty').classList.toggle('hidden', l.length > 0);
     if (window.swWatch) swWatch.paintAll($('wlList'));
     badge();
+    paintLive();
+  }
+
+  /* ---- live prices (our Cloudflare Worker → Yahoo NSE, ~15-min delay).
+     One batched call for the whole list (chunks of 30); silently keeps rows
+     bare if the Worker is unreachable or a symbol isn't on Yahoo. ---- */
+  const WORKER = 'https://stocksworld-quotes.dhruvan2510.workers.dev';
+  let LIVE = {};   // sym -> {ltp, prevClose}
+  function marketOpenIST(){
+    const n = new Date(Date.now() + 330*60000);
+    const d = n.getUTCDay(), h = n.getUTCHours() + n.getUTCMinutes()/60;
+    return d >= 1 && d <= 5 && h >= 9 && h <= 15.75;
+  }
+  function paintLive(){
+    document.querySelectorAll('[data-px]').forEach(el => {
+      const v = LIVE[el.getAttribute('data-px')];
+      if (!v || v.ltp == null) return;
+      const ch = v.prevClose > 0 ? (v.ltp / v.prevClose - 1) * 100 : null;
+      el.innerHTML = '₹' + (v.ltp >= 1000 ? Math.round(v.ltp).toLocaleString('en-IN') : v.ltp.toFixed(2)) +
+        (ch == null ? '' : ' <span class="' + (ch >= 0 ? 'text-emerald-600' : 'text-rose-600') + '">' +
+          (ch > 0 ? '+' : '') + ch.toFixed(2) + '%</span>');
+      el.title = 'Live price (Yahoo NSE, ~15-min delay)';
+    });
+  }
+  async function fetchLive(){
+    const syms = (window.swWatch ? swWatch.list() : []).map(e => e.s);
+    if (!syms.length) return;
+    try {
+      for (let i = 0; i < syms.length; i += 30) {
+        const d = await (await fetch(WORKER + '/?symbols=' + encodeURIComponent(syms.slice(i, i + 30).join(',')), {cache:'no-store'})).json();
+        Object.assign(LIVE, (d && d.data) || {});
+      }
+      paintLive();
+    } catch (e) { /* keep rows bare */ }
   }
 
   // Owner-only page: everyone else gets a lock card (client-side curtain; the
@@ -96,8 +131,9 @@
   function boot(){
     if (!SW_OWNER) { swLock(); return; }
     if (!window.swWatch) { setTimeout(boot, 150); return; }
-    swWatch.load().then(render);
-    document.addEventListener('sw-watch-change', render);
+    swWatch.load().then(() => { render(); fetchLive(); });
+    document.addEventListener('sw-watch-change', () => { render(); fetchLive(); });
+    setInterval(() => { if (!document.hidden && marketOpenIST()) fetchLive(); }, 60000);
 
     $('wlAddBtn').addEventListener('click', add);
     $('wlAdd').addEventListener('keydown', ev => { if (ev.key === 'Enter') add(); });

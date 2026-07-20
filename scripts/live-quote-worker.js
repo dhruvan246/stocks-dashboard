@@ -14,6 +14,10 @@
  *   GET ?chart=^NSEI               -> verbatim Yahoo intraday chart JSON (1m/1d) for ONE
  *        symbol — used by the home-page ticker (price + prevClose + sparkline series).
  *        Whitelisted passthrough (only the Yahoo chart endpoint), cached 30 s per symbol.
+ *   GET ?quotes=^GSPC,GC=F,BTC-USD -> live quotes for VERBATIM Yahoo symbols (no .NS
+ *        appended — supports futures GC=F, FX EURUSD=X, crypto BTC-USD, any index).
+ *        Same response shape as ?symbols=. Used by the Global Markets page.
+ *        Cached 30 s per symbol set. Cap 40 symbols per call.
  *   GET ?announcements=1           -> today+yesterday NSE corporate announcements
  *        {"asOf":<ms>,"source":"nse","rows":[[symbol,company,"YYYY-MM-DD HH:MM:SS",
  *          subject,caption,file],...]}   (same row shape as docs/announcements.json;
@@ -34,6 +38,7 @@ const PDF_PREFIX = 'https://nsearchives.nseindia.com/corporate/';
 const MON = { jan:1, feb:2, mar:3, apr:4, may:5, jun:6, jul:7, aug:8, sep:9, oct:10, nov:11, dec:12 };
 let ANN_CACHE = { ts: 0, body: null };         // per-isolate cache, 90 s
 const CHART_CACHE = new Map();                 // sym -> { ts, text }, 30 s
+const QUOTE_CACHE = new Map();                 // symbol-set -> { ts, text }, 30 s
 
 export default {
   async fetch(request) {
@@ -43,6 +48,8 @@ export default {
     if (url.searchParams.get('announcements')) return announcements();
     const chart = url.searchParams.get('chart');
     if (chart) return chartPassthrough(chart);
+    const quotes = url.searchParams.get('quotes');
+    if (quotes) return yahooQuotes(quotes);
 
     const symbols = (url.searchParams.get('symbols') || '')
       .split(',').map(s => s.trim().toUpperCase()).filter(Boolean).slice(0, 30); // cap per call
@@ -72,6 +79,43 @@ export default {
     return json({ asOf: Date.now(), source: 'yahoo-nse', data });
   },
 };
+
+/* ------- live quotes for VERBATIM Yahoo symbols (Global Markets page) ------ */
+
+async function yahooQuotes(csv) {
+  const syms = [...new Set(String(csv).split(',').map(s => s.trim().toUpperCase())
+    .filter(s => /^[\^]?[A-Z0-9.\-&=]{1,20}$/.test(s)))].slice(0, 40);
+  if (!syms.length) return json({ error: 'pass ?quotes=^GSPC,GC=F,BTC-USD' }, 400);
+
+  const key = syms.join(',');
+  const now = Date.now();
+  const hit = QUOTE_CACHE.get(key);
+  if (hit && now - hit.ts < 30_000) return new Response(hit.text, { headers: { ...CORS, 'content-type': 'application/json' } });
+
+  const data = {};
+  await Promise.all(syms.map(async sym => {
+    try {
+      const r = await fetch(
+        `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?interval=1d&range=1d`,
+        { headers: { 'User-Agent': 'Mozilla/5.0', 'Accept': 'application/json' } }
+      );
+      if (!r.ok) return;
+      const d = await r.json();
+      const m = d && d.chart && d.chart.result && d.chart.result[0] && d.chart.result[0].meta;
+      if (m && m.regularMarketPrice != null) {
+        data[sym] = {
+          ltp: m.regularMarketPrice,
+          prevClose: m.chartPreviousClose != null ? m.chartPreviousClose : (m.previousClose != null ? m.previousClose : null),
+        };
+      }
+    } catch (e) { /* skip this symbol */ }
+  }));
+
+  const text = JSON.stringify({ asOf: now, source: 'yahoo', data });
+  QUOTE_CACHE.set(key, { ts: now, text });
+  if (QUOTE_CACHE.size > 20) QUOTE_CACHE.delete(QUOTE_CACHE.keys().next().value);
+  return new Response(text, { headers: { ...CORS, 'content-type': 'application/json' } });
+}
 
 /* ------- verbatim Yahoo intraday chart for ONE symbol (home-page ticker) --- */
 

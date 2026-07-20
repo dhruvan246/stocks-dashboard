@@ -292,6 +292,32 @@ async function loadSHP(){
 
 /* ---------- boot ---------- */
 $('sForm').onsubmit=e=>{ e.preventDefault(); const v=$('sSearch').value.trim().toUpperCase(); if(v) location.href='./stock.html?sym='+encodeURIComponent(v); };
+/* ---------- live price top-up (our Cloudflare Worker → Yahoo NSE, ~15-min delay).
+   Overwrites the header price + 1-day % only; chart, technicals and stats stay on
+   the baked EOD data (they're labelled "as of latest close"). Skips dead tickers,
+   fails silently for BSE-only names Yahoo doesn't carry. ---------- */
+const WORKER='https://stocksworld-quotes.dhruvan2510.workers.dev';
+function liveMarketOpen(){
+  const n=new Date(Date.now()+330*60000);
+  const d=n.getUTCDay(), h=n.getUTCHours()+n.getUTCMinutes()/60;
+  return d>=1&&d<=5&&h>=9&&h<=15.75;
+}
+async function liveQuote(){
+  const m=META[TKR]; if(!m||!m.alive) return;
+  try{
+    const j=await (await fetch(WORKER+'/?chart='+encodeURIComponent(m.symbol+'.NS'),{cache:'no-store'})).json();
+    const mt=j&&j.chart&&j.chart.result&&j.chart.result[0]&&j.chart.result[0].meta;
+    if(!mt||mt.regularMarketPrice==null) return;
+    const ltp=mt.regularMarketPrice;
+    const pc=mt.chartPreviousClose!=null?mt.chartPreviousClose:mt.previousClose;
+    $('sPrice').textContent='₹'+(ltp>=1000?Math.round(ltp).toLocaleString('en-IN'):ltp.toFixed(2));
+    if(pc>0){ const ch=(ltp/pc-1)*100;
+      $('sChg').innerHTML=`<span class="${ch>=0?'pos':'neg'}">${pct(ch)}</span> <span class="text-slate-400 text-xs">1-day</span>`; }
+    $('sAsof').innerHTML='<span style="color:#16a34a;font-weight:800">● LIVE</span> '+
+      (liveMarketOpen()?'':'(last traded) ')+'· Yahoo NSE, ~15-min delay';
+  }catch(e){ /* keep baked close */ }
+}
+
 (async function boot(){
   if(!SYM){ fail('No symbol given. Add ?sym=RELIANCE to the URL.'); return; }
   try{ await loadEngineData(m=>{ const t=$('ovT'); if(t&&m) t.textContent=m; }); }
@@ -301,6 +327,8 @@ $('sForm').onsubmit=e=>{ e.preventDefault(); const v=$('sSearch').value.trim().t
   try{ render(); }catch(e){ fail('Render error: '+(e&&e.message||e)); console.error(e); return; }
   $('ov').style.display='none';
   loadSHP();
+  liveQuote();
+  setInterval(()=>{ if(!document.hidden&&liveMarketOpen()) liveQuote(); },60000);
 })();
 </script>
 </body>

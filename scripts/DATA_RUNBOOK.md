@@ -2018,3 +2018,52 @@ bhavcopy source, same "unusual activity today" nature).
 - **Reference for parity checks:** the StockView "Volume Shockers" page (turnover/ratio/delivery
   columns) — our turnover/volume/delivery match to the decimal; ratios differ slightly by baseline
   window definition, which is expected and documented on-page.
+
+## 36. LIVE (INTRADAY) DATA LAYER — which page gets live numbers from where  (2026-07-20)
+
+The site is static (GitHub Pages), so "live" = the BROWSER fetching an intraday source
+directly on page load + a 60 s timer during IST market hours (9:00–15:45 Mon–Fri, gated by
+`document.hidden`). Every live top-up **overwrites baked numbers in place and fails silently**
+— if the source is down the page simply keeps the baked feed, so nothing ever breaks.
+
+Two live sources:
+
+1. **niftyindices CDN (NO proxy needed)** — `https://liveindexsa.niftyindices.com/jsonfiles/LiveIndicesWatch.json`
+   sends `Access-Control-Allow-Origin: *`, so pages fetch it straight from the browser.
+   All ~131 NSE indices: level, 1D %, OHLC, 52-w high/low, `timeVal`. It is ALSO the nightly
+   backbone of fetch_index_table.py — same keys (`indexName` verbatim == indices.json `k`),
+   so live rows merge by exact string match.
+   * **indices.html** — live level / 1D % / 52-w range + green "● LIVE hh:mm" badge; stat
+     cards + heatmap recompute per tick. 1W/1M/1Y, PE/PB/DY, sparkline, valuation
+     percentile stay baked (they're history-derived).
+
+2. **Cloudflare Worker** `https://stocksworld-quotes.dhruvan2510.workers.dev`
+   (source `scripts/live-quote-worker.js`, deploy = paste whole file in CF dashboard →
+   Workers → stocksworld-quotes → Edit code → Deploy; guide `scripts/LIVE_FEED_SETUP.md`).
+   Four routes, all CORS-open, all cached in-Worker (30–90 s):
+   * `?symbols=RELIANCE,TCS` — Yahoo NSE quotes (`.NS` auto-appended; `^NSEI` style passes
+     verbatim). Users: saved-strategies Today's-Picks "Go Live", stock-backtest, **watchlist.html**
+     (price + day % chip per starred stock, batched 30/call).
+   * `?chart=SYM` — verbatim Yahoo intraday chart passthrough. Users: index.html home ticker,
+     **stock.html** (header price + 1-day % go live; chart/technicals stay EOD).
+   * `?quotes=^GSPC,GC=F,BTC-USD` — VERBATIM Yahoo symbols (futures `=F`, FX `=X`, crypto
+     `-USD`, foreign indices). User: **global.html** (all tiles + cue gauge recompute live,
+     60 s always — global markets trade ~24 h).
+   * `?announcements=1` — NSE corporate announcements w/ cookie warmup. Users:
+     announcements.html, quarterly-results.html LIVE tab.
+
+Deliberately NOT live (EOD/filings by nature — don't "fix"): movers (whole point is
+corp-action-ADJUSTED closes; raw live overlay would contradict it), delivery, volume,
+deals, insider, market-mood breadth, fii-dii, shareholding, sectors, monthly-returns,
+macro, mutual funds, live-tracking (paper-trades at CLOSES by design), quarterly numbers.
+
+Gotchas:
+- **Worker route missing = silent fallback.** Pages call routes that may not be deployed
+  yet; every live fetch is wrapped in catch{} → baked data stays. After editing the worker
+  file, it does NOTHING until pasted into the CF dashboard (no wrangler/CI deploy).
+- LiveIndicesWatch numbers are STRINGS → parseFloat everything; skip rows with last<=0.
+- After 15:45 IST both sources keep serving the closed session — pages fetch ONCE on load
+  even off-hours (fills the gap between close and the nightly bake) but only auto-refresh
+  during market hours.
+- The SW never caches cross-origin requests (worker/CDN stay network-only) and HTML pages
+  are network-first — live-layer edits need no SW cache bump unless the SHELL list changes.
