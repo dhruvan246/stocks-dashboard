@@ -147,20 +147,26 @@
   })();
 
   // Single source of truth for the nav. Add deployed pages here.
+  // Every public page is listed here INDIVIDUALLY (StockView-style: any dashboard
+  // is one click away from anywhere) — the nav, footer and home tiles all render
+  // from this one list. Parameterized detail pages (stock.html, strategy-backtest.html)
+  // are reached from content, not the menu.
   var NAV_GROUPS = [
     { g: 'Markets', cols: [
       { sub: 'Overview', items: [
         ['./nse-bse-dashboard.html', '📈', 'Stocks'],
         ['./movers.html',            '📊', 'Top Movers'],
+        ['./indices.html',           '📇', 'Indices'],
+        ['./sectors.html',           '🔥', 'Sectors'],
+        ['./monthly-returns.html',   '🗓️', 'Monthly Returns'],
+        ['./market-mood.html',       '🌡️', 'Market Mood'],
         ['./macro.html',             '🌍', 'Macro'],
         ['./global.html',            '🌏', 'Global Markets'],
-        ['./sectors.html',           '🔥', 'Sectors'],
-        ['./indices.html',           '📇', 'Indices'],
-        ['./monthly-returns.html',   '🗓️', 'Market Analytics'],
         ['./watchlist.html',         '📌', 'Watchlist']
       ] },
       { sub: 'Flows & Ownership', items: [
-        ['./fii-dii.html',           '🌐', 'FII/DII'],
+        ['./fii-dii.html',           '🌐', 'FII/DII Flows'],
+        ['./shareholding.html',      '🏛️', 'Stock Holdings'],
         ['./deals.html',             '🐋', 'Bulk/Block Deals'],
         ['./insider.html',           '🕵️', 'Insider Trades'],
         ['./delivery.html',          '📦', 'Delivery Spikes'],
@@ -170,17 +176,24 @@
       { sub: 'Discovery & Filings', items: [
         ['./discovery.html',         '💸', 'Smart Money Picks'],
         ['./quarterly-results.html', '🧾', 'Quarterly Results'],
-        ['./ipos.html',              '📅', 'Corporate Calendar'],
-        ['./announcements.html',     '📢', 'Announcements']
+        ['./announcements.html',     '📢', 'Announcements'],
+        ['./ipos.html',              '🚀', 'IPOs & Listings'],
+        ['./actions.html',           '📅', 'Ex-Dates Calendar']
       ] }
     ] },
     { g: 'Funds', items: [
       ['./mutual-funds.html',                       '💰', 'Mutual Funds'],
+      ['./backtest.html',                           '🧮', 'MF Backtest'],
       ['https://dhruvan246.github.io/fno-dashboard/', '🎯', 'F&O']
     ] },
     { g: 'Tools', items: [
-      ['./saved-strategies.html', '⭐', 'Strategies'],
-      ['./status.html',           '🛠️', 'Owner console']
+      ['./saved-strategies.html', '⭐', 'Saved Strategies'],
+      ['./backtest-history.html', '🕘', 'Backtest History'],
+      ['./live-tracking.html',    '📡', 'Live Tracking'],
+      ['./status.html',           '🩺', 'Data Health'],
+      ['./results-coverage.html', '✅', 'Results Coverage'],
+      ['./analytics.html',        '👀', 'Page Stats'],
+      ['./insurer-inbox.html',    '📥', 'Insurer Inbox']
     ] }
   ];
   var NAV_CTA = ['./stock-backtest.html', '🧪', 'Create a strategy'];
@@ -188,9 +201,10 @@
   // ---- PAGE GROUPS: sibling pages presented as ONE tabbed section. Each member
   // page keeps its own URL, payload and data pipeline (so deep links, feeds.json
   // and the perf story are untouched); buildTabs() injects a shared tab strip at
-  // the top of <main> on every member, and the nav / footer / home tiles list a
-  // single entry per group (the first tab). Merge or split a section here — one
-  // place, applies everywhere. Private members are hidden from non-owners.
+  // the top of <main> on every member for quick sibling hops. The nav / footer /
+  // home tiles list every member individually (see NAV_GROUPS above). Merge or
+  // split a section here — one place, applies everywhere. Private members are
+  // hidden from non-owners.
   var PAGE_GROUPS = [
     { g: 'Market Analytics', tabs: [
       ['./movers.html',          '📊', 'Top Movers'],
@@ -202,7 +216,7 @@
       ['./fii-dii.html',      '🌐', 'Daily Flows'],
       ['./shareholding.html', '🏛️', 'Stock Holdings']
     ] },
-    { g: 'Deals & Insiders', flat: true, tabs: [
+    { g: 'Deals & Insiders', tabs: [
       ['./deals.html',    '🐋', 'Bulk/Block Deals'],
       ['./insider.html',  '🕵️', 'Insider Trades'],
       ['./delivery.html', '📦', 'Delivery Spikes'],
@@ -224,14 +238,8 @@
       ['./insurer-inbox.html',    '📥', 'Insurer Inbox']
     ] }
   ];
-  // member file -> its group's first tab (the file the nav entry points at), so the
-  // nav can highlight the group entry while any member page is open.
-  var TAB_PRIMARY = {};
-  PAGE_GROUPS.forEach(function (g) {
-    if (g.flat) return;   // flat groups list every member in the nav, so each highlights itself
-    var p = g.tabs[0][0].replace('./', '').toLowerCase();
-    g.tabs.forEach(function (t) { TAB_PRIMARY[t[0].replace('./', '').toLowerCase()] = p; });
-  });
+  // (Every member page is listed individually in NAV_GROUPS, so each one
+  // self-highlights in the nav — no primary-tab remapping needed.)
 
   // A group may define column sub-sections (cols) for its desktop mega-panel.
   // Flatten them into a single items[] so the mobile menu, home tiles and
@@ -268,7 +276,6 @@
     var nav = document.querySelector('header nav'); if (!nav) return;
     try {
       var here = (location.pathname.split('/').pop() || '').toLowerCase();
-      here = TAB_PRIMARY[here] || here;   // grouped page -> highlight its group's nav entry
       var isActive = function (href) { return href.indexOf('http') !== 0 && href.replace('./', '').toLowerCase() === here; };
       var link = function (it) {
         var href = it[0], ic = it[1], lb = it[2], ext = href.indexOf('http') === 0;
