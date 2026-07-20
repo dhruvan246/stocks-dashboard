@@ -302,7 +302,8 @@ const MONTHS = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','
 
 let QR=null, CAL=null, FEED=null, QTRS=[], CO=null, BSE_COUNT=0, PDF_ONLY=new Set();
 const ST = { tab:'overview', qi:0, mode:'yoy', basis:'auto', uni:'all', mcap:'all', sector:'all',
-             search:'', screen:'all', heat:'pat', cal:'conf', sort:{k:'ann',dir:-1}, shown:100 };
+             search:'', screen:'all', heat:'pat', cal:'conf', sort:{k:'ann',dir:-1}, shown:100,
+             uniSet:null, uniName:'' };   // uni:'idx' → filter by uniSet (a season-universe member list)
 let WATCH = new Set(); try{ WATCH = new Set(JSON.parse(localStorage.getItem('qr_watch')||'[]')); }catch(e){}
 /* Stars here are BRIDGED to the site-wide synced ⭐ Watchlist (sw-watchlist.js):
    toggling a star on this page adds/removes it there too, and vice versa.
@@ -456,6 +457,7 @@ const UNIBIT={n50:1,n100:2,n500:4,m150:8,s250:16,fno:32};
 function passFilters(r){
   const c=r.c;
   if(ST.uni==='watch'){ if(!WATCH.has(r.sym)) return false; }
+  else if(ST.uni==='idx'){ if(!ST.uniSet||!ST.uniSet.has(r.sym)) return false; }
   else if(ST.uni==='bse'){ if(!c.bse) return false; }
   else if(ST.uni==='nse'){ if(c.bse) return false; }
   else if(ST.uni!=='all'){ if(!(c.x & UNIBIT[ST.uni])) return false; }
@@ -985,19 +987,36 @@ function rsVal(m){ return m?m[RS_MODE]:null; }                       // value fo
 function rsCnt(m){ return m?(RS_MODE==='median'?m.n:m.tn):null; }    // company count for the current mode
 
 /* Quarter click-through: clicking a quarter (chart bar / table row) opens the All Results tab
-   pinned to that quarter + this universe. Only universes the main filter can express (its index
-   bitmask) are clickable; older quarters beyond the main table's window stay tooltip-only. */
+   pinned to that quarter + this universe. Broad universes map onto the main filter's index
+   bitmask; every other index (sectoral, Nifty 200, Midcap 50 …) filters by its CURRENT member
+   list shipped in results_season.json. Quarters older than the main window stay tooltip-only. */
 const RS2UNI={ 'liquid':'all','Nifty 50':'n50','Nifty 100':'n100','Nifty 500':'n500',
                'Nifty Midcap 150':'m150','Nifty Smallcap 250':'s250' };
 function rsClickable(qe){
   const qi=QTRS.indexOf(qe);
-  return (RS_CUR.key in RS2UNI) && qi>=0 && qi<Math.min(8,QTRS.length-4);
+  return ((RS_CUR.key in RS2UNI)||(RS_CUR.members&&RS_CUR.members.length)) &&
+         qi>=0 && qi<Math.min(8,QTRS.length-4);
+}
+/* Filter the main table by an arbitrary member list: a transient "(index)" option in the
+   universe dropdown, so the active filter stays visible and the user can switch away. */
+function setIdxUniverse(key,label,members){
+  ST.uni='idx'; ST.uniSet=new Set(members); ST.uniName=label||key;
+  const sel=$('selUni');
+  let o=sel.querySelector('option[value="idx"]');
+  if(!o){ o=document.createElement('option'); o.value='idx'; sel.insertBefore(o,sel.options[1]||null); }
+  o.textContent=(label||key)+' (index)';
 }
 function rsOpenResults(qe){
   if(!rsClickable(qe)) return;
-  ST.qi=QTRS.indexOf(qe); ST.uni=RS2UNI[RS_CUR.key]; ST.shown=100;
+  ST.qi=QTRS.indexOf(qe); ST.shown=100;
+  if(RS_CUR.key in RS2UNI){
+    ST.uni=RS2UNI[RS_CUR.key];
+    try{ history.replaceState(null,'','?tab=results&qe='+qe+'&uni='+ST.uni); }catch(e){}
+  }else{
+    setIdxUniverse(RS_CUR.key,RS_CUR.label,RS_CUR.members);
+    try{ history.replaceState(null,'','?tab=results&qe='+qe+'&uniIdx='+encodeURIComponent(RS_CUR.key)); }catch(e){}
+  }
   $('selUni').value=ST.uni;
-  try{ history.replaceState(null,'','?tab=results&qe='+qe+'&uni='+ST.uni); }catch(e){}
   setTab('results');
   window.scrollTo(0,0);
 }
@@ -1168,7 +1187,7 @@ function renderSeason(){
   if(RS_STATE===2){ rsRenderChart(); rsRenderTable(); return; }
   if(RS_STATE===1) return;
   RS_STATE=1;
-  fetch('./results_season.json')
+  fetch('./results_season.json?t='+Date.now())
     .then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
     .then(d=>{ RS_STATE=2; rsInit(d); })
     .catch(e=>{ RS_STATE=0; $('rsStatus').textContent='Could not load season-trend data ('+e.message+') — reopen the tab to retry.'; });
@@ -1257,6 +1276,14 @@ async function load(){
     if(uq&&['all','n50','n100','n500','m150','s250','fno','nse','bse','watch'].includes(uq)) ST.uni=uq;
     const dqi=QTRS.indexOf(+(p.get('qe')||0));
     if(dqi>=0&&dqi<Math.min(8,QTRS.length-4)) ST.qi=dqi;
+    // ?uniIdx=Nifty%20Bank → filter by that index's current member list (from results_season.json,
+    // fetched here only when the param is present — the season click-through writes these URLs).
+    const idxKey=p.get('uniIdx');
+    if(idxKey){ try{
+      const d=await fetch('./results_season.json?t='+Date.now()).then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); });
+      const u=(d.universes||[]).find(x=>x.key===idxKey);
+      if(u&&u.members&&u.members.length) setIdxUniverse(u.key,u.label,u.members);
+    }catch(e){} }
     renderSectorSel(); $('selUni').value=ST.uni; wire(); render();
     $('status').classList.add('hidden'); $('app').style.display='';
     liveTopUp(); setInterval(()=>{ if(!document.hidden) liveTopUp(); },60000);

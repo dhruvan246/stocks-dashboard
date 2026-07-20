@@ -923,13 +923,19 @@ YoY+QoQ, rule-based verdict dot, reaction %, since-result drift; screen chips: t
 dates), **Season Trends** (the §11 multi-year median/total YoY chart, merged here 2026-07-18 — own
 universe/mode/period controls, shared filter card hidden, `results_season.json` lazy-fetched on first open).
 **Season Trends quarter CLICK-THROUGH (2026-07-20):** clicking a quarter (chart bar/hit-area or "Quarter
-detail" table row, "open →") jumps to the All Results tab pinned to that quarter + universe. Only universes
-the main filter's bitmask can express are clickable — `RS2UNI` map in quarterly-results.html: liquid→all,
-Nifty 50/100/500→n50/n100/n500, Midcap 150→m150, Smallcap 250→s250; sectoral/other indices (Nifty Bank…)
-stay tooltip-only (main table has no membership data for them). Quarters older than the main window
-(8 chips = latest 8 QEs) also stay unclickable. The click rewrites the URL via history.replaceState.
-Deep links: `?tab=results|feed|calendar|season&sym=TCS`, plus `?tab=results&qe=YYYYMMDD&uni=n500`
-(quarter-end + universe pre-select — what the click-through writes, so the view is shareable).
+detail" table row, "open →") jumps to the All Results tab pinned to that quarter + universe — for EVERY
+season universe. Two paths in quarterly-results.html: the 6 broad universes map onto the main filter's
+index bitmask (`RS2UNI`: liquid→all, Nifty 50/100/500→n50/n100/n500, Midcap 150→m150, Smallcap 250→s250);
+every OTHER index (Nifty Bank, IT, Nifty 200, Midcap 50 …) filters by its `members` list — CURRENT
+membership (latest snapshot, rename-mapped), emitted per index universe by build_results_season.py into
+results_season.json (+~20 KB; current-not-point-in-time on purpose — the universe filter is a display
+filter, §15 above). The member filter shows as a transient "<Index> (index)" option (`value="idx"`,
+`ST.uniSet`) in the universe dropdown. Quarters older than the main window (8 chips = latest 8 QEs) stay
+tooltip-only. Clicks rewrite the URL via history.replaceState; results_season.json fetches are ?t=
+cache-busted (they weren't pre-2026-07-20 — browsers held stale copies for hours).
+Deep links: `?tab=results|feed|calendar|season&sym=TCS`, plus `?tab=results&qe=YYYYMMDD&uni=n500` and
+`?tab=results&qe=YYYYMMDD&uniIdx=Nifty%20Bank` (uniIdx lazy-fetches results_season.json for the member
+list — what sectoral-index clicks write, so the view is shareable).
 
 **Three data files, three refresh paths (page fetches only these — no big bins):**
 1. `docs/quarterly_results.json` (~1.8 MB raw) ← **`scripts/build_quarterly_results.py`** — per company:

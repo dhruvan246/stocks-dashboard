@@ -291,10 +291,16 @@ def main():
                 if index in FIN_UNIVERSES else
                 "Point-in-time %s members at each quarter's rebalance (survivorship-free)."
                 " Banks/NBFCs are included: their revenue = interest earned, operating profit = pre-provision." % index)
-        universes.append(build(
+        uni = build(
             index, index, note,
             (lambda snps: (lambda qe: snap_as_of(snps, iso(qe))))(snaps), 5, include_fin=True,
-            member_fn_live=(lambda snps: (lambda qe: snap_as_of(snps, "9999-99-99")))(snaps)))
+            member_fn_live=(lambda snps: (lambda qe: snap_as_of(snps, "9999-99-99")))(snaps))
+        # CURRENT members (latest snapshot, rename-mapped) — powers the quarterly-results page's
+        # Season-Trends quarter click-through for universes the main table's index bitmask can't
+        # express (sectoral indices, Nifty 200, Midcap 50 …). Current-membership on purpose: the
+        # All Results universe filter is a display filter, not point-in-time (DATA_RUNBOOK §15).
+        uni["members"] = sorted(snap_as_of(snaps, "9999-99-99"))
+        universes.append(uni)
 
     universes = [u for u in universes if u["quarters"]]
     for u in universes:
