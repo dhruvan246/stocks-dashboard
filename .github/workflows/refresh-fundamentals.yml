@@ -46,7 +46,12 @@ concurrency:
 jobs:
   refresh-fundamentals:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # ⚠️ 20 was too tight for the NIGHTLY run: insurer vision (~11m) + IPO-base backfill (~9m) alone
+    # hit 20m, so the job was CANCELLED before "Rebuild Quarterly Results payload" + commit ever ran —
+    # quarterly_results.json went 2 days stale (2026-07-18→20) and freshly-parsed numbers (RBLBANK,
+    # FEDERALBNK…) never reached the page. Non-nightly runs skip those heavy steps and still finish in
+    # ~2-3m, so this only affects the one nightly/dispatch pass. 40m leaves headroom for the rebuild.
+    timeout-minutes: 40
     steps:
       - name: Checkout
         uses: actions/checkout@v5
