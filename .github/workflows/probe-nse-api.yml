@@ -1,0 +1,36 @@
+# Debug tool: fetch NSE API endpoints from CI (NSE 403s most raw/home IPs, but CI
+# IPs + a cookie warmup work — same trick as the fetchers). Dispatch-only; prints
+# the first 4000 chars of each response to the log. Used to verify API schemas
+# before wiring a page/worker route. No commits, no side effects.
+name: Probe NSE API (debug tool)
+on:
+  workflow_dispatch:
+    inputs:
+      paths:
+        description: 'Comma-separated NSE API paths (e.g. /api/live-analysis-volume-gainers)'
+        required: true
+        default: '/api/live-analysis-volume-gainers'
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: fetch each path with cookie warmup
+        env:
+          PATHS: ${{ inputs.paths }}
+        run: |
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
+          jar=$(mktemp)
+          curl -s -c "$jar" -A "$UA" -H "Accept: text/html,application/xhtml+xml" \
+            -H "Accept-Language: en-US,en;q=0.9" https://www.nseindia.com/ -o /dev/null
+          sleep 2
+          echo "$PATHS" | tr ',' '\n' | while read -r p; do
+            [ -z "$p" ] && continue
+            echo ""
+            echo "===== $p ====="
+            curl -s -b "$jar" -A "$UA" \
+              -H "Accept: application/json, text/plain, */*" \
+              -H "Referer: https://www.nseindia.com/market-data/live-market-indices" \
+              "https://www.nseindia.com$p" | head -c 4000
+            echo ""
+          done
