@@ -645,6 +645,7 @@
       "type": "json_rows_age",
       "name": "BSE rows still arriving in results feed",
       "file": "results_feed.json",
+      "schedule": "hourly 08:30-00:30",
       "match": "bseindia",
       "max_age_hours": 120,
       "workflow": "refresh-results-hourly.yml",
@@ -653,6 +654,7 @@
     {
       "type": "release_asset",
       "name": "Backtest dataset (release asset)",
+      "schedule": "weekdays 20:45 IST",
       "repo": "dhruvan246/stocks-dashboard",
       "tag": "data",
       "asset": "sf_stock_data.bin",
@@ -662,6 +664,7 @@
     {
       "type": "repo_head",
       "name": "sf-data split parts (Pages repo)",
+      "schedule": "weekdays 20:45 IST",
       "repo": "dhruvan246/sf-data",
       "branch": "main",
       "max_age_hours": 110,
@@ -670,6 +673,7 @@
     {
       "type": "supabase_rpc",
       "name": "Supabase shared history (alive)",
+      "schedule": "daily 01:00 IST",
       "url": "https://nebjnsndgrhumnkuipqy.supabase.co/rest/v1/rpc/bt_public",
       "apikey": "sb_publishable_MDlQwiVc5deii91__UNeDg_z9r4Fk98",
       "workflow": "backup-backtest-history.yml",

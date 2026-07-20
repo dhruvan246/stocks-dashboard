@@ -58,12 +58,18 @@
     if (h < 48) return h.toFixed(0) + ' h ago';
     return (h / 24).toFixed(1) + ' d ago';
   }
+  var GEN = 0; // epoch ms of the health check, set once status.json loads
+  function fmtWhen(ms) {
+    return new Date(ms).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', hour12: true });
+  }
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
 
   function row(f) {
     var ok = f.status === 'ok';
     var dotCls = ok ? (f.static ? 'na' : 'ok') : 'bad';
-    var right = '<div class="text-right shrink-0">' +
+    var sched = (f.cadence && f.cadence !== 'infra') ? f.cadence : (f.schedule || '—');
+    var ran = (f.age_hours != null && GEN) ? fmtWhen(GEN - f.age_hours * 3600e3) : '—';
+    var right = '<div class="text-right shrink-0 w-20">' +
       '<div class="text-xs font-semibold ' + (ok ? 'text-slate-600' : 'text-red-600') + '">' +
       (ok ? (f.static ? 'static' : esc(fmtAge(f.age_hours)) || 'fresh') : esc(f.status)) + '</div>' +
       '<div class="text-[11px] text-slate-400">' + esc(fmtBytes(f.bytes)) + '</div></div>';
@@ -76,18 +82,30 @@
         '<div class="text-sm font-semibold text-slate-800 truncate">' + esc(f.name) + '</div>' +
         '<div class="text-[11px] text-slate-400 truncate"><code>' + esc(f.file) + '</code>' + wf +
         (f.detail ? ' · <span class="text-red-500">' + esc(f.detail) + '</span>' : '') + '</div>' +
-      '</div>' + right + '</div>';
+        '<div class="sm:hidden text-[11px] text-slate-400 mt-0.5">runs ' + esc(sched) + ' · last ' + esc(ran) + '</div>' +
+      '</div>' +
+      '<div class="hidden sm:block w-40 shrink-0 text-[11px] text-slate-500">' + esc(sched) + '</div>' +
+      '<div class="hidden sm:block w-32 shrink-0 text-[11px] text-slate-500">' + esc(ran) + '</div>' +
+      right + '</div>';
   }
 
   function section(title, feeds) {
     if (!feeds.length) return '';
     return '<div class="mb-5"><div class="text-[11px] uppercase tracking-wide text-slate-500 font-bold mb-2">' + esc(title) + '</div>' +
-      '<div class="card overflow-hidden">' + feeds.map(row).join('') + '</div></div>';
+      '<div class="card overflow-hidden">' +
+      '<div class="hidden sm:flex items-center gap-3 px-4 py-1.5 border-b border-slate-100 text-[10px] uppercase tracking-wide text-slate-400 font-bold">' +
+        '<span class="w-[.65rem] shrink-0"></span>' +
+        '<div class="flex-1 min-w-0">Feed</div>' +
+        '<div class="w-40 shrink-0">Schedule</div>' +
+        '<div class="w-32 shrink-0">Last updated (IST)</div>' +
+        '<div class="w-20 shrink-0 text-right">Age / size</div></div>' +
+      feeds.map(row).join('') + '</div></div>';
   }
 
   fetch('./status.json', { cache: 'no-store' })
     .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
     .then(function (s) {
+      GEN = Date.parse(s.generated_utc) || 0;
       var bad = s.feeds.filter(function (f) { return f.status !== 'ok'; });
       var when = new Date(s.generated_utc).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' });
       document.getElementById('banner').innerHTML = bad.length === 0

@@ -83,7 +83,7 @@ def check_feed(f):
 
 def check_special(s):
     r = {"file": s["type"], "name": s["name"], "workflow": s.get("workflow"),
-         "cadence": "infra", "pages": [], "static": False,
+         "cadence": "infra", "schedule": s.get("schedule"), "pages": [], "static": False,
          "status": "ok", "detail": "", "bytes": None, "age_hours": None}
     try:
         if s["type"] == "release_asset":
