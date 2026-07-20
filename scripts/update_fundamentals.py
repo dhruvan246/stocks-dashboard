@@ -82,32 +82,46 @@ def main():
     # Mirrors the SME fix on the announcements side (fetch_announcements). Mainboard is essential
     # (abort on failure); SME is best-effort (skip). Fresh session per board — NSE throttles sme
     # when it follows equities in the same session (see DATA_RUNBOOK §14).
+    # ⚠️ In peak results season this endpoint gets SLOW — a size=500 page took >60 s and the old
+    # single-try fetch died with "read operation timed out", then `return`ed with exit 0. That made
+    # the outage TRIPLY INVISIBLE (green runs, no .fund_updated, no rebuild): ZERO numbers parsed
+    # 2026-07-17→20 while the page showed "numbers being parsed" for every new filing. Rules:
+    # smaller pages (size=200), longer timeout, RETRY each page with a FRESH session, and if the
+    # mainboard still yields nothing, EXIT NONZERO so the workflow goes red — never a silent no-op.
     rows = []
     for idx in ("equities", "sme"):
         jar = B.nse_jar()
         base = ("https://www.nseindia.com/api/integrated-filing-results?index=%s&period=Quarterly"
                 "&from_date=%s&to_date=%s" % (idx, frm, to))
-        got, page = 0, 1
-        try:
-            total = 0
-            while True:
-                jb = json.loads(B._get(base + "&page=%d&size=500" % page, headers=h, jar=jar, timeout=60))
-                if isinstance(jb, list):           # defensive: pre-pagination shape (no envelope)
-                    rows.extend(jb); got += len(jb); break
-                d = jb.get("data", []) or []
-                rows.extend(d); got += len(d)
-                # totalCount FLAPS between responses (observed 30080 → 12 mid-fetch) — trust the MAX
-                # seen, never the latest, else a flaky envelope ends the loop early and drops filings.
-                total = max(total, jb.get("totalCount") or 0)
-                if not d or got >= total or page > 60:   # page cap = hard stop against a bad envelope
+        got, page, total, dead = 0, 1, 0, False
+        while True:
+            jb = None
+            for attempt in range(3):
+                if attempt:
+                    print("  [%s] page %d retry %d (fresh session)" % (idx, page, attempt))
+                    jar = B.nse_jar()
+                try:
+                    jb = json.loads(B._get(base + "&page=%d&size=200" % page, headers=h, jar=jar, timeout=150))
                     break
-                page += 1
-        except Exception as e:
-            print("recent-filings fetch [%s] failed: %s" % (idx, e))
-            if idx == "equities":
-                return                              # mainboard is essential; SME is best-effort
-            continue
+                except Exception as e:
+                    print("  [%s] page %d attempt %d failed: %s" % (idx, page, attempt + 1, e))
+            if jb is None:
+                dead = page == 1                    # page 1 dead = the board yielded nothing at all
+                break                               # deeper page dead = keep what we have (window overlaps self-heal)
+            if isinstance(jb, list):                # defensive: pre-pagination shape (no envelope)
+                rows.extend(jb); got += len(jb); break
+            d = jb.get("data", []) or []
+            rows.extend(d); got += len(d)
+            # totalCount FLAPS between responses (observed 30080 → 12 mid-fetch) — trust the MAX
+            # seen, never the latest, else a flaky envelope ends the loop early and drops filings.
+            total = max(total, jb.get("totalCount") or 0)
+            if not d or got >= total or page > 150:  # page cap = hard stop against a bad envelope
+                break
+            page += 1
         print("filings [%s] last %d days: +%d (%d pages)" % (idx, WINDOW_DAYS, got, page))
+        if idx == "equities" and dead:
+            print("FATAL: mainboard filings fetch yielded nothing — failing LOUD (no silent no-op)")
+            sys.exit(1)                             # red run = visible outage, not a quiet skip
     print("total filings: %d" % len(rows))
 
     byq = {}
