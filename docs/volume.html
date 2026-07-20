@@ -94,6 +94,24 @@
       <div id="sectors" class="space-y-1.5"></div>
     </div>
 
+    <!-- LIVE SESSION SPURTS (our CF Worker → NSE volume-gainers; hidden unless live data parses) -->
+    <div id="liveCard" class="card p-4 mb-5 hidden">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+        <div class="text-[11px] font-extrabold uppercase tracking-wide" style="color:var(--text-faint)">
+          <span style="color:#16a34a">● LIVE</span> volume spurts · this session, right now <span id="liveAt" class="normal-case font-semibold"></span>
+        </div>
+        <div class="text-[11px]" style="color:var(--text-faint)">× = today's volume vs NSE's <b>1-week</b> average · the table below is EOD vs our <b>20-session</b> baseline</div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm min-w-[680px]">
+          <thead class="text-[11px] uppercase" style="color:var(--text-faint);border-bottom:1px solid var(--border)">
+            <tr><th class="text-left py-1.5 px-2">Stock</th><th class="text-right px-2">LTP</th><th class="text-right px-2">Chg %</th><th class="text-right px-2">Volume</th><th class="text-right px-2">× 1-wk avg</th><th class="text-right px-2">Turnover</th></tr>
+          </thead>
+          <tbody id="liveBody"></tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- VIEW + FILTERS -->
     <div class="mb-3 flex flex-wrap items-center gap-2">
       <div class="seg" role="tablist">
@@ -277,6 +295,39 @@ function finish(h,upto,total,unit,cols){
 }
 
 load();
+
+/* ---- live session spurts via our Cloudflare Worker (?nse=volume-gainers).
+   NSE's own intraday volume-spurt feed: today's volume vs its 1-WEEK average
+   (the EOD table keeps our 20-session baseline — different windows, so they're
+   shown as separate sections, never mixed). Market-hours only; the card stays
+   hidden if the Worker route isn't deployed yet or NSE hiccups. ---- */
+const WORKER='https://stocksworld-quotes.dhruvan2510.workers.dev';
+function marketOpenIST(){
+  const n=new Date(Date.now()+330*60000);
+  const d=n.getUTCDay(), h=n.getUTCHours()+n.getUTCMinutes()/60;
+  return d>=1&&d<=5&&h>=9&&h<=15.75;
+}
+async function liveSpurts(){
+  if(!marketOpenIST()){ $('liveCard').classList.add('hidden'); return; }
+  try{
+    const j=await (await fetch(WORKER+'/?nse=volume-gainers',{cache:'no-store'})).json();
+    const rows=((j&&j.data)||[]).filter(r=>r&&r.symbol&&r.week1volChange>=2);
+    if(!rows.length) return;
+    $('liveBody').innerHTML=rows.slice(0,15).map(r=>'<tr style="border-bottom:1px solid var(--border)">'
+      +'<td class="py-1.5 px-2">'+slink(r.symbol,r.companyName)+'</td>'
+      +'<td class="text-right px-2 num font-semibold">'+(r.ltp!=null?Number(r.ltp).toLocaleString('en-IN'):'—')+'</td>'
+      +'<td class="text-right px-2 num">'+pctc(r.pChange)+'</td>'
+      +'<td class="text-right px-2 num">'+volf(r.volume)+'</td>'
+      +'<td class="text-right px-2 num font-bold" style="color:var(--accent)">'+(r.week1volChange!=null?Number(r.week1volChange).toFixed(1)+'×':'—')+'</td>'
+      +'<td class="text-right px-2 num">₹'+crf(r.turnover/100)+' Cr</td>'
+      +'</tr>').join('');
+    const t=new Date(j.asOf||Date.now());
+    $('liveAt').textContent='· '+t.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})+' IST · refreshes every minute';
+    $('liveCard').classList.remove('hidden');
+    if(window.swWatch) swWatch.paintAll($('liveBody'));
+  }catch(e){ /* keep the card hidden — EOD table below is unaffected */ }
+}
+liveSpurts(); setInterval(()=>{ if(!document.hidden) liveSpurts(); },60000);
 </script>
 </body>
 </html>

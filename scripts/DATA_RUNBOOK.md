@@ -2051,11 +2051,22 @@ Two live sources:
      60 s always — global markets trade ~24 h).
    * `?announcements=1` — NSE corporate announcements w/ cookie warmup. Users:
      announcements.html, quarterly-results.html LIVE tab.
+   * `?nse=volume-gainers|gainers|loosers` — WHITELISTED NSE live-analysis passthrough
+     (cookie warmup, 60 s cache, volume-gainers data capped 60 rows). Users:
+     **volume.html** ("LIVE volume spurts" card — NSE's intraday feed, ratio vs NSE's
+     1-WEEK avg, deliberately a SEPARATE section from the EOD 20-session table) and
+     **movers.html** ("LIVE this session" strip — raw NSE gainers/losers chips from the
+     `allSec` bucket; the main table stays corp-action-adjusted EOD). Both market-hours
+     only, hidden otherwise. Schemas verified via `probe-nse-api.yml` (dispatch-only
+     workflow — CI IPs + warmup reach NSE; use it before wiring any new NSE endpoint).
+     ⚠️ `/api/equity-stockIndices` (would give live breadth) is blocked even from CI —
+     that's why market-mood breadth has no live version.
 
-Deliberately NOT live (EOD/filings by nature — don't "fix"): movers (whole point is
-corp-action-ADJUSTED closes; raw live overlay would contradict it), delivery, volume,
-deals, insider, market-mood breadth, fii-dii, shareholding, sectors, monthly-returns,
-macro, mutual funds, live-tracking (paper-trades at CLOSES by design), quarterly numbers.
+Deliberately NOT live (EOD/filings by nature — don't "fix"): delivery %, deals,
+insider, market-mood breadth (see above), fii-dii, shareholding, sectors,
+monthly-returns, macro, mutual funds, live-tracking (paper-trades at CLOSES by
+design), quarterly numbers. Movers/volume EOD tables stay EOD — their live strips
+are additive, never replacements (different baselines/adjustment).
 
 Gotchas:
 - **Worker route missing = silent fallback.** Pages call routes that may not be deployed

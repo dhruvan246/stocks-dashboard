@@ -23,6 +23,11 @@
  *          subject,caption,file],...]}   (same row shape as docs/announcements.json;
  *        `file` has the nsearchives /corporate/ prefix stripped)
  *        Cached in the Worker for 90 s — many visitors still mean ~1 NSE call/min.
+ *   GET ?nse=volume-gainers        -> whitelisted NSE live-analysis passthrough with
+ *        cookie warmup, cached 60 s per key. Keys: volume-gainers (live volume
+ *        spurts, used by the Volume Shockers page), gainers / loosers (live top
+ *        movers incl. the allSec whole-market bucket, used by the Top Movers page).
+ *        Response = NSE's own JSON + {asOf} (volume-gainers data capped at 60 rows).
  *
  * DEPLOY:  see scripts/LIVE_FEED_SETUP.md  (paste this whole file over the old one)
  * ========================================================================== */
@@ -39,6 +44,18 @@ const MON = { jan:1, feb:2, mar:3, apr:4, may:5, jun:6, jul:7, aug:8, sep:9, oct
 let ANN_CACHE = { ts: 0, body: null };         // per-isolate cache, 90 s
 const CHART_CACHE = new Map();                 // sym -> { ts, text }, 30 s
 const QUOTE_CACHE = new Map();                 // symbol-set -> { ts, text }, 30 s
+const NSE_CACHE = new Map();                   // nse-key -> { ts, text }, 60 s
+
+// Whitelisted NSE live-analysis endpoints (key -> [path, referer]). Only these
+// can be proxied — never a caller-supplied path.
+const NSE_LIVE = {
+  'volume-gainers': ['/api/live-analysis-volume-gainers',
+                     'https://www.nseindia.com/market-data/volume-gainers-spurts'],
+  'gainers':        ['/api/live-analysis-variations?index=gainers',
+                     'https://www.nseindia.com/market-data/top-gainers-losers'],
+  'loosers':        ['/api/live-analysis-variations?index=loosers',
+                     'https://www.nseindia.com/market-data/top-gainers-losers'],
+};
 
 export default {
   async fetch(request) {
@@ -50,6 +67,8 @@ export default {
     if (chart) return chartPassthrough(chart);
     const quotes = url.searchParams.get('quotes');
     if (quotes) return yahooQuotes(quotes);
+    const nse = url.searchParams.get('nse');
+    if (nse) return nseLive(nse);
 
     const symbols = (url.searchParams.get('symbols') || '')
       .split(',').map(s => s.trim().toUpperCase()).filter(Boolean).slice(0, 30); // cap per call
@@ -136,6 +155,45 @@ async function chartPassthrough(sym) {
   return new Response(text, { headers: { ...CORS, 'content-type': 'application/json' } });
 }
 
+/* ---- NSE cookie warmup: visit the homepage like a browser, keep its cookies --- */
+
+async function nseCookie() {
+  const home = await fetch('https://www.nseindia.com/', {
+    headers: { 'User-Agent': NSE_UA, 'Accept': 'text/html,application/xhtml+xml' },
+    redirect: 'follow',
+  });
+  return cookieHeader(home);
+}
+
+/* ---------------- whitelisted NSE live-analysis passthrough ---------------- */
+
+async function nseLive(key) {
+  const cfg = NSE_LIVE[key];
+  if (!cfg) return json({ error: 'unknown ?nse= key — one of: ' + Object.keys(NSE_LIVE).join(', ') }, 400);
+  const now = Date.now();
+  const hit = NSE_CACHE.get(key);
+  if (hit && now - hit.ts < 60_000) return new Response(hit.text, { headers: { ...CORS, 'content-type': 'application/json' } });
+  try {
+    const cookie = await nseCookie();
+    const r = await fetch('https://www.nseindia.com' + cfg[0], {
+      headers: {
+        'User-Agent': NSE_UA,
+        'Accept': 'application/json, text/plain, */*',
+        'Referer': cfg[1],
+        ...(cookie ? { 'Cookie': cookie } : {}),
+      },
+    });
+    if (!r.ok) return json({ error: 'NSE HTTP ' + r.status }, 502);
+    const j = await r.json();
+    if (j && Array.isArray(j.data) && j.data.length > 60) j.data = j.data.slice(0, 60); // volume-gainers: cap payload
+    const text = JSON.stringify({ asOf: now, source: 'nse', ...j });
+    NSE_CACHE.set(key, { ts: now, text });
+    return new Response(text, { headers: { ...CORS, 'content-type': 'application/json' } });
+  } catch (e) {
+    return json({ error: String((e && e.message) || e) }, 502);
+  }
+}
+
 /* ---------------- NSE corporate announcements (today + yesterday IST) ------ */
 
 async function announcements() {
@@ -143,11 +201,7 @@ async function announcements() {
   if (ANN_CACHE.body && now - ANN_CACHE.ts < 90_000) return json(ANN_CACHE.body);
   try {
     // 1) visit the NSE homepage like a browser to collect session cookies
-    const home = await fetch('https://www.nseindia.com/', {
-      headers: { 'User-Agent': NSE_UA, 'Accept': 'text/html,application/xhtml+xml' },
-      redirect: 'follow',
-    });
-    const cookie = cookieHeader(home);
+    const cookie = await nseCookie();
 
     // 2) query today + yesterday (IST clock) so late-evening filings are covered
     const ist = new Date(now + 330 * 60000);
