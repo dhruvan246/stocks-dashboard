@@ -47,6 +47,15 @@
 (function () {
   var WF = 'https://github.com/dhruvan246/stocks-dashboard/actions/workflows/';
 
+  // Owner-only page (client-side curtain; nav hides it for non-owners too).
+  function swLock(){ document.querySelector('main').innerHTML =
+    '<div class="max-w-md mx-auto text-center py-20"><div class="text-5xl mb-4">🔒</div>' +
+    '<h1 class="text-lg font-bold text-slate-800 mb-2">This page is private</h1>' +
+    '<p class="text-sm text-slate-500">It\'s a personal tool of the site owner. The rest of the site is open — head back to the <a class="text-indigo-600 font-semibold hover:underline" href="./index.html">home page</a>.</p></div>'; }
+  var SW_OWNER = (function(){ try { return !!localStorage.getItem('bt_owner_key'); } catch(e){ return false; } })();
+
+  if (!SW_OWNER) { swLock(); return; }
+
   function fmtBytes(b) {
     if (b == null) return '';
     if (b >= 1048576) return (b / 1048576).toFixed(1) + ' MB';
