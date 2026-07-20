@@ -1214,6 +1214,16 @@ the Quarterly Results page. **4 scripts + `.github/workflows/refresh-bse.yml` (2
   moved to `scripts/archive/` (gitignored); 35 still-referenced `_*` tools kept in scripts/ (resweep loop,
   membership history, FM vision helpers). 81 scratch PNGs deleted. If an old procedure references a missing
   `_*.py`, look in scripts/archive/ first.
+- **NSE-side API lockdown (first seen 2026-07-20):** "run failed" emails where update_fundamentals /
+  fetch_actions show 403 or the bot-challenge HTML on EVERY transport — urllib AND curl_cffi AND the CF
+  worker (worker body `{"error":"NSE HTTP 403"}` → HTTP 502) AND a local residential-IP run — mean NSE's
+  Akamai has hard-locked `www.nseindia.com/api/*` for all non-real-browser clients. Nothing to fix in code:
+  do NOT add stronger impersonation. Verify blast radius instead: refresh-bse.yml green ⇒ declared results
+  still fill from BSE PDFs (vision net); bhavcopy/nsearchives jobs (Daily stock data refresh) are unaffected.
+  Recovery is automatic — the 15-min fundamentals cron self-heals (fill-only, keyed by qe_Date) and ex-dates
+  is a stateless rebuild; probe recovery with a curl_cffi `size=1` GET of integrated-filing-results, then
+  `gh workflow run "Daily fundamentals refresh"` + `"Refresh ex-dates calendar"`. The auto-rerun
+  "still failing after 5 auto-retries — needs a human" email is the system working, not a new bug.
 
 ---
 
