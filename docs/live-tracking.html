@@ -163,6 +163,20 @@
     if (list.length) drawChart(list[0]);
   }
 
+  // "Is this stale?" helper — the tracker only gets a new point on trading-day evenings
+  // (~21:00 IST), so a Friday data-day shown all weekend is normal, not a failure.
+  function freshNote(dataDay){
+    try {
+      const ist = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+      const today = ist.getFullYear() + '-' + String(ist.getMonth() + 1).padStart(2, '0') + '-' + String(ist.getDate()).padStart(2, '0');
+      if (dataDay === today) return 'Updated with today’s close.';
+      const dow = ist.getDay();
+      if (dow === 6 || dow === 0) return 'Market closed for the weekend — next update Monday ~9 pm IST.';
+      if (ist.getHours() < 22) return 'Next update today ~9 pm IST, after market close.';
+      return 'No new data today — the market was likely closed. Updates land on trading evenings ~9 pm IST.';
+    } catch (e) { return ''; }
+  }
+
   // Owner-only page (client-side curtain; nav hides it for non-owners too).
   function swLock(){ document.querySelector('main').innerHTML =
     '<div class="max-w-md mx-auto text-center py-20"><div class="text-5xl mb-4">🔒</div>' +
@@ -177,7 +191,7 @@
       if (!r.ok) throw 0;
       T = await r.json();
       if (!T || !Array.isArray(T.strategies) || !T.strategies.length) throw 0;
-      $('upd').textContent = 'Data day: ' + T.updated + '.';
+      $('upd').textContent = 'Data day: ' + T.updated + '. ' + freshNote(T.updated);
       $('status').classList.add('hidden'); $('wrap').classList.remove('hidden');
       render();
     } catch (e) {
