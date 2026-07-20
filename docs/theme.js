@@ -161,7 +161,10 @@
       ] },
       { sub: 'Flows & Ownership', items: [
         ['./fii-dii.html',           '🌐', 'FII/DII'],
-        ['./deals.html',             '🐋', 'Deals & Insiders'],
+        ['./deals.html',             '🐋', 'Bulk/Block Deals'],
+        ['./insider.html',           '🕵️', 'Insider Trades'],
+        ['./delivery.html',          '📦', 'Delivery Spikes'],
+        ['./volume.html',            '⚡', 'Volume Shockers'],
         ['./bank-credit.html',       '🏦', 'Banking Growth']
       ] },
       { sub: 'Discovery & Filings', items: [
@@ -199,7 +202,7 @@
       ['./fii-dii.html',      '🌐', 'Daily Flows'],
       ['./shareholding.html', '🏛️', 'Stock Holdings']
     ] },
-    { g: 'Deals & Insiders', tabs: [
+    { g: 'Deals & Insiders', flat: true, tabs: [
       ['./deals.html',    '🐋', 'Bulk/Block Deals'],
       ['./insider.html',  '🕵️', 'Insider Trades'],
       ['./delivery.html', '📦', 'Delivery Spikes'],
@@ -225,6 +228,7 @@
   // nav can highlight the group entry while any member page is open.
   var TAB_PRIMARY = {};
   PAGE_GROUPS.forEach(function (g) {
+    if (g.flat) return;   // flat groups list every member in the nav, so each highlights itself
     var p = g.tabs[0][0].replace('./', '').toLowerCase();
     g.tabs.forEach(function (t) { TAB_PRIMARY[t[0].replace('./', '').toLowerCase()] = p; });
   });
