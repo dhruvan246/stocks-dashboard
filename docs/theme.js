@@ -142,6 +142,14 @@
       '@media (max-width:760px){.sw-group{display:none;}.sw-menu{display:block;}}' +
       '@media (max-width:430px){.sw-cta .sw-cta-lb{display:none;}}' +
       '@media (max-width:520px){.sw-menu-panel{position:fixed;left:10px;right:10px;top:60px;min-width:0;max-width:none;}}' +
+      '.sw-bbar{display:none;}' +
+      '@media (max-width:760px){' +
+        '.sw-bbar{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;background:color-mix(in srgb,var(--surface) 92%,transparent);-webkit-backdrop-filter:saturate(170%) blur(14px);backdrop-filter:saturate(170%) blur(14px);border-top:1px solid var(--border);padding-bottom:env(safe-area-inset-bottom);}' +
+        '.sw-bbar-it{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 0 8px;font-size:10.5px;font-weight:600;color:var(--text-muted);text-decoration:none;background:none;border:0;cursor:pointer;transition:var(--tr);}' +
+        '.sw-bbar-it .ic{font-size:17px;line-height:1;}' +
+        '.sw-bbar-it.on{color:var(--accent);}' +
+        'body{padding-bottom:calc(56px + env(safe-area-inset-bottom));}' +
+      '}' +
       'header nav:not(.sw-nav){visibility:hidden;}';
     document.head.appendChild(st);
   })();
@@ -422,6 +430,34 @@
   }
 
   // =========================================================================
+  // MOBILE BOTTOM BAR — phones only (≤760px, same breakpoint as the ☰ menu):
+  // a fixed bar with the four everyday destinations, so switching sections
+  // never needs a scroll back up to the header. Markets opens the ☰ panel
+  // (all sections, current group pre-expanded); the rest are plain links.
+  // =========================================================================
+  function buildBottomBar() {
+    if (document.querySelector('.sw-bbar')) return;
+    var here = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+    var inMarkets = NAV_GROUPS[0].items.some(function (it) {
+      return it[0].replace('./', '').toLowerCase() === here;
+    });
+    var cls = function (on) { return 'sw-bbar-it' + (on ? ' on' : ''); };
+    var bar = document.createElement('nav');
+    bar.className = 'sw-bbar';
+    bar.setAttribute('aria-label', 'Quick sections');
+    bar.innerHTML =
+      '<a class="' + cls(here === 'index.html') + '" href="./index.html"><span class="ic" aria-hidden="true">🏠</span>Home</a>' +
+      '<button type="button" class="' + cls(inMarkets) + '" aria-haspopup="true"><span class="ic" aria-hidden="true">📊</span>Markets</button>' +
+      '<a class="' + cls(here === 'stock-backtest.html') + '" href="./stock-backtest.html"><span class="ic" aria-hidden="true">🧪</span>Backtest</a>' +
+      '<a class="' + cls(here === 'mutual-funds.html' || here === 'backtest.html') + '" href="./mutual-funds.html"><span class="ic" aria-hidden="true">💰</span>Funds</a>';
+    document.body.appendChild(bar);
+    bar.querySelector('button').addEventListener('click', function (e) {
+      e.stopPropagation();   // keep the document outside-click closer from instantly re-closing it
+      var b = document.querySelector('.sw-menu-btn'); if (b) b.click();
+    });
+  }
+
+  // =========================================================================
   // PAGE-GROUP TAB STRIP — on any page that belongs to a PAGE_GROUPS entry,
   // inject pill tabs (same look as the Quarterly Results tab bar) as the first
   // child of <main>, so the strip inherits the page's own width and padding.
@@ -542,7 +578,7 @@
     } catch (e) {}
   }
 
-  function init() { buildNav(); buildTabs(); buildFooter(); build(); watchHeader(); watchTables(); loadFeatures(); }
+  function init() { buildNav(); buildTabs(); buildFooter(); buildBottomBar(); build(); watchHeader(); watchTables(); loadFeatures(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();
