@@ -22,7 +22,7 @@ TWO KNOWN BLIND SPOTS (fill manually when they show gaps):
 
 Run: python -X utf8 update_fundamentals.py
 """
-import os, sys, json, datetime, re
+import os, sys, json, datetime, re, time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import build_fundamentals as B   # reuse _get / nse_jar / iso / xbrl_profit / MIN_QE
@@ -88,21 +88,38 @@ def main():
     # 2026-07-17→20 while the page showed "numbers being parsed" for every new filing. Rules:
     # smaller pages (size=200), longer timeout, RETRY each page with a FRESH session, and if the
     # mainboard still yields nothing, EXIT NONZERO so the workflow goes red — never a silent no-op.
+    def warm_jar():
+        """Fresh cookie jar warmed like a real visit: homepage (nse_jar) THEN the financial-results
+        page itself — Akamai often serves the API a block page unless the corresponding HTML page's
+        cookies are in the jar. (2026-07-20: API returned a non-JSON body until the page visit.)"""
+        j = B.nse_jar()
+        try:
+            B._get("https://www.nseindia.com/companies-listing/corporate-filings-financial-results",
+                   headers={"User-Agent": B.UA, "Accept": "text/html,application/xhtml+xml"},
+                   jar=j, timeout=30)
+        except Exception as e:
+            print("  (warm page visit failed: %s)" % str(e)[:60])
+        return j
+
     rows = []
     for idx in ("equities", "sme"):
-        jar = B.nse_jar()
+        jar = warm_jar()
         base = ("https://www.nseindia.com/api/integrated-filing-results?index=%s&period=Quarterly"
                 "&from_date=%s&to_date=%s" % (idx, frm, to))
         got, page, total, dead = 0, 1, 0, False
         while True:
             jb = None
-            for attempt in range(3):
+            for attempt in range(4):
                 if attempt:
-                    print("  [%s] page %d retry %d (fresh session)" % (idx, page, attempt))
-                    jar = B.nse_jar()
+                    print("  [%s] page %d retry %d (fresh warmed session after backoff)" % (idx, page, attempt))
+                    time.sleep(6 * attempt)         # spaced retries — hammering keeps the block alive
+                    jar = warm_jar()
                 try:
-                    jb = json.loads(B._get(base + "&page=%d&size=200" % page, headers=h, jar=jar, timeout=150))
+                    body = B._get(base + "&page=%d&size=200" % page, headers=h, jar=jar, timeout=150)
+                    jb = json.loads(body)
                     break
+                except json.JSONDecodeError:
+                    print("  [%s] page %d attempt %d: NON-JSON body: %r" % (idx, page, attempt + 1, body[:150]))
                 except Exception as e:
                     print("  [%s] page %d attempt %d failed: %s" % (idx, page, attempt + 1, e))
             if jb is None:
