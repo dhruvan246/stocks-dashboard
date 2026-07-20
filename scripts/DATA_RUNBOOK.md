@@ -1747,8 +1747,15 @@ ordered by ex-date, dividends enriched with yield vs latest close.
   ⚠️ No params = only ~today's ex-dates (~20 rows) — ALWAYS pass the window (last 30d + next 75d;
   the far end fills in as companies file, actions are announced ~2-4 weeks ahead). The response can
   be a bare LIST or {data:[...]} — handle both. kind parsed from `subject` (D/B/S/R/BB/O); dividend
-  amount regex `r[se]\.?\s*(\d+(?:\.\d+)?)` (subjects write "Rs 2" and "Rs. 11.25"); yield = amt /
-  dash_slim latest ('.NS'-key gotcha §26). Dedup (exDate, sym, subject).
+  amount regex `r[se]\.?\s*-?\s*(\d+(?:\.\d+)?)` (subjects write "Rs 2", "Rs. 11.25" AND BSE's
+  "Rs. - 1.64"); yield = amt / dash_slim latest ('.NS'-key gotcha §26). Dedup (exDate, sym, subject).
+- **BSE fallback (added 2026-07-20, the NSE /api/* lockdown day — §18):** when the NSE fetch fails,
+  the same run builds the calendar from BSE `api/DefaultData/w?...&Fdate=YYYYMMDD&TDate=YYYYMMDD`
+  (plain urllib + bseindia.com warmup, the bse_fetch transport; the Corpforward endpoint 302-loops —
+  don't use it). scripcode → NSE symbol via `scripts/bse_scrips.json` `by_id`; unmapped BSE-only
+  scrips are skipped (~10) to keep the page's NSE universe. Ex-date from numeric `exdate` (YYYYMMDD),
+  record date from `RD_Date` ("20 Jul 2026"). Top-level `"src": "NSE"|"BSE"` in actions.json says
+  which source built the file — check it before debugging a "weird" calendar.
 - **Refresh:** `.github/workflows/refresh-actions.yml` — 08:30 IST Mon-Sat + 18:50 IST weekdays
   (board-meeting outcomes announce actions in the evening). feeds.json min_ratio 0.3 — the calendar
   legitimately shrinks a lot outside dividend season, don't tighten.
