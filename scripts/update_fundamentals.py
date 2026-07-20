@@ -76,26 +76,39 @@ def main():
     # a heavy results day most companies (e.g. MAHABANK/ELECON on 2026-07-10) never got fetched.
     # Page through with a large size until we've pulled totalCount rows. Downstream dedups by
     # (sym, qe), so any page overlap is harmless.
-    base = ("https://www.nseindia.com/api/integrated-filing-results?index=equities&period=Quarterly"
-            "&from_date=%s&to_date=%s" % (frm, to))
+    # ⚠️ Query BOTH the mainboard (index=equities) AND SME/Emerge (index=sme) boards. SME results
+    # file XBRL too, but WITHOUT this pass their numbers never parse — the filing shows on the page
+    # while the number stays perma "numbers being parsed" (VIGOR/SHERA/KARNIKA/GSMFOILS, 2026-07).
+    # Mirrors the SME fix on the announcements side (fetch_announcements). Mainboard is essential
+    # (abort on failure); SME is best-effort (skip). Fresh session per board — NSE throttles sme
+    # when it follows equities in the same session (see DATA_RUNBOOK §14).
     rows = []
-    try:
-        page, total = 1, 0
-        while True:
-            jb = json.loads(B._get(base + "&page=%d&size=500" % page, headers=h, jar=jar, timeout=60))
-            if isinstance(jb, list):           # defensive: pre-pagination shape (no envelope)
-                rows = jb; break
-            d = jb.get("data", []) or []
-            rows.extend(d)
-            # totalCount FLAPS between responses (observed 30080 → 12 mid-fetch) — trust the MAX
-            # seen, never the latest, else a flaky envelope ends the loop early and drops filings.
-            total = max(total, jb.get("totalCount") or 0)
-            if not d or len(rows) >= total or page > 60:   # page cap = hard stop against a bad envelope
-                break
-            page += 1
-    except Exception as e:
-        print("recent-filings fetch failed:", e); return
-    print("filings in last %d days: %d (%d pages)" % (WINDOW_DAYS, len(rows), page))
+    for idx in ("equities", "sme"):
+        jar = B.nse_jar()
+        base = ("https://www.nseindia.com/api/integrated-filing-results?index=%s&period=Quarterly"
+                "&from_date=%s&to_date=%s" % (idx, frm, to))
+        got, page = 0, 1
+        try:
+            total = 0
+            while True:
+                jb = json.loads(B._get(base + "&page=%d&size=500" % page, headers=h, jar=jar, timeout=60))
+                if isinstance(jb, list):           # defensive: pre-pagination shape (no envelope)
+                    rows.extend(jb); got += len(jb); break
+                d = jb.get("data", []) or []
+                rows.extend(d); got += len(d)
+                # totalCount FLAPS between responses (observed 30080 → 12 mid-fetch) — trust the MAX
+                # seen, never the latest, else a flaky envelope ends the loop early and drops filings.
+                total = max(total, jb.get("totalCount") or 0)
+                if not d or got >= total or page > 60:   # page cap = hard stop against a bad envelope
+                    break
+                page += 1
+        except Exception as e:
+            print("recent-filings fetch [%s] failed: %s" % (idx, e))
+            if idx == "equities":
+                return                              # mainboard is essential; SME is best-effort
+            continue
+        print("filings [%s] last %d days: +%d (%d pages)" % (idx, WINDOW_DAYS, got, page))
+    print("total filings: %d" % len(rows))
 
     byq = {}
     for r in rows:
