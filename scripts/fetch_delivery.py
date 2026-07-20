@@ -15,7 +15,9 @@ CI-proven), one file PER DATE:
 OUTPUTS
   docs/delivery_hist.json  (fetcher state + page detail; NOT page-critical)
      {"days":[YYYYMMDD ints, last KEEP_SESS sessions],
-      "stocks":{SYM:[[close, delivQty, delivPct] | null per day]}}
+      "stocks":{SYM:[[close, delivQty, delivPct, vol, turnLacs] | null per day]}}
+     (cells widened 2026-07-20 for build_volume.py — Volume Shockers; older cells written
+      before then are length 3, so any consumer must index defensively, not unpack)
   docs/delivery.json       (the page feed)
      {"updated","from","to",
       "spikes":[[date, sym, name, close, chgPct, delivCr, delivPct, avg20Pct, qtyMult]...],
@@ -57,7 +59,10 @@ MAX_BACKWALK = 80       # calendar days to walk when seeding
 URL = "https://nsearchives.nseindia.com/products/content/sec_bhavdata_full_%02d%02d%04d.csv"
 
 def fetch_day(d):
-    """-> {SYM: (close, dq, dpct)} for EQ rows, or None if the file isn't there (holiday)."""
+    """-> {SYM: (close, dq, dpct, vol, turnLacs)} for EQ rows, or None if the file isn't
+    there (holiday). vol = TTL_TRD_QNTY (col 10), turnLacs = TURNOVER_LACS (col 11) — the
+    Volume Shockers page (build_volume.py) consumes these; delivery uses cols 0/1/2 only.
+    Old 3-element cells from before this widened schema are handled downstream."""
     try:
         t = B._get(URL % (d.day, d.month, d.year), headers={"User-Agent": B.UA}, timeout=60)
     except Exception:
@@ -69,12 +74,14 @@ def fetch_day(d):
         sym = r[0].strip().upper()
         try:
             close = float(r[8])
+            vol = None if r[10].strip() in ("-", "") else int(float(r[10]))
+            tlac = None if r[11].strip() in ("-", "") else float(r[11])
             dq = None if r[13].strip() in ("-", "") else int(float(r[13]))
             dp = None if r[14].strip() in ("-", "") else float(r[14])
         except Exception:
             continue
         if sym and close > 0:
-            out[sym] = (close, dq, dp)
+            out[sym] = (close, dq, dp, vol, tlac)
     return out if len(out) > 500 else None
 
 def main():
@@ -140,7 +147,7 @@ def main():
         for i in range(len(arr)):
             cell = arr[i]
             if cell is None: continue
-            close, dq, dp = cell
+            close, dq, dp = cell[0], cell[1], cell[2]
             if dq is not None:
                 base = [x for x in prior_dq[-BASE_WIN:] if x]
                 if (len(base) >= MIN_BASE and prev_close and dp is not None):
@@ -163,7 +170,7 @@ def main():
         cell = arr[last_i]
         m = meta.get(sym)
         if not cell or cell[1] is None or not m or not m.get("name"): continue
-        close, dq, dp = cell
+        close, dq, dp = cell[0], cell[1], cell[2]
         prevs = [c[0] for c in arr[:last_i] if c and c[0]]
         chg = round((close - prevs[-1]) / prevs[-1] * 100.0, 1) if prevs else None
         today_rows.append([sym, m["name"], close, chg, round(dq * close / 1e7, 2), dp])

@@ -200,7 +200,8 @@
     { g: 'Deals & Insiders', tabs: [
       ['./deals.html',    '🐋', 'Bulk/Block Deals'],
       ['./insider.html',  '🕵️', 'Insider Trades'],
-      ['./delivery.html', '📦', 'Delivery Spikes']
+      ['./delivery.html', '📦', 'Delivery Spikes'],
+      ['./volume.html',   '⚡', 'Volume Shockers']
     ] },
     { g: 'Corporate Calendar', tabs: [
       ['./ipos.html',    '🚀', 'IPOs & Listings'],

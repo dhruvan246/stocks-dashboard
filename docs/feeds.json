@@ -1,62 +1,679 @@
 {
   "_readme": "Single source of truth mapping every data feed -> producing workflow -> consuming pages. Used by scripts/check_feeds.py (nightly monitor, writes docs/status.json, rendered by status.html) and scripts/guard_feed.py (pre-commit sanity guard run inside CI workflows). max_age_hours=null means a static/reference file (existence + parse check only, no staleness alarm). min_ratio is the guard's floor for new_size/old_size (0 = skip the shrink check, for feeds that legitimately shrink). See DATA_RUNBOOK.md section 18.",
   "feeds": [
-    { "file": "announcements.json",        "name": "NSE announcements (rolling 31d)",      "workflow": "refresh-announcements.yml",  "cadence": "4x/day",              "max_age_hours": 36,  "min_bytes": 2000000, "min_ratio": 0.5, "pages": ["announcements.html"] },
-    { "file": "discovery.json",            "name": "Smart Money Picks buckets",            "workflow": "refresh-announcements.yml",  "cadence": "4x/day",              "max_age_hours": 36,  "min_bytes": 300000,  "min_ratio": 0,   "pages": ["discovery.html"] },
-    { "file": "order_values.json",         "name": "Order-win values (enriched)",          "workflow": "refresh-announcements.yml",  "cadence": "daily",               "max_age_hours": 168, "min_bytes": 2000,    "min_ratio": 0,   "pages": ["discovery.html"] },
-    { "file": "order_shares.json",         "name": "Order-win share counts",               "workflow": "refresh-announcements.yml",  "cadence": "daily",               "max_age_hours": 168, "min_bytes": 100,     "min_ratio": 0,   "pages": ["discovery.html"] },
-    { "file": "deals.json",                "name": "NSE bulk + block deals (rolling 92d)", "workflow": "refresh-deals.yml",          "cadence": "2x/day (eve + catch-up)", "max_age_hours": 110, "min_bytes": 10000, "min_ratio": 0.6, "pages": ["deals.html", "discovery.html"] },
-    { "file": "insider.json",              "name": "NSE insider trades PIT (rolling 92d)", "workflow": "refresh-insider.yml",        "cadence": "2x/day (XBRL index)",     "max_age_hours": 110, "min_bytes": 100000, "min_ratio": 0.6, "pages": ["insider.html", "discovery.html"] },
-    { "file": "delivery.json",             "name": "Delivery spikes (45 sessions)",        "workflow": "refresh-delivery.yml",       "cadence": "2x/day (eve + catch-up)", "max_age_hours": 110, "min_bytes": 50000,  "min_ratio": 0.5, "pages": ["delivery.html", "discovery.html"] },
-    { "file": "delivery_hist.json",        "name": "Delivery history state (45 sessions)", "workflow": "refresh-delivery.yml",       "cadence": "2x/day (eve + catch-up)", "max_age_hours": 110, "min_bytes": 1000000, "min_ratio": 0.8, "pages": [] },
-    { "file": "index_monthly.json",        "name": "Index monthly returns (32 indices)",   "workflow": "refresh-index-monthly.yml",  "cadence": "2x/day (eve + catch-up)", "max_age_hours": 110, "min_bytes": 60000,   "min_ratio": 0.9, "pages": ["monthly-returns.html"] },
-    { "file": "ipos.json",                 "name": "IPO pipeline (open/upcoming/listed)",  "workflow": "refresh-ipos.yml",           "cadence": "2x/day",                  "max_age_hours": 110, "min_bytes": 2000,   "min_ratio": 0.5, "pages": ["ipos.html"] },
-    { "file": "actions.json",              "name": "Ex-dates calendar (-30d..+75d)",       "workflow": "refresh-actions.yml",        "cadence": "2x/day",                  "max_age_hours": 110, "min_bytes": 3000,   "min_ratio": 0.3, "pages": ["actions.html"] },
-    { "file": "results_feed.json",         "name": "Live declared-results feed",           "workflow": "refresh-results-hourly.yml", "cadence": "hourly 08:30-00:30",  "max_age_hours": 96,  "min_bytes": 5000,    "min_ratio": 0,   "pages": ["quarterly-results.html"] },
-    { "file": "results_calendar.json",     "name": "Results calendar",                     "workflow": "refresh-results-hourly.yml", "cadence": "hourly 08:30-00:30",  "max_age_hours": 96,  "min_bytes": 10000,   "min_ratio": 0,   "pages": ["quarterly-results.html"] },
-    { "file": "quarterly_results.json",    "name": "Quarterly results table",              "workflow": "refresh-fundamentals.yml",   "cadence": "hourly 10:15-23:15",  "max_age_hours": 96,  "min_bytes": 800000,  "min_ratio": 0.5, "pages": ["quarterly-results.html"] },
-    { "file": "sf_fundamentals.json",      "name": "Backtest fundamentals (owners PAT)",   "workflow": "refresh-fundamentals.yml",   "cadence": "hourly (season)",     "max_age_hours": 168, "min_bytes": 1500000, "min_ratio": 0.6, "pages": ["stock-backtest.html"] },
-    { "file": "sf_revop.json",             "name": "Revenue + operating profit (XBRL)",    "workflow": "refresh-fundamentals.yml",   "cadence": "hourly (season)",     "max_age_hours": 168, "min_bytes": 1500000, "min_ratio": 0.6, "pages": [] },
-    { "file": "results_season.json",       "name": "Results Season medians",               "workflow": "refresh-fundamentals.yml",   "cadence": "daily",               "max_age_hours": 168, "min_bytes": 80000,   "min_ratio": 0.5, "pages": ["quarterly-results.html"] },
-    { "file": "fii_dii.json",              "name": "FII/DII cash flows",                   "workflow": "refresh-fii-dii.yml",        "cadence": "weekdays 20:15 IST",  "max_age_hours": 110, "min_bytes": 3000,    "min_ratio": 0.6, "pages": ["fii-dii.html"] },
-    { "file": "fii_fo.json",               "name": "FII derivatives stats",                "workflow": "refresh-fii-dii.yml",        "cadence": "weekdays 20:15 IST",  "max_age_hours": 110, "min_bytes": 500000,  "min_ratio": 0.6, "pages": ["fii-dii.html"] },
-    { "file": "nifty.json",                "name": "Nifty 50 index history",               "workflow": "refresh-fii-dii.yml",        "cadence": "weekdays 20:15 IST",  "max_age_hours": 110, "min_bytes": 30000,   "min_ratio": 0.6, "pages": ["index.html", "fii-dii.html", "bank-credit.html", "sectors.html", "stock-backtest.html"] },
-    { "file": "nifty500.json",             "name": "Nifty 500 index history",              "workflow": "refresh-fii-dii.yml",        "cadence": "weekdays 20:15 IST",  "max_age_hours": 110, "min_bytes": 30000,   "min_ratio": 0.6, "pages": ["index.html", "stock-backtest.html"] },
-    { "file": "nifty_bank.json",           "name": "Nifty Bank index history",             "workflow": "refresh-fii-dii.yml",        "cadence": "weekdays 20:15 IST",  "max_age_hours": 110, "min_bytes": 30000,   "min_ratio": 0.6, "pages": ["index.html"] },
-    { "file": "india_vix.json",            "name": "India VIX history",                    "workflow": "refresh-fii-dii.yml",        "cadence": "weekdays 20:15 IST",  "max_age_hours": 110, "min_bytes": 25000,   "min_ratio": 0.6, "pages": ["index.html"] },
-    { "file": "nifty500_turnover.json",    "name": "Market Mood monthly turnover",         "workflow": "refresh-market-mood.yml",    "cadence": "weekdays 21:35 IST",  "max_age_hours": 110, "min_bytes": 2000,    "min_ratio": 0.5, "pages": ["market-mood.html"] },
-    { "file": "market_breadth.json",       "name": "Nifty 500 market breadth (daily)",     "workflow": "refresh-market-mood.yml",    "cadence": "weekdays 21:35 IST",  "max_age_hours": 110, "min_bytes": 30000,   "min_ratio": 0.9, "pages": ["market-mood.html"] },
-    { "file": "shareholding.json",         "name": "FII/DII holdings per stock (SHP)",     "workflow": "refresh-shareholding.yml",   "cadence": "2x/day",              "max_age_hours": null, "min_bytes": 200000, "min_ratio": 0.85, "pages": ["shareholding.html"] },
-    { "file": "shp_meta.json",             "name": "SHP pipeline heartbeat",               "workflow": "refresh-shareholding.yml",   "cadence": "2x/day",              "max_age_hours": 36,  "min_bytes": 50,      "min_ratio": 0,   "pages": ["shareholding.html"] },
-    { "file": "shp_engine.json",           "name": "FII/DII factors for the backtest",     "workflow": "refresh-shareholding.yml",   "cadence": "2x/day",              "max_age_hours": null, "min_bytes": 500000, "min_ratio": 0.85, "pages": ["stock-backtest.html", "saved-strategies.html"] },
-    { "file": "bank_credit.json",          "name": "RBI bank loan growth (y/y)",           "workflow": "refresh-bank-credit.yml",    "cadence": "Tue+Sat (fortnightly data)", "max_age_hours": 480, "min_bytes": 10000, "min_ratio": 0.6, "pages": ["bank-credit.html"] },
-    { "file": "macro.json",                "name": "Macro dashboard (rates/valuation/economy)", "workflow": "refresh-macro.yml",     "cadence": "daily 20:40 IST",     "max_age_hours": 40,  "min_bytes": 150000,  "min_ratio": 0.9, "pages": ["macro.html"] },
-    { "file": "global.json",               "name": "Global markets (overnight indices/commodities/FX)", "workflow": "refresh-global.yml", "cadence": "2x/day (07:40 + 21:40 IST)", "max_age_hours": 30,  "min_bytes": 12000,   "min_ratio": 0.5, "pages": ["global.html"] },
-    { "file": "sector_classification.json","name": "BSE 5-level sector classification",    "workflow": "refresh-classification.yml", "cadence": "weekly Sat",          "max_age_hours": 240, "min_bytes": 300000,  "min_ratio": 0.6, "pages": ["sectors.html"] },
-    { "file": "bse_universe.json",         "name": "BSE-only stock universe",              "workflow": "refresh-bse.yml",            "cadence": "2x/day",              "max_age_hours": 504, "min_bytes": 100000,  "min_ratio": 0.6, "pages": [] },
-    { "file": "bse_fundamentals.json",     "name": "BSE-only fundamentals (OCR grind)",    "workflow": "refresh-bse.yml",            "cadence": "2x/day",              "max_age_hours": 504, "min_bytes": 2000,    "min_ratio": 0.5, "pages": [] },
-    { "file": "bse_results.json",          "name": "BSE-only quarterly results",           "workflow": "refresh-bse.yml",            "cadence": "2x/day",              "max_age_hours": 96,  "min_bytes": 5000,    "min_ratio": 0,   "pages": ["quarterly-results.html"] },
-    { "file": "bse_prices.bin",            "name": "BSE-only price history",               "workflow": "refresh-bse.yml",            "cadence": "2x/day",              "max_age_hours": 60,  "min_bytes": 1500000, "min_ratio": 0.9, "pages": ["quarterly-results.html"] },
-    { "file": "sf_meta.json",              "name": "Backtest data version marker",         "workflow": "refresh-backtest-data.yml",  "cadence": "weekdays 20:45 IST",  "max_age_hours": 110, "min_bytes": 10,      "min_ratio": 0,   "pages": ["stock-backtest.html", "strategy-backtest.html"] },
-    { "file": "stock_data.bin",            "name": "Dashboard price + membership bin",     "workflow": "refresh-membership.yml",     "cadence": "weekly Sat",          "max_age_hours": 240, "min_bytes": 10000000, "min_ratio": 0.9, "pages": ["nse-bse-dashboard.html", "sectors.html", "stock-backtest.html"] },
-    { "file": "dash_slim.bin",             "name": "Dashboard slim payload (last 250d)",   "workflow": "refresh.yml",                "cadence": "weekdays 3x eve",     "max_age_hours": 110, "min_bytes": 1500000, "min_ratio": 0.9, "pages": ["nse-bse-dashboard.html", "sectors.html"] },
-    { "file": "live_tracking.json",        "name": "Live pick forward-tracking log",       "workflow": "log-picks.yml",              "cadence": "daily (after snapshot bake)", "max_age_hours": 110, "min_bytes": 5000, "min_ratio": 0.6, "pages": ["live-tracking.html", "saved-strategies.html"] },
-    { "file": "results_coverage.json",     "name": "Results coverage summary",             "workflow": "refresh-results-hourly.yml", "cadence": "hourly 08:30-00:30",  "max_age_hours": 96,  "min_bytes": 200,     "min_ratio": 0,   "pages": ["results-coverage.html"] },
-    { "file": "tl_reconcile.json",         "name": "Trendlyne reconcile report (nightly)", "workflow": "tl-reconcile.yml",           "cadence": "daily 23:45 IST",     "max_age_hours": 54,  "min_bytes": 100,     "min_ratio": 0,   "pages": [] },
-    { "file": "mutual-funds.html",         "name": "Mutual funds page (baked)",            "workflow": "refresh-mf.yml",             "cadence": "weekdays 22:00 IST",  "max_age_hours": 110, "min_bytes": 200000,  "min_ratio": 0.5, "pages": [] },
-    { "file": "nse-bse-dashboard.html",    "name": "Stocks dashboard page (baked)",        "workflow": "refresh.yml",                "cadence": "weekdays 3x eve",     "max_age_hours": 110, "min_bytes": 30000,   "min_ratio": 0.5, "pages": [] },
-    { "file": "vision_fills.json",         "name": "Vision-filled result cells",           "workflow": "refresh-fundamentals.yml",   "cadence": "event-driven",        "max_age_hours": null, "min_bytes": 2,      "min_ratio": 0,   "pages": ["quarterly-results.html"] },
-    { "file": "feed_qe_fix.json",          "name": "Feed quarter-mislabel self-heals",     "workflow": "refresh-announcements.yml",  "cadence": "event-driven",        "max_age_hours": null, "min_bytes": 2,      "min_ratio": 0,   "pages": [] },
-    { "file": "mf_funds.json",             "name": "MF backtest fund list",                "workflow": "refresh-mf.yml",             "cadence": "weekdays 22:00 IST",  "max_age_hours": 110, "min_bytes": 300000,  "min_ratio": 0.6, "pages": ["backtest.html"] },
-    { "file": "mf_history.bin",            "name": "MF backtest NAV history",              "workflow": "refresh-mf.yml",             "cadence": "weekdays 22:00 IST",  "max_age_hours": 110, "min_bytes": 3000000, "min_ratio": 0.9, "pages": ["backtest.html"] },
-    { "file": "known_fundamental_gaps.json","name": "Known unrecoverable gaps (reference)","workflow": null,                          "cadence": "manual",              "max_age_hours": null, "min_bytes": 1000,   "min_ratio": 0.6, "pages": [] },
-    { "file": "nifty500_members_2025.json","name": "Nifty 500 members snapshot (reference)","workflow": null,                         "cadence": "manual",              "max_age_hours": null, "min_bytes": 5000,   "min_ratio": 0.6, "pages": [] },
-    { "file": "reconstruction_candidates.json","name": "Reconstruction candidates (reference)","workflow": null,                     "cadence": "manual",              "max_age_hours": null, "min_bytes": 1000,   "min_ratio": 0.6, "pages": [] }
+    {
+      "file": "announcements.json",
+      "name": "NSE announcements (rolling 31d)",
+      "workflow": "refresh-announcements.yml",
+      "cadence": "4x/day",
+      "max_age_hours": 36,
+      "min_bytes": 2000000,
+      "min_ratio": 0.5,
+      "pages": [
+        "announcements.html"
+      ]
+    },
+    {
+      "file": "discovery.json",
+      "name": "Smart Money Picks buckets",
+      "workflow": "refresh-announcements.yml",
+      "cadence": "4x/day",
+      "max_age_hours": 36,
+      "min_bytes": 300000,
+      "min_ratio": 0,
+      "pages": [
+        "discovery.html"
+      ]
+    },
+    {
+      "file": "order_values.json",
+      "name": "Order-win values (enriched)",
+      "workflow": "refresh-announcements.yml",
+      "cadence": "daily",
+      "max_age_hours": 168,
+      "min_bytes": 2000,
+      "min_ratio": 0,
+      "pages": [
+        "discovery.html"
+      ]
+    },
+    {
+      "file": "order_shares.json",
+      "name": "Order-win share counts",
+      "workflow": "refresh-announcements.yml",
+      "cadence": "daily",
+      "max_age_hours": 168,
+      "min_bytes": 100,
+      "min_ratio": 0,
+      "pages": [
+        "discovery.html"
+      ]
+    },
+    {
+      "file": "deals.json",
+      "name": "NSE bulk + block deals (rolling 92d)",
+      "workflow": "refresh-deals.yml",
+      "cadence": "2x/day (eve + catch-up)",
+      "max_age_hours": 110,
+      "min_bytes": 10000,
+      "min_ratio": 0.6,
+      "pages": [
+        "deals.html",
+        "discovery.html"
+      ]
+    },
+    {
+      "file": "insider.json",
+      "name": "NSE insider trades PIT (rolling 92d)",
+      "workflow": "refresh-insider.yml",
+      "cadence": "2x/day (XBRL index)",
+      "max_age_hours": 110,
+      "min_bytes": 100000,
+      "min_ratio": 0.6,
+      "pages": [
+        "insider.html",
+        "discovery.html"
+      ]
+    },
+    {
+      "file": "delivery.json",
+      "name": "Delivery spikes (45 sessions)",
+      "workflow": "refresh-delivery.yml",
+      "cadence": "2x/day (eve + catch-up)",
+      "max_age_hours": 110,
+      "min_bytes": 50000,
+      "min_ratio": 0.5,
+      "pages": [
+        "delivery.html",
+        "discovery.html"
+      ]
+    },
+    {
+      "file": "delivery_hist.json",
+      "name": "Delivery history state (45 sessions)",
+      "workflow": "refresh-delivery.yml",
+      "cadence": "2x/day (eve + catch-up)",
+      "max_age_hours": 110,
+      "min_bytes": 1000000,
+      "min_ratio": 0.8,
+      "pages": []
+    },
+    {
+      "file": "volume.json",
+      "name": "Volume shockers (derived)",
+      "workflow": "refresh-delivery.yml",
+      "cadence": "2x/day (eve + catch-up)",
+      "max_age_hours": 110,
+      "min_bytes": 8000,
+      "min_ratio": 0.3,
+      "pages": [
+        "volume.html"
+      ]
+    },
+    {
+      "file": "index_monthly.json",
+      "name": "Index monthly returns (32 indices)",
+      "workflow": "refresh-index-monthly.yml",
+      "cadence": "2x/day (eve + catch-up)",
+      "max_age_hours": 110,
+      "min_bytes": 60000,
+      "min_ratio": 0.9,
+      "pages": [
+        "monthly-returns.html"
+      ]
+    },
+    {
+      "file": "indices.json",
+      "name": "Live NSE indices table (~131)",
+      "workflow": "refresh-indices.yml",
+      "cadence": "2x/day (eve + catch-up)",
+      "max_age_hours": 110,
+      "min_bytes": 40000,
+      "min_ratio": 0.8,
+      "pages": [
+        "indices.html"
+      ]
+    },
+    {
+      "file": "indices_hist.json",
+      "name": "Indices rolling close + PE/PB history",
+      "workflow": "refresh-indices.yml",
+      "cadence": "2x/day (eve + catch-up)",
+      "max_age_hours": 110,
+      "min_bytes": 1000,
+      "min_ratio": 0.6,
+      "pages": []
+    },
+    {
+      "file": "ipos.json",
+      "name": "IPO pipeline (open/upcoming/listed)",
+      "workflow": "refresh-ipos.yml",
+      "cadence": "2x/day",
+      "max_age_hours": 110,
+      "min_bytes": 2000,
+      "min_ratio": 0.5,
+      "pages": [
+        "ipos.html"
+      ]
+    },
+    {
+      "file": "actions.json",
+      "name": "Ex-dates calendar (-30d..+75d)",
+      "workflow": "refresh-actions.yml",
+      "cadence": "2x/day",
+      "max_age_hours": 110,
+      "min_bytes": 3000,
+      "min_ratio": 0.3,
+      "pages": [
+        "actions.html"
+      ]
+    },
+    {
+      "file": "results_feed.json",
+      "name": "Live declared-results feed",
+      "workflow": "refresh-results-hourly.yml",
+      "cadence": "hourly 08:30-00:30",
+      "max_age_hours": 96,
+      "min_bytes": 5000,
+      "min_ratio": 0,
+      "pages": [
+        "quarterly-results.html"
+      ]
+    },
+    {
+      "file": "results_calendar.json",
+      "name": "Results calendar",
+      "workflow": "refresh-results-hourly.yml",
+      "cadence": "hourly 08:30-00:30",
+      "max_age_hours": 96,
+      "min_bytes": 10000,
+      "min_ratio": 0,
+      "pages": [
+        "quarterly-results.html"
+      ]
+    },
+    {
+      "file": "quarterly_results.json",
+      "name": "Quarterly results table",
+      "workflow": "refresh-fundamentals.yml",
+      "cadence": "hourly 10:15-23:15",
+      "max_age_hours": 96,
+      "min_bytes": 800000,
+      "min_ratio": 0.5,
+      "pages": [
+        "quarterly-results.html"
+      ]
+    },
+    {
+      "file": "sf_fundamentals.json",
+      "name": "Backtest fundamentals (owners PAT)",
+      "workflow": "refresh-fundamentals.yml",
+      "cadence": "hourly (season)",
+      "max_age_hours": 168,
+      "min_bytes": 1500000,
+      "min_ratio": 0.6,
+      "pages": [
+        "stock-backtest.html"
+      ]
+    },
+    {
+      "file": "sf_revop.json",
+      "name": "Revenue + operating profit (XBRL)",
+      "workflow": "refresh-fundamentals.yml",
+      "cadence": "hourly (season)",
+      "max_age_hours": 168,
+      "min_bytes": 1500000,
+      "min_ratio": 0.6,
+      "pages": []
+    },
+    {
+      "file": "results_season.json",
+      "name": "Results Season medians",
+      "workflow": "refresh-fundamentals.yml",
+      "cadence": "daily",
+      "max_age_hours": 168,
+      "min_bytes": 80000,
+      "min_ratio": 0.5,
+      "pages": [
+        "quarterly-results.html"
+      ]
+    },
+    {
+      "file": "fii_dii.json",
+      "name": "FII/DII cash flows",
+      "workflow": "refresh-fii-dii.yml",
+      "cadence": "weekdays 20:15 IST",
+      "max_age_hours": 110,
+      "min_bytes": 3000,
+      "min_ratio": 0.6,
+      "pages": [
+        "fii-dii.html"
+      ]
+    },
+    {
+      "file": "fii_fo.json",
+      "name": "FII derivatives stats",
+      "workflow": "refresh-fii-dii.yml",
+      "cadence": "weekdays 20:15 IST",
+      "max_age_hours": 110,
+      "min_bytes": 500000,
+      "min_ratio": 0.6,
+      "pages": [
+        "fii-dii.html"
+      ]
+    },
+    {
+      "file": "nifty.json",
+      "name": "Nifty 50 index history",
+      "workflow": "refresh-fii-dii.yml",
+      "cadence": "weekdays 20:15 IST",
+      "max_age_hours": 110,
+      "min_bytes": 30000,
+      "min_ratio": 0.6,
+      "pages": [
+        "index.html",
+        "fii-dii.html",
+        "bank-credit.html",
+        "sectors.html",
+        "stock-backtest.html"
+      ]
+    },
+    {
+      "file": "nifty500.json",
+      "name": "Nifty 500 index history",
+      "workflow": "refresh-fii-dii.yml",
+      "cadence": "weekdays 20:15 IST",
+      "max_age_hours": 110,
+      "min_bytes": 30000,
+      "min_ratio": 0.6,
+      "pages": [
+        "index.html",
+        "stock-backtest.html"
+      ]
+    },
+    {
+      "file": "nifty_bank.json",
+      "name": "Nifty Bank index history",
+      "workflow": "refresh-fii-dii.yml",
+      "cadence": "weekdays 20:15 IST",
+      "max_age_hours": 110,
+      "min_bytes": 30000,
+      "min_ratio": 0.6,
+      "pages": [
+        "index.html"
+      ]
+    },
+    {
+      "file": "india_vix.json",
+      "name": "India VIX history",
+      "workflow": "refresh-fii-dii.yml",
+      "cadence": "weekdays 20:15 IST",
+      "max_age_hours": 110,
+      "min_bytes": 25000,
+      "min_ratio": 0.6,
+      "pages": [
+        "index.html"
+      ]
+    },
+    {
+      "file": "nifty500_turnover.json",
+      "name": "Market Mood monthly turnover",
+      "workflow": "refresh-market-mood.yml",
+      "cadence": "weekdays 21:35 IST",
+      "max_age_hours": 110,
+      "min_bytes": 2000,
+      "min_ratio": 0.5,
+      "pages": [
+        "market-mood.html"
+      ]
+    },
+    {
+      "file": "market_breadth.json",
+      "name": "Nifty 500 market breadth (daily)",
+      "workflow": "refresh-market-mood.yml",
+      "cadence": "weekdays 21:35 IST",
+      "max_age_hours": 110,
+      "min_bytes": 30000,
+      "min_ratio": 0.9,
+      "pages": [
+        "market-mood.html"
+      ]
+    },
+    {
+      "file": "shareholding.json",
+      "name": "FII/DII holdings per stock (SHP)",
+      "workflow": "refresh-shareholding.yml",
+      "cadence": "2x/day",
+      "max_age_hours": null,
+      "min_bytes": 200000,
+      "min_ratio": 0.85,
+      "pages": [
+        "shareholding.html"
+      ]
+    },
+    {
+      "file": "shp_meta.json",
+      "name": "SHP pipeline heartbeat",
+      "workflow": "refresh-shareholding.yml",
+      "cadence": "2x/day",
+      "max_age_hours": 36,
+      "min_bytes": 50,
+      "min_ratio": 0,
+      "pages": [
+        "shareholding.html"
+      ]
+    },
+    {
+      "file": "shp_engine.json",
+      "name": "FII/DII factors for the backtest",
+      "workflow": "refresh-shareholding.yml",
+      "cadence": "2x/day",
+      "max_age_hours": null,
+      "min_bytes": 500000,
+      "min_ratio": 0.85,
+      "pages": [
+        "stock-backtest.html",
+        "saved-strategies.html"
+      ]
+    },
+    {
+      "file": "bank_credit.json",
+      "name": "RBI bank loan growth (y/y)",
+      "workflow": "refresh-bank-credit.yml",
+      "cadence": "Tue+Sat (fortnightly data)",
+      "max_age_hours": 480,
+      "min_bytes": 10000,
+      "min_ratio": 0.6,
+      "pages": [
+        "bank-credit.html"
+      ]
+    },
+    {
+      "file": "macro.json",
+      "name": "Macro dashboard (rates/valuation/economy)",
+      "workflow": "refresh-macro.yml",
+      "cadence": "daily 20:40 IST",
+      "max_age_hours": 40,
+      "min_bytes": 150000,
+      "min_ratio": 0.9,
+      "pages": [
+        "macro.html"
+      ]
+    },
+    {
+      "file": "global.json",
+      "name": "Global markets (overnight indices/commodities/FX)",
+      "workflow": "refresh-global.yml",
+      "cadence": "2x/day (07:40 + 21:40 IST)",
+      "max_age_hours": 30,
+      "min_bytes": 12000,
+      "min_ratio": 0.5,
+      "pages": [
+        "global.html"
+      ]
+    },
+    {
+      "file": "sector_classification.json",
+      "name": "BSE 5-level sector classification",
+      "workflow": "refresh-classification.yml",
+      "cadence": "weekly Sat",
+      "max_age_hours": 240,
+      "min_bytes": 300000,
+      "min_ratio": 0.6,
+      "pages": [
+        "sectors.html"
+      ]
+    },
+    {
+      "file": "bse_universe.json",
+      "name": "BSE-only stock universe",
+      "workflow": "refresh-bse.yml",
+      "cadence": "2x/day",
+      "max_age_hours": 504,
+      "min_bytes": 100000,
+      "min_ratio": 0.6,
+      "pages": []
+    },
+    {
+      "file": "bse_fundamentals.json",
+      "name": "BSE-only fundamentals (OCR grind)",
+      "workflow": "refresh-bse.yml",
+      "cadence": "2x/day",
+      "max_age_hours": 504,
+      "min_bytes": 2000,
+      "min_ratio": 0.5,
+      "pages": []
+    },
+    {
+      "file": "bse_results.json",
+      "name": "BSE-only quarterly results",
+      "workflow": "refresh-bse.yml",
+      "cadence": "2x/day",
+      "max_age_hours": 96,
+      "min_bytes": 5000,
+      "min_ratio": 0,
+      "pages": [
+        "quarterly-results.html"
+      ]
+    },
+    {
+      "file": "bse_prices.bin",
+      "name": "BSE-only price history",
+      "workflow": "refresh-bse.yml",
+      "cadence": "2x/day",
+      "max_age_hours": 60,
+      "min_bytes": 1500000,
+      "min_ratio": 0.9,
+      "pages": [
+        "quarterly-results.html"
+      ]
+    },
+    {
+      "file": "sf_meta.json",
+      "name": "Backtest data version marker",
+      "workflow": "refresh-backtest-data.yml",
+      "cadence": "weekdays 20:45 IST",
+      "max_age_hours": 110,
+      "min_bytes": 10,
+      "min_ratio": 0,
+      "pages": [
+        "stock-backtest.html",
+        "strategy-backtest.html"
+      ]
+    },
+    {
+      "file": "stock_data.bin",
+      "name": "Dashboard price + membership bin",
+      "workflow": "refresh-membership.yml",
+      "cadence": "weekly Sat",
+      "max_age_hours": 240,
+      "min_bytes": 10000000,
+      "min_ratio": 0.9,
+      "pages": [
+        "nse-bse-dashboard.html",
+        "sectors.html",
+        "stock-backtest.html"
+      ]
+    },
+    {
+      "file": "dash_slim.bin",
+      "name": "Dashboard slim payload (last 250d)",
+      "workflow": "refresh.yml",
+      "cadence": "weekdays 3x eve",
+      "max_age_hours": 110,
+      "min_bytes": 1500000,
+      "min_ratio": 0.9,
+      "pages": [
+        "nse-bse-dashboard.html",
+        "sectors.html"
+      ]
+    },
+    {
+      "file": "live_tracking.json",
+      "name": "Live pick forward-tracking log",
+      "workflow": "log-picks.yml",
+      "cadence": "daily (after snapshot bake)",
+      "max_age_hours": 110,
+      "min_bytes": 5000,
+      "min_ratio": 0.6,
+      "pages": [
+        "live-tracking.html",
+        "saved-strategies.html"
+      ]
+    },
+    {
+      "file": "results_coverage.json",
+      "name": "Results coverage summary",
+      "workflow": "refresh-results-hourly.yml",
+      "cadence": "hourly 08:30-00:30",
+      "max_age_hours": 96,
+      "min_bytes": 200,
+      "min_ratio": 0,
+      "pages": [
+        "results-coverage.html"
+      ]
+    },
+    {
+      "file": "tl_reconcile.json",
+      "name": "Trendlyne reconcile report (nightly)",
+      "workflow": "tl-reconcile.yml",
+      "cadence": "daily 23:45 IST",
+      "max_age_hours": 54,
+      "min_bytes": 100,
+      "min_ratio": 0,
+      "pages": []
+    },
+    {
+      "file": "mutual-funds.html",
+      "name": "Mutual funds page (baked)",
+      "workflow": "refresh-mf.yml",
+      "cadence": "weekdays 22:00 IST",
+      "max_age_hours": 110,
+      "min_bytes": 200000,
+      "min_ratio": 0.5,
+      "pages": []
+    },
+    {
+      "file": "nse-bse-dashboard.html",
+      "name": "Stocks dashboard page (baked)",
+      "workflow": "refresh.yml",
+      "cadence": "weekdays 3x eve",
+      "max_age_hours": 110,
+      "min_bytes": 30000,
+      "min_ratio": 0.5,
+      "pages": []
+    },
+    {
+      "file": "vision_fills.json",
+      "name": "Vision-filled result cells",
+      "workflow": "refresh-fundamentals.yml",
+      "cadence": "event-driven",
+      "max_age_hours": null,
+      "min_bytes": 2,
+      "min_ratio": 0,
+      "pages": [
+        "quarterly-results.html"
+      ]
+    },
+    {
+      "file": "feed_qe_fix.json",
+      "name": "Feed quarter-mislabel self-heals",
+      "workflow": "refresh-announcements.yml",
+      "cadence": "event-driven",
+      "max_age_hours": null,
+      "min_bytes": 2,
+      "min_ratio": 0,
+      "pages": []
+    },
+    {
+      "file": "mf_funds.json",
+      "name": "MF backtest fund list",
+      "workflow": "refresh-mf.yml",
+      "cadence": "weekdays 22:00 IST",
+      "max_age_hours": 110,
+      "min_bytes": 300000,
+      "min_ratio": 0.6,
+      "pages": [
+        "backtest.html"
+      ]
+    },
+    {
+      "file": "mf_history.bin",
+      "name": "MF backtest NAV history",
+      "workflow": "refresh-mf.yml",
+      "cadence": "weekdays 22:00 IST",
+      "max_age_hours": 110,
+      "min_bytes": 3000000,
+      "min_ratio": 0.9,
+      "pages": [
+        "backtest.html"
+      ]
+    },
+    {
+      "file": "known_fundamental_gaps.json",
+      "name": "Known unrecoverable gaps (reference)",
+      "workflow": null,
+      "cadence": "manual",
+      "max_age_hours": null,
+      "min_bytes": 1000,
+      "min_ratio": 0.6,
+      "pages": []
+    },
+    {
+      "file": "nifty500_members_2025.json",
+      "name": "Nifty 500 members snapshot (reference)",
+      "workflow": null,
+      "cadence": "manual",
+      "max_age_hours": null,
+      "min_bytes": 5000,
+      "min_ratio": 0.6,
+      "pages": []
+    },
+    {
+      "file": "reconstruction_candidates.json",
+      "name": "Reconstruction candidates (reference)",
+      "workflow": null,
+      "cadence": "manual",
+      "max_age_hours": null,
+      "min_bytes": 1000,
+      "min_ratio": 0.6,
+      "pages": []
+    }
   ],
   "special": [
-    { "type": "json_rows_age", "name": "BSE rows still arriving in results feed", "file": "results_feed.json", "match": "bseindia", "max_age_hours": 120, "workflow": "refresh-results-hourly.yml", "note": "catches the BSE merge dying while NSE keeps the file fresh (import-crash class, 2026-07-17)" },
-    { "type": "release_asset", "name": "Backtest dataset (release asset)",  "repo": "dhruvan246/stocks-dashboard", "tag": "data", "asset": "sf_stock_data.bin", "max_age_hours": 110, "workflow": "refresh-backtest-data.yml" },
-    { "type": "repo_head",     "name": "sf-data split parts (Pages repo)",  "repo": "dhruvan246/sf-data", "branch": "main", "max_age_hours": 110, "workflow": "refresh-backtest-data.yml" },
-    { "type": "supabase_rpc",  "name": "Supabase shared history (alive)",   "url": "https://nebjnsndgrhumnkuipqy.supabase.co/rest/v1/rpc/bt_public", "apikey": "sb_publishable_MDlQwiVc5deii91__UNeDg_z9r4Fk98", "workflow": "backup-backtest-history.yml", "note": "kept awake by the daily backup; if red, restore the project in the Supabase dashboard" }
+    {
+      "type": "json_rows_age",
+      "name": "BSE rows still arriving in results feed",
+      "file": "results_feed.json",
+      "match": "bseindia",
+      "max_age_hours": 120,
+      "workflow": "refresh-results-hourly.yml",
+      "note": "catches the BSE merge dying while NSE keeps the file fresh (import-crash class, 2026-07-17)"
+    },
+    {
+      "type": "release_asset",
+      "name": "Backtest dataset (release asset)",
+      "repo": "dhruvan246/stocks-dashboard",
+      "tag": "data",
+      "asset": "sf_stock_data.bin",
+      "max_age_hours": 110,
+      "workflow": "refresh-backtest-data.yml"
+    },
+    {
+      "type": "repo_head",
+      "name": "sf-data split parts (Pages repo)",
+      "repo": "dhruvan246/sf-data",
+      "branch": "main",
+      "max_age_hours": 110,
+      "workflow": "refresh-backtest-data.yml"
+    },
+    {
+      "type": "supabase_rpc",
+      "name": "Supabase shared history (alive)",
+      "url": "https://nebjnsndgrhumnkuipqy.supabase.co/rest/v1/rpc/bt_public",
+      "apikey": "sb_publishable_MDlQwiVc5deii91__UNeDg_z9r4Fk98",
+      "workflow": "backup-backtest-history.yml",
+      "note": "kept awake by the daily backup; if red, restore the project in the Supabase dashboard"
+    }
   ]
 }

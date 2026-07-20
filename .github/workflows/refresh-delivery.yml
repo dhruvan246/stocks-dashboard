@@ -17,6 +17,7 @@ on:
   push:
     paths:
       - "scripts/fetch_delivery.py"
+      - "scripts/build_volume.py"
       - ".github/workflows/refresh-delivery.yml"
 
 permissions:
@@ -43,6 +44,11 @@ jobs:
       - name: Fetch missing bhavcopy days + recompute delivery spikes
         run: python3 -X utf8 scripts/fetch_delivery.py
 
+      # Volume Shockers (docs/volume.json) is a DERIVED view of the same rolling history
+      # fetch_delivery.py just refreshed — no extra network. Must run after it every time.
+      - name: Rebuild Volume Shockers feed
+        run: python3 -X utf8 scripts/build_volume.py
+
       # ⚠️ reset-and-replay gotcha (runbook §18): every file the fetch step writes
       # must ride the cp-to-/tmp + cp-back + git-add lists below (BOTH jsons).
       - name: Guard — refuse to commit a broken or shrunken feed
@@ -55,12 +61,14 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           cp docs/delivery.json      /tmp/delivery.json
           cp docs/delivery_hist.json /tmp/delivery_hist.json
+          cp docs/volume.json        /tmp/volume.json
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
             cp /tmp/delivery.json      docs/delivery.json
             cp /tmp/delivery_hist.json docs/delivery_hist.json
-            git add docs/delivery.json docs/delivery_hist.json
+            cp /tmp/volume.json        docs/volume.json
+            git add docs/delivery.json docs/delivery_hist.json docs/volume.json
             if git diff --cached --quiet; then
               echo "Delivery feeds unchanged — nothing to commit"
               echo "changed=false" >> "$GITHUB_OUTPUT"

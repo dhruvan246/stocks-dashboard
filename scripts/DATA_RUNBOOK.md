@@ -42,6 +42,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§32** HISTORICAL INDEX/F&O MEMBERSHIP from WAYBACK
 - **§33** MACRO DASHBOARD
 - **§34** PAGE GROUPS — merged tabbed sections (theme.js)
+- **§35** VOLUME SHOCKERS
 - **§35** GLOBAL MARKETS DASHBOARD
 
 ---
@@ -1978,3 +1979,42 @@ is fetched first so every risk asset can correlate against it; `NO_CORR` skips I
 **Refresh:** `.github/workflows/refresh-global.yml`, 2x/day 02:10 + 16:10 UTC (07:40 + 21:40 IST),
 same guard + commit-retry + pages-dispatch pattern as refresh-macro. Guard: feeds.json global.json
 min_bytes 12000, min_ratio 0.5 (stateless size varies). Nav = theme.js NAV_GROUPS Markets>Overview 🌏.
+
+---
+
+## 35. VOLUME SHOCKERS  (docs/volume.html — "Volume Shockers" nav, built 2026-07-20, SELF-UPDATING)
+**The unusual-volume screen:** stocks trading many times their own 20-session average volume today —
+the first sign of sudden interest. Modelled on (but our own design, not a clone of) the reference
+"Volume Shockers" page. Paired with Delivery Spikes in the **Deals & Insiders** page group (same
+bhavcopy source, same "unusual activity today" nature).
+
+- **Zero new network — a DERIVED view.** `scripts/build_volume.py` reads the delivery pipeline's
+  rolling history `docs/delivery_hist.json` (already refreshed every evening by `fetch_delivery.py`)
+  plus `docs/dash_slim.bin` meta (name/sector/mcap/52w) and `scripts/fno_list.json`. It must run
+  **right after** `fetch_delivery.py` in `refresh-delivery.yml` (it does).
+- **Volume source + the reconstruction bootstrap:** `fetch_delivery.py` was widened 2026-07-20 to
+  store the exact NSE columns `TTL_TRD_QNTY` (col 10) and `TURNOVER_LACS` (col 11) — cells are now
+  `[close, delivQty, delivPct, vol, turnLacs]` (older cells are length 3, index defensively, never
+  unpack). Until 45 sessions of exact columns accrue, `build_volume.py` reconstructs volume as
+  `delivQty / (delivPct/100)` and turnover as `close*vol/1e7` — **verified exact** on the seed day
+  (CAMPUS reconstructs to 52.3M vol / ₹1,235 cr / 5.7% deliv, matching the reference to the decimal).
+  The displayed day is exact; only the 20-session baseline is mildly noisy from delivPct rounding and
+  self-heals to fully exact as real columns fill in.
+- **Rule:** ratio = todayVol / mean(prior up-to-20 sessions), needs ≥15 prior non-null sessions (so
+  fresh listings never inflate their own baseline), ratio ≥ 2×, turnover ≥ ₹5 L, a known mainboard
+  name. Page filters (ratio 2/3/5/10×, turnover Any/25L/1Cr, direction, delivery-confirmed / F&O-only
+  lens, sector, search, sort) are all client-side.
+- **Feed `docs/volume.json`** (~19 KB): `rows` [sym,name,ltp,chg%,vol,avg20,ratio,turnCr,delivPct,
+  sector,mcap,fno,near52,dir], `sectors` [sector,count,upCount] (the sector-activity strip), `repeat`
+  [sym,name,nSess,bestRatio,lastDate] (our extra "≥2 shock sessions in 5" view), `stats`.
+- **Our differentiators vs the reference** (the "don't look like them" ask): dark analytics UI with a
+  gradient hero + stat tiles, a **sector-activity strip** (where the unusual volume concentrates,
+  green = up-day share), a **ratio bar** per row, **delivery-confirmed** badge/lens, **F&O** tag +
+  filter, **distance-from-52w-high** column, an up-vs-down **direction** split, and the multi-session
+  **Repeat shockers** view.
+- **Wiring:** run in `refresh-delivery.yml` (build step + volume.json on the /tmp cp-back + git-add
+  lists, §18 gotcha); nav tab in `theme.js` PAGE_GROUPS "Deals & Insiders"; `feeds.json` volume.json
+  (min_bytes 8000, min_ratio 0.3 — shocker counts vary a lot day to day); `sw.js` SHELL + CACHE v46→v47.
+- **Reference for parity checks:** the StockView "Volume Shockers" page (turnover/ratio/delivery
+  columns) — our turnover/volume/delivery match to the decimal; ratios differ slightly by baseline
+  window definition, which is expected and documented on-page.
