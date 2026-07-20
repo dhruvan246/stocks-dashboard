@@ -16,6 +16,7 @@
   .pill.pending{background:#fef3c7;color:#92400e}
   .pill.no_pdf{background:#fee2e2;color:#991b1b}
   .pill.filled{background:#dcfce7;color:#166534}
+  .pill.bse_dup{background:#e0e7ff;color:#3730a3}
   .bar{height:.6rem;border-radius:9999px;background:#e2e8f0;overflow:hidden;display:flex}
   .bar > span{display:block;height:100%}
   .scrollbar::-webkit-scrollbar{height:8px}
@@ -108,7 +109,31 @@
     if (v >= 1000)   return '₹' + (v/1000).toFixed(1) + 'k cr';
     return '₹' + v.toFixed(0) + ' cr';
   }
-  var LBL = { pending:'Pending', no_pdf:'No PDF', filled:'Filled' };
+  var LBL = { pending:'Pending', no_pdf:'No PDF', filled:'Filled', bse_dup:'Via BSE' };
+
+  // Next scheduled vision-routine run (fires ≈3 PM and ≈11 PM IST; crons drift ~45 min late).
+  function nextRun(){
+    var n = new Date(), h = (n.getUTCHours() + n.getUTCMinutes()/60 + 5.5) % 24;
+    if (h < 15) return 'today ≈3 PM IST';
+    if (h < 23) return 'today ≈11 PM IST';
+    return 'tomorrow ≈3 PM IST';
+  }
+  // Why a row has no numbers yet, and when it should get them.
+  function reason(status, exch){
+    if (status === 'pending' && exch === 'BSE') return {
+      why: 'BSE-only listing — no XBRL feed; the numbers are read straight off the filing PDF.',
+      eta: 'Next vision run: ' + nextRun() };
+    if (status === 'pending') return {
+      why: 'Result PDF is attached, but NSE hasn’t posted the XBRL and no run has read the PDF yet.',
+      eta: 'Next vision run: ' + nextRun() + ' — or sooner if the XBRL lands (checked hourly)' };
+    if (status === 'no_pdf') return {
+      why: 'The filing carried no attachment to read, so the vision routine can’t fill it.',
+      eta: 'When NSE posts the XBRL — usually within 1–2 days; the hourly cron picks it up' };
+    if (status === 'bse_dup') return {
+      why: 'Listed on both exchanges — filled through its BSE listing by the BSE pipeline.',
+      eta: 'Next vision run: ' + nextRun() };
+    return { why: '', eta: '' };
+  }
 
   // Owner-only page (client-side curtain; nav hides it for non-owners too).
   function swLock(){ document.querySelector('main').innerHTML =
@@ -180,8 +205,10 @@
       '<th class="text-right font-bold px-3 py-2">M-cap</th>' +
       '<th class="text-left font-bold px-3 py-2">Declared</th>' +
       '<th class="text-left font-bold px-3 py-2">Status</th>' +
+      '<th class="text-left font-bold px-3 py-2">Why not filled · when it will be</th>' +
       '</tr></thead><tbody>' +
       rows.map(function(r){
+        var w = reason(r[5], r[2]);
         return '<tr class="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition">' +
           '<td class="px-3 py-2"><a href="./stock.html?s='+encodeURIComponent(r[0])+'" class="font-bold text-slate-900 hover:text-indigo-600">'+esc(r[0])+'</a>' +
             '<div class="text-[11px] text-slate-400">'+esc(r[1])+'</div></td>' +
@@ -189,6 +216,8 @@
           '<td class="px-3 py-2 text-right tabular-nums text-slate-600">'+fmtCr(r[3])+'</td>' +
           '<td class="px-3 py-2 text-xs text-slate-500">'+esc(r[4])+'</td>' +
           '<td class="px-3 py-2"><span class="pill '+esc(r[5])+'">'+esc(LBL[r[5]]||r[5])+'</span></td>' +
+          '<td class="px-3 py-2 text-xs text-slate-500 min-w-[16rem] max-w-sm">'+esc(w.why)+
+            '<div class="text-[11px] font-semibold text-indigo-600 mt-0.5">'+esc(w.eta)+'</div></td>' +
         '</tr>';
       }).join('') + '</tbody></table>';
   }
