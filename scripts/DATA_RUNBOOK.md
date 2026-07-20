@@ -42,6 +42,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§32** HISTORICAL INDEX/F&O MEMBERSHIP from WAYBACK
 - **§33** MACRO DASHBOARD
 - **§34** PAGE GROUPS — merged tabbed sections (theme.js)
+- **§35** GLOBAL MARKETS DASHBOARD
 
 ---
 
@@ -1949,3 +1950,31 @@ Rules:
 - The distinct case: **Results Season is a REAL in-page tab** of quarterly-results.html (§11/§15), not a
   page group — its old page is a redirect stub. Page groups were chosen for the other six merges so the
   heavy per-page JS (charts/Supabase/backtest engines) never had to be namespaced together.
+
+---
+
+## 35. GLOBAL MARKETS DASHBOARD  (docs/global.html — "Global Markets" nav 🌏, built 2026-07-20)
+
+Overnight cue for the Indian open (modelled on quantmac /market/global, but our own dark design +
+extra features so it does NOT look like theirs). US / Europe / Asia / India indices, commodities,
+crypto and FX/rates — each with last close, 1D/1W/1M/YTD/1Y %, 60-pt hover-tooltip sparkline, 52w
+range bar, and **correlation-to-Nifty** (Pearson of ~1y daily returns).
+
+**Data:** `scripts/fetch_global.py` -> `docs/global.json`. STATELESS — rebuilt each run from ~2y of
+Yahoo Finance daily history (`/v8/finance/chart/<sym>`), so nothing to accumulate/corrupt; a failed
+symbol just drops out and self-heals next run. ~32 instruments (see INSTRUMENTS list). Nifty (^NSEI)
+is fetched first so every risk asset can correlate against it; `NO_CORR` skips India/FX/VIX. Output:
+`{as_of, updated, source, groups:{US,Europe,Asia,India,Commodities,Crypto}, fx:[...]}`.
+
+**Advanced features (ours, not in the reference):**
+- **Global cue gauge** — each overnight risk asset's 1D move weighted by max(corr-to-Nifty,0), summed
+  -> a −100..+100 index + Risk-on/Neutral/Risk-off verdict for the open (computed client-side, transparent).
+- Live **session clock** (Tokyo/HK/India/London/US open-now, UTC-hour based), breadth + regional pulse
+  tiles, overnight movers strip, card+table (sortable) views, group + timeframe (1D/1W/1M/YTD/1Y) pills.
+- ⚠️ **VIX is excluded from every aggregate** (`AGG_SKIP={vix:1}`): a VIX spike is risk-OFF, so leaving
+  it in an equity average (it's in the US group) inverts the "US overnight" tile (+12% VIX flipped
+  −0.9% equities to a phantom +1.7%). VIX still shows as a card; just never counts toward avgs/breadth/cue.
+
+**Refresh:** `.github/workflows/refresh-global.yml`, 2x/day 02:10 + 16:10 UTC (07:40 + 21:40 IST),
+same guard + commit-retry + pages-dispatch pattern as refresh-macro. Guard: feeds.json global.json
+min_bytes 12000, min_ratio 0.5 (stateless size varies). Nav = theme.js NAV_GROUPS Markets>Overview 🌏.
