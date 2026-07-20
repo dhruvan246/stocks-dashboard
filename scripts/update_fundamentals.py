@@ -119,8 +119,17 @@ def main():
             raise RuntimeError("curl_cffi HTTP %d" % r.status_code)
         return r.text
 
+    # Last-resort transport: the project's Cloudflare Worker proxies this one API from CF's edge
+    # (?filings= route, live-quote-worker.js) — Akamai passes CF while blocking datacenter IPs.
+    WORKER = "https://stocksworld-quotes.dhruvan2510.workers.dev"
+    def worker_get(idx_, page_):
+        import urllib.request
+        u = ("%s/?filings=%s&from=%s&to=%s&page=%d&size=200" % (WORKER, idx_, frm, to, page_))
+        return urllib.request.urlopen(urllib.request.Request(u, headers={"User-Agent": B.UA}),
+                                      timeout=150).read().decode("utf-8", "replace")
+
     rows = []
-    prefer_cffi = [False]                            # sticky: once cffi is the working transport, lead with it
+    prefer = ["urllib"]                              # sticky: lead with whichever transport last worked
     for idx in ("equities", "sme"):
         jar = warm_jar()
         base = ("https://www.nseindia.com/api/integrated-filing-results?index=%s&period=Quarterly"
@@ -128,9 +137,12 @@ def main():
         got, page, total, dead = 0, 1, 0, False
         while True:
             url = base + "&page=%d&size=200" % page
-            # Transport order: urllib twice (2nd with re-warmed jar), then curl_cffi twice. Once
-            # cffi is what worked, START there for every later page (urllib is blocked for the run).
-            plans = ["cffi", "cffi", "urllib", "urllib"] if prefer_cffi[0] else ["urllib", "urllib", "cffi", "cffi"]
+            # Transport ladder: urllib ×2 (2nd with re-warmed jar) → curl_cffi Chrome-TLS →
+            # Cloudflare Worker proxy. STICKY: once a transport works, every later page LEADS
+            # with it (a blocked transport stays blocked for the whole run — don't re-pay it).
+            plans = {"urllib": ["urllib", "urllib", "cffi", "worker"],
+                     "cffi":   ["cffi", "cffi", "worker", "urllib"],
+                     "worker": ["worker", "worker", "cffi", "urllib"]}[prefer[0]]
             jb = None
             for attempt, transport in enumerate(plans):
                 if attempt:
@@ -140,10 +152,15 @@ def main():
                     if transport == "urllib":
                         if attempt: jar = warm_jar()
                         body = B._get(url, headers=h, jar=jar, timeout=150)
-                    else:
+                    elif transport == "cffi":
                         body = cffi_get(url)
-                    jb = json.loads(body)
-                    prefer_cffi[0] = transport == "cffi"
+                    else:
+                        body = worker_get(idx, page)
+                    parsed = json.loads(body)
+                    if isinstance(parsed, dict) and parsed.get("error"):   # Worker's structured failure
+                        raise RuntimeError("worker: %s" % parsed["error"])
+                    jb = parsed
+                    prefer[0] = transport
                     break
                 except json.JSONDecodeError:
                     print("  [%s] page %d attempt %d [%s]: NON-JSON body: %r" % (idx, page, attempt + 1, transport, body[:150]))

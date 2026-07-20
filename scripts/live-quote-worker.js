@@ -69,6 +69,8 @@ export default {
     if (quotes) return yahooQuotes(quotes);
     const nse = url.searchParams.get('nse');
     if (nse) return nseLive(nse);
+    const filings = url.searchParams.get('filings');
+    if (filings) return filingsPassthrough(url, filings);
 
     const symbols = (url.searchParams.get('symbols') || '')
       .split(',').map(s => s.trim().toUpperCase()).filter(Boolean).slice(0, 30); // cap per call
@@ -188,6 +190,40 @@ async function nseLive(key) {
     if (j && Array.isArray(j.data) && j.data.length > 60) j.data = j.data.slice(0, 60); // volume-gainers: cap payload
     const text = JSON.stringify({ asOf: now, source: 'nse', ...j });
     NSE_CACHE.set(key, { ts: now, text });
+    return new Response(text, { headers: { ...CORS, 'content-type': 'application/json' } });
+  } catch (e) {
+    return json({ error: String((e && e.message) || e) }, 502);
+  }
+}
+
+/* ------- whitelisted NSE integrated-filings passthrough (CI numbers fetch) -------
+ * 2026-07-20: NSE's Akamai serves its bot-challenge page to the integrated-filing-results
+ * API for datacenter IPs (GitHub runners AND curl_cffi Chrome-TLS) — while Cloudflare's
+ * edge still passes. update_fundamentals.py falls back to this route when blocked.
+ * STRICT: fixed path, validated params only — never a caller-supplied URL. */
+
+async function filingsPassthrough(url, idx) {
+  if (!/^(equities|sme)$/.test(idx)) return json({ error: 'filings must be equities|sme' }, 400);
+  const from = url.searchParams.get('from') || '', to = url.searchParams.get('to') || '';
+  if (!/^\d{2}-\d{2}-\d{4}$/.test(from) || !/^\d{2}-\d{2}-\d{4}$/.test(to))
+    return json({ error: 'from/to must be DD-MM-YYYY' }, 400);
+  const page = Math.min(Math.max(parseInt(url.searchParams.get('page') || '1', 10) || 1, 1), 200);
+  const size = Math.min(Math.max(parseInt(url.searchParams.get('size') || '200', 10) || 200, 1), 200);
+  try {
+    const cookie = await nseCookie();
+    const r = await fetch(
+      `https://www.nseindia.com/api/integrated-filing-results?index=${idx}&period=Quarterly` +
+      `&from_date=${from}&to_date=${to}&page=${page}&size=${size}`,
+      { headers: {
+          'User-Agent': NSE_UA,
+          'Accept': 'application/json, text/plain, */*',
+          'Referer': 'https://www.nseindia.com/companies-listing/corporate-filings-financial-results',
+          ...(cookie ? { 'Cookie': cookie } : {}),
+        } }
+    );
+    if (!r.ok) return json({ error: 'NSE HTTP ' + r.status }, 502);
+    const text = await r.text();
+    if (/^\s*</.test(text)) return json({ error: 'NSE served non-JSON (challenge page)' }, 502);
     return new Response(text, { headers: { ...CORS, 'content-type': 'application/json' } });
   } catch (e) {
     return json({ error: String((e && e.message) || e) }, 502);
