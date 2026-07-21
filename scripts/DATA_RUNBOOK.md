@@ -1063,6 +1063,16 @@ list — what sectoral-index clicks write, so the view is shareable).
     predates a fill_ann_dates heal commit would otherwise bake the bad date into quarterly_results.json and
     the page shows baked anns as-is (filedAfterQE guards only FEED rows) — happened with ENRIN Sep-2024
     (ann=20240930) in the 12:07 IST 2026-07-21 bake, racing the heal push.
+  **ann=0 RECOVERY (2026-07-21): `backfill_ann_dates_bse.py`** — recovered REAL declared dates for 613 of the
+  1,102 ann=0 (date-unknown) rows from the BSE announcement archive (metadata only, no PDFs/vision/API key):
+  window (qe+1 .. qe+150d) via fetch_insurers.datebound; accept the EARLIEST filing whose NEWSSUB states the
+  target period (parse_qe, "exact") or, if no candidate states any period, a SOLO result-filing date inside
+  (qe+5 .. qe+100d); if the only period-stated filing is a DIFFERENT quarter's → refuse ("other-period" skip —
+  the unstated one next to it is as likely that quarter's refiling; NEVER guess a backtest-visibility date).
+  Ledger scripts/ann_date_fills.json (+ _ann_date_skips.json, --retry-skips to re-attempt); fill-only into
+  BOTH docs/sf_fundamentals.json and scripts/fundamentals.json where ann==0 and PAT present; ann > qe enforced
+  at write. `--reapply` re-applies the ledger after any rebuild/clobber. Residual ~489 rows stay ann=0
+  (skip ledger has per-key reasons; mostly pre-2019 BSE microcaps with unstated headlines — legitimate).
   Same audit taught `parse_qe` the caption styles that caused those qe=0s — anchored only ("Q.E.", "as on",
   "for the … year", "For <Month D, YYYY>", month+year with no day, and the unambiguous unanchored
   "F.Y. 2025-26" → March); fetch_bse_results' `qe_from_head` now lazy-imports it (superset of its local
