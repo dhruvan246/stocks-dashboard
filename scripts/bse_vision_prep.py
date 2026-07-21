@@ -23,6 +23,7 @@ from results_pending import find_pending, find_unknown_qe   # shared with build_
 HERE = os.path.dirname(os.path.abspath(__file__))
 D = os.path.join(HERE, "..", "docs")
 NSE_PDF = "https://nsearchives.nseindia.com/corporate/"
+WORKER = "https://stocksworld-quotes.dhruvan2510.workers.dev"   # ?pdf= relay (live-quote-worker.js)
 
 def norm(s): return re.sub(r"(limited|ltd)$", "", re.sub(r"[^a-z0-9]", "", str(s).lower()))
 
@@ -121,6 +122,19 @@ def _nse_pdf_with_retry(NB, url, hdr, jar_box, sym, tries=3):   # brief ride-out
             try: jar_box[0] = _nse_warm(NB)   # fresh cookies + pause clears NSE's per-IP throttle
             except Exception: pass
             delay = min(delay * 2, 60)
+    # Last transport: our Cloudflare Worker's ?pdf= relay. CF's edge still passes NSE's Akamai
+    # while every scripted IP we have (GitHub runners, local python, curl_cffi Chrome-TLS) is
+    # hard-403'd (2026-07-21) — without this, NSE-only names with no BSE copy stay unfetchable.
+    # Harmless before the worker route is deployed: the 400/502 JSON fails the %PDF check.
+    try:
+        import urllib.request
+        fn = url.rstrip("/").rsplit("/", 1)[-1]
+        raw = urllib.request.urlopen(WORKER + "/?pdf=" + fn, timeout=60).read()
+        if raw[:4] == b"%PDF":
+            print("  NSE %-11s fetched via CF worker relay" % sym)
+            return raw
+    except Exception:
+        pass
     return None
 
 def _bse_fallback(sym, by_id, op_box, outdir, qe):

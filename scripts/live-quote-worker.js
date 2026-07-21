@@ -83,6 +83,8 @@ export default {
     if (ipo) return ipoSubscription(ipo);
     const filings = url.searchParams.get('filings');
     if (filings) return filingsPassthrough(url, filings);
+    const pdf = url.searchParams.get('pdf');
+    if (pdf) return pdfPassthrough(pdf);
 
     const symbols = (url.searchParams.get('symbols') || '')
       .split(',').map(s => s.trim().toUpperCase()).filter(Boolean).slice(0, 30); // cap per call
@@ -239,6 +241,39 @@ async function filingsPassthrough(url, idx) {
     const text = await r.text();
     if (/^\s*</.test(text)) return json({ error: 'NSE served non-JSON (challenge page)' }, 502);
     return new Response(text, { headers: { ...CORS, 'content-type': 'application/json' } });
+  } catch (e) {
+    return json({ error: String((e && e.message) || e) }, 502);
+  }
+}
+
+/* ------- NSE archive PDF relay (vision routine's blocked-fetch fallback) -------
+ * 2026-07-21: nsearchives.nseindia.com hard-403s every scripted transport we have
+ * (GitHub runners, local python, even curl_cffi Chrome-TLS from a residential IP)
+ * while Cloudflare's edge still passes NSE — so filing PDFs for NSE-only names
+ * with no BSE copy (GFSTEELS etc.) were unfetchable and sat "numbers being
+ * parsed" until XBRL. bse_vision_prep._nse_pdf_with_retry falls back to this
+ * route. STRICT: bare archive filenames only (no slashes, no URLs) — the route
+ * can only reach nsearchives.nseindia.com/corporate/, never act as an open proxy. */
+
+async function pdfPassthrough(file) {
+  if (!/^[A-Za-z0-9][A-Za-z0-9_.\-]{0,150}\.pdf$/i.test(file) || file.includes('..'))
+    return json({ error: 'pdf must be a bare nsearchives corporate filename' }, 400);
+  try {
+    const cookie = await nseCookie();
+    const r = await fetch('https://nsearchives.nseindia.com/corporate/' + file, {
+      headers: {
+        'User-Agent': NSE_UA,
+        'Accept': 'application/pdf,*/*',
+        'Referer': 'https://www.nseindia.com/companies-listing/corporate-filings-announcements',
+        ...(cookie ? { 'Cookie': cookie } : {}),
+      },
+    });
+    if (!r.ok) return json({ error: 'NSE HTTP ' + r.status }, 502);
+    const buf = await r.arrayBuffer();
+    if (buf.byteLength < 8 || new Uint8Array(buf, 0, 1)[0] === 0x3c)   // '<' = challenge/error page
+      return json({ error: 'NSE served non-PDF (challenge page)' }, 502);
+    return new Response(buf, { headers: { ...CORS, 'content-type': 'application/pdf',
+                                          'cache-control': 'public, max-age=86400' } });
   } catch (e) {
     return json({ error: String((e && e.message) || e) }, 502);
   }
