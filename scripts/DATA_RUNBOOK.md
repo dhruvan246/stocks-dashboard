@@ -1071,8 +1071,13 @@ list — what sectoral-index clicks write, so the view is shareable).
   the unstated one next to it is as likely that quarter's refiling; NEVER guess a backtest-visibility date).
   Ledger scripts/ann_date_fills.json (+ _ann_date_skips.json, --retry-skips to re-attempt); fill-only into
   BOTH docs/sf_fundamentals.json and scripts/fundamentals.json where ann==0 and PAT present; ann > qe enforced
-  at write. `--reapply` re-applies the ledger after any rebuild/clobber. Residual ~489 rows stay ann=0
-  (skip ledger has per-key reasons; mostly pre-2019 BSE microcaps with unstated headlines — legitimate).
+  at write. `--reapply` re-applies the ledger after any rebuild/clobber.
+  **Second pass (2026-07-22, "seq" rule): 809/1,102 total.** Filings stating a DIFFERENT period are excluded,
+  then the unstated filing is accepted when boxed by KNOWN neighbour declarations (> prev quarter's ann,
+  < next quarter's ann / earliest later-stated filing; band qe+5..qe+150d, never a stated-other's same day);
+  fetch window widened to qe+240d (late "exact" filings — AASHKA Sep-2022 declared Apr-2023). Residual 293
+  rows stay ann=0 legitimately (~124 archive-empty pre-2019 microcaps + unresolvable ambiguity; skip ledger
+  has per-key reasons — don't re-sweep without a genuinely better rule).
   Same audit taught `parse_qe` the caption styles that caused those qe=0s — anchored only ("Q.E.", "as on",
   "for the … year", "For <Month D, YYYY>", month+year with no day, and the unambiguous unanchored
   "F.Y. 2025-26" → March); fetch_bse_results' `qe_from_head` now lazy-imports it (superset of its local

@@ -75,23 +75,45 @@ def targets(fund):
                 out.append((sym, q[0]))
     return sorted(out)
 
-def resolve(cands, qe):
-    """cands = [(ann_int, attachment, newssub), ...] -> (ann, how) or (None, reason)."""
+def q_neighbors(qe):
+    y, md = qe // 10000, qe % 10000
+    prv = {331: (y - 1) * 10000 + 1231, 630: y * 10000 + 331,
+           930: y * 10000 + 630, 1231: y * 10000 + 930}[md]
+    nxt = {331: y * 10000 + 630, 630: y * 10000 + 930,
+           930: y * 10000 + 1231, 1231: (y + 1) * 10000 + 331}[md]
+    return prv, nxt
+
+def resolve(cands, qe, prev_ann=None, next_ann=None):
+    """cands = [(ann_int, attachment, newssub), ...] -> (ann, how) or (None, reason).
+    prev_ann/next_ann = KNOWN declared dates of the neighbouring quarters (bounds for the
+    second-pass "seq" rule: the target's declaration must sit strictly between them)."""
     cands = [c for c in cands if c[0] > qe]                      # impossible-pair rule, belt
     if not cands:
         return None, "no-candidates"
-    exact = [c[0] for c in cands if parse_qe(c[2]) == qe]
+    parsed = [(c[0], parse_qe(c[2])) for c in cands]
+    exact = [d for d, pq in parsed if pq == qe]
     if exact:
         return min(exact), "exact"
-    if any(parse_qe(c[2]) not in (0, qe) for c in cands) and not exact:
-        # some filing in the window states a DIFFERENT period; unstated ones next to it are
-        # as likely that other quarter's — refuse rather than guess
-        stated = sorted({parse_qe(c[2]) for c in cands} - {0})
-        return None, "other-period:%s" % ",".join(map(str, stated))
-    band = sorted({c[0] for c in cands if plus(qe, 5) <= c[0] <= plus(qe, 100)})
-    if len(band) == 1:
-        return band[0], "solo"
-    return None, ("ambiguous:%d-dates" % len(band)) if band else "outside-band"
+    stated = [(d, pq) for d, pq in parsed if pq not in (0, qe)]  # states a DIFFERENT period
+    stated_dates = {d for d, _ in stated}                        # same-day twin = same board
+    later_min = min([d for d, pq in stated if pq > qe], default=None)
+    unstated = sorted({d for d, pq in parsed if pq == 0})
+    hi = plus(qe, 150) if next_ann else plus(qe, 100)
+    ok = [d for d in unstated
+          if plus(qe, 5) <= d <= hi
+          and d not in stated_dates
+          and (not prev_ann or d > prev_ann)
+          and (not next_ann or d < next_ann)
+          and (later_min is None or d < later_min)]
+    if not ok:
+        if stated:
+            return None, "other-period:%s" % ",".join(str(pq) for pq in sorted({p for _, p in stated}))
+        return None, ("ambiguous:%d-dates" % len(unstated)) if unstated else "outside-band"
+    if len(ok) == 1:
+        return ok[0], "seq" if (stated or next_ann) else "solo"
+    if next_ann or later_min:      # bounded above by a KNOWN later declaration -> earliest wins
+        return ok[0], "seq"
+    return None, "ambiguous:%d-dates" % len(ok)
 
 def apply_ledger(ledger):
     """Fill-only into both fundamentals files. Returns (cells_docs, cells_master)."""
@@ -142,6 +164,13 @@ def main():
         todo = todo[:args.limit]
     print("targets: %d rows across %d companies" % (len(todo), len({s for s, _ in todo})))
 
+    known = {}                                       # (sym, qe) -> known declared date (bounds)
+    for sym, arr in fund.items():
+        for q in arr:
+            if isinstance(q, list) and len(q) >= 5 and isinstance(q[0], int):
+                ann = min([a for a in (q[2], q[4]) if a], default=None)
+                if ann: known[(sym, q[0])] = ann
+
     o = FI.bse_session()
     t0 = time.time()
     done = filled = 0
@@ -154,7 +183,7 @@ def main():
         if not code:
             skips[key] = "no-scrip"; done += 1; continue
         try:
-            cands = FI.datebound(o, code, str(plus(qe, 1)), str(plus(qe, 150)))
+            cands = FI.datebound(o, code, str(plus(qe, 1)), str(plus(qe, 240)))
         except Exception as ex:
             print("  %s fetch err: %s" % (key, str(ex)[:80])); cands = []
         if not cands:
@@ -166,9 +195,11 @@ def main():
                 skips.pop(k, None)
             print("8 consecutive empty windows — BSE likely rate-limiting; aborting run (burst "
                   "not recorded), rerun later"); break
-        ann, how = resolve(cands, qe)
+        prv, nxt = q_neighbors(qe)
+        ann, how = resolve(cands, qe, known.get((sym, prv)), known.get((sym, nxt)))
         if ann:
             ledger[key] = {"ann": ann, "src": "bse:" + how}
+            known[(sym, qe)] = ann       # todo is qe-ascending: a fill bounds the same co's later targets
             filled += 1
             print("  %-14s %d -> %d (%s)" % (sym, qe, ann, how))
         elif cands or how == "no-candidates":
