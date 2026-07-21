@@ -129,12 +129,17 @@ def _nse_pdf_with_retry(NB, url, hdr, jar_box, sym, tries=3):   # brief ride-out
     try:
         import urllib.request
         fn = url.rstrip("/").rsplit("/", 1)[-1]
-        raw = urllib.request.urlopen(WORKER + "/?pdf=" + fn, timeout=60).read()
+        # browser UA required: Cloudflare's OWN bot protection (error 1010) bans bare
+        # python-urllib signatures at the workers.dev front door — the worker never sees it
+        req = urllib.request.Request(WORKER + "/?pdf=" + fn,
+                                     headers={"User-Agent": NB.UA, "Accept": "application/pdf,*/*"})
+        raw = urllib.request.urlopen(req, timeout=60).read()
         if raw[:4] == b"%PDF":
             print("  NSE %-11s fetched via CF worker relay" % sym)
             return raw
-    except Exception:
-        pass
+        print("  NSE %-11s relay served non-PDF (%d bytes)" % (sym, len(raw) if raw else 0))
+    except Exception as ex:
+        print("  NSE %-11s relay failed: %s" % (sym, type(ex).__name__))
     return None
 
 def _bse_fallback(sym, by_id, op_box, outdir, qe):
