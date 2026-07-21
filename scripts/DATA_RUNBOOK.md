@@ -1100,6 +1100,14 @@ list — what sectoral-index clicks write, so the view is shareable).
   GANGAFORGE, not on BSE) can't fall back — those wait for NSE's XBRL. Gentler 1.5 s spacing + browser-ish
   headers (Sec-Fetch + announcements-page referer/warm) reduce the trip rate. Verified 2026-07-19: all 6
   dual-listed names rendered via BSE fallback while NSE returned 403.
+  **2026-07-21 escalation — CF worker `?pdf=` relay for the NSE-only leftovers.** The block widened to EVERY
+  scripted transport (GitHub runners, local python, curl_cffi Chrome-TLS from the user's residential IP — even
+  `www.nseindia.com/` 403s locally) while the Cloudflare edge still passes (?announcements=1 fine). So
+  `live-quote-worker.js` gained `?pdf=<bare filename>` → `nsearchives/corporate/<file>` (strict filename
+  validation, never an open proxy; challenge-page detection; 1-day edge cache), and `_nse_pdf_with_retry`
+  tries it as the LAST transport before "UNFETCHED". Fails soft if the deployed worker predates the route.
+  Note "other sites still show the data" is licensed feeds / their own IP pools, not the public archive —
+  don't chase browser paths: BOTH in-app browser surfaces block nseindia.com by policy.
 - **Price-universe ORPHANS (tiny NSE filers absent from sf_stock_data.bin) now show as lightweight rows.**
   Micro NSE names (e.g. OASIS/Oasis Tradelink, BETALA/Betala Global Securities) file real results but have
   no `co` entry (not in the price bin, no parsed XBRL) → they used to hang as "numbers being parsed" forever.
