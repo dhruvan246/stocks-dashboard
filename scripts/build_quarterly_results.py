@@ -152,6 +152,12 @@ def main():
             if r[1] is not None: rows[i][2] = round(float(r[1]), 2)
             if r[3] is not None: rows[i][5] = round(float(r[3]), 2)
             ann = min([a for a in (r[2], r[4]) if a], default=None)
+            # Impossible-pair belt (runbook §15): an ann on/before its own quarter-end can reach
+            # this baker when a CI run's checkout predates a fill_ann_dates heal commit (ENRIN
+            # 2026-07-21). Bake it as date-unknown instead of showing/using a date the result
+            # cannot have; the source file is healed separately.
+            if ann and ann <= r[0]:
+                print("IMPOSSIBLE ann dropped: %s qe=%d ann=%d" % (sym, r[0], ann)); ann = None
             if ann: anns[r[0]] = ann; rows[i][6] = ann
         # Revenue / Operating Profit from sf_revop (pad legacy 7-elem)
         fin = 0

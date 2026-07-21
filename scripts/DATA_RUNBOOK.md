@@ -1058,6 +1058,11 @@ list — what sectoral-index clicks write, so the view is shareable).
     year typo) in sf_fundamentals + scripts/fundamentals.json. ⚠️ ann=0 is the "date unknown" SENTINEL
     (falsy → consumers skip; page shows no date) — never "impossible", never touched.
   - tl_reconcile's fallback path carries the same `r[2] > qe_iso` guard.
+  - **Baker** (build_quarterly_results.py): an ann <= its quarter-end coming out of sf_fundamentals is baked
+    as date-unknown (dropped, logged "IMPOSSIBLE ann dropped"). Needed because a CI run whose checkout
+    predates a fill_ann_dates heal commit would otherwise bake the bad date into quarterly_results.json and
+    the page shows baked anns as-is (filedAfterQE guards only FEED rows) — happened with ENRIN Sep-2024
+    (ann=20240930) in the 12:07 IST 2026-07-21 bake, racing the heal push.
   Same audit taught `parse_qe` the caption styles that caused those qe=0s — anchored only ("Q.E.", "as on",
   "for the … year", "For <Month D, YYYY>", month+year with no day, and the unambiguous unanchored
   "F.Y. 2025-26" → March); fetch_bse_results' `qe_from_head` now lazy-imports it (superset of its local
