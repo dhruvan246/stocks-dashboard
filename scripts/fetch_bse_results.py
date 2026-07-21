@@ -51,13 +51,27 @@ def _seg_qe(seg):
     return 0
 
 def qe_from_head(*texts):
-    """Reporting quarter-end (int YYYYMMDD) parsed from an 'ended <date>' clause in the filing text.
-    Returns 0 when the period isn't stated — the page then shows NO quarter badge (never a wrong one)."""
+    """Reporting quarter-end (int YYYYMMDD) parsed from the filing text. Prefers fetch_announcements'
+    audit-hardened parse_qe (Q.E./"as on"/"for the … year"/F.Y. ranges…, all anchored); the local
+    'ended <date>'-only parser is the fallback. Lazy import on purpose — this module must stay light
+    at import time (runbook §15 import-crash tripwire), and fetch_announcements pulls in the NSE
+    session module. Returns 0 when the period isn't stated — NO quarter badge, never a wrong one."""
+    try:
+        from fetch_announcements import parse_qe
+        return parse_qe(*texts)
+    except Exception:
+        pass
     h = " ".join(str(t or "") for t in texts)
     for m in ENDED_RE.finditer(h):
         qe = _seg_qe(m.group(1))
         if qe: return qe
     return 0
+
+def _qe_sane(qe, filed):
+    """Demote impossible (qe, filing-date) pairs to 0 — a result can't be declared on/before its own
+    quarter-end (same rule as fetch_announcements.qe_sane / filedAfterQE on the page)."""
+    if not qe: return 0
+    return qe if str(filed) > "%04d-%02d-%02d" % (qe // 10000, qe // 100 % 100, qe % 100) else 0
 
 def qlabel(qe):
     """20260630 -> 'Q1 FY27'. Jun/Sep/Dec belong to the NEXT fiscal year, Mar to the same."""
@@ -186,7 +200,7 @@ def main():
         cap = re.sub(r"\s+", " ", str(r.get("HEADLINE") or r.get("NEWSSUB") or "")).strip()
         if len(cap) > 220: cap = cap[:219] + "…"
         feed.setdefault("rows", []).append([sym, re.sub(r"\s+", " ", str(r.get("SLONGNAME") or sym)).strip(),
-                                            dt, qe_from_head(r.get("HEADLINE"), r.get("NEWSSUB"), r.get("MORE")), cap, file])
+                                            dt, _qe_sane(qe_from_head(r.get("HEADLINE"), r.get("NEWSSUB"), r.get("MORE")), dt[:10]), cap, file])
         added += 1
     # ---- 1b. inject BSE-only results we've CONFIRMED via OCR (bse_fundamentals.json) ----
     # BSE lets small cos file the result under "Board Meeting"/"Company Update" (not the Result

@@ -157,6 +157,14 @@ _FY_RE = re.compile(r"(?:\bf\.?\s*y\.?|financial\s+year)\s*[:.\-]?\s*(20\d{2})\s
 
 def _qe_mk(mo, y): return (y * 10000 + mo * 100 + _DAY_LAST[mo]) if mo in _DAY_LAST else 0
 
+def qe_sane(qe, filed):
+    """A result can't be declared on/before its own quarter-end, for ANY quarter — an impossible
+    (qe, filing-date) pair means the caption (or a bad ledger entry) lied about the period. Demote
+    to 0 so the row renders as period-unknown (vision resolves it) instead of under a quarter it
+    predates. `filed` = 'YYYY-MM-DD'. Shared by both feed writers (fetch_bse_results imports it)."""
+    if not qe: return 0
+    return qe if str(filed) > "%04d-%02d-%02d" % (qe // 10000, qe // 100 % 100, qe % 100) else 0
+
 def parse_qe(*texts):
     h = " ".join(str(t or "") for t in texts)
     for rx in _ANCHOR_RES:
@@ -213,7 +221,7 @@ def write_results_feed(allrows):
         if not (RESULT_CAT_RE.search(cat) or
                 (cat == "Outcome of Board Meeting" and RESULT_CAP_RE.search(cap))):
             continue
-        qe = qfix.get("%s|%s" % (r[0], str(r[2])[:10])) or parse_qe(cap)
+        qe = qe_sane(qfix.get("%s|%s" % (r[0], str(r[2])[:10])) or parse_qe(cap), str(r[2])[:10])
         feed.append([r[0], r[1], r[2], qe, (cap[:220] + "…") if len(cap) > 221 else cap, r[5]])
     have = set((r[0], r[2][:10]) for r in feed)
     for r in kept_prev:                                  # backfill any (sym,date) THIS run's fetch missed

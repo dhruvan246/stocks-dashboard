@@ -194,6 +194,10 @@ def main():
                     print("  NSE %-11s UNFETCHED (NSE 403 + no BSE copy) — left pending" % sym)
                 continue
             real = pdf_period(raw)                             # what the filing itself says
+            if real and str(fdate)[:10] <= "%04d-%02d-%02d" % (real // 10000, real // 100 % 100, real % 100):
+                # impossible: the "period" ends on/after the filing date — the parse grabbed some other
+                # date in the PDF (validity/meeting/record date). Never ledger an impossible quarter.
+                print("  qfix NSE %-11s filing=%d IMPOSSIBLE vs filed %s — ignored" % (sym, real, fdate)); real = 0
             if real and real != qe:                           # NSE caption mislabelled the quarter
                 qfix["%s|%s" % (sym, fdate)] = real
                 print("  qfix NSE %-11s caption=%d -> filing=%d (skip)" % (sym, qe, real)); continue
@@ -236,6 +240,8 @@ def main():
                         raw = bse_render.fetch_pdf(opu[0], att)
                         if raw: break
             real = pdf_period(raw) if raw else 0
+            if real and str(fdate)[:10] <= "%04d-%02d-%02d" % (real // 10000, real // 100 % 100, real % 100):
+                print("  qe? %-11s %s -> %d IMPOSSIBLE (period ends on/after filing date) — left unclassified" % (sym, fdate, real)); real = 0
             if not real:
                 print("  qe? %-11s %s — period unreadable (scanned/blocked), left unclassified" % (sym, fdate))
                 continue
