@@ -296,6 +296,10 @@ def main():
     inc_fin = "--fin" in args
 
     n500_only = "--n500" in args
+    # --symfile FILE: restrict to an explicit symbol list (JSON array) — used for the point-in-time
+    # ever-member sweeps (ex-Nifty-500 names that no longer carry the current x&4 bit).
+    symfile = args[args.index("--symfile") + 1] if "--symfile" in args else None
+    symset = set(json.load(open(symfile))) if symfile else None
     all_q = "--all-quarters" in args
     # --years caps how far back to sweep; absent = FULL PAT history (every quarter in sf_fundamentals).
     back_years = int(args[args.index("--years") + 1]) if "--years" in args else None
@@ -372,6 +376,8 @@ def main():
     gaps = {}
     for sym, meta in qr["co"].items():
         if only and sym not in only:
+            continue
+        if symset is not None and sym not in symset:
             continue
         if n500_only and not (meta.get("x", 0) & 4):
             continue
@@ -484,6 +490,27 @@ def main():
                 got.append((qe, basis))
         return got
 
+    def save_all(final=False):
+        """Checkpoint every store ATOMICALLY (tmp + os.replace) with retries. A transient Windows
+        file lock (AV/indexer) once raised EINVAL straight from open(...,'w') at a checkpoint and
+        killed a 6-hour sweep at 130/485 — an interim save failure must never be fatal, and a
+        direct 'w' open can truncate the file if it dies mid-write. os.replace is all-or-nothing."""
+        for obj, path in ((revop, REVOP_DOCS), (revop_scr, REVOP_SCR), (done, DONE),
+                          (skips, SKIPS), (pnl, PNL)):
+            for attempt in range(3):
+                try:
+                    tmp = path + ".tmp"
+                    with open(tmp, "w") as f:
+                        json.dump(obj, f, separators=(",", ":"))
+                    os.replace(tmp, path)
+                    break
+                except OSError as ex:
+                    if attempt == 2:
+                        print("  ! save failed for %s (%s)%s" % (os.path.basename(path), ex,
+                              " — FINAL, data only in earlier checkpoint" if final else " — will retry next checkpoint"), flush=True)
+                    else:
+                        time.sleep(2)
+
     for si, sym in enumerate(syms):
         want = sorted(gaps[sym], reverse=True)
         scrip = by_id.get(sym)
@@ -547,18 +574,10 @@ def main():
         if (si + 1) % 10 == 0 or si + 1 == len(syms):
             print("  [%d/%d] %s — filled %d cells, %d PDFs" % (si + 1, len(syms), sym, filled, fetched), flush=True)
             if not dry:
-                json.dump(revop, open(REVOP_DOCS, "w"), separators=(",", ":"))
-                json.dump(revop_scr, open(REVOP_SCR, "w"), separators=(",", ":"))
-                json.dump(done, open(DONE, "w"), separators=(",", ":"))
-                json.dump(skips, open(SKIPS, "w"), separators=(",", ":"))
-                json.dump(pnl, open(PNL, "w"), separators=(",", ":"))
+                save_all()
 
     if not dry:
-        json.dump(revop, open(REVOP_DOCS, "w"), separators=(",", ":"))
-        json.dump(revop_scr, open(REVOP_SCR, "w"), separators=(",", ":"))
-        json.dump(done, open(DONE, "w"), separators=(",", ":"))
-        json.dump(skips, open(SKIPS, "w"), separators=(",", ":"))
-        json.dump(pnl, open(PNL, "w"), separators=(",", ":"))
+        save_all(final=True)
     print("DONE: filled %d basis-cells via %d PDF fetches (cache: %s); skips ledger %d entries; pnl rows %d"
           % (filled, fetched, os.path.basename(PDFCACHE), len(skips), sum(len(v) for v in pnl.values())), flush=True)
 
