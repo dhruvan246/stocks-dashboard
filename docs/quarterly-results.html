@@ -500,6 +500,34 @@ function renderSectorSel(){
   $('selSector').innerHTML=opts.join(''); $('selSector').value=ST.sector;
 }
 
+/* ---------- Season-Trends parity ----------
+   The Overview "Median revenue/PAT growth" tiles must show the SAME number as the Season Trends
+   tab for the same universe+quarter. Both derive from sf_revop/sf_fundamentals, but Season Trends'
+   figure is baked by build_results_season.py (vision_fills fallback + point-in-time membership +
+   include_fin) — a live recompute drifts 0.1-0.7%. So for a plain broad-universe view (no sector/
+   mcap sub-filter, YoY mode) we READ the exact median out of the SAME results_season.json Season
+   Trends shows → guaranteed identical. Sector/mcap sub-filters (which Season Trends doesn't offer)
+   keep the live per-reporter median. */
+const OV2RS={ n50:'Nifty 50', n100:'Nifty 100', n500:'Nifty 500', m150:'Nifty Midcap 150', s250:'Nifty Smallcap 250' };
+function ensureRS(cb){                            // loads results_season.json ONCE, data only (no UI)
+  if(RS_STATE===2){ cb&&cb(); return; }
+  if(RS_STATE===1) return;                        // in-flight; the .then re-renders the active tab
+  RS_STATE=1;
+  fetch('./results_season.json?t='+Date.now())
+    .then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+    .then(d=>{ RS_DATA=d; RS_STATE=2;
+               if(ST.tab==='overview') renderOverview(); else if(ST.tab==='season') seasonRender();
+               cb&&cb(); })
+    .catch(()=>{ RS_STATE=0; });
+}
+function rsMedianFor(qe){
+  if(RS_STATE!==2||!RS_DATA||ST.mode!=='yoy'||ST.sector!=='all'||ST.mcap!=='all') return null;
+  const key=OV2RS[ST.uni]; if(!key) return null;
+  const u=(RS_DATA.universes||[]).find(x=>x.key===key); if(!u) return null;
+  const q=(u.quarters||[]).find(x=>x.qe===qe); if(!q) return null;
+  return { rev:q.rev&&q.rev.median, pat:q.pat&&q.pat.median };
+}
+
 /* ---------- render: overview ---------- */
 function tile(label,val,sub,cls){
   return '<div class="tile"><div class="text-[10px] uppercase tracking-wide text-slate-500 font-bold">'+label+'</div>'+
@@ -507,6 +535,7 @@ function tile(label,val,sub,cls){
     (sub?'<div class="text-[11px] text-slate-500 mt-0.5">'+sub+'</div>':'')+'</div>';
 }
 function renderOverview(){
+  if(RS_STATE!==2) ensureRS();               // kick off Season-Trends median load; its .then re-renders
   const qi=ST.qi, rows=filtered(qi), lag=ST.mode==='yoy'?4:1;
   const gKey=ST.mode==='yoy'?'py':'pq', rKey=ST.mode==='yoy'?'ry':'rq', fKey=ST.mode==='yoy'?'pfY':'pfQ';
   // expected = year-ago reporters within current filters
@@ -532,11 +561,16 @@ function renderOverview(){
   FEEDROWS.forEach(r=>{ if((r[3]===qe||(qi===0&&r[3]===0)) && !haveNums.has(r[0]) && !haveNames.has(normN(r[1])) && coPass(r[0])) pendSet.add(r[0]); });
   const pending=pendSet.size, declared=rows.length+pending;
   let pdfOnly=0; pendSet.forEach(s=>{ if(PDF_ONLY.has(s)) pdfOnly++; }); const coming=pending-pdfOnly;
+  // Season-Trends parity: read the exact universe median where available, else the live per-reporter one
+  const rsm=rsMedianFor(QTRS[qi]);
+  const medRev=(rsm&&rsm.rev!=null)?rsm.rev:median(revs);
+  const medPat=(rsm&&rsm.pat!=null)?rsm.pat:median(pats);
+  const medSub=rsm?'matches Season Trends':(ST.mode==='yoy'?'vs year-ago quarter':'vs previous quarter');
   $('tiles').innerHTML=
     tile('Declared', declared.toLocaleString('en-IN'),
          rows.length.toLocaleString('en-IN')+' with numbers'+(coming? ' · +'+coming+' coming':'')+(pdfOnly? ' · '+pdfOnly+' filing-only':''))+
-    tile('Median revenue growth', fmtPct(median(revs)), ST.mode==='yoy'?'vs year-ago quarter':'vs previous quarter', pctCls(median(revs)))+
-    tile('Median PAT growth', fmtPct(median(pats)), (pUp+pDn)?(pUp+' up · '+pDn+' down'):'', pctCls(median(pats)))+
+    tile('Median revenue growth', fmtPct(medRev), medSub, pctCls(medRev))+
+    tile('Median PAT growth', fmtPct(medPat), rsm?(pUp+' up · '+pDn+' down · matches Season Trends'):((pUp+pDn)?(pUp+' up · '+pDn+' down'):''), pctCls(medPat))+
     tile('PAT growers', (pUp+pDn)? Math.round(pUp/(pUp+pDn)*100)+'%' :'—', pUp+' of '+(pUp+pDn)+' with a comparable base', pUp>=pDn?'pos':'neg')+
     tile('Turnarounds', lp||'0', 'loss → profit '+(ST.mode==='yoy'?'YoY':'QoQ'), lp?'pos':'text-slate-900')+
     tile('Median reaction', fmtPct(median(rxs)), rxs.length+' priced result days', pctCls(median(rxs)));
@@ -556,7 +590,9 @@ function renderOverview(){
   const meds=[];
   for(let k=4;k>=0;k--){
     const rr=recsFor(qi+k).filter(passFilters);
-    meds.push({k, med:median(rr.map(r=>r[gKey]).filter(v=>v!=null)), n:rr.length});
+    const rsk=rsMedianFor(QTRS[qi+k]);                         // Season-Trends parity per quarter
+    const m=(rsk&&rsk.pat!=null)?rsk.pat:median(rr.map(r=>r[gKey]).filter(v=>v!=null));
+    meds.push({k, med:m, n:rr.length});
   }
   const mx=Math.max(10,...meds.map(m=>Math.abs(m.med||0)));
   for(const m of meds){
@@ -972,7 +1008,7 @@ async function liveTopUp(){
    first-load bytes are unchanged. State/controls are independent of the quarter/filter card above
    (which is hidden on this tab — the chart has its own universe/mode/period controls). */
 let RS_DATA=null, RS_CUR={quarters:[]}, RS_MODE='total', RS_PERIOD='1y', RS_CFROM=null, RS_CTO=null;
-let RS_STATE=0, rsRz=null;   // 0 = not loaded, 1 = loading, 2 = ready
+let RS_STATE=0, rsRz=null, RS_UI=false;   // 0 = not loaded, 1 = loading, 2 = ready; RS_UI = season UI wired
 
 function rsQuarters(){
   const qs=RS_CUR.quarters||[];
@@ -1186,14 +1222,14 @@ function rsInit(data){
   window.addEventListener('resize',()=>{ clearTimeout(rsRz);
     rsRz=setTimeout(()=>{ if(ST.tab==='season'&&RS_STATE===2) rsRenderChart(); },150); });
 }
+function seasonRender(){                          // RS_DATA is ready; set up UI once, then render
+  if(!RS_UI){ try{ rsInit(RS_DATA); RS_UI=true; }catch(e){ if($('rsStatus')) $('rsStatus').textContent='Could not set up ('+e.message+')'; return; } }
+  else { rsRenderChart(); rsRenderTable(); }
+}
 function renderSeason(){
-  if(RS_STATE===2){ rsRenderChart(); rsRenderTable(); return; }
-  if(RS_STATE===1) return;
-  RS_STATE=1;
-  fetch('./results_season.json?t='+Date.now())
-    .then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
-    .then(d=>{ RS_STATE=2; rsInit(d); })
-    .catch(e=>{ RS_STATE=0; $('rsStatus').textContent='Could not load season-trend data ('+e.message+') — reopen the tab to retry.'; });
+  if(RS_STATE===2){ seasonRender(); return; }
+  if($('rsStatus')) $('rsStatus').textContent='Loading season-trend data…';
+  ensureRS(()=>{ if(ST.tab==='season') seasonRender(); });
 }
 
 /* ---------- shell ---------- */

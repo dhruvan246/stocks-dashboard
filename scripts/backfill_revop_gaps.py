@@ -251,17 +251,23 @@ def metrics_at(rows, x, scale):
     oi = val_at(rows.get("oi", []), x) or 0.0
     fc = val_at(rows.get("fc", []), x) or 0.0
     dep = val_at(rows.get("dep", []), x) or 0.0
-    # Decimal-integrity check: some text layers drop the decimal point in individual cells
-    # (MCX Dec-25 printed 197.47 as 19747). The PAT anchor only proves the PAT cell, so prove
-    # the revenue cell too via Schedule III's own identity: Total Income = rev + other income.
+    # Decimal-integrity check via Schedule III's identity: Total Income = rev + other income.
+    # A decimal-dropped REVENUE cell (MCX printed 197.47 as 19747) shows up as rev > total income,
+    # which is impossible -> reject. But if rev <= ti yet rev+oi != ti, it's the OTHER-INCOME cell
+    # that got mis-read (common in M&M-style integrated multi-column filings) — the revenue is still
+    # trustworthy (it sits at the PAT-anchored column), so keep rev and just drop the derived op.
     ti = val_at(rows.get("ti", []), x)
-    if ti is not None and abs((rev + oi) - ti) > max(0.6, 0.006 * abs(ti)):
-        return None
+    comp_ok = True
+    if ti is not None:
+        if rev > ti * 1.02 + 1:
+            return None                                    # revenue can't exceed total income
+        if abs((rev + oi) - ti) > max(0.6, 0.006 * abs(ti)):
+            comp_ok = False                                # a component (oi) mis-read -> op unreliable
     pbet = val_at(rows.get("pbet", []), x)
     if pbet is None:
         pbet = val_at(rows.get("pbt", []), x)
     op = ebit = None
-    if pbet is not None:
+    if comp_ok and pbet is not None:
         op = pbet + fc + dep - oi
         ebit = op - dep
         # Operating profit (≈EBITDA) can NEVER exceed revenue from operations for these filers — if
