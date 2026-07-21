@@ -135,29 +135,52 @@ RESULT_CAT_RE = re.compile(r"^financial\s+result", re.I)
 # quarter — so read the reporting period per filing and ANCHOR on an "ended" clause (never assume the
 # current season). Snap to a quarter-end month; 0 (no badge) when the period isn't stated.
 _DAY_LAST = {3: 31, 6: 30, 9: 30, 12: 31}
-_ENDED_RE = re.compile(r"end(?:ed|ing)\s+(?:on\s+)?(.{0,30}?\d{4})", re.I)
-_DMY_RE = re.compile(r"(\d{1,2})(?:st|nd|rd|th)?[\s,]+([A-Za-z]{3,9})[,\s]+(\d{4})", re.I)
+# Anchors tried IN ORDER; each yields a short segment that must contain the period date. Everything
+# stays anchored — a bare date in a caption is as likely the board-MEETING date as the period, and a
+# June-30 meeting approving March results would mis-file as the June quarter. 2026-07-21 additions
+# ("Q.E.", "as on", "for the … year", "For <Month D, YYYY>") come from the audit of real qe=0 captions;
+# they only fire where the old parser returned 0, so no previously-parsed row can change quarter.
+_ANCHOR_RES = [
+    re.compile(r"end(?:ed|ing)\s+(?:on\s+)?(.{0,30}?\d{4})", re.I),                 # "quarter ended March 31, 2026"
+    re.compile(r"q\.?\s*e\.?[\s:.\-]*(.{0,20}?\d{4})", re.I),                       # "Q.E.31.03.2026" (no \b: real captions glue it — "theQ.E.31.03.2026")
+    re.compile(r"\bas\s+(?:on|at)[\s:.\-]*(.{0,20}?\d{4})", re.I),                  # "AS ON 30.06.2026"
+    re.compile(r"for\s+the\s+(?:quarter\s+and\s+)?(?:financial\s+)?year\s+(.{0,25}?\d{4})", re.I),  # "for the quarter and financial year March 31, 2026"
+    re.compile(r"\bfor\s+((?:[A-Za-z]{3,9}\s+\d{1,2},?|\d{1,2}(?:st|nd|rd|th)?\s+[A-Za-z]{3,9}[,\s.\-]*|[A-Za-z]{3,9}[,\s.\-]*)\s*\d{4})", re.I),  # "For March 31, 2026" / "for 30th June-2026" / "for September 2025" (month+year can't be a meeting date)
+]
+_DMY_RE = re.compile(r"(\d{1,2})(?:st|nd|rd|th)?[\s,]+([A-Za-z]{3,9})[,\s.\-]+(\d{4})", re.I)
 _MDY_RE = re.compile(r"([A-Za-z]{3,9})\s+(\d{1,2}),?\s+(\d{4})", re.I)
 _NUM_RE = re.compile(r"(\d{1,2})[.\-/](\d{1,2})[.\-/](\d{4})")
+_MY_RE = re.compile(r"([A-Za-z]{3,9})[,\s]+(\d{4})", re.I)          # "March, 2026" (day unstated)
+# "F.Y. 2025-26" / "FY 2025-2026" / "financial year 2025-26" -> March of the END year. Unambiguous
+# (a fiscal-year range is never a meeting date), so this one needs no anchor.
+_FY_RE = re.compile(r"(?:\bf\.?\s*y\.?|financial\s+year)\s*[:.\-]?\s*(20\d{2})\s*[-–—/]\s*(?:20)?(\d{2})\b", re.I)
 
 def _qe_mk(mo, y): return (y * 10000 + mo * 100 + _DAY_LAST[mo]) if mo in _DAY_LAST else 0
 
 def parse_qe(*texts):
     h = " ".join(str(t or "") for t in texts)
-    for mm in _ENDED_RE.finditer(h):
-        seg = mm.group(1)
-        m = _DMY_RE.search(seg)
-        if m:
-            qe = _qe_mk(MON.get(m.group(2).lower()[:3], 0), int(m.group(3)))
-            if qe: return qe
-        m = _MDY_RE.search(seg)
-        if m:
-            qe = _qe_mk(MON.get(m.group(1).lower()[:3], 0), int(m.group(3)))
-            if qe: return qe
-        m = _NUM_RE.search(seg)
-        if m:
-            qe = _qe_mk(int(m.group(2)), int(m.group(3)))
-            if qe: return qe
+    for rx in _ANCHOR_RES:
+        for mm in rx.finditer(h):
+            seg = mm.group(1)
+            m = _DMY_RE.search(seg)
+            if m:
+                qe = _qe_mk(MON.get(m.group(2).lower()[:3], 0), int(m.group(3)))
+                if qe: return qe
+            m = _MDY_RE.search(seg)
+            if m:
+                qe = _qe_mk(MON.get(m.group(1).lower()[:3], 0), int(m.group(3)))
+                if qe: return qe
+            m = _NUM_RE.search(seg)
+            if m:
+                qe = _qe_mk(int(m.group(2)), int(m.group(3)))
+                if qe: return qe
+            m = _MY_RE.search(seg)                       # month + year, no day: snap to that quarter-end
+            if m:
+                qe = _qe_mk(MON.get(m.group(1).lower()[:3], 0), int(m.group(2)))
+                if qe: return qe
+    m = _FY_RE.search(h)
+    if m and int(m.group(2)) == (int(m.group(1)) + 1) % 100:
+        return (2000 + int(m.group(2))) * 10000 + 331
     return 0
 
 def write_results_feed(allrows):

@@ -97,10 +97,13 @@ def our_declared(qe):
             names.add(nname(r.get("name")))
     except Exception as e:                       # classifier needs quarterly_results.json
         print("  (results_pending.classify unavailable: %s — feed rows direct)" % e)
+        qe_iso = "%04d-%02d-%02d" % (qe // 10000, qe // 100 % 100, qe % 100)
         for r in feed:
             # qe==0 = declared but period-unclassified (resolved by the vision prep within hours) —
-            # still a declared filing, so it must cover the TL meeting or the diff re-flags it nightly
-            if r[3] == qe or r[3] == 0:
+            # still a declared filing, so it must cover the TL meeting or the diff re-flags it nightly.
+            # Filed-after-quarter-end guard: a stale unresolved row from BEFORE the quarter ended is a
+            # late prior-quarter filing, not live-quarter coverage (same rule as quarterly-results.html).
+            if r[3] == qe or (r[3] == 0 and r[2][:10] > qe_iso):
                 syms.add(r[0].upper()); names.add(nname(r[1]))
 
     co = (load("quarterly_results.json", {}) or {}).get("co", {})

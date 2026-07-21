@@ -1042,6 +1042,15 @@ list — what sectoral-index clicks write, so the view is shareable).
   the page counts qe=0 rows as "numbers coming" on the LIVE quarter only, labelled "reporting period being
   determined"; tl_reconcile counts them as declared coverage. Never treat qe=0 as "assume current quarter" —
   resolution comes from the PDF, period unknown stays labelled unknown.
+  ⚠️ **…and ONLY when FILED AFTER the live quarter ended** (`qe0OnLive()` in quarterly-results.html + the same
+  `r[2] > qe_iso` guard in tl_reconcile's fallback, 2026-07-21). A Jun-quarter result cannot be declared in June:
+  without this guard, stale unresolved rows still in the rolling 31-day feed (late Q4/annual filings from
+  June — DECPO "Q.E.31.03.2026", ORGCOAT "F.Y. 2025-26"…) surfaced under the June quarter with impossible
+  June "declared" dates (user-visible bug, day one of the rule). Same audit taught `parse_qe` the caption
+  styles that caused those qe=0s — anchored only ("Q.E.", "as on", "for the … year", "For <Month D, YYYY>",
+  month+year with no day, and the unambiguous unanchored "F.Y. 2025-26" → March) — a bare date stays
+  unparsed on purpose (it's as likely the board-meeting date; _qe_mk's quarter-end-month check is NOT enough
+  protection at quarter turns, e.g. a 30.06 meeting approving March results).
 - ⚠️ **BSE results can hide under "Board Meeting / Outcome of Board Meeting" with NO Result-category twin** —
   fetch_bse_results.py runs a second 7-day scan of that category and keeps outcomes that (a) talk about results
   (JPPOWER-style headline), OR (b) match a result-purpose date in results_calendar.json for that company

@@ -358,6 +358,11 @@ function fmtPct(v,dp){
 function pctCls(v){ return v==null?'text-slate-400':(v>0?'pos':(v<0?'neg':'text-slate-500')); }
 function fmtMcap(v){ return v>=100000 ? (v/100000).toFixed(2)+' L cr' : Math.round(v).toLocaleString('en-IN')+' cr'; }
 function fmtDate8(a){ if(!a) return '—'; const s=String(a); return s.slice(6,8)+' '+MONTHS[+s.slice(4,6)]+' '+s.slice(2,4); }
+/* qe===0 feed rows (filing didn't state its period) count on the LIVE quarter ONLY when FILED after
+   that quarter ended — a Jun-quarter result can't be declared in June. Without this, stale unresolved
+   rows (late Q4/annual filings from weeks ago still in the rolling feed) surface under the live
+   quarter with impossible pre-quarter-end dates (the 2026-07-21 "June dates on the June quarter" bug). */
+function qe0OnLive(r,qeSel){ const s=String(qeSel); return r[2].slice(0,10) > s.slice(0,4)+'-'+s.slice(4,6)+'-'+s.slice(6,8); }
 function isoNice(iso){ const d=new Date(iso+'T00:00:00'); return d.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'}); }
 function median(arr){ if(!arr.length) return null; const a=[...arr].sort((x,y)=>x-y); const m=a.length>>1; return a.length%2? a[m] : (a[m-1]+a[m])/2; }
 /* search match ignoring case, spaces and punctuation: "cellaspace" matches "Cella Space Ltd" */
@@ -558,7 +563,7 @@ function renderOverview(){
   const haveNames=new Set(rows.map(r=>normN(r.c.n)));
   // qe===0 feed rows (filing didn't state its period; the vision prep resolves it within hours)
   // count as pending on the LIVE quarter only — never attributed to a specific quarter, never hidden
-  FEEDROWS.forEach(r=>{ if((r[3]===qe||(qi===0&&r[3]===0)) && !haveNums.has(r[0]) && !haveNames.has(normN(r[1])) && coPass(r[0])) pendSet.add(r[0]); });
+  FEEDROWS.forEach(r=>{ if((r[3]===qe||(qi===0&&r[3]===0&&qe0OnLive(r,qe))) && !haveNums.has(r[0]) && !haveNames.has(normN(r[1])) && coPass(r[0])) pendSet.add(r[0]); });
   const pending=pendSet.size, declared=rows.length+pending;
   let pdfOnly=0; pendSet.forEach(s=>{ if(PDF_ONLY.has(s)) pdfOnly++; }); const coming=pending-pdfOnly;
   // Season-Trends parity: read the exact universe median where available, else the live per-reporter one
@@ -730,7 +735,7 @@ function renderResults(){
   if(ST.screen==='all'){
     const seen=new Set();
     FEEDROWS.forEach(r=>{
-      if((r[3]!==qeSel&&!(ST.qi===0&&r[3]===0))||haveNums.has(r[0])||haveNm.has(nrmN(r[1]))||seen.has(r[0]))return;
+      if((r[3]!==qeSel&&!(ST.qi===0&&r[3]===0&&qe0OnLive(r,qeSel)))||haveNums.has(r[0])||haveNm.has(nrmN(r[1]))||seen.has(r[0]))return;
       if(CO[r[0]]?!coPass(r[0]):(ST.uni!=='all'&&ST.uni!=='bse'&&ST.uni!=='nse'||ST.sector!=='all'||ST.mcap!=='all'))return;
       if(ST.uni==='bse'&&!(CO[r[0]]&&CO[r[0]].bse))return;
       if(ST.uni==='nse'&&CO[r[0]]&&CO[r[0]].bse)return;
