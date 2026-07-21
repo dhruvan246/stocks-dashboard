@@ -225,7 +225,12 @@ def write_results_feed(allrows):
         feed.append([r[0], r[1], r[2], qe, (cap[:220] + "…") if len(cap) > 221 else cap, r[5]])
     have = set((r[0], r[2][:10]) for r in feed)
     for r in kept_prev:                                  # backfill any (sym,date) THIS run's fetch missed
-        if (r[0], r[2][:10]) not in have: feed.append(r); have.add((r[0], r[2][:10]))
+        if (r[0], r[2][:10]) in have: continue
+        # apply the quarter-fix ledger to CARRIED rows too — a straggler older than the fetch window
+        # (KGVL-class, filed weeks ago) otherwise rides here verbatim and its recorded fix NEVER lands
+        fx = qfix.get("%s|%s" % (r[0], r[2][:10]))
+        if fx: r = [r[0], r[1], r[2], qe_sane(fx, r[2][:10]), r[4], r[5]]
+        feed.append(r); have.add((r[0], r[2][:10]))
     # trim to a rolling 31-day window (matches fetch_bse_results) so preserved BSE rows don't accrete
     cut = (datetime.date.today() - datetime.timedelta(days=31)).isoformat()
     feed = [r for r in feed if r[2][:10] >= cut]
