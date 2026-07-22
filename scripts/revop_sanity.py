@@ -56,15 +56,20 @@ def main():
             v = revof(a)
             if v is None:
                 continue
+            # tiny-con: junk/mis-scaled consolidated context beside a healthy standalone.
+            # Gated on the CON SLOT being new (old row's con empty) — NOT on the whole cell being
+            # new: con fills usually land beside a pre-existing std, which is exactly when the
+            # junk arrives (first real catch: the 2026-07-22 rescue re-read 12 junk comparatives).
+            o = old.get(s, {}).get(str(qe))
+            con_is_new = not (o and o[1] is not None)
+            if (con_is_new and a[0] is not None and a[1] is not None and a[0] > 20
+                    and 0 <= a[1] < 0.05 * a[0] and a[1] < 20):
+                kill_con.append((s, qe, a[1], "junk-tiny-con(con %.2f < 5%% of std %.2f)" % (a[1], a[0])))
             if not wasold(s, qe):
                 # scale spike
                 if ref_max is not None and ref_max >= 20 and v > 4 * ref_max:
                     kill.append((s, qe, v, "scale-spike>4x-established-max(%.0f)" % ref_max))
                     continue
-                # tiny-con: junk/mis-scaled consolidated context beside a healthy standalone
-                if (a[0] is not None and a[1] is not None and a[0] > 20
-                        and 0 <= a[1] < 0.05 * a[0] and a[1] < 20):
-                    kill_con.append((s, qe, a[1], "junk-tiny-con(con %.2f < 5%% of std %.2f)" % (a[1], a[0])))
                 if v > 50:
                     seen.setdefault(round(v, 2), []).append(qe)
         for v, qs in seen.items():
