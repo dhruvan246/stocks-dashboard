@@ -769,8 +769,12 @@ function renderResults(){
   let rows=filtered(ST.qi).filter(screenPass);
   rows=sortRows(rows);
   // PENDING: companies that filed a result for this quarter but whose numbers aren't parsed yet
-  // (BSE OCR pending / NSE XBRL not yet posted). Show them as "numbers coming" rows so the
-  // Declared count fully reconciles here — nothing is hidden. Only when no numbers-based screen is on.
+  // (BSE OCR pending / NSE XBRL not yet posted). OWNER-ONLY, same curtain as the Feed tab's
+  // "Numbers pending" card (FEED_OWNER / bt_owner_key): to a visitor an empty row reads as a
+  // broken page, but to the owner it is the coverage tool saying which names still need a
+  // vision fill. The "+N numbers coming" count in the header stays visible to EVERYONE so the
+  // Declared total still reconciles — the ROWS are hidden, the ARITHMETIC is not.
+  // Only when no numbers-based screen is on.
   const qeSel=QTRS[ST.qi], haveNums=new Set(recsFor(ST.qi).map(r=>r.sym));
   const nrmN=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'').replace(/(limited|ltd)$/,'');
   const haveNm=new Set(recsFor(ST.qi).map(r=>nrmN(r.c.n)));
@@ -790,7 +794,9 @@ function renderResults(){
   const nPdf=pend.filter(r=>PDF_ONLY.has(r[0])).length, nComing=pend.length-nPdf;
   $('fCount').textContent=rows.length.toLocaleString('en-IN')+' with numbers'+(nComing?' · +'+nComing+' numbers coming':'')+(nPdf?' · '+nPdf+' filing-only (PDF)':'')+' · '+qlabel(QTRS[ST.qi],true);
   const shown=rows.slice(0,ST.shown);
-  const pendHtml=pend.map(r=>{
+  // Owner curtain: visitors get the numbers-only table (an empty row reads as a broken page).
+  // FEED_OWNER is defined below with the Feed tab's pending card — same bt_owner_key.
+  const pendHtml=!FEED_OWNER?'':pend.map(r=>{
     const c=CO[r[0]], pdf=r[5]?(String(r[5]).indexOf('http')===0?r[5]:PDF_PREFIX+r[5]):'';
     const pdfOnly=PDF_ONLY.has(r[0]);
     const msg=pdfOnly
