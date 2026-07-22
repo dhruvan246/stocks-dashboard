@@ -92,7 +92,9 @@ ROW_PATS = {
     "pbt":  re.compile(r"profit\s*/?\s*\(?\s*loss\s*\)?\s*(?:from\s+\w+\s+activities\s+)?before\s+tax"
                        r"|profit\s+before\s+tax", re.I),
     "tax":  re.compile(r"^(?:total\s+)?tax\s+expenses?", re.I),
-    "pat":  re.compile(r"(?:net\s+)?profit\s*/?\s*\(?\s*loss\s*\)?\s*(?:after\s+tax\s*)?for\s+the\s+"
+    # NOTE '(?:/?\s*\(?\s*loss\s*\)?)?' is OPTIONAL: plain 'Profit for the period' (Eternal/Zomato
+    # style) must match too — requiring the literal 'loss' silently skipped every such filer.
+    "pat":  re.compile(r"(?:net\s+)?profit\s*(?:/?\s*\(?\s*loss\s*\)?)?\s*(?:after\s+tax\s*)?for\s+the\s+"
                        r"(?:period|quarter|year)|profit\s+after\s+tax", re.I),
     "own":  re.compile(r"attributable\s+to\s*:?\s*(?:the\s+)?(?:owners?|equity\s+holders|shareholders)", re.I),
     # 'Total Income' (= rev + other income) — validation row only, NOT 'Total income from operations'
@@ -115,6 +117,13 @@ def close(a, b):
 
 def prevq(qe):
     return FI.prevq(qe)
+
+
+def nextq(qe):
+    """Next standard quarter-end: 0331→0630→0930→1231→next-year 0331."""
+    y, mmdd = qe // 10000, qe % 10000
+    nxt = {331: 630, 630: 930, 930: 1231, 1231: 331}[mmdd]
+    return (y + 1) * 10000 + nxt if mmdd == 1231 else y * 10000 + nxt
 
 
 def yago(qe):
@@ -296,6 +305,9 @@ def main():
     inc_fin = "--fin" in args
 
     n500_only = "--n500" in args
+    # --rescue: also mine LATER filings' comparative columns for a gap quarter (next-quarter and
+    # year-later result PDFs print it as their comparative) — the only source for pre-IPO quarters.
+    rescue = "--rescue" in args
     # --symfile FILE: restrict to an explicit symbol list (JSON array) — used for the point-in-time
     # ever-member sweeps (ex-Nifty-500 names that no longer carry the current x&4 bit).
     symfile = args[args.index("--symfile") + 1] if "--symfile" in args else None
@@ -458,10 +470,13 @@ def main():
             return []
         got = []
         for basis in bases:
-            # stored PAT anchors for every quarter this page could show
+            # stored PAT anchors for every quarter this page could show. Include the NEXT quarter
+            # and the YEAR-LATER quarter too: a later filing's page shows our target qe as its
+            # prev-quarter / year-ago COMPARATIVE column, and its own (stored-PAT) columns then
+            # anchor alongside it — a 2-3 column lock instead of a lone comparative match.
             cand = set()
             for qe in want_qes:
-                cand.update((qe, prevq(qe), yago(qe)))
+                cand.update((qe, prevq(qe), yago(qe), nextq(qe), qe + 10000, prevq(qe + 10000)))
             stored = {qe: pat_of(sym, qe, basis) for qe in cand}
             stored = {qe: v for qe, v in stored.items() if v is not None}
             if not stored:
@@ -535,19 +550,38 @@ def main():
                 wins.append((d0 - datetime.timedelta(days=6), d0 + datetime.timedelta(days=6)))
             dq = datetime.datetime.strptime(str(qe), "%Y%m%d").date()
             wins.append((dq + datetime.timedelta(days=10), dq + datetime.timedelta(days=160)))
-            fils, err = [], None
+            if rescue:
+                # COMPARATIVE RESCUE: our target quarter is printed as the prev-quarter /
+                # year-ago comparative column of LATER filings — the only extant source when
+                # the company IPO'd after qe (it never filed qe itself), and a second chance
+                # when its own filing was scanned. Search around the NEXT quarter's and the
+                # YEAR-LATER quarter's stored announce dates (else their post-quarter stretch).
+                for rq in (nextq(qe), qe + 10000):
+                    rr = fmap.get(sym, {}).get(rq)
+                    rann = (rr[2] or (rr[4] if len(rr) > 4 else None)) if rr else None
+                    if rann:
+                        d1 = datetime.datetime.strptime(str(rann), "%Y%m%d").date()
+                        wins.append((d1 - datetime.timedelta(days=6), d1 + datetime.timedelta(days=6)))
+                    else:
+                        dr = datetime.datetime.strptime(str(rq), "%Y%m%d").date()
+                        wins.append((dr + datetime.timedelta(days=10), dr + datetime.timedelta(days=75)))
+            fils, err, seen_f = [], None, set()
             for lo, hi in wins:
                 try:
-                    fils = FI.datebound(op_sess, str(scrip), lo.strftime("%Y%m%d"), hi.strftime("%Y%m%d"))
+                    got_f = FI.datebound(op_sess, str(scrip), lo.strftime("%Y%m%d"), hi.strftime("%Y%m%d"))
                 except Exception as ex:
                     err = "ann-list-err:%s" % type(ex).__name__
+                    got_f = []
                 time.sleep(0.5)
-                if fils:
-                    break
+                for t in got_f or []:
+                    if t[1] not in seen_f:
+                        seen_f.add(t[1]); fils.append(t)
+                if fils and not rescue:
+                    break                      # legacy behaviour: first productive window wins
             if not fils:
                 skips["%s|%d" % (sym, qe)] = err or "no-result-filing-in-window"
                 continue
-            for annd, att, sub in fils[:4]:
+            for annd, att, sub in fils[:10 if rescue else 4]:
                 if att in seen_atts:
                     continue
                 seen_atts.add(att)
@@ -562,7 +596,9 @@ def main():
                 except Exception:
                     continue
                 open_want = [q for q in want if need_bases(sym, q)]
-                for pi in range(min(len(doc), 14)):
+                # investor-letter PDFs (Eternal/Zomato style) bury the statements 20+ pages in —
+                # scan deeper when rescue-mining comparatives; 14 pages stays the cheap default.
+                for pi in range(min(len(doc), 40 if rescue else 14)):
                     try_page(sym, doc[pi], open_want, "%s@%s" % (att[:24], annd))
                 doc.close()
                 if not need_bases(sym, qe):
