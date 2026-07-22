@@ -222,7 +222,7 @@
       <div class="dstrip" id="feedDates"></div>
       <div id="feedList"></div>
       <div class="text-center mt-4"><button id="fMore" class="hidden px-5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition">Load more ↓</button></div>
-      <p class="text-[11px] text-slate-500 mt-3">₹ crore · YoY vs the same quarter last year, computed on the same reporting basis both periods (consolidated preferred) · when the year-ago quarter was a <b>loss</b>, growth is measured against its absolute value · <b>LP</b> = loss→profit turnaround, <b>PL</b> = profit→loss, <b>LL</b> = still loss-making · banks/NBFCs show total income &amp; PAT only · cards appear once numbers are parsed (NSE names sync nightly ~21:30 IST) — fresh filings wait under <i>numbers pending</i> · every NSE + BSE result filing, refreshes ~4×/day plus a live top-up (~every minute) when our relay is up · <span id="feedUpd"></span></p>
+      <p class="text-[11px] text-slate-500 mt-3">₹ crore · YoY vs the same quarter last year, computed on the same reporting basis both periods (consolidated preferred) · when the year-ago quarter was a <b>loss</b>, growth is measured against its absolute value · <b>LP</b> = loss→profit turnaround, <b>PL</b> = profit→loss, <b>LL</b> = still loss-making · banks/NBFCs show total income &amp; PAT only · cards appear once a filing's numbers are parsed (NSE names sync nightly ~21:30 IST) · every NSE + BSE result filing, refreshes ~4×/day plus a live top-up (~every minute) when our relay is up · <span id="feedUpd"></span></p>
     </section>
 
     <!-- ============ CALENDAR ============ -->
@@ -843,6 +843,10 @@ const FEED_CAT_RE=/^financial\s+result/i, FEED_CAP_RE=/financial\s+results?\s+fo
 const FEED_QE_RE=/(period|quarter|year)\s+ended\s+([A-Za-z]{3})[a-z]*\s+(\d{1,2}),?\s+(\d{4})/i;
 let feedDays='7', feedSort='latest', feedDay='all', feedTurn=false, feedShown=24;
 const feedPdf = f => f.indexOf('http')===0 ? f : PDF_PREFIX+f;
+/* "Numbers pending" (filings we've seen but haven't parsed yet) is the owner's coverage tool, not a
+   visitor feature — same client-side curtain as results-coverage/analytics. Visitors see cards only,
+   and every count keys off cards so the numbers they see always reconcile. */
+const FEED_OWNER = (()=>{ try{ return !!localStorage.getItem('bt_owner_key'); }catch(e){ return false; } })();
 /* A feed row earns a CARD when its company + quarter have parsed numbers; else it's "numbers pending". */
 function feedItem(r){
   const c=CO[r[0]]; if(!c) return null;
@@ -926,8 +930,10 @@ function renderFeed(){
   $('feedChips').querySelectorAll('[data-fs]').forEach(b=>b.onclick=()=>{ feedSort=b.getAttribute('data-fs'); feedShown=24; renderFeed(); });
   $('feedChips').querySelectorAll('[data-ft]').forEach(b=>b.onclick=()=>{ feedTurn=!feedTurn; feedShown=24; renderFeed(); });
   const cut=new Date(Date.now()-(+feedDays)*864e5).toISOString().slice(0,10);
-  const all=FEEDROWS.filter(r=>r[2].slice(0,10)>=cut && (coPass(r[0])||!CO[r[0]]&&ST.uni==='all'&&ST.sector==='all'&&ST.mcap==='all'))
-                    .filter(r=>!ST.search||normSearch(r[0]).indexOf(normSearch(ST.search))>=0||normSearch(r[1]).indexOf(normSearch(ST.search))>=0);
+  let all=FEEDROWS.filter(r=>r[2].slice(0,10)>=cut && (coPass(r[0])||!CO[r[0]]&&ST.uni==='all'&&ST.sector==='all'&&ST.mcap==='all'))
+                  .filter(r=>!ST.search||normSearch(r[0]).indexOf(normSearch(ST.search))>=0||normSearch(r[1]).indexOf(normSearch(ST.search))>=0);
+  const items=new Map(); all.forEach(r=>items.set(r,feedItem(r)));
+  if(!FEED_OWNER) all=all.filter(r=>items.get(r));
   /* Screener-style date strip: jump to a single declaration day */
   const dayC={}; all.forEach(r=>{ const d=r[2].slice(0,10); dayC[d]=(dayC[d]||0)+1; });
   const days=Object.keys(dayC).sort().reverse();
@@ -938,9 +944,11 @@ function renderFeed(){
   $('feedDates').querySelectorAll('[data-dd]').forEach(b=>b.onclick=()=>{ feedDay=b.getAttribute('data-dd'); feedShown=24; renderFeed(); });
   const rows= feedDay==='all'? all : all.filter(r=>r[2].slice(0,10)===feedDay);
   const cards=[], pend=[];
-  rows.forEach(r=>{ const it=feedItem(r); if(it) cards.push(it); else pend.push(r); });
+  rows.forEach(r=>{ const it=items.get(r); if(it) cards.push(it); else pend.push(r); });
   let list=feedTurn? cards.filter(it=>patFlag(it.gy)==='LP') : cards;
-  $('feedCount').textContent=rows.length+' filings · '+list.length+(feedTurn?' turnarounds':' with numbers');
+  $('feedCount').textContent= FEED_OWNER
+    ? rows.length+' filings · '+list.length+(feedTurn?' turnarounds':' with numbers')
+    : list.length+(feedTurn?' turnarounds':' results');
   const pv=g=>g&&g.pct!=null?g.pct:-1e9;
   if(feedSort==='sales')       list=list.slice().sort((a,b)=>pv(b.ry)-pv(a.ry));
   else if(feedSort==='profit') list=list.slice().sort((a,b)=>pv(b.gy)-pv(a.gy));
@@ -956,15 +964,15 @@ function renderFeed(){
       const g=groups[d]||[], p=pgroups[d]||[];
       const take=g.slice(0,feedShown-used); used+=take.length;
       html+='<div class="dayhead">'+(d===today?'Today':d===yest?'Yesterday':isoNice(d))+
-        ' <span class="normal-case text-slate-400">· '+(g.length+p.length)+' filings</span><span class="dline"></span></div>';
+        ' <span class="normal-case text-slate-400">· '+(g.length+p.length)+(FEED_OWNER?' filings':' results')+'</span><span class="dline"></span></div>';
       if(take.length) html+='<div class="fgrid">'+take.map(feedCard).join('')+'</div>';
       if(take.length<g.length) break;                      /* rest of this day + older days sit behind Load more */
-      if(p.length&&!feedTurn) html+='<div class="card p-2 mt-2.5"><div class="px-3 pt-1.5 pb-1 text-[10.5px] uppercase tracking-wide font-extrabold text-slate-400">Numbers pending · '+p.length+'</div>'+p.map(feedPendRow).join('')+'</div>';
+      if(p.length&&!feedTurn&&FEED_OWNER) html+='<div class="card p-2 mt-2.5"><div class="px-3 pt-1.5 pb-1 text-[10.5px] uppercase tracking-wide font-extrabold text-slate-400">Numbers pending · '+p.length+'</div>'+p.map(feedPendRow).join('')+'</div>';
     }
   }else{
     const take=list.slice(0,feedShown); used=take.length;
     html='<div class="fgrid">'+take.map(feedCard).join('')+'</div>'+
-      (pend.length&&!feedTurn?'<div class="text-[11px] text-slate-400 mt-3">'+pend.length+' filings without parsed numbers are hidden under this sort — switch to <b>Latest</b> to see them.</div>':'');
+      (pend.length&&!feedTurn&&FEED_OWNER?'<div class="text-[11px] text-slate-400 mt-3">'+pend.length+' filings without parsed numbers are hidden under this sort — switch to <b>Latest</b> to see them.</div>':'');
   }
   $('feedList').innerHTML=html||'<div class="card p-8 text-center text-slate-400 text-sm">No results '+(feedTurn?'with a loss→profit turnaround ':'')+'in this window'+(ST.uni!=='all'||ST.sector!=='all'||ST.mcap!=='all'?' under these filters':'')+'.</div>';
   $('fMore').classList.toggle('hidden', used>=list.length);
