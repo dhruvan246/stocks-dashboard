@@ -787,6 +787,14 @@ V-recovery (Jun-2021: +48%)**.
     arithmetic; IRCTC/GAEL/GRAPHITE/TTML land on **exactly 100.000** (IRCTC: 165839.23 − 80580.17 = 85259.06, and
     its Jun-22 filing says 852.59). **(b) cross-basis** — the other-basis filing minutes later (BATAINDIA, GHCL,
     BRFL). **(c) neighbours** — only where exactly one power of ten lands every slot in range (SILGO, PBAINFRA).
+  - **TINY-CON subclass (user-reported 3MINDIA Dec-25 con 1.23 vs std 1228.05; 58-cell sweep FIXED 2026-07-22):**
+    a junk or /100 **consolidated context beside a healthy standalone** — con rev < 5% of std is structurally
+    impossible for a real consolidation. Sweep rule: `con<0.05*std AND std>20`. Adjudication split: whole-con-basis
+    /100 incl. PAT → scale_fix.json (k=-2, basis=con: METROBRAND/NAVNETEDUL/PARKHOTELS); Screener-reachable
+    (≥ ~12 qtrs back) → PAT-anchored Sales OVERWRITE (AIIL/PFC/JINDALSAW/TENNIND); unverifiable → null CON slots
+    only (49 cells, _revgap_nulled.json). ⚠️ the inverted case exists: ACUTAAS Jun-23 had std=con×100 (null the
+    STD, keep coherent con). **Prevention now automatic:** `revop_sanity.py` rule 3 nulls new tiny-con fills
+    (con < 5% of std AND < 20 cr — the 20-cr floor protects real small con from an inflated std).
   - **⚠️ Don't require ">= N quarters" when sweeping** — that hid **GICL 20250930** (×1e5 on BOTH bases, rendering
     ₹3,615,270cr of revenue) outright, because GICL has only 4 quarters. Compare to ADJACENT quarters instead.
   - **KNOWN-UNFIXED (needs its own session, NOT in the ledger):** **QUINT** (Quint Digital, ₹180cr mcap) has ~20
