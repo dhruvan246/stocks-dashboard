@@ -257,6 +257,7 @@
             <div>
               <h2 class="text-sm font-bold uppercase tracking-wide text-white flex items-center gap-2">📊 <span id="rsChartTitle">Total YoY growth by quarter</span></h2>
               <p class="text-[11px] text-slate-400 mt-1" id="rsAsOf"></p>
+              <p class="text-[11px] text-slate-500 mt-0.5 flex items-center gap-1.5" id="rsRefreshed"></p>
             </div>
             <div id="rsLegend" class="flex items-center gap-3 sm:gap-4 text-[11px] font-medium shrink-0"></div>
           </div>
@@ -515,17 +516,37 @@ function renderSectorSel(){
    Trends shows → guaranteed identical. Sector/mcap sub-filters (which Season Trends doesn't offer)
    keep the live per-reporter median. */
 const OV2RS={ n50:'Nifty 50', n100:'Nifty 100', n500:'Nifty 500', m150:'Nifty Midcap 150', s250:'Nifty Smallcap 250' };
-function ensureRS(cb){                            // loads results_season.json ONCE, data only (no UI)
-  if(RS_STATE===2){ cb&&cb(); return; }
+function ensureRS(cb,force){                      // loads results_season.json ONCE, data only (no UI)
+  if(RS_STATE===2&&!force){ cb&&cb(); return; }
   if(RS_STATE===1) return;                        // in-flight; the .then re-renders the active tab
+  const wasReady=RS_STATE===2;
   RS_STATE=1;
   fetch('./results_season.json?t='+Date.now())
     .then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
     .then(d=>{ RS_DATA=d; RS_STATE=2;
                if(ST.tab==='overview') renderOverview(); else if(ST.tab==='season') seasonRender();
                cb&&cb(); })
-    .catch(()=>{ RS_STATE=0; });
+    .catch(()=>{ RS_STATE=wasReady?2:0; });        // a failed background refresh keeps showing stale data, not an error
 }
+/* Data-freshness clock: the backend rebuilds results_season.json every ~15min whenever new filings
+   land (see DATA_RUNBOOK §11) — but a browser tab left open never sees that unless it refetches.
+   Poll quietly in the background (only while the tab is visible/foreground) and tick the "X ago"
+   label every 30s so it's obvious the page is live, not stalled. */
+function rsAgeText(){
+  if(!RS_DATA||!RS_DATA.updated) return '';
+  const m=/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}) IST$/.exec(RS_DATA.updated);
+  if(!m) return 'data refreshed '+RS_DATA.updated;
+  const utcMs=Date.UTC(+m[1],+m[2]-1,+m[3],+m[4],+m[5])-5.5*3600000;
+  const mins=Math.max(0,Math.round((Date.now()-utcMs)/60000));
+  const age = mins<1?'moments ago' : mins<60?mins+' min ago' : Math.round(mins/60)+' hr ago';
+  return 'data refreshed '+age+' ('+RS_DATA.updated+')';
+}
+function rsTickAge(){
+  const el=$('rsRefreshed'); if(!el||ST.tab!=='season') return;
+  el.textContent=rsAgeText();
+}
+setInterval(rsTickAge, 30000);
+setInterval(()=>{ if(document.visibilityState==='visible') ensureRS(null,true); }, 300000);  // 5 min
 function rsMedianFor(qe){
   if(RS_STATE!==2||!RS_DATA||ST.mode!=='yoy'||ST.sector!=='all'||ST.mcap!=='all') return null;
   const key=OV2RS[ST.uni]; if(!key) return null;
@@ -1081,6 +1102,7 @@ function rsRenderChart(){
   ];
   const uni=$('rsUniverse'); if(uni) uni.textContent=RS_CUR.note||'';
   const asof=$('rsAsOf'); if(asof) asof.textContent=(RS_CUR.label||'')+(RS_DATA.dataAsOf?' · prices as of '+RS_DATA.dataAsOf:'');
+  rsTickAge();
   const foot=$('rsFootnote');
   if(foot) foot.textContent=(RS_MODE==='median'
       ? 'MEDIAN — the typical company’s YoY growth (consolidated where filed, else standalone); half of members grew faster, half slower. '

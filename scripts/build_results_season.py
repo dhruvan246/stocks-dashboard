@@ -22,7 +22,7 @@ may be negative — Trendlyne's (cur-base)/ABS(base) convention, DATA_RUNBOOK §
 Out: docs/results_season.json = { defaultUniverse, basis, dataAsOf, universes:[{key,label,note,quarters}] }
 Run:  python -X utf8 build_results_season.py
 """
-import os, json, gzip, statistics
+import os, json, gzip, statistics, datetime
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -339,6 +339,7 @@ def main():
         print("  %-24s %2d quarters  latest %s reported=%d" % (
             u["label"], len(q), q[-1]["label"] if q else "-", q[-1]["reported"] if q else 0))
 
+    ist = datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)
     payload = {
         "defaultUniverse": "liquid",
         "basis": "YoY vs the year-ago quarter (positive base). PAT = consolidated owners-attributable where "
@@ -346,6 +347,9 @@ def main():
                  "& Operating profit include banks/NBFCs (bank rev = interest earned, op = pre-provision profit). "
                  "Index universes use point-in-time membership (whoever was in the index at each quarter's rebalance).",
         "dataAsOf": end,
+        # when THIS build ran — distinct from dataAsOf (the price bin's date). Lets the page show
+        # "refreshed HH:MM IST" so a stale open tab doesn't read as a dead pipeline (runbook §11).
+        "updated": ist.strftime("%Y-%m-%d %H:%M IST"),
         "universes": universes,
     }
     json.dump(payload, open(OUT, "w"), separators=(",", ":"))
