@@ -1,0 +1,54 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "bash",
+            "command": "python -X utf8 \"$CLAUDE_PROJECT_DIR/scripts/_concurrency_guard.py\" pre-edit",
+            "timeout": 15,
+            "statusMessage": "Checking for cross-session file conflicts"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "bash",
+            "command": "python -X utf8 \"$CLAUDE_PROJECT_DIR/scripts/_concurrency_guard.py\" pre-bash",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "bash",
+            "command": "python -X utf8 \"$CLAUDE_PROJECT_DIR/scripts/_concurrency_guard.py\" post-edit",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "bash",
+            "command": "python -X utf8 \"$CLAUDE_PROJECT_DIR/scripts/_concurrency_guard.py\" session-start",
+            "timeout": 20
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -2255,6 +2255,13 @@ Gotchas:
 5. Ledgers, not derived files; re-verify LIVE ~20 min after any heal push (in-flight CI can race).
 6. Plain local `date` for commit labels — `TZ=Asia/Kolkata date` prints UTC on this machine (no tzdata in git-bash).
 
+Rules 1–2 are ENFORCED BY HOOKS: `.claude/settings.json` runs `scripts/_concurrency_guard.py`
+(pre-edit: file dirty from another session → confirmation prompt; pre-bash: `reset --hard` /
+`stash` / `add -A` / `commit -a` / autostash-rebase / `checkout .` / `clean` / force-push in the
+shared checkout → confirmation prompt; session-start: injects the current dirty-file list).
+Worktrees (`stocks-wt\*`, `.claude\worktrees\*`) are exempt — single-writer by construction.
+Guard gotcha: PowerShell 5.1 pipes prepend a UTF-8 BOM; the guard strips it before json.load.
+
 **CASE STUDY 2026-07-22** (why these rules exist): the scheduler fired vision-fill at 03:42 IST;
 the laptop slept mid-run; the commit label read "21-Jul 22:22 IST" (TZ bug → UTC), so after waking
 at ~11:50 the SAME session didn't recognize its own commit b358d2e, concluded a CI job had "picked

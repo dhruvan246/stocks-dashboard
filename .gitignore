@@ -6,8 +6,10 @@ scripts/__pycache__/
 *.pyc
 .DS_Store
 scripts/_bhav_cache/
-.claude/
+.claude/*
+!.claude/settings.json
 scripts/_*
+!scripts/_concurrency_guard.py
 # Required by the daily fundamentals workflow (apply_owners_full.py) — must be tracked
 !scripts/_reattr_owners.json
 _prs_txt/

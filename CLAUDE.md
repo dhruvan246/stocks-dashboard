@@ -19,6 +19,8 @@ Rules that keep them from fighting (violated → the 2026-07-22 tangle, see DATA
 5. **Heal data via ledgers, not derived files.** Nightly CI rebuilds derived JSONs (sf_revop.json, results_season.json, quarterly_results.json, sf_fundamentals.json, dash bins…) and will clobber direct edits. Route fixes through the matching ledger (scale_fix.json, feed_qe_fix.json, ann_date_fills.json, revop_fundamentals.json, _bse_fund_done.json, …) then rebuild. After pushing a data heal, re-verify LIVE ~20 min later — an in-flight CI run may have raced you.
 6. **Timestamps:** plain `date +'%Y-%m-%d %H:%M IST'` (this machine runs IST). `TZ=Asia/Kolkata date` silently prints UTC on Windows git-bash (no tz database) and mislabels commits by 5h30m.
 
+**Enforcement:** rules 1–2 are enforced by hooks (`.claude/settings.json` → `scripts/_concurrency_guard.py`). Editing a file that another session has dirty, or running a tree-wide git mutation in this checkout, pops a confirmation prompt; session start injects a list of files currently dirty. If the guard prompts you, it is almost always right — resolve the conflict (coordinate or use a worktree), don't route around it.
+
 ## Data work
 
 Before ANY data work, read `scripts/DATA_RUNBOOK.md` and follow it — procedures there override improvisation.
