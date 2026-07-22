@@ -2235,3 +2235,50 @@ Gotchas:
 - **feeds.json:** indices.json + indices_hist.json entries exist (guard_feed monitored).
 - **In-browser live top-up:** §36 — the page ALSO fetches LiveIndicesWatch directly
   (CORS-open) every 60 s during market hours; level/1D%/52w go live, the rest stays baked.
+
+## 38. CONCURRENCY — ONE WRITER PER TREE  (2026-07-22, after the vision-fill / backfill tangle)
+
+**WHO WRITES THIS REPO** (three actor classes, overlapping all day):
+- **GitHub Actions** (~30 `refresh-*.yml` + `refresh.yml` + `pages.yml`…) — cloud checkouts,
+  file-scoped `git add`, per-workflow `concurrency:` groups, rebase-retry push. Well-behaved;
+  keep that pattern intact when editing workflows.
+- **Local scheduled routines** (Claude scheduled tasks; today: bse-vision-fill 15:08/23:08 IST) —
+  each owns a PRIVATE persistent worktree under `C:\Users\dhruv\stocks-wt\<task>`. They never
+  touch the interactive checkout.
+- **Interactive Claude sessions** (often several at once) — share `C:\Users\dhruv\stocks-dashboard`.
+
+**THE RULES** (mirrored in repo-root CLAUDE.md, which every session auto-loads):
+1. Own-files-only staging; never `git add -A` / `git commit -a`.
+2. No `reset --hard` / `stash` / `rebase --autostash` in the shared checkout — worktrees only.
+3. Long/scripted jobs → own worktree (`git worktree add --detach C:/Users/dhruv/stocks-wt/<name> origin/main`).
+4. Rebase-retry push; if blocked by others' dirty files → cherry-pick your commit in a temp worktree.
+5. Ledgers, not derived files; re-verify LIVE ~20 min after any heal push (in-flight CI can race).
+6. Plain local `date` for commit labels — `TZ=Asia/Kolkata date` prints UTC on this machine (no tzdata in git-bash).
+
+**CASE STUDY 2026-07-22** (why these rules exist): the scheduler fired vision-fill at 03:42 IST;
+the laptop slept mid-run; the commit label read "21-Jul 22:22 IST" (TZ bug → UTC), so after waking
+at ~11:50 the SAME session didn't recognize its own commit b358d2e, concluded a CI job had "picked
+up and committed" its files, re-extracted 7 already-filled companies, and its `rebase --autostash`
+collided with the revenue-backfill session's uncommitted sf_revop.json / revop_fundamentals.json —
+parking that WIP in stashes and restoring files to HEAD by guesswork. No data was lost, but only by
+luck; a follow-up "recovery" nearly rewrote history off a false ABSENT reading (bse_fundamentals
+`px` is keyed by SCRIP CODE, not symbol — check the structure before declaring data missing).
+
+**HOT-FILE OWNERSHIP** (single writer each; everyone else goes through the ledger):
+- `sf_revop.json` / `results_season.json` / `quarterly_results.json` / `sf_fundamentals.json` —
+  nightly `refresh.yml` rebuild is the writer; local backfills write the
+  `scripts/revop_fundamentals.json` ledger + rebuild (that's why backfill work survives the nightly).
+- `bse_fundamentals.json` / `vision_fills.json` / `bse_results.json` / `results_coverage.json` —
+  bse-vision-fill routine (in its worktree).
+- `shp_history.json` — `refresh-shareholding.yml` ONLY; never two writers (§22 corruption).
+- Ledgers (`scale_fix.json`, `feed_qe_fix.json`, `ann_date_fills.json`, `_bse_fund_done.json`, …) —
+  append via their scripts; safe to edit locally because CI replays them.
+
+**WORKTREE RECIPES:**
+```
+create:  git worktree add --detach C:/Users/dhruv/stocks-wt/<name> origin/main
+sync:    (inside it) git fetch origin -q && git reset --hard origin/main    <- safe THERE only
+push:    git push origin HEAD:main    (inside fetch+rebase retry loop)
+remove:  git worktree remove C:/Users/dhruv/stocks-wt/<name>
+list:    git worktree list
+```
