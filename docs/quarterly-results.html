@@ -902,7 +902,7 @@ function feedCard(it){
     '</div>'+
     '<table class="ftbl">'+head+body+'</table>'+
     '<div class="flex items-center justify-between mt-1.5 text-[10.5px] text-slate-400">'+
-      '<span>declared '+isoNice(dt.slice(0,10))+'</span>'+
+      '<span>declared '+isoNice(dt.slice(0,10))+' · '+dt.slice(11,16)+'</span>'+
       (it.rx!=null?'<span class="font-bold '+pctCls(it.rx)+'" title="Price move on result day">'+fmtPct(it.rx)+' on result day</span>':'')+
     '</div></div>';
 }
