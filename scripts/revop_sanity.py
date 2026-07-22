@@ -9,6 +9,11 @@ can't catch on its own, logging every removal to _revgap_nulled.json:
      company. Real quarterly revenue essentially never repeats exactly; this is a comparative
      column mis-attributed to the wrong quarter (SIEMENS 3398.5 in both Jun-25 and Dec-25).
      Both offending cells are blanked (safer than keeping one wrong one).
+  3. TINY-CON     — con rev present but < 5%% of std rev AND < 20 cr: a filer's junk/mis-scaled
+     consolidated context (3MINDIA Dec-25 con 1.23 vs std 1228.05; 58-cell sweep 2026-07-22).
+     A real consolidation can't shrink revenue below ~5%% of standalone. Only the CON slots are
+     blanked (std verified fine in every swept case). The 20-cr floor protects real-but-small con
+     values from a scale-inflated std (the ACUTAAS inversion).
 
 Run:  python scripts/revop_sanity.py [--dry]   (compares docs/sf_revop.json vs git HEAD)
 """
@@ -37,7 +42,8 @@ def main():
         o = old.get(s, {}).get(str(qe))
         return bool(o) and (o[0] is not None or o[1] is not None)
 
-    kill = []   # (sym, qe, val, reason)
+    kill = []       # (sym, qe, val, reason) — nulls the whole row
+    kill_con = []   # (sym, qe, val, reason) — nulls only the con slots
     for s, d in rv.items():
         # established reference from pre-existing cells
         oldvals = [revof(old.get(s, {}).get(q)) for q in old.get(s, {})]
@@ -55,6 +61,10 @@ def main():
                 if ref_max is not None and ref_max >= 20 and v > 4 * ref_max:
                     kill.append((s, qe, v, "scale-spike>4x-established-max(%.0f)" % ref_max))
                     continue
+                # tiny-con: junk/mis-scaled consolidated context beside a healthy standalone
+                if (a[0] is not None and a[1] is not None and a[0] > 20
+                        and 0 <= a[1] < 0.05 * a[0] and a[1] < 20):
+                    kill_con.append((s, qe, a[1], "junk-tiny-con(con %.2f < 5%% of std %.2f)" % (a[1], a[0])))
                 if v > 50:
                     seen.setdefault(round(v, 2), []).append(qe)
         for v, qs in seen.items():
@@ -72,22 +82,29 @@ def main():
         seen_keys.add(k)
         kills.append((s, qe, v, why))
 
-    print("sanity: %d cells to null (%d scale, %d duplicate)" % (
+    kill_con = [k for k in kill_con if (k[0], k[1]) not in seen_keys]
+    print("sanity: %d cells to null (%d scale, %d duplicate) + %d con-only" % (
         len(kills),
         sum(1 for k in kills if k[3].startswith("scale")),
-        sum(1 for k in kills if k[3].startswith("duplicate"))))
-    for s, qe, v, why in sorted(kills):
+        sum(1 for k in kills if k[3].startswith("duplicate")),
+        len(kill_con)))
+    for s, qe, v, why in sorted(kills) + sorted(kill_con):
         print("  %-12s %s  rev=%-10s  %s" % (s, qe, v, why))
 
-    if not dry and kills:
+    if not dry and (kills or kill_con):
         for s, qe, v, why in kills:
             a = rv[s][qe]
             a[0] = a[1] = a[2] = a[3] = a[7] = a[8] = None
             rv[s][qe] = a
             led["%s|%s" % (s, qe)] = {"nulled_rev": v, "reason": why}
+        for s, qe, v, why in kill_con:
+            a = rv[s][qe]
+            a[1] = a[3] = a[8] = None
+            rv[s][qe] = a
+            led["%s|%s" % (s, qe)] = {"nulled_rev": v, "reason": why}
         json.dump(rv, open(RV, "w"), separators=(",", ":"))
         json.dump(led, open(LED, "w"), indent=0)
-        print("nulled %d cells; ledger now %d entries" % (len(kills), len(led)))
+        print("nulled %d cells; ledger now %d entries" % (len(kills) + len(kill_con), len(led)))
 
 
 if __name__ == "__main__":
