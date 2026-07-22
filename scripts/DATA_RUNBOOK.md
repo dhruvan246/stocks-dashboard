@@ -210,6 +210,26 @@ in-step: pymupdf + curl_cffi + rapidocr-onnxruntime/onnxruntime/numpy. Validate:
 **Manual method** — correct page/row, owners-attributable, unit disambiguation, verify:
 → **`scripts/INSURER_EXTRACTION_PLAYBOOK.md`** (memory: project-stocks-insurer-extraction).
 
+**PRE-LISTING insurer quarters — IRDAI website disclosure packs (proven CANHLIFE FY24, 2026-07-22):**
+When a quarter predates the insurer's listing (no BSE/NSE filing exists anywhere), the IRDAI **public
+disclosure packs on the company website** carry it. Recipe (CANHLIFE example):
+1. Find the packs: the site's public-disclosures page is an AEM app; the per-quarter PDF sits under
+   `/content/dam/<site>/pdf/public-disclosure/disclosure/<id>/website-disclosure-<mon>-<yy>.pdf` and the
+   `<option value="<id>">FY-Qn</option>` dropdown in the page HTML maps quarter→id (CANHLIFE: 55=FY24Q1 …
+   66=FY26Q4). The DAM folder listing `…/disclosure/<id>.1.json` is OPEN and gives the exact filename
+   (naming drifts: `june-23` vs `june-2024` vs `march-26`). Plain curl needs only a browser User-Agent.
+2. **L-1-A-RA** (Revenue Account, policyholders) is CUMULATIVE-to-date with segment columns — take the
+   GRAND-total column (NPI Sub-Total after reinsurance; Income-from-Investments block Sub-Total) and get
+   the quarter by **consecutive-pack subtraction** (Q2 = H1 − Q1 …). In the Q4 pack, page 1 of L-1 is the
+   Mar QUARTER directly and page 2 the FY (pages 3-4 = prior year).
+3. **L-2-A-PL** (shareholders' P&L) has **FOR-QUARTER columns directly**: shareholders' investment income
+   (sum a-d), Other income, PBT, PAT.
+4. rev = NPI + policyholders' inv income + shareholders' inv income; op = PBT − OI(both) — same LI
+   convention as build_revop. **Validate the chain**: Q1+Q2+Q3+Q4 must equal the FY pack to ~1 lac, and if
+   any listed-era quarter overlaps, the method must reproduce its SEBI-form value EXACTLY (CANHLIFE Jun-24
+   3,086.86 reproduced to the paisa). PAT anchor per quarter from the L-2 for-quarter column. ⚠️ op from
+   L-forms carries ±1cr classification noise vs the SEBI form (rev/PAT are exact).
+
 **ROBUSTNESS UPGRADES (2026-07-16) — so the Season Trends chart (quarterly-results.html) never silently undercounts an index:**
 1. **Free Gemini-vision fallback is WIRED but needs a secret.** `fetch_insurers.py` → `gemini_extract()` (via
    `gemini_vision.py`, Google AI Studio FREE tier ~1500/day, we use ~7/qtr) renders the P&L page and reads it,
