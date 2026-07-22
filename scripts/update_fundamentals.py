@@ -123,10 +123,23 @@ def main():
     # (?filings= route, live-quote-worker.js) — Akamai passes CF while blocking datacenter IPs.
     WORKER = "https://stocksworld-quotes.dhruvan2510.workers.dev"
     def worker_get(idx_, page_):
-        import urllib.request
+        import urllib.request, urllib.error
         u = ("%s/?filings=%s&from=%s&to=%s&page=%d&size=200" % (WORKER, idx_, frm, to, page_))
-        return urllib.request.urlopen(urllib.request.Request(u, headers={"User-Agent": B.UA}),
-                                      timeout=150).read().decode("utf-8", "replace")
+        req = urllib.request.Request(u, headers={"User-Agent": B.UA})
+        # A 5xx from the WORKER is a transient CF/upstream hiccup (cold start, gateway blip) —
+        # NOT the Akamai block the other transports hit. Worth its own in-place retry: on
+        # 2026-07-20 every scheduled run died with "worker: HTTP Error 502" as attempt 4 of 4,
+        # so the one rung that could still have passed was spent on a temporary error and the
+        # whole day's fundamentals went unfilled. An Akamai block (403) is NOT retried here —
+        # that one is real and the ladder should move on.
+        for tries in range(3):
+            try:
+                return urllib.request.urlopen(req, timeout=150).read().decode("utf-8", "replace")
+            except urllib.error.HTTPError as e:
+                if e.code not in (502, 503, 504) or tries == 2:
+                    raise
+                print("  [worker] HTTP %d (transient) — retrying in %ds" % (e.code, 10 * (tries + 1)))
+                time.sleep(10 * (tries + 1))
 
     rows = []
     prefer = ["urllib"]                              # sticky: lead with whichever transport last worked

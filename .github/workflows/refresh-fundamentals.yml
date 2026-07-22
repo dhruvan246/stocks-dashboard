@@ -2,16 +2,26 @@ name: Daily fundamentals refresh
 
 on:
   schedule:
-    # EVERY 15 MIN from 04:00–14:45 UTC = 09:30–20:15 IST, EVERY day (weekend board
-    # meetings exist) — so a company's numbers appear within ~15 min of its XBRL landing.
-    # This span covers the whole results-filing window (filings cluster 15:00–20:00 IST).
-    # Was hourly at :45, but GitHub's scheduler DRIFTS under load (observed 2026-07-17:
-    # a :45 cron fired at 07:02 / 09:29 / 11:08 UTC — gaps of 1.5–2.5 h, not 1 h). Firing
-    # 4× an hour means a dropped/late slot no longer costs an hour. Idle runs are ~40 s
-    # (the updater skips iXBRL for quarters already stored) and the 1.8 MB Quarterly
-    # Results baker stays GATED on docs/.fund_updated, so density costs ~nothing and
-    # does NOT bloat git history. Actions minutes are free (public repo).
-    - cron: "*/15 4-14 * * *"
+    # Twice hourly, 04:00–14:30 UTC = 09:30–20:00 IST, EVERY day (weekend board meetings
+    # exist). Span covers the results-filing window (filings cluster 15:00–20:00 IST).
+    #
+    # ⚠️ THE REQUESTED CADENCE IS NOT THE DELIVERED CADENCE. This was "*/15" until
+    # 2026-07-22, on the theory that firing 4×/h makes a dropped slot cheap. Measuring the
+    # actual run history killed that theory: over 07-19→07-22 the gaps between consecutive
+    # SCHEDULED runs were 102, 63, 56, 94, 65, 79, 123, 205, 134, 134, 95, 51, 129, 164,
+    # 127, 94, 131, 116, 114, 163 min — median ~115 min, and NOT ONE gap under 51 min.
+    # "*/15" was delivering ~8% of the requested runs. GitHub throttles high-frequency cron
+    # on free public repos, and asking for more appears to get you dropped harder, so the
+    # dense schedule was buying nothing. ":00/:30" states an honest intent; if delivery
+    # still measures ~2 h, the fault is GitHub's queue, not this line — do NOT "fix" it by
+    # making the cron denser again. That was already tried.
+    #
+    # For cadence that actually holds, use the repository_dispatch path below (external
+    # scheduler = guaranteed delivery). GitHub cron is the FALLBACK, not the primary.
+    # Idle runs are ~40 s (the updater skips iXBRL for quarters already stored) and the
+    # 1.8 MB Quarterly Results baker stays GATED on docs/.fund_updated, so this costs
+    # ~nothing and does NOT bloat git history. Actions minutes are free (public repo).
+    - cron: "0,30 4-14 * * *"
     # 15:45 UTC (21:15 IST) — the FULL nightly run: insurer vision fill + IPO-base fill +
     # an UNGATED baker rebuild (so reactions/drift track the 20:45 IST prices). It gets
     # hours 15 AND 16 UTC to itself — no dense cron there — because the steps below detect
