@@ -859,7 +859,7 @@ function fYoyTd(g,isPat){
   return '<td class="'+pctCls(g.pct)+' font-bold">'+(g.pct>=0?'⇡ ':'⇣ ')+Math.abs(g.pct).toFixed(0)+'%</td>';
 }
 const fValTd = v => '<td class="'+(v!=null&&v<0?'neg font-semibold':'text-slate-800')+'">'+fmtCr(v)+'</td>';
-function feedCard(it,showDate){
+function feedCard(it){
   const [sym,co,dt,qe,cap,file]=it.r, c=it.c, qi=it.qi;
   const i1=qi+1<QTRS.length?qi+1:-1, i4=qi+4<QTRS.length?qi+4:-1;
   const head='<tr class="fh"><td></td><td>YoY</td><td>'+qlabel(QTRS[qi],false)+'</td><td>'+
@@ -898,7 +898,7 @@ function feedCard(it,showDate){
     '</div>'+
     '<table class="ftbl">'+head+body+'</table>'+
     '<div class="flex items-center justify-between mt-1.5 text-[10.5px] text-slate-400">'+
-      '<span>filed '+(showDate?isoNice(dt.slice(0,10))+' ':'')+dt.slice(11,16)+'</span>'+
+      '<span>declared '+isoNice(dt.slice(0,10))+'</span>'+
       (it.rx!=null?'<span class="font-bold '+pctCls(it.rx)+'" title="Price move on result day">'+fmtPct(it.rx)+' on result day</span>':'')+
     '</div></div>';
 }
@@ -957,13 +957,13 @@ function renderFeed(){
       const take=g.slice(0,feedShown-used); used+=take.length;
       html+='<div class="dayhead">'+(d===today?'Today':d===yest?'Yesterday':isoNice(d))+
         ' <span class="normal-case text-slate-400">· '+(g.length+p.length)+' filings</span><span class="dline"></span></div>';
-      if(take.length) html+='<div class="fgrid">'+take.map(it=>feedCard(it,false)).join('')+'</div>';
+      if(take.length) html+='<div class="fgrid">'+take.map(feedCard).join('')+'</div>';
       if(take.length<g.length) break;                      /* rest of this day + older days sit behind Load more */
       if(p.length&&!feedTurn) html+='<div class="card p-2 mt-2.5"><div class="px-3 pt-1.5 pb-1 text-[10.5px] uppercase tracking-wide font-extrabold text-slate-400">Numbers pending · '+p.length+'</div>'+p.map(feedPendRow).join('')+'</div>';
     }
   }else{
     const take=list.slice(0,feedShown); used=take.length;
-    html='<div class="fgrid">'+take.map(it=>feedCard(it,true)).join('')+'</div>'+
+    html='<div class="fgrid">'+take.map(feedCard).join('')+'</div>'+
       (pend.length&&!feedTurn?'<div class="text-[11px] text-slate-400 mt-3">'+pend.length+' filings without parsed numbers are hidden under this sort — switch to <b>Latest</b> to see them.</div>':'');
   }
   $('feedList').innerHTML=html||'<div class="card p-8 text-center text-slate-400 text-sm">No results '+(feedTurn?'with a loss→profit turnaround ':'')+'in this window'+(ST.uni!=='all'||ST.sector!=='all'||ST.mcap!=='all'?' under these filters':'')+'.</div>';
