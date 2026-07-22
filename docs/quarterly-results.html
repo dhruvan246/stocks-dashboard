@@ -50,7 +50,22 @@
   .bar-tip{pointer-events:none}
   .scrollbar::-webkit-scrollbar{height:8px}
   .scrollbar::-webkit-scrollbar-thumb{background:#475569;border-radius:4px}
-  @media (max-width:640px){ .tabbtn{padding:7px 11px;font-size:12.5px} }
+  /* Just Declared — per-company result cards (Screener-inspired). Mini table has NO thead on
+     purpose: theme.js auto-cardify keys off thead and would stack these tiny tables on phones. */
+  .fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:10px}
+  .fcard{cursor:pointer;transition:box-shadow .12s,transform .12s,border-color .12s;overflow-x:auto}
+  .fcard:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(2,6,23,.10);border-color:var(--border-strong,#cbd5e1)}
+  .ftbl{width:100%;border-collapse:collapse;margin-top:8px}
+  .ftbl td{padding:3.5px 6px;font-size:12px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .ftbl td:first-child{text-align:left;font-weight:700;color:var(--text-muted,#64748b);padding-left:0}
+  .ftbl td:last-child{padding-right:0}
+  .ftbl tr.fh td{font-size:9.5px;text-transform:uppercase;letter-spacing:.04em;font-weight:800;color:var(--text-faint,#94a3b8);border-bottom:1px solid var(--border,#e2e8f0);padding-bottom:5px}
+  .ftbl tr:not(.fh)+tr td{border-top:1px solid var(--border,#f1f5f9)}
+  .dstrip{display:flex;gap:6px;overflow-x:auto;padding:2px 0 6px;scrollbar-width:thin}
+  .dchip{font-size:11px;padding:3.5px 10px}
+  .dayhead{display:flex;align-items:baseline;gap:8px;margin:18px 0 8px;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;font-weight:800;color:var(--text-muted,#64748b)}
+  .dayhead .dline{flex:1;height:1px;background:var(--border,#e2e8f0)}
+  @media (max-width:640px){ .tabbtn{padding:7px 11px;font-size:12.5px} .fgrid{grid-template-columns:1fr} }
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
@@ -203,9 +218,11 @@
 
     <!-- ============ FEED ============ -->
     <section id="tab-feed" style="display:none">
-      <div class="flex flex-wrap items-center gap-1.5 mb-3" id="feedChips"></div>
-      <div id="feedList" class="space-y-4"></div>
-      <p class="text-[11px] text-slate-500 mt-3">Every NSE + BSE result filing · refreshes ~4×/day plus a live top-up (~every minute) when our relay is up · growth badges &amp; price reaction appear for NSE-tracked names after the nightly numbers sync (~21:30 IST) · <span id="feedUpd"></span></p>
+      <div class="flex flex-wrap items-center gap-1.5 mb-2" id="feedChips"></div>
+      <div class="dstrip" id="feedDates"></div>
+      <div id="feedList"></div>
+      <div class="text-center mt-4"><button id="fMore" class="hidden px-5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition">Load more ↓</button></div>
+      <p class="text-[11px] text-slate-500 mt-3">₹ crore · YoY vs the same quarter last year, computed on the same reporting basis both periods (consolidated preferred) · when the year-ago quarter was a <b>loss</b>, growth is measured against its absolute value · <b>LP</b> = loss→profit turnaround, <b>PL</b> = profit→loss, <b>LL</b> = still loss-making · banks/NBFCs show total income &amp; PAT only · cards appear once numbers are parsed (NSE names sync nightly ~21:30 IST) — fresh filings wait under <i>numbers pending</i> · every NSE + BSE result filing, refreshes ~4×/day plus a live top-up (~every minute) when our relay is up · <span id="feedUpd"></span></p>
     </section>
 
     <!-- ============ CALENDAR ============ -->
@@ -824,44 +841,134 @@ function renderResults(){
 let FEEDROWS=[];   // [sym,co,dt,qe,caption,file]
 const FEED_CAT_RE=/^financial\s+result/i, FEED_CAP_RE=/financial\s+results?\s+for\s+the\s+(period|quarter|year)|submitted.{0,40}financial\s+results?/i;
 const FEED_QE_RE=/(period|quarter|year)\s+ended\s+([A-Za-z]{3})[a-z]*\s+(\d{1,2}),?\s+(\d{4})/i;
-let feedDays='7';
+let feedDays='7', feedSort='latest', feedDay='all', feedTurn=false, feedShown=24;
+const feedPdf = f => f.indexOf('http')===0 ? f : PDF_PREFIX+f;
+/* A feed row earns a CARD when its company + quarter have parsed numbers; else it's "numbers pending". */
+function feedItem(r){
+  const c=CO[r[0]]; if(!c) return null;
+  const qi=r[3]?QTRS.indexOf(qe2qe(r[3])):-1;
+  if(qi<0||!c.q[qi]) return null;
+  if(pick(c.q[qi],'rev')[0]==null && pick(c.q[qi],'pat')[0]==null) return null;
+  return {r,c,qi, ry:growth(c.q,qi,'rev',4), oy:growth(c.q,qi,'op',4), gy:growth(c.q,qi,'pat',4), rx:c.q[qi][7]};
+}
+function fYoyTd(g,isPat){
+  if(!g) return '<td class="text-slate-400">—</td>';
+  const fl=isPat?patFlag(g):(g.flag||null);
+  if(fl) return '<td class="'+(fl==='LP'?'pos':'neg')+' font-bold" title="'+
+    (fl==='LP'?'Turnaround: loss a year ago, profit now':fl==='PL'?'Profit a year ago, loss now':'Loss both years — shrunk '+fmtPct(g.pct,0)+' vs |base|')+'">'+fl+'</td>';
+  return '<td class="'+pctCls(g.pct)+' font-bold">'+(g.pct>=0?'⇡ ':'⇣ ')+Math.abs(g.pct).toFixed(0)+'%</td>';
+}
+const fValTd = v => '<td class="'+(v!=null&&v<0?'neg font-semibold':'text-slate-800')+'">'+fmtCr(v)+'</td>';
+function feedCard(it,showDate){
+  const [sym,co,dt,qe,cap,file]=it.r, c=it.c, qi=it.qi;
+  const i1=qi+1<QTRS.length?qi+1:-1, i4=qi+4<QTRS.length?qi+4:-1;
+  const head='<tr class="fh"><td></td><td>YoY</td><td>'+qlabel(QTRS[qi],false)+'</td><td>'+
+    (i1>=0?qlabel(QTRS[i1],false):'')+'</td><td>'+(i4>=0?qlabel(QTRS[i4],false):'')+'</td></tr>';
+  const mrow=(label,metric,g,isPat)=>{
+    const v1=i1>=0?pick(c.q[i1],metric)[0]:null, v4=i4>=0?pick(c.q[i4],metric)[0]:null;
+    return '<tr><td>'+label+'</td>'+fYoyTd(g,isPat)+fValTd(pick(c.q[qi],metric)[0])+fValTd(v1)+fValTd(v4)+'</tr>';
+  };
+  let body='';
+  if(c.f) body=mrow('Total income','rev',it.ry)+mrow('Net profit','pat',it.gy,true);
+  else{
+    body=mrow('Sales','rev',it.ry)+mrow('Op. profit','op',it.oy)+mrow('Net profit','pat',it.gy,true);
+    const o0=opm(c.q[qi]);
+    if(o0!=null){
+      const o1=i1>=0?opm(c.q[i1]):null, o4=i4>=0?opm(c.q[i4]):null;
+      const d=o4!=null?Math.round((o0-o4)*100):null;
+      body+='<tr><td>OPM</td><td class="'+(d==null?'text-slate-400':(d>=0?'pos':'neg'))+' font-bold" title="Margin change vs year-ago quarter, basis points">'+
+        (d==null?'—':(d>=0?'⇡ ':'⇣ ')+Math.abs(d)+'bps')+'</td>'+
+        '<td class="text-slate-800">'+o0.toFixed(1)+'%</td><td class="text-slate-800">'+(o1==null?'—':o1.toFixed(1)+'%')+'</td><td class="text-slate-800">'+(o4==null?'—':o4.toFixed(1)+'%')+'</td></tr>';
+    }
+  }
+  const fl=patFlag(it.gy);
+  return '<div class="card fcard p-3" data-open="'+esc(sym)+'">'+
+    '<div class="flex items-start justify-between gap-2">'+
+      '<div class="min-w-0">'+
+        '<div class="flex items-center gap-1.5 flex-wrap">'+
+          '<b class="text-slate-900 text-[13px]">'+esc(sym)+'</b>'+
+          '<span class="badge">'+qlabel(QTRS[qi],false)+'</span>'+
+          (fl==='LP'?'<span class="badge pos" style="background:transparent;border:1px solid currentColor">Turnaround</span>':'')+
+          (fl==='PL'?'<span class="badge neg" style="background:transparent;border:1px solid currentColor">Into loss</span>':'')+
+          (c.bse?'<span class="badge" title="Listed on BSE only">BSE</span>':'')+(c.f?'<span class="badge">🏦</span>':'')+
+        '</div>'+
+        '<div class="text-[11px] text-slate-500 truncate mt-0.5">'+esc(c.n||co)+(c.m?' · ₹'+fmtMcap(c.m):'')+'</div>'+
+      '</div>'+
+      (file?'<a class="docbtn shrink-0" target="_blank" rel="noopener" href="'+esc(feedPdf(file))+'" onclick="event.stopPropagation()">PDF ↗</a>':'')+
+    '</div>'+
+    '<table class="ftbl">'+head+body+'</table>'+
+    '<div class="flex items-center justify-between mt-1.5 text-[10.5px] text-slate-400">'+
+      '<span>filed '+(showDate?isoNice(dt.slice(0,10))+' ':'')+dt.slice(11,16)+'</span>'+
+      (it.rx!=null?'<span class="font-bold '+pctCls(it.rx)+'" title="Price move on result day">'+fmtPct(it.rx)+' on result day</span>':'')+
+    '</div></div>';
+}
+function feedPendRow(r){
+  const [sym,co,dt,qe,cap,file]=r, c=CO[sym];
+  return '<div class="flex items-start gap-3 px-3.5 py-2 hover:bg-slate-50 rounded-lg'+(c?' cursor-pointer':'')+'"'+(c?' data-open="'+esc(sym)+'"':'')+'>'+
+    '<div class="text-[11px] text-slate-400 font-bold w-11 shrink-0 pt-0.5">'+dt.slice(11,16)+'</div>'+
+    '<div class="min-w-0 flex-1"><div class="flex flex-wrap items-center gap-x-2 gap-y-0.5"><b class="text-slate-900 text-[12.5px]">'+esc(sym)+'</b>'+
+      '<span class="text-[11px] text-slate-500 truncate">'+esc(co)+'</span>'+
+      (qe?'<span class="badge">'+qlabel(qe2qe(qe),false)+'</span>':'')+'</div>'+
+    '<div class="text-[11px] text-slate-500 mt-0.5 line-clamp-2">'+esc(cap||'Financial results filed')+'</div></div>'+
+    (file?'<a class="docbtn shrink-0" target="_blank" rel="noopener" href="'+esc(feedPdf(file))+'" onclick="event.stopPropagation()">PDF ↗</a>':'')+'</div>';
+}
 function renderFeed(){
-  $('feedChips').innerHTML=[['1','Today'],['2','Since yesterday'],['7','Last 7 days'],['31','Last month']]
-    .map(([k,l])=>'<button class="chip'+(feedDays===k?' on':'')+'" data-fd="'+k+'">'+l+'</button>').join('')+
-    '<span class="text-[11px] text-slate-500 ml-2" id="feedCount"></span><span id="feedLive" class="hidden text-[11px] font-bold ml-auto" style="color:var(--pos,#15803d)"></span>';
-  $('feedChips').querySelectorAll('[data-fd]').forEach(b=>b.onclick=()=>{ feedDays=b.getAttribute('data-fd'); renderFeed(); });
+  $('feedChips').innerHTML=
+    [['1','Today'],['2','Since yesterday'],['7','Last 7 days'],['31','Last month']]
+      .map(([k,l])=>'<button class="chip'+(feedDays===k?' on':'')+'" data-fd="'+k+'">'+l+'</button>').join('')+
+    '<span class="mx-1" style="color:var(--border-strong,#cbd5e1)">|</span>'+
+    [['latest','Latest'],['sales','Sales growth'],['profit','Profit growth'],['rx','Reaction']]
+      .map(([k,l])=>'<button class="chip'+(feedSort===k?' on':'')+'" data-fs="'+k+'">'+l+'</button>').join('')+
+    '<button class="chip'+(feedTurn?' on':'')+'" data-ft="1" title="Only loss→profit turnarounds (PAT)">🔄 Turnarounds</button>'+
+    '<span class="text-[11px] text-slate-500 ml-2" id="feedCount"></span>'+
+    '<span id="feedLive" class="hidden text-[11px] font-bold ml-auto" style="color:var(--pos,#15803d)"></span>';
+  $('feedChips').querySelectorAll('[data-fd]').forEach(b=>b.onclick=()=>{ feedDays=b.getAttribute('data-fd'); feedDay='all'; feedShown=24; renderFeed(); });
+  $('feedChips').querySelectorAll('[data-fs]').forEach(b=>b.onclick=()=>{ feedSort=b.getAttribute('data-fs'); feedShown=24; renderFeed(); });
+  $('feedChips').querySelectorAll('[data-ft]').forEach(b=>b.onclick=()=>{ feedTurn=!feedTurn; feedShown=24; renderFeed(); });
   const cut=new Date(Date.now()-(+feedDays)*864e5).toISOString().slice(0,10);
-  const rows=FEEDROWS.filter(r=>r[2].slice(0,10)>=cut && (coPass(r[0])||!CO[r[0]]&&ST.uni==='all'&&ST.sector==='all'&&ST.mcap==='all'))
-                     .filter(r=>!ST.search||normSearch(r[0]).indexOf(normSearch(ST.search))>=0||normSearch(r[1]).indexOf(normSearch(ST.search))>=0);
-  $('feedCount').textContent=rows.length+' filings';
+  const all=FEEDROWS.filter(r=>r[2].slice(0,10)>=cut && (coPass(r[0])||!CO[r[0]]&&ST.uni==='all'&&ST.sector==='all'&&ST.mcap==='all'))
+                    .filter(r=>!ST.search||normSearch(r[0]).indexOf(normSearch(ST.search))>=0||normSearch(r[1]).indexOf(normSearch(ST.search))>=0);
+  /* Screener-style date strip: jump to a single declaration day */
+  const dayC={}; all.forEach(r=>{ const d=r[2].slice(0,10); dayC[d]=(dayC[d]||0)+1; });
+  const days=Object.keys(dayC).sort().reverse();
+  $('feedDates').innerHTML= days.length>1
+    ? '<button class="chip dchip'+(feedDay==='all'?' on':'')+'" data-dd="all">All days</button>'+
+      days.map(d=>'<button class="chip dchip'+(feedDay===d?' on':'')+'" data-dd="'+d+'">'+isoNice(d)+' · '+dayC[d]+'</button>').join('')
+    : '';
+  $('feedDates').querySelectorAll('[data-dd]').forEach(b=>b.onclick=()=>{ feedDay=b.getAttribute('data-dd'); feedShown=24; renderFeed(); });
+  const rows= feedDay==='all'? all : all.filter(r=>r[2].slice(0,10)===feedDay);
+  const cards=[], pend=[];
+  rows.forEach(r=>{ const it=feedItem(r); if(it) cards.push(it); else pend.push(r); });
+  let list=feedTurn? cards.filter(it=>patFlag(it.gy)==='LP') : cards;
+  $('feedCount').textContent=rows.length+' filings · '+list.length+(feedTurn?' turnarounds':' with numbers');
+  const pv=g=>g&&g.pct!=null?g.pct:-1e9;
+  if(feedSort==='sales')       list=list.slice().sort((a,b)=>pv(b.ry)-pv(a.ry));
+  else if(feedSort==='profit') list=list.slice().sort((a,b)=>pv(b.gy)-pv(a.gy));
+  else if(feedSort==='rx')     list=list.slice().sort((a,b)=>(b.rx==null?-1e9:b.rx)-(a.rx==null?-1e9:a.rx));
   const today=new Date().toISOString().slice(0,10), yest=new Date(Date.now()-864e5).toISOString().slice(0,10);
-  const groups={};
-  rows.forEach(r=>{ const d=r[2].slice(0,10); (groups[d]=groups[d]||[]).push(r); });
-  $('feedList').innerHTML=Object.keys(groups).sort().reverse().map(d=>{
-    const items=groups[d].map(r=>{
-      const [sym,co,dt,qe,cap,file]=r, c=CO[sym];
-      const qi=qe?QTRS.indexOf(+String(qe).slice(0,6)*100+(+String(qe).slice(6,8))):-1;
-      let badges='';
-      if(c){
-        const idx=QTRS.indexOf(qe2qe(qe));
-        if(idx>=0){
-          const gy=growth(c.q,idx,'pat',4), ry2=growth(c.q,idx,'rev',4), row=c.q[idx];
-          if(gy) badges+='<span class="badge '+((gy.pct!=null&&gy.pct>=0)||gy.flag==='LP'?'pos':'neg')+'" style="background:transparent;border:1px solid currentColor">PAT '+(gy.flag||fmtPct(gy.pct,0))+'</span> ';
-          if(ry2&&ry2.pct!=null&&!c.f) badges+='<span class="badge '+pctCls(ry2.pct)+'" style="background:transparent;border:1px solid currentColor">Rev '+fmtPct(ry2.pct,0)+'</span> ';
-          if(row&&row[7]!=null) badges+='<span class="badge '+pctCls(row[7])+'" style="background:transparent;border:1px solid currentColor" title="Result-day move">'+fmtPct(row[7])+'</span>';
-        }
-      }
-      return '<div class="flex items-start gap-3 px-3.5 py-2.5 hover:bg-slate-50 rounded-lg'+(c?' cursor-pointer':'')+'"'+(c?' data-open="'+esc(sym)+'"':'')+'>'+
-        '<div class="text-[11px] text-slate-400 font-bold w-11 shrink-0 pt-0.5">'+dt.slice(11,16)+'</div>'+
-        '<div class="min-w-0 flex-1"><div class="flex flex-wrap items-center gap-x-2 gap-y-0.5"><b class="text-slate-900">'+esc(sym)+'</b>'+
-          '<span class="text-[11px] text-slate-500 truncate">'+esc(co)+'</span>'+
-          (qe?'<span class="badge">'+qlabel(qe2qe(qe),false)+'</span>':'')+' '+badges+'</div>'+
-        '<div class="text-[11.5px] text-slate-500 mt-0.5 line-clamp-2">'+esc(cap||'Financial results filed')+'</div></div>'+
-        (file?'<a class="docbtn shrink-0" target="_blank" rel="noopener" href="'+esc(file.indexOf('http')===0?file:PDF_PREFIX+file)+'" onclick="event.stopPropagation()">PDF ↗</a>':'')+'</div>';
-    }).join('');
-    const lbl=d===today?'Today':d===yest?'Yesterday':isoNice(d);
-    return '<div class="card p-2"><div class="px-3 pt-2 pb-1 text-[11px] uppercase tracking-wide font-extrabold text-slate-500">'+lbl+' <span class="text-slate-400 normal-case font-bold">· '+groups[d].length+' results</span></div>'+items+'</div>';
-  }).join('')||'<div class="card p-8 text-center text-slate-400 text-sm">No results filed in this window'+(ST.uni!=='all'||ST.sector!=='all'?' under these filters':'')+'.</div>';
+  let html='', used=0;
+  if(feedSort==='latest'){
+    const groups={}, pgroups={};
+    list.forEach(it=>{ const d=it.r[2].slice(0,10); (groups[d]=groups[d]||[]).push(it); });
+    pend.forEach(r=>{ const d=r[2].slice(0,10); (pgroups[d]=pgroups[d]||[]).push(r); });
+    for(const d of [...new Set([...Object.keys(groups),...Object.keys(pgroups)])].sort().reverse()){
+      if(used>=feedShown) break;
+      const g=groups[d]||[], p=pgroups[d]||[];
+      const take=g.slice(0,feedShown-used); used+=take.length;
+      html+='<div class="dayhead">'+(d===today?'Today':d===yest?'Yesterday':isoNice(d))+
+        ' <span class="normal-case text-slate-400">· '+(g.length+p.length)+' filings</span><span class="dline"></span></div>';
+      if(take.length) html+='<div class="fgrid">'+take.map(it=>feedCard(it,false)).join('')+'</div>';
+      if(take.length<g.length) break;                      /* rest of this day + older days sit behind Load more */
+      if(p.length&&!feedTurn) html+='<div class="card p-2 mt-2.5"><div class="px-3 pt-1.5 pb-1 text-[10.5px] uppercase tracking-wide font-extrabold text-slate-400">Numbers pending · '+p.length+'</div>'+p.map(feedPendRow).join('')+'</div>';
+    }
+  }else{
+    const take=list.slice(0,feedShown); used=take.length;
+    html='<div class="fgrid">'+take.map(it=>feedCard(it,true)).join('')+'</div>'+
+      (pend.length&&!feedTurn?'<div class="text-[11px] text-slate-400 mt-3">'+pend.length+' filings without parsed numbers are hidden under this sort — switch to <b>Latest</b> to see them.</div>':'');
+  }
+  $('feedList').innerHTML=html||'<div class="card p-8 text-center text-slate-400 text-sm">No results '+(feedTurn?'with a loss→profit turnaround ':'')+'in this window'+(ST.uni!=='all'||ST.sector!=='all'||ST.mcap!=='all'?' under these filters':'')+'.</div>';
+  $('fMore').classList.toggle('hidden', used>=list.length);
+  $('fMore').onclick=()=>{ feedShown+=48; renderFeed(); };
   $('feedList').querySelectorAll('[data-open]').forEach(el=>el.onclick=()=>openModal(el.getAttribute('data-open')));
 }
 function qe2qe(v){ return +v; }
