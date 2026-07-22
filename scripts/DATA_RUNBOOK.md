@@ -48,6 +48,12 @@ loads every session. (README.md is just a short pointer here — this file is th
 ---
 
 ## 0. GOLDEN RULES (the things that bite if forgotten)
+- **PROVENANCE ON EVERY FILL.** Any script that writes a data cell must journal, per cell, WHERE the
+  value came from (source system + document id/URL + which anchor verified it) — in a **tracked**
+  ledger (like `ipo_base_fills.json` / `screener_rev_fills.json`), not a gitignored `scripts/_*` one
+  (those die with clobbers/worktrees). 2026-07-22 lesson: pre-IPO PATs had no per-cell source; finding
+  they came from Screener took git -S archaeology — and the SAME source held the missing revenue all
+  along. (memory: feedback-provenance-every-backfill)
 - **Profit basis = OWNERS-ATTRIBUTABLE.** Backtest `npCon` (FUND index 3) = owners-attributable.
   Apply via `apply_owners_full.py`. ⚠️ **NEVER run `apply_total_pat.py`** (wrong basis). (memory: project-stocks-profit-basis)
 - **Fundamentals come from BSE filing PDFs + VISION** — not Screener, not OCR (OCR mangles digits). (memory: feedback-bse-pdfs-not-screener)
