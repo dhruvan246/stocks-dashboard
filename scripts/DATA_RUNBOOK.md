@@ -25,7 +25,8 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§15** QUARTERLY RESULTS DASHBOARD
 - **§16** DISCOVERY BUCKETS
 - **§17** BSE-ONLY STOCK COVERAGE  (**§17b** who actually fills the numbers — CI readers are mostly DEAD;
-  **§17c** page-picking bugs that masquerade as "the company didn't file")
+  **§17c** page-picking bugs that masquerade as "the company didn't file"; **§17d** cloud-Routine port — works,
+  but blocked on GitHub write permission)
 - **§18** DATA HEALTH MONITORING + COMMIT GUARDS
 - **§19** SITE FEATURES ON SUPABASE
 - **§20** RESULTS COVERAGE DASHBOARD
@@ -1369,6 +1370,42 @@ rule stands (distrust the PDF pick, not the feed) — these are the mechanisms b
   scrip's announcements (`bse_render.announcements`) before saying so.
 - **Genuine non-filing exists too:** CONTAINER (540597, now Indus Aluminium Recyclers) POSTPONED its board
   meeting. Only call this after reading the actual letter.
+
+### 17d. CLOUD-ROUTINE PORT — tested 2026-07-23, BLOCKED ONLY on GitHub write permission
+
+Goal: get vision-fill off the laptop (it only runs when the PC is awake). Ported the routine to a **Claude Code
+cloud Routine** (claude.ai/code/routines — Anthropic-hosted, runs on the Pro/Max plan, NO API key, NO hardware).
+Three real runs. **Everything worked except landing the commit.** Re-read this before re-attempting.
+
+- **✅ THE BIG ONE: BSE *IS* REACHABLE from Anthropic's egress proxy.** This was the main risk (BSE rate-limits
+  by IP and NSE hard-403s every scripted IP we have — §0, §18). Filings fetched, PDFs rendered, vision read them,
+  merge + `build_bse_results` + `build_results_coverage` all ran clean, and it correctly skipped CONTAINER
+  (ok:false). **So the cloud path is viable the moment write access exists.**
+- **❌ BLOCKER: the Claude GitHub App is NOT installed on the account, and cannot be installed.**
+  `github.com/settings/installations` → "No installed GitHub Apps". Consequences, all confirmed by run:
+  - `git push origin HEAD:main` → **403** (this is NOT branch protection)
+  - `git push` to a `claude/`-prefixed branch → **also 403** — the sandbox proxy blocks raw git push outright
+  - GitHub MCP `create_branch` / `push_files` → **403 "Resource not accessible by integration"**
+  ⇒ The repo connection came from `/web-setup` (syncs the `gh` token = clone/READ only). Write needs the App.
+  The docs say the App install is prompted during **GitHub-trigger** setup — in practice adding a GitHub trigger
+  did NOT offer it, and there is no official Anthropic "Claude" App in the GitHub Marketplace (only third-party
+  Actions: Claude Code Action Official, BugBot, AutoFix — those run Claude *inside your CI* with an API key and
+  are a DIFFERENT thing). Ask Anthropic support; the evidence is the empty Installed-Apps list.
+- **⚠️ "Allow unrestricted branch pushes"** (docs: Permissions tab at the bottom of the routine form) **does not
+  exist in the current UI** — the tabs are Connectors / Behavior / Notifications. Don't hunt for it.
+- **⚠️ A GitHub-event trigger fires a FULL run per matching event** — with ~30 CI workflows pushing all day this
+  would shred the daily routine-run cap. Schedule trigger only.
+- **Cron field is UTC**, but the form header resolves it to local ("Runs daily at 4:30 PM GMT+5:30"). **Trust the
+  header.** 16:30 IST = `0 11 * * *`; 23:30 IST = `0 18 * * *`. One routine takes ONE schedule trigger — two runs
+  a day needs two routines (and 2× the run cap).
+- **`git fetch` is slow through the proxy and times out**, though the proxy is healthy. Prompt tolerates it
+  (`timeout 180`, then carry on with the session-start clone).
+- **Cost:** ~62k tokens / 18 min for a near-empty day; ~10 min on the repeats. Draws on the SAME subscription pool
+  as interactive sessions, plus a separate daily routine-run cap (claude.ai/settings/usage).
+- **Adapted prompt** (worktree/lock logic stripped — a fresh VM per run makes them unnecessary; `/tmp` paths;
+  `TZ=Asia/Kolkata date` is CORRECT there, unlike Windows git-bash) is worth rewriting from the local SKILL.md
+  when this is revisited. **Until write access exists the local 16:30/23:30 task remains the only thing that
+  actually lands data** — the cloud run does the work and then throws it away.
 
 ---
 
