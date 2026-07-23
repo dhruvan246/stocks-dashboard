@@ -7,7 +7,14 @@ name: Refresh BSE-only coverage
 
 on:
   schedule:
-    - cron: "40 16 * * *"   # 22:10 IST daily (after BSE bhavcopy is published) — full run (prices+numbers)
+    # ⚠️ ORDERING CONTRACT with the local bse-vision-fill routine (15:00/23:00 IST → 16:30/23:45 IST):
+    # the FREE readers here (OCR → Gemini) must finish BEFORE that routine starts, so every declared
+    # result gets two free attempts and only the residue costs plan tokens. This run has taken up to
+    # 1h16m, and crons fire up to ~45 min late (runbook §"cron drift"), so keep >=2h of headroom.
+    # ⚠️ NOT hours 15–16 UTC — refresh-fundamentals reserves those for its nightly (it detects the
+    # nightly by wall-clock hour, so a cron there could be misread as one). 14:40 UTC sits just below.
+    - cron: "40 14 * * *"   # 20:10 IST daily (after BSE bhavcopy is published) — full run (prices+numbers)
+                            # was 22:10; moved earlier to clear the 23:45 IST vision-fill routine.
     - cron: "40 6 * * *"    # 12:10 IST daily — extra numbers-grind pass to cover the sub-₹100cr tail faster
   repository_dispatch:
     types: [bse-refresh]
