@@ -24,7 +24,8 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§14** CORPORATE ANNOUNCEMENTS BROWSER
 - **§15** QUARTERLY RESULTS DASHBOARD
 - **§16** DISCOVERY BUCKETS
-- **§17** BSE-ONLY STOCK COVERAGE
+- **§17** BSE-ONLY STOCK COVERAGE  (**§17b** who actually fills the numbers — CI readers are mostly DEAD;
+  **§17c** page-picking bugs that masquerade as "the company didn't file")
 - **§18** DATA HEALTH MONITORING + COMMIT GUARDS
 - **§19** SITE FEATURES ON SUPABASE
 - **§20** RESULTS COVERAGE DASHBOARD
@@ -1195,7 +1196,7 @@ shareable URL (`discovery.html#b=<key>`).
 Our core price/fundamentals dataset is NSE-keyed, so ~2,678 **BSE-listed-only** stocks (ISIN not on NSE —
 e.g. Cella Space 532701, NSDL) were entirely absent. NSE 2,385 + BSE-only 2,678 ≈ the "~5,000 stocks"
 users compare against (Screener covers BSE-only; we didn't). This pipeline adds them as first-class rows on
-the Quarterly Results page. **4 scripts + `.github/workflows/refresh-bse.yml` (22:10 IST daily):**
+the Quarterly Results page. **4 scripts + `.github/workflows/refresh-bse.yml` (20:10 IST daily — see §17b):**
 - **`build_bse_universe.py` → `docs/bse_universe.json`** — BSE bulk `ListofScripData` (all active equity,
   one call: SCRIP_CD, scrip_id, ISIN, GROUP, FACE_VALUE, **Mktcap**) MINUS the NSE `EQUITY_L.csv` ISIN set =
   BSE-only. Rows `[scrip_cd, ticker, name, isin, group, faceval, mcap_cr, sector]`, biggest-mcap-first. Sector
@@ -1213,7 +1214,7 @@ the Quarterly Results page. **4 scripts + `.github/workflows/refresh-bse.yml` (2
   **⚠️ ORDER = DECLARED-FIRST, then mcap desc, floor 0** (was mcap-only + floor 100 → 782 already-declared
   sub-₹100cr cos were being SKIPPED — user wanted ALL results incl. <100cr). `declared_recently()` scans the
   strCat=Result feed (last ~110d) → those scrips grind FIRST at ANY mcap; the `--min-mcap` floor now applies
-  ONLY to non-declared names. Workflow runs `--min-mcap 0` TWICE daily (12:10 + 22:10 IST) so the whole
+  ONLY to non-declared names. Workflow runs `--min-mcap 0` TWICE daily (12:10 + 20:10 IST) so the whole
   ~2,678 universe is covered in ~1-2 wks, real declarers first. **Validated: Cella Space Q1FY27 PAT 7.29 =
   exact vs Screener.** (Revenue is Revenue-from-Operations; Screener may show Total Income — small diff.)
   **⚠️ FEED INJECTION (fetch_bse_results.py step 1b):** BSE lets small cos file the result under "Board
@@ -1291,6 +1292,58 @@ the Quarterly Results page. **4 scripts + `.github/workflows/refresh-bse.yml` (2
   `…/scripts/stocksworld-quotes/deployments {strategy:'percentage', versions:[{percentage:100, version_id}]}`.
   Needs the user's explicit deploy authorization (auto-mode blocks it otherwise). Manual fallback: paste the file
   in the quick editor + Deploy (LIVE_FEED_SETUP.md).
+
+### 17b. WHO ACTUALLY FILLS BSE-ONLY NUMBERS — and why CI mostly can't  (2026-07-23)
+
+Established while asking "why didn't a cron job fill these 19?" — **don't re-derive this, and don't assume
+the cloud grind will drain the backlog.**
+
+- **Reader chain in `fetch_bse_fund.py:extract()`** (each runs only if the previous found nothing):
+  OCR (rapidocr) → `bse_vision_api` (Anthropic) → `gemini_vision.read_corp_results` (Google, free).
+- **⚠️ `ANTHROPIC_API_KEY` IS NOT SET as a repo secret** (`gh secret list` = GEMINI_API_KEY, SF_DATA_TOKEN
+  only). `refresh-bse.yml` references it, so it resolves to empty and the Anthropic step is a permanent
+  no-op. Scanned filings therefore fell through the whole chain for months. **The user has decided NOT to
+  pay for an Anthropic key — do not propose it again as the fix.**
+- **⚠️ The free Gemini tier is ALREADY SPENT most days.** `gemini_vision.py` header claims "~1,500 req/day,
+  we use ~7/quarter → always free", but that budget was written for the insurer job alone; `fetch_insurers.py`
+  AND `backfill_ipo_bases.py` share the same key nightly. First real test (run 29997801224, 2026-07-23)
+  returned `RESOURCE_EXHAUSTED` on the very first call and disabled itself for the run — **0 companies
+  filled, so its accuracy on scanned micro-caps is still UNVERIFIED.** It is opportunistic only; it cannot
+  drain the ~531-scrip backlog. The quota guard (`quota_dead()`) works correctly and won't hang CI.
+- **`gemini_vision.read_corp_results` is PAT-ONLY** — no revenue in its schema — so cells it fills carry
+  blank rev/OPM (same shape as the Claude backfills; see the PAT-only-gap memory).
+- **`MAX_FAIL = 3` retires scrips permanently** (`fetch_bse_fund.py:31`, moved into `done` at line ~269).
+  ~321 of the 531 in `_bse_fund_fail.json` are retired **for failing OCR at a time when no working vision
+  reader existed** — they are untried, not unreadable. Do NOT clear them until a reader is proven accurate,
+  or they just burn 3 more attempts and re-retire.
+- **CONCLUSION: the local `bse-vision-fill` scheduled routine is the PRIMARY reader for scanned BSE
+  micro-caps, not a safety net.** It runs on the user's Claude plan (no marginal cost). Everything above is
+  best-effort ahead of it.
+- **Ordering contract (timings changed 2026-07-23):** free readers must finish before the paid-plan routine
+  starts. `refresh-bse` 12:10 + **20:10 IST** (was 22:10; moved out of hours 15–16 UTC, which
+  `refresh-fundamentals` reserves for its nightly hour-gate — see the cron-drift note in §11/§15),
+  `refresh-fundamentals` nightly 21:15, then **`bse-vision-fill` 16:30 + 23:30 IST** (cron `30 16,23 * * *`,
+  ~8 min jitter; one cron shares a single minute field across both hours, so 23:45 is not expressible
+  alongside 16:30).
+
+### 17c. PAGE-PICKING BUGS THAT LOOK LIKE "the company didn't file"  (2026-07-23)
+
+Two distinct failure modes, both of which produced a WRONG "no P&L in this filing" conclusion. §17's existing
+rule stands (distrust the PDF pick, not the feed) — these are the mechanisms behind it.
+
+- **`bse_vision_prep.render_pdf_pages` under-scored real tables.** `NUM_TOK` was `\d[\d,]{2,}` (3+ digits),
+  so a micro-cap table of `3.19 / 22.86 / 7.00` scored ~34 while a blank scanned page scored
+  `SCAN_SCORE = 40`. VIRTUALG Q1FY27: P&L on pages 2 (standalone) and 6 (consolidated), SIX blanks, the
+  4-page budget went entirely to blanks → subagent correctly reported "auditor report only", conclusion was
+  wrong. **Fixed 2026-07-23** (`cf7f855`): count any digit-run incl. decimals (tables now score 143/144),
+  and take scored pages BEFORE blanks so blanks can only fill leftover slots.
+- **A company can file the board-meeting OUTCOME letter without the results attachment.** KRIFILIND
+  2026-07-22 filed "Approval of Unaudited Financial Results…" at ~18:00 whose PDF is only the cover letter +
+  annexure; the numbers post separately later. `pdf_period()` reads 20260630 from it, so it looks like the
+  right filing. This is genuinely "wait for the next run", NOT a renderer miss — but verify by listing the
+  scrip's announcements (`bse_render.announcements`) before saying so.
+- **Genuine non-filing exists too:** CONTAINER (540597, now Indus Aluminium Recyclers) POSTPONED its board
+  meeting. Only call this after reading the actual letter.
 
 ---
 
