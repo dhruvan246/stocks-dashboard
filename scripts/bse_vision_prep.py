@@ -39,8 +39,14 @@ def norm(s): return re.sub(r"(limited|ltd)$", "", re.sub(r"[^a-z0-9]", "", str(s
 # (never crowd out real numbers). TELGE Q1FY27 is the case that pins this down — tables on pages 4 and
 # 11, four blank scanned pages around them; ranking blanks first rendered all four blanks and neither
 # table. In an all-scanned filing every page ties here and doc order is preserved, as before.
-NUM_TOK = re.compile(r"\d[\d,]{2,}")
-SCAN_SCORE = 40        # observed: real tables 49-196 numeric tokens/page, prose <=32
+# ⚠️ NUM_TOK must count SMALL decimals too. The old pattern (\d[\d,]{2,}) required 3+ digits, so a
+# micro-cap table whose figures are 3.19 / 22.86 / 7.00 scored near-zero while a scanned blank scored 40.
+# VIRTUALG Q1FY27 (2026-07-23) is the case: P&L on pages 2 and 6 scored 34 each, SIX blank pages scored
+# 40, the 4-page budget went entirely to blanks, and the routine reported "auditor report only, no P&L"
+# for a filing that plainly had one. Counting any digit-run — decimals included — puts those tables at
+# 100+ and back on top.
+NUM_TOK = re.compile(r"\d[\d,.]*\d|\d")
+SCAN_SCORE = 40        # a text-less page: can't be scored, must outrank prose but never a real table
 
 def render_pdf_pages(raw):
     try: doc = fitz.open(stream=raw, filetype="pdf")
@@ -56,7 +62,12 @@ def render_pdf_pages(raw):
             continue
         cands.append((-score, pi))
     cands.sort()
-    keep = sorted(pi for _, pi in cands[:4])
+    # Keep up to 4 pages, but NEVER let blanks crowd out a scored table: take scored pages first, then
+    # fill any remaining slots with blanks. Without this a filing with 2 tables + 6 blanks still loses
+    # half its budget to blanks even once the tables outrank them.
+    scored = [pi for s, pi in cands if -s != SCAN_SCORE]
+    blanks = [pi for s, pi in cands if -s == SCAN_SCORE]
+    keep = sorted((scored + blanks)[:4])
     return [doc[pi].get_pixmap(dpi=200).tobytes("png") for pi in keep]
 
 def pdf_period(raw):
