@@ -168,9 +168,14 @@ def extract(op, code, name, months, deadline=None):
             # keep the most recent filing per quarter-end
             if qe not in res or anni >= res[qe].get("ann", 0):
                 res[qe] = rec
-    # VISION FALLBACK: OCR found nothing anchored → render the P&L pages and ask the vision API (CI has
-    # no Claude, so this is what fills scanned filings unattended). No-op when ANTHROPIC_API_KEY is unset.
+    # VISION FALLBACK: OCR found nothing anchored → render the P&L pages and ask a vision reader.
+    # CI has no Claude, so this is what fills scanned filings unattended. Two readers, tried in order:
+    #   1. bse_vision_api (Anthropic)  — no-op when ANTHROPIC_API_KEY is unset (it is, as of 2026-07-23)
+    #   2. gemini_vision.read_corp_results — Google AI Studio FREE tier, the key we actually hold.
+    # Before this, the whole fallback was Anthropic-only, so every scanned BSE micro-cap fell through and
+    # got retired at MAX_FAIL while a working free key sat wired to the insurer job two workflows away.
     if not res and (deadline is None or time.time() < deadline):
+        pngs = None
         try:
             import bse_vision_api
             pngs = _render_pl_pngs(op, code)
@@ -187,6 +192,26 @@ def extract(op, code, name, months, deadline=None):
                             res[qe] = rec
         except Exception as ex:
             print("    vision fallback err:", str(ex)[:70])
+        # FREE reader, second chance. read_corp_results is PAT-only (no revenue in its schema), so cells
+        # it fills carry rev=None — the same PAT-only shape the Claude backfills leave behind.
+        if not res and (deadline is None or time.time() < deadline):
+            try:
+                import gemini_vision
+                if not gemini_vision.quota_dead():
+                    if pngs is None: pngs = _render_pl_pngs(op, code)
+                    if pngs:
+                        g = gemini_vision.read_corp_results(
+                            name, "30 June 2026", "31 March 2026", "30 June 2025", pngs)
+                        if g and g.get("ok") and g.get("company_matches"):
+                            for qe, key in ((20260630, "cur"), (20250630, "yago")):
+                                d = g.get(key) or {}
+                                pat = d.get("con") if d.get("con") is not None else d.get("std")
+                                if pat is None: continue
+                                res[qe] = {"pat": round(float(pat), 2), "src": "gemini",
+                                           "ann": (20260715 if qe == 20260630 else 0),
+                                           "basis": "C" if d.get("con") is not None else "S"}
+            except Exception as ex:
+                print("    gemini fallback err:", str(ex)[:70])
     return res
 
 def _render_pl_pngs(op, code):

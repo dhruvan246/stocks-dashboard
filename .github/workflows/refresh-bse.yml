@@ -53,6 +53,9 @@ jobs:
           # Optional: when set, scanned filings OCR can't read are filled via the Anthropic vision API
           # (a few cents per company). Unset → grind stays OCR-only and those rows show "filing PDF only".
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # FREE fallback (Google AI Studio, no billing) — this is the key we actually hold, so it is what
+          # fills scanned micro-cap filings today. Without it the grind retires them at MAX_FAIL unread.
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python3 -X utf8 scripts/fetch_bse_fund.py --budget ${{ github.event.inputs.fund_budget || '150' }} --min-mcap 0 --months 5 --max-minutes 75 || echo "(fund grind failed — keeping existing)"
 
       - name: Rebuild BSE results payload
