@@ -58,12 +58,27 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **Profit basis = OWNERS-ATTRIBUTABLE.** Backtest `npCon` (FUND index 3) = owners-attributable.
   Apply via `apply_owners_full.py`. ⚠️ **NEVER run `apply_total_pat.py`** (wrong basis). (memory: project-stocks-profit-basis)
 - **Fundamentals come from BSE filing PDFs + VISION** — not Screener, not OCR (OCR mangles digits). (memory: feedback-bse-pdfs-not-screener)
-- **⚠️ BSE `FinancialResult` API is entity-POISONED for some scrips — verify the audited entity, not the scrip label.**
-  `FinancialResult/w?scripcode=500033` (FORCEMOT) + its `/downloads1/BSEFinancialResult*.zip` return **BSE Limited's**
-  numbers, not Force Motors'. The **announcement** API `AnnSubCategoryGetData?strScrip=500033&strCat=Result` → attachment
-  GUID → `corpfiling/AttachLive|AttachHis/<guid>` returns the **genuine** company. So poisoning is endpoint-specific, not
-  scrip-specific. ANY BSE fetch must confirm CIN/auditor on the PDF (FM=L34102MH1958/Akurdi; BSE Ltd=L67120MH2005/Batliboi),
-  never just the scrip label. Full writeup + the proven backfill recipe: `scripts/FORCEMOT_CONTAMINATION_FINDINGS.md`. (2026-06-22)
+- **⚠️⚠️ BSE `FinancialResult` API is entity-POISONED for EVERY SCRIP — treat it as UNUSABLE, full stop.**
+  Originally logged as FORCEMOT-specific (2026-06-22): `FinancialResult/w?scripcode=500033` + its
+  `/downloads1/*.zip` returned **BSE Limited's** numbers, not Force Motors'. **2026-07-23 re-test proves the blast
+  radius is TOTAL, not "some scrips":** six stuck micro-caps (539195, 522017, 513472, 541741, 544657, 522650) **and
+  RELIANCE (500325)** all returned the *byte-identical* zip — same href `/downloads1/fbbf6644-e2a4-412b-aa35-
+  5b85c38d9301.zip`, same MD5 `b72a6476992b`, same 6,572,706 bytes, same listing (`New folder (2)/Consolidated
+  Financial Q4FY26.pdf`…). One company's filing is served for every scripcode. **Any code that trusts this endpoint
+  writes ONE random company's numbers across the whole BSE universe.** `bse_fetch.quarters()` (line ~70) and
+  `bse_ocr_poc.py` still call it — do not build on them.
+  **USE INSTEAD:** the **announcement** API `AnnSubCategoryGetData?strScrip=<code>&strCat=Result` → attachment GUID →
+  `corpfiling/AttachLive|AttachHis/<guid>` returns the **genuine** company (verified per-scrip, distinct PDFs).
+  Poisoning is endpoint-specific, not scrip-specific. ANY BSE fetch must confirm CIN/auditor on the PDF
+  (FM=L34102MH1958/Akurdi; BSE Ltd=L67120MH2005/Batliboi), never just the scrip label.
+  Full writeup + the proven backfill recipe: `scripts/FORCEMOT_CONTAMINATION_FINDINGS.md`.
+- **⚠️ BSE publishes NO usable XBRL for BSE-only micro-caps — the PDF really is the only source** (checked
+  2026-07-23, don't re-hunt). Three routes tested, all dead: (1) `FinancialResult/w` zips — poisoned, see above;
+  (2) result announcements carry `XBRLFLAG: None` and no `.xml`/`.xbrl` attachment — the `XML_NAME` field
+  (`ANN_<scrip>_<guid>`) is per-scrip and correctly coded but resolves NOWHERE: `AttachLive/`, `AttachHis/`,
+  `CorpAttachment/`, `CorpXbrlGen/`, `Xbrl/`, `BSEDATA/xbrl/`, `downloads1/` all 404, and `/corporates/anndata/<name>.xml`
+  returns an Angular HTML shell, not XML; (3) nothing in the repo had ever found a working route. This is why NSE names
+  get full rev+op+EBIT+PAT free from XBRL (`update_fundamentals.py` → `xbrl_revop`) while BSE-only names need OCR/vision.
 - **⚠️ A 162-byte `/tmp/bse.json` is BSE's rate-limit 302, not a parser bug.** Over its per-IP quota
   `ListofScripData/w` answers `302 → api.bseindia.com/error_Bse.html` (a 162-byte "Object Moved" stub —
   the byte count is the fingerprint). `curl -s` **exits 0 on a 302** and saves the stub, so the junk only
@@ -1205,9 +1220,9 @@ the Quarterly Results page. **4 scripts + `.github/workflows/refresh-bse.yml` (2
   bhavcopy `BhavCopy_BSE_CM_0_0_0_<YYYYMMDD>_F_0000.CSV` (cols ISIN/TckrSymb/**ClsPric**/TtlTradgVol, ~4,900/day).
   Resumable, SORT-MERGES (backfill can add dates OLDER than existing — don't revert to append-only). Daily.
 - **`fetch_bse_fund.py` → `docs/bse_fundamentals.json`** (`{px:{scrip:{QE:{rev,pat,ann,basis}}}}`) — quarterly
-  Rev/PAT. **⚠️ The BSE `FinancialResult` API is ENTITY-POISONED for many scrips** (returns **BSE Ltd's** numbers
-  — the FORCEMOT pattern; proven on Cella Space: its "result zip" was BSE Ltd's auditor report). So we DON'T use
-  it. Instead per scrip: `AnnSubCategoryGetData` (strCat=-1) → pick result/board-outcome filings WITH an
+  Rev/PAT. **⚠️ The BSE `FinancialResult` API is ENTITY-POISONED for EVERY scrip** (returns **BSE Ltd's** numbers
+  — the FORCEMOT pattern; proven on Cella Space, and on 2026-07-23 confirmed byte-identical for 6 micro-caps AND
+  RELIANCE — see §0 golden rules). So we DON'T use it. Instead per scrip: `AnnSubCategoryGetData` (strCat=-1) → pick result/board-outcome filings WITH an
   attachment → `AttachLive/AttachHis/<guid>.pdf` → **OCR** (rapidocr; small BSE cos file SCANNED PDFs, no text
   layer) → **IDENTITY-GUARD** (company name tokens must appear on the page) → parse P&L rows. OCR ~15s/page ⇒
   SLOW ⇒ bounded+resumable grind (`--budget N --max-minutes M`, ledger `scripts/_bse_fund_done.json`).
@@ -1319,6 +1334,16 @@ the cloud grind will drain the backlog.**
 - **CONCLUSION: the local `bse-vision-fill` scheduled routine is the PRIMARY reader for scanned BSE
   micro-caps, not a safety net.** It runs on the user's Claude plan (no marginal cost). Everything above is
   best-effort ahead of it.
+- **Don't go hunting for a free structured feed — it was checked 2026-07-23 and does not exist.** BSE
+  publishes no usable XBRL for these names (all routes 404 / poisoned — see §0 golden rules). NSE names get
+  full rev+op+EBIT+PAT free from XBRL; BSE-only names have only the PDF. That asymmetry is permanent as far
+  as we can tell, and it is WHY this laptop-dependent routine exists.
+- **Reader field coverage differs — don't conflate them** (I did, 2026-07-23): `bse_vision_api` (Anthropic)
+  reads **rev + pat** for jun2026/jun2025; `gemini_vision.read_corp_results` reads **pat ONLY** (cur/prec/yago —
+  it was written for the insurer net-profit job and generalized without adding revenue). Neither reads `op`,
+  deliberately: operating profit counts only when the statement PRINTS an explicit line, and most don't
+  (2 of 19 on 2026-07-22). Extending the Gemini schema to carry revenue is a small, free change if it is ever
+  worth running.
 - **Ordering contract (timings changed 2026-07-23):** free readers must finish before the paid-plan routine
   starts. `refresh-bse` 12:10 + **20:10 IST** (was 22:10; moved out of hours 15–16 UTC, which
   `refresh-fundamentals` reserves for its nightly hour-gate — see the cron-drift note in §11/§15),
