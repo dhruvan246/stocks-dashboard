@@ -255,6 +255,7 @@ async function initUI(){
     const c = (raw && raw.cfg) ? raw.cfg : raw; const saved = (raw && raw.cfg) ? raw.saved : null;   // {cfg, saved} (new) or bare cfg (back-compat)
     const resultOnly = !!(raw && raw.view==='result');   // opened via the 👁 on the Strategy page → show ONLY the full result, no config form
     const runNow = !!(raw && raw.view==='run');           // "Run Backtest" from the Strategy page → auto-run AND record to History (nests under the strategy)
+    window.__runSid = raw && raw.sid ? raw.sid : null;    // strategy id this run belongs to — the run records with it and NEVER creates a new strategy
     await applyCfg(c);
     // "Run" mode: primary button → ▶ Run Backtest, heading reflects it, create-hint hidden. We do NOT auto-run.
     const rb=$('run'); rb.textContent='▶ Run Backtest'; rb.className='bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-5 py-2 text-sm font-semibold shadow-sm'; rb.onclick=run;
@@ -499,6 +500,7 @@ async function autoSaveHistory(){
 // different dates adds a card under the existing row, never a duplicate strategy.
 async function autoSaveStrategy(){
   if(window.__viewOnly) return;   // view-only (👁) — don't publish a strategy to the shared list
+  if(window.__runSid) return;     // run launched FROM a strategy page — it nests there via sid; editing params must NOT spawn a duplicate strategy (Trendlyne semantics)
   if(!LAST_RUN) return;
   if(window.btSync){ try{ await btSync.pullStrategies(); }catch(e){} }   // sync to the latest shared list first
   const s=loadLS('bt_strategies'); const k=stratIdentity(LAST_RUN.cfg);
@@ -514,8 +516,10 @@ function yByY(eq){ if(!eq||!eq.length) return []; const by={}; eq.forEach(e=>{by
 function histItem(c,r){
   const sy=yByY(r.equity), ny=yByY((r.bench500&&r.bench500.length?r.bench500:r.bench)||[]); const nm={}; ny.forEach(x=>{nm[x[0]]=x[1];});
   const yby=sy.map(x=>[x[0], x[1], (nm[x[0]]!=null?nm[x[0]]:null)]);   // [year, strategy%, nifty500%]
-  return { id:'h'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), ts:Date.now(), label:strategyLabel(c), cfg:c, yby:yby,
+  const item={ id:'h'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), ts:Date.now(), label:strategyLabel(c), cfg:c, yby:yby,
     m:{cagr:r.cagr, finalV:r.finalV, maxDD:r.maxDD, vol:r.vol, winRate:r.winRate, benchCagr:r.benchCagr, rebs:r.rebs.length, years:r.years} };
+  if(window.__runSid) item.sid=window.__runSid;   // link the run to its parent strategy (survives later ✏️ edits of the strategy's config)
+  return item;
 }
 async function saveToHistory(){
   if(!LAST_RUN) return;
@@ -559,6 +563,34 @@ async function saveStrategyFromForm(){
   }
   $('runMsg').textContent='Saved — opening Saved Strategies…';
   location.href='./saved-strategies.html?view=new';   // land on the New view so the just-saved strategy is at the top
+}
+// ---- ✏️ EDIT MODE (Trendlyne semantics): opened from a Strategy page's Edit button (bt_load
+//      {view:'edit', sid, name}). 💾 updates the SAME strategy entry — same id, new cfg/name —
+//      NEVER a duplicate. Its backtest history stays attached (runs link by sid). ----
+function enterEditMode(raw){
+  window.__editSid=raw.sid; window.__editName=raw.name||'';
+  const rb=$('run'); rb.textContent='💾 Update Strategy';
+  rb.className='bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-5 py-2 text-sm font-semibold shadow-sm';
+  rb.onclick=updateStrategyInPlace;
+  const h1=document.querySelector('h1'); if(h1) h1.textContent='✏️ Edit Strategy';
+  const hint=$('saveHint'); if(hint){ hint.textContent=''; const b=document.createElement('b'); b.textContent=raw.name||'strategy';
+    hint.append('Editing '); hint.append(b); hint.append(' — change anything, then 💾 Update Strategy. It updates the SAME strategy (no duplicate is created) and its backtest history stays attached.'); }
+}
+async function updateStrategyInPlace(){
+  const sid=window.__editSid; if(!sid) return;
+  const cfg=readCfg();
+  if(!cfg.start||!cfg.end||cfg.start>=cfg.end){ $('runMsg').textContent='Pick a valid date range first.'; return; }
+  const name=prompt('Strategy name:', window.__editName || strategyLabel(cfg));
+  if(name===null) return;                                  // cancelled
+  const entry={ id:sid, ts:Date.now(), name:(name.trim()||window.__editName||strategyLabel(cfg)), cfg:cfg, local:true };
+  // local mirror first (so it shows even if the publish fails), then shared update-in-place
+  const s=loadLS('bt_strategies'); const i=s.findIndex(x=>x&&x.id===sid);
+  if(i>=0) s[i]=entry; else s.unshift(entry);
+  saveLS('bt_strategies', s);
+  let ok=false;
+  if(window.btSync&&btSync.updateStrategy){ try{ ok=await btSync.updateStrategy(entry); }catch(e){} }
+  $('runMsg').textContent = ok ? '✔ Strategy updated — opening its page…' : '✔ Updated on this device — opening its page…';
+  location.href='./strategy-backtest.html?id='+encodeURIComponent(sid);
 }
 
 /* ---- extended technical factors (close + turnover + Nifty; no fundamentals) ---- */
@@ -1213,6 +1245,14 @@ async function bootBacktest(){
       const snap=(window.btSync&&btSync.snapGet)? await btSync.snapGet(snapKey(raw.cfg)) : null;
       if(snap){ localStorage.removeItem('bt_load'); renderSnapshotPage(snap, raw.cfg); return; }
       raw.view='result'; localStorage.setItem('bt_load', JSON.stringify(raw));   // no snapshot yet → recompute once (and cache it)
+    }
+    if(raw && raw.view==='edit' && raw.cfg){                       // ✏️ Edit Strategy — instant form, no heavy data
+      localStorage.removeItem('bt_load');
+      await initUIStatic();
+      await applyCfg(raw.cfg);                                     // DATA_MODE is already 'sf' → no engine load
+      enterEditMode(raw);
+      const ov=$('ov'); if(ov) ov.remove();
+      return;
     }
     if(raw){ await load(); return; }   // History/Saved "Load" or result-only — applyCfg loads the engine
   }catch(e){}

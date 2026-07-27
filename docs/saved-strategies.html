@@ -32,7 +32,7 @@
     <h1 class="text-xl md:text-2xl font-bold text-slate-900">⭐ Saved Strategies</h1>
     <button id="clearAll" class="text-xs text-red-600 hover:underline font-semibold">Clear all</button>
   </div>
-  <p class="text-xs text-slate-500 mb-4">Strategies you saved from backtests, ranked by survivorship-free CAGR. Click <b>🎯 Picks</b> for the live deployment basket, or <b>👁</b> (or the row) to open the strategy page — parameters to re-run &amp; its full run history. <a href="./stock-backtest.html" class="text-indigo-600 hover:underline">← back to Backtest</a></p>
+  <p class="text-xs text-slate-500 mb-4">Strategies you saved, ranked by survivorship-free CAGR. Click a strategy to open its page — 🎯 live picks, 📈 backtests &amp; 🕘 rewind live there. <a href="./stock-backtest.html" class="text-indigo-600 hover:underline">← back to Backtest</a></p>
   <div class="flex items-center gap-1.5 mb-3 flex-wrap">
     <button id="tabBest" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">🏆 Best return</button>
     <button id="tabNew" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">🆕 New</button>
@@ -192,7 +192,7 @@ function metricsFor(cfg) {
 // A new backtest you run (saved to History) — ANY window, including short ones — shows up here
 // automatically. No min-length filter: the headline CAGR uses the LONGEST window (canonicalCagr), so a
 // short run adds a card + bumps the count but can't inflate the headline or the sort.
-function backtestsFor(savedVars) {
+function backtestsFor(savedVars, sidSet) {
   if (!savedVars.length) return [];
   const k = identityKey(savedVars[0].cfg), byWin = new Map();
   const consider = (id, c, name, m, ts) => {
@@ -201,7 +201,9 @@ function backtestsFor(savedVars) {
     const prev = byWin.get(wk);
     if (!prev || score > prev._score) byWin.set(wk, { id, cfg: c, name, m: m || {}, _score: score });
   };
-  for (const h of HIST) if (h.cfg && identityKey(h.cfg) === k) consider(h.id, h.cfg, h.label || h.name, h.m, h.ts);
+  // A run belongs here if it carries this strategy's id (sid — stamped on runs launched from the
+  // strategy page; survives ✏️ edits of the config) OR its config matches the identity (legacy runs).
+  for (const h of HIST) if (h.cfg && ((h.sid && sidSet && sidSet.has(h.sid)) || identityKey(h.cfg) === k)) consider(h.id, h.cfg, h.label || h.name, h.m, h.ts);
   for (const v of savedVars) consider(v.id, v.cfg, v.name, metricsFor(v.cfg), v.ts);   // safety net for saved windows
   return [...byWin.values()].sort((a, b) => (a.cfg.start || '').localeCompare(b.cfg.start || '') || (a.cfg.method || '').localeCompare(b.cfg.method || '') || ((a.cfg.topN || 0) - (b.cfg.topN || 0)));
 }
@@ -298,14 +300,15 @@ function buildGroups(items) {
   const groups = new Map();
   for (const it of items) {
     const k = identityKey(it.cfg);
-    if (!groups.has(k)) groups.set(k, { rep: it, vars: new Map() });
+    if (!groups.has(k)) groups.set(k, { rep: it, vars: new Map(), allIds: new Set() });
     const g = groups.get(k);
+    g.allIds.add(it.id);                                  // every entry id — runs link back by sid
     if ((it.ts || 0) > (g.rep.ts || 0)) g.rep = it;
     const vk = winKey(it.cfg);
     const prev = g.vars.get(vk);
     if (!prev || (it.ts || 0) > (prev.ts || 0)) g.vars.set(vk, it);
   }
-  for (const g of groups.values()) { g.list = backtestsFor([...g.vars.values()]); g.cagr = canonicalCagr(g.list); }
+  for (const g of groups.values()) { g.list = backtestsFor([...g.vars.values()], g.allIds); g.cagr = canonicalCagr(g.list); }
   return groups;
 }
 function render() {
@@ -335,8 +338,6 @@ function render() {
   const header = `<thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
     <th class="text-left font-semibold px-4 py-2.5">Strategy</th>
     <th class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">${wmode ? (CUSTOM_WIN ? `Return · ${CUSTOM_WIN.start} → ${CUSTOM_WIN.end}${CUSTOM_WIN.topN != null ? ` · top-${CUSTOM_WIN.topN}` : ''} ▾` : 'Return · window ▾') : `CAGR${VIEW === 'best' ? ' ▾' : ''}`}</th>
-    <th class="text-center font-semibold px-3 py-2.5 whitespace-nowrap">Backtests</th>
-    <th class="text-center font-semibold px-3 py-2.5 whitespace-nowrap">Today's Picks</th>
     <th class="px-2 py-2.5"></th>
     ${OWNER ? '<th class="px-2 py-2.5"></th>' : ''}
   </tr></thead>`;
@@ -360,13 +361,11 @@ function render() {
           <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">📈</span>
           <span class="min-w-0">
             <span class="block font-semibold text-indigo-700 leading-snug">${esc(it.name)}</span>
-            <span class="block text-[11px] text-slate-500 truncate">${esc(universeLabel(c))} · ${FREQ[c.freq] || c.freq + 'mo'} · ${countLabel} · ${SORTL[c.sortBy] || c.sortBy} ${c.dir === 'high' ? '↓' : '↑'}</span>
+            <span class="block text-[11px] text-slate-500 truncate">${esc(universeLabel(c))} · ${FREQ[c.freq] || c.freq + 'mo'} · ${countLabel} · ${SORTL[c.sortBy] || c.sortBy} ${c.dir === 'high' ? '↓' : '↑'} · ${n} backtest${n > 1 ? 's' : ''}</span>
           </span>
         </div>
       </td>
       <td class="px-3 py-3 text-right text-sm whitespace-nowrap">${cagrCell}</td>
-      <td class="px-3 py-3 text-center"><button class="text-slate-400 hover:text-indigo-600 text-base leading-none" data-open="${esc(it.id)}" title="Open strategy page — parameters + run history (${n} backtest${n > 1 ? 's' : ''})">👁</button></td>
-      <td class="px-3 py-3 text-center"><button class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-700 transition" data-picks="${esc(it.id)}" title="Today's live picks basket for this strategy">🎯 Picks</button></td>
       <td class="px-2 py-3 text-center"><button class="text-base leading-none transition" data-favtoggle="${esc(identityKey(c))}" title="${favs.has(identityKey(c)) ? 'Remove from favourites' : 'Add to favourites'}">${favs.has(identityKey(c)) ? '⭐' : '☆'}</button></td>
       ${OWNER ? `<td class="px-2 py-3 text-center"><button class="text-slate-300 hover:text-red-500 text-sm" data-delgroup="${esc(identityKey(c))}" title="Delete strategy">🗑️</button></td>` : ''}
     </tr>`;
@@ -945,7 +944,7 @@ function wireUI() {
   // Don't eager-load the 17 MB + 90 MB engine — the list + 👁 results work from saved data alone.
   // Market data loads on demand only when you open Today's Picks (ensureEngine), so first paint is instant.
   $('status').textContent = strategies().length
-    ? 'Click a strategy (or 👁) to open its page. 🎯 Picks loads live data on demand.'
+    ? 'Click a strategy to open its page — live picks, backtests, rewind & edit.'
     : '';
 })();
 </script>
