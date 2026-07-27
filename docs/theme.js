@@ -196,6 +196,7 @@
     ] },
     { g: 'Tools', items: [
       ['./saved-strategies.html', '⭐', 'Saved Strategies'],
+      ['./all-picks.html',        '🎯', 'All Picks'],
       ['./backtest-history.html', '🕘', 'Backtest History'],
       ['./live-tracking.html',    '📡', 'Live Tracking'],
       ['./status.html',           '🩺', 'Data Health'],

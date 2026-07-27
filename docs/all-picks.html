@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · All Picks</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./bt-sync.js"></script>
+<style>
+  body{font-feature-settings:"tnum" 1}
+  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
+  .pos{color:#15803d}.neg{color:#b91c1c}
+  .clamp2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .chip{font-size:10.5px;font-weight:600;border:1px solid #e2e8f0;border-radius:999px;padding:2px 8px;white-space:nowrap}
+  .tick{font-size:11px;font-weight:650;border:1px solid #e2e8f0;border-radius:7px;padding:3px 7px;white-space:nowrap;
+        display:inline-flex;gap:5px;align-items:center}
+  .tick b{font-weight:750}
+  .tick em{font-style:normal;font-size:10px;opacity:.85}
+  .up{color:#15803d;border-color:#bbf7d0;background:#f0fdf4}
+  .dn{color:#b91c1c;border-color:#fecaca;background:#fef2f2}
+  html[data-theme="dark"] .up{background:rgba(52,211,153,.10);border-color:rgba(52,211,153,.32)}
+  html[data-theme="dark"] .dn{background:rgba(248,113,113,.10);border-color:rgba(248,113,113,.32)}
+  html[data-theme="soft"] .up{background:rgba(15,157,88,.08)}
+  html[data-theme="soft"] .dn{background:rgba(225,29,98,.08)}
+  .scard{transition:.18s cubic-bezier(.4,0,.2,1)}
+  .scard:hover{transform:translateY(-2px);box-shadow:0 16px 44px -18px rgba(16,24,40,.34)}
+  .brow:hover{background:#f8fafc}
+  .vbtn[aria-selected="true"]{background:#4f46e5;color:#fff}
+  #board .grid-row{display:grid;grid-template-columns:28px minmax(170px,1.6fr) 92px 58px minmax(240px,2.6fr);gap:12px;align-items:center}
+  @media (max-width:820px){ #boardScroll{overflow-x:auto} #boardScroll>div{min-width:820px} }
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav></nav>
+  </div>
+</header>
+
+<main class="max-w-screen-xl mx-auto px-4 py-6">
+  <div class="flex items-start justify-between flex-wrap gap-3 mb-1">
+    <div>
+      <h1 class="text-xl font-bold text-slate-900">🎯 All Picks — every strategy's current basket</h1>
+      <p class="text-sm text-slate-500 mt-1 max-w-3xl">What each saved strategy is holding <b>right now</b> — the basket it formed at its last rebalance, priced live. Returns are measured <b>from that rebalance</b>, not from when tracking began. <span id="upd" class="text-slate-400"></span></p>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      <div class="flex gap-1 bg-white border border-slate-200 rounded-lg p-1 shadow-sm" role="tablist" aria-label="View">
+        <button id="vCards" role="tab" class="vbtn text-xs font-semibold px-3 py-1.5 rounded-md text-slate-500 hover:text-slate-800 transition" aria-selected="true">▦ Cards</button>
+        <button id="vBoard" role="tab" class="vbtn text-xs font-semibold px-3 py-1.5 rounded-md text-slate-500 hover:text-slate-800 transition" aria-selected="false">☰ Board</button>
+      </div>
+      <button id="refresh" class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-3 py-2 text-sm font-semibold shadow-sm">↻ Refresh</button>
+    </div>
+  </div>
+
+  <div id="stats" class="grid gap-3 mt-5 mb-4" style="grid-template-columns:repeat(auto-fit,minmax(158px,1fr))"></div>
+  <div id="status" class="text-sm text-slate-500 py-8 text-center card border-dashed">Loading saved strategies…</div>
+
+  <section id="cards" class="hidden grid gap-4" style="grid-template-columns:repeat(auto-fill,minmax(320px,1fr))"></section>
+
+  <section id="board" class="hidden card overflow-hidden">
+    <div id="boardScroll"><div>
+      <div class="grid-row bg-slate-50 border-b border-slate-200 px-4 py-2.5 text-[10px] uppercase tracking-wider font-bold text-slate-400 sticky top-14 z-10">
+        <div>#</div><div>Strategy</div><div class="text-right">Since reb.</div><div class="text-right">Hold</div><div>Basket · live move since rebalance</div>
+      </div>
+      <div id="boardRows"></div>
+    </div></div>
+  </section>
+
+  <p id="foot" class="text-[11px] text-slate-400 mt-4 hidden">Prices are live (Yahoo NSE, ~15-min delay). A basket is the strategy's top-N as screened on its last rebalance date; per-stock figures are the move from that day's close to the live price. ↻ Refresh re-fetches quotes.</p>
+</main>
+
+<script src="./backtest-engine.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const f2 = n => n == null || isNaN(n) ? '—' : (+n).toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2});
+const sp = n => n == null || isNaN(n) ? '—' : (n >= 0 ? '+' : '') + n.toFixed(2) + '%';
+const kls = n => n == null || isNaN(n) ? '' : (n >= 0 ? 'pos' : 'neg');
+const FREQL = { 1:'Monthly', 3:'Quarterly', 6:'Half-yearly', 12:'Yearly' };
+
+let VIEW = 'cards', RESULT = [], SKIPPED = [];
+try { VIEW = localStorage.getItem('ap_view') === 'board' ? 'board' : 'cards'; } catch (e) {}
+
+/* ---------- strategy schedule ----------
+ * A deployed strategy rebalances on MONTH-ENDS, every `freq` months, phased from its own start
+ * month — the same cadence simulate() walks. The last such boundary before today is when the
+ * basket now held was formed, so it is the only honest anchor for "how is it doing".            */
+function monthEndOf(y, m) { return new Date(Date.UTC(y, m, 0)).toISOString().slice(0, 10); }   // m = 1..12
+function lastRebalanceDate(cfg, today) {
+  const freq = Math.max(1, +cfg.freq || 1);
+  const start = (cfg.start && /^\d{4}-\d{2}/.test(cfg.start)) ? cfg.start : '2020-01-31';
+  const y0 = +start.slice(0, 4), m0 = +start.slice(5, 7);
+  let last = null;
+  for (let k = 0; k < 800; k++) {
+    const t = y0 * 12 + (m0 - 1) + k * freq;
+    const me = monthEndOf(Math.floor(t / 12), (t % 12) + 1);
+    if (me >= today) break;
+    last = me;
+  }
+  return last;
+}
+// A month-end can fall on a weekend/holiday — snap to the last day that actually traded, so the
+// entry price and the 52w window share one anchor (mirrors simulate()'s snapTD).
+let _TD = null;
+function snapTD(off) {
+  if (!_TD) {
+    const set = new Set();
+    for (const r of ['RELIANCE','TCS','HDFCBANK','INFY','ICICIBANK','ITC','SBIN','LT']) {
+      const s = SERIES[r]; if (s && s.d) for (const o of s.d) set.add(o);
+    }
+    _TD = [...set].sort((a, b) => a - b);
+  }
+  if (!_TD.length) return off;
+  let lo = 0, hi = _TD.length - 1, ans = -1;
+  while (lo <= hi) { const m = (lo + hi) >> 1; if (_TD[m] <= off) { ans = m; lo = m + 1; } else hi = m - 1; }
+  return ans < 0 ? off : _TD[ans];
+}
+
+/* ---------- screening, with the expensive pass shared across strategies ----------
+ * factorsAt() is the costly step (it walks the whole universe). Every strategy on the same
+ * universe + date can share ONE pass, so we compute it with all factor families switched on and
+ * then just filter/sort per strategy — the same steps screenAsOf() takes internally.            */
+const ROWS = new Map();
+function rowsAt(cfg, date) {
+  const key = [cfg.indexName || '', cfg.mcapFloor || 0, cfg.earnBasis || 'con', date].join('|');
+  let r = ROWS.get(key);
+  if (!r) {
+    const superCfg = { indexName: cfg.indexName, mcapFloor: cfg.mcapFloor || 0,
+      earnBasis: cfg.earnBasis || 'con', sortBy: 'composite', dir: 'high', topN: 1, freq: 1,
+      // these only trip needsTech/needsFund/needsShp — filters are applied per strategy below
+      filters: [{ field:'stoch' }, { field:'profitYoyPct' }, { field:'fiiPct' }] };
+    r = factorsAt(dayOff(date), superCfg);
+    ROWS.set(key, r);
+  }
+  return r;
+}
+// Some stored strategies carry filters as display strings ("profitYoyPct > 25"). Fed to the engine
+// raw, f.field is undefined and EVERY stock fails passFilters — a silently empty basket.
+function normFilters(list) {
+  return (list || []).map(f => {
+    if (f && typeof f === 'object') return f;
+    const m = /^\s*([A-Za-z_]\w*)\s*(>=|<=|>|<|=)\s*(-?[\d.]+)\s*$/.exec(String(f));
+    return m ? { field: m[1], op: m[2], val: parseFloat(m[3]) } : null;
+  }).filter(Boolean);
+}
+function basketAt(cfg, date, topN) {
+  let rows = rowsAt(cfg, date).filter(r => r.rsi != null && passFilters(r, cfg.filters));
+  rows = rows.filter(r => fieldVal(r, cfg.sortBy) != null);
+  rows = rows.slice().sort((a, b) => {
+    const x = fieldVal(a, cfg.sortBy), y = fieldVal(b, cfg.sortBy);
+    return cfg.dir === 'high' ? y - x : x - y;
+  });
+  return rows.slice(0, topN);
+}
+
+/* ---------- pricing ----------
+ * A basket is fixed once the rebalance has happened, so re-pricing never needs a re-screen:
+ * ↻ Refresh only re-quotes and recomputes the move from each entry price.                      */
+function priceHold(h, todayOff) {
+  const q = (typeof liveQuote === 'function') ? liveQuote(h.sym) : null;
+  h.live = (q && q.ltp != null) ? q.ltp : priceAt(h.tkr, todayOff);
+  h.ret = (h.live != null && h.entry > 0) ? (h.live / h.entry - 1) * 100 : null;
+  return h;
+}
+function repriceAll(todayOff) {
+  RESULT.forEach(r => {
+    r.holds.forEach(h => priceHold(h, todayOff));
+    const rets = r.holds.map(h => h.ret).filter(x => x != null);
+    r.ret = rets.length ? rets.reduce((a, b) => a + b, 0) / rets.length : null;
+  });
+}
+async function refreshPrices() {
+  if (!RESULT.length) return build('Loading…');
+  $('status').classList.remove('hidden');
+  $('status').textContent = 'Fetching live prices…';
+  let live = { n: 0, date: SF.end };
+  try { live = await applyLiveOverlay(RESULT.map(r => r.cfg), m => { $('status').textContent = m; }); } catch (e) {}
+  repriceAll(dayOff(live.date || SF.end));
+  stampLive(live);
+  $('status').classList.add('hidden');
+  paint();
+}
+function stampLive(live) {
+  $('upd').textContent = live.n
+    ? `· 🟢 live · ${live.n} quotes at ${new Date().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'})}`
+    : `· prices as of ${SF.end} close`;
+}
+
+/* ---------- render ---------- */
+function setView(v) {
+  VIEW = v;
+  try { localStorage.setItem('ap_view', v); } catch (e) {}
+  $('vCards').setAttribute('aria-selected', String(v === 'cards'));
+  $('vBoard').setAttribute('aria-selected', String(v === 'board'));
+  $('cards').classList.toggle('hidden', v !== 'cards' || !RESULT.length);
+  $('board').classList.toggle('hidden', v !== 'board' || !RESULT.length);
+}
+function stratHref(s) { return './strategy-backtest.html?id=' + encodeURIComponent(s.id); }
+
+function renderStats() {
+  const held = new Map();
+  RESULT.forEach(r => r.holds.forEach(h => held.set(h.sym, (held.get(h.sym) || 0) + 1)));
+  const top = [...held.entries()].sort((a, b) => b[1] - a[1])[0];
+  const best = RESULT.filter(r => r.ret != null).sort((a, b) => b.ret - a.ret)[0];
+  const cells = [
+    ['Strategies', RESULT.length, SKIPPED.length ? SKIPPED.length + ' skipped' : 'baskets priced live'],
+    ['Unique stocks held', held.size, 'across every basket'],
+    ['Highest conviction', top ? top[0] : '—', top ? top[1] + ' strateg' + (top[1] > 1 ? 'ies' : 'y') + ' hold it' : ''],
+    ['Best since rebalance', best ? sp(best.ret) : '—', best ? esc(best.rebLabel) : ''],
+  ];
+  $('stats').innerHTML = cells.map(([k, v, s]) => `<div class="card p-3">
+      <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">${esc(k)}</div>
+      <div class="text-xl font-extrabold text-slate-900 mt-0.5">${esc(v)}</div>
+      <div class="text-[11px] text-slate-500">${s}</div></div>`).join('');
+}
+
+function renderCards() {
+  $('cards').innerHTML = RESULT.map(r => `
+    <article class="card p-4 pb-0 scard flex flex-col">
+      <div class="flex items-start justify-between gap-2">
+        <a href="${stratHref(r.s)}" class="text-[13.5px] font-bold text-slate-900 hover:text-indigo-600 clamp2 leading-snug">${esc(r.name)}</a>
+        ${r.empty
+          ? '<span class="text-[11px] font-bold whitespace-nowrap px-2 py-0.5 rounded-full text-slate-500 bg-slate-100">in cash</span>'
+          : `<span class="text-[13px] font-extrabold whitespace-nowrap px-2 py-0.5 rounded-full ${r.ret >= 0 ? 'pos' : 'neg'}"
+              style="background:${r.ret >= 0 ? 'rgba(21,128,61,.10)' : 'rgba(185,28,28,.10)'}">${sp(r.ret)}</span>`}
+      </div>
+      <div class="flex flex-wrap gap-1.5 mt-2 mb-3">
+        <span class="chip text-slate-500 bg-slate-50">${esc(r.uni)}</span>
+        <span class="chip text-slate-500 bg-slate-50">${esc(r.freqL)}</span>
+        <span class="chip text-slate-500 bg-slate-50">Top ${r.topN}</span>
+        ${r.nf ? `<span class="chip text-slate-500 bg-slate-50">${r.nf} filter${r.nf > 1 ? 's' : ''}</span>` : ''}
+      </div>
+      ${r.empty ? `<div class="border-t border-dashed border-slate-200 py-4 text-center text-[12px] text-slate-400">
+          No stock passed the filters on ${esc(r.rebDate)} — nothing bought.</div>` : ''}
+      <table class="w-full text-sm border-collapse ${r.empty ? 'hidden' : 'border-t border-dashed border-slate-200'}">
+        <tbody>${r.holds.map((h, i) => `
+          <tr class="border-b border-slate-100">
+            <td class="py-1.5 pr-2 text-[10.5px] text-slate-400 font-bold w-4">${i + 1}</td>
+            <td class="pr-2 font-semibold"><a href="./stock.html?sym=${encodeURIComponent(h.sym)}" class="hover:text-indigo-600">${esc(h.sym)}</a></td>
+            <td class="text-right px-1 text-[12.5px] text-slate-500">₹${f2(h.live)}</td>
+            <td class="text-right pl-1 text-[12px] font-bold ${kls(h.ret)}" title="Since ${esc(r.rebDate)} close (₹${f2(h.entry)})">${sp(h.ret)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+      <a href="${stratHref(r.s)}" class="-mx-4 mt-2 px-4 py-2 border-t border-slate-200 bg-slate-50 rounded-b-xl text-[12px] font-semibold text-indigo-600 flex justify-between items-center">
+        Open strategy →<span class="text-slate-400 font-normal">held since ${esc(r.rebDate)}</span></a>
+    </article>`).join('');
+}
+
+function renderBoard() {
+  $('boardRows').innerHTML = RESULT.map((r, i) => `
+    <div class="grid-row brow px-4 py-2.5 border-b border-slate-100 transition">
+      <div class="text-[11px] text-slate-400 font-bold">${i + 1}</div>
+      <div class="min-w-0">
+        <a href="${stratHref(r.s)}" class="block text-[12.5px] font-semibold text-slate-800 hover:text-indigo-600 truncate">${esc(r.name)}</a>
+        <div class="text-[10.5px] text-slate-400 truncate">${esc(r.uni)} · ${esc(r.freqL)} · since ${esc(r.rebDate)}</div>
+      </div>
+      <div class="text-right text-[12.5px] font-bold ${kls(r.ret)}">${r.empty ? '<span class="text-slate-400 font-semibold text-[11px]">in cash</span>' : sp(r.ret)}</div>
+      <div class="text-right text-[12px] text-slate-500">${r.topN}</div>
+      <div class="flex flex-wrap gap-1">${r.empty ? `<span class="text-[11px] text-slate-400">No stock passed the filters on ${esc(r.rebDate)}</span>` : ''}${r.holds.map(h => `
+        <a href="./stock.html?sym=${encodeURIComponent(h.sym)}" class="tick ${h.ret >= 0 ? 'up' : 'dn'}"
+           title="₹${f2(h.entry)} on ${esc(r.rebDate)} → ₹${f2(h.live)}"><b>${esc(h.sym)}</b><em>${sp(h.ret)}</em></a>`).join('')}</div>
+    </div>`).join('');
+}
+
+function paint() {
+  RESULT.sort((a, b) => (b.ret == null ? -1e9 : b.ret) - (a.ret == null ? -1e9 : a.ret));
+  renderStats(); renderCards(); renderBoard(); setView(VIEW);
+  $('foot').classList.remove('hidden');
+}
+
+/* ---------- boot ---------- */
+async function build(msg) {
+  $('status').classList.remove('hidden');
+  $('status').textContent = msg || 'Loading market data…';
+  if (!window.__ENGINE_READY) {
+    await loadEngineData(m => { if (m) $('status').textContent = m; });
+    window.__ENGINE_READY = true;
+  }
+  let all = [];
+  try { all = JSON.parse(localStorage.getItem('bt_strategies') || '[]'); } catch (e) { all = []; }
+  all = all.filter(s => s && s.cfg).map(s => {
+    const cfg = Object.assign({}, s.cfg);
+    cfg.filters = normFilters(cfg.filters);
+    return Object.assign({}, s, { cfg });
+  });
+  if (!all.length) {
+    $('status').innerHTML = 'No saved strategies yet. <a class="text-indigo-600 font-semibold hover:underline" href="./stock-backtest.html">Create one →</a>';
+    return;
+  }
+  // one quote fan-out for the union of every strategy's universe
+  $('status').textContent = 'Fetching live prices…';
+  let live = { n: 0, date: SF.end };
+  try { live = await applyLiveOverlay(all.map(s => s.cfg), m => { $('status').textContent = m; }); } catch (e) {}
+  const today = live.date || SF.end, todayOff = dayOff(today);
+
+  RESULT = []; SKIPPED = []; ROWS.clear();
+  for (let i = 0; i < all.length; i++) {
+    const s = all[i], cfg = s.cfg;
+    $('status').textContent = `Screening baskets… ${i + 1}/${all.length}`;
+    if (i % 3 === 0) await new Promise(r => setTimeout(r, 0));   // let the browser breathe
+    // Unbounded universes would need a whole-market pass per strategy — not worth the wait here.
+    if (!cfg.indexName) { SKIPPED.push(s.name || 'unnamed'); continue; }
+    const rebRaw = lastRebalanceDate(cfg, today);
+    if (!rebRaw) { SKIPPED.push(s.name || 'unnamed'); continue; }
+    const rebDate = isoOff(snapTD(dayOff(rebRaw)));
+    let basket = [];
+    try { basket = basketAt(cfg, rebDate, cfg.topN || 5); } catch (e) { SKIPPED.push(s.name || 'unnamed'); continue; }
+    // An empty basket is a real state, not a failure: no stock passed the filters on the rebalance
+    // date, so the strategy is sitting in cash. Show it as such rather than dropping the card.
+    const holds = basket.map(r => priceHold({ sym: r.sym, tkr: r.tkr, ind: r.ind, entry: r.price }, todayOff));
+    const rets = holds.map(h => h.ret).filter(x => x != null);
+    RESULT.push({
+      s, name: s.name || strategyLabel(cfg), cfg, topN: cfg.topN || 5,
+      uni: universeLabel(cfg), freqL: FREQL[cfg.freq] || (cfg.freq + 'mo'),
+      nf: (cfg.filters || []).length, rebDate, rebLabel: 'since ' + rebDate,
+      holds, empty: !holds.length,
+      ret: rets.length ? rets.reduce((a, b) => a + b, 0) / rets.length : null,
+    });
+  }
+  $('status').classList.add('hidden');
+  stampLive(live);
+  paint();
+}
+
+$('vCards').onclick = () => setView('cards');
+$('vBoard').onclick = () => setView('board');
+$('refresh').onclick = () => { $('refresh').disabled = true; refreshPrices().finally(() => { $('refresh').disabled = false; }); };
+
+(async function boot() {
+  setView(VIEW);
+  if (window.btSync) { try { await btSync.pullStrategies(); } catch (e) {} }
+  build().catch(e => { $('status').innerHTML = '<span class="neg">Couldn\'t build the picks — ' + esc(e.message || e) + '</span>'; });
+})();
+</script>
+</body>
+</html>

@@ -184,14 +184,23 @@ async function _liveFetch(chunk, quotes) {
   return got;
 }
 // Quote the strategy's universe and splice the live bars in. Returns a summary for the UI.
+// Accepts ONE cfg or an ARRAY of them (all-picks.html overlays every saved strategy at once) —
+// the quoted set is the union of their universes, so one fan-out serves the whole page.
 async function applyLiveOverlay(cfg, onProgress) {
   clearLiveOverlay();
   const date = liveScreenDate(), off = dayOff(date);
-  const members = (cfg && cfg.indexName) ? membersAsOf(cfg.indexName, date) : null;
-  const syms = members ? [...members].filter(s => SERIES[s]) : [];
+  const cfgs = Array.isArray(cfg) ? cfg : [cfg];
+  const set = new Set();
+  let unbounded = false;
+  for (const c of cfgs) {
+    const m = (c && c.indexName) ? membersAsOf(c.indexName, date) : null;
+    if (!m) { unbounded = true; continue; }
+    for (const s of m) if (SERIES[s]) set.add(s);
+  }
+  const syms = [...set];
   // Unbounded universes (All stocks / turnover floors) would need thousands of quotes — skip the
   // price overlay there, but still screen at today's date so fresh EARNINGS are picked up.
-  if (!syms.length || syms.length > LIVE_MAX) return { date, n: 0, quoted: 0, tried: syms.length, skipped: true };
+  if (!syms.length || syms.length > LIVE_MAX) return { date, n: 0, quoted: 0, tried: syms.length, skipped: true, unbounded };
   const quotes = {};
   const batches = []; for (let i = 0; i < syms.length; i += LIVE_BATCH) batches.push(syms.slice(i, i + LIVE_BATCH));
   let done = 0;
@@ -230,7 +239,7 @@ async function applyLiveOverlay(cfg, onProgress) {
     spliced.push(sym);
   }
   LIVE_BAR = { off, syms: spliced, quotes, at: Date.now() };
-  return { date, n: spliced.length, quoted: Object.keys(quotes).length, tried: syms.length, skipped: false };
+  return { date, n: spliced.length, quoted: Object.keys(quotes).length, tried: syms.length, skipped: false, unbounded };
 }
 
 /* ---- price / factor helpers ---- */
