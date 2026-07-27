@@ -67,10 +67,14 @@
           <option value="0">Any move</option><option value="0.25">≥ 0.25 pp</option>
           <option value="0.5">≥ 0.5 pp</option><option value="1">≥ 1 pp</option><option value="2">≥ 2 pp</option>
         </select>
+        <select id="streak" class="border border-slate-200 rounded-lg px-2 py-1.5 text-xs bg-white" title="Stocks where FII stake rose in this many consecutive quarters, counting back from the latest filing">
+          <option value="0">Any FII streak</option>
+        </select>
         <select id="minmcap" class="border border-slate-200 rounded-lg px-2 py-1.5 text-xs bg-white">
           <option value="0">All sizes</option><option value="500">Mcap &gt; ₹500 cr</option>
           <option value="1000">&gt; ₹1,000 cr</option><option value="10000">&gt; ₹10,000 cr</option><option value="50000">&gt; ₹50,000 cr</option>
         </select>
+        <select id="index" class="border border-slate-200 rounded-lg px-2 py-1.5 text-xs bg-white" title="Filter to the current members of an NSE index"><option value="">All indices</option></select>
         <select id="sector" class="border border-slate-200 rounded-lg px-2 py-1.5 text-xs bg-white"><option value="">All sectors</option></select>
         <span id="count" class="text-xs text-slate-400 ml-auto"></span>
         <button id="csv" class="chip">⬇ CSV</button>
@@ -90,7 +94,7 @@
             <th class="text-right px-2 sortable" data-k="ddii">DII Δ</th>
             <th class="text-right px-2 sortable" data-k="dmf">MF Δ</th>
             <th class="text-right px-2 sortable" data-k="dprom">Promoter Δ</th>
-            <th class="text-center px-2">FII/DII trend</th>
+            <th class="text-center px-2 sortable" data-k="streak" title="Sort by the FII rising streak">FII/DII trend</th>
           </tr></thead>
           <tbody id="tbody"></tbody>
         </table>
@@ -101,7 +105,7 @@
     </div>
 
     <p class="text-[11px] text-slate-500 mt-5" id="foot">
-      Source: NSE shareholding-pattern XBRL filings (SEBI format). <b>FII</b> = Institutions (Foreign): FPI category I+II, foreign direct investment &amp; other foreign institutions. <b>DII</b> = Institutions (Domestic): mutual funds, insurance, banks, pension/provident, AIFs etc. <b>MF</b> = mutual funds alone (a subset of DII). Δ columns are the change in <b>percentage points (pp)</b> vs the company's previous filed quarter. Holdings are disclosed <b>quarterly</b> (within 21 days of quarter end) — companies file on different days, so new rows appear here every day during filing season; this page refreshes twice daily. Educational only — not investment advice.
+      Source: NSE shareholding-pattern XBRL filings (SEBI format). <b>FII</b> = Institutions (Foreign): FPI category I+II, foreign direct investment &amp; other foreign institutions. <b>DII</b> = Institutions (Domestic): mutual funds, insurance, banks, pension/provident, AIFs etc. <b>MF</b> = mutual funds alone (a subset of DII). Δ columns are the change in <b>percentage points (pp)</b> vs the company's previous filed quarter. The <b>index</b> filter uses each NSE index's <b>current</b> member list (not membership as of the quarter shown). The <b>FII streak</b> filter (🔥 badge) counts consecutive quarters — counting back from the latest filing — in which FII stake rose by at least 0.05 pp; a missed or non-consecutive quarter ends the streak. <span id="qnote"></span> Holdings are disclosed <b>quarterly</b> (within 21 days of quarter end) — companies file on different days, so new rows appear here every day during filing season; this page refreshes twice daily. Educational only — not investment advice.
     </p>
   </div>
 </main>
@@ -113,6 +117,7 @@
 const $ = id => document.getElementById(id);
 const MONS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 let QUARTERS=[], ROWS=[], VIEW=[], shown=0;
+const IDX=new Map();   // index name -> Set of current member symbols (from indices.json)
 const PAGE=300;
 let mode='all', sortK='sub', sortDir=-1;
 
@@ -158,9 +163,46 @@ function load(){
         ddii:p?+(c[2]-p[2]).toFixed(2):null, dmf:p?+(c[3]-p[3]).toFixed(2):null };
     }).filter(Boolean);
 
-    buildCards(); buildChips(); buildSectors(); apply();
+    buildCards(); buildChips(); buildSectors(); buildStreaks(); apply();
     $('status').classList.add('hidden'); $('content').classList.remove('hidden');
+    loadIndexes();
   }).catch(()=>{ $('status').textContent='Could not load shareholding data — try again in a minute.'; });
+}
+
+/* Index membership rides on indices.json (the Indices page's own feed, refreshed 2x/day) so this
+   page ships no extra data of its own. Loaded AFTER the table renders — the filter is a bonus,
+   never a reason to delay first paint, and a failed fetch just leaves "All indices". */
+function loadIndexes(){
+  fetch('./indices.json').then(r=>{ if(!r.ok) throw 0; return r.json(); }).then(j=>{
+    const labels=j.group_labels||{}, order=j.groups||[];
+    const withMem=(j.indices||[]).filter(x=>x.n && x.members && x.members.length);
+    if(!withMem.length) return;
+    withMem.forEach(x=>IDX.set(x.n, new Set(x.members)));
+    // headline broad indices first, then natural order ("Nifty 50" before "Nifty 100", not after)
+    const HEAD=['Nifty 50','Nifty Next 50','Nifty 100','Nifty 200','Nifty 500'];
+    const rank=n=>{ const i=HEAD.indexOf(n); return i<0?99:i; };
+    $('index').innerHTML='<option value="">All indices</option>' +
+      order.filter(g=>withMem.some(x=>x.g===g)).map(g=>
+        '<optgroup label="'+esc(labels[g]||g)+'">' +
+        withMem.filter(x=>x.g===g)
+          .sort((a,b)=>rank(a.n)-rank(b.n)||a.n.localeCompare(b.n,undefined,{numeric:true}))
+          .map(x=>'<option value="'+esc(x.n)+'">'+esc(x.n)+' · '+x.members.length+'</option>').join('') +
+        '</optgroup>').join('');
+    const want=new URLSearchParams(location.search).get('idx');
+    if(want){
+      const hit=[...IDX.keys()].find(k=>k.toLowerCase()===want.toLowerCase());
+      if(hit){ $('index').value=hit; apply(); }
+    }
+  }).catch(()=>{});
+}
+
+// Streak options are capped by how many quarters the feed actually ships (8 → at most 7 rises).
+function buildStreaks(){
+  const max=Math.max(1, Math.min(12, QUARTERS.length-1));
+  let o='<option value="0">Any FII streak</option>';
+  for(let n=1;n<=max;n++) o+='<option value="'+n+'">🔥 FII up '+n+' qtr'+(n>1?'s':'')+' in a row</option>';
+  $('streak').innerHTML=o;
+  $('qnote').textContent='This page carries '+QUARTERS.length+' quarters of filings, so '+max+' in a row is the longest streak it can show.';
 }
 
 
@@ -203,10 +245,13 @@ function buildSectors(){
 function apply(){
   const q=($('q').value||'').trim().toUpperCase();
   const mm=+$('minmove').value, mc=+$('minmcap').value, sec=$('sector').value;
+  const idx=$('index').value, idxSet=idx?IDX.get(idx):null, st=+$('streak').value||0;
   VIEW = ROWS.filter(r=>{
     if(q && r.s.indexOf(q)<0 && r.n.toUpperCase().indexOf(q)<0) return false;
     if(mc && r.m<mc) return false;
     if(sec && r.sec!==sec) return false;
+    if(idxSet && !idxSet.has(r.s)) return false;
+    if(st && r.streak<st) return false;
     if(mode==='fiiup' && !(r.dfii>0.005)) return false;
     if(mode==='fiidn' && !(r.dfii<-0.005)) return false;
     if(mode==='diiup' && !(r.ddii>0.005)) return false;
@@ -294,7 +339,7 @@ document.addEventListener('mousemove', e=>{
 });
 
 // ---- controls ----
-['q','minmove','minmcap','sector'].forEach(id=>{ $(id).addEventListener('input', apply); });
+['q','minmove','minmcap','sector','index','streak'].forEach(id=>{ $(id).addEventListener('input', apply); });
 $('more').onclick=renderMore;
 document.querySelectorAll('th.sortable').forEach(th=>{
   th.onclick=()=>{
@@ -304,9 +349,9 @@ document.querySelectorAll('th.sortable').forEach(th=>{
   };
 });
 $('csv').onclick=()=>{
-  const head='symbol,name,mcap_cr,sector,quarter,filed,fii_pct,fii_chg_pp,dii_pct,dii_chg_pp,mf_pct,mf_chg_pp,promoter_pct,promoter_chg_pp\n';
+  const head='symbol,name,mcap_cr,sector,quarter,filed,fii_pct,fii_chg_pp,dii_pct,dii_chg_pp,mf_pct,mf_chg_pp,promoter_pct,promoter_chg_pp,fii_rising_streak_qtrs\n';
   const body=VIEW.map(r=>[r.s,'"'+r.n.replace(/"/g,"'")+'"',r.m,'"'+r.sec+'"',r.q,r.sub,r.fii,r.dfii==null?'':r.dfii,r.dii,
-    r.ddii==null?'':r.ddii,r.mf,r.dmf==null?'':r.dmf,r.prom,r.dprom==null?'':r.dprom].join(',')).join('\n');
+    r.ddii==null?'':r.ddii,r.mf,r.dmf==null?'':r.dmf,r.prom,r.dprom==null?'':r.dprom,r.streak].join(',')).join('\n');
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([head+body],{type:'text/csv'})); a.download='fii_dii_holdings.csv'; a.click();
 };
