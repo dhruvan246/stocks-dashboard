@@ -1,0 +1,38 @@
+{
+ "_README": "Confirmed WRONG stored PAT cells in docs/sf_fundamentals.json, with the as-filed correct value and its source. Found while rev-backfilling: the cell's revenue could not be written because the stored PAT failed the anchor rule (see scripts/_apply_reads.py). sf_fundamentals is CI-rebuilt and is owned by refresh.yml / the bse-vision-fill routine (DATA_RUNBOOK hot-file ownership), so DO NOT hand-edit it from another tree - route the fix through that lane, then re-run the rev applier and these cells will anchor and fill.",
+ "GICRE": {
+  "_note": "GIC Re standalone Annexure-I, Rs-in-lakh /100. FY21 quarter PATs read off the filings are -557.47 / +230.05 / +987.42 / +1260.44, which sum to 1920.44 = the FY21 PAT printed in GIC Re's own FY21 'Summary of Revenue and Profit and Loss Account' (Rs crore) - so the four corrections below are self-consistent and independently confirmed. Stored Mar-20 (1197.41) and Jun-20 (-557.47) are CORRECT and were filled normally.",
+  "20200930": {
+   "stored_pat": -327.42,
+   "correct_pat": 230.05,
+   "defect": "stored value is the H1-FY21 YEAR-TO-DATE column (-32,742 lakh), not the Sep-20 quarter (23,005 lakh)",
+   "source": "GICRE Sep-2020 filing Annexure-I standalone col1; confirmed by the Dec-2020 filing's Sep-20 comparative col2",
+   "rev_ready": 12258.70,
+   "op_ready": 621.35
+  },
+  "20201231": {
+   "stored_pat": 662.72,
+   "correct_pat": 987.42,
+   "defect": "stored value matches neither the Dec-20 quarter (98,742 lakh) nor the 9M YTD (66,000 lakh); quarter figure is 987.42",
+   "source": "GICRE Dec-2020 filing Annexure-I standalone col1; equals Q3 PAT 987.42 in the FY21 crore summary",
+   "rev_ready": 11763.63,
+   "op_ready": 1503.71
+  },
+  "20210331": {
+   "stored_pat": 2045.48,
+   "correct_pat": 1260.44,
+   "defect": "stored value is the Mar-21 PROFIT BEFORE TAX (204,548 lakh); PAT is 126,044 lakh",
+   "source": "GICRE Jun-2021 filing Annexure-I standalone col2 (31/03/2021)",
+   "rev_ready": 9859.76,
+   "op_ready": 2137.75
+  },
+  "20210630": {
+   "stored_pat": 1260.44,
+   "correct_pat": -771.73,
+   "defect": "stored value is the PREVIOUS quarter's PAT (Mar-21 = 126,044 lakh); Jun-21 is a loss of 77,173 lakh",
+   "source": "GICRE Jun-2021 filing Annexure-I standalone col1 (30/06/2021); the Jun-22 filing's Jun-21 comparative agrees at -771.73",
+   "rev_ready": 13149.01,
+   "op_ready": -1361.15
+  }
+ }
+}
