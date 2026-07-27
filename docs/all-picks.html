@@ -271,7 +271,9 @@ function renderBoard() {
 }
 
 function paint() {
-  RESULT.sort((a, b) => (b.ret == null ? -1e9 : b.ret) - (a.ret == null ? -1e9 : a.ret));
+  // Alphabetical by strategy name — a stable running order, so a card stays where you last saw it
+  // instead of jumping around as prices move. `numeric` keeps top-3 ahead of top-10.
+  RESULT.sort((a, b) => String(a.name).localeCompare(String(b.name), 'en', { numeric: true, sensitivity: 'base' }));
   renderStats(); renderCards(); renderBoard(); setView(VIEW);
   $('foot').classList.remove('hidden');
 }
