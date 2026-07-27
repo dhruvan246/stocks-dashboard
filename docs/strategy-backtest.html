@@ -250,10 +250,10 @@ function picksCard(c) {
 // Instant view: the nightly-logged basket (no market data download).
 function renderBakedPicks(c) {
   if (!BAKED || !BAKED.picks || !BAKED.picks.length) {
-    $('pkMsg').innerHTML = 'No baked basket for this strategy yet — click <b>⚡ Full details</b> to compute it live (one-time market-data load).';
+    $('pkMsg').innerHTML = 'Computing the live qualifying list (one-time market-data load)…';
     return;
   }
-  $('pkMsg').innerHTML = `Basket as of <b>${esc(BAKED.day)}</b> (nightly log) · ${BAKED.picks.length} stocks · <b>⚡ Full details</b> adds ranks, metrics &amp; allocation for every qualifying stock.`;
+  $('pkMsg').innerHTML = `Basket as of <b>${esc(BAKED.day)}</b> (nightly log) · ${BAKED.picks.length} stocks · loading the full qualifying list…`;
   const cap = +$('pkCap').value || 100000, per = cap / (BAKED.picks.length || 1);
   const rows = BAKED.picks.map((p, i) => {
     const shares = p.p > 0 ? Math.floor(per / p.p) : 0;
@@ -425,8 +425,10 @@ function renderStrategy(strat, list) {
   const t0 = new URLSearchParams(location.search).get('tab');
   setTab(t0 === 'backtests' ? 'bt' : t0 === 'rewind' ? 'rw' : 'picks');
 
-  // 🎯 Live Picks wiring — instant baked view, ⚡ upgrades to the full engine view
+  // 🎯 Live Picks wiring — instant baked view, then AUTO-upgrade to the FULL qualifying list
+  // (every stock that passes the filters, ranked; market data loads once in the background)
   renderBakedPicks(c);
+  renderFullPicks(c);
   $('pkFull').onclick = () => renderFullPicks(c);
   $('pkCsv').onclick = downloadPicksCSV;
   $('pkCap').onchange = () => { if (LAST_PICKS && LAST_PICKS.full) renderFullPicks(c); else renderBakedPicks(c); };
