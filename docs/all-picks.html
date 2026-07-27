@@ -48,7 +48,7 @@
   <div class="flex items-start justify-between flex-wrap gap-3 mb-1">
     <div>
       <h1 class="text-xl font-bold text-slate-900">🎯 All Picks — every strategy's current basket</h1>
-      <p class="text-sm text-slate-500 mt-1 max-w-3xl">What each saved strategy is holding <b>right now</b> — the basket it formed at its last rebalance, priced live. Returns are measured <b>from that rebalance</b>, not from when tracking began. <span id="upd" class="text-slate-400"></span></p>
+      <p class="text-sm text-slate-500 mt-1 max-w-3xl">The stocks each saved strategy qualifies for <b>right now</b> — the same list as its Live Picks tab, priced live. The badge is that strategy's return on the basket it actually holds, measured <b>since its last rebalance</b>. <span id="upd" class="text-slate-400"></span></p>
     </div>
     <div class="flex items-center gap-2 shrink-0">
       <div class="flex gap-1 bg-white border border-slate-200 rounded-lg p-1 shadow-sm" role="tablist" aria-label="View">
@@ -67,13 +67,13 @@
   <section id="board" class="hidden card overflow-hidden">
     <div id="boardScroll"><div>
       <div class="grid-row bg-slate-50 border-b border-slate-200 px-4 py-2.5 text-[10px] uppercase tracking-wider font-bold text-slate-400 sticky top-14 z-10">
-        <div>#</div><div>Strategy</div><div class="text-right">Since reb.</div><div class="text-right">Hold</div><div>Basket · live move since rebalance</div>
+        <div>#</div><div>Strategy</div><div class="text-right">Since reb.</div><div class="text-right">Hold</div><div>Qualifying now · today's move</div>
       </div>
       <div id="boardRows"></div>
     </div></div>
   </section>
 
-  <p id="foot" class="text-[11px] text-slate-400 mt-4 hidden">Prices are live (Yahoo NSE, ~15-min delay). A basket is the strategy's top-N as screened on its last rebalance date; per-stock figures are the move from that day's close to the live price. ↻ Refresh re-fetches quotes.</p>
+  <p id="foot" class="text-[11px] text-slate-400 mt-4 hidden">Prices are live (Yahoo NSE, ~15-min delay); per-stock figures are today's move. The listed stocks are the strategy's top-N screened as of now, so they match its Live Picks tab and can differ from what it currently holds. The badge return is measured on the held basket — the top-N as screened on the last rebalance date — from that day's close to the live price. One card per selection rule, so the count matches Saved Strategies. ↻ Refresh re-fetches quotes.</p>
 </main>
 
 <script src="./backtest-engine.js"></script>
@@ -84,6 +84,16 @@ const f2 = n => n == null || isNaN(n) ? '—' : (+n).toLocaleString('en-IN', {mi
 const sp = n => n == null || isNaN(n) ? '—' : (n >= 0 ? '+' : '') + n.toFixed(2) + '%';
 const kls = n => n == null || isNaN(n) ? '' : (n >= 0 ? 'pos' : 'neg');
 const FREQL = { 1:'Monthly', 3:'Quarterly', 6:'Half-yearly', 12:'Yearly' };
+const PICK_CAP = 12;   // rows shown per card; a top-50 rule would otherwise bury the page
+// Yield to the renderer between strategies so the progress line paints and the tab stays alive.
+// NOT setTimeout: a backgrounded tab throttles timers to roughly one callback a MINUTE, which turns
+// a 2-minute build into a twenty-minute one that looks like a hang. A MessageChannel task yields
+// just as well and isn't subject to timer throttling.
+const _yieldChan = (typeof MessageChannel !== 'undefined') ? new MessageChannel() : null;
+function yieldToUI() {
+  if (!_yieldChan) return new Promise(r => setTimeout(r, 0));
+  return new Promise(r => { _yieldChan.port1.onmessage = () => r(); _yieldChan.port2.postMessage(0); });
+}
 
 let VIEW = 'cards', RESULT = [], SKIPPED = [];
 try { VIEW = localStorage.getItem('ap_view') === 'board' ? 'board' : 'cards'; } catch (e) {}
@@ -141,6 +151,47 @@ function rowsAt(cfg, date) {
   }
   return r;
 }
+/* Identity = the SELECTION RULE, matching saved-strategies.html so BOTH PAGES COUNT THE SAME.
+ * Excludes `method` (execution-only), start/end (the window) and `topN` (the stock count is a
+ * variation) — a strategy saved at 3, 5 and 10 stocks is ONE strategy. `<`≡`<=` and `>`≡`>=` so a
+ * boundary-only difference doesn't split a rule in two.
+ * KEEP IN SYNC with saved-strategies.html's identityKey(); a drift here shows a different strategy
+ * count on the two pages, which is exactly the bug this fixes. */
+function identityKey(c) {
+  const normOp = op => ({ '<=': '<', '>=': '>' }[op] || op);
+  const f = (c.filters || []).map(x => x.field + normOp(x.op) + x.val).sort().join(',');
+  return [c.indexName || '', c.mcapFloor || 0, c.freq, c.sortBy, c.dir, c.lookback || 1, c.earnBasis || 'con', f].join('|');
+}
+// Collapse saved variants onto one entry per rule. The variants differ only in topN, and since the
+// ranking is identical the smaller baskets are PREFIXES of the larger one — so showing the biggest
+// topN shows every variant at once, and the rank numbers say where a smaller one stops.
+function groupByIdentity(list) {
+  const by = new Map();
+  for (const s of list) {
+    const k = identityKey(s.cfg);
+    const g = by.get(k);
+    if (!g) { by.set(k, { rep: s, counts: new Set([s.cfg.topN || 5]) }); continue; }
+    g.counts.add(s.cfg.topN || 5);
+    // Represent the rule by the variant saved MOST RECENTLY — the stock count you last worked at.
+    // (Taking the widest instead would render a 50-stock card for a rule also saved at 5.)
+    if ((s.ts || 0) > (g.rep.ts || 0)) g.rep = s;
+  }
+  return [...by.values()].map(g => ({
+    s: g.rep, cfg: g.rep.cfg,
+    counts: [...g.counts].sort((a, b) => a - b),
+  }));
+}
+// The saved list, normalised. btSync.pullStrategies() REPLACES localStorage with the shared list,
+// so anything deleted on Saved Strategies is already gone by the time we read it here.
+function loadStrategies() {
+  let all = [];
+  try { all = JSON.parse(localStorage.getItem('bt_strategies') || '[]'); } catch (e) { all = []; }
+  return all.filter(s => s && s.cfg).map(s => {
+    const cfg = Object.assign({}, s.cfg);
+    cfg.filters = normFilters(cfg.filters);
+    return Object.assign({}, s, { cfg });
+  });
+}
 // Some stored strategies carry filters as display strings ("profitYoyPct > 25"). Fed to the engine
 // raw, f.field is undefined and EVERY stock fails passFilters — a silently empty basket.
 function normFilters(list) {
@@ -161,24 +212,50 @@ function basketAt(cfg, date, topN) {
 }
 
 /* ---------- pricing ----------
- * A basket is fixed once the rebalance has happened, so re-pricing never needs a re-screen:
- * ↻ Refresh only re-quotes and recomputes the move from each entry price.                      */
-function priceHold(h, todayOff) {
+ * Each card carries TWO baskets, because they answer different questions:
+ *   picks — what the strategy qualifies for RIGHT NOW (identical to the strategy page's Live
+ *           Picks tab), shown with the live price and today's move. This is the list you'd act on.
+ *   held  — the basket formed at the last rebalance. Never displayed, but it is what the headline
+ *           return is measured on, so that number reflects the position actually carried rather
+ *           than a hypothetical one.
+ * Membership of both is fixed between rebalances, so ↻ Refresh only re-quotes and re-prices.    */
+function priceHold(h, todayOff) {                 // held: move from its entry price
   const q = (typeof liveQuote === 'function') ? liveQuote(h.sym) : null;
   h.live = (q && q.ltp != null) ? q.ltp : priceAt(h.tkr, todayOff);
   h.ret = (h.live != null && h.entry > 0) ? (h.live / h.entry - 1) * 100 : null;
   return h;
 }
+function pricePick(p, todayOff) {                 // displayed: live price + today's move
+  const q = (typeof liveQuote === 'function') ? liveQuote(p.sym) : null;
+  p.live = (q && q.ltp != null) ? q.ltp : priceAt(p.tkr, todayOff);
+  p.day = (q && q.ltp != null && q.prevClose > 0) ? (q.ltp / q.prevClose - 1) * 100 : null;
+  return p;
+}
 function repriceAll(todayOff) {
   RESULT.forEach(r => {
-    r.holds.forEach(h => priceHold(h, todayOff));
-    const rets = r.holds.map(h => h.ret).filter(x => x != null);
+    r.picks.forEach(p => pricePick(p, todayOff));
+    r.held.forEach(h => priceHold(h, todayOff));
+    const rets = r.held.map(h => h.ret).filter(x => x != null);
     r.ret = rets.length ? rets.reduce((a, b) => a + b, 0) / rets.length : null;
   });
 }
 async function refreshPrices() {
   if (!RESULT.length) return build('Loading…');
   $('status').classList.remove('hidden');
+  // Re-sync the saved list first: a strategy deleted (or added) on Saved Strategies has to vanish
+  // from here too, not linger until a reload. Only rebuild when the set actually moved — a rebuild
+  // re-screens every basket, which is the slow path.
+  $('status').textContent = 'Syncing saved strategies…';
+  if (window.btSync) {
+    try {
+      await btSync.pullStrategies();
+      const fresh = groupByIdentity(loadStrategies()).map(g => identityKey(g.cfg));
+      const have = new Set(RESULT.map(r => identityKey(r.cfg)));
+      if (fresh.length !== have.size || fresh.some(k => !have.has(k))) {
+        return build('Saved strategies changed — rebuilding…');
+      }
+    } catch (e) { /* offline: keep what we have and just re-price */ }
+  }
   $('status').textContent = 'Fetching live prices…';
   let live = { n: 0, date: SF.end };
   try { live = await applyLiveOverlay(RESULT.map(r => r.cfg), m => { $('status').textContent = m; }); } catch (e) {}
@@ -206,13 +283,13 @@ function stratHref(s) { return './strategy-backtest.html?id=' + encodeURICompone
 
 function renderStats() {
   const held = new Map();
-  RESULT.forEach(r => r.holds.forEach(h => held.set(h.sym, (held.get(h.sym) || 0) + 1)));
+  RESULT.forEach(r => r.picks.forEach(p => held.set(p.sym, (held.get(p.sym) || 0) + 1)));
   const top = [...held.entries()].sort((a, b) => b[1] - a[1])[0];
   const best = RESULT.filter(r => r.ret != null).sort((a, b) => b.ret - a.ret)[0];
   const cells = [
-    ['Strategies', RESULT.length, SKIPPED.length ? SKIPPED.length + ' skipped' : 'baskets priced live'],
-    ['Unique stocks held', held.size, 'across every basket'],
-    ['Highest conviction', top ? top[0] : '—', top ? top[1] + ' strateg' + (top[1] > 1 ? 'ies' : 'y') + ' hold it' : ''],
+    ['Strategies', RESULT.length, SKIPPED.length ? SKIPPED.length + ' skipped' : 'screened live'],
+    ['Unique stocks picked', held.size, 'across every basket'],
+    ['Highest conviction', top ? top[0] : '—', top ? 'picked by ' + top[1] + ' strateg' + (top[1] > 1 ? 'ies' : 'y') : ''],
     ['Best since rebalance', best ? sp(best.ret) : '—', best ? esc(best.rebLabel) : ''],
   ];
   $('stats').innerHTML = cells.map(([k, v, s]) => `<div class="card p-3">
@@ -226,31 +303,34 @@ function renderCards() {
     <article class="card p-4 pb-0 scard flex flex-col">
       <div class="flex items-start justify-between gap-2">
         <a href="${stratHref(r.s)}" class="text-[13.5px] font-bold text-slate-900 hover:text-indigo-600 clamp2 leading-snug">${esc(r.name)}</a>
-        ${r.empty
+        ${r.ret == null
           ? '<span class="text-[11px] font-bold whitespace-nowrap px-2 py-0.5 rounded-full text-slate-500 bg-slate-100">in cash</span>'
           : `<span class="text-[13px] font-extrabold whitespace-nowrap px-2 py-0.5 rounded-full ${r.ret >= 0 ? 'pos' : 'neg'}"
-              style="background:${r.ret >= 0 ? 'rgba(21,128,61,.10)' : 'rgba(185,28,28,.10)'}">${sp(r.ret)}</span>`}
+              style="background:${r.ret >= 0 ? 'rgba(21,128,61,.10)' : 'rgba(185,28,28,.10)'}"
+              title="Held basket's return since the ${esc(r.rebDate)} rebalance">${sp(r.ret)} <span class="font-semibold opacity-70">since ${esc(r.rebDate.slice(5))}</span></span>`}
       </div>
       <div class="flex flex-wrap gap-1.5 mt-2 mb-3">
         <span class="chip text-slate-500 bg-slate-50">${esc(r.uni)}</span>
         <span class="chip text-slate-500 bg-slate-50">${esc(r.freqL)}</span>
-        <span class="chip text-slate-500 bg-slate-50">Top ${r.topN}</span>
+        <span class="chip text-slate-500 bg-slate-50">${r.counts && r.counts.length > 1 ? esc(r.counts.join('/')) + ' stocks' : 'Top ' + r.topN}</span>
         ${r.nf ? `<span class="chip text-slate-500 bg-slate-50">${r.nf} filter${r.nf > 1 ? 's' : ''}</span>` : ''}
       </div>
       ${r.empty ? `<div class="border-t border-dashed border-slate-200 py-4 text-center text-[12px] text-slate-400">
-          No stock passed the filters on ${esc(r.rebDate)} — nothing bought.</div>` : ''}
+          No stock qualifies right now.</div>` : ''}
       <table class="w-full text-sm border-collapse ${r.empty ? 'hidden' : 'border-t border-dashed border-slate-200'}">
-        <tbody>${r.holds.map((h, i) => `
+        <tbody>${r.picks.slice(0, PICK_CAP).map((p, i) => `
           <tr class="border-b border-slate-100">
             <td class="py-1.5 pr-2 text-[10.5px] text-slate-400 font-bold w-4">${i + 1}</td>
-            <td class="pr-2 font-semibold"><a href="./stock.html?sym=${encodeURIComponent(h.sym)}" class="hover:text-indigo-600">${esc(h.sym)}</a></td>
-            <td class="text-right px-1 text-[12.5px] text-slate-500">₹${f2(h.live)}</td>
-            <td class="text-right pl-1 text-[12px] font-bold ${kls(h.ret)}" title="Since ${esc(r.rebDate)} close (₹${f2(h.entry)})">${sp(h.ret)}</td>
+            <td class="pr-2 font-semibold"><a href="./stock.html?sym=${encodeURIComponent(p.sym)}" class="hover:text-indigo-600">${esc(p.sym)}</a></td>
+            <td class="text-right px-1 text-[12.5px] text-slate-500">₹${f2(p.live)}</td>
+            <td class="text-right pl-1 text-[12px] font-bold ${kls(p.day)}" title="Today's move">${sp(p.day)}</td>
           </tr>`).join('')}
+          ${r.picks.length > PICK_CAP ? `<tr><td colspan="4" class="py-1.5 text-[11px] text-slate-400">
+            + ${r.picks.length - PICK_CAP} more — <a href="${stratHref(r.s)}" class="text-indigo-600 hover:underline">see all</a></td></tr>` : ''}
         </tbody>
       </table>
       <a href="${stratHref(r.s)}" class="-mx-4 mt-2 px-4 py-2 border-t border-slate-200 bg-slate-50 rounded-b-xl text-[12px] font-semibold text-indigo-600 flex justify-between items-center">
-        Open strategy →<span class="text-slate-400 font-normal">held since ${esc(r.rebDate)}</span></a>
+        Open strategy →<span class="text-slate-400 font-normal">qualifying now</span></a>
     </article>`).join('');
 }
 
@@ -262,11 +342,12 @@ function renderBoard() {
         <a href="${stratHref(r.s)}" class="block text-[12.5px] font-semibold text-slate-800 hover:text-indigo-600 truncate">${esc(r.name)}</a>
         <div class="text-[10.5px] text-slate-400 truncate">${esc(r.uni)} · ${esc(r.freqL)} · since ${esc(r.rebDate)}</div>
       </div>
-      <div class="text-right text-[12.5px] font-bold ${kls(r.ret)}">${r.empty ? '<span class="text-slate-400 font-semibold text-[11px]">in cash</span>' : sp(r.ret)}</div>
+      <div class="text-right text-[12.5px] font-bold ${kls(r.ret)}" title="Held basket's return since the ${esc(r.rebDate)} rebalance">${r.ret == null ? '<span class="text-slate-400 font-semibold text-[11px]">in cash</span>' : sp(r.ret)}</div>
       <div class="text-right text-[12px] text-slate-500">${r.topN}</div>
-      <div class="flex flex-wrap gap-1">${r.empty ? `<span class="text-[11px] text-slate-400">No stock passed the filters on ${esc(r.rebDate)}</span>` : ''}${r.holds.map(h => `
-        <a href="./stock.html?sym=${encodeURIComponent(h.sym)}" class="tick ${h.ret >= 0 ? 'up' : 'dn'}"
-           title="₹${f2(h.entry)} on ${esc(r.rebDate)} → ₹${f2(h.live)}"><b>${esc(h.sym)}</b><em>${sp(h.ret)}</em></a>`).join('')}</div>
+      <div class="flex flex-wrap gap-1">${r.empty ? '<span class="text-[11px] text-slate-400">No stock qualifies right now</span>' : ''}${r.picks.slice(0, PICK_CAP).map(p => `
+        <a href="./stock.html?sym=${encodeURIComponent(p.sym)}" class="tick ${p.day >= 0 ? 'up' : 'dn'}"
+           title="₹${f2(p.live)} · today's move"><b>${esc(p.sym)}</b><em>${sp(p.day)}</em></a>`).join('')}${
+        r.picks.length > PICK_CAP ? `<a href="${stratHref(r.s)}" class="tick text-slate-500">+${r.picks.length - PICK_CAP} more</a>` : ''}</div>
     </div>`).join('');
 }
 
@@ -286,44 +367,47 @@ async function build(msg) {
     await loadEngineData(m => { if (m) $('status').textContent = m; });
     window.__ENGINE_READY = true;
   }
-  let all = [];
-  try { all = JSON.parse(localStorage.getItem('bt_strategies') || '[]'); } catch (e) { all = []; }
-  all = all.filter(s => s && s.cfg).map(s => {
-    const cfg = Object.assign({}, s.cfg);
-    cfg.filters = normFilters(cfg.filters);
-    return Object.assign({}, s, { cfg });
-  });
+  const all = loadStrategies();
   if (!all.length) {
     $('status').innerHTML = 'No saved strategies yet. <a class="text-indigo-600 font-semibold hover:underline" href="./stock-backtest.html">Create one →</a>';
     return;
   }
+  const groups = groupByIdentity(all);   // one entry per selection rule, as Saved Strategies counts them
   // one quote fan-out for the union of every strategy's universe
   $('status').textContent = 'Fetching live prices…';
   let live = { n: 0, date: SF.end };
-  try { live = await applyLiveOverlay(all.map(s => s.cfg), m => { $('status').textContent = m; }); } catch (e) {}
+  try { live = await applyLiveOverlay(groups.map(g => g.cfg), m => { $('status').textContent = m; }); } catch (e) {}
   const today = live.date || SF.end, todayOff = dayOff(today);
 
   RESULT = []; SKIPPED = []; ROWS.clear();
-  for (let i = 0; i < all.length; i++) {
-    const s = all[i], cfg = s.cfg;
-    $('status').textContent = `Screening baskets… ${i + 1}/${all.length}`;
-    if (i % 3 === 0) await new Promise(r => setTimeout(r, 0));   // let the browser breathe
+  for (let i = 0; i < groups.length; i++) {
+    const s = groups[i].s, cfg = groups[i].cfg, counts = groups[i].counts;
+    $('status').textContent = `Screening baskets… ${i + 1}/${groups.length}`;
+    if (i % 3 === 0) await yieldToUI();   // let the browser breathe
     // Unbounded universes would need a whole-market pass per strategy — not worth the wait here.
-    if (!cfg.indexName) { SKIPPED.push(s.name || 'unnamed'); continue; }
+    // Also catch an index we hold NO membership snapshot for: factorsAt() treats a null member set
+    // as "no filter" and screens all ~4,400 stocks with every factor family on, which takes minutes
+    // per strategy and looks like a hang.
+    if (!cfg.indexName || !membersAsOf(cfg.indexName, today)) { SKIPPED.push(s.name || 'unnamed'); continue; }
     const rebRaw = lastRebalanceDate(cfg, today);
     if (!rebRaw) { SKIPPED.push(s.name || 'unnamed'); continue; }
     const rebDate = isoOff(snapTD(dayOff(rebRaw)));
-    let basket = [];
-    try { basket = basketAt(cfg, rebDate, cfg.topN || 5); } catch (e) { SKIPPED.push(s.name || 'unnamed'); continue; }
-    // An empty basket is a real state, not a failure: no stock passed the filters on the rebalance
-    // date, so the strategy is sitting in cash. Show it as such rather than dropping the card.
-    const holds = basket.map(r => priceHold({ sym: r.sym, tkr: r.tkr, ind: r.ind, entry: r.price }, todayOff));
-    const rets = holds.map(h => h.ret).filter(x => x != null);
+    const topN = cfg.topN || 5;
+    let heldRows = [], pickRows = [];
+    try {
+      heldRows = basketAt(cfg, rebDate, topN);   // what was bought — drives the headline return
+      pickRows = basketAt(cfg, today, topN);     // what qualifies now — what the card lists
+    } catch (e) { SKIPPED.push(s.name || 'unnamed'); continue; }
+    // An empty list is a real state, not a failure: nothing passed the filters. Show it as such
+    // rather than dropping the card.
+    const held = heldRows.map(r => priceHold({ sym: r.sym, tkr: r.tkr, ind: r.ind, entry: r.price }, todayOff));
+    const picks = pickRows.map(r => pricePick({ sym: r.sym, tkr: r.tkr, ind: r.ind }, todayOff));
+    const rets = held.map(h => h.ret).filter(x => x != null);
     RESULT.push({
-      s, name: s.name || strategyLabel(cfg), cfg, topN: cfg.topN || 5,
+      s, name: s.name || strategyLabel(cfg), cfg, topN,
       uni: universeLabel(cfg), freqL: FREQL[cfg.freq] || (cfg.freq + 'mo'),
-      nf: (cfg.filters || []).length, rebDate, rebLabel: 'since ' + rebDate,
-      holds, empty: !holds.length,
+      nf: (cfg.filters || []).length, rebDate, rebLabel: 'since ' + rebDate, counts,
+      picks, held, empty: !picks.length,
       ret: rets.length ? rets.reduce((a, b) => a + b, 0) / rets.length : null,
     });
   }
