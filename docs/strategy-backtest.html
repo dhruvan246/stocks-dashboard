@@ -237,7 +237,6 @@ function picksCard(c) {
       <div><div class="text-base font-bold text-slate-900">🎯 Live Picks — current basket</div>
         <div class="text-[12px] text-slate-500">The stocks this strategy selects right now — its filters + <b>${esc(SORTL[c.sortBy] || c.sortBy)}</b> (${c.dir === 'high' ? 'prefer high' : 'prefer low'}) ranking. Top ${c.topN} ⭐ = the basket.</div></div>
       <div class="flex items-end gap-2 flex-wrap">
-        <div><label class="lbl">Capital ₹</label><input id="pkCap" type="number" value="${c.capital || 100000}" class="inp" style="width:110px"></div>
         <button id="pkFull" class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2 text-sm font-semibold shadow-sm shrink-0">⚡ Full details</button>
         <button id="pkCsv" class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-3 py-2 text-sm font-semibold shadow-sm shrink-0">⬇ CSV</button>
       </div>
@@ -254,22 +253,16 @@ function renderBakedPicks(c) {
     return;
   }
   $('pkMsg').innerHTML = `Basket as of <b>${esc(BAKED.day)}</b> (nightly log) · ${BAKED.picks.length} stocks · loading the full qualifying list…`;
-  const cap = +$('pkCap').value || 100000, per = cap / (BAKED.picks.length || 1);
-  const rows = BAKED.picks.map((p, i) => {
-    const shares = p.p > 0 ? Math.floor(per / p.p) : 0;
-    return `<tr class="border-b border-slate-50 bg-indigo-50/40">
+  const rows = BAKED.picks.map((p, i) => `<tr class="border-b border-slate-50 bg-indigo-50/40">
       <td class="py-1.5 pr-2 text-slate-400 whitespace-nowrap">${i + 1} ⭐</td>
       <td class="pr-3 font-semibold">${stockLink(p.s, 'text-indigo-700 hover:underline')}</td>
-      <td class="text-right px-2">${p.p != null ? (+p.p).toFixed(2) : '—'}</td>
-      <td class="text-right px-2 font-semibold">${shares}</td>
-      <td class="text-right px-2">${fmtINR(shares * p.p)}</td></tr>`;
-  }).join('');
+      <td class="text-right px-2">${p.p != null ? (+p.p).toFixed(2) : '—'}</td></tr>`).join('');
   $('pkOut').innerHTML = `<div class="overflow-x-auto"><table class="w-full text-sm border-collapse">
     <thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
       <th class="text-left px-2 py-2">#</th><th class="text-left pr-3 py-2">Symbol</th>
-      <th class="text-right px-2 py-2">Close ₹</th><th class="text-right px-2 py-2">Shares</th><th class="text-right px-2 py-2">Allocation</th></tr></thead>
+      <th class="text-right px-2 py-2">Close ₹</th></tr></thead>
     <tbody>${rows}</tbody></table></div>`;
-  $('pkNote').textContent = 'Prices = official daily close (bhavcopy). Equal-weight allocation with whole-share rounding.';
+  $('pkNote').textContent = 'Prices = official daily close (bhavcopy).';
   LAST_PICKS = { date: BAKED.day, rows: BAKED.picks.map((p, i) => ({ rank: i + 1, sym: p.s, close: p.p })) };
 }
 // Previous rebalance boundary: the month-end `freq` months before the given date (for 🆕 badges).
@@ -278,39 +271,43 @@ function monthEndBefore(dstr, months) {
   const t = y * 12 + (m - 1) - months, yy = Math.floor(t / 12), mm = ((t % 12) + 12) % 12;
   return new Date(Date.UTC(yy, mm + 1, 0)).toISOString().slice(0, 10);
 }
-// Full view: complete ranked qualifying list from the engine (screenAsOf), with allocation + 🆕 badges.
+// Full view: complete ranked qualifying list from the engine (screenAsOf) — sorted by the strategy's
+// sort factor, with ONE COLUMN PER STRATEGY PARAMETER (the sort field + every filter field) + 🆕 badges.
+// Short column headers for the parameter columns (mirror simulate()'s SHORT; fall back to FIELD_LABEL).
+const SHORTF = { changePercent: 'Chg %', rsi: 'RSI', d52: '% 52wHi', d52_low_pct: '% 52wLo', indRank: 'Ind rank', mcap: 'Mcap ₹Cr', hist_mcap: 'HMcap ₹Cr', profitYoyPct: 'NP YoY %', profitBase: 'NP base ₹Cr', profitAccel: 'NP accel', profitTTM: 'NP TTM %', profitStreak: 'NP streak', postDrift: 'Drift %', composite: 'Composite', ret1m: '1m %', ret3m: '3m %', ret6m: '6m %', ret12m: '12m %', stoch: 'Stoch %K', bollB: 'Boll %b', macdH: 'MACD hist', vol: 'Vol %', beta: 'Beta', turn: 'Turnover ₹L', fiiPct: 'FII %', fiiChgPp: 'FII Δpp', diiPct: 'DII %', diiChgPp: 'DII Δpp' };
+const shortLabel = f => SHORTF[f] || (typeof FIELD_LABEL !== 'undefined' && FIELD_LABEL[f]) || f;
 async function renderFullPicks(c) {
   const btn = $('pkFull'), msg = $('pkMsg'); btn.disabled = true;
   msg.textContent = 'Loading market data…';
   if (!await ensureEngine(msg)) { msg.innerHTML = '<span class="neg">Couldn’t load market data — try again.</span>'; btn.disabled = false; return; }
   const date = SF.end, topN = c.topN || 5;
-  const ranked = screenAsOf(c, date);
+  const ranked = screenAsOf(c, date);   // already sorted by the strategy's sort-by parameter
   // 🆕 badge: picks that were NOT in the basket at the previous rebalance boundary
   let prevSet = null, prevDate = monthEndBefore(date, Math.max(1, c.freq || 1));
   if (prevDate >= SF.start) { try { prevSet = new Set(screenAsOf(c, prevDate).slice(0, topN).map(r => r.sym)); } catch (e) { prevSet = null; } }
-  const cap = +$('pkCap').value || 100000, per = cap / (Math.min(topN, ranked.length) || 1);
-  let deployed = 0;
-  const sortL = SORTL[c.sortBy] || ((typeof FIELDS !== 'undefined' ? FIELDS.find(f => f.v === c.sortBy) : null) || {}).l || c.sortBy;
-  const fmtV = v => (v == null || isNaN(v)) ? '—' : (Math.abs(v) >= 1000 ? Math.round(v).toLocaleString('en-IN') : (+v).toFixed(2));
+  // strategy-parameter columns = the sort field + every filter field (deduped, in order), with the
+  // filter condition shown under the header. Same pattern as the rebalance log's dispCols.
+  const conds = {}; (c.filters || []).forEach(f => { (conds[f.field] = conds[f.field] || []).push(f.op + ' ' + f.val); });
+  const dispFields = [...new Set([c.sortBy, ...(c.filters || []).map(f => f.field)])];
+  const fmtV = (f, r) => {
+    const v = fieldVal(r, f);
+    if (v == null || isNaN(v)) return '—';
+    if (f === 'changePercent') return `<span class="${v >= 0 ? 'pos' : 'neg'}">${pct(v)}</span>`;
+    if (f === 'd52' || f === 'd52_low_pct') return (+v).toFixed(2) + '%';
+    return Math.abs(v) >= 1000 ? Math.round(v).toLocaleString('en-IN') : (+v).toFixed(2);
+  };
   const csvRows = [];
   const rowsHtml = ranked.map((r, i) => {
     const inTop = i < topN;
     const raw = (typeof META !== 'undefined' && META[r.tkr] && META[r.tkr].raw) ? META[r.tkr].raw : r.price;   // real ₹ to trade at
-    const shares = inTop && raw > 0 ? Math.floor(per / raw) : null;
-    const alloc = shares != null ? shares * raw : null; if (alloc) deployed += alloc;
     const isNew = inTop && prevSet && !prevSet.has(r.sym);
-    csvRows.push({ rank: i + 1, sym: r.sym, metric: fieldVal(r, c.sortBy), chg: r.chg, d52: r.d52, d52low: r.d52low, rsi: r.rsi, close: raw, shares, alloc, isNew });
+    csvRows.push({ rank: i + 1, sym: r.sym, isNew, vals: dispFields.map(f => fieldVal(r, f)), close: raw });
     return `<tr class="border-b border-slate-50 ${inTop ? 'bg-indigo-50/60' : ''}">
       <td class="py-1.5 pr-2 text-slate-400 whitespace-nowrap">${i + 1}${inTop ? ' ⭐' : ''}</td>
       <td class="pr-3 font-semibold">${stockLink(r.sym, 'text-indigo-700 hover:underline')}${isNew ? '<span class="newbadge" title="Entered the basket since ' + esc(prevDate) + '">🆕 NEW</span>' : ''}</td>
       <td class="pr-3 text-slate-500 text-xs hidden sm:table-cell">${esc(r.ind || '')}</td>
-      <td class="text-right px-2 font-semibold">${fmtV(fieldVal(r, c.sortBy))}</td>
-      <td class="text-right px-2 ${r.chg >= 0 ? 'pos' : 'neg'}">${pct(r.chg)}</td>
-      <td class="text-right px-2">${r.d52 == null ? '—' : r.d52.toFixed(2) + '%'}</td>
-      <td class="text-right px-2">${r.rsi == null ? '—' : r.rsi.toFixed(2)}</td>
-      <td class="text-right px-2">${raw == null ? '—' : (+raw).toFixed(2)}</td>
-      <td class="text-right px-2 font-semibold">${shares != null ? shares : '—'}</td>
-      <td class="text-right px-2">${alloc != null ? fmtINR(alloc) : '—'}</td></tr>`;
+      ${dispFields.map((f, di) => `<td class="text-right px-2 ${di === 0 ? 'font-semibold' : ''}">${fmtV(f, r)}</td>`).join('')}
+      <td class="text-right px-2">${raw == null ? '—' : (+raw).toFixed(2)}</td></tr>`;
   }).join('');
   // exits since the previous rebalance (were in the basket then, not now)
   let exitsLine = '';
@@ -319,24 +316,24 @@ async function renderFullPicks(c) {
     const exits = [...prevSet].filter(s => !curTop.has(s));
     if (exits.length) exitsLine = `<div class="text-[11px] text-slate-500 mt-2">↩ Dropped since ${esc(prevDate)}: ${exits.map(s => stockLink(s, 'text-slate-600 hover:underline')).join(', ')}</div>`;
   }
-  msg.innerHTML = `As of <b>${esc(date)}</b> · <b>${ranked.length}</b> qualifying · Top ${topN} ⭐ = the basket · deployed <b>${fmtINR(deployed)}</b> of ${fmtINR(cap)} · universe ${esc(universeLabel(c))}`;
+  msg.innerHTML = `As of <b>${esc(date)}</b> · <b>${ranked.length}</b> qualifying · Top ${topN} ⭐ = the basket · sorted by <b>${esc(shortLabel(c.sortBy))}</b> (${c.dir === 'high' ? 'high → low' : 'low → high'}) · universe ${esc(universeLabel(c))}`;
+  const headCells = dispFields.map(f => `<th class="text-right px-2 py-2">${esc(shortLabel(f))}${f === c.sortBy ? ' ' + (c.dir === 'high' ? '▾' : '▴') : ''}${conds[f] ? `<span class="block normal-case text-[9px] font-normal text-slate-400">${esc(conds[f].join(' & '))}</span>` : ''}</th>`).join('');
   $('pkOut').innerHTML = ranked.length ? `<div class="overflow-x-auto"><table class="w-full text-sm border-collapse">
     <thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
       <th class="text-left px-2 py-2">#</th><th class="text-left pr-3 py-2">Symbol</th><th class="text-left pr-3 py-2 hidden sm:table-cell">Industry</th>
-      <th class="text-right px-2 py-2">${esc(sortL)}</th><th class="text-right px-2 py-2">Chg %</th><th class="text-right px-2 py-2">% 52wHi</th>
-      <th class="text-right px-2 py-2">RSI</th><th class="text-right px-2 py-2">Close ₹</th><th class="text-right px-2 py-2">Shares</th><th class="text-right px-2 py-2">Allocation</th></tr></thead>
+      ${headCells}<th class="text-right px-2 py-2">Close ₹</th></tr></thead>
     <tbody>${rowsHtml}</tbody></table></div>` + exitsLine
     : '<div class="text-center text-slate-400 text-sm py-6">No stocks qualify right now.</div>';
-  $('pkNote').textContent = '🆕 = entered the basket since the previous rebalance. Prices = official daily close (bhavcopy); allocation = equal-weight of capital across the Top-' + topN + ' with whole-share rounding.';
-  LAST_PICKS = { date, full: true, rows: csvRows };
+  $('pkNote').textContent = 'Columns = this strategy\'s sort + filter parameters (condition under each header). 🆕 = entered the basket since the previous rebalance. Prices = official daily close (bhavcopy).';
+  LAST_PICKS = { date, full: true, fields: dispFields, rows: csvRows };
   btn.disabled = false; btn.textContent = '↻ Recompute';
 }
 function downloadPicksCSV() {
   if (!LAST_PICKS || !LAST_PICKS.rows.length) return;
   let head, lines;
   if (LAST_PICKS.full) {
-    head = ['Rank', 'Symbol', 'New', 'SortMetric', 'Change%', 'Pct_from_52wHigh', 'Pct_from_52wLow', 'RSI', 'Close', 'Shares', 'Allocation'];
-    lines = LAST_PICKS.rows.map(r => [r.rank, r.sym, r.isNew ? 'NEW' : '', r.metric == null ? '' : (+r.metric).toFixed(2), r.chg == null ? '' : r.chg.toFixed(2), r.d52 == null ? '' : r.d52.toFixed(2), r.d52low == null ? '' : r.d52low.toFixed(2), r.rsi == null ? '' : r.rsi.toFixed(2), r.close == null ? '' : (+r.close).toFixed(2), r.shares == null ? '' : r.shares, r.alloc == null ? '' : Math.round(r.alloc)].join(','));
+    head = ['Rank', 'Symbol', 'New'].concat(LAST_PICKS.fields.map(f => shortLabel(f).replace(/[^A-Za-z0-9%]+/g, '_'))).concat(['Close']);
+    lines = LAST_PICKS.rows.map(r => [r.rank, r.sym, r.isNew ? 'NEW' : ''].concat(r.vals.map(v => v == null || isNaN(v) ? '' : (+v).toFixed(2))).concat([r.close == null ? '' : (+r.close).toFixed(2)]).join(','));
   } else {
     head = ['Rank', 'Symbol', 'Close'];
     lines = LAST_PICKS.rows.map(r => [r.rank, r.sym, r.close == null ? '' : (+r.close).toFixed(2)].join(','));
@@ -431,7 +428,6 @@ function renderStrategy(strat, list) {
   renderFullPicks(c);
   $('pkFull').onclick = () => renderFullPicks(c);
   $('pkCsv').onclick = downloadPicksCSV;
-  $('pkCap').onchange = () => { if (LAST_PICKS && LAST_PICKS.full) renderFullPicks(c); else renderBakedPicks(c); };
 
   // ✏️ Edit Strategy → the builder in EDIT mode: 💾 updates THIS strategy in place (same id — its
   // backtests stay attached), never a duplicate. This is the Trendlyne Edit-screener semantics.
