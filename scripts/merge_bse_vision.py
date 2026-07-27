@@ -6,7 +6,7 @@ Input: a JSON file (arg1) that is a list of
   {"ticker","scrip","ok":bool,"basis":"C|S","jun2026":{"rev","pat"},"jun2025":{"rev","pat"},"note"}
 Values are ₹ crore. jun2025 is stored so YoY computes. ann date defaults per-quarter (filing month).
 
-Run: python -X utf8 scripts/merge_bse_vision.py <results.json>
+Run: python -X utf8 scripts/merge_bse_vision.py <results.json> [--qefix <outdir>/qe_fix_run.json]
 """
 import os, sys, json
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -14,6 +14,7 @@ FUND = os.path.join(HERE, "..", "docs", "bse_fundamentals.json")
 FAILS = os.path.join(HERE, "_bse_fund_fail.json")
 DONE = os.path.join(HERE, "_bse_fund_done.json")
 VFILLS = os.path.join(HERE, "..", "docs", "vision_fills.json")   # NSE overlay the page applies to empty cells
+QFIX = os.path.join(HERE, "..", "docs", "feed_qe_fix.json")      # "SYM|YYYY-MM-DD" -> real quarter-end
 # nominal ann dates (filing months): current quarter shows this; year-ago ann unused for YoY
 ANN = {"20260630": 20260715, "20260331": 20260615, "20250630": 0}
 
@@ -32,6 +33,35 @@ def feed_ann():
 
 QMAP = [("jun2026", "20260630"), ("mar2026", "20260331"), ("jun2025", "20250630")]
 
+def reapply_qefix(path):
+    """Re-apply the quarter fixes bse_vision_prep resolved EARLIER IN THIS RUN (it journals them to
+    <outdir>/qe_fix_run.json, outside the repo).
+
+    Why this exists: prep writes docs/feed_qe_fix.json itself, but the routine re-syncs with
+    `git reset --hard origin/main` between prep and merge — the laptop can sleep for hours mid-run — and
+    that discards prep's working-tree write. Re-running prep can't bring it back either: the names it
+    resolved are no longer pending, so they're never re-scanned, and a mislabelled quarter sits phantom-
+    pending until someone notices by hand (2026-07-27: HMT and SGLRES). Idempotent — safe to re-run.
+    """
+    try:
+        run = json.load(open(path, encoding="utf-8"))
+    except Exception as e:
+        print("  ⚠ qefix: %s unreadable (%s) — this run's quarter fixes were NOT re-applied" % (path, e))
+        return
+    if not run:
+        print("  qefix: no quarter fixes resolved this run")
+        return
+    try: cur = json.load(open(QFIX, encoding="utf-8"))
+    except Exception: cur = {}
+    add = {k: v for k, v in run.items() if cur.get(k) != v}
+    if not add:
+        print("  qefix: all %d already in feed_qe_fix.json" % len(run))
+        return
+    cur.update(add)
+    json.dump(cur, open(QFIX, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
+    print("  qefix: re-applied %d of %d into feed_qe_fix.json (%d total) — %s"
+          % (len(add), len(run), len(cur), ", ".join("%s=%s" % kv for kv in sorted(add.items()))))
+
 def _num(v): return round(float(v), 2) if v is not None else None
 
 def put(px, scrip, qe, rec, basis, ann=None):
@@ -41,7 +71,11 @@ def put(px, scrip, qe, rec, basis, ann=None):
     px.setdefault(scrip, {})[qe] = d
 
 def main():
-    items = json.load(open(sys.argv[1], encoding="utf-8"))
+    argv = sys.argv[1:]
+    if "--qefix" in argv:                       # do this FIRST: it's independent of the merge below
+        i = argv.index("--qefix")
+        reapply_qefix(argv[i + 1]); del argv[i:i + 2]
+    items = json.load(open(argv[0], encoding="utf-8"))
     data = json.load(open(FUND, encoding="utf-8"))
     px = data["px"]
     fails = json.load(open(FAILS)) if os.path.exists(FAILS) else {}

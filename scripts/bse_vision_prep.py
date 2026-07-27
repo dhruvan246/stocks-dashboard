@@ -294,6 +294,18 @@ def main():
     if qfix:
         json.dump(allfix, open(fixp, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
         print("WROTE %s: +%d quarter fixes (%d total)" % (os.path.normpath(fixp), len(qfix), len(allfix)))
+    # ⚠️ That repo edit does NOT survive the scheduled routine. The laptop can sleep for hours mid-run, so
+    # SKILL step 5 re-syncs (`git reset --hard origin/main`) before merging — which throws this working-tree
+    # write away. Re-running prep cannot regenerate it either: the names it resolved are no longer pending,
+    # so they're never re-scanned. 2026-07-27 lost 4 fixes that way (59 -> 55 entries), including
+    # HMT|2026-07-27 and SGLRES|2026-07-27 -> 20260331, which would have left both phantom-pending on the
+    # wrong quarter. So journal this run's fixes OUTSIDE the repo, beside the manifest, and let
+    # `merge_bse_vision.py --qefix <this file>` re-apply them AFTER the re-sync. Written even when empty,
+    # so "nothing to fix" is distinguishable from "the routine forgot to pass --qefix".
+    runp = os.path.join(outdir, "qe_fix_run.json")
+    json.dump(qfix, open(runp, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
+    print("WROTE %s: %d quarter fixes for `merge_bse_vision.py --qefix` to re-apply after the re-sync"
+          % (os.path.normpath(runp), len(qfix)))
 
     # ---- BSE-only (via bse_fetch) ----
     if bse:

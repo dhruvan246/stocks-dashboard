@@ -1150,6 +1150,18 @@ list — what sectoral-index clicks write, so the view is shareable).
   applies that override every hourly rebuild → the row re-files under its true quarter and drops out of pending.
   No API/vision cost (pure text+regex). The routine commits feed_qe_fix.json + results_feed.json. Keyed by
   sym+date so a genuine later June filing (different date) is never wrongly re-tagged.
+  - ⚠️ **…and the routine's own mid-run re-sync used to EAT those fixes (found + fixed 2026-07-27).** Prep writes
+    `docs/feed_qe_fix.json` at step 2, but SKILL step 5 re-syncs with `git reset --hard origin/main` before merging
+    (the laptop can sleep for hours mid-run), discarding that working-tree write. Re-running prep does **not** bring
+    them back: the names it resolved are no longer pending, so nothing ever re-scans them — the fix is lost silently
+    and the row stays phantom-pending under the wrong quarter until a human notices. Observed live: 59 → 55 entries,
+    losing `COALINDIA|2026-07-27`+`SHIVACEM|2026-07-27` → 20260630 and `HMT|2026-07-27`+`SGLRES|2026-07-27` →
+    20260331. **Fix:** prep now also journals the run's fixes OUTSIDE the repo to `<outdir>/qe_fix_run.json` (written
+    even when empty, so "none this run" ≠ "the flag was forgotten"), and step 5 runs
+    `merge_bse_vision.py <out.json> --qefix <outdir>/qe_fix_run.json`, which re-applies them post-reset — idempotent,
+    so re-merging after a sleep is still safe. Watch the merge log for the `qefix:` line; `⚠ qefix: … unreadable`
+    means they did NOT land and prep's `qe? SYM date -> QUARTER` log lines must be re-added by hand. **General rule:
+    any repo write made BEFORE a step that re-syncs must be journaled outside the repo, or it does not exist.**
 - ⚠️ **NSE nsearchives 403s scripted PDF downloads → the vision routine falls back to the BSE copy (2026-07-19).**
   On 2026-07-18 AXISBANK/KOTAKBANK/PNB/JKCEMENT/PSB/INDIACEM filed by ~13:00 IST but sat "numbers being parsed"
   through the whole day. Root cause (verified): the CI XBRL crons ran fine but NSE hadn't posted the structured
