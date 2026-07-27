@@ -255,6 +255,18 @@ html[data-theme] header nav{ min-width:0; }
 html{ -webkit-text-size-adjust:100%; }
 html[data-theme] body{ overflow-x:hidden; }                 /* belt-and-suspenders against side-scroll */
 html[data-theme] table{ -webkit-overflow-scrolling:touch; }
+/* …and the cause that line was papering over: body is a flex COLUMN (see the v2
+ * section below), so each page's <main> is a flex item that sizes itself to its
+ * widest child. One wide table and <main> grows to ~900px on a 375px phone, the
+ * document pans sideways under your finger, and everything fixed (the bottom
+ * bar) or sticky (the header) is left behind — which is why only the home page,
+ * with no wide content, kept its bottom bar. Clamp the top-level blocks to the
+ * screen; the .overflow-x-auto wrappers inside them then scroll on their own,
+ * as they were always meant to. Phones only, so the desktop max-w-screen-*
+ * caps are untouched. theme.js:fitViewport() mops up any leftover wide row. */
+@media (max-width:760px){
+  html[data-theme] body > *{ min-width:0; max-width:100%; }
+}
 @media (max-width:640px){
   html[data-theme] header > div{ padding-left:12px; padding-right:12px; }
   html[data-theme] .sw-theme-switch button{ width:32px; height:30px; font-size:15px; }  /* comfier tap targets */

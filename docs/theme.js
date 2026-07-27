@@ -542,23 +542,67 @@
     var t = document.querySelectorAll('table');
     for (var i = 0; i < t.length; i++) { try { cardifyTable(t[i]); } catch (e) {} }
   }
+
+  // =========================================================================
+  // NO SIDEWAYS DRIFT (phones) — a document wider than the screen pans under
+  // your finger, and everything fixed (the bottom bar) or sticky (the header)
+  // slides off with it. theme.css clamps the top-level blocks; this mops up
+  // what is left, usually one chip/toggle row a few px too wide: let it wrap,
+  // or scroll inside itself, instead of stretching the whole page. Anything
+  // that already scrolls horizontally (tab strips, table cards) is skipped —
+  // its content is SUPPOSED to run past the edge.
+  // =========================================================================
+  function fitViewport() {
+    try {
+      if (window.innerWidth > 760) return;                                // phones only
+      var root = document.documentElement;
+      if (root.scrollWidth <= root.clientWidth + 1) return;               // nothing sticks out
+      var vw = root.clientWidth, main = document.querySelector('main') || document.body;
+      var fix = function (el, cs) {
+        var par = el.parentElement, pcs = par ? getComputedStyle(par) : null;
+        if (pcs && pcs.display === 'flex' && pcs.flexWrap === 'nowrap') { par.style.flexWrap = 'wrap'; return; }
+        if (cs.display === 'flex' && cs.flexWrap === 'nowrap') { el.style.flexWrap = 'wrap'; return; }
+        el.style.overflowX = 'auto'; el.style.maxWidth = '100%';
+      };
+      var walk = function (el) {
+        var kids = el.children;
+        for (var i = 0; i < kids.length; i++) {
+          if (root.scrollWidth <= root.clientWidth + 1) return;           // page fits again — stop
+          var k = kids[i], cs = getComputedStyle(k);
+          if (cs.display === 'none' || cs.position === 'fixed') continue;
+          if (cs.overflowX === 'auto' || cs.overflowX === 'scroll') continue;
+          if (k.getBoundingClientRect().right > vw + 1) { fix(k, cs); continue; }
+          if (k.scrollWidth > k.clientWidth + 1) walk(k);                 // the offender is deeper in
+        }
+      };
+      for (var p = 0; p < 3 && root.scrollWidth > root.clientWidth + 1; p++) walk(main);
+    } catch (e) {}
+  }
+
   function watchTables() {
-    cardifyAll();
+    cardifyAll(); fitViewport();
     if (!('MutationObserver' in window)) return;
-    var timer = null;
+    var timer = null, wantCards = false;
+    var settle = function () { if (wantCards) { cardifyAll(); wantCards = false; } fitViewport(); };
     new MutationObserver(function (muts) {
+      var any = false;
       for (var i = 0; i < muts.length; i++) {
         var added = muts[i].addedNodes; if (!added || !added.length) continue;
         for (var j = 0; j < added.length; j++) {
           var n = added[j]; if (n.nodeType !== 1) continue;
-          if ((n.matches && n.matches('table,tbody,tr,td,th')) || (n.querySelector && n.querySelector('table,tr'))) {
-            if (timer) clearTimeout(timer);
-            timer = setTimeout(cardifyAll, 80);            // debounce: run once after rows settle
-            return;
-          }
+          any = true;
+          if ((n.matches && n.matches('table,tbody,tr,td,th')) || (n.querySelector && n.querySelector('table,tr'))) wantCards = true;
         }
       }
+      if (!any) return;                                    // only style/text edits — nothing to re-measure
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(settle, 80);                      // debounce: run once after rows settle
     }).observe(document.body, { childList: true, subtree: true });
+    var rz = null;
+    window.addEventListener('resize', function () {        // rotate / desktop→phone width
+      if (rz) clearTimeout(rz); rz = setTimeout(fitViewport, 150);
+    }, { passive: true });
+    window.addEventListener('load', fitViewport);          // late images / async renders
   }
 
   // Load the site-features layer on every page: sw-sync.js (Supabase kv/analytics)
