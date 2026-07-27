@@ -49,6 +49,14 @@
       const remote = Array.isArray(data) ? data : (data || []);
       // first run: if the shared list is empty but this (owner) browser has strategies, seed it up
       if (!remote.length && ownerKey() && _localStr().length) { await pushStrategies(); return _localStr(); }
+      // A strategy that came BACK from the shared list is, by definition, published — so the
+      // `local` flag stock-backtest.html stamps at creation ("show it anyway in case the publish
+      // failed") is stale. Clear it. Left set, saved-strategies.html's self-heal keeps treating it
+      // as never-published and RE-PUBLISHES it whenever it's missing from a pull — which is exactly
+      // what a deletion looks like, so deleted strategies came back from any browser still holding
+      // the old list. Genuinely unpublished ones aren't in `remote`, so they keep the flag and stay
+      // protected.
+      for (const s of remote) if (s && s.local) delete s.local;
       _saveLocalStr(remote); return remote;
     } catch (e) { console.warn('strat pull', e && e.message || e); return _localStr(); }
   }
