@@ -280,7 +280,11 @@ async function renderFullPicks(c) {
   const btn = $('pkFull'), msg = $('pkMsg'); btn.disabled = true;
   msg.textContent = 'Loading market data…';
   if (!await ensureEngine(msg)) { msg.innerHTML = '<span class="neg">Couldn’t load market data — try again.</span>'; btn.disabled = false; return; }
-  const date = SF.end, topN = c.topN || 5;
+  // LIVE: overlay today's prices onto the series and screen as of TODAY, so both intraday moves and
+  // results filed after the last bhavcopy count. Re-runs (↻ Recompute) re-fetch. Fail-silent.
+  let live = { date: SF.end, n: 0, quoted: 0, skipped: true };
+  try { live = await applyLiveOverlay(c, m => { msg.textContent = m; }); } catch (e) { /* stay on closes */ }
+  const date = live.date, topN = c.topN || 5;
   const ranked = screenAsOf(c, date);   // already sorted by the strategy's sort-by parameter
   // 🆕 badge: picks that were NOT in the basket at the previous rebalance boundary
   let prevSet = null, prevDate = monthEndBefore(date, Math.max(1, c.freq || 1));
@@ -299,15 +303,19 @@ async function renderFullPicks(c) {
   const csvRows = [];
   const rowsHtml = ranked.map((r, i) => {
     const inTop = i < topN;
-    const raw = (typeof META !== 'undefined' && META[r.tkr] && META[r.tkr].raw) ? META[r.tkr].raw : r.price;   // real ₹ to trade at
+    // With the live overlay on, r.price IS the LTP; META.raw is the unadjusted last close (fallback).
+    const q = (typeof liveQuote === 'function') ? liveQuote(r.sym) : null;
+    const rawClose = (typeof META !== 'undefined' && META[r.tkr] && META[r.tkr].raw) ? META[r.tkr].raw : r.price;
+    const shown = (q && q.ltp != null) ? q.ltp : rawClose;   // real ₹ to trade at
+    const dayChg = (q && q.ltp != null && q.prevClose > 0) ? (q.ltp / q.prevClose - 1) * 100 : null;
     const isNew = inTop && prevSet && !prevSet.has(r.sym);
-    csvRows.push({ rank: i + 1, sym: r.sym, isNew, vals: dispFields.map(f => fieldVal(r, f)), close: raw });
+    csvRows.push({ rank: i + 1, sym: r.sym, isNew, vals: dispFields.map(f => fieldVal(r, f)), close: shown, dayChg });
     return `<tr class="border-b border-slate-50 ${inTop ? 'bg-indigo-50/60' : ''}">
       <td class="py-1.5 pr-2 text-slate-400 whitespace-nowrap">${i + 1}${inTop ? ' ⭐' : ''}</td>
       <td class="pr-3 font-semibold">${stockLink(r.sym, 'text-indigo-700 hover:underline')}${isNew ? '<span class="newbadge" title="Entered the basket since ' + esc(prevDate) + '">🆕 NEW</span>' : ''}</td>
       <td class="pr-3 text-slate-500 text-xs hidden sm:table-cell">${esc(r.ind || '')}</td>
       ${dispFields.map((f, di) => `<td class="text-right px-2 ${di === 0 ? 'font-semibold' : ''}">${fmtV(f, r)}</td>`).join('')}
-      <td class="text-right px-2">${raw == null ? '—' : (+raw).toFixed(2)}</td></tr>`;
+      <td class="text-right px-2 whitespace-nowrap">${shown == null ? '—' : (+shown).toFixed(2)}${dayChg == null ? '' : ` <span class="${dayChg >= 0 ? 'pos' : 'neg'} text-[11px]">${dayChg >= 0 ? '+' : ''}${dayChg.toFixed(2)}%</span>`}</td></tr>`;
   }).join('');
   // exits since the previous rebalance (were in the basket then, not now)
   let exitsLine = '';
@@ -316,15 +324,22 @@ async function renderFullPicks(c) {
     const exits = [...prevSet].filter(s => !curTop.has(s));
     if (exits.length) exitsLine = `<div class="text-[11px] text-slate-500 mt-2">↩ Dropped since ${esc(prevDate)}: ${exits.map(s => stockLink(s, 'text-slate-600 hover:underline')).join(', ')}</div>`;
   }
-  msg.innerHTML = `As of <b>${esc(date)}</b> · <b>${ranked.length}</b> qualifying · Top ${topN} ⭐ = the basket · sorted by <b>${esc(shortLabel(c.sortBy))}</b> (${c.dir === 'high' ? 'high → low' : 'low → high'}) · universe ${esc(universeLabel(c))}`;
+  const stamp = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+  const liveTag = live.n
+    ? `<span class="text-emerald-600 font-semibold">🟢 LIVE</span> ${live.n}/${live.tried} quoted at ${esc(stamp)}`
+    : `<span class="text-slate-400">prices = last close (${esc(SF.end)})</span>`;
+  msg.innerHTML = `As of <b>${esc(date)}</b> · ${liveTag} · <b>${ranked.length}</b> qualifying · Top ${topN} ⭐ = the basket · sorted by <b>${esc(shortLabel(c.sortBy))}</b> (${c.dir === 'high' ? 'high → low' : 'low → high'}) · universe ${esc(universeLabel(c))}`;
   const headCells = dispFields.map(f => `<th class="text-right px-2 py-2">${esc(shortLabel(f))}${f === c.sortBy ? ' ' + (c.dir === 'high' ? '▾' : '▴') : ''}${conds[f] ? `<span class="block normal-case text-[9px] font-normal text-slate-400">${esc(conds[f].join(' & '))}</span>` : ''}</th>`).join('');
   $('pkOut').innerHTML = ranked.length ? `<div class="overflow-x-auto"><table class="w-full text-sm border-collapse">
     <thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
       <th class="text-left px-2 py-2">#</th><th class="text-left pr-3 py-2">Symbol</th><th class="text-left pr-3 py-2 hidden sm:table-cell">Industry</th>
-      ${headCells}<th class="text-right px-2 py-2">Close ₹</th></tr></thead>
+      ${headCells}<th class="text-right px-2 py-2">${live.n ? 'Price ₹' : 'Close ₹'}</th></tr></thead>
     <tbody>${rowsHtml}</tbody></table></div>` + exitsLine
     : '<div class="text-center text-slate-400 text-sm py-6">No stocks qualify right now.</div>';
-  $('pkNote').textContent = 'Columns = this strategy\'s sort + filter parameters (condition under each header). 🆕 = entered the basket since the previous rebalance. Prices = official daily close (bhavcopy).';
+  $('pkNote').textContent = 'Columns = this strategy\'s sort + filter parameters (condition under each header). 🆕 = entered the basket since the previous rebalance. '
+    + (live.n
+      ? 'Prices are live (Yahoo NSE, ~15-min delay) and every price factor is recomputed off them; earnings use every result filed up to today. ↻ Recompute re-fetches.'
+      : 'Prices = official daily close (bhavcopy).');
   LAST_PICKS = { date, full: true, fields: dispFields, rows: csvRows };
   btn.disabled = false; btn.textContent = '↻ Recompute';
 }
@@ -332,8 +347,8 @@ function downloadPicksCSV() {
   if (!LAST_PICKS || !LAST_PICKS.rows.length) return;
   let head, lines;
   if (LAST_PICKS.full) {
-    head = ['Rank', 'Symbol', 'New'].concat(LAST_PICKS.fields.map(f => shortLabel(f).replace(/[^A-Za-z0-9%]+/g, '_'))).concat(['Close']);
-    lines = LAST_PICKS.rows.map(r => [r.rank, r.sym, r.isNew ? 'NEW' : ''].concat(r.vals.map(v => v == null || isNaN(v) ? '' : (+v).toFixed(2))).concat([r.close == null ? '' : (+r.close).toFixed(2)]).join(','));
+    head = ['Rank', 'Symbol', 'New'].concat(LAST_PICKS.fields.map(f => shortLabel(f).replace(/[^A-Za-z0-9%]+/g, '_'))).concat(['Price', 'Day%']);
+    lines = LAST_PICKS.rows.map(r => [r.rank, r.sym, r.isNew ? 'NEW' : ''].concat(r.vals.map(v => v == null || isNaN(v) ? '' : (+v).toFixed(2))).concat([r.close == null ? '' : (+r.close).toFixed(2), r.dayChg == null ? '' : r.dayChg.toFixed(2)]).join(','));
   } else {
     head = ['Rank', 'Symbol', 'Close'];
     lines = LAST_PICKS.rows.map(r => [r.rank, r.sym, r.close == null ? '' : (+r.close).toFixed(2)].join(','));

@@ -139,6 +139,100 @@ async function loadEngineData(onProgress) {
   onProgress && onProgress('');
 }
 
+/* ---- LIVE intraday overlay (optional — used by the 🎯 Live Picks screen) ----------------------
+ * Splices ONE synthetic bar carrying today's live LTP onto the end of each stock's price series,
+ * so EVERY price factor (52w distance, returns, RSI, stoch, Bollinger…) is computed by the same
+ * engine code off the live price — no parallel copy of the maths to keep in sync.
+ *
+ * Why this exists: screens used to be anchored to SF.end (the last completed bhavcopy). On a Monday
+ * in results season that hides both the weekend's filings and every intraday move, so a strategy
+ * showed a stale basket. Screening at liveScreenDate() also advances the point-in-time EARNINGS
+ * gate (profitAt/profitMetrics compare against the as-of date), which is what surfaces results
+ * declared after the last price bar.
+ *
+ * Deliberate limits: only the LTP is known, so the synthetic bar's high == low == LTP — a 52w high
+ * set intraday ABOVE the last print is not seen. Turnover (TURN) is never extended, because a
+ * partial-day figure would drag the 20d average down. Volume/delivery carry the previous day
+ * forward for the same reason. Fail-silent throughout: an unquoted symbol keeps its last close.
+ */
+const LIVE_WORKER = 'https://stocksworld-quotes.dhruvan2510.workers.dev';
+const LIVE_MAX = 800;          // universe cap — beyond this the quote fan-out isn't worth the wait
+const LIVE_BATCH = 30;         // worker caps ?symbols= at 30 per call
+const LIVE_CONC = 6;           // batches in flight at once
+let LIVE_BAR = { off: null, syms: [], quotes: {}, at: 0 };
+function liveQuote(sym) { return LIVE_BAR.quotes[sym] || null; }
+function liveInfo() { return { off: LIVE_BAR.off, n: LIVE_BAR.syms.length, at: LIVE_BAR.at }; }
+// IST calendar date, independent of the viewer's timezone (toISOString renders UTC; +5:30 shifts it).
+function istToday() { return new Date(Date.now() + 5.5 * 3600 * 1000).toISOString().slice(0, 10); }
+// The date a LIVE screen runs for: today, but never before the last bar we actually hold.
+function liveScreenDate() { const t = istToday(), e = (SF && SF.end) || t; return t > e ? t : e; }
+// Remove the synthetic bars (idempotent — every re-run clears before it re-fetches).
+function clearLiveOverlay() {
+  if (LIVE_BAR.off == null) { LIVE_BAR = { off: null, syms: [], quotes: {}, at: 0 }; return; }
+  for (const sym of LIVE_BAR.syms) {
+    const s = SERIES[sym]; if (!s || !s.d || !s.d.length) continue;
+    if (s.d[s.d.length - 1] !== LIVE_BAR.off) continue;      // not ours (data refreshed under us)
+    for (const k of ['d', 'p', 'h', 'l', 'hb', 'lb', 'v', 'dv']) if (s[k] && s[k].length) s[k].pop();
+  }
+  LIVE_BAR = { off: null, syms: [], quotes: {}, at: 0 };
+}
+async function _liveFetch(chunk, quotes) {
+  const r = await fetch(LIVE_WORKER + '/?symbols=' + encodeURIComponent(chunk.join(',')), { cache: 'no-store' });
+  const d = await r.json();
+  let got = 0;
+  for (const k in ((d && d.data) || {})) { const q = d.data[k]; if (q && q.ltp != null) { quotes[k] = q; got++; } }
+  return got;
+}
+// Quote the strategy's universe and splice the live bars in. Returns a summary for the UI.
+async function applyLiveOverlay(cfg, onProgress) {
+  clearLiveOverlay();
+  const date = liveScreenDate(), off = dayOff(date);
+  const members = (cfg && cfg.indexName) ? membersAsOf(cfg.indexName, date) : null;
+  const syms = members ? [...members].filter(s => SERIES[s]) : [];
+  // Unbounded universes (All stocks / turnover floors) would need thousands of quotes — skip the
+  // price overlay there, but still screen at today's date so fresh EARNINGS are picked up.
+  if (!syms.length || syms.length > LIVE_MAX) return { date, n: 0, quoted: 0, tried: syms.length, skipped: true };
+  const quotes = {};
+  const batches = []; for (let i = 0; i < syms.length; i += LIVE_BATCH) batches.push(syms.slice(i, i + LIVE_BATCH));
+  let done = 0;
+  for (let i = 0; i < batches.length; i += LIVE_CONC) {
+    await Promise.all(batches.slice(i, i + LIVE_CONC).map(b =>
+      _liveFetch(b, quotes).catch(() => 0).then(() => {
+        done += b.length;
+        onProgress && onProgress(`Fetching live prices… ${Math.min(done, syms.length)}/${syms.length}`);
+      })));
+  }
+  // Yahoo drops symbols intermittently (a first pass typically misses ~15%) — re-ask for the gaps in
+  // small chunks. Without this, a stock silently keeps Friday's price and can drop out of the basket.
+  for (let round = 0; round < 2; round++) {
+    const missing = syms.filter(s => !quotes[s]);
+    if (!missing.length) break;
+    onProgress && onProgress(`Fetching live prices… retrying ${missing.length}`);
+    const rb = []; for (let i = 0; i < missing.length; i += 10) rb.push(missing.slice(i, i + 10));
+    for (let i = 0; i < rb.length; i += LIVE_CONC) {
+      await Promise.all(rb.slice(i, i + LIVE_CONC).map(b => _liveFetch(b, quotes).catch(() => 0)));
+    }
+  }
+  const spliced = [];
+  for (const sym in quotes) {
+    const px = quotes[sym].ltp; if (!(px > 0)) continue;
+    const s = SERIES[sym]; if (!s || !s.d || !s.d.length) continue;
+    const last = s.d.length - 1;
+    if (s.d[last] >= off) continue;                    // series already covers today — nothing to add
+    const cp = Math.round(px * 100);
+    s.d.push(off); s.p.push(cp);
+    if (s.h) s.h.push(cp);                             // LTP only: no intraday range is available
+    if (s.l) s.l.push(cp);
+    if (s.hb) s.hb.push(0);
+    if (s.lb) s.lb.push(0);
+    if (s.v) s.v.push(s.v[last]);                      // carry forward — a part-day figure skews surges
+    if (s.dv) s.dv.push(s.dv[last]);
+    spliced.push(sym);
+  }
+  LIVE_BAR = { off, syms: spliced, quotes, at: Date.now() };
+  return { date, n: spliced.length, quoted: Object.keys(quotes).length, tried: syms.length, skipped: false };
+}
+
 /* ---- price / factor helpers ---- */
 function dayOff(dstr) { return Math.floor((Date.parse(dstr + 'T00:00:00Z') / 1000 - START_TS) / DAY); }
 function isoOff(off) { return new Date((START_TS + off * DAY) * 1000).toISOString().slice(0, 10); }
