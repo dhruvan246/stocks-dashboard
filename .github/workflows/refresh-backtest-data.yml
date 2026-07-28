@@ -105,21 +105,32 @@ jobs:
           git push -q --force "https://x:${SF_DATA_TOKEN}@github.com/dhruvan246/sf-data.git" main
           echo "force-pushed fresh split data to sf-data"
 
-      # Commit ONLY the tiny version marker (docs/sf_meta.json, ~20 bytes), and only when the
-      # updater actually appended a day (it rewrote sf_meta.json then). The browser keys its
-      # IndexedDB cache of the big bin on this `end`, so bumping it is what makes clients
-      # re-download; the 80 MB bin itself is never committed (stays a release asset).
+      # Symbol/name index behind the site-wide 🔍 search box. Built from the SAME meta the
+      # backtest payload carries, so search only ever offers stocks stock.html can render.
+      # Tiny (~190 KB) and committed, unlike the bin itself.
+      - name: Rebuild search index
+        if: ${{ hashFiles('docs/.sf_updated') != '' || github.event_name == 'workflow_dispatch' }}
+        run: python3 scripts/build_search_index.py || echo "search index rebuild failed — keeping committed copy"
+
+      # Commit ONLY the tiny version marker (docs/sf_meta.json, ~20 bytes) plus the search
+      # index, and only when the updater actually appended a day (it rewrote sf_meta.json
+      # then). The browser keys its IndexedDB cache of the big bin on this `end`, so bumping
+      # it is what makes clients re-download; the 80 MB bin itself is never committed (stays
+      # a release asset). NOTE: the retry loop resets --hard, so every file to be committed
+      # must be stashed in /tmp first and copied back INSIDE the loop.
       - name: Commit version marker
         if: ${{ hashFiles('docs/.sf_updated') != '' }}
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           cp docs/sf_meta.json /tmp/sf_meta.json     # preserve the updater's fresh marker across reset
+          [ -f docs/search_index.json ] && cp docs/search_index.json /tmp/search_index.json
           [ -f scripts/_rename_suspects.json ] && cp scripts/_rename_suspects.json /tmp/_rename_suspects.json
           for attempt in 1 2 3 4 5; do
             git fetch origin main && git reset --hard origin/main
             cp /tmp/sf_meta.json docs/sf_meta.json
             git add docs/sf_meta.json
+            [ -f /tmp/search_index.json ] && cp /tmp/search_index.json docs/search_index.json && git add docs/search_index.json
             [ -f /tmp/_rename_suspects.json ] && cp /tmp/_rename_suspects.json scripts/_rename_suspects.json && git add -f scripts/_rename_suspects.json
             if git diff --cached --quiet; then echo "marker unchanged"; exit 0; fi
             git commit -m "Backtest data version marker $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"

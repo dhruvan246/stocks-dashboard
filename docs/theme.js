@@ -384,6 +384,316 @@
   }
 
   // =========================================================================
+  // SITE SEARCH — a 🔍 button in every page's header (and in the phone bottom
+  // bar) that opens a command-palette: type a symbol or company name, hit ↵ and
+  // land on that stock's page. Shortcuts: "/" or ⌘K / Ctrl-K to open, ↑↓ to
+  // move, esc to close.
+  //
+  // The index (docs/search_index.json, ~190 KB / ~60 KB gzipped, built by
+  // scripts/build_search_index.py) is fetched LAZILY on first use, so pages pay
+  // nothing for it until someone actually searches. Its universe is exactly the
+  // survivorship-free payload stock.html renders from — every suggestion is a
+  // page that exists. Nav pages are matched too (from NAV_GROUPS), so the
+  // palette doubles as a jump-anywhere box.
+  // =========================================================================
+  var SRCH = { rows: null, ind: [], v: '', load: null, ov: null, in: null, list: null, sel: 0, items: [] };
+  var SRCH_RECENT = 'sw_srch_recent';
+
+  (function injectSearchCSS() {
+    if (document.getElementById('sw-srch-css')) return;
+    var st = document.createElement('style'); st.id = 'sw-srch-css';
+    st.textContent =
+      '.sw-srch-btn{display:inline-flex;align-items:center;gap:8px;margin-left:14px;padding:7px 11px;min-width:216px;border:1px solid var(--border-strong);border-radius:var(--radius-sm);background:var(--surface-2);color:var(--text-faint);font-size:13px;font-weight:500;cursor:pointer;transition:var(--tr);}' +
+      '.sw-srch-btn:hover{border-color:var(--accent);color:var(--text-muted);background:var(--accent-soft);}' +
+      '.sw-srch-btn .sw-srch-kbd{margin-left:auto;font-size:10.5px;font-weight:700;padding:2px 6px;border:1px solid var(--border-strong);border-radius:6px;color:var(--text-faint);background:var(--surface);}' +
+      '@media (max-width:1040px){.sw-srch-btn{min-width:0;margin-left:8px;}.sw-srch-btn .sw-srch-lb,.sw-srch-btn .sw-srch-kbd{display:none;}}' +
+      // Phones: the header has no room left (logo + ☰ + theme pill already fill it),
+      // so search moves to the bottom bar's 🔍 tab instead.
+      '@media (max-width:520px){.sw-srch-btn{display:none;}}' +
+      '.sw-srch-ov{position:fixed;inset:0;z-index:90;display:none;justify-content:center;align-items:flex-start;padding:10vh 14px 14px;background:rgba(4,7,14,.58);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);}' +
+      '.sw-srch-ov.open{display:flex;animation:sw-pop .14s ease;}' +
+      '.sw-srch-box{width:100%;max-width:620px;background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column;max-height:80vh;}' +
+      '.sw-srch-top{display:flex;align-items:center;gap:9px;padding:12px 14px;border-bottom:1px solid var(--border);}' +
+      '.sw-srch-in{flex:1;min-width:0;border:0;outline:0;background:transparent;color:var(--text);font-size:16px;font-weight:600;}' +
+      '.sw-srch-in::placeholder{color:var(--text-faint);font-weight:500;}' +
+      '.sw-srch-in::-webkit-search-cancel-button{display:none;}' +
+      '.sw-srch-x{border:1px solid var(--border-strong);background:var(--surface-2);color:var(--text-faint);border-radius:7px;font-size:10.5px;font-weight:700;padding:3px 7px;cursor:pointer;}' +
+      '.sw-srch-x:hover{color:var(--text);border-color:var(--accent);}' +
+      '.sw-srch-list{overflow-y:auto;padding:6px;-webkit-overflow-scrolling:touch;}' +
+      '.sw-srch-h{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);padding:9px 10px 5px;}' +
+      '.sw-srch-it{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:9px;text-decoration:none;color:var(--text);cursor:pointer;}' +
+      '.sw-srch-it:hover,.sw-srch-it.on{background:var(--accent-soft);}' +
+      '.sw-srch-it.on{box-shadow:inset 0 0 0 1px var(--border-strong);}' +
+      '.sw-srch-sym{font-size:13.5px;font-weight:800;letter-spacing:.01em;white-space:nowrap;}' +
+      '.sw-srch-it.on .sw-srch-sym{color:var(--accent);}' +
+      '.sw-srch-nm{font-size:12.5px;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1;}' +
+      '.sw-srch-it b{color:var(--accent);font-weight:800;}' +
+      '.sw-srch-meta{margin-left:auto;font-size:11px;color:var(--text-faint);white-space:nowrap;}' +
+      '.sw-srch-tag{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:2px 6px;border-radius:999px;background:var(--surface-3);color:var(--text-faint);white-space:nowrap;}' +
+      '.sw-srch-empty{padding:20px 12px;text-align:center;font-size:13px;color:var(--text-faint);}' +
+      '.sw-srch-foot{display:flex;gap:12px;flex-wrap:wrap;padding:8px 14px;border-top:1px solid var(--border);font-size:10.5px;color:var(--text-faint);background:var(--surface-2);}' +
+      // Phones: a sheet near the top (so the on-screen keyboard doesn't cover the
+      // results), hugging its content, with finger-sized rows and no desk-only chrome.
+      '@media (max-width:640px){' +
+        '.sw-srch-ov{padding:8px;}' +
+        '.sw-srch-box{max-height:calc(100% - 16px);border-radius:var(--radius);}' +
+        '.sw-srch-top{padding:11px 12px;}' +
+        '.sw-srch-it{padding:11px 10px;min-height:44px;}' +
+        '.sw-srch-meta{display:none;}.sw-srch-foot{display:none;}' +
+      '}';
+    document.head.appendChild(st);
+  })();
+
+  function srchRecent(add) {
+    var list = [];
+    try { list = JSON.parse(localStorage.getItem(SRCH_RECENT) || '[]') || []; } catch (e) { list = []; }
+    if (!add) return list;
+    list = [add].concat(list.filter(function (s) { return s !== add; })).slice(0, 8);
+    try { localStorage.setItem(SRCH_RECENT, JSON.stringify(list)); } catch (e) {}
+    return list;
+  }
+
+  function srchLoad() {
+    if (SRCH.rows) return Promise.resolve(true);
+    if (SRCH.load) return SRCH.load;
+    SRCH.load = fetch('./search_index.json')
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (j) {
+        SRCH.ind = j.ind || [];
+        SRCH.v = j.v || '';
+        // r[5] = uppercased name, precomputed once so each keystroke is a plain
+        // indexOf over the array instead of 5k toUpperCase() calls.
+        SRCH.rows = (j.s || []).map(function (r) { r[5] = String(r[1]).toUpperCase(); return r; });
+        return true;
+      })
+      .catch(function (e) { SRCH.load = null; throw e; });
+    return SRCH.load;
+  }
+
+  function fmtCr(v) {
+    if (!v) return '';
+    if (v >= 100000) return '₹' + (v / 100000).toFixed(2) + ' L cr';
+    return '₹' + Math.round(v).toLocaleString('en-IN') + ' cr';
+  }
+  // bold the matched slice without letting the raw text through unescaped
+  function srchHi(text, q) {
+    var i = q ? String(text).toUpperCase().indexOf(q) : -1;
+    if (i < 0) return esc(text);
+    return esc(text.slice(0, i)) + '<b>' + esc(text.slice(i, i + q.length)) + '</b>' + esc(text.slice(i + q.length));
+  }
+
+  // Match tiers, best first: exact symbol → symbol prefix → name word-start →
+  // symbol contains → name contains. Rows are pre-sorted (live before delisted,
+  // then mcap desc) by the builder, so within a tier the big names come first.
+  function srchMatch(q) {
+    var t1 = [], t2 = [], t3 = [], t4 = [], t5 = [], rows = SRCH.rows || [];
+    for (var i = 0; i < rows.length; i++) {
+      var r = rows[i], sym = r[0], nm = r[5];
+      // An exact hit wins — unless it's a delisted ticker whose symbol a LIVE stock
+      // also starts with ("hdfc" = the merged-away HDFC Ltd, but you meant HDFCBANK).
+      // Demoting it to the prefix tier lands it after the live names, which sort first.
+      if (sym === q) { (r[2] ? t1 : t2).push(r); continue; }
+      if (sym.indexOf(q) === 0) { t2.push(r); continue; }
+      var ni = nm.indexOf(q);
+      if (ni === 0 || (ni > 0 && !/[A-Z0-9]/.test(nm.charAt(ni - 1)))) { t3.push(r); continue; }
+      if (sym.indexOf(q) > 0) { t4.push(r); continue; }
+      if (ni > 0) { t5.push(r); }
+      if (t1.length + t2.length + t3.length > 400) break;   // plenty to rank from
+    }
+    var hits = t1.concat(t2, t3, t4, t5);
+    // Words in any order ("motors tata", "bank of baroda" typed loosely) — only as a
+    // fallback, so the straight substring ranking above always wins when it matches.
+    if (hits.length < 6 && q.indexOf(' ') > 0) {
+      var toks = q.split(/\s+/).filter(Boolean), seen = {};
+      hits.forEach(function (r) { seen[r[0]] = 1; });
+      for (var j = 0; j < rows.length && hits.length < 14; j++) {
+        var rr = rows[j], hay = rr[0] + ' ' + rr[5];
+        if (seen[rr[0]]) continue;
+        var all = true;
+        for (var k = 0; k < toks.length; k++) if (hay.indexOf(toks[k]) < 0) { all = false; break; }
+        if (all) hits.push(rr);
+      }
+    }
+    return hits.slice(0, 14);
+  }
+
+  function srchPages(q) {
+    var hits = [];
+    NAV_GROUPS.forEach(function (g) {
+      g.items.forEach(function (it) {
+        if (it[2].toUpperCase().indexOf(q) >= 0) hits.push(it);
+      });
+    });
+    if ('CREATE A STRATEGY'.indexOf(q) >= 0 || 'BACKTEST'.indexOf(q) >= 0) hits.push(NAV_CTA);
+    return hits.slice(0, 3);
+  }
+
+  function srchRender(q) {
+    var html = '', items = [];
+    var stockRow = function (r) {
+      var meta = [fmtCr(r[3]), SRCH.ind[r[4]] && SRCH.ind[r[4]] !== 'Unknown' ? SRCH.ind[r[4]] : ''].filter(Boolean).join(' · ');
+      items.push('./stock.html?sym=' + encodeURIComponent(r[0]));
+      return '<a class="sw-srch-it" role="option" href="./stock.html?sym=' + encodeURIComponent(r[0]) + '">' +
+        '<span class="sw-srch-sym">' + srchHi(r[0], q) + '</span>' +
+        '<span class="sw-srch-nm">' + (r[1] === r[0] ? '' : srchHi(r[1], q)) + '</span>' +
+        (r[2] ? '' : '<span class="sw-srch-tag">delisted</span>') +
+        (meta ? '<span class="sw-srch-meta">' + esc(meta) + '</span>' : '') + '</a>';
+    };
+    if (!q) {
+      var byS = {}; (SRCH.rows || []).forEach(function (r) { byS[r[0]] = r; });
+      var rec = srchRecent().map(function (s) { return byS[s]; }).filter(Boolean);
+      if (rec.length) html += '<div class="sw-srch-h">Recent</div>' + rec.map(stockRow).join('');
+      html += '<div class="sw-srch-h">Largest companies</div>' +
+        (SRCH.rows || []).slice(0, 6).map(stockRow).join('');
+    } else {
+      var hits = srchMatch(q);
+      if (hits.length) html += '<div class="sw-srch-h">Stocks</div>' + hits.map(stockRow).join('');
+      var pages = srchPages(q);
+      if (pages.length) {
+        html += '<div class="sw-srch-h">Pages</div>' + pages.map(function (it) {
+          items.push(it[0]);
+          return '<a class="sw-srch-it" role="option" href="' + esc(it[0]) + '">' +
+            '<span class="sw-srch-sym" aria-hidden="true">' + it[1] + '</span>' +
+            '<span class="sw-srch-nm">' + srchHi(it[2], q) + '</span></a>';
+        }).join('');
+      }
+      if (!hits.length) {
+        // Nothing indexed — still let a typed symbol through (a fresh listing, or a
+        // BSE-only name the price payload doesn't carry yet). The stock page says
+        // plainly when it can't find one, which beats a dead end here.
+        if (!pages.length && /^[A-Z0-9&.-]{2,20}$/.test(q)) {
+          items.push('./stock.html?sym=' + encodeURIComponent(q));
+          html += '<div class="sw-srch-h">Not in our price data</div>' +
+            '<a class="sw-srch-it" role="option" href="./stock.html?sym=' + encodeURIComponent(q) + '">' +
+            '<span class="sw-srch-sym">' + esc(q) + '</span>' +
+            '<span class="sw-srch-nm">Open the stock page anyway →</span></a>';
+        } else if (!pages.length) {
+          html += '<div class="sw-srch-empty">No stock matches “' + esc(q) + '”.<br>Search by symbol (RELIANCE) or company name (Reliance Industries).</div>';
+        }
+      }
+    }
+    SRCH.items = items;
+    SRCH.sel = 0;
+    SRCH.list.innerHTML = html;
+    srchMark();
+  }
+
+  function srchMark() {
+    var els = SRCH.list.querySelectorAll('.sw-srch-it');
+    for (var i = 0; i < els.length; i++) {
+      var on = i === SRCH.sel;
+      els[i].classList.toggle('on', on);
+      els[i].setAttribute('aria-selected', on ? 'true' : 'false');
+      if (on && els[i].scrollIntoView) els[i].scrollIntoView({ block: 'nearest' });
+    }
+  }
+
+  function srchGo(href) {
+    if (!href) return;
+    var m = /[?&]sym=([^&]+)/.exec(href);
+    if (m) srchRecent(decodeURIComponent(m[1]));
+    location.href = href;
+  }
+
+  function srchOpen(prefill) {
+    if (!SRCH.ov) return;
+    SRCH.ov.classList.add('open');
+    SRCH.in.value = prefill || '';
+    SRCH.list.innerHTML = '<div class="sw-srch-empty">Loading stock list…</div>';
+    try { SRCH.in.focus({ preventScroll: true }); } catch (e) { SRCH.in.focus(); }
+    srchLoad().then(function () {
+      if (SRCH.ov.classList.contains('open')) srchRender(SRCH.in.value.trim().toUpperCase());
+    }).catch(function () {
+      SRCH.list.innerHTML = '<div class="sw-srch-empty">Couldn’t load the stock list — check your connection and try again.</div>';
+    });
+  }
+  function srchClose() { if (SRCH.ov) SRCH.ov.classList.remove('open'); }
+
+  function buildSearch() {
+    if (document.querySelector('.sw-srch-ov')) return;
+
+    var ov = document.createElement('div');
+    ov.className = 'sw-srch-ov';
+    ov.setAttribute('role', 'dialog');
+    ov.setAttribute('aria-modal', 'true');
+    ov.setAttribute('aria-label', 'Search stocks');
+    ov.innerHTML =
+      '<div class="sw-srch-box">' +
+        '<div class="sw-srch-top">' +
+          '<span aria-hidden="true">🔍</span>' +
+          '<input class="sw-srch-in" type="search" autocomplete="off" autocorrect="off" spellcheck="false" ' +
+            'role="combobox" aria-expanded="true" aria-autocomplete="list" aria-controls="sw-srch-list" ' +
+            'aria-label="Search stocks by name or symbol" placeholder="Search a stock — name or symbol…" />' +
+          '<button class="sw-srch-x" type="button" aria-label="Close search">esc</button>' +
+        '</div>' +
+        '<div class="sw-srch-list" id="sw-srch-list" role="listbox" aria-label="Search results"></div>' +
+        '<div class="sw-srch-foot"><span>↑↓ move</span><span>↵ open stock page</span><span>esc close</span></div>' +
+      '</div>';
+    document.body.appendChild(ov);
+    SRCH.ov = ov;
+    SRCH.in = ov.querySelector('.sw-srch-in');
+    SRCH.list = ov.querySelector('.sw-srch-list');
+
+    // header button — sits right after the logo, like Screener/Trendlyne
+    var host = document.querySelector('header > div')
+            || document.querySelector('header .max-w-screen-xl')
+            || document.querySelector('header');
+    if (host) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'sw-srch-btn';
+      btn.setAttribute('aria-label', 'Search stocks');
+      btn.innerHTML = '<span aria-hidden="true">🔍</span>' +
+        '<span class="sw-srch-lb">Search a stock…</span><span class="sw-srch-kbd">/</span>';
+      btn.addEventListener('click', function () { srchOpen(''); });
+      if (host.children.length > 1) host.insertBefore(btn, host.children[1]);
+      else host.appendChild(btn);
+    }
+
+    ov.querySelector('.sw-srch-x').addEventListener('click', srchClose);
+    ov.addEventListener('click', function (e) { if (e.target === ov) srchClose(); });
+
+    var deb = null;
+    SRCH.in.addEventListener('input', function () {
+      if (!SRCH.rows) return;                       // still loading; open() renders on arrival
+      if (deb) clearTimeout(deb);
+      var q = SRCH.in.value.trim().toUpperCase();
+      deb = setTimeout(function () { srchRender(q); }, 60);
+    });
+    SRCH.in.addEventListener('keydown', function (e) {
+      var n = SRCH.items.length;
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        if (!n) return;
+        e.preventDefault();
+        SRCH.sel = (SRCH.sel + (e.key === 'ArrowDown' ? 1 : n - 1)) % n;
+        srchMark();
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (deb) { clearTimeout(deb); deb = null; srchRender(SRCH.in.value.trim().toUpperCase()); }
+        srchGo(SRCH.items[SRCH.sel]);
+      } else if (e.key === 'Escape') { e.preventDefault(); srchClose(); }
+    });
+    SRCH.list.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('.sw-srch-it');
+      if (!a || e.metaKey || e.ctrlKey || e.shiftKey) return;   // let modifier-clicks open a tab
+      e.preventDefault();
+      srchGo(a.getAttribute('href'));
+    });
+
+    // global shortcuts: "/" or ⌘K / Ctrl-K
+    document.addEventListener('keydown', function (e) {
+      if (SRCH.ov.classList.contains('open')) { if (e.key === 'Escape') srchClose(); return; }
+      var t = e.target || {}, tag = (t.tagName || '').toLowerCase();
+      if (tag === 'input' || tag === 'textarea' || tag === 'select' || t.isContentEditable) return;
+      if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) { e.preventDefault(); srchOpen(''); return; }
+      if (e.key === '/' && !e.metaKey && !e.ctrlKey && !e.altKey) { e.preventDefault(); srchOpen(''); }
+    });
+
+    // let pages hand off their own lookup boxes (e.g. stock.html's "another symbol")
+    try { window.swSearch = { open: srchOpen, close: srchClose }; } catch (e) {}
+  }
+
+  // =========================================================================
   // SITE FOOTER — injected on every page so all pages share one footer with
   // the same links as the header Menu. Replaces any hardcoded <footer> and
   // keeps its old text as a fine-print credits line.
@@ -448,13 +758,18 @@
     bar.setAttribute('aria-label', 'Quick sections');
     bar.innerHTML =
       '<a class="' + cls(here === 'index.html') + '" href="./index.html"><span class="ic" aria-hidden="true">🏠</span>Home</a>' +
-      '<button type="button" class="' + cls(inMarkets) + '" aria-haspopup="true"><span class="ic" aria-hidden="true">📊</span>Markets</button>' +
+      '<button type="button" class="' + cls(inMarkets) + '" data-sw="menu" aria-haspopup="true"><span class="ic" aria-hidden="true">📊</span>Markets</button>' +
+      '<button type="button" class="sw-bbar-it" data-sw="search" aria-label="Search stocks"><span class="ic" aria-hidden="true">🔍</span>Search</button>' +
       '<a class="' + cls(here === 'stock-backtest.html') + '" href="./stock-backtest.html"><span class="ic" aria-hidden="true">🧪</span>Backtest</a>' +
       '<a class="' + cls(here === 'mutual-funds.html' || here === 'backtest.html') + '" href="./mutual-funds.html"><span class="ic" aria-hidden="true">💰</span>Funds</a>';
     document.body.appendChild(bar);
-    bar.querySelector('button').addEventListener('click', function (e) {
+    bar.querySelector('[data-sw="menu"]').addEventListener('click', function (e) {
       e.stopPropagation();   // keep the document outside-click closer from instantly re-closing it
       var b = document.querySelector('.sw-menu-btn'); if (b) b.click();
+    });
+    bar.querySelector('[data-sw="search"]').addEventListener('click', function (e) {
+      e.stopPropagation();
+      srchOpen('');
     });
   }
 
@@ -623,7 +938,7 @@
     } catch (e) {}
   }
 
-  function init() { buildNav(); buildTabs(); buildFooter(); buildBottomBar(); build(); watchHeader(); watchTables(); loadFeatures(); }
+  function init() { buildNav(); buildSearch(); buildTabs(); buildFooter(); buildBottomBar(); build(); watchHeader(); watchTables(); loadFeatures(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();

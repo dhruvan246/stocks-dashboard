@@ -291,7 +291,12 @@ async function loadSHP(){
 }
 
 /* ---------- boot ---------- */
-$('sForm').onsubmit=e=>{ e.preventDefault(); const v=$('sSearch').value.trim().toUpperCase(); if(v) location.href='./stock.html?sym='+encodeURIComponent(v); };
+/* This box hands off to theme.js's site-wide search palette (name OR symbol, with
+   suggestions); typing a bare symbol and pressing Go still works if it hasn't loaded. */
+$('sSearch').addEventListener('focus',()=>{ if(window.swSearch){ $('sSearch').blur(); window.swSearch.open($('sSearch').value.trim()); } });
+$('sForm').onsubmit=e=>{ e.preventDefault(); const v=$('sSearch').value.trim().toUpperCase();
+  if(window.swSearch){ window.swSearch.open(v); return; }
+  if(v) location.href='./stock.html?sym='+encodeURIComponent(v); };
 /* ---------- live price top-up (our Cloudflare Worker → Yahoo NSE, ~15-min delay).
    Overwrites the header price + 1-day % only; chart, technicals and stats stay on
    the baked EOD data (they're labelled "as of latest close"). Skips dead tickers,
