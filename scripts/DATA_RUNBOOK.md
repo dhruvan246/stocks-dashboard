@@ -25,6 +25,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§15** QUARTERLY RESULTS DASHBOARD
 - **§16** DISCOVERY BUCKETS
 - **§17** BSE-ONLY STOCK COVERAGE
+- **§17b** VISION-FILL = CLOUD ROUTINE 4×/day (13:30/16:30/20:30/23:30 IST)
 - **§18** DATA HEALTH MONITORING + COMMIT GUARDS
 - **§19** SITE FEATURES ON SUPABASE
 - **§20** RESULTS COVERAGE DASHBOARD
@@ -1283,6 +1284,35 @@ the Quarterly Results page. **4 scripts + `.github/workflows/refresh-bse.yml` (2
   Needs the user's explicit deploy authorization (auto-mode blocks it otherwise). Manual fallback: paste the file
   in the quick editor + Deploy (LIVE_FEED_SETUP.md).
 
+### 17b. VISION-FILL = CLOUD ROUTINE, 4×/day  (ported off the desktop 2026-07-28)
+
+The `bse-vision-fill` reader — the thing that guarantees no declared result stays "numbers being
+parsed" — is a **Claude Code CLOUD routine** (claude.ai/code/routines, id
+`trig_01N3H7t8Dgn2XmLqwBg94j2r`), no longer a local desktop task. It runs on Anthropic's cloud on
+the user's plan: no API key, no laptop-awake dependency.
+- **Schedule: cron `0 8,11,15,18 * * *` UTC = 13:30 / 16:30 / 20:30 / 23:30 IST.** Each slot sits
+  just AFTER a free-reader wave, honoring the standing contract *"other fetches first; vision only
+  fills what they missed"*: 13:30 after the 12:10 BSE OCR grind; 16:30 for post-market filings;
+  20:30 right after the 15-min XBRL window closes (09:30–20:29 IST); 23:30 after the 22:10 BSE full
+  run + 23:15 XBRL nightly pass (the old desktop slot). The contract is also STRUCTURAL, not just
+  timing: `find_pending` (results_pending.py) subtracts everything the crons already filled, and the
+  NSE-side vision overlay applies to EMPTY cells only, so real XBRL always supersedes.
+- **Landing path — direct push to main is 403-blocked for cloud sessions.** The routine pushes a
+  `claude/vision-fill-<timestamp>` branch → `gh pr create` → `gh pr merge --squash --delete-branch
+  --admin` (merges within seconds; PRs #4/#5/#6 were the first three). A conflicted merge = leave
+  the PR open and report; the next slot re-fills the same numbers.
+- **The LOCAL scheduled task is DISABLED (2026-07-28) but kept as fallback** — re-enable it from the
+  desktop app's scheduled tasks if the cloud routine breaks. Its worktree `stocks-wt/vision-fill`
+  and SKILL.md (`~/.claude/scheduled-tasks/bse-vision-fill/SKILL.md`) still exist.
+- **⚠️ The cloud prompt lives in the trigger config, NOT in a repo file.** Update via the /schedule
+  skill → `RemoteTrigger {action:"update"}` (or the routines web UI). When a vision-pipeline script
+  changes behavior, PORT THE CHANGE TO THE CLOUD PROMPT — nothing syncs it automatically (the
+  2026-07-27 `--qefix` fix only reached the cloud prompt on 2026-07-28, manually). Keep the local
+  SKILL.md fallback in sync too, or note the drift.
+- Environment `env_01Pb6Vujaf9FQ9m1kZXYJN9c`; sandbox egress must allow api/www.bseindia.com,
+  nsearchives/www.nseindia.com and the CF worker. BSE IS reachable from Anthropic egress (verified
+  2026-07-23); if that ever changes the run reports a cloud-IP block explicitly.
+
 ---
 
 ## 18. DATA HEALTH MONITORING + COMMIT GUARDS  (docs/status.html — "Data health" nav, built 2026-07-16)
@@ -2267,9 +2297,11 @@ Gotchas:
 - **GitHub Actions** (~30 `refresh-*.yml` + `refresh.yml` + `pages.yml`…) — cloud checkouts,
   file-scoped `git add`, per-workflow `concurrency:` groups, rebase-retry push. Well-behaved;
   keep that pattern intact when editing workflows.
-- **Local scheduled routines** (Claude scheduled tasks; today: bse-vision-fill 15:08/23:08 IST) —
-  each owns a PRIVATE persistent worktree under `C:\Users\dhruv\stocks-wt\<task>`. They never
-  touch the interactive checkout.
+- **Cloud Claude routines** (claude.ai/code/routines; today: bse-vision-fill at 13:30/16:30/20:30/
+  23:30 IST, §17b) — fresh throwaway VM per run, lands work via a `claude/*` branch + auto-merged PR.
+  (The former LOCAL scheduled-task pattern — private persistent worktree under
+  `C:\Users\dhruv\stocks-wt\<task>`, never the interactive checkout — is disabled for vision-fill
+  but remains the rule for any future local routine.)
 - **Interactive Claude sessions** (often several at once) — share `C:\Users\dhruv\stocks-dashboard`.
 
 **THE RULES** (mirrored in repo-root CLAUDE.md, which every session auto-loads):
@@ -2301,7 +2333,7 @@ luck; a follow-up "recovery" nearly rewrote history off a false ABSENT reading (
   nightly `refresh.yml` rebuild is the writer; local backfills write the
   `scripts/revop_fundamentals.json` ledger + rebuild (that's why backfill work survives the nightly).
 - `bse_fundamentals.json` / `vision_fills.json` / `bse_results.json` / `results_coverage.json` —
-  bse-vision-fill routine (in its worktree).
+  bse-vision-fill CLOUD routine (own VM, lands via PR; §17b).
 - `shp_history.json` — `refresh-shareholding.yml` ONLY; never two writers (§22 corruption).
 - Ledgers (`scale_fix.json`, `feed_qe_fix.json`, `ann_date_fills.json`, `_bse_fund_done.json`, …) —
   append via their scripts; safe to edit locally because CI replays them.
