@@ -69,12 +69,17 @@ async function gunzipJSON(url) {
   const stream = new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'));
   return JSON.parse(await new Response(stream).text());
 }
-// stock_data.bin only supplies point-in-time index membership + time base + benchmark.
-// CORE_META keeps that payload's dash metadata (keyed SYMBOL.NS) — the only place market cap
-// lives, which the stock page turns into mcap / P/E / P/S. SF's own meta (activateSF) carries
-// no mcap, and this file is already downloaded here, so it costs nothing extra.
+// Core supplies point-in-time index membership + the time base + dash metadata (CORE_META, keyed
+// SYMBOL.NS — the only place market cap lives; SF's own meta carries none).
+//
+// It reads dash_slim.bin (2 MB), NOT stock_data.bin (17.5 MB). Both files are written by the same
+// build_compressed.py run and their indicesHistory / fnoHistory / startTs are byte-identical; the
+// 15.5 MB difference is stock_data.bin's full price series, which activateSF() overwrites moments
+// later and no caller ever reads. Slim's meta is also the fresher one (regenerated more often), and
+// it is only consumed by the stock page's fallback render — screening never reads mcap from here
+// (rowsAt takes META[sym].mcap, which the SF path sets to 0).
 async function loadCore() {
-  const D = await gunzipJSON('./stock_data.bin');   // browser-cached (ETag); no cache-buster → instant on repeat loads
+  const D = await gunzipJSON('./dash_slim.bin');   // browser-cached (ETag); no cache-buster → instant on repeat loads
   IDXH = D.indicesHistory || {}; FNOH = D.fnoHistory || []; START_TS = D.startTs;
   CORE_META = D.meta || {};
   try { NIFTY = (await (await fetch('./nifty.json')).json()).px || {}; } catch (e) { NIFTY = {}; }
@@ -136,7 +141,7 @@ function activateSF() { SERIES = SF.series; META = SF.meta; TURN = SF.turn; SF_E
 async function loadEngineData(onProgress) {
   onProgress && onProgress('Loading market data…');
   await loadCore();
-  onProgress && onProgress('Loading survivorship-free data (~17 MB)…');
+  onProgress && onProgress('Loading full market history — large, once a day…');
   await loadSF(); activateSF();
   await loadFund();   // point-in-time quarterly net profit (small file; enables profit factors)
   await loadShp();    // point-in-time FII/DII holdings (small file; enables shareholding factors)

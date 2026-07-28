@@ -481,7 +481,12 @@ Goal: every page fast even for a brand-new visitor (caching can't help a cold fi
 - **The STOCK page never loads the engine's data at all** — it opens from two pre-cut per-stock
   files (~37 KB total) instead of the ~137 MB whole-market load. See **§40**; that is the pattern to
   copy for any future "one entity" page.
-- **Backtest pages lazy-load the engine** (17 MB + 90 MB sf data). `saved-strategies.html` renders its list from
+- **`loadCore()` reads `dash_slim.bin` (2 MB), never `stock_data.bin` (17.5 MB).** Same
+  build_compressed.py run writes both and their `indicesHistory`/`fnoHistory`/`startTs` are
+  byte-identical; the 15.5 MB difference is a full price series that `activateSF()` overwrites
+  seconds later and nobody reads. Don't "restore" the big file here. (`stock-backtest.html`'s SURV
+  mode has its OWN loader and legitimately still wants `stock_data.bin`.)
+- **Backtest pages lazy-load the engine** (2 MB core + ~115 MB sf data). `saved-strategies.html` renders its list from
   synced DB data; the engine loads only when Today's Picks opens (`ensureEngine`). `stock-backtest.html` direct
   visit shows the builder instantly via `initUIStatic()` (dates from tiny `sf_meta.json`); Saving needs no data;
   a real Run comes via `bt_load` (loads the engine). `strategy-backtest.html` is DB-only (no engine).
