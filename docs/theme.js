@@ -48,6 +48,24 @@
     }
   })();
 
+  // ---- "Get the app" state. Chrome fires `beforeinstallprompt` very early —
+  // often before DOMContentLoaded — and only ONCE per page load, so it is
+  // captured here at parse time and replayed when the visitor taps Android.
+  // (The sheet that uses it is built further down, see GET THE APP.) ----
+  var APP_KEY = 'sw_app_prompt';
+  var INSTALL = { evt: null, done: false };
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();          // keep Chrome's own mini-infobar out of the way — ours replaces it
+    INSTALL.evt = e;
+  });
+  window.addEventListener('appinstalled', function () {
+    INSTALL.evt = null; INSTALL.done = true;
+    try { localStorage.setItem(APP_KEY, 'installed'); } catch (e) {}
+    var s = document.getElementById('sw-app-sheet'); if (s) s.classList.remove('open');
+    var o = document.getElementById('sw-app-ov');    if (o) o.classList.remove('open');
+    var g = document.getElementById('sw-f-app');     if (g) g.style.display = 'none';
+  });
+
   function updateUI(t) {
     var box = document.getElementById('sw-theme-switch'); if (!box) return;
     box.querySelectorAll('button').forEach(function (b) {
@@ -735,7 +753,12 @@
       '<div class="sw-f-bar"><div class="sw-f-bar-in">' +
         '<span>© ' + new Date().getFullYear() + ' STOCKSWORLD · For education &amp; research — not investment advice.</span>' +
         (credits ? '<span>' + esc(credits) + '</span>' : '') +
+        // permanent way back to the install sheet, for anyone who dismissed it
+        // or is reading on a desktop and wants it on their phone later
+        (appInstalled() ? '' : '<button type="button" class="sw-f-app" id="sw-f-app">📲 Get the app</button>') +
       '</div></div>';
+    var getapp = f.querySelector('#sw-f-app');
+    if (getapp) getapp.addEventListener('click', function () { appOpen(true); });
     if (old && old.parentNode) { old.parentNode.replaceChild(f, old); }
     else { document.body.appendChild(f); }
   }
@@ -771,6 +794,226 @@
       e.stopPropagation();
       srchOpen('');
     });
+  }
+
+  // =========================================================================
+  // GET THE APP — every phone visit is offered the app, on BOTH platforms.
+  //
+  // STOCKSWORLD ships as a PWA (manifest + service worker, wired at the top of
+  // this file), so "the app" is this site installed to the home screen: its own
+  // icon, a standalone window with no browser chrome, and the shell cached for
+  // offline. There is no Play Store / App Store listing, and the two platforms
+  // install it in completely different ways:
+  //   Android — Chrome fires `beforeinstallprompt`; we stash it (see INSTALL at
+  //             the top) and replay it on tap, so it really is one tap into the
+  //             system install dialog. Browsers that never fire it (Firefox,
+  //             Samsung Internet) fall back to the written steps.
+  //   iOS     — Apple exposes NO install API whatsoever. The only route is
+  //             Share → Add to Home Screen, so we show it step by step.
+  // Both buttons are always offered — the visitor's own platform just leads —
+  // because people ask "is there an app?" on behalf of the other phone too.
+  // The sheet auto-opens on phones, snoozes a week when dismissed, never shows
+  // once installed, and the footer's "Get the app" reopens it on any device.
+  // =========================================================================
+  var HOW = {
+    android: {
+      ic: '🤖', t: 'Install on Android',
+      note: 'Works in Chrome, Edge, Brave and Samsung Internet.',
+      steps: [
+        ['Open the browser menu', 'The ⋮ button at the top-right of the address bar.'],
+        ['Tap "Install app"', 'Some browsers word it "Add to Home screen".'],
+        ['Confirm "Install"', 'STOCKSWORLD lands in your app drawer with its own icon.']
+      ]
+    },
+    ios: {
+      ic: '🍎', t: 'Install on iPhone / iPad',
+      note: 'Apple allows this from the Share menu only — it works in Safari and in Chrome for iOS.',
+      steps: [
+        ['Tap the Share button', 'The ⬆️ arrow-out-of-a-box icon in the browser bar.'],
+        ['Choose "Add to Home Screen"', 'Scroll the list of actions down if you do not see it.'],
+        ['Tap "Add"', 'STOCKSWORLD opens full-screen from your home screen, no browser bars.']
+      ]
+    }
+  };
+
+  (function injectAppCSS() {
+    if (document.getElementById('sw-app-css')) return;
+    var st = document.createElement('style'); st.id = 'sw-app-css';
+    st.textContent =
+      '.sw-app-sheet{position:fixed;left:10px;right:10px;bottom:14px;max-width:520px;margin:0 auto;z-index:70;display:none;gap:10px;align-items:center;padding:12px 12px 13px 13px;border:1px solid var(--border-strong);border-radius:var(--radius);background:color-mix(in srgb,var(--surface) 95%,transparent);-webkit-backdrop-filter:saturate(180%) blur(16px);backdrop-filter:saturate(180%) blur(16px);box-shadow:var(--shadow-lg);}' +
+      '.sw-app-sheet.open{display:grid;grid-template-columns:auto 1fr auto;animation:sw-rise .22s ease;}' +
+      // the sheet must clear the fixed bottom bar, which only exists on phones
+      '@media (max-width:760px){.sw-app-sheet{bottom:calc(70px + env(safe-area-inset-bottom));}}' +
+      '.sw-app-ic{width:44px;height:44px;border-radius:12px;display:block;}' +
+      '.sw-app-tx{min-width:0;}' +
+      '.sw-app-t{font-size:14.5px;font-weight:800;letter-spacing:-.01em;color:var(--text);}' +
+      '.sw-app-s{font-size:11.5px;color:var(--text-muted);margin-top:2px;}' +
+      '.sw-app-x{align-self:start;flex:none;width:26px;height:26px;padding:0;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--text-faint);font-size:11px;line-height:1;cursor:pointer;transition:var(--tr);}' +
+      '.sw-app-x:hover{color:var(--text);border-color:var(--accent);}' +
+      '.sw-app-row{grid-column:1/-1;display:flex;gap:8px;}' +
+      '.sw-app-btn{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;padding:9px 10px;border:1px solid var(--border-strong);border-radius:11px;background:var(--surface-2);color:var(--text);font-size:13px;font-weight:800;cursor:pointer;transition:var(--tr);}' +
+      '.sw-app-btn:hover{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);}' +
+      '.sw-app-btn.pri{background:var(--accent);border-color:var(--accent);color:#fff;}' +
+      '.sw-app-btn.pri:hover{filter:brightness(1.09);color:#fff;}' +
+      '.sw-app-ov{position:fixed;inset:0;z-index:95;display:none;align-items:center;justify-content:center;padding:14px;background:rgba(4,7,14,.62);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);}' +
+      '.sw-app-ov.open{display:flex;}' +
+      '.sw-app-box{width:100%;max-width:440px;max-height:86vh;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:15px 16px 15px;border:1px solid var(--border-strong);border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow-lg);animation:sw-rise .2s ease;}' +
+      '.sw-app-hd{display:flex;align-items:center;gap:10px;}' +
+      '.sw-app-hd h3{margin:0;font-size:16px;font-weight:800;color:var(--text);}' +
+      '.sw-app-hd .sw-app-x{margin-left:auto;}' +
+      '.sw-app-note{margin:7px 0 9px;font-size:12px;line-height:1.5;color:var(--text-muted);}' +
+      '.sw-app-step{display:flex;gap:11px;padding:10px 0;border-top:1px solid var(--border);}' +
+      '.sw-app-n{flex:none;display:flex;align-items:center;justify-content:center;width:23px;height:23px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-size:11.5px;font-weight:800;}' +
+      '.sw-app-sh{font-size:13.5px;font-weight:700;color:var(--text);}' +
+      '.sw-app-sd{margin-top:2px;font-size:12px;line-height:1.45;color:var(--text-muted);}' +
+      '.sw-app-alt{display:block;width:100%;margin-top:12px;padding:11px 10px;border:1px dashed var(--border-strong);border-radius:11px;background:none;color:var(--text-muted);font-size:12.5px;font-weight:700;cursor:pointer;transition:var(--tr);}' +
+      '.sw-app-alt:hover{color:var(--accent);border-color:var(--accent);}' +
+      // phones: the steps read as a bottom sheet, thumb-side up
+      '@media (max-width:640px){.sw-app-ov{align-items:flex-end;padding:9px;}' +
+        // theme.css gives every phone <button> min-height:38px, and
+        // `html[data-theme] button` outranks a bare class — so the install CTAs
+        // need the same specificity to keep their 44px target, and the little
+        // square ✕ / footer pill need it to keep their own size (same escape
+        // hatch theme.css uses for the theme-switch pill).
+        'html[data-theme] .sw-app-btn{min-height:44px;}' +
+        'html[data-theme] .sw-app-x,html[data-theme] .sw-f-app{min-height:0;}}' +
+      '.sw-f-app{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border:1px solid var(--border-strong);border-radius:999px;background:var(--surface-2);color:var(--text-muted);font-size:11.5px;font-weight:800;cursor:pointer;transition:var(--tr);}' +
+      '.sw-f-app:hover{color:var(--accent);border-color:var(--accent);background:var(--accent-soft);}';
+    document.head.appendChild(st);
+  })();
+
+  function isIOS() {
+    var ua = navigator.userAgent || '';
+    if (/iPad|iPhone|iPod/i.test(ua)) return true;
+    return /Macintosh/.test(ua) && (navigator.maxTouchPoints || 0) > 1;   // iPadOS 13+ reports itself as a Mac
+  }
+  function isPhone() {
+    if (isIOS() || /Android/i.test(navigator.userAgent || '')) return true;
+    var coarse = false; try { coarse = window.matchMedia('(pointer:coarse)').matches; } catch (e) {}
+    return coarse && window.innerWidth <= 760;
+  }
+  // Already running as an installed app? Then there is nothing to offer.
+  function appInstalled() {
+    if (INSTALL.done) return true;
+    if (navigator.standalone === true) return true;                       // iOS, launched from the home screen
+    try {
+      return window.matchMedia('(display-mode: standalone)').matches ||
+             window.matchMedia('(display-mode: minimal-ui)').matches ||
+             window.matchMedia('(display-mode: fullscreen)').matches;
+    } catch (e) { return false; }
+  }
+  function appSnoozed() {
+    try {
+      var v = localStorage.getItem(APP_KEY);
+      if (!v) return false;
+      if (v === 'installed') return true;
+      return (Date.now() - (parseInt(v, 10) || 0)) < 7 * 864e5;           // dismissed — ask again next week
+    } catch (e) { return false; }
+  }
+  function appSnooze() { try { localStorage.setItem(APP_KEY, String(Date.now())); } catch (e) {} }
+
+  function appClose(snooze) {
+    var el = document.getElementById('sw-app-sheet');
+    if (el) el.classList.remove('open');
+    if (snooze) appSnooze();
+  }
+
+  // Android one-tap: replay the install event Chrome handed us at page load.
+  function appAndroid() {
+    var e = INSTALL.evt;
+    if (!e) { appHow('android'); return; }   // never fired (Firefox/Samsung) or already spent this load
+    INSTALL.evt = null;                      // a captured prompt can only be replayed once
+    appClose(false);
+    try {
+      e.prompt();
+      if (e.userChoice && e.userChoice.then) {
+        e.userChoice.then(function (c) {
+          if (!c || c.outcome !== 'accepted') appSnooze();                // "not now" — don't nag for a week
+        }).catch(function () {});
+      }
+    } catch (err) { appHow('android'); }
+  }
+
+  function appHow(p) {
+    var h = HOW[p] || HOW.ios, other = p === 'ios' ? 'android' : 'ios';
+    var ov = document.getElementById('sw-app-ov');
+    if (!ov) {
+      ov = document.createElement('div');
+      ov.id = 'sw-app-ov'; ov.className = 'sw-app-ov';
+      ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true');
+      ov.innerHTML = '<div class="sw-app-box"></div>';
+      document.body.appendChild(ov);
+      ov.addEventListener('click', function (ev) {
+        if (ev.target === ov) { ov.classList.remove('open'); return; }     // tap the backdrop to dismiss
+        var b = ev.target.closest ? ev.target.closest('[data-p]') : null;
+        if (!b) return;
+        var t = b.getAttribute('data-p');
+        if (t === 'close') ov.classList.remove('open');
+        else if (t === 'android' && INSTALL.evt) { ov.classList.remove('open'); appAndroid(); }
+        else appHow(t);
+      });
+      document.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Escape') ov.classList.remove('open');
+      });
+    }
+    ov.setAttribute('aria-label', h.t);
+    ov.querySelector('.sw-app-box').innerHTML =
+      '<div class="sw-app-hd"><span aria-hidden="true" style="font-size:19px">' + h.ic + '</span>' +
+        '<h3>' + h.t + '</h3>' +
+        '<button type="button" class="sw-app-x" data-p="close" aria-label="Close">✕</button></div>' +
+      '<p class="sw-app-note">' + h.note + '</p>' +
+      h.steps.map(function (s, i) {
+        return '<div class="sw-app-step"><span class="sw-app-n">' + (i + 1) + '</span><div>' +
+          '<div class="sw-app-sh">' + s[0] + '</div><div class="sw-app-sd">' + s[1] + '</div></div></div>';
+      }).join('') +
+      '<button type="button" class="sw-app-alt" data-p="' + other + '">' + HOW[other].ic + '  On ' +
+        (other === 'ios' ? 'an iPhone or iPad' : 'an Android phone') + ' instead? Show those steps</button>';
+    ov.classList.add('open');
+    appClose(false);                          // the sheet handed off; the steps take over
+  }
+
+  function appOpen(force) {
+    if (appInstalled()) return;
+    if (!force && appSnoozed()) return;
+    var el = document.getElementById('sw-app-sheet');
+    if (!el) {
+      var btn = {
+        android: '<button type="button" class="sw-app-btn" data-p="android"><span aria-hidden="true">🤖</span>Android</button>',
+        ios: '<button type="button" class="sw-app-btn" data-p="ios"><span aria-hidden="true">🍎</span>iPhone</button>'
+      };
+      var mine = isIOS() ? 'ios' : 'android', other = mine === 'ios' ? 'android' : 'ios';
+      el = document.createElement('div');
+      el.id = 'sw-app-sheet'; el.className = 'sw-app-sheet';
+      el.setAttribute('role', 'region');
+      el.setAttribute('aria-label', 'Install the STOCKSWORLD app');
+      el.innerHTML =
+        '<img class="sw-app-ic" src="./icon-192.png" alt="" width="44" height="44">' +
+        '<div class="sw-app-tx"><div class="sw-app-t">Get the STOCKSWORLD app</div>' +
+          '<div class="sw-app-s">Free · installs in seconds · works offline</div></div>' +
+        '<button type="button" class="sw-app-x" data-p="close" aria-label="Not now">✕</button>' +
+        '<div class="sw-app-row">' + btn[mine].replace('sw-app-btn', 'sw-app-btn pri') + btn[other] + '</div>';
+      document.body.appendChild(el);
+      el.addEventListener('click', function (ev) {
+        var b = ev.target.closest ? ev.target.closest('[data-p]') : null;
+        if (!b) return;
+        var p = b.getAttribute('data-p');
+        if (p === 'close') appClose(true);
+        else if (p === 'android') appAndroid();
+        else appHow('ios');
+      });
+    }
+    el.classList.add('open');
+  }
+
+  function buildInstall() {
+    // let pages offer their own "get the app" entry point (same as swSearch)
+    try { window.swApp = { open: appOpen, how: appHow, installed: appInstalled }; } catch (e) {}
+    try {
+      if (!isPhone() || appInstalled() || appSnoozed()) return;
+      // Let the page paint first — a card that lands on a half-drawn dashboard
+      // reads as an ad; one that slides in after it settles reads as an offer.
+      setTimeout(function () { appOpen(false); }, 1400);
+    } catch (e) {}
   }
 
   // =========================================================================
@@ -942,7 +1185,7 @@
     } catch (e) {}
   }
 
-  function init() { buildNav(); buildSearch(); buildTabs(); buildFooter(); buildBottomBar(); build(); watchHeader(); watchTables(); loadFeatures(); }
+  function init() { buildNav(); buildSearch(); buildTabs(); buildFooter(); buildBottomBar(); buildInstall(); build(); watchHeader(); watchTables(); loadFeatures(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();
