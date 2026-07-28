@@ -147,6 +147,17 @@ def validate_n500(snaps, wb):
 def main():
     changelog = json.load(open(os.path.join(HERE, "_changelog.json")))
     wb = json.load(open(os.path.join(HERE, "_wb_n500_snaps.json")))
+    # Official archived sub-index constituent CSVs (ground truth) pinned as hard
+    # checkpoints for the 8 broad tiers, exactly like wb does for Nifty 500. Keys
+    # are Wayback YYYYMMDD (or "LIVE") -> convert to ISO; LIVE == today's anchor, skip.
+    try:
+        _off = json.load(open(os.path.join(HERE, "_idx_official_snaps.json")))
+    except Exception:
+        _off = {}
+    OFFICIAL = {}
+    for _tier, _snaps in _off.items():
+        OFFICIAL[_tier] = {("%s-%s-%s" % (d[:4], d[4:6], d[6:8])): set(v)
+                           for d, v in _snaps.items() if d != "LIVE"}
     hist_path = os.path.join(HERE, "indices_history.json")
     H = json.load(open(hist_path, encoding="utf-8"))
     # old->current map from the PRICE build (build_sf_data merges renamed series by ISIN). Membership
@@ -167,7 +178,10 @@ def main():
         if not events:
             print(f"{idx}: no change events — left as-is"); continue
         anchor = today_list(slug)
-        cps = {d: set(v) for d, v in wb.items()} if idx == "Nifty 500" else None
+        if idx == "Nifty 500":
+            cps = {d: set(v) for d, v in wb.items()}
+        else:
+            cps = OFFICIAL.get(idx) or None   # official archived CSVs pinned exact
         snaps = reconstruct(anchor, events, cps)
         if idx == "Nifty 500":
             worst = validate_n500(snaps, wb)
@@ -229,16 +243,18 @@ def main():
             if s["effectiveDate"] <= d: best = s
         return set(best["symbols"]) if best else set()
     def _derive(name, fn, basis):
-        dates = sorted({s["effectiveDate"] for bi in basis for s in H.get(bi, [])})
+        # Official archived CSVs are ground truth — pin them exact; derive only between.
+        offd = {d: sorted({canon(x) for x in v}) for d, v in OFFICIAL.get(name, {}).items()}
+        dates = sorted({s["effectiveDate"] for bi in basis for s in H.get(bi, [])} | set(offd))
         out = []
         for d in dates:
-            syms = sorted(fn(d))
+            syms = offd.get(d) or sorted(fn(d))   # official wins where present
             if not syms or (out and out[-1]["symbols"] == syms):
                 continue
             out.append({"effectiveDate": d, "symbols": syms})
         if out:
             H[name] = out
-            print(f"  derived {name}: {len(out)} snapshots (from {' - '.join(basis)})")
+            print(f"  derived {name}: {len(out)} snapshots ({len(offd)} official-pinned, rest from {' - '.join(basis)})")
     _derive("Nifty MidSmallcap 400",
             lambda d: _asof("Nifty 500", d) - _asof("Nifty 100", d),
             ["Nifty 500", "Nifty 100"])
