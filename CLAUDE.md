@@ -24,3 +24,16 @@ Rules that keep them from fighting (violated → the 2026-07-22 tangle, see DATA
 ## Data work
 
 Before ANY data work, read `scripts/DATA_RUNBOOK.md` and follow it — procedures there override improvisation.
+
+## Ship-it quality gate — UI, design, features, everything
+
+Standing rule from the user (2026-07-28): **anything you build must be bug-free when you hand it over.**
+A change is done when it has been RUN and SEEN WORKING, not when the edit is written — no size exemption,
+the "obviously safe one-liner" is exactly what has shipped broken before.
+
+Before saying "done" or pushing ANY code change, run the full gate in **DATA_RUNBOOK §39**: syntax/import
+check every touched file → load the page and read the console (zero errors) → check the blast radius of
+shared files (`theme.js`/`theme.css` are on every page) → test the empty/missing/1-row/renamed-ticker paths
+→ mobile 375px + dark and light → bump the service-worker cache if assets changed → verify LIVE after the
+push. Then report exactly what you verified and what you did not — never call something "working" that you
+only read instead of ran. If a bug ships anyway, add the check that would have caught it to §39.

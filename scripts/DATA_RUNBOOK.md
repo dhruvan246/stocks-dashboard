@@ -46,6 +46,10 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§34** PAGE GROUPS — merged tabbed sections (theme.js)
 - **§35** VOLUME SHOCKERS
 - **§35** GLOBAL MARKETS DASHBOARD
+- **§36** LIVE (INTRADAY) DATA LAYER
+- **§37** INDIAN INDICES TABLE
+- **§38** CONCURRENCY — ONE WRITER PER TREE
+- **§39** ★ SHIP-IT QUALITY GATE — nothing goes out unverified (**read before ANY UI / design / feature work**)
 
 ---
 
@@ -2450,3 +2454,75 @@ push:    git push origin HEAD:main    (inside fetch+rebase retry loop)
 remove:  git worktree remove C:/Users/dhruv/stocks-wt/<name>
 list:    git worktree list
 ```
+
+---
+
+## 39. ★ SHIP-IT QUALITY GATE — nothing goes out unverified  (2026-07-28, STANDING USER RULE)
+
+**THE RULE (user, 2026-07-28):** *"whenever u do any ui development, design or feature or anything
+make sure its bug free."* Said after too many changes landed broken and the user had to come back
+and report them. **A change is not "done" when the edit is written — it is done when it has been RUN
+and SEEN WORKING.** "Looks right" is not evidence. Applies to every UI tweak, new page, new feature,
+refactor, script change — no size exemption; the one-line "obviously safe" fix is exactly the one
+that has shipped broken before.
+
+### The gate — run ALL of these before saying "done" or pushing
+
+**0. Syntax / import gate (every file touched).**
+```
+node --check docs/<file>.js                    # JS
+python -m py_compile scripts/<file>.py         # Python
+python -m json.tool <file>.json > /dev/null    # JSON
+python -c "import <module>"                    # heavy-import scripts — §15/§18 smoke tripwire
+```
+⚠️ A syntax error in `theme.js` / `theme.css` takes down **every page on the site** (§34) — they are
+injected site-wide. Never push those unchecked. Never let `|| echo` swallow a failure in a workflow
+(that hid a dead BSE feed merge for weeks — §15/§18).
+
+**1. Actually load the page.** `preview_start` → `read_console_messages` (must be **zero** errors) →
+`read_page` and confirm the new thing is really in the DOM **with real values** — not `Loading…`,
+`NaN`, `undefined`, `null`, `—`, or an empty table. Reading your own diff is not verification.
+
+**2. Blast radius — everything else that uses what you touched.**
+- `theme.js` / `theme.css` / nav / footer / tiles → **all pages**; spot-check ≥3 (home, a table page, a chart page).
+- Shared JS (`sw-sync.js`, `sw-watchlist.js`, `backtest-engine.js`) → `grep -rl` every consumer, open each.
+- `stock-backtest.html` has its **OWN inline engine** — any factor/logic added to one MUST be ported
+  to `backtest-engine.js` and vice-versa (memory: feedback-backtest-engines-sync).
+- Changed a JSON's shape → check every reader of that JSON, plus the writer that bakes it.
+- New page → `NAV_GROUPS` in theme.js + an `index.html` blurb (§34), else it exists but is unreachable.
+
+**3. The unhappy paths — this is where site bugs actually live, not the happy path.**
+Empty array · exactly 1 row · all-null column · missing key · stock with no history / pre-IPO date ·
+string-vs-number filter compare · empty basket · divide-by-zero · **negative year-ago base**
+(feedback-negative-base-growth) · a renamed ticker whose price bin still lags (§30) · a user with
+nothing saved yet · first visit with no localStorage · a strategy that returns 0 picks.
+
+**4. Mobile + theme (a UI change is not verified until both are).**
+`resize_window` mobile (375px): the **`<body>` must not scroll sideways** and the fixed bottom bar must
+stay put (that exact drift shipped 2026-07-28); tables must cardify ≤640px with **colspan cells set
+`display:block`**, else the card collapses. Then check **dark AND light**.
+
+**5. Cache.** Any changed `docs/*.js|css|html` asset ⇒ **bump the service-worker CACHE version**, or
+returning users keep running the old broken file (the Android SW cache even survives a reinstall).
+
+**6. Verify LIVE after the push, not just locally.** `curl -s <live URL> | grep …` once Pages deploys
+(~1–3 min) — the browser pane is flaky for this. Data heals: re-check **~20 min later**, an in-flight
+CI run can clobber you (§0, §38).
+
+### Report honestly
+State exactly what was verified and what was not — *"console clean on 3 pages, mobile + dark checked;
+NOT tested with an empty watchlist."* Never call something "working" that was only read, never run.
+A named unverified corner costs one sentence; the same corner found by the user costs their trust.
+
+### Bugs that actually shipped, and the check that would have caught each
+| shipped bug | gate that catches it |
+|---|---|
+| page panned sideways, bottom bar slid off screen (2026-07-28) | **4** — mobile viewport |
+| deleted strategies resurrected for everyone (fixed 9233f43) | **3** — stale local flag + self-heal path |
+| Live Picks / holdings anchored to `SF.end`, missing same-day filings & prices | **3** — verify vs real current data, not the baked snapshot |
+| backtest saved the same strategy twice | **2** — two writers of one record |
+| BSE feed merge silently dead in CI (top-level heavy import + `\|\| echo`) | **0** — import smoke test, no swallowed errors |
+
+### If a bug ships anyway
+Fix the **class**, not just the instance: ask *"what check would have caught this?"* and add it to the
+gate above. That is what keeps this list from growing.
