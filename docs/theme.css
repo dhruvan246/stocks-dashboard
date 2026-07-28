@@ -332,17 +332,22 @@ html[data-theme] table{ -webkit-overflow-scrolling:touch; }
   html[data-theme] table.sw-cardify tbody td[colspan]::before{ content:none; }
 }
 
-/* ----------- wide tables that must STAY tables on phones (.sw-scrollx) -------
- * Some tables read as a GRID — you compare a number against the one beside it —
- * and one-card-per-row destroys that. This is screener.in's pattern, measured
- * from their quarterly-results table at 375px: the holder scrolls sideways
- * (overflow-x:auto), the table keeps its NATURAL width (theirs is 1126px in a
- * 375px viewport — it never shrinks), cells stop wrapping, type drops a notch,
- * and the first column is position:sticky;left:0 with an opaque background so
- * you never lose the row you're reading. The page itself must not pan, so the
- * scroll is confined to the holder.
- * Opt in: put .sw-scrollx on the element wrapping the <table>. theme.js then
- * skips cardifying it. Desktop untouched — all of this is phone-only. */
+/* ----------- wide tables stay TABLES on phones (.sw-scrollx) — THE DEFAULT ---
+ * A data table reads as a GRID: you compare a number against the one beside it.
+ * One-card-per-row destroys that, so since 2026-07-28 this is what every wide
+ * table does on a phone, and cards are the explicit opt-in (.sw-cards, below).
+ *
+ * screener.in's pattern, measured from their quarterly table at 375px: the
+ * holder scrolls sideways (overflow-x:auto), the table keeps its NATURAL width
+ * (theirs is 1126px in a 375px viewport — it never shrinks), cells stop
+ * wrapping, type drops a notch, and the first column is position:sticky;left:0
+ * over an opaque background so you never lose the row you're reading. The page
+ * itself must not pan, so the scroll stays inside the holder.
+ *
+ * theme.js applies the holder + the pin class; --sw-pin-head/--sw-pin-body are
+ * the resolved backgrounds of the header row and the body rows on THAT page, so
+ * the pinned cell matches its own table instead of guessing a token.
+ * Desktop untouched — every rule here is phone-only. */
 @media (max-width:640px){
   html[data-theme] .sw-scrollx{
     overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch;
@@ -357,11 +362,42 @@ html[data-theme] table{ -webkit-overflow-scrolling:touch; }
   }
   html[data-theme] .sw-scrollx table th,
   html[data-theme] .sw-scrollx table td{ white-space:nowrap; padding:7px 9px; }
+  /* pinned column — 1st by default, 2nd when the 1st is a rank/blank gutter
+   * (movers, the screeners and every backtest holdings table lead with "#",
+   * and pinning a row number tells you nothing) */
   html[data-theme] .sw-scrollx table thead th:first-child,
   html[data-theme] .sw-scrollx table tbody td:first-child,
   html[data-theme] .sw-scrollx table tbody th:first-child{
     position:sticky; left:0; z-index:2;
-    background:var(--surface); box-shadow:1px 0 0 var(--border);
+    box-shadow:1px 0 0 var(--border);
+  }
+  html[data-theme] .sw-scrollx table thead th:first-child{ background:var(--sw-pin-head,var(--surface)); }
+  html[data-theme] .sw-scrollx table tbody td:first-child,
+  html[data-theme] .sw-scrollx table tbody th:first-child{ background:var(--sw-pin-body,var(--surface)); }
+  /* .sw-pin2: the gutter scrolls away UNDER the pinned name column */
+  html[data-theme] .sw-scrollx table.sw-pin2 thead th:first-child,
+  html[data-theme] .sw-scrollx table.sw-pin2 tbody td:first-child,
+  html[data-theme] .sw-scrollx table.sw-pin2 tbody th:first-child{
+    position:static; box-shadow:none; background:none;
+  }
+  html[data-theme] .sw-scrollx table.sw-pin2 thead th:nth-child(2),
+  html[data-theme] .sw-scrollx table.sw-pin2 tbody td:nth-child(2),
+  html[data-theme] .sw-scrollx table.sw-pin2 tbody th:nth-child(2){
+    position:sticky; left:0; z-index:2; box-shadow:1px 0 0 var(--border);
+  }
+  html[data-theme] .sw-scrollx table.sw-pin2 thead th:nth-child(2){ background:var(--sw-pin-head,var(--surface)); }
+  html[data-theme] .sw-scrollx table.sw-pin2 tbody td:nth-child(2),
+  html[data-theme] .sw-scrollx table.sw-pin2 tbody th:nth-child(2){ background:var(--sw-pin-body,var(--surface)); }
+  /* a cell holding prose (an announcement caption, "what happened") wraps
+   * inside a sane width instead of stretching the row off to the horizon */
+  html[data-theme] .sw-scrollx table td.sw-wrap{
+    white-space:normal; min-width:180px; max-width:290px;
+  }
+  /* full-width colspan cells (group headings, expand rows, empty states) are
+   * never the pinned column — theme.js tags them .sw-span */
+  html[data-theme] .sw-scrollx table tbody td.sw-span{
+    position:static !important; box-shadow:none !important; background:none !important;
+    white-space:normal;
   }
 }
 

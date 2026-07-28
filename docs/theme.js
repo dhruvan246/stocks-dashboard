@@ -78,6 +78,11 @@
     try { localStorage.setItem(KEY, t); } catch (e) {}
     setThemeColor(t);
     updateUI(t);
+    // The pinned column of a scrolling table paints a COPY of its table's
+    // background (theme.js resolves it once, see responsifyAll). A theme switch
+    // repaints the table but not that copy, so re-resolve it — after the .18s
+    // colour transition, or we'd read the old colour mid-fade.
+    setTimeout(function () { try { responsifyAll(); } catch (e) {} }, 260);
   }
 
   function build() {
@@ -1059,11 +1064,19 @@
   }
 
   // =========================================================================
-  // RESPONSIVE TABLES — reflow wide data tables into stacked label/value cards
-  // on phones. We tag every wide table (>=4 cols, header has no colspan) with
-  // .sw-cardify and stamp each body cell with data-label = its column header;
-  // the CSS above (theme.css @media max-width:640px) does the rest. A
-  // MutationObserver re-runs it so JS-rendered / sorted tables stay labelled.
+  // RESPONSIVE TABLES (phones) — two behaviours, and SCROLL IS THE DEFAULT
+  // since 2026-07-28 (user: cards "should not happen", match screener.in).
+  //
+  //   1. DEFAULT — the table stays a table: theme.js gives it a .sw-scrollx
+  //      holder, so it keeps its natural width and the holder scrolls sideways
+  //      with the name column pinned (theme.css). A data table is a GRID; you
+  //      read it by comparing a number to the one beside it.
+  //   2. OPT-IN CARDS — .sw-cards on the table or any ancestor keeps the old
+  //      one-card-per-row reflow, for feeds whose row is a story rather than a
+  //      grid row (an announcement caption, "what happened", "why not filled").
+  //
+  // Both paths key off the same header scan. A MutationObserver re-runs the
+  // whole thing, so JS-rendered and re-sorted tables keep their treatment.
   // =========================================================================
   function headerLabels(table) {
     var thead = table.tHead;
@@ -1082,10 +1095,6 @@
     return out;
   }
   function cardifyTable(table) {
-    // Opted OUT: inside a .sw-scrollx holder the table stays a TABLE on phones
-    // (screener.in-style sideways scroll, first column pinned — see theme.css).
-    // Grid-like tables lose their meaning as one card per row.
-    if (table.closest && table.closest('.sw-scrollx')) { table.classList.remove('sw-cardify'); return; }
     var labels = headerLabels(table);
     if (!labels) { table.classList.remove('sw-cardify'); return; }
     table.classList.add('sw-cardify');
@@ -1100,9 +1109,90 @@
       }
     }
   }
-  function cardifyAll() {
+  // the background actually painted behind a cell: a table's tint usually sits on
+  // the <thead>/<tr>/<table> or the card around it, not on the cell itself, so walk
+  // up until something is opaque. The pinned column paints this, so scrolled
+  // numbers pass BEHIND it instead of showing through.
+  function paintedBg(el) {
+    for (var n = el; n && n !== document.documentElement; n = n.parentElement) {
+      var bg = getComputedStyle(n).backgroundColor;
+      if (bg && bg !== 'transparent' && !/rgba\([^)]*,\s*0\)$/.test(bg)) return bg;
+    }
+    return '';
+  }
+  // Give the table a sideways-scrolling holder and pin its name column.
+  function scrollifyTable(table) {
+    if (table.classList.contains('sw-cardify')) {          // switched modes (opt-in removed)
+      table.classList.remove('sw-cardify');
+    }
+    var holder = table.parentElement;
+    if (!holder) return;
+    if (!holder.classList.contains('sw-scrollx')) {
+      // Re-use the existing wrapper only when the table is its ONLY element child —
+      // otherwise a card's heading would scroll away with the table.
+      if (holder.children.length === 1) {
+        holder.classList.add('sw-scrollx');
+      } else {
+        var w = document.createElement('div');
+        w.className = 'sw-scrollx';
+        var pcs = getComputedStyle(holder);
+        if (pcs.display === 'flex' || pcs.display === 'inline-flex') { w.style.flex = '1 1 auto'; w.style.minWidth = '0'; }
+        holder.insertBefore(w, table);
+        w.appendChild(table);
+        holder = w;
+      }
+    }
+    // WHICH column to pin: the one that identifies the row, so the label stays
+    // while the numbers slide. Prefer a Stock/Index/Fund-style column if it is
+    // 1st or 2nd (IPOs and the deal feeds lead with a date, movers and the
+    // screeners with a "#" gutter — pinning either tells you nothing); else the
+    // 1st, unless that is a blank/rank gutter.
+    var hrow = table.tHead && table.tHead.rows.length ? table.tHead.rows[table.tHead.rows.length - 1] : null;
+    if (hrow && hrow.cells.length > 2) {
+      var txt = function (c) { return (c ? (c.textContent || '') : '').replace(/[\s#⇅↕▲▼]/g, ''); };
+      var ID = /^(stock|symbol|company|name|index|fund|scheme|holder|person|client|sector|strategy|mutualfund)/i;
+      var pin2 = ID.test(txt(hrow.cells[1])) && !ID.test(txt(hrow.cells[0]));
+      if (!pin2 && txt(hrow.cells[0]) === '') pin2 = true;         // blank / rank gutter
+      table.classList.toggle('sw-pin2', pin2);
+    }
+    // A full-width colspan cell (group heading, expand row, empty state) must not
+    // be pinned — it would drag a shadow line into the middle of the table.
+    for (var b = 0; b < table.tBodies.length; b++) {
+      var rws = table.tBodies[b].rows;
+      for (var r = 0; r < rws.length; r++) {
+        var c0 = rws[r].cells[0];
+        if (c0 && (c0.colSpan || 1) > 1) c0.classList.add('sw-span');
+      }
+    }
+    // resolve the pinned cell's background from this page's own table
+    var hcell = hrow && hrow.cells.length ? hrow.cells[0] : null;
+    var bcell = table.tBodies.length && table.tBodies[0].rows.length ? table.tBodies[0].rows[0].cells[0] : null;
+    if (hcell) { var hb = paintedBg(hcell); if (hb) table.style.setProperty('--sw-pin-head', hb); }
+    if (bcell) { var bb = paintedBg(bcell); if (bb) table.style.setProperty('--sw-pin-body', bb); }
+  }
+  // how many columns wide, counting colspans — headerLabels() deliberately rejects
+  // grouped headers (cards can't label them) but a grouped table is still a GRID
+  // that should scroll, so width is measured separately.
+  function colCount(table) {
+    var hrow = (table.tHead && table.tHead.rows.length) ? table.tHead.rows[table.tHead.rows.length - 1]
+             : (table.tBodies.length && table.tBodies[0].rows.length ? table.tBodies[0].rows[0] : null);
+    if (!hrow) return 0;
+    var n = 0;
+    for (var i = 0; i < hrow.cells.length; i++) n += hrow.cells[i].colSpan || 1;
+    return n;
+  }
+  function responsifyAll() {
     var t = document.querySelectorAll('table');
-    for (var i = 0; i < t.length; i++) { try { cardifyTable(t[i]); } catch (e) {} }
+    for (var i = 0; i < t.length; i++) {
+      try {
+        var tb = t[i];
+        if (colCount(tb) < 4) continue;                     // narrow tables already fit
+        // .sw-grid forces scroll even inside a .sw-cards feed (a grid nested in a
+        // card-mode list); cards need labels, so a grouped header falls through.
+        if (!tb.classList.contains('sw-grid') && tb.closest && tb.closest('.sw-cards') && headerLabels(tb)) cardifyTable(tb);
+        else scrollifyTable(tb);
+      } catch (e) {}
+    }
   }
 
   // =========================================================================
@@ -1142,10 +1232,10 @@
   }
 
   function watchTables() {
-    cardifyAll(); fitViewport();
+    responsifyAll(); fitViewport();
     if (!('MutationObserver' in window)) return;
     var timer = null, wantCards = false;
-    var settle = function () { if (wantCards) { cardifyAll(); wantCards = false; } fitViewport(); };
+    var settle = function () { if (wantCards) { responsifyAll(); wantCards = false; } fitViewport(); };
     new MutationObserver(function (muts) {
       var any = false;
       for (var i = 0; i < muts.length; i++) {

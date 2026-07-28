@@ -370,7 +370,7 @@ function render() {
       ${OWNER ? `<td class="px-2 py-3 text-center"><button class="text-slate-300 hover:text-red-500 text-sm" data-delgroup="${esc(identityKey(c))}" title="Delete strategy">🗑️</button></td>` : ''}
     </tr>`;
   }).join('');
-  $('list').innerHTML = `<table class="w-full text-sm border-collapse">${header}<tbody>${body}</tbody></table>`;
+  $('list').innerHTML = `<table class="w-full text-sm border-collapse sw-cards">${header}<tbody>${body}</tbody></table>`;
   // wiring
   $('list').querySelectorAll('[data-favtoggle]').forEach(b => b.onclick = (e) => {
     e.stopPropagation(); toggleFav(b.dataset.favtoggle);
