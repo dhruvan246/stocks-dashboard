@@ -332,6 +332,39 @@ html[data-theme] table{ -webkit-overflow-scrolling:touch; }
   html[data-theme] table.sw-cardify tbody td[colspan]::before{ content:none; }
 }
 
+/* ----------- wide tables that must STAY tables on phones (.sw-scrollx) -------
+ * Some tables read as a GRID — you compare a number against the one beside it —
+ * and one-card-per-row destroys that. This is screener.in's pattern, measured
+ * from their quarterly-results table at 375px: the holder scrolls sideways
+ * (overflow-x:auto), the table keeps its NATURAL width (theirs is 1126px in a
+ * 375px viewport — it never shrinks), cells stop wrapping, type drops a notch,
+ * and the first column is position:sticky;left:0 with an opaque background so
+ * you never lose the row you're reading. The page itself must not pan, so the
+ * scroll is confined to the holder.
+ * Opt in: put .sw-scrollx on the element wrapping the <table>. theme.js then
+ * skips cardifying it. Desktop untouched — all of this is phone-only. */
+@media (max-width:640px){
+  html[data-theme] .sw-scrollx{
+    overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch;
+    scrollbar-width:thin; padding-bottom:3px;
+  }
+  /* a VISIBLE slider: styling the webkit scrollbar opts out of overlay bars,
+   * so there's a permanent hint that content continues past the edge */
+  html[data-theme] .sw-scrollx::-webkit-scrollbar{ height:7px; }
+  html[data-theme] .sw-scrollx::-webkit-scrollbar-thumb{ border-width:2px; }
+  html[data-theme] .sw-scrollx table{
+    width:auto !important; min-width:100%; font-size:12.5px;
+  }
+  html[data-theme] .sw-scrollx table th,
+  html[data-theme] .sw-scrollx table td{ white-space:nowrap; padding:7px 9px; }
+  html[data-theme] .sw-scrollx table thead th:first-child,
+  html[data-theme] .sw-scrollx table tbody td:first-child,
+  html[data-theme] .sw-scrollx table tbody th:first-child{
+    position:sticky; left:0; z-index:2;
+    background:var(--surface); box-shadow:1px 0 0 var(--border);
+  }
+}
+
 /* =========================================================================
  * V2 VISUAL OVERHAUL — aurora background, entrance animations, hover lifts,
  * animated logo, header scroll shadow, and the uniform injected footer

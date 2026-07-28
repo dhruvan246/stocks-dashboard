@@ -93,7 +93,9 @@
       <a href="./quarterly-results.html" class="text-xs font-semibold text-indigo-600 hover:underline">All companies' results →</a>
     </div>
     <div id="fundCards" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-3"></div>
-    <div id="funds" class="overflow-x-auto text-sm">—</div>
+    <!-- sw-scrollx: stays a table on phones and scrolls sideways with the quarter
+         column pinned (theme.css), instead of reflowing to one card per quarter -->
+    <div id="funds" class="sw-scrollx overflow-x-auto text-sm">—</div>
     <div id="fundNote" class="text-[11px] text-slate-400 mt-2"></div>
   </div>
 

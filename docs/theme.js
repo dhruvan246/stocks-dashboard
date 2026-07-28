@@ -839,6 +839,10 @@
     return out;
   }
   function cardifyTable(table) {
+    // Opted OUT: inside a .sw-scrollx holder the table stays a TABLE on phones
+    // (screener.in-style sideways scroll, first column pinned — see theme.css).
+    // Grid-like tables lose their meaning as one card per row.
+    if (table.closest && table.closest('.sw-scrollx')) { table.classList.remove('sw-cardify'); return; }
     var labels = headerLabels(table);
     if (!labels) { table.classList.remove('sw-cardify'); return; }
     table.classList.add('sw-cardify');
