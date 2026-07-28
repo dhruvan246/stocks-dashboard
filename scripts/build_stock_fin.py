@@ -22,6 +22,10 @@ WHAT IT REPLACES
          (sf_revop.json — op = EBITDA, fin=1 marks banks/NBFCs)
   shpQ   quarter-end dates, newest first ] the stock's row of the quarterly
   shp    the matching holding cells       ] shareholding-pattern feed
+  shpH   FULL shareholding history, oldest first (scripts/shp_history.json —
+         back to 2019-09-30): [[qEndISO, prom%, fii%, dii%, mf%, ins%,
+         subDate, nShareholders], …]. shpQ/shp (8 quarters) stay for readers
+         that predate it; the page prefers shpH when present.
 
 RENAMES
   Fundamentals are keyed by a company's CURRENT ticker while its price history
@@ -30,9 +34,10 @@ RENAMES
   the same fallback fundFor()/FUND_ALIAS does in backtest-engine.js. Without it
   every renamed stock's page would show "no quarterly earnings on file".
 
-Run: python scripts/build_stock_fin.py
+Run: python scripts/build_stock_fin.py [--out DIR]   (--out: local verification
+     builds that must not touch the committed docs/fin/)
 """
-import json, os, re, shutil, sys
+import argparse, json, os, re, shutil, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -42,6 +47,7 @@ OUT  = os.path.join(DOCS, "fin")
 FUND_J  = os.path.join(DOCS, "sf_fundamentals.json")
 REVOP_J = os.path.join(DOCS, "sf_revop.json")
 SHP_J   = os.path.join(DOCS, "shareholding.json")
+SHPH_J  = os.path.join(HERE, "shp_history.json")
 RENAME  = os.path.join(HERE, "_rename_map.json")
 
 _UNSAFE = re.compile(r"[^A-Za-z0-9._-]")
@@ -61,9 +67,15 @@ def load(path, what):
 
 
 def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--out", default=OUT, help="output dir (default docs/fin — CI path)")
+    args = ap.parse_args()
+    out_dir = args.out
+
     fund  = load(FUND_J,  "net profit")
     revop = load(REVOP_J, "revenue/margins")
     shpj  = load(SHP_J,   "shareholding")
+    shph  = load(SHPH_J,  "shareholding history")
     if not fund and not revop:
         sys.exit("ABORT: neither sf_fundamentals.json nor sf_revop.json could be read")
     if fund and len(fund) < 2000:
@@ -71,6 +83,15 @@ def main():
 
     shp_q = shpj.get("quarters") or []
     shp_rows = {r[0]: r for r in (shpj.get("rows") or []) if r}
+
+    # full history, oldest first: {SYM:{QE:[prom,fii,dii,mf,ins,subDate,nsh?]}} → [[QE,…7 fields], …]
+    hist_rows = {}
+    for sym, qmap in shph.items():
+        if sym.startswith("_") or not isinstance(qmap, dict):
+            continue
+        rows = [[qe] + list((qmap[qe] or [])[:7]) for qe in sorted(qmap)]
+        if rows:
+            hist_rows[sym] = rows
 
     aliases = {}
     if os.path.exists(RENAME):
@@ -80,7 +101,7 @@ def main():
             print("WARN: could not read _rename_map.json (%s) — renamed tickers will show no financials" % e)
 
     # every symbol that has data, plus each old name that resolves into one
-    syms = set(fund) | set(revop) | set(shp_rows)
+    syms = set(fund) | set(revop) | set(shp_rows) | set(hist_rows)
     for old, new in aliases.items():
         if new in syms:
             syms.add(old)
@@ -92,9 +113,9 @@ def main():
         alias = aliases.get(sym)
         return src.get(alias) if alias else None
 
-    if os.path.isdir(OUT):
-        shutil.rmtree(OUT)             # drop slices for symbols that left the feeds
-    os.makedirs(OUT, exist_ok=True)
+    if os.path.isdir(out_dir):
+        shutil.rmtree(out_dir)         # drop slices for symbols that left the feeds
+    os.makedirs(out_dir, exist_ok=True)
 
     seen, written, total = {}, 0, 0
     for sym in sorted(syms):
@@ -114,18 +135,21 @@ def main():
         if row and row[4]:
             payload["shpQ"] = shp_q
             payload["shp"] = row[4]
+        h = resolve(hist_rows, sym)
+        if h:
+            payload["shpH"] = h
         if len(payload) == 1:
             continue                   # nothing on file for this ticker
 
         blob = json.dumps(payload, separators=(",", ":"), ensure_ascii=False)
-        with open(os.path.join(OUT, sl + ".json"), "w", encoding="utf-8") as fh:
+        with open(os.path.join(out_dir, sl + ".json"), "w", encoding="utf-8") as fh:
             fh.write(blob)
         written += 1
         total += len(blob.encode())
 
-    print("fin slices: %d symbols (%d with profit, %d with revenue, %d with SHP), "
+    print("fin slices: %d symbols (%d with profit, %d with revenue, %d with SHP, %d with SHP history), "
           "%.1f MB raw, avg %.1f KB"
-          % (written, len(fund), len(revop), len(shp_rows), total / 1e6,
+          % (written, len(fund), len(revop), len(shp_rows), len(hist_rows), total / 1e6,
              total / max(written, 1) / 1024))
 
 

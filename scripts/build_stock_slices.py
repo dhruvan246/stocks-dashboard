@@ -31,6 +31,24 @@ SHAPE
   chips / fno     index memberships as of `end`, precomputed — this is the only
         reason the page ever pulled the 17 MB stock_data.bin
 
+  sv=2 ACTIVITY + CONTEXT (2026-07-28) — everything below is per-stock rows cut
+  from feeds the site already bakes, so the page never fetches a whole-market
+  file. All are optional keys: absent = nothing on file, the page shows the
+  section's empty state. Rolling windows are the feeds' own (ann 31 d, ins/dls
+  ~92 d, act ≈ past 5 wk + upcoming), refreshed on this builder's daily cadence.
+    act   [[date, kind D/B/S/O, purpose, exDate, value, yield%], …]   actions.json
+    ann   [[ts, category, caption, pdfFile], …] newest first ≤30      announcements.json
+    ins   [[date, person, cat, side, qty, ₹value, mode, %post], …] ≤30 insider.json
+    dls   [[date, kind B/K, client, side, qty, price], …] ≤30         deals.json
+    dsc   [[date, bucketTitle, blurb, pdfFile], …] ≤20                discovery.json
+          (announcement-backed trigger buckets only — order wins, capacity, M&A…)
+    nr    'YYYY-MM-DD' next results date (earliest upcoming)          results_calendar.json
+    rp    [ts, qEndYYYYMMDD, url] newest results-filing PDF (BSE)     results_feed.json
+    peers {g: industry label, r: [[sym, name, mcap ₹cr, peTTM, r1y%], …]}
+          same-industry peers by mcap (self first) — sector_classification.json
+          `industry` level (igroup when thin); P/E from point-in-time owners PAT
+          (last 4 CONTIGUOUS quarters), 1-y return from the price data
+
 OUTPUT
   <outdir>/stk/<SLUG>.json  one per symbol (~8 KB average, 21 KB for a 30-year
   name) plus <outdir>/stk_meta.json carrying the data version.
@@ -45,7 +63,7 @@ OUTPUT
 
 Run: python scripts/build_stock_slices.py [--out DIR] [--only SYM,SYM]
 """
-import argparse, gzip, json, os, re, shutil, sys
+import argparse, bisect, gzip, json, os, re, shutil, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -56,7 +74,10 @@ SF_BIN   = os.environ.get("SF_BIN") or os.path.join(DOCS, "sf_stock_data.bin")
 CORE_BIN = os.path.join(DOCS, "stock_data.bin")
 
 TAIL = 400          # bars carrying h/l/v/dv/t — 52 weeks (~250 sessions) is the deepest window
-SCHEMA = 1
+SCHEMA = 2          # 2: activity feeds (act/ann/ins/dls/dsc/nr/rp) + peers — additive, sv=1 readers unaffected
+
+ANN_CAP, INS_CAP, DLS_CAP, DSC_CAP = 30, 30, 30, 20
+PEER_N = 8          # same-industry rows besides the stock itself
 
 _UNSAFE = re.compile(r"[^A-Za-z0-9._-]")
 
@@ -64,6 +85,184 @@ _UNSAFE = re.compile(r"[^A-Za-z0-9._-]")
 def slug(sym):
     """Filename for a symbol. Mirrored by slugSym() in docs/stock.html."""
     return _UNSAFE.sub("_", sym)
+
+
+def jload(path, what):
+    """Optional feed: missing/corrupt file degrades that one section, never the build."""
+    if not os.path.exists(path):
+        print("WARN: %s missing — %s absent from slices" % (os.path.basename(path), what))
+        return {}
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            return json.load(fh)
+    except Exception as e:
+        print("WARN: %s unreadable (%s) — %s absent from slices" % (os.path.basename(path), e, what))
+        return {}
+
+
+def _trim(s, n):
+    s = str(s or "").strip()
+    return s if len(s) <= n else s[: n - 1] + "…"
+
+
+def build_activity(end):
+    """Per-symbol rows cut from the whole-market activity feeds (see header)."""
+    A = {}
+
+    def add(kind, sym, row):
+        A.setdefault(sym, {}).setdefault(kind, []).append(row)
+
+    for r in (jload(os.path.join(DOCS, "actions.json"), "corporate actions").get("rows") or ()):
+        # [date, sym, name, kind, purpose, exDate, value, yield]
+        add("act", r[1], [r[0], r[3], _trim(r[4], 90), r[5], r[6], r[7]])
+    for r in (jload(os.path.join(DOCS, "announcements.json"), "announcements").get("rows") or ()):
+        # [sym, company, ts, category, caption, pdfFile]
+        add("ann", r[0], [r[2], _trim(r[3], 60), _trim(r[4], 140), r[5]])
+    for r in (jload(os.path.join(DOCS, "insider.json"), "insider trades").get("rows") or ()):
+        # [date, sym, company, person, cat, side, qty, valueRs, mode, pctPost, key]
+        add("ins", r[1], [r[0], _trim(r[3], 60), r[4], r[5], r[6], r[7], r[8], r[9]])
+    for r in (jload(os.path.join(DOCS, "deals.json"), "bulk/block deals").get("rows") or ()):
+        # [date, kind, sym, name, client, side, qty, price]
+        add("dls", r[2], [r[0], r[1], _trim(r[4], 60), r[5], r[6], r[7]])
+    for g in (jload(os.path.join(DOCS, "discovery.json"), "discovery triggers").get("groups") or ()):
+        for b in g.get("buckets") or ():
+            title = _trim(b.get("t"), 40)
+            for r in b.get("rows") or ():
+                # [sym, name, price, chg, date, blurb, pdfFile, value] — announcement-backed only.
+                # Screen-type buckets reuse the row shape with numbers in these slots, so demand
+                # a real ISO date AND a .pdf filename before treating it as a trigger event.
+                if (len(r) > 6 and isinstance(r[4], str) and len(r[4]) == 10
+                        and isinstance(r[6], str) and r[6].lower().endswith(".pdf")):
+                    add("dsc", r[0], [r[4], title, _trim(r[5], 120), r[6]])
+
+    caps = {"act": None, "ann": ANN_CAP, "ins": INS_CAP, "dls": DLS_CAP, "dsc": DSC_CAP}
+    for sym, d in A.items():
+        for k, rows in d.items():
+            if k == "dsc":                      # one bucket can list a filing twice
+                seen, out = set(), []
+                for r in rows:
+                    key = (r[0], r[2])
+                    if key not in seen:
+                        seen.add(key)
+                        out.append(r)
+                rows = out
+            rows.sort(key=lambda r: r[0], reverse=True)
+            if caps[k]:
+                rows = rows[: caps[k]]
+            d[k] = rows
+
+    nr = {}
+    for r in (jload(os.path.join(DOCS, "results_calendar.json"), "results calendar").get("rows") or ()):
+        # [sym, name, date, purpose]
+        if "result" in str(r[3] or "").lower() and r[2] >= end:
+            if r[0] not in nr or r[2] < nr[r[0]]:
+                nr[r[0]] = r[2]
+    for sym, dt in nr.items():
+        A.setdefault(sym, {})["nr"] = dt
+
+    rp = {}
+    for r in (jload(os.path.join(DOCS, "results_feed.json"), "results filing PDFs").get("rows") or ()):
+        # [sym, name, ts, qEnd, caption, url]
+        if r[0] not in rp or r[2] > rp[r[0]][0]:
+            rp[r[0]] = [r[2], r[3], r[5]]
+    for sym, row in rp.items():
+        A.setdefault(sym, {})["rp"] = row
+
+    return A
+
+
+def _qi(qe):
+    """Quarter index of a yyyymmdd quarter-end, for contiguity checks."""
+    return (qe // 10000) * 4 + ((qe // 100) % 100 - 1) // 3
+
+
+def build_peer_stats(data, meta, core, end):
+    """Per-symbol (mcap, P/E TTM, 1-y return) + industry buckets, for the peers table.
+    P/E uses point-in-time owners PAT over the last 4 CONTIGUOUS quarters — same rule
+    as the page's own TTM cards (a gap would understate the year and inflate P/E).
+    Grouping uses sector_classification.json's `industry` level (191 groups — screener-like
+    granularity: 'Refineries & Marketing', 'Private Sector Bank'), because the price bin's
+    own `ind` has only ~22 coarse buckets that put RELIANCE next to COALINDIA. A thin
+    industry (<3 peers) widens to its `igroup`."""
+    fund = jload(os.path.join(DOCS, "sf_fundamentals.json"), "peer P/E")
+    alias = jload(os.path.join(HERE, "_rename_map.json"), "peer renames")
+    sclass = jload(os.path.join(DOCS, "sector_classification.json"), "peer industries")
+
+    def pat_ttm(sym):
+        f = fund.get(sym) or (fund.get(alias.get(sym)) if alias.get(sym) else None)
+        if not f or len(f) < 4:
+            return None
+        rows = f[-4:]
+        for i in range(1, 4):
+            if _qi(rows[i][0]) != _qi(rows[i - 1][0]) + 1:
+                return None
+        tot = 0.0
+        for r in rows:
+            v = r[3] if r[3] is not None else r[1]
+            if v is None:
+                return None
+            tot += v
+        return tot
+
+    try:
+        e = end.replace("-", "")
+        yago = int(e) - 10000
+    except Exception:
+        yago = None
+
+    def group_of(sym):
+        c = sclass.get(sym + ".NS") or sclass.get(sym) or {}
+        fine = c.get("industry") or c.get("igroup")
+        wide = c.get("igroup") or fine
+        if not fine:
+            m = meta.get(sym, {})
+            fine = wide = m.get("ind") or m.get("industry")
+        return fine, wide
+
+    stats, by_fine, by_wide = {}, {}, {}
+    for sym, o in data.items():
+        m = meta.get(sym, {})
+        cm = core.get(sym + ".NS") or core.get(sym) or {}
+        mcap = cm.get("mcap")
+        r1y = None
+        d, c = o.get("d") or (), o.get("c") or ()
+        if yago and len(c) > 1:
+            j = bisect.bisect_right(d, yago) - 1
+            if j >= 0 and c[j]:
+                r1y = (c[-1] / c[j] - 1) * 100
+        pe = None
+        if mcap:
+            pt = pat_ttm(sym)
+            if pt and pt > 0:
+                pe = mcap / pt
+        stats[sym] = (mcap, pe, r1y)
+        fine, wide = group_of(sym)
+        if m.get("alive") and mcap:
+            if fine:
+                by_fine.setdefault(fine, []).append(sym)
+            if wide:
+                by_wide.setdefault(wide, []).append(sym)
+    for grp in (by_fine, by_wide):
+        for k in grp:
+            grp[k].sort(key=lambda s: stats[s][0] or 0, reverse=True)
+    return stats, (by_fine, by_wide, group_of)
+
+
+def peers_for(sym, m, stats, groups, meta):
+    by_fine, by_wide, group_of = groups
+    fine, wide = group_of(sym)
+    label, pool = fine, (by_fine.get(fine) or ())
+    if len([x for x in pool if x != sym]) < 3 and wide and wide != fine:
+        label, pool = wide, (by_wide.get(wide) or ())
+    rows, rnd = [], lambda v, p: (None if v is None else round(v, p))
+    for s in [sym] + [x for x in pool if x != sym][:PEER_N]:
+        st = stats.get(s)
+        if not st:
+            continue
+        nm = (meta.get(s, {}).get("name") or s)
+        rows.append([s, _trim(nm, 28), (None if st[0] is None else int(round(st[0]))),
+                     rnd(st[1], 1), rnd(st[2], 1)])
+    return {"g": label, "r": rows} if len(rows) > 1 else None
 
 
 def members_as_of(snaps, date_str):
@@ -167,6 +366,11 @@ def main():
     idx_mem = {name: members_as_of(snaps, end) for name, snaps in idx_hist.items()}
     print("  ts=%d  end=%s  indices=%d  fno=%d" % (ts, end, len(idx_mem), len(fno_syms)), flush=True)
 
+    print("cutting activity feeds + peer stats …", flush=True)
+    ACT = build_activity(end)
+    pstats, groups = build_peer_stats(data, meta, core_meta, end)
+    print("  activity for %d symbols, %d fine industries" % (len(ACT), len(groups[0])), flush=True)
+
     outdir = os.path.join(args.out, "stk")
     if os.path.isdir(outdir):
         shutil.rmtree(outdir)          # drop slices for symbols that vanished from the payload
@@ -184,6 +388,11 @@ def main():
         chips = sorted(name for name, mem in idx_mem.items() if sym in mem)
         payload = build_slice(sym, data[sym], meta.get(sym, {}), end, ts,
                               chips, sym in fno_syms, core_meta)
+        for k, v in (ACT.get(sym) or {}).items():   # act/ann/ins/dls/dsc lists + nr/rp scalars
+            payload[k] = v
+        pr = peers_for(sym, meta.get(sym, {}), pstats, groups, meta)
+        if pr:
+            payload["peers"] = pr      # {g: industry label, r: [[sym,name,mcap,pe,r1y], …] self first}
         blob = json.dumps(payload, separators=(",", ":"), ensure_ascii=False)
         with open(os.path.join(outdir, sl + ".json"), "w", encoding="utf-8") as fh:
             fh.write(blob)

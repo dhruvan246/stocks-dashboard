@@ -6,7 +6,7 @@
  *     requests (the sf-data repo, Supabase, the live-quote Worker) — those stay network-only
  *     so data is always fresh and the cache never bloats.
  * Bump CACHE when the shell asset list changes. */
-const CACHE = 'sw-shell-v55';   // v55: stock page boots from per-stock slices (backtest-engine.js)
+const CACHE = 'sw-shell-v56';   // v56: stock page v2 — activity/peers/SHP-history/seasonality/events (stock.html)
 const SHELL = [
   './', './index.html', './nse-bse-dashboard.html', './stock-backtest.html', './saved-strategies.html',
   './backtest-history.html', './strategy-backtest.html', './mutual-funds.html', './fii-dii.html',
