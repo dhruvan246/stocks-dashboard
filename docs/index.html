@@ -50,8 +50,13 @@
     background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius);box-shadow:var(--shadow);
     color:var(--text-faint);font-size:14.5px;font-weight:500;text-align:left;cursor:pointer;transition:var(--tr);}
   .hero-srch:hover{border-color:var(--accent);box-shadow:0 10px 26px -14px var(--glow);}
-  .hero-srch .hs-lb{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .hero-srch .hs-go{flex:none;font-size:12.5px;font-weight:700;color:#fff;padding:6px 13px;border-radius:var(--radius-sm);
+  .hero-srch:focus-within{border-color:var(--accent);box-shadow:0 10px 26px -14px var(--glow);}
+  .hero-srch .hs-in{flex:1;min-width:0;border:0;outline:0;background:transparent;color:var(--text);
+    font-size:15px;font-weight:600;font-family:inherit;}
+  .hero-srch .hs-in::placeholder{color:var(--text-faint);font-weight:500;}
+  .hero-srch .hs-in::-webkit-search-cancel-button{display:none;}
+  .hero-srch .hs-go{flex:none;border:0;cursor:pointer;font-family:inherit;font-size:12.5px;font-weight:700;color:#fff;
+    padding:7px 14px;border-radius:var(--radius-sm);
     background:linear-gradient(120deg,var(--accent),var(--accent-2));box-shadow:0 6px 16px -6px var(--glow);}
   @media (max-width:520px){.hero-srch{padding:10px 12px;font-size:13.5px;}.hero-srch .hs-go{padding:6px 11px;}}
 
@@ -105,11 +110,12 @@
     <span class="eyebrow"><span class="live-dot"></span> Live · NSE &amp; BSE</span>
     <h1>Indian markets, <span class="grad">decoded.</span></h1>
     <p class="sub">Live dashboards for stocks, sectors and mutual funds — plus a strategy backtester over 25+ years of data.</p>
-    <button type="button" class="hero-srch" id="heroSrch" aria-label="Search a stock">
+    <form class="hero-srch" id="heroSrch" action="./stock.html" method="get" role="search">
       <span aria-hidden="true">🔍</span>
-      <span class="hs-lb">Search a stock — name or symbol…</span>
-      <span class="hs-go" aria-hidden="true">Search</span>
-    </button>
+      <input class="hs-in" type="search" name="sym" autocomplete="off" spellcheck="false"
+             placeholder="Search a stock — name or symbol…" aria-label="Search a stock by name or symbol" />
+      <button class="hs-go" type="submit">Search</button>
+    </form>
   </section>
 
   <!-- INDEX TICKER — populated from docs/*.json by JS below -->
@@ -353,12 +359,26 @@
     document.getElementById('tileSections').innerHTML = html;
   }
 
-  // ---- hero search box -> theme.js's site-wide search palette ----------------
-  var hs = document.getElementById('heroSrch');
-  if (hs) hs.addEventListener('click', function () {
-    if (window.swSearch) window.swSearch.open('');
-    else location.href = './nse-bse-dashboard.html';   // theme.js unavailable — fall back to the screener
-  });
+  // ---- hero search box -------------------------------------------------------
+  // A REAL input, so it is always typable: focusing it hands off to theme.js's
+  // palette (suggestions + keyboard nav), and if that isn't there — a stale cached
+  // theme.js, JS blocked — the plain GET to stock.html?sym= still does the job.
+  // It must never navigate anywhere the visitor didn't ask for.
+  var hs = document.getElementById('heroSrch'), hsIn = hs && hs.querySelector('.hs-in');
+  if (hs && hsIn) {
+    var toPalette = function () {
+      if (!window.swSearch) return false;
+      hsIn.blur();
+      window.swSearch.open(hsIn.value.trim());
+      return true;
+    };
+    hsIn.addEventListener('focus', toPalette);
+    hs.addEventListener('submit', function (e) {
+      var v = hsIn.value.trim();
+      if (toPalette() || !v) e.preventDefault();       // palette took it, or nothing typed
+      else hsIn.value = v.toUpperCase();               // plain fallback: ./stock.html?sym=SYM
+    });
+  }
 })();
 </script>
 </body>
