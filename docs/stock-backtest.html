@@ -90,6 +90,7 @@ const $=id=>document.getElementById(id);
 const DAY=86400;
 let META={}, SERIES={}, IDXH={}, FNOH=[], START_TS=0, NIFTY={}, NIFTY500={};
 let SURV=null, SF=null, DATA_MODE='surv', TURN={}, SF_END_OFF=Infinity;
+let SUPPRESS_MODE_RESET=false;   // see setMode(): loading data FOR a displayed result must not wipe it
 const TURN_OPTS=[['100','≥₹1 Cr'],['500','≥₹5 Cr'],['2000','≥₹20 Cr'],['10000','≥₹100 Cr']]; // daily turnover (₹ lacs)
 const FIELDS=[
   {v:'rsi',l:'RSI(14)'},
@@ -209,7 +210,11 @@ async function setMode(mode){
   if(mode===DATA_MODE && SF) return;
   if(!await loadSF()) return;
   SERIES=SF.series; META=SF.meta; START_TS=SF.startTs; TURN=SF.turn; SF_END_OFF=SF.endOff; DATA_MODE='sf'; IDXH=SURV.idxh; FNOH=SURV.fnoh;
-  updateModeUI(); $('out').innerHTML=''; LAST_RUN=null;
+  updateModeUI();
+  // A displayed result was computed against the OLD data, so it's cleared — except when the load was
+  // requested BY that result (a saved snapshot pulling prices for its live screen), which would
+  // otherwise wipe the page it was called from.
+  if(!SUPPRESS_MODE_RESET){ $('out').innerHTML=''; LAST_RUN=null; }
 }
 // Single "Universe" dropdown = index constituents (default Nifty 500) + size buckets + F&O.
 function uniOptionsHTML(mode){
@@ -481,6 +486,7 @@ async function run(){
   if(needsShp(cfg)){ $('runMsg').textContent='Loading shareholding data…'; await loadShp();
     if(!Object.keys(SHPD).length){ $('runMsg').textContent='Shareholding data not available yet — try another factor.'; return; } }
   $('runMsg').textContent='Running…';
+  clearLiveOverlay();   // a previous ⚡ Go Live left a synthetic today-bar spliced on — the BACKTEST must never see it
   setTimeout(()=>{ try{ const res=simulate(cfg); LAST_RUN={cfg,res}; render(res,cfg); $('runMsg').textContent=''; saveSnapshot(cfg,res); autoSaveHistory().then(autoSaveStrategy); }
     catch(e){ $('runMsg').textContent='Error: '+e.message; console.error(e); } }, 30);
 }
@@ -763,6 +769,24 @@ function factorsAt(off, cfg){
 }
 function fieldVal(r, f){ switch(f){ case 'changePercent':return r.chg; case 'rsi':return r.rsi; case 'd52':return r.d52; case 'd52_low_pct':return r.d52low; case 'indRank':return r.indRank; case 'mcap':return r.mcap; case 'hist_mcap':return r.histMcap; case 'profitYoyPct':return r.profitYoyPct; case 'profitBase':return r.profitBase; } return (f in r && typeof r[f]==='number')?r[f]:null; }
 function isoOff(off){ return new Date((START_TS+off*DAY)*1000).toISOString().slice(0,10); }
+// ONE screen = filters + rank on the sort factor. Shared by the backtest (simulate), the
+// qualifying-count chart and the LIVE picks panel, so all three agree by construction.
+// (Mirrors screenAsOf()/passFilters() in backtest-engine.js — keep the two in sync.)
+function passFilters(r, filters){
+  for(const f of (filters||[])){
+    let x=fieldVal(r,f.field); if(x==null) return false;
+    if(typeof x==='number') x=Math.round(x*1e6)/1e6;
+    const ok = f.op==='>'?x>f.val:f.op==='>='?x>=f.val:f.op==='<'?x<f.val:f.op==='<='?x<=f.val:x===f.val;
+    if(!ok) return false;
+  }
+  return true;
+}
+function screenAt(cfg, off){
+  let rows=factorsAt(off,cfg).filter(r=>r.rsi!=null && passFilters(r,cfg.filters));
+  rows=rows.filter(r=>fieldVal(r,cfg.sortBy)!=null);   // can't rank a stock on a factor it's missing (e.g. no earnings yet)
+  rows.sort((a,b)=>{const x=fieldVal(a,cfg.sortBy),y=fieldVal(b,cfg.sortBy); return cfg.dir==='high'?y-x:x-y;});
+  return rows;
+}
 
 function simulate(cfg){
   const months=monthsBetween(cfg.start,cfg.end);
@@ -790,10 +814,7 @@ function simulate(cfg){
     const isReb = (mi===0) || (monthsSinceReb>=cfg.freq);
     if(isReb){
       // screen → filter → rank → top-N target
-      let rows=factorsAt(off,cfg).filter(r=>r.rsi!=null);
-      for(const f of cfg.filters){ rows=rows.filter(r=>{let x=fieldVal(r,f.field); if(x==null)return false; if(typeof x==='number')x=Math.round(x*1e6)/1e6; return f.op==='>'?x>f.val:f.op==='>='?x>=f.val:f.op==='<'?x<f.val:f.op==='<='?x<=f.val:x===f.val;}); }
-      rows=rows.filter(r=>fieldVal(r,cfg.sortBy)!=null);   // can't rank a stock on a factor it's missing (e.g. no earnings yet)
-      rows.sort((a,b)=>{const x=fieldVal(a,cfg.sortBy),y=fieldVal(b,cfg.sortBy); return cfg.dir==='high'?y-x:x-y;});
+      const rows=screenAt(cfg,off);
       const target=rows.slice(0,N); const tmap={}; target.forEach(r=>tmap[r.tkr]=r); const tset=new Set(target.map(r=>r.tkr));
       // close trades for positions LEAVING the portfolio; flag this period's new entries
       for(const t of Object.keys(pos)){ if(!tset.has(t)){ const e=entryInfo[t]; if(e){ const mp=markPrice(t,off); const xp=(mp==null?e.price:mp);
@@ -932,18 +953,21 @@ function render(r,cfg){
         <tr class="border-b border-slate-50"><td class="px-2 py-1 font-medium text-blue-700 sticky left-0 bg-white">Strategy</td>${sy.map(y=>`<td class="text-right px-2 font-semibold ${y[1]>=0?'pos':'neg'}">${pct(y[1])}</td>`).join('')}</tr>
         <tr><td class="px-2 py-1 font-medium text-amber-600 sticky left-0 bg-white">Nifty 500</td>${sy.map(y=>{const n=nm[y[0]];return `<td class="text-right px-2 text-xs ${n>=0?'pos':'neg'}">${n!=null?pct(n):'—'}</td>`;}).join('')}</tr>
       </tbody></table></div></div>`; }
-  // latest holdings (current portfolio with weights — winners that rode show larger weights)
+  // Today's picks — the LIVE screen (goLive re-runs the whole strategy at today's date on live prices,
+  // exactly like the strategy page's 🎯 Live Picks tab). Until it finishes, show the basket the
+  // simulation ended on, clearly stamped with its date so the two are never confused.
   html+=`<div class="card p-4 mb-4">
     <div class="flex flex-wrap items-center gap-2 mb-2">
-      <div class="text-sm font-semibold text-slate-700">📌 Current holdings / today's picks <span class="text-slate-400 font-normal">(after the last rebalance — ${cfg.method==='hold'?'winners ride, so weights drift':'equal-weight'})</span></div>
+      <div class="text-sm font-semibold text-slate-700">🎯 Live picks — what qualifies right now <span class="text-slate-400 font-normal">(the whole screen re-run on today's prices &amp; today's filings — top ${cfg.topN} ⭐ = the basket)</span></div>
       <button id="btGoLive" class="ml-auto px-2.5 py-1 rounded-lg text-xs font-semibold bg-rose-600 text-white hover:bg-rose-700">⚡ Go Live</button>
       <button id="btLiveCfg" class="text-slate-400 hover:text-slate-700 text-sm px-1" title="Set live-feed Worker URL">⚙</button>
     </div>
     <div id="liveMsg" class="text-[11px] text-slate-500 mb-1"></div>
-    <div class="overflow-x-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b"><tr><th class="text-left py-1 px-2">#</th><th class="text-left px-2">Stock</th><th class="text-left px-2">Industry</th><th class="text-right px-2">Weight</th><th class="text-right px-2">Value</th><th class="text-right px-2">Chg%(lb)</th><th class="text-right px-2">RSI</th><th class="text-right px-2">52wHi%</th><th class="text-right px-2">Live ₹</th><th class="text-right px-2">Day %</th></tr></thead><tbody>
-    ${r.latest.map((p,i)=>`<tr class="border-b border-slate-50"><td class="px-2 py-1 text-slate-400">${i+1}</td><td class="px-2 font-medium">${stockLink(p.sym,'text-indigo-700 hover:underline')}</td><td class="px-2 text-slate-500 text-xs">${p.ind}</td><td class="text-right px-2 font-semibold">${p.wt.toFixed(1)}%</td><td class="text-right px-2 text-slate-500">${fmtINR(p.val)}</td><td class="text-right px-2 ${p.chg>=0?'pos':'neg'}">${p.chg!=null?pct(p.chg):'·'}</td><td class="text-right px-2">${p.rsi!=null?p.rsi.toFixed(2):'·'}</td><td class="text-right px-2 neg">${p.d52!=null?p.d52.toFixed(2)+'%':'·'}</td><td class="liveCell text-right px-2 text-slate-300" data-sym="${p.sym}">—</td><td class="dayCell text-right px-2 text-slate-300" data-sym="${p.sym}">—</td></tr>`).join('')}
-    ${r.latestCash>1?`<tr class="border-b border-slate-50 bg-slate-50"><td class="px-2 py-1"></td><td class="px-2 font-medium text-slate-600">💵 Cash</td><td class="px-2 text-slate-400 text-xs">uninvested</td><td class="text-right px-2 font-semibold">${(r.latest._cashWt||0).toFixed(1)}%</td><td class="text-right px-2 text-slate-500">${fmtINR(r.latestCash)}</td><td colspan="5"></td></tr>`:''}
-    </tbody></table></div></div>`;
+    <div id="liveOut"><div class="overflow-x-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b"><tr><th class="text-left py-1 px-2">#</th><th class="text-left px-2">Stock</th><th class="text-left px-2">Industry</th><th class="text-right px-2">Weight</th><th class="text-right px-2">Value</th><th class="text-right px-2">Chg%(lb)</th><th class="text-right px-2">RSI</th><th class="text-right px-2">52wHi%</th></tr></thead><tbody>
+    ${r.latest.map((p,i)=>`<tr class="border-b border-slate-50"><td class="px-2 py-1 text-slate-400">${i+1}</td><td class="px-2 font-medium">${stockLink(p.sym,'text-indigo-700 hover:underline')}</td><td class="px-2 text-slate-500 text-xs">${p.ind}</td><td class="text-right px-2 font-semibold">${p.wt.toFixed(1)}%</td><td class="text-right px-2 text-slate-500">${fmtINR(p.val)}</td><td class="text-right px-2 ${p.chg>=0?'pos':'neg'}">${p.chg!=null?pct(p.chg):'·'}</td><td class="text-right px-2">${p.rsi!=null?p.rsi.toFixed(2):'·'}</td><td class="text-right px-2 neg">${p.d52!=null?p.d52.toFixed(2)+'%':'·'}</td></tr>`).join('')}
+    ${r.latestCash>1?`<tr class="border-b border-slate-50 bg-slate-50"><td class="px-2 py-1"></td><td class="px-2 font-medium text-slate-600">💵 Cash</td><td class="px-2 text-slate-400 text-xs">uninvested</td><td class="text-right px-2 font-semibold">${(r.latest._cashWt||0).toFixed(1)}%</td><td class="text-right px-2 text-slate-500">${fmtINR(r.latestCash)}</td><td colspan="3"></td></tr>`:''}
+    </tbody></table></div></div>
+    <div id="liveNote" class="text-[11px] text-slate-400 mt-2">Held basket as of the last rebalance (${r.rebs.length?r.rebs[r.rebs.length-1].date:cfg.end}) — click <b>⚡ Go Live</b> to re-screen on today's prices and filings.</div></div>`;
   // ----- rebalance log (expandable, with per-rebalance holdings: weight, NEW, factor) -----
   html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2">🔄 Rebalance log <span class="text-slate-400 font-normal">(${r.rebs.length} rebalances — click any to see that period's basket, weights &amp; new entries)</span></div>
     ${r.rebs.slice().reverse().map((rb,ri)=>{const idx=r.rebs.length-ri;
@@ -975,10 +999,12 @@ function render(r,cfg){
   const ss=$('btSaveStrat');
   if(ss) ss.onclick=saveStrategy;
   const gl=$('btGoLive'), gc=$('btLiveCfg');
-  if(gl) gl.onclick=goLive;
+  if(gl) gl.onclick=()=>goLive(false);
   if(gc) gc.onclick=setWorkerUrl;
-  // if a live feed is already configured, fetch live prices automatically (no click needed)
-  if(!window.__snapshotMode && gl && localStorage.getItem('live_worker_url')) goLive(true);
+  // Market data is already in memory after a real run, so re-screen LIVE straight away — the picks a
+  // strategy shows should be today's, not the last bhavcopy's. A saved snapshot has no price data
+  // loaded, so there it waits for the button rather than pulling ~17 MB unasked.
+  if(!window.__snapshotMode && gl) goLive(true);
 }
 // ---- paginated trade log (50 rows per page — keeps each page well below 100) ----
 let TRADE_PAGE=0; const TRADE_PER=50;
@@ -1025,33 +1051,189 @@ function downloadTradeCsv(r,cfg){
 // ---- live feed (shares the Cloudflare Worker URL configured on the Strategies page) ----
 function setWorkerUrl(){
   const cur=localStorage.getItem('live_worker_url')||'';
-  const v=prompt('Paste your Cloudflare Worker URL for live quotes (see scripts/LIVE_FEED_SETUP.md — like https://xxx.workers.dev):', cur);
+  const v=prompt('Paste your Cloudflare Worker URL for live quotes (see scripts/LIVE_FEED_SETUP.md — like https://xxx.workers.dev).\nLeave blank to use the default feed:', cur);
   if(v==null) return cur;
   const t=v.trim();
   if(t && /^https?:\/\//.test(t)){ localStorage.setItem('live_worker_url',t); return t; }
   if(t==='') { localStorage.removeItem('live_worker_url'); return ''; }
   alert('That doesn\'t look like a URL (must start with https://).'); return cur;
 }
+/* ---- LIVE intraday overlay (same design as backtest-engine.js — keep the two in sync) ------------
+ * Splices ONE synthetic bar carrying today's LTP onto the end of each stock's price series, so EVERY
+ * price factor (52w distance, returns, RSI, stoch, Bollinger…) is recomputed by the SAME engine code
+ * off the live price — no parallel copy of the maths to keep in sync. Screening at liveScreenDate()
+ * also advances the point-in-time EARNINGS gate, so results filed after the last bhavcopy count.
+ *
+ * Deliberate limits: only the LTP is known, so the synthetic bar's high == low == LTP (an intraday 52w
+ * high set above the last print isn't seen). Turnover (TURN) is never extended — a part-day figure
+ * would drag the 20d average down; volume/delivery carry the previous day forward for the same reason.
+ * Fail-silent throughout: an unquoted symbol simply keeps its last close.
+ */
+const LIVE_WORKER='https://stocksworld-quotes.dhruvan2510.workers.dev';
+const LIVE_MAX=800;    // universe cap — beyond this the quote fan-out isn't worth the wait
+const LIVE_BATCH=30;   // worker caps ?symbols= at 30 per call
+const LIVE_CONC=6;     // batches in flight at once
+let LIVE_BAR={off:null, syms:[], quotes:{}, at:0};
+function liveWorkerUrl(){ return localStorage.getItem('live_worker_url')||LIVE_WORKER; }
+function liveQuote(sym){ return LIVE_BAR.quotes[sym]||null; }
+// IST calendar date, independent of the viewer's timezone (toISOString renders UTC; +5:30 shifts it).
+function istToday(){ return new Date(Date.now()+5.5*3600*1000).toISOString().slice(0,10); }
+// The date a LIVE screen runs for: today, but never before the last bar we actually hold.
+function liveScreenDate(){ const t=istToday(), e=(SF&&SF.end)||t; return t>e?t:e; }
+// Remove the synthetic bars (idempotent — every re-run clears before it re-fetches, and a fresh
+// ▶ Run Backtest clears first so the simulation itself NEVER sees a synthetic bar).
+function clearLiveOverlay(){
+  if(LIVE_BAR.off==null){ LIVE_BAR={off:null,syms:[],quotes:{},at:0}; return; }
+  for(const sym of LIVE_BAR.syms){
+    const s=SERIES[sym]; if(!s||!s.d||!s.d.length) continue;
+    if(s.d[s.d.length-1]!==LIVE_BAR.off) continue;      // not ours (data refreshed under us)
+    for(const k of ['d','p','h','l','hb','lb','v','dv']) if(s[k]&&s[k].length) s[k].pop();
+  }
+  LIVE_BAR={off:null,syms:[],quotes:{},at:0};
+}
+async function _liveFetch(chunk, quotes){
+  const u=liveWorkerUrl(), sep=u.includes('?')?'&':'?';
+  const r=await fetch(u+sep+'symbols='+encodeURIComponent(chunk.join(',')),{cache:'no-store'});
+  const d=await r.json();
+  let got=0;
+  for(const k in ((d&&d.data)||{})){ const q=d.data[k]; if(q&&q.ltp!=null){ quotes[k]=q; got++; } }
+  return got;
+}
+async function applyLiveOverlay(cfg, onProgress){
+  clearLiveOverlay();
+  const date=liveScreenDate(), off=dayOff(date);
+  const members=cfg.indexName?membersAsOf(cfg.indexName,date):null;
+  const syms=members?[...members].filter(s=>SERIES[s]):[];
+  // Unbounded universes (All stocks / turnover floors) would need thousands of quotes — skip the price
+  // overlay there, but still screen at today's date so fresh EARNINGS are picked up.
+  if(!syms.length || syms.length>LIVE_MAX) return {date, n:0, quoted:0, tried:syms.length, skipped:true, unbounded:!members};
+  const quotes={};
+  const batches=[]; for(let i=0;i<syms.length;i+=LIVE_BATCH) batches.push(syms.slice(i,i+LIVE_BATCH));
+  let done=0;
+  for(let i=0;i<batches.length;i+=LIVE_CONC){
+    await Promise.all(batches.slice(i,i+LIVE_CONC).map(b=>_liveFetch(b,quotes).catch(()=>0).then(()=>{
+      done+=b.length; onProgress&&onProgress(`Fetching live prices… ${Math.min(done,syms.length)}/${syms.length}`); })));
+  }
+  // Yahoo drops symbols intermittently (a first pass typically misses ~15%) — re-ask for the gaps in
+  // small chunks. Without this a stock silently keeps Friday's price and can drop out of the basket.
+  for(let round=0;round<2;round++){
+    const missing=syms.filter(s=>!quotes[s]); if(!missing.length) break;
+    onProgress&&onProgress(`Fetching live prices… retrying ${missing.length}`);
+    const rb=[]; for(let i=0;i<missing.length;i+=10) rb.push(missing.slice(i,i+10));
+    for(let i=0;i<rb.length;i+=LIVE_CONC) await Promise.all(rb.slice(i,i+LIVE_CONC).map(b=>_liveFetch(b,quotes).catch(()=>0)));
+  }
+  const spliced=[];
+  for(const sym in quotes){
+    const px=quotes[sym].ltp; if(!(px>0)) continue;
+    const s=SERIES[sym]; if(!s||!s.d||!s.d.length) continue;
+    const last=s.d.length-1;
+    if(s.d[last]>=off) continue;                       // series already covers today — nothing to add
+    const cp=Math.round(px*100);
+    s.d.push(off); s.p.push(cp);
+    if(s.h) s.h.push(cp);                              // LTP only: no intraday range is available
+    if(s.l) s.l.push(cp);
+    if(s.hb) s.hb.push(0);
+    if(s.lb) s.lb.push(0);
+    if(s.v) s.v.push(s.v[last]);                       // carry forward — a part-day figure skews surges
+    if(s.dv) s.dv.push(s.dv[last]);
+    spliced.push(sym);
+  }
+  LIVE_BAR={off, syms:spliced, quotes, at:Date.now()};
+  return {date, n:spliced.length, quoted:Object.keys(quotes).length, tried:syms.length, skipped:false, unbounded:false};
+}
+// Heavy market data on demand — a saved snapshot renders with none of it loaded.
+async function ensureLiveData(cfg, onMsg){
+  if(!SF){ onMsg&&onMsg('Loading price history (one-time, ~17 MB)…'); SUPPRESS_MODE_RESET=true;
+    try{ if(!await ensureData()) return false; } finally{ SUPPRESS_MODE_RESET=false; } }
+  if(needsFund(cfg)){ onMsg&&onMsg('Loading earnings data…'); await loadFund(); }
+  if(needsShp(cfg)){ onMsg&&onMsg('Loading shareholding data…'); await loadShp(); }
+  return !!SF;
+}
+// short column headers for the strategy-parameter columns (mirrors simulate()'s SHORT + strategy-backtest.html)
+const SHORTF={changePercent:'Chg %',rsi:'RSI',d52:'% 52wHi',d52_low_pct:'% 52wLo',indRank:'Ind rank',mcap:'Mcap ₹Cr',hist_mcap:'HMcap ₹Cr',profitYoyPct:'NP YoY %',profitBase:'NP base ₹Cr',profitAccel:'NP accel',profitTTM:'NP TTM %',profitStreak:'NP streak',postDrift:'Drift %',composite:'Composite',ret1m:'1m %',ret3m:'3m %',ret6m:'6m %',ret12m:'12m %',stoch:'Stoch %K',bollB:'Boll %b',macd:'MACD hist',vol:'Vol %',beta:'Beta',turnover:'Turnover ₹L',fiiPct:'FII %',fiiChgPp:'FII Δpp',diiPct:'DII %',diiChgPp:'DII Δpp'};
+const shortLabel=f=>SHORTF[f]||FIELD_LABEL[f]||f;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const universeLabel=c=>c.indexName?String(c.indexName).replace('__FNO__','F&O stocks'):c.mcapFloor?('≥₹'+(+c.mcapFloor).toLocaleString('en-IN')+'L turnover'):'All stocks';
+/* ⚡ GO LIVE — re-run the WHOLE screen at today's date on live prices, exactly like the strategy
+ * page's 🎯 Live Picks tab. This used to only repaint two price columns while the list itself, and
+ * every filter/sort value in it, stayed frozen at the last rebalance — so the page showed yesterday's
+ * qualifiers under a live price. Now the basket itself is re-screened. */
 async function goLive(silent){
   if(!LAST_RUN) return;
-  let url=localStorage.getItem('live_worker_url')||'';
-  if(!url){ if(silent) return; url=setWorkerUrl(); if(!url) return; }
-  const syms=LAST_RUN.res.latest.map(p=>p.sym);
-  if(!syms.length){ return; }
-  const btn=$('btGoLive'); const prev=btn.textContent; btn.textContent='⏳ Fetching…'; btn.disabled=true;
+  const cfg=LAST_RUN.cfg, held=new Set((LAST_RUN.res.latest||[]).map(p=>p.sym));
+  const btn=$('btGoLive'), msg=$('liveMsg'), out=$('liveOut'), note=$('liveNote');
+  if(!out) return;
+  const prevLbl=btn?btn.textContent:'';
+  if(btn){ btn.disabled=true; btn.textContent='⏳ Screening…'; }
   try{
-    const sep=url.includes('?')?'&':'?';
-    const res=await fetch(url+sep+'symbols='+encodeURIComponent(syms.join(',')));
-    if(!res.ok) throw new Error('Worker returned HTTP '+res.status);
-    const d=await res.json(); const data=d.data||{};
-    if(!Object.keys(data).length) throw new Error('no quotes returned (symbols may be BSE-only, or the source is rate-limiting)');
-    document.querySelectorAll('.liveCell').forEach(td=>{ const q=data[td.dataset.sym]; const ok=q&&q.ltp!=null;
-      td.textContent= ok?('₹'+q.ltp.toFixed(2)):'—'; td.className='liveCell text-right px-2 '+(ok?'font-semibold text-rose-600':'text-slate-300'); });
-    document.querySelectorAll('.dayCell').forEach(td=>{ const q=data[td.dataset.sym]; const dd=(q&&q.ltp!=null&&q.prevClose)?(q.ltp/q.prevClose-1)*100:null;
-      td.textContent= dd==null?'—':pct(dd); td.className='dayCell text-right px-2 '+(dd==null?'text-slate-300':dd>=0?'pos':'neg'); });
-    $('liveMsg').innerHTML=`<span class="text-rose-600 font-semibold">🔴 LIVE</span> · fetched ${new Date(d.asOf||Date.now()).toLocaleTimeString('en-IN')} · Yahoo NSE (~15 min delay). Day % = live vs previous close.`;
-  }catch(e){ if(!silent) alert('Live fetch failed: '+e.message+'\n\nCheck the Worker URL (⚙) and that opening it in a browser returns JSON. See scripts/LIVE_FEED_SETUP.md.'); }
-  finally{ btn.textContent=prev; btn.disabled=false; }
+    if(!await ensureLiveData(cfg, m=>{ if(msg) msg.textContent=m; })) throw new Error('market data unavailable');
+    let live={date:liveScreenDate(), n:0, quoted:0, tried:0, skipped:true, unbounded:true};
+    try{ live=await applyLiveOverlay(cfg, m=>{ if(msg) msg.textContent=m; }); }catch(e){ /* stay on closes */ }
+    if(msg) msg.textContent='Screening…';
+    const date=live.date, off=dayOff(date), topN=cfg.topN||10;
+    const ranked=screenAt(cfg, off);
+    // Universe too big to quote wholesale: the factors above are off the last close, but still quote the
+    // names actually shown so the ₹ you'd trade at is current.
+    let dispQuoted=0;
+    if(live.skipped && ranked.length){
+      const show=ranked.slice(0,60).map(r=>r.sym), q={}, bs=[];
+      for(let i=0;i<show.length;i+=LIVE_BATCH) bs.push(show.slice(i,i+LIVE_BATCH));
+      for(let i=0;i<bs.length;i+=LIVE_CONC) await Promise.all(bs.slice(i,i+LIVE_CONC).map(b=>_liveFetch(b,q).catch(()=>0)));
+      Object.assign(LIVE_BAR.quotes,q); dispQuoted=Object.keys(q).length;
+    }
+    // columns = the sort field + every filter field (deduped, in order), condition under the header —
+    // the same dispCols pattern as the rebalance log, so what you filtered on is what you see.
+    const conds={}; (cfg.filters||[]).forEach(f=>{ (conds[f.field]=conds[f.field]||[]).push(f.op+' '+f.val); });
+    const dispFields=[...new Set([cfg.sortBy,...(cfg.filters||[]).map(f=>f.field)])];
+    const fmtV=(f,r)=>{ const v=fieldVal(r,f);
+      if(v==null||isNaN(v)) return '—';
+      if(f==='changePercent') return `<span class="${v>=0?'pos':'neg'}">${pct(v)}</span>`;
+      if(f==='d52'||f==='d52_low_pct') return (+v).toFixed(2)+'%';
+      return Math.abs(v)>=1000?Math.round(v).toLocaleString('en-IN'):(+v).toFixed(2); };
+    const rowsHtml=ranked.map((r,i)=>{
+      const inTop=i<topN;
+      // with the overlay on, r.price IS the LTP; META.raw is the unadjusted last close (fallback)
+      const q=liveQuote(r.sym);
+      const rawClose=(META[r.tkr]&&META[r.tkr].raw)?META[r.tkr].raw:r.price;
+      const shown=(q&&q.ltp!=null)?q.ltp:rawClose;
+      const dayChg=(q&&q.ltp!=null&&q.prevClose>0)?(q.ltp/q.prevClose-1)*100:null;
+      const tag=inTop?(held.has(r.sym)
+          ?'<span class="text-[9px] text-slate-400 ml-1">held</span>'
+          :'<span class="text-[9px] bg-emerald-100 text-emerald-700 px-1 rounded font-semibold ml-1" title="Not in the basket at the last rebalance">🆕 NEW</span>'):'';
+      return `<tr class="border-b border-slate-50 ${inTop?'bg-indigo-50/60':''}">
+        <td class="py-1.5 px-2 text-slate-400 whitespace-nowrap">${i+1}${inTop?' ⭐':''}</td>
+        <td class="px-2 font-medium">${stockLink(r.sym,'text-indigo-700 hover:underline')}${tag}</td>
+        <td class="px-2 text-slate-500 text-xs hidden sm:table-cell">${esc(r.ind||'')}</td>
+        ${dispFields.map((f,di)=>`<td class="text-right px-2 ${di===0?'font-semibold':''}">${fmtV(f,r)}</td>`).join('')}
+        <td class="text-right px-2 whitespace-nowrap">${shown==null?'—':(+shown).toFixed(2)}${dayChg==null?'':` <span class="${dayChg>=0?'pos':'neg'} text-[11px]">${dayChg>=0?'+':''}${dayChg.toFixed(2)}%</span>`}</td></tr>`;
+    }).join('');
+    const headCells=dispFields.map(f=>`<th class="text-right px-2 py-2">${esc(shortLabel(f))}${f===cfg.sortBy?' '+(cfg.dir==='high'?'▾':'▴'):''}${conds[f]?`<span class="block normal-case text-[9px] font-normal text-slate-400">${esc(conds[f].join(' & '))}</span>`:''}</th>`).join('');
+    out.innerHTML = ranked.length?`<div class="overflow-x-auto"><table class="w-full text-sm border-collapse">
+      <thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
+        <th class="text-left px-2 py-2">#</th><th class="text-left px-2 py-2">Stock</th><th class="text-left px-2 py-2 hidden sm:table-cell">Industry</th>
+        ${headCells}<th class="text-right px-2 py-2">${live.n||dispQuoted?'Price ₹':'Close ₹'}</th></tr></thead>
+      <tbody>${rowsHtml}</tbody></table></div>`
+      : '<div class="text-center text-slate-400 text-sm py-6">No stocks qualify right now.</div>';
+    // which of the last rebalance's holdings no longer qualify
+    const curTop=new Set(ranked.slice(0,topN).map(r=>r.sym));
+    const exits=[...held].filter(s=>!curTop.has(s));
+    const stamp=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+    const liveTag=live.n
+      ? `<span class="text-emerald-600 font-semibold">🟢 LIVE</span> ${live.n}/${live.tried} quoted at ${esc(stamp)}`
+      : (dispQuoted?`<span class="text-emerald-600 font-semibold">🟢 LIVE prices</span> on the ${dispQuoted} shown · factors as of ${esc(SF.end)}`
+                   :`<span class="text-slate-400">prices = last close (${esc((SF&&SF.end)||'')})</span>`);
+    if(msg) msg.innerHTML=`As of <b>${esc(date)}</b> · ${liveTag} · <b>${ranked.length}</b> qualifying · Top ${topN} ⭐ = the basket · sorted by <b>${esc(shortLabel(cfg.sortBy))}</b> (${cfg.dir==='high'?'high → low':'low → high'}) · universe ${esc(universeLabel(cfg))}`
+      + (exits.length?`<br><span class="text-slate-500">↩ No longer qualifying from the last rebalance: ${exits.map(s=>stockLink(s,'text-slate-600 hover:underline')).join(', ')}</span>`:'');
+    if(note) note.textContent='Columns = this strategy\'s sort + filter parameters (condition under each header). ⭐ = the top-'+topN+' it would hold; 🆕 = not held at the last rebalance. '
+      + (live.n?'Prices are live (Yahoo NSE, ~15-min delay) and EVERY factor above is recomputed off them; earnings count every result filed up to today. ↻ Recompute re-fetches.'
+              :'This universe is too large to quote wholesale, so the factors use the last official close; earnings still count every result filed up to today.');
+    if(btn) btn.textContent='↻ Recompute';
+  }catch(e){
+    if(msg) msg.textContent='';
+    if(!silent) alert('Live screen failed: '+e.message+'\n\nIf you use a custom quotes Worker (⚙), check that opening its URL in a browser returns JSON. See scripts/LIVE_FEED_SETUP.md.');
+    if(btn) btn.textContent=prevLbl;
+  }
+  finally{ if(btn) btn.disabled=false; }
 }
 function drawEquity(r){
   const eq=r.equity, bn=((r.bench500&&r.bench500.length?r.bench500:r.bench)||[]); const n=eq.length; if(n<2)return;
@@ -1113,11 +1295,7 @@ function drawPeriodReturns(r){
 }
 // ---- qualifying universe over time: count of ALL stocks meeting the strategy's filters at a date ----
 // (same screen the backtest ranks, BEFORE slicing to top-N — i.e. the pool the picks are drawn from)
-function qualCountAt(off, cfg){
-  let rows=factorsAt(off,cfg).filter(r=>r.rsi!=null);
-  for(const f of cfg.filters){ rows=rows.filter(r=>{let x=fieldVal(r,f.field); if(x==null)return false; if(typeof x==='number')x=Math.round(x*1e6)/1e6; return f.op==='>'?x>f.val:f.op==='>='?x>=f.val:f.op==='<'?x<f.val:f.op==='<='?x<=f.val:x===f.val;}); }
-  return rows.filter(r=>fieldVal(r,cfg.sortBy)!=null).length;
-}
+function qualCountAt(off, cfg){ return screenAt(cfg,off).length; }
 function qualDates(cfg, gran){
   const endData=isoOff(maxOffset()); const end=(cfg.end<endData?cfg.end:endData);
   if(gran==='month')   return monthsBetween(cfg.start,end);
