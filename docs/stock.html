@@ -62,6 +62,12 @@
     </div>
   </div>
 
+  <!-- rewind banner -->
+  <div id="rwBanner" class="hidden rounded-xl border border-indigo-200 bg-indigo-50/70 px-4 py-2.5 text-sm text-indigo-900 flex flex-wrap items-center gap-x-3 gap-y-1">
+    <span>🕰️ <b>Rewind:</b> viewing this page as the market saw it on <b id="rwDate">—</b> — financials and shareholding show only what had been <i>filed</i> by then; current-only sections (activity, peers, strategies, technicals) are hidden.</span>
+    <button id="rwExit" class="ml-auto px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white">Back to today</button>
+  </div>
+
   <!-- quick stats -->
   <div id="stats" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3"></div>
 
@@ -69,7 +75,12 @@
   <div class="card p-4">
     <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
       <div class="text-sm font-semibold text-slate-700">📈 Price <span class="text-slate-400 font-normal">(split/bonus-adjusted close · hover for values)</span></div>
-      <div id="ranges" class="flex items-center gap-1 text-[11px] font-semibold"></div>
+      <div class="flex items-center gap-2 flex-wrap">
+        <div id="ranges" class="flex items-center gap-1 text-[11px] font-semibold"></div>
+        <span class="text-slate-300">·</span>
+        <input id="rwPick" type="date" class="border border-slate-300 rounded-lg px-1.5 py-0.5 text-[11px] text-slate-600" title="Rewind: view the page as of a past date" />
+        <button id="rwGo" class="px-2 py-1 rounded-md text-[11px] font-semibold border border-indigo-300 text-indigo-600 hover:bg-indigo-50">🕰️ Rewind</button>
+      </div>
     </div>
     <div id="chartWrap"><div id="chart"></div><div id="tip"></div></div>
     <div id="evLegend" class="flex flex-wrap items-center gap-1.5 mt-2 text-[11px]"></div>
@@ -185,6 +196,15 @@ function fail(msg){ $('ov').style.display='none'; $('sSym').textContent=SYM||'?'
  * trades (ins), bulk/block deals (dls), discovery triggers (dsc). One dot per day on a strip
  * under the price line, coloured by that day's highest-priority event; the hover tooltip lists
  * the day's events. Legend chips toggle each type. ---------------------------------------------- */
+/* ---------- rewind (time-travel) state --------------------------------------------------------
+   ASOF = day offset of the rewind date, or null for the live view. Every renderer reads it:
+   prices/returns clamp to the date, financials and shareholding show only rows whose FILING
+   date (announcement / submission) was on or before it — what the market actually knew then.
+   Current-only sections (activity, peers, strategies, technicals with tail-limited inputs)
+   hide rather than silently show today's data. */
+let ASOF=null;
+const asofYmd=()=>ASOF==null?99999999:+isoOff(ASOF).replace(/-/g,'');
+
 const EV_TYPES={R:['Results','#6366f1'],D:['Dividend','#f59e0b'],C:['Corp action','#8b5cf6'],K:['Deals','#0ea5e9'],I:['Insider','#14b8a6'],T:['Triggers','#f43f5e']};
 const EV_PRIO=['R','D','C','K','I','T'];
 let EVENTS=[], EVSHOW=new Set(EV_PRIO);
@@ -239,7 +259,9 @@ function seriesPoints(){
 }
 function rangeDays(r){ return {'1M':30,'6M':182,'1Y':365,'3Y':1095,'5Y':1825,'Max':1e9}[r]||1e9; }
 function drawChart(){
-  const all=seriesPoints(); if(!all.length){ $('chart').innerHTML='<div class="text-slate-400 text-sm py-10 text-center">No price history.</div>'; return; }
+  let all=seriesPoints(); if(!all.length){ $('chart').innerHTML='<div class="text-slate-400 text-sm py-10 text-center">No price history.</div>'; return; }
+  if(ASOF!=null) all=all.filter(p=>p[0]<=ASOF);
+  if(!all.length){ $('chart').innerHTML='<div class="text-slate-400 text-sm py-10 text-center">No trading history before this date.</div>'; return; }
   const lastOff=all[all.length-1][0], lo=lastOff-rangeDays(RANGE);
   let pts=all.filter(p=>p[0]>=lo); if(pts.length<2) pts=all.slice(-2);
   // downsample to ~420 points for smooth render
@@ -302,9 +324,12 @@ function wireHover(){
 /* ---------- stats / returns / technicals / fundamentals ---------- */
 function statCard(lbl,val,cls){ return `<div class="card p-3"><div class="lbl text-slate-500">${lbl}</div><div class="text-lg font-bold ${cls||'text-slate-900'} mt-0.5">${val}</div></div>`; }
 function render(){
-  const off=SF_END_OFF, s=SERIES[TKR], m=META[TKR];
-  const n=s.p.length, adjLast=s.p[n-1]/100, adjPrev=n>1?s.p[n-2]/100:adjLast;
-  const rawLast=m.raw!=null?m.raw:adjLast;
+  const rw=ASOF!=null, s=SERIES[TKR], m=META[TKR];
+  const off=rw?ASOF:SF_END_OFF;
+  const n=s.p.length;
+  const bi=Math.min(Math.max(lbound(s.d,off+1)-1,0),n-1);      // last bar on/before the as-of date
+  const adjLast=s.p[bi]/100, adjPrev=bi>0?s.p[bi-1]/100:adjLast;
+  const rawLast=(!rw&&m.raw!=null)?m.raw:adjLast;               // no historical unadjusted close — rewind shows adjusted
   const dayChg=adjPrev>0?(adjLast/adjPrev-1)*100:0;
   const hl=hl52(TKR,off)||{hi:adjLast,low:adjLast};
   const d52=(hl.hi-adjLast)/hl.hi*100, d52low=(adjLast-hl.low)/hl.low*100;
@@ -317,7 +342,7 @@ function render(){
   if(!m.alive) $('sDead').classList.remove('hidden');
   $('sPrice').textContent='₹'+(rawLast>=1000?Math.round(rawLast).toLocaleString('en-IN'):rawLast.toFixed(2));
   $('sChg').innerHTML=`<span class="${dayChg>=0?'pos':'neg'}">${pct(dayChg)}</span> <span class="text-slate-400 text-xs">1-day</span>`;
-  $('sAsof').textContent='as of '+isoOff(off);
+  $('sAsof').textContent=(rw?'🕰️ rewound to ':'as of ')+isoOff(off);
   $('sBt').href='./stock-backtest.html';
   // chips: index memberships + F&O. The slice carries them precomputed — resolving membership from
   // indicesHistory was the ONLY thing the page still wanted the 17 MB stock_data.bin for.
@@ -336,7 +361,7 @@ function render(){
   $('sMeta').innerHTML=meta2.join('');
   // quick stats
   $('stats').innerHTML=[
-    statCard('Last close','₹'+(rawLast>=1000?Math.round(rawLast).toLocaleString('en-IN'):rawLast.toFixed(2))),
+    statCard(rw?'Close (adj.)':'Last close','₹'+(rawLast>=1000?Math.round(rawLast).toLocaleString('en-IN'):rawLast.toFixed(2))),
     statCard('1-year', r1y==null?'—':pct(r1y), r1y>=0?'pos':'neg'),
     statCard('% from 52w high', d52.toFixed(2)+'%','neg'),
     statCard('% above 52w low', pct(d52low), d52low>=0?'pos':'neg'),
@@ -348,11 +373,18 @@ function render(){
   $('ranges').querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{ RANGE=b.dataset.r; drawChart(); $('ranges').querySelectorAll('[data-r]').forEach(x=>x.classList.toggle('on',x.dataset.r===RANGE)); $('ranges').querySelectorAll('[data-r]').forEach(x=>{if(x.dataset.r!==RANGE)x.classList.add('text-slate-500');else x.classList.remove('text-slate-500');}); });
   buildEvents();          // slice events now; results dates join once the fin file lands
   drawChart();
-  try{ renderStrat(); }catch(e){ console.error(e); }
-  try{ renderPeers(); }catch(e){ console.error(e); }
-  try{ renderActivity(); }catch(e){ console.error(e); }
+  if(rw){                 // current-only sections: hide, never show today's data under a past date
+    ['stratCard','peersCard','actCard'].forEach(id=>{ const el=$(id); if(el) el.style.display='none'; });
+    $('delivSpark').style.display='none';
+    $('sMeta').style.display='none';
+  }else{
+    $('delivSpark').style.display=''; $('sMeta').style.display='';
+    try{ renderStrat(); }catch(e){ console.error(e); }
+    try{ renderPeers(); }catch(e){ console.error(e); }
+    try{ renderActivity(); }catch(e){ console.error(e); }
+    try{ renderDelivSpark(); }catch(e){ console.error(e); }
+  }
   try{ renderSeason(); }catch(e){ console.error(e); }
-  try{ renderDelivSpark(); }catch(e){ console.error(e); }
   // returns table (stock vs Nifty)
   const periods=[['1M',30],['3M',91],['6M',182],['1Y',365],['3Y',1095],['5Y',1825]];
   const yStart=dayOff(isoOff(off).slice(0,4)+'-01-01');
@@ -365,7 +397,9 @@ function render(){
     ${rows.map(([l,sr,nr])=>`<tr class="border-b border-slate-50"><td class="py-1 pr-2 font-medium">${l}</td><td class="text-right px-2 ${sr>=0?'pos':'neg'}">${sr==null?'—':pct(sr)}</td><td class="text-right px-2 text-xs ${nr>=0?'pos':'neg'}">${nr==null?'—':pct(nr)}</td></tr>`).join('')}
     <tr class="border-t border-slate-200"><td class="py-1 pr-2 font-semibold">CAGR (full)</td><td class="text-right px-2 font-semibold ${cagr>=0?'pos':'neg'}">${cagr==null?'—':pct(cagr)}</td><td class="text-right px-2"></td></tr>
   </tbody></table>`;
-  // technicals
+  // technicals — hidden in rewind: h/l/v/delivery ship only for the last 400 bars, so a past
+  // date would read tail padding and lie with confidence
+  $('tech').parentElement.style.display=rw?'none':'';
   const tline=(l,v)=>`<div class="text-slate-500">${l}</div><div class="text-right font-semibold">${v}</div>`;
   const num=(v,suf)=>v==null?'—':(v.toFixed(2)+(suf||''));
   $('tech').innerHTML=[
@@ -416,15 +450,28 @@ function renderFunds(){
   const arr=((typeof fundFor==='function')?fundFor(TKR):(typeof FUND!=='undefined'?FUND[TKR]:null))||[];   // fundFor() follows ticker-rename aliases (TATAMOTORS→TMPV, …)
   const rv=revopFor(TKR)||{};
   const fundBy={}; arr.forEach(q=>fundBy[q[0]]=q);
-  const seen={}; arr.forEach(q=>seen[q[0]]=1); Object.keys(rv).forEach(k=>seen[+k]=1);
+  // rewind: a quarter (and each basis within it) exists only if its ANNOUNCEMENT date is on or
+  // before the as-of date — the strict point-in-time gate. Rev-only quarters with no announce
+  // date on file can't prove they were known, so they drop out of the rewound view.
+  const KY=asofYmd(), rw=ASOF!=null;
+  const kStd=e=>{ const q=fundBy[e]; return !!(q&&q[2]!=null&&q[2]<=KY); };
+  const kCon=e=>{ const q=fundBy[e]; return !!(q&&q[4]!=null&&q[4]<=KY); };
+  const seen={};
+  arr.forEach(q=>{ if(!rw||kStd(q[0])||kCon(q[0])) seen[q[0]]=1; });
+  if(!rw) Object.keys(rv).forEach(k=>seen[+k]=1);
   const ends=Object.keys(seen).map(Number).sort((a,b)=>a-b);
   if(!ends.length){ $('funds').innerHTML=FIN_STATE==='pending'
       ? '<span class="text-slate-400">Loading quarterly financials…</span>'
       : '<span class="text-slate-400">No quarterly earnings on file for this stock.</span>'; return; }
 
-  const pat=e=>{ const q=fundBy[e]; return q?(q[3]!=null?q[3]:(q[1]!=null?q[1]:null)):null; };
-  const patCon=e=>{ const q=fundBy[e]; return !!(q&&q[3]!=null); };
-  const raw=(e,i)=>{ const c=rv[String(e)]; return (c&&c[i]!=null)?c[i]:null; };
+  const pat=e=>{ const q=fundBy[e]; if(!q) return null;
+    if(q[3]!=null&&(!rw||kCon(e))) return q[3];
+    if(q[1]!=null&&(!rw||kStd(e))) return q[1];
+    return null; };
+  const patCon=e=>{ const q=fundBy[e]; return !!(q&&q[3]!=null&&(!rw||kCon(e))); };
+  const raw=(e,i)=>{ const c=rv[String(e)]; if(!c||c[i]==null) return null;
+    if(rw){ const con=(i===1||i===3||i===5||i===8); if(con?!kCon(e):!kStd(e)) return null; }
+    return c[i]; };
   const pick=(e,ci,si)=>{ const c=raw(e,ci); if(c!=null) return {v:c,con:true}; const s=raw(e,si); return s!=null?{v:s,con:false}:null; };
   const rev=e=>pick(e,1,0), op=e=>pick(e,3,2), ebit=e=>pick(e,8,7);
   const vOf=x=>x?x.v:null;
@@ -446,9 +493,10 @@ function renderFunds(){
   const patT=sum(cur4,e=>pat(e)), patP=contiguous?sum(prev4,e=>pat(e)):null;
 
   // ---- valuation: mcap re-priced off THIS page's last close, so a stale bake can't skew P/E ----
+  // (in rewind: re-priced to the as-of close — share count assumed constant, a fair first cut)
   const cm=(typeof CORE_META!=='undefined'&&CORE_META)?(CORE_META[TKR+'.NS']||CORE_META[TKR]):null;
   const m=META[TKR], s=SERIES[TKR];
-  const lastRaw=(m&&m.raw!=null)?m.raw:(s?s.p[s.p.length-1]/100:null);
+  const lastRaw=rw?priceAt(TKR,ASOF):((m&&m.raw!=null)?m.raw:(s?s.p[s.p.length-1]/100:null));
   let mcap=null;
   if(cm&&cm.mcap&&cm.latest&&lastRaw) mcap=cm.mcap/cm.latest*lastRaw;
   else if(cm&&cm.mcap) mcap=cm.mcap;
@@ -502,10 +550,11 @@ function renderFunds(){
   const withAnn=ends.filter(e=>fundBy[e]&&annOf(fundBy[e])!=null);
   const lr=$('lastReact'); lr.classList.add('hidden');
   // newest quarter whose reaction is computable — the very latest can announce after the last price bar
+  const li=s2?Math.min(Math.max(lbound(s2.d,(rw?ASOF:SF_END_OFF)+1)-1,0),s2.p.length-1):0;
   for(let i=withAnn.length-1;i>=0&&s2;i--){
     const e=withAnn[i], a=annOf(fundBy[e]), rct=reactionAt(a);
-    if(!rct) continue;
-    const drift=(s2.p[s2.p.length-1]/s2.p[rct.j]-1)*100;
+    if(!rct||rct.j>li) continue;                    // reaction bar must be inside the rewound window
+    const drift=(s2.p[li]/s2.p[rct.j]-1)*100;
     lr.classList.remove('hidden');
     lr.innerHTML=`Last result <b>${fq(e)}</b> (announced ${ymd2iso(a)}): result-day move `+
       `<b class="${rct.rx>=0?'pos':'neg'}">${pct(rct.rx)}</b> · since then <b class="${drift>=0?'pos':'neg'}">${pct(drift)}</b>`;
@@ -692,8 +741,26 @@ async function loadSHP(){
    by reshaping to its (quarters newest-first, cells) contract; the trend chart and the
    shareholder-count band are drawn from the full history regardless of the table window. */
 let SHP_HIST=null, SHP_FULL=false;
+function shpHistView(){
+  // rewind: only filings SUBMITTED by the as-of date (submission date, else quarter end + a
+  // filing-lag cushion of 45 days when the submission date is missing)
+  if(ASOF==null) return SHP_HIST;
+  const iso=isoOff(ASOF);
+  return (SHP_HIST||[]).filter(r=>{
+    if(r[6]) return r[6]<=iso;
+    const qe=new Date(r[0]); qe.setDate(qe.getDate()+45);
+    return qe.toISOString().slice(0,10)<=iso;
+  });
+}
 function renderSHPdeep(){
-  const hist=SHP_FULL?SHP_HIST:SHP_HIST.slice(-12);
+  const view=shpHistView();
+  if(!view.length){
+    $('shp').innerHTML='<span class="text-slate-400">No shareholding-pattern filing had been submitted by this date.</span>';
+    $('shpChart').style.display='none';
+    $('shpAll').style.display='none';
+    return;
+  }
+  const hist=SHP_FULL?view:view.slice(-12);
   renderSHP(hist.map(r=>r[0]).reverse(), hist.map(r=>r.slice(1,8)).reverse());
 }
 function wireShpToggle(){
@@ -813,7 +880,9 @@ function renderSeason(){
   const el=$('season'); if(!el) return;
   const s=SERIES[TKR]; if(!s||s.d.length<40){ el.innerHTML='<span class="text-slate-400">Not enough history for a seasonality view.</span>'; return; }
   const me=[]; let curYm=null;                       // month-end closes [ [YYYY-MM, close], … ]
-  for(let i=0;i<s.d.length;i++){ const ym=isoOff(s.d[i]).slice(0,7);
+  const cutoff=ASOF!=null?ASOF:Infinity;             // rewind: seasonality ends at the as-of date
+  for(let i=0;i<s.d.length;i++){ if(s.d[i]>cutoff) break;
+    const ym=isoOff(s.d[i]).slice(0,7);
     if(ym!==curYm){ me.push([ym,s.p[i]/100]); curYm=ym; } else me[me.length-1][1]=s.p[i]/100; }
   if(me.length<14){ el.innerHTML='<span class="text-slate-400">Not enough history for a seasonality view.</span>'; return; }
   const by={};
@@ -859,6 +928,29 @@ function renderDelivSpark(){
     `<path d="${pts.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)).join(' ')}" fill="none" stroke="#0ea5e9" stroke-width="1.5"/></svg>`;
 }
 
+/* ---------- rewind wiring ---------------------------------------------------------------- */
+function rerenderAll(){
+  try{ render(); }catch(e){ console.error(e); }
+  try{ renderFunds(); }catch(e){ console.error(e); }
+  if(SHP_HIST){ try{ shpTrendChart(shpHistView()); renderSHPdeep(); wireShpToggle(); }catch(e){ console.error(e); } }
+}
+function applyRewind(iso){
+  const s=SERIES[TKR]; if(!s) return;
+  const o=Math.min(Math.max(dayOff(iso),s.d[0]),SF_END_OFF);
+  ASOF=o;
+  $('rwBanner').classList.remove('hidden');
+  $('rwDate').textContent=isoOff(o);
+  document.title='STOCKSWORLD · '+(META[TKR]?META[TKR].symbol:SYM)+' @ '+isoOff(o);
+  rerenderAll();
+  $('rwBanner').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function exitRewind(){
+  ASOF=null;
+  $('rwBanner').classList.add('hidden');
+  document.title='STOCKSWORLD · '+(META[TKR]?META[TKR].symbol:SYM);
+  rerenderAll();
+}
+
 /* ---------- boot ---------- */
 /* This box hands off to theme.js's site-wide search palette (name OR symbol, with
    suggestions); typing a bare symbol and pressing Go still works if it hasn't loaded. */
@@ -877,6 +969,7 @@ function liveMarketOpen(){
   return d>=1&&d<=5&&h>=9&&h<=15.75;
 }
 async function liveQuote(){
+  if(ASOF!=null) return;                    // rewound view: the header must stay at the past date
   const m=META[TKR]; if(!m||!m.alive) return;
   try{
     const j=await (await fetch(WORKER+'/?chart='+encodeURIComponent(m.symbol+'.NS'),{cache:'no-store'})).json();
@@ -939,6 +1032,13 @@ async function liveQuote(){
     // and re-renders with the full columns when sf_revop lands.
     loadRevop().then(()=>{ try{ renderFunds(); }catch(e){ console.error(e); } });
     try{ buildEvents(); drawChart(); }catch(e){ console.error(e); }     // engine FUND has the ann dates
+  }
+  // rewind controls: date bounds follow this stock's actual history
+  const s0=SERIES[TKR];
+  if(s0&&s0.d.length){
+    $('rwPick').min=isoOff(s0.d[0]); $('rwPick').max=isoOff(SF_END_OFF);
+    $('rwGo').onclick=()=>{ const v=$('rwPick').value; if(v) applyRewind(v); };
+    $('rwExit').onclick=exitRewind;
   }
   liveQuote();
   setInterval(()=>{ if(!document.hidden&&liveMarketOpen()) liveQuote(); },60000);
