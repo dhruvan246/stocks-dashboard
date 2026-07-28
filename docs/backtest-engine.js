@@ -8,7 +8,7 @@
  * Data source is always survivorship-free (NSE bhavcopy incl. delisted names).
  * ========================================================================== */
 const DAY = 86400;
-let META = {}, SERIES = {}, IDXH = {}, FNOH = [], START_TS = 0, NIFTY = {}, NIFTY500 = {};
+let META = {}, SERIES = {}, IDXH = {}, FNOH = [], START_TS = 0, NIFTY = {}, NIFTY500 = {}, CORE_META = {};
 let SF = null, TURN = {}, SF_END_OFF = Infinity;
 const DATA_MODE = 'sf';                       // survivorship-free only
 const TURN_OPTS = [['100', '≥₹1 Cr'], ['500', '≥₹5 Cr'], ['2000', '≥₹20 Cr'], ['10000', '≥₹100 Cr']]; // daily turnover (₹ lacs)
@@ -70,9 +70,13 @@ async function gunzipJSON(url) {
   return JSON.parse(await new Response(stream).text());
 }
 // stock_data.bin only supplies point-in-time index membership + time base + benchmark.
+// CORE_META keeps that payload's dash metadata (keyed SYMBOL.NS) — the only place market cap
+// lives, which the stock page turns into mcap / P/E / P/S. SF's own meta (activateSF) carries
+// no mcap, and this file is already downloaded here, so it costs nothing extra.
 async function loadCore() {
   const D = await gunzipJSON('./stock_data.bin');   // browser-cached (ETag); no cache-buster → instant on repeat loads
   IDXH = D.indicesHistory || {}; FNOH = D.fnoHistory || []; START_TS = D.startTs;
+  CORE_META = D.meta || {};
   try { NIFTY = (await (await fetch('./nifty.json')).json()).px || {}; } catch (e) { NIFTY = {}; }
   try { NIFTY500 = (await (await fetch('./nifty500.json')).json()).px || {}; } catch (e) { NIFTY500 = {}; }
 }

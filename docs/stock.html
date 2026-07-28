@@ -88,8 +88,13 @@
 
   <!-- fundamentals -->
   <div class="card p-4">
-    <div class="text-sm font-semibold text-slate-700 mb-2">💰 Quarterly net profit <span class="text-slate-400 font-normal">— point-in-time (₹ cr), consolidated where available, YoY growth</span></div>
+    <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+      <div class="text-sm font-semibold text-slate-700">💰 Quarterly financials <span class="text-slate-400 font-normal">— point-in-time (₹ cr), consolidated where filed, YoY growth</span></div>
+      <a href="./quarterly-results.html" class="text-xs font-semibold text-indigo-600 hover:underline">All companies' results →</a>
+    </div>
+    <div id="fundCards" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-3"></div>
     <div id="funds" class="overflow-x-auto text-sm">—</div>
+    <div id="fundNote" class="text-[11px] text-slate-400 mt-2"></div>
   </div>
 
   <!-- shareholding pattern -->
@@ -236,18 +241,111 @@ function render(){
   // fundamentals (quarterly net profit, point-in-time)
   renderFunds();
 }
+/* ---------- quarterly financials -------------------------------------------------
+ * Net profit comes from sf_fundamentals (point-in-time, OWNERS-attributable — never
+ * swap in sf_revop's PAT mirror slots). Revenue / operating profit / EBIT come from
+ * sf_revop, whose per-quarter cell is
+ *   [revStd, revCon, opStd, opCon, patStd, patCon, fin, ebitStd, ebitCon]
+ * with op = EBITDA (revenue - opex excl. interest & depreciation) and ebit = op - dep.
+ * fin=1 marks banks/NBFCs, whose "revenue" is interest earned and whose margins aren't
+ * comparable to industrials — flagged in the note rather than hidden.
+ * ------------------------------------------------------------------------------- */
+let REVOP=null;                    // sf_revop.json — fetched AFTER first paint (1.3 MB gzipped)
+async function loadRevop(){
+  if(REVOP) return REVOP;
+  try{ REVOP=await (await fetch('./sf_revop.json')).json(); }
+  catch(e){ REVOP={}; }
+  return REVOP;
+}
+function revopFor(sym){
+  const R=REVOP||{}; const alias=(typeof FUND_ALIAS!=='undefined'&&FUND_ALIAS)?FUND_ALIAS[sym]:null;
+  return R[sym]||(alias?R[alias]:null)||null;
+}
+const qIdx=e=>{ const y=Math.floor(e/10000), m=Math.floor(e/100)%100; return y*4+Math.floor((m-1)/3); };  // quarter number, for contiguity checks
+const crFmt=v=>v==null?'—':v.toLocaleString('en-IN',{maximumFractionDigits:v!=null&&Math.abs(v)<100?1:0});
+const crBig=v=>v==null?'—':(Math.abs(v)>=100000?'₹'+(v/100000).toFixed(2)+' L cr':'₹'+Math.round(v).toLocaleString('en-IN')+' cr');
+const growth=(cur,base)=>(cur==null||base==null||base===0)?null:(cur-base)/Math.abs(base)*100;   // ABS base: a shrinking LOSS must not read as a gain
+
 function renderFunds(){
-  const arr=(typeof fundFor==='function')?fundFor(TKR):((typeof FUND!=='undefined'&&FUND[TKR])?FUND[TKR]:null);   // fundFor() follows ticker-rename aliases (TATAMOTORS→TMPV, …)
-  if(!arr||!arr.length){ $('funds').innerHTML='<span class="text-slate-400">No quarterly earnings on file for this stock.</span>'; return; }
-  const rows=arr.slice(-12);   // last 12 quarters
-  const val=q=>q[3]!=null?q[3]:(q[1]!=null?q[1]:null);   // con else std (₹ cr)
-  const basisOf=q=>q[3]!=null?'con':'std';
-  const byEnd={}; arr.forEach(q=>byEnd[q[0]]=q);
-  const yoy=q=>{ const b=byEnd[q[0]-10000]; if(!b) return null; const cv=val(q), bv=val(b); return (bv!=null&&cv!=null&&bv!==0)?(cv-bv)/Math.abs(bv)*100:null; };
+  const arr=((typeof fundFor==='function')?fundFor(TKR):(typeof FUND!=='undefined'?FUND[TKR]:null))||[];   // fundFor() follows ticker-rename aliases (TATAMOTORS→TMPV, …)
+  const rv=revopFor(TKR)||{};
+  const fundBy={}; arr.forEach(q=>fundBy[q[0]]=q);
+  const seen={}; arr.forEach(q=>seen[q[0]]=1); Object.keys(rv).forEach(k=>seen[+k]=1);
+  const ends=Object.keys(seen).map(Number).sort((a,b)=>a-b);
+  if(!ends.length){ $('funds').innerHTML='<span class="text-slate-400">No quarterly earnings on file for this stock.</span>'; return; }
+
+  const pat=e=>{ const q=fundBy[e]; return q?(q[3]!=null?q[3]:(q[1]!=null?q[1]:null)):null; };
+  const patCon=e=>{ const q=fundBy[e]; return !!(q&&q[3]!=null); };
+  const raw=(e,i)=>{ const c=rv[String(e)]; return (c&&c[i]!=null)?c[i]:null; };
+  const pick=(e,ci,si)=>{ const c=raw(e,ci); if(c!=null) return {v:c,con:true}; const s=raw(e,si); return s!=null?{v:s,con:false}:null; };
+  const rev=e=>pick(e,1,0), op=e=>pick(e,3,2), ebit=e=>pick(e,8,7);
+  const vOf=x=>x?x.v:null;
+  const opm=e=>{ const r=vOf(rev(e)), o=vOf(op(e)); return (r&&o!=null)?o/r*100:null; };
+  const basis=e=>{ const r=rev(e); if(r) return r.con?'con':'std'; return fundBy[e]?(patCon(e)?'con':'std'):'—'; };
+  const isFin=ends.some(e=>raw(e,6)===1);
   const fq=e=>{ const s=String(e); return s.slice(0,4)+'-'+s.slice(4,6); };
-  $('funds').innerHTML=`<table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr><th class="text-left py-1 pr-2">Quarter end</th><th class="text-right px-2">Net profit (₹ cr)</th><th class="text-right px-2">Basis</th><th class="text-right px-2">YoY %</th></tr></thead><tbody>
-    ${rows.slice().reverse().map(q=>{ const v=val(q), y=yoy(q); return `<tr class="border-b border-slate-50"><td class="py-1 pr-2 font-medium">${fq(q[0])}</td><td class="text-right px-2 ${v>=0?'':'neg'}">${v==null?'—':v.toLocaleString('en-IN',{maximumFractionDigits:1})}</td><td class="text-right px-2 text-[11px] text-slate-400 uppercase">${basisOf(q)}</td><td class="text-right px-2 ${y>=0?'pos':'neg'}">${y==null?'—':pct(y)}</td></tr>`; }).join('')}
-  </tbody></table>`;
+
+  // ---- TTM: the last 4 CONTIGUOUS quarters (and the 4 before, for YoY) ----
+  const window4=endIdx=>{ const w=ends.slice(endIdx-3,endIdx+1);
+    if(w.length<4) return null;
+    for(let i=1;i<4;i++) if(qIdx(w[i])!==qIdx(w[i-1])+1) return null;
+    return w; };
+  const sum=(w,get)=>{ if(!w) return null; let t=0; for(const e of w){ const v=get(e); if(v==null) return null; t+=v; } return t; };
+  const cur4=window4(ends.length-1), prev4=(ends.length>=8&&cur4)?window4(ends.length-5):null;
+  const contiguous=!!(cur4&&prev4&&qIdx(cur4[0])===qIdx(prev4[3])+1);
+  const revT=sum(cur4,e=>vOf(rev(e))), revP=contiguous?sum(prev4,e=>vOf(rev(e))):null;
+  const opT=sum(cur4,e=>vOf(op(e)));
+  const patT=sum(cur4,e=>pat(e)), patP=contiguous?sum(prev4,e=>pat(e)):null;
+
+  // ---- valuation: mcap re-priced off THIS page's last close, so a stale bake can't skew P/E ----
+  const cm=(typeof CORE_META!=='undefined'&&CORE_META)?(CORE_META[TKR+'.NS']||CORE_META[TKR]):null;
+  const m=META[TKR], s=SERIES[TKR];
+  const lastRaw=(m&&m.raw!=null)?m.raw:(s?s.p[s.p.length-1]/100:null);
+  let mcap=null;
+  if(cm&&cm.mcap&&cm.latest&&lastRaw) mcap=cm.mcap/cm.latest*lastRaw;
+  else if(cm&&cm.mcap) mcap=cm.mcap;
+  const pe=(mcap&&patT&&patT>0)?mcap/patT:null;
+  const ps=(mcap&&revT&&revT>0)?mcap/revT:null;
+
+  const sub=(v,cls)=>v==null?'':`<div class="text-[11px] ${cls||'text-slate-400'} mt-0.5">${v}</div>`;
+  const card=(lbl,val,extra,cls)=>`<div class="card p-3"><div class="lbl text-slate-500">${lbl}</div>`+
+    `<div class="text-lg font-bold ${cls||'text-slate-900'} mt-0.5">${val}</div>${extra||''}</div>`;
+  const gTag=g=>g==null?'':`<span class="${g>=0?'pos':'neg'}">${pct(g)}</span> <span class="text-slate-400">YoY</span>`;
+  $('fundCards').innerHTML=[
+    card('Market cap', mcap==null?'—':crBig(mcap), sub(mcap==null?null:'at ₹'+(lastRaw>=1000?Math.round(lastRaw).toLocaleString('en-IN'):lastRaw.toFixed(2)))),
+    card('Revenue (TTM)', revT==null?'—':crBig(revT), sub(gTag(growth(revT,revP)))),
+    card('Operating profit (TTM)', opT==null?'—':crBig(opT), sub((revT&&opT!=null)?('OPM '+(opT/revT*100).toFixed(1)+'%'):null)),
+    card('Net profit (TTM)', patT==null?'—':crBig(patT), sub(gTag(growth(patT,patP))), patT<0?'neg':'text-slate-900'),
+    card('P/E (TTM)', pe==null?'—':pe.toFixed(1), sub(patT!=null&&patT<=0?'loss-making':null)),
+    card('P/S (TTM)', ps==null?'—':ps.toFixed(2), sub(revT==null?null:'price ÷ sales'))
+  ].join('');
+
+  // ---- quarter table (newest first) ----
+  const show=ends.slice(-12).reverse();
+  const num=(v,cls)=>`<td class="text-right px-2 ${cls||''}">${crFmt(v)}</td>`;
+  const gCell=g=>`<td class="text-right px-2 ${g==null?'':(g>=0?'pos':'neg')}">${g==null?'—':pct(g)}</td>`;
+  $('funds').innerHTML=`<table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>`+
+    `<th class="text-left py-1 pr-2">Quarter end</th><th class="text-right px-2">Revenue</th><th class="text-right px-2">Rev YoY</th>`+
+    `<th class="text-right px-2">Op profit</th><th class="text-right px-2">OPM</th><th class="text-right px-2">EBIT</th>`+
+    `<th class="text-right px-2">Net profit</th><th class="text-right px-2">PAT YoY</th><th class="text-right px-2">Basis</th>`+
+    `</tr></thead><tbody>`+
+    show.map(e=>{ const p=pat(e), r=vOf(rev(e)), o=vOf(op(e)), eb=vOf(ebit(e)), mg=opm(e);
+      return `<tr class="border-b border-slate-50"><td class="py-1 pr-2 font-medium whitespace-nowrap">${fq(e)}</td>`+
+        num(r)+gCell(growth(r,vOf(rev(e-10000))))+
+        num(o,o!=null&&o<0?'neg':'')+
+        `<td class="text-right px-2 ${mg==null?'':(mg>=0?'':'neg')}">${mg==null?'—':mg.toFixed(1)+'%'}</td>`+
+        num(eb,eb!=null&&eb<0?'neg':'')+
+        num(p,p!=null&&p<0?'neg':'font-semibold')+gCell(growth(p,pat(e-10000)))+
+        `<td class="text-right px-2 text-[11px] text-slate-400 uppercase">${basis(e)}</td></tr>`;
+    }).join('')+`</tbody></table>`;
+
+  const notes=['All figures ₹ crore, as filed for that quarter (point-in-time — later restatements don’t rewrite history). '+
+    'Net profit is the owners-attributable share; “Basis” shows whether the row is consolidated or standalone. '+
+    'Op profit = EBITDA (revenue less operating expenses, before interest and depreciation); EBIT is after depreciation.'];
+  if(isFin) notes.push('<span class="text-amber-600">Bank / NBFC:</span> “revenue” is interest earned plus other operating income and “op profit” is pre-provision — neither margin is comparable to a non-financial company.');
+  if(!Object.keys(rv).length) notes.push('Revenue, margins and EBIT aren’t on file for this stock yet — only net profit is shown. <a class="text-indigo-500 hover:underline" href="./results-season.html">How coverage is built →</a>');
+  else if(revT==null) notes.push('Revenue (TTM) is blank because one of the last four quarters has no revenue on file — a partial sum would understate the year.');
+  $('fundNote').innerHTML=notes.join('<br>');
 }
 
 /* ---------- shareholding pattern (NSE quarterly SHP filings, docs/shareholding.json) ---------- */
@@ -332,6 +430,9 @@ async function liveQuote(){
   try{ render(); }catch(e){ fail('Render error: '+(e&&e.message||e)); console.error(e); return; }
   $('ov').style.display='none';
   loadSHP();
+  // Revenue/margins arrive after first paint: the PAT-only table is already on screen,
+  // and re-renders with the full columns when sf_revop lands.
+  loadRevop().then(()=>{ try{ renderFunds(); }catch(e){ console.error(e); } });
   liveQuote();
   setInterval(()=>{ if(!document.hidden&&liveMarketOpen()) liveQuote(); },60000);
 })();
