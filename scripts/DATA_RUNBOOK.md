@@ -615,6 +615,17 @@ V-recovery (Jun-2021: +48%)**.
   (= N500 − N100) after reconstruction — this RECOVERS the 2020-21 delisted small-caps the press-release walk missed
   (Smallcap 250 went 233 → ~250). Can't derive Smallcap 50/100 or Midcap 100 (they need per-stock mcap RANK within the
   band, which isn't a set operation) — those keep a small early-2020 over-count (a few EXTRA, not missing; immaterial).
+  **⚠️ 2015-2019 N500 REVIEWS = HUNT OVERLAY (fixed 2026-07-28, commit 9d8926d).** The six semi-annual reviews
+  Mar-2017..Sep-2019 (+ Mar-2015) use pre-2016 PDF layouts `parse_pdf` can't read — without them Nifty 500 collapsed
+  to 432-489 members across 2015-2018 (~37% wrong at worst) and carried the Mar-2019 review unapplied (sizes LOOKED
+  fine — only a content diff catches that class). `build_changelog.py` now overlays `_n500_hunt_prs.json`
+  (era-aware parse of all 24 hunted docs, FORCE-TRACKED like _wb_n500_snaps.json — if it goes missing the overlay
+  prints a WARNING and 2015-2019 silently regresses). Residual: ~15-16 drift 2015-03→2018-10 (no archived full list
+  in that window to pin; irreducible from primary sources); Oct-2019+ exact. `verify_sizes.py` checks N500 back to
+  2015-04 (tol 17). LESSON (the 993cfce trap): that commit's message claimed the official-anchor pins were in
+  `build_membership_v2.py`, but the edit was only ever STASHED (stash@{0}) — the next weekly refresh silently
+  rebuilt without it. Recovered 2026-07-28. After editing membership code, `git show HEAD --stat` and confirm the
+  .py files you changed are actually IN the commit before trusting the next CI rebuild.
 - **PAT** = `docs/sf_fundamentals.json` (owners-attributable con where filed, else std — same basis as the backtest,
   memory project-stocks-profit-basis). **Revenue + Operating Profit** live in a PARALLEL dataset
   `docs/sf_revop.json` = `{SYM:{QE:[revStd,revCon,opStd,opCon,patStd,patCon,fin,ebitStd,ebitCon]}}`
