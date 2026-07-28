@@ -101,6 +101,12 @@ _BAD_ROW = re.compile(r"before tax|comprehensive|segment|exceptional|carried to|
 
 def is_result_filing(r):
     blob = ((r.get("SUBCATNAME", "") or "") + " " + (r.get("NEWSSUB", "") or "")).lower()
+    # A "Financial Results" SUBCAT row with an attachment IS the filing regardless of wording —
+    # Tata Motors titles its results "Intimation Of Outcome Of Board Meeting ...", and the
+    # 'intimation' veto silently discarded every one of them (Jun-2020 recovered 2026-07-28 only
+    # by querying raw). The veto exists to skip pre-meeting notices; the subcategory is decisive.
+    if (r.get("SUBCATNAME", "") or "").strip().lower() == "financial results":
+        return True
     if _RESULT_VETO.search(blob):
         return False
     return bool(_RESULT_HIT.search(blob))
