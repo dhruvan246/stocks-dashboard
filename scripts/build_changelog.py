@@ -241,6 +241,26 @@ def main():
             kept.append(c)
         changelog[idx] = kept
     print(f"  COVID-2020 null: dropped {nulled} never-effective events (Feb/Mar-2020, superseded by 10062020 eff 2020-06-26)")
+    # --- 2015-2019 HUNTED REVIEWS OVERLAY (Nifty 500 only) -----------------------------------------
+    # The six semi-annual reviews Mar-2017..Sep-2019 (plus Mar-2015 and a few off-cycles) use older
+    # PDF layouts parse_pdf can't read ("CNX 500" headings without the numbered prefix, "Nifty 500
+    # Index" suffix), so the walk was missing ~145 swaps — Nifty 500 collapsed to 432-489 members
+    # across 2015-2018 and carried the Mar-2019 review unapplied. Those PDFs were brute-hunted and
+    # parsed with an era-aware parser (2026-07-02) into _n500_hunt_prs.json (force-tracked). Overlay
+    # them here: for any stem the hunt covers, the hunt parse WINS (it was validated anchor-to-anchor).
+    try:
+        hunt = json.load(open(os.path.join(HERE, "_n500_hunt_prs.json")))
+    except Exception as e:
+        hunt = []; print(f"  WARNING: _n500_hunt_prs.json not loaded ({e}) — 2015-2019 N500 reviews will be missing")
+    if hunt:
+        hstems = {h["file"].replace("ind_prs", "").replace(".pdf", "") for h in hunt}
+        n5 = [c for c in changelog.get("Nifty 500", []) if c["src"] not in hstems]
+        for h in hunt:
+            e = str(h["eff"])
+            n5.append({"eff": f"{e[:4]}-{e[4:6]}-{e[6:]}", "excluded": h["excluded"],
+                       "included": h["included"], "src": h["file"].replace("ind_prs", "").replace(".pdf", "")})
+        changelog["Nifty 500"] = n5
+        print(f"  HUNT OVERLAY (Nifty 500): {len(hunt)} hunted docs win over {len(hstems)} stems")
     apply_manual_fixes(changelog)
     for idx in sorted(changelog):
         ch = changelog[idx]; ch.sort(key=lambda x: x["eff"])

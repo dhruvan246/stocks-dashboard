@@ -27,6 +27,17 @@ for idx, exp in SIZE.items():
         allok = False
     print("  %-24s exp=%3d snaps=%2d  %s" % (idx, exp, len(snaps), "OK" if not bad else "BAD " + str(bad[:6])))
 
+# Nifty 500 pre-2020: the 2015-2019 reviews are captured (hunt overlay in build_changelog.py), but the
+# 2015-03-25 -> 2018-10-04 stretch has NO archived full list to pin, so the backward walk carries a
+# residual ~15-16 size drift from uncaptured off-cycle swaps. Tolerance 17 catches a relapse into the
+# old failure (missing semi-annual reviews -> sizes 432-489) without flagging the irreducible drift.
+print("\nNifty 500 pre-2020 (2015-04-01+, tol 17 — catches missing semi-annual reviews):")
+snaps = [s for s in ih.get("Nifty 500", []) if "2015-04-01" <= s["effectiveDate"] < "2020-01-01"]
+bad = [(s["effectiveDate"], len(s["symbols"])) for s in snaps if abs(len(s["symbols"]) - 500) > 17]
+if bad:
+    allok = False
+print("  %-24s exp=500 snaps=%2d  %s" % ("Nifty 500", len(snaps), "OK" if not bad else "BAD " + str(bad[:6])))
+
 print("\nSECTORAL indexes — size range (variable size is normal):")
 for idx in SECTORAL:
     sizes = [len(s["symbols"]) for s in ih.get(idx, []) if s["effectiveDate"] >= "2020-01-01"]
