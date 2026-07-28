@@ -103,6 +103,26 @@
     <div id="fundNote" class="text-[11px] text-slate-400 mt-2"></div>
   </div>
 
+  <!-- deep financial detail (XBRL re-parse: EPS, P&L breakdown, balance sheet, cash flow, segments, bank health) -->
+  <div class="card p-4" id="deepCard" style="display:none">
+    <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+      <div class="text-sm font-semibold text-slate-700">🧾 Financial detail <span class="text-slate-400 font-normal">— from the company's own XBRL filings</span></div>
+    </div>
+    <div id="deepTabs" class="flex gap-1.5 overflow-x-auto whitespace-nowrap pb-1"></div>
+    <div id="deepBody" class="mt-2 text-sm"></div>
+    <div id="deepNote" class="text-[11px] text-slate-400 mt-2"></div>
+  </div>
+
+  <!-- strategy exposure -->
+  <div class="card p-4" id="stratCard" style="display:none">
+    <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+      <div class="text-sm font-semibold text-slate-700">🎯 Strategy exposure <span id="stratN" class="text-slate-400 font-normal"></span></div>
+      <a href="./all-picks.html" class="text-xs font-semibold text-indigo-600 hover:underline">All strategies' picks →</a>
+    </div>
+    <div id="strat" class="text-sm"></div>
+    <div class="text-[11px] text-slate-400 mt-2">Tracked strategies (live paper portfolios on this site) whose current basket holds this stock. Return is since each strategy went live — not a recommendation.</div>
+  </div>
+
   <!-- peer comparison -->
   <div class="card p-4" id="peersCard" style="display:none">
     <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
@@ -328,6 +348,7 @@ function render(){
   $('ranges').querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{ RANGE=b.dataset.r; drawChart(); $('ranges').querySelectorAll('[data-r]').forEach(x=>x.classList.toggle('on',x.dataset.r===RANGE)); $('ranges').querySelectorAll('[data-r]').forEach(x=>{if(x.dataset.r!==RANGE)x.classList.add('text-slate-500');else x.classList.remove('text-slate-500');}); });
   buildEvents();          // slice events now; results dates join once the fin file lands
   drawChart();
+  try{ renderStrat(); }catch(e){ console.error(e); }
   try{ renderPeers(); }catch(e){ console.error(e); }
   try{ renderActivity(); }catch(e){ console.error(e); }
   try{ renderSeason(); }catch(e){ console.error(e); }
@@ -447,6 +468,35 @@ function renderFunds(){
     card('P/S (TTM)', ps==null?'—':ps.toFixed(2), sub(revT==null?null:'price ÷ sales'))
   ].join('');
 
+  // ---- ratio cards — unlocked by the deep slice (latest reported equity/borrowings) ----
+  const bs=latestBS(ends);
+  if(bs){
+    const eq=bs.x.eq, borr=bs.x.borr||0;
+    const ebitT=sum(cur4,e=>vOf(ebit(e)));
+    const fcT=sum(cur4,e=>{ const x=xCell(e); return x&&x.fc!=null?x.fc:null; });
+    const extra=[];
+    if(patT!=null&&eq){ const roe=patT/eq*100;
+      extra.push(card('ROE (TTM)',roe.toFixed(1)+'%',sub('on latest equity, '+fmtQtr(bs.e)),roe<0?'neg':'text-slate-900')); }
+    if(!isFin&&ebitT!=null&&eq){ const roce=ebitT/(eq+borr)*100;
+      extra.push(card('ROCE (TTM)',roce.toFixed(1)+'%',sub('EBIT ÷ (equity + debt)'),roce<0?'neg':'text-slate-900')); }
+    if(eq) extra.push(card('Debt / Equity',(borr/eq).toFixed(2),sub('borrowings ₹'+crS(borr)+' cr')));
+    if(mcap&&eq) extra.push(card('P/B',(mcap/eq).toFixed(2),sub('book value ₹'+crS(eq)+' cr')));
+    if(!isFin&&ebitT!=null&&fcT) extra.push(card('Interest cover',(ebitT/fcT).toFixed(1)+'×',sub('EBIT ÷ interest, TTM')));
+    for(let i=ends.length-1;i>=0;i--){                     // CFO/PAT — cash conversion, latest full FY
+      const e=ends[i], x=xCell(e);
+      if(x&&x.cf_d>=300&&x.cfo!=null){
+        const fy=fyOf(e), qs=ends.filter(q=>fyOf(q)===fy);
+        if(qs.length===4&&qs.every(q=>pat(q)!=null)){
+          const pf=qs.reduce((t,q)=>t+pat(q),0);
+          if(pf) extra.push(card('CFO / PAT',(x.cfo/pf).toFixed(2),sub('FY'+String(fy).slice(2)+' cash conversion'),(x.cfo/pf)<0?'neg':'text-slate-900'));
+        }
+        break;
+      }
+    }
+    if(extra.length) $('fundCards').innerHTML+=extra.join('');
+  }
+  try{ renderDeep(ends,pat,rev,op,isFin); }catch(e){ console.error(e); }
+
   // ---- last-result reaction + drift since (result-day convention documented at reactionAt) ----
   const s2=SERIES[TKR];
   const withAnn=ends.filter(e=>fundBy[e]&&annOf(fundBy[e])!=null);
@@ -491,6 +541,99 @@ function renderFunds(){
   if(!Object.keys(rv).length) notes.push('Revenue, margins and EBIT aren’t on file for this stock yet — only net profit is shown. <a class="text-indigo-500 hover:underline" href="./results-season.html">How coverage is built →</a>');
   else if(revT==null) notes.push('Revenue (TTM) is blank because one of the last four quarters has no revenue on file — a partial sum would understate the year.');
   $('fundNote').innerHTML=notes.join('<br>');
+}
+
+/* ---------- deep financial detail (fin slice `x` — XBRL re-parse) ------------------------------
+   FIN_X = {qEnd: {s:{...}, c:{...}}}: EPS, interest/depreciation/tax, balance sheet (half-yearly),
+   cash flow (+cf_d period days — filers tag quarter, H1 or FY periods), segments, bank health.
+   Consolidated preferred per quarter, standalone fallback — same rule as the summary table. */
+let FIN_X=null;
+const xCell=e=>{ const c=FIN_X&&FIN_X[String(e)]; return c?(c.c||c.s||null):null; };
+const xBasis=e=>{ const c=FIN_X&&FIN_X[String(e)]; return c?(c.c?'con':'std'):''; };
+const fyOf=e=>{ const m=Math.floor(e/100)%100; return m<=3?Math.floor(e/10000):Math.floor(e/10000)+1; };
+const crS=v=>v==null?'—':Math.round(v).toLocaleString('en-IN');
+function latestBS(ends){
+  for(let i=ends.length-1;i>=0;i--){ const x=xCell(ends[i]); if(x&&x.eq!=null) return {e:ends[i],x}; }
+  return null;
+}
+function renderDeep(ends,patFn,revFn,opFn,isFin){
+  const card=$('deepCard'); if(!card) return;
+  if(!FIN_X||!ends.some(e=>xCell(e))){ card.style.display='none'; return; }
+  card.style.display='';
+  const has={q:ends.some(e=>xCell(e)), seg:ends.some(e=>(xCell(e)||{}).seg),
+    bank:ends.slice(-12).some(e=>{const x=xCell(e); return x&&(x.gnpa_pct!=null||x.cet1!=null);})};
+  // complete FYs (all 4 quarters have PAT)
+  const byFy={};
+  ends.forEach(e=>{ (byFy[fyOf(e)]=byFy[fyOf(e)]||[]).push(e); });
+  const fys=Object.keys(byFy).map(Number).sort((a,b)=>b-a)
+    .filter(fy=>byFy[fy].length===4&&byFy[fy].every(e=>patFn(e)!=null));
+  has.a=fys.length>0;
+  const tabs=[['q','📄 Quarterly detail'],['a','📚 Annual'],['seg','🧩 Segments'],['bank','🏦 Bank health']].filter(([k])=>has[k]);
+  let cur=tabs[0][0];
+  const draw=()=>{
+    $('deepTabs').innerHTML=tabs.map(([k,l])=>`<button data-t="${k}" class="px-2.5 py-1 rounded-lg text-xs font-semibold border shrink-0 ${k===cur?'bg-slate-800 text-white border-slate-800':'text-slate-500 border-slate-200 hover:bg-slate-50'}">${l}</button>`).join('');
+    $('deepTabs').querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{ cur=b.dataset.t; draw(); });
+    const th=t=>`<th class="text-right px-2">${t}</th>`;
+    const td=(v,cls)=>`<td class="text-right px-2 ${cls||''}">${v}</td>`;
+    const money=v=>td(v==null?'—':v.toLocaleString('en-IN',{maximumFractionDigits:Math.abs(v)<100?1:0}),v!=null&&v<0?'neg':'');
+    let html='',note='';
+    if(cur==='q'){
+      const rows=ends.filter(e=>xCell(e)).slice(-12).reverse();
+      html=`<div class="sw-scrollx overflow-x-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>`+
+        `<th class="text-left py-1 pr-2">Quarter</th>${th('EPS ₹')}${th('Other inc')}${th('Interest')}${th('Depr')}${th('Tax')}${th('Excep')}${th('PBT')}<th class="text-right px-2">Audited</th></tr></thead><tbody>`+
+        rows.map(e=>{ const x=xCell(e);
+          return `<tr class="border-b border-slate-50"><td class="py-1 pr-2 font-medium whitespace-nowrap">${fmtQtr(e)}</td>`+
+            td(x.eps_b==null?'—':x.eps_b.toLocaleString('en-IN'),x.eps_b!=null&&x.eps_b<0?'neg':'font-semibold')+
+            money(x.oi)+money(x.fc)+money(x.dep)+money(x.tax)+money(x.exc)+money(x.pbt)+
+            td(x.aud==='A'?'✓':(x.aud==='U'?'unaudited':'—'),x.qual?'neg':'text-slate-500 text-xs')+`</tr>`;
+        }).join('')+`</tbody></table></div>`;
+      note='₹ crore except EPS (₹/share, basic). Consolidated where filed. '+(ends.some(e=>(xCell(e)||{}).qual)?'<span class="neg">⚠ At least one filing carries an audit qualification.</span>':'');
+    }else if(cur==='a'){
+      const vOf=x=>x?x.v:null;
+      html=`<div class="sw-scrollx overflow-x-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>`+
+        `<th class="text-left py-1 pr-2">FY</th>${th('Revenue')}${th('OPM')}${th('Net profit')}${th('EPS ₹')}${th('Equity')}${th('Borrowings')}${th('CFO')}${th('Capex')}${th('ROE')}</tr></thead><tbody>`+
+        fys.slice(0,8).map(fy=>{
+          const qs=byFy[fy].sort((a,b)=>a-b), mar=qs[qs.length-1];
+          const sum=g=>{ let t=0; for(const e of qs){ const v=g(e); if(v==null) return null; t+=v; } return t; };
+          const revY=sum(e=>vOf(revFn(e))), opY=sum(e=>vOf(opFn(e))), patY=sum(patFn);
+          const epsY=sum(e=>(xCell(e)||{}).eps_b!=null?xCell(e).eps_b:null);
+          const xm=xCell(mar)||{};
+          const cfo=(xm.cf_d>=300)?xm.cfo:null, capex=(xm.cf_d>=300)?xm.capex:null;
+          const roe=(patY!=null&&xm.eq)?patY/xm.eq*100:null;
+          return `<tr class="border-b border-slate-50"><td class="py-1 pr-2 font-medium">FY${String(fy).slice(2)}</td>`+
+            money(revY)+td(revY&&opY!=null?(opY/revY*100).toFixed(1)+'%':'—')+
+            money(patY)+td(epsY==null?'—':epsY.toFixed(2),epsY!=null&&epsY<0?'neg':'')+
+            money(xm.eq)+money(xm.borr)+money(cfo)+money(capex)+
+            td(roe==null?'—':roe.toFixed(1)+'%',roe!=null&&roe<0?'neg':'')+`</tr>`;
+        }).join('')+`</tbody></table></div>`;
+      note='Financial years (Apr–Mar), complete years only — quarterly sums for P&L, FY-end balance sheet, full-year cash flow (cf period ≥ 300 days). '+(isFin?'Bank/NBFC “revenue” is interest earned — margins not comparable to industrials.':'');
+    }else if(cur==='seg'){
+      let segE=null; for(let i=ends.length-1;i>=0;i--){ const x=xCell(ends[i]); if(x&&x.seg){ segE=ends[i]; break; } }
+      const x=xCell(segE), tot=x.seg.reduce((t,s)=>t+(s[1]||0),0);
+      html=`<div class="sw-scrollx overflow-x-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>`+
+        `<th class="text-left py-1 pr-2">Segment</th>${th('Revenue')}${th('Share')}${th('Result')}${th('Margin')}</tr></thead><tbody>`+
+        x.seg.map(([nm,rv,rs])=>`<tr class="border-b border-slate-50"><td class="py-1.5 pr-2">${esc(nm)}</td>`+
+          money(rv)+td(rv!=null&&tot?(rv/tot*100).toFixed(1)+'%':'—')+money(rs)+
+          td(rv&&rs!=null?(rs/rv*100).toFixed(1)+'%':'—',rs!=null&&rs<0?'neg':'')+`</tr>`).join('')+
+        `</tbody></table></div>`;
+      note=`Reportable segments for ${fmtQtr(segE)} (${xBasis(segE)}). “Result” is segment profit before tax and finance costs; “Share” is of segment revenue before eliminations.`;
+    }else if(cur==='bank'){
+      const rows=ends.filter(e=>{const x=xCell(e); return x&&(x.gnpa_pct!=null||x.cet1!=null||x.dep_amt!=null);}).slice(-8);
+      const line=(lbl,get,fmt)=>`<tr class="border-b border-slate-50"><td class="py-1.5 pr-2 font-medium whitespace-nowrap">${lbl}</td>`+
+        rows.map(e=>{ const v=get(xCell(e)||{}); return `<td class="text-right px-2 whitespace-nowrap">${v==null?'<span class="text-slate-300">—</span>':fmt(v)}</td>`; }).join('')+`</tr>`;
+      html=`<div class="sw-scrollx overflow-x-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr><th class="text-left py-1 pr-2">Metric</th>`+
+        rows.map(e=>`<th class="text-right px-2 whitespace-nowrap">${fmtQtr(e)}</th>`).join('')+`</tr></thead><tbody>`+
+        line('Gross NPA %',x=>x.gnpa_pct,v=>v.toFixed(2))+line('Net NPA %',x=>x.nnpa_pct,v=>v.toFixed(2))+
+        line('CET-1 %',x=>x.cet1,v=>v.toFixed(2))+line('CAR %',x=>x.car,v=>v.toFixed(2))+
+        line('ROA %',x=>x.roa,v=>v.toFixed(2))+
+        line('Deposits',x=>x.dep_amt,crS)+line('Advances',x=>x.adv,crS)+line('Interest expended',x=>x.int_exp,crS)+
+        `</tbody></table></div>`;
+      note='As filed in the bank’s quarterly XBRL. Deposits/advances/interest in ₹ crore. NPA ratios are of gross/net advances.';
+    }
+    $('deepBody').innerHTML=html;
+    $('deepNote').innerHTML=note;
+  };
+  draw();
 }
 
 /* ---------- shareholding pattern (NSE quarterly SHP filings) ----------------------------------
@@ -594,6 +737,18 @@ function shpTrendChart(hist){
   }
   el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="none" style="display:block">${grid}${paths}${xl}</svg>${band}<div class="text-[11px] mt-1">${leg}</div>`;
   el.style.display='';
+}
+
+/* ---------- strategy exposure (slice.strat — tracked strategies holding this stock now) ---------- */
+function renderStrat(){
+  const el=$('stratCard'); if(!el) return;
+  const rows=(SLICE&&SLICE.strat)||[];
+  if(!rows.length){ el.style.display='none'; return; }
+  el.style.display='';
+  $('stratN').textContent='— in '+rows.length+' tracked strateg'+(rows.length===1?'y':'ies')+' right now';
+  $('strat').innerHTML=rows.map(r=>`<div class="flex items-center justify-between gap-2 py-1.5 border-b border-slate-50">`+
+    `<span class="min-w-0 flex-1 text-[13px]">${esc(r[0])}<span class="text-[11px] text-slate-400 ml-1.5">since ${esc(r[2]||'—')}</span></span>`+
+    `<b class="${(r[1]||0)>=0?'pos':'neg'} whitespace-nowrap text-[13px]">${r[1]==null?'—':pct(+r[1])}</b></div>`).join('');
 }
 
 /* ---------- peer comparison (slice.peers — same industry, mcap-ranked, self first) ---------- */
@@ -760,6 +915,7 @@ async function liveQuote(){
       FIN_STATE=F?'ok':'none';
       installStockFin(TKR,F);
       REVOP={}; if(F&&F.revop) REVOP[TKR]=F.revop;
+      FIN_X=(F&&F.x)||null;
       try{ renderFunds(); }catch(e){ console.error(e); }
       if(F&&F.shpH&&F.shpH.length){
         SHP_HIST=F.shpH;

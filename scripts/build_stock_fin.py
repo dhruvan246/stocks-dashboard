@@ -26,6 +26,10 @@ WHAT IT REPLACES
          back to 2019-09-30): [[qEndISO, prom%, fii%, dii%, mf%, ins%,
          subDate, nShareholders], …]. shpQ/shp (8 quarters) stay for readers
          that predate it; the page prefers shpH when present.
+  x      DEEP quarter detail from the XBRL re-parse (scripts/xbrl_extra.json[.gz],
+         built by build_xbrl_extra.py): {qEnd: {s:{...}, c:{...}}} — EPS, interest/
+         depreciation/tax/exceptional, balance sheet, cash flow (+cf_d period days),
+         segments, bank NPA/CET1/ROA, audited flag. ₹ crore / ₹ per share / %.
 
 RENAMES
   Fundamentals are keyed by a company's CURRENT ticker while its price history
@@ -37,7 +41,7 @@ RENAMES
 Run: python scripts/build_stock_fin.py [--out DIR]   (--out: local verification
      builds that must not touch the committed docs/fin/)
 """
-import argparse, json, os, re, shutil, sys
+import argparse, gzip, json, os, re, shutil, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -48,7 +52,16 @@ FUND_J  = os.path.join(DOCS, "sf_fundamentals.json")
 REVOP_J = os.path.join(DOCS, "sf_revop.json")
 SHP_J   = os.path.join(DOCS, "shareholding.json")
 SHPH_J  = os.path.join(HERE, "shp_history.json")
+XTRA_J  = os.path.join(HERE, "xbrl_extra.json")      # local build output…
+XTRA_GZ = XTRA_J + ".gz"                             # …the committed copy CI reads
 RENAME  = os.path.join(HERE, "_rename_map.json")
+
+# per-quarter detail fields the PAGE consumes — the rest of the ledger stays local-only
+XTRA_KEEP = {"eps_b", "eps_d", "oi", "fc", "dep", "tax", "exc", "pbt", "emp", "mat",
+             "assets", "eq", "borr", "cash", "invnt", "rec", "pay", "ppe", "cwip", "invst",
+             "cfo", "cfi", "cff", "capex", "divp", "cf_d", "seg",
+             "gnpa_pct", "nnpa_pct", "cet1", "car", "roa", "dep_amt", "adv", "int_exp",
+             "aud", "qual"}
 
 _UNSAFE = re.compile(r"[^A-Za-z0-9._-]")
 
@@ -92,6 +105,34 @@ def main():
         rows = [[qe] + list((qmap[qe] or [])[:7]) for qe in sorted(qmap)]
         if rows:
             hist_rows[sym] = rows
+
+    # deep XBRL detail — prefer the local build output, fall back to the committed .gz (CI path)
+    xtra = {}
+    src = XTRA_J if os.path.exists(XTRA_J) else (XTRA_GZ if os.path.exists(XTRA_GZ) else None)
+    if src:
+        try:
+            raw = open(src, "rb").read()
+            if src.endswith(".gz"):
+                raw = gzip.decompress(raw)
+            for sym, qs in json.loads(raw).items():
+                keep = {}
+                for qe, cell in qs.items():
+                    kc = {}
+                    for b in ("s", "c"):
+                        d = cell.get(b)
+                        if d:
+                            kd = {k: v for k, v in d.items() if k in XTRA_KEEP}
+                            if kd:
+                                kc[b] = kd
+                    if kc:
+                        keep[qe] = kc
+                if keep:
+                    xtra[sym] = keep
+            print("deep XBRL detail: %d symbols (from %s)" % (len(xtra), os.path.basename(src)))
+        except Exception as e:
+            print("WARN: could not read %s (%s) — deep detail absent from every slice" % (os.path.basename(src), e))
+    else:
+        print("WARN: xbrl_extra.json[.gz] missing — deep detail absent from every slice")
 
     aliases = {}
     if os.path.exists(RENAME):
@@ -138,6 +179,9 @@ def main():
         h = resolve(hist_rows, sym)
         if h:
             payload["shpH"] = h
+        xt = resolve(xtra, sym)
+        if xt:
+            payload["x"] = xt
         if len(payload) == 1:
             continue                   # nothing on file for this ticker
 

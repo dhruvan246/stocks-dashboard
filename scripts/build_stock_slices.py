@@ -42,6 +42,8 @@ SHAPE
     dls   [[date, kind B/K, client, side, qty, price], …] ≤30         deals.json
     dsc   [[date, bucketTitle, blurb, pdfFile], …] ≤20                discovery.json
           (announcement-backed trigger buckets only — order wins, capacity, M&A…)
+    strat [[strategyName, liveRet%, since, asOfDay], …] ≤12           live_tracking.json
+          (tracked strategies whose CURRENT basket holds this stock, best return first)
     nr    'YYYY-MM-DD' next results date (earliest upcoming)          results_calendar.json
     rp    [ts, qEndYYYYMMDD, url] newest results-filing PDF (BSE)     results_feed.json
     peers {g: industry label, r: [[sym, name, mcap ₹cr, peTTM, r1y%], …]}
@@ -124,6 +126,11 @@ def build_activity(end):
     for r in (jload(os.path.join(DOCS, "deals.json"), "bulk/block deals").get("rows") or ()):
         # [date, kind, sym, name, client, side, qty, price]
         add("dls", r[2], [r[0], r[1], _trim(r[4], 60), r[5], r[6], r[7]])
+    for s in (jload(os.path.join(DOCS, "live_tracking.json"), "strategy picks").get("strategies") or ()):
+        # a symbol sitting in a tracked strategy's CURRENT basket — [name, live ret %, since, as-of day]
+        for p in ((s.get("latest") or {}).get("picks") or ()):
+            if p.get("s"):
+                add("strat", p["s"], [_trim(s.get("name"), 60), s.get("ret"), s.get("since"), (s.get("latest") or {}).get("day")])
     for g in (jload(os.path.join(DOCS, "discovery.json"), "discovery triggers").get("groups") or ()):
         for b in g.get("buckets") or ():
             title = _trim(b.get("t"), 40)
@@ -135,7 +142,7 @@ def build_activity(end):
                         and isinstance(r[6], str) and r[6].lower().endswith(".pdf")):
                     add("dsc", r[0], [r[4], title, _trim(r[5], 120), r[6]])
 
-    caps = {"act": None, "ann": ANN_CAP, "ins": INS_CAP, "dls": DLS_CAP, "dsc": DSC_CAP}
+    caps = {"act": None, "ann": ANN_CAP, "ins": INS_CAP, "dls": DLS_CAP, "dsc": DSC_CAP, "strat": 12}
     for sym, d in A.items():
         for k, rows in d.items():
             if k == "dsc":                      # one bucket can list a filing twice
@@ -146,7 +153,10 @@ def build_activity(end):
                         seen.add(key)
                         out.append(r)
                 rows = out
-            rows.sort(key=lambda r: r[0], reverse=True)
+            if k == "strat":                    # best-performing strategies first, not date order
+                rows.sort(key=lambda r: (r[1] is None, -(r[1] or 0)))
+            else:
+                rows.sort(key=lambda r: r[0], reverse=True)
             if caps[k]:
                 rows = rows[: caps[k]]
             d[k] = rows
