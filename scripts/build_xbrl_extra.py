@@ -42,9 +42,12 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import scale_fix
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-CACHE = os.path.join(HERE, "_xbrl_cache")
+# XBRL_CACHE override: the nightly top-up routine runs from its OWN worktree (one writer per
+# tree) but reads the single 80-GB cache that lives in the main checkout — see xtra_nightly.py.
+CACHE = os.environ.get("XBRL_CACHE") or os.path.join(HERE, "_xbrl_cache")
 OUT = os.path.join(HERE, "xbrl_extra.json")
 PROG = os.path.join(HERE, "_xtra_progress.json")
+SEEN = os.path.join(HERE, "_xtra_seen.json")
 REVOP = os.path.join(HERE, "revop_fundamentals.json")
 
 MIN_QE, MAX_QE = 20180101, 20261231
@@ -346,22 +349,42 @@ def main():
     args = sys.argv[1:]
     limit = int(args[args.index("--limit") + 1]) if "--limit" in args else None
     fresh = "--fresh" in args
+    incremental = "--incremental" in args
 
     files = sorted(os.listdir(CACHE), key=ts_key)      # ascending -> latest filing wins
     files = [f for f in files if ts_key(f)[:4] >= "2018"]
     if limit:
         files = files[-limit:]
-    total = len(files)
 
-    data, start_i = {}, 0
-    if not fresh and not limit and os.path.exists(PROG):
+    # --incremental (nightly top-up): process exactly the cache files not in the seen-set.
+    # A set difference, NOT a count-index resume — a late-arriving filing whose timestamp sorts
+    # BEFORE already-processed files would be silently skipped by an index and lost forever.
+    seen = None
+    if incremental:
         try:
-            p = json.load(open(PROG))
+            seen = set(json.load(open(SEEN)))
             data = json.load(open(OUT))
-            start_i = p.get("done", 0)
-            print("resuming from %d/%d" % (start_i, total))
         except Exception:
-            data, start_i = {}, 0
+            sys.exit("ABORT: --incremental needs both %s and %s (seed them from a full run)"
+                     % (os.path.basename(SEEN), os.path.basename(OUT)))
+        files = [f for f in files if f not in seen]
+        total = len(files)
+        print("incremental: %d new cache files, %d symbols in ledger" % (total, len(data)))
+        if not files:
+            print("nothing new — ledger unchanged")
+            return
+        start_i = 0
+    else:
+        total = len(files)
+        data, start_i = {}, 0
+        if not fresh and not limit and os.path.exists(PROG):
+            try:
+                p = json.load(open(PROG))
+                data = json.load(open(OUT))
+                start_i = p.get("done", 0)
+                print("resuming from %d/%d" % (start_i, total))
+            except Exception:
+                data, start_i = {}, 0
 
     def accumulate(r):
         if not r:
@@ -373,7 +396,7 @@ def main():
 
     todo = files[start_i:]
     processed = 0
-    if limit:
+    if limit or incremental:                            # small batches: sequential is fine
         for fname in todo:
             accumulate(_worker(fname)); processed += 1
     else:
@@ -388,8 +411,12 @@ def main():
                     print("  %d/%d files, %d symbols" % (start_i + processed, total, len(data)), flush=True)
 
     json.dump(data, open(OUT, "w"), separators=(",", ":"))
-    if not limit:
+    if incremental:
+        seen.update(files)
+        json.dump(sorted(seen), open(SEEN, "w"), separators=(",", ":"))
+    elif not limit:
         json.dump({"done": total}, open(PROG, "w"))
+        json.dump(sorted(files), open(SEEN, "w"), separators=(",", ":"))   # seed for --incremental
     n_q = sum(len(q) for q in data.values())
     print("Wrote %s: %d symbols, %d symbol-quarters, %d files processed" % (OUT, len(data), n_q, processed))
     validate(data)
