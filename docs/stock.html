@@ -20,7 +20,7 @@
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
-<div id="ov"><div class="w-10 h-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-3"></div><p class="text-sm text-slate-600" id="ovT">Loading market data (~17 MB, once)…</p></div>
+<div id="ov"><div class="w-10 h-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-3"></div><p class="text-sm text-slate-600" id="ovT">Loading…</p></div>
 
 <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
   <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
@@ -119,6 +119,10 @@ const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;',
 const qs=new URLSearchParams(location.search);
 let SYM=(qs.get('sym')||qs.get('s')||'').trim().toUpperCase();
 let TKR=null, CHART=null, RANGE='Max';
+/* SLICE = this stock's pre-cut payload (docs/stk/<SLUG>.json on the sf-data host). Null means we
+   fell back to loading the whole-market engine, the old ~137 MB path — see boot(). FIN_STATE tracks
+   the financials file so the quarterly table can say "loading" instead of "nothing on file". */
+let SLICE=null, FIN_STATE='pending';
 
 function fail(msg){ $('ov').style.display='none'; $('sSym').textContent=SYM||'?'; $('sName').innerHTML=`<span class="neg">${esc(msg)}</span>`; }
 
@@ -192,10 +196,14 @@ function render(){
   $('sChg').innerHTML=`<span class="${dayChg>=0?'pos':'neg'}">${pct(dayChg)}</span> <span class="text-slate-400 text-xs">1-day</span>`;
   $('sAsof').textContent='as of '+isoOff(off);
   $('sBt').href='./stock-backtest.html';
-  // chips: index memberships + F&O
-  const today=isoOff(off); const chips=[];
-  try{ for(const idx in (IDXH||{})){ const mem=membersAsOf(idx,today); if(mem&&mem.has(TKR)) chips.push(idx); } }catch(e){}
-  let fno=false; try{ const f=membersAsOf('__FNO__',today); fno=!!(f&&f.has(TKR)); }catch(e){}
+  // chips: index memberships + F&O. The slice carries them precomputed — resolving membership from
+  // indicesHistory was the ONLY thing the page still wanted the 17 MB stock_data.bin for.
+  const today=isoOff(off); let chips=[], fno=false;
+  if(SLICE){ chips=SLICE.chips||[]; fno=!!SLICE.fno; }
+  else{
+    try{ for(const idx in (IDXH||{})){ const mem=membersAsOf(idx,today); if(mem&&mem.has(TKR)) chips.push(idx); } }catch(e){}
+    try{ const f=membersAsOf('__FNO__',today); fno=!!(f&&f.has(TKR)); }catch(e){}
+  }
   $('sChips').innerHTML=(fno?`<span class="text-[10px] font-bold bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full">F&amp;O</span>`:'')+
     chips.map(c=>`<span class="text-[10px] font-semibold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">${esc(c)}</span>`).join('')||'<span class="text-[11px] text-slate-400">Not in any tracked index currently.</span>';
   // quick stats
@@ -252,7 +260,9 @@ function render(){
  * fin=1 marks banks/NBFCs, whose "revenue" is interest earned and whose margins aren't
  * comparable to industrials — flagged in the note rather than hidden.
  * ------------------------------------------------------------------------------- */
-let REVOP=null;                    // sf_revop.json — fetched AFTER first paint (1.3 MB gzipped)
+/* REVOP is normally this ONE stock's rows, lifted from docs/fin/<SLUG>.json. loadRevop() below is
+   the fallback path only: no fin slice → pull the whole 3.9 MB market file, as the page used to. */
+let REVOP=null;
 async function loadRevop(){
   if(REVOP) return REVOP;
   try{ REVOP=await (await fetch('./sf_revop.json')).json(); }
@@ -274,7 +284,9 @@ function renderFunds(){
   const fundBy={}; arr.forEach(q=>fundBy[q[0]]=q);
   const seen={}; arr.forEach(q=>seen[q[0]]=1); Object.keys(rv).forEach(k=>seen[+k]=1);
   const ends=Object.keys(seen).map(Number).sort((a,b)=>a-b);
-  if(!ends.length){ $('funds').innerHTML='<span class="text-slate-400">No quarterly earnings on file for this stock.</span>'; return; }
+  if(!ends.length){ $('funds').innerHTML=FIN_STATE==='pending'
+      ? '<span class="text-slate-400">Loading quarterly financials…</span>'
+      : '<span class="text-slate-400">No quarterly earnings on file for this stock.</span>'; return; }
 
   const pat=e=>{ const q=fundBy[e]; return q?(q[3]!=null?q[3]:(q[1]!=null?q[1]:null)):null; };
   const patCon=e=>{ const q=fundBy[e]; return !!(q&&q[3]!=null); };
@@ -350,20 +362,22 @@ function renderFunds(){
   $('fundNote').innerHTML=notes.join('<br>');
 }
 
-/* ---------- shareholding pattern (NSE quarterly SHP filings, docs/shareholding.json) ---------- */
+/* ---------- shareholding pattern (NSE quarterly SHP filings) ----------------------------------
+   Rows normally arrive inside this stock's fin slice; loadSHP() below is the fallback that reads
+   the whole-market shareholding.json (0.9 MB) when no slice exists. -------------------------- */
 const SHP_MONS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const shpQ=iso=>SHP_MONS[+iso.slice(5,7)-1]+' '+iso.slice(0,4);
-async function loadSHP(){
+function renderSHP(quarters,cells){
   const el=$('shp');
+  if(!quarters||!quarters.length||!cells||!cells.length){
+    el.innerHTML=FIN_STATE==='pending'
+      ? '<span class="text-slate-400">Loading shareholding pattern…</span>'
+      : '<span class="text-slate-400">No NSE quarterly shareholding-pattern filing on file for this stock (BSE-only listings and pre-2021-format filers aren’t covered yet).</span>';
+    return;
+  }
   try{
-    const j=await(await fetch('./shareholding.json')).json();
-    const rows=j.rows||[];
-    const alias=(typeof FUND_ALIAS!=='undefined'&&FUND_ALIAS&&FUND_ALIAS[SYM])||null;
-    const row=rows.find(r=>r[0]===SYM)||(alias?rows.find(r=>r[0]===alias):null);
-    if(!row){ el.innerHTML='<span class="text-slate-400">No NSE quarterly shareholding-pattern filing on file for this stock (BSE-only listings and pre-2021-format filers aren’t covered yet).</span>'; return; }
-    const cells=row[4]||[];
     // feed quarters are newest-first; display oldest -> newest, trimming leading never-filed quarters
-    let idx=j.quarters.map((q,i)=>i).reverse();
+    let idx=quarters.map((q,i)=>i).reverse();
     while(idx.length&&!cells[idx[0]]) idx.shift();
     if(!idx.length){ el.innerHTML='<span class="text-slate-400">No parsed shareholding filings yet for this stock.</span>'; return; }
     const v=(i,k)=>{ const c=cells[i]; return (c&&c[k]!=null)?c[k]:null; };
@@ -371,7 +385,7 @@ async function loadSHP(){
     const tr=(lbl,get,cls,raw)=>'<tr class="border-b border-slate-50 '+(cls||'')+'"><td class="py-1.5 pr-2 font-medium whitespace-nowrap">'+lbl+'</td>'+
       idx.map(i=>{ const x=get(i); return '<td class="text-right px-2 py-1.5 whitespace-nowrap">'+(x==null?'<span class="text-slate-300">—</span>':(raw?x:x.toFixed(2)+'%'))+'</td>'; }).join('')+'</tr>';
     let h='<table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr><th class="text-left py-1 pr-2">Holder</th>'+
-      idx.map(i=>'<th class="text-right px-2 py-1 whitespace-nowrap">'+shpQ(j.quarters[i])+'</th>').join('')+'</tr></thead><tbody>';
+      idx.map(i=>'<th class="text-right px-2 py-1 whitespace-nowrap">'+shpQ(quarters[i])+'</th>').join('')+'</tr></thead><tbody>';
     h+=tr('Promoters',i=>v(i,0));
     h+=tr('FIIs',i=>v(i,1));
     h+=tr('DIIs <button id="diiTg" class="ml-1 w-4 h-4 inline-flex items-center justify-center rounded border border-slate-300 text-slate-500 text-[10px] leading-none align-middle" title="Show mutual fund / insurance split">+</button>',i=>v(i,2));
@@ -388,6 +402,15 @@ async function loadSHP(){
     if(tg) tg.onclick=()=>{ const open=tg.textContent.trim()==='−'; tg.textContent=open?'+':'−';
       el.querySelectorAll('.shp-sub').forEach(r=>r.classList.toggle('hidden',open)); };
   }catch(e){ el.innerHTML='<span class="text-slate-400">Shareholding data unavailable right now.</span>'; }
+}
+async function loadSHP(){
+  try{
+    const j=await(await fetch('./shareholding.json')).json();
+    const rows=j.rows||[];
+    const alias=(typeof FUND_ALIAS!=='undefined'&&FUND_ALIAS&&FUND_ALIAS[SYM])||null;
+    const row=rows.find(r=>r[0]===SYM)||(alias?rows.find(r=>r[0]===alias):null);
+    renderSHP(j.quarters||[], row?(row[4]||[]):null);
+  }catch(e){ $('shp').innerHTML='<span class="text-slate-400">Shareholding data unavailable right now.</span>'; }
 }
 
 /* ---------- boot ---------- */
@@ -423,18 +446,47 @@ async function liveQuote(){
   }catch(e){ /* keep baked close */ }
 }
 
+/* Opening a company used to cost ~137 MB — the whole market's prices, index history and
+   fundamentals — because the page booted the shared backtest engine. Now it pulls one pre-cut
+   slice for THIS stock (~16 KB) plus the benchmark series, both in flight together, and paints
+   as soon as they land. Financials follow a beat later in their own ~2 KB file. The full-engine
+   path survives underneath for any symbol the slice builder hasn't caught up with yet. */
 (async function boot(){
   if(!SYM){ fail('No symbol given. Add ?sym=RELIANCE to the URL.'); return; }
-  try{ await loadEngineData(m=>{ const t=$('ovT'); if(t&&m) t.textContent=m; }); }
-  catch(e){ fail('Could not load market data: '+(e&&e.message||e)); return; }
-  if(!META[SYM]){ fail('“'+SYM+'” not found in the dataset.'); return; }
-  TKR=SYM;
-  try{ render(); }catch(e){ fail('Render error: '+(e&&e.message||e)); console.error(e); return; }
-  $('ov').style.display='none';
-  loadSHP();
-  // Revenue/margins arrive after first paint: the PAT-only table is already on screen,
-  // and re-renders with the full columns when sf_revop lands.
-  loadRevop().then(()=>{ try{ renderFunds(); }catch(e){ console.error(e); } });
+  // Nifty closes power the benchmark column, beta and RS — small, and shared with other pages'
+  // cache. Started first so it overlaps the slice fetch instead of following it.
+  const niftyP=fetch('./nifty.json').then(r=>r.json()).then(j=>{NIFTY=j.px||{};}).catch(()=>{NIFTY={};});
+  let slice=null;
+  try{ slice=await loadStockSlice(SYM); }catch(e){ console.warn('no slice for '+SYM+' ('+(e&&e.message||e)+') — falling back to the full engine'); }
+
+  if(slice){
+    const finP=loadStockFin(SYM);                 // in flight while we render prices
+    TKR=installStockSlice(slice); SLICE=slice;
+    await niftyP;
+    try{ render(); }catch(e){ fail('Render error: '+(e&&e.message||e)); console.error(e); return; }
+    $('ov').style.display='none';
+    finP.then(F=>{
+      FIN_STATE=F?'ok':'none';
+      installStockFin(TKR,F);
+      REVOP={}; if(F&&F.revop) REVOP[TKR]=F.revop;
+      try{ renderFunds(); }catch(e){ console.error(e); }
+      renderSHP(F&&F.shpQ, F&&F.shp);
+    });
+  }else{
+    // FALLBACK: no slice for this symbol yet — load the whole market, as the page always did.
+    $('ovT').textContent='Loading market data (~17 MB, once)…';
+    try{ await loadEngineData(m=>{ const t=$('ovT'); if(t&&m) t.textContent=m; }); }
+    catch(e){ fail('Could not load market data: '+(e&&e.message||e)); return; }
+    if(!META[SYM]){ fail('“'+SYM+'” not found in the dataset.'); return; }
+    TKR=SYM;
+    FIN_STATE='ok';                                // FUND came with the engine; REVOP lands below
+    try{ render(); }catch(e){ fail('Render error: '+(e&&e.message||e)); console.error(e); return; }
+    $('ov').style.display='none';
+    loadSHP();
+    // Revenue/margins arrive after first paint: the PAT-only table is already on screen,
+    // and re-renders with the full columns when sf_revop lands.
+    loadRevop().then(()=>{ try{ renderFunds(); }catch(e){ console.error(e); } });
+  }
   liveQuote();
   setInterval(()=>{ if(!document.hidden&&liveMarketOpen()) liveQuote(); },60000);
 })();

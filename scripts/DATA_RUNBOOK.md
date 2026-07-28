@@ -24,9 +24,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§14** CORPORATE ANNOUNCEMENTS BROWSER
 - **§15** QUARTERLY RESULTS DASHBOARD
 - **§16** DISCOVERY BUCKETS
-- **§17** BSE-ONLY STOCK COVERAGE  (**§17b** who actually fills the numbers — CI readers are mostly DEAD;
-  **§17c** page-picking bugs that masquerade as "the company didn't file"; **§17d** cloud-Routine port — works,
-  but blocked on GitHub write permission)
+- **§17** BSE-ONLY STOCK COVERAGE
 - **§18** DATA HEALTH MONITORING + COMMIT GUARDS
 - **§19** SITE FEATURES ON SUPABASE
 - **§20** RESULTS COVERAGE DASHBOARD
@@ -50,40 +48,20 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§37** INDIAN INDICES TABLE
 - **§38** CONCURRENCY — ONE WRITER PER TREE
 - **§39** ★ SHIP-IT QUALITY GATE — nothing goes out unverified (**read before ANY UI / design / feature work**)
+- **§40** STOCK PAGE = PER-STOCK SLICES
 
 ---
 
 ## 0. GOLDEN RULES (the things that bite if forgotten)
-- **PROVENANCE ON EVERY FILL.** Any script that writes a data cell must journal, per cell, WHERE the
-  value came from (source system + document id/URL + which anchor verified it) — in a **tracked**
-  ledger (like `ipo_base_fills.json` / `screener_rev_fills.json`), not a gitignored `scripts/_*` one
-  (those die with clobbers/worktrees). 2026-07-22 lesson: pre-IPO PATs had no per-cell source; finding
-  they came from Screener took git -S archaeology — and the SAME source held the missing revenue all
-  along. (memory: feedback-provenance-every-backfill)
 - **Profit basis = OWNERS-ATTRIBUTABLE.** Backtest `npCon` (FUND index 3) = owners-attributable.
   Apply via `apply_owners_full.py`. ⚠️ **NEVER run `apply_total_pat.py`** (wrong basis). (memory: project-stocks-profit-basis)
 - **Fundamentals come from BSE filing PDFs + VISION** — not Screener, not OCR (OCR mangles digits). (memory: feedback-bse-pdfs-not-screener)
-- **⚠️⚠️ BSE `FinancialResult` API is entity-POISONED for EVERY SCRIP — treat it as UNUSABLE, full stop.**
-  Originally logged as FORCEMOT-specific (2026-06-22): `FinancialResult/w?scripcode=500033` + its
-  `/downloads1/*.zip` returned **BSE Limited's** numbers, not Force Motors'. **2026-07-23 re-test proves the blast
-  radius is TOTAL, not "some scrips":** six stuck micro-caps (539195, 522017, 513472, 541741, 544657, 522650) **and
-  RELIANCE (500325)** all returned the *byte-identical* zip — same href `/downloads1/fbbf6644-e2a4-412b-aa35-
-  5b85c38d9301.zip`, same MD5 `b72a6476992b`, same 6,572,706 bytes, same listing (`New folder (2)/Consolidated
-  Financial Q4FY26.pdf`…). One company's filing is served for every scripcode. **Any code that trusts this endpoint
-  writes ONE random company's numbers across the whole BSE universe.** `bse_fetch.quarters()` (line ~70) and
-  `bse_ocr_poc.py` still call it — do not build on them.
-  **USE INSTEAD:** the **announcement** API `AnnSubCategoryGetData?strScrip=<code>&strCat=Result` → attachment GUID →
-  `corpfiling/AttachLive|AttachHis/<guid>` returns the **genuine** company (verified per-scrip, distinct PDFs).
-  Poisoning is endpoint-specific, not scrip-specific. ANY BSE fetch must confirm CIN/auditor on the PDF
-  (FM=L34102MH1958/Akurdi; BSE Ltd=L67120MH2005/Batliboi), never just the scrip label.
-  Full writeup + the proven backfill recipe: `scripts/FORCEMOT_CONTAMINATION_FINDINGS.md`.
-- **⚠️ BSE publishes NO usable XBRL for BSE-only micro-caps — the PDF really is the only source** (checked
-  2026-07-23, don't re-hunt). Three routes tested, all dead: (1) `FinancialResult/w` zips — poisoned, see above;
-  (2) result announcements carry `XBRLFLAG: None` and no `.xml`/`.xbrl` attachment — the `XML_NAME` field
-  (`ANN_<scrip>_<guid>`) is per-scrip and correctly coded but resolves NOWHERE: `AttachLive/`, `AttachHis/`,
-  `CorpAttachment/`, `CorpXbrlGen/`, `Xbrl/`, `BSEDATA/xbrl/`, `downloads1/` all 404, and `/corporates/anndata/<name>.xml`
-  returns an Angular HTML shell, not XML; (3) nothing in the repo had ever found a working route. This is why NSE names
-  get full rev+op+EBIT+PAT free from XBRL (`update_fundamentals.py` → `xbrl_revop`) while BSE-only names need OCR/vision.
+- **⚠️ BSE `FinancialResult` API is entity-POISONED for some scrips — verify the audited entity, not the scrip label.**
+  `FinancialResult/w?scripcode=500033` (FORCEMOT) + its `/downloads1/BSEFinancialResult*.zip` return **BSE Limited's**
+  numbers, not Force Motors'. The **announcement** API `AnnSubCategoryGetData?strScrip=500033&strCat=Result` → attachment
+  GUID → `corpfiling/AttachLive|AttachHis/<guid>` returns the **genuine** company. So poisoning is endpoint-specific, not
+  scrip-specific. ANY BSE fetch must confirm CIN/auditor on the PDF (FM=L34102MH1958/Akurdi; BSE Ltd=L67120MH2005/Batliboi),
+  never just the scrip label. Full writeup + the proven backfill recipe: `scripts/FORCEMOT_CONTAMINATION_FINDINGS.md`. (2026-06-22)
 - **⚠️ A 162-byte `/tmp/bse.json` is BSE's rate-limit 302, not a parser bug.** Over its per-IP quota
   `ListofScripData/w` answers `302 → api.bseindia.com/error_Bse.html` (a 162-byte "Object Moved" stub —
   the byte count is the fingerprint). `curl -s` **exits 0 on a 302** and saves the stub, so the junk only
@@ -230,26 +208,6 @@ in-step: pymupdf + curl_cffi + rapidocr-onnxruntime/onnxruntime/numpy. Validate:
 
 **Manual method** — correct page/row, owners-attributable, unit disambiguation, verify:
 → **`scripts/INSURER_EXTRACTION_PLAYBOOK.md`** (memory: project-stocks-insurer-extraction).
-
-**PRE-LISTING insurer quarters — IRDAI website disclosure packs (proven CANHLIFE FY24, 2026-07-22):**
-When a quarter predates the insurer's listing (no BSE/NSE filing exists anywhere), the IRDAI **public
-disclosure packs on the company website** carry it. Recipe (CANHLIFE example):
-1. Find the packs: the site's public-disclosures page is an AEM app; the per-quarter PDF sits under
-   `/content/dam/<site>/pdf/public-disclosure/disclosure/<id>/website-disclosure-<mon>-<yy>.pdf` and the
-   `<option value="<id>">FY-Qn</option>` dropdown in the page HTML maps quarter→id (CANHLIFE: 55=FY24Q1 …
-   66=FY26Q4). The DAM folder listing `…/disclosure/<id>.1.json` is OPEN and gives the exact filename
-   (naming drifts: `june-23` vs `june-2024` vs `march-26`). Plain curl needs only a browser User-Agent.
-2. **L-1-A-RA** (Revenue Account, policyholders) is CUMULATIVE-to-date with segment columns — take the
-   GRAND-total column (NPI Sub-Total after reinsurance; Income-from-Investments block Sub-Total) and get
-   the quarter by **consecutive-pack subtraction** (Q2 = H1 − Q1 …). In the Q4 pack, page 1 of L-1 is the
-   Mar QUARTER directly and page 2 the FY (pages 3-4 = prior year).
-3. **L-2-A-PL** (shareholders' P&L) has **FOR-QUARTER columns directly**: shareholders' investment income
-   (sum a-d), Other income, PBT, PAT.
-4. rev = NPI + policyholders' inv income + shareholders' inv income; op = PBT − OI(both) — same LI
-   convention as build_revop. **Validate the chain**: Q1+Q2+Q3+Q4 must equal the FY pack to ~1 lac, and if
-   any listed-era quarter overlaps, the method must reproduce its SEBI-form value EXACTLY (CANHLIFE Jun-24
-   3,086.86 reproduced to the paisa). PAT anchor per quarter from the L-2 for-quarter column. ⚠️ op from
-   L-forms carries ±1cr classification noise vs the SEBI form (rev/PAT are exact).
 
 **ROBUSTNESS UPGRADES (2026-07-16) — so the Season Trends chart (quarterly-results.html) never silently undercounts an index:**
 1. **Free Gemini-vision fallback is WIRED but needs a secret.** `fetch_insurers.py` → `gemini_extract()` (via
@@ -520,6 +478,9 @@ Goal: every page fast even for a brand-new visitor (caching can't help a cold fi
 - **Homepage + Mutual Funds = slim payload + lazy full data.** See §4. HTML is a small shell; default view renders
   from a slim file (`dash_slim.bin` ~2 MB / inline scheme list ~0.5 MB); the heavy history (`stock_data.bin` /
   `mf_history.bin`) is lazy-fetched on first real need (`ensureFull` / `ensureHistory`) then cached.
+- **The STOCK page never loads the engine's data at all** — it opens from two pre-cut per-stock
+  files (~37 KB total) instead of the ~137 MB whole-market load. See **§40**; that is the pattern to
+  copy for any future "one entity" page.
 - **Backtest pages lazy-load the engine** (17 MB + 90 MB sf data). `saved-strategies.html` renders its list from
   synced DB data; the engine loads only when Today's Picks opens (`ensureEngine`). `stock-backtest.html` direct
   visit shows the builder instantly via `initUIStatic()` (dates from tiny `sf_meta.json`); Saving needs no data;
@@ -808,14 +769,6 @@ V-recovery (Jun-2021: +48%)**.
     arithmetic; IRCTC/GAEL/GRAPHITE/TTML land on **exactly 100.000** (IRCTC: 165839.23 − 80580.17 = 85259.06, and
     its Jun-22 filing says 852.59). **(b) cross-basis** — the other-basis filing minutes later (BATAINDIA, GHCL,
     BRFL). **(c) neighbours** — only where exactly one power of ten lands every slot in range (SILGO, PBAINFRA).
-  - **TINY-CON subclass (user-reported 3MINDIA Dec-25 con 1.23 vs std 1228.05; 58-cell sweep FIXED 2026-07-22):**
-    a junk or /100 **consolidated context beside a healthy standalone** — con rev < 5% of std is structurally
-    impossible for a real consolidation. Sweep rule: `con<0.05*std AND std>20`. Adjudication split: whole-con-basis
-    /100 incl. PAT → scale_fix.json (k=-2, basis=con: METROBRAND/NAVNETEDUL/PARKHOTELS); Screener-reachable
-    (≥ ~12 qtrs back) → PAT-anchored Sales OVERWRITE (AIIL/PFC/JINDALSAW/TENNIND); unverifiable → null CON slots
-    only (49 cells, _revgap_nulled.json). ⚠️ the inverted case exists: ACUTAAS Jun-23 had std=con×100 (null the
-    STD, keep coherent con). **Prevention now automatic:** `revop_sanity.py` rule 3 nulls new tiny-con fills
-    (con < 5% of std AND < 20 cr — the 20-cr floor protects real small con from an inflated std).
   - **⚠️ Don't require ">= N quarters" when sweeping** — that hid **GICL 20250930** (×1e5 on BOTH bases, rendering
     ₹3,615,270cr of revenue) outright, because GICL has only 4 quarters. Compare to ADJACENT quarters instead.
   - **KNOWN-UNFIXED (needs its own session, NOT in the ledger):** **QUINT** (Quint Digital, ₹180cr mcap) has ~20
@@ -1228,7 +1181,7 @@ shareable URL (`discovery.html#b=<key>`).
 Our core price/fundamentals dataset is NSE-keyed, so ~2,678 **BSE-listed-only** stocks (ISIN not on NSE —
 e.g. Cella Space 532701, NSDL) were entirely absent. NSE 2,385 + BSE-only 2,678 ≈ the "~5,000 stocks"
 users compare against (Screener covers BSE-only; we didn't). This pipeline adds them as first-class rows on
-the Quarterly Results page. **4 scripts + `.github/workflows/refresh-bse.yml` (20:10 IST daily — see §17b):**
+the Quarterly Results page. **4 scripts + `.github/workflows/refresh-bse.yml` (22:10 IST daily):**
 - **`build_bse_universe.py` → `docs/bse_universe.json`** — BSE bulk `ListofScripData` (all active equity,
   one call: SCRIP_CD, scrip_id, ISIN, GROUP, FACE_VALUE, **Mktcap**) MINUS the NSE `EQUITY_L.csv` ISIN set =
   BSE-only. Rows `[scrip_cd, ticker, name, isin, group, faceval, mcap_cr, sector]`, biggest-mcap-first. Sector
@@ -1237,16 +1190,16 @@ the Quarterly Results page. **4 scripts + `.github/workflows/refresh-bse.yml` (2
   bhavcopy `BhavCopy_BSE_CM_0_0_0_<YYYYMMDD>_F_0000.CSV` (cols ISIN/TckrSymb/**ClsPric**/TtlTradgVol, ~4,900/day).
   Resumable, SORT-MERGES (backfill can add dates OLDER than existing — don't revert to append-only). Daily.
 - **`fetch_bse_fund.py` → `docs/bse_fundamentals.json`** (`{px:{scrip:{QE:{rev,pat,ann,basis}}}}`) — quarterly
-  Rev/PAT. **⚠️ The BSE `FinancialResult` API is ENTITY-POISONED for EVERY scrip** (returns **BSE Ltd's** numbers
-  — the FORCEMOT pattern; proven on Cella Space, and on 2026-07-23 confirmed byte-identical for 6 micro-caps AND
-  RELIANCE — see §0 golden rules). So we DON'T use it. Instead per scrip: `AnnSubCategoryGetData` (strCat=-1) → pick result/board-outcome filings WITH an
+  Rev/PAT. **⚠️ The BSE `FinancialResult` API is ENTITY-POISONED for many scrips** (returns **BSE Ltd's** numbers
+  — the FORCEMOT pattern; proven on Cella Space: its "result zip" was BSE Ltd's auditor report). So we DON'T use
+  it. Instead per scrip: `AnnSubCategoryGetData` (strCat=-1) → pick result/board-outcome filings WITH an
   attachment → `AttachLive/AttachHis/<guid>.pdf` → **OCR** (rapidocr; small BSE cos file SCANNED PDFs, no text
   layer) → **IDENTITY-GUARD** (company name tokens must appear on the page) → parse P&L rows. OCR ~15s/page ⇒
   SLOW ⇒ bounded+resumable grind (`--budget N --max-minutes M`, ledger `scripts/_bse_fund_done.json`).
   **⚠️ ORDER = DECLARED-FIRST, then mcap desc, floor 0** (was mcap-only + floor 100 → 782 already-declared
   sub-₹100cr cos were being SKIPPED — user wanted ALL results incl. <100cr). `declared_recently()` scans the
   strCat=Result feed (last ~110d) → those scrips grind FIRST at ANY mcap; the `--min-mcap` floor now applies
-  ONLY to non-declared names. Workflow runs `--min-mcap 0` TWICE daily (12:10 + 20:10 IST) so the whole
+  ONLY to non-declared names. Workflow runs `--min-mcap 0` TWICE daily (12:10 + 22:10 IST) so the whole
   ~2,678 universe is covered in ~1-2 wks, real declarers first. **Validated: Cella Space Q1FY27 PAT 7.29 =
   exact vs Screener.** (Revenue is Revenue-from-Operations; Screener may show Total Income — small diff.)
   **⚠️ FEED INJECTION (fetch_bse_results.py step 1b):** BSE lets small cos file the result under "Board
@@ -1324,104 +1277,6 @@ the Quarterly Results page. **4 scripts + `.github/workflows/refresh-bse.yml` (2
   `…/scripts/stocksworld-quotes/deployments {strategy:'percentage', versions:[{percentage:100, version_id}]}`.
   Needs the user's explicit deploy authorization (auto-mode blocks it otherwise). Manual fallback: paste the file
   in the quick editor + Deploy (LIVE_FEED_SETUP.md).
-
-### 17b. WHO ACTUALLY FILLS BSE-ONLY NUMBERS — and why CI mostly can't  (2026-07-23)
-
-Established while asking "why didn't a cron job fill these 19?" — **don't re-derive this, and don't assume
-the cloud grind will drain the backlog.**
-
-- **Reader chain in `fetch_bse_fund.py:extract()`** (each runs only if the previous found nothing):
-  OCR (rapidocr) → `bse_vision_api` (Anthropic) → `gemini_vision.read_corp_results` (Google, free).
-- **⚠️ `ANTHROPIC_API_KEY` IS NOT SET as a repo secret** (`gh secret list` = GEMINI_API_KEY, SF_DATA_TOKEN
-  only). `refresh-bse.yml` references it, so it resolves to empty and the Anthropic step is a permanent
-  no-op. Scanned filings therefore fell through the whole chain for months. **The user has decided NOT to
-  pay for an Anthropic key — do not propose it again as the fix.**
-- **⚠️ The free Gemini tier is ALREADY SPENT most days.** `gemini_vision.py` header claims "~1,500 req/day,
-  we use ~7/quarter → always free", but that budget was written for the insurer job alone; `fetch_insurers.py`
-  AND `backfill_ipo_bases.py` share the same key nightly. First real test (run 29997801224, 2026-07-23)
-  returned `RESOURCE_EXHAUSTED` on the very first call and disabled itself for the run — **0 companies
-  filled, so its accuracy on scanned micro-caps is still UNVERIFIED.** It is opportunistic only; it cannot
-  drain the ~531-scrip backlog. The quota guard (`quota_dead()`) works correctly and won't hang CI.
-- **`gemini_vision.read_corp_results` is PAT-ONLY** — no revenue in its schema — so cells it fills carry
-  blank rev/OPM (same shape as the Claude backfills; see the PAT-only-gap memory).
-- **`MAX_FAIL = 3` retires scrips permanently** (`fetch_bse_fund.py:31`, moved into `done` at line ~269).
-  ~321 of the 531 in `_bse_fund_fail.json` are retired **for failing OCR at a time when no working vision
-  reader existed** — they are untried, not unreadable. Do NOT clear them until a reader is proven accurate,
-  or they just burn 3 more attempts and re-retire.
-- **CONCLUSION: the local `bse-vision-fill` scheduled routine is the PRIMARY reader for scanned BSE
-  micro-caps, not a safety net.** It runs on the user's Claude plan (no marginal cost). Everything above is
-  best-effort ahead of it.
-- **Don't go hunting for a free structured feed — it was checked 2026-07-23 and does not exist.** BSE
-  publishes no usable XBRL for these names (all routes 404 / poisoned — see §0 golden rules). NSE names get
-  full rev+op+EBIT+PAT free from XBRL; BSE-only names have only the PDF. That asymmetry is permanent as far
-  as we can tell, and it is WHY this laptop-dependent routine exists.
-- **Reader field coverage differs — don't conflate them** (I did, 2026-07-23): `bse_vision_api` (Anthropic)
-  reads **rev + pat** for jun2026/jun2025; `gemini_vision.read_corp_results` reads **pat ONLY** (cur/prec/yago —
-  it was written for the insurer net-profit job and generalized without adding revenue). Neither reads `op`,
-  deliberately: operating profit counts only when the statement PRINTS an explicit line, and most don't
-  (2 of 19 on 2026-07-22). Extending the Gemini schema to carry revenue is a small, free change if it is ever
-  worth running.
-- **Ordering contract (timings changed 2026-07-23):** free readers must finish before the paid-plan routine
-  starts. `refresh-bse` 12:10 + **20:10 IST** (was 22:10; moved out of hours 15–16 UTC, which
-  `refresh-fundamentals` reserves for its nightly hour-gate — see the cron-drift note in §11/§15),
-  `refresh-fundamentals` nightly 21:15, then **`bse-vision-fill` 16:30 + 23:30 IST** (cron `30 16,23 * * *`,
-  ~8 min jitter; one cron shares a single minute field across both hours, so 23:45 is not expressible
-  alongside 16:30).
-
-### 17c. PAGE-PICKING BUGS THAT LOOK LIKE "the company didn't file"  (2026-07-23)
-
-Two distinct failure modes, both of which produced a WRONG "no P&L in this filing" conclusion. §17's existing
-rule stands (distrust the PDF pick, not the feed) — these are the mechanisms behind it.
-
-- **`bse_vision_prep.render_pdf_pages` under-scored real tables.** `NUM_TOK` was `\d[\d,]{2,}` (3+ digits),
-  so a micro-cap table of `3.19 / 22.86 / 7.00` scored ~34 while a blank scanned page scored
-  `SCAN_SCORE = 40`. VIRTUALG Q1FY27: P&L on pages 2 (standalone) and 6 (consolidated), SIX blanks, the
-  4-page budget went entirely to blanks → subagent correctly reported "auditor report only", conclusion was
-  wrong. **Fixed 2026-07-23** (`cf7f855`): count any digit-run incl. decimals (tables now score 143/144),
-  and take scored pages BEFORE blanks so blanks can only fill leftover slots.
-- **A company can file the board-meeting OUTCOME letter without the results attachment.** KRIFILIND
-  2026-07-22 filed "Approval of Unaudited Financial Results…" at ~18:00 whose PDF is only the cover letter +
-  annexure; the numbers post separately later. `pdf_period()` reads 20260630 from it, so it looks like the
-  right filing. This is genuinely "wait for the next run", NOT a renderer miss — but verify by listing the
-  scrip's announcements (`bse_render.announcements`) before saying so.
-- **Genuine non-filing exists too:** CONTAINER (540597, now Indus Aluminium Recyclers) POSTPONED its board
-  meeting. Only call this after reading the actual letter.
-
-### 17d. CLOUD-ROUTINE PORT — tested 2026-07-23, BLOCKED ONLY on GitHub write permission
-
-Goal: get vision-fill off the laptop (it only runs when the PC is awake). Ported the routine to a **Claude Code
-cloud Routine** (claude.ai/code/routines — Anthropic-hosted, runs on the Pro/Max plan, NO API key, NO hardware).
-Three real runs. **Everything worked except landing the commit.** Re-read this before re-attempting.
-
-- **✅ THE BIG ONE: BSE *IS* REACHABLE from Anthropic's egress proxy.** This was the main risk (BSE rate-limits
-  by IP and NSE hard-403s every scripted IP we have — §0, §18). Filings fetched, PDFs rendered, vision read them,
-  merge + `build_bse_results` + `build_results_coverage` all ran clean, and it correctly skipped CONTAINER
-  (ok:false). **So the cloud path is viable the moment write access exists.**
-- **❌ BLOCKER: the Claude GitHub App is NOT installed on the account, and cannot be installed.**
-  `github.com/settings/installations` → "No installed GitHub Apps". Consequences, all confirmed by run:
-  - `git push origin HEAD:main` → **403** (this is NOT branch protection)
-  - `git push` to a `claude/`-prefixed branch → **also 403** — the sandbox proxy blocks raw git push outright
-  - GitHub MCP `create_branch` / `push_files` → **403 "Resource not accessible by integration"**
-  ⇒ The repo connection came from `/web-setup` (syncs the `gh` token = clone/READ only). Write needs the App.
-  The docs say the App install is prompted during **GitHub-trigger** setup — in practice adding a GitHub trigger
-  did NOT offer it, and there is no official Anthropic "Claude" App in the GitHub Marketplace (only third-party
-  Actions: Claude Code Action Official, BugBot, AutoFix — those run Claude *inside your CI* with an API key and
-  are a DIFFERENT thing). Ask Anthropic support; the evidence is the empty Installed-Apps list.
-- **⚠️ "Allow unrestricted branch pushes"** (docs: Permissions tab at the bottom of the routine form) **does not
-  exist in the current UI** — the tabs are Connectors / Behavior / Notifications. Don't hunt for it.
-- **⚠️ A GitHub-event trigger fires a FULL run per matching event** — with ~30 CI workflows pushing all day this
-  would shred the daily routine-run cap. Schedule trigger only.
-- **Cron field is UTC**, but the form header resolves it to local ("Runs daily at 4:30 PM GMT+5:30"). **Trust the
-  header.** 16:30 IST = `0 11 * * *`; 23:30 IST = `0 18 * * *`. One routine takes ONE schedule trigger — two runs
-  a day needs two routines (and 2× the run cap).
-- **`git fetch` is slow through the proxy and times out**, though the proxy is healthy. Prompt tolerates it
-  (`timeout 180`, then carry on with the session-start clone).
-- **Cost:** ~62k tokens / 18 min for a near-empty day; ~10 min on the repeats. Draws on the SAME subscription pool
-  as interactive sessions, plus a separate daily routine-run cap (claude.ai/settings/usage).
-- **Adapted prompt** (worktree/lock logic stripped — a fresh VM per run makes them unnecessary; `/tmp` paths;
-  `TZ=Asia/Kolkata date` is CORRECT there, unlike Windows git-bash) is worth rewriting from the local SKILL.md
-  when this is revisited. **Until write access exists the local 16:30/23:30 task remains the only thing that
-  actually lands data** — the cloud run does the work and then throws it away.
 
 ---
 
@@ -2526,3 +2381,68 @@ A named unverified corner costs one sentence; the same corner found by the user 
 ### If a bug ships anyway
 Fix the **class**, not just the instance: ask *"what check would have caught this?"* and add it to the
 gate above. That is what keeps this list from growing.
+
+---
+
+## 40. STOCK PAGE = PER-STOCK SLICES  (docs/stock.html first paint, built 2026-07-28)
+**Problem it fixed:** opening any company (`stock.html?sym=RELIANCE`) booted the shared backtest
+engine, i.e. the WHOLE market, before it could draw one line: `stock_data.bin` 17 MB +
+`sf_stock_data_1/2.bin` 115 MB + `sf_fundamentals.json` 3.2 MB + `sf_revop.json` 3.9 MB +
+`shareholding.json` + `shp_engine.json` — **~137 MB and a ~250 MB JSON.parse per visit**, for one
+stock. Worst of all, 104 MB of that was `stock_data.bin`'s `series`, which `activateSF()` threw away
+immediately; the page wanted only its index membership and market cap.
+
+**Now:** two pre-cut files per stock. Cold page ≈ **37 KB of data** (~3,600× less), one round trip
+each, both fetched in parallel with the tiny `nifty.json`.
+
+| file | what | built by | published to | cadence |
+|---|---|---|---|---|
+| `stk/<SLUG>.json` (~15 KB gz) | prices, meta, index chips, mcap | `build_stock_slices.py` | **sf-data** repo (force-push) | daily, every stock |
+| `docs/fin/<SLUG>.json` (~2 KB gz) | profit, revenue/margins, shareholding | `build_stock_fin.py` | **this** repo (committed) | on every results commit |
+
+**Why two files and two homes — do not "simplify" this into one:**
+- Price slices change for EVERY stock EVERY trading day → committing them here = ~40 MB/day of new
+  blobs forever. They ride the existing sf-data force-push (fresh single commit, no history).
+- Financial slices change for the ONE company that just filed → git stores only that blob, so they
+  CAN be committed, and `refresh-stock-fin.yml` (push-triggered on `sf_fundamentals.json` /
+  `sf_revop.json` / `shareholding.json`) rebuilds them minutes after any results workflow lands.
+  Folding them into the daily price push would leave the quarterly table up to 24 h stale mid-season.
+
+**The rule that keeps it honest:** a slice carries the upstream arrays **verbatim**, and the client
+(`installStockSlice` in `backtest-engine.js`) applies the exact transform `loadSF()` applies. Never
+re-derive values in the builder. First cut did, and it cost real accuracy — rounding turnover to an
+int put a 40% error on penny stocks (TVVISION 0.957 → 0.571 ₹ lacs) and converting the per-mil
+high/low into x100 paise moved 52-week lows on sub-₹10 names. Passing `hb/lb`, `dv`, `t` through and
+letting the page divide/expand them made all 517 probe symbols match to the last decimal.
+
+**Tail arrays:** `h/l/v/dv/t` ship only for the last `k=400` bars — the deepest window anything on
+the page looks back is 52 weeks. `installStockSlice` pads the head so indices stay aligned with `d`;
+pad value is "no intraday range known" (high=low=close, or a 0 per-mil offset) and **never null**,
+which would poison the 52-week low. Full daily `d`+`p` are kept — the chart's Max range and the
+since-inception/CAGR rows need them (SF history is weekly pre-2020, daily after, so it stays small).
+
+**SLUG** = symbol with anything outside `[A-Za-z0-9._-]` → `_` (23 symbols carry `&`/`+`: M&M, L&T,
+SRERAYHY+H). Same rule in both builders and in `slugSym()`; builders abort on a collision.
+Renamed tickers get a fin slice under the OLD name too (TATAMOTORS → TMPV's financials), mirroring
+`fundFor()`/`FUND_ALIAS` — without it every renamed stock's page showed "no quarterly earnings".
+
+**Fallback:** no slice (a listing newer than the last build) → the page loads the full engine exactly
+as before, with the old overlay message. Correct, just slow. Nothing to fix by hand.
+
+**Verify after changing either builder or `installStockSlice`** — this is the whole safety net:
+```
+python scripts/build_stock_slices.py --out docs        # writes docs/stk/ (gitignored, local only)
+python scripts/build_stock_fin.py
+node <scratch>/equiv.js     # loads the REAL loadSF() path + the slice path in one vm, compares
+                            # 25 metrics per symbol over ~500 probes incl. delisted/penny/ETF names
+```
+The harness is the reference, not a re-implementation: it feeds probe symbols to the engine's own
+`loadSF()` through a stubbed `fetch`, so any drift between the two paths shows up as a mismatch.
+
+**Gotchas:**
+- `docs/stk/` is **gitignored** — it exists locally only to serve the page from `localhost`
+  (`SLICE_BASE` switches to `./stk/` off localhost/file://). Production reads it from sf-data,
+  which is the SAME origin as the site (both `dhruvan246.github.io`), so there is no CORS hop.
+- The service worker never caches `.json` and ignores cross-origin, so slices are always fresh.
+- Slices depend on `docs/stock_data.bin` for `startTs` + index/F&O membership + mcap. It is still
+  committed and still needed by other pages — the STOCK page just no longer downloads it.

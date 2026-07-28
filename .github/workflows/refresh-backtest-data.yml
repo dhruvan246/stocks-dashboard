@@ -34,7 +34,7 @@ concurrency:
 jobs:
   refresh-backtest-data:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30      # +10 for cutting and pushing the 5k per-stock slices
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -90,20 +90,26 @@ jobs:
       # The browser loads the dataset from the dedicated same-origin sf-data Pages repo (the release
       # asset fails CORS in-browser). Split the >100MB file into 2 sub-100MB halves and FORCE-PUSH them
       # there — a fresh single commit each day, so that repo never accumulates history/bloat.
-      - name: Force-push split data to sf-data Pages repo
+      #
+      # The same push carries stk/ — one small pre-cut slice per stock, which is what docs/stock.html
+      # actually opens with (runbook §40). They ride along here because they need this job's freshly
+      # appended sf_stock_data.bin, and they belong in a force-pushed repo: every stock's slice changes
+      # every trading day, so committing them to the main repo would add ~40 MB a day forever.
+      - name: Force-push split data + per-stock slices to sf-data Pages repo
         if: ${{ hashFiles('docs/.sf_updated') != '' || github.event_name == 'workflow_dispatch' }}
         env:
           SF_DATA_TOKEN: ${{ secrets.SF_DATA_TOKEN }}
         run: |
           python3 scripts/split_sf_data.py
+          python3 scripts/build_stock_slices.py
           cd scripts/_sfsplit
           git init -q -b main
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add sf_stock_data_1.bin sf_stock_data_2.bin sf_meta.json
+          git add sf_stock_data_1.bin sf_stock_data_2.bin sf_meta.json stk_meta.json stk
           git commit -q -m "data $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
           git push -q --force "https://x:${SF_DATA_TOKEN}@github.com/dhruvan246/sf-data.git" main
-          echo "force-pushed fresh split data to sf-data"
+          echo "force-pushed fresh split data + $(ls stk | wc -l) stock slices to sf-data"
 
       # Symbol/name index behind the site-wide 🔍 search box. Built from the SAME meta the
       # backtest payload carries, so search only ever offers stocks stock.html can render.

@@ -143,6 +143,73 @@ async function loadEngineData(onProgress) {
   onProgress && onProgress('');
 }
 
+/* ---- SINGLE-STOCK FAST PATH (docs/stock.html) -------------------------------------------------
+ * A screen needs the whole market; a company page needs one company. loadEngineData() above pulls
+ * ~137 MB (stock_data.bin 17 MB + both sf-data halves 115 MB + fundamentals) before it can draw
+ * anything, which is why opening a stock used to crawl. scripts/build_stock_slices.py pre-cuts one
+ * file per symbol — the same arrays this engine builds in memory, already normalised — so the page
+ * loads ~16 KB and every helper below (hl52 / rsi14 / computeTech / retPctAt / priceAt) runs against
+ * it unchanged. One shape, one set of maths, no second implementation to keep in sync.
+ *
+ * Deliberately NOT set here: SF (leaving it null keeps loadSF()'s guard intact, so a page can still
+ * fall back to the full engine in the same visit) and IDXH/FNOH (index chips are precomputed into
+ * the slice — reading membership was the ONLY reason the page ever fetched the 17 MB stock_data.bin).
+ * ---------------------------------------------------------------------------------------------- */
+// Production: sf-data is the SAME origin as the site (both dhruvan246.github.io), so this is a
+// plain same-origin fetch, no CORS. Serving docs/ locally, point at a locally built ./stk/ instead.
+const SLICE_BASE = (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.protocol === 'file:')
+  ? './stk/' : 'https://dhruvan246.github.io/sf-data/stk/';
+// Mirrors slug() in build_stock_slices.py / build_stock_fin.py — 23 symbols carry & or + (M&M, L&T…)
+function slugSym(s) { return String(s).replace(/[^A-Za-z0-9._-]/g, '_'); }
+async function loadStockSlice(sym) {
+  const r = await fetch(SLICE_BASE + slugSym(sym) + '.json');
+  if (!r.ok) throw new Error('slice HTTP ' + r.status);
+  const S = await r.json();
+  if (!S || !Array.isArray(S.p) || !S.p.length || typeof S.d0 !== 'number') throw new Error('slice malformed');
+  return S;
+}
+// Per-stock financials (docs/fin/<SLUG>.json — profit, revenue/margins, shareholding). Separate file
+// because results land on their own cadence, hours after the daily price rebuild. Absent = no filings.
+async function loadStockFin(sym) {
+  try {
+    const r = await fetch('./fin/' + slugSym(sym) + '.json');
+    if (!r.ok) return null;
+    const F = await r.json();
+    return (F && typeof F === 'object') ? F : null;
+  } catch (e) { return null; }
+}
+function installStockSlice(S) {
+  const sym = S.sym, n = S.p.length;
+  const d = new Array(n); d[0] = S.d0;
+  const dd = S.dd || []; for (let i = 1; i < n; i++) d[i] = d[i - 1] + dd[i - 1];
+  // h/l/v/dv/t cover only the last k bars (nothing on the page looks back past 52 weeks); pad the
+  // head so every array stays index-aligned with d. Padding is never null — that would poison the
+  // 52-week low — it is whatever means "no intraday range known": high = low = close, or a 0 offset.
+  const pad = (a, fill) => { if (!a) return null; const out = new Array(n), off = n - a.length;
+    for (let i = 0; i < off; i++) out[i] = fill(i);
+    for (let i = 0; i < a.length; i++) out[off + i] = a[i];
+    return out; };
+  const ser = { d, p: S.p };
+  // Same branches loadSF() applies to the whole-market payload, so both paths agree exactly.
+  if (S.h && S.l) { ser.h = pad(S.h, i => S.p[i]); ser.l = pad(S.l, i => S.p[i]); }
+  else if (S.hb && S.lb) { ser.hb = pad(S.hb, () => 0); ser.lb = pad(S.lb, () => 0); }
+  if (S.v)  ser.v  = pad(S.v, () => 0);
+  if (S.dv) ser.dv = pad(S.hl ? S.dv : S.dv.map(x => x / 10), () => 0);   // legacy dv is stored x10
+  START_TS = S.ts;
+  SERIES = {}; SERIES[sym] = ser;
+  TURN   = {}; TURN[sym]   = { d, t: pad(S.t, () => 0) || new Array(n).fill(0) };
+  META   = {}; META[sym]   = { symbol: sym, name: S.name || sym, industry: S.ind || '', sector: S.ind || '',
+                               mcap: 0, latest: S.p[n - 1] / 100, alive: !!S.alive, raw: S.raw != null ? S.raw : null };
+  const endOff = Math.floor((Date.parse((S.end || '') + 'T00:00:00Z') / 1000 - S.ts) / DAY);
+  SF_END_OFF = isFinite(endOff) ? endOff : d[n - 1];
+  CORE_META = {};
+  if (S.mcap != null) CORE_META[sym + '.NS'] = { symbol: sym, mcap: S.mcap, latest: S.mcapAt != null ? S.mcapAt : null };
+  return sym;
+}
+function installStockFin(sym, F) {
+  FUND = {}; if (F && F.fund) FUND[sym] = F.fund;   // already alias-resolved at build time
+}
+
 /* ---- LIVE intraday overlay (optional — used by the 🎯 Live Picks screen) ----------------------
  * Splices ONE synthetic bar carrying today's live LTP onto the end of each stock's price series,
  * so EVERY price factor (52w distance, returns, RSI, stoch, Bollinger…) is computed by the same

@@ -36,3 +36,10 @@ _wf_run.js
 # revop backfill: local PDF cache + raw P&L harvest (not served)
 scripts/_revgap_pdfcache/
 scripts/sf_pnl_full.json
+
+# Per-stock PRICE slices (build_stock_slices.py). Built here only to test stock.html locally —
+# in production they are force-pushed to the sf-data Pages repo, because every stock's slice
+# changes every trading day and committing them would grow this repo ~40 MB a day.
+# The FINANCIAL slices (docs/fin/) are the opposite case and ARE tracked: only the handful of
+# companies that filed since the last build produce new blobs.
+docs/stk/

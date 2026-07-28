@@ -1,0 +1,67 @@
+name: Rebuild per-stock financial slices
+
+# docs/stock.html reads ONE company's financials from docs/fin/<SLUG>.json (~2 KB) instead of
+# pulling sf_fundamentals.json + sf_revop.json + shareholding.json (8 MB of whole-market data)
+# on every visit — see runbook §40. Those three feeds are written by a dozen different results
+# workflows at all hours, so rather than teach each of them to rebuild the slices, this job
+# watches the files themselves: whatever lands a new quarter, the affected company's slice is
+# refreshed minutes later. Only the stocks that actually filed produce new blobs, so the repo
+# grows by kilobytes, not by the 40 MB/day the PRICE slices would cost (those are force-pushed
+# to the sf-data repo by refresh-backtest-data.yml instead).
+#
+# No self-trigger: this job only ever commits docs/fin/**, which is not in the paths filter.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/sf_fundamentals.json"
+      - "docs/sf_revop.json"
+      - "docs/shareholding.json"
+      - "scripts/build_stock_fin.py"
+      - "scripts/_rename_map.json"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-stock-fin
+  cancel-in-progress: true      # a burst of results commits only needs the LAST rebuild
+
+jobs:
+  rebuild-fin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Build per-stock financial slices
+        run: python3 scripts/build_stock_fin.py
+
+      # NOTE: the retry loop resets --hard, so the freshly built directory is stashed in /tmp and
+      # copied back INSIDE the loop — anything left only in the workspace would be discarded.
+      # `git add --all -- docs/fin` is scoped to that one directory (and this is an ephemeral CI
+      # checkout, not the shared working tree CLAUDE.md rule 1 protects); --all is what stages the
+      # DELETIONS for companies that dropped out of the feeds.
+      - name: Commit refreshed slices
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -rf /tmp/fin && cp -r docs/fin /tmp/fin
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main && git reset --hard origin/main
+            rm -rf docs/fin && cp -r /tmp/fin docs/fin
+            git add --all -- docs/fin
+            if git diff --cached --quiet; then echo "financial slices unchanged"; exit 0; fi
+            git commit -q -m "Per-stock financial slices $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then echo "pushed (attempt #$attempt)"; exit 0; fi
+            sleep $(( attempt * 5 ))
+          done
+          echo "fin slice push failed after 5 attempts"; exit 1
