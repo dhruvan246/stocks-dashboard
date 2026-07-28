@@ -62,9 +62,13 @@
 
   /* index ticker */
   .indices{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:30px 0 6px;}
-  .ix{position:relative;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 16px 14px;
-    box-shadow:var(--shadow);overflow:hidden;transition:transform var(--tr),box-shadow var(--tr);}
-  .ix:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);}
+  .ix{display:block;position:relative;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 16px 14px;
+    box-shadow:var(--shadow);overflow:hidden;transition:transform var(--tr),box-shadow var(--tr),border-color var(--tr);}
+  .ix:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:color-mix(in srgb,var(--accent) 40%,var(--border));}
+  /* each card opens the index's own chart page */
+  .ix .open{position:absolute;top:13px;right:14px;font-size:10.5px;font-weight:700;color:var(--text-faint);opacity:0;transition:var(--tr);}
+  .ix:hover .open{opacity:1;color:var(--accent);transform:translateX(2px);}
+  @media (hover:none){.ix .open{opacity:.6;}}
   .ix .nm{font-size:12.5px;font-weight:700;color:var(--text-muted);}
   .ix .px{font-size:24px;font-weight:800;letter-spacing:-.02em;margin-top:6px;min-height:29px;}
   .ix .chg{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:700;margin-top:8px;padding:3px 9px;border-radius:999px;min-height:22px;}
@@ -118,12 +122,13 @@
     </form>
   </section>
 
-  <!-- INDEX TICKER — populated from docs/*.json by JS below -->
+  <!-- INDEX TICKER — populated from docs/*.json by JS below.
+       Each card is a link into that index's own chart page (index-chart.html). -->
   <section class="indices" id="indices">
-    <div class="ix" data-src="nifty.json"       data-ysym="%5ENSEI"     data-name="NIFTY 50"   data-kind="index"></div>
-    <div class="ix" data-src="nifty500.json"    data-ysym="%5ECRSLDX"   data-name="NIFTY 500"  data-kind="index"></div>
-    <div class="ix" data-src="nifty_bank.json"  data-ysym="%5ENSEBANK"  data-name="NIFTY BANK" data-kind="index"></div>
-    <div class="ix" data-src="india_vix.json"   data-ysym="%5EINDIAVIX" data-name="INDIA VIX"  data-kind="vix"></div>
+    <a class="ix" href="./index-chart.html?ix=nifty"     data-src="nifty.json"       data-ysym="%5ENSEI"     data-name="NIFTY 50"   data-kind="index"></a>
+    <a class="ix" href="./index-chart.html?ix=nifty500"  data-src="nifty500.json"    data-ysym="%5ECRSLDX"   data-name="NIFTY 500"  data-kind="index"></a>
+    <a class="ix" href="./index-chart.html?ix=banknifty" data-src="nifty_bank.json"  data-ysym="%5ENSEBANK"  data-name="NIFTY BANK" data-kind="index"></a>
+    <a class="ix" href="./index-chart.html?ix=vix"       data-src="india_vix.json"   data-ysym="%5EINDIAVIX" data-name="INDIA VIX"  data-kind="vix"></a>
   </section>
 
   <!-- TILE GRID — rendered from window.SW_NAV (single source of truth in theme.js) -->
@@ -209,6 +214,7 @@
     if (price == null || prevClose == null) return;
     var chg = ((price - prevClose) / prevClose) * 100, up = chg >= 0;
     el.innerHTML =
+      '<span class="open">Chart →</span>' +
       '<div class="nm">' + el.getAttribute('data-name') + badge(live) + '</div>' +
       '<div class="px">' + fmt(price) + '</div>' +
       '<div class="chg ' + (up ? 'up' : 'down') + '">' + (up ? '▲' : '▼') + ' ' + Math.abs(chg).toFixed(2) + '%</div>' +
@@ -218,7 +224,7 @@
 
   // 1) seed from the committed daily-close JSON — always available, never blank
   function loadStatic(el) {
-    el.innerHTML = '<div class="nm">' + el.getAttribute('data-name') + '</div>' +
+    el.innerHTML = '<span class="open">Chart →</span><div class="nm">' + el.getAttribute('data-name') + '</div>' +
       '<div class="px skeleton">00,000.00</div><div class="chg skeleton">0.00%</div><div class="rsi skeleton">RSI</div>';
     return fetch('./' + el.getAttribute('data-src'), { cache: 'no-store' })
       .then(function (r) { return r.json(); })
@@ -231,7 +237,7 @@
         paint(el, last, prev, null, false);
       })
       .catch(function () {
-        el.innerHTML = '<div class="nm">' + el.getAttribute('data-name') + '</div>' +
+        el.innerHTML = '<span class="open">Chart →</span><div class="nm">' + el.getAttribute('data-name') + '</div>' +
           '<div class="px" style="font-size:15px;color:var(--text-faint)">—</div><div class="rsi">data unavailable</div>';
       });
   }

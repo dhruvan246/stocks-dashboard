@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Index</title>
+<meta name="description" content="Live chart and full history for NIFTY 50, NIFTY 500, NIFTY BANK and INDIA VIX — returns, month-by-month heatmap, rolling CAGR, seasonality and drawdowns." />
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{ --up:#059669; --up-soft:rgba(5,150,105,.10); --down:#dc2626; --down-soft:rgba(220,38,38,.10); }
+  html[data-theme="dark"]{ --up:#34d399; --up-soft:rgba(52,211,153,.14); --down:#f87171; --down-soft:rgba(248,113,113,.14); }
+  *{box-sizing:border-box;}
+  body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;margin:0;color:var(--text);
+       -webkit-font-smoothing:antialiased;overflow-x:hidden;font-feature-settings:"tnum" 1;}
+  body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background:
+     radial-gradient(60% 55% at 15% 8%,color-mix(in srgb,var(--accent) 12%,transparent),transparent 60%),
+     radial-gradient(55% 50% at 88% 4%,color-mix(in srgb,var(--accent-2) 12%,transparent),transparent 60%);}
+  a{text-decoration:none;color:inherit;}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px;}
+
+  /* header (same shell as the home page — theme.js injects Menu + theme pill) */
+  header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--surface) 82%,transparent);
+    -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);transition:box-shadow var(--tr);}
+  header.sw-scrolled{box-shadow:var(--shadow);}
+  .hd{display:flex;align-items:center;gap:12px;height:60px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.02em;font-size:18px;color:var(--text);}
+  .logo .mark{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:#fff;font-size:12px;font-weight:800;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 6px 16px -6px var(--glow);}
+  .logo em{font-style:normal;color:var(--accent);}
+  @media (max-width:430px){.hd{gap:8px;}.logo{font-size:0;gap:0;}.logo .mark{font-size:12px;}}
+
+  main.wrap{padding-top:18px;padding-bottom:64px;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:14px;}
+  .card h2{font-size:15px;font-weight:800;letter-spacing:-.01em;margin:0 0 2px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+  .card h2 .mut{font-size:12px;font-weight:500;color:var(--text-faint);letter-spacing:0;}
+  .card-h{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px;}
+  .mut{color:var(--text-muted);} .faint{color:var(--text-faint);}
+  .up{color:var(--up);} .down{color:var(--down);}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start;}
+  @media (max-width:860px){.grid2{grid-template-columns:1fr;}}
+
+  /* index switcher */
+  .switch{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+  .swi{display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border-radius:999px;font-size:12.5px;font-weight:700;
+    background:var(--surface);border:1px solid var(--border);color:var(--text-muted);box-shadow:var(--shadow);transition:var(--tr);}
+  .swi:hover{border-color:var(--accent);color:var(--text);}
+  .swi.on{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;border-color:transparent;}
+  .swi .d{font-size:11px;font-weight:700;opacity:.85;}
+
+  /* hero card */
+  .hero-card{display:grid;grid-template-columns:1fr auto;gap:14px;}
+  .hero-card h1{font-size:clamp(22px,3.4vw,30px);font-weight:800;letter-spacing:-.02em;margin:0;}
+  .hero-card .sub{font-size:12.5px;color:var(--text-muted);margin-top:4px;}
+  .hero-card .px{font-size:clamp(26px,4vw,34px);font-weight:800;letter-spacing:-.02em;line-height:1.1;text-align:right;}
+  .chgpill{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;padding:3px 10px;border-radius:999px;margin-top:6px;}
+  .chgpill.up{background:var(--up-soft);} .chgpill.down{background:var(--down-soft);}
+  .asof{font-size:11px;color:var(--text-faint);margin-top:6px;text-align:right;}
+  .badge{font-size:9.5px;font-weight:800;letter-spacing:.05em;padding:2px 7px;border-radius:999px;background:var(--surface-3);color:var(--text-muted);}
+  .badge.live{color:var(--up);background:var(--up-soft);}
+  .facts{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:10px;
+    border-top:1px solid var(--border);padding-top:12px;margin-top:2px;}
+  .fact .k{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-faint);}
+  .fact .v{font-size:14px;font-weight:700;margin-top:3px;}
+  .rangebar{height:5px;border-radius:999px;background:linear-gradient(90deg,var(--down-soft),var(--surface-3),var(--up-soft));position:relative;margin-top:7px;}
+  .rangebar i{position:absolute;top:-3px;width:3px;height:11px;border-radius:2px;background:var(--accent);}
+  @media (max-width:560px){.hero-card{grid-template-columns:1fr;}.hero-card .px,.asof{text-align:left;}}
+
+  /* controls */
+  .ctrls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .rngs,.tgls{display:flex;gap:4px;flex-wrap:wrap;}
+  .rng,.tgl{cursor:pointer;font-family:inherit;font-size:11.5px;font-weight:700;padding:5px 10px;border-radius:999px;
+    border:1px solid var(--border);background:var(--surface-2);color:var(--text-muted);transition:var(--tr);}
+  .rng:hover,.tgl:hover{border-color:var(--accent);color:var(--text);}
+  .rng.on{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;border-color:transparent;}
+  .tgl.on{background:var(--accent-soft);color:var(--accent);border-color:color-mix(in srgb,var(--accent) 35%,transparent);}
+
+  /* chart */
+  #chartWrap{position:relative;}
+  #chart svg{display:block;width:100%;height:auto;touch-action:pan-y;}
+  #tip{position:absolute;pointer-events:none;display:none;background:var(--surface);border:1px solid var(--border-strong);
+    border-radius:10px;padding:7px 10px;font-size:11.5px;line-height:1.45;box-shadow:var(--shadow-lg);white-space:nowrap;z-index:5;}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--text-muted);margin-top:8px;}
+  .legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px;}
+
+  /* stat tiles */
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:12px;margin-bottom:14px;}
+  .tile{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:13px 14px;}
+  .tile .k{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-faint);}
+  .tile .v{font-size:18px;font-weight:800;letter-spacing:-.02em;margin-top:4px;}
+  .tile .s{font-size:11px;color:var(--text-faint);margin-top:3px;}
+
+  /* tables */
+  table{border-collapse:collapse;width:100%;font-size:12.5px;}
+  th,td{padding:6px 9px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--border);}
+  th:first-child,td:first-child{text-align:left;}
+  thead th{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-faint);
+    background:var(--surface-2);border-bottom:1px solid var(--border-strong);}
+  tbody tr:hover{background:var(--surface-2);}
+  tbody tr:last-child td{border-bottom:0;}
+  td.num{font-variant-numeric:tabular-nums;font-weight:600;}
+  .heat td.h{font-weight:700;color:var(--text);}
+  .heat td:first-child{font-weight:800;}
+
+  /* mini bar charts */
+  .bcw{position:relative;margin-top:6px;}
+  .bcw svg{display:block;width:100%;height:auto;}
+  .bcb{transition:opacity var(--tr);cursor:default;}
+  .bcb:hover{opacity:1 !important;}
+  .bctip{position:absolute;top:0;display:none;pointer-events:none;background:var(--surface);border:1px solid var(--border-strong);
+    border-radius:10px;padding:6px 9px;font-size:11.5px;line-height:1.45;box-shadow:var(--shadow-lg);white-space:nowrap;z-index:6;}
+
+  .chips{display:flex;flex-wrap:wrap;gap:6px;}
+  .chip{font-size:11.5px;font-weight:600;padding:4px 9px;border-radius:8px;background:var(--surface-2);
+    border:1px solid var(--border);color:var(--text-muted);transition:var(--tr);}
+  .chip:hover{border-color:var(--accent);color:var(--text);}
+  .lnk{color:var(--accent);font-weight:700;font-size:12.5px;}
+  .lnk:hover{text-decoration:underline;}
+  .note{font-size:11px;color:var(--text-faint);margin-top:8px;line-height:1.5;}
+  .skel{background:var(--surface-3);border-radius:6px;color:transparent;animation:sk 1.2s ease-in-out infinite;}
+  @keyframes sk{50%{opacity:.5;}}
+  .hidden{display:none !important;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap hd">
+    <a class="logo" href="./index.html"><span class="mark">SW</span>STOCKS<em>WORLD</em></a>
+    <nav></nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- sibling indices -->
+  <div class="switch" id="switch"></div>
+
+  <!-- price header -->
+  <section class="card hero-card">
+    <div>
+      <h1 id="ixName" class="skel">NIFTY 50</h1>
+      <div class="sub" id="ixSub">&nbsp;</div>
+    </div>
+    <div>
+      <div class="px" id="ixPx">—</div>
+      <div style="text-align:right"><span class="chgpill" id="ixChg">&nbsp;</span></div>
+      <div class="asof" id="ixAsof">&nbsp;</div>
+    </div>
+    <div class="facts" id="facts"></div>
+  </section>
+
+  <!-- chart -->
+  <section class="card">
+    <div class="card-h">
+      <h2>📈 Chart <span class="mut" id="rngNote"></span></h2>
+      <div class="ctrls">
+        <div class="rngs" id="rngs"></div>
+        <div class="tgls" id="tgls"></div>
+      </div>
+    </div>
+    <div id="chartWrap"><div id="chart"></div><div id="tip"></div></div>
+    <div class="legend" id="chartLegend"></div>
+  </section>
+
+  <!-- headline stats -->
+  <section class="tiles" id="statTiles"></section>
+
+  <div class="grid2">
+    <!-- returns -->
+    <section class="card">
+      <h2>📅 Returns <span class="mut">— absolute &amp; annualised</span></h2>
+      <div id="returns" class="faint" style="font-size:12px">Loading…</div>
+      <div class="note" id="retNote"></div>
+    </section>
+    <!-- technicals -->
+    <section class="card">
+      <h2>📊 Technicals <span class="mut">— at last close</span></h2>
+      <div id="tech" class="faint" style="font-size:12px">Loading…</div>
+    </section>
+  </div>
+
+  <!-- month-by-month -->
+  <section class="card">
+    <h2>🗓️ Month-by-month <span class="mut" id="mhNote"></span></h2>
+    <div id="monthly" class="faint" style="font-size:12px">Loading…</div>
+  </section>
+
+  <!-- seasonality -->
+  <section class="card">
+    <h2>🌤️ Seasonality <span class="mut" id="seasNote"></span></h2>
+    <div id="season" class="faint" style="font-size:12px">Loading…</div>
+  </section>
+
+  <!-- rolling returns -->
+  <section class="card" id="rollCard">
+    <h2>📐 Rolling returns <span class="mut">— every possible holding period, annualised (CAGR)</span></h2>
+    <div id="rolling" class="faint" style="font-size:12px">Loading…</div>
+    <div class="note">Every start month in the history is tested. “% positive” is the share of those windows that ended in profit — the practical answer to “what if I had bought at the worst possible time?”</div>
+  </section>
+
+  <!-- calendar years -->
+  <section class="card">
+    <h2>📊 Calendar-year returns</h2>
+    <div id="yearly" class="faint" style="font-size:12px">Loading…</div>
+  </section>
+
+  <!-- drawdowns -->
+  <section class="card" id="ddCard">
+    <h2>📉 Biggest falls <span class="mut">— peak-to-trough drawdowns &amp; recovery</span></h2>
+    <div id="dd" class="faint" style="font-size:12px">Loading…</div>
+  </section>
+
+  <!-- VIX-only extras -->
+  <section class="card hidden" id="vixCard">
+    <h2>🌪️ Where volatility sits today</h2>
+    <div id="vixBody"></div>
+  </section>
+
+  <!-- constituents -->
+  <section class="card hidden" id="memCard">
+    <h2>🏢 Constituents <span class="mut" id="memNote"></span></h2>
+    <div id="members" class="chips"></div>
+    <div class="note"><button class="tgl" id="memMore" type="button">Show all</button></div>
+  </section>
+
+  <!-- related -->
+  <section class="card">
+    <h2>🔗 Go deeper</h2>
+    <div class="chips" id="links" style="margin-top:6px"></div>
+    <div class="note" id="srcNote"></div>
+  </section>
+
+</main>
+
+<script>
+(function () {
+'use strict';
+
+/* ===========================================================================
+ * INDEX DETAIL PAGE  —  ./index-chart.html?ix=nifty
+ *
+ * Payload discipline (CLAUDE.md / "slim by default"): the chart paints from ONE
+ * per-index daily-close JSON (~75 KB, 2012→date). Everything else is lazy and
+ * additive — index_monthly.json (month-end closes back to 1995) for the history
+ * tables, indices.json for valuation + members, and the live quote for the
+ * intraday line. Nothing here loads a price bin.
+ * ======================================================================== */
+
+var REG = {
+  nifty:     { src:'nifty.json',      ysym:'^NSEI',     key:'NIFTY 50',   name:'NIFTY 50',   kind:'index',
+               sub:'India’s 50 largest listed companies — the market’s benchmark.' },
+  nifty500:  { src:'nifty500.json',   ysym:'^CRSLDX',   key:'NIFTY 500',  name:'NIFTY 500',  kind:'index',
+               sub:'The broadest Nifty — ~96% of listed market capitalisation.' },
+  banknifty: { src:'nifty_bank.json', ysym:'^NSEBANK',  key:'NIFTY BANK', name:'NIFTY BANK', kind:'index',
+               sub:'The most-traded banking index — the market’s risk barometer.' },
+  vix:       { src:'india_vix.json',  ysym:'^INDIAVIX', key:null,         name:'INDIA VIX',  kind:'vix',
+               sub:'Expected 30-day Nifty volatility, implied by option prices — the “fear gauge”.' }
+};
+var ALIAS = { nifty50:'nifty', 'nifty 50':'nifty', n50:'nifty', nsei:'nifty',
+              'nifty 500':'nifty500', n500:'nifty500', crsldx:'nifty500',
+              nifty_bank:'banknifty', niftybank:'banknifty', 'nifty bank':'banknifty', bank:'banknifty', nsebank:'banknifty',
+              indiavix:'vix', 'india vix':'vix', 'india_vix':'vix' };
+var ORDER = ['nifty','nifty500','banknifty','vix'];
+
+var $ = function (id) { return document.getElementById(id); };
+var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]; }); };
+var fmt = function (n, d) { return n == null || !isFinite(n) ? '—' : n.toLocaleString('en-IN', { minimumFractionDigits: d == null ? 2 : d, maximumFractionDigits: d == null ? 2 : d }); };
+var pct = function (v, d) { return v == null || !isFinite(v) ? '—' : (v >= 0 ? '+' : '') + v.toFixed(d == null ? 2 : d) + '%'; };
+// index LEVELS: whole numbers read better for a 24,000-point index, decimals matter
+// for a 12-point volatility index
+var lvl = function (v) { return v == null || !isFinite(v) ? '—' : fmt(v, Math.abs(v) < 100 ? 2 : 0); };
+var cls = function (v) { return v == null || !isFinite(v) ? '' : v >= 0 ? 'up' : 'down'; };
+var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+/* ---- state ------------------------------------------------------------- */
+var KEY = null, CFG = null;
+var D = [], P = [];                 // daily: iso dates + closes (ascending)
+var MC = [];                        // monthly: [{ym:'1995-11', t:<sort>, c:close}] ascending
+var MSRC = '';                      // where the monthly series came from
+var LIVE = null;                    // {price, prev, series:[[ms,px]], dayHi, dayLo, at}
+var VAL = null;                     // valuation row out of indices.json
+var RANGE = '1Y', LOG = false, DDMODE = false, CMP = false, LASTW = 0;
+var CMPD = null;                    // Nifty 50 daily closes for the compare overlay
+var CHART = null;
+
+/* ---- date helpers ------------------------------------------------------ */
+function iso(d) { return d.toISOString().slice(0, 10); }
+function shiftISO(s, n, unit) {
+  var p = s.split('-'), d = new Date(Date.UTC(+p[0], +p[1] - 1, +p[2]));
+  if (unit === 'd') d.setUTCDate(d.getUTCDate() - n);
+  else if (unit === 'm') d.setUTCMonth(d.getUTCMonth() - n);
+  else d.setUTCFullYear(d.getUTCFullYear() - n);
+  return iso(d);
+}
+function daysBetween(a, b) { return (Date.parse(b) - Date.parse(a)) / 86400000; }
+function prettyDate(s) {
+  if (!s) return '—';
+  var p = s.split('-');
+  return p[2].replace(/^0/, '') + ' ' + MON[+p[1] - 1] + ' ' + p[0];
+}
+// index of the last daily bar on or before `d` (-1 when the history starts later)
+function atOrBefore(d) {
+  var lo = 0, hi = D.length - 1, ans = -1;
+  while (lo <= hi) { var m = (lo + hi) >> 1; if (D[m] <= d) { ans = m; lo = m + 1; } else hi = m - 1; }
+  return ans;
+}
+// The observation to measure from: a trading day inside the daily history, or the
+// month-end close the monthly history supplies before it. Month-end closes never look
+// AHEAD of the asked-for date, except at the very start where that month IS the
+// beginning of the record. Returns {c: close, at: ISO date, label: how to print it}.
+function baseRef(d) {
+  var i;
+  if (D.length && d >= D[0]) { i = atOrBefore(d); return i >= 0 ? { c: P[i], at: D[i], label: prettyDate(D[i]) } : null; }
+  if (!MC.length) return null;
+  var ym = d.slice(0, 7), used = null;
+  for (i = MC.length - 1; i >= 0; i--) if (MC[i].ym < ym) { used = MC[i]; break; }
+  if (!used && MC[0].ym <= ym) used = MC[0];
+  if (!used) return null;
+  var y = +used.ym.slice(0, 4), m = +used.ym.slice(5, 7);
+  return { c: used.c, at: iso(new Date(Date.UTC(y, m, 0))), label: MON[m - 1] + ' ' + y + ' end' };
+}
+function closeAt(d) { var b = baseRef(d); return b ? b.c : null; }
+function firstISO() {
+  var a = D.length ? D[0] : null, b = MC.length ? MC[0].ym + '-01' : null;
+  if (a && b) return a < b ? a : b;
+  return a || b;
+}
+
+/* ---- maths ------------------------------------------------------------- */
+function rsi(closes, period) {
+  period = period || 14;
+  if (!closes || closes.length <= period) return null;
+  var gain = 0, loss = 0, i;
+  for (i = 1; i <= period; i++) { var d = closes[i] - closes[i - 1]; if (d >= 0) gain += d; else loss -= d; }
+  gain /= period; loss /= period;
+  for (i = period + 1; i < closes.length; i++) {
+    var ch = closes[i] - closes[i - 1];
+    gain = (gain * (period - 1) + (ch > 0 ? ch : 0)) / period;
+    loss = (loss * (period - 1) + (ch < 0 ? -ch : 0)) / period;
+  }
+  if (loss === 0) return 100;
+  return 100 - 100 / (1 + gain / loss);
+}
+function weeklyCloses() {                       // last close of each ISO week
+  var out = [], lastKey = null;
+  for (var i = 0; i < D.length; i++) {
+    var dt = new Date(D[i] + 'T00:00:00Z'), day = dt.getUTCDay(), mon = new Date(dt);
+    mon.setUTCDate(dt.getUTCDate() - ((day + 6) % 7));
+    var k = iso(mon);
+    if (k === lastKey) out[out.length - 1] = P[i]; else { out.push(P[i]); lastKey = k; }
+  }
+  return out;
+}
+function sma(n) { if (P.length < n) return null; var s = 0; for (var i = P.length - n; i < P.length; i++) s += P[i]; return s / n; }
+function annVol(days) {                          // annualised stdev of daily log returns
+  var n = Math.min(days, P.length - 1); if (n < 20) return null;
+  var r = [], i;
+  for (i = P.length - n; i < P.length; i++) r.push(Math.log(P[i] / P[i - 1]));
+  var m = r.reduce(function (a, b) { return a + b; }, 0) / r.length, v = 0;
+  for (i = 0; i < r.length; i++) v += (r[i] - m) * (r[i] - m);
+  return Math.sqrt(v / (r.length - 1)) * Math.sqrt(252) * 100;
+}
+function median(a) {
+  if (!a.length) return null;
+  var s = a.slice().sort(function (x, y) { return x - y; }), h = s.length >> 1;
+  return s.length % 2 ? s[h] : (s[h - 1] + s[h]) / 2;
+}
+
+/* ---- monthly series ---------------------------------------------------- */
+function monthlyFromDaily() {                    // fallback when the index isn't in index_monthly.json
+  var out = [], last = null;
+  for (var i = 0; i < D.length; i++) {
+    var ym = D[i].slice(0, 7);
+    if (last && last.ym === ym) last.c = P[i];
+    else { last = { ym: ym, c: P[i] }; out.push(last); }
+  }
+  return out;
+}
+function monthlyFromFile(rec) {
+  var out = [], yrs = Object.keys(rec.closes || {}).sort();
+  yrs.forEach(function (y) {
+    (rec.closes[y] || []).forEach(function (c, m) {
+      if (c != null && isFinite(c)) out.push({ ym: y + '-' + String(m + 1).padStart(2, '0'), c: c });
+    });
+  });
+  return out;
+}
+// month-return matrix: {year: [12 pct or null], y:<year pct>}
+function monthMatrix() {
+  var rows = {}, i;
+  for (i = 1; i < MC.length; i++) {
+    var y = +MC[i].ym.slice(0, 4), m = +MC[i].ym.slice(5, 7) - 1;
+    // only chain months that are actually adjacent (a gap must not fake a return)
+    var py = +MC[i - 1].ym.slice(0, 4), pm = +MC[i - 1].ym.slice(5, 7) - 1;
+    if (py * 12 + pm !== y * 12 + m - 1) continue;
+    if (!rows[y]) rows[y] = { m: new Array(12).fill(null), y: null };
+    rows[y].m[m] = (MC[i].c / MC[i - 1].c - 1) * 100;
+  }
+  Object.keys(rows).forEach(function (y) {
+    var dec = null, janBase = null, k;
+    for (k = MC.length - 1; k >= 0; k--) if (+MC[k].ym.slice(0, 4) === +y) { dec = MC[k].c; break; }
+    for (k = MC.length - 1; k >= 0; k--) if (MC[k].ym === (+y - 1) + '-12') { janBase = MC[k].c; break; }
+    if (dec != null && janBase != null) rows[y].y = (dec / janBase - 1) * 100;
+  });
+  return rows;
+}
+// monthly AVERAGE level per month — the meaningful view for a volatility index
+function monthLevelMatrix() {
+  var acc = {}, i;
+  for (i = 0; i < D.length; i++) {
+    var y = +D[i].slice(0, 4), m = +D[i].slice(5, 7) - 1;
+    if (!acc[y]) acc[y] = { m: new Array(12).fill(null), n: new Array(12).fill(0), y: null };
+    acc[y].m[m] = (acc[y].m[m] || 0) + P[i]; acc[y].n[m]++;
+  }
+  Object.keys(acc).forEach(function (y) {
+    var tot = 0, cnt = 0;
+    for (var m = 0; m < 12; m++) { if (acc[y].n[m]) { tot += acc[y].m[m]; cnt += acc[y].n[m]; acc[y].m[m] /= acc[y].n[m]; } else acc[y].m[m] = null; }
+    acc[y].y = cnt ? tot / cnt : null;
+  });
+  return acc;
+}
+
+/* ---- live quote (same Worker + proxy chain as the home ticker) --------- */
+var WORKER = 'https://stocksworld-quotes.dhruvan2510.workers.dev';
+var PROXIES = [
+  function (s) { return { url: WORKER + '/?chart=' + encodeURIComponent(s), wrap: false }; },
+  function (s) { return { url: 'https://corsproxy.io/?url=' + encodeURIComponent(yurl(s)), wrap: false }; },
+  function (s) { return { url: 'https://api.allorigins.win/get?url=' + encodeURIComponent(yurl(s)), wrap: true }; }
+];
+function yurl(s) { return 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent(s) + '?interval=1m&range=1d'; }
+function fetchLive(sym) {
+  var i = 0;
+  function next() {
+    if (i >= PROXIES.length) return Promise.reject('all proxies failed');
+    var p = PROXIES[i++](sym);
+    return fetch(p.url, { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw 0; return r.text(); })
+      .then(function (t) {
+        var j = JSON.parse(p.wrap ? JSON.parse(t).contents : t);
+        var res = j.chart.result[0], m = res.meta, series = [];
+        if (res.timestamp && res.indicators && res.indicators.quote) {
+          var q = res.indicators.quote[0].close || [];
+          for (var k = 0; k < q.length; k++) if (q[k] != null) series.push([res.timestamp[k] * 1000, q[k]]);
+        }
+        var price = m.regularMarketPrice, prev = m.chartPreviousClose != null ? m.chartPreviousClose : m.previousClose;
+        if (price == null || prev == null) throw 0;
+        return { price: price, prev: prev, series: series, dayHi: m.regularMarketDayHigh, dayLo: m.regularMarketDayLow,
+                 at: m.regularMarketTime ? m.regularMarketTime * 1000 : Date.now() };
+      })
+      .catch(function () { return next(); });
+  }
+  return next();
+}
+function marketOpen() {                          // NSE cash: Mon–Fri 09:15–15:30 IST
+  var ist = new Date(Date.now() + (new Date().getTimezoneOffset() * 60000) + 5.5 * 3600000);
+  var day = ist.getDay(), mins = ist.getHours() * 60 + ist.getMinutes();
+  return day >= 1 && day <= 5 && mins >= 9 * 60 && mins <= 15 * 60 + 45;
+}
+function istTime(ms) {
+  var d = new Date(ms + (new Date().getTimezoneOffset() * 60000) + 5.5 * 3600000);
+  return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+}
+
+/* =========================================================================
+ * HEADER
+ * ====================================================================== */
+function renderSwitch() {
+  $('switch').innerHTML = ORDER.map(function (k) {
+    var c = REG[k];
+    return '<a class="swi' + (k === KEY ? ' on' : '') + '" href="./index-chart.html?ix=' + k + '">' + esc(c.name) + '</a>';
+  }).join('') + '<a class="swi" href="./indices.html">📇 All 131 indices</a>';
+}
+function renderHeader() {
+  var last = P.length ? P[P.length - 1] : null, prev = P.length > 1 ? P[P.length - 2] : null;
+  var price = LIVE ? LIVE.price : last, base = LIVE ? LIVE.prev : prev;
+  var live = !!(LIVE && marketOpen());
+  $('ixName').classList.remove('skel');
+  $('ixName').innerHTML = esc(CFG.name) + ' <span class="badge' + (live ? ' live' : '') + '">' + (live ? '● LIVE' : 'AT CLOSE') + '</span>';
+  $('ixSub').textContent = CFG.sub;
+  $('ixPx').textContent = fmt(price);
+  if (price != null && base) {
+    var ch = price - base, cp = ch / base * 100;
+    var e = $('ixChg');
+    e.className = 'chgpill ' + cls(cp);
+    e.innerHTML = (cp >= 0 ? '▲' : '▼') + ' ' + fmt(Math.abs(ch)) + ' (' + pct(cp) + ')';
+  }
+  $('ixAsof').textContent = LIVE ? ('as of ' + istTime(LIVE.at) + ' IST' + (live ? '' : ' · last traded') + ' · ~15 min delayed')
+                                 : (D.length ? 'close of ' + prettyDate(D[D.length - 1]) : '');
+  renderFacts(price, base);
+}
+function renderFacts(price, base) {
+  var hl = hi52(), f = [];
+  f.push(['Prev close', fmt(base)]);
+  if (LIVE && LIVE.dayLo != null && LIVE.dayHi != null) f.push(["Day's range", lvl(LIVE.dayLo) + ' – ' + lvl(LIVE.dayHi)]);
+  if (hl) {
+    var posn = price != null ? Math.max(0, Math.min(100, (price - hl.lo) / ((hl.hi - hl.lo) || 1) * 100)) : 50;
+    f.push(['52-week range', lvl(hl.lo) + ' – ' + lvl(hl.hi) +
+      '<div class="rangebar"><i style="left:' + posn.toFixed(1) + '%"></i></div>']);
+  }
+  if (VAL) {
+    if (VAL.pe != null) f.push(['P/E', fmt(VAL.pe)]);
+    if (VAL.pb != null) f.push(['P/B', fmt(VAL.pb)]);
+    if (VAL.dy != null) f.push(['Dividend yield', fmt(VAL.dy) + '%']);
+    if (VAL.mem) f.push(['Constituents', VAL.mem]);
+  }
+  if (CFG.kind === 'vix' && price != null) {
+    var regime = price < 13 ? 'Low' : price < 20 ? 'Moderate' : price < 28 ? 'High' : 'Extreme';
+    f.push(['Volatility regime', regime]);
+    var pr = pctileOf(price);
+    if (pr != null) f.push(['Percentile since 2012', pr.toFixed(0) + 'th']);
+  }
+  $('facts').innerHTML = f.map(function (x) {
+    return '<div class="fact"><div class="k">' + x[0] + '</div><div class="v">' + x[1] + '</div></div>';
+  }).join('');
+}
+function hi52() {
+  if (!D.length) return null;
+  var from = shiftISO(D[D.length - 1], 1, 'y'), hi = -Infinity, lo = Infinity, hid = '', lod = '';
+  for (var i = 0; i < D.length; i++) {
+    if (D[i] < from) continue;
+    if (P[i] > hi) { hi = P[i]; hid = D[i]; }
+    if (P[i] < lo) { lo = P[i]; lod = D[i]; }
+  }
+  return hi === -Infinity ? null : { hi: hi, lo: lo, hid: hid, lod: lod };
+}
+function allTimeHigh() {
+  var hi = -Infinity, hid = '';
+  for (var i = 0; i < P.length; i++) if (P[i] > hi) { hi = P[i]; hid = D[i]; }
+  return hi === -Infinity ? null : { hi: hi, d: hid };
+}
+function pctileOf(v) {
+  if (!P.length) return null;
+  var n = 0; for (var i = 0; i < P.length; i++) if (P[i] <= v) n++;
+  return n / P.length * 100;
+}
+
+/* =========================================================================
+ * CHART
+ * ====================================================================== */
+var RANGES = [['1D', 0], ['1W', 7], ['1M', 31], ['6M', 183], ['YTD', -1], ['1Y', 366], ['3Y', 1096], ['5Y', 1827], ['10Y', 3653], ['MAX', 1e9]];
+function renderControls() {
+  $('rngs').innerHTML = RANGES.map(function (r) {
+    return '<button class="rng' + (r[0] === RANGE ? ' on' : '') + '" data-r="' + r[0] + '" type="button">' + r[0] + '</button>';
+  }).join('');
+  $('rngs').querySelectorAll('.rng').forEach(function (b) {
+    b.onclick = function () { RANGE = b.dataset.r; renderControls(); drawChart(); };
+  });
+  var t = '<button class="tgl' + (LOG ? ' on' : '') + '" id="tLog" type="button">Log scale</button>' +
+          '<button class="tgl' + (DDMODE ? ' on' : '') + '" id="tDD" type="button">Drawdown</button>';
+  if (KEY !== 'nifty') t += '<button class="tgl' + (CMP ? ' on' : '') + '" id="tCmp" type="button">vs NIFTY 50</button>';
+  $('tgls').innerHTML = t;
+  $('tLog').onclick = function () { LOG = !LOG; if (LOG) DDMODE = false; renderControls(); drawChart(); };
+  $('tDD').onclick = function () { DDMODE = !DDMODE; if (DDMODE) { LOG = false; CMP = false; } renderControls(); drawChart(); };
+  if ($('tCmp')) $('tCmp').onclick = function () {
+    CMP = !CMP; if (CMP) { DDMODE = false; LOG = false; }
+    renderControls();
+    if (CMP && !CMPD) {
+      fetch('./nifty.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
+        var px = j.px || {}, ds = Object.keys(px).sort();
+        CMPD = { d: ds, p: ds.map(function (x) { return px[x]; }) };
+        drawChart();
+      }).catch(function () { CMP = false; renderControls(); drawChart(); });
+    }
+    drawChart();
+  };
+}
+// points for the active range: [[x(ms), y], …]
+function rangePoints() {
+  if (RANGE === '1D') {
+    if (LIVE && LIVE.series.length > 1) return { pts: LIVE.series.slice(), intraday: true };
+    var n = Math.min(6, D.length), out = [];
+    for (var i = D.length - n; i < D.length; i++) out.push([Date.parse(D[i]), P[i]]);
+    return { pts: out, intraday: false, note: 'live intraday unavailable — showing the last few sessions' };
+  }
+  var lastD = D[D.length - 1], from;
+  var days = (RANGES.filter(function (r) { return r[0] === RANGE; })[0] || [null, 1e9])[1];
+  if (RANGE === 'YTD') from = lastD.slice(0, 4) + '-01-01';
+  else if (days >= 1e9) from = D[0];
+  else from = shiftISO(lastD, days, 'd');
+  var pts = [];
+  for (var k = 0; k < D.length; k++) if (D[k] >= from) pts.push([Date.parse(D[k]), P[k]]);
+  if (pts.length < 2) pts = D.slice(-2).map(function (d, ix) { return [Date.parse(d), P[P.length - 2 + ix]]; });
+  return { pts: pts, intraday: false };
+}
+function cmpPoints(x0, x1) {
+  if (!CMP || !CMPD) return null;
+  var out = [];
+  for (var i = 0; i < CMPD.d.length; i++) { var t = Date.parse(CMPD.d[i]); if (t >= x0 && t <= x1) out.push([t, CMPD.p[i]]); }
+  return out.length > 1 ? out : null;
+}
+function downsample(pts, max) {
+  if (pts.length <= max) return pts;
+  var step = pts.length / max, out = [];
+  for (var i = 0; i < max; i++) out.push(pts[Math.floor(i * step)]);
+  out.push(pts[pts.length - 1]);
+  return out;
+}
+function drawChart() {
+  var rp = rangePoints(), pts = downsample(rp.pts, 520);
+  if (pts.length < 2) { $('chart').innerHTML = '<div class="faint" style="padding:40px 0;text-align:center">No history for this range.</div>'; return; }
+  var x0 = pts[0][0], x1 = pts[pts.length - 1][0];
+  var cmp = cmpPoints(x0, x1), cmpNorm = null;
+  var base = pts[0][1];
+  var ys, transform;
+  if (DDMODE) {                                   // % below the running peak
+    var peak = -Infinity;
+    ys = pts.map(function (p) { peak = Math.max(peak, p[1]); return (p[1] / peak - 1) * 100; });
+    transform = function (v) { return v; };
+  } else if (CMP && cmp) {                        // both series indexed to 0% at range start
+    ys = pts.map(function (p) { return (p[1] / base - 1) * 100; });
+    var cb = cmp[0][1];
+    cmpNorm = downsample(cmp, 520).map(function (p) { return [p[0], (p[1] / cb - 1) * 100]; });
+    transform = function (v) { return v; };
+  } else {
+    ys = pts.map(function (p) { return p[1]; });
+    transform = function (v) { return LOG ? Math.log10(v) : v; };
+  }
+  var plotted = ys.map(transform);
+  var allY = plotted.slice();
+  if (cmpNorm) cmpNorm.forEach(function (p) { allY.push(transform(p[1])); });
+  var yMin = Math.min.apply(null, allY), yMax = Math.max.apply(null, allY);
+  if (DDMODE) yMax = 0;
+  if (yMin === yMax) { yMin -= 1; yMax += 1; }
+  var padY = (yMax - yMin) * 0.06; yMin -= padY; yMax += DDMODE ? 0 : padY;
+
+  // Draw in the container's OWN pixels (viewBox width = CSS width) so labels render
+  // 1:1 at every screen size — a fixed 960-wide viewBox squeezes a phone chart to
+  // ~107px tall with 3px text.
+  var CW = Math.max(300, Math.round($('chartWrap').clientWidth || 960));
+  var W = CW, H = CW < 560 ? 300 : 340, PL = CW < 560 ? 46 : 58, PR = 14, PT = 12, PB = 26;
+  var X = function (t) { return PL + (t - x0) / ((x1 - x0) || 1) * (W - PL - PR); };
+  var Y = function (v) { return PT + (1 - (transform(v) - yMin) / ((yMax - yMin) || 1)) * (H - PT - PB); };
+  var up = DDMODE ? false : ys[ys.length - 1] >= ys[0];
+  var stroke = up ? 'var(--up)' : 'var(--down)';
+  var fill = up ? 'rgba(5,150,105,.13)' : 'rgba(220,38,38,.13)';
+
+  var line = '', area = '';
+  for (var i = 0; i < pts.length; i++) line += (i ? 'L' : 'M') + X(pts[i][0]).toFixed(1) + ' ' + Y(ys[i]).toFixed(1) + ' ';
+  var floorY = H - PB;                            // yMin always lands on the plot floor
+  area = line + 'L ' + X(x1).toFixed(1) + ' ' + floorY.toFixed(1) + ' L ' + X(x0).toFixed(1) + ' ' + floorY.toFixed(1) + ' Z';
+
+  // y grid
+  var grid = '';
+  for (var g = 0; g <= 4; g++) {
+    var tv = yMin + (yMax - yMin) * g / 4, y = PT + (1 - g / 4) * (H - PT - PB);
+    var lbl = DDMODE || (CMP && cmpNorm) ? tv.toFixed(1) + '%' : lvl(LOG ? Math.pow(10, tv) : tv);
+    grid += '<line x1="' + PL + '" y1="' + y.toFixed(1) + '" x2="' + (W - PR) + '" y2="' + y.toFixed(1) +
+            '" stroke="var(--border)" stroke-width="1"/>' +
+            '<text x="' + (PL - 7) + '" y="' + (y + 3.5).toFixed(1) + '" text-anchor="end" font-size="10.5" fill="var(--text-faint)">' + lbl + '</text>';
+  }
+  // x labels
+  var xl = '', steps = W < 560 ? 3 : (pts.length > 40 ? 5 : 3);
+  for (var s = 0; s <= steps; s++) {
+    var p = pts[Math.min(pts.length - 1, Math.round(s / steps * (pts.length - 1)))];
+    var dt = new Date(p[0]);
+    var txt = rp.intraday ? istTime(p[0])
+            : (x1 - x0 > 400 * 86400000 ? dt.getUTCFullYear() : MON[dt.getUTCMonth()] + " '" + String(dt.getUTCFullYear()).slice(2));
+    xl += '<text x="' + X(p[0]).toFixed(1) + '" y="' + (H - 7) + '" text-anchor="middle" font-size="10.5" fill="var(--text-faint)">' + txt + '</text>';
+  }
+  var cmpPath = '';
+  if (cmpNorm) {
+    cmpPath = '<path d="' + cmpNorm.map(function (p, ix) { return (ix ? 'L' : 'M') + X(p[0]).toFixed(1) + ' ' + Y(p[1]).toFixed(1); }).join(' ') +
+              '" fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-dasharray="5 4" opacity=".9"/>';
+  }
+  var zero = (DDMODE || cmpNorm) && yMin < 0 && yMax > -0.0001
+    ? '<line x1="' + PL + '" y1="' + Y(0).toFixed(1) + '" x2="' + (W - PR) + '" y2="' + Y(0).toFixed(1) + '" stroke="var(--text-faint)" stroke-width="1" stroke-dasharray="4 4" opacity=".7"/>' : '';
+
+  $('chart').innerHTML =
+    '<svg id="svg" viewBox="0 0 ' + W + ' ' + H + '" width="100%" preserveAspectRatio="none">' +
+      grid + '<path d="' + area + '" fill="' + fill + '" stroke="none"/>' +
+      '<path d="' + line + '" fill="none" stroke="' + stroke + '" stroke-width="2" stroke-linejoin="round"/>' + cmpPath + zero +
+      '<line id="cross" x1="0" y1="' + PT + '" x2="0" y2="' + (H - PB) + '" stroke="var(--text-faint)" stroke-width="1" stroke-dasharray="3 3" style="display:none"/>' +
+      '<circle id="dot" r="3.6" fill="' + (up ? 'var(--up)' : 'var(--down)') + '" style="display:none"/>' + xl +
+    '</svg>';
+
+  CHART = { pts: pts, ys: ys, X: X, Y: Y, W: W, intraday: rp.intraday, cmp: cmpNorm, base: base };
+  wireHover();
+
+  // summary + legend — high/low off the FULL series, not the downsampled draw list
+  var chg = (rp.pts[rp.pts.length - 1][1] / rp.pts[0][1] - 1) * 100;
+  var lo = Infinity, hiv = -Infinity;
+  rp.pts.forEach(function (p) { if (p[1] < lo) lo = p[1]; if (p[1] > hiv) hiv = p[1]; });
+  $('rngNote').innerHTML = '— ' + RANGE + ': ' +
+    (DDMODE ? '<b class="down">' + ys[ys.length - 1].toFixed(2) + '%</b> below this window’s peak · '
+            : '<b class="' + cls(chg) + '">' + pct(chg) + '</b> · ') +
+    'high ' + lvl(hiv) + ' · low ' + lvl(lo) +
+    (rp.note ? ' <span class="faint">(' + rp.note + ')</span>' : '');
+  var leg = '<span><i style="background:' + (up ? 'var(--up)' : 'var(--down)') + '"></i>' + esc(CFG.name) + (DDMODE ? ' drawdown from peak' : '') + '</span>';
+  if (cmpNorm) {
+    var mine = (pts[pts.length - 1][1] / pts[0][1] - 1) * 100, theirs = (cmp[cmp.length - 1][1] / cmp[0][1] - 1) * 100;
+    leg += '<span><i style="background:var(--accent)"></i>NIFTY 50</span>' +
+           '<span class="' + cls(mine - theirs) + '">Relative: <b>' + pct(mine - theirs) + '</b> over this window</span>';
+  }
+  if (LOG) leg += '<span class="faint">Log scale — equal vertical distance = equal % move</span>';
+  $('chartLegend').innerHTML = leg;
+}
+
+function wireHover() {
+  var svg = $('svg'); if (!svg || !CHART) return;
+  var pts = CHART.pts, ys = CHART.ys, X = CHART.X, Y = CHART.Y, W = CHART.W;
+  function move(clientX) {
+    var r = svg.getBoundingClientRect(), px = (clientX - r.left) / r.width * W;
+    var best = 0, bd = 1e18;
+    for (var i = 0; i < pts.length; i++) { var dx = Math.abs(X(pts[i][0]) - px); if (dx < bd) { bd = dx; best = i; } }
+    var p = pts[best], cx = X(p[0]), cy = Y(ys[best]);
+    var cr = $('cross'), dot = $('dot');
+    cr.setAttribute('x1', cx); cr.setAttribute('x2', cx); cr.style.display = '';
+    dot.setAttribute('cx', cx); dot.setAttribute('cy', cy); dot.style.display = '';
+    var when = CHART.intraday ? istTime(p[0]) + ' IST' : prettyDate(iso(new Date(p[0])));
+    var body = '<b>' + when + '</b><br>' + fmt(p[1]);
+    if (DDMODE) body += '<br><span class="down">' + ys[best].toFixed(2) + '% below peak</span>';
+    else {
+      var ch = (p[1] / CHART.base - 1) * 100;
+      body += ' <span class="' + cls(ch) + '">(' + pct(ch) + ' in range)</span>';
+      if (CHART.cmp) {
+        var c = CHART.cmp, k = 0, bd2 = 1e18;
+        for (var q = 0; q < c.length; q++) { var d2 = Math.abs(c[q][0] - p[0]); if (d2 < bd2) { bd2 = d2; k = q; } }
+        body += '<br><span class="faint">NIFTY 50: ' + pct(c[k][1]) + '</span>';
+      }
+    }
+    var tip = $('tip'), wrapW = $('chartWrap').clientWidth, tx = cx / W * wrapW;
+    tip.style.display = 'block'; tip.innerHTML = body;
+    tip.style.left = Math.min(Math.max(tx + 12, 4), Math.max(4, wrapW - tip.offsetWidth - 6)) + 'px';
+    tip.style.top = '8px';
+  }
+  svg.addEventListener('pointermove', function (e) { move(e.clientX); });
+  svg.addEventListener('pointerdown', function (e) { move(e.clientX); });
+  svg.addEventListener('pointerleave', function () {
+    $('cross').style.display = 'none'; $('dot').style.display = 'none'; $('tip').style.display = 'none';
+  });
+}
+
+/* =========================================================================
+ * STAT TILES + TECHNICALS
+ * ====================================================================== */
+function tile(k, v, s, c) {
+  return '<div class="tile"><div class="k">' + k + '</div><div class="v ' + (c || '') + '">' + v + '</div>' +
+         (s ? '<div class="s">' + s + '</div>' : '') + '</div>';
+}
+function renderTiles() {
+  var last = P[P.length - 1], hl = hi52(), ath = allTimeHigh(), t = [];
+  var ytd = retBetween(D[D.length - 1].slice(0, 4) + '-01-01');
+  t.push(tile('YTD', pct(ytd), 'since 1 Jan ' + D[D.length - 1].slice(0, 4), cls(ytd)));
+  var y1 = retYears(1);
+  t.push(tile('1-year', pct(y1), 'vs ' + prettyDate(shiftISO(D[D.length - 1], 1, 'y')), cls(y1)));
+  if (hl) {
+    t.push(tile('52-week high', lvl(hl.hi), prettyDate(hl.hid) + ' · ' + pct((last / hl.hi - 1) * 100) + ' from here', cls(last - hl.hi)));
+    t.push(tile('52-week low', lvl(hl.lo), prettyDate(hl.lod) + ' · ' + pct((last / hl.lo - 1) * 100) + ' above', 'up'));
+  }
+  if (ath) {
+    var dd = (last / ath.hi - 1) * 100;
+    t.push(tile(CFG.kind === 'vix' ? 'Highest ever (2012→)' : 'All-time high', lvl(ath.hi),
+      prettyDate(ath.d) + ' · ' + (Math.abs(dd) < 0.05 ? 'at the high now' : pct(dd) + ' from here'), cls(dd)));
+  }
+  var v = annVol(252);
+  if (v != null) t.push(tile('Volatility (1y)', v.toFixed(1) + '%', 'annualised standard deviation'));
+  $('statTiles').innerHTML = t.join('');
+}
+function renderTech() {
+  var last = P[P.length - 1], rows = [];
+  var rD = rsi(P.slice(-300), 14), rW = rsi(weeklyCloses().slice(-200), 14);
+  function tag(r) { return r == null ? '' : r >= 70 ? ' <span class="down">overbought</span>' : r <= 30 ? ' <span class="up">oversold</span>' : ' <span class="faint">neutral</span>'; }
+  rows.push(['RSI(14) daily', rD == null ? '—' : rD.toFixed(1) + tag(rD)]);
+  rows.push(['RSI(14) weekly', rW == null ? '—' : rW.toFixed(1) + tag(rW)]);
+  [20, 50, 100, 200].forEach(function (n) {
+    var m = sma(n); if (m == null) return;
+    var d = (last / m - 1) * 100;
+    rows.push([n + '-day average', lvl(m) + ' <span class="' + cls(d) + '">(' + pct(d) + ')</span>']);
+  });
+  var up = 0, tot = 0;
+  for (var i = Math.max(1, P.length - 252); i < P.length; i++) { tot++; if (P[i] >= P[i - 1]) up++; }
+  if (tot) rows.push(['Up days (last year)', (up / tot * 100).toFixed(0) + '% <span class="faint">(' + up + ' of ' + tot + ')</span>']);
+  var best = { v: -1e9 }, worst = { v: 1e9 };
+  for (i = 1; i < P.length; i++) {
+    var ch = (P[i] / P[i - 1] - 1) * 100;
+    if (ch > best.v) best = { v: ch, d: D[i] };
+    if (ch < worst.v) worst = { v: ch, d: D[i] };
+  }
+  rows.push(['Best day ever', '<span class="up">' + pct(best.v) + '</span> <span class="faint">' + prettyDate(best.d) + '</span>']);
+  rows.push(['Worst day ever', '<span class="down">' + pct(worst.v) + '</span> <span class="faint">' + prettyDate(worst.d) + '</span>']);
+  var ath = allTimeHigh();
+  if (ath) rows.push(['Days since that peak', Math.round(daysBetween(ath.d, D[D.length - 1])).toLocaleString('en-IN') +
+    ' <span class="faint">(' + prettyDate(ath.d) + ')</span>']);
+  $('tech').innerHTML = '<table><tbody>' + rows.map(function (r) {
+    return '<tr><td>' + r[0] + '</td><td class="num">' + r[1] + '</td></tr>';
+  }).join('') + '</tbody></table>';
+}
+
+/* =========================================================================
+ * RETURNS
+ * ====================================================================== */
+function retBetween(fromISO) {
+  var a = closeAt(fromISO), b = P.length ? P[P.length - 1] : null;
+  if (a == null || b == null || !a) return null;
+  return (b / a - 1) * 100;
+}
+function retYears(n) { return retBetween(shiftISO(D[D.length - 1], n, 'y')); }
+function cagr(fromISO) {
+  var r = baseRef(fromISO), b = P[P.length - 1];
+  if (!r || !r.c) return null;
+  var yrs = daysBetween(r.at, D[D.length - 1]) / 365.25;   // annualise over the REAL gap
+  if (yrs < 1) return null;
+  return (Math.pow(b / r.c, 1 / yrs) - 1) * 100;
+}
+function baseLabel(d) { var b = baseRef(d); return b ? b.label : prettyDate(d); }
+function renderReturns() {
+  var lastD = D[D.length - 1], start = firstISO(), rows = [];
+  function add(lbl, from) {
+    if (!from || from < start) return;
+    var r = retBetween(from); if (r == null) return;
+    rows.push([lbl, r, cagr(from), from]);
+  }
+  add('1 day', D.length > 1 ? D[D.length - 2] : null);
+  add('1 week', shiftISO(lastD, 7, 'd'));
+  add('1 month', shiftISO(lastD, 1, 'm'));
+  add('3 months', shiftISO(lastD, 3, 'm'));
+  add('6 months', shiftISO(lastD, 6, 'm'));
+  add('YTD', lastD.slice(0, 4) + '-01-01');
+  [1, 2, 3, 5, 7, 10, 15, 20, 25].forEach(function (y) { add(y + ' year' + (y > 1 ? 's' : ''), shiftISO(lastD, y, 'y')); });
+  add('Since ' + start.slice(0, 4), start);
+  var unit = CFG.kind === 'vix' ? 'change in the index level' : 'price return (dividends not included)';
+  $('returns').innerHTML =
+    '<table><thead><tr><th>Period</th><th>From</th><th>Return</th><th>Annualised</th></tr></thead><tbody>' +
+    rows.map(function (r) {
+      return '<tr><td>' + r[0] + '</td><td class="faint">' + baseLabel(r[3]) + '</td>' +
+        '<td class="num ' + cls(r[1]) + '">' + pct(r[1]) + '</td>' +
+        '<td class="num ' + cls(r[2]) + '">' + (r[2] == null ? '—' : pct(r[2])) + '</td></tr>';
+    }).join('') + '</tbody></table>';
+  var since = retBetween(start);
+  $('retNote').innerHTML = CFG.kind === 'vix'
+    ? 'VIX is a volatility level, not an investable price — treat these as changes in the fear gauge, not returns. ' + unit + '.'
+    : '₹1,00,000 invested at the ' + start.slice(0, 4) + ' level would be <b>₹' +
+      (since == null ? '—' : fmt(100000 * (1 + since / 100), 0)) + '</b> today. Index ' + unit + '.';
+}
+
+/* =========================================================================
+ * MONTH-BY-MONTH  +  SEASONALITY  +  CALENDAR YEARS
+ * ====================================================================== */
+function heatBg(v, scale) {
+  if (v == null || !isFinite(v)) return '';
+  var a = Math.min(Math.abs(v) / (scale || 8), 1);
+  return 'background:' + (v >= 0 ? 'rgba(5,150,105,' : 'rgba(220,38,38,') + (0.08 + 0.55 * a).toFixed(3) + ')';
+}
+function levelBg(v, lo, hi) {
+  if (v == null) return '';
+  var a = Math.min(Math.max((v - lo) / ((hi - lo) || 1), 0), 1);
+  return 'background:rgba(' + Math.round(5 + 215 * a) + ',' + Math.round(150 - 112 * a) + ',' + Math.round(105 - 67 * a) + ',' + (0.12 + 0.5 * a).toFixed(3) + ')';
+}
+function renderMonthly() {
+  var vix = CFG.kind === 'vix';
+  var rows = vix ? monthLevelMatrix() : monthMatrix();
+  var years = Object.keys(rows).map(Number).sort(function (a, b) { return b - a; });
+  if (!years.length) { $('monthly').textContent = 'No monthly history.'; return; }
+  var lo = 1e9, hi = -1e9;
+  if (vix) years.forEach(function (y) { rows[y].m.forEach(function (v) { if (v != null) { lo = Math.min(lo, v); hi = Math.max(hi, v); } }); });
+  var head = '<tr><th>Year</th>' + MON.map(function (m) { return '<th>' + m + '</th>'; }).join('') +
+             '<th>' + (vix ? 'Avg' : 'Year') + '</th></tr>';
+  var body = years.map(function (y) {
+    var r = rows[y];
+    return '<tr><td>' + y + '</td>' + r.m.map(function (v, mi) {
+      return '<td class="num h" style="' + (vix ? levelBg(v, lo, hi) : heatBg(v)) +
+        '" title="' + MON[mi] + ' ' + y + (v == null ? '' : ' · ' + (vix ? v.toFixed(2) : pct(v))) + '">' +
+        (v == null ? '<span class="faint">·</span>' : vix ? v.toFixed(1) : v.toFixed(1) + '%') + '</td>';
+    }).join('') + '<td class="num h" style="' + (vix ? '' : heatBg(r.y, 20)) + '"><b>' +
+      (r.y == null ? '—' : vix ? r.y.toFixed(1) : pct(r.y, 1)) + '</b></td></tr>';
+  }).join('');
+  $('monthly').innerHTML = '<table class="heat">' + '<thead>' + head + '</thead><tbody>' + body + '</tbody></table>';
+  $('mhNote').textContent = vix
+    ? '— average VIX level in each month (green = calm, red = fearful)'
+    : '— % change in each calendar month' + (MSRC ? ' · ' + MSRC : '');
+}
+function renderSeasonality() {
+  if (CFG.kind === 'vix') {
+    var lv = monthLevelMatrix(), yy = Object.keys(lv), avg = new Array(12).fill(0), cnt = new Array(12).fill(0);
+    yy.forEach(function (y) { lv[y].m.forEach(function (v, m) { if (v != null) { avg[m] += v; cnt[m]++; } }); });
+    var vals = avg.map(function (s, m) { return cnt[m] ? s / cnt[m] : null; });
+    var mx = Math.max.apply(null, vals.filter(function (v) { return v != null; }));
+    $('season').innerHTML = barChart('season', vals, MON, function (v, m) {
+      return '<b>' + MON[m] + '</b><br>average VIX ' + v.toFixed(1) + '<br><span class="faint">' + cnt[m] + ' years</span>';
+    }, mx, false) + '<div class="note">Average level of the fear gauge in each calendar month since 2012.</div>';
+    $('seasNote').textContent = '— when the market gets nervous';
+    return;
+  }
+  var mm = monthMatrix(), years = Object.keys(mm), sum = new Array(12).fill(0), n = new Array(12).fill(0), pos = new Array(12).fill(0), all = [[], [], [], [], [], [], [], [], [], [], [], []];
+  years.forEach(function (y) {
+    mm[y].m.forEach(function (v, m) { if (v == null) return; sum[m] += v; n[m]++; if (v > 0) pos[m]++; all[m].push(v); });
+  });
+  var avgs = sum.map(function (s, m) { return n[m] ? s / n[m] : null; });
+  var mag = Math.max.apply(null, avgs.filter(function (v) { return v != null; }).map(Math.abs));
+  var best = -1, worst = -1;
+  avgs.forEach(function (v, m) {
+    if (v == null) return;
+    if (best < 0 || v > avgs[best]) best = m;
+    if (worst < 0 || v < avgs[worst]) worst = m;
+  });
+  if (best < 0) { $('season').textContent = 'Not enough monthly history yet.'; return; }
+  $('season').innerHTML = barChart('season', avgs, MON, function (v, m) {
+    return '<b>' + MON[m] + '</b><br>average ' + pct(v) + '<br>median ' + pct(median(all[m])) +
+           '<br><span class="faint">' + pos[m] + ' of ' + n[m] + ' years positive</span>';
+  }, mag, true) +
+    '<div class="note">Strongest month on average: <b>' + MON[best] + '</b> (' + pct(avgs[best]) + ') · weakest: <b>' + MON[worst] +
+    '</b> (' + pct(avgs[worst]) + '). Averages over ' + years.length + ' years — a tendency, never a promise.</div>';
+  $('seasNote').textContent = '— average return by calendar month';
+}
+// generic mini bar chart (SVG) with its own hover tooltip. `hostId` supplies the
+// pixel width so, like the price chart, it draws 1:1 instead of being scaled down.
+var BARN = 0;
+function barChart(hostId, vals, labels, tipFn, scale, signed) {
+  var id = 'bc' + (++BARN);
+  var W = Math.max(300, Math.round(($(hostId) && $(hostId).clientWidth) || 960));
+  var H = signed ? 170 : 140, PT = 8, PB = 18;
+  var n = vals.length, mx = scale || 1, slot = W / n, bw = Math.max(3, Math.min(slot * 0.68, 46));
+  var zeroY = signed ? PT + (H - PT - PB) / 2 : H - PB;
+  var span = signed ? (H - PT - PB) / 2 : (H - PT - PB);
+  var perLbl = Math.max(4, Math.floor(W / 34));
+  var bars = '', lbls = '', every = n > perLbl ? Math.ceil(n / perLbl) : 1;
+  vals.forEach(function (v, i) {
+    var cx = slot * i + slot / 2;
+    if (i % every === 0) lbls += '<text x="' + cx.toFixed(1) + '" y="' + (H - 4) + '" text-anchor="middle" font-size="10.5" fill="var(--text-faint)">' + labels[i] + '</text>';
+    if (v == null || !isFinite(v)) return;
+    var h = Math.max(1.5, Math.min(Math.abs(v) / mx, 1) * span);
+    var y = (!signed || v >= 0) ? zeroY - h : zeroY;
+    var col = signed ? (v >= 0 ? 'var(--up)' : 'var(--down)') : 'var(--accent)';
+    bars += '<rect class="bcb" data-i="' + i + '" x="' + (cx - bw / 2).toFixed(1) + '" y="' + y.toFixed(1) +
+            '" width="' + bw.toFixed(1) + '" height="' + h.toFixed(1) + '" rx="2" fill="' + col + '" opacity=".85"/>';
+  });
+  var zero = signed ? '<line x1="0" y1="' + zeroY + '" x2="' + W + '" y2="' + zeroY + '" stroke="var(--border-strong)" stroke-width="1"/>' : '';
+  var html = '<div id="' + id + '" class="bcw">' +
+      '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" preserveAspectRatio="none">' + zero + bars + lbls + '</svg>' +
+      '<div id="' + id + 't" class="bctip"></div></div>';
+  setTimeout(function () {
+    var root = $(id); if (!root) return;
+    var tip = $(id + 't');
+    root.querySelectorAll('.bcb').forEach(function (b) {
+      var show = function () {
+        var i = +b.getAttribute('data-i');
+        tip.style.display = 'block'; tip.innerHTML = tipFn(vals[i], i);
+        var rr = root.getBoundingClientRect(), br = b.getBoundingClientRect();
+        tip.style.left = Math.min(Math.max(br.left - rr.left - 24, 0), Math.max(0, rr.width - tip.offsetWidth - 2)) + 'px';
+      };
+      b.addEventListener('pointerenter', show);
+      b.addEventListener('pointerdown', show);
+      b.addEventListener('pointerleave', function () { tip.style.display = 'none'; });
+    });
+  }, 0);
+  return html;
+}
+function renderYearly() {
+  var vix = CFG.kind === 'vix';
+  var rows = vix ? monthLevelMatrix() : monthMatrix();
+  var years = Object.keys(rows).map(Number).sort(function (a, b) { return a - b; });
+  var vals = [], labs = [];
+  years.forEach(function (y) { if (rows[y].y == null) return; vals.push(rows[y].y); labs.push(String(y).slice(2)); });
+  if (!vals.length) { $('yearly').textContent = 'No yearly history.'; return; }
+  var mag = Math.max.apply(null, vals.map(Math.abs));
+  var posN = vals.filter(function (v) { return v > 0; }).length;
+  $('yearly').innerHTML = barChart('yearly', vals, labs, function (v, i) {
+    return '<b>' + years.filter(function (y) { return rows[y].y != null; })[i] + '</b><br>' + (vix ? 'average VIX ' + v.toFixed(1) : pct(v));
+  }, mag, !vix) +
+    (vix ? '<div class="note">Average VIX level per calendar year.</div>'
+         : '<div class="note"><b>' + posN + ' of ' + vals.length + '</b> calendar years were positive (' +
+           (posN / vals.length * 100).toFixed(0) + '%). Best: <b class="up">' + pct(Math.max.apply(null, vals)) +
+           '</b> · worst: <b class="down">' + pct(Math.min.apply(null, vals)) + '</b>.</div>');
+}
+
+/* =========================================================================
+ * ROLLING RETURNS (CAGR table)
+ * ====================================================================== */
+function renderRolling() {
+  if (CFG.kind === 'vix') { $('rollCard').classList.add('hidden'); return; }
+  if (MC.length < 24) { $('rolling').textContent = 'Not enough history yet.'; return; }
+  var wins = [1, 3, 5, 7, 10, 15];
+  var rows = wins.map(function (w) {
+    var k = w * 12, out = [];
+    for (var i = 0; i + k < MC.length; i++) {
+      var a = MC[i].c, b = MC[i + k].c;
+      if (!a || !b) continue;
+      out.push((Math.pow(b / a, 1 / w) - 1) * 100);
+    }
+    if (out.length < 6) return null;
+    var pos = out.filter(function (v) { return v > 0; }).length;
+    var gt12 = out.filter(function (v) { return v >= 12; }).length;
+    return { w: w, n: out.length, best: Math.max.apply(null, out), worst: Math.min.apply(null, out),
+             med: median(out), avg: out.reduce(function (a, b) { return a + b; }, 0) / out.length,
+             pos: pos / out.length * 100, gt12: gt12 / out.length * 100 };
+  }).filter(Boolean);
+  $('rolling').innerHTML =
+    '<table><thead><tr><th>Held for</th><th>Best</th><th>Worst</th><th>Median</th><th>Average</th><th>% positive</th><th>% ≥ 12%</th><th>Windows</th></tr></thead><tbody>' +
+    rows.map(function (r) {
+      return '<tr><td>' + r.w + ' year' + (r.w > 1 ? 's' : '') + '</td>' +
+        '<td class="num up">' + pct(r.best, 1) + '</td>' +
+        '<td class="num ' + cls(r.worst) + '">' + pct(r.worst, 1) + '</td>' +
+        '<td class="num ' + cls(r.med) + '">' + pct(r.med, 1) + '</td>' +
+        '<td class="num ' + cls(r.avg) + '">' + pct(r.avg, 1) + '</td>' +
+        '<td class="num">' + r.pos.toFixed(0) + '%</td>' +
+        '<td class="num">' + r.gt12.toFixed(0) + '%</td>' +
+        '<td class="num faint">' + r.n + '</td></tr>';
+    }).join('') + '</tbody></table>';
+}
+
+/* =========================================================================
+ * DRAWDOWNS
+ * ====================================================================== */
+function drawdowns() {
+  var eps = [], peak = -Infinity, peakD = null, cur = null;
+  for (var i = 0; i < P.length; i++) {
+    if (P[i] >= peak) {
+      if (cur) { cur.recD = D[i]; cur.rec = Math.round(daysBetween(cur.troughD, D[i])); eps.push(cur); cur = null; }
+      peak = P[i]; peakD = D[i];
+    } else {
+      var dd = (P[i] / peak - 1) * 100;
+      if (!cur) cur = { peak: peak, peakD: peakD, dd: dd, trough: P[i], troughD: D[i] };
+      else if (dd < cur.dd) { cur.dd = dd; cur.trough = P[i]; cur.troughD = D[i]; }
+    }
+  }
+  if (cur) { cur.rec = null; cur.ongoing = true; eps.push(cur); }
+  return eps.sort(function (a, b) { return a.dd - b.dd; }).slice(0, 8);
+}
+function renderDrawdowns() {
+  // a mean-reverting volatility index has no meaningful "drawdown" — its regime
+  // table and spike list (below) say the same thing honestly
+  if (CFG.kind === 'vix') { $('ddCard').classList.add('hidden'); return; }
+  var eps = drawdowns();
+  if (!eps.length) { $('dd').textContent = 'No drawdowns in this history.'; return; }
+  $('dd').innerHTML =
+    '<table><thead><tr><th>Peak</th><th>Level</th><th>Trough</th><th>Level</th><th>Fall</th><th>Fall took</th><th>Recovered</th><th>Recovery</th></tr></thead><tbody>' +
+    eps.map(function (e) {
+      return '<tr><td>' + prettyDate(e.peakD) + '</td><td class="num">' + lvl(e.peak) + '</td>' +
+        '<td>' + prettyDate(e.troughD) + '</td><td class="num">' + lvl(e.trough) + '</td>' +
+        '<td class="num down">' + e.dd.toFixed(1) + '%</td>' +
+        '<td class="num faint">' + Math.round(daysBetween(e.peakD, e.troughD)) + ' d</td>' +
+        '<td>' + (e.ongoing ? '<span class="down">not yet</span>' : prettyDate(e.recD)) + '</td>' +
+        '<td class="num faint">' + (e.ongoing ? '—' : e.rec + ' d') + '</td></tr>';
+    }).join('') + '</tbody></table>' +
+    '<div class="note">Measured on daily closes since ' + prettyDate(D[0]) + '. “Recovery” counts calendar days from the trough back to the old peak.</div>';
+}
+
+/* =========================================================================
+ * VIX EXTRAS
+ * ====================================================================== */
+function renderVix() {
+  if (CFG.kind !== 'vix') return;
+  $('vixCard').classList.remove('hidden');
+  var last = LIVE ? LIVE.price : P[P.length - 1];
+  var bands = [[0, 12, 'Calm', 'Complacent market — small daily moves expected'],
+               [12, 16, 'Normal', 'Business as usual'],
+               [16, 22, 'Nervous', 'Event risk being priced in'],
+               [22, 30, 'Fearful', 'Sharp swings, hedging demand high'],
+               [30, 1e9, 'Panic', 'Crash-level stress — rare and short-lived']];
+  var counts = bands.map(function (b) { return P.filter(function (v) { return v >= b[0] && v < b[1]; }).length; });
+  var tot = P.length;
+  var y1 = P.slice(-252), y1c = bands.map(function (b) { return y1.filter(function (v) { return v >= b[0] && v < b[1]; }).length; });
+  var rows = bands.map(function (b, i) {
+    var on = last >= b[0] && last < b[1];
+    return '<tr' + (on ? ' style="background:var(--accent-soft)"' : '') + '><td>' + (on ? '▶ ' : '') + b[2] + '</td>' +
+      '<td class="faint">' + b[0] + (b[1] > 100 ? '+' : '–' + b[1]) + '</td>' +
+      '<td class="num">' + (counts[i] / tot * 100).toFixed(1) + '%</td>' +
+      '<td class="num">' + (y1c[i] / y1.length * 100).toFixed(1) + '%</td>' +
+      '<td class="faint" style="white-space:normal">' + b[3] + '</td></tr>';
+  }).join('');
+  // biggest single-day spikes
+  var spikes = [];
+  for (var i = 1; i < P.length; i++) spikes.push({ d: D[i], v: (P[i] / P[i - 1] - 1) * 100, lvl: P[i] });
+  spikes.sort(function (a, b) { return b.v - a.v; });
+  $('vixBody').innerHTML =
+    '<table><thead><tr><th>Regime</th><th>VIX</th><th>Days since 2012</th><th>Last year</th><th>What it means</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+    '<h2 style="margin-top:16px">⚡ Biggest one-day spikes</h2>' +
+    '<table><thead><tr><th>Date</th><th>Jump</th><th>Closed at</th><th>Nifty that day</th></tr></thead><tbody>' +
+    spikes.slice(0, 6).map(function (s) {
+      return '<tr><td>' + prettyDate(s.d) + '</td><td class="num up">' + pct(s.v) + '</td><td class="num">' + fmt(s.lvl) + '</td>' +
+             '<td class="num faint" data-nd="' + s.d + '">—</td></tr>';
+    }).join('') + '</tbody></table>' +
+    '<div class="note">A VIX spike is the market paying up for protection — historically it peaks near the bottom of a fall, not the top.</div>';
+  // fill the Nifty column (cheap: the file is already cached by the compare toggle path)
+  fetch('./nifty.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
+    var px = j.px || {}, ds = Object.keys(px).sort();
+    document.querySelectorAll('[data-nd]').forEach(function (td) {
+      var d = td.getAttribute('data-nd'), k = ds.indexOf(d);
+      if (k > 0) {
+        var ch = (px[ds[k]] / px[ds[k - 1]] - 1) * 100;
+        td.className = 'num ' + cls(ch); td.textContent = pct(ch);
+      }
+    });
+  }).catch(function () {});
+}
+
+/* =========================================================================
+ * CONSTITUENTS + LINKS
+ * ====================================================================== */
+var MEM_OPEN = false;
+function renderMembers() {
+  if (!VAL || !VAL.members || !VAL.members.length) return;
+  $('memCard').classList.remove('hidden');
+  $('memNote').textContent = '— ' + VAL.members.length + ' stocks · tap one for its page';
+  var draw = function () {
+    var list = MEM_OPEN ? VAL.members : VAL.members.slice(0, 60);
+    $('members').innerHTML = list.map(function (s) {
+      return '<a class="chip" href="./stock.html?sym=' + encodeURIComponent(s) + '">' + esc(s) + '</a>';
+    }).join('');
+    $('memMore').textContent = MEM_OPEN ? 'Show fewer' : 'Show all ' + VAL.members.length;
+    $('memMore').classList.toggle('hidden', VAL.members.length <= 60);
+  };
+  $('memMore').onclick = function () { MEM_OPEN = !MEM_OPEN; draw(); };
+  draw();
+}
+function renderLinks() {
+  var l = [['./indices.html', '📇 All indices, live'],
+           ['./monthly-returns.html', '🗓️ Monthly returns — every index'],
+           ['./movers.html', '📊 Today’s top movers'],
+           ['./market-mood.html', '🌡️ Market mood & breadth'],
+           ['./sectors.html', '🔥 Sector performance'],
+           ['./stock-backtest.html', '🧪 Backtest a strategy']];
+  if (CFG.kind !== 'vix') l.splice(4, 0, ['./index-chart.html?ix=vix', '🌪️ India VIX — the fear gauge']);
+  $('links').innerHTML = l.map(function (x) { return '<a class="chip" href="' + x[0] + '">' + x[1] + '</a>'; }).join('');
+  $('srcNote').innerHTML = 'Daily closes: NSE end-of-day (from ' + prettyDate(D[0]) + ', refreshed every evening). ' +
+    (MC.length && MSRC ? 'Month-end history: ' + MSRC + '. ' : '') +
+    'Live price: Yahoo via our Cloudflare Worker, ~15 minutes delayed, polled during market hours.';
+}
+
+/* =========================================================================
+ * BOOT
+ * ====================================================================== */
+function resolveKey() {
+  var q = new URLSearchParams(location.search).get('ix') || 'nifty';
+  var k = String(q).toLowerCase().trim();
+  if (REG[k]) return k;
+  if (ALIAS[k]) return ALIAS[k];
+  return 'nifty';
+}
+// one section failing must never blank the rest of the page
+function safe(fn) { try { fn(); } catch (e) { if (window.console) console.error('[index-chart]', fn.name || 'section', e); } }
+
+// the SVGs are drawn in real pixels, so a width change (rotation, window drag)
+// needs a redraw rather than a stretch
+var RSZT = null;
+window.addEventListener('resize', function () {
+  clearTimeout(RSZT);
+  RSZT = setTimeout(function () {
+    var w = $('chartWrap') ? $('chartWrap').clientWidth : 0;
+    if (!D.length || Math.abs(w - LASTW) < 24) return;
+    LASTW = w;
+    [drawChart, renderSeasonality, renderYearly].forEach(safe);
+  }, 180);
+});
+function renderAll() {
+  [renderHeader, renderTiles, renderTech, renderReturns, renderMonthly, renderSeasonality,
+   renderRolling, renderYearly, renderDrawdowns, renderVix, renderLinks].forEach(safe);
+}
+function boot() {
+  KEY = resolveKey(); CFG = REG[KEY];
+  document.title = CFG.name + ' chart · STOCKSWORLD';
+  renderSwitch();
+  $('ixName').textContent = CFG.name;
+  $('ixSub').textContent = CFG.sub;
+
+  fetch('./' + CFG.src, { cache: 'no-store' })
+    .then(function (r) { return r.json(); })
+    .then(function (j) {
+      var px = j.px || {};
+      D = Object.keys(px).sort();
+      P = D.map(function (d) { return px[d]; });
+      if (D.length < 30) throw new Error('thin history');
+      MC = monthlyFromDaily(); MSRC = '';
+      renderControls();
+      drawChart();
+      LASTW = $('chartWrap').clientWidth;
+      renderAll();
+
+      // ---- lazy, additive: month-end history back to the 1990s
+      if (CFG.key) {
+        fetch('./index_monthly.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j2) {
+          var rec = (j2.indices || []).filter(function (x) { return x.key === CFG.key; })[0];
+          if (!rec) return;
+          var m = monthlyFromFile(rec);
+          if (m.length > MC.length) { MC = m; MSRC = 'NSE month-end closes from ' + m[0].ym.slice(0, 4); }
+          [renderReturns, renderMonthly, renderSeasonality, renderRolling, renderYearly, renderLinks].forEach(safe);
+        }).catch(function () {});
+      }
+      // ---- lazy, additive: valuation + members
+      if (CFG.key) {
+        fetch('./indices.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j3) {
+          VAL = (j3.indices || []).filter(function (x) { return x.k === CFG.key; })[0] || null;
+          if (!VAL) return;
+          renderHeader(); renderMembers();
+        }).catch(function () {});
+      }
+      // ---- live quote + polling
+      var poll = function () {
+        fetchLive(CFG.ysym).then(function (q) {
+          LIVE = q; renderHeader();
+          if (RANGE === '1D') drawChart();
+        }).catch(function () {});
+      };
+      poll();
+      setInterval(function () { if (!document.hidden && marketOpen()) poll(); }, 45000);
+      document.addEventListener('visibilitychange', function () { if (!document.hidden && marketOpen()) poll(); });
+    })
+    .catch(function (e) {
+      $('ixPx').textContent = '—';
+      $('chart').innerHTML = '<div class="faint" style="padding:40px 0;text-align:center">Could not load ' + esc(CFG.src) + '. Please refresh.</div>';
+    });
+}
+boot();
+})();
+</script>
+</body>
+</html>
