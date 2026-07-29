@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex" />
+<title>STOCKSWORLD · Strategy Phases Lab</title>
+<meta name="description" content="Unlisted research page: top strategies from the 4.44M exhaustive grid, per market phase." />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<style>
+  body{font-feature-settings:"tnum" 1}
+  .pcard{background:var(--surface,#fff);border:1px solid var(--border,#e2e8f0);border-radius:.75rem;
+    padding:12px 14px;cursor:pointer;min-width:150px;flex:1;transition:.15s;user-select:none}
+  .pcard:hover{border-color:var(--accent,#2563eb)}
+  .pcard.on{border-color:var(--accent,#2563eb);box-shadow:0 0 0 1px var(--accent,#2563eb) inset}
+  .pcard .t{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--text-faint,#94a3b8)}
+  .pcard .v{font-size:20px;font-weight:800;margin-top:2px}
+  .pcard .s{font-size:11px;color:var(--text-muted,#64748b);margin-top:2px}
+  .pcard.info{cursor:default}
+  .pos{color:#16a34a} html[data-theme="dark"] .pos{color:#4ade80}
+  .warn{color:#b45309} html[data-theme="dark"] .warn{color:#fbbf24}
+  table{border-collapse:collapse;width:100%;min-width:960px}
+  th{position:sticky;top:0;background:var(--surface-2,#f1f5f9);color:var(--text-muted,#64748b);
+    font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;text-align:left;padding:8px 9px;
+    cursor:pointer;user-select:none;white-space:nowrap;z-index:1}
+  th.num,td.num{text-align:right}
+  td{padding:6px 9px;border-top:1px solid var(--border,#e2e8f0);font-size:13px}
+  td.mono{font-family:ui-monospace,Consolas,monospace}
+  .fam{display:inline-block;background:var(--surface-2,#f1f5f9);border-radius:4px;padding:1px 7px;
+    font-size:12px;white-space:nowrap;color:var(--text-muted,#475569)}
+  .shell{background:var(--surface,#fff);border:1px solid var(--border,#e2e8f0);border-radius:.75rem;overflow-x:auto}
+  input[type=search]{background:var(--surface,#fff);border:1px solid var(--border,#cbd5e1);color:var(--text,#0f172a);
+    border-radius:.5rem;padding:7px 11px;font-size:13px;min-width:230px}
+  html[data-theme="dark"] input[type=search]{border-color:#374151;color:#e2e8f0}
+</style>
+</head>
+<body class="min-h-screen">
+<main class="max-w-6xl mx-auto px-3 sm:px-5 py-5">
+  <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight">🧪 Strategy Phases Lab</h1>
+  <p class="text-[13px] mt-1" style="color:var(--text-muted,#64748b)">
+    4,440,600 strategies tested (every sort factor × direction × all 1–3 filter combos) · Nifty 500 · monthly · top-5 ·
+    survivorship-free engine. Unlisted research page. <span id="builtAt"></span>
+  </p>
+
+  <div class="flex flex-wrap gap-2.5 mt-4" id="cards"></div>
+
+  <div class="flex flex-wrap items-center gap-3 mt-4">
+    <input type="search" id="q" placeholder="Search filters / factor… e.g. delivPct" aria-label="Search">
+    <span id="count" class="text-[12px]" style="color:var(--text-muted,#64748b)"></span>
+  </div>
+
+  <div class="shell mt-2">
+    <table id="tbl"><thead id="th"></thead><tbody id="tb"></tbody></table>
+  </div>
+  <p class="text-[11.5px] mt-3" style="color:var(--text-faint,#94a3b8)" id="foot"></p>
+</main>
+<script>
+(async function(){
+  const R = await (await fetch('./strategy_phases.json?v=1')).json();
+  document.getElementById('builtAt').textContent = 'Built ' + R.built + '.';
+  const P = R.phases, C = R.combos, cards = R.cards;
+  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const fmtTot = v => (v>=0?'+':'') + (Math.abs(v)>=1000 ? (v/100).toFixed(1)+'x' : v.toFixed(0)+'%');
+  // phase index by key
+  const PI = {}; P.forEach((p,i)=>PI[p.key]=i);
+  const DEFS = [
+    { key:'full', title:'Entire cycle',      sub:P[0].start+' → '+P[0].end, big:()=>C[cards.full[0]].p[0][0].toFixed(1)+'% CAGR', desc:'Top 1000 by full-cycle CAGR' },
+    { key:'w1',   title:'Covid → Sep-21',    sub:P[1].start+' → '+P[1].end, big:()=>fmtTot(C[cards.w1[0]].p[1][1]),  desc:'Top 1000 by total return in this phase' },
+    { key:'w2',   title:'Mar-23 → Sep-24',   sub:P[2].start+' → '+P[2].end, big:()=>fmtTot(C[cards.w2[0]].p[2][1]),  desc:'Top 1000 by total return in this phase' },
+    { key:'w3',   title:'Mar-26 → today',    sub:P[3].start+' → '+P[3].end, big:()=>fmtTot(C[cards.w3[0]].p[3][1]),  desc:'Top 1000 by total return in this phase' },
+    { key:'all4', title:'⭐ Best in ALL 4',  sub:'consistency ranking',     big:()=>'Top 100', desc:'Ranked by WORST phase rank — must be elite in every phase' },
+  ];
+  const cardsEl = document.getElementById('cards');
+  cardsEl.innerHTML = DEFS.map((d,i)=>'<div class="pcard'+(d.key==='all4'?'':'')+'" data-k="'+d.key+'" role="button" tabindex="0">'+
+      '<div class="t">'+d.title+'</div><div class="v pos">'+d.big()+'</div><div class="s">'+d.sub+'</div></div>').join('') +
+    '<div class="pcard info"><div class="t">Nifty 500 benchmark</div><div class="v">'+P[0].bench.cagr.toFixed(1)+'% <span class="text-[12px] font-semibold">CAGR full cycle</span></div>'+
+    '<div class="s">'+P.slice(1).map(p=>p.label.split(' ')[0]+' '+fmtTot(p.bench.totRet)).join(' · ')+'</div></div>';
+
+  let cur='all4', sortK=null, sortAsc=true, needle='';
+  const famOf = c => c.d+'-'+c.s;
+  function rowsFor(k){
+    if(k==='all4') return cards.all4.map((x,j)=>({rk:j+1, c:C[x.i], worst:x.worst, ranks:x.ranks}));
+    return cards[k].map((ci,j)=>({rk:j+1, c:C[ci]}));
+  }
+  function headFor(k){
+    const base = k==='all4'
+      ? [['rk','#'],['worst','Worst rank'],['r0','Full CAGR %'],['r1','Covid tot %'],['r2','23-24 tot %'],['r3','26 tot %']]
+      : k==='full'
+        ? [['rk','#'],['r0','CAGR %'],['tot','Total %'],['dd','Max DD %'],['win','Win %']]
+        : [['rk','#'],['tot','Total %'],['cg','CAGR %'],['dd','Max DD %'],['win','Win %']];
+    return base.concat([['fam','Rank by'],['f','Filters']]);
+  }
+  function valOf(r,k,col){
+    const pi = PI[k]||0;
+    if(col==='rk')return r.rk; if(col==='worst')return r.worst;
+    if(col==='fam')return famOf(r.c); if(col==='f')return r.c.f;
+    if(k==='all4'){ const m={r0:r.c.p[0][0],r1:r.c.p[1][1],r2:r.c.p[2][1],r3:r.c.p[3][1]}; return m[col]; }
+    const ph=r.c.p[pi];
+    return col==='r0'?ph[0]:col==='cg'?ph[0]:col==='tot'?ph[1]:col==='dd'?ph[2]:ph[3];
+  }
+  function render(){
+    const head = headFor(cur);
+    document.getElementById('th').innerHTML = '<tr>'+head.map(([ck,l])=>
+      '<th data-c="'+ck+'" class="'+(ck==='fam'||ck==='f'?'':'num')+'">'+l+(sortK===ck?(sortAsc?' ▴':' ▾'):'')+'</th>').join('')+'</tr>';
+    let rows = rowsFor(cur);
+    if(needle) rows = rows.filter(r=>r.c.f.toLowerCase().includes(needle)||famOf(r.c).toLowerCase().includes(needle));
+    if(sortK) rows.sort((a,b)=>{const x=valOf(a,cur,sortK),y=valOf(b,cur,sortK);
+      return (typeof x==='number'?x-y:String(x).localeCompare(String(y)))*(sortAsc?1:-1);});
+    document.getElementById('tb').innerHTML = rows.map(r=>{
+      const cells = head.map(([ck])=>{
+        if(ck==='fam')return '<td><span class="fam">'+esc(famOf(r.c))+'</span></td>';
+        if(ck==='f')return '<td class="mono" style="font-size:12px">'+esc(r.c.f)+'</td>';
+        let v=valOf(r,cur,ck), txt;
+        if(ck==='rk'||ck==='worst')txt=v.toLocaleString('en-IN');
+        else if(ck==='tot'||ck==='r1'||ck==='r2'||ck==='r3')txt=fmtTot(v);
+        else txt=v.toFixed(1);
+        const cls=(ck==='dd'&&v>35)?' warn':((ck==='tot'||ck==='r0'||ck==='cg')?' pos font-semibold':'');
+        return '<td class="num mono'+cls+'">'+txt+'</td>';});
+      return '<tr>'+cells.join('')+'</tr>';}).join('');
+    document.getElementById('count').textContent = rows.length.toLocaleString('en-IN')+' strategies'+(needle?' · matching "'+needle+'"':'');
+    document.querySelectorAll('.pcard[data-k]').forEach(el=>el.classList.toggle('on',el.dataset.k===cur));
+    const pi=PI[cur]||0;
+    document.getElementById('foot').textContent = cur==='all4'
+      ? 'Worst rank = a strategy’s poorest rank across the 4 phases (out of 44.4 lakh). Lower = consistently elite. Total-% columns are absolute returns for each phase.'
+      : 'Phase '+P[pi].start+' → '+P[pi].end+' ('+P[pi].years+'y). Total % is absolute (not annualised). Benchmark Nifty 500: '+fmtTot(P[pi].bench.totRet)+' total. All rows: Nifty 500 universe, monthly rebalance, top-5 equal-weight, reset.';
+  }
+  cardsEl.addEventListener('click',e=>{const el=e.target.closest('.pcard[data-k]');if(!el)return;cur=el.dataset.k;sortK=null;render();});
+  cardsEl.addEventListener('keydown',e=>{if(e.key!=='Enter'&&e.key!==' ')return;const el=e.target.closest('.pcard[data-k]');if(!el)return;e.preventDefault();cur=el.dataset.k;sortK=null;render();});
+  document.getElementById('q').addEventListener('input',e=>{needle=e.target.value.trim().toLowerCase();render();});
+  document.getElementById('th').addEventListener('click',e=>{const th=e.target.closest('th');if(!th)return;
+    const ck=th.dataset.c; if(sortK===ck)sortAsc=!sortAsc;else{sortK=ck;sortAsc=(ck==='rk'||ck==='worst'||ck==='dd'||ck==='fam'||ck==='f');} render();});
+  render();
+})();
+</script>
+</body>
+</html>
