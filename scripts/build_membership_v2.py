@@ -129,6 +129,44 @@ def reconstruct(anchor_today, events, checkpoints=None):
         for d, S in checkpoints.items(): snaps[d] = {canon(x) for x in S}
     return snaps
 
+def checkpoint_continuity(snaps, checkpoints, events):
+    """Close the holes the BACKWARD walk cannot.
+
+    reconstruct() only restores a past member when the changelog records the exclusion that
+    removed them, so every exclusion the press-release parser missed makes the reconstruction
+    decay monotonically into the past: 501 members at 2018-10-04 down to 485 at 2015-03-27,
+    with no archived full list anywhere between 2015-03-25 and 2018-10-04 to pin it back.
+    Symptom to look for: adds/removes balanced at every transition except a few where removes
+    exceed adds, after which the deficit never recovers (YESBANK, in the Nifty 50 at the time,
+    sat outside the reconstructed Nifty 500 for three years).
+
+    Invariant applied: a symbol present at BOTH surrounding pinned checkpoints and never named
+    in an exclusion between them was a member for the whole interval. A genuine leave-and-rejoin
+    IS recorded as an exclusion, so requiring "never excluded" preserves those real gaps — this
+    fills only the holes the changelog itself cannot account for.
+    """
+    if not checkpoints:
+        return 0
+    cps = sorted(d for d in checkpoints if d in snaps)
+    dates = sorted(snaps)
+    ev = merge_same_eff(events)
+    added = 0
+    for a, b in zip(cps, cps[1:]):
+        both = snaps[a] & snaps[b]
+        gone = set()
+        for c in ev:
+            if a < c["eff"] <= b:
+                gone |= {canon(x) for x in c["excluded"]}
+        stayed = both - gone
+        for d in dates:
+            if a < d < b:
+                miss = stayed - snaps[d]
+                if miss:
+                    snaps[d] |= miss
+                    added += len(miss)
+    return added
+
+
 def validate_n500(snaps, wb):
     def asof(d):
         best = None
@@ -183,6 +221,13 @@ def main():
         else:
             cps = OFFICIAL.get(idx) or None   # official archived CSVs pinned exact
         snaps = reconstruct(anchor, events, cps)
+        # Nifty 500 only: its checkpoints are dense enough for the invariant to be safe, and it
+        # is the index whose backward walk provably decays (see checkpoint_continuity). The
+        # fixed-size sub-indexes are already pinned to official CSVs at J=0.997 and adding to
+        # them risks pushing a 50-name tier over its size check.
+        if idx == "Nifty 500":
+            n = checkpoint_continuity(snaps, cps, events)
+            print(f"  continuity repair: restored {n} member-slots between pinned checkpoints")
         if idx == "Nifty 500":
             worst = validate_n500(snaps, wb)
             if worst < 99.0:   # SAFETY GATE: never overwrite good membership with a degraded rebuild
