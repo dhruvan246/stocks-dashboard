@@ -45,6 +45,10 @@
   </p>
 
   <div class="flex flex-wrap gap-2.5 mt-4" id="cards"></div>
+  <div class="mt-3" id="ywrap" style="display:none">
+    <div class="flab" style="font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint,#94a3b8)">Year-wise · top 1000 each</div>
+    <div class="flex flex-wrap gap-2.5 mt-1.5" id="ycards"></div>
+  </div>
 
   <div class="flex flex-wrap items-center gap-3 mt-4">
     <input type="search" id="q" placeholder="Search filters / factor… e.g. delivPct" aria-label="Search">
@@ -58,7 +62,7 @@
 </main>
 <script>
 (async function(){
-  const R = await (await fetch('./strategy_phases.json?v=1')).json();
+  const R = await (await fetch('./strategy_phases.json?v=2')).json();
   document.getElementById('builtAt').textContent = 'Built ' + R.built + '.';
   const P = R.phases, C = R.combos, cards = R.cards;
   const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -78,10 +82,18 @@
     '<div class="pcard info"><div class="t">Nifty 500 benchmark</div><div class="v">'+P[0].bench.cagr.toFixed(1)+'% <span class="text-[12px] font-semibold">CAGR full cycle</span></div>'+
     '<div class="s">'+P.slice(1).map(p=>p.label.split(' ')[0]+' '+fmtTot(p.bench.totRet)).join(' · ')+'</div></div>';
 
+  const YRS = R.years||[];
+  if(YRS.length){ document.getElementById('ywrap').style.display='';
+    document.getElementById('ycards').innerHTML = YRS.map(y=>'<div class="pcard" data-k="'+y.key+'" role="button" tabindex="0">'+
+      '<div class="t">'+y.label+'</div><div class="v pos">'+((v)=>(v>=0?'+':'')+(Math.abs(v)>=1000?(v/100).toFixed(1)+'x':v.toFixed(0)+'%'))(y.rows[0].tot)+'</div>'+
+      '<div class="s">best of 44.4L · bench '+(y.bench?(y.bench.totRet>=0?'+':'')+y.bench.totRet+'%':'—')+'</div></div>').join('');
+  }
+  const yearOf = k => YRS.find(y=>y.key===k);
   let cur='all4', sortK=null, sortAsc=true, needle='';
   const famOf = c => c.d+'-'+c.s;
   function rowsFor(k){
     if(k==='all4') return cards.all4.map((x,j)=>({rk:j+1, c:C[x.i], worst:x.worst, ranks:x.ranks}));
+    const Y=yearOf(k); if(Y) return Y.rows.map((r,j)=>({rk:j+1, c:C[r.i], y:r}));
     return cards[k].map((ci,j)=>({rk:j+1, c:C[ci]}));
   }
   function headFor(k){
@@ -93,10 +105,11 @@
     return base.concat([['fam','Rank by'],['f','Filters']]);
   }
   function valOf(r,k,col){
-    const pi = PI[k]||0;
     if(col==='rk')return r.rk; if(col==='worst')return r.worst;
     if(col==='fam')return famOf(r.c); if(col==='f')return r.c.f;
+    if(r.y){ return col==='tot'?r.y.tot:col==='cg'?r.y.cg:col==='dd'?r.y.dd:r.y.win; }
     if(k==='all4'){ const m={r0:r.c.p[0][0],r1:r.c.p[1][1],r2:r.c.p[2][1],r3:r.c.p[3][1]}; return m[col]; }
+    const pi = PI[k]||0;
     const ph=r.c.p[pi];
     return col==='r0'?ph[0]:col==='cg'?ph[0]:col==='tot'?ph[1]:col==='dd'?ph[2]:ph[3];
   }
@@ -121,13 +134,17 @@
       return '<tr>'+cells.join('')+'</tr>';}).join('');
     document.getElementById('count').textContent = rows.length.toLocaleString('en-IN')+' strategies'+(needle?' · matching "'+needle+'"':'');
     document.querySelectorAll('.pcard[data-k]').forEach(el=>el.classList.toggle('on',el.dataset.k===cur));
-    const pi=PI[cur]||0;
+    const Y=yearOf(cur), pi=PI[cur]||0;
     document.getElementById('foot').textContent = cur==='all4'
       ? 'Worst rank = a strategy’s poorest rank across the 4 phases (out of 44.4 lakh). Lower = consistently elite. Total-% columns are absolute returns for each phase.'
+      : Y ? 'Year '+Y.start+' → '+Y.end+' ('+Y.years+'y). Total % is absolute. Benchmark Nifty 500: '+(Y.bench?fmtTot(Y.bench.totRet):'—')+' total. All rows: Nifty 500 universe, monthly rebalance, top-5 equal-weight, reset.'
       : 'Phase '+P[pi].start+' → '+P[pi].end+' ('+P[pi].years+'y). Total % is absolute (not annualised). Benchmark Nifty 500: '+fmtTot(P[pi].bench.totRet)+' total. All rows: Nifty 500 universe, monthly rebalance, top-5 equal-weight, reset.';
   }
-  cardsEl.addEventListener('click',e=>{const el=e.target.closest('.pcard[data-k]');if(!el)return;cur=el.dataset.k;sortK=null;render();});
-  cardsEl.addEventListener('keydown',e=>{if(e.key!=='Enter'&&e.key!==' ')return;const el=e.target.closest('.pcard[data-k]');if(!el)return;e.preventDefault();cur=el.dataset.k;sortK=null;render();});
+  const onCard=e=>{const el=e.target.closest('.pcard[data-k]');if(!el)return;cur=el.dataset.k;sortK=null;render();};
+  const onKey=e=>{if(e.key!=='Enter'&&e.key!==' ')return;const el=e.target.closest('.pcard[data-k]');if(!el)return;e.preventDefault();cur=el.dataset.k;sortK=null;render();};
+  cardsEl.addEventListener('click',onCard); cardsEl.addEventListener('keydown',onKey);
+  document.getElementById('ycards').addEventListener('click',onCard);
+  document.getElementById('ycards').addEventListener('keydown',onKey);
   document.getElementById('q').addEventListener('input',e=>{needle=e.target.value.trim().toLowerCase();render();});
   document.getElementById('th').addEventListener('click',e=>{const th=e.target.closest('th');if(!th)return;
     const ck=th.dataset.c; if(sortK===ck)sortAsc=!sortAsc;else{sortK=ck;sortAsc=(ck==='rk'||ck==='worst'||ck==='dd'||ck==='fam'||ck==='f');} render();});
