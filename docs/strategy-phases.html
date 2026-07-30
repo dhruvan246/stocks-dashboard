@@ -153,9 +153,9 @@
   }
   function headFor(k){
     const base = k==='all4'
-      ? [['rk','#'],['worst','Worst rank'],['r0','Full CAGR %'],['r1','Covid tot %'],['r2','23-24 tot %'],['r3','26 tot %']]
+      ? [['rk','#'],['worst','Worst rank'],['r0','Full CAGR %'],['r1','Covid tot %'],['r2','23-24 tot %'],['r3','26 tot %'],['dd','Full DD %']]
       : k==='allY'
-        ? [['rk','#'],['worst','Worst yr rank']].concat(YRS.map((y,j)=>['y'+j,"’"+y.key.slice(3)+' %']))
+        ? [['rk','#'],['worst','Worst yr rank'],['dd','Full DD %']].concat(YRS.map((y,j)=>['y'+j,"’"+y.key.slice(3)+' %']))
         : k==='full'
           ? [['rk','#'],['r0','CAGR %'],['tot','Total %'],['dd','Max DD %'],['win','Win %']]
           : [['rk','#'],['tot','Total %'],['cg','CAGR %'],['dd','Max DD %'],['win','Win %']];
@@ -166,7 +166,7 @@
     if(col==='fam')return famOf(r.c); if(col==='f')return r.c.f;
     if(r.yr&&col[0]==='y'){ return r.yr[+col.slice(1)]; }
     if(r.y){ return col==='tot'?r.y.tot:col==='cg'?r.y.cg:col==='dd'?r.y.dd:r.y.win; }
-    if(k==='all4'){ const m={r0:r.c.p[0][0],r1:r.c.p[1][1],r2:r.c.p[2][1],r3:r.c.p[3][1]}; return m[col]; }
+    if(k==='all4'){ const m={r0:r.c.p[0][0],r1:r.c.p[1][1],r2:r.c.p[2][1],r3:r.c.p[3][1],dd:r.c.p[0][2]}; return m[col]; }
     const pi = PI[k]||0;
     const ph=r.c.p[pi];
     return col==='r0'?ph[0]:col==='cg'?ph[0]:col==='tot'?ph[1]:col==='dd'?ph[2]:ph[3];
