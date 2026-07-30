@@ -19,6 +19,18 @@
   .pcard .v{font-size:20px;font-weight:800;margin-top:2px}
   .pcard .s{font-size:11px;color:var(--text-muted,#64748b);margin-top:2px}
   .pcard.info{cursor:default}
+  .vcard{background:var(--surface,#fff);border:1.5px solid var(--border,#e2e8f0);border-radius:.7rem;
+    padding:9px 16px;cursor:pointer;user-select:none;transition:.15s;text-align:left;min-width:138px}
+  .vcard:hover{border-color:var(--accent,#2563eb);transform:translateY(-1px)}
+  .vcard .n{font-size:14px;font-weight:800;letter-spacing:-.01em}
+  .vcard .m{font-size:11px;color:var(--text-muted,#64748b);margin-top:1px}
+  .vcard.on{border-color:var(--accent,#2563eb);box-shadow:0 0 0 1.5px var(--accent,#2563eb) inset}
+  .vcard.on .n{color:var(--accent,#2563eb)}
+  .vcard.off{opacity:.45;cursor:not-allowed}
+  .vcard .cmp{display:none;font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--text-faint,#94a3b8);margin-top:2px}
+  .vcard.off .cmp{display:block}
+  .vcard:focus-visible{outline:2px solid var(--accent,#2563eb);outline-offset:2px}
   .pos{color:#16a34a} html[data-theme="dark"] .pos{color:#4ade80}
   .warn{color:#b45309} html[data-theme="dark"] .warn{color:#fbbf24}
   table{border-collapse:collapse;width:100%;min-width:960px}
@@ -83,20 +95,21 @@
     DATA[v] = await res.json(); return DATA[v];
   }
   function paintPills(){
-    document.querySelectorAll('#vpills .chip').forEach(b=>{
+    document.querySelectorAll('#vpills .vcard').forEach(b=>{
       b.classList.toggle('on', b.dataset.v===curVar);
-      if(b.dataset.off==='1'){ b.style.opacity=.45; b.title='still computing — check back soon'; }
-      else { b.style.opacity=''; b.title=''; }});
+      b.classList.toggle('off', b.dataset.off==='1');
+      b.title = b.dataset.off==='1' ? 'still computing — check back soon' : '';});
   }
   const vp=document.getElementById('vpills');
-  vp.insertAdjacentHTML('beforeend', Object.keys(SUFS).map(v=>'<button class="chip" data-v="'+v+'">'+VLABEL[v]+'</button>').join(''));
-  vp.addEventListener('click',async e=>{const b=e.target.closest('.chip');if(!b)return;
+  vp.insertAdjacentHTML('beforeend', Object.keys(SUFS).map(v=>{const [n,m]=VLABEL[v].split(' · ');
+    return '<button class="vcard" data-v="'+v+'"><div class="n">'+n+'</div><div class="m">'+m+'</div><div class="cmp">⏳ computing…</div></button>';}).join(''));
+  vp.addEventListener('click',async e=>{const b=e.target.closest('.vcard');if(!b)return;
     try{ const j=await loadVar(b.dataset.v); b.dataset.off=''; curVar=b.dataset.v; applyData(j); }
     catch(err){ b.dataset.off='1'; paintPills(); }});
   // probe which variants exist (they appear incrementally as their grids finish)
   Object.keys(SUFS).filter(v=>v!=='r5').forEach(v=>{
     fetch('./strategy_phases'+SUFS[v]+'.json?v=4',{method:'HEAD'}).then(r=>{
-      const b=vp.querySelector('[data-v="'+v+'"]'); if(b){ b.dataset.off = r.ok?'':'1'; paintPills(); }}).catch(()=>{});});
+      const b=vp.querySelector('.vcard[data-v="'+v+'"]'); if(b){ b.dataset.off = r.ok?'':'1'; paintPills(); }}).catch(()=>{});});
 
   function buildCards(){
     const DEFS = [
