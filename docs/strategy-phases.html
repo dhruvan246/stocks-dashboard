@@ -80,10 +80,11 @@
 </main>
 <script>
 (async function(){
-  const SUFS={r5:'',h5:'_h5',r3:'_r3',h3:'_h3'};
-  const VLABEL={r5:'Top 5 · Monthly reset',h5:'Top 5 · Ride winners',r3:'Top 3 · Monthly reset',h3:'Top 3 · Ride winners'};
-  const VDESC={r5:['5','rebalanced monthly (reset)'],h5:['5','ride winners (hold — exits replaced, winners kept)'],
-               r3:['3','rebalanced monthly (reset)'],h3:['3','ride winners (hold — exits replaced, winners kept)']};
+  const SUFS={r5:'',h5:'_h5',r3:'_r3',h3:'_h3',fno:'_fno_h3'};
+  const VLABEL={r5:'Top 5 · Monthly reset',h5:'Top 5 · Ride winners',r3:'Top 3 · Monthly reset',h3:'Top 3 · Ride winners',fno:'F&O · Top 3 · Ride winners'};
+  const VDESC={r5:['5','rebalanced monthly (reset)','Nifty 500'],h5:['5','ride winners (hold — exits replaced, winners kept)','Nifty 500'],
+               r3:['3','rebalanced monthly (reset)','Nifty 500'],h3:['3','ride winners (hold — exits replaced, winners kept)','Nifty 500'],
+               fno:['3','ride winners (hold — exits replaced, winners kept)','F&O stocks (survivorship-free)']};
   const DATA={}; let curVar='r5';
   let R=null,P=null,C=null,cards=null,YRS=[],PI={};
   const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -101,7 +102,8 @@
       b.title = b.dataset.off==='1' ? 'still computing — check back soon' : '';});
   }
   const vp=document.getElementById('vpills');
-  vp.insertAdjacentHTML('beforeend', Object.keys(SUFS).map(v=>{const [n,m]=VLABEL[v].split(' · ');
+  vp.insertAdjacentHTML('beforeend', Object.keys(SUFS).map(v=>{const parts=VLABEL[v].split(' · ');
+    const n=parts.slice(0,-1).join(' · '), m=parts[parts.length-1];
     return '<button class="vcard" data-v="'+v+'"><div class="n">'+n+'</div><div class="m">'+m+'</div><div class="cmp">⏳ computing…</div></button>';}).join(''));
   vp.addEventListener('click',async e=>{const b=e.target.closest('.vcard');if(!b)return;
     try{ const j=await loadVar(b.dataset.v); b.dataset.off=''; curVar=b.dataset.v; applyData(j); }
@@ -137,8 +139,8 @@
     R=j; P=R.phases; C=R.combos; cards=R.cards; YRS=R.years||[];
     PI={}; P.forEach((p,i)=>PI[p.key]=i);
     document.getElementById('builtAt').textContent='Built '+R.built+'.';
-    document.getElementById('vdesc').innerHTML='<b>every strategy = a TOP-'+VDESC[curVar][0]+' basket, equal-weight, '+VDESC[curVar][1]+'</b>';
-    document.getElementById('basketChip').textContent='Top-'+VDESC[curVar][0]+' basket · equal-weight · '+(curVar[0]==='h'?'ride winners':'monthly reset');
+    document.getElementById('vdesc').innerHTML='<b>every strategy = a TOP-'+VDESC[curVar][0]+' basket on '+VDESC[curVar][2]+', equal-weight, '+VDESC[curVar][1]+'</b>';
+    document.getElementById('basketChip').textContent=(curVar==='fno'?'F&O · ':'')+'Top-'+VDESC[curVar][0]+' basket · equal-weight · '+(VDESC[curVar][1].indexOf('ride')===0?'ride winners':'monthly reset');
     cur='all4'; sortK=null; needle=''; document.getElementById('q').value='';
     buildCards(); paintPills(); render();
   }
