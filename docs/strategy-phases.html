@@ -90,7 +90,7 @@
   const fmtTot = v => (v>=0?'+':'') + (Math.abs(v)>=1000 ? (v/100).toFixed(1)+'x' : v.toFixed(0)+'%');
   async function loadVar(v){
     if(DATA[v]) return DATA[v];
-    const res = await fetch('./strategy_phases'+SUFS[v]+'.json?v=4');
+    const res = await fetch('./strategy_phases'+SUFS[v]+'.json', {cache:'no-cache'});
     if(!res.ok) throw new Error('not ready');
     DATA[v] = await res.json(); return DATA[v];
   }
@@ -108,7 +108,7 @@
     catch(err){ b.dataset.off='1'; paintPills(); }});
   // probe which variants exist (they appear incrementally as their grids finish)
   Object.keys(SUFS).filter(v=>v!=='r5').forEach(v=>{
-    fetch('./strategy_phases'+SUFS[v]+'.json?v=4',{method:'HEAD'}).then(r=>{
+    fetch('./strategy_phases'+SUFS[v]+'.json',{method:'HEAD',cache:'no-cache'}).then(r=>{
       const b=vp.querySelector('.vcard[data-v="'+v+'"]'); if(b){ b.dataset.off = r.ok?'':'1'; paintPills(); }}).catch(()=>{});});
 
   function buildCards(){
