@@ -62,7 +62,7 @@
 </main>
 <script>
 (async function(){
-  const R = await (await fetch('./strategy_phases.json?v=2')).json();
+  const R = await (await fetch('./strategy_phases.json?v=3')).json();
   document.getElementById('builtAt').textContent = 'Built ' + R.built + '.';
   const P = R.phases, C = R.combos, cards = R.cards;
   const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -86,27 +86,34 @@
   if(YRS.length){ document.getElementById('ywrap').style.display='';
     document.getElementById('ycards').innerHTML = YRS.map(y=>'<div class="pcard" data-k="'+y.key+'" role="button" tabindex="0">'+
       '<div class="t">'+y.label+'</div><div class="v pos">'+((v)=>(v>=0?'+':'')+(Math.abs(v)>=1000?(v/100).toFixed(1)+'x':v.toFixed(0)+'%'))(y.rows[0].tot)+'</div>'+
-      '<div class="s">best of 44.4L · bench '+(y.bench?(y.bench.totRet>=0?'+':'')+y.bench.totRet+'%':'—')+'</div></div>').join('');
+      '<div class="s">best of 44.4L · bench '+(y.bench?(y.bench.totRet>=0?'+':'')+y.bench.totRet+'%':'—')+'</div></div>').join('')+
+      (cards.allY?'<div class="pcard" data-k="allY" role="button" tabindex="0">'+
+      '<div class="t">⭐ Best in ALL years</div><div class="v pos">Top 100</div>'+
+      '<div class="s">worst yearly rank across all '+YRS.length+'</div></div>':'');
   }
   const yearOf = k => YRS.find(y=>y.key===k);
   let cur='all4', sortK=null, sortAsc=true, needle='';
   const famOf = c => c.d+'-'+c.s;
   function rowsFor(k){
     if(k==='all4') return cards.all4.map((x,j)=>({rk:j+1, c:C[x.i], worst:x.worst, ranks:x.ranks}));
+    if(k==='allY') return cards.allY.map((x,j)=>({rk:j+1, c:C[x.i], worst:x.worst, yr:x.yrets}));
     const Y=yearOf(k); if(Y) return Y.rows.map((r,j)=>({rk:j+1, c:C[r.i], y:r}));
     return cards[k].map((ci,j)=>({rk:j+1, c:C[ci]}));
   }
   function headFor(k){
     const base = k==='all4'
       ? [['rk','#'],['worst','Worst rank'],['r0','Full CAGR %'],['r1','Covid tot %'],['r2','23-24 tot %'],['r3','26 tot %']]
-      : k==='full'
-        ? [['rk','#'],['r0','CAGR %'],['tot','Total %'],['dd','Max DD %'],['win','Win %']]
-        : [['rk','#'],['tot','Total %'],['cg','CAGR %'],['dd','Max DD %'],['win','Win %']];
+      : k==='allY'
+        ? [['rk','#'],['worst','Worst yr rank']].concat(YRS.map((y,j)=>['y'+j,"’"+y.key.slice(3)+' %']))
+        : k==='full'
+          ? [['rk','#'],['r0','CAGR %'],['tot','Total %'],['dd','Max DD %'],['win','Win %']]
+          : [['rk','#'],['tot','Total %'],['cg','CAGR %'],['dd','Max DD %'],['win','Win %']];
     return base.concat([['fam','Rank by'],['f','Filters']]);
   }
   function valOf(r,k,col){
     if(col==='rk')return r.rk; if(col==='worst')return r.worst;
     if(col==='fam')return famOf(r.c); if(col==='f')return r.c.f;
+    if(r.yr&&col[0]==='y'){ return r.yr[+col.slice(1)]; }
     if(r.y){ return col==='tot'?r.y.tot:col==='cg'?r.y.cg:col==='dd'?r.y.dd:r.y.win; }
     if(k==='all4'){ const m={r0:r.c.p[0][0],r1:r.c.p[1][1],r2:r.c.p[2][1],r3:r.c.p[3][1]}; return m[col]; }
     const pi = PI[k]||0;
@@ -127,9 +134,9 @@
         if(ck==='f')return '<td class="mono" style="font-size:12px">'+esc(r.c.f)+'</td>';
         let v=valOf(r,cur,ck), txt;
         if(ck==='rk'||ck==='worst')txt=v.toLocaleString('en-IN');
-        else if(ck==='tot'||ck==='r1'||ck==='r2'||ck==='r3')txt=fmtTot(v);
+        else if(ck==='tot'||ck==='r1'||ck==='r2'||ck==='r3'||(cur==='allY'&&ck[0]==='y'))txt=fmtTot(v);
         else txt=v.toFixed(1);
-        const cls=(ck==='dd'&&v>35)?' warn':((ck==='tot'||ck==='r0'||ck==='cg')?' pos font-semibold':'');
+        const cls=(ck==='dd'&&v>35)?' warn':((ck==='tot'||ck==='r0'||ck==='cg'||(cur==='allY'&&ck[0]==='y'&&v<0))?(v<0?' warn':' pos font-semibold'):'');
         return '<td class="num mono'+cls+'">'+txt+'</td>';});
       return '<tr>'+cells.join('')+'</tr>';}).join('');
     document.getElementById('count').textContent = rows.length.toLocaleString('en-IN')+' strategies'+(needle?' · matching "'+needle+'"':'');
@@ -137,6 +144,8 @@
     const Y=yearOf(cur), pi=PI[cur]||0;
     document.getElementById('foot').textContent = cur==='all4'
       ? 'Worst rank = a strategy’s poorest rank across the 4 phases (out of 44.4 lakh). Lower = consistently elite. Total-% columns are absolute returns for each phase.'
+      : cur==='allY'
+      ? 'Worst yearly rank = a strategy’s poorest rank across all '+YRS.length+' calendar years (out of 44.4 lakh). Year columns are absolute total returns.'
       : Y ? 'Year '+Y.start+' → '+Y.end+' ('+Y.years+'y). Total % is absolute. Benchmark Nifty 500: '+(Y.bench?fmtTot(Y.bench.totRet):'—')+' total. All rows: Nifty 500 universe, monthly rebalance, top-5 equal-weight, reset.'
       : 'Phase '+P[pi].start+' → '+P[pi].end+' ('+P[pi].years+'y). Total % is absolute (not annualised). Benchmark Nifty 500: '+fmtTot(P[pi].bench.totRet)+' total. All rows: Nifty 500 universe, monthly rebalance, top-5 equal-weight, reset.';
   }
