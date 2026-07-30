@@ -202,7 +202,10 @@ basic EPS × shares (paid-up ÷ face value) must reproduce the owners' number.
   Mar-26: owners & NCI tagged 0, real owners = total -58.6 from the FIRST filing;
   the 24-Jun REVISED filing says -19.18 but the store is point-in-time on first filing).
   Benign MISMATCH examples: SAGCEM Jun-25 (real 60%-sub NCI; filer's XBRL EPS on total),
-  NAVNETEDUL (annual EPS mistagged into OneD). Pre-2025 quarters were NOT swept
+  NAVNETEDUL (annual EPS mistagged into OneD), CENTUM Mar-26 (filer stuffed the TCI-
+  attributable split into the PAT-attributable tags; the filing prints NO PAT owners/NCI
+  split for the quarter, so the store keeps the printed total 1.64 per the 2c rule -
+  examined vs full PDF 2026-07-30, do not re-audit). Pre-2025 quarters were NOT swept
   (old-endpoint XBRLs; era already reconciled against StockView/Trendlyne) — if a
   pre-2025 tiny-con anomaly surfaces, verify via PDF.
 
