@@ -150,7 +150,15 @@ const PERF = {};         // in-memory perf cache keyed by strategy id
 const FREQ = { 1: 'Monthly', 3: 'Quarterly', 6: 'Half-yearly', 12: 'Yearly' };
 const SORTL = { changePercent: 'Change % desc', rsi: 'RSI', d52: '% from 52w High', d52_low_pct: '% from 52w Low', indRank: 'Industry rank', mcap: 'Mcap', hist_mcap: 'Hist mcap', profitYoyPct: 'Net Profit Qtr Growth YoY %', profitBase: 'Net Profit (year-ago Q)', profitAccel: 'Profit-growth acceleration', profitTTM: 'Profit growth TTM %', profitStreak: 'Profit-growth streak', postDrift: 'Post-result drift %', composite: 'Quality-Momentum composite', fiiPct: 'FII holding %', fiiChgPp: 'FII holding change QoQ (pp)', diiPct: 'DII holding %', diiChgPp: 'DII holding change QoQ (pp)' };
 
-function strategies() { return loadLS('bt_strategies'); }
+// PRIVATE strategies live ONLY in this browser (bt_private_strategies / bt_private_history keys):
+// merged into every view, never written to the shared keys, so no sync path can publish them.
+function privStrategies() { return loadLS('bt_private_strategies').map(s => Object.assign({}, s, { _priv: true })); }
+function strategies() {
+  const priv = privStrategies();
+  if (!priv.length) return loadLS('bt_strategies');
+  const pk = new Set(priv.map(s => identityKey(s.cfg)));   // private wins: hide any shared copy of the same identity
+  return loadLS('bt_strategies').filter(s => !pk.has(identityKey(s.cfg))).concat(priv);
+}
 function clampDate(d, lo, hi) { return d < lo ? lo : d > hi ? hi : d; }
 
 /* ---------- strategy list (Trendlyne-style) ----------
@@ -360,14 +368,14 @@ function render() {
         <div class="flex items-center gap-3">
           <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">📈</span>
           <span class="min-w-0">
-            <span class="block font-semibold text-indigo-700 leading-snug">${esc(it.name)}</span>
+            <span class="block font-semibold text-indigo-700 leading-snug">${it._priv ? '<span title="Private — visible only in this browser">🔒</span> ' : ''}${esc(it.name)}</span>
             <span class="block text-[11px] text-slate-500 truncate">${esc(universeLabel(c))} · ${FREQ[c.freq] || c.freq + 'mo'} · ${countLabel} · ${SORTL[c.sortBy] || c.sortBy} ${c.dir === 'high' ? '↓' : '↑'} · ${n} backtest${n > 1 ? 's' : ''}</span>
           </span>
         </div>
       </td>
       <td class="px-3 py-3 text-right text-sm whitespace-nowrap">${cagrCell}</td>
       <td class="px-2 py-3 text-center"><button class="text-base leading-none transition" data-favtoggle="${esc(identityKey(c))}" title="${favs.has(identityKey(c)) ? 'Remove from favourites' : 'Add to favourites'}">${favs.has(identityKey(c)) ? '⭐' : '☆'}</button></td>
-      ${OWNER ? `<td class="px-2 py-3 text-center"><button class="text-slate-300 hover:text-red-500 text-sm" data-delgroup="${esc(identityKey(c))}" title="Delete strategy">🗑️</button></td>` : ''}
+      ${OWNER ? `<td class="px-2 py-3 text-center whitespace-nowrap">${it._priv ? '' : `<button class="text-slate-300 hover:text-amber-500 text-sm mr-1" data-mkpriv="${esc(it.id)}" title="Make private — move to THIS browser only (removes from the shared list for everyone)">🔒</button>`}<button class="text-slate-300 hover:text-red-500 text-sm" data-delgroup="${esc(identityKey(c))}" title="Delete strategy">🗑️</button></td>` : ''}
     </tr>`;
   }).join('');
   $('list').innerHTML = `<table class="w-full text-sm border-collapse sw-cards">${header}<tbody>${body}</tbody></table>`;
@@ -384,7 +392,28 @@ function render() {
   $('list').querySelectorAll('[data-delgroup]').forEach(b => b.onclick = (e) => {
     e.stopPropagation(); const k = b.dataset.delgroup;
     if (!confirm('Delete this strategy from the saved list?')) return;
-    saveLS('bt_strategies', strategies().filter(x => identityKey(x.cfg) !== k)); if (window.btSync) btSync.pushStrategies(); render();
+    // two stores: shared (synced) and private (this browser) — never write merged views back to either
+    saveLS('bt_strategies', loadLS('bt_strategies').filter(x => identityKey(x.cfg) !== k));
+    saveLS('bt_private_strategies', loadLS('bt_private_strategies').filter(x => identityKey(x.cfg) !== k));
+    if (window.btSync) btSync.pushStrategies(); render();
+  });
+  // 🔒 Make private: move the strategy + ALL its recorded runs from the shared lists into
+  // this browser's private store. Shared arrays are rewritten without them (deletes for everyone).
+  $('list').querySelectorAll('[data-mkpriv]').forEach(b => b.onclick = async (e) => {
+    e.stopPropagation(); const id = b.dataset.mkpriv;
+    const shared = loadLS('bt_strategies'); const it = shared.find(x => x.id === id); if (!it) return;
+    if (!confirm('Make "' + (it.name || 'this strategy') + '" PRIVATE?\n\nIt moves into THIS browser only (with all its backtest runs) and disappears from the shared list for everyone. Other devices/browsers will not see it.')) return;
+    const k = identityKey(it.cfg);
+    const grab = shared.filter(x => identityKey(x.cfg) === k).map(x => { const y = Object.assign({}, x); delete y.local; return y; });
+    saveLS('bt_private_strategies', grab.concat(loadLS('bt_private_strategies')));
+    saveLS('bt_strategies', shared.filter(x => identityKey(x.cfg) !== k));
+    const isRun = h => h && h.cfg && identityKey(h.cfg) === k;
+    const mine = HIST.filter(isRun);
+    saveLS('bt_private_history', mine.concat(loadLS('bt_private_history').filter(h => !isRun(h))).slice(0, 300));
+    saveLS('bt_history', loadLS('bt_history').filter(h => !isRun(h)));
+    HIST = HIST.filter(h => !isRun(h)).concat(mine);
+    if (window.btSync) { try { await btSync.pushStrategies(); await btSync.push(); } catch (err) {} }
+    render();
   });
   $('list').querySelectorAll('[data-bt]').forEach(b => b.onclick = () => {
     const it = DETAIL[b.dataset.bt] || strategies().find(x => x.id === b.dataset.bt); if (!it) return;
@@ -906,7 +935,7 @@ function wireUI() {
   // seconds) leaves the page blank even though we have everything needed to paint.
   // The background pull then refreshes the list in place. Skipped in headless CI modes.
   if (!headless) {
-    HIST = localHistBefore;                                             // provisional; the shared pull overwrites it
+    HIST = localHistBefore.concat(loadLS('bt_private_history'));        // provisional; the shared pull overwrites it (private re-merged after)
     wireUI();
     setView(initialView);
     $('status').textContent = strategies().length ? 'Syncing latest…' : '';
@@ -930,6 +959,7 @@ function wireUI() {
       if (window.btSync) for (const h of histLocalOnly) { try { await btSync.append(h); } catch (e) {} }
     }
   }
+  HIST = HIST.concat(loadLS('bt_private_history'));   // private runs (this browser only) — display merge, never synced
   // Preserve strategies saved locally on THIS browser that the shared list doesn't have (saved while not the
   // owner, so never published) — otherwise the pull silently drops them and a just-created strategy vanishes.
   const pulled = loadLS('bt_strategies'); const have = new Set(pulled.map(s => s.id));

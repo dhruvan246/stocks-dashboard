@@ -490,11 +490,18 @@ async function run(){
   setTimeout(()=>{ try{ const res=simulate(cfg); LAST_RUN={cfg,res}; render(res,cfg); $('runMsg').textContent=''; saveSnapshot(cfg,res); autoSaveHistory().then(autoSaveStrategy); }
     catch(e){ $('runMsg').textContent='Error: '+e.message; console.error(e); } }, 30);
 }
+// ---- PRIVATE strategies (this browser only — bt_private_* keys, never synced): any run of a
+// private strategy records to the private history so its config never re-enters the shared lists.
+function privIdentitySet(){ try{ return new Set(loadLS('bt_private_strategies').map(x=>stratIdentity(x.cfg))); }catch(e){ return new Set(); } }
+function isPrivCfg(c){ try{ return privIdentitySet().has(stratIdentity(c)); }catch(e){ return false; } }
+function savePrivateRun(item){ const p=loadLS('bt_private_history'); const s=JSON.stringify(item.cfg);
+  if(p.some(x=>JSON.stringify(x.cfg)===s)) return; p.unshift(item); saveLS('bt_private_history', p.slice(0,300)); }
 // every run is recorded to History automatically (skips an exact repeat of the most recent entry)
 async function autoSaveHistory(){
   if(window.__viewOnly) return;   // opened just to VIEW a run (👁) — don't write to the shared history
   if(!LAST_RUN) return;
   if(window.__fromLoad){ window.__fromLoad=false; return; }   // this run came from History/Saved "Load" — it's already saved, don't duplicate it
+  if(isPrivCfg(LAST_RUN.cfg)){ savePrivateRun(histItem(LAST_RUN.cfg, LAST_RUN.res)); return; }   // 🔒 private → this browser only
   if(window.btSync){ try{ await btSync.pull(); }catch(e){} }   // refresh to the LATEST shared first, so adding never drops another device's entries
   const h=loadLS('bt_history'); const item=histItem(LAST_RUN.cfg, LAST_RUN.res);
   const s=JSON.stringify(item.cfg);
@@ -508,6 +515,7 @@ async function autoSaveStrategy(){
   if(window.__viewOnly) return;   // view-only (👁) — don't publish a strategy to the shared list
   if(window.__runSid) return;     // run launched FROM a strategy page — it nests there via sid; editing params must NOT spawn a duplicate strategy (Trendlyne semantics)
   if(!LAST_RUN) return;
+  if(isPrivCfg(LAST_RUN.cfg)) return;   // 🔒 a private strategy exists for this config — never re-create it in the shared list
   if(window.btSync){ try{ await btSync.pullStrategies(); }catch(e){} }   // sync to the latest shared list first
   const s=loadLS('bt_strategies'); const k=stratIdentity(LAST_RUN.cfg);
   if(s.some(x=>stratIdentity(x.cfg)===k)) return;   // this strategy already exists — its runs nest automatically
@@ -529,6 +537,8 @@ function histItem(c,r){
 }
 async function saveToHistory(){
   if(!LAST_RUN) return;
+  if(isPrivCfg(LAST_RUN.cfg)){ savePrivateRun(histItem(LAST_RUN.cfg, LAST_RUN.res));
+    const m=$('saveMsg'); if(m) m.textContent='🔒 Saved to PRIVATE history (this browser only)'; return; }
   if(window.btSync){ try{ await btSync.pull(); }catch(e){} }   // add onto the latest shared, so we never drop another device's entries
   const h=loadLS('bt_history'); const item=histItem(LAST_RUN.cfg, LAST_RUN.res); h.unshift(item); saveLS('bt_history', h.slice(0,300)); if(window.btSync)btSync.append(item);   // atomic add
   const msg=$('saveMsg'); if(msg) msg.textContent='💾 Saved to Backtest History';
@@ -538,6 +548,7 @@ async function saveStrategy(){
   const def=strategyLabel(LAST_RUN.cfg);
   const name=prompt('Name this strategy:', def);
   if(!name) return;
+  if(isPrivCfg(LAST_RUN.cfg)){ const m=$('saveMsg'); if(m) m.textContent='🔒 Already saved as a PRIVATE strategy in this browser'; return; }
   // OPEN to everyone: refresh from the shared list first so we never clobber another visitor's strategy
   if(window.btSync){ try{ await btSync.pullStrategies(); }catch(e){} }
   const entry={ id:'s'+Date.now().toString(36), ts:Date.now(), name:name.trim(), cfg:LAST_RUN.cfg, local:true };
@@ -559,6 +570,7 @@ async function saveStrategyFromForm(){
   if(name===null) return;                                  // cancelled
   const nm=(name.trim()||def);
   // OPEN to everyone: refresh to the latest shared list first so appending never drops another visitor's strategy
+  if(isPrivCfg(cfg)){ $('runMsg').textContent='🔒 This strategy already exists as PRIVATE in this browser.'; return; }
   if(window.btSync){ try{ await btSync.pullStrategies(); }catch(e){} }
   const s=loadLS('bt_strategies'); const k=stratIdentity(cfg);
   if(!s.some(x=>stratIdentity(x.cfg)===k)){              // dedup by identity — don't add the same strategy twice

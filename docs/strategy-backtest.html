@@ -487,7 +487,8 @@ function renderNotFound() {
     try { await btSync.pullStrategies(); } catch (e) {}
     try { HIST = await btSync.pull() || []; } catch (e) { HIST = []; }
   }
-  const all = loadLS('bt_strategies');
+  HIST = HIST.concat(loadLS('bt_private_history'));   // 🔒 private runs (this browser only) — display merge, never synced
+  const all = loadLS('bt_strategies').concat(loadLS('bt_private_strategies'));   // 🔒 private strategies resolve by id/k too
   let strat = id ? all.find(s => s.id === id) : null;
   if (!strat && kParam) strat = all.find(s => identityKey(s.cfg) === kParam);
   if (!strat) { renderNotFound(); return; }

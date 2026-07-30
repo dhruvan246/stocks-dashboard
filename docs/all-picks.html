@@ -186,6 +186,7 @@ function groupByIdentity(list) {
 function loadStrategies() {
   let all = [];
   try { all = JSON.parse(localStorage.getItem('bt_strategies') || '[]'); } catch (e) { all = []; }
+  try { all = all.concat(JSON.parse(localStorage.getItem('bt_private_strategies') || '[]')); } catch (e) {}   // 🔒 this browser's private strategies
   return all.filter(s => s && s.cfg).map(s => {
     const cfg = Object.assign({}, s.cfg);
     cfg.filters = normFilters(cfg.filters);
