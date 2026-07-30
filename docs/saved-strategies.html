@@ -968,7 +968,9 @@ function wireUI() {
   // everyone. A publish that failed is minutes old; a strategy missing from the shared list days
   // after it was saved was deleted on purpose, so leave it deleted.
   const HEAL_WINDOW_MS = 24 * 60 * 60 * 1000;
+  const pKeys = new Set(privStrategies().map(s => identityKey(s.cfg)));   // 🔒 private identities never re-publish
   const localOnly = localBefore.filter(s => s && s.local && !have.has(s.id)
+    && !pKeys.has(identityKey(s.cfg))
     && (Date.now() - (s.ts || 0)) < HEAL_WINDOW_MS);
   if (localOnly.length) { saveLS('bt_strategies', pulled.concat(localOnly)); if (window.btSync) { try { await btSync.pushStrategies(); } catch (e) {} } }   // publish local-only strategies (open list; self-heals an earlier failed publish)
   if (params.get('logpicks')) { await runLogPicks(); return; }   // headless daily picks-logger — skips the UI
