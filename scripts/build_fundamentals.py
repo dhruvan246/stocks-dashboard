@@ -101,6 +101,40 @@ def xbrl_profit(xml, basis_hint=None):
         if m.group(1) not in bank:
             try: bank[m.group(1)] = round(float(m.group(2)) / 1e7, 2)
             except Exception: pass
+    # FILER TAG-SWAP GUARD (GLENMARK Q4FY26 con -0.1 vs real 301.41; also KIRLOSBROS Q1FY26):
+    # some filers SWAP the two "attributable to" tags — OwnersOfParent carries the tiny NCI
+    # share while NonControllingInterests carries the real owners' profit. The sum owners+NCI
+    # = total is swap-invariant, so only the filing's own EPS row can arbitrate: basic EPS ×
+    # shares (paid-up ÷ face value) must reproduce the owners' number. Trust the owners tag
+    # only when it passes that test; when it clearly fails AND the NCI tag passes, read the
+    # NCI tag instead. Both-fail / no-EPS / no-shares → keep the owners tag (old behaviour).
+    nci = {}
+    for m in re.finditer(r'<in-(?:bse-fin|capmkt):ProfitOrLossAttributableToNonControllingInterests contextRef="([^"]+)"[^>]*>([^<]+)<', xml):
+        if m.group(1) not in nci:
+            try: nci[m.group(1)] = round(float(m.group(2)) / 1e7, 2)
+            except Exception: pass
+    eps = {}
+    for t in ("BasicEarningsLossPerShareFromContinuingAndDiscontinuedOperations",
+              "BasicEarningsLossPerShareFromContinuingOperations", "BasicEarningsLossPerShare"):
+        for m in re.finditer(r'<in-(?:bse-fin|capmkt):' + t + r' contextRef="([^"]+)"[^>]*>([^<]+)<', xml):
+            if m.group(1) not in eps:
+                try: eps[m.group(1)] = float(m.group(2))
+                except Exception: pass
+        if eps: break
+    shares = None
+    mp = re.search(r'<in-(?:bse-fin|capmkt):PaidUpValueOfEquityShareCapital contextRef="[^"]+"[^>]*>([^<]+)<', xml)
+    mf = re.search(r'<in-(?:bse-fin|capmkt):FaceValueOfEquityShareCapital contextRef="[^"]+"[^>]*>([^<]+)<', xml)
+    try:
+        if mp and mf and float(mf.group(1)) > 0: shares = float(mp.group(1)) / float(mf.group(1))
+    except Exception: pass
+    def owners(ctx):
+        a = attr.get(ctx)
+        n, e = nci.get(ctx), eps.get(ctx)
+        if a is None or n is None or not shares or e is None: return a
+        tol = max(0.03, abs(e) * 0.03)
+        ea, en = abs(a * 1e7 / shares - e), abs(n * 1e7 / shares - e)
+        if ea > 3 * tol and en <= tol: return n          # tags swapped — NCI tag holds owners' PAT
+        return a
     std = con = None
     one, one_nat = plp.get("OneD"), nat.get("OneD", "") or hint
     if one is not None:
@@ -108,11 +142,11 @@ def xbrl_profit(xml, basis_hint=None):
         # the owners tag is missing OR zero. Some filers (e.g. ELECON Q1FY27) tag
         # ProfitOrLossAttributableToOwnersOfParent=0 and put the real profit only in the total; a
         # plain .get(key, default) returns that 0.0 → con wrongly 0. `or one` treats 0 as absent.
-        if "consol" in one_nat: con = attr.get("OneD") or bank.get("OneD") or one
+        if "consol" in one_nat: con = owners("OneD") or bank.get("OneD") or one
         else: std = one                                  # standalone or unlabelled
     four, four_nat = plp.get("FourD"), nat.get("FourD", "") or hint
     if four is not None and four_nat != one_nat:         # combined filing: other basis, current Q
-        if "consol" in four_nat: con = con if con is not None else (attr.get("FourD") or bank.get("FourD") or four)
+        if "consol" in four_nat: con = con if con is not None else (owners("FourD") or bank.get("FourD") or four)
         else: std = std if std is not None else four
     return std, con
 
@@ -125,7 +159,10 @@ def integrated_profit(xml, con=False):
     For CONSOLIDATED filings use profit ATTRIBUTABLE TO OWNERS OF THE PARENT (excludes minority /
     non-controlling interest) — this is what Trendlyne/StockView report; fall back to the total
     ProfitLossForPeriod when the tag is absent (standalone, or no minority). Banks/NBFCs tag the
-    total as ProfitLossForThePeriod (with "The")."""
+    total as ProfitLossForThePeriod (with "The").
+    ⚠️ Legacy path (historical full rebuilds only) — has NO filer tag-swap guard; the live daily
+    pipeline is update_fundamentals -> xbrl_profit, which EPS-anchors against swapped
+    owners/NCI tags (GLENMARK Q4FY26). If this path is ever revived, port that guard."""
     if con:
         m = re.search(r'ProfitOrLossAttributableToOwnersOfParent contextRef="OneD"[^>]*>([-0-9.eE+]+)<', xml)
         if m:

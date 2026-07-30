@@ -179,6 +179,33 @@ Fill the recent quarters so `ttm_pat` (4 consecutive qtrs in `sf_revop`) populat
   OMPOWER, SAIPARENT, INNOVISION) — verify via NSE `corporate-announcements` (curl_cffi) earliest results date.
   memory: [[project-stocks-orderwins-pe-backfill]].
 
+### 2d. FILER TAG-SWAP: owners ↔ NCI in NSE XBRL  (GLENMARK Q4FY26, found 2026-07-30)
+Some filers SWAP the two "attributable to" tags in the results XBRL:
+`ProfitOrLossAttributableToOwnersOfParent` carries the tiny NCI share while
+`...AttributableToNonControllingInterests` carries the real owners' profit. Our con PAT then
+stores the NCI (GLENMARK Mar-26: -0.1 stored vs 301.41 real). The swap is SUM-INVARIANT
+(owners+NCI=total either way), so only the filing's own **EPS row** arbitrates:
+basic EPS × shares (paid-up ÷ face value) must reproduce the owners' number.
+- **Parser guard (live since 2026-07-30):** `build_fundamentals.xbrl_profit` EPS-anchors the
+  owners tag and reads the NCI tag instead when owners clearly fails while NCI passes. Covers
+  the daily cron (update_fundamentals) + backfill_gaps/hist_backfill. `integrated_profit`
+  (legacy full-rebuild path) does NOT have the guard — port it if that path is revived.
+- **Detection sweep:** `python -X utf8 scripts/detect_attr_swap.py` — flags stored con cells
+  with the tiny-|con| signature, refetches their consolidated XBRL, EPS-tests both tags.
+  Verdict SWAPPED = high confidence, but STILL anchor a 2nd way (BSE PDF attributable rows /
+  Screener total) before healing (§2b guard-edit of BOTH fundamentals JSONs + sf_revop idx5).
+  MISMATCH_MANUAL ≠ swap: usually weighted-avg-shares EPS (mid-quarter capital raise, e.g.
+  GSPCROP IPO), wrong paid-up tag, or an annual EPS mistagged into OneD — read the PDF.
+- **Healed cells are journaled in `scripts/attr_swap_fixes.json`** (tracked; per-cell
+  provenance). 2026-07-30 sweep over all 2025+ quarters: 111 suspects → 6 swaps
+  (GLENMARK/KIRLOSBROS/SHYAMMETL/TALBROAUTO/NITCO/GSPCROP) + 1 empty-tags case (TRU
+  Mar-26: owners & NCI tagged 0, real owners = total -58.6 from the FIRST filing;
+  the 24-Jun REVISED filing says -19.18 but the store is point-in-time on first filing).
+  Benign MISMATCH examples: SAGCEM Jun-25 (real 60%-sub NCI; filer's XBRL EPS on total),
+  NAVNETEDUL (annual EPS mistagged into OneD). Pre-2025 quarters were NOT swept
+  (old-endpoint XBRLs; era already reconciled against StockView/Trendlyne) — if a
+  pre-2025 tiny-con anomaly surfaces, verify via PDF.
+
 ---
 
 ## 3. INSURERS  (IRDAI-format — XBRL can't parse them; PARTIALLY auto-filled FREE)  ★ free text-anchor, 2026-07-15 ★
