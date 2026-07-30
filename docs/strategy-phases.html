@@ -40,8 +40,9 @@
 <main class="max-w-6xl mx-auto px-3 sm:px-5 py-5">
   <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight">🧪 Strategy Phases Lab</h1>
   <p class="text-[13px] mt-1" style="color:var(--text-muted,#64748b)">
-    4,440,600 strategies tested (every sort factor × direction × all 1–3 filter combos) · Nifty 500 · monthly · top-5 ·
-    survivorship-free engine. Unlisted research page. <span id="builtAt"></span>
+    4,440,600 strategies tested (every sort factor × direction × all 1–3 filter combos) · survivorship-free engine.
+    <b>Every strategy here = a TOP-5 basket</b>: the 5 best-ranked stocks, equal-weight, rebalanced monthly (reset)
+    on the Nifty 500. Unlisted research page. <span id="builtAt"></span>
   </p>
 
   <div class="flex flex-wrap gap-2.5 mt-4" id="cards"></div>
@@ -52,6 +53,7 @@
 
   <div class="flex flex-wrap items-center gap-3 mt-4">
     <input type="search" id="q" placeholder="Search filters / factor… e.g. delivPct" aria-label="Search">
+    <span class="fam" style="font-weight:700">Top-5 basket · equal-weight · monthly reset</span>
     <span id="count" class="text-[12px]" style="color:var(--text-muted,#64748b)"></span>
   </div>
 
@@ -143,9 +145,9 @@
     document.querySelectorAll('.pcard[data-k]').forEach(el=>el.classList.toggle('on',el.dataset.k===cur));
     const Y=yearOf(cur), pi=PI[cur]||0;
     document.getElementById('foot').textContent = cur==='all4'
-      ? 'Worst rank = a strategy’s poorest rank across the 4 phases (out of 44.4 lakh). Lower = consistently elite. Total-% columns are absolute returns for each phase.'
+      ? 'Worst rank = a strategy’s poorest rank across the 4 phases (out of 44.4 lakh). Lower = consistently elite. Total-% columns are absolute returns for each phase. All rows are top-5 equal-weight baskets, monthly reset.'
       : cur==='allY'
-      ? 'Worst yearly rank = a strategy’s poorest rank across all '+YRS.length+' calendar years (out of 44.4 lakh). Year columns are absolute total returns.'
+      ? 'Worst yearly rank = a strategy’s poorest rank across all '+YRS.length+' calendar years (out of 44.4 lakh). Year columns are absolute total returns. All rows are top-5 equal-weight baskets, monthly reset.'
       : Y ? 'Year '+Y.start+' → '+Y.end+' ('+Y.years+'y). Total % is absolute. Benchmark Nifty 500: '+(Y.bench?fmtTot(Y.bench.totRet):'—')+' total. All rows: Nifty 500 universe, monthly rebalance, top-5 equal-weight, reset.'
       : 'Phase '+P[pi].start+' → '+P[pi].end+' ('+P[pi].years+'y). Total % is absolute (not annualised). Benchmark Nifty 500: '+fmtTot(P[pi].bench.totRet)+' total. All rows: Nifty 500 universe, monthly rebalance, top-5 equal-weight, reset.';
   }
