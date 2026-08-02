@@ -45,7 +45,7 @@ const FIELDS = [
   { v: 'turnover', l: 'Avg daily turnover (₹ lacs, 20d)' },
   { v: 'turnSurge', l: 'Turnover surge (5d ÷ 90d)' },
   { v: 'volSurge', l: 'Volume surge — shares (5d ÷ 90d)' },
-  { v: 'delivPct', l: 'Delivery % (20d avg, 2020+ data)' },
+  { v: 'delivPct', l: 'Delivery % (20d avg, 2002+ data)' },
   { v: 'macd', l: 'MACD histogram (12,26,9)' },
   { v: 'stoch', l: 'Stochastic %K (14)' },
   { v: 'bollB', l: 'Bollinger %b (20,2)' },
