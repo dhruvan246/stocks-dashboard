@@ -136,3 +136,14 @@ Progress log (append a line per completed step):
   engine + live data): 2002-2011 was flat 0% → now 76.7%-98.9% by year (ramps up from 2002 as stocks
   accrue 120d of history); 2012 also rose 89%→96.5% (partial-lookback-window side effect). Full
   numbers + harness notes in memory `project-stocks-factor-coverage-audit`.
+- 2026-08-02: STEP 2a done (commit df70cf9f, pushed via worktree — docs/backtest-engine.js was dirty
+  from another session's unrelated loadCore/dash_slim change). Relabeled `mcap`/`hist_mcap` in FIELDS
+  (docs/backtest-engine.js AND stock-backtest.html's copy) to state plainly they are always 0 in
+  survivorship-free mode and point at Turnover instead; fields kept, not removed, so saved strategies
+  referencing them still resolve. sw.js CACHE sw-shell-v61→v62. This is label-only — no coverage number
+  changes (mcap/hist_mcap were already ⚠ ALWAYS 0 by design, per `project-stocks-factor-coverage-audit`;
+  there is no fetchable market-cap source in NSE bhavcopy, so this ceiling is permanent, not a gap to
+  re-measure). Verified live: Deploy-to-Pages run green, fetched live backtest-engine.js/sw.js show the
+  new text, active SW cache key confirmed `sw-shell-v62` after 2 reloads, read_page on the live dropdown
+  (both sortBy and the +Add-filter combobox) shows the exact ⚠ labels, no console errors on
+  stock-backtest.html or saved-strategies.html.
