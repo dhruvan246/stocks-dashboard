@@ -50,6 +50,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§38** CONCURRENCY — ONE WRITER PER TREE
 - **§39** ★ SHIP-IT QUALITY GATE — nothing goes out unverified (**read before ANY UI / design / feature work**)
 - **§40** STOCK PAGE = PER-STOCK SLICES
+- **§41** ★ PUBLISHING A DATA HEAL — "live on the server" ≠ "the site uses it" (**read before ANY heal / backfill**)
 
 ---
 
@@ -2524,3 +2525,44 @@ The harness is the reference, not a re-implementation: it feeds probe symbols to
 - The service worker never caches `.json` and ignores cross-origin, so slices are always fresh.
 - Slices depend on `docs/stock_data.bin` for `startTs` + index/F&O membership + mcap. It is still
   committed and still needed by other pages — the STOCK page just no longer downloads it.
+
+---
+
+## 41. ★ PUBLISHING A DATA HEAL — "live on the server" ≠ "the site uses it"  (2026-08-02, learned the hard way)
+
+**The trap.** A heal/backfill (delivery ledgers, corp-action fix, rename merge, scale fix) rewrites
+HISTORY without adding a trading day, so `sf_meta.json {end}` does **not** change. The browser caches
+the two 50MB+ `sf_stock_data_{1,2}.bin` parts in **IndexedDB keyed on that version string**. Keyed on
+`end` alone, every client that had already cached that date kept serving **pre-heal bytes** — forever,
+until the next trading day happened to bump `end`.
+
+**What it cost (2026-08-02):** the 2002-2019 delivery backfill was verified correct at every server
+layer — release asset, sf-data parts, month-by-month coverage — and was still **invisible on the site**.
+A `Delivery % >= 60` backtest from 2003 qualified ZERO stocks before ~2020 and drew a flat equity line.
+The user found it by running a backtest; no monitor, test, or verification step had noticed.
+
+**The fix that is now in place (don't regress it):**
+1. `split_sf_data.py` writes `sf_meta.json = {"end":…, "rev": sha1(part1+part2)[:10]}` — a fingerprint
+   of the PUBLISHED BYTES, so it changes on any content change and only on a content change (never a
+   per-run timestamp: that would force every client to re-download ~115 MB daily for nothing).
+2. `backtest-engine.js` **and** `stock-backtest.html` — which carries **its own copy of `loadSF`**;
+   patch BOTH, always — key the cache on `end + ':' + rev`, degrading to end-only if `rev` is absent.
+3. `sw.js` CACHE bump, or the new loader never reaches anybody.
+4. **Workflow step "Verify clients will see this build"** polls the live
+   `dhruvan246.github.io/sf-data/sf_meta.json` until it serves the rev this run just built, and FAILS
+   the run otherwise (also fails if `rev` ever disappears from the split output). A silent staleness
+   bug is now a red CI run.
+
+**Checklist for any future heal — the last two are the ones that got skipped:**
+- [ ] Ledger-based fix (§5 golden rule), applied fill-only + idempotent.
+- [ ] Local pre-publish gate: re-score the invariant on the patched bin BEFORE publishing.
+- [ ] Publish (release asset + sf-data parts) and re-score the **downloaded live** file.
+- [ ] **Confirm `rev` CHANGED** on the browser-facing `sf_meta.json` (`curl` it; Pages lags the push by
+      1-5 min). Never fake `end` forward to force a refresh — that lies about the data date.
+- [ ] **Load the actual page and see the healed data in a result**, not just in the file. "The bytes are
+      correct" and "the feature works" are different claims (§39).
+
+**Generalise it:** any client-side cache keyed on a DATE will go stale under a heal. Today the sf parts
+are the only such cache (`dash_slim.bin` / `stock_data.bin` / `mf_history.bin` / `stk/` slices are plain
+ETag fetches that revalidate within ~10 min, and `sw.js` never caches `.bin`/`.json`). If you ever add
+another IndexedDB/localStorage data cache, key it on CONTENT, not on the data date.

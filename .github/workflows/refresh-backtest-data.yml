@@ -111,6 +111,32 @@ jobs:
           git push -q --force "https://x:${SF_DATA_TOKEN}@github.com/dhruvan246/sf-data.git" main
           echo "force-pushed fresh split data + $(ls stk | wc -l) stock slices to sf-data"
 
+      # ── PUBLISH != VISIBLE ────────────────────────────────────────────────────────────────────
+      # Browsers cache the two 50MB+ parts in IndexedDB keyed on sf_meta.json {end}+{rev}. A HEAL
+      # (delivery backfill, corp-action fix, rename merge) rewrites history WITHOUT advancing `end`,
+      # so `rev` — a fingerprint of the published bytes — is the ONLY thing that tells a warm browser
+      # to re-download. This shipped broken once: the 2002-2019 delivery backfill was live on every
+      # server layer while every returning visitor kept serving pre-heal bytes, and it took a user
+      # running a backtest to notice. So assert the browser-facing file really carries THIS build.
+      - name: Verify clients will see this build (sf_meta rev is live)
+        if: ${{ hashFiles('docs/.sf_updated') != '' || github.event_name == 'workflow_dispatch' }}
+        run: |
+          REV=$(python3 -c "import json;print(json.load(open('scripts/_sfsplit/sf_meta.json')).get('rev') or '')")
+          if [ -z "$REV" ]; then
+            echo "::error::split_sf_data.py published no 'rev'. Browsers key their ~115MB cache on it; without it a heal is INVISIBLE to every warm client until the next trading day. Restore the rev in split_sf_data.py."
+            exit 1
+          fi
+          for i in $(seq 1 20); do
+            LIVE=$(curl -s "https://dhruvan246.github.io/sf-data/sf_meta.json?t=$(date +%s%N)" || true)
+            case "$LIVE" in
+              *"$REV"*) echo "clients will load rev=$REV (live: $LIVE)"; exit 0 ;;
+            esac
+            echo "waiting for Pages to serve rev=$REV (attempt $i/20) — live: $LIVE"
+            sleep 30
+          done
+          echo "::error::Pages still serves a stale sf_meta.json after 10 min (want rev=$REV, live: $LIVE). The data is published but clients would keep the PREVIOUS version cached — check the sf-data Pages deployment."
+          exit 1
+
       # Symbol/name index behind the site-wide 🔍 search box. Built from the SAME meta the
       # backtest payload carries, so search only ever offers stocks stock.html can render.
       # Tiny (~190 KB) and committed, unlike the bin itself.
