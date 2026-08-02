@@ -170,3 +170,30 @@ Progress log (append a line per completed step):
   side effects) for RSI(14)<30 2003-2017: 169/180 months produced real, sane picks. Full writeup +
   two near-misses (shared-storage risk, a DATA_RUNBOOK.md concurrent-edit recovered via `git add -p`)
   in memory `project-stocks-daily-bars-rebuild`.
+- 2026-08-02: STEP 5 PARTIAL — user asked for both the achievable extension AND the harder
+  pre-2016 OCR attempt; delivered the former, hit a genuine dead end on the latter (reported, not
+  guessed past). **DONE: FII/DII extended 2019-09 -> 2016-03/06** via BSE's SHPQNewFormat
+  quarter-list (real filing_date_time + XBRL back to Mar/Jun-2016, confirmed system-wide across
+  RELIANCE/TCS/PAGEIND — NOT one company's quirk) + XBRL parsed by the EXISTING parse_shp()
+  unmodified (BSE's in-bse-shp taxonomy uses identical concept/member names to NSE's). New script
+  `scripts/fetch_shp_bse_hist.py`, ledger `scripts/shp_fill_hist_2016_2019.json.gz` (623 companies,
+  6,787 cells), applied fill-only via a new `apply_bse_hist_ledger()` in fetch_shareholding.py
+  (called every refresh_quarters() run, idempotent). Verified live: shp_meta.json cells
+  53,863->60,650, shp_engine.json RELIANCE 40 quarters from 2016-09-30, and a live
+  `simulate(cfg)` call with `fiiPct>15` 2017-2018 quarterly returned 8/8 non-empty rebalances
+  (impossible before — fiiPct was 0% coverage pre-2019). Independent 3rd-party spot-check was
+  NOT achievable — Screener/Trendlyne free tiers only show a rolling ~3yr window, nowhere near
+  2016; verification instead rests on parse_shp's own reconciliation math + smooth multi-quarter
+  trends + qualitative checks against well-known facts (ITC prom=0.00% every quarter — ITC is
+  famously promoter-less; Infosys prom~12-13% — also famously low). **STOP-GATE, pre-2016: NO
+  accessible source found for OCR, not just missing dates.** Systematically probed and ruled out:
+  BSE's own SHP module (quarters exist as bare labels back to 2001, but `shpDecleraction` returns
+  `[]` — literally no data, nothing to date-stamp or OCR); BSE's general announcement search
+  (correct category name is "Shareholding" per its own JS bundle, confirmed working recently, but
+  returns 0 rows for RELIANCE even in a recent sanity-check window — routine quarterly SHP filings
+  don't flow through it); NSE's live master API (returns 0 for ANY old quarter-end, confirmed with
+  a KNOWN-recent date too — it's a rolling window only, can't retroactively query, which is also
+  WHY the Sep-2019 floor existed pre-STEP-5); NSE's general corporate-announcements API (genuinely
+  has 2010-era data — 2,059 real rows for Jan-2010 — but its ~40 distinct filing categories that
+  month contain no "Shareholding Pattern" entry at all). Full detail in memory
+  `project-stocks-shp-bse-backfill`.
