@@ -28,6 +28,7 @@ SRC_FILES = [("_b3_reads.json", True), ("_bank_reads.json", True), ("_resid_read
 SRC_FILES.append(("_nsearch_reads.json", None))     # NSE archived-HTML pull; cell carries its own fin
 SRC_FILES.append(("_nsexbrl_reads.json", None))     # NSE per-filing XBRL (2018-19)
 SRC_FILES.append(("_mc_reads.json", None))          # Moneycontrol browser-driven (PAT-anchored per cell)
+SRC_FILES.append(("_screener_reads.json", None))    # Screener.in annual-total derivation (see _screener_annual.py)
 for _p in sorted(glob.glob(os.path.join(HERE, "_nsexbrl_reads_*.json"))):
     SRC_FILES.append((os.path.basename(_p), None))
 for _p in sorted(glob.glob(os.path.join(HERE, "_nsearch_reads_*.json"))):
