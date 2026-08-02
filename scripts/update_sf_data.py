@@ -260,9 +260,10 @@ def main():
             e["vw"] = [round(c[i] * (1000 + vwo[i]) / 1000, 2) for i in range(n)]
             e["dv"] = [round(x / 10, 2) for x in e.get("dv", [])]
             for kk in ("hb", "lb", "ob"): e.pop(kk, None)
-    # Delivery-% heal ledger (scripts/dv_fill.json): recovered DELIV_PER cells + BE/T2T '-' days
-    # (compulsory delivery -> 100). Fill-only where dv==0, so a re-run applies 0 and is a no-op;
-    # a non-zero count flags a real change and rides the publish condition below.
+    # Delivery-% heal ledgers (scripts/dv_fill.json + dv_fill_hist.json.gz): recovered DELIV_PER
+    # cells, BE/T2T '-' days (compulsory delivery -> 100), and the 2002-2019 MTO-file backfill
+    # (pre-2020 bhavcopies have no DELIV_PER column). Fill-only where dv==0, so a re-run applies
+    # 0 and is a no-op; a non-zero count flags a real change and rides the publish condition below.
     dvf = B.apply_dv_fill(data)
     # MANUAL rename merges the ISIN-detector can't make: same security, but the ISIN CHANGED at the
     # rename so the ISIN-based auto-merge skips it (a safety guard against recycled tickers). These are

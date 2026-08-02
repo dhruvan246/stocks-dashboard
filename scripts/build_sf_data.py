@@ -86,28 +86,32 @@ def parse_rows(text):
 
 
 def apply_dv_fill(data):
-    """Fill-only delivery-%% ledger (scripts/dv_fill.json, tracked): cells recovered from
-    per-day sec_bhavdata_full / MTO re-reads plus BE(T2T) '-' days stored as 100. Writes only
-    where dv is 0 and the date row exists, so it is idempotent and can never clobber a real
-    value. Ledger keys are MERGED (current) symbols — on a from-scratch rebuild (era symbols,
-    pre-merge) unmatched keys are skipped here and re-applied by update_sf_data on the merged
-    release asset."""
-    p = os.path.join(HERE, "dv_fill.json")
-    if not os.path.exists(p): return 0
-    try:
-        fills = json.load(open(p)).get("fills", {})
-    except Exception as e:
-        print("dv_fill.json unreadable (%s) — skipped" % e, flush=True); return 0
+    """Fill-only delivery-%% ledgers (tracked): dv_fill.json (2020+ heal: sec_bhavdata re-reads,
+    BE/T2T '-' days as 100) + dv_fill_hist.json.gz (2002-2019 backfill from the MTO security-wise
+    delivery files — the pre-2020 bhavcopies carry no DELIV_PER at all). Writes only where dv is
+    0 and the date row exists, so it is idempotent and can never clobber a real value. Ledger
+    keys are MERGED (current) symbols — on a from-scratch rebuild (era symbols, pre-merge)
+    unmatched keys are skipped here and re-applied by update_sf_data on the merged release asset."""
     n = 0
-    for sym, days in fills.items():
-        s = data.get(sym)
-        if not s: continue
-        pos = {d: i for i, d in enumerate(s["d"])}
-        for ds, v in days.items():
-            i = pos.get(int(ds))
-            if i is not None and not s["dv"][i]:
-                s["dv"][i] = v[0] if isinstance(v, list) else v; n += 1
-    if n: print("dv_fill ledger applied: %d delivery%% cells" % n, flush=True)
+    for fname in ("dv_fill.json", "dv_fill_hist.json.gz"):
+        p = os.path.join(HERE, fname)
+        if not os.path.exists(p): continue
+        try:
+            fh = gzip.open(p, "rt", encoding="utf-8") if fname.endswith(".gz") else open(p)
+            fills = json.load(fh).get("fills", {})
+        except Exception as e:
+            print("%s unreadable (%s) — skipped" % (fname, e), flush=True); continue
+        k = 0
+        for sym, days in fills.items():
+            s = data.get(sym)
+            if not s: continue
+            pos = {d: i for i, d in enumerate(s["d"])}
+            for ds, v in days.items():
+                i = pos.get(int(ds))
+                if i is not None and not s["dv"][i]:
+                    s["dv"][i] = v[0] if isinstance(v, list) else v; k += 1
+        if k: print("%s applied: %d delivery%% cells" % (fname, k), flush=True)
+        n += k
     return n
 
 
