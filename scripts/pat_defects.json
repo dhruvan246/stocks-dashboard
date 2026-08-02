@@ -7,6 +7,36 @@
    "stored_pat": 121.31
   }
  },
+ "ASAHIINDIA": {
+  "20161231": {
+   "correct_pat": 25.87,
+   "defect": "stored Dec-16 std PAT fails both as-filed gates",
+   "source": "bse-detres 515030 q92; eps recon + fy=page",
+   "stored_pat": 45.16
+  }
+ },
+ "CHAMBLFERT": {
+  "20150331": {
+   "correct_pat": -103.57,
+   "defect": "SIGN FLIP: stored +103.57, as-filed quarter is a LOSS of 103.57 (shipping write-off quarter); page eps recon confirms the negative",
+   "source": "bse-detres 500085 q85 audited; eps recon",
+   "stored_pat": 103.57
+  }
+ },
+ "COX&KINGS": {
+  "20151231": {
+   "correct_pat": 25.71,
+   "defect": "stored Dec-15 std PAT fails both as-filed gates",
+   "source": "bse-detres 533144 q88; eps recon + fy=page",
+   "stored_pat": 17.26
+  },
+  "20160331": {
+   "correct_pat": 25.78,
+   "defect": "stored Mar-16 std PAT fails both as-filed gates (audited page)",
+   "source": "bse-detres 533144 q89; eps recon + fy=page",
+   "stored_pat": 22.28
+  }
+ },
  "GICRE": {
   "20191231": {
    "correct_pat": -1069.64,
@@ -49,6 +79,14 @@
    "stored_pat": 1260.44
   },
   "_note": "GIC Re standalone Annexure-I, Rs-in-lakh /100. FY21 quarter PATs read off the filings are -557.47 / +230.05 / +987.42 / +1260.44, which sum to 1920.44 = the FY21 PAT printed in GIC Re's own FY21 'Summary of Revenue and Profit and Loss Account' (Rs crore) - so the four corrections below are self-consistent and independently confirmed. Stored Mar-20 (1197.41) and Jun-20 (-557.47) are CORRECT and were filled normally."
+ },
+ "HDFC": {
+  "20180331": {
+   "correct_pat": 2846.22,
+   "defect": "stored Mar-18 std PAT is not the as-filed figure; HDFC Ltd reported 2,846.22cr std Q4FY18 (incl stake-sale gain)",
+   "source": "bse-detres 500010 q97 audited; fy=page",
+   "stored_pat": 1631.93
+  }
  },
  "_README": "Confirmed WRONG stored PAT cells in docs/sf_fundamentals.json, with the as-filed correct value and its source. Found while rev-backfilling: the cell's revenue could not be written because the stored PAT failed the anchor rule (see scripts/_apply_reads.py). sf_fundamentals is CI-rebuilt and is owned by refresh.yml / the bse-vision-fill routine (DATA_RUNBOOK hot-file ownership), so DO NOT hand-edit it from another tree - route the fix through that lane, then re-run the rev applier and these cells will anchor and fill."
 }
