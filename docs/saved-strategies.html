@@ -368,14 +368,15 @@ function render() {
         <div class="flex items-center gap-3">
           <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">📈</span>
           <span class="min-w-0">
-            <span class="block font-semibold text-indigo-700 leading-snug">${it._priv ? '<span title="Private — visible only in this browser">🔒</span> ' : ''}${esc(it.name)}</span>
+            <span class="block font-semibold text-indigo-700 leading-snug">${esc(it.name)}</span>
             <span class="block text-[11px] text-slate-500 truncate">${esc(universeLabel(c))} · ${FREQ[c.freq] || c.freq + 'mo'} · ${countLabel} · ${SORTL[c.sortBy] || c.sortBy} ${c.dir === 'high' ? '↓' : '↑'} · ${n} backtest${n > 1 ? 's' : ''}</span>
+            ${(c.filters || []).length ? `<span class="block text-[11px] text-slate-400 truncate" title="${esc(expr)}">Filters: ${esc(expr)}</span>` : ''}
           </span>
         </div>
       </td>
       <td class="px-3 py-3 text-right text-sm whitespace-nowrap">${cagrCell}</td>
       <td class="px-2 py-3 text-center"><button class="text-base leading-none transition" data-favtoggle="${esc(identityKey(c))}" title="${favs.has(identityKey(c)) ? 'Remove from favourites' : 'Add to favourites'}">${favs.has(identityKey(c)) ? '⭐' : '☆'}</button></td>
-      ${OWNER ? `<td class="px-2 py-3 text-center whitespace-nowrap">${it._priv ? '' : `<button class="text-slate-300 hover:text-amber-500 text-sm mr-1" data-mkpriv="${esc(it.id)}" title="Make private — move to THIS browser only (removes from the shared list for everyone)">🔒</button>`}<button class="text-slate-300 hover:text-red-500 text-sm" data-delgroup="${esc(identityKey(c))}" title="Delete strategy">🗑️</button></td>` : ''}
+      ${OWNER ? `<td class="px-2 py-3 text-center whitespace-nowrap"><button class="text-slate-300 hover:text-red-500 text-sm" data-delgroup="${esc(identityKey(c))}" title="Delete strategy">🗑️</button></td>` : ''}
     </tr>`;
   }).join('');
   $('list').innerHTML = `<table class="w-full text-sm border-collapse sw-cards">${header}<tbody>${body}</tbody></table>`;
@@ -396,24 +397,6 @@ function render() {
     saveLS('bt_strategies', loadLS('bt_strategies').filter(x => identityKey(x.cfg) !== k));
     saveLS('bt_private_strategies', loadLS('bt_private_strategies').filter(x => identityKey(x.cfg) !== k));
     if (window.btSync) btSync.pushStrategies(); render();
-  });
-  // 🔒 Make private: move the strategy + ALL its recorded runs from the shared lists into
-  // this browser's private store. Shared arrays are rewritten without them (deletes for everyone).
-  $('list').querySelectorAll('[data-mkpriv]').forEach(b => b.onclick = async (e) => {
-    e.stopPropagation(); const id = b.dataset.mkpriv;
-    const shared = loadLS('bt_strategies'); const it = shared.find(x => x.id === id); if (!it) return;
-    if (!confirm('Make "' + (it.name || 'this strategy') + '" PRIVATE?\n\nIt moves into THIS browser only (with all its backtest runs) and disappears from the shared list for everyone. Other devices/browsers will not see it.')) return;
-    const k = identityKey(it.cfg);
-    const grab = shared.filter(x => identityKey(x.cfg) === k).map(x => { const y = Object.assign({}, x); delete y.local; return y; });
-    saveLS('bt_private_strategies', grab.concat(loadLS('bt_private_strategies')));
-    saveLS('bt_strategies', shared.filter(x => identityKey(x.cfg) !== k));
-    const isRun = h => h && h.cfg && identityKey(h.cfg) === k;
-    const mine = HIST.filter(isRun);
-    saveLS('bt_private_history', mine.concat(loadLS('bt_private_history').filter(h => !isRun(h))).slice(0, 300));
-    saveLS('bt_history', loadLS('bt_history').filter(h => !isRun(h)));
-    HIST = HIST.filter(h => !isRun(h)).concat(mine);
-    if (window.btSync) { try { await btSync.pushStrategies(); await btSync.push(); } catch (err) {} }
-    render();
   });
   $('list').querySelectorAll('[data-bt]').forEach(b => b.onclick = () => {
     const it = DETAIL[b.dataset.bt] || strategies().find(x => x.id === b.dataset.bt); if (!it) return;
@@ -946,6 +929,26 @@ function wireUI() {
     try { HIST = await btSync.pull() || []; } catch (e) { HIST = []; }  // shared backtest history (all windows)
     try { WAVE_SNAP = await btSync.snapGet('waves'); } catch (e) { WAVE_SNAP = null; }   // precomputed wave results
   } else if (headless) { HIST = localHistBefore; }
+  // One-time migration: the "private strategy" (🔒) feature is removed — publish anything still
+  // sitting in this browser's private store back to the shared list/history so it's visible to
+  // everyone again, then wipe the private store so nothing stays hidden going forward.
+  {
+    const privS = loadLS('bt_private_strategies'), privH = loadLS('bt_private_history');
+    if (privS.length || privH.length) {
+      const shared = loadLS('bt_strategies'), haveS = new Set(shared.map(s => s.id));
+      saveLS('bt_strategies', shared.concat(privS.filter(s => !haveS.has(s.id))));
+      saveLS('bt_private_strategies', []);
+      const sharedH = loadLS('bt_history'), haveH = new Set(sharedH.map(h => h && h.id));
+      const newH = privH.filter(h => h && !haveH.has(h.id));
+      saveLS('bt_history', sharedH.concat(newH));
+      saveLS('bt_private_history', []);
+      HIST = HIST.concat(newH);
+      if (window.btSync) {
+        try { await btSync.pushStrategies(); } catch (e) {}
+        for (const h of newH) { try { await btSync.append(h); } catch (e) {} }
+      }
+    }
+  }
   // Surface any backtest run recorded on THIS browser that the shared pull didn't return yet (sync lag,
   // or the DB was paused/unreachable when the run auto-saved). Without this, a window you JUST ran can be
   // missing from its strategy's expanded list until the shared history catches up. Merge local-only runs
