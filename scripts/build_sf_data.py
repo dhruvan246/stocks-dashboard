@@ -253,16 +253,23 @@ def main():
     # the merged price series uses — otherwise renamed stocks vanish from historical backtests.
     json.dump(rename_to, open(os.path.join(HERE, "_rename_map.json"), "w"))
 
+    # "Currently listed" universe, for the alive/industry/name tag below. Used to read this out of
+    # a <script id="compressedData"> blob embedded in docs/nse-bse-dashboard.html — that page was
+    # since refactored to load data from dash_slim.bin instead, so the blob hasn't existed for a
+    # while and the scrape's bare except was silently leaving `cur` EMPTY. That marked EVERY symbol
+    # alive=False + industry="Unknown" on every full rebuild (found 2026-08-02: RELIANCE/TCS/INFY
+    # all alive=False on live data). dash_slim.bin IS the current source of truth for this now.
     cur = {}
     try:
-        import re, base64
-        h = open(os.path.join(ROOT, "docs", "nse-bse-dashboard.html"), encoding="utf-8").read()
-        b64 = re.search(r'<script id="compressedData"[^>]*>([A-Za-z0-9+/=]+)</script>', h).group(1)
-        D = json.loads(gzip.decompress(base64.b64decode(b64)))
-        for m in D["meta"].values():
-            cur[m["symbol"]] = {"name": m.get("name"), "industry": m.get("industry") or m.get("sector")}
+        slim = json.loads(gzip.decompress(open(os.path.join(ROOT, "docs", "dash_slim.bin"), "rb").read()))
+        for k, m in (slim.get("meta") or {}).items():
+            sym = m.get("symbol") or k.split(".")[0]
+            cur[sym] = {"name": m.get("name"), "industry": m.get("industry") or m.get("sector")}
     except Exception as e:
         print("  (current meta unavailable:", e, ")")
+    if not cur:
+        sys.exit("ABORT: currently-listed universe (dash_slim.bin meta) came out EMPTY — refusing to "
+                  "mark every symbol dead. Fix the source before re-running (see commit that added this guard).")
 
     df = int(DAILY_FROM.strftime("%Y%m%d"))
     # Corporate-action ratios: bonus/split ex-dates appear as huge overnight "drops" because
