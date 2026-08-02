@@ -27,8 +27,15 @@ const PAGES_WAIT_MS = 8 * 60 * 1000;    // max wait for both GitHub Pages deploy
 // the longest window — never finished: it was left as `pending` and the tab kept serving older numbers.
 // (Stock counts became separate rows on 2026-08-03, taking 35 strategies to 47, so this got tighter.)
 const BAKE_WAIT_MS  = 70 * 60 * 1000;   // must stay under the job's timeout-minutes, minus ~5 min of setup
-const PER_ITER_MS   = 15 * 60 * 1000;   // per-batch wait; longer batches = fewer engine re-downloads
-const MAX_ITERS     = 14;               // reload in a fresh browser this many times at most (each resumes)
+const PER_ITER_MS   = 15 * 60 * 1000;   // per-batch ceiling — NOT what actually ends a batch, see MAX_ITERS
+// ⚠️ A batch never lasts anywhere near PER_ITER_MS: the page's renderer dies ~30s in (it holds ~100 MB of
+// market data), so batches end on their own and the ITERATION CAP, not the time budget, is what ends a run.
+// Each batch still makes progress — the page saves after every strategy and the next one resumes — at
+// roughly 4-5 strategies/batch on the 6.3-yr `cycle` wave and 10-30 on the shorter ones. At 14 the run hit
+// the cap in 8m47s having left `cycle` at 27/45 (run 30765373241), which is why that tab kept serving stale
+// numbers. ~21 batches covers all four waves at 45 strategies; 60 leaves room to grow. The real stop is the
+// deadline above (60 x ~35s is ~35 min, well inside it) plus the stall guard in main().
+const MAX_ITERS     = 60;               // reload in a fresh browser this many times at most (each resumes)
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 async function fetchEnd(url) {
