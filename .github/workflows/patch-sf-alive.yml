@@ -1,0 +1,52 @@
+name: Patch sf_stock_data.bin alive/industry (one-shot)
+
+# ONE-SHOT REMEDIATION (2026-08-02) — delete this workflow once the fix is confirmed live.
+#
+# Today's daily-bars full rebuild (build_sf_data.py) wrote alive=False + industry="Unknown" for
+# EVERY symbol in the release-asset sf_stock_data.bin (its "currently listed" lookup scraped a
+# <script id="compressedData"> blob that no longer exists in docs/nse-bse-dashboard.html — see the
+# commit that fixed build_sf_data.py + added scripts/patch_sf_alive.py). Sessions cannot
+# `gh release upload` directly (runbook §41) — this workflow does the actual republish.
+#
+# This only heals the ALREADY-published bin's meta fields in place; it does not touch price data
+# and does not re-fetch any bhavcopies. After this lands, trigger "Daily backtest data refresh"
+# (workflow_dispatch) to propagate the fix to the sf-data Pages host the live backtest engine reads.
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Download current release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p docs
+          gh release download data --pattern 'sf_stock_data.bin' --dir docs --clobber
+
+      - name: Fetch live dash_slim.bin (freshest currently-listed universe)
+        run: curl -fsS https://dhruvan246.github.io/stocks-dashboard/dash_slim.bin -o docs/dash_slim.bin
+
+      - name: Patch alive / industry / name
+        run: python3 -X utf8 scripts/patch_sf_alive.py docs/sf_stock_data.bin docs/dash_slim.bin
+
+      - name: Re-publish patched release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload data docs/sf_stock_data.bin --clobber
+          echo "Published patched sf_stock_data.bin (end=$(python3 -c "import json,gzip;print(json.loads(gzip.decompress(open('docs/sf_stock_data.bin','rb').read()))['end'])"))"
