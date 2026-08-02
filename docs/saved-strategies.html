@@ -13,6 +13,10 @@
   body{font-feature-settings:"tnum" 1}
   .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
   .pos{color:#15803d}.neg{color:#b91c1c}
+  /* The hover card borrows .card for its theming, but theme.css gives every .card the sw-rise entrance
+     animation — which restarts on each un-hide, so the tooltip would fade+slide in over 0.5s AND be
+     measured 12px above where it lands. A tooltip must appear already in place. */
+  #yrCard{animation:none!important;opacity:1}
   .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
 </style>
 </head>
@@ -86,6 +90,10 @@
     <div class="text-[11px] text-slate-400 mt-1.5">running a real backtest for each strategy</div>
   </div>
 </div>
+
+<!-- Year-wise returns, shown while the pointer is over a strategy name. pointer-events:none so it can
+     never swallow a click meant for the row underneath. -->
+<div id="yrCard" class="hidden fixed z-50 w-64 card shadow-xl overflow-hidden pointer-events-none" style="left:0;top:0"></div>
 
 <!-- Today's Picks modal -->
 <div id="modal" class="hidden fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm overflow-y-auto p-3 sm:p-6">
@@ -323,11 +331,51 @@ function windowMode() { return VIEW === 'custom' || (VIEW === 'best' && CUSTOM_W
 // rule alone, so their numbers would all read "no data" until the next bake. Each stored row records the
 // `topN` it was computed at, so a pre-split entry is attached ONLY to the row with that exact count —
 // a 200-stock return must never be shown on the 5-stock row (that mix-up is what this split fixes).
-function waveResult(c) {
-  const hit = CUSTOM.get(identityKey(c));
+function lookupResult(get, c) {
+  const hit = get(identityKey(c));
   if (hit) return hit;
-  const legacy = CUSTOM.get(ruleKey(c)), n = c.topN != null ? c.topN : null;
+  const legacy = get(ruleKey(c)), n = c.topN != null ? c.topN : null;
   return (legacy && n != null && legacy.topN === n) ? legacy : null;
+}
+function waveResult(c) { return lookupResult(k => CUSTOM.get(k), c); }
+
+/* ---------- per-wave columns (🆕 New tab) ----------
+   The snapshot already holds every strategy's return for ALL FOUR market-cycle windows, so the New
+   tab can show them side by side with no compute and no engine download — the Best-return tab only
+   ever loads one wave at a time. Columns appear only once at least one wave is baked; before the
+   snapshot arrives (early paint) they'd be four empty columns, so they stay off. */
+const WAVE_NAME = { w1: 'Wave 1', w2: 'Wave 2', w3: 'Wave 3', cycle: 'Full cycle' };
+const WAVE_ICON = { w1: '🌊', w2: '🌊', w3: '🌊', cycle: '🔄' };
+// Same identity lookup as waveResult, but against ANY wave in the snapshot rather than the loaded one.
+function snapResult(wave, c) {
+  const r = WAVE_SNAP && WAVE_SNAP[wave] && WAVE_SNAP[wave].results;
+  return r ? lookupResult(k => r[k], c) : null;
+}
+function monLabel(d) {
+  const p = String(d || '').split('-');
+  return p.length > 1 ? ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+p[1]] + '’' + p[0].slice(2) : '';
+}
+// Window printed under each column heading: the snapshot's REAL dates when baked (w3 and cycle end at
+// the data date, which moves every day), the hard-coded preset otherwise.
+function waveColWindow(key) {
+  const w = WAVE_SNAP && WAVE_SNAP[key], p = PERIOD_PRESETS[key] || {};
+  return monLabel((w && w.start) || p.from) + '–' + (monLabel((w && w.end) || p.to) || 'date');
+}
+function waveColsOn() { return VIEW === 'new' && !!WAVE_SNAP && WAVE_ORDER.some(k => WAVE_SNAP[k] && WAVE_SNAP[k].results); }
+// One per-wave return cell: the RETURN over that window (bold, signed), with the run's CAGR, drawdown
+// and stock count riding along in the tooltip so the column stays one line wide.
+function waveCell(key, c) {
+  const r = snapResult(key, c);
+  if (!r || r.ret == null) return '<td class="px-2 py-3 text-right"><span class="text-slate-300 text-xs" title="not in the snapshot yet">—</span></td>';
+  const tip = `${WAVE_NAME[key]} ${waveColWindow(key)} · return ${pct(r.ret)}`
+    + (r.cagr != null ? ` · CAGR ${pct(r.cagr)}` : '')
+    + (r.maxDD != null ? ` · MaxDD -${r.maxDD.toFixed(1)}%` : '')
+    + (r.topN != null ? ` · top-${r.topN}` : '');
+  // Full cycle spans 6+ years, where an absolute headline like +1001% says nothing about the pace, so
+  // the annualised number rides along in brackets. The three waves are ~18 months — absolute is plain
+  // enough there, and a CAGR on a part-year window reads bigger than the money actually made.
+  const ann = (key === 'cycle' && r.cagr != null) ? ` <span class="text-[11px] font-normal text-slate-500">(CAGR ${pct(r.cagr)})</span>` : '';
+  return `<td class="px-2 py-3 text-right text-sm whitespace-nowrap" title="${esc(tip)}"><span class="font-semibold ${r.ret >= 0 ? 'pos' : 'neg'}">${pct(r.ret)}</span>${ann}</td>`;
 }
 // Load a wave's precomputed results (from the snapshot) into CUSTOM so render() shows them. Returns false if absent.
 function loadWaveIntoCustom(key) {
@@ -366,6 +414,93 @@ function setView(v){
   }
   render();
 }
+/* ---------- year-wise returns, shown on hover of the strategy name ----------
+   Source = the `yby` array stock-backtest.html stamps on EVERY saved history run: [year, strategy%,
+   nifty500%] calendar-year returns. Nothing is recomputed here, so the card opens instantly.
+   Coverage matters: yByY() bases a run's FIRST year on the run's start value and ends its LAST year
+   wherever the run stopped, so those two years are partial, not calendar-year returns. For each year
+   we therefore take the run that covers the MOST of it (full coverage wins, newest run breaks ties)
+   and mark anything short of a whole year with * so a part-year number is never read as a full one. */
+const YR_FROM = 2020;
+const YRG = new Map();          // row id -> group, so the hover card can find its strategy
+function yearRows(g) {
+  const k = identityKey(g.rep.cfg), sids = g.allIds;
+  const n0 = g.rep.cfg.topN != null ? g.rep.cfg.topN : '';
+  const best = new Map();       // year -> {ret, bench, cov, full, ts}
+  let last = YR_FROM;
+  for (const h of HIST) {
+    if (!h.cfg || !h.yby || !h.yby.length) continue;
+    if ((h.cfg.topN != null ? h.cfg.topN : '') !== n0) continue;            // same rule AND same stock count
+    if (!((h.sid && sids && sids.has(h.sid)) || identityKey(h.cfg) === k)) continue;
+    const t0 = Date.parse(h.cfg.start || ''), t1 = Date.parse(h.cfg.end || '');
+    for (const y of h.yby) {
+      const yr = +y[0]; if (!(yr >= YR_FROM) || y[1] == null) continue;
+      const jan = Date.parse(yr + '-01-01'), dec = Date.parse(yr + '-12-31');
+      const ok = isFinite(t0) && isFinite(t1);
+      const cov  = ok ? Math.max(0, Math.min(t1, dec) - Math.max(t0, jan)) : 0;
+      const full = ok && t0 <= jan && t1 >= dec;
+      const prev = best.get(yr);
+      if (!prev || cov > prev.cov || (cov === prev.cov && (h.ts || 0) > prev.ts))
+        best.set(yr, { ret: y[1], bench: y[2], cov, full, ts: h.ts || 0 });
+      if (yr > last) last = yr;
+    }
+  }
+  if (!best.size) return [];
+  const out = [];
+  for (let yr = YR_FROM; yr <= last; yr++) {
+    const b = best.get(yr);
+    out.push({ year: yr, ret: b ? b.ret : null, bench: b ? b.bench : null, full: !!(b && b.full) });
+  }
+  return out;
+}
+function yearCardHTML(g) {
+  const rows = yearRows(g);
+  const head = `<div class="px-3 py-1.5 border-b border-slate-200 bg-slate-50">
+      <div class="text-[11px] font-semibold text-slate-800 leading-snug line-clamp-2">${esc(g.rep.name)}</div>
+      <div class="text-[10px] text-slate-500">Calendar-year returns${g.rep.cfg.topN != null ? ' · ' + g.rep.cfg.topN + ' stocks' : ''}</div>
+    </div>`;
+  // Empty is usually not a gap in the data but a stock-count mismatch: since counts became part of a
+  // strategy's identity, a top-50 row must not borrow the top-5 run's years. Say so, don't just dash.
+  if (!rows.length) return head + `<div class="px-3 py-3 text-[11px] text-slate-400">No year-wise data yet — no saved backtest of this strategy${g.rep.cfg.topN != null ? ` at ${g.rep.cfg.topN} stocks` : ''} covers ${YR_FROM} onward.</div>`;
+  const cell = v => v == null ? '<span class="text-slate-300">—</span>' : `<span class="font-semibold ${v >= 0 ? 'pos' : 'neg'}">${pct(v)}</span>`;
+  // A run whose benchmark series is missing lands as null or a nonsense -100 (equity read as zero) —
+  // show a dash rather than a wrong Nifty 500 number.
+  const bench = v => (v == null || !isFinite(v) || v <= -99) ? '<span class="text-slate-300">—</span>' : `<span class="${v >= 0 ? 'text-slate-600' : 'text-slate-500'}">${pct(v)}</span>`;
+  const part = rows.some(r => r.ret != null && !r.full);
+  return head + `<table class="w-full text-[11px]">
+    <thead><tr class="text-slate-400"><th class="text-left font-medium px-3 pt-1 pb-0.5">Year</th><th class="text-right font-medium px-2 pt-1 pb-0.5">Strategy</th><th class="text-right font-medium px-3 pt-1 pb-0.5">Nifty 500</th></tr></thead>
+    <tbody>${rows.map(r => `<tr class="border-t border-slate-100">
+      <td class="px-3 py-0.5 text-slate-600">${r.year}${r.ret != null && !r.full ? '<span class="text-amber-500">*</span>' : ''}</td>
+      <td class="px-2 py-0.5 text-right">${cell(r.ret)}</td>
+      <td class="px-3 py-0.5 text-right">${bench(r.bench)}</td></tr>`).join('')}</tbody></table>`
+    + (part ? '<div class="px-3 py-1 text-[10px] text-slate-400 border-t border-slate-100 leading-tight">* part-year — the backtest window starts or ends mid-year</div>' : '');
+}
+function showYearCard(el, id) {
+  const g = YRG.get(id); if (!g) return;
+  const box = $('yrCard');
+  box.innerHTML = yearCardHTML(g);
+  box.classList.remove('hidden');
+  // ORDER MATTERS. Read the card's size FIRST: offsetWidth/offsetHeight flush the layout that setting
+  // innerHTML + un-hiding just invalidated. Reading the anchor's rect before that flush returns stale
+  // coordinates (~12px off here), which is enough to drop the card on top of the row it describes.
+  // offset* are also the right measure for size — unlike getBoundingClientRect they don't report where
+  // the box currently SITS, i.e. wherever the previous hover left it.
+  const pad = 8, gap = 10, W = window.innerWidth, H = window.innerHeight;
+  const w = box.offsetWidth, h = box.offsetHeight, r = el.getBoundingClientRect();
+  // Place BESIDE the name, not under it: this table is wide and the card is narrow, so there is nearly
+  // always room to the right, and a side placement never covers the row you're pointing at — nor does
+  // it need a tall viewport (below/above needs h+row px of clear space, which a short window hasn't got).
+  // Vertically centred on the row, then clamped, so the card is always fully on screen.
+  const left = (r.right + gap + w <= W - pad) ? r.right + gap
+             : (r.left - gap - w >= pad)      ? r.left - gap - w
+             : Math.max(pad, Math.min(r.left, W - w - pad));            // no side room: fall back under the name
+  const wantTop = (left === Math.max(pad, Math.min(r.left, W - w - pad)) && left < r.right && left + w > r.left)
+    ? r.bottom + 6                                                      // overlapping horizontally → sit below
+    : r.top + r.height / 2 - h / 2;                                     // beside → centre on the row
+  box.style.left = left + 'px';
+  box.style.top = Math.max(pad, Math.min(wantTop, H - h - pad)) + 'px';
+}
+function hideYearCard() { const b = $('yrCard'); if (b) b.classList.add('hidden'); }
 // Group saved entries by strategy identity → one entry each; its backtests = its saved windows
 // (dedup by start+method). Also attaches g.list (all runs) and g.cagr (headline full-period CAGR).
 function buildGroups(items) {
@@ -425,14 +560,26 @@ function render() {
     }
   }
   $('list').className = 'card overflow-x-auto';
+  // The 🆕 New tab REPLACES the CAGR column with each strategy's return in all four market-cycle
+  // windows, straight from the baked snapshot (see waveCell). CAGR is dropped because Full cycle's
+  // bracketed CAGR is the same number for most rows — the headline takes the longest saved run, which
+  // is usually the cycle window. When the snapshot hasn't loaded, wcols is false and the CAGR column
+  // stays, so the tab is never left with no numbers at all. On the other tabs that same <th> carries
+  // the window RETURN, so it must never be dropped there.
+  // <br> in the wave headers — not a block span — because theme.js's mobile card reflow builds each
+  // cell's label from the header text and turns <br> into a space.
+  const wcols = waveColsOn();
   const header = `<thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
     <th class="text-left font-semibold px-4 py-2.5">Strategy</th>
-    <th class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">${wmode ? (CUSTOM_WIN ? `Return · ${CUSTOM_WIN.start} → ${CUSTOM_WIN.end}${CUSTOM_WIN.topN != null ? ` · top-${CUSTOM_WIN.topN}` : ''} ▾` : 'Return · window ▾') : `CAGR${VIEW === 'best' ? ' ▾' : ''}`}</th>
+    ${wcols ? '' : `<th class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">${wmode ? (CUSTOM_WIN ? `Return · ${CUSTOM_WIN.start} → ${CUSTOM_WIN.end}${CUSTOM_WIN.topN != null ? ` · top-${CUSTOM_WIN.topN}` : ''} ▾` : 'Return · window ▾') : `CAGR${VIEW === 'best' ? ' ▾' : ''}`}</th>`}
+    ${wcols ? WAVE_ORDER.map(k => `<th class="text-right font-semibold px-2 py-2.5 whitespace-nowrap" title="Return over ${esc(WAVE_NAME[k])} (${esc(waveColWindow(k))}), from the ${esc(WAVE_SNAP.date || 'latest')} snapshot">${WAVE_ICON[k]} ${esc(WAVE_NAME[k])}<br><span class="text-[9px] font-medium normal-case tracking-normal text-slate-400">${esc(waveColWindow(k))}</span></th>`).join('') : ''}
     <th class="px-2 py-2.5"></th>
     ${OWNER ? '<th class="px-2 py-2.5"></th>' : ''}
   </tr></thead>`;
+  YRG.clear();
   const body = rows.map((g, gi) => {
     const it = g.rep, c = it.cfg;
+    YRG.set(it.id, g);                                    // hover target → its group, for the year card
     const expr = filterExpr(c) || 'no filters';
     const list = g.list, n = list.length, best = g.cagr;
     const counts = [...new Set([...g.vars.values()].map(v => v.cfg.topN).filter(v => v != null))].sort((a, b) => a - b);
@@ -450,13 +597,14 @@ function render() {
         <div class="flex items-center gap-3">
           <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">📈</span>
           <span class="min-w-0">
-            <span class="block font-semibold text-indigo-700 leading-snug">${esc(it.name)}</span>
+            <span class="block font-semibold text-indigo-700 leading-snug"><span data-yrs="${esc(it.id)}" title="">${esc(it.name)}</span></span>
             <span class="block text-[11px] text-slate-500 truncate">${esc(universeLabel(c))} · ${FREQ[c.freq] || c.freq + 'mo'} · ${countLabel} · ${SORTL[c.sortBy] || c.sortBy} ${c.dir === 'high' ? '↓' : '↑'} · ${n} backtest${n > 1 ? 's' : ''}</span>
             ${(c.filters || []).length ? `<span class="block text-[11px] text-slate-400 truncate" title="${esc(expr)}">Filters: ${esc(expr)}</span>` : ''}
           </span>
         </div>
       </td>
-      <td class="px-3 py-3 text-right text-sm whitespace-nowrap">${cagrCell}</td>
+      ${wcols ? '' : `<td class="px-3 py-3 text-right text-sm whitespace-nowrap">${cagrCell}</td>`}
+      ${wcols ? WAVE_ORDER.map(k => waveCell(k, c)).join('') : ''}
       <td class="px-2 py-3 text-center"><button class="text-base leading-none transition" data-favtoggle="${esc(identityKey(c))}" title="${isFav(favs, c) ? 'Remove from favourites' : 'Add to favourites'}">${isFav(favs, c) ? '⭐' : '☆'}</button></td>
       ${OWNER ? `<td class="px-2 py-3 text-center whitespace-nowrap"><button class="text-slate-300 hover:text-red-500 text-sm" data-delgroup="${esc(identityKey(c))}" title="Delete strategy">🗑️</button></td>` : ''}
     </tr>`;
@@ -465,6 +613,11 @@ function render() {
   // wiring
   $('list').querySelectorAll('[data-favtoggle]').forEach(b => b.onclick = (e) => {
     e.stopPropagation(); toggleFav(b.dataset.favtoggle);
+  });
+  // Hover the strategy name → year-by-year returns (2020 → latest) for that exact strategy.
+  $('list').querySelectorAll('[data-yrs]').forEach(el => {
+    el.onmouseenter = () => showYearCard(el, el.dataset.yrs);
+    el.onmouseleave = hideYearCard;
   });
   // Row click opens the strategy page (parameters + run history). Inner buttons (👁, 🎯, ☆, 🗑)
   // handle their own clicks — don't also navigate when one of them is pressed.
@@ -991,6 +1144,8 @@ function wireUI() {
   if (!$('cTo').value)   $('cTo').value = today;
   $('cCompute').onclick = () => { document.querySelectorAll('.preset').forEach(b => b.classList.remove('!bg-indigo-600', '!text-white')); computeCustom(); };
   document.querySelectorAll('.preset').forEach(b => b.onclick = () => runPreset(b.dataset.preset));
+  // The year card is position:fixed, so a scroll would leave it hanging over the wrong row.
+  window.addEventListener('scroll', hideYearCard, true);
 }
 
 (async function boot() {
