@@ -136,6 +136,30 @@ def save_hist(h):
                 time.sleep(1 + i)
         os.replace(tmp, HIST)  # last try — surface the error if it truly won't release
 
+# Coverage campaign STEP 5: BSE-sourced backfill for 2016-03..2019-06, the window the NSE master
+# API (fetch_master, below) can't reach — it only ever serves a recent rolling window, never
+# historical quarters (confirmed: querying it for 2016-2019 quarter-ends returns 0 rows even
+# though those quarters plainly have filings). Built by scripts/fetch_shp_bse_hist.py from BSE's
+# SHPQNewFormat quarter-list + XBRL (same in-bse-shp taxonomy/concept names as NSE's, parsed by
+# the SAME parse_shp() above). Fill-only, idempotent — safe to call every run.
+BSE_HIST_LEDGER = os.path.join(HERE, "shp_fill_hist_2016_2019.json.gz")
+def apply_bse_hist_ledger(h):
+    if not os.path.exists(BSE_HIST_LEDGER): return 0
+    try:
+        with gzip.open(BSE_HIST_LEDGER, "rt", encoding="utf-8") as fh:
+            fills = json.load(fh).get("fills", {})
+    except Exception as e:
+        print("BSE hist ledger unreadable (%s) — skipped" % e); return 0
+    n = 0
+    for sym, qs in fills.items():
+        dest = h.setdefault(sym, {})
+        for qe, cell in qs.items():
+            if qe in dest: continue   # fill-only — never overwrite an existing cell
+            dest[qe] = cell[:7] if cell[6] is not None else cell[:6]   # drop the ledger-only "scripcode:qtrid" provenance tag (cell[7])
+            n += 1
+    if n: print("shp_fill_hist_2016_2019.json.gz applied: %d cells" % n)
+    return n
+
 # ------------------------------------------------------------------ NSE fetch
 def fetch_master(jar, qe_iso):
     """All SHP filings whose as-on date == qe. Returns [] on failure (self-healing)."""
@@ -242,6 +266,7 @@ def parse_shp(txt, qe_iso):
 def refresh_quarters(qes, reparse=False):
     jar = B.nse_jar()
     hist = load_hist()
+    apply_bse_hist_ledger(hist)   # STEP 5 2016-2019 backfill — fill-only, no-ops once applied
     names = hist.setdefault("_names", {})
     before = cells_of(hist)
     stats = []
