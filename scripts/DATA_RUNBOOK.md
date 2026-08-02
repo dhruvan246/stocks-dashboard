@@ -2665,3 +2665,27 @@ missing shareholders' leg.
 
 Tooling (rev-mission worktree): `_irdai_life.py`, `_irdai_gi.py`, `_irdai_gicre.py`,
 `_irdai_niacl.py`; packs cached under `scripts/_irdai/<SYM>/`.
+
+## 44. ★ DELISTED-BUT-STILL-FILING: the BSE DEBT segment  (found 2026-08-03)
+
+When a company is delisted from EQUITY but keeps listed NCDs, SEBI Reg 33/52 still oblige it to
+publish quarterly results — but they are filed against its DEBT scrip code, so every equity-side
+route (BSE announcement API by equity code, BSE detres table, NSE corporates-financial-results,
+NSE integrated-filing) reports "no filing" and the quarter looks structurally dead. It is not.
+
+Recipe: `ListofScripData/w?...&segment=Debt&status=` returns 64,017 rows; find the issuer by
+`Scrip_Name`, take the codes whose status is not Delisted, and run the normal announcement
+window against them. ISEC (ICICI Securities, merged into ICICI Bank and delisted March 2025)
+files under debt scrip 729001 — Q4FY25 through Q4FY26 all recovered this way, each anchored
+exactly against the stored PAT on both bases.
+
+Two traps in these filings:
+* the P&L pages are scanned with a garbled text layer (labels readable, figures in a separate
+  flow) — parse POSITIONALLY by word coordinates, as with the IRDAI forms in §43;
+* standalone and consolidated PAT can differ by less than the anchor tolerance (ISEC: 473.31 vs
+  474.59), so a single page will satisfy BOTH bases and silently duplicate itself into the con
+  slot. Require a DISTINCT page per basis and pick the page whose value is CLOSEST to each
+  stored figure; if both bases resolve to the same page and the same numbers, keep standalone
+  only. (This bug produced identical std/con rows before it was caught.)
+
+Applied through `scripts/_debt_reads.json`, wired into `_apply_reads.py`.
