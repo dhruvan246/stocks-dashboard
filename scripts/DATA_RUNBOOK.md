@@ -2570,3 +2570,42 @@ The user found it by running a backtest; no monitor, test, or verification step 
 are the only such cache (`dash_slim.bin` / `stock_data.bin` / `mf_history.bin` / `stk/` slices are plain
 ETag fetches that revalidate within ~10 min, and `sw.js` never caches `.bin`/`.json`). If you ever add
 another IndexedDB/localStorage data cache, key it on CONTENT, not on the data date.
+
+## 42. ★ BSE DETAILED-RESULTS JSON — the as-filed 2015+ quarterly source  (discovered 2026-08-02)
+
+Every quarterly result BSE ever displayed on its old "detailed results" pages is served as
+STRUCTURED JSON, back to at least Mar-2015 (and 2014 responds too), including DELISTED and
+SUSPENDED scrips and the &-symbol companies whose NSE archive pages are 0-byte (J&KBANK, M&MFIN):
+
+    https://api.bseindia.com/BseIndiaAPI/api/Corp_detailedResult_Transpose_ng/w?scrip_cd=<CODE>&qtr=<QID>
+    QID = "NN.00" where NN = 85 + 4*(FY-2015) + {Mar:0, Jun:1, Sep:2, Dec:3}   (85 = Mar-2015)
+    QID = "NN.50" on the fiscal-year-END quarter = the audited ANNUAL row
+          (Mar for Apr-Mar filers; DEC for calendar-year filers like AMBUJACEM/ACC)
+
+Facts that matter:
+* Values are AS-ORIGINALLY-FILED (verified: SHRIRAMFIN Mar-18 = IGAAP 144.6 not the Ind-AS
+  restated 961.76; NSE's matching list row declares "indAs":"Non-Ind-AS"), in ₹ MILLION — ÷10.
+* Bank format is first-class: "Interest Earned/...", printed "Operating Profit Before
+  Provisions and Contingencies", NPA/CAR rows. Industrial rows allow the op reconstruction
+  (pbet + |finance| + |depreciation| − other income).
+* EPS + Equity Capital + Face Value rows → EPS×(equity/FV) reconstructs owners-PAT: the gate
+  for PAT fills where no stored anchor exists (±6%).
+* ALWAYS verify Date Begin/End span == 3 months (annual/H1 rows exist in the same id space).
+* Standalone/primary basis only. No working consolidated endpoint found (2026-08-02).
+* Scrip codes for dead companies: ListofScripData/w?...&status=Delisted|Suspended|(blank=all
+  10,786) — scrip_id equals the NSE symbol for most; resolve the rest by name.
+
+Discipline (same as every backfill route): a cell lands ONLY if the page NP (÷10) matches the
+stored sf_fundamentals PAT for (sym,qe) on some basis within max(2cr,3%); PAT fills need the
+EPS-recon or the FY-consistency gate (candidate + other three quarters ≈ the .50 annual within
+max(3cr,3%) — this also PROVES the basis). Derivations use the .50 annual, never Screener's
+annual: Screener silently swaps in RESTATED annuals (Ind-AS transitions, mergers, fiscal-year
+changes) and mixed-basis residuals pass ratio gates — that poisoned 20 live cells on 2026-08-02
+(purged via scripts/rev_defects.json, the guarded null ledger that lets the fill-only appliers
+refill from corrected reads).
+
+Tooling lives in the rev-mission worktree (scripts/_bse_detres.py, _bse_annual_derive.py,
+_patfill_gate2.py, _anchor_adjud.py, _mk_gaps_2015.py); ledgers rev_defects.json /
+sanity_ok.json / pat_defects.json / xbrl_comparative_fills.json are tracked. sanity_ok.json
+exists because revop_sanity's 4x scale-spike rule misfires on IBC-collapsed companies
+(UTTAMSTL/GAMMONIND) when backfilling their healthy years — allowlist reviewed cells there.
