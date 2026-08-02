@@ -30,6 +30,10 @@ SRC_FILES.append(("_nsexbrl_reads.json", None))     # NSE per-filing XBRL (2018-
 SRC_FILES.append(("_mc_reads.json", None))          # Moneycontrol browser-driven (PAT-anchored per cell)
 SRC_FILES.append(("_screener_reads.json", None))    # Screener.in annual-total derivation (see _screener_annual.py)
 SRC_FILES.append(("_bsedet_reads.json", None))      # BSE detailed-results JSON (as-filed, _bse_detres.py)
+# Companies delisted from EQUITY but still filing under BSE's DEBT segment (listed NCDs keep
+# Reg-33/52 obligations alive): their results never appear under the equity scrip code, so the
+# equity-side routes all report "no filing". Look the issuer up in ListofScripData?segment=Debt.
+SRC_FILES.append(("_debt_reads.json", None))
 for _p in sorted(glob.glob(os.path.join(HERE, "_nsexbrl_reads_*.json"))):
     SRC_FILES.append((os.path.basename(_p), None))
 for _p in sorted(glob.glob(os.path.join(HERE, "_nsearch_reads_*.json"))):
