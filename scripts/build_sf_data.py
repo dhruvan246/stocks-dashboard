@@ -69,15 +69,46 @@ def parse_rows(text):
     out = []
     for r in rows[1:]:
         if len(r) <= max(iS, iC): continue
-        if (r[iSer].strip() if iSer >= 0 else "EQ") not in ("EQ", "BE"): continue
+        ser = (r[iSer].strip() if iSer >= 0 else "EQ")
+        if ser not in ("EQ", "BE"): continue
         c = num(r, iC)
         if c <= 0: continue
+        dlv = num(r, iD)
+        # BE = trade-to-trade: every trade settles with delivery, so NSE prints DELIV_PER as '-'
+        # there. Store the true 100 instead of the 0 sentinel (0 must mean "unavailable" only).
+        if ser == "BE" and iD >= 0 and dlv == 0: dlv = 100.0
         # FULL row cached so future factor additions never need a refetch:
         # [sym, close, prevclose, turnover, high, low, open, volume, deliv%, vwap, trades, isin]
         out.append([r[iS].strip(), c, num(r, iP), num(r, iT), num(r, iH, c), num(r, iL, c),
-                    num(r, iO, c), num(r, iV), num(r, iD), num(r, iW), num(r, iN),
+                    num(r, iO, c), num(r, iV), dlv, num(r, iW), num(r, iN),
                     (r[iI].strip() if 0 <= iI < len(r) else "")])
     return out
+
+
+def apply_dv_fill(data):
+    """Fill-only delivery-%% ledger (scripts/dv_fill.json, tracked): cells recovered from
+    per-day sec_bhavdata_full / MTO re-reads plus BE(T2T) '-' days stored as 100. Writes only
+    where dv is 0 and the date row exists, so it is idempotent and can never clobber a real
+    value. Ledger keys are MERGED (current) symbols — on a from-scratch rebuild (era symbols,
+    pre-merge) unmatched keys are skipped here and re-applied by update_sf_data on the merged
+    release asset."""
+    p = os.path.join(HERE, "dv_fill.json")
+    if not os.path.exists(p): return 0
+    try:
+        fills = json.load(open(p)).get("fills", {})
+    except Exception as e:
+        print("dv_fill.json unreadable (%s) — skipped" % e, flush=True); return 0
+    n = 0
+    for sym, days in fills.items():
+        s = data.get(sym)
+        if not s: continue
+        pos = {d: i for i, d in enumerate(s["d"])}
+        for ds, v in days.items():
+            i = pos.get(int(ds))
+            if i is not None and not s["dv"][i]:
+                s["dv"][i] = v[0] if isinstance(v, list) else v; n += 1
+    if n: print("dv_fill ledger applied: %d delivery%% cells" % n, flush=True)
+    return n
 
 
 def fetch_day(d, j):
@@ -330,6 +361,7 @@ def main():
     print("Stored %d symbols (%d delisted/absent today); official split/bonus applied=%d, non-reconciling=%d, "
           "demerger/scheme drops kept (not divided out)=%d"
           % (len(data), dead, applied_off, bad_recon, demerger_skipped), flush=True)
+    apply_dv_fill(data)
     if skip_log:
         print("  demerger/scheme ex-dates kept as real drops (sym, date, ratio):", flush=True)
         for s, y, rr in skip_log: print("    %-12s %d  ratio=%.3f" % (s, y, rr), flush=True)

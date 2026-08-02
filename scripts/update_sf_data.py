@@ -260,6 +260,10 @@ def main():
             e["vw"] = [round(c[i] * (1000 + vwo[i]) / 1000, 2) for i in range(n)]
             e["dv"] = [round(x / 10, 2) for x in e.get("dv", [])]
             for kk in ("hb", "lb", "ob"): e.pop(kk, None)
+    # Delivery-% heal ledger (scripts/dv_fill.json): recovered DELIV_PER cells + BE/T2T '-' days
+    # (compulsory delivery -> 100). Fill-only where dv==0, so a re-run applies 0 and is a no-op;
+    # a non-zero count flags a real change and rides the publish condition below.
+    dvf = B.apply_dv_fill(data)
     # MANUAL rename merges the ISIN-detector can't make: same security, but the ISIN CHANGED at the
     # rename so the ISIN-based auto-merge skips it (a safety guard against recycled tickers). These are
     # verified price-continuous. Idempotent: once the old series is folded in and dropped it's a no-op.
@@ -400,8 +404,8 @@ def main():
     # refreshes the on-disk bin but does NOT publish the release, bump clients, or commit a marker.
     blob = gzip.compress(json.dumps(D, separators=(",", ":")).encode(), 6)
     open(OUT, "wb").write(blob)
-    if not appended and not healed and not merged and not mr:
-        print("No new day / heal / merge / manual-rights — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
+    if not appended and not healed and not merged and not mr and not dvf:
+        print("No new day / heal / merge / manual-rights / dv-fill — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
     open(MARK, "w").write(D["end"])
     # tiny version marker — committed daily, lets the browser cache the big bin in IndexedDB
     # keyed to this `end` and skip re-downloading 80 MB until the data actually changes.
