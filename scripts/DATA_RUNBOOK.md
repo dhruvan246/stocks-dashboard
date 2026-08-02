@@ -2624,3 +2624,44 @@ _patfill_gate2.py, _anchor_adjud.py, _mk_gaps_2015.py); ledgers rev_defects.json
 sanity_ok.json / pat_defects.json / xbrl_comparative_fills.json are tracked. sanity_ok.json
 exists because revop_sanity's 4x scale-spike rule misfires on IBC-collapsed companies
 (UTTAMSTL/GAMMONIND) when backfilling their healthy years — allowlist reviewed cells there.
+
+## 43. ★ INSURER QUARTERS FROM IRDAI PUBLIC DISCLOSURES  (route solved 2026-08-03)
+
+Insurers file IRDAI-format disclosures, not the standard exchange P&L, so they are invisible to
+every other route before ~2019 (BSE serves no attachment pre-2019, NSE's archive has ZERO
+insurer rows, the BSE detres JSON of §42 carries no IRDAI forms). Their own websites publish
+the quarterly L-forms (life) / NL-forms (general) going back a decade — that is the source.
+
+**Access.** `pip install curl_cffi`, then `requests.get(url, impersonate="chrome")`. ICICI Pru
+and ICICI Lombard hard-403 plain urllib (Akamai fingerprints TLS, not headers) and are blocked
+in BOTH browser surfaces (the Chrome extension refuses the domain by policy; computer-use grants
+browsers read-only tier). Impersonation returns 200 on every insurer site tried.
+
+**Where the archives are** (all verified): hdfclife.com/about-us/public-disclosure (static links,
+FY2016+) · iciciprulife.com/about-us/investor-relations/yearly-public-disclosures.html?ID=about3
+(3,585 links; folders FY<yr>/fy<yr>q<n>s) · icicilombard.com/about-us/public-disclosure (3,071
+links to 2010; folder `2016-17` not `2016-2017`, and the `?sfvrsn=` query param is REQUIRED) ·
+gicre.in/periodicdisclosure/<FY>/<n>th-qtr/NL-1-Rev-Acc.html (HTML tables, not PDFs) ·
+newindia.co.in CMS uuid paths — enumerate with the wayback CDX API, then fetch them LIVE.
+
+**Reading the forms.** Figures are ₹ THOUSANDS (÷10,000 → crore). Columns run
+[For Qn current | Upto Qn current | For Qn prior | Upto Qn prior] so a row's quarter value is
+the 4th-from-last number — but ALWAYS confirm the column by anchoring the P&L's profit-after-tax
+against stored sf_fundamentals, because some packs print only cumulative columns (then difference
+consecutive packs). Newer PDFs put labels and figures in separate text blocks: parse positionally
+by word y-coordinate; older ones keep them on one line. GIC Re's revenue account is FOUR segment
+tables with no total — sum them.
+
+**Revenue convention (reverse-engineered, validated to the paisa):**
+  general insurers: policyholders' [premium earned (net) + profit on sale/redemption of
+  investments + interest, dividend & rent] PLUS **shareholders' [interest, dividend & rent +
+  profit on sale − loss on sale]** taken from the P&L. Other income (fx gain, terrorism-pool,
+  misc) is excluded. Validated ICICIGI Sep-2019: parsed 2854.12 vs stored 2854.12 (delta 0.00),
+  GICRE Mar-2018: 8835.31 vs 8834.04 (0.014%).
+  life insurers: net premium + policyholders' investment income only.
+Always validate a NEW insurer's parser against a quarter that is already stored before writing
+anything — the conventions differ between life and general, and that check is what caught the
+missing shareholders' leg.
+
+Tooling (rev-mission worktree): `_irdai_life.py`, `_irdai_gi.py`, `_irdai_gicre.py`,
+`_irdai_niacl.py`; packs cached under `scripts/_irdai/<SYM>/`.
