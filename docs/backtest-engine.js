@@ -672,12 +672,26 @@ function nearestNifty(dstr) { return nearestIdx(NIFTY, dstr); }
 function maxDrawdown(eq) { let peak = -1, mdd = 0; for (const [, v] of eq) { if (v > peak) peak = v; else if (peak > 0) { const dd = (peak - v) / peak * 100; if (dd > mdd) mdd = dd; } } return mdd; }
 
 /* ---- config labels + localStorage ---- */
+// Short field labels for the filter fingerprint in strategyLabel() below — distinct from the
+// longer FIELD_LABEL used in dropdowns/tables. Keep in sync with FIELDS (each page's own copy).
+const SHORT_FIELD = { changePercent: 'Chg%', rsi: 'RSI', d52: '52wHi%', d52_low_pct: '52wLo%', indRank: 'IndRank', mcap: 'Mcap', hist_mcap: 'HMcap',
+  profitYoyPct: 'NP-YoY%', profitBase: 'NP-base', fiiPct: 'FII%', fiiChgPp: 'FII Δpp', diiPct: 'DII%', diiChgPp: 'DII Δpp',
+  ret1m: 'Ret-1m%', ret3m: 'Ret-3m%', ret6m: 'Ret-6m%', ret12m: 'Ret-12m%', accel: 'MomAccel%', dma50: '50DMA%', dma200: '200DMA%',
+  rangePos: 'RangePos', daysHigh: 'DaysSinceHi', vol: 'Vol%', riskMom: 'RiskMom', beta: 'Beta', mdd6: 'MDD-6m%', upPct: 'UpDay%',
+  turnover: 'Turnover', turnSurge: 'TurnSurge', volSurge: 'VolSurge', delivPct: 'Deliv%', macd: 'MACD', stoch: 'Stoch%K', bollB: 'BollB',
+  profitAccel: 'ProfitAccel', profitTTM: 'ProfitTTM%', profitStreak: 'ProfitStreak', postDrift: 'PostDrift%', composite: 'QM-Composite' };
+// Filters are what make two strategies with the same sort/topN/universe/frequency actually
+// different — a bare "N filters" count collides whenever the count matches too, so the label
+// spells out each filter (short field + op + val) instead of just counting them.
+function filterFingerprint(filters) {
+  return (filters || []).map(f => `${SHORT_FIELD[f.field] || FIELD_LABEL[f.field] || f.field} ${f.op} ${f.val}`).join(', ');
+}
 function strategyLabel(c) {
-  const S = { changePercent: 'Momentum', rsi: 'RSI', d52: '52w-High', d52_low_pct: '52w-Low', indRank: 'Industry-rank', mcap: 'Mcap', hist_mcap: 'Hist-mcap' };
+  const S = { changePercent: 'Momentum', rsi: 'RSI', d52: '52w-High', d52_low_pct: '52w-Low', indRank: 'Industry-rank', mcap: 'Mcap', hist_mcap: 'Hist-mcap', profitYoyPct: 'Profit-growth', profitBase: 'Profit-base' };
   const F = { 1: 'Monthly', 3: 'Quarterly', 6: 'Half-yearly', 12: 'Yearly' }[c.freq] || c.freq + 'mo';
   const uni = c.indexName ? String(c.indexName).replace('__FNO__', 'F&O') : c.mcapFloor ? '≥₹' + (+c.mcapFloor).toLocaleString('en-IN') + 'L turnover' : 'All stocks';
-  const nf = (c.filters || []).length;
-  return `${S[c.sortBy] || FIELD_LABEL[c.sortBy] || c.sortBy} ${c.dir === 'high' ? 'top' : 'bottom'}-${c.topN} · ${uni} · ${F}${nf ? ' · ' + nf + ' filter' + (nf > 1 ? 's' : '') : ''}`;
+  const fp = filterFingerprint(c.filters);
+  return `${S[c.sortBy] || FIELD_LABEL[c.sortBy] || c.sortBy} ${c.dir === 'high' ? 'top' : 'bottom'}-${c.topN} · ${uni} · ${F}${fp ? ' · ' + fp : ''}`;
 }
 function universeLabel(c) { return c.indexName ? String(c.indexName).replace('__FNO__', 'F&O Stocks') : c.mcapFloor ? '≥₹' + (+c.mcapFloor).toLocaleString('en-IN') + 'L turnover' : 'All stocks'; }
 function freqLabel(c) { return { 1: 'Monthly', 3: 'Quarterly', 6: 'Half-yearly', 12: 'Yearly' }[c.freq] || c.freq + 'mo'; }
