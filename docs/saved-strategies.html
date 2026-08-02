@@ -167,18 +167,29 @@ function clampDate(d, lo, hi) { return d < lo ? lo : d > hi ? hi : d; }
    pulled from the shared Backtest History — each showing its saved CAGR/MaxDD + Picks/Backtest.
    Any future run of the same strategy lands in History and auto-appears under its row. */
 function identityKey(c) {
-  // Identity = the SELECTION RULE. Excludes `method` (hold/reset is execution-only), start/end (the
-  // window), AND `topN` (the stock count is a variation, like the window — a strategy saved at 3, 5
-  // and 50 stocks is ONE strategy shown as one row, with the counts nested inside). The variant-level
-  // key (winKey) carries start+method+topN so those runs stay individually addressable.
+  // Identity = the SELECTION RULE **at one stock count**. Excludes `method` (hold/reset is
+  // execution-only) and start/end (the window), but INCLUDES `topN`: the same rule at 5 stocks and at
+  // 200 stocks is two strategies, listed as two rows each with its own return.
+  // Why topN is part of identity (changed 2026-08-03): merged rows were ranked at whichever stock
+  // count was saved LAST — buildGroups picks the newest entry as `rep` and the wave bake runs it with
+  // no topN override. So saving a 200-stock run of an existing 5-stock rule silently re-baked that
+  // row's Wave-3 return at 200 stocks (+1.96% instead of +46%) and dropped it from #5 to #34 of 35.
   // Treat boundary-only operator differences as the same rule: `<`≡`<=`, `>`≡`>=` (same field, value
   // and direction). This keeps two strategies that differ only by a `<` vs `<=` from splitting into
   // separate rows, while opposite directions (`>0` vs `<0`) or different values stay distinct.
+  return ruleKey(c) + '|' + (c.topN != null ? c.topN : '');
+}
+// The selection rule WITHOUT the stock count — i.e. identityKey as it was before the split. Used ONLY
+// to derive the live-picks `sid` ('st' + hash36(key), see runLogPicks): tracking series are keyed by
+// sid in Supabase sw_picks_log, so deriving them from the split key would have orphaned every existing
+// series. Picks stay logged once per RULE (a top-5 basket is a prefix of the same rule's top-200).
+function ruleKey(c) {
   const normOp = op => ({ '<=': '<', '>=': '>' }[op] || op);
   const f = (c.filters || []).map(x => x.field + normOp(x.op) + x.val).sort().join(',');
   return [c.indexName || '', c.mcapFloor || 0, c.freq, c.sortBy, c.dir, c.lookback || 1, c.earnBasis || 'con', f].join('|');
 }
-// Variant identity within one strategy = window + rebalance method + stock count.
+// Variant identity within one strategy = window + rebalance method. (topN stays in the key too, so a
+// run that reaches a row via `sid` rather than config can never collide with a same-window run here.)
 function winKey(c) { return (c.start || '') + '|' + (c.method || '') + '|' + (c.topN != null ? c.topN : ''); }
 function windowEnd(c) { return (typeof SF !== 'undefined' && SF && SF.end) ? SF.end : (c.end || 'today'); }
 let HIST = [];                 // shared backtest history — used only to look up each saved window's metrics
@@ -211,27 +222,25 @@ function backtestsFor(savedVars, sidSet) {
   };
   // A run belongs here if it carries this strategy's id (sid — stamped on runs launched from the
   // strategy page; survives ✏️ edits of the config) OR its config matches the identity (legacy runs).
-  for (const h of HIST) if (h.cfg && ((h.sid && sidSet && sidSet.has(h.sid)) || identityKey(h.cfg) === k)) consider(h.id, h.cfg, h.label || h.name, h.m, h.ts);
+  // Both paths must also match this row's STOCK COUNT — the sid survives a ✏️ edit of topN, so without
+  // the guard a run re-launched at 200 stocks would list itself under the top-5 row.
+  const n0 = savedVars[0].cfg.topN != null ? savedVars[0].cfg.topN : '';
+  const sameN = c => (c.topN != null ? c.topN : '') === n0;
+  for (const h of HIST) if (h.cfg && sameN(h.cfg) && ((h.sid && sidSet && sidSet.has(h.sid)) || identityKey(h.cfg) === k)) consider(h.id, h.cfg, h.label || h.name, h.m, h.ts);
   for (const v of savedVars) consider(v.id, v.cfg, v.name, metricsFor(v.cfg), v.ts);   // safety net for saved windows
   return [...byWin.values()].sort((a, b) => (a.cfg.start || '').localeCompare(b.cfg.start || '') || (a.cfg.method || '').localeCompare(b.cfg.method || '') || ((a.cfg.topN || 0) - (b.cfg.topN || 0)));
 }
-// Headline CAGR for the column + sort. Per STOCK-COUNT variant we take its LONGEST-window run (so a
-// short lucky window can't inflate that variant), then use the BEST variant as the group's headline.
-// Without the per-variant split, merging counts (top-3/5/50 into one row) would let one variant's long
-// but weak window (e.g. a top-5 11-yr run at 24%) bury another variant's strong full period (top-3 at
-// 74%) — the headline would collapse even though the strategy at its best count is excellent.
+// Headline CAGR for the column + sort = this strategy's LONGEST-window run, so a short lucky window
+// can't inflate it. (Stock counts are their own rows since 2026-08-03, so there are no longer variants
+// to reconcile here — every run in `list` is the same rule at the same count.)
 function canonicalCagr(list) {
-  const byN = new Map();                                   // topN -> {dur, cagr} of that variant's longest-window run
+  let best = null;                                         // longest window wins; equal windows → higher CAGR
   for (const b of list) {
     const m = b.m || {}, c = b.cfg; if (m.cagr == null) continue;
     const dur = (c.start && c.end) ? (Date.parse(c.end) - Date.parse(c.start)) : 0;
-    const key = c.topN != null ? c.topN : '';
-    const prev = byN.get(key);
-    if (!prev || dur > prev.dur || (dur === prev.dur && m.cagr > prev.cagr)) byN.set(key, { dur, cagr: m.cagr });
+    if (!best || dur > best.dur || (dur === best.dur && m.cagr > best.cagr)) best = { dur, cagr: m.cagr };
   }
-  let best = null;
-  for (const v of byN.values()) if (best == null || v.cagr > best) best = v.cagr;
-  return best != null ? best : -Infinity;
+  return best ? best.cagr : -Infinity;
 }
 function detailCard(b) {
   const c = b.cfg, m = b.m || {};
@@ -256,7 +265,15 @@ function detailCard(b) {
 }
 function loadFavs() { try { return new Set(JSON.parse(localStorage.getItem('bt_fav_strategies') || '[]')); } catch(e) { return new Set(); } }
 function saveFavs(s) { localStorage.setItem('bt_fav_strategies', JSON.stringify([...s])); }
-function toggleFav(k) { const s = loadFavs(); s.has(k) ? s.delete(k) : s.add(k); saveFavs(s); render(); }
+// Stars saved BEFORE the stock-count split carry the rule-only key, so honour both forms — otherwise
+// every existing favourite silently un-stars itself the day this ships. A legacy star lights up every
+// count of its rule; un-starring clears both forms so the star actually turns off.
+function isFav(favs, c) { return favs.has(identityKey(c)) || favs.has(ruleKey(c)); }
+function toggleFav(k) {
+  const s = loadFavs(), legacy = k.replace(/\|[^|]*$/, '');   // strip the trailing |topN → pre-split key
+  if (s.has(k) || s.has(legacy)) { s.delete(k); s.delete(legacy); } else s.add(k);
+  saveFavs(s); render();
+}
 
 let VIEW = 'best';   // 'best' = Best return (over the selected wave, from snapshot), 'new', 'fav', 'custom'
 const CUSTOM = new Map();   // identityKey -> {cagr, ret, maxDD, finalV, start, end} for the active window (wave or custom)
@@ -265,6 +282,16 @@ let BEST_WAVE = 'w1';       // which market-cycle wave the Best-return tab is sh
 let WAVE_SNAP = null;       // { date, w1:{start,end,topN,results:{idKey:{ret,cagr,maxDD,topN}}}, w2, w3, cycle }
 // True when the list should show per-window RETURN results (Custom tab, or Best tab with a wave loaded).
 function windowMode() { return VIEW === 'custom' || (VIEW === 'best' && CUSTOM_WIN && CUSTOM_WIN.wave && CUSTOM.size > 0); }
+// This row's result in the active window. Snapshots baked BEFORE the stock-count split are keyed by the
+// rule alone, so their numbers would all read "no data" until the next bake. Each stored row records the
+// `topN` it was computed at, so a pre-split entry is attached ONLY to the row with that exact count —
+// a 200-stock return must never be shown on the 5-stock row (that mix-up is what this split fixes).
+function waveResult(c) {
+  const hit = CUSTOM.get(identityKey(c));
+  if (hit) return hit;
+  const legacy = CUSTOM.get(ruleKey(c)), n = c.topN != null ? c.topN : null;
+  return (legacy && n != null && legacy.topN === n) ? legacy : null;
+}
 // Load a wave's precomputed results (from the snapshot) into CUSTOM so render() shows them. Returns false if absent.
 function loadWaveIntoCustom(key) {
   const w = WAVE_SNAP && WAVE_SNAP[key];
@@ -330,13 +357,13 @@ function render() {
   const favs = loadFavs();
   // sort: 'new' = most-recently-saved; 'custom' = by the computed custom-window CAGR (uncomputed sink to the bottom); else headline CAGR
   const wmode = windowMode();
-  const cKey = g => { const r = CUSTOM.get(identityKey(g.rep.cfg)); return (r && r.cagr != null) ? r.ret : -Infinity; };
+  const cKey = g => { const r = waveResult(g.rep.cfg); return (r && r.cagr != null) ? r.ret : -Infinity; };
   let rows = [...groups.values()].sort((a, b) =>
     VIEW === 'new' ? ((b.rep.ts || 0) - (a.rep.ts || 0)) :
     wmode          ? (cKey(b) - cKey(a)) :
                      (b.cagr - a.cagr));
   if (VIEW === 'fav') {
-    rows = rows.filter(g => favs.has(identityKey(g.rep.cfg)));
+    rows = rows.filter(g => isFav(favs, g.rep.cfg));
     if (!rows.length) {
       $('list').innerHTML = '<div class="card p-8 text-center text-slate-400 text-sm">No favourites yet. Click ☆ on any strategy to add it here.</div>';
       return;
@@ -357,7 +384,7 @@ function render() {
     const countLabel = (counts.length ? counts.join('/') : c.topN) + ' stocks';
     let cagrCell = isFinite(best) ? `<span class="font-bold ${best >= 0 ? 'pos' : 'neg'}">${pct(best)}</span>` : '<span class="text-slate-400">—</span>';
     if (wmode) {
-      const cr = CUSTOM.get(identityKey(c));
+      const cr = waveResult(c);
       cagrCell = cr && cr.cagr != null
         ? `<span class="font-bold ${cr.ret >= 0 ? 'pos' : 'neg'}">${pct(cr.ret)}</span>
            <span class="block text-[10px] text-slate-400 mt-0.5">CAGR ${pct(cr.cagr)} · DD -${cr.maxDD.toFixed(1)}%${cr.topN != null ? ` · top-${cr.topN}` : ''}</span>`
@@ -375,7 +402,7 @@ function render() {
         </div>
       </td>
       <td class="px-3 py-3 text-right text-sm whitespace-nowrap">${cagrCell}</td>
-      <td class="px-2 py-3 text-center"><button class="text-base leading-none transition" data-favtoggle="${esc(identityKey(c))}" title="${favs.has(identityKey(c)) ? 'Remove from favourites' : 'Add to favourites'}">${favs.has(identityKey(c)) ? '⭐' : '☆'}</button></td>
+      <td class="px-2 py-3 text-center"><button class="text-base leading-none transition" data-favtoggle="${esc(identityKey(c))}" title="${isFav(favs, c) ? 'Remove from favourites' : 'Add to favourites'}">${isFav(favs, c) ? '⭐' : '☆'}</button></td>
       ${OWNER ? `<td class="px-2 py-3 text-center whitespace-nowrap"><button class="text-slate-300 hover:text-red-500 text-sm" data-delgroup="${esc(identityKey(c))}" title="Delete strategy">🗑️</button></td>` : ''}
     </tr>`;
   }).join('');
@@ -862,10 +889,13 @@ async function runLogPicks(){
     if (!window.swSync) throw new Error('swSync never loaded');
     say('loading engine + market data…');
     await ensureEngine();
-    const byId = {};                                                   // canonical variant per identity = longest window
+    // Canonical variant per RULE (ruleKey, not identityKey) = longest window. Deliberately rule-level,
+    // not per stock count: the sid logged to sw_picks_log is 'st'+hash36(this key), so switching it to
+    // the split key would orphan every tracking series ever recorded. One rule → one logged basket.
+    const byId = {};
     for (const s of strategies()){
       if (!s || !s.cfg) continue;
-      const k = identityKey(s.cfg);
+      const k = ruleKey(s.cfg);
       if (!byId[k] || (s.cfg.start || '9999') < (byId[k].cfg.start || '9999')) byId[k] = s;
     }
     const ids = Object.keys(byId), day = SF.end;

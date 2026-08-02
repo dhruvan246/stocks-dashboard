@@ -151,20 +151,20 @@ function rowsAt(cfg, date) {
   }
   return r;
 }
-/* Identity = the SELECTION RULE, matching saved-strategies.html so BOTH PAGES COUNT THE SAME.
- * Excludes `method` (execution-only), start/end (the window) and `topN` (the stock count is a
- * variation) — a strategy saved at 3, 5 and 10 stocks is ONE strategy. `<`≡`<=` and `>`≡`>=` so a
+/* Identity = the SELECTION RULE AT ONE STOCK COUNT, matching saved-strategies.html so BOTH PAGES COUNT
+ * THE SAME. Excludes `method` (execution-only) and start/end (the window); INCLUDES `topN` — the same
+ * rule saved at 5 and at 200 stocks is two strategies with two baskets. `<`≡`<=` and `>`≡`>=` so a
  * boundary-only difference doesn't split a rule in two.
  * KEEP IN SYNC with saved-strategies.html's identityKey(); a drift here shows a different strategy
  * count on the two pages, which is exactly the bug this fixes. */
 function identityKey(c) {
   const normOp = op => ({ '<=': '<', '>=': '>' }[op] || op);
   const f = (c.filters || []).map(x => x.field + normOp(x.op) + x.val).sort().join(',');
-  return [c.indexName || '', c.mcapFloor || 0, c.freq, c.sortBy, c.dir, c.lookback || 1, c.earnBasis || 'con', f].join('|');
+  return [c.indexName || '', c.mcapFloor || 0, c.freq, c.sortBy, c.dir, c.lookback || 1, c.earnBasis || 'con', f,
+          (c.topN != null ? c.topN : '')].join('|');
 }
-// Collapse saved variants onto one entry per rule. The variants differ only in topN, and since the
-// ranking is identical the smaller baskets are PREFIXES of the larger one — so showing the biggest
-// topN shows every variant at once, and the rank numbers say where a smaller one stops.
+// One entry per saved strategy. Stock counts are part of the identity, so each count already gets its
+// own card — this now only dedups repeat saves of the SAME rule+count (keeping the newest).
 function groupByIdentity(list) {
   const by = new Map();
   for (const s of list) {
@@ -172,8 +172,6 @@ function groupByIdentity(list) {
     const g = by.get(k);
     if (!g) { by.set(k, { rep: s, counts: new Set([s.cfg.topN || 5]) }); continue; }
     g.counts.add(s.cfg.topN || 5);
-    // Represent the rule by the variant saved MOST RECENTLY — the stock count you last worked at.
-    // (Taking the widest instead would render a 50-stock card for a rule also saved at 5.)
     if ((s.ts || 0) > (g.rep.ts || 0)) g.rep = s;
   }
   return [...by.values()].map(g => ({

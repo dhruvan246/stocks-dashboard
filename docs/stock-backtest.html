@@ -404,12 +404,14 @@ function stratIdentity(c){
 }
 // "Is this strategy already in the Saved Strategies list?" — used to hide a duplicate Save button
 // (a saved strategy re-opened & re-run should NOT re-offer "Save as Strategy"). Mirrors identityKey()
-// in saved-strategies.html: excludes the date window AND topN (a row groups its stock-count variants),
-// and treats `<`≡`<=` / `>`≡`>=` so a boundary-only difference isn't seen as a new strategy.
+// in saved-strategies.html: excludes the date window, INCLUDES topN (each stock count is its own saved
+// strategy there), and treats `<`≡`<=` / `>`≡`>=` so a boundary-only difference isn't a new strategy.
+// Including topN is what re-offers "Save as Strategy" when you re-run a saved rule at a new count —
+// that count needs its own row, and its own wave return.
 function savedIdentity(c){
   const normOp=op=>({'<=':'<','>=':'>'}[op]||op);
   const f=(c.filters||[]).map(x=>x.field+normOp(x.op)+x.val).sort().join(',');
-  return [c.indexName||'', c.mcapFloor||0, c.freq, c.sortBy, c.dir, c.lookback||1, c.earnBasis||'con', f].join('|');
+  return [c.indexName||'', c.mcapFloor||0, c.freq, c.sortBy, c.dir, c.lookback||1, c.earnBasis||'con', f, (c.topN!=null?c.topN:'')].join('|');
 }
 function isAlreadySaved(cfg){
   try{ const k=savedIdentity(cfg); return loadLS('bt_strategies').some(x=>x&&x.cfg&&savedIdentity(x.cfg)===k); }catch(e){ return false; }

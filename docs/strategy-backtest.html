@@ -70,9 +70,12 @@ let STRAT = null;  // the strategy this page shows
 // --- identity + backtest lookup: IDENTICAL semantics to saved-strategies.html so a strategy
 //     resolves to exactly the same set of runs there and here. ---
 // Identity + variant keys: IDENTICAL semantics to saved-strategies.html so this page shows exactly the
-// runs that the merged Saved-Strategies row represents. Excludes topN (stock count is a variation) and
-// normalizes boundary operators (<≡<=, >≡>=); the variant key (winKey) carries start+method+topN.
-function identityKey(c) {
+// runs that the Saved-Strategies row represents. INCLUDES topN (each stock count is its own strategy
+// row) and normalizes boundary operators (<≡<=, >≡>=); the variant key (winKey) carries start+method.
+function identityKey(c) { return ruleKey(c) + '|' + (c.topN != null ? c.topN : ''); }
+// The rule without the stock count — live-picks sids are derived from THIS (see the live_tracking
+// lookup in boot), so they stay attached to the rule across the stock-count split.
+function ruleKey(c) {
   const normOp = op => ({ '<=': '<', '>=': '>' }[op] || op);
   const f = (c.filters || []).map(x => x.field + normOp(x.op) + x.val).sort().join(',');
   return [c.indexName || '', c.mcapFloor || 0, c.freq, c.sortBy, c.dir, c.lookback || 1, c.earnBasis || 'con', f].join('|');
@@ -100,7 +103,12 @@ function backtestsFor(savedVars, sidSet) {
     const prev = byWin.get(wk);
     if (!prev || score > prev._score) byWin.set(wk, { id, cfg: c, name, m: m || {}, _score: score });
   };
-  for (const h of HIST) if (h.cfg && ((h.sid && sidSet && sidSet.has(h.sid)) || identityKey(h.cfg) === k)) consider(h.id, h.cfg, h.label || h.name, h.m, h.ts);
+  // Both paths must match this strategy's STOCK COUNT: the sid survives a ✏️ edit of topN, so without
+  // the guard a run re-launched at a different count would list itself under this one (same as
+  // saved-strategies.html's backtestsFor).
+  const n0 = savedVars[0].cfg.topN != null ? savedVars[0].cfg.topN : '';
+  const sameN = c => (c.topN != null ? c.topN : '') === n0;
+  for (const h of HIST) if (h.cfg && sameN(h.cfg) && ((h.sid && sidSet && sidSet.has(h.sid)) || identityKey(h.cfg) === k)) consider(h.id, h.cfg, h.label || h.name, h.m, h.ts);
   for (const v of savedVars) consider(v.id, v.cfg, v.name, metricsFor(v.cfg), v.ts);
   return [...byWin.values()].sort((a, b) => (b.m && b.m.cagr != null ? b.m.cagr : -1e9) - (a.m && a.m.cagr != null ? a.m.cagr : -1e9) || (a.cfg.start || '').localeCompare(b.cfg.start || ''));
 }
@@ -497,10 +505,11 @@ function renderNotFound() {
   const savedVars = all.filter(s => identityKey(s.cfg) === k);
   if (!savedVars.some(s => s.id === strat.id)) savedVars.push(strat);
   const sidSet = new Set(savedVars.map(s => s.id));
-  // baked basket for the instant Live-Picks paint (tiny json; sid there = 'st'+hash36(identity))
+  // baked basket for the instant Live-Picks paint (tiny json; sid there = 'st'+hash36(RULE key — the
+  // logger keys picks per rule, not per stock count, so use ruleKey here or nothing ever matches)
   try {
     const trk = await (await fetch('./live_tracking.json')).json();
-    const tsid = 'st' + hash36(k);
+    const tsid = 'st' + hash36(ruleKey(strat.cfg));
     const t = (trk.strategies || []).find(s => s.sid === tsid);
     if (t && t.latest) BAKED = { day: t.latest.day, picks: t.latest.picks || [], updated: trk.updated };
   } catch (e) {}
