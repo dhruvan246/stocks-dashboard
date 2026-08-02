@@ -36,7 +36,13 @@
     head('meta', { name: 'apple-mobile-web-app-status-bar-style', content: 'default' });
     head('meta', { name: 'apple-mobile-web-app-title', content: 'STOCKSWORLD' });
     setThemeColor(norm(saved()));
-    if ('serviceWorker' in navigator) {
+    // HEADLESS CI MODES (?bakewaves=1, ?logpicks=1) get NO service worker. Each CI batch runs in a
+    // FRESH browser, so the SW always installs from scratch there: sw.js calls skipWaiting() +
+    // clients.claim(), which fires controllerchange and reloads the page — killing the long-running
+    // job ~30s in, every single batch, forever. That is what stopped the 6.3-yr `cycle` wave from ever
+    // finishing (it sat at 27/45 while w1/w2/w3 squeaked through). Real visitors are unaffected.
+    var ciMode = /[?&](bakewaves|logpicks)=/.test(location.search);
+    if ('serviceWorker' in navigator && !ciMode) {
       // When a new SW activates and claims the page (after a shell bump), reload once so the
       // installed app immediately swaps in the fresh (mobile-responsive) pages instead of the
       // stale cached desktop layout. Guarded so it only ever reloads a single time.
