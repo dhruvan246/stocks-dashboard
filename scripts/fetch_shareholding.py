@@ -136,29 +136,37 @@ def save_hist(h):
                 time.sleep(1 + i)
         os.replace(tmp, HIST)  # last try — surface the error if it truly won't release
 
-# Coverage campaign STEP 5: BSE-sourced backfill for 2016-03..2019-06, the window the NSE master
-# API (fetch_master, below) can't reach — it only ever serves a recent rolling window, never
-# historical quarters (confirmed: querying it for 2016-2019 quarter-ends returns 0 rows even
-# though those quarters plainly have filings). Built by scripts/fetch_shp_bse_hist.py from BSE's
-# SHPQNewFormat quarter-list + XBRL (same in-bse-shp taxonomy/concept names as NSE's, parsed by
-# the SAME parse_shp() above). Fill-only, idempotent — safe to call every run.
-BSE_HIST_LEDGER = os.path.join(HERE, "shp_fill_hist_2016_2019.json.gz")
+# Coverage campaign STEP 5: historical backfills the NSE master API (fetch_master, below) can't
+# reach — it only ever serves a recent rolling window, never historical quarters (confirmed:
+# querying it for old quarter-ends returns 0 rows even though those quarters plainly have filings).
+# Ledgers, applied fill-only in ORDER (earlier ledgers win where quarters overlap), idempotent:
+#   1. shp_fill_hist_2016_2019.json.gz — BSE SHPQNewFormat XBRL (fetch_shp_bse_hist.py). Real
+#      per-filing dates. 2016-03..2019-06.
+#   2. shp_fill_hist_2010_2016.json.gz — Wayback-archived Moneycontrol Clause-35 pages
+#      (fetch_shp_wayback_mc.py). 2010-12..2016-03. ⚠ sub-dates are the QE+21d SEBI-deadline
+#      CONVENTION (no real dates exist anywhere — BSE deleted them); each cell carries the
+#      approx tag in the ledger's provenance slot, dropped on merge like the scripcode tag.
+BSE_HIST_LEDGERS = [os.path.join(HERE, "shp_fill_hist_2016_2019.json.gz"),
+                    os.path.join(HERE, "shp_fill_hist_2010_2016.json.gz")]
 def apply_bse_hist_ledger(h):
-    if not os.path.exists(BSE_HIST_LEDGER): return 0
-    try:
-        with gzip.open(BSE_HIST_LEDGER, "rt", encoding="utf-8") as fh:
-            fills = json.load(fh).get("fills", {})
-    except Exception as e:
-        print("BSE hist ledger unreadable (%s) — skipped" % e); return 0
-    n = 0
-    for sym, qs in fills.items():
-        dest = h.setdefault(sym, {})
-        for qe, cell in qs.items():
-            if qe in dest: continue   # fill-only — never overwrite an existing cell
-            dest[qe] = cell[:7] if cell[6] is not None else cell[:6]   # drop the ledger-only "scripcode:qtrid" provenance tag (cell[7])
-            n += 1
-    if n: print("shp_fill_hist_2016_2019.json.gz applied: %d cells" % n)
-    return n
+    n_total = 0
+    for path in BSE_HIST_LEDGERS:
+        if not os.path.exists(path): continue
+        try:
+            with gzip.open(path, "rt", encoding="utf-8") as fh:
+                fills = json.load(fh).get("fills", {})
+        except Exception as e:
+            print("%s unreadable (%s) — skipped" % (os.path.basename(path), e)); continue
+        n = 0
+        for sym, qs in fills.items():
+            dest = h.setdefault(sym, {})
+            for qe, cell in qs.items():
+                if qe in dest: continue   # fill-only — never overwrite an existing cell
+                dest[qe] = cell[:7] if cell[6] is not None else cell[:6]   # drop the ledger-only provenance tag (cell[7])
+                n += 1
+        if n: print("%s applied: %d cells" % (os.path.basename(path), n))
+        n_total += n
+    return n_total
 
 # ------------------------------------------------------------------ NSE fetch
 def fetch_master(jar, qe_iso):
