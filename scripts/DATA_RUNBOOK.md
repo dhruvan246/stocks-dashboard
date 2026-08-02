@@ -2542,9 +2542,13 @@ A `Delivery % >= 60` backtest from 2003 qualified ZERO stocks before ~2020 and d
 The user found it by running a backtest; no monitor, test, or verification step had noticed.
 
 **The fix that is now in place (don't regress it):**
-1. `split_sf_data.py` writes `sf_meta.json = {"end":…, "rev": sha1(part1+part2)[:10]}` — a fingerprint
-   of the PUBLISHED BYTES, so it changes on any content change and only on a content change (never a
-   per-run timestamp: that would force every client to re-download ~115 MB daily for nothing).
+1. `split_sf_data.py` writes `sf_meta.json = {"end":…, "rev": sha1(payload1+payload2)[:10]}` — a
+   fingerprint of the **uncompressed** data, so it changes on any content change and ONLY on one.
+   ⚠️ It hashed the *gzip bytes* for the first few hours and that was wrong: `gzip.compress` stamps
+   the current time into its header, so two rebuilds of identical data produced different revs and
+   would have made every client re-download ~115 MB for nothing (caught by diffing two published
+   parts: same size, same payload sha1, different header bytes 4-7). The parts are now written with
+   `mtime=0` as well, so an unchanged rebuild is byte-identical and ETag/CDN-friendly.
 2. `backtest-engine.js` **and** `stock-backtest.html` — which carries **its own copy of `loadSF`**;
    patch BOTH, always — key the cache on `end + ':' + rev`, degrading to end-only if `rev` is absent.
 3. `sw.js` CACHE bump, or the new loader never reaches anybody.

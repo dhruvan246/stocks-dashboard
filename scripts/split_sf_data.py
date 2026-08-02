@@ -29,16 +29,21 @@ def main():
         obj = dict(other)
         obj["data"] = {s: D["data"][s] for s in grp}
         obj["meta"] = {s: meta[s] for s in grp if s in meta}
-        raw = gzip.compress(json.dumps(obj, separators=(",", ":")).encode(), 9)
+        payload = json.dumps(obj, separators=(",", ":")).encode()
+        fp.update(payload)          # fingerprint the DATA, before compression (see the rev note below)
+        # mtime=0: gzip stamps the CURRENT TIME into its header by default, so byte-identical data
+        # compressed twice produced different files. Pinning it keeps the published file byte-stable,
+        # which also lets HTTP ETags/CDNs treat an unchanged rebuild as genuinely unchanged.
+        raw = gzip.compress(payload, 9, mtime=0)
         open(os.path.join(OUT, "sf_stock_data_%d.bin" % part), "wb").write(raw)
-        fp.update(raw)
         print("part %d: %d symbols, %.1f MB" % (part, len(grp), len(raw) / 1048576), flush=True)
     # CONTENT fingerprint, not just `end`: a heal/backfill run (e.g. the delivery-% ledgers) rewrites
     # history WITHOUT advancing `end`, and the browser keys its IndexedDB copy of these 100+ MB parts
     # on this file. Keyed on `end` alone, every client that had already cached the day kept serving
     # the PRE-heal bytes forever — the 2002-2019 delivery backfill was invisible on the site until the
-    # next new trading day. `rev` changes whenever the published bytes change, so clients re-download
-    # exactly when the data really changed and not one day sooner.
+    # next new trading day. `rev` hashes the PAYLOAD, not the gzip container (whose header carries a
+    # timestamp — hashing the compressed bytes made rev change on every rebuild, which would have made
+    # every client re-download ~115 MB for identical data). So it changes exactly when the data does.
     rev = fp.hexdigest()[:10]
     json.dump({"end": D["end"], "rev": rev}, open(os.path.join(OUT, "sf_meta.json"), "w"))
     print("split done; end=%s rev=%s" % (D["end"], rev), flush=True)
