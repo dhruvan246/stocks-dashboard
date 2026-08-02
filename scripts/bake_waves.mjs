@@ -21,8 +21,13 @@ const SESSION  = process.env.GITHUB_RUN_ID || String(Date.now());
 const BAKE_URL = `${BASE}/saved-strategies.html?bakewaves=1&session=${SESSION}`;
 
 const PAGES_WAIT_MS = 8 * 60 * 1000;    // max wait for both GitHub Pages deploys to publish the new data date
-const BAKE_WAIT_MS  = 40 * 60 * 1000;   // overall budget across all batches (the 6-yr cycle wave is ~40s/strategy)
-const PER_ITER_MS   = 9 * 60 * 1000;    // per-batch wait (one fresh browser before it's killed/finishes)
+// Overall budget across all batches. Cost ≈ strategies × total window-years × ~6s: the four waves span
+// 1.5 + 1.5 + 0.35 + 6.3 ≈ 9.7 years, so ~47 strategies ≈ 48 min of pure compute, plus a fresh browser
+// per batch re-downloading the engine + market data. At 40 min the `cycle` wave — baked LAST and by far
+// the longest window — never finished: it was left as `pending` and the tab kept serving older numbers.
+// (Stock counts became separate rows on 2026-08-03, taking 35 strategies to 47, so this got tighter.)
+const BAKE_WAIT_MS  = 70 * 60 * 1000;   // must stay under the job's timeout-minutes, minus ~5 min of setup
+const PER_ITER_MS   = 15 * 60 * 1000;   // per-batch wait; longer batches = fewer engine re-downloads
 const MAX_ITERS     = 14;               // reload in a fresh browser this many times at most (each resumes)
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));

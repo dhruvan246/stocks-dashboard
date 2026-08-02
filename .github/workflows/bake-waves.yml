@@ -27,7 +27,9 @@ jobs:
     # Manual runs always; auto runs only after the upstream refresh actually SUCCEEDED.
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 55
+    # Must exceed BAKE_WAIT_MS (70 min) + Playwright install + the Pages wait, or the runner kills the job
+    # mid-bake and the `cycle` wave never gets promoted. Public repo, so Actions minutes are free.
+    timeout-minutes: 90
     steps:
       - name: Checkout
         uses: actions/checkout@v5
