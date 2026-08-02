@@ -20,7 +20,11 @@ MARK = os.path.join(ROOT, "docs", ".sf_updated")
 RELEASE_URL = "https://github.com/dhruvan246/stocks-dashboard/releases/download/data/sf_stock_data.bin"
 
 sys.path.insert(0, HERE)
+# build_sf_data's module-level code parses sys.argv[1:] as its own START/DAILY_FROM dates — hide our
+# own args (e.g. --base) from it while importing, or it crashes trying to parse '--base' as a date.
+_argv = sys.argv; sys.argv = _argv[:1]
 import build_sf_data as B   # reuse fetch_day / parse_rows / jar (module-level code is harmless)
+sys.argv = _argv
 
 CA_FRACS = [1/2, 1/3, 2/3, 1/4, 3/4, 1/5, 2/5, 3/5, 1/6, 5/6, 1/8, 1/10, 1/20, 1/50,
             2.0, 3.0, 4.0, 5.0, 10.0]
