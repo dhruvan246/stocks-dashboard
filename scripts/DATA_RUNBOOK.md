@@ -120,9 +120,24 @@ Pipeline (the workflow, in order — to run by hand do the same):
    Full fix sweep for a confirmed pair (MANUAL_MERGE + fundamentals key-move + fno/membership/side-files):
    **§30**. Note the ISIN may be UNCHANGED yet still strand the history — GUJENERGY's day-1 bhavcopy row
    simply carried no ISIN, so the auto-merge had nothing to match on.
-4. `python3 scripts/split_sf_data.py` → force-push `sf_stock_data_1.bin`+`_2.bin`+`sf_meta.json` to the
+4. `python3 scripts/split_sf_data.py` → force-push `sf_stock_data_1.bin`..`_N.bin`+`sf_meta.json` to the
    **sf-data** Pages repo (secret `SF_DATA_TOKEN`). Browser loads from there (same origin, no CORS).
+   `N = ceil(total_gz / 95MB)` (currently 2; grows automatically as the dataset grows — 2026-08-02's
+   true-daily-since-2002 rebuild landed at 185MB/2 parts). Loaders (`backtest-engine.js` +
+   `stock-backtest.html`) read `sf_meta.json.parts` (default 2 if absent) instead of a hardcoded loop —
+   both must stay in sync (memory `feedback-backtest-engines-sync`).
 5. Commit ONLY `docs/sf_meta.json` (≈20-byte version marker) — clients re-download when `{end}` bumps.
+
+**Rebuilding the base from scratch** (e.g. changing `DAILY_FROM`, coverage-campaign STEP 3): a fresh
+`build_sf_data.py START DAILY_FROM` run produces an UN-merged bin (missing MANUAL_MERGE renames,
+MANUAL_RIGHTS, self-heal). Re-apply everything `update_sf_data.py` normally carries by running
+`python update_sf_data.py --base <path-to-fresh-bin>` — reads that file instead of fetching the
+release asset, then runs the same merge/heal/dv-fill pass. STOP-GATE before publishing: log shows
+MANUAL_MERGE lines (PATANJALI/RUCHI etc.), dv_fill counts (~6135 / ~1.7M), `end` not regressed vs the
+live release. A session can't `gh release upload` a 200+MB rebuilt bin directly (permission
+classifier) and can't commit it either (>100MB single-file git limit) — split it first
+(`split_sf_data.py`), push the parts to an orphan branch, and adopt via a one-shot workflow that joins
++ uploads + re-triggers this pipeline (pattern used 2026-08-02, workflow deleted after adoption).
 
 Trigger manually (today not in yet / missed run):
 - GitHub → Actions → **"Daily backtest data refresh"** → Run workflow, **or** `gh workflow run refresh-backtest-data.yml`,
