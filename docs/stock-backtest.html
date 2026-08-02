@@ -169,7 +169,9 @@ async function loadSF(){
     // release-asset path failed CORS; the >100MB single file couldn't be committed here.) Split into
     // 2 files (each <100MB); fetch+merge both, cache each in IndexedDB by version.
     const SF_BASE='https://dhruvan246.github.io/sf-data/';
-    let ver=''; try{ ver=(await (await fetch(SF_BASE+'sf_meta.json?t='+Date.now())).json()).end||''; }catch(e){}
+    // Cache version = end + CONTENT rev (see backtest-engine.js): a heal/backfill republishes these
+    // parts WITHOUT advancing `end`, so an end-only key served stale cached bytes indefinitely.
+    let ver=''; try{ const m=await (await fetch(SF_BASE+'sf_meta.json?t='+Date.now())).json(); ver=m.end?m.end+(m.rev?':'+m.rev:''):''; }catch(e){}
     const D={data:{}, meta:{}, end:'', start:''}; let cleared=false;
     for(let pi=1; pi<=2; pi++){
       let buf = ver ? await _sfGet('sfp'+pi+':'+ver) : null;

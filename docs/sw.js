@@ -6,7 +6,7 @@
  *     requests (the sf-data repo, Supabase, the live-quote Worker) — those stay network-only
  *     so data is always fresh and the cache never bloats.
  * Bump CACHE when the shell asset list changes. */
-const CACHE = 'sw-shell-v60';   // v60: delivery% now 2002+ (label in backtest-engine)
+const CACHE = 'sw-shell-v61';   // v61: sf cache key = end+rev (heal republishes without a date bump)
 const SHELL = [
   './', './index.html', './nse-bse-dashboard.html', './stock-backtest.html', './saved-strategies.html',
   './backtest-history.html', './strategy-backtest.html', './mutual-funds.html', './fii-dii.html',
