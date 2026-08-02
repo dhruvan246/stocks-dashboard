@@ -147,3 +147,26 @@ Progress log (append a line per completed step):
   new text, active SW cache key confirmed `sw-shell-v62` after 2 reloads, read_page on the live dropdown
   (both sortBy and the +Add-filter combobox) shows the exact ⚠ labels, no console errors on
   stock-backtest.html or saved-strategies.html.
+- 2026-08-02: STEP 3 done. DECISION-GATE answered: DAILY_FROM=2002-01-02 (recommended floor, not
+  1996 max-truth). Rebuilt docs/sf_stock_data.bin from scratch (worktree stocks-wt/daily-rebuild,
+  _bhav_cache copied over first — it's gitignored so a fresh worktree starts empty): 185MB gz, 4,441
+  symbols, end=2026-08-02. Merge pass (`update_sf_data.py --base <freshbin>`, new flag — found+fixed
+  an argv collision with build_sf_data's own module-level sys.argv parsing) STOP-GATE all green:
+  MANUAL_MERGE fired for PATANJALI/PCBL/RBA/LTM, ETERNAL/ZOMATO + all 12 other tripwire renames
+  verified merged with no orphan stubs, dv_fill 6,134 + dv_fill_hist 1,707,993 cells applied (at
+  build time), end not regressed vs live release. split_sf_data.py generalized to dynamic
+  `parts=ceil(total_gz/95MB)` (computed 2 this time) instead of a fixed 2; loaders in
+  backtest-engine.js + stock-backtest.html now read `sf_meta.json.parts`; sw.js v62→v63. Published
+  via a NEW pattern (rebuilt bin >100MB, can't be committed or `gh release upload`ed by a session):
+  split parts → orphan branch `rebuild-base` → one-shot `adopt-rebuilt-base.yml` (workflow_dispatch)
+  joins + uploads the release asset, then the session manually ran
+  `gh workflow run refresh-backtest-data.yml` itself (the workflow's OWN attempt to do this via
+  GITHUB_TOKEN gets HTTP 403 — the default token can't dispatch other workflows, only a session's
+  own gh auth can). That run split+force-pushed to sf-data successfully. Orphan branch + one-shot
+  workflow deleted after. Verified live: downloaded+parsed the live split parts (same facts as
+  local), network-log confirmed the real page fetches exactly 2 parts with the correct versioned
+  cache key, and called `ensureData()`+`simulate(cfg)` directly (bypassing `run()`'s wrapper, which
+  writes to the REAL shared Supabase-synced bt_strategies/bt_history — simulate() itself has no
+  side effects) for RSI(14)<30 2003-2017: 169/180 months produced real, sane picks. Full writeup +
+  two near-misses (shared-storage risk, a DATA_RUNBOOK.md concurrent-edit recovered via `git add -p`)
+  in memory `project-stocks-daily-bars-rebuild`.
