@@ -130,3 +130,9 @@ merged fill-only into the shp_engine builder via a tracked hist ledger (runbook 
 
 Progress log (append a line per completed step):
 - 2026-08-02: campaign file created; baseline table in memory `project-stocks-factor-coverage-audit`.
+- 2026-08-02: STEP 1 done (commit 661d413c). Nifty daily closes 2002-01-01→2011-12-30 fetched from
+  niftyindices.com, merged fill-only into docs/nifty.json (2,497 dates), 8-point STOP-GATE vs
+  index_monthly.json all exact, verified live. Re-audited `beta` coverage (N500 point-in-time, live
+  engine + live data): 2002-2011 was flat 0% → now 76.7%-98.9% by year (ramps up from 2002 as stocks
+  accrue 120d of history); 2012 also rose 89%→96.5% (partial-lookback-window side effect). Full
+  numbers + harness notes in memory `project-stocks-factor-coverage-audit`.
