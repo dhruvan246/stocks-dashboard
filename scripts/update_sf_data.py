@@ -216,7 +216,12 @@ def apply_manual_rights(data):
 
 def main():
     if os.path.exists(MARK): os.remove(MARK)
-    D = load_base()
+    if "--base" in sys.argv:
+        base_path = sys.argv[sys.argv.index("--base") + 1]
+        print("Base: local file %s" % base_path)
+        D = json.loads(gzip.decompress(open(base_path, "rb").read()))
+    else:
+        D = load_base()
     last = datetime.datetime.strptime(D["end"], "%Y-%m-%d").date()
     today = datetime.date.today()
     days = []

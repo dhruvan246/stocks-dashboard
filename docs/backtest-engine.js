@@ -98,15 +98,15 @@ async function _sfClear() { try { const db = await _sfdb(); await new Promise(re
 async function loadSF() {
   if (SF) return true;
   // Data lives in a dedicated same-origin repo (dhruvan246.github.io/sf-data/), force-pushed daily
-  // (no bloat), served from Pages — same origin, no CORS. Split into 2 files (<100MB each).
+  // (no bloat), served from Pages — same origin, no CORS. Split into sf_meta.json{parts} files (<95MB each).
   const SF_BASE = 'https://dhruvan246.github.io/sf-data/';
   // Cache version = end + CONTENT rev. A heal/backfill republishes the parts WITHOUT advancing
   // `end` (the 2002-2019 delivery backfill did exactly that), and keying on `end` alone pinned
   // every returning visitor to the stale cached bytes until the next trading day. `rev` is absent
   // on an older sf_meta.json — then this degrades to the previous end-only key.
-  let ver = ''; try { const m = await (await fetch(SF_BASE + 'sf_meta.json?t=' + Date.now())).json(); ver = m.end ? m.end + (m.rev ? ':' + m.rev : '') : ''; } catch (e) {}
+  let ver = '', parts = 2; try { const m = await (await fetch(SF_BASE + 'sf_meta.json?t=' + Date.now())).json(); ver = m.end ? m.end + (m.rev ? ':' + m.rev : '') : ''; parts = m.parts || 2; } catch (e) {}
   const D = { data: {}, meta: {}, end: '', start: '' }; let cleared = false;
-  for (let pi = 1; pi <= 2; pi++) {
+  for (let pi = 1; pi <= parts; pi++) {
     let buf = ver ? await _sfGet('sfp' + pi + ':' + ver) : null;
     if (!buf) {
       if (!cleared) { await _sfClear(); cleared = true; }

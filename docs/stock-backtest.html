@@ -167,17 +167,17 @@ async function loadSF(){
     // Data lives in a dedicated same-origin repo (dhruvan246.github.io/sf-data/), force-pushed daily
     // (no history bloat) and served from Pages — same origin as this page, so no CORS. (The earlier
     // release-asset path failed CORS; the >100MB single file couldn't be committed here.) Split into
-    // 2 files (each <100MB); fetch+merge both, cache each in IndexedDB by version.
+    // sf_meta.json{parts} files (each <95MB); fetch+merge all, cache each in IndexedDB by version.
     const SF_BASE='https://dhruvan246.github.io/sf-data/';
     // Cache version = end + CONTENT rev (see backtest-engine.js): a heal/backfill republishes these
     // parts WITHOUT advancing `end`, so an end-only key served stale cached bytes indefinitely.
-    let ver=''; try{ const m=await (await fetch(SF_BASE+'sf_meta.json?t='+Date.now())).json(); ver=m.end?m.end+(m.rev?':'+m.rev:''):''; }catch(e){}
+    let ver='', parts=2; try{ const m=await (await fetch(SF_BASE+'sf_meta.json?t='+Date.now())).json(); ver=m.end?m.end+(m.rev?':'+m.rev:''):''; parts=m.parts||2; }catch(e){}
     const D={data:{}, meta:{}, end:'', start:''}; let cleared=false;
-    for(let pi=1; pi<=2; pi++){
+    for(let pi=1; pi<=parts; pi++){
       let buf = ver ? await _sfGet('sfp'+pi+':'+ver) : null;
-      if(buf){ $('runMsg').textContent='Loading survivorship-free data (cached '+pi+'/2)…'; }
+      if(buf){ $('runMsg').textContent='Loading survivorship-free data (cached '+pi+'/'+parts+')…'; }
       else{
-        $('runMsg').textContent='Loading survivorship-free data (part '+pi+'/2)…';
+        $('runMsg').textContent='Loading survivorship-free data (part '+pi+'/'+parts+')…';
         if(!cleared){ await _sfClear(); cleared=true; }   // evict any older version
         const resp=await fetch(SF_BASE+'sf_stock_data_'+pi+'.bin?v='+(ver||Date.now()),{cache:'reload'});
         if(!resp.ok) throw new Error('HTTP '+resp.status+' part '+pi);
