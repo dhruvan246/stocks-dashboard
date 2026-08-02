@@ -38,6 +38,13 @@
     <button id="tabNew" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">🆕 New</button>
     <button id="tabCustom" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">🗓️ Custom period</button>
     <button id="tabFav" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">⭐ Favourites</button>
+    <!-- Membership (universe) picker — applies to EVERY tab: pick Nifty 500 and the list shows only
+         Nifty-500 strategies, pick F&O and only F&O ones. Options are built from the universes the
+         saved strategies actually use, with per-tab counts. -->
+    <div id="uniRow" class="flex items-center gap-1.5 w-full sm:w-auto sm:ml-auto">
+      <label for="uniSel" class="text-[11px] font-bold uppercase tracking-wide text-slate-500">Membership</label>
+      <select id="uniSel" title="Show only strategies built on this universe" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-semibold"></select>
+    </div>
   </div>
   <!-- Best-return market-cycle presets (shown only on the Best-return tab). Results are precomputed and
        stored as a Supabase snapshot, so clicking a wave loads instantly. -->
@@ -275,6 +282,36 @@ function toggleFav(k) {
   saveFavs(s); render();
 }
 
+/* ---------- membership (universe) filter — one picker, applies to EVERY tab ----------
+   A strategy's universe lives in cfg as `indexName` ('Nifty 500', '__FNO__', …) OR `mcapFloor`
+   (a turnover bucket) OR neither (all stocks) — the same three shapes stock-backtest.html's Universe
+   dropdown writes. uniKey() flattens those into one comparable string, exactly like uniValue()
+   on strategy-backtest.html. '*' is the sentinel for "every membership" — note '' is already a
+   real universe ("All stocks"), so it can't double as the show-everything value. */
+function uniKey(c) { return c.indexName ? c.indexName : (c.mcapFloor ? 'mcap:' + c.mcapFloor : ''); }
+function uniText(k) { return universeLabel(k.slice(0, 5) === 'mcap:' ? { mcapFloor: +k.slice(5) } : { indexName: k }); }
+// Display order: indices broad-to-narrow, then F&O, then turnover buckets ascending, then All stocks.
+const UNI_ORDER = ['Nifty 50', 'Nifty 100', 'Nifty 200', 'Nifty 500', 'Nifty Midcap 150', 'Nifty Smallcap 250', '__FNO__'];
+function uniRank(k) {
+  const i = UNI_ORDER.indexOf(k); if (i >= 0) return i;
+  if (k.slice(0, 5) === 'mcap:') return 100 + (+k.slice(5) || 0) / 1e9;
+  return 200;                                              // '' = All stocks, last
+}
+let UNI = localStorage.getItem('bt_uni_filter') || '*';    // sticky across tabs AND visits
+// Rebuild the picker from the universes present in `rows` (the CURRENT tab's set, before the universe
+// filter) so each option carries a count that means something on the tab you're looking at. The active
+// pick is always kept selectable even at 0, otherwise the <select> would silently jump to another value.
+function buildUniSelect(rows) {
+  const counts = new Map();
+  for (const g of rows) { const k = uniKey(g.rep.cfg); counts.set(k, (counts.get(k) || 0) + 1); }
+  if (UNI !== '*' && !counts.has(UNI)) counts.set(UNI, 0);
+  const keys = [...counts.keys()].sort((a, b) => uniRank(a) - uniRank(b) || a.localeCompare(b));
+  $('uniSel').innerHTML = `<option value="*">All memberships (${rows.length})</option>` +
+    keys.map(k => `<option value="${esc(k)}">${esc(uniText(k))} (${counts.get(k)})</option>`).join('');
+  $('uniSel').value = UNI;
+}
+function setUni(v) { UNI = v || '*'; localStorage.setItem('bt_uni_filter', UNI); render(); }
+
 let VIEW = 'best';   // 'best' = Best return (over the selected wave, from snapshot), 'new', 'fav', 'custom'
 const CUSTOM = new Map();   // identityKey -> {cagr, ret, maxDD, finalV, start, end} for the active window (wave or custom)
 let CUSTOM_WIN = null;      // {start,end,topN,wave?} the window CUSTOM currently holds
@@ -349,6 +386,8 @@ function buildGroups(items) {
 function render() {
   const items = strategies();
   const OWNER = !!(window.btSync && btSync.isOwner());   // only the owner sees delete controls
+  $('uniRow').classList.toggle('hidden', !items.length);   // paired with 'flex' like waveRow/customBar — a bare `hidden` loses to `flex`
+  $('uniRow').classList.toggle('flex', !!items.length);
   if (!items.length) {
     $('list').innerHTML = '<div class="card p-8 text-center text-slate-400 text-sm">No saved strategies yet. Run a backtest and click “⭐ Save as Strategy”.</div>';
     return;
@@ -365,7 +404,23 @@ function render() {
   if (VIEW === 'fav') {
     rows = rows.filter(g => isFav(favs, g.rep.cfg));
     if (!rows.length) {
+      buildUniSelect(rows);
+      $('list').className = '';
       $('list').innerHTML = '<div class="card p-8 text-center text-slate-400 text-sm">No favourites yet. Click ☆ on any strategy to add it here.</div>';
+      return;
+    }
+  }
+  // Membership filter — LAST, so the picker's counts describe this tab and the tab's own empty state
+  // ("no favourites yet") still wins over the narrower "none in this membership" one.
+  buildUniSelect(rows);
+  if (UNI !== '*') {
+    const all = rows.length;
+    rows = rows.filter(g => uniKey(g.rep.cfg) === UNI);
+    if (!rows.length) {
+      $('list').className = '';
+      $('list').innerHTML = `<div class="card p-8 text-center text-slate-400 text-sm">No <b>${esc(uniText(UNI))}</b> strategies in this tab.
+        <button id="uniClear" class="text-indigo-600 hover:underline font-semibold">Show all ${all}</button></div>`;
+      $('uniClear').onclick = () => setUni('*');
       return;
     }
   }
@@ -485,6 +540,10 @@ function setComputeUI(on, txt, frac) {
 // ~40s, so one batch may only finish a handful; saving per-strategy is what guarantees forward progress.
 async function computeWindow(from, to, topN, onProgress, sink, existing, onChunk) {
   const groups = [...buildGroups(strategies()).values()];
+  // Compute the membership you're LOOKING AT first (results stream in, so the visible list fills
+  // immediately); the rest still run afterwards, so switching membership later isn't blank. Stable
+  // sort keeps each partition's order. No-op for the headless wave bake — UNI is '*' there.
+  if (UNI !== '*') groups.sort((a, b) => (uniKey(b.rep.cfg) === UNI) - (uniKey(a.rep.cfg) === UNI));
   const out = existing ? Object.assign({}, existing) : {};
   let done = 0;
   if (sink) for (const k in out) sink.set(k, out[k]);
@@ -925,6 +984,7 @@ function wireUI() {
   $('tabNew').onclick    = () => setView('new');
   $('tabCustom').onclick = () => setView('custom');
   $('tabFav').onclick    = () => setView('fav');
+  $('uniSel').onchange   = () => setUni($('uniSel').value);
   // default the custom window to 2021-01-01 → today (Compute clamps to the data range)
   const t = new Date(), today = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
   if (!$('cFrom').value) $('cFrom').value = '2021-01-01';
