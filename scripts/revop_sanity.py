@@ -32,7 +32,14 @@ def revof(a):
 
 
 def main():
+    global OK
     dry = "--dry" in sys.argv
+    # reviewed allowlist: PAT-anchored as-filed reads for companies whose LATER scale collapsed
+    # (IBC-era UTTAMSTL/GAMMONIND class) — "established max" there reflects the dying years and
+    # the 4x rule misfires on healthy earlier quarters. The anchor already proved the scale:
+    # the page's NP/10 had to match the stored PAT for the cell to land at all.
+    okp = os.path.join(HERE, "sanity_ok.json")
+    OK = set(json.load(open(okp))) if os.path.exists(okp) else set()
     rv = json.load(open(RV))
     old = json.loads(subprocess.run(["git", "show", "HEAD:docs/sf_revop.json"],
                                     capture_output=True, text=True, cwd=ROOT).stdout or "{}")
@@ -66,8 +73,9 @@ def main():
                     and 0 <= a[1] < 0.05 * a[0] and a[1] < 20):
                 kill_con.append((s, qe, a[1], "junk-tiny-con(con %.2f < 5%% of std %.2f)" % (a[1], a[0])))
             if not wasold(s, qe):
-                # scale spike
-                if ref_max is not None and ref_max >= 20 and v > 4 * ref_max:
+                # scale spike (allowlisted cells exempt — see OK above)
+                if ref_max is not None and ref_max >= 20 and v > 4 * ref_max \
+                        and "%s|%s" % (s, qe) not in OK:
                     kill.append((s, qe, v, "scale-spike>4x-established-max(%.0f)" % ref_max))
                     continue
                 if v > 50:
