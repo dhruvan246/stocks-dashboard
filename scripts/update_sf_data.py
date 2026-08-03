@@ -54,6 +54,15 @@ LEGACY_FALSE_CA = [
     ("INDUSINDBK", 20250311),  # derivatives-accounting disclosure
     ("PAYTM", 20211118), ("PAYTM", 20211119),   # IPO listing crash
     ("IEX", 20250724),         # CERC market-coupling order
+    # 2026-08-03 full-series audit vs Yahoo-raw + official bhavcopies (memory:
+    # project-stocks-demerger-price-gap): five more crashes the >25%-drop inference had baked in
+    # as splits — each verified: NSE CA feed EMPTY +-10d, raw bhavcopy fall matches the factor.
+    ("SAMMAANCAP", 20190930),  # IBULHSGFIN -34.4% (Indiabulls crisis) read as 2/3
+    ("SAMMAANCAP", 20200319),  # IBULHSGFIN -33.7% (COVID) read as 2/3
+    ("YESBANK", 20190430),     # -29.2% Q4-loss shock read as 2/3
+    ("ZEEL", 20190125),        # -26.6% Essel-crisis Friday read as 3/4
+    ("DISHTV", 20190125),      # -33.2% same Friday read as 2/3
+    ("RELINFRA", 20190206), ("RELINFRA", 20190207),  # -32.1% then -28.3% read as 2/3 x 2/3
     # IPO listing-day pops mis-read as reverse-splits (keep the real move):
     ("ROUTE", 20200921), ("INDIGOPNTS", 20210202), ("MTARTECH", 20210315), ("GRINFRA", 20210719),
     ("NYKAA", 20211110), ("IREDA", 20231129), ("PREMIERENE", 20240903),

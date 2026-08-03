@@ -52,6 +52,9 @@ MANUAL_NOADJUST = {
     "INDUSINDBK": [20250311],   # derivatives-accounting disclosure
     "PAYTM": [20211118, 20211119],   # IPO listing-day crash
     "IEX": [20250724],          # CERC market-coupling order
+    # 2026-08-03 full-series audit: crashes mis-baked as splits (see update_sf_data LEGACY_FALSE_CA)
+    "SAMMAANCAP": [20190930, 20200319], "YESBANK": [20190430],
+    "ZEEL": [20190125], "DISHTV": [20190125], "RELINFRA": [20190206, 20190207],
     # --- IPO listing-day pops mis-read as reverse-splits (keep the real move) ---
     "ROUTE": [20200921], "INDIGOPNTS": [20210202], "MTARTECH": [20210315], "GRINFRA": [20210719],
     "NYKAA": [20211110], "IREDA": [20231129], "PREMIERENE": [20240903],
