@@ -23,6 +23,46 @@
    "stored_pat": 45.16
   }
  },
+ "ASTERDM": {
+  "20170630": {
+   "correct_pat": -22.67,
+   "correct_pat_con": null,
+   "defect": "stored std PAT is the Q1-FY19 value year-shifted into Q1-FY18 (IPO-cohort comparative misplacement). con slot poisoned by the same year-shift; true con comparatives chain to RESTATED FY18 con 281.69 vs originally-filed 266.61 => refused per as-originally-filed rule => nulled",
+   "source": "year-later filings' year-ago std columns, cross-proven: Q2FY18=-18.50 direct (Nov-2018 filing p10), Q3FY18=-22.50 direct (Feb-2019 filing p10), Q1FY18=-22.67 via BOTH H1FY18(-41.17)-Q2 AND 9MFY18(-63.67)-Q2-Q3; identity -22.67-18.50-22.50-23.52 == -87.19 audited FY18 (detres .50) EXACT. Std comparatives chain to the ORIGINAL audited total => not restated => acceptable",
+   "stored_pat": -12.63,
+   "stored_pat_con": 20.35
+  },
+  "20170930": {
+   "correct_pat": -18.5,
+   "correct_pat_con": null,
+   "defect": "stored std PAT is the Q2-FY19 value year-shifted into Q2-FY18. con slot poisoned by the same year-shift; true con comparatives chain to RESTATED FY18 con 281.69 vs originally-filed 266.61 => refused per as-originally-filed rule => nulled",
+   "source": "year-later filings' year-ago std columns, cross-proven: Q2FY18=-18.50 direct (Nov-2018 filing p10), Q3FY18=-22.50 direct (Feb-2019 filing p10), Q1FY18=-22.67 via BOTH H1FY18(-41.17)-Q2 AND 9MFY18(-63.67)-Q2-Q3; identity -22.67-18.50-22.50-23.52 == -87.19 audited FY18 (detres .50) EXACT. Std comparatives chain to the ORIGINAL audited total => not restated => acceptable",
+   "stored_pat": -10.61,
+   "stored_pat_con": 13.92
+  },
+  "20171231": {
+   "correct_pat": -22.5,
+   "correct_pat_con": null,
+   "defect": "stored std PAT is the Q3-FY19 value year-shifted into Q3-FY18. con slot poisoned by the same year-shift; true con comparatives chain to RESTATED FY18 con 281.69 vs originally-filed 266.61 => refused per as-originally-filed rule => nulled",
+   "source": "year-later filings' year-ago std columns, cross-proven: Q2FY18=-18.50 direct (Nov-2018 filing p10), Q3FY18=-22.50 direct (Feb-2019 filing p10), Q1FY18=-22.67 via BOTH H1FY18(-41.17)-Q2 AND 9MFY18(-63.67)-Q2-Q3; identity -22.67-18.50-22.50-23.52 == -87.19 audited FY18 (detres .50) EXACT. Std comparatives chain to the ORIGINAL audited total => not restated => acceptable",
+   "stored_pat": -2.81,
+   "stored_pat_con": 113.2
+  }
+ },
+ "BDL": {
+  "20170630": {
+   "correct_pat": 101.42,
+   "defect": "stored PAT is the Q1-FY19 value year-shifted into Q1-FY18; the FY-identity held only because stored Q2 was itself derived as H1-minus-poisoned-Q1 (compensating errors)",
+   "source": "direct year-ago std columns of BDL's FY19 filings (values in lakh /100): Q1FY18=101.42 (Jul-2018 filing p1 x1359), Q2FY18=83.89 (Nov-2018 filing p1 x1149); H1FY18=185.31 direct in BOTH filings == 101.42+83.89 EXACT; FY identity 101.42+83.89+6.18+336.66 == 528.15 audited (detres .50) EXACT. BDL is single-basis (std==con every quarter) so both slots heal to the same value",
+   "stored_pat": 81.82
+  },
+  "20170930": {
+   "correct_pat": 83.89,
+   "defect": "stored PAT was derived as true-H1FY18(185.31) minus the poisoned Q1(81.82) => compensating error; direct comparative shows 83.89",
+   "source": "direct year-ago std columns of BDL's FY19 filings (values in lakh /100): Q1FY18=101.42 (Jul-2018 filing p1 x1359), Q2FY18=83.89 (Nov-2018 filing p1 x1149); H1FY18=185.31 direct in BOTH filings == 101.42+83.89 EXACT; FY identity 101.42+83.89+6.18+336.66 == 528.15 audited (detres .50) EXACT. BDL is single-basis (std==con every quarter) so both slots heal to the same value",
+   "stored_pat": 103.49
+  }
+ },
  "BHARATFIN": {
   "20171231": {
    "correct_pat": 162.61,
