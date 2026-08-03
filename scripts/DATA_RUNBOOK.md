@@ -55,6 +55,17 @@ loads every session. (README.md is just a short pointer here — this file is th
 ---
 
 ## 0. GOLDEN RULES (the things that bite if forgotten)
+- **★ EVERY SUCCESS GETS WRITTEN HERE, IMMEDIATELY.** The moment a route/recipe/fix WORKS
+  (verified, not hoped), append it to this runbook in the same session — a new § for a new
+  route, or a line in the matching § for a refinement. Procedures live HERE; facts/state live
+  in memory. A success that isn't written down will be re-derived from scratch (and possibly
+  wrong) next time. This rule is user-mandated (2026-08-04). (memory: feedback-auto-persist-learnings)
+- **★ FILINGS COME IN THREE UNITS — test crore (÷1), million (÷10), AND LAKH (÷100) before
+  declaring a parse "refused".** Banks are RBI-mandated to file in lakh; misc 2017-era cos too.
+  An anchor gate makes wrong-scale acceptance impossible (both PAT anchors would miss by 100×),
+  so widening the hypothesis set is free — skipping ÷100 cost a full false-refusal pass over
+  the FY18 IPO cohort (BANDHANBNK/HAL/DIXON/IEX…) on 2026-08-03. Diagnose refusals from cached
+  OCR (`_rev_diag.py` pattern: dump ≥3-num rows + which gate failed), never accept one untriaged.
 - **Profit basis = OWNERS-ATTRIBUTABLE.** Backtest `npCon` (FUND index 3) = owners-attributable.
   Apply via `apply_owners_full.py`. ⚠️ **NEVER run `apply_total_pat.py`** (wrong basis). (memory: project-stocks-profit-basis)
 - **Fundamentals come from BSE filing PDFs + VISION** — not Screener, not OCR (OCR mangles digits). (memory: feedback-bse-pdfs-not-screener)
