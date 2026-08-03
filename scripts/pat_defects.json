@@ -81,12 +81,36 @@
    "stored_pat": 103.49
   }
  },
+ "BEDMUTHA": {
+  "20180630": {
+   "correct_pat_con": -14.06,
+   "defect": "year-shift duplicate (\u00a745 detector): CON slot held Jun-2019 con",
+   "source": "FourD year-ago comparative of INDAS_47752_131695_14082019114510_WEB.xml (Jun-2019 con filing); equals the Jun-2018 own std filing INDAS_39025 OneD -14.06 exactly (near-single-basis)",
+   "stored_pat_con": -16.01
+  }
+ },
  "BHARATFIN": {
   "20171231": {
    "correct_pat": 162.61,
    "defect": "stored value fails the series FY-coherence test (page series annual-exact, stored series off)",
    "source": "series-review 2026-08-02: as-filed bse-detres page value; page quarter-sums match the audited .50 annual EXACTLY for this FY while the stored series does not",
    "stored_pat": 192.96
+  }
+ },
+ "BLUEBLENDS": {
+  "20180630": {
+   "correct_pat_con": -1.61,
+   "defect": "year-shift duplicate (\u00a745 detector): CON slot held Jun-2019 con",
+   "source": "FourD year-ago comparative of INDAS_48279_134187_26082019021217_WEB.xml; equals the Jun-2018 own std filing INDAS_38887 OneD -1.61 exactly",
+   "stored_pat_con": -1.78
+  }
+ },
+ "BRFL": {
+  "20180630": {
+   "correct_pat_con": -342.02,
+   "defect": "year-shift duplicate (\u00a745 detector): CON slot held Jun-2019 con (Q1FY20 -506.55)",
+   "source": "FourD year-ago comparative of INDAS_48379_135493_07092019081423_WEB.xml (Q1 filing: YTD==current refuted, value coherent with own Jun-2018 std filing -339.21)",
+   "stored_pat_con": -506.55
   }
  },
  "CENTENKA": {
@@ -103,6 +127,20 @@
    "defect": "SIGN FLIP: stored +103.57, as-filed quarter is a LOSS of 103.57 (shipping write-off quarter); page eps recon confirms the negative",
    "source": "bse-detres 500085 q85 audited; eps recon",
    "stored_pat": 103.57
+  }
+ },
+ "CHENNPETRO": {
+  "20170930": {
+   "correct_pat_con": null,
+   "defect": "year-shift duplicate (\u00a745 detector): CON slot held a smeared value (23.61 also sits in Jun-2018/Sep-2018 con); CPCL published con only half-yearly pre-FY19 - Q2-FY18 con alone was never published",
+   "source": "detector \u00a745 + FY18 con neighbors 1/3; H1-FY18 con was a half-year figure, not this",
+   "stored_pat_con": 23.61
+  },
+  "20171231": {
+   "correct_pat_con": null,
+   "defect": "year-shift duplicate (\u00a745 detector): CON slot held Dec-2018's con (-362.99, own Dec-2018 con XBRL OneD matches stored late); no 9M-FY18 con filing existed",
+   "source": "Dec-2018 con XBRL INDAS_41839..._WEB_2.xml OneD -362.99 anchors the LATE year; nulled",
+   "stored_pat_con": -362.99
   }
  },
  "COX&KINGS": {
@@ -230,6 +268,14 @@
   },
   "_note": "GIC Re standalone Annexure-I, Rs-in-lakh /100. FY21 quarter PATs read off the filings are -557.47 / +230.05 / +987.42 / +1260.44, which sum to 1920.44 = the FY21 PAT printed in GIC Re's own FY21 'Summary of Revenue and Profit and Loss Account' (Rs crore) - so the four corrections below are self-consistent and independently confirmed. Stored Mar-20 (1197.41) and Jun-20 (-557.47) are CORRECT and were filled normally."
  },
+ "GUJAPOLLO": {
+  "20180630": {
+   "correct_pat_con": -0.73,
+   "defect": "year-shift duplicate (\u00a745 detector): CON slot held Jun-2019 con (+1.58; note sign vs own std -1.58)",
+   "source": "FourD year-ago comparative of INDAS_48359_135406_06092019083941_WEB.xml (Q1 structure; own Jun-2018 std filing prints -1.58)",
+   "stored_pat_con": 1.58
+  }
+ },
  "GUJNRECOKE": {
   "20150630": {
    "correct_pat": -56.34,
@@ -322,6 +368,40 @@
    "stored_pat": 33.34
   }
  },
+ "LEHAR": {
+  "20241231": {
+   "correct_pat": 2.18,
+   "defect": "year-shift duplicate (\u00a745 detector): value is the filing's LAKH figure stored as crore (x100); single-basis so both slots",
+   "source": "bse-detres 532829 qtr 124 Dec-2024 NP 21.79 rupees-M -> 2.18 cr, rev 66.92",
+   "stored_pat": 217.86
+  },
+  "20250331": {
+   "correct_pat": 5.04,
+   "defect": "year-shift duplicate (\u00a745 detector): value is the filing's LAKH figure stored as crore (x100)",
+   "source": "bse-detres 532829 qtr 125 Mar-2025 (Audited) NP -> 5.04 cr, rev 109.45; FY25 .50 annual 10.87 coheres with 2.18+5.04 H2",
+   "stored_pat": 504.15
+  },
+  "20250930": {
+   "correct_pat": 7.29,
+   "defect": "year-shift duplicate (\u00a745 detector): stored 582.76 lakh-as-crore matches NO filed figure; the Sep-2025 filing prints 7.29 cr",
+   "source": "bse-detres 532829 qtr 127 Sep-2025 NP -> 7.29 cr, rev 140.52",
+   "stored_pat": 582.76
+  },
+  "20251231": {
+   "correct_pat": 2.13,
+   "defect": "year-shift duplicate (\u00a745 detector): held Dec-2024's (itself x100-poisoned) value; true Dec-2025 as-filed 2.13",
+   "source": "bse-detres 532829 qtr 128 Dec-2025 NP -> 2.13 cr, rev 57.13",
+   "stored_pat": 217.86
+  }
+ },
+ "LMW": {
+  "20180930": {
+   "correct_pat_con": null,
+   "defect": "year-shift duplicate (\u00a745 detector): CON slot held Sep-2019 con; LMW published no quarterly con in FY19 (only Mar-2019 con exists in store, 1/3 neighbors) - no document for a true Sep-2018 con",
+   "source": "Sep-2019 con XBRL OneD 12.16 == stored (late anchored); FourD 22.63 == H1FY20 YTD exact; no year-ago context; nulled per as-originally-filed rule",
+   "stored_pat_con": 12.16
+  }
+ },
  "MCLEODRUSS": {
   "20150630": {
    "correct_pat": -23.22,
@@ -348,12 +428,28 @@
    "stored_pat": -117.77
   }
  },
+ "MIDHANI": {
+  "20170630": {
+   "correct_pat": 8.19,
+   "defect": "year-shift duplicate (\u00a745 detector): held Jun-2018's value (IPO-cohort: listed Apr-2018, Jun-2017 pre-listing); single-basis filer (std==con every row) so both slots heal",
+   "source": "FourD year-ago comparative of the Jun-2018 filing INDAS_38581_34213_11082018053643_WEB.xml; FY18 chain 8.19+19.11+26.48+77.48 == 131.26 detres .50 audited annual EXACT",
+   "stored_pat": 12.82
+  }
+ },
  "MODTHREAD": {
   "20170630": {
    "correct_pat": 1.27,
    "defect": "year-shift duplicate (\u00a745 detector): std slot held the adjacent year's value",
    "source": "detres",
    "stored_pat": 2.83
+  }
+ },
+ "NAGAFERT": {
+  "20180630": {
+   "correct_pat_con": -1.04,
+   "defect": "year-shift duplicate (\u00a745 detector): CON slot held Jun-2019 con (-113.17)",
+   "source": "FourD year-ago comparative of INDAS_47658_131388_13082019063108_WEB.xml; equals the Jun-2018 own std filing INDAS_37364 OneD -1.04 exactly",
+   "stored_pat_con": -113.17
   }
  },
  "NAM-INDIA": {
@@ -378,6 +474,14 @@
    "stored_pat": 5.24
   }
  },
+ "ORIENTHOT": {
+  "20180930": {
+   "correct_pat_con": null,
+   "defect": "year-shift duplicate (\u00a745 detector): CON slot held Sep-2019 con; Oriental Hotels published no FY19 quarterly con (0/3 neighbors) - no document for a true Sep-2018 con",
+   "source": "Sep-2019 con XBRL OneD -9.19 == stored; FourD -16.74 == H1FY20 YTD exact; no year-ago context; nulled",
+   "stored_pat_con": -9.19
+  }
+ },
  "PAISALO": {
   "20170930": {
    "correct_pat": 22.0,
@@ -386,12 +490,28 @@
    "stored_pat": 20.4
   }
  },
+ "PARACABLES": {
+  "20180630": {
+   "correct_pat_con": 3.28,
+   "defect": "year-shift duplicate (\u00a745 detector): CON slot held Jun-2019 con",
+   "source": "FourD year-ago comparative of INDAS_48306_134961_03092019054154_WEB.xml; equals the Jun-2018 own std filing INDAS_37911 OneD 3.28 exactly",
+   "stored_pat_con": 6.62
+  }
+ },
  "PENIND": {
   "20171231": {
    "correct_pat": 8.57,
    "defect": "year-shift duplicate (\u00a745 detector): std slot held the adjacent year's value",
    "source": "detres",
    "stored_pat": 11.49
+  }
+ },
+ "PIIND": {
+  "20180630": {
+   "correct_pat_con": 82.2,
+   "defect": "year-shift duplicate (\u00a745 detector): CON slot held Jun-2019 con (101.6; PI began con quarterly reporting FY20 - Jun-2018 con was first published as this comparative)",
+   "source": "FourD year-ago comparative of INDAS_46215_124979_25072019042934_WEB.xml (Q1 structure refutes YTD; coherent with own Jun-2018 std filing 81.7)",
+   "stored_pat_con": 101.6
   }
  },
  "RAJTV": {
@@ -582,6 +702,14 @@
    "defect": "year-shift duplicate (\u00a745 detector): std slot held the adjacent year's value",
    "source": "detres",
    "stored_pat": 4.99
+  }
+ },
+ "TECHNOE": {
+  "20180630": {
+   "correct_pat": 66.51,
+   "defect": "year-shift duplicate (\u00a745 detector): std slot held Jun-2019 std",
+   "source": "FourD year-ago comparative of INDAS_47918_132197_14082019044311_WEB.xml (Jun-2019 std filing); FY19 chain 66.51+stored Sep/Dec/Mar == 181.59 detres .50 audited annual EXACT",
+   "stored_pat": 51.25
   }
  },
  "TI": {
