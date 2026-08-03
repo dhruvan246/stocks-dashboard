@@ -11,17 +11,16 @@ name: Bake full-history snapshot
 # no service-worker reload, no batch/resume machinery. Measured cost: ~68s per 24-year backtest at a
 # flat ~630 MB heap, so the whole set lands well inside the timeout.
 #
-# Not correctness-critical: if it fails, the button says "isn't baked yet" and nothing else changes.
+# Not correctness-critical: if it fails, the column just doesn't appear and nothing else changes.
 # It also refuses to publish an empty result set, so a bad run can't blank a good snapshot.
 
-# Chained AFTER the wave bake, not in parallel with it: both write the same snapshot row, and the
-# browser-side wave bake rewrites the WHOLE payload from the copy it read at page load. Running
-# concurrently, its final write would silently drop a `full` key published while it was working.
-# The wave bake itself only runs after a successful data refresh, so this still means "once the
-# day's data is in". Any conclusion counts — a failed wave bake shouldn't hold back this one.
+# ONCE A DAY, off the data refresh. Deliberately NOT chained behind bake-waves: that workflow also
+# fires on the FUNDAMENTALS refresh, so it runs every ~30 min, and chaining would run this ~30-minute
+# job dozens of times a day. The two no longer share a snapshot row (this one owns 'waves_full'), so
+# there is nothing to serialise against.
 on:
   workflow_run:
-    workflows: ["Bake wave snapshot"]
+    workflows: ["Daily backtest data refresh"]
     types: [completed]
   workflow_dispatch: {}
 
@@ -34,6 +33,8 @@ concurrency:
 
 jobs:
   bake:
+    # Manual runs always; auto runs only after the data refresh actually SUCCEEDED.
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 180        # ~68s x strategies + ~1 min of data load; ample headroom as the list grows
     steps:

@@ -11,8 +11,12 @@
 // IDENTITY: keys come from docs/bt-identity.js — the SAME file the page loads. A key computed a
 // second way here would not error, it would just leave the site saying "not baked yet" forever.
 //
-// Writes the same Supabase snapshot the waves use (bt_snapshots id 'waves'), promoting ONLY the
-// `full` key, so this and the daily wave bake never clobber each other.
+// Writes its OWN Supabase snapshot row (bt_snapshots id 'waves_full'), NOT the waves' row. Sharing
+// one row cost a full bake on 2026-08-03: the browser-side wave bake rewrites the WHOLE payload from
+// the copy it read at page load, so a bake-waves run that started after this one published reverted
+// `full` to a stale checkpoint. And bake-waves fires off the FUNDAMENTALS refresh too — it runs every
+// ~30 min all day, so there is no quiet window to slot into and no point chaining behind it (that
+// would also mean running this 29-minute job dozens of times a day). Separate rows, no coordination.
 //
 // Run: node scripts/bake_full.mjs          (env: BAKE_WINDOW=full, BAKE_SAVE_EVERY=5)
 
@@ -23,6 +27,7 @@ import { dirname, join } from 'path';
 const HERE = dirname(fileURLToPath(import.meta.url)), ROOT = dirname(HERE), DOCS = join(ROOT, 'docs');
 const SITE = process.env.BAKE_SITE || 'https://dhruvan246.github.io/stocks-dashboard/';
 const SAVE_EVERY = +process.env.BAKE_SAVE_EVERY || 5;
+const SNAP_ID = 'waves_full';   // OUR row — the waves' row is rewritten wholesale by the browser bake
 
 // Supabase config is READ OUT OF bt-sync.js rather than copied — one place to rotate a key.
 const SYNC = readFileSync(join(DOCS, 'bt-sync.js'), 'utf8');
@@ -102,13 +107,14 @@ async function main() {
   const strategies = await rpc('bt_strats_public');
   console.log(`[bake-full] ${Array.isArray(strategies) ? strategies.length : 0} saved strategies`);
 
-  const snapBefore = (await rpc('bt_snap_get', { snap_id: 'waves' })) || {};
   const session = process.env.GITHUB_RUN_ID || String(Date.now());
 
+  // Checkpoints keep the last COMPLETE result set intact: they write to `pending`, which the page
+  // never displays, so an interrupted run can't replace good numbers with a partial set.
   const checkpoint = async (results, from, to) => {
-    const payload = Object.assign({}, snapBefore);
-    payload.full = Object.assign({}, payload.full, { pending: results, pendingSess: session, start: from, end: to });
-    try { await rpc('bt_snap_set', { secret: SB_WRITE, snap_id: 'waves', payload }); console.log(`[bake-full] checkpoint ${Object.keys(results).length}`); }
+    const prev = (await rpc('bt_snap_get', { snap_id: SNAP_ID })) || {};
+    const payload = Object.assign({}, prev, { pending: results, pendingSess: session, start: from, end: to });
+    try { await rpc('bt_snap_set', { secret: SB_WRITE, snap_id: SNAP_ID, payload }); console.log(`[bake-full] checkpoint ${Object.keys(results).length}`); }
     catch (e) { console.warn('[bake-full] checkpoint failed:', e.message); }
   };
 
@@ -126,13 +132,10 @@ async function main() {
   const n = Object.keys(out.results).length;
   if (!n) throw new Error('no strategies computed — refusing to publish an empty snapshot');
 
-  // PROMOTE: `full` becomes live results. Re-read first so a wave bake that finished while we were
-  // computing keeps its keys — we only ever replace our own.
-  const latest = (await rpc('bt_snap_get', { snap_id: 'waves' })) || {};
-  const payload = Object.assign({}, latest);
-  payload.full = { start: out.from, end: out.to, topN: null, results: out.results, sess: session };
-  payload.date = out.end;
-  const ok = await rpc('bt_snap_set', { secret: SB_WRITE, snap_id: 'waves', payload });
+  // PROMOTE: this row IS the full-history result, so the complete set simply replaces it (pending
+  // dropped). Nothing else writes this row, so there is no merge to do and nothing to race with.
+  const payload = { start: out.from, end: out.to, topN: null, results: out.results, sess: session, date: out.end };
+  const ok = await rpc('bt_snap_set', { secret: SB_WRITE, snap_id: SNAP_ID, payload });
   console.log(`[bake-full] ${ok === true ? 'PUBLISHED' : 'publish returned ' + JSON.stringify(ok)} — ${n}/${out.n} strategies, ${out.from} → ${out.to}, ${Math.round((Date.now() - t0) / 60000)} min`);
   if (ok !== true) process.exitCode = 1;
 }

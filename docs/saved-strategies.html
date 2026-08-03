@@ -325,6 +325,7 @@ const CUSTOM = new Map();   // identityKey -> {cagr, ret, maxDD, finalV, start, 
 let CUSTOM_WIN = null;      // {start,end,topN,wave?} the window CUSTOM currently holds
 let BEST_WAVE = 'w1';       // which market-cycle wave the Best-return tab is showing
 let WAVE_SNAP = null;       // { date, w1:{start,end,topN,results:{idKey:{ret,cagr,maxDD,topN}}}, w2, w3, cycle }
+let FULL_SNAP = null;       // the 'waves_full' row (Node baker): { date, start, end, results } for 2002→date
 // True when the list should show per-window RETURN results (Custom tab, or Best tab with a wave loaded).
 function windowMode() { return VIEW === 'custom' || (VIEW === 'best' && CUSTOM_WIN && CUSTOM_WIN.wave && CUSTOM.size > 0); }
 // This row's result in the active window. Snapshots baked BEFORE the stock-count split are keyed by the
@@ -347,8 +348,10 @@ function waveResult(c) { return lookupResult(k => CUSTOM.get(k), c); }
 const WAVE_NAME = { w1: 'Wave 1', w2: 'Wave 2', w3: 'Wave 3', cycle: 'Full cycle', full: 'Full history' };
 const WAVE_ICON = { w1: '🌊', w2: '🌊', w3: '🌊', cycle: '🔄', full: '🏛' };
 // Same identity lookup as waveResult, but against ANY wave in the snapshot rather than the loaded one.
+// 'full' lives in its own snapshot row (FULL_SNAP); the cycle waves live in WAVE_SNAP.
+function snapFor(wave) { return wave === 'full' ? FULL_SNAP : (WAVE_SNAP && WAVE_SNAP[wave]); }
 function snapResult(wave, c) {
-  const r = WAVE_SNAP && WAVE_SNAP[wave] && WAVE_SNAP[wave].results;
+  const w = snapFor(wave), r = w && w.results;
   return r ? lookupResult(k => r[k], c) : null;
 }
 function monLabel(d) {
@@ -358,15 +361,15 @@ function monLabel(d) {
 // Window printed under each column heading: the snapshot's REAL dates when baked (w3 and cycle end at
 // the data date, which moves every day), the hard-coded preset otherwise.
 function waveColWindow(key) {
-  const w = WAVE_SNAP && WAVE_SNAP[key], p = PERIOD_PRESETS[key] || {};
+  const w = snapFor(key), p = PERIOD_PRESETS[key] || {};
   // `full` has no hard-coded start — before its snapshot lands, the dataset's own start is the label.
   const start = (w && w.start) || p.from || fullWindowStart();
   return monLabel(start) + '–' + (monLabel((w && w.end) || p.to) || 'date');
 }
-function waveColsOn() { return VIEW === 'new' && !!WAVE_SNAP && ALL_WAVES.some(k => WAVE_SNAP[k] && WAVE_SNAP[k].results); }
+function waveColsOn() { return VIEW === 'new' && (!!WAVE_SNAP || !!FULL_SNAP) && ALL_WAVES.some(k => { const w = snapFor(k); return w && w.results; }); }
 // Columns to show on the New tab: the daily waves, plus Full history ONCE it has been baked (its job
 // runs separately, so it must never sit there as a permanently empty column).
-function waveCols() { return ALL_WAVES.filter(k => k !== 'full' || (WAVE_SNAP && WAVE_SNAP.full && WAVE_SNAP.full.results)); }
+function waveCols() { return ALL_WAVES.filter(k => k !== 'full' || (FULL_SNAP && FULL_SNAP.results)); }
 // One per-wave return cell: the RETURN over that window (bold, signed), with the run's CAGR, drawdown
 // and stock count riding along in the tooltip so the column stays one line wide.
 function waveCell(key, c) {
@@ -654,7 +657,7 @@ function render() {
   const header = `<thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
     <th data-sort="name"${dirAttr('name')} class="text-left font-semibold px-4 py-2.5">Strategy</th>
     ${wcols ? '' : `<th data-sort="main"${dirAttr('main')} class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">${wmode ? (CUSTOM_WIN ? `Return · ${CUSTOM_WIN.start} → ${CUSTOM_WIN.end}${CUSTOM_WIN.topN != null ? ` · top-${CUSTOM_WIN.topN}` : ''}` : 'Return · window') : 'CAGR'}</th>`}
-    ${wcols ? waveCols().map(k => `<th data-sort="${k}"${dirAttr(k)} class="text-right font-semibold px-2 py-2.5 whitespace-nowrap" title="Return over ${esc(WAVE_NAME[k])} (${esc(waveColWindow(k))}), from the ${esc(WAVE_SNAP.date || 'latest')} snapshot">${WAVE_ICON[k]} ${esc(WAVE_NAME[k])}<br><span class="text-[9px] font-medium normal-case tracking-normal text-slate-400">${esc(waveColWindow(k))}</span></th>`).join('') : ''}
+    ${wcols ? waveCols().map(k => `<th data-sort="${k}"${dirAttr(k)} class="text-right font-semibold px-2 py-2.5 whitespace-nowrap" title="Return over ${esc(WAVE_NAME[k])} (${esc(waveColWindow(k))}), from the ${esc((snapFor(k) && snapFor(k).date) || (WAVE_SNAP && WAVE_SNAP.date) || 'latest')} snapshot">${WAVE_ICON[k]} ${esc(WAVE_NAME[k])}<br><span class="text-[9px] font-medium normal-case tracking-normal text-slate-400">${esc(waveColWindow(k))}</span></th>`).join('') : ''}
     <th class="px-2 py-2.5"></th>
     ${OWNER ? '<th class="px-2 py-2.5"></th>' : ''}
   </tr></thead>`;
@@ -1279,7 +1282,12 @@ function wireUI() {
   if (window.btSync) {
     try { await btSync.pullStrategies(); } catch (e) {}                 // shared strategy definitions (replaces local with the shared list)
     try { HIST = await btSync.pull() || []; } catch (e) { HIST = []; }  // shared backtest history (all windows)
-    try { WAVE_SNAP = await btSync.snapGet('waves'); } catch (e) { WAVE_SNAP = null; }   // precomputed wave results
+    // Two rows, deliberately: 'waves' is rewritten wholesale by the browser-side wave bake, so the
+    // Node full-history baker owns a separate 'waves_full' row it can publish to without being
+    // clobbered (that race ate a completed bake on 2026-08-03). Fetched together, both public reads.
+    try { const [w, f] = await Promise.all([btSync.snapGet('waves'), btSync.snapGet('waves_full')]);
+          WAVE_SNAP = w; FULL_SNAP = (f && f.results) ? f : null; }
+    catch (e) { WAVE_SNAP = null; FULL_SNAP = null; }
   } else if (headless) { HIST = localHistBefore; }
   // One-time migration: the "private strategy" (🔒) feature is removed — publish anything still
   // sitting in this browser's private store back to the shared list/history so it's visible to
