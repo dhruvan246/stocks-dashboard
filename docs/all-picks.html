@@ -30,6 +30,11 @@
   .brow:hover{background:#f8fafc}
   .vbtn[aria-selected="true"]{background:#4f46e5;color:#fff}
   #board .grid-row{display:grid;grid-template-columns:28px minmax(170px,1.6fr) 92px 92px 58px minmax(240px,2.6fr);gap:12px;align-items:center}
+  /* padding+negative margin grows the tap area into the header row's own padding without
+     moving the label: the text alone is a 15px-tall target, which is a miss on a phone. */
+  .sortcol{cursor:pointer;user-select:none;padding:10px 0;margin:-10px 0}
+  .sortcol:hover{color:#475569}
+  .sortcol .ar{font-size:9px;margin-left:3px;opacity:.9}
   @media (max-width:924px){ #boardScroll{overflow-x:auto} #boardScroll>div{min-width:924px} }
 </style>
 </head>
@@ -71,8 +76,13 @@
            sticky scrollport instead of the viewport. top-14 then means "56px below the
            card's own top" rather than "clear of the site header", so the label row sat
            parked on top of row 1 at every scroll position. -->
-      <div class="grid-row bg-slate-50 border-b border-slate-200 px-4 py-2.5 text-[10px] uppercase tracking-wider font-bold text-slate-400 sticky top-0 z-10">
-        <div>#</div><div>Strategy</div><div class="text-right" title="Held basket's return since its last rebalance">Since reb.</div><div class="text-right" title="Held basket's move since the previous close">Since prev close</div><div class="text-right">Hold</div><div>Qualifying now · today's move</div>
+      <div id="boardHead" class="grid-row bg-slate-50 border-b border-slate-200 px-4 py-2.5 text-[10px] uppercase tracking-wider font-bold text-slate-400 sticky top-0 z-10">
+        <div>#</div>
+        <div data-sort="name" class="sortcol">Strategy<span class="ar"></span></div>
+        <div data-sort="ret" class="sortcol text-right" title="Held basket's return since its last rebalance">Since reb.<span class="ar"></span></div>
+        <div data-sort="day" class="sortcol text-right" title="Held basket's move since the previous close">Since prev close<span class="ar"></span></div>
+        <div data-sort="topN" class="sortcol text-right">Hold<span class="ar"></span></div>
+        <div>Qualifying now · today's move</div>
       </div>
       <div id="boardRows"></div>
     </div></div>
@@ -284,6 +294,37 @@ function stampLive(live) {
     : `· prices as of ${SF.end} close`;
 }
 
+/* ---------- sorting ----------
+ * One order for the whole page: RESULT is what both views map over, so sorting the board
+ * re-orders the cards too rather than leaving the two disagreeing about what rank 1 is.  */
+let SORT = { key: 'name', asc: true };
+function sortCmp(a, b) {
+  const k = SORT.key, dir = SORT.asc ? 1 : -1;
+  if (k === 'name') return String(a.name).localeCompare(String(b.name), 'en', { numeric: true, sensitivity: 'base' }) * dir;
+  const x = a[k], y = b[k];
+  // "in cash" and "no quote yet" are not small numbers — they sink to the bottom whichever
+  // way the arrow points, so flipping direction never fills the top with blanks.
+  if (x == null && y == null) return 0;
+  if (x == null) return 1;
+  if (y == null) return -1;
+  return (x - y) * dir;
+}
+function applySort() { RESULT.sort(sortCmp); }
+function paintSortArrows() {
+  document.querySelectorAll('#boardHead [data-sort]').forEach(el => {
+    const on = el.dataset.sort === SORT.key;
+    el.querySelector('.ar').textContent = on ? (SORT.asc ? '▲' : '▼') : '';
+    el.style.color = on ? '#475569' : '';
+  });
+}
+function onSortClick(e) {
+  const h = e.target.closest('[data-sort]'); if (!h) return;
+  const k = h.dataset.sort;
+  // same column toggles; a new one starts A→Z for names and biggest-first for numbers
+  if (SORT.key === k) SORT.asc = !SORT.asc; else SORT = { key: k, asc: k === 'name' };
+  applySort(); renderCards(); renderBoard(); paintSortArrows();
+}
+
 /* ---------- render ---------- */
 function setView(v) {
   VIEW = v;
@@ -379,10 +420,11 @@ function renderBoard() {
 }
 
 function paint() {
-  // Alphabetical by strategy name — a stable running order, so a card stays where you last saw it
-  // instead of jumping around as prices move. `numeric` keeps top-3 ahead of top-10.
-  RESULT.sort((a, b) => String(a.name).localeCompare(String(b.name), 'en', { numeric: true, sensitivity: 'base' }));
-  renderStats(); renderCards(); renderBoard(); setView(VIEW);
+  // Defaults to alphabetical by strategy name — a stable running order, so a card stays where
+  // you last saw it instead of jumping around as prices move. `numeric` keeps top-3 ahead of
+  // top-10. A ↻ Refresh re-paints under whatever sort you picked rather than resetting it.
+  applySort();
+  renderStats(); renderCards(); renderBoard(); paintSortArrows(); setView(VIEW);
   $('foot').classList.remove('hidden');
 }
 
@@ -444,6 +486,7 @@ async function build(msg) {
 
 $('vCards').onclick = () => setView('cards');
 $('vBoard').onclick = () => setView('board');
+$('boardHead').addEventListener('click', onSortClick);
 $('refresh').onclick = () => { $('refresh').disabled = true; refreshPrices().finally(() => { $('refresh').disabled = false; }); };
 
 (async function boot() {
