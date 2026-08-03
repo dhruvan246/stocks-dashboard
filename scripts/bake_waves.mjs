@@ -77,7 +77,12 @@ async function bakeOnce(budgetMs) {
   });
   let status = '(no status)', done = false, crashed = false;
   try {
-    const page = await browser.newPage();
+    // ⚠️ BLOCK SERVICE WORKERS. theme.js reloads the page on `controllerchange`, which fires the first
+    // time a browser meets a new sw.js version — mid-bake, destroying the run's progress. Every batch
+    // is a fresh browser, so EVERY batch met it: uniform ~45s batches that end without a crash and
+    // re-report the same strategy index. That's what capped the 2026-08-03 full-history bake at 5/32
+    // (the Tailwind banner logged twice per batch = the page loading twice). The bake needs no SW.
+    const page = await (await browser.newContext({ serviceWorkers: 'block' })).newPage();
     page.on('console', m => console.log('[page]', m.text()));
     page.on('pageerror', e => console.log('[page-error]', e.message));
     await page.goto(BAKE_URL, { waitUntil: 'domcontentloaded', timeout: 120000 });
@@ -106,17 +111,26 @@ async function main() {
   const dataEnd = await waitForPages();
   console.log(`[bake-waves] starting against data end=${dataEnd || '(unknown)'}`);
   const deadline = Date.now() + BAKE_WAIT_MS;
-  let done = false, prevStatus = '';
+  let done = false, curWave = null, best = -1, flat = 0;
+  // Progress = the (wave, strategy index) in "Baking <wave> N/M (i/j waves)". Compare the NUMBER, not
+  // the whole string: the page paints the last COMPLETED index and then blocks on the next backtest,
+  // so a batch that died part-way through strategy N+1 still reads "N/M" despite having saved real
+  // work. String equality read that as stuck and stopped runs that were progressing fine. The index
+  // restarts at each new wave, so it is only comparable WITHIN one wave.
+  const parse = s => { const m = /Baking\s+(\S+)\s+(\d+)\s*\/\s*(\d+)/.exec(s || ''); return m ? { wave: m[1], n: +m[2] } : null; };
   for (let iter = 1; iter <= MAX_ITERS && Date.now() < deadline; iter++) {
     const budget = Math.max(30000, Math.min(PER_ITER_MS, deadline - Date.now()));
     const { status, done: d, crashed } = await bakeOnce(budget);
     console.log(`[bake-waves] batch ${iter}: ${status}`);
     if (d) { done = true; break; }
     if (/Bake error/.test(status)) { console.error('[bake-waves] page reported a bake error'); process.exit(1); }
-    // Stall guard: identical readable status two batches running = stuck on the same wave (not progressing).
-    // Crashes read no status and keep looping (they DO progress via the incremental per-wave save).
-    if (!crashed && status === prevStatus) { console.warn('[bake-waves] no progress across two batches — stopping'); break; }
-    if (!crashed) prevStatus = status;
+    const p = parse(status);
+    if (crashed || !p) continue;                              // unreadable status; crashes DO progress
+    if (p.wave !== curWave) { curWave = p.wave; best = p.n; flat = 0; continue; }   // moved to the next wave
+    if (p.n > best) { best = p.n; flat = 0; continue; }        // advanced within this wave
+    // Genuinely flat: same-or-lower index, same wave. One batch can legitimately fail to finish a
+    // single long backtest (the full-history window is ~24 years), so allow a few before giving up.
+    if (++flat >= 4) { console.warn(`[bake-waves] no progress across ${flat} batches (stuck at ${curWave} ${best}) — stopping`); break; }
   }
   if (done) { console.log('[bake-waves] done — wave snapshot saved'); return; }
   // Non-critical: the page falls back to the full-history CAGR ranking if the snapshot is missing/stale.
