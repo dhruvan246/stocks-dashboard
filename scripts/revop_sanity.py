@@ -52,10 +52,15 @@ def main():
     kill = []       # (sym, qe, val, reason) — nulls the whole row
     kill_con = []   # (sym, qe, val, reason) — nulls only the con slots
     for s, d in rv.items():
-        # established reference from pre-existing cells
-        oldvals = [revof(old.get(s, {}).get(q)) for q in old.get(s, {})]
-        oldvals = [v for v in oldvals if v is not None]
-        ref_max = max(oldvals) if len(oldvals) >= 6 else None
+        # Established reference from pre-existing cells, PER SLOT. A holding company's
+        # consolidated revenue is legitimately several times its standalone (EQUITAS con
+        # 384-1133 vs std 3-163), so comparing a new CON value against a std-derived maximum
+        # nulls perfectly good data — that was the long-standing "MFSL casualty" false positive.
+        def slot_max(i):
+            vals = [c[i] for c in old.get(s, {}).values()
+                    if c and len(c) > i and c[i] is not None]
+            return max(vals) if len(vals) >= 6 else None
+        ref_by_slot = {0: slot_max(0), 1: slot_max(1)}
 
         # value -> [quarters] for duplicate detection (only among NEW fills)
         seen = {}
@@ -73,7 +78,8 @@ def main():
                     and 0 <= a[1] < 0.05 * a[0] and a[1] < 20):
                 kill_con.append((s, qe, a[1], "junk-tiny-con(con %.2f < 5%% of std %.2f)" % (a[1], a[0])))
             if not wasold(s, qe):
-                # scale spike (allowlisted cells exempt — see OK above)
+                # scale spike, compared against the SAME slot's history (allowlisted cells exempt)
+                ref_max = ref_by_slot[0 if a[0] is not None else 1]
                 if ref_max is not None and ref_max >= 20 and v > 4 * ref_max \
                         and "%s|%s" % (s, qe) not in OK:
                     kill.append((s, qe, v, "scale-spike>4x-established-max(%.0f)" % ref_max))
