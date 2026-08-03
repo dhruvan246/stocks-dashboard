@@ -2801,8 +2801,11 @@ bars), so it is precomputed in CI and the site only ever READS the answer:
   `full` key. The wave bake only runs after a successful data refresh, so the chain still means
   "once today's data is in".
 * Results land in the SAME Supabase snapshot as the waves (`bt_snapshots` id `waves`, key `full`),
-  read publicly by every visitor (`bt_snap_get`, no owner key) — the 🏛 Full history button and the
-  New-tab column are instant for everyone, and nobody ever presses anything.
+  read publicly by every visitor (`bt_snap_get`, no owner key) — instant for everyone, nobody ever
+  presses anything. Surfaced as the **Full history COLUMN on the 🆕 New tab** only; there is no
+  wave-row button for it (one existed for a few hours on 2026-08-03 and was removed — the four
+  market-cycle windows are what you rank the list by). The column appears only once the key is
+  baked, so it is never a permanently empty column.
 * Window starts at `SF.dailyFrom` (2002-01-02), NOT `SF.start` (1996): pre-2002 bars are weekly and
   the oscillator family is meaningless there.
 * Checkpoints every 5 strategies into the snapshot's pending slot; only a COMPLETE set is promoted,

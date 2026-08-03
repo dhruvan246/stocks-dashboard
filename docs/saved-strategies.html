@@ -78,7 +78,6 @@
     <button data-preset="w2" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">🌊 Wave 2 <span class="opacity-60">Mar’23–Sep’24</span></button>
     <button data-preset="w3" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">🌊 Wave 3 <span class="opacity-60">Mar’26–date</span></button>
     <button data-preset="cycle" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">🔄 Entire cycle <span class="opacity-60">Mar’20–date</span></button>
-    <button data-preset="full" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">🏛 Full history <span class="opacity-60">2002–date</span></button>
     <span id="waveSnapInfo" class="text-[11px] text-slate-400 ml-auto"></span>
     <button id="waveUpdate" class="hidden text-[11px] font-semibold text-indigo-600 hover:underline">↻ Update snapshot</button>
   </div>
@@ -829,6 +828,9 @@ const PERIOD_PRESETS = {
   w2:    { from: '2023-03-31', to: '2024-09-30' },
   w3:    { from: '2026-03-31', to: null },
   cycle: { from: '2020-03-31', to: null },
+  // `full` is NOT a clickable view — there is no wave-row button for it (removed 2026-08-03, the
+  // four cycle windows are what you rank by). It stays here because the nightly Node bake reads this
+  // window definition and the 🆕 New tab shows its result as a column.
   // `from: null` = fullWindowStart() — where TRUE daily bars begin (2002-01-02), NOT the dataset's
   // 1996 start: pre-2002 bars are weekly, where the oscillator family isn't meaningful.
   full:  { from: null, to: null },
@@ -857,11 +859,9 @@ function runPreset(key) {
   render();
   if (!has) {
     const owner = !!(window.btSync && btSync.isOwner());
-    // `full` bakes in its own nightly job, so pointing at ↻ (which bakes the DAILY set) would be wrong.
-    $('waveSnapInfo').innerHTML = key === 'full'
-      ? 'Full history isn’t baked yet — the nightly job fills it in.'
-      : owner ? 'This wave isn’t baked yet — click <b>↻ Update snapshot</b>.'
-              : 'This wave isn’t baked yet.';
+    $('waveSnapInfo').innerHTML = owner
+      ? 'This wave isn’t baked yet — click <b>↻ Update snapshot</b>.'
+      : 'This wave isn’t baked yet.';
   } else {
     $('waveSnapInfo').textContent = WAVE_SNAP && WAVE_SNAP.date ? `snapshot ${WAVE_SNAP.date}` : '';
   }
