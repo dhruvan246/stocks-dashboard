@@ -1,20 +1,27 @@
 name: Bake full-history snapshot
 
-# Precomputes every saved strategy's FULL-HISTORY result (2002-01-02 → the latest data date) into the
-# same Supabase snapshot the waves use (bt_snapshots id 'waves', key `full`). The 🏛 Full history button
-# on Saved Strategies then reads it instantly — no 24-year backtest in anyone's browser.
+# Precomputes every saved strategy's FULL-HISTORY result (true-daily floor 2002-01-02 → the latest
+# data date) into the same Supabase snapshot the waves use (bt_snapshots id 'waves', key `full`).
+# The 🏛 Full history button on Saved Strategies then reads it instantly — no 24-year backtest in
+# anyone's browser, and nobody has to press anything: this fires off the daily data refresh.
 #
-# Separate from bake-waves.yml because the window is ~24 years — on its own roughly 2.5x the cost of all
-# four market-cycle waves together, and it needs the deep pre-2019 price parts loaded. Squeezing it into
-# the daily bake would push that job past its timeout and leave the waves stale.
+# Runs in NODE, not a browser. The Playwright harness the wave bake uses could never finish this
+# window — every batch died ~40s in, during the data load, before a single backtest ran (2026-08-03).
+# The engine is DOM-free by design, so scripts/bake_full.mjs runs it directly: no renderer to crash,
+# no service-worker reload, no batch/resume machinery. Measured cost: ~68s per 24-year backtest at a
+# flat ~630 MB heap, so the whole set lands well inside the timeout.
 #
-# Not correctness-critical: if this fails, the Full-history button simply says it isn't baked yet, and
-# every other tab is unaffected. Each run is incremental — the page saves after every strategy and the
-# next batch resumes — so a partial run still makes progress and tomorrow's finishes it.
+# Not correctness-critical: if it fails, the button says "isn't baked yet" and nothing else changes.
+# It also refuses to publish an empty result set, so a bad run can't blank a good snapshot.
 
+# Chained AFTER the wave bake, not in parallel with it: both write the same snapshot row, and the
+# browser-side wave bake rewrites the WHOLE payload from the copy it read at page load. Running
+# concurrently, its final write would silently drop a `full` key published while it was working.
+# The wave bake itself only runs after a successful data refresh, so this still means "once the
+# day's data is in". Any conclusion counts — a failed wave bake shouldn't hold back this one.
 on:
   workflow_run:
-    workflows: ["Daily backtest data refresh"]
+    workflows: ["Bake wave snapshot"]
     types: [completed]
   workflow_dispatch: {}
 
@@ -27,12 +34,8 @@ concurrency:
 
 jobs:
   bake:
-    # Manual runs always; auto runs only after the data refresh actually SUCCEEDED.
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    # BAKE_WAIT_MIN (240) + Playwright install + the Pages wait must fit inside this. Public repo, so
-    # Actions minutes are free; GitHub's per-job ceiling is 360 min.
-    timeout-minutes: 300
+    timeout-minutes: 180        # ~68s x strategies + ~1 min of data load; ample headroom as the list grows
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -42,14 +45,9 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install Playwright (chromium)
-        run: |
-          npm install playwright@^1.48
-          npx playwright install --with-deps chromium
-
-      - name: Bake the full-history window headlessly
+      # Node's default heap is under what the merged 24-year dataset needs (~630 MB live, with
+      # transient peaks while the deep parts are parsed and prepended).
+      - name: Bake the full-history window
         env:
-          BAKE_WAVES: full          # → saved-strategies.html?waves=full (this job bakes ONLY that window)
-          BAKE_WAIT_MIN: "240"      # ~24-yr window across every strategy; batches resume each other
-          BAKE_MAX_ITERS: "400"     # each batch dies on renderer memory after a few strategies, so allow many
-        run: node scripts/bake_waves.mjs
+          NODE_OPTIONS: --max-old-space-size=6144
+        run: node scripts/bake_full.mjs

@@ -9,6 +9,7 @@
 <script src="./theme.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./bt-sync.js"></script>
+<script src="./bt-identity.js"></script>
 <script src="./backtest-engine.js"></script>
 <style>
   body{font-feature-settings:"tnum" 1}
@@ -72,15 +73,7 @@ let STRAT = null;  // the strategy this page shows
 // Identity + variant keys: IDENTICAL semantics to saved-strategies.html so this page shows exactly the
 // runs that the Saved-Strategies row represents. INCLUDES topN (each stock count is its own strategy
 // row) and normalizes boundary operators (<≡<=, >≡>=); the variant key (winKey) carries start+method.
-function identityKey(c) { return ruleKey(c) + '|' + (c.topN != null ? c.topN : ''); }
-// The rule without the stock count — live-picks sids are derived from THIS (see the live_tracking
-// lookup in boot), so they stay attached to the rule across the stock-count split.
-function ruleKey(c) {
-  const normOp = op => ({ '<=': '<', '>=': '>' }[op] || op);
-  const f = (c.filters || []).map(x => x.field + normOp(x.op) + x.val).sort().join(',');
-  return [c.indexName || '', c.mcapFloor || 0, c.freq, c.sortBy, c.dir, c.lookback || 1, c.earnBasis || 'con', f].join('|');
-}
-function winKey(c) { return (c.start || '') + '|' + (c.method || '') + '|' + (c.topN != null ? c.topN : ''); }
+// identityKey / ruleKey / winKey come from bt-identity.js (one shared definition).
 function windowEnd(c) { return (typeof SF !== 'undefined' && SF && SF.end) ? SF.end : (c.end || 'today'); }
 function metricsFor(cfg) {
   const k = identityKey(cfg), wk = winKey(cfg);
