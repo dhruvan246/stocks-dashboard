@@ -2779,6 +2779,48 @@ store-wide; microcap sub-1cr pairs can be genuine). Adjudication recipe, all fro
 Route heals through `pat_defects.json` (exact stored_pat guard) + rev via `_bsedet_reads.json` with
 the corrected pat_seen as anchor — the batch chain orders defect-fix before reads-apply.
 
+**Detector round-2 (2026-08-04): 188 slot-pairs adjudicated, ~110 cells healed, the rest triaged.**
+Store-wide scan (std[1]+con[3] slots) found 188 exact-dup slot-pairs; three ledger batches
+(b4dd72fb → batch-3b) healed them down to ~75 open. What the campaign established:
+
+* **The poison mechanism is NSE's list double-indexing**: `corporates-financial-results` (and
+  sometimes `integrated-filing-results`) lists the SAME result file under BOTH the current
+  quarter's `toDate` row and the comparative quarter's — an importer keyed by toDate reads the
+  file's OneD (current!) into the comparative year's cell. NEVER assign a file to a quarter by
+  its list row; assign by the `_DDMMYYYYHHMMSS` filing timestamp in the filename (5..130 days
+  after quarter-end) or the FY-declaration tags.
+* **XBRL context IDs have NO fixed meaning across filers**: FourD = year-ago in one file
+  (PIIND), YTD in another (GHCL), preceding-quarter in a third. Identify a context by
+  VALUE-ARITHMETIC against trusted cells (YTD/PREV/FY-ENDED hypotheses; June-quarter files are
+  gold — YTD==OneD there, so a second context is almost always the year-ago comparative).
+  `ProfitLossForPeriod` can also be total-incl-NCI vs owners (HCLTECH 4237 vs 4235).
+* **`scripts/yshift_genuine.json` (tracked)** holds the ~44 PROVEN-genuine coincidence slots —
+  the scan must subtract it or it re-adjudicates HCLTECH/ELECON/CESC/AARTIDRUGS-1709/DISHMAN
+  forever (HCLTECH con was ₹4,235cr flat YoY per the company's own release; ELECON con 87.72
+  flat to the paisa, H1 arithmetic exact — exact-dup ≠ automatically poison).
+* **The fingerprint often marks WHOLE-SERIES corruption, not one shifted cell**: pulling the
+  pair-thread exposed LEHAR (lakh-as-crore ×100 series), HAWKINCOOK (16 cells of -7.0/8.0
+  sentinels + shifted values 2020-24, FY25-26 rows entirely absent), MAFATIND (2021-26 block
+  scrambled + 9 missing rows), VOITHPAPR (next-year values shifted back + -0.5 sentinels,
+  ends Mar-2023), TECHNVISN/NOVELIX (×100). After ANY heal RE-RUN the scan — the detector
+  re-fires as each layer is removed (MAFATIND Mar-2023 surfaced only after Mar-2024 healed).
+* **Fill-only appliers re-poison healed cells from stale harvest rows**: `_revgap_done.json`
+  held mislabeled rows (a Jan-2024 announcement "containing" Jun-2024; a May-2025 one landing
+  its CURRENT rev as Mar-2024 con) that re-filled the bad rev after every rev_defects null.
+  When a null keeps reappearing, grep EVERY reads/harvest ledger for the cell and correct the
+  SOURCE entry, not just the cell.
+* Missing-row fills go through `xbrl_comparative_fills.json` and need BOTH forms: `"std"`
+  (rev/op → sf_revop) AND `"pat_std"` (creates the sf_fundamentals row — the std form alone
+  fills revop only).
+
+Open queues (evidence in `_yshift_verdicts.json`/`_yshift_chain.json`, rev-mission worktree):
+con truths living in BSE announcement XBRL (GHCL/ALOKTEXT/UTTAMSTL/CHENNPETRO-Jun+Sep-18/GPPL/
+RATNAMANI/TI/PAISALO-con/FINCABLES class, ~15 slots); IPO-cohort pre-listing comparatives needing
+the NSE-zip PDF pass (ADANIGREEN×3, AMBER-1706 chain-verify 25.62, RPSGVENT×4, ASTRON×4,
+SPENCERS×2, KHADIM/SHALBY/DNAMEDIA/APOLLO/HITECH/INFOBEAN/MIDHANI-con); integrated-era con
+stragglers (INGERRAND/EMERALL/MAJESAUT/OVOBELE/ARCHITORG); SHILPAMED-2015 (double-indexed archive
+mess); MAFATIND pre-2021 + con-basis rebuild; TSFINV/AGROPHOS/AGLSL/SGFL scrip-resolution class.
+
 **Legit structural breaks vs the scale-spike nuller:** demerger boundaries (CHOLAHLDNG Mar-2017 =
 pre-demerger full Tube Investments, 1168.14 vs holdco-era ~65) and lumpy traders (OSWALGREEN Jun-2015
 316.44, two independent as-filed docs) are REAL spikes — allowlist in `sanity_ok.json`, never widen
