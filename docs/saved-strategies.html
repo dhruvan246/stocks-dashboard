@@ -325,7 +325,6 @@ const CUSTOM = new Map();   // identityKey -> {cagr, ret, maxDD, finalV, start, 
 let CUSTOM_WIN = null;      // {start,end,topN,wave?} the window CUSTOM currently holds
 let BEST_WAVE = 'w1';       // which market-cycle wave the Best-return tab is showing
 let WAVE_SNAP = null;       // { date, w1:{start,end,topN,results:{idKey:{ret,cagr,maxDD,topN}}}, w2, w3, cycle }
-let FULL_SNAP = null;       // the 'waves_full' row (Node baker): { date, start, end, results } for 2002→date
 // True when the list should show per-window RETURN results (Custom tab, or Best tab with a wave loaded).
 function windowMode() { return VIEW === 'custom' || (VIEW === 'best' && CUSTOM_WIN && CUSTOM_WIN.wave && CUSTOM.size > 0); }
 // This row's result in the active window. Snapshots baked BEFORE the stock-count split are keyed by the
@@ -345,11 +344,10 @@ function waveResult(c) { return lookupResult(k => CUSTOM.get(k), c); }
    tab can show them side by side with no compute and no engine download — the Best-return tab only
    ever loads one wave at a time. Columns appear only once at least one wave is baked; before the
    snapshot arrives (early paint) they'd be four empty columns, so they stay off. */
-const WAVE_NAME = { w1: 'Wave 1', w2: 'Wave 2', w3: 'Wave 3', cycle: 'Full cycle', full: 'Full history' };
-const WAVE_ICON = { w1: '🌊', w2: '🌊', w3: '🌊', cycle: '🔄', full: '🏛' };
+const WAVE_NAME = { w1: 'Wave 1', w2: 'Wave 2', w3: 'Wave 3', cycle: 'Full cycle' };
+const WAVE_ICON = { w1: '🌊', w2: '🌊', w3: '🌊', cycle: '🔄' };
 // Same identity lookup as waveResult, but against ANY wave in the snapshot rather than the loaded one.
-// 'full' lives in its own snapshot row (FULL_SNAP); the cycle waves live in WAVE_SNAP.
-function snapFor(wave) { return wave === 'full' ? FULL_SNAP : (WAVE_SNAP && WAVE_SNAP[wave]); }
+function snapFor(wave) { return WAVE_SNAP && WAVE_SNAP[wave]; }
 function snapResult(wave, c) {
   const w = snapFor(wave), r = w && w.results;
   return r ? lookupResult(k => r[k], c) : null;
@@ -362,14 +360,10 @@ function monLabel(d) {
 // the data date, which moves every day), the hard-coded preset otherwise.
 function waveColWindow(key) {
   const w = snapFor(key), p = PERIOD_PRESETS[key] || {};
-  // `full` has no hard-coded start — before its snapshot lands, the dataset's own start is the label.
-  const start = (w && w.start) || p.from || fullWindowStart();
+  const start = (w && w.start) || p.from;
   return monLabel(start) + '–' + (monLabel((w && w.end) || p.to) || 'date');
 }
-function waveColsOn() { return VIEW === 'new' && (!!WAVE_SNAP || !!FULL_SNAP) && ALL_WAVES.some(k => { const w = snapFor(k); return w && w.results; }); }
-// Columns to show on the New tab: the daily waves, plus Full history ONCE it has been baked (its job
-// runs separately, so it must never sit there as a permanently empty column).
-function waveCols() { return ALL_WAVES.filter(k => k !== 'full' || (FULL_SNAP && FULL_SNAP.results)); }
+function waveColsOn() { return VIEW === 'new' && !!WAVE_SNAP && WAVE_ORDER.some(k => { const w = snapFor(k); return w && w.results; }); }
 // One per-wave return cell: the RETURN over that window (bold, signed), with the run's CAGR, drawdown
 // and stock count riding along in the tooltip so the column stays one line wide.
 function waveCell(key, c) {
@@ -379,10 +373,10 @@ function waveCell(key, c) {
     + (r.cagr != null ? ` · CAGR ${pct(r.cagr)}` : '')
     + (r.maxDD != null ? ` · MaxDD -${r.maxDD.toFixed(1)}%` : '')
     + (r.topN != null ? ` · top-${r.topN}` : '');
-  // Full cycle spans 6+ years and Full history 24, where an absolute headline like +1001% says nothing
-  // about the pace, so the annualised number rides along in brackets. The three waves are ~18 months —
-  // absolute is plain enough there, and a CAGR on a part-year window reads bigger than the money made.
-  const ann = ((key === 'cycle' || key === 'full') && r.cagr != null) ? ` <span class="text-[11px] font-normal text-slate-500">(CAGR ${pct(r.cagr)})</span>` : '';
+  // Full cycle spans 6+ years, where an absolute headline like +1001% says nothing about the pace,
+  // so the annualised number rides along in brackets. The three waves are ~18 months — absolute is
+  // plain enough there, and a CAGR on a part-year window reads bigger than the money made.
+  const ann = (key === 'cycle' && r.cagr != null) ? ` <span class="text-[11px] font-normal text-slate-500">(CAGR ${pct(r.cagr)})</span>` : '';
   return `<td class="px-2 py-3 text-right text-sm whitespace-nowrap" title="${esc(tip)}"><span class="font-semibold ${r.ret >= 0 ? 'pos' : 'neg'}">${pct(r.ret)}</span>${ann}</td>`;
 }
 // Load a wave's precomputed results (from the snapshot) into CUSTOM so render() shows them. Returns false if absent.
@@ -536,7 +530,7 @@ let SORT = { key: null, asc: false };
 function sortCols(wcols, wmode) {
   const cols = [{ key: 'name', label: 'Strategy' }];
   if (!wcols) cols.push({ key: 'main', label: wmode ? 'Return' : 'CAGR' });
-  else waveCols().forEach(k => cols.push({ key: k, label: WAVE_NAME[k] }));
+  else WAVE_ORDER.forEach(k => cols.push({ key: k, label: WAVE_NAME[k] }));
   return cols;
 }
 // What the arrow should mark: an explicit sort, else the column the tab's default order uses
@@ -657,7 +651,7 @@ function render() {
   const header = `<thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
     <th data-sort="name"${dirAttr('name')} class="text-left font-semibold px-4 py-2.5">Strategy</th>
     ${wcols ? '' : `<th data-sort="main"${dirAttr('main')} class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">${wmode ? (CUSTOM_WIN ? `Return · ${CUSTOM_WIN.start} → ${CUSTOM_WIN.end}${CUSTOM_WIN.topN != null ? ` · top-${CUSTOM_WIN.topN}` : ''}` : 'Return · window') : 'CAGR'}</th>`}
-    ${wcols ? waveCols().map(k => `<th data-sort="${k}"${dirAttr(k)} class="text-right font-semibold px-2 py-2.5 whitespace-nowrap" title="Return over ${esc(WAVE_NAME[k])} (${esc(waveColWindow(k))}), from the ${esc((snapFor(k) && snapFor(k).date) || (WAVE_SNAP && WAVE_SNAP.date) || 'latest')} snapshot">${WAVE_ICON[k]} ${esc(WAVE_NAME[k])}<br><span class="text-[9px] font-medium normal-case tracking-normal text-slate-400">${esc(waveColWindow(k))}</span></th>`).join('') : ''}
+    ${wcols ? WAVE_ORDER.map(k => `<th data-sort="${k}"${dirAttr(k)} class="text-right font-semibold px-2 py-2.5 whitespace-nowrap" title="Return over ${esc(WAVE_NAME[k])} (${esc(waveColWindow(k))}), from the ${esc((snapFor(k) && snapFor(k).date) || (WAVE_SNAP && WAVE_SNAP.date) || 'latest')} snapshot">${WAVE_ICON[k]} ${esc(WAVE_NAME[k])}<br><span class="text-[9px] font-medium normal-case tracking-normal text-slate-400">${esc(waveColWindow(k))}</span></th>`).join('') : ''}
     <th class="px-2 py-2.5"></th>
     ${OWNER ? '<th class="px-2 py-2.5"></th>' : ''}
   </tr></thead>`;
@@ -689,7 +683,7 @@ function render() {
         </div>
       </td>
       ${wcols ? '' : `<td class="px-3 py-3 text-right text-sm whitespace-nowrap">${cagrCell}</td>`}
-      ${wcols ? waveCols().map(k => waveCell(k, c)).join('') : ''}
+      ${wcols ? WAVE_ORDER.map(k => waveCell(k, c)).join('') : ''}
       <td class="px-2 py-3 text-center"><button class="text-base leading-none transition" data-favtoggle="${esc(identityKey(c))}" title="${isFav(favs, c) ? 'Remove from favourites' : 'Add to favourites'}">${isFav(favs, c) ? '⭐' : '☆'}</button></td>
       ${OWNER ? `<td class="px-2 py-3 text-center whitespace-nowrap"><button class="text-slate-300 hover:text-red-500 text-sm" data-delgroup="${esc(identityKey(c))}" title="Delete strategy">🗑️</button></td>` : ''}
     </tr>`;
@@ -831,22 +825,9 @@ const PERIOD_PRESETS = {
   w2:    { from: '2023-03-31', to: '2024-09-30' },
   w3:    { from: '2026-03-31', to: null },
   cycle: { from: '2020-03-31', to: null },
-  // `full` is NOT a clickable view — there is no wave-row button for it (removed 2026-08-03, the
-  // four cycle windows are what you rank by). It stays here because the nightly Node bake reads this
-  // window definition and the 🆕 New tab shows its result as a column.
-  // `from: null` = fullWindowStart() — where TRUE daily bars begin (2002-01-02), NOT the dataset's
-  // 1996 start: pre-2002 bars are weekly, where the oscillator family isn't meaningful.
-  full:  { from: null, to: null },
 };
-// The DAILY bake set. `full` is deliberately absent: a 24-year window costs roughly 2.5x all four
-// waves put together and needs the deep pre-2019 history loaded, so it bakes in its own nightly job
-// (bake-full-history.yml → ?waves=full) with a far bigger budget. Both jobs write the same snapshot
-// row, each promoting only the keys it baked.
 const WAVE_ORDER = ['w1', 'w2', 'w3', 'cycle'];
-const ALL_WAVES = ['w1', 'w2', 'w3', 'cycle', 'full'];
-// Start of the Full-history window: the true-daily floor when the data reports one, else the dataset start.
-function fullWindowStart() { return (typeof SF !== 'undefined' && SF && (SF.dailyFrom || SF.start)) || '2002-01-02'; }
-// Which windows a bake run should compute: ?waves=full (or a comma list); default = the daily set.
+// Which windows a bake run should compute: a comma list of the above; default = the daily set.
 function bakeWaveList() {
   const raw = new URLSearchParams(location.search).get('waves');
   if (!raw) return WAVE_ORDER;
@@ -890,13 +871,13 @@ async function computeAndSaveWaves(headless) {
   // interrupted or failed bake never destroys the numbers the page is already serving.
   const payload = (WAVE_SNAP && typeof WAVE_SNAP === 'object') ? Object.assign({}, WAVE_SNAP) : {};
   payload.bakeSession = session;
-  const waves = bakeWaveList();                                  // daily set, or ?waves=full for the long one
+  const waves = bakeWaveList();                                  // the daily set, or a ?waves= subset of it
   const freshDone = key => payload[key] && payload[key].sess === session &&
                            payload[key].results && Object.keys(payload[key].results).length >= groupCountAll;
   for (let wi = 0; wi < waves.length; wi++) {
     const key = waves[wi], p = PERIOD_PRESETS[key];
     if (freshDone(key)) continue;                                // already recomputed in THIS session
-    const from = clampDate(p.from || fullWindowStart(), SF.start, SF.end);
+    const from = clampDate(p.from, SF.start, SF.end);
     const to   = clampDate(p.to || today, SF.start, SF.end);
     // resume this session's partial work for this wave (kept beside the live results, not over them)
     const prior = (payload[key] && payload[key].pendingSess === session) ? payload[key].pending : null;
@@ -1282,12 +1263,8 @@ function wireUI() {
   if (window.btSync) {
     try { await btSync.pullStrategies(); } catch (e) {}                 // shared strategy definitions (replaces local with the shared list)
     try { HIST = await btSync.pull() || []; } catch (e) { HIST = []; }  // shared backtest history (all windows)
-    // Two rows, deliberately: 'waves' is rewritten wholesale by the browser-side wave bake, so the
-    // Node full-history baker owns a separate 'waves_full' row it can publish to without being
-    // clobbered (that race ate a completed bake on 2026-08-03). Fetched together, both public reads.
-    try { const [w, f] = await Promise.all([btSync.snapGet('waves'), btSync.snapGet('waves_full')]);
-          WAVE_SNAP = w; FULL_SNAP = (f && f.results) ? f : null; }
-    catch (e) { WAVE_SNAP = null; FULL_SNAP = null; }
+    try { WAVE_SNAP = await btSync.snapGet('waves'); }
+    catch (e) { WAVE_SNAP = null; }
   } else if (headless) { HIST = localHistBefore; }
   // One-time migration: the "private strategy" (🔒) feature is removed — publish anything still
   // sitting in this browser's private store back to the shared list/history so it's visible to

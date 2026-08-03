@@ -1,12 +1,10 @@
-/* Strategy IDENTITY — the single definition, shared by the pages and the CI bake.
+/* Strategy IDENTITY — the single definition, shared by the pages.
  *
  * A baked result is stored under identityKey(cfg) and looked up by the page under the same key, so
  * the two MUST agree exactly. They used to be separate copies in saved-strategies.html and
- * strategy-backtest.html; the 2026-08-03 topN change had to be made in both, and a CI baker with a
- * third copy would have been a third chance to drift — a silent one, since a mismatched key doesn't
- * error, it just shows "not baked yet" forever. Hence one file, loaded by everyone:
- *   pages   <script src="./bt-identity.js"></script>   (defines the globals below)
- *   Node    read the file and evaluate it alongside the engine (scripts/bake_full.mjs)
+ * strategy-backtest.html; the 2026-08-03 topN change had to be made in both, which is exactly the
+ * silent-drift risk this file removes — a mismatched key doesn't error, it just shows "not baked
+ * yet" forever. Hence one file, loaded via <script src="./bt-identity.js"></script> everywhere.
  *
  * DOM-FREE and dependency-free — do not add either.
  */

@@ -2789,54 +2789,20 @@ keep in sync, memory `feedback-backtest-engines-sync`):
    must match after `ensureHistoryFor` (harness pattern: intercept the sf-data host with
    Playwright `page.route`, serve local part files).
 
-## 47. ★ FULL-HISTORY RESULTS ARE PRE-BAKED NIGHTLY — IN NODE, NOT A BROWSER  (2026-08-03)
+## 47. ★ FULL-HISTORY COLUMN — REMOVED  (added 2026-08-03, removed 2026-08-03)
 
-A 2002→date backtest is ~68s of honest compute per strategy (24 years x ~4,400 stocks on true daily
-bars), so it is precomputed in CI and the site only ever READS the answer:
-
-* `.github/workflows/bake-full-history.yml` → `node scripts/bake_full.mjs`, `timeout-minutes: 180`.
-* Chained after **Bake wave snapshot** (any conclusion), NOT off the data refresh directly: both
-  jobs write the same snapshot row, and the browser-side wave bake rewrites the WHOLE payload from
-  the copy it read at page load — running concurrently it would silently drop a freshly published
-  `full` key. The wave bake only runs after a successful data refresh, so the chain still means
-  "once today's data is in".
-* Results land in the SAME Supabase snapshot as the waves (`bt_snapshots` id `waves`, key `full`),
-  read publicly by every visitor (`bt_snap_get`, no owner key) — instant for everyone, nobody ever
-  presses anything. Surfaced as the **Full history COLUMN on the 🆕 New tab** only; there is no
-  wave-row button for it (one existed for a few hours on 2026-08-03 and was removed — the four
-  market-cycle windows are what you rank the list by). The column appears only once the key is
-  baked, so it is never a permanently empty column.
-* Window starts at `SF.dailyFrom` (2002-01-02), NOT `SF.start` (1996): pre-2002 bars are weekly and
-  the oscillator family is meaningless there.
-* Checkpoints every 5 strategies into the snapshot's pending slot; only a COMPLETE set is promoted,
-  and it refuses to publish an empty result set, so a bad run can never blank a good snapshot.
-
-### Why Node and not the Playwright harness the waves use
-`scripts/bake_waves.mjs` drives `saved-strategies.html` in a headless browser. For the ~18-month
-waves that works. For this window it never finished — every batch died ~40s in, DURING the data
-load, before a single backtest ran (five batches, all stuck at 5/32, run 30822256497). Two causes
-were found and only the first was fixable there:
-1. **Service worker.** Every batch is a fresh browser, so every batch met the current `sw.js` for
-   the first time → `controllerchange` → theme.js reloads the page → bake dies. Tell-tale: the
-   Tailwind banner logged TWICE per batch. Fixed with `newContext({serviceWorkers:'block'})` —
-   worth keeping, it was quietly costing the DAILY wave bake too.
-2. **The harness itself** still cut batches off mid-load. Not worth chasing: the engine is DOM-FREE
-   by design, so Node runs it directly — no renderer, no reload, no batch/resume machinery.
-   Measured: ~68s per 24-yr backtest at a flat ~630 MB heap (browser probe), F&O universes ~2s.
-
-### Running the engine in Node (the shims that matter)
-`scripts/bake_full.mjs` reads `docs/backtest-engine.js` and evaluates it in ONE Function body with
-its driver (the engine declares everything `const`/`let` at top level, so they must share a scope):
-* `globalThis.location` stub — only `SLICE_BASE` reads it, at load time.
-* `fetch` wrapper resolving the engine's relative `./x` URLs against the live site.
-* IndexedDB is absent; the engine's cache helpers are already try/catch'd and degrade to no caching,
-  which is correct for a fresh runner anyway.
-* `NODE_OPTIONS=--max-old-space-size=6144` — the default heap is under what the merged 24-year
-  dataset needs (~630 MB live, higher transient peaks while deep parts are parsed and prepended).
+The 🏛 Full-history column (2002→date return, baked nightly in Node — `scripts/bake_full.mjs` +
+`.github/workflows/bake-full-history.yml`, snapshot row `waves_full`) was pulled from the 🆕 New tab
+of Saved Strategies on request the same day it shipped. Both files are deleted; the `waves_full`
+Supabase row is simply never written or read again (harmless to leave sitting in the DB). If this
+comes back, the old approach (Node-side bake, separate snapshot row so the browser-side wave bake
+can't clobber it mid-publish, checkpoint-every-5 + refuse-empty-publish) is still sound — see the
+git history of this section (`git log -p -- scripts/DATA_RUNBOOK.md`) for the full design writeup,
+or `git show <commit>^:scripts/bake_full.mjs` for the script.
 
 ### ★ Strategy identity lives in ONE file
-`docs/bt-identity.js` (`identityKey`/`ruleKey`/`winKey`/`bakeGroups`) is loaded by
-`saved-strategies.html`, `strategy-backtest.html` AND the Node baker. A baked result is stored under
+`docs/bt-identity.js` (`identityKey`/`ruleKey`/`winKey`/`bakeGroups`) is loaded by both
+`saved-strategies.html` and `strategy-backtest.html`. A baked result is stored under
 `identityKey(cfg)` and looked up by the page under the same key: a second copy that drifts does not
 error, it just leaves the site saying "not baked yet" forever. The 2026-08-03 topN change already
 had to be applied to two copies by hand — do not make a third.
