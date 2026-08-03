@@ -2689,3 +2689,36 @@ Two traps in these filings:
   only. (This bug produced identical std/con rows before it was caught.)
 
 Applied through `scripts/_debt_reads.json`, wired into `_apply_reads.py`.
+
+## 45. ★★ THE FY QUARTER-SUM IDENTITY — how to prove which side of an anchor mismatch is wrong
+
+When a filing's PAT does not match the stored PAT, the cell is refused — correctly, but that
+leaves you not knowing WHICH side is wrong. The decisive test, using only the BSE detres source
+of §42: fetch all four quarters of the fiscal year plus the audited annual (`.50` sub-id), then
+sum each series.
+
+    as-filed quarters sum == audited annual   ->  the STORED series is defective
+    stored quarters sum   == audited annual   ->  the read is wrong; leave the cell alone
+    neither matches                           ->  usually a standalone/consolidated mix; REFUSE
+
+This is proof, not inference — an audited annual is not free to disagree with its own quarters.
+Cases it settled (2026-08-03), each of which had resisted every extraction route:
+* SYNDIBANK Dec-2018 stored **0.00** (a sentinel): as-filed quarters sum to -2588.30 = the FY19
+  annual exactly, and the stored series missed by precisely 107.99 — the disputed cell. The same
+  zero had ALSO caused an earlier FY-consistency gate to reject Mar-2019 (128.02) as inconsistent,
+  so one bad cell was blocking two.
+* ITI FY18: as-filed 230.56 vs annual 230.55 -> stored Sep-17 (7.56) and Dec-17 (13.58) both wrong
+  (true 46.11 / 76.24).
+* IIFL FY18: as-filed 204.35 == annual exactly -> stored Dec-17 23.44 wrong (true 33.07).
+* COX&KINGS Jun-2015: annual reconciles to 0.47% with the as-filed value vs 4.7% with the stored
+  one, and EPS x shares independently gives 77.71 vs the page's 77.64.
+  ⚠️ Its verdict FLIPPED after two other FY16 quarters were healed — the test depends on the rest
+  of the series, so re-run it after any heal in the same fiscal year.
+
+Refuse rather than force when neither side reconciles (GODREJPROP FY18, MOTILALOFS FY18,
+SUDARCOLOR FY16 all failed both ways — the annual there is consolidated while the quarters are
+standalone). Tool: `scripts/_fy_identity.py SYM:FY`.
+
+Corollary worth remembering: a "revenue not served" cell is often not a document problem at all —
+of the first six closed in this class, ALL six were blocked by a wrong or missing stored PAT
+rather than by an unavailable filing.
