@@ -68,26 +68,37 @@ def announced(sym, ymd):
 # scan the recent window
 end = datetime.date.today(); cur = end - datetime.timedelta(days=LOOKBACK)
 cands = []
+# ALL calendar days: weekend special sessions (budget Saturdays, muhurat, DR Saturdays) are real
+# trading days that now carry bars in the price series, so they must be audited too.
+# Two traps on non-trading dates, both seen live on 2026-08-01/02:
+#   1. the URL serves NSE's HTML error page (3.5 KB, passes bhav()'s size check) — reject anything
+#      without a SYMBOL header, else csv.reader happily parses markup;
+#   2. the URL re-serves the PRIOR session's file under the wrong date — skip a file identical to
+#      the last ACCEPTED one. The signature must only advance on a genuinely parsed bhavcopy: an
+#      interposed error page in between would otherwise reset the baseline and let the re-served
+#      file through as a "new" session (that injected fake 2026-08-02 crashes in testing).
+last_sig = None
 while cur <= end:
-    if cur.weekday() < 5:
-        txt = bhav(cur)
-        if txt:
-            rows = list(csv.reader(io.StringIO(txt)))
-            if rows and len(rows) > 1:
-                hdr = [x.strip() for x in rows[0]]
-                try: iS, iSer, iC, iP = hdr.index("SYMBOL"), hdr.index("SERIES"), hdr.index("CLOSE_PRICE"), hdr.index("PREV_CLOSE")
-                except ValueError: iS = -1
-                if iS >= 0:
-                    ymd = int(cur.strftime("%Y%m%d"))
-                    for x in rows[1:]:
-                        if len(x) <= iP or x[iSer].strip() != "EQ": continue
-                        try: c, pc = float(x[iC]), float(x[iP])
-                        except Exception: continue
-                        if pc <= 0 or ca_factor(c / pc) == 1.0: continue
-                        sym = x[iS].strip()
-                        if ymd in OFFF.get(sym, set()): continue   # already an official split/bonus
-                        cands.append((ymd, sym, round((c / pc - 1) * 100, 1)))
-        time.sleep(0.25)
+    txt = bhav(cur)
+    if txt and "SYMBOL" in txt[:200].upper():
+        rows = list(csv.reader(io.StringIO(txt)))
+        if rows and len(rows) > 1:
+            hdr = [x.strip() for x in rows[0]]
+            try: iS, iSer, iC, iP = hdr.index("SYMBOL"), hdr.index("SERIES"), hdr.index("CLOSE_PRICE"), hdr.index("PREV_CLOSE")
+            except ValueError: iS = -1
+            sig = hash(txt)
+            if iS >= 0 and sig != last_sig:
+                last_sig = sig
+                ymd = int(cur.strftime("%Y%m%d"))
+                for x in rows[1:]:
+                    if len(x) <= iP or x[iSer].strip() != "EQ": continue
+                    try: c, pc = float(x[iC]), float(x[iP])
+                    except Exception: continue
+                    if pc <= 0 or ca_factor(c / pc) == 1.0: continue
+                    sym = x[iS].strip()
+                    if ymd in OFFF.get(sym, set()): continue   # already an official split/bonus
+                    cands.append((ymd, sym, round((c / pc - 1) * 100, 1)))
+    time.sleep(0.25)
     cur += datetime.timedelta(days=1)
 
 # a split-ratio move with NO announcement = crash -> record
