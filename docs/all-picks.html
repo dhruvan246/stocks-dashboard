@@ -29,13 +29,13 @@
   .scard:hover{transform:translateY(-2px);box-shadow:0 16px 44px -18px rgba(16,24,40,.34)}
   .brow:hover{background:#f8fafc}
   .vbtn[aria-selected="true"]{background:#4f46e5;color:#fff}
-  #board .grid-row{display:grid;grid-template-columns:28px minmax(170px,1.6fr) 92px 92px 58px minmax(240px,2.6fr);gap:12px;align-items:center}
+  #board .grid-row{display:grid;grid-template-columns:28px minmax(170px,1.6fr) 92px 92px 58px minmax(240px,2.6fr) minmax(240px,2.6fr);gap:12px;align-items:center}
   /* padding+negative margin grows the tap area into the header row's own padding without
      moving the label: the text alone is a 15px-tall target, which is a miss on a phone. */
   .sortcol{cursor:pointer;user-select:none;padding:10px 0;margin:-10px 0}
   .sortcol:hover{color:#475569}
   .sortcol .ar{font-size:9px;margin-left:3px;opacity:.9}
-  @media (max-width:924px){ #boardScroll{overflow-x:auto} #boardScroll>div{min-width:924px} }
+  @media (max-width:1176px){ #boardScroll{overflow-x:auto} #boardScroll>div{min-width:1176px} }
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
@@ -91,12 +91,13 @@
         <div data-sort="day" class="sortcol text-right" title="Held basket's move since the previous close">Since prev close<span class="ar"></span></div>
         <div data-sort="topN" class="sortcol text-right">Hold<span class="ar"></span></div>
         <div>Qualifying now · today's move</div>
+        <div title="The basket screened on the last rebalance date — what the strategy actually holds, and what the return badges are measured on">Qualifying at rebalance · move since</div>
       </div>
       <div id="boardRows"></div>
     </div></div>
   </section>
 
-  <p id="foot" class="text-[11px] text-slate-400 mt-4 hidden">Prices are live (Yahoo NSE, ~15-min delay); per-stock figures are today's move. The listed stocks are the strategy's top-N screened as of now, so they match its Live Picks tab and can differ from what it currently holds. Both badges are measured on the held basket — the top-N as screened on the last rebalance date — as the equal-weight move of those stocks to the live price: “since prev close” from yesterday's close (it reads “—” until live quotes arrive), “since reb.” from the rebalance day's close. One card per selection rule, so the count matches Saved Strategies. ↻ Refresh re-fetches quotes.</p>
+  <p id="foot" class="text-[11px] text-slate-400 mt-4 hidden">Prices are live (Yahoo NSE, ~15-min delay); per-stock figures are today's move. The listed stocks are the strategy's top-N screened as of now, so they match its Live Picks tab and can differ from what it currently holds. The board's last column is that held basket — the top-N screened on the rebalance date — with each stock's move since then. Both badges are measured on the held basket — the top-N as screened on the last rebalance date — as the equal-weight move of those stocks to the live price: “since prev close” from yesterday's close (it reads “—” until live quotes arrive), “since reb.” from the rebalance day's close. One card per selection rule, so the count matches Saved Strategies. ↻ Refresh re-fetches quotes.</p>
 </main>
 
 <script src="./backtest-engine.js"></script>
@@ -276,9 +277,9 @@ function basketAt(cfg, date, topN) {
  * Each card carries TWO baskets, because they answer different questions:
  *   picks — what the strategy qualifies for RIGHT NOW (identical to the strategy page's Live
  *           Picks tab), shown with the live price and today's move. This is the list you'd act on.
- *   held  — the basket formed at the last rebalance. Never displayed, but it is what the headline
- *           return is measured on, so that number reflects the position actually carried rather
- *           than a hypothetical one.
+ *   held  — the basket formed at the last rebalance. Shown as the board's last column, and it is
+ *           what the headline return is measured on, so that number reflects the position
+ *           actually carried rather than a hypothetical one.
  * Membership of both is fixed between rebalances, so ↻ Refresh only re-quotes and re-prices.    */
 function priceHold(h, todayOff) {                 // held: today's move on what it actually owns
   const q = (typeof liveQuote === 'function') ? liveQuote(h.sym) : null;
@@ -467,6 +468,10 @@ function renderBoard() {
         <a href="./stock.html?sym=${encodeURIComponent(p.sym)}" class="tick ${p.day >= 0 ? 'up' : 'dn'}"
            title="₹${f2(p.live)} · today's move"><b>${esc(p.sym)}</b><em>${sp(p.day)}</em></a>`).join('')}${
         r.picks.length > PICK_CAP ? `<a href="${stratHref(r.s)}" class="tick text-slate-500">+${r.picks.length - PICK_CAP} more</a>` : ''}</div>
+      <div class="flex flex-wrap gap-1">${!r.held.length ? '<span class="text-[11px] text-slate-400">in cash</span>' : ''}${r.held.slice(0, PICK_CAP).map(h => `
+        <a href="./stock.html?sym=${encodeURIComponent(h.sym)}" class="tick ${h.ret >= 0 ? 'up' : 'dn'}"
+           title="₹${f2(h.entry)} → ₹${f2(h.live)} · since the ${esc(r.rebDate)} rebalance"><b>${esc(h.sym)}</b><em>${sp(h.ret)}</em></a>`).join('')}${
+        r.held.length > PICK_CAP ? `<a href="${stratHref(r.s)}" class="tick text-slate-500">+${r.held.length - PICK_CAP} more</a>` : ''}</div>
     </div>`).join('');
 }
 
