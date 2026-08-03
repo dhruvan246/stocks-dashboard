@@ -197,3 +197,33 @@ Progress log (append a line per completed step):
   has 2010-era data — 2,059 real rows for Jan-2010 — but its ~40 distinct filing categories that
   month contain no "Shareholding Pattern" entry at all). Full detail in memory
   `project-stocks-shp-bse-backfill`.
+- 2026-08-03: **STEP 5 FULL-DEPTH DONE — the "pre-2016 unreachable" verdict above is SUPERSEDED.**
+  User asked for entire step-5 coverage, so the dead end got re-attacked from a different angle and
+  broke open: the archived WEB is a source the API probes never considered. The Wayback Machine
+  holds ~134k captures of Moneycontrol's old `company-facts/<slug>/shareholding-pattern/<scId>/<qtrid>`
+  pages — server-rendered full Clause-35 tables (promoter total, MF/UTI, FI/Banks, insurance, FII
+  rows + institutions subtotal), dense 2011-2016, and MC's qtrid numbering IS BSE's own
+  (29=Mar-2001 … 89=Mar-2016), so quarters are addressable exactly. New `scripts/fetch_shp_wayback_mc.py`
+  (map → frontier → sample → harvest → ledger, all resumable, page cache gzipped).
+  **Result: ledger `scripts/shp_fill_hist_2010_2016.json.gz`, 4,118 cells / 523 companies,
+  Dec-2010 → Sep-2015**; shp_history 60,650 → 64,768 cells; shp_engine RELIANCE 40 → 53 quarters
+  (earliest 2011-03-31), TCS from 2010-12-31. Verified live: a `simulate()` run with `fiiPct>15`,
+  2012-01→2015-09 quarterly, gave **15/15 non-empty rebalances, 21.1% CAGR**, holdings that are the
+  right names for the era (UNITDSPR 53%, APOLLOHOSP 40%, ZEEL 37%). Shared bt_* stores untouched
+  (58/300 before and after).
+  **Two STOP-GATE catches worth keeping:** (1) column convention — pages give both "% of (A+B)" and
+  "% of (A+B+C)"; these are identical except for GDR companies, so calibration measured ONLY that
+  subset against trusted 2016 XBRL anchors → ABC wins (6.23 vs 6.87 median pp) and matches modern
+  XBRL's A+B+C2 basis. (2) the gate's first run returned *zero* overlap, which turned out to be a
+  SOURCE defect, not a bug: MC's pages carry an EMPTY FII row for EVERY company at Dec-2015 and
+  Mar-2016 (verified on ACC — a large cap that plainly had foreign holding), 0% fill vs 94-99% at
+  every earlier quarter, i.e. MC's own pipeline broke when SEBI restructured the format. Those 838
+  cells are DROPPED rather than written as fii=0 — writing them would have fabricated "no foreign
+  holding" for ~840 company-quarters, exactly what parse_shp's never-zero-default rule exists to
+  prevent. Also dropped: 196 failing institutions-reconciliation, 181 no-fii, 132 no-promoter-total.
+  **Dates:** pre-2016 filings carry no submission date anywhere (BSE deleted them), so visibility =
+  QE+21d, the era's SEBI Clause-35 deadline, flagged approximate in every cell's provenance slot
+  (`--lag N` regenerates). 2016+ cells keep their REAL dates — ledgers apply in order, XBRL first.
+  **Remaining floor: Sep-2015 back to Dec-2010 is filled; 2001-2010 stays unreachable** (MC had no
+  such pages before Dec-2010 — verified on a 2008 capture; only March quarters could ever come from
+  annual-report OCR, a different undertaking). Full detail: memory `project-stocks-shp-wayback-2010`.
