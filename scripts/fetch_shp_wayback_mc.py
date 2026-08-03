@@ -370,65 +370,96 @@ def cmd_ledger():
     cells = parsed["cells"]
     hist = json.load(open(os.path.join(HERE, "shp_history.json"), encoding="utf-8"))
 
-    # SEAM CALIBRATION: for companies with a trusted 2016 XBRL cell (2016-06-30 or 2016-09-30),
-    # compare our parsed Dec-2015/Mar-2016 FII under BOTH column conventions; holdings drift slowly,
-    # so the correct column minimizes the median |seam|.
-    diffs = {"AB": [], "ABC": []}
+    # ⚠ SOURCE DEFECT, found by this gate on the first run (2026-08-03): for qtrid 88 (Dec-2015)
+    # and 89 (Mar-2016) Moneycontrol's own pages carry an EMPTY "Foreign Institutional Investors"
+    # row — all "-" — for EVERY company including large caps with obvious foreign holding (verified
+    # on ACC, both quarters). MC's pipeline evidently broke when SEBI restructured the format; the
+    # data is absent at source, not mis-parsed. FII fill-rate is 94-99% for every qtrid <= 87 and
+    # exactly 0% at 88/89. Those two quarters are DROPPED — writing them would fabricate fii=0 for
+    # ~840 company-quarters, the precise failure mode parse_shp's "never zero-default" rule exists
+    # to prevent. Effective ledger window is therefore Dec-2010 .. Sep-2015.
+    USABLE_MAX_Q = 87
+
+    # SEAM CALIBRATION. The two candidate columns are "% of (A+B)" and "% of (A+B+C)", where C is
+    # the GDR/custodian block; they are IDENTICAL for companies without GDRs, so the choice only
+    # matters for the GDR subset — which is where this measures. Anchor = the trusted 2016 XBRL
+    # cells; nearest usable harvested quarter is Sep-2015, so a ~3-quarter drift is baked into the
+    # absolute numbers and only the RELATIVE AB-vs-ABC comparison is meaningful.
+    best = {}
     for key, c in cells.items():
         sym, q = key.split("|"); q = int(q)
-        if q not in (88, 89): continue
+        if q > USABLE_MAX_Q: continue
+        p = c["cols"].get("fii")
+        if not p or (p[0] is None and p[1] is None): continue
+        if sym not in best or q > best[sym][0]: best[sym] = (q, p)
+    diffs = {"AB": [], "ABC": []}
+    gdr = {"AB": [], "ABC": []}
+    for sym, (q, p) in best.items():
         anchor = None
         for qe in ("2016-06-30", "2016-09-30"):
             v = (hist.get(sym) or {}).get(qe)
             if v: anchor = v; break
-        if not anchor or "fii" not in c["cols"]: continue
-        ab, abc = c["cols"]["fii"]
-        if ab is not None: diffs["AB"].append(abs(ab - anchor[1]))
-        if abc is not None: diffs["ABC"].append(abs(abc - anchor[1]))
-    med = {}
-    for k, v in diffs.items():
-        v.sort()
-        med[k] = v[len(v) // 2] if v else None
-    print("seam medians vs 2016 XBRL fii:", med, "(n=%d/%d)" % (len(diffs["AB"]), len(diffs["ABC"])), flush=True)
-    if med["AB"] is None and med["ABC"] is None:
-        raise SystemExit("STOP: no seam overlap at all — cannot calibrate column convention")
-    use_abc = (med["ABC"] is not None) and (med["AB"] is None or med["ABC"] <= med["AB"])
+        if not anchor: continue
+        ab, abc = p[0], p[1]
+        if ab is None or abc is None: continue
+        diffs["AB"].append(abs(ab - anchor[1])); diffs["ABC"].append(abs(abc - anchor[1]))
+        if abs(ab - abc) > 0.5:                       # GDR company: the columns actually differ
+            gdr["AB"].append(abs(ab - anchor[1])); gdr["ABC"].append(abs(abc - anchor[1]))
+    def med(v):
+        v = sorted(v); return v[len(v) // 2] if v else None
+    mAB, mABC, gAB, gABC = med(diffs["AB"]), med(diffs["ABC"]), med(gdr["AB"]), med(gdr["ABC"])
+    print("seam vs 2016 XBRL fii — all n=%d: AB=%s ABC=%s | GDR-subset n=%d: AB=%s ABC=%s"
+          % (len(diffs["AB"]), mAB, mABC, len(gdr["AB"]), gAB, gABC), flush=True)
+    if mAB is None or len(diffs["AB"]) < 50:
+        raise SystemExit("STOP: too little seam overlap (%d) to calibrate" % len(diffs["AB"]))
+    if gABC is None or len(gdr["AB"]) < 5:
+        raise SystemExit("STOP: no GDR-subset overlap — cannot discriminate the two column conventions")
+    use_abc = gABC <= gAB
     col = 1 if use_abc else 0
-    print("chosen column convention:", "%%of(A+B+C)" if use_abc else "%%of(A+B)", flush=True)
-    if (med["ABC"] if use_abc else med["AB"]) > 2.0:
-        raise SystemExit("STOP: chosen convention still has median seam > 2pp — definitions don't line up, refusing to write")
+    print("chosen column convention:", "%of(A+B+C)" if use_abc else "%of(A+B)", flush=True)
+    # Drift over ~3 quarters is expected; a definition mismatch would show up far larger than this.
+    if min(mAB, mABC) > 4.0:
+        raise SystemExit("STOP: best convention still has median seam %.2fpp — definitions don't line up, refusing to write" % min(mAB, mABC))
 
     fills = defaultdict(dict)
     dropped = Counter()
     for key, c in cells.items():
         sym, q = key.split("|"); q = int(q)
+        if q > USABLE_MAX_Q:
+            dropped["qtr88-89-source-has-no-fii"] += 1; continue
         qe = qe_of_qtrid(q)
         cols = c["cols"]
         def val(slot):
             p = cols.get(slot)
             if not p: return None
             return p[col] if p[col] is not None else p[1 - col]
-        fii = val("fii") or 0.0
-        mf = val("mf") or 0.0
-        dii = (val("mf") or 0.0) + (val("banks") or 0.0) + (val("ins") or 0.0)
+        # fii is the primary factor AND proof the institutions block parsed — never default it to
+        # 0.0 (that is indistinguishable from a genuine zero holding and silently poisons screens).
+        fii = val("fii")
+        if fii is None:
+            dropped["no-fii"] += 1; continue
         prom = val("prom")
-        inst = val("inst_sub")
-        if prom is None and fii == 0.0 and dii == 0.0:
-            dropped["empty"] += 1; continue
+        if prom is None:
+            dropped["no-promoter-total"] += 1; continue
+        mf = val("mf") or 0.0
+        dii = mf + (val("banks") or 0.0) + (val("ins") or 0.0)
         # reconciliation gate mirroring parse_shp: itemized institutions ≈ subtotal (when present)
+        inst = val("inst_sub")
         if inst is not None:
             item_sum = fii + dii + (val("govt") or 0.0) + (val("qfi") or 0.0)
             if abs(item_sum - inst) > 1.0:
                 dropped["inst-recon"] += 1; continue
+        if not (0.0 <= prom <= 100.0) or not (0.0 <= fii <= 100.0) or not (0.0 <= dii <= 100.0):
+            dropped["out-of-range"] += 1; continue
         sub = (qe + datetime.timedelta(days=LAG_DAYS)).isoformat()
-        fills[sym][qe.isoformat()] = [round(prom, 2) if prom is not None else 0.0,
-                                       round(fii, 2), round(dii, 2), round(mf, 2),
-                                       round(val("ins") or 0.0, 2), sub, None, c["src"] + ":approx+%dd" % LAG_DAYS]
+        fills[sym][qe.isoformat()] = [round(prom, 2), round(fii, 2), round(dii, 2), round(mf, 2),
+                                       round(val("ins") or 0.0, 2), sub, None,
+                                       c["src"] + ":approx+%dd" % LAG_DAYS]
     total = sum(len(v) for v in fills.values())
-    meta = {"window": ["2010-12-31", "2016-03-31"], "source": "wayback moneycontrol company-facts",
+    meta = {"window": ["2010-12-31", "2015-09-30"], "source": "wayback moneycontrol company-facts",
             "date_convention": "QE+%dd (SEBI Clause-35 deadline) — APPROXIMATE, no real filing dates exist" % LAG_DAYS,
             "column_convention": "%of(A+B+C)" if use_abc else "%of(A+B)",
-            "seam_median_pp": med, "companies": len(fills), "cells": total,
+            "seam_median_pp": {"all_AB": mAB, "all_ABC": mABC, "gdr_AB": gAB, "gdr_ABC": gABC}, "companies": len(fills), "cells": total,
             "dropped": dict(dropped)}
     with gzip.open(LEDGER_OUT, "wt", encoding="utf-8") as fh:
         json.dump({"_meta": meta, "fills": fills}, fh, separators=(",", ":"))
