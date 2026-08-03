@@ -81,15 +81,23 @@ return (async function () {
   log(\`\${groups.length} strategies to bake\`);
   if (!groups.length) return { skipped: true };
 
-  const results = {};
+  // RESUME: a run cancelled mid-way (a data refresh landing on top of this one) leaves its finished
+  // strategies in the row's pending slot. Reuse them when they were computed for the SAME window and
+  // data date — otherwise start clean, because a stale number is worse than a slow run.
+  const results = Object.assign({}, CTX.resumeFrom(from, to));
+  const resumed = Object.keys(results).length;
+  if (resumed) log(resumed + ' strategies already computed for this window — resuming');
+
   let done = 0;
   for (const g of groups) {
+    const key = identityKey(g.cfg);
+    if (results[key]) { done++; continue; }
     const cfg = { ...g.cfg, start: from, end: to, capital: g.cfg.capital || 100000 };
     const t0 = Date.now();
     try {
       const r = simulate(cfg);
-      results[identityKey(g.cfg)] = { ret: (r.finalV / cfg.capital - 1) * 100, cagr: r.cagr,
-                                      maxDD: r.maxDD, finalV: r.finalV, topN: cfg.topN };
+      results[key] = { ret: (r.finalV / cfg.capital - 1) * 100, cagr: r.cagr,
+                       maxDD: r.maxDD, finalV: r.finalV, topN: cfg.topN };
       log(\`\${++done}/\${groups.length} \${g.name || identityKey(g.cfg)} — CAGR \${r.cagr.toFixed(2)}% (\${Math.round((Date.now()-t0)/1000)}s)\`);
     } catch (e) {
       done++; log(\`\${done}/\${groups.length} FAILED \${g.name || ''}: \${e && e.message || e}\`);
@@ -108,6 +116,7 @@ async function main() {
   console.log(`[bake-full] ${Array.isArray(strategies) ? strategies.length : 0} saved strategies`);
 
   const session = process.env.GITHUB_RUN_ID || String(Date.now());
+  const before = (await rpc('bt_snap_get', { snap_id: SNAP_ID })) || {};
 
   // Checkpoints keep the last COMPLETE result set intact: they write to `pending`, which the page
   // never displays, so an interrupted run can't replace good numbers with a partial set.
@@ -123,6 +132,9 @@ async function main() {
     clampDate: (d, lo, hi) => (d < lo ? lo : d > hi ? hi : d),
     saveEvery: SAVE_EVERY,
     checkpoint,
+    // Only reuse a checkpoint computed for the very same window AND data date — the window end moves
+    // with the data, so yesterday's partial set would silently mix two end dates into one column.
+    resumeFrom: (from, to) => (before.pending && before.start === from && before.end === to) ? before.pending : {},
   };
 
   const t0 = Date.now();
