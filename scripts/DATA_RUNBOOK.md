@@ -139,6 +139,22 @@ classifier) and can't commit it either (>100MB single-file git limit) — split 
 (`split_sf_data.py`), push the parts to an orphan branch, and adopt via a one-shot workflow that joins
 + uploads + re-triggers this pipeline (pattern used 2026-08-02, workflow deleted after adoption).
 
+**Weekend special sessions (fixed 2026-08-03):** budget Saturdays (2015-02-28, 2020-02-01,
+2025-02-01), weekend muhurat sessions and the 2024 DR-drill Saturdays are REAL trading days that
+every enumerator used to skip via `weekday() < 5` — which made 52w hi/lo provably wrong for 55–147
+stocks for up to a year after each budget Saturday. Now: (a) every daily enumerator
+(update_sf_data, build_sf_data, fetch_bse_bhav, fetch_delivery) walks ALL calendar days — a
+non-session weekend is one cheap "no file" miss, and duplicate-of-prior-day guards absorb NSE/BSE
+re-serving Friday's file on non-trading days; (b) `insert_weekend_sessions()` in update_sf_data.py
+inserts the historical weekend bars in place (idempotent, sentinel-checked), reading rows from the
+tracked ledger `scripts/weekend_sessions.json.gz` first (CI can't always reach the old NSE archive)
+with live fetch as fallback — prices are scaled onto the series' CA level via the PREVIOUS day's
+raw bhavcopy close, NEVER the file's PREV_CLOSE column; (c) fetch_bse_bhav.py has a matching
+`WEEKEND_HEAL` pass for dates inside the BSE store's span. A NEW special weekend session needs NO
+action — the daily walk picks it up like any weekday. ⚠️ An insert-only publish does not advance
+`end` — clients pick it up via the content-hash `rev` in sf-data's sf_meta.json (see the
+sf-cache-key memory); confirm `rev` changed after the run. After bars change, re-bake waves.
+
 Trigger manually (today not in yet / missed run):
 - GitHub → Actions → **"Daily backtest data refresh"** → Run workflow, **or** `gh workflow run refresh-backtest-data.yml`,
   **or** POST `/repos/dhruvan246/stocks-dashboard/dispatches` `{"event_type":"backtest-data-refresh"}`.

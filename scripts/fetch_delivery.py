@@ -102,9 +102,22 @@ def main():
     added = 0
     d = start
     while d <= today:
-        if d.weekday() < 5:
-            got = fetch_day(d)
-            if got:
+        # ALL calendar days — weekend special sessions (budget Saturdays, weekend muhurat,
+        # DR-drill Saturdays) are real trading days the old weekday()<5 filter dropped.
+        got = fetch_day(d)
+        if got:
+            # NSE's dated URL can re-serve the prior day's file on non-trading days. A file
+            # whose closes are ~all identical to the last stored session is that misdirect,
+            # not a session — skip it (protects the now-enumerated ordinary weekends).
+            same = tot = 0
+            for sym, cell in got.items():
+                arr = stocks.get(sym)
+                if arr and arr[-1]:
+                    tot += 1
+                    if abs(arr[-1][0] - cell[0]) < 0.005: same += 1
+            if tot > 500 and same / tot > 0.99:
+                print("  %s: duplicate of last session — skipped" % d.isoformat(), flush=True)
+            else:
                 ymd = d.year * 10000 + d.month * 100 + d.day
                 for arr in stocks.values(): arr.append(None)
                 for sym, cell in got.items():
@@ -114,7 +127,7 @@ def main():
                     arr[-1] = list(cell)
                 days.append(ymd); added += 1
                 print("  +%s (%d stocks)" % (d.isoformat(), len(got)), flush=True)
-            time.sleep(0.25)
+        time.sleep(0.25)   # after every attempt — a miss is still an HTTP request
         d += datetime.timedelta(days=1)
     print("appended %d sessions (now %d)" % (added, len(days)), flush=True)
     if not days:

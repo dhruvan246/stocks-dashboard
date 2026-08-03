@@ -167,9 +167,21 @@ def main():
     op = B.session(); time.sleep(1)
     d = start; got = 0; last = data["end"]
     while d <= today:
-        if d.weekday() < 5:                       # skip weekends outright
-            cl = day_closes(op, d)
-            if cl:
+        # ALL calendar days — weekend special sessions (budget Saturdays, weekend muhurat,
+        # DR-drill Saturdays) are real trading days the old weekday()<5 filter dropped.
+        cl = day_closes(op, d)
+        if cl:
+            # duplicate guard: a weekend/holiday file whose closes ~all equal each scrip's
+            # last stored close is a re-served prior-day file, not a session — skip it.
+            same = tot = 0
+            for code, s in px.items():
+                t = cl.get(code)
+                if t and s["c"]:
+                    tot += 1
+                    if abs(s["c"][-1] - t[0]) < 0.005: same += 1
+            if tot > 500 and same / tot > 0.99:
+                print("  %s: duplicate of prior session — skipped" % d.isoformat())
+            else:
                 di = int(d.strftime("%Y%m%d")); got += 1; last = max(last, di)
                 for code in codes:
                     t = cl.get(code)
@@ -181,8 +193,46 @@ def main():
                 if got % 20 == 0:
                     data["end"] = last; save_prices(data)
                     print("  …%d days, through %d" % (got, last)); time.sleep(0.2)
-            time.sleep(0.15)
+        time.sleep(0.15)
         d += datetime.timedelta(days=1)
+
+    # --- weekend special sessions (budget Saturdays, weekend muhurat, DR-drill Saturdays) ---
+    # The forward walk only moves from `end`, and the old weekday()<5 filter skipped these for
+    # years — so heal any that fall inside the stored span explicitly. save_prices() re-sorts
+    # each series (dv stays aligned via ensure_dv) and heal_delivery() backfills their dv like
+    # any other stored date. Idempotent: a date already present is skipped without a fetch.
+    WEEKEND_HEAL = [20150228, 20161030, 20191027, 20200201, 20201114, 20231112,
+                    20240120, 20240302, 20240518, 20250201, 20260201]
+    floor = min((s["d"][0] for s in px.values() if s["d"]), default=None)
+    for di in WEEKEND_HEAL:
+        if floor is None or di <= floor or di > int(today.strftime("%Y%m%d")): continue
+        if any(di in hs for hs in have.values()): continue          # already stored
+        wd = datetime.date(di // 10000, di // 100 % 100, di % 100)
+        cl = day_closes(op, wd)
+        if not cl:
+            print("  weekend %s: no BSE bhavcopy — skipped" % wd); time.sleep(0.15); continue
+        # duplicate guard vs each scrip's close on its last session BEFORE this date
+        same = tot = 0
+        for code, s in px.items():
+            t = cl.get(code)
+            if not t or not s["d"]: continue
+            k = bisect.bisect_left(s["d"], di) - 1
+            if k >= 0:
+                tot += 1
+                if abs(s["c"][k] - t[0]) < 0.005: same += 1
+        if tot > 500 and same / tot > 0.99:
+            print("  weekend %s: file duplicates the prior session — skipped" % wd); continue
+        ins = 0
+        for code in codes:
+            t = cl.get(code)
+            s = px.get(code)
+            if not t or not s or not s["d"] or di in have.get(code, ()): continue
+            if s["d"][0] > di: continue                             # scrip's series starts later
+            s["d"].append(di); s["c"].append(t[0]); s["v"].append(t[1])
+            have.setdefault(code, set()).add(di); ins += 1
+        print("  weekend %s: inserted %d scrips" % (wd, ins))
+        time.sleep(0.15)
+
     data["end"] = last
     save_prices(data)   # closes are safe on disk before the delivery pass touches anything
     # delivery layer: heal every stored date that still lacks dv (first run backfills the

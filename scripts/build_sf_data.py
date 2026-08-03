@@ -176,7 +176,11 @@ def main():
     all_days = []
     d = START
     while d <= END:
-        if d.weekday() < 5: all_days.append(d)
+        # ALL calendar days — weekend special sessions (budget Saturdays, weekend muhurat,
+        # DR-drill Saturdays) are real trading days; the old weekday()<5 filter dropped them.
+        # Non-session weekends cost one cached [] miss each, and the exact-duplicate signature
+        # check below already skips NSE's holiday URL misdirect (prior day's file re-served).
+        all_days.append(d)
         d += datetime.timedelta(days=1)
     todo = [d for d in all_days if needs_fetch(d)]
     print("Trading-day candidates: %d | needing (re)fetch: %d" % (len(all_days), len(todo)), flush=True)

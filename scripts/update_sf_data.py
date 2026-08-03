@@ -218,6 +218,120 @@ def apply_manual_rights(data):
     return n
 
 
+# ---------------------------------------------------------------------------
+# WEEKEND SPECIAL SESSIONS — budget Saturdays, weekend Diwali-muhurat sessions and the 2024
+# DR-drill Saturdays. Every daily enumerator in this repo skipped Sat/Sun until 2026-08-03, so
+# these real trading days are missing from the series entirely — which made the 52w high/low
+# provably wrong for 55-147 stocks for up to a year after each budget Saturday (VOLTAS's true
+# 52w low, set 2025-02-01, was invisible for 206 trading days). The pass below INSERTS each
+# date's bhavcopy bar in place, scaling prices onto the series' CA-adjustment level with
+# f = adjusted_prev_close / RAW prev close taken from the PREVIOUS day's own bhavcopy (never
+# this file's PREV_CLOSE column, which NSE mis-states on random days — see the chain-on-actual-
+# ratios note in build_sf_data). Idempotent: a date already present (sentinel check) costs
+# nothing. Rows come from the tracked ledger scripts/weekend_sessions.json.gz (CI runners can't
+# always reach the old NSE archive), falling back to a live fetch for dates not in it.
+# Only dates VERIFIED to have a real bhavcopy belong in this list. Found by sweeping EVERY
+# Sat/Sun 2002->2026-08 for a bhavcopy and keeping files that differ from BOTH neighbouring
+# sessions (>300 rows; NSE re-serves the prior session's file on non-trading days, so
+# "identical to Friday" = no session). The 2026-08-03 sweep found exactly these 30.
+_WEEKEND_CONFIRMED = [
+    (2003, 3, 22), (2003, 10, 25), (2003, 11, 15),   # early special Sats (10-25 = muhurat)
+    (2004, 4, 17), (2004, 10, 9),
+    (2005, 6, 4), (2005, 11, 26),
+    (2006, 4, 29), (2006, 6, 25), (2006, 10, 21),    # 10-21 = muhurat Sat
+    (2009, 10, 17),                                  # muhurat Sat
+    (2010, 2, 6),                                    # extended-hours test Sat
+    (2012, 1, 7), (2012, 3, 3), (2012, 4, 28), (2012, 9, 8),   # exchange special live Sats
+    (2013, 5, 11), (2013, 11, 3),                    # 11-03 = muhurat Sun
+    (2014, 3, 22),
+    (2015, 2, 28),                                   # Budget Saturday (full session)
+    (2016, 10, 30),                                  # muhurat Sun
+    (2019, 10, 27),                                  # muhurat Sun
+    (2020, 2, 1),                                    # Budget Saturday (full session)
+    (2020, 11, 14),                                  # muhurat Sat
+    (2023, 11, 12),                                  # muhurat Sun
+    (2024, 1, 20),                                   # special session (Ram-Mandir-week Sat)
+    (2024, 3, 2), (2024, 5, 18),                     # DR-site-switch special live Sats
+    (2025, 2, 1),                                    # Budget Saturday (full session)
+    (2026, 2, 1),                                    # Budget SUNDAY (full session)
+]
+WEEKEND_SESSIONS = [datetime.date(*t) for t in _WEEKEND_CONFIRMED]
+
+
+def insert_weekend_sessions(data, j):
+    """Insert missing weekend special-session bars in place. Returns bars inserted."""
+    import bisect
+    ledger = {}
+    lp = os.path.join(HERE, "weekend_sessions.json.gz")
+    if os.path.exists(lp):
+        try:
+            ledger = json.load(gzip.open(lp, "rt", encoding="utf-8"))
+        except Exception as ex:
+            print("  weekend ledger unreadable (%s) — falling back to live fetch" % ex)
+
+    def has(sym, ymd):
+        e = data.get(sym); ds = e.get("d") if e else None
+        if not ds: return False
+        i = bisect.bisect_left(ds, ymd)
+        return i < len(ds) and ds[i] == ymd
+
+    total = 0
+    for day in WEEKEND_SESSIONS:
+        ymd = int(day.strftime("%Y%m%d"))
+        if any(has(s, ymd) for s in ("RELIANCE", "SBIN", "ITC")):
+            continue                                   # already inserted — zero-cost steady state
+        led = ledger.get(str(ymd)) or {}
+        rows = led.get("rows") or B.fetch_day(day, j)
+        if not rows:
+            print("  WEEKEND %s: no bhavcopy available — skipped" % day); continue
+        if len(rows) < 300:   # stub/corrupt archive file (2010-05-16 has 7 rows), not a session
+            print("  WEEKEND %s: only %d rows — stub file, skipped" % (day, len(rows))); continue
+        prev_raw = led.get("prev") or {}
+        if not prev_raw:                               # walk back to the previous trading day's file
+            d0 = day - datetime.timedelta(days=1)
+            for _ in range(7):
+                prows = B.fetch_day(d0, j)
+                if prows: prev_raw = {r[0]: r[1] for r in prows}; break
+                d0 -= datetime.timedelta(days=1)
+        # misdirect guard: NSE's per-day URL can serve the PRIOR day's file — a "session" whose
+        # closes are ~all identical to the previous trading day is that file, not a session.
+        if prev_raw:
+            same = tot = 0
+            for r in rows:
+                pv = prev_raw.get(r[0])
+                if pv: tot += 1; same += abs(pv - r[1]) < 0.005
+            if tot > 500 and same / tot > 0.99:
+                print("  WEEKEND %s: file duplicates the prior day — skipped" % day); continue
+        ins = skip = 0
+        for r in rows:
+            sym, c, p, t = r[0], r[1], r[2], r[3]
+            h = r[4] if len(r) > 4 else c; l = r[5] if len(r) > 5 else c
+            o_ = r[6] if len(r) > 6 else c; v = r[7] if len(r) > 7 else 0
+            dlv = r[8] if len(r) > 8 else 0; vw = r[9] if len(r) > 9 else 0
+            e = data.get(sym)
+            if not e or not e.get("d") or any(k not in e for k in ("c", "t", "h", "l", "op", "v", "dv", "vw")):
+                skip += 1; continue                    # unknown symbol — nothing to anchor to
+            ds = e["d"]; i = bisect.bisect_left(ds, ymd)
+            if i < len(ds) and ds[i] == ymd: continue  # this symbol already has the bar
+            if i == 0: skip += 1; continue             # listed ON the session — no prior bar to anchor
+            raw_prev = prev_raw.get(sym) or p          # exact anchor; file PREV_CLOSE only as fallback
+            if not raw_prev: skip += 1; continue
+            f = e["c"][i - 1] / raw_prev               # CA-adjustment level at the insertion point
+            adj_c = round(c * f, 2)
+            # implausible day move vs the neighbour = ex-date-on-session edge or bad anchor -> leave out
+            if not (0.01 < f < 100) or not (0.6 <= adj_c / e["c"][i - 1] <= 1.6):
+                skip += 1; continue
+            hi = round(max(h, c) * f, 2); lo_ = round((min(l, c) if l > 0 else c) * f, 2)
+            opx = round(o_ * f, 2) if o_ > 0 else adj_c; vwx = round(vw * f, 2) if vw > 0 else adj_c
+            e["d"].insert(i, ymd); e["c"].insert(i, adj_c); e["t"].insert(i, round(t, 1))
+            e["h"].insert(i, hi); e["l"].insert(i, lo_); e["op"].insert(i, opx)
+            e["v"].insert(i, int(v)); e["dv"].insert(i, round(dlv, 2) if dlv else 0); e["vw"].insert(i, vwx)
+            ins += 1
+        total += ins
+        print("  WEEKEND %s: inserted %d bars (%d rows skipped)" % (day, ins, skip))
+    return total
+
+
 def main():
     if os.path.exists(MARK): os.remove(MARK)
     if "--base" in sys.argv:
@@ -231,7 +345,12 @@ def main():
     days = []
     d = last + datetime.timedelta(days=1)
     while d <= today:
-        if d.weekday() < 5: days.append(d)
+        # ALL calendar days — weekends included. Budget Saturdays (2025-02-01), weekend muhurat
+        # sessions and DR-drill Saturdays are real trading days with a published bhavcopy; the old
+        # weekday()<5 filter silently dropped them (52w hi/lo were provably wrong for 55-147 stocks
+        # after each budget Saturday). A non-session weekend costs one "no file" skip, nothing more;
+        # the duplicate-of-previous-day guard below catches NSE's holiday URL misdirect.
+        days.append(d)
         d += datetime.timedelta(days=1)
     # NOTE: do NOT early-return when there are no new days — self_heal (below) must still run so phantom-CA
     # corrections (e.g. REC) get applied + republished even on an "up to date" day. The append loop simply
@@ -336,6 +455,8 @@ def main():
                 data.pop(old, None); meta.pop(old, None); merged += 1
                 print("  MANUAL RENAME MERGE %s -> %s (%d pts prepended, adj=%.4f)" % (old, new, len(idx), adj))
     mr = apply_manual_rights(data)   # hand-verified per-stock rights adjustments to match Trendlyne
+    wk = insert_weekend_sessions(data, j)   # backfill missing weekend special sessions (budget Sats etc.)
+    if wk: print("Weekend special sessions: %d bars inserted." % wk)
     for day in days:
         rows = B.fetch_day(day, j)
         if not rows:
@@ -414,8 +535,8 @@ def main():
     # refreshes the on-disk bin but does NOT publish the release, bump clients, or commit a marker.
     blob = gzip.compress(json.dumps(D, separators=(",", ":")).encode(), 6)
     open(OUT, "wb").write(blob)
-    if not appended and not healed and not merged and not mr and not dvf:
-        print("No new day / heal / merge / manual-rights / dv-fill — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
+    if not appended and not healed and not merged and not mr and not dvf and not wk:
+        print("No new day / heal / merge / manual-rights / dv-fill / weekend-insert — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
     open(MARK, "w").write(D["end"])
     # tiny version marker — committed daily, lets the browser cache the big bin in IndexedDB
     # keyed to this `end` and skip re-downloading 80 MB until the data actually changes.
