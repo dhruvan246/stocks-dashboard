@@ -18,6 +18,15 @@
      measured 12px above where it lands. A tooltip must appear already in place. */
   #yrCard{animation:none!important;opacity:1}
   .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  /* Sort arrow via ::after, NOT a text node: theme.js builds each phone card's label from the
+     header's textContent, so an arrow in the DOM would ride along into every card row. */
+  th[data-sort]{cursor:pointer;user-select:none}
+  th[data-sort]:hover{color:#334155}
+  th[data-sort][data-dir]::after{font-size:9px;margin-left:3px;vertical-align:1px}
+  th[data-sort][data-dir="asc"]::after{content:"▲"}
+  th[data-sort][data-dir="desc"]::after{content:"▼"}
+  .sortrow{display:none}
+  @media(max-width:640px){ .sortrow{display:flex} }
   /* Phone card mode (theme.js turns this table into cards ≤640px): every other
      cell is a "label — value" line, but the first one IS the card's title — a
      name, a meta line and the filter list stacked together. Squeezed into the
@@ -86,6 +95,9 @@
     <div class="w-full h-1 bg-slate-100 rounded overflow-hidden"><div id="cBar" class="h-full bg-indigo-500 transition-all" style="width:0%"></div></div>
   </div>
   <div id="status" class="text-xs text-slate-500 mb-3"></div>
+  <!-- Phone-only sort control: ≤640px theme.js reflows the table into cards and hides the
+       <thead>, so the clickable column headers vanish with it. Same columns, same state. -->
+  <div id="sortRow" class="sortrow items-center gap-2 mb-2"></div>
   <div id="list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
 </main>
 
@@ -528,8 +540,77 @@ function buildGroups(items) {
   for (const g of groups.values()) { g.list = backtestsFor([...g.vars.values()], g.allIds); g.cagr = canonicalCagr(g.list); }
   return groups;
 }
+/* ---------- column sorting (every tab) ----------
+ * SORT.key null means "leave the tab's own default order alone" — Best/Custom rank by the
+ * window's return, New by when you saved it. Clicking a header takes over from there; the
+ * key is re-validated on every render because the columns themselves change per tab (the
+ * New tab swaps one CAGR column for four wave ones). */
+let SORT = { key: null, asc: false };
+// The columns this tab is currently showing, in header order.
+function sortCols(wcols, wmode) {
+  const cols = [{ key: 'name', label: 'Strategy' }];
+  if (!wcols) cols.push({ key: 'main', label: wmode ? 'Return' : 'CAGR' });
+  else WAVE_ORDER.forEach(k => cols.push({ key: k, label: WAVE_NAME[k] }));
+  return cols;
+}
+// What the arrow should mark: an explicit sort, else the column the tab's default order uses
+// (New sorts by save time, which is no column at all, so it gets none).
+function effSort() { return SORT.key ? SORT : { key: VIEW === 'new' ? null : 'main', asc: false }; }
+function sortValue(g, key) {
+  const c = g.rep.cfg;
+  if (key === 'main') {
+    if (windowMode()) { const r = waveResult(c); return (r && r.ret != null) ? r.ret : null; }
+    return isFinite(g.cagr) ? g.cagr : null;
+  }
+  const r = snapResult(key, c);                       // w1 / w2 / w3 / cycle
+  return (r && r.ret != null) ? r.ret : null;
+}
+function sortRows(rows) {
+  if (!SORT.key) return rows;                          // tab default already applied
+  const dir = SORT.asc ? 1 : -1;
+  return rows.sort((a, b) => {
+    if (SORT.key === 'name') return String(a.rep.name || '').localeCompare(String(b.rep.name || ''), 'en', { numeric: true, sensitivity: 'base' }) * dir;
+    const x = sortValue(a, SORT.key), y = sortValue(b, SORT.key);
+    // "not in the snapshot yet" is absent, not zero — it sinks either way, so flipping the
+    // arrow never fills the top of the list with dashes.
+    if (x == null && y == null) return 0;
+    if (x == null) return 1;
+    if (y == null) return -1;
+    return (x - y) * dir;
+  });
+}
+function paintSortRow(cols) {
+  const eff = effSort();
+  $('sortRow').innerHTML =
+    '<label for="sortSel" class="text-[11px] font-bold uppercase tracking-wide text-slate-500">Sort</label>' +
+    '<select id="sortSel" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-semibold">' +
+      `<option value=""${SORT.key ? '' : ' selected'}>Default</option>` +
+      cols.map(c => `<option value="${c.key}"${SORT.key === c.key ? ' selected' : ''}>${esc(c.label)}</option>`).join('') +
+    '</select>' +
+    `<button id="sortDir" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-semibold" title="${eff.asc ? 'Ascending' : 'Descending'}">${eff.asc ? '▲' : '▼'}</button>`;
+  $('sortSel').onchange = e => {
+    const k = e.target.value;
+    SORT = k ? { key: k, asc: k === 'name' } : { key: null, asc: false };
+    render();
+  };
+  $('sortDir').onclick = () => {
+    const e2 = effSort();
+    SORT = { key: SORT.key || e2.key, asc: !e2.asc };
+    if (!SORT.key) SORT = { key: null, asc: false };
+    render();
+  };
+}
+function onSortClick(e) {
+  const th = e.target.closest('th[data-sort]'); if (!th) return;
+  const k = th.dataset.sort;
+  // same column toggles; a new one opens A→Z for the name, biggest-first for the numbers
+  if (SORT.key === k) SORT.asc = !SORT.asc; else SORT = { key: k, asc: k === 'name' };
+  render();
+}
+
 function render() {
   const items = strategies();
+  $('sortRow').innerHTML = '';                        // rebuilt below; stays empty on every empty state
   const OWNER = !!(window.btSync && btSync.isOwner());   // only the owner sees delete controls
   $('uniRow').classList.toggle('hidden', !items.length);   // paired with 'flex' like waveRow/customBar — a bare `hidden` loses to `flex`
   $('uniRow').classList.toggle('flex', !!items.length);
@@ -579,10 +660,18 @@ function render() {
   // <br> in the wave headers — not a block span — because theme.js's mobile card reflow builds each
   // cell's label from the header text and turns <br> into a space.
   const wcols = waveColsOn();
+  // The New tab swaps one CAGR column for four wave ones, so a sort carried over from another
+  // tab can name a column that no longer exists — drop back to the tab's own order if so.
+  const COLS = sortCols(wcols, wmode);
+  if (SORT.key && !COLS.some(c => c.key === SORT.key)) SORT = { key: null, asc: false };
+  const eff = effSort();
+  const dirAttr = k => (eff.key === k ? ` data-dir="${eff.asc ? 'asc' : 'desc'}"` : '');
+  rows = sortRows(rows);
+  paintSortRow(COLS);
   const header = `<thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
-    <th class="text-left font-semibold px-4 py-2.5">Strategy</th>
-    ${wcols ? '' : `<th class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">${wmode ? (CUSTOM_WIN ? `Return · ${CUSTOM_WIN.start} → ${CUSTOM_WIN.end}${CUSTOM_WIN.topN != null ? ` · top-${CUSTOM_WIN.topN}` : ''} ▾` : 'Return · window ▾') : `CAGR${VIEW === 'best' ? ' ▾' : ''}`}</th>`}
-    ${wcols ? WAVE_ORDER.map(k => `<th class="text-right font-semibold px-2 py-2.5 whitespace-nowrap" title="Return over ${esc(WAVE_NAME[k])} (${esc(waveColWindow(k))}), from the ${esc(WAVE_SNAP.date || 'latest')} snapshot">${WAVE_ICON[k]} ${esc(WAVE_NAME[k])}<br><span class="text-[9px] font-medium normal-case tracking-normal text-slate-400">${esc(waveColWindow(k))}</span></th>`).join('') : ''}
+    <th data-sort="name"${dirAttr('name')} class="text-left font-semibold px-4 py-2.5">Strategy</th>
+    ${wcols ? '' : `<th data-sort="main"${dirAttr('main')} class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">${wmode ? (CUSTOM_WIN ? `Return · ${CUSTOM_WIN.start} → ${CUSTOM_WIN.end}${CUSTOM_WIN.topN != null ? ` · top-${CUSTOM_WIN.topN}` : ''}` : 'Return · window') : 'CAGR'}</th>`}
+    ${wcols ? WAVE_ORDER.map(k => `<th data-sort="${k}"${dirAttr(k)} class="text-right font-semibold px-2 py-2.5 whitespace-nowrap" title="Return over ${esc(WAVE_NAME[k])} (${esc(waveColWindow(k))}), from the ${esc(WAVE_SNAP.date || 'latest')} snapshot">${WAVE_ICON[k]} ${esc(WAVE_NAME[k])}<br><span class="text-[9px] font-medium normal-case tracking-normal text-slate-400">${esc(waveColWindow(k))}</span></th>`).join('') : ''}
     <th class="px-2 py-2.5"></th>
     ${OWNER ? '<th class="px-2 py-2.5"></th>' : ''}
   </tr></thead>`;
@@ -1143,6 +1232,8 @@ async function runLogPicks(){
 // Wire the tab / preset controls + default the custom window. Split out of boot() so it can
 // run up-front, before any network, so the buttons work the instant the first paint lands.
 function wireUI() {
+  // delegated on #list, whose innerHTML render() replaces wholesale — the listener outlives it
+  $('list').addEventListener('click', onSortClick);
   $('tabBest').onclick   = () => setView('best');
   $('tabNew').onclick    = () => setView('new');
   $('tabCustom').onclick = () => setView('custom');
