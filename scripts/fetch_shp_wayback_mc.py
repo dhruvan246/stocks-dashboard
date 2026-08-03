@@ -286,23 +286,29 @@ def parse_mc_page(html, expect_code=None, expect_syms=(), slug=None):
 
 # ---------------------------------------------------------------- fetch machinery
 def wb_fetch(ts, orig):
+    # Pages are cached GZIPPED — the raw-HTML cache hit 1.23 GB and filled the disk mid-run
+    # (OSError 28) on 2026-08-03. Plain .html files from before that are still read if present.
     key = re.sub(r"[^A-Za-z0-9]+", "_", orig[-90:]) + "_" + ts
-    cf = os.path.join(PAGES, key + ".html")
+    cf = os.path.join(PAGES, key + ".html.gz")
+    legacy = os.path.join(PAGES, key + ".html")
     if os.path.exists(cf):
-        return open(cf, encoding="utf-8").read(), True
+        with gzip.open(cf, "rt", encoding="utf-8") as fh: return fh.read(), True
+    if os.path.exists(legacy):
+        return open(legacy, encoding="utf-8").read(), True
     url = "https://web.archive.org/web/%sid_/%s" % (ts, orig)
     delay = 60
     for attempt in range(6):
         try:
             html = http_get(url, timeout=90)
-            open(cf, "w", encoding="utf-8").write(html)
+            with gzip.open(cf + ".tmp", "wt", encoding="utf-8", compresslevel=6) as fh: fh.write(html)
+            os.replace(cf + ".tmp", cf)
             return html, False
         except urllib.error.HTTPError as e:
             if e.code in (429, 503):
                 print("  rate-limited (%d), sleeping %ds" % (e.code, delay), flush=True)
                 time.sleep(delay); delay = min(delay * 2, 600)
             elif e.code == 404:
-                open(cf, "w", encoding="utf-8").write("")   # negative-cache
+                with gzip.open(cf, "wt", encoding="utf-8") as fh: fh.write("")   # negative-cache
                 return "", False
             else:
                 raise
