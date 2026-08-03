@@ -109,6 +109,15 @@ def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
     for sym, ex in LEGACY_FALSE_CA:
         if not any(e[0] == sym and e[1] == ex for e in events):
             events.append((sym, ex, None, True))
+    # Ledger DEMERGERS (scripts/demerger_adj.json): reconciled every run regardless of age
+    # (idempotent, network-free — the raw ex-day ratio rides in the ledger). Converges bins where
+    # the drop is still baked in, AND bins where an old build mis-inferred the drop as a split.
+    for (dsym, dex) in MANUAL_DEMERGERS:
+        if not any(e[0] == dsym and abs(od(e[1]) - od(dex)) <= 5 for e in events):
+            events.append((dsym, dex, None, True))
+    dem_by_sym = {}
+    for (dsym, dex), dv in MANUAL_DEMERGERS.items():
+        dem_by_sym.setdefault(dsym, []).append((dex, dv))
     if not events: return 0
     try: _RAW = json.load(open(os.path.join(HERE, "crash_raw_prices.json")))
     except Exception: _RAW = {}
@@ -128,17 +137,26 @@ def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
         ds = e["d"]
         j = next((k for k in range(len(ds)) if ds[k] >= ex), None)   # drop day = first day on/after ex
         if j is None or j < 1: continue
-        re_ex, re_prev = raw_close(ds[j], sym), raw_close(ds[j - 1], sym)
         c = e["c"]
-        if not re_ex or not re_prev or not c[j] or not c[j - 1]: continue
-        adj_ratio, raw_ratio = c[j] / c[j - 1], re_ex / re_prev
+        if not c[j] or not c[j - 1]: continue
+        # demerger with a ledger factor? its committed raw ex-day ratio spares the bhavcopy refetch
+        dem = next((dv for dex, dv in dem_by_sym.get(sym, []) if abs(od(dex) - od(ex)) <= 5), None) if is_dem else None
+        if dem is not None:
+            raw_ratio = dem[1]
+        else:
+            re_ex, re_prev = raw_close(ds[j], sym), raw_close(ds[j - 1], sym)
+            if not re_ex or not re_prev: continue
+            raw_ratio = re_ex / re_prev
+        adj_ratio = c[j] / c[j - 1]
         if adj_ratio <= 0: continue
         applied_f = raw_ratio / adj_ratio   # factor the bin currently reflects across the ex-date
         if applied_f <= 0: continue
         # correct_f = EXACTLY what the rebuild would apply now, given the official action AND the
         # real drop (same reconciliation guard — so combined split+bonus, ex-date moves and misparses
         # resolve to inference just like the rebuild, instead of being force-overridden).
-        if off is not None and 0.75 <= raw_ratio / off <= 1.30:
+        if dem is not None:
+            correct_f = dem[0]   # demerger: scale out the SPOS open-gap (value moved to the spin-off)
+        elif off is not None and 0.75 <= raw_ratio / off <= 1.30:
             correct_f = off
         elif is_dem and not (0.75 <= raw_ratio <= 1.30):
             correct_f = 1.0
@@ -148,7 +166,8 @@ def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
         if abs(corr - 1) > 0.02:   # baked-in treatment disagrees with the rebuild's -> fix
             for key in ("c", "h", "l", "op", "vw"):
                 if key in e: e[key] = [round(x * corr, 2) for x in e[key][:j]] + e[key][j:]
-            kind = "demerger:keep-drop" if correct_f == 1.0 else "split/bonus f=%.4f" % correct_f
+            kind = ("demerger f=%.4f" % correct_f) if dem is not None else \
+                   ("demerger:keep-drop" if correct_f == 1.0 else "split/bonus f=%.4f" % correct_f)
             print("  SELF-HEAL %s ex %d: was f=%.4f -> %s  (rescaled %d pre-ex points x%.4f)"
                   % (sym, ex, applied_f, kind, j, corr))
             healed += 1
@@ -196,6 +215,25 @@ try:
     MANUAL_RIGHTS += [tuple(x) for x in _rt if (x[0], x[1]) not in _seen]
 except Exception as _e:
     print("  (rights_terp.json not loaded: %s)" % _e)
+
+# --- DEMERGER price adjustment (2026-08-03). A demerger is not a loss — holders receive the
+# spin-off's shares — but the raw tape keeps the ex-date value separation as a price fall, so every
+# trailing-window factor (ret6m/mdd6/d52/rangePos/...) read a spin-off as a crash for the following
+# 6-12 months (SKFINDIA 2025-10 ret6m -45% vs ~flat truth; NMDC 2023-03 -12.7% vs strongly positive).
+# scripts/demerger_adj.json (built by build_demerger_adj.py from the official CA feed, demerger/
+# spin-off subjects ONLY) holds [sym, exTradingYmd, factor, raw_drop]: factor = ex-date SPOS open /
+# prev close — the exchange's own price discovery for the residual company — and raw_drop = the raw
+# ex-day close ratio (reconciliation anchor, so CI never refetches old bhavcopies). self_heal scales
+# pre-ex history by `factor` EVERY run (idempotent; also converges old bins that mis-inferred a
+# demerger drop as a split). Crash keep-drops (phantom_crashes / LEGACY_FALSE_CA / MANUAL_NOADJUST)
+# are never in this ledger and keep their drops. After a NEW demerger: run build_demerger_adj.py
+# (the workflow does, right after build_corp_actions.py) — until then the day-of run keeps the drop.
+try:
+    MANUAL_DEMERGERS = {(x[0], int(x[1])): (float(x[2]), float(x[3]))
+                        for x in json.load(open(os.path.join(ROOT, "scripts", "demerger_adj.json")))}
+except Exception as _e:
+    MANUAL_DEMERGERS = {}
+    print("  (demerger_adj.json not loaded: %s)" % _e)
 
 def apply_manual_rights(data):
     """Scale each MANUAL_RIGHTS stock's pre-ex prices by its TERP factor. Idempotent WITHOUT a marker:

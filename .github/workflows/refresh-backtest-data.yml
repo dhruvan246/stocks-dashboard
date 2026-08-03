@@ -50,6 +50,13 @@ jobs:
       - name: Refresh official corporate-action ratios
         run: python3 scripts/build_corp_actions.py || echo "corp-action refresh failed — using committed copy"
 
+      # Demerger price-adjustment ledger (scripts/demerger_adj.json): factor = ex-date SPOS open /
+      # prev close per official demerger. Incremental — a normal day adds nothing; a fresh demerger
+      # ex-date gets its factor the same evening, and update_sf_data.self_heal applies it in this
+      # very run. On failure the committed ledger is used (still correct, just not yet extended).
+      - name: Refresh demerger adjustment ledger
+        run: python3 scripts/build_demerger_adj.py || echo "demerger sweep failed — using committed ledger"
+
       - name: Append missing trading days to sf_stock_data.bin
         run: python3 scripts/update_sf_data.py
 
@@ -159,12 +166,14 @@ jobs:
           cp docs/sf_meta.json /tmp/sf_meta.json     # preserve the updater's fresh marker across reset
           [ -f docs/search_index.json ] && cp docs/search_index.json /tmp/search_index.json
           [ -f scripts/_rename_suspects.json ] && cp scripts/_rename_suspects.json /tmp/_rename_suspects.json
+          [ -f scripts/demerger_adj.json ] && cp scripts/demerger_adj.json /tmp/demerger_adj.json
           for attempt in 1 2 3 4 5; do
             git fetch origin main && git reset --hard origin/main
             cp /tmp/sf_meta.json docs/sf_meta.json
             git add docs/sf_meta.json
             [ -f /tmp/search_index.json ] && cp /tmp/search_index.json docs/search_index.json && git add docs/search_index.json
             [ -f /tmp/_rename_suspects.json ] && cp /tmp/_rename_suspects.json scripts/_rename_suspects.json && git add -f scripts/_rename_suspects.json
+            [ -f /tmp/demerger_adj.json ] && cp /tmp/demerger_adj.json scripts/demerger_adj.json && git add scripts/demerger_adj.json
             if git diff --cached --quiet; then echo "marker unchanged"; exit 0; fi
             git commit -m "Backtest data version marker $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
             if git push origin HEAD:main; then echo "pushed marker (attempt #$attempt)"; exit 0; fi
