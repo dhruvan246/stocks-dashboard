@@ -2758,6 +2758,33 @@ Corollary worth remembering: a "revenue not served" cell is often not a document
 of the first six closed in this class, ALL six were blocked by a wrong or missing stored PAT
 rather than by an unavailable filing.
 
+⚠️ **COMPENSATING ERRORS PASS THIS TEST (BDL 2026-08-04).** BDL FY18: stored 81.82+103.49+6.18+336.66
+== 528.15 audited EXACT — yet Jun-17 (81.82) was the Q1-FY19 value year-shifted back, and Sep-17
+(103.49) had been DERIVED as H1-minus-that-poisoned-Q1. Errors constructed FROM the identity satisfy
+the identity. Direct year-ago comparatives in the next year's filings (101.42 / 83.89, H1 = 185.31
+in BOTH filings) are the only cure. So: quarter-sum agreement is NECESSARY, never SUFFICIENT — when
+a cell's provenance is a derivation (not a document), verify at least one leg against a direct column.
+
+**IPO-cohort YEAR-SHIFT poison + the .50-restatement detector (2026-08-04, ASTERDM/BDL).**
+Detector: scan sf_fundamentals for PAT(q) == PAT(q+10000) exactly with |v|>0.5 — consecutive-year
+identical PAT is the fingerprint of comparative columns landed into the wrong year (~100 pairs
+store-wide; microcap sub-1cr pairs can be genuine). Adjudication recipe, all from cached/free sources:
+1. detres .00 both years — if the LATER year's page matches stored, the EARLIER year holds the copy.
+2. True earlier-year values = the year-later filings' direct year-ago columns (std page), PROVEN by
+   chaining to the detres `.50` audited annual: quarters must sum EXACT.
+3. The same chain is a RESTATEMENT DETECTOR: comparatives that sum to the ORIGINAL audited total are
+   as-originally-filed (accept); comparatives chaining to a DIFFERENT (restated) total are restated
+   (refuse — for ASTERDM con the honest heal was NULL, expressed via pat_defects stored_pat_con/
+   correct_pat_con=null, applier `_pat_defect_fix.py` supports the separate con pair).
+Route heals through `pat_defects.json` (exact stored_pat guard) + rev via `_bsedet_reads.json` with
+the corrected pat_seen as anchor — the batch chain orders defect-fix before reads-apply.
+
+**Legit structural breaks vs the scale-spike nuller:** demerger boundaries (CHOLAHLDNG Mar-2017 =
+pre-demerger full Tube Investments, 1168.14 vs holdco-era ~65) and lumpy traders (OSWALGREEN Jun-2015
+316.44, two independent as-filed docs) are REAL spikes — allowlist in `sanity_ok.json`, never widen
+the nuller's tolerance. A read that keeps reappearing and getting nulled every batch is the tell:
+grep the staged reads for cells the applier lands but the docs file never shows.
+
 ---
 
 ## 46. ★ BACKTEST DATA IS SPLIT BY DATE — quick runs never download deep history  (2026-08-03)
