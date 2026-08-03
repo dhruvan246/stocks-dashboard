@@ -55,7 +55,14 @@
       <h1 class="text-xl font-bold text-slate-900">🎯 All Picks — every strategy's current basket</h1>
       <p class="text-sm text-slate-500 mt-1 max-w-3xl">The stocks each saved strategy qualifies for <b>right now</b> — the same list as its Live Picks tab, priced live. The badges are that strategy's move on the basket it actually holds — <b>since the previous close</b>, and since its last rebalance. <span id="upd" class="text-slate-400"></span></p>
     </div>
-    <div class="flex items-center gap-2 shrink-0">
+    <div class="flex items-center gap-2 flex-wrap">
+      <!-- Membership (universe) picker — same filter as Saved Strategies (shared bt_uni_filter key):
+           pick Nifty 500 and only Nifty-500 strategies' baskets show, pick F&O and only F&O ones.
+           Options come from the universes the built cards actually use, with counts. -->
+      <div id="uniRow" class="hidden items-center gap-1.5">
+        <label for="uniSel" class="text-[11px] font-bold uppercase tracking-wide text-slate-500">Membership</label>
+        <select id="uniSel" title="Show only strategies built on this universe" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-semibold bg-white"></select>
+      </div>
       <div class="flex gap-1 bg-white border border-slate-200 rounded-lg p-1 shadow-sm" role="tablist" aria-label="View">
         <button id="vCards" role="tab" class="vbtn text-xs font-semibold px-3 py-1.5 rounded-md text-slate-500 hover:text-slate-800 transition" aria-selected="true">▦ Cards</button>
         <button id="vBoard" role="tab" class="vbtn text-xs font-semibold px-3 py-1.5 rounded-md text-slate-500 hover:text-slate-800 transition" aria-selected="false">☰ Board</button>
@@ -66,6 +73,7 @@
 
   <div id="stats" class="grid gap-3 mt-5 mb-4" style="grid-template-columns:repeat(auto-fit,minmax(158px,1fr))"></div>
   <div id="status" class="text-sm text-slate-500 py-8 text-center card border-dashed">Loading saved strategies…</div>
+  <div id="uniEmpty" class="hidden text-sm text-slate-400 py-8 text-center card border-dashed"></div>
 
   <section id="cards" class="hidden grid gap-4" style="grid-template-columns:repeat(auto-fill,minmax(320px,1fr))"></section>
 
@@ -112,6 +120,45 @@ function yieldToUI() {
 
 let VIEW = 'cards', RESULT = [], SKIPPED = [];
 try { VIEW = localStorage.getItem('ap_view') === 'board' ? 'board' : 'cards'; } catch (e) {}
+
+/* ---------- membership (universe) filter ----------
+ * Same picker as Saved Strategies, and the SAME bt_uni_filter localStorage key, so choosing
+ * Nifty 500 on either page carries to the other. uniKey() flattens the three shapes cfg can
+ * store a universe in (indexName / mcapFloor / neither) into one comparable string; '*' is
+ * the show-everything sentinel because '' is already a real universe ("All stocks").
+ * KEEP IN SYNC with saved-strategies.html. Screening isn't re-run on change — RESULT keeps
+ * every card and visible() is the filtered view both renderers draw from. */
+function uniKey(c) { return c.indexName ? c.indexName : (c.mcapFloor ? 'mcap:' + c.mcapFloor : ''); }
+function uniText(k) { return universeLabel(k.slice(0, 5) === 'mcap:' ? { mcapFloor: +k.slice(5) } : { indexName: k }); }
+// Display order: indices broad-to-narrow, then F&O, then turnover buckets ascending, then All stocks.
+const UNI_ORDER = ['Nifty 50', 'Nifty 100', 'Nifty 200', 'Nifty 500', 'Nifty Midcap 150', 'Nifty Smallcap 250', '__FNO__'];
+function uniRank(k) {
+  const i = UNI_ORDER.indexOf(k); if (i >= 0) return i;
+  if (k.slice(0, 5) === 'mcap:') return 100 + (+k.slice(5) || 0) / 1e9;
+  return 200;                                              // '' = All stocks, last
+}
+let UNI = '*';
+try { UNI = localStorage.getItem('bt_uni_filter') || '*'; } catch (e) {}
+function visible() { return UNI === '*' ? RESULT : RESULT.filter(r => uniKey(r.cfg) === UNI); }
+// Options carry the count of built cards on each universe. The active pick stays selectable
+// even at 0 (e.g. it was set on Saved Strategies for a universe this page skipped), otherwise
+// the <select> would silently jump to another value.
+function buildUniSelect() {
+  const counts = new Map();
+  for (const r of RESULT) { const k = uniKey(r.cfg); counts.set(k, (counts.get(k) || 0) + 1); }
+  if (UNI !== '*' && !counts.has(UNI)) counts.set(UNI, 0);
+  const keys = [...counts.keys()].sort((a, b) => uniRank(a) - uniRank(b) || a.localeCompare(b));
+  $('uniSel').innerHTML = `<option value="*">All memberships (${RESULT.length})</option>` +
+    keys.map(k => `<option value="${esc(k)}">${esc(uniText(k))} (${counts.get(k)})</option>`).join('');
+  $('uniSel').value = UNI;
+  $('uniRow').classList.toggle('hidden', !RESULT.length);   // paired with 'flex' — a bare `hidden` loses to `flex`
+  $('uniRow').classList.toggle('flex', !!RESULT.length);
+}
+function setUni(v) {
+  UNI = v || '*';
+  try { localStorage.setItem('bt_uni_filter', UNI); } catch (e) {}
+  paint();
+}
 
 /* ---------- strategy schedule ----------
  * A deployed strategy rebalances on MONTH-ENDS, every `freq` months, phased from its own start
@@ -331,19 +378,23 @@ function setView(v) {
   try { localStorage.setItem('ap_view', v); } catch (e) {}
   $('vCards').setAttribute('aria-selected', String(v === 'cards'));
   $('vBoard').setAttribute('aria-selected', String(v === 'board'));
-  $('cards').classList.toggle('hidden', v !== 'cards' || !RESULT.length);
-  $('board').classList.toggle('hidden', v !== 'board' || !RESULT.length);
+  const n = visible().length;   // membership filter can empty the page — its notice shows instead
+  $('cards').classList.toggle('hidden', v !== 'cards' || !n);
+  $('board').classList.toggle('hidden', v !== 'board' || !n);
 }
 function stratHref(s) { return './strategy-backtest.html?id=' + encodeURIComponent(s.id); }
 
 function renderStats() {
+  // Stats describe what's on screen: filtered to one membership, they summarise that slice.
+  const rows = visible();
   const held = new Map();
-  RESULT.forEach(r => r.picks.forEach(p => held.set(p.sym, (held.get(p.sym) || 0) + 1)));
+  rows.forEach(r => r.picks.forEach(p => held.set(p.sym, (held.get(p.sym) || 0) + 1)));
   const top = [...held.entries()].sort((a, b) => b[1] - a[1])[0];
-  const best = RESULT.filter(r => r.day != null).sort((a, b) => b.day - a.day)[0];
-  const bestReb = RESULT.filter(r => r.ret != null).sort((a, b) => b.ret - a.ret)[0];
+  const best = rows.filter(r => r.day != null).sort((a, b) => b.day - a.day)[0];
+  const bestReb = rows.filter(r => r.ret != null).sort((a, b) => b.ret - a.ret)[0];
   const cells = [
-    ['Strategies', RESULT.length, SKIPPED.length ? SKIPPED.length + ' skipped' : 'screened live'],
+    ['Strategies', rows.length, UNI !== '*' ? 'of ' + RESULT.length + ' total'
+                                            : SKIPPED.length ? SKIPPED.length + ' skipped' : 'screened live'],
     ['Unique stocks picked', held.size, 'across every basket'],
     ['Highest conviction', top ? top[0] : '—', top ? 'picked by ' + top[1] + ' strateg' + (top[1] > 1 ? 'ies' : 'y') : ''],
     ['Best today', best ? sp(best.day) : '—', best ? 'since the previous close' : ''],
@@ -356,7 +407,7 @@ function renderStats() {
 }
 
 function renderCards() {
-  $('cards').innerHTML = RESULT.map(r => `
+  $('cards').innerHTML = visible().map(r => `
     <article class="card p-4 pb-0 scard flex flex-col">
       <div class="flex items-start justify-between gap-2">
         <a href="${stratHref(r.s)}" class="text-[13.5px] font-bold text-slate-900 hover:text-indigo-600 clamp2 leading-snug">${esc(r.name)}</a>
@@ -398,7 +449,7 @@ function renderCards() {
 }
 
 function renderBoard() {
-  $('boardRows').innerHTML = RESULT.map((r, i) => `
+  $('boardRows').innerHTML = visible().map((r, i) => `
     <div class="grid-row brow px-4 py-2.5 border-b border-slate-100 transition">
       <div class="text-[11px] text-slate-400 font-bold">${i + 1}</div>
       <div class="min-w-0">
@@ -424,6 +475,13 @@ function paint() {
   // you last saw it instead of jumping around as prices move. `numeric` keeps top-3 ahead of
   // top-10. A ↻ Refresh re-paints under whatever sort you picked rather than resetting it.
   applySort();
+  buildUniSelect();
+  if (RESULT.length && !visible().length) {   // a membership with nothing here — offer the way back
+    $('uniEmpty').innerHTML = `No <b>${esc(uniText(UNI))}</b> strategies here.
+      <button id="uniClear" class="text-indigo-600 hover:underline font-semibold">Show all ${RESULT.length}</button>`;
+    $('uniEmpty').classList.remove('hidden');
+    $('uniClear').onclick = () => setUni('*');
+  } else $('uniEmpty').classList.add('hidden');
   renderStats(); renderCards(); renderBoard(); paintSortArrows(); setView(VIEW);
   $('foot').classList.remove('hidden');
 }
@@ -486,6 +544,7 @@ async function build(msg) {
 
 $('vCards').onclick = () => setView('cards');
 $('vBoard').onclick = () => setView('board');
+$('uniSel').onchange = () => setUni($('uniSel').value);
 $('boardHead').addEventListener('click', onSortClick);
 $('refresh').onclick = () => { $('refresh').disabled = true; refreshPrices().finally(() => { $('refresh').disabled = false; }); };
 
