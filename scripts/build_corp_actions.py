@@ -81,8 +81,9 @@ def official_factor(subj):
     # HINDCOMPOS 0.5 not 0.333), which then disagreed with the correctly-combined price data and got
     # reverted by self_heal. Also: NSE writes the currency as "Rs" for >Re.1 but "Re" for exactly Re.1,
     # so accept BOTH (the rs-only regex silently dropped every split down to Re.1, e.g. GAEL Rs2->Re1).
-    m = re.search(r'from\s*(?:r[se]\.?\s*)?([\d.]+).*?to\s*(?:r[se]\.?\s*)?([\d.]+)', s)
-    if m and ("split" in s or "sub-division" in s or "sub division" in s):
+    # NSE also files abbreviated subjects ("Fv Splt Frm Rs 10 To Rs 2") — accept frm/splt variants
+    m = re.search(r'f(?:ro|r)m\s*(?:r[se]\.?\s*)?([\d.]+).*?to\s*(?:r[se]\.?\s*)?([\d.]+)', s)
+    if m and ("split" in s or "splt" in s or "sub-division" in s or "sub division" in s or "subdivision" in s):
         x, y = float(m.group(1)), float(m.group(2))
         if x and 0 < y < x: factor *= y / x; parts.append("split FV %s->%s" % (m.group(1), m.group(2)))
     m = re.search(r'bonus[^0-9]*(\d+)\s*:\s*(\d+)', s)
