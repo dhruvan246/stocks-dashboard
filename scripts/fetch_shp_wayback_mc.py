@@ -306,6 +306,12 @@ def wb_fetch(ts, orig):
                 return "", False
             else:
                 raise
+        except (urllib.error.URLError, TimeoutError, ConnectionError, OSError) as e:
+            # transient network trouble (Wayback outage windows) — brief in-run retry; if it
+            # persists, raise so the caller logs FETCH FAIL and a later re-run picks it up
+            if attempt >= 2: raise
+            print("  net-error (%r), sleeping 25s" % e, flush=True)
+            time.sleep(25)
     raise RuntimeError("gave up on %s" % url)
 
 def cmd_sample(n):
