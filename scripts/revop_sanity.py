@@ -89,6 +89,8 @@ def main():
         for v, qs in seen.items():
             if len(qs) >= 2:                     # same paisa in >=2 quarters -> mis-attribution
                 for qe in qs:
+                    if "%s|%s" % (s, qe) in OK:   # allowlisted: genuine near-identical as-filed
+                        continue
                     kill.append((s, qe, v, "duplicate-value-across-quarters(%s)" % ",".join(sorted(qs))))
 
     # de-dup kill list (a cell could hit both rules)
