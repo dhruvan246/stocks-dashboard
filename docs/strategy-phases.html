@@ -46,6 +46,16 @@
   input[type=search]{background:var(--surface,#fff);border:1px solid var(--border,#cbd5e1);color:var(--text,#0f172a);
     border-radius:.5rem;padding:7px 11px;font-size:13px;min-width:230px}
   html[data-theme="dark"] input[type=search]{border-color:#374151;color:#e2e8f0}
+  /* Phones: the strategy's identity (Rank by + Filters) leads the row instead of
+     trailing 600px off-screen — see headFor(). Cap the filter cell so the whole
+     expression wraps inside the viewport rather than running past its edge. */
+  @media(max-width:700px){
+    /* min-width, or auto table-layout collapses this column to its minimum
+       content width; overflow-wrap (not word-break) so that minimum stays a
+       whole token wide instead of one character. */
+    #tbl th[data-c="f"],#tbl td.mono:not(.num){min-width:186px;max-width:206px;
+      white-space:normal;overflow-wrap:break-word;line-height:1.35}
+  }
   /* ---- bottom glossary (every code on this page spelled out) ---- */
   .gloss{margin-top:16px;background:var(--surface,#fff);border:1px solid var(--border,#e2e8f0);border-radius:.75rem}
   .gloss>summary{cursor:pointer;padding:12px 15px;font-size:13.5px;font-weight:800;list-style:none;user-select:none}
@@ -271,6 +281,17 @@
   const yearOf = k => YRS.find(y=>y.key===k);
   let cur='all4', sortK=null, sortAsc=true, needle='';
   const famOf = c => c.d+'-'+c.s;
+  const MQ = window.matchMedia('(max-width:700px)');
+  const narrow = () => MQ.matches;
+  // Rotate / resize across the breakpoint → rebuild the header in the other order.
+  // Watch resize AS WELL AS the media query: a MediaQueryList 'change' does not fire
+  // in every embedded context, and losing it strands the phone column order on a
+  // desktop-width screen. Both paths no-op unless the breakpoint actually flipped.
+  let wasNarrow = narrow(), rzT = null;
+  const onViewport = () => { if (!R || narrow() === wasNarrow) return; wasNarrow = narrow(); render(); };
+  if (MQ.addEventListener) MQ.addEventListener('change', onViewport);
+  else if (MQ.addListener) MQ.addListener(onViewport);
+  window.addEventListener('resize', () => { if (rzT) clearTimeout(rzT); rzT = setTimeout(onViewport, 150); }, { passive: true });
   function rowsFor(k){
     if(k==='all4') return cards.all4.map((x,j)=>({rk:j+1, c:C[x.i], worst:x.worst, ranks:x.ranks}));
     if(k==='allY') return cards.allY.map((x,j)=>({rk:j+1, c:C[x.i], worst:x.worst, yr:x.yrets}));
@@ -285,7 +306,14 @@
         : k==='full'
           ? [['rk','#'],['r0','CAGR %'],['tot','Total %'],['dd','Max DD %'],['win','Win %']]
           : [['rk','#'],['tot','Total %'],['cg','CAGR %'],['dd','Max DD %'],['win','Win %']];
-    return base.concat([['fam','Rank by'],['f','Filters']]);
+    // The identity columns trail the numbers on desktop (the numbers are what you
+    // scan), but on a phone that puts them ~600px past the right edge of a table
+    // that scrolls sideways — you'd see nothing but figures and never learn WHICH
+    // strategy a row is. Lead with them there; theme.js then pins 'Rank by' (its
+    // pin2 rule pins column 2 when column 1 is a bare rank gutter), so the name
+    // stays put while the numbers slide under it.
+    const ident = [['fam','Rank by'],['f','Filters']];
+    return narrow() ? [base[0]].concat(ident, base.slice(1)) : base.concat(ident);
   }
   function valOf(r,k,col){
     if(col==='rk')return r.rk; if(col==='worst')return r.worst;
