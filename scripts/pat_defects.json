@@ -7,6 +7,16 @@
    "stored_pat": 121.31
   }
  },
+ "ACCELYA": {
+  "20170630": {
+   "correct_pat": 21.59,
+   "correct_pat_con": 22.11,
+   "defect": "year-shift duplicate (\u00a745 detector): std and con slots each held the adjacent year's value for their basis",
+   "source": "std: detres | con: nse:financial_res_ACCELYA_1028960.html (original Jul-2017 con filing) | late anchor = Jun-2018 con XBRL OneD 21.92 == stored; original early con page prints 22.11",
+   "stored_pat": 18.67,
+   "stored_pat_con": 21.92
+  }
+ },
  "AMBUJACEM": {
   "20160930": {
    "correct_pat": 277.02,
@@ -49,6 +59,14 @@
    "stored_pat_con": 113.2
   }
  },
+ "AURUS": {
+  "20170930": {
+   "correct_pat": 7.62,
+   "defect": "year-shift duplicate (\u00a745 detector): CON slot held the adjacent year's con value (std slot unaffected and differs)",
+   "source": "nse:financial_res_AURUS_1032825.html",
+   "stored_pat": 4.05
+  }
+ },
  "BDL": {
   "20170630": {
    "correct_pat": 101.42,
@@ -69,6 +87,14 @@
    "defect": "stored value fails the series FY-coherence test (page series annual-exact, stored series off)",
    "source": "series-review 2026-08-02: as-filed bse-detres page value; page quarter-sums match the audited .50 annual EXACTLY for this FY while the stored series does not",
    "stored_pat": 192.96
+  }
+ },
+ "CENTENKA": {
+  "20210331": {
+   "correct_pat": 48.57,
+   "defect": "year-shift duplicate (\u00a745 detector): std slot held the adjacent year's value",
+   "source": "detres",
+   "stored_pat": 21.88
   }
  },
  "CHAMBLFERT": {
@@ -129,12 +155,28 @@
    "stored_pat": 8.17
   }
  },
+ "EMKAY": {
+  "20180630": {
+   "correct_pat": 4.12,
+   "defect": "year-shift duplicate (\u00a745 detector): std slot held the adjacent year's value",
+   "source": "detres",
+   "stored_pat": -1.13
+  }
+ },
  "GAYAPROJ": {
   "20170331": {
    "correct_pat": 28.3,
    "defect": "stored value fails the series FY-coherence test (page series annual-exact, stored series off)",
    "source": "series-review 2026-08-02: as-filed bse-detres page value; page quarter-sums match the audited .50 annual EXACTLY for this FY while the stored series does not",
    "stored_pat": 32.24
+  }
+ },
+ "GICHSGFIN": {
+  "20180331": {
+   "correct_pat": 59.87,
+   "defect": "year-shift duplicate (\u00a745 detector): std slot held the adjacent year's value",
+   "source": "detres",
+   "stored_pat": 50.99
   }
  },
  "GICRE": {
@@ -210,6 +252,14 @@
    "stored_pat": 1631.93
   }
  },
+ "IFCI": {
+  "20180331": {
+   "correct_pat": -566.64,
+   "defect": "year-shift duplicate (\u00a745 detector): std slot held the adjacent year's value",
+   "source": "detres",
+   "stored_pat": -37.66
+  }
+ },
  "IIFL": {
   "20171231": {
    "correct_pat": 33.07,
@@ -236,6 +286,20 @@
    "rev_ready": 250.97,
    "source": "bse-detres scrip 523610 qtr 96",
    "stored_pat": 13.58
+  }
+ },
+ "JISLDVREQS": {
+  "20170930": {
+   "correct_pat": 16.04,
+   "defect": "year-shift duplicate (\u00a745 detector): std slot held the adjacent year's value",
+   "source": "detres",
+   "stored_pat": 45.57
+  },
+  "20171231": {
+   "correct_pat": 64.73,
+   "defect": "year-shift duplicate (\u00a745 detector): std slot held the adjacent year's value",
+   "source": "detres",
+   "stored_pat": 62.98
   }
  },
  "JMFINANCIL": {
@@ -284,6 +348,14 @@
    "stored_pat": -117.77
   }
  },
+ "MODTHREAD": {
+  "20170630": {
+   "correct_pat": 1.27,
+   "defect": "year-shift duplicate (\u00a745 detector): std slot held the adjacent year's value",
+   "source": "detres",
+   "stored_pat": 2.83
+  }
+ },
  "NAM-INDIA": {
   "20170930": {
    "correct_pat": 120.0,
@@ -296,6 +368,30 @@
    "defect": "stored value fails the series FY-coherence test (page series annual-exact, stored series off)",
    "source": "series-review 2026-08-02: as-filed bse-detres page value; page quarter-sums match the audited .50 annual EXACTLY for this FY while the stored series does not",
    "stored_pat": 115.19
+  }
+ },
+ "NDL": {
+  "20170630": {
+   "correct_pat": 16.31,
+   "defect": "year-shift duplicate (\u00a745 detector): std slot held the adjacent year's value",
+   "source": "detres",
+   "stored_pat": 5.24
+  }
+ },
+ "PAISALO": {
+  "20170930": {
+   "correct_pat": 22.0,
+   "defect": "year-shift duplicate (\u00a745 detector): std slot held the adjacent year's value",
+   "source": "detres",
+   "stored_pat": 20.4
+  }
+ },
+ "PENIND": {
+  "20171231": {
+   "correct_pat": 8.57,
+   "defect": "year-shift duplicate (\u00a745 detector): std slot held the adjacent year's value",
+   "source": "detres",
+   "stored_pat": 11.49
   }
  },
  "RAJTV": {
@@ -322,24 +418,100 @@
    "stored_pat": -4323.0
   }
  },
+ "RESONANCE": {
+  "20260331": {
+   "correct_pat": 4.6,
+   "defect": "year-shift duplicate (\u00a745 detector): Mar-2026 held Mar-2025 value; single-basis filer (std==con 26/26 rows) so both slots heal",
+   "source": "bse-detres Mar-2026 .00 page NP 4.6; FY26 identity healed_sum 10.4 == audited .50 annual 10.4 EXACT",
+   "stored_pat": 3.06
+  }
+ },
+ "RKDL": {
+  "20170331": {
+   "correct_pat": -1.51,
+   "defect": "year-shift duplicate (\u00a745 detector): std slot held the adjacent year's value",
+   "source": "detres",
+   "stored_pat": -4.57
+  }
+ },
+ "RSYSTEMS": {
+  "20170630": {
+   "correct_pat": 4.66,
+   "defect": "year-shift duplicate (\u00a745 detector): CON slot held the adjacent year's con value (std slot unaffected and differs)",
+   "source": "nse:financial_res_RSYSTEMS_1028513.html",
+   "stored_pat": 8.94
+  },
+  "20170930": {
+   "correct_pat": 6.28,
+   "correct_pat_con": 6.43,
+   "defect": "year-shift duplicate (\u00a745 detector): std and con slots each held the adjacent year's value for their basis",
+   "source": "std: detres | con: nse:financial_res_RSYSTEMS_1032248.html",
+   "stored_pat": 9.61,
+   "stored_pat_con": 12.57
+  }
+ },
  "SAMMAANCAP": {
   "20170930": {
    "correct_pat": 796.06,
-   "defect": "stored value fails the series FY-coherence test (page series annual-exact, stored series off)",
-   "source": "series-review 2026-08-02: as-filed bse-detres page value; page quarter-sums match the audited .50 annual EXACTLY for this FY while the stored series does not",
-   "stored_pat": 933.26
+   "correct_pat_con": 861.06,
+   "defect": "stored value fails the series FY-coherence test (page series annual-exact, stored series off) | CON slot separately year-shift poisoned (\u00a745 detector): held Sep-2018 con value 1044.15; true as-originally-filed con 861.06",
+   "source": "series-review 2026-08-02: as-filed bse-detres page value; page quarter-sums match the audited .50 annual EXACTLY for this FY while the stored series does not | con: nse-archive financial_res_SAMMAANCAP_1031783.html (original Nov-2017 con filing, owners-PAT 86106.1 lakh)",
+   "stored_pat": 933.26,
+   "stored_pat_con": 1044.15
   },
   "20171231": {
    "correct_pat": 1084.05,
-   "defect": "stored value fails the series FY-coherence test (page series annual-exact, stored series off)",
-   "source": "series-review 2026-08-02: as-filed bse-detres page value; page quarter-sums match the audited .50 annual EXACTLY for this FY while the stored series does not",
-   "stored_pat": 952.66
+   "correct_pat_con": 1167.73,
+   "defect": "stored value fails the series FY-coherence test (page series annual-exact, stored series off) | CON slot separately year-shift poisoned (\u00a745 detector): held Dec-2018 con value 985.51; true as-originally-filed con 1167.73 (OakNorth stake-sale quarter)",
+   "source": "series-review 2026-08-02: as-filed bse-detres page value; page quarter-sums match the audited .50 annual EXACTLY for this FY while the stored series does not | con: nse-archive financial_res_SAMMAANCAP_1035412.html (original filing, owners-PAT 116773.49 lakh)",
+   "stored_pat": 952.66,
+   "stored_pat_con": 985.51
   },
   "20180331": {
    "correct_pat": 952.36,
    "defect": "stored value fails the series FY-coherence test (page series annual-exact, stored series off)",
    "source": "series-review 2026-08-02: as-filed bse-detres page value; page quarter-sums match the audited .50 annual EXACTLY for this FY while the stored series does not",
    "stored_pat": 999.71
+  }
+ },
+ "SATIN": {
+  "20170930": {
+   "correct_pat": 12.69,
+   "correct_pat_con": 11.27,
+   "defect": "year-shift duplicate (\u00a745 detector): std and con slots each held the adjacent year's value for their basis",
+   "source": "std: detres | con: nse:financial_res_SATIN_1033268.html",
+   "stored_pat": 44.4,
+   "stored_pat_con": 46.12
+  }
+ },
+ "SHIVATEX": {
+  "20170630": {
+   "correct_pat": 6.04,
+   "defect": "year-shift duplicate (\u00a745 detector): std slot held the adjacent year's value",
+   "source": "detres",
+   "stored_pat": 1.06
+  }
+ },
+ "SIGIND": {
+  "20170930": {
+   "correct_pat": 1.43,
+   "defect": "year-shift duplicate (\u00a745 detector): std slot held the adjacent year's value",
+   "source": "detres",
+   "stored_pat": 2.56
+  },
+  "20180331": {
+   "correct_pat": 8.42,
+   "defect": "year-shift duplicate (\u00a745 detector): std slot held the adjacent year's value",
+   "source": "detres",
+   "stored_pat": 3.22
+  }
+ },
+ "SIYSIL": {
+  "20180331": {
+   "correct_pat": 48.08,
+   "defect": "year-shift duplicate (\u00a745 detector): std slot held the adjacent year's value",
+   "source": "detres",
+   "stored_pat": 46.73
   }
  },
  "SREINFRA": {
@@ -402,6 +574,22 @@
    "rev_ready": 5458.64,
    "source": "bse-detres scrip 532276 qtr 99 (Dec-2018) + the .50 FY19 annual row",
    "stored_pat": 0.0
+  }
+ },
+ "TCPLPACK": {
+  "20170630": {
+   "correct_pat": 3.09,
+   "defect": "year-shift duplicate (\u00a745 detector): std slot held the adjacent year's value",
+   "source": "detres",
+   "stored_pat": 4.99
+  }
+ },
+ "TI": {
+  "20170930": {
+   "correct_pat": -0.52,
+   "defect": "year-shift duplicate (\u00a745 detector): std slot held the adjacent year's value",
+   "source": "detres",
+   "stored_pat": -46.64
   }
  },
  "WABAG": {
