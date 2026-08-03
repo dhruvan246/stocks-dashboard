@@ -2844,3 +2844,27 @@ or `git show <commit>^:scripts/bake_full.mjs` for the script.
 `identityKey(cfg)` and looked up by the page under the same key: a second copy that drifts does not
 error, it just leaves the site saying "not baked yet" forever. The 2026-08-03 topN change already
 had to be applied to two copies by hand — do not make a third.
+
+
+## 48. ★★ POINT-IN-TIME N500 MEMBERSHIP FOR AUDITS = stock_data.bin indicesHistory  (2026-08-04)
+
+**Any member-scoped audit/backfill MUST take membership from `docs/stock_data.bin` →
+`indicesHistory["Nifty 500"]` (74 event-driven snapshots 2006→2026, CI-maintained) via
+`scripts/_n500_member_bin.py` (worktree rev-mission) — nearest-prior-snapshot, rename-normed,
+DUMMY* placeholder tickers filtered.** Never the 17-snapshot `_n500_history_raw.json` +
+`_n500_changes.json` replay walk: the changes ledger has NO merger/delisting exclusions
+pre-2020, so that walk carried dead companies as PHANTOM members for months-to-years
+(GRUH "member" through Dec-2019 though removed 2019-09-27; CMC through Dec-2016; ELDERPHARM,
+MONSANTO, RASOYPR similar — found when the user asked "was GRUH in the N500 in Dec-2019?").
+
+Effects when re-based (2026-08-04): 33 of 41 grave cells dissolved (phantom non-member cells,
+annotated `phantom_non_member` in never_filed.json, 8 real graves remain), AND ~55 hidden
+member-cells SURFACED — reshuffle-quarter transients the sparse walk never audited (exit-quarter
+cells of ADANIPOWER/RANBAXY/TATASTLBSL/COX&KINGS/LAKSHVILAS…): 48 revs landed same-day via
+detres + 7 PATs via FY-identity gates. Reshuffle quarters union ~520-539 symbols (churn), quiet
+quarters ~500 — a member-count stuck at exactly 500-503 across a reshuffle is the STALE-WALK smell.
+
+The backtest was NEVER affected — `membersAsOf` in the engine reads the SAME bin indicesHistory
+(spliced by `build_n500_membership.py`); only the audit layer had forked onto the sparse source.
+The turnover page ignores the changes-replay too (snapshots only). If a new audit script needs
+membership, import `_n500_member_bin` — do not copy-paste a walk.
