@@ -139,9 +139,16 @@ def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
         if j is None or j < 1: continue
         c = e["c"]
         if not c[j] or not c[j - 1]: continue
-        # demerger with a ledger factor? its committed raw ex-day ratio spares the bhavcopy refetch
-        dem = next((dv for dex, dv in dem_by_sym.get(sym, []) if abs(od(dex) - od(ex)) <= 5), None) if is_dem else None
-        if dem is not None:
+        # demerger with a ledger factor? its committed raw ex-day ratio spares the bhavcopy refetch.
+        # RE-ANCHOR j on the LEDGER's ex-day: the same demerger can reach here via a nearby event
+        # (VEDL's phantom-crash flag sits at 20260501, ledger ex 20260430) and anchoring on that
+        # event's own date would rescale across the WRONG bar with the ledger's raw ratio.
+        demx = next(((dex, dv) for dex, dv in dem_by_sym.get(sym, []) if abs(od(dex) - od(ex)) <= 5), None) if is_dem else None
+        dem = None
+        if demx is not None:
+            dex, dem = demx
+            j = next((k for k in range(len(ds)) if ds[k] >= dex), None)
+            if j is None or j < 1 or not c[j] or not c[j - 1]: continue
             raw_ratio = dem[1]
         else:
             re_ex, re_prev = raw_close(ds[j], sym), raw_close(ds[j - 1], sym)
