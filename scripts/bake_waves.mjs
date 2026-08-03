@@ -10,6 +10,11 @@
 // as a user clicking "Save"), so no secrets are needed here.
 //
 // Run: node scripts/bake_waves.mjs      (needs `playwright` + a chromium install)
+//
+// ENV (used by the sibling FULL-HISTORY job, bake-full-history.yml — same script, longer budget):
+//   BAKE_WAVES     comma list of windows to bake → page's ?waves= (default: the daily four)
+//   BAKE_WAIT_MIN  overall budget in minutes (default 70)
+//   BAKE_MAX_ITERS batch cap (default 60)
 
 import { chromium } from 'playwright';
 
@@ -18,7 +23,9 @@ const SFDATA = 'https://dhruvan246.github.io/sf-data';
 // One SESSION per run: every batch below reuses it so they resume each other's progress. A new run
 // (the next daily bake) gets a new session → the page recomputes every wave fresh against that day's data.
 const SESSION  = process.env.GITHUB_RUN_ID || String(Date.now());
-const BAKE_URL = `${BASE}/saved-strategies.html?bakewaves=1&session=${SESSION}`;
+const WAVES    = (process.env.BAKE_WAVES || '').trim();
+const BAKE_URL = `${BASE}/saved-strategies.html?bakewaves=1&session=${SESSION}`
+               + (WAVES ? `&waves=${encodeURIComponent(WAVES)}` : '');
 
 const PAGES_WAIT_MS = 8 * 60 * 1000;    // max wait for both GitHub Pages deploys to publish the new data date
 // Overall budget across all batches. Cost ≈ strategies × total window-years × ~6s: the four waves span
@@ -26,7 +33,9 @@ const PAGES_WAIT_MS = 8 * 60 * 1000;    // max wait for both GitHub Pages deploy
 // per batch re-downloading the engine + market data. At 40 min the `cycle` wave — baked LAST and by far
 // the longest window — never finished: it was left as `pending` and the tab kept serving older numbers.
 // (Stock counts became separate rows on 2026-08-03, taking 35 strategies to 47, so this got tighter.)
-const BAKE_WAIT_MS  = 70 * 60 * 1000;   // must stay under the job's timeout-minutes, minus ~5 min of setup
+// The full-history window is ~24 years on its own, which is why it runs as a separate job with
+// BAKE_WAIT_MIN/BAKE_MAX_ITERS raised rather than being squeezed in here.
+const BAKE_WAIT_MS  = (+process.env.BAKE_WAIT_MIN || 70) * 60 * 1000;   // must stay under the job's timeout-minutes, minus ~5 min of setup
 const PER_ITER_MS   = 15 * 60 * 1000;   // per-batch ceiling — NOT what actually ends a batch, see MAX_ITERS
 // ⚠️ A batch never lasts anywhere near PER_ITER_MS: the page's renderer dies ~30s in (it holds ~100 MB of
 // market data), so batches end on their own and the ITERATION CAP, not the time budget, is what ends a run.
@@ -35,7 +44,7 @@ const PER_ITER_MS   = 15 * 60 * 1000;   // per-batch ceiling — NOT what actual
 // the cap in 8m47s having left `cycle` at 27/45 (run 30765373241), which is why that tab kept serving stale
 // numbers. ~21 batches covers all four waves at 45 strategies; 60 leaves room to grow. The real stop is the
 // deadline above (60 x ~35s is ~35 min, well inside it) plus the stall guard in main().
-const MAX_ITERS     = 60;               // reload in a fresh browser this many times at most (each resumes)
+const MAX_ITERS     = +process.env.BAKE_MAX_ITERS || 60;   // reload in a fresh browser this many times at most (each resumes)
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 async function fetchEnd(url) {

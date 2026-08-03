@@ -1,0 +1,55 @@
+name: Bake full-history snapshot
+
+# Precomputes every saved strategy's FULL-HISTORY result (2002-01-02 → the latest data date) into the
+# same Supabase snapshot the waves use (bt_snapshots id 'waves', key `full`). The 🏛 Full history button
+# on Saved Strategies then reads it instantly — no 24-year backtest in anyone's browser.
+#
+# Separate from bake-waves.yml because the window is ~24 years — on its own roughly 2.5x the cost of all
+# four market-cycle waves together, and it needs the deep pre-2019 price parts loaded. Squeezing it into
+# the daily bake would push that job past its timeout and leave the waves stale.
+#
+# Not correctness-critical: if this fails, the Full-history button simply says it isn't baked yet, and
+# every other tab is unaffected. Each run is incremental — the page saves after every strategy and the
+# next batch resumes — so a partial run still makes progress and tomorrow's finishes it.
+
+on:
+  workflow_run:
+    workflows: ["Daily backtest data refresh"]
+    types: [completed]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bake-full-history
+  cancel-in-progress: true
+
+jobs:
+  bake:
+    # Manual runs always; auto runs only after the data refresh actually SUCCEEDED.
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    # BAKE_WAIT_MIN (240) + Playwright install + the Pages wait must fit inside this. Public repo, so
+    # Actions minutes are free; GitHub's per-job ceiling is 360 min.
+    timeout-minutes: 300
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Playwright (chromium)
+        run: |
+          npm install playwright@^1.48
+          npx playwright install --with-deps chromium
+
+      - name: Bake the full-history window headlessly
+        env:
+          BAKE_WAVES: full          # → saved-strategies.html?waves=full (this job bakes ONLY that window)
+          BAKE_WAIT_MIN: "240"      # ~24-yr window across every strategy; batches resume each other
+          BAKE_MAX_ITERS: "400"     # each batch dies on renderer memory after a few strategies, so allow many
+        run: node scripts/bake_waves.mjs

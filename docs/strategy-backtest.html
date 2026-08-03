@@ -389,6 +389,7 @@ async function runRewind(c) {
   if (!await ensureEngine(msg)) { msg.innerHTML = '<span class="neg">Couldn’t load market data — try again.</span>'; btn.disabled = false; return; }
   const inp = $('rwDate'); inp.min = SF.start; inp.max = SF.end;
   let date = inp.value || SF.end; if (date < SF.start) date = SF.start; if (date > SF.end) date = SF.end; inp.value = date;
+  await ensureHistoryFor(date, m => { if (m) msg.textContent = m; });   // rewinds before ~2020 pull the deep parts once
   const ranked = screenAsOf(c, date), topN = c.topN || 5;
   const sortL = SORTL[c.sortBy] || ((typeof FIELDS !== 'undefined' ? FIELDS.find(f => f.v === c.sortBy) : null) || {}).l || c.sortBy;
   msg.innerHTML = `As of <b>${esc(date)}</b> · <b>${ranked.length}</b> stock${ranked.length === 1 ? '' : 's'} qualified · Top ${topN} ⭐ = the picks · universe ${esc(universeLabel(c))}`;

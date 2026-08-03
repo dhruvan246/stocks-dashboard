@@ -85,67 +85,142 @@ async function loadCore() {
   try { NIFTY = (await (await fetch('./nifty.json')).json()).px || {}; } catch (e) { NIFTY = {}; }
   try { NIFTY500 = (await (await fetch('./nifty500.json')).json()).px || {}; } catch (e) { NIFTY500 = {}; }
 }
-// Release asset FIRST — refreshed DAILY by the refresh-backtest-data workflow (no repo bloat).
-// The in-repo copy is the offline/older fallback. Release URLs aren't browser-cacheable, so we
-// cache the downloaded bytes in IndexedDB keyed to the data version (sf_meta.json {end}): first
-// load downloads once, later visits read it back instantly; a new daily version re-downloads.
-const SF_URLS = ['https://github.com/dhruvan246/stocks-dashboard/releases/download/data/sf_stock_data.bin', './sf_stock_data.bin'];
+// Data lives in a dedicated same-origin repo (dhruvan246.github.io/sf-data/), force-pushed daily
+// (no bloat), served from Pages — same origin, no CORS. Layout since 2026-08-03 is BY DATE:
+//   sf_recent_*.bin  bars from sf_meta.deepFrom (2019-01-01) — covers the default 2020-03-31
+//                    window and every wave preset with a full 365d lookback, at ~1/3 the bytes
+//   sf_deep_*.bin    everything earlier (2002-2018 daily + pre-2002 weekly), fetched by
+//                    ensureDeepHistory() only when a run's window starts before ~2020
+// A meta WITHOUT `deepFrom` = the legacy by-symbol sf_stock_data_*.bin layout — kept loadable so
+// the pages can deploy ahead of the data flip.
+const SF_BASE = 'https://dhruvan246.github.io/sf-data/';
 const SF_DB = 'sfcache';
 function _sfdb() { return new Promise((res, rej) => { const r = indexedDB.open(SF_DB, 1); r.onupgradeneeded = () => { if (!r.result.objectStoreNames.contains('bin')) r.result.createObjectStore('bin'); }; r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); }
 async function _sfGet(k) { try { const db = await _sfdb(); return await new Promise(res => { const t = db.transaction('bin', 'readonly').objectStore('bin').get(k); t.onsuccess = () => res(t.result || null); t.onerror = () => res(null); }); } catch (e) { return null; } }
 async function _sfPut(k, v) { try { const db = await _sfdb(); await new Promise(res => { const t = db.transaction('bin', 'readwrite').objectStore('bin').put(v, k); t.onsuccess = () => res(); t.onerror = () => res(); }); } catch (e) {} }
 async function _sfClear() { try { const db = await _sfdb(); await new Promise(res => { const t = db.transaction('bin', 'readwrite').objectStore('bin').clear(); t.onsuccess = t.onerror = () => res(); }); } catch (e) {} }
+// Fetch one .bin part (IndexedDB-cached by data version) and return its parsed JSON.
+// `allowClear` — only the INITIAL page load may wipe the cache on a version change; a deep-history
+// cache miss must never evict the recent parts cached moments earlier under the same version.
+let _SF_CLEARED = false;
+async function _sfPart(file, key, ver, allowClear) {
+  let buf = ver ? await _sfGet(key + ':' + ver) : null;
+  if (!buf) {
+    if (allowClear && !_SF_CLEARED) { await _sfClear(); _SF_CLEARED = true; }   // evict older versions
+    const resp = await fetch(SF_BASE + file + '?v=' + (ver || Date.now()), { cache: 'reload' });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status + ' ' + file);
+    buf = await resp.arrayBuffer();
+    if (ver) _sfPut(key + ':' + ver, buf);
+  }
+  return JSON.parse(await new Response(new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'))).text());
+}
+// Normalise one symbol's raw record into engine arrays: day offsets, integer-paise closes, exact
+// intraday high/low when the data carries them, legacy per-mil offsets otherwise.
+function _sfNorm(o, ts) {
+  const n = o.d.length, d = new Array(n), p = new Array(n), t = new Array(n);
+  const hasHL = o.h && o.l, h = hasHL ? new Array(n) : null, l = hasHL ? new Array(n) : null;
+  for (let i = 0; i < n; i++) {
+    const y = o.d[i];
+    const off = Math.floor((Date.UTC(Math.floor(y / 10000), (Math.floor(y / 100) % 100) - 1, y % 100) / 1000 - ts) / DAY);
+    d[i] = off; p[i] = Math.round(o.c[i] * 100); t[i] = o.t[i] || 0;
+    if (hasHL) { h[i] = Math.round(o.h[i] * 100); l[i] = Math.round(o.l[i] * 100); }
+  }
+  const ser = { d, p };
+  if (hasHL) { ser.h = h; ser.l = l; }                     // EXACT intraday high/low (x100, like p)
+  else if (o.hb && o.lb) { ser.hb = o.hb; ser.lb = o.lb; } // old-format fallback (per-mil offsets)
+  if (o.v)  ser.v  = o.v;    // traded volume (shares)
+  if (o.dv) ser.dv = hasHL ? o.dv : o.dv.map(x => x / 10);   // delivery % (normalised to exact %)
+  return { ser, t, lastClose: o.c[n - 1] };
+}
+function _sfMeta(sym, sm, lastClose) {
+  return { symbol: sym, name: sm.name || sym, industry: sm.ind || 'Other', sector: sm.ind || 'Other', mcap: 0, latest: lastClose, alive: sm.alive, raw: sm.raw || null };
+}
 async function loadSF() {
   if (SF) return true;
-  // Data lives in a dedicated same-origin repo (dhruvan246.github.io/sf-data/), force-pushed daily
-  // (no bloat), served from Pages — same origin, no CORS. Split into sf_meta.json{parts} files (<95MB each).
-  const SF_BASE = 'https://dhruvan246.github.io/sf-data/';
   // Cache version = end + CONTENT rev. A heal/backfill republishes the parts WITHOUT advancing
   // `end` (the 2002-2019 delivery backfill did exactly that), and keying on `end` alone pinned
   // every returning visitor to the stale cached bytes until the next trading day. `rev` is absent
   // on an older sf_meta.json — then this degrades to the previous end-only key.
-  let ver = '', parts = 2; try { const m = await (await fetch(SF_BASE + 'sf_meta.json?t=' + Date.now())).json(); ver = m.end ? m.end + (m.rev ? ':' + m.rev : '') : ''; parts = m.parts || 2; } catch (e) {}
-  const D = { data: {}, meta: {}, end: '', start: '' }; let cleared = false;
-  for (let pi = 1; pi <= parts; pi++) {
-    let buf = ver ? await _sfGet('sfp' + pi + ':' + ver) : null;
-    if (!buf) {
-      if (!cleared) { await _sfClear(); cleared = true; }
-      const resp = await fetch(SF_BASE + 'sf_stock_data_' + pi + '.bin?v=' + (ver || Date.now()), { cache: 'reload' });
-      if (!resp.ok) throw new Error('HTTP ' + resp.status + ' part ' + pi);
-      buf = await resp.arrayBuffer();
-      if (ver) _sfPut('sfp' + pi + ':' + ver, buf);
-    }
-    const Dp = JSON.parse(await new Response(new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'))).text());
+  let M = {}; try { M = (await (await fetch(SF_BASE + 'sf_meta.json?t=' + Date.now())).json()) || {}; } catch (e) {}
+  const ver = M.end ? M.end + (M.rev ? ':' + M.rev : '') : '';
+  const files = M.deepFrom
+    ? Array.from({ length: M.recent || 1 }, (_, i) => ['sf_recent_' + (i + 1) + '.bin', 'sfr' + (i + 1)])
+    : Array.from({ length: M.parts || 2 }, (_, i) => ['sf_stock_data_' + (i + 1) + '.bin', 'sfp' + (i + 1)]);   // legacy by-symbol layout
+  const D = { data: {}, meta: {}, end: '', start: '' };
+  for (const [file, key] of files) {
+    const Dp = await _sfPart(file, key, ver, true);
     Object.assign(D.data, Dp.data); Object.assign(D.meta, Dp.meta);
     D.end = Dp.end || D.end; D.start = Dp.start || D.start;
   }
   const ts = START_TS, ser = {}, meta = {}, turn = {};
   for (const sym in D.data) {
-    const o = D.data[sym], n = o.d.length, d = new Array(n), p = new Array(n), t = new Array(n);
-    const hasHL = o.h && o.l, h = hasHL ? new Array(n) : null, l = hasHL ? new Array(n) : null;
-    for (let i = 0; i < n; i++) {
-      const y = o.d[i];
-      const off = Math.floor((Date.UTC(Math.floor(y / 10000), (Math.floor(y / 100) % 100) - 1, y % 100) / 1000 - ts) / DAY);
-      d[i] = off; p[i] = Math.round(o.c[i] * 100); t[i] = o.t[i] || 0;
-      if (hasHL) { h[i] = Math.round(o.h[i] * 100); l[i] = Math.round(o.l[i] * 100); }
-    }
-    ser[sym] = { d, p }; turn[sym] = { d, t }; const sm = D.meta[sym] || {};
-    if (hasHL) { ser[sym].h = h; ser[sym].l = l; }                     // EXACT intraday high/low (x100, like p)
-    else if (o.hb && o.lb) { ser[sym].hb = o.hb; ser[sym].lb = o.lb; } // old-format fallback (per-mil offsets)
-    if (o.v)  ser[sym].v  = o.v;    // traded volume (shares)
-    if (o.dv) ser[sym].dv = hasHL ? o.dv : o.dv.map(x => x / 10);   // delivery % (normalised to exact %)
-    meta[sym] = { symbol: sym, name: sm.name || sym, industry: sm.ind || 'Other', sector: sm.ind || 'Other', mcap: 0, latest: o.c[n - 1], alive: sm.alive, raw: sm.raw || null };
+    const r = _sfNorm(D.data[sym], ts);
+    ser[sym] = r.ser; turn[sym] = { d: r.ser.d, t: r.t };
+    meta[sym] = _sfMeta(sym, D.meta[sym] || {}, r.lastClose);
   }
   const endOff = Math.floor((Date.parse((D.end || '2024-01-01') + 'T00:00:00Z') / 1000 - ts) / DAY);
-  SF = { meta, series: ser, turn, startTs: ts, endOff, start: D.start, end: D.end,
-         nDead: Object.values(meta).filter(m => !m.alive).length, nTot: Object.keys(meta).length };
+  // start/nTot/nDead describe the FULL dataset (from the meta) even before deep history loads, so
+  // date pickers and universe stats never shrink to the recent slice.
+  SF = { meta, series: ser, turn, startTs: ts, endOff, start: M.fullStart || D.start, end: D.end, ver,
+         // where TRUE daily bars begin (2002-01-02); earlier bars are weekly, so oscillator-family
+         // factors aren't meaningful there — the full-history window starts here, not at `start`.
+         dailyFrom: M.dailyFrom || '',
+         deepFrom: M.deepFrom || null, deepParts: M.deepFrom ? (M.deep || 0) : 0, deepLoaded: !(M.deepFrom && M.deep > 0),
+         nDead: M.nTot != null ? M.nDead : Object.values(meta).filter(m => !m.alive).length,
+         nTot: M.nTot != null ? M.nTot : Object.keys(meta).length };
   return true;
 }
 function activateSF() { SERIES = SF.series; META = SF.meta; TURN = SF.turn; SF_END_OFF = SF.endOff; START_TS = SF.startTs; }
+
+/* ---- deep history (bars before SF.deepFrom), loaded on demand ------------------------------
+ * Quick runs (default 2020-03-31 window, wave presets, live screens) never need it. A run whose
+ * window starts before ~2020 awaits ensureHistoryFor(start) first; merge PREPENDS each symbol's
+ * older bars, and symbols that died before deepFrom arrive here for the first time. Pre-deepFrom
+ * bars never change day-to-day, so mixing a cached recent part with a fresher deep part is safe. */
+function needsDeepFor(dstr) { return !!(SF && !SF.deepLoaded && dstr && dayOff(dstr) - 366 < dayOff(SF.deepFrom)); }
+function _histGuard(dstr) { if (needsDeepFor(dstr)) throw new Error('pre-' + SF.deepFrom.slice(0, 4) + ' history not loaded — await ensureHistoryFor(start) first'); }
+let _DEEP_LOADING = null;
+async function ensureDeepHistory(onProgress) {
+  if (!SF || SF.deepLoaded) return true;
+  if (!_DEEP_LOADING) _DEEP_LOADING = _loadDeep(onProgress).catch(e => { _DEEP_LOADING = null; throw e; });
+  return _DEEP_LOADING;
+}
+async function _loadDeep(onProgress) {
+  for (let pi = 1; pi <= SF.deepParts; pi++) {
+    onProgress && onProgress('Loading pre-' + SF.deepFrom.slice(0, 4) + ' history (' + pi + '/' + SF.deepParts + ')…');
+    const Dp = await _sfPart('sf_deep_' + pi + '.bin', 'sfd' + pi, SF.ver, false);
+    for (const sym in Dp.data) {
+      const { ser: ds, t: dt, lastClose } = _sfNorm(Dp.data[sym], SF.startTs);
+      const rs = SF.series[sym];
+      if (!rs) {   // delisted before deepFrom — first sighting of this symbol
+        SF.series[sym] = ds; SF.turn[sym] = { d: ds.d, t: dt };
+        SF.meta[sym] = _sfMeta(sym, Dp.meta[sym] || {}, lastClose);
+        continue;
+      }
+      rs.d = ds.d.concat(rs.d); rs.p = ds.p.concat(rs.p);
+      // Optional per-bar arrays must stay index-aligned with d. Both slices come from one source
+      // array so presence always matches; if it ever doesn't, drop the pair (falls back to closes)
+      // rather than serve a misaligned window.
+      for (const [a, b] of [['h', 'l'], ['hb', 'lb']]) {
+        if (ds[a] && rs[a] && ds[b] && rs[b]) { rs[a] = ds[a].concat(rs[a]); rs[b] = ds[b].concat(rs[b]); }
+        else if (ds[a] || rs[a] || ds[b] || rs[b]) { delete rs[a]; delete rs[b]; }
+      }
+      for (const k of ['v', 'dv']) {
+        if (ds[k] && rs[k]) rs[k] = ds[k].concat(rs[k]);
+        else if (rs[k]) delete rs[k];
+      }
+      const tu = SF.turn[sym]; tu.d = rs.d; tu.t = dt.concat(tu.t);
+    }
+  }
+  SF.deepLoaded = true; activateSF();
+  onProgress && onProgress('');
+  return true;
+}
+async function ensureHistoryFor(dstr, onProgress) { if (needsDeepFor(dstr)) await ensureDeepHistory(onProgress); return true; }
 async function loadEngineData(onProgress) {
   onProgress && onProgress('Loading market data…');
   await loadCore();
-  onProgress && onProgress('Loading full market history — large, once a day…');
+  onProgress && onProgress('Loading market history — downloads once a day, then cached…');
   await loadSF(); activateSF();
   await loadFund();   // point-in-time quarterly net profit (small file; enables profit factors)
   await loadShp();    // point-in-time FII/DII holdings (small file; enables shareholding factors)
@@ -154,8 +229,9 @@ async function loadEngineData(onProgress) {
 
 /* ---- SINGLE-STOCK FAST PATH (docs/stock.html) -------------------------------------------------
  * A screen needs the whole market; a company page needs one company. loadEngineData() above pulls
- * ~137 MB (stock_data.bin 17 MB + both sf-data halves 115 MB + fundamentals) before it can draw
- * anything, which is why opening a stock used to crawl. scripts/build_stock_slices.py pre-cuts one
+ * ~80 MB (dash_slim 2 MB + the recent sf-data part ~78 MB + fundamentals; deep pre-2019 history
+ * only on demand) before it can draw anything, which is why opening a stock used to crawl.
+ * scripts/build_stock_slices.py pre-cuts one
  * file per symbol — the same arrays this engine builds in memory, already normalised — so the page
  * loads ~16 KB and every helper below (hl52 / rsi14 / computeTech / retPctAt / priceAt) runs against
  * it unchanged. One shape, one set of maths, no second implementation to keep in sync.
@@ -561,6 +637,7 @@ function passFilters(r, filters) {
 }
 // ranked candidate list as of a date (top cfg.topN = picks, the rest = "also qualifying")
 function screenAsOf(cfg, dateStr) {
+  _histGuard(dateStr);   // a screen at a pre-2020 date needs the deep parts loaded first
   const off = dayOff(dateStr);
   let rows = factorsAt(off, cfg).filter(r => r.rsi != null && passFilters(r, cfg.filters));
   rows = rows.filter(r => fieldVal(r, cfg.sortBy) != null);   // can't rank on a missing factor (e.g. no earnings yet)
@@ -576,6 +653,7 @@ function allocateBasket(picks, capital) {
 }
 // buy top-N once at `start`, hold unchanged to `end` (equal-weight, delisting→0)
 function computeHold(cfg, start, end, capital) {
+  _histGuard(start);
   const picks = screenAsOf(cfg, start).slice(0, cfg.topN);
   const endOff = dayOff(end);
   const per = capital / (picks.length || 1);
@@ -591,6 +669,7 @@ function computeHold(cfg, start, end, capital) {
 
 /* ---- the backtester ---- */
 function simulate(cfg) {
+  _histGuard(cfg.start);   // LOUD failure beats silently backtesting years with no bars loaded
   const months = monthsBetween(cfg.start, cfg.end);
   // Rebalance on the LAST TRADING DAY <= the calendar month-end (a month-end can fall on a weekend/holiday).
   // Standard/NSE 52w hi/lo = trailing 365d from the last TRADING day; anchoring the window on the raw calendar

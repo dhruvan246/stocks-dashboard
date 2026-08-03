@@ -94,9 +94,10 @@ loads every session. (README.md is just a short pointer here — this file is th
   hand-committed (was 2026-06-13 while live was 2026-06-22). The **live tool loads from the sf-data repo**, so
   Node grid-search/backtest harnesses that read `docs/sf_stock_data.bin` will silently use days-old prices and
   print numbers that DON'T match the site (cost me a wrong 88% vs the live 84%). For any analysis meant to match
-  the tool, fetch the LIVE parts first: `curl -s https://dhruvan246.github.io/sf-data/sf_stock_data_{1,2}.bin?v=<end>`
-  (merge `data`/`meta`, `end` from `sf-data/sf_meta.json`), or pull the `data` release asset. Cross-check
-  `gzip-decompress(docs/sf_stock_data.bin).end` vs `sf-data/sf_meta.json {end}` before trusting local results.
+  the tool, rebuild from the LIVE parts first: `python3 scripts/fetch_live_sf.py` (one command — fetches
+  sf-data's current layout, merges, overwrites `docs/sf_stock_data.bin`), or pull the `data` release asset.
+  Cross-check `gzip-decompress(docs/sf_stock_data.bin).end` vs `sf-data/sf_meta.json {end}` before trusting
+  local results.
 
 ---
 
@@ -120,12 +121,19 @@ Pipeline (the workflow, in order — to run by hand do the same):
    Full fix sweep for a confirmed pair (MANUAL_MERGE + fundamentals key-move + fno/membership/side-files):
    **§30**. Note the ISIN may be UNCHANGED yet still strand the history — GUJENERGY's day-1 bhavcopy row
    simply carried no ISIN, so the auto-merge had nothing to match on.
-4. `python3 scripts/split_sf_data.py` → force-push `sf_stock_data_1.bin`..`_N.bin`+`sf_meta.json` to the
-   **sf-data** Pages repo (secret `SF_DATA_TOKEN`). Browser loads from there (same origin, no CORS).
-   `N = ceil(total_gz / 95MB)` (currently 2; grows automatically as the dataset grows — 2026-08-02's
-   true-daily-since-2002 rebuild landed at 185MB/2 parts). Loaders (`backtest-engine.js` +
-   `stock-backtest.html`) read `sf_meta.json.parts` (default 2 if absent) instead of a hardcoded loop —
-   both must stay in sync (memory `feedback-backtest-engines-sync`).
+4. `python3 scripts/split_sf_data.py` → force-push the BY-DATE split + `sf_meta.json` to the **sf-data**
+   Pages repo (secret `SF_DATA_TOKEN`). Browser loads from there (same origin, no CORS). Layout
+   (since 2026-08-03 — the 192MB post-rebuild payload made every page load parse the lot):
+   - `sf_recent_1.bin` — bars ≥ `deepFrom` (2019-01-01), all a quick run needs: the default
+     2020-03-31 window and every wave preset keep a full 365d lookback inside it (~1/3 the bytes).
+   - `sf_deep_1..N.bin` — older bars (by-symbol halves, each <95MB); the browser fetches them ONLY
+     when a run's window starts before ~2020 (`ensureDeepHistory()`), then prepends per symbol.
+   - `sf_meta.json` — `{end, deepFrom, fullStart, recent, deep, nTot, nDead}`. No `deepFrom` key =
+     legacy by-symbol `sf_stock_data_*.bin` layout (loaders keep a fallback branch for it).
+   Loaders live in `backtest-engine.js` AND `stock-backtest.html` (inline copy) — both must stay
+   in sync (memory `feedback-backtest-engines-sync`). Every backtest entry point must
+   `await ensureHistoryFor(start)` before `simulate()`/`screenAsOf()` — they throw on missing
+   deep history rather than silently compute on a truncated series.
 5. Commit ONLY `docs/sf_meta.json` (≈20-byte version marker) — clients re-download when `{end}` bumps.
 
 **Rebuilding the base from scratch** (e.g. changing `DAILY_FROM`, coverage-campaign STEP 3): a fresh
@@ -404,13 +412,13 @@ Default config unless the user says otherwise: **Nifty 500, monthly (freq 1), to
 
 ### 7.0 ALWAYS use LIVE data first (the committed bin is STALE — §0)
 `docs/sf_stock_data.bin` is a frozen snapshot (was 2026-06-13 while live was -06-25). Before ANY Node grid run,
-merge the LIVE sf-data parts over it, else prices are days stale and CAGRs won't match the site:
+rebuild it from the LIVE sf-data parts, else prices are days stale and CAGRs won't match the site:
 ```
-curl -s "https://dhruvan246.github.io/sf-data/sf_stock_data_1.bin?v=<end>" -o scripts/_live/p1.bin
-curl -s "https://dhruvan246.github.io/sf-data/sf_stock_data_2.bin?v=<end>" -o scripts/_live/p2.bin   # <end> from sf-data/sf_meta.json
-node -e "z=require('zlib');f=require('fs');a=JSON.parse(z.gunzipSync(f.readFileSync('scripts/_live/p1.bin')));b=JSON.parse(z.gunzipSync(f.readFileSync('scripts/_live/p2.bin')));m={...a,data:{...a.data,...b.data},meta:{...(a.meta||{}),...(b.meta||{})}};f.writeFileSync('docs/sf_stock_data.bin',z.gzipSync(JSON.stringify(m),{level:6}))"
-# verify: node -e "...gunzip docs/sf_stock_data.bin...console.log(d.end)"  → must equal sf-data {end}; ZOMATO absent, ETERNAL len>1000
+python3 scripts/fetch_live_sf.py
 ```
+One command — reads `sf_meta.json` for the current layout (by-date `sf_recent_*`+`sf_deep_*` since
+2026-08-03, per-symbol concat exactly like the browser; legacy by-symbol handled too), applies the
+ZOMATO/ETERNAL merge guard, overwrites `docs/sf_stock_data.bin`, prints `end` to verify vs live meta.
 Restore afterwards if you don't want the working tree dirty: `git checkout docs/sf_stock_data.bin`.
 
 ### 7.1 EXHAUSTIVE grid — `scripts/grid_search_full.js` (NOT the greedy `grid_search.js`)
@@ -2738,3 +2746,67 @@ standalone). Tool: `scripts/_fy_identity.py SYM:FY`.
 Corollary worth remembering: a "revenue not served" cell is often not a document problem at all —
 of the first six closed in this class, ALL six were blocked by a wrong or missing stored PAT
 rather than by an unavailable filing.
+
+---
+
+## 46. ★ BACKTEST DATA IS SPLIT BY DATE — quick runs never download deep history  (2026-08-03)
+
+**Why:** the 2026-08-02 true-daily-since-2002 rebuild took the browser payload from ~94 MB to
+192 MB, and EVERY page load parsed all of it — while the default window (2020-03-31) and all four
+wave presets never read a bar before 2019-04. Loads and runs both roughly doubled overnight.
+
+**Layout** (built by `scripts/split_sf_data.py`, force-pushed to the sf-data Pages repo — §1 step 4):
+
+| file | contents | when the browser fetches it |
+|---|---|---|
+| `sf_recent_1.bin` (~78 MB) | bars ≥ `deepFrom` (2019-01-01) | always, on engine load |
+| `sf_deep_1..N.bin` (~107 MB) | bars before `deepFrom` | ONLY when a run's window starts before ~2020 |
+| `sf_meta.json` | `{end, rev, deepFrom, fullStart, dailyFrom, recent, deep, nTot, nDead}` | first, to pick the layout |
+
+`deepFrom` = 2020-03-31 (earliest preset) − 365d lookback, with margin. No `deepFrom` key in the
+meta = the LEGACY by-symbol `sf_stock_data_*.bin` layout; both loaders keep that branch so pages
+can deploy ahead of a data flip.
+
+**Client contract** (`docs/backtest-engine.js` + the inline copy in `docs/stock-backtest.html` —
+keep in sync, memory `feedback-backtest-engines-sync`):
+* `SF.start` / `nTot` / `nDead` come from the META, so date pickers and universe stats show the
+  FULL dataset even while only the recent slice is in memory.
+* `SF.dailyFrom` (2002-01-02) = where TRUE daily bars begin; pre-2002 is weekly and the oscillator
+  family isn't meaningful there. The Full-history window starts here, NOT at `start` (1996).
+* `ensureHistoryFor(startDate)` before `simulate()`/`screenAsOf()` — merge PREPENDS older bars per
+  symbol; symbols that died before `deepFrom` first appear at that point.
+* `simulate()`/`screenAsOf()`/`computeHold()` THROW when deep history is missing (`_histGuard`).
+  Never soften this to a silent return — a truncated series produces plausible, wrong numbers.
+* Only the initial load may clear the IndexedDB byte cache; a deep-part miss must not evict the
+  recent part cached seconds earlier under the same version.
+
+**Verification** (do all three when touching the split or the loaders):
+1. `python3 scripts/fetch_live_sf.py` → rebuild the full bin from live parts (§7.0).
+2. Re-split it and md5-compare every field of every symbol against that bin — deep+recent
+   concatenated must equal the original exactly (4,441 symbols, 0 diffs at the 2026-08-03 flip).
+3. Drive `backtest-engine.js` in a real browser against BOTH layouts and diff the run metrics:
+   a 2020-window backtest must be byte-identical recent-only vs legacy-full, and a pre-2019 one
+   must match after `ensureHistoryFor` (harness pattern: intercept the sf-data host with
+   Playwright `page.route`, serve local part files).
+
+## 47. ★ FULL-HISTORY RESULTS ARE PRE-BAKED NIGHTLY  (bake-full-history.yml, 2026-08-03)
+
+A 2002→date backtest is a few minutes of honest compute per strategy (24 years × ~4,400 stocks on
+true daily bars) — too slow to run in the browser on demand. So it is precomputed in CI, exactly
+like the market-cycle waves:
+
+* `.github/workflows/bake-full-history.yml` runs after every successful daily data refresh,
+  `timeout-minutes: 300`, driving `scripts/bake_waves.mjs` with `BAKE_WAVES=full`,
+  `BAKE_WAIT_MIN=240`, `BAKE_MAX_ITERS=400`.
+* That script opens `saved-strategies.html?bakewaves=1&waves=full&session=<run id>` headlessly, so
+  the baked numbers come from the page's OWN engine — never a second implementation to keep in sync.
+* Results land in the SAME Supabase snapshot as the waves (`bt_snapshots` id `waves`, key `full`).
+  Each job promotes only the keys it baked, so the daily wave bake and this one don't clobber
+  each other. Incremental: the page saves after every strategy and later batches resume.
+* The site reads it instantly — 🏛 Full history on the Best-return tab, plus a Full-history column
+  on the 🆕 New tab that appears only once the key exists (never a permanently empty column).
+* Non-critical by design: if it fails, the button says "isn't baked yet" and nothing else changes.
+
+Memory sanity (measured 2026-08-03): the engine's arrays cost ~204 MB heap recent-only and ~501 MB
+with deep history merged (9.26M bars, 4,441 symbols) — well inside the 4 GB heap the bake launches
+chromium with, so full history in a CI browser is not a memory problem.
