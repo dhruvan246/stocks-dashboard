@@ -18,6 +18,16 @@
      measured 12px above where it lands. A tooltip must appear already in place. */
   #yrCard{animation:none!important;opacity:1}
   .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  /* Phone card mode (theme.js turns this table into cards ≤640px): every other
+     cell is a "label — value" line, but the first one IS the card's title — a
+     name, a meta line and the filter list stacked together. Squeezed into the
+     59% left over after the "Strategy" label it wraps to a column ~180px wide,
+     so let it span the whole card instead. The empty data-label suppresses the
+     label; cardifyTable only stamps one when the attribute is absent. */
+  @media(max-width:640px){
+    #list table.sw-cardify tbody td:first-child{
+      display:block!important;text-align:left!important;padding:9px 0 10px!important}
+  }
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
@@ -593,7 +603,7 @@ function render() {
         : (CUSTOM_WIN ? '<span class="text-slate-300 text-xs">no data</span>' : '<span class="text-slate-400 text-xs">not computed</span>');
     }
     return `<tr class="border-b border-slate-100 hover:bg-slate-50 cursor-pointer" data-openrow="${esc(it.id)}" title="Open strategy page">
-      <td class="px-4 py-3">
+      <td class="px-4 py-3" data-label="">
         <div class="flex items-center gap-3">
           <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">📈</span>
           <span class="min-w-0">

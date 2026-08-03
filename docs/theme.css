@@ -283,7 +283,13 @@ html[data-theme] table{ -webkit-overflow-scrolling:touch; }
  * label / value lines, so dense financial tables never scroll sideways.
  * Desktop is completely untouched (rules live only inside this media query). */
 @media (max-width:640px){
-  html[data-theme] table.sw-cardify{ display:block; width:100%; border:0; }
+  /* min-width:0 — pages guard their DESKTOP table against crushed columns with a
+     Tailwind min-w-[840px] and friends. Harmless while it is a table; fatal once
+     each row becomes a card, because the card inherits that width, the 41% label
+     eats ~340px of it and the value lands past the right edge of the phone. Six
+     pages shipped that pairing (deals, insider, announcements, actions,
+     discovery, delivery), so drop it here rather than page by page. */
+  html[data-theme] table.sw-cardify{ display:block; width:100%; border:0; min-width:0 !important; }
   /* keep the header for screen-readers but take it out of the visual flow */
   html[data-theme] table.sw-cardify thead{
     position:absolute; width:1px; height:1px; padding:0; margin:-1px;
@@ -312,6 +318,14 @@ html[data-theme] table{ -webkit-overflow-scrolling:touch; }
   html[data-theme] table.sw-cardify tbody th:not(:last-child){
     border-bottom:1px solid var(--border) !important;
   }
+  /* The cell's content is a FLEX ITEM of that label/value row, so it keeps the
+     default min-width:auto and refuses to shrink below its longest unbreakable
+     line. A single nowrap/`truncate` span inside (Saved Strategies stacks a name,
+     a meta line and "Filters: …" in one cell) is then enough to drag the card
+     hundreds of px past the screen edge instead of ellipsizing — measured 734px
+     of content in a 328px card. Let it shrink; truncate only works once it can. */
+  html[data-theme] table.sw-cardify tbody td > *,
+  html[data-theme] table.sw-cardify tbody th > *{ min-width:0; }
   html[data-theme] table.sw-cardify tbody td::before,
   html[data-theme] table.sw-cardify tbody th::before{
     content:attr(data-label); flex:0 0 41%; text-align:left;
