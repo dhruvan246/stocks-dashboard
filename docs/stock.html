@@ -861,7 +861,12 @@ function actRows(kind,rows){
   const row=(date,badge,body,link)=>`<div class="flex items-start gap-2 py-1.5 border-b border-slate-50">`+
     `<span class="text-[11px] text-slate-400 whitespace-nowrap w-[74px] shrink-0 pt-0.5">${esc(date)}</span>`+
     `<div class="min-w-0 flex-1 text-[13px]">${badge}${body}${link||''}</div></div>`;
-  const bdg=(txt,cls)=>`<span class="text-[10px] font-bold uppercase ${cls} px-1.5 py-0.5 rounded mr-1.5 whitespace-nowrap">${esc(txt)}</span>`;
+  // BSE hands us category strings 50+ chars long ("Analysts/Institutional Investor
+  // Meet/Con. Call Updates"). As a nowrap inline badge that shoots past the row and,
+  // on a phone, past the screen edge — where it is clipped with no ellipsis and no way
+  // to scroll to it. inline-block + max-width + ellipsis keeps it on one line inside
+  // the row; the untruncated text stays reachable via the title.
+  const bdg=(txt,cls)=>`<span title="${esc(txt)}" class="text-[10px] font-bold uppercase ${cls} px-1.5 py-0.5 rounded mr-1.5 whitespace-nowrap inline-block align-bottom max-w-full overflow-hidden text-ellipsis">${esc(txt)}</span>`;
   if(kind==='ann') return rows.map(r=>row(r[0].slice(0,10),bdg(r[1]||'—','bg-slate-100 text-slate-600'),esc(r[2]),pdf(r[3]))).join('');
   if(kind==='dsc') return rows.map(r=>row(r[0],bdg(r[1],'bg-rose-50 text-rose-600'),esc(r[2]),pdf(r[3]))).join('');
   if(kind==='ins') return rows.map(r=>{ const sd=INS_SIDE[r[3]]||[r[3]||'—',''];
