@@ -112,8 +112,20 @@ def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
     # Ledger DEMERGERS (scripts/demerger_adj.json): reconciled every run regardless of age
     # (idempotent, network-free — the raw ex-day ratio rides in the ledger). Converges bins where
     # the drop is still baked in, AND bins where an old build mis-inferred the drop as a split.
+    # A ledger factor belongs to exactly ONE bar boundary — match by the RESOLVED drop-day index,
+    # never by calendar proximity: VEDL's phantom-crash flag (20260501 -> bar 20260504) sits a day
+    # after its demerger ex (20260430 -> bar 20260430); a +-days match let that event hijack the
+    # factor onto the wrong boundary and block-mis-scale 6k bars. With bar-exact matching the
+    # phantom event falls through to the generic raw-price reconciliation, which is what repairs
+    # any such historical mis-scale.
+    def _jat(sym_, ymd_):
+        e_ = data.get(sym_); ds_ = e_.get("d") if e_ else None
+        if not ds_: return None
+        return next((k for k in range(len(ds_)) if ds_[k] >= ymd_), None)
     for (dsym, dex) in MANUAL_DEMERGERS:
-        if not any(e[0] == dsym and abs(od(e[1]) - od(dex)) <= 5 for e in events):
+        tj = _jat(dsym, dex)
+        if tj is None: continue
+        if not any(e[0] == dsym and _jat(dsym, e[1]) == tj for e in events):
             events.append((dsym, dex, None, True))
     dem_by_sym = {}
     for (dsym, dex), dv in MANUAL_DEMERGERS.items():
@@ -139,16 +151,15 @@ def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
         if j is None or j < 1: continue
         c = e["c"]
         if not c[j] or not c[j - 1]: continue
-        # demerger with a ledger factor? its committed raw ex-day ratio spares the bhavcopy refetch.
-        # RE-ANCHOR j on the LEDGER's ex-day: the same demerger can reach here via a nearby event
-        # (VEDL's phantom-crash flag sits at 20260501, ledger ex 20260430) and anchoring on that
-        # event's own date would rescale across the WRONG bar with the ledger's raw ratio.
-        demx = next(((dex, dv) for dex, dv in dem_by_sym.get(sym, []) if abs(od(dex) - od(ex)) <= 5), None) if is_dem else None
+        # demerger with a ledger factor on THIS EXACT bar boundary? its committed raw ex-day ratio
+        # spares the bhavcopy refetch. Bar-exact only — a nearby event (phantom crash a day later)
+        # must NOT borrow the factor; it falls through to the raw-price reconciliation below.
         dem = None
-        if demx is not None:
-            dex, dem = demx
-            j = next((k for k in range(len(ds)) if ds[k] >= dex), None)
-            if j is None or j < 1 or not c[j] or not c[j - 1]: continue
+        if is_dem:
+            for dex, dv in dem_by_sym.get(sym, []):
+                jj = next((k for k in range(len(ds)) if ds[k] >= dex), None)
+                if jj == j: dem = dv; break
+        if dem is not None:
             raw_ratio = dem[1]
         else:
             re_ex, re_prev = raw_close(ds[j], sym), raw_close(ds[j - 1], sym)
