@@ -278,6 +278,72 @@ Next: STEP D (BSE detres harvest, 2008-14, the ~14k-cell big one).
    LIVE-verify 3 spot cells/era vs public record (e.g. SBIN Mar-08 1,883.25; HINDALCO Mar-10
    663.92; SATYAMCOMP Sep-08 597.43 — all pre-verified today).
 
+### STEP D — status (2026-08-04, Sonnet): SHIPPED
+
+`scripts/_bse_detres_pre15.py` (new, untracked scratch alongside `_bse_detres.py`,
+worktree `pre2015-detres`) + `_apply_reads.py --pre2015` mode (tracked, isolated
+code path — the default 2015+ mode is untouched). Fetch order per company: all
+qids 54-85 + annuals 57.50-85.50 in one pass (a small bounded prefetch pool, 4
+workers, warms the cache ~8 companies ahead of the sequential gate loop — the
+gate/land logic itself stays fully sequential and unchanged by this).
+
+**Numbers:** 727 companies in scope, 691 with a resolvable BSE code (unchanged
+STEP G residual — 36 unresolved, no fuzzy resolution attempted). Of 13,925
+2008-14 gap cells: **11,071 landed** (GATE F 8,996 · GATE S 732 · GATE E 1,343),
+**2,541 refused** (recorded with reasons in `pre2015_attempted_d.json`), 313 cells
+belong to unresolved-code companies. Refusal classes: 785 non-standard fiscal
+year (annual span ≠ ~365d — year-end changes, caught by the date-span check and
+correctly refused rather than mis-landed); 562 no filing in detres for that
+quarter; 183 genuine FY quarter-sum/annual mismatches neither gate could close;
+35 quarter-date mismatches; 4 irregular filings; 1 gate-S disagreement flagged
+for hand Sec.45 adjudication (not auto-healed). GATE X stayed stubbed all run —
+STEP N hasn't shipped yet.
+
+**Correctness fix mid-run:** GATE F originally included an alternate-scale
+"rescue" (try x10/÷10 on whichever leg made a failing FY-sum close). The yshift
+poison scan caught its output on GAMMONIND (two different quarters both forced to
+the same value). Root-caused and removed — the rescue had no independent
+evidence, it searched a 2-candidate space per leg until one satisfied the SAME
+constraint being tested (circular, not proof — exactly the "compensating errors
+pass the identity" trap these LANDING RULES already name). 28 cells across 6
+companies (AKSHOPTFBR, BEPL, DHAMPURSUG, ESSAROIL, FKONCO, GAMMONIND) were
+retracted and re-derived under the fixed code: 19/28 re-landed cleanly via GATE E
+on their original unmodified readings (proving those were right all along), 9/28
+now correctly refuse. 5 of the 6 companies had already been pushed before the fix
+landed; that commit corrected the live data. Full detail + both git commits in
+the session that shipped this.
+
+**Sanity pass:** revop_sanity flagged 90 cells across this run (12 companies) —
+all reviewed against raw cache before any allowlist decision, none blind. 84
+confirmed genuine and allowlisted in `sanity_ok.json`: a "scale-spike" class
+(established-max reference reflects a company that collapsed AFTER 2015 —
+ABGSHIP/EDUCOMP/GTL/OPTOCIRCUI/PSL/REIAGROLTD/ALEMBICLTD, several confirmed by a
+seamless bridge into their own pre-existing post-2015 stored series, no
+discontinuity) and a "duplicate-value" class (ANDHRSUGAR/GEOMETRIC/SONATSOFTW,
+raw precision below 2dp display rounding proves the two filings are genuinely
+different documents). 6 cells across 3 companies (MASTEK/PEL/SUZLON) deliberately
+LEFT nulled: their revenue matches exactly (not just at 2dp) across large time
+gaps while every other field on the filing differs substantially — a materially
+more ambiguous signal than the other two classes, and LANDING RULES prefers
+refusing ambiguous revenue over forcing it. PAT for those 6 is unaffected either
+way (revop_sanity never touches the PAT mirror slot). yshift scan clean across
+the full campaign (11,071 cells / 660 symbols) after 2 genuine-coincidence pairs
+(PARSVNATH, SOBHA) were investigated and allowlisted in `yshift_genuine.json`
+with full reasoning.
+
+**LIVE-verified through the client** (not just the raw bulk JSON — the per-stock
+`fin/<SYM>.json` slice the stock page actually fetches): HINDALCO Mar-10 663.92
+(gate F) and SATYAMCOMP Sep-08 597.43 (gate E) both confirmed exact. SBIN Mar-08
+1,883.25 (confirmed correct by direct fetch, matches public record) is correctly
+REFUSED — FY08's Q1 (Jun-07) is pre-detres-floor so GATE F can't close, and GATE
+E misses by 16% on this specific bank filing (reported quarterly EPS doesn't
+reconcile against period-end equity capital for reasons unrelated to scale).
+Expected to close once STEP N supplies GATE X.
+
+Next: STEP N (NSE archive, 2005-07 + 2008-14 residue) unlocks GATE X, which
+should close some of STEP D's 2,541 refusals — particularly the FY08-boundary
+class and cells where the FY-sum genuinely can't close on detres alone.
+
 ## STEP N — NSE ARCHIVE HARVEST 2005Q1→2007Q4 + 2008-14 residue
 
 1. Worktree `pre2015-nsearch`. `_nse_archive_revop.py` already handles list/detail/cache/rename
@@ -349,3 +415,13 @@ one session; deliverable = feasibility verdict + (if green) the harvest recipe a
   BSE master / likely membership-bin identity split — full detail in the STEP G status block
   above). `_n500_member_bin.py` + `_bse_master_all.json` + `_scrip_extra.json` promoted from
   untracked rev-mission-only scratch to committed shared assets.
+- 2026-08-04: STEP D shipped (Sonnet) — see STEP D status block above. 11,071/13,925
+  2008-14 gap cells landed (F 8,996 · S 732 · E 1,343), 2,541 refused with reasons,
+  313 unresolved-code residue. Found+fixed a real correctness bug mid-run (GATE F's
+  alternate-scale rescue was circular, caught by the yshift poison scan on
+  GAMMONIND; removed, 28 cells across 6 companies retracted and correctly
+  re-derived). Reviewed all 90 revop_sanity nulls against raw cache; 84 allowlisted
+  as genuine (sanity_ok.json), 6 deliberately left refused (ambiguous exact-match
+  revenue, ok's PAT unaffected). LIVE-verified through the client (per-stock
+  fin/<SYM>.json slice, not just the bulk file). SATYAMCOMP/HINDALCO spot values
+  exact; SBIN Mar-08 correctly refused pending STEP N's GATE X.
