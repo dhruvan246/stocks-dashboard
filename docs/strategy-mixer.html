@@ -607,9 +607,8 @@ function renderCorr(M){
       return `<td class="cell ${cls}">${c.toFixed(2)}</td>`;
     }).join('') + '</tr>').join('');
   $('corrTbl').innerHTML = head + body;
-  const short = M.dates.length < 13;
-  if (short) $('corrTbl').insertAdjacentHTML('afterend', '<div class="text-[11px] text-amber-600 mt-2" id="corrNote">Under a year of monthly data — correlations this young are noisy.</div>');
-  else { const nEl = $('corrNote'); if (nEl) nEl.remove(); }
+  const nEl = $('corrNote'); if (nEl) nEl.remove();   // re-renders (theme flip) must not stack notes
+  if (M.dates.length < 13) $('corrTbl').insertAdjacentHTML('afterend', '<div class="text-[11px] text-amber-600 mt-2" id="corrNote">Under a year of monthly data — correlations this young are noisy.</div>');
 }
 
 /* ---------- yearly table ---------- */
@@ -686,7 +685,9 @@ $('bFav').onclick = () => {
     if (st.end && sfEnd && st.end <= sfEnd) $('dTo').value = st.end; else if (sfEnd) $('dTo').value = sfEnd;
     (st.sel || []).forEach(k => {
       const s = ALL.find(x => identityKey(x.cfg) === k);
-      if (s && SEL.size < MAX_SEL) SEL.set(k, { s, alloc: Math.max(0, +(st.alloc || {})[k] || 100000) });
+      // a saved 0 is a deliberate "park it" — keep it 0, don't silently refill to ₹1L
+      const a = +((st.alloc || {})[k]);
+      if (s && SEL.size < MAX_SEL) SEL.set(k, { s, alloc: a >= 0 ? a : 100000 });
     });
   }
   renderList(); renderMix();
