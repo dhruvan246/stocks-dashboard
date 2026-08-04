@@ -1611,10 +1611,15 @@ rows land daily during season). Distinct from `fii-dii.html` (market-level daily
 pages cross-link.
 
 - **Fetcher = `scripts/fetch_shareholding.py`** (stdlib-only; reuses build_fundamentals' NSE session):
-  1. Master list per quarter-end: `/api/corporate-share-holdings-master?index=equities&from_date=<QE>&to_date=<QE>`
-     — ⚠️ the window filters on the pattern's **AS-ON date**, so from=to=quarter-end returns EVERY company's
-     filing for that quarter in ONE call (~2,300/qtr). Mid-quarter as-on dates = event-based SHPs (capital
-     changes) — deliberately NOT tracked (quarter-end series only, Trendlyne-comparable).
+  1. Master list per quarter-end: `/api/corporate-share-holdings-master?index=equities&from_date=<QE>&to_date=<QE+180d,
+     capped at today>` — ⚠️ **the window filters on the SUBMISSION date, NOT the as-on date, since ~2026-08**
+     (it filtered on as-on when this was built, and the switch was SILENT). from=to=quarter-end now matches only
+     the 1-2 filings submitted ON the quarter end, so the daily top-up quietly stopped adding anything —
+     Jun-2026 sat at 2,196 cells while 2,284 existed. Fix (2026-08-04): ask for the filing SEASON
+     (QE → QE+180d, capped at today; the API doesn't truncate — a 6-month window returns ~4,800 rows) and keep
+     the rows whose **`date`** field (= the as-on date) equals the quarter. Mid-quarter as-on dates = event-based
+     SHPs (capital changes) — still deliberately dropped (quarter-end series only, Trendlyne-comparable).
+     **Symptom to watch for: `master <QE>: N filings ... , M as-on this quarter` with M in single digits.**
   2. Each master row carries an **`xbrl` url** (nsearchives, ~150-500 KB) → parse category facts
      `ShareholdingAsAPercentageOfTotalNumberOfShares` per context member (contexts with exactly one
      explicitMember, no typedMember — typed = the named >1% shareholders):
@@ -1635,13 +1640,24 @@ pages cross-link.
      dash_slim + sector macro from sector_classification; ABORT if <500 rows) + **`docs/shp_meta.json`**
      (tiny heartbeat, changes every run — feeds.json watches THIS for liveness at 36h; shareholding.json
      itself has max_age null because off-season it legitimately never changes).
+  5. Bank every filing's **total share count** in `scripts/shares_outstanding.json` (tracked, tiny):
+     `{SYM: [shares, "QE", "sub-date"]}`, newest quarter wins. Source = `NumberOfShares` on the
+     whole-company (`ShareholdingPatternMember`) context, `NumberOfFullyPaidUpEquityShares` as fallback.
+     Parsed by **`parse_shares()`, deliberately independent of `parse_shp()`** — a company with no
+     institutional holding files only promoter/public rows, which parse_shp MUST reject (it can't tell
+     "no institutions" from "old format", and zero-filling would poison FII/DII, §22b), yet those SME-ish
+     names are exactly the ones that need a share count. It is also NOT a slot in shp_history: four readers
+     index those cells positionally. See §22e for what consumes it.
 - **Runs:** default = top-up last 3 QEs (current season + late filers/revisions of 2 back, only new/revised
   XBRLs re-fetched); `--backfill N` = deep fill; `--quarters <QE,QE,…>` = explicit list; `--reparse` =
   re-fetch even unchanged filings (schema upgrades, e.g. adding nsh); `--feed-only` = rebuild docs feed,
-  no network. Initial backfill 2026-07-16: 4 quarters (Sep-25→Jun-26), ~7k XBRLs, ~45 min, 6 threads.
+  no network; `--symbols A,B,C` = restrict to those tickers; `--fill-shares` = re-read only the filings of
+  symbols with no share count yet (idempotent, cheap, safe to re-run). Initial backfill 2026-07-16:
+  4 quarters (Sep-25→Jun-26), ~7k XBRLs, ~45 min, 6 threads.
 - **Auto-refresh:** `.github/workflows/refresh-shareholding.yml` — cron 12:40 + 20:40 IST **daily incl.
   weekends** (filings land any day); reset-and-replay commit carries shareholding.json + shp_meta.json +
-  shp_history.json through /tmp (§18 gotcha); guard_feed before commit; dispatches pages.yml.
+  shp_engine.json + shp_history.json + **shares_outstanding.json** through /tmp (§18 gotcha — a file the
+  fetch step writes that is NOT on all three lists is silently discarded); guard_feed; dispatches pages.yml.
 - **Per-stock view: `docs/stock.html` "Shareholding pattern" section** — quarterly table from
   shareholding.json (Promoters / FIIs / DIIs w/ +/− MF-insurance expander / Public&others=100−prom−fii−dii /
   No.-of-shareholders row that auto-hides while counts are absent); quarters oldest→newest, leading
@@ -1651,9 +1667,31 @@ pages cross-link.
   this week), min-move pp + mcap + sector filters, sortable columns, FII+DII sparkline w/ hover tooltip,
   Δ pills vs the stock's PREVIOUS filed quarter ("first" pill when no prior), NEW badge ≤3d, CSV export,
   sw-star watchlist, theme.js auto-cardify on mobile. Row cap 300 + "Show more".
-- **Gotchas:** master `date` fields are as-on dates — a Jul window returns only event SHPs, NOT the June
-  quarter (query from=to=QE instead). GAYAPROJ-style +16pp FII jumps are usually restructuring allotments —
-  real filing data, not bugs. BSE-only stocks (no NSE listing) have no SHP here (future work, BSE source).
+- **Gotchas:** master `date` = the as-on date, `submissionDate`/`broadcastDate` = when it was filed, and the
+  from/to window filters on the LATTER (see step 1 — this flipped silently and cost us a season of top-ups).
+  GAYAPROJ-style +16pp FII jumps are usually restructuring allotments — real filing data, not bugs.
+  BSE-only stocks (no NSE listing) have no SHP here (future work, BSE source).
+
+### 22e. MARKET CAP FOR THE NSE-ONLY COHORT  (2026-08-04 — why E2E had no mcap or P/E)
+**Every mcap on the site traces to ONE field: `Mktcap` in BSE's scrip master** (`fetch_all.py`). A company
+NSE lists and BSE doesn't has no row there, so fetch_all takes its NSE-only branch and hardcodes `mcap: 0`
+— **104 symbols, BSE Ltd and CDSL among them** (both genuinely NSE-only; E2E Networks came up NSE Emerge →
+main board). Zero mcap then blanks **Market cap, P/E, P/S and P/B** on the stock page (all divide into it)
+and leaves the stock at the bottom of its own peer table. It is NOT a fundamentals gap — E2E's filings and
+TTM profit were complete the whole time.
+- **Fix = `build_compressed.py`**, right after the 52w pass: for any meta with a falsy mcap and a `latest`
+  close, `mcap = shares x latest / 1e7` using `scripts/shares_outstanding.json` (§22 step 5), tagged
+  `mcapSrc: "shp:<QE>"`. **Fill-only — a real BSE mcap is never overwritten.**
+- **Accuracy: median 0.08% vs BSE's own Mktcap, worst 0.3%** on a 20-name spread (RELIANCE→PGHL, 2026-06-30
+  counts). The two sources are interchangeable in practice; the residual is the gap between the SHP as-on
+  date and BSE's snapshot. Verified by rebuilding stock_data.bin on a mixed payload: BSE-sourced caps
+  untouched, SHP-sourced ones filled, no-count symbols still 0.
+- **Propagation is automatic**: `build_stock_slices.py` reads `docs/stock_data.bin` meta for both the slice's
+  `mcap`/`mcapAt` and the peer table's mcap-ranking + P/E, so the stock page picks it up on the next bake.
+- **Residual: 2 of 104** (INFRA, MSCIADD) — no SHP filing in the last 4 quarters, so no share count. Don't
+  grind on them; they fill themselves whenever they next file.
+- **Rejected alternative:** shares = PAT ÷ basic EPS from the quarterly XBRL. Fine for LTTS (1.2% off) but
+  CYIENT came out 39% high and AFFLE 2.8x low (an ANNUAL EPS sitting in the Q4 slot). Don't resurrect it.
 
 ### 22b. DEEP HISTORY (2019-09-30 →) + the OLD XBRL FORMAT  (built 2026-07-16/17)
 - **Format boundary = Sep-2022.** Quarters ≥ 2022-09-30 file the new taxonomy (InstitutionsDomestic/

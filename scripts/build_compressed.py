@@ -48,6 +48,34 @@ for tkr, pairs in payload["series"].items():
             h52_count += 1
 print(f"52w-high attached to {h52_count} stocks")
 
+# --- market cap for the NSE-only cohort (shares from SHP filings x latest close) --------------
+# Every other mcap on the site comes from ONE field: Mktcap in BSE's scrip master (fetch_all.py).
+# A company NSE lists but BSE doesn't has no row there, so fetch_all falls through to its
+# NSE-only branch and hardcodes mcap 0 — ~105 symbols, BSE Ltd and CDSL among them. Blank mcap
+# also blanks P/E, P/S and P/B on the stock page, which all divide into it.
+# The quarterly shareholding-pattern XBRL we already download carries the total share count,
+# banked per symbol in scripts/shares_outstanding.json by fetch_shareholding.py, so
+# mcap = shares x latest close closes the gap for free. Reproduces BSE's own figure to a
+# median 0.08% on a 20-name check, so the two sources are interchangeable in practice.
+# Fill-only: a real BSE mcap is never overwritten.
+shares_path = ROOT / "scripts" / "shares_outstanding.json"
+if shares_path.exists():
+    try:
+        shares = json.loads(shares_path.read_text(encoding="utf-8"))
+        filled = 0
+        for tkr, meta in payload["meta"].items():
+            if meta.get("mcap") or not meta.get("latest"): continue
+            got = shares.get(str(meta.get("symbol") or tkr.split(".")[0]).upper())
+            if not got or not got[0]: continue
+            mcap = got[0] * meta["latest"] / 1e7          # shares x rupees -> rupees crore
+            if mcap <= 0: continue
+            meta["mcap"] = round(mcap, 2)
+            meta["mcapSrc"] = "shp:" + got[1]             # provenance — not a BSE-reported cap
+            filled += 1
+        print(f"mcap from SHP share counts: {filled} filled ({len(shares)} counts on file)")
+    except Exception as e:
+        print(f"WARN shares_outstanding unusable ({e}) — NSE-only caps stay blank")
+
 # Historical index snapshots (per-rebalance constituent lists, NSE symbols only).
 # Optional — if missing, the dashboard falls back to today's META.indices.
 indices_history_path = ROOT / "scripts" / "indices_history.json"

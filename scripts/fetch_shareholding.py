@@ -3,8 +3,9 @@
 
 Pipeline (DATA_RUNBOOK.md section 22):
   1. Master list per quarter-end: /api/corporate-share-holdings-master?index=equities
-     &from_date=<QE>&to_date=<QE>  (the window filters on the pattern's AS-ON date, so one
-     call per quarter-end returns every company's filing for that quarter; ~2,900/qtr).
+     &from_date=<QE>&to_date=<QE+180d, capped at today>. The window filters on the SUBMISSION
+     date (it filtered on the as-on date until ~2026-08; see fetch_master), so we ask for the
+     filing season and keep the rows whose as-on date is the quarter — ~2,300/qtr.
   2. Each filing carries an XBRL url (nsearchives) — parse the category percentage facts:
        promoter  = ShareholdingOfPromoterAndPromoterGroupMember
        public    = PublicShareholdingMember
@@ -21,11 +22,15 @@ Pipeline (DATA_RUNBOOK.md section 22):
      the filing carries it — cells written before 2026-07-16 have 6 slots, readers index 0-5 + optional 6.
   4. Build docs/shareholding.json (slim page feed, aligned quarter arrays + mcap/sector join)
      and docs/shp_meta.json (tiny freshness marker committed every run, feeds.json watches it).
+  5. Bank each filing's total share count in scripts/shares_outstanding.json — the ONLY free
+     source of a market cap for companies NSE lists and BSE doesn't (see load_shares).
 
 Runs:
   python -X utf8 scripts/fetch_shareholding.py                # daily top-up (last 3 QEs, new/revised only)
   python -X utf8 scripts/fetch_shareholding.py --backfill 4   # one-time deep fill (most-recent quarter first)
   python -X utf8 scripts/fetch_shareholding.py --backfill 4 --reparse  # re-fetch even unchanged filings (schema upgrades)
+  python -X utf8 scripts/fetch_shareholding.py --quarters 2026-06-30 --fill-shares   # only symbols with no share count yet
+  python -X utf8 scripts/fetch_shareholding.py --quarters 2026-06-30 --fill-shares --symbols E2E,BSE,CDSL
   python -X utf8 scripts/fetch_shareholding.py --feed-only    # rebuild docs feed from history, no network
 
 Self-healing: a failed master call skips that quarter (history keeps yesterday's cells); XBRL
@@ -51,6 +56,7 @@ FEED_QUARTERS = 8      # quarters shipped to the page
 THREADS = 6            # parallel XBRL downloads (nsearchives is a static host)
 FLUSH_EVERY = 150      # persist history every N new cells (resumable backfill)
 MIN_FEED_ROWS = 500    # never overwrite a good feed with a near-empty one
+MASTER_WINDOW_DAYS = 180  # submission-date window per quarter (see fetch_master)
 
 REF = "https://www.nseindia.com/companies-listing/corporate-filings-shareholding-pattern"
 MON = {"JAN": 1, "FEB": 2, "MAR": 3, "APR": 4, "MAY": 5, "JUN": 6,
@@ -136,6 +142,37 @@ def save_hist(h):
                 time.sleep(1 + i)
         os.replace(tmp, HIST)  # last try — surface the error if it truly won't release
 
+# ---- share-count ledger -----------------------------------------------------------------
+# {SYM: [shares_outstanding, "QE", "sub-date"]} — newest quarter wins.
+# Why a ledger and not a slot in shp_history: parse_shp REJECTS filings with no institutional
+# rows (it can't distinguish "no institutions" from "old format", and zero-filling would poison
+# FII/DII), yet those small NSE-only companies are precisely the ones with no market cap. The
+# count is a separate fact, so it gets a separate file — and shp_history's cell shape, which
+# four readers index positionally, stays untouched.
+# Consumer: build_compressed.py, which turns shares x latest close into mcap for the ~105
+# NSE-only symbols BSE's scrip master has no row for.
+SHARES = os.path.join(HERE, "shares_outstanding.json")
+
+def load_shares():
+    if os.path.exists(SHARES):
+        try:
+            return json.load(open(SHARES, encoding="utf-8"))
+        except Exception as e:
+            print("WARN shares ledger unreadable (%s) — starting empty" % e)
+    return {}
+
+def save_shares(s):
+    with _flush_lock:
+        tmp = SHARES + ".tmp.%d" % os.getpid()
+        json.dump(s, open(tmp, "w", encoding="utf-8"), separators=(",", ":"), sort_keys=True)
+        for i in range(12):
+            try:
+                os.replace(tmp, SHARES)
+                return
+            except PermissionError:
+                time.sleep(1 + i)
+        os.replace(tmp, SHARES)
+
 # Coverage campaign STEP 5: historical backfills the NSE master API (fetch_master, below) can't
 # reach — it only ever serves a recent rolling window, never historical quarters (confirmed:
 # querying it for old quarter-ends returns 0 rows even though those quarters plainly have filings).
@@ -170,19 +207,33 @@ def apply_bse_hist_ledger(h):
 
 # ------------------------------------------------------------------ NSE fetch
 def fetch_master(jar, qe_iso):
-    """All SHP filings whose as-on date == qe. Returns [] on failure (self-healing)."""
+    """All SHP filings whose AS-ON date == qe. Returns [] on failure (self-healing).
+
+    ⚠️ from_date/to_date filter on the SUBMISSION date, NOT the pattern's as-on date. It was
+    the other way round when this was written (runbook §22), and the switch was silent: the
+    daily top-up kept asking from=to=quarter-end, which matches only filings submitted ON the
+    quarter end — 2 rows for Jun-2026 instead of 2,284, so the top-up quietly stopped adding
+    anything. Ask for a submission window that opens at the quarter end and runs to today
+    (capped: SEBI's deadline is 21d, revisions trail by months, and the API doesn't truncate —
+    a 6-month window returns ~4,800 rows), then keep the rows whose as-on date IS this quarter.
+    Mid-quarter as-on dates are event-based SHPs (capital changes) — deliberately dropped."""
     d = datetime.date.fromisoformat(qe_iso)
-    dd = "%02d-%02d-%04d" % (d.day, d.month, d.year)
+    to = max(d, min(datetime.date.today(), d + datetime.timedelta(days=MASTER_WINDOW_DAYS)))
+    fmt = lambda x: "%02d-%02d-%04d" % (x.day, x.month, x.year)
     url = ("https://www.nseindia.com/api/corporate-share-holdings-master?index=equities"
-           "&from_date=%s&to_date=%s" % (dd, dd))
+           "&from_date=%s&to_date=%s" % (fmt(d), fmt(to)))
     hdr = {"User-Agent": B.UA, "Accept": "application/json, text/plain, */*", "Referer": REF}
     try:
-        j = json.loads(B._get(url, headers=hdr, jar=jar, timeout=120))
+        j = json.loads(B._get(url, headers=hdr, jar=jar, timeout=180))
         recs = j if isinstance(j, list) else j.get("data", [])
-        return recs if isinstance(recs, list) else []
+        if not isinstance(recs, list): return []
     except Exception as e:
         print("ERR master %s: %r" % (qe_iso, e))
         return []
+    out = [r for r in recs if iso_date(r.get("date")) == qe_iso]
+    print("  master %s: %d filings submitted %s..%s, %d as-on this quarter"
+          % (qe_iso, len(recs), fmt(d), fmt(to), len(out)))
+    return out
 
 def fetch_xbrl(url, jar):
     """XBRL from nsearchives — plain fetch first (static host), session fallback."""
@@ -193,11 +244,43 @@ def fetch_xbrl(url, jar):
         return B._get(url, headers=hdr, jar=jar, timeout=120)
 
 # ------------------------------------------------------------------ XBRL parse
+def parse_shares(txt):
+    """-> total equity shares outstanding (int), or None.
+
+    Deliberately independent of parse_shp. A company with NO institutional holding files only
+    promoter/public rows, which parse_shp must reject (it can't tell "no institutions" from
+    "old format", and guessing zero would poison FII/DII — runbook §22b). Their share count is
+    still perfectly good, and those SME-ish names are exactly the ones missing a market cap.
+    NumberOfShares is the full base (fully paid + partly paid + DRs); the fully-paid tag is the
+    fallback for filers who omit it. Both sit on the whole-company context."""
+    root = txt if hasattr(txt, "iter") else ET.fromstring(txt)
+    strip = lambda t: t.split("}", 1)[-1]
+    whole = set()
+    for c in root.iter():
+        if strip(c.tag) != "context": continue
+        mems, typed = [], False
+        for m in c.iter():
+            st = strip(m.tag)
+            if st == "explicitMember": mems.append((m.text or "").split(":")[-1].strip())
+            elif st == "typedMember": typed = True
+        if not typed and mems == ["ShareholdingPatternMember"]: whole.add(c.get("id"))
+    best = {}
+    for f in root.iter():
+        tag = strip(f.tag)
+        if tag not in ("NumberOfShares", "NumberOfFullyPaidUpEquityShares"): continue
+        if f.get("contextRef") not in whole: continue
+        try:
+            v = int(float(str(f.text).strip()))
+        except (TypeError, ValueError):
+            continue
+        if v > 0: best[tag] = v
+    return best.get("NumberOfShares") or best.get("NumberOfFullyPaidUpEquityShares")
+
 def parse_shp(txt, qe_iso):
     """-> dict(prom, fii, dii, mf, ins) as % (2dp) or None if not anchored.
     Category facts sit in contexts with exactly ONE explicit member and no typed member
     (typed members = the named >1% shareholders)."""
-    root = ET.fromstring(txt)
+    root = txt if hasattr(txt, "iter") else ET.fromstring(txt)
     strip = lambda t: t.split("}", 1)[-1]
     ctx = {}  # id -> member localname | None(invalid)
     for c in root.iter():
@@ -271,11 +354,12 @@ def parse_shp(txt, qe_iso):
     return out
 
 # ------------------------------------------------------------------ main fetch
-def refresh_quarters(qes, reparse=False):
+def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
     jar = B.nse_jar()
     hist = load_hist()
     apply_bse_hist_ledger(hist)   # STEP 5 2016-2019 backfill — fill-only, no-ops once applied
     names = hist.setdefault("_names", {})
+    shares = load_shares()
     before = cells_of(hist)
     stats = []
 
@@ -293,23 +377,32 @@ def refresh_quarters(qes, reparse=False):
                 best[sym] = {"sub": sub, "xb": xb, "name": re.sub(r"\s+", " ", str(r.get("name") or "")).strip()}
         todo = []
         for sym, r in best.items():
+            if only is not None and sym not in only: continue
             have = (hist.get(sym) or {}).get(qe)
-            if have and str(have[5]) >= r["sub"] and not reparse: continue  # already have this or newer
+            if fill_shares:
+                # re-read only the filings whose share count we never captured
+                if (shares.get(sym) or [None, ""])[1] >= qe: continue
+            elif have and str(have[5]) >= r["sub"] and not reparse:
+                continue                                                    # already have this or newer
             todo.append((sym, r))
         print("%s: %d filings, %d new/revised to parse" % (qe, len(best), len(todo)))
         stats.append((qe, len(best), len(todo)))
 
-        done = skip = 0
+        done = skip = nsh_new = 0
         def work(item):
             sym, r = item
             try:
-                txt = fetch_xbrl(r["xb"], jar)
-                return sym, r, parse_shp(txt, qe)
+                root = ET.fromstring(fetch_xbrl(r["xb"], jar))
+                return sym, r, parse_shp(root, qe), parse_shares(root)
             except Exception as e:
-                return sym, r, ("ERR", repr(e))
+                return sym, r, ("ERR", repr(e)), None
         with ThreadPoolExecutor(max_workers=THREADS) as ex:
             for fut in as_completed([ex.submit(work, it) for it in todo]):
-                sym, r, res = fut.result()
+                sym, r, res, nshares = fut.result()
+                # Share count is banked whether or not the FII/DII parse survived its gates.
+                if nshares and (shares.get(sym) or [None, ""])[1] <= qe:
+                    if shares.get(sym) != [nshares, qe, r["sub"]]: nsh_new += 1
+                    shares[sym] = [nshares, qe, r["sub"]]
                 if isinstance(res, dict):
                     cell = [res["prom"], res["fii"], res["dii"], res["mf"], res["ins"], r["sub"]]
                     if res.get("nsh"): cell.append(res["nsh"])
@@ -323,8 +416,9 @@ def refresh_quarters(qes, reparse=False):
                     skip += 1
                     why = res[1] if isinstance(res, tuple) else "no-anchor/old-format"
                     if skip <= 12: print("  SKIP %s %s: %s" % (sym, qe, why))
-        print("%s: +%d cells, %d skipped" % (qe, done, skip))
+        print("%s: +%d cells, %d skipped, %d share counts" % (qe, done, skip, nsh_new))
         save_hist(hist)
+        save_shares(shares)
 
     after = cells_of(hist)
     if after < before:
@@ -420,7 +514,12 @@ if __name__ == "__main__":
         else:
             qes = last_qes(n)
         print("quarter-ends:", ", ".join(qes))
-        stats = refresh_quarters(qes, reparse="--reparse" in args)
+        only = None
+        if "--symbols" in args:
+            only = {s.strip().upper() for s in args[args.index("--symbols") + 1].split(",") if s.strip()}
+            print("symbols:", len(only))
+        stats = refresh_quarters(qes, reparse="--reparse" in args, only=only,
+                                 fill_shares="--fill-shares" in args)
         if "--hist" in args:
             print("(staging run — docs feed/meta NOT rebuilt)")
         else:
