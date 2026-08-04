@@ -186,6 +186,39 @@ def _qi(qe):
     return (qe // 10000) * 4 + ((qe // 100) % 100 - 1) // 3
 
 
+def fill_missing_mcaps(core, data):
+    """Give the NSE-only cohort a market cap, in core_meta, before anything reads it.
+
+    Every mcap in stock_data.bin traces to BSE's scrip master (fetch_all.py), which has no row
+    for a company NSE lists and BSE doesn't — ~104 symbols (BSE Ltd, CDSL, E2E…) sit at mcap 0,
+    which blanks Market cap AND P/E AND P/S AND P/B on the page and drops the stock to the
+    bottom of its own peer table. scripts/shares_outstanding.json (from the SHP filings we
+    already download) closes it: mcap = shares x last close, matching BSE's own figure to a
+    median 0.08%.
+
+    build_compressed.py does the same fill when it BUILDS the bin — but the committed
+    docs/stock_data.bin is only ever patched in place (refresh-membership.yml, weekly) and its
+    meta is months old, so relying on that alone would leave the page waiting indefinitely.
+    Doing it here as well costs nothing and uses THIS build's close, which is today's.
+    Fill-only: a real BSE mcap is never touched."""
+    shares = jload(os.path.join(HERE, "shares_outstanding.json"), "NSE-only market caps")
+    filled = 0
+    for sym, rec in (shares or {}).items():
+        n = (rec or [None])[0]
+        if not n: continue
+        key = sym + ".NS" if (sym + ".NS") in core else (sym if sym in core else sym + ".NS")
+        cm = core.get(key)
+        if cm and cm.get("mcap"): continue                 # BSE already reported one
+        closes = (data.get(sym) or {}).get("c") or ()
+        if not closes or not closes[-1]: continue
+        # update in place — the entry carries name/industry/52w fields other readers may want
+        core.setdefault(key, {"symbol": sym}).update(
+            {"mcap": round(n * closes[-1] / 1e7, 2), "latest": closes[-1],
+             "mcapSrc": "shp:" + str(rec[1])})
+        filled += 1
+    print("  mcap from SHP share counts: %d filled" % filled, flush=True)
+
+
 def build_peer_stats(data, meta, core, end):
     """Per-symbol (mcap, P/E TTM, 1-y return) + industry buckets, for the peers table.
     P/E uses point-in-time owners PAT over the last 4 CONTIGUOUS quarters — same rule
@@ -375,6 +408,7 @@ def main():
     fno_syms = members_as_of(CORE.get("fnoHistory", []), end)
     idx_mem = {name: members_as_of(snaps, end) for name, snaps in idx_hist.items()}
     print("  ts=%d  end=%s  indices=%d  fno=%d" % (ts, end, len(idx_mem), len(fno_syms)), flush=True)
+    fill_missing_mcaps(core_meta, data)   # before peer stats AND slices — both read core_meta
 
     print("cutting activity feeds + peer stats …", flush=True)
     ACT = build_activity(end)
