@@ -14,26 +14,28 @@
   .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
   .pos{color:#15803d}.neg{color:#b91c1c}
   .clamp2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  .chip{font-size:10.5px;font-weight:600;border:1px solid #e2e8f0;border-radius:999px;padding:2px 8px;white-space:nowrap}
-  .tick{font-size:11px;font-weight:650;border:1px solid #e2e8f0;border-radius:7px;padding:3px 7px;white-space:nowrap;
+  /* var(--…) with a light fallback: theme.js sets data-theme before first paint, so these
+     resolve per theme — hardcoded light hexes made the board's chips unreadable on dark. */
+  .chip{font-size:10.5px;font-weight:600;border:1px solid var(--border,#e2e8f0);border-radius:999px;padding:2px 8px;white-space:nowrap}
+  .tick{font-size:11px;font-weight:650;border:1px solid var(--border,#e2e8f0);border-radius:7px;padding:3px 7px;white-space:nowrap;
         display:inline-flex;gap:5px;align-items:center}
   .tick b{font-weight:750}
   .tick em{font-style:normal;font-size:10px;opacity:.85}
-  .up{color:#15803d;border-color:#bbf7d0;background:#f0fdf4}
-  .dn{color:#b91c1c;border-color:#fecaca;background:#fef2f2}
+  .up{color:var(--pos,#15803d);border-color:#bbf7d0;background:#f0fdf4}
+  .dn{color:var(--neg,#b91c1c);border-color:#fecaca;background:#fef2f2}
   html[data-theme="dark"] .up{background:rgba(52,211,153,.10);border-color:rgba(52,211,153,.32)}
   html[data-theme="dark"] .dn{background:rgba(248,113,113,.10);border-color:rgba(248,113,113,.32)}
   html[data-theme="soft"] .up{background:rgba(15,157,88,.08)}
   html[data-theme="soft"] .dn{background:rgba(225,29,98,.08)}
   .scard{transition:.18s cubic-bezier(.4,0,.2,1)}
   .scard:hover{transform:translateY(-2px);box-shadow:0 16px 44px -18px rgba(16,24,40,.34)}
-  .brow:hover{background:#f8fafc}
+  .brow:hover{background:var(--surface-2,#f8fafc)}
   .vbtn[aria-selected="true"]{background:#4f46e5;color:#fff}
   #board .grid-row{display:grid;grid-template-columns:28px minmax(170px,1.6fr) 92px 92px 58px minmax(240px,2.6fr) minmax(240px,2.6fr);gap:12px;align-items:center}
   /* padding+negative margin grows the tap area into the header row's own padding without
      moving the label: the text alone is a 15px-tall target, which is a miss on a phone. */
   .sortcol{cursor:pointer;user-select:none;padding:10px 0;margin:-10px 0}
-  .sortcol:hover{color:#475569}
+  .sortcol:hover{color:var(--text,#475569)}
   .sortcol .ar{font-size:9px;margin-left:3px;opacity:.9}
   @media (max-width:1176px){ #boardScroll{overflow-x:auto} #boardScroll>div{min-width:1176px} }
 </style>
@@ -64,8 +66,8 @@
         <select id="uniSel" title="Show only strategies built on this universe" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-semibold bg-white"></select>
       </div>
       <div class="flex gap-1 bg-white border border-slate-200 rounded-lg p-1 shadow-sm" role="tablist" aria-label="View">
-        <button id="vCards" role="tab" class="vbtn text-xs font-semibold px-3 py-1.5 rounded-md text-slate-500 hover:text-slate-800 transition" aria-selected="true">▦ Cards</button>
-        <button id="vBoard" role="tab" class="vbtn text-xs font-semibold px-3 py-1.5 rounded-md text-slate-500 hover:text-slate-800 transition" aria-selected="false">☰ Board</button>
+        <button id="vCards" role="tab" class="vbtn text-xs font-semibold px-3 py-1.5 rounded-md text-slate-500 hover:text-slate-800 transition" aria-selected="false">▦ Cards</button>
+        <button id="vBoard" role="tab" class="vbtn text-xs font-semibold px-3 py-1.5 rounded-md text-slate-500 hover:text-slate-800 transition" aria-selected="true">☰ Board</button>
       </div>
       <button id="refresh" class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-3 py-2 text-sm font-semibold shadow-sm">↻ Refresh</button>
     </div>
@@ -120,8 +122,11 @@ function yieldToUI() {
   return new Promise(r => { _yieldChan.port1.onmessage = () => r(); _yieldChan.port2.postMessage(0); });
 }
 
-let VIEW = 'cards', RESULT = [], SKIPPED = [];
-try { VIEW = localStorage.getItem('ap_view') === 'board' ? 'board' : 'cards'; } catch (e) {}
+let VIEW = 'board', RESULT = [], SKIPPED = [];
+// ap_view2, not the old ap_view: setView used to WRITE the key on every page load, so every
+// past visitor has ap_view:'cards' stored without ever choosing it — honoring it would keep
+// them on the old default forever. The new key is written only on an explicit toggle click.
+try { VIEW = localStorage.getItem('ap_view2') === 'cards' ? 'cards' : 'board'; } catch (e) {}
 
 /* ---------- membership (universe) filter ----------
  * Same picker as Saved Strategies, and the SAME bt_uni_filter localStorage key, so choosing
@@ -363,7 +368,7 @@ function paintSortArrows() {
   document.querySelectorAll('#boardHead [data-sort]').forEach(el => {
     const on = el.dataset.sort === SORT.key;
     el.querySelector('.ar').textContent = on ? (SORT.asc ? '▲' : '▼') : '';
-    el.style.color = on ? '#475569' : '';
+    el.style.color = on ? 'var(--text, #475569)' : '';
   });
 }
 function onSortClick(e) {
@@ -377,7 +382,6 @@ function onSortClick(e) {
 /* ---------- render ---------- */
 function setView(v) {
   VIEW = v;
-  try { localStorage.setItem('ap_view', v); } catch (e) {}
   $('vCards').setAttribute('aria-selected', String(v === 'cards'));
   $('vBoard').setAttribute('aria-selected', String(v === 'board'));
   const n = visible().length;   // membership filter can empty the page — its notice shows instead
@@ -421,7 +425,7 @@ function renderCards() {
   $('cards').innerHTML = visible().map(r => `
     <article class="card p-4 pb-0 scard flex flex-col">
       <div class="flex items-start justify-between gap-2">
-        <a href="${stratHref(r.s)}" class="text-[13.5px] font-bold text-slate-900 hover:text-indigo-600 clamp2 leading-snug">${esc(r.name)}</a>
+        <a href="${stratHref(r.s)}" class="text-[13.5px] font-bold text-slate-900 hover:text-indigo-600 leading-snug">${esc(r.name)}</a>
         ${!r.held.length
           ? '<span class="text-[11px] font-bold whitespace-nowrap px-2 py-0.5 rounded-full text-slate-500 bg-slate-100">in cash</span>'
           : `<span class="flex flex-col items-end gap-1 shrink-0">
@@ -464,7 +468,7 @@ function renderBoard() {
     <div class="grid-row brow px-4 py-2.5 border-b border-slate-100 transition">
       <div class="text-[11px] text-slate-400 font-bold">${i + 1}</div>
       <div class="min-w-0">
-        <a href="${stratHref(r.s)}" class="block text-[12.5px] font-semibold text-slate-800 hover:text-indigo-600 truncate">${esc(r.name)}</a>
+        <a href="${stratHref(r.s)}" class="block text-[12.5px] font-semibold text-slate-800 hover:text-indigo-600">${esc(r.name)}</a>
         <div class="text-[10.5px] text-slate-400 truncate">${esc(r.uni)} · ${esc(r.freqL)} · since ${esc(r.rebDate)}</div>
       </div>
       <div class="text-right text-[12.5px] font-bold ${kls(r.ret)}" title="Held basket's return since the ${esc(r.rebDate)} rebalance">${
@@ -557,8 +561,10 @@ async function build(msg) {
   paint();
 }
 
-$('vCards').onclick = () => setView('cards');
-$('vBoard').onclick = () => setView('board');
+// Persist only here — an explicit click is a choice; paint()/boot calling setView is not.
+function chooseView(v) { try { localStorage.setItem('ap_view2', v); } catch (e) {} setView(v); }
+$('vCards').onclick = () => chooseView('cards');
+$('vBoard').onclick = () => chooseView('board');
 $('uniSel').onchange = () => setUni($('uniSel').value);
 $('boardHead').addEventListener('click', onSortClick);
 $('refresh').onclick = () => { $('refresh').disabled = true; refreshPrices().finally(() => { $('refresh').disabled = false; }); };
