@@ -293,7 +293,16 @@ def main():
         dates = sorted({s["effectiveDate"] for bi in basis for s in H.get(bi, [])} | set(offd))
         out = []
         for d in dates:
-            syms = offd.get(d) or sorted(fn(d))   # official wins where present
+            syms = offd.get(d)                    # official wins where present
+            if not syms:
+                # A set-difference is only meaningful once every subtrahend index has
+                # history: with e.g. Nifty 100 still empty, N500 - {} would emit a
+                # full-N500 placeholder row for a tier that didn't exist yet (these
+                # launched Apr-2016). No snapshot at all => _asof correctly returns
+                # empty there.
+                if any(not _asof(bi, d) for bi in basis[1:]):
+                    continue
+                syms = sorted(fn(d))
             if not syms or (out and out[-1]["symbols"] == syms):
                 continue
             out.append({"effectiveDate": d, "symbols": syms})
