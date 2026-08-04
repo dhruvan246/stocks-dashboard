@@ -136,6 +136,35 @@ correct arcs for era corp-actions. The audits and the backtest then share one tr
    `project-stocks-n500-membership-history` + progress log here.
    ⚠️ stock_data.bin is also written by daily CI — rebase-race expected; the §38 rule-4 loop handles it.
 
+### STEP M — status + M2 measured findings (2026-08-04, Fable session)
+
+**M1 SHIPPED** (commit 6243a22f): the 21 official 2002-06 lists are in `_wb_n500_snaps.json`,
+rebuild verified additive-only (all 81 prior snapshots byte-identical, +21 new, earliest
+2002-10-02), CI `refresh-membership.yml` dispatched to regenerate indices_history + the bin.
+Known cosmetic side effect (pre-existing class): derived MSC400/SC250 gain N500-copy placeholder
+rows at the new pre-2006 dates because Nifty-100 is empty there — same documented junk as the
+existing 2006/2010/2014 placeholder rows; granular tiers pre-2018 were already do-not-trust.
+
+**M2 (MC captures for the 2007-09 + 2011-13 dark windows) — machinery built and MEASURED, not
+shipped.** Parser handles both markup eras (`pricechart.php?sc_did=<CODE>` pre-2011,
+`stockpricequote/<ind>/<slug>/<CODE>` 2011+); resolution via `_idx_codemap.json` (983 codes,
+AO04→ABAN class). Measured on all 26 target captures (harness: session scratchpad
+`mc_m2_resolve.py` + `mc_m2_out.json`):
+* 2010-13 captures: 475-500 rows, only **5-16 unresolved codes** each — close to shippable.
+* 2007-09 captures: **20-83 unresolved codes** each, and the unresolved are precisely the
+  DEAD/renamed era names (RPL, Satyam-era code, Bajaj Auto pre-split 'BA', Arvind Mills 'AM',
+  Bank of Rajasthan 'BR', Adlabs 'AF27', Aztecsoft 'A13'…). ⚠️ Shipping codemap-only resolution
+  would silently DROP the dead = inject survivorship bias into membership — the exact opposite
+  of the mission. DO NOT ship M2 until the residual codes are resolved.
+* Fix route (one focused session): resolve residual sc_did codes by STRICT name match against the
+  ~600-symbol union of the two BRACKETING official checkpoints only (tiny closed candidate space,
+  exact/prefix-unique after normalization; MANUAL map for the stubborn; NO open-universe fuzz),
+  and/or harvest each code's own archived MC page for its printed NSE ticker. Then per-capture QA:
+  size 480-520, arcs (RPL ∈ 2008-05..2009-09, ∉ 2009-12; SATYAMCOMP through 2013), Jaccard vs
+  both brackets consistent with ~10%/yr churn, and store as `scripts/_mc_n500_snaps.json` + a
+  3-line cps-merge in build_membership_v2.py main() (N500 only), force-tracked, so the weekly
+  refresh reproduces it.
+
 ## STEP G — CUT THE GAP UNIVERSE  (30 min, after M)
 
 From the rebuilt membership: for each quarter 2002Q1→2014Q4, members = `_n500_member_bin`
