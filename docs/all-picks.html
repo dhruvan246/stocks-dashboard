@@ -72,6 +72,7 @@
   </div>
 
   <div id="stats" class="grid gap-3 mt-5 mb-4" style="grid-template-columns:repeat(auto-fit,minmax(158px,1fr))"></div>
+  <div id="topPicks" class="hidden card p-3 mb-4 flex flex-wrap items-center gap-2"></div>
   <div id="status" class="text-sm text-slate-500 py-8 text-center card border-dashed">Loading saved strategies…</div>
   <div id="uniEmpty" class="hidden text-sm text-slate-400 py-8 text-center card border-dashed"></div>
 
@@ -390,14 +391,15 @@ function renderStats() {
   const rows = visible();
   const held = new Map();
   rows.forEach(r => r.picks.forEach(p => held.set(p.sym, (held.get(p.sym) || 0) + 1)));
-  const top = [...held.entries()].sort((a, b) => b[1] - a[1])[0];
+  // Ties (common once you're 5 deep) break alphabetically so the list is deterministic
+  // rather than riding on whatever order rows happened to be visited in.
+  const top5 = [...held.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 5);
   const best = rows.filter(r => r.day != null).sort((a, b) => b.day - a.day)[0];
   const bestReb = rows.filter(r => r.ret != null).sort((a, b) => b.ret - a.ret)[0];
   const cells = [
     ['Strategies', rows.length, UNI !== '*' ? 'of ' + RESULT.length + ' total'
                                             : SKIPPED.length ? SKIPPED.length + ' skipped' : 'screened live'],
     ['Unique stocks picked', held.size, 'across every basket'],
-    ['Highest conviction', top ? top[0] : '—', top ? 'picked by ' + top[1] + ' strateg' + (top[1] > 1 ? 'ies' : 'y') : ''],
     ['Best today', best ? sp(best.day) : '—', best ? 'since the previous close' : ''],
     ['Best since rebalance', bestReb ? sp(bestReb.ret) : '—', bestReb ? esc(bestReb.rebLabel) : ''],
   ];
@@ -405,6 +407,14 @@ function renderStats() {
       <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">${esc(k)}</div>
       <div class="text-xl font-extrabold text-slate-900 mt-0.5">${esc(v)}</div>
       <div class="text-[11px] text-slate-500">${s}</div></div>`).join('');
+
+  // Top-5 by conviction (how many strategies currently qualify each stock) — replaces the old
+  // single "Highest conviction" tile, which only ever showed rank 1.
+  $('topPicks').classList.toggle('hidden', !top5.length);
+  $('topPicks').innerHTML = !top5.length ? '' : `
+    <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold shrink-0">Most picked</span>
+    ${top5.map(([sym, n], i) => `<a href="./stock.html?sym=${encodeURIComponent(sym)}" class="tick hover:border-indigo-300 hover:text-indigo-600"
+        title="Picked by ${n} of ${rows.length} strateg${rows.length > 1 ? 'ies' : 'y'} right now"><span class="opacity-60">#${i + 1}</span><b>${esc(sym)}</b><em>${n} strateg${n > 1 ? 'ies' : 'y'}</em></a>`).join('')}`;
 }
 
 function renderCards() {
