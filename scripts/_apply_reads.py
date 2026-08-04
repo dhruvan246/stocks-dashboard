@@ -50,24 +50,42 @@ def close(a, b):
     return abs(a - b) <= max(2.0, 0.03 * max(abs(a), abs(b)))
 
 
-PRE2015 = os.path.join(HERE, "pre2015_reads_d.json")
+PRE2015_LEDGERS = [os.path.join(HERE, "pre2015_reads_d.json"),   # STEP D: BSE detres 2008-14
+                   os.path.join(HERE, "pre2015_reads_n.json")]   # STEP N: NSE archive 2005-07 + residue
+
+
+def _load_pre2015_reads():
+    """Merge every step's ledger (same cell shape, disjoint (sym,qe) universes by
+    construction -- STEP N's gap universe explicitly excludes cells STEP D already
+    landed) into one dict. A symbol appearing in both files just gets its per-qe
+    keys unioned."""
+    out = {}
+    for p in PRE2015_LEDGERS:
+        if not os.path.exists(p):
+            continue
+        for sym, cells in json.load(open(p, encoding="utf8")).items():
+            out.setdefault(sym, {}).update(cells)
+    return out
 
 
 def main_pre2015():
-    """PRE2015_CAMPAIGN STEP D applier (scripts/PRE2015_CAMPAIGN.md, LANDING RULES).
+    """PRE2015_CAMPAIGN STEP D+N applier (scripts/PRE2015_CAMPAIGN.md, LANDING RULES).
     Separate code path from the default mode above: almost no pre-2015 cell has a
     stored PAT to anchor against, so unlike the default flow this one CREATES the
-    PAT row in docs/sf_fundamentals.json when the harvest ledger's gate (F/E) proved
-    it, rather than requiring one to already exist (gate S is the one case where a
-    stored PAT already exists -- re-verified here, not just trusted from harvest
-    time, in case another session/CI filled it in the meantime). Only touches STD
-    slots: pre-2015 con was optional (Clause 41) and detres carries no con flag, so
-    this route never writes con (LANDING RULES 3). Fill-only, idempotent, safe to
-    re-run after a reset (the batch_push pattern).
+    PAT row in docs/sf_fundamentals.json when the harvest ledger's gate (S/X/F/E)
+    proved it, rather than requiring one to already exist (gate S is the one case
+    where a stored PAT already exists -- re-verified here, not just trusted from
+    harvest time, in case another session/CI filled it in the meantime). Only
+    touches STD slots: pre-2015 con was optional (Clause 41) and neither detres nor
+    this campaign's NSE route carry a landed con reading, so this route never
+    writes con (LANDING RULES 3). Fill-only, idempotent, safe to re-run after a
+    reset (the batch_push pattern). Reads every ledger in PRE2015_LEDGERS (STEP D's
+    pre2015_reads_d.json + STEP N's pre2015_reads_n.json) so one applier serves
+    every step without change.
     Run: python -X utf8 scripts/_apply_reads.py --pre2015 [--dry]
     """
     dry = "--dry" in sys.argv
-    reads = json.load(open(PRE2015, encoding="utf8")) if os.path.exists(PRE2015) else {}
+    reads = _load_pre2015_reads()
     fund = json.load(open(FUND))
     revop = json.load(open(DOCS))
     scr = json.load(open(SCR)) if os.path.exists(SCR) else {}
