@@ -449,6 +449,116 @@ that alone can prove the LAST pre-NSE year). Anything landed carries `src:'wb-<s
 one session; deliverable = feasibility verdict + (if green) the harvest recipe appended here.
 **A permanent partial floor for 2002-04 is an acceptable honest outcome — report it, don't force it.**
 
+### STEP W — status (2026-08-05, Sonnet): FEASIBILITY DONE, verdict **GREEN — bigger than scoped**.
+No cells landed (capped probe, per the doc). Worktree `pre2015-stepw`, scratch harness
+`_stepw_probe.py`/`_stepw_myiris.py`/`_stepw_sample.py`/`_stepw_validate.py` (untracked, disposable).
+
+**Headline correction to this doc's own premise**: candidate 4 (archived `nseindia.com` results
+pages) is not a weak fallback — it is a **genuine EXCHANGE-NATIVE source**, the same page family
+STEP N already harvested for 2005-07, just an earlier site revision
+(`marketinfo/companyinfo/eod/results.jsp`, retired long before STEP N's live-fetch code could ever
+reach it — only wayback holds it now). This directly contradicts the STATE OF THE WORLD /
+candidate-list framing above ("No exchange source exists (proven)") for this era. Recommend the
+**normal landing bar** (gates F/E directly, X as a bonus), not the higher third-party bar — it is
+an exchange source, not a rendition of one.
+
+**Measured coverage (full CDX enumeration, not a sample — 30,039 rows returned on a 60,000 cap, so
+nothing was truncated):** the archived `.../eod/results.jsp` tree holds **10,874 captures, 2002-2006**
+(892 / 2,967 / 4,791 / 1,925 / 299 by year), URL-encoded as
+`<from><to><period><audit><cum><consol><const><SYMBOL>` (period ∈ Q1-Q4/H1/H2/AN, e.g.
+`01-APR-200230-JUN-2002Q1UNNNETATAMOTORS`). Against STEP G's 566-symbol / 4,493-cell 2002-04
+target set: **406/566 companies (71.7%) have ≥1 archived row; 2,458/4,493 target cells (54.7%)
+have a row landing on that EXACT quarter-end**, direct hits only — before any GATE-F/cumdiff
+derivation of the kind that lifted STEP N from its direct-hit floor to 88.3%. Treat 54.7% as a
+floor, not a ceiling.
+
+**Gates validated on real fetched pages, not assumed:**
+* **GATE F, exact match**: KANORICHEM FY2003 (Apr-02→Mar-03) — Q1+Q2+Q3+Q4 sales
+  7,807+8,961+9,090+8,682 = **34,540**, Annual row = **34,540** (identical, not just within
+  tolerance); PAT 314+386+403+169 = **1,272**, Annual = **1,272** (identical). Same-source,
+  same-basis, tiling dates confirmed before summing.
+* **GATE E, exact match**: ALPSINDUS FY01 annual — PAT 839 lakh / (Equity Capital 620 / Face
+  Value 10 = 62 lakh shares) = EPS 13.53, page's own printed Basic EPS = **13.53**. TATAMOTORS
+  Q4FY03 same check: 13,757 / (31,983/10) = 4.301 ≈ printed **4.30**.
+* **A real near-miss, caught and named, not forced**: TATAMOTORS' "AN"-labelled FY2003 row
+  looked like a 4.2% GATE-F miss at first pass — until the page's own `Result Type` text was read
+  properly: that row is **Consolidated** (sales 1,141,386 vs the Non-Consolidated Q1-4 sum
+  1,083,701), while Q1-Q4 are **Non-Consolidated**. The URL's own flag characters had encoded this
+  (`NC` vs `NN` in the consolidation slot) but a quick URL-only decode mis-read the position and
+  called it standalone. **Conclusion for the recipe: basis and period MUST be read from the
+  page's own printed `Result Period`/`Result Type` text, never inferred from the URL** — the URL
+  is fine for cheap existence-counting, never for landing decisions. This is the same discipline
+  §45/STEP N already mandate, now independently confirmed necessary on this source too.
+* **Calendar-year filers present here too, handled correctly by the existing rule**: GLAXO's
+  four "quarters" first looked like a 4.1%/8.8% GATE-F miss — it is a Jan-Mar-and-a-Dec-year-end
+  mix (real dates: Q1 Jan-Mar 2004, Q2-Q4 Apr-Dec 2003, Annual Jan-Dec 2003), i.e. they don't
+  tile one 12-month window at all. The mandatory date-span/tiling check (LANDING RULES 1) throws
+  this out before a false identity is ever computed — exactly its job, and this era needs it just
+  as much as 2005-14 did.
+* Bank-template rows (SBIN, IDBIBANK, ANDHRABANK, J&KBANK, ORIENTBANK, …) and a older/shorter
+  2002-vintage URL grammar (1-char audit flag instead of 2, seen on `ANACEALPSINDUS`-style 2002
+  captures) are a large share of the "unparsed by URL" residual (880/891 of 2002's with-query
+  rows) — **not missing data, a second grammar** a harvester must branch on, same as detres
+  needed a bank field-map. Un-triaged here on purpose (harvest-code territory).
+
+**myiris.com (candidate 1) — confirmed as a usable secondary/BSE-only route, not the primary.**
+Full CDX enumeration of `financial.php` (2001-2006, per-year queries, none truncated): **24,786
+captures, 4,460 distinct company codes**. Page header carries exact `BSE:` code + `NSE:` symbol +
+`ISIN` (no fuzzy matching needed — RELINDUS example: `BSE:500325 NSE:RELIANCE
+ISIN:INE002A01018`). Its "Latest Quarterly/Halfyearly" table yields 2 periods per capture
+(current + year-ago comparative), both with declared period-end + month-count in the column
+header itself. **Parser bug found and fixed during this probe**: the block's caption text
+("Latest Quarterly/Halfyearly") also appears in an unrelated section-nav row that leads straight
+into the ANNUAL income statement — matching only the first hit silently read annual figures as
+quarterly. Fixed by requiring the real block's row (the one carrying the "Detailed Quarterly"
+popup link). Post-fix, sampled cached pages: 42/48 (87.5%) yield a usable quarterly block (the
+rest are genuinely annual-only reports), and every period extracted carried both rev and PAT
+(81/81). Useful mainly as (a) a GATE-X cross-check aggregator once NSE-archive is the primary
+read, and (b) an identity-resolution assist for STEP G's 126 residual unresolved BSE codes (its
+header gives BSE code directly) — not measured as a coverage number here, flagged as a follow-up.
+Best-effort only: a broader random-sample coverage run was started (400 icodes) and stopped early
+to prioritize verifying the much stronger NSE-archive lead once it surfaced — not a dead end,
+just de-prioritized.
+
+**moneycontrol / indiainfoline / archived bseindia.com (candidates 2-4's other half) — UNPROBED,
+not ruled out.** Wayback CDX began refusing connections (`ConnectionError`, not 4xx/5xx) partway
+through this session after sustained querying. Per the campaign's own hard line ("never rotate
+through header tricks" / stop and report on service errors), this was backed off rather than
+pushed through. `nseindia.com/marketinfo/companyinfo/` itself briefly hit the same throttling and
+recovered on retry after a backoff; moneycontrol's older (pre-2011) URL scheme and
+indiainfoline.com's `/comp/` tree were never reached. Given the NSE-archive finding above is
+already the strongest possible kind of source (exchange-native, not third-party), these three are
+now backup routes for the residual ~45% rather than a load-bearing part of the feasibility case —
+re-probe them only if the NSE-archive harvest's own residual needs a second aggregator.
+
+**RECIPE for a future STEP W-execute session** (this step deliberately stops here, per the doc's
+own cap — no ledger, no landing code, nothing pushed except this write-up):
+1. Worktree `pre2015-stepw-harvest` (fresh). Per target symbol (STEP G's 566, era-chain resolved):
+   CDX-enumerate `nseindia.com/marketinfo/companyinfo/eod/results.jsp?*<SYMBOL>` (per-symbol query
+   avoids any prefix-crawl truncation risk) and cache every hit.
+2. Parse using ONLY in-page text for period/basis/figures (the URL grammar is enumeration-only,
+   per the TATAMOTORS finding above); reuse the field-name map already proven here (`Net Sales`,
+   `Net Profit(+)/Loss(-)`, `Basic EPS (in Rs.)`, `Paid-up Equity Share Capital`, `Face Value of
+   Share (in Rs.)`); add the bank template (Interest Earned line) as a second field-map, same
+   pattern as detres/LANDING RULES 4.
+3. Gates: F primary (this doc's KANORICHEM proof), E secondary, X bonus vs myiris where both
+   exist. Mandatory date-tiling check BEFORE every FY-sum (GLAXO proof above). Cumulative-row
+   differencing (LANDING RULES 1) for filers who folded Q4 into the annual, exactly STEP N's
+   technique — untested here but there is no reason to expect this source behaves differently.
+4. Old-grammar 2002 captures and bank rows: branch by reading the page, don't extend the URL
+   regex further — it was never meant for landing.
+5. Ledger `scripts/pre2015_reads_w.json`, `_apply_reads.py --pre2015` extended the same way STEP N
+   extended it for STEP D's ledger (`PRE2015_LEDGERS` list).
+6. Expect the 54.7% direct-hit floor to rise once cumdiff + GATE F are applied (STEP N's direct
+   hits were lower than its final 88.3% for the same reason) — but budget for a genuine residual:
+   2002 Q1-Q3 also has no membership-bin coverage today (STEP M's own documented hole), so those
+   quarters may be un-auditable even where financials exist. **A permanent partial floor here
+   remains a legitimate, honest possible outcome for the residual — this status block does not
+   promise 100%, only that the source is real and materially bigger than "does not exist".**
+
+Next: either STEP W-execute (harvest per the recipe above) or STEP Q close-out QA on D+N first —
+user's call, both are now unblocked.
+
 ## STEP Q — CLOSE-OUT QA (after D+N, and again after W)
 
 1. Full-window audit table (member-quarter × {rev,pat} × year) from `_n500_member_bin` — the
@@ -510,3 +620,26 @@ one session; deliverable = feasibility verdict + (if green) the harvest recipe a
   the yshift guard for all 27 chunks; a push cycle that reported success while pushing
   nothing, twice; a cursor that advanced past 20 never-harvested companies on a crash) —
   lessons generalized into DATA_RUNBOOK §38.
+- 2026-08-05: STEP W feasibility probe done (Sonnet) — see STEP W status block above.
+  Verdict GREEN, bigger than the doc originally scoped: the archived `nseindia.com`
+  `eod/results.jsp` tree (2002-2006, 10,874 captures, full CDX enumeration not a sample)
+  is a genuine EXCHANGE-NATIVE source for this era, not just third-party renditions —
+  corrects this doc's own "no exchange source exists" premise for 2002-04. Measured
+  against STEP G's 566-symbol/4,493-cell target set: 406 companies (71.7%) reachable,
+  2,458 cells (54.7%) hit on the exact quarter-end directly, before any GATE-F/cumdiff
+  uplift (STEP N's own direct-hit rate was lower than its eventual 88.3% for the same
+  reason). GATE F validated with an EXACT match (KANORICHEM FY2003, both sales and PAT);
+  GATE E validated exact (ALPSINDUS, TATAMOTORS). Caught and corrected a real trap before
+  it could land anything: basis/period read from the URL's own flag encoding silently
+  mislabelled a Consolidated annual as standalone on TATAMOTORS (the page's own printed
+  Result Type text disagreed) — recipe now mandates page-text-only reads for landing
+  decisions, URL decoding for cheap enumeration only. Calendar-year filers (GLAXO) also
+  present in this era; the existing mandatory date-tiling check correctly refuses to sum
+  across a non-tiling quarter set rather than mis-landing. myiris.com confirmed as a
+  usable secondary/cross-check + BSE-code-resolution route (24,786 captures/4,460
+  companies, header carries BSE+NSE+ISIN with no fuzzy matching) but de-prioritized once
+  the stronger NSE-archive lead surfaced; moneycontrol/indiainfoline/archived-bseindia
+  left UNPROBED (wayback began refusing connections mid-session — backed off per the
+  hard line, not ruled out, just not needed for a green verdict). No cells landed, no
+  ledger created, nothing pushed except this write-up — per the doc's own cap, a harvest
+  recipe is appended for a future STEP W-execute session rather than executed here.
