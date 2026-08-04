@@ -98,6 +98,12 @@
     </section>
 
     <section class="card p-4 mb-4">
+      <div class="text-sm font-bold text-slate-900 mb-1">📊 Month by month — the mix's return each month</div>
+      <div class="text-[11px] text-slate-400 mb-2">Blue = the mix ended the month higher, red = lower. Hover a bar for the exact move.</div>
+      <div id="mrWrap" style="overflow-x:auto"></div>
+    </section>
+
+    <section class="card p-4 mb-4">
       <div class="text-sm font-bold text-slate-900 mb-2">🧩 Each strategy inside the mix</div>
       <div class="overflow-x-auto"><table class="w-full text-sm border-collapse" id="perStrat"></table></div>
       <div class="text-[11px] text-slate-400 mt-2">Profit = final value minus what was put in. Win % = that strategy's own positive rebalance periods. Each strategy compounds its own bucket — money is never moved between strategies mid-run.</div>
@@ -128,7 +134,32 @@
       <div class="text-[11px] text-slate-400 mt-2">* partial year (the window starts or ends inside it).</div>
     </section>
 
-    <p class="text-[11px] text-slate-400 mb-6">How the mix is computed: each strategy runs exactly like its own backtest — same engine, same survivorship-free prices, rebalancing its own stocks on its own schedule — on the rupees you gave it, and the mix is simply the sum of those buckets marked month by month. Money is never shifted between strategies. Brokerage, taxes and slippage are not modelled; a delisted stock's position is written down to zero. Benchmark = Nifty 500 total of the same total capital (Nifty 50 when 500 history is unavailable).</p>
+    <!-- Rebalance + trade logs: the strategy page shows ONE strategy's, so here every row is tagged
+         with which strategy it belongs to and the picker narrows to one at a time. -->
+    <section class="card p-4 mb-4">
+      <div class="flex items-center justify-between flex-wrap gap-2 mb-1">
+        <div class="text-sm font-bold text-slate-900">🔄 Rebalance log — every reshuffle in the mix</div>
+        <select id="rbWho" class="inp" style="width:auto;padding:.3rem .5rem;font-size:12px"></select>
+      </div>
+      <div class="text-[11px] text-slate-400 mb-2">Newest first. Each row is one strategy's rebalance day: what its bucket was worth, how it moved since its previous rebalance, how many names it swapped in, and the basket it then held (🆕 = new that day). Weights are of that strategy's own bucket.</div>
+      <div id="rbOut"></div>
+      <div id="rbMore" class="mt-2"></div>
+    </section>
+
+    <section class="card p-4 mb-4">
+      <div class="flex items-center justify-between flex-wrap gap-2 mb-1">
+        <div class="text-sm font-bold text-slate-900">📒 Trade log — every position the mix took</div>
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <select id="tdWho" class="inp" style="width:auto;padding:.3rem .5rem;font-size:12px"></select>
+          <button id="tdCsv" class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-3 py-1.5 text-xs font-semibold shadow-sm">⬇ CSV</button>
+        </div>
+      </div>
+      <div id="tdStats" class="flex flex-wrap gap-1.5 mb-2"></div>
+      <div id="tdOut"></div>
+      <div id="tdMore" class="mt-2"></div>
+    </section>
+
+    <p class="text-[11px] text-slate-400 mb-6">The rebalance and trade logs are each strategy's own, tagged and merged — pick one strategy in either dropdown to read it exactly as its backtest page shows it. A trade's sell price on a "still held" row is the last available price in the window. How the mix is computed: each strategy runs exactly like its own backtest — same engine, same survivorship-free prices, rebalancing its own stocks on its own schedule — on the rupees you gave it, and the mix is simply the sum of those buckets marked month by month. Money is never shifted between strategies. Brokerage, taxes and slippage are not modelled; a delisted stock's position is written down to zero. Benchmark = Nifty 500 total of the same total capital (Nifty 50 when 500 history is unavailable).</p>
   </div>
 </main>
 
@@ -647,10 +678,151 @@ function renderYearly(M){
     </tr>`).join('')}</tbody>`;
 }
 
+/* ---------- month-by-month bars (mirrors the strategy page's period-returns chart, on the MIX) ---------- */
+function drawMonthly(M){
+  const data = [];
+  for (let i = 1; i < M.comb.length; i++) if (M.comb[i-1] > 0) data.push({ d: M.dates[i], v: (M.comb[i] / M.comb[i-1] - 1) * 100 });
+  const el = $('mrWrap'), n = data.length;
+  if (!n){ el.innerHTML = '<div class="text-xs text-slate-400 py-4">No completed months yet.</div>'; return; }
+  const PL = 40, PR = 14, PT = 20, PB = 64, H = 300;
+  const elW = Math.max(320, el.clientWidth || 880);
+  const gap = Math.max(14, (elW - PL - PR) / n), bw = Math.min(gap * 0.62, 40), W = Math.max(elW, Math.round(PL + PR + gap * n));
+  const vmax = Math.max(1, ...data.map(d => d.v)), vmin = Math.min(-1, ...data.map(d => d.v)), span = (vmax - vmin) || 1;
+  const y = v => PT + (H - PT - PB) * (1 - (v - vmin) / span), y0 = y(0);
+  let g = '';
+  for (let k = 0; k <= 4; k++){ const v = vmin + span * k / 4, yy = y(v);
+    g += `<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="var(--border,#f1f5f9)"/><text x="${PL-4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${v.toFixed(0)}%</text>`; }
+  g += `<line x1="${PL}" y1="${y0.toFixed(1)}" x2="${W-PR}" y2="${y0.toFixed(1)}" stroke="#cbd5e1"/>`;
+  const showLab = gap >= 22, dstep = Math.ceil(n / 40);
+  let bars = '', hits = '';
+  data.forEach((d, i) => {
+    const cx = PL + gap * i + (gap - bw) / 2, up = d.v >= 0, col = up ? '#2563eb' : '#f43f5e';
+    const top = Math.min(y(d.v), y0), h = Math.max(1, Math.abs(y(d.v) - y0));
+    // 2px surface gap between adjacent bars comes from bw < gap; rounded data-end on the outer edge
+    bars += `<rect x="${cx.toFixed(1)}" y="${top.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" fill="${col}" rx="2"/>`;
+    if (showLab) bars += `<text x="${(cx+bw/2).toFixed(1)}" y="${(up ? top - 3 : top + h + 9).toFixed(1)}" font-size="8" fill="${col}" text-anchor="middle">${d.v.toFixed(1)}</text>`;
+    if (i % dstep === 0){ const lx = (cx + bw/2).toFixed(1), ly = H - PB + 10;
+      bars += `<text x="${lx}" y="${ly}" font-size="8" fill="#94a3b8" text-anchor="end" transform="rotate(-50 ${lx} ${ly})">${d.d}</text>`; }
+    hits += `<rect x="${(PL+gap*i).toFixed(1)}" y="${PT}" width="${gap.toFixed(1)}" height="${(H-PT-PB).toFixed(1)}" fill="transparent" style="cursor:pointer"><title>${d.d} — the mix ${d.v >= 0 ? '+' : ''}${d.v.toFixed(2)}%</title></rect>`;
+  });
+  el.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="max-width:none">${g}${bars}${hits}</svg>`;
+}
+
+/* ---------- rebalance + trade logs ----------
+ * The strategy page shows ONE strategy's log; the mix interleaves several, so every row carries a
+ * colored dot + strategy name and the <select> narrows to one. Rows are capped with a "show all"
+ * escape — a 6-year monthly mix can be 200+ rebalances and 1,000+ trades. */
+let RB_ALL = false, TD_ALL = false;
+const RB_CAP = 24, TD_CAP = 60;
+function whoOptions(M){ return '<option value="-1">All strategies</option>' + M.per.map((x, i) => `<option value="${i}">#${i+1} ${esc(shortName(x.s, 40))}</option>`).join(''); }
+function stratTag(M, i){
+  const p = pal();
+  return `<span class="inline-flex items-center gap-1.5 min-w-0"><span class="dot" style="background:${p.s[i % p.s.length]}"></span>
+    <span class="text-[11px] text-slate-500 truncate" title="${esc(stratName(M.per[i].s))}">#${i+1}</span></span>`;
+}
+function renderRebalances(M){
+  const who = +($('rbWho').value != null && $('rbWho').value !== '' ? $('rbWho').value : -1);
+  const rows = [];
+  M.per.forEach((x, i) => { if (who >= 0 && who !== i) return; (x.r.rebs || []).forEach(b => rows.push({ i, b })); });
+  rows.sort((a, b) => a.b.date < b.b.date ? 1 : a.b.date > b.b.date ? -1 : a.i - b.i);
+  if (!rows.length){ $('rbOut').innerHTML = '<div class="text-xs text-slate-400 py-4">No rebalances in this window.</div>'; $('rbMore').innerHTML = ''; return; }
+  const shown = RB_ALL ? rows : rows.slice(0, RB_CAP);
+  const HOLD_CAP = 10;
+  $('rbOut').innerHTML = `<div class="overflow-x-auto"><table class="w-full text-sm border-collapse">
+    <thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
+      <th class="text-left font-semibold px-3 py-2.5">Date</th>
+      <th class="text-left font-semibold px-2 py-2.5">Strategy</th>
+      <th class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">Bucket value</th>
+      <th class="text-right font-semibold px-3 py-2.5 whitespace-nowrap" title="Its return since ITS previous rebalance">Since prev.</th>
+      <th class="text-right font-semibold px-3 py-2.5">New</th>
+      <th class="text-right font-semibold px-3 py-2.5">Cash</th>
+      <th class="text-left font-semibold px-3 py-2.5">Basket held after the reshuffle</th>
+    </tr></thead><tbody>${shown.map(({ i, b }) => `
+      <tr class="border-b border-slate-100 align-top">
+        <td class="px-3 py-2.5 whitespace-nowrap font-medium text-slate-700">${esc(b.date)}</td>
+        <td class="px-2 py-2.5">${stratTag(M, i)}</td>
+        <td class="text-right px-3 py-2.5 whitespace-nowrap font-semibold">₹${fmtIN(b.val)}</td>
+        <td class="text-right px-3 py-2.5 font-bold ${b.ret >= 0 ? 'pos' : 'neg'}">${b.ret == null ? '—' : pct(b.ret)}</td>
+        <td class="text-right px-3 py-2.5 text-slate-500">${b.nNew || 0}</td>
+        <td class="text-right px-3 py-2.5 text-slate-500 whitespace-nowrap">${(b.cashWt || 0).toFixed(0)}%</td>
+        <td class="px-3 py-2.5"><span class="flex flex-wrap gap-1">${(b.holds || []).slice(0, HOLD_CAP).map(h => `
+          <a href="./stock.html?sym=${encodeURIComponent(h.sym)}" class="tick text-slate-600 hover:border-indigo-300 hover:text-indigo-600"
+             title="${esc(h.sym)} · ${(h.wt || 0).toFixed(1)}% of this bucket${h.isNew ? ' · entered today' : ''}"><b>${esc(h.sym)}</b><em>${(h.wt || 0).toFixed(0)}%</em>${h.isNew ? '<em class="text-emerald-600">🆕</em>' : ''}</a>`).join('')}
+          ${(b.holds || []).length > HOLD_CAP ? `<span class="tick text-slate-400">+${b.holds.length - HOLD_CAP}</span>` : ''}</span></td>
+      </tr>`).join('')}</tbody></table></div>`;
+  $('rbMore').innerHTML = rows.length > RB_CAP
+    ? `<button id="rbToggle" class="text-[12px] font-semibold text-indigo-600 hover:underline">${RB_ALL ? '▴ Show fewer' : '▾ Show all ' + rows.length + ' rebalances'}</button>`
+    : `<span class="text-[11px] text-slate-400">${rows.length} rebalance${rows.length > 1 ? 's' : ''}.</span>`;
+  const t = $('rbToggle'); if (t) t.onclick = () => { RB_ALL = !RB_ALL; renderRebalances(M); };
+}
+function tradeRows(M){
+  const who = +($('tdWho').value != null && $('tdWho').value !== '' ? $('tdWho').value : -1);
+  const rows = [];
+  M.per.forEach((x, i) => { if (who >= 0 && who !== i) return; (x.r.trades || []).forEach(t => rows.push({ i, t })); });
+  rows.sort((a, b) => a.t.entryDate < b.t.entryDate ? 1 : a.t.entryDate > b.t.entryDate ? -1 : a.i - b.i);
+  return rows;
+}
+function renderTrades(M){
+  const rows = tradeRows(M);
+  if (!rows.length){ $('tdOut').innerHTML = '<div class="text-xs text-slate-400 py-4">No trades in this window.</div>'; $('tdStats').innerHTML = ''; $('tdMore').innerHTML = ''; return; }
+  const wins = rows.filter(r => r.t.retPct > 0).length;
+  const avg = rows.reduce((a, r) => a + r.t.retPct, 0) / rows.length;
+  const best = rows.reduce((a, r) => r.t.retPct > a.t.retPct ? r : a);
+  const worst = rows.reduce((a, r) => r.t.retPct < a.t.retPct ? r : a);
+  const open = rows.filter(r => r.t.held).length;
+  const chip = (k, v, cls) => `<span class="chip text-slate-500 bg-slate-50">${k} <b class="${cls || 'text-slate-700'}">${v}</b></span>`;
+  $('tdStats').innerHTML = chip('Trades', rows.length) + chip('Winners', wins + ' (' + (100 * wins / rows.length).toFixed(0) + '%)', 'pos')
+    + chip('Average', pct(avg), avg >= 0 ? 'pos' : 'neg') + chip('Best', esc(best.t.sym) + ' ' + pct(best.t.retPct), 'pos')
+    + chip('Worst', esc(worst.t.sym) + ' ' + pct(worst.t.retPct), 'neg') + chip('Still held', open);
+  const shown = TD_ALL ? rows : rows.slice(0, TD_CAP);
+  $('tdOut').innerHTML = `<div class="overflow-x-auto"><table class="w-full text-sm border-collapse">
+    <thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
+      <th class="text-left font-semibold px-3 py-2.5">Stock</th>
+      <th class="text-left font-semibold px-2 py-2.5">Strategy</th>
+      <th class="text-left font-semibold px-3 py-2.5 whitespace-nowrap">Bought</th>
+      <th class="text-left font-semibold px-3 py-2.5 whitespace-nowrap">Sold</th>
+      <th class="text-right font-semibold px-3 py-2.5">Buy ₹</th>
+      <th class="text-right font-semibold px-3 py-2.5">Sell ₹</th>
+      <th class="text-right font-semibold px-3 py-2.5">Return</th>
+    </tr></thead><tbody>${shown.map(({ i, t }) => `
+      <tr class="border-b border-slate-100">
+        <td class="px-3 py-2 font-semibold"><a href="./stock.html?sym=${encodeURIComponent(t.sym)}" class="hover:text-indigo-600">${esc(t.sym)}</a></td>
+        <td class="px-2 py-2">${stratTag(M, i)}</td>
+        <td class="px-3 py-2 whitespace-nowrap text-slate-600">${esc(t.entryDate)}</td>
+        <td class="px-3 py-2 whitespace-nowrap text-slate-600">${t.held ? '<span class="chip text-indigo-600 bg-indigo-50">still held</span>' : esc(t.exitDate)}</td>
+        <td class="text-right px-3 py-2 whitespace-nowrap">${t.entryPrice == null ? '—' : (+t.entryPrice).toFixed(2)}</td>
+        <td class="text-right px-3 py-2 whitespace-nowrap">${t.exitPrice == null ? '—' : (+t.exitPrice).toFixed(2)}</td>
+        <td class="text-right px-3 py-2 font-bold ${t.retPct >= 0 ? 'pos' : 'neg'}">${pct(t.retPct)}</td>
+      </tr>`).join('')}</tbody></table></div>`;
+  $('tdMore').innerHTML = rows.length > TD_CAP
+    ? `<button id="tdToggle" class="text-[12px] font-semibold text-indigo-600 hover:underline">${TD_ALL ? '▴ Show fewer' : '▾ Show all ' + rows.length + ' trades'}</button>`
+    : `<span class="text-[11px] text-slate-400">${rows.length} trade${rows.length > 1 ? 's' : ''}.</span>`;
+  const t = $('tdToggle'); if (t) t.onclick = () => { TD_ALL = !TD_ALL; renderTrades(M); };
+}
+function downloadTradesCSV(){
+  if (!LAST) return;
+  const rows = tradeRows(LAST);
+  if (!rows.length) return;
+  const head = ['Stock','Strategy','Bought','Sold','StillHeld','BuyPrice','SellPrice','ReturnPct'];
+  const lines = rows.map(({ i, t }) => [t.sym, '"' + String(stratName(LAST.per[i].s)).replace(/"/g, '""') + '"',
+    t.entryDate, t.held ? '' : t.exitDate, t.held ? 'YES' : '',
+    t.entryPrice == null ? '' : (+t.entryPrice).toFixed(2), t.exitPrice == null ? '' : (+t.exitPrice).toFixed(2),
+    t.retPct == null ? '' : (+t.retPct).toFixed(2)].join(','));
+  const blob = new Blob([[head.join(',')].concat(lines).join('\n')], { type:'text/csv' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `mix_trades_${LAST.start}_${LAST.end}.csv`; a.click(); URL.revokeObjectURL(a.href);
+}
+
 function renderResults(){
   if (!LAST) return;
-  renderTiles(LAST); renderLegend(LAST); drawEq(LAST); drawDD(LAST);
+  renderTiles(LAST); renderLegend(LAST); drawEq(LAST); drawDD(LAST); drawMonthly(LAST);
   renderPerStrat(LAST); renderOverlap(LAST); renderHoldings(LAST); renderCorr(LAST); renderYearly(LAST);
+  // keep the log pickers' current choice across a re-render (theme flip must not reset the filter)
+  const rbWas = $('rbWho').value, tdWas = $('tdWho').value;
+  $('rbWho').innerHTML = whoOptions(LAST); $('tdWho').innerHTML = whoOptions(LAST);
+  $('rbWho').value = (rbWas && +rbWas < LAST.per.length) ? rbWas : '-1';
+  $('tdWho').value = (tdWas && +tdWas < LAST.per.length) ? tdWas : '-1';
+  renderRebalances(LAST); renderTrades(LAST);
 }
 // theme flips repaint the charts with the dark-validated palette
 new MutationObserver(() => { if (LAST && !$('results').classList.contains('hidden')) renderResults(); })
@@ -659,6 +831,9 @@ new MutationObserver(() => { if (LAST && !$('results').classList.contains('hidde
 /* ---------- boot ---------- */
 $('q').oninput = renderList;
 $('runBtn').onclick = runMix;
+$('rbWho').onchange = () => { RB_ALL = false; renderRebalances(LAST); };
+$('tdWho').onchange = () => { TD_ALL = false; renderTrades(LAST); };
+$('tdCsv').onclick = downloadTradesCSV;
 $('bEq').onclick = () => { const t = totalAlloc() || SEL.size * 100000, per = Math.round(t / (SEL.size || 1)); SEL.forEach(v => v.alloc = per); renderMix(); saveState(); };
 $('bLakh').onclick = () => { SEL.forEach(v => v.alloc = 100000); renderMix(); saveState(); };
 $('bClear').onclick = () => { SEL.clear(); renderMix(); renderList(); saveState(); };

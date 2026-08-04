@@ -317,7 +317,10 @@ window.SW_GLOSSARY = (function () {
     stratoverlap: ['Overlap', "How many stocks two strategies hold in common. High overlap means the mix is doubling the same bet under two names, not diversifying."],
     divbenefit: ['Smoother by (pp)', "How much shallower the mix's worst fall is than the allocation-weighted average of each strategy's own worst fall. Positive = the strategies' bad patches didn't all land at once."],
     posmonths:  ['Positive months', "The share of months the combined portfolio ended higher than it started — a feel for how often you'd have opened the app to good news."],
-    mixvol:     ['Volatility %', "How much the mix's month-to-month returns swing, annualised. Lower = a steadier ride for the same destination."]
+    mixvol:     ['Volatility %', "How much the mix's month-to-month returns swing, annualised. Lower = a steadier ride for the same destination."],
+    reblog:     ['Rebalance log', "One row per reshuffle: what that strategy's money was worth that day, how it moved since its previous rebalance, how many names it swapped in, and the basket it then held. 🆕 marks a stock that entered that day."],
+    tradelog:   ['Trade log', "Every position taken: the day it was bought, the day it was sold, both prices and the return. A row marked <i>still held</i> was never sold — it is valued at the last price in the window."],
+    holdwt:     ['Weight %', "How much of that strategy's own bucket a stock is, on the rebalance day. Baskets start equal-weighted and drift apart as prices move."]
   };
 
   /* =======================================================================
@@ -641,6 +644,7 @@ window.SW_GLOSSARY = (function () {
       secs: [
         ['The mix', ['mixalloc', 'divbenefit', 'stratcorr', 'stratoverlap', 'posmonths']],
         ['Result tiles', ['cagr', 'totret', 'maxdd', 'mixvol', 'benchmark', 'finalval']],
+        ['The logs', ['reblog', 'tradelog', 'holdwt']],
         ['Strategy anatomy', ['rebalance', 'topn', 'universe', 'winpct']],
         ['Trust', ['pit', 'survfree']]
       ],
