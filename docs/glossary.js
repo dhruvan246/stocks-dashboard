@@ -309,7 +309,15 @@ window.SW_GLOSSARY = (function () {
     /* ---------- dashboard screen ---------- */
     screenwin:  ['Screen period (From → To)', "The window whose return is used to <i>rank</i> stocks. The basket is bought on the To Date — nothing after it influences the pick."],
     holduntil:  ['Hold until', "The date the basket is sold. The return between the To Date and this date is the result the screen actually delivered."],
-    allocated:  ['Allocated', "The rupees put into each name — equal-weighted, so the same amount into every stock in the basket."]
+    allocated:  ['Allocated', "The rupees put into each name — equal-weighted, so the same amount into every stock in the basket."],
+
+    /* ---------- strategy mixer ---------- */
+    mixalloc:   ['Allocation ₹', "How much money the mix puts into a strategy. Each strategy runs on its own bucket, rebalancing its own stocks on its own schedule — money is never shifted between buckets mid-run."],
+    stratcorr:  ['Correlation', "How similarly two strategies' monthly returns move: 1 = they swing together, 0 = unrelated, negative = one zigs when the other zags. Low correlation is what makes a mix smoother than its parts."],
+    stratoverlap: ['Overlap', "How many stocks two strategies hold in common. High overlap means the mix is doubling the same bet under two names, not diversifying."],
+    divbenefit: ['Smoother by (pp)', "How much shallower the mix's worst fall is than the allocation-weighted average of each strategy's own worst fall. Positive = the strategies' bad patches didn't all land at once."],
+    posmonths:  ['Positive months', "The share of months the combined portfolio ended higher than it started — a feel for how often you'd have opened the app to good news."],
+    mixvol:     ['Volatility %', "How much the mix's month-to-month returns swing, annualised. Lower = a steadier ride for the same destination."]
   };
 
   /* =======================================================================
@@ -626,6 +634,17 @@ window.SW_GLOSSARY = (function () {
         ['Columns', ['ltp', 'daychg', 'chgpct', 'mcap']]
       ],
       note: "These are the stocks each saved strategy's rules qualify for right now, produced by the same code the backtests use. A stock appearing in many baskets means several unrelated rules like it — not that it is a recommendation."
+    },
+
+    'strategy-mixer.html': {
+      sub: '(what mixing strategies measures)',
+      secs: [
+        ['The mix', ['mixalloc', 'divbenefit', 'stratcorr', 'stratoverlap', 'posmonths']],
+        ['Result tiles', ['cagr', 'totret', 'maxdd', 'mixvol', 'benchmark', 'finalval']],
+        ['Strategy anatomy', ['rebalance', 'topn', 'universe', 'winpct']],
+        ['Trust', ['pit', 'survfree']]
+      ],
+      note: "Every strategy in the mix is simulated over the same dates by the same engine as its own backtest page, on the rupees you allocated. The mix is the sum of those buckets — no money moves between strategies, and costs and taxes are not modelled."
     },
 
     'live-tracking.html': {

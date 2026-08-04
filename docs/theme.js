@@ -226,6 +226,7 @@
     { g: 'Tools', items: [
       ['./saved-strategies.html', '⭐', 'Saved Strategies'],
       ['./all-picks.html',        '🎯', 'All Picks'],
+      ['./strategy-mixer.html',   '🎛️', 'Strategy Mixer'],
       ['./backtest-history.html', '🕘', 'Backtest History'],
       ['./live-tracking.html',    '📡', 'Live Tracking'],
       ['./status.html',           '🩺', 'Data Health'],

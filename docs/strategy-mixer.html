@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Strategy Mixer</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./bt-sync.js"></script>
+<style>
+  body{font-feature-settings:"tnum" 1}
+  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
+  .pos{color:#15803d}.neg{color:#b91c1c}
+  .lbl{display:block;font-size:11px;font-weight:600;color:#64748b;margin-bottom:4px}
+  .inp{width:100%;padding:.5rem .6rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:14px;background:#fff;color:#0f172a}
+  .inp:focus{outline:none;border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.15)}
+  .chip{font-size:10px;font-weight:600;border:1px solid var(--border,#e2e8f0);border-radius:999px;padding:1px 7px;white-space:nowrap}
+  .dot{width:10px;height:10px;border-radius:999px;display:inline-block;flex-shrink:0}
+  .srow:hover{background:var(--surface-2,#f8fafc)}
+  .srow input[type=checkbox]{accent-color:#4f46e5;width:15px;height:15px}
+  /* matrix cells: background tint carries the signal, the number stays in text ink */
+  .cell{font-size:12px;font-weight:700;text-align:center;padding:8px 6px;border:1px solid var(--border,#e2e8f0)}
+  .tint-lo{background:rgba(16,185,129,.12)} .tint-mid{background:rgba(245,158,11,.14)} .tint-hi{background:rgba(244,63,94,.14)}
+  .legit{cursor:pointer;user-select:none;display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;
+         border:1px solid var(--border,#e2e8f0);border-radius:999px;padding:3px 10px}
+  .legit.off{opacity:.38}
+  .tick{font-size:11px;font-weight:650;border:1px solid var(--border,#e2e8f0);border-radius:7px;padding:3px 7px;white-space:nowrap;display:inline-flex;gap:5px;align-items:center}
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav></nav>
+  </div>
+</header>
+
+<main class="max-w-screen-xl mx-auto px-4 py-6">
+  <h1 class="text-xl font-bold text-slate-900">🎛️ Strategy Mixer — blend strategies into one portfolio</h1>
+  <p class="text-sm text-slate-500 mt-1 mb-5 max-w-3xl">Pick a few of your saved strategies, decide how many rupees go into each, and see how the <b>combined portfolio</b> would have done — growth, worst fall, how much the strategies overlap, and whether mixing them actually made the ride smoother. Every strategy runs over the <b>same dates</b> with the same engine as its own backtest page.</p>
+
+  <div class="grid gap-4 lg:grid-cols-2 items-start">
+    <!-- 1 · pick -->
+    <section class="card p-4">
+      <div class="flex items-center justify-between gap-2 mb-2">
+        <div class="text-sm font-bold text-slate-900">1 · Pick strategies <span class="text-slate-400 font-semibold">(2–8)</span></div>
+        <input id="q" class="inp" style="width:150px;padding:.3rem .55rem;font-size:12px" placeholder="filter by name…">
+      </div>
+      <div id="listMsg" class="text-sm text-slate-500 py-6 text-center">Loading saved strategies…</div>
+      <div id="stratList" class="max-h-[26rem] overflow-y-auto -mx-1 px-1"></div>
+      <div class="text-[11px] text-slate-400 mt-2 border-t border-slate-100 pt-2">⭐ = your Favourites from <a href="./saved-strategies.html?view=fav" class="text-indigo-600 hover:underline">Saved Strategies</a> (shown first). The CAGR chip is that strategy's own saved backtest (longest window).</div>
+    </section>
+
+    <!-- 2 · allocate + run -->
+    <section class="card p-4">
+      <div class="text-sm font-bold text-slate-900 mb-2">2 · Money in each strategy</div>
+      <div id="mixEmpty" class="text-sm text-slate-400 py-6 text-center border border-dashed border-slate-200 rounded-lg">Tick strategies on the left — they appear here with a ₹ box each.</div>
+      <div id="mixRows" class="space-y-1.5"></div>
+      <div id="mixTotal" class="hidden text-[13px] font-bold text-slate-900 flex items-center justify-between border-t border-slate-200 mt-2.5 pt-2.5"></div>
+      <div id="mixBtns" class="hidden flex-wrap gap-1.5 mt-2 flex">
+        <button id="bEq" class="chip text-slate-600 bg-slate-50 hover:border-indigo-300" title="Same ₹ into every selected strategy, keeping the current total">Equal split</button>
+        <button id="bLakh" class="chip text-slate-600 bg-slate-50 hover:border-indigo-300" title="₹1,00,000 into every selected strategy">₹1L each</button>
+        <button id="bFav" class="chip text-slate-600 bg-slate-50 hover:border-indigo-300" title="Tick every ⭐ favourite">⭐ Add favourites</button>
+        <button id="bClear" class="chip text-slate-600 bg-slate-50 hover:border-rose-300">Clear all</button>
+      </div>
+      <div class="grid grid-cols-2 gap-3 mt-4">
+        <div><label class="lbl" for="dFrom">From</label><input id="dFrom" type="date" class="inp"></div>
+        <div><label class="lbl" for="dTo">To</label><input id="dTo" type="date" class="inp"></div>
+      </div>
+      <div class="text-[11px] text-slate-400 mt-1.5">Every strategy in the mix runs over this one window, so the numbers here can differ from a strategy's own saved backtest (which may use a different window). Dates before 2019 load extra history once.</div>
+      <button id="runBtn" class="w-full mt-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-lg px-5 py-2.5 text-sm font-semibold shadow-sm transition">▶ Run the mix</button>
+      <div id="runMsg" class="text-xs text-slate-500 mt-2 min-h-[1rem]"></div>
+    </section>
+  </div>
+
+  <!-- results -->
+  <div id="results" class="hidden">
+    <div id="tiles" class="grid gap-3 mt-6 mb-4" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))"></div>
+
+    <section class="card p-4 mb-4">
+      <div class="flex items-center justify-between flex-wrap gap-2 mb-1">
+        <div class="text-sm font-bold text-slate-900">📈 Growth of the mix</div>
+        <div class="text-[11px] text-slate-400">click a name to hide/show its line · hover for values</div>
+      </div>
+      <div id="legend" class="flex flex-wrap gap-1.5 mb-2"></div>
+      <div id="eqWrap"></div>
+    </section>
+
+    <section class="card p-4 mb-4">
+      <div class="text-sm font-bold text-slate-900 mb-1">🌊 Drawdown — how far below its peak the mix was</div>
+      <div class="text-[11px] text-slate-400 mb-2">0% = at an all-time high. The deepest dip is the max drawdown. Hover for the date.</div>
+      <div id="ddWrap"></div>
+    </section>
+
+    <section class="card p-4 mb-4">
+      <div class="text-sm font-bold text-slate-900 mb-2">🧩 Each strategy inside the mix</div>
+      <div class="overflow-x-auto"><table class="w-full text-sm border-collapse" id="perStrat"></table></div>
+      <div class="text-[11px] text-slate-400 mt-2">Profit = final value minus what was put in. Win % = that strategy's own positive rebalance periods. Each strategy compounds its own bucket — money is never moved between strategies mid-run.</div>
+    </section>
+
+    <section class="card p-4 mb-4">
+      <div class="text-sm font-bold text-slate-900 mb-1">🔁 Stock overlap — are you buying the same stocks twice?</div>
+      <div class="text-[11px] text-slate-400 mb-3">Each strategy's basket as of its last rebalance in the window. The diagonal is the basket size; every other cell = stocks the two share (and what share of the smaller basket that is). Hover a cell to see which stocks.</div>
+      <div class="overflow-x-auto"><table class="border-collapse" id="ovMatrix"></table></div>
+      <div id="sharedChips" class="mt-3"></div>
+    </section>
+
+    <section class="card p-4 mb-4">
+      <div class="text-sm font-bold text-slate-900 mb-1">💼 The combined portfolio</div>
+      <div class="text-[11px] text-slate-400 mb-2" id="holdSub"></div>
+      <div class="overflow-x-auto"><table class="w-full text-sm border-collapse" id="holdTbl"></table></div>
+    </section>
+
+    <section class="card p-4 mb-4" id="corrCard">
+      <div class="text-sm font-bold text-slate-900 mb-1">🔗 Do the strategies move together? (correlation of monthly returns)</div>
+      <div class="text-[11px] text-slate-400 mb-3">1 = they swing together (mixing adds little) · near 0 = unrelated (good diversification) · negative = one zigs when the other zags (best). <span class="font-semibold">Green ≤ 0.4 · amber 0.4–0.7 · red &gt; 0.7.</span></div>
+      <div class="overflow-x-auto"><table class="border-collapse" id="corrTbl"></table></div>
+    </section>
+
+    <section class="card p-4 mb-4">
+      <div class="text-sm font-bold text-slate-900 mb-2">🗓️ Year by year</div>
+      <div class="overflow-x-auto"><table class="w-full text-sm border-collapse" id="yearTbl"></table></div>
+      <div class="text-[11px] text-slate-400 mt-2">* partial year (the window starts or ends inside it).</div>
+    </section>
+
+    <p class="text-[11px] text-slate-400 mb-6">How the mix is computed: each strategy runs exactly like its own backtest — same engine, same survivorship-free prices, rebalancing its own stocks on its own schedule — on the rupees you gave it, and the mix is simply the sum of those buckets marked month by month. Money is never shifted between strategies. Brokerage, taxes and slippage are not modelled; a delisted stock's position is written down to zero. Benchmark = Nifty 500 total of the same total capital (Nifty 50 when 500 history is unavailable).</p>
+  </div>
+</main>
+
+<script src="./backtest-engine.js"></script>
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const FREQL = { 1:'Monthly', 3:'Quarterly', 6:'Half-yearly', 12:'Yearly' };
+const MAX_SEL = 8;
+// Yield between simulations so the progress line paints (MessageChannel, not setTimeout —
+// backgrounded tabs throttle timers to ~1/min; same trick as all-picks.html).
+const _yc = (typeof MessageChannel !== 'undefined') ? new MessageChannel() : null;
+function yieldToUI(){ if(!_yc) return new Promise(r=>setTimeout(r,0)); return new Promise(r=>{ _yc.port1.onmessage=()=>r(); _yc.port2.postMessage(0); }); }
+
+/* ---------- palette (validated for CVD + contrast, light AND dark) ----------
+ * Fixed slot order, never cycled: slot 0 = the MIX line, slot 1 = the benchmark (dashed),
+ * slots 2+ = strategies in selection order. Identity also carried by the legend + tooltips,
+ * so color is never the only signal. */
+const PAL = {
+  light: { mix:'#4f46e5', bench:'#d97706', s:['#059669','#f43f5e','#2563eb','#65a30d','#9333ea','#0d9488','#c026d3','#ea580c'] },
+  dark:  { mix:'#6366f1', bench:'#d97706', s:['#059669','#f43f5e','#3b82f6','#65a30d','#a855f7','#0d9488','#d946ef','#ea580c'] }
+};
+function pal(){ return (document.documentElement.getAttribute('data-theme')==='dark') ? PAL.dark : PAL.light; }
+
+/* ---------- identity keys — KEEP IN SYNC with saved-strategies.html / all-picks.html ----------
+ * Identity = the selection rule AT ONE STOCK COUNT (includes topN; `<`≡`<=`), so this page counts
+ * strategies exactly as Saved Strategies does, and ⭐ favourites resolve by both key forms. */
+function identityKey(c){ return ruleKey(c) + '|' + (c.topN != null ? c.topN : ''); }
+function ruleKey(c){
+  const normOp = op => ({ '<=':'<', '>=':'>' }[op] || op);
+  const f = (c.filters || []).map(x => x.field + normOp(x.op) + x.val).sort().join(',');
+  return [c.indexName || '', c.mcapFloor || 0, c.freq, c.sortBy, c.dir, c.lookback || 1, c.earnBasis || 'con', f].join('|');
+}
+function loadFavs(){ try { return new Set(JSON.parse(localStorage.getItem('bt_fav_strategies') || '[]')); } catch(e){ return new Set(); } }
+function isFav(favs, c){ return favs.has(identityKey(c)) || favs.has(ruleKey(c)); }
+
+/* ---------- saved strategies (same normalisation as all-picks.html) ---------- */
+function normFilters(list){
+  return (list || []).map(f => {
+    if (f && typeof f === 'object') return f;
+    const m = /^\s*([A-Za-z_]\w*)\s*(>=|<=|>|<|=)\s*(-?[\d.]+)\s*$/.exec(String(f));
+    return m ? { field:m[1], op:m[2], val:parseFloat(m[3]) } : null;
+  }).filter(Boolean);
+}
+function loadStrategies(){
+  let all = [];
+  try { all = JSON.parse(localStorage.getItem('bt_strategies') || '[]'); } catch(e){ all = []; }
+  try { all = all.concat(JSON.parse(localStorage.getItem('bt_private_strategies') || '[]')); } catch(e){}
+  return all.filter(s => s && s.cfg).map(s => {
+    const cfg = Object.assign({}, s.cfg); cfg.filters = normFilters(cfg.filters);
+    return Object.assign({}, s, { cfg });
+  });
+}
+// One row per selection rule + stock count (dedupe repeat saves of the same rule, newest wins).
+function groupByIdentity(list){
+  const by = new Map();
+  for (const s of list){
+    const k = identityKey(s.cfg), g = by.get(k);
+    if (!g){ by.set(k, s); continue; }
+    if ((s.ts || 0) > (g.ts || 0)) by.set(k, s);
+  }
+  return [...by.values()];
+}
+
+/* ---------- each strategy's own headline CAGR (context chip in the picker) ----------
+ * From the shared backtest history: this identity's LONGEST-window run wins, exactly like
+ * saved-strategies.html's canonicalCagr — a short lucky window can't inflate the chip. */
+let HIST = [];
+function ownCagr(cfg){
+  const k = identityKey(cfg); let best = null;
+  for (const h of HIST){
+    if (!h.cfg || !h.m || h.m.cagr == null) continue;
+    if (identityKey(h.cfg) !== k) continue;
+    const dur = (h.cfg.start && h.cfg.end) ? (Date.parse(h.cfg.end) - Date.parse(h.cfg.start)) : 0;
+    if (!best || dur > best.dur || (dur === best.dur && h.m.cagr > best.cagr)) best = { dur, cagr: h.m.cagr, start: h.cfg.start };
+  }
+  return best;
+}
+
+/* ---------- state ---------- */
+let ALL = [];                       // grouped saved strategies [{id,name,cfg,ts}]
+const SEL = new Map();              // identityKey -> { s, alloc }  (insertion order = color order)
+let LAST = null;                    // last run result (for redraws + theme changes)
+const HID = new Set();              // hidden strategy indices on the equity chart
+let RUNNING = false;
+
+function saveState(){
+  try {
+    localStorage.setItem('mix_state_v1', JSON.stringify({
+      sel: [...SEL.keys()], alloc: Object.fromEntries([...SEL.entries()].map(([k,v]) => [k, v.alloc])),
+      start: $('dFrom').value, end: $('dTo').value
+    }));
+  } catch(e){}
+}
+function loadState(){ try { return JSON.parse(localStorage.getItem('mix_state_v1') || 'null'); } catch(e){ return null; } }
+
+/* ---------- picker list ---------- */
+function stratName(s){ return s.name || strategyLabel(s.cfg); }
+function stratHref(s){ return './strategy-backtest.html?id=' + encodeURIComponent(s.id); }
+function shortName(s, n){ const t = stratName(s); return t.length > n ? t.slice(0, n - 1) + '…' : t; }
+
+function renderList(){
+  const favs = loadFavs(), q = ($('q').value || '').toLowerCase();
+  const rows = ALL
+    .filter(s => !q || stratName(s).toLowerCase().includes(q))
+    .sort((a,b) => (isFav(favs,b.cfg)?1:0) - (isFav(favs,a.cfg)?1:0) ||
+                   String(stratName(a)).localeCompare(String(stratName(b)), 'en', {numeric:true, sensitivity:'base'}));
+  $('stratList').innerHTML = rows.map(s => {
+    const k = identityKey(s.cfg), on = SEL.has(k), c = s.cfg;
+    const own = ownCagr(c);
+    return `<label class="srow flex items-center gap-2.5 px-2 py-2 rounded-lg cursor-pointer border-b border-slate-50">
+      <input type="checkbox" data-k="${esc(k)}" ${on ? 'checked' : ''} ${!on && SEL.size >= MAX_SEL ? 'disabled' : ''}>
+      <span class="min-w-0 flex-1">
+        <span class="block text-[12.5px] font-semibold text-slate-800 truncate">${isFav(favs,c) ? '<span class="text-amber-500">⭐</span> ' : ''}${esc(stratName(s))}</span>
+        <span class="flex flex-wrap gap-1 mt-0.5">
+          <span class="chip text-slate-500 bg-slate-50">${esc(universeLabel(c))}</span>
+          <span class="chip text-slate-500 bg-slate-50">${FREQL[c.freq] || c.freq + 'mo'}</span>
+          <span class="chip text-slate-500 bg-slate-50">Top ${c.topN || 5}</span>
+          ${(c.filters || []).length ? `<span class="chip text-slate-500 bg-slate-50">${c.filters.length} filter${c.filters.length>1?'s':''}</span>` : ''}
+          ${!c.indexName ? '<span class="chip text-amber-600 bg-amber-50" title="Screens the whole market every rebalance — slower to simulate">whole-market · slow</span>' : ''}
+        </span>
+      </span>
+      ${own ? `<span class="text-[11px] font-bold ${own.cagr >= 0 ? 'pos' : 'neg'} shrink-0" title="Its own saved backtest since ${esc(own.start || '')}">${pct(own.cagr)}<span class="block text-[9px] font-semibold text-slate-400 text-right">CAGR</span></span>` : ''}
+    </label>`;
+  }).join('');
+  $('stratList').querySelectorAll('input[data-k]').forEach(cb => cb.onchange = () => toggleSel(cb.dataset.k, cb.checked));
+  $('listMsg').classList.toggle('hidden', ALL.length > 0);
+  if (!ALL.length) $('listMsg').innerHTML = 'No saved strategies yet. <a class="text-indigo-600 font-semibold hover:underline" href="./stock-backtest.html">Create one →</a>';
+  else if (!rows.length) { $('listMsg').classList.remove('hidden'); $('listMsg').textContent = 'No strategy matches that filter.'; }
+}
+
+function toggleSel(k, on){
+  if (on){
+    if (SEL.size >= MAX_SEL) return renderList();
+    const s = ALL.find(x => identityKey(x.cfg) === k); if (!s) return;
+    SEL.set(k, { s, alloc: 100000 });
+  } else SEL.delete(k);
+  renderMix(); renderList(); saveState();
+}
+
+/* ---------- allocation tray ---------- */
+const fmtIN = n => (n == null || isNaN(n)) ? '—' : Math.round(n).toLocaleString('en-IN');
+function totalAlloc(){ return [...SEL.values()].reduce((a,v) => a + (v.alloc || 0), 0); }
+function renderMix(){
+  const has = SEL.size > 0;
+  $('mixEmpty').classList.toggle('hidden', has);
+  $('mixTotal').classList.toggle('hidden', !has);
+  $('mixBtns').classList.toggle('hidden', !has);
+  const tot = totalAlloc(), p = pal();
+  $('mixRows').innerHTML = [...SEL.entries()].map(([k, v], i) => `
+    <div class="flex items-center gap-2">
+      <span class="dot" style="background:${p.s[i % p.s.length]}"></span>
+      <span class="text-[12px] font-semibold text-slate-700 truncate flex-1 min-w-0" title="${esc(stratName(v.s))}">${esc(shortName(v.s, 34))}</span>
+      <span class="text-[11px] text-slate-400 w-11 text-right shrink-0">${tot > 0 && v.alloc > 0 ? (v.alloc / tot * 100).toFixed(0) + '%' : '—'}</span>
+      <span class="relative shrink-0"><span class="absolute left-2 top-1/2 -translate-y-1/2 text-[12px] text-slate-400">₹</span>
+        <input type="number" min="0" step="10000" value="${v.alloc}" data-al="${esc(k)}" class="inp" style="width:118px;padding-left:1.15rem;padding-top:.3rem;padding-bottom:.3rem;font-size:13px"></span>
+      <button data-rm="${esc(k)}" class="text-slate-300 hover:text-rose-500 text-sm shrink-0" title="Remove from the mix">✕</button>
+    </div>`).join('');
+  $('mixTotal').innerHTML = `<span>Total invested</span><span>₹${fmtIN(tot)}</span>`;
+  $('mixRows').querySelectorAll('input[data-al]').forEach(inp => inp.onchange = () => {
+    const v = SEL.get(inp.dataset.al); if (v){ v.alloc = Math.max(0, +inp.value || 0); renderMix(); saveState(); }
+  });
+  $('mixRows').querySelectorAll('button[data-rm]').forEach(b => b.onclick = () => toggleSel(b.dataset.rm, false));
+}
+
+/* ---------- run ---------- */
+function setMsg(t, bad){ $('runMsg').innerHTML = bad ? '<span class="neg">' + esc(t) + '</span>' : esc(t); }
+async function runMix(){
+  if (RUNNING) return;
+  const picks = [...SEL.entries()].filter(([,v]) => v.alloc > 0);
+  if (picks.length < 2) return setMsg('Pick at least 2 strategies and give each some money.', true);
+  const start = $('dFrom').value, end = $('dTo').value;
+  if (!start || !end || start >= end) return setMsg('Pick a valid date range.', true);
+  RUNNING = true; $('runBtn').disabled = true;
+  try {
+    if (!window.__ENGINE_READY){
+      await loadEngineData(m => { if (m) setMsg(m); });
+      window.__ENGINE_READY = true;
+    }
+    await ensureHistoryFor(start, m => { if (m) setMsg(m); });   // pre-2019 windows pull the deep parts once
+    const sims = [], errs = [];
+    for (let i = 0; i < picks.length; i++){
+      const [k, v] = picks[i];
+      setMsg(`Simulating ${i + 1}/${picks.length} — ${stratName(v.s)}…`);
+      await yieldToUI();
+      try {
+        const cfg = Object.assign({}, v.s.cfg, { start, end, capital: v.alloc, mode:'sf' });
+        if (!cfg.method) cfg.method = 'reset';
+        const r = simulate(cfg);
+        sims.push({ k, s: v.s, alloc: v.alloc, r });
+      } catch(e){ errs.push(stratName(v.s) + ' (' + (e.message || e) + ')'); }
+    }
+    if (sims.length < 2){
+      setMsg('Not enough strategies could run' + (errs.length ? ' — failed: ' + errs.join('; ') : '') + '.', true);
+      return;
+    }
+    LAST = combine(sims, start, end);
+    HID.clear();
+    renderResults();
+    setMsg(errs.length ? '⚠ Skipped (couldn’t run): ' + errs.join('; ') : '');
+    $('results').classList.remove('hidden');
+    $('results').scrollIntoView({ behavior:'smooth', block:'start' });
+    saveState();
+  } catch(e){
+    setMsg('Run failed — ' + (e.message || e), true);
+  } finally {
+    RUNNING = false; $('runBtn').disabled = false;
+  }
+}
+
+/* ---------- combine the buckets ----------
+ * Every sim ran over the SAME (start, end), so their monthly equity arrays share identical
+ * dates — the mix at each month is simply the sum of buckets. No cross-strategy rebalancing. */
+function combine(sims, start, end){
+  const n = Math.min(...sims.map(x => x.r.equity.length));
+  const dates = sims[0].r.equity.slice(0, n).map(p => p[0]);
+  const comb = new Array(n).fill(0);
+  sims.forEach(x => { for (let i = 0; i < n; i++) comb[i] += x.r.equity[i][1]; });
+  const totalCap = sims.reduce((a,x) => a + x.alloc, 0);
+  // benchmark scaled to the total capital (engine scales it to each sim's own capital)
+  const s0 = sims[0], b0 = (s0.r.bench500 && s0.r.bench500.length) ? s0.r.bench500 : s0.r.bench;
+  const bench = (b0 && b0.length) ? b0.slice(0, n).map(p => p[1] == null ? null : p[1] * totalCap / s0.alloc) : null;
+  const benchLabel = (s0.r.bench500 && s0.r.bench500.length) ? 'Nifty 500' : 'Nifty 50';
+  const years = (Date.parse(end) - Date.parse(start)) / (365.25 * 864e5);
+  const finalV = comb[n - 1];
+  const rets = []; for (let i = 1; i < n; i++) if (comb[i-1] > 0) rets.push(comb[i] / comb[i-1] - 1);
+  const mean = rets.reduce((a,b) => a + b, 0) / (rets.length || 1);
+  const vol = Math.sqrt(rets.reduce((a,b) => a + (b - mean) ** 2, 0) / (rets.length || 1) * 12) * 100;
+  const eqPairs = dates.map((d,i) => [d, comb[i]]);
+  const maxDD = maxDrawdown(eqPairs);
+  const benchFinal = bench ? bench[n - 1] : null;
+  return {
+    start, end, dates, comb, totalCap, years, finalV,
+    cagr: years > 0 && totalCap > 0 ? (Math.pow(finalV / totalCap, 1 / years) - 1) * 100 : 0,
+    totRet: totalCap > 0 ? (finalV / totalCap - 1) * 100 : 0,
+    vol, maxDD,
+    posMonths: rets.length ? 100 * rets.filter(r => r > 0).length / rets.length : 0,
+    bench, benchLabel,
+    benchCagr: (benchFinal && years > 0) ? (Math.pow(benchFinal / totalCap, 1 / years) - 1) * 100 : null,
+    per: sims.map((x, i) => ({
+      k: x.k, s: x.s, alloc: x.alloc, r: x.r, i,
+      eq: x.r.equity.slice(0, n).map(p => p[1]),
+      rets: (() => { const e = x.r.equity, out = []; for (let j = 1; j < n; j++) out.push(e[j-1][1] > 0 ? e[j][1] / e[j-1][1] - 1 : 0); return out; })()
+    }))
+  };
+}
+
+/* ---------- tiles ---------- */
+function tile(k, v, sub, cls){
+  return `<div class="card p-3"><div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">${k}</div>
+    <div class="text-xl font-extrabold mt-0.5 ${cls || 'text-slate-900'}">${v}</div>
+    <div class="text-[11px] text-slate-500">${sub || ''}</div></div>`;
+}
+function renderTiles(M){
+  const beat = M.benchCagr != null && M.cagr >= M.benchCagr;
+  // diversification benefit: allocation-weighted average of each strategy's own worst fall vs the mix's
+  const wDD = M.per.reduce((a,p) => a + (p.r.maxDD || 0) * p.alloc, 0) / (M.totalCap || 1);
+  const dben = wDD - M.maxDD;
+  $('tiles').innerHTML =
+    tile('Final value', fmtINR(M.finalV), 'from ' + fmtINR(M.totalCap), M.finalV >= M.totalCap ? 'pos' : 'neg')
+    + tile('Total return', pct(M.totRet), M.years.toFixed(1) + ' years', M.totRet >= 0 ? 'pos' : 'neg')
+    + tile('CAGR', pct(M.cagr), 'per year, compounded', M.cagr >= 0 ? 'pos' : 'neg')
+    + tile(M.benchLabel + ' CAGR', M.benchCagr != null ? pct(M.benchCagr) : '—', beat ? 'the mix wins ✓' : 'benchmark', beat ? 'pos' : 'neg')
+    + tile('Max drawdown', '-' + M.maxDD.toFixed(1) + '%', 'worst peak-to-trough', 'neg')
+    + tile('Volatility', M.vol.toFixed(1) + '%', 'annualised swing', '')
+    + tile('Positive months', M.posMonths.toFixed(0) + '%', 'months that ended up', '')
+    + tile('Smoother by', (dben >= 0.05 ? dben.toFixed(1) + ' pp' : '—'),
+           dben >= 0.05 ? 'max DD vs holding each alone' : 'no drawdown benefit this window', dben >= 0.05 ? 'pos' : '');
+}
+
+/* ---------- charts (site idiom: inline SVG + crosshair tooltip) ---------- */
+function seriesForChart(M){
+  const p = pal();
+  const out = [{ name:'The mix', color:p.mix, w:2.6, vals:M.comb, dash:'' }];
+  M.per.forEach((x, i) => { if (!HID.has(i)) out.push({ name: shortName(x.s, 26), color: p.s[i % p.s.length], w:1.4, vals:x.eq, dash:'' }); });
+  if (M.bench) out.push({ name:M.benchLabel, color:p.bench, w:1.5, vals:M.bench, dash:'4 3' });
+  return out;
+}
+function drawEq(M){
+  const S = seriesForChart(M), dates = M.dates, n = dates.length;
+  if (n < 2){ $('eqWrap').innerHTML = '<div class="text-xs text-slate-400 py-4">Window too short to chart.</div>'; return; }
+  const W = 940, H = 330, PL = 68, PR = 14, PT = 12, PB = 26;
+  const all = S.flatMap(s => s.vals).filter(v => v != null);
+  const mn = Math.min(...all), mx = Math.max(...all);
+  const x = i => PL + (W - PL - PR) * i / (n - 1);
+  const y = v => PT + (H - PT - PB) * (1 - (v - mn) / ((mx - mn) || 1));
+  const path = vals => vals.map((v, i) => v == null ? '' : ((i === 0 || vals[i-1] == null ? 'M' : 'L') + x(i).toFixed(1) + ' ' + y(v).toFixed(1))).filter(Boolean).join(' ');
+  let g = '';
+  for (let k = 0; k <= 4; k++){
+    const v = mn + (mx - mn) * k / 4, yy = y(v);
+    g += `<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="var(--border,#f1f5f9)"/><text x="${PL-5}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${fmtINR(v)}</text>`;
+  }
+  const step = Math.ceil(n / 8);
+  dates.forEach((d, i) => { if (i % step) return; g += `<text x="${x(i).toFixed(1)}" y="${H-8}" font-size="9" fill="#94a3b8" text-anchor="middle">${d.slice(0,7)}</text>`; });
+  const lines = S.map(s => `<path d="${path(s.vals)}" fill="none" stroke="${s.color}" stroke-width="${s.w}"${s.dash ? ` stroke-dasharray="${s.dash}"` : ''}/>`).join('');
+  const dots = S.map((s, si) => `<circle id="eqd${si}" r="3.4" fill="${s.color}" stroke="var(--surface,#fff)" style="display:none"></circle>`).join('');
+  $('eqWrap').innerHTML = `<div style="position:relative"><svg id="eqsvg" viewBox="0 0 ${W} ${H}" class="w-full">${g}${lines}
+    <line id="eqg" x1="0" y1="${PT}" x2="0" y2="${H-PB}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3" style="display:none"/>${dots}
+    <rect id="eqhit" x="${PL}" y="${PT}" width="${W-PL-PR}" height="${H-PT-PB}" fill="transparent" style="cursor:crosshair"/></svg>
+    <div id="eqtip" style="position:absolute;display:none;pointer-events:none;background:#0f172a;color:#fff;font-size:11px;line-height:1.55;padding:6px 9px;border-radius:6px;white-space:nowrap;transform:translate(-50%,calc(-100% - 10px));z-index:20;box-shadow:0 2px 10px rgba(0,0,0,.3)"></div></div>`;
+  const svg = $('eqsvg'), tip = $('eqtip'), gl = $('eqg'), hit = $('eqhit');
+  function at(ev){
+    const rect = svg.getBoundingClientRect();
+    let i = Math.round((((ev.clientX - rect.left) / rect.width * W) - PL) / (W - PL - PR) * (n - 1));
+    i = Math.max(0, Math.min(n - 1, i));
+    const sx = x(i);
+    gl.setAttribute('x1', sx); gl.setAttribute('x2', sx); gl.style.display = '';
+    let html = `<b>${dates[i]}</b>`, topY = H;
+    S.forEach((s, si) => {
+      const v = s.vals[i], d = $('eqd' + si);
+      if (v == null){ d.style.display = 'none'; return; }
+      d.setAttribute('cx', sx); d.setAttribute('cy', y(v)); d.style.display = '';
+      topY = Math.min(topY, y(v));
+      const base = s.vals.find(b => b != null), r = base ? (v / base - 1) * 100 : null;
+      html += `<br><span style="color:${s.color}">●</span> ${esc(s.name)} ${fmtINR(v)}${r == null ? '' : ` <span style="color:${r >= 0 ? '#4ade80' : '#f87171'}">(${r >= 0 ? '+' : ''}${r.toFixed(1)}%)</span>`}`;
+    });
+    tip.innerHTML = html; tip.style.display = '';
+    tip.style.left = (sx / W * rect.width) + 'px';
+    tip.style.top = (topY / H * rect.height) + 'px';
+  }
+  hit.addEventListener('mousemove', at);
+  svg.addEventListener('mouseleave', () => { tip.style.display = 'none'; gl.style.display = 'none'; S.forEach((s, si) => { $('eqd' + si).style.display = 'none'; }); });
+}
+function drawDD(M){
+  const n = M.dates.length; if (n < 2){ $('ddWrap').innerHTML = ''; return; }
+  let peak = -Infinity; const dd = M.comb.map(v => { if (v > peak) peak = v; return peak > 0 ? (v / peak - 1) * 100 : 0; });
+  const W = 940, H = 170, PL = 44, PR = 14, PT = 8, PB = 24;
+  const mn = Math.min(-1, ...dd);
+  const x = i => PL + (W - PL - PR) * i / (n - 1);
+  const y = v => PT + (H - PT - PB) * (v / mn);          // 0 at top, deepest fall at bottom
+  let g = '';
+  for (let k = 0; k <= 2; k++){
+    const v = mn * k / 2, yy = y(v);
+    g += `<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="var(--border,#f1f5f9)"/><text x="${PL-5}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${v.toFixed(0)}%</text>`;
+  }
+  const step = Math.ceil(n / 8);
+  M.dates.forEach((d, i) => { if (i % step) return; g += `<text x="${x(i).toFixed(1)}" y="${H-7}" font-size="9" fill="#94a3b8" text-anchor="middle">${d.slice(0,7)}</text>`; });
+  const line = dd.map((v, i) => (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(v).toFixed(1)).join(' ');
+  const area = line + ` L ${x(n-1).toFixed(1)} ${y(0).toFixed(1)} L ${x(0).toFixed(1)} ${y(0).toFixed(1)} Z`;
+  $('ddWrap').innerHTML = `<div style="position:relative"><svg id="ddsvg" viewBox="0 0 ${W} ${H}" class="w-full">${g}
+    <path d="${area}" fill="rgba(244,63,94,.12)"/><path d="${line}" fill="none" stroke="#f43f5e" stroke-width="1.6"/>
+    <line id="ddg" x1="0" y1="${PT}" x2="0" y2="${H-PB}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3" style="display:none"/>
+    <circle id="dddot" r="3.2" fill="#f43f5e" stroke="var(--surface,#fff)" style="display:none"></circle>
+    <rect id="ddhit" x="${PL}" y="${PT}" width="${W-PL-PR}" height="${H-PT-PB}" fill="transparent" style="cursor:crosshair"/></svg>
+    <div id="ddtip" style="position:absolute;display:none;pointer-events:none;background:#0f172a;color:#fff;font-size:11px;padding:5px 8px;border-radius:6px;white-space:nowrap;transform:translate(-50%,calc(-100% - 8px));z-index:20"></div></div>`;
+  const svg = $('ddsvg'), tip = $('ddtip'), gl = $('ddg'), dot = $('dddot');
+  $('ddhit').addEventListener('mousemove', ev => {
+    const rect = svg.getBoundingClientRect();
+    let i = Math.round((((ev.clientX - rect.left) / rect.width * W) - PL) / (W - PL - PR) * (n - 1));
+    i = Math.max(0, Math.min(n - 1, i));
+    const sx = x(i), sy = y(dd[i]);
+    gl.setAttribute('x1', sx); gl.setAttribute('x2', sx); gl.style.display = '';
+    dot.setAttribute('cx', sx); dot.setAttribute('cy', sy); dot.style.display = '';
+    tip.innerHTML = `<b>${M.dates[i]}</b> · ${dd[i].toFixed(1)}% below peak`;
+    tip.style.display = ''; tip.style.left = (sx / W * rect.width) + 'px'; tip.style.top = (sy / H * rect.height) + 'px';
+  });
+  svg.addEventListener('mouseleave', () => { tip.style.display = 'none'; gl.style.display = 'none'; dot.style.display = 'none'; });
+}
+function renderLegend(M){
+  const p = pal();
+  const items = [{ label:'The mix', color:p.mix, idx:-1 }]
+    .concat(M.per.map((x, i) => ({ label: shortName(x.s, 26), color: p.s[i % p.s.length], idx:i })))
+    .concat(M.bench ? [{ label:M.benchLabel + ' (dashed)', color:p.bench, idx:-2 }] : []);
+  $('legend').innerHTML = items.map(it =>
+    `<span class="legit ${it.idx >= 0 && HID.has(it.idx) ? 'off' : ''}" ${it.idx >= 0 ? `data-tg="${it.idx}"` : ''} title="${it.idx >= 0 ? esc(stratName(M.per[it.idx].s)) : ''}">
+       <span class="dot" style="background:${it.color}"></span>${esc(it.label)}</span>`).join('');
+  $('legend').querySelectorAll('[data-tg]').forEach(el => el.onclick = () => {
+    const i = +el.dataset.tg;
+    if (HID.has(i)) HID.delete(i); else HID.add(i);
+    renderLegend(M); drawEq(M);
+  });
+}
+
+/* ---------- per-strategy table ---------- */
+function renderPerStrat(M){
+  const p = pal();
+  const th = t => `<th class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">${t}</th>`;
+  const rows = M.per.map((x, i) => {
+    const r = x.r, pnl = r.finalV - x.alloc;
+    return `<tr class="border-b border-slate-100">
+      <td class="px-3 py-2.5 min-w-[180px]"><span class="flex items-center gap-2"><span class="dot" style="background:${p.s[i % p.s.length]}"></span>
+        <a href="${stratHref(x.s)}" class="font-semibold text-slate-800 hover:text-indigo-600 text-[12.5px]">${esc(stratName(x.s))}</a></span></td>
+      <td class="text-right px-3 py-2.5 whitespace-nowrap">₹${fmtIN(x.alloc)}</td>
+      <td class="text-right px-3 py-2.5 text-slate-500">${(x.alloc / M.totalCap * 100).toFixed(0)}%</td>
+      <td class="text-right px-3 py-2.5 whitespace-nowrap font-semibold">₹${fmtIN(r.finalV)}</td>
+      <td class="text-right px-3 py-2.5 whitespace-nowrap font-bold ${pnl >= 0 ? 'pos' : 'neg'}">${pnl >= 0 ? '+' : '−'}₹${fmtIN(Math.abs(pnl))}</td>
+      <td class="text-right px-3 py-2.5 font-bold ${r.cagr >= 0 ? 'pos' : 'neg'}">${pct(r.cagr)}</td>
+      <td class="text-right px-3 py-2.5 neg font-semibold">-${(r.maxDD || 0).toFixed(1)}%</td>
+      <td class="text-right px-3 py-2.5">${(r.vol || 0).toFixed(1)}%</td>
+      <td class="text-right px-3 py-2.5">${(r.winRate || 0).toFixed(0)}%</td>
+    </tr>`;
+  }).join('');
+  $('perStrat').innerHTML = `<thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
+      <th class="text-left font-semibold px-3 py-2.5">Strategy</th>${th('Invested')}${th('Weight')}${th('Final value')}${th('Profit')}${th('CAGR')}${th('Max DD')}${th('Volatility')}${th('Win %')}
+    </tr></thead><tbody>${rows}</tbody>`;
+}
+
+/* ---------- overlap ---------- */
+function basketOf(x){ return (x.r.latest || []).map(h => h.sym); }
+function renderOverlap(M){
+  const p = pal(), baskets = M.per.map(basketOf), sets = baskets.map(b => new Set(b));
+  const head = `<tr><th class="cell bg-slate-50 text-[10px] uppercase tracking-wide text-slate-400"></th>` +
+    M.per.map((x, i) => `<th class="cell bg-slate-50"><span class="flex items-center justify-center gap-1.5 text-[11px] text-slate-600" title="${esc(stratName(x.s))}"><span class="dot" style="background:${p.s[i % p.s.length]}"></span>#${i + 1}</span></th>`).join('') + '</tr>';
+  const body = M.per.map((a, i) => `<tr>
+      <th class="cell bg-slate-50 text-left"><span class="flex items-center gap-1.5 text-[11px] text-slate-600 max-w-[220px]"><span class="dot" style="background:${p.s[i % p.s.length]}"></span><span class="truncate" title="${esc(stratName(a.s))}">#${i + 1} ${esc(shortName(a.s, 22))}</span></span></th>` +
+    M.per.map((b, j) => {
+      if (i === j) return `<td class="cell text-slate-400" title="Basket size at its last rebalance">${baskets[i].length}<span class="block text-[9px] font-semibold">stocks</span></td>`;
+      const shared = baskets[i].filter(s => sets[j].has(s));
+      const mn = Math.min(baskets[i].length, baskets[j].length);
+      const pctSh = mn > 0 ? shared.length / mn * 100 : null;
+      const cls = pctSh == null ? '' : pctSh > 60 ? 'tint-hi' : pctSh > 25 ? 'tint-mid' : 'tint-lo';
+      return `<td class="cell ${cls}" title="${shared.length ? 'Shared: ' + shared.join(', ') : 'No shared stocks'}">${shared.length}${pctSh == null ? '' : `<span class="block text-[9px] font-semibold text-slate-500">${pctSh.toFixed(0)}%</span>`}</td>`;
+    }).join('') + '</tr>').join('');
+  $('ovMatrix').innerHTML = head + body;
+  // stocks held by 2+ strategies
+  const cnt = new Map();
+  baskets.forEach((b, i) => b.forEach(s => { const e = cnt.get(s) || { n:0, by:[] }; e.n++; e.by.push(i); cnt.set(s, e); }));
+  const multi = [...cnt.entries()].filter(([,e]) => e.n >= 2).sort((a,b) => b[1].n - a[1].n || a[0].localeCompare(b[0]));
+  $('sharedChips').innerHTML = multi.length
+    ? `<span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold mr-1">In 2+ baskets</span> ` + multi.map(([s, e]) =>
+        `<a href="./stock.html?sym=${encodeURIComponent(s)}" class="tick text-slate-600 hover:border-indigo-300 hover:text-indigo-600 mr-1 mb-1"
+           title="Held by ${e.by.map(i => '#' + (i + 1) + ' ' + stratName(M.per[i].s)).join(' · ')}"><b>${esc(s)}</b><em>×${e.n}</em></a>`).join('')
+    : '<span class="text-[12px] text-slate-400">No stock appears in more than one basket — the strategies hold completely different stocks right now.</span>';
+}
+
+/* ---------- combined holdings ---------- */
+function renderHoldings(M){
+  const p = pal(), agg = new Map();
+  M.per.forEach((x, i) => (x.r.latest || []).forEach(h => {
+    const e = agg.get(h.sym) || { val:0, by:[] }; e.val += h.val || 0; e.by.push(i); agg.set(h.sym, e);
+  }));
+  const cash = M.per.reduce((a,x) => a + (x.r.latestCash || 0), 0);
+  const totV = [...agg.values()].reduce((a,e) => a + e.val, 0) + cash;
+  const rows = [...agg.entries()].sort((a,b) => b[1].val - a[1].val);
+  const CAP = 40;
+  $('holdSub').textContent = `${rows.length} stocks across ${M.per.length} baskets — each strategy's holdings as of its own last rebalance in the window, valued that day. A stock held by several strategies is one combined line.`;
+  const tr = ([sym, e], i) => `<tr class="border-b border-slate-100">
+      <td class="px-3 py-2 text-[11px] text-slate-400 font-bold w-6">${i + 1}</td>
+      <td class="px-2 py-2 font-semibold"><a href="./stock.html?sym=${encodeURIComponent(sym)}" class="hover:text-indigo-600">${esc(sym)}</a></td>
+      <td class="px-2 py-2"><span class="flex gap-1">${e.by.map(bi => `<span class="dot" style="background:${p.s[bi % p.s.length]}" title="${esc(stratName(M.per[bi].s))}"></span>`).join('')}</span></td>
+      <td class="text-right px-3 py-2 whitespace-nowrap">₹${fmtIN(e.val)}</td>
+      <td class="text-right px-3 py-2 text-slate-500">${totV > 0 ? (e.val / totV * 100).toFixed(1) + '%' : '—'}</td></tr>`;
+  $('holdTbl').innerHTML = `<thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
+      <th class="text-left font-semibold px-3 py-2.5">#</th><th class="text-left font-semibold px-2 py-2.5">Stock</th>
+      <th class="text-left font-semibold px-2 py-2.5">Held by</th><th class="text-right font-semibold px-3 py-2.5">Value</th>
+      <th class="text-right font-semibold px-3 py-2.5">% of mix</th></tr></thead>
+    <tbody>${rows.slice(0, CAP).map(tr).join('')}
+      ${rows.length > CAP ? `<tr><td colspan="5" class="px-3 py-2 text-[11px] text-slate-400">+ ${rows.length - CAP} smaller positions</td></tr>` : ''}
+      ${cash > 0.5 ? `<tr class="border-t border-slate-200"><td></td><td class="px-2 py-2 font-semibold text-slate-500">Cash (uninvested)</td><td></td>
+        <td class="text-right px-3 py-2 whitespace-nowrap text-slate-500">₹${fmtIN(cash)}</td>
+        <td class="text-right px-3 py-2 text-slate-500">${totV > 0 ? (cash / totV * 100).toFixed(1) + '%' : '—'}</td></tr>` : ''}
+    </tbody>`;
+}
+
+/* ---------- correlation ---------- */
+function pearson(a, b){
+  const n = Math.min(a.length, b.length); if (n < 3) return null;
+  let ma = 0, mb = 0; for (let i = 0; i < n; i++){ ma += a[i]; mb += b[i]; } ma /= n; mb /= n;
+  let ab = 0, aa = 0, bb = 0;
+  for (let i = 0; i < n; i++){ const x = a[i] - ma, y = b[i] - mb; ab += x * y; aa += x * x; bb += y * y; }
+  if (aa <= 0 || bb <= 0) return null;                 // a flat (all-cash) series has no correlation
+  return ab / Math.sqrt(aa * bb);
+}
+function renderCorr(M){
+  const p = pal();
+  const head = `<tr><th class="cell bg-slate-50"></th>` + M.per.map((x, i) =>
+    `<th class="cell bg-slate-50"><span class="flex items-center justify-center gap-1.5 text-[11px] text-slate-600" title="${esc(stratName(x.s))}"><span class="dot" style="background:${p.s[i % p.s.length]}"></span>#${i + 1}</span></th>`).join('') + '</tr>';
+  const body = M.per.map((a, i) => `<tr>
+      <th class="cell bg-slate-50 text-left"><span class="flex items-center gap-1.5 text-[11px] text-slate-600 max-w-[220px]"><span class="dot" style="background:${p.s[i % p.s.length]}"></span><span class="truncate" title="${esc(stratName(a.s))}">#${i + 1} ${esc(shortName(a.s, 22))}</span></span></th>` +
+    M.per.map((b, j) => {
+      if (i === j) return `<td class="cell text-slate-400">1.00</td>`;
+      const c = pearson(a.rets, b.rets);
+      if (c == null) return `<td class="cell text-slate-400" title="Too little movement to measure">—</td>`;
+      const cls = c > 0.7 ? 'tint-hi' : c > 0.4 ? 'tint-mid' : 'tint-lo';
+      return `<td class="cell ${cls}">${c.toFixed(2)}</td>`;
+    }).join('') + '</tr>').join('');
+  $('corrTbl').innerHTML = head + body;
+  const short = M.dates.length < 13;
+  if (short) $('corrTbl').insertAdjacentHTML('afterend', '<div class="text-[11px] text-amber-600 mt-2" id="corrNote">Under a year of monthly data — correlations this young are noisy.</div>');
+  else { const nEl = $('corrNote'); if (nEl) nEl.remove(); }
+}
+
+/* ---------- yearly table ---------- */
+function yearlyOf(dates, vals){
+  // return per calendar year: value at the year's last point vs the previous year's last point
+  const lastIdx = new Map();
+  dates.forEach((d, i) => { if (vals[i] != null) lastIdx.set(d.slice(0, 4), i); });
+  const years = [...lastIdx.keys()].sort();
+  const out = [];
+  let prev = vals.findIndex(v => v != null);           // window start = the first year's base
+  for (const yr of years){
+    const i = lastIdx.get(yr);
+    if (i > prev && vals[prev] > 0) out.push({ yr, ret: (vals[i] / vals[prev] - 1) * 100 });
+    else out.push({ yr, ret: null });
+    prev = i;
+  }
+  return out;
+}
+function renderYearly(M){
+  const p = pal();
+  const mix = yearlyOf(M.dates, M.comb);
+  const per = M.per.map(x => { const m = new Map(yearlyOf(M.dates, x.eq).map(r => [r.yr, r.ret])); return m; });
+  const ben = M.bench ? new Map(yearlyOf(M.dates, M.bench).map(r => [r.yr, r.ret])) : null;
+  const y0 = M.start.slice(0, 4), y1 = M.end.slice(0, 4);
+  const star = yr => (yr === y0 && M.start.slice(5, 7) !== '01') || (yr === y1 && M.end.slice(5, 7) !== '12') ? '*' : '';
+  const cell = v => v == null ? '<td class="text-right px-3 py-2 text-slate-400">—</td>'
+    : `<td class="text-right px-3 py-2 font-semibold ${v >= 0 ? 'pos' : 'neg'}">${pct(v)}</td>`;
+  $('yearTbl').innerHTML = `<thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
+      <th class="text-left font-semibold px-3 py-2.5">Year</th>
+      <th class="text-right font-semibold px-3 py-2.5"><span class="inline-flex items-center gap-1.5"><span class="dot" style="background:${p.mix}"></span>The mix</span></th>
+      ${M.per.map((x, i) => `<th class="text-right font-semibold px-3 py-2.5 whitespace-nowrap" title="${esc(stratName(x.s))}"><span class="inline-flex items-center gap-1.5"><span class="dot" style="background:${p.s[i % p.s.length]}"></span>#${i + 1}</span></th>`).join('')}
+      ${ben ? `<th class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">${M.benchLabel}</th>` : ''}
+    </tr></thead><tbody>${mix.map(r => `<tr class="border-b border-slate-100">
+      <td class="px-3 py-2 font-semibold text-slate-700">${r.yr}${star(r.yr)}</td>
+      ${cell(r.ret)}${per.map(m => cell(m.get(r.yr))).join('')}${ben ? cell(ben.get(r.yr)) : ''}
+    </tr>`).join('')}</tbody>`;
+}
+
+function renderResults(){
+  if (!LAST) return;
+  renderTiles(LAST); renderLegend(LAST); drawEq(LAST); drawDD(LAST);
+  renderPerStrat(LAST); renderOverlap(LAST); renderHoldings(LAST); renderCorr(LAST); renderYearly(LAST);
+}
+// theme flips repaint the charts with the dark-validated palette
+new MutationObserver(() => { if (LAST && !$('results').classList.contains('hidden')) renderResults(); })
+  .observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+
+/* ---------- boot ---------- */
+$('q').oninput = renderList;
+$('runBtn').onclick = runMix;
+$('bEq').onclick = () => { const t = totalAlloc() || SEL.size * 100000, per = Math.round(t / (SEL.size || 1)); SEL.forEach(v => v.alloc = per); renderMix(); saveState(); };
+$('bLakh').onclick = () => { SEL.forEach(v => v.alloc = 100000); renderMix(); saveState(); };
+$('bClear').onclick = () => { SEL.clear(); renderMix(); renderList(); saveState(); };
+$('bFav').onclick = () => {
+  const favs = loadFavs();
+  for (const s of ALL){ if (SEL.size >= MAX_SEL) break; const k = identityKey(s.cfg); if (isFav(favs, s.cfg) && !SEL.has(k)) SEL.set(k, { s, alloc:100000 }); }
+  renderMix(); renderList(); saveState();
+};
+(async function boot(){
+  let sfEnd = '';
+  try { sfEnd = (await (await fetch('./sf_meta.json')).json()).end || ''; } catch(e){}
+  if (window.btSync){
+    try { await btSync.pullStrategies(); } catch(e){}
+    try { HIST = await btSync.pull() || []; } catch(e){ HIST = []; }
+  }
+  ALL = groupByIdentity(loadStrategies());
+  // default window: the latest saved start among strategies would surprise (differs per mix) —
+  // use the platform's common default, capped to the data range.
+  $('dFrom').value = '2020-01-31';
+  $('dTo').value = sfEnd || new Date().toISOString().slice(0, 10);
+  const st = loadState();
+  if (st){
+    if (st.start) $('dFrom').value = st.start;
+    if (st.end && sfEnd && st.end <= sfEnd) $('dTo').value = st.end; else if (sfEnd) $('dTo').value = sfEnd;
+    (st.sel || []).forEach(k => {
+      const s = ALL.find(x => identityKey(x.cfg) === k);
+      if (s && SEL.size < MAX_SEL) SEL.set(k, { s, alloc: Math.max(0, +(st.alloc || {})[k] || 100000) });
+    });
+  }
+  renderList(); renderMix();
+  if (SEL.size >= 2) runMix();     // returning visitor: re-run their last mix automatically
+})();
+</script>
+</body>
+</html>
