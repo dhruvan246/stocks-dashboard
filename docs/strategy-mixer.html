@@ -193,7 +193,7 @@
       <div id="tdMore" class="mt-2"></div>
     </section>
 
-    <p class="text-[11px] text-slate-400 mb-6">The rebalance and trade logs are each strategy's own, tagged and merged — pick one strategy in either dropdown to read it exactly as its backtest page shows it. A trade's sell price on a "still held" row is the last available price in the window. <b>Separate buckets</b>: each strategy runs exactly like its own backtest — same engine, same survivorship-free prices, rebalancing its own stocks on its own schedule — on the rupees you gave it, and the mix is simply the sum of those buckets marked month by month, with money never shifted between strategies. <b>One combined portfolio</b>: the same strategy signals, but the whole amount sits in a single basket — each strategy asks for as many slots as it holds names, a stock several strategies want fills several slots and carries that multiple of the money, and the entire portfolio is re-spread to the new plan (at its current value) whenever any strategy rebalances. A strategy holding nothing keeps its share in cash rather than crowding the others. Brokerage, taxes and slippage are not modelled; a delisted stock's position is written down to zero. Benchmark = Nifty 500 total of the same total capital (Nifty 50 when 500 history is unavailable).</p>
+    <p class="text-[11px] text-slate-400 mb-6">The rebalance and trade logs are each strategy's own, tagged and merged — pick one strategy in either dropdown to read it exactly as its backtest page shows it. A trade's sell price on a "still held" row is the last available price in the window. <b>Separate buckets</b>: each strategy runs exactly like its own backtest — same engine, same survivorship-free prices, rebalancing its own stocks on its own schedule — on the rupees you gave it, and the mix is simply the sum of those buckets marked month by month, with money never shifted between strategies. <b>One combined portfolio</b>: the same strategy signals, but the whole amount sits in a single basket — each strategy asks for as many slots as it holds names, a stock several strategies want fills several slots and carries that multiple of the money, and the entire portfolio is re-spread to the new plan (at its current value) whenever any strategy rebalances. A strategy holding nothing keeps its share in cash rather than crowding the others. Market cap in the portfolio table is <b>today's</b>, not the company's size on the rebalance date — the survivorship-free price history these runs use carries prices, not share counts, so no point-in-time market cap exists; large/mid/small follow the usual top-100 / next-150 / rest split on that same current ranking. Brokerage, taxes and slippage are not modelled; a delisted stock's position is written down to zero. Benchmark = Nifty 500 total of the same total capital (Nifty 50 when 500 history is unavailable).</p>
   </div>
 </main>
 
@@ -714,6 +714,50 @@ function renderOverlap(M){
     : '<span class="text-[12px] text-slate-400">No stock appears in more than one basket — the strategies hold completely different stocks right now.</span>';
 }
 
+/* ---------- market cap ----------
+ * The SF (survivorship-free) path deliberately sets META.mcap = 0 — that dataset carries prices, not
+ * share counts, so there is NO point-in-time market cap to show. CORE_META (dash_slim.bin, keyed
+ * SYMBOL.NS, ₹ crore, refreshed daily) does carry the CURRENT one, which is what these columns show.
+ * Labelled as today's on the page: a rebalance from 2021 valued at 2026's market cap would be a lie.
+ * Size buckets follow the SEBI shape (top 100 large / next 150 mid / rest small) but rank on today's
+ * mcap across every symbol we hold a figure for, so treat them as indicative. */
+function mcapOf(sym){ const m = (typeof CORE_META !== 'undefined' && CORE_META) ? CORE_META[sym + '.NS'] : null; return (m && m.mcap > 0) ? m.mcap : null; }
+let _MRANK = null;
+function mcapRank(sym){
+  if (!_MRANK){
+    _MRANK = new Map();
+    if (typeof CORE_META !== 'undefined' && CORE_META){
+      Object.keys(CORE_META).filter(k => CORE_META[k].mcap > 0)
+        .sort((a,b) => CORE_META[b].mcap - CORE_META[a].mcap)
+        .forEach((k, i) => _MRANK.set(k, i + 1));
+    }
+  }
+  return _MRANK.get(sym + '.NS') || null;
+}
+function capBucket(sym){ const r = mcapRank(sym); return r == null ? null : r <= 100 ? 'Large' : r <= 250 ? 'Mid' : 'Small'; }
+function fmtCr(v){
+  if (v == null || !isFinite(v)) return '—';
+  return v >= 100000 ? '₹' + (v / 100000).toFixed(2) + 'L Cr'      // ≥ ₹1 lakh crore
+       : v >= 1000    ? '₹' + Math.round(v).toLocaleString('en-IN') + ' Cr'
+                      : '₹' + v.toFixed(0) + ' Cr';
+}
+// one <td> so both holdings tables show market cap identically
+function mcapCell(sym){
+  const v = mcapOf(sym), b = capBucket(sym);
+  return `<td class="text-right px-3 py-2 whitespace-nowrap">${v == null ? '<span class="text-slate-400">—</span>' : fmtCr(v)}
+    ${b ? `<span class="block text-[9.5px] font-semibold text-slate-400">${b} cap</span>` : ''}</td>`;
+}
+// "where the money sits by company size", for the line under each table
+function capMixLine(rows){
+  const by = { Large:0, Mid:0, Small:0, Unknown:0 };
+  let tot = 0;
+  rows.forEach(([sym, val]) => { by[capBucket(sym) || 'Unknown'] += val; tot += val; });
+  if (!tot) return '';
+  const parts = ['Large','Mid','Small','Unknown'].filter(k => by[k] > 0)
+    .map(k => `<b>${(by[k] / tot * 100).toFixed(0)}%</b> ${k === 'Unknown' ? 'unknown size' : k.toLowerCase() + ' cap'}`);
+  return ` By company size, the money sits ${parts.join(' · ')}.`;
+}
+
 /* ---------- combined holdings ----------
  * Split mode: each bucket's own holdings, summed. Pool mode: the single conviction-weighted
  * basket the whole amount is spread across, with the ×k multiplier that produced each weight. */
@@ -727,7 +771,8 @@ function renderPoolHoldings(M){
   if (!last){ $('holdTbl').innerHTML = ''; $('holdSub').textContent = 'No rebalance in this window.'; return; }
   const tot = last.val || 1, byK = new Map();
   last.holds.forEach(h => byK.set(h.k, (byK.get(h.k) || 0) + 1));
-  $('holdSub').innerHTML = `${last.holds.length} stocks as of the ${esc(last.date)} rebalance — the whole ₹${fmtIN(tot)} spread across every strategy's picks at once.`;
+  $('holdSub').innerHTML = `${last.holds.length} stocks as of the ${esc(last.date)} rebalance — the whole ₹${fmtIN(tot)} spread across every strategy's picks at once.`
+    + capMixLine(last.holds.map(h => [h.sym, h.val]));
   // The arithmetic in words. Per-STRATEGY shares, not one flat "slot size": a strategy holding 5
   // names splits its money five ways, so its per-stock share is smaller than a top-3 strategy's,
   // and an unequal ₹ allocation moves it again. Percentages are of the whole portfolio, so they
@@ -750,14 +795,17 @@ function renderPoolHoldings(M){
       <td class="px-3 py-2 text-[11px] text-slate-400 font-bold w-6">${i + 1}</td>
       <td class="px-2 py-2 font-semibold"><a href="./stock.html?sym=${encodeURIComponent(h.sym)}" class="hover:text-indigo-600">${esc(h.sym)}</a>${h.k > 1 ? ` <span class="kx">×${h.k}</span>` : ''}</td>
       <td class="px-2 py-2"><span class="flex gap-1">${h.by.map(bi => `<span class="dot" style="background:${p.s[bi % p.s.length]}" title="${esc(stratName(M.per[bi].s))}"></span>`).join('')}</span></td>
+      ${mcapCell(h.sym)}
       <td class="text-right px-3 py-2 whitespace-nowrap font-semibold">₹${fmtIN(h.val)}</td>
       <td class="text-right px-3 py-2 text-slate-500">${h.wt.toFixed(1)}%</td></tr>`;
   $('holdTbl').innerHTML = `<thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
       <th class="text-left font-semibold px-3 py-2.5">#</th><th class="text-left font-semibold px-2 py-2.5">Stock</th>
-      <th class="text-left font-semibold px-2 py-2.5">Picked by</th><th class="text-right font-semibold px-3 py-2.5">Money in it</th>
+      <th class="text-left font-semibold px-2 py-2.5">Picked by</th>
+      <th class="text-right font-semibold px-3 py-2.5 whitespace-nowrap" title="Market cap as it stands today — this dataset has no market cap for past dates">Market cap<span class="block normal-case text-[9px] font-normal text-slate-400">today</span></th>
+      <th class="text-right font-semibold px-3 py-2.5">Money in it</th>
       <th class="text-right font-semibold px-3 py-2.5">% of portfolio</th></tr></thead>
     <tbody>${last.holds.map(tr).join('')}
-      ${last.cash > 1 ? `<tr class="border-t border-slate-200"><td></td><td class="px-2 py-2 font-semibold text-slate-500">Cash (uninvested)</td><td></td>
+      ${last.cash > 1 ? `<tr class="border-t border-slate-200"><td></td><td class="px-2 py-2 font-semibold text-slate-500">Cash (uninvested)</td><td></td><td></td>
         <td class="text-right px-3 py-2 whitespace-nowrap text-slate-500">₹${fmtIN(last.cash)}</td>
         <td class="text-right px-3 py-2 text-slate-500">${last.cashWt.toFixed(1)}%</td></tr>` : ''}</tbody>`;
 }
@@ -770,20 +818,24 @@ function renderSplitHoldings(M){
   const totV = [...agg.values()].reduce((a,e) => a + e.val, 0) + cash;
   const rows = [...agg.entries()].sort((a,b) => b[1].val - a[1].val);
   const CAP = 40;
-  $('holdSub').textContent = `${rows.length} stocks across ${M.per.length} baskets — each strategy's holdings as of its own last rebalance in the window, valued that day. A stock held by several strategies is one combined line.`;
+  $('holdSub').innerHTML = `${rows.length} stocks across ${M.per.length} baskets — each strategy's holdings as of its own last rebalance in the window, valued that day. A stock held by several strategies is one combined line.`
+    + capMixLine(rows.map(([sym, e]) => [sym, e.val]));
   const tr = ([sym, e], i) => `<tr class="border-b border-slate-100">
       <td class="px-3 py-2 text-[11px] text-slate-400 font-bold w-6">${i + 1}</td>
       <td class="px-2 py-2 font-semibold"><a href="./stock.html?sym=${encodeURIComponent(sym)}" class="hover:text-indigo-600">${esc(sym)}</a></td>
       <td class="px-2 py-2"><span class="flex gap-1">${e.by.map(bi => `<span class="dot" style="background:${p.s[bi % p.s.length]}" title="${esc(stratName(M.per[bi].s))}"></span>`).join('')}</span></td>
+      ${mcapCell(sym)}
       <td class="text-right px-3 py-2 whitespace-nowrap">₹${fmtIN(e.val)}</td>
       <td class="text-right px-3 py-2 text-slate-500">${totV > 0 ? (e.val / totV * 100).toFixed(1) + '%' : '—'}</td></tr>`;
   $('holdTbl').innerHTML = `<thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
       <th class="text-left font-semibold px-3 py-2.5">#</th><th class="text-left font-semibold px-2 py-2.5">Stock</th>
-      <th class="text-left font-semibold px-2 py-2.5">Held by</th><th class="text-right font-semibold px-3 py-2.5">Value</th>
+      <th class="text-left font-semibold px-2 py-2.5">Held by</th>
+      <th class="text-right font-semibold px-3 py-2.5 whitespace-nowrap" title="Market cap as it stands today — this dataset has no market cap for past dates">Market cap<span class="block normal-case text-[9px] font-normal text-slate-400">today</span></th>
+      <th class="text-right font-semibold px-3 py-2.5">Value</th>
       <th class="text-right font-semibold px-3 py-2.5">% of mix</th></tr></thead>
     <tbody>${rows.slice(0, CAP).map(tr).join('')}
-      ${rows.length > CAP ? `<tr><td colspan="5" class="px-3 py-2 text-[11px] text-slate-400">+ ${rows.length - CAP} smaller positions</td></tr>` : ''}
-      ${cash > 0.5 ? `<tr class="border-t border-slate-200"><td></td><td class="px-2 py-2 font-semibold text-slate-500">Cash (uninvested)</td><td></td>
+      ${rows.length > CAP ? `<tr><td colspan="6" class="px-3 py-2 text-[11px] text-slate-400">+ ${rows.length - CAP} smaller positions</td></tr>` : ''}
+      ${cash > 0.5 ? `<tr class="border-t border-slate-200"><td></td><td class="px-2 py-2 font-semibold text-slate-500">Cash (uninvested)</td><td></td><td></td>
         <td class="text-right px-3 py-2 whitespace-nowrap text-slate-500">₹${fmtIN(cash)}</td>
         <td class="text-right px-3 py-2 text-slate-500">${totV > 0 ? (cash / totV * 100).toFixed(1) + '%' : '—'}</td></tr>` : ''}
     </tbody>`;

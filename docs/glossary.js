@@ -323,7 +323,8 @@ window.SW_GLOSSARY = (function () {
     holdwt:     ['Weight %', "How much of that strategy's own bucket a stock is, on the rebalance day. Baskets start equal-weighted and drift apart as prices move."],
     sepbuckets: ['Separate buckets', "Each strategy invests only its own money and rebalances on its own schedule, exactly as it would alone. A stock two strategies both pick is simply bought twice, once in each bucket. The mix is the sum of the buckets."],
     onepf:      ['One combined portfolio', "All the strategies' picks go into a single basket and the whole amount is spread across them at once. Because a stock two strategies pick gets both of their shares, the money leans towards the names several strategies agree on."],
-    conviction: ['×2 / ×3 (conviction)', "How many of your strategies were picking that stock that month. In the combined portfolio each pick is a share of the money, so ×2 means the stock got two shares — twice what a stock only one strategy picked received."]
+    conviction: ['×2 / ×3 (conviction)', "How many of your strategies were picking that stock that month. In the combined portfolio each pick is a share of the money, so ×2 means the stock got two shares — twice what a stock only one strategy picked received."],
+    capbucket:  ['Large / Mid / Small cap', "A company's size band by market cap — the biggest 100 companies are large cap, the next 150 mid cap, everything below small cap. On the mixer this is worked out on <i>today's</i> ranking, so read it as indicative rather than the exact SEBI list."]
   };
 
   /* =======================================================================
@@ -649,6 +650,7 @@ window.SW_GLOSSARY = (function () {
         ['The mix', ['mixalloc', 'divbenefit', 'stratcorr', 'stratoverlap', 'posmonths']],
         ['Result tiles', ['cagr', 'totret', 'maxdd', 'mixvol', 'benchmark', 'finalval']],
         ['The logs', ['reblog', 'tradelog', 'holdwt']],
+        ['Company size', ['mcap', 'capbucket']],
         ['Strategy anatomy', ['rebalance', 'topn', 'universe', 'winpct']],
         ['Trust', ['pit', 'survfree']]
       ],
