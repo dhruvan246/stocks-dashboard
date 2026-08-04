@@ -2948,3 +2948,37 @@ The backtest was NEVER affected — `membersAsOf` in the engine reads the SAME b
 (spliced by `build_n500_membership.py`); only the audit layer had forked onto the sparse source.
 The turnover page ignores the changes-replay too (snapshots only). If a new audit script needs
 membership, import `_n500_member_bin` — do not copy-paste a walk.
+
+
+## 49. ★★ THE 100%% CLOSE-OUT PLAYBOOK — what finally landed the last ~40 cells  (2026-08-04)
+
+Mission fact: REV + PAT both closed at 100.0000%% of fillable over 23,081 member-quarter cells
+(2015→2026Q1, bin-snapshot membership). What worked, in escalation order — use it next campaign:
+
+1. **detres JSON first** (§42), scrip NAME-VERIFIED against `_bse_master_all.json` — the master's
+   `Scrip_Name` is the CURRENT name; resolve the ERA entity before judging plausibility
+   (scrip 506390 today reads "Sudarshan Colorants" but was CLARIANT CHEMICALS in 2016 —
+   calendar-FY, transition stub Jan-Mar-2016; and 533206 is SJVN, NOT Srei — wrong-map poison
+   nearly landed another company's numbers).
+2. **TEXT-LAYER positional word-row rebuild** (y-cluster `get_text('words')`, x-sorted) BEFORE
+   OCR — many BSE "Outcome of Board Meeting" PDFs are digital (Srei/MOFS/RELCAPITAL were).
+   Subject filters must NOT require "result": outcomes hide results; DO exclude
+   newspaper|voting|ballot|postal|clarification|non-submission.
+3. **OCR with scale-aware anchors** (1/10/100) + micro-cap floor 0.08 for |v|<5 (0.6cr floor
+   makes small-value anchors column-ambiguous — ORISSAMINE lesson).
+4. **Year-later filings' year-ago columns** with DOUBLE anchors; windows +140d around FY20
+   (COVID) and up to a YEAR late for CIRP companies (AMTEKAUTO filed Jun-2017 in Aug-2018).
+5. **VISION reads (user-authorized) for scan-soup** — every vision landing still needs an exact
+   anchor + an internal identity (H1/9M/FY arithmetic on the same page).
+6. **Era-press corroboration as tiebreak GATE** when two as-filed-era documents conflict:
+   Capital-Market-wire numbers (Business Standard archives) matched the true doc EXACTLY for
+   TEXRAIL (12.16) and SUDARCOLOR/Clariant (9.85). AI answers (Gemini) are LEADS for locating
+   such press, never landing evidence — they attached real prior-quarter numbers to never-filed
+   quarters (GRUH/CAPF/ILFSTRANS "final filings" that don't exist) and missed pages BSE serves.
+7. **Graves need documents**: non-submission letters, BOTH-exchange zero-scans, merger effective
+   dates, annual-only publications under NCLT. 19 stand (identical set both metrics); 33 more
+   dissolved as phantom non-member cells when membership was re-based (§48).
+Convention guards that bit repeatedly: bank rev = Interest Earned; holdco std rev can be ~0
+(RELIGARE 0.33) or negative as-filed (NITINFIRE -173.06, JPINFRATEC -640.75 — 106-cell
+precedent); HMT-class stored series may be the AUDITED-restated basis — match the SERIES
+convention (continuing-ops rev 2.30), not the original filing, when stored PATs prove restated.
