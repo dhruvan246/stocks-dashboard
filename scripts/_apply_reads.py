@@ -50,7 +50,107 @@ def close(a, b):
     return abs(a - b) <= max(2.0, 0.03 * max(abs(a), abs(b)))
 
 
+PRE2015 = os.path.join(HERE, "pre2015_reads_d.json")
+
+
+def main_pre2015():
+    """PRE2015_CAMPAIGN STEP D applier (scripts/PRE2015_CAMPAIGN.md, LANDING RULES).
+    Separate code path from the default mode above: almost no pre-2015 cell has a
+    stored PAT to anchor against, so unlike the default flow this one CREATES the
+    PAT row in docs/sf_fundamentals.json when the harvest ledger's gate (F/E) proved
+    it, rather than requiring one to already exist (gate S is the one case where a
+    stored PAT already exists -- re-verified here, not just trusted from harvest
+    time, in case another session/CI filled it in the meantime). Only touches STD
+    slots: pre-2015 con was optional (Clause 41) and detres carries no con flag, so
+    this route never writes con (LANDING RULES 3). Fill-only, idempotent, safe to
+    re-run after a reset (the batch_push pattern).
+    Run: python -X utf8 scripts/_apply_reads.py --pre2015 [--dry]
+    """
+    dry = "--dry" in sys.argv
+    reads = json.load(open(PRE2015, encoding="utf8")) if os.path.exists(PRE2015) else {}
+    fund = json.load(open(FUND))
+    revop = json.load(open(DOCS))
+    scr = json.load(open(SCR)) if os.path.exists(SCR) else {}
+
+    applied, skipped, fund_new = [], [], 0
+    touched_syms = set()
+    for sym, cells in reads.items():
+        frows = fund.setdefault(sym, [])
+        fmap = {r[0]: r for r in frows}
+        for qe_s, c in cells.items():
+            qe = int(qe_s)
+            gate = c.get("gate")
+            pat = c.get("pat")
+            if c.get("basis", "std") != "std":
+                skipped.append((sym, qe, "non-std basis unsupported in pre2015 mode"))
+                continue
+
+            row = fmap.get(qe)
+            if gate == "S":
+                if row is None or row[1] is None:
+                    skipped.append((sym, qe, "gate-S but no stored PAT at apply time (drifted?)"))
+                    continue
+                if not close(row[1], pat):
+                    skipped.append((sym, qe, "gate-S anchor drift at apply: stored=%s read=%s" % (row[1], pat)))
+                    continue
+                stored_pat = row[1]
+            elif gate in ("F", "E", "X"):
+                if row is not None and row[1] is not None:
+                    # a PAT has landed since harvest time (another route/session) --
+                    # re-anchor instead of blindly inserting a duplicate row
+                    if not close(row[1], pat):
+                        skipped.append((sym, qe, "gate-%s but stored PAT now present and disagrees: stored=%s read=%s"
+                                        % (gate, row[1], pat)))
+                        continue
+                    stored_pat = row[1]
+                else:
+                    newrow = [qe, pat, c.get("ann"), None, None]
+                    frows.append(newrow)
+                    fmap[qe] = newrow
+                    fund_new += 1
+                    stored_pat = pat
+            else:
+                skipped.append((sym, qe, "unknown/missing gate %r" % gate))
+                continue
+
+            for data in (revop, scr):
+                d = data.setdefault(sym, {})
+                cell = d.get(qe_s) or [None] * 9
+                if len(cell) < 9:
+                    cell = cell + [None] * (9 - len(cell))
+                if cell[0] is None and c.get("rev") is not None:
+                    cell[0] = c["rev"]
+                if cell[2] is None and c.get("op") is not None:
+                    cell[2] = c["op"]
+                if cell[4] is None:
+                    cell[4] = stored_pat
+                if c.get("fin"):
+                    cell[6] = 1
+                elif cell[6] is None:
+                    cell[6] = 0
+                d[qe_s] = cell
+            applied.append((sym, qe, gate))
+            touched_syms.add(sym)
+
+    for sym in touched_syms:
+        fund[sym].sort(key=lambda r: r[0])
+
+    from collections import Counter
+    gc = Counter(g for _, _, g in applied)
+    print("pre2015: applied %d cells (%s) | %d new fundamentals rows | skipped %d" % (
+        len(applied), ", ".join("%s=%d" % kv for kv in sorted(gc.items())), fund_new, len(skipped)))
+    for s in skipped:
+        print("  SKIP", s)
+    if not dry:
+        json.dump(fund, open(FUND, "w"), separators=(",", ":"))
+        json.dump(revop, open(DOCS, "w"), separators=(",", ":"))
+        json.dump(scr, open(SCR, "w"), separators=(",", ":"))
+        print("written: sf_fundamentals.json, sf_revop.json, revop_fundamentals.json")
+
+
 def main():
+    if "--pre2015" in sys.argv:
+        return main_pre2015()
     dry = "--dry" in sys.argv
     fund = json.load(open(FUND))
     fmap = {s: {r[0]: r for r in rows} for s, rows in fund.items()}
