@@ -141,9 +141,10 @@ correct arcs for era corp-actions. The audits and the backtest then share one tr
 **M1 SHIPPED** (commit 6243a22f): the 21 official 2002-06 lists are in `_wb_n500_snaps.json`,
 rebuild verified additive-only (all 81 prior snapshots byte-identical, +21 new, earliest
 2002-10-02), CI `refresh-membership.yml` dispatched to regenerate indices_history + the bin.
-Known cosmetic side effect (pre-existing class): derived MSC400/SC250 gain N500-copy placeholder
-rows at the new pre-2006 dates because Nifty-100 is empty there — same documented junk as the
-existing 2006/2010/2014 placeholder rows; granular tiers pre-2018 were already do-not-trust.
+The N500-copy placeholder side effect (derived MSC400/SC250 rows at dates where Nifty-100 had no
+history, incl. the old 2006/2010/2014 junk) was FIXED same-day in a465eb09: `_derive` now skips
+dates where any subtrahend index is empty, so the derived tiers simply have no snapshot before
+their basis exists (MSC400 starts 2015-09-28, SC250 2016-09-30; asof = empty before that).
 
 **M2 (MC captures for the 2007-09 + 2011-13 dark windows) — machinery built and MEASURED, not
 shipped.** Parser handles both markup eras (`pricechart.php?sc_did=<CODE>` pre-2011,
