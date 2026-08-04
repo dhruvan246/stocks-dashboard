@@ -559,6 +559,95 @@ own cap — no ledger, no landing code, nothing pushed except this write-up):
 Next: either STEP W-execute (harvest per the recipe above) or STEP Q close-out QA on D+N first —
 user's call, both are now unblocked.
 
+### STEP W-execute — status (2026-08-05, Sonnet): BATCH 1 SHIPPED, 114 cells / 19 companies
+Worktree `pre2015-stepw-harvest`. `scripts/_stepw_wb.py` (wayback CDX+fetch, untracked scratch)
++ `scripts/_stepw_nse_pre15.py` (untracked scratch, mirrors STEP N's structure: universe → per-
+symbol candidate fetch → FY bucketing → chain/cumdiff resolution → gate S/F/E in that priority —
+GATE X deliberately left stubbed this pass, same precedent as STEP D's first run, would need also
+harvesting myiris). `_apply_reads.py --pre2015`: added `pre2015_reads_w.json` to `PRE2015_LEDGERS`
+(tracked, one-line addition, same pattern STEP N used to add itself).
+
+**Numbers (verified by reading the ledger back off `origin/main`, not from the run's own log —
+DATA_RUNBOOK §38b): 114 cells landed across 19 companies** (alphabetically 3MINDIA→SBIN/GLAXO,
+the run was stopped partway through the 566-symbol universe, see below), **76 refused** with
+reasons in `pre2015_attempted_w.json`. Gate mix: **F=35 · E=79 · S=0 · X=0** (X unattempted this
+pass). `revop_sanity` and the yshift scan both clean — the only flags present (6 cells,
+MASTEK/PEL/SUZLON) are STEP D's own pre-existing, already-adjudicated nulls, untouched by this
+batch. Applied cleanly via `_apply_reads.py --pre2015`: 114 new `sf_fundamentals.json` rows, 0
+skipped, consistent whether re-derived before or after a same-day CI push touched unrelated files.
+
+**Gate F validated on new data with an exact match**: APOLLOTYRE FY2004 (Apr03-Mar04) — all four
+quarters sum to the annual PAT exactly twice over (`qsum=70.42 annual=70.42`, and separately
+`qsum=120.02 annual=120.02` for its FY2003) — the KANORICHEM-style clean identity the probe found
+holds up at real harvest scale, not just on the hand-picked probe sample.
+
+**A real, structural (not a bug) finding: calendar-year filers make GATE F unavailable under
+Apr-Mar bucketing, but GATE E still lands them correctly.** ABB, GLAXO and 3MINDIA (all
+foreign-parented — Swiss-Swedish, UK, US respectively — a common pattern: Indian subsidiaries of
+multinationals often keep the parent's Jan-Dec fiscal year rather than India's Apr-Mar norm) file
+real quarters that this harvester's Apr-Mar `fy_of()` bucketing can never assemble into one tiling
+FY: a Jan-Dec filer's calendar Q1 (Jan-Mar) lands in one Apr-Mar bucket while its Q2-Q4 and its own
+annual land in the NEXT one, so no bucket ever holds all four quarters + a matching annual, and the
+mandatory date-tiling check (correctly) refuses every attempt. GATE E has no such dependency (it is
+a single-document self-check, EPS × equity/face-value ≈ PAT, independent of which bucket a leg
+landed in) and lands these companies' real quarters correctly regardless — confirmed by spot-check:
+GLAXO Q1FY03 (01-Jan-2003→31-Mar-2003) raw page Net Sales 28,286 lakh / Net Profit 3,509 lakh /
+EPS 4.70 / equity capital 7,448 lakh reproduces the ledger's rev=282.86 pat=35.09 exactly, and
+implied EPS-recon (4.70×74.48/10=35.01) sits 0.08cr from the printed PAT, comfortably inside gate.
+**This is a gate-MIX effect, not a correctness risk** — data lands right, just at a weaker (still
+LANDING-RULES-sanctioned) tier for this filer class. Noting it here rather than attempting a
+company-specific true-FY detector, which would be a proportionality mismatch for what this step
+budgeted.
+
+**Bank template spot-verified byte-exact**: SBIN Q1FY05 (01-Apr-2004→30-Jun-2004) raw page
+Interest Earned 766,657 lakh / Operating Profit 207,140 lakh / Net Profit 105,840 lakh matches the
+ledger's rev=7666.57 op=2071.40 pat=1058.40 to the last digit. SBIN's own FY-sum identities also
+landed clean (e.g. FY2005 `qsum=4304.52 annual=4304.52`, exact).
+
+**Two real bugs found and fixed while building the harvester (before any cell landed), both worth
+naming so they aren't repeated:**
+1. `gate_e()`'s EPS-recon implicitly double-divided by 100: `eqcap` is stored already
+   crore-converted (`to_crore()` applied when the leg is built), so multiplying by a further
+   `/100.0` inside the gate silently made every implied-PAT calculation 100x too small. Caught by
+   hand-deriving the ALPSINDUS numbers before running any code, not by a failed test.
+2. `cumdiff()`/`add_legs()` (the Q4-folded-into-annual derivation, STEP N's own technique) didn't
+   carry a `frm`/`to` date span on the leg they return, which would have made the mandatory
+   date-tiling check silently and permanently fail for every FY needing ANY derived leg (tiles()
+   requires real dates on all four legs). Fixed by computing each derived leg's known analytic
+   quarter-boundary (`quarter_bounds()`) rather than trying to read one off a page that was never
+   fetched for that exact slot.
+
+**A design gap fixed after the first live test, not caught by reading the code alone**: a
+transient wayback fetch failure on the ONLY candidate covering some quarter would otherwise fall
+through to a permanent `"no-archive-rows-for-that-FY"` refusal — indistinguishable in the ledger
+from a genuine absence, and (worse) it would permanently block retrying that cell on a future run,
+since refused cells are skipped by the wanted-cell filter. Fixed: fetch failures are now tracked
+per-FY and suppress the refusal write entirely for any cell in an affected FY, leaving it eligible
+for a future run to pick back up once the page is reachable (its content is cached the moment a
+fetch DOES succeed, so a retry costs nothing extra).
+
+**Why only 19/566 companies this pass**: sustained wayback connection throttling
+(`HTTPSConnectionPool ... Max retries exceeded`) throughout the run, consistent with the same
+throttling the STEP W probe hit earlier the same day. A 4-worker prefetch pool (same pattern STEP
+D/N already validated: warms the on-disk cache ahead of the unchanged sequential gate/land loop)
+was added mid-session but didn't meaningfully outrun the throttling. This is an environmental
+condition, not a code defect — every fetch failure is retry-safe by design (see the design-gap fix
+above), so resuming later costs nothing beyond wall-clock time.
+
+**RESUME RECIPE**: `cd scripts && python -X utf8 -u _stepw_nse_pre15.py` (no arguments — it
+automatically skips every `(sym, qe)` already in `pre2015_reads_w.json` or
+`pre2015_attempted_w.json`, so re-running is free for everything already resolved and just
+continues alphabetically). Checkpoints every 50 landed cells and every 10 companies — if stopping
+before a natural end, expect to lose whatever landed since the LAST checkpoint (harmless: cached
+pages make it free to re-land on the next run; confirmed by this batch's own APOLLOTYRE cells,
+computed correctly mid-run but lost when the process was stopped before their checkpoint, and not
+present in what was actually pushed — caught by reading the ledger back off `origin/main` rather
+than trusting the run's own log, exactly the §38b discipline). After each further batch: apply
+(`_apply_reads.py --pre2015`) → `revop_sanity.py --dry` → `_yshift_scan_pre15.py --reads
+pre2015_reads_w.json` → commit (tracked ledger + `_apply_reads.py` if changed + the 3 data files)
+→ push via reset+reapply (plain rebase WILL conflict on the minified JSON, confirmed this batch)
+→ verify by reading the ledger back off origin, not the push return code.
+
 ## STEP Q — CLOSE-OUT QA (after D+N, and again after W)
 
 1. Full-window audit table (member-quarter × {rev,pat} × year) from `_n500_member_bin` — the
@@ -643,3 +732,18 @@ user's call, both are now unblocked.
   hard line, not ruled out, just not needed for a green verdict). No cells landed, no
   ledger created, nothing pushed except this write-up — per the doc's own cap, a harvest
   recipe is appended for a future STEP W-execute session rather than executed here.
+- 2026-08-05: STEP W-execute batch 1 shipped (Sonnet) — see status block above. 114 cells /
+  19 companies landed (F=35 incl. an exact APOLLOTYRE FY-sum match, E=79), 76 refused, both
+  verified by reading the ledger back off origin (not the run's own log — a checkpoint
+  boundary quirk lost some cells the log showed landing, e.g. APOLLOTYRE, from what actually
+  reached origin; harmless, cached pages make them free to re-land next run). revop_sanity
+  and yshift both clean, no new flags. Found a real structural (not a bug) pattern: Jan-Dec
+  calendar-year filers (ABB/GLAXO/3MINDIA, foreign-parented) can never satisfy GATE F under
+  Apr-Mar bucketing, but GATE E lands them correctly regardless (spot-verified byte-exact)
+  — a gate-mix effect, not a correctness risk. Also fixed two real bugs before any cell
+  landed (an EPS-recon double-divide, and derived cumdiff/chainsum legs missing the dates
+  the mandatory tiling check needs) and one design gap after the first live test (a
+  transient fetch failure was falling through to a permanent, un-retryable refusal — fixed
+  to stay retryable). Stopped at 19/566 companies due to sustained wayback throttling
+  (environmental, not a defect); full resume recipe in the status block — re-running the
+  harvester with no arguments continues alphabetically for free.
