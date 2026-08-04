@@ -189,6 +189,72 @@ NAME-match (the UNITEDBNK-disease recipe; measured today: direct-only resolves 5
 gotchas are documented in memory `project-stocks-rev-2015-extension`). Report reachability per era.
 Commit the gap file + the cutter script.
 
+### STEP G — status (2026-08-04, Sonnet): SHIPPED
+
+`scripts/cut_gaps_0214.py` (new, worktree `pre2015-gaps`) walks true per-quarter bin
+membership via `_n500_member_bin.membership(qe)` over all 52 quarters 2002Q1-2014Q4 and
+subtracts cells that already have BOTH std PAT (`docs/sf_fundamentals.json`) AND std rev
+(`docs/sf_revop.json`) — dual-form gaps (`need:["rev"]`, PAT already stored by the old
+2012-14 batch) are tagged separately from full gaps (`need:["pat","rev"]`) so STEP D/N don't
+re-fetch what's already there. `_n500_member_bin.py` was untracked and only existed in
+worktree `rev-mission`; copied in, relativized (no more hard-coded cross-worktree path to
+the old checkout's `_rename_map.json`), and committed here as a shared asset — same for
+`_bse_master_all.json` (10,786-row BSE master) and `_scrip_extra.json` (the delisted-code
+supplement, grown 82→198 entries this run).
+
+**Numbers:** 24,421 real member-quarter cells, only **1** fully stored, **24,420 open**
+(744 of them dual-form: PAT already there, rev missing). Ever-members measured per era:
+2008-14 **727** (doc baseline 708) / 2005-07 **574** (doc baseline 552) / 2002-04 **566**
+(exact match). Both deltas are explained, not bugs: `membership()` returns EMPTY for
+20020331/20020630/20020930 (no snapshot exists before the earliest surviving capture,
+2002-10-02) rather than extrapolating backward — accounts for ~1,600 of the 26,022→24,421
+total-cell delta; the small 2008-14/2005-07 member-count deltas most likely reflect the
+M2 build settling between the doc's mid-build measurement and the final shipped 120-snapshot
+bin. Re-verify only if it matters downstream.
+
+**BSE-code reachability** (companies with ≥1 open cell in that era; layers = by_id/scrip_extra
+direct → rename-chain variants (both directions) → exact `scrip_id` match against the full
+`_bse_master_all.json` → normalized company-name match sourced from `symchg.csv` — no fuzzy
+matching anywhere, ambiguous/absent stays unresolved and reported):
+
+| era | resolved | universe | % |
+|---|---|---|---|
+| 2008-14 | 691 | 727 | 95.0% |
+| 2005-07 | 508 | 574 | 88.5% |
+| 2002-04 | 463 | 566 | 81.8% |
+
+Overall: **749/875 (85.6%)** unique symbols-with-gaps resolved. 116 new codes recovered
+this run (scrip_id-exact or symchg-name layer) and folded into `_scrip_extra.json` —
+spot-verified ~20 against `_bse_master_all.json` Scrip_Name (RANBAXY/HDFC/MINDTREE/PATNI/
+5 PSU banks/RPL/RNRL/LML/WYETH/NIRMA/PEL/JPASSOCIAT/COX&KINGS/…), all correct, zero false
+positives found.
+
+**Residual: 126 unique unresolved symbols, four named classes (not a blob):**
+1. **BSE mnemonic diverges from the NSE symbol by more than a clean suffix** — CASTROL
+   (real scrip_id `CASTROLIND`), CEAT (`CEATLTD`), 3IINFOTECH (`3IINFOLTD`). Resolvable with
+   a deliberate suffix-normalization pass (strip IND/LTD/CO both sides, require the result
+   still unique) — left for a dedicated follow-up rather than bolted on here.
+2. **Genuinely ambiguous multi-entity groups** — TV-18 has FOUR BSE candidates
+   (TV18/TV18BRDCST/TV18BRDCSTR/TV18EQPP); Television Eighteen India Ltd and TV18 Broadcast
+   Ltd are DIFFERENT legal entities (the TM03-Tata-Motors-vs-TMCV class from STEP M2's own
+   writeup) — needs historical adjudication of which entity traded under that symbol when,
+   not a guess.
+3. **Genuinely absent from `_bse_master_all.json`** — SATYAMCOMP, zero hits on any field.
+   Public record BSE code is 500376 (Mahindra Satyam, merged into Tech Mahindra Jul-2013 —
+   already a `manual_adds` entry in `_mc_code_supplement.json` for the identical reason on
+   the membership side) — deliberately NOT inserted here since it can't be verified against
+   any in-repo source; needs a manual, evidenced add to `_scrip_extra.json` before STEP D
+   runs, same precedent as the membership-side manual_adds.
+4. **Likely membership-bin identity splits — a STEP M follow-up, not a STEP G bug**:
+   COLGATE has no `_rename_map.json` entry to COLPAL (which itself resolves cleanly, BSE
+   500830) — the M2 `era_overrides` entry for MC code `CPI` reads
+   `{"from":"COLPAL","to":"COLGATE"}`, possibly backwards; BILT never links to BALLARPUR
+   (already resolved, BSE 500102) despite BILT being Ballarpur Industries' common market
+   name. Both look like the same real company appearing under two unlinked bin identities —
+   worth a `_rename_map.json` pass before the audit denominator is trusted further.
+
+Next: STEP D (BSE detres harvest, 2008-14, the ~14k-cell big one).
+
 ## STEP D — DETRES HARVEST 2008Q1→2014Q4  (the big one, ~14k cells; pure python, hours)
 
 1. Worktree `pre2015-detres`. Extend `_bse_detres.py` (or a sibling `_bse_detres_pre15.py`) with:
@@ -273,3 +339,13 @@ one session; deliverable = feasibility verdict + (if green) the harvest recipe a
   scope measured 26,022 member-quarter std cells, 727 stored, ~25.3k open, 839 ever-members;
   bin membership empty pre-Nov-2006 → STEP M created; gates X/F/E/S designed and validated on
   RELIANCE/SBIN/HINDALCO/SATYAMCOMP era data.
+- 2026-08-04: STEP M1+M2 shipped (see STEP M status block) — N500 bin now 120 snapshots
+  2002-10-02→date.
+- 2026-08-04: STEP G shipped (Sonnet) — `cut_gaps_0214.py` cuts true per-quarter-membership
+  gaps: 24,421 real member-quarter cells, 24,420 open (744 dual-form, PAT-only). BSE-code
+  reachability 691/727 (2008-14) · 508/574 (2005-07) · 463/566 (2002-04) via by_id → rename-chain
+  → exact scrip_id match → symchg-name match, no fuzzy matching; 126 unique symbols unresolved,
+  triaged into 4 classes (mnemonic-suffix mismatch / genuine multi-entity ambiguity / absent from
+  BSE master / likely membership-bin identity split — full detail in the STEP G status block
+  above). `_n500_member_bin.py` + `_bse_master_all.json` + `_scrip_extra.json` promoted from
+  untracked rev-mission-only scratch to committed shared assets.
