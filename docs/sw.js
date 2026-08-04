@@ -6,7 +6,7 @@
  *     requests (the sf-data repo, Supabase, the live-quote Worker) — those stay network-only
  *     so data is always fresh and the cache never bloats.
  * Bump CACHE when the shell asset list changes. */
-const CACHE = 'sw-shell-v64';   // v64: lazy deep-history data layout (backtest engine + pages)
+const CACHE = 'sw-shell-v65';   // v65: site-wide glossary panel (glossary.js)
 const SHELL = [
   './', './index.html', './nse-bse-dashboard.html', './stock-backtest.html', './saved-strategies.html',
   './backtest-history.html', './strategy-backtest.html', './mutual-funds.html', './fii-dii.html',
@@ -15,7 +15,7 @@ const SHELL = [
   './discovery.html', './deals.html', './insider.html', './delivery.html', './volume.html', './ipos.html', './actions.html', './watchlist.html', './live-tracking.html', './insurer-inbox.html', './analytics.html',
   './results-coverage.html', './monthly-returns.html', './macro.html',
   './indices.html', './global.html', './movers.html', './index-chart.html',
-  './theme.css', './theme.js', './backtest-engine.js', './bt-sync.js', './sw-sync.js', './sw-watchlist.js',
+  './theme.css', './theme.js', './glossary.js', './backtest-engine.js', './bt-sync.js', './sw-sync.js', './sw-watchlist.js',
   './manifest.webmanifest',
   './icon-192.png', './icon-512.png', './icon-512-maskable.png', './apple-touch-icon.png'
 ];

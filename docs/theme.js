@@ -723,6 +723,120 @@
   }
 
   // =========================================================================
+  // SITE GLOSSARY — a collapsed "📖 Glossary" panel at the bottom of every
+  // page, spelling out ONLY the terms that page actually uses (the strategy
+  // pages get the factor codes, the deals page gets bulk vs block, and so on).
+  //
+  // The wording lives in ./glossary.js, NOT here — one dictionary of terms plus
+  // a per-page list of which ones to show. That file is pulled in the first
+  // time a reader opens the panel, so a normal page load pays nothing for it.
+  // Edit glossary.js to change any definition or to add a term to a page.
+  // =========================================================================
+  var GLOSS_SKIP = ['results-season.html', 'private-import.html'];   // redirect stub + one-off owner utility
+
+  function buildGlossary() {
+    if (document.querySelector('.sw-gloss')) return;                 // a page shipping its own stays untouched
+    var here = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+    if (GLOSS_SKIP.indexOf(here) >= 0) return;
+
+    var d = document.createElement('details');
+    d.className = 'sw-gloss';
+    d.innerHTML = '<summary>📖 Glossary <span>— every term on this page, spelled out</span></summary>' +
+      '<div class="sw-gloss-body"><p class="sw-gloss-wait">Loading…</p></div>';
+
+    var host = document.querySelector('main');
+    if (host) host.appendChild(d);
+    else {
+      // pages without a <main> (the Stocks dashboard) — sit above the footer
+      var ft = document.querySelector('footer');
+      if (ft && ft.parentNode) ft.parentNode.insertBefore(d, ft);
+      else document.body.appendChild(d);
+    }
+
+    var done = false;
+    d.addEventListener('toggle', function () {
+      if (done || !d.open) return;
+      done = true;
+      loadGlossData(function (G) {
+        var body = d.querySelector('.sw-gloss-body');
+        if (!G || !G.p[here]) { body.innerHTML = '<p class="sw-gloss-wait">No glossary for this page yet.</p>'; return; }
+        render(G, G.p[here], d, body);
+      }, function () {
+        d.querySelector('.sw-gloss-body').innerHTML =
+          '<p class="sw-gloss-wait">Could not load the glossary — check your connection and reopen this panel.</p>';
+        done = false;   // let a retry happen on the next open
+      });
+    });
+
+    function render(G, page, det, body) {
+      if (page.sub) {
+        var sp = det.querySelector('summary span');
+        if (sp) sp.textContent = '— every term on this page, spelled out ' + page.sub;
+      }
+      var html = (page.intro || []).map(function (p) { return '<p>' + p + '</p>'; }).join('');
+      (page.secs || []).forEach(function (sec) {
+        var rows = (sec[1] || []).map(function (k) {
+          var bar = k.indexOf('|'), key = bar < 0 ? k : k.slice(0, bar), label = bar < 0 ? null : k.slice(bar + 1);
+          var term = G.t[key];
+          if (!term) return '';                                       // key typo'd or term retired — skip, never print a blank row
+          return '<div><code>' + esc(label || term[0]) + '</code></div><div>' + term[1] + '</div>';
+        }).join('');
+        if (rows) html += '<h4>' + esc(sec[0]) + '</h4><div class="sw-gl">' + rows + '</div>';
+      });
+      if (page.note) html += '<h4>Fine print</h4><p>' + page.note + '</p>';
+      body.innerHTML = html || '<p class="sw-gloss-wait">No glossary for this page yet.</p>';
+    }
+  }
+
+  // one fetch per page, shared by anything else that wants the dictionary
+  var glossState = 0, glossQueue = [];                                // 0 idle · 1 loading · 2 ready
+  function loadGlossData(ok, fail) {
+    if (glossState === 2) { ok(window.SW_GLOSSARY); return; }
+    glossQueue.push({ ok: ok, fail: fail });
+    if (glossState === 1) return;
+    glossState = 1;
+    var s = document.createElement('script');
+    s.src = './glossary.js';
+    s.onload = function () {
+      glossState = window.SW_GLOSSARY ? 2 : 0;
+      var q = glossQueue; glossQueue = [];
+      q.forEach(function (c) { glossState === 2 ? c.ok(window.SW_GLOSSARY) : c.fail(); });
+    };
+    s.onerror = function () {
+      glossState = 0;
+      var q = glossQueue; glossQueue = [];
+      q.forEach(function (c) { c.fail(); });
+    };
+    document.head.appendChild(s);
+  }
+
+  (function injectGlossCSS() {
+    if (document.getElementById('sw-gloss-css')) return;
+    var st = document.createElement('style'); st.id = 'sw-gloss-css';
+    st.textContent =
+      '.sw-gloss{margin:26px 0 8px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);}' +
+      '.sw-gloss>summary{cursor:pointer;padding:13px 16px;font-size:13.5px;font-weight:800;color:var(--text);list-style:none;user-select:none;}' +
+      '.sw-gloss>summary::-webkit-details-marker{display:none;}' +
+      '.sw-gloss>summary::before{content:"\\25B8";display:inline-block;width:15px;color:var(--text-faint);}' +
+      '.sw-gloss[open]>summary::before{content:"\\25BE";}' +
+      '.sw-gloss>summary:hover{color:var(--accent);}' +
+      '.sw-gloss>summary span{font-weight:500;color:var(--text-muted);}' +
+      '.sw-gloss-body{padding:4px 16px 20px;border-top:1px solid var(--border);}' +
+      '.sw-gloss-body h4{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);margin:17px 0 7px;}' +
+      '.sw-gloss-body p{font-size:12.5px;color:var(--text-muted);margin:8px 0;line-height:1.55;}' +
+      '.sw-gloss-body p b{color:var(--text);}' +
+      '.sw-gloss-body code{font-family:ui-monospace,Consolas,monospace;font-size:12px;color:var(--accent);word-break:break-word;}' +
+      '.sw-gloss-wait{font-size:12.5px;color:var(--text-muted);}' +
+      '.sw-gl{display:grid;grid-template-columns:150px 1fr;gap:7px 14px;font-size:12.5px;line-height:1.55;}' +
+      '.sw-gl>div:nth-child(even){color:var(--text-muted);}' +
+      '.sw-gl b{color:var(--text);font-weight:700;}' +
+      /* phones: one column, each term stacked above its definition */
+      '@media(max-width:700px){.sw-gl{grid-template-columns:1fr;gap:0;}' +
+      '.sw-gl>div:nth-child(odd){margin-top:12px;}.sw-gl>div:nth-child(even){margin-top:2px;}}';
+    document.head.appendChild(st);
+  })();
+
+  // =========================================================================
   // SITE FOOTER — injected on every page so all pages share one footer with
   // the same links as the header Menu. Replaces any hardcoded <footer> and
   // keeps its old text as a fine-print credits line.
@@ -1281,7 +1395,7 @@
     } catch (e) {}
   }
 
-  function init() { buildNav(); buildSearch(); buildTabs(); buildFooter(); buildBottomBar(); buildInstall(); build(); watchHeader(); watchTables(); loadFeatures(); }
+  function init() { buildNav(); buildSearch(); buildTabs(); buildGlossary(); buildFooter(); buildBottomBar(); buildInstall(); build(); watchHeader(); watchTables(); loadFeatures(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();

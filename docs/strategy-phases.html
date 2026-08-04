@@ -56,29 +56,6 @@
     #tbl th[data-c="f"],#tbl td.mono:not(.num){min-width:186px;max-width:206px;
       white-space:normal;overflow-wrap:break-word;line-height:1.35}
   }
-  /* ---- bottom glossary (every code on this page spelled out) ---- */
-  .gloss{margin-top:16px;background:var(--surface,#fff);border:1px solid var(--border,#e2e8f0);border-radius:.75rem}
-  .gloss>summary{cursor:pointer;padding:12px 15px;font-size:13.5px;font-weight:800;list-style:none;user-select:none}
-  .gloss>summary::-webkit-details-marker{display:none}
-  .gloss>summary::before{content:'▸';display:inline-block;width:15px;color:var(--text-faint,#94a3b8)}
-  .gloss[open]>summary::before{content:'▾'}
-  .gloss>summary span{font-weight:500;color:var(--text-muted,#64748b)}
-  .gbody{padding:4px 15px 18px;border-top:1px solid var(--border,#e2e8f0)}
-  .gbody h4{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
-    color:var(--text-faint,#94a3b8);margin:16px 0 7px}
-  .gbody p{font-size:12.5px;color:var(--text-muted,#64748b);margin:7px 0;line-height:1.55}
-  .gbody p b{color:var(--text,#0f172a)}
-  html[data-theme="dark"] .gbody p b{color:#e2e8f0}
-  .gl{display:grid;grid-template-columns:136px 1fr;gap:7px 13px;font-size:12.5px;line-height:1.5}
-  .gl code{font-family:ui-monospace,Consolas,monospace;font-size:12px;color:var(--accent,#2563eb);word-break:break-word}
-  .gl div:nth-child(even){color:var(--text-muted,#64748b)}
-  .gl b{color:var(--text,#0f172a);font-weight:700}
-  html[data-theme="dark"] .gl b{color:#e2e8f0}
-  @media(max-width:700px){
-    .gl{grid-template-columns:1fr;gap:0}
-    .gl div:nth-child(odd){margin-top:11px}
-    .gl div:nth-child(even){margin-top:1px}
-  }
 </style>
 </head>
 <body class="min-h-screen">
@@ -111,106 +88,6 @@
   </div>
   <p class="text-[11.5px] mt-3" style="color:var(--text-faint,#94a3b8)" id="foot"></p>
 
-  <details class="gloss">
-    <summary>📖 Glossary — every code on this page, spelled out <span>(rank-by factors, filters, columns)</span></summary>
-    <div class="gbody">
-
-      <h4>How to read one row</h4>
-      <p><b>Rank by</b> is written <code>direction-factor</code>. <code>high-ret6m</code> = sort every surviving stock by
-        6-month return, biggest first. <code>low-upPct</code> = sort by up-day consistency, <i>smallest</i> first. The top
-        3 or 5 of that sorted list is what the strategy buys.</p>
-      <p><b>Filters</b> are the entry conditions, all of them ANDed, applied <i>before</i> the ranking.
-        <code>d52&lt;=25 &amp; fiiChgPp&gt;0</code> = keep only stocks within 25% of their 52-week high that also had FIIs
-        adding last quarter, then rank whatever is left. A stock missing a factor's value is dropped, never ranked last.</p>
-      <p><b>Rebalance</b> happens on the last trading day of every month. <b>Monthly reset</b> = the whole basket is sold
-        and re-bought equal-weight each month. <b>Ride winners (hold)</b> = only names that fell out of the top N are sold;
-        survivors are kept untouched (so winners compound and weights drift), and the freed cash is split equally among the
-        empty slots.</p>
-      <p><b>Universe</b> is point-in-time and survivorship-free: a stock is eligible on a date only if it was actually in
-        the Nifty 500 (or in F&amp;O, for the F&amp;O variant) on that date, and delisted companies stay in history.
-        Fundamentals and shareholding are point-in-time too — a quarter is only visible after its real filing date.</p>
-
-      <h4>Result columns</h4>
-      <div class="gl">
-        <div><code>CAGR %</code></div><div>Compound annual growth rate — the annualised return over that window.</div>
-        <div><code>Total %</code></div><div>Absolute return over the window, not annualised. Shown as <code>x</code> above 1,000% (<code>12.4x</code> = the money multiplied 12.4 times).</div>
-        <div><code>Max DD %</code></div><div>Maximum drawdown — the worst peak-to-trough fall of the strategy's own equity curve. Amber above 35%.</div>
-        <div><code>Win %</code></div><div>Share of monthly rebalance periods that ended positive.</div>
-        <div><code>Worst rank</code></div><div>The strategy's <i>poorest</i> rank across all 4 phases (or all calendar years), out of 44.4 lakh. Low = never bad in any regime, which is the point of the ⭐ cards.</div>
-      </div>
-
-      <h4>Price &amp; momentum factors</h4>
-      <div class="gl">
-        <div><code>ret1m</code></div><div><b>Return — 1 month %</b>. Price today vs price 30 days ago.</div>
-        <div><code>ret3m</code></div><div><b>Return — 3 month %</b>. Price today vs 91 days ago.</div>
-        <div><code>ret6m</code></div><div><b>Return — 6 month %</b>. Price today vs 182 days ago.</div>
-        <div><code>ret12m</code></div><div><b>Return — 12 month %</b>. Price today vs 365 days ago.</div>
-        <div><code>accel</code></div><div><b>Momentum acceleration</b>. This month's 1-month return minus last month's, in percentage points. Positive = the move is speeding up.</div>
-        <div><code>riskMom</code></div><div><b>Risk-adjusted momentum</b>. 3-month return ÷ annualised volatility. Rewards a steady climb over a violent one.</div>
-        <div><code>postDrift</code></div><div><b>Post-result drift %</b>. Return since the company's last earnings announcement date — the classic post-earnings drift.</div>
-        <div><code>composite</code></div><div><b>Quality-Momentum composite</b>. Sum of three same-day cross-sectional z-scores: TTM profit growth (+), 12-month return (+), volatility (−). 0 = an average stock that day, ≥2 = strong on all three at once.</div>
-      </div>
-
-      <h4>Trend &amp; price levels</h4>
-      <div class="gl">
-        <div><code>d52</code></div><div><b>Distance from 52-week High %</b>, as a positive number (Trendlyne convention). High 100, price 95 → <code>5</code>. So <code>d52&lt;=10</code> means "within 10% of its one-year high".</div>
-        <div><code>d52_low_pct</code></div><div><b>Distance from 52-week Low %</b> — how far <i>above</i> the low it trades. <code>100</code> = it has doubled off the low.</div>
-        <div><code>rangePos</code></div><div><b>52-week range position</b>. Where the price sits between the year's low (0) and high (100).</div>
-        <div><code>daysHigh</code></div><div><b>Days since the 52-week high</b>. Low = it just made a new high; high = a long time since.</div>
-        <div><code>dma50</code></div><div><b>Distance from the 50-DMA %</b> — % above (+) or below (−) the average close of the last 50 days.</div>
-        <div><code>dma200</code></div><div><b>Distance from the 200-DMA %</b> — same, against the 200-day average.</div>
-        <div><code>indRank</code></div><div><b>Industry momentum rank</b>. On each rebalance date, industries are ranked by their members' average 1-month return and bucketed into deciles: <code>1</code> = hottest industry, <code>10</code> = coldest.</div>
-      </div>
-
-      <h4>Risk</h4>
-      <div class="gl">
-        <div><code>vol</code></div><div><b>Volatility %</b>. Standard deviation of daily returns over the last 90 days, annualised.</div>
-        <div><code>beta</code></div><div><b>Beta vs Nifty</b>. Slope of the stock's daily returns against the Nifty's over the last 120 days. 1 = moves with the index, &gt;1 = amplifies it.</div>
-        <div><code>mdd6</code></div><div><b>Max drawdown — 6 month %</b>. Worst peak-to-trough fall in the stock over the last 182 days.</div>
-        <div><code>upPct</code></div><div><b>Up-day consistency %</b>. Of the ~62 trading sessions in the last 90 days, the share that closed higher than the previous close. High = a steady grind; low = the gains (or losses) came in a few jumps.</div>
-      </div>
-
-      <h4>Liquidity &amp; participation</h4>
-      <div class="gl">
-        <div><code>turnover</code></div><div><b>Average daily turnover</b> in ₹ lacs over 20 days (₹100 lacs = ₹1 Cr). <code>turnover&gt;=2000</code> = at least ₹20 Cr traded a day.</div>
-        <div><code>turnSurge</code></div><div><b>Turnover surge</b>. Last week's average turnover ÷ the last 90 days'. <code>1.5</code> = money flowing in 50% heavier than usual.</div>
-        <div><code>volSurge</code></div><div><b>Volume surge</b> — the same ratio measured on share volume instead of rupees.</div>
-        <div><code>delivPct</code></div><div><b>Delivery %</b>. Average share of traded volume actually taken to demat (not intraday) over the last 28 days. High = real buying, not churn. Data exists from 2020 onward.</div>
-      </div>
-
-      <h4>Oscillators</h4>
-      <div class="gl">
-        <div><code>rsi</code></div><div><b>RSI(14)</b> — Wilder's Relative Strength Index on daily closes. Below 30 = oversold, above 70 = overbought.</div>
-        <div><code>macd</code></div><div><b>MACD histogram (12,26,9)</b> — MACD line minus its signal line. Above 0 = short-term trend is running ahead of the medium-term one.</div>
-        <div><code>stoch</code></div><div><b>Stochastic %K(14)</b> — where the close sits inside the last three weeks' price range, 0 to 100.</div>
-        <div><code>bollB</code></div><div><b>Bollinger %b (20,2)</b> — where the close sits between the lower band (0) and the upper band (100).</div>
-      </div>
-
-      <h4>Fundamentals — point-in-time, consolidated</h4>
-      <div class="gl">
-        <div><code>profitYoyPct</code></div><div><b>Net profit growth, quarter YoY %</b>. Latest <i>filed</i> quarter's net profit vs the same quarter a year earlier. A loss-making year-ago base is divided by its absolute value, so a swing from −10 Cr to +5 Cr reads +150%, not a nonsense number.</div>
-        <div><code>profitBase</code></div><div><b>Year-ago quarter's net profit, ₹Cr</b> — the denominator itself. <code>profitBase&gt;0</code> filters out the optical growth you get off a loss-making base.</div>
-        <div><code>profitAccel</code></div><div><b>Profit-growth acceleration</b>. This quarter's YoY growth minus last quarter's, in points. Positive = growth is improving, not just positive.</div>
-        <div><code>profitTTM</code></div><div><b>TTM profit growth %</b>. Sum of the last 4 quarters vs the sum of the 4 before them — smooths out seasonality.</div>
-        <div><code>profitStreak</code></div><div><b>Profit-growth streak</b>. Consecutive quarters of positive YoY growth, counting back from the latest filing.</div>
-      </div>
-
-      <h4>Ownership — quarterly shareholding filings</h4>
-      <div class="gl">
-        <div><code>fiiPct</code></div><div><b>FII holding %</b> — foreign institutional stake in the latest filed quarter.</div>
-        <div><code>fiiChgPp</code></div><div><b>FII change QoQ</b>, in percentage points, vs the immediately preceding quarter only. <code>fiiChgPp&gt;0</code> = foreigners added. The Sep-2022 SEBI reclassification is skipped, since it moved stakes on paper without anyone buying.</div>
-        <div><code>diiPct</code></div><div><b>DII holding %</b> — domestic institutions (MFs, insurers, banks) in the latest filed quarter.</div>
-        <div><code>diiChgPp</code></div><div><b>DII change QoQ</b>, in percentage points — same rules as FII.</div>
-      </div>
-
-      <h4>Fine print</h4>
-      <p>Every lookback above is counted in calendar days, so "90 days" is about 62 trading sessions. Returns are computed
-        on raw traded prices. Brokerage, STT, slippage and taxes are <b>not</b> modelled, and a basket of 3–5 stocks
-        concentrates risk far more than the index it is measured against. With 44.4 lakh combinations tested, the very top
-        rows are partly luck — that is exactly why the ⭐ "best in ALL phases / ALL years" cards exist. This is an unlisted
-        research page, not advice.</p>
-    </div>
-  </details>
 </main>
 <script>
 (async function(){
