@@ -320,7 +320,10 @@ window.SW_GLOSSARY = (function () {
     mixvol:     ['Volatility %', "How much the mix's month-to-month returns swing, annualised. Lower = a steadier ride for the same destination."],
     reblog:     ['Rebalance log', "One row per reshuffle: what that strategy's money was worth that day, how it moved since its previous rebalance, how many names it swapped in, and the basket it then held. 🆕 marks a stock that entered that day."],
     tradelog:   ['Trade log', "Every position taken: the day it was bought, the day it was sold, both prices and the return. A row marked <i>still held</i> was never sold — it is valued at the last price in the window."],
-    holdwt:     ['Weight %', "How much of that strategy's own bucket a stock is, on the rebalance day. Baskets start equal-weighted and drift apart as prices move."]
+    holdwt:     ['Weight %', "How much of that strategy's own bucket a stock is, on the rebalance day. Baskets start equal-weighted and drift apart as prices move."],
+    sepbuckets: ['Separate buckets', "Each strategy invests only its own money and rebalances on its own schedule, exactly as it would alone. A stock two strategies both pick is simply bought twice, once in each bucket. The mix is the sum of the buckets."],
+    onepf:      ['One combined portfolio', "All the strategies' picks go into a single basket and the whole amount is spread across them at once. Because a stock two strategies pick gets both of their shares, the money leans towards the names several strategies agree on."],
+    conviction: ['×2 / ×3 (conviction)', "How many of your strategies were picking that stock that month. In the combined portfolio each pick is a share of the money, so ×2 means the stock got two shares — twice what a stock only one strategy picked received."]
   };
 
   /* =======================================================================
@@ -642,6 +645,7 @@ window.SW_GLOSSARY = (function () {
     'strategy-mixer.html': {
       sub: '(what mixing strategies measures)',
       secs: [
+        ['The two ways to invest it', ['sepbuckets', 'onepf', 'conviction']],
         ['The mix', ['mixalloc', 'divbenefit', 'stratcorr', 'stratoverlap', 'posmonths']],
         ['Result tiles', ['cagr', 'totret', 'maxdd', 'mixvol', 'benchmark', 'finalval']],
         ['The logs', ['reblog', 'tradelog', 'holdwt']],

@@ -27,6 +27,18 @@
          border:1px solid var(--border,#e2e8f0);border-radius:999px;padding:3px 10px}
   .legit.off{opacity:.38}
   .tick{font-size:11px;font-weight:650;border:1px solid var(--border,#e2e8f0);border-radius:7px;padding:3px 7px;white-space:nowrap;display:inline-flex;gap:5px;align-items:center}
+  /* mode cards — the two ways to put the money in */
+  .modecard{text-align:left;border:1.5px solid var(--border,#e2e8f0);border-radius:.6rem;padding:10px 12px;transition:.15s;background:var(--surface,#fff);cursor:pointer}
+  .modecard:hover{border-color:#a5b4fc}
+  .modecard[aria-pressed="true"]{border-color:#4f46e5;box-shadow:0 0 0 3px rgba(99,102,241,.14)}
+  .modecard .mtitle{font-size:12.5px;font-weight:750;display:flex;align-items:center;gap:6px}
+  .modecard .mdesc{font-size:10.5px;line-height:1.45;margin-top:3px;color:#64748b}
+  .modecard[aria-pressed="true"] .mtitle{color:#4f46e5}
+  html[data-theme="dark"] .modecard[aria-pressed="true"] .mtitle{color:#a5b4fc}
+  .mradio{width:13px;height:13px;border-radius:999px;border:2px solid var(--border,#cbd5e1);flex-shrink:0}
+  .modecard[aria-pressed="true"] .mradio{border-color:#4f46e5;background:radial-gradient(circle,#4f46e5 0 3px,transparent 3.5px)}
+  .kx{font-size:9.5px;font-weight:750;border-radius:4px;padding:1px 4px;background:rgba(79,70,229,.12);color:#4f46e5}
+  html[data-theme="dark"] .kx{color:#a5b4fc}
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
@@ -42,7 +54,7 @@
 
 <main class="max-w-screen-xl mx-auto px-4 py-6">
   <h1 class="text-xl font-bold text-slate-900">🎛️ Strategy Mixer — blend strategies into one portfolio</h1>
-  <p class="text-sm text-slate-500 mt-1 mb-5 max-w-3xl">Pick a few of your saved strategies, decide how many rupees go into each, and see how the <b>combined portfolio</b> would have done — growth, worst fall, how much the strategies overlap, and whether mixing them actually made the ride smoother. Every strategy runs over the <b>same dates</b> with the same engine as its own backtest page.</p>
+  <p class="text-sm text-slate-500 mt-1 mb-5 max-w-3xl">Pick a few of your saved strategies, decide how many rupees go into each, and see how the <b>combined portfolio</b> would have done — growth, worst fall, how much the strategies overlap, and whether mixing them actually made the ride smoother. Choose whether each strategy runs on <b>its own money</b> or everything goes into <b>one shared basket</b> (where a stock two strategies both pick gets double the money). Every strategy runs over the <b>same dates</b> with the same engine as its own backtest page.</p>
 
   <div class="grid gap-4 lg:grid-cols-2 items-start">
     <!-- 1 · pick -->
@@ -67,6 +79,19 @@
         <button id="bLakh" class="chip text-slate-600 bg-slate-50 hover:border-indigo-300" title="₹1,00,000 into every selected strategy">₹1L each</button>
         <button id="bFav" class="chip text-slate-600 bg-slate-50 hover:border-indigo-300" title="Tick every ⭐ favourite">⭐ Add favourites</button>
         <button id="bClear" class="chip text-slate-600 bg-slate-50 hover:border-rose-300">Clear all</button>
+      </div>
+      <div class="text-sm font-bold text-slate-900 mt-4 mb-1.5">3 · How the money is invested</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <button id="mSplit" class="modecard" aria-pressed="true">
+          <span class="mtitle"><span class="mradio"></span>Separate buckets</span>
+          <span class="mdesc block">Each strategy invests <b>its own money</b> and rebalances on its own schedule. A stock two strategies both pick is simply bought twice, once in each bucket.</span>
+          <span class="mstat block text-[10.5px] font-bold mt-1.5 text-slate-400">—</span>
+        </button>
+        <button id="mPool" class="modecard" aria-pressed="false">
+          <span class="mtitle"><span class="mradio"></span>One combined portfolio</span>
+          <span class="mdesc block">All the picks go into <b>one basket</b> and the whole amount is spread across them — so a stock picked by 2 strategies gets <b>double</b> the money, by 3 gets triple.</span>
+          <span class="mstat block text-[10.5px] font-bold mt-1.5 text-slate-400">—</span>
+        </button>
       </div>
       <div class="grid grid-cols-2 gap-3 mt-4">
         <div><label class="lbl" for="dFrom">From</label><input id="dFrom" type="date" class="inp"></div>
@@ -106,7 +131,7 @@
     <section class="card p-4 mb-4">
       <div class="text-sm font-bold text-slate-900 mb-2">🧩 Each strategy inside the mix</div>
       <div class="overflow-x-auto"><table class="w-full text-sm border-collapse" id="perStrat"></table></div>
-      <div class="text-[11px] text-slate-400 mt-2">Profit = final value minus what was put in. Win % = that strategy's own positive rebalance periods. Each strategy compounds its own bucket — money is never moved between strategies mid-run.</div>
+      <div class="text-[11px] text-slate-400 mt-2">Profit = final value minus what was put in. Win % = that strategy's own positive rebalance periods. This table always shows each strategy run <b>on its own</b> with that money, so in <b>one combined portfolio</b> mode it is the comparison rather than what the mix did.</div>
     </section>
 
     <section class="card p-4 mb-4">
@@ -119,7 +144,16 @@
     <section class="card p-4 mb-4">
       <div class="text-sm font-bold text-slate-900 mb-1">💼 The combined portfolio</div>
       <div class="text-[11px] text-slate-400 mb-2" id="holdSub"></div>
+      <div id="splitMath" class="hidden text-[12px] mb-3 rounded-lg px-3 py-2" style="background:var(--surface-2,#f8fafc)"></div>
       <div class="overflow-x-auto"><table class="w-full text-sm border-collapse" id="holdTbl"></table></div>
+    </section>
+
+    <!-- pooled mode only: how the split moved from one rebalance to the next -->
+    <section class="card p-4 mb-4 hidden" id="poolRebCard">
+      <div class="text-sm font-bold text-slate-900 mb-1">⚖️ How the split changed each rebalance</div>
+      <div class="text-[11px] text-slate-400 mb-2">Newest first. Every time any strategy reshuffles, the whole portfolio is re-spread across the new set of picks. <span class="kx">×2</span> means two strategies were picking that stock that month, so it got two shares of the money. 🆕 = wasn't held the previous rebalance.</div>
+      <div id="poolRebOut"></div>
+      <div id="poolRebMore" class="mt-2"></div>
     </section>
 
     <section class="card p-4 mb-4" id="corrCard">
@@ -159,7 +193,7 @@
       <div id="tdMore" class="mt-2"></div>
     </section>
 
-    <p class="text-[11px] text-slate-400 mb-6">The rebalance and trade logs are each strategy's own, tagged and merged — pick one strategy in either dropdown to read it exactly as its backtest page shows it. A trade's sell price on a "still held" row is the last available price in the window. How the mix is computed: each strategy runs exactly like its own backtest — same engine, same survivorship-free prices, rebalancing its own stocks on its own schedule — on the rupees you gave it, and the mix is simply the sum of those buckets marked month by month. Money is never shifted between strategies. Brokerage, taxes and slippage are not modelled; a delisted stock's position is written down to zero. Benchmark = Nifty 500 total of the same total capital (Nifty 50 when 500 history is unavailable).</p>
+    <p class="text-[11px] text-slate-400 mb-6">The rebalance and trade logs are each strategy's own, tagged and merged — pick one strategy in either dropdown to read it exactly as its backtest page shows it. A trade's sell price on a "still held" row is the last available price in the window. <b>Separate buckets</b>: each strategy runs exactly like its own backtest — same engine, same survivorship-free prices, rebalancing its own stocks on its own schedule — on the rupees you gave it, and the mix is simply the sum of those buckets marked month by month, with money never shifted between strategies. <b>One combined portfolio</b>: the same strategy signals, but the whole amount sits in a single basket — each strategy asks for as many slots as it holds names, a stock several strategies want fills several slots and carries that multiple of the money, and the entire portfolio is re-spread to the new plan (at its current value) whenever any strategy rebalances. A strategy holding nothing keeps its share in cash rather than crowding the others. Brokerage, taxes and slippage are not modelled; a delisted stock's position is written down to zero. Benchmark = Nifty 500 total of the same total capital (Nifty 50 when 500 history is unavailable).</p>
   </div>
 </main>
 
@@ -180,8 +214,8 @@ function yieldToUI(){ if(!_yc) return new Promise(r=>setTimeout(r,0)); return ne
  * slots 2+ = strategies in selection order. Identity also carried by the legend + tooltips,
  * so color is never the only signal. */
 const PAL = {
-  light: { mix:'#4f46e5', bench:'#d97706', s:['#059669','#f43f5e','#2563eb','#65a30d','#9333ea','#0d9488','#c026d3','#ea580c'] },
-  dark:  { mix:'#6366f1', bench:'#d97706', s:['#059669','#f43f5e','#3b82f6','#65a30d','#a855f7','#0d9488','#d946ef','#ea580c'] }
+  light: { mix:'#4f46e5', bench:'#d97706', alt:'#64748b', s:['#059669','#f43f5e','#2563eb','#65a30d','#9333ea','#0d9488','#c026d3','#ea580c'] },
+  dark:  { mix:'#6366f1', bench:'#d97706', alt:'#94a3b8', s:['#059669','#f43f5e','#3b82f6','#65a30d','#a855f7','#0d9488','#d946ef','#ea580c'] }
 };
 function pal(){ return (document.documentElement.getAttribute('data-theme')==='dark') ? PAL.dark : PAL.light; }
 
@@ -242,6 +276,7 @@ function ownCagr(cfg){
 
 /* ---------- state ---------- */
 let ALL = [];                       // grouped saved strategies [{id,name,cfg,ts}]
+let MODE = 'split';                 // 'split' = a bucket per strategy · 'pool' = one shared portfolio
 const SEL = new Map();              // identityKey -> { s, alloc }  (insertion order = color order)
 let LAST = null;                    // last run result (for redraws + theme changes)
 const HID = new Set();              // hidden strategy indices on the equity chart
@@ -251,7 +286,7 @@ function saveState(){
   try {
     localStorage.setItem('mix_state_v1', JSON.stringify({
       sel: [...SEL.keys()], alloc: Object.fromEntries([...SEL.entries()].map(([k,v]) => [k, v.alloc])),
-      start: $('dFrom').value, end: $('dTo').value
+      start: $('dFrom').value, end: $('dTo').value, mode: MODE
     }));
   } catch(e){}
 }
@@ -371,35 +406,119 @@ async function runMix(){
   }
 }
 
-/* ---------- combine the buckets ----------
- * Every sim ran over the SAME (start, end), so their monthly equity arrays share identical
- * dates — the mix at each month is simply the sum of buckets. No cross-strategy rebalancing. */
+/* ---------- trading-day snap (mirrors simulate()'s, so the pooled walk prices on the same days) ---------- */
+let _TD = null;
+function snapTD(off){
+  if (!_TD){
+    const set = new Set();
+    for (const r of ['RELIANCE','TCS','HDFCBANK','INFY','ICICIBANK','ITC','SBIN','LT']){ const s = SERIES[r]; if (s && s.d) for (const o of s.d) set.add(o); }
+    _TD = [...set].sort((a,b) => a - b);
+  }
+  if (!_TD.length) return off;
+  let lo = 0, hi = _TD.length - 1, ans = -1;
+  while (lo <= hi){ const m = (lo + hi) >> 1; if (_TD[m] <= off) { ans = m; lo = m + 1; } else hi = m - 1; }
+  return ans < 0 ? off : _TD[ans];
+}
+
+/* ---------- headline numbers for any equity curve ---------- */
+function statsOf(comb, dates, totalCap, start, end){
+  const n = comb.length, finalV = comb[n - 1];
+  const years = (Date.parse(end) - Date.parse(start)) / (365.25 * 864e5);
+  const rets = []; for (let i = 1; i < n; i++) if (comb[i-1] > 0) rets.push(comb[i] / comb[i-1] - 1);
+  const mean = rets.reduce((a,b) => a + b, 0) / (rets.length || 1);
+  return {
+    comb, finalV, years,
+    cagr: (years > 0 && totalCap > 0) ? (Math.pow(finalV / totalCap, 1 / years) - 1) * 100 : 0,
+    totRet: totalCap > 0 ? (finalV / totalCap - 1) * 100 : 0,
+    vol: Math.sqrt(rets.reduce((a,b) => a + (b - mean) ** 2, 0) / (rets.length || 1) * 12) * 100,
+    maxDD: maxDrawdown(dates.map((d,i) => [d, comb[i]])),
+    posMonths: rets.length ? 100 * rets.filter(r => r > 0).length / rets.length : 0
+  };
+}
+
+/* ---------- MODE 2: one pooled portfolio ----------
+ * Every strategy's basket is a set of SLOTS: strategy i with ₹aᵢ over kᵢ picks puts ₹aᵢ/kᵢ behind
+ * each of its names. A stock picked by two strategies therefore fills two slots and carries double
+ * the money; three strategies, triple. That target is re-struck (and the whole portfolio
+ * re-spread to it, at the portfolio's CURRENT value) whenever ANY strategy rebalances; in between
+ * the weights drift with prices, exactly like a real holding.
+ * A strategy holding nothing that month simply leaves its share in cash rather than crowding the
+ * others' names — otherwise an empty basket would silently lever up the strategies that did fire. */
+function buildPool(sims, dates, totalCap){
+  const n = dates.length;
+  // which of each strategy's rebalances is in force at month m (its basket is fixed between them)
+  const active = sims.map(x => {
+    const rebs = x.r.rebs || []; let ri = -1; const out = [];
+    for (let m = 0; m < n; m++){
+      while (ri + 1 < rebs.length && rebs[ri+1].date <= dates[m]) ri++;
+      out.push(ri >= 0 ? rebs[ri] : null);
+    }
+    return out;
+  });
+  const rebDates = new Set(); sims.forEach(x => (x.r.rebs || []).forEach(b => rebDates.add(b.date)));
+  const targetsAt = m => {
+    const t = new Map();
+    sims.forEach((x, i) => {
+      const b = active[i][m]; if (!b || !b.holds || !b.holds.length) return;
+      const per = x.alloc / b.holds.length;                      // this strategy's rupees per slot
+      b.holds.forEach(h => {
+        const e = t.get(h.sym) || { rs:0, k:0, by:[] };
+        e.rs += per; e.k++; e.by.push(i); t.set(h.sym, e);
+      });
+    });
+    return t;
+  };
+  let units = {}, cash = 0, started = false, lastVal = totalCap, prev = new Set();
+  const equity = [], rebs = [];
+  const mark = off => { let v = cash; for (const s in units){ const p = markPrice(s, off); if (p != null) v += units[s] * p; } return v; };
+  for (let m = 0; m < n; m++){
+    const off = snapTD(dayOff(dates[m]));
+    const val = started ? mark(off) : totalCap;
+    equity.push(val);
+    if (!rebDates.has(dates[m])) continue;
+    const t = targetsAt(m), scale = val / (totalCap || 1);       // grow the plan with the portfolio
+    units = {}; let deployed = 0; const holds = [];
+    t.forEach((e, sym) => {
+      const p = markPrice(sym, off), want = e.rs * scale;
+      if (p == null || p <= 0 || want <= 0) return;              // delisted / unpriceable → stays cash
+      units[sym] = want / p; deployed += want;
+      holds.push({ sym, k: e.k, by: e.by, val: want, wt: val > 0 ? want / val * 100 : 0, isNew: !prev.has(sym) });
+    });
+    cash = Math.max(0, val - deployed);
+    holds.sort((a,b) => b.val - a.val || a.sym.localeCompare(b.sym));
+    rebs.push({ date: dates[m], val, ret: started ? (val / (lastVal || 1) - 1) * 100 : 0,
+                holds, cash, cashWt: val > 0 ? cash / val * 100 : 0, nNew: holds.filter(h => h.isNew).length,
+                slots: [...t.values()].reduce((a,e) => a + e.k, 0),
+                // names each strategy held that month — the denominator behind its per-stock share
+                sizes: sims.map((x, i) => (active[i][m] && active[i][m].holds) ? active[i][m].holds.length : 0) });
+    prev = new Set(holds.map(h => h.sym));
+    lastVal = val; started = true;
+  }
+  return { equity, rebs };
+}
+
+/* ---------- combine ----------
+ * Both modes are computed from ONE set of simulations, so switching mode is instant and the two
+ * are directly comparable. `split` = the sum of the separate buckets; `pool` = the single
+ * conviction-weighted portfolio above. */
 function combine(sims, start, end){
   const n = Math.min(...sims.map(x => x.r.equity.length));
   const dates = sims[0].r.equity.slice(0, n).map(p => p[0]);
-  const comb = new Array(n).fill(0);
-  sims.forEach(x => { for (let i = 0; i < n; i++) comb[i] += x.r.equity[i][1]; });
   const totalCap = sims.reduce((a,x) => a + x.alloc, 0);
-  // benchmark scaled to the total capital (engine scales it to each sim's own capital)
+  const split = new Array(n).fill(0);
+  sims.forEach(x => { for (let i = 0; i < n; i++) split[i] += x.r.equity[i][1]; });
+  const pooled = buildPool(sims, dates, totalCap);
+  // benchmark scaled to the total capital (the engine scales it to each sim's own capital)
   const s0 = sims[0], b0 = (s0.r.bench500 && s0.r.bench500.length) ? s0.r.bench500 : s0.r.bench;
   const bench = (b0 && b0.length) ? b0.slice(0, n).map(p => p[1] == null ? null : p[1] * totalCap / s0.alloc) : null;
   const benchLabel = (s0.r.bench500 && s0.r.bench500.length) ? 'Nifty 500' : 'Nifty 50';
-  const years = (Date.parse(end) - Date.parse(start)) / (365.25 * 864e5);
-  const finalV = comb[n - 1];
-  const rets = []; for (let i = 1; i < n; i++) if (comb[i-1] > 0) rets.push(comb[i] / comb[i-1] - 1);
-  const mean = rets.reduce((a,b) => a + b, 0) / (rets.length || 1);
-  const vol = Math.sqrt(rets.reduce((a,b) => a + (b - mean) ** 2, 0) / (rets.length || 1) * 12) * 100;
-  const eqPairs = dates.map((d,i) => [d, comb[i]]);
-  const maxDD = maxDrawdown(eqPairs);
   const benchFinal = bench ? bench[n - 1] : null;
+  const years = (Date.parse(end) - Date.parse(start)) / (365.25 * 864e5);
   return {
-    start, end, dates, comb, totalCap, years, finalV,
-    cagr: years > 0 && totalCap > 0 ? (Math.pow(finalV / totalCap, 1 / years) - 1) * 100 : 0,
-    totRet: totalCap > 0 ? (finalV / totalCap - 1) * 100 : 0,
-    vol, maxDD,
-    posMonths: rets.length ? 100 * rets.filter(r => r > 0).length / rets.length : 0,
-    bench, benchLabel,
+    start, end, dates, totalCap, years, bench, benchLabel,
     benchCagr: (benchFinal && years > 0) ? (Math.pow(benchFinal / totalCap, 1 / years) - 1) * 100 : null,
+    split: statsOf(split, dates, totalCap, start, end),
+    pool: Object.assign(statsOf(pooled.equity, dates, totalCap, start, end), { rebs: pooled.rebs }),
     per: sims.map((x, i) => ({
       k: x.k, s: x.s, alloc: x.alloc, r: x.r, i,
       eq: x.r.equity.slice(0, n).map(p => p[1]),
@@ -415,26 +534,34 @@ function tile(k, v, sub, cls){
     <div class="text-[11px] text-slate-500">${sub || ''}</div></div>`;
 }
 function renderTiles(M){
-  const beat = M.benchCagr != null && M.cagr >= M.benchCagr;
+  const A = M.cur, other = MODE === 'pool' ? M.split : M.pool;
+  const beat = M.benchCagr != null && A.cagr >= M.benchCagr;
   // diversification benefit: allocation-weighted average of each strategy's own worst fall vs the mix's
   const wDD = M.per.reduce((a,p) => a + (p.r.maxDD || 0) * p.alloc, 0) / (M.totalCap || 1);
-  const dben = wDD - M.maxDD;
+  const dben = wDD - A.maxDD;
+  const gap = A.finalV - other.finalV;
   $('tiles').innerHTML =
-    tile('Final value', fmtINR(M.finalV), 'from ' + fmtINR(M.totalCap), M.finalV >= M.totalCap ? 'pos' : 'neg')
-    + tile('Total return', pct(M.totRet), M.years.toFixed(1) + ' years', M.totRet >= 0 ? 'pos' : 'neg')
-    + tile('CAGR', pct(M.cagr), 'per year, compounded', M.cagr >= 0 ? 'pos' : 'neg')
+    tile('Final value', fmtINR(A.finalV), 'from ' + fmtINR(M.totalCap), A.finalV >= M.totalCap ? 'pos' : 'neg')
+    + tile('Total return', pct(A.totRet), A.years.toFixed(1) + ' years', A.totRet >= 0 ? 'pos' : 'neg')
+    + tile('CAGR', pct(A.cagr), 'per year, compounded', A.cagr >= 0 ? 'pos' : 'neg')
     + tile(M.benchLabel + ' CAGR', M.benchCagr != null ? pct(M.benchCagr) : '—', beat ? 'the mix wins ✓' : 'benchmark', beat ? 'pos' : 'neg')
-    + tile('Max drawdown', '-' + M.maxDD.toFixed(1) + '%', 'worst peak-to-trough', 'neg')
-    + tile('Volatility', M.vol.toFixed(1) + '%', 'annualised swing', '')
-    + tile('Positive months', M.posMonths.toFixed(0) + '%', 'months that ended up', '')
+    + tile('Max drawdown', '-' + A.maxDD.toFixed(1) + '%', 'worst peak-to-trough', 'neg')
+    + tile('Volatility', A.vol.toFixed(1) + '%', 'annualised swing', '')
+    + tile('Positive months', A.posMonths.toFixed(0) + '%', 'months that ended up', '')
     + tile('Smoother by', (dben >= 0.05 ? dben.toFixed(1) + ' pp' : '—'),
-           dben >= 0.05 ? 'max DD vs holding each alone' : 'no drawdown benefit this window', dben >= 0.05 ? 'pos' : '');
+           dben >= 0.05 ? 'max DD vs holding each alone' : 'no drawdown benefit this window', dben >= 0.05 ? 'pos' : '')
+    + tile(MODE === 'pool' ? 'vs separate buckets' : 'vs one portfolio',
+           (gap >= 0 ? '+' : '−') + '₹' + fmtIN(Math.abs(gap)),
+           gap >= 0 ? 'this way earned more' : 'the other way earned more', gap >= 0 ? 'pos' : 'neg');
 }
 
 /* ---------- charts (site idiom: inline SVG + crosshair tooltip) ---------- */
 function seriesForChart(M){
   const p = pal();
-  const out = [{ name:'The mix', color:p.mix, w:2.6, vals:M.comb, dash:'' }];
+  const out = [{ name: MODE === 'pool' ? 'One portfolio' : 'Separate buckets', color:p.mix, w:2.6, vals:M.cur.comb, dash:'' }];
+  // the mode you're NOT on, so the two are visible side by side
+  out.push({ name: MODE === 'pool' ? 'Separate buckets' : 'One portfolio', color:p.alt, w:1.5,
+             vals:(MODE === 'pool' ? M.split : M.pool).comb, dash:'5 3' });
   M.per.forEach((x, i) => { if (!HID.has(i)) out.push({ name: shortName(x.s, 26), color: p.s[i % p.s.length], w:1.4, vals:x.eq, dash:'' }); });
   if (M.bench) out.push({ name:M.benchLabel, color:p.bench, w:1.5, vals:M.bench, dash:'4 3' });
   return out;
@@ -486,7 +613,7 @@ function drawEq(M){
 }
 function drawDD(M){
   const n = M.dates.length; if (n < 2){ $('ddWrap').innerHTML = ''; return; }
-  let peak = -Infinity; const dd = M.comb.map(v => { if (v > peak) peak = v; return peak > 0 ? (v / peak - 1) * 100 : 0; });
+  let peak = -Infinity; const dd = M.cur.comb.map(v => { if (v > peak) peak = v; return peak > 0 ? (v / peak - 1) * 100 : 0; });
   const W = 940, H = 170, PL = 44, PR = 14, PT = 8, PB = 24;
   const mn = Math.min(-1, ...dd);
   const x = i => PL + (W - PL - PR) * i / (n - 1);
@@ -521,7 +648,8 @@ function drawDD(M){
 }
 function renderLegend(M){
   const p = pal();
-  const items = [{ label:'The mix', color:p.mix, idx:-1 }]
+  const items = [{ label: MODE === 'pool' ? 'One portfolio' : 'Separate buckets', color:p.mix, idx:-1 },
+                 { label: (MODE === 'pool' ? 'Separate buckets' : 'One portfolio') + ' (dashed)', color:p.alt, idx:-3 }]
     .concat(M.per.map((x, i) => ({ label: shortName(x.s, 26), color: p.s[i % p.s.length], idx:i })))
     .concat(M.bench ? [{ label:M.benchLabel + ' (dashed)', color:p.bench, idx:-2 }] : []);
   $('legend').innerHTML = items.map(it =>
@@ -586,8 +714,54 @@ function renderOverlap(M){
     : '<span class="text-[12px] text-slate-400">No stock appears in more than one basket — the strategies hold completely different stocks right now.</span>';
 }
 
-/* ---------- combined holdings ---------- */
+/* ---------- combined holdings ----------
+ * Split mode: each bucket's own holdings, summed. Pool mode: the single conviction-weighted
+ * basket the whole amount is spread across, with the ×k multiplier that produced each weight. */
 function renderHoldings(M){
+  if (MODE === 'pool') return renderPoolHoldings(M);
+  $('splitMath').classList.add('hidden');
+  return renderSplitHoldings(M);
+}
+function renderPoolHoldings(M){
+  const p = pal(), last = (M.pool.rebs || [])[M.pool.rebs.length - 1];
+  if (!last){ $('holdTbl').innerHTML = ''; $('holdSub').textContent = 'No rebalance in this window.'; return; }
+  const tot = last.val || 1, byK = new Map();
+  last.holds.forEach(h => byK.set(h.k, (byK.get(h.k) || 0) + 1));
+  $('holdSub').innerHTML = `${last.holds.length} stocks as of the ${esc(last.date)} rebalance — the whole ₹${fmtIN(tot)} spread across every strategy's picks at once.`;
+  // The arithmetic in words. Per-STRATEGY shares, not one flat "slot size": a strategy holding 5
+  // names splits its money five ways, so its per-stock share is smaller than a top-3 strategy's,
+  // and an unequal ₹ allocation moves it again. Percentages are of the whole portfolio, so they
+  // stay true however much it has grown.
+  const parts = M.per.map((x, i) => {
+    const kN = (last.sizes || [])[i] || 0;
+    if (!kN) return `${stratTag(M, i)} <span class="text-slate-500">held nothing</span>`;
+    const w = (x.alloc / kN) / (M.totalCap || 1) * 100;
+    return `${stratTag(M, i)} <span class="text-slate-500">over ${kN} name${kN > 1 ? 's' : ''} → <b>${w.toFixed(1)}%</b> each</span>`;
+  });
+  const dbl = [...byK.entries()].filter(([k]) => k > 1).sort((a,b) => b[0] - a[0]);
+  $('splitMath').classList.remove('hidden');
+  $('splitMath').innerHTML = `<b>How this split is worked out:</b> each strategy spreads its own money across the names it holds —
+    <span class="inline-flex flex-wrap gap-x-3 gap-y-1 align-middle">${parts.join('')}</span>.
+    ${dbl.length
+      ? 'A stock more than one strategy picks gets <b>every</b> one of their shares added: ' + dbl.map(([k, c]) => `<b>${c}</b> stock${c > 1 ? 's' : ''} at <span class="kx">×${k}</span>`).join(' · ') + '.'
+      : 'No stock is picked by more than one strategy this month, so nothing gets a double share right now.'}
+    ${last.cash > 1 ? ` ₹${fmtIN(last.cash)} stayed in cash (a strategy holding nothing keeps its share aside).` : ''}`;
+  const tr = (h, i) => `<tr class="border-b border-slate-100">
+      <td class="px-3 py-2 text-[11px] text-slate-400 font-bold w-6">${i + 1}</td>
+      <td class="px-2 py-2 font-semibold"><a href="./stock.html?sym=${encodeURIComponent(h.sym)}" class="hover:text-indigo-600">${esc(h.sym)}</a>${h.k > 1 ? ` <span class="kx">×${h.k}</span>` : ''}</td>
+      <td class="px-2 py-2"><span class="flex gap-1">${h.by.map(bi => `<span class="dot" style="background:${p.s[bi % p.s.length]}" title="${esc(stratName(M.per[bi].s))}"></span>`).join('')}</span></td>
+      <td class="text-right px-3 py-2 whitespace-nowrap font-semibold">₹${fmtIN(h.val)}</td>
+      <td class="text-right px-3 py-2 text-slate-500">${h.wt.toFixed(1)}%</td></tr>`;
+  $('holdTbl').innerHTML = `<thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
+      <th class="text-left font-semibold px-3 py-2.5">#</th><th class="text-left font-semibold px-2 py-2.5">Stock</th>
+      <th class="text-left font-semibold px-2 py-2.5">Picked by</th><th class="text-right font-semibold px-3 py-2.5">Money in it</th>
+      <th class="text-right font-semibold px-3 py-2.5">% of portfolio</th></tr></thead>
+    <tbody>${last.holds.map(tr).join('')}
+      ${last.cash > 1 ? `<tr class="border-t border-slate-200"><td></td><td class="px-2 py-2 font-semibold text-slate-500">Cash (uninvested)</td><td></td>
+        <td class="text-right px-3 py-2 whitespace-nowrap text-slate-500">₹${fmtIN(last.cash)}</td>
+        <td class="text-right px-3 py-2 text-slate-500">${last.cashWt.toFixed(1)}%</td></tr>` : ''}</tbody>`;
+}
+function renderSplitHoldings(M){
   const p = pal(), agg = new Map();
   M.per.forEach((x, i) => (x.r.latest || []).forEach(h => {
     const e = agg.get(h.sym) || { val:0, by:[] }; e.val += h.val || 0; e.by.push(i); agg.set(h.sym, e);
@@ -660,7 +834,7 @@ function yearlyOf(dates, vals){
 }
 function renderYearly(M){
   const p = pal();
-  const mix = yearlyOf(M.dates, M.comb);
+  const mix = yearlyOf(M.dates, M.cur.comb);
   const per = M.per.map(x => { const m = new Map(yearlyOf(M.dates, x.eq).map(r => [r.yr, r.ret])); return m; });
   const ben = M.bench ? new Map(yearlyOf(M.dates, M.bench).map(r => [r.yr, r.ret])) : null;
   const y0 = M.start.slice(0, 4), y1 = M.end.slice(0, 4);
@@ -669,7 +843,7 @@ function renderYearly(M){
     : `<td class="text-right px-3 py-2 font-semibold ${v >= 0 ? 'pos' : 'neg'}">${pct(v)}</td>`;
   $('yearTbl').innerHTML = `<thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
       <th class="text-left font-semibold px-3 py-2.5">Year</th>
-      <th class="text-right font-semibold px-3 py-2.5"><span class="inline-flex items-center gap-1.5"><span class="dot" style="background:${p.mix}"></span>The mix</span></th>
+      <th class="text-right font-semibold px-3 py-2.5"><span class="inline-flex items-center gap-1.5"><span class="dot" style="background:${p.mix}"></span>${MODE === 'pool' ? 'One portfolio' : 'The mix'}</span></th>
       ${M.per.map((x, i) => `<th class="text-right font-semibold px-3 py-2.5 whitespace-nowrap" title="${esc(stratName(x.s))}"><span class="inline-flex items-center gap-1.5"><span class="dot" style="background:${p.s[i % p.s.length]}"></span>#${i + 1}</span></th>`).join('')}
       ${ben ? `<th class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">${M.benchLabel}</th>` : ''}
     </tr></thead><tbody>${mix.map(r => `<tr class="border-b border-slate-100">
@@ -680,8 +854,8 @@ function renderYearly(M){
 
 /* ---------- month-by-month bars (mirrors the strategy page's period-returns chart, on the MIX) ---------- */
 function drawMonthly(M){
-  const data = [];
-  for (let i = 1; i < M.comb.length; i++) if (M.comb[i-1] > 0) data.push({ d: M.dates[i], v: (M.comb[i] / M.comb[i-1] - 1) * 100 });
+  const C = M.cur.comb, data = [];
+  for (let i = 1; i < C.length; i++) if (C[i-1] > 0) data.push({ d: M.dates[i], v: (C[i] / C[i-1] - 1) * 100 });
   const el = $('mrWrap'), n = data.length;
   if (!n){ el.innerHTML = '<div class="text-xs text-slate-400 py-4">No completed months yet.</div>'; return; }
   const PL = 40, PR = 14, PT = 20, PB = 64, H = 300;
@@ -813,9 +987,66 @@ function downloadTradesCSV(){
   a.download = `mix_trades_${LAST.start}_${LAST.end}.csv`; a.click(); URL.revokeObjectURL(a.href);
 }
 
+/* ---------- pooled rebalance log: how the split moved month to month ---------- */
+let PR_ALL = false; const PR_CAP = 18;
+function renderPoolRebs(M){
+  const card = $('poolRebCard');
+  card.classList.toggle('hidden', MODE !== 'pool');
+  if (MODE !== 'pool') return;
+  const p = pal(), rows = (M.pool.rebs || []).slice().reverse();
+  if (!rows.length){ $('poolRebOut').innerHTML = '<div class="text-xs text-slate-400 py-4">No rebalances in this window.</div>'; $('poolRebMore').innerHTML = ''; return; }
+  const shown = PR_ALL ? rows : rows.slice(0, PR_CAP), CAP = 14;
+  $('poolRebOut').innerHTML = `<div class="overflow-x-auto"><table class="w-full text-sm border-collapse">
+    <thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
+      <th class="text-left font-semibold px-3 py-2.5">Date</th>
+      <th class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">Portfolio</th>
+      <th class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">Since prev.</th>
+      <th class="text-right font-semibold px-3 py-2.5" title="Different stocks held (a stock picked twice still counts once)">Stocks</th>
+      <th class="text-right font-semibold px-3 py-2.5">New</th>
+      <th class="text-left font-semibold px-3 py-2.5">Where the money went — stock, its share, and how many strategies picked it</th>
+    </tr></thead><tbody>${shown.map(b => `
+      <tr class="border-b border-slate-100 align-top">
+        <td class="px-3 py-2.5 whitespace-nowrap font-medium text-slate-700">${esc(b.date)}</td>
+        <td class="text-right px-3 py-2.5 whitespace-nowrap font-semibold">₹${fmtIN(b.val)}</td>
+        <td class="text-right px-3 py-2.5 font-bold ${b.ret >= 0 ? 'pos' : 'neg'}">${pct(b.ret)}</td>
+        <td class="text-right px-3 py-2.5 text-slate-500">${b.holds.length}</td>
+        <td class="text-right px-3 py-2.5 text-slate-500">${b.nNew}</td>
+        <td class="px-3 py-2.5"><span class="flex flex-wrap gap-1">${b.holds.slice(0, CAP).map(h => `
+          <a href="./stock.html?sym=${encodeURIComponent(h.sym)}" class="tick text-slate-600 hover:border-indigo-300 hover:text-indigo-600"
+             title="₹${fmtIN(h.val)} — ${h.wt.toFixed(1)}% — picked by ${h.by.map(i => stratName(M.per[i].s)).join(' + ')}"><b>${esc(h.sym)}</b><em>${h.wt.toFixed(0)}%</em>${h.k > 1 ? `<em class="kx">×${h.k}</em>` : ''}${h.isNew ? '<em class="text-emerald-600">🆕</em>' : ''}</a>`).join('')}
+          ${b.holds.length > CAP ? `<span class="tick text-slate-400">+${b.holds.length - CAP}</span>` : ''}
+          ${b.cashWt >= 0.5 ? `<span class="tick text-slate-400">cash ${b.cashWt.toFixed(0)}%</span>` : ''}</span></td>
+      </tr>`).join('')}</tbody></table></div>`;
+  $('poolRebMore').innerHTML = rows.length > PR_CAP
+    ? `<button id="prToggle" class="text-[12px] font-semibold text-indigo-600 hover:underline">${PR_ALL ? '▴ Show fewer' : '▾ Show all ' + rows.length + ' rebalances'}</button>`
+    : `<span class="text-[11px] text-slate-400">${rows.length} rebalance${rows.length > 1 ? 's' : ''}.</span>`;
+  const t = $('prToggle'); if (t) t.onclick = () => { PR_ALL = !PR_ALL; renderPoolRebs(M); };
+}
+
+/* ---------- mode ---------- */
+function paintModeCards(){
+  $('mSplit').setAttribute('aria-pressed', String(MODE === 'split'));
+  $('mPool').setAttribute('aria-pressed', String(MODE === 'pool'));
+  const stat = (el, S) => {
+    const e = el.querySelector('.mstat');
+    if (!LAST || !S){ e.textContent = '—'; e.className = 'mstat block text-[10.5px] font-bold mt-1.5 text-slate-400'; return; }
+    e.innerHTML = `${pct(S.cagr)} a year · ${fmtINR(S.finalV)}`;
+    e.className = 'mstat block text-[10.5px] font-bold mt-1.5 ' + (S.cagr >= 0 ? 'pos' : 'neg');
+  };
+  stat($('mSplit'), LAST && LAST.split); stat($('mPool'), LAST && LAST.pool);
+}
+function setMode(m){
+  if (MODE === m) return;
+  MODE = m; PR_ALL = false;
+  saveState();
+  if (LAST && !$('results').classList.contains('hidden')) renderResults(); else paintModeCards();
+}
+
 function renderResults(){
   if (!LAST) return;
-  renderTiles(LAST); renderLegend(LAST); drawEq(LAST); drawDD(LAST); drawMonthly(LAST);
+  LAST.cur = MODE === 'pool' ? LAST.pool : LAST.split;
+  paintModeCards();
+  renderTiles(LAST); renderLegend(LAST); drawEq(LAST); drawDD(LAST); drawMonthly(LAST); renderPoolRebs(LAST);
   renderPerStrat(LAST); renderOverlap(LAST); renderHoldings(LAST); renderCorr(LAST); renderYearly(LAST);
   // keep the log pickers' current choice across a re-render (theme flip must not reset the filter)
   const rbWas = $('rbWho').value, tdWas = $('tdWho').value;
@@ -831,6 +1062,8 @@ new MutationObserver(() => { if (LAST && !$('results').classList.contains('hidde
 /* ---------- boot ---------- */
 $('q').oninput = renderList;
 $('runBtn').onclick = runMix;
+$('mSplit').onclick = () => setMode('split');
+$('mPool').onclick = () => setMode('pool');
 $('rbWho').onchange = () => { RB_ALL = false; renderRebalances(LAST); };
 $('tdWho').onchange = () => { TD_ALL = false; renderTrades(LAST); };
 $('tdCsv').onclick = downloadTradesCSV;
@@ -856,6 +1089,7 @@ $('bFav').onclick = () => {
   $('dTo').value = sfEnd || new Date().toISOString().slice(0, 10);
   const st = loadState();
   if (st){
+    if (st.mode === 'pool') MODE = 'pool';
     if (st.start) $('dFrom').value = st.start;
     if (st.end && sfEnd && st.end <= sfEnd) $('dTo').value = st.end; else if (sfEnd) $('dTo').value = sfEnd;
     (st.sel || []).forEach(k => {
@@ -865,7 +1099,7 @@ $('bFav').onclick = () => {
       if (s && SEL.size < MAX_SEL) SEL.set(k, { s, alloc: a >= 0 ? a : 100000 });
     });
   }
-  renderList(); renderMix();
+  renderList(); renderMix(); paintModeCards();
   if (SEL.size >= 2) runMix();     // returning visitor: re-run their last mix automatically
 })();
 </script>
