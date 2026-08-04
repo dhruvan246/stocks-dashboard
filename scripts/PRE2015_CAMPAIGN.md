@@ -157,14 +157,26 @@ AO04→ABAN class). Measured on all 26 target captures (harness: session scratch
   Bank of Rajasthan 'BR', Adlabs 'AF27', Aztecsoft 'A13'…). ⚠️ Shipping codemap-only resolution
   would silently DROP the dead = inject survivorship bias into membership — the exact opposite
   of the mission. DO NOT ship M2 until the residual codes are resolved.
-* Fix route (one focused session): resolve residual sc_did codes by STRICT name match against the
-  ~600-symbol union of the two BRACKETING official checkpoints only (tiny closed candidate space,
-  exact/prefix-unique after normalization; MANUAL map for the stubborn; NO open-universe fuzz),
-  and/or harvest each code's own archived MC page for its printed NSE ticker. Then per-capture QA:
-  size 480-520, arcs (RPL ∈ 2008-05..2009-09, ∉ 2009-12; SATYAMCOMP through 2013), Jaccard vs
-  both brackets consistent with ~10%/yr churn, and store as `scripts/_mc_n500_snaps.json` + a
-  3-line cps-merge in build_membership_v2.py main() (N500 only), force-tracked, so the weekly
-  refresh reproduces it.
+* ✅ **M2 SHIPPED same day (2026-08-04, Fable).** All 117 residual codes adjudicated: 83 by
+  prefix-unique match vs official era name tables (`_n500_rawcsv` CSVs + EQUITY_L + pre-2008 htm
+  names), 16 ambiguous + 18 no-match by era-bhavcopy trading evidence, 10 DROPPED with evidence
+  (dead/merged/BSE-only at capture: IBP, IPCL, UWB, BGF, D-Link, FCL, Narmada Chematur, Wellwin,
+  Williamson-Tea-dup, iGATE). **Then the deeper trap surfaced: the codemap itself emits
+  CROSS-ERA symbols** (TM03 "Tata Motors"→TMCV the 2024 CV spin-off, AI54 "Alok"→ALOKINDS,
+  AP26 "Aventis"→SANOFI, ~45 codes) — silent wrong-era members. Cure = an ERA-UNIVERSE
+  re-resolution pass: any resolved symbol not trading in the era bhavcopy near the capture date
+  is re-resolved from its display name, gated on actually-trading-then, with an official-bracket
+  tiebreak (the Tata Motors DVR twin has an IDENTICAL company name) + a tiny MANUAL_ERA map
+  (GUJFLUORO typo, EMERCK→MERCK, TV-18 hyphen, ZUARIAGRO). MC omissions healed by public record
+  (SATYAMCOMP absent from Dec-2011/2012 renders though listed till the Jun-2013 TechM merger).
+  Thin 2007-08 renders (<490) get official-bracket fill; identical consecutive cached renders
+  deduped. **Result: 18 checkpoints 2007-10-14 → 2013-11-29, sizes 489-508, arcs exact (RPL,
+  Satyam, Bank-of-Rajasthan, pre-split Bajaj), orphan rate 0.2-0.4% == the official lists' own,
+  phantom drops 5 slots (3 smallcaps, status-quo outcome).** Files: `scripts/_mc_n500_snaps.json`
+  (checkpoints) + `scripts/_mc_code_supplement.json` (full provenance: supplement map, drops,
+  era-overrides, manual adds), merged into cps in build_membership_v2.py (N500 only), all
+  force-tracked. Also healed: literal 'Symbol' header-row artifact in the 2006/2010 official wb
+  lists. Harness: session scratchpad `mc_compose.py`. N500 now 120 snapshots 2002-10-02→date.
 
 ## STEP G — CUT THE GAP UNIVERSE  (30 min, after M)
 

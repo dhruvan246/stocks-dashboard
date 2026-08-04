@@ -218,6 +218,14 @@ def main():
         anchor = today_list(slug)
         if idx == "Nifty 500":
             cps = {d: set(v) for d, v in wb.items()}
+            # Moneycontrol-derived soft checkpoints for the 2007-13 dark windows (15 dates;
+            # code-resolved + evidence-adjudicated, see PRE2015_CAMPAIGN.md STEP M2 and
+            # _mc_code_supplement.json). Official wb lists win on any same-date collision.
+            try:
+                for _d, _v in json.load(open(os.path.join(HERE, "_mc_n500_snaps.json"))).items():
+                    cps.setdefault(_d, set(_v))
+            except FileNotFoundError:
+                pass
         else:
             cps = OFFICIAL.get(idx) or None   # official archived CSVs pinned exact
         snaps = reconstruct(anchor, events, cps)
