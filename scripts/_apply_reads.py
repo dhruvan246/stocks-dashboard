@@ -51,7 +51,8 @@ def close(a, b):
 
 
 PRE2015_LEDGERS = [os.path.join(HERE, "pre2015_reads_d.json"),   # STEP D: BSE detres 2008-14
-                   os.path.join(HERE, "pre2015_reads_n.json")]   # STEP N: NSE archive 2005-07 + residue
+                   os.path.join(HERE, "pre2015_reads_n.json"),   # STEP N: NSE archive 2005-07 + residue
+                   os.path.join(HERE, "pre2015_reads_w.json")]   # STEP W: archived NSE eod/results.jsp 2002-04
 
 
 def _load_pre2015_reads():
