@@ -2477,6 +2477,44 @@ remove:  git worktree remove C:/Users/dhruv/stocks-wt/<name>
 list:    git worktree list
 ```
 
+### 38b. ★★ LONG BATCH DRIVERS LIE ABOUT SUCCESS — verify against origin, not local state
+_(2026-08-04, PRE2015 STEP N: three separate bugs, each of which reported success while
+losing or skipping real work. All three were found by RECONCILIATION, never by a log line.)_
+
+A driver that loops {harvest → apply → guard → commit → push} over hours has three failure
+modes that all look exactly like success. Assume every one of them is present until checked:
+
+1. **A push that pushes nothing.** The reset+reapply cycle (required here because minified
+   single-line JSON never rebases cleanly) is fragile in both directions:
+   * `git checkout <commit> -- <paths>` with ONE bad pathspec fails the WHOLE command. Listing
+     an untracked scratch script there left the ledgers at their just-reset (stale) state, so
+     re-apply found nothing new, the staged diff was empty, and the driver logged "reconciled
+     with upstream, nothing new to push". Only TRACKED paths belong in that list, and its exit
+     code must be checked.
+   * Dropping the `git reset --hard origin/main` itself (an edit fixing the above deleted it)
+     turns the whole retry block into a no-op with the identical "nothing to push" message.
+   **Push return codes, empty staged diffs and local commits ALL lie.** The only honest check
+   is to read the artifact back out of `origin/main` (`git show origin/main:<ledger>`) and
+   confirm it contains this batch's work. Do that before advancing any cursor.
+2. **A guard that isn't running.** A bare relative filename passed to a helper the driver runs
+   with `cwd=ROOT` resolves against ROOT, not `scripts/`. The year-shift poison scan therefore
+   read a nonexistent ledger, got `{}`, and printed `clean (0 landed cells checked)` for all 27
+   chunks. **"Clean (0 checked)" is not clean — it is not running.** Guards must exit non-zero
+   when their input is missing, and resolve bare names against their own script dir.
+3. **"ALL COMPANIES PROCESSED" means the CURSOR reached the end, not that work happened.** A
+   harvester crash (exit 1) fell through a stop-gate that only tested `rc == 2`; the driver ran
+   the rest of the chunk against an unchanged ledger and advanced the cursor past 20
+   never-harvested companies. Stop on `rc != 0`, not on one expected code.
+
+**The standing close-out check for any batch campaign** — cheap, and the only thing that
+actually proves coverage: reconcile the LEDGERS against the UNIVERSE.
+`touched = set(reads) | {k.split("|")[0] for k in attempts}`; anything in the universe and not
+in `touched` was never visited, whatever the logs said. Then assert
+`landed + refused == universe` so every cell is either data or a named refusal. This found 24
+missing companies (279 cells) and 123 invisible cells that no log line mentioned. Corollary:
+a harvester must record a refusal on EVERY path that abandons a cell — a bare `continue` in a
+per-year loop makes those cells invisible to exactly this reconciliation.
+
 ---
 
 ## 39. ★ SHIP-IT QUALITY GATE — nothing goes out unverified  (2026-07-28, STANDING USER RULE)

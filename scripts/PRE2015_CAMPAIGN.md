@@ -357,6 +357,79 @@ class and cells where the FY-sum genuinely can't close on detres alone.
    (no-nse-rows, gate-fail, cumulative-unresolvable, dead-both-sources → announcement-window
    probe → grave with evidence).
 
+### STEP N — status (2026-08-04, Sonnet): SHIPPED
+
+`scripts/_nse_archive_pre15.py` + `_pre15_stepn_driver.py` + `_pre15_stepn_report.py` (new,
+untracked scratch, worktree `pre2015-nsearch`), `_apply_reads.py --pre2015` generalized to read
+EVERY step's ledger (`PRE2015_LEDGERS` = D's + N's; tracked, committed before the first batch
+push). `_nse_archive_revop.py` itself is UNCHANGED — its list/detail/cache/alias/&-encoding
+machinery is imported as-is; the period-parameterized list fetch is a sibling function.
+
+**Numbers: of 8,856 universe cells (6,002 in 2005-07 + 2,854 2008-14 residue, 635 companies),
+7,816 landed (88.3%) — GATE F 4,595 · E 2,197 · X 1,013 · S 11, plus 327 cumdiff-derived legs —
+and 1,040 refused, every one with a named reason. All 635/635 companies adjudicated; accounting
+closed (landed + refused == universe).** Coverage by year: 2005-07 ~91%, 2008-11 ~86-93%,
+2012-14 35-44% (that tail is the era STEP D already harvested, so N only sees its hard residue).
+
+**GATE X is the step's real unlock** (1,013 cells): detres cache was copied in from the STEP D
+worktree, so cross-source checks cost zero BSE refetches. SBIN Mar-08 = 1,883.25 — the cell STEP D
+documented as "correctly refused, expected to close once STEP N supplies GATE X" — landed via X
+and is LIVE-verified through the client (`fin/SBIN.json`). Also client-verified: INFY FY2006
+quarters sum 2,421.85 and RELIANCE FY2006 sum 9,069.00, both matching the public standalone
+FY06 record.
+
+**Cumulative-difference derivation** (LANDING RULES 1) is what makes the era tractable: many
+pre-2015 filers never lodged a discrete Q4 (it is folded into the Annual only — TATASTEEL FY08 is
+the type case). A running chain-sum of an UNBROKEN prefix of DIRECT quarters from Q1 serves as
+the cumulative baseline, so Q4 = Annual − (Q1+Q2+Q3) with all four legs real documents; the chain
+is cut, never revived, the moment a quarter can't be resolved, so a derived leg is always exactly
+one subtraction from direct reads and still needs GATE F. Never GATE E (a derivation was not a
+party to the document's own EPS row).
+
+**Anti-poison:** the document's OWN printed "Period Ended" must equal the quarter its list row
+promised, or the read is discarded — this is the direct defence against §45's NSE list
+double-indexing, applied at the source rather than detected afterwards.
+
+**Residue, 1,040 cells, every class named** (full per-cell JSON via `_pre15_stepn_report.py --json`):
+454 no-usable-leg-for-quarter · 434 gate-F-and-E-both-failed · 141 no-nse-rows-for-that-FY ·
+10 no-nse-filings-any-era (IDBIBANK class) · 1 gate-S-disagree (AARTIIND 20130630, left for hand
+§45 adjudication, never auto-healed). Calendar-year filers (ACC, AMBUJACEM) refuse safely rather
+than mis-landing: the Apr-Mar FY frame doesn't fit them and the Period-Ended check stops the
+annual being slotted as a quarter — same "non-standard FY refuses correctly" outcome STEP D had.
+
+**Poison guards, all reviewed against raw source, none blind:** 5 new yshift pairs adjudicated
+genuine and allowlisted (LGBROS/RIIL proven by raw precision differing below 2dp display —
+415.47 vs 415.18, 468.97 vs 469.46; APOLLOHOSP/COSMOFIRST/HONAUT are exact ties at those filers'
+whole-lakh granularity, but distinct documents + verified Period Ended + different rev/EPS per
+year + an independent per-year gate exclude the double-index mechanism; HONAUT also repeats 13.9
+at an ADJACENT quarter, which no year-shift can produce). 15 sanity cells allowlisted:
+ZUARIIND ×11 (the "4× established max 273" reference is the POST-demerger holdco — fertiliser
+business demerged to Zuari Agro ~2011-12, series collapses 966→23; 6 of the flagged cells landed
+via GATE X, i.e. BSE agrees independently), ASTRAZEN ×2 (raw 8821.96 vs 8821.80), CESC ×2 (filer
+rounds every quarter to whole crore; neighbouring Sep-06 is 675, so the 674 cluster is real).
+MASTEK/PEL/SUZLON stay nulled — STEP D's prior deliberate verdict, not revisited.
+
+⚠️ **Three orchestration bugs cost real work and are worth not repeating** (all now fixed in the
+scripts, and the lessons generalized into DATA_RUNBOOK §38):
+1. A bare relative filename passed to a script the driver runs with `cwd=ROOT` resolves against
+   ROOT, not `scripts/`. Hit three separate scripts. In `_yshift_scan_pre15.py` it silently
+   disarmed the poison guard for all 27 chunks — it reported `clean (0 landed cells checked)`
+   every time. **A guard that reports "clean (0 checked)" is not clean, it is not running.**
+2. The reset+reapply push cycle can report success while pushing nothing — twice: first when the
+   checkout-back list contained an UNTRACKED path (one bad pathspec fails the whole multi-path
+   `git checkout`, leaving ledgers at their just-reset state), then when an edit fixing that
+   accidentally deleted the `git reset --hard origin/main` line itself. Push return codes, empty
+   staged diffs and local commits ALL lied about whether data reached origin. The only honest
+   check is reading the ledger back out of `origin/main` — now enforced in the driver.
+3. "ALL COMPANIES PROCESSED" meant only that the CURSOR reached the last symbol. A harvester
+   crash (rc=1) fell through a stop-gate that only tested `rc == 2`, and the cursor advanced past
+   20 never-harvested companies. Found by reconciling ledgers against the universe, not by
+   trusting the completion message; 24 companies / 244 cells recovered.
+
+Next: STEP W (2002-2004 wayback probe) and/or STEP Q close-out QA. Note STEP N did NOT land any
+`con` cells — con was deliberately out of scope for both pre-2015 appliers, and remains an
+available LANDING-RULES-sanctioned bonus for a later pass.
+
 ## STEP W — 2002-2004 (and pre-2008 residue): PROBE the archived web  (feasibility step, capped)
 
 No exchange source exists (proven). Candidates, in probe order, each = CDX enumerate → fetch 5
@@ -425,3 +498,15 @@ one session; deliverable = feasibility verdict + (if green) the harvest recipe a
   revenue, ok's PAT unaffected). LIVE-verified through the client (per-stock
   fin/<SYM>.json slice, not just the bulk file). SATYAMCOMP/HINDALCO spot values
   exact; SBIN Mar-08 correctly refused pending STEP N's GATE X.
+- 2026-08-04: STEP N shipped (Sonnet) — see STEP N status block above. 7,816/8,856 cells
+  landed (88.3%; F 4,595 · E 2,197 · X 1,013 · S 11, +327 cumdiff legs), 1,040 refused
+  with named classes, 635/635 companies adjudicated, accounting closed. GATE X lit up for
+  the first time (1,013 cells, free off the copied STEP D detres cache) and closed SBIN
+  Mar-08 = 1,883.25 exactly as STEP D predicted. Cumulative-difference derivation unlocks
+  the many filers who folded Q4 into the annual. LIVE-verified through the client: SBIN
+  Mar-08, plus INFY FY06 (2,421.85) and RELIANCE FY06 (9,069.00) matching public record.
+  5 yshift pairs + 15 sanity cells reviewed against raw source and allowlisted with
+  evidence. Three orchestration bugs found and fixed (bare-relative-path silently disarming
+  the yshift guard for all 27 chunks; a push cycle that reported success while pushing
+  nothing, twice; a cursor that advanced past 20 never-harvested companies on a crash) —
+  lessons generalized into DATA_RUNBOOK §38.
