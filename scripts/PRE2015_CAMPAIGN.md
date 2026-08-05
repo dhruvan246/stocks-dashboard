@@ -559,17 +559,35 @@ own cap — no ledger, no landing code, nothing pushed except this write-up):
 Next: either STEP W-execute (harvest per the recipe above) or STEP Q close-out QA on D+N first —
 user's call, both are now unblocked.
 
-### STEP W-execute — status (2026-08-05, Sonnet): 5 BATCHES SHIPPED, 646 cells / 100 companies (17.7%)
-**Running total after batch 5 (verified on origin): 646 cells, 100 companies, 454 refused.**
-Batches: #1 114/19 · #2 +192→306/48 · #3 +188→494/76 · #4 +52→546/84 · #5 +100→646/100 (this one
-also caught+resolved a new revop_sanity flag, CUMMINSIND 20040930/20041231 — exact revenue
-coincidence across two DIFFERENT source captures with different PAT, same "genuine
-duplicate-value" class STEP D already documented, nulled per revop_sanity's default, PAT
-unaffected). Retry/backoff in `_stepw_wb.py` tightened mid-run (2 attempts/5s backoff, was
-4/10-20-30s) — same request volume, far less wasted wall-clock sleeping on dead connections;
-roughly doubled throughput in the following batch. Batch-1's own detailed findings (calendar-year
-gate-mix pattern, the two pre-launch bugs, the fetch-failure/refusal design fix) below still hold
-and were not re-litigated per batch. **RESUME exactly as below — nothing else has changed.**
+### STEP W-execute — status (2026-08-05, Sonnet): 8 BATCHES SHIPPED, 755 cells / 122 companies (21.6%)
+**Running total after batch 8 (verified on origin): 755 cells, 122 companies, ~500 refused.**
+Batches: #1 114/19 · #2 +192→306/48 · #3 +188→494/76 · #4 +52→546/84 · #5 +100→646/100 · #6
++83→729/117 · #7 +20→749/122 · #8 +6→755/122 (batches 5-8 all pushed via reset+reapply — plain
+rebase conflicted on the minified JSON every single time origin moved between fetch and push,
+which given ~30 concurrent CI workflows on this repo is most attempts; never worth retrying plain
+rebase more than once). Batch 5 caught+resolved a new revop_sanity flag, CUMMINSIND
+20040930/20041231 — exact revenue coincidence across two DIFFERENT source captures with different
+PAT, same "genuine duplicate-value" class STEP D already documented, nulled per revop_sanity's
+default, PAT unaffected (re-nulled identically in every later batch since re-applying from the raw
+ledger re-derives it fresh each time — expected, not a regression).
+
+**Throughput tuning, two rounds**: `_stepw_wb.py` retry/backoff cut from 4 attempts/10-20-30s
+backoff to 2/5s (batch 5→6, ~2x), then further to a single attempt with NO backoff sleep (batch
+7→8) — observed failures are fast connection-refused errors, not slow timeouts, so retrying
+in-process mostly just burns wall-clock on a connection that isn't coming back within that
+process's lifetime; a future full re-run costs nothing extra since successes are cached (per-FY
+fetch-failure tracking already made this safe, see batch 1's design-gap fix). Deliberately did
+**not** parallelize across multiple agents when asked — the bottleneck is wayback's own connection
+throttling (confirmed by isolated CDX+page-fetch probes going into total refusal mid-session, unrelated
+to this harvester's own request pattern, then recovering), not local orchestration capacity; more
+concurrent writers against an already-throttling external endpoint risks making it worse, and this
+class of backfill has a standing one-writer-at-a-time rule from a past incident (memory
+`feedback-backfill-one-agent-at-a-time`). **A genuine multi-minute-to-tens-of-minutes wayback outage
+happened mid-session** (total connection refusal on trivial isolated requests, not just this
+harvester) — backed off and waited per the campaign's own hard line rather than retried through it;
+it self-recovered. Batch-1's other detailed findings (calendar-year gate-mix pattern, the two
+pre-launch bugs) below still hold and were not re-litigated per batch. **RESUME exactly as below —
+nothing else has changed.**
 
 #### Batch 1 detail (114 cells / 19 companies) — findings below still apply to every later batch
 Worktree `pre2015-stepw-harvest`. `scripts/_stepw_wb.py` (wayback CDX+fetch, untracked scratch)
@@ -769,3 +787,15 @@ pre2015_reads_w.json` → commit (tracked ledger + `_apply_reads.py` if changed 
   revop_sanity flag this run (CUMMINSIND, genuine duplicate-value coincidence, same class
   STEP D already named) resolved the same way STEP D did. RESUME: `cd scripts && python
   -X utf8 -u _stepw_nse_pre15.py`, no arguments, continues from company 100/566.
+- 2026-08-05: STEP W-execute batches 6-8 shipped (Sonnet) — cumulative 755 cells / 122
+  companies (21.6%), ~500 refused, verified on origin after every batch. Retry/backoff cut
+  further to a single no-backoff attempt (was 2/5s) for another throughput jump — a future
+  re-run costs nothing extra on any miss, so failing fast beats waiting in-process. Hit and
+  rode out a genuine multi-minute-plus wayback outage mid-session (confirmed via isolated
+  probes unrelated to this harvester, not a local defect) — backed off per the campaign's
+  hard line rather than retried through it, resumed once it self-recovered. Explicitly
+  declined to parallelize across agents when asked: the bottleneck is external connection
+  throttling, not orchestration, and this backfill class has a standing one-writer rule from
+  a past incident — more concurrent writers against an already-struggling endpoint would
+  likely worsen it, not help. RESUME: `cd scripts && python -X utf8 -u _stepw_nse_pre15.py`,
+  no arguments, continues from company 122/566 (~444 remain).
