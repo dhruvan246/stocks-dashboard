@@ -618,11 +618,22 @@ it self-recovered. Batch-1's other detailed findings (calendar-year gate-mix pat
 pre-launch bugs) below still hold and were not re-litigated per batch. **RESUME exactly as below —
 nothing else has changed.**
 
+**★ 2026-08-06 update (cross-machine move, Windows→Mac): `_stepw_wb.py`, `_stepw_nse_pre15.py`,
+`_yshift_scan_pre15.py` were promoted from untracked scratch to TRACKED (force-added past the `_*`
+gitignore rule, commit `4ee98880`)** — the untracked-scratch convention below assumed one machine;
+on a real machine switch those files are invisible to `git status` and silently lost on a wipe,
+with zero rescue path. Now a plain `git clone` (or pull, on an existing checkout) carries the
+harvester itself, not just its data — **the complete resume recipe on ANY machine is: clone/pull,
+`git worktree add --detach <path> origin/main`, `cd scripts && python -X utf8 -u
+_stepw_nse_pre15.py`.** No file transfer, no rebuild. The on-disk `_wb_cache/` (HTTP response
+cache) is NOT part of this and doesn't need to be — disposable by design, rebuilds free as the
+harvester re-fetches on the new machine.
+
 #### Batch 1 detail (114 cells / 19 companies) — findings below still apply to every later batch
-Worktree `pre2015-stepw-harvest`. `scripts/_stepw_wb.py` (wayback CDX+fetch, untracked scratch)
-+ `scripts/_stepw_nse_pre15.py` (untracked scratch, mirrors STEP N's structure: universe → per-
-symbol candidate fetch → FY bucketing → chain/cumdiff resolution → gate S/F/E in that priority —
-GATE X deliberately left stubbed this pass, same precedent as STEP D's first run, would need also
+Worktree `pre2015-stepw-harvest`. `scripts/_stepw_wb.py` (wayback CDX+fetch; tracked as of the
+2026-08-06 update above) + `scripts/_stepw_nse_pre15.py` (mirrors STEP N's structure: universe →
+per-symbol candidate fetch → FY bucketing → chain/cumdiff resolution → gate S/F/E in that priority
+— GATE X deliberately left stubbed this pass, same precedent as STEP D's first run, would need also
 harvesting myiris). `_apply_reads.py --pre2015`: added `pre2015_reads_w.json` to `PRE2015_LEDGERS`
 (tracked, one-line addition, same pattern STEP N used to add itself).
 
