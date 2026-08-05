@@ -518,6 +518,17 @@ def main():
                 if _m and rev > max(25 * _m, 500):
                     skips["%s|%d" % (sym, qe)] = "absurd-vs-mcap"
                     continue
+                # con-vs-std floor guard: consolidated = standalone + subsidiaries, so con revenue
+                # collapsing to a sliver of the SAME quarter's already-stored std revenue means the
+                # anchor locked onto the wrong column (a stray EPS/per-share figure, a sub-table) —
+                # PAT can coincidentally match while revenue is nonsense (caught live 2026-08-06:
+                # 3MINDIA 20251231 con rev extracted as 1.23 vs std 1228.05, con PAT == std PAT so
+                # the PAT anchor alone passed it). Skip for review instead of trusting the coincidence.
+                if basis == "con" and not is_nosub(sym):
+                    std_rev = (revop.get(sym, {}).get(str(qe)) or [None])[0]
+                    if std_rev and std_rev > 0 and rev < 0.5 * std_rev:
+                        skips["%s|%d" % (sym, qe)] = "con-rev-far-below-std:%.2f-vs-%.2f" % (rev, std_rev)
+                        continue
                 put_cell(sym, qe, basis, rev, op, ebit, src)
                 put_pnl(sym, qe, basis, rows, x, scale, op, ebit, src)
                 got.append((qe, basis))

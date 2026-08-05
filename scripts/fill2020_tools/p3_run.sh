@@ -13,7 +13,11 @@ cd "${FILL2020_WT:-$HOME/stocks-wt/fill2020}" || exit 1
 PY="${PYTHON:-$HOME/stocks-dashboard/.venv/bin/python}"
 
 CAP=420          # per-invocation wall clock
-QSTEP=7          # quarters per invocation
+QSTEP=13         # quarters per invocation (was 7) -- --rescue is OFF below so each gap quarter is
+                 # ~2 search windows x <=4 PDFs x 14 pages instead of ~4 windows x <=10 PDFs x 40
+                 # pages, cheap enough to widen the slice (2 invocations/company instead of 4,
+                 # halving BSE-session-bootstrap overhead) without reintroducing the M&M-class
+                 # kill-loses-everything risk a QSTEP=26 single-shot would bring back
 
 # Portable stand-in for GNU `timeout` (absent on this Mac, no Homebrew -- see mac-setup memory).
 # SIGTERMs the child after $1 seconds; exit code 124 on timeout, mirroring `timeout`'s convention
@@ -48,7 +52,7 @@ while [ "$i" -lt "$N" ]; do
 import json;q=json.load(open('scripts/_p3_qes.json'))[$j:$j+$QSTEP];print(','.join(str(x) for x in q))")
     [ -z "$QS" ] && break
     OUT=$(run_timeout "$CAP" "$PY" -X utf8 scripts/backfill_revop_gaps.py --qe "$QS" \
-          --only "$SYM" --fin --retry-skips --rescue 2>&1)
+          --only "$SYM" --fin --retry-skips 2>&1)
     rc=$?
     got=$(printf '%s' "$OUT" | grep -oE "^DONE: filled [0-9]+" | grep -oE "[0-9]+$")
     [ -n "$got" ] && TOTAL=$((TOTAL + got))
