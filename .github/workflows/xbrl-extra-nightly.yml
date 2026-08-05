@@ -1,0 +1,113 @@
+name: Deep-fundamentals ledger top-up
+
+# Keeps scripts/xbrl_extra.json.gz — the ~200-tag-per-filing ledger behind the stock page's
+# "Financial detail" block (EPS, balance sheet, cash flow, segments, bank health) — current with
+# each day's NSE filings. Pushing the .gz push-triggers refresh-stock-fin.yml, so the per-stock
+# fin slices follow minutes later. Ran as a LOCAL scheduled task until 2026-08-05; moved here so
+# it no longer depends on this machine being awake.
+#
+# STATE, and why none of it has to be committed:
+#   ledger  — gunzipped from the committed .gz at the start of every run (authoritative).
+#   cache   — CI keeps a ROLLING copy of just the last ~3 weeks of XBRL (~150 MB), restored from
+#             the Actions cache. The local 80-GB cache is NOT needed: --incremental only ever
+#             reads files the seen-set hasn't got, and the filings list only offers the window.
+#   seen-set— rides in the same Actions cache entry as the cache dir, so the two can't disagree.
+#             Lost cache ⇒ empty seed ⇒ the window is re-downloaded and re-extracted, which is
+#             harmless: the window only holds the NEWEST filings and the ledger merges per-field
+#             non-null latest-wins, so a replay can only re-assert (see xtra_nightly.py).
+#   The cache is saved ONLY on success — a run that dies after fetching but before pushing leaves
+#   no state behind, so tomorrow redoes it rather than marking those filings seen-but-unextracted.
+
+on:
+  schedule:
+    # 18:30 UTC = 00:00 IST — after the day's filings have landed (they cluster 15:00–20:00 IST)
+    # and after refresh-fundamentals' 17:45 UTC late top-up. GitHub's scheduler drifts up to ~45
+    # min under load; harmless here, the 14-day window self-heals a whole missed night.
+    - cron: "30 18 * * *"
+  workflow_dispatch:
+    inputs:
+      max_fetch:
+        description: "Cap on new XBRL downloads this run (cold-start throttle)"
+        default: "1500"
+      window:
+        description: "Filing-list window in days"
+        default: "14"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: xbrl-extra-nightly
+  cancel-in-progress: false
+
+jobs:
+  topup:
+    runs-on: ubuntu-latest
+    # A warm night is ~5 min (a few hundred filings). A COLD one downloads up to max_fetch files
+    # sequentially at NSE's pace (~1 s each), so the cap and this timeout move together.
+    timeout-minutes: 75
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Install Chrome-TLS transport
+        # curl_cffi is the 2nd rung of the transport ladder — NSE's Akamai serves the bot-challenge
+        # page to plain-urllib fingerprints (same reason refresh-fundamentals.yml installs it).
+        run: pip install -q curl_cffi
+
+      # scripts/_xbrl_cache and scripts/_xtra_seen.json are both gitignored (scripts/_*), so they
+      # survive the reset --hard in the commit loop below and never reach a commit.
+      - name: Restore rolling XBRL window + seen-set
+        id: cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            scripts/_xbrl_cache
+            scripts/_xtra_seen.json
+          key: xbrl-window-${{ github.run_id }}
+          restore-keys: xbrl-window-
+
+      - name: Unpack the ledger the .gz carries
+        run: |
+          python3 -c "import gzip,shutil; shutil.copyfileobj(gzip.open('scripts/xbrl_extra.json.gz','rb'), open('scripts/xbrl_extra.json','wb'))"
+          ls -l scripts/xbrl_extra.json
+
+      - name: Fetch new filings and extract into the ledger
+        run: |
+          MF="${{ github.event.inputs.max_fetch }}"; MF="${MF:-1500}"
+          WIN="${{ github.event.inputs.window }}"; WIN="${WIN:-14}"
+          python3 -X utf8 scripts/xtra_nightly.py \
+            --window "$WIN" --max-fetch "$MF" --seed-seen --prune-cache-days 21
+
+      # No --push above: xtra_nightly.py refuses it from a tree named stocks-dashboard (CLAUDE.md
+      # rule 2) and the runner's checkout is exactly that. Committing here also matches the rest of
+      # the repo's workflows. reset --hard is legal in this ephemeral checkout, hence the copy-back.
+      - name: Commit the ledger
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp scripts/xbrl_extra.json.gz /tmp/xbrl_extra.json.gz
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main && git reset --hard origin/main
+            cp /tmp/xbrl_extra.json.gz scripts/xbrl_extra.json.gz
+            git add scripts/xbrl_extra.json.gz
+            if git diff --cached --quiet; then echo "gz unchanged — nothing to push"; exit 0; fi
+            git commit -q -m "Deep-fundamentals ledger top-up $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then echo "pushed (attempt #$attempt)"; exit 0; fi
+            sleep $(( attempt * 5 ))
+          done
+          echo "ledger push failed after 5 attempts"; exit 1
+
+      - name: Save rolling XBRL window + seen-set
+        if: success()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            scripts/_xbrl_cache
+            scripts/_xtra_seen.json
+          key: xbrl-window-${{ github.run_id }}
