@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+"""STEP W-execute: wayback CDX + fetch helper. Trimmed from the STEP W probe harness.
+
+None from cdx() means UNPROVEN (throttled/network fail) -- distinct from [] (proven empty).
+Never rotate headers/retry through a persistent block -- back off hard and let the caller decide
+whether to stop (campaign hard line, DATA_RUNBOOK Sec.38).
+"""
+import json, os, re, time
+import requests
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+CACHE = os.path.join(HERE, "_wb_cache")
+os.makedirs(CACHE, exist_ok=True)
+UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) stocks-dashboard/stepw-harvest"}
+
+
+def _cache_path(key):
+    safe = re.sub(r"[^A-Za-z0-9_.-]", "_", key)[:180]
+    return os.path.join(CACHE, safe)
+
+
+def cdx(url, frm=None, to=None, limit=60000, match="prefix", fl="timestamp,original,statuscode",
+        collapse="urlkey", fresh=False):
+    p = {"url": url, "output": "json", "fl": fl, "limit": str(limit), "matchType": match}
+    if collapse:
+        p["collapse"] = collapse
+    if frm:
+        p["from"] = frm
+    if to:
+        p["to"] = to
+    q = "&".join("%s=%s" % (k, requests.utils.quote(str(v), safe="")) for k, v in p.items())
+    api = "https://web.archive.org/cdx/search/cdx?" + q
+    cp = _cache_path("cdx_" + q) + ".json"
+    if os.path.exists(cp) and not fresh:
+        return json.load(open(cp, encoding="utf-8"))
+    last = None
+    for attempt in range(5):
+        try:
+            r = requests.get(api, headers=UA, timeout=180)
+            if r.status_code != 200:
+                last = "http %s" % r.status_code
+                time.sleep(20 * (attempt + 1))
+                continue
+            txt = r.text.strip()
+            rows = json.loads(txt) if txt else []
+            hdr = rows[0] if rows else []
+            out = [dict(zip(hdr, row)) for row in rows[1:]]
+            json.dump(out, open(cp, "w", encoding="utf-8"))
+            return out
+        except Exception as e:  # noqa
+            last = str(e)[:80]
+            time.sleep(20 * (attempt + 1))
+    print("  !! cdx fail %s :: %s" % (url, last), flush=True)
+    return None
+
+
+def wb_fetch(ts, original, fresh=False):
+    """id_ = raw original bytes, no wayback toolbar/rewriting.
+
+    Single attempt, no backoff sleep: observed failures this session are fast connection-refused
+    errors, not slow timeouts, so retrying in-place mostly just burns wall-clock waiting on a
+    connection that isn't coming back within the same process's lifetime anyway. A cell whose
+    only candidate fails here stays RETRYABLE (never a permanent refusal, see
+    _stepw_nse_pre15.py's fetch_incomplete_fys) -- a future full re-run costs nothing extra since
+    successes are cached, so failing fast here trades in-run persistence for wall-clock: more,
+    quicker passes beat fewer, slower ones as long as each pass lands real cells, which it does."""
+    u = "https://web.archive.org/web/%sid_/%s" % (ts, original)
+    cp = _cache_path("wb_%s_%s" % (ts, original)) + ".html"
+    if os.path.exists(cp) and not fresh:
+        return open(cp, encoding="utf-8", errors="replace").read()
+    last = None
+    for attempt in range(1):
+        try:
+            r = requests.get(u, headers=UA, timeout=45)
+            if r.status_code in (200, 404, 403):
+                t = r.text
+                open(cp, "w", encoding="utf-8", errors="replace").write(t)
+                return t
+            last = "http %s" % r.status_code
+        except Exception as e:  # noqa
+            last = str(e)[:80]
+    print("  !! wb fail %s %s :: %s" % (ts, original[:70], last), flush=True)
+    return None   # None == fetch failed (retry later). "" would mean "fetched, empty".
