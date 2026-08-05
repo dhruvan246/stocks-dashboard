@@ -371,7 +371,13 @@ def main():
                 if errs[0] >= 8:
                     print("STOP-GATE: 8 consecutive fetch failures (last on %s)" % sym, flush=True)
                     _dump(out, attempts)
-                    sys.exit(2)
+                    # sys.exit() here waits on concurrent.futures' atexit handler, which blocks
+                    # until the prefetch daemon thread's ThreadPoolExecutor drains its ENTIRE queued
+                    # job list (thousands of candidates) -- observed hanging 1min+ post-stop-gate
+                    # while still hammering wayback, defeating the gate's whole purpose. _dump()
+                    # above already flushed+closed its files (refcounted, synchronous in CPython),
+                    # so it's safe to skip the rest of interpreter teardown.
+                    os._exit(2)
                 continue
             errs[0] = 0
             p = parse_page(html)
