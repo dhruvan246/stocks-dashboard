@@ -419,30 +419,38 @@ def main():
 
     op_sess = FI.bse_session()
     time.sleep(1)
-    filled = fetched = 0
+    filled = fetched = dup = 0
     syms = sorted(gaps)
     if limit:
         syms = syms[:limit]
 
     def put_cell(sym, qe, basis, rev, op, ebit, src):
-        nonlocal filled
+        # "filled" counts only cells that actually CHANGED a store (None -> value). The old
+        # unconditional count re-counted already-stored extractions and reported phantom yield
+        # (M&M "filled 46" with an sha-identical sf_revop, 2026-08-05) — never trust a count
+        # that doesn't require a write.
+        nonlocal filled, dup
         key = "%s|%d" % (sym, qe)
+        changed = False
         for store in (revop, revop_scr):
             d = store.setdefault(sym, {})
             rr = d.get(str(qe)) or [None] * 6 + [0, None, None]
             if len(rr) < 9:
                 rr += [None] * (9 - len(rr))
             i = {"std": (0, 2, 7), "con": (1, 3, 8)}[basis]
-            if rr[i[0]] is None and rev is not None: rr[i[0]] = rev
-            if rr[i[1]] is None and op is not None: rr[i[1]] = op
-            if rr[i[2]] is None and ebit is not None: rr[i[2]] = ebit
+            if rr[i[0]] is None and rev is not None: rr[i[0]] = rev; changed = True
+            if rr[i[1]] is None and op is not None: rr[i[1]] = op; changed = True
+            if rr[i[2]] is None and ebit is not None: rr[i[2]] = ebit; changed = True
             # PAT mirror slots (4=std,5=con) — copy the anchored stored PAT for consistency
             pv = pat_of(sym, qe, basis)
             if rr[{"std": 4, "con": 5}[basis]] is None and pv is not None:
                 rr[{"std": 4, "con": 5}[basis]] = pv
             d[str(qe)] = rr
-        done.setdefault(key, {})[basis] = {"rev": rev, "op": op, "src": src}
-        filled += 1
+        if changed:
+            done.setdefault(key, {})[basis] = {"rev": rev, "op": op, "src": src}
+            filled += 1
+        else:
+            dup += 1
 
     PNL_ROWS = ("rev", "oi", "fc", "dep", "pbet", "pbt", "tax", "pat", "own")
 
@@ -624,8 +632,9 @@ def main():
 
     if not dry:
         save_all(final=True)
-    print("DONE: filled %d basis-cells via %d PDF fetches (cache: %s); skips ledger %d entries; pnl rows %d"
-          % (filled, fetched, os.path.basename(PDFCACHE), len(skips), sum(len(v) for v in pnl.values())), flush=True)
+    print("DONE: filled %d basis-cells (%d re-extractions were already stored, not counted) via %d PDF fetches "
+          "(cache: %s); skips ledger %d entries; pnl rows %d"
+          % (filled, dup, fetched, os.path.basename(PDFCACHE), len(skips), sum(len(v) for v in pnl.values())), flush=True)
 
 
 if __name__ == "__main__":
