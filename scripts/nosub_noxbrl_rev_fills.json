@@ -1,0 +1,329 @@
+{
+ "generated": "2026-08-05",
+ "campaign": "FILL-2020 Phase 1b (scripts/FILL2020_CAMPAIGN.md)",
+ "method": "no-sub consolidated identity (SEBI LODR Reg 33)",
+ "group": "noxbrl",
+ "evidence_class": "PAT identity over copy-free quarters ONLY \u2014 NSE serves no XBRL for these names, so the XBRL gate used by nosub_rev_derive.py (P6) cannot apply; quarters touched by apply_nosub_constd*.py are excluded so the test cannot be satisfied by those copies",
+ "copy_quarters_excluded": [
+  20250331,
+  20250630,
+  20250930,
+  20251231
+ ],
+ "min_clean_quarters": 10,
+ "companies": 7,
+ "cells": 134,
+ "per_company_proof": {
+  "ABBOTINDIA": {
+   "copy_free_quarters": 53,
+   "mismatches": 0
+  },
+  "BAJAJHFL": {
+   "copy_free_quarters": 27,
+   "mismatches": 0
+  },
+  "BAYERCROP": {
+   "copy_free_quarters": 48,
+   "mismatches": 0
+  },
+  "BOSCH-HCIL": {
+   "copy_free_quarters": 41,
+   "mismatches": 0
+  },
+  "CANHLIFE": {
+   "copy_free_quarters": 42,
+   "mismatches": 0
+  },
+  "GVT&D": {
+   "copy_free_quarters": 41,
+   "mismatches": 0
+  },
+  "ICICIAMC": {
+   "copy_free_quarters": 11,
+   "mismatches": 0
+  }
+ },
+ "rejected": {
+  "ALIVUS": "rev/op differ @20230930",
+  "ENRIN": "only 5 copy-free quarters (<10)",
+  "LGEINDIA": "only 4 copy-free quarters (<10)"
+ },
+ "fills": {
+  "ABBOTINDIA": {
+   "20250630": {
+    "revC": 1738.35,
+    "opC": 445.59,
+    "ebitC": 426.11
+   },
+   "20250331": {
+    "revC": 1604.59,
+    "opC": 428.54,
+    "ebitC": 410.61
+   },
+   "20250930": {
+    "revC": 1757.15,
+    "opC": 502.17,
+    "ebitC": 483.53
+   },
+   "20220930": {
+    "revC": 1379.48
+   },
+   "20221231": {
+    "revC": 1322.19
+   },
+   "20230331": {
+    "revC": 1343.08
+   }
+  },
+  "BAJAJHFL": {
+   "20240930": {
+    "revC": 2410.15,
+    "opC": 2231.17,
+    "ebitC": 2221.15
+   },
+   "20241231": {
+    "revC": 2448.86,
+    "opC": 2238.95,
+    "ebitC": 2228.82
+   },
+   "20250331": {
+    "revC": 2507.96,
+    "opC": 2281.71,
+    "ebitC": 2270.62
+   },
+   "20250630": {
+    "revC": 2615.71,
+    "opC": 2371.25,
+    "ebitC": 2360.16
+   },
+   "20250930": {
+    "revC": 2754.85,
+    "opC": 2502.17,
+    "ebitC": 2490.47
+   },
+   "20251231": {
+    "revC": 2885.93,
+    "opC": 2623.1,
+    "ebitC": 2611.08
+   },
+   "20260331": {
+    "revC": 2902.61,
+    "opC": 2640.27,
+    "ebitC": 2627.75
+   },
+   "20240331": {
+    "revC": 1996.0
+   },
+   "20230930": {
+    "revC": 1911.0
+   },
+   "20231231": {
+    "revC": 1946.0
+   },
+   "20260630": {
+    "revC": 3063.02,
+    "opC": 2830.05
+   }
+  },
+  "BAYERCROP": {
+   "20191231": {
+    "revC": 854.0,
+    "opC": 175.3
+   }
+  },
+  "BOSCH-HCIL": {
+   "20251231": {
+    "revC": 475.57,
+    "opC": -0.93,
+    "ebitC": -15.48
+   },
+   "20260331": {
+    "revC": 965.35,
+    "opC": 67.72,
+    "ebitC": 55.72
+   },
+   "20250630": {
+    "revC": 852.63,
+    "opC": 36.43,
+    "ebitC": 20.8
+   },
+   "20250930": {
+    "revC": 1257.77,
+    "opC": 0.69,
+    "ebitC": -30.32
+   },
+   "20191231": {
+    "revC": 435.96,
+    "opC": 32.38
+   },
+   "20200331": {
+    "revC": 432.91,
+    "opC": 27.18
+   },
+   "20201231": {
+    "revC": 487.53,
+    "opC": 67.33
+   },
+   "20210630": {
+    "revC": 491.97,
+    "opC": 4.73
+   },
+   "20210930": {
+    "revC": 397.24,
+    "opC": 5.68
+   },
+   "20220930": {
+    "revC": 308.24,
+    "opC": -53.89
+   },
+   "20221231": {
+    "revC": 518.26,
+    "opC": -1.95
+   },
+   "20230331": {
+    "revC": 547.62,
+    "opC": 23.36
+   },
+   "20231231": {
+    "revC": 299.56,
+    "opC": -3.15
+   }
+  },
+  "CANHLIFE": {
+   "20250930": {
+    "revC": 2347.94,
+    "opC": 40.12
+   },
+   "20251231": {
+    "revC": 4202.25,
+    "opC": 24.98
+   },
+   "20260331": {
+    "revC": 1374.13,
+    "opC": 32.32
+   },
+   "20260630": {
+    "revC": 4350.86,
+    "opC": 23.59
+   },
+   "20241231": {
+    "revC": 1516.43,
+    "opC": 24.48
+   },
+   "20240930": {
+    "revC": 3323.2,
+    "opC": 38.91
+   },
+   "20250630": {
+    "revC": 3631.61,
+    "opC": 20.77
+   },
+   "20250331": {
+    "revC": 2783.07,
+    "opC": 29.84
+   },
+   "20240630": {
+    "revC": 3086.86,
+    "opC": 18.55
+   },
+   "20230930": {
+    "revC": 2487.21,
+    "opC": -14.93
+   },
+   "20231231": {
+    "revC": 3202.0,
+    "opC": 141.36
+   },
+   "20240331": {
+    "revC": 3534.02,
+    "opC": 31.18
+   }
+  },
+  "GVT&D": {
+   "20260331": {
+    "revC": 1637.08,
+    "opC": 444.94,
+    "ebitC": 432.82
+   },
+   "20250630": {
+    "revC": 1330.13,
+    "opC": 387.6,
+    "ebitC": 376.46
+   },
+   "20250930": {
+    "revC": 1538.46,
+    "opC": 396.46,
+    "ebitC": 384.85
+   },
+   "20251231": {
+    "revC": 1700.64,
+    "opC": 454.63,
+    "ebitC": 443.07
+   },
+   "20240630": {
+    "revC": 958.0
+   },
+   "20240930": {
+    "revC": 1108.0
+   },
+   "20241231": {
+    "revC": 1074.0
+   },
+   "20250331": {
+    "revC": 1153.0
+   },
+   "20240331": {
+    "revC": 914.0
+   },
+   "20230930": {
+    "revC": 698.0
+   },
+   "20231231": {
+    "revC": 839.0
+   },
+   "20200630": {
+    "revC": 642.79,
+    "opC": 0.32
+   },
+   "20200930": {
+    "revC": 870.9,
+    "opC": 42.82
+   },
+   "20200331": {
+    "revC": 664.17,
+    "opC": -235.74
+   },
+   "20191231": {
+    "revC": 939.8,
+    "opC": -60.94
+   }
+  },
+  "ICICIAMC": {
+   "20251231": {
+    "revC": 1514.67,
+    "opC": 1140.33,
+    "ebitC": 1114.35
+   },
+   "20260331": {
+    "revC": 1517.01,
+    "opC": 1160.06,
+    "ebitC": 1132.43
+   },
+   "20260630": {
+    "revC": 1564.22,
+    "opC": 1132.65
+   },
+   "20250630": {
+    "revC": 1330.67,
+    "opC": 945.59,
+    "ebitC": 920.26
+   },
+   "20241231": {
+    "revC": 1227.0
+   },
+   "20250331": {
+    "revC": 1269.0
+   }
+  }
+ }
+}

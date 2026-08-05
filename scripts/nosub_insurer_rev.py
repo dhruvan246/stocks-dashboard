@@ -36,8 +36,21 @@ MIN_CLEAN = 10
 WINDOW_START = 20191231
 COPY_QES = {20250331, 20250630, 20250930, 20251231}   # the only quarters the prior copies touched
 
-INSURERS = {"SBILIFE", "HDFCLIFE", "ICICIPRULI", "ICICIGI", "GICRE", "NIACL", "LICI",
-            "STARHEALTH", "NIVABUPA", "GODIGIT", "MFSL"}
+# Two groups share this gate because NSE serves NO XBRL for either, so the P6 cache test in
+# nosub_rev_derive.py can never pass for them:
+#   insurer — IRDAI format carries no XBRL P&L at all
+#   noxbrl  — the ~330 NSE-listed names NSE simply never serves an XBRL for (the ABBOTINDIA /
+#             BAYERCROP class called out in backfill_revop_gaps.py's header)
+# Pick with a positional arg: `python scripts/nosub_insurer_rev.py noxbrl --apply`
+GROUPS = {
+    "insurer": {"SBILIFE", "HDFCLIFE", "ICICIPRULI", "ICICIGI", "GICRE", "NIACL", "LICI",
+                "STARHEALTH", "NIVABUPA", "GODIGIT", "MFSL"},
+    "noxbrl": {"GVT&D", "ABBOTINDIA", "BOSCH-HCIL", "BAJAJHFL", "BAYERCROP", "CANHLIFE",
+               "ICICIAMC", "ALIVUS", "ENRIN", "LGEINDIA"},
+}
+GROUP = next((a for a in sys.argv[1:] if a in GROUPS), "insurer")
+INSURERS = GROUPS[GROUP]
+LEDGER_OUT = "scripts/nosub_%s_rev_fills.json" % GROUP
 
 REV_S, REV_C, OP_S, OP_C, PAT_S, PAT_C, FINFLAG, EBIT_S, EBIT_C = range(9)
 TWINS = [(REV_C, REV_S, "revC"), (OP_C, OP_S, "opC"), (EBIT_C, EBIT_S, "ebitC")]
@@ -92,7 +105,7 @@ for _, _, _, n, _ in fills:
     by_field[n] += 1
 
 print("=" * 74)
-print(f"{'APPLY' if APPLY else 'DRY RUN'} — insurer no-sub consolidated derivation")
+print("%s — no-sub consolidated derivation (group=%s)" % ("APPLY" if APPLY else "DRY RUN", GROUP))
 print("=" * 74)
 summary = ", ".join("%s(%dq)" % (s, v["copy_free_quarters"]) for s, v in proven.items())
 print("PROVEN : %d  %s" % (len(proven), summary))
@@ -123,13 +136,13 @@ with open("docs/sf_revop.json", "w", encoding="utf-8") as f:
     json.dump(revop, f, separators=(",", ":"))
 with open("scripts/revop_fundamentals.json", "w", encoding="utf-8") as f:
     json.dump(ledger, f, separators=(",", ":"))
-with open("scripts/nosub_insurer_rev_fills.json", "w", encoding="utf-8") as f:
+with open(LEDGER_OUT, "w", encoding="utf-8") as f:
     json.dump({
         "generated": "2026-08-05",
         "campaign": "FILL-2020 Phase 1b (scripts/FILL2020_CAMPAIGN.md)",
-        "method": "no-sub consolidated identity for insurers (SEBI LODR Reg 33)",
-        "evidence_class": "PAT identity over copy-free quarters ONLY — insurers file IRDAI format "
-                          "with no XBRL P&L, so the XBRL gate used by nosub_rev_derive.py (P6) cannot "
+        "method": "no-sub consolidated identity (SEBI LODR Reg 33)", "group": GROUP,
+        "evidence_class": "PAT identity over copy-free quarters ONLY — NSE serves no XBRL for these "
+                          "names, so the XBRL gate used by nosub_rev_derive.py (P6) cannot "
                           "apply; quarters touched by apply_nosub_constd*.py are excluded so the test "
                           "cannot be satisfied by those copies",
         "copy_quarters_excluded": sorted(COPY_QES),
