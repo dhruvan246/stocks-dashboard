@@ -559,10 +559,18 @@ own cap — no ledger, no landing code, nothing pushed except this write-up):
 Next: either STEP W-execute (harvest per the recipe above) or STEP Q close-out QA on D+N first —
 user's call, both are now unblocked.
 
-### STEP W-execute — status (2026-08-05, Sonnet): 8 BATCHES SHIPPED, 755 cells / 122 companies (21.6%)
-**Running total after batch 8 (verified on origin): 755 cells, 122 companies, ~500 refused.**
+### STEP W-execute — status (2026-08-05, Sonnet): 10 BATCHES SHIPPED, 768 cells / 123 companies (21.7%)
+**Running total after batch 10 (verified on origin): 768 cells, 123 companies, ~500 refused.**
+**PAUSED here deliberately, not blocked**: wayback's connection quality degraded hard for the back
+half of this session (batches 9-10 landed only 5 and 8 cells respectively across 1,000+ log lines
+each — well under 1% yield) after recovering from the earlier full outage but never returning to
+batches 1-6's throughput. Every batch still checkpointed and pushed rather than left sitting
+locally. **Resume whenever convenient — a quick 2-3 sample CDX pings (see `_stepw_wb.cdx()`
+against a trivial URL) before committing to a full run is the cheap way to check whether
+conditions have recovered; don't grind a sub-1% run to conclusion, stop and re-check instead.**
 Batches: #1 114/19 · #2 +192→306/48 · #3 +188→494/76 · #4 +52→546/84 · #5 +100→646/100 · #6
-+83→729/117 · #7 +20→749/122 · #8 +6→755/122 (batches 5-8 all pushed via reset+reapply — plain
++83→729/117 · #7 +20→749/122 · #8 +6→755/122 · #9 +5→760/122 · #10 +8→768/123 (batches 5-10 all
+pushed via reset+reapply — plain
 rebase conflicted on the minified JSON every single time origin moved between fetch and push,
 which given ~30 concurrent CI workflows on this repo is most attempts; never worth retrying plain
 rebase more than once). Batch 5 caught+resolved a new revop_sanity flag, CUMMINSIND
@@ -799,3 +807,11 @@ pre2015_reads_w.json` → commit (tracked ledger + `_apply_reads.py` if changed 
   a past incident — more concurrent writers against an already-struggling endpoint would
   likely worsen it, not help. RESUME: `cd scripts && python -X utf8 -u _stepw_nse_pre15.py`,
   no arguments, continues from company 122/566 (~444 remain).
+- 2026-08-05: STEP W-execute batches 9-10 shipped (Sonnet), then DELIBERATELY PAUSED —
+  cumulative 768 cells / 123 companies (21.7%), verified on origin. wayback never returned
+  to earlier throughput after the mid-session outage cleared — yield fell under 1% (5 and 8
+  cells landed across 1,000+ log lines each). Stopped grinding a low-yield connection rather
+  than keep burning cycles; both tiny batches still checkpointed+pushed regardless, nothing
+  left uncommitted. RESUME: same command as above, continues from company 123/566 (~443
+  remain) — cheap health-check first (a couple of trivial CDX pings) before committing to a
+  full run, per the note in the status block above.
