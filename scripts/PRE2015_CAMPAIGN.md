@@ -559,7 +559,35 @@ own cap — no ledger, no landing code, nothing pushed except this write-up):
 Next: either STEP W-execute (harvest per the recipe above) or STEP Q close-out QA on D+N first —
 user's call, both are now unblocked.
 
-### STEP W-execute — status (2026-08-05, Sonnet): 14 BATCHES SHIPPED, 788 cells / 127 companies (22.4%)
+### STEP W-execute — status (2026-08-06, Sonnet): 15 BATCHES SHIPPED, 808 cells / 130 companies (22.9%)
+**Running total after batch 15 (verified on origin): 808 cells, 130 companies, ~500+ refused.**
+Batch 15: +20→808/130 (FSS, GAIL, GAMMONIND, GARDENSILK). Cross-machine session (Mac): first full
+launch hit a TOTAL wayback outage (TCP `Connection refused` on port 443 specifically — port 80 to
+the same host and port 443 to plain `archive.org` both worked, so this was wayback's own HTTPS
+frontend, not a local network problem), 0/3,200+ requests over the whole 566-symbol pass, manually
+stopped per the campaign's own "don't grind a sub-1% run" line rather than let it run to
+completion. Recovered ~3 min later (confirmed via `_stepw_wb.cdx()` probe, not a lucky single
+ping). **Real bug found and fixed on resume**: the stop-gate's `sys.exit(2)` was NOT actually
+terminating the process — `concurrent.futures`' own atexit handler joins the prefetch daemon
+thread's `ThreadPoolExecutor` and blocks interpreter shutdown until its ENTIRE queued job list
+drains (thousands of candidates), so the harvester kept hammering wayback for 1min+ after printing
+STOP-GATE and dumping the ledger, defeating the gate's whole purpose. Fixed: `os._exit(2)` instead
+(verified safe in isolation first — `_dump()`'s file handles are already closed via CPython
+refcounting by the time exit runs, so nothing needed the normal teardown). Pushed as `fc228b3a`
+before resuming. With the fix live, wrapped the harvester in a bounded auto-retry loop (15
+attempts, 3-min backoff, stops early on natural completion) instead of manually re-launching on
+every flicker — resuming is free (already-landed/attempted cells skipped), so this just
+opportunistically grabs cells during any good connectivity window. Yield across 8 attempts: landed
+cells every attempt except two, repeatedly stalling at the same alphabetical point (GAMMONIND then
+GEOMETRIC) for 3-4 attempts each before getting through — live probes during the GEOMETRIC wall
+showed the same generic `Max retries exceeded` failures on totally different URLs/timestamps each
+time (not a company-specific bug, just where the cumulative 8-consecutive-failure counter kept
+landing). Paused deliberately (not blocked) after 8 attempts on user instruction while still
+mid-plateau at GEOMETRIC — resume picks up exactly there via the recipe below, no special
+handling needed. `_stepw_nse_pre15.py`'s stop-gate fix (`os._exit`) is live in this push; no other
+code changes.
+
+### STEP W-execute — batch 14 status (superseded by batch 15 above, kept for continuity)
 **Running total after batch 14 (verified on origin): 788 cells, 127 companies, ~500 refused.**
 Batch 12: +5→775/124, same flickering-connection pattern batch 11 measured (no new mechanism,
 not re-described here). Batch 13: +5→780/126, harvester's OWN stop-gate fired (8 consecutive
