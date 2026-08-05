@@ -3020,3 +3020,39 @@ Convention guards that bit repeatedly: bank rev = Interest Earned; holdco std re
 (RELIGARE 0.33) or negative as-filed (NITINFIRE -173.06, JPINFRATEC -640.75 — 106-cell
 precedent); HMT-class stored series may be the AUDITED-restated basis — match the SERIES
 convention (continuing-ops rev 2.30), not the original filing, when stored PATs prove restated.
+
+## 50. ★ THE DEEP-FUNDAMENTALS NIGHTLY IS A CLOUD ROUTINE  (moved off the desktop 2026-08-05)
+
+`scripts/xbrl_extra.json.gz` — the ~200-tag-per-filing ledger behind the stock page's Financial
+detail block (EPS, balance sheet, cash flow, segments, bank health) — was topped up by a LOCAL
+scheduled task reading the 80-GB `scripts/_xbrl_cache`. It now runs as a **cloud routine**
+(claude.ai/code/routines, 00:00 IST daily), landing via `claude/xbrl-extra-<ts>` → PR →
+`gh pr merge --squash --admin`, exactly like the vision-fill routine (§17b). The local task is
+DISABLED, kept as fallback. `.github/workflows/xbrl-extra-nightly.yml` exists but has **no cron**
+— it is the MANUAL rescue lever (dispatch it for a big catch-up; a GitHub runner reaches
+nsearchives directly and its Actions cache makes repeat runs cheap).
+
+**A cloud sandbox keeps NOTHING between runs, so the state had to move into the repo.** Two
+committed files are the whole contract, and both runners maintain them identically:
+- `scripts/xbrl_extra.json.gz` — the ledger. Every run `gunzip`s it as its starting point, so
+  the repo, not any machine, is the source of truth.
+- `scripts/xtra_seen_window.json.gz` (~16 KB, 2.3k names) — the seen-set **pruned to the last 60
+  days by FILING timestamp**. This is the piece that makes a stateless run cheap: `fetch_new`
+  treats seen names as already-`have`, so an empty sandbox downloads only genuinely NEW filings
+  (~200/night) instead of the whole 14-day window (~3.6k). Names older than the list window can
+  never be re-offered, hence the prune — full seen-sets are 100k+ names and would bloat git.
+
+Reusable lessons for moving any local routine to cloud:
+- **Prove the replay is idempotent before allowing state loss.** Here it is: the window holds only
+  the NEWEST filings and the ledger merges per-field, non-null, latest-wins — so re-extracting a
+  window file can only re-assert. That property is what turns "lost cache" into a slow night
+  instead of corruption. Check it before copying this pattern.
+- **Never synthesize a seen-set from a filings LIST** — marking a file seen that was never
+  extracted loses that quarter silently until the company refiles. Seed it only from the cache
+  listing taken BEFORE the fetch (`--seed-seen`), or from the committed copy (`--seen-repo`).
+- **Cap the cold start** (`--max-fetch`): the first run has to fetch whatever the committed
+  seen-window doesn't cover, and NSE is ~1 s per file. The window overlap self-heals the rest.
+- `--prune-cache-days` refuses on any cache over 20k files, so a stray flag can never eat the
+  local 80-GB one.
+- `--push` stays refused from a tree named `stocks-dashboard` (CLAUDE.md rule 2), which is also
+  the runner's checkout name — cloud and CI both commit via their own retry/PR path instead.
