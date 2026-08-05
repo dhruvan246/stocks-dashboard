@@ -559,7 +559,19 @@ own cap — no ledger, no landing code, nothing pushed except this write-up):
 Next: either STEP W-execute (harvest per the recipe above) or STEP Q close-out QA on D+N first —
 user's call, both are now unblocked.
 
-### STEP W-execute — status (2026-08-05, Sonnet): BATCH 1 SHIPPED, 114 cells / 19 companies
+### STEP W-execute — status (2026-08-05, Sonnet): 5 BATCHES SHIPPED, 646 cells / 100 companies (17.7%)
+**Running total after batch 5 (verified on origin): 646 cells, 100 companies, 454 refused.**
+Batches: #1 114/19 · #2 +192→306/48 · #3 +188→494/76 · #4 +52→546/84 · #5 +100→646/100 (this one
+also caught+resolved a new revop_sanity flag, CUMMINSIND 20040930/20041231 — exact revenue
+coincidence across two DIFFERENT source captures with different PAT, same "genuine
+duplicate-value" class STEP D already documented, nulled per revop_sanity's default, PAT
+unaffected). Retry/backoff in `_stepw_wb.py` tightened mid-run (2 attempts/5s backoff, was
+4/10-20-30s) — same request volume, far less wasted wall-clock sleeping on dead connections;
+roughly doubled throughput in the following batch. Batch-1's own detailed findings (calendar-year
+gate-mix pattern, the two pre-launch bugs, the fetch-failure/refusal design fix) below still hold
+and were not re-litigated per batch. **RESUME exactly as below — nothing else has changed.**
+
+#### Batch 1 detail (114 cells / 19 companies) — findings below still apply to every later batch
 Worktree `pre2015-stepw-harvest`. `scripts/_stepw_wb.py` (wayback CDX+fetch, untracked scratch)
 + `scripts/_stepw_nse_pre15.py` (untracked scratch, mirrors STEP N's structure: universe → per-
 symbol candidate fetch → FY bucketing → chain/cumdiff resolution → gate S/F/E in that priority —
@@ -747,3 +759,13 @@ pre2015_reads_w.json` → commit (tracked ledger + `_apply_reads.py` if changed 
   to stay retryable). Stopped at 19/566 companies due to sustained wayback throttling
   (environmental, not a defect); full resume recipe in the status block — re-running the
   harvester with no arguments continues alphabetically for free.
+- 2026-08-05: STEP W-execute batches 2-5 shipped (Sonnet) — cumulative 646 cells / 100
+  companies (17.7%), 454 refused, all verified on origin after every batch. Retry/backoff
+  tightened mid-run (`_stepw_wb.py`: 2 attempts/5s, was 4/10-20-30s) for roughly 2x
+  throughput at the same request volume — deliberately NOT parallelized across agents
+  (the bottleneck is wayback's own connection throttling, not local orchestration; more
+  concurrent writers against the same rate-limited endpoint plus the standing
+  one-writer-at-a-time rule for this class of backfill made that the wrong lever). One new
+  revop_sanity flag this run (CUMMINSIND, genuine duplicate-value coincidence, same class
+  STEP D already named) resolved the same way STEP D did. RESUME: `cd scripts && python
+  -X utf8 -u _stepw_nse_pre15.py`, no arguments, continues from company 100/566.
