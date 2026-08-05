@@ -1,10 +1,16 @@
 name: Deep-fundamentals ledger top-up
 
+# ⚠️ NOT the nightly runner — that is the CLOUD ROUTINE (claude.ai/code/routines, 00:00 IST),
+# see DATA_RUNBOOK §50. This workflow is the MANUAL RESCUE: dispatch it when the routine is
+# broken or when a catch-up needs more throughput than a routine run gives (a GitHub runner
+# reaches nsearchives without the worker relay, and the Actions cache makes repeat runs cheap).
+# Both runners share ONE state contract — the committed ledger .gz and seen-window .gz — so
+# either can run any night without confusing the other.
+#
 # Keeps scripts/xbrl_extra.json.gz — the ~200-tag-per-filing ledger behind the stock page's
 # "Financial detail" block (EPS, balance sheet, cash flow, segments, bank health) — current with
 # each day's NSE filings. Pushing the .gz push-triggers refresh-stock-fin.yml, so the per-stock
-# fin slices follow minutes later. Ran as a LOCAL scheduled task until 2026-08-05; moved here so
-# it no longer depends on this machine being awake.
+# fin slices follow minutes later.
 #
 # STATE, and why none of it has to be committed:
 #   ledger  — gunzipped from the committed .gz at the start of every run (authoritative).
@@ -19,11 +25,8 @@ name: Deep-fundamentals ledger top-up
 #   no state behind, so tomorrow redoes it rather than marking those filings seen-but-unextracted.
 
 on:
-  schedule:
-    # 18:30 UTC = 00:00 IST — after the day's filings have landed (they cluster 15:00–20:00 IST)
-    # and after refresh-fundamentals' 17:45 UTC late top-up. GitHub's scheduler drifts up to ~45
-    # min under load; harmless here, the 14-day window self-heals a whole missed night.
-    - cron: "30 18 * * *"
+  # No cron ON PURPOSE: the routine owns the nightly slot. Two schedulers on one ledger would
+  # just race each other's pushes for the same filings.
   workflow_dispatch:
     inputs:
       max_fetch:
@@ -82,7 +85,8 @@ jobs:
           MF="${{ github.event.inputs.max_fetch }}"; MF="${MF:-1500}"
           WIN="${{ github.event.inputs.window }}"; WIN="${WIN:-14}"
           python3 -X utf8 scripts/xtra_nightly.py \
-            --window "$WIN" --max-fetch "$MF" --seed-seen --prune-cache-days 21
+            --window "$WIN" --max-fetch "$MF" --seed-seen --prune-cache-days 21 \
+            --seen-repo scripts/xtra_seen_window.json.gz
 
       # No --push above: xtra_nightly.py refuses it from a tree named stocks-dashboard (CLAUDE.md
       # rule 2) and the runner's checkout is exactly that. Committing here also matches the rest of
@@ -92,10 +96,12 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           cp scripts/xbrl_extra.json.gz /tmp/xbrl_extra.json.gz
+          cp scripts/xtra_seen_window.json.gz /tmp/xtra_seen_window.json.gz
           for attempt in 1 2 3 4 5; do
             git fetch origin main && git reset --hard origin/main
             cp /tmp/xbrl_extra.json.gz scripts/xbrl_extra.json.gz
-            git add scripts/xbrl_extra.json.gz
+            cp /tmp/xtra_seen_window.json.gz scripts/xtra_seen_window.json.gz
+            git add scripts/xbrl_extra.json.gz scripts/xtra_seen_window.json.gz
             if git diff --cached --quiet; then echo "gz unchanged — nothing to push"; exit 0; fi
             git commit -q -m "Deep-fundamentals ledger top-up $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
             if git push origin HEAD:main; then echo "pushed (attempt #$attempt)"; exit 0; fi

@@ -11,19 +11,23 @@ Keeps scripts/xbrl_extra.json.gz current with each day's filings. Three steps:
   3. PUBLISH (--push): re-gzip the ledger and commit/push xbrl_extra.json.gz, which
      push-triggers refresh-stock-fin.yml → fresh fin slices minutes later.
 
-CLOUD (xbrl-extra-nightly.yml, the primary runner since 2026-08-05): CI has no 80-GB
-cache, so it keeps a ROLLING one — only the window's filings, restored from the Actions
-cache — and pushes the .gz from the workflow (this script's --push refuses there, see
-below). Three flags exist for that mode:
+CLOUD (the primary runner since 2026-08-05): no 80-GB cache out there, so the routine keeps
+NOTHING between runs except what the repo carries, and pushes the .gz itself (this script's
+--push refuses from a tree named stocks-dashboard, see below). Four flags serve that mode:
+  --seen-repo P.gz    THE state that makes a fresh sandbox viable. Seeds the seen-set from
+                      this committed gz, and rewrites it (pruned to SEEN_KEEP_DAYS) at the
+                      end. Without it an empty sandbox re-downloads the whole window nightly;
+                      with it, only genuinely new filings are fetched. Names older than the
+                      list window can never be re-offered, hence the prune — the file stays
+                      ~30 KB, cheap to commit daily.
   --seed-seen         write the seen-set from the current cache listing when it's missing.
-                      A cold CI cache is EMPTY, so the seed is empty and every file
-                      downloaded that night gets extracted — correct, not a silent skip.
-  --max-fetch N       stop downloading after N new files. A cold start (whole window
-                      missing) then spreads over a few nights instead of blowing the job
-                      timeout; the window overlap re-offers the rest.
-  --prune-cache-days N  after a successful extract, drop cache files older than N days —
-                      they can never be re-offered by an N>WINDOW_DAYS-day list. Refuses on
-                      a cache that looks like the big local one (see PRUNE_MAX_FILES).
+                      A cold cache is EMPTY, so the seed is empty and every file downloaded
+                      that night gets extracted — correct, not a silent skip.
+  --max-fetch N       stop downloading after N new files, so a cold start spreads over a few
+                      nights instead of blowing the job timeout; the window re-offers the rest.
+  --prune-cache-days N  after a successful extract, drop cache files older than N days — they
+                      can never be re-offered by an N>WINDOW_DAYS-day list. Refuses on a cache
+                      that looks like the big local one (see PRUNE_MAX_FILES).
 Replaying a window file is harmless: the window only ever holds the NEWEST filings, and the
 ledger merges per-field non-null latest-wins, so a re-extract can only re-assert.
 
@@ -58,6 +62,9 @@ WINDOW_DAYS = 14
 # ~100k+ irreplaceable filings back to 2018, so refuse to prune anything that big — a stray flag
 # must never eat it.
 PRUNE_MAX_FILES = 20000
+# How much of the seen-set the committed --seen-repo copy keeps. Only names the filings list can
+# still offer matter, so WINDOW_DAYS would do; 60 leaves room to widen --window after an outage.
+SEEN_KEEP_DAYS = 60
 WORKER = "https://stocksworld-quotes.dhruvan2510.workers.dev"
 
 
@@ -153,6 +160,12 @@ def fetch_new(rows, max_fetch=None):
     """Download every listed XBRL the cache doesn't have yet. Append-only; failures skip
     (the window overlap re-offers them tomorrow). max_fetch caps a cold CI start."""
     have = set(os.listdir(CACHE))
+    # An already-EXTRACTED filing needs no re-download even when the cache is gone (cloud runs
+    # start empty every night) — the seen-set is the durable half of "have".
+    try:
+        have |= set(json.load(open(SEEN)))
+    except Exception:
+        pass
     new, fail = 0, 0
     jar = warm_jar()
     for r in rows:
@@ -207,9 +220,32 @@ def prune_cache(days):
     print("cache prune: -%d files older than %dd (%d kept)" % (gone, days, len(names) - gone))
 
 
+def seen_repo_load(path):
+    """Seed the seen-set from the committed gz (cloud runs keep no state of their own)."""
+    if os.path.exists(SEEN) or not os.path.exists(path):
+        return
+    names = json.loads(gzip.open(path, "rb").read().decode("utf-8"))
+    json.dump(names, open(SEEN, "w"), separators=(",", ":"))
+    print("seen-repo: seeded %d names from %s" % (len(names), os.path.basename(path)))
+
+
+def seen_repo_save(path):
+    """Write the seen-set back, pruned to SEEN_KEEP_DAYS by FILING timestamp (not mtime — the
+    committed copy outlives every machine that wrote it). Unparseable names are kept."""
+    import build_xbrl_extra as BX          # ts_key: the one canonical filename→timestamp reader
+    names = json.load(open(SEEN))
+    cutoff = (datetime.date.today() - datetime.timedelta(days=SEEN_KEEP_DAYS)).strftime("%Y%m%d")
+    keep = [n for n in names if not BX.ts_key(n)[:8].isdigit() or BX.ts_key(n)[:8] >= cutoff]
+    blob = json.dumps(sorted(keep), separators=(",", ":")).encode("utf-8")
+    open(path, "wb").write(gzip.compress(blob, 9))
+    print("seen-repo: %d names kept (last %dd), %d dropped -> %.0f KB gz"
+          % (len(keep), SEEN_KEEP_DAYS, len(names) - len(keep), os.path.getsize(path) / 1024.0))
+
+
 def main():
     args = sys.argv[1:]
     push = "--push" in args
+    seen_repo = args[args.index("--seen-repo") + 1] if "--seen-repo" in args else None
     def opt(name, default=None):
         return int(args[args.index(name) + 1]) if name in args else default
     window = opt("--window", WINDOW_DAYS)
@@ -225,6 +261,8 @@ def main():
             sys.exit("ABORT: cache dir %s missing — set XBRL_CACHE to the main checkout's scripts/_xbrl_cache" % CACHE)
     # Seed the seen-set BEFORE fetching: everything already cached was extracted by an earlier
     # run, everything downloaded below is new. (Cold cache ⇒ empty seed ⇒ extract all.)
+    if seen_repo:
+        seen_repo_load(seen_repo)
     if "--seed-seen" in args and not os.path.exists(SEEN):
         json.dump(sorted(os.listdir(CACHE)), open(SEEN, "w"), separators=(",", ":"))
         print("seeded seen-set from %d cached files" % len(os.listdir(CACHE)))
@@ -244,6 +282,8 @@ def main():
 
     if prune_days:                          # only after the extract above succeeded
         prune_cache(prune_days)
+    if seen_repo:
+        seen_repo_save(seen_repo)
 
     if push:
         def git(*a):
