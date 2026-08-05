@@ -137,3 +137,83 @@ quarter — sweep only those (they're pipeline misses, not unfiled results). Do 
 - Phase 2: `Read scripts/FILL2020_CAMPAIGN.md; execute Phase 2 up to the gate, show me the no-sub list and wait for my yes.`
 - Phase 3: `Read scripts/FILL2020_CAMPAIGN.md; execute Phase 3, one chunk at a time. Report after each chunk's apply+push.`
 - Phase 4+5: `Read scripts/FILL2020_CAMPAIGN.md; execute Phases 4 and 5 and post the final before/after tables.`
+
+---
+
+# RESUMING ON A DIFFERENT MACHINE  (written 2026-08-06, at 920/1,749 cells = 53%)
+
+Everything needed is on **origin/main**. A fresh clone is sufficient; nothing else must be carried
+across. The 4.1 GB `scripts/_revgap_pdfcache/` and the 104k-file `scripts/_xbrl_cache/` are pure
+caches — do NOT copy them, they refetch/aren't needed (the one distilled artifact that matters,
+`scripts/xbrl_nature.json`, is tracked).
+
+## 1. Setup
+```
+git clone https://github.com/dhruvan246/stocks-dashboard.git
+cd stocks-dashboard
+pip install pymupdf curl_cffi          # backfill_revop_gaps needs fitz + the BSE session helpers
+python -X utf8 scripts/fill2020_tools/audit_coverage.py
+```
+That last command must print **TOTAL 1749 / 829 / 920 (53% closed)** (higher "closed" is fine — CI
+keeps filling the live quarter). If it errors, nothing else below will work.
+
+## 2. Work in a throwaway worktree, never the shared checkout (CLAUDE.md rules 1-2)
+```
+git worktree add --detach ~/stocks-wt/fill2020 origin/main
+cd ~/stocks-wt/fill2020
+```
+
+## 3. What is already carried in git
+- data + 920 filled cells: `docs/sf_revop.json`, `scripts/revop_fundamentals.json`
+- derivation tools + proofs: `scripts/nosub_rev_derive.py`, `scripts/nosub_insurer_rev.py`,
+  `scripts/scan_xbrl_nature.py`, `scripts/xbrl_nature.json`
+- provenance ledgers: `scripts/nosub_rev_fills.json`, `nosub_insurer_rev_fills.json`,
+  `nosub_noxbrl_rev_fills.json`
+- fetch tool with the campaign's `--qe` flag: `scripts/backfill_revop_gaps.py`
+- **skip/done ledgers (force-added, previously gitignored):** `scripts/_revgap_skips.json`
+  (~12.6k entries — without it every known-dead cell gets re-ground), `scripts/_revgap_done.json`,
+  `scripts/sf_pnl_full.json`
+- campaign tooling: `scripts/fill2020_tools/` (audit_coverage, merge_fillonly, p3_run, scan_jun2022)
+
+## 4. THE BLOCKER TO SOLVE FIRST — do not just restart the sweep
+Phase 3 is **stalled, not merely unfinished**. `backfill_revop_gaps.py` prints
+`DONE: filled N basis-cells` counting values it EXTRACTED, including ones already stored. Proven
+2026-08-05: an M&M run reported "filled 46 cells" and a manual 2-quarter run reported 7, yet in both
+cases `docs/sf_revop.json` was rewritten with a **SHA identical to HEAD** and M&M's 20 gap quarters
+were untouched. **Measure yield with `git diff --stat` / `sha1sum` against HEAD, never the tool's own
+line.** The only real Phase-3 fills are the 42 cells in commit 7d77d8b2, where the fill-only merge
+reported a true added-count because it diffs actual values.
+
+Root cause for M&M specifically: its gaps are **standalone** revenue (revS x17), while `--rescue`
+mines **consolidated** comparative columns it already has. Before grinding, per target check WHICH
+BASIS is missing and whether the chosen route can even produce it:
+```
+python -X utf8 - <<'PY'
+import json
+r=json.load(open('docs/sf_revop.json'))
+sym='M&M'
+for q,row in sorted(r[sym].items()):
+    if q>='20191231' and (row[0] is None or row[1] is None):
+        print(q, 'missing', 'std' if row[0] is None else '', 'con' if row[1] is None else '')
+PY
+```
+
+## 5. Remaining 829 cells
+- **549 / 177 companies non-financial** — `backfill_revop_gaps` territory, but see §4 first.
+- **255 / 57 financial** — banks/NBFCs/insurers. This tool rebuilds a P&L from "revenue from
+  operations" rows a bank's P&L does NOT have (its top line is Interest Earned), so they fail
+  systematically (CUB: 0 fills from 16 PDFs). Needs a bank/NBFC-format reader — unbuilt.
+- **25 PAT cells** — mostly merger/casualty quarters possibly never filed (HDFC Jun-23 class).
+  Document-unfillable with evidence is a valid DONE.
+
+## 6. Pushing these files (CI rewrites sf_revop every few minutes, so textual rebase ALWAYS conflicts)
+Never resolve conflict markers in the minified JSONs. Use the semantic fill-only merge: start from
+origin's newer file, copy in only cells where yours has a value and origin is None (CI always wins).
+```
+git fetch origin -q && git reset --hard origin/main -q
+python -X utf8 scripts/fill2020_tools/merge_fillonly.py MINE.json docs/sf_revop.json docs/sf_revop.json
+python -X utf8 scripts/revop_sanity.py          # run after EVERY pass
+git add docs/sf_revop.json scripts/revop_fundamentals.json && git commit && git push origin HEAD:main
+```
+Retry the whole block on rejection. `revop_sanity.py` earns its keep — it caught and nulled a junk
+fill this campaign (ADANIENT 20220630 con rev 3.17 vs std 20318.47).
