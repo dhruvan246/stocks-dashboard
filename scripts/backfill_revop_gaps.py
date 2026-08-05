@@ -315,6 +315,14 @@ def main():
     all_q = "--all-quarters" in args
     # --years caps how far back to sweep; absent = FULL PAT history (every quarter in sf_fundamentals).
     back_years = int(args[args.index("--years") + 1]) if "--years" in args else None
+    # --qe 20220630[,20220930] restricts the sweep to specific quarter-ends (implies --all-quarters,
+    # since a target quarter is usually outside the 13-quarter display window). Added for the
+    # FILL-2020 campaign's Jun-2022 pass: that ONE quarter is absent from the XBRL cache for 134 of
+    # 142 affected N500 members (verified by scanning all 104k cached filings), so it needs a
+    # surgical sweep instead of the multi-hour full-history one.
+    qe_filter = set(int(q) for q in args[args.index("--qe") + 1].split(",")) if "--qe" in args else None
+    if qe_filter:
+        all_q = True
 
     fund = json.load(open(FUND))
     revop = json.load(open(REVOP_DOCS))
@@ -336,6 +344,8 @@ def main():
             lo = (latest // 10000 - back_years) * 10000
             hist = [q for q in hist if q > lo]
         qes = hist
+    if qe_filter:
+        qes = sorted(qe_filter)
     fmap = {s: {r[0]: r for r in rows} for s, rows in fund.items()}
 
     def pat_of(sym, qe, basis):
