@@ -559,18 +559,29 @@ own cap — no ledger, no landing code, nothing pushed except this write-up):
 Next: either STEP W-execute (harvest per the recipe above) or STEP Q close-out QA on D+N first —
 user's call, both are now unblocked.
 
-### STEP W-execute — status (2026-08-05, Sonnet): 10 BATCHES SHIPPED, 768 cells / 123 companies (21.7%)
-**Running total after batch 10 (verified on origin): 768 cells, 123 companies, ~500 refused.**
+### STEP W-execute — status (2026-08-05, Sonnet): 11 BATCHES SHIPPED, 770 cells / 123 companies (21.7%)
+**Running total after batch 11 (verified on origin): 770 cells, 123 companies, ~500 refused.**
 **PAUSED here deliberately, not blocked**: wayback's connection quality degraded hard for the back
-half of this session (batches 9-10 landed only 5 and 8 cells respectively across 1,000+ log lines
-each — well under 1% yield) after recovering from the earlier full outage but never returning to
-batches 1-6's throughput. Every batch still checkpointed and pushed rather than left sitting
-locally. **Resume whenever convenient — a quick 2-3 sample CDX pings (see `_stepw_wb.cdx()`
+half of this session (batches 9-11 landed 5, 8, then 2 cells across 1,000+ log lines each — well
+under 1% yield) after recovering from the earlier full outage but never returning to batches 1-6's
+throughput. **Batch 11 measured WHY, and it isn't what batches 9-10 assumed**: a 4-way-concurrent
+probe (matching the harvester's own prefetch pool) failed instantly (~3.3s, a fast rejection not a
+timeout) — but so did a THREE-REQUEST SEQUENTIAL probe run immediately after, at the exact same
+speed, even though an EARLIER 3-request sequential probe (minutes before) had succeeded 3/3 with
+falling latency (16.6s→1.4s→2.9s, looking like a clean recovery in progress). **Conclusion: this
+is genuinely volatile, flickering connectivity on a timescale of single minutes — not a stable
+outage, not a stable recovery, and not caused by this harvester's own concurrency level** (both
+concurrent and sequential patterns flipped between fully-OK and fully-refused within the same short
+window). A pre-flight health check is still worth doing before a full run, but a single clean
+reading doesn't predict the next five minutes — expect to just try, measure real yield over the
+first several hundred log lines, and stop early if it's near-zero rather than trusting a lucky probe.
+Every batch still checkpointed and pushed rather than left sitting locally. **Resume whenever
+convenient — a quick 2-3 sample CDX pings (see `_stepw_wb.cdx()`
 against a trivial URL) before committing to a full run is the cheap way to check whether
 conditions have recovered; don't grind a sub-1% run to conclusion, stop and re-check instead.**
 Batches: #1 114/19 · #2 +192→306/48 · #3 +188→494/76 · #4 +52→546/84 · #5 +100→646/100 · #6
-+83→729/117 · #7 +20→749/122 · #8 +6→755/122 · #9 +5→760/122 · #10 +8→768/123 (batches 5-10 all
-pushed via reset+reapply — plain
++83→729/117 · #7 +20→749/122 · #8 +6→755/122 · #9 +5→760/122 · #10 +8→768/123 · #11 +2→770/123
+(batches 5-11 all pushed via reset+reapply — plain
 rebase conflicted on the minified JSON every single time origin moved between fetch and push,
 which given ~30 concurrent CI workflows on this repo is most attempts; never worth retrying plain
 rebase more than once). Batch 5 caught+resolved a new revop_sanity flag, CUMMINSIND
@@ -815,3 +826,12 @@ pre2015_reads_w.json` → commit (tracked ledger + `_apply_reads.py` if changed 
   left uncommitted. RESUME: same command as above, continues from company 123/566 (~443
   remain) — cheap health-check first (a couple of trivial CDX pings) before committing to a
   full run, per the note in the status block above.
+- 2026-08-05: STEP W-execute batch 11 shipped (Sonnet), then PAUSED again — cumulative 770
+  cells / 123 companies (21.7%, +2 only), verified on origin. Measured WHY yield stayed near
+  zero after a clean-looking pre-flight health check: connectivity is genuinely flickering
+  minute-to-minute (a 3-request sequential probe went from 3/3 success with falling latency
+  to 3/3 instant failure within a few minutes, and a 4-way-concurrent probe failed identically
+  to a sequential one run right after — ruling out this harvester's own concurrency as the
+  cause). A single good pre-flight reading does not predict the next several minutes; the
+  reliable signal is measured yield over the run's own first few hundred lines, not a probe
+  taken before starting. RESUME: same command, continues from company 123/566 (~443 remain).
