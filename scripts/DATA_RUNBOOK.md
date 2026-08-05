@@ -322,8 +322,8 @@ in-step: pymupdf + curl_cffi + rapidocr-onnxruntime/onnxruntime/numpy. Validate:
   is lazy-fetched by `ensureHistory()` on first use of the custom-date calculator or a fund-detail modal.
   → To test either build locally without the CI source artifact: reconstruct the inputs FROM the live HTML
     (decode the `__B64__` / `histData` inline blobs), drop them in `scripts/`, run the build, verify in a
-    browser, then `git checkout` any tracked source you overwrote. Windows: prefix `PYTHONUTF8=1` (the build
-    `print()`s a `→`). See §9.
+    browser, then `git checkout` any tracked source you overwrote. (The build `print()`s a `→` — fine on
+    macOS' default UTF-8; the old Windows runs needed a `PYTHONUTF8=1` prefix.) See §9.
   → `scripts/mf_history.b64` (gitignored, CI-only, from fetch_mf_returns.py) is just base64 of the tracked
     `docs/mf_history.bin` — rebuild it in one line rather than re-fetching ~5k schemes:
     `python -c "import base64,pathlib;pathlib.Path('scripts/mf_history.b64').write_text(base64.b64encode(pathlib.Path('docs/mf_history.bin').read_bytes()).decode())"`
@@ -674,10 +674,10 @@ V-recovery (Jun-2021: +48%)**.
   (adds ALKYLAMINE/DHANUKA/GMMPFAUDLR/SUMICHEM/ABB/CSBBANK/…; keeps BLISSGVS/IFCI/NFL). `build_changelog.py`
   has stem 10062020 in FILES + a COVID-null pass dropping 18022020/12032020 events (Nifty 50/Bank redated
   2020-03-19). Do NOT add stem 19032020 (nulled too). Found via the StockView cross-audit.
-- **⚠️ web.archive.org: curl/PowerShell BLOCKED but the claude-in-chrome BROWSER reaches it** (navigate, then
+- **⚠️ web.archive.org: curl/scripted HTTP BLOCKED but the claude-in-chrome BROWSER reaches it** (navigate, then
   page-context fetch to `/cdx/search/cdx` works). ind_nifty500list.csv has only ONE 2020 snapshot (2020-07-25).
   To hunt a missing press release: probe every weekday stem `ind_prs<DDMMYYYY>[_1|_2].pdf` on live niftyindices
-  (GOTCHA: generating stems with python on Windows emits CRLF — `tr -d '\r'` or every URL silently 404s).
+  (GOTCHA, Windows-era: stem lists generated there carried CRLF — `tr -d '\r'` before use or every URL silently 404s).
 - **⚠️ MEMBERSHIP COMPLETENESS (2026-07-01 — user: "fetch every rebalance, none missed"):** `indices_history.json`
   is reconstructed from **niftyindices reconstitution press-release PDFs** (`ind_prs<DDMMYYYY>.pdf`), parsed by
   **`build_changelog.py`** → `_changelog.json` (per-index add/drop events), then **`build_membership_v2.py`** walks
@@ -1393,14 +1393,13 @@ the user's plan: no API key, no laptop-awake dependency.
   `claude/vision-fill-<timestamp>` branch → `gh pr create` → `gh pr merge --squash --delete-branch
   --admin` (merges within seconds; PRs #4/#5/#6 were the first three). A conflicted merge = leave
   the PR open and report; the next slot re-fills the same numbers.
-- **The LOCAL scheduled task is DISABLED (2026-07-28) but kept as fallback** — re-enable it from the
-  desktop app's scheduled tasks if the cloud routine breaks. Its worktree `stocks-wt/vision-fill`
-  and SKILL.md (`~/.claude/scheduled-tasks/bse-vision-fill/SKILL.md`) still exist.
+- **There is NO local fallback task anymore** — the old Windows scheduled task, its worktree and its
+  SKILL.md went away with the Windows box (retired 2026-08-05). If the cloud routine breaks, fix and
+  re-run the routine itself; do NOT recreate a local scheduled task.
 - **⚠️ The cloud prompt lives in the trigger config, NOT in a repo file.** Update via the /schedule
   skill → `RemoteTrigger {action:"update"}` (or the routines web UI). When a vision-pipeline script
   changes behavior, PORT THE CHANGE TO THE CLOUD PROMPT — nothing syncs it automatically (the
-  2026-07-27 `--qefix` fix only reached the cloud prompt on 2026-07-28, manually). Keep the local
-  SKILL.md fallback in sync too, or note the drift.
+  2026-07-27 `--qefix` fix only reached the cloud prompt on 2026-07-28, manually).
 - Environment `env_01Pb6Vujaf9FQ9m1kZXYJN9c`; sandbox egress must allow api/www.bseindia.com,
   nsearchives/www.nseindia.com and the CF worker. BSE IS reachable from Anthropic egress (verified
   2026-07-23); if that ever changes the run reports a cloud-IP block explicitly.
@@ -1716,7 +1715,7 @@ TTM profit were complete the whole time.
   simultaneously → (a) both used the same `.tmp` path — one's os.replace stole the other's file
   (FileNotFoundError / WinError 5), (b) whole-file flushes from a stale in-memory copy REVERTED the other
   writer's freshly-added quarters, (c) a mid-write read produced a torn JSON. Mitigations now in code:
-  pid-suffixed tmp + retry-on-PermissionError in save_hist (Windows readers block os.replace). For any
+  pid-suffixed tmp + retry-on-PermissionError in save_hist (Windows-era: readers there blocked os.replace). For any
   big backfill while another writer may run: use **`--hist scripts/shp_history_stage.json`** (staging file,
   implies no feed/meta rebuild) then **`python scripts/_shp_merge_stage.py`** once the other writer exits
   (fill-only + newer-submission-wins + shrink-ABORT). CI is safe (workflow `concurrency` group).
@@ -2144,7 +2143,7 @@ Recipe (all steps have working scripts in scripts/, see memory project-stocks-n5
 
 Gotchas that cost time: don't CDX only `.csv` — the same NSE list lived at `.htm`/`.xls` (2002-2006 full lists
 found that way, saved scripts/_n500_pre2008/); the 2008 `.htm` "gzip-corrupt" wayback capture is really PLAIN
-HTML mislabeled by wayback (fetch raw, skip auto-decode) but is an 11KB shell; TZ= doesn't work in Git Bash.
+HTML mislabeled by wayback (fetch raw, skip auto-decode) but is an 11KB shell; (Windows-era) TZ= didn't work in Git Bash.
 
 Membership-hunt asset inventory (untracked, scripts/): _n500_mc_caps/ (85 raw MC captures), _n500_mc_parsed.json
 (74 full lists), _n500_pre2008/ (28 official 2002-06 lists), _n500_rawcsv/ (official CSVs + era EQUITY_L),
@@ -2427,27 +2426,28 @@ Gotchas:
 - **GitHub Actions** (~30 `refresh-*.yml` + `refresh.yml` + `pages.yml`…) — cloud checkouts,
   file-scoped `git add`, per-workflow `concurrency:` groups, rebase-retry push. Well-behaved;
   keep that pattern intact when editing workflows.
-- **Cloud Claude routines** (claude.ai/code/routines; today: bse-vision-fill at 13:30/16:30/20:30/
-  23:30 IST, §17b) — fresh throwaway VM per run, lands work via a `claude/*` branch + auto-merged PR.
-  (The former LOCAL scheduled-task pattern — private persistent worktree under
-  `C:\Users\dhruv\stocks-wt\<task>`, never the interactive checkout — is disabled for vision-fill
+- **Cloud Claude routines** (claude.ai/code/routines; today: bse-vision-fill 4×/day §17b +
+  deep-fundamentals nightly §50) — fresh throwaway VM per run, lands work via a `claude/*` branch +
+  auto-merged PR. (The old LOCAL scheduled-task pattern — private persistent worktree under
+  `~/stocks-wt/<task>`, never the interactive checkout — retired with the Windows box 2026-08-05,
   but remains the rule for any future local routine.)
-- **Interactive Claude sessions** (often several at once) — share `C:\Users\dhruv\stocks-dashboard`.
+- **Interactive Claude sessions** (often several at once) — share `/Users/dhruvan/stocks-dashboard`.
 
 **THE RULES** (mirrored in repo-root CLAUDE.md, which every session auto-loads):
 1. Own-files-only staging; never `git add -A` / `git commit -a`.
 2. No `reset --hard` / `stash` / `rebase --autostash` in the shared checkout — worktrees only.
-3. Long/scripted jobs → own worktree (`git worktree add --detach C:/Users/dhruv/stocks-wt/<name> origin/main`).
+3. Long/scripted jobs → own worktree (`git worktree add --detach ~/stocks-wt/<name> origin/main`).
 4. Rebase-retry push; if blocked by others' dirty files → cherry-pick your commit in a temp worktree.
 5. Ledgers, not derived files; re-verify LIVE ~20 min after any heal push (in-flight CI can race).
-6. Plain local `date` for commit labels — `TZ=Asia/Kolkata date` prints UTC on this machine (no tzdata in git-bash).
+6. Plain local `date` for commit labels (the Mac runs IST; the old Windows git-bash TZ=-prints-UTC trap is gone).
 
 Rules 1–2 are ENFORCED BY HOOKS: `.claude/settings.json` runs `scripts/_concurrency_guard.py`
 (pre-edit: file dirty from another session → confirmation prompt; pre-bash: `reset --hard` /
 `stash` / `add -A` / `commit -a` / autostash-rebase / `checkout .` / `clean` / force-push in the
 shared checkout → confirmation prompt; session-start: injects the current dirty-file list).
-Worktrees (`stocks-wt\*`, `.claude\worktrees\*`) are exempt — single-writer by construction.
-Guard gotcha: PowerShell 5.1 pipes prepend a UTF-8 BOM; the guard strips it before json.load.
+Worktrees (`stocks-wt/*`, `.claude/worktrees/*`) are exempt — single-writer by construction.
+Guard gotcha (Windows-era): PowerShell 5.1 pipes prepended a UTF-8 BOM; the guard still strips
+one before json.load (harmless on macOS).
 
 **CASE STUDY 2026-07-22** (why these rules exist): the scheduler fired vision-fill at 03:42 IST;
 the laptop slept mid-run; the commit label read "21-Jul 22:22 IST" (TZ bug → UTC), so after waking
@@ -2470,10 +2470,10 @@ luck; a follow-up "recovery" nearly rewrote history off a false ABSENT reading (
 
 **WORKTREE RECIPES:**
 ```
-create:  git worktree add --detach C:/Users/dhruv/stocks-wt/<name> origin/main
+create:  git worktree add --detach ~/stocks-wt/<name> origin/main
 sync:    (inside it) git fetch origin -q && git reset --hard origin/main    <- safe THERE only
 push:    git push origin HEAD:main    (inside fetch+rebase retry loop)
-remove:  git worktree remove C:/Users/dhruv/stocks-wt/<name>
+remove:  git worktree remove ~/stocks-wt/<name>
 list:    git worktree list
 ```
 
@@ -3028,7 +3028,8 @@ detail block (EPS, balance sheet, cash flow, segments, bank health) — was topp
 scheduled task reading the 80-GB `scripts/_xbrl_cache`. It now runs as a **cloud routine**
 (claude.ai/code/routines, 00:00 IST daily), landing via `claude/xbrl-extra-<ts>` → PR →
 `gh pr merge --squash --admin`, exactly like the vision-fill routine (§17b). The local task is
-DISABLED, kept as fallback. `.github/workflows/xbrl-extra-nightly.yml` exists but has **no cron**
+GONE (retired with the Windows box 2026-08-05 — do not recreate it).
+`.github/workflows/xbrl-extra-nightly.yml` exists but has **no cron**
 — it is the MANUAL rescue lever (dispatch it for a big catch-up; a GitHub runner reaches
 nsearchives directly and its Actions cache makes repeat runs cheap).
 
@@ -3052,7 +3053,7 @@ Reusable lessons for moving any local routine to cloud:
   listing taken BEFORE the fetch (`--seed-seen`), or from the committed copy (`--seen-repo`).
 - **Cap the cold start** (`--max-fetch`): the first run has to fetch whatever the committed
   seen-window doesn't cover, and NSE is ~1 s per file. The window overlap self-heals the rest.
-- `--prune-cache-days` refuses on any cache over 20k files, so a stray flag can never eat the
-  local 80-GB one.
+- `--prune-cache-days` refuses on any cache over 20k files, so a stray flag could never eat the
+  old local 80-GB one (that cache went away with the Windows box).
 - `--push` stays refused from a tree named `stocks-dashboard` (CLAUDE.md rule 2), which is also
   the runner's checkout name — cloud and CI both commit via their own retry/PR path instead.

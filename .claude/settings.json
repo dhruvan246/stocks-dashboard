@@ -7,7 +7,7 @@
           {
             "type": "command",
             "shell": "bash",
-            "command": "python -X utf8 \"$CLAUDE_PROJECT_DIR/scripts/_concurrency_guard.py\" pre-edit",
+            "command": "python3 -X utf8 \"$CLAUDE_PROJECT_DIR/scripts/_concurrency_guard.py\" pre-edit",
             "timeout": 15,
             "statusMessage": "Checking for cross-session file conflicts"
           }
@@ -19,7 +19,7 @@
           {
             "type": "command",
             "shell": "bash",
-            "command": "python -X utf8 \"$CLAUDE_PROJECT_DIR/scripts/_concurrency_guard.py\" pre-bash",
+            "command": "python3 -X utf8 \"$CLAUDE_PROJECT_DIR/scripts/_concurrency_guard.py\" pre-bash",
             "timeout": 10
           }
         ]
@@ -32,7 +32,7 @@
           {
             "type": "command",
             "shell": "bash",
-            "command": "python -X utf8 \"$CLAUDE_PROJECT_DIR/scripts/_concurrency_guard.py\" post-edit",
+            "command": "python3 -X utf8 \"$CLAUDE_PROJECT_DIR/scripts/_concurrency_guard.py\" post-edit",
             "timeout": 10
           }
         ]
@@ -44,7 +44,7 @@
           {
             "type": "command",
             "shell": "bash",
-            "command": "python -X utf8 \"$CLAUDE_PROJECT_DIR/scripts/_concurrency_guard.py\" session-start",
+            "command": "python3 -X utf8 \"$CLAUDE_PROJECT_DIR/scripts/_concurrency_guard.py\" session-start",
             "timeout": 20
           }
         ]

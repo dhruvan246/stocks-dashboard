@@ -10,15 +10,15 @@ Wired as Claude Code hooks in .claude/settings.json. Modes (argv[1]):
   session-start  SessionStart           - inject a heads-up listing files other sessions
                  have dirty right now, plus stash pile-up / local-vs-origin divergence.
 
-Scope: only files/commands touching C:\\Users\\dhruv\\stocks-dashboard proper. Anything in
-a worktree (C:\\Users\\dhruv\\stocks-wt\\* or .claude\\worktrees\\*) is exempt by design -
+Scope: only files/commands touching /Users/dhruvan/stocks-dashboard proper. Anything in
+a worktree (/Users/dhruvan/stocks-wt/* or .claude/worktrees/*) is exempt by design -
 worktrees are single-writer, that's the whole point.
 
 Never blocks on its own failure: any internal error -> silent allow.
 """
 import json, os, re, subprocess, sys, tempfile
 
-MAIN = os.path.normcase(r"C:\Users\dhruv\stocks-dashboard")
+MAIN = os.path.normcase("/Users/dhruvan/stocks-dashboard")
 WT_MARK = os.path.normcase(os.sep + ".claude" + os.sep + "worktrees" + os.sep)
 
 
@@ -101,7 +101,7 @@ def pre_bash(h):
         if re.search(pat, cmd):
             ask("`%s` in the SHARED checkout can destroy other sessions' uncommitted work "
                 "(CLAUDE.md rules 1-2 / runbook 38). Stage explicit paths instead, or do this "
-                "inside your own worktree under C:/Users/dhruv/stocks-wt/. Proceed only if the "
+                "inside your own worktree under ~/stocks-wt/. Proceed only if the "
                 "user confirms." % name)
             return
 
@@ -131,7 +131,7 @@ def session_start(h):
 def main():
     mode = sys.argv[1] if len(sys.argv) > 1 else ""
     try:
-        # strip BOM: PowerShell 5.1 pipes prepend U+FEFF, which breaks json.load
+        # strip BOM (Windows-era: PowerShell 5.1 pipes prepended U+FEFF; harmless to keep)
         h = json.loads(sys.stdin.read().lstrip("﻿"))
     except Exception:
         h = {}
