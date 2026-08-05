@@ -559,10 +559,15 @@ own cap — no ledger, no landing code, nothing pushed except this write-up):
 Next: either STEP W-execute (harvest per the recipe above) or STEP Q close-out QA on D+N first —
 user's call, both are now unblocked.
 
-### STEP W-execute — status (2026-08-05, Sonnet): 12 BATCHES SHIPPED, 775 cells / 124 companies (21.9%)
-**Running total after batch 12 (verified on origin): 775 cells, 124 companies, ~500 refused.**
+### STEP W-execute — status (2026-08-05, Sonnet): 13 BATCHES SHIPPED, 780 cells / 126 companies (22.3%)
+**Running total after batch 13 (verified on origin): 780 cells, 126 companies, ~500 refused.**
 Batch 12: +5→775/124, same flickering-connection pattern batch 11 measured (no new mechanism,
-not re-described here).
+not re-described here). Batch 13: +5→780/126, and this time the harvester's OWN stop-gate fired
+(8 consecutive fetch failures) rather than a manual stop — confirms the stop-gate is a reliable
+self-terminating safety valve on the flickering connection, exits 2, dumps state first. **Refined
+guidance: on a resume, it's fine to just let the process run to ITS OWN stop-gate rather than
+manually judging yield and killing it early** — either way the result is the same (checkpoint what
+landed, push, try again later), but letting the built-in gate fire is simpler and no less safe.
 **PAUSED here deliberately, not blocked**: wayback's connection quality degraded hard for the back
 half of this session (batches 9-11 landed 5, 8, then 2 cells across 1,000+ log lines each — well
 under 1% yield) after recovering from the earlier full outage but never returning to batches 1-6's
