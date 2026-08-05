@@ -11,7 +11,8 @@ Keeps scripts/xbrl_extra.json.gz current with each day's filings. Three steps:
   3. PUBLISH (--push): re-gzip the ledger and commit/push xbrl_extra.json.gz, which
      push-triggers refresh-stock-fin.yml → fresh fin slices minutes later.
 
-CLOUD (the primary runner since 2026-08-05): no 80-GB cache out there, so the routine keeps
+CLOUD (the primary runner since 2026-08-05): no copy of the 5.9-GB local
+cache out there, so the routine keeps
 NOTHING between runs except what the repo carries, and pushes the .gz itself (this script's
 --push refuses from a tree named stocks-dashboard, see below). Four flags serve that mode:
   --seen-repo P.gz    THE state that makes a fresh sandbox viable. Seeds the seen-set from

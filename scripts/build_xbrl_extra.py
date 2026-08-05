@@ -43,7 +43,7 @@ import scale_fix
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 # XBRL_CACHE override: the nightly top-up routine runs from its OWN worktree (one writer per
-# tree) but reads the single 80-GB cache that lives in the main checkout — see xtra_nightly.py.
+# tree) but reads the single 5.9-GB (104k-file) cache that lives in the main checkout — see xtra_nightly.py.
 CACHE = os.environ.get("XBRL_CACHE") or os.path.join(HERE, "_xbrl_cache")
 OUT = os.path.join(HERE, "xbrl_extra.json")
 PROG = os.path.join(HERE, "_xtra_progress.json")

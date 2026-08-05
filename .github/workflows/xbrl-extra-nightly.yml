@@ -15,7 +15,7 @@ name: Deep-fundamentals ledger top-up
 # STATE, and why none of it has to be committed:
 #   ledger  — gunzipped from the committed .gz at the start of every run (authoritative).
 #   cache   — CI keeps a ROLLING copy of just the last ~3 weeks of XBRL (~150 MB), restored from
-#             the Actions cache. The local 80-GB cache is NOT needed: --incremental only ever
+#             the Actions cache. The local 5.9-GB cache is NOT needed: --incremental only ever
 #             reads files the seen-set hasn't got, and the filings list only offers the window.
 #   seen-set— rides in the same Actions cache entry as the cache dir, so the two can't disagree.
 #             Lost cache ⇒ empty seed ⇒ the window is re-downloaded and re-extracted, which is

@@ -3025,7 +3025,7 @@ convention (continuing-ops rev 2.30), not the original filing, when stored PATs 
 
 `scripts/xbrl_extra.json.gz` — the ~200-tag-per-filing ledger behind the stock page's Financial
 detail block (EPS, balance sheet, cash flow, segments, bank health) — was topped up by a LOCAL
-scheduled task reading the 80-GB `scripts/_xbrl_cache`. It now runs as a **cloud routine**
+scheduled task reading the 5.9-GB (104k-file) `scripts/_xbrl_cache`. It now runs as a **cloud routine**
 (claude.ai/code/routines, 00:00 IST daily), landing via `claude/xbrl-extra-<ts>` → PR →
 `gh pr merge --squash --admin`, exactly like the vision-fill routine (§17b). The local task is
 GONE (retired with the Windows box 2026-08-05 — do not recreate it).
@@ -3054,6 +3054,6 @@ Reusable lessons for moving any local routine to cloud:
 - **Cap the cold start** (`--max-fetch`): the first run has to fetch whatever the committed
   seen-window doesn't cover, and NSE is ~1 s per file. The window overlap self-heals the rest.
 - `--prune-cache-days` refuses on any cache over 20k files, so a stray flag could never eat the
-  old local 80-GB one (that cache went away with the Windows box).
+  old local one (5.9 GB / 104k files; that cache went away with the Windows box).
 - `--push` stays refused from a tree named `stocks-dashboard` (CLAUDE.md rule 2), which is also
   the runner's checkout name — cloud and CI both commit via their own retry/PR path instead.
