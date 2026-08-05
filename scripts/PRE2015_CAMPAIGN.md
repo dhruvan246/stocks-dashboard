@@ -559,15 +559,18 @@ own cap — no ledger, no landing code, nothing pushed except this write-up):
 Next: either STEP W-execute (harvest per the recipe above) or STEP Q close-out QA on D+N first —
 user's call, both are now unblocked.
 
-### STEP W-execute — status (2026-08-05, Sonnet): 13 BATCHES SHIPPED, 780 cells / 126 companies (22.3%)
-**Running total after batch 13 (verified on origin): 780 cells, 126 companies, ~500 refused.**
+### STEP W-execute — status (2026-08-05, Sonnet): 14 BATCHES SHIPPED, 788 cells / 127 companies (22.4%)
+**Running total after batch 14 (verified on origin): 788 cells, 127 companies, ~500 refused.**
 Batch 12: +5→775/124, same flickering-connection pattern batch 11 measured (no new mechanism,
-not re-described here). Batch 13: +5→780/126, and this time the harvester's OWN stop-gate fired
-(8 consecutive fetch failures) rather than a manual stop — confirms the stop-gate is a reliable
-self-terminating safety valve on the flickering connection, exits 2, dumps state first. **Refined
-guidance: on a resume, it's fine to just let the process run to ITS OWN stop-gate rather than
-manually judging yield and killing it early** — either way the result is the same (checkpoint what
-landed, push, try again later), but letting the built-in gate fire is simpler and no less safe.
+not re-described here). Batch 13: +5→780/126, harvester's OWN stop-gate fired (8 consecutive
+fetch failures) rather than a manual stop. Batch 14: +8→788/127, but this time the run plateaued
+at ZERO net progress for 1,000+ log lines WITHOUT ever tripping the stop-gate — occasional
+isolated fetch successes (pages that load fine but don't pass any gate, or candidates outside a
+wanted FY) reset the consecutive-failure counter without landing anything, so 8-in-a-row never
+quite happens even while real progress has stopped. **Corrected guidance (batch 13's "let it hit
+its own stop-gate" take was too optimistic): the stop-gate is real but not guaranteed to fire —
+still judge primarily by measured yield (landed cells / log lines) over a several-hundred-line
+window, and manually stop on a genuine plateau even if the process hasn't self-terminated.**
 **PAUSED here deliberately, not blocked**: wayback's connection quality degraded hard for the back
 half of this session (batches 9-11 landed 5, 8, then 2 cells across 1,000+ log lines each — well
 under 1% yield) after recovering from the earlier full outage but never returning to batches 1-6's
