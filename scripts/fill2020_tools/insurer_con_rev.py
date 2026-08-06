@@ -205,6 +205,12 @@ R_SHARE_HEAD = re.compile(r"shareholders[’'`\s]*\s*(a/?c|account)", re.I)
 # in the same order — without it, joining pages would be a guess.
 R_TRANSFER_OUT = re.compile(r"transferred to shareholders", re.I)
 R_TRANSFER_IN = re.compile(r"transfer from policyholders", re.I)
+# General insurers print the profit tail on the page AFTER the revenue rows, and their
+# owners-attributable consolidated profit is never printed as one number — runbook §3. It is
+# PAT + minority(signed) + share of associates, which is exactly what our stored con PAT holds.
+R_MINORITY = re.compile(r"profit attributable to minority|minority interest|non.?controlling", re.I)
+R_ASSOCIATE = re.compile(r"share of profit.*associate|associate enterprises", re.I)
+R_CARRIED = re.compile(r"profit\s*/?\s*\(?loss\)?\s*carried to balance sheet", re.I)
 
 
 def align(tout, tin):
@@ -268,16 +274,47 @@ def read_doc(doc, life):
         # half a statement: premium legs here, shareholders' P&L on a following page
         prem = pick_row(rows, R_NETPREM if life else R_PREMEARNED)
         tout = pick_row(rows, R_TRANSFER_OUT)
-        if prem is None or tout is None:
+        if prem is None:
             continue
+        if tout is None and life:
+            continue          # life format joins on the transfer line; without it, no join
         ph = pick_row(rows, R_PH_INV)
         if ph is None:
             continue
+        share_at = -1
+        for j, (lab_, vals_) in enumerate(rows):
+            if R_SHARE_HEAD.search(lab_):
+                share_at = j
         for pno2, rows2, decl2 in per_page[i + 1:i + 4]:
             if decl2 and decl and decl2 != decl:
                 break
             tin = pick_row(rows2, R_TRANSFER_IN)
             pat = pick_row(rows2, R_PAT)
+            if pat is not None and tin is None:
+                # GENERAL-FORMAT CONTINUATION: revenue rows here, profit tail on the next page.
+                # Build the owners-attributable vector the way runbook §3 defines it; the anchor
+                # against our stored con PAT is what proves the two pages' columns line up, so no
+                # separate shared-row test is needed (and none exists in this layout).
+                minor = pick_row(rows2, R_MINORITY) or []
+                assoc = pick_row(rows2, R_ASSOCIATE) or []
+                owners = [None if pat[k] is None else
+                          pat[k] + (at(minor, k) or 0.0) + (at(assoc, k) or 0.0)
+                          for k in range(len(pat))]
+                carried = pick_row(rows2, R_CARRIED)
+                if carried:      # when the filing prints it, it must agree — a free second check
+                    n = min(len(owners), len(carried))
+                    if any(owners[k] is not None and carried[k] is not None
+                           and abs(owners[k] - carried[k]) > 1.0 for k in range(n)):
+                        continue
+                share_at2 = -1
+                for j, (lab2, vals2) in enumerate(rows2):
+                    if R_SHARE_HEAD.search(lab2):
+                        share_at2 = j
+                sh2 = pick_row(rows, R_SH_INV, after=share_at) if share_at >= 0 else None
+                out.append((pno, {"prem": prem, "ph": ph, "sh": sh2 or [], "pat": owners,
+                                  "decl": decl or decl2, "joined": pno2,
+                                  "owners_built": True}))
+                break
             if tin is None or pat is None:
                 continue
             shift = align(tout, tin)          # the two pages need not start at the same column
