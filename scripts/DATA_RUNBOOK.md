@@ -3373,7 +3373,9 @@ with no stored standalone to control against are skipped, not guessed. It also c
   gone), "Aooropriations", and numbers break apart ("212.414" for 212414). Even the STANDALONE page
   yields no matching labels, so there is no positive control and by A5 nothing can land. Needs
   render-and-OCR (the §3 Gemini path, which still has no API key), not another regex.
-* **NIACL (16) — do NOT re-attempt with a cross-page join.** Its profit tail (PAT, minority,
+* **NIACL — SOLVED (15 cells) by the header-DATE column model.** See 55b; the note below is the
+  failure it replaced, kept because the failure mode recurs.
+* **NIACL, the wrong way — do NOT re-attempt with an index-based cross-page join.** Its profit tail (PAT, minority,
   associate) sits on the page AFTER the revenue rows, and building owners-con per §3 across that
   break LOOKS right — NIACL Sep-2023 reproduced 10,566.55 against an exact standalone control. It is
   wrong in general: the pack's revenue page has FOUR columns and its profit page FIVE (six-month
@@ -3388,6 +3390,34 @@ with no stored standalone to control against are skipped, not guessed. It also c
   the standalone page. That is the limit of A5, and it is why the above had to be caught by eye
   (two quarters sharing a value is the fingerprint; scan any batch for duplicate values before
   applying).
+
+### 55b. ★★ SELECT A COLUMN BY ITS PRINTED DATE, NOT BY ITS INDEX
+The fix that turned NIACL from "unreachable" into 15 anchored cells, and the right default for any
+multi-column filing. These statements print a dated header row — `(30/09/2020) (30/06/2020)
+(30/09/2019) (30/09/2020) (30/09/2019) (31/03/2020)` — so the period of every column is stated
+outright. Read it (`header_columns()`: the y-band carrying the MOST date tokens, >=3 — page titles
+and "Renewed from" lines contain dates too), slot every figure into those columns by right edge,
+and the same index means the same period on every page of the filing.
+* This is what makes the cross-page join safe: the profit page's owners vector is re-expressed in
+  the revenue page's column space before anything is read.
+* Match by **(date, occurrence)**, never by date alone — the SAME date heads both the quarter and
+  the six-months-ended column, so "first column with this date" maps the YTD figure onto the
+  quarter (`map_columns()`).
+* Result: NIACL Sep-2020 reads 7,979.60 and Jun-2020 reads 6,923.24 — the index-based version gave
+  both quarters 6,923.24. It also corrected Dec-2021, which had been given Sep-2021's figure.
+
+**THE ADJUDICATION TEST for any insurer con read: the con/std RATIO FAMILY.** An insurer's
+consolidated-to-standalone revenue ratio is remarkably stable, and we hold it independently for
+2025+ from the XBRL. NIACL's 15 recovered cells run 1.0024-1.0061 against a stored 2025+ family of
+1.0020-1.0054 — three independent confirmations (PAT anchor, standalone control, ratio family).
+The same test REJECTED a LICI read that had passed the anchor: it implied 1.0079 where LICI's own
+stored quarters run 1.0019-1.0046, so it was dropped rather than landed. Use it on every batch.
+
+**And the guard that would have caught the original bug, now in the applier:** two quarters of one
+company reporting the SAME revenue to the paisa is the fingerprint of a column misalignment. Real
+revenue does not repeat exactly at these magnitudes. `insurer_con_rev.py --apply` refuses the whole
+batch and prints the pairs. A per-filing standalone control CANNOT catch this — it passes on the
+standalone page while the consolidated side is misread.
 
 ### 55a. An empty BSE announcement list is RATE-LIMITING, not absence
 `fetch_insurers.datebound()` swallows a throttled response in its inner `except: break` and returns
