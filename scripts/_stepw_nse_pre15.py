@@ -376,7 +376,22 @@ def main():
             if html is None:
                 errs[0] += 1
                 if url_to is not None:
-                    fetch_incomplete_fys.add(fy_of(url_to))
+                    # Mark every WANTED fy this candidate could have served, not just its own.
+                    # The pre-filter above accepts a candidate whose declared fy is within +/-1
+                    # of a wanted fy (a filing's comparative columns cover neighbouring years),
+                    # so a page fetched to serve fy N can be declared N-1. Marking only
+                    # fy_of(url_to) left the ADJACENT wanted fy unprotected, and the
+                    # refusal-recording block below then wrote a permanent
+                    # `no-archive-rows-for-that-FY` for a cell whose page simply never
+                    # downloaded. Measured 2026-08-07 after the universe first closed out: 92 of
+                    # 396 cells in that refusal class had candidate pages that were never once
+                    # fetched -- i.e. falsely closed. Same "refusal that refuses nothing real"
+                    # rule as the skip paths below.
+                    u = fy_of(url_to)
+                    for f in (u - 1, u, u + 1):
+                        if f in needed_fys:
+                            fetch_incomplete_fys.add(f)
+                    fetch_incomplete_fys.add(u)
                 # TIERED BACKOFF (replaces "8 consecutive failures -> kill the whole run").
                 # Measured 2026-08-06: the old gate aborted the process on a burst, and the
                 # 180s wrapper sleep meant each pass did 2-9s of WORK per 185s of wall-clock --
