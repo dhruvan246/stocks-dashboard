@@ -8,6 +8,21 @@ single day, 2002→2015, filled by the same rule book as the completed 2015→20
 (runbook §42/§43/§44/§45/§48), **negligible-token routes first** (structured JSON/HTML, no vision,
 no PDFs unless a step says so). And: per-date N500 membership must be correct 2002→2015.
 
+## ► LIVE COVERAGE (measured off origin 2026-08-06 — the number that matters for "what next")
+
+| era | open cells | of total | complete |
+|---|---|---|---|
+| **2002-2004** | **3,640** | 4,493 | **19.0%** |
+| 2005-2014 | 1,032 | 19,928 | 94.8% |
+| **2002-2014 overall** | **4,672** | 24,421 | **80.9%** |
+
+**2002-04 holds 78% of everything still open and is the only era under 90% — STEP W is the
+highest-yield route left, and its alphabetical scan has only reached ~"G" of 566 symbols.**
+The 2005-14 residual is mostly hard-floor: 572 of its 1,032 cells have ZERO sibling quarters
+stored (no derivation can reach them), 122 have 2-of-3 siblings (need a second equation — a H1
+or 9M cumulative), and a real share is legitimately empty (holding/realty shells that filed no
+operating revenue at all — 67 such cells proven cell-by-cell 2026-08-06, see STEP A residual).
+
 ## STATE OF THE WORLD (measured 2026-08-04 — re-verify only if something contradicts it)
 
 * Scope = **member-quarter STANDALONE cells, 2002Q1→2014Q4: 26,022 cells; 727 stored; ~25,300 open.**
@@ -559,8 +574,24 @@ own cap — no ledger, no landing code, nothing pushed except this write-up):
 Next: either STEP W-execute (harvest per the recipe above) or STEP Q close-out QA on D+N first —
 user's call, both are now unblocked.
 
-### STEP W-execute — status (2026-08-06, Sonnet): 15 BATCHES SHIPPED, 808 cells / 130 companies (22.9%)
-**Running total after batch 15 (verified on origin): 808 cells, 130 companies, ~500+ refused.**
+### STEP W-execute — status (2026-08-06, Sonnet): 16 BATCHES SHIPPED, 867 cells / 141 companies (24.6%)
+**Running total after batch 16 (verified on origin): 867 cells, 141 companies.**
+Batch 16: +59→867/141 (GEOMETRIC, GEORGWILIM, GESHIPPING, GFLLIMITED, GILLETTE, GIPCL, GLENMARK,
+GMDCLTD and neighbours). Landed entirely by the bounded auto-retry loop running UNATTENDED while
+the same session worked on STEP A — that is the batch's real lesson: with the stop-gate actually
+terminating (see batch 15's `os._exit` fix) a `for i in 1..15; do harvester; sleep 180; done`
+wrapper converts wayback's minute-scale flicker from a babysitting problem into throughput. The
+loop repeatedly stalled 3-4 consecutive attempts at ONE alphabetical point (GAMMONIND, then
+GEOMETRIC, then GEORGWILIM, then GFLLIMITED) before breaking through; each stall was generic
+`Max retries exceeded` on DIFFERENT URLs/timestamps every attempt, i.e. the 8-consecutive-failure
+counter simply happening to fill up at wherever the alphabetical scan had reached — NOT a
+company-specific fault. Do not special-case those symbols. Resumption is free (landed/attempted
+cells are skipped), so an interrupted loop costs nothing but wall-clock.
+**Progress is alphabetical and currently only around "G" of 566 target symbols — most of the
+2002-04 universe is still untouched, and 2002-04 now holds 3,640 of the campaign's 4,672
+remaining open cells (78% of ALL outstanding work). This is the highest-yield route left.**
+
+Batch 15 detail (kept — the stop-gate bug it fixed is load-bearing for batch 16's method):
 Batch 15: +20→808/130 (FSS, GAIL, GAMMONIND, GARDENSILK). Cross-machine session (Mac): first full
 launch hit a TOTAL wayback outage (TCP `Connection refused` on port 443 specifically — port 80 to
 the same host and port 443 to plain `archive.org` both worked, so this was wayback's own HTTPS
@@ -586,6 +617,75 @@ landing). Paused deliberately (not blocked) after 8 attempts on user instruction
 mid-plateau at GEOMETRIC — resume picks up exactly there via the recipe below, no special
 handling needed. `_stepw_nse_pre15.py`'s stop-gate fix (`os._exit`) is live in this push; no other
 code changes.
+
+## STEP A — ANNUAL-MINUS-3-SIBLINGS DERIVATION 2005-2014  (new step, 2026-08-06, Sonnet: SHIPPED)
+
+`scripts/_stepa_annual_derive.py` (tracked, force-added past the `scripts/_*` ignore) +
+ledgers `pre2015_reads_a.json` / `pre2015_attempted_a.json` + a one-line `_apply_reads.py`
+registration (gate `"A"` added to the F/E/X tuple, ledger appended to `PRE2015_LEDGERS`).
+**108 cells / 68 companies landed; 107 applied.**
+
+**The insight.** STEP D's two largest FY-complete-but-one refusal classes — "annual
+unavailable/unparseable" and "annual span N days (not ~365)" — are ONE root cause: those
+companies do not run an Apr-Mar fiscal year. ABB and GLAXO file Jan-Dec, ESCORTS Oct-Sep,
+ELDERPHARM Jul-Jun. An Apr-Mar-shaped annual lookup either misses the filing entirely or finds
+it and rejects the span. NSE's `corporates-financial-results?period=Annual` DOES serve those
+annuals, and pre-2015 rows carry `resultDetailedDataLink`. So: read the FY window off the
+filing's own fromDate/toDate, find the 4 quarter-ends inside it, and when exactly ONE is missing
+derive it as annual minus the three stored siblings.
+
+**Validate the method before writing anything.** On FYs where all four quarters were already
+stored, annual == sum(4 quarters) EXACTLY — delta 0.00 on BOTH rev and PAT (GLAXO FY2007, ABB
+FY2014). That single check proves FY-window detection, page parsing and unit scaling all at
+once, and costs one script. Independently confirmed on a landed cell too: CAIRN Sep-2012 derived
+PAT -25.04 vs an independently stored -25.01.
+
+**The identity does NOT validate itself** (compensating errors satisfy the very constraint that
+defines them — the GAMMONIND rescue lesson, STEP D). Derived cells must additionally clear: FY
+span 350-380d · annual page Symbol matches target · rev > 0 and inside the sibling range ·
+sibling-PAT-sum <= annual · |derived PAT| <= 3x sibling max · derived PAT <= derived rev.
+**Those guards refuse 18 cells the bare arithmetic would have landed** — e.g. AMBUJACEM Dec-2007,
+where 3 siblings sum to 1781.81 PAT against a 1769.10 FULL YEAR, so a sibling is secretly
+cumulative and the -12.71 residual is garbage for a company then earning ~300-400/qtr. A 19th
+(AARTIIND Jun-2013) is caught by the applier's own re-anchor guard, derived 22.53 vs stored
+42.35 — that cell stays UNAPPLIED and is a genuine open question, not a closed refusal.
+
+**Round 2 — two parser label variants worth ~75 cells.** STEP A's biggest refusal class was
+"annual-rows-unreadable" (102 cells: 74 rev=None with PAT fine, 26 PAT=None with rev fine).
+Both were label bugs in the SHARED `_nse_archive_revop.py`, not missing data:
+  * `Net Sales/Income from Operation` — SINGULAR; `R_REV_IND2` demands "operations"
+  * `Net Profit (+) / Loss (-) for the period` — the `(+)`/`(-)` markers sit between words
+    `R_PAT_ANY` expects adjacent
+Added as `R_REV_SIGNED` / `R_PAT_SIGNED`, tried STRICTLY LAST in their own `pick()` calls and
+deliberately NOT folded into the existing alternations — widening an alternation can make it
+match an EARLIER row on a page that already parses, silently changing landed values.
+**Regression-checked over all 367 cached archive pages: ZERO previously-parsed values changed**;
+137 pages newly yield a revenue, 63 a PAT. STEP A went 33 -> 76 landed on re-run (refusals
+120 -> 45).
+
+**Trap, cost one debug cycle:** chain fallback patterns on `is None`, NEVER on `or`. A legitimate
+`0.00` is falsy, so `or` falls through to the next pattern and then to None — turning a real zero
+into an "unreadable" row. The first regression run showed 12 phantom "changes" (all `0.0 -> None`)
+purely from this. NOTE `_nse_archive_revop.main` still has the latent form
+(`pick(R_PAT_OWN) or pick(R_PAT_ANY)`) — left alone as out of scope, fix it if a PAT-exactly-0.00
+cell ever surfaces.
+
+**Ledger merge discipline:** the harvester only re-derives cells still OPEN, so deleting the
+ledger before a re-run regenerates it WITHOUT the cells a previous batch already applied. Merge
+the origin copy back in before committing (33 + 76 -> 108, zero value conflicts on the overlap)
+or the provenance record for the earlier batch is silently dropped.
+
+**Push mechanics:** `docs/sf_fundamentals.json` / `sf_revop.json` are single minified lines, so a
+concurrent CI commit makes the rebase CONFLICT (hit twice this session). Runbook §2b is the fix
+and it works cleanly: abort, `git reset --hard origin/main` INSIDE YOUR OWN WORKTREE, restore the
+ledger + scripts, re-run `_apply_reads.py --pre2015`, re-commit. The ledger is the source of
+truth — replaying it onto fresh data is always safe and always reproduces the same result
+(verified: identical `A=32`/`A=107` counts and the same single AARTIIND skip both times).
+
+Residual after STEP A: 45 refusals — 15 no-nse-annual-rows, 11 sibling-quarter-incomplete,
+9 derived-rev-non-positive, 4 annual-rows-unreadable, 18 guard-refused (above), 1 symbol
+mismatch. Re-running later is free (cache in `_stepa_cache/`) and picks up any cell whose
+siblings have since been filled by another step.
 
 ### STEP W-execute — batch 14 status (superseded by batch 15 above, kept for continuity)
 **Running total after batch 14 (verified on origin): 788 cells, 127 companies, ~500 refused.**
