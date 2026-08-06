@@ -46,8 +46,14 @@ API = ("https://api.bseindia.com/BseIndiaAPI/api/Corp_detailedResult_Transpose_n
 UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) "
       "Chrome/124.0 Safari/537.36")
 EPS_TOL = 0.06                 # runbook §42: EPS-recon gate is +/-6%
+FY_ABS, FY_REL = 3.0, 0.03     # runbook §42 FY-consistency gate: max(3cr, 3%)
 MONTHS = {"Jan": 1, "Feb": 2, "Mar": 3, "Apr": 4, "May": 5, "Jun": 6,
           "Jul": 7, "Aug": 8, "Sep": 9, "Oct": 10, "Nov": 11, "Dec": 12}
+
+# Delisted/renamed companies are absent from bse_scrips.json (built from the live master).
+# Resolved 2026-08-06 from ListofScripData?status=Delisted (10,797 records -- validate the count,
+# a 162-byte body is BSE's rate-limit stub, runbook §0).
+SCRIP_OVERRIDE = {"ADVANTA": "532840", "DISHMAN": "532526", "CAPF": "532938"}
 
 
 def qid(qe):
@@ -119,7 +125,92 @@ def ref_shares(scrip, qe, cache):
     return None, None
 
 
-def check(scrip, qe, cache=None):
+def fy_gate(scrip, qe, np_mn, stored, cache):
+    """Fallback gate: the candidate + the fiscal year's other three quarters must reconcile to the
+    audited annual row (QID NN.50 on the March quarter) within max(3cr, 3%).
+
+    Needed where the EPS reconstruction cannot be built at all -- the Ind-AS-era rows for some
+    filers print neither Equity Capital nor Face Value in ANY nearby quarter (COFORGE, VTL), so
+    there is no share count to multiply by. This gate is stronger anyway when the other three
+    quarters come from our OWN stored series, because agreeing with the audited annual then also
+    proves the candidate is on the same basis as the series it is joining.
+
+    stored: {qe: std_pat_cr} already in sf_fundamentals for this symbol.
+    Returns (ok, note).
+    """
+    y, m = qe // 10000, (qe // 100) % 100
+    # Try the Apr-Mar convention first, then calendar-year (runbook §42: the .50 annual sits on the
+    # fiscal-year-END quarter -- March for Apr-Mar filers, DECEMBER for calendar-year filers).
+    cands = []
+    fy = y + 1 if m > 3 else y
+    cands.append(("Apr-Mar", fy * 10000 + 331, [(fy - 1) * 10000 + 630, (fy - 1) * 10000 + 930,
+                                                (fy - 1) * 10000 + 1231, fy * 10000 + 331]))
+    cands.append(("Jan-Dec", y * 10000 + 1231, [y * 10000 + 331, y * 10000 + 630,
+                                                y * 10000 + 930, y * 10000 + 1231]))
+    reasons = []
+    for label, end_qe, qs in cands:
+        ey, em = end_qe // 10000, (end_qe // 100) % 100
+        n = 85 + (ey - 2015) * 4 + {3: 0, 6: 1, 9: 2, 12: 3}[em]
+        if not 0 <= n - 85 <= 47:
+            reasons.append("%s:out-of-range" % label)
+            continue
+        try:
+            ann = fields(get(scrip, "%d.50" % n))
+        except Exception as ex:
+            reasons.append("%s:fetch-%s" % (label, type(ex).__name__))
+            continue
+        time.sleep(0.4)
+        a_np = fnum(ann, "Net Profit", "Net Profit (+)/ Loss (-) from Ordinary Activities after Tax")
+        b, e = parse_dt(ann.get("Date Begin", "")), parse_dt(ann.get("Date End", ""))
+        if a_np is None or not b or not e:
+            reasons.append("%s:no-annual-row" % label)
+            continue
+        span = (e // 10000 * 12 + (e // 100) % 100) - (b // 10000 * 12 + (b // 100) % 100)
+        if span != 11 or e != end_qe:
+            reasons.append("%s:span=%d" % (label, span + 1))
+            continue
+        total, srcs, bad = 0.0, [], None
+        for q in qs:
+            if q == qe:
+                total += np_mn / 10.0
+                srcs.append("self")
+            elif q in stored and stored[q] is not None:
+                total += stored[q]
+                srcs.append("stored")
+            else:
+                # sibling also missing from our data (common when two gaps share a fiscal year --
+                # VTL Jun+Sep 2019). Take it from detres too; the annual then validates both at once
+                # while the stored siblings still tie the sum to our own series.
+                sq = qid(q)
+                if (scrip, sq) not in cache:
+                    try:
+                        cache[(scrip, sq)] = fields(get(scrip, sq))
+                    except Exception:
+                        cache[(scrip, sq)] = {}
+                    time.sleep(0.4)
+                g = cache[(scrip, sq)]
+                gnp = fnum(g, "Net Profit",
+                           "Net Profit (+)/ Loss (-) from Ordinary Activities after Tax")
+                ge = parse_dt(g.get("Date End", ""))
+                if gnp is None or ge != q:
+                    bad = q
+                    break
+                total += gnp / 10.0
+                srcs.append("detres")
+        if bad:
+            reasons.append("%s:sibling-%d-unavailable" % (label, bad))
+            continue
+        a_cr = a_np / 10.0
+        err = abs(total - a_cr)
+        if err > max(FY_ABS, abs(a_cr) * FY_REL):
+            reasons.append("%s:off %.2f cr (sum=%.2f ann=%.2f)" % (label, err, total, a_cr))
+            continue
+        return True, "fy-recon[%s] %.2f vs annual %.2f (delta %.2f, siblings %s)" % (
+            label, total, a_cr, err, "+".join(srcs))
+    return False, "; ".join(reasons)
+
+
+def check(scrip, qe, cache=None, stored=None):
     """Return (value_cr, note) or (None, reason)."""
     cache = cache if cache is not None else {}
     js = get(scrip, qid(qe))
@@ -145,23 +236,28 @@ def check(scrip, qe, cache=None):
                "Basic for discontinued & continuing operation",
                "Diluted for discontinued & continuing operation",
                "Basic for continuing operation", "Basic EPS", "Basic & Diluted EPS")
-    if eps is None:
-        return None, "no-eps-row"
     if abs(np) < 1e-9:
         return None, "zero-net-profit"
-    if eq and fv:
-        shares, src = eq / fv, "own"               # both in millions -> share count in millions
-    else:
-        shares, refq = ref_shares(scrip, qe, cache)
-        if not shares:
-            return None, "no-share-count-anywhere"
-        src = "ref:%s" % refq
-    recon = eps * shares
-    err = abs(recon - np) / abs(np)
-    if err > EPS_TOL:
-        return None, "eps-recon %.1f%% off (np=%.1f recon=%.1f, shares=%s)" % (
-            err * 100, np, recon, src)
-    return round(np / 10.0, 2), "eps-recon %.2f%% [%s]" % (err * 100, src)
+    # --- primary gate: EPS reconstruction
+    eps_note = "no-eps-row"
+    if eps is not None:
+        shares, src = (eq / fv, "own") if (eq and fv) else ref_shares(scrip, qe, cache)
+        if not (eq and fv):
+            shares, refq = (shares, src)
+            src = "ref:%s" % refq if shares else None
+        if shares:
+            recon = eps * shares
+            err = abs(recon - np) / abs(np)
+            if err <= EPS_TOL:
+                return round(np / 10.0, 2), "eps-recon %.2f%% [%s]" % (err * 100, src)
+            eps_note = "eps-recon %.1f%% off" % (err * 100)
+        else:
+            eps_note = "no-share-count-anywhere"
+    # --- fallback gate: FY-consistency against the audited annual row
+    ok, note = fy_gate(scrip, qe, np, stored or {}, cache)
+    if ok:
+        return round(np / 10.0, 2), "%s (eps gate: %s)" % (note, eps_note)
+    return None, "%s; %s" % (eps_note, note)
 
 
 def main():
@@ -176,7 +272,7 @@ def main():
     for sym, qes in sorted(targets.items()):
         if only and sym not in only:
             continue
-        scrip = by_id.get(sym)
+        scrip = SCRIP_OVERRIDE.get(sym) or by_id.get(sym)
         if not scrip:
             bad.append((sym, "-", "no-bse-scrip"))
             continue
@@ -190,7 +286,8 @@ def main():
                 bad.append((sym, qe, "already-filled"))
                 continue
             try:
-                val, note = check(str(scrip), qe, cache)
+                stored = {r[0]: r[1] for r in fund.get(sym, []) if r[1] is not None}
+                val, note = check(str(scrip), qe, cache, stored)
             except Exception as ex:
                 val, note = None, "fetch-error:%s" % type(ex).__name__
             time.sleep(0.5)
