@@ -97,7 +97,7 @@
    "basis": "std",
    "k": 5,
    "file": "INTEGRATED_FILING_NONINDAS_1575526_14112025065604_WEB_xml",
-   "why": "XBRL RevenueFromOperations = 36152700000000 (3.6e13 rupees = 3,615,270cr) for a company whose adjacent quarters are 34.33 and 39.16. \u00f71e5 lands ALL SIX values on their neighbours: revStd 36.15 (34.33/39.16), revCon 37.57 (35.40/47.31), opStd 3.02 (2.97/3.02), opCon 3.45 (3.18/10.10), npStd 1.82 (1.74/1.73), npCon 1.72 (1.45/6.92). MISSED by the original detector purely because GICL has only 4 quarters and that sweep required >= 6.",
+   "why": "XBRL RevenueFromOperations = 36152700000000 (3.6e13 rupees = 3,615,270cr) for a company whose adjacent quarters are 34.33 and 39.16. ÷1e5 lands ALL SIX values on their neighbours: revStd 36.15 (34.33/39.16), revCon 37.57 (35.40/47.31), opStd 3.02 (2.97/3.02), opCon 3.45 (3.18/10.10), npStd 1.82 (1.74/1.73), npCon 1.72 (1.45/6.92). MISSED by the original detector purely because GICL has only 4 quarters and that sweep required >= 6.",
    "was_revop": {
     "rev": 3615270.0,
     "op": 302190.0,
@@ -394,6 +394,51 @@
    },
    "was_fund": 0.12,
    "fixed_fund": 12.0
+  },
+  {
+   "sym": "GAIL",
+   "qe": "20241231",
+   "basis": "std",
+   "k": -2,
+   "file": null,
+   "why": "Standalone filing carries every monetary tag at 10^-2 of its true value; the SAME quarter's consolidated filing is clean (revC 36937.05). Anchor (b)+(c): ours x100 reproduces screener's standalone EXACTLY on all three independent metrics -- rev 349.58->34958 vs 34937, op 28.38->2838 vs 2838, PAT 38.67->3867 vs 3867 -- and the eight adjacent standalone quarters all sit at ~32000-35700. XBRL filename unrecorded: the local _xbrl_cache was purged 2026-08-03, so this entry repairs the built JSONs only; re-add `file` when the cache is rebuilt so a full re-parse stays clean.",
+   "was_revop": {
+    "rev": 349.58,
+    "op": 28.38,
+    "pat": 38.67,
+    "ebit": 20.06
+   },
+   "was_fund": 38.67
+  },
+  {
+   "sym": "RCF",
+   "qe": "20241231",
+   "basis": "std",
+   "k": -2,
+   "file": null,
+   "why": "Standalone tags at 10^-2; same-quarter consolidated clean (revC 4518.35). ours x100 == screener standalone exactly on rev 45.18->4518 vs 4518, op 1.79->179 vs 179, PAT 0.8->80 vs 80; adjacent standalone quarters 3370-5292. XBRL filename unrecorded (cache purged 2026-08-03).",
+   "was_revop": {
+    "rev": 45.18,
+    "op": 1.79,
+    "pat": 0.8,
+    "ebit": 1.16
+   },
+   "was_fund": 0.8
+  },
+  {
+   "sym": "TEAMLEASE",
+   "qe": "20231231",
+   "basis": "std",
+   "k": -2,
+   "file": null,
+   "why": "Standalone tags at 10^-2; same-quarter consolidated clean (revC 2445.36). ours x100 == screener standalone exactly on rev 22.22->2222 vs 2222, op 0.23->23 vs 23, PAT 0.29->29 vs 29; adjacent standalone quarters 1954-2686. XBRL filename unrecorded (cache purged 2026-08-03).",
+   "was_revop": {
+    "rev": 22.22,
+    "op": 0.23,
+    "pat": 0.29,
+    "ebit": 0.15
+   },
+   "was_fund": 0.29
   }
  ]
 }
