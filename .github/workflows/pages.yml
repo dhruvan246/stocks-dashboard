@@ -40,3 +40,15 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+        with:
+          # deploy-pages waits for GitHub's Pages backend to build the uploaded artifact and
+          # gives up after 10 minutes by DEFAULT. On a busy day that is not enough: on
+          # 2026-08-06 every run from 12:02 UTC onward died with "Timeout reached, aborting"
+          # while still reporting `deployment_queued` — i.e. the artifact uploaded fine and the
+          # backend queue was simply slower than the wait. The site went ~1.5 h without
+          # publishing anything, from ~30 writers' worth of commits, and each failure also
+          # cancels its own queued deployment, which feeds the backlog.
+          # 30 minutes costs nothing when the queue is healthy (the step returns as soon as the
+          # deployment reports success) and rides out the backlog when it is not.
+          timeout: 1800000
+          error_count: 20
