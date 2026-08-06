@@ -354,10 +354,14 @@ in-step: pymupdf + curl_cffi + rapidocr-onnxruntime/onnxruntime/numpy. Validate:
 ---
 
 ## 5. PENDING QUEUE (remind the user)
-- **GICRE consolidated PAT is a standalone copy** (~12 quarters since Sep-2022; §55c has the
-  evidence from the Jun-2023 filing: con 950.07/977.66 vs stored 731.79 = the standalone). This is
-  a §2b correction, not a fill. It also BLOCKS ~12 GICRE consolidated-revenue cells in the FILL-2020
-  window, since every revenue fill anchors on the con PAT.
+- ✅ **GICRE con PAT — DONE 2026-08-06** (17 cells corrected, §55c). Two follow-ups it opened:
+  - **GICRE STANDALONE PAT is polluted in the same era** (Dec-2024, Sep-2025, Jun-2025 hold the
+    CONSOLIDATED after-tax figure; the filings and their own 9M/FY columns both say otherwise —
+    Dec-2024 std is 1621.35, not the stored 1623.43). Not fixed: different defect, wider blast
+    radius, needs its own sweep. Evidence in §55c.
+  - **GICRE con-PAT copies predate FY2023** — Mar/Sep/Dec-2021 read materially different
+    consolidated figures from what we store (Dec-2021: stored −28.48, filings 141.80, two filings
+    agreeing). Deliberately not written; a pre-2022 sweep should take the whole era at once.
 Genuinely open items (memory: project-stocks-pending-queue has the full context):
 - **Tier-1 re-sweep IN PROGRESS** — 56 companies / 514 cells left; resume per memory
   project-stocks-resweep-resume (ledgers `scripts/_wf_skips.json` + `_wf_audit_done.json`).
@@ -3495,7 +3499,8 @@ with no stored standalone to control against are skipped, not guessed. It also c
   market. **Never apply a neighbour-plausibility band to an insurer** — the COVID quarters are real.
 
 **Residue, honestly (re-examined 2026-08-06 after a second attempt):**
-* **GICRE (18) — OCR SOLVED THE READING; the blocker is a STORED con-PAT defect.** See 55c.
+* **GICRE — SOLVED 2026-08-06.** The reading was never the blocker and neither, in the end, was the
+  con-PAT anchor: §55c corrected 17 con-PAT cells, which unblocks the revenue track. See 55c.
 * **GICRE, the reading problem (solved) — the text layer is CORRUPTED, §51b class.** Not the four-segment shape §43 warned
   about: the 2023 packs print a single "Premium Earned (Net)" row like NIACL's. The blocker is that
   the extracted text reads "OPERA TING RES UL TS", "Income from investments net)" (opening paren
@@ -3520,31 +3525,79 @@ with no stored standalone to control against are skipped, not guessed. It also c
   (two quarters sharing a value is the fingerprint; scan any batch for duplicate values before
   applying).
 
-### 55c. ★★ GICRE's STORED CONSOLIDATED PAT IS A STANDALONE COPY — revenue cannot anchor until it is fixed
-The OCR fallback (55d) reads GIC Re's filings correctly: its Jun-2023 standalone statement
-reproduces our stored standalone revenue EXACTLY (8,63,256 + 1,74,692 + 70,801 = ₹11,087.49cr vs
-stored 11087.49; PAT 731.78 vs stored 731.79). So the reading was never the real blocker. The real
-one is in the PAT track:
+### 55c. ★★ GICRE's CONSOLIDATED PAT — DEFECT FOUND AND FIXED (17 cells, 2026-08-06)
+**Status: CLOSED for FY2022-FY2026.** Tool `scripts/fill2020_tools/gicre_con_pat.py`, ledgers
+`scripts/gicre_con_pat_fills.json` + `pat_defects.json`. Two defects, one correction:
 
-    Jun-2023 filing, p16 "Reviewed Statement of CONSOLIDATED Financial Results":
-        Profit/(loss) after tax            95,007 lakh  = ₹950.07 cr
-        Profit for the year (incl. assoc.) 97,766 lakh  = ₹977.66 cr
-    our stored con PAT for 20230630        = 731.79  ... which is the STANDALONE figure.
+* **COPY (12 cells, Sep-2022..Dec-2025).** The stored con PAT was an exact copy of the STANDALONE
+  PAT. GIC Re has subsidiaries and associates and files a consolidated statement EVERY quarter, so
+  identical was never plausible: its Jun-2023 pack prints con ₹977.66cr where we stored 731.79 —
+  that filing's own standalone figure.
+* **CONVENTION (5 cells: 20220331 20220630 20240331 20250331 20260331).** These were genuinely
+  consolidated but held the `Profit/(loss) after tax` line — i.e. BEFORE the share of profit in
+  associates — while our basis is owners-attributable, which includes it. Left alone they would
+  have split the series across two conventions, which is worse than either.
 
-Fingerprint across GICRE's series: con PAT differs from std ONLY in March quarters (20220331,
-20240331, 20250331, 20260331) plus 20220630 — every other quarter since Sep-2022 stores con == std
-to the paisa. GIC Re has subsidiaries and associates and files consolidated results QUARTERLY, so
-those identical quarters are copies, not coincidence.
-**Consequence for the revenue track:** a con revenue can only land where the stored con PAT is
-genuine, so ~12 GICRE quarters are unfillable BY CONSTRUCTION until the PAT is corrected — and
-correcting a wrong non-null cell is §2b, a different procedure, explicitly out of the fill-only
-campaign's scope. The quarters whose con PAT IS genuine fail for a second, unrelated reason (their
-older filings yield no standalone statement for the A5 control). GICRE therefore stays open.
-⚠️ Do NOT "fix" this by filling con revenue against the copied PAT — that pairs a real consolidated
-revenue with a standalone profit in the same row.
-Contrast SBILIFE and ICICIGI, which also store con == std in all 30 quarters: those are genuinely
-no-subsidiary insurers (playbook §3), so identical is CORRECT there. The fingerprint alone does not
-prove a defect — check whether the company actually files a consolidated statement.
+**THE ROW TO READ, and how it was settled.** GICRE's consolidated statement prints no NCI line at
+all (wholly-owned subsidiaries), so the owners' figure is one of two adjacent rows:
+`Profit/(loss) after tax` or that plus `Share of Profit in Associates` = `Profit for the year`.
+The filing's own **EPS row arbitrates** (the §2d principle): basic EPS × shares (paid-up ÷ face
+value ₹5) reproduces `Profit for the year` to ~0.04% and misses `Profit after tax` by ~4%.
+**`Profit for the year` is the cell.**
+
+**★ THE CHECK THAT DID THE REAL WORK — CUMULATIVE-COLUMN RECONCILIATION.** Every pack prints a
+year-to-date and/or full-year column beside the quarters, and the quarters of that fiscal year must
+rebuild it. All 13 available closures came out exact or within a paisa:
+FY23 6907.32 vs 6907.31 · FY24 6685.87 vs 6685.87 · FY25 7431.85 vs 7431.84 · 9M-FY26 7129.79 vs
+7129.79 · H1-FY26 5404.13 vs 5404.13 · H1-FY25 3256.37 vs 3256.37 · 9M-FY25 4932.99 vs 4932.99 …
+Four independently-read quarter columns reproducing a printed annual to the paisa is not something
+a misread can do, and unlike §45's compensating-error trap NONE of these quarters is derived — each
+is read straight off a printed column. This is the gate that closed the quarters only one legible
+filing prints.
+
+**⚠️ THE TRAP THIS CLASS OF PACK SETS — a partly-unreadable header lies about periods.**
+The layout is `[Q] [Q-1] [Q-4] | [YTD cur] [YTD prior] | [previous year ended]`. When OCR loses one
+header date the survivors still look like a clean header, but their OCCURRENCES have shifted:
+* the Sep-2024 consolidated page detects 4 dates for 6 figure columns, and the H1-FY25 year-to-date
+  column (₹3,256.37cr) then presents itself as `(30/09/2024)` occurrence 0 — the Sep-2024 QUARTER;
+* the Dec-2022 pack prints `31/03/2022` exactly ONCE and it is the FULL YEAR (₹2,005.74cr), not the
+  March quarter (₹1,795.40cr).
+So **never infer "quarter" from occurrence 0**. `align_roles()` matches the surviving dates as a
+SUBSEQUENCE of the pack's canonical layout (derived from the filing's own reporting quarter) and
+takes the role from there, refusing the page when the alignment is not unique. That keeps the good
+columns and correctly excludes the cumulative ones. Compare §55b: reading the printed date is
+necessary but NOT sufficient — you also have to know which *kind* of column you are reading.
+
+**Reading these scans at all** (they are §51b glyph-class, text layer unusable — see 55d for OCR):
+* Labels do not survive: the standalone PAT row comes back as `Prohiti(loss)aftertax`, the
+  consolidated one as `Proft/(loss}after tax`. Rows are therefore found by **value anchor** on the
+  standalone side (the row reproducing ≥2 stored quarters IS the PAT row) and by **fuzzy label**
+  (difflib ≥0.86 against a canonical form) on the consolidated side.
+* `declared_basis()` misses these pages too — `ConsolldatedFinancial` does not contain
+  "consolidat". Fuzzy at 0.80 is safe: the worst real damage still scores 0.83 against
+  "consolidated" and 0.18 against "standalone".
+* The EPS figures sit on the caption's MIDDLE line (`items (net of tax expense) for the period`),
+  usually on the statement's continuation page, whose header may detect a different number of
+  columns — re-express it by (date, occurrence), never by index.
+* Two OCR damage modes are tolerated in the CORROBORATING profit-tail identity and recorded, never
+  in the value taken: a lost parenthesis flips the associates' sign (Sep-2024 prints (9.20)), and a
+  stray digit shifts profit-after-tax by a power of ten (Dec-2024's 1,62,343 → 16234.31).
+
+**⚠️ SEPARATE, STILL OPEN — the STANDALONE side is polluted in the same era.** Found while building
+the control, NOT fixed (different defect, wider blast radius, needs its own sweep):
+Dec-2024 stored std 1623.43 but the Dec-2024 AND Dec-2025 packs both print std **1621.35** — 1623.43
+is that pack's CONSOLIDATED after-tax figure. Same shape at Sep-2025 (stored 2698.01 = the con
+after-tax; the packs print std **2866.79**) and Jun-2025. The 9M/FY standalone columns confirm the
+filings: 9M-FY25 4518.47 and FY25 6701.36 both reconcile with 1621.35 and not with 1623.43. So for
+those quarters BOTH slots held the consolidated pre-associate number.
+**Consequence for anyone re-running this:** the per-filing standalone control (A5/C3) fails on those
+packs *because our stored standalone is wrong*, not because the reading is. That is why the tool
+treats the standalone control as one anchor among several rather than a hard gate.
+
+**Also open, deliberately out of scope:** the COPY defect predates the fixed window. Comparative
+columns show Mar-2021 (stored 1260.44, filings 1328.87), Sep-2021 (1010.55 vs 1348.15) and Dec-2021
+(−28.48 vs **141.80**, two filings agreeing) are copies too. Not written — fixing three quarters of
+an era nobody has swept is worse than leaving it; queued in §5 as a pre-2022 sweep.
 
 ### 55d. ★ OCR FALLBACK for corrupted text layers  (built 2026-08-06)
 `insurer_con_rev.py` re-reads a filing with rapidocr (free, local, no API key — the §3 Gemini path
