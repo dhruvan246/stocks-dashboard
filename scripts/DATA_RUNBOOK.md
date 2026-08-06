@@ -3098,3 +3098,57 @@ for the quorter ended 30th June 2020 ... Rs.121 crore" against our stored std 12
 **IOB con=std is NOT valid** — when IOB does report con it DIVERGES (551.78 vs std 552.38), so it has real
 consolidation differences; an identity fill would be fabrication. Leave null.
 
+
+---
+
+## 52. ★★ STANDALONE PAT 2015-2020 — the detres route, and why the PDF route can't reach it  (2026-08-06)
+
+Closed 32 of the 37 standalone-PAT gaps for Mar-2015..Dec-2020 in one session. The PDF/announcement
+path could not reach ANY of them, for two reasons that will recur on any pre-2017 backfill:
+
+1. **Stored announce dates for old quarters are not filing dates.** Many look like a
+   quarter-end+45d default. APLLTD Sep-2015 is stored `20151114`; the filing is `20151027`. A ±6-9
+   day window around the stored date therefore finds NOTHING. **Search the post-quarter stretch
+   (qe+8d .. qe+140d), not the announce date**, whenever the target is pre-2018.
+2. **Pre-2016 BSE attachments 404.** They use an underscore+timestamp name
+   (`B37C7931_1C03_..._141357.pdf`); `AttachHis`/`AttachLive` return 404 and
+   `corporates/anndata` returns HTML. The bytes are simply not reachable by the modern path.
+
+**Use §42's detailed-results JSON instead** — keyed by quarter rather than announcement, structured
+rather than scanned, so both problems vanish. Tool: `scripts/fill2020_tools/fill_std_pat_detres.py`
+(dry-run by default, `--apply` to write, `--only SYM` to scope). Ledger:
+`scripts/std_pat_detres_fills.json`.
+
+### 52a. Gates — one of these must hold, never a bare printed number
+- **EPS recon** (primary): `EPS x (Equity Capital / Face Value)` == Net Profit within 6%. Ind-AS-era
+  rows (~2017+) DROP Equity Capital and Face Value and rename EPS to "Basic for discontinued &
+  continuing operation" — fall back to the share count from the nearest quarter that still prints
+  it. If a split intervened the recon fails tolerance and the cell is skipped, which is the safe way.
+- **FY-consistency** (fallback, and the stronger of the two): the candidate + the fiscal year's other
+  three quarters == the audited `.50` annual row within max(3cr, 3%). Try Apr-Mar AND calendar-year
+  (`.50` sits on the fiscal-year-END quarter). When a sibling is ALSO missing from our data, pull it
+  from detres too — two gaps sharing a fiscal year otherwise block each other forever (VTL Jun+Sep
+  2019). Any sibling taken from our OWN store makes this prove BASIS as well as value.
+- **Escalate, don't guess, when a value looks wrong.** GFLLIMITED Mar-2018 std 240.65 is 2.5x its
+  neighbours and 4x its own con — correct: FY18 annual 487.31 == the four-quarter sum exactly (the
+  std>con gap is INOX Wind subsidiary losses). APLLTD Sep/Dec-2015 spikes ~3x — correct: the stored
+  CON spikes identically and FY16 annual 698.12 vs sum 698.11.
+
+### 52b. Delisted companies are missing from bse_scrips.json
+It is built from the live master, so dead names resolve to None. Get them from
+`ListofScripData/w?...&status=Delisted` (4,611 rows; blank status = all 10,797 — **validate the
+count**, a 162-byte body is the rate-limit stub, §0). Found: ADVANTA 532840, DISHMAN 532526,
+CAPF 532938. Baked into `SCRIP_OVERRIDE` in the tool.
+
+### 52c. The 5 that stay NULL — documented, do not re-grind
+- **IL&FSTRANS Sep-2018 + Dec-2018.** The company filed announcements titled *"Reasons For
+  Non-Submission Of Financial Results For The Quarter Ended 2018"* (2018-11-22) and *"Disclosure Of
+  Reasons For Delay In Submission Of Financial Results"* (2019-06-07). It told the exchange it was
+  not submitting — the IL&FS group collapse. Never-filed, proven from the filer's own words. ✔
+- **CAPF Dec-2018.** Zero result filings Dec-2018..Apr-2019; Capital First merged into IDFC FIRST
+  Bank on 18-Dec-2018, before Q3 FY19 was due. ✔
+- **ADVANTA Mar-2015 + Sep-2015.** EPS recon off 9.0%/8.7% (both quarters carry extraordinary items
+  and print two divergent EPS figures) AND FY16 does not reconcile (sum 58.73 vs annual 69.32, off
+  10.60 cr). Genuinely inconsistent year; not fillable at this standard. Its Jun-2015 IS filled —
+  passes EPS recon independently at 1.31%.
+
