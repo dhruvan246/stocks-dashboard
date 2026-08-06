@@ -3463,7 +3463,8 @@ with no stored standalone to control against are skipped, not guessed. It also c
   market. **Never apply a neighbour-plausibility band to an insurer** — the COVID quarters are real.
 
 **Residue, honestly (re-examined 2026-08-06 after a second attempt):**
-* **GICRE (18) — the text layer is CORRUPTED, §51b class.** Not the four-segment shape §43 warned
+* **GICRE (18) — OCR SOLVED THE READING; the blocker is a STORED con-PAT defect.** See 55c.
+* **GICRE, the reading problem (solved) — the text layer is CORRUPTED, §51b class.** Not the four-segment shape §43 warned
   about: the 2023 packs print a single "Premium Earned (Net)" row like NIACL's. The blocker is that
   the extracted text reads "OPERA TING RES UL TS", "Income from investments net)" (opening paren
   gone), "Aooropriations", and numbers break apart ("212.414" for 212414). Even the STANDALONE page
@@ -3486,6 +3487,48 @@ with no stored standalone to control against are skipped, not guessed. It also c
   the standalone page. That is the limit of A5, and it is why the above had to be caught by eye
   (two quarters sharing a value is the fingerprint; scan any batch for duplicate values before
   applying).
+
+### 55c. ★★ GICRE's STORED CONSOLIDATED PAT IS A STANDALONE COPY — revenue cannot anchor until it is fixed
+The OCR fallback (55d) reads GIC Re's filings correctly: its Jun-2023 standalone statement
+reproduces our stored standalone revenue EXACTLY (8,63,256 + 1,74,692 + 70,801 = ₹11,087.49cr vs
+stored 11087.49; PAT 731.78 vs stored 731.79). So the reading was never the real blocker. The real
+one is in the PAT track:
+
+    Jun-2023 filing, p16 "Reviewed Statement of CONSOLIDATED Financial Results":
+        Profit/(loss) after tax            95,007 lakh  = ₹950.07 cr
+        Profit for the year (incl. assoc.) 97,766 lakh  = ₹977.66 cr
+    our stored con PAT for 20230630        = 731.79  ... which is the STANDALONE figure.
+
+Fingerprint across GICRE's series: con PAT differs from std ONLY in March quarters (20220331,
+20240331, 20250331, 20260331) plus 20220630 — every other quarter since Sep-2022 stores con == std
+to the paisa. GIC Re has subsidiaries and associates and files consolidated results QUARTERLY, so
+those identical quarters are copies, not coincidence.
+**Consequence for the revenue track:** a con revenue can only land where the stored con PAT is
+genuine, so ~12 GICRE quarters are unfillable BY CONSTRUCTION until the PAT is corrected — and
+correcting a wrong non-null cell is §2b, a different procedure, explicitly out of the fill-only
+campaign's scope. The quarters whose con PAT IS genuine fail for a second, unrelated reason (their
+older filings yield no standalone statement for the A5 control). GICRE therefore stays open.
+⚠️ Do NOT "fix" this by filling con revenue against the copied PAT — that pairs a real consolidated
+revenue with a standalone profit in the same row.
+Contrast SBILIFE and ICICIGI, which also store con == std in all 30 quarters: those are genuinely
+no-subsidiary insurers (playbook §3), so identical is CORRECT there. The fingerprint alone does not
+prove a defect — check whether the company actually files a consolidated statement.
+
+### 55d. ★ OCR FALLBACK for corrupted text layers  (built 2026-08-06)
+`insurer_con_rev.py` re-reads a filing with rapidocr (free, local, no API key — the §3 Gemini path
+is still unwired) when the text layer yields no consolidated statement. Two things make it usable:
+* **Normalised label matching.** OCR returns whole phrases with the spaces stripped
+  ("PremiumEarned(Net)"), so every row pattern also has a normalised form (lowercase,
+  alphanumerics only) — which incidentally made the text path immune to punctuation variants like
+  ICICIPRULI's "Income from investments: (Net)".
+* **Indian digit-grouping repair.** OCR reads "1,74,942" as "1.74942" — the comma becomes a
+  decimal point. A value with 3+ digits after a single point and a short integer part is a mangled
+  group, not a fraction (1.74942 -> 174942, 35.97353 -> 3597353), while ratios like 2.88 and 10.36
+  are left alone.
+Cost ~1-2s/page, so it is a FALLBACK, never the first read, and capped at 45 pages.
+§0 says OCR mangles digits — it does, and that is precisely why nothing here trusts it: a mangled
+digit fails the PAT anchor, the standalone control, or the ratio family. The reader is allowed to
+be unreliable because the gates are not.
 
 ### 55b. ★★ SELECT A COLUMN BY ITS PRINTED DATE, NOT BY ITS INDEX
 The fix that turned NIACL from "unreachable" into 15 anchored cells, and the right default for any
