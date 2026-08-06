@@ -103,11 +103,14 @@
   <!-- fundamentals -->
   <div class="card p-4">
     <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
-      <div class="text-sm font-semibold text-slate-700">💰 Quarterly financials <span class="text-slate-400 font-normal">— point-in-time (₹ cr), consolidated where filed, YoY growth</span></div>
+      <div class="text-sm font-semibold text-slate-700">💰 Quarterly financials <span id="fundHdrSub" class="text-slate-400 font-normal">— point-in-time (₹ cr), consolidated where filed, YoY growth</span></div>
       <a href="./quarterly-results.html" class="text-xs font-semibold text-indigo-600 hover:underline">All companies' results →</a>
     </div>
     <div id="lastReact" class="text-xs text-slate-500 mb-2 hidden"></div>
     <div id="fundCards" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-3"></div>
+    <!-- reporting-basis switch (screener.in style): consolidated by default, standalone on demand.
+         Governs the cards above, this table, and the 🧾 Financial detail card below. -->
+    <div id="fundBasis" class="flex items-center gap-1.5 flex-wrap mb-2" style="display:none"></div>
     <!-- sw-scrollx: stays a table on phones and scrolls sideways with the quarter
          column pinned (theme.css), instead of reflowing to one card per quarter -->
     <div id="funds" class="sw-scrollx overflow-x-auto text-sm">—</div>
@@ -441,6 +444,15 @@ function revopFor(sym){
   const R=REVOP||{}; const alias=(typeof FUND_ALIAS!=='undefined'&&FUND_ALIAS)?FUND_ALIAS[sym]:null;
   return R[sym]||(alias?R[alias]:null)||null;
 }
+/* Reporting basis, screener.in-style. CONSOLIDATED is the default — it is the group's real
+   picture and what the TTM cards / P/E have always used. In 'con' the standalone number is
+   still the fallback for a quarter the company never filed consolidated (pre-2020 consolidated
+   filings are structurally absent for most Indian companies), and the Basis column marks those
+   rows. 'std' is strict: parent-only figures, no consolidated ever mixed in.
+   FB_EFF is the basis actually in force for the stock on screen (a stock with no standalone
+   data at all can't honour a remembered 'std'), and the 🧾 Financial detail card reads it too. */
+let FBASIS='con', FB_EFF='con';
+try{ if(localStorage.getItem('sw_finBasis')==='std') FBASIS='std'; }catch(e){}
 const qIdx=e=>{ const y=Math.floor(e/10000), m=Math.floor(e/100)%100; return y*4+Math.floor((m-1)/3); };  // quarter number, for contiguity checks
 const crFmt=v=>v==null?'—':v.toLocaleString('en-IN',{maximumFractionDigits:v!=null&&Math.abs(v)<100?1:0});
 const crBig=v=>v==null?'—':(Math.abs(v)>=100000?'₹'+(v/100000).toFixed(2)+' L cr':'₹'+Math.round(v).toLocaleString('en-IN')+' cr');
@@ -460,23 +472,53 @@ function renderFunds(){
   arr.forEach(q=>{ if(!rw||kStd(q[0])||kCon(q[0])) seen[q[0]]=1; });
   if(!rw) Object.keys(rv).forEach(k=>seen[+k]=1);
   const ends=Object.keys(seen).map(Number).sort((a,b)=>a-b);
-  if(!ends.length){ $('funds').innerHTML=FIN_STATE==='pending'
+  if(!ends.length){ $('fundBasis').style.display='none';
+    $('funds').innerHTML=FIN_STATE==='pending'
       ? '<span class="text-slate-400">Loading quarterly financials…</span>'
       : '<span class="text-slate-400">No quarterly earnings on file for this stock.</span>'; return; }
 
-  const pat=e=>{ const q=fundBy[e]; if(!q) return null;
-    if(q[3]!=null&&(!rw||kCon(e))) return q[3];
-    if(q[1]!=null&&(!rw||kStd(e))) return q[1];
-    return null; };
-  const patCon=e=>{ const q=fundBy[e]; return !!(q&&q[3]!=null&&(!rw||kCon(e))); };
+  const conPat=e=>{ const q=fundBy[e]; return (q&&q[3]!=null&&(!rw||kCon(e)))?q[3]:null; };
+  const stdPat=e=>{ const q=fundBy[e]; return (q&&q[1]!=null&&(!rw||kStd(e)))?q[1]:null; };
   const raw=(e,i)=>{ const c=rv[String(e)]; if(!c||c[i]==null) return null;
     if(rw){ const con=(i===1||i===3||i===5||i===8); if(con?!kCon(e):!kStd(e)) return null; }
     return c[i]; };
-  const pick=(e,ci,si)=>{ const c=raw(e,ci); if(c!=null) return {v:c,con:true}; const s=raw(e,si); return s!=null?{v:s,con:false}:null; };
+  // which bases this stock actually has (after the point-in-time gate) — decides whether the
+  // switch is worth showing at all, and stops a remembered 'std' emptying a con-only stock
+  const anyCon=ends.some(e=>conPat(e)!=null||raw(e,1)!=null||raw(e,3)!=null||raw(e,8)!=null);
+  const anyStd=ends.some(e=>stdPat(e)!=null||raw(e,0)!=null||raw(e,2)!=null||raw(e,7)!=null);
+  const B=(FBASIS==='std'&&anyStd)?'std':'con';
+  FB_EFF=B;                                              // renderDeep()/xCell() follow the same basis
+
+  const pat=e=>{ if(B==='std') return stdPat(e); const c=conPat(e); return c!=null?c:stdPat(e); };
+  const patCon=e=>B!=='std'&&conPat(e)!=null;
+  const pick=(e,ci,si)=>{ if(B==='std'){ const s=raw(e,si); return s!=null?{v:s,con:false}:null; }
+    const c=raw(e,ci); if(c!=null) return {v:c,con:true}; const s=raw(e,si); return s!=null?{v:s,con:false}:null; };
   const rev=e=>pick(e,1,0), op=e=>pick(e,3,2), ebit=e=>pick(e,8,7);
   const vOf=x=>x?x.v:null;
-  const opm=e=>{ const r=vOf(rev(e)), o=vOf(op(e)); return (r&&o!=null)?o/r*100:null; };
-  const basis=e=>{ const r=rev(e); if(r) return r.con?'con':'std'; return fundBy[e]?(patCon(e)?'con':'std'):'—'; };
+  const opm=e=>marginOn([e]);      // margin on ONE basis too — see marginOn() below
+  // Basis of the row as ACTUALLY shown. A quarter can be genuinely mixed — consolidated PAT is on
+  // file back to ~2010 while consolidated REVENUE mostly starts 2020 — and calling such a row "std"
+  // (what this did before) hid a consolidated profit behind a standalone label. 'mix' says so.
+  const rowCon=e=>{ const r=rev(e),o=op(e),b=ebit(e); return !!((r&&r.con)||(o&&o.con)||(b&&b.con)||patCon(e)); };
+  const rowStd=e=>{ const r=rev(e),o=op(e),b=ebit(e);
+    return !!((r&&!r.con)||(o&&!o.con)||(b&&!b.con)||(pat(e)!=null&&!patCon(e))); };
+  const basis=e=>{ const c=rowCon(e),s=rowStd(e); return c&&s?'mix':(c?'con':(s?'std':'—')); };
+
+  // ---- the basis switch itself (only when both bases exist for this stock) ----
+  const bEl=$('fundBasis');
+  if(anyCon&&anyStd){
+    bEl.style.display='';
+    bEl.innerHTML='<span class="text-[11px] uppercase text-slate-400 mr-1">Figures</span>'+
+      [['con','Consolidated'],['std','Standalone']].map(([k,l])=>
+        `<button data-b="${k}" class="px-2.5 py-1 rounded-lg text-xs font-semibold border shrink-0 ${k===B?'bg-slate-800 text-white border-slate-800':'text-slate-500 border-slate-200 hover:bg-slate-50'}">${l}</button>`).join('');
+    bEl.querySelectorAll('[data-b]').forEach(b=>b.onclick=()=>{
+      if(b.dataset.b===FBASIS) return;
+      FBASIS=b.dataset.b; try{ localStorage.setItem('sw_finBasis',FBASIS); }catch(e){}
+      renderFunds();
+    });
+  }else bEl.style.display='none';
+  const hdr=$('fundHdrSub');
+  if(hdr) hdr.textContent='— point-in-time (₹ cr), '+(B==='std'?'standalone (parent only)':'consolidated where filed')+', YoY growth';
   const isFin=ends.some(e=>raw(e,6)===1);
   const fq=e=>{ const s=String(e); return s.slice(0,4)+'-'+s.slice(4,6); };
 
@@ -488,9 +530,25 @@ function renderFunds(){
   const sum=(w,get)=>{ if(!w) return null; let t=0; for(const e of w){ const v=get(e); if(v==null) return null; t+=v; } return t; };
   const cur4=window4(ends.length-1), prev4=(ends.length>=8&&cur4)?window4(ends.length-5):null;
   const contiguous=!!(cur4&&prev4&&qIdx(cur4[0])===qIdx(prev4[3])+1);
-  const revT=sum(cur4,e=>vOf(rev(e))), revP=contiguous?sum(prev4,e=>vOf(rev(e))):null;
-  const opT=sum(cur4,e=>vOf(op(e)));
-  const patT=sum(cur4,e=>pat(e)), patP=contiguous?sum(prev4,e=>pat(e)):null;
+  const revT=sum(cur4,e=>vOf(rev(e))), opT=sum(cur4,e=>vOf(op(e))), patT=sum(cur4,e=>pat(e));
+  /* GROWTH IS COMPUTED ON ONE BASIS, NEVER ACROSS TWO. Consolidated revenue mostly starts 2020
+     while standalone runs back to 2015, so the naive con-preferred pair compares this year's
+     consolidated against last year's standalone and invents group-sized "growth" (measured
+     2026-08-06: 5.4% of revenue and 3.2% of PAT YoY cells site-wide). Rule: use consolidated
+     when BOTH periods have it, else standalone for both, else no number at all. */
+  const yoyOn=(getCon,getStd,a,b)=>{ if(!a||!b) return null;
+    if(B!=='std'){ const x=sum(a,getCon), y=sum(b,getCon); if(x!=null&&y!=null) return growth(x,y); }
+    const x=sum(a,getStd), y=sum(b,getStd); return (x!=null&&y!=null)?growth(x,y):null; };
+  const conRev=e=>raw(e,1), stdRev=e=>raw(e,0);
+  const revG=contiguous?yoyOn(conRev,stdRev,cur4,prev4):null;
+  const patG=contiguous?yoyOn(conPat,stdPat,cur4,prev4):null;
+  const qYoY=(gc,gs)=>e=>yoyOn(gc,gs,[e],[e-10000]);        // per-quarter, same rule
+  const revYoY=qYoY(conRev,stdRev), patYoY=qYoY(conPat,stdPat);
+  // …and so is a margin: consolidated op profit over STANDALONE revenue is not a margin of anything.
+  const marginOn=w=>{ if(!w) return null;
+    if(B!=='std'){ const r=sum(w,conRev), o=sum(w,e=>raw(e,3)); if(r&&o!=null) return o/r*100; }
+    const r=sum(w,stdRev), o=sum(w,e=>raw(e,2)); return (r&&o!=null)?o/r*100:null; };
+  const opmT=marginOn(cur4);
 
   // ---- valuation: mcap re-priced off THIS page's last close, so a stale bake can't skew P/E ----
   // (in rewind: re-priced to the as-of close — share count assumed constant, a fair first cut)
@@ -509,9 +567,9 @@ function renderFunds(){
   const gTag=g=>g==null?'':`<span class="${g>=0?'pos':'neg'}">${pct(g)}</span> <span class="text-slate-400">YoY</span>`;
   $('fundCards').innerHTML=[
     card('Market cap', mcap==null?'—':crBig(mcap), sub(mcap==null?null:'at ₹'+(lastRaw>=1000?Math.round(lastRaw).toLocaleString('en-IN'):lastRaw.toFixed(2)))),
-    card('Revenue (TTM)', revT==null?'—':crBig(revT), sub(gTag(growth(revT,revP)))),
-    card('Operating profit (TTM)', opT==null?'—':crBig(opT), sub((revT&&opT!=null)?('OPM '+(opT/revT*100).toFixed(1)+'%'):null)),
-    card('Net profit (TTM)', patT==null?'—':crBig(patT), sub(gTag(growth(patT,patP))), patT<0?'neg':'text-slate-900'),
+    card('Revenue (TTM)', revT==null?'—':crBig(revT), sub(gTag(revG))),
+    card('Operating profit (TTM)', opT==null?'—':crBig(opT), sub(opmT==null?null:('OPM '+opmT.toFixed(1)+'%'))),
+    card('Net profit (TTM)', patT==null?'—':crBig(patT), sub(gTag(patG)), patT<0?'neg':'text-slate-900'),
     card('P/E (TTM)', pe==null?'—':pe.toFixed(1), sub(patT!=null&&patT<=0?'loss-making':null)),
     card('P/S (TTM)', ps==null?'—':ps.toFixed(2), sub(revT==null?null:'price ÷ sales'))
   ].join('');
@@ -574,18 +632,29 @@ function renderFunds(){
     `</tr></thead><tbody>`+
     show.map(e=>{ const p=pat(e), r=vOf(rev(e)), o=vOf(op(e)), eb=vOf(ebit(e)), mg=opm(e);
       return `<tr class="border-b border-slate-50"><td class="py-1 pr-2 font-medium whitespace-nowrap">${fq(e)}</td>`+
-        num(r)+gCell(growth(r,vOf(rev(e-10000))))+
+        num(r)+gCell(revYoY(e))+
         num(o,o!=null&&o<0?'neg':'')+
         `<td class="text-right px-2 ${mg==null?'':(mg>=0?'':'neg')}">${mg==null?'—':mg.toFixed(1)+'%'}</td>`+
         num(eb,eb!=null&&eb<0?'neg':'')+
-        num(p,p!=null&&p<0?'neg':'font-semibold')+gCell(growth(p,pat(e-10000)))+rxCell(e)+
+        num(p,p!=null&&p<0?'neg':'font-semibold')+gCell(patYoY(e))+rxCell(e)+
         `<td class="text-right px-2 text-[11px] text-slate-400 uppercase">${basis(e)}</td></tr>`;
     }).join('')+`</tbody></table>`;
 
   const notes=['All figures ₹ crore, as filed for that quarter (point-in-time — later restatements don’t rewrite history). '+
     'Net profit is the owners-attributable share; “Basis” shows whether the row is consolidated or standalone. '+
     'Op profit = EBITDA (revenue less operating expenses, before interest and depreciation); EBIT is after depreciation. '+
+    'YoY always compares both periods on the <i>same</i> basis (consolidated when both filed it, else standalone) — it is blank when the two share no basis, because mixing them invents growth that never happened. '+
     '“React” is the close-to-close move on the first trading day on/after the results announcement.'];
+  // basis note — only says something the Basis column doesn't already
+  if(!anyCon) notes.push('This company files <b>standalone</b> results only — no consolidated filing on file, so there is nothing to switch to.');
+  else if(!anyStd) notes.push('This company files <b>consolidated</b> results only.');
+  else if(B==='std'){ const miss=show.filter(e=>basis(e)==='—').length;
+    notes.push('Showing <b>standalone</b> figures — the parent company alone, subsidiaries excluded.'+
+      (miss?' '+miss+' of the last '+show.length+' quarters '+(miss===1?'has':'have')+' no standalone filing on file and '+(miss===1?'is':'are')+' blank.':'')); }
+  else{ const fb=show.filter(e=>basis(e)==='std').length, mx=show.filter(e=>basis(e)==='mix').length, bits=[];
+    if(fb) bits.push(fb+' of the last '+show.length+' '+(fb===1?'has':'have')+' no consolidated filing at all, so '+(fb===1?'that row is':'those rows are')+' standalone (<span class="uppercase">std</span>)');
+    if(mx) bits.push(mx+' '+(mx===1?'row is':'rows are')+' part-consolidated — consolidated for the figures filed that way, standalone for the rest (<span class="uppercase">mix</span>)');
+    if(bits.length) notes.push('Showing <b>consolidated</b> figures where filed: '+bits.join('; ')+'.'); }
   if(isFin) notes.push('<span class="text-amber-600">Bank / NBFC:</span> “revenue” is interest earned plus other operating income and “op profit” is pre-provision — neither margin is comparable to a non-financial company.');
   if(!Object.keys(rv).length) notes.push('Revenue, margins and EBIT aren’t on file for this stock yet — only net profit is shown. <a class="text-indigo-500 hover:underline" href="./results-season.html">How coverage is built →</a>');
   else if(revT==null) notes.push('Revenue (TTM) is blank because one of the last four quarters has no revenue on file — a partial sum would understate the year.');
@@ -596,9 +665,11 @@ function renderFunds(){
    FIN_X = {qEnd: {s:{...}, c:{...}}}: EPS, interest/depreciation/tax, balance sheet (half-yearly),
    cash flow (+cf_d period days — filers tag quarter, H1 or FY periods), segments, bank health.
    Consolidated preferred per quarter, standalone fallback — same rule as the summary table. */
-let FIN_X=null;
-const xCell=e=>{ const c=FIN_X&&FIN_X[String(e)]; return c?(c.c||c.s||null):null; };
-const xBasis=e=>{ const c=FIN_X&&FIN_X[String(e)]; return c?(c.c?'con':'std'):''; };
+let FIN_X=null, DEEP_TAB=null;
+const xCell=e=>{ const c=FIN_X&&FIN_X[String(e)]; if(!c) return null;
+  return FB_EFF==='std'?(c.s||null):(c.c||c.s||null); };                       // follows the basis switch
+const xBasis=e=>{ const c=FIN_X&&FIN_X[String(e)]; if(!c) return '';
+  return FB_EFF==='std'?(c.s?'std':''):(c.c?'con':(c.s?'std':'')); };
 const fyOf=e=>{ const m=Math.floor(e/100)%100; return m<=3?Math.floor(e/10000):Math.floor(e/10000)+1; };
 const crS=v=>v==null?'—':Math.round(v).toLocaleString('en-IN');
 function latestBS(ends){
@@ -618,10 +689,11 @@ function renderDeep(ends,patFn,revFn,opFn,isFin){
     .filter(fy=>byFy[fy].length===4&&byFy[fy].every(e=>patFn(e)!=null));
   has.a=fys.length>0;
   const tabs=[['q','📄 Quarterly detail'],['a','📚 Annual'],['seg','🧩 Segments'],['bank','🏦 Bank health']].filter(([k])=>has[k]);
-  let cur=tabs[0][0];
+  // keep the open tab across a re-render (flipping the basis switch re-runs this whole card)
+  let cur=(DEEP_TAB&&tabs.some(([k])=>k===DEEP_TAB))?DEEP_TAB:tabs[0][0];
   const draw=()=>{
     $('deepTabs').innerHTML=tabs.map(([k,l])=>`<button data-t="${k}" class="px-2.5 py-1 rounded-lg text-xs font-semibold border shrink-0 ${k===cur?'bg-slate-800 text-white border-slate-800':'text-slate-500 border-slate-200 hover:bg-slate-50'}">${l}</button>`).join('');
-    $('deepTabs').querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{ cur=b.dataset.t; draw(); });
+    $('deepTabs').querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{ cur=DEEP_TAB=b.dataset.t; draw(); });
     const th=t=>`<th class="text-right px-2">${t}</th>`;
     const td=(v,cls)=>`<td class="text-right px-2 ${cls||''}">${v}</td>`;
     const money=v=>td(v==null?'—':v.toLocaleString('en-IN',{maximumFractionDigits:Math.abs(v)<100?1:0}),v!=null&&v<0?'neg':'');
@@ -636,7 +708,7 @@ function renderDeep(ends,patFn,revFn,opFn,isFin){
             money(x.oi)+money(x.fc)+money(x.dep)+money(x.tax)+money(x.exc)+money(x.pbt)+
             td(x.aud==='A'?'✓':(x.aud==='U'?'unaudited':'—'),x.qual?'neg':'text-slate-500 text-xs')+`</tr>`;
         }).join('')+`</tbody></table></div>`;
-      note='₹ crore except EPS (₹/share, basic). Consolidated where filed. '+(ends.some(e=>(xCell(e)||{}).qual)?'<span class="neg">⚠ At least one filing carries an audit qualification.</span>':'');
+      note='₹ crore except EPS (₹/share, basic). '+(FB_EFF==='std'?'Standalone (parent only).':'Consolidated where filed.')+' '+(ends.some(e=>(xCell(e)||{}).qual)?'<span class="neg">⚠ At least one filing carries an audit qualification.</span>':'');
     }else if(cur==='a'){
       const vOf=x=>x?x.v:null;
       html=`<div class="sw-scrollx overflow-x-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>`+
