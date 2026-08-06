@@ -115,6 +115,14 @@ def read_page(link, sym, qe, want_con):
         pat = per
     if pat is None:
         return None, "no-pat-row", None
+    # BLANK TEMPLATE PAGES. Some filers submitted the consolidated form with every P&L row left at
+    # 0.00 (SUNTV Mar-2017: profit, tax, EPS, minority all 0.0; only Paid-up equity populated).
+    # The page validates on basis/period/symbol and its sibling std page is perfectly good, so
+    # nothing upstream catches it -- but the consolidated figures were simply never entered. A
+    # genuine consolidated PAT of exactly 0.00 is vanishingly unlikely; refusing it costs at most
+    # one real cell and blocks a whole class of silent zero-fills.
+    if abs(pat) < 1e-9:
+        return None, "blank-template(all-zero con page)", None
     return pat, meta, rows
 
 
@@ -214,6 +222,14 @@ def main():
         eg, note = eps_gate(pat, rows)
         gates.append("E:%s %s" % ({True: "PASS", False: "FAIL", None: "n/a"}[eg], note))
         passed = passed or (eg is True)
+        # A FAILING E is also a hard block, for the same reason as S': GATE S' validates the page
+        # FAMILY (source, scale, period, identity) via the std sibling, but it says nothing about
+        # WHICH ROW was picked on the CON page. Where the con page does carry EPS + equity, that
+        # reconstruction is the only check on the row choice, so a failure means the picked row is
+        # wrong even though the document is right (TATASTEEL Sep-2016: recon -230.92 vs picked
+        # -54.42). E:n/a -- inputs genuinely absent -- stays acceptable when S' passed.
+        if eg is False:
+            blocked = blocked or "E-recon failed (%s)" % note
         if blocked:
             passed = False
         rec = {"con": round(pat, 2), "unit": meta.get("unit"), "gates": gates,
