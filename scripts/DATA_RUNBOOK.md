@@ -3562,6 +3562,31 @@ revenue does not repeat exactly at these magnitudes. `insurer_con_rev.py --apply
 batch and prints the pairs. A per-filing standalone control CANNOT catch this — it passes on the
 standalone page while the consolidated side is misread.
 
+### 55e. ★ THE PDF READER GENERALISES — the residue's blocker is ATTACHMENT SELECTION  (2026-08-06)
+`fill2020_tools/pdf_rev_reader.py` applies the insurer machinery (date-keyed columns §55b, OCR
+§55d, anchor-by-PAT, cross-basis control) to ordinary industrial filings. It WORKS: TATAELXSI
+Mar-2024 — a fully SCANNED filing, no text layer at all — reads revenue 905.94 against our stored
+905.94, PAT anchored at 196.93 exactly, via OCR. Two findings from trying to run it over the
+residue, both of which will recur:
+
+1. **Cost.** OCR is ~1-2s/page, so a company with 11 gap quarters that yields nothing costs 15+
+   minutes. Do NOT sweep the residue with OCR blind. Establish per-company that the document
+   contains the statement you need BEFORE paying for the read.
+2. **⚠️ THE ATTACHMENT IS USUALLY NOT THE RESULTS.** The earliest result-flagged BSE announcement
+   after quarter-end is frequently a board-meeting outcome / cover letter, not the financial
+   statements. ALKYLAMINE Jun-2024 fetched that way gives 7 pages and 13,996 chars with ZERO hits
+   for both "consolidated" AND "standalone" — which reads exactly like "this company filed
+   standalone only", the very inference the no-con identity route (§54b) is built on.
+   **It is not true.** The §51b positive control kills it: point the same detector at ALKYLAMINE
+   Jun-2019, a quarter whose stored con PAT (36.67) demonstrably differs from std (35.09) so a
+   consolidated statement MUST exist — and it ALSO scores zero. The detector was not detecting.
+   **Never infer "no consolidated statement was filed" from a keyword miss in one attachment**;
+   control it against a period where the thing is known to exist, and if the control fails, the
+   attachment is wrong, not the company's filing behaviour.
+   Fixing this means selecting the attachment by content (a page carrying a revenue row and a
+   dated header) across ALL result announcements in the window, not by date order — that is the
+   next piece of work for this residue.
+
 ### 55a. An empty BSE announcement list is RATE-LIMITING, not absence
 `fetch_insurers.datebound()` swallows a throttled response in its inner `except: break` and returns
 `[]`, which reads exactly like "this company filed nothing that quarter". Seven NIACL quarters were
