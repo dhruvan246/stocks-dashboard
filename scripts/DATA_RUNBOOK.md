@@ -3224,3 +3224,25 @@ associates` — literally this dataset's basis. Fall back to the plain period ro
 interest is absent or zero; **7 cells were refused as `no-owners-row-but-minority-present`** rather
 than silently landing total PAT on an owners-basis series.
 
+
+### 53d. FY-identity derivation for con — and the 9-month-annual trap
+Where a fiscal year has 3 con quarters stored and the 4th is the gap, `derived = annual - sum(3)`.
+Across all 311 gap companies only **35 FYs qualify and 13 have the annual — 1 survived the gates.**
+Tool: `fill2020_tools/derive_con_pat_fy.py`, ledger `scripts/con_pat_fy_derived.json`.
+
+Two gates make the difference between arithmetic and fabrication:
+- **CALIBRATION.** The subtraction is only as good as the annual, which can silently sit on another
+  footing (restated post-merger/Ind-AS). 555 FYs here have all four con quarters, so test
+  `annual == sum(4)` for the SAME company in a neighbouring FULL year. Holds → commensurable.
+- **DECLARED SPAN — the one that actually bit.** HCLTECH FY2016 derived a Jun-2015 con of **38.64
+  against siblings of ~1,870**. Its "annual" covers only Jul-2015..Mar-2016: the 9-month stub from
+  moving a June-ending FY to a March-ending one. `annual - 3 quarters` was differencing periods that
+  do not tile. **It passed calibration** — calibrating FY2017 says nothing about FY2016's span.
+  The page prints `Financial Year <d> To <d>`: **require 12 months.** Behind it, a sibling-magnitude
+  net (derived within 0.15x..6x the median of the three knowns) catches undeclared span anomalies.
+  Same class as §45 and STEP-W's GLAXO finding — a calendar/transition year that silently fails to
+  tile is the standard way an identity derivation fabricates a plausible number.
+
+**Pre-2020 con-PAT is now closed at 2,939 open cells**, every one of them structurally absent
+rather than un-attempted: 2.7% of gap cells had a quarterly filing (42 landed), and the FY-identity
+route reaches 1 more. Do not re-grind this window without a genuinely new source.
