@@ -47,11 +47,12 @@ REVOP = os.path.join(ROOT, "docs", "sf_revop.json")
 REVOP_M = os.path.join(HERE, "revop_fundamentals.json")
 LEDGER = os.path.join(HERE, "copied_con_purge.json")
 
-# symbol -> first quarter of the copied run (inclusive). NSE-verified, see docstring.
-CONFIRMED = {
-    "RALLIS": 20220630, "ABB": 20220930, "CAMPUS": 20220930, "RAILTEL": 20230930,
-    "JTEKTINDIA": 20231231, "AAVAS": 20240630, "3MINDIA": 20240930, "MANYAVAR": 20241231,
-}
+# symbol -> first quarter of the copied run (inclusive), read from the shared ledger. This was a
+# hardcoded list of 8 NSE-verified names; the ledger is now the single source of truth for both
+# this purge and the coverage audit. Companies that filed consolidated and then STOPPED: anything
+# from their stop quarter onward that still EQUALS standalone is a copy, not a filing.
+# USER RULE 2026-08-06: no real consolidated filing for 4+ quarters => treat as stopped.
+CONFIRMED = json.load(open(os.path.join(HERE, "no_con_filing.json")))["stopped_filing_con"]
 TOL = 0.011
 
 
