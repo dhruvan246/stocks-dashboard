@@ -3594,6 +3594,22 @@ those quarters BOTH slots held the consolidated pre-associate number.
 packs *because our stored standalone is wrong*, not because the reading is. That is why the tool
 treats the standalone control as one anchor among several rather than a hard gate.
 
+**What the fix bought on the REVENUE track, honestly (2026-08-06).** The corrected anchor unblocked
+the con-revenue read for **Jun-2023 (₹11,165.84cr, con/std 1.0071 — inside GICRE's stored ratio
+family 1.0031-1.0154, §55b's adjudication test)**, applied. The other eight targets still fail, but
+for a DIFFERENT reason than before: not "no page anchored to stored con PAT" (that is gone) but
+`std control failed: filing reads None` — `insurer_con_rev`'s revenue-leg patterns find nothing on
+those packs' standalone pages, so A5 has no positive control. That is a reader limit on the REVENUE
+rows, not an anchor problem; anyone resuming should fix the leg patterns (the PAT rows on those same
+pages read fine, see 55c above), not the anchor.
+⚠️ **And the same copy defect is visible in the revenue track**: `sf_revop` stores con revenue ==
+std revenue TO THE PAISA at 20230930 (13,224.18) and 20240630 (12,822.55), where every other
+populated quarter runs 1.003-1.05. The fill-only campaign cannot see these — they are non-null. They
+need a §2b revenue correction of their own.
+Cached re-runs: `scripts/fill2020_tools/insurer_con_rev_cached.py` wraps the tool with an on-disk
+page-OCR cache (same `<SYM>_<qe>_<attachment>` keys 55c's audit already populated); it changes no
+gate. Note it keys by a hash of the PDF BYTES — `fitz.open(stream=...)` documents have no `.name`.
+
 **Also open, deliberately out of scope:** the COPY defect predates the fixed window. Comparative
 columns show Mar-2021 (stored 1260.44, filings 1328.87), Sep-2021 (1010.55 vs 1348.15) and Dec-2021
 (−28.48 vs **141.80**, two filings agreeing) are copies too. Not written — fixing three quarters of
