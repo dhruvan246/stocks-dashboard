@@ -60,7 +60,7 @@
   <div class="flex items-start justify-between flex-wrap gap-3 mb-1">
     <div>
       <h1 class="text-xl font-bold text-slate-900">🎯 All Picks — every strategy's current basket</h1>
-      <p class="text-sm text-slate-500 mt-1 max-w-3xl">The stocks each saved strategy qualifies for <b>right now</b> — the same list as its Live Picks tab, priced live. The badges are that strategy's move on the basket it actually holds — <b>since the previous close</b>, and since its last rebalance. <span id="upd" class="text-slate-400"></span></p>
+      <p id="intro" class="text-sm text-slate-500 mt-1 max-w-3xl">The stocks each saved strategy qualifies for <b>right now</b> — the same list as its Live Picks tab, priced live. The badges are that strategy's move on the basket it actually holds — <b>since the previous close</b>, and since its last rebalance. <span id="upd" class="text-slate-400"></span></p>
     </div>
     <div class="flex items-center gap-2 flex-wrap">
       <!-- Membership (universe) picker — same filter as Saved Strategies (shared bt_uni_filter key):
@@ -70,12 +70,27 @@
         <label for="uniSel" class="text-[11px] font-bold uppercase tracking-wide text-slate-500">Membership</label>
         <select id="uniSel" title="Show only strategies built on this universe" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-semibold bg-white"></select>
       </div>
+      <!-- 🕘 Rewind — the strategy page's Rewind tab, applied to EVERY basket at once: pick a date
+           and the whole board re-screens as of that day (point-in-time membership, factors and
+           closes; no live quotes, because there weren't any). Shareable as ?asof=YYYY-MM-DD. -->
+      <div class="flex items-center gap-1.5">
+        <label for="rwPick" class="text-[11px] font-bold uppercase tracking-wide text-slate-500">Rewind</label>
+        <input id="rwPick" type="date" title="Show every strategy's basket as of a past date" class="border border-slate-300 rounded-lg px-2 py-1.5 text-xs font-semibold bg-white" />
+        <button id="rwGo" class="border border-indigo-300 text-indigo-600 hover:bg-indigo-50 rounded-lg px-2.5 py-1.5 text-xs font-bold whitespace-nowrap">🕘 Go</button>
+      </div>
       <div class="flex gap-1 bg-white border border-slate-200 rounded-lg p-1 shadow-sm" role="tablist" aria-label="View">
         <button id="vCards" role="tab" class="vbtn text-xs font-semibold px-3 py-1.5 rounded-md text-slate-500 hover:text-slate-800 transition" aria-selected="false">▦ Cards</button>
         <button id="vBoard" role="tab" class="vbtn text-xs font-semibold px-3 py-1.5 rounded-md text-slate-500 hover:text-slate-800 transition" aria-selected="true">☰ Board</button>
       </div>
       <button id="refresh" class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-3 py-2 text-sm font-semibold shadow-sm">↻ Refresh</button>
     </div>
+  </div>
+
+  <!-- rewind banner (mirrors the stock page's) — always states which day is on screen, so a
+       rewound board can never be mistaken for the live one -->
+  <div id="rwBanner" class="hidden card px-4 py-2.5 mt-4 text-[12.5px] text-slate-600 flex flex-wrap items-center gap-x-3 gap-y-1.5" style="border-left:3px solid #6366f1">
+    <span>🕘 <b class="text-indigo-600">Rewind:</b> every strategy's basket as the market saw it on <b id="rwLabel" class="text-slate-900">—</b> — index membership, filters and ranking are all point-in-time, and prices are that day's close (no live quotes).</span>
+    <button id="rwExit" class="ml-auto px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shrink-0">← Back to live</button>
   </div>
 
   <div id="stats" class="grid gap-3 mt-5 mb-4" style="grid-template-columns:repeat(auto-fit,minmax(158px,1fr))"></div>
@@ -96,16 +111,16 @@
         <div>#</div>
         <div data-sort="name" class="sortcol">Strategy<span class="ar"></span></div>
         <div data-sort="ret" class="sortcol text-right" title="Held basket's return since its last rebalance">Since reb.<span class="ar"></span></div>
-        <div data-sort="day" class="sortcol text-right" title="Held basket's move since the previous close">Since prev close<span class="ar"></span></div>
+        <div data-sort="day" class="sortcol text-right" title="Held basket's move since the previous close"><span id="hDay">Since prev close</span><span class="ar"></span></div>
         <div data-sort="topN" class="sortcol text-right">Hold<span class="ar"></span></div>
-        <div>Qualifying now · today's move</div>
+        <div id="hQual">Qualifying now · today's move</div>
         <div title="The basket screened on the last rebalance date — what the strategy actually holds, and what the return badges are measured on">Qualifying at rebalance · move since</div>
       </div>
       <div id="boardRows"></div>
     </div></div>
   </section>
 
-  <p id="foot" class="text-[11px] text-slate-400 mt-4 hidden"><span class="text-amber-500">⭐</span> marks a strategy you've starred in the Favourites tab on <a href="./saved-strategies.html?view=fav" class="text-indigo-600 hover:underline">Saved Strategies</a> (stars are set there; this page only mirrors them, and they live in this browser). Prices are live (Yahoo NSE, ~15-min delay); per-stock figures are today's move. The listed stocks are the strategy's top-N screened as of now, so they match its Live Picks tab and can differ from what it currently holds. The board's last column is that held basket — the top-N screened on the rebalance date — with each stock's move since then. Both badges are measured on the held basket — the top-N as screened on the last rebalance date — as the equal-weight move of those stocks to the live price: “since prev close” from yesterday's close (it reads “—” until live quotes arrive), “since reb.” from the rebalance day's close. One card per selection rule, so the count matches Saved Strategies. ↻ Refresh re-fetches quotes.</p>
+  <p id="foot" class="text-[11px] text-slate-400 mt-4 hidden"><span class="text-amber-500">⭐</span> marks a strategy you've starred in the Favourites tab on <a href="./saved-strategies.html?view=fav" class="text-indigo-600 hover:underline">Saved Strategies</a> (stars are set there; this page only mirrors them, and they live in this browser). <span id="footRw" class="hidden">Prices are that session's official close (bhavcopy, split/bonus-adjusted); per-stock figures are the move over that one session. The listed stocks are the top-N the rule screened on that date, off the index membership, filters and factors as they stood then — nothing later leaks in. The board's last column is what the strategy held going into the day — the top-N screened at the last rebalance before it — with each stock's move from that entry to the as-of close. One card per selection rule, so the count matches Saved Strategies. ↻ Refresh is off while rewound: the closes can't change.</span><span id="footLive">Prices are live (Yahoo NSE, ~15-min delay); per-stock figures are today's move. The listed stocks are the strategy's top-N screened as of now, so they match its Live Picks tab and can differ from what it currently holds. The board's last column is that held basket — the top-N screened on the rebalance date — with each stock's move since then. Both badges are measured on the held basket — the top-N as screened on the last rebalance date — as the equal-weight move of those stocks to the live price: “since prev close” from yesterday's close (it reads “—” until live quotes arrive), “since reb.” from the rebalance day's close. One card per selection rule, so the count matches Saved Strategies. ↻ Refresh re-fetches quotes.</span></p>
 </main>
 
 <script src="./backtest-engine.js"></script>
@@ -128,6 +143,19 @@ function yieldToUI() {
 }
 
 let VIEW = 'board', RESULT = [], SKIPPED = [];
+
+/* ---------- 🕘 rewind (time travel) ----------
+ * ASOF = the date the WHOLE board is rendered for, or null for the live view. Same idea as the
+ * strategy page's 🕘 Rewind tab, applied to every saved strategy at once: each basket is
+ * re-screened as of that day, with point-in-time index membership, factors and closes — and no
+ * live quotes, because there weren't any that day. Held-basket returns then run from the last
+ * rebalance BEFORE the as-of date to the as-of close.
+ * ASOF is normalised to a real trading day by build() (a Sunday shows Friday's board), and
+ * mirrored into ?asof=YYYY-MM-DD so a rewound view can be bookmarked or shared.               */
+let ASOF = null;
+try { const q = new URLSearchParams(location.search).get('asof'); if (q && /^\d{4}-\d{2}-\d{2}$/.test(q)) ASOF = q; } catch (e) {}
+const dayWord = () => ASOF ? 'move on ' + ASOF : "today's move";
+const noQual = () => ASOF ? 'No stock qualified on ' + ASOF : 'No stock qualifies right now';
 // ap_view2, not the old ap_view: setView used to WRITE the key on every page load, so every
 // past visitor has ap_view:'cards' stored without ever choosing it — honoring it would keep
 // them on the old default forever. The new key is written only on an explicit toggle click.
@@ -192,8 +220,10 @@ function lastRebalanceDate(cfg, today) {
 }
 // A month-end can fall on a weekend/holiday — snap to the last day that actually traded, so the
 // entry price and the 52w window share one anchor (mirrors simulate()'s snapTD).
+// _TD is rebuilt by every build(): a rewind past ~2020 PREPENDS deep-history bars to these series,
+// and a list cached from before that load stops at 2019 — every older date would fail to snap.
 let _TD = null;
-function snapTD(off) {
+function tdList() {
   if (!_TD) {
     const set = new Set();
     for (const r of ['RELIANCE','TCS','HDFCBANK','INFY','ICICIBANK','ITC','SBIN','LT']) {
@@ -201,11 +231,17 @@ function snapTD(off) {
     }
     _TD = [...set].sort((a, b) => a - b);
   }
-  if (!_TD.length) return off;
-  let lo = 0, hi = _TD.length - 1, ans = -1;
-  while (lo <= hi) { const m = (lo + hi) >> 1; if (_TD[m] <= off) { ans = m; lo = m + 1; } else hi = m - 1; }
-  return ans < 0 ? off : _TD[ans];
+  return _TD;
 }
+function tdIdxLE(off) {
+  const T = tdList();
+  let lo = 0, hi = T.length - 1, ans = -1;
+  while (lo <= hi) { const m = (lo + hi) >> 1; if (T[m] <= off) { ans = m; lo = m + 1; } else hi = m - 1; }
+  return ans;
+}
+function snapTD(off) { const i = tdIdxLE(off); return i < 0 ? off : _TD[i]; }
+// The session before `off` — the "previous close" a rewound day's move is measured from.
+function prevTD(off) { const i = tdIdxLE(off); return i > 0 ? _TD[i - 1] : off - 1; }
 
 /* ---------- screening, with the expensive pass shared across strategies ----------
  * factorsAt() is the costly step (it walks the whole universe). Every strategy on the same
@@ -303,19 +339,25 @@ function basketAt(cfg, date, topN) {
  *           what the headline return is measured on, so that number reflects the position
  *           actually carried rather than a hypothetical one.
  * Membership of both is fixed between rebalances, so ↻ Refresh only re-quotes and re-prices.    */
-function priceHold(h, todayOff) {                 // held: today's move on what it actually owns
-  const q = (typeof liveQuote === 'function') ? liveQuote(h.sym) : null;
-  h.live = (q && q.ltp != null) ? q.ltp : priceAt(h.tkr, todayOff);
+// The day's move. LIVE: only from a real quote — null without one, rather than a stale number off
+// the baked closes. REWIND (prevOff set): that session's close over the one before it.
+function dayMove(x, q, prevOff) {
+  if (q && q.ltp != null && q.prevClose > 0) return (q.ltp / q.prevClose - 1) * 100;
+  if (prevOff == null || x.live == null) return null;
+  const pv = priceAt(x.tkr, prevOff);
+  return pv > 0 ? (x.live / pv - 1) * 100 : null;
+}
+function priceHold(h, off, prevOff) {             // held: the day's move on what it actually owns
+  const q = (!ASOF && typeof liveQuote === 'function') ? liveQuote(h.sym) : null;   // no live quotes in rewind
+  h.live = (q && q.ltp != null) ? q.ltp : priceAt(h.tkr, off);
   h.ret = (h.live != null && h.entry > 0) ? (h.live / h.entry - 1) * 100 : null;
-  // Same basis as pricePick, so a row's headline and its chips can never disagree: null
-  // without a live quote rather than a stale number off the baked closes.
-  h.day = (q && q.ltp != null && q.prevClose > 0) ? (q.ltp / q.prevClose - 1) * 100 : null;
+  h.day = dayMove(h, q, prevOff);                 // same basis as pricePick, so a row's headline and its chips can't disagree
   return h;
 }
-function pricePick(p, todayOff) {                 // displayed: live price + today's move
-  const q = (typeof liveQuote === 'function') ? liveQuote(p.sym) : null;
-  p.live = (q && q.ltp != null) ? q.ltp : priceAt(p.tkr, todayOff);
-  p.day = (q && q.ltp != null && q.prevClose > 0) ? (q.ltp / q.prevClose - 1) * 100 : null;
+function pricePick(p, off, prevOff) {             // displayed: price on the day + that day's move
+  const q = (!ASOF && typeof liveQuote === 'function') ? liveQuote(p.sym) : null;
+  p.live = (q && q.ltp != null) ? q.ltp : priceAt(p.tkr, off);
+  p.day = dayMove(p, q, prevOff);
   return p;
 }
 // Equal-weight aggregate over the held basket, on whichever leg is asked for: `ret` runs
@@ -326,15 +368,16 @@ function avgOf(held, key) {
   const v = held.map(h => h[key]).filter(x => x != null);
   return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null;
 }
-function repriceAll(todayOff) {
+function repriceAll(off, prevOff) {
   RESULT.forEach(r => {
-    r.picks.forEach(p => pricePick(p, todayOff));
-    r.held.forEach(h => priceHold(h, todayOff));
+    r.picks.forEach(p => pricePick(p, off, prevOff));
+    r.held.forEach(h => priceHold(h, off, prevOff));
     r.ret = avgOf(r.held, 'ret'); r.day = avgOf(r.held, 'day');
   });
 }
 async function refreshPrices() {
-  if (!RESULT.length) return build('Loading…');
+  if (ASOF) return;                                  // a rewound board is fixed at that day's close
+  if (!RESULT.length) return runBuild('Loading…');
   $('status').classList.remove('hidden');
   // Re-sync the saved list first: a strategy deleted (or added) on Saved Strategies has to vanish
   // from here too, not linger until a reload. Only rebuild when the set actually moved — a rebuild
@@ -346,22 +389,27 @@ async function refreshPrices() {
       const fresh = groupByIdentity(loadStrategies()).map(g => identityKey(g.cfg));
       const have = new Set(RESULT.map(r => identityKey(r.cfg)));
       if (fresh.length !== have.size || fresh.some(k => !have.has(k))) {
-        return build('Saved strategies changed — rebuilding…');
+        return runBuild('Saved strategies changed — rebuilding…');
       }
     } catch (e) { /* offline: keep what we have and just re-price */ }
   }
   $('status').textContent = 'Fetching live prices…';
   let live = { n: 0, date: SF.end };
   try { live = await applyLiveOverlay(RESULT.map(r => r.cfg), m => { $('status').textContent = m; }); } catch (e) {}
-  repriceAll(dayOff(live.date || SF.end));
+  repriceAll(dayOff(live.date || SF.end), null);
   stampLive(live);
   $('status').classList.add('hidden');
   paint();
 }
+// LAST_LIVE is kept because paintRewindUI() rewrites #intro (and with it the #upd span) on every
+// paint — the stamp has to be re-applied from the last known quote summary, not lost.
+let LAST_LIVE = { n: 0 };
 function stampLive(live) {
-  $('upd').textContent = live.n
-    ? `· 🟢 live · ${live.n} quotes at ${new Date().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'})}`
-    : `· prices as of ${SF.end} close`;
+  LAST_LIVE = live || LAST_LIVE;
+  const el = $('upd'); if (!el) return;
+  el.textContent = ASOF ? `· 🕘 rewind · prices at the ${ASOF} close`
+    : LAST_LIVE.n ? `· 🟢 live · ${LAST_LIVE.n} quotes at ${new Date().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'})}`
+    : (typeof SF !== 'undefined' && SF) ? `· prices as of ${SF.end} close` : '';   // SF is null until the engine loads
 }
 
 /* ---------- sorting ----------
@@ -418,9 +466,10 @@ function renderStats() {
   const bestReb = rows.filter(r => r.ret != null).sort((a, b) => b.ret - a.ret)[0];
   const cells = [
     ['Strategies', rows.length, UNI !== '*' ? 'of ' + RESULT.length + ' total'
-                                            : SKIPPED.length ? SKIPPED.length + ' skipped' : 'screened live'],
+                                            : SKIPPED.length ? SKIPPED.length + ' skipped' : ASOF ? 'screened as of ' + ASOF : 'screened live'],
     ['Unique stocks picked', held.size, 'across every basket'],
-    ['Best today', best ? sp(best.day) : '—', best ? 'since the previous close' : ''],
+    [ASOF ? 'Best on the day' : 'Best today', best ? sp(best.day) : '—',
+      best ? (ASOF ? 'move on ' + ASOF : 'since the previous close') : ''],
     ['Best since rebalance', bestReb ? sp(bestReb.ret) : '—', bestReb ? esc(bestReb.rebLabel) : ''],
   ];
   $('stats').innerHTML = cells.map(([k, v, s]) => `<div class="card p-3">
@@ -434,7 +483,7 @@ function renderStats() {
   $('topPicks').innerHTML = !top5.length ? '' : `
     <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold shrink-0">Most picked</span>
     ${top5.map(([sym, n], i) => `<a href="./stock.html?sym=${encodeURIComponent(sym)}" class="tick hover:border-indigo-300 hover:text-indigo-600"
-        title="Picked by ${n} of ${rows.length} strateg${rows.length > 1 ? 'ies' : 'y'} right now"><span class="opacity-60">#${i + 1}</span><b>${esc(sym)}</b><em>${n} strateg${n > 1 ? 'ies' : 'y'}</em></a>`).join('')}`;
+        title="Picked by ${n} of ${rows.length} strateg${rows.length > 1 ? 'ies' : 'y'} ${ASOF ? 'on ' + ASOF : 'right now'}"><span class="opacity-60">#${i + 1}</span><b>${esc(sym)}</b><em>${n} strateg${n > 1 ? 'ies' : 'y'}</em></a>`).join('')}`;
 }
 
 function renderCards() {
@@ -447,12 +496,12 @@ function renderCards() {
           ? '<span class="text-[11px] font-bold whitespace-nowrap px-2 py-0.5 rounded-full text-slate-500 bg-slate-100">in cash</span>'
           : `<span class="flex flex-col items-end gap-1 shrink-0">
               ${r.day == null
-                ? '<span class="text-[11px] font-bold whitespace-nowrap px-2 py-0.5 rounded-full text-slate-400 bg-slate-100" title="No live quote yet">—</span>'
+                ? `<span class="text-[11px] font-bold whitespace-nowrap px-2 py-0.5 rounded-full text-slate-400 bg-slate-100" title="${ASOF ? 'No close on ' + ASOF : 'No live quote yet'}">—</span>`
                 : `<span class="text-[13px] font-extrabold whitespace-nowrap px-2 py-0.5 rounded-full ${r.day >= 0 ? 'pos' : 'neg'}"
                     style="background:${r.day >= 0 ? 'rgba(21,128,61,.10)' : 'rgba(185,28,28,.10)'}"
-                    title="Held basket's move since the previous close">${sp(r.day)} <span class="font-semibold opacity-70">today</span></span>`}
-              ${r.ret == null ? '' : `<span class="text-[10.5px] font-bold whitespace-nowrap ${kls(r.ret)} opacity-80"
-                    title="Held basket's return since the ${esc(r.rebDate)} rebalance">${sp(r.ret)} <span class="font-semibold text-slate-400">since ${esc(r.rebDate.slice(5))}</span></span>`}
+                    title="Held basket's move over the ${ASOF ? esc(ASOF) + ' session' : 'session, from the previous close'}">${sp(r.day)} <span class="font-semibold opacity-70">${ASOF ? 'that day' : 'today'}</span></span>`}
+              ${r.ret == null || !r.rebDate ? '' : `<span class="text-[10.5px] font-bold whitespace-nowrap ${kls(r.ret)} opacity-80"
+                    title="Held basket's return from the ${esc(r.rebDate)} rebalance${ASOF ? ' to ' + esc(ASOF) : ''}">${sp(r.ret)} <span class="font-semibold text-slate-400">since ${esc(r.rebDate.slice(5))}</span></span>`}
             </span>`}
       </div>
       <div class="flex flex-wrap gap-1.5 mt-2 mb-3">
@@ -462,21 +511,21 @@ function renderCards() {
         ${r.nf ? `<span class="chip text-slate-500 bg-slate-50">${r.nf} filter${r.nf > 1 ? 's' : ''}</span>` : ''}
       </div>
       ${r.empty ? `<div class="border-t border-dashed border-slate-200 py-4 text-center text-[12px] text-slate-400">
-          No stock qualifies right now.</div>` : ''}
+          ${noQual()}.</div>` : ''}
       <table class="w-full text-sm border-collapse ${r.empty ? 'hidden' : 'border-t border-dashed border-slate-200'}">
         <tbody>${r.picks.slice(0, PICK_CAP).map((p, i) => `
           <tr class="border-b border-slate-100">
             <td class="py-1.5 pr-2 text-[10.5px] text-slate-400 font-bold w-4">${i + 1}</td>
             <td class="pr-2 font-semibold"><a href="./stock.html?sym=${encodeURIComponent(p.sym)}" class="hover:text-indigo-600">${esc(p.sym)}</a></td>
             <td class="text-right px-1 text-[12.5px] text-slate-500">₹${f2(p.live)}</td>
-            <td class="text-right pl-1 text-[12px] font-bold ${kls(p.day)}" title="Today's move">${sp(p.day)}</td>
+            <td class="text-right pl-1 text-[12px] font-bold ${kls(p.day)}" title="${dayWord()}">${sp(p.day)}</td>
           </tr>`).join('')}
           ${r.picks.length > PICK_CAP ? `<tr><td colspan="4" class="py-1.5 text-[11px] text-slate-400">
             + ${r.picks.length - PICK_CAP} more — <a href="${stratHref(r.s)}" class="text-indigo-600 hover:underline">see all</a></td></tr>` : ''}
         </tbody>
       </table>
       <a href="${stratHref(r.s)}" class="-mx-4 mt-2 px-4 py-2 border-t border-slate-200 bg-slate-50 rounded-b-xl text-[12px] font-semibold text-indigo-600 flex justify-between items-center">
-        Open strategy →<span class="text-slate-400 font-normal">qualifying now</span></a>
+        Open strategy →<span class="text-slate-400 font-normal">${ASOF ? 'qualifying on ' + esc(ASOF) : 'qualifying now'}</span></a>
     </article>`).join('');
 }
 
@@ -487,24 +536,48 @@ function renderBoard() {
       <div class="text-[11px] text-slate-400 font-bold">${i + 1}</div>
       <div class="min-w-0">
         <a href="${stratHref(r.s)}" class="block text-[12.5px] font-semibold text-slate-800 hover:text-indigo-600">${isFav(favs, r.cfg) ? FAV_MARK : ''}${esc(r.name)}</a>
-        <div class="text-[10.5px] text-slate-400 truncate">${esc(r.uni)} · ${esc(r.freqL)} · since ${esc(r.rebDate)}</div>
+        <div class="text-[10.5px] text-slate-400 truncate">${esc(r.uni)} · ${esc(r.freqL)} · ${r.rebDate ? 'since ' + esc(r.rebDate) : 'not started yet'}</div>
       </div>
-      <div class="text-right text-[12.5px] font-bold ${kls(r.ret)}" title="Held basket's return since the ${esc(r.rebDate)} rebalance">${
-        !r.held.length ? '<span class="text-slate-400 font-semibold text-[11px]">in cash</span>'
+      <div class="text-right text-[12.5px] font-bold ${kls(r.ret)}" title="${r.rebDate ? 'Held basket\'s return from the ' + esc(r.rebDate) + ' rebalance' + (ASOF ? ' to ' + esc(ASOF) : '') : 'No rebalance had happened yet'}">${
+        !r.held.length ? `<span class="text-slate-400 font-semibold text-[11px]">${r.rebDate ? 'in cash' : 'not started'}</span>`
         : r.ret == null ? '<span class="text-slate-400 font-semibold text-[11px]">—</span>' : sp(r.ret)}</div>
-      <div class="text-right text-[12.5px] font-bold ${kls(r.day)}" title="Held basket's move since the previous close">${
+      <div class="text-right text-[12.5px] font-bold ${kls(r.day)}" title="Held basket's move over the ${ASOF ? esc(ASOF) + ' session' : 'session, from the previous close'}">${
         !r.held.length ? '<span class="text-slate-400 font-semibold text-[11px]">—</span>'
         : r.day == null ? '<span class="text-slate-400 font-semibold text-[11px]">—</span>' : sp(r.day)}</div>
       <div class="text-right text-[12px] text-slate-500">${r.topN}</div>
-      <div class="flex flex-wrap gap-1">${r.empty ? '<span class="text-[11px] text-slate-400">No stock qualifies right now</span>' : ''}${r.picks.slice(0, PICK_CAP).map(p => `
+      <div class="flex flex-wrap gap-1">${r.empty ? `<span class="text-[11px] text-slate-400">${noQual()}</span>` : ''}${r.picks.slice(0, PICK_CAP).map(p => `
         <a href="./stock.html?sym=${encodeURIComponent(p.sym)}" class="tick ${p.day >= 0 ? 'up' : 'dn'}"
-           title="₹${f2(p.live)} · today's move"><b>${esc(p.sym)}</b><em>${sp(p.day)}</em></a>`).join('')}${
+           title="₹${f2(p.live)} · ${dayWord()}"><b>${esc(p.sym)}</b><em>${sp(p.day)}</em></a>`).join('')}${
         r.picks.length > PICK_CAP ? `<a href="${stratHref(r.s)}" class="tick text-slate-500">+${r.picks.length - PICK_CAP} more</a>` : ''}</div>
-      <div class="flex flex-wrap gap-1">${!r.held.length ? '<span class="text-[11px] text-slate-400">in cash</span>' : ''}${r.held.slice(0, PICK_CAP).map(h => `
+      <div class="flex flex-wrap gap-1">${!r.held.length ? `<span class="text-[11px] text-slate-400">${r.rebDate ? 'in cash' : 'not started'}</span>` : ''}${r.held.slice(0, PICK_CAP).map(h => `
         <a href="./stock.html?sym=${encodeURIComponent(h.sym)}" class="tick ${h.ret >= 0 ? 'up' : 'dn'}"
            title="₹${f2(h.entry)} → ₹${f2(h.live)} · since the ${esc(r.rebDate)} rebalance"><b>${esc(h.sym)}</b><em>${sp(h.ret)}</em></a>`).join('')}${
         r.held.length > PICK_CAP ? `<a href="${stratHref(r.s)}" class="tick text-slate-500">+${r.held.length - PICK_CAP} more</a>` : ''}</div>
     </div>`).join('');
+}
+
+/* Everything outside the two renderers that has to say WHICH DAY is on screen: the banner, the
+ * intro line, the board's column labels, the tab title, and ↻ Refresh (meaningless once prices
+ * are fixed at a past close). Called by paint(), so it can never drift from the rendered rows. */
+function paintRewindUI() {
+  const on = !!ASOF;
+  $('rwBanner').classList.toggle('hidden', !on);
+  $('rwBanner').classList.toggle('flex', on);
+  if (on) { $('rwLabel').textContent = ASOF; $('rwPick').value = ASOF; }
+  $('refresh').disabled = on;
+  $('refresh').classList.toggle('opacity-40', on);
+  $('refresh').classList.toggle('cursor-not-allowed', on);
+  $('refresh').title = on ? 'Prices are fixed at the as-of close — leave rewind to re-quote' : '';
+  $('footRw').classList.toggle('hidden', !on);
+  $('footLive').classList.toggle('hidden', on);
+  $('hDay').textContent = on ? 'Move on ' + ASOF.slice(5) : 'Since prev close';
+  $('hQual').textContent = on ? `Qualifying on ${ASOF} · that day's move` : "Qualifying now · today's move";
+  document.title = on ? 'STOCKSWORLD · All Picks @ ' + ASOF : 'STOCKSWORLD · All Picks';
+  $('intro').innerHTML = (on
+    ? `The stocks each saved strategy qualified for <b>on ${esc(ASOF)}</b> — re-screened point-in-time, at that day's close. The badges are that strategy's move on the basket it held then — <b>over that session</b>, and since its last rebalance before it.`
+    : 'The stocks each saved strategy qualifies for <b>right now</b> — the same list as its Live Picks tab, priced live. The badges are that strategy\'s move on the basket it actually holds — <b>since the previous close</b>, and since its last rebalance.')
+    + ' <span id="upd" class="text-slate-400"></span>';
+  stampLive(LAST_LIVE);          // the span above is brand new — put the quote stamp back on it
 }
 
 function paint() {
@@ -519,6 +592,7 @@ function paint() {
     $('uniEmpty').classList.remove('hidden');
     $('uniClear').onclick = () => setUni('*');
   } else $('uniEmpty').classList.add('hidden');
+  paintRewindUI();
   renderStats(); renderCards(); renderBoard(); paintSortArrows(); setView(VIEW);
   $('foot').classList.remove('hidden');
 }
@@ -531,17 +605,41 @@ async function build(msg) {
     await loadEngineData(m => { if (m) $('status').textContent = m; });
     window.__ENGINE_READY = true;
   }
+  // Rewind bounds come from the dataset, now that it's loaded. The floor is where TRUE daily bars
+  // begin (2002-01-02) — before that the bars are weekly, so RSI/52w-style factors aren't real.
+  const rwMin = SF.dailyFrom || SF.start, rwMax = SF.end;
+  $('rwPick').min = rwMin; $('rwPick').max = rwMax;
+  if (ASOF) ASOF = ASOF < rwMin ? rwMin : ASOF > rwMax ? rwMax : ASOF;   // a hand-typed ?asof= can be anywhere
+  else if (!$('rwPick').value) $('rwPick').value = rwMax;
   const all = loadStrategies();
   if (!all.length) {
     $('status').innerHTML = 'No saved strategies yet. <a class="text-indigo-600 font-semibold hover:underline" href="./stock-backtest.html">Create one →</a>';
     return;
   }
   const groups = groupByIdentity(all);   // one entry per selection rule, as Saved Strategies counts them
-  // one quote fan-out for the union of every strategy's universe
-  $('status').textContent = 'Fetching live prices…';
+  const prog = m => { if (m) $('status').textContent = m; };
+  // one quote fan-out for the union of every strategy's universe — LIVE VIEW ONLY: a rewind is
+  // priced off that day's close, and splicing today's quotes in would be a look-ahead.
   let live = { n: 0, date: SF.end };
-  try { live = await applyLiveOverlay(groups.map(g => g.cfg), m => { $('status').textContent = m; }); } catch (e) {}
-  const today = live.date || SF.end, todayOff = dayOff(today);
+  if (!ASOF) {
+    $('status').textContent = 'Fetching live prices…';
+    try { live = await applyLiveOverlay(groups.map(g => g.cfg), m => { $('status').textContent = m; }); } catch (e) {}
+  }
+  let today = ASOF || live.date || SF.end;
+  // A rewind reaching back past ~2020 needs the deep-history parts; factorsAt() has no guard of its
+  // own (screenAsOf does), so without this every basket would come back silently EMPTY. Pull them
+  // once for the as-of date, then again for the oldest rebalance boundary if that lands earlier —
+  // a yearly strategy screens its held basket up to 12 months before the date on screen.
+  await ensureHistoryFor(today, prog);
+  _TD = null;                                                    // deep bars may have just been prepended
+  if (ASOF) { today = isoOff(snapTD(dayOff(today))); ASOF = today; setAsofUrl(); }   // land on a real session
+  const rebOf = groups.map(g => lastRebalanceDate(g.cfg, today));
+  const earliest = rebOf.filter(Boolean).sort()[0];
+  if (earliest && earliest < today) { await ensureHistoryFor(earliest, prog); _TD = null; }
+  // Live: price off the live bar (dayOff(today)) and take the day's move from the quotes. Rewind:
+  // price off that session's close, with the move measured against the session before it.
+  const priceOff = ASOF ? snapTD(dayOff(today)) : dayOff(today);
+  const prevOff = ASOF ? prevTD(priceOff) : null;
 
   RESULT = []; SKIPPED = []; ROWS.clear();
   for (let i = 0; i < groups.length; i++) {
@@ -553,23 +651,24 @@ async function build(msg) {
     // as "no filter" and screens all ~4,400 stocks with every factor family on, which takes minutes
     // per strategy and looks like a hang.
     if (!cfg.indexName || !membersAsOf(cfg.indexName, today)) { SKIPPED.push(s.name || 'unnamed'); continue; }
-    const rebRaw = lastRebalanceDate(cfg, today);
-    if (!rebRaw) { SKIPPED.push(s.name || 'unnamed'); continue; }
-    const rebDate = isoOff(snapTD(dayOff(rebRaw)));
+    // No boundary before this date = the strategy hadn't started yet (its own start month is later —
+    // routine in a rewind). It holds nothing, but its rule still screens, so keep the card.
+    const rebRaw = rebOf[i];
+    const rebDate = rebRaw ? isoOff(snapTD(dayOff(rebRaw))) : null;
     const topN = cfg.topN || 5;
     let heldRows = [], pickRows = [];
     try {
-      heldRows = basketAt(cfg, rebDate, topN);   // what was bought — drives the headline return
-      pickRows = basketAt(cfg, today, topN);     // what qualifies now — what the card lists
+      if (rebDate) heldRows = basketAt(cfg, rebDate, topN);   // what was bought — drives the headline return
+      pickRows = basketAt(cfg, today, topN);                  // what qualifies on the date — what the card lists
     } catch (e) { SKIPPED.push(s.name || 'unnamed'); continue; }
     // An empty list is a real state, not a failure: nothing passed the filters. Show it as such
     // rather than dropping the card.
-    const held = heldRows.map(r => priceHold({ sym: r.sym, tkr: r.tkr, ind: r.ind, entry: r.price }, todayOff));
-    const picks = pickRows.map(r => pricePick({ sym: r.sym, tkr: r.tkr, ind: r.ind }, todayOff));
+    const held = heldRows.map(r => priceHold({ sym: r.sym, tkr: r.tkr, ind: r.ind, entry: r.price }, priceOff, prevOff));
+    const picks = pickRows.map(r => pricePick({ sym: r.sym, tkr: r.tkr, ind: r.ind }, priceOff, prevOff));
     RESULT.push({
       s, name: s.name || strategyLabel(cfg), cfg, topN,
       uni: universeLabel(cfg), freqL: FREQL[cfg.freq] || (cfg.freq + 'mo'),
-      nf: (cfg.filters || []).length, rebDate, rebLabel: 'since ' + rebDate, counts,
+      nf: (cfg.filters || []).length, rebDate, rebLabel: rebDate ? 'since ' + rebDate : 'not started', counts,
       picks, held, empty: !picks.length,
       ret: avgOf(held, 'ret'), day: avgOf(held, 'day'),
     });
@@ -579,18 +678,55 @@ async function build(msg) {
   paint();
 }
 
+/* ---------- rewind wiring ---------- */
+function setAsofUrl() {
+  try {
+    const u = new URL(location.href);
+    if (ASOF) u.searchParams.set('asof', ASOF); else u.searchParams.delete('asof');
+    history.replaceState(null, '', u.pathname + u.search + u.hash);
+  } catch (e) {}
+}
+let BUILDING = false;   // a second build racing the first would interleave writes to RESULT
+function runBuild(msg) {
+  if (BUILDING) return Promise.resolve();
+  BUILDING = true;
+  return build(msg)
+    .catch(e => { $('status').classList.remove('hidden');
+      $('status').innerHTML = '<span class="neg">Couldn\'t build the picks — ' + esc(e.message || e) + '</span>'; })
+    .finally(() => { BUILDING = false; });
+}
+function applyRewind(iso) {
+  if (!iso || iso === ASOF) return;
+  ASOF = iso; setAsofUrl(); paintRewindUI();
+  runBuild('Rewinding to ' + iso + '…');
+}
+function exitRewind() {
+  if (!ASOF) return;
+  ASOF = null; setAsofUrl(); paintRewindUI();
+  runBuild('Back to live — re-screening…');
+}
+
 // Persist only here — an explicit click is a choice; paint()/boot calling setView is not.
 function chooseView(v) { try { localStorage.setItem('ap_view2', v); } catch (e) {} setView(v); }
 $('vCards').onclick = () => chooseView('cards');
 $('vBoard').onclick = () => chooseView('board');
 $('uniSel').onchange = () => setUni($('uniSel').value);
 $('boardHead').addEventListener('click', onSortClick);
-$('refresh').onclick = () => { $('refresh').disabled = true; refreshPrices().finally(() => { $('refresh').disabled = false; }); };
+$('refresh').onclick = () => {
+  if (ASOF || BUILDING) return;
+  $('refresh').disabled = true;
+  refreshPrices().finally(() => { $('refresh').disabled = !!ASOF; });
+};
+const goRewind = () => { const v = $('rwPick').value; if (v) applyRewind(v); };
+$('rwGo').onclick = goRewind;
+$('rwPick').onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); goRewind(); } };
+$('rwExit').onclick = exitRewind;
 
 (async function boot() {
   setView(VIEW);
+  paintRewindUI();   // ?asof= in the URL: banner + labels up front, before the slow rebuild
   if (window.btSync) { try { await btSync.pullStrategies(); } catch (e) {} }
-  build().catch(e => { $('status').innerHTML = '<span class="neg">Couldn\'t build the picks — ' + esc(e.message || e) + '</span>'; });
+  runBuild();
 })();
 </script>
 </body>
