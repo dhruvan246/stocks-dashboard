@@ -349,6 +349,27 @@ def solve(page_data, stored_pat):
     return best[:4] if best else None
 
 
+def anns_with_retry(sess, code, lo, hi, tries=3):
+    """(filings, session) — an EMPTY announcement list is not proof of absence.
+
+    BSE rate-limits per IP (runbook §0: the 162-byte stub). Over quota, datebound()'s inner
+    `except: break` swallows the failure and returns [], which reads exactly like "this company
+    filed nothing that quarter". That produced seven false "no result filing" verdicts for NIACL
+    on 2026-08-06 — every one of which returned two real filings when retried on a fresh session.
+    So: retry on a NEW session with a pause before believing an empty result."""
+    for attempt in range(tries):
+        try:
+            got = FI.datebound(sess, code, lo, hi)
+        except Exception:
+            got = []
+        if got:
+            return got, sess
+        if attempt < tries - 1:
+            time.sleep(3.0 * (attempt + 1))
+            sess = FI.bse_session()
+    return [], sess
+
+
 def main():
     argv = sys.argv
     only = set(argv[argv.index("--only") + 1].split(",")) if "--only" in argv else None
@@ -389,13 +410,10 @@ def main():
             lo = "%04d%02d%02d" % (y + (m + 1) // 12, (m % 12) + 1, 5)
             hi_m, hi_y = ((m + 4 - 1) % 12) + 1, y + (m + 4 - 1) // 12
             hi = "%04d%02d%02d" % (hi_y, hi_m, 28)
-            try:
-                anns = FI.datebound(sess, str(code), lo, hi)
-            except Exception as e:
-                skips["%s|%d|list" % (sym, qe)] = "bse-list-%s" % type(e).__name__
-                continue
+            anns, sess = anns_with_retry(sess, str(code), lo, hi)
             if not anns:
-                skips["%s|%d|list" % (sym, qe)] = "no result filing in %s..%s" % (lo, hi)
+                skips["%s|%d|list" % (sym, qe)] = (
+                    "no result filing in %s..%s after 3 tries on fresh sessions" % (lo, hi))
                 continue
             # earliest result filing after quarter-end first (runbook §3)
             got = {}
