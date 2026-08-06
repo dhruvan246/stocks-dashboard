@@ -3541,3 +3541,71 @@ minutes each, every time only after the user named the company.
 * **Pre-2016 BSE attachments 404** on AttachHis/AttachLive (§52).
 * **Blank-template pages** print every row as 0.00 — a zero is a blank row, not a result (§53b).
 
+
+---
+
+## 58. ★★★ THE STANDARD BACKFILL READ — announcement PDF + COLUMN ANCHOR  (2026-08-06, USER-MANDATED DEFAULT)
+
+**User instruction 2026-08-06:** *"the way that got u 3 cells now should be added in rulebook for all
+future backfills"* — and *"do the same in future for everything"*. This is now the DEFAULT method
+for any cell the quarter-keyed indexes miss, and the reference recipe for every new backfill tool.
+
+It is what recovered ANGELONE 2025-03 (revS 1031.35), ADANIGREEN 2025-03 (revS 6461.00) and
+LICI 2023-06 (revS 188749.16) within minutes each, after both index routes had reported nothing.
+§57 says WHICH route; this section says HOW to read it so the value is trustworthy.
+
+### 58a. Why the index routes miss, and this one does not
+`Corp_detailedResult_Transpose_ng` (BSE detres) and the NSE archive list are **derived indexes**.
+A missing row there is a gap in the INDEX and says nothing about the filing. The BSE announcement
+stream is the **primary record** — it is the filing itself. Empirically: detres returned an empty
+row and the NSE list stopped short for all three cells above, while the announcement PDF had every
+one of them.
+
+### 58b. The recipe
+1. **Announce date** — take it from the row you already hold (`sf_fundamentals` r[2] std / r[4] con).
+   You are not searching blind; you know roughly when the company filed.
+2. **List filings** — `fetch_insurers.datebound(sess, scrip, from, to)` over the announce date ±5-7d.
+   Empty? WIDEN to the post-quarter stretch (qe+10d .. qe+160d) and RETRY ON A FRESH SESSION — an
+   empty BSE list is often rate-limiting, not absence (§55a). Old announce dates are frequently
+   `quarter-end+45d` defaults rather than real filing dates (§52).
+3. **Fetch the attachment** — GUID → `corpfiling/AttachHis|AttachLive/<guid>.pdf`, via
+   `backfill_revop_gaps.cached_pdf` so each PDF is downloaded once and reused forever.
+4. **Pick the page by its DECLARED basis** — scan the first ~2,000 chars for `standalone` /
+   `consolidat`. A page mentioning only one of them is that basis; a page mentioning both is a
+   cover/notes page — keep scanning. Never assume page order.
+5. **Read the LABELLED row**, never a position: `Revenue from operations` / `Total income from
+   operations` / `Net Profit ... for the period` / for banks `Interest Earned`. For consolidated
+   PAT prefer `...after taxes, minority interest and share of profit of associates` (owners basis).
+6. **★ COLUMN ANCHOR — THE STEP THAT MAKES IT TRUSTWORTHY ★.** These statements print 4-6 columns
+   (current quarter, prior quarter, year-ago quarter, YTD, full year). **NEVER take column 0.**
+   Identify the target column by finding the column whose value REPRODUCES A VALUE WE ALREADY STORE
+   for a neighbouring quarter or the other basis. Worked examples:
+   - ANGELONE: PAT columns 1,802.58/3,010.28/3,460.16 (÷10) == stored std PAT 180.26/301.03/345.99
+     for Mar-25/Dec-24/Mar-24 → column 0 is Mar-2025 → its revenue 10,313.46 → **1,031.35**. Two
+     stored REVENUE comparatives matched too (1,245.99 / 1,346.99). Five independent locks.
+   - ADANIGREEN: PAT columns 113/557/(195) == stored Mar-25/Dec-24/Mar-24.
+   - LICI: the Jun-2023 PAT anchor deliberately FAILED (see 58d) so the read was anchored on the
+     **Mar-2023 column** instead — PAT 13,427.81 == stored exactly, and that column's total income
+     200,185.38 == stored revS 200,178.83 (0.003%).
+   If NO column reproduces a stored value, the read is unanchored → **SKIP** (§6 constraint).
+7. **Scale from the DECLARED unit** in the header — `Rs in millions` ÷10, `lakhs` ÷100, `crores` ÷1.
+   Never infer scale from magnitude.
+8. **Second, independent check on the same page** before writing:
+   total income == revenue + other income (ANGELONE 6,461+314−7 = 6,768 ✓), or PBT − tax == PAT,
+   or 6M/9M == ΣQ (SpiceJet −593.409 + −112.594 = −706.003 ✓).
+9. **Write fill-only** and journal the whole anchor chain per cell in a TRACKED ledger.
+
+### 58c. Guards that must be in every reader built on this
+* a printed **0.00 is a blank row**, not a result — reject it (SUNTV, UJJIVAN/SFCL);
+* **cumulative pages are YTD** — a Q2/Q3/Q4 cumulative row lands 6/9/12 months as a quarter;
+* **glyph-corrupted text layers** ("Slondolone") defeat keyword search — use corruption-tolerant
+  fragments and positive-control the detector (§51b);
+* validate **basis / Period Ended / Symbol from the page body**, never from the index row.
+
+### 58d. When the anchor fails, that is a RESULT — investigate, do not coerce
+LICI 2023-06: the filing states standalone PAT 9,543.71 while we store 9,634.98, which is exactly
+our stored CONSOLIDATED value — i.e. the std slot holds the con figure. The failing anchor EXPOSED a
+wrong stored value. Correcting it is the §2b procedure, not a fill; the cell was landed on a
+different (Mar-2023) anchor and the defect was journalled and reported. A backfill pass never
+silently rewrites a value it was not asked to fill.
+
