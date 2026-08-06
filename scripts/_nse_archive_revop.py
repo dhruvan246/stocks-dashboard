@@ -62,6 +62,16 @@ R_OP_BANK = re.compile(r"operating profit before provisions", re.I)
 R_PAT_OWN = re.compile(r"net profit.*after\s+taxe?s?.*minority\s+interest", re.I)
 R_PAT_ANY = re.compile(r"net profit\s*/?\s*\(?loss\)?\s*for the period"
                        r"|net profit.*from ordinary activities after tax", re.I)
+# Same template, sign-notation variants the two patterns above miss:
+#   "Net Sales/Income from Operation"          <- SINGULAR, R_REV_IND2 demands "operations"
+#   "Net Profit (+) / Loss (-) for the period" <- the (+)/(-) markers sit between the words
+#                                                 R_PAT_ANY expects to be adjacent
+# Both are tried STRICTLY LAST (separate pick() calls, never folded into the alternations
+# above) so every currently-matching page keeps the exact row it matches today -- widening an
+# existing alternation could make it match an EARLIER row and silently change landed values.
+R_REV_SIGNED = re.compile(r"net sales\s*/\s*income from operations?\b", re.I)
+R_PAT_SIGNED = re.compile(r"net profit\s*\([+-]\)\s*/?\s*\(?loss\)?\s*\([+-]\)?\s*for the period"
+                          r"|net profit\s*\([+-]\)\s*/\s*loss", re.I)
 
 
 def aliases(sym):

@@ -55,6 +55,15 @@ def d2ord(qe):
     return datetime.date(qe // 10000, (qe // 100) % 100, qe % 100).toordinal()
 
 
+def _first(prows, *pats):
+    """First pattern that matches a row, by `is None` -- NOT `or` (0.00 is falsy)."""
+    for p in pats:
+        v = N.pick(prows, p)
+        if v is not None:
+            return v
+    return None
+
+
 def quarters_in(frm, to):
     """The calendar quarter-ends strictly inside (frm, to]. A standard FY yields 4."""
     return [q for q in QES if frm < d2ord(q) <= to]
@@ -156,9 +165,12 @@ def main():
                 continue      # standalone is the campaign's scope
 
             isbank = meta.get("fmt") == "Banking"
-            a_rev = N.pick(prows, N.R_REV_BANK) if isbank else N.pick(
-                prows, N.R_REV_IND, N.R_REV_IND2, N.R_REV_IND3)
-            a_pat = N.pick(prows, N.R_PAT_OWN) or N.pick(prows, N.R_PAT_ANY)
+            # NOTE: chain on `is None`, never `or` -- a legitimate 0.00 is falsy and would
+            # fall through to the next pattern (and then to None), silently turning a real
+            # zero into an unreadable row.
+            a_rev = (N.pick(prows, N.R_REV_BANK) if isbank else
+                     _first(prows, N.R_REV_IND, N.R_REV_IND2, N.R_REV_IND3, N.R_REV_SIGNED))
+            a_pat = _first(prows, N.R_PAT_OWN, N.R_PAT_ANY, N.R_PAT_SIGNED)
             if a_rev is None or a_pat is None:
                 att["%s|%d" % (sym, tgt)] = {
                     "reason": "annual-rows-unreadable (rev=%s pat=%s)" % (a_rev, a_pat)}
