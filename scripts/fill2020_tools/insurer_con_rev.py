@@ -325,7 +325,44 @@ def reindex(vec, shift):
 # Sep-2020 both read 6,923.24). Both pages DO print the same dated header row, so the period is
 # available directly: read it, and pick the column whose date IS the quarter being filled.
 # ---------------------------------------------------------------------------------------------
-DATE_TOK = re.compile(r"^\(?(\d{2})/(\d{2})/(\d{4})\)?$")
+_MONTHS = {m: i for i, m in enumerate(
+    ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"], 1)}
+# Header dates come in every shape a filer can imagine, and OCR strips the spaces:
+#   (30/06/2023) · 31.03.2024 · March31,2024 · 31stMarch2024
+_DATE_FORMS = (
+    re.compile(r"^(\d{1,2})[/.\-](\d{1,2})[/.\-](\d{4})$"),                       # d m y
+    re.compile(r"^([a-z]{3,9})\.?(\d{1,2}),?(\d{4})$"),                            # month d y
+    re.compile(r"^(\d{1,2})(?:st|nd|rd|th)?([a-z]{3,9})\.?,?(\d{4})$"),            # d month y
+)
+
+
+def parse_date_tok(tok):
+    """Quarter-end int from a header token, or None. Punctuation and spaces are ignored, so the
+    same matcher works on a text layer and on an OCR read (which strips spaces inside a box)."""
+    t = re.sub(r"[()\s]", "", (tok or "")).lower()
+    for i, rx in enumerate(_DATE_FORMS):
+        m = rx.match(t)
+        if not m:
+            continue
+        try:
+            if i == 0:
+                d, mo, y = int(m.group(1)), int(m.group(2)), int(m.group(3))
+            elif i == 1:
+                mo = _MONTHS.get(m.group(1)[:3])
+                d, y = int(m.group(2)), int(m.group(3))
+            else:
+                d = int(m.group(1))
+                mo = _MONTHS.get(m.group(2)[:3])
+                y = int(m.group(3))
+        except (TypeError, ValueError):
+            continue
+        if not mo or not (1 <= mo <= 12) or not (1 <= d <= 31) or not (1990 <= y <= 2100):
+            continue
+        return y * 10000 + mo * 100 + d
+    return None
+
+
+DATE_TOK = re.compile(r"^\(?(\d{2})/(\d{2})/(\d{4})\)?$")   # kept: legacy callers
 HDR_TOL = 26.0          # pt; how far a figure's right edge may sit from its header's right edge
 
 
@@ -337,10 +374,9 @@ def header_columns(page, ocr=False):
     words = sorted(words_of(page, ocr), key=lambda w: (round(w[1], 1), w[0]))
     bands = {}
     for x0, y0, x1, y1, w, *_ in words:
-        m = DATE_TOK.match(w)
-        if not m:
+        qe = parse_date_tok(w)
+        if qe is None:
             continue
-        qe = int(m.group(3)) * 10000 + int(m.group(2)) * 100 + int(m.group(1))
         bands.setdefault(round(y0 / 4.0), []).append((x1, qe))
     if not bands:
         return []
