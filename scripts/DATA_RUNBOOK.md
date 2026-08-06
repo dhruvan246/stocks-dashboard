@@ -4006,3 +4006,46 @@ not a property of the cell — §52c.)
 must also have come back empty.** screener.in is that reader for Indian listed equities. If our
 reader says nothing and screener says something, the defect is in our reader — go and find it. Log
 which route produced the value and which routes failed, per cell.
+
+## 61. ★★★ READER-FAILURE MODES — an empty result is a DIAGNOSIS, not a conclusion  (2026-08-06, USER-MANDATED)
+
+**The instruction:** *"all that u mentioned in table . pls add them in runbook so that future backfills
+should never stay empty and get filled"*.
+
+Every cell below was reported by me as *unfillable*. Every one of them existed. In each case my
+reader returned empty for a reason that had **nothing to do with whether the data exists** — and
+because an empty parse and a genuine absence look byte-identical, I reported both with the same
+confidence. **When a read comes back empty, the first question is never "is the data missing?" —
+it is "which of these six things just happened?"**
+
+### 61a. The six modes, their signatures, and the counter for each
+
+| # | mode | signature you can TEST for | the counter — do this, do not conclude absence |
+|---|---|---|---|
+| 1 | **Image-only statement** (MCX) | `len(page.get_text().strip()) < 80` **and** `page.get_images()` — MCX's consolidated page extracts **11 characters** | render the page and read it (§57 rung 10). The filing's own TITLE said "Consolidated"; the text layer is not the document |
+| 2 | **Layout-specific row label** (AIIL) | no revenue row matched, but the doc clearly IS a results statement (PAT row found, period header found) | widen the label set. Finance/NBFC/bank layouts print **`Revenue`**, not `Sales`/`Revenue from operations`. Same trap as §53's bank format. Never gate on one label family |
+| 3 | **Value lives in a different filing** (CGPOWER, NMDC) | own-quarter PDF parses fine and simply lacks the number | **every quarter is printed in ~3 filings**: its own, the **Q+1** filing (as the *preceding-quarter* column), and the **Q+4** filing (as the *year-ago comparative* column). CGPOWER 2752.77 and NMDC 7004.59 both came from Q+4 |
+| 4 | **Transport failure dressed as absence** (CYIENT, WAAREEENER) | API returns **0 rows with HTTP 200** — no exception, no error text | 0 filings is a **run-time condition, not a property of the cell** (§52c). Retry x3 with a fresh session and backoff; cross-check the window against detres/NSE. Still zero => state `BLOCKED-TRANSPORT`, **never** `NOT-FILED`. A ~20 ms connection refusal means *this process has no network* (e.g. a backgrounded task, which runs sandboxed) — rerun in the foreground |
+| 5 | **Both bases interleaved on one page** (BALKRISIND) | two plausible candidates for one row; column index reused across rows (§55b) | **refusing is correct — reporting it as unfillable is not.** The state is `NEEDS-CROSSCHECK`. Get a target from a second reader, then anchor to it: the cell landing within ±1 of the target IS the quarter. That turned 2746.59-or-2752 into a confirmed **2752.38** |
+| 6 | **OUR stored cell is the wrong one** (SWANCORP) | cross-check agrees on every quarter to the paisa **except one** | the indictment is against **us**, not the source. SWANCORP `20240331` revC = 7.91 vs 1398 while Jun/Sep/Dec-2024 matched exactly. Log the suspect cell; do **not** let it veto the fill you came for |
+
+### 61b. Terminal states — a backfill pass may only end a cell in one of these
+
+Anything else is an unfinished job reported as a finished one.
+
+* `FILLED-EXACT` — filing precision, column anchored per §58.
+* `FILLED-ROUNDED` — second reader, crore-rounded, **labelled `precision: "crore-rounded"`** in the
+  ledger so a later pass refines it and nobody mistakes it for a filing read.
+* `NOT-APPLICABLE` — the company does not file that basis at that quarter; evidence in
+  `scripts/no_con_filing.json` (§60c, rolling-4-quarter rule).
+* `BLOCKED-TRANSPORT` — retry later. **This is not a conclusion and must never be counted as closed.**
+* `NEEDS-VISION` / `NEEDS-CROSSCHECK` — work items, mode 1 and mode 5. Also not conclusions.
+* `UNFILLABLE` — requires **two independent readers** to have come back empty, with both recorded.
+  One reader failing is mode 1-6 until proven otherwise.
+
+### 61c. The standing rule
+
+**Never report a cell empty without naming which of 61a you ruled out.** "My parser found nothing"
+is a statement about the parser. Depth in the ladder is not breadth: §57's twelve rungs all read the
+same document class, so twelve failures are one failure repeated. Add the *independent* reader
+(§60) before adding a thirteenth rung.
