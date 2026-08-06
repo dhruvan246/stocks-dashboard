@@ -1,0 +1,29 @@
+{
+ "_doc": "STD-SLOT-HOLDS-CON corrections (runbook §59). Each cell's stored STANDALONE PAT was the CONSOLIDATED figure. Correcting a non-null value -> runbook §2b procedure, NOT a fill. The con slot is CORRECT in every case here and is left untouched. Applier: scripts/stdcon_audit/apply_fixes.py (guard-edits sf_fundamentals.json + scripts/fundamentals.json idx1, sf_revop.json + scripts/revop_fundamentals.json idx4).",
+ "_identities": {
+  "LICI-FY2023-std": "682.89 + 15952.49 + 6334.20 + 13427.81 = 36397.39 == the FY23 standalone annual printed as 36,39,738.99 lakh in the 10-Aug-2023 filing AND as the prior-year column of the 27-May-2024 filing. Stored quarters sum to 38331.79.",
+  "LICI-FY2024-std": "9543.71 + 7925.02 + 9444.42 + 13762.64 = 40675.79 == the FY24 standalone annual printed in the 27-May-2024 filing (p4). Stored quarters sum to 40872.32.",
+  "LICI-FY2022-Q4-std": "FY22 annual 4043.12 - 9M FY22 1671.57 = 2371.55. The same subtraction on the CON side, 4124.71 - 1715.31 = 2409.40, reproduces the value we currently store in the std slot - i.e. the stored number is demonstrably the consolidated one.",
+  "LICI-H1FY26-std": "10053.39 + 10986.51 = 21039.90 == the printed H1FY26 standalone total (06-Nov-2025 filing p4). The con side: 10098.48 + 10957.05 = 21055.53 == the printed H1FY26 consolidated total."
+ },
+ "cells": [
+  {"sym": "LICI", "qe": 20220331, "old_std": 2409.40, "new_std": 2371.55, "con": 2409.40,
+   "src": "BSE ann 2022-05-30 (12b8f790-2c58-49ae-909d-ac8d31120adf) p5 'Statement of Standalone Audited Results', Rs in Lakhs, row 29/31 'Profit/(loss) after tax [and before] Extraordinary Items' col Mar-2022 = 2,37,155.20 lakh. Cols [Mar-22|Dec-21|Mar-21|FY22|FY21] = 2371.55|234.91|2893.49|4043.12|2900.57. Anchors: Dec-21 234.91 reproduces the Dec-2021 std column of the 09-Feb-2023 filing; FY22 4043.12 reproduces that filing's FY22 column. p17 CONSOLIDATED same row = 2,40,939.65 lakh = 2409.40 = the stored value.",
+   "anchors": ["FY22-minus-9M identity (exact)", "Dec-2021 comparative column", "consolidated page reproduces the stored number"]},
+  {"sym": "LICI", "qe": 20220630, "old_std": 602.79, "new_std": 682.89, "con": 602.79,
+   "src": "BSE ann 2023-08-10 (d5335dfd-362f-427a-ad7b-0006e4c3eb6c) p6 STANDALONE, Rs in Lakhs, row 'Profit after tax and before Extraordinary Items' Jun-2022 comparative column = 68,288.90 lakh = 682.89. Column map proven by the adjacent Mar-2023 column 13,42,781.16 lakh = 13427.81 == our stored (independently verified) Mar-2023 std.",
+   "anchors": ["FY2023 quarter-sum identity (exact)", "Mar-2023 comparative column == stored"]},
+  {"sym": "LICI", "qe": 20221231, "old_std": 8348.71, "new_std": 6334.20, "con": 8348.71,
+   "src": "BSE ann 2023-02-09 (0e604354-8e27-46d5-85c4-ea3d3f698483) p7 'Statement of Unaudited Standalone Results', Rs in Lakhs, row 31 col Dec-2022 = 6,33,419.53 lakh. The scan is ambiguous at the leading digit (row 29 renders 8,33,419.53); arithmetic settles it -- printed 9M FY23 = 22,96,957.83 lakh = 22969.58 and 682.89+15952.49+6334.20 = 22969.58 exactly. p18 CONSOLIDATED col Dec-2022 = 8,34,871.49 lakh = 8348.71 = the stored value.",
+   "anchors": ["9M FY23 identity (exact)", "FY2023 quarter-sum identity (exact)", "Sep-2022 comparative column == stored", "consolidated page reproduces the stored number"]},
+  {"sym": "LICI", "qe": 20230630, "old_std": 9634.98, "new_std": 9543.71, "con": 9634.98,
+   "src": "BSE ann 2023-08-10 (d5335dfd) p6 STANDALONE row 'Profit after tax and before Extraordinary Items' col Jun-2023 = 9,54,371.26 lakh = 9543.71. p17 CONSOLIDATED same quarter = 9,63,498.31 lakh = 9634.98 = the stored value. Independently: the 10-Nov-2023 filing (5926efe3) p7 standalone repeats 9,54,371.26 as its Jun-2023 comparative, and the 08-Aug-2024 filing (05621a72) p5 prints it again as its year-ago column.",
+   "anchors": ["FY2024 quarter-sum identity (exact)", "H1FY24 printed total 17468.73 = 7925.02+9543.71", "direct year-ago comparative in two later filings", "EPS split std 15.09 vs con 15.23 on 632.5cr shares"]},
+  {"sym": "LICI", "qe": 20230930, "old_std": 8030.28, "new_std": 7925.02, "con": 8030.28,
+   "src": "BSE ann 2023-11-10 (5926efe3-0e0e-464b-873c-e38c48117d32) p7 STANDALONE row 'Profit after tax and before Extraordinary Items' = [7,92,501.55 | 9,54,371.26 | 15,95,249.40 | 17,46,872.81] lakh = [Sep-23 7925.02 | Jun-23 9543.71 | Sep-22 15952.49 | H1FY24 17468.73]. p20 CONSOLIDATED col Sep-2023 = 8,03,028.48 lakh = 8030.28 = the stored value.",
+   "anchors": ["FY2024 quarter-sum identity (exact)", "printed H1FY24 total == Sep+Jun (exact)", "Sep-2022 comparative column == stored"]},
+  {"sym": "LICI", "qe": 20250930, "old_std": 10098.48, "new_std": 10053.39, "con": 10098.48,
+   "src": "BSE ann 2025-11-06 (73de7b97-7433-4a52-b4d4-2b024c5fa36f) p4 STANDALONE (this filing prints Rs in CRORE, not lakh -- unit proven by the anchors below) row 29/31 = [10,053.39 | 10,986.51 | 7,620.86 | 21,039.90 | 18,081.91 | 48,151.17]. p16 CONSOLIDATED col Sep-2025 = 10098.48 = the stored value. NOTE scripts/revop_fundamentals.json ALREADY holds patStd 10053.39 for this quarter -- an independent pipeline got it right, and sf_fundamentals disagrees with it.",
+   "anchors": ["printed H1FY26 total 21039.90 == 10053.39+10986.51 (exact)", "Jun-2025 column 10986.51 == stored std", "Sep-2024 column 7620.86 == stored std", "revop ledger independently holds 10053.39"]}
+ ]
+}
