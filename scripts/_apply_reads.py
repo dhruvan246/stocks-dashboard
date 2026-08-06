@@ -52,7 +52,8 @@ def close(a, b):
 
 PRE2015_LEDGERS = [os.path.join(HERE, "pre2015_reads_d.json"),   # STEP D: BSE detres 2008-14
                    os.path.join(HERE, "pre2015_reads_n.json"),   # STEP N: NSE archive 2005-07 + residue
-                   os.path.join(HERE, "pre2015_reads_w.json")]   # STEP W: archived NSE eod/results.jsp 2002-04
+                   os.path.join(HERE, "pre2015_reads_w.json"),   # STEP W: archived NSE eod/results.jsp 2002-04
+                   os.path.join(HERE, "pre2015_reads_a.json")]   # STEP A: NSE annual-minus-3-siblings derivation
 
 
 def _load_pre2015_reads():
@@ -113,7 +114,7 @@ def main_pre2015():
                     skipped.append((sym, qe, "gate-S anchor drift at apply: stored=%s read=%s" % (row[1], pat)))
                     continue
                 stored_pat = row[1]
-            elif gate in ("F", "E", "X"):
+            elif gate in ("F", "E", "X", "A"):
                 if row is not None and row[1] is not None:
                     # a PAT has landed since harvest time (another route/session) --
                     # re-anchor instead of blindly inserting a duplicate row
