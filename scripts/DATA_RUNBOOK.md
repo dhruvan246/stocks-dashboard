@@ -3140,15 +3140,27 @@ It is built from the live master, so dead names resolve to None. Get them from
 count**, a 162-byte body is the rate-limit stub, §0). Found: ADVANTA 532840, DISHMAN 532526,
 CAPF 532938. Baked into `SCRIP_OVERRIDE` in the tool.
 
-### 52c. The 5 that stay NULL — documented, do not re-grind
-- **IL&FSTRANS Sep-2018 + Dec-2018.** The company filed announcements titled *"Reasons For
+### 52c. Final residue: 3 stay NULL (proven never-filed), 2 recovered by GATE X  (updated same day)
+- **IL&FSTRANS Sep-2018 + Dec-2018 — NULL, conclusive.** The company filed *"Reasons For
   Non-Submission Of Financial Results For The Quarter Ended 2018"* (2018-11-22) and *"Disclosure Of
-  Reasons For Delay In Submission Of Financial Results"* (2019-06-07). It told the exchange it was
-  not submitting — the IL&FS group collapse. Never-filed, proven from the filer's own words. ✔
-- **CAPF Dec-2018.** Zero result filings Dec-2018..Apr-2019; Capital First merged into IDFC FIRST
-  Bank on 18-Dec-2018, before Q3 FY19 was due. ✔
-- **ADVANTA Mar-2015 + Sep-2015.** EPS recon off 9.0%/8.7% (both quarters carry extraordinary items
-  and print two divergent EPS figures) AND FY16 does not reconcile (sum 58.73 vs annual 69.32, off
-  10.60 cr). Genuinely inconsistent year; not fillable at this standard. Its Jun-2015 IS filled —
-  passes EPS recon independently at 1.31%.
+  Reasons For Delay In Submission"* (2019-06-07 and 2019-08-30). It DID eventually file — *"Financial
+  Results For March 31, 2019"* on 2020-06-05 and FY20 on 2020-12-07 — but both late filings carry
+  **annual columns only** (FY19 vs FY18; no quarterly split anywhere in 40 pages). Two missing
+  quarters in one FY can't be separated by any identity. Never-published as quarters, from the
+  filer's own documents. ✔
+- **CAPF Dec-2018 — NULL, conclusive.** Capital First merged into IDFC FIRST Bank effective
+  18-Dec-2018 — the entity dissolved BEFORE the quarter even ended; zero result filings after. Same
+  class as HDFC Jun-23. ✔
+- **ADVANTA Mar-2015 + Sep-2015 — FILLED (10.59 / 15.17), and a lesson.** First diagnosis
+  ("genuinely inconsistent year") was WRONG: the NSE archive pages declare ADVANTA a
+  **calendar-year filer** ("First Quarter, Financial Year 01-Jan-2015 To 31-Dec-2015"), so the
+  Apr-Mar FY identity was summing across two of its fiscal years — of course it missed by 10.6cr.
+  The 9% EPS misses are the quarters' extraordinary items. Landed via **GATE X** (PRE2015 standard):
+  detres NP == the NSE archive detail page to the 4th digit (105.9mn == 1,058.96 lakh;
+  151.74mn == 1,517.38 lakh), share capital cross-matching on both. Tool:
+  `fill2020_tools/apply_advanta_std.py`. **Rule: before declaring an Apr-Mar FY identity "failed",
+  check the filer's fiscal year on the NSE page ("Relating to ... Financial Year dd-mmm To dd-mmm")
+  — AMBUJACEM/ACC-class calendar filers will fail it structurally.** ✔
+- **NSE archive serves DELISTED symbols with detail pages both bases** (ADVANTA here; SATYAMCOMP
+  precedent) — a working GATE-X second source for any 2015+ residue the PDF route can't reach.
 
