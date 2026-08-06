@@ -652,6 +652,28 @@
   "revS": 422.17,
   "src": "bse-filing-pdf, geometric column (\u00a762)"
  },
+ "EPIGRAL|20220331|revS": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 99.09,
+   "col": 0,
+   "confirm": "col 2 reproduces stored 20210331 pat 32.76 at the same scale",
+   "doc": "fbac6cb1-1332-4016-9c41-21f3aaa5efed.pdf",
+   "page": 1,
+   "pat_row": "Net Profit for the period (VII-VIII)",
+   "rev_row": "Total income (1 \u275611)",
+   "scale": "lakh",
+   "window": "own-season"
+  },
+  "gates": {
+   "band_median": 477.51,
+   "crosscheck": "FY2022 identity: 3 siblings + this = 1552.92 vs screener annual 1551.0",
+   "crosscheck_pass": true,
+   "row_class": "total-income"
+  },
+  "revS": 500.77,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
  "EPIGRAL|20220630|revS": {
   "applied": "2026-08-06 universal-read sweep",
   "evidence": {
@@ -1032,6 +1054,28 @@
   "revC": 348.74,
   "src": "bse-filing-pdf, geometric column (\u00a762)"
  },
+ "HBLENGINE|20220630|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 20.03,
+   "col": 0,
+   "confirm": "col 2 reproduces stored 20210630 pat 20.66 at the same scale",
+   "doc": "e76c17e5-9740-4dae-9238-cac82e602a21.pdf",
+   "page": 6,
+   "pat_row": "|Net Profit/(Loss) after Tax (5-6)",
+   "rev_row": "Total Income",
+   "scale": "lakh",
+   "window": "own-season"
+  },
+  "gates": {
+   "band_median": 323.19,
+   "crosscheck": "FY2023 identity: 3 siblings + this = 1371.96 vs screener annual 1369.0",
+   "crosscheck_pass": true,
+   "row_class": "total-income"
+  },
+  "revC": 322.98,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
  "HBLENGINE|20220930|revC": {
   "applied": "2026-08-06 universal-read sweep",
   "evidence": {
@@ -1140,6 +1184,891 @@
    "row_class": "total-income"
   },
   "revC": 559.94,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "HERITGFOOD|20220630|revS": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 9.84,
+   "col": 0,
+   "confirm": "col 1 reproduces stored 20220331 pat 14.46 at the same scale",
+   "doc": "d7c94edc-dda0-44b4-8843-b094d64c3f62.pdf",
+   "page": 1,
+   "pat_row": "Profil for the period/year",
+   "rev_row": "Revenue",
+   "scale": "million",
+   "window": "own-season"
+  },
+  "gates": {
+   "band_median": 732.3,
+   "crosscheck": "FY2023 identity: 3 siblings + this = 3208.67 vs screener annual 3209.0",
+   "crosscheck_pass": true,
+   "row_class": "operating"
+  },
+  "revS": 814.73,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "HLEGLAS|20200331|revS": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 10.77,
+   "confirm": "col x=375 reproduces this quarter's other-basis PAT 10.87 at the same scale",
+   "doc": "2804762a-1195-43d6-9e33-a7ab710631f1.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 1,
+   "pat_row": "XI. Profit for the period (IX - X)",
+   "rev_row": "I. Revenue from operations",
+   "scale": "lakh",
+   "window": "own-season",
+   "x": 309.7
+  },
+  "gates": {
+   "band_median": 153.64,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revS": 99.18,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "HLEGLAS|20200630|revS": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 6.21,
+   "confirm": "col x=482 reproduces 20190630 PAT 7.48 at the same scale",
+   "doc": "1ea11b5c-7b78-438d-858d-34f444684ab9.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 2,
+   "pat_row": "XI. Profit for the Period/Year (IX - X)",
+   "rev_row": "I. Revenue from operations",
+   "scale": "lakh",
+   "window": "own-season",
+   "x": 345.8
+  },
+  "gates": {
+   "band_median": 153.64,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revS": 69.84,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "HLEGLAS|20201231|revS": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 16.92,
+   "confirm": "col x=422 reproduces 20200331 PAT 10.77 at the same scale",
+   "doc": "859dd213-bab3-48cf-b7da-f2ed4e7127be.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 1,
+   "pat_row": "XVIII Profit for the Period (XIV + XVII)",
+   "rev_row": "I. Revenue from operations",
+   "scale": "lakh",
+   "window": "Q+1",
+   "x": 355.1
+  },
+  "gates": {
+   "band_median": 153.64,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revS": 115.08,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "HLEGLAS|20210331|revS": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 17.87,
+   "confirm": "col x=422 reproduces 20200331 PAT 10.77 at the same scale",
+   "doc": "859dd213-bab3-48cf-b7da-f2ed4e7127be.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 1,
+   "pat_row": "XVIII Profit for the Period (XIV + XVII)",
+   "rev_row": "I. Revenue from operations",
+   "scale": "lakh",
+   "window": "own-season",
+   "x": 288.4
+  },
+  "gates": {
+   "band_median": 153.64,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revS": 126.81,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "HLEGLAS|20210630|revS": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 14.2,
+   "confirm": "col x=475 reproduces 20200630 PAT 6.21 at the same scale",
+   "doc": "94e4c47c-9e04-4f58-b698-c1c522ada73e.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 1,
+   "pat_row": "XI. Profit for the Period/ Year (IX - X)",
+   "rev_row": "I. Revenue from operations",
+   "scale": "lakh",
+   "window": "own-season",
+   "x": 337.8
+  },
+  "gates": {
+   "band_median": 153.64,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revS": 112.34,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "HLEGLAS|20210930|revS": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 13.1,
+   "col": 2,
+   "confirm": "col 1 reproduces stored 20220630 pat 13.02 at the same scale",
+   "doc": "f7d70d02-5edf-4f08-98ae-d96c9d6cf618.pdf",
+   "page": 1,
+   "pat_row": "XVIIE | Profit for the Period (XIV + XVII)",
+   "rev_row": "[Revenue from operations",
+   "scale": "lakh",
+   "window": "Q+4"
+  },
+  "gates": {
+   "band_median": 153.64,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revS": 110.01,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "HLEGLAS|20211231|revS": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 16.84,
+   "confirm": "col x=423 reproduces 20210331 PAT 17.87 at the same scale",
+   "doc": "ec3c2b64-cfe3-432f-bbca-335361508d47.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 1,
+   "pat_row": "XI. |Profit for the period / year (IX - X)",
+   "rev_row": "L Revenue from operations",
+   "scale": "lakh",
+   "window": "Q+1",
+   "x": 358.7
+  },
+  "gates": {
+   "band_median": 153.64,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revS": 128.55,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "HUBTOWN|20210331|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": -1.54,
+   "confirm": "col x=439 reproduces 20200331 PAT -17.26 at the same scale",
+   "doc": "e2fd4f71-0554-44e1-9337-aa274f11c57c.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 16,
+   "pat_row": "Owners of the Parent",
+   "rev_row": "a. Revenue from Operations",
+   "scale": "lakh",
+   "window": "own-season",
+   "x": 331.8
+  },
+  "gates": {
+   "band_median": 36.69,
+   "crosscheck": "FY2021 identity: 3 siblings + this = 266.08 vs screener annual 266.0",
+   "crosscheck_pass": true,
+   "row_class": "operating"
+  },
+  "revC": 159.12,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "HUDCO|20220630|revS": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 411.71,
+   "col": 0,
+   "confirm": "col 2 reproduces stored 20210630 pat 404.62 at the same scale",
+   "doc": "f7b47b8a-a318-4fa1-80ab-3e5d83420e8b.pdf",
+   "page": 3,
+   "pat_row": "Profit /(loss) for the Period / Year (V-VI)",
+   "rev_row": "Revenue from operations",
+   "scale": "crore",
+   "window": "own-season"
+  },
+  "gates": {
+   "band_median": 1737.76,
+   "crosscheck": "FY2023 identity: 3 siblings + this = 7047.02 vs screener annual 7082.0",
+   "crosscheck_pass": true,
+   "row_class": "operating"
+  },
+  "revS": 1736.42,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "ICRA|20220630|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 21.25,
+   "confirm": "col x=490 reproduces 20210630 PAT 23.95 at the same scale",
+   "doc": "e6ba754b-fa4a-4787-b398-96e6168ef09a.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 6,
+   "pat_row": "(a) Owners of the company",
+   "rev_row": "I Revenue from operations",
+   "scale": "lakh",
+   "window": "own-season",
+   "x": 375.9
+  },
+  "gates": {
+   "band_median": 96.16,
+   "crosscheck": "FY2023 identity: 3 siblings + this = 403.24 vs screener annual 403.0",
+   "crosscheck_pass": true,
+   "row_class": "operating"
+  },
+  "revC": 92.52,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "INDSWFTLAB|20210331|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": -29.19,
+   "confirm": "col x=383 reproduces 20201231 PAT 11.55 at the same scale",
+   "doc": "9ed44f0a-d0f5-42e0-bc69-982d137c7e66.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 15,
+   "pat_row": "iNet Profit /( Loss) for the period after ta",
+   "rev_row": "Total Revenue",
+   "scale": "lakh",
+   "window": "own-season",
+   "x": 333.5
+  },
+  "gates": {
+   "band_median": 231.95,
+   "crosscheck": "FY2021 identity: 3 siblings + this = 893.91 vs screener annual 891.0",
+   "crosscheck_pass": true,
+   "row_class": "total-income"
+  },
+  "revC": 229.11,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "INOXLEISUR|20220630|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 57.09,
+   "confirm": "col x=596 reproduces 20220331 PAT -28.17 at the same scale",
+   "doc": "8664e680-a436-4a69-8cba-560fa442e456.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 8,
+   "pat_row": "Profit/(Loss) for the period/year (3-4)",
+   "rev_row": "a) Revenue from operations",
+   "scale": "lakh",
+   "window": "own-season",
+   "x": 508.4
+  },
+  "gates": {
+   "band_median": 193.46,
+   "crosscheck": "screener quarter 2022-06-30 = 582.0 vs 582.26",
+   "crosscheck_pass": true,
+   "row_class": "operating"
+  },
+  "revC": 582.26,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "ITCHOTELS|20240630|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 87.0,
+   "confirm": "col x=492 reproduces 20250331 PAT 256.90 at the same scale",
+   "doc": "d8ca8a0b-7294-4988-b0e2-732e48f64b27.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 3,
+   "pat_row": "PROFIT FOR THE PERIOD (8-9)",
+   "rev_row": "REVENUE FROM OPERATIONS [(i)+(ii)]",
+   "scale": "crore",
+   "window": "Q+4",
+   "x": 433.8
+  },
+  "gates": {
+   "band_median": 998.32,
+   "crosscheck": "screener quarter 2024-06-30 = 706.0 vs 705.84",
+   "crosscheck_pass": true,
+   "row_class": "operating"
+  },
+  "revC": 705.84,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "ITCHOTELS|20241231|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 216.0,
+   "confirm": "col x=398 reproduces 20240331 PAT 183.71 at the same scale",
+   "doc": "b3e009f3-13d4-4c47-a2da-0b53cee662c9.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 7,
+   "pat_row": "PROFIT FOR THE PERIOD (8-9)",
+   "rev_row": "REVENUE FROM OPERATIONS [(i)+(ii)]",
+   "scale": "crore",
+   "window": "Q+1",
+   "x": 455.2
+  },
+  "gates": {
+   "band_median": 998.32,
+   "crosscheck": "screener quarter 2024-12-31 = 1015.0 vs 1015.4",
+   "crosscheck_pass": true,
+   "row_class": "operating"
+  },
+  "revC": 1015.4,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "JPPOWER|20221231|revS": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": -216.91,
+   "confirm": "col x=858 reproduces this quarter's other-basis PAT -217.97 at the same scale",
+   "doc": "1867ff93-bc0a-45af-bc8a-1ca9e358c5d4.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 1,
+   "pat_row": "IX Net Profit/(Ioss) after tax (VII-VIII)",
+   "rev_row": "I Revenue from operations",
+   "scale": "lakh",
+   "window": "Q+1",
+   "x": 604.7
+  },
+  "gates": {
+   "band_median": 1403.83,
+   "crosscheck": "FY2023 identity: 3 siblings + this = 5786.67 vs screener annual 5787.0",
+   "crosscheck_pass": true,
+   "row_class": "operating"
+  },
+  "revS": 1201.05,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "JSLHISAR|20220630|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 307.76,
+   "confirm": "col x=516 reproduces 20210630 PAT 358.06 at the same scale",
+   "doc": "f813a60a-8da5-43d8-8065-5ac9277b1c67.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 1,
+   "pat_row": "Owners of the holding company",
+   "rev_row": "I |Revenue from operations",
+   "scale": "crore",
+   "window": "own-season",
+   "x": 427.2
+  },
+  "gates": {
+   "band_median": 3444.86,
+   "crosscheck": "screener quarter 2022-06-30 = 3454.0 vs 3453.96",
+   "crosscheck_pass": true,
+   "row_class": "operating"
+  },
+  "revC": 3453.96,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "JSWDULUX|20220630|revS": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 76.86,
+   "col": 2,
+   "confirm": "col 1 reproduces stored 20230331 pat 95.41 at the same scale",
+   "doc": "ddf30c9d-cf21-4956-aa26-7f6e4445f932.pdf",
+   "page": 6,
+   "pat_row": "Net Profit I (Loss) for the period I year (3",
+   "rev_row": "(a) Revenue from operations",
+   "scale": "million",
+   "window": "Q+4"
+  },
+  "gates": {
+   "band_median": 920.27,
+   "crosscheck": "FY2023 identity: 3 siblings + this = 3802.12 vs screener annual 3802.0",
+   "crosscheck_pass": true,
+   "row_class": "operating"
+  },
+  "revS": 937.7,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "JSWENERGY|20220630|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 560.43,
+   "confirm": "col x=486 reproduces 20210630 PAT 201.10 at the same scale",
+   "doc": "db4849ca-1f26-42af-92f4-5a2faf87e7a7.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 9,
+   "pat_row": "Owners of the Company",
+   "rev_row": "a) Revenue from operations [Refer note",
+   "scale": "crore",
+   "window": "own-season",
+   "x": 375.2
+  },
+  "gates": {
+   "band_median": 2317.78,
+   "crosscheck": "FY2023 identity: 3 siblings + this = 10331.81 vs screener annual 10332.0",
+   "crosscheck_pass": true,
+   "row_class": "operating"
+  },
+  "revC": 3026.27,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "JSWSTEEL|20220630|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 838.0,
+   "confirm": "col x=437 reproduces 20230331 PAT 3664.00 at the same scale",
+   "doc": "0b8bcdb1-07c7-4a19-ab7d-468e04e65885.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 8,
+   "pat_row": "\u0372Owners of the Company",
+   "rev_row": "Total Revenue from operations",
+   "scale": "crore",
+   "window": "Q+4",
+   "x": 492.5
+  },
+  "gates": {
+   "band_median": 40456.0,
+   "crosscheck": "FY2023 identity: 3 siblings + this = 165960.00 vs screener annual 165960.0",
+   "crosscheck_pass": true,
+   "row_class": "total-income"
+  },
+  "revC": 38086.0,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "JWL|20220331|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 13.78,
+   "col": 1,
+   "confirm": "col 0 reproduces stored 20220630 rev 295.40 at the same scale",
+   "doc": "5afb52d2-2ac5-4962-b6c5-367b2b837cc1.pdf",
+   "page": 9,
+   "pat_row": "|Profit for the period / year (7-8)",
+   "rev_row": "|Revenue from operations",
+   "scale": "lakh",
+   "window": "Q+1"
+  },
+  "gates": {
+   "band_median": 678.07,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revC": 362.61,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "KALYANKJIL|20200930|revS": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 28.5,
+   "col": 1,
+   "confirm": "col 0 reproduces stored 20211231 rev 2880.09 at the same scale",
+   "doc": "3237f5cd-d18e-4447-bb10-6f92c23f0964.pdf",
+   "page": 9,
+   "pat_row": "Owners of the Company",
+   "rev_row": "Revenue from operations",
+   "scale": "million",
+   "window": "Q+4"
+  },
+  "gates": {
+   "band_median": 2666.97,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revS": 1636.78,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "KIRLFER|20250331|revS": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 95.56,
+   "col": 0,
+   "confirm": "col 1 reproduces stored 20241231 pat 61.25 at the same scale",
+   "doc": "44e9b466-ccb8-4723-bc92-443c85292488.pdf",
+   "page": 1,
+   "pat_row": "9 Profit for the period (7-8)",
+   "rev_row": "1 Revenue from Operations",
+   "scale": "crore",
+   "window": "own-season"
+  },
+  "gates": {
+   "band_median": 1599.57,
+   "crosscheck": "screener quarter 2025-03-31 = 1737.0 vs 1736.19",
+   "crosscheck_pass": true,
+   "row_class": "operating"
+  },
+  "revS": 1736.19,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "KIRLFER|20250630|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 95.12,
+   "col": 0,
+   "confirm": "col 2 reproduces stored 20231231 rev 1548.21 at the same scale",
+   "doc": "b1363922-9169-41c4-be58-6bb98d5092e5.pdf",
+   "page": 4,
+   "pat_row": "9 Profit for the period (7-8)",
+   "rev_row": "1 Revenue from Operations",
+   "scale": "crore",
+   "window": "own-season"
+  },
+  "gates": {
+   "band_median": 1340.84,
+   "crosscheck": "screener quarter 2025-06-30 = 1698.0 vs 1698.09",
+   "crosscheck_pass": true,
+   "row_class": "operating"
+  },
+  "revC": 1698.09,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "KIRLFER|20250630|revS": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 95.77,
+   "col": 0,
+   "confirm": "col 2 reproduces stored 20240630 pat 75.57 at the same scale",
+   "doc": "b1363922-9169-41c4-be58-6bb98d5092e5.pdf",
+   "page": 1,
+   "pat_row": "9 Profit for the period (7-8)",
+   "rev_row": "1 Revenue from Operations",
+   "scale": "crore",
+   "window": "own-season"
+  },
+  "gates": {
+   "band_median": 1599.57,
+   "crosscheck": "screener quarter 2025-06-30 = 1698.0 vs 1685.05",
+   "crosscheck_pass": true,
+   "row_class": "operating"
+  },
+  "revS": 1685.05,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "LEMONTREE|20220630|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 13.85,
+   "confirm": "col x=367 reproduces 20210930 PAT -20.82 at the same scale",
+   "doc": "bfce224d-c133-46f5-b5bf-15dab2b7cc8a.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 4,
+   "pat_row": "Equity holders of the parent",
+   "rev_row": "Revenue from operations",
+   "scale": "lakh",
+   "window": "Q+1",
+   "x": 298.3
+  },
+  "gates": {
+   "band_median": 170.19,
+   "crosscheck": "FY2023 identity: 3 siblings + this = 875.00 vs screener annual 875.0",
+   "crosscheck_pass": true,
+   "row_class": "operating"
+  },
+  "revC": 192.04,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "LLOYDSME|20220331|revS": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 123.37,
+   "confirm": "col x=468 reproduces 20210331 PAT 5.35 at the same scale",
+   "doc": "b1157f03-b918-44eb-ac6b-00d1a7592bf7.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 9,
+   "pat_row": "Owners of the parent",
+   "rev_row": "(a) Revenue from Operations",
+   "scale": "lakh",
+   "window": "own-season",
+   "x": 362.8
+  },
+  "gates": {
+   "band_median": 1614.73,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revS": 333.21,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "LLOYDSME|20220630|revS": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": -930.33,
+   "confirm": "col x=517 reproduces 20210630 PAT -0.18 at the same scale",
+   "doc": "31561aab-aa77-4ce4-a7e4-4db85c59b40b.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 6,
+   "pat_row": "Owners of the parent",
+   "rev_row": "(a) Revenue from Operations",
+   "scale": "crore",
+   "window": "own-season",
+   "x": 397.1
+  },
+  "gates": {
+   "band_median": 1614.73,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revS": 842.68,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "LLOYDSME|20220930|revS": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 142.71,
+   "confirm": "col x=401 reproduces 20210930 PAT 0.31 at the same scale",
+   "doc": "a16da99f-33c2-47a7-a1d1-ee2892f43799.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 8,
+   "pat_row": "(i) Owners of the parent",
+   "rev_row": "(a) Revenue from Operations",
+   "scale": "crore",
+   "window": "own-season",
+   "x": 293.8
+  },
+  "gates": {
+   "band_median": 1614.73,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revS": 673.76,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "LLOYDSME|20221231|revS": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 230.03,
+   "confirm": "col x=411 reproduces 20211231 PAT -26.19 at the same scale",
+   "doc": "f6c23307-4560-489e-8f3e-00be0ca7ab36.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 6,
+   "pat_row": "(i) Owners of the parent",
+   "rev_row": "(a) Revenue from Operations",
+   "scale": "crore",
+   "window": "own-season",
+   "x": 317.9
+  },
+  "gates": {
+   "band_median": 1614.73,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revS": 999.62,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "LLOYDSME|20230331|revS": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 269.0,
+   "confirm": "col x=402 reproduces 20220331 PAT 123.37 at the same scale",
+   "doc": "a9f00eea-19a3-4ae6-b913-7cd964c01700.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 10,
+   "pat_row": "(i) Owners of the parent",
+   "rev_row": "(a) Revenue from Operations",
+   "scale": "crore",
+   "window": "own-season",
+   "x": 319.2
+  },
+  "gates": {
+   "band_median": 1614.73,
+   "crosscheck": "screener quarter 2023-03-31 = 876.0 vs 876.25",
+   "crosscheck_pass": true,
+   "row_class": "operating"
+  },
+  "revS": 876.25,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "LTFOODS|20211231|revS": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 20.21,
+   "confirm": "col x=300 reproduces this quarter's other-basis PAT 76.93 at the same scale",
+   "doc": "b693bf71-cd8f-462c-9985-c6efb861d8a0.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 2,
+   "pat_row": "Profit attributable to owners of parent",
+   "rev_row": "Revenue from operations",
+   "scale": "lakh",
+   "window": "own-season",
+   "x": 547.1
+  },
+  "gates": {
+   "band_median": 628.47,
+   "crosscheck": "FY2022 identity: 3 siblings + this = 2829.97 vs screener annual 2840.0",
+   "crosscheck_pass": true,
+   "row_class": "operating"
+  },
+  "revS": 720.3,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "LTFOODS|20220930|revS": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 34.91,
+   "confirm": "col x=241 reproduces this quarter's other-basis PAT 95.40 at the same scale",
+   "doc": "dd0144e2-b446-4c15-894c-fe60c5003716.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 4,
+   "pat_row": "Profit attributable to owners of parent",
+   "rev_row": "Revenue from operations",
+   "scale": "lakh",
+   "window": "Q+1",
+   "x": 594.0
+  },
+  "gates": {
+   "band_median": 920.26,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revS": 1056.14,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "LUMAXIND|20241231|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 33.48,
+   "col": 2,
+   "confirm": "col 1 reproduces stored 20250930 pat 35.64 at the same scale",
+   "doc": "e160d318-ad13-41c1-9b8d-06968be00ef5.pdf",
+   "page": 3,
+   "pat_row": "Profit for the period/year (7-ll)",
+   "rev_row": "Total Income",
+   "scale": "lakh",
+   "window": "Q+4"
+  },
+  "gates": {
+   "band_median": 867.17,
+   "crosscheck": "screener quarter 2024-12-31 = 887.0 vs 888.22",
+   "crosscheck_pass": true,
+   "row_class": "total-income"
+  },
+  "revC": 888.22,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "MANINFRA|20220630|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 43.77,
+   "col": 0,
+   "confirm": "col 2 reproduces stored 20210630 pat 44.90 at the same scale",
+   "doc": "57f59608-ea82-47f8-b400-c5b88b9a1587.pdf",
+   "page": 8,
+   "pat_row": "Profit for the period (7 - 8)",
+   "rev_row": "Revenue from Operations",
+   "scale": "lakh",
+   "window": "own-season"
+  },
+  "gates": {
+   "band_median": 348.89,
+   "crosscheck": "FY2023 identity: 3 siblings + this = 1890.36 vs screener annual 1890.0",
+   "crosscheck_pass": true,
+   "row_class": "operating"
+  },
+  "revC": 351.97,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "MASFIN|20220630|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 45.95,
+   "confirm": "col x=424 reproduces 20220331 PAT 42.94 at the same scale",
+   "doc": "6aaa7844-ddf3-4107-b0e2-1fcbc817db6a.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 18,
+   "pat_row": "Owners of the Parent",
+   "rev_row": "Total Total revenue revenue from operations",
+   "scale": "lakh",
+   "window": "own-season",
+   "x": 362.2
+  },
+  "gates": {
+   "band_median": 214.06,
+   "crosscheck": "FY2023 identity: 3 siblings + this = 988.91 vs screener annual 980.0",
+   "crosscheck_pass": true,
+   "row_class": "total-income"
+  },
+  "revC": 205.46,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "MCX|20240331|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 87.87,
+   "col": 1,
+   "confirm": "col 2 reproduces stored 20230630 pat 19.66 at the same scale",
+   "doc": "1a3d305a-c93b-499b-bcbd-7414510066ac.pdf",
+   "page": 1,
+   "pat_row": "Net profit after tax (7-8)",
+   "rev_row": "Income from operations",
+   "scale": "lakh",
+   "window": "Q+1"
+  },
+  "gates": {
+   "band_median": 212.95,
+   "crosscheck": "screener quarter 2024-03-31 = 181.0 vs 181.14",
+   "crosscheck_pass": true,
+   "row_class": "operating"
+  },
+  "revC": 181.14,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "NETWORK18|20220630|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": -3.32,
+   "confirm": "col x=478 reproduces 20210630 PAT 9.57 at the same scale",
+   "doc": "f941c623-fd23-4e58-822f-ad84e90844c6.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 5,
+   "pat_row": "I(a) Owners of the Company",
+   "rev_row": "Total Income",
+   "scale": "lakh",
+   "window": "own-season",
+   "x": 386.9
+  },
+  "gates": {
+   "band_median": 1584.99,
+   "crosscheck": "FY2023 identity: 3 siblings + this = 6245.52 vs screener annual 6223.0",
+   "crosscheck_pass": true,
+   "row_class": "total-income"
+  },
+  "revC": 1362.42,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "NYKAA|20201231|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 68.97,
+   "confirm": "col x=345 reproduces 20210930 PAT 1.17 at the same scale",
+   "doc": "73bf46a3-300c-46de-adc1-a303f763413d.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 4,
+   "pat_row": "V Profit after tax (III - IV)",
+   "rev_row": "Revenue from operations",
+   "scale": "million",
+   "window": "Q+4",
+   "x": 404.6
+  },
+  "gates": {
+   "band_median": 929.29,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revC": 807.97,
   "src": "bse-filing-pdf, geometric column (\u00a762)"
  }
 }
