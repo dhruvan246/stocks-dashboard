@@ -267,6 +267,14 @@ jobs:
             cp /tmp/quarterly_results.json docs/quarterly_results.json
             git add docs/quarterly_results.json
             [ -f /tmp/_ipo_base_skips.json ] && cp /tmp/_ipo_base_skips.json scripts/_ipo_base_skips.json && git add scripts/_ipo_base_skips.json
+            # Fill-coverage scoreboard (docs/fill-coverage.html) — built HERE, inside the loop and
+            # AFTER the three-way merge, deliberately. It is derived from sf_revop + sf_fundamentals,
+            # so building it earlier would compute over pre-merge data and then be wiped by the
+            # reset --hard above. Cheap (~20 KB, pure recompute) so it runs every attempt.
+            # Non-fatal: a scoreboard must never block the data commit.
+            python3 -X utf8 scripts/build_fill_coverage.py \
+              && git add docs/fill_coverage.json \
+              || echo "(fill-coverage build failed — non-fatal)"
             if git diff --cached --quiet; then echo "no diff"; exit 0; fi
             git commit -m "Daily fundamentals + results refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
             if git push origin HEAD:main; then echo "pushed (attempt #$attempt)"; gh workflow run pages.yml || echo "(pages deploy dispatch failed)"; exit 0; fi

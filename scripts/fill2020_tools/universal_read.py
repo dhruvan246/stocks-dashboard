@@ -352,7 +352,10 @@ def main():
         out = json.load(open(out_path))          # keep prior verdicts; only retry what is unknown
     done = 0
     for key, meta in sorted(tg.items()):
-        if key in out and out[key].get("state") in ("FILLED-EXACT", "NEEDS-VISION"):
+        # Only BLOCKED-TRANSPORT deserves a retry -- it is the one state that is about the network
+        # rather than the document. NEEDS-VISION / NEEDS-CROSSCHECK are diagnoses; re-running the
+        # same reader over the same PDFs just burns the BSE rate limit we need for unread cells.
+        if key in out and out[key].get("state") != "BLOCKED-TRANSPORT":
             continue
         if done >= limit:
             break

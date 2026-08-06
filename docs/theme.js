@@ -231,6 +231,7 @@
       ['./live-tracking.html',    '📡', 'Live Tracking'],
       ['./status.html',           '🩺', 'Data Health'],
       ['./results-coverage.html', '✅', 'Results Coverage'],
+      ['./fill-coverage.html',    '📊', 'Fill Coverage'],
       ['./analytics.html',        '👀', 'Page Stats'],
       ['./insurer-inbox.html',    '📥', 'Insurer Inbox']
     ] }
@@ -273,6 +274,7 @@
     { g: 'Owner console', tabs: [
       ['./status.html',           '🩺', 'Data Health'],
       ['./results-coverage.html', '✅', 'Results Coverage'],
+      ['./fill-coverage.html',    '📊', 'Fill Coverage'],
       ['./analytics.html',        '👀', 'Page Stats'],
       ['./insurer-inbox.html',    '📥', 'Insurer Inbox']
     ] }
@@ -297,7 +299,7 @@
     var _u = new URL(location.href), _ok = _u.searchParams.get('ownerkey');
     if (_ok) { localStorage.setItem('bt_owner_key', _ok); _u.searchParams.delete('ownerkey'); history.replaceState(null, '', _u.pathname + _u.search + _u.hash); }
   } catch (e) {}
-  var PRIVATE_PAGES = ['watchlist.html', 'live-tracking.html', 'insurer-inbox.html', 'analytics.html', 'status.html', 'results-coverage.html'];
+  var PRIVATE_PAGES = ['watchlist.html', 'live-tracking.html', 'insurer-inbox.html', 'analytics.html', 'status.html', 'results-coverage.html', 'fill-coverage.html'];
   var IS_OWNER = false; try { IS_OWNER = !!localStorage.getItem('bt_owner_key'); } catch (e) {}
   if (!IS_OWNER) NAV_GROUPS.forEach(function (g) {
     var keep = function (it) { return PRIVATE_PAGES.indexOf(it[0].replace('./', '')) < 0; };
