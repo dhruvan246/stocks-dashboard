@@ -73,8 +73,106 @@ def index_evidence(sym):
     return len(std), len(con), (min(con) if con else None)
 
 
+# ---------------------------------------------------------------------------------------------
+# CANDIDATE BUILDER — the E1..E5 gates, in code.
+# This lived in a session's scratch analysis the first time it ran, which made the route only
+# half-reproducible: the tool applied a candidate file it could not itself regenerate. It is here
+# now so `--rebuild-candidates` re-derives the list from current data + the cached NSE index.
+# ---------------------------------------------------------------------------------------------
+TARGETS = os.path.join(HERE, "_rev2020_targets.json")
+FUND = os.path.join(ROOT, "docs", "sf_fundamentals.json")
+DROPPED = os.path.join(HERE, "_con_identity_dropped.json")
+MAT_ABS, MAT_REL = 0.05, 0.001        # E4: con PAT == std PAT "materially"
+CONTRA_REL = 0.01                     # E5: >1% apart at-or-before the gap contradicts the identity
+
+
+def _mat_eq(a, b):
+    if a is None or b is None:
+        return None
+    return abs(a - b) <= max(MAT_ABS, MAT_REL * abs(a))
+
+
+def rebuild_candidates():
+    targets = json.load(open(TARGETS))
+    revop = json.load(open(REVOP_DOCS))
+    fund = {s: {int(r[0]): (r[1], r[3]) for r in rows if len(r) > 3}
+            for s, rows in json.load(open(FUND)).items()}
+    keep, dropped = {}, {}
+
+    for sym, v in sorted(targets.items()):
+        if not v.get("revC"):
+            continue
+        p = os.path.join(LIST_CACHE, re.sub(r"[^A-Z0-9]", "_", sym.upper()) + ".json")
+        if not os.path.exists(p):
+            dropped[sym] = {"reason": "no cached NSE index (run nse_list_harvest.py)",
+                            "cells": v["revC"]}
+            continue
+        have = {"std": set(), "con": set()}
+        for r in json.load(open(p)):
+            qe = iso_qe(r.get("toDate"))
+            if qe:
+                have["con" if r.get("consolidated") == "Consolidated" else "std"].add(qe)
+        firstcon = min(have["con"]) if have["con"] else None
+
+        passed, why = [], []
+        for qe in sorted(v["revC"]):
+            row = (revop.get(sym) or {}).get(str(qe)) or [None] * 9
+            ps, pc = fund.get(sym, {}).get(qe, (None, None))
+            if sym in CARVE_OUT:
+                why.append("carve-out")
+            elif qe not in have["std"]:
+                why.append("%d: E1 no standalone row in the index for that quarter" % qe)
+            elif qe in have["con"]:
+                why.append("%d: E2 a consolidated filing EXISTS for that quarter" % qe)
+            elif firstcon is not None and qe > firstcon:
+                why.append("%d: E3 later than the first consolidated filing (%d)" % (qe, firstcon))
+            elif row[0] is None:
+                why.append("%d: no standalone revenue to copy" % qe)
+            elif pc is None:
+                why.append("%d: E4 no stored con PAT" % qe)
+            elif _mat_eq(ps, pc) is not True:
+                why.append("%d: E4 stored con PAT differs from std (%s vs %s)" % (qe, ps, pc))
+            else:
+                passed.append(qe)
+        if not passed:
+            dropped[sym] = {"reason": "; ".join(why[:4]), "cells": v["revC"]}
+            continue
+
+        # E5 — a contradiction anywhere AT OR BEFORE the gap run disqualifies the whole company.
+        last = max(passed)
+        bad = []
+        for q, row in (revop.get(sym) or {}).items():
+            if int(q) > last:
+                continue
+            if row[0] is not None and row[1] is not None and \
+                    abs(row[1] - row[0]) > CONTRA_REL * max(abs(row[0]), 1e-9):
+                bad.append("rev@%s %.1f vs %.1f" % (q, row[0], row[1]))
+        for q, (a, b) in fund.get(sym, {}).items():
+            if q > last or a is None or b is None:
+                continue
+            if abs(b - a) > CONTRA_REL * max(abs(a), 1e-9):
+                bad.append("pat@%d %.2f vs %.2f" % (q, a, b))
+        if bad:
+            dropped[sym] = {"reason": "E5 contradicted at/before the gap: " + "; ".join(bad[:3]),
+                            "cells": v["revC"]}
+            continue
+        keep[sym] = passed
+
+    json.dump(keep, open(CAND, "w"), indent=1, sort_keys=True)
+    json.dump(dropped, open(DROPPED, "w"), indent=1, sort_keys=True)
+    print("candidates: %d cells / %d companies  (dropped %d companies)" % (
+        sum(len(v) for v in keep.values()), len(keep), len(dropped)))
+    for sym, qes in sorted(keep.items(), key=lambda kv: -len(kv[1])):
+        print("    %-13s %2d" % (sym, len(qes)))
+    return keep
+
+
 def main():
     apply_it = "--apply" in sys.argv
+    if "--rebuild-candidates" in sys.argv:
+        rebuild_candidates()
+        if not apply_it:
+            return
     cand = json.load(open(CAND))
     revop = json.load(open(REVOP_DOCS))
     ledger = json.load(open(REVOP_LEDGER))
