@@ -4049,3 +4049,44 @@ Anything else is an unfinished job reported as a finished one.
 is a statement about the parser. Depth in the ladder is not breadth: §57's twelve rungs all read the
 same document class, so twelve failures are one failure repeated. Add the *independent* reader
 (§60) before adding a thirteenth rung.
+
+## 62. ★★★ COLUMNS ARE GEOMETRY, NOT LIST INDICES — the fix that finally killed the §55b trap  (2026-08-06)
+
+Discovered while building the §61 reader, by watching that reader reproduce the exact bug it was
+written to prevent.
+
+**The bug, one line:** `values[i]` from one row does **not** mean the same period as `values[i]` from
+another row. PDF text extraction *linearises* a table, and rows legitimately differ in width — merged
+cells, a notes column, a spanning sub-total, a footnote marker parsed as a token. So an index learned
+from the PAT row is meaningless on the revenue row.
+
+**Watch it happen.** The reader anchored BALKRISIND's Mar-2025 column correctly on the stored
+consolidated PAT, carried index 5 across to the revenue row, and returned **170.61** — the precise
+wrong number I had refused by hand days earlier. It passed the "a second column reproduces another
+stored quarter" confirmation, because that check *also* used indices.
+
+**The dead end.** Requiring the two rows to have equal width is safe but nearly blind: yield fell to
+1 of 7. Correct answers were being thrown away along with the wrong one.
+
+**The fix — `scripts/fill2020_tools/geom_read.py`.** Stop using indices. Financial statements
+**right-align** their figures, so a period column is a stable vertical band of x-coordinates across
+every row of the table. `page.get_text("words")` gives each token's bounding box, so:
+
+1. group tokens into visual lines by `y` (≈3pt tolerance);
+2. on the PAT row, find the token reproducing our stored PAT for that quarter+basis at some declared
+   scale — **that token's right edge `x1` is the column**;
+3. on the revenue row, take the token whose right edge falls in the same band (±14pt — columns sit
+   40–90pt apart, so this is comfortably unambiguous);
+4. confirm with a **different band** on the same rows reproducing a **different** stored quarter.
+
+Two rows may now differ completely in width and the read is still right, because the column is a
+**geometric fact about the page** rather than a guess about list positions. BALKRISIND immediately
+returned **2752.38** — matching the value found independently, and reached without screener.
+
+**Rules.**
+* Any new PDF table reader uses `get_text("words")` and x-bands. Never `split("\n")` + index.
+* Compare **right edges** (`x1`), not centres or left edges — only the right edge is stable when
+  figures vary in digit count.
+* Keep the linear reader only as a fallback *after* the geometric one returns nothing, never before.
+* A confirmation check that uses the same addressing scheme as the thing it is confirming proves
+  nothing. Confirm across a different axis.
