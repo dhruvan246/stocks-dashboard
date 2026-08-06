@@ -75,12 +75,18 @@ def quarter_ends(first=20150331, last=20260630):
 # User instruction 2026-08-06: "stop showing 3mindia in such lists and other stocks which stopped
 # posting consolidated long back".
 try:
-    NO_CON = load("scripts/no_con_filing.json")["stopped_filing_con"]
+    _nc = load("scripts/no_con_filing.json")
+    NO_CON = _nc.get("stopped_filing_con", {})          # sym -> quarter it stopped
+    NEVER_CON = set(_nc.get("never_filed_con", []))     # never files consolidated at all
 except Exception:
-    NO_CON = {}
+    NO_CON, NEVER_CON = {}, set()
 
 
 def files_con(sym, qe):
+    """False when this company has no consolidated statement for that quarter -- either it never
+    files consolidated, or it stopped at a known quarter. Those cells are NOT gaps."""
+    if sym in NEVER_CON:
+        return False
     start = NO_CON.get(sym)
     return not (start and qe >= start)
 
