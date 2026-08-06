@@ -209,6 +209,16 @@ PY
 ## 6. Pushing these files (CI rewrites sf_revop every few minutes, so textual rebase ALWAYS conflicts)
 Never resolve conflict markers in the minified JSONs. Use the semantic fill-only merge: start from
 origin's newer file, copy in only cells where yours has a value and origin is None (CI always wins).
+⚠️ **`reset --hard` ALSO THROWS AWAY YOUR OWN UNPUSHED TOOL COMMITS.** This recipe is for the DATA
+files only. On 2026-08-06 it silently destroyed five committed-but-unpushed tools in
+`scripts/fill2020_tools/` — the data and ledgers landed (they get re-staged after the reset), the
+runbook shipped sections citing those tools by path, and the tools themselves were gone from
+origin. They were recoverable only because `git worktree remove` leaves the commits dangling in the
+main repo's object store (`git fsck --no-reflogs | grep "dangling commit"`, then
+`git ls-tree -r --name-only <sha>` to find the one holding the file). **Push every tool/script
+commit BEFORE running the data merge cycle** — new files rebase cleanly and never conflict, so
+there is no reason to hold them.
+
 ```
 git fetch origin -q && git reset --hard origin/main -q
 python -X utf8 scripts/fill2020_tools/merge_fillonly.py MINE.json docs/sf_revop.json docs/sf_revop.json
