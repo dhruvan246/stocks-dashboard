@@ -574,17 +574,21 @@ own cap — no ledger, no landing code, nothing pushed except this write-up):
 Next: either STEP W-execute (harvest per the recipe above) or STEP Q close-out QA on D+N first —
 user's call, both are now unblocked.
 
-### ⚠ OPEN ITEM carried out of batch 17 — 6 BHARTIARTL cells still carry `rev=None`
-`BHARTIARTL` 20030630 / 20030930 / 20031231 / 20040331 / 20040630 / 20041231 sit in
-`pre2015_reads_w.json` with a proven PAT but **no revenue** — they were landed by the pre-fix
-parser (see batch 17 below), and wayback went down before they could be re-derived. Their PAT is
-already applied and LIVE, so they are NOT a data-loss risk; they are a *revenue* gap that looks
-permanent because the harvester skips any cell already in the ledger.
-**To close on a healthy-connectivity run:** delete those 6 keys from `pre2015_reads_w.json`, then
-`python -X utf8 -u _stepw_nse_pre15.py --only BHARTIARTL` — the fixed `R_SALES_IND` will pick the
-revenue up. Verify with `sum(1 for s in d for q in d[s] if d[s][q].get('rev') is None) == 0`.
-(Do NOT simply delete-and-forget: their PAT is live, so the ledger entry must come back either way
-or a reset-and-replay drops live values. Re-derive, don't just drop.)
+### ✔ RESOLVED (was flagged as an open item in batch 17) — BHARTIARTL's `rev=None` is CORRECT
+The 6 `BHARTIARTL` cells (20030630 / 20030930 / 20031231 / 20040331 / 20040630 / 20041231) carry a
+proven PAT and **no revenue, and that is the right answer** — do NOT "fix" them.
+Re-derived them against the fixed parser (batch 18 run) and they still come back `rev=None`,
+because the filing itself says so. The era symbol is `BHARTI` = **Bharti Tele-Ventures, a pure
+HOLDING company**: the telecom business sat in subsidiaries (Bharti Cellular, Bharti Infotel), so
+its STANDALONE P&L prints `Net Sales 0.00` with the whole result carried by `Other Income`. Read
+off 6 separate cached pages: `Net Sales` row PRESENT and equal to `0.00` in every period but one.
+The tiny PAT (0.07cr Jun-03, 0.11cr Sep-03) is likewise genuine, and each cell landed **GATE S** —
+an unrelated source already stored the identical number.
+The harvester maps a legitimate `0.00` to `None` (`sales > 0` test), so "rev=None" here means
+"filed zero", not "failed to read". Same class as the 67 STEP A cells proven empty in the
+2005-14 sweep (holding/realty shells) — **the campaign's revenue floor is partly real, not all
+recoverable.** Before treating any `rev=None` as a parser bug, read the page: distinguish
+row-absent / row-present-but-zero / row-present-and-missed. Only the third is a bug.
 
 ### STEP W-execute — status (2026-08-06, Sonnet): 17 BATCHES SHIPPED, 902 cells / 146 companies (25.6%)
 **Running total after batch 17 (verified on origin): 902 cells, 146 companies. 2002-04 now 19.9%
