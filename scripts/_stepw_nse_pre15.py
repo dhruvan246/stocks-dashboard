@@ -46,7 +46,15 @@ MON = dict(jan=1, feb=2, mar=3, apr=4, may=5, jun=6, jul=7, aug=8, sep=9, oct=10
 DATE_RE = r"(\d{2})-([A-Za-z]{3})-(\d{4})"
 
 # --- field maps: two templates on this page family, same split STEP N/detres already use -------
-R_SALES_IND = re.compile(r"^net sales$|^sales of products/services$|^total income from operations$", re.I)
+# "net sales / income from operations" is the FY2003+ revision of this page family's top line
+# (the pre-2003 pages print a bare "Net Sales"). Without it the page still lands its PAT via GATE
+# E/F but stores rev=None -- a half-filled cell that reads as a revenue gap forever. Found on GTL
+# 2003-04; a sweep of every cached page showed sales=None on 16 of 367 and ALL 16 carry exactly
+# this label, i.e. it is the ONLY revenue-row miss in the whole page family. Every alternation
+# here is fully ^...$-anchored, so a label matches exactly one of them and adding this cannot
+# change which row an already-parsing page picks (regression-verified over all 367 pages).
+R_SALES_IND = re.compile(r"^net sales$|^sales of products/services$|^total income from operations$"
+                         r"|^net sales\s*/\s*income from operations$", re.I)
 R_SALES_BANK = re.compile(r"^interest earned$", re.I)
 R_OP_BANK = re.compile(r"^operating profit$", re.I)
 R_PAT_IND = re.compile(r"^net profit\(\+\)/loss\(-\)$|^net profit\(\+\)/loss\(-\)for the period$", re.I)
