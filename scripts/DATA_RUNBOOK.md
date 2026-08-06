@@ -3916,3 +3916,93 @@ Tooling: `scripts/stdcon_audit/` — `screen.py` (the screen), `sample.py` (stra
 (delisted-aware scrip resolution, §52b), `render.py` (vision), `report.py` (verdict table + Wilson
 interval). Evidence: `_audit.json` (every route tried, per cell), `_manual.json` (hand-confirmed
 verdicts with their full derivation), `_screen.json`, `_sample.json`.
+## 60. ★★★ screener.in IS A ROUTE — stop reporting "no data" when a second reader already has it  (2026-08-06, USER-MANDATED)
+
+**The trigger, verbatim:** *"how the fuck screener has all and u r replying nothing exists? pls check
+and resolve this as we need to backfill old quarters as well"*. Preceded by *"i dont want hear cant be
+filled or ur assumption that data must not be there"*. Both are standing rules, not one-off gripes.
+
+**The failure this fixes.** Every rung of §57 reads a FILING. When a filing was image-only (MCX),
+labelled the top line in a layout my regex did not expect (AIIL: the finance layout prints
+`Revenue`, not `Sales`), or interleaved both bases on one page (BALKRISIND), my reader returned
+nothing — and I wrote that up as *the data does not exist*. It existed. screener.in had already
+done the read. **A route failing is not evidence of absence. It is evidence about my reader.**
+
+### 60a. What screener actually covers — MEASURED, not assumed
+
+| table | reach | use |
+|---|---|---|
+| Quarterly (`/company/SYM/` std, `/company/SYM/consolidated/`) | **trailing ~13 quarters only** | the recent window; useless for 2015–2022 |
+| Annual P&L | **12 full years, FY2015→FY2026, both bases** | the lever for OLD quarters, via §60d |
+
+So screener does **not** "have all". Say what it has. It cannot see a 2018 quarter directly — but
+its FY2018 total plus three stored quarters produces that quarter by subtraction.
+
+### 60b. Read it with a SCRIPT, never with WebFetch prose
+
+`scripts/screener_fetch.py`. Every `<th>`/`<td>` carries `data-date-key="YYYY-MM-DD"`, so **columns
+are addressed by printed date** — the §55b rule, satisfied structurally rather than by discipline.
+
+**WebFetch prose summaries are BANNED for financial cells.** Live proof: asked for CYIENT Mar-2025
+it returned `Sales 1927`. The date-keyed table says **1909**; 1926.4 is our own stored **Dec-2024**.
+The summary was shifted one column and would have written the wrong quarter's revenue into the
+dataset with a confident-looking citation. Prose readers guess columns. Parsers do not.
+
+Also: `_ROW` must be `<tr[^>]*>`, not `<tr>` — screener stripes its rows, and the strict pattern
+silently returns an empty table (looks exactly like "company not covered").
+
+### 60c. THE GATE — a screener number is never written on its own authority
+
+`scripts/fill2020_tools/screener_gate.py`. Before writing, screener's own series for that field must
+reproduce **≥2 values we already store, with ZERO disagreements**. One disagreement ⇒ different
+entity or different basis ⇒ **reject the whole series, never cherry-pick the one cell you wanted**.
+
+What the gate caught on its first run:
+* **TMPV** — screener shows the demerged passenger-vehicle company; our series is legacy Tata Motors
+  **including JLR** through Jun-2025 (they converge only from Sep-2025). 7/12 agreement. A blind copy
+  writes a number ~20,000 cr wrong and *looks* perfectly plausible next to its neighbours.
+* **SWANCORP** — 11/12, and the one disagreement is **ours**: stored `20240331` revC = 7.91 against
+  screener 1398, while Jun/Sep/Dec-2024 match to the paisa. The gate finds our bad cells too.
+
+Try both row labels: `Sales` **and** `Revenue`. Gating on `Sales` alone returns "quarter absent" for
+every bank, NBFC and investment company — the same bank-format trap as §53.
+
+### 60d. OLD quarters: FY annual − the 3 stored quarters
+
+`scripts/fill2020_tools/screener_annual_sweep.py`. Three gates, all mandatory:
+
+* **Gate A (entity/basis).** For FYs where we hold all 4 quarters, our sum must reproduce screener's
+  annual. Measured: where entity and basis match it agrees to **±0.01%**. Require ≥3 agreeing FYs and
+  ≥60% agreement.
+* **Gate A2 (the year itself).** Disagreements are **not noise — they are restatement/demerger years**
+  (ACC FY2023 −19.9%, AARTIIND FY2022 +13.6% = Pharmalabs demerger, ABCAPITAL FY2023 −21.5%,
+  ADANIENT FY2024 +9.4%). Screener carries the **restated** total; our quarters are **as-reported**.
+  Subtracting one from the other yields a garbage residual that passes every plausibility check.
+  **Reject the YEAR, not the company** — and reject years *adjacent* to a restated year too.
+* **Gate B (residual sanity).** Derived value must be >0 and within 0.2×–5× the median sibling
+  quarter. Catches the case where one of the three *stored* quarters is itself wrong
+  (AIIL 20230331 derived −118.36 against siblings 89/93/311 — correctly refused).
+
+### 60e. screener is the SEARCH KEY, not the answer
+
+It prints **crore-rounded integers**; we store filing precision. So use its value to go *find* the
+exact figure — knowing the answer is "about 2752" makes the PDF read trivial and, crucially,
+**eliminates the column-index guess** that caused the BALKRISIND/SWANCORP near-misses: pick the cell
+in a revenue-labelled row landing within ±1 of the target, at any declared scale. That cell is the
+quarter. `refine_from_filing.py` (own filing) and `refine_via_nextyear.py` (the Mar-(Y+1) comparative
+column, and the Jun-Y filing's preceding-quarter column). 6 of 10 Mar-2025 cells landed at filing
+precision this way; CGPOWER 2752.77 and NMDC 7004.59 came from the *next year's* filing after the
+own-quarter PDF gave nothing.
+
+**When refinement fails, still fill.** Write the crore-rounded value with
+`precision: "crore-rounded"` in the ledger. A sourced approximation with honest provenance beats a
+hole — but it must be *labelled*, so a later pass can refine it and nobody mistakes it for a filing
+read. (BSE's announcement API throttles to 0 filings without erroring; that is a *run-time* condition,
+not a property of the cell — §52c.)
+
+### 60f. The rule, generalised
+
+**Before any cell is reported as unfillable, a SECOND INDEPENDENT READER must have been tried and
+must also have come back empty.** screener.in is that reader for Indian listed equities. If our
+reader says nothing and screener says something, the defect is in our reader — go and find it. Log
+which route produced the value and which routes failed, per cell.
