@@ -69,24 +69,49 @@ def quarter_ends(first=20150331, last=20260630):
     return out
 
 
+# Companies PROVEN to have stopped filing consolidated (NSE: zero Consolidated filings from that
+# quarter on). Their consolidated cells are NOT gaps -- there is nothing to fill -- so counting them
+# as "missing" makes REMOVING fabricated data look like a regression. Reported separately instead.
+# User instruction 2026-08-06: "stop showing 3mindia in such lists and other stocks which stopped
+# posting consolidated long back".
+try:
+    NO_CON = load("scripts/no_con_filing.json")["stopped_filing_con"]
+except Exception:
+    NO_CON = {}
+
+
+def files_con(sym, qe):
+    start = NO_CON.get(sym)
+    return not (start and qe >= start)
+
+
 rows = []
 for qe in quarter_ends():
     mem = members_at(qe)
     c = {"rev_std": 0, "rev_con": 0, "pat_std": 0, "pat_con": 0}
+    na = {"pat_con": 0, "rev_con": 0}      # not-applicable: company does not file consolidated
     for sym in mem:
         fk = resolve(sym, fund)
         std, con = fund[fk].get(qe, (None, None)) if fk else (None, None)
         if std is None:
             c["pat_std"] += 1
         if con is None:
-            c["pat_con"] += 1
+            if files_con(fk or sym, qe):
+                c["pat_con"] += 1
+            else:
+                na["pat_con"] += 1
         rk = resolve(sym, revop)
         rs, rc = revop[rk].get(qe, (None, None)) if rk else (None, None)
         if rs is None:
             c["rev_std"] += 1
         if rc is None:
-            c["rev_con"] += 1
-    rows.append({"qe": qe, "members": len(mem), **{k + "_empty": v for k, v in c.items()}})
+            if files_con(rk or sym, qe):
+                c["rev_con"] += 1
+            else:
+                na["rev_con"] += 1
+    rows.append({"qe": qe, "members": len(mem),
+                 **{k + "_empty": v for k, v in c.items()},
+                 **{k + "_na": v for k, v in na.items()}})
 
 tot = {"revS": 0, "revC": 0, "patS": 0, "patC": 0}
 for r in rows:
@@ -108,6 +133,12 @@ for k in ("revS", "revC", "patS", "patC"):
     print("%-7s %7d %7d %7d" % (k, BASELINE[k], tot[k], BASELINE[k] - tot[k]))
 print("%-7s %7d %7d %7d  (%.0f%% closed)" % ("TOTAL", start, now, start - now,
                                              100.0 * (start - now) / start))
+na_p = sum(r["pat_con_na"] for r in rows if WINDOW_START <= r["qe"] <= 20260331)
+na_r = sum(r["rev_con_na"] for r in rows if WINDOW_START <= r["qe"] <= 20260331)
+if na_p or na_r:
+    print("\nNOT APPLICABLE (company stopped filing consolidated - nothing to fill):"
+          "  patC %d, revC %d" % (na_p, na_r))
+    print("  These are excluded from the gap counts above. Ledger: scripts/no_con_filing.json")
 
 if "--json" in sys.argv:
     out = sys.argv[sys.argv.index("--json") + 1]
