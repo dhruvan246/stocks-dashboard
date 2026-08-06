@@ -3366,6 +3366,33 @@ with no stored standalone to control against are skipped, not guessed. It also c
   HDFCLIFE Mar-2020 246.03 against ~15,000 neighbours) because investment income is marked to
   market. **Never apply a neighbour-plausibility band to an insurer** — the COVID quarters are real.
 
-**Residue, honestly:** GICRE (17) reads nothing — its revenue account is four segment tables with no
-total (§43), so the single-row convention above cannot apply. NIACL's other 16 fail the standalone
-control. Both are documented dead-ends for THIS reader, not proven-unfillable quarters.
+**Residue, honestly (re-examined 2026-08-06 after a second attempt):**
+* **GICRE (18) — the text layer is CORRUPTED, §51b class.** Not the four-segment shape §43 warned
+  about: the 2023 packs print a single "Premium Earned (Net)" row like NIACL's. The blocker is that
+  the extracted text reads "OPERA TING RES UL TS", "Income from investments net)" (opening paren
+  gone), "Aooropriations", and numbers break apart ("212.414" for 212414). Even the STANDALONE page
+  yields no matching labels, so there is no positive control and by A5 nothing can land. Needs
+  render-and-OCR (the §3 Gemini path, which still has no API key), not another regex.
+* **NIACL (16) — do NOT re-attempt with a cross-page join.** Its profit tail (PAT, minority,
+  associate) sits on the page AFTER the revenue rows, and building owners-con per §3 across that
+  break LOOKS right — NIACL Sep-2023 reproduced 10,566.55 against an exact standalone control. It is
+  wrong in general: the pack's revenue page has FOUR columns and its profit page FIVE (six-month
+  columns are added there), with a leading blank cell, so index k is a different period on each
+  page. The 3% PAT tolerance then admits a near-miss, and Jun-2020/Sep-2020 both landed 6,923.24
+  (and Jun/Sep-2021 both 8,115.95) — the previous quarter's revenue carrying this quarter's anchor.
+  **Anchoring proves identity, NOT column alignment across pages**; only a shared row does (the life
+  format's transfer line), and this layout has none. The path is disabled in code with that note.
+  To re-enable: map each column to its period from the printed date headers per page, and select by
+  PERIOD rather than by index.
+* **A per-filing standalone control cannot catch a consolidated-side column error** — it passes on
+  the standalone page. That is the limit of A5, and it is why the above had to be caught by eye
+  (two quarters sharing a value is the fingerprint; scan any batch for duplicate values before
+  applying).
+
+### 55a. An empty BSE announcement list is RATE-LIMITING, not absence
+`fetch_insurers.datebound()` swallows a throttled response in its inner `except: break` and returns
+`[]`, which reads exactly like "this company filed nothing that quarter". Seven NIACL quarters were
+recorded as "no result filing" that way on 2026-08-06; every one returned two real filings when
+retried on a fresh session. Retry an empty result on a NEW session (3 tries, backing off) before
+believing it — `insurer_con_rev.anns_with_retry()`. Same family as §0's 162-byte stub rule: never
+let an empty body mean "nothing exists".
