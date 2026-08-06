@@ -106,9 +106,8 @@ DASHES = {"-", "–", "—", "−"}
 COL_TOL = 14.0            # points; figure columns in these packs sit well over 30pt apart
 
 
-def page_rows(page):
-    """[(label, [values left->right])] built from word boxes, so labels and figures that live in
-    separate text flows still line up (runbook §43/§44).
+def _raw_rows(page):
+    """[(label, [(x_right, value)])] — one entry per y-band, figures keyed by their right edge.
 
     Two traps this handles, both of which produced ZERO usable rows in the naive version:
       * rows open with a SERIAL cell ("2  Net premium income  9,87,006 ..."). Treating that as the
@@ -149,6 +148,12 @@ def page_rows(page):
                 if v is not None:
                     vals.append((x1, v))
         raw.append((" ".join(label).strip(), vals))
+    return raw
+
+
+def page_rows(page):
+    """[(label, [values left->right])] on the page's own figure-geometry columns."""
+    raw = _raw_rows(page)
 
     # Page-level column geometry. Aligning by ORDER breaks the moment one row prints a dash that
     # the reader drops: every later value shifts one column left, and the anchor still passes
@@ -243,6 +248,82 @@ def reindex(vec, shift):
     return out
 
 
+# ---------------------------------------------------------------------------------------------
+# HEADER-DATE COLUMN MODEL — select a column by the PERIOD it is headed with, never by index.
+# Index-based selection is what broke the general-insurer cross-page join: NIACL's Sep-2020 pack
+# detects 6 figure columns on its revenue page and 7 on its profit page, so slot k is a different
+# period on each, and a 3%-tolerant PAT anchor happily accepted the mismatch (Jun-2020 and
+# Sep-2020 both read 6,923.24). Both pages DO print the same dated header row, so the period is
+# available directly: read it, and pick the column whose date IS the quarter being filled.
+# ---------------------------------------------------------------------------------------------
+DATE_TOK = re.compile(r"^\(?(\d{2})/(\d{2})/(\d{4})\)?$")
+HDR_TOL = 26.0          # pt; how far a figure's right edge may sit from its header's right edge
+
+
+def header_columns(page):
+    """[(x_right, qe)] left-to-right for the page's dated header row, or [] if there isn't one.
+
+    The header is the y-band carrying the MOST date tokens (>=3) — titles and 'Renewed from'
+    lines elsewhere on the page also contain dates and must not be mistaken for it."""
+    words = sorted(page.get_text("words"), key=lambda w: (round(w[1], 1), w[0]))
+    bands = {}
+    for x0, y0, x1, y1, w, *_ in words:
+        m = DATE_TOK.match(w)
+        if not m:
+            continue
+        qe = int(m.group(3)) * 10000 + int(m.group(2)) * 100 + int(m.group(1))
+        bands.setdefault(round(y0 / 4.0), []).append((x1, qe))
+    if not bands:
+        return []
+    best = max(bands.values(), key=len)
+    return sorted(best) if len(best) >= 3 else []
+
+
+def rows_on_columns(page, cols):
+    """page_rows(), but every figure is slotted by the HEADER column it sits under, so the same
+    index means the same period on every page of the filing."""
+    out = []
+    for label, vals in _raw_rows(page):
+        slotted = [None] * len(cols)
+        for x1, v in vals:
+            k = min(range(len(cols)), key=lambda i: abs(cols[i][0] - x1))
+            if abs(cols[k][0] - x1) <= HDR_TOL and slotted[k] is None:
+                slotted[k] = v
+        out.append((label, slotted if any(v is not None for v in slotted) else []))
+    return out
+
+
+def map_columns(cols_a, cols_b):
+    """For each column of page A, the index of the SAME period on page B, or None.
+
+    Matched by (date, occurrence) rather than by date alone: these statements print the same date
+    twice — once heading the quarter, once heading the six-months-ended column — so "first column
+    with this date" would map the six-month column onto the quarter's figures."""
+    seen_a, out = {}, []
+    for _x, q in cols_a:
+        j = seen_a.get(q, 0)
+        seen_a[q] = j + 1
+        k, hit = 0, None
+        for i, (_xb, qb) in enumerate(cols_b):
+            if qb == q:
+                if k == j:
+                    hit = i
+                    break
+                k += 1
+        out.append(hit)
+    return out
+
+
+def column_for(cols, qe):
+    """LEFTMOST column headed with this quarter-end. These statements print the quarter columns
+    before the six-month / year-to-date ones, and the same date heads both (NIACL prints
+    30/09/2020 twice: once as the quarter, once as the six months), so leftmost = the quarter."""
+    for i, (_x, q) in enumerate(cols):
+        if q == qe:
+            return i
+    return None
+
+
 def declared_basis(rows):
     # general insurers put the statement title below a registration/circular preamble, so the
     # header scan has to reach further than the first few rows
@@ -291,43 +372,48 @@ def read_doc(doc, life):
             tin = pick_row(rows2, R_TRANSFER_IN)
             pat = pick_row(rows2, R_PAT)
             if pat is not None and tin is None:
-                # GENERAL-FORMAT CONTINUATION — DISABLED, and here is why (2026-08-06).
-                # The idea: revenue rows on this page, profit tail on the next, with the owners
-                # vector built per runbook §3 (PAT + minority + associate). It reads correctly when
-                # the two pages share a column layout — NIACL Sep-2023 reproduced 10,566.55 against
-                # a standalone control of 10,516.54 exactly. But it is NOT SAFE in general: the two
-                # pages need not have the same columns. NIACL's Sep-2020 pack prints FOUR columns on
-                # the revenue page and FIVE on the profit page (it adds the six-month columns), and
-                # the profit vector opens with a blank cell. Index k is then a different period on
-                # each page, and the 3% PAT tolerance is loose enough to let the near-miss through:
-                # Jun-2020 and Sep-2020 both came out as 6,923.24, as did Jun/Sep-2021 at 8,115.95 —
-                # the previous quarter's revenue wearing this quarter's anchor. The standalone
-                # control cannot catch it because the control passes on the standalone page.
-                # Anchoring does NOT prove column alignment across pages; only a shared row does
-                # (the life format's transfer line), and this layout has none.
-                # TO RE-ENABLE SAFELY: map each column to its PERIOD from the printed date headers
-                # ("(30/09/2020) (30/06/2020) ..."), per page, and select by period rather than by
-                # index. Until then this refuses, per the campaign's anchored-or-SKIP rule.
-                continue
-                minor = pick_row(rows2, R_MINORITY) or []
-                assoc = pick_row(rows2, R_ASSOCIATE) or []
-                owners = [None if pat[k] is None else
-                          pat[k] + (at(minor, k) or 0.0) + (at(assoc, k) or 0.0)
-                          for k in range(len(pat))]
-                carried = pick_row(rows2, R_CARRIED)
-                if carried:      # when the filing prints it, it must agree — a free second check
-                    n = min(len(owners), len(carried))
-                    if any(owners[k] is not None and carried[k] is not None
-                           and abs(owners[k] - carried[k]) > 1.0 for k in range(n)):
-                        continue
-                share_at2 = -1
-                for j, (lab2, vals2) in enumerate(rows2):
+                # GENERAL-FORMAT CONTINUATION, re-enabled on the header-date column model.
+                # History (keep this, it is the reason the gate looks like it does): the first
+                # version joined the two pages by INDEX and let the PAT anchor stand in for proof
+                # of alignment. It is not proof. NIACL's Sep-2020 pack detects 6 figure columns on
+                # the revenue page and 7 on the profit page, so slot k differed between them, and
+                # the 3% tolerance accepted the near-miss — Jun-2020 and Sep-2020 both landed
+                # 6,923.24 (Jun's revenue wearing Sep's anchor). Both pages DO print the same dated
+                # header row, so the period is now read directly from it and the profit vector is
+                # re-expressed in the revenue page's column space by (date, occurrence).
+                cols_a = header_columns(doc[pno])
+                cols_b = header_columns(doc[pno2])
+                if len(cols_a) < 3 or len(cols_b) < 3:
+                    continue
+                rows_a = rows_on_columns(doc[pno], cols_a)
+                rows_b = rows_on_columns(doc[pno2], cols_b)
+                prem = pick_row(rows_a, R_NETPREM if life else R_PREMEARNED)
+                ph = pick_row(rows_a, R_PH_INV)
+                pat_b = pick_row(rows_b, R_PAT)
+                if prem is None or ph is None or pat_b is None:
+                    continue
+                share_a = -1
+                for j2, (lab2, _v2) in enumerate(rows_a):
                     if R_SHARE_HEAD.search(lab2):
-                        share_at2 = j
-                sh2 = pick_row(rows, R_SH_INV, after=share_at) if share_at >= 0 else None
-                out.append((pno, {"prem": prem, "ph": ph, "sh": sh2 or [], "pat": owners,
-                                  "decl": decl or decl2, "joined": pno2,
-                                  "owners_built": True}))
+                        share_a = j2
+                sh_a = pick_row(rows_a, R_SH_INV, after=share_a) if share_a >= 0 else None
+                minor = pick_row(rows_b, R_MINORITY) or []
+                assoc = pick_row(rows_b, R_ASSOCIATE) or []
+                owners_b = [None if v is None else
+                            v + (at(minor, k2) or 0.0) + (at(assoc, k2) or 0.0)
+                            for k2, v in enumerate(pat_b)]
+                carried = pick_row(rows_b, R_CARRIED)
+                if carried:      # when the filing prints it, it must agree — a free second check
+                    n = min(len(owners_b), len(carried))
+                    if any(owners_b[k2] is not None and carried[k2] is not None
+                           and abs(owners_b[k2] - carried[k2]) > 1.0 for k2 in range(n)):
+                        continue
+                mapping = map_columns(cols_a, cols_b)
+                owners = [None if mapping[i2] is None else at(owners_b, mapping[i2])
+                          for i2 in range(len(cols_a))]
+                out.append((pno, {"prem": prem, "ph": ph, "sh": sh_a or [], "pat": owners,
+                                  "decl": decl or decl2, "joined": pno2, "owners_built": True,
+                                  "cols": [q for _x, q in cols_a]}))
                 break
             if tin is None or pat is None:
                 continue
@@ -561,6 +647,29 @@ def main():
     if not apply_it:
         print("(dry run — ledgers written, data files untouched)")
         return
+
+    # ★ DUPLICATE-VALUE GUARD — the check that would have caught the 2026-08-06 column bug.
+    # Two quarters of the same company reporting the SAME revenue to the paisa is the fingerprint
+    # of a column misalignment (one quarter's figure wearing another's anchor). Real revenue
+    # repeating exactly across quarters does not happen at these magnitudes. Refuse the whole
+    # apply rather than land a plausible wrong number.
+    by_sym = defaultdict(list)
+    for key, v in fills.items():
+        sym_, qe_, basis_ = key.split("|")
+        if v.get("rev") is not None:
+            by_sym[(sym_, basis_)].append((qe_, v["rev"]))
+    dupes = []
+    for (sym_, basis_), items in sorted(by_sym.items()):
+        seen = {}
+        for qe_, rev in sorted(items):
+            if rev in seen:
+                dupes.append("%s %s: %s and %s both %.2f" % (sym_, basis_, seen[rev], qe_, rev))
+            seen[rev] = qe_
+    if dupes:
+        print("REFUSING TO APPLY — duplicate revenue across quarters (column misalignment):")
+        for d in dupes:
+            print("   " + d)
+        sys.exit(2)
 
     applied = 0
     for key, v in sorted(fills.items()):
