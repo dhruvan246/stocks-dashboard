@@ -12,9 +12,9 @@ no PDFs unless a step says so). And: per-date N500 membership must be correct 20
 
 | era | open cells | of total | complete |
 |---|---|---|---|
-| **2002-2004** | **3,640** | 4,493 | **19.0%** |
+| **2002-2004** | **3,599** | 4,493 | **19.9%** |
 | 2005-2014 | 1,032 | 19,928 | 94.8% |
-| **2002-2014 overall** | **4,672** | 24,421 | **80.9%** |
+| **2002-2014 overall** | **4,631** | 24,421 | **81.0%** |
 
 **2002-04 holds 78% of everything still open and is the only era under 90% — STEP W is the
 highest-yield route left, and its alphabetical scan has only reached ~"G" of 566 symbols.**
@@ -574,7 +574,45 @@ own cap — no ledger, no landing code, nothing pushed except this write-up):
 Next: either STEP W-execute (harvest per the recipe above) or STEP Q close-out QA on D+N first —
 user's call, both are now unblocked.
 
-### STEP W-execute — status (2026-08-06, Sonnet): 16 BATCHES SHIPPED, 867 cells / 141 companies (24.6%)
+### ⚠ OPEN ITEM carried out of batch 17 — 6 BHARTIARTL cells still carry `rev=None`
+`BHARTIARTL` 20030630 / 20030930 / 20031231 / 20040331 / 20040630 / 20041231 sit in
+`pre2015_reads_w.json` with a proven PAT but **no revenue** — they were landed by the pre-fix
+parser (see batch 17 below), and wayback went down before they could be re-derived. Their PAT is
+already applied and LIVE, so they are NOT a data-loss risk; they are a *revenue* gap that looks
+permanent because the harvester skips any cell already in the ledger.
+**To close on a healthy-connectivity run:** delete those 6 keys from `pre2015_reads_w.json`, then
+`python -X utf8 -u _stepw_nse_pre15.py --only BHARTIARTL` — the fixed `R_SALES_IND` will pick the
+revenue up. Verify with `sum(1 for s in d for q in d[s] if d[s][q].get('rev') is None) == 0`.
+(Do NOT simply delete-and-forget: their PAT is live, so the ledger entry must come back either way
+or a reset-and-replay drops live values. Re-derive, don't just drop.)
+
+### STEP W-execute — status (2026-08-06, Sonnet): 17 BATCHES SHIPPED, 902 cells / 146 companies (25.6%)
+**Running total after batch 17 (verified on origin): 902 cells, 146 companies. 2002-04 now 19.9%
+complete (3,599 open of 4,493); campaign overall 81.0%.**
+Batch 17: +35 (GODAVRFERT, GODFRYPHLP, GODREJCP, GRAPHITE, GRASIM, GSFC, AZTECSOFT…) from one
+15-attempt unattended cycle — GRASIM alone gave 9, six on GATE F with exact FY-sum reconciliation.
+
+**The batch's real content is a PARSER FIX, and its lesson generalises: a cell can land WRONG
+without anything failing.** GTL landed 5 cells with `rev=None` — PAT proven, revenue blank. Not a
+fetch error: the page prints `Net Sales / Income from Operations` while `R_SALES_IND` only matched
+the exact string `^net sales$`. Pre-2003 pages of this family use a bare `Net Sales`; **the FY2003+
+revision renamed the line** and the regex was never updated. Nothing errors on this path — the
+cell just stores PAT-without-revenue and reads as a permanent revenue gap forever.
+*Method that found and bounded it, reuse verbatim:* sweep EVERY cached page, count how many parse
+`sales=None`, and check how many of those contain a plausible-but-unmatched revenue label. Result:
+16 of 367 pages, and **all 16 carried exactly this one label** — so the fix is complete, not a
+guess. It is one more `^...$`-anchored alternation; because every alternation is fully anchored a
+label matches exactly one of them, so it cannot change which row an already-parsing page picks.
+Regression-verified over all 367 pages: **ZERO previously-parsed values changed, 16 newly parse a
+revenue.** Caught at ~"G" of 566 symbols, i.e. before ~75% of the universe was scanned.
+*Re-deriving the already-landed rev=None cells:* the harvester SKIPS any cell already in the
+ledger, so a parser fix never self-heals past work — you must delete those keys first. Doing that
+recovered AZTECSOFT's 6 complete, all **GATE S** (read PAT == stored PAT from an unrelated source
+— an independent confirmation the parse is right, now with revenue attached). GTL's 5 had not been
+applied yet so dropping them lost nothing. BHARTIARTL's 6 could not re-derive before wayback died
+and were RESTORED as-is — see the OPEN ITEM block above.
+
+Batch 16 detail (kept — its unattended-loop method is what produced batch 17):
 **Running total after batch 16 (verified on origin): 867 cells, 141 companies.**
 Batch 16: +59→867/141 (GEOMETRIC, GEORGWILIM, GESHIPPING, GFLLIMITED, GILLETTE, GIPCL, GLENMARK,
 GMDCLTD and neighbours). Landed entirely by the bounded auto-retry loop running UNATTENDED while
