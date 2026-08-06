@@ -53,6 +53,29 @@ def iso(d):  # "16-Jan-2025 20:20" or "31-Mar-2024" -> "20240331"
     if not m: return None
     return "%04d%02d%02d" % (int(m.group(3)), MONTHS[m.group(2).title()], int(m.group(1)))
 
+def is_con_basis(s):
+    """True only for a CONSOLIDATED basis label. NEVER use `"consol" in s` for this.
+
+    ★ THE BUG THIS REPLACES (found 2026-08-06, user-spotted via screener.in) ★
+    NSE's `consolidated` field carries exactly two values -- "Consolidated" and "Non-Consolidated"
+    -- and `"consol" in "non-consolidated"` is TRUE. So whenever a filing's XBRL omitted the
+    NatureOfReportStandaloneConsolidated tag and the code fell back to that label as a hint, a
+    STANDALONE filing was classified consolidated and its profit written into the con slot. The
+    daily upsert is fill-only, so the fabricated value then stuck forever.
+
+    Symptom in the data: a company that genuinely consolidated STOPS filing consolidated, and from
+    that quarter on con == std to the paisa. 3MINDIA (last real con Jun-2024), AAVAS (Mar-2024),
+    RALLIS (Mar-2022 -- 16 quarters of copies), CAMPUS, ABB, RAILTEL, JTEKTINDIA... ~60 companies,
+    ~443 cells. NSE independently confirms ZERO Consolidated filings for those quarters.
+    """
+    s = (s or "").strip().lower().replace(" ", "").replace("_", "").replace("-", "")
+    if not s:
+        return False
+    if s.startswith("non") or "nonconsol" in s:
+        return False
+    return "consol" in s
+
+
 def xbrl_profit(xml, basis_hint=None):
     """Return (np_standalone_cr, np_consolidated_cr) for the CURRENT QUARTER from one filing.
 
@@ -142,11 +165,11 @@ def xbrl_profit(xml, basis_hint=None):
         # the owners tag is missing OR zero. Some filers (e.g. ELECON Q1FY27) tag
         # ProfitOrLossAttributableToOwnersOfParent=0 and put the real profit only in the total; a
         # plain .get(key, default) returns that 0.0 → con wrongly 0. `or one` treats 0 as absent.
-        if "consol" in one_nat: con = owners("OneD") or bank.get("OneD") or one
+        if is_con_basis(one_nat): con = owners("OneD") or bank.get("OneD") or one
         else: std = one                                  # standalone or unlabelled
     four, four_nat = plp.get("FourD"), nat.get("FourD", "") or hint
     if four is not None and four_nat != one_nat:         # combined filing: other basis, current Q
-        if "consol" in four_nat: con = con if con is not None else (owners("FourD") or bank.get("FourD") or four)
+        if is_con_basis(four_nat): con = con if con is not None else (owners("FourD") or bank.get("FourD") or four)
         else: std = std if std is not None else four
     return std, con
 
@@ -205,7 +228,7 @@ def fetch_integrated(sym, jar, skip=()):
         if r.get("type") != "Integrated Filing- Financials" or not xb: continue
         qe = iso(r.get("qe_Date"))
         if not qe or int(qe) in skip: continue
-        key = "con" if "consol" in (r.get("consolidated") or "").lower() else "std"
+        key = "con" if is_con_basis(r.get("consolidated")) else "std"
         d = byq.setdefault(qe, {})
         if key in d: continue
         cf = os.path.join(CACHE, re.sub(r"[^A-Za-z0-9]", "_", xb.rsplit("/", 1)[-1]))

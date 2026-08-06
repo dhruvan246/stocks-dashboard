@@ -213,7 +213,7 @@ def main():
         std = con = None; annStd = annCon = None
         rStd = rCon = oStd = oCon = eStd = eCon = None; rFin = 0
         for f in sorted(filings, key=lambda x: x["ann"]):
-            is_con = "consol" in (f.get("basis") or "").lower()
+            is_con = B.is_con_basis(f.get("basis"))   # NOT `"consol" in ...` -- see build_fundamentals.is_con_basis
             # Skip the ~1 MB iXBRL fetch only when BOTH net-profit AND rev/op for this basis are
             # already known (a bank is "known" once flagged fin). Keeps the wide window cheap.
             pat_have = ((is_con and (con is not None or (existing and existing[3] is not None))) or
