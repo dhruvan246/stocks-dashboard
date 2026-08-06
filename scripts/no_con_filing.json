@@ -11,7 +11,16 @@
   "JYOTHYLAB": "user check on screener.in 2026-08-06: last consolidated filing Mar-2025. Its own Q1FY26 filing note says the company \"had then published consolidated segment results\" -- past tense.",
   "SBFC": "user primary-source check 2026-08-06: last consolidated filing Mar-2025, none for the four quarters since. Matches stored data exactly -- patC diverges through 20250331 (93.94 vs std 94.39) then is identical from 20250630.",
   "UCOBANK": "user primary-source check 2026-08-06: last consolidated filing Mar-2025, none since. Stored data agrees -- patC diverges through 20250331 then goes identical.",
+  "_ceased": "Entities that ceased filing ANY results. Verified across BSE announcements, BSE detailed-results and the NSE archive (see runbook \u00a751c/\u00a752c). Their cells are not gaps in ANY metric -- there is no company left to report.",
   "_rule_4q": "USER RULE 2026-08-06: exclude any company with no real consolidated filing for the last 4+ quarters. Detected as: >=2 quarters where stored con genuinely diverges from std (proof it once consolidated), then >=4 later quarters with no divergence. Excluded from the quarter AFTER its last real consolidated filing."
+ },
+ "ceased_filing": {
+  "CAPF": 20181231,
+  "GSPL": 20260331,
+  "HDFC": 20230630,
+  "IDFC": 20240930,
+  "IL&FSTRANS": 20180930,
+  "TV18BRDCST": 20240930
  },
  "never_filed_con": [
   "7SEASL",

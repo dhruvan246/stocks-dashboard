@@ -86,8 +86,18 @@ try:
     _nc = load("scripts/no_con_filing.json")
     NO_CON = _nc.get("stopped_filing_con", {})
     NEVER_CON = set(_nc.get("never_filed_con", []))
+    CEASED = _nc.get("ceased_filing", {})     # entity gone: NO metric is a gap from this quarter
 except Exception:
-    NO_CON, NEVER_CON = {}, set()
+    NO_CON, NEVER_CON, CEASED = {}, set(), {}
+
+
+def ceased(sym, qe):
+    """True when the company had stopped filing ANY results by this quarter (merger, dissolution,
+    or a formal non-submission notice). Nothing about that quarter is a data gap -- there is no
+    company left to report. Verified per entity across BSE announcements, BSE detailed-results and
+    the NSE archive (runbook §51c / §52c)."""
+    st = CEASED.get(sym)
+    return bool(st and qe >= st)
 
 _raw_fund = load("docs/sf_fundamentals.json")
 DIVQ = {}                       # sym -> sorted quarters where con genuinely differs from std
@@ -132,6 +142,10 @@ for qe in quarter_ends():
     na = {"pat_con": 0, "rev_con": 0}      # not-applicable: company does not file consolidated
     for sym in mem:
         fk = resolve(sym, fund)
+        if ceased(fk or sym, qe) or ceased(sym, qe):
+            na["pat_con"] += 1                 # counted as not-applicable, never as a gap
+            na["rev_con"] += 1
+            continue
         std, con = fund[fk].get(qe, (None, None)) if fk else (None, None)
         if std is None:
             c["pat_std"] += 1
