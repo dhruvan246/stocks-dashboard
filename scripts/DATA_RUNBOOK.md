@@ -3426,3 +3426,50 @@ recorded as "no result filing" that way on 2026-08-06; every one returned two re
 retried on a fresh session. Retry an empty result on a NEW session (3 tries, backing off) before
 believing it — `insurer_con_rev.anns_with_retry()`. Same family as §0's 162-byte stub rule: never
 let an empty body mean "nothing exists".
+
+---
+
+## 56. ★★ CI CAN SILENTLY REVERT YOUR PUSH — the stale-snapshot clobber  (2026-08-06, fixed)
+
+A backfill pushed 193 consolidated-revenue cells. Ten minutes later they were gone from the SERVED
+file while still present in the ledger. Nothing errored; the push had been verified against origin
+and reported as landed.
+
+**The mechanism.** `refresh-fundamentals.yml` snapshotted the payloads at the start of its commit
+step, then inside its push-retry loop did:
+
+    git fetch origin main && git reset --hard origin/main   # picks up other writers
+    cp /tmp/sf_revop.json docs/sf_revop.json                # ...and throws them away
+
+The `reset` correctly pulled in the concurrent work and the blind `cp` immediately reverted it.
+Any writer landing between a refresh's snapshot and its commit was erased. The 1,205 identity fills
+of the same session survived only because they were pushed before that snapshot — luck, not design.
+The values were recoverable solely because `scripts/revop_fundamentals.json` is deliberately NOT
+committed from CI, so the ledger kept them: **the ledger-first rule is what made this repairable.**
+
+### 56a. The fix — three-way merge, never a blind copy
+`scripts/ci_preserve_merge.py`, wired into the workflow with a new baseline snapshot taken right
+after checkout (before any step mutates the payloads). Per slot:
+
+    ours != base  -> this run changed it on purpose -> take OURS (deliberate nulls included)
+    ours == base  -> this run never touched it      -> take THEIRS (concurrent fill survives)
+
+A plain fill-only merge is NOT sufficient and would introduce a different bug: `revop_sanity.py`
+exists to null junk cells, and fill-only would resurrect every value it deleted. The three-way base
+is what separates "CI removed this" from "CI never had it". Verified on the real race data: all 193
+concurrent cells survive, a CI update still wins, and a CI-deliberate null is respected. Falls back
+to the old copy on any unexpected shape, so it can never make a refresh worse.
+
+### 56b. The detector — `scripts/verify_fills_live.py`
+Re-checks every cell in every fill ledger against the served payloads.
+`MISSING` = ledger has a value, payload has None → a clobber; `--repair` restores it.
+`DRIFT` = both present but different → reported, never auto-changed (a later correction may
+legitimately supersede a backfill; only a human decides). Exits 1 on any MISSING so a wrapper can
+fail loudly. Negative-control tested: clobber one cell and it names that cell and exits 1.
+
+### 56c. The process rule this violated
+CLAUDE.md rule 5 and §41 already say re-verify LIVE ~20 min after a data heal *because an in-flight
+CI run may race you*. That step was skipped — verification happened at push time only, so a whole
+batch was reported as landed when the served file had lost it. **"Verified against origin at push
+time" is not verification.** Run `verify_fills_live.py` after the push AND after a refresh cycle.
+

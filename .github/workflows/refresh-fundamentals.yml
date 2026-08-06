@@ -71,6 +71,17 @@ jobs:
         with:
           python-version: "3.11"
 
+      # BASE snapshot for the three-way merge in the commit step. MUST be taken before any step
+      # below modifies the payloads, so it records the files as checked out -- i.e. what origin
+      # looked like when this run began. Without a base, the commit step can only choose between
+      # its own copy and origin's, and it chose its own: on 2026-08-06 that silently reverted 193
+      # backfilled cells that landed mid-run. See scripts/ci_preserve_merge.py.
+      - name: Snapshot payload baseline (concurrent-writer merge)
+        run: |
+          mkdir -p /tmp/base
+          cp docs/sf_fundamentals.json /tmp/base/sf_fundamentals.json
+          cp docs/sf_revop.json        /tmp/base/sf_revop.json
+
       - name: Pull newly-filed quarterly results into sf_fundamentals.json
         # curl_cffi = Chrome-TLS fallback transport — 2026-07-20 NSE's Akamai began serving the
         # bot-challenge page to this API for plain-urllib fingerprints (fails LOUD without it).
@@ -234,8 +245,16 @@ jobs:
           for attempt in 1 2 3 4 5; do
             git fetch origin main && git reset --hard origin/main
             if [ "$FUND" = "1" ]; then
-              cp /tmp/sf_fundamentals.json docs/sf_fundamentals.json
-              cp /tmp/sf_revop.json        docs/sf_revop.json
+              # THREE-WAY MERGE, never a blind copy. The reset above just pulled in whatever other
+              # writers (backfill sessions, the vision routine) landed while this job ran; copying
+              # our pre-run snapshot over it would throw all of that away -- which is exactly what
+              # happened on 2026-08-06. Per slot: if this run changed it, ours wins (deliberate
+              # nulls from revop_sanity included); if this run did not touch it, origin's value is
+              # kept. Falls back to a plain copy on any unexpected shape.
+              python3 scripts/ci_preserve_merge.py /tmp/base/sf_fundamentals.json \
+                      /tmp/sf_fundamentals.json docs/sf_fundamentals.json docs/sf_fundamentals.json
+              python3 scripts/ci_preserve_merge.py /tmp/base/sf_revop.json \
+                      /tmp/sf_revop.json        docs/sf_revop.json        docs/sf_revop.json
               [ -f /tmp/ipo_base_fills.json ] && cp /tmp/ipo_base_fills.json scripts/ipo_base_fills.json && git add scripts/ipo_base_fills.json
               [ -f /tmp/excise_duty.json ] && cp /tmp/excise_duty.json scripts/excise_duty.json && git add scripts/excise_duty.json
               git add docs/sf_fundamentals.json docs/sf_revop.json
