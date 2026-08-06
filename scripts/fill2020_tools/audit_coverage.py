@@ -69,26 +69,60 @@ def quarter_ends(first=20150331, last=20260630):
     return out
 
 
-# Companies PROVEN to have stopped filing consolidated (NSE: zero Consolidated filings from that
-# quarter on). Their consolidated cells are NOT gaps -- there is nothing to fill -- so counting them
-# as "missing" makes REMOVING fabricated data look like a regression. Reported separately instead.
-# User instruction 2026-08-06: "stop showing 3mindia in such lists and other stocks which stopped
-# posting consolidated long back".
+# ── IS THERE A CONSOLIDATED RECORD FOR THIS COMPANY AT THIS QUARTER? ──────────────────────────
+# USER RULE 2026-08-06, stated as a ROLLING window: "if u r checking mar 24 cons data and from
+# there backwards, if there is no cons record for straight 4 quarters then [exclude] them from
+# coverage". So the test is applied AS OF each quarter, not once for all time -- which also handles
+# a company that pauses consolidated reporting and later resumes.
+#
+# "A consolidated record" = a quarter where stored con genuinely DIVERGES from std. That is the only
+# signal that separates a real consolidated filing from standalone copied into the con slot (the
+# is_con_basis bug, runbook §56) or from a no-subsidiary identity. A company with no divergence in
+# the trailing 4 quarters is not filing consolidated, so its con cells are NOT gaps.
+#
+# The explicit ledger stays as a user-verified override (screener.in checks: SBFC/UCOBANK/JYOTHYLAB
+# last filed Mar-2025, CERA Jun-2025, FACT Dec-2025, ALKYLAMINE Mar-2020, CUB/ENRIN/ALIVUS never).
 try:
     _nc = load("scripts/no_con_filing.json")
-    NO_CON = _nc.get("stopped_filing_con", {})          # sym -> quarter it stopped
-    NEVER_CON = set(_nc.get("never_filed_con", []))     # never files consolidated at all
+    NO_CON = _nc.get("stopped_filing_con", {})
+    NEVER_CON = set(_nc.get("never_filed_con", []))
 except Exception:
     NO_CON, NEVER_CON = {}, set()
 
+_raw_fund = load("docs/sf_fundamentals.json")
+DIVQ = {}                       # sym -> sorted quarters where con genuinely differs from std
+for _s, _rows in _raw_fund.items():
+    _d = []
+    for _r in _rows:
+        if len(_r) > 3 and _r[1] is not None and _r[3] is not None:
+            if abs(_r[3] - _r[1]) > max(0.05, abs(_r[1]) * 0.001):
+                _d.append(_r[0])
+    if _d:
+        DIVQ[_s] = sorted(_d)
+
+
+def _back4(qe):
+    """qe and the three quarters before it."""
+    y, m = qe // 10000, (qe // 100) % 100
+    i = y * 4 + {3: 0, 6: 1, 9: 2, 12: 3}[m]
+    out = []
+    for k in range(4):
+        yy, r = divmod(i - k, 4)
+        mm = [3, 6, 9, 12][r]
+        out.append(yy * 10000 + mm * 100 + LAST_DAY[mm])
+    return out
+
 
 def files_con(sym, qe):
-    """False when this company has no consolidated statement for that quarter -- either it never
-    files consolidated, or it stopped at a known quarter. Those cells are NOT gaps."""
+    """False when there is no consolidated record for this company at this quarter -- so the cell
+    is NOT a gap and must not be counted as one."""
     if sym in NEVER_CON:
         return False
     start = NO_CON.get(sym)
-    return not (start and qe >= start)
+    if start and qe >= start:
+        return False
+    win = set(_back4(qe))
+    return any(q in win for q in DIVQ.get(sym, ()))
 
 
 rows = []
