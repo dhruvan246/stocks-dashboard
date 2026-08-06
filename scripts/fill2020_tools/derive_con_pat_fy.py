@@ -68,6 +68,25 @@ def fy_quarters(fyend):
             (fyend - 1) * 10000 + 1231, fyend * 10000 + 331]
 
 
+MONN = {"jan": 1, "feb": 2, "mar": 3, "apr": 4, "may": 5, "jun": 6,
+        "jul": 7, "aug": 8, "sep": 9, "oct": 10, "nov": 11, "dec": 12}
+R_FYSPAN = re.compile(r"Financial\s*Year\s*\|?\s*(\d{2})-([A-Za-z]{3})-(\d{4})\s*\|?\s*To\s*\|?\s*"
+                      r"(\d{2})-([A-Za-z]{3})-(\d{4})", re.I)
+
+
+def fy_span_months(html):
+    """Months covered by the page's own declared 'Financial Year <d> To <d>', or None."""
+    m = R_FYSPAN.search(re.sub(r"<[^>]+>", "|", html))
+    if not m:
+        return None, None
+    try:
+        b = (int(m.group(3)), MONN[m.group(2).lower()])
+        e = (int(m.group(6)), MONN[m.group(5).lower()])
+    except KeyError:
+        return None, None
+    return (e[0] * 12 + e[1]) - (b[0] * 12 + b[1]) + 1, "%s-%s-%s..%s-%s-%s" % m.groups()
+
+
 def annual_pat(sym, fyend, link):
     """Owners-attributable PAT from a consolidated ANNUAL page, or (None, reason)."""
     path = os.path.join(CACHE, "ann_%s_%d_c.html" % (sym.replace("&", "_"), fyend))
@@ -75,6 +94,15 @@ def annual_pat(sym, fyend, link):
         html = NAR.get_detail(link, sym, path)
     except Exception as ex:
         return None, "fetch:%s" % type(ex).__name__
+    # DATE-TILING CHECK (§45 / PRE2015 STEP-W's GLAXO finding). An "annual" row is not always 12
+    # months: HCLTECH's FY2016 row covers only Jul-2015..Mar-2016, the 9-month stub created when it
+    # moved from a June-ending to a March-ending fiscal year. Subtracting three quarters from a
+    # 9-month total produced a phantom Jun-2015 con of 38.64 against siblings of ~1,870 -- a value
+    # that passes every other gate here, including calibration on a neighbouring year. The page
+    # declares its own span, so demand it covers the four quarters being differenced.
+    span, txt = fy_span_months(html)
+    if span is not None and span != 12:
+        return None, "fy-span=%dm (%s) not 12m" % (span, txt)
     meta, rows = NAR.parse_detail(html)
     if (meta.get("Consolidated / Non-Consolidated", "")).strip().lower() != "consolidated":
         return None, "not-consolidated"
@@ -160,8 +188,19 @@ def main():
             if a is None:
                 refused.append((mem, fyend, miss[0], "annual:%s" % why))
                 continue
-            known = sum(v for q, v in vals.items() if v is not None)
+            kvals = [v for q, v in vals.items() if v is not None]
+            known = sum(kvals)
             derived = round(a - known, 2)
+            # SIBLING-MAGNITUDE net, behind the span check. A derived quarter wildly out of scale
+            # with the three it sits beside means the annual and the quarters are not describing the
+            # same thing, whatever the labels say. Cheap, and catches span anomalies the page
+            # neglects to declare.
+            med = sorted(abs(v) for v in kvals)[len(kvals) // 2]
+            if med > 0 and not (0.15 * med <= abs(derived) <= 6.0 * med):
+                refused.append((mem, fyend, miss[0],
+                                "implausible vs siblings (derived %.2f, sibling median %.2f)"
+                                % (derived, med)))
+                continue
             landed["%s|%d" % (mem, miss[0])] = {
                 "con": derived, "src": "fy-identity-nse-annual", "fy": fyend,
                 "annual": round(a, 2), "known_sum": round(known, 2), "calibration": cal,
