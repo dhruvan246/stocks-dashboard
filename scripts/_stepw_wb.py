@@ -57,19 +57,21 @@ def cdx(url, frm=None, to=None, limit=60000, match="prefix", fl="timestamp,origi
 def wb_fetch(ts, original, fresh=False):
     """id_ = raw original bytes, no wayback toolbar/rewriting.
 
-    Single attempt, no backoff sleep: observed failures this session are fast connection-refused
-    errors, not slow timeouts, so retrying in-place mostly just burns wall-clock waiting on a
-    connection that isn't coming back within the same process's lifetime anyway. A cell whose
-    only candidate fails here stays RETRYABLE (never a permanent refusal, see
-    _stepw_nse_pre15.py's fetch_incomplete_fys) -- a future full re-run costs nothing extra since
-    successes are cached, so failing fast here trades in-run persistence for wall-clock: more,
-    quicker passes beat fewer, slower ones as long as each pass lands real cells, which it does."""
+    TWO attempts, 2s apart. The original single-attempt form reasoned that "more, quicker passes
+    beat fewer, slower ones" -- sound, but it assumed the passes would actually be frequent.
+    MEASURED 2026-08-06: paired with the caller's abort-the-whole-run stop-gate and the wrapper's
+    180s sleep, each pass did 2-9s of work per 185s of wall-clock (~3% duty cycle), because
+    wayback fails in bursts of ~8 and one burst discarded the entire pass. Two tries 2s apart
+    clears most bursts in-place. This is NOT "retrying through a persistent block" (Sec.38's hard
+    line) -- the caller's tiered backoff is what detects a real block and stops. A cell whose
+    candidates still fail stays RETRYABLE (never a permanent refusal, see
+    _stepw_nse_pre15.py's fetch_incomplete_fys)."""
     u = "https://web.archive.org/web/%sid_/%s" % (ts, original)
     cp = _cache_path("wb_%s_%s" % (ts, original)) + ".html"
     if os.path.exists(cp) and not fresh:
         return open(cp, encoding="utf-8", errors="replace").read()
     last = None
-    for attempt in range(1):
+    for attempt in range(2):
         try:
             r = requests.get(u, headers=UA, timeout=45)
             if r.status_code in (200, 404, 403):
@@ -79,5 +81,7 @@ def wb_fetch(ts, original, fresh=False):
             last = "http %s" % r.status_code
         except Exception as e:  # noqa
             last = str(e)[:80]
+        if attempt == 0:
+            time.sleep(2)
     print("  !! wb fail %s %s :: %s" % (ts, original[:70], last), flush=True)
     return None   # None == fetch failed (retry later). "" would mean "fetched, empty".

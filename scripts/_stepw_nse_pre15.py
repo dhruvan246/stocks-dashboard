@@ -343,6 +343,7 @@ def main():
     threading.Thread(target=_prefetch_all, daemon=True).start()
 
     errs = [0]
+    backoffs = [0]   # hard backoffs since the last SUCCESSFUL fetch (tier-2/3 above)
     n_land = n_ref = n_co = 0
 
     for si, sym in enumerate(all_syms, 1):
@@ -376,18 +377,51 @@ def main():
                 errs[0] += 1
                 if url_to is not None:
                     fetch_incomplete_fys.add(fy_of(url_to))
-                if errs[0] >= 8:
-                    print("STOP-GATE: 8 consecutive fetch failures (last on %s)" % sym, flush=True)
+                # TIERED BACKOFF (replaces "8 consecutive failures -> kill the whole run").
+                # Measured 2026-08-06: the old gate aborted the process on a burst, and the
+                # 180s wrapper sleep meant each pass did 2-9s of WORK per 185s of wall-clock --
+                # a ~3% duty cycle. Wayback fails in bursts of exactly this size, so the run was
+                # being thrown away over blips that clear in seconds.
+                #   tier 1 (8 in a row)  -> this SYMBOL is unlucky right now; skip it, keep the
+                #                           pass alive. Its cells stay retryable (never refused).
+                #   tier 2 (60 in a row) -> failures are sustained ACROSS symbols: that is a real
+                #                           block, so back off HARD in-process (DATA_RUNBOOK
+                #                           Sec.38's hard line) rather than hammering through it.
+                #   tier 3 (3 hard backoffs, no success between) -> genuinely down; stop.
+                if errs[0] >= 60:
+                    backoffs[0] += 1
+                    if backoffs[0] >= 3:
+                        print("STOP: %d consecutive failures across symbols after %d hard backoffs"
+                              " -- wayback is down, stopping." % (errs[0], backoffs[0]), flush=True)
+                        _dump(out, attempts)
+                        # os._exit: sys.exit() blocks on concurrent.futures' atexit handler, which
+                        # joins the prefetch pool and drains its whole queue (observed hanging 1min+
+                        # while still hammering wayback). _dump() closed its files already.
+                        os._exit(2)
+                    print("  ...sustained failures, hard backoff %d/3 (%ds)"
+                          % (backoffs[0], 120), flush=True)
                     _dump(out, attempts)
-                    # sys.exit() here waits on concurrent.futures' atexit handler, which blocks
-                    # until the prefetch daemon thread's ThreadPoolExecutor drains its ENTIRE queued
-                    # job list (thousands of candidates) -- observed hanging 1min+ post-stop-gate
-                    # while still hammering wayback, defeating the gate's whole purpose. _dump()
-                    # above already flushed+closed its files (refcounted, synchronous in CPython),
-                    # so it's safe to skip the rest of interpreter teardown.
-                    os._exit(2)
+                    time.sleep(120)
+                    errs[0] = 0
+                    fetch_incomplete_fys.update(needed_fys)   # see note below
+                    break
+                if errs[0] >= 8:
+                    print("  ..skip %s (8 consecutive fetch failures) -- cells stay retryable"
+                          % sym, flush=True)
+                    # CRITICAL: breaking out early leaves this symbol's remaining candidates
+                    # UNFETCHED, but the refusal-recording block after this loop cannot tell
+                    # "we looked and there was nothing" from "we never got to look". Without
+                    # this line it writes `no-archive-rows-for-that-FY` -- a PERMANENT refusal
+                    # that blocks the cell from ever being retried. Measured when this skip
+                    # first replaced os._exit: ONE 10-minute run falsely refused 1,050 cells.
+                    # (The old abort-the-process gate never reached that code, which is why it
+                    # never hit this.) Marking every wanted FY fetch-incomplete keeps them
+                    # retryable -- the file's own "refusal that refuses nothing real" rule.
+                    fetch_incomplete_fys.update(needed_fys)
+                    break
                 continue
             errs[0] = 0
+            backoffs[0] = 0   # a real success means we are NOT in a persistent block
             p = parse_page(html)
             if p is None:
                 continue
