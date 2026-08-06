@@ -57,12 +57,27 @@ def fetch(sym, con=False, ttl=86400):
         with open(key, encoding="utf-8") as f:
             return f.read()
     url = "https://www.screener.in/company/%s/%s" % (sym, "consolidated/" if con else "")
-    r = _sess().get(url, timeout=30)
-    if r.status_code != 200:
-        return None
-    with open(key, "w", encoding="utf-8") as f:
-        f.write(r.text)
-    return r.text
+    # A sweep touches ~700 pages; one transport hiccup must not kill the run. NOTE: a connection
+    # refused in ~20ms is not screener rate-limiting, it is THIS PROCESS having no network -- e.g. a
+    # backgrounded bash task, which runs sandboxed. Retrying that is pointless; the fix is to run in
+    # the foreground. Retries here are for genuine transient failures.
+    global _SESS
+    for attempt in range(3):
+        try:
+            r = _sess().get(url, timeout=30)
+        except Exception:
+            _SESS = None
+            time.sleep(1.5 * (attempt + 1))
+            continue
+        if r.status_code == 404:
+            return None                              # symbol not on screener -- do not retry
+        if r.status_code != 200:
+            time.sleep(2.0 * (attempt + 1))
+            continue
+        with open(key, "w", encoding="utf-8") as f:
+            f.write(r.text)
+        return r.text
+    return None
 
 
 _SECTION = re.compile(r'id="(quarters|profit-loss)"(.*?)</table>', re.S)
