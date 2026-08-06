@@ -349,7 +349,9 @@ Genuinely open items (memory: project-stocks-pending-queue has the full context)
   project-stocks-resweep-resume (ledgers `scripts/_wf_skips.json` + `_wf_audit_done.json`).
 - **Bucket B/C/D "unfillable" re-audit** (user asked 2026-06-23 "don't assume, remind me later"):
   B=110 cos/1188 skip-logged cells (re-verify skips after finder improvements), C=25 recent-IPO
-  pre-listing (re-check RHP Q1-stub method §6), D=5 dead-ends (HEXT/PIRAMALFIN/SPICEJET/IOB/BASF).
+  pre-listing (re-check RHP Q1-stub method §6), D=3 dead-ends (HEXT/PIRAMALFIN/SPICEJET).
+  ✅ **IOB CLOSED 2026-08-06** — proven never-filed, not a fetch failure (§51). ✅ **BASF CLOSED
+  2026-08-06** — Mar-2020 con filled by no-sub identity (first subsidiary acquired 2020-08-18).
 - **KIRLFER con 2022Q2→date** — mixed-basis series; re-extract owners-attributable and overwrite
   the con==std no-sub fills (details in the pending-queue memory).
 - **Tier-2 re-audit DEFERRED** (user: "tier 2 we will do later") — when resumed, only target
@@ -3057,3 +3059,42 @@ Reusable lessons for moving any local routine to cloud:
   old local one (5.9 GB / 104k files; that cache went away with the Windows box).
 - `--push` stays refused from a tree named `stocks-dashboard` (CLAUDE.md rule 2), which is also
   the runner's checkout name — cloud and CI both commit via their own retry/PR path instead.
+
+---
+
+## 51. ★★ "NO CONSOLIDATED" IS USUALLY REAL — and scanned filings LIE to keyword search  (2026-08-06)
+
+Two findings from closing the FILL-2020 PAT residue. Both cost real time; neither is obvious.
+
+### 51a. Quarterly consolidated results only became compulsory from FY2020
+Before Apr-2019 most Indian listed companies filed **standalone quarterly + consolidated annually**.
+So a pre-2019 empty `con` cell is usually a **never-filed** quarter, not a backfill miss. Proof from
+our own data (`sf_fundamentals`, first quarter each company ever reports con PAT):
+**285 companies start at Jun-2019** (Q1 FY2020) and 142 more at Sep-2019 — by far the largest onset
+in the series. Con gaps collapse in lockstep: 197 (Mar-2018) → 67 (Mar-2019) → 13 (Jun-2019).
+**Consequence:** do NOT plan a fetch campaign for pre-2019 con cells. ~3.1k of them cannot be fetched
+because they do not exist. The only legitimate routes are (a) the no-sub identity where provable, and
+(b) annual-consolidated ÷ quarter derivation where 3 of 4 siblings are known (§45).
+
+### 51b. Bank/PSU scans have a GLYPH-SUBSTITUTION text layer — `a→o`, `t→l`
+IOB's 2020-21 result PDFs carry a real text layer (54k chars over 28 pages) but it is systematically
+corrupted: "Standalone Financial Results" extracts as **"Slondolone Flnonciol Resulls"**, "audited" as
+"oudited", "Bank" as "Bonk". A plain `re.compile("consolidat")` scan returns **zero hits on a document
+that does contain the word**. Same class as the ABREL/Century-Textiles 2019 filings ("Income" → "Ireom").
+- **Search with a corruption-tolerant fragment**, not the whole word: `[o0]ns[o0][li1]id` catches both
+  `Consolidated` and `Consolidoled`. Pick a fragment whose letters survive the substitution.
+- **ALWAYS run a positive control before believing a zero.** Point the same detector at a period where
+  the thing is KNOWN to exist. IOB Mar-2022 (con 551.78 stored) lights up — `"Audited Slondolone ond
+  Consolidoled Finonciol Results"` — which is what proves the 2020-21 zero is real and not a parser bug.
+- **Then eyeball the hits.** The one candidate hit in IOB's Jun-2020 filing was `"os port of
+  consolidotion ond reducing concentrotion risk"` — loan-book consolidation, an English false positive.
+
+### 51c. IOB 2019-2021 con PAT — CLOSED, do not re-grind
+Checked all 8 quarters Mar-2020..Dec-2021 (plus Dec-2019) via BSE announcements, wide windows where the
+±8-day window found nothing (Jun-2020's filing landed 2020-08-20, COVID-delayed), detector validated per
+51b: **IOB published no consolidated results before Mar-2022.** Its stored con series starting exactly at
+20220331 is correct, not a gap. Corroboration: the Jun-2020 filing's own highlights page prints "Net Profit
+for the quorter ended 30th June 2020 ... Rs.121 crore" against our stored std 120.69. ✔
+**IOB con=std is NOT valid** — when IOB does report con it DIVERGES (551.78 vs std 552.38), so it has real
+consolidation differences; an identity fill would be fabrication. Leave null.
+
