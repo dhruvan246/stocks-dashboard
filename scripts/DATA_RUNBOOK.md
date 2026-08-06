@@ -2694,6 +2694,26 @@ The user found it by running a backtest; no monitor, test, or verification step 
 - [ ] **Load the actual page and see the healed data in a result**, not just in the file. "The bytes are
       correct" and "the feature works" are different claims (§39).
 
+### 41b. ★ A CI JOB'S OWN COMMIT DOES NOT TRIGGER THE PAGES DEPLOY  (found 2026-08-06)
+
+`refresh-stock-fin.yml` rebuilds `docs/fin/<SLUG>.json` — the per-stock slice `stock.html` actually
+reads — on every push that touches `docs/sf_revop.json`. It works, it commits, and the commit is on
+main within minutes. **But the site does not serve it.** `actions/checkout@v5` with no token argument
+pushes as the default `GITHUB_TOKEN`, and GitHub deliberately does not let a `GITHUB_TOKEN` push
+trigger further workflows (the recursion guard). `pages.yml` is `on: push: paths: docs/**` — so the
+slice commit lands and no deploy fires. The slices go live only when some LATER push to `docs/**`
+from a PAT-authenticated job or a human happens to deploy the whole tree.
+
+Symptom to recognise: `git show origin/main:docs/fin/<SLUG>.json` HAS the healed value while
+`curl` of the live URL (cache-buster and all) does not, and the newest `pages.yml` run's headSha is
+the commit BEFORE the slice commit. That is not CDN lag and waiting will not fix it.
+
+Immediate fix after any rev/PAT heal: `gh workflow run pages.yml` (workflow_dispatch is enabled) —
+it publishes whatever is committed and is safe to repeat. Proper fix if this keeps biting: give the
+slice job a PAT for its push, or add a `workflow_run` trigger on pages.yml.
+**This is §41's own lesson recurring one layer out** — the bytes were right in git, the derived slice
+was right in git, and the site still served nulls.
+
 **Generalise it:** any client-side cache keyed on a DATE will go stale under a heal. Today the sf parts
 are the only such cache (`dash_slim.bin` / `stock_data.bin` / `mf_history.bin` / `stk/` slices are plain
 ETag fetches that revalidate within ~10 min, and `sw.js` never caches `.bin`/`.json`). If you ever add
