@@ -161,17 +161,32 @@ def scan_geom(doc, sym, qe, field):
         qn = shift_q(qe, k)
         others.append(("%d PAT" % qn, stored(sym, qn, "patC" if want_con else "patS")))
     others = [o for o in others if o[1] is not None]
-    vision = []
+    vision, saw_statement_text = [], False
     for pi in range(len(doc)):
         page = doc[pi]
         if len(page.get_text().strip()) < 80 and page.get_images():
             vision.append(pi)                                    # MODE 1
             continue
+        # Does this TEXT page structurally look like a results statement (a PAT-ish row AND a
+        # revenue-ish row)? That is what separates "the statement is an image" from "the statement
+        # is right here in text and my ANCHOR failed" -- two completely different problems that the
+        # first version of this reader collapsed into NEEDS-VISION. It sent SUNDROP and TATACAP to
+        # a paid vision read whose chosen pages were an auditor signature page and a credit-rating
+        # annexure, while TATACAP's anchor value sat in plain text on pages 14 and 33 of the very
+        # same document. Both were then resolved for free by the screener gate.
+        if not saw_statement_text:
+            rows = GEOM.lines_of(page)
+            if any(any(p.search(r[1]) for p in PAT_LABELS) for r in rows) and \
+               any(any(p.search(r[1]) for p in REV_LABELS) for r in rows):
+                saw_statement_text = True
         val, ev = GEOM.find(page, anchor, others, PAT_LABELS, REV_LABELS)
         if val is not None:
             ev["page"] = pi
             return val, ev
-    return None, ({"vision": vision} if vision else None)
+    # ONLY a document with no readable statement text is a vision candidate.
+    if vision and not saw_statement_text:
+        return None, {"vision": vision}
+    return None, ({"text_statement_present": True} if saw_statement_text else None)
 
 
 def scan(doc, sym, qe, field):
