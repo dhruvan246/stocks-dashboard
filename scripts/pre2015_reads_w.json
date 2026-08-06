@@ -17425,6 +17425,19 @@
 "rev": 263.75,
 "src": "wb-nse-archive 20030827093518|?01-APR-200330-JUN-2003Q1UNNNENICOLASPIR | GATE-F failed (FY2004: legs present [20030630, 20040331], no annual or not tiling); EPS-recon implied=24.97 seen=25.21 tol=2.00 OK"
 },
+"20030930": {
+"ann": 20031114,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "F",
+"nse_link": "20040910232349|?01-JUL-200330-SEP-2003Q2UNNNENICOLASPIR",
+"op": null,
+"pat": 47.69,
+"rev": 311.0,
+"src": "wb-nse-archive 20040910232349|?01-JUL-200330-SEP-2003Q2UNNNENICOLASPIR | FY2004 identity OK: qsum=188.01 annual=188.01 (tol 5.64)"
+},
 "20031231": {
 "ann": 20040214,
 "ann_approx": true,
@@ -17936,6 +17949,19 @@
 "pat": -1.3,
 "rev": 113.1,
 "src": "wb-nse-archive 20041230125006|?01-APR-200430-JUN-2004Q4ANNNEPRISMCEM | GATE-F failed (FY2005: legs present [20040630], no annual or not tiling); EPS-recon implied=-1.19 seen=-1.30 tol=2.00 OK"
+},
+"20040930": {
+"ann": 20041114,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20041230125054|?01-JUL-200430-SEP-2004Q1UNNNEPRISMCEM",
+"op": null,
+"pat": -0.77,
+"rev": 88.47,
+"src": "wb-nse-archive 20041230125054|?01-JUL-200430-SEP-2004Q1UNNNEPRISMCEM | GATE-F failed (FY2005: legs present [20040630, 20040930], no annual or not tiling); EPS-recon implied=-0.89 seen=-0.77 tol=2.00 OK"
 }
 },
 "PSIDATASYS": {
@@ -17980,6 +18006,19 @@
 "rev": 275.5,
 "src": "wb-nse-archive 20050105181959|?01-OCT-200331-DEC-2003Q3UNNNEPSL | GATE-F failed (FY2004: legs present [20030630, 20030930, 20031231], no annual or not tiling); EPS-recon implied=6.71 seen=6.72 tol=2.00 OK"
 },
+"20040331": {
+"ann": 20040515,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20050105181947|?01-JAN-200431-MAR-2004Q4UNNNEPSL",
+"op": null,
+"pat": 8.54,
+"rev": 259.06,
+"src": "wb-nse-archive 20050105181947|?01-JAN-200431-MAR-2004Q4UNNNEPSL | GATE-F failed (FY2004: legs present [20030630, 20030930, 20031231, 20040331], no annual or not tiling); EPS-recon implied=8.50 seen=8.54 tol=2.00 OK"
+},
 "20040630": {
 "ann": 20040814,
 "ann_approx": true,
@@ -18007,7 +18046,182 @@
 "src": "wb-nse-archive 20050105181955|?01-JUL-200430-SEP-2004Q2UNNNEPSL | GATE-F failed (FY2005: legs present [20040930], no annual or not tiling); EPS-recon implied=7.32 seen=7.33 tol=2.00 OK"
 }
 },
+"PUNJABTRAC": {
+"20021231": {
+"ann": 20030214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "F",
+"nse_link": "20030429203138|?01-OCT-200231-DEC-2002Q3UNNNEPUNJABTRAC",
+"op": null,
+"pat": 10.0,
+"rev": 137.4,
+"src": "wb-nse-archive 20030429203138|?01-OCT-200231-DEC-2002Q3UNNNEPUNJABTRAC | FY2003 identity OK: qsum=42.30 annual=43.12 (tol 3.00)"
+},
+"20030331": {
+"ann": 20030515,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "F",
+"nse_link": "20040228185047|?01-JAN-200331-MAR-2003Q4UNNNEPUNJABTRAC",
+"op": null,
+"pat": 7.5,
+"rev": 113.5,
+"src": "wb-nse-archive 20040228185047|?01-JAN-200331-MAR-2003Q4UNNNEPUNJABTRAC | FY2003 identity OK: qsum=42.30 annual=43.12 (tol 3.00)"
+},
+"20030630": {
+"ann": 20030814,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "F",
+"nse_link": "20040228192752|?01-APR-200330-JUN-2003Q1UNNNEPUNJABTRAC",
+"op": null,
+"pat": 5.7,
+"rev": 119.4,
+"src": "wb-nse-archive 20040228192752|?01-APR-200330-JUN-2003Q1UNNNEPUNJABTRAC | FY2004 identity OK: qsum=42.02 annual=42.02 (tol 3.00)"
+},
+"20030930": {
+"ann": 20031114,
+"ann_approx": true,
+"basis": "std",
+"derived": "cumdiff",
+"fin": 0,
+"gate": "F",
+"nse_link": "20040228202735|?01-APR-200330-SEP-2003H1UNCNEPUNJABTRAC minus 20040228192752|?01-APR-200330-JUN-2003Q1UNNNEPUNJABTRAC",
+"op": null,
+"pat": 6.1,
+"rev": 127.6,
+"src": "wb-nse-archive 20040228202735|?01-APR-200330-SEP-2003H1UNCNEPUNJABTRAC minus 20040228192752|?01-APR-200330-JUN-2003Q1UNNNEPUNJABTRAC | cumdiff leg (20040228202735|?01-APR-200330-SEP-2003H1UNCNEPUNJABTRAC minus 20040228192752|?01-APR-200330-JUN-2003Q1UNNNEPUNJABTRAC); FY2004 identity OK: qsum=42.02 annual=42.02 (tol 3.00)"
+},
+"20031231": {
+"ann": 20040214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "F",
+"nse_link": "20040228202634|?01-OCT-200331-DEC-2003Q3UNNNEPUNJABTRAC",
+"op": null,
+"pat": 13.5,
+"rev": 166.5,
+"src": "wb-nse-archive 20040228202634|?01-OCT-200331-DEC-2003Q3UNNNEPUNJABTRAC | FY2004 identity OK: qsum=42.02 annual=42.02 (tol 3.00)"
+},
+"20040331": {
+"ann": 20040515,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "F",
+"nse_link": "20040828195042|?01-JAN-200431-MAR-2004Q4UNNNEPUNJABTRAC",
+"op": null,
+"pat": 16.72,
+"rev": 183.84,
+"src": "wb-nse-archive 20040828195042|?01-JAN-200431-MAR-2004Q4UNNNEPUNJABTRAC | FY2004 identity OK: qsum=42.02 annual=42.02 (tol 3.00)"
+},
+"20040630": {
+"ann": 20040814,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040828195026|?01-APR-200430-JUN-2004Q1UNNNEPUNJABTRAC",
+"op": null,
+"pat": 10.0,
+"rev": 182.0,
+"src": "wb-nse-archive 20040828195026|?01-APR-200430-JUN-2004Q1UNNNEPUNJABTRAC | GATE-F failed (FY2005: legs present [20040630, 20040930], no annual or not tiling); EPS-recon implied=10.94 seen=10.00 tol=2.00 OK"
+},
+"20040930": {
+"ann": 20041114,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20050104213642|?01-JUL-200430-SEP-2004Q2UNNNEPUNJABTRAC",
+"op": null,
+"pat": 10.8,
+"rev": 189.7,
+"src": "wb-nse-archive 20050104213642|?01-JUL-200430-SEP-2004Q2UNNNEPUNJABTRAC | GATE-F failed (FY2005: legs present [20040630, 20040930], no annual or not tiling); EPS-recon implied=10.94 seen=10.80 tol=2.00 OK"
+}
+},
+"PVP": {
+"20030331": {
+"ann": 20030515,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20030729201625|?01-JAN-200331-MAR-2003Q3UNNNESOFTSOLINT",
+"op": null,
+"pat": -1.3,
+"rev": 20.16,
+"src": "wb-nse-archive 20030729201625|?01-JAN-200331-MAR-2003Q3UNNNESOFTSOLINT | GATE-F failed (FY2003: legs present [20020930, 20030331], no annual or not tiling); EPS-recon implied=-1.31 seen=-1.30 tol=2.00 OK"
+},
+"20031231": {
+"ann": 20040214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040208025758|?01-OCT-200331-DEC-2003Q1UNNNESOFTSOLINT",
+"op": null,
+"pat": 3.84,
+"rev": 10.66,
+"src": "wb-nse-archive 20040208025758|?01-OCT-200331-DEC-2003Q1UNNNESOFTSOLINT | GATE-F failed (FY2004: legs present [20031231], no annual or not tiling); EPS-recon implied=3.84 seen=3.84 tol=2.00 OK"
+}
+},
+"RAINCALCIN": {
+"20030930": {
+"ann": 20031114,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040910232321|?01-JUL-200330-SEP-2003Q2ANNNERAINCALCIN",
+"op": null,
+"pat": 6.66,
+"rev": 83.09,
+"src": "wb-nse-archive 20040910232321|?01-JUL-200330-SEP-2003Q2ANNNERAINCALCIN | GATE-F failed (FY2004: legs present [20030930, 20031231], no annual or not tiling); EPS-recon implied=6.60 seen=6.66 tol=2.00 OK"
+},
+"20031231": {
+"ann": 20040214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040910232501|?01-OCT-200331-DEC-2003Q3ANNNERAINCALCIN",
+"op": null,
+"pat": 8.93,
+"rev": 80.81,
+"src": "wb-nse-archive 20040910232501|?01-OCT-200331-DEC-2003Q3ANNNERAINCALCIN | GATE-F failed (FY2004: legs present [20030930, 20031231], no annual or not tiling); EPS-recon implied=8.93 seen=8.93 tol=2.00 OK"
+}
+},
 "RALLIS": {
+"20030630": {
+"ann": 20030814,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040903005531|?01-APR-200330-JUN-2003Q1UNNNERALLIS",
+"op": null,
+"pat": -14.33,
+"rev": 91.65,
+"src": "wb-nse-archive 20040903005531|?01-APR-200330-JUN-2003Q1UNNNERALLIS | GATE-F failed (FY2004: legs present [20030630, 20030930, 20031231], no annual or not tiling); EPS-recon implied=-14.33 seen=-14.33 tol=2.00 OK"
+},
 "20031231": {
 "ann": 20040214,
 "ann_approx": true,
@@ -18131,6 +18345,19 @@
 "rev": 21.02,
 "src": "wb-nse-archive 20031226065323|?01-JAN-200331-MAR-2003Q4ANNNERAMCOSYS | GATE-F failed (FY2003: legs present [20030331], no annual or not tiling); EPS-recon implied=-3.36 seen=-3.35 tol=2.00 OK"
 },
+"20030630": {
+"ann": 20030814,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20031226065756|?01-APR-200330-JUN-2003Q1UNNNERAMCOSYS",
+"op": null,
+"pat": -15.01,
+"rev": 16.11,
+"src": "wb-nse-archive 20031226065756|?01-APR-200330-JUN-2003Q1UNNNERAMCOSYS | GATE-F failed (FY2004: legs present [20030630, 20030930, 20031231, 20040331], no annual or not tiling); EPS-recon implied=-15.08 seen=-15.01 tol=2.00 OK"
+},
 "20030930": {
 "ann": 20031114,
 "ann_approx": true,
@@ -18210,6 +18437,19 @@
 "pat": 279.8,
 "rev": 1024.9,
 "src": "wb-nse-archive 20030819040457|?01-JAN-200331-MAR-2003Q1UNNNERANBAXY | GATE-F failed (FY2003: legs present [20020930, 20021231, 20030331], no annual or not tiling); EPS-recon implied=279.92 seen=279.80 tol=16.80 OK"
+},
+"20030630": {
+"ann": 20030814,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20030819054030|?01-APR-200330-JUN-2003Q2UNNNERANBAXY",
+"op": null,
+"pat": 196.8,
+"rev": 827.7,
+"src": "wb-nse-archive 20030819054030|?01-APR-200330-JUN-2003Q2UNNNERANBAXY | GATE-F failed (FY2004: legs present [20030630, 20030930, 20031231, 20040331], no annual or not tiling); EPS-recon implied=196.82 seen=196.80 tol=11.81 OK"
 },
 "20030930": {
 "ann": 20031114,
@@ -18345,6 +18585,32 @@
 }
 },
 "RELCAPITAL": {
+"20030331": {
+"ann": 20030515,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20050104213440|?01-JAN-200331-MAR-2003Q4ANNNERELCAPITAL",
+"op": null,
+"pat": 26.99,
+"rev": 124.34,
+"src": "wb-nse-archive 20050104213440|?01-JAN-200331-MAR-2003Q4ANNNERELCAPITAL | GATE-F failed (FY2003: legs present [20020630, 20020930, 20030331], no annual or not tiling); EPS-recon implied=27.10 seen=26.99 tol=2.00 OK"
+},
+"20030630": {
+"ann": 20030814,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "F",
+"nse_link": "20050104213154|?01-APR-200330-JUN-2003Q1UNNNERELCAPITAL",
+"op": null,
+"pat": 22.8,
+"rev": 88.26,
+"src": "wb-nse-archive 20050104213154|?01-APR-200330-JUN-2003Q1UNNNERELCAPITAL | FY2004 identity OK: qsum=105.79 annual=105.79 (tol 3.17)"
+},
 "20030930": {
 "ann": 20031114,
 "ann_approx": true,
@@ -18357,6 +18623,19 @@
 "pat": 26.69,
 "rev": 76.13,
 "src": "wb-nse-archive 20031219113352|?01-JUL-200330-SEP-2003Q2UNNNERELCAPITAL | GATE-F failed (FY2004: legs present [20030930], no annual or not tiling); EPS-recon implied=26.85 seen=26.69 tol=2.00 OK"
+},
+"20031231": {
+"ann": 20040214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "F",
+"nse_link": "20050104213722|?01-OCT-200331-DEC-2003Q3UNNNERELCAPITAL",
+"op": null,
+"pat": 28.89,
+"rev": 78.25,
+"src": "wb-nse-archive 20050104213722|?01-OCT-200331-DEC-2003Q3UNNNERELCAPITAL | FY2004 identity OK: qsum=105.79 annual=105.79 (tol 3.17)"
 },
 "20040331": {
 "ann": 20040515,
@@ -18411,6 +18690,32 @@
 "pat": 1263.0,
 "rev": 12693.0,
 "src": "wb-nse-archive 20040208115741|?01-JUL-200330-SEP-2003Q2UNNNERELIANCE | GATE-F failed (FY2004: legs present [20030930], no annual or not tiling); EPS-recon implied=1256.40 seen=1263.00 tol=75.78 OK"
+},
+"20040630": {
+"ann": 20040814,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040810144220|?01-APR-200430-JUN-2004Q1UNNNERELIANCE",
+"op": null,
+"pat": 1437.0,
+"rev": 14280.0,
+"src": "wb-nse-archive 20040810144220|?01-APR-200430-JUN-2004Q1UNNNERELIANCE | GATE-F failed (FY2005: legs present [20040630, 20040930], no annual or not tiling); EPS-recon implied=1437.88 seen=1437.00 tol=86.27 OK"
+},
+"20040930": {
+"ann": 20041114,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20041207142757|?01-JUL-200430-SEP-2004Q2UNNNERELIANCE",
+"op": null,
+"pat": 1752.0,
+"rev": 16164.0,
+"src": "wb-nse-archive 20041207142757|?01-JUL-200430-SEP-2004Q2UNNNERELIANCE | GATE-F failed (FY2005: legs present [20040630, 20040930], no annual or not tiling); EPS-recon implied=1745.00 seen=1752.00 tol=105.12 OK"
 }
 },
 "RICOAUTO": {
@@ -19013,6 +19318,19 @@
 }
 },
 "SAIL": {
+"20021231": {
+"ann": 20030214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040208025513|?01-OCT-200231-DEC-2002Q3UNNNESAIL",
+"op": null,
+"pat": -78.75,
+"rev": 4443.36,
+"src": "wb-nse-archive 20040208025513|?01-OCT-200231-DEC-2002Q3UNNNESAIL | GATE-F failed (FY2003: legs present [20020930, 20021231, 20030331], no annual or not tiling); EPS-recon implied=-78.48 seen=-78.75 tol=4.72 OK"
+},
 "20030331": {
 "ann": 20030515,
 "ann_approx": true,
@@ -19054,6 +19372,19 @@
 }
 },
 "SALORAINTL": {
+"20021231": {
+"ann": 20030214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040815170207|?01-OCT-200231-DEC-2002Q3UNNNESALORAINTL",
+"op": null,
+"pat": 3.2,
+"rev": 94.82,
+"src": "wb-nse-archive 20040815170207|?01-OCT-200231-DEC-2002Q3UNNNESALORAINTL | GATE-F failed (FY2003: legs present [20020930, 20021231, 20030331], no annual or not tiling); EPS-recon implied=3.20 seen=3.20 tol=2.00 OK"
+},
 "20030331": {
 "ann": 20030515,
 "ann_approx": true,
@@ -19080,6 +19411,19 @@
 "rev": 91.22,
 "src": "wb-nse-archive 20040815170129|?01-APR-200330-JUN-2003Q1UNNNESALORAINTL | GATE-F failed (FY2004: legs present [20030630, 20030930, 20040331], no annual or not tiling); EPS-recon implied=2.44 seen=2.44 tol=2.00 OK"
 },
+"20031231": {
+"ann": 20040214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "F",
+"nse_link": "20040815170211|?01-OCT-200331-DEC-2003Q3UNNNESALORAINTL",
+"op": null,
+"pat": 4.76,
+"rev": 109.75,
+"src": "wb-nse-archive 20040815170211|?01-OCT-200331-DEC-2003Q3UNNNESALORAINTL | FY2004 identity OK: qsum=15.95 annual=15.95 (tol 3.00)"
+},
 "20040331": {
 "ann": 20040515,
 "ann_approx": true,
@@ -19092,6 +19436,19 @@
 "pat": 4.05,
 "rev": 109.1,
 "src": "wb-nse-archive 20040815170154|?01-JAN-200431-MAR-2004Q4UNNNESALORAINTL | GATE-F failed (FY2004: legs present [20030630, 20030930, 20040331], no annual or not tiling); EPS-recon implied=4.05 seen=4.05 tol=2.00 OK"
+},
+"20040630": {
+"ann": 20040814,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040815170141|?01-APR-200430-JUN-2004Q1UNNNESALORAINTL",
+"op": null,
+"pat": 4.15,
+"rev": 110.54,
+"src": "wb-nse-archive 20040815170141|?01-APR-200430-JUN-2004Q1UNNNESALORAINTL | GATE-F failed (FY2005: legs present [20040630], no annual or not tiling); EPS-recon implied=4.15 seen=4.15 tol=2.00 OK"
 }
 },
 "SANDESH": {
@@ -19121,6 +19478,19 @@
 "rev": 29.2,
 "src": "wb-nse-archive 20040917092725|?01-JAN-200331-MAR-2003Q4ANNNESANDESH | GATE-F failed (FY2003: legs present [20021231, 20030331], no annual or not tiling); EPS-recon implied=3.33 seen=3.33 tol=2.00 OK"
 },
+"20030630": {
+"ann": 20030814,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040917092235|?01-APR-200330-JUN-2003Q1UNNNESANDESH",
+"op": null,
+"pat": 4.89,
+"rev": 33.2,
+"src": "wb-nse-archive 20040917092235|?01-APR-200330-JUN-2003Q1UNNNESANDESH | GATE-F failed (FY2004: legs present [20030630, 20030930, 20040331], no annual or not tiling); EPS-recon implied=4.89 seen=4.89 tol=2.00 OK"
+},
 "20030930": {
 "ann": 20031114,
 "ann_approx": true,
@@ -19133,6 +19503,19 @@
 "pat": 1.1,
 "rev": 30.46,
 "src": "wb-nse-archive 20040917093042|?01-JUL-200330-SEP-2003Q2UNNNESANDESH | GATE-F failed (FY2004: legs present [20030930], no annual or not tiling); EPS-recon implied=1.10 seen=1.10 tol=2.00 OK"
+},
+"20040331": {
+"ann": 20040515,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040917092927|?01-JAN-200431-MAR-2004Q4ANNNESANDESH",
+"op": null,
+"pat": -0.26,
+"rev": 34.3,
+"src": "wb-nse-archive 20040917092927|?01-JAN-200431-MAR-2004Q4ANNNESANDESH | GATE-F failed (FY2004: legs present [20030630, 20030930, 20040331], no annual or not tiling); EPS-recon implied=-0.26 seen=-0.26 tol=2.00 OK"
 },
 "20040630": {
 "ann": 20040814,
@@ -19149,6 +19532,19 @@
 }
 },
 "SANOFI": {
+"20030630": {
+"ann": 20030814,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20031208220058|?01-APR-200330-JUN-2003Q2UNNNEAVENTIS",
+"op": null,
+"pat": 23.3,
+"rev": 175.3,
+"src": "wb-nse-archive 20031208220058|?01-APR-200330-JUN-2003Q2UNNNEAVENTIS | GATE-F failed (FY2004: legs present [20030630, 20030930, 20031231], no annual or not tiling); EPS-recon implied=23.30 seen=23.30 tol=2.00 OK"
+},
 "20030930": {
 "ann": 20031114,
 "ann_approx": true,
@@ -19161,6 +19557,19 @@
 "pat": 26.1,
 "rev": 158.8,
 "src": "wb-nse-archive 20031209020732|?01-JUL-200330-SEP-2003Q3UNNNEAVENTIS | GATE-F failed (FY2004: legs present [20030930], no annual or not tiling); EPS-recon implied=26.11 seen=26.10 tol=2.00 OK"
+},
+"20031231": {
+"ann": 20040214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040805113906|?01-OCT-200331-DEC-2003Q4UNNNEAVENTIS",
+"op": null,
+"pat": 30.4,
+"rev": 172.8,
+"src": "wb-nse-archive 20040805113906|?01-OCT-200331-DEC-2003Q4UNNNEAVENTIS | GATE-F failed (FY2004: legs present [20030630, 20030930, 20031231], no annual or not tiling); EPS-recon implied=30.34 seen=30.40 tol=2.00 OK"
 }
 },
 "SAREGAMA": {
@@ -19282,6 +19691,19 @@
 "pat": 173.48,
 "rev": 771.5,
 "src": "wb-nse-archive 20040805073710|?01-APR-200430-JUN-2004Q1ANNNESATYAMCOMP | GATE-F failed (FY2005: legs present [20040630, 20040930], no annual or not tiling); EPS-recon implied=173.61 seen=173.48 tol=10.42 OK"
+},
+"20041231": {
+"ann": 20050214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20050312162850|?01-OCT-200431-DEC-2004Q3ANNNESATYAMCOMP",
+"op": null,
+"pat": 174.79,
+"rev": 891.26,
+"src": "wb-nse-archive 20050312162850|?01-OCT-200431-DEC-2004Q3ANNNESATYAMCOMP | GATE-F failed (FY2005: legs present [20040630, 20040930, 20041231], no annual or not tiling); EPS-recon implied=175.05 seen=174.79 tol=10.50 OK"
 }
 },
 "SBIN": {
@@ -19403,6 +19825,36 @@
 "src": "wb-nse-archive 20060521034909|?01-OCT-200431-DEC-2004Q3UBNNESBIN | FY2005 identity OK: qsum=4304.52 annual=4304.52 (tol 129.14)"
 }
 },
+"SCI": {
+"20021231": {
+"ann": 20030214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20030429202754|?01-OCT-200231-DEC-2002Q3UNNNESCI",
+"op": null,
+"pat": 76.22,
+"rev": 594.71,
+"src": "wb-nse-archive 20030429202754|?01-OCT-200231-DEC-2002Q3UNNNESCI | GATE-F failed (FY2003: legs present [20020930, 20021231], no annual or not tiling); EPS-recon implied=76.22 seen=76.22 tol=4.57 OK"
+}
+},
+"SHRIRAMFIN": {
+"20031231": {
+"ann": 20040214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20051111233411|?01-OCT-200331-DEC-2003Q3UNNNESRTRANSFIN",
+"op": null,
+"pat": 7.16,
+"rev": 60.51,
+"src": "wb-nse-archive 20051111233411|?01-OCT-200331-DEC-2003Q3UNNNESRTRANSFIN | GATE-F failed (FY2004: legs present [20031231], no annual or not tiling); EPS-recon implied=6.49 seen=7.16 tol=2.00 OK"
+}
+},
 "SHYAMTELE": {
 "20021231": {
 "ann": 20030214,
@@ -19417,6 +19869,19 @@
 "rev": 41.78,
 "src": "wb-nse-archive 20030820172737|?01-OCT-200231-DEC-2002Q3UNNNESHYAMTELE | GATE-F failed (FY2003: legs present [20020930, 20021231, 20030331], no annual or not tiling); EPS-recon implied=0.32 seen=0.32 tol=2.00 OK"
 },
+"20030630": {
+"ann": 20030814,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20030820172506|?01-APR-200330-JUN-2003Q1UNNNESHYAMTELE",
+"op": null,
+"pat": 0.05,
+"rev": 0.94,
+"src": "wb-nse-archive 20030820172506|?01-APR-200330-JUN-2003Q1UNNNESHYAMTELE | GATE-F failed (FY2004: legs present [20030630, 20030930, 20040331], no annual or not tiling); EPS-recon implied=0.06 seen=0.05 tol=2.00 OK"
+},
 "20030930": {
 "ann": 20031114,
 "ann_approx": true,
@@ -19430,6 +19895,19 @@
 "rev": 0.97,
 "src": "wb-nse-archive 20050110053457|?01-JUL-200330-SEP-2003Q2UNNNESHYAMTELE | GATE-F failed (FY2004: legs present [20030930], no annual or not tiling); EPS-recon implied=0.06 seen=0.07 tol=2.00 OK"
 },
+"20040331": {
+"ann": 20040515,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20050110053432|?01-JAN-200431-MAR-2004Q4UNNNESHYAMTELE",
+"op": null,
+"pat": 0.03,
+"rev": 11.66,
+"src": "wb-nse-archive 20050110053432|?01-JAN-200431-MAR-2004Q4UNNNESHYAMTELE | GATE-F failed (FY2004: legs present [20030630, 20030930, 20040331], no annual or not tiling); EPS-recon implied=0.03 seen=0.03 tol=2.00 OK"
+},
 "20040930": {
 "ann": 20041114,
 "ann_approx": true,
@@ -19442,6 +19920,19 @@
 "pat": 0.08,
 "rev": 1.04,
 "src": "wb-nse-archive 20050110053548|?01-JUL-200430-SEP-2004Q2UNNNESHYAMTELE | GATE-F failed (FY2005: legs present [20040930], no annual or not tiling); EPS-recon implied=0.06 seen=0.08 tol=2.00 OK"
+},
+"20041231": {
+"ann": 20050214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20050324160742|?01-OCT-200431-DEC-2004Q3UNNNESHYAMTELE",
+"op": null,
+"pat": -0.16,
+"rev": 2.3,
+"src": "wb-nse-archive 20050324160742|?01-OCT-200431-DEC-2004Q3UNNNESHYAMTELE | GATE-F failed (FY2005: legs present [20040930, 20041231], no annual or not tiling); EPS-recon implied=-0.16 seen=-0.16 tol=2.00 OK"
 }
 },
 "SIEMENS": {
@@ -19470,6 +19961,32 @@
 "pat": 35.97,
 "rev": 389.7,
 "src": "wb-nse-archive 20040504181237|?01-JAN-200331-MAR-2003Q2UNNNESIEMENS | GATE-F failed (FY2003: legs present [20020930, 20021231, 20030331], no annual or not tiling); EPS-recon implied=35.96 seen=35.97 tol=2.16 OK"
+},
+"20030630": {
+"ann": 20030814,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040504181838|?01-APR-200330-JUN-2003Q3UNNNESIEMENS",
+"op": null,
+"pat": 15.53,
+"rev": 299.47,
+"src": "wb-nse-archive 20040504181838|?01-APR-200330-JUN-2003Q3UNNNESIEMENS | GATE-F failed (FY2004: legs present [20030630, 20030930, 20031231, 20040331], no annual or not tiling); EPS-recon implied=15.54 seen=15.53 tol=2.00 OK"
+},
+"20030930": {
+"ann": 20031114,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040504181527|?01-JUL-200330-SEP-2003Q4UNNNESIEMENS",
+"op": null,
+"pat": 53.47,
+"rev": 436.86,
+"src": "wb-nse-archive 20040504181527|?01-JUL-200330-SEP-2003Q4UNNNESIEMENS | GATE-F failed (FY2004: legs present [20030630, 20030930, 20031231, 20040331], no annual or not tiling); EPS-recon implied=53.45 seen=53.47 tol=3.21 OK"
 },
 "20031231": {
 "ann": 20040214,
@@ -19643,6 +20160,32 @@
 "pat": 8.02,
 "rev": 50.94,
 "src": "wb-nse-archive 20040210041743|?01-OCT-200331-DEC-2003Q3UNNNED-LINK | GATE-F failed (FY2004: legs present [20030630, 20030930, 20031231], no annual or not tiling); EPS-recon implied=8.01 seen=8.02 tol=2.00 OK"
+},
+"20040930": {
+"ann": 20041114,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20050417163219|?01-JUL-200430-SEP-2004Q2UNNNED-LINK",
+"op": null,
+"pat": 6.87,
+"rev": 64.52,
+"src": "wb-nse-archive 20050417163219|?01-JUL-200430-SEP-2004Q2UNNNED-LINK | GATE-F failed (FY2005: legs present [20040930, 20041231], no annual or not tiling); EPS-recon implied=6.87 seen=6.87 tol=2.00 OK"
+},
+"20041231": {
+"ann": 20050214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20050417163153|?01-OCT-200431-DEC-2004Q3UNNNED-LINK",
+"op": null,
+"pat": 6.66,
+"rev": 69.58,
+"src": "wb-nse-archive 20050417163153|?01-OCT-200431-DEC-2004Q3UNNNED-LINK | GATE-F failed (FY2005: legs present [20040930, 20041231], no annual or not tiling); EPS-recon implied=6.66 seen=6.66 tol=2.00 OK"
 }
 },
 "SNOWCEMIND": {
@@ -19698,6 +20241,19 @@
 "rev": 9.5,
 "src": "wb-nse-archive 20040229010354|?01-JUL-200330-SEP-2003Q2UNNNESNOWCEMIND | GATE-F failed (FY2004: legs present [20030930], no annual or not tiling); EPS-recon implied=-3.24 seen=-3.24 tol=2.00 OK"
 },
+"20031231": {
+"ann": 20040214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040229004637|?01-OCT-200331-DEC-2003Q3UNNNESNOWCEMIND",
+"op": null,
+"pat": -1.5,
+"rev": 13.36,
+"src": "wb-nse-archive 20040229004637|?01-OCT-200331-DEC-2003Q3UNNNESNOWCEMIND | GATE-F failed (FY2004: legs present [20030630, 20030930, 20031231], no annual or not tiling); EPS-recon implied=-1.50 seen=-1.50 tol=2.00 OK"
+},
 "20040630": {
 "ann": 20040814,
 "ann_approx": true,
@@ -19723,6 +20279,19 @@
 "pat": -2.97,
 "rev": 11.15,
 "src": "wb-nse-archive 20041211222244|?01-JUL-200430-SEP-2004Q2UNNNESNOWCEMIND | GATE-F failed (FY2005: legs present [20040930], no annual or not tiling); EPS-recon implied=-2.97 seen=-2.97 tol=2.00 OK"
+},
+"20041231": {
+"ann": 20050214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20050422220832|?01-OCT-200431-DEC-2004Q3UNNNESNOWCEMIND",
+"op": null,
+"pat": -1.26,
+"rev": 17.31,
+"src": "wb-nse-archive 20050422220832|?01-OCT-200431-DEC-2004Q3UNNNESNOWCEMIND | GATE-F failed (FY2005: legs present [20040630, 20040930, 20041231], no annual or not tiling); EPS-recon implied=-1.26 seen=-1.26 tol=2.00 OK"
 }
 },
 "SONATSOFTW": {
@@ -19846,6 +20415,34 @@
 "src": "wb-nse-archive 20041230054502|?01-JUL-200430-SEP-2004Q2UNNNESPIC | GATE-F failed (FY2005: legs present [20040930], no annual or not tiling); EPS-recon implied=178.21 seen=178.60 tol=10.72 OK"
 }
 },
+"SREINFRA": {
+"20031231": {
+"ann": 20040214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20050317181918|?01-OCT-200331-DEC-2003Q3UNNNESREINTFIN",
+"op": null,
+"pat": 4.09,
+"rev": 29.76,
+"src": "wb-nse-archive 20050317181918|?01-OCT-200331-DEC-2003Q3UNNNESREINTFIN | GATE-F failed (FY2004: legs present [20031231], no annual or not tiling); EPS-recon implied=4.12 seen=4.09 tol=2.00 OK"
+},
+"20041231": {
+"ann": 20050214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20050317181922|?01-OCT-200431-DEC-2004Q3UNNNESREINTFIN",
+"op": null,
+"pat": 8.78,
+"rev": 35.6,
+"src": "wb-nse-archive 20050317181922|?01-OCT-200431-DEC-2004Q3UNNNESREINTFIN | GATE-F failed (FY2005: legs present [20041231], no annual or not tiling); EPS-recon implied=8.82 seen=8.78 tol=2.00 OK"
+}
+},
 "SRF": {
 "20030331": {
 "ann": 20030515,
@@ -19953,6 +20550,19 @@
 "rev": 12.28,
 "src": "wb-nse-archive 20040903010407|?01-APR-200330-JUN-2003OTUNNNESRIADIKARI | GATE-F failed (FY2004: legs present [20030630], no annual or not tiling); EPS-recon implied=-1.53 seen=-1.53 tol=2.00 OK"
 },
+"20031231": {
+"ann": 20040214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040903011120|?01-OCT-200331-DEC-2003Q1UNNNESRIADIKARI",
+"op": null,
+"pat": 0.65,
+"rev": 15.63,
+"src": "wb-nse-archive 20040903011120|?01-OCT-200331-DEC-2003Q1UNNNESRIADIKARI | GATE-F failed (FY2004: legs present [20030630, 20031231, 20040331], no annual or not tiling); EPS-recon implied=0.65 seen=0.65 tol=2.00 OK"
+},
 "20040331": {
 "ann": 20040515,
 "ann_approx": true,
@@ -19978,6 +20588,19 @@
 "pat": 0.18,
 "rev": 15.07,
 "src": "wb-nse-archive 20040903010700|?01-APR-200430-JUN-2004Q3UNNNESRIADIKARI | GATE-F failed (FY2005: legs present [20040630, 20041231], no annual or not tiling); EPS-recon implied=0.19 seen=0.18 tol=2.00 OK"
+},
+"20040930": {
+"ann": 20041114,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20050106174529|?01-JUL-200430-SEP-2004Q4UNNNESRIADIKARI",
+"op": null,
+"pat": 0.28,
+"rev": 13.61,
+"src": "wb-nse-archive 20050106174529|?01-JUL-200430-SEP-2004Q4UNNNESRIADIKARI | GATE-F failed (FY2005: legs present [20040630, 20040930, 20041231], no annual or not tiling); EPS-recon implied=0.28 seen=0.28 tol=2.00 OK"
 },
 "20041231": {
 "ann": 20050214,
@@ -20006,6 +20629,32 @@
 "pat": 5.9,
 "rev": 2126.45,
 "src": "wb-nse-archive 20040902033234|?01-OCT-200331-DEC-2003Q3UNNNESTCINDIA | GATE-F failed (FY2004: legs present [20030630, 20030930, 20031231], no annual or not tiling); EPS-recon implied=5.91 seen=5.90 tol=2.00 OK"
+},
+"20040331": {
+"ann": 20040515,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040902033227|?01-JAN-200431-MAR-2004Q4UNNNESTCINDIA",
+"op": null,
+"pat": 13.66,
+"rev": 2811.21,
+"src": "wb-nse-archive 20040902033227|?01-JAN-200431-MAR-2004Q4UNNNESTCINDIA | GATE-F failed (FY2004: legs present [20030630, 20030930, 20031231, 20040331], no annual or not tiling); EPS-recon implied=13.65 seen=13.66 tol=2.00 OK"
+},
+"20040630": {
+"ann": 20040814,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040902033215|?01-APR-200430-JUN-2004Q1UNNNESTCINDIA",
+"op": null,
+"pat": 10.23,
+"rev": 3539.73,
+"src": "wb-nse-archive 20040902033215|?01-APR-200430-JUN-2004Q1UNNNESTCINDIA | GATE-F failed (FY2005: legs present [20040630], no annual or not tiling); EPS-recon implied=10.23 seen=10.23 tol=2.00 OK"
 }
 },
 "STERLINBIO": {
@@ -20089,6 +20738,19 @@
 }
 },
 "STLTECH": {
+"20030331": {
+"ann": 20030515,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20030908015136|?01-JAN-200331-MAR-2003Q4UNNNESTROPTICAL",
+"op": null,
+"pat": -24.17,
+"rev": 41.34,
+"src": "wb-nse-archive 20030908015136|?01-JAN-200331-MAR-2003Q4UNNNESTROPTICAL | GATE-F failed (FY2003: legs present [20020630, 20030331], no annual or not tiling); EPS-recon implied=-25.31 seen=-24.17 tol=2.00 OK"
+},
 "20030630": {
 "ann": 20030814,
 "ann_approx": true,
@@ -20166,6 +20828,21 @@
 "pat": 6.48,
 "rev": 95.87,
 "src": "wb-nse-archive 20050428113057|?01-OCT-200431-DEC-2004Q3UNNNESTROPTICAL | GATE-F failed (FY2005: legs present [20040630, 20040930, 20041231, 20050331], no annual or not tiling); EPS-recon implied=6.50 seen=6.48 tol=2.00 OK"
+}
+},
+"SUNDARMFIN": {
+"20021231": {
+"ann": 20030214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20030715034557|?01-OCT-200231-DEC-2002Q3UNNNESUNDARMFIN",
+"op": null,
+"pat": 10.67,
+"rev": 110.84,
+"src": "wb-nse-archive 20030715034557|?01-OCT-200231-DEC-2002Q3UNNNESUNDARMFIN | GATE-F failed (FY2003: legs present [20020630, 20020930, 20021231], no annual or not tiling); EPS-recon implied=10.68 seen=10.67 tol=2.00 OK"
 }
 },
 "SUNPHARMA": {
@@ -20410,6 +21087,32 @@
 "pat": 60.2,
 "rev": 379.07,
 "src": "wb-nse-archive 20040229014701|?01-JAN-200331-MAR-2003Q4UNNNETATACHEM | GATE-F failed (FY2003: legs present [20030331], no annual or not tiling); EPS-recon implied=60.17 seen=60.20 tol=3.61 OK"
+},
+"20030930": {
+"ann": 20031114,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040229014709|?01-JUL-200330-SEP-2003Q2UNNNETATACHEM",
+"op": null,
+"pat": 80.52,
+"rev": 482.96,
+"src": "wb-nse-archive 20040229014709|?01-JUL-200330-SEP-2003Q2UNNNETATACHEM | GATE-F failed (FY2004: legs present [20030930, 20040331], no annual or not tiling); EPS-recon implied=80.59 seen=80.52 tol=4.84 OK"
+},
+"20040331": {
+"ann": 20040515,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040815165927|?01-JAN-200431-MAR-2004Q4ANNNETATACHEM",
+"op": null,
+"pat": 29.65,
+"rev": 554.2,
+"src": "wb-nse-archive 20040815165927|?01-JAN-200431-MAR-2004Q4ANNNETATACHEM | GATE-F failed (FY2004: legs present [20030930, 20040331], no annual or not tiling); EPS-recon implied=29.69 seen=29.65 tol=2.00 OK"
 },
 "20041231": {
 "ann": 20050214,
@@ -20826,6 +21529,19 @@
 }
 },
 "TATAINVEST": {
+"20030331": {
+"ann": 20030515,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040617170647|?01-JAN-200331-MAR-2003Q4ANNNEINVESTCORP",
+"op": null,
+"pat": 2.2,
+"rev": 2.09,
+"src": "wb-nse-archive 20040617170647|?01-JAN-200331-MAR-2003Q4ANNNEINVESTCORP | GATE-F failed (FY2003: legs present [20020630, 20020930, 20030331], no annual or not tiling); EPS-recon implied=2.39 seen=2.20 tol=2.00 OK"
+},
 "20030630": {
 "ann": 20030814,
 "ann_approx": true,
@@ -20890,9 +21606,48 @@
 "pat": 27.72,
 "rev": 25.71,
 "src": "wb-nse-archive 20050317122032|?01-JUL-200430-SEP-2004Q2UNNNEINVESTCORP | GATE-F failed (FY2005: legs present [20040630, 20040930], no annual or not tiling); EPS-recon implied=27.72 seen=27.72 tol=2.00 OK"
+},
+"20041231": {
+"ann": 20050214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20050317111233|?01-OCT-200431-DEC-2004Q3UNNNEINVESTCORP",
+"op": null,
+"pat": 38.6,
+"rev": 38.69,
+"src": "wb-nse-archive 20050317111233|?01-OCT-200431-DEC-2004Q3UNNNEINVESTCORP | GATE-F failed (FY2005: legs present [20040630, 20040930, 20041231], no annual or not tiling); EPS-recon implied=38.59 seen=38.60 tol=2.32 OK"
 }
 },
 "TATAPOWER": {
+"20030630": {
+"ann": 20030814,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20030819053417|?01-APR-200330-JUN-2003Q1UNNNETATAPOWER",
+"op": null,
+"pat": 99.43,
+"rev": 1082.07,
+"src": "wb-nse-archive 20030819053417|?01-APR-200330-JUN-2003Q1UNNNETATAPOWER | GATE-F failed (FY2004: legs present [20030630, 20031231], no annual or not tiling); EPS-recon implied=99.35 seen=99.43 tol=5.97 OK"
+},
+"20031231": {
+"ann": 20040214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040301231308|?01-OCT-200331-DEC-2003Q3UNNNETATAPOWER",
+"op": null,
+"pat": 184.49,
+"rev": 1027.45,
+"src": "wb-nse-archive 20040301231308|?01-OCT-200331-DEC-2003Q3UNNNETATAPOWER | GATE-F failed (FY2004: legs present [20030630, 20031231], no annual or not tiling); EPS-recon implied=184.45 seen=184.49 tol=11.07 OK"
+},
 "20040630": {
 "ann": 20040814,
 "ann_approx": true,
@@ -20962,6 +21717,19 @@
 "rev": 10.22,
 "src": "wb-nse-archive 20030728072311|?01-JAN-200331-MAR-2003Q3UNNNETHIRUSUGAR | GATE-F failed (FY2003: legs present [20020630, 20020930, 20030331], no annual or not tiling); EPS-recon implied=0.54 seen=0.54 tol=2.00 OK"
 },
+"20030630": {
+"ann": 20030814,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040504222930|?01-APR-200330-JUN-2003Q4ANNNETHIRUSUGAR",
+"op": null,
+"pat": 1.87,
+"rev": 39.86,
+"src": "wb-nse-archive 20040504222930|?01-APR-200330-JUN-2003Q4ANNNETHIRUSUGAR | GATE-F failed (FY2004: legs present [20030630, 20030930, 20031231, 20040331], no annual or not tiling); EPS-recon implied=1.87 seen=1.87 tol=2.00 OK"
+},
 "20040331": {
 "ann": 20040515,
 "ann_approx": true,
@@ -20977,6 +21745,19 @@
 }
 },
 "TIPSMUSIC": {
+"20030630": {
+"ann": 20030814,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040812071010|?01-APR-200330-JUN-2003Q1UNNNETIPSINDLTD",
+"op": null,
+"pat": 0.42,
+"rev": 9.48,
+"src": "wb-nse-archive 20040812071010|?01-APR-200330-JUN-2003Q1UNNNETIPSINDLTD | GATE-F failed (FY2004: legs present [20030630, 20030930, 20031231, 20040331], no annual or not tiling); EPS-recon implied=0.42 seen=0.42 tol=2.00 OK"
+},
 "20031231": {
 "ann": 20040214,
 "ann_approx": true,
@@ -21015,6 +21796,21 @@
 "pat": -0.52,
 "rev": 5.01,
 "src": "wb-nse-archive 20040812071151|?01-APR-200430-JUN-2004Q1UNNNETIPSINDLTD | GATE-F failed (FY2005: legs present [20040630], no annual or not tiling); EPS-recon implied=-0.52 seen=-0.52 tol=2.00 OK"
+}
+},
+"TIRUMALCHM": {
+"20021231": {
+"ann": 20030214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20041230204749|?01-OCT-200231-DEC-2002Q3UNNNETIRUMALCHM",
+"op": null,
+"pat": 0.67,
+"rev": 64.83,
+"src": "wb-nse-archive 20041230204749|?01-OCT-200231-DEC-2002Q3UNNNETIRUMALCHM | GATE-F failed (FY2003: legs present [20021231], no annual or not tiling); EPS-recon implied=0.67 seen=0.67 tol=2.00 OK"
 }
 },
 "TITAN": {
@@ -21203,9 +21999,35 @@
 "pat": -0.13,
 "rev": 188.4,
 "src": "wb-nse-archive 20040820074754|?01-JAN-200431-MAR-2004Q4UNNNETNPETRO | FY2004 identity OK: qsum=22.21 annual=22.21 (tol 3.00)"
+},
+"20040630": {
+"ann": 20040814,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040820074733|?01-APR-200430-JUN-2004Q1UNNNETNPETRO",
+"op": null,
+"pat": 2.81,
+"rev": 191.34,
+"src": "wb-nse-archive 20040820074733|?01-APR-200430-JUN-2004Q1UNNNETNPETRO | GATE-F failed (FY2005: legs present [20040630], no annual or not tiling); EPS-recon implied=2.79 seen=2.81 tol=2.00 OK"
 }
 },
 "TODAYS": {
+"20030930": {
+"ann": 20031114,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040226010626|?01-JUL-200330-SEP-2003Q2UNNNETODAYS",
+"op": null,
+"pat": 1.67,
+"rev": 22.52,
+"src": "wb-nse-archive 20040226010626|?01-JUL-200330-SEP-2003Q2UNNNETODAYS | GATE-F failed (FY2004: legs present [20030930, 20031231, 20040331], no annual or not tiling); EPS-recon implied=1.68 seen=1.67 tol=2.00 OK"
+},
 "20031231": {
 "ann": 20040214,
 "ann_approx": true,
@@ -21231,6 +22053,19 @@
 "pat": 0.56,
 "rev": 20.52,
 "src": "wb-nse-archive 20050323212120|?01-JAN-200431-MAR-2004Q4UNNNETODAYS | GATE-F failed (FY2004: legs present [20040331], no annual or not tiling); EPS-recon implied=0.56 seen=0.56 tol=2.00 OK"
+},
+"20041231": {
+"ann": 20050214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20050323212521|?01-OCT-200431-DEC-2004Q3UNNNETODAYS",
+"op": null,
+"pat": 2.04,
+"rev": 25.66,
+"src": "wb-nse-archive 20050323212521|?01-OCT-200431-DEC-2004Q3UNNNETODAYS | GATE-F failed (FY2005: legs present [20041231], no annual or not tiling); EPS-recon implied=2.04 seen=2.04 tol=2.00 OK"
 }
 },
 "TORNTPHARM": {
@@ -21412,6 +22247,21 @@
 "src": "wb-nse-archive 20030827093108|?01-APR-200330-JUN-2003Q1UNNNETATATELSER | GATE-F failed (FY2004: legs present [20030630, 20030930], no annual or not tiling); EPS-recon implied=-43.57 seen=-44.26 tol=2.66 OK"
 }
 },
+"TUBEINVEST": {
+"20040331": {
+"ann": 20040515,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040901190602|?01-JAN-200431-MAR-2004Q4UNNNETUBEINVEST",
+"op": null,
+"pat": 36.64,
+"rev": 330.33,
+"src": "wb-nse-archive 20040901190602|?01-JAN-200431-MAR-2004Q4UNNNETUBEINVEST | GATE-F failed (FY2004: legs present [20040331], no annual or not tiling); EPS-recon implied=36.64 seen=36.64 tol=2.20 OK"
+}
+},
 "TV18": {
 "20030331": {
 "ann": 20030515,
@@ -21451,9 +22301,130 @@
 "pat": -5.62,
 "rev": 10.12,
 "src": "wb-nse-archive 20050323211613|?01-JUL-200330-SEP-2003Q2UNNNETV18 | GATE-F failed (FY2004: legs present [20030630, 20030930], no annual or not tiling); EPS-recon implied=-5.62 seen=-5.62 tol=2.00 OK"
+},
+"20040930": {
+"ann": 20041114,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20050323211729|?01-JUL-200430-SEP-2004Q2UNNNETV18",
+"op": null,
+"pat": 2.14,
+"rev": 16.56,
+"src": "wb-nse-archive 20050323211729|?01-JUL-200430-SEP-2004Q2UNNNETV18 | GATE-F failed (FY2005: legs present [20040930, 20041231], no annual or not tiling); EPS-recon implied=2.14 seen=2.14 tol=2.00 OK"
+},
+"20041231": {
+"ann": 20050214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20050323211538|?01-OCT-200431-DEC-2004Q3UNNNETV18",
+"op": null,
+"pat": 5.28,
+"rev": 23.12,
+"src": "wb-nse-archive 20050323211538|?01-OCT-200431-DEC-2004Q3UNNNETV18 | GATE-F failed (FY2005: legs present [20040930, 20041231], no annual or not tiling); EPS-recon implied=5.28 seen=5.28 tol=2.00 OK"
+}
+},
+"TVSMOTOR": {
+"20030331": {
+"ann": 20030515,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040502202203|?01-JAN-200331-MAR-2003Q4UNNNETVSMOTOR",
+"op": null,
+"pat": 37.54,
+"rev": 663.28,
+"src": "wb-nse-archive 20040502202203|?01-JAN-200331-MAR-2003Q4UNNNETVSMOTOR | GATE-F failed (FY2003: legs present [20020630, 20020930, 20030331], no annual or not tiling); EPS-recon implied=37.54 seen=37.54 tol=2.25 OK"
+},
+"20030630": {
+"ann": 20030814,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20031226065706|?01-APR-200330-JUN-2003Q1UNNNETVSMOTOR",
+"op": null,
+"pat": 32.08,
+"rev": 662.5,
+"src": "wb-nse-archive 20031226065706|?01-APR-200330-JUN-2003Q1UNNNETVSMOTOR | GATE-F failed (FY2004: legs present [20030630, 20040331], no annual or not tiling); EPS-recon implied=32.09 seen=32.08 tol=2.00 OK"
+},
+"20040630": {
+"ann": 20040814,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040805122605|?01-APR-200430-JUN-2004Q1UNNNETVSMOTOR",
+"op": null,
+"pat": 27.18,
+"rev": 611.06,
+"src": "wb-nse-archive 20040805122605|?01-APR-200430-JUN-2004Q1UNNNETVSMOTOR | GATE-F failed (FY2005: legs present [20040630], no annual or not tiling); EPS-recon implied=27.07 seen=27.18 tol=2.00 OK"
+}
+},
+"UCAL": {
+"20030630": {
+"ann": 20030814,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20050324013810|?01-APR-200330-JUN-2003Q1UNNNEUCALFUEL",
+"op": null,
+"pat": 6.98,
+"rev": 57.72,
+"src": "wb-nse-archive 20050324013810|?01-APR-200330-JUN-2003Q1UNNNEUCALFUEL | GATE-F failed (FY2004: legs present [20030630, 20040331], no annual or not tiling); EPS-recon implied=6.98 seen=6.98 tol=2.00 OK"
+},
+"20040331": {
+"ann": 20040515,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20050324013719|?01-JAN-200431-MAR-2004Q4UNNNEUCALFUEL",
+"op": null,
+"pat": 8.33,
+"rev": 72.18,
+"src": "wb-nse-archive 20050324013719|?01-JAN-200431-MAR-2004Q4UNNNEUCALFUEL | GATE-F failed (FY2004: legs present [20030630, 20040331], no annual or not tiling); EPS-recon implied=8.34 seen=8.33 tol=2.00 OK"
+},
+"20041231": {
+"ann": 20050214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20050324013633|?01-OCT-200431-DEC-2004Q3UNNNEUCALFUEL",
+"op": null,
+"pat": 8.46,
+"rev": 67.67,
+"src": "wb-nse-archive 20050324013633|?01-OCT-200431-DEC-2004Q3UNNNEUCALFUEL | GATE-F failed (FY2005: legs present [20041231], no annual or not tiling); EPS-recon implied=10.15 seen=8.46 tol=2.00 OK"
 }
 },
 "UFLEX": {
+"20031231": {
+"ann": 20040214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20050423210309|?01-OCT-200331-DEC-2003Q3UNNNEFLEX",
+"op": null,
+"pat": 9.74,
+"rev": 149.19,
+"src": "wb-nse-archive 20050423210309|?01-OCT-200331-DEC-2003Q3UNNNEFLEX | GATE-F failed (FY2004: legs present [20030630, 20030930, 20031231], no annual or not tiling); EPS-recon implied=9.71 seen=9.74 tol=2.00 OK"
+},
 "20040630": {
 "ann": 20040814,
 "ann_approx": true,
@@ -21819,6 +22790,32 @@
 }
 },
 "VARDHMNSPG": {
+"20030930": {
+"ann": 20031114,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040904185835|?01-JUL-200330-SEP-2003Q2UNNNEVARDHMNSPG",
+"op": null,
+"pat": 8.7,
+"rev": 165.76,
+"src": "wb-nse-archive 20040904185835|?01-JUL-200330-SEP-2003Q2UNNNEVARDHMNSPG | GATE-F failed (FY2004: legs present [20030930, 20031231, 20040331], no annual or not tiling); EPS-recon implied=8.69 seen=8.70 tol=2.00 OK"
+},
+"20031231": {
+"ann": 20040214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040904185852|?01-OCT-200331-DEC-2003Q3UNNNEVARDHMNSPG",
+"op": null,
+"pat": 10.22,
+"rev": 175.4,
+"src": "wb-nse-archive 20040904185852|?01-OCT-200331-DEC-2003Q3UNNNEVARDHMNSPG | GATE-F failed (FY2004: legs present [20030930, 20031231, 20040331], no annual or not tiling); EPS-recon implied=10.22 seen=10.22 tol=2.00 OK"
+},
 "20040331": {
 "ann": 20040515,
 "ann_approx": true,
@@ -21844,6 +22841,77 @@
 "pat": 6.35,
 "rev": 148.99,
 "src": "wb-nse-archive 20040904185803|?01-APR-200430-JUN-2004Q1UNNNEVARDHMNSPG | GATE-F failed (FY2005: legs present [20040630], no annual or not tiling); EPS-recon implied=6.35 seen=6.35 tol=2.00 OK"
+},
+"20040930": {
+"ann": 20041114,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20050113222554|?01-JUL-200430-SEP-2004Q2UNNNEVARDHMNSPG",
+"op": null,
+"pat": 11.85,
+"rev": 186.63,
+"src": "wb-nse-archive 20050113222554|?01-JUL-200430-SEP-2004Q2UNNNEVARDHMNSPG | GATE-F failed (FY2005: legs present [20040630, 20040930], no annual or not tiling); EPS-recon implied=11.85 seen=11.85 tol=2.00 OK"
+}
+},
+"VESUVIUS": {
+"20021231": {
+"ann": 20030214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20030302000128|?01-OCT-200231-DEC-2002Q4ANNNEVESUVIUS",
+"op": null,
+"pat": 6.23,
+"rev": 30.9,
+"src": "wb-nse-archive 20030302000128|?01-OCT-200231-DEC-2002Q4ANNNEVESUVIUS | GATE-F failed (FY2003: legs present [20021231], no annual or not tiling); EPS-recon implied=6.23 seen=6.23 tol=2.00 OK"
+}
+},
+"VINDHYATEL": {
+"20021231": {
+"ann": 20030214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040923204351|?01-OCT-200231-DEC-2002Q3UNNNEVINDHYATEL",
+"op": null,
+"pat": -1.37,
+"rev": 20.67,
+"src": "wb-nse-archive 20040923204351|?01-OCT-200231-DEC-2002Q3UNNNEVINDHYATEL | GATE-F failed (FY2003: legs present [20020630, 20020930, 20021231], no annual or not tiling); EPS-recon implied=-1.37 seen=-1.37 tol=2.00 OK"
+},
+"20031231": {
+"ann": 20040214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040923204356|?01-OCT-200331-DEC-2003Q3UNNNEVINDHYATEL",
+"op": null,
+"pat": -1.09,
+"rev": 14.67,
+"src": "wb-nse-archive 20040923204356|?01-OCT-200331-DEC-2003Q3UNNNEVINDHYATEL | GATE-F failed (FY2004: legs present [20031231], no annual or not tiling); EPS-recon implied=-1.09 seen=-1.09 tol=2.00 OK"
+}
+},
+"VINYLCHEM": {
+"20030630": {
+"ann": 20030814,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040901000057|?01-APR-200330-JUN-2003Q1UNNNEVINYLCHEM",
+"op": null,
+"pat": -0.29,
+"rev": 22.58,
+"src": "wb-nse-archive 20040901000057|?01-APR-200330-JUN-2003Q1UNNNEVINYLCHEM | GATE-F failed (FY2004: legs present [20030630], no annual or not tiling); EPS-recon implied=-0.29 seen=-0.29 tol=2.00 OK"
 }
 },
 "VIPIND": {
@@ -21859,6 +22927,19 @@
 "pat": 3.2,
 "rev": 88.96,
 "src": "wb-nse-archive 20041224011501|?01-APR-200330-JUN-2003Q1UNNNEVIPIND | GATE-F failed (FY2004: legs present [20030630], no annual or not tiling); EPS-recon implied=3.19 seen=3.20 tol=2.00 OK"
+},
+"20040630": {
+"ann": 20040814,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20041224011608|?01-APR-200430-JUN-2004Q1UNNNEVIPIND",
+"op": null,
+"pat": 5.08,
+"rev": 90.9,
+"src": "wb-nse-archive 20041224011608|?01-APR-200430-JUN-2004Q1UNNNEVIPIND | GATE-F failed (FY2005: legs present [20040630, 20040930], no annual or not tiling); EPS-recon implied=5.08 seen=5.08 tol=2.00 OK"
 }
 },
 "VISAKAIND": {
@@ -22188,6 +23269,19 @@
 }
 },
 "WIPRO": {
+"20031231": {
+"ann": 20040214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040226011529|?01-OCT-200331-DEC-2003Q3AANNEWIPRO",
+"op": null,
+"pat": 244.5,
+"rev": 1327.3,
+"src": "wb-nse-archive 20040226011529|?01-OCT-200331-DEC-2003Q3AANNEWIPRO | GATE-F failed (FY2004: legs present [20030930, 20031231, 20040331], no annual or not tiling); EPS-recon implied=245.75 seen=244.50 tol=14.75 OK"
+},
 "20040331": {
 "ann": 20040515,
 "ann_approx": true,
@@ -22243,7 +23337,89 @@
 "src": "wb-nse-archive 20040902033511|?01-APR-200430-JUN-2004Q2UNNNEWOCKPHARMA | GATE-F failed (FY2005: legs present [20040630], no annual or not tiling); EPS-recon implied=46.43 seen=46.40 tol=2.79 OK"
 }
 },
+"ZEEL": {
+"20040331": {
+"ann": 20040515,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040620190609|?01-JAN-200431-MAR-2004Q4UNNNEZEETELE",
+"op": null,
+"pat": 44.59,
+"rev": 174.38,
+"src": "wb-nse-archive 20040620190609|?01-JAN-200431-MAR-2004Q4UNNNEZEETELE | GATE-F failed (FY2004: legs present [20030930, 20040331], no annual or not tiling); EPS-recon implied=44.55 seen=44.59 tol=2.68 OK"
+},
+"20041231": {
+"ann": 20050214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20050309001814|?01-OCT-200431-DEC-2004Q3UNNNEZEETELE",
+"op": null,
+"pat": 38.41,
+"rev": 177.19,
+"src": "wb-nse-archive 20050309001814|?01-OCT-200431-DEC-2004Q3UNNNEZEETELE | GATE-F failed (FY2005: legs present [20040630, 20040930, 20041231], no annual or not tiling); EPS-recon implied=38.36 seen=38.41 tol=2.30 OK"
+}
+},
+"ZENITHCOMP": {
+"20030331": {
+"ann": 20030515,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20050324161141|?01-JAN-200331-MAR-2003Q4ANNNEZENITHCOMP",
+"op": null,
+"pat": 0.16,
+"rev": 61.05,
+"src": "wb-nse-archive 20050324161141|?01-JAN-200331-MAR-2003Q4ANNNEZENITHCOMP | GATE-F failed (FY2003: legs present [20020630, 20020930, 20030331], no annual or not tiling); EPS-recon implied=0.17 seen=0.16 tol=2.00 OK"
+},
+"20030930": {
+"ann": 20031114,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20050324160503|?01-JUL-200330-SEP-2003Q2UNNNEZENITHCOMP",
+"op": null,
+"pat": 1.71,
+"rev": 96.15,
+"src": "wb-nse-archive 20050324160503|?01-JUL-200330-SEP-2003Q2UNNNEZENITHCOMP | GATE-F failed (FY2004: legs present [20030930], no annual or not tiling); EPS-recon implied=1.70 seen=1.71 tol=2.00 OK"
+},
+"20040930": {
+"ann": 20041114,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20050324161157|?01-JUL-200430-SEP-2004Q2UNNNEZENITHCOMP",
+"op": null,
+"pat": 2.13,
+"rev": 77.74,
+"src": "wb-nse-archive 20050324161157|?01-JUL-200430-SEP-2004Q2UNNNEZENITHCOMP | GATE-F failed (FY2005: legs present [20040930], no annual or not tiling); EPS-recon implied=2.12 seen=2.13 tol=2.00 OK"
+}
+},
 "ZENSARTECH": {
+"20021231": {
+"ann": 20030214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040828020734|?01-OCT-200231-DEC-2002Q3UNNNEZENSARTECH",
+"op": null,
+"pat": 2.93,
+"rev": 25.68,
+"src": "wb-nse-archive 20040828020734|?01-OCT-200231-DEC-2002Q3UNNNEZENSARTECH | GATE-F failed (FY2003: legs present [20021231], no annual or not tiling); EPS-recon implied=2.93 seen=2.93 tol=2.00 OK"
+},
 "20030630": {
 "ann": 20030814,
 "ann_approx": true,
@@ -22256,9 +23432,35 @@
 "pat": 3.05,
 "rev": 25.84,
 "src": "wb-nse-archive 20040828020514|?01-APR-200330-JUN-2003Q1UNNNEZENSARTECH | GATE-F failed (FY2004: legs present [20030630], no annual or not tiling); EPS-recon implied=3.05 seen=3.05 tol=2.00 OK"
+},
+"20030930": {
+"ann": 20031114,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040828020720|?01-JUL-200330-SEP-2003Q2UNNNEZENSARTECH",
+"op": null,
+"pat": 1.13,
+"rev": 29.39,
+"src": "wb-nse-archive 20040828020720|?01-JUL-200330-SEP-2003Q2UNNNEZENSARTECH | GATE-F failed (FY2004: legs present [20030630, 20030930], no annual or not tiling); EPS-recon implied=1.14 seen=1.13 tol=2.00 OK"
 }
 },
 "ZUARIIND": {
+"20021231": {
+"ann": 20030214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040902192741|?01-OCT-200231-DEC-2002Q3UNNNEZUARIAGRO",
+"op": null,
+"pat": 5.72,
+"rev": 309.03,
+"src": "wb-nse-archive 20040902192741|?01-OCT-200231-DEC-2002Q3UNNNEZUARIAGRO | GATE-F failed (FY2003: legs present [20021231], no annual or not tiling); EPS-recon implied=5.71 seen=5.72 tol=2.00 OK"
+},
 "20030930": {
 "ann": 20031114,
 "ann_approx": true,
@@ -22284,9 +23486,35 @@
 "pat": 5.17,
 "rev": 306.43,
 "src": "wb-nse-archive 20040902192704|?01-JAN-200431-MAR-2004Q4ANNNEZUARIAGRO | GATE-F failed (FY2004: legs present [20030930, 20040331], no annual or not tiling); EPS-recon implied=5.18 seen=5.17 tol=2.00 OK"
+},
+"20040930": {
+"ann": 20041114,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20050312074942|?01-JUL-200430-SEP-2004Q2UNNNEZUARIAGRO",
+"op": null,
+"pat": 18.1,
+"rev": 412.36,
+"src": "wb-nse-archive 20050312074942|?01-JUL-200430-SEP-2004Q2UNNNEZUARIAGRO | GATE-F failed (FY2005: legs present [20040930, 20050331], no annual or not tiling); EPS-recon implied=18.11 seen=18.10 tol=2.00 OK"
 }
 },
 "ZYDUSLIFE": {
+"20021231": {
+"ann": 20030214,
+"ann_approx": true,
+"basis": "std",
+"derived": null,
+"fin": 0,
+"gate": "E",
+"nse_link": "20040220215350|?01-OCT-200231-DEC-2002Q3UNNNECADILAHC",
+"op": null,
+"pat": 17.29,
+"rev": 166.64,
+"src": "wb-nse-archive 20040220215350|?01-OCT-200231-DEC-2002Q3UNNNECADILAHC | GATE-F failed (FY2003: legs present [20020630, 20020930, 20021231, 20030331], no annual or not tiling); EPS-recon implied=17.27 seen=17.29 tol=2.00 OK"
+},
 "20030930": {
 "ann": 20031114,
 "ann_approx": true,
