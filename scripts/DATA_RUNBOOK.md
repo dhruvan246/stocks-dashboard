@@ -4109,6 +4109,13 @@ Anything else is an unfinished job reported as a finished one.
   `scripts/no_con_filing.json` (§60c, rolling-4-quarter rule).
 * `BLOCKED-TRANSPORT` — retry later. **This is not a conclusion and must never be counted as closed.**
 * `NEEDS-VISION` / `NEEDS-CROSSCHECK` — work items, mode 1 and mode 5. Also not conclusions.
+  **`NEEDS-VISION` is deferred to the very END of a sweep and needs the user's explicit go-ahead**
+  (standing rule, 2026-08-06: *"the one that requires vision, keep them for last and take my
+  permission"*). Vision is the expensive rung; every cheaper route must be exhausted across the
+  WHOLE target list first, because reader improvements retroactively rescue queued cells — widening
+  the label set (§63a/b) and adding the own-season window (§63e) turned several `NEEDS-VISION` cells
+  into ordinary text reads on this very sweep. Re-run the text reader over the queue after any
+  reader change, then report what is left and wait.
 * `UNFILLABLE` — requires **two independent readers** to have come back empty, with both recorded.
   One reader failing is mode 1-6 until proven otherwise.
 
