@@ -84,11 +84,24 @@ def find(page, anchor, others, pat_pats, rev_pats):
     rows = lines_of(page)
     if not rows:
         return None, None
-    pat_rows = [r for r in rows if any(p.search(r[1]) for p in pat_pats)]
-    rev_rows = [r for r in rows if any(p.search(r[1]) for p in rev_pats)]
-    if not pat_rows or not rev_rows:
+
+    def rank(label, pats):
+        for i, p in enumerate(pats):
+            if p.search(label):
+                return i
+        return None
+
+    # Collect EVERY valid reading and choose by label specificity, never by page order. First-match
+    # is fragile: widening the label sets to unlock CYIENT silently broke BALKRISIND, because a
+    # newly-matched but less specific row now came first. Specificity is the stable tiebreak --
+    # patterns are ordered most-specific-first in both families.
+    pat_rows = [(rank(r[1], pat_pats), r) for r in rows if rank(r[1], pat_pats) is not None]
+    rev_rows_r = [(rank(r[1], rev_pats), r) for r in rows if rank(r[1], rev_pats) is not None]
+    if not pat_rows or not rev_rows_r:
         return None, None
-    for _y, plabel, pvals in pat_rows:
+    rev_rows = [r for _k, r in rev_rows_r]
+    best = None
+    for prank, (_y, plabel, pvals) in sorted(pat_rows, key=lambda t: t[0]):
         for x1, v in pvals:
             for sc, un in SCALES:
                 if abs(v / sc - anchor) > max(0.05, abs(anchor) * 0.004):
@@ -106,11 +119,14 @@ def find(page, anchor, others, pat_pats, rev_pats):
                         break
                 if conf is None:
                     continue
-                for _y2, rlabel, rvals in rev_rows:
+                for rrank, (_y2, rlabel, rvals) in sorted(rev_rows_r, key=lambda t: t[0]):
                     got = at_column(rvals, x1)
                     if got is not None and got > 0:
-                        return round(got / sc, 2), {
+                        cand = ((prank, rrank), round(got / sc, 2), {
                             "x": round(x1, 1), "scale": un, "rev_row": rlabel[:44],
                             "pat_row": plabel[:44], "anchor": anchor, "confirm": conf,
-                            "method": "geometric column (§55b)"}
-    return None, None
+                            "method": "geometric column (§55b)"})
+                        if best is None or cand[0] < best[0]:
+                            best = cand
+                        break
+    return (None, None) if best is None else (best[1], best[2])

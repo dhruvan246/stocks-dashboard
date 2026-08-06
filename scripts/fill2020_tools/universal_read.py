@@ -61,18 +61,34 @@ FUND = json.load(open(os.path.join(ROOT, "docs", "sf_fundamentals.json")))
 REV_LABELS = [
     re.compile(r"t[o0]tal\s+inc[o0]me\s+fr[o0]m\s+[o0]pera", re.I),
     re.compile(r"revenue\s+fr[o0]m\s+[o0]pera", re.I),
+    # Ind-AS 115 wording. CYIENT prints ONLY this -- no "revenue from operations" line anywhere --
+    # so omitting it made a fully-text, perfectly readable filing look like it had no revenue row.
+    re.compile(r"revenue\s+fr[o0]m\s+c[o0]ntracts?\s+with\s+cust[o0]mers", re.I),
     re.compile(r"inc[o0]me\s+fr[o0]m\s+[o0]pera", re.I),
     re.compile(r"sales\s*/\s*inc[o0]me\s+fr[o0]m\s+[o0]pera", re.I),
-    re.compile(r"net\s+sales", re.I),
+    re.compile(r"revenue\s+fr[o0]m\s+sale\s+[o0]f", re.I),
+    re.compile(r"^\s*(gr[o0]ss\s+)?(net\s+)?sales\b", re.I),
+    re.compile(r"^\s*turn\s?[o0]ver", re.I),
     re.compile(r"^\s*t[o0]tal\s+revenue", re.I),
     re.compile(r"^\s*revenue\s*$", re.I),            # finance layout
     re.compile(r"^\s*t[o0]tal\s+inc[o0]me", re.I),   # finance layout, last resort
 ]
 PAT_LABELS = [
     re.compile(r"[o0]wner.{0,25}[o0]f\s+the\s+(parent|c[o0]mpan|h[o0]lding)", re.I),
+    # The owners-attributable figure is often a CONTINUATION line under "Profit attributable to:",
+    # so the caption carries no "profit" and no "owners" at all. CYIENT prints "Shareholders of the
+    # Company" -- values 1704/1223 (Rs million) = our stored 170.4/122.3 con PAT exactly.
+    re.compile(r"(equity\s+)?share\s?h[o0]lders?\s+[o0]f\s+the\s+(c[o0]mpan|parent|h[o0]lding)", re.I),
+    re.compile(r"equity\s+h[o0]lders?\s+[o0]f\s+the\s+(parent|c[o0]mpan)", re.I),
     re.compile(r"net\s+pr[o0][fl]i?[lt].{0,45}(f[o0]r\s+the\s+(peri[o0]d|quarter|year)|a[fl]ter\s+tax)", re.I),
     re.compile(r"pr[o0][fl]i?[lt]\s+a[fl]ter\s+tax", re.I),
-    re.compile(r"pr[o0][fl]i?[lt].{0,20}f[o0]r\s+the\s+peri[o0]d", re.I),
+    # "Profit for the quarter / year" -- the plain Ind-AS caption, with no "Net" prefix and no
+    # "period". Required "period" before, so CYIENT's PAT row never matched either.
+    # NOTE the (?:...)? around the loss alternative. Writing it as `\(?l[o0]ss\)?` made the word
+    # "loss" MANDATORY and silently un-matched plain "Profit for the period (VII-VIII)" -- which is
+    # BALKRISIND's consolidated PAT row, the exact anchor. A widened pattern that quietly narrows.
+    re.compile(r"pr[o0][fl]i?[lt](?:\s*/\s*\(?l[o0]ss\)?)?\s+f[o0]r\s+the\s+(peri[o0]d|quarter|year)", re.I),
+    re.compile(r"pr[o0][fl]i?[lt]\s+attributable\s+t[o0]", re.I),
 ]
 NUM = re.compile(r"^\(?-?[\d,]+\.?\d*\)?$")
 SCALES = ((1.0, "crore"), (10.0, "million"), (100.0, "lakh"))
@@ -260,6 +276,14 @@ def windows(qe, ann):
     if d0:
         out.append(("own", (d0 - datetime.timedelta(days=8)).strftime("%Y%m%d"),
                     (d0 + datetime.timedelta(days=8)).strftime("%Y%m%d")))
+    # The stored announce date is a FEED date and is routinely stale or simply another event (§52).
+    # CYIENT's is 25-May-2025 while it actually filed Q4 in April, so a +-8d window missed the
+    # filing entirely and reported "0 rows" -- transport-shaped output from a targeting error.
+    # Always also sweep the whole results season for the quarter itself.
+    y0, m0 = qe // 10000, (qe // 100) % 100
+    s0 = datetime.date(y0, m0, LAST_DAY[m0]) + datetime.timedelta(days=8)
+    out.append(("own-season", s0.strftime("%Y%m%d"),
+                (s0 + datetime.timedelta(days=85)).strftime("%Y%m%d")))
     for tag, k in (("Q+1", 1), ("Q+4", 4)):
         q = shift_q(qe, k)
         y, m = q // 10000, (q // 100) % 100

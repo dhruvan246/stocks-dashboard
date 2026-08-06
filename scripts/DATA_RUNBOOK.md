@@ -4143,3 +4143,62 @@ returned **2752.38** — matching the value found independently, and reached wit
 * Keep the linear reader only as a fallback *after* the geometric one returns nothing, never before.
 * A confirmation check that uses the same addressing scheme as the thing it is confirming proves
   nothing. Confirm across a different axis.
+
+## 63. ★★★ THE LABEL AND WINDOW GAPS THAT FAKED "NO DATA" — found by making the reader work  (2026-08-06)
+
+Built the §61 reader, pointed it at the cells I had called unfillable, and every remaining failure
+turned out to be one of these. None was missing data. All five are now in
+`scripts/fill2020_tools/universal_read.py`; the campaign's Mar-2025 residual went from
+"5 unreachable" to **5 read at filing precision**, each independently confirming screener's
+crore-rounded value.
+
+### 63a. Revenue row labels — the Ind-AS 115 caption
+
+**`Revenue from contracts with customers`.** CYIENT's Q4 filing prints this and *nothing else* — no
+"revenue from operations" line exists anywhere in the document. A fully-text, perfectly readable
+16-page filing therefore looked like it had no revenue row at all. Add to the family, high priority:
+
+    revenue from contracts with customers | revenue from sale of ... | turnover | gross sales
+
+### 63b. PAT row labels — the owners figure is often a CONTINUATION line
+
+The owners-attributable number frequently sits under a `Profit attributable to:` header, so **its own
+caption contains neither "profit" nor "owners"**:
+
+    Shareholders of the Company | Equity shareholders of the Company | Equity holders of the parent
+
+CYIENT prints `Shareholders of the Company` = `1704 | 1223 | ...` in ₹ **million** — i.e. our stored
+con PAT **170.4** for Mar-2025 and **122.3** for Dec-2024, both exact. Perfect anchor, invisible to a
+pattern that insists on the word "owners".
+
+### 63c. A widened regex that silently NARROWS
+
+Replacing `pr[o0][fl]i?[lt].{0,20}f[o0]r\s+the\s+peri[o0]d` with
+`pr[o0][fl]i?[lt]\s*/?\s*\(?l[o0]ss\)?\s*f[o0]r\s+the\s+...` made the word **loss** *mandatory*
+(`\(?l[o0]ss\)?` only makes the parentheses optional). Plain `Profit for the period (VII-VIII)` —
+BALKRISIND's consolidated PAT row, the literal anchor — stopped matching, and the cell that had just
+been read correctly regressed to unreadable. **Every alternative must be wrapped `(?:...)?`, and any
+label-set change must be re-run against cells already known to read.** Keep a regression set.
+
+### 63d. Pick candidates by LABEL SPECIFICITY, never by page order
+
+Widening the label sets to unlock CYIENT broke BALKRISIND, because a newly-matched but *less*
+specific row now came first and first-match won. Collect **every** valid reading on the page and
+choose the lowest `(pat_label_rank, rev_label_rank)`, patterns ordered most-specific-first. Order of
+appearance on a page carries no meaning; specificity does.
+
+### 63e. The stored announce date is a FEED date — always sweep the season too
+
+`ann` in our target files is routinely stale or points at a different event. CYIENT's says
+25-May-2025; it actually filed Q4 on **24-Apr-2025**, so a ±8-day window returned **0 rows** — output
+shaped exactly like a throttled API (§61a mode 4) but caused by *targeting*, not transport. Always
+add an `own-season` window of `quarter_end + 8d .. + 93d` alongside the announce-date window. This
+alone recovered AIIL and WAAREEENER.
+
+### 63f. Route boundary: NSE's per-company results index stops at Dec-2024
+
+`corporates-financial-results?symbol=X&period=Quarterly|Annual` returns nothing with
+`toDate` in 2025 or later — CYIENT has 166 quarterly rows, latest `31-Mar-2024`. So the XBRL route
+(§57 rung 5, `nse_xbrl_rev.py`) **cannot serve 2025+ cells at all**; BSE is the only route there.
+This is a property of the API, not of the data. Record it as a boundary so nobody re-derives
+"NSE has no filing" as "the company did not file".

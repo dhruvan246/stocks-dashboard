@@ -6,11 +6,12 @@
   "src": "bse-filing-pdf-manual-read"
  },
  "AIIL|20250331": {
-  "applied": "2026-08-06 Mar-2025 sweep",
-  "evidence": "screener.in gate 11/11, row 'Revenue' (NBFC layout)",
-  "precision": "crore-rounded",
-  "revC": 1452.0,
-  "src": "screener.in + filing refine (route \u00a757 rung 3b)"
+  "applied": "2026-08-06 rounded->exact upgrade",
+  "evidence": "own-season p14 'Revenue from operations'",
+  "precision": "filing-exact",
+  "revC": 1451.81,
+  "src": "bse-filing-pdf, geometric column read (\u00a762)",
+  "supersedes": 1452.0
  },
  "ANGELONE|20250331": {
   "applied": "2026-08-06 FILL-2020 named cells",
@@ -33,11 +34,12 @@
   "src": "screener.in + filing refine (route \u00a757 rung 3b)"
  },
  "CYIENT|20250331": {
-  "applied": "2026-08-06 Mar-2025 sweep",
-  "evidence": "screener.in gate 12/12; BSE announcement API throttled at run time",
-  "precision": "crore-rounded",
-  "revC": 1909.0,
-  "src": "screener.in + filing refine (route \u00a757 rung 3b)"
+  "applied": "2026-08-06 rounded->exact upgrade",
+  "evidence": "own-season p2 '(a) Revenue from contracts with customers', Rs million 19092, col x=420.6 anchored on 'Shareholders of the Company' 1704 == stored con PAT 170.4; adjacent col 1223 == stored Dec-2024 con PAT 122.3",
+  "precision": "filing-exact",
+  "revC": 1909.2,
+  "src": "bse-filing-pdf, geometric column read (\u00a762)",
+  "supersedes": 1909.0
  },
  "KNRCON|20250331": {
   "applied": "2026-08-06 Mar-2025 sweep",
@@ -79,11 +81,12 @@
   "src": "screener.in + filing refine (route \u00a757 rung 3b)"
  },
  "WAAREEENER|20250331": {
-  "applied": "2026-08-06 Mar-2025 sweep",
-  "evidence": "screener.in gate 11/11; BSE announcement API throttled at run time",
-  "precision": "crore-rounded",
-  "revC": 4004.0,
-  "src": "screener.in + filing refine (route \u00a757 rung 3b)"
+  "applied": "2026-08-06 rounded->exact upgrade",
+  "evidence": "own-season p6 '(a) Revenue from operations'",
+  "precision": "filing-exact",
+  "revC": 4003.93,
+  "src": "bse-filing-pdf, geometric column read (\u00a762)",
+  "supersedes": 4004.0
  },
  "WESTLIFE|20250331": {
   "applied": "2026-08-06 Mar-2025 sweep",
