@@ -5,11 +5,46 @@
   "revS": 6461.0,
   "src": "bse-filing-pdf-manual-read"
  },
+ "AIIL|20250331": {
+  "applied": "2026-08-06 Mar-2025 sweep",
+  "evidence": "screener.in gate 11/11, row 'Revenue' (NBFC layout)",
+  "precision": "crore-rounded",
+  "revC": 1452.0,
+  "src": "screener.in + filing refine (route \u00a757 rung 3b)"
+ },
  "ANGELONE|20250331": {
   "applied": "2026-08-06 FILL-2020 named cells",
   "evidence": "filing 2025-04-17, Rs mn/10: total rev from ops 10,313.46; anchors = same-page PAT 180.26==stored std, prior PAT cols 301.03/346.02==stored, prior REV cols 1245.99/1346.99==stored revS",
   "revS": 1031.35,
   "src": "bse-filing-pdf-manual-read"
+ },
+ "BALKRISIND|20250331": {
+  "applied": "2026-08-06 Mar-2025 sweep",
+  "evidence": "own BSE filing p2 'Revenue from Operations'; screener target 2752",
+  "precision": "filing-exact",
+  "revC": 2752.38,
+  "src": "screener.in + filing refine (route \u00a757 rung 3b)"
+ },
+ "CGPOWER|20250331": {
+  "applied": "2026-08-06 Mar-2025 sweep",
+  "evidence": "Mar-2026 filing p16 comparative '(a) Revenue from operations'; screener target 2753",
+  "precision": "filing-exact",
+  "revC": 2752.77,
+  "src": "screener.in + filing refine (route \u00a757 rung 3b)"
+ },
+ "CYIENT|20250331": {
+  "applied": "2026-08-06 Mar-2025 sweep",
+  "evidence": "screener.in gate 12/12; BSE announcement API throttled at run time",
+  "precision": "crore-rounded",
+  "revC": 1909.0,
+  "src": "screener.in + filing refine (route \u00a757 rung 3b)"
+ },
+ "KNRCON|20250331": {
+  "applied": "2026-08-06 Mar-2025 sweep",
+  "evidence": "screener.in gate 12/12; filing 'Total income' 975.21 includes other income",
+  "precision": "crore-rounded",
+  "revC": 975.0,
+  "src": "screener.in + filing refine (route \u00a757 rung 3b)"
  },
  "LICI|20230630": {
   "applied": "2026-08-06 FILL-2020 named cells",
@@ -28,5 +63,33 @@
   "evidence": "vision read of the image-only page 2 of the 08-May-2026 filing; anchors: Dec-2025 column reproduces stored con PAT 401.12 AND stored con revenue 665.62 exactly, target column PAT 529.77 == stored con PAT",
   "revC": 888.94,
   "src": "bse-filing-pdf-VISION"
+ },
+ "NMDC|20250331": {
+  "applied": "2026-08-06 Mar-2025 sweep",
+  "evidence": "Mar-2026 filing p24 'Sales / Income from Operations'; screener target 7005",
+  "precision": "filing-exact",
+  "revC": 7004.59,
+  "src": "screener.in + filing refine (route \u00a757 rung 3b)"
+ },
+ "SWANCORP|20250331": {
+  "applied": "2026-08-06 Mar-2025 sweep",
+  "evidence": "own filing p8 'Total Income from Operations' 85,575.3 lakh; con PAT -17.73 confirmed p5; screener 856",
+  "precision": "filing-exact",
+  "revC": 855.75,
+  "src": "screener.in + filing refine (route \u00a757 rung 3b)"
+ },
+ "WAAREEENER|20250331": {
+  "applied": "2026-08-06 Mar-2025 sweep",
+  "evidence": "screener.in gate 11/11; BSE announcement API throttled at run time",
+  "precision": "crore-rounded",
+  "revC": 4004.0,
+  "src": "screener.in + filing refine (route \u00a757 rung 3b)"
+ },
+ "WESTLIFE|20250331": {
+  "applied": "2026-08-06 Mar-2025 sweep",
+  "evidence": "Jun-2025 filing p3 preceding-quarter column, 28.94 lakh",
+  "precision": "filing-exact",
+  "revS": 0.29,
+  "src": "screener.in + filing refine (route \u00a757 rung 3b)"
  }
 }
