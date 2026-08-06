@@ -49,7 +49,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§37** INDIAN INDICES TABLE
 - **§38** CONCURRENCY — ONE WRITER PER TREE
 - **§39** ★ SHIP-IT QUALITY GATE — nothing goes out unverified (**read before ANY UI / design / feature work**)
-- **§40** STOCK PAGE = PER-STOCK SLICES
+- **§40** STOCK PAGE = PER-STOCK SLICES · **§40b** ★ REPORTING BASIS — one basis per comparison
 - **§41** ★ PUBLISHING A DATA HEAL — "live on the server" ≠ "the site uses it" (**read before ANY heal / backfill**)
 
 ---
@@ -2665,6 +2665,32 @@ The harness is the reference, not a re-implementation: it feeds probe symbols to
 - The service worker never caches `.json` and ignores cross-origin, so slices are always fresh.
 - Slices depend on `docs/stock_data.bin` for `startTs` + index/F&O membership + mcap. It is still
   committed and still needed by other pages — the STOCK page just no longer downloads it.
+
+### 40b. ★ REPORTING BASIS — one basis per COMPARISON, always  (2026-08-06)
+
+`stock.html` has a **Consolidated / Standalone** switch above the quarterly table (`#fundBasis`,
+remembered in `localStorage.sw_finBasis`, default consolidated). It drives `FB_EFF`, which the
+🧾 Financial-detail card reads through `xCell()`, so the whole page moves as one. The switch only
+renders when the stock HAS both bases, and a remembered `std` silently reverts to `con` on a
+consolidated-only stock — never leave the user on an empty table they didn't ask for.
+
+**The rule that matters, and it is not cosmetic:** a LEVEL may fall back across bases (show the
+consolidated figure, else the standalone one — coverage wins), but any **comparison** — YoY, QoQ,
+a margin, any ratio of two cells — must take **both operands from ONE basis**: consolidated when
+both have it, else standalone for both, else print nothing. Consolidated revenue mostly starts
+**2020** while standalone runs back to **2015**, so the naive "consolidated preferred, per cell"
+pick silently compares this year's GROUP against last year's PARENT and prints group-sized growth
+that never happened. Measured across `docs/fin/*.json` (last 12 quarters, 2026-08-06) before the
+fix: **5.4% of revenue YoY cells and 3.2% of PAT YoY cells, 731 stocks.** Same trap for OPM
+(consolidated op profit ÷ standalone revenue is not a margin of anything).
+`quarterly-results.html` already did this right — `growth()`/`opm()` walk a basis order `['c','s']`
+and bail rather than mix. Copy that shape; do not invent a new one. (Pairs with the ABS-base rule
+for a negative year-ago base — `(cur−base)/|base|`, memory `feedback-negative-base-growth`.)
+
+**Disclose the mix.** The Basis column is `con` / `std` / **`mix`** — `mix` means the row uses
+consolidated for the figures filed that way and standalone for the rest (typically consolidated PAT
+with standalone revenue, the 2015-19 shape). Labelling such a row `std`, as it did before, hides a
+consolidated profit behind a standalone label. Anything that shows a per-row basis owes the same.
 
 ---
 
