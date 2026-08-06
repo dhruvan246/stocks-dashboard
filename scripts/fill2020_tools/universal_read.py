@@ -251,8 +251,19 @@ def scan(doc, sym, qe, field):
     return None, ({"vision": vision} if vision else None)
 
 
+_FIL_CACHE = {}
+
+
 def filings(scrip, a, b):
-    """MODE 4: retry transport; distinguish 'API said zero' from 'API would not answer'."""
+    """MODE 4: retry transport; distinguish 'API said zero' from 'API would not answer'.
+
+    Cached per (scrip, window): a 660-cell sweep asks for the same company/window many times, and
+    BSE throttles on request volume -- uncached, the sweep manufactures its own mode-4 failures.
+    """
+    ck = (str(scrip), a, b)
+    if ck in _FIL_CACHE:
+        r, err = _FIL_CACHE[ck]
+        return r, (FI.bse_session() if r else None), err
     last = None
     for attempt in range(3):
         try:
@@ -263,9 +274,11 @@ def filings(scrip, a, b):
             time.sleep(2.0 * (attempt + 1))
             continue
         if r:
+            _FIL_CACHE[ck] = (r, None)
             return r, sess, None
         last = "0 rows"
         time.sleep(1.5 * (attempt + 1))
+    _FIL_CACHE[ck] = ([], last)
     return [], None, last
 
 
@@ -333,11 +346,21 @@ def read_cell(sym, qe, field, scrip, ann):
 def main():
     tg = json.load(open(sys.argv[1]))
     out_path = sys.argv[sys.argv.index("--out") + 1] if "--out" in sys.argv else "/tmp/universal.json"
+    limit = int(sys.argv[sys.argv.index("--limit") + 1]) if "--limit" in sys.argv else 10 ** 9
     out = {}
+    if "--resume" in sys.argv and os.path.exists(out_path):
+        out = json.load(open(out_path))          # keep prior verdicts; only retry what is unknown
+    done = 0
     for key, meta in sorted(tg.items()):
+        if key in out and out[key].get("state") in ("FILLED-EXACT", "NEEDS-VISION"):
+            continue
+        if done >= limit:
+            break
+        done += 1
         sym, qe, field = key.split("|")
         r = read_cell(sym, int(qe), field, meta.get("scrip"), meta.get("ann"))
         out[key] = r
+        json.dump(out, open(out_path, "w"), indent=1)      # checkpoint every cell
         if r["state"] == "FILLED-EXACT":
             e = r["evidence"]
             where = ("x=%s" % e["x"]) if "x" in e else ("col%s" % e.get("col"))
