@@ -352,6 +352,10 @@ in-step: pymupdf + curl_cffi + rapidocr-onnxruntime/onnxruntime/numpy. Validate:
 ---
 
 ## 5. PENDING QUEUE (remind the user)
+- **GICRE consolidated PAT is a standalone copy** (~12 quarters since Sep-2022; §55c has the
+  evidence from the Jun-2023 filing: con 950.07/977.66 vs stored 731.79 = the standalone). This is
+  a §2b correction, not a fill. It also BLOCKS ~12 GICRE consolidated-revenue cells in the FILL-2020
+  window, since every revenue fill anchors on the con PAT.
 Genuinely open items (memory: project-stocks-pending-queue has the full context):
 - **Tier-1 re-sweep IN PROGRESS** — 56 companies / 514 cells left; resume per memory
   project-stocks-resweep-resume (ledgers `scripts/_wf_skips.json` + `_wf_audit_done.json`).
