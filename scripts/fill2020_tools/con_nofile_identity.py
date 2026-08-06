@@ -23,10 +23,13 @@ Post-Apr-2019 this is decisive rather than suggestive: consolidated quarterly re
 COMPULSORY for any listed company having subsidiaries (runbook §51a), so a company filing only
 standalone in the campaign window is asserting it has nothing to consolidate.
 
-BANKS ARE EXCLUDED BY USER DECISION (2026-08-06, extended 2026-08-06 to this pass): CUB (18 cells)
-and UCOBANK (6) meet every test above and are still left null, on the same reasoning that keeps
-KTKBANK/SOUTHBANK null -- a bank's consolidated can differ for reasons a plain identity papers over.
-They are documented as deliberately-null, not as unfillable.
+BANKS WERE EXCLUDED BY USER DECISION (2026-08-06) AND ARE NOW INCLUDED. Asked again the same day,
+when the con-PAT follow-up surfaced the identical question for KTKBANK/SOUTHBANK, the user chose
+"include banks everywhere". CUB (79 filings, ZERO consolidated ever) and UCOBANK (first consolidated
+2022-03, after its whole gap run) meet every gate above, so they now fill on the same evidence as
+the non-banks. IOB is NOT affected: it fails E4 -- its con is null throughout the window, and where
+it does report con it DIVERGES from std (551.78 vs 552.38, runbook §51c) -- so an identity there
+would be fabrication and it stays null.
 
 Fill-only, campaign window only: revC <- revS, opC <- opS, ebitC <- ebitS, never over a non-null
 cell, never for KIRLFER. Writes docs/sf_revop.json + scripts/revop_fundamentals.json and journals
@@ -52,7 +55,7 @@ LEDGER_OUT = os.path.join(SCRIPTS, "con_nofile_identity_fills.json")
 # sf_revop row: [revStd, revCon, opStd, opCon, patStd, patCon, fin, ebitStd, ebitCon]
 TWINS = [(1, 0, "revC"), (3, 2, "opC"), (8, 7, "ebitC")]
 CARVE_OUT = {"KIRLFER"}                       # mixed-basis con series (runbook §5)
-BANKS_NULL = {"CUB", "UCOBANK", "KTKBANK", "SOUTHBANK"}   # user decision — see docstring
+BANKS_NULL = set()          # was {CUB, UCOBANK, KTKBANK, SOUTHBANK}; user reversed it 2026-08-06
 MON = {m: i for i, m in enumerate(
     ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], 1)}
 
@@ -238,6 +241,18 @@ def main():
 
     json.dump(revop, open(REVOP_DOCS, "w"), separators=(",", ":"))
     json.dump(ledger, open(REVOP_LEDGER, "w"), separators=(",", ":"))
+    # MERGE, never replace. `fills` only ever contains cells this run actually wrote, so a second
+    # run (e.g. the 2026-08-06 bank re-run) would otherwise publish a ledger holding four companies
+    # and silently drop the provenance of the 91 values the first run landed.
+    prior = {}
+    if os.path.exists(LEDGER_OUT):
+        try:
+            prior = (json.load(open(LEDGER_OUT)) or {}).get("fills") or {}
+        except Exception:
+            prior = {}
+    merged = {s: dict(v) for s, v in prior.items()}
+    for sym, qmap in journal.items():
+        merged.setdefault(sym, {}).update(qmap)
     json.dump({
         "generated": "2026-08-06",
         "campaign": "FILL-2020 revenue track (scripts/FILL2020_CAMPAIGN.md)",
@@ -250,13 +265,16 @@ def main():
                   "E4 stored con PAT already equals std PAT (max(0.05, 0.1%))",
                   "E5 no quarter at-or-before the gap where both rev bases or both PAT bases "
                   "differ by >1%"],
-        "user_gate": "approved 2026-08-06 for the 91 non-bank values; banks held null on the "
-                     "user's earlier KTKBANK/SOUTHBANK ruling",
+        "user_gate": "approved 2026-08-06 for the 91 non-bank values; banks approved the same "
+                     "day when the user chose 'include banks everywhere'",
         "held_null": {k: v for k, v in held.items()},
-        "companies": len(journal), "values": applied,
-        "fills": journal,
+        "companies": len(merged),
+        "values": sum(len([k for k in q if k != "evidence"]) for v in merged.values() for q in v.values()),
+        "last_run_values": applied, "last_run_companies": len(journal),
+        "fills": merged,
     }, open(LEDGER_OUT, "w"), indent=1, sort_keys=True)
-    print("\nAPPLIED %d values across %d companies" % (applied, len(journal)))
+    print("\nAPPLIED %d values across %d companies (ledger now holds %d companies)"
+          % (applied, len(journal), len(merged)))
 
 
 if __name__ == "__main__":

@@ -18,10 +18,18 @@ subsidiary appeared -- so at the gap quarter there was nothing to consolidate an
   TCIEXP     Dec-2019  diverges 2024-06; no subsidiary referenced in the Dec-2019 filing.
   BASF       Mar-2020  diverges 2020-06; first subsidiary acquired 18-Aug-2020, after this quarter.
 
+  KTKBANK    Dec-2019  ADDED 2026-08-06 when the user reversed the non-banks-only rule to "include
+  SOUTHBANK  Dec-2019  banks everywhere". These two are no longer resting on our own (possibly
+    derived) identity quarters -- the earlier "only 2 identity quarters, too thin" objection was an
+    artifact of judging them from stored data alone. The NSE filing index answers it directly
+    (§54b E1-E5, all five verified for both): a standalone result IS listed for Dec-2019, NO
+    consolidated one is, and the gap precedes the company's FIRST consolidated filing ever --
+    KTKBANK 2020-09-30 (95 filings), SOUTHBANK 2021-06-30 (89 filings). Post-Apr-2019 that is the
+    exchange's own record that there was nothing to consolidate (§51a). No quarter at or before the
+    gap contradicts the identity. Corroboration: KTKBANK's first subsidiary, KBL Services Ltd, was
+    incorporated in 2020 -- after this quarter.
+
 DELIBERATELY EXCLUDED (same audit, left null on purpose -- do not "helpfully" add them):
-  KTKBANK / SOUTHBANK Dec-2019 -- banks; user call 2026-08-06 was non-banks only. A bank's
-    consolidated can differ for reasons a plain identity would paper over, and KTKBANK shows only
-    2 identity quarters before diverging (2020-09) -- too thin to prove no-sub.
   IOB 2019-2021 (9 cells) -- con is null for every quarter Mar-2018..Dec-2021, but when IOB does
     report consolidated (from Mar-2022) it DIVERGES from standalone (551.78 vs 552.38). It has real
     consolidation differences, so con=std would be fabrication, not an identity.
@@ -54,6 +62,13 @@ CELLS = [
      "no-sub-identity; con diverges only from 20240630; no subsidiary in Dec-2019 filing"),
     ("BASF", 20200331,
      "no-sub-identity; con diverges only from 20200630; first subsidiary acquired 2020-08-18"),
+    # banks — added 2026-08-06 on the user's "include banks everywhere" call; §54b E1-E5 verified
+    ("KTKBANK", 20191231,
+     "no-sub-identity; NSE index 95 filings: standalone listed for 20191231, no consolidated, "
+     "first consolidated ever 20200930; no contradiction at/before the gap (E1-E5)"),
+    ("SOUTHBANK", 20191231,
+     "no-sub-identity; NSE index 89 filings: standalone listed for 20191231, no consolidated, "
+     "first consolidated ever 20210630; no contradiction at/before the gap (E1-E5)"),
 ]
 
 
