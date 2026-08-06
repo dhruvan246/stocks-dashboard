@@ -11,6 +11,7 @@
 //   node --max-old-space-size=3072 scripts/_gridmega_run.js            # full run
 //   PARITY_ONLY=1 node scripts/_gridmega_run.js                        # parity + ETA only
 // argv: [start] [end].  env: MAIN_ONLY=1 (grid + top-2000 only) · EVAL_FILE=x.json ·
+//   SELECT_FILE=x.json (exact metrics for a set of grid row indices, for the Phases Lab build) ·
 //   TOPN=3|5 · METHOD=reset|hold · UNIVERSE='Nifty 500'|__FNO__  (the Phases Lab basket variants).
 // Reads LIVE data from scripts/_live/ (p1_new.bin p2_new.bin fund_live.json shp_live.json
 // nifty_live.json nifty500_live.json stock_data_live.bin) — stage it with
@@ -107,7 +108,12 @@
     ALLOFFS.forEach((off, i) => { CACHE.set(off, factorsAt(off, FULLCFG));
       if ((i+1) % 10 === 0) console.error('factors ' + (i+1) + '/' + ALLOFFS.length + '  ' + ((Date.now()-t0)/1000|0) + 's'); });
     const dump = {}; for (const [k, v] of CACHE) dump[k] = v;
-    fs.writeFileSync(CACHE_FILE, zlib.gzipSync(JSON.stringify(dump), { level: 6 }));
+    // write-then-rename: basket variants for the same window+universe share this cache and may run
+    // concurrently, so a reader must never see a half-written file. Duplicate builds are harmless
+    // (the content is deterministic); a torn read would not be.
+    const tmp = CACHE_FILE + '.' + process.pid + '.tmp';
+    fs.writeFileSync(tmp, zlib.gzipSync(JSON.stringify(dump), { level: 6 }));
+    fs.renameSync(tmp, CACHE_FILE);
     console.error('factor cache built in ' + ((Date.now()-t0)/1000|0) + 's → ' + CACHE_FILE);
   }
 
@@ -278,7 +284,7 @@
     fs.writeFileSync(path.join(ROOT, 'scripts', '_gridmega_eval.json'), JSON.stringify(rows, null, 1));
     console.error('EVAL done: ' + rows.length + ' configs'); process.exit(0);
   }
-  if (!process.env.EVAL_FILE) {
+  if (!process.env.EVAL_FILE && !process.env.SELECT_FILE) {
     console.error('parity check vs simulate() — 12 configs…'); const t0 = Date.now();
     let bad = 0;
     for (const pc of PARITY) {
@@ -305,6 +311,33 @@
     for (let k = j + 1; k < nA; k++) { if (CATOMS[k].fi === CATOMS[i].fi || CATOMS[k].fi === CATOMS[j].fi) continue; FSETS.push([i, j, k]); } }
   const TOTAL = FSETS.length * SORTFIELDS.length * 2;
   console.error('atoms=' + nA + ' fsets=' + FSETS.length + ' sorts=' + SORTFIELDS.length + ' × 2 dirs → ' + TOTAL.toLocaleString() + ' combos');
+  const fdesc = fset => fset.map(x => { const a = CATOMS[x]; return a.field + a.op + a.val; }).join(' & ');
+
+  // SELECT mode: re-score a set of grid ROW INDICES in THIS window and emit exact metrics.
+  // The Phases Lab needs cagr/totRet/maxDD/winRate for the ~10k combos that made some window's
+  // top list, in all 11 windows. Addressing them by row index (not by re-parsing the CSV's filter
+  // text) means the descriptor comes from the same enumeration that produced the row — it cannot
+  // drift. totRet is taken from finalV, never re-derived from a 2dp CAGR.
+  // SELECT_FILE=<json array of row indices> node _gridmega_run.js <start> <end>
+  if (process.env.SELECT_FILE) {
+    const want = new Set(JSON.parse(fs.readFileSync(process.env.SELECT_FILE, 'utf8')));
+    const rows = []; let idx = 0;
+    for (const sfld of SORTFIELDS) for (const dir of DIRS) for (let fi = 0; fi < FSETS.length; fi++, idx++) {
+      if (!want.has(idx)) continue;
+      const r = simFast(sfld, dir, FSETS[fi].map(x => CATOMS[x]), TOPN, METHOD, MAIN);
+      rows.push({ i: idx, s: sfld, d: dir, f: fdesc(FSETS[fi]), cagr: +r.cagr.toFixed(2),
+                  tot: +((r.finalV / CAPITAL - 1) * 100).toFixed(1), dd: +r.maxDD.toFixed(1),
+                  win: +r.winRate.toFixed(1), picks: +r.avgPicks.toFixed(2) });
+    }
+    const bA = nearestIdx(NIFTY500, START), bB = nearestIdx(NIFTY500, END);
+    const out = { window: [START, END], years: +yearsOf(START, END).toFixed(2), total: TOTAL,
+      bench: { totRet: (bA && bB) ? +((bB / bA - 1) * 100).toFixed(1) : null,
+               cagr: (bA && bB) ? +benchCagrOf(START, END).toFixed(2) : null }, rows };
+    const F = path.join(ROOT, 'scripts', '_gridmega_sel_' + TAG + '.json');
+    fs.writeFileSync(F, JSON.stringify(out));
+    console.error('SELECT done: ' + rows.length + '/' + want.size + ' rows → ' + path.basename(F));
+    process.exit(0);
+  }
 
   // quick benchmark for ETA
   {
@@ -320,7 +353,6 @@
 
   // ===== main grid =====
   const t0 = Date.now();
-  const fdesc = fset => fset.map(x => { const a = CATOMS[x]; return a.field + a.op + a.val; }).join(' & ');
   const TOPK = 1500, TOPR = 900;
   let topC = [], topR = [];   // {key fields..., cagr, maxDD, winRate, vol, avgPicks}
   let cutC = -Infinity, cutR = -Infinity;

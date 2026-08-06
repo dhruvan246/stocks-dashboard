@@ -526,6 +526,44 @@ Use FILE scripts, not `node -e` (shell quoting mangles the URL). Pull→prepend�
   **`bt_load {view:'run'}`** — a NEW mode = auto-run AND record to History (NOT view-only), so the result nests back under
   the strategy. `readForm()` PRESERVES `lookback` + `filters` so identity holds (see the lookback gotcha above).
 
+### 7.4 REFRESH THE STRATEGY PHASES LAB (the 4.44M-combo grid behind `strategy-phases.html`)
+**One command** — waits for the day's sf-data publish, stages LIVE data once, runs 11 windows × 5 basket
+variants, builds all five page JSONs:
+```
+cd ~/stocks-wt/<job> && ./scripts/gridmega_phases_all.sh 2026-08-06 4     # wantEnd, parallel jobs
+FORCE_END=2026-08-05 ./scripts/gridmega_phases_all.sh "" 4                # don't wait, pin the window end
+```
+Pieces (ALL TRACKED since 2026-08-06 — the previous set was untracked scratch and died in the Aug-3
+cache purge, costing a full rebuild-from-scratch before this refresh could even start):
+- `gridmega_fetch_live.py` → `scripts/_live/` (p1_new.bin p2_new.bin fund/shp/nifty/nifty500/stock_data).
+  Handles the by-date `sf_deep_*`+`sf_recent_*` layout; deep parts FIRST so recent bars append after.
+- `gridmega_shim.js` — `location`/`localStorage` stub; the engine reads `location.hostname` at load.
+- `grid_search_mega.js` — env `TOPN` · `METHOD` · `UNIVERSE` select the basket variant; `VTAG` keeps
+  each variant's artifacts apart (default top5/reset/N500 keeps the legacy un-suffixed names).
+  `MAIN_ONLY=1` for phase grids. `SELECT_FILE=<json row indices>` re-scores a chosen set in a window
+  and emits EXACT cagr/totRet/dd/win.
+- `gridmega_phases_run.py` — the 55-job driver; RESUMABLE (skips any window whose `_gridmega_top_` marker
+  exists), longest windows first, staggered starts.
+- `gridmega_phases_build.js` — merges 11 windows → `docs/strategy_phases<vtag>.json`. Needs `GRID_END=`.
+
+**Traps that will silently corrupt a refresh:**
+1. **PURGE `_gridmega_cache_*.json.gz` whenever `_live/` is re-staged.** The factor cache is keyed by
+   window+universe, NOT by data revision — a stale cache feeds the PREVIOUS snapshot's factor values
+   into today's grid and nothing warns you. `gridmega_phases_all.sh` purges automatically.
+2. **One staging for all 11 windows.** A daily rebuild re-applies corp-action adjustments and can revise
+   historical bars, so windows computed on two different stagings are not comparable — and the ⭐
+   best-in-all-4 / best-in-all-years cards are pure cross-window comparisons.
+3. **The merge is a POSITIONAL join** — row N is the same strategy in every window because the grid
+   enumerates SORTFIELDS × DIRS × FSETS deterministically. Never key on the filter text.
+4. A window is done only when `_gridmega_top_<tag>.json` exists; the CSV alone may be a partial mid-run file.
+5. Pages Deploy lags the sf-data commit (1–5 min). Gate on the SERVED `sf_meta.json`, not the commit.
+6. `docs/sw.js` never caches `.json` and the page fetches with `cache:'no-cache'` → **no service-worker
+   bump needed** for a data-only refresh.
+
+**Cost on the M5 (2026-08-06):** 0.37 ms/combo top-5, 0.30 top-3, 0.17 F&O (smaller universe) ⇒ full-cycle
+window ~22–35 min at 4-way parallel, whole sweep ~2 h. Each process PEAKS ~3.3 GB parsing the 9.3M-bar
+dataset then settles ~1 GB, so 4-way fits 16 GB with the built-in 25 s start stagger.
+
 ---
 
 ## 8. F&O MEMBERSHIP (survivorship-free; CURRENT-name labels)  ★ rebuilt + normalized 2026-06-23 ★
