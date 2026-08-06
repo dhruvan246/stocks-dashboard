@@ -55,6 +55,14 @@ loads every session. (README.md is just a short pointer here — this file is th
 ---
 
 ## 0. GOLDEN RULES (the things that bite if forgotten)
+- **★★ NEVER SAY "CAN'T BE FILLED". EXHAUST EVERY ROUTE, THEN SAY WHICH ONES YOU TRIED.**
+  User-mandated 2026-08-06 after three misses in a row in one session (ANGELONE, ADANIGREEN,
+  LICI — each declared out of reach, each filled from the announcement PDF minutes later once
+  the user named it). A route returning nothing means **THAT ROUTE has no row**, never that the
+  value does not exist. Report refusals as `not-found-via:<routes tried>`, never as "unfillable"
+  or "never filed", unless the **full ladder in §57** has been walked AND primary evidence says
+  the company did not report. Do not infer absence from a company's category ("it's an insurer,
+  so it needs the special route") — open the document. **Full procedure: §57.**
 - **★ EVERY SUCCESS GETS WRITTEN HERE, IMMEDIATELY.** The moment a route/recipe/fix WORKS
   (verified, not hoped), append it to this runbook in the same session — a new § for a new
   route, or a line in the matching § for a refinement. Procedures live HERE; facts/state live
@@ -3472,4 +3480,64 @@ CLAUDE.md rule 5 and §41 already say re-verify LIVE ~20 min after a data heal *
 CI run may race you*. That step was skipped — verification happened at push time only, so a whole
 batch was reported as landed when the served file had lost it. **"Verified against origin at push
 time" is not verification.** Run `verify_fills_live.py` after the push AND after a refresh cycle.
+
+
+---
+
+## 57. ★★ THE ROUTE LADDER — never report a cell unreachable until all of it is walked  (2026-08-06, USER-MANDATED)
+
+**Standing user instruction, 2026-08-06:** *"going ahead i dont want hear cant be filled or ur
+assumption that data must not be there for it. i want every stock to be checked thoroughly by every
+way u can use."*
+
+Why it was needed: in one session three cells were reported out of reach and then filled within
+minutes each, every time only after the user named the company.
+* **ANGELONE 2025-03** — reported as "detres has no row, NSE list doesn't reach it". True, and
+  irrelevant: the announcement PDF held it. Filled 1031.35 on five independent anchors.
+* **ADANIGREEN 2025-03** — listed as remaining while the tool's own `MAX_QE` bound excluded it. It
+  was never attempted. Filled 6461.00.
+* **LICI 2023-06** — declared to "need the §43 IRDAI route rather than a P&L read", **judged by
+  category without opening the document**. The filing had a clean standalone statement with a
+  readable Total row. Filled 188749.16.
+
+### 57a. The rule
+1. A route returning nothing means **THAT ROUTE has no row.** It is never evidence the value does
+   not exist.
+2. Refusals are recorded as `not-found-via:<routes tried>`. The words "unfillable", "never filed"
+   and "does not exist" may be used **only** when the whole ladder below has been walked AND a
+   primary document says the company did not report (an exchange non-submission notice, a merger
+   effective before the filing deadline, a delisting). See §51c and §52c for what that standard of
+   evidence looks like in practice.
+3. **Never infer absence from a company's category.** "It's an insurer / a bank / delisted /
+   pre-2019" is a hypothesis about which route fits, never a conclusion about existence.
+4. A cell excluded by a tool's own scope bound (`MAX_QE`, `--only`, a window constant) is
+   **NOT ATTEMPTED**, and must be reported that way — never merged into a "remaining/residual" count
+   that reads as "tried and failed".
+
+### 57b. The ladder — walk it in this order, log every rung tried
+| # | route | good for | ref |
+|---|---|---|---|
+| 1 | BSE detailed-results JSON | 2015+, quarter-keyed, standalone, incl. delisted | §42 |
+| 2 | NSE archive detail pages | 2005+, BOTH bases, declares scale/basis/period, incl. delisted | §52, §53 |
+| 3 | **BSE announcement PDF** | the one that keeps winning when 1 & 2 are blind | §6 |
+| 4 | NSE announcements / integrated filing (+ the `.zip` gotcha) | recent quarters | §6 |
+| 5 | XBRL cache / live XBRL | 2018+ | §54 |
+| 6 | Comparative columns of the NEXT-quarter or year-later filing | quarters the company never filed alone (pre-IPO), or scanned own-filing | §6 `--rescue` |
+| 7 | FY / 9M identity (annual − known siblings) | one missing quarter in an otherwise complete FY | §45, §53d |
+| 8 | No-sub identity (con = std) | proven no consolidatable subsidiary | §6A, §53 |
+| 9 | IRDAI public disclosures | insurers | §43 |
+| 10 | Vision read (render/crop) | scanned PDFs with no text layer, or OCR-corrupted ones like GICRE 2024-12 | §17b |
+| 11 | Wayback / archived exchange pages | pre-2008, dead endpoints | §32 |
+| 12 | Acquirer's disclosures | merged/dissolved entities' stub periods | §51c |
+
+### 57c. Traps that make a route look empty when it is not
+* **A tight window around a STORED announce date finds nothing** — old announce dates are often
+  `quarter-end+45d` defaults, not filing dates (§52). Search the post-quarter stretch.
+* **An empty BSE announcement list is often RATE-LIMITING, not absence** — retry on a fresh session
+  (§55a).
+* **Glyph-corrupted text layers** defeat keyword search: "Standalone" extracts as "Slondolone".
+  Search corruption-tolerant fragments and ALWAYS positive-control the detector against a period
+  where the thing is known to exist (§51b).
+* **Pre-2016 BSE attachments 404** on AttachHis/AttachLive (§52).
+* **Blank-template pages** print every row as 0.00 — a zero is a blank row, not a result (§53b).
 
