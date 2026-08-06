@@ -3,8 +3,28 @@ name: Deploy site to Pages
 # Controlled replacement for the managed branch-based Pages build. The managed
 # flow rebuilt on every push and, when many commits landed close together (daily
 # refresh bots + manual pushes), superseded deploys were reported as FAILED and
-# emailed. Here, cancel-in-progress makes a superseded deploy CANCEL cleanly —
-# cancelled runs send no failure email — so only a genuine error notifies you.
+# emailed.
+#
+# cancel-in-progress was TRUE here for that reason, and on 2026-08-06 it stopped the
+# site publishing for over two hours. Every run from 12:02 UTC onward ended in
+# "Timeout reached, aborting!" while still reading `deployment_queued`. Cause: a
+# cancel fires AFTER the run has already created a Pages deployment on GitHub's side,
+# and cancelling the workflow does not retire that deployment. Under the day's commit
+# volume each cancel abandoned another queued deployment, the backend queue never
+# drained, and every subsequent run timed out waiting behind the wreckage — which
+# then cancelled ITS deployment too. A self-feeding jam.
+#
+# Raising the wait cannot fix it: deploy-pages caps `timeout` at 600000 ms and warns
+# "timeout value is greater than the allowed maximum" if you ask for more.
+#
+# So: cancel-in-progress FALSE, which is also what GitHub's own Pages starter
+# workflow specifies — "do NOT cancel in-progress runs as we want to allow these
+# production deployments to complete". The concurrency group still prevents a
+# pile-up: only ONE run may be pending per group, and a newly queued run cancels the
+# previously PENDING one, so intermediate deploys are skipped without ever touching a
+# deployment that is already in flight. Superseded runs are therefore still cancelled
+# (no failure email — the original concern) but only while they are waiting, never
+# mid-deploy.
 
 on:
   push:
@@ -20,7 +40,7 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -41,14 +61,8 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v5
         with:
-          # deploy-pages waits for GitHub's Pages backend to build the uploaded artifact and
-          # gives up after 10 minutes by DEFAULT. On a busy day that is not enough: on
-          # 2026-08-06 every run from 12:02 UTC onward died with "Timeout reached, aborting"
-          # while still reporting `deployment_queued` — i.e. the artifact uploaded fine and the
-          # backend queue was simply slower than the wait. The site went ~1.5 h without
-          # publishing anything, from ~30 writers' worth of commits, and each failure also
-          # cancels its own queued deployment, which feeds the backlog.
-          # 30 minutes costs nothing when the queue is healthy (the step returns as soon as the
-          # deployment reports success) and rides out the backlog when it is not.
-          timeout: 1800000
-          error_count: 20
+          # 600000 ms is the action's HARD MAXIMUM — asking for more is silently clamped with
+          # "timeout value is greater than the allowed maximum". Stated explicitly so nobody
+          # tries to ride out a queue backlog by raising it; fix the queue instead (see the
+          # cancel-in-progress note above).
+          timeout: 600000
