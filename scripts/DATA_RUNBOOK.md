@@ -3274,6 +3274,94 @@ Two gates make the difference between arithmetic and fabrication:
 **Pre-2020 con-PAT is now closed at 2,939 open cells**, every one of them structurally absent
 rather than un-attempted: 2.7% of gap cells had a quarterly filing (42 landed), and the FY-identity
 route reaches 1 more. Do not re-grind this window without a genuinely new source.
+→ **2,926 after §53e** (53 of 2,979 closed). The wall itself did not move; the refusal list did.
+
+### 53e. Reworking the 37 refusals — the owners DEDUCTION convention, and three gates that argue back  (2026-08-06)
+`con_pat_nse_reads.json` kept every refusal with a reason, which is what made a second pass cheap:
+8 more cells landed with no new discovery work, purely because a convention learned LATER (during
+the con-REVENUE pass) answered the largest refusal class. **Re-read your own refusal ledger whenever
+a new technique appears — it is the cheapest source of cells in the campaign.**
+
+**The convention.** The Ind-AS-era archive template drops the explicit owners line and prints
+`Net Profit/(Loss) for the period` (BEFORE minority/associates), then `Share of profit/(loss) of
+associates` and `Minority interest` as DEDUCTIONS, then a `Consolidated Net Profit/Loss for the
+period` row that merely DUPLICATES the period row and carries no information. So
+
+    owners = period − minority − associates
+
+⚠️ In the revenue pass this could be offered as one of several candidate variants and the stored con
+PAT picked the right one. **Here the PAT IS the value being written, so there is nothing to match
+against and variant-shopping is not available.** The convention has to be established first:
+`read_con_pat_owners.py --calibrate` scores it on cells whose con PAT we ALREADY store, counting
+only SEPARABLE cases (where ±associates are further apart than the anchor tolerance — a near-tie
+proves nothing). **51 separable, 50 correct; 49 of them on the exact Ind-AS template, 49/49 correct.**
+The one dissent (ASHOKA Mar-2015) is not a counter-example: that page's own owners row equals the
+identity, so it is our STORED value that disagrees with the document.
+
+**GATE C — the EPS positive control, and it must be allowed to say no.** §53b makes a failing EPS
+recon a hard block. Two refusals looked like false ones (TATASTEEL Sep-16/Dec-16: the page prints
+the owners row by name, the deduction identity reproduces it exactly, GATE S' matches stored std to
+the paisa, and the FY quarter-sum lands within 0.19% of the audited annual). The hypothesis was that
+Tata Steel's EPS simply never reconciles. **The control refuted it** — 3 of its 4 stored quarters
+reconcile within 3%, so the 12.6%/97.9% miss on the targets is real evidence and the block stands.
+JINDALPOLY is cleaner still: 6 of 7 control quarters reconcile to the paisa, its target misses by
+16.9%, and its FY2017 quarters do not tile the audited annual either way (218.16 vs 275.36) → refuse
+per §45. **A control is only worth running if it is allowed to kill your theory.**
+* Related fix worth keeping: the old gate tested only `^\(?a\)?\s*basic`, which grabs the
+  BEFORE-exceptional EPS while the archive prints the after-exceptional one too. Test EVERY EPS row
+  and journal which one matched — that alone turned three "EPS n/a/FAIL" reads into clean passes.
+
+**GATE S'' — a failing S' is sometimes a REVISED FILING, not a wrong document.** Ask §45's question
+of the whole fiscal year instead of one quarter (`adjudicate_sprime.py`, ledger
+`con_pat_sprime_adjudication.json`). The classes separate cleanly:
+| pattern | reading | cells |
+|---|---|---|
+| 0–2 of 3 sibling quarters reproduced, our series tiles the audited annual | BAD PAGE — refuse | GITANJALI ×3, GLOBOFFS, ZEELEARN ×2, CGPOWER |
+| archive tiles the annual, ours does not | BAD STORED — S' refusal was false | BLUESTARCO (still blocked by GATE C) |
+| **3 of 3 siblings exact, disputed quarter <2% off, our series tiles the annual** | **REVISED quarter — land it** | BLISSGVS Jun-2016 |
+| neither series tiles its own audited annual | unresolved FY — refuse | NOIDATOLL |
+| no audited annual published | inconclusive — refuse | AJRINFRA ×2 |
+
+**Two traps while building that, both of which silently produce a confident wrong answer:**
+1. **The audited annual is NOT findable in the quarterly feed.** The FY row and the Q4 row share a
+   `toDate` of 31-Mar, so selecting by `toDate` returns the QUARTER. Every verdict in the first run
+   was an artifact of comparing a 3-month figure with a 4-quarter sum. Use the list API's own
+   `period=Annual` feed and span-check `fromDate`→`toDate` to ~12 months (§53d's declared-span gate).
+2. **Cache-key collision.** The page cache is keyed `(sym, qe, tag)`; the annual and the Q4 page
+   share a `qe`, so with the same tag the second fetch silently re-reads the first page's HTML.
+   Same class as the 0-byte-cache bug in `_nse_archive_revop.get()`.
+
+**`basis-mismatch:?` was a mislabel — the source is dead, the link was fine (13 cells).** M&MFIN ×12
+and ICRA Jun-2017 refused with a phantom "basis mismatch" because the page parsed to nothing. The
+truth: NSE's archive returns a content-free ~2.9KB shell for **symbols containing `&`** (§42's known
+M&MFIN/J&KBANK breakage) — raw `&` and `%26` both return the shell, `%2526` and de-ampersanded names
+404, and every one of M&MFIN's 12 quarterly ids behaves identically. ICRA 1028491 is a 0-byte file
+across repeated tries. Neither is reachable by this route; BSE detres cannot substitute (§42:
+standalone only). **Always render a no-meta page as "empty shell", never as a content disagreement —
+the wrong label sent a whole pass hunting for a better link.**
+
+**Result: 37 refusals → 8 landed, 29 refused with a named cause** (13 empty-shell, 3 EPS-blocked and
+control-confirmed, 11 S'-adjudicated, 2 blank-template re-verified all-zero). Tools:
+`fill2020_tools/read_con_pat_owners.py` (+`--calibrate`), `adjudicate_sprime.py`,
+`diag_con_pat_refusals.py`; ledgers `con_pat_owners_reads.json`,
+`con_pat_owners_calibration.json`, `con_pat_sprime_adjudication.json`.
+
+### 53f. Banks are IN — the user reversed the non-banks-only rule  (2026-08-06)
+The 2026-08-06 "non-banks only" call on the no-sub con identity (which held KTKBANK/SOUTHBANK, and
+later CUB/UCOBANK, deliberately null) was put to the user again and **reversed: "include banks
+everywhere."** Applied: KTKBANK + SOUTHBANK Dec-2019 con PAT, and 30 revC + 28 opC cells across
+CUB/UCOBANK/KTKBANK/SOUTHBANK. `con_nofile_identity.py`'s `BANKS_NULL` is now empty.
+* The earlier objection to KTKBANK ("only 2 identity quarters before diverging — too thin") was an
+  artifact of judging no-sub from our OWN stored cells. The NSE filing index answers it directly and
+  non-circularly (§54b E1–E5, all five verified): a standalone result IS listed for Dec-2019, no
+  consolidated one is, and the gap precedes the first consolidated filing ever (KTKBANK 2020-09-30
+  of 95 filings; SOUTHBANK 2021-06-30 of 89).
+* **IOB is untouched and stays null** — it fails E4 (con null throughout, and where it does report
+  con it DIVERGES: 551.78 vs std 552.38, §51c). Including banks is not including fabrication.
+* ⚠️ `con_nofile_identity.py` used to REWRITE `con_nofile_identity_fills.json` from the current
+  run's journal only. Because the appliers are fill-only, a second run journals just the new cells
+  and would have deleted the provenance of the 91 values the first run landed. It MERGES now — any
+  applier that publishes a provenance ledger must merge, never replace.
 
 ---
 
