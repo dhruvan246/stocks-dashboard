@@ -1,0 +1,58 @@
+{
+ "LAHOTIOV|20250331": {
+  "con_val": null,
+  "confirmed_by": "vision read of the rendered P&L rows",
+  "how": "BSE ann 2025-05-29 (0f617bad) p4 'Statement of Audited Financial Results for the Quarter and Year ended 31st March,2025', STANDALONE, 'Rs. In Lakhs'. Row VIII 'Net Profit/(Loss) for the period from continuing operation' col 31-03-2025 = 404.11 LAKH = 4.04cr (cols 31-03-2025 | 31-12-2024 | 31-03-2024 | FY25 | FY24 = 404.11 | 458.91 | (91.82) | 1286.06 | 1185.21). BSE detres agrees: 4.04. Stored 404.11 is the LAKH figure stored as crore -- a x100 scale error, same class as runbook 45 LEHAR. Stored Jun-2024 453.78 carries the same error; the PDF read anchored on it and reproduced the mistake, which is why the automated pass reported a conflict rather than a verdict.",
+  "std_val": 4.04,
+  "verdict": "OTHER-DEFECT"
+ },
+ "LICI|20220630": {
+  "con_val": 602.79,
+  "confirmed_by": "text-layer read + FY2023 quarter-sum identity",
+  "how": "10-Aug-2023 filing (d5335dfd) p6 STANDALONE, Jun-2022 comparative column = 68,288.90 lakh = 682.89 (column map proven by the adjacent Mar-2023 column 13427.81 == our stored std). Our store holds 602.79 in BOTH slots; 602.79 is the value the same filing's CONSOLIDATED page carries for Jun-2022 (that page's text layer is glyph-damaged, so the con side is corroboration rather than a clean read). FY2023 STANDALONE QUARTER-SUM IDENTITY (runbook \u00a745), all four columns read from the 10-Aug-2023 filing (d5335dfd) p6 'Statement of Standalone Unaudited Financial Results', Rs in Lakhs, row 'Profit after tax and before Extraordinary Items'; header row prints June 30 2023 | March 31 2023 | June 30 2022 | March 31 2023(year): Jun-22 682.89 + Sep-22 15952.49 + Dec-22 6334.20 + Mar-23 13427.81 = 36397.39 == the filed FY23 standalone annual 36,39,738.99 lakh EXACTLY. An audited annual cannot disagree with its own quarters, so this fixes all four standalone values.",
+  "std_val": 682.89,
+  "verdict": "DEFECT"
+ },
+ "LICI|20221231": {
+  "con_val": 8348.71,
+  "confirmed_by": "vision read at 6x + 9M identity + FY2023 STANDALONE QUARTER-SUM IDENTITY (runbook \u00a745), all four columns read from the 10-Aug-2023 filing (d5335dfd) p6 'Statement of Standalone Unaudited Financial Results', Rs in Lakhs, row 'Profit after tax and before Extraordinary Items'; header row prints June 30 2023 | March 31 2023 | June 30 2022 | March 31 2023(year): Jun-22 682.89 + Sep-22 15952.49 + Dec-22 6334.20 + Mar-23 13427.81 = 36397.39 == the filed FY23 standalone annual 36,39,738.99 lakh EXACTLY. An audited annual cannot disagree with its own quarters, so this fixes all four standalone values.",
+  "how": "09-Feb-2023 filing (0e604354) p7 STANDALONE row 31 'Profit/(loss) after tax and Extraordinary Items' col Dec-2022 = 6,33,419.53 lakh = 6334.20 (its Sep-2022 column 15,95,249.40 = 15952.49 == our verified-OK stored Sep-2022 std). The scan is ambiguous at the leading digit -- row 29 renders the same figure as 8,33,419.53 -- and ARITHMETIC settles it: printed 9M FY23 = 22,96,957.83 lakh = 22969.58, and 682.89+15952.49+6334.20 = 22969.58 exactly, while 6354.21 would be needed for the 8,33 reading. p18 CONSOLIDATED col Dec-2022 = 8,34,871.49 lakh = 8348.71 = our stored std AND con.",
+  "std_val": 6334.2,
+  "verdict": "DEFECT"
+ },
+ "LICI|20230630": {
+  "con_val": 9634.98,
+  "confirmed_by": "text-layer read + H1 identity + EPS split + FY2023 STANDALONE QUARTER-SUM IDENTITY (runbook \u00a745), all four columns read from the 10-Aug-2023 filing (d5335dfd) p6 'Statement of Standalone Unaudited Financial Results', Rs in Lakhs, row 'Profit after tax and before Extraordinary Items'; header row prints June 30 2023 | March 31 2023 | June 30 2022 | March 31 2023(year): Jun-22 682.89 + Sep-22 15952.49 + Dec-22 6334.20 + Mar-23 13427.81 = 36397.39 == the filed FY23 standalone annual 36,39,738.99 lakh EXACTLY. An audited annual cannot disagree with its own quarters, so this fixes all four standalone values.",
+  "how": "THE PROVEN CASE, reproduced by this method. 10-Aug-2023 filing (d5335dfd): p6 STANDALONE row 'Profit after tax and before Extraordinary Items' = 9,54,371.26 lakh = 9543.71; its Mar-2023 column 13,42,781.16 lakh = 13427.81 reproduces our stored 2023-03 std to the paisa, so the column map is certain. p17 CONSOLIDATED same row col Jun-2023 = 9,63,498.31 lakh = 9634.98 = EXACTLY our stored std AND con. Second, independent confirmation from the 10-Nov-2023 filing (5926efe3) p7 standalone: its Jun-2023 comparative column is 9,54,371.26 again, and Sep+Jun = 7925.02+9543.71 = 17468.73 == the printed H1FY24 total. Third: the filing's own EPS rows, std 15.09 vs con 15.23 on 632.5cr shares -> 9544 vs 9633.",
+  "std_val": 9543.71,
+  "verdict": "DEFECT"
+ },
+ "LICI|20230930": {
+  "con_val": 8030.28,
+  "confirmed_by": "text-layer read + printed-H1 arithmetic identity",
+  "how": "10-Nov-2023 filing (5926efe3) p7 STANDALONE row 'Profit after tax and before Extraordinary Items' = [7,92,501.55 | 9,54,371.26 | 15,95,249.40 | 17,46,872.81 | ...] lakh = [Sep-23 7925.02 | Jun-23 9543.71 | Sep-22 15952.49 | H1FY24 17468.73]. Two independent column anchors: Sep-22 15952.49 == our stored (verified-OK) Sep-2022 std, and the printed H1FY24 17468.73 == 7925.02+9543.71 EXACTLY. p20 CONSOLIDATED col Sep-23 = 8,03,028.48 lakh = 8030.28 = our stored std AND con.",
+  "std_val": 7925.02,
+  "verdict": "DEFECT"
+ },
+ "NITTAGELA|20210331": {
+  "con_val": 2.18,
+  "confirmed_by": "vision read of both rendered statements (scanned filing, no usable text layer)",
+  "how": "BSE ann 2021-05-07 (38200472), Nitta Gelatin India Ltd, 'in Lakhs'. p1 STATEMENT OF AUDITED STANDALONE ... 31 MARCH 2021, row 7 'Profit/(Loss) for the period/year (5-6)' cols 31-Mar-21 | 31-Dec-20 | 31-Mar-20 | FY21 | FY20 = 154.08 | 567.99 | (158.82) | 1790.44 | 789.54 -> std Mar-21 = 1.54cr (== BSE detres 1.54; detres Dec-20 5.68 == the filing's 567.99 lakh, an independent second column). p5 CONSOLIDATED same quarter: 'Profit/(loss) for the period attributable to a) Owners of the parent' = 217.86 lakh = 2.18cr. Stored std = con = 0.06 matches NEITHER. The company's stored series is corrupt more widely (stored Dec-2020 std 9.50 / con 13.28 vs filed 5.68 / 6.52).",
+  "std_val": 1.54,
+  "verdict": "OTHER-DEFECT"
+ },
+ "SPCENET|20181231": {
+  "con_val": 0.0,
+  "confirmed_by": "per-basis XBRL read",
+  "how": "Stored std == stored con == 0.00. Both bases' NSE XBRL for this quarter tag ProfitLossForPeriod as 0.00 as well, so the store faithfully reflects what was filed. Two zeros carry no standalone-vs-consolidated information, so the cell cannot exhibit this defect either way. (Whether a 0.00 PAT is itself a blank-template filing, runbook 53b, is a separate data-quality question and is NOT what this audit measures.)",
+  "std_val": 0.0,
+  "verdict": "N/A-ZERO"
+ },
+ "THRIVE|20220630": {
+  "con_val": -2.31,
+  "confirmed_by": "vision read of the rendered page + detres agreement on std",
+  "how": "BSE ann 2022-08-12 (6e769c02), Ador Multiproducts Ltd, Rs in lakh. STANDALONE p1 'Profit/(loss) for the period (11+14)' col 30/06/2022 = (33.27) lakh = -0.33cr, == BSE detres -0.33 (detres calibrated standalone: 2 divergent-neighbour votes). CONSOLIDATED p4 same row col 30/06/2022 = (230.88) lakh = -2.31cr; header row reads 30/06/2022 | 30/06/2021 | 31/03/2022 | year 31/03/2022. Stored 0.08 matches NEITHER basis. Stored announce date 20220722 PRE-DATES the 2022-08-12 filing, so the row was keyed to the wrong document.",
+  "std_val": -0.33,
+  "verdict": "OTHER-DEFECT"
+ }
+}

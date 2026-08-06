@@ -1,0 +1,4039 @@
+{
+ "5PAISA|20231231": {
+  "con": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "consolidated",
+     "ctx": "OneD",
+     "filed": "11-Jan-2024 16:13",
+     "nci": 0.0,
+     "owners": 0.0,
+     "pat_src": "period-total (owners+NCI both tagged 0.00 -- split never filed)",
+     "period": "2023-10-01..2023-12-31",
+     "rev": 100.26,
+     "tag": "ProfitLossForPeriod",
+     "total": 15.09,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/NBFC_INDAS_101010_1016438_11012024041305.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 15.09
+   }
+  ],
+  "con_val": 15.09,
+  "needs_eyes": false,
+  "qe": 20231231,
+  "routes": [
+   "xbrl-std: 15.09 (ctx OneD, 2023-10-01..2023-12-31, declared standalone)",
+   "xbrl-con: 15.09 (ctx OneD, 2023-10-01..2023-12-31, declared consolidated)",
+   "detres: no row"
+  ],
+  "scrip": "540776",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "standalone",
+     "ctx": "OneD",
+     "filed": "11-Jan-2024 16:10",
+     "nci": null,
+     "owners": null,
+     "pat_src": "period-total",
+     "period": "2023-10-01..2023-12-31",
+     "rev": 100.25,
+     "tag": "ProfitLossForPeriod",
+     "total": 15.09,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/NBFC_INDAS_101009_1016417_11012024041027.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 15.09
+   }
+  ],
+  "std_val": 15.09,
+  "stored_con": 15.09,
+  "stored_std": 15.09,
+  "sym": "5PAISA",
+  "verdict": "OK"
+ },
+ "ALPA|20240630": {
+  "con": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "consolidated",
+     "ctx": "OneD",
+     "filed": "14-Aug-2024 16:26",
+     "nci": 0.0,
+     "owners": 0.0,
+     "pat_src": "period-total (owners+NCI both tagged 0.00 -- split never filed)",
+     "period": "2024-04-01..2024-06-30",
+     "rev": 21.44,
+     "tag": "ProfitLossForPeriod",
+     "total": 5.1,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_112164_1225684_14082024042622.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 5.1
+   }
+  ],
+  "con_val": 5.1,
+  "needs_eyes": false,
+  "qe": 20240630,
+  "routes": [
+   "xbrl-std: 5.12 (ctx OneD, 2024-04-01..2024-06-30, declared standalone)",
+   "xbrl-con: 5.10 (ctx OneD, 2024-04-01..2024-06-30, declared consolidated)",
+   "detres: 5.12 span-ok calib=standalone CAL-REV tie: stored revStd == revCon here, uninformative; CAL-PAT std @20240930: detres 7.63 == stored std 7.63 (con 7.69); CAL-PAT std @20250331: detres -1.95 == stored std -1.95 (con -2.12); CAL-PAT votes std=2 con=0 over 2 divergent neighbours"
+  ],
+  "scrip": "532878",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "standalone",
+     "ctx": "OneD",
+     "filed": "14-Aug-2024 16:24",
+     "nci": null,
+     "owners": null,
+     "pat_src": "period-total",
+     "period": "2024-04-01..2024-06-30",
+     "rev": 21.44,
+     "tag": "ProfitLossForPeriod",
+     "total": 5.12,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_112161_1225667_14082024042405.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 5.12
+   },
+   {
+    "ev": {
+     "calib": [
+      "CAL-REV tie: stored revStd == revCon here, uninformative",
+      "CAL-PAT std @20240930: detres 7.63 == stored std 7.63 (con 7.69)",
+      "CAL-PAT std @20250331: detres -1.95 == stored std -1.95 (con -2.12)",
+      "CAL-PAT votes std=2 con=0 over 2 divergent neighbours"
+     ],
+     "rev": 21.44,
+     "type": "Un-Audited"
+    },
+    "src": "bse-detres",
+    "value": 5.12
+   }
+  ],
+  "std_val": 5.12,
+  "stored_con": 5.1,
+  "stored_std": 5.12,
+  "sym": "ALPA",
+  "verdict": "OK"
+ },
+ "ALPHALOGIC|20231231": {
+  "con": [],
+  "con_val": null,
+  "needs_eyes": false,
+  "qe": 20231231,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: 0.74 span-ok calib=standalone CAL-PAT pass @20250331: detres 0.91 == stored std 0.91 (con 1.22)"
+  ],
+  "scrip": "542770",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "calib": [
+      "CAL-PAT pass @20250331: detres 0.91 == stored std 0.91 (con 1.22)"
+     ],
+     "rev": 1.16,
+     "type": "Un-Audited"
+    },
+    "src": "bse-detres",
+    "value": 0.74
+   }
+  ],
+  "std_val": 0.74,
+  "stored_con": 0.74,
+  "stored_std": 0.74,
+  "sym": "ALPHALOGIC",
+  "verdict": "OK"
+ },
+ "ALPSINDUS|20190930": {
+  "con": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "consolidated",
+     "ctx": "OneD",
+     "filed": "15-Nov-2019 13:27",
+     "nci": -0.0,
+     "owners": 8.18,
+     "pat_src": "owners-tag",
+     "period": "2019-07-01..2019-09-30",
+     "rev": 81.95,
+     "tag": "ProfitLossForPeriod",
+     "total": 8.17,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_50913_170658_15112019012749_WEB.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 8.18
+   }
+  ],
+  "con_val": 8.18,
+  "needs_eyes": false,
+  "qe": 20190930,
+  "routes": [
+   "xbrl-std: 8.19 (ctx OneD, 2019-07-01..2019-09-30, declared standalone)",
+   "xbrl-con: 8.18 (ctx OneD, 2019-07-01..2019-09-30, declared consolidated)",
+   "detres: 8.19 span-ok calib=ambiguous CAL-REV tie: stored revStd == revCon here, uninformative; CAL-PAT inconclusive @20190331: detres -22.35 vs std -22.35 / con -22.42"
+  ],
+  "scrip": "530715",
+  "scrip_src": "delisted-master",
+  "std": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "standalone",
+     "ctx": "OneD",
+     "filed": "15-Nov-2019 13:04",
+     "nci": 0.0,
+     "owners": 8.19,
+     "pat_src": "owners-tag",
+     "period": "2019-07-01..2019-09-30",
+     "rev": 81.95,
+     "tag": "ProfitLossForPeriod",
+     "total": 8.19,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_50891_170406_15112019010444_WEB.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 8.19
+   }
+  ],
+  "std_val": 8.19,
+  "stored_con": 8.18,
+  "stored_std": 8.19,
+  "sym": "ALPSINDUS",
+  "verdict": "OK"
+ },
+ "ALPSINDUS|20210930": {
+  "con": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "consolidated",
+     "ctx": "OneD",
+     "filed": "13-Nov-2021 13:13",
+     "nci": -0.0,
+     "owners": -15.16,
+     "pat_src": "owners-tag",
+     "period": "2021-07-01..2021-09-30",
+     "rev": 92.63,
+     "tag": "ProfitLossForPeriod",
+     "total": -15.16,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_79140_557564_13112021011338_WEB.xml"
+    },
+    "src": "nse-xbrl",
+    "value": -15.16
+   }
+  ],
+  "con_val": -15.16,
+  "needs_eyes": false,
+  "qe": 20210930,
+  "routes": [
+   "xbrl-std: -15.15 (ctx OneD, 2021-07-01..2021-09-30, declared standalone)",
+   "xbrl-con: -15.16 (ctx OneD, 2021-07-01..2021-09-30, declared consolidated)",
+   "detres: -15.15 span-ok calib=standalone CAL-REV tie: stored revStd == revCon here, uninformative; CAL-PAT pass @20210331: detres -25.86 == stored std -25.86 (con -26.21)"
+  ],
+  "scrip": "530715",
+  "scrip_src": "delisted-master",
+  "std": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "standalone",
+     "ctx": "OneD",
+     "filed": "13-Nov-2021 13:12",
+     "nci": null,
+     "owners": null,
+     "pat_src": "period-total",
+     "period": "2021-07-01..2021-09-30",
+     "rev": 92.63,
+     "tag": "ProfitLossForPeriod",
+     "total": -15.15,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_79139_557560_13112021011214_WEB.xml"
+    },
+    "src": "nse-xbrl",
+    "value": -15.15
+   },
+   {
+    "ev": {
+     "calib": [
+      "CAL-REV tie: stored revStd == revCon here, uninformative",
+      "CAL-PAT pass @20210331: detres -25.86 == stored std -25.86 (con -26.21)"
+     ],
+     "rev": 92.63,
+     "type": "Un-Audited"
+    },
+    "src": "bse-detres",
+    "value": -15.15
+   }
+  ],
+  "std_val": -15.15,
+  "stored_con": -15.16,
+  "stored_std": -15.15,
+  "sym": "ALPSINDUS",
+  "verdict": "OK"
+ },
+ "ALPSINDUS|20240930": {
+  "con": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "consolidated",
+     "ctx": "OneD",
+     "filed": "15-Nov-2024 13:12",
+     "nci": 0.02,
+     "owners": -15.78,
+     "pat_src": "owners-tag",
+     "period": "2024-07-01..2024-09-30",
+     "rev": 0.0,
+     "tag": "ProfitLossForPeriod",
+     "total": -15.77,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_116552_1314219_15112024011256.xml"
+    },
+    "src": "nse-xbrl",
+    "value": -15.78
+   }
+  ],
+  "con_val": -15.78,
+  "needs_eyes": false,
+  "qe": 20240930,
+  "routes": [
+   "xbrl-std: -15.82 (ctx OneD, 2024-07-01..2024-09-30, declared standalone)",
+   "xbrl-con: -15.78 (ctx OneD, 2024-07-01..2024-09-30, declared consolidated)",
+   "detres: -15.82 span-ok calib=standalone CAL-REV tie: stored revStd == revCon here, uninformative; CAL-PAT pass @20230331: detres -18.66 == stored std -18.66 (con -18.05)"
+  ],
+  "scrip": "530715",
+  "scrip_src": "delisted-master",
+  "std": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "standalone",
+     "ctx": "OneD",
+     "filed": "15-Nov-2024 13:10",
+     "nci": null,
+     "owners": null,
+     "pat_src": "period-total",
+     "period": "2024-07-01..2024-09-30",
+     "rev": 0.0,
+     "tag": "ProfitLossForPeriod",
+     "total": -15.82,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_116549_1314207_15112024011007.xml"
+    },
+    "src": "nse-xbrl",
+    "value": -15.82
+   },
+   {
+    "ev": {
+     "calib": [
+      "CAL-REV tie: stored revStd == revCon here, uninformative",
+      "CAL-PAT pass @20230331: detres -18.66 == stored std -18.66 (con -18.05)"
+     ],
+     "rev": 0.04,
+     "type": "Un-Audited"
+    },
+    "src": "bse-detres",
+    "value": -15.82
+   }
+  ],
+  "std_val": -15.82,
+  "stored_con": -15.78,
+  "stored_std": -15.82,
+  "sym": "ALPSINDUS",
+  "verdict": "OK"
+ },
+ "ANIKINDS|20211231": {
+  "con": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "consolidated",
+     "ctx": "OneD",
+     "filed": "12-Feb-2022 18:46",
+     "nci": 0.0,
+     "owners": 0.0,
+     "pat_src": "period-total (owners+NCI both tagged 0.00 -- split never filed)",
+     "period": "2021-10-01..2021-12-31",
+     "rev": 61.39,
+     "tag": "ProfitLossForPeriod",
+     "total": 1.01,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_82700_609385_12022022064657_WEB.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 1.01
+   }
+  ],
+  "con_val": 1.01,
+  "needs_eyes": false,
+  "qe": 20211231,
+  "routes": [
+   "xbrl-std: 1.03 (ctx OneD, 2021-10-01..2021-12-31, declared standalone)",
+   "xbrl-con: 1.01 (ctx OneD, 2021-10-01..2021-12-31, declared consolidated)",
+   "detres: 1.03 span-ok calib=standalone CAL-REV tie: stored revStd == revCon here, uninformative; CAL-PAT pass @20210930: detres 3.75 == stored std 3.75 (con 3.07)"
+  ],
+  "scrip": "519383",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "standalone",
+     "ctx": "OneD",
+     "filed": "12-Feb-2022 18:45",
+     "nci": null,
+     "owners": null,
+     "pat_src": "period-total",
+     "period": "2021-10-01..2021-12-31",
+     "rev": 61.39,
+     "tag": "ProfitLossForPeriod",
+     "total": 1.03,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_82699_609382_12022022064544_WEB.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 1.03
+   },
+   {
+    "ev": {
+     "calib": [
+      "CAL-REV tie: stored revStd == revCon here, uninformative",
+      "CAL-PAT pass @20210930: detres 3.75 == stored std 3.75 (con 3.07)"
+     ],
+     "rev": 61.4,
+     "type": "Un-Audited"
+    },
+    "src": "bse-detres",
+    "value": 1.03
+   }
+  ],
+  "std_val": 1.03,
+  "stored_con": 1.01,
+  "stored_std": 1.03,
+  "sym": "ANIKINDS",
+  "verdict": "OK"
+ },
+ "BEARDSELL|20181231": {
+  "con": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "consolidated",
+     "ctx": "OneD",
+     "filed": "26-Feb-2019 11:11",
+     "nci": 0.0,
+     "owners": 0.0,
+     "pat_src": "period-total (owners+NCI both tagged 0.00 -- split never filed)",
+     "period": "2018-10-01..2018-12-31",
+     "rev": 47.07,
+     "tag": "ProfitLossForPeriod",
+     "total": 0.07,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_43175_82607_14022019030036_WEB_2.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 0.07
+   }
+  ],
+  "con_val": 0.07,
+  "needs_eyes": false,
+  "qe": 20181231,
+  "routes": [
+   "xbrl-std: 0.04 (ctx OneD, 2018-10-01..2018-12-31, declared standalone)",
+   "xbrl-con: 0.07 (ctx OneD, 2018-10-01..2018-12-31, declared consolidated)",
+   "detres: 0.04 span-ok calib=standalone CAL-REV pass: detres rev 43.88 == stored revStd 43.88 (revCon 47.07)"
+  ],
+  "scrip": "539447",
+  "scrip_src": "delisted-master",
+  "std": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "standalone",
+     "ctx": "OneD",
+     "filed": "26-Feb-2019 11:11",
+     "nci": 0.0,
+     "owners": 0.0,
+     "pat_src": "period-total (owners+NCI both tagged 0.00 -- split never filed)",
+     "period": "2018-10-01..2018-12-31",
+     "rev": 43.88,
+     "tag": "ProfitLossForPeriod",
+     "total": 0.04,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_43175_82607_14022019030036_WEB.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 0.04
+   },
+   {
+    "ev": {
+     "calib": [
+      "CAL-REV pass: detres rev 43.88 == stored revStd 43.88 (revCon 47.07)"
+     ],
+     "rev": 43.88,
+     "type": "Un-Audited"
+    },
+    "src": "bse-detres",
+    "value": 0.04
+   }
+  ],
+  "std_val": 0.04,
+  "stored_con": 0.0,
+  "stored_std": 0.04,
+  "sym": "BEARDSELL",
+  "verdict": "OK"
+ },
+ "BEDMUTHA|20180630": {
+  "con": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "consolidated",
+     "ctx": "FourD",
+     "filed": "14-Aug-2019 11:45",
+     "nci": 0.0,
+     "owners": 0.0,
+     "pat_src": "period-total (owners+NCI both tagged 0.00 -- split never filed)",
+     "period": "2018-04-01..2018-06-30",
+     "rev": 139.43,
+     "tag": "ProfitLossForPeriod",
+     "total": -14.06,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_47752_131695_14082019114510_WEB.xml"
+    },
+    "src": "nse-xbrl",
+    "value": -14.06
+   }
+  ],
+  "con_val": -14.06,
+  "needs_eyes": false,
+  "qe": 20180630,
+  "routes": [
+   "xbrl-std: -14.08 (ctx OneD, 2018-04-01..2018-06-30, declared standalone)",
+   "xbrl-con: -14.06 (ctx FourD, 2018-04-01..2018-06-30, declared consolidated)",
+   "detres: -14.08 span-ok calib=standalone CAL-REV tie: stored revStd == revCon here, uninformative; CAL-PAT std @20180331: detres -10.23 == stored std -10.23 (con -9.63); CAL-PAT std @20190630: detres -16.13 == stored std -16.13 (con -16.01); CAL-PAT std @20190930: detres -21.29 == stored std -21.29 (con -21.16); CAL-PAT votes std=3 con=0 over 3 divergent neighbours"
+  ],
+  "scrip": "533270",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "standalone",
+     "ctx": "OneD",
+     "filed": "31-Aug-2018 14:17",
+     "nci": 0.0,
+     "owners": 0.0,
+     "pat_src": "period-total (owners+NCI both tagged 0.00 -- split never filed)",
+     "period": "2018-04-01..2018-06-30",
+     "rev": 139.43,
+     "tag": "ProfitLossForPeriod",
+     "total": -14.08,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_39025_35458_14082018073413_WEB.xml"
+    },
+    "src": "nse-xbrl",
+    "value": -14.08
+   },
+   {
+    "ev": {
+     "calib": [
+      "CAL-REV tie: stored revStd == revCon here, uninformative",
+      "CAL-PAT std @20180331: detres -10.23 == stored std -10.23 (con -9.63)",
+      "CAL-PAT std @20190630: detres -16.13 == stored std -16.13 (con -16.01)",
+      "CAL-PAT std @20190930: detres -21.29 == stored std -21.29 (con -21.16)",
+      "CAL-PAT votes std=3 con=0 over 3 divergent neighbours"
+     ],
+     "rev": 139.43,
+     "type": "Un-Audited"
+    },
+    "src": "bse-detres",
+    "value": -14.08
+   }
+  ],
+  "std_val": -14.08,
+  "stored_con": -14.06,
+  "stored_std": -14.08,
+  "sym": "BEDMUTHA",
+  "verdict": "OK"
+ },
+ "CAPLIPOINT|20150630": {
+  "con": [],
+  "con_val": null,
+  "needs_eyes": false,
+  "qe": 20150630,
+  "routes": [
+   "xbrl-std: fetch:HTTPError",
+   "xbrl-con: fetch:HTTPError",
+   "detres: 12.70 span-ok calib=standalone CAL-PAT std @20150930: detres 14.20 == stored std 14.20 (con 14.08); CAL-PAT std @20151231: detres 15.98 == stored std 15.98 (con 16.10); CAL-PAT std @20160331: detres 15.15 == stored std 15.15 (con 15.58); CAL-PAT votes std=3 con=0 over 3 divergent neighbours"
+  ],
+  "scrip": "524742",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "calib": [
+      "CAL-PAT std @20150930: detres 14.20 == stored std 14.20 (con 14.08)",
+      "CAL-PAT std @20151231: detres 15.98 == stored std 15.98 (con 16.10)",
+      "CAL-PAT std @20160331: detres 15.15 == stored std 15.15 (con 15.58)",
+      "CAL-PAT votes std=3 con=0 over 3 divergent neighbours"
+     ],
+     "rev": 67.55,
+     "type": "Audited"
+    },
+    "src": "bse-detres",
+    "value": 12.7
+   }
+  ],
+  "std_val": 12.7,
+  "stored_con": 12.69,
+  "stored_std": 12.7,
+  "sym": "CAPLIPOINT",
+  "verdict": "OK"
+ },
+ "DALMIASUG|20220930": {
+  "con": [],
+  "con_val": null,
+  "needs_eyes": false,
+  "qe": 20220930,
+  "routes": [
+   "xbrl-std: 11.71 (ctx OneD, 2022-07-01..2022-09-30, declared standalone)",
+   "xbrl-con: no-con-row (1 list rows for this quarter)",
+   "detres: 11.71 span-ok calib=standalone CAL-REV pass: detres rev 578.86 == stored revStd 578.86 (revCon None)"
+  ],
+  "scrip": "500097",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "standalone",
+     "ctx": "OneD",
+     "filed": "09-Nov-2022 14:19",
+     "nci": null,
+     "owners": null,
+     "pat_src": "period-total",
+     "period": "2022-07-01..2022-09-30",
+     "rev": 578.86,
+     "tag": "ProfitLossForPeriod",
+     "total": 11.71,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_848722_4995_09112022141918_WEB.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 11.71
+   },
+   {
+    "ev": {
+     "calib": [
+      "CAL-REV pass: detres rev 578.86 == stored revStd 578.86 (revCon None)"
+     ],
+     "rev": 578.86,
+     "type": "Un-Audited"
+    },
+    "src": "bse-detres",
+    "value": 11.71
+   }
+  ],
+  "std_val": 11.71,
+  "stored_con": 11.71,
+  "stored_std": 11.71,
+  "sym": "DALMIASUG",
+  "verdict": "OK"
+ },
+ "DBCORP|20240331": {
+  "con": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "consolidated",
+     "ctx": "OneD",
+     "filed": "22-May-2024 18:14",
+     "nci": 0.0,
+     "owners": 116.71,
+     "pat_src": "owners-tag",
+     "period": "2024-01-01..2024-03-31",
+     "rev": 617.13,
+     "tag": "ProfitLossForPeriod",
+     "total": 122.53,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_106726_1134151_22052024061400.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 116.71
+   }
+  ],
+  "con_val": 116.71,
+  "needs_eyes": false,
+  "qe": 20240331,
+  "routes": [
+   "xbrl-std: 122.55 (ctx OneD, 2024-01-01..2024-03-31, declared standalone)",
+   "xbrl-con: 116.71 (ctx OneD, 2024-01-01..2024-03-31, declared consolidated)",
+   "detres: 122.55 span-ok calib=standalone CAL-REV tie: stored revStd == revCon here, uninformative; CAL-PAT pass @20231231: detres 122.89 == stored std 122.89 (con 123.98)"
+  ],
+  "scrip": "533151",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "standalone",
+     "ctx": "OneD",
+     "filed": "22-May-2024 18:10",
+     "nci": null,
+     "owners": null,
+     "pat_src": "period-total",
+     "period": "2024-01-01..2024-03-31",
+     "rev": 617.17,
+     "tag": "ProfitLossForPeriod",
+     "total": 122.55,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_106725_1134135_22052024061021.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 122.55
+   },
+   {
+    "ev": {
+     "calib": [
+      "CAL-REV tie: stored revStd == revCon here, uninformative",
+      "CAL-PAT pass @20231231: detres 122.89 == stored std 122.89 (con 123.98)"
+     ],
+     "rev": 617.17,
+     "type": "Un-Audited"
+    },
+    "src": "bse-detres",
+    "value": 122.55
+   }
+  ],
+  "std_val": 122.55,
+  "stored_con": 122.53,
+  "stored_std": 122.55,
+  "sym": "DBCORP",
+  "verdict": "OK"
+ },
+ "EIMCOELECO|20190930": {
+  "con": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "consolidated",
+     "ctx": "OneD",
+     "filed": "17-Oct-2019 11:20",
+     "nci": 0.0,
+     "owners": 0.0,
+     "pat_src": "period-total (owners+NCI both tagged 0.00 -- split never filed)",
+     "period": "2019-07-01..2019-09-30",
+     "rev": 20.51,
+     "tag": "ProfitLossForPeriod",
+     "total": 4.47,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_48612_151688_17102019112046_WEB_2.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 4.47
+   }
+  ],
+  "con_val": 4.47,
+  "needs_eyes": false,
+  "qe": 20190930,
+  "routes": [
+   "xbrl-std: 4.45 (ctx OneD, 2019-07-01..2019-09-30, declared standalone)",
+   "xbrl-con: 4.47 (ctx OneD, 2019-07-01..2019-09-30, declared consolidated)",
+   "detres: 4.45 span-ok calib=standalone CAL-REV tie: stored revStd == revCon here, uninformative; CAL-PAT pass @20190331: detres 7.90 == stored std 7.90 (con 7.85)"
+  ],
+  "scrip": "523708",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "standalone",
+     "ctx": "OneD",
+     "filed": "17-Oct-2019 11:20",
+     "nci": 0.0,
+     "owners": 0.0,
+     "pat_src": "period-total (owners+NCI both tagged 0.00 -- split never filed)",
+     "period": "2019-07-01..2019-09-30",
+     "rev": 20.51,
+     "tag": "ProfitLossForPeriod",
+     "total": 4.45,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_48612_151688_17102019112046_WEB.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 4.45
+   },
+   {
+    "ev": {
+     "calib": [
+      "CAL-REV tie: stored revStd == revCon here, uninformative",
+      "CAL-PAT pass @20190331: detres 7.90 == stored std 7.90 (con 7.85)"
+     ],
+     "rev": 20.51,
+     "type": "Un-Audited"
+    },
+    "src": "bse-detres",
+    "value": 4.45
+   }
+  ],
+  "std_val": 4.45,
+  "stored_con": 4.47,
+  "stored_std": 4.45,
+  "sym": "EIMCOELECO",
+  "verdict": "OK"
+ },
+ "EMAMILTD|20181231": {
+  "con": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "consolidated",
+     "ctx": "OneD",
+     "filed": "07-Feb-2019 14:21",
+     "nci": -0.21,
+     "owners": 137.75,
+     "pat_src": "owners-tag",
+     "period": "2018-10-01..2018-12-31",
+     "rev": 810.9,
+     "tag": "ProfitLossForPeriod",
+     "total": 137.54,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_41989_78979_31012019052314_WEB_2.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 137.75
+   }
+  ],
+  "con_val": 137.75,
+  "needs_eyes": false,
+  "qe": 20181231,
+  "routes": [
+   "xbrl-std: 137.80 (ctx OneD, 2018-10-01..2018-12-31, declared standalone)",
+   "xbrl-con: 137.75 (ctx OneD, 2018-10-01..2018-12-31, declared consolidated)",
+   "detres: 137.80 span-ok calib=standalone CAL-REV pass: detres rev 758.51 == stored revStd 758.51 (revCon 810.9)"
+  ],
+  "scrip": "531162",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "standalone",
+     "ctx": "OneD",
+     "filed": "07-Feb-2019 14:21",
+     "nci": 0.0,
+     "owners": 0.0,
+     "pat_src": "period-total (owners+NCI both tagged 0.00 -- split never filed)",
+     "period": "2018-10-01..2018-12-31",
+     "rev": 758.51,
+     "tag": "ProfitLossForPeriod",
+     "total": 137.8,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_41989_78979_31012019052314_WEB.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 137.8
+   },
+   {
+    "ev": {
+     "calib": [
+      "CAL-REV pass: detres rev 758.51 == stored revStd 758.51 (revCon 810.9)"
+     ],
+     "rev": 758.51,
+     "type": "Un-Audited"
+    },
+    "src": "bse-detres",
+    "value": 137.8
+   }
+  ],
+  "std_val": 137.8,
+  "stored_con": 137.75,
+  "stored_std": 137.8,
+  "sym": "EMAMILTD",
+  "verdict": "OK"
+ },
+ "EY|20240930": {
+  "con": [],
+  "con_val": null,
+  "needs_eyes": false,
+  "qe": 20240930,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: 0.34 span-ok calib=standalone CAL-PAT CON @20240630: detres 0.81 == stored CON 0.81 (std 81.19); CAL-PAT std @20241231: detres 0.46 == stored std 0.46 (con 0.11); CAL-PAT std @20250331: detres 0.05 == stored std 0.05 (con -0.57); CAL-PAT votes std=2 con=1 over 3 divergent neighbours"
+  ],
+  "scrip": "512099",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "calib": [
+      "CAL-PAT CON @20240630: detres 0.81 == stored CON 0.81 (std 81.19)",
+      "CAL-PAT std @20241231: detres 0.46 == stored std 0.46 (con 0.11)",
+      "CAL-PAT std @20250331: detres 0.05 == stored std 0.05 (con -0.57)",
+      "CAL-PAT votes std=2 con=1 over 3 divergent neighbours"
+     ],
+     "rev": 6.35,
+     "type": "Un-Audited"
+    },
+    "src": "bse-detres",
+    "value": 0.34
+   }
+  ],
+  "std_val": 0.34,
+  "stored_con": 0.34,
+  "stored_std": 0.34,
+  "sym": "EY",
+  "verdict": "OK"
+ },
+ "FAZE3Q|20250630": {
+  "con": [],
+  "con_val": null,
+  "needs_eyes": false,
+  "qe": 20250630,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: 12.76 span-ok calib=standalone CAL-REV pass: detres rev 204.72 == stored revStd 204.72 (revCon 211.97)"
+  ],
+  "scrip": "530079",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "calib": [
+      "CAL-REV pass: detres rev 204.72 == stored revStd 204.72 (revCon 211.97)"
+     ],
+     "rev": 204.72,
+     "type": "Un-Audited"
+    },
+    "src": "bse-detres",
+    "value": 12.76
+   }
+  ],
+  "std_val": 12.76,
+  "stored_con": 12.77,
+  "stored_std": 12.76,
+  "sym": "FAZE3Q",
+  "verdict": "OK"
+ },
+ "GICRE|20220930": {
+  "con": [
+   {
+    "ev": {
+     "ann": 20221109,
+     "evidence": [],
+     "header": [
+      [
+       312,
+       20220930
+      ],
+      [
+       429,
+       20210930
+      ]
+     ],
+     "label": "Profit/(Loss) After Tax",
+     "page": 31,
+     "row": [
+      [
+       462,
+       2945.89
+      ],
+      [
+       532,
+       308.47
+      ]
+     ],
+     "unit_div": 100.0,
+     "why": "ordinal col 1 of 2 (header 20220930)"
+    },
+    "garbled": null,
+    "src": "bse-ann-pdf",
+    "tier": "B",
+    "value": 29.46
+   }
+  ],
+  "con_val": 29.46,
+  "needs_eyes": true,
+  "qe": 20220930,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: no row",
+   "pdf/bse-ann(qe+8..150d):6 filings",
+   "pdf/pdf:c47cd6be-1d5b-48fa-859c-f8d0ed56dbb0 ann=20221109 period_ok=True pages=34 quarter/period ended september 30, 2022",
+   "pdf/pdf:e3e9280b-0720-4d55-9c9b-45ff077d317d ann=20221109 period_ok=True pages=34 quarter/period ended september 30, 2022",
+   "pdf/pdf:07a3f409-181e-4c11-b930-00bb82f87cef ann=20221123 period_ok=False pages=3 ",
+   "pdf/pdf:623d7525-638d-4cce-af3e-def013a308a5 ann=20230209 period_ok=False pages=30 ",
+   "pdf/pdf:85c9e648-513c-431f-b2f3-d8fb942d40ef ann=20230209 period_ok=False pages=30 ",
+   "pdf/scanned-no-text-layer:edf1cd6a-69eb-4bc5-b753-2d4e3027(ann=20230213,1/1 text pages)",
+   "nse-archive-std: no-detail-link (0 list rows for this quarter)",
+   "nse-archive-con: no-detail-link (0 list rows for this quarter)"
+  ],
+  "scrip": "540755",
+  "scrip_src": "live-master",
+  "std": [],
+  "std_val": null,
+  "stored_con": 1859.93,
+  "stored_std": 1859.93,
+  "sym": "GICRE",
+  "verdict": "INCONCLUSIVE"
+ },
+ "GICRE|20221231": {
+  "con": [],
+  "con_val": null,
+  "needs_eyes": false,
+  "qe": 20221231,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: no row",
+   "pdf/bse-ann(qe+8..150d):5 filings",
+   "pdf/pdf:623d7525-638d-4cce-af3e-def013a308a5 ann=20230209 period_ok=True pages=30 quarter/period ended december 31, 2022",
+   "pdf/pdf:85c9e648-513c-431f-b2f3-d8fb942d40ef ann=20230209 period_ok=True pages=30 quarter/period ended december 31, 2022",
+   "pdf/scanned-no-text-layer:edf1cd6a-69eb-4bc5-b753-2d4e3027(ann=20230213,1/1 text pages)",
+   "pdf/pdf:123d1145-3066-495c-9929-622844c04090 ann=20230525 period_ok=False pages=43 ",
+   "pdf/pdf:3da98cde-65e3-4d04-976e-5d887957428f ann=20230525 period_ok=False pages=43 ",
+   "nse-archive-std: no-detail-link (0 list rows for this quarter)",
+   "nse-archive-con: no-detail-link (0 list rows for this quarter)"
+  ],
+  "scrip": "540755",
+  "scrip_src": "live-master",
+  "std": [],
+  "std_val": null,
+  "stored_con": 1198.99,
+  "stored_std": 1198.99,
+  "sym": "GICRE",
+  "verdict": "INCONCLUSIVE"
+ },
+ "GICRE|20230331": {
+  "con": [
+   {
+    "ev": {
+     "ann": 20230810,
+     "evidence": [],
+     "header": [
+      [
+       301,
+       20230630
+      ],
+      [
+       382,
+       20220630
+      ],
+      [
+       463,
+       20230301
+      ],
+      [
+       541,
+       20230331
+      ]
+     ],
+     "label": "Profit/ (Loss) After Tax",
+     "page": 27,
+     "row": [
+      [
+       312,
+       731.79
+      ],
+      [
+       392,
+       689.72
+      ],
+      [
+       473,
+       2563.84
+      ],
+      [
+       550,
+       6312.5
+      ]
+     ],
+     "unit_div": 100.0,
+     "why": "ordinal col 4 of 4 (header 20230331)"
+    },
+    "garbled": null,
+    "src": "bse-ann-pdf",
+    "tier": "B",
+    "value": 63.12
+   }
+  ],
+  "con_val": 63.12,
+  "needs_eyes": true,
+  "qe": 20230331,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: no row",
+   "pdf/bse-ann(qe+8..150d):4 filings",
+   "pdf/pdf:123d1145-3066-495c-9929-622844c04090 ann=20230525 period_ok=True pages=43 quarter and financial year ended march 31, 2023",
+   "pdf/pdf:3da98cde-65e3-4d04-976e-5d887957428f ann=20230525 period_ok=True pages=43 quarter and financial year ended march 31, 2023",
+   "pdf/pdf:bb7fb95a-e7bd-48d7-b96a-21e60a03ea7e ann=20230810 period_ok=False pages=32 ",
+   "pdf/pdf:e3de986c-be30-4442-ac8e-936f60cd10a5 ann=20230810 period_ok=False pages=32 ",
+   "nse-archive-std: no-detail-link (0 list rows for this quarter)",
+   "nse-archive-con: no-detail-link (0 list rows for this quarter)"
+  ],
+  "scrip": "540755",
+  "scrip_src": "live-master",
+  "std": [],
+  "std_val": null,
+  "stored_con": 2563.84,
+  "stored_std": 2563.84,
+  "sym": "GICRE",
+  "verdict": "INCONCLUSIVE"
+ },
+ "GICRE|20230630": {
+  "con": [
+   {
+    "ev": {
+     "ann": 20230810,
+     "evidence": [],
+     "header": [
+      [
+       301,
+       20230630
+      ],
+      [
+       382,
+       20220630
+      ],
+      [
+       463,
+       20230301
+      ],
+      [
+       541,
+       20230331
+      ]
+     ],
+     "label": "Profit/ (Loss) After Tax",
+     "page": 27,
+     "row": [
+      [
+       312,
+       731.79
+      ],
+      [
+       392,
+       689.72
+      ],
+      [
+       473,
+       2563.84
+      ],
+      [
+       550,
+       6312.5
+      ]
+     ],
+     "unit_div": 100.0,
+     "why": "ordinal col 1 of 4 (header 20230630)"
+    },
+    "garbled": null,
+    "src": "bse-ann-pdf",
+    "tier": "B",
+    "value": 7.32
+   }
+  ],
+  "con_val": 7.32,
+  "needs_eyes": true,
+  "qe": 20230630,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: no row",
+   "pdf/bse-ann(qe+8..150d):5 filings",
+   "pdf/pdf:bb7fb95a-e7bd-48d7-b96a-21e60a03ea7e ann=20230810 period_ok=True pages=32 quarter ended june 30, 2023",
+   "pdf/pdf:e3de986c-be30-4442-ac8e-936f60cd10a5 ann=20230810 period_ok=True pages=32 quarter ended june 30, 2023",
+   "pdf/pdf:ae02cfc7-b7fd-4976-9da4-57ea58f8eec8 ann=20231109 period_ok=True pages=29 quarter and six months ended september 30, 2022 and quarter ended june 30 2023",
+   "pdf/pdf:b4ecdf1f-a5f2-418a-ab0d-6f8a96575948 ann=20231109 period_ok=True pages=29 quarter and six months ended september 30, 2022 and quarter ended june 30 2023",
+   "pdf/pdf:51fbd257-d652-489c-9014-90ffc9a4885b ann=20231208 period_ok=False pages=3 ",
+   "nse-archive-std: no-detail-link (0 list rows for this quarter)",
+   "nse-archive-con: no-detail-link (0 list rows for this quarter)"
+  ],
+  "scrip": "540755",
+  "scrip_src": "live-master",
+  "std": [],
+  "std_val": null,
+  "stored_con": 731.79,
+  "stored_std": 731.79,
+  "sym": "GICRE",
+  "verdict": "INCONCLUSIVE"
+ },
+ "GICRE|20230930": {
+  "con": [],
+  "con_val": null,
+  "needs_eyes": false,
+  "qe": 20230930,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: no row",
+   "pdf/bse-ann(qe+8..150d):6 filings",
+   "pdf/pdf:ae02cfc7-b7fd-4976-9da4-57ea58f8eec8 ann=20231109 period_ok=True pages=29 quarter/period ended september 30, 2023",
+   "pdf/pdf:b4ecdf1f-a5f2-418a-ab0d-6f8a96575948 ann=20231109 period_ok=True pages=29 quarter/period ended september 30, 2023",
+   "pdf/pdf:51fbd257-d652-489c-9014-90ffc9a4885b ann=20231208 period_ok=False pages=3 ",
+   "pdf/pdf:2aefbe78-7658-41f6-aedb-2f99237039a6 ann=20240207 period_ok=False pages=27 ",
+   "pdf/pdf:465606d1-3e27-4195-a87f-427ca6a77816 ann=20240207 period_ok=False pages=27 ",
+   "pdf/pdf:7eb250b5-5484-43ec-9e3a-37039f78fe14 ann=20240415 period_ok=False pages=2 ",
+   "nse-archive-std: no-detail-link (0 list rows for this quarter)",
+   "nse-archive-con: no-detail-link (0 list rows for this quarter)"
+  ],
+  "scrip": "540755",
+  "scrip_src": "live-master",
+  "std": [],
+  "std_val": null,
+  "stored_con": 1605.09,
+  "stored_std": 1605.09,
+  "sym": "GICRE",
+  "verdict": "INCONCLUSIVE"
+ },
+ "GICRE|20231231": {
+  "con": [],
+  "con_val": null,
+  "needs_eyes": false,
+  "qe": 20231231,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: no row",
+   "pdf/bse-ann(qe+8..150d):6 filings",
+   "pdf/pdf:2aefbe78-7658-41f6-aedb-2f99237039a6 ann=20240207 period_ok=True pages=27 quarter/period ended december 31, 2023",
+   "pdf/pdf:465606d1-3e27-4195-a87f-427ca6a77816 ann=20240207 period_ok=True pages=27 quarter/period ended december 31, 2023",
+   "pdf/pdf:7eb250b5-5484-43ec-9e3a-37039f78fe14 ann=20240415 period_ok=False pages=2 ",
+   "pdf/pdf:00b2f677-89a2-4dd2-beba-7e2a670502f8 ann=20240528 period_ok=False pages=35 ",
+   "pdf/pdf:6c94bfe4-b1e2-4b9b-bf25-52ad45988785 ann=20240528 period_ok=False pages=35 ",
+   "pdf/pdf:61b78990-94e5-44a8-a828-6f7e8dd15efe ann=20240605 period_ok=False pages=2 ",
+   "nse-archive-std: no-detail-link (0 list rows for this quarter)",
+   "nse-archive-con: no-detail-link (0 list rows for this quarter)"
+  ],
+  "scrip": "540755",
+  "scrip_src": "live-master",
+  "std": [],
+  "std_val": null,
+  "stored_con": 1517.96,
+  "stored_std": 1517.96,
+  "sym": "GICRE",
+  "verdict": "INCONCLUSIVE"
+ },
+ "GSS|20240630": {
+  "con": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "consolidated",
+     "ctx": "OneD",
+     "filed": "14-Aug-2024 22:15",
+     "nci": null,
+     "owners": null,
+     "pat_src": "period-total",
+     "period": "2024-04-01..2024-06-30",
+     "rev": 29.8,
+     "tag": "ProfitLossForPeriod",
+     "total": 0.1,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_112473_1227494_14082024101503.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 0.1
+   }
+  ],
+  "con_val": 0.1,
+  "needs_eyes": false,
+  "qe": 20240630,
+  "routes": [
+   "xbrl-std: 0.07 (ctx OneD, 2024-04-01..2024-06-30, declared standalone)",
+   "xbrl-con: 0.10 (ctx OneD, 2024-04-01..2024-06-30, declared consolidated)",
+   "detres: 0.07 span-ok calib=standalone CAL-REV pass: detres rev 2.12 == stored revStd 2.12 (revCon 29.8)"
+  ],
+  "scrip": "532951",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "standalone",
+     "ctx": "OneD",
+     "filed": "14-Aug-2024 22:13",
+     "nci": null,
+     "owners": null,
+     "pat_src": "period-total",
+     "period": "2024-04-01..2024-06-30",
+     "rev": 2.12,
+     "tag": "ProfitLossForPeriod",
+     "total": 0.07,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_112471_1227488_14082024101317.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 0.07
+   },
+   {
+    "ev": {
+     "calib": [
+      "CAL-REV pass: detres rev 2.12 == stored revStd 2.12 (revCon 29.8)"
+     ],
+     "rev": 2.12,
+     "type": "Un-Audited"
+    },
+    "src": "bse-detres",
+    "value": 0.07
+   }
+  ],
+  "std_val": 0.07,
+  "stored_con": 0.1,
+  "stored_std": 0.07,
+  "sym": "GSS",
+  "verdict": "OK"
+ },
+ "HDFCLIFE|20190930": {
+  "con": [
+   {
+    "ev": {
+     "ann": 20191023,
+     "evidence": [
+      "pat col(20190630)==stored[-1]=425.71 DIVERGENT MATERIAL"
+     ],
+     "header": [
+      [
+       277,
+       20190930
+      ],
+      [
+       328,
+       20190630
+      ]
+     ],
+     "label": "Profit after tax and before Extraordlnarv items",
+     "page": 17,
+     "row": [
+      [
+       278,
+       30.898
+      ],
+      [
+       336,
+       42571.0
+      ]
+     ],
+     "unit_div": 100.0,
+     "why": "ordinal col 1 of 2 (header 20190930)"
+    },
+    "garbled": null,
+    "src": "bse-ann-pdf",
+    "tier": "A",
+    "value": 0.31
+   }
+  ],
+  "con_val": 0.31,
+  "needs_eyes": true,
+  "qe": 20190930,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: no row",
+   "pdf/bse-ann(qe+8..150d):4 filings",
+   "pdf/pdf:5fa25dd4-db4c-4d9d-b45a-06e8cd5a2cf0 ann=20191023 period_ok=True pages=84 quarter and half year ended september 30,2019",
+   "pdf/scanned-no-text-layer:ce288722-bc38-446f-a8db-e50e33d8(ann=20191231,1/1 text pages)",
+   "pdf/pdf:6399c9a4-df81-4ae2-99ee-a61a7a839c1a ann=20200123 period_ok=True pages=77 three months ended i as at nine months ended/ as 11t december 31, 20~1 september 30, 2019",
+   "pdf/pdf:856770b4-cc27-4555-a5af-2bf2b1ae373a ann=20200123 period_ok=True pages=77 three months ended i as at nine months ended/ as 11t december 31, 20~1 september 30, 2019",
+   "nse-archive-std: no-detail-link (0 list rows for this quarter)",
+   "nse-archive-con: no-detail-link (0 list rows for this quarter)"
+  ],
+  "scrip": "540777",
+  "scrip_src": "live-master",
+  "std": [],
+  "std_val": null,
+  "stored_con": 308.98,
+  "stored_std": 308.69,
+  "sym": "HDFCLIFE",
+  "verdict": "INCONCLUSIVE"
+ },
+ "HDFCLIFE|20200331": {
+  "con": [
+   {
+    "ev": {
+     "ann": 20200721,
+     "evidence": [
+      "pat col(20190630)==stored[-3]=425.71 DIVERGENT MATERIAL"
+     ],
+     "header": [
+      [
+       350,
+       20200630
+      ],
+      [
+       408,
+       20200331
+      ],
+      [
+       463,
+       20190630
+      ],
+      [
+       521,
+       20200331
+      ]
+     ],
+     "label": "Profit after tax and before Extraordinary items",
+     "page": 11,
+     "row": [
+      [
+       358,
+       45054.0
+      ],
+      [
+       415,
+       31165.0
+      ],
+      [
+       471,
+       42571.0
+      ],
+      [
+       528,
+       129745.0
+      ]
+     ],
+     "unit_div": 100.0,
+     "why": "ordinal col 2 of 4 (header 20200331)"
+    },
+    "garbled": null,
+    "src": "bse-ann-pdf",
+    "value": 311.65
+   }
+  ],
+  "con_val": 311.65,
+  "needs_eyes": true,
+  "qe": 20200331,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: no row",
+   "pdf/bse-ann(qe+8..150d):5 filings",
+   "pdf/scanned-no-text-layer:16957857-12e0-4d64-899a-01e18ed8(ann=20200422,1/1 text pages)",
+   "pdf/pdf:ca5730b1-257e-4fcb-8ebe-513085718e76 ann=20200427 period_ok=True pages=95 quarter and year ended march 31, 2020",
+   "pdf/scanned-no-text-layer:ac05faa7-d460-4e7f-a656-b74cd55a(ann=20200630,1/1 text pages)",
+   "pdf/pdf:6ba01e02-8d61-4c64-b083-86b06ea30430 ann=20200721 period_ok=True pages=85 quarter ended march 31, 2020"
+  ],
+  "scrip": "540777",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "ann": 20200721,
+     "evidence": [
+      "pat col(20190630)==stored[-3]=424.62 DIVERGENT MATERIAL"
+     ],
+     "header": [
+      [
+       353,
+       20200630
+      ],
+      [
+       408,
+       20200331
+      ],
+      [
+       459,
+       20190630
+      ]
+     ],
+     "label": "Profit after tax and before Extraordinary items",
+     "page": 3,
+     "row": [
+      [
+       361,
+       45109.0
+      ],
+      [
+       414,
+       31171.0
+      ],
+      [
+       467,
+       42462.0
+      ],
+      [
+       516,
+       129527.0
+      ]
+     ],
+     "unit_div": 100.0,
+     "why": "nearest-x 414 vs header 408 (header 20200331)"
+    },
+    "garbled": null,
+    "src": "bse-ann-pdf",
+    "value": 311.71
+   }
+  ],
+  "std_val": 311.71,
+  "stored_con": 311.65,
+  "stored_std": 311.71,
+  "sym": "HDFCLIFE",
+  "verdict": "OK"
+ },
+ "HDFCLIFE|20240331": {
+  "con": [
+   {
+    "ev": {
+     "ann": 20240418,
+     "evidence": [
+      "pat col(20231231)==stored[-1]=367.54 DIVERGENT MATERIAL",
+      "pat col(20230331)==stored[-4]=361.97 DIVERGENT MATERIAL"
+     ],
+     "header": [
+      [
+       292,
+       20240331
+      ],
+      [
+       362,
+       20231231
+      ],
+      [
+       422,
+       20230331
+      ],
+      [
+       486,
+       20240331
+      ],
+      [
+       551,
+       20230331
+      ]
+     ],
+     "label": "Profit after tax and before Extraordinary items",
+     "page": 20,
+     "row": [
+      [
+       300,
+       41164.0
+      ],
+      [
+       365,
+       36754.0
+      ],
+      [
+       429,
+       36197.0
+      ],
+      [
+       494,
+       157408.0
+      ],
+      [
+       559,
+       136828.0
+      ]
+     ],
+     "unit_div": 100.0,
+     "why": "ordinal col 1 of 5 (header 20240331)"
+    },
+    "garbled": null,
+    "src": "bse-ann-pdf",
+    "tier": "A",
+    "value": 411.64
+   }
+  ],
+  "con_val": 411.64,
+  "needs_eyes": false,
+  "qe": 20240331,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: no row",
+   "pdf/bse-ann(qe+8..150d):5 filings",
+   "pdf/pdf:900d7aca-e73f-493c-a011-a814b4df9c18 ann=20240418 period_ok=True pages=40 quarter and year ended march 31, 2024",
+   "pdf/scanned-no-text-layer:6e65ca0f-0cf9-4891-8b4c-66916107(ann=20240628,1/1 text pages)",
+   "pdf/pdf:e4e6454d-d4da-4dc3-a952-55b12f6dd42a ann=20240715 period_ok=False pages=26 ",
+   "pdf/pdf:5ac49234-4393-428a-86f6-87579a49a273 ann=20241015 period_ok=False pages=32 ",
+   "pdf/pdf:5f8591d2-c65c-4761-a5c6-ad281356a88a ann=20241015 period_ok=False pages=32 ",
+   "nse-archive-std: no-detail-link (0 list rows for this quarter)",
+   "nse-archive-con: no-detail-link (0 list rows for this quarter)"
+  ],
+  "scrip": "540777",
+  "scrip_src": "live-master",
+  "std": [],
+  "std_val": null,
+  "stored_con": 411.64,
+  "stored_std": 411.66,
+  "sym": "HDFCLIFE",
+  "verdict": "INCONCLUSIVE"
+ },
+ "HINDCON|20240331": {
+  "con": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "consolidated",
+     "ctx": "OneD",
+     "filed": "16-May-2024 18:38",
+     "nci": 0.01,
+     "owners": 1.79,
+     "pat_src": "owners-tag",
+     "period": "2024-01-01..2024-03-31",
+     "rev": 14.34,
+     "tag": "ProfitLossForPeriod",
+     "total": 1.8,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_106132_1127152_16052024063848.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 1.79
+   }
+  ],
+  "con_val": 1.79,
+  "needs_eyes": false,
+  "qe": 20240331,
+  "routes": [
+   "xbrl-std: 1.80 (ctx OneD, 2024-01-01..2024-03-31, declared standalone)",
+   "xbrl-con: 1.79 (ctx OneD, 2024-01-01..2024-03-31, declared consolidated)",
+   "bse-scrip: unresolved in live + delisted + suspended masters"
+  ],
+  "scrip": null,
+  "scrip_src": "unresolved",
+  "std": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "standalone",
+     "ctx": "OneD",
+     "filed": "16-May-2024 18:36",
+     "nci": null,
+     "owners": null,
+     "pat_src": "period-total",
+     "period": "2024-01-01..2024-03-31",
+     "rev": 14.34,
+     "tag": "ProfitLossForPeriod",
+     "total": 1.8,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_106128_1127135_16052024063625.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 1.8
+   }
+  ],
+  "std_val": 1.8,
+  "stored_con": 1.79,
+  "stored_std": 1.8,
+  "sym": "HINDCON",
+  "verdict": "OK"
+ },
+ "ICICIPRULI|20190930": {
+  "con": [],
+  "con_val": null,
+  "needs_eyes": false,
+  "qe": 20190930,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: no row",
+   "pdf/bse-ann(qe+8..150d):6 filings",
+   "pdf/pdf:140fefe8-302d-4c78-9f96-75c6be58cdae ann=20191022 period_ok=True pages=53 quarter and halt year ended september 30, 2019",
+   "pdf/pdf:2944797c-efc0-45be-b94d-464967dfd536 ann=20191022 period_ok=True pages=54 quarter and half year ended september 30, 2019",
+   "pdf/pdf:7c4b8cd9-aac7-4a45-af69-8bb2f7adc9a7 ann=20191108 period_ok=True pages=5 period ended september 30, 2019",
+   "pdf/scanned-no-text-layer:9a4cc3ca-21ac-4d76-b517-62a610ab(ann=20191226,1/1 text pages)",
+   "pdf/pdf:a1bd716f-16e1-4107-a8ce-cb5cc78d39df ann=20200121 period_ok=False pages=49 ",
+   "pdf/pdf:eb4e4cf2-ef59-4ef4-84a4-953bddd2ed18 ann=20200121 period_ok=False pages=50 ",
+   "nse-archive-std: no-detail-link (0 list rows for this quarter)",
+   "nse-archive-con: no-detail-link (0 list rows for this quarter)"
+  ],
+  "scrip": "540133",
+  "scrip_src": "live-master",
+  "std": [],
+  "std_val": null,
+  "stored_con": 301.84,
+  "stored_std": 301.86,
+  "sym": "ICICIPRULI",
+  "verdict": "INCONCLUSIVE"
+ },
+ "ICICIPRULI|20240331": {
+  "con": [
+   {
+    "ev": {
+     "ann": 20240723,
+     "evidence": [
+      "pat col(20230630)==stored[-3]=206.19 DIVERGENT MATERIAL"
+     ],
+     "header": [
+      [
+       331,
+       20240630
+      ],
+      [
+       408,
+       20240331
+      ],
+      [
+       481,
+       20230630
+      ],
+      [
+       552,
+       20240331
+      ]
+     ],
+     "label": "Net Profit After Tax (\u20b9 in Lakhs)",
+     "page": 39,
+     "row": [
+      [
+       335,
+       22434.0
+      ],
+      [
+       414,
+       17367.0
+      ],
+      [
+       487,
+       20619.0
+      ],
+      [
+       550,
+       85066.0
+      ]
+     ],
+     "unit_div": 100.0,
+     "why": "ordinal col 2 of 4 (header 20240331)"
+    },
+    "garbled": null,
+    "src": "bse-ann-pdf",
+    "tier": "A",
+    "value": 173.67
+   }
+  ],
+  "con_val": 173.67,
+  "needs_eyes": true,
+  "qe": 20240331,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: no row",
+   "pdf/bse-ann(qe+8..150d):4 filings",
+   "pdf/pdf:476b0166-2890-46ad-a036-7755af473e13 ann=20240423 period_ok=False pages=90 ",
+   "pdf/pdf:e7057a54-04dd-4da9-bd9d-e549cc6ef5a4 ann=20240423 period_ok=True pages=91 quarter and year ended march 31, 2024",
+   "pdf/pdf:a95a6c19-92fe-4f34-bf09-846591839935 ann=20240723 period_ok=False pages=55 "
+  ],
+  "scrip": "540133",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "ann": 20240723,
+     "evidence": [
+      "pat col(20230630)==stored[-3]=206.91 DIVERGENT MATERIAL"
+     ],
+     "header": [
+      [
+       338,
+       20240630
+      ],
+      [
+       397,
+       20240331
+      ],
+      [
+       450,
+       20230630
+      ],
+      [
+       508,
+       20240331
+      ]
+     ],
+     "label": "Profit/(loss) after tax and before extraordinary items",
+     "page": 28,
+     "row": [
+      [
+       345,
+       22540.0
+      ],
+      [
+       401,
+       17376.0
+      ],
+      [
+       456,
+       20691.0
+      ],
+      [
+       512,
+       85239.0
+      ]
+     ],
+     "unit_div": 100.0,
+     "why": "ordinal col 2 of 4 (header 20240331)"
+    },
+    "garbled": null,
+    "src": "bse-ann-pdf",
+    "tier": "A",
+    "value": 173.76
+   }
+  ],
+  "std_val": 173.76,
+  "stored_con": 173.67,
+  "stored_std": 173.76,
+  "sym": "ICICIPRULI",
+  "verdict": "OK"
+ },
+ "IDEA|20240331": {
+  "con": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "consolidated",
+     "ctx": "OneD",
+     "filed": "16-May-2024 19:31",
+     "nci": 0.0,
+     "owners": 0.0,
+     "pat_src": "period-total (owners+NCI both tagged 0.00 -- split never filed)",
+     "period": "2024-01-01..2024-03-31",
+     "rev": 10573.7,
+     "tag": "ProfitLossForPeriod",
+     "total": -7674.6,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_106147_1127302_16052024073122.xml"
+    },
+    "src": "nse-xbrl",
+    "value": -7674.6
+   }
+  ],
+  "con_val": -7674.6,
+  "needs_eyes": false,
+  "qe": 20240331,
+  "routes": [
+   "xbrl-std: -7678.80 (ctx OneD, 2024-01-01..2024-03-31, declared standalone)",
+   "xbrl-con: -7674.60 (ctx OneD, 2024-01-01..2024-03-31, declared consolidated)",
+   "detres: -7678.80 span-ok calib=standalone CAL-REV pass: detres rev 10472.30 == stored revStd 10472.30 (revCon 10573.7)"
+  ],
+  "scrip": "532822",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "standalone",
+     "ctx": "OneD",
+     "filed": "16-May-2024 19:34",
+     "nci": null,
+     "owners": null,
+     "pat_src": "period-total",
+     "period": "2024-01-01..2024-03-31",
+     "rev": 10472.3,
+     "tag": "ProfitLossForPeriod",
+     "total": -7678.8,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_106148_1127309_16052024073407.xml"
+    },
+    "src": "nse-xbrl",
+    "value": -7678.8
+   },
+   {
+    "ev": {
+     "calib": [
+      "CAL-REV pass: detres rev 10472.30 == stored revStd 10472.30 (revCon 10573.7)"
+     ],
+     "rev": 10472.3,
+     "type": "Audited"
+    },
+    "src": "bse-detres",
+    "value": -7678.8
+   }
+  ],
+  "std_val": -7678.8,
+  "stored_con": -7674.6,
+  "stored_std": -7678.8,
+  "sym": "IDEA",
+  "verdict": "OK"
+ },
+ "INDORAMA|20220331": {
+  "con": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "consolidated",
+     "ctx": "OneD",
+     "filed": "29-Apr-2022 12:34",
+     "nci": null,
+     "owners": null,
+     "pat_src": "period-total",
+     "period": "2022-01-01..2022-03-31",
+     "rev": 1251.71,
+     "tag": "ProfitLossForPeriod",
+     "total": 107.13,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_83728_649349_29042022123418_WEB.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 107.13
+   }
+  ],
+  "con_val": 107.13,
+  "needs_eyes": false,
+  "qe": 20220331,
+  "routes": [
+   "xbrl-std: 107.10 (ctx OneD, 2022-01-01..2022-03-31, declared standalone)",
+   "xbrl-con: 107.13 (ctx OneD, 2022-01-01..2022-03-31, declared consolidated)",
+   "detres: 107.10 span-ok calib=standalone CAL-REV pass: detres rev 1199.71 == stored revStd 1199.71 (revCon 1251.71)"
+  ],
+  "scrip": "500207",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "standalone",
+     "ctx": "OneD",
+     "filed": "29-Apr-2022 14:15",
+     "nci": null,
+     "owners": null,
+     "pat_src": "period-total",
+     "period": "2022-01-01..2022-03-31",
+     "rev": 1199.71,
+     "tag": "ProfitLossForPeriod",
+     "total": 107.1,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_83734_649399_29042022021542_WEB.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 107.1
+   },
+   {
+    "ev": {
+     "calib": [
+      "CAL-REV pass: detres rev 1199.71 == stored revStd 1199.71 (revCon 1251.71)"
+     ],
+     "rev": 1199.71,
+     "type": "Audited"
+    },
+    "src": "bse-detres",
+    "value": 107.1
+   }
+  ],
+  "std_val": 107.1,
+  "stored_con": 107.13,
+  "stored_std": 107.1,
+  "sym": "INDORAMA",
+  "verdict": "OK"
+ },
+ "INDOTHAI|20180630": {
+  "con": [],
+  "con_val": null,
+  "needs_eyes": false,
+  "qe": 20180630,
+  "routes": [
+   "xbrl-std: no-context spanning 3m to 20180630 on basis standalone (contexts={})",
+   "xbrl-con: no-context spanning 3m to 20180630 on basis consolidated (contexts={})",
+   "detres: 3.03 span-ok calib=standalone CAL-PAT std @20180331: detres 1.21 == stored std 1.21 (con 1.29); CAL-PAT std @20181231: detres 0.26 == stored std 0.26 (con 0.05); CAL-PAT std @20190331: detres -0.17 == stored std -0.17 (con -0.32); CAL-PAT votes std=3 con=0 over 3 divergent neighbours"
+  ],
+  "scrip": "533676",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "calib": [
+      "CAL-PAT std @20180331: detres 1.21 == stored std 1.21 (con 1.29)",
+      "CAL-PAT std @20181231: detres 0.26 == stored std 0.26 (con 0.05)",
+      "CAL-PAT std @20190331: detres -0.17 == stored std -0.17 (con -0.32)",
+      "CAL-PAT votes std=3 con=0 over 3 divergent neighbours"
+     ],
+     "rev": 14.71,
+     "type": "Un-Audited"
+    },
+    "src": "bse-detres",
+    "value": 3.03
+   }
+  ],
+  "std_val": 3.03,
+  "stored_con": 3.05,
+  "stored_std": 3.03,
+  "sym": "INDOTHAI",
+  "verdict": "OK"
+ },
+ "JINDCOT|20210630": {
+  "con": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "consolidated",
+     "ctx": "OneD",
+     "filed": "14-Aug-2021 17:31",
+     "nci": 0.0,
+     "owners": 0.0,
+     "pat_src": "period-total (owners+NCI both tagged 0.00 -- split never filed)",
+     "period": "2021-04-01..2021-06-30",
+     "rev": 6.82,
+     "tag": "ProfitLossForPeriod",
+     "total": -1.14,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_76023_507893_14082021053113_WEB.xml"
+    },
+    "src": "nse-xbrl",
+    "value": -1.14
+   }
+  ],
+  "con_val": -1.14,
+  "needs_eyes": false,
+  "qe": 20210630,
+  "routes": [
+   "xbrl-std: -1.14 (ctx OneD, 2021-04-01..2021-06-30, declared standalone)",
+   "xbrl-con: -1.14 (ctx OneD, 2021-04-01..2021-06-30, declared consolidated)",
+   "detres: -1.14 span-ok calib=standalone CAL-REV tie: stored revStd == revCon here, uninformative; CAL-PAT pass @20210930: detres -1.91 == stored std -1.91 (con -1.97)"
+  ],
+  "scrip": "533103",
+  "scrip_src": "delisted-master",
+  "std": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "standalone",
+     "ctx": "OneD",
+     "filed": "14-Aug-2021 17:29",
+     "nci": null,
+     "owners": null,
+     "pat_src": "period-total",
+     "period": "2021-04-01..2021-06-30",
+     "rev": 6.82,
+     "tag": "ProfitLossForPeriod",
+     "total": -1.14,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_76021_507884_14082021052951_WEB.xml"
+    },
+    "src": "nse-xbrl",
+    "value": -1.14
+   },
+   {
+    "ev": {
+     "calib": [
+      "CAL-REV tie: stored revStd == revCon here, uninformative",
+      "CAL-PAT pass @20210930: detres -1.91 == stored std -1.91 (con -1.97)"
+     ],
+     "rev": 6.82,
+     "type": "Un-Audited"
+    },
+    "src": "bse-detres",
+    "value": -1.14
+   }
+  ],
+  "std_val": -1.14,
+  "stored_con": -1.14,
+  "stored_std": -1.14,
+  "sym": "JINDCOT",
+  "verdict": "OK"
+ },
+ "LAHOTIOV|20250331": {
+  "con": [],
+  "con_val": null,
+  "needs_eyes": true,
+  "qe": 20250331,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: 4.04 span-ok calib=standalone CAL-PAT std @20241231: detres 4.59 == stored std 4.64 (con 12.91); CAL-PAT std @20250930: detres 6.68 == stored std 6.68 (con 6.97); CAL-PAT std @20240331: detres -0.92 == stored std -0.92 (con 3.67); CAL-PAT votes std=3 con=0 over 3 divergent neighbours",
+   "pdf/bse-ann(qe+8..150d):5 filings",
+   "pdf/pdf:0f617bad-0696-4028-b8ee-05359276f992 ann=20250529 period_ok=True pages=21 quarter and year ended march 31, 2025",
+   "pdf/pdf:bde821b2-a6ab-473c-ac3d-ecd86292b7f4 ann=20250529 period_ok=True pages=21 quarter and year ended march 31, 2025",
+   "pdf/scanned-no-text-layer:76625401-b0e8-47b6-b7a6-48532f63(ann=20250804,1/1 text pages)",
+   "pdf/pdf:c377ba88-2f9b-4d9b-9596-770c270daac9 ann=20250813 period_ok=False pages=15 ",
+   "pdf/pdf:ea03cee8-2e0e-4182-bf7f-de7a52fe8551 ann=20250813 period_ok=False pages=15 ",
+   "nse-archive-std: no-detail-link (0 list rows for this quarter)",
+   "nse-archive-con: no-detail-link (0 list rows for this quarter)"
+  ],
+  "scrip": "531842",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "calib": [
+      "CAL-PAT std @20241231: detres 4.59 == stored std 4.64 (con 12.91)",
+      "CAL-PAT std @20250930: detres 6.68 == stored std 6.68 (con 6.97)",
+      "CAL-PAT std @20240331: detres -0.92 == stored std -0.92 (con 3.67)",
+      "CAL-PAT votes std=3 con=0 over 3 divergent neighbours"
+     ],
+     "rev": 121.74,
+     "type": "Audited"
+    },
+    "src": "bse-detres",
+    "value": 4.04
+   },
+   {
+    "ev": {
+     "ann": 20250813,
+     "evidence": [
+      "pat col(20240630)==stored[-3]=453.78 MATERIAL"
+     ],
+     "header": [
+      [
+       326,
+       20250630
+      ],
+      [
+       389,
+       20250331
+      ],
+      [
+       459,
+       20240630
+      ],
+      [
+       533,
+       20250331
+      ]
+     ],
+     "label": "XIII) [Profit / (Loss) for the period (VIII+XI)",
+     "page": 8,
+     "row": [
+      [
+       329,
+       180.58
+      ],
+      [
+       390,
+       40411.0
+      ],
+      [
+       468,
+       45378.0
+      ],
+      [
+       542,
+       1286.06
+      ]
+     ],
+     "unit_div": 100.0,
+     "why": "ordinal col 2 of 4 (header 20250331)"
+    },
+    "garbled": null,
+    "src": "bse-ann-pdf",
+    "tier": "A",
+    "value": 404.11
+   }
+  ],
+  "std_val": 4.04,
+  "stored_con": 404.11,
+  "stored_std": 404.11,
+  "sym": "LAHOTIOV",
+  "verdict": "CONFLICT-STD-SOURCES"
+ },
+ "LICI|20220331": {
+  "con": [
+   {
+    "ev": {
+     "ann": 20220530,
+     "evidence": [
+      "pat col(20211231)==stored[-1]=211.30 DIVERGENT MATERIAL",
+      "pat col(20210331)==stored[-4]=2917.34 DIVERGENT MATERIAL"
+     ],
+     "header": [
+      [
+       283,
+       20220331
+      ],
+      [
+       346,
+       20211231
+      ],
+      [
+       410,
+       20210331
+      ],
+      [
+       476,
+       20220331
+      ],
+      [
+       548,
+       20210331
+      ]
+     ],
+     "label": "Profit/ (loss) after tax and Extraordinary Items",
+     "page": 18,
+     "row": [
+      [
+       293,
+       240939.85
+      ],
+      [
+       358,
+       21129.87
+      ],
+      [
+       419,
+       291733.98
+      ],
+      [
+       460,
+       4.0
+      ],
+      [
+       491,
+       12470.82
+      ],
+      [
+       562,
+       297413.86
+      ]
+     ],
+     "unit_div": 100.0,
+     "why": "nearest-x 293 vs header 283 (header 20220331)"
+    },
+    "garbled": null,
+    "src": "bse-ann-pdf",
+    "tier": "A",
+    "value": 2409.4
+   }
+  ],
+  "con_val": 2409.4,
+  "needs_eyes": false,
+  "qe": 20220331,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: no row",
+   "pdf/bse-ann(qe+8..150d):6 filings",
+   "pdf/scanned-no-text-layer:c6ec91d3-f2c6-4008-a23f-a29ae13f(ann=20220524,1/1 text pages)",
+   "pdf/pdf:12b8f790-2c58-49ae-909d-ac8d31120adf ann=20220530 period_ok=True pages=25 quarter and year ended 31st march, 2022",
+   "pdf/pdf:3c3ba2f9-cf8a-4888-a412-618224522b1d ann=20220608 period_ok=False pages=3 ",
+   "pdf/scanned-no-text-layer:6eec50a1-136c-4895-a23b-2ae903f5(ann=20220704,1/1 text pages)",
+   "pdf/pdf:7733e669-18bd-4ef1-b123-aebc76224a78 ann=20220714 period_ok=False pages=9 ",
+   "pdf/pdf:fcfad4fa-e577-4046-8e6d-63d7bc89d61f ann=20220812 period_ok=False pages=23 ",
+   "nse-archive-std: no-detail-link (0 list rows for this quarter)",
+   "nse-archive-con: no-detail-link (0 list rows for this quarter)"
+  ],
+  "scrip": "543526",
+  "scrip_src": "live-master",
+  "std": [],
+  "std_val": null,
+  "stored_con": 2409.4,
+  "stored_std": 2409.4,
+  "sym": "LICI",
+  "verdict": "INCONCLUSIVE"
+ },
+ "LICI|20220630": {
+  "con": [
+   {
+    "ev": {
+     "ann": 20220812,
+     "evidence": [
+      "pat col(20220331)==stored[-1]=2409.40 MATERIAL"
+     ],
+     "header": [
+      [
+       329,
+       20220630
+      ],
+      [
+       398,
+       20220331
+      ],
+      [
+       533,
+       20220331
+      ]
+     ],
+     "label": "Profit/ (loss) after tax and before Extraordinary Items",
+     "page": 12,
+     "row": [
+      [
+       340,
+       60278.88
+      ],
+      [
+       403,
+       240939.65
+      ],
+      [
+       474,
+       2438.82
+      ],
+      [
+       512,
+       4.0
+      ],
+      [
+       541,
+       12470.82
+      ]
+     ],
+     "unit_div": 100.0,
+     "why": "nearest-x 340 vs header 329 (header 20220630)"
+    },
+    "garbled": null,
+    "src": "bse-ann-pdf",
+    "tier": "A",
+    "value": 602.79
+   }
+  ],
+  "con_val": 602.79,
+  "needs_eyes": true,
+  "qe": 20220630,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: no row",
+   "pdf/bse-ann(qe+8..150d):5 filings",
+   "pdf/pdf:7733e669-18bd-4ef1-b123-aebc76224a78 ann=20220714 period_ok=False pages=9 ",
+   "pdf/pdf:fcfad4fa-e577-4046-8e6d-63d7bc89d61f ann=20220812 period_ok=True pages=23 quarter ended on june 30, 2022",
+   "pdf/scanned-no-text-layer:4524ddeb-0043-421e-8e09-4e3c9004(ann=20221019,1/1 text pages)",
+   "pdf/pdf:27c144e8-71e0-4373-8731-e7b0d9669135 ann=20221111 period_ok=True pages=27 quarter ended june 30, 2022",
+   "pdf/pdf:87d04500-4bd3-40fe-83fc-0fdc336ff291 ann=20221125 period_ok=False pages=4 ",
+   "nse-archive-std: no-detail-link (0 list rows for this quarter)",
+   "nse-archive-con: no-detail-link (0 list rows for this quarter)"
+  ],
+  "scrip": "543526",
+  "scrip_src": "live-master",
+  "std": [],
+  "std_val": null,
+  "stored_con": 602.79,
+  "stored_std": 602.79,
+  "sym": "LICI",
+  "verdict": "INCONCLUSIVE"
+ },
+ "LICI|20220930": {
+  "con": [
+   {
+    "ev": {
+     "ann": 20221111,
+     "evidence": [
+      "pat col(20210930)==stored[-4]=1479.65 DIVERGENT MATERIAL"
+     ],
+     "header": [
+      [
+       271,
+       20220930
+      ],
+      [
+       333,
+       20220630
+      ],
+      [
+       394,
+       20210930
+      ],
+      [
+       453,
+       20220930
+      ],
+      [
+       515,
+       20210930
+      ],
+      [
+       579,
+       20220331
+      ]
+     ],
+     "label": "Profit / (loss) after tax and before Extraordinary",
+     "page": 19,
+     "row": [
+      [
+       280,
+       1585435.0
+      ],
+      [
+       402,
+       147964.68
+      ],
+      [
+       463,
+       1645713.68
+      ],
+      [
+       525,
+       150401.3
+      ],
+      [
+       585,
+       412470.82
+      ]
+     ],
+     "unit_div": 100.0,
+     "why": "nearest-x 280 vs header 271 (header 20220930)"
+    },
+    "garbled": null,
+    "src": "bse-ann-pdf",
+    "tier": "A",
+    "value": 15854.35
+   }
+  ],
+  "con_val": 15854.35,
+  "needs_eyes": true,
+  "qe": 20220930,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: no row",
+   "pdf/bse-ann(qe+8..150d):5 filings",
+   "pdf/scanned-no-text-layer:4524ddeb-0043-421e-8e09-4e3c9004(ann=20221019,1/1 text pages)",
+   "pdf/pdf:27c144e8-71e0-4373-8731-e7b0d9669135 ann=20221111 period_ok=True pages=27 quarter and half year ended on september 30, 2022"
+  ],
+  "scrip": "543526",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "ann": 20221111,
+     "evidence": [
+      "pat col(20210930)==stored[-4]=1433.71 DIVERGENT MATERIAL"
+     ],
+     "header": [
+      [
+       280,
+       20220930
+      ],
+      [
+       338,
+       20220630
+      ],
+      [
+       395,
+       20210930
+      ],
+      [
+       451,
+       20220930
+      ],
+      [
+       508,
+       20210930
+      ],
+      [
+       565,
+       20220331
+      ]
+     ],
+     "label": "Profit/ (loss) after tax and EJCttaordlnary Items",
+     "page": 6,
+     "row": [
+      [
+       287,
+       1595249.4
+      ],
+      [
+       344,
+       68288.9
+      ],
+      [
+       400,
+       143371.29
+      ],
+      [
+       458,
+       1663538.3
+      ],
+      [
+       513,
+       143665.57
+      ],
+      [
+       571,
+       404312.11
+      ]
+     ],
+     "unit_div": 100.0,
+     "why": "ordinal col 1 of 6 (header 20220930)"
+    },
+    "garbled": null,
+    "src": "bse-ann-pdf",
+    "tier": "A",
+    "value": 15952.49
+   }
+  ],
+  "std_val": 15952.49,
+  "stored_con": 15952.49,
+  "stored_std": 15952.49,
+  "sym": "LICI",
+  "verdict": "OK"
+ },
+ "LICI|20221231": {
+  "con": [
+   {
+    "ev": {
+     "ann": 20230209,
+     "evidence": [
+      "pat col(20211231)==stored[-4]=211.30 DIVERGENT MATERIAL"
+     ],
+     "header": [
+      [
+       269,
+       20221231
+      ],
+      [
+       332,
+       20220930
+      ],
+      [
+       394,
+       20211231
+      ],
+      [
+       456,
+       20221231
+      ],
+      [
+       582,
+       20220331
+      ]
+     ],
+     "label": "Profit / (loss) after tax and before Extraordinary",
+     "page": 18,
+     "row": [
+      [
+       280,
+       834871.49
+      ],
+      [
+       343,
+       1585435.0
+      ],
+      [
+       406,
+       21129.87
+      ],
+      [
+       467,
+       2280585.17
+      ],
+      [
+       529,
+       171531.17
+      ],
+      [
+       589,
+       412470.82
+      ]
+     ],
+     "unit_div": 100.0,
+     "why": "nearest-x 280 vs header 269 (header 20221231)"
+    },
+    "garbled": null,
+    "src": "bse-ann-pdf",
+    "tier": "A",
+    "value": 8348.71
+   }
+  ],
+  "con_val": 8348.71,
+  "needs_eyes": true,
+  "qe": 20221231,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: no row",
+   "pdf/bse-ann(qe+8..150d):3 filings",
+   "pdf/scanned-no-text-layer:c3f65980-b32c-459c-88e0-24b4c8d9(ann=20230201,1/1 text pages)",
+   "pdf/pdf:0e604354-8e27-46d5-85c4-ea3d3f698483 ann=20230209 period_ok=True pages=24 quarter and nine months ended on december 31, 2022",
+   "pdf/pdf:c682f0c5-ecb4-48fa-87a1-1fa0135f580d ann=20230524 period_ok=False pages=27 ",
+   "nse-archive-std: no-detail-link (0 list rows for this quarter)",
+   "nse-archive-con: no-detail-link (0 list rows for this quarter)"
+  ],
+  "scrip": "543526",
+  "scrip_src": "live-master",
+  "std": [],
+  "std_val": null,
+  "stored_con": 8348.71,
+  "stored_std": 8348.71,
+  "sym": "LICI",
+  "verdict": "INCONCLUSIVE"
+ },
+ "LICI|20230331": {
+  "con": [
+   {
+    "ev": {
+     "ann": 20230810,
+     "evidence": [
+      "pat col(20220630)==stored[-3]=602.79 MATERIAL"
+     ],
+     "header": [
+      [
+       287,
+       20230630
+      ],
+      [
+       357,
+       20230331
+      ],
+      [
+       424,
+       20220630
+      ],
+      [
+       493,
+       20230331
+      ]
+     ],
+     "label": "Profit / (loss) after tax and before",
+     "page": 17,
+     "row": [
+      [
+       296,
+       963498.31
+      ],
+      [
+       331,
+       13.0
+      ],
+      [
+       365,
+       19079.43
+      ],
+      [
+       433,
+       60278.68
+      ],
+      [
+       501,
+       3599664.6
+      ]
+     ],
+     "unit_div": 100.0,
+     "why": "nearest-x 365 vs header 357 (header 20230331)"
+    },
+    "garbled": null,
+    "src": "bse-ann-pdf",
+    "tier": "A",
+    "value": 190.79
+   }
+  ],
+  "con_val": 190.79,
+  "needs_eyes": true,
+  "qe": 20230331,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: no row",
+   "pdf/bse-ann(qe+8..150d):3 filings",
+   "pdf/pdf:c682f0c5-ecb4-48fa-87a1-1fa0135f580d ann=20230524 period_ok=True pages=27 quarter and year ended 31st march, 2023",
+   "pdf/scanned-no-text-layer:a3282c06-d5a1-4187-9b88-1eb1f8bf(ann=20230802,1/1 text pages)",
+   "pdf/pdf:d5335dfd-362f-427a-ad7b-0006e4c3eb6c ann=20230810 period_ok=False pages=23 "
+  ],
+  "scrip": "543526",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "ann": 20230810,
+     "evidence": [],
+     "header": [
+      [
+       337,
+       20230630
+      ],
+      [
+       401,
+       20230331
+      ],
+      [
+       460,
+       20220630
+      ],
+      [
+       523,
+       20230331
+      ]
+     ],
+     "label": "Profit after tax and before Extraordinary Items",
+     "page": 6,
+     "row": [
+      [
+       342,
+       954371.26
+      ],
+      [
+       406,
+       1342781.16
+      ],
+      [
+       465,
+       68288.9
+      ],
+      [
+       528,
+       3639738.99
+      ]
+     ],
+     "unit_div": 100.0,
+     "why": "ordinal col 2 of 4 (header 20230331)"
+    },
+    "garbled": null,
+    "src": "bse-ann-pdf",
+    "tier": "B",
+    "value": 13427.81
+   }
+  ],
+  "std_val": 13427.81,
+  "stored_con": 13427.81,
+  "stored_std": 13427.81,
+  "sym": "LICI",
+  "verdict": "OK"
+ },
+ "LICI|20230630": {
+  "con": [
+   {
+    "ev": {
+     "ann": 20230810,
+     "evidence": [
+      "pat col(20220630)==stored[-4]=602.79 MATERIAL"
+     ],
+     "header": [
+      [
+       287,
+       20230630
+      ],
+      [
+       357,
+       20230331
+      ],
+      [
+       424,
+       20220630
+      ],
+      [
+       493,
+       20230331
+      ]
+     ],
+     "label": "Profit / (loss) after tax and before",
+     "page": 17,
+     "row": [
+      [
+       296,
+       963498.31
+      ],
+      [
+       331,
+       13.0
+      ],
+      [
+       365,
+       19079.43
+      ],
+      [
+       433,
+       60278.68
+      ],
+      [
+       501,
+       3599664.6
+      ]
+     ],
+     "unit_div": 100.0,
+     "why": "nearest-x 296 vs header 287 (header 20230630)"
+    },
+    "garbled": null,
+    "src": "bse-ann-pdf",
+    "value": 9634.98
+   }
+  ],
+  "con_val": 9634.98,
+  "needs_eyes": true,
+  "qe": 20230630,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: no row",
+   "pdf/bse-ann(qe+8..150d):8 filings",
+   "pdf/scanned-no-text-layer:a3282c06-d5a1-4187-9b88-1eb1f8bf(ann=20230802,1/1 text pages)",
+   "pdf/pdf:d5335dfd-362f-427a-ad7b-0006e4c3eb6c ann=20230810 period_ok=True pages=23 quarter ended on june 30, 2023"
+  ],
+  "scrip": "543526",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "ann": 20230810,
+     "evidence": [
+      "pat col(20230331)==stored[-1]=13427.81 MATERIAL"
+     ],
+     "header": [
+      [
+       337,
+       20230630
+      ],
+      [
+       401,
+       20230331
+      ],
+      [
+       460,
+       20220630
+      ],
+      [
+       523,
+       20230331
+      ]
+     ],
+     "label": "Profit after tax and before Extraordinary Items",
+     "page": 6,
+     "row": [
+      [
+       342,
+       954371.26
+      ],
+      [
+       406,
+       1342781.16
+      ],
+      [
+       465,
+       68288.9
+      ],
+      [
+       528,
+       3639738.99
+      ]
+     ],
+     "unit_div": 100.0,
+     "why": "ordinal col 1 of 4 (header 20230630)"
+    },
+    "garbled": null,
+    "src": "bse-ann-pdf",
+    "value": 9543.71
+   }
+  ],
+  "std_val": 9543.71,
+  "stored_con": 9634.98,
+  "stored_std": 9634.98,
+  "sym": "LICI",
+  "verdict": "DEFECT"
+ },
+ "LICI|20230930": {
+  "con": [
+   {
+    "ev": {
+     "ann": 20231110,
+     "evidence": [
+      "pat col(20230630)==stored[-1]=9634.98 MATERIAL"
+     ],
+     "header": [
+      [
+       234,
+       20230930
+      ],
+      [
+       296,
+       20230630
+      ],
+      [
+       417,
+       20230930
+      ],
+      [
+       479,
+       20220930
+      ],
+      [
+       542,
+       20230331
+      ]
+     ],
+     "label": "Profit/ (loss) after tax and before",
+     "page": 20,
+     "row": [
+      [
+       244,
+       803028.48
+      ],
+      [
+       306,
+       963498.31
+      ],
+      [
+       367,
+       1585435.0
+      ],
+      [
+       428,
+       1766526.79
+      ],
+      [
+       469,
+       1645.0
+      ],
+      [
+       490,
+       713.68
+      ],
+      [
+       550,
+       3599664.6
+      ]
+     ],
+     "unit_div": 100.0,
+     "why": "nearest-x 244 vs header 234 (header 20230930)"
+    },
+    "garbled": null,
+    "src": "bse-ann-pdf",
+    "tier": "A",
+    "value": 8030.28
+   }
+  ],
+  "con_val": 8030.28,
+  "needs_eyes": true,
+  "qe": 20230930,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: no row",
+   "pdf/bse-ann(qe+8..150d):8 filings",
+   "pdf/scanned-no-text-layer:a4e63c6a-7126-41c5-be54-38fe488d(ann=20231026,1/1 text pages)",
+   "pdf/scanned-no-text-layer:0a1ce285-5ff8-42d7-9ce5-300a35f5(ann=20231110,1/2 text pages)",
+   "pdf/pdf:5926efe3-0e0e-464b-873c-e38c48117d32 ann=20231110 period_ok=True pages=28 quarter and half year ended on september 30, 2023",
+   "pdf/scanned-no-text-layer:be49066d-2f5d-429c-a6d5-6f71d34f(ann=20231211,1/1 text pages)",
+   "pdf/scanned-no-text-layer:84a946bf-c120-4b79-bf31-afcf4c87(ann=20231226,1/1 text pages)",
+   "pdf/scanned-no-text-layer:24c4c8db-85d2-4e0a-9724-4b72b695(ann=20240108,1/1 text pages)",
+   "nse-archive-std: no-detail-link (0 list rows for this quarter)",
+   "nse-archive-con: no-detail-link (0 list rows for this quarter)"
+  ],
+  "scrip": "543526",
+  "scrip_src": "live-master",
+  "std": [],
+  "std_val": null,
+  "stored_con": 8030.28,
+  "stored_std": 8030.28,
+  "sym": "LICI",
+  "verdict": "INCONCLUSIVE"
+ },
+ "LICI|20240331": {
+  "con": [],
+  "con_val": null,
+  "needs_eyes": true,
+  "qe": 20240331,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: no row",
+   "pdf/bse-ann(qe+8..150d):6 filings",
+   "pdf/scanned-no-text-layer:791a3914-2fd3-4b68-95a1-3e4d1e8b(ann=20240425,1/1 text pages)",
+   "pdf/scanned-no-text-layer:9bc29e67-9b88-4266-a5f8-2c09e5aa(ann=20240516,1/1 text pages)",
+   "pdf/pdf:166bd60d-3803-46a0-a869-0473b6f8cb66 ann=20240527 period_ok=True pages=24 quarter and year ended march 31, 2024",
+   "pdf/pdf:c4c3a94b-0125-4885-897e-5725948fea3c ann=20240527 period_ok=True pages=24 quarter and year ended march 31, 2024",
+   "pdf/scanned-no-text-layer:f567b7c1-57d9-468c-9c1b-086f5526(ann=20240725,1/1 text pages)",
+   "pdf/pdf:05621a72-09f0-4633-9644-e4a61b274c97 ann=20240808 period_ok=False pages=22 "
+  ],
+  "scrip": "543526",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "ann": 20240527,
+     "evidence": [
+      "pat col(20230331)==stored[-4]=13427.81 MATERIAL"
+     ],
+     "header": [
+      [
+       268,
+       20240331
+      ],
+      [
+       382,
+       20230331
+      ],
+      [
+       440,
+       20240331
+      ],
+      [
+       499,
+       20230331
+      ]
+     ],
+     "label": "Profit after tax and before Extraordinary Items - -",
+     "page": 4,
+     "row": [
+      [
+       270,
+       13762.64
+      ],
+      [
+       329,
+       9444.42
+      ],
+      [
+       388,
+       13427.81
+      ],
+      [
+       442,
+       40675.79
+      ],
+      [
+       507,
+       36397.39
+      ]
+     ],
+     "unit_div": 1.0,
+     "why": "nearest-x 270 vs header 268 (header 20240331)"
+    },
+    "garbled": null,
+    "src": "bse-ann-pdf",
+    "tier": "A",
+    "value": 13762.64
+   }
+  ],
+  "std_val": 13762.64,
+  "stored_con": 13762.64,
+  "stored_std": 13762.64,
+  "sym": "LICI",
+  "verdict": "OK"
+ },
+ "LICI|20250930": {
+  "con": [
+   {
+    "ev": {
+     "ann": 20251106,
+     "evidence": [
+      "pat col(20250630)==stored[-1]=10957.05 DIVERGENT MATERIAL",
+      "pat col(20240930)==stored[-4]=7728.68 DIVERGENT MATERIAL"
+     ],
+     "header": [
+      [
+       264,
+       20250930
+      ],
+      [
+       321,
+       20250630
+      ],
+      [
+       375,
+       20240930
+      ],
+      [
+       484,
+       20240930
+      ],
+      [
+       539,
+       20250331
+      ]
+     ],
+     "label": "Profit/ (loss) after tax and before",
+     "page": 16,
+     "row": [
+      [
+       274,
+       10098.48
+      ],
+      [
+       330,
+       10957.05
+      ],
+      [
+       382,
+       7728.68
+      ],
+      [
+       439,
+       21055.53
+      ],
+      [
+       490,
+       18273.01
+      ],
+      [
+       545,
+       48320.33
+      ]
+     ],
+     "unit_div": 1.0,
+     "why": "nearest-x 274 vs header 264 (header 20250930)"
+    },
+    "garbled": null,
+    "src": "bse-ann-pdf",
+    "tier": "A",
+    "value": 10098.48
+   }
+  ],
+  "con_val": 10098.48,
+  "needs_eyes": false,
+  "qe": 20250930,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: no row",
+   "pdf/bse-ann(qe+8..150d):4 filings",
+   "pdf/pdf:73de7b97-7433-4a52-b4d4-2b024c5fa36f ann=20251106 period_ok=True pages=24 quarter and half- year ended september 30, 2025",
+   "pdf/scanned-no-text-layer:4aab570f-4339-4115-9f04-4e19404c(ann=20260127,1/1 text pages)",
+   "pdf/scanned-no-text-layer:d5e68578-6a42-40ea-9373-c0c310e1(ann=20260205,1/18 text pages)",
+   "pdf/pdf:8ff7ec5f-ba40-4d68-a0cb-55cdb7ce1e71 ann=20260413 period_ok=False pages=2 ",
+   "nse-archive-std: no-detail-link (0 list rows for this quarter)",
+   "nse-archive-con: no-detail-link (0 list rows for this quarter)"
+  ],
+  "scrip": "543526",
+  "scrip_src": "live-master",
+  "std": [],
+  "std_val": null,
+  "stored_con": 10098.48,
+  "stored_std": 10098.48,
+  "sym": "LICI",
+  "verdict": "INCONCLUSIVE"
+ },
+ "MANINDS|20210630": {
+  "con": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "consolidated",
+     "ctx": "OneD",
+     "filed": "09-Aug-2021 17:33",
+     "nci": 0.0,
+     "owners": 0.0,
+     "pat_src": "period-total (owners+NCI both tagged 0.00 -- split never filed)",
+     "period": "2021-04-01..2021-06-30",
+     "rev": 403.71,
+     "tag": "ProfitLossForPeriod",
+     "total": 19.28,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_74479_501722_09082021053306_WEB.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 19.28
+   }
+  ],
+  "con_val": 19.28,
+  "needs_eyes": false,
+  "qe": 20210630,
+  "routes": [
+   "xbrl-std: 19.28 (ctx OneD, 2021-04-01..2021-06-30, declared standalone)",
+   "xbrl-con: 19.28 (ctx OneD, 2021-04-01..2021-06-30, declared consolidated)",
+   "detres: 19.28 span-ok calib=standalone CAL-REV tie: stored revStd == revCon here, uninformative; CAL-PAT pass @20210331: detres 25.23 == stored std 25.23 (con 25.86)"
+  ],
+  "scrip": "513269",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "standalone",
+     "ctx": "OneD",
+     "filed": "09-Aug-2021 17:23",
+     "nci": null,
+     "owners": null,
+     "pat_src": "period-total",
+     "period": "2021-04-01..2021-06-30",
+     "rev": 403.71,
+     "tag": "ProfitLossForPeriod",
+     "total": 19.28,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_74472_501695_09082021052317_WEB.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 19.28
+   },
+   {
+    "ev": {
+     "calib": [
+      "CAL-REV tie: stored revStd == revCon here, uninformative",
+      "CAL-PAT pass @20210331: detres 25.23 == stored std 25.23 (con 25.86)"
+     ],
+     "rev": 403.71,
+     "type": "Un-Audited"
+    },
+    "src": "bse-detres",
+    "value": 19.28
+   }
+  ],
+  "std_val": 19.28,
+  "stored_con": 19.28,
+  "stored_std": 19.28,
+  "sym": "MANINDS",
+  "verdict": "OK"
+ },
+ "MAXIMUS|20230930": {
+  "con": [],
+  "con_val": null,
+  "needs_eyes": false,
+  "qe": 20230930,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: 0.08 span-ok calib=standalone CAL-PAT pass @20230630: detres -0.21 == stored std -0.21 (con 1.35)"
+  ],
+  "scrip": "540401",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "calib": [
+      "CAL-PAT pass @20230630: detres -0.21 == stored std -0.21 (con 1.35)"
+     ],
+     "rev": 1.9,
+     "type": "Un-Audited"
+    },
+    "src": "bse-detres",
+    "value": 0.08
+   }
+  ],
+  "std_val": 0.08,
+  "stored_con": 0.08,
+  "stored_std": 0.08,
+  "sym": "MAXIMUS",
+  "verdict": "OK"
+ },
+ "MCCHRLS-B|20210331": {
+  "con": [],
+  "con_val": null,
+  "needs_eyes": false,
+  "qe": 20210331,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: 2.21 span-ok calib=standalone CAL-PAT pass @20201231: detres 0.37 == stored std 0.37 (con 0.18)"
+  ],
+  "scrip": "507836",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "calib": [
+      "CAL-PAT pass @20201231: detres 0.37 == stored std 0.37 (con 0.18)"
+     ],
+     "rev": 5.89,
+     "type": "Audited"
+    },
+    "src": "bse-detres",
+    "value": 2.21
+   }
+  ],
+  "std_val": 2.21,
+  "stored_con": 2.22,
+  "stored_std": 2.21,
+  "sym": "MCCHRLS-B",
+  "verdict": "OK"
+ },
+ "MOHITIND|20220930": {
+  "con": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "consolidated",
+     "ctx": "OneD",
+     "filed": "15-Nov-2022 10:54",
+     "nci": null,
+     "owners": 0.08,
+     "pat_src": "owners-tag",
+     "period": "2022-07-01..2022-09-30",
+     "rev": 44.64,
+     "tag": "ProfitLossForPeriod",
+     "total": 0.08,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_873986_5838_15112022105449_WEB.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 0.08
+   }
+  ],
+  "con_val": 0.08,
+  "needs_eyes": false,
+  "qe": 20220930,
+  "routes": [
+   "xbrl-std: 0.07 (ctx OneD, 2022-07-01..2022-09-30, declared standalone)",
+   "xbrl-con: 0.08 (ctx OneD, 2022-07-01..2022-09-30, declared consolidated)",
+   "detres: 0.07 span-ok calib=standalone CAL-REV tie: stored revStd == revCon here, uninformative; CAL-PAT pass @20221231: detres -0.55 == stored std -0.55 (con -0.47)"
+  ],
+  "scrip": "531453",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "standalone",
+     "ctx": "OneD",
+     "filed": "15-Nov-2022 10:54",
+     "nci": null,
+     "owners": null,
+     "pat_src": "period-total",
+     "period": "2022-07-01..2022-09-30",
+     "rev": 44.64,
+     "tag": "ProfitLossForPeriod",
+     "total": 0.07,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_873977_5838_15112022105427_WEB.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 0.07
+   },
+   {
+    "ev": {
+     "calib": [
+      "CAL-REV tie: stored revStd == revCon here, uninformative",
+      "CAL-PAT pass @20221231: detres -0.55 == stored std -0.55 (con -0.47)"
+     ],
+     "rev": 44.64,
+     "type": "Un-Audited"
+    },
+    "src": "bse-detres",
+    "value": 0.07
+   }
+  ],
+  "std_val": 0.07,
+  "stored_con": 0.08,
+  "stored_std": 0.07,
+  "sym": "MOHITIND",
+  "verdict": "OK"
+ },
+ "MSPL|20250930": {
+  "con": [],
+  "con_val": null,
+  "needs_eyes": false,
+  "qe": 20250930,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: -74.77 span-ok calib=standalone CAL-REV tie: stored revStd == revCon here, uninformative; CAL-PAT pass @20250331: detres -34.20 == stored std -34.20 (con -33.83)"
+  ],
+  "scrip": "532650",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "calib": [
+      "CAL-REV tie: stored revStd == revCon here, uninformative",
+      "CAL-PAT pass @20250331: detres -34.20 == stored std -34.20 (con -33.83)"
+     ],
+     "rev": 676.87,
+     "type": "Un-Audited"
+    },
+    "src": "bse-detres",
+    "value": -74.77
+   }
+  ],
+  "std_val": -74.77,
+  "stored_con": -74.76,
+  "stored_std": -74.77,
+  "sym": "MSPL",
+  "verdict": "OK"
+ },
+ "NESCO|20190930": {
+  "con": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "consolidated",
+     "ctx": "OneD",
+     "filed": "12-Nov-2019 11:59",
+     "nci": 0.0,
+     "owners": 73.95,
+     "pat_src": "owners-tag",
+     "period": "2019-07-01..2019-09-30",
+     "rev": 120.64,
+     "tag": "ProfitLossForPeriod",
+     "total": 73.95,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_49942_164520_12112019115957_WEB.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 73.95
+   }
+  ],
+  "con_val": 73.95,
+  "needs_eyes": false,
+  "qe": 20190930,
+  "routes": [
+   "xbrl-std: 73.96 (ctx OneD, 2019-07-01..2019-09-30, declared standalone)",
+   "xbrl-con: 73.95 (ctx OneD, 2019-07-01..2019-09-30, declared consolidated)",
+   "detres: 73.96 span-ok calib=ambiguous CAL-REV tie: stored revStd == revCon here, uninformative; CAL-PAT inconclusive @20190630: detres 37.83 vs std 37.83 / con 37.90"
+  ],
+  "scrip": "505355",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "standalone",
+     "ctx": "OneD",
+     "filed": "12-Nov-2019 11:53",
+     "nci": null,
+     "owners": null,
+     "pat_src": "period-total",
+     "period": "2019-07-01..2019-09-30",
+     "rev": 120.64,
+     "tag": "ProfitLossForPeriod",
+     "total": 73.96,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_49940_164507_12112019115329_WEB.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 73.96
+   }
+  ],
+  "std_val": 73.96,
+  "stored_con": 73.95,
+  "stored_std": 73.96,
+  "sym": "NESCO",
+  "verdict": "OK"
+ },
+ "NFL|20190630": {
+  "con": [],
+  "con_val": null,
+  "needs_eyes": false,
+  "qe": 20190630,
+  "routes": [
+   "xbrl-std: fetch:HTTPError",
+   "xbrl-con: fetch:HTTPError",
+   "detres: -64.02 span-ok calib=standalone CAL-PAT pass @20190331: detres 80.88 == stored std 80.88 (con 78.95)"
+  ],
+  "scrip": "523630",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "calib": [
+      "CAL-PAT pass @20190331: detres 80.88 == stored std 80.88 (con 78.95)"
+     ],
+     "rev": 2547.04,
+     "type": "Un-Audited"
+    },
+    "src": "bse-detres",
+    "value": -64.02
+   }
+  ],
+  "std_val": -64.02,
+  "stored_con": -64.07,
+  "stored_std": -64.02,
+  "sym": "NFL",
+  "verdict": "OK"
+ },
+ "NITTAGELA|20210331": {
+  "con": [],
+  "con_val": null,
+  "needs_eyes": false,
+  "qe": 20210331,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: 1.54 span-ok calib=ambiguous CAL-PAT none @20201231: detres 5.68 vs std 9.50 / con 13.28; CAL-PAT none @20211231: detres 9.50 vs std 0.08 / con -0.04; CAL-PAT none @20220331: detres 8.69 vs std 0.06 / con 0.00; CAL-PAT votes std=0 con=0 over 3 divergent neighbours",
+   "pdf/bse-ann(qe+8..150d):5 filings",
+   "pdf/scanned-no-text-layer:9cfe832a-36c3-4dc1-b0d1-e4a2d171(ann=20210430,1/1 text pages)",
+   "pdf/pdf:38200472-ee85-4aef-9752-5d866675eb2a ann=20210507 period_ok=True pages=16 quarter and year ended 3lst march, 2021",
+   "pdf/pdf:8d3a0f2f-bfe0-4ed5-894c-78bac470e81e ann=20210605 period_ok=False pages=3 ",
+   "pdf/pdf:b5ef1354-7497-4dc5-8849-daac14aef64f ann=20210723 period_ok=False pages=9 ",
+   "pdf/pdf:5010b5ad-3063-4025-b597-a6d53053f974 ann=20210802 period_ok=True pages=9 period ended 31 march 2021",
+   "nse-archive-std: no-detail-link (0 list rows for this quarter)",
+   "nse-archive-con: no-detail-link (0 list rows for this quarter)"
+  ],
+  "scrip": "506532",
+  "scrip_src": "live-master",
+  "std": [],
+  "std_val": null,
+  "stored_con": 0.06,
+  "stored_std": 0.06,
+  "sym": "NITTAGELA",
+  "verdict": "INCONCLUSIVE"
+ },
+ "RATNAMANI|20181231": {
+  "con": [],
+  "con_val": null,
+  "needs_eyes": false,
+  "qe": 20181231,
+  "routes": [
+   "xbrl-std: 62.76 (ctx OneD, 2018-10-01..2018-12-31, declared standalone)",
+   "xbrl-con: no-con-row (1 list rows for this quarter)",
+   "detres: 62.76 span-ok calib=standalone CAL-REV pass: detres rev 728.48 == stored revStd 728.48 (revCon None)"
+  ],
+  "scrip": "520111",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "standalone",
+     "ctx": "OneD",
+     "filed": "01-Feb-2019 18:32",
+     "nci": 0.0,
+     "owners": 0.0,
+     "pat_src": "period-total (owners+NCI both tagged 0.00 -- split never filed)",
+     "period": "2018-10-01..2018-12-31",
+     "rev": 728.48,
+     "tag": "ProfitLossForPeriod",
+     "total": 62.76,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_41908_78692_30012019052833_WEB.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 62.76
+   },
+   {
+    "ev": {
+     "calib": [
+      "CAL-REV pass: detres rev 728.48 == stored revStd 728.48 (revCon None)"
+     ],
+     "rev": 728.48,
+     "type": "Un-Audited"
+    },
+    "src": "bse-detres",
+    "value": 62.76
+   }
+  ],
+  "std_val": 62.76,
+  "stored_con": 62.76,
+  "stored_std": 62.76,
+  "sym": "RATNAMANI",
+  "verdict": "OK"
+ },
+ "SEMAC|20181231": {
+  "con": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "consolidated",
+     "ctx": "OneD",
+     "filed": "01-Feb-2019 16:09",
+     "nci": 0.4,
+     "owners": 1.54,
+     "pat_src": "owners-tag",
+     "period": "2018-10-01..2018-12-31",
+     "rev": 44.08,
+     "tag": "ProfitLossForPeriod",
+     "total": 1.94,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_41866_78460_30012019102837_WEB_2.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 1.54
+   }
+  ],
+  "con_val": 1.54,
+  "needs_eyes": false,
+  "qe": 20181231,
+  "routes": [
+   "xbrl-std: 1.96 (ctx OneD, 2018-10-01..2018-12-31, declared standalone)",
+   "xbrl-con: 1.54 (ctx OneD, 2018-10-01..2018-12-31, declared consolidated)",
+   "detres: 1.96 span-ok calib=standalone CAL-REV pass: detres rev 11.61 == stored revStd 11.61 (revCon 44.08)"
+  ],
+  "scrip": "505368",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "standalone",
+     "ctx": "OneD",
+     "filed": "01-Feb-2019 16:09",
+     "nci": 0.0,
+     "owners": 0.0,
+     "pat_src": "period-total (owners+NCI both tagged 0.00 -- split never filed)",
+     "period": "2018-10-01..2018-12-31",
+     "rev": 11.61,
+     "tag": "ProfitLossForPeriod",
+     "total": 1.96,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_41866_78460_30012019102837_WEB.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 1.96
+   },
+   {
+    "ev": {
+     "calib": [
+      "CAL-REV pass: detres rev 11.61 == stored revStd 11.61 (revCon 44.08)"
+     ],
+     "rev": 11.61,
+     "type": "Un-Audited"
+    },
+    "src": "bse-detres",
+    "value": 1.96
+   }
+  ],
+  "std_val": 1.96,
+  "stored_con": 1.94,
+  "stored_std": 1.96,
+  "sym": "SEMAC",
+  "verdict": "OK"
+ },
+ "SHRJAGP|20200630": {
+  "con": [],
+  "con_val": null,
+  "needs_eyes": true,
+  "qe": 20200630,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: 7.14 span-ok calib=consolidated CAL-PAT CON @20200331: detres 7.38 == stored CON 7.38 (std 6.17); CAL-PAT votes std=0 con=1 over 1 divergent neighbours",
+   "pdf/bse-ann(qe+8..150d):5 filings",
+   "pdf/scanned-no-text-layer:f37c9bf0-4081-4480-a870-8a7a4393(ann=20200820,1/1 text pages)",
+   "pdf/pdf:40c0245f-8331-4f45-90be-be1cfd488bfe ann=20200908 period_ok=True pages=3 quarter ending on june 30, 2020",
+   "pdf/pdf:fdf0b18f-221c-4f20-bd08-0602d9f6e343 ann=20200908 period_ok=True pages=3 quarter ending on june 30, 2020",
+   "pdf/pdf:63885750-32fe-4cf1-ab07-29bafb2ea135 ann=20201112 period_ok=False pages=5 ",
+   "pdf/pdf:befd1c0e-fcff-441e-8dff-f319e12013da ann=20201112 period_ok=False pages=5 "
+  ],
+  "scrip": "512453",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "ann": 20200908,
+     "evidence": [],
+     "header": [
+      [
+       341,
+       20200630
+      ],
+      [
+       410,
+       20190630
+      ],
+      [
+       476,
+       20200331
+      ],
+      [
+       549,
+       20200331
+      ]
+     ],
+     "label": "Profit for the period (7-8)",
+     "page": 1,
+     "row": [
+      [
+       358,
+       713.9
+      ],
+      [
+       425,
+       616.78
+      ],
+      [
+       488,
+       738.26
+      ],
+      [
+       569,
+       2733.4
+      ]
+     ],
+     "unit_div": 100.0,
+     "why": "ordinal col 1 of 4 (header 20200630)"
+    },
+    "garbled": null,
+    "src": "bse-ann-pdf",
+    "tier": "B",
+    "value": 7.14
+   }
+  ],
+  "std_val": 7.14,
+  "stored_con": 7.14,
+  "stored_std": 7.14,
+  "sym": "SHRJAGP",
+  "verdict": "OK"
+ },
+ "SPCENET|20181231": {
+  "con": [],
+  "con_val": null,
+  "needs_eyes": false,
+  "qe": 20181231,
+  "routes": [
+   "xbrl-std: blank/zero PAT in standalone XBRL",
+   "xbrl-con: blank/zero PAT in consolidated XBRL",
+   "bse-scrip: unresolved in live + delisted + suspended masters",
+   "nse-archive-std: no-detail-link (2 list rows for this quarter)",
+   "nse-archive-con: no-detail-link (2 list rows for this quarter)"
+  ],
+  "scrip": null,
+  "scrip_src": "unresolved",
+  "std": [],
+  "std_val": null,
+  "stored_con": 0.0,
+  "stored_std": 0.0,
+  "sym": "SPCENET",
+  "verdict": "INCONCLUSIVE"
+ },
+ "SPCENET|20230331": {
+  "con": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "consolidated",
+     "ctx": "OneD",
+     "filed": "31-May-2023 15:37",
+     "nci": -0.02,
+     "owners": 1.11,
+     "pat_src": "owners-tag",
+     "period": "2023-01-01..2023-03-31",
+     "rev": 28.3,
+     "tag": "ProfitLossForPeriod",
+     "total": 1.09,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_93872_860141_31052023033703.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 1.11
+   }
+  ],
+  "con_val": 1.11,
+  "needs_eyes": false,
+  "qe": 20230331,
+  "routes": [
+   "xbrl-std: 1.15 (ctx OneD, 2023-01-01..2023-03-31, declared standalone)",
+   "xbrl-con: 1.11 (ctx OneD, 2023-01-01..2023-03-31, declared consolidated)",
+   "bse-scrip: unresolved in live + delisted + suspended masters"
+  ],
+  "scrip": null,
+  "scrip_src": "unresolved",
+  "std": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "standalone",
+     "ctx": "OneD",
+     "filed": "31-May-2023 15:34",
+     "nci": null,
+     "owners": null,
+     "pat_src": "period-total",
+     "period": "2023-01-01..2023-03-31",
+     "rev": 25.88,
+     "tag": "ProfitLossForPeriod",
+     "total": 1.15,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_93870_860134_31052023033435.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 1.15
+   }
+  ],
+  "std_val": 1.15,
+  "stored_con": 1.11,
+  "stored_std": 1.15,
+  "sym": "SPCENET",
+  "verdict": "OK"
+ },
+ "SPMLINFRA|20250630": {
+  "con": [],
+  "con_val": null,
+  "needs_eyes": false,
+  "qe": 20250630,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: 12.15 span-ok calib=standalone CAL-REV tie: stored revStd == revCon here, uninformative; CAL-PAT std @20250331: detres 11.81 == stored std 11.81 (con 12.01); CAL-PAT std @20250930: detres 15.25 == stored std 15.25 (con 15.04); CAL-PAT std @20241231: detres 10.41 == stored std 10.41 (con 9.94); CAL-PAT votes std=3 con=0 over 3 divergent neighbours"
+  ],
+  "scrip": "500402",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "calib": [
+      "CAL-REV tie: stored revStd == revCon here, uninformative",
+      "CAL-PAT std @20250331: detres 11.81 == stored std 11.81 (con 12.01)",
+      "CAL-PAT std @20250930: detres 15.25 == stored std 15.25 (con 15.04)",
+      "CAL-PAT std @20241231: detres 10.41 == stored std 10.41 (con 9.94)",
+      "CAL-PAT votes std=3 con=0 over 3 divergent neighbours"
+     ],
+     "rev": 155.91,
+     "type": "Un-Audited"
+    },
+    "src": "bse-detres",
+    "value": 12.15
+   }
+  ],
+  "std_val": 12.15,
+  "stored_con": 12.12,
+  "stored_std": 12.15,
+  "sym": "SPMLINFRA",
+  "verdict": "OK"
+ },
+ "THRIVE|20220630": {
+  "con": [],
+  "con_val": null,
+  "needs_eyes": false,
+  "qe": 20220630,
+  "routes": [
+   "xbrl-std: no-std-row (0 list rows for this quarter)",
+   "xbrl-con: no-con-row (0 list rows for this quarter)",
+   "detres: -0.33 span-ok calib=standalone CAL-PAT std @20210930: detres -0.26 == stored std -0.26 (con -1.30); CAL-PAT none @20210630: detres -0.25 vs std 4.20 / con 3.32; CAL-PAT std @20210331: detres -0.62 == stored std -0.62 (con -1.61); CAL-PAT votes std=2 con=0 over 3 divergent neighbours",
+   "pdf/bse-ann(qe+8..150d):6 filings",
+   "pdf/pdf:8a021d60-1501-40d1-9728-08f1affc15a5 ann=20220722 period_ok=False pages=21 ",
+   "pdf/scanned-no-text-layer:402161fe-3507-43a7-98fb-79d39b10(ann=20220802,1/1 text pages)",
+   "pdf/scanned-no-text-layer:38855dd1-06a5-4f72-a536-420bd89a(ann=20220812,1/1 text pages)",
+   "pdf/pdf:6e769c02-a60d-4420-a1a9-657002cfb045 ann=20220812 period_ok=True pages=8 quarter ended 30 june, 2022",
+   "pdf/pdf:adebdb91-1b46-4671-b5eb-70837ae9e748 ann=20221104 period_ok=False pages=11 ",
+   "pdf/scanned-no-text-layer:c764ea68-a22b-410f-8359-08eab632(ann=20221104,1/1 text pages)",
+   "nse-archive-std: no-detail-link (0 list rows for this quarter)",
+   "nse-archive-con: no-detail-link (0 list rows for this quarter)"
+  ],
+  "scrip": "523120",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "calib": [
+      "CAL-PAT std @20210930: detres -0.26 == stored std -0.26 (con -1.30)",
+      "CAL-PAT none @20210630: detres -0.25 vs std 4.20 / con 3.32",
+      "CAL-PAT std @20210331: detres -0.62 == stored std -0.62 (con -1.61)",
+      "CAL-PAT votes std=2 con=0 over 3 divergent neighbours"
+     ],
+     "rev": 1.45,
+     "type": "Un-Audited"
+    },
+    "src": "bse-detres",
+    "value": -0.33
+   }
+  ],
+  "std_val": -0.33,
+  "stored_con": 0.08,
+  "stored_std": 0.08,
+  "sym": "THRIVE",
+  "verdict": "STD-MISMATCH-CON-UNREAD"
+ },
+ "TIL|20221231": {
+  "con": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "consolidated",
+     "ctx": "OneD",
+     "filed": "09-Feb-2023 16:28",
+     "nci": 0.0,
+     "owners": 0.0,
+     "pat_src": "period-total (owners+NCI both tagged 0.00 -- split never filed)",
+     "period": "2022-10-01..2022-12-31",
+     "rev": 11.1,
+     "tag": "ProfitLossForPeriod",
+     "total": -21.42,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_89175_789687_09022023042851.xml"
+    },
+    "src": "nse-xbrl",
+    "value": -21.42
+   }
+  ],
+  "con_val": -21.42,
+  "needs_eyes": false,
+  "qe": 20221231,
+  "routes": [
+   "xbrl-std: -21.40 (ctx OneD, 2022-10-01..2022-12-31, declared standalone)",
+   "xbrl-con: -21.42 (ctx OneD, 2022-10-01..2022-12-31, declared consolidated)",
+   "detres: -21.40 span-ok calib=standalone CAL-REV tie: stored revStd == revCon here, uninformative; CAL-PAT pass @20230331: detres -22.12 == stored std -22.12 (con -24.83)"
+  ],
+  "scrip": "505196",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "standalone",
+     "ctx": "OneD",
+     "filed": "09-Feb-2023 16:26",
+     "nci": null,
+     "owners": null,
+     "pat_src": "period-total",
+     "period": "2022-10-01..2022-12-31",
+     "rev": 11.1,
+     "tag": "ProfitLossForPeriod",
+     "total": -21.4,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_89172_789677_09022023042654.xml"
+    },
+    "src": "nse-xbrl",
+    "value": -21.4
+   },
+   {
+    "ev": {
+     "calib": [
+      "CAL-REV tie: stored revStd == revCon here, uninformative",
+      "CAL-PAT pass @20230331: detres -22.12 == stored std -22.12 (con -24.83)"
+     ],
+     "rev": 11.1,
+     "type": "Un-Audited"
+    },
+    "src": "bse-detres",
+    "value": -21.4
+   }
+  ],
+  "std_val": -21.4,
+  "stored_con": -21.42,
+  "stored_std": -21.4,
+  "sym": "TIL",
+  "verdict": "OK"
+ },
+ "TOKYOPLAST|20241231": {
+  "con": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "consolidated",
+     "ctx": "OneD",
+     "filed": "28-Jan-2025 16:31",
+     "nci": null,
+     "owners": null,
+     "pat_src": "period-total",
+     "period": "2024-10-01..2024-12-31",
+     "rev": 19.05,
+     "tag": "ProfitLossForPeriod",
+     "total": 0.08,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_117853_1363104_28012025043155.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 0.08
+   }
+  ],
+  "con_val": 0.08,
+  "needs_eyes": false,
+  "qe": 20241231,
+  "routes": [
+   "xbrl-std: 0.08 (ctx OneD, 2024-10-01..2024-12-31, declared standalone)",
+   "xbrl-con: 0.08 (ctx OneD, 2024-10-01..2024-12-31, declared consolidated)",
+   "detres: 0.08 span-ok calib=standalone CAL-REV tie: stored revStd == revCon here, uninformative; CAL-PAT std @20250930: detres 0.70 == stored std 0.70 (con 0.64); CAL-PAT std @20251231: detres 0.07 == stored std 0.08 (con -0.13); CAL-PAT std @20260331: detres 0.54 == stored std 0.54 (con 0.04); CAL-PAT votes std=3 con=0 over 3 divergent neighbours"
+  ],
+  "scrip": "500418",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "standalone",
+     "ctx": "OneD",
+     "filed": "28-Jan-2025 16:22",
+     "nci": null,
+     "owners": null,
+     "pat_src": "period-total",
+     "period": "2024-10-01..2024-12-31",
+     "rev": 19.05,
+     "tag": "ProfitLossForPeriod",
+     "total": 0.08,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_117849_1363075_28012025042205.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 0.08
+   },
+   {
+    "ev": {
+     "calib": [
+      "CAL-REV tie: stored revStd == revCon here, uninformative",
+      "CAL-PAT std @20250930: detres 0.70 == stored std 0.70 (con 0.64)",
+      "CAL-PAT std @20251231: detres 0.07 == stored std 0.08 (con -0.13)",
+      "CAL-PAT std @20260331: detres 0.54 == stored std 0.54 (con 0.04)",
+      "CAL-PAT votes std=3 con=0 over 3 divergent neighbours"
+     ],
+     "rev": 19.05,
+     "type": "Un-Audited"
+    },
+    "src": "bse-detres",
+    "value": 0.08
+   }
+  ],
+  "std_val": 0.08,
+  "stored_con": 0.08,
+  "stored_std": 0.08,
+  "sym": "TOKYOPLAST",
+  "verdict": "OK"
+ },
+ "VIDHIING|20230630": {
+  "con": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "consolidated",
+     "ctx": "OneD",
+     "filed": "11-Aug-2023 15:57",
+     "nci": null,
+     "owners": null,
+     "pat_src": "period-total",
+     "period": "2023-04-01..2023-06-30",
+     "rev": 79.67,
+     "tag": "ProfitLossForPeriod",
+     "total": 8.37,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_96492_915028_11082023035733.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 8.37
+   }
+  ],
+  "con_val": 8.37,
+  "needs_eyes": false,
+  "qe": 20230630,
+  "routes": [
+   "xbrl-std: 8.38 (ctx OneD, 2023-04-01..2023-06-30, declared standalone)",
+   "xbrl-con: 8.37 (ctx OneD, 2023-04-01..2023-06-30, declared consolidated)",
+   "detres: 8.38 span-ok calib=standalone CAL-REV tie: stored revStd == revCon here, uninformative; CAL-PAT pass @20230331: detres 8.86 == stored std 8.86 (con 8.78)"
+  ],
+  "scrip": "531717",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "standalone",
+     "ctx": "OneD",
+     "filed": "11-Aug-2023 16:03",
+     "nci": null,
+     "owners": null,
+     "pat_src": "period-total",
+     "period": "2023-04-01..2023-06-30",
+     "rev": 79.67,
+     "tag": "ProfitLossForPeriod",
+     "total": 8.38,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_96498_915055_11082023040325.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 8.38
+   },
+   {
+    "ev": {
+     "calib": [
+      "CAL-REV tie: stored revStd == revCon here, uninformative",
+      "CAL-PAT pass @20230331: detres 8.86 == stored std 8.86 (con 8.78)"
+     ],
+     "rev": 79.67,
+     "type": "Un-Audited"
+    },
+    "src": "bse-detres",
+    "value": 8.38
+   }
+  ],
+  "std_val": 8.38,
+  "stored_con": 8.37,
+  "stored_std": 8.38,
+  "sym": "VIDHIING",
+  "verdict": "OK"
+ },
+ "WINDLAS|20231231": {
+  "con": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "consolidated",
+     "ctx": "OneD",
+     "filed": "08-Feb-2024 16:52",
+     "nci": 0.0,
+     "owners": 15.1,
+     "pat_src": "owners-tag",
+     "period": "2023-10-01..2023-12-31",
+     "rev": 162.21,
+     "tag": "ProfitLossForPeriod",
+     "total": 15.1,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_102787_1048277_08022024045220.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 15.1
+   }
+  ],
+  "con_val": 15.1,
+  "needs_eyes": false,
+  "qe": 20231231,
+  "routes": [
+   "xbrl-std: 15.10 (ctx OneD, 2023-10-01..2023-12-31, declared standalone)",
+   "xbrl-con: 15.10 (ctx OneD, 2023-10-01..2023-12-31, declared consolidated)",
+   "detres: 15.10 span-ok calib=standalone CAL-REV tie: stored revStd == revCon here, uninformative; CAL-PAT pass @20241231: detres 15.23 == stored std 15.23 (con 15.58)"
+  ],
+  "scrip": "543329",
+  "scrip_src": "live-master",
+  "std": [
+   {
+    "ev": {
+     "bank_row": null,
+     "basis_declared": "standalone",
+     "ctx": "OneD",
+     "filed": "08-Feb-2024 16:55",
+     "nci": null,
+     "owners": null,
+     "pat_src": "period-total",
+     "period": "2023-10-01..2023-12-31",
+     "rev": 162.21,
+     "tag": "ProfitLossForPeriod",
+     "total": 15.1,
+     "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_102790_1048291_08022024045548.xml"
+    },
+    "src": "nse-xbrl",
+    "value": 15.1
+   },
+   {
+    "ev": {
+     "calib": [
+      "CAL-REV tie: stored revStd == revCon here, uninformative",
+      "CAL-PAT pass @20241231: detres 15.23 == stored std 15.23 (con 15.58)"
+     ],
+     "rev": 162.21,
+     "type": "Un-Audited"
+    },
+    "src": "bse-detres",
+    "value": 15.1
+   }
+  ],
+  "std_val": 15.1,
+  "stored_con": 15.1,
+  "stored_std": 15.1,
+  "sym": "WINDLAS",
+  "verdict": "OK"
+ }
+}

@@ -51,6 +51,8 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§39** ★ SHIP-IT QUALITY GATE — nothing goes out unverified (**read before ANY UI / design / feature work**)
 - **§40** STOCK PAGE = PER-STOCK SLICES · **§40b** ★ REPORTING BASIS — one basis per comparison
 - **§41** ★ PUBLISHING A DATA HEAL — "live on the server" ≠ "the site uses it" (**read before ANY heal / backfill**)
+- **§42–§58** ROUTE & SOURCE DISCOVERIES (detres JSON, FY identity, pre-2020 std/con ceilings, CI clobber, the ROUTE LADDER, the STANDARD BACKFILL READ)
+- **§59** ★★ STANDALONE-SLOT-HOLDS-CONSOLIDATED AUDIT — the screen is not a defect count (**read before acting on any std/con equality screen**)
 
 ---
 
@@ -3795,3 +3797,122 @@ wrong stored value. Correcting it is the §2b procedure, not a fill; the cell wa
 different (Mar-2023) anchor and the defect was journalled and reported. A backfill pass never
 silently rewrites a value it was not asked to fill.
 
+---
+
+## 59. ★★ IS THE STANDALONE SLOT SECRETLY HOLDING THE CONSOLIDATED FIGURE?  (audited 2026-08-06)
+
+The question, from the LICI 2023-06 case: `sf_fundamentals` stores std PAT 9634.98 AND con PAT
+9634.98, while the filing states standalone 9,54,371.26 lakh = **9543.71** — the stored std is the
+CONSOLIDATED number. How often does that happen store-wide?
+
+### 59a. The screen is NOT a defect count — the measured rate is ~0%
+Screen (reproducible via `scripts/stdcon_audit/screen.py`): take quarters where both bases are
+stored; `divergent = |con-std| > max(0.05, 0.001*|std|)`; flag companies with ≥3 divergent quarters
+that ALSO show non-divergent quarters SANDWICHED between divergent ones. That yields
+**3,109 cells / 802 companies**. A stratified sample of **44** (era × revenue quartile, seed 20260806,
+`sample.py`) was then run to the decisive test:
+
+| verdict | n |
+|---|---|
+| OK — the filing's standalone PAT equals the stored std | **40** |
+| DEFECT — std slot holds the consolidated figure | **0** |
+| OTHER-DEFECT — stored std wrong, but NOT by holding con | **3** |
+| N/A — stored std == stored con == 0.00, no information either way | 1 |
+
+**0/43 = 0.0% (95% Wilson 0.0–8.2%).** Every sampled cell was resolved against a primary document,
+so the band is real, not a coverage artefact. Do NOT plan a mass correction off the screen size:
+the interior equal-runs it flags are overwhelmingly GENUINE — a subsidiary contributing ~0, or a
+company whose consolidation difference is smaller than the tolerance (NESCO Sep-2019 std 73.96 vs
+con 73.95, straight from both bases' XBRL).
+
+**Where the defect DOES live: individual insurer quarters, not a company-wide pattern.** A targeted
+pass over LICI's own nine flagged cells found **four confirmed defects** (Jun-2022, Dec-2022,
+Jun-2023, Sep-2023) and **three confirmed-correct** (Sep-2022, Mar-2023, Mar-2024) — so it is
+per-cell, and re-reading a company's other quarters is not optional. Proof for the whole set is one
+identity (§45): the 10-Aug-2023 filing's standalone columns give
+`682.89 + 15952.49 + 6334.20 + 13427.81 = 36397.39` = its own printed FY23 standalone annual,
+**exactly**, while our stored quarters sum to 38331.79.
+
+### 59b. The decisive test, and the ladder that answers it
+Per cell: read BOTH bases from primary documents.
+`std_page == stored_std` → OK. `std_page != stored_std AND con_page == stored_std` → DEFECT.
+`std_page != stored_std AND con_page != stored_std` → OTHER-DEFECT. Anything else → record
+`not-found-via:<routes>` (§57a), never "unfillable".
+
+Rungs in yield order (`stdcon_audit/audit.py` walks all of them and logs each):
+1. **NSE results XBRL, one document per basis** — `xbrl_route.py`. THE route for 2019+. Every
+   `corporates-financial-results` row carries an `xbrl` URL and NSE files ONE XBRL PER BASIS, with
+   the row declaring which. `resultDetailedDataLink` is empty for essentially all post-2019 rows, so
+   the archive DETAIL pages (§52/§53) cover only the pre-2020 tail — that is why the first manual
+   attempt found "no page" for 11 of 12 sampled cells. Nothing is assumed about context ids
+   (§45 warns they have no fixed meaning): a context is used only if it declares
+   `DateOfStartOfReportingPeriod`/`DateOfEndOfReportingPeriod` spanning exactly the 3 months ending
+   on the quarter AND its `NatureOfReportStandaloneConsolidated` matches the basis being read.
+2. **BSE detailed-results JSON (§42)** — standalone, 2015+, incl. delisted. See 58c.
+3. **BSE announcement PDF** — both bases in one document; the winner when 1 and 2 are blind.
+4. NSE archive detail pages (§52/§53) — pre-2020 tail.
+5. Vision render (`render.py`, §57b rung 10) — scanned filings and damaged text layers.
+
+### 59c. detres has no basis label — CALIBRATE it per scrip before believing it
+§42 says the endpoint is "standalone/**primary**". *Primary* is the trap: if it served a
+consolidated figure for a scrip whose std slot also held the consolidated figure, the two would
+agree and the cell would be wrongly cleared. So every detres read is calibrated first:
+* **CAL-REV** (free, same response): its revenue row must match stored revStd and differ from
+  stored revCon.
+* **CAL-PAT**: the nearest DIVERGENT quarters must come back matching stored std, not stored con.
+  **Take a MAJORITY over up to three neighbours.** One is not enough — SHRJAGP's own stored
+  Mar-2020 std is itself corrupt (it holds the Jun-2019 value), and a single-neighbour test
+  therefore declared "detres is serving consolidated" for a company that has only ever filed one
+  basis. A corrupt neighbour can outvote nothing; it cannot outvote two good ones.
+
+### 59d. Traps this audit hit, every one of which silently returns a WRONG number
+* **The column map must be READ, not assumed.** HDFCLIFE Mar-2020 was first read out of the JULY
+  filing, whose columns are `[Jun-2020, Mar-2020, Jun-2019, FY20]` — "column 0 is the target" gave
+  451.09 for a quarter that is 311.71, and the anchor hits were internally consistent with the
+  shifted layout, so nothing caught it. Parse the printed header dates and take the column that
+  NAMES the target quarter (leftmost — a fiscal-year column repeats the same date). This also turns
+  every later filing into a legitimate comparative-column source (§57b rung 6) for free.
+* **Match header cells to figures by RIGHT edge.** Statement numbers and header dates are both
+  right-aligned; using PyMuPDF's `x0` for one and `x1` for the other put every column ~32pt out and
+  matched nothing. Prefer ordinal mapping when #columns == #numbers.
+* **Build the header from ONE row — the one with the most dates.** Accumulating dates across rows
+  pulls the TITLE's date in as a phantom extra column (SHRI JAGDAMBA Jun-2020 mis-picked).
+* **Numbers to the LEFT of the row label are ROW INDICES**, not data; including them shifts every
+  column by one (LICI's `29 Profit/(loss)...`).
+* **BSE files many quarterly results under "Outcome of Board Meeting"** with no "financial result"
+  text in the headline or subcategory. `bse_vision.is_result()` alone misses them — LICI's Jun-2023
+  results, the proven defect case, are filed exactly that way. Use a loose include-list plus the
+  exclusion list (investor presentation / press release / transcript / newspaper / analyst), and let
+  the content gates do the filtering.
+* **A text cover page over a SCANNED body passes a "does this PDF have text?" check.** IDEA
+  Mar-2024: page 0 has 1,795 characters, pages 1-22 have zero. Count pages with real text in the
+  BODY (≥2 pages over 400 chars), then fall to vision.
+* **`owners` and `NCI` both tagged 0.00 does not mean zero profit** — the split was simply never
+  filed, and the period total IS the owners' figure (EIMCOELECO/ANIKINDS/JINDCOT here; §2d records
+  the same for TRU Mar-26). Taking the tag literally lands 0.00 on profitable companies.
+* **An anchor proves the column map, NOT the scale, when the stored anchor carries the same scale
+  error.** LAHOTIOV Mar-2025: the filing says 404.11 LAKH = 4.04cr, we store 404.11 as crore, and
+  the PDF read "confirmed" 404.11 by anchoring on stored Jun-2024 453.78 — which is the identical
+  ×100 error. detres disagreeing by exactly a power of ten is the tell; treat it as a scale conflict,
+  not a tie.
+* **Small filers name no basis at all** ("UN-AUIDITED FINANCIAL RESULTS FOR THE QUARTER ENDED ON
+  30.06.2020"). If the WHOLE document never says "consolidated" (§51b corruption-tolerant test),
+  the statement in it is the standalone one.
+* **A verified read still needs a human when the anchors contradict it.** Reads are tiered: A =
+  column map confirmed by other columns reproducing stored values; B = header names the target and
+  there is one number per column, but no anchor could be checked (or the stored neighbours are
+  themselves wrong). Tier B is used and FLAGGED, never silently promoted.
+
+### 59e. What the screen actually finds instead — and it is worth fixing
+3 of 43 resolved cells (7%) hold a wrong standalone PAT for reasons unrelated to consolidation:
+LAHOTIOV Mar-2025 = a ×100 lakh-as-crore error (§45 LEHAR class); NITTAGELA Mar-2021 stores 0.06
+against a filed 1.54 (its Dec-2020 is wrong too); THRIVE Jun-2022 stores 0.08 against a filed -0.33
+std / -2.31 con, with an announce date that PRE-DATES the filing. So this screen is a decent
+*general* wrong-value detector even though it is a poor detector of the specific defect it was built
+for. Route any repair through §2b (correcting a non-null value), not through a fill-only applier.
+
+Tooling: `scripts/stdcon_audit/` — `screen.py` (the screen), `sample.py` (stratified draw),
+`audit.py` (ladder + verdict), `xbrl_route.py`, `detres.py`, `nse_arch.py`, `scrips.py`
+(delisted-aware scrip resolution, §52b), `render.py` (vision), `report.py` (verdict table + Wilson
+interval). Evidence: `_audit.json` (every route tried, per cell), `_manual.json` (hand-confirmed
+verdicts with their full derivation), `_screen.json`, `_sample.json`.
