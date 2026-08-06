@@ -107,11 +107,24 @@ def read_std(link, sym, qe):
     if pat is None:
         return None, "no-pat-row"
     isbank = (meta.get("fmt") == "Banking")
-    rev = NAR.pick(rows, *(R_REV_BANK if isbank else R_REV_IND))
-    if rev is None:                                  # declared format can still lack its usual row
-        rev = NAR.pick(rows, *(R_REV_IND if isbank else R_REV_BANK))
+    # A PRINTED 0.00 IS A BLANK ROW, NOT A RESULT. These filings carry the full template and leave
+    # the rows they do not use empty: UJJIVAN (a bank) files bank-format, so the industrial
+    # "income from operations" row is present and zero, and picking by declared format alone
+    # returned rev=0.00 for 6 cells that all passed the PAT anchor perfectly. Take the first
+    # NON-ZERO candidate from either row set, and refuse when every candidate is zero -- a company
+    # with a stored PAT does not have exactly zero revenue.
+    order = (R_REV_BANK, R_REV_IND) if isbank else (R_REV_IND, R_REV_BANK)
+    rev = None
+    for group in order:
+        for pat_re in group:
+            v = NAR.pick(rows, pat_re)
+            if v is not None and abs(v) > 1e-9:
+                rev = v
+                break
+        if rev is not None:
+            break
     if rev is None:
-        return None, "no-revenue-row"
+        return None, "no-revenue-row(or all-zero/blank template)"
     return (pat, rev, "bank" if isbank else "industrial"), "ok"
 
 
