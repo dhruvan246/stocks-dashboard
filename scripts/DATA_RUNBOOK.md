@@ -3164,3 +3164,63 @@ CAPF 532938. Baked into `SCRIP_OVERRIDE` in the tool.
 - **NSE archive serves DELISTED symbols with detail pages both bases** (ADVANTA here; SATYAMCOMP
   precedent) — a working GATE-X second source for any 2015+ residue the PDF route can't reach.
 
+
+---
+
+## 53. ★★ PRE-2020 CONSOLIDATED PAT — the ceiling is 2.7%, and it is measured, not assumed  (2026-08-06)
+
+§51a established that quarterly consolidated only became compulsory from FY2020. This section
+turns that into a NUMBER, so nobody plans a campaign against a wall that isn't there.
+
+**Swept all 311 companies with a pre-2020 con-PAT gap (2,979 cells, quarters 2015Q1–2019Q4)**
+against the NSE results-archive list API (`corporates-financial-results?symbol=X&period=Quarterly`,
+which serves DELISTED symbols and declares basis per row). Result, with 0 errors and 0 empty
+responses — i.e. this is a real answer, not a fetch failure:
+
+| | |
+|---|---|
+| gap cells | 2,979 across 311 companies |
+| have a CONSOLIDATED quarterly filing | **79 (2.7%), in just 25 companies** |
+| have a consolidated ANNUAL row | 777 across 290 companies |
+| landed after gates | **42** |
+
+**~97% of pre-2020 con-PAT was never filed as a quarter.** The 777 annuals cannot rescue it: an
+annual splits into quarters only when three of its four siblings are known, and for these companies
+the quarters are precisely what is missing. Annuals are a GATE (§45 FY identity), not a source.
+
+Tools: `fill2020_tools/nse_con_discover.py` (resumable inventory) → `read_con_pat_nse.py`
+(gated reader, `--apply` merges fill-only). Ledger `scripts/con_pat_nse_reads.json` keeps every
+refusal with its reason.
+
+### 53a. Reading a basis you have NO stored anchor for — GATE S'
+Every other route anchors the read against the stored PAT for that (sym, qe, basis). Here the
+stored con IS the gap. The substitute:
+
+> **GATE S' (sibling-basis):** fetch the NON-consolidated page for the SAME quarter and check it
+> against the STORED std. That proves source + scale + period-mapping + symbol identity for this
+> exact company-quarter; the con page then comes from the same family under the same declared unit.
+
+Generalises the SpiceJet manoeuvre (§ FILL-2020 Phase 4): *validate the document through the basis
+you already hold, then read the basis you don't.* Reusable anywhere a whole basis is missing.
+
+### 53b. Four failure modes this route has, all of which pass naive checks
+1. **Blank-template pages.** SUNTV Mar-2017 filed the consolidated form with every P&L row 0.00
+   (only Paid-up equity populated). Basis/period/symbol all validate and the std sibling is
+   perfect. **Refuse `PAT == 0.00` outright.**
+2. **S' passes, row choice still wrong.** S' validates the FAMILY, never WHICH ROW was picked on
+   the con page. TATASTEEL Sep-2016 recon −230.92 vs picked −54.42. **Where the con page carries
+   EPS+equity, a failing EPS recon must BLOCK, not merely "not pass".**
+3. **Cumulative pages are YTD.** A Q2/Q3/Q4 cumulative row lands 6/9/12 months as a quarter.
+   `parse_detail` does not surface the field — read `Cumulative / Non-Cumulative` from the body.
+4. **`aliases()` excludes the symbol itself** — checking membership without prepending `sym`
+   rejects every page whose Symbol is simply the current one (BALLARPUR "mismatching" BALLARPUR).
+
+EPS recon here is `PAT == eps * eqcap / fv`; the declared-unit divisor cancels, so it is immune to
+`parse_detail` scaling per-share rows (Face Value ₹2 prints as 0.02 under lakhs).
+
+### 53c. Owners-attributable, or nothing
+The archive prints `Net Profit/(Loss) after taxes, minority interest and share of profit of
+associates` — literally this dataset's basis. Fall back to the plain period row ONLY when minority
+interest is absent or zero; **7 cells were refused as `no-owners-row-but-minority-present`** rather
+than silently landing total PAT on an owners-basis series.
+
