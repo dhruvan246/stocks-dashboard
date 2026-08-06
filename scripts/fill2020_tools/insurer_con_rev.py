@@ -89,12 +89,62 @@ R_PAT = re.compile(r"^profit\s*/?\s*\(?loss\)?\s*after tax and extraordinary ite
 NUMRE = re.compile(r"^\(?-?[\d,]+\.?\d*\)?$")
 
 
+# ---------------------------------------------------------------------------------------------
+# OCR MODE — for filings whose text layer is corrupted (GICRE; runbook §51b glyph substitution).
+# rapidocr renders and re-reads the page, which is CLEANER than the broken text layer, but it
+# returns whole phrases with the spaces stripped ("PremiumEarned(Net)"). So every row label is also
+# matched in a NORMALISED form (lowercase, alphanumerics only), which incidentally makes the
+# text-layer path immune to punctuation variants too.
+#
+# ⚠️ Runbook §0 says OCR mangles digits — true, and it is exactly why nothing here relies on OCR
+# being right. A mangled digit fails the PAT anchor, or the standalone control, or the con/std
+# ratio family (§55b). The reader is allowed to be unreliable because the gates are not.
+# ---------------------------------------------------------------------------------------------
+OCR_BAND_TOL = 5.0        # OCR baselines wobble more than a text layer's
+OCR_MAX_PAGES = 45        # cap the render cost; insurer statements sit well inside this
+
+
+def norm(t):
+    return re.sub(r"[^a-z0-9]", "", (t or "").lower())
+
+
+N_NETPREM = re.compile(r"^netpremiumincome")
+N_PREMEARNED = re.compile(r"^premiumearned(net)?$|^netpremiumearned")
+N_PH_INV = re.compile(r"^incomefrominvestments?net$")
+N_SH_INV = re.compile(r"^[a-z]?incomefrominvestments$|^investmentincome")
+N_PAT = re.compile(r"^profit(loss)?aftertax(andbeforeextraordinaryitems|andextraordinaryitems)?$")
+N_MINORITY = re.compile(r"minorityinterest|noncontrolling")
+N_ASSOCIATE = re.compile(r"shareofprofit.*associate|associateenterprises")
+N_CARRIED = re.compile(r"^profit(loss)?carriedtobalancesheet")
+N_TRANSFER_OUT = re.compile(r"transferredtoshareholders")
+N_TRANSFER_IN = re.compile(r"transferfrompolicyholders")
+N_SHARE_HEAD = re.compile(r"shareholders(ac|account)")
+
+
+def words_of(page, ocr=False):
+    """(x0, y0, x1, y1, text) from the text layer, or from rapidocr when ocr=True."""
+    if ocr:
+        return [(w[0], w[1], w[2], w[3], w[4]) for w in FI._ocr_words(page)]
+    return [(w[0], w[1], w[2], w[3], w[4]) for w in page.get_text("words")]
+
+
+# OCR reads the Indian digit grouping "1,74,942" as "1.74942" — the comma becomes a decimal point.
+# These statements print MONETARY figures as whole lakhs and RATIOS with at most two decimals, so a
+# value with 3+ digits after a single point and a short integer part is a mangled group, not a
+# fraction: 1.74942 -> 174942, 35.97353 -> 3597353, while 2.88 and 10.36 are left alone. A wrong
+# call here cannot land a cell — it fails the PAT anchor.
+REGROUP = re.compile(r"^(\d{1,3})\.(\d{3,})$")
+
+
 def num(tok):
     t = tok.strip().replace(",", "")
     if not NUMRE.match(t) or t in ("-", ""):
         return None
     neg = t.startswith("(")
     t = t.strip("()")
+    m = REGROUP.match(t)
+    if m:
+        t = m.group(1) + m.group(2)
     try:
         v = float(t)
     except ValueError:
@@ -107,7 +157,20 @@ DASHES = {"-", "–", "—", "−"}
 COL_TOL = 14.0            # points; figure columns in these packs sit well over 30pt apart
 
 
-def _raw_rows(page):
+NORM_OF = {}          # populated after the R_* patterns exist (see _init_norm_map)
+
+
+def _init_norm_map():
+    NORM_OF.update({
+        id(R_NETPREM): N_NETPREM, id(R_PREMEARNED): N_PREMEARNED, id(R_PH_INV): N_PH_INV,
+        id(R_SH_INV): N_SH_INV, id(R_PAT): N_PAT, id(R_MINORITY): N_MINORITY,
+        id(R_ASSOCIATE): N_ASSOCIATE, id(R_CARRIED): N_CARRIED,
+        id(R_TRANSFER_OUT): N_TRANSFER_OUT, id(R_TRANSFER_IN): N_TRANSFER_IN,
+        id(R_SHARE_HEAD): N_SHARE_HEAD,
+    })
+
+
+def _raw_rows(page, ocr=False):
     """[(label, [(x_right, value)])] — one entry per y-band, figures keyed by their right edge.
 
     Two traps this handles, both of which produced ZERO usable rows in the naive version:
@@ -115,10 +178,11 @@ def _raw_rows(page):
         first value drops the label and the row disappears.
       * a row's label and its figures can sit in different text blocks at slightly different y, so
         the band tolerance has to be a few points, not an exact key."""
-    words = sorted(page.get_text("words"), key=lambda w: (round(w[1], 1), w[0]))
+    words = sorted(words_of(page, ocr), key=lambda w: (round(w[1], 1), w[0]))
+    tol = OCR_BAND_TOL if ocr else 3.0
     bands, cur, cy = [], [], None
     for x0, y0, x1, y1, w, *_ in words:
-        if cy is None or abs(y0 - cy) <= 3.0:
+        if cy is None or abs(y0 - cy) <= tol:
             cur.append((x0, x1, w))
             cy = y0 if cy is None else cy
         else:
@@ -152,9 +216,9 @@ def _raw_rows(page):
     return raw
 
 
-def page_rows(page):
+def page_rows(page, ocr=False):
     """[(label, [values left->right])] on the page's own figure-geometry columns."""
-    raw = _raw_rows(page)
+    raw = _raw_rows(page, ocr)
 
     # Page-level column geometry. Aligning by ORDER breaks the moment one row prints a dash that
     # the reader drops: every later value shifts one column left, and the anchor still passes
@@ -195,12 +259,16 @@ ENUM = re.compile(r"^\((?:[a-z]|[ivx]{1,4}|\d{1,2})\)\s*|^\d{1,2}\.\s+", re.I)
 
 
 def pick_row(rows, pat, after=-1):
+    npat = NORM_OF.get(id(pat))
     for i, (lab, vals) in enumerate(rows):
         if i <= after or not vals:
             continue
         for form in (lab, re.sub(r"[\d\*¹²³]+$", "", lab).strip(), ENUM.sub("", lab).strip()):
             if pat.search(form):
                 return vals
+        # normalised: OCR strips the spaces inside a box, and filers vary the punctuation
+        if npat is not None and npat.search(norm(lab)):
+            return vals
     return None
 
 
@@ -261,12 +329,12 @@ DATE_TOK = re.compile(r"^\(?(\d{2})/(\d{2})/(\d{4})\)?$")
 HDR_TOL = 26.0          # pt; how far a figure's right edge may sit from its header's right edge
 
 
-def header_columns(page):
+def header_columns(page, ocr=False):
     """[(x_right, qe)] left-to-right for the page's dated header row, or [] if there isn't one.
 
     The header is the y-band carrying the MOST date tokens (>=3) — titles and 'Renewed from'
     lines elsewhere on the page also contain dates and must not be mistaken for it."""
-    words = sorted(page.get_text("words"), key=lambda w: (round(w[1], 1), w[0]))
+    words = sorted(words_of(page, ocr), key=lambda w: (round(w[1], 1), w[0]))
     bands = {}
     for x0, y0, x1, y1, w, *_ in words:
         m = DATE_TOK.match(w)
@@ -280,11 +348,13 @@ def header_columns(page):
     return sorted(best) if len(best) >= 3 else []
 
 
-def rows_on_columns(page, cols):
+def rows_on_columns(page, cols, ocr=False):
     """page_rows(), but every figure is slotted by the HEADER column it sits under, so the same
     index means the same period on every page of the filing."""
+    if not cols:
+        return []
     out = []
-    for label, vals in _raw_rows(page):
+    for label, vals in _raw_rows(page, ocr):
         slotted = [None] * len(cols)
         for x1, v in vals:
             k = min(range(len(cols)), key=lambda i: abs(cols[i][0] - x1))
@@ -336,13 +406,16 @@ def declared_basis(rows):
     return None
 
 
-def read_doc(doc, life):
+def read_doc(doc, life, ocr=False):
     """[(label, page_data)] — one entry per statement found, joining a statement that runs across
-    two pages (see R_TRANSFER_OUT). Returns the same dict shape read_page produces."""
+    two pages (see R_TRANSFER_OUT). Returns the same dict shape read_page produces.
+
+    ocr=True re-reads every page with rapidocr instead of the text layer — for filings whose text
+    layer is corrupted (GICRE, runbook §51b). Slow (~1-2s/page), so it is a fallback, never first."""
     per_page = []
-    for pno in range(doc.page_count):
+    for pno in range(min(doc.page_count, OCR_MAX_PAGES if ocr else doc.page_count)):
         try:
-            rows = page_rows(doc[pno])
+            rows = page_rows(doc[pno], ocr)
         except Exception:
             continue
         per_page.append((pno, rows, declared_basis(rows)))
@@ -382,12 +455,12 @@ def read_doc(doc, life):
                 # 6,923.24 (Jun's revenue wearing Sep's anchor). Both pages DO print the same dated
                 # header row, so the period is now read directly from it and the profit vector is
                 # re-expressed in the revenue page's column space by (date, occurrence).
-                cols_a = header_columns(doc[pno])
-                cols_b = header_columns(doc[pno2])
+                cols_a = header_columns(doc[pno], ocr)
+                cols_b = header_columns(doc[pno2], ocr)
                 if len(cols_a) < 3 or len(cols_b) < 3:
                     continue
-                rows_a = rows_on_columns(doc[pno], cols_a)
-                rows_b = rows_on_columns(doc[pno2], cols_b)
+                rows_a = rows_on_columns(doc[pno], cols_a, ocr)
+                rows_b = rows_on_columns(doc[pno2], cols_b, ocr)
                 prem = pick_row(rows_a, R_NETPREM if life else R_PREMEARNED)
                 ph = pick_row(rows_a, R_PH_INV)
                 pat_b = pick_row(rows_b, R_PAT)
@@ -556,6 +629,7 @@ def main():
                 continue
             # earliest result filing after quarter-end first (runbook §3)
             got = {}
+            used_ocr = False
             for adate, att, _sub in sorted(anns):
                 p = os.path.join(PDFCACHE, "%s_%d_%s" % (sym, qe, re.sub(r"[^A-Za-z0-9.]", "_", att)))
                 if os.path.exists(p) and os.path.getsize(p) > 5000:
@@ -573,6 +647,16 @@ def main():
                     cands = read_doc(doc, life)
                 except Exception:
                     cands = []
+                if not any(pd.get("decl") == "con" for _p, pd in cands):
+                    # text layer gave us no consolidated statement — it may be corrupted rather
+                    # than absent (GICRE reads "OPERA TING RES UL TS"). Re-read with OCR.
+                    try:
+                        ocr_cands = read_doc(doc, life, ocr=True)
+                    except Exception:
+                        ocr_cands = []
+                    if ocr_cands:
+                        cands = ocr_cands
+                        used_ocr = True
                 def best_for(basis):
                     stored = (fmap.get(sym, {}).get(qe) or [None, None, None, None])[
                         1 if basis == "std" else 3]
@@ -628,6 +712,7 @@ def main():
                 key = "%s|%d|%s" % (sym, qe, basis)
                 rev, col, scale, pat_seen = s
                 fills[key] = {"rev": rev, "basis": basis, "page": pno, "column": col,
+                              "reader": "ocr" if used_ocr else "text",
                               "scale": scale, "anchor": pat_seen, "page_basis": how,
                               "std_control": ctrl_rev,
                               "stored_pat": (fmap[sym][qe][1 if basis == "std" else 3]),
@@ -692,6 +777,9 @@ def main():
     json.dump(revop, open(REVOP_DOCS, "w"), separators=(",", ":"))
     json.dump(ledger, open(REVOP_LEDGER, "w"), separators=(",", ":"))
     print("APPLIED %d insurer revenue cells" % applied)
+
+
+_init_norm_map()      # R_* patterns exist by now
 
 
 if __name__ == "__main__":
