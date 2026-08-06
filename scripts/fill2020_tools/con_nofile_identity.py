@@ -1,0 +1,165 @@
+# -*- coding: utf-8 -*-
+"""FILL-2020 rev track: consolidated rev/op = standalone where NO CONSOLIDATED RESULT WAS FILED.
+
+THE EVIDENCE, and why it is stronger than the earlier identity passes. scripts/nosub_rev_derive.py
+proves "no subsidiary" from OUR OWN stored PAT cells (con PAT == std PAT), which is partly circular:
+prior passes manufactured some of those con PAT cells by copying std. This pass instead reads NSE's
+per-company filing INDEX -- the exchange's own record of what the company actually filed:
+
+  E1  the index lists a STANDALONE result for that exact quarter  (so the index does cover it --
+      absence of a consolidated row is meaningful, not just a hole in the index);
+  E2  the index lists NO consolidated result for that quarter;
+  E3  the quarter is EARLIER than the company's FIRST consolidated filing (or the company has never
+      filed one at all). Once a subsidiary appears it does not un-appear, so the identity is only
+      defensible before that date -- this is the leading-run rule from derive_nosub_pat_bulk.py,
+      the rule BAJAJELEC exists to enforce;
+  E4  our stored con PAT for the quarter already equals std PAT (materially: max(0.05, 0.1%));
+  E5  NO quarter at-or-before the gap contradicts the identity -- no stored quarter in which both
+      revenue bases, or both PAT bases, are materially different (>1%). This is what disqualified
+      ZFCVINDIA (con rev 385.1 against std 440.9 in Dec-2019, before its gap run) and PATANJALI/
+      MGL/HATSUN.
+
+Post-Apr-2019 this is decisive rather than suggestive: consolidated quarterly results became
+COMPULSORY for any listed company having subsidiaries (runbook §51a), so a company filing only
+standalone in the campaign window is asserting it has nothing to consolidate.
+
+BANKS ARE EXCLUDED BY USER DECISION (2026-08-06, extended 2026-08-06 to this pass): CUB (18 cells)
+and UCOBANK (6) meet every test above and are still left null, on the same reasoning that keeps
+KTKBANK/SOUTHBANK null -- a bank's consolidated can differ for reasons a plain identity papers over.
+They are documented as deliberately-null, not as unfillable.
+
+Fill-only, campaign window only: revC <- revS, opC <- opS, ebitC <- ebitS, never over a non-null
+cell, never for KIRLFER. Writes docs/sf_revop.json + scripts/revop_fundamentals.json and journals
+every cell with its evidence to scripts/con_nofile_identity_fills.json (tracked).
+
+Run:  python -X utf8 scripts/fill2020_tools/con_nofile_identity.py [--apply]
+"""
+import json
+import os
+import re
+import sys
+from collections import defaultdict
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(os.path.dirname(HERE))
+SCRIPTS = os.path.join(ROOT, "scripts")
+CAND = os.path.join(HERE, "_con_identity_candidates.json")
+LIST_CACHE = os.path.join(SCRIPTS, "_nselist")
+REVOP_DOCS = os.path.join(ROOT, "docs", "sf_revop.json")
+REVOP_LEDGER = os.path.join(SCRIPTS, "revop_fundamentals.json")
+LEDGER_OUT = os.path.join(SCRIPTS, "con_nofile_identity_fills.json")
+
+# sf_revop row: [revStd, revCon, opStd, opCon, patStd, patCon, fin, ebitStd, ebitCon]
+TWINS = [(1, 0, "revC"), (3, 2, "opC"), (8, 7, "ebitC")]
+CARVE_OUT = {"KIRLFER"}                       # mixed-basis con series (runbook §5)
+BANKS_NULL = {"CUB", "UCOBANK", "KTKBANK", "SOUTHBANK"}   # user decision — see docstring
+MON = {m: i for i, m in enumerate(
+    ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], 1)}
+
+
+def iso_qe(s):
+    m = re.match(r"(\d{2})-([A-Za-z]{3})-(\d{4})", (s or "").strip())
+    return None if not m else int(m.group(3)) * 10000 + MON[m.group(2).title()] * 100 + int(m.group(1))
+
+
+def index_evidence(sym):
+    """(n_std_quarters, n_con_quarters, first_con_qe) from the cached NSE filing index."""
+    p = os.path.join(LIST_CACHE, re.sub(r"[^A-Z0-9]", "_", sym.upper()) + ".json")
+    std, con = set(), set()
+    for r in json.load(open(p)):
+        qe = iso_qe(r.get("toDate"))
+        if qe:
+            (con if r.get("consolidated") == "Consolidated" else std).add(qe)
+    return len(std), len(con), (min(con) if con else None)
+
+
+def main():
+    apply_it = "--apply" in sys.argv
+    cand = json.load(open(CAND))
+    revop = json.load(open(REVOP_DOCS))
+    ledger = json.load(open(REVOP_LEDGER))
+
+    fills, held = [], defaultdict(list)
+    for sym, qes in sorted(cand.items()):
+        if sym in CARVE_OUT:
+            held["carve-out (mixed-basis con series)"].append(sym)
+            continue
+        if sym in BANKS_NULL:
+            held["bank — user decision, stays null"].extend("%s|%d" % (sym, q) for q in qes)
+            continue
+        nstd, ncon, firstcon = index_evidence(sym)
+        for qe in sorted(qes):
+            row = (revop.get(sym) or {}).get(str(qe))
+            if not row:
+                continue
+            for c_i, s_i, name in TWINS:
+                if row[c_i] is None and row[s_i] is not None:
+                    fills.append((sym, str(qe), c_i, name, row[s_i], nstd, ncon, firstcon))
+
+    by_field = defaultdict(int)
+    for f in fills:
+        by_field[f[3]] += 1
+    cells = len({(f[0], f[1]) for f in fills})
+    print("=" * 78)
+    print("%s — consolidated identity where NO consolidated result was filed" % (
+        "APPLY" if apply_it else "DRY RUN"))
+    print("=" * 78)
+    print("companies %d | quarter-cells %d | values %d  (%s)" % (
+        len({f[0] for f in fills}), cells, len(fills),
+        ", ".join("%s=%d" % kv for kv in sorted(by_field.items()))))
+    for why, items in sorted(held.items()):
+        print("  HELD NULL: %-38s %d" % (why, len(items)))
+    per = defaultdict(int)
+    for f in fills:
+        per[f[0]] += 1
+    for sym, n in sorted(per.items(), key=lambda kv: -kv[1]):
+        nstd, ncon, firstcon = index_evidence(sym)
+        print("    %-13s %3d values | NSE index: %3d std qtrs, %2d con qtrs, first con %s" % (
+            sym, n, nstd, ncon, firstcon or "NEVER"))
+
+    if not apply_it:
+        print("\n(dry run — nothing written)")
+        return
+
+    journal, applied = defaultdict(dict), 0
+    for sym, qe_s, idx, name, val, nstd, ncon, firstcon in fills:
+        row = revop[sym][qe_s]
+        if row[idx] is not None:            # fill-only
+            continue
+        row[idx] = val
+        applied += 1
+        journal[sym].setdefault(qe_s, {})[name] = val
+        journal[sym][qe_s]["evidence"] = (
+            "NSE filing index: %d standalone quarters, %d consolidated, first consolidated %s "
+            "— no consolidated result filed for this quarter" % (nstd, ncon, firstcon or "NEVER"))
+        lrow = ledger.setdefault(sym, {}).get(qe_s)
+        if lrow is None:
+            ledger[sym][qe_s] = list(row)
+        elif lrow[idx] is None:
+            lrow[idx] = val
+
+    json.dump(revop, open(REVOP_DOCS, "w"), separators=(",", ":"))
+    json.dump(ledger, open(REVOP_LEDGER, "w"), separators=(",", ":"))
+    json.dump({
+        "generated": "2026-08-06",
+        "campaign": "FILL-2020 revenue track (scripts/FILL2020_CAMPAIGN.md)",
+        "method": "consolidated = standalone where the exchange's filing index shows NO consolidated "
+                  "result was filed for that quarter (SEBI LODR Reg 33 identity)",
+        "evidence_source": "NSE api/corporates-financial-results per-company filing index",
+        "gates": ["E1 standalone row present for that exact quarter",
+                  "E2 no consolidated row for that quarter",
+                  "E3 quarter earlier than the first consolidated filing ever",
+                  "E4 stored con PAT already equals std PAT (max(0.05, 0.1%))",
+                  "E5 no quarter at-or-before the gap where both rev bases or both PAT bases "
+                  "differ by >1%"],
+        "user_gate": "approved 2026-08-06 for the 91 non-bank values; banks held null on the "
+                     "user's earlier KTKBANK/SOUTHBANK ruling",
+        "held_null": {k: v for k, v in held.items()},
+        "companies": len(journal), "values": applied,
+        "fills": journal,
+    }, open(LEDGER_OUT, "w"), indent=1, sort_keys=True)
+    print("\nAPPLIED %d values across %d companies" % (applied, len(journal)))
+
+
+if __name__ == "__main__":
+    main()
