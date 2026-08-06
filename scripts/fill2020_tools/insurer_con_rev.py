@@ -291,10 +291,24 @@ def read_doc(doc, life):
             tin = pick_row(rows2, R_TRANSFER_IN)
             pat = pick_row(rows2, R_PAT)
             if pat is not None and tin is None:
-                # GENERAL-FORMAT CONTINUATION: revenue rows here, profit tail on the next page.
-                # Build the owners-attributable vector the way runbook §3 defines it; the anchor
-                # against our stored con PAT is what proves the two pages' columns line up, so no
-                # separate shared-row test is needed (and none exists in this layout).
+                # GENERAL-FORMAT CONTINUATION — DISABLED, and here is why (2026-08-06).
+                # The idea: revenue rows on this page, profit tail on the next, with the owners
+                # vector built per runbook §3 (PAT + minority + associate). It reads correctly when
+                # the two pages share a column layout — NIACL Sep-2023 reproduced 10,566.55 against
+                # a standalone control of 10,516.54 exactly. But it is NOT SAFE in general: the two
+                # pages need not have the same columns. NIACL's Sep-2020 pack prints FOUR columns on
+                # the revenue page and FIVE on the profit page (it adds the six-month columns), and
+                # the profit vector opens with a blank cell. Index k is then a different period on
+                # each page, and the 3% PAT tolerance is loose enough to let the near-miss through:
+                # Jun-2020 and Sep-2020 both came out as 6,923.24, as did Jun/Sep-2021 at 8,115.95 —
+                # the previous quarter's revenue wearing this quarter's anchor. The standalone
+                # control cannot catch it because the control passes on the standalone page.
+                # Anchoring does NOT prove column alignment across pages; only a shared row does
+                # (the life format's transfer line), and this layout has none.
+                # TO RE-ENABLE SAFELY: map each column to its PERIOD from the printed date headers
+                # ("(30/09/2020) (30/06/2020) ..."), per page, and select by period rather than by
+                # index. Until then this refuses, per the campaign's anchored-or-SKIP rule.
+                continue
                 minor = pick_row(rows2, R_MINORITY) or []
                 assoc = pick_row(rows2, R_ASSOCIATE) or []
                 owners = [None if pat[k] is None else
