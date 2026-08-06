@@ -7,12 +7,15 @@
 // then each combo only filters + walks the presorted order — verified EXACT vs simulate().
 //
 // Build + run (appended to the engine, shares scope):
-//   cat docs/backtest-engine.js scripts/grid_search_mega.js > scripts/_gridmega_run.js
+//   cat scripts/gridmega_shim.js docs/backtest-engine.js scripts/grid_search_mega.js > scripts/_gridmega_run.js
 //   node --max-old-space-size=3072 scripts/_gridmega_run.js            # full run
 //   PARITY_ONLY=1 node scripts/_gridmega_run.js                        # parity + ETA only
+// argv: [start] [end].  env: MAIN_ONLY=1 (grid + top-2000 only) · EVAL_FILE=x.json ·
+//   TOPN=3|5 · METHOD=reset|hold · UNIVERSE='Nifty 500'|__FNO__  (the Phases Lab basket variants).
 // Reads LIVE data from scripts/_live/ (p1_new.bin p2_new.bin fund_live.json shp_live.json
-// nifty_live.json nifty500_live.json stock_data_live.bin) — runbook §7.0.
-// Writes scripts/_gridmega_result_<start>.json (+ checkpoint + full CSV.gz of every combo).
+// nifty_live.json nifty500_live.json stock_data_live.bin) — stage it with
+// `python3 scripts/gridmega_fetch_live.py` (runbook §7.0/§7.4).
+// Writes scripts/_gridmega_result_<start><vtag>.json (+ checkpoint + full CSV.gz of every combo).
 (function () {
   const fs = require('fs'), zlib = require('zlib'), path = require('path');
   const ROOT = path.resolve(__dirname, '..');
@@ -58,10 +61,21 @@
   // ===== window / schedule =====
   const START = process.argv[2] || '2020-03-31';
   const END = process.argv[3] || SFD.end;                       // optional end override (phase grids)
-  const TAG = process.argv[3] ? START + '_' + END : START;      // artifact naming: keep legacy names for full runs
+  // Basket variant — the Phases Lab ships one grid per basket shape (runbook §7.4).
+  //   TOPN   basket size the grid itself searches over (default 5)
+  //   METHOD 'reset' = sell all + rebuy monthly | 'hold' = ride winners (exits replaced, winners kept)
+  //   UNIVERSE 'Nifty 500' (default) or '__FNO__' for the F&O universe
+  // VTAG keeps each variant's CSV/cache/top artifacts separate; the default variant keeps the
+  // legacy un-suffixed names so old artifacts stay readable.
+  const TOPN = +(process.env.TOPN || 5);
+  const METHOD = process.env.METHOD || 'reset';
+  const UNIVERSE = process.env.UNIVERSE || 'Nifty 500';
+  const VTAG = (TOPN === 5 && METHOD === 'reset' && UNIVERSE === 'Nifty 500') ? ''
+             : '_' + (UNIVERSE === '__FNO__' ? 'fno_' : '') + (METHOD === 'hold' ? 'h' : 'r') + TOPN;
+  const TAG = (process.argv[3] ? START + '_' + END : START) + VTAG; // artifact naming
   const CAPITAL = 100000;
-  const BASECFG = { start:START, end:END, indexName:'Nifty 500', freq:1, lookback:1, topN:5,
-                    capital:CAPITAL, mode:'sf', earnBasis:'con', mcapFloor:0, method:'reset' };
+  const BASECFG = { start:START, end:END, indexName:UNIVERSE, freq:1, lookback:1, topN:TOPN,
+                    capital:CAPITAL, mode:'sf', earnBasis:'con', mcapFloor:0, method:METHOD };
   // trading-day snap — identical to simulate()
   const _tdset = new Set();
   for (const r of ['RELIANCE','TCS','HDFCBANK','INFY','ICICIBANK','ITC','SBIN','LT']) { const s = SERIES[r]; if (s && s.d) for (const o of s.d) _tdset.add(o); }
@@ -79,7 +93,10 @@
   const FULLCFG = { ...BASECFG, sortBy:'composite', filters:[{field:'fiiPct',op:'>',val:-1}] }; // triggers tech+fund+shp+composite
   const ALLOFFS = [...new Set([...MAIN.O, ...OOS1.O, ...OOS2.O])].sort((a,b)=>a-b);
   for (const o of [...OOS1.O, ...OOS2.O]) if (!MAIN.O.includes(o)) console.error('note: OOS off '+o+' ('+isoOff(o)+') outside main window set');
-  const CACHE_FILE = path.join(ROOT, 'scripts', '_gridmega_cache_' + START + '_' + END + '.json.gz');
+  // Factor rows are universe-filtered (rowsAt → membersAsOf), so the cache is per-UNIVERSE.
+  // topN/method never reach factorsAt, so all basket sizes share one cache file.
+  const UTAG = UNIVERSE === 'Nifty 500' ? '' : '_fno';
+  const CACHE_FILE = path.join(ROOT, 'scripts', '_gridmega_cache_' + START + '_' + END + UTAG + '.json.gz');
   let CACHE = new Map();
   if (fs.existsSync(CACHE_FILE)) {
     const raw = GZf(CACHE_FILE);
@@ -312,16 +329,16 @@
   const flushCsv = () => { if (!csvBuf.length) return; fs.appendFileSync(CSV_FILE, zlib.gzipSync(csvBuf.join('\n') + '\n')); csvBuf.length = 0; };
   csvBuf.push('sortBy,dir,filters,cagr,maxDD,winRate,avgPicks');
   let done = 0, degenerate = 0;
-  const CKPT = path.join(ROOT, 'scripts', '_gridmega_ckpt.json');
+  const CKPT = path.join(ROOT, 'scripts', '_gridmega_ckpt_' + TAG + '.json'); // per-window: runs go in parallel
   for (const sfld of SORTFIELDS) for (const dir of DIRS) {
     for (let fi = 0; fi < FSETS.length; fi++) {
       const fset = FSETS[fi];
-      const r = simFast(sfld, dir, fset.map(x => CATOMS[x]), 5, 'reset', MAIN);
+      const r = simFast(sfld, dir, fset.map(x => CATOMS[x]), TOPN, METHOD, MAIN);
       done++;
       if (r.avgPicks < 2.5) degenerate++;   // mostly-empty basket — tracked but still recorded
       csvBuf.push(sfld + ',' + dir + ',' + fdesc(fset).replace(/,/g, ';') + ',' + r.cagr.toFixed(2) + ',' + r.maxDD.toFixed(1) + ',' + r.winRate.toFixed(1) + ',' + r.avgPicks.toFixed(2));
       if (csvBuf.length >= 200000) flushCsv();
-      const rec = { sortBy: sfld, dir, fset, topN: 5, method: 'reset', cagr: r.cagr, maxDD: r.maxDD, winRate: r.winRate, vol: r.vol, avgPicks: r.avgPicks };
+      const rec = { sortBy: sfld, dir, fset, topN: TOPN, method: METHOD, cagr: r.cagr, maxDD: r.maxDD, winRate: r.winRate, vol: r.vol, avgPicks: r.avgPicks };
       if (r.cagr > cutC) { topC.push(rec); if (topC.length > TOPK * 2) { topC.sort((a, b) => b.cagr - a.cagr); topC.length = TOPK; cutC = topC[TOPK - 1].cagr; } }
       const ra = r.cagr / (r.maxDD || 1);
       if (ra > cutR && r.cagr > 15) { topR.push({ ...rec, ra }); if (topR.length > TOPR * 2) { topR.sort((a, b) => b.ra - a.ra); topR.length = TOPR; cutR = topR[TOPR - 1].ra; } }
@@ -356,10 +373,11 @@
     const t1 = Date.now(); let nref = 0;
     const seeds = [...pool.values()];
     for (const s of seeds) {
-      for (const n of [3, 8, 10]) { const r = simFast(s.sortBy, s.dir, s.fset.map(x => CATOMS[x]), n, 'reset', MAIN);
-        addPool({ sortBy: s.sortBy, dir: s.dir, fset: s.fset, topN: n, method: 'reset', ...r }, 'topN'); nref++; }
-      const rh = simFast(s.sortBy, s.dir, s.fset.map(x => CATOMS[x]), 5, 'hold', MAIN);
-      addPool({ sortBy: s.sortBy, dir: s.dir, fset: s.fset, topN: 5, method: 'hold', ...rh }, 'hold'); nref++;
+      for (const n of [3, 5, 8, 10].filter(n => n !== TOPN)) { const r = simFast(s.sortBy, s.dir, s.fset.map(x => CATOMS[x]), n, METHOD, MAIN);
+        addPool({ sortBy: s.sortBy, dir: s.dir, fset: s.fset, topN: n, method: METHOD, ...r }, 'topN'); nref++; }
+      const alt = METHOD === 'hold' ? 'reset' : 'hold';
+      const rh = simFast(s.sortBy, s.dir, s.fset.map(x => CATOMS[x]), TOPN, alt, MAIN);
+      addPool({ sortBy: s.sortBy, dir: s.dir, fset: s.fset, topN: TOPN, method: alt, ...rh }, alt); nref++;
     }
     // 4th filter on the top slice only
     const ext = [...new Map([...topC.slice(0, 50), ...topR.slice(0, 30)].map(r => [keyOf(r), r])).values()];
@@ -367,8 +385,8 @@
       const used = new Set(s.fset.map(x => CATOMS[x].fi));
       for (let ai = 0; ai < nA; ai++) { if (used.has(CATOMS[ai].fi)) continue;
         const fset = [...s.fset, ai].sort((a, b) => a - b);
-        const r = simFast(s.sortBy, s.dir, fset.map(x => CATOMS[x]), 5, 'reset', MAIN);
-        if (r.cagr > s.cagr) addPool({ sortBy: s.sortBy, dir: s.dir, fset, topN: 5, method: 'reset', ...r }, '4filter'); nref++; }
+        const r = simFast(s.sortBy, s.dir, fset.map(x => CATOMS[x]), TOPN, METHOD, MAIN);
+        if (r.cagr > s.cagr) addPool({ sortBy: s.sortBy, dir: s.dir, fset, topN: TOPN, method: METHOD, ...r }, '4filter'); nref++; }
     }
     console.error('refinement: ' + nref + ' extra sims in ' + ((Date.now()-t1)/1000|0) + 's; pool=' + pool.size);
   }
@@ -418,7 +436,7 @@
            cagr: +r.cagr.toFixed(2), maxDD: +r.maxDD.toFixed(1), benchCagr: +benchCagrOf(START, END).toFixed(2) },
   });
   const out = {
-    window: [START, END], universe: 'Nifty 500', freq: 1, defaultTopN: 5,
+    window: [START, END], universe: UNIVERSE, freq: 1, defaultTopN: TOPN, method: METHOD,
     bench: { main: +benchCagrOf(START, END).toFixed(2), oos2023: +benchCagrOf('2023-03-31', END).toFixed(2), oosMid: +benchCagrOf('2021-06-30', '2024-06-30').toFixed(2) },
     totalCombos: done, atoms: ATOMS.map(a => a.field + a.op + a.val), degenerate,
     elapsedMin: +((Date.now() - t0) / 60000).toFixed(1),
@@ -426,6 +444,6 @@
     topByRobust: byRobust.slice(0, 40).map(fmt),
     topByRiskAdj: all.slice().sort((a, b) => (b.cagr / (b.maxDD || 1)) - (a.cagr / (a.maxDD || 1))).slice(0, 30).map(fmt),
   };
-  fs.writeFileSync(path.join(ROOT, 'scripts', '_gridmega_result_' + START + '.json'), JSON.stringify(out, null, 1));
-  console.error('DONE → scripts/_gridmega_result_' + START + '.json   best=' + out.topByCAGR[0].strategy + ' cagr=' + out.topByCAGR[0].cagr + '  bench=' + out.bench.main);
+  fs.writeFileSync(path.join(ROOT, 'scripts', '_gridmega_result_' + START + VTAG + '.json'), JSON.stringify(out, null, 1));
+  console.error('DONE → scripts/_gridmega_result_' + START + VTAG + '.json   best=' + out.topByCAGR[0].strategy + ' cagr=' + out.topByCAGR[0].cagr + '  bench=' + out.bench.main);
 })();
