@@ -54,6 +54,9 @@ sys.path.insert(0, SCRIPTS)
 _spec = importlib.util.spec_from_file_location("nar", os.path.join(SCRIPTS, "_nse_archive_revop.py"))
 NAR = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(NAR)                       # reuse aliases/get_detail/parse_detail/pick
+# NAR.get() reads a module-global JAR that NAR.main() normally creates; importing the module
+# skips that, so every fetch raised NameError. Seed it here (NAR refreshes it itself on 4xx).
+NAR.JAR = NAR.BF.nse_jar()
 
 INV = os.path.join(HERE, "_con_nse_inventory.json")
 TARGETS = os.path.join(HERE, "_con_targets_pre2020.json")
@@ -92,8 +95,16 @@ def read_page(link, sym, qe, want_con):
         return None, "basis-mismatch:%s" % (basis or "?"), None
     if qe_of(meta.get("Period Ended", "")) != qe:
         return None, "period-mismatch:%s" % meta.get("Period Ended"), None
-    if (meta.get("Symbol") or "").upper() not in {a.upper() for a in NAR.aliases(sym)}:
+    # aliases() returns the OTHER era spellings, not the symbol itself -- omitting sym rejected
+    # every page whose Symbol was simply the current one (BALLARPUR "mismatched" itself).
+    if (meta.get("Symbol") or "").upper() not in {a.upper() for a in ([sym] + NAR.aliases(sym))}:
         return None, "symbol-mismatch:%s" % meta.get("Symbol"), None
+    # CUMULATIVE PAGES ARE YEAR-TO-DATE, NOT THE QUARTER. parse_detail does not surface this field,
+    # so read it from the body: a Q2/Q3/Q4 cumulative row would land a 6/9/12-month figure as a
+    # quarter. (PRE2015 STEP N carries the same check.)
+    m = re.search(r"Cumulative\s*/\s*Non-?Cumulative\s*\|?\s*(Non-?Cumulative|Cumulative)", html, re.I)
+    if m and m.group(1).lower().replace("-", "").startswith("cumulative"):
+        return None, "cumulative-page(YTD not quarter)", None
     own = NAR.pick(rows, R_OWN)
     per = NAR.pick(rows, R_PERIOD)
     mi = NAR.pick(rows, R_MINORITY)
@@ -180,6 +191,7 @@ def main():
         # The std link comes from NAR.list_rows (disk-cached, alias-aware: it merges the era
         # spellings, which matters because NSE rewrites archive filenames to the CURRENT symbol).
         srec = std_link(sym, qe)
+        blocked = None
         if stored_std is not None and srec:
             spat, smeta, _ = read_page(srec, sym, qe, False)
             time.sleep(0.7)
@@ -189,11 +201,21 @@ def main():
                 gates.append("S':%s std_page=%.2f stored=%.2f" % ("PASS" if good else "FAIL",
                                                                   spat, stored_std))
                 passed = passed or good
+                # A FAILING S' is a HARD BLOCK, not merely an unpassed gate. It means this page
+                # family disagrees with a value we already hold for the same company-quarter --
+                # revised filing, restatement, or period mis-mapping. Whatever the cause, a
+                # consolidated figure read from the same family cannot be trusted, and GATE E
+                # (an internal self-consistency check) cannot rescue it: EPS and PAT can agree
+                # with each other on a page that is describing a different period entirely.
+                if not good:
+                    blocked = "S'-mismatch (std page %.2f vs stored %.2f)" % (spat, stored_std)
             else:
                 gates.append("S':unavailable(%s)" % smeta)
         eg, note = eps_gate(pat, rows)
         gates.append("E:%s %s" % ({True: "PASS", False: "FAIL", None: "n/a"}[eg], note))
         passed = passed or (eg is True)
+        if blocked:
+            passed = False
         rec = {"con": round(pat, 2), "unit": meta.get("unit"), "gates": gates,
                "stored_std": stored_std, "link": link}
         if passed:
@@ -202,10 +224,10 @@ def main():
             print("  OK   %-12s %d  con=%-10.2f std=%-10s | %s" % (sym, qe, pat, stored_std,
                                                                    " ; ".join(gates)), flush=True)
         else:
-            rec["skip"] = "no-gate-passed"
+            rec["skip"] = blocked or "no-gate-passed"
             reads["%s|%d" % (sym, qe)] = rec
             skip += 1
-            print("  SKIP %-12s %d  no gate passed | %s" % (sym, qe, " ; ".join(gates)), flush=True)
+            print("  SKIP %-12s %d  %s | %s" % (sym, qe, blocked or "no gate passed", " ; ".join(gates)), flush=True)
         if (i + 1) % 10 == 0:
             json.dump(reads, open(READS, "w"), indent=0, sort_keys=True)
     json.dump(reads, open(READS, "w"), indent=0, sort_keys=True)
