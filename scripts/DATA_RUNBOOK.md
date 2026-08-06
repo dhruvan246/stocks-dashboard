@@ -3246,3 +3246,106 @@ Two gates make the difference between arithmetic and fabrication:
 **Pre-2020 con-PAT is now closed at 2,939 open cells**, every one of them structurally absent
 rather than un-attempted: 2.7% of gap cells had a quarterly filing (42 landed), and the FY-identity
 route reaches 1 more. Do not re-grind this window without a genuinely new source.
+
+---
+
+## 54. ★★ POST-2020 REVENUE — the NSE filing INDEX is both a fetch route and an evidence source  (2026-08-06)
+
+Closed 279 of the 770 post-2020 empty rev cells (revS 192→139, revC 578→352) in one session, none
+of it by reading a PDF. The unlock is an endpoint the campaign had only ever used for PAT:
+
+    https://www.nseindia.com/api/corporates-financial-results?index=equities&symbol=<SYM>&period=Quarterly
+
+It returns EVERY quarterly result the company filed with NSE — one row per (quarter, basis) — each
+carrying `consolidated` ("Consolidated"/"Non-Consolidated") and, for ~2018+, the `xbrl` URL. Harvest
+it once per company (`fill2020_tools/nse_list_harvest.py`, cache `scripts/_nselist/`), and it answers
+two different questions.
+
+### 54a. The XBRL is still served for quarters our cache never held — 150 cells
+sf_revop is built by re-parsing `_xbrl_cache`; a cell is empty mostly because the daily fetch missed
+that filing, NOT because no document exists. Download the listed XBRL, parse it with
+`build_revop.parse_file` (the same parser the nightly uses — so a later `--fresh` rebuild reproduces
+the cell), anchor, write. Tool: `fill2020_tools/nse_xbrl_rev.py`. This closed M&M ×13 — the target
+that had defeated `backfill_revop_gaps.py` for two sessions, because M&M's gaps are STANDALONE while
+`--rescue` mines consolidated comparatives (campaign doc §4).
+* Gates: declared basis == target basis, parsed quarter-end == target (never trust the list row's
+  `toDate` — §45's double-indexing), PAT anchor vs stored (owners tag preferred), fill-only.
+* ⚠️ **Do NOT sanity-band a value against the OTHER basis' stored twin.** Two independent failures:
+  con/std ratios are legitimately huge for holding structures (TMPV con 79,611 vs std 14,851 — JLR
+  is in the consolidation; GMRAIRPORT 72x; M&M 2.2x), and the stored twin is sometimes itself the
+  junk cell (ETERNAL Mar-2022 stores con rev 1.21 against a true standalone 1,014.80). Band against
+  the company's own SAME-BASIS neighbouring quarters instead — that catches the 3MINDIA class
+  (off by three orders of magnitude) without rejecting real data.
+* `.../corporate/xbrl/-` is a real listing with a placeholder URL (37 cells, ACC Dec-2021 class) —
+  the filing exists, the XBRL was never published. Record it as such, don't retry the 404 forever.
+
+### 54b. The index is NEGATIVE evidence: proof a consolidated result was never filed — 91 cells
+`nosub_rev_derive.py` proves "no subsidiary" from our own stored con PAT, which is partly circular
+(earlier passes manufactured con PAT by copying std). The index is the exchange's own record and
+cannot be contaminated by us: CUB has 79 filings and ZERO consolidated ones; TIMKEN 75 and zero.
+Post-Apr-2019 that is decisive, because consolidated quarterlies are compulsory for any company
+having subsidiaries (§51a) — filing standalone-only asserts there is nothing to consolidate.
+Gates used (`fill2020_tools/con_nofile_identity.py`), all five required:
+  E1 the index shows a STANDALONE filing for that exact quarter (so its silence on consolidated is
+     meaningful and not just a hole in the index) · E2 no consolidated row for that quarter ·
+  E3 the quarter precedes the company's FIRST consolidated filing ever (the leading-run rule) ·
+  E4 stored con PAT already equals std PAT · E5 **no quarter at-or-before the gap where both rev
+     bases, or both PAT bases, differ by >1%** — E5 is the one that earns its keep: it disqualified
+     ZFCVINDIA (con rev 385.1 against std 440.9 in Dec-2019, BEFORE its gap run), PATANJALI, MGL and
+     HATSUN, and it is the check that separates "no subsidiary" from "we simply never stored one".
+**Banks are held null by user decision** (2026-08-06) even when they pass every gate — CUB (18
+cells, never consolidated in 79 filings) and UCOBANK (6), on the same reasoning that already kept
+KTKBANK/SOUTHBANK null. Those are deliberately-null, not unfillable.
+
+## 55. ★★ INSURER CONSOLIDATED REVENUE from the filing PDF — and the control that makes it safe  (2026-08-06)
+
+38 cells (HDFCLIFE 14, ICICIPRULI 20, NIACL 4). Insurer con revenue is reachable by NO other route:
+NSE serves no insurer rev XBRL before the 2025 Integrated-Filing regime and
+`api/integrated-filing-results` returns only the last ~20 filings; the IRDAI public disclosures of
+§43 are entity-level and therefore standalone-only forever; and con=std is fabrication for every
+insurer except ICICIPRULI (§3). So the quarterly filing PDF, which carries both statements, is it.
+Tool: `fill2020_tools/insurer_con_rev.py`, ledger `scripts/insurer_con_rev_fills.json`.
+
+**Convention (both validated to the paisa against stored standalone values):**
+  life    = Net premium income + policyholders' Income from investments (Net) + shareholders'
+            Investment Income.  HDFCLIFE Jun-2022: 9,27,187 − 3,48,656 + 10,060 = ₹5,885.91cr = stored.
+  general = Premium Earned (Net) + policyholders' Income from investments (net) + shareholders'
+            Income from investments.  NIACL Jun-2023: 7,91,900 + 1,35,544 + 56,563 = ₹9,840.07cr = stored.
+
+**★ THE GATE THAT MATTERS — a per-filing standalone POSITIVE CONTROL.** Accept the consolidated
+figure only if the SAME filing's standalone statement reproduces the standalone revenue already
+stored for that quarter (0.5%). It tests the entire chain — page, column, scale, every revenue leg —
+against a known answer, per document. It caught what nothing else did: in the 2025-format packs the
+shareholders' investment-income leg sits on a different page and was silently contributing zero
+(29,061.08 read against 29,381.30 stored), and the PAT anchor passed that read happily. Quarters
+with no stored standalone to control against are skipped, not guessed. It also cut HDFCLIFE from 17
+"successful" reads to 11 trustworthy ones — and recovered 2 the earlier version had failed.
+
+**Layout traps, all of which produced silent wrong numbers before they were fixed:**
+* **Column alignment must be GEOMETRIC, never positional.** A row printing a nil dash loses a cell,
+  every later value shifts one column left, and the PAT row shifts with it so the anchor still
+  passes. Cluster the figure x-positions page-wide and report every row into those columns — and
+  cluster on the **right** edge, because the figures are right-aligned and the left edge moves with
+  the digit count (that alone shattered one column into three).
+* **A statement can span two pages** (the 2025 format; some 2023-24 packs). Join them only when the
+  policyholders' "Transferred to Shareholders A/c" vector equals the shareholders' "Transfer from
+  Policyholders' Account" vector — that shared line proves the two pages' columns are the same
+  periods, and it tolerates an offset (one page had a leading empty column).
+* **Pick the column by ANCHOR, never by position** (packs print [current | prev qtr | year-ago | FY]
+  and the order moves between years), and the SCALE by anchor too (lakh/crore/million).
+* **§44's duplicate trap is live here**: NIACL Jun-2023 stores std and con PAT identically (260.23),
+  so one page satisfies both anchors. Refuse a consolidated figure that comes from the page which
+  just served as the standalone control.
+* Labels differ per filer over one character: ICICIPRULI prints "Income from investments: (Net)"
+  with a colon, and that alone read as "no statement page found" for all 20 of its quarters.
+* The shareholders' section marker is a bare heading in the life format but a FIGURE row in the
+  general format ("Income in shareholders' account (a+b+c):"), so it cannot be required to be
+  value-less; take the LAST match, since "Transferred to Shareholders A/c" also matches and sits
+  above the real heading.
+* Insurer revenue legitimately goes NEGATIVE (ICICIPRULI Mar-2020 std −8,339.14, Jun-2022 −1,611.82;
+  HDFCLIFE Mar-2020 246.03 against ~15,000 neighbours) because investment income is marked to
+  market. **Never apply a neighbour-plausibility band to an insurer** — the COVID quarters are real.
+
+**Residue, honestly:** GICRE (17) reads nothing — its revenue account is four segment tables with no
+total (§43), so the single-row convention above cannot apply. NIACL's other 16 fail the standalone
+control. Both are documented dead-ends for THIS reader, not proven-unfillable quarters.
