@@ -53,7 +53,7 @@ profit-without-revenue on every 2003-04 page. Both label fixes were regression-c
 |---|---|---|---|
 | 2008Q1–2014Q4 | **BSE detres JSON** (runbook §42): `Corp_detailedResult_Transpose_ng/w?scrip_cd=<code>&qtr=<QID>.00`, QID = 85+4×(FY−2015)+{Mar:0,Jun:1,Sep:2,Dec:3} → Mar-2008 = **57** | RELIANCE/SBIN/HINDALCO/SATYAMCOMP/KEMROCK/3IINFOTECH/HFCL all full P&L at qid 57-81; SBIN Mar-08 NP 18832.5 ⇒ 1,883.25cr ✓ public record | ₹ MILLION ÷10. Serves delisted+suspended. `.50` audited annual works **FY08+** (RELIANCE FY08 19,458cr exact ✓). EPS+Equity Capital+Face Value rows present ⇒ EPS-recon gate live. **Below qid 57 (pre-Mar-2008): 3-row stub** (Type/Date Begin/Date End only) — the registry knows the quarter, has no financials. `.50` also stubs below FY08. |
 | 2005Q1–2007Q4 | **NSE archive HTML** (memory `feedback-nse-archive-first`): `corporates-financial-results?symbol=X&period=Quarterly` + `resultDetailedDataLink` → `financial_res_<SYM>_<id>.html` | RELIANCE/INFY/ACC lists all floor at **31-Mar-2005**; SATYAMCOMP serves 54 rows 2005-2013 (delisted OK); HINDALCO Mar-10 page rev 5,358.46cr ✓ matches detres+public | Page is **single-column (current quarter only) — NO comparative column.** Declares: `Amount(Rs. in lakhs)`, Banking/Non-Banking, Audited, **Consolidated/Non-Consolidated, Cumulative/Non-cumulative**, Relating-to quarter. `period=Annual` rows exist back to **FY05 (Audited)** with detail links ⇒ FY-identity gate is self-contained in-source. `filingDate`/`broadCastDate` are null pre-2018 ⇒ no real ann dates. Not all delisted served (BHARTISHIP = 0 rows → detres covers 2008+ only; pre-2008 those are STEP-W residue). |
-| 2002Q1–2004Q4 | **NO structured exchange source exists** (both probed dead: detres stub, NSE floor 2005) | — | STEP W probes the archived web (candidates + CDX seeds inside). Honest possibility of a permanent partial floor here. |
+| 2002Q1–2004Q4 | ~~NO structured exchange source exists~~ — **that verdict was about the LIVE apis only, and is now OUT OF DATE.** Live BSE detres stubs below qid 57 and live NSE floors at 2005, both still true. But **BSE's ARCHIVED website was never probed** and it does carry structured results — see "STEP B candidate" below. | — | STEP W is COMPLETE against the archived NSE tree (2,319 landed / 2,174 refused). The BSE archive is the one live lead left. |
 
 Membership raw material, all parsed and force-tracked already: `scripts/_n500_pre2008_lists.json`
 (**21 official NSE full lists 2002-10-02 → 2006-07-14, each 498-501 era-symbols**; the 20020815
@@ -658,6 +658,59 @@ GitHub works — which is why cloud sessions can push but cannot harvest. Re-ena
 after `web.archive.org` is added to that environment's allowed-domains list. (Trick worth reusing:
 a cloud run cannot show you its stdout, so have it **encode the answer in the branch name** and read
 it with `git ls-remote`.)
+
+## 🔎 STEP B candidate — BSE's ARCHIVED website (scoped 2026-08-07, NOT yet built)
+
+**The one live lead left for 2002-04.** The design-time verdict "no structured exchange source
+exists" was measured against BSE's **live** detres API (stubs below qid 57 = pre-Mar-2008) and
+**live** NSE (floors 2005). Both remain true. **BSE's archived website is a different thing and
+was never probed.** It is not a variant of STEP W either: different publisher, so it does NOT
+inherit STEP W's dominant failure mode (809 refusals where NSE's archive never captured the
+company at all).
+
+**The page, and why it is usable.** `web.archive.org` copies of
+`http://www.bseindia.com/qresann/result.asp?scripcd=<BSE code>` render a real structured P&L.
+Verified by fetching one (scripcd 514448, Jyoti Resins, capture 20040515041831):
+
+```
+ScripCode: 514448   ScripName: Jyoti Resins & Adhesives Ltd
+Quarter: December   Date Begin: 01 Oct 2000   Date End: 31 Dec 2000
+Description        Value(Rs. million)
+Net Sales   5.97 · Other Income 0.02 · Total Income 5.99 · Expenditure -5.15
+Interest   -0.26 · Gross Profit 0.57 · Depreciation -0.29 · Net Profit 0.28
+Equity Capital 40.00
+```
+
+Revenue, PAT, EXPLICIT period dates, a DECLARED unit (₹ million ÷10) and **Equity Capital** — so
+GATE F and GATE E port over unchanged, no new proof machinery needed. Reached via the
+`announcecom.asp` page's own nav (`/qresann/result.asp?scripcd=`); do not guess the path.
+Sibling pages: `announce.asp`, `announcecom.asp` (headline text like "FY-01 net profit down by
+52.97%" — RATIOS, not values, NOT usable), `comparch.asp`, `shareholding.asp`.
+
+**Measured scope (CDX, 2001-2007):** ~20,000 captures (hit the row limit, so this is a FLOOR),
+**3,936-5,154 distinct scrip codes**. Captures by year: 2001 5,616 · 2002 657 · 2003 397 ·
+2004 1,679 · 2005 5,299 · 2006 1,425 · 2007 1,955.
+
+**Overlap with what is still missing — this is a CEILING, not a yield:**
+`1,093 of the 2,174 open cells (50%), across 254 companies`, belong to a company that has at
+least one archived capture (joined via `_gaps_0214.json`'s `bse_code`; 407 cells are at symbols
+with no resolved BSE code at all).
+
+### ⚠ The number that actually decides this is NOT MEASURED YET
+**Each `result.asp` capture shows exactly ONE quarter — whatever was current when the crawler
+visited.** So a company having captures does not mean the MISSING quarter is among them, and the
+real yield must be well under the 50% ceiling: captures cluster in 2001 and 2005 while the gap is
+2002-04. **Do not plan against 50%.** A 10-company yield sample was attempted 2026-08-07 and came
+back 0/34 — but ALL 41 fetches failed with `Max retries exceeded` and 0 pages parsed, i.e. wayback
+was down. That run is VOID, not a negative result; recording it here so nobody cites it as
+evidence the source is empty. (Same trap as the 92 "false refusals" above: never read an outage as
+data absence.)
+
+**To decide it, run the sample when wayback is healthy** (verify with a REAL `wb_fetch`, not a root
+probe — a 302 on `/web/2005id_/` proves nothing): for ~10 companies with captures, fetch a few
+captures each, parse `Date End:` to get the quarter, and count how many land on a cell we still
+need. If that yield is materially above ~10%, STEP B is worth building; if it is near zero, the
+2002-04 floor is real and the campaign should stop there and say so.
 
 ### STEP W-execute — batch-by-batch history (superseded by the completion block above)
 
