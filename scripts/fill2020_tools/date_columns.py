@@ -24,18 +24,26 @@ nine/six/half/year-to-date/twelve is EXCLUDED, not silently preferred against.
 Self-validating: the caller checks the mapping on the STANDALONE statement first (where a stored
 value does exist), and only trusts the consolidated page if the same parsing reproduced standalone.
 
-STATUS 2026-08-07: NOT WIRED INTO ANY WRITER -- it is not good enough yet, and the measurements say
-so. Over 602 cached statement pages:
-    54% of text pages yielded any quarter date;
-    1.5 quarter-columns per page on average, where a real quarterly statement has 3-5, so it is
-      finding FRAGMENTS of header rows rather than whole ones;
-    several hits came from narrative notes ("profit for the quarter en...") rather than table
-      headers, i.e. a date in prose is being mistaken for a column;
-    1 of 8 sampled pages produced a value at the mapped column.
-What it needs before it can be trusted: restrict date detection to a header BAND (the contiguous
-lines above the first numeric row) instead of the whole page, group same-y dates into one header row
-and require >=2 of them, and treat a lone date on a page as prose until proven otherwise.
-Committed as groundwork so the next pass starts from measurements rather than from scratch.
+STATUS 2026-08-07 (second pass): STILL NOT WIRED INTO ANY WRITER, but now plausibly close.
+Measured over ~600 cached statement pages:
+    header parsed on 67% of REAL statement pages (pages carrying both a revenue row and a PAT row);
+    2.4 quarter-columns per page, up from 1.5;
+    on 120 statement pages with a parsed header, the date-mapped column reproduced a value we
+      already store on 84 (70%) -- anchor-free, no PAT needed. Clean hits include DIVISLAB
+      2019-09-30 356.78 and MFSL 2018-12-31 139.89, exact.
+CAVEAT ON THAT 70%: the test matched the read value against EVERY company's stored figures rather
+than tying each cached PDF to its own issuer, so some hits are coincidental. It is an UPPER BOUND,
+not a verified accuracy. Before this writes anything, re-run the test with the PDF bound to its
+company, and require the same header parse to reproduce the STANDALONE figure on the same document
+(which we hold for every pre-2020 quarter) as the per-document self-check.
+Two fixes got it here, both worth remembering:
+    * the body-row marker must look for AMOUNTS, not digits -- every Indian letterhead is full of
+      numbers (ISO 9001, PIN 581 325, CIN ...PLC001936) and treating those as table body put the
+      body marker ABOVE the header, discarding the real header row as a footnote. That single
+      confusion accounted for most of the original 4% detection rate;
+    * cluster header dates in a +-14pt BAND, not on an exact shared baseline -- statements stack
+      the caption inside each column cell ("Quarter / ended / 31.12.2018") so adjacent columns
+      land on different y.
 """
 import re
 
@@ -106,21 +114,79 @@ def dates_on(page, ytol=3.0):
     return out
 
 
-def quarter_columns(page):
-    """-> {qe: x_right} for columns that are a SINGLE QUARTER.
+def header_rows(page, ytol=3.0, min_dates=2):
+    """Date rows that are a real TABLE HEADER, not a date mentioned in prose.
+
+    The first version scanned the whole page and mistook narrative dates for columns -- it averaged
+    1.5 columns per page where a statement has 3-5, and 1 of 8 sampled pages produced a value.
+    A header has two properties prose does not:
+      * SEVERAL dates share one baseline (a column header row), so require >= min_dates on one y;
+      * it sits ABOVE the numeric body of the table.
+    A lone date on a line is prose until proven otherwise.
+    """
+    # Cluster by a BAND, not an exact baseline. Many statements stack the caption inside each
+    # column cell ("Quarter / ended / 31.12.2018"), so the dates of adjacent columns land on
+    # slightly different y. Requiring an exact shared baseline found headers on only 3% of pages;
+    # a +-14pt band recovers them without letting a prose date in (prose dates are isolated).
+    pts = sorted(dates_on(page, ytol), key=lambda t: t[2])
+    out, i = [], 0
+    while i < len(pts):
+        j, y0 = i, pts[i][2]
+        while j < len(pts) and pts[j][2] - y0 <= 14.0:
+            j += 1
+        grp = pts[i:j]
+        # de-duplicate by x so one column counted once
+        seen, uniq = set(), []
+        for qe, x, y, ctx in sorted(grp, key=lambda t: t[1]):
+            k = round(x / 8.0)
+            if k in seen:
+                continue
+            seen.add(k)
+            uniq.append((qe, x, ctx))
+        if len(uniq) >= min_dates:
+            out.append((y0, uniq))
+        i = j
+    return out
+
+
+# An AMOUNT, not merely a number. The letterhead of every Indian filing is full of digits --
+# "ISO 9001", "IS014001", "DANDELI - 581 325", "CIN: L02101KA1955PLC001936", phone numbers -- and
+# treating those as table body put the body marker ABOVE the real header, so the true header row
+# was discarded as a footnote. That single confusion was most of the 4% detection rate.
+AMOUNT = re.compile(r"^\(?-?\d{1,3}(?:,\d{2,3})+(?:\.\d+)?\)?$"     # 1,234 / 12,34,567.89
+                    r"|^\(?-?\d+\.\d{2}\)?$")                        # 1234.56
+
+
+def _first_numeric_y(page, ytol=3.0):
+    """Baseline of the first row that looks like table BODY (>=2 AMOUNTS on one line)."""
+    rows = {}
+    for x0, y0, x1, y1, w, *_ in page.get_text("words"):
+        if AMOUNT.match(w):
+            k = round(y0 / ytol)
+            rows[k] = rows.get(k, 0) + 1
+    hits = [y for y, n in sorted(rows.items()) if n >= 2]
+    return hits[0] * ytol if hits else None
+
+
+def quarter_columns(page, ytol=3.0):
+    """-> {qe: x_right} for columns that are a SINGLE QUARTER, taken from a real header row.
 
     A cumulative column ending on the same date is dropped rather than competing, because taking it
     silently converts a nine-month figure into 'the quarter' -- the defect class this campaign
     healed 58 of.
     """
+    body_y = _first_numeric_y(page, ytol)
     best = {}
-    for qe, x, _y, ctx in dates_on(page):
-        if CUMULATIVE.search(ctx) and not QUARTERLY.search(ctx):
-            continue
-        # a date seen more than once at different x: keep the leftmost (statements print the
-        # current quarter first, cumulative blocks to its right)
-        if qe not in best or x < best[qe]:
-            best[qe] = x
+    for y, dates in header_rows(page, ytol):
+        if body_y is not None and y > body_y:
+            continue                     # below the numbers: a footnote, not a header
+        for qe, x, ctx in dates:
+            if CUMULATIVE.search(ctx) and not QUARTERLY.search(ctx):
+                continue
+            # a date seen more than once at different x: keep the leftmost (statements print the
+            # current quarter first, cumulative blocks to its right)
+            if qe not in best or x < best[qe]:
+                best[qe] = x
     return best
 
 
