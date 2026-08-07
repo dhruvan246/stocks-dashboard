@@ -12,10 +12,10 @@ name: Auto-rerun failed workflows
 # Scope (widened 2026-08-07): the 2026-08-06 Actions outage failed 19 workflows, but only
 # 7 were watched here — the other 18 sat red until a human re-ran them, some a full day
 # later. Every data-refresh workflow is now covered. Excluded on purpose: this workflow
-# itself (retrying the retry-driver loops), "Deploy site to Pages" (its `concurrency:
-# group: pages, cancel-in-progress: true` means a retry just cancels whatever is waiting
-# its turn — ci-janitor.yml unwedges Pages instead), the workflow_run-triggered bakers
-# (they re-fire from their upstream), and the manual debug tools.
+# itself (retrying the retry-driver loops), "Deploy site to Pages" (it self-heals from the
+# next push, and its `concurrency: group: pages-deploy` already cancels a superseded
+# PENDING run — a blind retry only adds churn; ci-janitor.yml handles Pages instead), the
+# workflow_run-triggered bakers (they re-fire from their upstream), and manual debug tools.
 
 on:
   workflow_run:
