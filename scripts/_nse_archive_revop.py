@@ -52,6 +52,17 @@ R_REV_IND2 = re.compile(r"net sales\s*/\s*income from operations", re.I)
 R_REV_IND3 = re.compile(r"^revenue from operations?\b|^income from operations?$"
                         r"|^total revenue from operations?", re.I)
 R_REV_BANK = re.compile(r"^interest earned", re.I)
+# Two more operating-revenue spellings found 2026-08-07 on pages whose PAT anchor PASSED (so the
+# page is definitely the right filing) but which still reported "no-rev-row":
+#   "Net Income from sales / services"  -- unambiguously the operating revenue line
+R_REV_IND5 = re.compile(r"^net income from sales\s*/?\s*services?", re.I)
+#   bare "Total Income" -- LAST RESORT ONLY, and deliberately kept separate from the patterns
+# above rather than folded in. For a BANK/NBFC Total Income IS the top line, but for an
+# industrial it is sales PLUS other income, so preferring it over a real sales row would
+# silently overstate revenue. It is therefore tried only after every other pattern has failed,
+# which matches the campaign's own rule: "for banks/NBFCs use Total Income; if ONLY Total
+# Income is shown, use that".
+R_REV_TOTINC = re.compile(r"^total income$", re.I)
 # op: printed directly — no reconstruction from expense components needed
 R_OP_IND = re.compile(r"profit\s*/?\s*\(?loss\)?\s*from operations before other income", re.I)
 R_OP_BANK = re.compile(r"operating profit before provisions", re.I)
@@ -310,7 +321,23 @@ def main():
                 skips["%s|%d|%s" % (sym, qe, basis)] = "pat-anchor %s vs stored %s" % (
                     round(pat2, 2) if pat2 is not None else None, stored)
                 continue
-            rev = pick(prows, R_REV_BANK) if isbank else pick(prows, R_REV_IND, R_REV_IND2, R_REV_IND3)
+            # `is None` chaining, never `or` -- a legitimate 0.00 is falsy and would fall through.
+            if isbank:
+                rev = pick(prows, R_REV_BANK)
+            else:
+                rev = pick(prows, R_REV_IND, R_REV_IND2, R_REV_IND3)
+                if rev is None:
+                    rev = pick(prows, R_REV_SIGNED)
+                if rev is None:
+                    rev = pick(prows, R_REV_IND5)
+            # LAST RESORT, FINANCIALS ONLY. For a bank/NBFC "Total Income" is the genuine top
+            # line. For an industrial it is not: NAHARPOLY Jun-2008 prints Other Income 0.53 and
+            # Total Income 0.53 with NO sales row at all, so taking Total Income there would
+            # publish 0.53 as "revenue" for a company whose operating revenue is actually absent
+            # -- the same holding-company shape where this dataset correctly stores None
+            # (cf. BHARTIARTL). Caught 2026-08-07 before any of it was pushed.
+            if rev is None and isfin:
+                rev = pick(prows, R_REV_TOTINC)
             if rev is None or rev <= 0:
                 skips["%s|%d|%s" % (sym, qe, basis)] = "no-rev-row"
                 continue
