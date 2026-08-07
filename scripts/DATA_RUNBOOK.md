@@ -1778,6 +1778,37 @@ TTM profit were complete the whole time.
   implies no feed/meta rebuild) then **`python scripts/_shp_merge_stage.py`** once the other writer exits
   (fill-only + newer-submission-wins + shrink-ABORT). CI is safe (workflow `concurrency` group).
 
+### 22f. COVERAGE vs POINT-IN-TIME NIFTY 500, 2002→date  (audited 2026-08-07)
+Denominator = survivorship-free membership (`git show origin/main:scripts/indices_history.json` →
+`Nifty 500`, 120 snapshots, nearest-prior per QE, rename-normed, DUMMY* dropped — NEVER the checkout copy).
+95 quarters Dec-2002→Jun-2026 = **47,436 member-quarters, 22.0k covered (46.4%)**. FII and DII coverage are
+IDENTICAL in every quarter by construction (parse_shp writes both or neither).
+
+| era | member-qtrs | cov | why |
+|---|---|---|---|
+| Dec-2002 → Jun-2010 | 15,473 | **0%** | no source (MC's SHP pages didn't exist; BSE files start Jun-2016) |
+| Sep-2010 → Sep-2015 | 10,449 | **30%** | Wayback-MC harvest, full-depth already run; residual = captures that don't exist |
+| Dec-2015 + Mar-2016 | 998 | **0.3%** | the SEAM (below) |
+| Jun-2016 → Jun-2019 | 6,502 | **79%** | BSE-XBRL ledger; residual is FILLABLE |
+| Sep-2019 → Jun-2026 | 14,014 | **98%** | live NSE pipeline; residual is FILLABLE |
+
+- **1,706 member-quarters across 496 symbols are missing post-Jun-2016 and the source HAS them.** Probed 175
+  of those holes on BSE `SHPQNewFormat` → **175/175 have a real filing**, and three fetched at random
+  (NESTLEIND Mar-21 + Sep-19, MCX Dec-22) parse cleanly with `parse_shp()` UNMODIFIED. Worst blackouts:
+  **MCX / ABBOTINDIA / BAYERCROP have NOTHING since Sep-2019 (28 quarters each)**, BSE Ltd 33, NESTLEIND 15
+  (Sep-19→Mar-23), ITC 14, WESTLIFE 14. 411 of the 496 resolve to a scripcode in today's `bse_scrips.json`
+  (997 cells); the other 85 (709 cells) are mostly delisted/merged names the LIVE master no longer carries —
+  the survivorship tail needs ISIN or an era scrip master, not `by_id`.
+- **⚠️ `xbrlurl` IS TRUTHY WHEN THERE IS NO FILE.** Pre-2016 rows return `xbrlurl: "/XBRL1/"` (bare prefix)
+  with an EMPTY `XbrlFile` — `if row["xbrlurl"]` counts 104/104 quarters "available" back to Mar-2001 and is
+  a lie. **Gate on `(row["XbrlFile"] or "").strip()`.** Real files start **Jun-2016** (40/40 sampled);
+  Mar-2016 = 3/40; **Dec-2015 = 0/40** — and MC's pages carry an empty FII row at exactly qtrid 88/89
+  (§ the Wayback backfill), so the Dec-15/Mar-16 seam is a genuine two-quarter wall, not a fetch bug.
+- **`fetch_shp_bse_hist.py` (the 2016-19 ledger builder) was never committed** — only its output
+  `shp_fill_hist_2016_2019.json.gz` is tracked. Re-running that route means rewriting the fetcher.
+- Re-run the audit: the read-only scripts live in the session scratchpad pattern — membership × shp_history
+  join, no network. Per-quarter CSV columns: `quarter_end, n500_members_pit, with_fii_dii, coverage_pct`.
+
 ### 22c. FII/DII ACCUMULATION BACKTEST  (CHAT-DRIVEN — the on-page section was REMOVED)
 **⚠️ 2026-07-16: the user removed the backtest UI from shareholding.html ("I'll perform backtest in
 chat") — do NOT re-add the section.** What remains: `scripts/build_shp_backtest.py` (kept, run on
