@@ -32,12 +32,14 @@ hold). Single-number coincidences at 3 different scales are exactly how wrong ce
   python -X utf8 scripts/fill2020_tools/universal_read.py TARGETS.json [--out OUT.json]
   TARGETS.json: {"SYM|20250331|revC": {"scrip": 500093, "ann": 20250530}, ...}
 """
+import concurrent.futures
 import datetime
 import importlib.util
 import json
 import os
 import re
 import sys
+import threading
 import time
 
 WT = os.path.expanduser("~/stocks-wt/fill2020")
@@ -267,6 +269,7 @@ def scan(doc, sym, qe, field):
 
 
 _FIL_CACHE = {}
+_FIL_LOCK = threading.Lock()
 
 
 def filings(scrip, a, b):
@@ -276,7 +279,9 @@ def filings(scrip, a, b):
     BSE throttles on request volume -- uncached, the sweep manufactures its own mode-4 failures.
     """
     ck = (str(scrip), a, b)
-    if ck in _FIL_CACHE:
+    with _FIL_LOCK:
+        hit = ck in _FIL_CACHE
+    if hit:
         r, err = _FIL_CACHE[ck]
         return r, (FI.bse_session() if r else None), err
     last = None
@@ -289,11 +294,13 @@ def filings(scrip, a, b):
             time.sleep(2.0 * (attempt + 1))
             continue
         if r:
-            _FIL_CACHE[ck] = (r, None)
+            with _FIL_LOCK:
+                _FIL_CACHE[ck] = (r, None)
             return r, sess, None
         last = "0 rows"
         time.sleep(1.5 * (attempt + 1))
-    _FIL_CACHE[ck] = ([], last)
+    with _FIL_LOCK:
+        _FIL_CACHE[ck] = ([], last)
     return [], None, last
 
 
