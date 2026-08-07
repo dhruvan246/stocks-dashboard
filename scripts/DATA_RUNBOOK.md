@@ -1817,8 +1817,8 @@ both feeds, no network). 3 min at 5 threads for 1,649 targets. The gap was 1,706
   `MEMBERS` only mapped `MutualFundsOrUTIMember` — every filing carrying the lowercase-ti
   `MutualFundsOrUtiMember` (all BSE copies, all NSE filings before ~Jul-2025) got **mf=0.0, which reads as
   "no mutual-fund holding"** (MCX Mar-2025: dii 58.1, mf 0.0 → really 35.64). `parse_shp` now falls back to
-  the old-format key inside the new-format branch. fii/dii were never affected. ⚠️ The ~60k PRE-EXISTING
-  cells still carry the zero — they need a `--reparse` to heal, NOT done here.
+  the old-format key inside the new-format branch. fii/dii were never affected. The cells already on disk
+  kept their zero until the sweep in **§22g**, which re-read them from the filings.
 - **⚠️ `xbrlurl` IS TRUTHY WHEN THERE IS NO FILE.** Pre-2016 rows return `xbrlurl: "/XBRL1/"` (bare prefix)
   with an EMPTY `XbrlFile` — `if row["xbrlurl"]` counts 104/104 quarters "available" back to Mar-2001 and is
   a lie. **Gate on `(row["XbrlFile"] or "").strip()`.** Real files start **Jun-2016** (40/40 sampled);
@@ -1839,6 +1839,68 @@ both feeds, no network). 3 min at 5 threads for 1,649 targets. The gap was 1,706
   quarter, so no one has a better source — we just refuse the file). Fix = fall back to the partition sum
   when the declared total fails both bands. NOT DONE: it loosens the gate that catches power-of-ten scale
   errors, so it needs its own verification pass.
+
+### 22g. THE `mf` SLOT HEAL — 11,615 cells re-read from their own filings  (2026-08-07)
+**Every SHP cell parsed before 2026-08-07 16:35 IST could carry `mf = 0.0` meaning "not found".**
+`MEMBERS` mapped only `MutualFundsOrUTIMember`, but new-format filings spell the member BOTH ways and the
+lowercase-ti `MutualFundsOrUtiMember` is what all BSE copies and every NSE filing before ~Jul-2025 carry
+(§22f). `parse_shp` now falls back to the old key — this section is the residue: the cells already on disk,
+which no re-parse of NEW filings ever reaches. fii/dii/prom/ins were never affected.
+
+- **Repair = `scripts/heal_shp_mf.py` → ledger `scripts/shp_mf_heal.json.gz` → applied by
+  `fetch_shareholding.apply_mf_heal_ledger()`** (inside every `refresh_quarters` and `--apply-ledgers`;
+  idempotent, so CI re-heals itself if a reset-and-replay ever lands a stale history). The ledger patches
+  **cell[3] and nothing else**: never creates a cell, never writes a zero, skips any cell whose mf is
+  already set (a fresh parse always wins), and re-checks prom/fii/dii against the values the heal was
+  measured on (±0.5pp) so a revision that landed since is left alone. Three sections: `heals` (patch +
+  reference cell + `nse:<sub>` / `bse:<code>:<qtrid>` provenance), `zeros` (re-read, MF really is 0 —
+  evidence, and it stops a resume re-fetching), `rejects` (parse or guard refused; never patched).
+- **⚠️ THE FORMAT BOUNDARY FOLLOWS THE SUBMISSION DATE, NOT THE QUARTER.** §22b's "new format = quarters
+  ≥ 2022-09-30" is when filers were *required* to switch; a company filing a Mar-2022 pattern in Nov-2024
+  files it in the taxonomy current *then*. MANPASAND Mar-2022 (submitted 2024-11-04) came back
+  `InstitutionsDomesticMember 5.38` with the MF row lowercase — stored mf 0.0, real 5.38. So the sweep ran
+  the whole XBRL era (Jun-2016 →), not just the new-format quarters, and found 10 such cells pre-Sep-2022.
+- **Two cuts keep it cheap and honest:** MF ⊆ DII, so `mf = 0 AND dii = 0` is provably correct and never
+  fetched (**13,077 cells**); and quarters before Jun-2016 are *out of reach* rather than skipped — those
+  cells come from Wayback-archived Moneycontrol pages and no XBRL exists anywhere (427 candidates).
+- **Result: 24,613 cells re-read in ~17 min at 6 threads → 11,615 healed over 1,314 symbols, 12,724
+  confirmed genuinely zero, 334 rejected, 0 transport errors.** Healed values: median 4.82%, mean 7.07%,
+  max 47.38% (CROMPTON Mar-2025). By quarter: 922–1,165 per quarter across Sep-2022→Mar-2025, 10 cells
+  pre-Sep-2022, and **zero from Jun-2025 on** — which independently dates NSE's switch to the uppercase
+  spelling to the Jun-2025 filing season. Rejects: 161 no NSE filing and no BSE scripcode, 140 no filing at
+  either exchange, 27 guard mismatches (the stored cell is a different filing from the one on offer —
+  BFUTILITIE 2016-17 is 0.75pp off at BSE), 6 old-format parse refusals.
+- **How it was verified — four independent ways, because "the number changed" is not evidence:**
+  1. **Blast radius:** cell-by-cell diff of the whole history before/after — 11,615 slot-3 changes,
+     **0 changes in any other slot**, 0 cells added or dropped, every change 0 → positive. Whole-file
+     invariants after: 0 cells with `mf > dii`, 0 negative mf.
+  2. **Cross-source:** 12 random NSE-sourced heals re-fetched from BSE's independent copy of the same
+     filing — 12/12 identical to the cent (LICI 1.13, NAUKRI 10.61, HCLTECH 8.35, TVSMOTOR 15.47…).
+  3. **Seam collapse:** |Δmf| across Mar-2025→Jun-2025 (last buggy quarter → first clean one) went from
+     median **5.42pp → 0.20pp** (603 stocks moving >5pp → 16); Jun-2022→Sep-2022 from 4.09pp → 0.18pp.
+  4. **Drift baseline:** healed Mar-2025 values sit a median **0.21pp** from each stock's independently
+     parsed Jun-2025 value — statistically the same as the natural quarter-to-quarter MF drift (0.24pp
+     over Jun→Sep-2025, no heals involved). At n=1,106 that is the strongest single check.
+  Client-level: RELIANCE's stock page MF row went `0.00 | 0.00 | 0.00 | 9.32` → `8.03 | 9.14 | 9.21 | 9.32`;
+  HDFCBANK's full series is continuous 2022-06 → 2026-06; shareholding.html MF/ΔMF render, 0 failed
+  requests, 375px shows no sideways scroll.
+- **The 8 cells the neighbour-continuity check flagged were all re-verified at BSE and all real** —
+  PITTIENG/INDIGOPNTS/SBCL/STANLEY are genuine MF entries in Sep-2024 where **DII jumps by the same
+  amount** (SBCL dii 2.33 → 20.02 with mf 1.53 → 18.80). Only GHCL Dec-2022 was odd, and it is a
+  **pre-existing FII/DII defect, not a heal artifact** (next bullet).
+- **★ FOUND IN PASSING — 314 cells were parsed from the WRONG FILING.** Some companies file more than one
+  pattern for the same as-on date, and "newest submission per symbol wins" can pick a non-ordinary-equity
+  one. GHCL Dec-2022 stored prom 61.35 / dii 38.65 / mf 32.92 from a filing with **29.6M shares and 58
+  shareholders**; BSE's copy of the real pattern says dii 12.00 / mf 10.22 (identical 85% ratio — same
+  categories, different share class). Detector (read-only, no network): per symbol take the median of its
+  non-null shareholder counts (cell[6]) and flag cells under 5% of it — 314 cells, worst JPINFRATEC
+  2024-09/12 (nsh **1** vs median 141,175), MAZDOCK 2020-09 (7 vs 308,372), DSKULKARNI (8, five quarters).
+  All slots of those cells are wrong; fixing them is a separate job (ledger + a share-count scale gate in
+  `parse_shp` so a wrong-class filing is refused at write time). Not done here.
+- **Re-run:** `python3 -X utf8 scripts/heal_shp_mf.py` (resumable — skips everything already in the
+  ledger), `--sample 60` for a smoke test spread over eras and routes, `--from-qe` to widen or narrow, then
+  `python3 scripts/fetch_shareholding.py --apply-ledgers`. A dead NSE file (nsearchives drops old XBRLs)
+  falls through to BSE automatically — that is how the last 6 transport errors were cleared.
 
 ### 22c. FII/DII ACCUMULATION BACKTEST  (CHAT-DRIVEN — the on-page section was REMOVED)
 **⚠️ 2026-07-16: the user removed the backtest UI from shareholding.html ("I'll perform backtest in

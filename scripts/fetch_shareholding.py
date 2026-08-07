@@ -173,9 +173,13 @@ def save_shares(s):
                 time.sleep(1 + i)
         os.replace(tmp, SHARES)
 
-# Coverage campaign STEP 5: historical backfills the NSE master API (fetch_master, below) can't
-# reach — it only ever serves a recent rolling window, never historical quarters (confirmed:
-# querying it for old quarter-ends returns 0 rows even though those quarters plainly have filings).
+# Coverage campaign STEP 5: historical backfills from BSE, for the quarters the NSE master API
+# (fetch_master, below) cannot reach. ⚠️ It reaches FURTHER than this comment used to claim: asked
+# for a filing SEASON it serves full quarters back to 2021-09-30 (1,795 as-on rows), then falls off
+# a cliff — 87 rows for 2021-06-30, 62 for 2021-03-31, ~35 for 2019-2020. The old "recent rolling
+# window only" reading came from querying from=to=quarter-end back when the window filtered on the
+# as-on date; measured 2026-08-07 (§22f). So NSE is the right route for anything from Sep-2021 on
+# and BSE remains the only route before that.
 # Ledgers, applied fill-only in ORDER (earlier ledgers win where quarters overlap), idempotent:
 #   1. shp_fill_hist_2016_2019.json.gz — BSE SHPQNewFormat XBRL (fetch_shp_bse_hist.py). Real
 #      per-filing dates. 2016-03..2019-06.
@@ -208,6 +212,42 @@ def apply_bse_hist_ledger(h):
         if n: print("%s applied: %d cells" % (os.path.basename(path), n))
         n_total += n
     return n_total
+
+# The mf-slot repair ledger (scripts/heal_shp_mf.py, runbook §22g). Until 2026-08-07 MEMBERS
+# mapped only MutualFundsOrUTIMember, so every new-format filing spelling the member the old way
+# (MutualFundsOrUtiMember — all BSE copies, every NSE filing before ~Jul-2025) stored mf = 0.0,
+# i.e. "no mutual-fund holding" where the truth was "not found". parse_shp now falls back to the
+# lowercase key, but the cells parsed before the fix keep their zero, so they are re-read from
+# the filing and patched here. PATCHES ONE SLOT: never creates a cell, never writes a zero, and
+# never touches a cell whose mf is already set (a fresh parse always wins).
+MF_HEAL_LEDGER = os.path.join(HERE, "shp_mf_heal.json.gz")
+def apply_mf_heal_ledger(h):
+    if not os.path.exists(MF_HEAL_LEDGER): return 0
+    try:
+        with gzip.open(MF_HEAL_LEDGER, "rt", encoding="utf-8") as fh:
+            heals = json.load(fh).get("heals", {})
+    except Exception as e:
+        print("shp_mf_heal.json.gz unreadable (%s) — skipped" % e); return 0
+    n = stale = 0
+    for sym, qs in heals.items():
+        dest = h.get(sym)
+        if not isinstance(dest, dict): continue
+        for qe, rec in qs.items():
+            cell = dest.get(qe)
+            if not cell or len(cell) < 6 or cell[3]: continue    # gone, malformed, or already set
+            mf, prom, fii, dii = rec[0], rec[1], rec[2], rec[3]
+            if not mf or mf <= 0: continue                       # never zero-default
+            # Each heal was measured against a specific filing: if the stored cell has moved since
+            # (a revision re-parsed), that filing's mf is not ours to write into it.
+            if (abs((cell[0] or 0.0) - prom) > 0.5 or abs((cell[1] or 0.0) - fii) > 0.5
+                    or abs((cell[2] or 0.0) - dii) > 0.5 or mf > (cell[2] or 0.0) + 0.05):
+                stale += 1; continue
+            cell[3] = mf
+            n += 1
+    if n or stale:
+        print("shp_mf_heal applied: %d mf cells%s"
+              % (n, " (%d stale, left alone)" % stale if stale else ""))
+    return n
 
 # ------------------------------------------------------------------ NSE fetch
 def fetch_master(jar, qe_iso):
@@ -370,6 +410,7 @@ def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
     jar = B.nse_jar()
     hist = load_hist()
     apply_bse_hist_ledger(hist)   # STEP 5 2016-2019 backfill — fill-only, no-ops once applied
+    apply_mf_heal_ledger(hist)    # mf-slot repair — patch-only, no-ops once applied
     names = hist.setdefault("_names", {})
     shares = load_shares()
     before = cells_of(hist)
@@ -521,6 +562,7 @@ if __name__ == "__main__":
         h = load_hist()
         before = cells_of(h)
         n = apply_bse_hist_ledger(h)
+        apply_mf_heal_ledger(h)
         after = cells_of(h)
         if after < before:
             print("ABORT: history would shrink %d -> %d" % (before, after)); sys.exit(1)
