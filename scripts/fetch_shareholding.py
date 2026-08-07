@@ -432,7 +432,14 @@ def parse_shp(txt, qe_iso):
     # partition sanity: promoter + public + non-promoter-non-public ≈ 100. The third bucket
     # (ESOP trusts / DR custodians) can be large for no-promoter companies (ETERNAL 4.73%).
     extra = _third(vals) * scale
-    if not (98.0 <= out["prom"] + out["pub"] + extra <= 102.0): return None
+    # Two legitimate presentations, accept EITHER: the modern one where the third bucket is inside
+    # the base (prom + pub + extra = 100) and the 2016-era one where prom + pub already make 100 and
+    # the third bucket is quoted on top as a % of (A+B) — RELIANCE Jun-2016: 46.49 + 53.51 = 100.00
+    # with a 3.03 GDR block, which summed to 103.03 and got the whole filing thrown away. Requiring
+    # the two main buckets to reconcile to 100 is the actual check; which base the third bucket uses
+    # is a presentation choice, not evidence of a bad parse.
+    base = out["prom"] + out["pub"]
+    if not (98.0 <= base + extra <= 102.0 or 98.0 <= base <= 102.0): return None
     out = {k: round(v, 2) for k, v in out.items()}
     # nsh is OPTIONAL, so an implausible one gets dropped rather than published: the grand total
     # can never be below the public-shareholder count. BSE Ltd Sep-2024 files 248 against 539,914
