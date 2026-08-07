@@ -74,7 +74,10 @@ def main():
     n = 0
     for r in todo:
         key = "%s|%d|%s" % (r["sym"], r["qe"], r["field"])
-        if key in done and done[key]["verdict"] != "NEEDS-SOURCE":
+        # Skip anything already decided. NEEDS-SOURCE is only retried with --retry-source: those
+        # cells failed on transport or had no readable statement, and re-attempting them every run
+        # consumed the whole --limit before reaching a single NEW cell (74 -> 83 in one chunk).
+        if key in done and (done[key]["verdict"] != "NEEDS-SOURCE" or "--retry-source" not in sys.argv):
             continue
         if n >= limit:
             break
