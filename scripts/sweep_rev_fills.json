@@ -312,6 +312,28 @@
   "revC": 123.29,
   "src": "bse-filing-pdf, geometric column (\u00a762)"
  },
+ "AJRINFRA|20190930|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": -75.59,
+   "col": 1,
+   "confirm": "col 2 reproduces stored 20181231 pat -32.83 at the same scale",
+   "doc": "492ba50a-418c-4e5d-bb57-e461d8b9f992.pdf",
+   "page": 14,
+   "pat_row": "Profit/(Loss) for the period from continuing",
+   "rev_row": "Revenue from Operations",
+   "scale": "lakh",
+   "window": "Q+1"
+  },
+  "gates": {
+   "band_median": 28.62,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revC": 95.05,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
  "AJRINFRA|20191231|revC": {
   "applied": "2026-08-06 universal-read sweep",
   "evidence": {
@@ -1118,6 +1140,28 @@
   "revC": 320.35,
   "src": "bse-filing-pdf, geometric column (\u00a762)"
  },
+ "CERA|20190331|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 38.39,
+   "col": 1,
+   "confirm": "same column reproduces the other basis' PAT 38.04",
+   "doc": "d1d1a86a-fc03-48f0-a6e2-fd673bb66ae1.pdf",
+   "page": 2,
+   "pat_row": "Net Profit Attributable to :",
+   "rev_row": "Total Income ( I + II )",
+   "scale": "lakh",
+   "window": "Q+1"
+  },
+  "gates": {
+   "band_median": 309.1,
+   "crosscheck": "FY2019 identity: 3 siblings + this = 1356.03 vs screener annual 1352.0",
+   "crosscheck_pass": true,
+   "row_class": "total-income"
+  },
+  "revC": 422.56,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
  "CESC|20181231|revC": {
   "applied": "2026-08-06 universal-read sweep",
   "evidence": {
@@ -1138,6 +1182,120 @@
    "row_class": "operating"
   },
   "revC": 2415.0,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "CHAMBLFERT|20180630|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 155.82,
+   "confirm": "col x=427 reproduces 20190331 PAT 91.83 at the same scale",
+   "doc": "bdff16be-6150-470d-adc0-2bdcb48369a7.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 2,
+   "pat_row": "IX Profit for the Period (VII-VIII)",
+   "rev_row": "I Revenue from Operations",
+   "scale": "crore",
+   "window": "Q+4",
+   "x": 486.5
+  },
+  "gates": {
+   "band_median": 3392.4,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revC": 2190.36,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "CHAMBLFERT|20180930|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 181.06,
+   "confirm": "col x=502 reproduces 20190930 PAT 380.82 at the same scale",
+   "doc": "31b09e6d-524a-436a-bd46-231f9a213dcd.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 10,
+   "pat_row": "XI Profit for the Period (IX-X)",
+   "rev_row": "I Revenue from Operations",
+   "scale": "crore",
+   "window": "Q+4",
+   "x": 612.5
+  },
+  "gates": {
+   "band_median": 3392.4,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revC": 2508.11,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "CHAMBLFERT|20190331|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 91.83,
+   "confirm": "col x=486 reproduces 20180630 PAT 155.82 at the same scale",
+   "doc": "bdff16be-6150-470d-adc0-2bdcb48369a7.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 2,
+   "pat_row": "IX Profit for the Period (VII-VIII)",
+   "rev_row": "I Revenue from Operations",
+   "scale": "crore",
+   "window": "Q+1",
+   "x": 426.9
+  },
+  "gates": {
+   "band_median": 3392.4,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revC": 2610.85,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "COHANCE|20190331|revS": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 74.82,
+   "confirm": "col x=287 reproduces 20191231 PAT 52.00 at the same scale",
+   "doc": "56826b58-ad5e-4558-9378-ebfcdce63041.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 17,
+   "pat_row": "Profit After Tax for the period/year",
+   "rev_row": "Revenue",
+   "scale": "lakh",
+   "window": "Q+4",
+   "x": 340.3
+  },
+  "gates": {
+   "band_median": 248.69,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revS": 251.33,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "COHANCE|20191231|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 57.91,
+   "col": 2,
+   "confirm": "col 3 reproduces stored 20190331 pat 74.82 at the same scale",
+   "doc": "56826b58-ad5e-4558-9378-ebfcdce63041.pdf",
+   "page": 3,
+   "pat_row": "Net Profit/ (Loss) for the period/year(7-",
+   "rev_row": "Revenue from operations",
+   "scale": "lakh",
+   "window": "Q+1"
+  },
+  "gates": {
+   "band_median": 248.69,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revC": 250.92,
   "src": "bse-filing-pdf, geometric column (\u00a762)"
  },
  "DALMIASUG|20220630|revC": {
@@ -1207,6 +1365,29 @@
   "revC": 942.87,
   "src": "bse-filing-pdf, geometric column (\u00a762)"
  },
+ "DBCORP|20180630|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 97.56,
+   "confirm": "col x=376 reproduces 20190630 PAT 93.72 at the same scale",
+   "doc": "558977d3-0567-4f2e-b694-7ae38ba5d7ab.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 2,
+   "pat_row": "IX Net prolit for the quarter / ytar (VII-VI",
+   "rev_row": "I Revenue from operations 6.070.31",
+   "scale": "million",
+   "window": "Q+4",
+   "x": 464.3
+  },
+  "gates": {
+   "band_median": 593.55,
+   "crosscheck": "FY2019 identity: 3 siblings + this = 2462.70 vs screener annual 2463.0",
+   "crosscheck_pass": true,
+   "row_class": "operating"
+  },
+  "revC": 632.38,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
  "DBL|20240331|revS": {
   "applied": "2026-08-06 universal-read sweep",
   "evidence": {
@@ -1228,6 +1409,141 @@
    "row_class": "operating"
   },
   "revS": 2930.76,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "DCAL|20171231|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 42.0,
+   "confirm": "col x=417 reproduces 20180930 PAT 44.01 at the same scale",
+   "doc": "47e083e8-d50e-4507-ae14-76ff659d6009.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 4,
+   "pat_row": "(a) Owners of the company",
+   "rev_row": "Net Sales /Income from Operation",
+   "scale": "crore",
+   "window": "Q+4",
+   "x": 488.1
+  },
+  "gates": {
+   "band_median": 480.78,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revC": 430.91,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "DHAMPURSUG|20190331|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 107.76,
+   "col": 0,
+   "confirm": "col 2 reproduces stored 20180331 rev 921.24 at the same scale",
+   "doc": "58f18aa0-2111-4137-98c0-b1e95b2f1dd6.pdf",
+   "page": 10,
+   "pat_row": "Profit for the period attributable to:",
+   "rev_row": "Income from Operations",
+   "scale": "lakh",
+   "window": "own-season"
+  },
+  "gates": {
+   "band_median": 870.85,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revC": 888.37,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "DHFL|20180930|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 439.51,
+   "confirm": "col x=334 reproduces 20181231 PAT 313.72 at the same scale",
+   "doc": "ab00e9d7-d51c-4373-b33f-8be14fc39a02.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 2,
+   "pat_row": "Profit for the period (3-4)",
+   "rev_row": "Revenue from operations",
+   "scale": "lakh",
+   "window": "Q+1",
+   "x": 393.3
+  },
+  "gates": {
+   "band_median": 2431.81,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revC": 3515.66,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "DHFL|20181231|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 313.72,
+   "confirm": "col x=393 reproduces 20180930 PAT 439.51 at the same scale",
+   "doc": "ab00e9d7-d51c-4373-b33f-8be14fc39a02.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 2,
+   "pat_row": "Profit for the period (3-4)",
+   "rev_row": "Revenue from operations",
+   "scale": "lakh",
+   "window": "own-season",
+   "x": 333.8
+  },
+  "gates": {
+   "band_median": 2431.81,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revC": 3250.94,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "DIVISLAB|20180630|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 267.67,
+   "col": 2,
+   "confirm": "col 1 reproduces stored 20190331 pat 291.97 at the same scale",
+   "doc": "8941e892-5b40-4421-af8c-781a91c1b8f1.pdf",
+   "page": 4,
+   "pat_row": "Net Profit for the period (7-8)",
+   "rev_row": "Revenue from operations",
+   "scale": "lakh",
+   "window": "Q+4"
+  },
+  "gates": {
+   "band_median": 1573.51,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revC": 995.24,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "DIVISLAB|20190331|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 291.97,
+   "col": 1,
+   "confirm": "col 2 reproduces stored 20180630 pat 267.67 at the same scale",
+   "doc": "8941e892-5b40-4421-af8c-781a91c1b8f1.pdf",
+   "page": 4,
+   "pat_row": "Net Profit for the period (7-8)",
+   "rev_row": "Revenue from operations",
+   "scale": "lakh",
+   "window": "Q+1"
+  },
+  "gates": {
+   "band_median": 1573.51,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revC": 1267.13,
   "src": "bse-filing-pdf, geometric column (\u00a762)"
  },
  "EPIGRAL|20210331|revS": {
@@ -1411,6 +1727,118 @@
    "row_class": "operating"
   },
   "revS": 537.84,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "EXCELCROP|20180331|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 81.15,
+   "col": 1,
+   "confirm": "col 0 reproduces stored 20190331 pat 86.29 at the same scale",
+   "doc": "8aadde3c-47ff-4f21-a867-697e6a5eb0b7.pdf",
+   "page": 7,
+   "pat_row": "Equity holders of the parent",
+   "rev_row": "1 Revenue from Operations (Refer Note 9)",
+   "scale": "lakh",
+   "window": "Q+4"
+  },
+  "gates": {
+   "band_median": 848.96,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revC": 1189.8,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "FEL|20180630|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": -21.05,
+   "col": 2,
+   "confirm": "col 1 reproduces stored 20190331 pat 59.51 at the same scale",
+   "doc": "b1892e14-b096-42fb-8e29-53b32e775f6f.pdf",
+   "page": 4,
+   "pat_row": "a) Owners Of The Company",
+   "rev_row": "a) Revenue from operations",
+   "scale": "crore",
+   "window": "Q+4"
+  },
+  "gates": {
+   "band_median": 1099.01,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revC": 1345.37,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "FINCABLES|20181231|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 93.27,
+   "col": 2,
+   "confirm": "col 1 reproduces stored 20190930 pat 126.84 at the same scale",
+   "doc": "cb9faf44-c8d0-4d2c-bd3f-d90ed9828741.pdf",
+   "page": 5,
+   "pat_row": "Profit for the period (VII-VIII)",
+   "rev_row": "Revenue from Operations",
+   "scale": "crore",
+   "window": "Q+4"
+  },
+  "gates": {
+   "band_median": 709.06,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revC": 749.56,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "FINPIPE|20180930|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 77.82,
+   "confirm": "col x=332 reproduces 20190930 PAT 102.27 at the same scale",
+   "doc": "7851f3c7-a7d1-440f-ad4d-8c2e61fde5ca.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 3,
+   "pat_row": "XI Profit for the period (IX-X)",
+   "rev_row": "I Revenue from Operations",
+   "scale": "crore",
+   "window": "Q+4",
+   "x": 418.4
+  },
+  "gates": {
+   "band_median": 732.75,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revC": 542.62,
+  "src": "bse-filing-pdf, geometric column (\u00a762)"
+ },
+ "FINPIPE|20181231|revC": {
+  "applied": "2026-08-06 universal-read sweep",
+  "evidence": {
+   "anchor": 79.77,
+   "confirm": "col x=395 reproduces 20190930 PAT 102.27 at the same scale",
+   "doc": "9c31f683-11b2-45cc-8ea4-b39679e15f62.pdf",
+   "method": "geometric column (\u00a755b)",
+   "page": 3,
+   "pat_row": "XI Profit for the period {IX-X)",
+   "rev_row": "I Revenue from Operations",
+   "scale": "crore",
+   "window": "Q+4",
+   "x": 436.7
+  },
+  "gates": {
+   "band_median": 732.75,
+   "crosscheck": "no screener coverage",
+   "crosscheck_pass": null,
+   "row_class": "operating"
+  },
+  "revC": 756.61,
   "src": "bse-filing-pdf, geometric column (\u00a762)"
  },
  "FORCEMOT|20200930|revS": {
