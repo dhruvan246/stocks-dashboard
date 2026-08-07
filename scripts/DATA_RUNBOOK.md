@@ -4263,3 +4263,91 @@ alone recovered AIIL and WAAREEENER.
 (§57 rung 5, `nse_xbrl_rev.py`) **cannot serve 2025+ cells at all**; BSE is the only route there.
 This is a property of the API, not of the data. Record it as a boundary so nobody re-derives
 "NSE has no filing" as "the company did not file".
+
+## 63. ★★★ NOT-APPLICABLE WAS CIRCULAR — never infer "the company doesn't file it" from your own gaps  (2026-08-07, USER-CAUGHT)
+
+**The trigger:** *"check na ones once again. dont assume"* → *"verify it from 2-3 sources"*. The
+classification did not survive the check, and the coverage numbers I had been reporting all week
+were too flattering as a result.
+
+### 63a. The bug
+
+`audit_coverage` marked a consolidated cell NOT-APPLICABLE when stored con PAT showed no
+**divergence** from std in the trailing four quarters. Divergence was read from **our own
+sf_fundamentals** — so a company whose con PAT was merely *missing* generated no signal and was
+recorded as *"does not file consolidated"*.
+
+**We were concluding the data does not exist because we do not hold it.** And pre-2020, where con
+PAT is thinnest, is exactly where it fired hardest.
+
+### 63b. Three independent sources, all agreeing it was wrong
+
+| source | result |
+|---|---|
+| screener consolidated **annuals** (reach FY2015) | con annual ≠ std annual on **99 of 158** tested company/FY pairs — **63% misclassified** |
+| our own history, read differently | **96 of those 99** have divergent con PAT in *other* quarters — they demonstrably consolidate |
+| NSE filing index (`corporates-financial-results`) | **11 of 12** sampled list `consolidated == "Consolidated"` rows (AJANTPHARM 42, APARINDS 35, 63MOONS 28) |
+
+Among the companies written off as non-consolidators: **ONGC, ITC, HDFCBANK, NTPC, IOC, HINDALCO,
+M&M**. The absurdity of that list is the tell — when a screen excludes the largest consolidators in
+the index, the screen is broken, not the companies.
+
+### 63c. The replacement — POSITIVE evidence only
+
+`scripts/fill2020_tools/build_con_filer_evidence.py` → `scripts/con_filer_evidence.json`.
+A company consolidates if **any** independent source says so:
+* **E1** own-history divergence in **any** quarter, ever (con PAT *or* con revenue ≠ std);
+* **E2** screener's consolidated annual differs materially from its standalone, any FY.
+
+**The asymmetry is the whole point: one divergent quarter anywhere PROVES consolidation exists;
+absence across four quarters proves nothing about the company, only about our coverage.**
+Before a company's earliest evidence, claim nothing either way — neither a gap nor an exclusion.
+The user-verified ledger (`no_con_filing.json`) still wins where it applies: those were checked
+against screener by hand, and a stop date is positive evidence of a stop.
+
+Measured: **1,018 of 1,254** Nifty-500 members have positive evidence of consolidating; 236 do not.
+
+### 63d. What it cost to have been wrong
+
+| | before | after |
+|---|---|---|
+| 2015–2019 open revC | 941 | **2,911** |
+| 2015–2019 open patC | 136 | **2,069** |
+| campaign window | 131 open / 92.5% | **193 open / 89.0%** |
+
+`build_targets.py` was emitting **1,600** pre-2020 targets against a real **4,147** — it was
+skipping precisely the cells the broken rule had hidden. Any tool that reproduces the gap definition
+must be updated together with the audit, or it silently inherits the bug.
+
+### 63e. The generalised rule
+
+**An exclusion must rest on evidence ABOUT THE COMPANY, never on the absence of our own data.**
+Before any "not applicable", "never filed", "no data exists" classification ships:
+1. state which independent source establishes it;
+2. test it on a sample against **2–3** sources — the user asked for this explicitly and it took one
+   run to overturn a rule that had shaped the whole campaign's scoreboard;
+3. sanity-check the *implications*: if a classification excludes ONGC and ITC from consolidated
+   reporting, stop and look, because the population it selects is telling you it is wrong.
+
+## 64. ★★ THE ANCHOR DEPENDENCY — con PAT must be filled BEFORE con revenue is reachable  (2026-08-07)
+
+Every reader in this campaign identifies its target column by matching a value we **already store**
+(§58). For consolidated revenue that anchor is consolidated PAT. So a cell where **both** are missing
+is unreadable by construction — not "hard", *impossible* by this method.
+
+**Measured, and unambiguous.** Of the 4,147 pre-2020 consolidated-revenue targets, **2,744 (66%)
+have no stored PAT on that basis**. Of 203 successful pre-2020 filing reads, **203 came from the
+1,403 anchored cells and ZERO from the 2,744 unanchored ones**.
+
+**Consequence for sequencing: the PAT track is not optional and cannot follow the revenue track — it
+gates it.** Standalone PAT is complete pre-2020 (patS = 0 open in every quarter 2015-2019), so the
+standalone statement can be located; the consolidated statement must then be found *relative to it*.
+
+The anchor-free alternative is to address columns by the statement's own **printed period dates**
+(`date_columns.py`). Groundwork committed, deliberately NOT wired to any writer — measured over 602
+cached statement pages it found quarter dates on 54%, averaged **1.5 columns per page against a real
+3–5**, and picked dates out of narrative notes. What it needs is recorded in its docstring: restrict
+detection to a header BAND, group same-y dates and require ≥2, treat a lone date as prose.
+
+**Split any target list by anchorability before spending a run on it** — mixing the two pools makes
+a reader look like it is failing when it is really being handed impossible work.
