@@ -1,0 +1,12 @@
+{
+  "_note": "(symbol, quarter-end) pairs where NO shareholding pattern was ever filed, so the cell is not a coverage gap. Excluded from the DENOMINATOR by audit_shp_coverage.py. Every entry needs measured evidence (absent at BOTH exchanges), never an assumption — a cell we simply failed to fetch belongs in scripts/_shp_bse_absent.json instead, which stays IN the denominator.",
+  "_added": "2026-08-07",
+  "cells": {
+    "IDFC": {
+      "2024-09-30": "no row in NSE's SHP master for the quarter and no BSE filing; IDFC Ltd amalgamated into IDFC FIRST Bank effective Oct-2024, so the entity did not survive to file. Confirmed absent at both exchanges 2026-08-07."
+    },
+    "TV18BRDCST": {
+      "2024-09-30": "no row in NSE's SHP master for the quarter and no BSE filing; TV18 Broadcast amalgamated into Network18 in the Nov-2024 scheme. Confirmed absent at both exchanges 2026-08-07."
+    }
+  }
+}

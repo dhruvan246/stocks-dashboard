@@ -1826,8 +1826,19 @@ both feeds, no network). 3 min at 5 threads for 1,649 targets. The gap was 1,706
   (§ the Wayback backfill), so the Dec-15/Mar-16 seam is a genuine two-quarter wall, not a fetch bug.
 - **`fetch_shp_bse_hist.py` (the 2016-19 ledger builder) was never committed** — only its output
   `shp_fill_hist_2016_2019.json.gz` is tracked. Re-running that route means rewriting the fetcher.
-- Re-run the audit: the read-only scripts live in the session scratchpad pattern — membership × shp_history
-  join, no network. Per-quarter CSV columns: `quarter_end, n500_members_pit, with_fii_dii, coverage_pct`.
+- **Re-run it: `python3 -X utf8 scripts/audit_shp_coverage.py`** (reads ORIGIN/MAIN, not the checkout;
+  `--local`, `--csv out.csv`, `--missing <QE>` to list who is missing quarter by quarter).
+- **Two ledgers, opposite meanings — don't merge them.** `scripts/shp_no_filing.json` = no filing was EVER
+  made (entity merged/delisted mid-quarter, confirmed absent at BOTH exchanges) → the cell leaves the
+  DENOMINATOR. `scripts/_shp_bse_absent.json` = one source didn't serve it → stays IN the denominator,
+  because a dead route is not an absent filing. Seeded 2026-08-07 with IDFC and TV18BRDCST at 2024-09-30.
+- **⚠️ BSE Ltd (23 cells, Sep-19→Jun-25) is a PARSER refusal, not a missing filing.** NSE serves the XBRL
+  fine; `parse_shp` bails at the scale anchor because the whole-company percentage fact is junk (Sep-2024:
+  `total` = 6.9, neither ~1 nor ~100) even though the partition is clean and in percent — prom 0.00 +
+  pub 77.09 + npnp 22.90 = 100, FII 13.01 / DII 11.68 (identical to what Screener publishes for that
+  quarter, so no one has a better source — we just refuse the file). Fix = fall back to the partition sum
+  when the declared total fails both bands. NOT DONE: it loosens the gate that catches power-of-ten scale
+  errors, so it needs its own verification pass.
 
 ### 22c. FII/DII ACCUMULATION BACKTEST  (CHAT-DRIVEN — the on-page section was REMOVED)
 **⚠️ 2026-07-16: the user removed the backtest UI from shareholding.html ("I'll perform backtest in
