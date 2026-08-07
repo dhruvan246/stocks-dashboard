@@ -1832,13 +1832,35 @@ both feeds, no network). 3 min at 5 threads for 1,649 targets. The gap was 1,706
   made (entity merged/delisted mid-quarter, confirmed absent at BOTH exchanges) → the cell leaves the
   DENOMINATOR. `scripts/_shp_bse_absent.json` = one source didn't serve it → stays IN the denominator,
   because a dead route is not an absent filing. Seeded 2026-08-07 with IDFC and TV18BRDCST at 2024-09-30.
-- **⚠️ BSE Ltd (23 cells, Sep-19→Jun-25) is a PARSER refusal, not a missing filing.** NSE serves the XBRL
-  fine; `parse_shp` bails at the scale anchor because the whole-company percentage fact is junk (Sep-2024:
-  `total` = 6.9, neither ~1 nor ~100) even though the partition is clean and in percent — prom 0.00 +
-  pub 77.09 + npnp 22.90 = 100, FII 13.01 / DII 11.68 (identical to what Screener publishes for that
-  quarter, so no one has a better source — we just refuse the file). Fix = fall back to the partition sum
-  when the declared total fails both bands. NOT DONE: it loosens the gate that catches power-of-ten scale
-  errors, so it needs its own verification pass.
+- **✅ BSE Ltd FIXED 2026-08-07 — it was a PARSER refusal, never a missing filing.** Three changes in
+  `parse_shp`, +12 cells (Sep-2021→Jun-2025), Sep-2019→date now **99.9%**:
+  1. **Scale anchor is a LADDER** — declared total → prom+pub → +third bucket, first candidate inside a
+     band wins. BSE Ltd files a junk whole-company percentage (Sep-2024 `total` = 6.9) over a clean percent
+     partition (prom 0.00 + pub 77.09 + npnp 22.90 = 100). Additive BY CONSTRUCTION: a filing that already
+     anchored on its total is unchanged, so None→value is the only possible transition. The partition gate
+     [98,102] still does the real work — the ladder only picks which number gets tested.
+  2. **`TradingMembersAndAssociatesOfTradingMembers` = the third bucket** (slot `npnp2`, folded in by
+     `_third()`). A demutualised exchange parks its restricted trading-member shares there; BSE Ltd tagged
+     the SAME block as `SharesHeldByNonPromoterNonPublic…` at Sep-2024 and this at Jun-2025 (79.43 + 20.57
+     = 100.00 exact). PARENT row only — CorporateTradingMember/IndividualTradingMember/… sum back to it.
+  3. **`nsh` is dropped when it is below the public-shareholder count.** BSE Ltd Sep-2024 files 248 against
+     539,914 public holders — publishing it would have rendered "248 shareholders" between two ~540k
+     quarters. nsh is optional, so omitting is honest and the page auto-hides the row.
+  **Regression harness `scripts/_shp_anchor_regression.py`** (tracked, re-runnable): parses the same bytes
+  with `origin/main`'s parse_shp and the working copy and fails on any dict→different-dict. 900 filings /
+  22 companies → 900 identical, 0 changed. RUN IT before touching parse_shp again.
+- **★ NSE's master DOES serve history — the 2026-08-02 "rolling-window-only" verdict was an artefact of
+  querying `from=to=QE`** after the as-on→submission switch. Ask for the filing SEASON and it answers,
+  thinning going back: ~2,100 as-on rows at Sep-2024, 1,800 at Dec-2021, 62 at Mar-2021, 34 at Sep-2019.
+  `scripts/fetch_shp_nse_gaps.py` is the ledger-producing tool for the NSE-ONLY cohort (BSE Ltd, CDSL —
+  an exchange cannot list on itself, so no BSE route exists) → `shp_fill_nse_gaps.json.gz`.
+- **Cross-checked against Screener** on all six overlapping BSE Ltd quarters (Sep-23 7.90/8.09, Dec-23
+  12.03/11.27, Mar-24 13.04/12.69, Sep-24 13.01/11.68, Jun-25 18.14/11.27, Jun-26 21.32/24.15) — exact.
+  Screener carries only ~12 quarters, so past Sep-2023 we are the deeper source, not the poorer one.
+- **Still open in Sep-2019→date (13 cells):** BSE Ltd ×8 for 2019-09→2021-06 (NSE's archive doesn't reach
+  back that far) and ×3 (Jun-24/Dec-24/Mar-25) where NSE publishes the row but its own nsearchives file
+  404s on every host/path and retry; SUNDARMFIN Dec-2021 (both exchanges' links dead — Wayback untested,
+  it was throttling); JBCHEPHARM Jun-2026 (no filing at either exchange yet).
 
 ### 22g. THE `mf` SLOT HEAL — 11,615 cells re-read from their own filings  (2026-08-07)
 **Every SHP cell parsed before 2026-08-07 16:35 IST could carry `mf = 0.0` meaning "not found".**
