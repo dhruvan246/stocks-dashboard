@@ -183,7 +183,11 @@ def save_shares(s):
 #      (fetch_shp_wayback_mc.py). 2010-12..2016-03. ⚠ sub-dates are the QE+21d SEBI-deadline
 #      CONVENTION (no real dates exist anywhere — BSE deleted them); each cell carries the
 #      approx tag in the ledger's provenance slot, dropped on merge like the scripcode tag.
-BSE_HIST_LEDGERS = [os.path.join(HERE, "shp_fill_hist_2016_2019.json.gz"),
+#   3. shp_fill_n500_gaps.json.gz — the 2026-08-07 sweep of every remaining point-in-time Nifty-500
+#      hole from Jun-2016 on (fetch_shp_bse_hist.py, rebuilt). Real per-filing dates. FIRST in the
+#      list so its real dates beat the MC ledger's QE+21d convention wherever both have a cell.
+BSE_HIST_LEDGERS = [os.path.join(HERE, "shp_fill_n500_gaps.json.gz"),
+                    os.path.join(HERE, "shp_fill_hist_2016_2019.json.gz"),
                     os.path.join(HERE, "shp_fill_hist_2010_2016.json.gz")]
 def apply_bse_hist_ledger(h):
     n_total = 0
@@ -334,6 +338,14 @@ def parse_shp(txt, qe_iso):
     if is_new:
         for k in ("fii", "dii", "mf", "ins"):
             out[k] = (vals.get(k) or 0.0) * scale
+        # ⚠️ New-format filings spell the MF member BOTH ways — MutualFundsOrUTIMember and the
+        # old-format's MutualFundsOrUtiMember (the lowercase-ti one is what BSE's copies and every
+        # NSE filing before ~Jul-2025 carry). Mapping only the uppercase spelling silently wrote
+        # mf=0.0 on those, which reads as "no mutual-fund holding" instead of "not found"
+        # (MCX Mar-2025: dii 58.1 with mf 0.0). fii/dii were never affected — they come from the
+        # Domestic/Foreign facts directly. Found 2026-08-07 while backfilling.
+        if not out["mf"] and vals.get("o_mf"):
+            out["mf"] = vals["o_mf"] * scale
     else:
         g = lambda k: (vals.get(k) or 0.0) * scale
         fii = g("o_fpi") + g("o_fvci")
@@ -502,7 +514,21 @@ if __name__ == "__main__":
     if "--hist" in args:   # write to an alternate history file (staging for conflict-free backfills)
         HIST = os.path.abspath(args[args.index("--hist") + 1])
         print("history file:", HIST)
-    if "--feed-only" in args:
+    if "--apply-ledgers" in args:
+        # Merge the BSE_HIST_LEDGERS into shp_history + rebuild both feeds, no network.
+        # Idempotent (fill-only) — the normal path does this too, this is the offline entry point
+        # used right after a backfill lands a new ledger.
+        h = load_hist()
+        before = cells_of(h)
+        n = apply_bse_hist_ledger(h)
+        after = cells_of(h)
+        if after < before:
+            print("ABORT: history would shrink %d -> %d" % (before, after)); sys.exit(1)
+        save_hist(h)
+        print("history: %d cells (%+d) after ledgers" % (after, after - before))
+        build_feed()
+        build_engine_feed()
+    elif "--feed-only" in args:
         build_feed()
         build_engine_feed()
     else:

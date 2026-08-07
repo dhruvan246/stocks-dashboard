@@ -1789,16 +1789,36 @@ IDENTICAL in every quarter by construction (parse_shp writes both or neither).
 | Dec-2002 → Jun-2010 | 15,473 | **0%** | no source (MC's SHP pages didn't exist; BSE files start Jun-2016) |
 | Sep-2010 → Sep-2015 | 10,449 | **30%** | Wayback-MC harvest, full-depth already run; residual = captures that don't exist |
 | Dec-2015 + Mar-2016 | 998 | **0.3%** | the SEAM (below) |
-| Jun-2016 → Jun-2019 | 6,502 | **79%** | BSE-XBRL ledger; residual is FILLABLE |
-| Sep-2019 → Jun-2026 | 14,014 | **98%** | live NSE pipeline; residual is FILLABLE |
+| Jun-2016 → Jun-2019 | 6,502 | 79% → **98.8%** | BSE-XBRL ledger + the 2026-08-07 sweep |
+| Sep-2019 → Jun-2026 | 14,014 | 98% → **99.8%** | live NSE pipeline + the sweep |
 
-- **1,706 member-quarters across 496 symbols are missing post-Jun-2016 and the source HAS them.** Probed 175
-  of those holes on BSE `SHPQNewFormat` → **175/175 have a real filing**, and three fetched at random
-  (NESTLEIND Mar-21 + Sep-19, MCX Dec-22) parse cleanly with `parse_shp()` UNMODIFIED. Worst blackouts:
-  **MCX / ABBOTINDIA / BAYERCROP have NOTHING since Sep-2019 (28 quarters each)**, BSE Ltd 33, NESTLEIND 15
-  (Sep-19→Mar-23), ITC 14, WESTLIFE 14. 411 of the 496 resolve to a scripcode in today's `bse_scrips.json`
-  (997 cells); the other 85 (709 cells) are mostly delisted/merged names the LIVE master no longer carries —
-  the survivorship tail needs ISIN or an era scrip master, not `by_id`.
+Whole-sample after the sweep: **49.7%** (23,598 / 47,436) — everything still open is a measured wall.
+
+**✅ SWEPT SAME DAY (2026-08-07): +1,604 cells, Jun-16→Jun-19 79%→98.8%, Sep-19→Jun-26 97.8%→99.8%.**
+`scripts/fetch_shp_bse_hist.py` (rebuilt) → ledger `scripts/shp_fill_n500_gaps.json.gz` → applied by
+`python3 scripts/fetch_shareholding.py --apply-ledgers` (new offline entry point: merge ledgers + rebuild
+both feeds, no network). 3 min at 5 threads for 1,649 targets. The gap was 1,706 cells / 496 symbols:
+- **48 cells never had a scripcode to try** — BSE Ltd (33) and CDSL are NSE-only; MAXINDIA/RUCHISOYA/
+  TUBEINVEST/ALOKTEXT/SUPPETRO/GLOBOFFS are name mismatches. Those need NSE or an ISIN join.
+- **41 cells absent at BSE** (tracked in `scripts/_shp_bse_absent.json`): 25 with no row at all, 16 where
+  BSE lists a filename whose file 404s on every path and retry (KARURVYSYA/SUNDARMFIN 2016-18, the whole
+  590xxx ex-regional series) — banked as absent so resume stops re-fetching them.
+- **13 old-format parse skips** (RELINFRA/ZEELEARN/WELCORP at Jun-2016) — correct refusals, never zero-filled.
+- **★ THE SURVIVORSHIP TAIL NEEDED ONE QUERY PARAMETER.** `build_bse_universe.py` asks for
+  `...ListofScripData/w?...&status=Active` → 4,949 scrips, so every delisted N500-era name (ALBK, ANDHRABANK,
+  DHFL, GRUH, HDFC, GSKCONS…) had no scripcode and looked unfillable. **Blank the status and the same
+  endpoint returns 10,800** (4,612 Delisted + 1,236 Suspended), resolving 77 of those 85 symbols on a plain
+  `scrip_id` match. The fetcher pulls the full list itself; the live master stays Active-only on purpose.
+- Worst blackouts closed: **MCX / ABBOTINDIA / BAYERCROP had NOTHING since Sep-2019** (28 quarters each),
+  NESTLEIND 15 (Sep-19→Mar-23), ITC 14, WESTLIFE 14 — all current N500 members, all silently dropped by the
+  live NSE pipeline for years while `feeds.json` stayed green (it watches shp_meta liveness, which says
+  nothing about per-symbol completeness).
+- **MF slot bug found and fixed in the same pass:** new-format filings spell the member BOTH ways, and
+  `MEMBERS` only mapped `MutualFundsOrUTIMember` — every filing carrying the lowercase-ti
+  `MutualFundsOrUtiMember` (all BSE copies, all NSE filings before ~Jul-2025) got **mf=0.0, which reads as
+  "no mutual-fund holding"** (MCX Mar-2025: dii 58.1, mf 0.0 → really 35.64). `parse_shp` now falls back to
+  the old-format key inside the new-format branch. fii/dii were never affected. ⚠️ The ~60k PRE-EXISTING
+  cells still carry the zero — they need a `--reparse` to heal, NOT done here.
 - **⚠️ `xbrlurl` IS TRUTHY WHEN THERE IS NO FILE.** Pre-2016 rows return `xbrlurl: "/XBRL1/"` (bare prefix)
   with an EMPTY `XbrlFile` — `if row["xbrlurl"]` counts 104/104 quarters "available" back to Mar-2001 and is
   a lie. **Gate on `(row["XbrlFile"] or "").strip()`.** Real files start **Jun-2016** (40/40 sampled);

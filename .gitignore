@@ -24,6 +24,10 @@ _strag_*
 !scripts/_bse_sectors.json
 !scripts/_bse_fund_fail.json
 
+# SHP gap sweep: the (sym,qe) pairs BSE genuinely has no filing for — evidence, keep it tracked
+# so a resume never re-probes them (the raw quarter-list cache scripts/_shp_bse_cache/ stays local)
+!scripts/_shp_bse_absent.json
+
 # One-off backfill/scratch scripts swept out of the way (never tracked)
 scripts/archive/
 
