@@ -91,7 +91,19 @@ MEMBERS = {
     "SharesHeldByNonPromoterNonPublicShareholdersMember": "npnp",
     "EmployeeBenefitsTrustsMember": "trust",
     "SharesHeldByEmployeeTrustsMember": "trust",   # old-format name
+    # A demutualised EXCHANGE puts its restricted trading-member shares in that same third bucket
+    # and tags them with this name instead. BSE Ltd Jun-2025: pub 79.43 + this 20.57 = 100.00 exact,
+    # and the SAME company tagged the SAME block "SharesHeldByNonPromoterNonPublic…" at Sep-2024 —
+    # so it is the npnp bucket under another label, not a public sub-category. Parent row only: its
+    # children (CorporateTradingMember, IndividualTradingMember, …) sum back to it and would double-count.
+    "TradingMembersAndAssociatesOfTradingMembers": "npnp2",
 }
+def _third(vals):
+    """The SEBI partition's third bucket (neither promoter nor public), whichever label the filer
+    used: employee trust, generic non-promoter-non-public, or an exchange's trading-member block.
+    max() not sum() — filings tag the same shares under more than one of these."""
+    return max(vals.get("npnp") or 0.0, vals.get("trust") or 0.0, vals.get("npnp2") or 0.0)
+
 # Where does the old format's "Other institutions" row belong? True → DII, False → FII.
 # Calibrated 2026-07-17 on the format-boundary seam (Jun-2022 old vs Sep-2022 new, all stocks).
 OLD_OTHER_TO_DII = True
@@ -190,7 +202,10 @@ def save_shares(s):
 #   3. shp_fill_n500_gaps.json.gz — the 2026-08-07 sweep of every remaining point-in-time Nifty-500
 #      hole from Jun-2016 on (fetch_shp_bse_hist.py, rebuilt). Real per-filing dates. FIRST in the
 #      list so its real dates beat the MC ledger's QE+21d convention wherever both have a cell.
-BSE_HIST_LEDGERS = [os.path.join(HERE, "shp_fill_n500_gaps.json.gz"),
+#   4. shp_fill_nse_gaps.json.gz — NSE-sourced holes for the NSE-ONLY cohort (BSE Ltd, CDSL) that
+#      no BSE route can reach (fetch_shp_nse_gaps.py). Real per-filing dates.
+BSE_HIST_LEDGERS = [os.path.join(HERE, "shp_fill_nse_gaps.json.gz"),
+                    os.path.join(HERE, "shp_fill_n500_gaps.json.gz"),
                     os.path.join(HERE, "shp_fill_hist_2016_2019.json.gz"),
                     os.path.join(HERE, "shp_fill_hist_2010_2016.json.gz")]
 def apply_bse_hist_ledger(h):
@@ -339,15 +354,20 @@ def parse_shp(txt, qe_iso):
         ctx[c.get("id")] = mems[0] if (not typed and len(mems) == 1) else None
 
     vals = {}
-    nsh = None  # total no. of shareholders (whole-company context)
+    nsh = None      # total no. of shareholders (whole-company context)
+    nsh_pub = None  # public-only count, used purely as a consistency check on nsh
     for f in root.iter():
         tag = strip(f.tag)
         if tag == "NumberOfShareholders":
-            if (ctx.get(f.get("contextRef")) or "") == "ShareholdingPatternMember":
+            who = ctx.get(f.get("contextRef")) or ""
+            if who in ("ShareholdingPatternMember", "PublicShareholdingMember"):
                 try:
-                    nsh = int(float(str(f.text).strip()))
+                    n = int(float(str(f.text).strip()))
                 except (TypeError, ValueError):
-                    pass
+                    n = None
+                if n is not None:
+                    if who == "ShareholdingPatternMember": nsh = n
+                    else: nsh_pub = n
             continue
         if tag != "ShareholdingAsAPercentageOfTotalNumberOfShares": continue
         slot = MEMBERS.get(ctx.get(f.get("contextRef")) or "")
@@ -361,12 +381,24 @@ def parse_shp(txt, qe_iso):
     if not vals: return None
     prom, pub = vals.get("prom"), vals.get("pub")
     if prom is None and pub is None: return None
-    # scale anchor: total ≈ 1 (fractions, new format) or ≈ 100 (percent, old format + some filers)
-    anchor = vals.get("total")
-    if anchor is None: anchor = (prom or 0) + (pub or 0)
-    if 0.90 <= anchor <= 1.10: scale = 100.0
-    elif 90.0 <= anchor <= 110.0: scale = 1.0
-    else: return None
+    # scale anchor: total ≈ 1 (fractions, new format) or ≈ 100 (percent, old format + some filers).
+    # Candidates in descending order of trust, FIRST ONE IN A BAND WINS — a filing that already
+    # anchored on its declared total parses exactly as before, so this can only turn a REFUSAL into
+    # a parse, never change an accepted value.
+    # Why the fallbacks: BSE Ltd files a junk whole-company percentage (Sep-2024: total = 6.9) on top
+    # of a perfectly clean percent partition — prom 0.00 + pub 77.09 + npnp 22.90 = 100 — and the
+    # single-candidate anchor threw the whole filing away. 23 quarters of a current N500 member were
+    # missing for that reason alone (Screener publishes those same numbers off the same file).
+    # The partition gate at the bottom (prom+pub+extra ∈ [98,102]) is what actually keeps a wrong
+    # scale out; this ladder only decides which number gets tested against the two bands.
+    part = (prom or 0) + (pub or 0)
+    scale = None
+    for anchor in (vals.get("total"), part,
+                   part + _third(vals)):
+        if anchor is None: continue
+        if 0.90 <= anchor <= 1.10: scale = 100.0; break
+        if 90.0 <= anchor <= 110.0: scale = 1.0; break
+    if scale is None: return None
 
     is_new = ("fii" in vals) or ("dii" in vals)          # explicit Domestic/Foreign facts
     is_old = (not is_new) and ("o_inst" in vals)         # single Institutions bucket
@@ -399,10 +431,14 @@ def parse_shp(txt, qe_iso):
     if out["fii"] + out["dii"] > out["pub"] + 2.0: return None      # institutions can't exceed public
     # partition sanity: promoter + public + non-promoter-non-public ≈ 100. The third bucket
     # (ESOP trusts / DR custodians) can be large for no-promoter companies (ETERNAL 4.73%).
-    extra = max(vals.get("npnp") or 0.0, vals.get("trust") or 0.0) * scale
+    extra = _third(vals) * scale
     if not (98.0 <= out["prom"] + out["pub"] + extra <= 102.0): return None
     out = {k: round(v, 2) for k, v in out.items()}
-    if nsh and nsh > 0: out["nsh"] = nsh
+    # nsh is OPTIONAL, so an implausible one gets dropped rather than published: the grand total
+    # can never be below the public-shareholder count. BSE Ltd Sep-2024 files 248 against 539,914
+    # public holders (its own grand total is broken, like its 6.9 "total %"), which would have
+    # rendered "248 shareholders" on the stock page between two quarters reading ~540k.
+    if nsh and nsh > 0 and not (nsh_pub and nsh < nsh_pub): out["nsh"] = nsh
     return out
 
 # ------------------------------------------------------------------ main fetch

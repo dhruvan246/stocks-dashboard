@@ -27,6 +27,9 @@ _strag_*
 # SHP gap sweep: the (sym,qe) pairs BSE genuinely has no filing for — evidence, keep it tracked
 # so a resume never re-probes them (the raw quarter-list cache scripts/_shp_bse_cache/ stays local)
 !scripts/_shp_bse_absent.json
+!scripts/_shp_nse_absent.json
+# parse_shp regression harness — old vs new parser on the same bytes, keep it runnable
+!scripts/_shp_anchor_regression.py
 
 # One-off backfill/scratch scripts swept out of the way (never tracked)
 scripts/archive/
