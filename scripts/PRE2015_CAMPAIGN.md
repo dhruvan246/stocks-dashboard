@@ -8,20 +8,32 @@ single day, 2002→2015, filled by the same rule book as the completed 2015→20
 (runbook §42/§43/§44/§45/§48), **negligible-token routes first** (structured JSON/HTML, no vision,
 no PDFs unless a step says so). And: per-date N500 membership must be correct 2002→2015.
 
-## ► LIVE COVERAGE (measured off origin 2026-08-06 — the number that matters for "what next")
+## ► LIVE COVERAGE (measured off origin 2026-08-07 — the number that matters for "what next")
 
 | era | open cells | of total | complete |
 |---|---|---|---|
-| **2002-2004** | **3,599** | 4,493 | **19.9%** |
+| **2002-2004** | **2,184** | 4,493 | **51.4%** |
 | 2005-2014 | 1,032 | 19,928 | 94.8% |
-| **2002-2014 overall** | **4,631** | 24,421 | **81.0%** |
+| **2002-2014 overall** | **3,216** | 24,421 | **86.8%** |
 
-**2002-04 holds 78% of everything still open and is the only era under 90% — STEP W is the
-highest-yield route left, and its alphabetical scan has only reached ~"G" of 566 symbols.**
-The 2005-14 residual is mostly hard-floor: 572 of its 1,032 cells have ZERO sibling quarters
-stored (no derivation can reach them), 122 have 2-of-3 siblings (need a second equation — a H1
-or 9M cumulative), and a real share is legitimately empty (holding/realty shells that filed no
-operating revenue at all — 67 such cells proven cell-by-cell 2026-08-06, see STEP A residual).
+**BOTH ERAS ARE NOW SOURCE-EXHAUSTED, not effort-limited. There is no route left that more
+grinding on an existing step will open — every remaining cell has a recorded reason.**
+* **2002-04** — STEP W is COMPLETE (see its block below): 2,319 landed, 2,174 refused, 0 open.
+  37% of the refusals are companies `web.archive.org` never captured at all. Further progress
+  needs a DIFFERENT PUBLISHER (BSE archives) or a THIRD GATE for the 381 cells whose data was
+  read but couldn't be proved — not another sweep.
+* **2005-14** — hard-floor as before: 572 of its 1,032 cells have ZERO sibling quarters stored
+  (no derivation can reach them), 122 have 2-of-3 siblings (need a second equation — an H1 or 9M
+  cumulative), and a real share is legitimately empty (holding/realty shells that filed no
+  operating revenue at all — 67 such cells proven cell-by-cell 2026-08-06, see STEP A residual).
+
+**2026-08-06→07 session: +1,531 cells (788 → 2,319), 2002-04 went 17.7% → 51.4%.** Most of that
+came from three BUGS FOUND BY CHECKING VALUES THAT LOOKED ODD, not from more hours: a stop-gate
+that never stopped (`sys.exit` blocked on a ThreadPoolExecutor atexit handler, ~3% duty cycle),
+and two revenue-label variants — `Net Sales/Income from Operation` (singular) and
+`Net Sales / Income from Operations` (spaced) — the second of which was silently landing
+profit-without-revenue on every 2003-04 page. Both label fixes were regression-checked over all
+367 then-cached pages with ZERO previously-parsed values changed.
 
 ## STATE OF THE WORLD (measured 2026-08-04 — re-verify only if something contradicts it)
 
@@ -589,6 +601,65 @@ The harvester maps a legitimate `0.00` to `None` (`sales > 0` test), so "rev=Non
 2005-14 sweep (holding/realty shells) — **the campaign's revenue floor is partly real, not all
 recoverable.** Before treating any `rev=None` as a parser bug, read the page: distinguish
 row-absent / row-present-but-zero / row-present-and-missed. Only the third is a bug.
+
+## ✅ STEP W-execute — **COMPLETE** (2026-08-07, Sonnet). 2,319 landed / 2,174 refused / **0 open**
+
+**The universe is fully adjudicated: 2,319 + 2,174 = 4,493 = every STEP W target cell.** Sweeps now
+return `DONE companies=0` instantly. 2002-04 stands at **51.4% complete** (2,184 open of 4,493);
+campaign overall **86.8%**. Do NOT keep running sweeps against this step — there is nothing left
+for them to try, and a sweep that lands 0 is the expected result, not a bad night.
+
+| landed | gate | meaning |
+|---|---|---|
+| 1,718 | E | EPS x shares reproduced the printed PAT |
+| 589 | F | the 4 quarters summed to the separately-filed annual |
+| 12 | S | matched an already-stored value exactly |
+
+**Companies (566):** 51 fully landed with zero refusals · 344 partially landed · **171 landed nothing**.
+
+### The 2,174 refusals, classified — read this BEFORE proposing to "finish" 2002-04
+| # | class | recoverable by another STEP W sweep? |
+|---|---|---|
+| 809 (37%) | **A** — no archived page for the company AT ALL | **No.** Nothing was ever captured. |
+| 588 (27%) | **C** — that quarter's page never downloaded, or carried no PAT | **No** on this source. |
+| 396 (18%) | **B** — company archived, but not that fiscal year | **No.** Pages exist only for other FYs. |
+| 381 (18%) | **D** — legs present, neither GATE F nor E could prove them | **No** — refusing is the correct outcome. |
+
+**These were audited three separate ways on 2026-08-07, all offline against the 4,670-page cache,
+and every audit confirmed the refusals describe REAL ABSENCES, not tooling failures:**
+1. *The 92 "false refusals" that weren't.* Class B cells whose candidate pages existed but were
+   uncached looked wrongly closed, so they were reopened. The harvester re-refused all 92 in one
+   sweep, and inspecting the now-cached pages showed why: those companies' archives cover FY2004-05
+   only, while the cells were FY2003. **The audit's flaw: it used "absent from cache" as a proxy for
+   "not fetchable" while wayback had been down for hours — that measures the OUTAGE, not the data.**
+   Never infer unfillability from cache state during an outage.
+2. *Class C parser sweep.* Of 588, only **3** had a cached page for the right quarter that parsed
+   without a PAT — i.e. essentially no parser gap left, unlike the two label bugs fixed on 08-06.
+3. *Those 3.* All are 2,832-byte EMPTY SHELLS (page chrome + JS, zero data) — the documented
+   "archive serves an error page that passes size checks" trap. The parser was right to yield None.
+
+### Where 2002-04's remaining 2,184 cells could still come from — NOT from more sweeps
+STEP W has exhausted `web.archive.org`'s copy of NSE `results.jsp`. Anything further needs a
+DIFFERENT SOURCE, exactly as 2005-14 reached 94.8% via BSE detres + NSE archives rather than
+wayback. Untried angles, roughly in order of promise:
+* **BSE's own archived pages** for the 171 companies that landed nothing — a different publisher,
+  so class A ("NSE never captured it") does not imply BSE never did.
+* **Class D's 381 cells** are the most interesting residue: the DATA was read, only the proof
+  failed. A third gate (e.g. cross-source agreement against a BSE read, the old GATE X idea) could
+  close some without any new fetching.
+* Archived moneycontrol / myiris quarterly pages, which the campaign has never probed for this era.
+
+### ⚠ The cloud routine is blocked by SANDBOX EGRESS, not by anything in this repo
+`pre2015-stepw-harvest` (trig_018pv7Rg9YnwVEFSBzEYHwqo) is written, correct, and **disabled**.
+Measured 2026-08-07 by a one-shot probe that encoded its verdict in a branch name:
+`A(cdx)=ProxyError 403 CONNECT rejected · B(snapshot)=ProxyError 403 CONNECT rejected ·
+C(api.github.com)=200 OK`. Anthropic's cloud sandbox refuses CONNECT to `web.archive.org` while
+GitHub works — which is why cloud sessions can push but cannot harvest. Re-enable the routine only
+after `web.archive.org` is added to that environment's allowed-domains list. (Trick worth reusing:
+a cloud run cannot show you its stdout, so have it **encode the answer in the branch name** and read
+it with `git ls-remote`.)
+
+### STEP W-execute — batch-by-batch history (superseded by the completion block above)
 
 ### STEP W-execute — status (2026-08-06, Sonnet): 17 BATCHES SHIPPED, 902 cells / 146 companies (25.6%)
 **Running total after batch 17 (verified on origin): 902 cells, 146 companies. 2002-04 now 19.9%
