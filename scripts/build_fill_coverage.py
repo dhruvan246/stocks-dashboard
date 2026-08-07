@@ -65,6 +65,15 @@ def main():
         ceased = nc.get("ceased_filing", {})
     except Exception:
         never, stopped, ceased = set(), {}, {}
+    # POSITIVE-EVIDENCE consolidated-filer set. Replaces the trailing-4-quarter divergence test,
+    # which was circular: it read divergence from OUR OWN stored con PAT, so a company whose con
+    # data was merely MISSING produced no signal and got recorded as "does not file consolidated".
+    # Measured against screener on 158 company/FY pairs it had excluded: 63% WRONG, including ONGC,
+    # ITC, HDFCBANK, NTPC, IOC, HINDALCO and M&M. See build_con_filer_evidence.py.
+    try:
+        EV = load("scripts/con_filer_evidence.json")
+    except Exception:
+        EV = {}
 
     fund = {s: {int(r[0]): (r[1], r[3]) for r in rows if len(r) > 3}
             for s, rows in fund_raw.items()}
@@ -98,11 +107,28 @@ def main():
         return [x for x in (best or snaps[0])["symbols"] if not x.upper().startswith("DUMMY")]
 
     def files_con(sym, qe):
+        """True when a consolidated cell at this quarter is a REAL GAP.
+
+        The user-verified ledger still wins where it applies -- those entries were checked against
+        screener by hand, and a stop date is positive evidence of a stop. Everything else is decided
+        by POSITIVE evidence that the company consolidates at all (own-history divergence in any
+        quarter ever, or screener's consolidated annual differing from its standalone). One
+        divergent quarter anywhere PROVES consolidation exists; absence in four quarters proves
+        nothing about the company, only about our coverage."""
         if sym in never:
             return False
         st = stopped.get(sym)
         if st and qe >= st:
             return False
+        ev = EV.get(sym)
+        if ev is not None:
+            if not ev.get("files_con"):
+                return False
+            fy = ev.get("first_con_fy")
+            # Before the earliest evidence we have, we genuinely do not know -- do not claim a gap.
+            if fy and qe < (fy - 1) * 10000 + 401:
+                return False
+            return True
         return bool(divq.get(sym, set()) & back4(qe))
 
     rows, tot = [], {"revS": 0, "revC": 0, "patS": 0, "patC": 0}

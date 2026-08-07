@@ -123,14 +123,37 @@ def _back4(qe):
     return out
 
 
+try:
+    EV = load("scripts/con_filer_evidence.json")
+except Exception:
+    EV = {}
+
+
 def files_con(sym, qe):
-    """False when there is no consolidated record for this company at this quarter -- so the cell
-    is NOT a gap and must not be counted as one."""
+    """False when there is no consolidated record for this company at this quarter.
+
+    The trailing-4-quarter divergence test this replaces was CIRCULAR: divergence was read from our
+    own stored con PAT, so a company whose con data was merely MISSING generated no signal and was
+    recorded as "does not file consolidated". Verified against screener on 158 company/FY pairs it
+    had excluded -- 63% WRONG, including ONGC, ITC, HDFCBANK, NTPC, IOC, HINDALCO and M&M. Two
+    further sources agreed: our own history showed divergent con PAT in other quarters for 96 of 99,
+    and NSE's filing index listed consolidated filings for 11 of 12 sampled.
+
+    Now decided by POSITIVE evidence (build_con_filer_evidence.py). The user-verified ledger still
+    wins where it applies."""
     if sym in NEVER_CON:
         return False
     start = NO_CON.get(sym)
     if start and qe >= start:
         return False
+    ev = EV.get(sym)
+    if ev is not None:
+        if not ev.get("files_con"):
+            return False
+        fy = ev.get("first_con_fy")
+        if fy and qe < (fy - 1) * 10000 + 401:
+            return False          # before our earliest evidence we do not know; claim nothing
+        return True
     win = set(_back4(qe))
     return any(q in win for q in DIVQ.get(sym, ()))
 
