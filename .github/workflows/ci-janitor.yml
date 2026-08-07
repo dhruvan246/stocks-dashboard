@@ -1,0 +1,125 @@
+name: CI janitor (unwedge Pages + resweep stragglers)
+
+# Written after the 2026-08-06 GitHub Actions outage (Critical, ~15:22-24:00 UTC), which
+# exposed two holes that auto-rerun.yml structurally cannot cover:
+#
+#   1. A `pages.yml` run was left in status `waiting` for TWELVE HOURS. Because pages.yml
+#      declares `concurrency: {group: pages, cancel-in-progress: true}`, every later Pages
+#      run queued behind that corpse as `pending` with zero jobs ever created, then got
+#      cancelled by the next dispatch. The live site froze on a 13-hour-old build while all
+#      ~30 data workflows reported success and kept committing fresh data. NOTHING was red.
+#      The site being stale was the only symptom, and no workflow was watching for it.
+#      (memory: project-stocks-pages-wedged-concurrency)
+#
+#   2. auto-rerun.yml retries inside a runner, so its budget is minutes. An outage lasting
+#      hours outlives it, and it then exits 1 and gives up permanently. 18 workflows sat red
+#      until a human re-ran them by hand the next morning.
+#
+# This job holds no runner between sweeps, so it can keep trying for as long as it takes.
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"     # every 30 min — cheap (a few API calls), no runner held between sweeps
+  workflow_dispatch: {}
+
+permissions:
+  actions: write               # rerun + cancel runs, dispatch pages.yml
+  contents: read
+
+concurrency:
+  group: ci-janitor
+  cancel-in-progress: false    # never cancel a sweep mid-flight; they are short and idempotent
+
+jobs:
+  janitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+    steps:
+      - name: Unwedge Pages
+        run: |
+          set -uo pipefail
+          # A healthy Pages run finishes in 1-3 min. Anything still `waiting`/`pending`/`queued`
+          # after 30 min is wedged and is holding the `pages` concurrency group hostage.
+          cutoff=$(date -u -d '30 minutes ago' +%Y-%m-%dT%H:%M:%SZ)
+          echo "cutoff = $cutoff"
+
+          wedged=$(gh run list --workflow=pages.yml --repo "$REPO" --limit 60 \
+                     --json databaseId,status,createdAt \
+                     --jq "[.[] | select((.status==\"waiting\" or .status==\"pending\" or .status==\"queued\") and .createdAt < \"$cutoff\")] | .[].databaseId")
+
+          if [ -z "$wedged" ]; then
+            echo "✅ no wedged Pages runs"
+          else
+            for id in $wedged; do
+              echo "::warning::cancelling wedged Pages run $id (stuck >30 min, holding the 'pages' concurrency group)"
+              gh run cancel "$id" --repo "$REPO" \
+                || gh api -X POST "repos/$REPO/actions/runs/$id/force-cancel" >/dev/null 2>&1 \
+                || echo "  (could not cancel $id)"
+            done
+          fi
+
+      - name: Make sure the site actually deployed recently
+        run: |
+          set -uo pipefail
+          # Guard against the silent-staleness failure mode: data workflows all green, but
+          # nothing published. If no Pages run has SUCCEEDED in 3 h, kick one.
+          cutoff=$(date -u -d '3 hours ago' +%Y-%m-%dT%H:%M:%SZ)
+          recent=$(gh run list --workflow=pages.yml --repo "$REPO" --limit 40 \
+                     --json conclusion,createdAt \
+                     --jq "[.[] | select(.conclusion==\"success\" and .createdAt >= \"$cutoff\")] | length")
+          active=$(gh run list --workflow=pages.yml --repo "$REPO" --limit 20 \
+                     --json status --jq "[.[] | select(.status != \"completed\")] | length")
+
+          echo "successful Pages deploys in last 3h: $recent   currently active: $active"
+          if [ "$recent" -eq 0 ] && [ "$active" -eq 0 ]; then
+            echo "::warning::no successful Pages deploy in 3 h and none in flight — dispatching one"
+            gh workflow run pages.yml --repo "$REPO" --ref main || echo "(dispatch failed)"
+          else
+            echo "✅ Pages is publishing"
+          fi
+
+      - name: Re-run workflows still red
+        run: |
+          set -uo pipefail
+          # "Still red" = its most recent FAILURE is newer than its most recent SUCCESS.
+          # Bounded deliberately, so a genuinely broken workflow does not get re-run forever:
+          #   - only failures from the last 12 h
+          #   - skip anything with an active run (do not fight auto-rerun.yml mid-retry)
+          #   - skip runs already on attempt >= 5 (auto-rerun.yml had its go; a human is needed)
+          since=$(date -u -d '12 hours ago' +%Y-%m-%dT%H:%M:%SZ)
+
+          red=$(gh run list --repo "$REPO" --limit 200 \
+                  --json name,conclusion,status,createdAt,databaseId \
+                  --jq "
+                    [.[] | select(.createdAt >= \"$since\")]
+                    | group_by(.name)
+                    | map({
+                        wf:     .[0].name,
+                        active: ([.[] | select(.status != \"completed\")] | length),
+                        fail:   ([.[] | select(.conclusion==\"failure\")] | if length>0 then max_by(.createdAt) else null end),
+                        okAt:   ([.[] | select(.conclusion==\"success\")] | if length>0 then (max_by(.createdAt).createdAt) else null end)
+                      })
+                    | map(select(.fail != null and .active == 0 and (.okAt == null or .okAt < .fail.createdAt)))
+                    | map(select(.wf != \"Auto-rerun failed workflows\" and .wf != \"CI janitor (unwedge Pages + resweep stragglers)\" and .wf != \"Deploy site to Pages\"))
+                    | .[] | \"\(.fail.databaseId)\t\(.wf)\"
+                  ")
+
+          if [ -z "$red" ]; then
+            echo "✅ nothing still red"
+            exit 0
+          fi
+
+          printf '%s\n' "$red" | while IFS=$'\t' read -r id wf; do
+            [ -z "$id" ] && continue
+            att=$(gh run view "$id" --repo "$REPO" --json attempt -q .attempt 2>/dev/null || echo 1)
+            if [ "${att:-1}" -ge 5 ]; then
+              echo "::warning::'$wf' (run $id) has had $att attempts — leaving it red for a human"
+              continue
+            fi
+            echo "::notice::re-running '$wf' (run $id, attempt $att)"
+            gh run rerun "$id" --failed --repo "$REPO" || echo "  (rerun failed for $id)"
+            sleep 20        # stagger: these workflows push commits, do not stampede the rebase
+          done
