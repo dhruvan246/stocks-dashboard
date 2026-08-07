@@ -39,7 +39,15 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  # Group RENAMED from "pages" on 2026-08-07. After the 2026-08-06 Actions/Pages
+  # outage the old group wedged on GitHub's side: runs queued into it stayed
+  # `pending` (which in the Actions API means "blocked by concurrency") and NEVER
+  # got a runner — 29 consecutive runs, alive up to 43 min with ZERO jobs created,
+  # against a 9-second created→started time on the last healthy run. Nothing
+  # legitimately held it: no other workflow uses the group, no runner saturation,
+  # environment gate open, and no deployment left in `waiting`. A fresh group name
+  # carries no wedged state; the semantics below are deliberately unchanged.
+  group: pages-deploy
   cancel-in-progress: false
 
 jobs:
