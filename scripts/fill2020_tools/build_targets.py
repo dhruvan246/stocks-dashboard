@@ -66,6 +66,13 @@ def main():
     never = set(nc.get("never_filed_con", []))
     stopped = nc.get("stopped_filing_con", {})
     ceased = nc.get("ceased_filing", {})
+    # Positive-evidence consolidated-filer set -- replaces the circular trailing-4-quarter
+    # divergence test that excluded ONGC, ITC, HDFCBANK and ~4,000 other pre-2020 cells as
+    # "does not file consolidated" purely because we lacked their con PAT.
+    try:
+        EV = load("scripts/con_filer_evidence.json")
+    except Exception:
+        EV = {}
     scrips = scrip_map()
 
     divq = {}
@@ -109,7 +116,14 @@ def main():
                         continue
                     if ceased.get(k) and q >= ceased[k]:
                         continue
-                    if not (divq.get(k, set()) & back4(q)):
+                    ev = EV.get(k)
+                    if ev is not None:
+                        if not ev.get("files_con"):
+                            continue
+                        fy = ev.get("first_con_fy")
+                        if fy and q < (fy - 1) * 10000 + 401:
+                            continue
+                    elif not (divq.get(k, set()) & back4(q)):
                         continue
                 code = scrips.get(k.upper()) or scrips.get(sym.upper())
                 if not code:
