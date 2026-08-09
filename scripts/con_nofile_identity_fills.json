@@ -1,8 +1,28 @@
 {
  "campaign": "FILL-2020 revenue track (scripts/FILL2020_CAMPAIGN.md)",
- "companies": 18,
+ "companies": 19,
  "evidence_source": "NSE api/corporates-financial-results per-company filing index",
  "fills": {
+  "ATHERENERG": {
+   "20250930": {
+    "ebitC": -175.1,
+    "evidence": "NSE filing index: 6 standalone quarters, 1 consolidated, first consolidated 20260630 \u2014 no consolidated result filed for this quarter",
+    "opC": -132.5,
+    "revC": 898.9
+   },
+   "20251231": {
+    "ebitC": -102.4,
+    "evidence": "NSE filing index: 6 standalone quarters, 1 consolidated, first consolidated 20260630 \u2014 no consolidated result filed for this quarter",
+    "opC": -72.0,
+    "revC": 953.6
+   },
+   "20260331": {
+    "ebitC": -121.38,
+    "evidence": "NSE filing index: 6 standalone quarters, 1 consolidated, first consolidated 20260630 \u2014 no consolidated result filed for this quarter",
+    "opC": -69.58,
+    "revC": 1174.66
+   }
+  },
   "BASF": {
    "20200331": {
     "ebitC": 33.35,
@@ -740,9 +760,9 @@
  ],
  "generated": "2026-08-06",
  "held_null": {},
- "last_run_companies": 4,
- "last_run_values": 58,
+ "last_run_companies": 1,
+ "last_run_values": 9,
  "method": "consolidated = standalone where the exchange's filing index shows NO consolidated result was filed for that quarter (SEBI LODR Reg 33 identity)",
  "user_gate": "approved 2026-08-06 for the 91 non-bank values; banks approved the same day when the user chose 'include banks everywhere'",
- "values": 328
+ "values": 337
 }

@@ -97,6 +97,42 @@ def fetch_list(sym, jar):
                 r["_era"] = s
             rows.extend(got)
         time.sleep(0.4)
+    # The classic index stops at Dec-2024: SEBI's integrated-filing regime replaced it, and 2025+
+    # results live only under /api/integrated-filing-results (rows carry qe_Date + the same
+    # per-basis xbrl). Normalize those into the classic row shape so every consumer of this cache
+    # (con_nofile_identity's E-gates, nse_xbrl_rev) sees one continuous filing record.
+    for s in [sym] + aliases(sym):
+        url = ("https://www.nseindia.com/api/integrated-filing-results"
+               "?index=equities&period=Quarterly&symbol=%s" % urllib.parse.quote(s, safe=""))
+        got = None
+        for _ in (1, 2):
+            try:
+                raw = BF._get(url, headers=H, jar=jar)
+                jb = json.loads(raw if isinstance(raw, str) else raw.decode("utf8", "replace"))
+                got = jb.get("data", jb if isinstance(jb, list) else [])
+                break
+            except Exception as e:
+                errs.append("%s:intg:%s" % (s, type(e).__name__))
+                time.sleep(1.5)
+        for r in got or []:
+            basis = r.get("consolidated")
+            qd = (r.get("qe_Date") or "").strip()
+            m = re.match(r"(\d{2})-([A-Za-z]{3})-(\d{4})$", qd.title())
+            if basis not in ("Consolidated", "Standalone") or not m:
+                continue                      # governance / non-financial integrated rows
+            rows.append({
+                "_era": s, "_integrated": True,
+                "symbol": r.get("symbol"),
+                "toDate": m.group(0),
+                "consolidated": "Consolidated" if basis == "Consolidated" else "Non-Consolidated",
+                "audited": r.get("audited"),
+                "xbrl": r.get("xbrl"),
+                "pdf_attach": r.get("pdf_attach"),
+                "ixbrl": r.get("ixbrl"),
+                "filingDate": r.get("creation_Date"),
+                "relatingTo": None, "period": "Quarterly",
+            })
+        time.sleep(0.4)
     if not rows and errs:
         raise RuntimeError(",".join(errs[:4]))
     return rows
