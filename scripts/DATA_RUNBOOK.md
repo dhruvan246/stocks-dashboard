@@ -5360,6 +5360,27 @@ tooling in `scripts/revpat_verify/` (`audit_revpat_coverage`, `revpat_strata`, `
   CONSECUTIVE quarters **while PAT AGREES** (the third condition is what rules out wrong
   company/period/scale). Validated on 66 symbols: median relative difference across 823 cells is
   **exactly 0.0** — no systematic bias — with only AADHARHFC and MOTHERSON carrying the signature.
+- **★★★ HEALED AND LIVE-VERIFIED (646a31be) — 9 cells, and HOW to apply this class safely.**
+  `GICRE npStd 20241231→1621.35 / 20250630→1752.23 / 20250930→2866.79`, `GICRE revC 20240630→12886.47`,
+  `AADHARHFC revS 20230630→578.01 / 20231231→658.54`, `HDBFS revS 20240630→3883.8 / 20241231→4143.6 /
+  20250331→4266.1`. Confirmed on the LIVE `/fin/<SYM>.json` slices, and the clincher: **GICRE H1-FY26
+  now sums to 4619.02, exactly the figure the filing prints** (before the heal we were off by 251.76).
+  Tool: `scripts/revpat_verify/apply_staged_heals.py` (dry-run default). Four properties made it safe:
+  **(1) guard-edit per §2b** — abort unless the current value equals the recorded guard, never force;
+  **(2) BLAST-RADIUS PROOF per file** — patch in memory, diff against the original, and refuse to
+  write unless the ONLY changes are the intended cells; **(3) move BOTH TWINS**
+  (`docs/sf_fundamentals`↔`scripts/fundamentals`, `docs/sf_revop`↔`scripts/revop_fundamentals`) or the
+  next rebuild reinstates the old value; **(4) rebuild per-stock slices into a TEMP dir and copy only
+  those that changed** — 3 of 4,550 here, so no other session's derived output was swept in.
+  ⚠️ **`pat_defects.json` is a JOURNAL** (read only by `fill2020_tools/gicre_con_pat.py`) — writing
+  there records a defect but does NOT fix data. The PAT fix had to be a §2b guard-edit.
+  ⚠️ Re-verify the guards against ORIGIN immediately before applying if another session has been
+  writing: one had landed a `mirror resynced` commit 28s earlier, and for GICRE the MIRROR held the
+  CORRECT value — a std-side resync would have destroyed it. All six guards were re-checked and held.
+- **★ STILL OPEN after the heal:** HDBFS `revC` also holds Interest income — including at 2025-06-30
+  where the filing states no consolidated statement exists — not adjudicated. HDBFS 2024-09-30 sits in
+  the defect window but was never read, so it was deliberately NOT written (never write a value no
+  source asserts). Plus the 43 sweep candidates and 286 sweep 404s needing slug verification.
 - **★★★ AADHARHFC PROVEN, AND THE ROOT CAUSE IS A TOOL, NOT A COMPANY.** Its stored std revenue for
   2023-06-30 and 2023-12-31 equals the filing's **`Interest income` row EXACTLY** (533.47 == 533.47,
   579.26 == 579.26) against Total-revenue-from-operations of 578.01 and 658.54. **Cause:
