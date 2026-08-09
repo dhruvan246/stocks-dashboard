@@ -1401,6 +1401,27 @@ the Quarterly Results page. **4 scripts + `.github/workflows/refresh-bse.yml` (2
   Officer"* notice that `RESULT_HEAD`'s bare `financial` matched) — is same-day, so a tie-break suffices.
   `NOT_RESULT` (CFO/KMP/AGM/newspaper/trading-window…) must only apply when nothing says "financial results",
   else a combined results+appointment filing gets excluded.
+- **⚠️ A "Newspaper Publication" ad can OUTRANK the real filing it advertises** (found 2026-08-09, SRAMSET
+  531359 + JAYATMA 539005). SEBI Reg 47 makes companies publish a newspaper ad ~1 day AFTER the real results
+  filing, and that ad's HEADLINE often reuses the phrase *"Financial Results for the quarter ended…"* — enough
+  to match `STRONG_RESULT` in `bse_render._candidate()`, which **lets STRONG_RESULT bypass `NOT_RESULT` outright**
+  (needed so a combined results+appointment filing survives — see the INTEGRAEN case above), so the
+  newspaper-publication category match is never rejected either. Being one day NEWER, the ad then wins the
+  date-first sort and gets rendered — but it's a scan of a full newspaper PAGE (multiple companies' ads) whose
+  own company's block is just prose pointing at the website, no P&L table. The `pdf_period` tripwire does NOT
+  catch this: the ad genuinely states the right quarter, it just has no numbers. Symptom: a vision agent
+  reporting the page is a newspaper notice / "see website for full results" with no table — re-fetch
+  `bse_render.announcements()` for the scrip and manually pick the actual **"...Financial Results for the
+  Quarter Ended..."** (not "...Newspaper Publication...") filing, usually filed the day before.
+- **⚠️ All-scanned PDFs (no text layer on ANY page) still lose the table to page-order.** `render_pdf_pages`'s
+  NUMERIC DENSITY scoring (below) needs a text layer to count tokens; a text-less page always scores the flat
+  `SCAN_SCORE=40` regardless of what's on it, so when EVERY page in a filing is a scan, every candidate ties and
+  the first 4 by page order win — which can be cover letters / KMP-change annexures instead of the P&L (found
+  2026-08-09, SIMMOND 507998: an 11-page all-scanned filing where the real standalone/consolidated tables sat on
+  pages 6 and 8, but the render kept pages 0,2,3,4 — a CFO-appointment Annexure-C and blank cover pages). This is
+  the same failure family as the TELGE/VIRTUALG cases below, just with zero scoreable pages instead of some.
+  Fix on sight: render ALL pages of the PDF yourself (`bse_render.fetch_pdf` + `fitz`) and look — don't trust a
+  first-4 render on an all-scanned filing.
 - **⚠️ `render_pdf_pages` picks P&L pages by NUMERIC DENSITY, not by position** (`bse_vision_prep.py`). The
   table can sit deep behind a long auditors' report (CENTRALBK Q1FY27: consolidated P&L on **page 10 of 31**),
   and `PL_HINT` matches auditor prose too ("net profit/(loss) after tax"), so a first-N-pages/first-4-hits scan
