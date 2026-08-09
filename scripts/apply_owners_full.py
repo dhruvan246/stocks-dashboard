@@ -34,10 +34,16 @@ BACKFILL={
 # our standalone 26.61) and reverted to the cached 26.63 every single night: the heal was
 # journalled, committed, and never actually live. Anything corrected in con_copy_heals.json now
 # wins here, so a future heal cannot be silently undone the same way.
+# Both directions are authoritative: `now` is a heal, `value` is a REVERT (a cell adjudicated back
+# to what we already had, e.g. TATACOFFEE — owners 26.63, not the total 38.40 the heal wrote). A
+# revert has to pin too, or nothing stops a later ingestion from reintroducing the wrong number.
 try:
     _H=json.load(open(os.path.join(HERE,"con_copy_heals.json")))
-    HEALS={"%s|%s"%(k.split("|")[0],k.split("|")[1]):v["now"]
-           for k,v in _H.items() if k.endswith("|patC") and v.get("now") is not None}
+    HEALS={}
+    for _k,_v in _H.items():
+        if not _k.endswith("|patC"): continue
+        _val=_v.get("now") if _v.get("now") is not None else _v.get("value")
+        if _val is not None: HEALS["%s|%s"%(_k.split("|")[0],_k.split("|")[1])]=_val
 except Exception:
     HEALS={}
 src_own=src_bf=src_ren=src_heal=0
