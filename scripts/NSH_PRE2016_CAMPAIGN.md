@@ -6,7 +6,9 @@ lands. These cells have correct FII/DII/promoter percentages (harvested from arc
 runbook §22 / [[project-stocks-shp-wayback-2010]]); only the headcount is missing, because
 Moneycontrol's pages never carried it.
 
-**Status: NOT started. Route NOT yet established. Do not begin the expensive rung first.**
+**Status: route RESOLVED 2026-08-09 — the archived Moneycontrol pages carry the count (R0 below),
+and a side-ledger is being produced by the sibling coverage session at zero extra fetch cost.
+The annual-report rung is ON HOLD and may never be needed.**
 
 ## 1. The measurement that decides the shape of this campaign
 
@@ -23,41 +25,53 @@ the annual-report route — the obvious one, and the one originally proposed —
 of the gap** even if it works perfectly on every company. Committing to a PDF-reading campaign
 across 523 annual reports to fill 725 cells is a poor trade until the other rungs are ruled out.
 
-## 2. Route ladder (§57) — walk it IN THIS ORDER, cheapest and widest first
+## 2. Route ladder — RESOLVED 2026-08-09 by the sibling coverage session
 
-**R1 — BSE's pre-XBRL shareholding pages. START HERE.**
-Measured today: BSE's `SHPQNewFormat` list **does return rows for 2011-2015** (RELIANCE: 20 rows,
-qtrid 70-89) but every one has an **empty `XbrlFile`** — consistent with §22f (real XBRL files start
-Jun-2016). So the data exists on BSE for this era in some **HTML/aspx** form, not XBRL. Two hard
-pieces of evidence that a usable route exists:
-  - our own `shp_fill_thirdparty.json.gz` ledger carries the provenance string
-    **`prom=BSE shpSecSummery_New Table-I`** — i.e. a BSE "shpSecSummery / Table-I" surface was
-    already read successfully in a past backfill;
-  - the qtrid numbering is BSE's own and is already known (Dec-2015 = 88, Mar-2016 = 89), so the
-    per-quarter addressing is solved.
-  Three endpoint shapes were probed today (`shpSecSummery/w`, `ShpSecSummery/w`,
-  `shpPromoterNGroup/w` with `?scripcode=&qtrid=`) and all returned BSE's generic 1,814-byte error
-  page — **the guesses were wrong, the route is not disproven.** Find it properly: open a
-  2013-quarter SHP page in the browser pane, watch the network tab, and copy the request the page
-  itself makes. **If R1 works it covers ALL FOUR quarters and the whole 4,118 — do not proceed to
-  R2+ before settling it.**
+**★ R0 — THE ARCHIVED MONEYCONTROL CLAUSE-35 TABLES CARRY THE COUNT. This is the answer.**
+Confirmed with a worked example by the FII/DII coverage session (which is harvesting ~5,500 of
+these pages anyway): the **first numeric column of every row is the holder count**, and the
+grand-total row gives the whole-company figure. SUNDARMFIN Sep-2016 (Wayback 20161113075427,
+MC qtrid 91):
 
-**R2 — NSE archives.** NSE served shareholding patterns pre-2016 too. `feedback-nse-archive-first`
-is the standing lesson: check the archive route before concluding anything is unreachable.
+    Total shareholding of Promoter and Promoter Group (A)  ->     117 holders
+    Total Public shareholding (B)                          ->  22,109 holders
+    Total (A)+(B)+(C)                                      ->  22,227 holders   <- this is nsh
 
-**R3 — Wayback of EXCHANGE pages.** §22f records that MC's pages were archived but BSE's aspx pages
-"were never archived with old qtrids" — that was asserted for the percentage harvest; re-test it
-for the count specifically before accepting it.
+So the whole 4,118-cell gap is addressable from pages already being downloaded, at **zero extra
+fetches** — a second pass over the gzipped page cache (`scripts/_shp_wb_cache/pages`), not a
+refetch. Output will be a side-ledger keyed (sym, QE) carrying the **count only, no percentages**,
+which merges through `_shp_merge_nsh.py` (slot 6 only) at zero risk to anything else.
 
-**R4 — Annual reports (March only, ≤725 cells).** The "Distribution of Shareholding" / "Shareholding
-Pattern" schedule in the FY annual report states total holders as at 31 March. Sources: BSE/NSE
-annual-report archives, company IR pages. Expensive: PDF fetch + table read per company-year, ~523
-companies × up to 6 years. Only worth running for whatever R1-R3 leave behind, and only if the
-March-only coverage is judged worth it.
+**This supersedes the pessimistic framing in §1 below.** The "18% ceiling" applies only to the
+annual-report route; the wide route exists and is nearly free. **Do not spend anything on the
+annual-report rung until the side-ledger's real yield is known.**
 
-**R5 — third-party.** Screener carries shareholder counts and matched us **to the person 48/49
-times** (§22h) — but its floor is Mar-2017, so it cannot reach this era at all. Recorded so nobody
-re-probes it.
+**R1 — BSE's pre-XBRL endpoint: FOUND, and MEASURED EMPTY for this era. Route CLOSED.**
+The endpoint I failed to guess is:
+
+    https://api.bseindia.com/BseIndiaAPI/api/shpSecSummery_New/w?scripcode=<code>&qtrid=<qtrid>.00
+
+(found by grepping BSE's Angular bundle — a general technique worth reusing: ~32 SHP endpoints
+live in there, including `Corp_shpSec_SHPPubShold_ng` for the Table-III breakdown). It is alive and
+useful for the modern era — RELIANCE at qtrid 112 returns 10,761 bytes with promoter 50.61, and it
+was used today to anchor promoter/public/npnp on ~20 cells where the XBRL 404s. But tested at
+**qtrid 85 (Mar-2015), 80 (Dec-2013) and 70 (Jun-2011) it returns ~505-byte stubs** against 10,761
+for the control. The era is genuinely empty behind it — the same story as the empty `XbrlFile`.
+**A measured negative, not an undiscovered URL.** Do not re-probe this.
+(Caveat recorded: `Corp_shpSec_SHPPubShold_ng` returns an empty category skeleton even on a
+known-good control, so it needs a different key — `shpDecleraction` hands back a "Mid" that may be
+it. Unchased.)
+
+**R2 — NSE archives.** Unprobed. Only relevant for whatever R0 leaves behind.
+
+**R3 — Wayback of EXCHANGE pages.** Unprobed; §22f's "never archived with old qtrids" claim was
+made about percentages. Only relevant for R0's residue.
+
+**R4 — Annual reports (March only, <=725 cells).** The expensive rung. **HOLD.** Reachable ceiling
+is 18% of the gap and R0 looks likely to beat it outright.
+
+**R5 — third-party: DEAD for this era.** Screener carries counts and matched us to the person 48/49
+times (§22h), but its floor is Mar-2017. Recorded so nobody re-probes it.
 
 ## 3. Rules that still apply
 
@@ -74,17 +88,17 @@ re-probes it.
 - Heals land via the ledger route + `_shp_merge_nsh.py` (fills slot 6 only, refuses to touch
   percentages, never adds cells), staged, never as a second writer against CI.
 
-## 4. Recommended decision
+## 4. Decision (settled)
 
-Run **R1 route discovery only** — a ~1 hour job: find BSE's real pre-2016 SHP endpoint, pull three
-companies × three quarters, and check whether a shareholder count is present on that surface at all.
+**Wait for the R0 side-ledger, then merge it with `_shp_merge_nsh.py` and measure the residue.**
+Only what R0 cannot reach is a candidate for R2/R3, and R4 (annual reports) stays on hold
+indefinitely — it can never beat 18%.
 
-That single answer decides everything:
-- **count present** → a ~4,100-cell fill becomes a routine scripted backfill, worth doing;
-- **count absent from BSE's pre-2016 surface** → the ceiling really is the 725 March cells via
-  annual reports, and the honest recommendation is to leave 2010-2015 counts empty and say so on
-  the page, rather than spend a PDF campaign on 18% of a nice-to-have field.
-
-**Do not start R4 before R1 has answered.** The FII/DII campaign's own lesson: the expensive rung
-is worth running only after the cheap ones are measured, and a route being unknown is not the same
-as a route being absent ([[feedback-never-say-unfillable]]).
+Two lessons this scoping earned, both worth keeping:
+- **The expensive rung was nearly chosen first.** Annual reports were the obvious route and would
+  have capped at 18% of the gap for a 523-company PDF campaign. Measuring the March/non-March
+  split *before* planning is what caught it.
+- **"I could not find the endpoint" is not "the endpoint does not exist", and neither is the end of
+  the story.** Three wrong URL guesses proved nothing; the real endpoint was found by grepping the
+  site's own JS bundle, and only THEN did a proper test show the era is genuinely empty behind it.
+  A measured negative closes a route; a failed guess does not ([[feedback-never-say-unfillable]]).
