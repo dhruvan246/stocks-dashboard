@@ -5166,6 +5166,34 @@ Each needs a filing read. **This is now the whole remaining divergence populatio
 
 ---
 
+### 71f. ★ A MISSING SCRIPCODE CAN MEAN "NOT ON BSE" — do not fill the map
+SUBCAPCITY's two cells abstained with "no scripcode in `scrip_map` → the BSE stream is
+unreachable", and §71c called that structural and said to fix the map first. **That was the wrong
+instruction: there is nothing to fix.**
+
+SUBCAPCITY is **International Constructions Ltd** (formerly Subhash Capital City), ISIN
+**INE845C01016**, and it has **no BSE listing at all**:
+* the ISIN is absent from `bse_scrips.json` `by_isin` (4,875 ISINs) — necessary but not sufficient,
+  since §52b notes BSE-delisted names also drop out of the master;
+* so BSE was asked directly — `api.bseindia.com/.../PeerSmartSearch` returns **"No Match Found"**
+  for the company name, the ISIN, *and* the former name;
+* its cached XBRL carries `identifier scheme="http://www.nseindia.com/NSESymbol"`;
+* and the NSE results archive serves **76 rows (16 consolidated)** for it — the data is reachable,
+  just not where the reader was looking.
+
+`scrip_map()` returning None here is CORRECT. Inventing or guessing a code would send every future
+fetch to the wrong company. Recorded in **`scripts/_nse_only_no_bse.json`** so the next run reads
+the fact instead of re-deriving it. **Before treating a missing scripcode as a gap, ask BSE whether
+the company exists there.**
+
+The two cells remain open for a different reason: the only source NSE offers is the filer's own
+XBRL, and its attribution tags contradict each other — `NCI = 0.0` while `owners != total`, and at
+2022-09-30 `owners + NCI = -total` (sign flipped). `resultDetailedDataLink` is empty post-2019
+(§60), so there is no printed P&L to arbitrate. Our stored series follows the OWNERS tag in 4 of 6
+comparable quarters, so the mirror's -0.79 / 2.67 is the self-consistent choice — but that is a
+convention, not a proof, and it was not written on that basis.
+
+
 ## 72. ★★★ VERIFYING REV/PAT vs EXTERNAL SITES — the sites can only reach 10 of our 95 quarters  (campaign 2026-08-09)
 
 Full write-up `scripts/REVPAT_VERIFY_REPORT.md`; plan `REVPAT_VERIFY_CAMPAIGN.md`; phase findings and

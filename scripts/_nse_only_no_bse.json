@@ -1,0 +1,23 @@
+{
+ "_README": [
+  "Symbols with NO BSE listing at all. scrip_map() returning None for these is CORRECT, not a gap --",
+  "do not 'fix' it by inventing or guessing a scrip code, and do not route them through the BSE",
+  "announcement stream (universal_read / fetch_insurers.datebound). Use the NSE results archive:",
+  "https://www.nseindia.com/api/corporates-financial-results?index=equities&symbol=<SYM>&period=Quarterly",
+  "Each row declares its own basis and carries a per-basis `xbrl` link (runbook \u00a771f)."
+ ],
+ "generated": "2026-08-09",
+ "symbols": {
+  "SUBCAPCITY": {
+   "company": "International Constructions Limited (formerly Subhash Capital City Ltd)",
+   "isin": "INE845C01016",
+   "evidence": [
+    "ISIN absent from bse_scrips.json by_isin (4,875 ISINs)",
+    "BSE PeerSmartSearch returns 'No Match Found' for the company name, the ISIN and the former name",
+    "its cached XBRL carries identifier scheme http://www.nseindia.com/NSESymbol",
+    "the NSE results archive serves 76 rows for it (16 consolidated), so the data IS reachable"
+   ],
+   "route": "NSE results archive"
+  }
+ }
+}
