@@ -33,8 +33,23 @@ def quorum_needed(qe, prov):
     return 2 if (qe >= EXCHANGE_ERA and prov not in ("wayback-mc", "thirdparty", "")) else 3
 
 
-def decide(ours, obs, qe, prov):
+def tolerances(field, ours):
+    """Return (agree, spread_max) in the FIELD's own units.
+
+    Percentages are compared in percentage points; `nsh` is a raw headcount in the millions, so
+    reusing the pp thresholds there declared two sites in conflict over half a person. Sites also
+    publish counts at different precision (StockEdge rounds to 2dp of lakhs = +/-500 people), so
+    the headcount bands are relative."""
+    if field == "nsh" and ours:
+        base = abs(float(ours))
+        return max(1.0, 0.01 * base), max(1.0, 0.02 * base)
+    return AGREE, SPREAD_MAX
+
+
+def decide(ours, obs, qe, prov, field="", agree=None, spread_max=None):
     """obs = [{site, val, verdict, echo}] — one entry per site that carried this cell."""
+    AGREE, SPREAD_MAX = (agree if agree is not None else globals()["AGREE"]), \
+                        (spread_max if spread_max is not None else globals()["SPREAD_MAX"])
     indep = [o for o in obs if not o["echo"] and o["val"] is not None]
     echoes = [o for o in obs if o["echo"] and o["val"] is not None]
     need = quorum_needed(qe, prov)
@@ -52,9 +67,15 @@ def decide(ours, obs, qe, prov):
         return "SITES_DISAGREE", need, len(confirm), len(contra), spread
     if len(confirm) >= need and not contra:
         return "CONFIRMED", need, len(confirm), 0, spread
-    if len(contra) >= need and not confirm:
+    # CONTRADICTED is the top of the arbitration queue and means something specific: the sites
+    # agree with EACH OTHER and all of them disagree with us. That requires them to be tight
+    # among themselves. Without this guard, three sites scattered across 0.46pp (wider than the
+    # 0.06 tolerance, so none matches us) were being reported as a united front against our
+    # value — when in truth each simply rounds or derives the bucket differently. Those are
+    # SITES_DISAGREE: nothing is taken, and no one is accused.
+    if len(contra) >= need and not confirm and spread <= AGREE:
         return "CONTRADICTED", need, 0, len(contra), spread
-    if confirm and contra:
+    if contra and (confirm or spread > AGREE):
         return "SITES_DISAGREE", need, len(confirm), len(contra), spread
     return "INSUFFICIENT", need, len(confirm), len(contra), spread
 
@@ -91,7 +112,8 @@ def main():
 
     out, tally = [], collections.Counter()
     for (sym, qe, field), c in sorted(cells.items()):
-        d, need, nc, nx, spread = decide(c["ours"], c["obs"], qe, c["prov"])
+        ag, sp = tolerances(field, c["ours"])
+        d, need, nc, nx, spread = decide(c["ours"], c["obs"], qe, c["prov"], field, ag, sp)
         tally[d] += 1
         out.append({"sym": sym, "qe": qe, "field": field, "ours": c["ours"], "prov": c["prov"],
                     "decision": d, "quorum_needed": need, "n_confirm": nc, "n_contradict": nx,

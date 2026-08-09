@@ -94,6 +94,8 @@ def main():
 
     card = {"site": a.site, "precision": 2, "map": {}, "_derived": {}, "_pin": a.pin,
             "_comparable_rows": len(obs)}
+    if a.scale != 1.0:
+        card["scale"] = {"nsh": a.scale}     # carried into the diff engine, which applies it
 
     def search(field, rows):
         """Best subset of labels whose SUM reproduces our field over `rows`. None if unsupported."""

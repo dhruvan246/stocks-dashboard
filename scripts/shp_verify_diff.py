@@ -83,8 +83,12 @@ def num(v):
         return None
 
 
-def site_value(row_labels, labels):
-    """Sum the printed labels. Returns (value, missing_labels). Never zero-defaults."""
+def site_value(row_labels, labels, scale=1.0):
+    """Sum the printed labels, then apply the card's unit scale. Never zero-defaults.
+
+    `scale` exists because units differ across sites: StockEdge prints shareholder counts as
+    "No. of Shareholders (in Lacs)" = 46.52 where we store 4,651,863. Without it the engine
+    reported every one of those as a multi-million MISMATCH."""
     total, missing = 0.0, []
     for lab in labels:
         v = num(row_labels.get(lab))
@@ -94,7 +98,7 @@ def site_value(row_labels, labels):
             total += v
     if len(missing) == len(labels):
         return None, missing
-    return total, missing
+    return total * scale, missing
 
 
 def classify(delta, band_round, echoed):
@@ -121,6 +125,8 @@ def main():
     card = json.load(open(a.map, encoding="utf-8"))
     site = card["site"]
     band = round_band(card.get("precision", 2))
+    # per-field unit scale, e.g. {"nsh": 100000} for a site printing counts "in Lacs"
+    scales = card.get("scale", {}) or {}
     echo_sites = json.loads(gzip.open(a.prov).read())["_meta"]["echoes"] if a.prov else {}
 
     rows, tally = [], collections.Counter()
@@ -156,7 +162,7 @@ def main():
         for field, labels in fmap.items():
             if field not in SLOT:
                 continue
-            sval, missing = site_value(ext.get("rows", {}), labels)
+            sval, missing = site_value(ext.get("rows", {}), labels, float(scales.get(field, 1.0)))
             slot = SLOT[field]
             ours = ours_cell[slot] if len(ours_cell) > slot else None
             if sval is None:
