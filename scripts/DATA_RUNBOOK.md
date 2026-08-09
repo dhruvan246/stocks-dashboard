@@ -3820,6 +3820,21 @@ carrying `consolidated` ("Consolidated"/"Non-Consolidated") and, for ~2018+, the
 it once per company (`fill2020_tools/nse_list_harvest.py`, cache `scripts/_nselist/`), and it answers
 two different questions.
 
+⚠️ **THE CLASSIC INDEX STOPS AT DEC-2024** (found 2026-08-10) — SEBI's integrated-filing regime
+replaced it, and every company's rows simply end there. 2025+ quarters live under
+`/api/integrated-filing-results?index=equities&period=Quarterly&symbol=<SYM>` (rows carry `qe_Date`,
+per-basis `xbrl`/`ixbrl`/`pdf_attach`; basis vocabulary is "Consolidated"/"Standalone"). Two traps:
+the integrated XBRL instance holds ONLY the current quarter — zero comparative contexts, BANKING
+format included (verified TIMKEN Jun-26, INDUSINDBK Mar-24) — so comparative mining from XBRL is
+dead for 2025+; and `pdf_attach` is often the literal `corporate/null`, while the real results PDF
+sits on the corporate-announcements feed ("Outcome of Board Meeting"). `nse_list_harvest.py` now
+merges integrated rows into `_nselist/` in the classic shape, so the E-gates and `nse_xbrl_rev.py`
+see one continuous exchange record; a company that "has no rows" (ATHERENERG, listed May-2025) was
+just born after the classic index froze. First landed via the merged record: TMPV Mar-25 revC
+119503 (integrated con XBRL, owners-PAT anchor exact), ATHERENERG identity ×3 (std-only record,
+first con Jun-26), TIMKEN Jun-25 revC 822.18 (§58 year-ago column of the Jun-26 outcome PDF after
+both eras' XBRL routes measured empty).
+
 ### 54a. The XBRL is still served for quarters our cache never held — 150 cells
 sf_revop is built by re-parsing `_xbrl_cache`; a cell is empty mostly because the daily fetch missed
 that filing, NOT because no document exists. Download the listed XBRL, parse it with
