@@ -2833,6 +2833,13 @@ stay put (that exact drift shipped 2026-07-28); tables must cardify ≤640px wit
 
 **5. Cache.** Any changed `docs/*.js|css|html` asset ⇒ **bump the service-worker CACHE version**, or
 returning users keep running the old broken file (the Android SW cache even survives a reinstall).
+⚠️ **Read the CURRENT version off ORIGIN, never off your checkout** —
+`git show origin/main:docs/sw.js | grep '^const CACHE'`. An interactive checkout can be hundreds of CI
+commits stale, so "local v71 → bump to v72" can land a v72 that ORIGIN ALREADY SHIPPED with different
+content — same cache key, different bytes, and every warm browser is frozen on the old shell until the
+next bump. Caught before pushing on 2026-08-09 (checkout was 439 commits behind; origin was already v72).
+Same rule for any other monotonic counter in a tracked file (`sv=` page revs, `rev` cache keys —
+[[project-stocks-sf-cache-key-rev]]).
 
 **6. Verify LIVE after the push, not just locally.** `curl -s <live URL> | grep …` once Pages deploys
 (~1–3 min) — the browser pane is flaky for this. Data heals: re-check **~20 min later**, an in-flight
@@ -2851,6 +2858,7 @@ A named unverified corner costs one sentence; the same corner found by the user 
 | Live Picks / holdings anchored to `SF.end`, missing same-day filings & prices | **3** — verify vs real current data, not the baked snapshot |
 | backtest saved the same strategy twice | **2** — two writers of one record |
 | BSE feed merge silently dead in CI (top-level heavy import + `\|\| echo`) | **0** — import smoke test, no swallowed errors |
+| SW cache version bumped off a stale checkout, colliding with a version origin already shipped | **5** — read the current CACHE from `origin/main`, not the local file |
 
 ### If a bug ships anyway
 Fix the **class**, not just the instance: ask *"what check would have caught this?"* and add it to the
