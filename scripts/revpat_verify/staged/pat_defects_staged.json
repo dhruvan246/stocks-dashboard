@@ -1,0 +1,45 @@
+{
+ "_meta": {
+  "STATUS": "STAGED -- NOT APPLIED. No builder reads these files.",
+  "authorised": "user 2026-08-09: explicitly accepted FILING + 1 SITE for these cells, a deliberate relaxation of campaign rule 6b (which asks for the filing AND >=2 independent sites). Recorded per cell so the bar this was taken at is never lost.",
+  "tree_read_for_guards": "/Users/dhruvan/stocks-wt/revpat-verify",
+  "freeze": "heal freeze in force: SHP nsh reparse not landed and a second session is writing the same PAT stores",
+  "merge_into": "scripts/pat_defects.json",
+  "guard": "the applier must still match stored_pat before it writes"
+ },
+ "GICRE": {
+  "20250630": {
+   "stored_pat": 2172.77,
+   "correct_pat": 1752.23,
+   "defect": "standalone slot holds the CONSOLIDATED statement's PRE-ASSOCIATE PAT row; the standalone page's own PAT row is the correct value",
+   "source": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/2995f5a3-9a07-4636-b4ad-b26afead8823.pdf",
+   "unit_declared": "Amount in \u20b9 Lakhs (header, standalone page) \u2192 \u00f7100 for crore",
+   "column_anchor": "Same row's neighbouring columns on the SAME page reproduce our own stored std PAT EXACTLY: col (31/03/2025)=2,18,289 lakh=2182.89cr == stored npStd Mar-2025 (2182.89); col (30/06/2024)=1,03,636 lakh=1036.36cr == stored npStd Jun-2024 (1036.36). The target column (30/06/2025)=1,75,223 lakh=1752.23cr sits between two verified anchors on the same row.",
+   "second_check": "PBT\u2212tax=PAT holds in every column on the page (2,24,354\u221249,132=1,75,222\u2248175,223 rounding; 2,92,266\u221273,977=2,18,289 exact; 8,76,564\u22122,06,428=6,70,136 exact). ROOT CAUSE PROVEN: the SAME filing's CONSOLIDATED statement (page 18\u201319 of the PDF) shows row 27 \"Profit/(loss) after tax\" (pre-associates) = 2,17,277 lakh = 2172.77cr \u2014 an EXACT match to our mis-stored 'standalone' value \u2014 plus \"Share of Profit in Associates\" 35,782 = \"Profit for the year\" 2,53,059 lakh = 2530.59cr, which is exactly our stored (correct) CONSOLIDATED PAT. Our std slot was populated from the con statement's pre-associate PAT row, not the std statement's own PAT row.",
+   "confidence": "high",
+   "quorum": "user 2026-08-09: explicitly accepted FILING + 1 SITE for these cells, a deliberate relaxation of campaign rule 6b (which asks for the filing AND >=2 independent sites). Recorded per cell so the bar this was taken at is never lost."
+  },
+  "20250930": {
+   "stored_pat": 2698.01,
+   "correct_pat": 2866.79,
+   "defect": "standalone slot holds the CONSOLIDATED statement's PRE-ASSOCIATE PAT row; the standalone page's own PAT row is the correct value",
+   "source": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/4048b2b3-ec10-4538-8a41-878d65befe45.pdf",
+   "unit_declared": "Amount in \u20b9 Lakhs (header, standalone page) \u2192 \u00f7100 for crore",
+   "column_anchor": "The SAME row's (30/06/2025) comparator column = 1,75,223 lakh = 1752.23cr \u2014 an EXACT cross-filing match to the value independently established as the correct Jun-2025 standalone PAT in cell 1, filed 3 months apart in a DIFFERENT document. FY(31/03/2025) column = 6,70,136 lakh = 6701.36cr, again exactly matching the Jun-2025 filing's own FY column.",
+   "second_check": "H1 quarter-sum identity (the strongest available evidence per task brief): the filing's own printed YTD-to-30/09/2025 column for this row = 4,61,902 lakh; Q1(1,75,223) + Q2(2,86,679) = 4,61,902 lakh \u2014 EXACT. PBT\u2212tax=PAT also exact for the Sep-2025 column (3,47,276\u221260,597=2,86,679). ROOT CAUSE, same mechanism as cell 1: the SAME filing's CONSOLIDATED page shows pre-associate \"Profit/(loss) after tax\" for Sep-2025 = 2,69,801 lakh = 2698.01cr = our mis-stored 'standalone' value; + associates 17,553 = \"Profit for the year\" 2,87,354 lakh = 2873.54cr = our stored (correct) consolidated PAT.",
+   "confidence": "high",
+   "quorum": "user 2026-08-09: explicitly accepted FILING + 1 SITE for these cells, a deliberate relaxation of campaign rule 6b (which asks for the filing AND >=2 independent sites). Recorded per cell so the bar this was taken at is never lost."
+  },
+  "20241231": {
+   "stored_pat": 1623.43,
+   "correct_pat": 1621.35,
+   "defect": "standalone slot holds the CONSOLIDATED pre-associate PAT row (con pre-associate 1623.43 == our stored value); true standalone from the standalone page",
+   "source": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/03267167-0a76-4de7-b41c-b8067114ee3d.pdf",
+   "unit_declared": "Rs. in Lakhs except EPS (both std and con page headers) -> /100 for crore",
+   "column_anchor": "Standalone Annexure-1 row 27 'Profit / (loss) after tax', columns (31/12/2024)(30/09/2024)(31/12/2023)|YTD(31/12/2024)(31/12/2023)|FY(31/03/2024): 1,62,135 | 1,86,076 | 1,51,796 | 4,51,847 | 3,85,482 | 6,49,730. Comparators (30/09/2024)=1,86,076=1860.76cr and (31/12/2023)=1,51,796=1517.96cr both match already-stored values EXACTLY; FY-prior=6,49,730=6497.30cr matches sum of stored FY24 quarters (731.79+1605.09+1517.96+2642.48=6497.32) to within Rs0.02cr. THE SMOKING GUN: the SAME filing's consolidated page (Annexure-1, p.18) row 27 'Profit/(loss) after tax' (pre-associate) = 1,62,343 lakh = 1623.43cr - an EXACT match to our currently-stored 'standalone' value. Consolidated 'Share of Profit in Associates' = 5,318 lakh = 53.18cr; 'Profit for the year' = 1,67,662 lakh = 1676.62cr = our stored (correct) consolidated PAT exactly.",
+   "second_check": "9M-FY25 standalone YTD column (own page) = 4,51,847 lakh = 4518.47cr. Jun-2024(1036.36, stored/confirmed)+Sep-2024(1860.76, stored/confirmed)+this quarter TRUE value(1621.35) = 4518.47 - EXACT. Using the currently-stored (wrong) 1623.43 instead gives 4520.55, which does NOT match the filing's own printed 9M column - this decisively arbitrates in favour of 1621.35.",
+   "confidence": "high",
+   "quorum": "user 2026-08-09: explicitly accepted FILING + 1 SITE for these cells, a deliberate relaxation of campaign rule 6b (which asks for the filing AND >=2 independent sites). Recorded per cell so the bar this was taken at is never lost."
+  }
+ }
+}
