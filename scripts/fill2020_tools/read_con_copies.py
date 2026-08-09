@@ -1,0 +1,193 @@
+# -*- coding: utf-8 -*-
+"""Read the TRUE consolidated figure for every cell detect_con_copy flagged, from the filing.
+
+These are cells where our con slot holds a copy of the standalone value. Screener says the real
+consolidated figure differs, so it exists -- this goes and gets it from the company's own document
+rather than copying screener's rounded number.
+
+THE ANCHOR PROBLEM, and why this reader is different. Everywhere else in the campaign the column is
+identified by matching our stored value for that quarter (§58). Here that is impossible: the stored
+con value IS the defect. So the anchor is inverted --
+
+    screener's con figure for the TARGET quarter locates the column,
+    and a DIFFERENT column on the same rows must reproduce screener's con figure for ANOTHER
+    quarter at the same scale.
+
+One number can match by coincidence at three scales; two columns of the same row set matching two
+different quarters cannot. Screener is the search key, never the value written (§60e) -- what lands
+in the dataset is the filing's own figure, at filing precision.
+
+PDF NUMBER SPLITTING. Extraction often breaks "7,796.69" into "7796" and "69" as separate tokens,
+which is why an earlier attempt at TIMKEN found nothing at all. Adjacent numeric tokens closer than
+~4.5pt are re-joined with a decimal point before anything is parsed.
+
+Only pages whose own wording says consolidated are read (glyph-tolerant, and "non-consolidated" /
+"standalone" excluded), so a standalone page cannot be mistaken for the answer.
+
+  python -X utf8 scripts/fill2020_tools/read_con_copies.py [--limit N]
+"""
+import json
+import os
+import re
+import sys
+import time
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+SCRIPTS = os.path.dirname(HERE)
+ROOT = os.path.dirname(SCRIPTS)
+sys.path.insert(0, SCRIPTS)
+sys.path.insert(0, HERE)
+import universal_read as U                                        # noqa: E402
+import date_columns as DC                                         # noqa: E402
+import screener_fetch as SF                                       # noqa: E402
+import build_targets as BT                                        # noqa: E402
+import fitz                                                       # noqa: E402
+
+NUM = re.compile(r"^\(?-?[\d,]+\.?\d*\)?$")
+REV_RE = re.compile(r"revenue\s+fr[o0]m\s+[o0]pera|t[o0]tal\s+inc[o0]me\s+fr[o0]m\s+[o0]pera|"
+                    r"revenue\s+fr[o0]m\s+c[o0]ntracts|inc[o0]me\s+fr[o0]m\s+[o0]pera|net\s+sales", re.I)
+PAT_RE = re.compile(r"net\s+pr[o0][fl]i?[lt]\s+a[fl]ter\s+tax|pr[o0][fl]i?[lt]\s+a[fl]ter\s+tax|"
+                    r"[o0]wners?\s+[o0]f\s+the\s+(c[o0]mpan|parent)|"
+                    r"pr[o0][fl]i?[lt](?:\s*/\s*\(?l[o0]ss\)?)?\s+f[o0]r\s+the\s+(peri[o0]d|quarter|year)", re.I)
+OUT = "/tmp/con_copy_reads.json"
+
+
+def _val(w):
+    w = w.strip()
+    neg = w.startswith("(")
+    w = w.strip("()").replace(",", "")
+    if not w or w in ("-", "."):
+        return None
+    try:
+        return -float(w) if neg else float(w)
+    except ValueError:
+        return None
+
+
+def page_rows(page, ytol=3.0):
+    """[(label, [(x_right, value)])] with split numbers re-joined."""
+    L = {}
+    for x0, y0, x1, y1, w, *_ in page.get_text("words"):
+        L.setdefault(round(y0 / ytol), []).append((x0, x1, w))
+    out = []
+    for k in sorted(L):
+        t = sorted(L[k], key=lambda z: z[0])
+        merged, i = [], 0
+        while i < len(t):
+            x0, x1, w = t[i]
+            # "7796" + "69" printed 4pt apart is one number, not two
+            if NUM.match(w) and "." not in w and i + 1 < len(t) \
+               and NUM.match(t[i + 1][2]) and t[i + 1][0] - x1 < 4.5:
+                w = w + "." + t[i + 1][2]
+                x1 = t[i + 1][1]
+                i += 1
+            merged.append((x0, x1, w))
+            i += 1
+        lab = " ".join(w for _a, _b, w in merged if _val(w) is None).strip()
+        nums = [(x1, _val(w)) for _a, x1, w in merged if _val(w) is not None]
+        if nums:
+            out.append((lab, nums))
+    return out
+
+
+def main():
+    limit = int(sys.argv[sys.argv.index("--limit") + 1]) if "--limit" in sys.argv else 10 ** 9
+    flagged = json.load(open("/tmp/con_copy2.json"))
+    scrips = BT.scrip_map()
+    done = json.load(open(OUT)) if os.path.exists(OUT) else {}
+
+    # group by company so each screener series is fetched once
+    by_sym = {}
+    for b in flagged:
+        by_sym.setdefault(b["sym"], []).append(b)
+
+    n = 0
+    for sym, cells in sorted(by_sym.items()):
+        if n >= limit:
+            break
+        scrip = scrips.get(sym.upper())
+        if not scrip:
+            continue
+        try:
+            scon = SF.quarters(sym, con=True)
+        except Exception:
+            continue
+        lab_r = next((L for L in ("Sales", "Revenue") if any(L in r for r in scon.values())), None)
+        # every screener con quarter, as {qe: (rev, pat)} -- the confirmation pool
+        pool = {}
+        for dk, row in (scon or {}).items():
+            pool[int(dk.replace("-", ""))] = (row.get(lab_r), row.get("Net Profit"))
+
+        for b in cells:
+            key = "%s|%d|%s" % (sym, b["qe"], b["field"])
+            if key in done:
+                continue
+            n += 1
+            want = b["screener_con"]
+            is_rev = b["field"] == "revC"
+            got = None
+            # the quarter's own filing, then the next one, then the next year's
+            for tag, a, bb in U.windows(b["qe"], None):
+                fils, sess, err = U.filings(scrip, a, bb)
+                for _d, url, _s2 in (fils or [])[:4]:
+                    raw, _ = U.BRG.cached_pdf(sess, url)
+                    if not raw:
+                        continue
+                    try:
+                        doc = fitz.open(stream=raw, filetype="pdf")
+                    except Exception:
+                        continue
+                    for pi in range(len(doc)):
+                        pg = doc[pi]
+                        if len(pg.get_text().strip()) < 400 or DC.page_basis(pg) != "con":
+                            continue
+                        rows = page_rows(pg)
+                        tgt = [r for r in rows if (REV_RE if is_rev else PAT_RE).search(r[0])]
+                        for lab, nums in tgt:
+                            for x, v in nums:
+                                for sc in (1.0, 10.0, 100.0):
+                                    if abs(v / sc - want) > max(0.6, abs(want) * 0.012):
+                                        continue
+                                    # CONFIRM: another column, another screener con quarter
+                                    conf = None
+                                    for q2, (r2, p2) in pool.items():
+                                        t2 = r2 if is_rev else p2
+                                        if q2 == b["qe"] or t2 is None:
+                                            continue
+                                        for x2, w in nums:
+                                            if abs(x2 - x) > 14 and \
+                                               abs(w / sc - t2) <= max(0.6, abs(t2) * 0.012):
+                                                conf = "col x=%.0f == screener con %s for %d" % (x2, t2, q2)
+                                                break
+                                        if conf:
+                                            break
+                                    if conf:
+                                        got = {"value": round(v / sc, 2), "scale": sc, "page": pi,
+                                               "row": lab[:44], "confirm": conf, "window": tag,
+                                               "doc": url.split("/")[-1][:30],
+                                               "screener": want, "was": b["our"]}
+                                        break
+                                if got:
+                                    break
+                            if got:
+                                break
+                        if got:
+                            break
+                    doc.close()
+                    if got:
+                        break
+                if got:
+                    break
+                time.sleep(0.3)
+            done[key] = got or {"value": None, "why": "no confirmed consolidated column found",
+                                "screener": want, "was": b["our"]}
+            json.dump(done, open(OUT, "w"), indent=1)
+            print("  %-26s %s" % (key, ("= %-10s (was %s) %s" % (got["value"], b["our"], got["confirm"][:40]))
+                                  if got else "NOT FOUND"))
+
+    ok = sum(1 for v in done.values() if v.get("value") is not None)
+    print("\nread %d of %d flagged cells -> %s" % (ok, len(done), OUT))
+
+
+if __name__ == "__main__":
+    main()
