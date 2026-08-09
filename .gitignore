@@ -32,6 +32,9 @@ _strag_*
 !scripts/_shp_scripcode_override.json
 # parse_shp regression harness — old vs new parser on the same bytes, keep it runnable
 !scripts/_shp_anchor_regression.py
+# nsh-fill merger: the stock stage-merger drops same-submission-date enrichments,
+# so this surgical one must ship alongside it
+!scripts/_shp_merge_nsh.py
 
 # One-off backfill/scratch scripts swept out of the way (never tracked)
 scripts/archive/
