@@ -5316,6 +5316,38 @@ figures into row captions), BANCOINDIA 2019-03 (nothing anchors on two stored ne
 SUBCAPCITY 2021-03 (no BSE listing, §71f).
 
 
+### 71j. ★★★ TWO ATTRIBUTION BLOCKS ON ONE PAGE — the mirror was holding TCI, not PAT
+AXISCADES 2018-12 kept failing `owners + NCI == total` (1.59 + 0.11 against −0.61). Dumping the
+WHOLE profit block instead of only the matched rows showed why: the page carries **two attribution
+blocks**, and the reader was pairing rows across them.
+
+```
+IX. PROFIT/(LOSS) AFTER TAX        Dec-18  -0.61     <- total PAT
+    Owners of the Company                  -0.73     <- PROFIT attribution
+    Non controlling interest                0.11
+X.  Other Comprehensive Income     Dec-18   2.31
+    (total comprehensive income)            1.70     = -0.61 + 2.31
+    Owners of the Company                   1.59     <- TCI attribution
+    Non controlling interest                0.11
+```
+
+**sf_revop's 1.59 was total-comprehensive-income attributable to owners — not PAT at all.** The
+owners PAT is **−0.73**: `-0.61 − 0.11 = −0.72` against a printed −0.73 (lakh→crore rounding), and
+the FY19 column closes exactly, `−7.67 − 0.46 = −8.13` as printed. Corrected.
+
+**Take the FIRST owners/NCI pair after the post-tax line, and verify it against that line.** A
+statement prints owners twice — once for profit, once for total comprehensive income — and they are
+several rupees apart. An identity that "fails" may just mean the two rows came from different
+blocks. When a reader reports a failing identity, dump the whole block before believing the failure.
+
+**BANCOINDIA 2019-03 remains unreadable**, and now with a specific reason rather than "no profit
+row": all four windows were swept and **no consolidated P&L table exists as a text layer in any
+fetched PDF** — the own filing's consolidated pages are a BALANCE SHEET and two auditors' reports,
+Q+1 and Q+4 carry only auditor narrative. Its XBRL gives total 4.87 and owners 14.00 but **no NCI
+tag**, so the implied −9.13 split is arithmetically possible and wholly unconfirmed; screener has no
+coverage. It needs a different attachment or a vision read.
+
+
 ## 72. ★★★ VERIFYING REV/PAT vs EXTERNAL SITES — the sites can only reach 10 of our 95 quarters  (campaign 2026-08-09)
 
 Full write-up `scripts/REVPAT_VERIFY_REPORT.md`; plan `REVPAT_VERIFY_CAMPAIGN.md`; phase findings and
