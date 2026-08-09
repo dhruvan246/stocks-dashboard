@@ -33,26 +33,20 @@
   "was": 579.26
  },
  "ACUTAAS|20230630|revC": {
-  "applied": "2026-08-09",
-  "confirm": "col x=266 == screener con 172.0 for 20230930",
-  "now": 153.72,
-  "page": 8,
-  "reason": "con slot held a copy of standalone; value read from the filing's own consolidated page",
-  "row": "Revenue From Operations",
-  "screener": 154.0,
-  "src": "d1b80a28-4507-4647-87c7-a3e37b",
-  "was": 142.35
+  "readjudicated": "2026-08-09",
+  "value": 142.35,
+  "was_healed_to": 153.72,
+  "original": 142.35,
+  "reason": "restatement, not a copy: the own Jun-2023 filing and its XBRL both print 142.35 (Total income 143.45); 153.72 is only the Sep-2023 filing's restated comparative. con==std was legitimate before Tanfac was consolidated.",
+  "route": "BSE announcement stream (\u00a758 rung 3)"
  },
  "ATUL|20230630|patC": {
-  "applied": "2026-08-09",
-  "confirm": "col x=700 == screener con 164.0 for 20251231",
-  "now": 102.05,
-  "page": 4,
-  "reason": "con slot held a copy of standalone; value read from the filing's own consolidated page",
-  "row": "Profit for the period",
-  "screener": 102.0,
-  "src": "9a1d7f02-cb79-4144-89f4-01b8a1",
-  "was": 96.58
+  "readjudicated": "2026-08-09",
+  "value": 103.35,
+  "was_healed_to": 102.05,
+  "original": 96.58,
+  "reason": "the heal wrote the TOTAL. Filing: owners 103.35 + NCI -1.30 = 102.05 exactly, at the Jun-2023 column, on two documents. We store owners-attributable.",
+  "route": "BSE announcement stream (\u00a758 rung 3)"
  },
  "IDFCFIRSTB|20230630|patC": {
   "applied": "2026-08-09",

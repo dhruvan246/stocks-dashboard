@@ -4764,3 +4764,52 @@ of a PDF reader over that window is measuring transport, not reading.
   If confirmed these are con slots holding TOTAL PAT on an owners-attributable series (§53c, repair
   via §2b). Do not bulk-correct off this: it is two documents, and §59's audit found the equal-runs
   screen overwhelmingly genuine.
+
+
+---
+
+## 67. ★★★ RE-ADJUDICATING THE CON-COPY HEALS — 4 of 18 were wrong, all the same way  (2026-08-09)
+
+Every active con-copy heal was re-read from the **BSE announcement stream** (§58 rung 3) after
+TATACOFFEE turned out to be a basis regression and it emerged that only ONE of the 18 had ever been
+independently checkable. Verdicts per cell: `scripts/_con_copy_readjudication.json`.
+
+**12 confirmed · 2 corrected · 2 escalated · 2 immaterial-gap.** With TATACOFFEE that is **4 wrong
+of 18 (22%)**, and every failure is the same family — *the heal wrote a real number from the real
+filing that is not the number our convention stores*:
+
+| cell | wrote | should be | why |
+|---|---|---|---|
+| TATACOFFEE 2022-12 | 38.40 total | 26.63 owners | owners + NCI = total |
+| ATUL 2023-06 | 102.05 total | **103.35 owners** | owners 103.35 + NCI −1.30 = 102.05 exactly |
+| KIRLFER 2023-06 | 92.92 total | 74.01 owners | total 92.93 − minority 18.92 (escalated, see below) |
+| ACUTAAS 2023-06 | 153.72 restated | **142.35 as-reported** | own filing + its XBRL both say 142.35 |
+
+Root cause was one line of reasoning in `read_con_copies`: it anchored on **screener, which quotes
+TOTAL PAT**, and then wrote whichever row matched. The column was almost always right; the ROW was
+wrong. Fixed — screener now only locates the column, and the value is read off the OWNERS row.
+
+### 67a. Two false-positive classes the tripwire cannot see by itself
+* **Owners-vs-total** (§65f): a company whose owners-basis con PAT coincidentally equals its
+  standalone satisfies "ours con == std" while screener's total differs. TATACOFFEE.
+* **Legitimate con == std, later restated.** ACUTAAS had not yet consolidated Tanfac in Jun-2023, so
+  con == std was CORRECT then; the Sep-2023 filing restated the comparative to 153.72. Adopting a
+  restated comparative into an as-reported series also silently mixes bases (§40b). **Before
+  believing a flag, ask whether the company consolidated anything that quarter.**
+
+### 67b. A MIXED-CONVENTION series cannot be repaired two cells at a time
+KIRLFER stores **owners** at 2023-03 (88.22) and 2022-06 (93.56) but a **total** at 2024-03 (92.92);
+ATUL stores a total at 2023-03 (92.21, owners 93.56) and owners at 2022-06 (164.52). Correcting one
+cell inside such a series makes it locally right and globally no more consistent. KIRLFER is
+escalated untouched — its Jun-2024 statement has no minority line at all and restates Jun-2023 from
+92.93 to 17.73. **Test the convention on the company's OWN neighbouring quarters before writing**;
+that single check is what settled ATUL and stopped KIRLFER.
+
+### 67c. Do not re-automate the column placement naively
+The first pass at automatic adjudication assumed columns step one quarter per column. Statements
+print **[current Q, preceding Q, YEAR-AGO Q, YTD, FY]**, so it mis-placed nearly everything and
+"corrected" AADHARHFC to its own YTD columns (1221.97, 1895.02). Those verdicts were thrown away and
+all 17 cells adjudicated by hand off an evidence dump. **The cumulative columns are the trap** — and
+they are also the best confirmation available when read deliberately: AADHARHFC's three cells were
+each locked by an exact identity (H1 1221.97 = 628.55 + 593.42; 9M 1895.02 = 673.05 + 628.55 +
+593.42), which is far stronger evidence than any single-column match.

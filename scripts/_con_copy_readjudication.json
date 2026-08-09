@@ -1,0 +1,101 @@
+{
+ "_README": [
+  "Re-adjudication of every active con_copy heal against the PRIMARY RECORD (BSE announcement",
+  "stream, runbook §58 rung 3), 2026-08-09, at the user's request. The trigger: only ONE of the 18",
+  "heals had ever been independently checkable (against a cached XBRL) and that one -- TATACOFFEE",
+  "-- was wrong. So all 17 remaining were re-read from the filings.",
+  "",
+  "RESULT: 12 confirmed, 2 corrected, 2 escalated, 1 pair left alone as immaterial.",
+  "With TATACOFFEE that is 4 wrong of 18 (22%), and EVERY failure is the same family --",
+  "the heal took a number that was not the one our convention stores:",
+  "   * TOTAL PAT written where we store OWNERS-attributable   (TATACOFFEE, ATUL, KIRLFER)",
+  "   * a RESTATED comparative written where we store AS-REPORTED (ACUTAAS)",
+  "Root cause was in read_con_copies: it anchored on screener (which quotes TOTAL PAT) and wrote",
+  "whichever row matched. Fixed 2026-08-09 -- screener now only locates the COLUMN and the value",
+  "is read off the OWNERS row.",
+  "",
+  "METHOD NOTE, because it nearly went wrong again: the first pass at automatic column placement",
+  "assumed columns step one quarter per column. Real statements print [current Q, preceding Q,",
+  "YEAR-AGO Q, YTD, FY], so it mis-placed almost everything -- it 'corrected' AADHARHFC to its own",
+  "YTD columns (1221.97, 1895.02). Those verdicts were discarded and every cell was adjudicated by",
+  "hand off an evidence dump. Do not re-automate this without solving column placement properly."
+ ],
+ "generated": "2026-08-09",
+ "verdicts": {
+  "AADHARHFC|20230630|revC": {
+   "verdict": "CONFIRMED",
+   "evidence": "Jun-2024 filing, con page: columns anchored by stored revC Jun-24 713.14 and Mar-24 691.79; the year-ago column is 593.42."
+  },
+  "AADHARHFC|20230930|revC": {
+   "verdict": "CONFIRMED",
+   "evidence": "Sep-2024 filing: H1 FY24 column prints 1221.97 = 628.55 + 593.42 EXACTLY."
+  },
+  "AADHARHFC|20231231|revC": {
+   "verdict": "CONFIRMED",
+   "evidence": "Dec-2024 filing: 9M FY24 column prints 1895.02 = 673.05 + 628.55 + 593.42 EXACTLY."
+  },
+  "IDFCFIRSTB|20230630|patC": {
+   "verdict": "CONFIRMED",
+   "evidence": "Sep-2023 filing: H1 FY24 prints 1478.36 = 746.85 + 731.51 EXACTLY (lakh/100). Bank, no NCI split, so total == owners."
+  },
+  "TIMKEN|20241231|patC": {
+   "verdict": "CONFIRMED",
+   "evidence": "Dec-2025 filing con page: same PAT row reproduces stored con PAT 54.56 (Dec-25) and 93.60 (Sep-25); PBT 1029.79 - tax 247.71 = 782.08 (/10 = 78.21); the printed token is glyph-corrupt ('782.0J')."
+  },
+  "TIMKEN|20241231|revC": {
+   "verdict": "CONFIRMED",
+   "evidence": "Same page, revenue row: x-anchored by stored revC Dec-25 779.67 and Sep-25 786.35; Dec-24 column 6833.5/10 = 683.35."
+  },
+  "TIMKEN|20250331|patC": {
+   "verdict": "CONFIRMED",
+   "evidence": "Mar-2026 filing p16, header dates 20260331/20251231/20250331; Dec-25 column reproduces stored 54.56; Mar-25 column 1903.07/10 = 190.31."
+  },
+  "TIMKEN|20250331|revC": {
+   "verdict": "CONFIRMED",
+   "evidence": "Same page, revenue row: Mar-25 column 9514.57/10 = 951.46 (Dec-25 column 7796.69/10 = 779.67 matches stored)."
+  },
+  "TIMKEN|20250630|patC": {
+   "verdict": "CONFIRMED",
+   "evidence": "Dec-2025 filing 9M FY26 = 256.58 = 54.56 + 93.60 + 108.42; the two subtrahends both reproduce stored con PAT."
+  },
+  "TIMKEN|20250930|patC": {
+   "verdict": "CONFIRMED",
+   "evidence": "Dec-2025 filing, Sep-25 column 93.60, layout anchored by the un-healed Dec-25 column 54.56."
+  },
+  "TIMKEN|20250930|revC": {
+   "verdict": "CONFIRMED",
+   "evidence": "Same page, Sep-25 revenue column 786.35, anchored by Dec-25 779.67."
+  },
+  "SPICEJET|20240630|patC": {
+   "verdict": "CONFIRMED (column)",
+   "evidence": "Jun-2024 filing p8 (million/10), header dates 20240630/20240331/20230630: Jun-24 column 158.19; Mar-24 126.87 and Jun-23 197.62 both reproduce stored values.",
+   "note": "The page also prints NCI -0.13, so the strict OWNERS figure is 158.32. Difference 0.13 cr (0.08%) -- immaterial, and no clean owners row was extractable. Left as-is."
+  },
+  "SPICEJET|20250331|patC": {
+   "verdict": "CONFIRMED (column)",
+   "evidence": "Mar-2025 filing p17, header dates 20250331/20241231/20240331: Mar-25 column 3417.37/10 = 341.74; the Mar-24 column 1268.74/10 = 126.87 matches the value confirmed above.",
+   "note": "NCI -0.152 cr, so strict owners is 341.89. Difference 0.15 cr -- immaterial. Left as-is."
+  },
+  "ACUTAAS|20230630|revC": {
+   "verdict": "CORRECTED 153.72 -> 142.35",
+   "evidence": "The OWN Jun-2023 filing's con page prints 142.35 (Total income 143.45) and the con XBRL says RevenueFromOperations 142.35 / TotalIncome 143.45. 153.72 exists only as the Sep-2023 filing's RESTATED comparative (H1 there = 172.36 + 153.72 = 326.08).",
+   "why_flagged": "con == std was LEGITIMATE in Jun-2023 -- Tanfac was not yet consolidated. Tripwire false positive."
+  },
+  "ATUL|20230630|patC": {
+   "verdict": "CORRECTED 102.05 -> 103.35",
+   "evidence": "Jun-2023 filing con page, Jun-23 column: owners 103.35 + NCI (-1.30) = 102.05 = the post-tax line, exactly. Reproduced on the Sep-2023 filing's comparative column.",
+   "why_flagged": "the heal wrote the TOTAL where we store owners-attributable.",
+   "spillover": "ATUL 2023-03-31 stores 92.21, that quarter's TOTAL (owners 93.56) -- a pre-existing defect OUTSIDE this batch, reported not changed."
+  },
+  "KIRLFER|20230630|patC": {
+   "verdict": "ESCALATED - do not write",
+   "evidence": "Jun-2023 filing con page: 'Profit for the period (7.-8)' Jun-23 = 92.93, 'Minority Interest' = 18.92, no owners line, associates NA => owners = 74.01 (§53). The heal wrote 92.92, i.e. the TOTAL.",
+   "why_not_written": "KIRLFER's stored con series MIXES conventions: 2023-03-31 (88.22) and 2022-06-30 (93.56) are owners, but 2024-03-31 (92.92) is a total. Fixing two cells inside an internally inconsistent series would not make it right. Needs a decision about the whole series."
+  },
+  "KIRLFER|20240630|patC": {
+   "verdict": "ESCALATED - do not write",
+   "evidence": "Jun-2024 filing con page: Jun-24 total 69.75 (also confirmed in the Jun-2025 filing's comparative). That statement has NO minority-interest line at all, and it RESTATES Jun-2023 to 17.73 against the 92.93 the Jun-2023 filing itself printed.",
+   "why_not_written": "same mixed-basis series, plus heavy restatement across filings. KIRLFER is the documented mixed-basis carve-out."
+  }
+ }
+}
