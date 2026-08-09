@@ -1,5 +1,5 @@
 {
-  "_note": "(symbol, quarter-end) pairs where NO shareholding pattern was ever filed, so the cell is not a coverage gap. Excluded from the DENOMINATOR by audit_shp_coverage.py. Every entry needs measured evidence (absent at BOTH exchanges), never an assumption — a cell we simply failed to fetch belongs in scripts/_shp_bse_absent.json instead, which stays IN the denominator.",
+  "_note": "(symbol, quarter-end) pairs where NO shareholding pattern was ever filed, so the cell is not a coverage gap. Excluded from the DENOMINATOR by audit_shp_coverage.py. Every entry needs measured evidence (absent at BOTH exchanges), never an assumption \u2014 a cell we simply failed to fetch belongs in scripts/_shp_bse_absent.json instead, which stays IN the denominator.",
   "_added": "2026-08-07",
   "cells": {
     "IDFC": {
@@ -7,6 +7,9 @@
     },
     "TV18BRDCST": {
       "2024-09-30": "no row in NSE's SHP master for the quarter and no BSE filing; TV18 Broadcast amalgamated into Network18 in the Nov-2024 scheme. Confirmed absent at both exchanges 2026-08-07."
+    },
+    "CAPF": {
+      "2018-12-31": "no filing was ever made \u2014 Capital First amalgamated into IDFC Bank effective 18-Dec-2018 (IDFC First Bank press release; 31-Dec-2018 was only the share-conversion record date), so the entity did not survive to the quarter end. BSE's own SHP quarter list for scripcode 532938 ends at September 2018. Confirmed 2026-08-09."
     }
   }
 }
