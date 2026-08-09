@@ -5225,6 +5225,34 @@ found 23 candidates and was right about 6. At a ~26% hit rate it is a fine *sear
 terrible *verdict* — every one of the 23 still needed an outside source before anything was written.
 
 
+### 71h. ★★★ THE BLANKET RESYNC WROTE ONE WRONG VALUE — and the caveat is what caught it
+§71g resynced 16 cells mirror←authoritative on a structural argument, recorded 7 of them as
+"resynced but not verified" in `_fund_unconfirmed_cells.json`, and said plainly that *no longer
+divergent is not verified*. Going to the documents proved that caveat earned its keep:
+
+**3IINFOLTD 2025-12-31 was a REGRESSION I introduced.** Its own Dec-2025 filing (p7, lakhs) prints,
+at the Dec-25 column, period **208** and non-controlling **−5** — owners **213**. The XBRL agrees and
+its identity *closes*: `owners 2.14 + NCI −0.05 = total 2.09`. We store OWNERS, so **2.14** is the
+value; the resync wrote the TOTAL 2.09, because "sf_fundamentals is authoritative" is a statement
+about which FILE to trust, not about which BASIS the file happens to hold. Corrected to 2.14.
+
+**DELTAMAGNT 2022-03-31 confirmed at −0.12** — row XI "Profit/(loss) for the period/year" is
+−12.21 lakh in the own filing, and the Q+1 filing prints −0.12 in its Mar-22 column. NCI nil, so
+owners == total.
+
+**The rule this yields:** a resync is safe for *consistency* and unsafe as a *verdict on basis*.
+Before resyncing a cell, check whether the filing carries an owners/NCI split — where it does and
+the identity closes, the mirror may be holding the correct owners figure and the authoritative file
+the total. §71g's own screen (screener == fundamentals in 9, mirror in 0) could not see this,
+because screener quotes TOTAL and therefore agrees with the total by construction.
+
+Five remain genuinely unreadable and are still listed, each with its reason: AXISCADES 2018-12
+(OCR absorbs values into row captions — "(2,290.o4)" and "(1.263.51)" appear inside labels, so the
+columns are incomplete and owners 1.59 + NCI 0.11 will not reconcile to the −0.61 after-tax line);
+ARIHANTCAP 2026-03 and IRB 2020-09 (no header row places the target quarter); BANCOINDIA 2019-03
+(no consolidated page with a profit block in any fetched PDF); SUBCAPCITY 2021-03 (§71f).
+
+
 ## 72. ★★★ VERIFYING REV/PAT vs EXTERNAL SITES — the sites can only reach 10 of our 95 quarters  (campaign 2026-08-09)
 
 Full write-up `scripts/REVPAT_VERIFY_REPORT.md`; plan `REVPAT_VERIFY_CAMPAIGN.md`; phase findings and
