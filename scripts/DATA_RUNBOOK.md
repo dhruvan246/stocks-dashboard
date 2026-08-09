@@ -4871,3 +4871,53 @@ Sep-2023's own token is split by extraction, so its total came from the H1 ident
   invisible to it. **A clean tripwire run says nothing about convention consistency.**
 
 Ledger: `scripts/kirlfer_con_series.json` (per quarter: total, minority, owners, prior value, why).
+
+
+---
+
+## 69. ★★ THREE MORE OWNERS-vs-TOTAL SERIES — ATUL, SADBHAV, RENUKA  (2026-08-09)
+
+Three cells were named as suspects (SADBHAV Jun-19, RENUKA Sep-19, ATUL Mar-23). **All three turned
+out to be series that mix owners with TOTAL**, exactly like KIRLFER (§68), so each was repaired
+across its window — 9 cells. Ledger: `scripts/owners_basis_heals.json`.
+
+| | corrected |
+|---|---|
+| ATUL | Mar-22 136.58→**136.26** · Dec-22 136.87→**105.10** · Mar-23 92.21→**93.56** · Mar-24 74.90→**58.41** |
+| SADBHAV | Jun-19 −30.05→**−8.07** · Sep-19 −39.89→**−15.94** |
+| RENUKA | Sep-19 2739.6→**2817.9** · Mar-20 −145.2→**−146.0** · Jun-20 −35.3→**−34.9** |
+
+Each is `period − non-controlling interest` at the target column of the quarter's OWN filing, and
+each window closes on a printed OWNERS subtotal:
+```
+ATUL FY23  164.52 + 150.91 + 105.10 + 93.56 = 514.09   (printed) EXACT
+ATUL FY24  103.35 +  90.32 +  70.94 + 58.41 = 323.02   (printed) EXACT
+SADBHAV H1FY20      -15.94 +  -8.07         = -24.01   (printed) EXACT
+RENUKA FY20 -364.2 + 2817.9 + -208.6 + -146.0 = 2099.1 vs printed 2099.2
+```
+
+### 69a. Two cells held numbers belonging to NO basis
+ATUL Dec-22 stored **136.87** and Mar-24 stored **74.90** — neither the period nor the owners figure
+for those quarters. This is the same shape as KIRLFER's Sep-24 (which held Sep-2025's *standalone*).
+**A wrong con cell is not always the other basis; sometimes it is a stray number.** Do not assume
+the defect is total-vs-owners just because that is the common case — read the page.
+
+### 69b. ★ sf_fundamentals and sf_revop CAN DISAGREE — check both
+The applier's guard caught it: ATUL's `sf_revop` patC held **−105.24** at Mar-23 (an
+equity-attribution figure off the filing's page 10) while `sf_fundamentals` held 92.21. **They
+disagree at six ATUL quarters** — and at Mar-24 `sf_revop` already had the CORRECT 58.41 while
+fundamentals had 74.90, so neither file is reliably the good one. SADBHAV and RENUKA each diverge
+at one quarter too (Dec-2020).
+**Verify a con-PAT cell in BOTH files, and write both.** A fix applied to one is half a fix, and a
+comparison of the two is a free defect detector nobody was running.
+
+### 69c. A huge value is not automatically a scale error
+RENUKA Sep-2019's 2,739.6 cr sits wildly outside a series that otherwise runs −400 to +70, which
+looks exactly like a 10^k slip. It is real: the quarter carries a very large one-off, the same row
+prints H1 FY20 2327.9 = 2739.6 + (−411.7), and the FY20 owners subtotal closes on it. **Check the
+page's own arithmetic before reaching for `scale_fix`.**
+
+**Not changed, still suspect:** ATUL 2021-06-30 (stored 165.15; the FY22 owners subtotal 604.26
+implies 165.94) and SADBHAV 2020-03-31 (stored 886.63 against a standalone of 8.18 — wildly out of
+family, and no P&L page was located in that filing). Also open: the four remaining ATUL and one each
+SADBHAV/RENUKA fund-vs-revop divergences listed above.
