@@ -84,17 +84,36 @@ CUMMINSIND Jun-2022 `nsh`, ours 109,068 vs BSE 109,067 — **one shareholder**, 
 That closes the question the campaign was set up to answer for the era retail sites cannot reach.
 For Jun-2016 → date, our FII/DII data agrees with both exchanges' own documents.
 
-## 6. The null-`filing_date_time` theory — measured, and it is WEAK
+## 6. The null-`filing_date_time` theory — measured twice, and it is a WEAK SIGNAL
 
 P1 flagged BSE rows with a null `filing_date_time` as the leading root-cause candidate for our
-2,344 internal holes, on the strength of one case (MCX Mar-2017). Now measured across the sample:
-**43 null-date rows exist, and only 6 correspond to a cell we do not hold.** The other 37 we hold
-perfectly well. So a null filing date does NOT predict a missing cell, and it should not be
-treated as the explanation.
+2,344 internal holes, on the strength of one case (MCX Mar-2017). The completed cross-exchange
+leg (589 rows, 61 symbols) settles it:
 
-The 6 that do line up are still real and fillable: MCX 2017-03-31 (fii 22.34 / dii 36.51),
-ABBOTINDIA 2018-09-30, BHANDARI 2018-03-31 / 2018-12-31 / 2019-03-31, DENORA 2018-06-30.
-Plus 59 further cells where BSE holds a quarter we do not.
+| BSE rows | count | of which are cells WE LACK |
+|---|---|---|
+| null `filing_date_time` | 51 | **8 (15.7%)** |
+| dated normally | 538 | **19 (3.5%)** |
 
-Stated plainly because it was my hypothesis and it did not survive contact with the data: the
-cause of the 2,344 holes is still **unknown**, and P3b must diagnose it rather than assume this.
+So a null date IS enriched on holes — **4.4x** — but it is **not the cause**: 43 of the 51 nulls
+sit on cells we hold perfectly well, and 19 holes have a perfectly good filing date. It explains
+8 of the 27 holes in this sample, under a third.
+
+The 8 it does explain are real and fillable: MCX 2017-03-31, ABBOTINDIA 2018-09-30, BHANDARI
+2018-03-31 / 2018-12-31 / 2019-03-31, DENORA 2018-06-30, NIACL 2018-06-30, TARIL 2018-06-30.
+
+Stated plainly because it was my hypothesis and it did not survive contact with the data: **the
+cause of the 2,344 holes remains unknown.** P3b must diagnose it, not inherit this. Treat a null
+date as one useful predictor among others, never as the explanation.
+
+## 7. Two anomalies the exchange leg surfaced
+
+- **BHANDARI: 11 of 11 BSE filings unparseable**, on the corrected parser, plus 12 holes in our own
+  history for it. Not the `mf` bug. A micro-cap whose filings `parse_shp` will not anchor at all —
+  a coherent single-symbol story worth its own look, not a systemic defect.
+- **SUNDARMFIN has filed nothing to BSE since 2022-03-31**, so BSE cannot corroborate its last ~4
+  years at all; and its 2021-06-30 document is listed by BSE's own master but **404s on BSE's own
+  server**. A source-side integrity problem, not ours.
+- Also worth recording: the agent re-fetched and re-parsed the 139 rows it had written before the
+  parser correction, and **42 `mf` values changed from 0.00 to a real number**. The stale-checkout
+  error would have propagated into this dataset had it gone unnoticed.

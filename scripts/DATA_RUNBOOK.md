@@ -2024,8 +2024,9 @@ Full write-up: `scripts/SHP_VERIFY_REPORT.md`; plan `SHP_VERIFY_CAMPAIGN.md`; pe
   via the §22b staging file** (~12k fetches; never alongside other sweeps, never as a 2nd writer
   against the 12:40/20:40 CI job).
 - **★ THE 2,344 INTERNAL HOLES HAVE NO DIAGNOSED CAUSE.** The null-`filing_date_time` theory was
-  MEASURED AND FAILED: 43 null-date rows in the sample, only 6 correspond to a cell we lack.
-  Diagnose before assuming.
+  measured on 589 BSE rows: nulls are **4.4x enriched** on holes (8/51 = 15.7%) vs dated rows
+  (19/538 = 3.5%) — a real signal, but NOT the cause: 43 of 51 nulls sit on cells we hold fine and
+  19 holes have a good date. It explains under a third. Diagnose; don't inherit the guess.
 - Analysing with a LOCAL checkout produced a phantom parser bug (a copy 227 lines behind
   origin/main). `feedback-analyze-live-not-local-bin` applies to CODE, not just .bin/.json.
 
