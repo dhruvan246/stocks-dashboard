@@ -1,6 +1,6 @@
 {
  "campaign": "FILL-2020 revenue track (scripts/FILL2020_CAMPAIGN.md)",
- "companies": 19,
+ "companies": 21,
  "evidence_source": "NSE api/corporates-financial-results per-company filing index",
  "fills": {
   "ATHERENERG": {
@@ -388,6 +388,82 @@
     "revC": 1615.71
    }
   },
+  "MGL": {
+   "20200930": {
+    "ebitC": 178.63,
+    "evidence": "NSE filing index: 44 standalone quarters, 11 consolidated, first consolidated 20231231 \u2014 no consolidated result filed for this quarter",
+    "opC": 221.09,
+    "revC": 548.95
+   },
+   "20211231": {
+    "ebitC": 54.89,
+    "evidence": "NSE filing index: 44 standalone quarters, 11 consolidated, first consolidated 20231231 \u2014 no consolidated result filed for this quarter",
+    "opC": 103.1,
+    "revC": 1122.89
+   },
+   "20220930": {
+    "ebitC": 197.74,
+    "evidence": "NSE filing index: 44 standalone quarters, 11 consolidated, first consolidated 20231231 \u2014 no consolidated result filed for this quarter",
+    "opC": 252.84,
+    "revC": 1717.53
+   },
+   "20221231": {
+    "ebitC": 197.57,
+    "evidence": "NSE filing index: 44 standalone quarters, 11 consolidated, first consolidated 20231231 \u2014 no consolidated result filed for this quarter",
+    "opC": 256.1,
+    "revC": 1838.43
+   },
+   "20230930": {
+    "ebitC": 413.09,
+    "evidence": "NSE filing index: 44 standalone quarters, 11 consolidated, first consolidated 20231231 \u2014 no consolidated result filed for this quarter",
+    "opC": 478.88,
+    "revC": 1728.94
+   }
+  },
+  "PATANJALI": {
+   "20220930": {
+    "ebitC": 153.8,
+    "evidence": "NSE filing index: 26 standalone quarters, 8 consolidated, first consolidated 20240630 \u2014 no consolidated result filed for this quarter",
+    "opC": 194.6,
+    "revC": 8514.12
+   },
+   "20221231": {
+    "ebitC": 325.29,
+    "evidence": "NSE filing index: 26 standalone quarters, 8 consolidated, first consolidated 20240630 \u2014 no consolidated result filed for this quarter",
+    "opC": 368.04,
+    "revC": 7926.64
+   },
+   "20230331": {
+    "ebitC": 282.98,
+    "evidence": "NSE filing index: 26 standalone quarters, 8 consolidated, first consolidated 20240630 \u2014 no consolidated result filed for this quarter",
+    "opC": 326.31,
+    "revC": 7872.92
+   },
+   "20230630": {
+    "ebitC": 100.92,
+    "evidence": "NSE filing index: 26 standalone quarters, 8 consolidated, first consolidated 20240630 \u2014 no consolidated result filed for this quarter",
+    "opC": 168.59,
+    "revC": 7767.1
+   },
+   "20230930": {
+    "ebitC": 335.19,
+    "evidence": "NSE filing index: 26 standalone quarters, 8 consolidated, first consolidated 20240630 \u2014 no consolidated result filed for this quarter",
+    "opC": 395.3,
+    "revC": 7821.89
+   },
+   "20231231": {
+    "ebitC": 284.34,
+    "evidence": "NSE filing index: 26 standalone quarters, 8 consolidated, first consolidated 20240630 \u2014 no consolidated result filed for this quarter",
+    "opC": 344.04,
+    "revC": 7910.7
+   },
+   "20240331": {
+    "ebitC": 289.26,
+    "evidence": "NSE filing index: 26 standalone quarters, 8 consolidated, first consolidated 20240630 \u2014 no consolidated result filed for this quarter",
+    "opC": 370.62,
+    "revC": 8221.66
+   }
+  },
   "SANOFI": {
    "20200630": {
     "ebitC": 156.7,
@@ -760,9 +836,9 @@
  ],
  "generated": "2026-08-06",
  "held_null": {},
- "last_run_companies": 1,
- "last_run_values": 9,
+ "last_run_companies": 2,
+ "last_run_values": 36,
  "method": "consolidated = standalone where the exchange's filing index shows NO consolidated result was filed for that quarter (SEBI LODR Reg 33 identity)",
  "user_gate": "approved 2026-08-06 for the 91 non-bank values; banks approved the same day when the user chose 'include banks everywhere'",
- "values": 337
+ "values": 373
 }
