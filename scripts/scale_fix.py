@@ -57,6 +57,27 @@ def factor(fname):
     return _BY_FILE.get(os.path.basename(fname))
 
 
+_BY_CELL = None
+
+
+def factor_cell(sym, qe, basis):
+    """10**k for a (symbol, quarter, basis) known to be scaled, else None.
+
+    The file-keyed `factor()` above is the right hook for anything that reads the XBRL. Some
+    writers never see a filename: `apply_owners_full.py` rewrites npCon out of
+    `_reattr_owners.json`, which was built from the same poisoned XBRL and therefore carries the
+    SCALED owners figure. It runs nightly, AFTER `scale_fix.py --apply`, and silently restored the
+    error on 6 cells -- METROBRAND, NAVNETEDUL, PARKHOTELS, JUBLPHARMA, NDTV, PAYTM (found
+    2026-08-09; NDTV's npCon sat at -467.5 against a true -46.75). Those are exactly the filings
+    that carry a distinct ProfitOrLossAttributableToOwnersOfParent tag, so no file-keyed hook
+    could ever have reached them.
+    """
+    global _BY_CELL
+    if _BY_CELL is None:
+        _BY_CELL = {(e["sym"].upper(), str(e["qe"]), e["basis"]): 10.0 ** e["k"] for e in load()}
+    return _BY_CELL.get((str(sym).upper(), str(qe), basis))
+
+
 def _close(a, b):
     return a is not None and b is not None and abs(a - b) <= max(0.02, abs(b) * 0.005)
 

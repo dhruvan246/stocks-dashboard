@@ -159,5 +159,27 @@
   "reason": "cell was empty",
   "src": "TIMKEN Dec-2025 filing p5 / Mar-2026 filing p16, consolidated statement",
   "was": null
+ },
+ "TIMKEN|20241231|patC": {
+  "was": 74.31,
+  "now": 78.21,
+  "row": "Net Profit after tax (3-4)",
+  "page": 5,
+  "scale": 10.0,
+  "src": "Dec-2025 filing, consolidated page",
+  "confirm": "same row reproduces stored con PAT 54.56 (2025-12-31) and 93.60 (2025-09-30) exactly; PBT-tax 1029.79-247.71=782.08 and that identity holds on all 3 clean columns; corrupt token reads '782.0J'; screener 78",
+  "reason": "con slot held a copy of standalone (74.31); true consolidated read from the first filing that carried restated consolidated comparatives",
+  "applied": "2026-08-09"
+ },
+ "TIMKEN|20250630|patC": {
+  "was": 104.22,
+  "now": 108.43,
+  "row": "Net Profit after tax (3-4)",
+  "page": 5,
+  "scale": 10.0,
+  "src": "Dec-2025 filing, consolidated page (9M identity)",
+  "confirm": "9M FY26 2565.82 - Q3 545.56 - Q2 935.99 = 1084.27 -> 108.43; the two subtrahends are themselves confirmed against stored con PAT; screener 108",
+  "reason": "con slot held a copy of standalone (104.22); quarter never filed on a consolidated basis, recovered by the nine-month identity (runbook \u00a745)",
+  "applied": "2026-08-09"
  }
 }

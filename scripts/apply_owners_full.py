@@ -7,6 +7,8 @@ qualifying stock whose con-quarter still lacks an owners figure (potential resid
 Run: python -X utf8 apply_owners_full.py            (impact-only: pass --dry)"""
 import json, os, sys
 HERE=os.path.dirname(os.path.abspath(__file__)); ROOT=os.path.dirname(HERE)
+sys.path.insert(0,HERE)
+import scale_fix
 F=os.path.join(ROOT,"docs","sf_fundamentals.json")
 live=json.load(open(F))
 OWN=json.load(open(os.path.join(HERE,"_reattr_owners.json")))   # "SYM|qe" -> owners cr
@@ -25,11 +27,28 @@ BACKFILL={
  # ACUTAAS (Acutaas/Anupam Rasayan, consolidates Tanfac): from Q4FY26 filing attribution
  "ACUTAAS|20250331":62.48, "ACUTAAS|20251231":107.96, "ACUTAAS|20260331":131.76,
 }
-src_own=src_bf=src_ren=0
+# A HEAL LEDGER OUTRANKS THE EXTRACTION CACHE (added 2026-08-09).
+# _reattr_owners.json is built from the same XBRL as everything else, so when a con cell was wrong
+# at ingestion the cache carries the identical wrong number — and this script runs nightly, after
+# the heal. TATACOFFEE 20221231 was read from its own consolidated filing as 38.4 (screener 38,
+# our standalone 26.61) and reverted to the cached 26.63 every single night: the heal was
+# journalled, committed, and never actually live. Anything corrected in con_copy_heals.json now
+# wins here, so a future heal cannot be silently undone the same way.
+try:
+    _H=json.load(open(os.path.join(HERE,"con_copy_heals.json")))
+    HEALS={"%s|%s"%(k.split("|")[0],k.split("|")[1]):v["now"]
+           for k,v in _H.items() if k.endswith("|patC") and v.get("now") is not None}
+except Exception:
+    HEALS={}
+src_own=src_bf=src_ren=src_heal=0
 for sym,arr in live.items():
     for r in arr:
         if r[3] is None: continue
         k="%s|%d"%(sym,r[0])
+        a=HEALS.get(k)
+        if a is not None:
+            if abs(a-r[3])>0.005: r[3]=a; src_heal+=1
+            continue
         a=BACKFILL.get(k)
         if a is not None:
             if abs(a-r[3])>0.005: r[3]=a; src_bf+=1
@@ -47,11 +66,20 @@ for sym,arr in live.items():
         # quarters every night, undoing corrections). A genuine owners=0.00-exact alongside a nonzero
         # stored con is implausible; keeping the stored value is the safer error.
         if abs(a)<0.005 and abs(r[3])>=0.005: continue
+        # SCALE guard (§11). _reattr_owners.json was built from the same XBRL as everything else,
+        # so for a filing in the scale_fix ledger it holds the SCALED owners figure — and this
+        # script runs nightly, after `scale_fix.py --apply`, so it put the error straight back.
+        # Measured 2026-08-09: 6 live cells were still scaled for exactly this reason (NDTV
+        # 20240630 npCon -467.5 for a true -46.75). Correct here, at the point of application.
+        sc=scale_fix.factor_cell(sym,r[0],"con") or (None if not REV.get(sym) else next(
+            (scale_fix.factor_cell(_o,r[0],"con") for _o in REV[sym]
+             if scale_fix.factor_cell(_o,r[0],"con")),None))
+        if sc: a=round(a/sc,2)
         if abs(a-r[3])>0.005:
             r[3]=a
             if ren: src_ren+=1
             else: src_own+=1
-print("set npCon=owners: %d from _reattr_owners, %d via rename-alias (renamed stocks), %d from filing-backfill"%(src_own,src_ren,src_bf))
+print("set npCon=owners: %d from _reattr_owners, %d via rename-alias (renamed stocks), %d from filing-backfill, %d from con_copy_heals"%(src_own,src_ren,src_bf,src_heal))
 if "--dry" in sys.argv:
     print("DRY RUN — not written"); sys.exit(0)
 tmp=F+".tmp"; json.dump(live,open(tmp,"w"),separators=(",",":")); os.replace(tmp,F)

@@ -41,17 +41,45 @@ def parse_num(tok):
     return -v if neg else v
 
 
+def band_rows(words, ytol=3.0):
+    """Group words into visual rows by CLUSTERING y, not by BUCKETING it.
+
+    ROWS ARE GEOMETRY TOO (2026-08-09). This module fixed columns and left rows as
+    `round(y0 / ytol)` -- the same defect one axis over. A bucket has hard edges, so a row whose
+    tokens sit at y=388.4 and y=389.3 is TORN IN HALF: 388.4/3 rounds to 129, 389.3/3 to 130. The
+    label keeps whichever fragment shares its bucket and the rest becomes an orphan numeric row
+    belonging to no label. Statements typeset figures with sub-point baseline jitter, so this is
+    routine rather than exotic.
+
+    It is what made TIMKEN 2024-12-31 unreadable -- its consolidated PAT row extracted as
+        y389.3  "5 Net Profit after tax (3-4)"  545.56@286  935.99@330
+        y388.4                                  782.0J@381  2,565.82@423  2,718.89@469 ...
+    and the Dec-2024 column the read needed sat in the half with no label attached.
+
+    Clustering on the GAP between consecutive baselines has no edges to straddle. Intra-row jitter
+    measures ~0.4-1.2pt here and line pitch ~6-12pt, two cleanly separated populations with `ytol`
+    between them.
+    """
+    out, cur, top = [], [], None
+    for x0, y0, x1, y1, w, *_ in sorted(words, key=lambda t: t[1]):
+        if top is not None and y0 - top > ytol:
+            out.append((top, cur))
+            cur, top = [], None
+        cur.append((x0, x1, w))
+        top = y0 if top is None else max(top, y0)
+    if cur:
+        out.append((top, cur))
+    return out
+
+
 def lines_of(page, ytol=3.0):
     """-> [(y, label_text, [(x_right, value), ...])] in reading order."""
     words = page.get_text("words")          # (x0, y0, x1, y1, word, block, line, word_no)
     if not words:
         return []
-    rows = {}
-    for x0, y0, x1, y1, w, *_ in words:
-        rows.setdefault(round(y0 / ytol), []).append((x0, x1, w))
     out = []
-    for key in sorted(rows):
-        toks = sorted(rows[key], key=lambda t: t[0])
+    for y, row in band_rows(words, ytol):
+        toks = sorted(row, key=lambda t: t[0])
         vals, label = [], []
         for x0, x1, w in toks:
             v = parse_num(w)
@@ -61,7 +89,7 @@ def lines_of(page, ytol=3.0):
             else:
                 vals.append((x1, v))
         if vals:
-            out.append((key * ytol, " ".join(label), vals))
+            out.append((y, " ".join(label), vals))
     return out
 
 

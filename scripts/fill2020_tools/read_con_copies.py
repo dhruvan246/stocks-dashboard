@@ -21,10 +21,22 @@ PDF NUMBER SPLITTING. Extraction often breaks "7,796.69" into "7796" and "69" as
 which is why an earlier attempt at TIMKEN found nothing at all. Adjacent numeric tokens closer than
 ~4.5pt are re-joined with a decimal point before anything is parsed.
 
-Only pages whose own wording says consolidated are read (glyph-tolerant, and "non-consolidated" /
-"standalone" excluded), so a standalone page cannot be mistaken for the answer.
+Only pages whose own wording says the target basis are read (glyph-tolerant, and the opposite basis
+excluded), so the wrong statement cannot be mistaken for the answer.
+
+BOTH DIRECTIONS, because the flag's direction is not the defect's direction (2026-08-09). Of the
+cells detect_con_copy flags, some have the copy in the CON slot (fix con) and some in the STD slot
+-- the MIRROR defect, where our con value is already right and the standalone one is the copy. The
+two are told apart with no PDF at all: our stored value matches screener's con => mirror; it matches
+screener's std => con-copy (§59b). Running the con reader on a mirror cell can only ever return "the
+value we already store", and on 4 of them it returned nothing at all, because the figure it needs is
+on the STANDALONE page it is filtered never to open. Hence `--basis`:
+
+    --basis con   (default)  scan con pages, anchor on screener's con   -> repairs the CON slot
+    --basis std              scan std pages, anchor on screener's std   -> repairs the STD slot
 
   python -X utf8 scripts/fill2020_tools/read_con_copies.py [--limit N]
+      [--basis con|std] [--flagged PATH] [--out PATH]
 """
 import json
 import os
@@ -41,6 +53,7 @@ import universal_read as U                                        # noqa: E402
 import date_columns as DC                                         # noqa: E402
 import screener_fetch as SF                                       # noqa: E402
 import build_targets as BT                                        # noqa: E402
+import geom_read as GR                                            # noqa: E402
 import fitz                                                       # noqa: E402
 
 NUM = re.compile(r"^\(?-?[\d,]+\.?\d*\)?$")
@@ -65,13 +78,14 @@ def _val(w):
 
 
 def page_rows(page, ytol=3.0):
-    """[(label, [(x_right, value)])] with split numbers re-joined."""
-    L = {}
-    for x0, y0, x1, y1, w, *_ in page.get_text("words"):
-        L.setdefault(round(y0 / ytol), []).append((x0, x1, w))
+    """[(label, [(x_right, value)])] with split numbers re-joined.
+
+    Rows come from GR.band_rows, which clusters baselines instead of bucketing them -- bucketing
+    tore TIMKEN's consolidated PAT row in half and hid the column the read needed. See geom_read.
+    """
     out = []
-    for k in sorted(L):
-        t = sorted(L[k], key=lambda z: z[0])
+    for _y, row in GR.band_rows(page.get_text("words"), ytol):
+        t = sorted(row, key=lambda z: z[0])
         merged, i = [], 0
         while i < len(t):
             x0, x1, w = t[i]
@@ -90,11 +104,19 @@ def page_rows(page, ytol=3.0):
     return out
 
 
+def _arg(name, default=None):
+    return sys.argv[sys.argv.index(name) + 1] if name in sys.argv else default
+
+
 def main():
-    limit = int(sys.argv[sys.argv.index("--limit") + 1]) if "--limit" in sys.argv else 10 ** 9
-    flagged = json.load(open("/tmp/con_copy2.json"))
+    limit = int(_arg("--limit", 10 ** 9))
+    basis = _arg("--basis", "con")
+    if basis not in ("con", "std"):
+        sys.exit("--basis must be con or std")
+    out_p = _arg("--out", OUT if basis == "con" else OUT.replace(".json", "_std.json"))
+    flagged = json.load(open(_arg("--flagged", "/tmp/con_copy2.json")))
     scrips = BT.scrip_map()
-    done = json.load(open(OUT)) if os.path.exists(OUT) else {}
+    done = json.load(open(out_p)) if os.path.exists(out_p) else {}
 
     # group by company so each screener series is fetched once
     by_sym = {}
@@ -109,7 +131,7 @@ def main():
         if not scrip:
             continue
         try:
-            scon = SF.quarters(sym, con=True)
+            scon = SF.quarters(sym, con=(basis == "con"))
         except Exception:
             continue
         lab_r = next((L for L in ("Sales", "Revenue") if any(L in r for r in scon.values())), None)
@@ -123,7 +145,7 @@ def main():
             if key in done:
                 continue
             n += 1
-            want = b["screener_con"]
+            want = b["screener_con"] if basis == "con" else b["screener_std"]
             is_rev = b["field"] == "revC"
             got = None
             # the quarter's own filing, then the next one, then the next year's
@@ -139,7 +161,7 @@ def main():
                         continue
                     for pi in range(len(doc)):
                         pg = doc[pi]
-                        if len(pg.get_text().strip()) < 400 or DC.page_basis(pg) != "con":
+                        if len(pg.get_text().strip()) < 400 or DC.page_basis(pg) != basis:
                             continue
                         rows = page_rows(pg)
                         tgt = [r for r in rows if (REV_RE if is_rev else PAT_RE).search(r[0])]
@@ -157,14 +179,14 @@ def main():
                                         for x2, w in nums:
                                             if abs(x2 - x) > 14 and \
                                                abs(w / sc - t2) <= max(0.6, abs(t2) * 0.012):
-                                                conf = "col x=%.0f == screener con %s for %d" % (x2, t2, q2)
+                                                conf = "col x=%.0f == screener %s %s for %d" % (x2, basis, t2, q2)
                                                 break
                                         if conf:
                                             break
                                     if conf:
                                         got = {"value": round(v / sc, 2), "scale": sc, "page": pi,
                                                "row": lab[:44], "confirm": conf, "window": tag,
-                                               "doc": url.split("/")[-1][:30],
+                                               "basis": basis, "doc": url.split("/")[-1][:30],
                                                "screener": want, "was": b["our"]}
                                         break
                                 if got:
@@ -179,14 +201,15 @@ def main():
                 if got:
                     break
                 time.sleep(0.3)
-            done[key] = got or {"value": None, "why": "no confirmed consolidated column found",
+            done[key] = got or {"value": None, "basis": basis,
+                                "why": "no confirmed %s column found" % basis,
                                 "screener": want, "was": b["our"]}
-            json.dump(done, open(OUT, "w"), indent=1)
+            json.dump(done, open(out_p, "w"), indent=1)
             print("  %-26s %s" % (key, ("= %-10s (was %s) %s" % (got["value"], b["our"], got["confirm"][:40]))
                                   if got else "NOT FOUND"))
 
     ok = sum(1 for v in done.values() if v.get("value") is not None)
-    print("\nread %d of %d flagged cells -> %s" % (ok, len(done), OUT))
+    print("\nread %d of %d flagged cells (basis=%s) -> %s" % (ok, len(done), basis, out_p))
 
 
 if __name__ == "__main__":

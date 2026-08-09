@@ -4562,3 +4562,99 @@ detection to a header BAND, group same-y dates and require ≥2, treat a lone da
 
 **Split any target list by anchorability before spending a run on it** — mixing the two pools makes
 a reader look like it is failing when it is really being handed impossible work.
+
+
+---
+
+## 65. ★★★ FIVE SILENT-REVERT / SILENT-BLINDNESS BUGS  (found 2026-08-09, all fixed)
+
+None of these threw an error. Each produced plausible output while being wrong, which is why they
+survived. Grouped because the shape repeats: **a correction that is journalled is not a correction
+that is live, and a reader that returns nothing is not a source that has nothing.**
+
+### 65a. ROWS ARE GEOMETRY TOO — `round(y0/ytol)` tears statement rows in half
+`geom_read.py` exists because columns were being addressed by list index (§62). It fixed columns
+and left ROWS as `rows.setdefault(round(y0 / ytol), ...)` — the same defect one axis over. A bucket
+has hard edges, so a row whose tokens sit at y=388.4 and y=389.3 is split: 388.4/3 rounds to 129,
+389.3/3 to 130. The label keeps whichever fragment shares its bucket; the rest becomes an orphan
+numeric row belonging to no label. Statements typeset figures with sub-point baseline jitter, so
+this is routine.
+
+TIMKEN 2024-12-31's consolidated PAT row extracted as
+```
+y389.3  "5 Net Profit after tax (3-4)"  545.56@302  935.99@347
+y388.4                                  782.0J@381  2,565.82@444  2,718.89@491  4,621.94@540
+```
+— and the Dec-2024 column the read needed was in the half with no label attached. The reader
+reported "no confirmable consolidated column" for four straight attempts.
+
+**Fix: `geom_read.band_rows()`** clusters on the GAP between consecutive baselines instead. Intra-row
+jitter measures 0.4–1.2pt and line pitch 6–12pt, two cleanly separated populations. **Still carrying
+the bucket form:** `date_columns.py:91` and `:171`, `insurer_con_rev.py:380`, `gicre_con_pat.py:197`.
+Port them to `band_rows` before trusting any of those readers again.
+
+### 65b. THE FLAG'S DIRECTION IS NOT THE DEFECT'S DIRECTION
+`detect_con_copy` fires when our con slot equals our std slot while a second source says they
+differ. That proves a cell is wrong; it does **not** say which slot holds the error. Decide it with
+no PDF at all:
+
+| our stored value matches | meaning | fix |
+|---|---|---|
+| screener's **CON** | our con is right | the **STD** slot holds the copy (MIRROR) |
+| screener's **STD** | our std is right | the **CON** slot holds the copy |
+| neither | a third defect | investigate, do not write |
+
+Splitting the 16 open cells this way gave **6 con-copy, 9 mirror, 1 neither** — not the 11-plus-5
+previously recorded. Four cells booked as "no confirmable consolidated column" were mirrors all
+along: `read_con_copies` only opens pages whose own wording says CONSOLIDATED, so on a mirror cell
+it is filtered away from the very statement holding the answer. It could never have found them.
+The reader now takes `--basis std`.
+
+### 65c. A HEAL LEDGER MUST OUTRANK THE EXTRACTION CACHE
+`_reattr_owners.json` is built from the same XBRL as everything else, so when a con cell was wrong
+at ingestion the cache holds the identical wrong number — and `apply_owners_full.py` runs nightly,
+**after** the heal. TATACOFFEE 2022-12-31 was read from its own consolidated filing as 38.4
+(screener 38; our standalone 26.61) and reverted to the cached 26.63 every night. The heal was
+journalled, committed, and never once live. Six more cells were reverted the same way by scale:
+METROBRAND, NAVNETEDUL, PARKHOTELS, JUBLPHARMA, NDTV (npCon −467.5 for a true −46.75), PAYTM.
+`scale_fix.factor_cell(sym, qe, basis)` covers writers that never see a filename, and
+`con_copy_heals.json` now wins outright in `apply_owners_full`.
+**Rule: after writing any heal, check every nightly job that touches the same slot.** A journalled
+correction proves only that you wrote it down.
+
+### 65d. HALF-YEAR CUMULATIVES READ AS THE QUARTER — the Sep-2025 bug, at source
+SEBI's Integrated Filing format (live from the 2025-03-31 half-year) lets a company file its
+half-year with the SIX-MONTH figure in context `OneD`, period 2025-04-01..2025-09-30, 182 days.
+`build_revop.parse_file` has rejected that since the day it was written. **`xbrl_revop` was added
+the next day (2026-07-01) as a copy of the same logic without the check** — and it, with
+`build_fundamentals.xbrl_profit`, is what the daily updater actually calls. 33 cells at 2025-09-30
+stored a YTD figure as the quarter (UDS revC 1429.59, HBLENGINE, BELRISE, EDELWEISS, STYL, SHAH,
+PROSTARM…). They were healed via `cumulative_heals.json` while the parser was left alone.
+
+**It is a half-year-end effect, not a Sep-2025 one**, and it recurs every six months: of 871
+long-period contexts in the 104k cache, all sit at 2025-03-31 (224), 2025-09-30 (393) and
+2026-03-31 (249). Fixed with `build_revop.is_quarter_ctx`, gating both `OneD` and `FourD` in
+`xbrl_revop` and `xbrl_profit`. Unknown period counts as ACCEPT — ~1,220 cached filings state no
+period and rejecting them would delete real data (measured cost of the guard on those: 0 cells).
+
+Two things to know before touching it again:
+* **At Sep-30 a long context is genuinely cumulative (258 of 266 labelled); at Mar-31 it usually is
+  NOT** — 92 of 117 carry the real Q4 under a mislabelled Oct→Mar range (IOC, DIVISLAB, LTTS,
+  SYRMA, JKCEMENT…). Header semantics are byte-identical between the two kinds, so the guard costs
+  those Mar cells going forward. They become visible gaps, fillable by the ordinary ladder.
+* **A discriminator exists and is measured**: `long_value / our stored prior-quarter`, cumulative
+  ≈2 vs quarter ≈1. At threshold 1.40 it scores **371/383 = 96.9%**, erring 3 toward corruption and
+  9 toward gaps. NOT WIRED — measured on the both-filings population, which is not the long-only
+  population it would run on. Validate on the right population first.
+* PAT, operating profit and EBIT were never healed for the original 33 — `cumulative_heals.json`
+  covers revenue only.
+
+### 65e. A TRACKED TOOL HARDCODED ONE WORKTREE
+`universal_read.py` read `WT = ~/stocks-wt/fill2020` literally, `sys.path.insert(0, ...)`-ed it and
+`os.chdir`-ed into it. Every importer therefore got that one worktree's `geom_read` /
+`date_columns` / `fetch_insurers` **and its `sf_revop.json` + `sf_fundamentals.json`** — the anchors
+every read is scored against. Run a reader from any other tree and it silently anchors on another
+tree's data, with nothing in the output to show it. It went unnoticed only because the hardcoded
+path happened to be the active campaign's tree. Now derived from `__file__`, with `STOCKS_WT` as an
+explicit override. **Never hardcode a worktree in a tracked tool** (memory:
+analyze-live-not-local-bin).

@@ -76,6 +76,22 @@ def is_con_basis(s):
     return "consol" in s
 
 
+def _quarter_ctx(xml, cid):
+    """build_revop.is_quarter_ctx, imported LAZILY.
+
+    build_revop reads sf_revop.json at import time, so pulling it in at module scope would make
+    every consumer of build_fundamentals pay for that -- the §15/§18 top-level-import crash. If it
+    cannot be imported for any reason, ACCEPT the context: this guard exists to drop half-year
+    cumulatives, and it must never become a new way for the daily updater to silently write
+    nothing.
+    """
+    try:
+        import build_revop as _br
+        return _br.is_quarter_ctx(xml, cid)
+    except Exception:
+        return True
+
+
 def xbrl_profit(xml, basis_hint=None):
     """Return (np_standalone_cr, np_consolidated_cr) for the CURRENT QUARTER from one filing.
 
@@ -160,6 +176,16 @@ def xbrl_profit(xml, basis_hint=None):
         return a
     std = con = None
     one, one_nat = plp.get("OneD"), nat.get("OneD", "") or hint
+    four, four_nat = plp.get("FourD"), nat.get("FourD", "") or hint
+    # A context whose period is SIX MONTHS holds the half-year cumulative, not the quarter. Storing
+    # it as the quarter is the Sep-2025 bug that put YTD figures into 33 cells; the full write-up is
+    # on build_revop.is_quarter_ctx. This function's docstring used to argue the context dates were
+    # unreliable and should not be trusted -- measured 2026-08-09, the error runs one way only (a
+    # quarter carrying a half-year date range at Mar-31), never a short range holding a long value.
+    if one is not None and not _quarter_ctx(xml, "OneD"):
+        one = None
+    if four is not None and not _quarter_ctx(xml, "FourD"):
+        four = None
     if one is not None:
         # consolidated -> attributable to owners, BUT fall back to the total ProfitLossForPeriod when
         # the owners tag is missing OR zero. Some filers (e.g. ELECON Q1FY27) tag
@@ -167,7 +193,6 @@ def xbrl_profit(xml, basis_hint=None):
         # plain .get(key, default) returns that 0.0 → con wrongly 0. `or one` treats 0 as absent.
         if is_con_basis(one_nat): con = owners("OneD") or bank.get("OneD") or one
         else: std = one                                  # standalone or unlabelled
-    four, four_nat = plp.get("FourD"), nat.get("FourD", "") or hint
     if four is not None and four_nat != one_nat:         # combined filing: other basis, current Q
         if is_con_basis(four_nat): con = con if con is not None else (owners("FourD") or bank.get("FourD") or four)
         else: std = std if std is not None else four

@@ -111,6 +111,35 @@ def days_between(s, e):
     return (b - a).days
 
 
+def ctx_days(xml, cid):
+    """Length in days of context `cid`'s period, or None when the file states no period."""
+    p = ctx_period(xml, cid)
+    return days_between(p[0], p[1]) if p else None
+
+
+def is_quarter_ctx(xml, cid):
+    """Is context `cid` a 3-MONTH period, i.e. safe to store as 'the quarter'?
+
+    THE CUMULATIVE BUG (root-caused 2026-08-09). SEBI's Integrated Filing format, live since the
+    2025-03-31 half-year, lets a company file its half-year with the SIX-MONTH figure in OneD --
+    period 2025-04-01..2025-09-30, 182 days. `parse_file` has rejected that since the day it was
+    written; `xbrl_revop` below was added the NEXT day (2026-07-01) as a copy of the same logic
+    WITHOUT the check, and it is the function the daily updater actually calls. So 33 cells at
+    2025-09-30 stored a year-to-date figure as the quarter -- UDS revC 1429.59, plus HBLENGINE,
+    BELRISE, EDELWEISS, STYL, SHAH, PROSTARM and others. They were healed once through
+    cumulative_heals.json while the parser was left alone, so the next half-year would repeat it.
+
+    Measured over the 104,331-file cache: 100,217 OneD contexts are <=100 days and 871 are 101-195,
+    the long ones occurring ONLY at half-year ends (2025-03-31, 2025-09-30, 2026-03-31). This is a
+    half-year-end effect, not a Sep-2025 one, and it recurs every six months.
+
+    Unknown counts as ACCEPT: ~1,220 cached filings (mostly pre-2024 BANKING/NONINDAS) carry OneD
+    facts with no period stated at all, and rejecting those would delete real data.
+    """
+    d = ctx_days(xml, cid)
+    return d is None or 0 < d <= 100
+
+
 def fnum(xml, tag, ctx):
     m = RE_TAG[tag][ctx].search(xml)
     if not m:
@@ -275,15 +304,18 @@ def xbrl_revop(xml, basis_hint=None):
     fin = 1 if ("InterestEarned" in xml or "NetPremiumIncome" in xml or "PremiumEarned" in xml) else 0
     rev_std = op_std = ebit_std = rev_con = op_con = ebit_con = None
     one_nat = nat.get("OneD", "") or hint
-    rev, op, ebit, _, _ = metrics_for(xml, "OneD")
-    if rev is not None or op is not None:
-        if "consol" in one_nat:
-            rev_con, op_con, ebit_con = rev, op, ebit
-        else:
-            rev_std, op_std, ebit_std = rev, op, ebit
+    # Only read a context whose period IS a quarter -- a 182-day OneD is the half-year cumulative
+    # and storing it as the quarter is the Sep-2025 bug (see is_quarter_ctx).
+    if is_quarter_ctx(xml, "OneD"):
+        rev, op, ebit, _, _ = metrics_for(xml, "OneD")
+        if rev is not None or op is not None:
+            if "consol" in one_nat:
+                rev_con, op_con, ebit_con = rev, op, ebit
+            else:
+                rev_std, op_std, ebit_std = rev, op, ebit
     four_nat = nat.get("FourD", "")
-    if four_nat and four_nat != one_nat:          # combined filing: FourD is the OTHER basis
-        rev, op, ebit, _, _ = metrics_for(xml, "FourD")
+    if four_nat and four_nat != one_nat and is_quarter_ctx(xml, "FourD"):
+        rev, op, ebit, _, _ = metrics_for(xml, "FourD")   # combined filing: FourD is the OTHER basis
         if "consol" in four_nat and rev_con is None:
             rev_con, op_con, ebit_con = rev, op, ebit
         elif "consol" not in four_nat and rev_std is None:

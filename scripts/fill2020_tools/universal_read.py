@@ -42,7 +42,21 @@ import sys
 import threading
 import time
 
-WT = os.path.expanduser("~/stocks-wt/fill2020")
+# The tree this module belongs to -- NOT a hardcoded one (fixed 2026-08-09).
+#
+# This read `~/stocks-wt/fill2020` literally, then `sys.path.insert(0, ...)` it and `os.chdir` into
+# it. Every importer therefore got that ONE worktree's geom_read/date_columns/fetch_insurers and,
+# worse, that worktree's sf_revop.json + sf_fundamentals.json -- the anchors every read is judged
+# against. Running a reader from any other tree silently scored it against another tree's data,
+# with no error and nothing in the output to show it had happened. It went unnoticed only because
+# the hardcoded path happened to be the active campaign's tree; the day that worktree is stale or
+# deleted, reads keep succeeding and quietly anchor on the wrong numbers
+# (memory: analyze-live-not-local-bin).
+#
+# Derive the root from __file__ instead, so a tool always reads the tree it was launched from.
+# STOCKS_WT still overrides, for the deliberate cross-tree case.
+WT = os.environ.get("STOCKS_WT") or os.path.dirname(os.path.dirname(os.path.dirname(
+    os.path.abspath(__file__))))
 sys.path.insert(0, os.path.join(WT, "scripts"))
 sys.path.insert(0, os.path.join(WT, "scripts", "fill2020_tools"))
 os.chdir(WT)
