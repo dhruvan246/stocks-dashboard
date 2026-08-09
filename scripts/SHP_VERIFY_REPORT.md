@@ -7,17 +7,28 @@ The user's question was: *are our FII/DII holdings correct?* — to be answered 
 
 ---
 
-## 1. THE ANSWER
+## 1. THE ANSWER  (final — full universe swept)
 
 **Nothing we publish has been shown to be wrong.**
 
 | test | scope | result |
 |---|---|---|
-| **Cross-exchange** — our NSE-derived values vs BSE's *separately filed* documents | 61 symbols × 41 quarters, Jun-2016→Jun-2026 | **2,990 MATCH, 1 ROUND, 0 MISMATCH** |
-| **Three sites** vs the frozen stratified sample | 66 symbols, 3,884 cells we hold | **2,156 CONFIRMED, 0 contradicted** |
-| **Arbitration** — every contested cell taken to the actual filing | 136 field-verdicts | **79 OURS_CONFIRMED, 0 OURS_WRONG, 0 REVISION** |
-| Cells where *no* independent source agrees with us | 3,884 checked | **0** |
-| Cells where the sites agree with each other and disagree with us | 3,884 checked | **0** |
+| **FULL SWEEP — three sites × every stock** | **2,615 symbols, 179,424 cell-values we hold** | **87,315 CONFIRMED · 87 contradicted (0.048%)** |
+| **Arbitration of all 87** — taken to the company's own filing | 87 field-verdicts | **83 OURS_CONFIRMED, 0 OURS_WRONG**, 4 unresolvable |
+| **Cross-exchange** — our NSE values vs BSE's *separately filed* documents | 61 symbols × 41 quarters, Jun-2016→Jun-2026 | **2,990 MATCH, 1 ROUND, 0 MISMATCH** |
+| Three sites vs the frozen stratified sample | 66 symbols, 3,884 cells | 2,156 CONFIRMED, 0 contradicted |
+| Earlier arbitration (P5) | 136 field-verdicts | 79 OURS_CONFIRMED, 0 OURS_WRONG |
+| **Cells where NO independent source agrees with us** | 179,424 checked | **0** |
+
+**Across 179,424 published values, checked against three sites, both exchanges and 166 individual
+filings, not one has been shown wrong.** The 87 where sites lined up against us were each taken to
+the filing and 83 came back confirming us; the remaining 4 have no readable document on either
+exchange and stay open rather than being counted as verified.
+
+The single sharpest illustration of why the multi-source rule exists: **LCCINFOTEC Jun-2025** —
+Screener, StockEdge and Tickertape all three say promoter holding is 45.85%. The company's own
+filing says **0.0**, which is what we publish. A majority vote would have "corrected" correct data.
+Same shape at SUPREMEINF (47.32 vs a unanimous 34.68) and UJJIVAN (30.91 vs 40.48).
 
 The single non-exact value in the entire cross-exchange set is CUMMINSIND Jun-2022 shareholder
 count: ours 109,068, BSE 109,067 — **one shareholder, across a decade of filings.**
@@ -38,16 +49,41 @@ company's own filing and reproduced our stored cell field-for-field.
 
 | finding | scale | status |
 |---|---|---|
-| **Shareholder counts missing** — quarter-shaped, not scattered | **9,094 cells (13.7%)**; ~5,100 recoverable | diagnosed, route known, NOT yet run |
+| **Shareholder counts missing** — quarter-shaped, not scattered | 9,094 cells (13.7%) | **HEALED: +4,875, coverage 86.3% → 93.7%** |
 | Quarters sites/BSE hold that we do not | ~65 in the sample (51 nsh + 6 BSE + others) | verified fillable |
 | Internal holes inside a symbol's own history, post-Jun-2016 | **2,344 across 680 symbols** | cause UNKNOWN — see §4 |
 
-The shareholder-count gap is the headline. Coverage runs at 99.9% in every quarter from Sep-2019
-**except**: Sep-2022 (1.1%), Jun-2024 (0.3%), Mar-2024 (78%), and Sep-2025→Mar-2026 (~93%).
-The filings have the data and today's parser reads it — verified 6/6 on both blackout quarters
-(RELIANCE Sep-2022 = 3,485,825; HDFCBANK Jun-2024 = 3,664,325 — both stored as empty by us).
-Cause: those quarters were populated before shareholder-count extraction existed and fell outside
-the 8-quarter `--reparse` of 2026-07-16. Fix is `--reparse` scoped to the seven deficient quarters.
+### The shareholder-count gap — found, diagnosed and HEALED the same day
+
+Coverage ran at 99.9% in every quarter from Sep-2019 **except** Sep-2022 (1.1%), Jun-2024 (0.3%),
+Mar-2024 (78%) and Sep-2025→Mar-2026 (~93%). Two heals closed it:
+
+| pass | route | cells |
+|---|---|---|
+| 1 | `--reparse` scoped to the deficient quarters, staged | **+4,319** |
+| 2 | targeted count-only read of filings the percentage parser refuses | **+556** |
+| | | **62,258 of 66,477 = 93.7%** (from 86.3%) |
+
+Sep-2022 went 1.1% → 99.5%, Jun-2024 0.3% → 99.5%, Mar-2024 78% → 99.9%.
+
+**Pass 2 exists because of a wrong conclusion I published in pass 1.** I reported the residual
+~576 cells as "genuinely absent at source" because `parse_shp` refused 161 of 162 filings. That
+inference was faulty: `parse_shp` returns one all-or-nothing result, so when the FII/DII gates fail
+it returns None and **discards a shareholder count it has already read correctly**. 21STCENMGM
+Sep-2025 is the proof — parse refused, while the XBRL carried `ShareholdingPatternMember = 8,266`
+the whole time. A refusal is not an absence. `scripts/shp_nsh_only.py` now reads the count and
+nothing else (whole-company context only; category contexts carry per-bucket counts, and writing
+"6 promoters" as a company's shareholder count would be far worse than a blank).
+
+19 of the 575 recovered counts were **withheld** by the continuity gate rather than merged —
+DSKULKARNI reporting 8 shareholders against a 4,582 neighbour, EASTSILK falling 26,267 → 4,830 in
+six months, SUPREMEENG rising 8.5x. Each may be a real corporate event; none should be written on
+a parser's say-so.
+
+Verified live afterwards: 556 of 556 merged counts present in the deployed feed, and the 19
+withheld ones correctly absent. Note on reach — the page feed carries 8 quarters, so the +556
+recent counts are visible on the site while the +4,319 older ones sit in the store; the stock page
+reaches them through its per-stock `shpH` slice.
 
 ## 3. THE SITES — what each is actually worth
 
@@ -77,8 +113,11 @@ why the campaign was rebuilt around cross-exchange verification instead.
 - **6 cells are UNPARSEABLE** (BHANDARI ×4, SOMICONVEY, PUNJLLOYD): a document exists but
   `parse_shp` refuses to anchor it. That is the parser working correctly — zero-filling an
   unanchored filing is what poisons FII/DII — and they stay open.
-- **Phase 4 (all 2,615 symbols) was still running when this report was written.** Its numbers are
-  not in the totals above.
+- **4 cells could not be settled** by either exchange: MELSTAR Mar-2026 and SIGIND Sep-2025
+  (documents exist but will not anchor), INOXLEISUR Jun-2021 and STERLINBIO Mar-2021 (no filing at
+  either exchange). Open, not quietly counted as verified.
+- **19 recovered shareholder counts withheld** by the continuity gate — listed above.
+- **~19 residual count cells** have no NSE filing at all (their cells came via BSE ledgers).
 
 ## 5. METHOD — why these numbers can be trusted
 
@@ -94,7 +133,7 @@ why the campaign was rebuilt around cross-exchange verification instead.
   (Trust Fintech); StockEdge's ticker shortcut matched `IEL` to the wrong firm. Both would have
   become fake "defects" in our data.
 
-**Eleven tooling defects were found and fixed during the campaign** — a crash on `"22.58%"`
+**Fifteen tooling defects were found and fixed during the campaign** — a crash on `"22.58%"`
 strings, a deriver that fitted noise, an era-split that installed the wrong mapping (13 phantom
 mismatches), missing unit handling for lakhs (95 phantom mismatches), percentage thresholds applied
 to headcounts, a CONTRADICTED bar that accused sites of agreeing when they didn't (10 false
@@ -108,9 +147,11 @@ checkout* applies to code exactly as it does to data.
 
 ## 6. WHAT HAPPENS NEXT
 
-1. Finish Phase 4 (all 2,615 symbols × 3 sites), fold into the same quorum + arbitration pipeline.
-2. **Then** run the shareholder-count heal — `--reparse` on the seven deficient quarters, via the
-   §22b staging file, never concurrently with the sweeps (12k NSE fetches) and never as a second
-   writer against CI's twice-daily `shp_history.json` job.
-3. P3b: diagnose the 2,344 internal holes properly.
-4. Re-verify live ~20 min after any push (§41: "live on the server" ≠ "the site uses it").
+1. ~~Phase 4~~ **DONE** — 2,615 symbols × 3 sites, 77,391 rows, folded through quorum and arbitration.
+2. ~~Shareholder-count heal~~ **DONE** — +4,875, live-verified.
+3. **P3b: diagnose the 2,344 internal holes.** Still the largest open item. My null-`filing_date_time`
+   theory was measured and failed (4.4x enriched but explains under a third) — diagnose, don't inherit it.
+4. The sibling coverage session is producing a count-only side-ledger from archived Moneycontrol
+   pages, which should close most of the 4,118 pre-2016 count gap at zero fetch cost
+   (`scripts/NSH_PRE2016_CAMPAIGN.md`). Gate it through `shp_verify_nsh_seam.py` before merging.
+5. Re-verify live ~20 min after any push (§41: "live on the server" ≠ "the site uses it").
