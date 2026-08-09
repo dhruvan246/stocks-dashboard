@@ -80,6 +80,12 @@ def main():
     except Exception:
         pass
 
+    try:
+        ADJ = json.load(open(os.path.join(HERE, "_shp_revision_adjudicated.json")))
+        ADJ = {(sym, qe) for sym, qs in ADJ.items() if not sym.startswith("_") for qe in qs}
+    except Exception:
+        ADJ = set()
+
     syms = sorted(s for s in HIST if not s.startswith("_"))
     with_code = [s for s in syms if by.get(s)]
     no_code = [s for s in syms if not by.get(s)]
@@ -123,14 +129,20 @@ def main():
             sub = str(held[qe][5])
             if rev > sub:
                 with lock:
-                    flagged.append((sym, qe, r))
-                    stats["flagged"] += 1
+                    if (sym, qe) in ADJ:
+                        stats["adjudicated_skip"] += 1     # printed below; never re-flagged
+                    else:
+                        flagged.append((sym, qe, r))
+                        stats["flagged"] += 1
 
     t0 = time.time()
     with ThreadPoolExecutor(max_workers=a.threads) as ex:
         list(ex.map(scan, with_code))
     print("\nlist pass: %d ok, %d failed, %.1f min — %d cells flagged (revision newer than our sub-date)"
           % (stats["list_ok"], stats["list_failed"], (time.time() - t0) / 60, stats["flagged"]))
+    if stats["adjudicated_skip"]:
+        print("  (+%d previously adjudicated cells skipped — see _shp_revision_adjudicated.json)"
+              % stats["adjudicated_skip"])
 
     # site corroboration index from the Phase-4 extractions (already on disk, no refetch)
     sites_idx = collections.defaultdict(dict)
