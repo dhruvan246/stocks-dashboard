@@ -5037,3 +5037,52 @@ RENUKA  2021-03-31   -44.9 ->  -44.0   FY21 owners -34.9+105.4+-141.2+-44.0 = -1
 ```
 SADBHAV Dec-2020 is the one to remember: **neither file held the right number.** "The two files
 disagree" does not mean one of them is right.
+
+
+---
+
+## 71. ★★★ THE ADJUDICATION THAT WAS ABANDONED — when your "truth" source is the corrupted one  (2026-08-09)
+
+Closing the remaining **766** fund-vs-revop con-PAT divergences (§70) started as a per-cell
+adjudication against the filers' own XBRL: index all 104,331 cached filings, take
+`owners`-attributable con PAT as truth, and correct whichever file disagrees. It ran, and it
+returned a clean-looking verdict:
+
+> A filing == fundamentals → fix revop: **18**
+> B filing == revop → fix fundamentals: **718**
+> C filing == neither: 1
+
+**That verdict was wrong and applying it would have destroyed 693 correct values.** The check that
+caught it was asking why the answer inverted everything established that day:
+
+| | sf_fundamentals | XBRL `owners` tag | reality |
+|---|---|---|---|
+| MARUTI 2022-09-30 | **2112.50** | 212.50 | Q2 FY23 con PAT is ₹2,112 cr |
+| LUPIN 2021-09-30 | **−2094.87** | −209.84 | Q2 FY22 loss is ₹2,095 cr |
+| KAYNES 2023-03-31 | **63.51** | 5,814,249.6 | ₹63 cr |
+| SELMCL 2018-03-31 | **−1541.55** | +1541.34 | sign flipped in the tag |
+
+**The owners tag is the corrupted thing in this population** — ×0.1, sign-flipped, or unscaled raw
+rupees. `build_fundamentals.xbrl_profit`, the EPS-guarded parser, returns the same bad tag, which
+proves sf_fundamentals' correct values never came from these cached filings at all. sf_revop's patC
+is built from the unguarded tag, which is *why* it is the file that diverges.
+
+**The lesson, and it is not a small one: a source being primary does not make it correct.** The
+filer's own XBRL is as primary as it gets and it was wrong 693 times. Sanity-check a mass verdict
+against a handful of facts you can confirm independently — Maruti's quarterly profit is public
+knowledge — before letting it write. A verdict that overturns everything you established that day is
+far more likely to be a bug in your adjudicator than a discovery.
+
+### 71a. What was actually done instead
+sf_fundamentals is authoritative (`stock.html`, `build_quarterly_results`), it is what the site
+displays, and after §70 it is what Discovery reads. So the mirror was resynced to it — **writing
+only sf_revop, never the authoritative file** (verified byte-identical afterwards). No new error can
+be introduced this way: worst case the mirror carries an error the site was already showing.
+**Divergences 1,372 → 766 → 23.**
+
+### 71b. The 23 held back — `scripts/_fund_suspect_cells.json`
+Cells where **sf_fundamentals itself** is out of family against that company's own median |npCon|
+(>8× or <0.125×) while the mirror is in family. Resyncing from a value that looks wrong would
+launder it into a second file. Worst offenders: ZEAL 2026-03 (4114.27 against a 2.35 median),
+RELCAPITAL 2023-03 (2436.50 vs 276), NUCLEUS 2025-12 (250.2 vs 26.8), IFCI 2024-12, IRB 2020-09.
+Each needs a filing read. **This is now the whole remaining divergence population.**
