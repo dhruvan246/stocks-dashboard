@@ -15,6 +15,9 @@
   .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
   .inp{border:1px solid #cbd5e1;border-radius:.5rem;padding:.45rem .6rem;font-size:.875rem;background:#fff}
   .lbl{display:block;font-size:.7rem;font-weight:600;color:#64748b;margin-bottom:.25rem;text-transform:uppercase;letter-spacing:.02em}
+  /* theme.css flattens Chrome's default bold optgroup label back to 400 — restore it so the
+     factor groups read as headings, not as another selectable factor. */
+  select optgroup{font-weight:700}
   #ov{position:fixed;inset:0;background:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50}
 </style>
 </head>
@@ -91,6 +94,7 @@ let META={}, SERIES={}, IDXH={}, FNOH=[], START_TS=0, NIFTY={}, NIFTY500={};
 let SURV=null, SF=null, DATA_MODE='surv', TURN={}, SF_END_OFF=Infinity;
 let SUPPRESS_MODE_RESET=false;   // see setMode(): loading data FOR a displayed result must not wipe it
 const TURN_OPTS=[['100','≥₹1 Cr'],['500','≥₹5 Cr'],['2000','≥₹20 Cr'],['10000','≥₹100 Cr']]; // daily turnover (₹ lacs)
+const OWN_GRP='Ownership — FII/DII (latest filed quarter)';
 const FIELDS=[
   {v:'rsi',l:'RSI(14)'},
   {v:'d52',l:'Distance from 52w High % (high 100, price 95 → 5; near-high = ≤ 10)'},
@@ -100,10 +104,12 @@ const FIELDS=[
   {v:'hist_mcap',l:'Historical Mcap (₹Cr) — ⚠ NO DATA (always 0); use Turnover'},
   {v:'profitYoyPct',l:'Net Profit Qtr Growth YoY % (point-in-time earnings)'},
   {v:'profitBase',l:'Net Profit Yr-ago Qtr ₹Cr (YoY base)'},
-  {v:'fiiPct',l:'FII holding % (latest filed quarter)'},
-  {v:'fiiChgPp',l:'FII holding change QoQ (percentage points)'},
-  {v:'diiPct',l:'DII holding % (latest filed quarter)'},
-  {v:'diiChgPp',l:'DII holding change QoQ (percentage points)'},
+  // `g` groups these four into one <optgroup> — in a 39-item flat list the FII pair reads as
+  // part of the fundamentals block above it and gets missed (reported 2026-08-09).
+  {v:'fiiPct',   g:OWN_GRP, l:'FII holding %'},
+  {v:'fiiChgPp', g:OWN_GRP, l:'FII holding change QoQ (pp)'},
+  {v:'diiPct',   g:OWN_GRP, l:'DII holding %'},
+  {v:'diiChgPp', g:OWN_GRP, l:'DII holding change QoQ (pp)'},
   {v:'ret1m',l:'Return — 1 month %'},
   {v:'ret3m',l:'Return — 3 month %'},
   {v:'ret6m',l:'Return — 6 month %'},
@@ -132,6 +138,18 @@ const FIELDS=[
   {v:'composite',l:'Quality-Momentum composite (z: TTM growth + 12m return − volatility)'},
 ];
 const FIELD_LABEL={}; FIELDS.forEach(f=>FIELD_LABEL[f.v]=f.l);
+// Options for the Sort-by / filter-field dropdowns. A run of FIELDS entries sharing the same `g`
+// is wrapped in one <optgroup>, so related factors read as a labelled block instead of vanishing
+// into the flat list. Ungrouped entries stay direct children of the <select> (valid HTML).
+function fieldOptionsHtml(){
+  let html='', open=null;
+  for(const f of FIELDS){
+    const g=f.g||null;
+    if(g!==open){ if(open) html+='</optgroup>'; if(g) html+=`<optgroup label="${g}">`; open=g; }
+    html+=`<option value="${f.v}">${f.l}</option>`;
+  }
+  return html + (open?'</optgroup>':'');
+}
 const fmtINR=n=>'₹'+Math.round(n).toLocaleString('en-IN');
 const pct=n=>(n>=0?'+':'')+n.toFixed(2)+'%';
 const stockHref=sym=>'./stock.html?sym='+encodeURIComponent(sym);
@@ -301,7 +319,7 @@ function markPrice(tkr, off){ if(DATA_MODE==='sf'){ const s=SERIES[tkr]; if(!s)r
 async function initUI(){
   // unified Universe dropdown (size buckets + index constituents + F&O)
   buildUniverse(DATA_MODE, false);
-  $('cSort').innerHTML=FIELDS.map(f=>`<option value="${f.v}">${f.l}</option>`).join('');
+  $('cSort').innerHTML=fieldOptionsHtml();
   addFilter(); // one empty filter row
   $('addF').onclick=addFilter;
   $('run').onclick=saveStrategyFromForm;   // primary action is now SAVE; runs are launched from the Saved Strategies cards
@@ -336,7 +354,7 @@ async function initUI(){
 function maxOffset(){ let mx=0; for(const k in SERIES){const d=SERIES[k].d; if(d&&d.length){const v=d[d.length-1]; if(v>mx)mx=v;}} return mx; }
 function addFilter(){
   const row=document.createElement('div'); row.className='flex items-center gap-2 fRow';
-  row.innerHTML=`<select class="inp f-field text-xs flex-1">${FIELDS.map(f=>`<option value="${f.v}">${f.l}</option>`).join('')}</select>
+  row.innerHTML=`<select class="inp f-field text-xs flex-1">${fieldOptionsHtml()}</select>
     <select class="inp f-op text-xs"><option>&gt;</option><option>&gt;=</option><option>&lt;</option><option>&lt;=</option><option>==</option></select>
     <input type="number" step="any" class="inp f-val text-xs w-24" placeholder="value"/>
     <button class="text-red-500 text-sm px-1 f-rm">&times;</button>`;
@@ -1489,7 +1507,7 @@ async function bakeAll(){
 async function initUIStatic(){
   DATA_MODE='sf';
   buildUniverse('sf', false);                                   // universe options are static (TURN_OPTS + index list)
-  $('cSort').innerHTML=FIELDS.map(f=>`<option value="${f.v}">${f.l}</option>`).join('');
+  $('cSort').innerHTML=fieldOptionsHtml();
   addFilter(); $('addF').onclick=addFilter;
   $('run').onclick=saveStrategyFromForm;                        // primary action = Save (no market data needed)
   let end=''; try{ end=(await (await fetch('./sf_meta.json')).json()).end||''; }catch(e){}

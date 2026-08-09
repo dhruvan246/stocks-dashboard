@@ -12,6 +12,7 @@ let META = {}, SERIES = {}, IDXH = {}, FNOH = [], START_TS = 0, NIFTY = {}, NIFT
 let SF = null, TURN = {}, SF_END_OFF = Infinity;
 const DATA_MODE = 'sf';                       // survivorship-free only
 const TURN_OPTS = [['100', '≥₹1 Cr'], ['500', '≥₹5 Cr'], ['2000', '≥₹20 Cr'], ['10000', '≥₹100 Cr']]; // daily turnover (₹ lacs)
+const OWN_GRP = 'Ownership — FII/DII (latest filed quarter)';
 const FIELDS = [
   { v: 'rsi', l: 'RSI(14)' },
   { v: 'd52', l: 'Distance from 52w High % (high 100, price 95 → 5; near-high = ≤ 10)' },
@@ -23,10 +24,11 @@ const FIELDS = [
   { v: 'profitYoyPct', l: 'Net Profit Qtr Growth YoY % (point-in-time earnings)' },
   { v: 'profitBase', l: 'Net Profit Yr-ago Qtr ₹Cr (YoY base)' },
   // --- shareholding pattern: point-in-time FII/DII holding (quarterly SHP filings) ---
-  { v: 'fiiPct', l: 'FII holding % (latest filed quarter)' },
-  { v: 'fiiChgPp', l: 'FII holding change QoQ (percentage points)' },
-  { v: 'diiPct', l: 'DII holding % (latest filed quarter)' },
-  { v: 'diiChgPp', l: 'DII holding change QoQ (percentage points)' },
+  // `g` = <optgroup> heading in the builder dropdowns (see stock-backtest.html fieldOptionsHtml).
+  { v: 'fiiPct', g: OWN_GRP, l: 'FII holding %' },
+  { v: 'fiiChgPp', g: OWN_GRP, l: 'FII holding change QoQ (pp)' },
+  { v: 'diiPct', g: OWN_GRP, l: 'DII holding %' },
+  { v: 'diiChgPp', g: OWN_GRP, l: 'DII holding change QoQ (pp)' },
   // --- extended technical factors (close + turnover + Nifty derived) ---
   { v: 'ret1m', l: 'Return — 1 month %' },
   { v: 'ret3m', l: 'Return — 3 month %' },
