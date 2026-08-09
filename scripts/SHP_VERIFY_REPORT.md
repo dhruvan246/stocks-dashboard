@@ -44,8 +44,8 @@ of every held and unanchorable case — produced the final ledger of the class:
 | **HEALED** | **260** | our value was the superseded original; corrected via `shp_cell_fix.json` (35 site-contested + 199 full-sweep + 10 held-then-adjudicated + 9 ambiguous-resolved + 7 unanchorable-raw-read) |
 | **STORED-RIGHT** | **16** | the flagged "revision" is itself the wrong document — APTECHT's 35.06 against continuity+NSE+sites; FOCUS's 70-94-holder register vs its real ~25,000; SAGCEM's September filing misfiled under June |
 | **IMMATERIAL** | **183** | revised docs whose raw facts equal our stored values — refused by the parser on STRUCTURE (zero-institution filings), not substance |
-| seam-referred | 6 | late-filed XBRLs that EXIST for Dec-2015/Mar-2016 (a §22f premise correction) but conflict with the coverage session's fresh seam harvest — theirs to adjudicate (BHARATFORG's doc lumps institutions undifferentiated where the MC-derived split carries more information) |
-| retry-pending | 18 | documents that failed to fetch twice; deliberately NOT suppressed, so the Sunday sweep retries them |
+| seam — RESOLVED by the coverage session | 6 | late-filed XBRLs EXIST for Dec-2015/Mar-2016 (a §22f premise correction). Adjudicated against a third anchor (our own Jun-2016 BSE-XBRL cell): **2 doc-wins** (MINDACORP — the referral caught a genuine harvest defect: its MC institutions block was mis-bounded), **1 partial** (BFUTILITIE — promoter patched, corroborated split kept), **2 harvest-kept at stated LOW confidence** (BHARATFORG — the doc's FII 0.00 is the old-format no-FII-row artifact, but the split is uncertain in both directions), **1 dropped** (BBTC — promoter known ~8pp low with nothing valid to replace it; dropping beats publishing a known-wrong value) |
+| retry-pending | 18 (Sunday sweep) | documents that failed to fetch twice; deliberately NOT suppressed, so the Sunday sweep retries them |
 | **unexplained** | **0** | |
 
 Every adjudication is recorded in `scripts/_shp_revision_adjudicated.json` (the Sunday sweep skips
