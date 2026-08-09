@@ -5348,6 +5348,37 @@ tag**, so the implied −9.13 split is arithmetically possible and wholly unconf
 coverage. It needs a different attachment or a vision read.
 
 
+### 71k. ★★★ `page_basis()` HIDES SIDE-BY-SIDE STATEMENTS — the commonest reason a "profit row" is missing
+BANCOINDIA 2018-19 was the last cell queued for a vision read. **It needed no vision, and the
+consolidated P&L was in the filing the whole time.**
+
+`date_columns.page_basis()` returns `None` when a page mentions BOTH "consolidated" and
+"standalone" — it treats that as a cover/notes page. But a very common Indian layout is a **single
+statement printing STANDALONE and CONSOLIDATED side by side**, five columns each. Such a page names
+both bases, so it classifies `'-'`, and **every reader that filters `page_basis(pg) == "con"` skips
+the only page that has the numbers.** That is what produced "no consolidated page with a profit
+block" here — and, on the evidence of §71c, likely several of the six "no profit-for-period row"
+abstentions too.
+
+BANCOINDIA's page 1, `Rs in Lakhs`, row 14 "Profit/(Loss) for the period (10+13)":
+```
+consolidated   Mar-19 487 | Dec-18 (370) | Mar-18 2,698 | FY19 6,908 | FY18 11,677
+standalone     Mar-19 3,662 …                                  (3,662 == our stored npStd 36.62)
+```
+Stored Dec-18 **−3.70** and Mar-18 **26.98** reproduce that row exactly, so the column and the basis
+are both pinned. **4.87 is correct; no change.** The mirror's 14.00 is row 16, *Total Comprehensive
+income attributable to owners* = 487 + OCI 913 = 1,400 — the §71j TCI-not-PAT trap again.
+
+**Fix to make: `page_basis` needs a third answer.** "Both words present" should mean *both bases are
+on this page*, not *skip me*. Until it does, any reader that abstains with "no consolidated page"
+must retry with the basis filter OFF and pick the block by column geometry — the consolidated block
+is identifiable by magnitude against the standalone one.
+
+**Vision has still never been needed.** Twice now a cell was escalated to the vision rung and twice
+the answer was in a text layer the *filters* were hiding (§71e was a failed fetch plus an OCR layer;
+this one a basis misclassification). Exhaust the filters before the rung.
+
+
 ## 72. ★★★ VERIFYING REV/PAT vs EXTERNAL SITES — the sites can only reach 10 of our 95 quarters  (campaign 2026-08-09)
 
 Full write-up `scripts/REVPAT_VERIFY_REPORT.md`; plan `REVPAT_VERIFY_CAMPAIGN.md`; phase findings and

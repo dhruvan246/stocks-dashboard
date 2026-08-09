@@ -6,17 +6,11 @@
   "2026-08-09 verification pass: 2 of 7 settled from filings. 3IINFOLTD 20251231 was a REGRESSION introduced by the \u00a771g blanket resync -- the filing and the XBRL both give owners 2.14 (period 2.09, NCI -0.05) and the resync wrote the TOTAL; corrected to 2.14. DELTAMAGNT 20220331 confirmed at -0.12 in two filings. The remaining 5 are unreadable for per-cell reasons recorded in each entry -- they are NOT verified.",
   "2026-08-09 verification pass: 2 of 7 settled from filings. 3IINFOLTD 20251231 was a REGRESSION introduced by the \u00a771g blanket resync -- the filing and the XBRL both give owners 2.14 (period 2.09, NCI -0.05) and the resync wrote the TOTAL; corrected to 2.14. DELTAMAGNT 20220331 confirmed at -0.12 in two filings. The remaining 5 are unreadable for per-cell reasons recorded in each entry -- they are NOT verified.",
   "2026-08-09 neighbour-anchor pass (\u00a771i): IRB 20200930 CONFIRMED at -19.66 (two identities close, incl. H1FY21 -19.66 + stored Jun-20 -30.14 = -49.80 exactly as printed); ARIHANTCAP 20260331 CORRECTED 1.28 -> 0.50 (FY26 12.70+13.08+5.18+0.50 = 31.46 exactly as printed -- neither stored value was right). 3 remain and none is a regex gap: AXISCADES (OCR absorbs figures into captions; its only 'anchor' was a false positive off the 0.05 tolerance floor), BANCOINDIA (nothing anchors on two stored neighbours), SUBCAPCITY (no BSE listing, \u00a771f).",
-  "2026-08-09 final pass: AXISCADES 20181231 settled at -0.73. Dumping the whole profit block (not just matched rows) showed TWO attribution blocks -- the mirror's 1.59 was TOTAL COMPREHENSIVE INCOME attributable to owners, not PAT. Owners PAT = -0.73, confirmed by the FY19 column closing exactly (-7.67 - 0.46 = -8.13 as printed). 2 remain: BANCOINDIA (no con P&L in any PDF) and SUBCAPCITY (no BSE listing, \u00a771f)."
+  "2026-08-09 final pass: AXISCADES 20181231 settled at -0.73. Dumping the whole profit block (not just matched rows) showed TWO attribution blocks -- the mirror's 1.59 was TOTAL COMPREHENSIVE INCOME attributable to owners, not PAT. Owners PAT = -0.73, confirmed by the FY19 column closing exactly (-7.67 - 0.46 = -8.13 as printed). 2 remain: BANCOINDIA (no con P&L in any PDF) and SUBCAPCITY (no BSE listing, \u00a771f).",
+  "2026-08-09 BANCOINDIA 20190331 CONFIRMED at 4.87 -- no change, and NO vision read needed though one was approved. The consolidated P&L was there all along on page 1, which page_basis() had classified '-' because the page names BOTH bases: it is a side-by-side STANDALONE|CONSOLIDATED statement. Row 14 'Profit/(Loss) for the period (10+13)', consolidated block: Mar-19 487 | Dec-18 (370) | Mar-18 2,698 | FY19 6,908 (lakhs). Dec-18 -3.70 and Mar-18 26.98 match our stored values EXACTLY. The mirror's 14.00 is row 16 'Total Comprehensive income attributable to owners' = 487 + OCI 913 = 1,400 -- the same TCI-not-PAT trap as AXISCADES (\u00a771j)."
  ],
  "generated": "2026-08-09",
  "cells": [
-  {
-   "sym": "BANCOINDIA",
-   "qe": 20190331,
-   "value": 4.87,
-   "was_mirror": 14.0,
-   "why": "no consolidated P&L table exists as a text layer in ANY fetched PDF across all four windows -- the own filing's con pages are a balance sheet and auditors' reports, Q+1/Q+4 carry only auditor narrative. The XBRL has total 4.87 and owners 14.00 but NO NCI tag, so the implied -9.13 split is possible and unconfirmed. screener has no coverage. Needs a different attachment or a vision read."
-  },
   {
    "sym": "SUBCAPCITY",
    "qe": 20210331,
