@@ -37,15 +37,22 @@ BACKFILL={
 # Both directions are authoritative: `now` is a heal, `value` is a REVERT (a cell adjudicated back
 # to what we already had, e.g. TATACOFFEE — owners 26.63, not the total 38.40 the heal wrote). A
 # revert has to pin too, or nothing stops a later ingestion from reintroducing the wrong number.
-try:
-    _H=json.load(open(os.path.join(HERE,"con_copy_heals.json")))
-    HEALS={}
-    for _k,_v in _H.items():
-        if not _k.endswith("|patC"): continue
-        _val=_v.get("now") if _v.get("now") is not None else _v.get("value")
-        if _val is not None: HEALS["%s|%s"%(_k.split("|")[0],_k.split("|")[1])]=_val
-except Exception:
-    HEALS={}
+HEALS={}
+for _lg,_key in (("con_copy_heals.json",("now","value")),
+                 ("owners_basis_heals.json",("owners",))):
+    # owners_basis_heals.json carries the 2026-08-09 owners-vs-total repairs (KIRLFER, ATUL,
+    # SADBHAV, RENUKA, NUCLEUS, ZEAL...). _reattr_owners still holds the pre-repair number for
+    # some of them -- NUCLEUS 20251231 would have been reverted 20.70 -> 250.20 on the next
+    # nightly run -- so this ledger has to outrank the cache too, exactly like con_copy_heals.
+    try:
+        _H=json.load(open(os.path.join(HERE,_lg)))
+        _items=_H.get("cells",_H) if isinstance(_H,dict) else {}
+        for _k,_v in _items.items():
+            if not _k.endswith("|patC") or not isinstance(_v,dict): continue
+            _val=next((_v[_n] for _n in _key if _v.get(_n) is not None),None)
+            if _val is not None: HEALS["%s|%s"%(_k.split("|")[0],_k.split("|")[1])]=_val
+    except Exception:
+        pass
 src_own=src_bf=src_ren=src_heal=0
 for sym,arr in live.items():
     for r in arr:

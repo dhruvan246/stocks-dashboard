@@ -3,7 +3,10 @@
   "Cells where sf_fundamentals' npCon is ITSELF out of family against that company's own",
   "median |npCon| (>8x or <0.125x) while sf_revop's mirror is in family. NOT resynced --",
   "copying a value that looks wrong would launder it into a second file. Each needs a filing",
-  "read. Found 2026-08-09 while resyncing the mirror; runbook \u00a771."
+  "read. Found 2026-08-09 while resyncing the mirror; runbook \u00a771.",
+  "2026-08-09 pass 2: 5 of the 23 settled (NUCLEUS, OSWALAGRO, RELCAPITAL, ZEAL, SURANAT&P) and removed. For 10 of the remaining 18, screener AGREES with sf_fundamentals -- but screener quotes TOTAL PAT, so that only establishes fundamentals holds the TOTAL, not that it is right on our owners basis. Each of those needs exactly one number from the filing: the non-controlling-interest line. 5 more have no screener coverage at all (AXISCADES, BANCOINDIA, DELTAMAGNT, IRB, JHS) and 3 are ambiguous (3IINFOLTD, ARIHANTCAP, SUBCAPCITY 20210331).",
+  "2026-08-09 pass 3: VADILALIND settled and removed -- its flag was a FALSE ALARM (the quarter really is near zero; screener con ~-0.0 agrees with the filing's -0.15/-0.16). 17 remain, each now carrying `abstain_reason` from an instrumented pass. Three of them are structural rather than reader gaps: SUBCAPCITY x2 have NO SCRIPCODE so the BSE stream cannot be reached at all, and JHS 20180930 returned no consolidated page in any fetched PDF (scanned -- that is the VISION rung, which needs the user's go-ahead).",
+  "2026-08-09 pass 2: 5 of the 23 settled (NUCLEUS, OSWALAGRO, RELCAPITAL, ZEAL, SURANAT&P) and removed. For 10 of the remaining 18, screener AGREES with sf_fundamentals -- but screener quotes TOTAL PAT, so that only establishes fundamentals holds the TOTAL, not that it is right on our owners basis. Each of those needs exactly one number from the filing: the non-controlling-interest line. 5 more have no screener coverage at all (AXISCADES, BANCOINDIA, DELTAMAGNT, IRB, JHS) and 3 are ambiguous (3IINFOLTD, ARIHANTCAP, SUBCAPCITY 20210331)."
  ],
  "generated": "2026-08-09",
  "cells": [
@@ -12,161 +15,136 @@
    "qe": 20200930,
    "fund": -19.66,
    "revop": -66.6,
-   "family_median": 171.28
-  },
-  {
-   "sym": "NUCLEUS",
-   "qe": 20251231,
-   "fund": 250.2,
-   "revop": 20.7,
-   "family_median": 26.82
+   "family_median": 171.28,
+   "abstain_reason": "target quarter appears in NO header row across 54 consolidated pages"
   },
   {
    "sym": "JHS",
    "qe": 20180930,
    "fund": -27.82,
    "revop": 0.93,
-   "family_median": 1.68
+   "family_median": 1.68,
+   "abstain_reason": "no consolidated page at all in 3 fetched PDFs -- likely scanned; VISION rung"
   },
   {
    "sym": "DELTAMAGNT",
    "qe": 20220331,
    "fund": -0.12,
    "revop": -1.15,
-   "family_median": 2.83
-  },
-  {
-   "sym": "OSWALAGRO",
-   "qe": 20230630,
-   "fund": 0.3,
-   "revop": 4.28,
-   "family_median": 4.71
-  },
-  {
-   "sym": "VADILALIND",
-   "qe": 20251231,
-   "fund": -0.15,
-   "revop": 2.49,
-   "family_median": 14.04
+   "family_median": 2.83,
+   "abstain_reason": "no NCI row on the page carrying the target quarter"
   },
   {
    "sym": "BODALCHEM",
    "qe": 20230930,
    "fund": 1.24,
    "revop": 10.27,
-   "family_median": 20.98
+   "family_median": 20.98,
+   "abstain_reason": "no profit-for-period row co-occurring with the target column"
   },
   {
    "sym": "AXISCADES",
    "qe": 20181231,
    "fund": -0.61,
    "revop": 1.59,
-   "family_median": 10.54
+   "family_median": 10.54,
+   "abstain_reason": "rows found but period - NCI != owners; wrong rows picked"
   },
   {
    "sym": "BANCOINDIA",
    "qe": 20190331,
    "fund": 4.87,
    "revop": 14.0,
-   "family_median": 45.9
+   "family_median": 45.9,
+   "abstain_reason": "no profit-for-period row co-occurring with the target column"
   },
   {
    "sym": "CENTUM",
    "qe": 20240930,
    "fund": -0.31,
    "revop": -1.65,
-   "family_median": 4.55
+   "family_median": 4.55,
+   "abstain_reason": "no profit-for-period row co-occurring with the target column"
   },
   {
    "sym": "TRF",
    "qe": 20231231,
    "fund": 1.21,
    "revop": 10.94,
-   "family_median": 10.45
-  },
-  {
-   "sym": "RELCAPITAL",
-   "qe": 20230331,
-   "fund": 2436.5,
-   "revop": -1502.57,
-   "family_median": 276.0
+   "family_median": 10.45,
+   "abstain_reason": "no NCI row on the page carrying the target quarter"
   },
   {
    "sym": "SUBCAPCITY",
    "qe": 20200331,
    "fund": -4.53,
    "revop": -0.79,
-   "family_median": 0.49
+   "family_median": 0.49,
+   "abstain_reason": "NO SCRIPCODE in scrip_map -> the BSE announcement stream is unreachable"
   },
   {
    "sym": "SUBCAPCITY",
    "qe": 20210331,
    "fund": 7.41,
    "revop": 2.67,
-   "family_median": 0.49
+   "family_median": 0.49,
+   "abstain_reason": "NO SCRIPCODE in scrip_map -> the BSE announcement stream is unreachable"
   },
   {
    "sym": "IFCI",
    "qe": 20241231,
    "fund": -8.74,
    "revop": 741.53,
-   "family_median": 131.34
+   "family_median": 131.34,
+   "abstain_reason": "rows found but the identity fails; revop 741.53 vs fund -8.74 is a wide gap, needs the document"
   },
   {
    "sym": "STLTECH",
    "qe": 20250930,
    "fund": 4.0,
    "revop": 28.0,
-   "family_median": 57.0
+   "family_median": 57.0,
+   "abstain_reason": "no profit-for-period row co-occurring with the target column"
   },
   {
    "sym": "NAZARA",
    "qe": 20240331,
    "fund": 0.18,
    "revop": 8.35,
-   "family_median": 14.8
+   "family_median": 14.8,
+   "abstain_reason": "no NCI row on the page carrying the target quarter (material NCI company)"
   },
   {
    "sym": "ARIHANTCAP",
    "qe": 20260331,
    "fund": 1.28,
    "revop": 10.96,
-   "family_median": 12.62
+   "family_median": 12.62,
+   "abstain_reason": "no profit-for-period row co-occurring with the target column"
   },
   {
    "sym": "3IINFOLTD",
    "qe": 20251231,
    "fund": 2.09,
    "revop": 2.14,
-   "family_median": 17.11
+   "family_median": 17.11,
+   "abstain_reason": "no NCI row on the page carrying the target quarter (46 con pages, 18 with the header)"
   },
   {
    "sym": "DCXINDIA",
    "qe": 20260331,
    "fund": -0.3,
    "revop": 30.63,
-   "family_median": 9.6
+   "family_median": 9.6,
+   "abstain_reason": "no profit-for-period row co-occurring with the target column"
   },
   {
    "sym": "LANCORHOL",
    "qe": 20250331,
    "fund": 0.03,
    "revop": 1.27,
-   "family_median": 2.52
-  },
-  {
-   "sym": "SURANAT&P",
-   "qe": 20250930,
-   "fund": 0.17,
-   "revop": 0.76,
-   "family_median": 1.62
-  },
-  {
-   "sym": "ZEAL",
-   "qe": 20260331,
-   "fund": 4114.27,
-   "revop": 6.53,
-   "family_median": 2.35
+   "family_median": 2.52,
+   "abstain_reason": "rows found but the identity fails; wrong rows picked"
   }
  ]
 }

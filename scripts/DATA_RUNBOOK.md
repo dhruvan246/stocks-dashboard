@@ -5196,3 +5196,42 @@ tooling in `scripts/revpat_verify/` (`audit_revpat_coverage`, `revpat_strata`, `
   `build_contested.py` rebuilds the internal-divergence queue; `revpat_mapcard.py --extract <jsonl>
   --site <s>` derives a card and REFUSES below 80% hold; `revpat_quorum.py --base <dir>` applies
   rule 6b using accepted mappings only.
+
+### 71c. The 23 suspects: 6 settled, 17 need the document — and the screener trap in adjudicating them
+Of the 23 cells §71b held back, **6 are closed**:
+
+```
+NUCLEUS    2025-12-31  npCon 250.20  -> 20.70      screener 21, mirror agrees
+OSWALAGRO  2023-06-30  npCon   0.30  ->  4.28      screener 4.28; npCon was a copy of npStd
+RELCAPITAL 2023-03-31  npCon 2436.50 -> -1502.57   screener -1499; fund had the wrong SIGN too
+ZEAL       2026-03-31  npCon 4114.27 ->  6.53  AND npStd 4114.27 -> 7.15 (both bases junk)
+SURANAT&P  2025-09-30  npCon   0.17  ->  0.76      filing: 0.17 - (-0.59) = 0.76 exactly
+VADILALIND 2025-12-31  npCon  -0.15  -> -0.16      FALSE ALARM: the quarter really is ~0
+```
+
+**★ screener cannot adjudicate this class on its own, and it is tempting to think it can.** It
+quotes **TOTAL** PAT. So "screener agrees with sf_fundamentals" establishes only that fundamentals
+holds the TOTAL — not that it is right on our owners basis. Where NCI is material the mirror may be
+the correct value. That is why only cells with a *filing* read (SURANAT&P, VADILALIND) or where
+fundamentals is demonstrably junk (the other four) were written.
+
+**The 17 that abstained, with the first rung that broke** (now in `_fund_suspect_cells.json` as
+`abstain_reason`, so the next attempt starts from a diagnosis):
+* 6 — no profit-for-period row co-occurring with the target column
+* 4 — no NCI row on the page that carries the target quarter (3IINFOLTD, DELTAMAGNT, NAZARA, TRF)
+* 3 — rows found but `period − NCI != owners`; wrong rows picked (AXISCADES, IFCI, LANCORHOL)
+* 1 — IRB 2020-09: the target quarter appears in **no** header row across 54 consolidated pages
+* 1 — JHS 2018-09: **no consolidated page at all** in any fetched PDF — scanned, the VISION rung
+* 2 — SUBCAPCITY ×2: **no scripcode in `scrip_map`**, so the BSE stream is unreachable. Structural,
+  not a reader gap — fix the map first.
+
+Three automated passes (loose read, header-gated read, relaxed labels) resolved 1 more between
+them. The blocker is not one fixable gap; it is per-cell page layout. Do not keep widening regexes
+against it — the loose pass matched narrative prose and would have written nonsense.
+
+### 71d. `owners_basis_heals.json` now outranks `_reattr_owners` too
+Caught by the §65c check: `_reattr_owners.json` still held NUCLEUS 2025-12-31 at **250.20** and
+would have reverted the repair to it on the next nightly `apply_owners_full`. That script now reads
+`owners_basis_heals.json` with the same precedence it gives `con_copy_heals.json`, so every
+owners-vs-total repair from this session is pinned. **Any new heal ledger needs adding there, or
+the nightly job silently undoes it.**
