@@ -1,0 +1,17 @@
+{
+  "_note": "symbol -> BSE scripcode, for names the live scrip master cannot resolve by scrip_id because the company was renamed or demerged. Each entry is evidence-backed (ISIN or an unambiguous name+code match in BSE's full status= listing); never guess one.",
+  "RNAVAL": 533107,
+  "RUCHISOYA": 500368,
+  "TUBEINVEST": 504973,
+  "MONSANTO": 524084,
+  "CAPF": 532938,
+  "GLOBOFFS": 501848,
+  "_evidence": {
+    "RNAVAL": "533107 = Pipavav Defence -> Reliance Naval & Engineering -> Swan Defence & Heavy Industries; same code throughout",
+    "RUCHISOYA": "500368 = Ruchi Soya -> Patanjali Foods, ISIN INE619A01035, code unchanged across the rename",
+    "TUBEINVEST": "504973 = the PRE-demerger Tube Investments of India, which renamed to Cholamandalam Financial Holdings in 2017. The 2017 manufacturing spin-off is a DIFFERENT entity (540762/TIINDIA) — do not use it for pre-2017 quarters",
+    "MONSANTO": "524084 Monsanto India Ltd (delisted) — only in the full listing, not the Active one",
+    "CAPF": "532938 Capital First Ltd (delisted into IDFC First Bank)",
+    "GLOBOFFS": "501848 = Garware Offshore Services -> Global Offshore Services, ISIN INE446C01013"
+  }
+}

@@ -28,6 +28,8 @@ _strag_*
 # so a resume never re-probes them (the raw quarter-list cache scripts/_shp_bse_cache/ stays local)
 !scripts/_shp_bse_absent.json
 !scripts/_shp_nse_absent.json
+# evidence-backed symbol -> BSE scripcode overrides for renamed/demerged names
+!scripts/_shp_scripcode_override.json
 # parse_shp regression harness — old vs new parser on the same bytes, keep it runnable
 !scripts/_shp_anchor_regression.py
 

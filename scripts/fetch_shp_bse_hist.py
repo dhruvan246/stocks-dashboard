@@ -148,6 +148,15 @@ def build_codemap(hist_names):
     except Exception as e:
         print("WARN bse_scrips.json unusable: %s" % e)
 
+    ovr = os.path.join(HERE, "_shp_scripcode_override.json")
+    if os.path.exists(ovr):
+        try:
+            for k, v in load_json(ovr).items():
+                if not k.startswith("_"):
+                    cmap[norm(k)] = int(v); cmap[str(k).upper()] = int(v)
+        except Exception as e:
+            print("WARN scripcode override unusable: %s" % e)
+
     if os.path.exists(FULLSCRIP):
         full = load_json(FULLSCRIP)
     else:
