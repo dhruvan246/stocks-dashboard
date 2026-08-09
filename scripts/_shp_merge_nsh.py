@@ -40,10 +40,39 @@ def load(path):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--stage", default=os.path.join(HERE, "shp_history_stage.json"))
+    ap.add_argument("--counts", default="", help='count-only ledger {"counts":{SYM:{QE:int}}}, gz ok')
+    ap.add_argument("--accept", default="", help="seam report JSON; merge ONLY its PASS/SOFT rows")
     ap.add_argument("--apply", action="store_true", help="actually write (default: dry run)")
     a = ap.parse_args()
 
-    main_h, stage = load(MAIN), load(a.stage)
+    main_h = load(MAIN)
+    if a.counts:
+        import gzip as _gz
+        raw = _gz.open(a.counts, "rb").read() if a.counts.endswith(".gz") else open(a.counts, "rb").read()
+        counts = json.loads(raw).get("counts", {})
+        ok = None
+        if a.accept:
+            rep = json.load(open(a.accept, encoding="utf-8"))
+            ok = {(r["sym"], r["qe"]) for r in rep.get("rows", [])
+                  if r.get("verdict") in ("PASS", "SOFT")}
+            print("acceptance filter: %d PASS/SOFT rows admitted" % len(ok))
+        # Shape the count-only ledger into stage form by copying main's OWN percentages, so the
+        # drift guard below still runs unchanged and slot 6 is the only thing that can change.
+        stage = {}
+        for sym, qs in counts.items():
+            for qe, n in qs.items():
+                if ok is not None and (sym, qe) not in ok:
+                    continue
+                cur = main_h.get(sym, {}).get(qe)
+                if not cur:
+                    continue
+                cell = list(cur)
+                while len(cell) <= NSH:
+                    cell.append(None)
+                cell[NSH] = int(n)
+                stage.setdefault(sym, {})[qe] = cell
+    else:
+        stage = load(a.stage)
     before = sum(len(v) for k, v in main_h.items() if not k.startswith("_"))
     with_nsh_before = sum(1 for k, v in main_h.items() if not k.startswith("_")
                           for c in v.values() if len(c) > NSH and c[NSH])

@@ -79,18 +79,27 @@ def main():
             if already and len(already) > NSH and already[NSH]:
                 tally["ALREADY_HAVE"] += 1
                 continue
-            anchors = [(q, v) for q, v in held if q > qe]
+            # Anchor on the NEAREST independently-sourced count in EITHER direction. Looking only
+            # forward left 475 of 575 recent cells unjudged (NO_ANCHOR) — for the newest quarters
+            # there IS no later count, but the PRIOR quarter is right there at 99.9% coverage and
+            # is a perfectly good continuity reference.
+            anchors = sorted(((q, v) for q, v in held if q != qe),
+                             key=lambda t: abs(years_between(min(t[0], qe), max(t[0], qe))))
             if not anchors:
                 tally["NO_ANCHOR"] += 1
                 rows.append({"sym": sym, "qe": qe, "val": val, "verdict": "NO_ANCHOR",
                              "note": "no later independently-sourced count to compare against"})
                 continue
             aq, av = anchors[0]
-            yrs = years_between(qe, aq)
+            yrs = abs(years_between(min(aq, qe), max(aq, qe)))
             ratio = (av / val) if val else 0.0
-            cagr = (ratio ** (1.0 / yrs) - 1.0) if (yrs > 0 and ratio > 0) else None
-            if cagr is None or ratio > RATIO_HI or ratio < RATIO_LO:
+            # CAGR is meaningless across a single quarter: a real 76% move over 3 months
+            # annualises to 850%/yr and looks catastrophic. Under a year, judge the RATIO alone.
+            cagr = (ratio ** (1.0 / yrs) - 1.0) if (yrs >= 1.0 and ratio > 0) else None
+            if ratio <= 0 or ratio > RATIO_HI or ratio < RATIO_LO:
                 v = "FAIL"                      # order-of-magnitude: scale/column error
+            elif cagr is None:
+                v = "PASS"                      # sub-annual span, ratio already inside bounds
             elif abs(cagr) <= PASS_CAGR:
                 v = "PASS"
             elif abs(cagr) <= SOFT_CAGR:
