@@ -14,7 +14,11 @@ REPO="$(dirname "$HERE")"
 STAGE="$HERE/shp_history_stage.json"
 WORK="${NSH_WORK:-/private/tmp/claude-501/-Users-dhruvan-stocks-dashboard/a1d1d1ad-a4f0-49a1-8453-a0bb20fa7f58/scratchpad/shpverify/p6}"
 mkdir -p "$WORK"
-APPLY=""; [ "${1:-}" = "--apply" ] && APPLY="--apply"
+APPLY=""; MERGE_ONLY=""
+for arg in "$@"; do
+  [ "$arg" = "--apply" ] && APPLY="--apply"
+  [ "$arg" = "--merge-only" ] && MERGE_ONLY=1
+done
 
 cd "$REPO" || exit 1
 echo "== 1. sync + concurrency check =================================================="
@@ -47,6 +51,14 @@ for q, v in plan.items():
         print("      %s  %5d" % (q, len(v)))
 PY
 
+# --merge-only reuses an existing, already-validated staging file. Without it, --apply refetches
+# all ~5k filings just to reproduce a stage that was already built and dry-run checked — 45 wasted
+# minutes and 5k needless requests to NSE. Dry-run first, then apply with --merge-only.
+if [ -n "$MERGE_ONLY" ]; then
+  echo "== 3. staged reparse SKIPPED (--merge-only; reusing $STAGE) ====================="
+  [ -s "$STAGE" ] || { echo "   ! no staging file — run without --merge-only first"; exit 1; }
+  echo "   stage: $(wc -c < "$STAGE" | tr -d ' ') bytes"
+else
 echo "== 3. staged reparse (per quarter, only the symbols that need it) ==============="
 rm -f "$STAGE"
 python3 - "$WORK" "$HERE" <<'PY'
@@ -67,6 +79,8 @@ for i, (qe, syms) in enumerate(sorted(plan.items()), 1):
     if r.returncode:
         print("        ! exit %d — %s" % (r.returncode, (r.stderr or "")[-200:]))
 PY
+
+fi
 
 echo "== 4. merge (slot 6 only; refuses any cell whose percentages moved) ============="
 python3 -X utf8 "$HERE/_shp_merge_nsh.py" --stage "$STAGE" $APPLY | tee "$WORK/merge_report.txt"
