@@ -1,0 +1,87 @@
+{
+  "_meta": {
+    "campaign": "REVPAT_VERIFY p5 arbitration -- insurer REVENUE recheck (coordinator-mandated reopen)",
+    "run_date": "2026-08-09",
+    "objection_addressed": "Coordinator flagged that the original revenue verdicts validated our §55 construction only against OUR OWN already-stored comparator quarters -- which, for insurers, were themselves populated using that same construction (fetch_insurers.py only ever writes PAT; sf_revop.json's revS for insurers has no other origin per DATA_RUNBOOK §55). That check is circular: it proves internal self-consistency, not correctness. Cited precedent: HUDCO 2022-06-30 stored standalone revenue (1736.42) was actually the filing's 'Interest Income' sub-line, not Total -- an undetected wrong-row parse. PAT verdicts are explicitly NOT reopened (labelled row + PBT-Tax=PAT + FY-sum identity against the filing's own printed numbers, not our conventions).",
+    "constraints": "Foreground only, ≥2s between BSE requests, read-only, reused PDFs already in pdfs/ (no re-fetch of NIVABUPA/STARHEALTH Jun-2025 or Mar-2026 packs). Two new fetches made this recheck: STARHEALTH's 'Integrated Filing (Financial)' BSE announcement (a hypothesis test, see below) and two WebFetch reads of public Screener.in pages (read-only, no login) plus one of Groww -- used only to see what THIRD-PARTY figures and row labels the sites themselves show, not treated as ground truth for any verdict. No 403/429 encountered."
+  },
+  "hypotheses_tested": [
+    {
+      "hypothesis": "Sites use Gross Written Premium (or Gross Direct Premium) instead of Net Earned Premium; the gap is the reinsurance-ceded amount, which is non-constant quarter to quarter -- matching the observed non-constant gap ratios.",
+      "test": "Computed GPW alone, and GPW + both investment-income legs (i.e. the §55 construction with GPW substituted for Premium Earned), for all three cells. Also searched for any printed line item within ±15 lakh of the exact gap (56,092 lakh for NIVABUPA Jun-2025; 11,250 lakh for NIVABUPA Mar-2026; 64,753 lakh for STARHEALTH Jun-2025) across every row on the Annexure-I page, including GPW−NPW (reinsurance ceded on written premium) and NPW−PE (earned/unearned reserve movement).",
+      "result": "FAILS all three cells. GPW alone: NIVABUPA Jun-25 = 1631.90cr (site 1932.00, off by 300.1cr); NIVABUPA Mar-26 = 2879.68cr (site 2251.06 -- GPW is actually LARGER than the site figure here, ruling out GPW as an explanation outright for this cell); STARHEALTH Jun-25 = 3605.47cr (site 4880.00, off by 1274.5cr). GPW + both investment legs: 1782.98 / (not applicable, already disproven) / 3900.07cr -- still far short. No printed reinsurance-ceded line equals any of the three exact gaps (GPW−NPW = 344.03cr for NIVABUPA Jun-25, not 560.92cr; no equivalent for the others). DISCARDED per the brief's own instruction."
+    },
+    {
+      "hypothesis": "Sites use 'Total Income (3 to 5)' (the Annexure-I sub-total including the Shareholders' Account contribution) instead of the §55 construction.",
+      "test": "Compared Total Income row directly to site figures.",
+      "result": "FAILS all three: NIVABUPA Jun-25 Total Income = 1308.42cr (site 1932.00); NIVABUPA Mar-26 = 2077.66cr (site 2251.06); STARHEALTH Jun-25 = 4115.18cr (site 4880.00). None match."
+    },
+    {
+      "hypothesis": "Sites use Net Premium Written (net of reinsurance ceded, before the earned/unearned adjustment) instead of Premium Earned (Net).",
+      "test": "Compared NPW row directly and NPW + both investment legs to site figures.",
+      "result": "FAILS all three: NIVABUPA Jun-25 NPW = 1287.87cr; NIVABUPA Mar-26 NPW = 2301.66cr (closer to 2251.06 than other candidates but still 50.6cr off, not exact); STARHEALTH Jun-25 NPW = 3457.40cr. None match within any plausible rounding tolerance."
+    },
+    {
+      "hypothesis": "Exhaustive combinatorial search: does ANY sum of 1-3 rows printed on the Annexure-I page (33 distinct P&L and balance-sheet-adjacent figures per filing) land within ±0.15cr of the site's figure?",
+      "test": "Brute-force search over all combinations of size 1, 2, 3 from every transcribed row value on the target column, for each of the three cells.",
+      "result": "NIVABUPA Jun-25: only near-hits mix an income-statement figure with a balance-sheet figure (e.g. 'Income from Investments (Net)' + 'Paid up Equity Capital') -- not a coherent accounting concept, almost certainly coincidental. NIVABUPA Mar-26 and STARHEALTH Jun-25: ZERO combinations of size ≤3 landed within tolerance. The sites' figure is not a simple sum of anything printed on this page for two of the three cells."
+    },
+    {
+      "hypothesis": "The BSE 'Integrated Filing (Financial)' announcement category (a newer, SEBI-mandated combined disclosure) tags a standard, generic 'Revenue from Operations' XBRL-style figure that data vendors scrape uniformly across all companies including insurers, bypassing the bespoke IRDAI parsing.",
+      "test": "Located and fetched STARHEALTH's Integrated Filing (Financial) announcement (filed 2025-04-29, BSE attachment 0b0f05b9-5797-43ed-ad80-829d03c15943.pdf, covering the Mar-2025 quarter -- the closest one filed under this category; searched full text for 'revenue from operation'/'total income'/'total revenue'). Also searched both companies' full BSE announcement history (Nov-2024 to Aug-2026) for any Integrated Filing covering the actual target quarters (Jun-2025, Mar-2026).",
+      "result": "DEAD END. (a) The Integrated Filing PDF, on inspection, is just the SAME IRDAI Annexure-I/II financial-results package repackaged into the combined integrated-filing document -- zero occurrences of 'revenue from operation', 'total income', or 'total revenue' as generic tags; no alternate XBRL-style P&L. (b) Neither company has an Integrated Filing covering Jun-2025 or Mar-2026 at all in the announcement history (NIVABUPA: one entry total, Feb-2025, for Dec-2024; STARHEALTH: two entries, Jan-2025 and Apr-2025, for Dec-2024 and Mar-2025) -- so this filing category cannot be the sites' source for the three contested cells regardless."
+    },
+    {
+      "hypothesis": "A genuinely different, IND AS 117 ('Insurance revenue')-based P&L exists in the filings that sites might be reading instead of the IRDAI regulatory Annexure-I.",
+      "test": "Full-text search for 'insurance revenue' / 'Ind AS 117' / 'statement of profit or loss' across all three fetched PDFs.",
+      "result": "Found ONE such statement -- NIVABUPA's Mar-2026 (audited annual) filing, page 21, 'Statement of Profit or Loss' with a row 'Insurance revenue' = Rs. 7,82,910 lakh = 7829.10cr for the FULL YEAR ended Mar-2026 (comparative FY25 = 5,83,991 lakh = 5839.91cr). This is a real, different accounting concept (Ind AS 117 insurance-contracts revenue) -- but it is ANNUAL ONLY, appears in NEITHER company's Jun-2025 quarterly filing, and is far too large to be the source of the ~2138-2251cr QUARTERLY figure in dispute (even 1/4 of the annual figure, ~1957cr, doesn't match the site's 2251.06 exactly, and no quarterly breakdown of this concept is disclosed anywhere to reverse it out). Interesting context, not the mechanism."
+    }
+  ],
+  "cross_quarter_validation": {
+    "method": "Fetched Screener.in's full quarterly 'Sales' series (public page, read-only) for both companies -- every quarter shown, not just the 3 contested ones -- and compared to our stored revS series (the SAME §55 construction, independently re-derivable from each quarter's own filing). This directly tests the coordinator's circularity concern: if the construction were simply wrong or a self-fulfilling artifact, it should disagree with the sites broadly. If it agrees with the sites everywhere EXCEPT the 3 disputed cells, the disagreement is isolated to those cells specifically, not evidence the construction itself is mistaken.",
+    "NIVABUPA": {
+      "quarters_compared": 11,
+      "matches_screener_to_nearest_crore": 9,
+      "mismatches": [
+        {"quarter": "2025-06-30", "ours": 1371.08, "screener": 1932.00},
+        {"quarter": "2026-03-31", "ours": 2138.56, "screener": 2251.00}
+      ],
+      "matching_quarters_detail": "2023-09-30:969/969, 2023-12-31:1025.74/1026, 2024-03-31:1315.58/1316, 2024-06-30:1124.19/1124, 2024-09-30:1321.28/1321, 2024-12-31:1258.02/1258, 2025-03-31:1670.79/1671, 2025-09-30:1574.03/1574, 2025-12-31:1611.03/1611 -- all exact to rounding."
+    },
+    "STARHEALTH": {
+      "quarters_compared": 12,
+      "matches_screener_to_nearest_crore": 11,
+      "mismatches": [
+        {"quarter": "2025-06-30", "ours": 4232.86, "screener": 4880.00}
+      ],
+      "matching_quarters_detail": "2023-06-30 through 2024-12-31 (7 quarters) all exact to rounding, 2025-03-31:4081.25/4081, 2025-09-30:4377.78/4378, 2025-12-31:4566.27/4566, 2026-03-31:4648.07/4648 -- all exact to rounding."
+    },
+    "interpretation": "This is the opposite of what a wrong-row/HUDCO-shape defect looks like: a wrong row would produce a CONSISTENT, roughly-constant-ratio bias across every quarter (as HUDCO's Interest-Income-for-Total swap did). Instead, the §55 construction independently reproduces Screener's OWN published figure on 20 of 23 comparable quarters across two companies, and diverges only on exactly the 3 cells this campaign was asked to arbitrate. The disagreement is a property of THOSE SPECIFIC QUARTERS on the sites' side, not a property of the construction. This does not, by itself, prove the construction is the theoretically 'correct' definition of insurer revenue (that remains a genuine, unresolved definitional question, as the coordinator says) -- but it does refute the specific circularity concern that our earlier high-confidence read was self-fulfilling: this new check used independent third-party data we did not supply and did not previously look at."
+  },
+  "suggestive_but_unconfirmed_clue": {
+    "note": "NIVABUPA's own filing text flags exactly the two contested NIVABUPA quarters (not the surrounding ones) as touched by an accounting-METHOD TRANSITION: Note 9 in the Jun-2025 filing states the company began recognising gross written premium on a '1/n' basis from Oct 1, 2024 per new IRDAI regulation, which 'resulted in a decrease in gross written premium by Rs. 24,258 lakhs ... for the quarter ended June 30, 2025' (242.58cr). The Mar-2026 filing's Note 5 separately describes an EOM (Expenses of Management) computation methodology that was REVISED and RE-FILED for the year-to-date ended March 31, 2025 on IRDAI's advisory received Dec-2025/Jan-2026 -- i.e. NIVABUPA restated a prior return during exactly this window.",
+    "quantitative_check": "242.58cr covers only ~43% of the 560.92cr Jun-2025 gap and does not obviously map onto a Mar-2026 magnitude either (that note's cumulative FY26 figure is 846.99cr, far exceeding the 112.5cr Mar-2026 gap). So this does NOT arithmetically explain the anomaly and is NOT claimed as a finding -- it is offered only as a plausible mechanism: a company undergoing a live accounting-method transition/restatement is exactly the kind of quarter where an automated third-party data vendor (which Screener and Groww may both license from a common upstream source, consistent with them agreeing with each other) is likeliest to have picked up a stale, pre-restatement, or otherwise misaligned figure. STARHEALTH's Jun-2025 anomaly has no equivalent restatement note found in its own filing, so this mechanism -- even if real for NIVABUPA -- would not explain the STARHEALTH cell, and no NIVABUPA-STARHEALTH common cause was identified either. Reported as an open lead, not a conclusion."
+  },
+  "outcome": "OUTCOME 2, with an important refinement -- the sites' exact source row/figure was NOT located after a genuine, multi-angle search (row-by-row comparison, exhaustive combinatorial sum search, the coordinator's own GWP hypothesis, an Integrated-Filing XBRL hypothesis, and an Ind-AS-117 hypothesis all tested and discarded). BUT the circularity concern itself is answered by the cross-quarter check: the §55 construction is not self-referential -- it independently reproduces the sites' OWN published figures on 20 of 23 other quarters across both companies, so the disagreement is isolated to these 3 cells specifically rather than evidence the construction or the verdict method is wrong in general.",
+  "revised_cells": [
+    {
+      "symbol": "NIVABUPA", "quarter": "2025-06-30", "field": "std revenue",
+      "verdict": "OURS_CONFIRMED (unchanged)",
+      "confidence": "medium (downgraded from high)",
+      "confidence_rationale": "Downgraded because the sites' 1932.00/1931.75 figure could not be traced to any row or combination of rows in the primary filing, so this specific cell's disagreement remains genuinely unexplained rather than resolved -- 'confirmed' means 'our number is what the filing's Premium Earned + investment income rows say and it is not a parsing error', not 'we know why the sites disagree'. NOT downgraded to the degree pure self-referential circularity would warrant, because the underlying construction is now cross-validated against 9 OTHER independent site-reported quarters for this same company, which a circular/wrong-row defect could not produce."
+    },
+    {
+      "symbol": "NIVABUPA", "quarter": "2026-03-31", "field": "std revenue",
+      "verdict": "OURS_CONFIRMED (unchanged)",
+      "confidence": "medium (downgraded from high)",
+      "confidence_rationale": "Same reasoning as the Jun-2025 cell."
+    },
+    {
+      "symbol": "STARHEALTH", "quarter": "2025-06-30", "field": "std revenue",
+      "verdict": "OURS_CONFIRMED (unchanged)",
+      "confidence": "medium (downgraded from high)",
+      "confidence_rationale": "Same reasoning; cross-validated against 11 other independent STARHEALTH quarters on Screener."
+    }
+  ],
+  "unaffected": "PAT verdicts for all six insurer/JUBLPHARMA cells (1, 3, 5, and the JUBLPHARMA revenue cell 7, which is NOT an IRDAI construction -- it is a single labelled row on an ordinary XBRL-style filing, independently confirmed via BOTH BSE detres AND the announcement PDF) are NOT reopened and remain high confidence, per the coordinator's explicit scope."
+}

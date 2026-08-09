@@ -44,7 +44,7 @@
       "unit_declared": "(Rs. in Lakhs) -> ÷100 for crore",
       "basis_declared": "No 'Revenue from Operations' row is printed at all (IRDAI format) -- figure is the DATA_RUNBOOK §55 'general' insurer convention: Premium Earned (Net) row3 + policyholders' Income from Investments (Net) row4 + shareholders' Income from investments row18(b).",
       "column_anchor_evidence": "Jun-2025: 1,22,000 + 8,684 + 6,424 = 1,37,108 lakh = 1371.08cr, EXACT match to OURS. Column anchor, same construction applied to comparator columns on the SAME row set: Mar-2025 = 1,52,742+9,378+4,959 = 1,67,079 lakh = 1670.79cr, EXACT match to our stored revS Mar-2025 (1670.79). Jun-2024 = 1,01,802+5,748+4,869 = 1,12,419 lakh = 1124.19cr, EXACT match to our stored revS Jun-2024 (1124.19). Both comparator columns reproduce stored values to the paisa.",
-      "second_check": "The 3-leg construction is validated on the SAME filing that already double-anchors the PAT cell above (cell 1) via the operating-profit chain (row6 Total income -> row16 Operating Profit -> row18(a) Transfer from Policyholders' Fund), so the revenue read and the PAT read are cross-consistent, not independent guesses.",
+      "second_check": "The 3-leg construction is validated on the SAME filing that already double-anchors the PAT cell above (cell 1) via the operating-profit chain (row6 Total income -> row16 Operating Profit -> row18(a) Transfer from Policyholders' Fund), so the revenue read and the PAT read are cross-consistent, not independent guesses. RECHECK (see insurer_revenue_recheck.json): this construction ALSO independently reproduces Screener's own published 'Sales' figure on 9 of 11 other NIVABUPA quarters, exact to the crore -- external validation beyond this campaign's own comparator columns.",
       "fingerprint_tested": true,
       "fingerprint_holds": false,
       "routes_tried": [
@@ -52,8 +52,8 @@
         "rung2 NSE XBRL: REFUSED (0 list rows)",
         "rung3 BSE announcement PDF: SUCCESS"
       ],
-      "confidence": "high",
-      "notes": "Screener (1932.00) and Groww (1931.75) agree with EACH OTHER but neither matches any single printed row nor the runbook's validated convention; could not reverse-engineer their figure from any combination of the printed rows (tried Gross Premium, Net Premium Written, Total income, and several sums -- none land near 1932). Does not affect the verdict: the filing-anchored construction reproduces two independent stored comparator quarters exactly."
+      "confidence": "medium (downgraded from high on recheck -- see insurer_revenue_recheck.json)",
+      "notes": "Screener (1932.00) and Groww (1931.75) agree with EACH OTHER but neither matches any single printed row nor the runbook's validated convention; exhaustively searched (single rows, GWP/NWP/Total-income hypotheses, combinatorial sums of up to 3 rows, an Integrated-Filing XBRL hypothesis, an Ind-AS-117 'Insurance revenue' hypothesis) -- none reproduce 1932.00. RECHECK FINDING: the same construction matches Screener's OWN reported figure on 9 of 11 other NIVABUPA quarters exactly, so this disagreement is isolated to this one quarter rather than a systematic definitional gap -- refutes a simple GWP-vs-NEP or wrong-row explanation, but the sites' actual source for THIS quarter remains unidentified. Confidence downgraded accordingly (verdict unchanged)."
     },
     {
       "symbol": "NIVABUPA",
@@ -92,7 +92,7 @@
       "unit_declared": "(Rs. in Lakhs) -> ÷100 for crore",
       "basis_declared": "Same §55 'general' construction as cell 2: Premium Earned (Net) + policyholders' Income from Investments (Net) + shareholders' Income from investments.",
       "column_anchor_evidence": "Mar-2026: 1,97,195 + 13,047 + 3,614 = 2,13,856 lakh = 2138.56cr, EXACT match to OURS. Column anchor: Dec-2025 = 1,45,357+8,933+6,813 = 1,61,103 lakh = 1611.03cr EXACT match to stored revS Dec-2025 (1611.03); Mar-2025 (year-ago-within-this-filing) = 1,52,742+9,378+4,959 = 1,67,079 lakh = 1670.79cr EXACT match to stored revS Mar-2025 (1670.79) -- the SAME figure independently reproduced from a DIFFERENT filing (cell 2's Jun-2025 pack), a cross-filing agreement.",
-      "second_check": "Construction cross-validated against the same filing's cell-3 PAT chain (Total income row6 -> Operating Profit row16 -> Transfer from Policyholders' Fund row18(a)), all internally consistent on the target column.",
+      "second_check": "Construction cross-validated against the same filing's cell-3 PAT chain (Total income row6 -> Operating Profit row16 -> Transfer from Policyholders' Fund row18(a)), all internally consistent on the target column. RECHECK (see insurer_revenue_recheck.json): also independently reproduces Screener's own published 'Sales' figure on 9 of 11 other NIVABUPA quarters exact to the crore.",
       "fingerprint_tested": true,
       "fingerprint_holds": false,
       "routes_tried": [
@@ -100,8 +100,8 @@
         "rung2 NSE XBRL: REFUSED (0 list rows)",
         "rung3 BSE announcement PDF: SUCCESS"
       ],
-      "confidence": "high",
-      "notes": "Screener (2251.00) and Groww (2251.06) agree with each other but not with the filing or with any printed/summed row tried. Same open curiosity as cell 2 -- not pursued further, does not change the verdict."
+      "confidence": "medium (downgraded from high on recheck -- see insurer_revenue_recheck.json)",
+      "notes": "Screener (2251.00) and Groww (2251.06) agree with each other but not with the filing or with any printed/summed row tried (GWP here is actually LARGER than the site figure, 2879.68 vs 2251.06, ruling out a simple gross-premium explanation outright). RECHECK FINDING: same isolated-quarter pattern as cell 2 -- construction matches sites on every OTHER NIVABUPA quarter; this cell's exact source remains unidentified. Confidence downgraded (verdict unchanged). NIVABUPA's own filing notes (5 and 9) flag this AND the Jun-2025 quarter as touched by live accounting-method transitions (1/n premium recognition, an EOM methodology restatement advised by IRDAI in Dec-2025/Jan-2026) -- a plausible but unconfirmed reason a third-party data vendor might hold a stale figure for exactly these transition quarters."
     },
     {
       "symbol": "STARHEALTH",
@@ -140,7 +140,7 @@
       "unit_declared": "(₹ in lakhs) -> ÷100 for crore",
       "basis_declared": "No 'Revenue from Operations' row printed (IRDAI format) -- §55 'general' construction: Premiums earned (Net) row3 + Income from Investments (Net) row4 + shareholders' Income from Investments row18(b).",
       "column_anchor_evidence": "Jun-2025: 3,93,826 + 17,656 + 11,804 = 4,23,286 lakh = 4232.86cr, EXACT match to OURS. Column anchor: Mar-2025 = 3,79,832+18,590+9,703 = 4,08,125 lakh = 4081.25cr EXACT match to stored revS Mar-2025 (4081.25); Jun-2024 = 3,52,032+17,128+12,406 = 3,81,566 lakh = 3815.66cr EXACT match to stored revS Jun-2024 (3815.66). Both comparator columns exact.",
-      "second_check": "Same-filing cross-consistency with the cell-5 PAT chain (Sub Total row6 -> Operating Profit row16 -> Transfer from Policyholders' Fund row18(a)) on the target column.",
+      "second_check": "Same-filing cross-consistency with the cell-5 PAT chain (Sub Total row6 -> Operating Profit row16 -> Transfer from Policyholders' Fund row18(a)) on the target column. RECHECK (see insurer_revenue_recheck.json): also independently reproduces Screener's own published 'Sales' figure on 11 of 12 other STARHEALTH quarters exact to the crore.",
       "fingerprint_tested": true,
       "fingerprint_holds": false,
       "routes_tried": [
@@ -148,8 +148,8 @@
         "rung2 NSE XBRL: REFUSED (0 list rows)",
         "rung3 BSE announcement PDF: SUCCESS -- rendered page image"
       ],
-      "confidence": "high",
-      "notes": "Screener (4880.00) and Groww (4880.40) agree with each other but not the filing or the validated construction; could not reverse-engineer their figure (tried Gross Premium 3,60,547=3605.47, Sub Total 4,11,518=4115.18, and several sums -- none land near 4880). Does not change the verdict."
+      "confidence": "medium (downgraded from high on recheck -- see insurer_revenue_recheck.json)",
+      "notes": "Screener (4880.00) and Groww (4880.40) agree with each other but not the filing or the validated construction; could not reverse-engineer their figure (tried Gross Premium 3,60,547=3605.47, Sub Total 4,11,518=4115.18, an Integrated-Filing XBRL hypothesis (dead end -- STARHEALTH's Integrated Filing is the same IRDAI package repackaged, no generic revenue tag), and exhaustive combinatorial sums -- none land near 4880). RECHECK FINDING: the SAME construction matches Screener's own figure on 11 of 12 OTHER STARHEALTH quarters exactly -- this is a single isolated-quarter anomaly, not a systematic definitional gap, but its exact source was not identified. Confidence downgraded (verdict unchanged)."
     },
     {
       "symbol": "JUBLPHARMA",

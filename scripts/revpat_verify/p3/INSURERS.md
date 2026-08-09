@@ -114,3 +114,69 @@ never file standard XBRL results. No 403/429 was hit against BSE at any point th
 - The exact third-party (Screener/Groww/Tickertape) definitions were not pinned down for any of
   the seven cells — noted as an open curiosity in `insurer_verdicts.json`, not pursued further
   since it does not affect any verdict.
+
+---
+
+## ADDENDUM (2026-08-09, same session) — Revenue cells reopened on a circularity objection
+
+The coordinator raised a specific, correct-in-principle objection to cells 2, 4, 6 (NOT the PAT
+cells): our validation had shown the §55 construction reproduces our OWN already-stored
+comparator quarters — but for these insurers, those comparator quarters were themselves built
+from the SAME construction (fetch_insurers.py only ever writes PAT; nothing else populates
+insurer `revS`). That check proves internal self-consistency, not correctness. Precedent cited:
+HUDCO 2022-06-30's stored standalone revenue turned out to be the filing's "Interest Income"
+sub-line, not Total — an undetected wrong-row parse of exactly this shape. Full detail, every
+hypothesis tested and why each failed: `insurer_revenue_recheck.json`.
+
+**Five hypotheses tested, all discarded:**
+1. **Gross Written Premium vs Net Earned Premium** (the coordinator's own lead, tested first). No
+   printed reinsurance-ceded line equals any of the three exact gaps; GPW alone undershoots two
+   cells and, for NIVABUPA Mar-2026, GPW (2879.68cr) is actually LARGER than the site figure
+   (2251.06cr) — ruling this out directly for that cell.
+2. **"Total Income (3 to 5)"** — undershoots all three cells, no match.
+3. **Net Premium Written** (before the earned/unearned adjustment) — undershoots all three, no match.
+4. **Exhaustive combinatorial search** (every sum of 1–3 printed rows on the Annexure-I page) —
+   zero matches within tolerance for two of the three cells; the one near-hit for NIVABUPA
+   Jun-2025 mixed an income-statement figure with a balance-sheet figure, not a coherent concept.
+5. **BSE "Integrated Filing (Financial)"** (hypothesis: a generic XBRL revenue tag data vendors
+   scrape uniformly). Dead end on inspection — it's the same IRDAI Annexure-I/II package
+   repackaged, no generic tag — AND neither company even filed one covering these two target
+   quarters, so it cannot be the source regardless.
+6. Found, but ruled irrelevant: NIVABUPA's Mar-2026 filing (page 21) contains a genuine Ind AS 117
+   "Statement of Profit or Loss" with an "Insurance revenue" row (FY26 = 7829.10cr) — a real,
+   different accounting concept, but ANNUAL ONLY, absent from both companies' quarterly filings,
+   and far too large to be the quarterly figure in dispute even divided by 4.
+
+**The finding that actually answers the circularity objection.** Fetched Screener.in's full
+quarterly "Sales" series for BOTH companies (public page, read-only) — not just the 3 disputed
+cells — and compared every quarter to our stored series:
+
+| company | quarters compared | match sites exactly (to the crore) | mismatch |
+|---|---|---|---|
+| NIVABUPA | 11 | **9** | 2025-06-30, 2026-03-31 (the two contested cells) |
+| STARHEALTH | 12 | **11** | 2025-06-30 (the one contested cell) |
+
+The §55 construction independently reproduces Screener's OWN published figure on **20 of 23**
+comparable quarters across both companies, and disagrees ONLY on exactly the 3 cells this
+campaign was asked to arbitrate. This is the opposite signature of a wrong-row defect (HUDCO's
+Interest-Income swap produced a consistent bias every quarter, not an isolated one) — it directly
+refutes the concern that the earlier check was purely self-referential, because this comparison
+uses third-party data neither the construction nor this campaign had touched before.
+
+**What this does NOT do:** identify the sites' actual source for these 3 cells. That remains
+unexplained. A suggestive but unconfirmed lead: NIVABUPA's own filing notes flag both contested
+NIVABUPA quarters as touched by live accounting-method transitions (a 1/n premium-recognition
+regulatory change effective Oct-2024, and an EOM computation methodology that IRDAI advised the
+company to restate in Dec-2025/Jan-2026) — exactly the kind of quarter where a third-party data
+vendor might hold a stale or misaligned figure. The magnitudes don't fully reconcile (the noted
+242.58cr Jun-2025 GWP adjustment covers only ~43% of the 560.92cr gap) and no analogous note was
+found for STARHEALTH, so this is reported as an open lead, not a conclusion.
+
+**Revised outcome: OUTCOME 2** (sites' figure not located after a genuine search), **with
+confidence on cells 2, 4, 6 downgraded from `high` to `medium`** — the specific disagreement for
+these three quarters remains unexplained. Verdicts are UNCHANGED (`OURS_CONFIRMED`): the values
+are still exactly what the primary filing's labelled rows say under a construction now
+externally cross-validated on 20 other quarters, not merely self-consistent with our own prior
+data. PAT verdicts (cells 1, 3, 5) and the JUBLPHARMA cell (7, confirmed via two independent
+routes — BSE detres AND the announcement PDF, not the IRDAI construction) are unaffected and
+remain `high` confidence, per the coordinator's explicit scope.

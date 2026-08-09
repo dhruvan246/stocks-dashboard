@@ -94,6 +94,44 @@ next, and the arbitration in flight tests that exact fingerprint on the other tw
 Note the sites do **not** agree with each other on the insurer PAT cells (Tickertape differs from
 Screener/Groww on all three), so nothing there is decided by sites.
 
+### 3b. ★★★ THE CIRCULARITY OBJECTION — raised by the user, tested, and answered
+**The objection:** if our stored value and an arbitration read of the filing agree, but two
+independent sites agree on something else, one live possibility is that *our parser and the
+arbitration made the SAME mistake* — both picking the same wrong row. Then "ours == filed" is
+circular and confirms nothing.
+
+**It was not hypothetical.** The HUDCO check found exactly that failure mode in this codebase:
+our stored standalone revenue for 2022-06-30 was the filing's **"Interest Income" sub-line**, not
+its Total revenue row. And it applied to these insurer cells specifically, because IRDAI filings
+print no "Revenue from Operations" row — so the figure was **constructed** with our own §55
+convention and then validated against **our own stored quarters**, which proves only that the
+construction matches our parser.
+
+**The test that answers it:** compare the construction against the independent source across the
+company's WHOLE history, not just the disputed cells. A wrong-row parse is a *rule* — it biases
+every quarter. An isolated disagreement is not.
+
+| | construction vs Screener | disagrees on |
+|---|---|---|
+| NIVABUPA | **matches 9 of 11 quarters, exact to the crore** | only the 2 arbitrated cells |
+| STARHEALTH | **matches 11 of 12 quarters, exact to the crore** | only the 1 arbitrated cell |
+
+That is the **opposite** signature to HUDCO and AADHARHFC, where the shortfall runs across
+consecutive quarters. The construction is sound; something is peculiar about those three quarters.
+
+**Confidence still downgraded high → medium**, because the site disagreement remains *unexplained*:
+five hypotheses were tested and discarded (gross-written vs net-earned premium — for NIVABUPA
+Mar-2026 gross alone, 2879.68, is *larger* than the site's figure and rules it out; Total Income;
+Net Premium Written; an exhaustive combinatorial search over every printed row; a BSE
+Integrated-Filing XBRL route). An unexplained disagreement is not a resolved one.
+
+**A partial lead, recorded as unconfirmed:** NIVABUPA's own filing flags exactly its two contested
+quarters as affected by live accounting-method transitions (1/n premium recognition, an
+IRDAI-advised EOM restatement) — a plausible reason a vendor feed could carry pre-restatement
+figures, i.e. trap T-E. The magnitudes do not fully reconcile and STARHEALTH has no equivalent note,
+so it explains at most part of it.
+
+
 ## 4. WHAT THE EXTRACTION ITSELF TURNED UP
 
 - **★ Screener's window is "the last 13 quarters THAT COMPANY filed", not a fixed date.** P1 recorded

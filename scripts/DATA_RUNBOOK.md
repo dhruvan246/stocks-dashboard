@@ -5229,6 +5229,32 @@ tooling in `scripts/revpat_verify/` (`audit_revpat_coverage`, `revpat_strata`, `
   never comes; one lost its partial work. Phrasing it as a preference (as the plan did, from the SHP
   run) was not enough. Diagnose an agent's state before resuming — checking caches and logs first
   saved ~130 re-sent requests here.
+- **★★★ THE WRONG-ROW DEFECT, and the test that separates it from a real disagreement** (user-raised
+  2026-08-09, and it changed the method). If our stored value and an arbitration read of the filing
+  agree while two independent sites agree on something else, **our parser and the arbitration may
+  have made the SAME mistake — picking the same wrong row.** Then "ours == filed" is circular.
+  CONFIRMED INSTANCES: HUDCO 2022-06-30 stored the filing's **"Interest Income" sub-line** (1736.42)
+  instead of its Total revenue row (1749.27); AADHARHFC's std revenue runs 1.6-12.1% below an
+  independent source for **seven consecutive quarters** while PAT matches to 0.1%.
+  **THE DISCRIMINATOR — compare across the company's WHOLE history, not the disputed cells.** A
+  wrong-row parse is a RULE and biases every quarter; an isolated disagreement is not. Our insurer
+  revenue construction (§55) matches Screener on **9/11 NIVABUPA and 11/12 STARHEALTH quarters,
+  exact to the crore**, and disagrees only on the 3 arbitrated cells — the opposite signature to
+  HUDCO/AADHARHFC, so the construction is sound. Confidence there was still downgraded high→medium
+  because the disagreement stays UNEXPLAINED after five hypotheses were tested and discarded
+  (gross-vs-net premium, Total Income, Net Premium Written, exhaustive row-combination search,
+  Integrated-Filing XBRL). **An unexplained disagreement is not a resolved one.**
+  Detector: `scripts/revpat_verify/sweep_analyze.py` — revenue BELOW an independent source over
+  CONSECUTIVE quarters **while PAT AGREES** (the third condition is what rules out wrong
+  company/period/scale). Validated on 66 symbols: median relative difference across 823 cells is
+  **exactly 0.0** — no systematic bias — with only AADHARHFC and MOTHERSON carrying the signature.
+- **★ HUDCO's con==std is GENUINE, and it recalibrates the whole con-copy screen.** Its filings state
+  in their notes that consolidated == standalone because the sole associate contributes 0.00, and
+  each consolidated statement prints its own distinct associate line — derived, not pasted. So the
+  **6,470 con==std cells** `bulk_screen.py` flags are mostly LEGITIMATE. A control quarter is what
+  earned that finding: 2022-06-30 detected a real 0.05cr associate divergence our store flattens AND
+  exposed the Interest-Income sub-line defect. **Always include a control where the answer is
+  already known — it is what makes a negative finding credible instead of a blind spot.**
 - **Re-run:** `python3 -X utf8 scripts/revpat_verify/audit_revpat_coverage.py` (offline, reads this
   checkout's HEAD); `revpat_strata.py` re-derives the frozen 66-symbol sample identically;
   `build_contested.py` rebuilds the internal-divergence queue; `revpat_mapcard.py --extract <jsonl>
