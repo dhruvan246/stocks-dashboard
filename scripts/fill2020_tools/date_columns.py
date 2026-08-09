@@ -24,26 +24,32 @@ nine/six/half/year-to-date/twelve is EXCLUDED, not silently preferred against.
 Self-validating: the caller checks the mapping on the STANDALONE statement first (where a stored
 value does exist), and only trusts the consolidated page if the same parsing reproduced standalone.
 
-STATUS 2026-08-07 (second pass): STILL NOT WIRED INTO ANY WRITER, but now plausibly close.
-Measured over ~600 cached statement pages:
-    header parsed on 67% of REAL statement pages (pages carrying both a revenue row and a PAT row);
-    2.4 quarter-columns per page, up from 1.5;
-    on 120 statement pages with a parsed header, the date-mapped column reproduced a value we
-      already store on 84 (70%) -- anchor-free, no PAT needed. Clean hits include DIVISLAB
-      2019-09-30 356.78 and MFSL 2018-12-31 139.89, exact.
-CAVEAT ON THAT 70%: the test matched the read value against EVERY company's stored figures rather
-than tying each cached PDF to its own issuer, so some hits are coincidental. It is an UPPER BOUND,
-not a verified accuracy. Before this writes anything, re-run the test with the PDF bound to its
-company, and require the same header parse to reproduce the STANDALONE figure on the same document
-(which we hold for every pre-2020 quarter) as the per-document self-check.
-Two fixes got it here, both worth remembering:
-    * the body-row marker must look for AMOUNTS, not digits -- every Indian letterhead is full of
-      numbers (ISO 9001, PIN 581 325, CIN ...PLC001936) and treating those as table body put the
-      body marker ABOVE the header, discarding the real header row as a footnote. That single
-      confusion accounted for most of the original 4% detection rate;
-    * cluster header dates in a +-14pt BAND, not on an exact shared baseline -- statements stack
-      the caption inside each column cell ("Quarter / ended / 31.12.2018") so adjacent columns
-      land on different y.
+STATUS 2026-08-07 (third pass): NOT FIT TO WRITE DATA. Do not wire it to a writer.
+
+Detection improved a lot; ACCURACY did not follow, and accuracy is the only thing that matters.
+    header parsed on 67% of real statement pages (was ~4%), 2.4 quarter-columns/page (was 1.5);
+    but bound per-document -- each cached PDF matched to its OWN issuer via docs/search_index.json,
+    then the date-mapped column checked against that company's stored PAT for that quarter and
+    basis -- it reproduced the stored figure on only 45 of 128 tests: 35%.
+
+The earlier "70%" was measured by matching each read against EVERY company's stored figures, so
+coincidental matches inflated it. Binding the document to its issuer halved it. Trust the bound
+number; the unbound one is not a measurement of anything useful.
+
+35% means the column is wrong about two times in three. A writer on those terms would inject errors
+faster than the screener audit removes them -- this campaign healed 195 wrong cells on 2026-08-07,
+many of them from exactly this failure mode (a plausible value read from the wrong column).
+
+WHERE IT ACTUALLY FAILS, from the miss list: consolidated pages (BIOCON 2018-2019, FLEXITUFF). The
+header parse finds dates, but on a con page the PAT row picked is often the wrong one -- these
+statements carry several profit lines (before tax, after tax, total comprehensive, owners vs NCI)
+and the date column alone does not disambiguate the ROW. Fixing the column was necessary and not
+sufficient: row selection needs the same rigour, and the owners-attributable line must be pinned
+before this can be trusted.
+
+Next attempt should start from: (1) this 35% bound baseline, (2) row disambiguation on con pages,
+(3) the per-document self-check as the gate -- require the SAME parse to reproduce the standalone
+figure on the same document before accepting anything it says about the consolidated page.
 """
 import re
 
