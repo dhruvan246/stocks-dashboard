@@ -43,15 +43,19 @@ LEDGERS = [
     ("con_pat_nse_reads.json",       "fund",  "con",  3),
     ("con_pat_fy_derived.json",      "fund",  "con",  3),
 ]
-# NESTED correction ledgers: {SYM: {QE: {...}}} rather than the flat "SYM|QE" shape above.
-# These carry DEFECT CORRECTIONS (a value we proved wrong and replaced), so a clobber here does not
-# merely lose a backfill -- it silently restores a number a filing already refuted. The basis is
-# read per entry where the ledger records one.
-#   (file, payload, value-key, default slot, basis-key -> {basis: slot})
+# NESTED ledgers: {SYM: {QE: {...}}} rather than the flat "SYM|QE" shape above. The defect ledgers
+# carry CORRECTIONS (a value we proved wrong and replaced), so a clobber there does not merely lose
+# a backfill -- it silently restores a number a filing already refuted. The basis is read per entry
+# where the ledger records one. `root` (when set) names the top-level key holding the SYM map:
+# con_nofile_identity_fills.json (the FILL-2020 identity-fill journal, con = std where NSE's filing
+# index proves no consolidated result exists) wraps its SYM map in campaign metadata under "fills".
+# Only its revC maps into this detector's scope -- opC/ebitC have no slot in the checked payloads.
+#   (file, payload, value-key, default slot, basis-key, {basis: slot}, root)
 NESTED = [
-    ("pat_defects.json", "fund",  "correct_pat",     1, None, None),
-    ("pat_defects.json", "fund",  "correct_pat_con", 3, None, None),
-    ("rev_defects.json", "revop", "correct_rev",     0, "basis", {"std": 0, "con": 1}),
+    ("pat_defects.json", "fund",  "correct_pat",     1, None, None, None),
+    ("pat_defects.json", "fund",  "correct_pat_con", 3, None, None, None),
+    ("rev_defects.json", "revop", "correct_rev",     0, "basis", {"std": 0, "con": 1}, None),
+    ("con_nofile_identity_fills.json", "revop", "revC", 1, None, None, "fills"),
 ]
 TOL = 0.011
 
@@ -91,7 +95,7 @@ def main():
             elif abs(cur - want) > TOL:
                 drift.append((name, sym, qe, want, cur))
 
-    for name, payload, key, dslot, bkey, bmap in NESTED:
+    for name, payload, key, dslot, bkey, bmap, root in NESTED:
         p2 = os.path.join(HERE, name)
         if not os.path.exists(p2):
             continue
@@ -99,6 +103,10 @@ def main():
             led = json.load(open(p2))
         except Exception:
             continue
+        if root is not None:
+            led = led.get(root)
+            if not isinstance(led, dict):
+                continue
         for sym, qd in led.items():
             if not isinstance(qd, dict):
                 continue
