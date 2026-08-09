@@ -82,7 +82,12 @@ def main():
             filed = r.get("filed_total_revenue_from_operations") or r.get("filed_value")
         if r.get("ours_now") is None and r.get("ours_revS") is not None:
             r["ours_now"] = r["ours_revS"]
-        fld = "revC" if "con" in str(r.get("field", "")).lower() else "revS"
+        # Basis detection must not hinge on the substring "con": a verdict file described a cell
+        # as "sf_revop.json[GYFTR][20240630][1] (revC) ..." which contains no "con" at all, so it
+        # was misread as revS, looked up an empty slot and was dropped as "nothing stored". Right
+        # outcome, wrong reason — and it would have been the WRONG SLOT had revS been populated.
+        _f = str(r.get("field", "")).lower()
+        fld = "revC" if ("revc" in _f or "consolidated" in _f or "[1]" in _f) else "revS"
         idx = 1 if fld == "revC" else 0
 
         def drop(why):

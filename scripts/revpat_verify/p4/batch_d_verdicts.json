@@ -1,0 +1,636 @@
+{
+ "meta": {
+  "campaign": "REV/PAT verify, P5 packet -- batch D",
+  "scope": "docs/sf_revop.json[SYM][QE][0] (revS) for 6 companies' worst-2-quarters + 1 control each, per the packet brief. No repo writes, no heals.",
+  "session_note": "Every fetch run in the foreground, >=2s between live BSE/NSE requests. Reference tree /Users/dhruvan/stocks-wt/revpat-verify read-only (imports + bse_scrips.json lookup only, plus reuse of one already-known doc ID from scripts/_filing_adjudication.json for JPASSOCIAT which turned out to be mislabeled and was independently re-found); all fetch caches and PDF renders under this session's own working dir.",
+  "n_cells": 21
+ },
+ "cells": [
+  {
+   "symbol": "GYFTR",
+   "quarter": "2023-06-30",
+   "field": "sf_revop.json[GYFTR][20230630][0] (revS)",
+   "ours_now": 3.28,
+   "filed_total_revenue_from_operations": 19.09,
+   "components": {
+    "interest_income": 3.28,
+    "dividend_income": 0.08,
+    "net_gain_on_fair_value_changes": 15.49,
+    "other_operating_income": 0.24
+   },
+   "ours_matches_which_row": "Interest income -- exact to the cent: 327.57 lakh/100 = 3.2757 ~= 3.28",
+   "verdict": "OURS_WRONG",
+   "recommended_value": 19.09,
+   "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/67b2f080-33ed-4379-babc-cbcd92439005.pdf",
+   "unit_declared": "Rs in Lakhs (printed in filing header) -> /100 for crore",
+   "column_anchor_evidence": "PAT: filed 'Profit/(Loss) for the period' 1,308.09 lakh/100=13.0809 == stored patStd 13.08 (0.007%, effectively exact). Confirms the 'Quarter ended 30 June 2023' column, not a shifted column.",
+   "second_check": "Component sum 327.57+8.27+1549.44+23.97=1,909.25 lakh == printed 'Total Revenue from Operations' (1,909.25) exactly.",
+   "routes_tried": [
+    {
+     "route": "bse-detres (Corp_detailedResult_Transpose_ng, scrip 507912)",
+     "outcome": "refused: no-date-begin-end-in-response"
+    },
+    {
+     "route": "nse-xbrl (symbol GYFTR)",
+     "outcome": "refused: 0 list rows for this quarter on any basis"
+    },
+    {
+     "route": "BSE announcement stream (AnnSubCategoryGetData, scrip 507912)",
+     "outcome": "OK -- board-outcome filing dated 2023-07-21"
+    }
+   ],
+   "confidence": "high",
+   "notes": "Scrip 507912 was 'LKP Finance Limited' (NBFC, investment/financing; no separate reportable segments) at this date -- later renamed 'Gyftr Ltd' after a change-of-control approved 2024-08-28. Consolidated slot (revC) carries the identical defect this quarter: ours=3.93, filed con Interest income=392.64 lakh/100=3.9264, filed con Total Revenue from Operations=2,148.82 lakh=21.49cr."
+  },
+  {
+   "symbol": "GYFTR",
+   "quarter": "2023-09-30",
+   "field": "sf_revop.json[GYFTR][20230930][0] (revS)",
+   "ours_now": 3.11,
+   "filed_total_revenue_from_operations": 24.18,
+   "components": {
+    "interest_income": 3.11,
+    "dividend_income": 0.44,
+    "net_gain_on_fair_value_changes": 20.42,
+    "other_operating_income": 0.22
+   },
+   "ours_matches_which_row": "Interest income -- exact to the cent: 310.75 lakh/100 = 3.1075 ~= 3.11",
+   "verdict": "OURS_WRONG",
+   "recommended_value": 24.18,
+   "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/5f2cf8f3-2f6c-48f6-a635-b45fb323d384.pdf",
+   "unit_declared": "Rs in Lakhs -> /100 for crore",
+   "column_anchor_evidence": "PAT: filed 'Profit/(Loss) for the period' 1,855.02 lakh/100=18.5502 == stored patStd 18.55 (0.001%, effectively exact).",
+   "second_check": "Component sum 310.75+43.80+2,041.82+21.86=2,418.23 lakh == printed 'Total Revenue from Operations' (2,418.23) exactly. This is the biggest gap in the whole campaign (brief: -87.1%), fully explained by row identity, not rounding.",
+   "routes_tried": [
+    {
+     "route": "bse-detres (scrip 507912)",
+     "outcome": "refused: no-date-begin-end-in-response"
+    },
+    {
+     "route": "nse-xbrl (symbol GYFTR)",
+     "outcome": "refused: 0 list rows"
+    },
+    {
+     "route": "BSE announcement stream",
+     "outcome": "OK -- board-outcome filing dated 2023-10-25"
+    }
+   ],
+   "confidence": "high",
+   "notes": "Consolidated slot (revC) carries the identical defect: ours=3.62, filed con Interest income=362.47 lakh/100=3.6247, filed con Total Revenue from Operations=2,556.96 lakh=25.57cr."
+  },
+  {
+   "symbol": "GYFTR",
+   "quarter": "2023-12-31",
+   "field": "sf_revop.json[GYFTR][20231231][0] (revS) -- 3rd flagged quarter, read for triangulation, not in the required worst-2",
+   "ours_now": 4.42,
+   "filed_total_revenue_from_operations": null,
+   "components": {
+    "interest_income": 4.42
+   },
+   "ours_matches_which_row": "Interest income -- exact: 441.53 lakh/100=4.4153 ~= 4.42",
+   "verdict": "OURS_WRONG",
+   "recommended_value": null,
+   "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/63fc9fd5-ec27-4c4a-8d55-17d757a10902.pdf",
+   "unit_declared": "Rs in Lakhs -> /100 for crore",
+   "column_anchor_evidence": "Row label 'Interest income' read directly off the statement's Revenue-From-Operations block; not independently PAT-anchored in this read (time-boxed -- component/PAT breakdown not transcribed beyond the interest-income row).",
+   "second_check": "Not performed (partial read).",
+   "routes_tried": [
+    {
+     "route": "BSE announcement stream",
+     "outcome": "OK -- filing dated 2024-01-12"
+    }
+   ],
+   "confidence": "medium",
+   "notes": "Confirms the same defect a 3rd consecutive quarter -- included only to establish the defect is not a 1-quarter fluke, not part of the packet's required worst-2+control."
+  },
+  {
+   "symbol": "GYFTR",
+   "quarter": "2024-06-30",
+   "field": "sf_revop.json[GYFTR][20240630][1] (revC) -- NOT one of the brief's flagged quarters (revS was never populated this quarter, so the original sweep had nothing to compare)",
+   "ours_now": 3.16,
+   "filed_total_revenue_from_operations": 20.74,
+   "components": {
+    "interest_income": 3.16,
+    "dividend_income": 0.11,
+    "net_gain_on_fair_value_changes": 17.46,
+    "other_operating_income": 0.02
+   },
+   "ours_matches_which_row": "Interest income (consolidated) -- exact: 315.69 lakh/100=3.1569 ~= 3.16",
+   "verdict": "OURS_WRONG",
+   "recommended_value": 20.74,
+   "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/ff6bcd8f-f284-418c-878c-9bcaf47ce85f.pdf",
+   "unit_declared": "Rs in Lakhs -> /100 for crore",
+   "column_anchor_evidence": "Company still 'LKP Finance Limited' at this filing date (25-Jul-2024); change of control approved 28-Aug-2024, after this quarter.",
+   "second_check": "Component sum 315.69+10.78+1,745.90+1.71=2,074.08 lakh == printed 'Total Revenue from Operations' exactly.",
+   "routes_tried": [
+    {
+     "route": "BSE announcement stream",
+     "outcome": "OK -- filing dated 2024-07-25"
+    }
+   ],
+   "confidence": "high",
+   "notes": "Included as the closest thing to a control this symbol permits: since sf_revop['GYFTR'] has only 5 populated quarter-cells in its ENTIRE history and every one (this one included) reproduces the identical Interest-income-instead-of-Total-Revenue-from-Operations defect, there is no quarter where GYFTR/LKP Finance revenue is already stored correctly -- see notes/GYFTR.md for the 'why no control' discussion."
+  },
+  {
+   "symbol": "PIRAMALFIN",
+   "quarter": "2024-12-31",
+   "field": "sf_revop.json[PIRAMALFIN][20241231][0] (revS)",
+   "ours_now": 2205.61,
+   "filed_total_revenue_from_operations": 1980.97,
+   "components": {
+    "interest_income": 1773.83,
+    "rental_income": 0.03,
+    "fees_and_commission_income": 108.08,
+    "other_operating_income": 99.03,
+    "note": "as-originally-filed; a LATER filing (Mar-25) restates 'other operating income' to 347.14, making the restated total 2229.08"
+   },
+   "ours_matches_which_row": "No row in either the as-filed or the later-restated standalone statement (nor the consolidated one) reproduces 2205.61 to the cent. Closest: the RESTATED Total Revenue from operations (2229.08, per the Mar-25 filing's own comparative column), off by 23.47 (1.05%).",
+   "verdict": "UNRESOLVED",
+   "recommended_value": null,
+   "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/ac2ee9ae-d588-43d7-b5db-3102343cabf3.pdf",
+   "unit_declared": "Rs in Lakhs -> /100 for crore",
+   "column_anchor_evidence": "PAT anchor FAILS: filed 'Profit/(loss) for the period' Dec-24 column = (11,230) lakh = -112.30cr (a LOSS), in BOTH the as-filed version and the Mar-25 filing's restated comparative (std and con both). Our stored patStd for this quarter is +69.0cr (a PROFIT) -- opposite sign, not explainable by rounding or reclassification. The column-identity check that anchors every other cell in this packet does not hold here.",
+   "second_check": "Component sum for the as-filed version: 177,383+3+10,808+9,903=198,097 lakh == printed Total Revenue from operations (198,097) exactly -- the FILING itself is internally consistent; the problem is that neither our stored value nor its PAT companion reconciles to it.",
+   "routes_tried": [
+    {
+     "route": "bse-detres (scrip 544597)",
+     "outcome": "refused: no-date-begin-end-in-response"
+    },
+    {
+     "route": "nse-xbrl (symbol PIRAMALFIN)",
+     "outcome": "refused: 0 list rows -- PIRAMALFIN is not NSE-listed"
+    },
+    {
+     "route": "BSE announcement stream via equity scrip 544597",
+     "outcome": "0 rows in this date range -- equity trading did not commence until 2025-11-04 (confirmed via a later announcement)"
+    },
+    {
+     "route": "BSE announcement stream via debt-segment NCD scrip 937579 (issuer 'Piramal Finance Ltd')",
+     "outcome": "OK -- filing dated 2025-01-27"
+    }
+   ],
+   "confidence": "low",
+   "notes": "Same pre-equity-listing mechanism as AADHARHFC/HDBFS (equity scrip 544597 has zero announcement history before 2025-11-04; historical quarters read via the issuer's debt-segment NCD scrips). ADDITIONALLY complicated by a Composite Scheme of Arrangement amongst Piramal Enterprises Ltd (amended 2024-10-26, modified again 2025-04-09) that likely changed the reporting perimeter starting this exact quarter. Screener's own Sales figure (2810.0) ALSO fails to reconcile to any concept found (std/con x rev-ops/total-income, as-filed or restated) -- see notes/PIRAMALFIN.md for the full evidence table. Recommend a follow-up packet with access to the IPO/listing prospectus, which may carry a 3rd, not-yet-located version of these financials."
+  },
+  {
+   "symbol": "PIRAMALFIN",
+   "quarter": "2025-03-31",
+   "field": "sf_revop.json[PIRAMALFIN][20250331][0] (revS)",
+   "ours_now": 2315.89,
+   "filed_total_revenue_from_operations": 2377.67,
+   "components": {
+    "interest_income": 1865.18,
+    "rental_income": 0.13,
+    "fees_and_commission_income": 121.9,
+    "other_operating_income": 390.46
+   },
+   "ours_matches_which_row": "No row matches to the cent. Closest: filed standalone Total Revenue from operations (2377.67), off by 61.78 (2.6%); filed consolidated Total Revenue from operations (2395.46), off by 79.57 (3.3%).",
+   "verdict": "UNRESOLVED",
+   "recommended_value": null,
+   "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/590200c4-b665-419b-99ae-f53010321f6f.pdf",
+   "unit_declared": "Rs in Lakhs -> /100 for crore",
+   "column_anchor_evidence": "PAT anchor is WEAK, not exact: filed std 'Profit/(loss) for the period' Mar-25 column = 8,160 lakh = +81.60cr; filed con = 7,655 lakh = +76.55cr. Our stored patStd = 64.0cr -- same sign as both, but ~20% off either one; Screener's own Net Profit (64.0) matches ours exactly, not the filing.",
+   "second_check": "Component sum (std): 186,518+13+12,190+39,046=237,767 lakh == printed Total Revenue from operations exactly -- filing internally consistent.",
+   "routes_tried": [
+    {
+     "route": "bse-detres (scrip 544597)",
+     "outcome": "refused: no-date-begin-end-in-response"
+    },
+    {
+     "route": "nse-xbrl (symbol PIRAMALFIN)",
+     "outcome": "refused: 0 list rows"
+    },
+    {
+     "route": "BSE announcement stream via debt-segment NCD scrip 937579",
+     "outcome": "OK -- Audited FY24-25 filing dated 2025-05-06 (Standalone p.7 + Consolidated p.20)"
+    }
+   ],
+   "confidence": "low",
+   "notes": "Same pre-listing/scheme-of-arrangement complication as the Dec-24 cell above. Screener's 2860.0 does not match filed std or con Total Revenue from operations either."
+  },
+  {
+   "symbol": "PIRAMALFIN",
+   "quarter": "2025-06-30",
+   "field": "sf_revop.json[PIRAMALFIN][20250630][0] (revS) -- CONTROL",
+   "ours_now": 2658.04,
+   "filed_total_revenue_from_operations": 2658.04,
+   "components": {
+    "interest_income": 2403.99,
+    "dividend_income": 57.7,
+    "rental_income": 0.02,
+    "fees_and_commission_income": 114.27,
+    "other_operating_income": 82.06
+   },
+   "ours_matches_which_row": "Total Revenue from operations (I) -- exact to the cent: 2,658.04 == 2,658.04",
+   "verdict": "OURS_CONFIRMED",
+   "recommended_value": 2658.04,
+   "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/9a4ac48d-c7df-498f-bcbe-cb6242e2c81d.pdf",
+   "unit_declared": "Rs in CRORES (this filing switched from lakhs -- see notes)",
+   "column_anchor_evidence": "PAT exact: filed 'Profit for the period' Jun-25 comparative column = 263.25 == stored patStd 263.25 exactly.",
+   "second_check": "Component sum 2403.99+57.70+0.02+114.27+82.06=2,658.04 == printed Total Revenue from operations exactly.",
+   "routes_tried": [
+    {
+     "route": "BSE announcement stream via debt-segment NCD scrip 937579",
+     "outcome": "OK -- read as the immediately-preceding-quarter comparative column inside the Sep-25 filing dated 2025-10-17"
+    }
+   ],
+   "confidence": "high",
+   "notes": "This is the control the brief calls for: a quarter inside the general Dec24-Sep25 range but NOT one of the brief's 3 flagged quarters, where our stored value already agrees with the source exactly. It passes cleanly, which licenses the Sep-25 OURS_WRONG call below and shows the Dec-24/Mar-25 UNRESOLVED calls are a real, cell-specific anomaly and not a method failure."
+  },
+  {
+   "symbol": "PIRAMALFIN",
+   "quarter": "2025-09-30",
+   "field": "sf_revop.json[PIRAMALFIN][20250930][0] (revS) -- bonus read, not one of the brief's required worst-2 (which were Dec-24/Mar-25) but the 3rd flagged quarter in the window",
+   "ours_now": 2594.11,
+   "filed_total_revenue_from_operations": 2842.63,
+   "components": {
+    "interest_income": 2594.11,
+    "dividend_income": 9.16,
+    "rental_income": 0.02,
+    "fees_and_commission_income": 120.69,
+    "other_operating_income": 118.65
+   },
+   "ours_matches_which_row": "Interest income -- exact to the cent: 2,594.11 == 2,594.11",
+   "verdict": "OURS_WRONG",
+   "recommended_value": 2842.63,
+   "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/9a4ac48d-c7df-498f-bcbe-cb6242e2c81d.pdf",
+   "unit_declared": "Rs in Crores",
+   "column_anchor_evidence": "PAT: filed 'Profit for the period' 277.67 vs stored patStd 278.0 (0.12%, effectively exact); Screener's Net Profit also 278.0.",
+   "second_check": "Component sum 2594.11+9.16+0.02+120.69+118.65=2,842.63 == printed Total Revenue from operations exactly. Screener's Sales (2843.0) matches this filed total, not our stored value -- Screener is reading the correct row here even though it got Dec-24/Mar-25 wrong.",
+   "routes_tried": [
+    {
+     "route": "BSE announcement stream via debt-segment NCD scrip 937579",
+     "outcome": "OK -- filing dated 2025-10-17"
+    }
+   ],
+   "confidence": "high",
+   "notes": "Confirms the AADHARHFC/HDBFS wrong-row class also afflicts PIRAMALFIN, but only once the company's reporting stabilised post-scheme (Sep-25) -- the Dec-24/Mar-25 cells are a different, unresolved problem (see above), not simply 'more of the same defect'."
+  },
+  {
+   "symbol": "TVSHLTD",
+   "quarter": "2023-06-30",
+   "field": "sf_revop.json[TVSHLTD][20230630][0] (revS)",
+   "ours_now": 555.96,
+   "filed_total_revenue_from_operations": 555.96,
+   "components": {
+    "revenue_from_operations": 555.96,
+    "other_income": 33.06,
+    "total_income": 589.02
+   },
+   "ours_matches_which_row": "Revenue from operations (row a) -- exact: 555.96 == 555.96. Screener's 589.01 matches 'Total Income' (a+b=589.02), not row (a).",
+   "verdict": "AMBIGUOUS_CONCEPT",
+   "recommended_value": 555.96,
+   "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/6dc4d5fe-0807-4da0-a1e2-09f9f17f5921.pdf",
+   "unit_declared": "Rs in Crores (stated in filing header, no conversion needed)",
+   "column_anchor_evidence": "PAT: filed 'Profit / (loss) for the Period' Jun-23 comparative column = 27.95 == stored patStd 27.95 exactly. Independently, BSE detres (qtr 118.00) returns revenue=555.96, pat=27.95 -- both exact.",
+   "second_check": "a+b = 555.96+33.06 = 589.02 == Screener's displayed 589.01 (0.03cr rounding) -- confirms Screener is showing Total Income, not Revenue from operations.",
+   "routes_tried": [
+    {
+     "route": "bse-detres (Corp_detailedResult_Transpose_ng, scrip 520056)",
+     "outcome": "OK -- revenue=555.96, pat=27.95, exact match"
+    },
+    {
+     "route": "BSE announcement stream",
+     "outcome": "OK -- confirms detres via the primary filing (dated 2023-10-30, Sep-23 filing's Jun-23 comparative column)"
+    }
+   ],
+   "confidence": "high",
+   "notes": "TVS Holdings is a holding/investment company (per Screener's own 'financial' classification) with unusually large Other Income this quarter -- Rs 33.06cr at Jun-23, rising to Rs 94.43cr at Sep-23 (including a Rs 50.50cr profit on sale of TVS Credit Services shares and Rs 44.51cr of investment interest income reclassified out of exceptional items following a merger). Same 'different concept' pattern as the brief's BSE Ltd precedent (revenue + investment income)."
+  },
+  {
+   "symbol": "TVSHLTD",
+   "quarter": "2023-09-30",
+   "field": "sf_revop.json[TVSHLTD][20230930][0] (revS)",
+   "ours_now": 390.16,
+   "filed_total_revenue_from_operations": 390.16,
+   "components": {
+    "revenue_from_operations": 390.16,
+    "other_income": 94.43,
+    "total_income": 484.59
+   },
+   "ours_matches_which_row": "Revenue from operations (row a) -- exact: 390.16 == 390.16. Screener's 484.44 matches 'Total Income' (a+b=484.59), not row (a).",
+   "verdict": "AMBIGUOUS_CONCEPT",
+   "recommended_value": 390.16,
+   "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/6dc4d5fe-0807-4da0-a1e2-09f9f17f5921.pdf",
+   "unit_declared": "Rs in Crores",
+   "column_anchor_evidence": "PAT: filed 'Profit/(loss) for the Period' Sep-23 = 82.98 == stored patStd 82.98 exactly. BSE detres (qtr 119.00) independently returns revenue=390.16, pat=82.98 -- exact.",
+   "second_check": "a+b = 390.16+94.43 = 484.59 == Screener's 484.44 (0.15cr / 0.03%, within Screener's own rounding).",
+   "routes_tried": [
+    {
+     "route": "bse-detres (scrip 520056)",
+     "outcome": "OK -- exact match"
+    },
+    {
+     "route": "BSE announcement stream",
+     "outcome": "OK -- own-column read, filing dated 2023-10-30"
+    }
+   ],
+   "confidence": "high",
+   "notes": "This is the largest of the two flagged TVSHLTD gaps (brief: -19.5%) and it is fully explained by the Total-Income-vs-Revenue-from-operations concept gap, which is largest here because Other Income peaked this quarter (see notes above). Not a row defect in our data."
+  },
+  {
+   "symbol": "TVSHLTD",
+   "quarter": "2024-03-31",
+   "field": "sf_revop.json[TVSHLTD][20240331][0] (revS) -- CONTROL",
+   "ours_now": 370.54,
+   "filed_total_revenue_from_operations": 370.54,
+   "components": {},
+   "ours_matches_which_row": "Revenue from operations -- exact match via NSE XBRL (RevenueFromOperations tag).",
+   "verdict": "OURS_CONFIRMED",
+   "recommended_value": 370.54,
+   "source_url": "https://nsearchives.nseindia.com/corporate/xbrl/NBFC_INDAS_105586_1119828_10052024021007.xml",
+   "unit_declared": "INR, XBRL decimals=-7 -> /1e7 for crore",
+   "column_anchor_evidence": "PAT exact: filed 219.22 == stored patStd 219.22. Screener's Sales (370.54) also matches exactly at this quarter -- no Total-Income gap here, consistent with Other Income being small this quarter.",
+   "second_check": "Nightly parser (build_revop.py) independently reproduces the same figures (rev=370.54, pat=219.22) from the same XBRL file -- reproducibility check passes.",
+   "routes_tried": [
+    {
+     "route": "bse-detres (scrip 520056)",
+     "outcome": "no usable response for this quarter/qid"
+    },
+    {
+     "route": "nse-xbrl (symbol TVSHLTD)",
+     "outcome": "OK -- exact match"
+    }
+   ],
+   "confidence": "high",
+   "notes": "Control quarter outside the flagged window where ours already agrees with the source (and with Screener) -- validates the reading method and confirms the two AMBIGUOUS_CONCEPT calls above are quarter-specific (driven by unusually large Other Income), not a permanent mislabeling."
+  },
+  {
+   "symbol": "SPICEJET",
+   "quarter": "2024-06-30",
+   "field": "sf_revop.json[SPICEJET][20240630][0] (revS)",
+   "ours_now": 1565.16,
+   "filed_total_revenue_from_operations": 1695.52,
+   "components": {
+    "revenue_from_operations": 1565.16,
+    "other_operating_revenues": 130.36
+   },
+   "ours_matches_which_row": "Revenue from operations (row a) -- exact: 1,565.161 ~= 1,565.16 (excludes row b, 'Other operating revenues')",
+   "verdict": "OURS_WRONG",
+   "recommended_value": 1695.52,
+   "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/fae6b838-1fe7-4ed8-9574-992ba435ce34.pdf",
+   "unit_declared": "Rs in Millions (printed in filing header) -> /10 for crore",
+   "column_anchor_evidence": "PAT: filed 'Profit/(loss) for the quarter' 1,499.58 mn/10=149.958 == stored patStd 149.96 (0.001%, effectively exact). BSE detres (qtr 122.00) independently returns revenue=1695.52, pat=149.96 -- matches the TOTAL, confirming detres's 'Net Sales/Revenue From Operations' field == Total revenue from operations, not row (a) alone.",
+   "second_check": "1,565.161+130.355=1,695.516 == BSE detres's 1695.52 and the filing's own 'Total revenue from operations' line, exactly.",
+   "routes_tried": [
+    {
+     "route": "bse-detres (scrip 500285)",
+     "outcome": "OK -- revenue=1695.52 (the TOTAL, not row a), pat=149.96"
+    },
+    {
+     "route": "BSE announcement stream",
+     "outcome": "OK -- board-outcome filing dated 2024-08-14, own quarter column"
+    }
+   ],
+   "confidence": "high",
+   "notes": "Airline revenue format: (a) Revenue from operations [ticket/passenger] + (b) Other operating revenues [ancillary: baggage, cargo etc.] = Total revenue from operations. Stored value is row (a) alone."
+  },
+  {
+   "symbol": "SPICEJET",
+   "quarter": "2025-06-30",
+   "field": "sf_revop.json[SPICEJET][20250630][0] (revS)",
+   "ours_now": 1033.36,
+   "filed_total_revenue_from_operations": 1106.06,
+   "components": {
+    "revenue_from_operations": 1033.36,
+    "other_operating_revenues": 72.7
+   },
+   "ours_matches_which_row": "Revenue from operations (row a) -- exact: 1,033.361 ~= 1,033.36",
+   "verdict": "OURS_WRONG",
+   "recommended_value": 1106.06,
+   "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/d275cc29-c393-4860-8f89-ecd4cb32f0a9.pdf",
+   "unit_declared": "Rs in Millions -> /10 for crore",
+   "column_anchor_evidence": "PAT: filed '(Loss)/profit for the quarter' (2,350.84) mn/10=-235.084 == stored patStd -235.08 (effectively exact). BSE detres (qtr 126.00) independently returns revenue=1106.06, pat=-235.08 -- the TOTAL.",
+   "second_check": "1,033.361+72.696=1,106.057 == BSE detres 1106.06 and the filing's Total revenue from operations line exactly.",
+   "routes_tried": [
+    {
+     "route": "bse-detres (scrip 500285)",
+     "outcome": "OK -- revenue=1106.06 (total), pat=-235.08"
+    },
+    {
+     "route": "BSE announcement stream",
+     "outcome": "OK -- filed late (companion 'reasons for delay' disclosure on 2025-08-13); results filing dated 2025-09-05, own quarter column"
+    }
+   ],
+   "confidence": "high",
+   "notes": "Same row mechanism as 2024-06-30."
+  },
+  {
+   "symbol": "SPICEJET",
+   "quarter": "2025-03-31",
+   "field": "sf_revop.json[SPICEJET][20250331][0] (revS) -- 3rd flagged quarter in the window, read as a comparative column inside the Jun-25 filing, not separately PAT-anchored to a 3rd source",
+   "ours_now": 1360.87,
+   "filed_total_revenue_from_operations": 1446.38,
+   "components": {
+    "revenue_from_operations": 1360.87,
+    "other_operating_revenues": 85.51
+   },
+   "ours_matches_which_row": "Revenue from operations (row a) -- exact: 1,360.865 ~= 1,360.87",
+   "verdict": "OURS_WRONG",
+   "recommended_value": 1446.38,
+   "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/d275cc29-c393-4860-8f89-ecd4cb32f0a9.pdf",
+   "unit_declared": "Rs in Millions -> /10 for crore",
+   "column_anchor_evidence": "Read from the Jun-25 filing's own 'quarter ended 31 March 2025 (Audited)' comparative column.",
+   "second_check": "1,360.865+85.510=1,446.375, matching the printed Total revenue from operations for that column.",
+   "routes_tried": [
+    {
+     "route": "Same filing as the 2025-06-30 cell above",
+     "outcome": "OK"
+    }
+   ],
+   "confidence": "high",
+   "notes": "Confirms all 3 of the brief's flagged SPICEJET quarters (Jun-24, Mar-25, Jun-25) carry the identical defect."
+  },
+  {
+   "symbol": "SPICEJET",
+   "quarter": "2022-09-30",
+   "field": "sf_revop.json[SPICEJET][20220930][0] (revS) -- CONTROL",
+   "ours_now": 1952.62,
+   "filed_total_revenue_from_operations": 1952.62,
+   "components": {},
+   "ours_matches_which_row": "Total revenue from operations (the aggregate, correctly stored)",
+   "verdict": "OURS_CONFIRMED",
+   "recommended_value": 1952.62,
+   "source_url": "https://api.bseindia.com/BseIndiaAPI/api/Corp_detailedResult_Transpose_ng/w?scrip_cd=500285&qtr=115.00",
+   "unit_declared": "Rs in Millions -> /10 for crore",
+   "column_anchor_evidence": "PAT exact: filed -837.88 == stored patStd -837.88.",
+   "second_check": "Not independently re-derived from a PDF (BSE detres alone used for this control, since its 'Net Sales/Revenue From Operations' field was independently proven in cells 1-2 above to equal the Total, not row (a)).",
+   "routes_tried": [
+    {
+     "route": "bse-detres (scrip 500285, qtr 115.00)",
+     "outcome": "OK -- exact match"
+    }
+   ],
+   "confidence": "high",
+   "notes": "Well outside the flagged window; confirms the defect is confined to specific quarters (Jun-24 onward) and not a permanent mislabeling of the whole SPICEJET std series."
+  },
+  {
+   "symbol": "JPASSOCIAT",
+   "quarter": "2023-12-31",
+   "field": "sf_revop.json[JPASSOCIAT][20231231][0] (revS)",
+   "ours_now": 710.09,
+   "filed_total_revenue_from_operations": 710.09,
+   "components": {
+    "revenue_from_operations": 710.09,
+    "other_income": 51.72,
+    "total_income": 761.81
+   },
+   "ours_matches_which_row": "Revenue from Operations -- exact: 71,009 lakh/100=710.09 == 710.09. This company's format has NO revenue sub-components -- 'Revenue from Operations' is a single line, so it IS the correct 'Total revenue from operations' equivalent.",
+   "verdict": "OURS_CONFIRMED",
+   "recommended_value": 710.09,
+   "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/83c5b38b-fad5-4786-9cdb-ca9a3638eccd.pdf",
+   "unit_declared": "Rs in Lakhs -> /100 for crore",
+   "column_anchor_evidence": "PAT exact: filed 'Net Profit/(Loss) for the period after Tax' (48,241) lakh/100=-482.41 == stored patStd -482.41. Consolidated revenue also matches exactly: filed con Revenue from Operations 150,259 lakh=1,502.59 == stored revC 1,502.59.",
+   "second_check": "Cross-filing consistency: the SAME 71,009/48,241 figures reappear as the Dec-23 comparative column inside the later Mar-24 filing (read separately, doc adfabda8...), confirming no restatement between the two filings.",
+   "routes_tried": [
+    {
+     "route": "bse-detres (scrip 532532, Status=Delisted)",
+     "outcome": "returns revenue=710.09 matching, but not independently trusted -- see notes"
+    },
+    {
+     "route": "BSE announcement stream (equity scrip 532532)",
+     "outcome": "OK -- filing dated 2024-01-30, own quarter column, both Standalone and Consolidated statements present"
+    }
+   ],
+   "confidence": "high",
+   "notes": "Screener's Sales (867.0) does NOT reconcile to any figure found in the as-filed statement: not std Revenue-from-Ops (710.09), not std Total Income (761.81), not con Revenue-from-Ops (1502.59), not con Total Income (1558.58). Likely a Screener-side scraping issue related to this company's unusual CIRP-era statement layout (separate Continuing/Discontinued Operations lines, a 'regrouped/reclassified' comparative note) -- out of scope to audit Screener's own pipeline further. See notes/JPASSOCIAT.md."
+  },
+  {
+   "symbol": "JPASSOCIAT",
+   "quarter": "2024-03-31",
+   "field": "sf_revop.json[JPASSOCIAT][20240331][0] (revS)",
+   "ours_now": 935.42,
+   "filed_total_revenue_from_operations": 935.42,
+   "components": {
+    "revenue_from_operations": 935.42,
+    "other_income": 33.83,
+    "total_income": 969.25
+   },
+   "ours_matches_which_row": "Revenue from Operations -- exact: 93,542 lakh/100=935.42 == 935.42",
+   "verdict": "OURS_CONFIRMED",
+   "recommended_value": 935.42,
+   "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/adfabda8-a783-408d-974b-5d2f848924a4.pdf",
+   "unit_declared": "Rs in Lakhs -> /100 for crore",
+   "column_anchor_evidence": "PAT exact: filed 'Net Profit/(Loss) for the period after Tax' (67,442) lakh/100=-674.42 == stored patStd -674.42. Consolidated also exact: filed con Revenue from Operations 174,093 lakh=1,740.93 == stored revC 1,740.93.",
+   "second_check": "This filing's OWN Dec-23 comparative column reproduces 71,009/(48,241) exactly matching the standalone Dec-23 filing read separately -- cross-filing consistency confirmed both ways.",
+   "routes_tried": [
+    {
+     "route": "bse-detres (scrip 532532)",
+     "outcome": "not used for this cell -- read directly from the PDF instead after the text layer proved scrambled"
+    },
+    {
+     "route": "BSE announcement stream",
+     "outcome": "OK -- filing dated 2024-05-11. get_text() came back column-scrambled (labels and numbers interleaved out of order) -- read from the 200dpi PNG render instead per runbook rung 10"
+    }
+   ],
+   "confidence": "high",
+   "notes": "Screener's Sales (1184.0) does not reconcile to std or con, Revenue-from-Ops or Total-Income. Same conclusion as Dec-23: Screener appears to be wrong for this company's CIRP-era quarters, not us."
+  },
+  {
+   "symbol": "JPASSOCIAT",
+   "quarter": "2023-09-30",
+   "field": "sf_revop.json[JPASSOCIAT][20230930][0] (revS) -- CONTROL",
+   "ours_now": 1213.61,
+   "filed_total_revenue_from_operations": 1213.61,
+   "components": {},
+   "ours_matches_which_row": "Revenue from Operations -- exact: 121,361 lakh/100=1,213.61 == 1,213.61 (read as the comparative column inside the Dec-23 filing)",
+   "verdict": "OURS_CONFIRMED",
+   "recommended_value": 1213.61,
+   "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/83c5b38b-fad5-4786-9cdb-ca9a3638eccd.pdf",
+   "unit_declared": "Rs in Lakhs -> /100 for crore",
+   "column_anchor_evidence": "Comparative column '30.09.2023' inside the Dec-23 filing.",
+   "second_check": "Screener also agrees here (1214.0 -> matches 1213.61 within its own whole-crore rounding) -- unlike the two flagged quarters, this control is a clean 3-way match (filing = ours = Screener), which is exactly why it wasn't flagged by the original sweep.",
+   "routes_tried": [
+    {
+     "route": "Same filing as the 2023-12-31 cell above (comparative column)",
+     "outcome": "OK"
+    }
+   ],
+   "confidence": "high",
+   "notes": "Confirms the reading method and shows the Screener discrepancy is isolated to the two flagged quarters specifically, not a permanent Screener-vs-us mismatch for this symbol."
+  },
+  {
+   "symbol": "THEMISMED",
+   "quarter": "2024-06-30",
+   "field": "sf_revop.json[THEMISMED][20240630][0] (revS)",
+   "ours_now": 106.08,
+   "filed_total_revenue_from_operations": 106.08,
+   "components": {
+    "revenue_from_operations_continuing_std": 106.08,
+    "revenue_from_operations_consolidated": 122.99
+   },
+   "ours_matches_which_row": "Standalone Revenue from Operations (Net), Continuing Operation -- exact: 10,607.69 lakh/100=106.0769 ~= 106.08",
+   "verdict": "OURS_CONFIRMED",
+   "recommended_value": 106.08,
+   "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/0a22916b-b587-45c8-b2f6-d336940ffa15.pdf",
+   "unit_declared": "Rs in Lakhs -> /100 for crore",
+   "column_anchor_evidence": "PAT: filed std 'Profit for the Period' 1,871.47 lakh/100=18.7147 == stored patStd 18.71 (effectively exact). BSE detres (qtr 122.00) independently returns revenue=106.08, pat=18.71 -- exact.",
+   "second_check": "Our own CONSOLIDATED slot (revC=122.99) independently matches the filed CONSOLIDATED Revenue from Operations (12,299.38 lakh=122.9938) exactly -- BOTH our slots are individually correct.",
+   "routes_tried": [
+    {
+     "route": "bse-detres (scrip 530199)",
+     "outcome": "OK -- matches standalone exactly"
+    },
+    {
+     "route": "BSE announcement stream",
+     "outcome": "OK -- filing dated 2024-07-26, both Standalone (p.8) and Consolidated (p.10) statements present"
+    }
+   ],
+   "confidence": "high",
+   "notes": "Screener's Sales (122.99), captioned 'Standalone Figures in Rs. Crores' in the p4 sweep extract, is actually the CONSOLIDATED figure -- same basis-mismatch pattern as the AADHARHFC precedent's 2024-06-30 finding. Not a row defect: our std slot IS correct standalone, our con slot IS correct consolidated; the comparison source's own label is what's wrong."
+  },
+  {
+   "symbol": "THEMISMED",
+   "quarter": "2024-09-30",
+   "field": "sf_revop.json[THEMISMED][20240930][0] (revS)",
+   "ours_now": 99.59,
+   "filed_total_revenue_from_operations": 99.59,
+   "components": {
+    "revenue_from_operations_continuing_std": 99.59,
+    "revenue_from_operations_consolidated": 117.01
+   },
+   "ours_matches_which_row": "Standalone Revenue from Operations (Net), Continuing Operation -- exact: 9,959.22 lakh/100=99.5922 ~= 99.59",
+   "verdict": "OURS_CONFIRMED",
+   "recommended_value": 99.59,
+   "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/97c74a7e-8ac4-45bc-9e33-320e4728e501.pdf",
+   "unit_declared": "Rs in Lakhs -> /100 for crore",
+   "column_anchor_evidence": "PAT: BSE detres (qtr 123.00) returns revenue=99.59, pat=9.87 == stored patStd 9.87 exactly.",
+   "second_check": "Consolidated slot (revC=117.01) matches filed consolidated Revenue from Operations (11,700.99 lakh=117.0099) exactly.",
+   "routes_tried": [
+    {
+     "route": "bse-detres (scrip 530199)",
+     "outcome": "OK -- exact match"
+    },
+    {
+     "route": "BSE announcement stream",
+     "outcome": "OK -- filing dated 2024-10-25"
+    }
+   ],
+   "confidence": "high",
+   "notes": "Same basis-mismatch pattern as 2024-06-30. Screener's 117.01 is the consolidated figure."
+  },
+  {
+   "symbol": "THEMISMED",
+   "quarter": "2023-12-31",
+   "field": "sf_revop.json[THEMISMED][20231231][0] (revS) -- CONTROL",
+   "ours_now": 82.51,
+   "filed_total_revenue_from_operations": 82.51,
+   "components": {},
+   "ours_matches_which_row": "Revenue from Operations, std == con at this quarter (no consolidation delta)",
+   "verdict": "OURS_CONFIRMED",
+   "recommended_value": 82.51,
+   "source_url": "https://api.bseindia.com/BseIndiaAPI/api/Corp_detailedResult_Transpose_ng/w?scrip_cd=530199&qtr=120.00",
+   "unit_declared": "Rs in Millions/Lakhs per BSE detres calibration -> /10 for crore (BSE detres convention)",
+   "column_anchor_evidence": "PAT exact: filed 2.0 == stored patStd 2.0.",
+   "second_check": "Stored revS==revC==82.51 exactly at this quarter (no basis divergence) -- confirms the Jun/Sep-24 std-vs-con divergence is a real, quarter-specific consolidation event (an associate/JV effect), not a permanent labeling swap.",
+   "routes_tried": [
+    {
+     "route": "bse-detres (scrip 530199, qtr 120.00)",
+     "outcome": "OK -- exact match"
+    }
+   ],
+   "confidence": "high",
+   "notes": "Clean control -- validates the BSE-detres-as-anchor method for this symbol."
+  }
+ ]
+}

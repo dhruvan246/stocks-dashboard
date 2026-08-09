@@ -93,6 +93,36 @@
    ],
    "why_flagged": "BOTH numbers are right: ours (3.14) is Revenue from operations, the site's 145.23 is TOTAL INCOME, which at this distressed steel company includes a ~142cr one-off Other Income. A concept difference, not a defect.",
    "source": "batch_c_verdicts.json"
+  },
+  "TVSHLTD": {
+   "verdict": "AMBIGUOUS_CONCEPT",
+   "quarters_read": [
+    "2023-06-30",
+    "2023-09-30",
+    "2024-03-31 (control)"
+   ],
+   "why_flagged": "our Revenue from operations matches the filing exactly; the comparison site shows TOTAL INCOME. A concept difference, not a defect.",
+   "source": "batch_d_verdicts.json"
+  },
+  "JPASSOCIAT": {
+   "verdict": "OURS_CONFIRMED",
+   "quarters_read": [
+    "2023-12-31",
+    "2024-03-31",
+    "2023-09-30 (control)"
+   ],
+   "why_flagged": "exact match to the filed Revenue from Operations on BOTH bases in all three quarters; the site's number reconciles to no filed concept at all.",
+   "source": "batch_d_verdicts.json"
+  },
+  "THEMISMED": {
+   "verdict": "OURS_CONFIRMED",
+   "quarters_read": [
+    "2024-06-30",
+    "2024-09-30",
+    "2023-12-31 (control)"
+   ],
+   "why_flagged": "our STANDALONE matches the filing exactly; the site shows CONSOLIDATED despite a 'standalone' caption \u2014 the same mechanism as the AADHARHFC 2024 false positives.",
+   "source": "batch_d_verdicts.json"
   }
  },
  "cells": {
@@ -106,6 +136,18 @@
     "verdict": "OURS_CONFIRMED",
     "why_flagged": "read from the filing: 696.78 == Total revenue from operations exactly",
     "source": "aadharhfc_verdicts.json"
+   }
+  },
+  "PIRAMALFIN": {
+   "20241231": {
+    "verdict": "UNRESOLVED",
+    "why_flagged": "pre-listing scheme-of-arrangement restatement; even the PAT anchor breaks (sign flip). NOT adjudicated \u2014 left open deliberately, do not treat as clean.",
+    "source": "batch_d_verdicts.json"
+   },
+   "20250331": {
+    "verdict": "UNRESOLVED",
+    "why_flagged": "same restatement window as 2024-12-31",
+    "source": "batch_d_verdicts.json"
    }
   }
  }

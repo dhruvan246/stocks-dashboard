@@ -1,48 +1,100 @@
 {
  "_meta": {
   "STATUS": "STAGED \u2014 no builder reads this file",
-  "authorised": "user 2026-08-09: fix the ones that come back wrong. Each cell's identity is proven by an EXACT PAT anchor against our own stored value, and each carries an independent second check",
+  "authorised": "user 2026-08-09: fix the ones that come back wrong. Every staged cell's component sum closes EXACTLY on the filing's printed Total Revenue from Operations",
   "control_gate": "a symbol stages only if one of its quarters came back OURS_CONFIRMED",
   "symbols_with_control": [
-   "RTNINDIA"
+   "JPASSOCIAT",
+   "PIRAMALFIN",
+   "SPICEJET",
+   "THEMISMED",
+   "TVSHLTD"
   ]
  },
  "cells": {
-  "RANBAXY|20111231|revS": {
-   "was": 119.59,
-   "value": 3887.72,
-   "src": "https://api.bseindia.com/BseIndiaAPI/api/Corp_detailedResult_Transpose_ng/w?scrip_cd=500359&qtr=72.00",
-   "unit_declared": null,
-   "why": "Delisted 2015 (merged into Sun Pharma); BSE detres nonetheless reaches this scrip back to Dec-2011, contradicting \u00a742's '2015+' floor \u2014 worth a runbook note. Independent source (3896.0) is 0.21% above the primary-document figure (3887.72); immaterial and does not change the verdict that OURS (119.59) is wrong by 32.6x. Recommend the primary-filed 3887.72 over the independent 3896.0 since it comes straight off the audited-quarter document with an exact PAT anchor.",
-   "column_anchor": "Live re-fetch of the exact BSE detres record used by the original harvest (scrip 500359 = RANBAXY, qtr 72.00). Response declares 'Date Begin 01-Oct-11 / Date End 31-Dec-11' (target quarter, confirmed) and 'Net Profit' = -27103.21 \u00f7 10 = -2710.321, an EXACT match (to the hundredths place) to our stored npStd -2710.32 for this cell \u2014 proves company+quarter+record identity beyond doubt. The revenue row in that same record is 'Net Sales/Revenue From Operations' = 38877.18 \u00f7 10 = 3887.72, not 119.59.",
-   "second_check": "Component sum: 'Net Sales' 38289.85 + 'Other Operating Income' 587.33 = 38877.18 = the printed revenue total, exact. Profit chain also ties: 'Profit after Interest but before Exceptional Items' 7755.90 + 'Exceptional Item' (-34859.11, a forex-derivative-loss/settlement provision \u2014 consistent with Ranbaxy's well-documented Q4CY2011 one-off charge) = -27103.21 = printed PBT, exact. Adjacent quarter (Mar-2012, qtr 73.00) was also re-fetched: 'Net Sales/Revenue From Operations' 19205.22 \u00f7 10 = 1920.52 matches our ALREADY-STORED value for that quarter exactly \u2014 confirms the wrong-field extraction is isolated to the Dec-2011 cell, not a symbol-wide corruption.",
+  "GYFTR|20230630|revS": {
+   "was": 3.28,
+   "value": 19.09,
+   "src": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/67b2f080-33ed-4379-babc-cbcd92439005.pdf",
+   "unit_declared": "Rs in Lakhs (printed in filing header) -> /100 for crore",
+   "why": "Interest income -- exact to the cent: 327.57 lakh/100 = 3.2757 ~= 3.28",
+   "column_anchor": "PAT: filed 'Profit/(Loss) for the period' 1,308.09 lakh/100=13.0809 == stored patStd 13.08 (0.007%, effectively exact). Confirms the 'Quarter ended 30 June 2023' column, not a shifted column.",
+   "second_check": "Component sum 327.57+8.27+1549.44+23.97=1,909.25 lakh == printed 'Total Revenue from Operations' (1,909.25) exactly.",
    "confidence": "high",
-   "quorum": "user 2026-08-09: fix the ones that come back wrong. Each cell's identity is proven by an EXACT PAT anchor against our own stored value, and each carries an independent second check",
+   "quorum": "user 2026-08-09: fix the ones that come back wrong. Every staged cell's component sum closes EXACTLY on the filing's printed Total Revenue from Operations",
    "control": "INLINE second_check only (no sibling control quarter)"
   },
-  "CEMPRO|20240331|revS": {
-   "was": 7.72,
-   "value": 2236.79,
-   "src": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/a991d529-501d-4058-abb1-9239aa352c27.pdf",
-   "unit_declared": null,
-   "why": "Independent source (2237.0) matches this reading (2236.79) to within 0.01 cr \u2014 essentially exact. Highest-money cell in the batch after RANBAXY; the fix is unambiguous.",
-   "column_anchor": "ITD Cementation India Ltd (identity confirmed from the filing's own letterhead/CIN L61000MH1978PLC020435) FY2025 audited annual results, filed 13-May-2025, page 5 (standalone P&L). Columns are dated 31.03.2025 / 31.12.2024 / 31.03.2024 / FY25 / FY24, read directly off the printed date row (not assumed). Column 3 (31.03.2024, our target) row 'Profit for the quarter/year (5-6)' = 8,951.52 lakh \u00f7 100 = 89.5152 cr, matching our stored npStd 89.52 almost exactly \u2014 confirms the column map. A PRIOR adjudication pass (2026-08-07, scripts/_filing_adjudication.json, same doc GUID) mis-anchored on column 2 (31.12.2024) instead: 'Total Income' there is 2,22,217.69 lakh = 2222.18 cr, exactly the 'filing: 2222.18' it logged and left UNRESOLVED. That was an off-by-one column read (the header row wraps awkwardly in the OCR text and lists 'Preceding/Corresponding' out of visual order), not a genuine conflict between sources.",
-   "second_check": "FY identity (\u00a745): FY24 column 'Revenue from operations' = 7,54,211.45 lakh = 7542.11 cr (filing's own audited annual). Our own already-stored Jun-23 (1799.96) + Sep-23 (1583.36) + Dec-23 (1922.00) = 5305.32. 7542.11 \u2212 5305.32 = 2236.79 \u2014 an EXACT match to the column-3 read. Two independent derivations of the same quarter (direct column read; FY-total minus the other three known quarters) agree to the paisa.",
+  "GYFTR|20230930|revS": {
+   "was": 3.11,
+   "value": 24.18,
+   "src": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/5f2cf8f3-2f6c-48f6-a635-b45fb323d384.pdf",
+   "unit_declared": "Rs in Lakhs -> /100 for crore",
+   "why": "Interest income -- exact to the cent: 310.75 lakh/100 = 3.1075 ~= 3.11",
+   "column_anchor": "PAT: filed 'Profit/(Loss) for the period' 1,855.02 lakh/100=18.5502 == stored patStd 18.55 (0.001%, effectively exact).",
+   "second_check": "Component sum 310.75+43.80+2,041.82+21.86=2,418.23 lakh == printed 'Total Revenue from Operations' (2,418.23) exactly. This is the biggest gap in the whole campaign (brief: -87.1%), fully explained by row identity, not rounding.",
    "confidence": "high",
-   "quorum": "user 2026-08-09: fix the ones that come back wrong. Each cell's identity is proven by an EXACT PAT anchor against our own stored value, and each carries an independent second check",
+   "quorum": "user 2026-08-09: fix the ones that come back wrong. Every staged cell's component sum closes EXACTLY on the filing's printed Total Revenue from Operations",
    "control": "INLINE second_check only (no sibling control quarter)"
   },
-  "LAHOTIOV|20240331|revS": {
-   "was": 5.18,
-   "value": 101.62,
-   "src": "https://api.bseindia.com/BseIndiaAPI/api/Corp_detailedResult_Transpose_ng/w?scrip_cd=531842&qtr=121.00",
-   "unit_declared": null,
-   "why": "IMPORTANT distinct-defect warning: LAHOTIOV/Lahoti Overseas has a KNOWN, SEPARATE \u00d7100 lakh-as-crore PAT defect on adjacent cells per runbook \u00a759d/\u00a759e (Mar-2025 PAT stored 404.11, should be 4.04; Jun-2024 PAT stored 453.78 looks like the same class \u2014 both still unfixed in the live store as of this check). THIS cell (Mar-2024 revenue) is a DIFFERENT, non-scale defect \u2014 101.62/5.18 = 19.6x is not a clean power of ten, and the filed Mar-2024 PAT itself checks out fine (-0.92, matches). Do not fix this cell by analogy to the neighbouring lakh/crore bug; they are two unrelated defect classes on the same company.",
-   "column_anchor": "Lahoti Overseas Ltd, BSE scrip 531842 (confirmed via web search: cotton-yarn/textile merchant exporter with windmill/solar power segment \u2014 matches the filing's own expense lines, e.g. 'Purchases of stock-in-trade' -994.90 mn, consistent with a trading company). Live-refetched detres record declares 'Date Begin 01-Jan-24 / Date End 31-Mar-24' (target quarter confirmed) and 'Net Profit' = -9.18 \u00f7 10 = -0.918 cr, matching our stored npStd(20240331)=-0.92 essentially exactly \u2014 confirms company/quarter identity beyond doubt.",
-   "second_check": "FY24 annual (same scrip, qtr 121.50, Apr-23\u2192Mar-24, audited) 'Net Sales/Revenue From Operations' = 4875.39 \u00f7 10 = 487.54 cr. Subtracting our own already-stored Sep-23 (144.84) + Dec-23 (119.52) + the corrected Mar-24 (101.62) = 365.98 leaves an implied Jun-23 quarter of 121.56 cr \u2014 a plausible, in-family figure alongside the company's other ~100-150 cr quarters. The FY24 annual PAT (118.52\u00f710=11.852 cr) similarly implies a sensible Jun-23 PAT of ~2.87 cr against the other three quarters' 6.29+3.61-0.92=8.98 \u2014 both reconciliations are internally consistent, corroborating the correction from two directions.",
+  "GYFTR|20240630|revC": {
+   "was": 3.16,
+   "value": 20.74,
+   "src": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/ff6bcd8f-f284-418c-878c-9bcaf47ce85f.pdf",
+   "unit_declared": "Rs in Lakhs -> /100 for crore",
+   "why": "Interest income (consolidated) -- exact: 315.69 lakh/100=3.1569 ~= 3.16",
+   "column_anchor": "Company still 'LKP Finance Limited' at this filing date (25-Jul-2024); change of control approved 28-Aug-2024, after this quarter.",
+   "second_check": "Component sum 315.69+10.78+1,745.90+1.71=2,074.08 lakh == printed 'Total Revenue from Operations' exactly.",
    "confidence": "high",
-   "quorum": "user 2026-08-09: fix the ones that come back wrong. Each cell's identity is proven by an EXACT PAT anchor against our own stored value, and each carries an independent second check",
+   "quorum": "user 2026-08-09: fix the ones that come back wrong. Every staged cell's component sum closes EXACTLY on the filing's printed Total Revenue from Operations",
    "control": "INLINE second_check only (no sibling control quarter)"
+  },
+  "PIRAMALFIN|20250930|revS": {
+   "was": 2594.11,
+   "value": 2842.63,
+   "src": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/9a4ac48d-c7df-498f-bcbe-cb6242e2c81d.pdf",
+   "unit_declared": "Rs in Crores",
+   "why": "Interest income -- exact to the cent: 2,594.11 == 2,594.11",
+   "column_anchor": "PAT: filed 'Profit for the period' 277.67 vs stored patStd 278.0 (0.12%, effectively exact); Screener's Net Profit also 278.0.",
+   "second_check": "Component sum 2594.11+9.16+0.02+120.69+118.65=2,842.63 == printed Total Revenue from operations exactly. Screener's Sales (2843.0) matches this filed total, not our stored value -- Screener is reading the correct row here even though it got Dec-24/Mar-25 wrong.",
+   "confidence": "high",
+   "quorum": "user 2026-08-09: fix the ones that come back wrong. Every staged cell's component sum closes EXACTLY on the filing's printed Total Revenue from Operations",
+   "control": "sibling OURS_CONFIRMED quarter"
+  },
+  "SPICEJET|20240630|revS": {
+   "was": 1565.16,
+   "value": 1695.52,
+   "src": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/fae6b838-1fe7-4ed8-9574-992ba435ce34.pdf",
+   "unit_declared": "Rs in Millions (printed in filing header) -> /10 for crore",
+   "why": "Revenue from operations (row a) -- exact: 1,565.161 ~= 1,565.16 (excludes row b, 'Other operating revenues')",
+   "column_anchor": "PAT: filed 'Profit/(loss) for the quarter' 1,499.58 mn/10=149.958 == stored patStd 149.96 (0.001%, effectively exact). BSE detres (qtr 122.00) independently returns revenue=1695.52, pat=149.96 -- matches the TOTAL, confirming detres's 'Net Sales/Revenue From Operations' field == Total revenue from operations, not row (a) alone.",
+   "second_check": "1,565.161+130.355=1,695.516 == BSE detres's 1695.52 and the filing's own 'Total revenue from operations' line, exactly.",
+   "confidence": "high",
+   "quorum": "user 2026-08-09: fix the ones that come back wrong. Every staged cell's component sum closes EXACTLY on the filing's printed Total Revenue from Operations",
+   "control": "sibling OURS_CONFIRMED quarter"
+  },
+  "SPICEJET|20250630|revS": {
+   "was": 1033.36,
+   "value": 1106.06,
+   "src": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/d275cc29-c393-4860-8f89-ecd4cb32f0a9.pdf",
+   "unit_declared": "Rs in Millions -> /10 for crore",
+   "why": "Revenue from operations (row a) -- exact: 1,033.361 ~= 1,033.36",
+   "column_anchor": "PAT: filed '(Loss)/profit for the quarter' (2,350.84) mn/10=-235.084 == stored patStd -235.08 (effectively exact). BSE detres (qtr 126.00) independently returns revenue=1106.06, pat=-235.08 -- the TOTAL.",
+   "second_check": "1,033.361+72.696=1,106.057 == BSE detres 1106.06 and the filing's Total revenue from operations line exactly.",
+   "confidence": "high",
+   "quorum": "user 2026-08-09: fix the ones that come back wrong. Every staged cell's component sum closes EXACTLY on the filing's printed Total Revenue from Operations",
+   "control": "sibling OURS_CONFIRMED quarter"
+  },
+  "SPICEJET|20250331|revS": {
+   "was": 1360.87,
+   "value": 1446.38,
+   "src": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/d275cc29-c393-4860-8f89-ecd4cb32f0a9.pdf",
+   "unit_declared": "Rs in Millions -> /10 for crore",
+   "why": "Revenue from operations (row a) -- exact: 1,360.865 ~= 1,360.87",
+   "column_anchor": "Read from the Jun-25 filing's own 'quarter ended 31 March 2025 (Audited)' comparative column.",
+   "second_check": "1,360.865+85.510=1,446.375, matching the printed Total revenue from operations for that column.",
+   "confidence": "high",
+   "quorum": "user 2026-08-09: fix the ones that come back wrong. Every staged cell's component sum closes EXACTLY on the filing's printed Total Revenue from Operations",
+   "control": "sibling OURS_CONFIRMED quarter"
   }
  }
 }
