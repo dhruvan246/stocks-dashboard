@@ -30,7 +30,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§19** SITE FEATURES ON SUPABASE
 - **§20** RESULTS COVERAGE DASHBOARD
 - **§21** MARKET BREADTH
-- **§22** FII/DII HOLDINGS PER STOCK
+- **§22** FII/DII HOLDINGS PER STOCK  (22h = verification vs external sites + cross-exchange, 2026-08-09)
 - **§23** BULK & BLOCK DEALS
 - **§24** INSIDER TRADES
 - **§25** NEW-LISTING (IPO) YEAR-AGO BASE BACKFILL
@@ -1988,6 +1988,46 @@ public, the anchor resolves. All five slots are then wrong together. **Confirmed
   falls back `mf ← o_mf`. Latent until now — the tracked BSE ledgers are all pre-Sep-2022 old-format —
   but it would have bitten the moment any post-2022 quarter was filled from BSE, which is exactly what
   this fix does. Check this first if a BSE-sourced fill comes back with a suspiciously round mf.
+
+### 22h. ★★ VERIFICATION vs EXTERNAL SITES + THE OTHER EXCHANGE  (campaign 2026-08-09)
+Full write-up: `scripts/SHP_VERIFY_REPORT.md`; plan `SHP_VERIFY_CAMPAIGN.md`; per-phase findings
+`SHP_VERIFY_P1/P2/P5_FINDINGS.md`. Tooling (all committed, self-tested): `shp_verify_prov.py`
+(per-cell route map), `shp_verify_mapcard.py` (derives a site's mapping ARITHMETICALLY),
+`shp_verify_diff.py`, `shp_verify_quorum.py`, `shp_verify_arbitrate.py`.
+
+- **RESULT: no value we publish has been shown wrong.** Cross-exchange (our NSE-derived cells vs
+  BSE's *separately filed* documents, 61 syms x 41 qtrs, Jun-2016->Jun-2026): **2,990 MATCH, 1
+  ROUND, 0 MISMATCH** — the lone non-exact value is CUMMINSIND Jun-2022 nsh, off by ONE
+  shareholder. Three sites x 66 stratified symbols: 2,156 CONFIRMED, **0** cells contradicted,
+  **0** cells where no source agrees with us. 79 individual filings arbitrated: 0 defects.
+- **★ NO SITE HAS PRE-2010 DATA (7/7).** Trendlyne bottoms out Dec-2015, Screener Mar-2017,
+  everyone else 4-9 trailing quarters. Our 2002-2010 (0%) and 2010-2015 (30%) eras cannot be
+  corroborated by any aggregator — **cross-EXCHANGE is the only real check for the deep era**, and
+  2010-2015 (sourced from archived Moneycontrol) is UNVERIFIABLE BY DESIGN, not "fine".
+- **★ NEVER map a site's field by its NAME.** Groww publishes `otherDomesticInstitutions.insurance`
+  which is *all non-MF domestic holdings*, not insurance; mapping by name invents ~1.9pp of defect
+  on every stock. Derive the mapping arithmetically (which subset SUMS to ours) and refuse when
+  nothing fits. Screener's DII is simply not our DII (62% hold) — it must not vote on DII.
+- **★ SITES CARRY REAL ERRORS.** Screener FII ~2.7% miss rate: ICICIBANK Jun-2026 it says 33.79 vs
+  the filing's 49.82; HINDALCO Jun-2026 31.41 vs 35.60. Moneycontrol maps to NOTHING. Never heal
+  from a single site — campaign rule 6b (user mandate): a value is taken only when the exchange
+  filing AND >=2 independent sites agree; sites our data came FROM never count toward quorum.
+- **★ IDENTITY TRAPS AT SCALE.** Tickertape's sid `TRU` is Trust Fintech, unrelated to our TRU
+  (renamed Dhanvarsha, sid DHA); a StockEdge ticker shortcut matched `IEL` to the wrong company.
+  Exact-ticker match, else unambiguous full name, else SKIP — a wrong company becomes a fake defect.
+- **★ OPEN GAP — shareholder counts: 9,094 cells (13.7%) have no `nsh`, quarter-shaped.** 99.9% in
+  every quarter from Sep-2019 EXCEPT Sep-2022 (1.1%), Jun-2024 (0.3%), Mar-2024 (78%),
+  Sep-2025..Mar-2026 (~93%). The filings HAVE it and today's parser reads it (6/6 on both blackout
+  quarters; RELIANCE Sep-2022 = 3,485,825, HDFCBANK Jun-2024 = 3,664,325, both stored empty).
+  Cause: populated before nsh extraction existed, missed by the 8-quarter --reparse of 2026-07-16.
+  **Fix = `--reparse --quarters 2022-09-30,2024-03-31,2024-06-30,2025-09-30,2025-12-31,2026-03-31,2026-06-30`
+  via the §22b staging file** (~12k fetches; never alongside other sweeps, never as a 2nd writer
+  against the 12:40/20:40 CI job).
+- **★ THE 2,344 INTERNAL HOLES HAVE NO DIAGNOSED CAUSE.** The null-`filing_date_time` theory was
+  MEASURED AND FAILED: 43 null-date rows in the sample, only 6 correspond to a cell we lack.
+  Diagnose before assuming.
+- Analysing with a LOCAL checkout produced a phantom parser bug (a copy 227 lines behind
+  origin/main). `feedback-analyze-live-not-local-bin` applies to CODE, not just .bin/.json.
 
 ### 22c. FII/DII ACCUMULATION BACKTEST  (CHAT-DRIVEN — the on-page section was REMOVED)
 **⚠️ 2026-07-16: the user removed the backtest UI from shareholding.html ("I'll perform backtest in
