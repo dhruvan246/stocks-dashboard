@@ -39,7 +39,7 @@ def main():
     led = json.load(open(os.path.join(TREE, "scripts/screener_rev_fills.json"), encoding="utf-8"))
     revop = json.load(open(os.path.join(TREE, "docs/sf_revop.json"), encoding="utf-8"))
 
-    site = collections.defaultdict(dict)
+    site = collections.defaultdict(dict)          # (sym, basis) -> qe -> revenue
     for p in a.sweep:
         if not os.path.exists(p):
             print("  ! missing sweep file: %s" % p); continue
@@ -48,11 +48,12 @@ def main():
             if not line:
                 continue
             e = json.loads(line)
-            if e.get("basis") != "std":
+            b = e.get("basis")
+            if b not in ("std", "con"):
                 continue
             rv = next((e["rows"][k] for k in REV_LABELS if k in e["rows"]), None)
             if rv is not None:
-                site[e["sym"].upper()][int(str(e["qe"]).replace("-", ""))] = float(rv)
+                site[(e["sym"].upper(), b)][int(str(e["qe"]).replace("-", ""))] = float(rv)
 
     rows, tally = [], collections.Counter()
     for key, v in led.items():
@@ -69,15 +70,13 @@ def main():
             if ledv is None:
                 continue
             stored = stored_row[idx] if stored_row and len(stored_row) > idx else None
-            sv = site.get(sym, {}).get(int(qe)) if basis == "std" else None
+            sv = site.get((sym, basis), {}).get(int(qe))
             rec = {"sym": sym, "qe": int(qe), "basis": basis, "ledger_rev": ledv,
                    "stored_now": stored, "screener_now": sv,
                    "basis_copy_in_ledger": basis_copy,
                    "src": (v.get(basis) or {}).get("src")}
             if stored is None:
                 rec["status"] = "NOT_IN_STORE"          # ledger staged it; sf_revop has nothing
-            elif basis == "con":
-                rec["status"] = "CON_NOT_SWEPT"         # the sweep was standalone-only
             elif sv is None:
                 rec["status"] = "NO_SITE_DATA"          # 404 / empty table / slug mismatch
             else:

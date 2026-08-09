@@ -82,11 +82,42 @@ ticker, and it means an unknown share of those 286 are live companies we simply 
 **Treat the 404 list as "needs slug verification", never as absence** (§57 rule 1: a route returning
 nothing is never evidence the value does not exist).
 
+## 6. ★★★ THE PAT-ONLY-ANCHOR COHORT IS FULLY CHECKED — AND CLEAN (234 of 234)
+
+`screener_rev_fills.json` = 191 (symbol, quarter) keys = **234 basis-cells** (127 std, 107 con)
+across 96 symbols, 2015-06 → 2025-09, every one filled by `screener_prerev.py` on the PAT-only
+anchor that produced the AADHARHFC defect. All 234 have now been compared against Screener's
+current revenue row — the 107 consolidated cells needed a targeted `/consolidated/` crawl of
+57 symbols (632 rows, 48 live fetches, 9 served from cache, zero 404s, zero empty tables, no 403).
+
+| result | cells |
+|---|---|
+| **MATCHES_SITE_ROW** | **234 / 234** |
+| row-selection mismatches | **0** |
+
+**The 8 basis-copy flags are all LEGITIMATE.** These were sym-quarters where the tool recorded the
+same revenue for con and std, still identical in our store: ABDL ×2, ABLBL, CPPLUS, FORCEMOT ×2,
+HDBFS, MEESHO. With consolidated site data in hand the discriminator is decisive — **Screener shows
+con == std for all eight as well**, which is exactly `detect_con_copy.py`'s own rule that a genuine
+identity shows con == std on the site too. Not copies.
+
+**What a match does and does not mean.** These cells were sourced FROM Screener, so under rule 6b's
+provenance echo Screener cannot *confirm* them. But the defect under test is that the wrong ROW was
+taken from that page, so comparing against Screener's revenue row today is a row-selection check,
+and a mismatch would have been real evidence. **Finding none across 234 cells bounds the blast
+radius of the PAT-only anchor to the cases already found** — it is not a clean bill on those cells'
+absolute correctness, which only a filing read could give.
+
+**So AADHARHFC was not the tip of an iceberg.** The tool's blind spot is real and the rule it earns
+stands (*an anchor that validates one field does not validate another*), but its realised damage in
+this cohort is zero. The open work is now the 30 Class-B candidates from §2, which came from a
+different detector and are not part of this cohort.
+
 ## 5. WHAT THIS PHASE DID NOT DO
 - **Nothing here is adjudicated.** All 43 are candidates. Every screen in this campaign has produced
   false positives alongside real defects — the `con==std` screen fires 6,470 times and HUDCO proved
   that shape is usually legitimate. Only a filing read decides.
 - Consolidated revenue was not swept (standalone only — one page per symbol, chosen because
   standalone is where multiple sites can vote and where our PAT has essentially full backtest reach).
-- The 191-cell `screener_rev_fills` cohort is identified but not yet cross-checked.
+- ~~The 191-cell cohort is identified but not yet cross-checked.~~ **DONE — §6, 234/234 clean.**
 - Class A (zero-sentinel) is filed, not diagnosed.
