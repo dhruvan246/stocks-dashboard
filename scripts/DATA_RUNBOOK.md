@@ -3165,6 +3165,26 @@ slice job a PAT for its push, or add a `workflow_run` trigger on pages.yml.
 **This is §41's own lesson recurring one layer out** — the bytes were right in git, the derived slice
 was right in git, and the site still served nulls.
 
+**§41b-i — NEVER park the publish-wait poller inside a worktree you are about to delete** (2026-08-10,
+cost: six runaway loops, one of them spinning for 7h55m). The standard verify step is backgrounded as
+
+    cd ~/stocks-wt/<job> && until [ "$(gh run list ... --jq '.[0].status')" = completed ]; do sleep 20; done
+
+Then the fix ships, `git worktree remove` runs, and the poller's working directory ceases to exist.
+`gh` now fails EVERY iteration with `failed to determine base repo: ... Unable to read current working
+directory`, the `until` condition can never become `completed`, and the loop retries forever, appending
+the same error line every 20s (they had grown to 40–180 KB). They never report an error, because an `until`
+loop treats "command failed" as "not done yet" — silence reads as patience.
+
+Three rules for any backgrounded wait:
+  * **`cd` somewhere that will outlive it** — the MAIN checkout, or pass `-C <path>`/`--repo owner/name`
+    to `gh` so it needs no cwd at all;
+  * **bound the loop** — `for i in $(seq 90); do ... done` beats `until`, so a wedged wait dies on its own;
+  * **before `git worktree remove`, kill your own pollers** — `ps -eo pid,command | grep shell-snapshots`
+    lists them; anything older than the job itself is a leak.
+Check for leaked pollers whenever a session has shipped several fixes: they cost nothing visible but
+poll GitHub forever.
+
 **Generalise it:** any client-side cache keyed on a DATE will go stale under a heal. Today the sf parts
 are the only such cache (`dash_slim.bin` / `stock_data.bin` / `mf_history.bin` / `stk/` slices are plain
 ETag fetches that revalidate within ~10 min, and `sw.js` never caches `.bin`/`.json`). If you ever add
