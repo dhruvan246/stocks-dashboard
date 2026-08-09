@@ -52,6 +52,9 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§40** STOCK PAGE = PER-STOCK SLICES · **§40b** ★ REPORTING BASIS — one basis per comparison
 - **§41** ★ PUBLISHING A DATA HEAL — "live on the server" ≠ "the site uses it" (**read before ANY heal / backfill**)
 - **§42–§58** ROUTE & SOURCE DISCOVERIES (detres JSON, FY identity, pre-2020 std/con ceilings, CI clobber, the ROUTE LADDER, the STANDARD BACKFILL READ)
+- **§70** ★★★ sf_fundamentals vs sf_revop DISAGREE — authority is fundamentals; the mirror is not rendered
+- **§71** ★★★ THE ADJUDICATION THAT WAS ABANDONED — when your "truth" source is the corrupted one
+- **§72** ★★★ VERIFYING REV/PAT vs EXTERNAL SITES — sites reach 10 of 95 quarters; con PAT has no site quorum
 - **§59** ★★ STANDALONE-SLOT-HOLDS-CONSOLIDATED AUDIT — the screen is not a defect count (**read before acting on any std/con equality screen**)
 
 ---
@@ -5107,3 +5110,70 @@ Cells where **sf_fundamentals itself** is out of family against that company's o
 launder it into a second file. Worst offenders: ZEAL 2026-03 (4114.27 against a 2.35 median),
 RELCAPITAL 2023-03 (2436.50 vs 276), NUCLEUS 2025-12 (250.2 vs 26.8), IFCI 2024-12, IRB 2020-09.
 Each needs a filing read. **This is now the whole remaining divergence population.**
+
+---
+
+## 72. ★★★ VERIFYING REV/PAT vs EXTERNAL SITES — the sites can only reach 10 of our 95 quarters  (campaign 2026-08-09)
+
+Full write-up `scripts/REVPAT_VERIFY_REPORT.md`; plan `REVPAT_VERIFY_CAMPAIGN.md`; phase findings and
+tooling in `scripts/revpat_verify/` (`audit_revpat_coverage`, `revpat_strata`, `revpat_mapcard`,
+`revpat_quorum`, `build_contested`, `exchange_fetch` — all re-runnable, all offline except the fetcher).
+
+- **★ THE CAMPAIGN PLAN'S OWN SLOT NOTE WAS WRONG.** `sf_revop` is
+  `[revS, revC, opS, opC, patS, patC, finFlag, ebitS, ebitC]` — **PAT at 4/5, EBIT at 7/8**, no
+  other-income pair. The plan said PAT sat at 7/8; following it would have compared **EBIT** against
+  every site's net profit and faked a mismatch on nearly every cell. **And `sf_revop`'s PAT is a
+  MIRROR** — authority is `sf_fundamentals` (§70). Never diff the mirror against a site: ~753
+  phantom defects.
+- **★★ THE SITES CANNOT REACH THE DATA.** Measured quarterly depth: Screener **13 qtrs (Jun-2023)**,
+  Tickertape 10 (Mar-2024, consolidated-only), Groww 5 (Jun-2025), StockEdge **none** (annual-only,
+  standalone, 5 rows), Trendlyne 403-blocked. We hold **95 quarters**. So **rule 6b (filing AND ≥2
+  independent sites) is satisfiable on ~10 of 95** and **pre-2023 is exchange-only** — the same
+  conclusion §22h reached for SHP, from different sites and different fields. Report those cells as
+  **unverifiable-by-site (measured)**, never as "unchecked".
+- **★★ CONSOLIDATED PAT HAS NO SITE QUORUM AND CANNOT GET ONE.** Screener's and Groww's consolidated
+  "Net Profit" sits **+1.5-1.7%** above our owners-attributable PAT with hold at **37.6% / 42.9%**,
+  and the bias **vanishes on standalone** (94-100% hold) where there is no NCI. They publish TOTAL;
+  we publish OWNERS. Neither may vote on con PAT. Tickertape is the only con-PAT voter, and one site
+  is not a quorum. **No site publishes an owners-vs-total split for a quarter** — T-B is
+  arbitration-only.
+- **★★ MAP PER (BASIS, COMPANY CLASS), NEVER GLOBALLY.** Tickertape's revenue field scored **21.4%**
+  unsegmented and was refused; split by our own `fin` flag it resolves. Our bank revenue is
+  **Interest Earned**, a site's is **Total Income**: SBIN runs **29-42% higher every quarter**
+  (Mar-2024 164,914 vs our 117,469) while RELIANCE agrees to 0.1%. One global card = every bank
+  flagged as a defect. Same failure class as §22h's wrong era-split, different axis.
+- **★★★ THE SBIN CASE — why site majority never decides.** Tickertape disagreed with our SBIN
+  consolidated PAT on **10 of 10 quarters**, always the same direction, with a plausible
+  total-vs-owners story. SBI's own XBRL: `ProfitLossAfterTaxesMinorityInterestAndShareOfProfitLoss
+  OfAssociates` Dec-2024 = **18,853.16 = ours, exact to the paisa**; and our Jun+Sep+Dec sum
+  **57,960.88 == the filing's own 9M YTD context, delta 0.00**, while the site's three miss it by
+  ₹1,067 cr. Ours-minus-MI (18,222.54) is not the site's number either — it is simply wrong.
+  **OURS_CONFIRMED.** A confident, consistent, mechanistically plausible site disagreement was still
+  the site's error.
+- **★ NSE's `FourD` CONTEXT CAN DECLARE 3-MONTH DATES WHILE HOLDING 9-MONTH YTD VALUES** (measured
+  4/4 on sampled Q3 filings, ratio ~2.9-3.0x). No period-span check on the context's own declared
+  dates catches it. **Never use `FourD` as a value source** — NSE files one XBRL per basis, so
+  `OneD` is correct once the right file is fetched. This produced 5 wrong values in a first draft
+  before a cross-check caught it. (Read positively, it is also the 9M anchor that settled SBIN.)
+- **★ "THE NAME LIES", three more instances:** StockEdge's `Consolidated_NetProfit` is **not**
+  consolidated (standalone `PAT + extra_items`, RELIANCE FY2023 43,002+1,188=44,190 exact);
+  Tickertape sid `TRU` is **Trust Fintech** (ours is sid `DHA`); StockEdge's ticker search is
+  name-fuzzy (`IEL` → *Gabriel India* first, real IEL is #6 of 26). Plus Groww's `financialSummary`
+  narrative is ~2 years stale and calls a six-month TCS period "the quarter".
+- **★ ROBOTS: `api.tickertape.in` and `quotes-api.tickertape.in` are `Disallow: /`.** Use the allowed
+  `www.tickertape.in` SSR route (`__NEXT_DATA__` → `props.pageProps['income-normal-interim']`), which
+  serves identical data. **§22h may need correcting** — the SHP campaign appears to have used the
+  disallowed host. Trendlyne 403'd on request #1 here while the SHP recon logged 10/10 successes the
+  same day: **the block is session/IP-dependent; re-probe fresh, never inherit "the site is open".**
+- **Coverage vs point-in-time N500** (95 qtrs, 47,436 member-quarters): revS **93.3%**, revC 39.5%,
+  patS **93.7%**, patC 42.5%. Mar-2020→date is 96.8-99.2% on all four; the con columns before that
+  are the §51a/§53 structural walls, not neglect.
+- **★ SEVERITY INVERSION: patS outranks patC for backtest impact.** Backtest-effective PAT (the
+  engine's `tries=[[3,4],[1,2]]` con→std fallback) comes to **44,468 cells — identical to patS to
+  the cell.** The fallback fully absorbs the 57.5% con gap, so a con-PAT hole is invisible to the
+  backtest while a std defect reaches 100% of member-quarters.
+- **Re-run:** `python3 -X utf8 scripts/revpat_verify/audit_revpat_coverage.py` (offline, reads this
+  checkout's HEAD); `revpat_strata.py` re-derives the frozen 66-symbol sample identically;
+  `build_contested.py` rebuilds the internal-divergence queue; `revpat_mapcard.py --extract <jsonl>
+  --site <s>` derives a card and REFUSES below 80% hold; `revpat_quorum.py --base <dir>` applies
+  rule 6b using accepted mappings only.
