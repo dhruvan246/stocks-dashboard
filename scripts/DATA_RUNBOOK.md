@@ -5273,3 +5273,28 @@ would have reverted the repair to it on the next nightly `apply_owners_full`. Th
 `owners_basis_heals.json` with the same precedence it gives `con_copy_heals.json`, so every
 owners-vs-total repair from this session is pinned. **Any new heal ledger needs adding there, or
 the nightly job silently undoes it.**
+
+### 71e. ★ JHS 2018-09 — the cell queued for VISION did not need it
+Vision was approved for JHS 2018-09-30 (the one cell §71c flagged as "no consolidated page at all —
+scanned"). **It was resolved without a vision read**, and the original diagnosis was wrong twice:
+
+* the OWN-quarter PDFs did not fail to *parse*, they **failed to fetch** — 3 of 4 returned no bytes.
+  That is transport (§57c), and "no consolidated page" was the wrong conclusion to draw from it;
+* the Q+4 filing (Sep-2019, carrying Sep-2018 as its year-ago column) **is** scanned, but it ships
+  an OCR text layer, and that was enough. Rung 6 of the ladder, not rung 10.
+
+**OCR corrupts digits in that document, so no printed number was trusted alone.** Every value is
+pinned by an identity the page asserts:
+```
+period Sep-18 = PBT -106.56 - tax (13.90 + -18.81)        = -101.65  printed, exact
+owners Sep-18 = period - NCI (-3.71)                      =  -97.94  OCR shows "[92 94)"
+control  Sep-19 owners -54.48 + Jun-19 owners -28.73      =  -83.21  = printed H1 owners
+control  Sep-19 PBT -98.09 - tax 96.18                    = -194.27  = printed period
+control  owners -97.94 + OCI owners 0.39                  =  -97.55  = printed TCI owners
+```
+-97.94 lakh = **-0.98 cr**, comfortably inside JHS's ~1.68 family median. Both the stored -27.82 and
+the mirror's 0.93 were wrong.
+
+**Before escalating anything to vision, re-fetch the own-quarter PDFs and read the NEXT-YEAR
+filing.** A failed fetch reads exactly like a scanned document in the logs, and a scan with an OCR
+layer is a text read, not a vision read — the expensive rung stays unused.
