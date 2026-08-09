@@ -1,0 +1,268 @@
+{
+ "site": "trendlyne",
+ "precision": 2,
+ "map": {
+  "prom": [
+   "Promoter"
+  ],
+  "fii": [
+   "FII"
+  ],
+  "dii": [
+   "DII"
+  ],
+  "mf": [
+   "DII > Mutual Funds"
+  ],
+  "ins": [
+   "DII > Insurance"
+  ]
+ },
+ "_derived": {
+  "prom": {
+   "labels": [
+    "Promoter"
+   ],
+   "median_abs_delta": 0.02,
+   "hold_pct": 100.0,
+   "median_bias": 0.0,
+   "rows": 133,
+   "runners_up": [
+    {
+     "labels": [
+      "Promoter > Holding"
+     ],
+     "median_abs_delta": 0.02,
+     "hold_pct": 100.0
+    },
+    {
+     "labels": [
+      "Promoter",
+      "Promoter > Locked"
+     ],
+     "median_abs_delta": 0.02,
+     "hold_pct": 100.0
+    },
+    {
+     "labels": [
+      "Promoter > Holding",
+      "Promoter > Locked"
+     ],
+     "median_abs_delta": 0.02,
+     "hold_pct": 100.0
+    }
+   ]
+  },
+  "fii": {
+   "labels": [
+    "FII"
+   ],
+   "median_abs_delta": 0.02,
+   "hold_pct": 100.0,
+   "median_bias": 0.0,
+   "rows": 133,
+   "runners_up": [
+    {
+     "labels": [
+      "FII",
+      "Promoter > Locked"
+     ],
+     "median_abs_delta": 0.02,
+     "hold_pct": 100.0
+    },
+    {
+     "labels": [
+      "FII",
+      "Promoter > Pledged"
+     ],
+     "median_abs_delta": 0.03,
+     "hold_pct": 85.0
+    },
+    {
+     "labels": [
+      "FII",
+      "Promoter > Locked",
+      "Promoter > Pledged"
+     ],
+     "median_abs_delta": 0.03,
+     "hold_pct": 85.0
+    }
+   ]
+  },
+  "dii": {
+   "labels": [
+    "DII"
+   ],
+   "median_abs_delta": 0.03,
+   "hold_pct": 85.0,
+   "median_bias": 0.03,
+   "rows": 133,
+   "runners_up": [
+    {
+     "labels": [
+      "DII",
+      "Promoter > Locked"
+     ],
+     "median_abs_delta": 0.03,
+     "hold_pct": 85.0
+    },
+    {
+     "labels": [
+      "DII > Insurance",
+      "DII > Mutual Funds",
+      "DII > Others"
+     ],
+     "median_abs_delta": 0.03,
+     "hold_pct": 58.6
+    },
+    {
+     "labels": [
+      "DII",
+      "Promoter > Pledged"
+     ],
+     "median_abs_delta": 0.04,
+     "hold_pct": 70.7
+    }
+   ],
+   "eras": {
+    "post_2022_09": {
+     "labels": [
+      "DII"
+     ],
+     "median_abs_delta": 0.03,
+     "hold_pct": 85.0,
+     "median_bias": 0.03,
+     "rows": 133
+    }
+   }
+  },
+  "mf": {
+   "labels": [
+    "DII > Mutual Funds"
+   ],
+   "median_abs_delta": 0.0,
+   "hold_pct": 100.0,
+   "median_bias": 0.0,
+   "rows": 130,
+   "runners_up": [
+    {
+     "labels": [
+      "DII > Mutual Funds",
+      "Promoter > Locked"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 100.0
+    },
+    {
+     "labels": [
+      "DII > Mutual Funds",
+      "Promoter > Pledged"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 84.6
+    },
+    {
+     "labels": [
+      "DII > Mutual Funds",
+      "Promoter > Locked",
+      "Promoter > Pledged"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 84.6
+    }
+   ]
+  },
+  "ins": {
+   "labels": [
+    "DII > Insurance"
+   ],
+   "median_abs_delta": 0.0,
+   "hold_pct": 100.0,
+   "median_bias": 0.0,
+   "rows": 130,
+   "runners_up": [
+    {
+     "labels": [
+      "DII > Insurance",
+      "Promoter > Locked"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 100.0
+    },
+    {
+     "labels": [
+      "DII > Insurance",
+      "Promoter > Pledged"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 84.6
+    },
+    {
+     "labels": [
+      "DII > Insurance",
+      "Promoter > Locked",
+      "Promoter > Pledged"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 84.6
+    }
+   ]
+  },
+  "nsh": {
+   "labels": [
+    "DII",
+    "FII",
+    "Public"
+   ],
+   "median_abs_delta": 1916317.5,
+   "hold_pct": 0.0,
+   "median_bias": -1916317.5,
+   "rows": 117,
+   "runners_up": [
+    {
+     "labels": [
+      "DII > Mutual Funds",
+      "FII",
+      "Public"
+     ],
+     "median_abs_delta": 1916320.84,
+     "hold_pct": 0.0
+    },
+    {
+     "labels": [
+      "DII > Insurance",
+      "FII",
+      "Public"
+     ],
+     "median_abs_delta": 1916330.55,
+     "hold_pct": 0.0
+    },
+    {
+     "labels": [
+      "FII",
+      "Others",
+      "Public"
+     ],
+     "median_abs_delta": 1916331.2,
+     "hold_pct": 0.0
+    }
+   ],
+   "eras": {
+    "post_2022_09": {
+     "labels": [
+      "DII",
+      "FII",
+      "Public"
+     ],
+     "median_abs_delta": 1916317.5,
+     "hold_pct": 0.0,
+     "median_bias": -1916317.5,
+     "rows": 117
+    }
+   }
+  }
+ },
+ "_pin": "93de247c",
+ "_comparable_rows": 139,
+ "_warnings": []
+}

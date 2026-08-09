@@ -162,7 +162,7 @@ def main():
         for field, labels in fmap.items():
             if field not in SLOT:
                 continue
-            sval, missing = site_value(ext.get("rows", {}), labels, float(scales.get(field, 1.0)))
+            sval, missing = site_value(ext.get("rows") or {}, labels, float(scales.get(field, 1.0)))
             slot = SLOT[field]
             ours = ours_cell[slot] if len(ours_cell) > slot else None
             if sval is None:

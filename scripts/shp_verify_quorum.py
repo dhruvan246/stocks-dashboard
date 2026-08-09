@@ -33,17 +33,27 @@ def quorum_needed(qe, prov):
     return 2 if (qe >= EXCHANGE_ERA and prov not in ("wayback-mc", "thirdparty", "")) else 3
 
 
-def tolerances(field, ours):
+def tolerances(field, ours, obs=None):
     """Return (agree, spread_max) in the FIELD's own units.
 
     Percentages are compared in percentage points; `nsh` is a raw headcount in the millions, so
     reusing the pp thresholds there declared two sites in conflict over half a person. Sites also
     publish counts at different precision (StockEdge rounds to 2dp of lakhs = +/-500 people), so
-    the headcount bands are relative."""
-    if field == "nsh" and ours:
-        base = abs(float(ours))
-        return max(1.0, 0.01 * base), max(1.0, 0.02 * base)
-    return AGREE, SPREAD_MAX
+    the headcount bands are relative.
+
+    When WE hold no value the scale has to come from the sites themselves — these are exactly the
+    NO_DATA_OURS cells the campaign exists to find, and defaulting them to a 0.5-person spread
+    buried real fillable gaps (TCS Jun-2024: BSE and Screener agree to the person) under
+    SITES_DISAGREE."""
+    if field != "nsh":
+        return AGREE, SPREAD_MAX
+    base = abs(float(ours)) if ours else None
+    if base is None and obs:
+        vals = [abs(float(o["val"])) for o in obs if o.get("val") is not None]
+        base = (sorted(vals)[len(vals) // 2] if vals else None)
+    if not base:
+        return AGREE, SPREAD_MAX
+    return max(1.0, 0.01 * base), max(1.0, 0.02 * base)
 
 
 def decide(ours, obs, qe, prov, field="", agree=None, spread_max=None):
@@ -112,7 +122,7 @@ def main():
 
     out, tally = [], collections.Counter()
     for (sym, qe, field), c in sorted(cells.items()):
-        ag, sp = tolerances(field, c["ours"])
+        ag, sp = tolerances(field, c["ours"], c["obs"])
         d, need, nc, nx, spread = decide(c["ours"], c["obs"], qe, c["prov"], field, ag, sp)
         tally[d] += 1
         out.append({"sym": sym, "qe": qe, "field": field, "ours": c["ours"], "prov": c["prov"],

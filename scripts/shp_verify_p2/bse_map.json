@@ -1,0 +1,4 @@
+{"site":"bse","precision":2,
+ "map":{"prom":["prom"],"fii":["fii"],"dii":["dii"],"ins":["ins"],"nsh":["nsh"]},
+ "_note":"IDENTITY card, minus `mf` DELIBERATELY. parse_shp reads the mutual-fund tag out of NSE documents but returns 0.0 for it on many BSE ones (a tag-spelling difference — runbook §22b records MutualFundsOrUtiMember with a lowercase 'ti' as a separate spelling). On the same filings BSE's prom/fii/dii/ins/nsh all match us exactly, and three other sites confirm our mf to the decimal, so the zero is a reader gap on this route, not evidence about our data. A source that structurally cannot read a field must not vote on it — mapping it anyway put 54 phantom disputes into the arbitration queue.",
+ "_followup":"Worth fixing in parse_shp so future BSE-sourced backfills cannot write mf=0 into shp_history. Today they do not: BSE-routed cells hold FEWER mf zeros (6.6-7.7%) than NSE-live ones (17.0%)."}

@@ -1,0 +1,264 @@
+{
+ "site": "etmarkets",
+ "precision": 2,
+ "map": {
+  "prom": [
+   "routeA.Promoters"
+  ],
+  "fii": [
+   "routeA.FII"
+  ],
+  "mf": [
+   "routeA.Mutual Funds"
+  ]
+ },
+ "_derived": {
+  "prom": {
+   "labels": [
+    "routeA.Promoters"
+   ],
+   "median_abs_delta": 0.0,
+   "hold_pct": 100.0,
+   "median_bias": 0.0,
+   "rows": 48,
+   "runners_up": [
+    {
+     "labels": [
+      "routeA.Pledge",
+      "routeA.Promoters"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 91.7
+    },
+    {
+     "labels": [
+      "routeA.Mutual Funds",
+      "routeA.Promoters"
+     ],
+     "median_abs_delta": 13.695,
+     "hold_pct": 8.3
+    },
+    {
+     "labels": [
+      "routeA.Mutual Funds",
+      "routeA.Pledge",
+      "routeA.Promoters"
+     ],
+     "median_abs_delta": 14.38,
+     "hold_pct": 0.0
+    }
+   ]
+  },
+  "fii": {
+   "labels": [
+    "routeA.FII"
+   ],
+   "median_abs_delta": 0.0,
+   "hold_pct": 100.0,
+   "median_bias": 0.0,
+   "rows": 48,
+   "runners_up": [
+    {
+     "labels": [
+      "routeA.FII",
+      "routeA.Pledge"
+     ],
+     "median_abs_delta": 0.01,
+     "hold_pct": 91.7
+    },
+    {
+     "labels": [
+      "routeA.DII"
+     ],
+     "median_abs_delta": 5.705,
+     "hold_pct": 0.0
+    },
+    {
+     "labels": [
+      "routeA.Mutual Funds"
+     ],
+     "median_abs_delta": 7.275,
+     "hold_pct": 0.0
+    }
+   ]
+  },
+  "dii": {
+   "labels": [
+    "routeA.DII"
+   ],
+   "median_abs_delta": 0.15,
+   "hold_pct": 6.2,
+   "median_bias": -0.15,
+   "rows": 48,
+   "runners_up": [
+    {
+     "labels": [
+      "routeA.DII",
+      "routeA.Pledge"
+     ],
+     "median_abs_delta": 0.155,
+     "hold_pct": 4.2
+    },
+    {
+     "labels": [
+      "routeA.FII"
+     ],
+     "median_abs_delta": 4.565,
+     "hold_pct": 0.0
+    },
+    {
+     "labels": [
+      "routeA.FII",
+      "routeA.Pledge"
+     ],
+     "median_abs_delta": 6.33,
+     "hold_pct": 0.0
+    }
+   ],
+   "eras": {
+    "post_2022_09": {
+     "labels": [
+      "routeA.DII"
+     ],
+     "median_abs_delta": 0.15,
+     "hold_pct": 6.2,
+     "median_bias": -0.15,
+     "rows": 48
+    }
+   }
+  },
+  "mf": {
+   "labels": [
+    "routeA.Mutual Funds"
+   ],
+   "median_abs_delta": 0.0,
+   "hold_pct": 100.0,
+   "median_bias": 0.0,
+   "rows": 48,
+   "runners_up": [
+    {
+     "labels": [
+      "routeA.Mutual Funds",
+      "routeA.Pledge"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 91.7
+    },
+    {
+     "labels": [
+      "routeA.Others"
+     ],
+     "median_abs_delta": 6.3,
+     "hold_pct": 2.1
+    },
+    {
+     "labels": [
+      "routeA.Others",
+      "routeA.Pledge"
+     ],
+     "median_abs_delta": 6.3,
+     "hold_pct": 2.1
+    }
+   ]
+  },
+  "ins": {
+   "labels": [
+    "routeA.Mutual Funds"
+   ],
+   "median_abs_delta": 4.57,
+   "hold_pct": 8.3,
+   "median_bias": 4.57,
+   "rows": 48,
+   "runners_up": [
+    {
+     "labels": [
+      "routeA.Mutual Funds",
+      "routeA.Pledge"
+     ],
+     "median_abs_delta": 6.53,
+     "hold_pct": 0.0
+    },
+    {
+     "labels": [
+      "routeA.Pledge"
+     ],
+     "median_abs_delta": 7.37,
+     "hold_pct": 0.0
+    },
+    {
+     "labels": [
+      "routeA.Others"
+     ],
+     "median_abs_delta": 8.285,
+     "hold_pct": 0.0
+    }
+   ],
+   "eras": {
+    "post_2022_09": {
+     "labels": [
+      "routeA.Mutual Funds"
+     ],
+     "median_abs_delta": 4.57,
+     "hold_pct": 8.3,
+     "median_bias": 4.57,
+     "rows": 48
+    }
+   }
+  },
+  "nsh": {
+   "labels": [
+    "routeA.DII",
+    "routeA.FII",
+    "routeA.Others"
+   ],
+   "median_abs_delta": 1780026.5,
+   "hold_pct": 0.0,
+   "median_bias": -1780026.5,
+   "rows": 48,
+   "runners_up": [
+    {
+     "labels": [
+      "routeA.FII",
+      "routeA.Mutual Funds",
+      "routeA.Others"
+     ],
+     "median_abs_delta": 1780034.51,
+     "hold_pct": 0.0
+    },
+    {
+     "labels": [
+      "routeA.DII",
+      "routeA.Mutual Funds",
+      "routeA.Others"
+     ],
+     "median_abs_delta": 1780037.29,
+     "hold_pct": 0.0
+    },
+    {
+     "labels": [
+      "routeA.FII",
+      "routeA.Others"
+     ],
+     "median_abs_delta": 1780051.37,
+     "hold_pct": 0.0
+    }
+   ],
+   "eras": {
+    "post_2022_09": {
+     "labels": [
+      "routeA.DII",
+      "routeA.FII",
+      "routeA.Others"
+     ],
+     "median_abs_delta": 1780026.5,
+     "hold_pct": 0.0,
+     "median_bias": -1780026.5,
+     "rows": 48
+    }
+   }
+  }
+ },
+ "_pin": "93de247c",
+ "_comparable_rows": 48,
+ "_warnings": []
+}

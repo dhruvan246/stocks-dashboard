@@ -1,0 +1,294 @@
+{
+ "site": "screener",
+ "precision": 2,
+ "map": {
+  "prom": [
+   "Promoters"
+  ],
+  "fii": [
+   "FIIs"
+  ],
+  "dii": [
+   "DIIs"
+  ],
+  "nsh": [
+   "No. of Shareholders"
+  ]
+ },
+ "_derived": {
+  "prom": {
+   "labels": [
+    "Promoters"
+   ],
+   "median_abs_delta": 0.0,
+   "hold_pct": 100.0,
+   "median_bias": 0.0,
+   "rows": 163,
+   "runners_up": [
+    {
+     "labels": [
+      "Government",
+      "Promoters"
+     ],
+     "median_abs_delta": 0.08,
+     "hold_pct": 33.1
+    },
+    {
+     "labels": [
+      "Government",
+      "Promoters",
+      "Public"
+     ],
+     "median_abs_delta": 10.605,
+     "hold_pct": 0.0
+    },
+    {
+     "labels": [
+      "Promoters",
+      "Public"
+     ],
+     "median_abs_delta": 11.05,
+     "hold_pct": 0.0
+    }
+   ]
+  },
+  "fii": {
+   "labels": [
+    "FIIs"
+   ],
+   "median_abs_delta": 0.0,
+   "hold_pct": 92.3,
+   "median_bias": 0.0,
+   "rows": 222,
+   "runners_up": [
+    {
+     "labels": [
+      "FIIs",
+      "Government"
+     ],
+     "median_abs_delta": 0.08,
+     "hold_pct": 39.0
+    },
+    {
+     "labels": [
+      "DIIs"
+     ],
+     "median_abs_delta": 7.825,
+     "hold_pct": 0.0
+    },
+    {
+     "labels": [
+      "DIIs",
+      "Government"
+     ],
+     "median_abs_delta": 8.89,
+     "hold_pct": 0.5
+    }
+   ]
+  },
+  "dii": {
+   "labels": [
+    "DIIs"
+   ],
+   "median_abs_delta": 0.01,
+   "hold_pct": 62.2,
+   "median_bias": -0.01,
+   "rows": 222,
+   "runners_up": [
+    {
+     "labels": [
+      "DIIs",
+      "Government"
+     ],
+     "median_abs_delta": 0.02,
+     "hold_pct": 63.1
+    },
+    {
+     "labels": [
+      "FIIs"
+     ],
+     "median_abs_delta": 7.835,
+     "hold_pct": 0.5
+    },
+    {
+     "labels": [
+      "FIIs",
+      "Government"
+     ],
+     "median_abs_delta": 9.02,
+     "hold_pct": 0.0
+    }
+   ],
+   "eras": {
+    "pre_2022_09": {
+     "labels": [
+      "DIIs"
+     ],
+     "median_abs_delta": 0.01,
+     "hold_pct": 74.2,
+     "median_bias": 0.0,
+     "rows": 66
+    },
+    "post_2022_09": {
+     "labels": [
+      "DIIs",
+      "Government"
+     ],
+     "median_abs_delta": 0.01,
+     "hold_pct": 71.9,
+     "median_bias": 0.0,
+     "rows": 135
+    }
+   }
+  },
+  "mf": {
+   "labels": [
+    "Government",
+    "Public"
+   ],
+   "median_abs_delta": 5.77,
+   "hold_pct": 0.0,
+   "median_bias": 0.17,
+   "rows": 192,
+   "runners_up": [
+    {
+     "labels": [
+      "Public"
+     ],
+     "median_abs_delta": 6.73,
+     "hold_pct": 0.9
+    },
+    {
+     "labels": [
+      "DIIs"
+     ],
+     "median_abs_delta": 10.37,
+     "hold_pct": 0.9
+    },
+    {
+     "labels": [
+      "DIIs",
+      "Government"
+     ],
+     "median_abs_delta": 10.99,
+     "hold_pct": 0.0
+    }
+   ],
+   "eras": {
+    "pre_2022_09": {
+     "labels": [
+      "Government",
+      "Public"
+     ],
+     "median_abs_delta": 6.68,
+     "hold_pct": 0.0,
+     "median_bias": 6.68,
+     "rows": 60
+    },
+    "post_2022_09": {
+     "labels": [
+      "Government",
+      "Public"
+     ],
+     "median_abs_delta": 5.5,
+     "hold_pct": 0.0,
+     "median_bias": -3.535,
+     "rows": 132
+    }
+   }
+  },
+  "ins": {
+   "labels": [
+    "Government"
+   ],
+   "median_abs_delta": 6.505,
+   "hold_pct": 3.6,
+   "median_bias": -6.505,
+   "rows": 192,
+   "runners_up": [
+    {
+     "labels": [
+      "Government",
+      "Public"
+     ],
+     "median_abs_delta": 6.96,
+     "hold_pct": 0.5
+    },
+    {
+     "labels": [
+      "Public"
+     ],
+     "median_abs_delta": 8.19,
+     "hold_pct": 0.5
+    },
+    {
+     "labels": [
+      "DIIs"
+     ],
+     "median_abs_delta": 13.61,
+     "hold_pct": 0.9
+    }
+   ],
+   "eras": {
+    "pre_2022_09": {
+     "labels": [
+      "Government"
+     ],
+     "median_abs_delta": 5.06,
+     "hold_pct": 10.0,
+     "median_bias": -5.06,
+     "rows": 60
+    },
+    "post_2022_09": {
+     "labels": [
+      "Government",
+      "Public"
+     ],
+     "median_abs_delta": 6.135,
+     "hold_pct": 0.0,
+     "median_bias": 6.135,
+     "rows": 132
+    }
+   }
+  },
+  "nsh": {
+   "labels": [
+    "No. of Shareholders"
+   ],
+   "median_abs_delta": 0.0,
+   "hold_pct": 100.0,
+   "median_bias": 0.0,
+   "rows": 198,
+   "runners_up": [
+    {
+     "labels": [
+      "Government",
+      "No. of Shareholders"
+     ],
+     "median_abs_delta": 0.07,
+     "hold_pct": 100.0
+    },
+    {
+     "labels": [
+      "Government",
+      "No. of Shareholders",
+      "Public"
+     ],
+     "median_abs_delta": 13.74,
+     "hold_pct": 100.0
+    },
+    {
+     "labels": [
+      "No. of Shareholders",
+      "Public"
+     ],
+     "median_abs_delta": 15.05,
+     "hold_pct": 100.0
+    }
+   ]
+  }
+ },
+ "_pin": "93de247c",
+ "_comparable_rows": 222,
+ "_warnings": []
+}

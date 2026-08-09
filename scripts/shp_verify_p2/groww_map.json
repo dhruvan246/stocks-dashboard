@@ -1,0 +1,261 @@
+{
+ "site": "groww",
+ "precision": 2,
+ "map": {
+  "prom": [
+   "shareHoldingPattern.promoters.individual.percent"
+  ],
+  "fii": [
+   "shareholdingPatternV2.fii"
+  ],
+  "dii": [
+   "shareholdingPatternV2.dii"
+  ],
+  "mf": [
+   "shareHoldingPattern.mutualFunds.percent"
+  ]
+ },
+ "_derived": {
+  "prom": {
+   "labels": [
+    "shareHoldingPattern.promoters.individual.percent"
+   ],
+   "median_abs_delta": 0.0014,
+   "hold_pct": 100.0,
+   "median_bias": 0.0,
+   "rows": 55,
+   "runners_up": [
+    {
+     "labels": [
+      "shareholdingPatternV2.promoters"
+     ],
+     "median_abs_delta": 0.0014,
+     "hold_pct": 100.0
+    },
+    {
+     "labels": [
+      "shareHoldingPattern.otherDomesticInstitutions.otherFirms.percent",
+      "shareHoldingPattern.promoters.individual.percent"
+     ],
+     "median_abs_delta": 0.0014,
+     "hold_pct": 100.0
+    },
+    {
+     "labels": [
+      "shareHoldingPattern.otherDomesticInstitutions.otherFirms.percent",
+      "shareholdingPatternV2.promoters"
+     ],
+     "median_abs_delta": 0.0014,
+     "hold_pct": 100.0
+    }
+   ]
+  },
+  "fii": {
+   "labels": [
+    "shareholdingPatternV2.fii"
+   ],
+   "median_abs_delta": 0.0029,
+   "hold_pct": 98.2,
+   "median_bias": 0.0008,
+   "rows": 55,
+   "runners_up": [
+    {
+     "labels": [
+      "shareHoldingPattern.otherDomesticInstitutions.otherFirms.percent",
+      "shareholdingPatternV2.fii"
+     ],
+     "median_abs_delta": 0.0029,
+     "hold_pct": 98.2
+    },
+    {
+     "labels": [
+      "shareHoldingPattern.promoters.corporation.percent",
+      "shareholdingPatternV2.fii"
+     ],
+     "median_abs_delta": 0.0029,
+     "hold_pct": 98.2
+    },
+    {
+     "labels": [
+      "shareHoldingPattern.promoters.government.percent",
+      "shareholdingPatternV2.fii"
+     ],
+     "median_abs_delta": 0.0029,
+     "hold_pct": 98.2
+    }
+   ]
+  },
+  "dii": {
+   "labels": [
+    "shareholdingPatternV2.dii"
+   ],
+   "median_abs_delta": 0.003,
+   "hold_pct": 96.4,
+   "median_bias": 0.0005,
+   "rows": 55,
+   "runners_up": [
+    {
+     "labels": [
+      "shareHoldingPattern.mutualFunds.percent",
+      "shareHoldingPattern.otherDomesticInstitutions.insurance.percent"
+     ],
+     "median_abs_delta": 0.003,
+     "hold_pct": 96.4
+    },
+    {
+     "labels": [
+      "shareHoldingPattern.otherDomesticInstitutions.otherFirms.percent",
+      "shareholdingPatternV2.dii"
+     ],
+     "median_abs_delta": 0.003,
+     "hold_pct": 96.4
+    },
+    {
+     "labels": [
+      "shareHoldingPattern.promoters.corporation.percent",
+      "shareholdingPatternV2.dii"
+     ],
+     "median_abs_delta": 0.003,
+     "hold_pct": 96.4
+    }
+   ]
+  },
+  "mf": {
+   "labels": [
+    "shareHoldingPattern.mutualFunds.percent"
+   ],
+   "median_abs_delta": 0.0024,
+   "hold_pct": 98.2,
+   "median_bias": 0.0006,
+   "rows": 55,
+   "runners_up": [
+    {
+     "labels": [
+      "shareHoldingPattern.mutualFunds.percent",
+      "shareHoldingPattern.otherDomesticInstitutions.otherFirms.percent"
+     ],
+     "median_abs_delta": 0.0024,
+     "hold_pct": 98.2
+    },
+    {
+     "labels": [
+      "shareHoldingPattern.mutualFunds.percent",
+      "shareHoldingPattern.promoters.corporation.percent"
+     ],
+     "median_abs_delta": 0.0024,
+     "hold_pct": 98.2
+    },
+    {
+     "labels": [
+      "shareHoldingPattern.mutualFunds.percent",
+      "shareHoldingPattern.promoters.government.percent"
+     ],
+     "median_abs_delta": 0.0024,
+     "hold_pct": 98.2
+    }
+   ]
+  },
+  "ins": {
+   "labels": [
+    "shareHoldingPattern.otherDomesticInstitutions.insurance.percent"
+   ],
+   "median_abs_delta": 2.7475,
+   "hold_pct": 0.0,
+   "median_bias": 2.7475,
+   "rows": 55,
+   "runners_up": [
+    {
+     "labels": [
+      "shareHoldingPattern.otherDomesticInstitutions.insurance.percent",
+      "shareHoldingPattern.otherDomesticInstitutions.otherFirms.percent"
+     ],
+     "median_abs_delta": 2.7475,
+     "hold_pct": 0.0
+    },
+    {
+     "labels": [
+      "shareHoldingPattern.otherDomesticInstitutions.insurance.percent",
+      "shareHoldingPattern.promoters.corporation.percent"
+     ],
+     "median_abs_delta": 2.7475,
+     "hold_pct": 0.0
+    },
+    {
+     "labels": [
+      "shareHoldingPattern.otherDomesticInstitutions.insurance.percent",
+      "shareHoldingPattern.promoters.government.percent"
+     ],
+     "median_abs_delta": 2.7475,
+     "hold_pct": 0.0
+    }
+   ],
+   "eras": {
+    "post_2022_09": {
+     "labels": [
+      "shareHoldingPattern.otherDomesticInstitutions.insurance.percent"
+     ],
+     "median_abs_delta": 2.7475,
+     "hold_pct": 0.0,
+     "median_bias": 2.7475,
+     "rows": 55
+    }
+   }
+  },
+  "nsh": {
+   "labels": [
+    "shareHoldingPattern.promoters.individual.percent",
+    "shareholdingPatternV2.dii",
+    "shareholdingPatternV2.promoters"
+   ],
+   "median_abs_delta": 2164133.4615,
+   "hold_pct": 0.0,
+   "median_bias": -2164133.4615,
+   "rows": 55,
+   "runners_up": [
+    {
+     "labels": [
+      "shareHoldingPattern.foreignInstitutions.percent",
+      "shareHoldingPattern.promoters.individual.percent",
+      "shareholdingPatternV2.promoters"
+     ],
+     "median_abs_delta": 2164133.9942,
+     "hold_pct": 0.0
+    },
+    {
+     "labels": [
+      "shareHoldingPattern.promoters.individual.percent",
+      "shareholdingPatternV2.fii",
+      "shareholdingPatternV2.promoters"
+     ],
+     "median_abs_delta": 2164133.9942,
+     "hold_pct": 0.0
+    },
+    {
+     "labels": [
+      "shareHoldingPattern.otherDomesticInstitutions.insurance.percent",
+      "shareHoldingPattern.promoters.individual.percent",
+      "shareholdingPatternV2.promoters"
+     ],
+     "median_abs_delta": 2164138.5941,
+     "hold_pct": 0.0
+    }
+   ],
+   "eras": {
+    "post_2022_09": {
+     "labels": [
+      "shareHoldingPattern.promoters.individual.percent",
+      "shareholdingPatternV2.dii",
+      "shareholdingPatternV2.promoters"
+     ],
+     "median_abs_delta": 2164133.4615,
+     "hold_pct": 0.0,
+     "median_bias": -2164133.4615,
+     "rows": 55
+    }
+   }
+  }
+ },
+ "_pin": "93de247c",
+ "_comparable_rows": 55,
+ "_warnings": []
+}

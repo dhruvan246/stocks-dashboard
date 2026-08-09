@@ -1,0 +1,253 @@
+{
+ "site": "stockedge",
+ "precision": 2,
+ "map": {
+  "prom": [
+   "Promoter [tpFtotalpromoter]"
+  ],
+  "fii": [
+   "FII/FPI [FII_FPI]"
+  ],
+  "dii": [
+   "DII [DII]"
+  ],
+  "mf": [
+   "Mutual Funds [tpINMFUTI]"
+  ],
+  "ins": [
+   "Insurance [tpINInsurance]"
+  ],
+  "nsh": [
+   "No. of Shareholders (in Lacs) [NumberOfShareholders]"
+  ]
+ },
+ "_derived": {
+  "prom": {
+   "labels": [
+    "Promoter [tpFtotalpromoter]"
+   ],
+   "median_abs_delta": 0.0,
+   "hold_pct": 100.0,
+   "median_bias": 0.0,
+   "rows": 108,
+   "runners_up": [
+    {
+     "labels": [
+      "ADR [tpADR]",
+      "Promoter [tpFtotalpromoter]"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 100.0
+    },
+    {
+     "labels": [
+      "Depository Receipts [tpCustodianDRs]",
+      "Promoter [tpFtotalpromoter]"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 100.0
+    },
+    {
+     "labels": [
+      "Foreign Promoter [tpFSubtotal]",
+      "Indian Promoter [tpINDSubtotal]"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 100.0
+    }
+   ]
+  },
+  "fii": {
+   "labels": [
+    "FII/FPI [FII_FPI]"
+   ],
+   "median_abs_delta": 0.0,
+   "hold_pct": 99.1,
+   "median_bias": 0.0,
+   "rows": 108,
+   "runners_up": [
+    {
+     "labels": [
+      "ADR [tpADR]",
+      "FII/FPI [FII_FPI]"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 99.1
+    },
+    {
+     "labels": [
+      "Depository Receipts [tpCustodianDRs]",
+      "FII/FPI [FII_FPI]"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 99.1
+    },
+    {
+     "labels": [
+      "FII/FPI [FII_FPI]",
+      "GDR [tpGDR]"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 99.1
+    }
+   ]
+  },
+  "dii": {
+   "labels": [
+    "DII [DII]"
+   ],
+   "median_abs_delta": 0.01,
+   "hold_pct": 77.8,
+   "median_bias": 0.0,
+   "rows": 108,
+   "runners_up": [
+    {
+     "labels": [
+      "ADR [tpADR]",
+      "DII [DII]"
+     ],
+     "median_abs_delta": 0.01,
+     "hold_pct": 77.8
+    },
+    {
+     "labels": [
+      "DII [DII]",
+      "Depository Receipts [tpCustodianDRs]"
+     ],
+     "median_abs_delta": 0.01,
+     "hold_pct": 77.8
+    },
+    {
+     "labels": [
+      "DII [DII]",
+      "GDR [tpGDR]"
+     ],
+     "median_abs_delta": 0.01,
+     "hold_pct": 77.8
+    }
+   ],
+   "eras": {
+    "post_2022_09": {
+     "labels": [
+      "DII [DII]"
+     ],
+     "median_abs_delta": 0.01,
+     "hold_pct": 77.8,
+     "median_bias": 0.0,
+     "rows": 108
+    }
+   }
+  },
+  "mf": {
+   "labels": [
+    "Mutual Funds [tpINMFUTI]"
+   ],
+   "median_abs_delta": 0.0,
+   "hold_pct": 99.0,
+   "median_bias": 0.0,
+   "rows": 105,
+   "runners_up": [
+    {
+     "labels": [
+      "ADR [tpADR]",
+      "Mutual Funds [tpINMFUTI]"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 99.0
+    },
+    {
+     "labels": [
+      "Depository Receipts [tpCustodianDRs]",
+      "Mutual Funds [tpINMFUTI]"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 99.0
+    },
+    {
+     "labels": [
+      "GDR [tpGDR]",
+      "Mutual Funds [tpINMFUTI]"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 99.0
+    }
+   ]
+  },
+  "ins": {
+   "labels": [
+    "Insurance [tpINInsurance]"
+   ],
+   "median_abs_delta": 0.0,
+   "hold_pct": 99.0,
+   "median_bias": 0.0,
+   "rows": 105,
+   "runners_up": [
+    {
+     "labels": [
+      "ADR [tpADR]",
+      "Insurance [tpINInsurance]"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 99.0
+    },
+    {
+     "labels": [
+      "Depository Receipts [tpCustodianDRs]",
+      "Insurance [tpINInsurance]"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 99.0
+    },
+    {
+     "labels": [
+      "GDR [tpGDR]",
+      "Insurance [tpINInsurance]"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 99.0
+    }
+   ]
+  },
+  "nsh": {
+   "labels": [
+    "No. of Shareholders (in Lacs) [NumberOfShareholders]"
+   ],
+   "median_abs_delta": 246.0,
+   "hold_pct": 97.9,
+   "median_bias": -87.0,
+   "rows": 95,
+   "runners_up": [
+    {
+     "labels": [
+      "ADR [tpADR]",
+      "No. of Shareholders (in Lacs) [NumberOfShareholders]"
+     ],
+     "median_abs_delta": 246.0,
+     "hold_pct": 97.9
+    },
+    {
+     "labels": [
+      "Depository Receipts [tpCustodianDRs]",
+      "No. of Shareholders (in Lacs) [NumberOfShareholders]"
+     ],
+     "median_abs_delta": 246.0,
+     "hold_pct": 97.9
+    },
+    {
+     "labels": [
+      "GDR [tpGDR]",
+      "No. of Shareholders (in Lacs) [NumberOfShareholders]"
+     ],
+     "median_abs_delta": 246.0,
+     "hold_pct": 97.9
+    }
+   ]
+  }
+ },
+ "_pin": "93de247c",
+ "_comparable_rows": 108,
+ "scale": {
+  "nsh": 100000.0
+ },
+ "_warnings": []
+}
