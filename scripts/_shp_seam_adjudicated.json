@@ -1,0 +1,41 @@
+{
+  "_note": "Adjudication of the six seam-era cells referred by the revision-sweep session (2026-08-09). BSE DOES carry late/revised XBRL for a handful of Dec-2015/Mar-2016 quarters — §22f's blanket 'real files start Jun-2016' has exceptions. Each cell was decided against a THIRD anchor neither route supplied: our own Jun-2016 cell, parsed from BSE XBRL by us. Applied by _shp_seam_adjudicate.py AFTER the wayback ledger is regenerated, so a ledger re-run cannot silently revert them.",
+  "_anchor": "hist[sym]['2016-06-30'] — our own parse, independent of both the MC derivation and the late XBRL",
+  "cells": {
+    "MINDACORP": {
+      "2015-12-31": {
+        "action": "replace",
+        "with": [63.15, 0.05, 16.29, null, null, "2016-01-21"],
+        "why": "DOC WINS. My MC derivation gave fii 1.48 + dii 3.07 = 4.55 institutions; the late XBRL gives 0.05 + 16.29 = 16.34, and our own Jun-2016 parse gives 0.09 + 19.14 = 19.23. The doc tracks the anchor, mine does not conserve the institutions total at all — the MC page's institutions block was mis-bounded. My cell is wrong."
+      },
+      "2016-03-31": {
+        "action": "replace",
+        "with": [65.33, 0.08, 19.28, null, null, "2016-04-21"],
+        "why": "DOC WINS, same reason: doc 0.08/19.28 lands within 0.15pp of our Jun-2016 0.09/19.14; my 4.53/3.06 is 12pp out on dii."
+      }
+    },
+    "BFUTILITIE": {
+      "2016-03-31": {
+        "action": "patch_promoter",
+        "promoter": 66.39,
+        "why": "PARTIAL. fii 0.46 / dii 0.24 are IDENTICAL between my derivation and the doc, so the split is corroborated. Only promoter differs (mine 65.64, doc 66.39) and the doc matches our Jun-2016 promoter of 66.39 exactly. Take the doc's promoter, keep the corroborated split."
+      }
+    },
+    "BHARATFORG": {
+      "2015-12-31": {
+        "action": "keep_mine",
+        "why": "MINE WINS ON INFORMATION. The doc parses to fii 0.00 / dii 32.16 — institutions lumped undifferentiated, which is the old-format 'no FII row' artifact, not a measurement that foreign holding was zero. My split is 16.73/15.42 and conserves the same 32.15 total. Writing the doc would replace a split with a zero we have a standing rule never to write. ⚠ FLAGGED: my split does not run smoothly into our Jun-2016 (6.36/26.67) even though the TOTAL does (32.5 -> 33.0), so the split itself is uncertain in both directions — Jun-2016's own split depends on OLD_OTHER_TO_DII, which is calibrated, not measured. Treat BHARATFORG's seam split as low-confidence."
+      },
+      "2016-03-31": {
+        "action": "keep_mine",
+        "why": "Same as Dec-2015: doc fii 0.00 / dii 32.54 vs my 15.93/16.61 on an identical 32.54 total. Same low-confidence flag."
+      }
+    },
+    "BBTC": {
+      "2015-12-31": {
+        "action": "drop",
+        "why": "MINE IS WRONG AND THERE IS NO REPLACEMENT. My promoter is 65.91; our own Jun-2016 parse says 74.02, and the parallel session independently healed BBTC Mar-2019 from 65.93 to 74.04 on continuity plus revision evidence. So the ~8pp understatement is a systematic MC-page defect for this company across years, not a one-quarter blip. BSE has no real file for Dec-2015 (checked: no XbrlFile on that row), so there is nothing to replace it with. Dropping beats publishing a promoter we know is 8pp low."
+      }
+    }
+  }
+}

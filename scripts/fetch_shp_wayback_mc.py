@@ -240,6 +240,7 @@ ROW_LABELS = {
     "fvci": r"Foreign Venture Capital Investors",     # match the Foreign VC row below it
 
     "inst_sub": r"\(1\)\s*Institutions.*?Sub Total",   # handled specially below
+    "pubtot": r"Total Public shareholding\s*\(B\)",     # for the promoter-less fallback
 }
 
 def parse_mc_page(html, expect_code=None, expect_syms=(), slug=None):
@@ -300,6 +301,8 @@ def parse_mc_page(html, expect_code=None, expect_syms=(), slug=None):
     # promoter total: anywhere on the page (unique label)
     p = find_row(ROW_LABELS["prom"])
     if p: out["prom"] = p
+    p = find_row(ROW_LABELS["pubtot"])
+    if p: out["pubtot"] = p
     # institution rows ONLY inside the "(1) Institutions" ... "Sub Total" block — for PSUs the
     # PROMOTER block also contains a "Central Government / State Government(s)" row (President of
     # India), which must not be read as the institutional-government row.
@@ -570,7 +573,18 @@ def cmd_ledger():
             dropped["no-fii"] += 1; continue
         prom = val("prom")
         if prom is None:
-            dropped["no-promoter-total"] += 1; continue
+            # Promoter-less filers (ITC, the old private-sector banks, MCX) print DASHES in every
+            # promoter row, which parses as None — and 122 cells died here in the first run. The
+            # page still asserts the fact arithmetically: on the %of(A+B) basis prom + pub = 100
+            # exactly, so a "Total Public shareholding (B)" of >= 99 IS the promoter total stated
+            # as its complement. Only claimed when pub_AB >= 99 — a company with a real promoter
+            # whose row merely failed to parse cannot sneak through as prom = 0.
+            pt = cols.get("pubtot")
+            pab = pt[0] if pt and pt[0] is not None else None
+            if pab is not None and pab >= 99.0:
+                prom = round(max(0.0, 100.0 - pab), 2)
+            else:
+                dropped["no-promoter-total"] += 1; continue
         mf = val("mf") or 0.0
         dii = mf + (val("banks") or 0.0) + (val("ins") or 0.0)
         # reconciliation gate mirroring parse_shp: itemized institutions ≈ subtotal (when present)

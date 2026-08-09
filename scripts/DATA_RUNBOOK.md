@@ -1869,6 +1869,28 @@ both feeds, no network). 3 min at 5 threads for 1,649 targets. The gap was 1,706
   - **Reproducibility, and it is the strongest evidence we have for this whole route:** the 2,590
     cells present in BOTH harvests agree to **max 0.00pp** on fii and dii. An independent re-crawl,
     re-parse and re-derivation reproduced the original campaign exactly.
+  - **⚠️ STAGE ORDER IS LOAD-BEARING — anything that EDITS the ledger must run AFTER `ledger`.**
+    `fetch_shp_wayback_mc.py ledger` rebuilds `shp_fill_hist_2010_2016.json.gz` WHOLE, from the
+    parsed cache. So a hand-adjudication written into that file before the stage re-runs is
+    silently reverted, with no error and nothing in the diff to notice — the journalled-is-not-live
+    trap wearing a different costume (§18 is the same shape for reset-and-replay). Current order:
+    `census → map → frontier → harvest → [local re-parse] → ledger → _shp_seam_adjudicate.py`.
+    The adjudicator is idempotent so it is safe to chain unconditionally; **any future routine that
+    edits this ledger goes on the RIGHT side of `ledger`, never the left.**
+  - **Adjudicating a seam cell against a THIRD anchor.** Where the MC derivation and a late BSE XBRL
+    disagree, neither is automatically right — decide against `hist[sym]["2016-06-30"]`, which we
+    parse ourselves and which neither route supplied. The 2026-08-09 referral of six cells split
+    four ways: MINDACORP ×2 the doc won (mine failed to conserve the institutions total, so the MC
+    block was mis-bounded); BFUTILITIE the split was corroborated and only the promoter came from
+    the doc; BHARATFORG ×2 the doc's `fii 0.00` is the old-format no-FII-row artifact so mine was
+    kept — but FLAGGED low-confidence, because my split doesn't run into Jun-2016 smoothly and
+    Jun-2016's own split rests on `OLD_OTHER_TO_DII`, which is calibrated, not measured; BBTC was
+    DROPPED (promoter 8pp low against two independent quarters, and no file exists to replace it —
+    a deliberate hole, not a regression, if a coverage audit ever counts it). Rules and reasoning:
+    `scripts/_shp_seam_adjudicated.json`.
+  - **⚠️ "Real files start Jun-2016" is true of ORIGINAL filings only.** BSE carries late/revised
+    XBRL inside the seam for at least MINDACORP, BHARATFORG, BFUTILITIE and BBTC. Don't read the
+    Jun-2016 floor as a hard wall when chasing a specific cell.
   - **Rebuilding the census:** `python3 scripts/fetch_shp_wayback_mc.py census` (new stage). Use
     PAGE pagination and filter locally — a wildcard prefix that size plus a server-side regex makes
     CDX scan too far and it answers **504**. `showNumPages` on the bare prefix gives ~214 bounded
