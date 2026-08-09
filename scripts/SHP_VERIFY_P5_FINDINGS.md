@@ -60,3 +60,41 @@ lists ALL submissions per (symbol, quarter) before choosing — the newest submi
 a revision can never be resolved by picking whichever value looks closer to ours. `parse_shp` is
 imported from a tree checked out at origin/main, after a stale working copy produced a phantom
 parser bug earlier in this campaign.
+
+---
+
+## 5. ★ CROSS-EXCHANGE: 2,991 comparisons, ZERO disagreements  (2026-08-09)
+
+The strongest test available to this campaign, and the one P1 was redesigned around. Our values
+are ~81% NSE-derived; BSE receives a **separate filing** of the same shareholding pattern from the
+same company. Comparing them tests the whole pipeline — was the right document found, was it
+fetched at all, was a revision missed — against a source that has never seen our data.
+
+**61 of the 66 frozen sample symbols, 41 quarters, Jun-2016 → Jun-2026:**
+
+| verdict | count |
+|---|---|
+| MATCH | **2,990** |
+| ROUND | 1 |
+| **MISMATCH** | **0** |
+
+Per field: prom 505, fii 505, dii 505, mf 505, ins 505, nsh 466. The single non-exact value is
+CUMMINSIND Jun-2022 `nsh`, ours 109,068 vs BSE 109,067 — **one shareholder**, across a decade.
+
+That closes the question the campaign was set up to answer for the era retail sites cannot reach.
+For Jun-2016 → date, our FII/DII data agrees with both exchanges' own documents.
+
+## 6. The null-`filing_date_time` theory — measured, and it is WEAK
+
+P1 flagged BSE rows with a null `filing_date_time` as the leading root-cause candidate for our
+2,344 internal holes, on the strength of one case (MCX Mar-2017). Now measured across the sample:
+**43 null-date rows exist, and only 6 correspond to a cell we do not hold.** The other 37 we hold
+perfectly well. So a null filing date does NOT predict a missing cell, and it should not be
+treated as the explanation.
+
+The 6 that do line up are still real and fillable: MCX 2017-03-31 (fii 22.34 / dii 36.51),
+ABBOTINDIA 2018-09-30, BHANDARI 2018-03-31 / 2018-12-31 / 2019-03-31, DENORA 2018-06-30.
+Plus 59 further cells where BSE holds a quarter we do not.
+
+Stated plainly because it was my hypothesis and it did not survive contact with the data: the
+cause of the 2,344 holes is still **unknown**, and P3b must diagnose it rather than assume this.
