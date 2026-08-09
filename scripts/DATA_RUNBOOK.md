@@ -4813,3 +4813,61 @@ all 17 cells adjudicated by hand off an evidence dump. **The cumulative columns 
 they are also the best confirmation available when read deliberately: AADHARHFC's three cells were
 each locked by an exact identity (H1 1221.97 = 628.55 + 593.42; 9M 1895.02 = 673.05 + 628.55 +
 593.42), which is far stronger evidence than any single-column match.
+
+
+---
+
+## 68. ★★★ REPAIRING A MIXED-CONVENTION SERIES — the KIRLFER rebuild  (2026-08-09)
+
+KIRLFER's consolidated PAT was escalated out of the §67 re-adjudication because two cells could not
+fix it. The stored series held **three different things at once**:
+
+| | quarters |
+|---|---|
+| owners-attributable (correct) | Mar-22 6.27 · Jun-22 93.56 · Dec-22 116.61 · Mar-23 88.22 · Jun-24 · Dec-24 · Jun-25 |
+| the TOTAL instead of owners | Jun-23 92.92 · Dec-23 105.33 |
+| an exact COPY of standalone | Sep-22 82.00 · Sep-23 56.88 |
+| another quarter's number entirely | **Mar-24 92.92** (= Jun-2023's total) · **Sep-24 84.91** (= Sep-2025's *standalone*) |
+
+**8 of 15 quarters were wrong.** Pre-2022 needed nothing: con == std from 2015 to Dec-2021 is real,
+KIRLFER had nothing to consolidate before ISMT.
+
+### 68a. The method — one convention, from each quarter's OWN filing
+These statements print no "attributable to owners" line, so `owners = profit for the period −
+minority interest` (§53; associates print NA throughout). Comparatives from later filings are NOT
+used — the ACUTAAS rule (§67a): as-reported, never restated.
+
+### 68b. What makes a series rebuild verifiable in a way single cells are not
+A cell read gives you one number and one anchor. A **whole year** gives you three simultaneous
+identities, and they must all close:
+
+```
+FY23  period  102.08 + 110.99 + 129.70 +  94.56 = 437.33   (printed)
+FY23  minority  8.52 +  14.28 +  13.09 +   6.34 =  42.23   (printed)
+FY23  owners  437.33 - 42.23 = 395.10 = 93.56 + 96.71 + 116.61 + 88.22
+FY24  period   92.93 +  81.67 + 105.33 +  17.73 = 297.66   (printed)
+FY24  minority 18.92 +  13.42 +  29.00 +  -1.78 =  59.56   (printed)
+FY24  owners  297.66 - 59.56 = 238.10 = 74.01 + 68.25 + 76.33 + 19.51
+```
+Every one closes to the paisa. **Reconciling the MINORITY row separately is the step that makes the
+owners series trustworthy** — matching only the period row would have left the split unverified,
+which is exactly how the total got stored as owners in the first place. A fourth, independent lock:
+screener's consolidated series (which quotes TOTAL PAT) reproduces all nine overlapping extracted
+totals — 93/82/105/18/70/78/54/92/86.
+
+Sep-2023's own token is split by extraction, so its total came from the H1 identity
+(174.60 − 92.93 = 81.67) and was confirmed again by the Dec-2024 filing's 9M FY24 column (279.93).
+
+### 68c. Generalise this
+* **When a series mixes conventions, rebuild the window; do not patch cells.** Two cells inside an
+  inconsistent series are locally right and globally no better — and each patch makes the next
+  audit harder to read.
+* **Test the convention on the company's OWN neighbouring quarters before writing anything.** That
+  single check is what identified which KIRLFER quarters were already correct, and it is cheap.
+* **A stored value that equals another quarter's number, or the other basis' number, is not a
+  rounding problem** — Sep-24 held Sep-2025's *standalone*. Scan a repaired series for values that
+  appear elsewhere in the same company's data.
+* The tripwire could only ever see the two exact-copy quarters (Sep-22, Sep-23). The six others were
+  invisible to it. **A clean tripwire run says nothing about convention consistency.**
+
+Ledger: `scripts/kirlfer_con_series.json` (per quarter: total, minority, owners, prior value, why).
