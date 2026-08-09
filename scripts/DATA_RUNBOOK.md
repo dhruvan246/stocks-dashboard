@@ -4658,3 +4658,29 @@ tree's data, with nothing in the output to show it. It went unnoticed only becau
 path happened to be the active campaign's tree. Now derived from `__file__`, with `STOCKS_WT` as an
 explicit override. **Never hardcode a worktree in a tracked tool** (memory:
 analyze-live-not-local-bin).
+
+### 65f. ★★★ OWNERS vs TOTAL — the con-copy tripwire's unavoidable false positive
+We store consolidated PAT **owners-attributable**; **screener quotes TOTAL consolidated PAT**. Where
+NCI is material those are different numbers, so a company can satisfy BOTH halves of the con-copy
+test with no defect at all:
+
+> **TATACOFFEE 2022-12-31.** Filing: owners 26.63 + NCI 11.77 = total 38.40; standalone 26.61.
+> Our con 26.63 (owners, **correct**) sits 0.02 from our std 26.61 *by coincidence* → "ours con ==
+> std". screener shows con 38 vs std 27 → "they differ". Flagged, read against screener's 38,
+> healed — and a correct value was destroyed. Reverted 2026-08-09.
+
+**A flag means "adjudicate this cell", never "this cell is a copy."** Before believing one, check
+whether screener's con minus our con is simply the NCI: if the filing reconciles
+`owners + NCI == total` and our value equals OWNERS, there is no defect.
+
+`read_con_copies.py` now uses screener **only to locate the COLUMN** and reads the value off the
+**OWNERS row** (`OWNERS_RE`) when the page has one — the column was never the problem, the ROW was.
+This is §58 step 5, which the reader had not been honouring.
+
+**How thin the check on the other heals is, stated plainly:** of the 18 journalled con-copy heals
+only **one** has a consolidated filing in `_xbrl_cache` to test against — and that one was wrong.
+The other 17 are not cleared; they are unmeasured by this route (TIMKEN never filed consolidated to
+NSE, AADHARHFC listed in 2024, etc.). Re-adjudicate them from the BSE announcement stream before
+treating them as settled. Also open: **ACUTAAS 2023-06-30 revC**, where the consolidated XBRL says
+RevenueFromOperations 142.35 while the heal wrote 153.72 from the PDF — filer's own XBRL and filer's
+own PDF disagree, so it needs adjudication rather than a preference.

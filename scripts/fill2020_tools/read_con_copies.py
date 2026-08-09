@@ -62,6 +62,12 @@ REV_RE = re.compile(r"revenue\s+fr[o0]m\s+[o0]pera|t[o0]tal\s+inc[o0]me\s+fr[o0]
 PAT_RE = re.compile(r"net\s+pr[o0][fl]i?[lt]\s+a[fl]ter\s+tax|pr[o0][fl]i?[lt]\s+a[fl]ter\s+tax|"
                     r"[o0]wners?\s+[o0]f\s+the\s+(c[o0]mpan|parent)|"
                     r"pr[o0][fl]i?[lt](?:\s*/\s*\(?l[o0]ss\)?)?\s+f[o0]r\s+the\s+(peri[o0]d|quarter|year)", re.I)
+# The owners-attributable line, which is the one we store for consolidated PAT (§58). Kept separate
+# from PAT_RE because PAT_RE must still MATCH the total row -- that is the row screener's figure
+# locates the column on; the owners row is what we then read.
+OWNERS_RE = re.compile(r"[o0]wners?\s+[o0]f\s+the\s+(c[o0]mpan|parent)|"
+                       r"attributable\s+t[o0]\s+.{0,24}(?:[o0]wners|equity\s+h[o0]lders)|"
+                       r"min[o0]rity\s+interest\s+and\s+share\s+[o0]f\s+pr[o0][fl]i?[lt]", re.I)
 OUT = "/tmp/con_copy_reads.json"
 
 
@@ -184,10 +190,28 @@ def main():
                                         if conf:
                                             break
                                     if conf:
-                                        got = {"value": round(v / sc, 2), "scale": sc, "page": pi,
-                                               "row": lab[:44], "confirm": conf, "window": tag,
+                                        val, lab2 = v, lab
+                                        # ★ OWNERS, NOT TOTAL (§58, added 2026-08-09). screener
+                                        # quotes TOTAL consolidated PAT; we store the
+                                        # owners-attributable figure. Anchoring on screener
+                                        # therefore lands on the TOTAL row, and writing it is a
+                                        # basis regression -- TATACOFFEE 2022-12-31 was "healed"
+                                        # from a correct 26.63 (owners) to 38.40 (total = owners
+                                        # 26.63 + NCI 11.77). The column is right; the ROW was
+                                        # wrong. So keep the column and re-read it off the owners
+                                        # row when the page has one.
+                                        if basis == "con" and not is_rev:
+                                            ow = next((r for r in rows if OWNERS_RE.search(r[0])
+                                                       and GR.at_column(r[1], x) is not None), None)
+                                            if ow:
+                                                val, lab2 = GR.at_column(ow[1], x), ow[0]
+                                        got = {"value": round(val / sc, 2), "scale": sc, "page": pi,
+                                               "row": lab2[:44], "confirm": conf, "window": tag,
                                                "basis": basis, "doc": url.split("/")[-1][:30],
                                                "screener": want, "was": b["our"]}
+                                        if lab2 is not lab:
+                                            got["owners_row"] = True
+                                            got["total_row_value"] = round(v / sc, 2)
                                         break
                                 if got:
                                     break

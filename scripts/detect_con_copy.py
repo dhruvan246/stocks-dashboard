@@ -29,6 +29,23 @@ LIMITS, stated so nobody mistakes a clean run for a clean dataset:
   * it only sees companies screener covers with both bases.
 A zero here means "none of the copies this test can see", never "no copies".
 
+★ THE FALSE POSITIVE THIS TEST CANNOT RULE OUT -- BASIS MISMATCH (found 2026-08-09).
+We store consolidated PAT OWNERS-ATTRIBUTABLE; screener quotes TOTAL consolidated PAT. Where NCI is
+material those are different numbers, so a company can satisfy both halves of the test without
+having any defect at all:
+
+    TATACOFFEE 2022-12-31 -- filing: owners 26.63 + NCI 11.77 = total 38.40, standalone 26.61.
+    Our con 26.63 (owners, CORRECT) sits 0.02 from our std 26.61 by coincidence -> "ours con == std".
+    screener shows con 38 vs std 27                                            -> "they differ".
+    Flagged. Read against screener's 38, healed, and the correct value was destroyed.
+
+So a flag means "this cell needs adjudicating", never "this cell is a copy". Before believing one,
+check whether screener's con minus our con is simply the NCI: if the filing reconciles
+owners + NCI == total and our value equals OWNERS, there is no defect. read_con_copies.py now uses
+screener only to locate the COLUMN and reads the value off the OWNERS row (§58).
+Cells whose |value| is a few crore are also below this test's resolution -- screener displays them
+rounded to integers, against a 0.6 tolerance floor (MMTC, MODIRUBBER).
+
   python -X utf8 scripts/detect_con_copy.py [--json OUT] [--limit N]
 """
 import json
