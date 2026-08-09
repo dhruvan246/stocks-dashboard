@@ -1843,6 +1843,40 @@ both feeds, no network). 3 min at 5 threads for 1,649 targets. The gap was 1,706
   "no mutual-fund holding"** (MCX Mar-2025: dii 58.1, mf 0.0 → really 35.64). `parse_shp` now falls back to
   the old-format key inside the new-format branch. fii/dii were never affected. The cells already on disk
   kept their zero until the sweep in **§22g**, which re-read them from the filings.
+- **✅✅ THE Dec-2015/Mar-2016 SEAM IS NOT A WALL — 0.3% → 52.1% (2026-08-09).** §22f previously
+  recorded it as a measured two-quarter wall on the 2026-08-03 finding that MC's "Foreign
+  Institutional Investors" row is empty at qtrid 88/89 for every company. **The row is empty; the
+  data is not.** The institutions **Sub Total is printed and correct** and the foreign block is
+  simply un-itemised, landing on whichever row survives the format change (HDFCBANK q88 leaves it
+  loose, q89 puts 39.63 on the QFI row). So invert the reconciliation the ledger ALREADY enforces
+  on every q≤87 cell — `fii + dii + govt + qfi ≈ inst_sub` — and read
+  **`fii = inst_sub − (mf + banks + govt + insurance + domestic VC)`**. Arithmetic, not inference.
+  - **Validated one quarter out, not three:** median |Mar-2016 derived − our Jun-2016 XBRL| =
+    **0.87pp across 308 companies** (gate was 3.0pp / ≥25). 713 derived cells kept. Spot: HDFCBANK
+    39.62 vs 39.59, INFY 40.17 vs 40.46, ITC 20.45 vs 20.60. ADR names are the known exception —
+    ICICIBANK is 13pp out because its depository block sits outside (A+B+C) on MC but inside FII in
+    the XBRL; that is the GDR column case the existing calibration handles.
+  - **⚠️ NEVER CLAMP A DERIVED RESIDUAL.** The first version also subtracted qfi and wrapped the
+    result in `max(0, …)`. At q89 the foreign block sits ON the QFI row, so it was subtracted twice
+    and the clamp turned the negative into a clean-looking **fii = 0.00** — a fabricated "no foreign
+    holding". A negative residual now DROPS the cell.
+  - **⚠️ THE LEDGER FILE IS SHARED — MERGE, NEVER OVERWRITE.** `ledger` writes
+    `shp_fill_hist_2010_2016.json.gz`, the same path the 2026-08-03 campaign wrote. The 2026-08-09
+    re-run rebuilt the CDX census from scratch (the original died with the page cache) and produced
+    a **smaller** frontier — 5,533 fetches vs 12,691 — so it held 787 cells the original lacked and
+    the original held **1,528** it lacked. A plain overwrite silently destroys those. The tracked
+    file is the UNION (577 companies / 4,905 cells), old cells preserved byte-for-byte.
+  - **Reproducibility, and it is the strongest evidence we have for this whole route:** the 2,590
+    cells present in BOTH harvests agree to **max 0.00pp** on fii and dii. An independent re-crawl,
+    re-parse and re-derivation reproduced the original campaign exactly.
+  - **Rebuilding the census:** `python3 scripts/fetch_shp_wayback_mc.py census` (new stage). Use
+    PAGE pagination and filter locally — a wildcard prefix that size plus a server-side regex makes
+    CDX scan too far and it answers **504**. `showNumPages` on the bare prefix gives ~214 bounded
+    pages → 43,984 shareholding captures.
+  - **Harvest pacing:** 6 threads. Wayback refuses ~40% of connections under load and each costs a
+    25s backoff, but concurrency still wins — measured 5 workers 2.81s/fetch vs 3 workers 3.80s.
+    Don't read a worker-count difference off two short samples taken an hour apart; the refusal rate
+    drifts with time of day and I mistuned once doing exactly that.
 - **⚠️ `xbrlurl` IS TRUTHY WHEN THERE IS NO FILE.** Pre-2016 rows return `xbrlurl: "/XBRL1/"` (bare prefix)
   with an EMPTY `XbrlFile` — `if row["xbrlurl"]` counts 104/104 quarters "available" back to Mar-2001 and is
   a lie. **Gate on `(row["XbrlFile"] or "").strip()`.** Real files start **Jun-2016** (40/40 sampled);
