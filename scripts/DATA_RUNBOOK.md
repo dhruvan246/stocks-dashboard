@@ -4642,10 +4642,24 @@ Two things to know before touching it again:
   NOT** — 92 of 117 carry the real Q4 under a mislabelled Oct→Mar range (IOC, DIVISLAB, LTTS,
   SYRMA, JKCEMENT…). Header semantics are byte-identical between the two kinds, so the guard costs
   those Mar cells going forward. They become visible gaps, fillable by the ordinary ladder.
-* **A discriminator exists and is measured**: `long_value / our stored prior-quarter`, cumulative
-  ≈2 vs quarter ≈1. At threshold 1.40 it scores **371/383 = 96.9%**, erring 3 toward corruption and
-  9 toward gaps. NOT WIRED — measured on the both-filings population, which is not the long-only
-  population it would run on. Validate on the right population first.
+* **A discriminator exists, and the transfer test says use it for MARCH ONLY.**
+  `long_value / our stored prior-quarter`: cumulative ≈2, quarter ≈1. On the LABELLED population
+  (both a long and a short filing cached, so truth is known) threshold 1.40 scores **371/383 =
+  96.9%**, erring 3 toward corruption and 9 toward gaps.
+  That population is not where the rule would run, so it was checked against the LONG-ONLY cells:
+
+  | | n | median ratio | share predicted QUARTER |
+  |---|---|---|---|
+  | labelled, Mar | 117 | 1.05 | 74% |
+  | **long-only, Mar** | 110 | 1.10 | **79%** |
+  | labelled, Sep | 268 | 2.07 | 4% |
+  | **long-only, Sep** | 54 | 2.03 | **33%** |
+
+  March transfers — same median, same shape. **September does not**: a third of long-only cells fall
+  below the threshold against 4% in the labelled set. The likely reason is circular input — those are
+  the poisoned Sep cohort, so the "prior quarter" the ratio divides by may itself be a cumulative.
+  **NOT WIRED anywhere.** If it is ever wired, restrict it to Mar-31 and require the prior quarter to
+  come from a filing that passed `is_quarter_ctx`.
 * PAT, operating profit and EBIT were never healed for the original 33 — `cumulative_heals.json`
   covers revenue only.
 
