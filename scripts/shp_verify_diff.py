@@ -171,7 +171,13 @@ def main():
                 v, delta = "NO_DATA_OURS", None
             elif field == "nsh":
                 delta = float(sval) - float(ours)
-                v = "MATCH" if delta == 0 else ("ROUND" if abs(delta) <= 0.01 * max(1.0, float(ours)) else "MISMATCH")
+                # A scaled count inherits the site's PRINTING quantum, not a relative band:
+                # StockEdge prints "in Lacs" to 2dp, so its quantum is 0.01 lakh = 1,000 people
+                # and any value can sit +/-500 from the truth. For a 32k-shareholder company that
+                # is 1.5%, so a flat 1% rule called correct data a MISMATCH.
+                q = float(scales.get(field, 1.0)) * 0.5 * (10.0 ** -int(card.get("precision", 2)))
+                band_n = max(0.01 * max(1.0, float(ours)), q)
+                v = "MATCH" if delta == 0 else ("ROUND" if abs(delta) <= band_n else "MISMATCH")
                 if v in ("MATCH", "ROUND") and echoed:
                     v = "PROVENANCE_ECHO"
             else:

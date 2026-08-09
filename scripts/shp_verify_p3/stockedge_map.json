@@ -1,0 +1,274 @@
+{
+ "site": "stockedge",
+ "precision": 2,
+ "map": {
+  "prom": [
+   "Promoter [tpFtotalpromoter]"
+  ],
+  "fii": [
+   "Depository Receipts [tpCustodianDRs]",
+   "FII/FPI [FII_FPI]"
+  ],
+  "mf": [
+   "Mutual Funds [tpINMFUTI]"
+  ],
+  "ins": [
+   "Insurance [tpINInsurance]"
+  ],
+  "nsh": [
+   "No. of Shareholders (in Lacs) [NumberOfShareholders]"
+  ]
+ },
+ "_derived": {
+  "prom": {
+   "labels": [
+    "Promoter [tpFtotalpromoter]"
+   ],
+   "median_abs_delta": 0.0,
+   "hold_pct": 99.8,
+   "median_bias": 0.0,
+   "rows": 542,
+   "runners_up": [
+    {
+     "labels": [
+      "ADR [tpADR]",
+      "Promoter [tpFtotalpromoter]"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 99.8
+    },
+    {
+     "labels": [
+      "Foreign Promoter [tpFSubtotal]",
+      "Indian Promoter [tpINDSubtotal]"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 99.8
+    },
+    {
+     "labels": [
+      "Non Promoter and Non Public [tpNPNPOther]",
+      "Promoter [tpFtotalpromoter]"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 99.8
+    }
+   ]
+  },
+  "fii": {
+   "labels": [
+    "Depository Receipts [tpCustodianDRs]",
+    "FII/FPI [FII_FPI]"
+   ],
+   "median_abs_delta": 0.0,
+   "hold_pct": 98.2,
+   "median_bias": 0.0,
+   "rows": 542,
+   "runners_up": [
+    {
+     "labels": [
+      "FII/FPI [FII_FPI]",
+      "GDR [tpGDR]"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 98.2
+    },
+    {
+     "labels": [
+      "ADR [tpADR]",
+      "Depository Receipts [tpCustodianDRs]",
+      "FII/FPI [FII_FPI]"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 98.2
+    },
+    {
+     "labels": [
+      "ADR [tpADR]",
+      "FII/FPI [FII_FPI]",
+      "GDR [tpGDR]"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 98.2
+    }
+   ]
+  },
+  "dii": {
+   "labels": [
+    "DII [DII]"
+   ],
+   "median_abs_delta": 0.01,
+   "hold_pct": 85.8,
+   "median_bias": 0.0,
+   "rows": 542,
+   "runners_up": [
+    {
+     "labels": [
+      "ADR [tpADR]",
+      "DII [DII]"
+     ],
+     "median_abs_delta": 0.01,
+     "hold_pct": 85.8
+    },
+    {
+     "labels": [
+      "DII [DII]",
+      "Non Promoter and Non Public [tpNPNPOther]"
+     ],
+     "median_abs_delta": 0.01,
+     "hold_pct": 85.8
+    },
+    {
+     "labels": [
+      "DII [DII]",
+      "tpOtherEWF [unlabeled API key, no UI Nm]"
+     ],
+     "median_abs_delta": 0.01,
+     "hold_pct": 85.8
+    }
+   ],
+   "eras": {
+    "pre_2022_09": {
+     "labels": [
+      "DII [DII]"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 100.0,
+     "median_bias": 0.0,
+     "rows": 8
+    },
+    "post_2022_09": {
+     "labels": [
+      "DII [DII]"
+     ],
+     "median_abs_delta": 0.01,
+     "hold_pct": 85.6,
+     "median_bias": 0.0,
+     "rows": 534
+    }
+   }
+  },
+  "mf": {
+   "labels": [
+    "Mutual Funds [tpINMFUTI]"
+   ],
+   "median_abs_delta": 0.0,
+   "hold_pct": 99.6,
+   "median_bias": 0.0,
+   "rows": 542,
+   "runners_up": [
+    {
+     "labels": [
+      "ADR [tpADR]",
+      "Mutual Funds [tpINMFUTI]"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 99.6
+    },
+    {
+     "labels": [
+      "Mutual Funds [tpINMFUTI]",
+      "Non Promoter and Non Public [tpNPNPOther]"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 99.6
+    },
+    {
+     "labels": [
+      "Mutual Funds [tpINMFUTI]",
+      "tpOtherEWF [unlabeled API key, no UI Nm]"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 99.6
+    }
+   ]
+  },
+  "ins": {
+   "labels": [
+    "Insurance [tpINInsurance]"
+   ],
+   "median_abs_delta": 0.0,
+   "hold_pct": 99.6,
+   "median_bias": 0.0,
+   "rows": 542,
+   "runners_up": [
+    {
+     "labels": [
+      "ADR [tpADR]",
+      "Insurance [tpINInsurance]"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 99.6
+    },
+    {
+     "labels": [
+      "Insurance [tpINInsurance]",
+      "Non Promoter and Non Public [tpNPNPOther]"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 99.6
+    },
+    {
+     "labels": [
+      "Insurance [tpINInsurance]",
+      "tpOtherEWF [unlabeled API key, no UI Nm]"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 99.6
+    }
+   ]
+  },
+  "nsh": {
+   "labels": [
+    "No. of Shareholders (in Lacs) [NumberOfShareholders]"
+   ],
+   "median_abs_delta": 266.0,
+   "hold_pct": 93.8,
+   "median_bias": -15.0,
+   "rows": 485,
+   "runners_up": [
+    {
+     "labels": [
+      "ADR [tpADR]",
+      "No. of Shareholders (in Lacs) [NumberOfShareholders]"
+     ],
+     "median_abs_delta": 266.0,
+     "hold_pct": 93.8
+    },
+    {
+     "labels": [
+      "No. of Shareholders (in Lacs) [NumberOfShareholders]",
+      "Non Promoter and Non Public [tpNPNPOther]"
+     ],
+     "median_abs_delta": 266.0,
+     "hold_pct": 93.8
+    },
+    {
+     "labels": [
+      "No. of Shareholders (in Lacs) [NumberOfShareholders]",
+      "tpOtherEWF [unlabeled API key, no UI Nm]"
+     ],
+     "median_abs_delta": 266.0,
+     "hold_pct": 93.8
+    }
+   ]
+  }
+ },
+ "_pin": "93de247c",
+ "_comparable_rows": 542,
+ "scale": {
+  "nsh": 100000.0
+ },
+ "eras": [
+  {
+   "from": "0000-00-00",
+   "to": "2022-06-30",
+   "map": {
+    "dii": [
+     "DII [DII]"
+    ]
+   }
+  }
+ ],
+ "_warnings": []
+}
