@@ -20,15 +20,36 @@ The user's question was: *are our FII/DII holdings correct?* — to be answered 
 | Earlier arbitration (P5) | 136 field-verdicts | 79 OURS_CONFIRMED, 0 OURS_WRONG |
 | **Cells where NO independent source agrees with us** | 179,424 checked | **0** |
 
-**Across 179,424 published values, checked against three sites, both exchanges and 166 individual
-filings, not one has been shown wrong.** The 87 where sites lined up against us were each taken to
-the filing and 83 came back confirming us; the remaining 4 have no readable document on either
-exchange and stay open rather than being counted as verified.
+**Final arithmetic: 179,424 published values checked; 51 shown wrong (0.028%) — all healed the
+same day.** And the campaign's most important finding came LAST, from the user challenging the
+unanimity cases rather than from any phase of the plan.
 
-The single sharpest illustration of why the multi-source rule exists: **LCCINFOTEC Jun-2025** —
-Screener, StockEdge and Tickertape all three say promoter holding is 45.85%. The company's own
-filing says **0.0**, which is what we publish. A majority vote would have "corrected" correct data.
-Same shape at SUPREMEINF (47.32 vs a unanimous 34.68) and UJJIVAN (30.91 vs 40.48).
+### ★ The revision-miss defect class — found by the user, not the campaign
+
+When all three sites agreed with each other and disagreed with us, arbitration read the NSE
+document and declared us confirmed. **That check was circular: it re-read the same document our
+pipeline had ingested, so a superseded filing confirmed itself.** The user asked "if every site
+agrees and we differ but match the filing, might WE have read the wrong thing?" — and the answer
+was yes, 35 times: companies file, then REVISE; BSE carries the revision (`revised_date_time`),
+while NSE's master keeps serving the original. Newest-submission-wins cannot see a revision that
+never appears in its list.
+
+Re-adjudicating all 103 "filing confirmed us" documents against BSE's independently received copy:
+**50 genuinely confirmed (sites genuinely wrong), 35 REVISED_ON_BSE — our value superseded, 51
+field-values wrong** — 15 BSE-absent, 3 unparseable. All 35 healed via `shp_cell_fix.json` with
+the revised BSE document + 2-3 agreeing sites as rule-6b evidence.
+
+**The example previously showcased here was inverted.** LCCINFOTEC Jun-2025 promoter 0.0 — cited
+as "three sites unanimously wrong" — was OUR stale document; the company revised to **45.85** on
+2025-11-05. The sites were right. Also healed: S&SPOWER 50.21→74.97, MSPL 33.48→42.34, SUPREMEINF
+47.32→34.68 (two quarters), MARKSANS FII 16.74→8.12, and two SANWARIA counts written by this very
+day's reparse heal (it read the pre-revision document).
+
+The 50 where BSE confirms us remain real site errors — UJJIVAN FII 30.91 (both exchanges) vs the
+sites' 40.48 stands. But the honest lesson is symmetric: **"ours equals the filing" is only
+evidence when it is not the same copy of the filing our pipeline already read.** Cross-exchange
+disagreement is now the first thing to check on any unanimous site-vs-us cell, and the daily
+pipeline needs a periodic BSE `revised_date_time` sweep so revisions stop going invisible.
 
 The single non-exact value in the entire cross-exchange set is CUMMINSIND Jun-2022 shareholder
 count: ours 109,068, BSE 109,067 — **one shareholder, across a decade of filings.**

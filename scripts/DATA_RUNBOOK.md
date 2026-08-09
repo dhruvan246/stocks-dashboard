@@ -2036,6 +2036,15 @@ Full write-up: `scripts/SHP_VERIFY_REPORT.md`; plan `SHP_VERIFY_CAMPAIGN.md`; pe
   the filing's 49.82; HINDALCO Jun-2026 31.41 vs 35.60. Moneycontrol maps to NOTHING. Never heal
   from a single site — campaign rule 6b (user mandate): a value is taken only when the exchange
   filing AND >=2 independent sites agree; sites our data came FROM never count toward quorum.
+- **★★ BUT UNANIMOUS SITES-vs-US = CHECK THE OTHER EXCHANGE FOR A REVISION FIRST (35 real defects,
+  2026-08-09).** Companies file then REVISE; BSE carries the revision (`revised_date_time` on its
+  SHPQNewFormat row) while NSE's master keeps serving the ORIGINAL — so "ours == the NSE filing"
+  is CIRCULAR when ours came from that same document. 103 unanimity cells re-adjudicated vs BSE's
+  copy: 50 we were right, **35 our value was superseded (51 field-values, healed via
+  shp_cell_fix.json)**. LCCINFOTEC Jun-2025 prom 0.0->45.85 was the flagship "sites wrong" example
+  and was actually OURS wrong. Detector: `shp_verify_revcheck.py`. OPEN: the daily pipeline needs a
+  periodic BSE revised_date_time sweep — revisions filed only to BSE are invisible to the NSE
+  master top-up.
 - **★ IDENTITY TRAPS AT SCALE.** Tickertape's sid `TRU` is Trust Fintech, unrelated to our TRU
   (renamed Dhanvarsha, sid DHA); a StockEdge ticker shortcut matched `IEL` to the wrong company.
   Exact-ticker match, else unambiguous full name, else SKIP — a wrong company becomes a fake defect.
