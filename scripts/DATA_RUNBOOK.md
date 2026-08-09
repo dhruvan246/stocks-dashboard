@@ -4746,3 +4746,21 @@ AttachHis and AttachLive. §52's "pre-2016 BSE attachments 404" understates it �
 extends past 2016 (AMBUJACEM Oct-2017 probed directly: 404 on both). **Rung 3 is blind for
 2015-2017; rungs 1-2 (BSE detres, NSE archive detail pages) are the route there.** Any measurement
 of a PDF reader over that window is measuring transport, not reading.
+
+### 66d. Two anchor lessons and two new suspects
+* **A PAT-only anchor can verify the DOCUMENT while sitting on the WRONG QUARTER.** AARTIIND's
+  Sep-2020 standalone PAT is 136.38 and its Dec-2019 is 136.82 — inside a 0.4% anchor tolerance. The
+  read passed and was on the wrong column. The prototype therefore requires a SECOND, different
+  lock: the same column must also reproduce stored `revS` on the revenue row. Any anchored reader
+  should carry two locks on two different ROWS, not two columns of one row.
+* **Consolidated row disambiguation is solved arithmetically, not by labels** (OCR wrecks captions):
+  search candidate rows for `owners + NCI == the post-tax profit line` **evaluated at the anchored
+  column**. That also separates the profit split from the identically-worded total-comprehensive
+  split. Needs punctuation-normalised labels, or `- Non-controlling - interests -- -` never matches.
+* **NEW SUSPECTS, flagged not touched — the TATACOFFEE class again, mirrored.** Two documents state
+  an owners/NCI split whose TOTAL is what we store:
+  `SADBHAV 2019-06` owners −8.07, NCI −21.98, period −30.05 — we store **−30.05**;
+  `RENUKA 2019-09` owners 2,817.90, NCI −78.30, period 2,739.60 — we store **2,739.60**.
+  If confirmed these are con slots holding TOTAL PAT on an owners-attributable series (§53c, repair
+  via §2b). Do not bulk-correct off this: it is two documents, and §59's audit found the equal-runs
+  screen overwhelmingly genuine.
