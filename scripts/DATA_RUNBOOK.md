@@ -5194,6 +5194,37 @@ comparable quarters, so the mirror's -0.79 / 2.67 is the self-consistent choice 
 convention, not a proof, and it was not written on that basis.
 
 
+### 71g. ★★★ CLOSED AT ZERO — and the out-of-family screen was a false alarm on 17 of 23
+The 23 cells §71b held back are resolved: **6 corrected from documents (§71c/e), 17 shown to be
+false alarms.** Divergences **1,372 → 766 → 23 → 0**.
+
+Working the last 16 one at a time showed they were never 16 problems, they were one:
+
+    sf_fundamentals holds the XBRL's TOTAL      (ProfitLossForPeriod)
+    sf_revop        holds the XBRL's OWNERS tag (ProfitOrLossAttributableToOwnersOfParent)
+
+and in these filings the owners tag is incoherent — `owners + NCI == total` fails in **14 of 16**,
+sometimes absurdly: NAZARA owners 8.35 + NCI 8.70 against a total of 0.18; IFCI owners 741.53 + NCI
+719.26 against −8.74. Where the NCI tag reads 0.0, total *is* owners anyway.
+
+**The check that settled it: screener, which quotes TOTAL PAT, agrees with sf_fundamentals in 9
+cells and with the mirror in ZERO.** Not one cell supported the mirror. So the file the screen had
+flagged as suspect was the correct one throughout, and the mirror was the corrupted copy — the same
+shape as §71, arrived at from the opposite direction.
+
+Resynced mirror ← authoritative, **writing only sf_revop and asserting sf_fundamentals
+byte-identical afterwards** (the script fails if it is not). No new error is possible that way.
+
+**"No longer divergent" is not "verified".** Seven cells had no independent source reach them
+(AXISCADES, BANCOINDIA, DELTAMAGNT, IRB, 3IINFOLTD, ARIHANTCAP, SUBCAPCITY 2021-03); they are
+resynced on the structural argument and listed in **`scripts/_fund_unconfirmed_cells.json`** so the
+distinction survives. A future audit should read those filings.
+
+**The lesson about the screen itself:** "value is out of family against the company's own median"
+found 23 candidates and was right about 6. At a ~26% hit rate it is a fine *search* heuristic and a
+terrible *verdict* — every one of the 23 still needed an outside source before anything was written.
+
+
 ## 72. ★★★ VERIFYING REV/PAT vs EXTERNAL SITES — the sites can only reach 10 of our 95 quarters  (campaign 2026-08-09)
 
 Full write-up `scripts/REVPAT_VERIFY_REPORT.md`; plan `REVPAT_VERIFY_CAMPAIGN.md`; phase findings and
