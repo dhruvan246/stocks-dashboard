@@ -13,8 +13,12 @@ general case was never swept. On its first run this tripwire found 19 cells acro
 including three TIMKEN quarters where the user had spotted one.
 
 THE TEST is decisive and needs no PDF:
-    our stored patC == patS (exact copy)  AND  screener's con NP differs from its std NP
+    our stored conC == stdC (exact copy)  AND  screener's con differs from its std
     -> our con slot is a copy of standalone, and the real consolidated figure exists.
+
+Run on BOTH columns -- consolidated PAT and consolidated REVENUE. The first version tested PAT only
+and therefore missed TIMKEN 2024-12-31, which stored revC 671.40 against a standalone 671.43 while
+the company's own filing says 683.35. A copy is a copy in either column.
 
 A legitimate identity (no subsidiary, or an equity-method associate) shows con == std on SCREENER
 TOO, so it is never flagged. The flag fires only when an independent source says the two differ.
@@ -44,6 +48,7 @@ def main():
     limit = int(sys.argv[sys.argv.index("--limit") + 1]) if "--limit" in sys.argv else 10 ** 9
     out_p = sys.argv[sys.argv.index("--json") + 1] if "--json" in sys.argv else None
     fund = json.load(open(os.path.join(ROOT, "docs", "sf_fundamentals.json")))
+    revop = json.load(open(os.path.join(ROOT, "docs", "sf_revop.json")))
     try:
         ev = json.load(open(os.path.join(HERE, "con_filer_evidence.json")))
         syms = [s for s, v in ev.items() if v.get("files_con")]
@@ -74,19 +79,42 @@ def main():
                 continue
             checked += 1
             if abs(c - s) > max(1.0, abs(s) * TOL_DIFF):
-                bad.append({"sym": sym, "qe": r[0], "our_patC": r[3], "our_patS": r[1],
+                bad.append({"sym": sym, "qe": r[0], "field": "patC", "our": r[3], "our_std": r[1],
                             "screener_con": c, "screener_std": s,
                             "why": "our con slot equals std, but screener reports con %s vs std %s"
                                    % (c, s)})
+
+        # ---- REVENUE side of the SAME defect. TIMKEN 2024-12-31 stored revC 671.40 against a
+        # standalone 671.43 while its own filing says the consolidated figure is 683.35 -- caught
+        # only because I happened to look, since the first version of this tripwire tested PAT
+        # alone. A copy is a copy in either column.
+        for q, row in (revop.get(sym) or {}).items():
+            if not row or len(row) < 2 or row[0] is None or row[1] is None:
+                continue
+            if abs(row[1] - row[0]) > max(0.05, abs(row[0]) * TOL_SAME):
+                continue
+            dk = "%s-%s-%s" % (q[:4], q[4:6], q[6:])
+            lc = next((L for L in ("Sales", "Revenue") if L in (qc.get(dk) or {})), None)
+            ls = next((L for L in ("Sales", "Revenue") if L in (qs.get(dk) or {})), None)
+            if not lc or not ls:
+                continue
+            c2, s2 = qc[dk][lc], qs[dk][ls]
+            checked += 1
+            if abs(c2 - s2) > max(1.0, abs(s2) * TOL_DIFF):
+                bad.append({"sym": sym, "qe": int(q), "field": "revC", "our": row[1],
+                            "our_std": row[0], "screener_con": c2, "screener_std": s2,
+                            "why": "con REVENUE slot equals std, screener reports con %s vs std %s"
+                                   % (c2, s2)})
 
     print("companies scanned: %d | cells testable (ours con==std, screener has both): %d"
           % (n, checked))
     print("CON SLOT HOLDS STD: %d cells across %d companies\n"
           % (len(bad), len({b["sym"] for b in bad})))
-    print("%-12s %-10s %11s %11s %11s" % ("sym", "quarter", "our patC", "scr con", "scr std"))
+    print("%-12s %-10s %-6s %11s %11s %11s"
+          % ("sym", "quarter", "field", "ours", "scr con", "scr std"))
     for b in sorted(bad, key=lambda z: -abs(z["screener_con"] - z["screener_std"])):
-        print("%-12s %-10d %11.2f %11.1f %11.1f"
-              % (b["sym"], b["qe"], b["our_patC"], b["screener_con"], b["screener_std"]))
+        print("%-12s %-10d %-6s %11.2f %11.1f %11.1f"
+              % (b["sym"], b["qe"], b["field"], b["our"], b["screener_con"], b["screener_std"]))
     print("\nLIMITS: screener's ~13-quarter window (roughly 2023+), EXACT copies only, and only "
           "companies screener covers on both bases. Zero here is not proof of a clean dataset.")
     if out_p:
