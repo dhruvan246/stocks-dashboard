@@ -1,0 +1,99 @@
+{
+  "_meta": {
+    "campaign": "REVPAT_VERIFY p5 arbitration",
+    "tree_pin": "e8a491c6",
+    "run_date": "2026-08-09",
+    "method": "DATA_RUNBOOK.md §57 route ladder + §58 column-anchor read, both independently re-walked and re-fetched fresh from bseindia.com in this session (no cached PDFs reused)",
+    "constraint_notes": "read-only; no logins/captcha bypass; ≥2s between requests; no 403/429 encountered against BSE at any point this session"
+  },
+  "cells": [
+    {
+      "symbol": "GICRE",
+      "quarter": "2025-06-30",
+      "field": "standalone PAT",
+      "ours": 2172.77,
+      "sites": { "screener": 1752.00, "groww": 1752.23 },
+      "verdict": "OURS_WRONG",
+      "filed_value": 1752.23,
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/2995f5a3-9a07-4636-b4ad-b26afead8823.pdf",
+      "source_filing": "GIC Re \"Reviewed Statement of Standalone Financial Results for the Quarter Ended 30th June 2025\" (BSE announcement, filed 2025-08-07)",
+      "unit_declared": "Amount in ₹ Lakhs (header, standalone page) → ÷100 for crore",
+      "basis_declared": "page header states \"Standalone\" explicitly; row 27 label \"Profit / (loss) after tax\"",
+      "column_anchor_evidence": "Same row's neighbouring columns on the SAME page reproduce our own stored std PAT EXACTLY: col (31/03/2025)=2,18,289 lakh=2182.89cr == stored npStd Mar-2025 (2182.89); col (30/06/2024)=1,03,636 lakh=1036.36cr == stored npStd Jun-2024 (1036.36). The target column (30/06/2025)=1,75,223 lakh=1752.23cr sits between two verified anchors on the same row.",
+      "second_check": "PBT−tax=PAT holds in every column on the page (2,24,354−49,132=1,75,222≈175,223 rounding; 2,92,266−73,977=2,18,289 exact; 8,76,564−2,06,428=6,70,136 exact). ROOT CAUSE PROVEN: the SAME filing's CONSOLIDATED statement (page 18–19 of the PDF) shows row 27 \"Profit/(loss) after tax\" (pre-associates) = 2,17,277 lakh = 2172.77cr — an EXACT match to our mis-stored 'standalone' value — plus \"Share of Profit in Associates\" 35,782 = \"Profit for the year\" 2,53,059 lakh = 2530.59cr, which is exactly our stored (correct) CONSOLIDATED PAT. Our std slot was populated from the con statement's pre-associate PAT row, not the std statement's own PAT row.",
+      "routes_tried": [
+        "rung1 BSE detres: REFUSED (no-date-begin-end-in-response) — independently re-verified this session via exchange_fetch.py",
+        "rung2 NSE XBRL: REFUSED (0 list rows for this quarter on any basis) — independently re-verified this session via exchange_fetch.py",
+        "rung3 BSE announcement PDF: SUCCESS — fresh live fetch + direct text-layer read this session"
+      ],
+      "confidence": "high",
+      "notes": "Consistent with DATA_RUNBOOK §55c, which had already found the same defect shape at Dec-2024 and Sep-2025 but had NOT reached Jun-2025 (\"same shape ... at Jun-2025\" was asserted without a shown read). This session supplies that missing direct read and independently re-confirms Sep-2025 (cell 2) from a freshly fetched PDF rather than relying on the runbook's prior claim. Do not heal — out of scope for this arbitration pass."
+    },
+    {
+      "symbol": "GICRE",
+      "quarter": "2025-09-30",
+      "field": "standalone PAT",
+      "ours": 2698.01,
+      "sites": { "screener": 2867.00, "groww": 2866.79 },
+      "verdict": "OURS_WRONG",
+      "filed_value": 2866.79,
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/4048b2b3-ec10-4538-8a41-878d65befe45.pdf",
+      "source_filing": "GIC Re \"Reviewed Statement of Standalone Financial Results for the Quarter and Half year Ended 30th September 2025\" (BSE announcement, filed 2025-11-12)",
+      "unit_declared": "Amount in ₹ Lakhs (header, standalone page) → ÷100 for crore",
+      "basis_declared": "page header states \"Standalone\" explicitly; row 27 label \"Profit / (loss) after tax\", figures printed linearly per row (this pack's text layer is clean, unlike the Jun-2025 pack)",
+      "column_anchor_evidence": "The SAME row's (30/06/2025) comparator column = 1,75,223 lakh = 1752.23cr — an EXACT cross-filing match to the value independently established as the correct Jun-2025 standalone PAT in cell 1, filed 3 months apart in a DIFFERENT document. FY(31/03/2025) column = 6,70,136 lakh = 6701.36cr, again exactly matching the Jun-2025 filing's own FY column.",
+      "second_check": "H1 quarter-sum identity (the strongest available evidence per task brief): the filing's own printed YTD-to-30/09/2025 column for this row = 4,61,902 lakh; Q1(1,75,223) + Q2(2,86,679) = 4,61,902 lakh — EXACT. PBT−tax=PAT also exact for the Sep-2025 column (3,47,276−60,597=2,86,679). ROOT CAUSE, same mechanism as cell 1: the SAME filing's CONSOLIDATED page shows pre-associate \"Profit/(loss) after tax\" for Sep-2025 = 2,69,801 lakh = 2698.01cr = our mis-stored 'standalone' value; + associates 17,553 = \"Profit for the year\" 2,87,354 lakh = 2873.54cr = our stored (correct) consolidated PAT.",
+      "routes_tried": [
+        "rung1 BSE detres: REFUSED (no-date-begin-end-in-response) — independently re-verified this session via exchange_fetch.py",
+        "rung2 NSE XBRL: REFUSED (0 list rows for this quarter on any basis) — independently re-verified this session via exchange_fetch.py",
+        "rung3 BSE announcement PDF: SUCCESS — fresh live fetch + direct text-layer read this session"
+      ],
+      "confidence": "high",
+      "notes": "Matches DATA_RUNBOOK §55c's own prior claim (std should read 2866.79) — this session independently re-derives it from a freshly fetched copy of the filing rather than trusting the runbook text, and adds the H1 quarter-sum proof the runbook did not show. Do not heal — out of scope for this arbitration pass."
+    },
+    {
+      "symbol": "BAJFINANCE",
+      "quarter": "2025-12-31",
+      "field": "standalone revenue",
+      "ours": 18067.89,
+      "sites": { "screener": 17870.00, "groww": 17869.70 },
+      "verdict": "OURS_CONFIRMED",
+      "filed_value": 18067.89,
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/f62936ec-8dee-4bc5-89b9-094c5e576451.pdf",
+      "source_filing": "Bajaj Finance Ltd \"Statement of unaudited Standalone financial results for the Quarter and Nine months ended 31 December 2025\" (BSE announcement, filed 2026-02-03, board outcome 2026-02-03)",
+      "unit_declared": "₹ in crore (header) — no scaling needed",
+      "basis_declared": "page header states \"Standalone\" explicitly; row label \"Total revenue from operations\", clean (non-OCR) text layer",
+      "column_anchor_evidence": "Neighbouring columns on the SAME row reproduce stored values EXACTLY: (30.09.2025)=17,184.42 == stored revS Sep-2025 (17184.42); (31.12.2024)=15,371.02 == stored revS Dec-2024 (15371.02). The target column (31.12.2025)=18,067.89 sits directly between two exact anchors.",
+      "second_check": "9-month quarter-sum identity (§45-style): filing's own printed 9M(31.12.2025) column = 51,948.85; stored Q1 FY26 (16,696.54) + Q2 FY26 (17,184.42) + this Q3 read (18,067.89) = 51,948.85 — EXACT to the paisa. Also Total income = revenue + other income on the page: 18,067.89+0.40=18,068.29, matches the printed \"Total income\" row exactly. Filed \"Profit after tax\" row for the quarter (4,580.52) also matches our stored PAT for this quarter exactly, confirming the whole column (not just the revenue cell) is correctly anchored.",
+      "routes_tried": [
+        "rung1 BSE detres: REFUSED (no-date-begin-end-in-response) — independently verified this session via exchange_fetch.py",
+        "rung2 NSE XBRL: REFUSED (0 list rows for this quarter on any basis) — independently verified this session via exchange_fetch.py",
+        "rung3 BSE announcement PDF: SUCCESS — fresh live fetch + direct text-layer read this session"
+      ],
+      "confidence": "high",
+      "notes": "Screener and Groww agree with EACH OTHER (17870.00 / 17869.70) but both diverge from the primary filing by ~198cr (~1.1%), and the SAME-DIRECTION, similar-magnitude gap recurs on the consolidated cell (4) too — this looks like a systematic vendor definitional choice (e.g. a different XBRL revenue tag, possibly excluding 'Income on derecognised (assigned) loans' + 'Net gain on fair value changes', which sum to ₹201.30cr, close to but not exactly the ₸198.19cr gap) rather than a random scrape error. Did not chase the exact vendor definition further — the primary filing's own labelled row, doubly anchored and 9M-identity-confirmed, conclusively supports our stored figure. This is the SADBHAV §70c case in reverse: sites agreeing does not make them right."
+    },
+    {
+      "symbol": "BAJFINANCE",
+      "quarter": "2025-12-31",
+      "field": "consolidated revenue",
+      "ours": 21213.89,
+      "sites": { "screener": 21013.00, "groww": 21013.49 },
+      "verdict": "OURS_CONFIRMED",
+      "filed_value": 21213.89,
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/f62936ec-8dee-4bc5-89b9-094c5e576451.pdf",
+      "source_filing": "Bajaj Finance Ltd \"Statement of unaudited Consolidated financial results for the Quarter and Nine months ended 31 December 2025\" (same BSE announcement as cell 3, filed 2026-02-03)",
+      "unit_declared": "₹ in crore (header) — no scaling needed",
+      "basis_declared": "page header states \"Consolidated\" explicitly; row label \"Total revenue from operations\"",
+      "column_anchor_evidence": "(30.09.2025)=20,178.90 == stored revC Sep-2025 (20178.90) EXACT; (31.12.2024)=18,035.13 vs stored revC Dec-2024 (18035.11) — ₹0.02cr difference, immaterial rounding, not a mismatch. Target column (31.12.2025)=21,213.89 sits directly between these anchors.",
+      "second_check": "9-month identity: filing's own printed 9M(31.12.2025) column = 60,916.67; stored Q1 FY26 con (19,523.88) + Q2 FY26 con (20,178.90) + this Q3 read (21,213.89) = 60,916.67 — EXACT. Total income on the page = 21,213.89+0.69=21,214.58, matches printed \"Total income\" row exactly. \"Profit after tax ... attributable to Owners of the Company\" for the quarter = 3,977.85, matches our stored consolidated PAT for this quarter exactly.",
+      "routes_tried": [
+        "rung1 BSE detres: REFUSED (route does not serve consolidated at all, per capability_card.md §A) — independently verified this session via exchange_fetch.py",
+        "rung2 NSE XBRL: REFUSED (0 list rows for this quarter on any basis) — independently verified this session via exchange_fetch.py",
+        "rung3 BSE announcement PDF: SUCCESS — fresh live fetch + direct text-layer read this session"
+      ],
+      "confidence": "high",
+      "notes": "Same agree-with-each-other-but-wrong pattern as cell 3. Excluding the same two candidate lines ('Income on derecognised (assigned) loans' ₹124.44cr + 'Net gain on fair value changes' ₹139.41cr = ₹263.85cr) does NOT cleanly reproduce the ₹200.40cr site gap here, so the exact vendor definition differs between the two sites' std and con treatments or is something else entirely — immaterial to the verdict since the primary filing, doubly anchored and 9M-identity-confirmed, conclusively supports our stored figure."
+    }
+  ]
+}

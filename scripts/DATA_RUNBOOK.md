@@ -5169,9 +5169,28 @@ tooling in `scripts/revpat_verify/` (`audit_revpat_coverage`, `revpat_strata`, `
   patS **93.7%**, patC 42.5%. Mar-2020→date is 96.8-99.2% on all four; the con columns before that
   are the §51a/§53 structural walls, not neglect.
 - **★ SEVERITY INVERSION: patS outranks patC for backtest impact.** Backtest-effective PAT (the
-  engine's `tries=[[3,4],[1,2]]` con→std fallback) comes to **44,468 cells — identical to patS to
-  the cell.** The fallback fully absorbs the 57.5% con gap, so a con-PAT hole is invisible to the
-  backtest while a std defect reaches 100% of member-quarters.
+  engine's `tries=[[3,4],[1,2]]` con→std fallback) comes to **44,468 cells against patS's 44,468 —
+  the two coverages agree to ~0.05%** (a residual ~22 member-quarters hold con PAT but no std;
+  store-wide, outside the N500 denominator, that residue is 1,493 cells, so do NOT restate this as
+  a strict subset). The fallback absorbs essentially the whole con gap, so a con-PAT hole is nearly
+  invisible to the backtest while a std defect reaches ~all member-quarters.
+- **★★★ TWO REAL DEFECTS FOUND — GICRE std PAT Jun-2025 and Sep-2025, root cause PROVEN.** Our
+  GICRE **standalone** slot is populated from the **consolidated** statement's *pre-associate* PAT
+  row. Same filing, consolidated page row 27 = 2,17,277 lakh = **2,172.77 cr = exactly our
+  mis-stored "standalone" value**; + Share of Profit in Associates 35,782 = 2,53,059 lakh =
+  2,530.59 cr = our stored (correct) con PAT. The standalone page's own PAT row reads **1,752.23**
+  (Jun-2025) and **2,866.79** (Sep-2025).
+  Anchored per §58: at Jun-2025 the neighbouring columns of the same row reproduce OUR OWN stored
+  Mar-2025 (2,182.89) and Jun-2024 (1,036.36) exactly; at Sep-2025 the filing's own H1 column gives
+  **Q1+Q2 = 1,75,223 + 2,86,679 = 4,61,902 lakh EXACT**. Rule 6b satisfied four ways (filing +
+  Screener + Groww + our own sf_revop mirror, which already held 1752.23). Extends **§55c**, which
+  had asserted the Jun/Sep-2025 shape without showing a read. **NOT HEALED** — the write path was
+  blocked by a concurrent writer; evidence in `scripts/revpat_verify/arbitration_verdicts.json`.
+- **★★ AND THE MIRROR IMAGE: BAJFINANCE Dec-2025 revenue, both bases — OURS_CONFIRMED, both sites
+  wrong.** Filing gives std **18,067.89** and con **21,213.89**, our stored values exactly, closed by
+  the 9-month quarter-sum identity on both bases; Screener and Groww are ~1.1% off, in the same
+  direction, **agreeing with each other**. Together with SBIN this is the second demonstration in one
+  campaign that **two sites agreeing is not evidence** — always arbitrate at the document.
 - **Re-run:** `python3 -X utf8 scripts/revpat_verify/audit_revpat_coverage.py` (offline, reads this
   checkout's HEAD); `revpat_strata.py` re-derives the frozen 66-symbol sample identically;
   `build_contested.py` rebuilds the internal-divergence queue; `revpat_mapcard.py --extract <jsonl>

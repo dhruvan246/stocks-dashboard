@@ -12,16 +12,42 @@ The question: *are our quarterly revenue and profit numbers correct?* — to be 
 
 ## 1. THE ANSWER SO FAR
 
-**Nothing we publish has been shown to be wrong. Two things we publish have been shown RIGHT against
-the companies' own filings, in cases where a site confidently said otherwise.**
+**Two real defects found and proven at the filing — GICRE standalone PAT, Jun-2025 and Sep-2025 —
+with the root cause identified. Everything else that was contested came back OURS_CONFIRMED,
+including two cases where sites confidently said otherwise.**
 
 | test | scope | result |
 |---|---|---|
 | Rule-6b cross-site quorum (3 sites, accepted mappings only) | 558 (symbol, quarter, field) cells | **201 CONFIRMED, 305 single-site-OK, 4 CONTRADICTED** |
 | Cells where ≥2 sites agree with each other *and* with us | 558 | **201** |
-| Cells where ≥2 sites agree with each other *against* us | 558 | **4** (all under arbitration, §4) |
-| Arbitration at the filing — SBIN consolidated PAT | 10 quarters, site disagreed on **10 of 10** | **OURS_CONFIRMED, exact to the paisa; the site is wrong** |
+| Cells where ≥2 sites agree with each other *against* us | 558 | **4** — all four arbitrated at the filing (§4) |
+| → arbitration outcome | 4 cells | **2 OURS_WRONG (GICRE), 2 OURS_CONFIRMED (BAJFINANCE)** |
+| Arbitration — SBIN consolidated PAT | 10 quarters, site disagreed on **10 of 10** | **OURS_CONFIRMED, exact to the paisa; the site is wrong** |
 | Internal store consistency (zero-network) | 133,000+ populated PAT cells | **55 disagree** at `50e57c82` (753 at my pin; the con side was closed concurrently — §5) |
+
+**The two defects (rule 6b satisfied four ways — the filing, two independent sites, and our own
+secondary store):**
+
+| cell | we store | the filing says | corroboration |
+|---|---|---|---|
+| GICRE 2025-06-30 std PAT | 2,172.77 | **1,752.23** | Screener 1752.00 · Groww 1752.23 · our own `sf_revop` mirror 1752.23 |
+| GICRE 2025-09-30 std PAT | 2,698.01 | **2,866.79** | Screener 2867.00 · Groww 2866.79 |
+
+**Root cause, proven rather than inferred:** our GICRE *standalone* slot is populated from the
+**consolidated** statement's *pre-associate* PAT row. In the same filing, the consolidated page's
+row 27 reads 2,17,277 lakh = **2,172.77 cr — exactly our mis-stored "standalone" value** — and
+adding "Share of Profit in Associates" (35,782) gives 2,53,059 lakh = 2,530.59 cr, which is exactly
+our stored *consolidated* PAT (correct). The same mechanism reproduces at Sep-2025.
+
+Both reads carry a column anchor and an independent second check: at Jun-2025 the neighbouring
+columns of the same row reproduce **our own** stored Mar-2025 (2,182.89) and Jun-2024 (1,036.36)
+exactly, so the column is identified, not assumed; at Sep-2025 the filing's own printed H1 column
+satisfies **Q1 + Q2 = YTD exactly** (1,75,223 + 2,86,679 = 4,61,902 lakh), and the Jun-2025
+comparator in that later document independently reproduces the value established from the earlier
+one. This is consistent with runbook §55c, which had recorded the same defect shape at Dec-2024 and
+Sep-2025 but had never shown a direct read for Jun-2025 — this campaign supplies it.
+
+**No heal has been performed** (§7 — the write path is blocked, and correctly so).
 
 **The single most important result is a negative one.** The pilot's worst-looking finding —
 SBIN consolidated PAT, where Tickertape disagreed with us on *every one* of 10 quarters, always in
@@ -124,7 +150,7 @@ on a different axis. Cards are keyed `(basis, company class)`.
 Identity discipline held: **zero identity-skips** across 14 stocks × 3 sites, every one confirmed by
 exact ticker echo, with ISIN where the payload carries one.
 
-## 4. WHAT IS CONTESTED — 4 cells, under arbitration
+## 4. WHAT WAS CONTESTED — 4 cells, all four arbitrated
 
 The only cells where two independent sites agree with each other *and* disagree with us:
 
@@ -135,12 +161,18 @@ The only cells where two independent sites agree with each other *and* disagree 
 | BAJFINANCE | 2025-12-31 | std revenue | 18,067.89 | 17,870.00 | 17,869.70 |
 | BAJFINANCE | 2025-12-31 | con revenue | 21,213.89 | 21,013.00 | 21,013.49 |
 
-GICRE is one of the two open items the plan asked to fold in ("its standalone cells are still
-suspect"), and for Jun-2025 **our own non-authoritative mirror holds 1,752.23 — siding with the
-sites against our authoritative file.** BSE detres and NSE XBRL both refuse these four (GICRE is an
-IRDAI-format insurer); under §57 that is *not* evidence of absence, so the remaining ladder rungs
-(BSE announcement PDF with the §58 column anchor; IRDAI disclosures) are being walked. **Verdicts
-are not in as of this writing and no heal has been proposed.**
+**All four are now arbitrated** (`revpat_verify/arbitration_verdicts.json`). BSE detres and NSE XBRL
+both refused them, which under §57 is *not* evidence of absence — the productive rung was **§58's
+BSE announcement PDF with a column anchor**, exactly as the runbook mandates as the default read.
+
+- **GICRE ×2 → OURS_WRONG.** Details and root cause in §1. GICRE was one of the two open items the
+  plan asked to fold in ("its standalone cells are still suspect") — that suspicion is now confirmed
+  with a document. A supporting hint that proved accurate: our own non-authoritative mirror already
+  held 1,752.23 for Jun-2025, siding with the sites against our authoritative file.
+- **BAJFINANCE ×2 → OURS_CONFIRMED.** The filing gives std revenue **18,067.89** and con revenue
+  **21,213.89** — our stored values, exactly. Both Screener and Groww are wrong by ~₹198-200 cr on
+  the same quarter, in the same direction, agreeing with each other. **Two sites agreeing is not
+  evidence**; that is the second independent demonstration of it in this campaign, after SBIN.
 
 A further **10 cells are SITES_DISAGREE** — almost all RELIANCE revenue, where Screener sits ~1-2%
 *below* us and Groww ~9% *above* us on the same quarter (Jun-2026: 309,468 / **311,850** / 340,257).
@@ -221,7 +253,8 @@ IRB), each needing a filing read.
 - **P3 (66-symbol stratified audit) and P4 (bulk sweep) have not been run.** The quorum numbers in
   §1 are the **14-stock calibration pilot** (592 site stock-quarters), not the frozen sample. The
   sample is drawn and the tooling runs; the extraction has not.
-- **The 4 contested cells are unresolved** as of writing (§4).
+- **The 2 GICRE defects are PROVEN but NOT HEALED.** They are the first heal this campaign owes,
+  and they must go through a ledger, not a direct edit (CLAUDE.md rule 5).
 - **No heal has been performed, and none should be yet.** Two blockers, both still standing: the SHP
   campaign's pending `nsh` reparse has not landed, and a concurrent session is actively writing the
   same PAT stores. One staged writer at a time.
@@ -231,7 +264,11 @@ IRB), each needing a filing read.
   that distinction; reporting it as unchecked would misstate both the effort and the risk.
 
 ## 8. NEXT
-1. Finish arbitrating the 4 contested cells down the §57 ladder (rung 3 onward).
+1. **Heal the two GICRE std-PAT cells** once the write path clears — via a ledger, with the rule-6b
+   evidence recorded per cell, then re-run the nightlies and diff, and verify LIVE.
+   **Also re-check GICRE's neighbouring quarters**: the root cause is a systematic
+   con-pre-associate-into-std mis-population, so Dec-2024 (already in §55c) and any quarter
+   built the same way is suspect. Two proven cells of one shape imply a series, not two accidents.
 2. Run P3 over the frozen 66 symbols × 3 sites, then P4 breadth-first on Screener.
 3. Work the 82 priority-1 internal-divergence cells: full 6b quorum *plus* filing arbitration.
 4. Only then heal, via ledgers (`scale_fix` / `feed_qe_fix` / `revop_fundamentals`), one writer at a

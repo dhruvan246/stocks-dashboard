@@ -93,12 +93,18 @@ Per-quarter detail: `p0/coverage_by_quarter.csv`.
 
 ### 3a. ★ A severity inversion the plan did not anticipate
 **patE — backtest-effective PAT** (the engine's `tries=[[3,4],[1,2]]` con→std per-quarter fallback) —
-comes to **44,468 cells, identical to patS to the cell.** The fallback *fully absorbs* the
-consolidated gap, so the 57.5% con-PAT hole is invisible to the backtest.
+comes to **44,468 cells against patS's 44,468**: the two coverages agree to within ~0.05%. The std
+fallback absorbs essentially the entire consolidated gap, so the 57.5% con-PAT hole is very nearly
+invisible to the backtest.
+
+⚠️ **Do not restate that as "patC is a subset of patS".** A direct count found **22 member-quarters
+holding con PAT but no std**, and store-wide (outside the N500 denominator) the residue is **1,493
+cells**. The two totals coinciding at 44,468 is a near-tie, not an identity — an earlier draft of
+this section claimed identity, and a direct count refuted it.
 
 The plan ranked con-PAT defects highest because the backtest consumes con. Measured, **patS is the
-field with backtest reach on 100% of member-quarters**; patC only matters where it exists *and*
-differs from std. Severity ordering for this campaign should follow patS first.
+field with backtest reach on essentially all member-quarters**; patC only matters where it exists
+*and* differs from std. Severity ordering for this campaign should follow patS first.
 
 ## 4. What P0 changes about the plan
 1. **Scope:** verify `sf_revop[0]/[1]` (revenue) and `sf_fundamentals npStd/npCon` (PAT). Never the mirror.
