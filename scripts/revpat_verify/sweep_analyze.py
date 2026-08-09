@@ -28,6 +28,11 @@ TREE = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 REV_LABELS = ("Revenue", "Sales")          # Screener's bank/NBFC and industrial revenue rows
 MIN_RUN = 2                                # consecutive quarters below to call it a run
 BELOW = -0.02                              # 2% -- below this a gap is not rounding
+# ★ A SINGLE quarter can be a defect too, and a run-only rule goes BLIND exactly when you start
+# fixing things: healing AADHARHFC 2023-06 and 2023-12 broke the run around 2023-09, which is still
+# -8.7% wrong -- and it silently vanished from this report. Partially healing a run must not hide
+# its remainder. So an isolated quarter this far below an independent source is flagged on its own.
+LONE = -0.05
 PAT_OK = 0.01                              # PAT must agree within 1% for the signature to hold
 
 
@@ -99,13 +104,22 @@ def main():
                     best = list(cur)
             else:
                 cur = []
-        if len(best) >= MIN_RUN:
+        # UNION, not either/or: a symbol can carry BOTH a run and a separate isolated bad quarter,
+        # and reporting only the run is how AADHARHFC 2023-09 (-8.7%) disappeared after its
+        # neighbours were healed. Take run cells (when a real run exists) plus every isolated cell
+        # at or below LONE, de-duplicated and back in quarter order.
+        run_cells = best if len(best) >= MIN_RUN else []
+        lone = [r for r in rows if r["rel"] <= LONE and r["pat_agrees"] and r not in run_cells]
+        best = sorted({r["qe"]: r for r in (run_cells + lone)}.values(), key=lambda r: r["qe"])
+        if best:
             cands.append({
                 "sym": sym, "is_financial": sym in isfin, "run_len": len(best),
                 "from": best[0]["qe"], "to": best[-1]["qe"],
                 "worst_pct": round(100 * min(r["rel"] for r in best), 1),
                 "median_pct": round(100 * statistics.median(r["rel"] for r in best), 1),
                 "pat_agrees_throughout": all(r["pat_agrees"] for r in best),
+                "kind": ("run+isolated" if run_cells and lone else
+                         ("run" if run_cells else "isolated_material")),
                 "cells": [{"qe": r["qe"], "ours": r["ours"], "site": r["site"],
                            "pct": round(100 * r["rel"], 1)} for r in best],
             })
