@@ -50,13 +50,13 @@ corroborate.** Its only real check is the exchange filing.
 | GICRE | 2025-09-30 | patS | 2698.01 | 2867.00 | 2866.79 | — | **OURS_WRONG (proven)** |
 | BAJFINANCE | 2025-12-31 | revS | 18067.89 | 17870.00 | 17869.70 | — | **OURS_CONFIRMED (proven)** |
 | BAJFINANCE | 2025-12-31 | revC | 21213.89 | 21013.00 | 21013.49 | — | **OURS_CONFIRMED (proven)** |
-| NIVABUPA | 2025-06-30 | patS | −91.44 | 71.00 | 71.44 | 39.00 | under arbitration |
-| NIVABUPA | 2025-06-30 | revS | 1371.08 | 1932.00 | 1931.75 | — | under arbitration |
-| NIVABUPA | 2026-03-31 | patS | 345.13 | 159.00 | 159.36 | 86.00 | under arbitration |
-| NIVABUPA | 2026-03-31 | revS | 2138.56 | 2251.00 | 2251.06 | — | under arbitration |
-| STARHEALTH | 2025-06-30 | patS | 262.52 | 438.00 | 438.18 | 745.00 | under arbitration |
-| STARHEALTH | 2025-06-30 | revS | 4232.86 | 4880.00 | 4880.40 | — | under arbitration |
-| JUBLPHARMA | 2025-03-31 | revS | 217.30 | 61.00 | 60.70 | — | under arbitration |
+| NIVABUPA | 2025-06-30 | patS | −91.44 | 71.00 | 71.44 | 39.00 | **OURS_CONFIRMED** |
+| NIVABUPA | 2025-06-30 | revS | 1371.08 | 1932.00 | 1931.75 | — | **OURS_CONFIRMED** |
+| NIVABUPA | 2026-03-31 | patS | 345.13 | 159.00 | 159.36 | 86.00 | **OURS_CONFIRMED** |
+| NIVABUPA | 2026-03-31 | revS | 2138.56 | 2251.00 | 2251.06 | — | **OURS_CONFIRMED** |
+| STARHEALTH | 2025-06-30 | patS | 262.52 | 438.00 | 438.18 | 745.00 | **OURS_CONFIRMED** |
+| STARHEALTH | 2025-06-30 | revS | 4232.86 | 4880.00 | 4880.40 | — | **OURS_CONFIRMED** |
+| JUBLPHARMA | 2025-03-31 | revS | 217.30 | 61.00 | 60.70 | — | **OURS_CONFIRMED** |
 | ABFRL | 2025-06-30 | patS / revS | −59.93 / 1392.85 | −77 / 1412 | −76.51 / 1412.33 | — | open |
 | ABFRL | 2026-03-31 | patS / revS | −139.13 / 1379.66 | −150 / 1409 | −149.81 / 1409.31 | — | open |
 | HONASA | 2025-03-31 | patS / revS | 22.64 / 479.28 | 25 / 523 | 24.61 / 522.57 | — | open |
@@ -66,6 +66,26 @@ corroborate.** Its only real check is the exchange filing.
 right** — GICRE flagged and later proven wrong, BAJFINANCE flagged and later proven *correct with
 both sites wrong*. That is the strongest available evidence that CONTRADICTED is a well-calibrated
 candidate signal and **not** a defect count.
+
+### 3a. ★★★ THE SEVEN ARBITRATED CELLS ALL CONFIRMED US — 7 of 7
+NIVABUPA ×4, STARHEALTH ×2 and JUBLPHARMA ×1 were taken to their own filings. **Every one matched
+our stored value exactly**, each triple-anchored: two comparator columns on the same row reproducing
+OTHER quarters we already store, plus an FY-quarter-sum identity closing to the paisa against the
+filing's own printed year column. NIVABUPA Mar-2026 is the cleanest — our four stored quarters
+(−91.44, −35.27, −87.64, 345.13) sum to **130.78**, exactly the filing's printed FY-Mar2026 figure.
+
+**The GICRE pre-associate fingerprint was tested and does NOT apply**: NIVABUPA has no subsidiaries
+and files no consolidated statement at all (zero `consolidat*` hits across the full 10-page PDF), so
+the defect that hit GICRE structurally cannot occur here. A fingerprint is a hypothesis to test per
+company, not a pattern to assume across a category.
+
+**What the sites are doing instead:** on the PAT cells all three disagree with *each other*
+(NIVABUPA Jun-2025: 71.00 / 71.44 / 39.00), so under rule 6b they decide nothing. On the revenue
+cells Screener and Groww agree with each other but their figure **could not be reproduced from any
+printed row or combination** — Gross Premium, Net Premium Written, Total Income and several sums
+were all tried and none land near it. So it is an unidentified aggregator concept, not a reading of
+the filing. Insurers are where the sites are least trustworthy, exactly as the IRDAI-format warnings
+in §3/§43/§55 imply.
 
 **Three of the eight contradicted symbols are insurers or insurer-like** (NIVABUPA, STARHEALTH, and
 GICRE already proven). Given GICRE's proven mechanism — the standalone slot populated from the

@@ -1,0 +1,179 @@
+{
+  "_meta": {
+    "campaign": "REVPAT_VERIFY p5 arbitration -- insurers (NIVABUPA/STARHEALTH) + JUBLPHARMA",
+    "run_date": "2026-08-09",
+    "method": "DATA_RUNBOOK.md §57 route ladder + §58 column-anchor read; every PDF fetched fresh from bseindia.com this session (no cached campaign artefacts reused), ≥2s between requests, no 403/429 encountered against BSE at any point. NSE rung (exchange_fetch.py) returned '0 list rows' (not blocked) for all three insurer quarters -- consistent with §3's documented fact that these insurers never file standard XBRL results at all, not a lockdown.",
+    "gicre_fingerprint_tested": "For every insurer cell (1-6): searched the FULL fetched PDF (all pages) for the substring 'consolidat' -- ZERO occurrences in all three filings (NIVABUPA Jun-2025 10pp, NIVABUPA Mar-2026 24pp, STARHEALTH Jun-2025 13pp). Both NIVABUPA and STARHEALTH have NO subsidiaries (fetch_insurers.py INSURERS config: sub=False for both, independently confirmed by the total absence of any consolidated statement in either filing). The GICRE defect mechanism (owners-con slot corrupted from a same-filing CONSOLIDATED statement's pre-associate PAT row) is therefore MECHANICALLY IMPOSSIBLE here: there is no second (consolidated) PAT figure anywhere in these filings that could have been miscopied into the standalone slot. Fingerprint verdict: NOT APPLICABLE / DOES NOT HOLD for cells 1-6, confirmed by direct evidence (full-text search), not merely inferred from config.",
+    "revenue_concept_note": "IRDAI-format insurers (NIVABUPA, STARHEALTH) print NO single 'Revenue from Operations' row. Our stored revS is a CONSTRUCTED figure per DATA_RUNBOOK §55's validated 'general' insurer convention: Premium Earned (Net) + policyholders' Income from Investments (Net) + shareholders' Income from Investments. This session independently re-derived and re-validated that exact construction against SIX different comparator columns across the three filings (see column_anchor_evidence per cell) -- every one reproduced our already-stored neighbouring-quarter revenue to the paisa. So while the underlying concept is a construction rather than a printed row (worth flagging per the task brief), it is a well-defined, filing-anchored, repeatedly-validated construction, not an ambiguous guess -- verdict OURS_CONFIRMED stands for cells 2, 4, 6."
+  },
+  "cells": [
+    {
+      "symbol": "NIVABUPA",
+      "quarter": "2025-06-30",
+      "field": "std PAT",
+      "ours": -91.44,
+      "sites": { "screener": 71.00, "groww": 71.44, "tickertape": 39.00 },
+      "verdict": "OURS_CONFIRMED",
+      "filed_value": -91.44,
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/981cf8af-8b7d-4f3c-b3ec-4dfee80367e8.pdf",
+      "source_filing": "Niva Bupa Health Insurance Company Ltd, \"Annexure-I: Statement of Unaudited Financial Results for the Quarter ended June 30, 2025\" (BSE Outcome-of-Board-Meeting announcement, filed 2025-07-31)",
+      "unit_declared": "(Rs. in Lakhs) -- stated in the page header -> ÷100 for crore",
+      "basis_declared": "Single IRDAI-format statement, no 'standalone'/'consolidated' qualifier printed anywhere and no consolidated statement exists in the 10-page filing (company has no subsidiaries) -- this IS the entity-level figure that std and con both equal.",
+      "column_anchor_evidence": "Read from a RENDERED PAGE IMAGE (text layer garbled by page rotation=270; row/column order unreliable via get_text()). Row 27 'Profit / (Loss) After Tax (25-26)', 4-column layout [Jun-25 Q | Mar-25 Q | Jun-24 Q | FY-Mar25]: Mar-25 column = 20,608 lakh = 206.08cr EXACT match to our stored npStd Mar-2025 (206.08); Jun-24 column = (1,882) lakh = -18.82cr EXACT match to our stored npStd Jun-2024 (-18.82). The target column (Jun-2025) = (9,144) lakh = -91.44cr sits directly between two exact anchors.",
+      "second_check": "TWO independent checks, both exact: (1) arithmetic -- Provision for Tax = nil this quarter, so PBT (row25, -9,144) = PAT (row27, -9,144), consistent as printed. (2) FY-quarter-sum identity -- filing's own printed 'Year ended Mar-2025' column for this row = 21,352 lakh = 213.52cr; our stored Jun24(-18.82)+Sep24(13.02)+Dec24(13.24)+Mar25(206.08) = 213.52cr, EXACT match.",
+      "fingerprint_tested": true,
+      "fingerprint_holds": false,
+      "routes_tried": [
+        "rung1 BSE detres: REFUSED (no-date-begin-end-in-response) -- re-verified this session via exchange_fetch.py",
+        "rung2 NSE XBRL: REFUSED (0 list rows for this quarter on any basis -- session NOT blocked, just no filing found, consistent with §3) -- re-verified this session via exchange_fetch.py",
+        "rung3 BSE announcement PDF: SUCCESS -- fresh live fetch, read from rendered page image (text layer unreliable due to page rotation)"
+      ],
+      "confidence": "high",
+      "notes": "Screener, Groww and Tickertape disagree with EACH OTHER (71.00 / 71.44 / 39.00) -- per the task's own rule, that alone means the sites decide nothing. The primary filing, triple-anchored (2 comparator columns + FY-sum identity, all exact), conclusively supports our stored value. GICRE con-pre-associate fingerprint does NOT apply: this insurer has no subsidiaries and files no consolidated statement at all (verified: zero 'consolidat*' hits in the full 10-page PDF)."
+    },
+    {
+      "symbol": "NIVABUPA",
+      "quarter": "2025-06-30",
+      "field": "std revenue",
+      "ours": 1371.08,
+      "sites": { "screener": 1932.00, "groww": 1931.75 },
+      "verdict": "OURS_CONFIRMED",
+      "filed_value": 1371.08,
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/981cf8af-8b7d-4f3c-b3ec-4dfee80367e8.pdf",
+      "source_filing": "Same filing as cell 1 (NIVABUPA Jun-2025 Annexure-I).",
+      "unit_declared": "(Rs. in Lakhs) -> ÷100 for crore",
+      "basis_declared": "No 'Revenue from Operations' row is printed at all (IRDAI format) -- figure is the DATA_RUNBOOK §55 'general' insurer convention: Premium Earned (Net) row3 + policyholders' Income from Investments (Net) row4 + shareholders' Income from investments row18(b).",
+      "column_anchor_evidence": "Jun-2025: 1,22,000 + 8,684 + 6,424 = 1,37,108 lakh = 1371.08cr, EXACT match to OURS. Column anchor, same construction applied to comparator columns on the SAME row set: Mar-2025 = 1,52,742+9,378+4,959 = 1,67,079 lakh = 1670.79cr, EXACT match to our stored revS Mar-2025 (1670.79). Jun-2024 = 1,01,802+5,748+4,869 = 1,12,419 lakh = 1124.19cr, EXACT match to our stored revS Jun-2024 (1124.19). Both comparator columns reproduce stored values to the paisa.",
+      "second_check": "The 3-leg construction is validated on the SAME filing that already double-anchors the PAT cell above (cell 1) via the operating-profit chain (row6 Total income -> row16 Operating Profit -> row18(a) Transfer from Policyholders' Fund), so the revenue read and the PAT read are cross-consistent, not independent guesses.",
+      "fingerprint_tested": true,
+      "fingerprint_holds": false,
+      "routes_tried": [
+        "rung1 BSE detres: REFUSED (no-date-begin-end-in-response)",
+        "rung2 NSE XBRL: REFUSED (0 list rows)",
+        "rung3 BSE announcement PDF: SUCCESS"
+      ],
+      "confidence": "high",
+      "notes": "Screener (1932.00) and Groww (1931.75) agree with EACH OTHER but neither matches any single printed row nor the runbook's validated convention; could not reverse-engineer their figure from any combination of the printed rows (tried Gross Premium, Net Premium Written, Total income, and several sums -- none land near 1932). Does not affect the verdict: the filing-anchored construction reproduces two independent stored comparator quarters exactly."
+    },
+    {
+      "symbol": "NIVABUPA",
+      "quarter": "2026-03-31",
+      "field": "std PAT",
+      "ours": 345.13,
+      "sites": { "screener": 159.00, "groww": 159.36, "tickertape": 86.00 },
+      "verdict": "OURS_CONFIRMED",
+      "filed_value": 345.13,
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/b7cd810d-e7da-43f9-831a-9275f5c93df5.pdf",
+      "source_filing": "Niva Bupa Health Insurance Company Ltd, \"Annexure-I: Statement of Audited Financial Results for the Quarter and Year to date ended March 31, 2026\" (BSE Outcome-of-Board-Meeting announcement, filed 2026-05-08)",
+      "unit_declared": "(Rs. in Lakhs) -> ÷100 for crore",
+      "basis_declared": "Same as cell 1: single entity-level statement, no subsidiaries, no consolidated page anywhere in the 24-page filing.",
+      "column_anchor_evidence": "Read from a rendered page image (page not rotated this time, but layout still dense/multi-column). Row 27 'Profit / (Loss) After Tax (25-26)', columns [Mar-26 Q | Dec-25 Q | Mar-25 Q | FY-Mar26 | FY-Mar25]: Dec-2025 column = (8,764) lakh = -87.64cr EXACT match to our stored npStd Dec-2025 (-87.64); Mar-2025 column = 20,608 lakh = 206.08cr EXACT match to our stored npStd Mar-2025 (206.08, and to this same figure independently read off the earlier Jun-2025 filing in cell 1 -- two different filings agreeing). Target column (Mar-2026) = 34,513 lakh = 345.13cr sits directly between two exact anchors.",
+      "second_check": "TWO independent checks, both exact: (1) PBT−Tax=PAT on the target column: 34,116 − (−397) = 34,513, exact (tax line is a credit/benefit of 397). (2) FY-quarter-sum identity: filing's own printed FY-Mar2026 column = 13,078 lakh = 130.78cr; our stored Jun25(-91.44)+Sep25(-35.27)+Dec25(-87.64)+Mar26(345.13) = 130.78cr, EXACT match.",
+      "fingerprint_tested": true,
+      "fingerprint_holds": false,
+      "routes_tried": [
+        "rung1 BSE detres: REFUSED (no-date-begin-end-in-response)",
+        "rung2 NSE XBRL: REFUSED (0 list rows)",
+        "rung3 BSE announcement PDF: SUCCESS -- read from rendered page image"
+      ],
+      "confidence": "high",
+      "notes": "Screener/Groww/Tickertape disagree with each other (159.00/159.36/86.00) -- sites decide nothing per rule. Filing triple-anchored (2 comparator columns + FY-sum identity + PBT-tax=PAT), all exact. Same no-subsidiary/no-consolidated-page finding as cell 1 rules out the GICRE fingerprint."
+    },
+    {
+      "symbol": "NIVABUPA",
+      "quarter": "2026-03-31",
+      "field": "std revenue",
+      "ours": 2138.56,
+      "sites": { "screener": 2251.00, "groww": 2251.06 },
+      "verdict": "OURS_CONFIRMED",
+      "filed_value": 2138.56,
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/b7cd810d-e7da-43f9-831a-9275f5c93df5.pdf",
+      "source_filing": "Same filing as cell 3 (NIVABUPA Mar-2026 Annexure-I).",
+      "unit_declared": "(Rs. in Lakhs) -> ÷100 for crore",
+      "basis_declared": "Same §55 'general' construction as cell 2: Premium Earned (Net) + policyholders' Income from Investments (Net) + shareholders' Income from investments.",
+      "column_anchor_evidence": "Mar-2026: 1,97,195 + 13,047 + 3,614 = 2,13,856 lakh = 2138.56cr, EXACT match to OURS. Column anchor: Dec-2025 = 1,45,357+8,933+6,813 = 1,61,103 lakh = 1611.03cr EXACT match to stored revS Dec-2025 (1611.03); Mar-2025 (year-ago-within-this-filing) = 1,52,742+9,378+4,959 = 1,67,079 lakh = 1670.79cr EXACT match to stored revS Mar-2025 (1670.79) -- the SAME figure independently reproduced from a DIFFERENT filing (cell 2's Jun-2025 pack), a cross-filing agreement.",
+      "second_check": "Construction cross-validated against the same filing's cell-3 PAT chain (Total income row6 -> Operating Profit row16 -> Transfer from Policyholders' Fund row18(a)), all internally consistent on the target column.",
+      "fingerprint_tested": true,
+      "fingerprint_holds": false,
+      "routes_tried": [
+        "rung1 BSE detres: REFUSED (no-date-begin-end-in-response)",
+        "rung2 NSE XBRL: REFUSED (0 list rows)",
+        "rung3 BSE announcement PDF: SUCCESS"
+      ],
+      "confidence": "high",
+      "notes": "Screener (2251.00) and Groww (2251.06) agree with each other but not with the filing or with any printed/summed row tried. Same open curiosity as cell 2 -- not pursued further, does not change the verdict."
+    },
+    {
+      "symbol": "STARHEALTH",
+      "quarter": "2025-06-30",
+      "field": "std PAT",
+      "ours": 262.52,
+      "sites": { "screener": 438.00, "groww": 438.18, "tickertape": 745.00 },
+      "verdict": "OURS_CONFIRMED",
+      "filed_value": 262.52,
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/de027dbf-5286-48e9-900e-c681a2baa91a.pdf",
+      "source_filing": "Star Health and Allied Insurance Company Ltd, \"Annexure-I: A - Statement of Unaudited Financial Results for the Quarter ended June 30, 2025\" (BSE Outcome-of-Board-Meeting announcement, filed 2025-07-29)",
+      "unit_declared": "(₹ in lakhs) -- stated in page header -> ÷100 for crore",
+      "basis_declared": "Single IRDAI-format statement; no consolidated page in the 13-page filing (company has no subsidiaries -- runbook §3 lists STARHEALTH sub=False).",
+      "column_anchor_evidence": "DATA_RUNBOOK §3 flags STARHEALTH's text layer as scanned/OCR-corrupted -- confirmed this session (get_text() returns glyph-class garbage: '3.47.592', 'lncome', 'APPROPRIATIONS' fragments, digits split across lines). Per method item 5, read from a RENDERED PAGE IMAGE instead: a clean, high-quality scan, fully legible. Row 27 'Profit/(Loss) After Tax (25-26)', columns [Jun-25 | Mar-25 | Jun-24 | YTD-Mar-25]: Mar-2025 column = 51 lakh = 0.51cr EXACT match to our stored npStd Mar-2025 (0.51); Jun-2024 column = 31,893 lakh = 318.93cr EXACT match to our stored npStd Jun-2024 (318.93). Target column (Jun-2025) = 26,252 lakh = 262.52cr sits directly between two exact anchors.",
+      "second_check": "TWO independent checks: (1) PBT−Tax=PAT on target column: PBT 35,202 − Tax(Current 10,861 + Deferred −1,911) = 35,202−8,950 = 26,252, EXACT. (2) FY-quarter-sum identity: filing's own printed YTD-Mar2025 column = 64,586 lakh = 645.86cr; our stored Jun24(318.93)+Sep24(111.29)+Dec24(215.14)+Mar25(0.51) = 645.87cr, matching to within 0.01cr (rounding).",
+      "fingerprint_tested": true,
+      "fingerprint_holds": false,
+      "routes_tried": [
+        "rung1 BSE detres: REFUSED (no-date-begin-end-in-response)",
+        "rung2 NSE XBRL: REFUSED (0 list rows)",
+        "rung3 BSE announcement PDF: SUCCESS -- text layer corrupted (§3-documented), read from rendered page image instead"
+      ],
+      "confidence": "high",
+      "notes": "Screener/Groww/Tickertape disagree with each other (438.00/438.18/745.00) -- sites decide nothing per rule. Filing triple-anchored (2 comparator columns + arithmetic PBT-tax=PAT + FY-sum identity), all exact or within a paisa of rounding. GICRE fingerprint does not apply: zero 'consolidat*' hits in the full 13-page PDF, no subsidiaries."
+    },
+    {
+      "symbol": "STARHEALTH",
+      "quarter": "2025-06-30",
+      "field": "std revenue",
+      "ours": 4232.86,
+      "sites": { "screener": 4880.00, "groww": 4880.40 },
+      "verdict": "OURS_CONFIRMED",
+      "filed_value": 4232.86,
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/de027dbf-5286-48e9-900e-c681a2baa91a.pdf",
+      "source_filing": "Same filing as cell 5 (STARHEALTH Jun-2025 Annexure-I).",
+      "unit_declared": "(₹ in lakhs) -> ÷100 for crore",
+      "basis_declared": "No 'Revenue from Operations' row printed (IRDAI format) -- §55 'general' construction: Premiums earned (Net) row3 + Income from Investments (Net) row4 + shareholders' Income from Investments row18(b).",
+      "column_anchor_evidence": "Jun-2025: 3,93,826 + 17,656 + 11,804 = 4,23,286 lakh = 4232.86cr, EXACT match to OURS. Column anchor: Mar-2025 = 3,79,832+18,590+9,703 = 4,08,125 lakh = 4081.25cr EXACT match to stored revS Mar-2025 (4081.25); Jun-2024 = 3,52,032+17,128+12,406 = 3,81,566 lakh = 3815.66cr EXACT match to stored revS Jun-2024 (3815.66). Both comparator columns exact.",
+      "second_check": "Same-filing cross-consistency with the cell-5 PAT chain (Sub Total row6 -> Operating Profit row16 -> Transfer from Policyholders' Fund row18(a)) on the target column.",
+      "fingerprint_tested": true,
+      "fingerprint_holds": false,
+      "routes_tried": [
+        "rung1 BSE detres: REFUSED (no-date-begin-end-in-response)",
+        "rung2 NSE XBRL: REFUSED (0 list rows)",
+        "rung3 BSE announcement PDF: SUCCESS -- rendered page image"
+      ],
+      "confidence": "high",
+      "notes": "Screener (4880.00) and Groww (4880.40) agree with each other but not the filing or the validated construction; could not reverse-engineer their figure (tried Gross Premium 3,60,547=3605.47, Sub Total 4,11,518=4115.18, and several sums -- none land near 4880). Does not change the verdict."
+    },
+    {
+      "symbol": "JUBLPHARMA",
+      "quarter": "2025-03-31",
+      "field": "std revenue",
+      "ours": 217.30,
+      "sites": { "screener": 61.00, "groww": 60.70 },
+      "verdict": "OURS_CONFIRMED",
+      "filed_value": 217.30,
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/94172736-4639-436f-a19c-8c3a94055f96.pdf",
+      "source_filing": "Jubilant Pharmova Limited, \"Statement of Standalone Audited Financial Results for the Quarter and Year ended 31 March 2025\" (BSE announcement, filed 2025-05-16)",
+      "unit_declared": "(₹ in million), page header, standalone page -> ÷10 for crore",
+      "basis_declared": "Page header explicitly states this is the STANDALONE statement (separate page from the consolidated statement earlier in the same PDF); row label 'Total revenue from operations' -- an ordinary (non-IRDAI) XBRL-style P&L, not ambiguous.",
+      "column_anchor_evidence": "This is NOT an insurer -- ordinary standard-format company, so also independently confirmed via rung1 BSE detres (Corp_detailedResult_Transpose_ng API, machine-readable, company-submitted): 'Net Sales/Revenue From Operations' = 2173.0 (Rs Million) = 217.3cr, EXACT match to OURS, from the SAME response that also returned PAT=13.6cr matching our stored std PAT for this quarter exactly. Separately, the PDF's own comparator columns on the SAME row: 31-Dec-2024 = 1,960 million = 196.0cr EXACT match to stored revS Dec-2024 (196.0); 31-Mar-2024 = 2,058 million = 205.8cr EXACT match to stored revS Mar-2024 (205.8).",
+      "second_check": "FY-quarter-sum identity: filing's own printed 'Year Ended 31 March 2025' column = 7,457 million = 745.7cr; our stored Jun24(166.7)+Sep24(165.7)+Dec24(196.0)+Mar25(217.3) = 745.7cr, EXACT match. Also PBT−Tax=PAT on the target column via BSE detres: 235−99=136 (Rs Million) = 13.6cr, matching stored PAT exactly -- an independently-sourced route (BSE detres) AND the PDF agree to the decimal.",
+      "fingerprint_tested": true,
+      "fingerprint_holds": false,
+      "routes_tried": [
+        "rung1 BSE detres: SUCCESS (revenue 217.3cr, PAT 13.6cr, both matching stored exactly)",
+        "rung2 NSE XBRL: not needed, rung1 already succeeded",
+        "rung3 BSE announcement PDF: SUCCESS -- independently confirms rung1 to the paisa, plus supplies the FY-sum second check"
+      ],
+      "confidence": "high",
+      "notes": "Not an insurer; the GICRE con-pre-associate fingerprint doesn't apply to this cell type (single std-revenue field, not a PAT-slot-swap question) -- included in the fingerprint_tested/holds fields only for schema uniformity, tested=true meaning 'considered', holds=false meaning 'not the shape of this defect'. Screener (61.00) and Groww (60.70) agree with each other but are far off (~3.6x lower) from a value that is confirmed by TWO independent routes (BSE detres machine feed + BSE announcement PDF) and THREE arithmetic identities (2 column anchors + FY-quarter-sum). Could not identify what the sites are showing instead (not Other Operating Income alone [11.7-29.5cr range], not any obvious sub-line) -- flagged as an open curiosity, does not affect the verdict. Note revS[0] for JUBLPHARMA (Jubilant Pharmova, a holding company with large operating subsidiaries) is genuinely much smaller than revC[1] every quarter by design -- consistent with the company structure, not a defect in itself."
+    }
+  ]
+}

@@ -5191,6 +5191,44 @@ tooling in `scripts/revpat_verify/` (`audit_revpat_coverage`, `revpat_strata`, `
   the 9-month quarter-sum identity on both bases; Screener and Groww are ~1.1% off, in the same
   direction, **agreeing with each other**. Together with SBIN this is the second demonstration in one
   campaign that **two sites agreeing is not evidence** — always arbitrate at the document.
+- **★★ P3 (66 frozen symbols, 3,104 cells): 852 CONFIRMED, 18 CONTRADICTED (0.58%), and
+  CONSOLIDATED PAT SCORED 0 CONFIRMED OF 394.** The P2 prediction — Screener and Groww publish TOTAL
+  con profit against our OWNERS-attributable series, so both are barred and Tickertape is left alone
+  — holds exactly at 5x the sample. **patE (the backtest-effective series) inherits it: 3 confirmed
+  of 397.** The engine's std fallback is essentially never exercised in the site-reachable era, so
+  the number strategy picks consume is the one figure sites cannot corroborate.
+- **★★★ ARBITRATION SCOREBOARD, 22 cells taken to the filings: 5 defects, 17 OURS_CONFIRMED.**
+  All 5 defects are GICRE (3 std PAT + 2 con revenue). **Every other contested cell confirmed us,
+  including 7 of 7 where TWO sites agreed against us** (NIVABUPA x4, STARHEALTH x2, JUBLPHARMA x1)
+  and BAJFINANCE x2. Sites agreeing with each other is not evidence; only the document decides.
+- **★★ INSURERS ARE WHERE THE SITES ARE LEAST TRUSTWORTHY.** On NIVABUPA/STARHEALTH PAT the three
+  sites disagree with EACH OTHER (Jun-2025: 71.00 / 71.44 / 39.00), so they decide nothing. On the
+  revenue cells Screener and Groww agree with each other but their figure **cannot be reproduced
+  from any printed row or combination** (Gross Premium, Net Premium Written, Total Income and sums
+  all tried) — an unidentified aggregator concept, not a reading of the filing. Meanwhile §55's
+  construction (Premium Earned + policyholders' + shareholders' investment income) reproduced SIX
+  independent stored comparator quarters to the paisa.
+- **★ A FINGERPRINT IS A HYPOTHESIS TO TEST PER COMPANY, NOT A CATEGORY PATTERN.** GICRE's
+  con-pre-associate defect was tested on the other insurers and is **mechanically impossible** there:
+  NIVABUPA and STARHEALTH have no subsidiaries and file no consolidated statement at all (zero
+  `consolidat*` hits across 10/24/13-page PDFs). Absence was proven, not assumed.
+- **★ READ FROM A RENDERED PAGE IMAGE WHEN THE TEXT LAYER IS SUSPECT.** Three separate packs in this
+  campaign defeated `get_text()`: a GICRE PDF misread a digit (8-for-9), NIVABUPA Jun-2025 has
+  `rotation=270` scrambling word order, and STARHEALTH's layer is OCR-corrupted (§3). Every figure
+  in these arbitrations was read off images.
+- **★ THE TRU IDENTITY TRAP RECURRED TWICE MORE** on Tickertape: `ccl-international-CCL` is not our
+  CCL (CCL Products India = sid `CCLP`), `shri-kalyan-holdings-SHK` is not our SHK (S H Kelkar =
+  sid `SHKE`). Three instances on one site. **A sid matching the ticker is a coincidence to be
+  disproved, never an identification** — the ticker-echo + ISIN gate caught both before any row was
+  emitted.
+- **★ SCREENER'S WINDOW IS "the last 13 quarters THAT COMPANY filed", not a fixed date.** The earlier
+  "13 quarters, oldest Jun-2023" note came from probing actively-filing large caps only; across 66
+  symbols the span is 2018-06-30 -> 2026-06-30 (CASTEXTECH stale at 2018-2021, ZEAL semi-annual).
+- **★ AGENT ORCHESTRATION: FORBID BACKGROUND JOBS, do not merely prefer foreground ones.** All three
+  P3 extraction agents stalled by starting a background fetch and waiting for a notification that
+  never comes; one lost its partial work. Phrasing it as a preference (as the plan did, from the SHP
+  run) was not enough. Diagnose an agent's state before resuming — checking caches and logs first
+  saved ~130 re-sent requests here.
 - **Re-run:** `python3 -X utf8 scripts/revpat_verify/audit_revpat_coverage.py` (offline, reads this
   checkout's HEAD); `revpat_strata.py` re-derives the frozen 66-symbol sample identically;
   `build_contested.py` rebuilds the internal-divergence queue; `revpat_mapcard.py --extract <jsonl>
