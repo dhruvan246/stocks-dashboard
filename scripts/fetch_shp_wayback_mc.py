@@ -69,6 +69,43 @@ def norm_name(s):
     return re.sub(r"[^a-z0-9]", "", s)
 
 # ---------------------------------------------------------------- map
+def cmd_census(qfilter=None):
+    """(Re)build the CDX census that map/frontier read. The original 134k-row census lived only in
+    the gitignored cache and went with the 2026-08-03 disk cleanup.
+
+    ⚠ Use PAGE pagination, not resumeKey, and do NOT push a regex filter server-side: a wildcard
+    prefix this size + regex makes CDX scan too far and it answers 504. `showNumPages` on the bare
+    prefix returns ~214 bounded pages; each one comes back fine and we filter locally."""
+    idx = "https://web.archive.org/cdx/search/cdx?url=moneycontrol.com/company-facts/*"
+    npages = int(http_get(idx + "&showNumPages=true", timeout=180).strip() or 0)
+    print("census: %d CDX pages" % npages, flush=True)
+    want = set(int(q) for q in qfilter) if qfilter else None
+    rows, kept = [], 0
+    for pg in range(npages):
+        url = idx + "&output=json&collapse=urlkey&fl=original,timestamp&page=%d" % pg
+        data = None
+        for attempt in range(4):
+            try:
+                data = json.loads(http_get(url, timeout=180, accept="application/json") or "[]"); break
+            except Exception as e:
+                print("   page %d retry %d (%r)" % (pg, attempt, e), flush=True); time.sleep(10 * (attempt + 1))
+        if data is None:
+            print("   page %d GAVE UP" % pg, flush=True); continue
+        body = data[1:] if data and data[0] and data[0][0] == "original" else data
+        for r in body:
+            if len(r) < 2: continue
+            orig = r[0]
+            m = re.search(r"company-facts/([^/]+)/shareholding-pattern/([^/?#]+)(?:/(\d+))?", orig)
+            if not m: continue
+            if want is not None and (not m.group(3) or int(m.group(3)) not in want): continue
+            rows.append([orig, r[1]]); kept += 1
+        if pg % 20 == 0 or pg == npages - 1:
+            print("   page %d/%d — %d shareholding captures kept" % (pg, npages, kept), flush=True)
+        time.sleep(1.0)
+    json.dump(rows, open(CDX_FILE, "w"))
+    print("CENSUS: %d captures -> %s" % (len(rows), CDX_FILE), flush=True)
+
+
 def cmd_map():
     D = json.loads(gzip.decompress(urllib.request.urlopen(urllib.request.Request(
         "https://dhruvan246.github.io/stocks-dashboard/dash_slim.bin", headers={"User-Agent": UA}), timeout=90).read()))
@@ -199,6 +236,9 @@ ROW_LABELS = {
     "ins": r"Insurance Companies",
     "fii": r"Foreign Institutional Investors",
     "qfi": r"Qualified Foreign Investor",
+    "vcf": r"^Venture Capital Funds",                 # DOMESTIC VC — anchored, so it cannot also
+    "fvci": r"Foreign Venture Capital Investors",     # match the Foreign VC row below it
+
     "inst_sub": r"\(1\)\s*Institutions.*?Sub Total",   # handled specially below
 }
 
@@ -275,13 +315,13 @@ def parse_mc_page(html, expect_code=None, expect_syms=(), slug=None):
         if blk_lo is not None: break
     if blk_lo is not None:
         hi = blk_hi if blk_hi is not None else min(blk_lo + 160, len(cells))
-        for slot in ("mf", "banks", "govt", "ins", "fii", "qfi"):
+        for slot in ("mf", "banks", "govt", "ins", "fii", "qfi", "vcf", "fvci"):
             p = find_row(ROW_LABELS[slot], blk_lo, hi)
             if p: out[slot] = p
         if blk_hi is not None:
             p = pair(row_nums(blk_hi - 1))
             if p: out["inst_sub"] = p
-    if "fii" not in out and "mf" not in out: return None
+    if "fii" not in out and "mf" not in out and "inst_sub" not in out: return None
     return {"qtrid": q, "cols": out}
 
 # ---------------------------------------------------------------- fetch machinery
@@ -378,7 +418,19 @@ def cmd_ledger():
     # exactly 0% at 88/89. Those two quarters are DROPPED — writing them would fabricate fii=0 for
     # ~840 company-quarters, the precise failure mode parse_shp's "never zero-default" rule exists
     # to prevent. Effective ledger window is therefore Dec-2010 .. Sep-2015.
-    USABLE_MAX_Q = 87
+    # ⚠ 2026-08-03 verdict, CORRECTED 2026-08-09: qtrid 88 (Dec-2015) and 89 (Mar-2016) DO have an
+    # empty "Foreign Institutional Investors" row on every MC page — that part was right — but the
+    # data is NOT absent. The institutions Sub Total is printed and correct, and the foreign block
+    # sits in the un-itemised remainder. Every q<=87 cell already passes the reconciliation gate
+    # below, i.e. inst_sub = fii + dii + govt + qfi holds to 1pp across the whole harvest, so at
+    # 88/89 we INVERT the same identity: fii = inst_sub - (mf + banks + ins + govt + qfi + vcf).
+    # That is arithmetic, not a guess — and it is checked against the Jun-2016 XBRL cells we parse
+    # ourselves, one quarter away (SEAM_GATE below), instead of the 3-quarter drift the original
+    # calibration had to live with. Proof it works: HDFCBANK q88 residual 39.78 vs our own
+    # Jun-2016 39.59.
+    USABLE_MAX_Q = 89
+    DERIVE_QS = (88, 89)          # quarters where fii is derived from the subtotal
+    SEAM_MAX_MEDIAN = 3.0         # median |q89 derived - Jun-2016 parsed| that must not be exceeded
 
     # SEAM CALIBRATION. The two candidate columns are "% of (A+B)" and "% of (A+B+C)", where C is
     # the GDR/custodian block; they are IDENTICAL for companies without GDRs, so the choice only
@@ -423,10 +475,11 @@ def cmd_ledger():
 
     fills = defaultdict(dict)
     dropped = Counter()
+    derived_cells = []
     for key, c in cells.items():
         sym, q = key.split("|"); q = int(q)
         if q > USABLE_MAX_Q:
-            dropped["qtr88-89-source-has-no-fii"] += 1; continue
+            dropped["beyond-usable-qtr"] += 1; continue
         qe = qe_of_qtrid(q)
         cols = c["cols"]
         def val(slot):
@@ -436,6 +489,22 @@ def cmd_ledger():
         # fii is the primary factor AND proof the institutions block parsed — never default it to
         # 0.0 (that is indistinguishable from a genuine zero holding and silently poisons screens).
         fii = val("fii")
+        derived = False
+        if fii is None and q in DERIVE_QS:
+            # foreign = the institutions subtotal minus the rows itemised as DOMESTIC. Do NOT also
+            # subtract qfi: at 88/89 the foreign block lands on whichever row survives the format
+            # change (HDFCBANK q88 leaves it un-itemised, q89 puts 39.63 on the QFI row) and both
+            # readings must end up in fii. NO CLAMP — a negative residual means the block did not
+            # parse, and max(0, ...) would turn that into a fabricated "no foreign holding".
+            inst0 = val("inst_sub")
+            dom = sum(val(k) or 0.0 for k in ("mf", "banks", "ins", "govt", "vcf"))
+            if inst0 is None:
+                dropped["derive-no-subtotal"] += 1; continue
+            resid = inst0 - dom
+            if resid < -0.5 or resid > 100.0:
+                dropped["derive-bad-residual"] += 1; continue
+            fii = round(max(resid, 0.0), 2) if resid >= -0.5 else None
+            derived = True
         if fii is None:
             dropped["no-fii"] += 1; continue
         prom = val("prom")
@@ -445,18 +514,49 @@ def cmd_ledger():
         dii = mf + (val("banks") or 0.0) + (val("ins") or 0.0)
         # reconciliation gate mirroring parse_shp: itemized institutions ≈ subtotal (when present)
         inst = val("inst_sub")
-        if inst is not None:
+        if inst is not None and not derived:      # derived cells satisfy it by construction
             item_sum = fii + dii + (val("govt") or 0.0) + (val("qfi") or 0.0)
             if abs(item_sum - inst) > 1.0:
                 dropped["inst-recon"] += 1; continue
+        if derived:
+            derived_cells.append((sym, qe, fii))
         if not (0.0 <= prom <= 100.0) or not (0.0 <= fii <= 100.0) or not (0.0 <= dii <= 100.0):
             dropped["out-of-range"] += 1; continue
         sub = (qe + datetime.timedelta(days=LAG_DAYS)).isoformat()
         fills[sym][qe.isoformat()] = [round(prom, 2), round(fii, 2), round(dii, 2), round(mf, 2),
                                        round(val("ins") or 0.0, 2), sub, None,
                                        c["src"] + ":approx+%dd" % LAG_DAYS]
+    # SEAM GATE for the derived 88/89 cells: Mar-2016 is ONE quarter from the Jun-2016 cells we
+    # parse ourselves from BSE's XBRL, so a bad derivation shows up immediately. If the median
+    # disagreement is worse than SEAM_MAX_MEDIAN, drop every derived cell rather than write them.
+    seam = []
+    for sym, qe, fii in derived_cells:
+        if qe.isoformat() != "2016-03-31": continue
+        nxt = (hist.get(sym) or {}).get("2016-06-30")
+        if nxt: seam.append(abs(fii - nxt[1]))
+    seam_med = med(seam)
+    print("DERIVED 88/89: %d cells; Mar-2016 vs our Jun-2016 XBRL — n=%d median %s pp"
+          % (len(derived_cells), len(seam), seam_med), flush=True)
+    if derived_cells:
+        if seam_med is None or len(seam) < 25:
+            print("  seam sample too small (%d) — dropping every derived cell" % len(seam), flush=True)
+            keep = set()
+        elif seam_med > SEAM_MAX_MEDIAN:
+            print("  median %.2fpp > %.1fpp — derivation NOT validated, dropping every derived cell"
+                  % (seam_med, SEAM_MAX_MEDIAN), flush=True)
+            keep = set()
+        else:
+            keep = {(sym, qe.isoformat()) for sym, qe, _ in derived_cells}
+            print("  derivation VALIDATED — keeping %d cells" % len(keep), flush=True)
+        for sym, qe, _ in derived_cells:
+            k = (sym, qe.isoformat())
+            if k not in keep and qe.isoformat() in fills.get(sym, {}):
+                del fills[sym][qe.isoformat()]; dropped["derive-seam-gate"] += 1
+        for sym in [k for k, v in fills.items() if not v]: del fills[sym]
+
     total = sum(len(v) for v in fills.values())
-    meta = {"window": ["2010-12-31", "2015-09-30"], "source": "wayback moneycontrol company-facts",
+    meta = {"window": ["2010-12-31", "2016-03-31"], "derived_88_89": len(derived_cells),
+            "derived_seam_median_pp": seam_med, "source": "wayback moneycontrol company-facts",
             "date_convention": "QE+%dd (SEBI Clause-35 deadline) — APPROXIMATE, no real filing dates exist" % LAG_DAYS,
             "column_convention": "%of(A+B+C)" if use_abc else "%of(A+B)",
             "seam_median_pp": {"all_AB": mAB, "all_ABC": mABC, "gdr_AB": gAB, "gdr_ABC": gABC}, "companies": len(fills), "cells": total,
@@ -468,7 +568,9 @@ def cmd_ledger():
 
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else ""
-    if cmd == "map": cmd_map()
+    if cmd == "census":
+        cmd_census([int(x) for x in sys.argv[2].split(",")] if len(sys.argv) > 2 else None)
+    elif cmd == "map": cmd_map()
     elif cmd == "frontier": cmd_frontier()
     elif cmd == "sample": cmd_sample(int(sys.argv[2]) if len(sys.argv) > 2 else 6)
     elif cmd == "harvest": cmd_harvest()
