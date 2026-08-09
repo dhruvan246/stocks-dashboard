@@ -170,17 +170,20 @@ jobs:
       - name: Re-assert owners-attributable consolidated profit (incl. renamed tickers)
         run: python3 scripts/apply_owners_full.py
 
-      # ★ CLOBBER DETECTOR (runbook §41/§56b, wired in 2026-08-09). Every fill and correction ledger
-      # claims specific cells; this re-checks that the SERVED payloads still carry them, immediately
-      # after the rebuild that could have reverted them. It exists because "verified at push time" is
-      # not verified: on 2026-08-06 a refresh restored its own pre-run snapshot over sf_revop.json and
-      # silently reverted 193 backfilled cells, and the push had been reported successful.
-      # NON-BLOCKING ON PURPOSE for now — as of wiring there are 8 pre-existing MISSING/DRIFT items in
-      # pat_defects.json (AURUS 2017-09 missing; RSYSTEMS/AARTIDRUGS/ADFFOODS/GODREJPROP/MMTC/SURAJEST
-      # drifting) that predate this step and are NOT triaged. Make it blocking (drop the `|| true`)
-      # once those are adjudicated, so a real clobber turns the run RED instead of printing quietly.
-      - name: Detect clobbered ledger cells in the served payloads (report-only)
-        run: python3 -X utf8 scripts/verify_fills_live.py || true
+      # ★ CLOBBER DETECTOR (runbook §41/§56b, wired in 2026-08-09, BLOCKING since 2026-08-10). Every fill
+      # and correction ledger claims specific cells; this re-checks that the SERVED payloads still carry
+      # them, immediately after the rebuild that could have reverted them. It exists because "verified at
+      # push time" is not verified: on 2026-08-06 a refresh restored its own pre-run snapshot over
+      # sf_revop.json and silently reverted 193 backfilled cells, and the push had been reported successful.
+      # The pre-existing items are adjudicated: the AURUS 2017-09 "MISSING" was a mis-keyed ledger entry
+      # (a CON heal journalled under correct_pat — re-keyed to correct_pat_con, runbook §56b), and the 7
+      # DRIFTs (RSYSTEMS/AARTIDRUGS/ADFFOODSx2/GODREJPROP/MMTC/SURAJEST) are report-only by design (a
+      # later correction may supersede; DRIFT never exits 1). So a non-zero exit here = a REAL clobber:
+      # this step failing aborts the run BEFORE the commit step, i.e. clobbered payloads don't publish.
+      # If it turns red: run scripts/verify_fills_live.py locally, adjudicate per §56b (repair vs re-key
+      # vs skip-flag the ledger entry) — do NOT re-add `|| true` (runbook §39).
+      - name: Detect clobbered ledger cells in the served payloads (blocking)
+        run: python3 -X utf8 scripts/verify_fills_live.py
 
       # Refiner excise netting (Trendlyne parity, runbook §11): petroleum cos' XBRL revenue is GROSS
       # (no excise tag exists), the PDF prints the "Excise Duty" row — net it off rev for the VERIFIED

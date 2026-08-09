@@ -89,10 +89,11 @@
  },
  "AURUS": {
   "20170930": {
-   "correct_pat": 7.62,
+   "correct_pat_con": 7.62,
    "defect": "year-shift duplicate (\u00a745 detector): CON slot held the adjacent year's con value (std slot unaffected and differs)",
+   "note": "2026-08-10 re-key: this is a CON-slot heal (batch b4dd72fb 'Con heals: ... AURUS ...') journalled under the std keys by mistake; std slot was None before AND after the heal (never held a value), con slot carries 7.62 live. The std-keyed entry made verify_fills_live flag a false MISSING against slot 1 (runbook 56b).",
    "source": "nse:financial_res_AURUS_1032825.html",
-   "stored_pat": 4.05
+   "stored_pat_con": 4.05
   }
  },
  "BDL": {
@@ -377,11 +378,11 @@
    "stored_pat_con": 1860.76
   },
   "20241231": {
-   "stored_pat": 1623.43,
    "correct_pat": 1621.35,
    "defect": "standalone slot holds the CONSOLIDATED pre-associate PAT row (con pre-associate 1623.43 == our stored value); true standalone from the standalone page",
+   "quorum": "user 2026-08-09: explicitly accepted FILING + 1 SITE for these cells, a deliberate relaxation of campaign rule 6b (which asks for the filing AND >=2 independent sites). Recorded per cell so the bar this was taken at is never lost.",
    "source": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/03267167-0a76-4de7-b41c-b8067114ee3d.pdf",
-   "quorum": "user 2026-08-09: explicitly accepted FILING + 1 SITE for these cells, a deliberate relaxation of campaign rule 6b (which asks for the filing AND >=2 independent sites). Recorded per cell so the bar this was taken at is never lost."
+   "stored_pat": 1623.43
   },
   "20250331": {
    "correct_pat_con": 2498.86,
@@ -390,18 +391,18 @@
    "stored_pat_con": 2363.87
   },
   "20250630": {
-   "stored_pat": 2172.77,
    "correct_pat": 1752.23,
    "defect": "standalone slot holds the CONSOLIDATED statement's PRE-ASSOCIATE PAT row; the standalone page's own PAT row is the correct value",
+   "quorum": "user 2026-08-09: explicitly accepted FILING + 1 SITE for these cells, a deliberate relaxation of campaign rule 6b (which asks for the filing AND >=2 independent sites). Recorded per cell so the bar this was taken at is never lost.",
    "source": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/2995f5a3-9a07-4636-b4ad-b26afead8823.pdf",
-   "quorum": "user 2026-08-09: explicitly accepted FILING + 1 SITE for these cells, a deliberate relaxation of campaign rule 6b (which asks for the filing AND >=2 independent sites). Recorded per cell so the bar this was taken at is never lost."
+   "stored_pat": 2172.77
   },
   "20250930": {
-   "stored_pat": 2698.01,
    "correct_pat": 2866.79,
    "defect": "standalone slot holds the CONSOLIDATED statement's PRE-ASSOCIATE PAT row; the standalone page's own PAT row is the correct value",
+   "quorum": "user 2026-08-09: explicitly accepted FILING + 1 SITE for these cells, a deliberate relaxation of campaign rule 6b (which asks for the filing AND >=2 independent sites). Recorded per cell so the bar this was taken at is never lost.",
    "source": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/4048b2b3-ec10-4538-8a41-878d65befe45.pdf",
-   "quorum": "user 2026-08-09: explicitly accepted FILING + 1 SITE for these cells, a deliberate relaxation of campaign rule 6b (which asks for the filing AND >=2 independent sites). Recorded per cell so the bar this was taken at is never lost."
+   "stored_pat": 2698.01
   },
   "20251231": {
    "correct_pat_con": 1725.66,

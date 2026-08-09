@@ -4182,6 +4182,21 @@ Re-checks every cell in every fill ledger against the served payloads.
 `DRIFT` = both present but different → reported, never auto-changed (a later correction may
 legitimately supersede a backfill; only a human decides). Exits 1 on any MISSING so a wrapper can
 fail loudly. Negative-control tested: clobber one cell and it names that cell and exits 1.
+Blocking in `refresh-fundamentals.yml` since 2026-08-10 — the step runs before the commit step, so
+a red run means clobbered payloads were NOT published.
+
+⚠️ **A MISSING can be a mis-keyed LEDGER entry, not a clobber — adjudicate before `--repair`
+(AURUS 2026-08-10).** In `pat_defects.json` the key IS the slot: `correct_pat` → std slot 1,
+`correct_pat_con` → con slot 3. AURUS|20170930's con-basis heal (batch b4dd72fb, "Con heals: …
+AURUS …") was journalled under `correct_pat`, so the detector checked the STD slot — which was
+None before and after the heal (never held a value) — and flagged MISSING for a week while the con
+slot correctly served 7.62. `--repair` would have written 7.62 into stdPAT, fabricating a std value
+no source asserts. Adjudication recipe: (1) read the entry's own `defect` text for the basis,
+(2) `git log -S SYM -- scripts/pat_defects.json` → does the heal commit's message say std or con,
+(3) diff the payload row at that commit — a slot that was None BEFORE the "clobber" was never
+clobbered. Fix = re-key the entry (`correct_pat`→`correct_pat_con`, `stored_pat`→`stored_pat_con`)
+so the guard moves to the slot the heal actually lives in; removal or a skip flag would drop the
+clobber guard on a genuinely healed cell.
 
 ### 56c. The process rule this violated
 CLAUDE.md rule 5 and §41 already say re-verify LIVE ~20 min after a data heal *because an in-flight
