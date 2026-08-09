@@ -1,0 +1,316 @@
+{
+  "_meta": {
+    "campaign": "REV/PAT verify — batch_a (AADHARHFC / BSE / MTNL / MMTC)",
+    "date": "2026-08-09",
+    "no_repo_writes": true,
+    "reference_tree_read_only": "/Users/dhruvan/stocks-wt/revpat-verify",
+    "authority": "docs/sf_revop.json[SYM][QE][0]=revS,[1]=revC; PAT=docs/sf_fundamentals.json (npStd/npCon)",
+    "headline": "Only AADHARHFC 2023-09-30 reproduces the AADHARHFC/HDBFS wrong-row defect class. BSE, MTNL and MMTC are all row-correct against their own primary filings; the brief's cited gaps are explained by three DIFFERENT, non-defect mechanisms (see per-cell notes)."
+  },
+  "cells": [
+    {
+      "symbol": "AADHARHFC",
+      "quarter": "2023-09-30",
+      "field": "revS",
+      "ours_now": 560.59,
+      "filed_total_revenue_from_operations": 614.00,
+      "components": {
+        "a_interest_income": 560.59,
+        "b_fees_and_commission_income": 24.51,
+        "c_net_gain_on_fair_value_changes": 3.33,
+        "d_net_gain_on_derecognition_of_financial_instruments": 25.57
+      },
+      "ours_matches_which_row": "a) Interest income — a COMPONENT row, not the total (same defect class as AADHARHFC 2023-06-30/2023-12-31 and HDBFS, all proven in scripts/revpat_verify/staged/)",
+      "verdict": "OURS_WRONG",
+      "recommended_value": 614.00,
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/d307a09a-5579-477f-8be5-49e2c23e3f59.pdf",
+      "filing_meta": {
+        "filed_date": "2024-02-08",
+        "title": "Standalone Statement of financial results for the quarter and nine months ended December 31, 2023 (Sep-2023 comparative column)",
+        "reached_via": "BSE debt-segment NCD scrip fan-out (runbook §44 applied to a pre-IPO NCD issuer, per AADHARHFC.md precedent) — AADHARHFC's equity scrip (544176) has zero history before its 2024-05-08 IPO"
+      },
+      "unit_declared": "Rs in Lakh (header) -> /100 for crore",
+      "column_anchor_evidence": "PAT: filed Sep-23 column 'Profit after tax' = 19,728 lakh = 197.28cr vs stored fund npStd/npCon 197.0/197.0 (0.14%, within normal rounding tolerance for this pre-IPO Screener-sourced series). Comparative lock: same filing's Dec-23 own-quarter column (57,926 / Interest income) matches stored 2023-12-31 revS 579.26 exactly, and its Profit after tax 20,344 lakh=203.44cr vs stored 203.0 -- consistent same-scale, same-row match across BOTH quarters in one document.",
+      "second_check": "Component sum 56,059+2,451+333+2,557 = 61,400 lakh = printed 'Total revenue from operations' exactly. 9M YTD identity: Jun-23(57,801)+Sep-23(61,400)+Dec-23(65,854) = 1,85,055 = filed 9-month column exactly.",
+      "routes_tried": [
+        "1: BSE detres (Corp_detailedResult_Transpose_ng), equity scrip 544176 -> no-date-begin-end-in-response (pre-listing, no filing at this scrip)",
+        "2: NSE per-basis XBRL, symbol AADHARHFC -> 0 list rows (not NSE-listed at this date)",
+        "3: BSE announcement stream via equity scrip 544176 -> earliest row 2024-05-29, nothing pre-listing",
+        "4: BSE announcement stream via BSE DEBT-segment scrip fan-out (runbook §44) -> HIT, re-fetched independently this session (fresh download, not reused from the reference tree's cache) and read directly"
+      ],
+      "confidence": "HIGH",
+      "notes": "Independently re-verified (fresh PDF download + own read, not just trusting the reference tree's staged/AADHARHFC.md side-finding) — reproduces it exactly to the rupee, including the brief's cited independent-source value of 614 to the cent. This is the SAME mechanism as the two already-healed AADHARHFC quarters either side of it (2023-06-30, 2023-12-31): screener_prerev.py accepted the 'Sales' row Screener showed for this pre-IPO period, which for this HFC is actually 'Interest income', gated only on a PAT match blind to which revenue row was taken."
+    },
+    {
+      "symbol": "BSE",
+      "quarter": "2023-06-30",
+      "field": "revS",
+      "ours_now": 156.62,
+      "filed_total_revenue_from_operations": 156.62,
+      "components": {
+        "1_revenue_from_operations": 156.62,
+        "2_investment_income": 33.91,
+        "3_other_income": 13.63,
+        "4_total_income": 204.16
+      },
+      "ours_matches_which_row": "'1 Revenue from operations' — the CORRECT, correctly-labelled row (not a component of a larger total; it is its own top-line item in BSE Ltd's 4-line income block)",
+      "verdict": "AMBIGUOUS_CONCEPT",
+      "recommended_value": null,
+      "source_url": "https://nsearchives.nseindia.com/corporate/Nseintimationfinal_09082023172447.pdf",
+      "filing_meta": {"filed_date": "2023-08-09", "title": "Statement of Standalone Financial Results for the quarter ended June 30, 2023"},
+      "unit_declared": "Rs in Lakhs -> /100 for crore",
+      "column_anchor_evidence": "PAT: filed 'Profit for the quarter' 50,714 lakh = 507.14cr == stored npStd 507.14 EXACTLY (this is the CDSL-stake-divestment exceptional-item quarter, PAT far above the run-rate, and it still matches to the rupee).",
+      "second_check": "Component sum 15,662+3,391+1,363 = 20,416 lakh = printed 'Total income' exactly.",
+      "routes_tried": [
+        "1: BSE detres -> BSE Ltd's own equity scrip code could not be resolved via the live active-equity master (~4,949/10,800-row pulls both miss it under scrip_id/Issuer_Name 'BSE'/'Bombay Stock Exchange') -- not attempted further, flagged as a genuine route gap, not a refusal",
+        "2: NSE per-basis XBRL (symbol BSE) -> HIT for all 5 quarters, cross-checked against nightly_parser (build_revop.py), agrees",
+        "3: NSE corporate-announcements PDF (the underlying filing behind the XBRL) -> HIT, fetched and read directly for this quarter"
+      ],
+      "confidence": "HIGH",
+      "notes": "MECHANISM IDENTIFIED, not just asserted: Screener.in's own 'Sales' figure for this quarter is 191 (rounded). 156.62 (ours, = filed 'Revenue from operations') + 33.91 (filed 'Investment income', the exchange's treasury/SGF income, which BSE Ltd's own statement keeps as a SEPARATE line, not part of 'Revenue from operations') = 190.53 ≈ 191. Screener's 'Sales' folds Investment income into Sales for this scrip; the filing itself does not. This is a genuine, reproducible CONCEPT difference (which of two legitimate exchange-revenue definitions counts as 'Sales'), not a wrong-row read."
+    },
+    {
+      "symbol": "BSE",
+      "quarter": "2023-09-30",
+      "field": "revS",
+      "ours_now": 206.61,
+      "filed_total_revenue_from_operations": 206.61,
+      "components": {
+        "1_revenue_from_operations": 206.61,
+        "2_investment_income": 62.40,
+        "3_other_income": 7.91,
+        "4_total_income": 276.92
+      },
+      "ours_matches_which_row": "'1 Revenue from operations' — the correct row",
+      "verdict": "AMBIGUOUS_CONCEPT",
+      "recommended_value": null,
+      "source_url": "https://nsearchives.nseindia.com/corporate/NSEintimation_10112023162600.pdf",
+      "filing_meta": {"filed_date": "2023-11-10", "title": "Statement of Standalone Financial Results for the quarter and six months ended September 30, 2023"},
+      "unit_declared": "Rs in Lakh -> /100 for crore",
+      "column_anchor_evidence": "PAT: filed 'Profit for the period' 7,196 lakh = 71.96cr == stored npStd 71.96 EXACTLY. Comparative column: Jun-23 revenue 15,662 = stored 2023-06-30 revS 156.62 exactly; Jun-23 PAT 50,714 = stored 507.14 exactly.",
+      "second_check": "Component sum 20,661+6,240+791 = 27,692 lakh = printed 'Total income' exactly.",
+      "routes_tried": [
+        "1: BSE detres -> scrip code unresolved (see 2023-06-30 cell), not attempted",
+        "2: NSE per-basis XBRL -> HIT, agrees with nightly parser",
+        "3: NSE corporate-announcements PDF -> HIT, fetched and read directly"
+      ],
+      "confidence": "HIGH",
+      "notes": "This is the brief's WORST BSE cell (-23.2%). Screener's own 'Sales' for this quarter is 269 (rounded). 206.61 + 62.40 (filed Investment income) = 269.01 ≈ 269 -- an EXACT reproduction of the brief's own quoted -23.2% worst-case figure via the Investment-income-inclusion mechanism identified in the 2023-06-30 cell. This confirms Screener.in is very likely the brief's 'independent source' for this company, and confirms the mechanism precisely rather than by coincidence."
+    },
+    {
+      "symbol": "BSE",
+      "quarter": "2023-12-31",
+      "field": "revS",
+      "ours_now": 278.40,
+      "filed_total_revenue_from_operations": 278.40,
+      "components": {"1_revenue_from_operations": 278.40, "2_plus_3_investment_and_other_income_xbrl_tag": 47.92, "4_total_income_xbrl_tag": 326.32},
+      "ours_matches_which_row": "in-bse-fin:RevenueFromOperations XBRL tag == stored exactly; in-bse-fin:Income (total) tag is the separate, larger figure",
+      "verdict": "AMBIGUOUS_CONCEPT",
+      "recommended_value": null,
+      "source_url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_102350_1044932_05022024060737.xml",
+      "filing_meta": {"filed_date": "2024-02-05", "title": "NSE XBRL, standalone, OneD context"},
+      "unit_declared": "INR, XBRL decimals=-7 (rupees) -> /1e7 for crore",
+      "column_anchor_evidence": "PAT: XBRL profit tag OneD context == stored npStd 95.16 exactly (nightly_parser_agrees:true, exchange_fetch.py cross-check).",
+      "second_check": "RevenueFromOperations + OtherIncome tags sum to the Income (total) tag, same identity structure verified on the two full-PDF-read quarters either side of this one (2023-09-30, 2024-03-31 comparative).",
+      "routes_tried": [
+        "1: BSE detres -> scrip unresolved, not attempted",
+        "2: NSE per-basis XBRL -> HIT, raw tag names extracted directly (RevenueFromOperations / OtherIncome / Income), not just the parsed number"
+      ],
+      "confidence": "MEDIUM-HIGH",
+      "notes": "Read via raw XBRL tag extraction, not a full rendered PDF page (unlike the 2023-06-30/2023-09-30/2024-06-30 cells which were read from the actual filing image). The tag names themselves (RevenueFromOperations vs Income) are unambiguous and match the pattern proven on the two full-PDF-verified neighbours, so confidence is high but one notch below a direct page read."
+    },
+    {
+      "symbol": "BSE",
+      "quarter": "2024-03-31",
+      "field": "revS",
+      "ours_now": 379.35,
+      "filed_total_revenue_from_operations": 379.35,
+      "components": {"1_revenue_from_operations": 379.35, "2_plus_3_investment_and_other_income_xbrl_tag": 105.05, "4_total_income_xbrl_tag": 484.40},
+      "ours_matches_which_row": "in-bse-fin:RevenueFromOperations XBRL tag == stored exactly",
+      "verdict": "AMBIGUOUS_CONCEPT",
+      "recommended_value": null,
+      "source_url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_105488_1118481_08052024084515.xml",
+      "filing_meta": {"filed_date": "2024-05-08", "title": "NSE XBRL, standalone, OneD context"},
+      "unit_declared": "INR, XBRL decimals=-7 -> /1e7 for crore",
+      "column_anchor_evidence": "PAT: XBRL OneD PAT tag == stored npStd 79.13 exactly (nightly_parser_agrees:true). Also independently cross-anchored by the 2024-06-30 filing's OWN comparative column (Mar-24 revenue 37,935 lakh=379.35 exactly, read from the full PDF for that cell).",
+      "second_check": "Same RevenueFromOperations+OtherIncome=Income identity as the other 4 BSE quarters.",
+      "routes_tried": [
+        "1: BSE detres -> scrip unresolved, not attempted",
+        "2: NSE per-basis XBRL -> HIT",
+        "3: full PDF for the NEXT quarter's comparative column (2024-06-30 filing) -> HIT, cross-confirms this cell's revenue independently"
+      ],
+      "confidence": "HIGH",
+      "notes": "This cell got a bonus direct-PDF cross-check via the 2024-06-30 filing's own Mar-24 comparative column, which reproduces 379.35 to the rupee — effectively a second, independent primary-document confirmation on top of the XBRL tag read."
+    },
+    {
+      "symbol": "BSE",
+      "quarter": "2024-06-30",
+      "field": "revS",
+      "ours_now": 495.98,
+      "filed_total_revenue_from_operations": 495.98,
+      "components": {
+        "1_revenue_from_operations": 495.98,
+        "2_investment_income": 49.49,
+        "3_other_income": 6.04,
+        "4_total_income": 551.51
+      },
+      "ours_matches_which_row": "'1 Revenue from operations' — the correct row",
+      "verdict": "OURS_CONFIRMED",
+      "recommended_value": null,
+      "source_url": "https://nsearchives.nseindia.com/corporate/NSEintimation_07082024164954.pdf",
+      "filing_meta": {"filed_date": "2024-08-07", "title": "Statement of Standalone Financial Results for the quarter ended June 30, 2024"},
+      "unit_declared": "Rs in Lakhs -> /100 for crore",
+      "column_anchor_evidence": "PAT: filed 'Profit for the quarter' 17,326 lakh = 173.26cr == stored npStd 173.26 EXACTLY. Comparative Mar-24 column: revenue 37,935=379.35 == stored 2024-03-31 revS exactly; PAT 7,913=79.13 == stored exactly.",
+      "second_check": "Component sum 49,598+4,949+604 = 55,151 lakh = printed 'Total income' exactly.",
+      "routes_tried": [
+        "1: BSE detres -> scrip unresolved, not attempted",
+        "2: NSE per-basis XBRL -> HIT, agrees with nightly parser",
+        "3: NSE corporate-announcements PDF -> HIT, fetched and read directly"
+      ],
+      "confidence": "HIGH",
+      "notes": "This is the CONTROL quarter within the brief's named BSE window (smallest gap of the 5, -9.0% to -10.1% depending on which independent figure is used). Screener's own Sales=545: 495.98+49.49(Investment income)=545.47≈545 — the SAME mechanism as the other 4 BSE quarters, just with a smaller Investment-income share of the total this quarter, hence the smaller gap. There is no quarter in this window where the gap is genuinely zero — the Investment-income-inclusion effect is systematic and present in all 5, at varying magnitude. Verdict recorded as OURS_CONFIRMED (row selection is unambiguously correct here and PAT/second-check both close exactly) even though, like its 4 siblings, the raw percentage gap vs Screener persists for the identified concept reason."
+    },
+    {
+      "symbol": "MTNL",
+      "quarter": "2025-06-30",
+      "field": "revS",
+      "ours_now": 51.66,
+      "filed_total_revenue_from_operations": 51.66,
+      "components": {
+        "revenue_from_operations": 51.66,
+        "other_income": 140.12,
+        "total_income": 191.78,
+        "segment_view_basic_other_services": 47.75,
+        "segment_view_cellular": 4.20,
+        "segment_view_gross_total": 51.95,
+        "segment_view_less_inter_segment": 0.29,
+        "segment_view_net_revenue_from_operations": 51.66
+      },
+      "ours_matches_which_row": "'I Revenue from operations' in Annexure I AND 'Net Revenue from Operations' in Annexure II's segment disclosure — both independently print 51.66, the correct and only revenue-from-operations figure",
+      "verdict": "AMBIGUOUS_CONCEPT",
+      "recommended_value": null,
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/25c3d879-e7d1-43a8-aee7-4803ae65a56a.pdf",
+      "filing_meta": {"filed_date": "2025-08-13", "title": "Integrated Filing (Financial) incl. Un-Audited Standalone Financial Results for the quarter ended 30/06/2025 (Annexures I & II)"},
+      "unit_declared": "Rs. in Crore (declared in header, no scaling needed)",
+      "column_anchor_evidence": "PAT: 'XIII Profit/(Loss) for the period' (941.03) == stored npStd (941.03) EXACTLY. Comparative columns on the SAME page: 31/03/2025 revenue 152.50 == stored 2025-03-31 revS exactly, PAT (827.22) == stored exactly; 30/06/2024 revenue 169.40 and PAT (771.82) both internally consistent.",
+      "second_check": "Segment-view (Annexure II) independently reproduces 51.66 via Basic&other services 47.75 + Cellular 4.20 + Unallocable 0.00 = 51.95 gross, less inter-segment 0.29 = 51.66 net — a genuinely separate table on the same PDF landing on the identical figure.",
+      "routes_tried": [
+        "1: BSE detres, scrip 500108 -> HIT (Net Sales/Revenue From Operations = 51.66, exact match, used as the first-pass exchange-leg cross-check before the full PDF read)",
+        "2: BSE announcement stream, scrip 500108 -> HIT, this exact filing",
+        "3: full rendered PDF (scanned, no text layer -- rendered at 2x and read visually per runbook §57 rung 10)"
+      ],
+      "confidence": "HIGH",
+      "notes": "This is the brief's WORST MTNL cell (-64.4% vs an independent source). MECHANISM: Screener.in's own quoted 'Sales' for this exact quarter is 145.0. That is NOT the originally-filed 51.66 -- it is the RESTATED figure MTNL's own NEXT filing (30/09/2025, see that cell below) shows for this SAME quarter's comparative column: 145.12. MTNL has been reclassifying large amounts between 'Revenue from operations' and 'Other Income' from filing to filing WITHOUT changing PAT (PAT stays 941.03 in both the original and the restated presentation). Our stored value is the quarter's OWN ORIGINALLY-FILED figure, the correct convention; the independent source appears to be tracking whichever filing most recently restated that quarter, not what was filed for it at the time. This is a 'restated vs as-reported' timing mismatch (the project's own precedent class, memory: 'CON slot holding a COPY of std' RE-ADJUDICATED note on restated-vs-as-reported), not a wrong-row read."
+    },
+    {
+      "symbol": "MTNL",
+      "quarter": "2025-03-31",
+      "field": "revS",
+      "ours_now": 152.50,
+      "filed_total_revenue_from_operations": 152.50,
+      "components": {"revenue_from_operations": 152.50, "other_income": 158.22, "total_income": 310.72},
+      "ours_matches_which_row": "'I Revenue from operations' — read from the 30/06/2025 filing's own comparative column for 31/03/2025, which is the ORIGINAL as-filed figure for this quarter (unchanged from its own Q4FY25 filing, not yet restated at that point)",
+      "verdict": "AMBIGUOUS_CONCEPT",
+      "recommended_value": null,
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/25c3d879-e7d1-43a8-aee7-4803ae65a56a.pdf",
+      "filing_meta": {"filed_date": "2025-08-13", "title": "Comparative column (31/03/2025) inside the Jun-2025 Integrated Filing, Annexure I"},
+      "unit_declared": "Rs. in Crore",
+      "column_anchor_evidence": "PAT comparative column (827.22) == stored npStd 2025-03-31 (-827.22) EXACTLY. Same column also anchors the 2025-06-30 cell above.",
+      "second_check": "Not independently re-derived from Mar-2025's OWN original filing this session (time-boxed) — relied on the comparative-column rung (runbook §57b rung 6), which is a valid but slightly weaker rung than reading the quarter's own filing directly.",
+      "routes_tried": [
+        "1: BSE detres, scrip 500108 -> HIT, 152.5 exact (first-pass cross-check)",
+        "2: comparative column of the 2025-06-30 filing (rung 6) -> HIT, used as the primary read for this cell"
+      ],
+      "confidence": "MEDIUM-HIGH",
+      "notes": "Second-worst MTNL cell (-40.9% vs the independent source's 258.0). The RESTATEMENT mechanism proven directly for 2025-06-30 and 2024-09-30 (see that cell) is the most likely explanation here too — the independent source's 258.0 was not traced to a specific later MTNL filing this session (time-boxed), so the mechanism is INFERRED BY PATTERN for this specific cell rather than directly pinned to a named restating document the way 2025-06-30 was. Our own value (152.50) is directly primary-source-confirmed (comparative column + PAT anchor + BSE detres agreement); what remains open is only which later filing performed the restatement Screener is tracking."
+    },
+    {
+      "symbol": "MTNL",
+      "quarter": "2025-09-30",
+      "field": "revS",
+      "ours_now": 174.48,
+      "filed_total_revenue_from_operations": 174.48,
+      "components": {"revenue_from_operations": 174.48, "other_income": 30.66, "total_income": 205.14},
+      "ours_matches_which_row": "'I Revenue from operations' — correct row, and NOT YET restated by any later filing seen this session",
+      "verdict": "OURS_CONFIRMED",
+      "recommended_value": null,
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/f990a029-fe16-41ee-89f1-e50bd282de7d.pdf",
+      "filing_meta": {"filed_date": "2025-11-14", "title": "Integrated Filing (Financial) incl. Un-Audited Standalone Financial Results for the quarter and half year ended 30/09/2025, Annexure I"},
+      "unit_declared": "Rs. in Crore",
+      "column_anchor_evidence": "PAT 'XIII Profit/(Loss) for the period' (959.07) == stored npStd (959.07) EXACTLY.",
+      "second_check": "This SAME PDF's comparative columns are the smoking gun for the restatement mechanism found on the other 2 MTNL cells: its 30/06/2025 column shows Revenue from operations RESTATED to 145.12 (Other Income 46.66) against the ORIGINAL 30/06/2025 filing's own 51.66/140.12 split — identical Total Income (191.78) and identical PAT (941.03) in both, confirming a pure revenue<->other-income reclassification with zero P&L impact. Its 30/09/2024 column similarly shows revenue RESTATED to 251.22 against the original filing's 158.80 (with PAT unchanged at -888.41 in both).",
+      "routes_tried": [
+        "1: BSE detres, scrip 500108 -> HIT, 174.48 exact",
+        "2: BSE announcement stream -> HIT, this filing (has a real text layer, not scanned)"
+      ],
+      "confidence": "HIGH",
+      "notes": "CONTROL QUARTER, as the brief's own logic predicted: gap vs the independent source is ~0% (174.48 vs Screener's 174.0) precisely BECAUSE no later filing has yet restated this quarter's revenue/other-income split. This control quarter's own comparative columns are what PROVED the restatement mechanism explaining the other 2 MTNL cells — reading it was not just a sanity check, it was the direct evidence source."
+    },
+    {
+      "symbol": "MMTC",
+      "quarter": "2023-12-31",
+      "field": "revS",
+      "ours_now": 0.73,
+      "filed_total_revenue_from_operations": 0.73,
+      "components": {"revenue_from_operations": 0.73, "other_income": 62.60, "total_income": 63.33},
+      "ours_matches_which_row": "'Revenue From Operations' — the correct, only revenue-from-operations row (MMTC's business has shrunk to near-zero trading revenue; PAT is now driven almost entirely by 'Other Income', i.e. treasury/interest income on large reserves)",
+      "verdict": "OURS_CONFIRMED",
+      "recommended_value": null,
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/45843af3-a6f9-43e6-8e07-de43e788349a.pdf",
+      "filing_meta": {"filed_date": "2024-02-08", "title": "Statement of Standalone Unaudited Financial Results for the Quarter and Nine Months Ended 31/12/2023"},
+      "unit_declared": "Rs. in Crores (declared in header)",
+      "column_anchor_evidence": "PAT '7 Profit/(loss) for the Period' 22.90 == stored npStd 22.9 EXACTLY.",
+      "second_check": "Total Income = Revenue from operations 0.73 + Other Income 62.60 = 63.33, matches printed Total Income exactly. Cross-confirmed unchanged in the 2024-03-31 filing's own Dec-23 comparative column (Part I: 0.73; Part III segment view: Net revenue 0.73) — no restatement between the two consecutive filings.",
+      "routes_tried": [
+        "1: BSE detres, scrip 513377 -> HIT, 0.73 exact (first-pass cross-check)",
+        "2: BSE announcement stream -> HIT, full PDF read (text layer present, not scanned)"
+      ],
+      "confidence": "MEDIUM-HIGH",
+      "notes": "Row-selection is CONFIRMED with high confidence (exact rupee match on the filing's own labelled row, PAT anchor exact, second check exact, AND unchanged across two consecutive filings so no restatement is in play here the way it is for MTNL). What is UNRESOLVED: which external source produces the brief's cited -31.5%/-39.0% gaps. Screener.in's own displayed 'Sales' for MMTC is rounded to the nearest WHOLE crore (0/1/2/5 across the whole series) — too coarse to reproduce a precise percentage on a sub-1cr base, so Screener does not appear to be the brief's source here the way it demonstrably is for BSE and (via restatement) MTNL. Total Income (63.33) is also not a match (that would be a ~-98.8% gap, not -31%/-39%). No candidate concept found this session that reproduces the brief's exact percentages; flagged honestly as unresolved rather than guessed."
+    },
+    {
+      "symbol": "MMTC",
+      "quarter": "2024-03-31",
+      "field": "revS",
+      "ours_now": 0.64,
+      "filed_total_revenue_from_operations": 0.64,
+      "components": {"revenue_from_operations": 0.64, "other_income": 64.35, "total_income": 64.99},
+      "ours_matches_which_row": "'Revenue From Operations' — correct row",
+      "verdict": "OURS_CONFIRMED",
+      "recommended_value": null,
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/5f307452-58b5-4aea-b4db-2ad3218c0bf2.pdf",
+      "filing_meta": {"filed_date": "2024-05-28", "title": "Statement of Standalone Audited Financial Results for the Quarter and Year ended 31/03/2024, Part I"},
+      "unit_declared": "Rs in Crores, except per share data (declared in header)",
+      "column_anchor_evidence": "PAT '7 Profit/(loss) for the Period' 31.82 == stored npStd 31.82 EXACTLY. Same page's Dec-23 comparative column: revenue 0.73 == stored 2023-12-31 revS exactly; PAT 22.90 == stored exactly.",
+      "second_check": "Part III segment disclosure (separate table, same PDF): 'Net revenue' row shows 31-Mar-24 = 0.64, 31-Dec-23 = 0.73 — independently reproduces both this cell and the prior cell from a structurally different table on the same filing.",
+      "routes_tried": [
+        "1: BSE detres, scrip 513377 -> HIT, 0.64 exact",
+        "2: BSE announcement stream -> HIT, full PDF read (scanned; rendered at 1.2-3x and read visually)"
+      ],
+      "confidence": "MEDIUM-HIGH",
+      "notes": "Same finding and same open item as the 2023-12-31 cell: row is confirmed correct against two independent tables in the primary filing, but the brief's specific gap source/percentage could not be reproduced or identified this session."
+    },
+    {
+      "symbol": "MMTC",
+      "quarter": "2026-03-31",
+      "field": "revS",
+      "ours_now": 0.61,
+      "filed_total_revenue_from_operations": 0.61,
+      "components": {"revenue_from_operations": 0.61, "other_income": 35.42, "total_income": 36.03},
+      "ours_matches_which_row": "'Revenue From Operations' — correct row",
+      "verdict": "OURS_CONFIRMED",
+      "recommended_value": null,
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/9854cc78-a5ae-4d24-9f20-abbebde9f011.pdf",
+      "filing_meta": {"filed_date": "2026-05-30", "title": "Statement of Standalone Audited Financial Results for the Quarter and Year ended 31/03/2026, Part I"},
+      "unit_declared": "Rs. in Crores, except per share data (declared in header)",
+      "column_anchor_evidence": "PAT '7 Profit/(loss) for the Period' 31.70 == stored npStd 31.7 EXACTLY. Same page's Dec-25 comparative column: revenue 0.34 == stored 2025-12-31 revS exactly; PAT 10.11 == stored exactly.",
+      "second_check": "Comparative column internally consistent with the 2025-12-31 cell's own stored value (0.34, unrestated).",
+      "routes_tried": [
+        "1: BSE detres, scrip 513377 -> HIT, 0.61 exact",
+        "2: BSE announcement stream -> HIT, full PDF read (scanned; rendered and read visually)"
+      ],
+      "confidence": "MEDIUM-HIGH",
+      "notes": "Endpoint of the brief's named MMTC range (2023-12-31 -> 2026-03-31), read as extra coverage beyond the 'worst 2 + control' minimum to confirm the row-correctness pattern holds across the FULL range, not just the older quarters. Same open item as the other two MMTC cells: source of the brief's percentage gap not identified."
+    }
+  ]
+}

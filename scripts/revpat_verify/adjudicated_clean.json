@@ -44,6 +44,38 @@
    "why_flagged": "whole-crore display rounding on a ~2-3cr base",
    "open_note": "BALLARPUR 2024-03-31 detres read is UNRELIABLE \u2014 its 'standalone' revenue matches our CONSOLIDATED slot and neither PAT slot matches; likely a CIRP-gap catch-up artefact. Not adjudicated; avoid as a control.",
    "source": "batch_b_verdicts.json"
+  },
+  "BSE": {
+   "verdict": "OURS_CONFIRMED / AMBIGUOUS_CONCEPT",
+   "quarters_read": [
+    "2023-06-30",
+    "2023-09-30",
+    "2023-12-31",
+    "2024-03-31",
+    "2024-06-30 (control)"
+   ],
+   "why_flagged": "Screener's 'Sales' = the filed 'Revenue from operations' PLUS Investment income, a line BSE Ltd's own statement excludes from operating revenue. Reproduces the flagged -23.2% worst / -18.0% median BY CONSTRUCTION (206.61 + 62.40 investment income = 269.01 ~ Screener's 269). A concept difference, not our data being wrong.",
+   "source": "batch_a_verdicts.json"
+  },
+  "MTNL": {
+   "verdict": "OURS_CONFIRMED / AMBIGUOUS_CONCEPT",
+   "quarters_read": [
+    "2025-06-30",
+    "2025-03-31",
+    "2025-09-30 (control)"
+   ],
+   "why_flagged": "RESTATED-vs-AS-FILED timing. MTNL reclassifies large amounts between 'Revenue from operations' and 'Other Income' from one filing to the next WITHOUT changing PAT \u2014 the Sep-2025 filing restates Jun-2025 from 51.66 to 145.12 and Sep-2024 from 158.80 to 251.22, identical PAT either side. Screener tracks the latest restatement; we correctly store as-filed (trap T-E).",
+   "source": "batch_a_verdicts.json"
+  },
+  "MMTC": {
+   "verdict": "OURS_CONFIRMED",
+   "quarters_read": [
+    "2023-12-31",
+    "2024-03-31",
+    "2026-03-31"
+   ],
+   "why_flagged": "row confirmed correct on three filings spanning the whole flagged range, zero restatement. The source of the cited -31.5%/-39.0% could NOT be identified \u2014 Screener's own MMTC figures round to whole crores (too coarse) and Total Income is a ~99% gap (too large). Recorded as UNRESOLVED-source rather than guessed; the ROW is not in doubt.",
+   "source": "batch_a_verdicts.json"
   }
  }
 }

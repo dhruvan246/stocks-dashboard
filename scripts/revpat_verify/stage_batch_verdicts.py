@@ -40,7 +40,9 @@ def rows_of(doc):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--verdicts", action="append", required=True)
+    ap.add_argument("--verdicts", action="append", required=True,
+                    help="verdict file; append ':SYM' for single-company packets whose records "
+                         "omit a symbol field (e.g. aadharhfc_verdicts.json:AADHARHFC)")
     ap.add_argument("--out", required=True)
     ap.add_argument("--authorised", default="")
     ap.add_argument("--merge", action="store_true",
@@ -50,10 +52,14 @@ def main():
     revop = json.load(open(os.path.join(TREE, "docs/sf_revop.json"), encoding="utf-8"))
 
     recs = []
-    for p in a.verdicts:
+    for spec in a.verdicts:
+        p, _, dsym = spec.partition(":") if not os.path.exists(spec) else (spec, "", "")
         if not os.path.exists(p):
             print("  ! missing verdict file: %s" % p); continue
-        recs += rows_of(json.load(open(p, encoding="utf-8")))
+        for r in rows_of(json.load(open(p, encoding="utf-8"))):
+            if dsym and not (r.get("symbol") or r.get("sym")):
+                r["symbol"] = dsym          # single-company packet: records carry no symbol
+            recs.append(r)
 
     # control gate — which symbols proved their method on a known-good quarter?
     confirmed = {str(r.get("symbol") or r.get("sym", "")).upper()
@@ -69,6 +75,8 @@ def main():
         filed = r.get("recommended_value")
         if filed is None:
             filed = r.get("filed_total_revenue_from_operations") or r.get("filed_value")
+        if r.get("ours_now") is None and r.get("ours_revS") is not None:
+            r["ours_now"] = r["ours_revS"]
         fld = "revC" if "con" in str(r.get("field", "")).lower() else "revS"
         idx = 1 if fld == "revC" else 0
 

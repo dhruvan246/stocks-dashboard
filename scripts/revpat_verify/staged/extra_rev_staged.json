@@ -1,57 +1,26 @@
 {
  "_meta": {
   "STATUS": "STAGED \u2014 no builder reads this file",
-  "authorised": "user 2026-08-09: fix revC too. Filing-documentary \u2014 the SAME PDF carries a full 'Statement of Consolidated Financial Results' whose Total Revenue from operations is digit-for-digit identical to standalone in every printed column; and for 2025-06-30 the filing's Note 12 states the company has no subsidiaries/associates/JVs, so no consolidated statement exists and any stored revC is a fabrication -> NULL.",
-  "note": "a `value` of null is a DELETION: the basis was never filed and the slot must be cleared"
+  "authorised": "user 2026-08-09: fix the ones that come back wrong. Filing-anchored: components sum to the printed total 61,400 lakh; 9M YTD identity closes exactly; controls 2024-06-30 and 2025-09-30 both OURS_CONFIRMED",
+  "control_gate": "a symbol stages only if one of its quarters came back OURS_CONFIRMED",
+  "symbols_with_control": [
+   "AADHARHFC",
+   "BSE",
+   "MMTC",
+   "MTNL"
+  ]
  },
  "cells": {
-  "HDBFS|20240630|revC": {
-   "was": 3264.6,
-   "value": 3883.8,
-   "src": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/48e68fad-46ba-4f2f-9d50-f1b14ad634b2.pdf",
-   "why": "consolidated statement EXISTS and its Total Revenue == standalone, digit-for-digit",
+  "AADHARHFC|20230930|revS": {
+   "was": 560.59,
+   "value": 614.0,
+   "src": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/d307a09a-5579-477f-8be5-49e2c23e3f59.pdf",
+   "unit_declared": "Rs in Lakh (header) -> /100 for crore",
+   "why": "a) Interest income \u2014 a COMPONENT row, not the total (same defect class as AADHARHFC 2023-06-30/2023-12-31 and HDBFS, all proven in scripts/revpat_verify/staged/)",
+   "column_anchor": "PAT: filed Sep-23 column 'Profit after tax' = 19,728 lakh = 197.28cr vs stored fund npStd/npCon 197.0/197.0 (0.14%, within normal rounding tolerance for this pre-IPO Screener-sourced series). Comparative lock: same filing's Dec-23 own-quarter column (57,926 / Interest income) matches stored 2023-12-31 revS 579.26 exactly, and its Profit after tax 20,344 lakh=203.44cr vs stored 203.0 -- consistent same-scale, same-row match across BOTH quarters in one document.",
+   "second_check": "Component sum 56,059+2,451+333+2,557 = 61,400 lakh = printed 'Total revenue from operations' exactly. 9M YTD identity: Jun-23(57,801)+Sep-23(61,400)+Dec-23(65,854) = 1,85,055 = filed 9-month column exactly.",
    "confidence": "HIGH",
-   "quorum": "user 2026-08-09: fix revC too. Filing-documentary \u2014 the SAME PDF carries a full 'Statement of Consolidated Financial Results' whose Total Revenue from operations is digit-for-digit identical to standalone in every printed column; and for 2025-06-30 the filing's Note 12 states the company has no subsidiaries/associates/JVs, so no consolidated statement exists and any stored revC is a fabrication -> NULL."
-  },
-  "HDBFS|20241231|revC": {
-   "was": 3516.9,
-   "value": 4143.6,
-   "src": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/1f276a6c-c343-4a5c-86af-5018d78ff70b.pdf",
-   "why": "consolidated statement EXISTS and its Total Revenue == standalone, digit-for-digit",
-   "confidence": "HIGH",
-   "quorum": "user 2026-08-09: fix revC too. Filing-documentary \u2014 the SAME PDF carries a full 'Statement of Consolidated Financial Results' whose Total Revenue from operations is digit-for-digit identical to standalone in every printed column; and for 2025-06-30 the filing's Note 12 states the company has no subsidiaries/associates/JVs, so no consolidated statement exists and any stored revC is a fabrication -> NULL."
-  },
-  "HDBFS|20250331|revC": {
-   "was": 3623.3,
-   "value": 4266.1,
-   "src": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/5276f6dc-237c-4393-8fa0-875e11252a44.pdf",
-   "why": "consolidated statement EXISTS and its Total Revenue == standalone, digit-for-digit",
-   "confidence": "HIGH",
-   "quorum": "user 2026-08-09: fix revC too. Filing-documentary \u2014 the SAME PDF carries a full 'Statement of Consolidated Financial Results' whose Total Revenue from operations is digit-for-digit identical to standalone in every printed column; and for 2025-06-30 the filing's Note 12 states the company has no subsidiaries/associates/JVs, so no consolidated statement exists and any stored revC is a fabrication -> NULL."
-  },
-  "HDBFS|20250630|revC": {
-   "was": 3831.5,
-   "value": null,
-   "src": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/54d67906-cf08-45aa-9ed6-025f13110532.pdf",
-   "why": "NO consolidated statement filed (Note 12: no subsidiaries/associates/JVs) \u2014 holding any revC is a fabrication",
-   "confidence": "HIGH",
-   "quorum": "user 2026-08-09: fix revC too. Filing-documentary \u2014 the SAME PDF carries a full 'Statement of Consolidated Financial Results' whose Total Revenue from operations is digit-for-digit identical to standalone in every printed column; and for 2025-06-30 the filing's Note 12 states the company has no subsidiaries/associates/JVs, so no consolidated statement exists and any stored revC is a fabrication -> NULL."
-  },
-  "HDBFS|20240930|revS": {
-   "was": 3431.0,
-   "value": 4006.8,
-   "src": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/e2b9f2bf-ef90-4486-87ee-f20aebc3c7d0.pdf",
-   "why": "stored value is the filing's `Interest income` row on BOTH pages; the Total Revenue from operations is 4006.8 and the consolidated page is identical to standalone",
-   "confidence": "HIGH",
-   "quorum": "user 2026-08-09: fix revC too. Filing-documentary \u2014 the SAME PDF carries a full 'Statement of Consolidated Financial Results' whose Total Revenue from operations is digit-for-digit identical to standalone in every printed column; and for 2025-06-30 the filing's Note 12 states the company has no subsidiaries/associates/JVs, so no consolidated statement exists and any stored revC is a fabrication -> NULL."
-  },
-  "HDBFS|20240930|revC": {
-   "was": 3431.0,
-   "value": 4006.8,
-   "src": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/e2b9f2bf-ef90-4486-87ee-f20aebc3c7d0.pdf",
-   "why": "stored value is the filing's `Interest income` row on BOTH pages; the Total Revenue from operations is 4006.8 and the consolidated page is identical to standalone",
-   "confidence": "HIGH",
-   "quorum": "user 2026-08-09: fix revC too. Filing-documentary \u2014 the SAME PDF carries a full 'Statement of Consolidated Financial Results' whose Total Revenue from operations is digit-for-digit identical to standalone in every printed column; and for 2025-06-30 the filing's Note 12 states the company has no subsidiaries/associates/JVs, so no consolidated statement exists and any stored revC is a fabrication -> NULL."
+   "quorum": "user 2026-08-09: fix the ones that come back wrong. Filing-anchored: components sum to the printed total 61,400 lakh; 9M YTD identity closes exactly; controls 2024-06-30 and 2025-09-30 both OURS_CONFIRMED"
   }
  }
 }
