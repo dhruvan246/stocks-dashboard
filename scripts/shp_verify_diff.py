@@ -65,14 +65,33 @@ def map_for(card, qe):
     return card["map"]
 
 
+def num(v):
+    """Sites print '22.58%', '46,51,863' (Indian grouping), '-', '' and bare floats. Return float or None.
+
+    A dash/blank is NOT zero — it means the site did not publish that row, and zero-defaulting is
+    precisely the failure mode that poisons FII/DII (runbook §22b)."""
+    if v is None:
+        return None
+    if isinstance(v, (int, float)):
+        return float(v)
+    s = str(v).strip().replace("%", "").replace(",", "").replace("−", "-")
+    if s in ("", "-", "--", "NA", "N/A", "na", "nil"):
+        return None
+    try:
+        return float(s)
+    except ValueError:
+        return None
+
+
 def site_value(row_labels, labels):
     """Sum the printed labels. Returns (value, missing_labels). Never zero-defaults."""
     total, missing = 0.0, []
     for lab in labels:
-        if lab in row_labels and row_labels[lab] is not None:
-            total += float(row_labels[lab])
-        else:
+        v = num(row_labels.get(lab))
+        if v is None:
             missing.append(lab)
+        else:
+            total += v
     if len(missing) == len(labels):
         return None, missing
     return total, missing
