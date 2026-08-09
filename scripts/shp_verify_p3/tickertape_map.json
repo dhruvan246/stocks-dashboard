@@ -1,0 +1,259 @@
+{
+ "site": "tickertape",
+ "precision": 2,
+ "map": {
+  "prom": [
+   "pmPctT"
+  ],
+  "fii": [
+   "fiPctT"
+  ],
+  "dii": [
+   "isPctT",
+   "mfPctT",
+   "othExInsDiPctT"
+  ],
+  "mf": [
+   "mfPctT"
+  ],
+  "ins": [
+   "isPctT"
+  ]
+ },
+ "_derived": {
+  "prom": {
+   "labels": [
+    "pmPctT"
+   ],
+   "median_abs_delta": 0.003,
+   "hold_pct": 97.5,
+   "median_bias": 0.0,
+   "rows": 353,
+   "runners_up": [
+    {
+     "labels": [
+      "plPctT",
+      "uPlPctT"
+     ],
+     "median_abs_delta": 0.003,
+     "hold_pct": 97.5
+    },
+    {
+     "labels": [
+      "uPlPctT"
+     ],
+     "median_abs_delta": 0.0032,
+     "hold_pct": 84.4
+    },
+    {
+     "labels": [
+      "plPctT",
+      "pmPctT"
+     ],
+     "median_abs_delta": 0.0032,
+     "hold_pct": 84.4
+    }
+   ]
+  },
+  "fii": {
+   "labels": [
+    "fiPctT"
+   ],
+   "median_abs_delta": 0.0027,
+   "hold_pct": 96.3,
+   "median_bias": -0.0004,
+   "rows": 353,
+   "runners_up": [
+    {
+     "labels": [
+      "fiPctT",
+      "plPctT"
+     ],
+     "median_abs_delta": 0.0031,
+     "hold_pct": 83.3
+    },
+    {
+     "labels": [
+      "fiPctT",
+      "pmPctP"
+     ],
+     "median_abs_delta": 0.0031,
+     "hold_pct": 82.4
+    },
+    {
+     "labels": [
+      "fiPctT",
+      "plPctT",
+      "pmPctP"
+     ],
+     "median_abs_delta": 0.0031,
+     "hold_pct": 82.4
+    }
+   ]
+  },
+  "dii": {
+   "labels": [
+    "isPctT",
+    "mfPctT",
+    "othExInsDiPctT"
+   ],
+   "median_abs_delta": 0.0025,
+   "hold_pct": 96.3,
+   "median_bias": 0.0,
+   "rows": 353,
+   "runners_up": [
+    {
+     "labels": [
+      "diPctT"
+     ],
+     "median_abs_delta": 0.0025,
+     "hold_pct": 96.3
+    },
+    {
+     "labels": [
+      "mfPctT",
+      "othDiPctT"
+     ],
+     "median_abs_delta": 0.0025,
+     "hold_pct": 96.3
+    },
+    {
+     "labels": [
+      "diPctT",
+      "pmPctP"
+     ],
+     "median_abs_delta": 0.0027,
+     "hold_pct": 82.4
+    }
+   ]
+  },
+  "mf": {
+   "labels": [
+    "mfPctT"
+   ],
+   "median_abs_delta": 0.0023,
+   "hold_pct": 97.2,
+   "median_bias": 0.0,
+   "rows": 353,
+   "runners_up": [
+    {
+     "labels": [
+      "mfPctT",
+      "plPctT"
+     ],
+     "median_abs_delta": 0.0029,
+     "hold_pct": 83.9
+    },
+    {
+     "labels": [
+      "mfPctT",
+      "pmPctP"
+     ],
+     "median_abs_delta": 0.003,
+     "hold_pct": 82.7
+    },
+    {
+     "labels": [
+      "mfPctT",
+      "plPctT",
+      "pmPctP"
+     ],
+     "median_abs_delta": 0.003,
+     "hold_pct": 82.7
+    }
+   ]
+  },
+  "ins": {
+   "labels": [
+    "isPctT"
+   ],
+   "median_abs_delta": 0.0022,
+   "hold_pct": 97.2,
+   "median_bias": 0.0,
+   "rows": 353,
+   "runners_up": [
+    {
+     "labels": [
+      "isPctT",
+      "plPctT"
+     ],
+     "median_abs_delta": 0.0028,
+     "hold_pct": 83.9
+    },
+    {
+     "labels": [
+      "isPctT",
+      "pmPctP"
+     ],
+     "median_abs_delta": 0.0028,
+     "hold_pct": 82.7
+    },
+    {
+     "labels": [
+      "isPctT",
+      "plPctT",
+      "pmPctP"
+     ],
+     "median_abs_delta": 0.0028,
+     "hold_pct": 82.7
+    }
+   ]
+  },
+  "nsh": {
+   "labels": [
+    "pmPctP",
+    "pmPctT",
+    "uPlPctT"
+   ],
+   "median_abs_delta": 189626.8763,
+   "hold_pct": 0.0,
+   "median_bias": -189626.8763,
+   "rows": 312,
+   "runners_up": [
+    {
+     "labels": [
+      "pmPctP",
+      "pmPctT",
+      "rOthPctT"
+     ],
+     "median_abs_delta": 189632.6679,
+     "hold_pct": 0.0
+    },
+    {
+     "labels": [
+      "pmPctP",
+      "rOthPctT",
+      "uPlPctT"
+     ],
+     "median_abs_delta": 189632.6679,
+     "hold_pct": 0.0
+    },
+    {
+     "labels": [
+      "othPctT",
+      "pmPctP",
+      "pmPctT"
+     ],
+     "median_abs_delta": 189636.3812,
+     "hold_pct": 0.0
+    }
+   ],
+   "eras": {
+    "post_2022_09": {
+     "labels": [
+      "othPctT",
+      "pmPctP",
+      "rOthPctT"
+     ],
+     "median_abs_delta": 189007.8274,
+     "hold_pct": 0.0,
+     "median_bias": -189007.8274,
+     "rows": 311
+    }
+   }
+  }
+ },
+ "_pin": "93de247c",
+ "_comparable_rows": 353,
+ "_warnings": []
+}
