@@ -1,0 +1,108 @@
+{
+  "company": "HUDCO (Housing & Urban Development Corporation Ltd.)",
+  "bse_scrip_code": "540530",
+  "generated": "2026-08-09",
+  "mandate": "Determine whether HUDCO's stored consolidated quarterly revenue/PAT is a genuine independently-filed figure or a copy of standalone. No repo writes, no heals.",
+  "sf_revop_slot_layout_confirmed_from": "scripts/build_revop.py line 411: sym -> qe -> [revStd,revCon,opStd,opCon,patStd,patCon,fin,ebitStd,ebitCon] (Rs crore)",
+  "sf_fundamentals_row_layout_confirmed_from": "scripts/fetch_insurers.py conval/stdval helpers: [qe, npStd, annStd(=announce date std), npCon, annCon(=announce date con)]",
+  "quarters": [
+    {
+      "quarter": "2026-03-31",
+      "consolidated_statement_present": true,
+      "filed_std_revenue": 3562.86,
+      "filed_con_revenue": 3562.86,
+      "filed_std_pat": 1981.31,
+      "filed_con_pat": 1981.31,
+      "ours_revS": 3562.86,
+      "ours_revC": 3562.86,
+      "ours_patS": 1981.31,
+      "ours_patC": 1981.31,
+      "verdict": "GENUINELY_IDENTICAL",
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/4d28da54-96e0-413f-95f7-667c4631dec8.pdf",
+      "source_filing": "BSE announcement, filed 2026-05-14T16:00:12, SUBCATNAME='Financial Results', NEWSSUB='Audited Financial Results For The Quarter And Year Ended On 31.03.2026.' (38-page combined std+con pack; std P&L on PDF page 9 (0-idx 8), con P&L on PDF page 34 (0-idx 33))",
+      "unit_declared": "Rs in crore (header prints '(₹ in crore)', both statements)",
+      "row_labels_used": "'Total revenue fom [sic] Operations' (= Interest Income + Dividend Income + Rental Income + Fees and Commission Income + Net Gain on Fair Value Changes + Sale of Services); PAT row 'Profit /(loss) for the Period / Year (V-VI)'",
+      "column_anchor_evidence": "Quarter-Ended column 31/03/26 is the target. Its two comparative columns reproduce OUR stored neighbour quarters exactly on BOTH statements: 31/12/25 rev 3431.20 / PAT 713.00 == stored sf_revop[20251231]; 31/03/25 rev 2844.99 / PAT 727.74 == stored sf_revop[20250331]. Two independent neighbour locks, both bases.",
+      "second_check": "PBT 621.01 minus Total Tax Expense (a NET CREDIT of -1360.30) = 621.01 - (-1360.30) = 1981.31, matches printed PAT on both statements. Consolidated statement additionally carries an explicit 'Share in profit/(Loss) of Associate = 0.00' line between PBT-before-associate and PBT, i.e. the identity is not a blank copy-paste — a distinct consolidation line exists and was computed as exactly zero at crore precision.",
+      "routes_tried": [
+        "rung3 BSE announcement PDF -- SUCCESS, both statements present, self-explaining",
+        "rung1 BSE detres (Corp_detailedResult_Transpose_ng, scrip_cd=540530, qtr=129.00) -- returned empty table (no Fld rows) for this scrip at every QID tested (105.00/114.00/127.00/129.00, spanning Mar-2020..Mar-2026); route appears to carry no coverage at all for this scrip -- NOT evidence about the underlying value, just this route's own gap",
+        "rung4/1(NSE) not attempted -- known 403 lockdown per runbook/session context, PDF route already sufficient and doubly anchored"
+      ],
+      "confidence": "HIGH",
+      "notes": "Filing's own Note 2 (identical wording on both the std-side and con-side notes pages) states explicitly: 'The Consolidated Financial Results comprises of the Financial results of the company and an Associate company M/s Shristi Urban Infrastructure Development Ltd. (SUIDL). Investments in associate company is accounted as per equity method of accounting as per Ind AS-28... The figures of Standalone and Consolidated Financial Results remain same as the loss of Associate consolidated is negligible and is rounded off as \"0\" on conversion to crores.' This is a DIRECT company disclosure, not an inference -- matches the runbook's own definition of a legitimate identity (equity-method associate, no consolidating subsidiary)."
+    },
+    {
+      "quarter": "2025-09-30",
+      "consolidated_statement_present": true,
+      "filed_std_revenue": 3219.03,
+      "filed_con_revenue": 3219.03,
+      "filed_std_pat": 709.83,
+      "filed_con_pat": 709.83,
+      "ours_revS": 3219.03,
+      "ours_revC": 3219.03,
+      "ours_patS": 709.83,
+      "ours_patC": 709.83,
+      "verdict": "GENUINELY_IDENTICAL",
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/a688454a-bac5-47cc-94c5-f3a125320477.pdf",
+      "source_filing": "BSE announcement, filed 2025-11-10T17:25:44, SUBCATNAME='Financial Results', NEWSSUB='Results For Quarter & Half Year Ended 30Th September, 2025' (28-page combined std+con pack; std P&L on PDF page 4 (0-idx 3), con P&L on PDF page 25 (0-idx 24))",
+      "unit_declared": "Rs in crore",
+      "row_labels_used": "'Total Revenue from Operations'; PAT row 'Profit /(loss) for the Period / Year (V-VI)'",
+      "column_anchor_evidence": "Quarter-Ended column 30/09/25 is the target. Comparative columns reproduce stored neighbours exactly on BOTH statements: 30/06/25 rev 2937.31 / PAT 630.23 == stored sf_revop[20250630]; 30/09/24 rev 2517.72 / PAT 688.62 == stored sf_revop[20240930]. Two independent neighbour locks, both bases.",
+      "second_check": "PBT 954.71 - Total Tax Expense 244.88 = 709.83, matches printed PAT both statements. Also H1 (Half Year Ended 30/09/25) column = 6156.34 rev / 1340.06 PAT reconciles exactly to Q1(2937.31)+Q2(3219.03)=6156.34 and Q1(630.23)+Q2(709.83)=1340.06 -- internal FY quarter-sum identity holds (both bases identical, so this check passes on con too).",
+      "routes_tried": [
+        "rung3 BSE announcement PDF -- SUCCESS",
+        "rung1 BSE detres -- not re-tried for this quarter (already established zero coverage for this scrip in the 2026-03-31 probe across a 6-year QID span); would only re-confirm the same route gap",
+        "NSE XBRL -- not attempted, known 403 lockdown, PDF route already sufficient"
+      ],
+      "confidence": "HIGH",
+      "notes": "Same explicit Note 2 language repeated verbatim (associate SUIDL, equity method, loss rounds to '0' at crore precision) on both the standalone-side and consolidated-side notes pages of this filing."
+    },
+    {
+      "quarter": "2022-06-30",
+      "consolidated_statement_present": true,
+      "filed_std_revenue": 1749.27,
+      "filed_con_revenue": 1749.27,
+      "filed_std_pat": 411.76,
+      "filed_con_pat": 411.71,
+      "ours_revS": 1736.42,
+      "ours_revC": 1749.27,
+      "ours_patS": null,
+      "ours_patC": 411.71,
+      "ours_patS_sf_fundamentals": 411.71,
+      "ours_patC_sf_fundamentals": 411.71,
+      "verdict": "NOT_A_COPY -- GENUINE_INDEPENDENT_COMPUTATION (revenue exactly identical; PAT genuinely differs by Rs0.05cr / 0.012%, reconciled exactly to the associate line -- see notes; does not cleanly fit the 4-way enum, see explanation below)",
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/907e248b-9f47-4de9-90ac-65892c1da5de.pdf",
+      "source_filing": "BSE announcement, filed 2022-08-08T15:23:54, SUBCATNAME='Financial Results', NEWSSUB='Submission Of Unaudited Financial Results (Standalone And Consolidated) Of The HUDCO For The Quarter Ended 30Th June, 2022.' -- title itself confirms both bases were filed. (28-page pack; std P&L PDF page 4 (0-idx 3), con P&L PDF page 18 (0-idx 17))",
+      "unit_declared": "Rs in crore",
+      "row_labels_used": "'Total revenue fom [sic] Operations'; PAT row 'Profit /(loss) for the Period / Year (V-VI)'",
+      "column_anchor_evidence": "Quarter-Ended column 30/06/2022 is the target, on BOTH statements. Comparative columns reproduce stored neighbours exactly: 31/03/2022 rev 1726.93 / PAT 746.90(std)/746.85(con) == stored sf_revop[20220331] (1726.93/1726.93, 746.9/746.85); 30/06/2021 rev 1790.31 / PAT 404.62(std)/404.57(con) == stored sf_revop[20210630] (1790.31/1790.31, 404.62/404.57). FY-Ended 31/03/2022 column also anchors: rev 6954.08 both bases == stored FY22 sum context. Anchors hold on both bases independently.",
+      "second_check": "Standalone: PBT 552.78 - Tax 141.02 = 411.76, matches printed std PAT exactly. Consolidated: PBT-before-associate 552.78 (identical to std), 'Share in profit/(Loss) of Associate' = (0.05), PBT-after 552.73, - Tax 141.02 = 411.71, matches printed con PAT exactly. The Rs0.05cr gap between std and con PAT is EXACTLY the printed associate-share line -- fully reconciled, not noise.",
+      "routes_tried": [
+        "rung3 BSE announcement PDF -- SUCCESS, title explicitly says 'Standalone And Consolidated'",
+        "rung1 BSE detres -- returned empty for this scrip at every QID tested",
+        "NSE XBRL -- not attempted, known 403 lockdown"
+      ],
+      "confidence": "HIGH",
+      "notes": "THIS IS THE CONTROL QUARTER and it produced a two-part, informative result, NOT a simple identity: (1) REVENUE: the filed standalone 'Total revenue from Operations' is 1749.27 -- IDENTICAL to consolidated (1749.27), and IDENTICAL to what we already store as revC. Our stored revS (1736.42) does NOT match the filed standalone total at all -- 1736.42 is the filing's 'Interest Income' SUB-LINE (one of six components that sum to Total revenue from Operations), not the Total row. So the revenue 'divergence' we hold for this quarter (1736.42 vs 1749.27) is a PARSING DEFECT in our own std slot (it captured a sub-component instead of the total), not a genuine standalone-vs-consolidated business difference -- the true filed figures are identical on both bases. (2) PAT: the filing shows a real, tiny, fully-reconciled difference -- std 411.76 vs con 411.71 (delta Rs0.05cr = 0.012%), driven by HUDCO's equity-method share of its one associate (SUIDL) posting a small loss that quarter (unlike 2025-26 quarters where the same associate's contribution rounded to exactly zero). Our stored PAT (sf_revop patC=411.71, sf_fundamentals npStd=npCon=411.71, same announce-date 20220808 on both) holds 411.71 for BOTH slots -- i.e. our stored STD PAT is itself a (very small, immaterial) copy of the CON figure, missing the genuine 411.76. CONCLUSION ON THE CONTROL: the method DID detect a real, non-copy, independently-computed difference in the primary document (Rs0.05cr PAT gap, exactly reconciled to the associate line) -- proving the method's sensitivity is not a blind spot. It ALSO surfaced that what our own store treats as 'the known divergent quarter' is mostly a false signal on the revenue side (a std-slot parsing bug, not a genuine con/std split) and an UNDER-signal on the PAT side (we currently show false identity, masking a real but immaterial Rs0.05cr gap). Neither finding supports 'CON_IS_A_COPY' as a defect class -- in both directions (revenue and PAT) the CONSOLIDATED figure is the one that is independently and correctly computed by HUDCO; where our own STORE is wrong, it is because the STANDALONE slot was mis-populated (wrong sub-line for revenue; a copy of con, missing an immaterial associate adjustment, for PAT), which is the mirror image of a 'con is a copy of std' defect and out of this campaign's scope to heal (no repo writes per mandate)."
+    }
+  ],
+  "cross_check": {
+    "screener_fy2026_annual": {
+      "checked": true,
+      "url_consolidated": "https://www.screener.in/company/HUDCO/consolidated/",
+      "url_standalone": "https://www.screener.in/company/HUDCO/",
+      "screener_con_fy2026_revenue_cr": 13150,
+      "screener_std_fy2026_revenue_cr_label_sales": 13294,
+      "screener_con_fy2026_net_profit_cr": 4034,
+      "screener_std_fy2026_net_profit_cr": 4034,
+      "filed_fy2026_annual_revenue_both_bases_from_pdf": 13150.40,
+      "filed_fy2026_annual_pat_both_bases_from_pdf": 4034.37,
+      "finding": "con_filer_evidence.json cites 'E2 screener con annual != std in FY2026' as evidence AGAINST genuine identity. Live-checked: Screener's own CONSOLIDATED annual revenue (13,150cr) matches the actual filed total-revenue-from-operations (13,150.40cr, both bases, verified directly from the BSE PDF above). It is Screener's STANDALONE 'Sales' figure (13,294cr) that does not match the primary filing -- neither the true std total (13,150.40) nor Screener's own con figure. Net Profit is identical on Screener across both bases (4,034cr), matching the filing (4,034.37cr both bases). This strongly suggests the con_filer_evidence.json flag is a SCREENER-SIDE scrape/definition artifact (e.g. a different 'Sales' construction, a stale quarter mixed in, or TTM vs FY mismatch) rather than evidence of a genuine business divergence -- the primary document shows no such divergence for FY2026."
+    }
+  },
+  "open_items_out_of_scope": [
+    "2018-12-31 is the OTHER quarter our own store marks as rev-divergent (revS=1310.53 vs revC=1284.2, per sf_revop). Not one of the 3 mandated quarters and NOT verified here. Given the 2022-06-30 finding (our std revenue slot mis-captured a sub-line instead of the Total row), it is plausible 2018-12-31 carries a similar parsing artifact rather than a genuine business difference, but this is a hypothesis, not a finding -- it needs its own primary-document read before any conclusion or heal.",
+    "sf_revop.json HUDCO[20220630][0] (revS=1736.42) and sf_fundamentals.json HUDCO row for 20220630 (npStd=411.71) both appear to be defects per the primary filing (true values 1749.27 and 411.76 respectively) -- reported here for the record only; NO WRITE was made per this task's no-heals constraint."
+  ]
+}
