@@ -84,6 +84,9 @@ def main():
     hdb_p = os.path.join(STAGED, "rev_defects_staged_HDBFS.json")
     hdb = json.load(open(hdb_p, encoding="utf-8"))["HDBFS"] if os.path.exists(hdb_p) else {}
     con = json.load(open(os.path.join(STAGED, "con_copy_reads_staged.json"), encoding="utf-8"))["cells"]
+    # optional third packet: further revS/revC corrections, and NULLs where a basis is not filed
+    x_p = os.path.join(STAGED, "extra_rev_staged.json")
+    extra = json.load(open(x_p, encoding="utf-8")).get("cells", {}) if os.path.exists(x_p) else {}
 
     plan, problems, skipped = [], [], []
 
@@ -114,11 +117,20 @@ def main():
                 [("AADHARHFC", q, 0, e["bad_rev"], e["correct_rev"], "revS") for q, e in rev.items()] +
                 [("HDBFS", q, 0, e["bad_rev"], e["correct_rev"], "revS") for q, e in hdb.items()] +
                 [(k.split("|")[0], k.split("|")[1], 1, v["was"], v["value"], "revC")
-                 for k, v in con.items()]):
+                 for k, v in con.items()] +
+                [(k.split("|")[0], k.split("|")[1], 0 if k.split("|")[2] == "revS" else 1,
+                  v["was"], v["value"], k.split("|")[2]) for k, v in extra.items()]):
             row = (d.get(sym) or {}).get(q)
             if not row:
                 problems.append("%s %s %s: no row" % (rel, sym, q)); continue
             cur = row[idx] if len(row) > idx else None
+            if want is None:                      # NULL: removing a value that was never filed
+                if cur is None:
+                    skipped.append("%s %s %s %s already null" % (rel, sym, q, lbl)); continue
+                if abs(cur - guard) > TOL:
+                    problems.append("%s %s %s %s: GUARD FAILED for NULL (now %s, expected %s)"
+                                    % (rel, sym, q, lbl, cur, guard)); continue
+                plan.append((rel, sym, q, lbl, cur, None)); continue
             if cur is not None and abs(cur - want) <= TOL:
                 skipped.append("%s %s %s %s already corrected" % (rel, sym, q, lbl)); continue
             if cur is None or abs(cur - guard) > TOL:
@@ -128,7 +140,8 @@ def main():
 
     print("PLANNED WRITES: %d" % len(plan))
     for rel, sym, q, fld, a_, b_ in plan:
-        print("   %-32s %-10s %s %-5s %12s -> %s" % (os.path.basename(rel), sym, q, fld, a_, b_))
+        print("   %-32s %-10s %s %-5s %12s -> %s" % (os.path.basename(rel), sym, q, fld, a_,
+                                                      "NULL (basis not filed)" if b_ is None else b_))
     if skipped:
         print("\nALREADY CORRECT (idempotent skip): %d" % len(skipped))
         for s in skipped[:8]:
