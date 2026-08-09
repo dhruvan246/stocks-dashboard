@@ -372,37 +372,98 @@ def cmd_sample(n):
               flush=True)
         if not cached: time.sleep(1.3)
 
-def cmd_harvest():
+def cmd_harvest(workers=5):
+    """Paced parallel fetch. The 2026-08-03 run went single-threaded at 1.25s and took ~6h for
+    12,691 fetches, then recorded its own verdict: zero 429s across ~20k requests, so the caution
+    was wasted. Default is 5 connections now, each still pacing, with the same exponential 429
+    backoff in wb_fetch — on pushback the whole pool slows because every worker sleeps. Resumable
+    exactly as before: _done is keyed by ts|url and checkpointed under a lock."""
     frontier = json.load(open(FRONTIER_FILE))
     scrips = json.load(open(os.path.join(HERE, "bse_scrips.json"), encoding="utf-8"))["by_id"]
     parsed = json.load(open(PARSED_FILE)) if os.path.exists(PARSED_FILE) else {}
     done_urls = set(parsed.get("_done", []))
     cells = parsed.get("cells", {})
-    n_new = 0
-    for i, f in enumerate(frontier):
+    todo = [f for f in frontier if (f["ts"] + "|" + f["url"]) not in done_urls]
+    print("harvest: %d queued, %d already done, %d workers" % (len(todo), len(done_urls), workers), flush=True)
+
+    import threading
+    from concurrent.futures import ThreadPoolExecutor
+    lock = threading.Lock()
+    state = {"n": 0, "new": 0, "fail": 0}
+
+    def one(f):
         uk = f["ts"] + "|" + f["url"]
-        if uk in done_urls: continue
         try:
             html, cached = wb_fetch(f["ts"], f["url"])
         except Exception as e:
-            print("  FETCH FAIL %s: %r" % (f["url"][:90], e), flush=True)
-            continue
+            with lock:
+                state["fail"] += 1
+                if state["fail"] <= 15: print("  FETCH FAIL %s: %r" % (f["url"][:90], e), flush=True)
+            return
         res = parse_mc_page(html, expect_code=scrips.get(f["sym"]), expect_syms=(f["sym"],), slug=f["slug"]) if html else None
-        if res:
-            q = res["qtrid"]
-            if 29 <= q <= 89:   # pre-Jun-2016 only; 2016+ comes from the XBRL ledger
-                key = "%s|%d" % (f["sym"], q)
+        with lock:
+            if res and 29 <= res["qtrid"] <= 89:
+                key = "%s|%d" % (f["sym"], res["qtrid"])
                 if key not in cells:
                     cells[key] = {"cols": res["cols"], "src": "wb:%s:%s" % (f["ts"], f["slug"])}
-                    n_new += 1
-        done_urls.add(uk)
+                    state["new"] += 1
+            done_urls.add(uk)
+            state["n"] += 1
+            if state["n"] % 100 == 0:
+                json.dump({"_done": sorted(done_urls), "cells": cells}, open(PARSED_FILE, "w"))
+                print("  ...%d/%d fetched, %d cells, %d fails" % (state["n"], len(todo), len(cells), state["fail"]), flush=True)
         if not cached: time.sleep(1.25)
-        if (i + 1) % 100 == 0:
-            parsed = {"_done": sorted(done_urls), "cells": cells}
-            json.dump(parsed, open(PARSED_FILE, "w"))
-            print("  ...%d/%d fetched, %d cells" % (i + 1, len(frontier), len(cells)), flush=True)
+
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        list(ex.map(one, todo))
     json.dump({"_done": sorted(done_urls), "cells": cells}, open(PARSED_FILE, "w"))
-    print("HARVEST DONE: %d cells across %d fetches" % (len(cells), len(done_urls)), flush=True)
+    print("HARVEST DONE: %d cells across %d fetches (%d new, %d fails)"
+          % (len(cells), len(done_urls), state["new"], state["fail"]), flush=True)
+
+def cmd_nshpass():
+    """Second pass over the CACHED pages only — no refetch — pulling the total shareholder count.
+
+    The MC Clause-35 table's first numeric column is the holder count per row, and the
+    "Total (A)+(B)+(C)" row carries the whole-company figure (SUNDARMFIN Sep-2016 = 22,227).
+    parse_mc_page never captured it, which is why ~4,118 MC-sourced cells have correct percentages
+    and no nsh. Emits a COUNT-ONLY side-ledger so it can be merged into slot 6 without touching a
+    single percentage."""
+    frontier = json.load(open(FRONTIER_FILE))
+    scrips = json.load(open(os.path.join(HERE, "bse_scrips.json"), encoding="utf-8"))["by_id"]
+    out, seen, miss = {}, 0, 0
+    for f in frontier:
+        key = re.sub(r"[^A-Za-z0-9]+", "_", f["url"][-90:]) + "_" + f["ts"]
+        cf = os.path.join(PAGES, key + ".html.gz")
+        if not os.path.exists(cf): continue
+        try:
+            with gzip.open(cf, "rt", encoding="utf-8") as fh: page = fh.read()
+        except Exception: continue
+        seen += 1
+        res = parse_mc_page(page, expect_code=scrips.get(f["sym"]), expect_syms=(f["sym"],), slug=f["slug"])
+        if not res or not (29 <= res["qtrid"] <= 89): continue
+        import html as _h
+        cells = [re.sub(r"[\s\xa0]+", " ", _h.unescape(c)).strip()
+                 for c in re.sub(r"<[^>]+>", "\x01", page).split("\x01")]
+        cells = [c for c in cells if c]
+        n = None
+        for i, c in enumerate(cells):
+            if re.fullmatch(r"Total \(A\)\+\(B\)\+\(C\)", c):
+                for c2 in cells[i + 1:i + 4]:
+                    v = c2.replace(",", "").strip()
+                    if re.fullmatch(r"\d+", v) and int(v) > 0: n = int(v); break
+                break
+        if n is None: miss += 1; continue
+        qe = qe_of_qtrid(res["qtrid"]).isoformat()
+        out.setdefault(f["sym"], {})[qe] = n
+    path = os.path.join(HERE, "shp_fill_nsh_pre2016.json.gz")
+    total = sum(len(v) for v in out.values())
+    with gzip.open(path, "wt", encoding="utf-8") as fh:
+        json.dump({"_meta": {"source": "wayback moneycontrol Clause-35, Total (A)+(B)+(C) holder column",
+                             "note": "COUNT ONLY — merge into slot 6, never touches percentages",
+                             "pages_read": seen, "companies": len(out), "cells": total}, "counts": out}, fh)
+    print("NSH PASS: %d cached pages read, %d counts across %d companies, %d pages had no total row -> %s"
+          % (seen, total, len(out), miss, path), flush=True)
+
 
 # ---------------------------------------------------------------- ledger (+ seam calibration)
 def cmd_ledger():
@@ -573,6 +634,7 @@ if __name__ == "__main__":
     elif cmd == "map": cmd_map()
     elif cmd == "frontier": cmd_frontier()
     elif cmd == "sample": cmd_sample(int(sys.argv[2]) if len(sys.argv) > 2 else 6)
-    elif cmd == "harvest": cmd_harvest()
+    elif cmd == "harvest": cmd_harvest(int(sys.argv[2]) if len(sys.argv) > 2 else 5)
+    elif cmd == "nshpass": cmd_nshpass()
     elif cmd == "ledger": cmd_ledger()
     else: print(__doc__)
