@@ -76,9 +76,13 @@ def main():
     # 2022-12-31 satisfies it permanently, because its correct owners-basis con genuinely equals
     # its standalone while screener quotes total PAT. Without this, the next sweep re-"heals" it
     # straight back to the wrong number. Surface them separately, never in the actionable list.
+    # `reverted` = a heal undone; `readjudicated` = re-read from the primary record and settled.
+    # Both mean a document has already answered this cell, so neither may re-enter the actionable
+    # list. ACUTAAS 2023-06 is why the second key is needed: its con genuinely EQUALS its
+    # standalone (Tanfac was not consolidated yet), so this test fires on it forever.
     try:
         known = {k: v for k, v in json.load(open(os.path.join(HERE, "con_copy_heals.json"))).items()
-                 if v.get("reverted")}
+                 if v.get("reverted") or v.get("readjudicated")}
     except Exception:
         known = {}
 
