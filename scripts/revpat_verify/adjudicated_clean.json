@@ -77,6 +77,22 @@
    ],
    "why_flagged": "row confirmed correct on three filings spanning the whole flagged range, zero restatement. The source of the cited -31.5%/-39.0% could NOT be identified \u2014 Screener's own MMTC figures round to whole crores (too coarse) and Total Income is a ~99% gap (too large). Recorded as UNRESOLVED-source rather than guessed; the ROW is not in doubt.",
    "source": "batch_a_verdicts.json"
+  },
+  "RTNINDIA": {
+   "verdict": "OURS_CONFIRMED",
+   "quarters_read": [
+    "2023-09-30"
+   ],
+   "why_flagged": "RattanIndia Enterprises is a HOLDING company with genuinely tiny standalone revenue (1.06cr). The comparison site's 221.91 reproduces no real row or column of the filing \u2014 the site is simply wrong here.",
+   "source": "batch_c_verdicts.json"
+  },
+  "SATHAISPAT": {
+   "verdict": "AMBIGUOUS_CONCEPT",
+   "quarters_read": [
+    "2022-03-31"
+   ],
+   "why_flagged": "BOTH numbers are right: ours (3.14) is Revenue from operations, the site's 145.23 is TOTAL INCOME, which at this distressed steel company includes a ~142cr one-off Other Income. A concept difference, not a defect.",
+   "source": "batch_c_verdicts.json"
   }
  },
  "cells": {

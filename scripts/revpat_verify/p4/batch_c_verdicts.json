@@ -1,0 +1,137 @@
+{
+  "campaign": "REV/PAT verify — batch_c (5 cells, revenue massively smaller than independent source)",
+  "generated": "2026-08-10",
+  "method": "runbook §57/§58 route ladder + column anchor; no repo writes",
+  "cells": [
+    {
+      "symbol": "RANBAXY",
+      "quarter": "2011-12-31",
+      "field": "revStd (sf_revop[SYM][20111231][0])",
+      "ours_now": 119.59,
+      "filed_value": 3887.72,
+      "independent_source_value": 3896.0,
+      "declared_unit": "₹ million (BSE Corp_detailedResult_Transpose_ng convention, ÷10 → crore)",
+      "ours_matches_which_row_or_scale": "ours (119.59) = the filing's 'Other Income' → 'Interest Earned' sub-line (1195.88 ÷ 10 = 119.588 ≈ 119.59), NOT the 'Net Sales/Revenue From Operations' row (38877.18 ÷ 10 = 3887.72). Both numbers live in the SAME live-re-fetched BSE detres record (scrip 500359, qtr 72.00) that also produced our exact stored PAT — the original harvest grabbed the wrong field.",
+      "diagnosis": "other",
+      "verdict": "OURS_WRONG",
+      "recommended_value": 3887.72,
+      "source_url": "https://api.bseindia.com/BseIndiaAPI/api/Corp_detailedResult_Transpose_ng/w?scrip_cd=500359&qtr=72.00",
+      "column_anchor_evidence": "Live re-fetch of the exact BSE detres record used by the original harvest (scrip 500359 = RANBAXY, qtr 72.00). Response declares 'Date Begin 01-Oct-11 / Date End 31-Dec-11' (target quarter, confirmed) and 'Net Profit' = -27103.21 ÷ 10 = -2710.321, an EXACT match (to the hundredths place) to our stored npStd -2710.32 for this cell — proves company+quarter+record identity beyond doubt. The revenue row in that same record is 'Net Sales/Revenue From Operations' = 38877.18 ÷ 10 = 3887.72, not 119.59.",
+      "second_check": "Component sum: 'Net Sales' 38289.85 + 'Other Operating Income' 587.33 = 38877.18 = the printed revenue total, exact. Profit chain also ties: 'Profit after Interest but before Exceptional Items' 7755.90 + 'Exceptional Item' (-34859.11, a forex-derivative-loss/settlement provision — consistent with Ranbaxy's well-documented Q4CY2011 one-off charge) = -27103.21 = printed PBT, exact. Adjacent quarter (Mar-2012, qtr 73.00) was also re-fetched: 'Net Sales/Revenue From Operations' 19205.22 ÷ 10 = 1920.52 matches our ALREADY-STORED value for that quarter exactly — confirms the wrong-field extraction is isolated to the Dec-2011 cell, not a symbol-wide corruption.",
+      "pat_also_off": false,
+      "routes_tried": [
+        "own-source re-fetch: live BSE detres API, scrip 500359, qtr 72.00 (SUCCESS — this is what originally sourced the cell; re-reading it correctly exposed the defect)",
+        "adjacent-quarter cross-check: live BSE detres, scrip 500359, qtr 73.00 (SUCCESS, confirms isolation of the bug)",
+        "prior campaign ledger (scripts/_filing_adjudication.json, 2026-08-07): verdict NEEDS-SOURCE/NEEDS-CROSSCHECK via BSE announcement PDFs (own-season/Q+1/Q+4 windows) — found filings but no anchorable column; did not re-check the original detres source, which is where the answer was",
+        "NSE archive (§52/§53) — not separately re-attempted live; known 403 lockdown per campaign history, and the detres route already gave a fully anchored, internally-reconciled answer so escalation was unnecessary (§57a: a route returning nothing is not evidence, but a route returning a fully-anchored answer does not require walking the rest of the ladder)"
+      ],
+      "confidence": "high",
+      "notes": "Delisted 2015 (merged into Sun Pharma); BSE detres nonetheless reaches this scrip back to Dec-2011, contradicting §42's '2015+' floor — worth a runbook note. Independent source (3896.0) is 0.21% above the primary-document figure (3887.72); immaterial and does not change the verdict that OURS (119.59) is wrong by 32.6x. Recommend the primary-filed 3887.72 over the independent 3896.0 since it comes straight off the audited-quarter document with an exact PAT anchor."
+    },
+    {
+      "symbol": "CEMPRO",
+      "quarter": "2024-03-31",
+      "field": "revStd (sf_revop[SYM][20240331][0])",
+      "ours_now": 7.72,
+      "filed_value": 2236.79,
+      "independent_source_value": 2237.0,
+      "declared_unit": "₹ in lakhs (filing header: '₹ In lakhs unless specified'), ÷100 → crore",
+      "ours_matches_which_row_or_scale": "ours (7.72) matches no printed row/column at any tested scale; the source PDF has a corruption-damaged text layer (ligature garbling: 'latb)' for '(a+b)', 'OIl' for 'a)', run-together digit groups) consistent with a truncated/mis-parsed digit-extraction artifact from an earlier automated read, not a clean scale slip.",
+      "diagnosis": "other",
+      "verdict": "OURS_WRONG",
+      "recommended_value": 2236.79,
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/a991d529-501d-4058-abb1-9239aa352c27.pdf",
+      "column_anchor_evidence": "ITD Cementation India Ltd (identity confirmed from the filing's own letterhead/CIN L61000MH1978PLC020435) FY2025 audited annual results, filed 13-May-2025, page 5 (standalone P&L). Columns are dated 31.03.2025 / 31.12.2024 / 31.03.2024 / FY25 / FY24, read directly off the printed date row (not assumed). Column 3 (31.03.2024, our target) row 'Profit for the quarter/year (5-6)' = 8,951.52 lakh ÷ 100 = 89.5152 cr, matching our stored npStd 89.52 almost exactly — confirms the column map. A PRIOR adjudication pass (2026-08-07, scripts/_filing_adjudication.json, same doc GUID) mis-anchored on column 2 (31.12.2024) instead: 'Total Income' there is 2,22,217.69 lakh = 2222.18 cr, exactly the 'filing: 2222.18' it logged and left UNRESOLVED. That was an off-by-one column read (the header row wraps awkwardly in the OCR text and lists 'Preceding/Corresponding' out of visual order), not a genuine conflict between sources.",
+      "second_check": "FY identity (§45): FY24 column 'Revenue from operations' = 7,54,211.45 lakh = 7542.11 cr (filing's own audited annual). Our own already-stored Jun-23 (1799.96) + Sep-23 (1583.36) + Dec-23 (1922.00) = 5305.32. 7542.11 − 5305.32 = 2236.79 — an EXACT match to the column-3 read. Two independent derivations of the same quarter (direct column read; FY-total minus the other three known quarters) agree to the paisa.",
+      "pat_also_off": false,
+      "routes_tried": [
+        "reused cached BSE announcement PDF from a prior campaign session (fill2020 worktree pdf cache, doc a991d529) and re-read it directly with printed-date column mapping (avoided the earlier off-by-one)",
+        "re-verified the PDF is still live at BSE's AttachHis endpoint (200 OK)",
+        "FY-identity cross-check against our own stored Jun/Sep/Dec-23 quarters"
+      ],
+      "confidence": "high",
+      "notes": "Independent source (2237.0) matches this reading (2236.79) to within 0.01 cr — essentially exact. Highest-money cell in the batch after RANBAXY; the fix is unambiguous."
+    },
+    {
+      "symbol": "RTNINDIA",
+      "quarter": "2023-09-30",
+      "field": "revStd (sf_revop[SYM][20230930][0])",
+      "ours_now": 1.06,
+      "filed_value": 1.06,
+      "independent_source_value": 221.91,
+      "declared_unit": "Rs. Million (filing header), ÷10 → crore",
+      "ours_matches_which_row_or_scale": "ours (1.06) EXACTLY matches the filed standalone 'Revenue from operations' row for the quarter ended 30.09.2023 (10.56 mn ÷ 10 = 1.056 → 1.06).",
+      "diagnosis": "site-wrong",
+      "verdict": "OURS_CONFIRMED",
+      "recommended_value": 1.06,
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/23923e7b-0f53-4dc3-993e-1bb28f62c8c2.pdf",
+      "column_anchor_evidence": "RattanIndia Enterprises Ltd (formerly RattanIndia Infrastructure Ltd; scrip code 534597 printed on the filing's own cover letter, matching our master) standalone unaudited results for the quarter/half-year ended 30-Sep-2023, page 6. Column '30.09.2022' PAT = 946.41 mn ÷ 10 = 94.64 cr, close to our stored npStd(20220930)=94.66 (rounding-level diff) — confirms column map. The '30.09.2023' column's own PAT = 2,075.60 mn ÷ 10 = 207.56 cr, an EXACT match to our stored npStd(20230930)=207.56 — tight second confirmation of identity.",
+      "second_check": "H1 (Apr-Sep 2023) 'Revenue from operations' = 23.81 mn = Q1(Jun-23, 13.25) + Q2(Sep-23, 10.56) exactly — YTD reconciles to the paisa. REL is the HOLDING company; standalone revenue is genuinely tiny (~₹1 cr/quarter of management/other fees) while its subsidiaries carry the real operating revenue — consolidated for the same quarter is ₹1,618.1 cr (already independently confirmed correct and healed on 2026-08-07 per scripts/filing_verdict_heals.json). The adjacent Dec-2023 quarter shows the identical pattern: standalone revenue 20.33 mn/10 = 2.03 cr matches our stored value exactly, PAT 1,942.41 mn/10 = 194.24 matches exactly, and a prior pass logged screener there too as 228.98 vs the correct 2.03 — same site-wrong shape repeating.",
+      "pat_also_off": false,
+      "routes_tried": [
+        "reused cached BSE filing from a prior campaign session (doc 23923e7b) and independently re-read page 6's standalone statement with printed-date column mapping",
+        "cross-checked the adjacent Dec-2023 quarter's cached filing (doc 6ddfc671) for corroboration — same pattern confirmed",
+        "confirmed the 221.91 figure in the task is the same value already logged as the independent/screener read against this exact cell in scripts/_filing_adjudication.json (2026-08-07 campaign), so this is not a fresh discrepancy"
+      ],
+      "confidence": "high",
+      "notes": "The independent source (screener.in) does not reproduce ANY row/column/scale combination in either basis for this quarter — it is simply wrong here, not measuring a legitimate alternate concept (contrast with SATHAISPAT below). This is the 'site is wrong' outcome the task brief flagged as a valid result. The task's '(2 qtrs)' annotation likely refers to Sep-2023 AND Dec-2023 both showing this pattern; only Sep-2023 was the assigned cell, Dec-2023 was checked as corroboration."
+    },
+    {
+      "symbol": "SATHAISPAT",
+      "quarter": "2022-03-31",
+      "field": "revStd (sf_revop[SYM][20220331][0])",
+      "ours_now": 3.14,
+      "filed_value": 3.145,
+      "independent_source_value": 145.23,
+      "declared_unit": "₹ million (BSE detres convention), ÷10 → crore",
+      "ours_matches_which_row_or_scale": "ours (3.14) matches the filed 'Net Sales/Revenue From Operations' row (31.45 mn ÷ 10 = 3.145) almost exactly. The independent source (145.23) matches the filed 'Total Income' row (1452.28 mn ÷ 10 = 145.228) almost exactly. Both numbers are correct — they are reading different rows of the same statement.",
+      "diagnosis": "ambiguous-concept",
+      "verdict": "AMBIGUOUS_CONCEPT",
+      "recommended_value": 3.14,
+      "source_url": "https://api.bseindia.com/BseIndiaAPI/api/Corp_detailedResult_Transpose_ng/w?scrip_cd=526093&qtr=113.00",
+      "column_anchor_evidence": "Sathavahana Ispat Ltd, BSE scrip 526093 (delisted/absent from our current bse_scrips.json master — identity resolved via external web search, not assumed: goodreturns/5paisa/groww all confirm BSE 526093 / NSE SATHAISPAT). Live-refetched detres record declares 'Date Begin 01-Jan-22 / Date End 31-Mar-22' (target quarter confirmed) and 'Net Profit' = 1165.08 ÷ 10 = 116.508 cr, matching our stored npStd(20220331)=116.51 almost exactly — confirms company/quarter identity.",
+      "second_check": "'Net Sales/Revenue From Operations' (31.45) + 'Other Income' (1420.83) = 1452.28 = the printed 'Total Income' row exactly. That figure (145.228) matches the independent source (145.23) to 0.001% — proving the independent source used Total Income, not Revenue-from-Operations, for this cell. The unusually large Other Income (₹142 cr against ₹3 cr of actual sales) is consistent with a distressed/near-dormant steel company (SATHAISPAT's neighbouring quarters show large operating losses of similar magnitude; this one-off Other Income — plausibly a debt waiver/write-back or asset disposal gain — is why PAT alone is unusually positive this single quarter).",
+      "pat_also_off": false,
+      "routes_tried": [
+        "BSE PeerSmartSearch by company name — 302/error_Bse.html (malformed query on my part), abandoned in favour of external identification",
+        "web search to resolve the scrip code for a company absent from the tracked bse_scrips.json master (found BSE 526093)",
+        "live re-fetch of BSE detres, scrip 526093, qtr 113.00 — SUCCESS, PAT-anchored"
+      ],
+      "confidence": "high",
+      "notes": "The old ledger's 'no BSE scrip' NEEDS-SOURCE verdict for this exact cell was a map gap, not a real wall (§57a rule 1) — resolved by sourcing the code externally. sf_revop's own convention across every other cell in this batch is 'Revenue from operations' specifically (never Total Income), so 3.14 is the right value for THIS field; no correction needed, but the concept mismatch explains 100% of the apparent 46x gap."
+    },
+    {
+      "symbol": "LAHOTIOV",
+      "quarter": "2024-03-31",
+      "field": "revStd (sf_revop[SYM][20240331][0])",
+      "ours_now": 5.18,
+      "filed_value": 101.62,
+      "independent_source_value": 101.62,
+      "declared_unit": "₹ million (BSE detres convention), ÷10 → crore",
+      "ours_matches_which_row_or_scale": "ours (5.18) does not match any printed row/column/scale in the filing at any tested factor (not ÷10, ÷100, ÷1000 of any line item). No provenance/src ledger entry survives for this cell in any local worktree, so the exact mechanism of the original error could not be reverse-engineered — it is a plain wrong value, confirmed wrong via the primary document rather than explained.",
+      "diagnosis": "other",
+      "verdict": "OURS_WRONG",
+      "recommended_value": 101.62,
+      "source_url": "https://api.bseindia.com/BseIndiaAPI/api/Corp_detailedResult_Transpose_ng/w?scrip_cd=531842&qtr=121.00",
+      "column_anchor_evidence": "Lahoti Overseas Ltd, BSE scrip 531842 (confirmed via web search: cotton-yarn/textile merchant exporter with windmill/solar power segment — matches the filing's own expense lines, e.g. 'Purchases of stock-in-trade' -994.90 mn, consistent with a trading company). Live-refetched detres record declares 'Date Begin 01-Jan-24 / Date End 31-Mar-24' (target quarter confirmed) and 'Net Profit' = -9.18 ÷ 10 = -0.918 cr, matching our stored npStd(20240331)=-0.92 essentially exactly — confirms company/quarter identity beyond doubt.",
+      "second_check": "FY24 annual (same scrip, qtr 121.50, Apr-23→Mar-24, audited) 'Net Sales/Revenue From Operations' = 4875.39 ÷ 10 = 487.54 cr. Subtracting our own already-stored Sep-23 (144.84) + Dec-23 (119.52) + the corrected Mar-24 (101.62) = 365.98 leaves an implied Jun-23 quarter of 121.56 cr — a plausible, in-family figure alongside the company's other ~100-150 cr quarters. The FY24 annual PAT (118.52÷10=11.852 cr) similarly implies a sensible Jun-23 PAT of ~2.87 cr against the other three quarters' 6.29+3.61-0.92=8.98 — both reconciliations are internally consistent, corroborating the correction from two directions.",
+      "pat_also_off": false,
+      "routes_tried": [
+        "searched every local worktree's provenance/src ledgers (pre2015 harvest reads/attempted files, revop_fundamentals.json, filing_verdict_heals.json, _filing_adjudication.json) for a trail on this cell — none found; LAHOTIOV's stored data starts only in Sep-2023, so it was not part of the pre-2015/pre-2020 harvest campaigns that leave 'src' trails",
+        "live re-fetch of BSE detres, scrip 531842, qtr 121.00 (target quarter) — SUCCESS",
+        "live re-fetch of BSE detres, scrip 531842, qtr 121.50 (FY24 annual, for the FY-identity second check) — SUCCESS"
+      ],
+      "confidence": "high",
+      "notes": "IMPORTANT distinct-defect warning: LAHOTIOV/Lahoti Overseas has a KNOWN, SEPARATE ×100 lakh-as-crore PAT defect on adjacent cells per runbook §59d/§59e (Mar-2025 PAT stored 404.11, should be 4.04; Jun-2024 PAT stored 453.78 looks like the same class — both still unfixed in the live store as of this check). THIS cell (Mar-2024 revenue) is a DIFFERENT, non-scale defect — 101.62/5.18 = 19.6x is not a clean power of ten, and the filed Mar-2024 PAT itself checks out fine (-0.92, matches). Do not fix this cell by analogy to the neighbouring lakh/crore bug; they are two unrelated defect classes on the same company."
+    }
+  ],
+  "summary": {
+    "OURS_WRONG": ["RANBAXY 2011-12-31", "CEMPRO 2024-03-31", "LAHOTIOV 2024-03-31"],
+    "OURS_CONFIRMED": ["RTNINDIA 2023-09-30"],
+    "AMBIGUOUS_CONCEPT": ["SATHAISPAT 2022-03-31"],
+    "BOTH_WRONG": [],
+    "UNRESOLVED": [],
+    "pat_also_off_count": 0,
+    "key_finding": "PAT was never off in any of the 5 cells — every defect (where one exists) is confined to the revenue row alone, not a whole-cell corruption. None of the ratios turned out to be a genuine SCALE error either; the three real defects are two wrong-field/wrong-column parser mistakes (RANBAXY, CEMPRO) and one unexplained bad value with no scale/partial/identity signature (LAHOTIOV). The other two 'defects' dissolve entirely on inspection: RTNINDIA is a site-side error (screener simply wrong), and SATHAISPAT is a concept mismatch (Total Income vs Revenue-from-Operations), not a data error on either side."
+  }
+}

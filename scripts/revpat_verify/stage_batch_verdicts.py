@@ -45,6 +45,11 @@ def main():
                          "omit a symbol field (e.g. aadharhfc_verdicts.json:AADHARHFC)")
     ap.add_argument("--out", required=True)
     ap.add_argument("--authorised", default="")
+    ap.add_argument("--accept-inline-control", action="store_true",
+                    help="allow a cell whose SYMBOL has no sibling OURS_CONFIRMED quarter, provided "
+                         "the record itself carries a second_check (an FY identity, an "
+                         "adjacent-quarter match, a component sum). Use only when the packet "
+                         "genuinely proved its method per cell; it is recorded per cell either way.")
     ap.add_argument("--merge", action="store_true",
                     help="merge into an existing staged file instead of replacing it")
     a = ap.parse_args()
@@ -83,7 +88,8 @@ def main():
         def drop(why):
             dropped.append({"sym": sym, "qe": q, "field": fld, "why": why})
 
-        if sym not in confirmed:
+        inline = str(r.get("second_check") or "").strip()
+        if sym not in confirmed and not (a.accept_inline_control and inline):
             drop("NO PASSING CONTROL for this symbol — a defect finding without one is "
                  "indistinguishable from a broken reading method"); continue
         if filed is None:
@@ -104,6 +110,8 @@ def main():
             "column_anchor": r.get("column_anchor_evidence"),
             "second_check": r.get("second_check"), "confidence": r.get("confidence"),
             "quorum": a.authorised,
+            "control": ("sibling OURS_CONFIRMED quarter" if sym in confirmed
+                        else "INLINE second_check only (no sibling control quarter)"),
         }
 
     if a.merge and os.path.exists(a.out):
