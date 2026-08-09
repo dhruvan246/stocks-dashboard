@@ -45,6 +45,8 @@ def load_ours():
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="quorum.json")
+    ap.add_argument("--suffix", default="pilot",
+                    help="which extraction set to read: <site>/<site>_<suffix>.jsonl")
     ap.add_argument("--base", required=True,
                     help="dir holding p2/<site>_map.json and <site>/<site>_pilot.jsonl")
     a = ap.parse_args()
@@ -71,7 +73,7 @@ def main():
     # ---- gather site observations -------------------------------------------
     votes = collections.defaultdict(dict)      # (sym, qe, field) -> site -> value
     for site in cards:
-        path = os.path.join(BASE, site, "%s_pilot.jsonl" % site)
+        path = os.path.join(BASE, site, "%s_%s.jsonl" % (site, a.suffix))
         if not os.path.exists(path):
             continue
         for line in open(path, encoding="utf-8"):
@@ -89,6 +91,28 @@ def main():
                         continue
                     votes[(sym, q, field)][site] = float(v) * mult
                     break
+
+    # ---- derive patE: BACKTEST-EFFECTIVE PAT --------------------------------
+    # backtest-engine.js profitAt(): tries = basis==='std' ? [[1,2]] : [[3,4],[1,2]].
+    # On the default consolidated basis the engine consumes patC where it exists and falls back to
+    # patS per quarter -- so patE is the number strategy picks actually eat, and a defect invisible
+    # in either pure basis can still flip a factor at the fallback boundary. We resolve the same
+    # rule on OUR side and on each site's side, then adjudicate it as its own field.
+    eff = {}
+    for (sym, q, field), sv in list(votes.items()):
+        if field not in ("patS", "patC"):
+            continue
+        mine = (ours.get(sym, {}) or {}).get(q, {})
+        use = "patC" if mine.get("patC") is not None else "patS"
+        if field != use:
+            continue
+        eff.setdefault((sym, q), {}).update(sv)
+    for (sym, q), sv in eff.items():
+        mine = (ours.get(sym, {}) or {}).get(q)
+        if not mine:                      # a site quarter we do not hold -- nothing to adjudicate
+            continue
+        votes[(sym, q, "patE")] = sv
+        mine["patE"] = mine.get("patC") if mine.get("patC") is not None else mine.get("patS")
 
     # ---- adjudicate ---------------------------------------------------------
     out, tally = [], collections.Counter()
@@ -137,7 +161,7 @@ def main():
     for r in out:
         byf[r["field"]][r["status"]] += 1
     print("\nby field:")
-    for f in ("revS", "revC", "patS", "patC"):
+    for f in ("revS", "revC", "patS", "patC", "patE"):
         if f in byf:
             t = byf[f]
             n = sum(t.values())

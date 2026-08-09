@@ -1,0 +1,703 @@
+{
+ "site": "groww",
+ "comparable_rows": 573,
+ "bases_seen": [
+  "con",
+  "std"
+ ],
+ "abs_floor_cr": 0.5,
+ "rel_band": 0.005,
+ "map": {
+  "con|nonfin": {
+   "Revenue from Operations": {
+    "label": "Revenue from Operations",
+    "basis_as_labelled": "con",
+    "company_class": "nonfin",
+    "field": "revC",
+    "scale": "crore",
+    "mult": 1.0,
+    "hold_pct": 97.3,
+    "n": 188,
+    "median_abs_delta": 0.0,
+    "median_rel_bias": 0.0,
+    "runner_up": {
+     "field": "revS",
+     "scale": "crore",
+     "hold_pct": 20.6
+    }
+   }
+  },
+  "con|fin": {
+   "Revenue from Operations": {
+    "label": "Revenue from Operations",
+    "basis_as_labelled": "con",
+    "company_class": "fin",
+    "field": "revC",
+    "scale": "crore",
+    "mult": 1.0,
+    "hold_pct": 98.7,
+    "n": 77,
+    "median_abs_delta": 0.0,
+    "median_rel_bias": 0.0,
+    "runner_up": {
+     "field": "revS",
+     "scale": "crore",
+     "hold_pct": 31.2
+    }
+   }
+  },
+  "std|nonfin": {
+   "Net Profit": {
+    "label": "Net Profit",
+    "basis_as_labelled": "std",
+    "company_class": "nonfin",
+    "field": "patS",
+    "scale": "crore",
+    "mult": 1.0,
+    "hold_pct": 98.0,
+    "n": 205,
+    "median_abs_delta": 0.0,
+    "median_rel_bias": 0.0,
+    "runner_up": {
+     "field": "patC",
+     "scale": "crore",
+     "hold_pct": 13.7
+    }
+   },
+   "Revenue from Operations": {
+    "label": "Revenue from Operations",
+    "basis_as_labelled": "std",
+    "company_class": "nonfin",
+    "field": "revS",
+    "scale": "crore",
+    "mult": 1.0,
+    "hold_pct": 95.6,
+    "n": 204,
+    "median_abs_delta": 0.0,
+    "median_rel_bias": 0.0,
+    "runner_up": {
+     "field": "revC",
+     "scale": "crore",
+     "hold_pct": 24.4
+    }
+   }
+  },
+  "std|fin": {
+   "Net Profit": {
+    "label": "Net Profit",
+    "basis_as_labelled": "std",
+    "company_class": "fin",
+    "field": "patS",
+    "scale": "crore",
+    "mult": 1.0,
+    "hold_pct": 93.9,
+    "n": 98,
+    "median_abs_delta": 0.0,
+    "median_rel_bias": 0.0,
+    "runner_up": {
+     "field": "patC",
+     "scale": "crore",
+     "hold_pct": 30.5
+    }
+   },
+   "Revenue from Operations": {
+    "label": "Revenue from Operations",
+    "basis_as_labelled": "std",
+    "company_class": "fin",
+    "field": "revS",
+    "scale": "crore",
+    "mult": 1.0,
+    "hold_pct": 94.9,
+    "n": 98,
+    "median_abs_delta": 0.0,
+    "median_rel_bias": 0.0,
+    "runner_up": {
+     "field": "revC",
+     "scale": "crore",
+     "hold_pct": 37.9
+    }
+   }
+  }
+ },
+ "rejected": [
+  {
+   "label": "EBITDA",
+   "basis_as_labelled": "con",
+   "company_class": "nonfin",
+   "field": "patS",
+   "scale": "million",
+   "mult": 0.1,
+   "hold_pct": 1.6,
+   "n": 190,
+   "median_abs_delta": 101.476,
+   "median_rel_bias": -0.7679,
+   "runner_up": {
+    "field": "patS",
+    "scale": "thousand",
+    "hold_pct": 0.5
+   }
+  },
+  {
+   "label": "Expenses",
+   "basis_as_labelled": "con",
+   "company_class": "nonfin",
+   "field": "revS",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 1.6,
+   "n": 189,
+   "median_abs_delta": 572.92,
+   "median_rel_bias": 0.12127,
+   "runner_up": {
+    "field": "patS",
+    "scale": "rupees",
+    "hold_pct": 0.5
+   }
+  },
+  {
+   "label": "Net Profit",
+   "basis_as_labelled": "con",
+   "company_class": "nonfin",
+   "field": "patC",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 74.7,
+   "n": 190,
+   "median_abs_delta": 0.0,
+   "median_rel_bias": 0.0,
+   "runner_up": {
+    "field": "patS",
+    "scale": "crore",
+    "hold_pct": 6.8
+   }
+  },
+  {
+   "label": "Operating Profit",
+   "basis_as_labelled": "con",
+   "company_class": "nonfin",
+   "field": "revC",
+   "scale": "x10",
+   "mult": 10.0,
+   "hold_pct": 1.1,
+   "n": 188,
+   "median_abs_delta": 1883.55,
+   "median_rel_bias": 0.25094,
+   "runner_up": {
+    "field": "patS",
+    "scale": "lakh",
+    "hold_pct": 0.5
+   }
+  },
+  {
+   "label": "Other Revenue",
+   "basis_as_labelled": "con",
+   "company_class": "nonfin",
+   "field": "patS",
+   "scale": "lakh",
+   "mult": 0.01,
+   "hold_pct": 1.1,
+   "n": 190,
+   "median_abs_delta": 138.658,
+   "median_rel_bias": -0.99685,
+   "runner_up": {
+    "field": "patS",
+    "scale": "thousand",
+    "hold_pct": 0.5
+   }
+  },
+  {
+   "label": "Profit Before Tax",
+   "basis_as_labelled": "con",
+   "company_class": "nonfin",
+   "field": "patC",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 0.5,
+   "n": 190,
+   "median_abs_delta": 58.13,
+   "median_rel_bias": 0.33089,
+   "runner_up": {
+    "field": "patS",
+    "scale": "million",
+    "hold_pct": 0.5
+   }
+  },
+  {
+   "label": "Revenue",
+   "basis_as_labelled": "con",
+   "company_class": "nonfin",
+   "field": "revC",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 20.7,
+   "n": 188,
+   "median_abs_delta": 54.835,
+   "median_rel_bias": 0.02187,
+   "runner_up": {
+    "field": "revS",
+    "scale": "crore",
+    "hold_pct": 6.9
+   }
+  },
+  {
+   "label": "Selling, General & Administrative Expenses",
+   "basis_as_labelled": "con",
+   "company_class": "nonfin",
+   "field": "patS",
+   "scale": "thousand",
+   "mult": 0.001,
+   "hold_pct": 1.1,
+   "n": 190,
+   "median_abs_delta": 138.58,
+   "median_rel_bias": -0.99702,
+   "runner_up": {
+    "field": "patS",
+    "scale": "rupees",
+    "hold_pct": 0.5
+   }
+  },
+  {
+   "label": "Total Operating Expenses",
+   "basis_as_labelled": "con",
+   "company_class": "nonfin",
+   "field": "patS",
+   "scale": "million",
+   "mult": 0.1,
+   "hold_pct": 1.1,
+   "n": 190,
+   "median_abs_delta": 121.308,
+   "median_rel_bias": 0.06743,
+   "runner_up": {
+    "field": "patS",
+    "scale": "lakh",
+    "hold_pct": 1.1
+   }
+  },
+  {
+   "label": "EBITDA",
+   "basis_as_labelled": "con",
+   "company_class": "fin",
+   "field": "revS",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 1.2,
+   "n": 80,
+   "median_abs_delta": 2291.06,
+   "median_rel_bias": -0.27838,
+   "runner_up": {
+    "field": "patS",
+    "scale": "million",
+    "hold_pct": 0.0
+   }
+  },
+  {
+   "label": "Expenses",
+   "basis_as_labelled": "con",
+   "company_class": "fin",
+   "field": "revS",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 1.2,
+   "n": 80,
+   "median_abs_delta": 598.76,
+   "median_rel_bias": -0.09272,
+   "runner_up": {
+    "field": "patS",
+    "scale": "million",
+    "hold_pct": 0.0
+   }
+  },
+  {
+   "label": "Net Profit",
+   "basis_as_labelled": "con",
+   "company_class": "fin",
+   "field": "patC",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 50.6,
+   "n": 77,
+   "median_abs_delta": 2.95,
+   "median_rel_bias": 0.0,
+   "runner_up": {
+    "field": "patS",
+    "scale": "crore",
+    "hold_pct": 23.8
+   }
+  },
+  {
+   "label": "Operating Profit",
+   "basis_as_labelled": "con",
+   "company_class": "fin",
+   "field": "patS",
+   "scale": "million",
+   "mult": 0.1,
+   "hold_pct": 0.0,
+   "n": 80,
+   "median_abs_delta": 482.402,
+   "median_rel_bias": -0.85236,
+   "runner_up": {
+    "field": "patC",
+    "scale": "million",
+    "hold_pct": 0.0
+   }
+  },
+  {
+   "label": "Other Revenue",
+   "basis_as_labelled": "con",
+   "company_class": "fin",
+   "field": "patS",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 0.0,
+   "n": 80,
+   "median_abs_delta": 673.09,
+   "median_rel_bias": -0.93491,
+   "runner_up": {
+    "field": "patS",
+    "scale": "million",
+    "hold_pct": 0.0
+   }
+  },
+  {
+   "label": "Profit Before Tax",
+   "basis_as_labelled": "con",
+   "company_class": "fin",
+   "field": "patS",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 2.5,
+   "n": 80,
+   "median_abs_delta": 335.095,
+   "median_rel_bias": 0.35624,
+   "runner_up": {
+    "field": "patC",
+    "scale": "crore",
+    "hold_pct": 0.0
+   }
+  },
+  {
+   "label": "Revenue",
+   "basis_as_labelled": "con",
+   "company_class": "fin",
+   "field": "revC",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 36.4,
+   "n": 77,
+   "median_abs_delta": 62.21,
+   "median_rel_bias": 0.01071,
+   "runner_up": {
+    "field": "revS",
+    "scale": "crore",
+    "hold_pct": 6.2
+   }
+  },
+  {
+   "label": "Selling, General & Administrative Expenses",
+   "basis_as_labelled": "con",
+   "company_class": "fin",
+   "field": "revC",
+   "scale": "x10",
+   "mult": 10.0,
+   "hold_pct": 1.3,
+   "n": 77,
+   "median_abs_delta": 3507.92,
+   "median_rel_bias": -0.8963,
+   "runner_up": {
+    "field": "revS",
+    "scale": "x10",
+    "hold_pct": 1.2
+   }
+  },
+  {
+   "label": "Total Operating Expenses",
+   "basis_as_labelled": "con",
+   "company_class": "fin",
+   "field": "patS",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 1.2,
+   "n": 80,
+   "median_abs_delta": 885.815,
+   "median_rel_bias": -0.95958,
+   "runner_up": {
+    "field": "revS",
+    "scale": "crore",
+    "hold_pct": 1.2
+   }
+  },
+  {
+   "label": "EBITDA",
+   "basis_as_labelled": "std",
+   "company_class": "nonfin",
+   "field": "patC",
+   "scale": "million",
+   "mult": 0.1,
+   "hold_pct": 1.0,
+   "n": 205,
+   "median_abs_delta": 165.212,
+   "median_rel_bias": -0.84122,
+   "runner_up": {
+    "field": "patS",
+    "scale": "million",
+    "hold_pct": 0.5
+   }
+  },
+  {
+   "label": "Expenses",
+   "basis_as_labelled": "std",
+   "company_class": "nonfin",
+   "field": "patS",
+   "scale": "million",
+   "mult": 0.1,
+   "hold_pct": 0.5,
+   "n": 205,
+   "median_abs_delta": 84.821,
+   "median_rel_bias": -0.14646,
+   "runner_up": {
+    "field": "patS",
+    "scale": "lakh",
+    "hold_pct": 0.5
+   }
+  },
+  {
+   "label": "Operating Profit",
+   "basis_as_labelled": "std",
+   "company_class": "nonfin",
+   "field": "patC",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 1.0,
+   "n": 205,
+   "median_abs_delta": 99.66,
+   "median_rel_bias": 0.35202,
+   "runner_up": {
+    "field": "patS",
+    "scale": "million",
+    "hold_pct": 0.5
+   }
+  },
+  {
+   "label": "Other Revenue",
+   "basis_as_labelled": "std",
+   "company_class": "nonfin",
+   "field": "patS",
+   "scale": "lakh",
+   "mult": 0.01,
+   "hold_pct": 1.0,
+   "n": 205,
+   "median_abs_delta": 152.444,
+   "median_rel_bias": -0.99695,
+   "runner_up": {
+    "field": "patS",
+    "scale": "thousand",
+    "hold_pct": 0.5
+   }
+  },
+  {
+   "label": "Profit Before Tax",
+   "basis_as_labelled": "std",
+   "company_class": "nonfin",
+   "field": "patS",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 3.9,
+   "n": 205,
+   "median_abs_delta": 48.8,
+   "median_rel_bias": 0.32521,
+   "runner_up": {
+    "field": "revC",
+    "scale": "x10",
+    "hold_pct": 1.5
+   }
+  },
+  {
+   "label": "Revenue",
+   "basis_as_labelled": "std",
+   "company_class": "nonfin",
+   "field": "revS",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 9.8,
+   "n": 204,
+   "median_abs_delta": 53.275,
+   "median_rel_bias": 0.03198,
+   "runner_up": {
+    "field": "revC",
+    "scale": "crore",
+    "hold_pct": 8.6
+   }
+  },
+  {
+   "label": "Selling, General & Administrative Expenses",
+   "basis_as_labelled": "std",
+   "company_class": "nonfin",
+   "field": "patS",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 1.0,
+   "n": 205,
+   "median_abs_delta": 103.84,
+   "median_rel_bias": 0.49912,
+   "runner_up": {
+    "field": "patS",
+    "scale": "lakh",
+    "hold_pct": 1.0
+   }
+  },
+  {
+   "label": "Total Operating Expenses",
+   "basis_as_labelled": "std",
+   "company_class": "nonfin",
+   "field": "patS",
+   "scale": "million",
+   "mult": 0.1,
+   "hold_pct": 2.4,
+   "n": 205,
+   "median_abs_delta": 101.732,
+   "median_rel_bias": -0.38188,
+   "runner_up": {
+    "field": "patC",
+    "scale": "million",
+    "hold_pct": 1.0
+   }
+  },
+  {
+   "label": "EBITDA",
+   "basis_as_labelled": "std",
+   "company_class": "fin",
+   "field": "patS",
+   "scale": "million",
+   "mult": 0.1,
+   "hold_pct": 0.0,
+   "n": 98,
+   "median_abs_delta": 396.91,
+   "median_rel_bias": -0.8684,
+   "runner_up": {
+    "field": "patC",
+    "scale": "million",
+    "hold_pct": 0.0
+   }
+  },
+  {
+   "label": "Expenses",
+   "basis_as_labelled": "std",
+   "company_class": "fin",
+   "field": "revC",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 2.1,
+   "n": 95,
+   "median_abs_delta": 916.19,
+   "median_rel_bias": -0.22199,
+   "runner_up": {
+    "field": "revS",
+    "scale": "crore",
+    "hold_pct": 1.0
+   }
+  },
+  {
+   "label": "Operating Profit",
+   "basis_as_labelled": "std",
+   "company_class": "fin",
+   "field": "patS",
+   "scale": "million",
+   "mult": 0.1,
+   "hold_pct": 0.0,
+   "n": 98,
+   "median_abs_delta": 397.2,
+   "median_rel_bias": -0.86885,
+   "runner_up": {
+    "field": "patC",
+    "scale": "million",
+    "hold_pct": 0.0
+   }
+  },
+  {
+   "label": "Other Revenue",
+   "basis_as_labelled": "std",
+   "company_class": "fin",
+   "field": "patS",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 0.0,
+   "n": 98,
+   "median_abs_delta": 530.935,
+   "median_rel_bias": -0.9545,
+   "runner_up": {
+    "field": "patS",
+    "scale": "million",
+    "hold_pct": 0.0
+   }
+  },
+  {
+   "label": "Profit Before Tax",
+   "basis_as_labelled": "std",
+   "company_class": "fin",
+   "field": "patC",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 2.1,
+   "n": 95,
+   "median_abs_delta": 189.36,
+   "median_rel_bias": 0.19796,
+   "runner_up": {
+    "field": "patS",
+    "scale": "crore",
+    "hold_pct": 2.0
+   }
+  },
+  {
+   "label": "Revenue",
+   "basis_as_labelled": "std",
+   "company_class": "fin",
+   "field": "revS",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 45.9,
+   "n": 98,
+   "median_abs_delta": 32.615,
+   "median_rel_bias": 0.00534,
+   "runner_up": {
+    "field": "revC",
+    "scale": "crore",
+    "hold_pct": 20.0
+   }
+  },
+  {
+   "label": "Selling, General & Administrative Expenses",
+   "basis_as_labelled": "std",
+   "company_class": "fin",
+   "field": "patS",
+   "scale": "x10",
+   "mult": 10.0,
+   "hold_pct": 1.0,
+   "n": 98,
+   "median_abs_delta": 490.35,
+   "median_rel_bias": -0.86398,
+   "runner_up": {
+    "field": "patS",
+    "scale": "crore",
+    "hold_pct": 0.0
+   }
+  },
+  {
+   "label": "Total Operating Expenses",
+   "basis_as_labelled": "std",
+   "company_class": "fin",
+   "field": "patS",
+   "scale": "million",
+   "mult": 0.1,
+   "hold_pct": 0.0,
+   "n": 98,
+   "median_abs_delta": 416.205,
+   "median_rel_bias": -0.9335,
+   "runner_up": {
+    "field": "patC",
+    "scale": "million",
+    "hold_pct": 0.0
+   }
+  }
+ ],
+ "_authority": "rev=sf_revop[0]/[1]; pat=sf_fundamentals npStd/npCon"
+}

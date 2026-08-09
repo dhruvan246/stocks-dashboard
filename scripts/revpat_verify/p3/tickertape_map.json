@@ -1,0 +1,669 @@
+{
+ "site": "tickertape",
+ "comparable_rows": 620,
+ "bases_seen": [
+  "con",
+  "std"
+ ],
+ "abs_floor_cr": 0.5,
+ "rel_band": 0.005,
+ "map": {
+  "con|nonfin": {
+   "qIncNinc": {
+    "label": "qIncNinc",
+    "basis_as_labelled": "con",
+    "company_class": "nonfin",
+    "field": "patC",
+    "scale": "crore",
+    "mult": 1.0,
+    "hold_pct": 89.3,
+    "n": 394,
+    "median_abs_delta": 0.0,
+    "median_rel_bias": 0.0,
+    "runner_up": {
+     "field": "patS",
+     "scale": "crore",
+     "hold_pct": 7.4
+    }
+   }
+  },
+  "con|fin": {
+   "qIncNinc": {
+    "label": "qIncNinc",
+    "basis_as_labelled": "con",
+    "company_class": "fin",
+    "field": "patC",
+    "scale": "crore",
+    "mult": 1.0,
+    "hold_pct": 87.9,
+    "n": 157,
+    "median_abs_delta": 0.0,
+    "median_rel_bias": 0.0,
+    "runner_up": {
+     "field": "patS",
+     "scale": "crore",
+     "hold_pct": 20.0
+    }
+   }
+  },
+  "std|nonfin": {
+   "qIncNinc": {
+    "label": "qIncNinc",
+    "basis_as_labelled": "std",
+    "company_class": "nonfin",
+    "field": "patS",
+    "scale": "crore",
+    "mult": 1.0,
+    "hold_pct": 100.0,
+    "n": 28,
+    "median_abs_delta": 0.0,
+    "median_rel_bias": 0.0,
+    "runner_up": {
+     "field": "patC",
+     "scale": "crore",
+     "hold_pct": 100.0
+    }
+   }
+  },
+  "std|fin": {
+   "qIncNinc": {
+    "label": "qIncNinc",
+    "basis_as_labelled": "std",
+    "company_class": "fin",
+    "field": "patS",
+    "scale": "crore",
+    "mult": 1.0,
+    "hold_pct": 92.1,
+    "n": 38,
+    "median_abs_delta": 0.0,
+    "median_rel_bias": 0.0,
+    "runner_up": {
+     "field": "patC",
+     "scale": "crore",
+     "hold_pct": 92.1
+    }
+   }
+  }
+ },
+ "rejected": [
+  {
+   "label": "qIncDep",
+   "basis_as_labelled": "con",
+   "company_class": "nonfin",
+   "field": "patS",
+   "scale": "x10",
+   "mult": 10.0,
+   "hold_pct": 0.8,
+   "n": 393,
+   "median_abs_delta": 715.0,
+   "median_rel_bias": 4.54487,
+   "runner_up": {
+    "field": "revC",
+    "scale": "x100",
+    "hold_pct": 0.8
+   }
+  },
+  {
+   "label": "qIncEbi",
+   "basis_as_labelled": "con",
+   "company_class": "nonfin",
+   "field": "revC",
+   "scale": "x10",
+   "mult": 10.0,
+   "hold_pct": 1.3,
+   "n": 383,
+   "median_abs_delta": 1839.75,
+   "median_rel_bias": 0.69287,
+   "runner_up": {
+    "field": "patS",
+    "scale": "million",
+    "hold_pct": 0.8
+   }
+  },
+  {
+   "label": "qIncEps",
+   "basis_as_labelled": "con",
+   "company_class": "nonfin",
+   "field": "patC",
+   "scale": "x10",
+   "mult": 10.0,
+   "hold_pct": 1.3,
+   "n": 394,
+   "median_abs_delta": 91.635,
+   "median_rel_bias": -0.63537,
+   "runner_up": {
+    "field": "patC",
+    "scale": "x100",
+    "hold_pct": 1.0
+   }
+  },
+  {
+   "label": "qIncIoi",
+   "basis_as_labelled": "con",
+   "company_class": "nonfin",
+   "field": "patS",
+   "scale": "million",
+   "mult": 0.1,
+   "hold_pct": 0.8,
+   "n": 393,
+   "median_abs_delta": 124.786,
+   "median_rel_bias": -0.9708,
+   "runner_up": {
+    "field": "patS",
+    "scale": "crore",
+    "hold_pct": 0.5
+   }
+  },
+  {
+   "label": "qIncOpe",
+   "basis_as_labelled": "con",
+   "company_class": "nonfin",
+   "field": "patC",
+   "scale": "million",
+   "mult": 0.1,
+   "hold_pct": 1.0,
+   "n": 394,
+   "median_abs_delta": 114.665,
+   "median_rel_bias": 0.03837,
+   "runner_up": {
+    "field": "patC",
+    "scale": "lakh",
+    "hold_pct": 0.8
+   }
+  },
+  {
+   "label": "qIncPbi",
+   "basis_as_labelled": "con",
+   "company_class": "nonfin",
+   "field": "revC",
+   "scale": "x10",
+   "mult": 10.0,
+   "hold_pct": 1.0,
+   "n": 383,
+   "median_abs_delta": 1584.39,
+   "median_rel_bias": 0.31875,
+   "runner_up": {
+    "field": "patC",
+    "scale": "million",
+    "hold_pct": 0.5
+   }
+  },
+  {
+   "label": "qIncPbt",
+   "basis_as_labelled": "con",
+   "company_class": "nonfin",
+   "field": "patC",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 0.8,
+   "n": 394,
+   "median_abs_delta": 50.875,
+   "median_rel_bias": 0.33435,
+   "runner_up": {
+    "field": "patS",
+    "scale": "crore",
+    "hold_pct": 0.3
+   }
+  },
+  {
+   "label": "qIncToi",
+   "basis_as_labelled": "con",
+   "company_class": "nonfin",
+   "field": "revS",
+   "scale": "x10",
+   "mult": 10.0,
+   "hold_pct": 0.5,
+   "n": 384,
+   "median_abs_delta": 778.635,
+   "median_rel_bias": -0.57483,
+   "runner_up": {
+    "field": "patS",
+    "scale": "crore",
+    "hold_pct": 0.3
+   }
+  },
+  {
+   "label": "qIncTrev",
+   "basis_as_labelled": "con",
+   "company_class": "nonfin",
+   "field": "revC",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 12.0,
+   "n": 383,
+   "median_abs_delta": 58.16,
+   "median_rel_bias": 0.02076,
+   "runner_up": {
+    "field": "revS",
+    "scale": "crore",
+    "hold_pct": 1.6
+   }
+  },
+  {
+   "label": "qIncDep",
+   "basis_as_labelled": "con",
+   "company_class": "fin",
+   "field": "revC",
+   "scale": "x100",
+   "mult": 100.0,
+   "hold_pct": 0.7,
+   "n": 151,
+   "median_abs_delta": 3666.78,
+   "median_rel_bias": -0.83156,
+   "runner_up": {
+    "field": "patS",
+    "scale": "x10",
+    "hold_pct": 0.6
+   }
+  },
+  {
+   "label": "qIncEbi",
+   "basis_as_labelled": "con",
+   "company_class": "fin",
+   "field": "patS",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 1.9,
+   "n": 160,
+   "median_abs_delta": 311.09,
+   "median_rel_bias": 0.38807,
+   "runner_up": {
+    "field": "revC",
+    "scale": "x100",
+    "hold_pct": 0.7
+   }
+  },
+  {
+   "label": "qIncEps",
+   "basis_as_labelled": "con",
+   "company_class": "fin",
+   "field": "revC",
+   "scale": "x10",
+   "mult": 10.0,
+   "hold_pct": 0.7,
+   "n": 151,
+   "median_abs_delta": 4849.63,
+   "median_rel_bias": -0.98986,
+   "runner_up": {
+    "field": "patS",
+    "scale": "x100",
+    "hold_pct": 0.0
+   }
+  },
+  {
+   "label": "qIncOpe",
+   "basis_as_labelled": "con",
+   "company_class": "fin",
+   "field": "revS",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 2.5,
+   "n": 159,
+   "median_abs_delta": 577.19,
+   "median_rel_bias": -0.09929,
+   "runner_up": {
+    "field": "revC",
+    "scale": "crore",
+    "hold_pct": 0.7
+   }
+  },
+  {
+   "label": "qIncPbi",
+   "basis_as_labelled": "con",
+   "company_class": "fin",
+   "field": "patS",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 1.2,
+   "n": 160,
+   "median_abs_delta": 296.045,
+   "median_rel_bias": 0.36959,
+   "runner_up": {
+    "field": "revC",
+    "scale": "x100",
+    "hold_pct": 0.7
+   }
+  },
+  {
+   "label": "qIncPbt",
+   "basis_as_labelled": "con",
+   "company_class": "fin",
+   "field": "patS",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 1.2,
+   "n": 160,
+   "median_abs_delta": 296.045,
+   "median_rel_bias": 0.36959,
+   "runner_up": {
+    "field": "revC",
+    "scale": "x100",
+    "hold_pct": 0.7
+   }
+  },
+  {
+   "label": "qIncToi",
+   "basis_as_labelled": "con",
+   "company_class": "fin",
+   "field": "revS",
+   "scale": "x10",
+   "mult": 10.0,
+   "hold_pct": 1.9,
+   "n": 159,
+   "median_abs_delta": 2084.11,
+   "median_rel_bias": -0.27774,
+   "runner_up": {
+    "field": "patS",
+    "scale": "crore",
+    "hold_pct": 0.0
+   }
+  },
+  {
+   "label": "qIncTrev",
+   "basis_as_labelled": "con",
+   "company_class": "fin",
+   "field": "revC",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 28.5,
+   "n": 151,
+   "median_abs_delta": 68.06,
+   "median_rel_bias": 0.01746,
+   "runner_up": {
+    "field": "revS",
+    "scale": "crore",
+    "hold_pct": 7.5
+   }
+  },
+  {
+   "label": "qIncDep",
+   "basis_as_labelled": "std",
+   "company_class": "nonfin",
+   "field": "patS",
+   "scale": "x10",
+   "mult": 10.0,
+   "hold_pct": 0.0,
+   "n": 28,
+   "median_abs_delta": 102.03,
+   "median_rel_bias": 0.78696,
+   "runner_up": {
+    "field": "patC",
+    "scale": "x10",
+    "hold_pct": 0.0
+   }
+  },
+  {
+   "label": "qIncEbi",
+   "basis_as_labelled": "std",
+   "company_class": "nonfin",
+   "field": "patS",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 0.0,
+   "n": 28,
+   "median_abs_delta": 107.99,
+   "median_rel_bias": 0.55427,
+   "runner_up": {
+    "field": "patC",
+    "scale": "crore",
+    "hold_pct": 0.0
+   }
+  },
+  {
+   "label": "qIncEps",
+   "basis_as_labelled": "std",
+   "company_class": "nonfin",
+   "field": "patS",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 0.0,
+   "n": 28,
+   "median_abs_delta": 164.887,
+   "median_rel_bias": -0.97192,
+   "runner_up": {
+    "field": "patC",
+    "scale": "crore",
+    "hold_pct": 0.0
+   }
+  },
+  {
+   "label": "qIncIoi",
+   "basis_as_labelled": "std",
+   "company_class": "nonfin",
+   "field": "patS",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 3.6,
+   "n": 28,
+   "median_abs_delta": 160.17,
+   "median_rel_bias": -0.96692,
+   "runner_up": {
+    "field": "patC",
+    "scale": "crore",
+    "hold_pct": 3.6
+   }
+  },
+  {
+   "label": "qIncOpe",
+   "basis_as_labelled": "std",
+   "company_class": "nonfin",
+   "field": "patS",
+   "scale": "million",
+   "mult": 0.1,
+   "hold_pct": 0.0,
+   "n": 28,
+   "median_abs_delta": 87.494,
+   "median_rel_bias": 0.01008,
+   "runner_up": {
+    "field": "patC",
+    "scale": "million",
+    "hold_pct": 0.0
+   }
+  },
+  {
+   "label": "qIncPbi",
+   "basis_as_labelled": "std",
+   "company_class": "nonfin",
+   "field": "patS",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 0.0,
+   "n": 28,
+   "median_abs_delta": 61.165,
+   "median_rel_bias": 0.36797,
+   "runner_up": {
+    "field": "patC",
+    "scale": "crore",
+    "hold_pct": 0.0
+   }
+  },
+  {
+   "label": "qIncPbt",
+   "basis_as_labelled": "std",
+   "company_class": "nonfin",
+   "field": "patS",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 0.0,
+   "n": 28,
+   "median_abs_delta": 55.21,
+   "median_rel_bias": 0.33815,
+   "runner_up": {
+    "field": "patC",
+    "scale": "crore",
+    "hold_pct": 0.0
+   }
+  },
+  {
+   "label": "qIncToi",
+   "basis_as_labelled": "std",
+   "company_class": "nonfin",
+   "field": "patS",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 0.0,
+   "n": 28,
+   "median_abs_delta": 115.64,
+   "median_rel_bias": -0.66185,
+   "runner_up": {
+    "field": "patC",
+    "scale": "crore",
+    "hold_pct": 0.0
+   }
+  },
+  {
+   "label": "qIncTrev",
+   "basis_as_labelled": "std",
+   "company_class": "nonfin",
+   "field": "revC",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 71.4,
+   "n": 21,
+   "median_abs_delta": 3.92,
+   "median_rel_bias": 0.00158,
+   "runner_up": {
+    "field": "revS",
+    "scale": "crore",
+    "hold_pct": 53.6
+   }
+  },
+  {
+   "label": "qIncDep",
+   "basis_as_labelled": "std",
+   "company_class": "fin",
+   "field": "patS",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 0.0,
+   "n": 38,
+   "median_abs_delta": 139.21,
+   "median_rel_bias": -1.0,
+   "runner_up": {
+    "field": "patS",
+    "scale": "million",
+    "hold_pct": 0.0
+   }
+  },
+  {
+   "label": "qIncEbi",
+   "basis_as_labelled": "std",
+   "company_class": "fin",
+   "field": "patS",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 31.6,
+   "n": 38,
+   "median_abs_delta": 33.115,
+   "median_rel_bias": 0.09905,
+   "runner_up": {
+    "field": "patC",
+    "scale": "crore",
+    "hold_pct": 31.6
+   }
+  },
+  {
+   "label": "qIncEps",
+   "basis_as_labelled": "std",
+   "company_class": "fin",
+   "field": "patS",
+   "scale": "x100",
+   "mult": 100.0,
+   "hold_pct": 28.9,
+   "n": 38,
+   "median_abs_delta": 9.985,
+   "median_rel_bias": 0.08418,
+   "runner_up": {
+    "field": "patC",
+    "scale": "x100",
+    "hold_pct": 28.9
+   }
+  },
+  {
+   "label": "qIncOpe",
+   "basis_as_labelled": "std",
+   "company_class": "fin",
+   "field": "patS",
+   "scale": "lakh",
+   "mult": 0.01,
+   "hold_pct": 2.6,
+   "n": 38,
+   "median_abs_delta": 112.893,
+   "median_rel_bias": -0.66282,
+   "runner_up": {
+    "field": "patC",
+    "scale": "lakh",
+    "hold_pct": 2.6
+   }
+  },
+  {
+   "label": "qIncPbi",
+   "basis_as_labelled": "std",
+   "company_class": "fin",
+   "field": "patS",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 31.6,
+   "n": 38,
+   "median_abs_delta": 33.115,
+   "median_rel_bias": 0.09905,
+   "runner_up": {
+    "field": "patC",
+    "scale": "crore",
+    "hold_pct": 31.6
+   }
+  },
+  {
+   "label": "qIncPbt",
+   "basis_as_labelled": "std",
+   "company_class": "fin",
+   "field": "patS",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 31.6,
+   "n": 38,
+   "median_abs_delta": 33.115,
+   "median_rel_bias": 0.09905,
+   "runner_up": {
+    "field": "patC",
+    "scale": "crore",
+    "hold_pct": 31.6
+   }
+  },
+  {
+   "label": "qIncToi",
+   "basis_as_labelled": "std",
+   "company_class": "fin",
+   "field": "revS",
+   "scale": "x100",
+   "mult": 100.0,
+   "hold_pct": 5.3,
+   "n": 38,
+   "median_abs_delta": 2102.61,
+   "median_rel_bias": -0.7989,
+   "runner_up": {
+    "field": "revC",
+    "scale": "x100",
+    "hold_pct": 5.3
+   }
+  },
+  {
+   "label": "qIncTrev",
+   "basis_as_labelled": "std",
+   "company_class": "fin",
+   "field": "revS",
+   "scale": "crore",
+   "mult": 1.0,
+   "hold_pct": 60.5,
+   "n": 38,
+   "median_abs_delta": 7.15,
+   "median_rel_bias": 0.00074,
+   "runner_up": {
+    "field": "revC",
+    "scale": "crore",
+    "hold_pct": 60.5
+   }
+  }
+ ],
+ "_authority": "rev=sf_revop[0]/[1]; pat=sf_fundamentals npStd/npCon"
+}
