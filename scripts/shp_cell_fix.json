@@ -86,6 +86,28 @@
         ],
         "src": "bse:542020_207202420283_SHP.xml",
         "why": "Company REVISED its filing (BSE revised_date_time=n/a); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge). Diffs: {'prom': '54.72->54.24'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      },
+      "2023-03-31": {
+        "cell": [
+          72.81,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          "2023-07-31",
+          150
+        ],
+        "was": [
+          73.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          "2023-04-14",
+          150
+        ],
+        "src": "bse:542020_317202316176_SHP.xml",
+        "why": "Unanchorable-revision adjudication (zero-institution filing, prom-only): doc and stored share the same 150-holder register (pre-expansion); trivial diff, revision is last word. Raw prom read off the promoter context; institutional zeros kept from stored. (2026-08-09)"
       }
     },
     "ASMS": {
@@ -1306,6 +1328,28 @@
         ],
         "src": "bse:532759_44202617278_SHP.xml",
         "why": "AMBIGUOUS cell adjudicated REVISION_RIGHT: fingerprint SAME_SECURITY (local nsh window) + last-word principle. nsh-only correction; percentage-clone flag vacuous for a static micro-cap; holder count matches no adjacent doc Diffs {'nsh': [22197, 23528]} (2026-08-09)"
+      },
+      "2023-06-30": {
+        "cell": [
+          71.82,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          "2024-03-22",
+          24672
+        ],
+        "was": [
+          68.45,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          "2023-07-18",
+          24673
+        ],
+        "src": "bse:532759_2232024112242_SHP.xml",
+        "why": "Unanchorable-revision adjudication (zero-institution filing, prom-only): stored 68.45 is a one-quarter dip vs neighbours 71.8-71.96; same register. Raw prom read off the promoter context; institutional zeros kept from stored. (2026-08-09)"
       }
     },
     "AURUM": {
@@ -1426,6 +1470,28 @@
         ],
         "src": "bse:532946_3012023145127_SHP.xml",
         "why": "BSE revision 2023-01-30 supersedes stored (sub 2023-01-19); diffs {'prom': [72.29, 72.76]}; corroboration=NO_SITE_WINDOW (revision sweep 2026-08-09)"
+      },
+      "2023-03-31": {
+        "cell": [
+          72.98,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          "2023-06-23",
+          7603
+        ],
+        "was": [
+          72.63,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          "2023-04-19",
+          7605
+        ],
+        "src": "bse:532946_2362023141412_SHP.xml",
+        "why": "Unanchorable-revision adjudication (zero-institution filing, prom-only): dual revised docs (72.98/72.85); 72.98 matches both adjacent quarters exactly. Raw prom read off the promoter context; institutional zeros kept from stored. (2026-08-09)"
       }
     },
     "BBTC": {
@@ -5868,6 +5934,102 @@
         ],
         "src": "bse:543411_1052024133332_SHP.xml",
         "why": "AMBIGUOUS cell adjudicated REVISION_RIGHT: fingerprint SAME_SECURITY (local nsh window) + last-word principle. local fingerprint PERFECT (rev nsh 45,890 vs stored 45,888 in a 29k->62k rising series); earlier deviation was a tail-window artifact Diffs {'prom': [53.2, 53.82], 'fii': [0.39, 1.96], 'dii': [11.44, 10.83], 'mf': [8.0, 7.57]} (2026-08-09)"
+      }
+    },
+    "TARMAT": {
+      "2022-09-30": {
+        "cell": [
+          36.15,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          "2022-11-04",
+          10454
+        ],
+        "was": [
+          38.07,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          "2022-10-15",
+          10454
+        ],
+        "src": "bse:532869_4112022144531_SHP.xml",
+        "why": "Unanchorable-revision adjudication (zero-institution filing, prom-only): same register (doc nsh == stored 10,454); volatile series, revision is last word. Raw prom read off the promoter context; institutional zeros kept from stored. (2026-08-09)"
+      }
+    },
+    "JHS": {
+      "2023-06-30": {
+        "cell": [
+          42.23,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          "2023-08-17",
+          23800
+        ],
+        "was": [
+          44.06,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          "2023-07-18",
+          23800
+        ],
+        "src": "bse:532771_178202312176_SHP.xml",
+        "why": "Unanchorable-revision adjudication (zero-institution filing, prom-only): revised == both neighbours (42.23); stored 44.06 is the outlier; same register. Raw prom read off the promoter context; institutional zeros kept from stored. (2026-08-09)"
+      }
+    },
+    "CINEVISTA": {
+      "2023-12-31": {
+        "cell": [
+          67.61,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          "2024-03-12",
+          12004
+        ],
+        "was": [
+          67.02,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          "2024-01-15",
+          12005
+        ],
+        "src": "bse:532324_1232024163441_SHP.xml",
+        "why": "Unanchorable-revision adjudication (zero-institution filing, prom-only): revised == both neighbours; same register. Raw prom read off the promoter context; institutional zeros kept from stored. (2026-08-09)"
+      }
+    },
+    "PIGL": {
+      "2023-09-30": {
+        "cell": [
+          52.09,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          "2023-10-20",
+          2167
+        ],
+        "was": [
+          52.89,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          "2023-10-19",
+          2165
+        ],
+        "src": "bse:543912_2010202315582_SHP.xml",
+        "why": "Unanchorable-revision adjudication (zero-institution filing, prom-only): revised == three adjacent quarters of a static series; stored 52.89 is the outlier. Raw prom read off the promoter context; institutional zeros kept from stored. (2026-08-09)"
       }
     }
   },
