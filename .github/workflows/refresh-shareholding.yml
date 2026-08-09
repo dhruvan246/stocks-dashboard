@@ -81,3 +81,52 @@ jobs:
           done
           echo "Failed to push after 5 attempts"
           exit 1
+
+      # ---------------------------------------------------------------- revision sweep (§22h)
+      # BSE carries a company's REVISED shareholding pattern; NSE's master keeps serving the
+      # ORIGINAL, so newest-submission-wins never sees the revision and a stored cell silently
+      # reflects a superseded filing. First full pass found 231 stale cells accumulated over ~6
+      # years, 51 field-values wrong in one earlier sample alone.
+      #
+      # Runs LAST and cannot affect the data refresh: it is dry-run (writes only its --out report
+      # and the gitignored scripts/_shp_bse_cache/), it is continue-on-error, and it sits after the
+      # commit + pages dispatch. ⚠️ Deliberately NOT on the reset-and-replay lists above (§18) —
+      # those exist for files the fetch step writes into the working tree, and this writes none.
+      #
+      # Weekly on the evening run is plenty for something that accrues ~40 stale cells a year.
+      # Heals are NOT automatic: the report is an artifact, and cell_fix entries are authored from
+      # it deliberately (shp_cell_fix.json), because ~15% of flagged "revisions" are themselves the
+      # wrong document — APTECHT Mar-2024 has sites backing the STORED value over the revision.
+      - name: Weekly BSE revision sweep (report only, never heals)
+        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '10 16 * * *'
+        continue-on-error: true
+        run: |
+          if [ "$(date -u +%u)" != "7" ] && [ "${{ github.event_name }}" != "workflow_dispatch" ]; then
+            echo "Not Sunday — skipping the weekly revision sweep"; exit 0
+          fi
+          mkdir -p /tmp/shpsweep
+          # the report is JSONL — one record per verified revision, "diffs" non-empty = STALE
+          python3 -X utf8 scripts/shp_revision_sweep.py --out /tmp/shpsweep/revision_report.jsonl
+          python3 - <<'PY'
+          import json, os
+          p = "/tmp/shpsweep/revision_report.jsonl"
+          if not os.path.exists(p):
+              print("::warning::revision sweep produced no report"); raise SystemExit(0)
+          recs = [json.loads(l) for l in open(p, encoding="utf-8") if l.strip()]
+          stale = [r for r in recs if r.get("diffs")]
+          print("revision sweep: %d records, %d STALE" % (len(recs), len(stale)))
+          for r in stale[:20]:
+              print("   %-12s %s  %s" % (r.get("sym"), r.get("qe"), r.get("diffs")))
+          if stale:
+              print("::warning::BSE revision sweep flagged %d stale cell(s) — see the artifact, "
+                    "then author shp_cell_fix.json entries by hand (§22h). Do NOT bulk-apply: "
+                    "some flagged revisions are themselves the wrong document." % len(stale))
+          PY
+
+      - name: Upload revision-sweep report
+        if: always() && hashFiles('/tmp/shpsweep/revision_report.jsonl') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: shp-revision-sweep
+          path: /tmp/shpsweep/revision_report.jsonl
+          retention-days: 30
