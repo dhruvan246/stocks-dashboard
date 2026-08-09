@@ -12,51 +12,68 @@ let META = {}, SERIES = {}, IDXH = {}, FNOH = [], START_TS = 0, NIFTY = {}, NIFT
 let SF = null, TURN = {}, SF_END_OFF = Infinity;
 const DATA_MODE = 'sf';                       // survivorship-free only
 const TURN_OPTS = [['100', '≥₹1 Cr'], ['500', '≥₹5 Cr'], ['2000', '≥₹20 Cr'], ['10000', '≥₹100 Cr']]; // daily turnover (₹ lacs)
-const OWN_GRP = 'Ownership — FII/DII (latest filed quarter)';
+// <optgroup> headings for the builder dropdowns — see stock-backtest.html fieldOptionsHtml().
+// Same taxonomy the site glossary uses for the Backtest page. Groups render in order of first
+// appearance below, members in the order listed; a heading carries the qualifier common to its
+// members so the option labels stay short enough not to truncate.
+// Must stay in sync with stock-backtest.html FIELDS (that page carries its own engine copy).
+const G_MOM = 'Price & momentum';
+const G_TRND = 'Trend & price levels';
+const G_RISK = 'Risk';
+const G_LIQ = 'Liquidity & participation';
+const G_OSC = 'Oscillators';
+const G_FUND = 'Fundamentals — point-in-time';
+const OWN_GRP = 'Ownership — FII/DII (latest filed qtr)';
+const G_SIZE = 'Size — ⚠ always 0, use Turnover';
 const FIELDS = [
-  { v: 'rsi', l: 'RSI(14)' },
-  { v: 'd52', l: 'Distance from 52w High % (high 100, price 95 → 5; near-high = ≤ 10)' },
-  { v: 'd52_low_pct', l: 'Distance from 52w Low % (% above the low)' },
-  { v: 'indRank', l: 'Industry Momentum Rank (1=hot…10=cold)' },
-  { v: 'mcap', l: 'Market Cap (₹Cr) — ⚠ NO DATA in survivorship-free mode (always 0); size-filter with Turnover instead' },
-  { v: 'hist_mcap', l: 'Historical Mcap (₹Cr) — ⚠ NO DATA (always 0); use Turnover' },
-  // --- fundamentals: point-in-time quarterly net profit (XBRL) ---
-  { v: 'profitYoyPct', l: 'Net Profit Qtr Growth YoY % (point-in-time earnings)' },
-  { v: 'profitBase', l: 'Net Profit Yr-ago Qtr ₹Cr (YoY base)' },
-  // --- shareholding pattern: point-in-time FII/DII holding (quarterly SHP filings) ---
-  // `g` = <optgroup> heading in the builder dropdowns (see stock-backtest.html fieldOptionsHtml).
+  { v: 'ret1m', g: G_MOM, l: 'Return — 1 month %' },
+  { v: 'ret3m', g: G_MOM, l: 'Return — 3 month %' },
+  { v: 'ret6m', g: G_MOM, l: 'Return — 6 month %' },
+  { v: 'ret12m', g: G_MOM, l: 'Return — 12 month %' },
+  { v: 'accel', g: G_MOM, l: 'Momentum acceleration %' },
+  { v: 'riskMom', g: G_MOM, l: 'Risk-adjusted momentum (3m ÷ vol)' },
+  { v: 'postDrift', g: G_MOM, l: 'Post-result drift % (return since last earnings date)' },
+  { v: 'composite', g: G_MOM, l: 'Quality-Momentum composite (z: TTM growth + 12m return − volatility)' },
+
+  { v: 'd52', g: G_TRND, l: 'Distance from 52w High % (high 100, price 95 → 5; near-high = ≤ 10)' },
+  { v: 'd52_low_pct', g: G_TRND, l: 'Distance from 52w Low % (% above the low)' },
+  { v: 'rangePos', g: G_TRND, l: '52-week range position (0=low…100=high)' },
+  { v: 'daysHigh', g: G_TRND, l: 'Days since 52-week high' },
+  { v: 'dma50', g: G_TRND, l: 'Distance from 50-DMA %' },
+  { v: 'dma200', g: G_TRND, l: 'Distance from 200-DMA %' },
+  { v: 'indRank', g: G_TRND, l: 'Industry Momentum Rank (1=hot…10=cold)' },
+
+  { v: 'vol', g: G_RISK, l: 'Volatility — annualised %' },
+  { v: 'beta', g: G_RISK, l: 'Beta vs Nifty' },
+  { v: 'mdd6', g: G_RISK, l: 'Max drawdown — 6 month %' },
+  { v: 'upPct', g: G_RISK, l: 'Up-day consistency % (3m)' },
+
+  { v: 'turnover', g: G_LIQ, l: 'Avg daily turnover (₹ lacs, 20d)' },
+  { v: 'turnSurge', g: G_LIQ, l: 'Turnover surge (5d ÷ 90d)' },
+  { v: 'volSurge', g: G_LIQ, l: 'Volume surge — shares (5d ÷ 90d)' },
+  { v: 'delivPct', g: G_LIQ, l: 'Delivery % (20d avg, 2002+ data)' },
+
+  { v: 'rsi', g: G_OSC, l: 'RSI(14)' },
+  { v: 'macd', g: G_OSC, l: 'MACD histogram (12,26,9)' },
+  { v: 'stoch', g: G_OSC, l: 'Stochastic %K (14)' },
+  { v: 'bollB', g: G_OSC, l: 'Bollinger %b (20,2)' },
+
+  // point-in-time quarterly net profit (XBRL)
+  { v: 'profitYoyPct', g: G_FUND, l: 'Net Profit Qtr Growth YoY %' },
+  { v: 'profitBase', g: G_FUND, l: 'Net Profit Yr-ago Qtr ₹Cr (YoY base)' },
+  { v: 'profitAccel', g: G_FUND, l: 'Profit-growth acceleration (this-Q YoY − last-Q YoY, pts)' },
+  { v: 'profitTTM', g: G_FUND, l: 'Profit growth TTM % (last 4Q vs prior 4Q)' },
+  { v: 'profitStreak', g: G_FUND, l: 'Profit-growth streak (consecutive +YoY quarters)' },
+
+  // point-in-time FII/DII holding (quarterly SHP filings)
   { v: 'fiiPct', g: OWN_GRP, l: 'FII holding %' },
   { v: 'fiiChgPp', g: OWN_GRP, l: 'FII holding change QoQ (pp)' },
   { v: 'diiPct', g: OWN_GRP, l: 'DII holding %' },
   { v: 'diiChgPp', g: OWN_GRP, l: 'DII holding change QoQ (pp)' },
-  // --- extended technical factors (close + turnover + Nifty derived) ---
-  { v: 'ret1m', l: 'Return — 1 month %' },
-  { v: 'ret3m', l: 'Return — 3 month %' },
-  { v: 'ret6m', l: 'Return — 6 month %' },
-  { v: 'ret12m', l: 'Return — 12 month %' },
-  { v: 'accel', l: 'Momentum acceleration %' },
-  { v: 'dma50', l: 'Distance from 50-DMA %' },
-  { v: 'dma200', l: 'Distance from 200-DMA %' },
-  { v: 'rangePos', l: '52-week range position (0=low…100=high)' },
-  { v: 'daysHigh', l: 'Days since 52-week high' },
-  { v: 'vol', l: 'Volatility — annualised %' },
-  { v: 'riskMom', l: 'Risk-adjusted momentum (3m ÷ vol)' },
-  { v: 'beta', l: 'Beta vs Nifty' },
-  { v: 'mdd6', l: 'Max drawdown — 6 month %' },
-  { v: 'upPct', l: 'Up-day consistency % (3m)' },
-  { v: 'turnover', l: 'Avg daily turnover (₹ lacs, 20d)' },
-  { v: 'turnSurge', l: 'Turnover surge (5d ÷ 90d)' },
-  { v: 'volSurge', l: 'Volume surge — shares (5d ÷ 90d)' },
-  { v: 'delivPct', l: 'Delivery % (20d avg, 2002+ data)' },
-  { v: 'macd', l: 'MACD histogram (12,26,9)' },
-  { v: 'stoch', l: 'Stochastic %K (14)' },
-  { v: 'bollB', l: 'Bollinger %b (20,2)' },
-  // --- extended fundamentals (added 2026-06-18; must stay in sync with stock-backtest.html FIELDS) ---
-  { v: 'profitAccel', l: 'Profit-growth acceleration (this-Q YoY − last-Q YoY, pts)' },
-  { v: 'profitTTM', l: 'Profit growth TTM % (last 4Q vs prior 4Q)' },
-  { v: 'profitStreak', l: 'Profit-growth streak (consecutive +YoY quarters)' },
-  { v: 'postDrift', l: 'Post-result drift % (return since last earnings date)' },
-  { v: 'composite', l: 'Quality-Momentum composite (z: TTM growth + 12m return − volatility)' },
+
+  // Dead in survivorship-free mode (the only mode) — kept so old saved strategies still resolve.
+  { v: 'mcap', g: G_SIZE, l: 'Market Cap (₹Cr)' },
+  { v: 'hist_mcap', g: G_SIZE, l: 'Historical Mcap (₹Cr)' },
 ];
 const FIELD_LABEL = {}; FIELDS.forEach(f => FIELD_LABEL[f.v] = f.l);
 const fmtINR = n => '₹' + Math.round(n).toLocaleString('en-IN');

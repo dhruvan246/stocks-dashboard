@@ -6,7 +6,7 @@
  *     requests (the sf-data repo, Supabase, the live-quote Worker) — those stay network-only
  *     so data is always fresh and the cache never bloats.
  * Bump CACHE when the shell asset list changes. */
-const CACHE = 'sw-shell-v73';   // v73: Backtest — FII/DII factors grouped in one <optgroup>, shorter labels
+const CACHE = 'sw-shell-v74';   // v74: Backtest — all 38 factors grouped into 8 <optgroup> sections
 const SHELL = [
   './', './index.html', './nse-bse-dashboard.html', './stock-backtest.html', './saved-strategies.html',
   './backtest-history.html', './strategy-backtest.html', './all-picks.html', './strategy-mixer.html', './mutual-funds.html', './fii-dii.html',
