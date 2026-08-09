@@ -1,7 +1,8 @@
 {
  "_meta": {
   "purpose": "Symbols/cells taken to their FILINGS and found CORRECT. Suppressed from sweep_analyze so a settled question does not resurface every run \u2014 the same reason detect_con_copy.py suppresses TATACOFFEE. Each entry records WHY the sweep flagged clean data.",
-  "rule": "suppression is per (symbol, quarter) where known, else whole-symbol with a reason"
+  "rule": "suppression is per (symbol, quarter) where known, else whole-symbol with a reason",
+  "cells": "per-CELL suppression, for symbols that carry a real defect in one quarter and a false positive in another \u2014 whole-symbol suppression would hide the real one"
  },
  "symbols": {
   "CUPID": {
@@ -76,6 +77,20 @@
    ],
    "why_flagged": "row confirmed correct on three filings spanning the whole flagged range, zero restatement. The source of the cited -31.5%/-39.0% could NOT be identified \u2014 Screener's own MMTC figures round to whole crores (too coarse) and Total Income is a ~99% gap (too large). Recorded as UNRESOLVED-source rather than guessed; the ROW is not in doubt.",
    "source": "batch_a_verdicts.json"
+  }
+ },
+ "cells": {
+  "AADHARHFC": {
+   "20240331": {
+    "verdict": "OURS_CONFIRMED",
+    "why_flagged": "std-vs-con artefact \u2014 the comparison page shows the consolidated figure while our revS is standalone; 2024-06-30 was READ from the filing and confirmed (696.78 == filed total)",
+    "source": "aadharhfc_verdicts.json"
+   },
+   "20240630": {
+    "verdict": "OURS_CONFIRMED",
+    "why_flagged": "read from the filing: 696.78 == Total revenue from operations exactly",
+    "source": "aadharhfc_verdicts.json"
+   }
   }
  }
 }

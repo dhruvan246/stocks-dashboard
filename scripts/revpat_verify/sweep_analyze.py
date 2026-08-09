@@ -56,9 +56,13 @@ def main():
     a = ap.parse_args()
 
     try:
-        clean = set(jload("scripts/revpat_verify/adjudicated_clean.json")["symbols"])
+        _adj = jload("scripts/revpat_verify/adjudicated_clean.json")
+        clean = set(_adj.get("symbols", {}))
+        # per-CELL suppression: a symbol can be genuinely wrong in one quarter and a false positive
+        # in another (AADHARHFC is both), so whole-symbol suppression would hide the real defect.
+        clean_cells = {(s_, int(q)) for s_, qd in (_adj.get("cells") or {}).items() for q in qd}
     except Exception:
-        clean = set()
+        clean, clean_cells = set(), set()
     revop = jload("docs/sf_revop.json")
     fund = jload("docs/sf_fundamentals.json")
     patf = collections.defaultdict(dict)
@@ -104,6 +108,8 @@ def main():
             mypat, spat = patf.get(sym, {}).get(q), sp
             patok = (mypat is not None and spat not in (None, 0)
                      and abs((mypat - spat) / abs(spat)) <= PAT_OK)
+            if (sym, q) in clean_cells:          # this exact cell was read and confirmed
+                continue
             rows.append({"qe": q, "ours": mine, "site": sv, "rel": rel, "pat_agrees": patok})
             allrel.append(rel)
         if not rows:
