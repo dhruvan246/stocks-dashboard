@@ -3399,6 +3399,20 @@ SPENCERS×2, KHADIM/SHALBY/DNAMEDIA/APOLLO/HITECH/INFOBEAN/MIDHANI-con); integra
 stragglers (INGERRAND/EMERALL/MAJESAUT/OVOBELE/ARCHITORG); SHILPAMED-2015 (double-indexed archive
 mess); MAFATIND pre-2021 + con-basis rebuild; TSFINV/AGROPHOS/AGLSL/SGFL scrip-resolution class.
 
+**The ADJACENT-QUARTER twin of the year-shift poison (2026-08-10, AURUS).** The scan above only
+pairs PAT(q)==PAT(q+1y), but the SAME list double-indexing also lands one filing's OneD into the
+NEIGHBOURING quarter whenever a late filer submits two quarters in one document. AURUS Jun+Sep-2018
+con both held 4.05 with the same ann 20181128: one combined con filing (XBRL
+INDAS_41001_60087_14112018070010_WEB.xml, filed 14-Nov-2018, listed by NSE under THREE toDates —
+30-Sep-2018, 30-Jun-2018, even 30-Sep-2017). Its two contexts carry DECLARED period dates:
+OneD 2018-07-01..09-30 = 4.05 (stays at Sep; its rev 55.172 == stored revC exactly), FourD
+2018-04-01..06-30 = 6.02 → Jun-2018 healed 4.05→6.02 via pat_defects. Detection fingerprint:
+PAT(q)==PAT(q+1qtr) EXACT with the SAME ann date and |v|>0.5 — a store-wide scan (one loop over
+sf_fundamentals) found **58 open pairs** (many Mar→Jun-2019 std; INFOBEAN/SASKEN/HPBL/KEIL/
+RPSGVENT/SPENCERS overlap the IPO-cohort queue above). Adjudicate each per this section — declared
+context dates beat every inference; identical-to-the-paisa + same ann date is the tell, but flat
+quarters DO exist, so each pair still needs its document.
+
 **Legit structural breaks vs the scale-spike nuller:** demerger boundaries (CHOLAHLDNG Mar-2017 =
 pre-demerger full Tube Investments, 1168.14 vs holdco-era ~65) and lumpy traders (OSWALGREEN Jun-2015
 316.44, two independent as-filed docs) are REAL spikes — allowlist in `sanity_ok.json`, never widen

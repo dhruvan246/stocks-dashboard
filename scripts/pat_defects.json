@@ -94,6 +94,12 @@
    "note": "2026-08-10 re-key: this is a CON-slot heal (batch b4dd72fb 'Con heals: ... AURUS ...') journalled under the std keys by mistake; std slot was None before AND after the heal (never held a value), con slot carries 7.62 live. The std-keyed entry made verify_fills_live flag a false MISSING against slot 1 (runbook 56b).",
    "source": "nse:financial_res_AURUS_1032825.html",
    "stored_pat_con": 4.05
+  },
+  "20180630": {
+   "correct_pat_con": 6.02,
+   "defect": "same-FY adjacent-quarter duplicate (outside the \u00a745 PAT(q)==PAT(q+1y) scan): con slot held the Sep-2018 quarter's value; NSE triple-indexed the one late combined filing under toDate 30-Jun-2018/30-Sep-2018/30-Sep-2017",
+   "source": "FourD context of nse xbrl INDAS_41001_60087_14112018070010_WEB.xml (only con filing bcast 28-Nov-2018 == stored ann 20181128; = BSE 534532 filing of 14-Nov-2018 'Quarter Ended 30th September 2018'): DECLARED period 2018-04-01..2018-06-30, Consolidated, ProfitLossForPeriod 60174000 = 6.0174cr, EPS 2.04 x 2.9484cr shares recon 0.04%. OneD (declared 2018-07-01..2018-09-30) PAT 40493000 = 4.05 stays at 20180930 - its rev 55.172cr == stored revC 20180930 exactly. FY19 audited con 14.4171 (INDAS_45866 FourD) coherent: 6.02+4.05+1.80 leaves 2.55 for the never-filed Dec-18 con",
+   "stored_pat_con": 4.05
   }
  },
  "BDL": {
