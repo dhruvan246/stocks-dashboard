@@ -2045,6 +2045,16 @@ Full write-up: `scripts/SHP_VERIFY_REPORT.md`; plan `SHP_VERIFY_CAMPAIGN.md`; pe
   and was actually OURS wrong. Detector: `shp_verify_revcheck.py`. OPEN: the daily pipeline needs a
   periodic BSE revised_date_time sweep — revisions filed only to BSE are invisible to the NSE
   master top-up.
+  **Carve-out — the NSE-ONLY cohort (BSE Ltd, CDSL, ~104 symbols §22e) is STRUCTURALLY
+  UNVERIFIABLE by this check**: an exchange cannot list on itself, so no BSE copy of their filings
+  exists, ever. Their cells are not "unchecked", they are uncheckable by the cross-exchange route —
+  say so wherever their values are cited. Per-route exposure audit (coverage session, 2026-08-09):
+  the 2016-19 BSE ledger route is CLEAN by construction (row_for() sorts by revised-else-filing
+  date and takes the LAST, so it already picks revisions — spot-checked HCL-INSYS Sep-2018,
+  NILKAMAL Mar-2018); the NSE-gap fills and Screener-anchored BSE Ltd cells inherit the blind spot
+  (NSE public_val is itself the original-document figure, so tying to it proves nothing); the
+  Wayback-MC era has NO revision oracle at all — an archived page is a snapshot, and BSE's pre-2016
+  surface is measured empty — recorded as a stated limitation on that ledger, not as verified.
 - **★ IDENTITY TRAPS AT SCALE.** Tickertape's sid `TRU` is Trust Fintech, unrelated to our TRU
   (renamed Dhanvarsha, sid DHA); a StockEdge ticker shortcut matched `IEL` to the wrong company.
   Exact-ticker match, else unambiguous full name, else SKIP — a wrong company becomes a fake defect.
