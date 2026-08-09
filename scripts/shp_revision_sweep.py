@@ -23,6 +23,13 @@ is attached from the Phase-4 sweep extractions where the quarter overlaps (no re
 Healing stays a separate, deliberate step through shp_cell_fix.json.
 
   python3 -X utf8 scripts/shp_revision_sweep.py --out sweep.jsonl [--threads 5] [--limit 0]
+
+★ OUTPUT SHAPE IS A CONTRACT WITH A SECOND CONSUMER. refresh-shareholding.yml (Sunday-evening
+step, added 4fe9e6e3) parses the --out file as JSONL — one record per verified revision, a
+non-empty "diffs" meaning stale — and emits the ::warning:: summary from it. Its first version
+assumed a dict with a "stale" key and would have thrown on every Sunday run INSIDE
+continue-on-error: a guard that appears to run weekly and never reports. If this record shape
+ever changes, update the workflow summariser in the same commit.
 """
 import os, sys, json, time, argparse, collections, threading, urllib.request
 from concurrent.futures import ThreadPoolExecutor
