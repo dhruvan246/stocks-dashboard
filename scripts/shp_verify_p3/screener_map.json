@@ -1,0 +1,293 @@
+{
+ "site": "screener",
+ "precision": 2,
+ "map": {
+  "prom": [
+   "Promoters"
+  ],
+  "fii": [
+   "FIIs"
+  ],
+  "nsh": [
+   "No. of Shareholders"
+  ]
+ },
+ "_derived": {
+  "prom": {
+   "labels": [
+    "Promoters"
+   ],
+   "median_abs_delta": 0.0,
+   "hold_pct": 100.0,
+   "median_bias": 0.0,
+   "rows": 921,
+   "runners_up": [
+    {
+     "labels": [
+      "FIIs",
+      "Promoters"
+     ],
+     "median_abs_delta": 10.21,
+     "hold_pct": 6.2
+    },
+    {
+     "labels": [
+      "DIIs",
+      "Promoters"
+     ],
+     "median_abs_delta": 13.41,
+     "hold_pct": 5.6
+    },
+    {
+     "labels": [
+      "Promoters",
+      "Public"
+     ],
+     "median_abs_delta": 14.93,
+     "hold_pct": 0.0
+    }
+   ]
+  },
+  "fii": {
+   "labels": [
+    "FIIs"
+   ],
+   "median_abs_delta": 0.0,
+   "hold_pct": 97.3,
+   "median_bias": 0.0,
+   "rows": 1013,
+   "runners_up": [
+    {
+     "labels": [
+      "DIIs"
+     ],
+     "median_abs_delta": 7.36,
+     "hold_pct": 2.7
+    },
+    {
+     "labels": [
+      "Public"
+     ],
+     "median_abs_delta": 13.22,
+     "hold_pct": 0.1
+    },
+    {
+     "labels": [
+      "DIIs",
+      "FIIs"
+     ],
+     "median_abs_delta": 14.42,
+     "hold_pct": 4.9
+    }
+   ]
+  },
+  "dii": {
+   "labels": [
+    "DIIs"
+   ],
+   "median_abs_delta": 0.01,
+   "hold_pct": 85.0,
+   "median_bias": 0.0,
+   "rows": 991,
+   "runners_up": [
+    {
+     "labels": [
+      "FIIs"
+     ],
+     "median_abs_delta": 7.09,
+     "hold_pct": 4.7
+    },
+    {
+     "labels": [
+      "DIIs",
+      "FIIs"
+     ],
+     "median_abs_delta": 11.56,
+     "hold_pct": 3.5
+    },
+    {
+     "labels": [
+      "Public"
+     ],
+     "median_abs_delta": 12.45,
+     "hold_pct": 0.6
+    }
+   ],
+   "eras": {
+    "pre_2022_09": {
+     "labels": [
+      "DIIs"
+     ],
+     "median_abs_delta": 0.0,
+     "hold_pct": 95.4,
+     "median_bias": 0.0,
+     "rows": 260
+    },
+    "post_2022_09": {
+     "labels": [
+      "DIIs"
+     ],
+     "median_abs_delta": 0.01,
+     "hold_pct": 81.3,
+     "median_bias": 0.0,
+     "rows": 731
+    }
+   }
+  },
+  "mf": {
+   "labels": [
+    "DIIs"
+   ],
+   "median_abs_delta": 3.8,
+   "hold_pct": 6.1,
+   "median_bias": 3.8,
+   "rows": 991,
+   "runners_up": [
+    {
+     "labels": [
+      "FIIs"
+     ],
+     "median_abs_delta": 6.53,
+     "hold_pct": 5.7
+    },
+    {
+     "labels": [
+      "Public"
+     ],
+     "median_abs_delta": 9.01,
+     "hold_pct": 0.4
+    },
+    {
+     "labels": [
+      "DIIs",
+      "FIIs"
+     ],
+     "median_abs_delta": 17.23,
+     "hold_pct": 2.2
+    }
+   ],
+   "eras": {
+    "pre_2022_09": {
+     "labels": [
+      "DIIs"
+     ],
+     "median_abs_delta": 3.08,
+     "hold_pct": 8.8,
+     "median_bias": 3.08,
+     "rows": 260
+    },
+    "post_2022_09": {
+     "labels": [
+      "DIIs"
+     ],
+     "median_abs_delta": 4.1,
+     "hold_pct": 5.1,
+     "median_bias": 4.1,
+     "rows": 731
+    }
+   }
+  },
+  "ins": {
+   "labels": [
+    "FIIs"
+   ],
+   "median_abs_delta": 8.77,
+   "hold_pct": 5.3,
+   "median_bias": 8.32,
+   "rows": 1013,
+   "runners_up": [
+    {
+     "labels": [
+      "DIIs"
+     ],
+     "median_abs_delta": 10.56,
+     "hold_pct": 6.7
+    },
+    {
+     "labels": [
+      "Public"
+     ],
+     "median_abs_delta": 11.07,
+     "hold_pct": 0.0
+    },
+    {
+     "labels": [
+      "DIIs",
+      "FIIs"
+     ],
+     "median_abs_delta": 25.25,
+     "hold_pct": 2.5
+    }
+   ],
+   "eras": {
+    "pre_2022_09": {
+     "labels": [
+      "DIIs"
+     ],
+     "median_abs_delta": 8.62,
+     "hold_pct": 6.2,
+     "median_bias": 8.62,
+     "rows": 260
+    },
+    "post_2022_09": {
+     "labels": [
+      "FIIs"
+     ],
+     "median_abs_delta": 8.75,
+     "hold_pct": 5.1,
+     "median_bias": 8.515,
+     "rows": 750
+    }
+   }
+  },
+  "nsh": {
+   "labels": [
+    "No. of Shareholders"
+   ],
+   "median_abs_delta": 0.0,
+   "hold_pct": 100.0,
+   "median_bias": 0.0,
+   "rows": 945,
+   "runners_up": [
+    {
+     "labels": [
+      "FIIs",
+      "No. of Shareholders"
+     ],
+     "median_abs_delta": 11.29,
+     "hold_pct": 100.0
+    },
+    {
+     "labels": [
+      "DIIs",
+      "No. of Shareholders"
+     ],
+     "median_abs_delta": 14.55,
+     "hold_pct": 100.0
+    },
+    {
+     "labels": [
+      "No. of Shareholders",
+      "Public"
+     ],
+     "median_abs_delta": 15.31,
+     "hold_pct": 99.9
+    }
+   ]
+  }
+ },
+ "_pin": "93de247c",
+ "_comparable_rows": 1013,
+ "eras": [
+  {
+   "from": "0000-00-00",
+   "to": "2022-06-30",
+   "map": {
+    "dii": [
+     "DIIs"
+    ]
+   }
+  }
+ ],
+ "_warnings": []
+}

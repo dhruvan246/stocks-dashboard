@@ -53,24 +53,34 @@ Anchor check: RELIANCE Jun-2026 re-fetched from the live NSE XBRL and re-parsed 
   difference, not a bucket difference: it keeps DRs outside the base where the post-Sep-2022 SEBI
   look-through puts them inside. Ours follows the as-filed XBRL. DEF_DIFF, not our defect.
 
-## 3. ★ A reader gap in our own parser, found by the exchange leg
+## 3. ★ A STALE LOCAL CHECKOUT, mistaken for a reader gap  (corrected — read this one carefully)
 
-`parse_shp` returns **`mf = 0.0` on BSE documents for 2022-2025 only**:
+The exchange leg appeared to expose a parser bug: `parse_shp` returning **`mf = 0.0` on BSE
+documents for 2022-2025 only** (0/21 in 2016 … 36/36 in 2023, 0/16 in 2026), while every other
+field on those same filings matched us exactly.
 
-| year | 2016 | 2017 | 2018 | 2019 | 2020 | 2021 | 2022 | 2023 | 2024 | 2025 | 2026 |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| mf==0 | 0/21 | 0/32 | 0/32 | 0/32 | 0/32 | 0/34 | **18/36** | **36/36** | **33/33** | **8/32** | 0/16 |
+The diagnosis of the mechanism was right — BSE's new-format filings keep the OLD lowercase
+`MutualFundsOrUtiMember` element, and a parser that only maps the uppercase `MutualFundsOrUTIMember`
+in its new-format branch writes 0.0. **The conclusion was wrong: that fix already shipped on
+2026-08-07 and is live on origin/main.** What actually happened is that this session's extraction
+agent and my own test both imported
+`/Users/dhruvan/stocks-dashboard/scripts/fetch_shareholding.py` — a checkout **227 lines behind
+origin/main**. The zeros are an artefact of the stale working copy, not of production behaviour.
 
-On those same filings BSE's prom/fii/dii/ins/nsh all match us exactly, and StockEdge, Trendlyne and
-Tickertape confirm our `mf` to the decimal — so this is a tag-spelling gap on that route (§22b
-already records `MutualFundsOrUtiMember`, lowercase "ti", as a separate spelling), not a defect in
-our data. Mapping the field anyway put **54 phantom disputes** into the arbitration queue, so the
-BSE card deliberately omits `mf`: a source that cannot read a field must not vote on it.
+Consequences, all corrected:
+- The BSE mapping card can carry `mf` after all; the 54 "phantom disputes" were self-inflicted twice
+  over — first by the stale parser, then by my omitting the field to work around it.
+- The BSE pilot rows for 2022-2025 need re-parsing with the current parser before their `mf`
+  is used for anything.
+- **No production fix is required and none should be written.**
 
-**It has not contaminated us** — measured, not assumed: cells written by BSE routes hold *fewer* mf
-zeros (bse-1619 6.6%, bse-sweep 7.7%) than NSE-live ones (17.0%). But a future BSE-sourced backfill
-touching 2022-2025 filings **would** write zeros, so `parse_shp` should learn the second spelling
-before P3b runs. Logged, not yet fixed.
+The rule this breaks is one already in the runbook for data — *analyse LIVE, never the local
+checkout* — and it applies to **code** exactly as it does to `.bin` and `.json` files. Every agent
+in this campaign now imports the parser from a tree checked out at origin/main.
+
+Still true and independently verified: our stored `mf` values are correct. StockEdge (99.0% hold),
+Trendlyne (100%) and Tickertape all confirm them to the decimal, and BSE-routed cells in
+`shp_history` hold *fewer* mf zeros (6.6-7.7%) than NSE-live ones (17.0%).
 
 ## 4. ★ Trendlyne kills the idea of a universal DII calibration
 
