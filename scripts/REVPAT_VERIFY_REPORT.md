@@ -21,7 +21,7 @@ the companies' own filings, in cases where a site confidently said otherwise.**
 | Cells where ≥2 sites agree with each other *and* with us | 558 | **201** |
 | Cells where ≥2 sites agree with each other *against* us | 558 | **4** (all under arbitration, §4) |
 | Arbitration at the filing — SBIN consolidated PAT | 10 quarters, site disagreed on **10 of 10** | **OURS_CONFIRMED, exact to the paisa; the site is wrong** |
-| Internal store consistency (zero-network) | 133,000+ populated PAT cells | **753 disagree** — a real, measured open queue (§5) |
+| Internal store consistency (zero-network) | 133,000+ populated PAT cells | **55 disagree** at `50e57c82` (753 at my pin; the con side was closed concurrently — §5) |
 
 **The single most important result is a negative one.** The pilot's worst-looking finding —
 SBIN consolidated PAT, where Tickertape disagreed with us on *every one* of 10 quarters, always in
@@ -148,26 +148,49 @@ Three different revenue concepts, consistent with RIL's gross "Value of Sales & 
 "Revenue from operations". Under rule 6b, **sites disagreeing among themselves means the value is
 not taken** — correctly, no verdict was drawn.
 
-## 5. OPEN — an internal contradiction worth more than the site work
+## 5. OPEN — the internal contradiction, and a correction to this report's own first draft
 
-**753 cells where our own two stores disagree about PAT** (720 con, 33 std), measured with zero
-network calls: `sf_fundamentals` (authoritative) vs the `sf_revop` mirror.
+At my pin I measured **753 cells where our own two stores disagree about PAT** (720 con, 33 std),
+zero network: `sf_fundamentals` (authoritative) vs the `sf_revop` mirror. **That number is now
+stale, and re-measuring against current `origin/main` (50e57c82) is the honest thing to do:**
 
-- **82** are in the point-in-time N500 *and* the site-verifiable window — full rule-6b quorum available.
-- **158** are in the N500 but older — exchange-only.
-- **513** are outside the N500 denominator.
-- Mechanism fingerprints: **137 sign flips** (30 of them same-magnitude), 10 power-of-ten, 15 where
-  the authoritative file holds 0.0.
+| | at pin `e8a491c6` | at `50e57c82` |
+|---|---|---|
+| consolidated | 720 | **22** |
+| **standalone** | **33** | **33 — unchanged** |
+| total | 753 | **55** |
 
-A concurrent session (`0d48d5e7`, runbook **§70**) measured the same population independently, found
-that **`build_discovery.ttm_pat` was reading the mirror** — so the Discovery / Order-Wins TTM P/E was
-computed off the wrong PAT across 203 symbols — fixed that consumer, resynced the 603 safe
-`revop == 0.0` cells, and deliberately left the genuine disagreements for adjudication. This report
-inherits that queue as `revpat_verify/p5_contested.json`, prioritised and fingerprinted.
+A concurrent session closed the consolidated side while this campaign was running (runbook **§70**,
+**§71**): it found `build_discovery.ttm_pat` was reading the mirror through `pick(cell, 5, 4)` — so
+the Discovery / Order-Wins TTM P/E was computed off the wrong PAT across 203 symbols — fixed that
+consumer, then resynced the mirror **to** fundamentals, writing only `sf_revop` and never the
+authoritative file. 1,372 → 766 → 23.
 
-**Its worked example is the standing warning** (§70c): SADBHAV Dec-2020, where the authoritative file
-held the *total* and the mirror held the right magnitude with a *flipped sign* — **neither file was
-right.** "The two sides disagree" never implies one of them is correct.
+**★ Their §71 is the most important caution for this campaign, and it points straight at my own
+method.** They tried to adjudicate those cells against the filers' own cached XBRL `owners` tag and
+got a clean-looking verdict — *fix fundamentals in 718 cases*. **It was wrong, and applying it would
+have destroyed 693 correct values:** in that population the owners tag is itself ×0.1, sign-flipped,
+or unscaled raw rupees (MARUTI Sep-2022 tag 212.50 against a real ₹2,112 cr; KAYNES Mar-2023 tag
+5,814,249.6 against ₹63 cr). **A source being primary does not make it correct.**
+
+Does that undermine §1's SBIN result, which also read an XBRL owners tag? **No — and the reason is
+the control, not the tag.** SBIN was not a bare tag read: the tag value equalled our stored figure
+*exactly*, and independently our three stored quarters summed to the filing's own 9-month YTD
+context to **delta 0.00**. A corrupted tag (×0.1, sign-flip, raw rupees) fails both of those at
+once. That is precisely the "confirm against facts you can check independently" discipline their
+§71 asks for, applied before the conclusion rather than after.
+
+**What remains genuinely open, and is this audit's distinct contribution: the 33 STANDALONE
+divergences are untouched.** §70 and §71 were both consolidated-scoped; `build_contested.py` covers
+both bases, and the std side has not moved. Of the 55 remaining: **6** are in the point-in-time N500
+*and* the site-verifiable window (full rule-6b quorum available), 2 are N500 but older, 47 sit
+outside the denominator. Fingerprints: 9 sign flips, 1 power-of-ten, 1 zero-sentinel. Their held-back
+23 are journalled separately in `scripts/_fund_suspect_cells.json` (ZEAL, RELCAPITAL, NUCLEUS, IFCI,
+IRB), each needing a filing read.
+
+**The standing warning either way** (§70c): SADBHAV Dec-2020, where the authoritative file held the
+*total* and the mirror held the right magnitude with a *flipped sign* — **neither file was right.**
+"The two sides disagree" never implies one of them is correct.
 
 ## 6. METHOD, AND WHERE I WAS WRONG
 
@@ -202,7 +225,8 @@ right.** "The two sides disagree" never implies one of them is correct.
 - **No heal has been performed, and none should be yet.** Two blockers, both still standing: the SHP
   campaign's pending `nsh` reparse has not landed, and a concurrent session is actively writing the
   same PAT stores. One staged writer at a time.
-- **The 753-cell internal queue is measured, not adjudicated.**
+- **The internal-divergence queue is measured, not adjudicated** — now 55 cells, of which the
+  **33 standalone ones are untouched by §70/§71** (both were consolidated-scoped).
 - **Pre-2023 is unverifiable by site, by measurement** — not "unchecked". Any future report must keep
   that distinction; reporting it as unchecked would misstate both the effort and the risk.
 
