@@ -1924,6 +1924,71 @@ which no re-parse of NEW filings ever reaches. fii/dii/prom/ins were never affec
   `python3 scripts/fetch_shareholding.py --apply-ledgers`. A dead NSE file (nsearchives drops old XBRLs)
   falls through to BSE automatically — that is how the last 6 transport errors were cleared.
 
+### 22g. WRONG-SHARE-CLASS CELLS — the scale check, and why the MEDIAN rule is the wrong one  (2026-08-09)
+**A filing can describe something that is not the company's ordinary equity** (a separate share class,
+or a stub) and still pass every gate in `parse_shp` — the partition adds to 100, institutions stay under
+public, the anchor resolves. All five slots are then wrong together. **Confirmed instances: 2.**
+
+| symbol | quarter | stored (wrong) | truth (BSE) |
+|---|---|---|---|
+| GHCL | 2022-12-31 | prom 61.35 / fii 0 / dii 38.65 / mf 32.92, **58 holders, 29.67M shares** | prom 19.05 / fii 24.38 / dii 12.00 / mf 10.22, 94,479 holders, 95.59M shares |
+| NDL | 2020-12-31 | prom 97.71 / fii 2.27, **18 holders** | prom 64.73 / fii 1.51, 28,682 holders, 48.05M shares |
+
+- **⚠️ It is NOT "newest submission per symbol wins picked the wrong row".** Probed six quarters of the
+  NSE master (2020-12 → 2024-09, ~1,900-2,090 symbols each): **only 0-3 symbols per quarter file more
+  than one pattern for the same as-on date** (ARMANFIN, RKFORGE, DUCON, HARIOMPIPE, NUCLEUS, ABCAPITAL,
+  GENSOL) and **none of them is affected**. GHCL has exactly ONE master row for Dec-2022 and that row's
+  document is the wrong one — there is nothing to prefer, so the correction can only come from BSE.
+  NDL is the one case where submission order mattered, and in the other direction: a **late REVISION**
+  (submitted 2021-04-26, four months after the quarter) is the defective one and displaced a good
+  original. Newest-wins is right for revisions in general; it just can't tell a good one from a bad one.
+- **⚠️ THE MEDIAN RULE IS 99.3% FALSE POSITIVES — do not use it.** "flag cells whose holder count is
+  under 5% of the symbol's own median" yields **302 cells / 87 symbols, of which 2 are defects**. A
+  median is not a scale reference for a series with a trend, and these series trend hard:
+  - **293 of 302 (97%) are growth ramps.** SME/Emerge names whose holder base grew 100-500× — AAKASH
+    94 → 50,417, ATALREAL 112 → 17,008, DIL 203 → 72,429. The early quarters are genuinely tiny and the
+    median is set by the late ones. Promoter % is flat across the whole ramp; nothing is wrong.
+  - **The worst-looking ones are PRE-IPO patterns, and they are correct data.** MAZDOCK 2020-09 (7
+    holders, prom 100.00), CLEAN 2021-06 (31), AVALON 2023-03 (19), UTIAMC 2020-09 (1,927) — the last
+    pattern filed before listing. The big promoter "discontinuity" at the next quarter is the IPO.
+  - Independent check: median holding-value discontinuity vs the nearest clean neighbours is **0.41pp
+    for flagged cells vs 0.34pp for all cells** — statistically the flagged population is not disturbed.
+- **The gate that works — `nsh_gate()` in fetch_shareholding.py: compare against the symbol's own
+  EARLIER maximum holder count, never a median.** Refuse a filing whose `nsh` is under 5% of
+  `max(nsh)` over quarters strictly before it. Trend-immune by construction: a growth ramp can't trip
+  it (each value is near the running max) and a first-ever filing has no reference so pre-IPO patterns
+  pass untouched. **Replayed over the full history: 2 rejections in 57,362 cells with a count (0.0035%)
+  — exactly the two adjudicated defects, zero false positives.**
+  - A quarantined filing **must not bank its share count either** — `shares_outstanding.json` feeds
+    market cap (§22e), so GHCL's 29.67M would have produced a 3.2× low mcap. The gate runs before the
+    share-ledger write for that reason.
+  - Rejections land in `scripts/shp_quarantine.json` (symbol, quarter, reason, the parsed cell, the
+    XBRL url) — **held for adjudication, never silently dropped.**
+  - **Blind spot:** 13.6% of cells carry no `nsh` at all; no holder-count rule can see those. The
+    orthogonal detector for them is a promoter-% V-shape (≥15pp away from both neighbours while the
+    neighbours agree within 3pp) — 16 hits, 14 of them NOT nsh-visible (AYMSYNTEX 2023-06, DIACABS
+    2023-09/12, ORCHPHARMA 2020-12, WIPRO 2016-06, VMART 2018-03, …). **Not yet adjudicated — open work.**
+- **Corrections go through `scripts/shp_cell_fix.json`, never a direct edit** (CLAUDE.md rule 5):
+  - `fix.<SYM>.<QE>` = `{cell, was, src, why}`. `was` records the wrong cell, so if the stored value is
+    later neither the fix nor the recorded bad value, `apply_cell_fix` **warns and leaves it alone**
+    instead of clobbering. It only ever overrides a cell that already exists — a correction ledger must
+    never invent one (that bug was caught by the empty-history test; keep the test).
+  - `accept.<SYM>.<QE>` = a holder-count collapse that is REAL, exempted from the gate so a `--reparse`
+    can't punch a hole. Currently JPINFRATEC (post-resolution: equity extinguished, wholly owned by
+    Suraksha — prom 100.00 / 1 holder is true and persists), DSKULKARNI and FEDDERELEC (post-insolvency
+    reductions; holdings corroborated by later filings, **their nsh is doubtful but unverified**).
+  - Applied in `load_hist()` so every reader gets it, and again **after** the fetch loop so a backfill
+    can't re-poison a fixed cell. `python -X utf8 scripts/fetch_shareholding.py --apply-fix`
+    materialises the ledger into shp_history.json with no network — needed because build_shp_backtest /
+    build_stock_fin / build_compressed read that file straight off disk.
+- **⚠️ BSE spells the mutual-fund member the OLD way inside NEW-format filings** —
+  `MutualFundsOrUtiMember` (lowercase "ti") where NSE writes `MutualFundsOrUTIMember`. `MEMBERS` maps
+  the two to different slots (`mf` vs `o_mf`) and the new-format branch only reads `mf`, so **every
+  BSE-sourced post-Sep-2022 filing silently returned mf = 0.00** (GHCL's real 10.22 → 0). parse_shp now
+  falls back `mf ← o_mf`. Latent until now — the tracked BSE ledgers are all pre-Sep-2022 old-format —
+  but it would have bitten the moment any post-2022 quarter was filled from BSE, which is exactly what
+  this fix does. Check this first if a BSE-sourced fill comes back with a suspiciously round mf.
+
 ### 22c. FII/DII ACCUMULATION BACKTEST  (CHAT-DRIVEN — the on-page section was REMOVED)
 **⚠️ 2026-07-16: the user removed the backtest UI from shareholding.html ("I'll perform backtest in
 chat") — do NOT re-add the section.** What remains: `scripts/build_shp_backtest.py` (kept, run on

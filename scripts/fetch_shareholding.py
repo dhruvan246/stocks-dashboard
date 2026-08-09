@@ -129,12 +129,14 @@ def last_qes(n, today=None):
     return out
 
 def load_hist():
+    h = {"_names": {}}
     if os.path.exists(HIST):
         try:
-            return json.load(open(HIST, encoding="utf-8"))
+            h = json.load(open(HIST, encoding="utf-8"))
         except Exception as e:
             print("WARN history unreadable (%s) — starting empty" % e)
-    return {"_names": {}}
+    apply_cell_fix(h)   # §22g corrections reach EVERY reader (feed, engine feed), not just the fetch
+    return h
 
 def cells_of(h):
     return sum(len(v) for k, v in h.items() if not k.startswith("_") and isinstance(v, dict))
@@ -267,6 +269,69 @@ def apply_mf_heal_ledger(h):
         print("shp_mf_heal applied: %d mf cells%s"
               % (n, " (%d stale, left alone)" % stale if stale else ""))
     return n
+
+# ---- per-cell correction ledger + the write-time scale gate (runbook §22g) ---------------
+# A handful of filings do not describe the company's ordinary equity at all — a different
+# share class, or a stub. GHCL 2022-12-31 is the type specimen: NSE serves exactly ONE
+# filing for that quarter and it covers 29.67M shares / 58 holders against a real 95.59M /
+# 94,479. So this is NOT "newest-submission-wins picked the wrong row" (duplicate rows exist
+# for only ~0.1% of symbols per quarter, and none of them is affected) — the only document
+# the source has is the wrong one, and the correction has to come from BSE.
+CELL_FIX = os.path.join(HERE, "shp_cell_fix.json")
+NSH_FLOOR_FRAC = 0.05   # a filing whose holder count is below this x the symbol's own
+                        # EARLIER maximum is not the ordinary-equity pattern. Replayed over
+                        # the whole history (57,362 cells carry a count): 20 hits / 5 symbols
+                        # raw, of which 18 are the real post-insolvency collapses now on the
+                        # ledger's accept-list => 2 rejections, both adjudicated defects.
+
+QUARANTINE = []   # filings held back by nsh_gate this run — written to shp_quarantine.json
+
+def load_cell_fix():
+    if os.path.exists(CELL_FIX):
+        try:
+            return json.load(open(CELL_FIX, encoding="utf-8"))
+        except Exception as e:
+            print("WARN shp_cell_fix unreadable (%s) — no corrections applied" % e)
+    return {}
+
+def apply_cell_fix(h, led=None):
+    """Override known-wrong cells. Runs AFTER the fetch so a --reparse cannot re-poison them."""
+    led = load_cell_fix() if led is None else led
+    n = 0
+    for sym, qs in (led.get("fix") or {}).items():
+        for qe, ent in qs.items():
+            cur = (h.get(sym) or {}).get(qe)
+            want, was = ent.get("cell"), ent.get("was")
+            if cur is None: continue                      # correct only what exists — a fix
+            if cur == want: continue                      # ledger must never INVENT a cell
+            if was is not None and cur != was:
+                print("WARN cell_fix %s %s: stored cell is neither the fix nor the recorded bad "
+                      "value (%s) — leaving it alone, re-adjudicate" % (sym, qe, cur))
+                continue
+            h.setdefault(sym, {})[qe] = list(want)
+            n += 1
+    if n: print("shp_cell_fix applied: %d cells" % n)
+    return n
+
+def nsh_gate(h, sym, qe, nsh, accept):
+    """-> reason string if this filing's holder count says it is not the ordinary equity.
+
+    Deliberately compares against the symbol's own EARLIER quarters only, never a
+    whole-history median: a median is not a scale reference for a series with a trend, and
+    these series trend hard. An SME that grew 94 -> 50,417 holders, and the last pre-IPO
+    pattern of a company about to list (MAZDOCK 7, CLEAN 31, AVALON 19), are both perfectly
+    real and both look tiny against their own median — that rule flags 302 cells of which
+    only 2 are defects. Against the running maximum of EARLIER quarters, a growth ramp and a
+    first filing cannot trip at all, and only a genuine collapse does."""
+    if not nsh: return None
+    if qe in ((accept.get("accept") or {}).get(sym) or {}): return None
+    prior = [c[6] for q, c in (h.get(sym) or {}).items()
+             if q < qe and len(c) > 6 and c[6]]
+    if not prior: return None
+    top = max(prior)
+    if nsh < NSH_FLOOR_FRAC * top:
+        return "nsh %d < %.0f%% of the symbol's earlier max %d" % (nsh, NSH_FLOOR_FRAC * 100, top)
+    return None
 
 # ------------------------------------------------------------------ NSE fetch
 def fetch_master(jar, qe_iso):
@@ -407,6 +472,10 @@ def parse_shp(txt, qe_iso):
     is_new = ("fii" in vals) or ("dii" in vals)          # explicit Domestic/Foreign facts
     is_old = (not is_new) and ("o_inst" in vals)         # single Institutions bucket
     if not (is_new or is_old): return None               # unknown vintage — SKIP, never zero-fill
+    # BSE's copy of a NEW-format filing spells the mutual-fund member the OLD way
+    # (MutualFundsOrUtiMember, lowercase "ti") — see runbook §22g. Without this the mf slot
+    # comes back 0.00 for every BSE-sourced post-Sep-2022 filing (GHCL Dec-2022: 10.22 -> 0).
+    if "mf" not in vals and "o_mf" in vals: vals["mf"] = vals["o_mf"]
 
     prom = (prom or 0) * scale
     pub = (pub if pub is not None else max(0.0, 100.0 - prom)) * (scale if vals.get("pub") is not None else 1)
@@ -458,6 +527,7 @@ def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
     hist = load_hist()
     apply_bse_hist_ledger(hist)   # STEP 5 2016-2019 backfill — fill-only, no-ops once applied
     apply_mf_heal_ledger(hist)    # mf-slot repair — patch-only, no-ops once applied
+    cellfix = load_cell_fix()     # load_hist already applied it; re-applied post-fetch below
     names = hist.setdefault("_names", {})
     shares = load_shares()
     before = cells_of(hist)
@@ -488,7 +558,7 @@ def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
         print("%s: %d filings, %d new/revised to parse" % (qe, len(best), len(todo)))
         stats.append((qe, len(best), len(todo)))
 
-        done = skip = nsh_new = 0
+        done = skip = nsh_new = quar = 0
         def work(item):
             sym, r = item
             try:
@@ -499,6 +569,18 @@ def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
         with ThreadPoolExecutor(max_workers=THREADS) as ex:
             for fut in as_completed([ex.submit(work, it) for it in todo]):
                 sym, r, res, nshares = fut.result()
+                # A filing that describes a different share class carries a share count to
+                # match, and shares_outstanding feeds market cap (§22e) — so a quarantined
+                # filing must not bank its count either, or the stock gets a mcap several
+                # times too low. Gate FIRST, then bank.
+                bad = nsh_gate(hist, sym, qe, res.get("nsh") if isinstance(res, dict) else None,
+                               cellfix)
+                if bad:
+                    quar += 1
+                    QUARANTINE.append({"sym": sym, "qe": qe, "sub": r["sub"], "why": bad,
+                                       "cell": res, "shares": nshares, "xbrl": r["xb"]})
+                    if quar <= 12: print("  QUARANTINE %s %s: %s" % (sym, qe, bad))
+                    continue
                 # Share count is banked whether or not the FII/DII parse survived its gates.
                 if nshares and (shares.get(sym) or [None, ""])[1] <= qe:
                     if shares.get(sym) != [nshares, qe, r["sub"]]: nsh_new += 1
@@ -516,7 +598,8 @@ def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
                     skip += 1
                     why = res[1] if isinstance(res, tuple) else "no-anchor/old-format"
                     if skip <= 12: print("  SKIP %s %s: %s" % (sym, qe, why))
-        print("%s: +%d cells, %d skipped, %d share counts" % (qe, done, skip, nsh_new))
+        print("%s: +%d cells, %d skipped, %d quarantined, %d share counts"
+              % (qe, done, skip, quar, nsh_new))
         save_hist(hist)
         save_shares(shares)
 
@@ -524,7 +607,13 @@ def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
     if after < before:
         print("ABORT: history would shrink %d -> %d — not writing" % (before, after))
         sys.exit(1)
+    apply_cell_fix(hist, cellfix)
     save_hist(hist)
+    if QUARANTINE:
+        json.dump(QUARANTINE, open(os.path.join(HERE, "shp_quarantine.json"), "w"),
+                  ensure_ascii=False, indent=1)
+        print("QUARANTINE: %d filing(s) held back for review -> scripts/shp_quarantine.json "
+              "(adjudicate, then add to shp_cell_fix.json 'fix' or 'accept')" % len(QUARANTINE))
     print("history: %d cells (%+d), %d symbols" % (after, after - before, sum(1 for k in hist if not k.startswith("_"))))
     return stats
 
@@ -610,6 +699,7 @@ if __name__ == "__main__":
         before = cells_of(h)
         n = apply_bse_hist_ledger(h)
         apply_mf_heal_ledger(h)
+        apply_cell_fix(h)             # §22g per-cell corrections (load_hist applied them too)
         after = cells_of(h)
         if after < before:
             print("ABORT: history would shrink %d -> %d" % (before, after)); sys.exit(1)

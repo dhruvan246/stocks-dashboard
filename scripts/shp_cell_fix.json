@@ -1,0 +1,58 @@
+{
+  "_doc": [
+    "Per-cell corrections + accept-list for shp_history.json. Applied by fetch_shareholding.py",
+    "(apply_cell_fix) on every run, AFTER the fetch loop — never edit shp_history.json directly",
+    "(CLAUDE.md rule 5, runbook §22g). Idempotent; re-running a backfill cannot re-poison a fixed cell.",
+    "",
+    "fix.<SYM>.<QE> = the ordinary-equity pattern, replacing a filing that describes something else.",
+    "   cell = [prom, fii, dii, mf, ins, sub-date, nsh]  (same shape as shp_history)",
+    "   src  = system:document that the corrected numbers were parsed from",
+    "   was  = the wrong cell being replaced, kept so the override is auditable and self-checking:",
+    "          if the stored cell no longer matches `was`, apply_cell_fix warns instead of silently",
+    "          overwriting whatever is there now.",
+    "",
+    "accept.<SYM>.<QE> = a shareholder-count collapse that is REAL (post-insolvency capital",
+    "   reduction, pre-IPO pattern, ...). Exempts the cell from the write-time nsh scale gate so a",
+    "   --reparse cannot punch a hole in correct data. See runbook §22g for how each was adjudicated."
+  ],
+
+  "fix": {
+    "GHCL": {
+      "2022-12-31": {
+        "cell": [19.05, 24.38, 12.0, 10.22, 0.78, "2023-01-07", 94479],
+        "was":  [61.35, 0.0, 38.65, 32.92, 2.5, "2023-01-07", 58],
+        "src": "bse:500171_1012023101328_SHP.xml",
+        "why": "NSE served ONE filing for this (sym,qe) and it describes 29,674,622 shares held by 58 holders; GHCL's ordinary equity was 95,585,786 shares / 94,479 holders. Not a mispick between two rows — the only NSE document is the wrong one. BSE's copy of the same quarter parses clean and matches both neighbours (prom 19.03 -> 19.05 -> 19.05)."
+      }
+    },
+    "NDL": {
+      "2020-12-31": {
+        "cell": [64.73, 1.51, 0.0, 0.0, 0.0, "2021-01-21", 28682],
+        "was":  [97.71, 2.27, 0.0, 0.0, 0.0, "2021-04-26", 18],
+        "src": "bse:532641_2112021151810_SHP.xml",
+        "why": "A late REVISION (submitted 2021-04-26, four months after the quarter) is defective and, being newest, displaced the good original under the newest-submission-wins rule. BSE's copy of the original (filed 2021-01-21) gives prom 64.73, matching both neighbours exactly (64.74 / 64.74)."
+      }
+    }
+  },
+
+  "accept": {
+    "JPINFRATEC": {
+      "2024-06-30": "Post-resolution (Suraksha): existing equity extinguished, company wholly owned by the resolution applicant. prom 100.00 / 1 holder is the real pattern, not a stub — it persists in every later filing.",
+      "2024-09-30": "same event",
+      "2024-12-31": "same event"
+    },
+    "DSKULKARNI": {
+      "2023-09-30": "Post-insolvency capital reduction: prom steps 46.84 -> 95.00 and STAYS there through 2026-06-30, including later filings with a normal holder count (4,582). The holdings are corroborated; only the nsh=8 is doubtful and it has NOT been verified against BSE.",
+      "2023-12-31": "same event",
+      "2024-09-30": "same event",
+      "2024-12-31": "same event",
+      "2025-03-31": "same event"
+    },
+    "FEDDERELEC": {
+      "2021-12-31": "prom 100.00 / 7 holders persists across every filing from 2021-12 to 2025-03 and never recovers — consistent with a post-insolvency reduction rather than a one-off wrong document. NOT verified against BSE (symbol absent from bse_scrips by_id).",
+      "2022-03-31": "same", "2022-06-30": "same", "2022-12-31": "same", "2023-03-31": "same",
+      "2023-06-30": "same", "2023-09-30": "same", "2023-12-31": "same", "2024-09-30": "same",
+      "2024-12-31": "same", "2025-03-31": "same"
+    }
+  }
+}
