@@ -72,6 +72,16 @@ def main():
     except Exception:
         syms = sorted(fund)
 
+    # Cells already adjudicated and REVERTED stay flagged forever by this test -- TATACOFFEE
+    # 2022-12-31 satisfies it permanently, because its correct owners-basis con genuinely equals
+    # its standalone while screener quotes total PAT. Without this, the next sweep re-"heals" it
+    # straight back to the wrong number. Surface them separately, never in the actionable list.
+    try:
+        known = {k: v for k, v in json.load(open(os.path.join(HERE, "con_copy_heals.json"))).items()
+                 if v.get("reverted")}
+    except Exception:
+        known = {}
+
     bad, checked, n = [], 0, 0
     for sym in syms:
         if n >= limit:
@@ -123,8 +133,16 @@ def main():
                             "why": "con REVENUE slot equals std, screener reports con %s vs std %s"
                                    % (c2, s2)})
 
+    supp = [b for b in bad if "%s|%d|%s" % (b["sym"], b["qe"], b["field"]) in known]
+    bad = [b for b in bad if "%s|%d|%s" % (b["sym"], b["qe"], b["field"]) not in known]
+
     print("companies scanned: %d | cells testable (ours con==std, screener has both): %d"
           % (n, checked))
+    if supp:
+        print("suppressed %d cell(s) already adjudicated and REVERTED (see con_copy_heals.json) -- "
+              "these satisfy the test permanently and are NOT defects:" % len(supp))
+        for b in supp:
+            print("   %s %d %s" % (b["sym"], b["qe"], b["field"]))
     print("CON SLOT HOLDS STD: %d cells across %d companies\n"
           % (len(bad), len({b["sym"] for b in bad})))
     print("%-12s %-10s %-6s %11s %11s %11s"
