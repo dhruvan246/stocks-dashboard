@@ -1,0 +1,49 @@
+{
+ "_meta": {
+  "purpose": "Symbols/cells taken to their FILINGS and found CORRECT. Suppressed from sweep_analyze so a settled question does not resurface every run \u2014 the same reason detect_con_copy.py suppresses TATACOFFEE. Each entry records WHY the sweep flagged clean data.",
+  "rule": "suppression is per (symbol, quarter) where known, else whole-symbol with a reason"
+ },
+ "symbols": {
+  "CUPID": {
+   "verdict": "OURS_CONFIRMED",
+   "quarters_read": [
+    "2024-09-30",
+    "2025-12-31",
+    "2023-12-31 (control)"
+   ],
+   "why_flagged": "the comparison site INTERMITTENTLY prints Total Income (revenue + non-operating other income, sometimes + a one-off fair-value gain) instead of Revenue from Operation; its own control quarter reads the correct row, so it is an unstable site-side artefact, not a stable alternate concept",
+   "source": "batch_b_verdicts.json"
+  },
+  "SELMC": {
+   "verdict": "OURS_CONFIRMED",
+   "quarters_read": [
+    "2024-12-31",
+    "2025-03-31",
+    "2024-03-31 (control)"
+   ],
+   "why_flagged": "whole-crore display rounding on a ~1-30cr base",
+   "source": "batch_b_verdicts.json"
+  },
+  "ESSARSHPNG": {
+   "verdict": "OURS_CONFIRMED",
+   "quarters_read": [
+    "2024-03-31",
+    "2023-12-31",
+    "2024-12-31 (control)"
+   ],
+   "why_flagged": "whole-crore display rounding on a ~5cr base",
+   "source": "batch_b_verdicts.json"
+  },
+  "BALLARPUR": {
+   "verdict": "OURS_CONFIRMED",
+   "quarters_read": [
+    "2025-09-30",
+    "2025-03-31",
+    "2026-03-31 (control)"
+   ],
+   "why_flagged": "whole-crore display rounding on a ~2-3cr base",
+   "open_note": "BALLARPUR 2024-03-31 detres read is UNRELIABLE \u2014 its 'standalone' revenue matches our CONSOLIDATED slot and neither PAT slot matches; likely a CIRP-gap catch-up artefact. Not adjudicated; avoid as a control.",
+   "source": "batch_b_verdicts.json"
+  }
+ }
+}

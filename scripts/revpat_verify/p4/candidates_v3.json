@@ -1,0 +1,1215 @@
+{
+ "_meta": {
+  "defect": "stored standalone revenue holds a COMPONENT row, not the total",
+  "signature": "consecutive quarters BELOW an independent source while PAT AGREES",
+  "thresholds": {
+   "below": -0.02,
+   "min_run": 2,
+   "pat_within": 0.01,
+   "lone": -0.05,
+   "abs_floor_cr": 2.0
+  },
+  "confirmed_instances": [
+   "HUDCO 2022-06-30 (Interest Income sub-line)",
+   "AADHARHFC 2023-24"
+  ],
+  "warning": "a flag is a place to LOOK. Only a filing read decides.",
+  "symbols_compared": 3244,
+  "suppressed_adjudicated_clean": [
+   "BALLARPUR",
+   "CUPID",
+   "ESSARSHPNG",
+   "SELMC"
+  ],
+  "candidates": 51,
+  "financial_candidates": 11,
+  "median_rel_all_cells": 0.0
+ },
+ "candidates": [
+  {
+   "sym": "HBSL",
+   "is_financial": true,
+   "run_len": 1,
+   "from": 20241231,
+   "to": 20241231,
+   "worst_pct": -1465.6,
+   "median_pct": -1465.6,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20241231,
+     "ours": -4.37,
+     "site": 0.32,
+     "pct": -1465.6
+    }
+   ]
+  },
+  {
+   "sym": "NAGAFERT",
+   "is_financial": false,
+   "run_len": 1,
+   "from": 20251231,
+   "to": 20251231,
+   "worst_pct": -100.0,
+   "median_pct": -100.0,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20251231,
+     "ours": 0.0,
+     "site": 8.46,
+     "pct": -100.0
+    }
+   ]
+  },
+  {
+   "sym": "ADVENTHTL",
+   "is_financial": false,
+   "run_len": 1,
+   "from": 20250930,
+   "to": 20250930,
+   "worst_pct": -100.0,
+   "median_pct": -100.0,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20250930,
+     "ours": 0.0,
+     "site": 5.0,
+     "pct": -100.0
+    }
+   ]
+  },
+  {
+   "sym": "MVL",
+   "is_financial": false,
+   "run_len": 1,
+   "from": 20190331,
+   "to": 20190331,
+   "worst_pct": -100.0,
+   "median_pct": -100.0,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20190331,
+     "ours": 0.0,
+     "site": 2.96,
+     "pct": -100.0
+    }
+   ]
+  },
+  {
+   "sym": "CEMPRO",
+   "is_financial": false,
+   "run_len": 3,
+   "from": 20240331,
+   "to": 20250331,
+   "worst_pct": -99.9,
+   "median_pct": -99.7,
+   "pat_agrees_throughout": true,
+   "kind": "run+isolated",
+   "cells": [
+    {
+     "qe": 20240331,
+     "ours": 7.72,
+     "site": 2237.0,
+     "pct": -99.7
+    },
+    {
+     "qe": 20241231,
+     "ours": 2215.99,
+     "site": 2270.0,
+     "pct": -2.4
+    },
+    {
+     "qe": 20250331,
+     "ours": 2.48,
+     "site": 2532.0,
+     "pct": -99.9
+    }
+   ]
+  },
+  {
+   "sym": "RTNINDIA",
+   "is_financial": true,
+   "run_len": 2,
+   "from": 20230930,
+   "to": 20231231,
+   "worst_pct": -99.5,
+   "median_pct": -99.3,
+   "pat_agrees_throughout": true,
+   "kind": "run",
+   "cells": [
+    {
+     "qe": 20230930,
+     "ours": 1.06,
+     "site": 221.91,
+     "pct": -99.5
+    },
+    {
+     "qe": 20231231,
+     "ours": 2.03,
+     "site": 228.98,
+     "pct": -99.1
+    }
+   ]
+  },
+  {
+   "sym": "MAHAPEXLTD",
+   "is_financial": false,
+   "run_len": 2,
+   "from": 20230331,
+   "to": 20241231,
+   "worst_pct": -99.1,
+   "median_pct": -99.0,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20230331,
+     "ours": 0.04,
+     "site": 3.31,
+     "pct": -98.8
+    },
+    {
+     "qe": 20241231,
+     "ours": 0.05,
+     "site": 5.86,
+     "pct": -99.1
+    }
+   ]
+  },
+  {
+   "sym": "SATHAISPAT",
+   "is_financial": false,
+   "run_len": 1,
+   "from": 20220331,
+   "to": 20220331,
+   "worst_pct": -97.8,
+   "median_pct": -97.8,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20220331,
+     "ours": 3.14,
+     "site": 145.23,
+     "pct": -97.8
+    }
+   ]
+  },
+  {
+   "sym": "BLIL",
+   "is_financial": false,
+   "run_len": 1,
+   "from": 20250930,
+   "to": 20250930,
+   "worst_pct": -97.0,
+   "median_pct": -97.0,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20250930,
+     "ours": 2.8,
+     "site": 93.0,
+     "pct": -97.0
+    }
+   ]
+  },
+  {
+   "sym": "RANBAXY",
+   "is_financial": false,
+   "run_len": 1,
+   "from": 20111231,
+   "to": 20111231,
+   "worst_pct": -96.9,
+   "median_pct": -96.9,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20111231,
+     "ours": 119.59,
+     "site": 3896.0,
+     "pct": -96.9
+    }
+   ]
+  },
+  {
+   "sym": "LAHOTIOV",
+   "is_financial": false,
+   "run_len": 5,
+   "from": 20240331,
+   "to": 20260331,
+   "worst_pct": -94.9,
+   "median_pct": -4.6,
+   "pat_agrees_throughout": true,
+   "kind": "run+isolated",
+   "cells": [
+    {
+     "qe": 20240331,
+     "ours": 5.18,
+     "site": 101.62,
+     "pct": -94.9
+    },
+    {
+     "qe": 20250630,
+     "ours": 80.63,
+     "site": 84.5,
+     "pct": -4.6
+    },
+    {
+     "qe": 20250930,
+     "ours": 104.04,
+     "site": 107.14,
+     "pct": -2.9
+    },
+    {
+     "qe": 20251231,
+     "ours": 92.89,
+     "site": 99.4,
+     "pct": -6.5
+    },
+    {
+     "qe": 20260331,
+     "ours": 84.68,
+     "site": 88.46,
+     "pct": -4.3
+    }
+   ]
+  },
+  {
+   "sym": "NETWORK18",
+   "is_financial": false,
+   "run_len": 1,
+   "from": 20240630,
+   "to": 20240630,
+   "worst_pct": -87.6,
+   "median_pct": -87.6,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20240630,
+     "ours": 56.01,
+     "site": 453.0,
+     "pct": -87.6
+    }
+   ]
+  },
+  {
+   "sym": "GYFTR",
+   "is_financial": false,
+   "run_len": 3,
+   "from": 20230630,
+   "to": 20231231,
+   "worst_pct": -87.1,
+   "median_pct": -82.8,
+   "pat_agrees_throughout": true,
+   "kind": "run",
+   "cells": [
+    {
+     "qe": 20230630,
+     "ours": 3.28,
+     "site": 19.09,
+     "pct": -82.8
+    },
+    {
+     "qe": 20230930,
+     "ours": 3.11,
+     "site": 24.18,
+     "pct": -87.1
+    },
+    {
+     "qe": 20231231,
+     "ours": 4.42,
+     "site": 18.54,
+     "pct": -76.2
+    }
+   ]
+  },
+  {
+   "sym": "TREJHARA",
+   "is_financial": false,
+   "run_len": 1,
+   "from": 20250630,
+   "to": 20250630,
+   "worst_pct": -80.4,
+   "median_pct": -80.4,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20250630,
+     "ours": 5.83,
+     "site": 29.82,
+     "pct": -80.4
+    }
+   ]
+  },
+  {
+   "sym": "MTNL",
+   "is_financial": false,
+   "run_len": 5,
+   "from": 20240930,
+   "to": 20251231,
+   "worst_pct": -64.4,
+   "median_pct": -38.0,
+   "pat_agrees_throughout": true,
+   "kind": "run+isolated",
+   "cells": [
+    {
+     "qe": 20240930,
+     "ours": 158.8,
+     "site": 251.0,
+     "pct": -36.7
+    },
+    {
+     "qe": 20241231,
+     "ours": 148.25,
+     "site": 239.0,
+     "pct": -38.0
+    },
+    {
+     "qe": 20250331,
+     "ours": 152.5,
+     "site": 258.0,
+     "pct": -40.9
+    },
+    {
+     "qe": 20250630,
+     "ours": 51.66,
+     "site": 145.0,
+     "pct": -64.4
+    },
+    {
+     "qe": 20251231,
+     "ours": 178.24,
+     "site": 191.0,
+     "pct": -6.7
+    }
+   ]
+  },
+  {
+   "sym": "IFCI",
+   "is_financial": true,
+   "run_len": 2,
+   "from": 20230331,
+   "to": 20250331,
+   "worst_pct": -59.6,
+   "median_pct": -33.8,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20230331,
+     "ours": 141.67,
+     "site": 351.0,
+     "pct": -59.6
+    },
+    {
+     "qe": 20250331,
+     "ours": 205.27,
+     "site": 223.0,
+     "pct": -8.0
+    }
+   ]
+  },
+  {
+   "sym": "MBLINFRA",
+   "is_financial": false,
+   "run_len": 1,
+   "from": 20250930,
+   "to": 20250930,
+   "worst_pct": -44.2,
+   "median_pct": -44.2,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20250930,
+     "ours": 30.55,
+     "site": 54.76,
+     "pct": -44.2
+    }
+   ]
+  },
+  {
+   "sym": "COHANCE",
+   "is_financial": false,
+   "run_len": 2,
+   "from": 20230930,
+   "to": 20240331,
+   "worst_pct": -27.0,
+   "median_pct": -19.5,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20230930,
+     "ours": 197.39,
+     "site": 224.62,
+     "pct": -12.1
+    },
+    {
+     "qe": 20240331,
+     "ours": 184.76,
+     "site": 252.93,
+     "pct": -27.0
+    }
+   ]
+  },
+  {
+   "sym": "STARTECK",
+   "is_financial": true,
+   "run_len": 1,
+   "from": 20260331,
+   "to": 20260331,
+   "worst_pct": -26.2,
+   "median_pct": -26.2,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20260331,
+     "ours": 6.12,
+     "site": 8.29,
+     "pct": -26.2
+    }
+   ]
+  },
+  {
+   "sym": "DOLATALGO",
+   "is_financial": false,
+   "run_len": 1,
+   "from": 20240331,
+   "to": 20240331,
+   "worst_pct": -25.0,
+   "median_pct": -25.0,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20240331,
+     "ours": 87.78,
+     "site": 117.0,
+     "pct": -25.0
+    }
+   ]
+  },
+  {
+   "sym": "BSE",
+   "is_financial": false,
+   "run_len": 5,
+   "from": 20230630,
+   "to": 20240630,
+   "worst_pct": -23.2,
+   "median_pct": -18.0,
+   "pat_agrees_throughout": true,
+   "kind": "run",
+   "cells": [
+    {
+     "qe": 20230630,
+     "ours": 156.62,
+     "site": 191.0,
+     "pct": -18.0
+    },
+    {
+     "qe": 20230930,
+     "ours": 206.61,
+     "site": 269.0,
+     "pct": -23.2
+    },
+    {
+     "qe": 20231231,
+     "ours": 278.4,
+     "site": 320.0,
+     "pct": -13.0
+    },
+    {
+     "qe": 20240331,
+     "ours": 379.35,
+     "site": 479.0,
+     "pct": -20.8
+    },
+    {
+     "qe": 20240630,
+     "ours": 495.98,
+     "site": 545.0,
+     "pct": -9.0
+    }
+   ]
+  },
+  {
+   "sym": "PEL",
+   "is_financial": true,
+   "run_len": 1,
+   "from": 20241231,
+   "to": 20241231,
+   "worst_pct": -22.2,
+   "median_pct": -22.2,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20241231,
+     "ours": 449.13,
+     "site": 577.0,
+     "pct": -22.2
+    }
+   ]
+  },
+  {
+   "sym": "PIRAMALFIN",
+   "is_financial": true,
+   "run_len": 3,
+   "from": 20241231,
+   "to": 20250930,
+   "worst_pct": -21.5,
+   "median_pct": -19.0,
+   "pat_agrees_throughout": true,
+   "kind": "run+isolated",
+   "cells": [
+    {
+     "qe": 20241231,
+     "ours": 2205.61,
+     "site": 2810.0,
+     "pct": -21.5
+    },
+    {
+     "qe": 20250331,
+     "ours": 2315.89,
+     "site": 2860.0,
+     "pct": -19.0
+    },
+    {
+     "qe": 20250930,
+     "ours": 2594.11,
+     "site": 2843.0,
+     "pct": -8.8
+    }
+   ]
+  },
+  {
+   "sym": "JPASSOCIAT",
+   "is_financial": false,
+   "run_len": 2,
+   "from": 20231231,
+   "to": 20240331,
+   "worst_pct": -21.0,
+   "median_pct": -19.5,
+   "pat_agrees_throughout": true,
+   "kind": "run",
+   "cells": [
+    {
+     "qe": 20231231,
+     "ours": 710.09,
+     "site": 867.0,
+     "pct": -18.1
+    },
+    {
+     "qe": 20240331,
+     "ours": 935.42,
+     "site": 1184.0,
+     "pct": -21.0
+    }
+   ]
+  },
+  {
+   "sym": "CRAMC",
+   "is_financial": false,
+   "run_len": 2,
+   "from": 20251231,
+   "to": 20260630,
+   "worst_pct": -19.9,
+   "median_pct": -14.6,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20251231,
+     "ours": 109.77,
+     "site": 121.0,
+     "pct": -9.3
+    },
+    {
+     "qe": 20260630,
+     "ours": 116.2,
+     "site": 145.0,
+     "pct": -19.9
+    }
+   ]
+  },
+  {
+   "sym": "BHARATCOAL",
+   "is_financial": false,
+   "run_len": 1,
+   "from": 20251231,
+   "to": 20251231,
+   "worst_pct": -19.8,
+   "median_pct": -19.8,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20251231,
+     "ours": 2782.8,
+     "site": 3469.0,
+     "pct": -19.8
+    }
+   ]
+  },
+  {
+   "sym": "TVSHLTD",
+   "is_financial": true,
+   "run_len": 3,
+   "from": 20230630,
+   "to": 20231231,
+   "worst_pct": -19.5,
+   "median_pct": -5.6,
+   "pat_agrees_throughout": true,
+   "kind": "run",
+   "cells": [
+    {
+     "qe": 20230630,
+     "ours": 555.96,
+     "site": 589.01,
+     "pct": -5.6
+    },
+    {
+     "qe": 20230930,
+     "ours": 390.16,
+     "site": 484.44,
+     "pct": -19.5
+    },
+    {
+     "qe": 20231231,
+     "ours": 158.01,
+     "site": 163.83,
+     "pct": -3.6
+    }
+   ]
+  },
+  {
+   "sym": "BHARATFIN",
+   "is_financial": false,
+   "run_len": 1,
+   "from": 20180331,
+   "to": 20180331,
+   "worst_pct": -16.5,
+   "median_pct": -16.5,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20180331,
+     "ours": 539.16,
+     "site": 646.0,
+     "pct": -16.5
+    }
+   ]
+  },
+  {
+   "sym": "IL&FSTRANS",
+   "is_financial": false,
+   "run_len": 1,
+   "from": 20171231,
+   "to": 20171231,
+   "worst_pct": -16.2,
+   "median_pct": -16.2,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20171231,
+     "ours": 712.78,
+     "site": 851.0,
+     "pct": -16.2
+    }
+   ]
+  },
+  {
+   "sym": "SYNCOM",
+   "is_financial": false,
+   "run_len": 1,
+   "from": 20190331,
+   "to": 20190331,
+   "worst_pct": -16.0,
+   "median_pct": -16.0,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20190331,
+     "ours": 11.69,
+     "site": 13.91,
+     "pct": -16.0
+    }
+   ]
+  },
+  {
+   "sym": "CIFL",
+   "is_financial": true,
+   "run_len": 1,
+   "from": 20250930,
+   "to": 20250930,
+   "worst_pct": -15.2,
+   "median_pct": -15.2,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20250930,
+     "ours": 40.69,
+     "site": 48.01,
+     "pct": -15.2
+    }
+   ]
+  },
+  {
+   "sym": "SAMPANN",
+   "is_financial": false,
+   "run_len": 1,
+   "from": 20250331,
+   "to": 20250331,
+   "worst_pct": -15.1,
+   "median_pct": -15.1,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20250331,
+     "ours": 27.5,
+     "site": 32.38,
+     "pct": -15.1
+    }
+   ]
+  },
+  {
+   "sym": "THEMISMED",
+   "is_financial": false,
+   "run_len": 2,
+   "from": 20240630,
+   "to": 20240930,
+   "worst_pct": -14.9,
+   "median_pct": -14.3,
+   "pat_agrees_throughout": true,
+   "kind": "run",
+   "cells": [
+    {
+     "qe": 20240630,
+     "ours": 106.08,
+     "site": 122.99,
+     "pct": -13.7
+    },
+    {
+     "qe": 20240930,
+     "ours": 99.59,
+     "site": 117.01,
+     "pct": -14.9
+    }
+   ]
+  },
+  {
+   "sym": "ACC",
+   "is_financial": false,
+   "run_len": 1,
+   "from": 20241231,
+   "to": 20241231,
+   "worst_pct": -12.9,
+   "median_pct": -12.9,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20241231,
+     "ours": 5175.96,
+     "site": 5940.0,
+     "pct": -12.9
+    }
+   ]
+  },
+  {
+   "sym": "JKPAPER",
+   "is_financial": false,
+   "run_len": 1,
+   "from": 20250331,
+   "to": 20250331,
+   "worst_pct": -12.9,
+   "median_pct": -12.9,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20250331,
+     "ours": 1438.97,
+     "site": 1652.0,
+     "pct": -12.9
+    }
+   ]
+  },
+  {
+   "sym": "DELTACORP",
+   "is_financial": false,
+   "run_len": 1,
+   "from": 20250331,
+   "to": 20250331,
+   "worst_pct": -11.9,
+   "median_pct": -11.9,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20250331,
+     "ours": 119.77,
+     "site": 136.0,
+     "pct": -11.9
+    }
+   ]
+  },
+  {
+   "sym": "MANAKALUCO",
+   "is_financial": false,
+   "run_len": 1,
+   "from": 20230930,
+   "to": 20230930,
+   "worst_pct": -11.5,
+   "median_pct": -11.5,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20230930,
+     "ours": 99.65,
+     "site": 112.6,
+     "pct": -11.5
+    }
+   ]
+  },
+  {
+   "sym": "ZYDUSWELL",
+   "is_financial": false,
+   "run_len": 1,
+   "from": 20241231,
+   "to": 20241231,
+   "worst_pct": -11.3,
+   "median_pct": -11.3,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20241231,
+     "ours": 88.4,
+     "site": 99.7,
+     "pct": -11.3
+    }
+   ]
+  },
+  {
+   "sym": "RSYSTEMS",
+   "is_financial": false,
+   "run_len": 1,
+   "from": 20250630,
+   "to": 20250630,
+   "worst_pct": -11.3,
+   "median_pct": -11.3,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20250630,
+     "ours": 259.12,
+     "site": 292.0,
+     "pct": -11.3
+    }
+   ]
+  },
+  {
+   "sym": "SHAHALLOYS",
+   "is_financial": false,
+   "run_len": 1,
+   "from": 20230630,
+   "to": 20230630,
+   "worst_pct": -11.0,
+   "median_pct": -11.0,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20230630,
+     "ours": 141.97,
+     "site": 159.56,
+     "pct": -11.0
+    }
+   ]
+  },
+  {
+   "sym": "AADHARHFC",
+   "is_financial": true,
+   "run_len": 3,
+   "from": 20230930,
+   "to": 20240630,
+   "worst_pct": -8.7,
+   "median_pct": -2.7,
+   "pat_agrees_throughout": true,
+   "kind": "run+isolated",
+   "cells": [
+    {
+     "qe": 20230930,
+     "ours": 560.59,
+     "site": 614.0,
+     "pct": -8.7
+    },
+    {
+     "qe": 20240331,
+     "ours": 672.98,
+     "site": 692.0,
+     "pct": -2.7
+    },
+    {
+     "qe": 20240630,
+     "ours": 696.78,
+     "site": 713.0,
+     "pct": -2.3
+    }
+   ]
+  },
+  {
+   "sym": "GINNIFILA",
+   "is_financial": false,
+   "run_len": 1,
+   "from": 20260331,
+   "to": 20260331,
+   "worst_pct": -7.9,
+   "median_pct": -7.9,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20260331,
+     "ours": 90.1,
+     "site": 97.78,
+     "pct": -7.9
+    }
+   ]
+  },
+  {
+   "sym": "SPICEJET",
+   "is_financial": false,
+   "run_len": 3,
+   "from": 20240630,
+   "to": 20250630,
+   "worst_pct": -7.7,
+   "median_pct": -6.6,
+   "pat_agrees_throughout": true,
+   "kind": "run",
+   "cells": [
+    {
+     "qe": 20240630,
+     "ours": 1565.16,
+     "site": 1696.0,
+     "pct": -7.7
+    },
+    {
+     "qe": 20250331,
+     "ours": 1360.87,
+     "site": 1446.0,
+     "pct": -5.9
+    },
+    {
+     "qe": 20250630,
+     "ours": 1033.36,
+     "site": 1106.0,
+     "pct": -6.6
+    }
+   ]
+  },
+  {
+   "sym": "JINDALPOLY",
+   "is_financial": false,
+   "run_len": 1,
+   "from": 20230331,
+   "to": 20230331,
+   "worst_pct": -6.6,
+   "median_pct": -6.6,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20230331,
+     "ours": 182.1,
+     "site": 195.0,
+     "pct": -6.6
+    }
+   ]
+  },
+  {
+   "sym": "RBLBANK",
+   "is_financial": true,
+   "run_len": 1,
+   "from": 20230630,
+   "to": 20230630,
+   "worst_pct": -6.2,
+   "median_pct": -6.2,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20230630,
+     "ours": 2679.85,
+     "site": 2856.0,
+     "pct": -6.2
+    }
+   ]
+  },
+  {
+   "sym": "SALSTEEL",
+   "is_financial": false,
+   "run_len": 1,
+   "from": 20230331,
+   "to": 20230331,
+   "worst_pct": -5.2,
+   "median_pct": -5.2,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20230331,
+     "ours": 106.52,
+     "site": 112.31,
+     "pct": -5.2
+    }
+   ]
+  },
+  {
+   "sym": "MONARCH",
+   "is_financial": false,
+   "run_len": 1,
+   "from": 20230930,
+   "to": 20230930,
+   "worst_pct": -5.2,
+   "median_pct": -5.2,
+   "pat_agrees_throughout": true,
+   "kind": "isolated_material",
+   "cells": [
+    {
+     "qe": 20230930,
+     "ours": 71.08,
+     "site": 75.0,
+     "pct": -5.2
+    }
+   ]
+  },
+  {
+   "sym": "MOTHERSON",
+   "is_financial": false,
+   "run_len": 2,
+   "from": 20230630,
+   "to": 20230930,
+   "worst_pct": -4.3,
+   "median_pct": -4.1,
+   "pat_agrees_throughout": true,
+   "kind": "run",
+   "cells": [
+    {
+     "qe": 20230630,
+     "ours": 2017.43,
+     "site": 2107.0,
+     "pct": -4.3
+    },
+    {
+     "qe": 20230930,
+     "ours": 2221.18,
+     "site": 2312.0,
+     "pct": -3.9
+    }
+   ]
+  },
+  {
+   "sym": "HITECHGEAR",
+   "is_financial": false,
+   "run_len": 2,
+   "from": 20240930,
+   "to": 20241231,
+   "worst_pct": -2.9,
+   "median_pct": -2.9,
+   "pat_agrees_throughout": true,
+   "kind": "run",
+   "cells": [
+    {
+     "qe": 20240930,
+     "ours": 168.01,
+     "site": 173.05,
+     "pct": -2.9
+    },
+    {
+     "qe": 20241231,
+     "ours": 141.34,
+     "site": 145.57,
+     "pct": -2.9
+    }
+   ]
+  },
+  {
+   "sym": "DISHMAN",
+   "is_financial": false,
+   "run_len": 3,
+   "from": 20141231,
+   "to": 20150630,
+   "worst_pct": -2.8,
+   "median_pct": -2.2,
+   "pat_agrees_throughout": true,
+   "kind": "run",
+   "cells": [
+    {
+     "qe": 20141231,
+     "ours": 118.64,
+     "site": 122.0,
+     "pct": -2.8
+    },
+    {
+     "qe": 20150331,
+     "ours": 160.47,
+     "site": 164.0,
+     "pct": -2.2
+    },
+    {
+     "qe": 20150630,
+     "ours": 133.99,
+     "site": 137.0,
+     "pct": -2.2
+    }
+   ]
+  },
+  {
+   "sym": "REPCOHOME",
+   "is_financial": true,
+   "run_len": 2,
+   "from": 20240930,
+   "to": 20241231,
+   "worst_pct": -2.8,
+   "median_pct": -2.4,
+   "pat_agrees_throughout": true,
+   "kind": "run",
+   "cells": [
+    {
+     "qe": 20240930,
+     "ours": 415.25,
+     "site": 427.0,
+     "pct": -2.8
+    },
+    {
+     "qe": 20241231,
+     "ours": 435.93,
+     "site": 445.0,
+     "pct": -2.0
+    }
+   ]
+  }
+ ]
+}

@@ -33,6 +33,13 @@ BELOW = -0.02                              # 2% -- below this a gap is not round
 # -8.7% wrong -- and it silently vanished from this report. Partially healing a run must not hide
 # its remainder. So an isolated quarter this far below an independent source is flagged on its own.
 LONE = -0.05
+# ★ ABSOLUTE FLOOR — a relative threshold alone is MEANINGLESS on a small base. Screener prints
+# whole crores, so its displayed figure carries +/-0.5cr of rounding; at a 25cr base a 2% "gap" IS
+# that rounding. Batch-B proved it: SELMC 2024-12-31's correct row (4.5219) and the inflated
+# Total-Income alternative (4.57) DISPLAY AS THE SAME INTEGER, so the flagged percentage could not
+# even in principle indicate a row swap. Three of four companies in that batch were flagged purely
+# by this artefact and all came back OURS_CONFIRMED. Require a real rupee gap as well.
+ABS_FLOOR_CR = 2.0
 PAT_OK = 0.01                              # PAT must agree within 1% for the signature to hold
 
 
@@ -48,6 +55,10 @@ def main():
     ap.add_argument("--csv", default="")
     a = ap.parse_args()
 
+    try:
+        clean = set(jload("scripts/revpat_verify/adjudicated_clean.json")["symbols"])
+    except Exception:
+        clean = set()
     revop = jload("docs/sf_revop.json")
     fund = jload("docs/sf_fundamentals.json")
     patf = collections.defaultdict(dict)
@@ -80,6 +91,8 @@ def main():
 
     cands, allrel = [], []
     for sym, qd in site.items():
+        if sym in clean:                  # already taken to its filings and found correct
+            continue
         ours = revop.get(sym) or {}
         rows = []
         for q in sorted(qd):
@@ -98,7 +111,7 @@ def main():
         # longest run of consecutive quarters BELOW the site with PAT agreeing
         best, cur = [], []
         for r in rows:
-            if r["rel"] <= BELOW and r["pat_agrees"]:
+            if r["rel"] <= BELOW and r["pat_agrees"] and abs(r["ours"] - r["site"]) >= ABS_FLOOR_CR:
                 cur.append(r)
                 if len(cur) > len(best):
                     best = list(cur)
@@ -109,7 +122,8 @@ def main():
         # neighbours were healed. Take run cells (when a real run exists) plus every isolated cell
         # at or below LONE, de-duplicated and back in quarter order.
         run_cells = best if len(best) >= MIN_RUN else []
-        lone = [r for r in rows if r["rel"] <= LONE and r["pat_agrees"] and r not in run_cells]
+        lone = [r for r in rows if r["rel"] <= LONE and r["pat_agrees"]
+                and abs(r["ours"] - r["site"]) >= ABS_FLOOR_CR and r not in run_cells]
         best = sorted({r["qe"]: r for r in (run_cells + lone)}.values(), key=lambda r: r["qe"])
         if best:
             cands.append({
@@ -129,10 +143,12 @@ def main():
     doc = {"_meta": {
         "defect": "stored standalone revenue holds a COMPONENT row, not the total",
         "signature": "consecutive quarters BELOW an independent source while PAT AGREES",
-        "thresholds": {"below": BELOW, "min_run": MIN_RUN, "pat_within": PAT_OK},
+        "thresholds": {"below": BELOW, "min_run": MIN_RUN, "pat_within": PAT_OK,
+                       "lone": LONE, "abs_floor_cr": ABS_FLOOR_CR},
         "confirmed_instances": ["HUDCO 2022-06-30 (Interest Income sub-line)", "AADHARHFC 2023-24"],
         "warning": "a flag is a place to LOOK. Only a filing read decides.",
-        "symbols_compared": len(site), "candidates": len(cands), "financial_candidates": len(fin),
+        "symbols_compared": len(site), "suppressed_adjudicated_clean": sorted(clean),
+        "candidates": len(cands), "financial_candidates": len(fin),
         "median_rel_all_cells": round(statistics.median(allrel), 5) if allrel else None},
         "candidates": cands}
     with open(a.out, "w", encoding="utf-8") as fh:
