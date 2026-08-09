@@ -4698,3 +4698,51 @@ NSE, AADHARHFC listed in 2024, etc.). Re-adjudicate them from the BSE announceme
 treating them as settled. Also open: **ACUTAAS 2023-06-30 revC**, where the consolidated XBRL says
 RevenueFromOperations 142.35 while the heal wrote 153.72 from the PDF — filer's own XBRL and filer's
 own PDF disagree, so it needs adjudication rather than a preference.
+
+
+---
+
+## 66. ★★★ PRE-2020 CON PAT VIA THE STANDALONE ANCHOR — measured, and NOT fit to write  (2026-08-09)
+
+§64 established that con PAT gates con revenue. Measured against the real target list:
+**2,740 of 4,055 pre-2020 con-revenue targets (68%) have no stored con PAT — and ZERO have neither
+basis.** Standalone PAT really is universally available, so it is the only way in, exactly as
+scoped. The question was whether anchoring on it works.
+
+### 66a. The gate, and what it is worth
+Require the SAME parse, on the SAME document, to first reproduce the STANDALONE PAT we already
+hold at a declared scale; abort the document if it cannot. Held-out scoring (truth = con PAT we
+already store, never shown to the reader; every document bound to its issuer by its own scrip code;
+only cells where con PAT differs from std by >2%, so reading the standalone page by mistake cannot
+score as correct):
+
+| | exact | attempted | accuracy | abstain |
+|---|---|---|---|---|
+| **gated** (std check must pass) | 9 | 12 | **75%** | 93% |
+| **ungated** (same reader, gate off) | 7 | 21 | **33%** | — |
+
+The gate more than doubles accuracy and reproduces the previously measured ~35% when removed —
+which is itself a useful confirmation that 35% was real. **But 75% is not 90%, and reach on the
+population it would actually run against is 4.6% (4 gated reads of 87 unanchored targets).** At
+those rates a full sweep of the 2,740 would touch ~125 cells and get ~30 of them wrong.
+**DO NOT WIRE IT TO A WRITER.** It abstains honestly, which is the right failure mode, but it does
+not yet earn write access.
+
+### 66b. What the measurement MOVED — the wall is the COLUMN now, not the row
+The previous attempt blamed row disambiguation on consolidated pages (several profit lines: before
+tax, after tax, total comprehensive, owners vs NCI). **That part is solved**, and without trusting
+labels: `owners + NCI == the post-tax profit line`, evaluated AT THE TARGET COLUMN, picks the
+owners row arithmetically.
+
+The failure moved one step along. The standalone page verifies the DOCUMENT, the SCALE and the ROW
+— **it does not verify WHICH COLUMN of the consolidated page is the target quarter.** Ordinal
+transfer between the two pages is **50% (4/8) even when the pages have equal column counts**, and
+only 60% (3/5) when their header-date sequences also agree. That is the next thing to solve, and it
+is what any further work should attack.
+
+### 66c. 2015-2017 is NOT a reader problem — do not tune the reader for it
+**55 of 58 cells in that window fetched ZERO BYTES**: the GUID-named BSE attachment 404s on both
+AttachHis and AttachLive. §52's "pre-2016 BSE attachments 404" understates it — the dead window
+extends past 2016 (AMBUJACEM Oct-2017 probed directly: 404 on both). **Rung 3 is blind for
+2015-2017; rungs 1-2 (BSE detres, NSE archive detail pages) are the route there.** Any measurement
+of a PDF reader over that window is measuring transport, not reading.
