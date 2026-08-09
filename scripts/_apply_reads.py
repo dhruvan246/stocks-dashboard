@@ -55,7 +55,8 @@ PRE2015_LEDGERS = [os.path.join(HERE, "pre2015_reads_d.json"),   # STEP D: BSE d
                    os.path.join(HERE, "pre2015_reads_w.json"),   # STEP W: archived NSE eod/results.jsp 2002-04
                    os.path.join(HERE, "pre2015_reads_a.json"),   # STEP A: NSE annual-minus-3-siblings derivation
                    os.path.join(HERE, "pre2015_reads_e.json"),   # STEP E: detres EPS-recon re-gate of D's unread-EPS refusals
-                   os.path.join(HERE, "pre2015_reads_f.json")]   # STEP F: NSE-archive EPS-recon for cells with no stored PAT anchor
+                   os.path.join(HERE, "pre2015_reads_f.json"),   # STEP F: NSE-archive EPS-recon for cells with no stored PAT anchor
+                   os.path.join(HERE, "pre2015_reads_g.json")]   # STEP G: bespoke 2014 close-out (cross-publisher field completion)
 
 
 def _load_pre2015_reads():
