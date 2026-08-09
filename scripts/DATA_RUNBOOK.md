@@ -1812,11 +1812,15 @@ IDENTICAL in every quarter by construction (parse_shp writes both or neither).
 |---|---|---|---|
 | Dec-2002 → Jun-2010 | 15,473 | **0%** | no source (MC's SHP pages didn't exist; BSE files start Jun-2016) |
 | Sep-2010 → Sep-2015 | 10,449 | **30%** | Wayback-MC harvest, full-depth already run; residual = captures that don't exist |
-| Dec-2015 + Mar-2016 | 998 | **0.3%** | the SEAM (below) |
+| Dec-2015 + Mar-2016 | 998 | 0.3% → **52.1%** | the seam FELL 2026-08-09 (below); 6 late-filed XBRLs also exist |
 | Jun-2016 → Jun-2019 | 6,502 | 79% → **98.8%** | BSE-XBRL ledger + the 2026-08-07 sweep |
 | Sep-2019 → Jun-2026 | 14,014 | 98% → **99.8%** | live NSE pipeline + the sweep |
 
-Whole-sample after the sweep: **49.7%** (23,598 / 47,436) — everything still open is a measured wall.
+Whole-sample: 49.7% after the 2026-08-07 sweep, **~51.4% after the 2026-08-09 seam fill — and MOVING**
+(wayback harvest round 2 + a Trendlyne seam fill are in flight). Re-run
+`python3 -X utf8 scripts/audit_shp_coverage.py` rather than trusting any number printed here;
+what remains open after those land is pre-2010 (no source found, 7 sites + BSE measured empty)
+and the un-captured share of 2010-2015.
 
 **✅ SWEPT SAME DAY (2026-08-07): +1,604 cells, Jun-16→Jun-19 79%→98.8%, Sep-19→Jun-26 97.8%→99.8%.**
 `scripts/fetch_shp_bse_hist.py` (rebuilt) → ledger `scripts/shp_fill_n500_gaps.json.gz` → applied by
@@ -1901,9 +1905,15 @@ both feeds, no network). 3 min at 5 threads for 1,649 targets. The gap was 1,706
     drifts with time of day and I mistuned once doing exactly that.
 - **⚠️ `xbrlurl` IS TRUTHY WHEN THERE IS NO FILE.** Pre-2016 rows return `xbrlurl: "/XBRL1/"` (bare prefix)
   with an EMPTY `XbrlFile` — `if row["xbrlurl"]` counts 104/104 quarters "available" back to Mar-2001 and is
-  a lie. **Gate on `(row["XbrlFile"] or "").strip()`.** Real files start **Jun-2016** (40/40 sampled);
-  Mar-2016 = 3/40; **Dec-2015 = 0/40** — and MC's pages carry an empty FII row at exactly qtrid 88/89
-  (§ the Wayback backfill), so the Dec-15/Mar-16 seam is a genuine two-quarter wall, not a fetch bug.
+  a lie. **Gate on `(row["XbrlFile"] or "").strip()`.** ORIGINAL files start **Jun-2016** (40/40 sampled;
+  Mar-2016 = 3/40, Dec-2015 = 0/40) — **but that floor is true of originals only. LATE/REVISED XBRLs
+  exist inside the seam** (found 2026-08-09 by the revision sweep: MINDACORP ×2, BHARATFORG ×2,
+  BFUTILITIE, BBTC — all with `revised_date_time` set, all parseable; adjudicated in
+  `scripts/_shp_seam_adjudicated.json`, with MINDACORP's doc beating the MC-derived cells and
+  BHARATFORG's doc carrying LESS information than them — fii lumped to 0.00). When chasing a specific
+  seam cell, check for a revised row before declaring the era XBRL-free. (Two earlier readings of
+  this line aged badly the same day: "the seam is a two-quarter wall" fell to the
+  institutions-subtotal derivation, and "no XBRL before Jun-2016" fell to these six.)
 - **`fetch_shp_bse_hist.py` (the 2016-19 ledger builder) was never committed** — only its output
   `shp_fill_hist_2016_2019.json.gz` is tracked. Re-running that route means rewriting the fetcher.
 - **Re-run it: `python3 -X utf8 scripts/audit_shp_coverage.py`** (reads ORIGIN/MAIN, not the checkout;
