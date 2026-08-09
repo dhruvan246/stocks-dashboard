@@ -5267,6 +5267,20 @@ tooling in `scripts/revpat_verify/` (`audit_revpat_coverage`, `revpat_strata`, `
   CONSECUTIVE quarters **while PAT AGREES** (the third condition is what rules out wrong
   company/period/scale). Validated on 66 symbols: median relative difference across 823 cells is
   **exactly 0.0** — no systematic bias — with only AADHARHFC and MOTHERSON carrying the signature.
+- **★★★ AADHARHFC PROVEN, AND THE ROOT CAUSE IS A TOOL, NOT A COMPANY.** Its stored std revenue for
+  2023-06-30 and 2023-12-31 equals the filing's **`Interest income` row EXACTLY** (533.47 == 533.47,
+  579.26 == 579.26) against Total-revenue-from-operations of 578.01 and 658.54. **Cause:
+  `screener_prerev.py` accepts a Screener revenue row once the page's NET PROFIT matches our stored
+  PAT — a PAT-ONLY anchor, so a wrong REVENUE row passes undetected.** Aadhar IPO'd 2024-05-08 and
+  was invisible pre-IPO to every standard route (only listed NCDs/CPs), so those quarters came
+  through that scraper; from 2024-03-31 the normal post-listing pipeline is exactly right, and the
+  small residual 2024 gaps are a std-vs-con artefact, not a row defect.
+  **EXPOSED COHORT: `scripts/screener_rev_fills.json` holds 191 cells filled on that PAT-only
+  anchor — every one is the same risk class and none has been re-checked.**
+  Reached via the **BSE debt-segment scrip route** (§44's playbook applied to a pre-IPO NCD issuer
+  rather than a delisted one — reusable for any recent-IPO NBFC/HFC).
+  ⚠️ **An anchor that validates one field does not validate another.** PAT matching says the page is
+  the right company and quarter; it says nothing about which revenue row was taken.
 - **★ HUDCO's con==std is GENUINE, and it recalibrates the whole con-copy screen.** Its filings state
   in their notes that consolidated == standalone because the sole associate contributes 0.00, and
   each consolidated statement prints its own distinct associate line — derived, not pasted. So the

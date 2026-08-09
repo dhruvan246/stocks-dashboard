@@ -1,0 +1,135 @@
+{
+  "symbol": "AADHARHFC",
+  "field_checked": "docs/sf_revop.json[AADHARHFC][QE][0]  (standalone revenue, revS)",
+  "campaign": "REV/PAT verify, P5 packet -- AADHARHFC standalone revenue wrong-row check",
+  "session_note": "No repo writes, no heals. All fetches run in foreground, >=2s between live BSE requests. Reference tree /Users/dhruvan/stocks-wt/revpat-verify read-only (imports + bse_scrips.json lookup only); own cache under this working dir.",
+  "bse_scrip_equity": 544176,
+  "bse_scrip_debt_used_for_prelisting_search": [936320, 973564, 955091, 959387],
+  "quarters": [
+    {
+      "quarter": "2023-06-30",
+      "ours_revS": 533.47,
+      "filed_total_revenue_from_operations": 578.01,
+      "components": {
+        "interest_income": 533.47,
+        "fees_and_commission_income": 17.79,
+        "net_gain_on_fair_value_changes": 4.92,
+        "net_gain_on_derecognition_of_financial_instruments": 21.83
+      },
+      "filed_other_income": 0.01,
+      "filed_total_income": 578.02,
+      "ours_matches_which_row": "Interest income (row a) -- exact to the cent: 533.47 == 533.47",
+      "gap_explained_by": "Screener(578) minus ours(533.47) = 44.53; fees(17.79)+FV gain(4.92)+other operating income(21.83) = 44.54 (0.01 rounding). The gap is precisely the non-interest components of 'Revenue from operations' -- same mechanism as the HUDCO 2022-06-30 precedent (stored value = Interest Income sub-line, not the Total revenue from operations row).",
+      "verdict": "OURS_WRONG",
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/99ea0928-7f15-4732-8857-78bf1e975d26.pdf",
+      "source_filing": "Standalone Statement of financial results for the quarter ended June 30, 2023, filed under Reg. 52 (pre-equity-IPO; company only had listed NCDs/CPs at this date). Filed 2023-08-09. Found via BSE debt-segment scrip 936320 (935AHFL28) -- AADHARHFC's equity scrip 544176 carries NOTHING before its May-2024 listing, so the standard BSE-detres and equity-announcement routes are structurally blind pre-IPO; the debt scrip broadcasts the same PDF.",
+      "unit_declared": "Rs in Lakh (printed in filing header) -> /100 for crore",
+      "row_labels_used": ["a) Interest income", "b) Fees and commission Income", "c) Net gain on fair value changes",
+                          "d) Net gain on derecognition of financial instruments under amortised cost category",
+                          "Total revenue from operations", "Other income", "Total income", "7 Profit after tax (5-6)"],
+      "column_anchor_evidence": "3-way PAT anchor on the 'quarter ended June 30, 2023' column: current-quarter PAT 146.28 vs stored 146.0 (0.19%); prior-quarter (Mar-2023) PAT 140.61 vs stored 141.0 (0.28%); year-ago (Jun-2022) PAT 115.75 vs stored 115.75 -- EXACT. All three reproduce our own stored sf_fundamentals PAT, confirming column 1 is the target quarter, not column 0-shift or a mislabeled column.",
+      "second_check": "Component sum: 53,347 + 1,779 + 492 + 2,183 = 57,801 lakh == printed 'Total revenue from operations' (57,801) exactly.",
+      "routes_tried": [
+        {"route": "bse-detres (Corp_detailedResult_Transpose_ng, scrip 544176)", "outcome": "no-date-begin-end-in-response -- pre-IPO, equity scrip not yet allotted/filing at this date"},
+        {"route": "nse-xbrl (per-basis XBRL, symbol AADHARHFC)", "outcome": "0 list rows for this quarter on any basis -- pre-IPO, not NSE-listed yet"},
+        {"route": "BSE announcement stream via equity scrip 544176", "outcome": "13 rows total, earliest 2024-05-29 -- nothing pre-listing"},
+        {"route": "BSE announcement stream via BSE DEBT-segment scrip codes (runbook §44 pattern, applied to a pre-IPO NCD/CP issuer instead of a delisted one)", "outcome": "OK -- same Financial Results PDF broadcast identically across all AADHARHFC debt scrips (936320, 973564, 955091, 959387 all returned it)"}
+      ],
+      "confidence": "high",
+      "notes": "Duplicate attachment bded27e8-8c5c-40a6-a9c8-f0d73a56c50a.pdf (same 1,223,158-byte file, same board-meeting date) exists in the announcement stream -- both resolve to the same numbers, not used as a second source, just a filing-mechanics duplicate (two auditors co-signing / two submission channels)."
+    },
+    {
+      "quarter": "2023-12-31",
+      "ours_revS": 579.26,
+      "filed_total_revenue_from_operations": 658.54,
+      "components": {
+        "interest_income": 579.26,
+        "fees_and_commission_income": 36.27,
+        "net_gain_on_fair_value_changes": 6.54,
+        "net_gain_on_derecognition_of_financial_instruments": 36.47
+      },
+      "filed_other_income": 0.02,
+      "filed_total_income": 658.56,
+      "ours_matches_which_row": "Interest income (row a) -- exact to the cent: 579.26 == 579.26",
+      "gap_explained_by": "Screener(659) minus ours(579.26) = 79.74; fees(36.27)+FV gain(6.54)+other operating income(36.47) = 79.28 (delta from Screener's whole-crore rounding of 658.54->659). Same mechanism as 2023-06-30: stored value is Interest income, not Total revenue from operations.",
+      "verdict": "OURS_WRONG",
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/d307a09a-5579-477f-8be5-49e2c23e3f59.pdf",
+      "source_filing": "Standalone Statement of financial results for the quarter and nine months ended December 31, 2023, filed under Reg. 52 (pre-IPO). Filed 2024-02-08. Same debt-scrip route as above.",
+      "unit_declared": "Rs in Lakh (printed) -> /100 for crore",
+      "row_labels_used": ["a) Interest income", "b) Fees and commission Income", "c) Net gain on fair value changes",
+                          "d) Net gain on derecognition of financial instruments under amortised cost category",
+                          "Total revenue from operations", "Other income", "Total income", "7 Profit after tax (5-6)"],
+      "column_anchor_evidence": "3-way PAT anchor on the 'quarter ended December 31, 2023' column: current PAT 203.44 vs stored 203.0 (0.22%); prior-quarter (Sep-2023) PAT 197.28 vs stored 197.0 (0.14%); year-ago (Dec-2022) PAT 158.52 vs stored 158.52 -- EXACT. Bonus revenue-side cross-check: the same page's Sep-2023 comparative column gives Interest income 560.59, exactly equal to our currently stored 2023-09-30 revS (560.59) -- independent confirmation that the SAME wrong-row mechanism also affects 2023-09-30 (not one of this packet's 4 target quarters, but consistent and worth recording).",
+      "second_check": "Component sum: 57,926 + 3,627 + 654 + 3,647 = 65,854 lakh == printed 'Total revenue from operations' (65,854) exactly. 9-month YTD column (1,85,055) also reconciles: Jun-23(57,801)+Sep-23(61,400)+Dec-23(65,854) = 1,85,055 exact.",
+      "routes_tried": [
+        {"route": "bse-detres (scrip 544176)", "outcome": "no-date-begin-end-in-response -- pre-IPO"},
+        {"route": "nse-xbrl (symbol AADHARHFC)", "outcome": "0 list rows -- pre-IPO"},
+        {"route": "BSE announcement stream, equity scrip 544176", "outcome": "nothing pre-listing"},
+        {"route": "BSE announcement stream, debt-segment scrip codes", "outcome": "OK"}
+      ],
+      "confidence": "high",
+      "notes": "2023-09-30 (Sep quarter) is NOT one of the 4 quarters this packet was scoped to verify, but the anchor evidence above shows it independently: stored revS 560.59 == filed Interest income 560.59 exactly, filed Total revenue from operations = 614.00 (Screener shows 614, task's own evidence table -- also a wrong-row case). Flagging for the record, not adjudicating further here."
+    },
+    {
+      "quarter": "2024-06-30",
+      "ours_revS": 696.78,
+      "filed_total_revenue_from_operations": 696.78,
+      "components": {
+        "interest_income": 634.40,
+        "fees_and_commission_income": 24.94,
+        "net_gain_on_fair_value_changes": 5.51,
+        "net_gain_on_derecognition_of_financial_instruments": 31.93
+      },
+      "filed_other_income": 0.02,
+      "filed_total_income": 696.80,
+      "ours_matches_which_row": "Total revenue from operations (STANDALONE) -- exact to the cent: 696.78 == 696.78. This is the CORRECT row.",
+      "gap_explained_by": "The task brief's -2.3% gap vs Screener(713) is NOT a row defect. It is a std-vs-con BASIS mismatch: the filing's CONSOLIDATED Total revenue from operations for the same quarter is 71,314 lakh = 713.14 cr, exactly Screener's displayed 713 -- Screener's default (non-suffixed) company page shows CONSOLIDATED data (a known site behaviour, runbook T-A / §72). Our own sf_revop CONSOLIDATED slot for this quarter already holds 713.14 -- exactly right. Comparing our STANDALONE slot to Screener's CONSOLIDATED display manufactures a false gap.",
+      "verdict": "OURS_CONFIRMED",
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/9edef400-d6a5-492b-be1c-359824715309.pdf",
+      "source_filing": "Standalone AND Consolidated Statement of financial results for the quarter ended June 30, 2024, filed under Reg. 33/52/63 (post-IPO, first filing under the equity scrip). Filed 2024-08-07, via equity scrip 544176.",
+      "unit_declared": "Rs in Lakh (printed) -> /100 for crore",
+      "row_labels_used": ["a) Interest income", "b) Fees and commission Income", "c) Net gain on fair value changes",
+                          "d) Net gain on derecognition of financial instruments under amortised cost category",
+                          "Total revenue from operations", "Other income", "Total income", "5 Profit after tax (3-4)"],
+      "column_anchor_evidence": "Double exact PAT anchor, both bases, same quarter: standalone PAT 200.08 == stored npStd 200.08; consolidated PAT 200.14 == stored npCon 200.14. Bonus: the same page's Mar-2024 comparative column gives standalone Total revenue from operations 672.98 == stored 2024-03-31 revS (672.98) exactly, and consolidated 691.79 == stored 2024-03-31 revC (691.79) exactly -- four independent locks in one filing.",
+      "second_check": "Standalone component sum: 63,440+2,494+551+3,193 = 69,678 == printed Total revenue from operations (69,678) exactly. Consolidated component sum: 63,440+4,123+558+3,193 = 71,314 == printed consolidated Total revenue from operations (71,314) exactly.",
+      "routes_tried": [
+        {"route": "bse-detres (scrip 544176)", "outcome": "not attempted after announcement route succeeded (detres is std-only and this quarter needed both bases for the con cross-check)"},
+        {"route": "BSE announcement stream, equity scrip 544176", "outcome": "OK -- filing found directly, first post-listing quarter"}
+      ],
+      "confidence": "high",
+      "notes": "The statement pages in this PDF (pages 3-11 by zero-index) are IMAGE-ONLY -- get_text() returns 0 characters despite pdfplumber/fitz reporting real image objects on each page (runbook §57 rung 10 / §61). Read via rendered PNG (fitz Matrix 2.5x) and visually transcribed; all figures corroborated by the exact 4-way PAT/revenue anchor above, so the vision read is trustworthy."
+    },
+    {
+      "quarter": "2025-09-30",
+      "ours_revS": 897.06,
+      "filed_total_revenue_from_operations": 897.06,
+      "components": {
+        "interest_income": 799.37,
+        "fees_and_commission_income": 49.58,
+        "net_gain_on_fair_value_changes": 4.03,
+        "net_gain_on_derecognition_of_financial_instruments": 44.08
+      },
+      "filed_other_income": 2.13,
+      "filed_total_income": 899.19,
+      "ours_matches_which_row": "Total revenue from operations (STANDALONE) -- exact to the cent: 897.06 == 897.06. Correct row, as expected for the control.",
+      "gap_explained_by": "n/a -- matches, consistent with the task's reported ~0.0% gap for this era.",
+      "verdict": "OURS_CONFIRMED",
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/5fba43a6-9185-463c-b346-b8d6d7b9ca4f.pdf",
+      "source_filing": "Standalone and Consolidated financial results for the quarter and half year ended September 30, 2025, filed under Reg. 33. Filed 2025-11-07 via equity scrip 544176.",
+      "unit_declared": "Rs in lakhs (printed) -> /100 for crore",
+      "row_labels_used": ["a) Interest income", "b) Fees and commission income", "c) Net gain on fair value changes",
+                          "d) Net gain on derecognition of financial instruments under amortised cost category",
+                          "Total revenue from operations", "Other Income", "Total Income", "5 Profit after tax (3-4)"],
+      "column_anchor_evidence": "Exact PAT anchor: current-quarter PAT 266.35 == stored npStd 266.35. Bonus: the same page's Jun-2025 comparative column gives Total revenue from operations 848.11 == stored 2025-06-30 revS (848.11) exactly.",
+      "second_check": "Component sum (corrected, see notes): 79,937+4,958+403+4,408 = 89,706 == printed Total revenue from operations (89,706) exactly.",
+      "routes_tried": [
+        {"route": "BSE announcement stream, equity scrip 544176", "outcome": "OK -- filing found directly"}
+      ],
+      "confidence": "high",
+      "notes": "TEXT-LAYER DIGIT MISREAD CAUGHT AND CORRECTED (runbook §57c/§61 class of trap): this PDF's statement page has a corrupted/OCR-like text layer (garbled header e.g. 'oo~diTffl'); get_text() on the Fees-and-commission-income row returned 4,953, which FAILS the component-sum second-check by 5 lakh (89,701 vs printed total 89,706). Rendered the page as a PNG (fitz Matrix 5x, cropped to the income block) and visually confirmed the correct digit is 4,958 (an 8-for-3 misread, same class as the runbook's documented 8-for-9 GICRE case) -- with 4,958 the component sum reconciles exactly. All other rows on this page read correctly in both the raw text layer and the image; only this one cell was affected. This is the CONTROL quarter per the campaign brief: standalone revS confirmed correct here, as expected -- if this control had disagreed, that would indict the verification method rather than the data."
+    }
+  ],
+  "mechanism_summary": "Two DIFFERENT things are happening in the evidence table the campaign brief supplied, not one continuum: (1) 2023-06-30, 2023-09-30 and 2023-12-31 (the 3 pre-IPO quarters) hold Interest Income in the revS slot instead of Total revenue from operations -- confirmed OURS_WRONG, gap = fees + net FV gain + net gain on derecognition, to the cent, in every quarter checked. These 3 quarters were populated pre-IPO via scripts/screener_prerev.py (a Screener scraper that pulls a table row literally labelled 'Sales'/'Revenue' from screener.in and anchors it only on PAT match -- the row-selection bug is upstream of that anchor, so a wrong revenue row silently passed a PAT-only gate). (2) From 2024-03-31 onward (i.e. once the company was equity-listed and results began flowing through the standard post-listing BSE/NSE pipeline instead of the pre-IPO Screener scrape) the stored revS is the CORRECT Total-revenue-from-operations row, confirmed exact at both 2024-06-30 and the 2025-09-30 control -- the residual ~1.6-2.7% 'gaps' reported for the 2024 quarters in the brief are a std-vs-con basis artifact (Screener's default page shows consolidated; our own con slot for 2024-06-30 already holds the exactly-right 713.14) and are NOT the same defect as the 2023 quarters.",
+  "scope_note": "docs/sf_revop.json[SYM][QE][1] (consolidated revenue, revC) was NOT in scope for this packet (brief specifies revS only) but a side-observation surfaced during the work: our stored revC for the 3 pre-IPO 2023 quarters (593.42 / 628.55 / 673.05) is NOT equal to revS (ruling out a simple con=std copy) despite the primary filings for those quarters being STANDALONE-ONLY under Reg. 52 -- no consolidated statement was filed at all pre-IPO (confirmed from the cover pages of both PDFs read: 'Standalone Statement of financial results ... pursuant to the Regulation 52', no Reg. 33/consolidated pack attached). Where those revC numbers came from is unresolved and is flagged as an open item for a future packet, not adjudicated here."
+}

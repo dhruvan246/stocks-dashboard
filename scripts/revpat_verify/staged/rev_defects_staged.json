@@ -1,0 +1,41 @@
+{
+ "_meta": {
+  "STATUS": "STAGED -- NOT APPLIED. No builder reads this file.",
+  "shape": "scripts/rev_defects.json is {SYM:{QE:{bad_rev,basis,defect,source}}} -- a guarded NULL ledger. Here we ALSO carry correct_rev, since the filing gives the true total.",
+  "promote": "either (a) add the bad_rev guard to rev_defects.json and let a corrected read refill, or (b) direct-correct per runbook 2b, guard-editing BOTH docs/sf_revop.json and scripts/revop_fundamentals.json with an assert on the old value.",
+  "then": "re-run the nightlies and DIFF (runbook 41), verify LIVE ~20 min after the push",
+  "authorised": "user 2026-08-09: accepted FILING + 1 SITE for this class (explicit rule-6b relaxation). Here the filing read is independent of the site: our stored value equals the filing's 'Interest income' row EXACTLY, which no site asserts."
+ },
+ "AADHARHFC": {
+  "20230630": {
+   "bad_rev": 533.47,
+   "correct_rev": 578.01,
+   "basis": "std",
+   "defect": "stored value is the filing's 'Interest income' ROW, not 'Total revenue from operations'. Populated pre-IPO by screener_prerev.py, whose anchor checks PAT ONLY -- a wrong revenue row passes undetected.",
+   "ours_matches_row": "Interest income (row a) -- exact to the cent: 533.47 == 533.47",
+   "source": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/99ea0928-7f15-4732-8857-78bf1e975d26.pdf",
+   "unit_declared": "Rs in Lakh (printed in filing header) -> /100 for crore",
+   "column_anchor": "3-way PAT anchor on the 'quarter ended June 30, 2023' column: current-quarter PAT 146.28 vs stored 146.0 (0.19%); prior-quarter (Mar-2023) PAT 140.61 vs stored 141.0 (0.28%); year-ago (Jun-2022) PAT 115.75 vs stored 115.75 -- EXACT. All three reproduce our own stored sf_fundamentals PAT, confirming column 1 is the target quarter, not column 0-shift or a mislabeled column.",
+   "second_check": "Component sum: 53,347 + 1,779 + 492 + 2,183 = 57,801 lakh == printed 'Total revenue from operations' (57,801) exactly.",
+   "confidence": "high",
+   "quorum": "user 2026-08-09: accepted FILING + 1 SITE for this class (explicit rule-6b relaxation). Here the filing read is independent of the site: our stored value equals the filing's 'Interest income' row EXACTLY, which no site asserts."
+  },
+  "20231231": {
+   "bad_rev": 579.26,
+   "correct_rev": 658.54,
+   "basis": "std",
+   "defect": "stored value is the filing's 'Interest income' ROW, not 'Total revenue from operations'. Populated pre-IPO by screener_prerev.py, whose anchor checks PAT ONLY -- a wrong revenue row passes undetected.",
+   "ours_matches_row": "Interest income (row a) -- exact to the cent: 579.26 == 579.26",
+   "source": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/d307a09a-5579-477f-8be5-49e2c23e3f59.pdf",
+   "unit_declared": "Rs in Lakh (printed) -> /100 for crore",
+   "column_anchor": "3-way PAT anchor on the 'quarter ended December 31, 2023' column: current PAT 203.44 vs stored 203.0 (0.22%); prior-quarter (Sep-2023) PAT 197.28 vs stored 197.0 (0.14%); year-ago (Dec-2022) PAT 158.52 vs stored 158.52 -- EXACT. Bonus revenue-side cross-check: the same page's Sep-2023 comparative column gives Interest income 560.59, exactly equal to our currently stored 2023-09-30 revS (560.59) -- independent confirmation that the SAME wrong-row mechanism also affects 2023-09-30 (not one of this packet's 4 target quarters, but consistent and worth recording).",
+   "second_check": "Component sum: 57,926 + 3,627 + 654 + 3,647 = 65,854 lakh == printed 'Total revenue from operations' (65,854) exactly. 9-month YTD column (1,85,055) also reconciles: Jun-23(57,801)+Sep-23(61,400)+Dec-23(65,854) = 1,85,055 exact.",
+   "confidence": "high",
+   "quorum": "user 2026-08-09: accepted FILING + 1 SITE for this class (explicit rule-6b relaxation). Here the filing read is independent of the site: our stored value equals the filing's 'Interest income' row EXACTLY, which no site asserts."
+  }
+ },
+ "dropped": [
+  "20240630 OURS_CONFIRMED",
+  "20250930 OURS_CONFIRMED"
+ ]
+}
