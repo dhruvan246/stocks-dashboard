@@ -71,6 +71,19 @@ never the checkout, never a later origin (the 12:40/20:40 IST refresh moves it d
    with the disagreement recorded in the ledger.
 7. Long/scripted work runs in its own worktree `~/stocks-wt/shp-verify` (CLAUDE.md rule 3);
    scratch output under the session scratchpad; commits file-scoped; push via the retry recipe.
+7b. **★ NAMESPACE YOUR SCRATCH FILES (near-miss, P1 2026-08-09).** Parallel site agents share ONE
+   scratchpad directory, so generic working filenames collide across siblings — in P1 the seven
+   agents independently reached for `reliance.html`, `tcs.html`, `itc.html`, `hdfcbank.html`,
+   `parse_tl.py`, `build_extract.py`. One collision was caught only because the Write tool refuses
+   to overwrite a file it hasn't read (it surfaced an ET-Markets `build_extract.py` sitting where a
+   Trendlyne one was about to land); **`curl -o` has no such guard** and would have silently
+   clobbered a sibling's raw evidence with no error and no exit code. Treat P1 as a near-miss, not
+   as proof the pattern is safe. So, from P3 on: every agent writes ALL intermediates — raw HTML,
+   probe dumps, throwaway parsers, notes, logs — under its OWN subdirectory
+   `p<phase>/<sitename>_work/` (e.g. `p3/trendlyne_work/reliance.html`), created at packet start.
+   The shared root of `p<phase>/` is reserved for the final per-site deliverables, which are already
+   unique by site name (`<sitename>.json`, `<sitename>_extract.jsonl`). Never `curl -o` — and never
+   redirect `>` — into the shared root.
 8. Comparisons are **as-on-date keyed**: our QE ↔ the site row whose as-on date equals that QE.
    A site row with a mid-quarter as-on date is an event-based SHP — we drop those BY DESIGN (§22
    step 1); record it as `EVENT_SHP`, not a mismatch.
@@ -178,15 +191,17 @@ selection rule = lowest md5(sym) within each stratum, so any agent can re-derive
 Dedupe; target 55–65. Every stratum member × every site × every overlapping quarter, per the
 site's mapping card. Also record NO_DATA_OURS rows (their quarters we lack) — that is the
 coverage-comparison half of the mission.
-Output: one JSONL per site (§8). Done when: every (site ∈ ≥5, stock, overlapping QE) has a verdict
-row, and inaccessible cells carry NO_DATA_* or a blocker.
+Output: one JSONL per site (§8) at the shared root as `p3/<sitename>_extract.jsonl`; everything else
+the agent writes goes under `p3/<sitename>_work/` (rule 7b). Done when: every (site ∈ ≥5, stock,
+overlapping QE) has a verdict row, and inaccessible cells carry NO_DATA_* or a blocker.
 
 ## 6. PHASE 4 — BULK SWEEP  (1–2 packets, SONNET, only sites P1 rated machine-readable)
 
 On the 1–2 sites with a cheap JSON/HTML route (expected: Trendlyne and/or Moneycontrol — the MC
 qtrid grammar is already known): sweep the FULL overlap — all shp_history symbols resolvable on
 the site, all quarters — via a deterministic script (written + committed in the worktree),
-resumable (append-only JSONL keyed `site|sym`, skip done). Diff offline. This is where "compare
+resumable (append-only JSONL keyed `site|sym`, skip done) — the resume file at `p4/<sitename>.jsonl`,
+its page cache and scratch under `p4/<sitename>_work/` (rule 7b). Diff offline. This is where "compare
 every single thing" is literal: potentially 40–60k cells/site. Respect rate limits (≈6–8 h at
 2 s/page — run as ONE background agent per site, never parallelize one site).
 
