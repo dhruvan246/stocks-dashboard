@@ -77,7 +77,10 @@ def main():
             fii = cell[1]
             if anc:
                 dist, aq, ac = anc
-                d = abs(fii - ac[1])
+                # ⚠ CHECK BOTH LEGS. The first version gated on fii alone and let HDFCBANK
+                # Dec-2015 through with dii 53.51 against a 13.79 anchor — it passed because its
+                # fii was fine. A split error can sit in EITHER leg; gating one is gating neither.
+                d = max(abs(fii - ac[1]), abs(cell[2] - ac[2]))
                 ok = d <= TOL.get(dist, 7.0)
                 verdict["%s:%s" % (route, "PASS-anchor" if ok else "DROP-anchor")] += 1
                 if not ok:
@@ -87,7 +90,8 @@ def main():
                 continue
             other = [r for r in routes if r != route]
             if other:
-                d = abs(fii - routes[other[0]][1])
+                o = routes[other[0]]
+                d = max(abs(fii - o[1]), abs(cell[2] - o[2]))
                 ok = d <= TOL_CROSS
                 verdict["%s:%s" % (route, "PASS-cross" if ok else "DROP-cross")] += 1
                 if not ok:
@@ -109,7 +113,7 @@ def main():
         drops[route].sort(reverse=True)
         print("\n   worst %s drops (|fii-anchor|, sym, qe, cell, anchor):" % route)
         for d in drops[route][:6]:
-            print("      %6.2fpp  %-11s %s   %6.2f vs %6.2f" % d)
+            print("      %6.2fpp  %-11s %s   fii %6.2f vs %6.2f" % d)
 
     # rebuild both ledgers keeping only survivors
     tot_before = sum(1 for _ in seam_src for _ in _ if False) or 0
