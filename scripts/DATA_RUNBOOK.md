@@ -5379,6 +5379,38 @@ the answer was in a text layer the *filters* were hiding (§71e was a failed fet
 this one a basis misclassification). Exhaust the filters before the rung.
 
 
+### 71l. ✔ `page_basis()` FIXED — 'both' is now an answer, and it immediately unlocked a read
+The §71k fix is in. `date_columns.page_basis()` returns **`'con' / 'std' / 'both' / None`**, and a
+new **`page_shows(page, want)`** returns True for the page's own basis *and* for `'both'`. Filter
+pages with `page_shows`, never with `page_basis(pg) == want`.
+
+**A trap caught in unit test before it shipped:** naively returning `'both'` when both words appear
+made every **"Non-Consolidated"** page — NSE's own title for a standalone filing — classify as
+`'both'`, offering pure standalone pages to consolidated readers. The word "consolidated" lives
+*inside* the negation. `page_basis` now strips `Non-/Un-Consolidated` before testing for a bare
+"consolidated", which also upgrades those pages from `None` to a correct `'std'`.
+
+**Measured over 514 real filing pages:**
+
+| | |
+|---|---|
+| unchanged | 462 |
+| `None → 'both'` (newly visible) | 52 |
+| …of which carry a profit row | **8** |
+| **regressions** (was con/std, now different) | **0** |
+
+`read_con_copies` re-run on the same 9-cell set returns SKFINDIA 558.68 byte-identical **and now
+also reads MODIRUBBER 2025-09-30**, which three previous passes had written off as
+"OUT-OF-RESOLUTION". One filter fix, one recovered cell.
+
+**Only `read_con_copies` called this helper** (the one other hit was a dict key), so the blast radius
+was small — but every ad-hoc reader written during this campaign carried the same
+`page_basis(pg) == "con"` line, which is why "no consolidated page" recurred so often. Use
+`page_shows`. On a `'both'` page the two bases sit in separate column blocks, so the caller **must**
+anchor its column on a value it already stores (§58); taking the first match can read the standalone
+block while believing it read the consolidated one.
+
+
 ## 72. ★★★ VERIFYING REV/PAT vs EXTERNAL SITES — the sites can only reach 10 of our 95 quarters  (campaign 2026-08-09)
 
 Full write-up `scripts/REVPAT_VERIFY_REPORT.md`; plan `REVPAT_VERIFY_CAMPAIGN.md`; phase findings and

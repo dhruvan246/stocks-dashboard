@@ -167,7 +167,12 @@ def main():
                         continue
                     for pi in range(len(doc)):
                         pg = doc[pi]
-                        if len(pg.get_text().strip()) < 400 or DC.page_basis(pg) != basis:
+                        # page_shows, not `== basis`: a side-by-side STANDALONE|CONSOLIDATED
+                        # statement names both bases, so it used to be skipped entirely (§71k).
+                        # Safe here because the column is anchored -- the value must match
+                        # screener's figure for THIS basis and a second column on the same rows
+                        # must reproduce another quarter, which the other basis' block will not do.
+                        if len(pg.get_text().strip()) < 400 or not DC.page_shows(pg, basis):
                             continue
                         rows = page_rows(pg)
                         tgt = [r for r in rows if (REV_RE if is_rev else PAT_RE).search(r[0])]

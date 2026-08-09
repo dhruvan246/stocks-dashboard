@@ -202,15 +202,42 @@ BASIS_NOT_CON = re.compile(r"n[o0]n[\s-]*c[o0]ns[o0]lidated|un[\s-]*c[o0]ns[o0]l
 
 
 def page_basis(page):
-    """'con' / 'std' / None from the page's own wording. Glyph-tolerant (§51: a->o, t->l)."""
+    """'con' / 'std' / 'both' / None from the page's own wording. Glyph-tolerant (§51: a->o, t->l).
+
+    'both' USED TO BE None, and that was the single biggest source of false "this filing has no
+    consolidated page" verdicts (runbook §71k). A very common Indian layout prints STANDALONE and
+    CONSOLIDATED side by side in ONE statement, five columns each -- that page names both bases, so
+    it collapsed to None, and every reader filtering `page_basis(pg) == "con"` skipped the only page
+    carrying the numbers. BANCOINDIA 2019-03 was escalated all the way to the vision rung over it;
+    its consolidated PAT was sitting in plain text on page 1 the whole time.
+
+    'both' is NOT a promise that the page is a statement -- a cover note saying "the Standalone and
+    Consolidated results were approved" says both words too. It means "do not rule this page out on
+    basis alone"; the caller still has to find a labelled row and anchor a column on it.
+    """
     t = page.get_text()[:1500]
-    has_con = bool(BASIS_CON.search(t))
     has_not = bool(BASIS_NOT_CON.search(t))
+    # "Consolidated" must be found OUTSIDE any "Non-Consolidated"/"Un-Consolidated", or the word
+    # inside the negation counts as evidence of a consolidated statement. NSE titles standalone
+    # filings "Non-Consolidated", so without this every standalone page reads as 'both' and gets
+    # offered as a consolidated candidate -- the exact opposite of the bug this function is fixing.
+    has_con = bool(BASIS_CON.search(BASIS_NOT_CON.sub(" ", t)))
     if has_con and not has_not:
         return "con"
     if has_not and not has_con:
         return "std"
     if has_con and has_not:
-        # both words present: a combined statement, or "Standalone and Consolidated" cover text.
-        return None
+        return "both"
     return None
+
+
+def page_shows(page, want):
+    """Could this page carry `want` ('con'/'std')? True for its own basis AND for 'both'.
+
+    Use this instead of `page_basis(pg) == want` anywhere you are filtering pages to read. On a
+    'both' page the two bases sit in separate column blocks, so the caller MUST identify its column
+    by anchoring on a value it already stores (§58) rather than taking the first match -- otherwise
+    it can read the standalone block while believing it read the consolidated one.
+    """
+    b = page_basis(page)
+    return b == want or b == "both"
