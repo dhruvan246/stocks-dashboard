@@ -1,0 +1,54 @@
+{
+  "site": "groww",
+  "resolve": {
+    "recipe": "GET https://groww.in/v1/api/search/v3/query/global/st_query?query=<text> (public JSON, no auth/cookie needed) -> data.content[] items with entity_type=='Stocks'; match by nse_scrip_code (exact) or isin, NOT by guessing the slug from the company name. Take that item's 'search_id' field verbatim as the page slug -> https://groww.in/stocks/<search_id>. Also present in the same object: bse_scrip_code, isin, groww_contract_id (e.g. GSTK500325), nse_scrip_code, title, company_short_name.",
+    "bulk_resolvable": true,
+    "caveat_renames": "search_id is NOT re-slugged on a company rename (T9). ETERNAL (ex-ZOMATO) resolves nse_scrip_code='ETERNAL', title='Eternal Ltd.', isin correct, but search_id is still the OLD slug 'zomato-ltd' and https://groww.in/stocks/eternal-ltd does NOT exist -- must use the returned search_id, never derive it from the current name.",
+    "data_quality_flag": "Search API returned isin='INE745G01043' for MCX (nse_scrip_code=MCX, bse_scrip_code=534091, title correct) -- this does not match the ISIN given in the probe brief (INE745G01035). Recorded as observed from Groww's own API; not verified against NSDL/exchange, flagging as a possible Groww data-quality defect, not something we should silently trust or silently correct."
+  },
+  "categories": {
+    "Promoters": "prom",
+    "Foreign Institutions": "fii",
+    "Mutual Funds": "mf",
+    "Other Domestic Institutions": "dii",
+    "Retail And Others": "other",
+    "shareHoldingPattern.promoters.individual.percent": "prom",
+    "shareHoldingPattern.promoters.government.percent": "prom",
+    "shareHoldingPattern.promoters.corporation.percent": "prom",
+    "shareHoldingPattern.mutualFunds.percent": "mf",
+    "shareHoldingPattern.otherDomesticInstitutions.insurance.percent": "ins",
+    "shareHoldingPattern.otherDomesticInstitutions.otherFirms.percent": "dii",
+    "shareHoldingPattern.foreignInstitutions.percent": "fii",
+    "shareHoldingPattern.retailAndOthers.percent": "other",
+    "shareholdingPatternV2.promoters": "prom",
+    "shareholdingPatternV2.fii": "fii",
+    "shareholdingPatternV2.dii": "dii",
+    "shareholdingPatternV2.public": "other",
+    "shareholdingPatternV2.others": "unknown"
+  },
+  "categories_note": "Groww ships TWO parallel representations of the SAME underlying data in every page's __NEXT_DATA__ JSON: (1) 'shareHoldingPattern' -- granular, with promoter split into individual/government/corporation, and a domestic-institutions bucket split into insurance/otherFirms; (2) 'shareholdingPatternV2' -- a pre-rolled-up prom/fii/dii/public/others quintet computed BY GROWW ITSELF (dii = mutualFunds + otherDomesticInstitutions; public = retailAndOthers). v2 is the site's own fii/dii bucketing, not our derivation -- worth capturing verbatim per rule 2, but P2 mapping-card work still needed to confirm 'Foreign Institutions' == our FPI+FDI definition (T7): no FPI-vs-FDI split is shown anywhere on Groww, so DEF_DIFF is likely once P2 checks a DR-heavy name. No pledge, no promoter-subcategory-of-corporation detail beyond the flat 0s seen in all 3 probes (all promoter holding classified under 'individual' in every probe). The visible DOM widget (rendered server-side, no JS needed) prints exactly 5 rows per quarter: Promoters / Foreign Institutions / Mutual Funds / Other Domestic Institutions / Retail And Others -- confirmed these are 2dp-rounded renderings of the JSON's float values (e.g. RELIANCE Jun'25 promoters.individual=50.0696 -> displayed '50.07%').",
+  "subrows_shown": [
+    "promoters.individual", "promoters.government", "promoters.corporation",
+    "otherDomesticInstitutions.insurance", "otherDomesticInstitutions.otherFirms"
+  ],
+  "precision": 2,
+  "precision_note": "DOM widget displays 2dp (verified: 50.0696 -> '50.07%'). The embedded __NEXT_DATA__ JSON itself carries far more digits (float summation noise, e.g. retailAndOthers=11.134900000000004) -- these are NOT a real higher-precision source, just unrounded floating-point sums; extraction below records the raw JSON value as instructed (no rounding at capture time) but treat trailing digits past 2dp as noise, not signal.",
+  "depth_reliance": "2025-06-30",
+  "depth_mcx": "2025-06-30",
+  "depth_eternal": "2025-06-30",
+  "depth_probe_pre2010": {
+    "RELIANCE": "no. Earliest quarter shown = 2025-06-30 (Jun '25) -- only 5 trailing quarters total, nowhere near 2010.",
+    "TCS": "no. Same 5-quarter window, earliest = 2025-06-30 (Jun '25).",
+    "ITC": "no. Same 5-quarter window, earliest = 2025-06-30 (Jun '25).",
+    "HDFCBANK": "no. Earliest row shown = 2025-08-31 (Aug '25, EVENT_SHP -- see event_rows), earliest REGULAR quarter-end = 2025-09-30 (Sep '25)."
+  },
+  "pre2010_probe_verdict": "GROWW SHOWS NO PRE-2010 DATA FOR ANY PROBE -- in fact it shows NOTHING older than ~15 months for ANY stock tested (mega-caps included). The 5-quarter cap is structural (same on both the widget preview and the dedicated /share-holding subpage), not a probe-specific gap. Groww cannot help close the Dec-2002..Jun-2010 (0% coverage) OR the Sep-2010..Sep-2015 (30.4%) OR the Dec-2015..Mar-2016 (0.3%) OR even most of the Jun-2016..Jun-2019 gap -- its entire visible history sits inside our already-100%-covered Sep-2019-to-date band.",
+  "event_rows": true,
+  "event_rows_note": "Not observed in the 3 required probes (all 5 rows for RELIANCE/MCX/ETERNAL were clean quarter-ends: Jun'26/Mar'26/Dec'25/Sep'25/Jun'25) but HDFCBANK (probed for the pre-2010 check) shows a mid-quarter row labelled 'Aug '25' in place of a Jun'25 quarter-end -- a genuine EVENT_SHP per rule 8/T4. Confirms Groww splices event-based filings into the same 5-slot window, silently displacing a regular quarter -- must be checked per-stock in P2/P3, not assumed absent.",
+  "machine_readable": true,
+  "needs_browser": false,
+  "api_route": "No standalone shareholding-only JSON endpoint found. Route actually used: (1) resolve via GET https://groww.in/v1/api/search/v3/query/global/st_query?query=<text> (JSON) for the slug, then (2) GET https://groww.in/stocks/<slug> (full SSR HTML, curl-able, no JS execution needed) and regex-extract <script id=\"__NEXT_DATA__\" type=\"application/json\">...</script>, json.loads it, read props.pageProps.stockData.shareHoldingPattern and .shareholdingPatternV2. The dedicated subpage https://groww.in/stocks/<slug>/share-holding carries the identical 5-quarter JSON (no deeper history, no pagination param found) -- not worth a separate fetch for bulk sweep purposes, the main page already has everything. No XHR/AJAX call was needed to switch quarter tabs client-side (all 5 quarters ship pre-loaded), so there is no deeper paginated API to discover behind JS -- 5 quarters really is the ceiling.",
+  "rate": "10 requests total (1 search + 1 stock page each for RELIANCE/MCX/ETERNAL/TCS/ITC/HDFCBANK + 1 dedicated /share-holding page), spaced >=2s apart. All returned HTTP 200. No 403/429, no CAPTCHA, no rate-limit signal observed at this volume.",
+  "access": "open (no login wall). Entire shareholding widget renders in the anonymous, unauthenticated page load -- no broker-account gate encountered anywhere in this recon.",
+  "notes": "HIGH-VALUE FINDING: Groww is machine-readable and cheaply bulk-sweepable (2 GETs per stock, no JS/browser needed) -- but its shareholding history is capped at ~5 trailing quarters (~15 months) for every stock tested, including RELIANCE. That caps its usefulness to ONLY the most recent 5 quarters of our already-100%-covered post-Sep-2019 band -- it cannot help with ANY of our open coverage gaps (pre-2010, 2010-2015 wayback-era, the 2015-16 seam, or 2016-2019 BSE-ledger era). Recommend: keep Groww in the roster for CURRENT-quarter cross-checks / T1,T2,T7 trap calibration (P2/P3) where its clean fii/dii/prom/mf/ins-in-dii breakdown and self-rolled v2 prom/fii/dii/public quintet are useful corroboration, but do NOT expect it to carry any Phase-4 depth beyond ~5 quarters/stock -- P4 bulk-sweep ROI here is small (currently-live cells only) even though the mechanics are cheap."
+}

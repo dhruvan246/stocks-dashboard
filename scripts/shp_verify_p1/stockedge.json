@@ -1,0 +1,68 @@
+{
+  "site": "StockEdge (web.stockedge.com)",
+  "resolve": {
+    "method": "two independent anonymous routes, both bulk-capable",
+    "route_A_static_sitemap": "https://web.stockedge.com/sitemap/sitemap_security.xml — full static <loc> list, each entry 'https://web.stockedge.com/share/<slug>/<securityId>'. One download (~487KB) gives slug+ID for every security on the site, no auth, no rate limit exposure. Confirmed: RELIANCE (Reliance Industries) -> slug 'reliance-industries', id 4897; MCX (Multi Commodity Exchange of India) -> slug 'multi-commodity-exchange-of-india', id 7802; ETERNAL -> slug 'eternal', id 98676 (NOT 'zomato' — no separate zomato entry in the sitemap; see notes on T9).",
+    "route_B_search_api": "GET https://api.stockedge.com/Api/SecurityDashboardApi/GetSecurities?term=<query> — anonymous, no auth headers required, returns [{ID,Name,IsMyStock,Slug}, ...] fuzzy-matched on name. Verified working for RELIANCE, TCS, ITC, HDFCBANK. Multiple near-name matches returned (e.g. 'RELIANCE' also matches Reliance Power, Reliance Infra, Reliance Capital, Reliance Communications, etc.) — bulk resolution should prefer the sitemap's exact slug or disambiguate on ISIN/exact-name, not first search hit.",
+    "bulk_resolvable": true,
+    "notes": "Sitemap approach is strictly better for P4 bulk resolution: one static file, zero per-symbol API calls, ~490KB covers the whole site's security universe (includes delisted/merged names too, e.g. multiple dead 'RELIANCE ...' entities alongside the live one)."
+  },
+  "categories": {
+    "Promoter": "prom",
+    "Indian Promoter": "prom",
+    "Foreign Promoter": "prom",
+    "Public": "other",
+    "FII/FPI": "fii",
+    "DII": "dii",
+    "Mutual Funds": "mf",
+    "Banks": "other",
+    "Insurance": "ins",
+    "Others": "other",
+    "Non Institution": "other",
+    "Non Promoter and Non Public": "other",
+    "Depository Receipts": "other",
+    "ADR": "other",
+    "GDR": "other",
+    "Promoter Holding Pledge (%)": "other",
+    "No. of Shareholders (in Lacs)": "unknown",
+    "tpOtherEWF (unlabeled API key, not shown in UI tree)": "unknown",
+    "tpINSubtotal (unlabeled API key, not shown in UI tree — likely Institution subtotal)": "unknown",
+    "NonPromoterNonPublic (unlabeled API key, always null in 27/27 rows observed — distinct from the displayed tpNPNPOther which is populated)": "unknown"
+  },
+  "subrows_shown": [
+    "Promoter -> Indian Promoter, Foreign Promoter",
+    "Public -> FII/FPI, DII, Non Institution",
+    "DII -> Mutual Funds, Banks, Insurance, Others",
+    "Depository Receipts -> ADR, GDR",
+    "Promoter Holding Pledge (%) — standalone row",
+    "No. of Shareholders (in Lacs) — standalone row, UNIT IS LACS not raw count (RELIANCE 2026-06 = 46.52, i.e. ~46.52 lakh = ~4.65 million holders)"
+  ],
+  "precision": 2,
+  "depth_reliance": "2024-06-30 (earliest of exactly 9 quarters returned, latest 2026-06-30)",
+  "depth_mcx": "2024-06-30 (identical 9-quarter window, latest 2026-06-30)",
+  "depth_eternal": "2024-06-30 (identical 9-quarter window, latest 2026-06-30; spans the Jul-2025 Zomato->Eternal rename with no break — the 2024-06..2025-06 rows are pre-rename Zomato quarters served under the SAME site_id 98676/slug 'eternal', prom=0.0 throughout as expected for a no-promoter company)",
+  "depth_probe_pre2010": {
+    "TCS": "NO — same fixed 9-quarter window, earliest 2024-06-30 (site_id 6797)",
+    "ITC": "NO — same fixed 9-quarter window, earliest 2024-06-30 (site_id 5535)",
+    "HDFCBANK": "NO — same fixed 9-quarter window, earliest 2024-06-30 (site_id 5051)",
+    "RELIANCE": "NO — same fixed 9-quarter window, earliest 2024-06-30 (site_id 4897)",
+    "verdict": "StockEdge's shareholding-pattern route is HARD-CAPPED at the trailing 9 quarters (~2.25 years) for every security tested, including India's largest, oldest-listed names. Tried 8 query-string variants (count/years/duration/range/take/pageSize/numOfRecords/limit) against the API directly — all ignored, server always returns exactly 9 rows, 2024-06 to 2026-06. This is a server-side cap, not a UI default. StockEdge is NOT a pre-2010 source; confirms the era stays 0%-covered from this site."
+  },
+  "event_rows": false,
+  "machine_readable": true,
+  "needs_browser": false,
+  "api_route": "https://api.stockedge.com/Api/SecurityDashboardApi/GetShareHoldingPatternDisplaySet/{securityId}  (GET, path-param securityId, no query params honored, no auth/headers required — verified anonymous with bare curl, no cookies/tokens/Referer needed despite a third-party scraper (RSSHub) sending Host/Origin/Referer headers defensively)",
+  "rate": "No 403/429 encountered across ~20 anonymous API calls (search + display-set for 6 securities + 8 query-param probes) at a self-imposed >=2s gap. No explicit rate-limit headers observed. Also pulled the full JS bundle set (main/vendor/runtime + ~804 lazy chunks, ~30-40MB total via 12-way parallel curl to locate the endpoint) with no blocking — those are static CDN assets, not gated.",
+  "access": "open — fully anonymous, no login wall encountered anywhere in this recon (home page, sitemap, search API, and the shareholding API itself all served without auth). No signup was attempted per hard rules.",
+  "notes": [
+    "SITE CHARACTERIZED: StockEdge (web.stockedge.com) — primary assignment succeeded, no fallback to Value Research Online needed.",
+    "Discovery path: web.stockedge.com is an Angular SPA (no SSR — /share/<slug>/<id> pages return the same 31933-byte shell as the homepage, all data is client-fetched). The API host api.stockedge.com was found via string search of the main JS bundle. The shareholding endpoint itself is NOT in the eagerly-loaded main/vendor bundles; it lives in one of ~804 lazily-loaded route chunks (chunk 55503.193f7b14afed9bdf.js). Located it by extracting the full chunk-id->hash manifest from runtime.js and grepping all 804 chunks in parallel for shareholding-related API strings.",
+    "Table (GetShareHoldingPatternDisplaySet) gives the FULL category tree with sub-rows in one call — satisfies plan rule 3 (one page-load/call = whole table) for whatever depth exists (9 quarters).",
+    "A SEPARATE single-metric chart API family exists (EdgeChartDashboardApi: GetFII, GetDII, GetPromoterShareHolding, GetRetail, GetInstitutional — found in chunk 28256.a7658aa75136d830.js) that looked like it might carry deeper history for trend charts. Could NOT get a working call convention for these (tried path-param and query-param securityId formats, both 404'd) within recon budget — flagging as UNEXPLORED, not confirmed absent. If Phase 2/4 wants to chase deeper StockEdge history, start there rather than re-deriving from scratch: the metric->URL-template list is already extracted in chunk 28256.",
+    "FP-noise artifact: raw API doubles carry floating-point noise past 2dp (e.g. DII 21.289999999999996, GDR/ADR computed sums). Rounded to 2dp in the extraction (matches the site's stated/displayed precision); raw unrounded values are recoverable by re-fetching the same URL if ever needed bit-exact.",
+    "'Public' (tpTotalpublic) is a derived aggregate the site prints directly (not us deriving it) — per trap T8 we still won't use it as a category source in later phases, just recording it exists.",
+    "'Banks' is its own DII sub-row here, separate from 'Insurance' and 'Mutual Funds' — matches our schema's DII definition needing FI/Banks folded in; useful for the Phase-2 mapping card.",
+    "No event-based (mid-quarter) rows seen in any of the 27 extracted rows — all DateEndName values land on standard quarter-ends (03/06/09/12).",
+    "T9 rename check: ETERNAL's old ZOMATO-era quarters (2024-06 through 2025-06, i.e. pre Jul-2025 rename) are served under the SAME site_id/slug as the current name — site did NOT split old+new history, single continuous ID. Confirmed only within the 9-quarter window; can't say whether pre-2024 ZOMATO history (if it existed beyond the cap) also lives under 98676 or a retired id, since nothing before 2024-06 is retrievable from this route at all."
+  ]
+}

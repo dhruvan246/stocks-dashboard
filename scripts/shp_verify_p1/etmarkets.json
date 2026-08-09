@@ -1,0 +1,50 @@
+{
+  "site": "etmarkets",
+  "resolve": {
+    "url_shape": "https://economictimes.indiatimes.com/<company-slug>/stocks/companyid-<N>.cms (page also carries a dedicated legacy table at /<slug>/shareholding/companyid-<N>.cms)",
+    "recipe": "GET https://economictimes.indiatimes.com/topic/<lowercase-NSE-symbol-or-name-fragment>.cms with -L (follow redirect). A 301 lands on the canonical /<slug>/stocks/companyid-<N>.cms page. Verified for MCX (topic/mcx -> multi-commodity-exchange-of-india-ltd/stocks/companyid-16571.cms). RELIANCE and ETERNAL companyids were instead read off the RIL page's own 'Nifty 50 Stocks' sidebar (13215 and 57948) since both are Nifty50 members; that sidebar is not a general resolver for non-Nifty50 names.",
+    "bulk_resolvable": "PARTIAL / UNCONFIRMED. The /topic/<x> redirect worked once (MCX) but no site search JSON endpoint was found in static HTML -- ET's search box is client-side JS (React bundle), its API call is not visible via curl. No sitemap, no autosuggest endpoint discovered (tried /marketstats/autosuggestion.cms, /marketstats/companysuggestion.cms, /php/search.php -- all 404). A full symbol->companyid map would need either (a) crawling /topic/<every-nse-symbol-lowercase> and checking for the 301 (slow, 1 req/symbol, unverified success rate), or (b) a browser session to capture the live search-box XHR (out of scope for this agent). NOT bulk-resolvable cheaply with what P1 found.",
+    "isin_route": "not tested"
+  },
+  "categories": {
+    "Promoters": "prom",
+    "Pledge": "other",
+    "FII": "fii",
+    "DII": "dii",
+    "Mutual Funds": "mf",
+    "Others": "other",
+    "Foreign Institutions": "fii",
+    "Non Banks MutualFunds": "mf",
+    "Central Government": "other",
+    "General Public": "other",
+    "Financial Institutions": "unknown",
+    "GDR": "other"
+  },
+  "categories_note": "TWO different, non-identical taxonomies coexist on the same site for the same company, from two different routes (see 'routes' below). Route A (stock page widget, current/live) uses a clean 6-row modern taxonomy: Promoters, Pledge, FII, DII, Mutual Funds, Others -- Mutual Funds appears to be a sub-row of DII (DII >= MF for every probe checked) but this is our inference from the numbers, not printed by the site; DO NOT treat as confirmed until P2 mapping card. Route B (legacy /shareholding/ page) uses an older 8-row NSE/BSE pre-2001-style bucket set: Promoters, Foreign Institutions, Non Banks MutualFunds, Central Government, Others, General Public, Financial Institutions, GDR. 'Financial Institutions' on Route B is ambiguous -- could be Banks+FI+Insurance combined (the legacy definition) or something narrower; marked 'unknown' pending P2, note it is NOT obviously equal to Route A's DII (values don't reconcile cleanly, e.g. MCX Route B: FinInst 20.74 + NonBankMF 30.07 = 50.81 vs Route A DII 35.69 -- the two routes are on different as-of dates so this is not a same-day contradiction, just a caution against assuming equivalence).",
+  "subrows_shown": ["Mutual Funds (Route A only)"],
+  "insurance_row": "NOT SHOWN on either route -- no 'Insurance' or 'Life Insurance' category printed anywhere on ET for any of the 3 probes.",
+  "nsh_shown": false,
+  "nsh_note": "No 'Number of Shareholders' figure found on either route for any probe stock.",
+  "precision": 2,
+  "precision_note": "Route A prints 2dp always (e.g. 0.00, 71.77). Route B prints 2dp but drops trailing zeros / the decimal point entirely for exact values (e.g. '0%' not '0.00%', '29.84%' but also plain '0%' for Central Government on RELIANCE).",
+  "depth_reliance": "2025-09-30 (only 4 quarters visible: Sep-2025, Dec-2025, Mar-2026, Jun-2026)",
+  "depth_mcx": "2025-09-30 (same 4-quarter window)",
+  "depth_eternal": "2025-09-30 (same 4-quarter window)",
+  "depth_general_finding": "Route A (the only route with any multi-quarter table) is a FIXED TRAILING 4-QUARTER WINDOW, not an archive. Confirmed identical window (Jun-2026/Mar-2026/Dec-2025/Sep-2025) across all 6 stocks probed (RELIANCE, MCX, ETERNAL, TCS, ITC, HDFCBANK) regardless of company age or listing history -- e.g. TCS (listed 2004, promoter=71.77 unchanged all 4 quarters) still only shows 4 quarters, not more. Route B (legacy page) shows exactly ONE snapshot with NO quarter/date label printed at all (not even 'latest') -- effectively zero historical depth. No pagination, year-selector, or 'view more history' control found in server-rendered HTML on either route. A client-side-only deeper archive may exist behind JS (e.g. the inert 'Total Shareholdings' second tab, or a chart component in a <div class=\"stocksPage_deferredSectionPlaceholder\"> that never resolved via curl) but this could not be tested without the browser pane, which this agent was told not to use.",
+  "depth_probe_pre2010": {
+    "RELIANCE": "NO -- earliest visible quarter is Sep-2025",
+    "TCS": "NO -- earliest visible quarter is Sep-2025",
+    "ITC": "NO -- earliest visible quarter is Sep-2025",
+    "HDFCBANK": "NO -- earliest visible quarter is Sep-2025"
+  },
+  "pre2010_answer": "NO for all 4 probe names. ET Markets does NOT show any quarter <= Jun-2010 via any machine-readable route found. In fact it shows nothing before Sep-2025 for ANY of the 6 stocks tested, including 20+ year listed blue chips (TCS, ITC, HDFCBANK, RELIANCE). The Dec-2002..Jun-2010 era (0% coverage in our data) gets ZERO help from ET's cheap routes. A deeper archive, if it exists at all on ET, is not exposed server-side and was not reachable without a browser.",
+  "event_rows": false,
+  "event_rows_note": "All quarters observed align to standard calendar QE dates (Jun/Mar/Dec/Sep month-end); no mid-quarter as-on dates seen. Sample too shallow (4 quarters x 6 stocks, all recent) to rule out event rows appearing for a volatile small-cap; not observed in this probe.",
+  "machine_readable": true,
+  "needs_browser": false,
+  "machine_readable_note": "Both routes are plain server-rendered HTML (curl-able, no JS execution needed) with page meta 'Last-Modified' timestamps proving live server-side rendering, not a cached SPA shell. No JSON API endpoint was found -- data must be scraped from the HTML table structure (class names stockShareholdingSection_table__tMqdU for Route A, table.tblData1 for Route B). needs_browser=false because everything captured here required only curl; flagged uncertainty above (Total Shareholdings tab, any deeper chart-backed archive) is UNTESTED, not confirmed browser-only.",
+  "api_route": null,
+  "rate": "11 requests made across ~10 minutes (RELIANCE x2 pages, MCX x3 incl. topic redirect + shareholding page, ETERNAL x2, TCS/ITC/HDFCBANK x1 each), all >=2s apart, one WebSearch-only detour for MCX id resolution. Zero 403/429 seen. All requests returned HTTP 200 (one 301 redirect followed cleanly). No rate-limit or blocking behavior observed at this volume.",
+  "access": "OPEN. No login wall, no paywall, no captcha encountered on any of the 11 requests. Standard desktop User-Agent used; no cookies/session required.",
+  "notes": "ET's per-stock shareholding data is thin: modern route caps at 4 trailing quarters and uses a 6-bucket taxonomy that folds everything non-prom/FII/DII/MF into a single 'Others' catch-all (no promoter-pledge detail beyond a flat 0.00 memo row, no insurance breakout, no shareholder count). Legacy route is a single dateless snapshot in an older 8-bucket taxonomy inherited from pre-2001 NSE/BSE convention, useful mainly as a second same-day cross-check of the SAME current quarter, not for history. Net: ET is USEFUL for verifying the last ~4 quarters (2 independent same-site taxonomies to sanity-check against each other) but CONTRIBUTES NOTHING to the pre-2010 depth question or to Phase-3/4 deep audits beyond ~Sep-2025 forward. Recommend the campaign not budget ET for historical strata (P3 'wayback-era-rich' / 'BSE-ledger-era' cohorts) -- only for the most-recent-4-quarters slice of the mega/mid/small strata. The MCX resolve path (topic/<name> redirect) is a nice cheap trick worth reusing by the P4 bulk agent if ET is kept in the roster, but its bulk-symbol coverage/hit-rate is UNVERIFIED (only tried once)."
+}

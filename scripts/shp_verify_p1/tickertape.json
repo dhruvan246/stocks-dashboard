@@ -1,0 +1,67 @@
+{
+  "site": "tickertape",
+  "resolve": {
+    "search_api": "GET https://api.tickertape.in/search?text=<query>&types=stock -> data.stocks[].{ticker,name,sid,slug,marketCap,quote}. `ticker` matches our NSE symbol in the common case; `sid` is Tickertape's opaque short code (often but not always related to the name, e.g. RELI, MCEI) and is the ID used in every other API route and in the page URL /stocks/<slugified-name>-<sid>.",
+    "bulk_resolvable": true,
+    "bulk_resolvable_note": "Feed our NSE symbol list through the search endpoint one at a time (rate-limited) to build a symbol->sid map; response includes marketCap so a fuzzy multi-hit can be disambiguated. Caveat: renamed tickers are NOT resolvable by new name (see ETERNAL below) -- a rename map must try both old and new names / fall back to crawling https://www.tickertape.in/sitemaps/stocks/sitemap.xml (888KB, one <loc> per stock, contains every slug+sid pair and could itself be used as a bulk resolver / cross-check, bypassing the search API and its rate limit entirely).",
+    "examples": {
+      "RELIANCE": "sid=RELI, slug=/stocks/reliance-industries-RELI (search 'RELIANCE' -> EXACT match)",
+      "MCX": "sid=MCEI, slug=/stocks/multi-commodity-exchange-of-india-MCEI (search 'MCX' -> EXACT match)",
+      "ETERNAL": "sid=ZOM, slug=/stocks/zomato-ZOM. Search text='ETERNAL' or 'eternal' returns ZERO stock hits (data.stocks=[], only an unrelated 'brands' hit for Info Edge). Search text='ZOMATO' or 'zom' DOES resolve it (as a 'brands' entry, not 'stocks', pointing to sid=ZOM/slug=/stocks/zomato-ZOM). Confirmed via the stocks sitemap: only 'zomato-ZOM' exists, no 'eternal-*' slug. The rendered PAGE at that slug already shows the new name ('<title>ETERNAL Share Price Today: Eternal Limited NSE</title>') -- so the site's content is renamed but its search index, slug and API sid are NOT. T9 case study: resolve by OLD name/ticker for this site."
+    }
+  },
+  "categories": {
+    "pmPctT [Total Promoter Holding]": "prom",
+    "pmPctP [Promoter Holding Pledged]": "other",
+    "plPctT [Pledged]": "other",
+    "uPlPctT [Unpledged]": "other",
+    "mfPctT [Mutual Funds]": "mf",
+    "isPctT [Insurance Firms]": "ins",
+    "diPctT [Domestic Institutional Holdings]": "dii",
+    "othDiPctT [Other Domestic Institutions]": "other",
+    "othExInsDiPctT [Others]": "other",
+    "fiPctT [Foreign Institutions]": "fii",
+    "rhPctT [Retail Investors]": "other",
+    "othPctT [Other Parties]": "other",
+    "rOthPctT [Retail and Others]": "other"
+  },
+  "categories_note": "Raw API keys shown (site does not print English row labels via this JSON route -- labels come from a separate `labels.Holdings` lookup table also embedded in the page's __NEXT_DATA__, English text given in brackets above, verified against the rendered page text e.g. 'Foreign Institutions', 'value':'16.90'). Verified internal identities (float-exact, not rounded): diPctT = mfPctT + othDiPctT; othDiPctT = isPctT + othExInsDiPctT; rOthPctT = rhPctT + othPctT; pmPctT + diPctT + fiPctT + rOthPctT = 100.000... (closes exactly for RELIANCE across all 6 quarters checked). So diPctT (DII) is NOT itself a printed atomic row on the underlying data model -- it decomposes as MF + Insurance + Others(non-institutional DII), same as our own dii breakdown. pmPctP/plPctT/uPlPctT are pledge-status splits of pmPctT (always 0 pledge in our 3 probes, so uPlPctT==pmPctT numerically); we don't store pledge (out of scope per plan) so mapped 'other'. rhPctT/othPctT/rOthPctT are the site's own printed 'public' sub-rows (retail investors / other parties / their sum) -- these are genuine PRINTED rows, not something we derived, but none of them correspond to a category we store, mapped 'other' per schema.",
+  "subrows_shown": [
+    "pmPctP [Promoter Holding Pledged]",
+    "plPctT [Pledged]",
+    "uPlPctT [Unpledged]",
+    "othDiPctT [Other Domestic Institutions]",
+    "othExInsDiPctT [Others]",
+    "rhPctT [Retail Investors]",
+    "othPctT [Other Parties]",
+    "rOthPctT [Retail and Others]"
+  ],
+  "precision": 2,
+  "precision_note": "Page renders values rounded to 2dp (confirmed in raw HTML, e.g. `\"value\":\"20.83\",\"unitText\":\"Percent\"` for DII, `\"value\":\"16.90\"` for FII). The underlying JSON API (both the SSR __NEXT_DATA__ blob and the /stocks/holdings/<sid> endpoint) returns full double-precision floats (14-16 significant digits, e.g. 50.10716523858447) -- captured at full precision in tickertape_extract.jsonl since that IS what the API gives verbatim; treat 2dp as the site's DISPLAY convention for tolerance-band purposes.",
+  "depth_reliance": "2025-03-31",
+  "depth_mcx": "2025-03-31",
+  "depth_eternal": "2025-03-31",
+  "depth_note": "CRITICAL FINDING: every stock probed -- RELIANCE, MCX, ETERNAL(ZOM), and separately TCS, ITC, HDFCBANK -- returns EXACTLY 6 rows, always the most recent 6 quarter-end (or near-quarter-end) snapshots as of the request date (2026-08-09), i.e. a fixed rolling window back to ~2025-03-31. Tried limit/count query params on the API (no effect, response byte-identical). No alternate route, chart endpoint, or 'yearly' tab data found in the page bundle giving deeper history. Tickertape's public per-stock SHP surface is structurally incapable of reaching further back than ~1.5 years -- it cannot help fill ANY of our gaps (2010-2019 wayback/BSE eras, or the 2015-16 seam) and has near-zero overlap value even for Phase 3 stratified audit beyond the last 6 quarters, which our own coverage is already ~100% for (Sep-2019->date).",
+  "depth_probe_pre2010": {
+    "RELIANCE": "NO. Earliest quarter returned = 2025-03-31 (6 rows total).",
+    "TCS": "NO. Earliest quarter returned = 2025-03-31 (6 rows total, sid=TCS).",
+    "ITC": "NO. Earliest quarter returned = 2025-03-31 (6 rows total, sid=ITC).",
+    "HDFCBANK": "NO. Earliest quarter returned = 2025-06-30 (6 rows total, sid=HDBK) -- and one of the 6 is a MID-QUARTER row (2025-08-31), i.e. an EVENT_SHP consuming one of the 6 slots, pushing the window slightly later than the other probes."
+  },
+  "event_rows": true,
+  "event_rows_note": "Not observed in the 3 core probes (RELIANCE/MCX/ETERNAL all showed exactly the 6 quarter-end dates Mar/Jun/Sep/Dec-31, no mid-quarter rows). Confirmed present on the site via the HDFCBANK pre-2010 probe: its window is ['2025-06-30','2025-08-31','2025-09-30','2025-12-31','2026-03-31','2026-06-30'] -- 2025-08-31 is mid-quarter (an event-based/interim filing), matching plan rule 8 (EVENT_SHP, drop by design, not a mismatch).",
+  "machine_readable": true,
+  "needs_browser": false,
+  "api_route": "https://api.tickertape.in/stocks/holdings/<sid>  (GET, JSON, no auth, no query params needed or effective; response shape {\"success\":true,\"data\":[{\"date\":\"<ISO8601 quarter-end>\",\"data\":{...13 float keys...}}, ...6 entries]}). Resolve <sid> via https://api.tickertape.in/search?text=<name-or-ticker>&types=stock. Both the API route and the page's embedded __NEXT_DATA__ JSON (at props.pageProps.securitySummary.holdings.holdings, same script tag on every /stocks/<slug> page) return byte-for-byte the same 6-quarter payload -- either is a valid cheap route, no browser needed.",
+  "rate": "No 403/429 in ~20 requests total (search + holdings + page fetches) across ~35 minutes at >=2s spacing (mostly 2.5s). www.tickertape.in is Cloudflare-fronted (cf-cache-status, cf-ray headers present, some pages served HIT from cache); api.tickertape.in has no CDN/rate-limit headers visible. No robots.txt disallow on /stocks/ or the api host (robots.txt only covers www.tickertape.in and disallows /smallcase/*, /space/*, /us-stocks/pricing-atpl -- none relevant here).",
+  "access": "Fully public, no login wall, no captcha, no paywall encountered on any of: page loads, search API, holdings API, sitemap. No account created, no credentials entered.",
+  "notes": [
+    "HIGH VALUE: clean, stable, undocumented-but-discoverable JSON API exists (api.tickertape.in/stocks/holdings/<sid> + /search). Trivial to bulk-sweep mechanically.",
+    "LOW VALUE for this campaign's actual mission: the API is capped at a rolling 6-quarter window (~last 1.5 years) for every stock tested, so it CANNOT be a Phase-4 bulk-sweep candidate for filling our 2010-2019 / seam coverage gaps -- recommend NOT promoting Tickertape to Phase 4 despite the clean API, unless the orchestrator wants it purely as a fast recent-quarter cross-check.",
+    "Rename handling (T9): Eternal Ltd (ex-Zomato) is served under its OLD sid/slug (ZOM / zomato-ZOM) with NEW display content. The site's own search index does not resolve 'ETERNAL' or 'eternal' at all (0 hits) -- any bulk resolver for this site must try pre-rename names/tickers too, or crawl the sitemap directly.",
+    "diPctT (DII) is a derived sum of mfPctT+isPctT+othExInsDiPctT under the hood even though the site treats it as a first-class printed row/chart -- useful for the Phase-2 mapping card, not itself a red flag.",
+    "Number of shareholders (nsh): NOT part of the quarterly holdings table/API. A single CURRENT snapshot count exists elsewhere on the page (props.pageProps.securityInfo.ratios.nShareholders, e.g. 4,651,863 for RELIANCE as of today) with no historical quarterly series found -- cannot be used for point-in-time nsh comparison beyond the latest quarter.",
+    "Pledge fields (pmPctP/plPctT/uPlPctT) are present per quarter but out of scope per campaign non-goals; all three probes show 0% pledge throughout the visible window so the pledge-vs-unpledged distinction couldn't be exercised.",
+    "No BSE-only handling observed to test (T10 n/a -- BSE Ltd not one of the 3 probes; MCX/RELIANCE/ETERNAL are all NSE+BSE listed anyway)."
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "site": "moneycontrol",
+  "resolve": {
+    "method": "GET https://www.moneycontrol.com/mccode/common/autosuggestion_solr.php?classic=true&query=<NSE_SYMBOL_or_NAME>&type=1&format=json -> array of candidates, each {pdt_dis_nm:'Name <span>ISIN, NSESYM, BSECODE</span>', link_src, sc_id, ...}. Identity-confirm a candidate by our BSE scripcode or NSE symbol appearing (word-boundary) inside pdt_dis_nm -- autosuggest returns look-alike/sister companies first for common tickers (e.g. query=ITC returned Apple Inc before ITC Ltd). The stock page URL is the FULL link_src (https://www.moneycontrol.com/india/stockpricequote/<sector-slug>/<company-slug>/<urlScid>) -- reuse it verbatim, do not rebuild it from the JSON 'sc_id' field: for ETERNAL, link_src ends in '/Z' but the JSON sc_id field says 'Z01' -- they diverged. This breaks the old fetch_shp_wayback_mc.py assumption that sc_id==URL trailing segment; a bulk resolver must parse the trailing path segment out of link_src, not trust sc_id. Re-verify identity on the loaded page itself (BSE scripcode digits and ISIN both appear in-page as plain text) before trusting any extraction -- do this in the same request, no extra round trip.",
+    "bulk_resolvable": true,
+    "bulk_caveat": "autosuggest is a single cheap GET per symbol and works for all 3 probes + all pre-2010-probe stocks tried (RELIANCE, MCX, ETERNAL, TCS, ITC, HDFCBANK) with zero manual intervention -- fine for a P4 bulk resolver. The known minor wrinkle is the sc_id-vs-URL-segment divergence above; always take the URL segment."
+  },
+  "categories": {
+    "Promoter": "prom",
+    "Pledges as % of promoter shares(%)": "other",
+    "FII": "fii",
+    "DII": "dii",
+    "Public": "other",
+    "Others": "unknown"
+  },
+  "subrows_shown": [],
+  "precision": 2,
+  "depth_reliance": "2025-06-30",
+  "depth_mcx": "2025-06-30",
+  "depth_eternal": "2025-06-30",
+  "depth_probe_pre2010": {
+    "RELIANCE": "NO -- live page shows only the trailing 5 quarters, earliest 2025-06-30",
+    "TCS": "NO -- live page shows only the trailing 5 quarters, earliest 2025-06-30",
+    "ITC": "NO -- live page shows only the trailing 5 quarters, earliest 2025-06-30",
+    "HDFCBANK": "NO -- live page shows only 5 columns, oldest labeled 'Aug 2025' (a mid-quarter/event column inside the trailing window, not even a clean quarter-end) -- confirms pre-2010 is unreachable on this route by a wide margin, and the depth cap is uniform across mega-caps regardless of company age or listing date"
+  },
+  "qtrid_grammar_live": false,
+  "event_rows": true,
+  "machine_readable": true,
+  "needs_browser": false,
+  "api_route": null,
+  "rate": "~2s spacing enforced manually between the 9 live requests made (3x autosuggest + 6x stockpricequote page + 1x financials page + 2x dead-route probes); zero 403/429/CAPTCHA encountered from either the autosuggest solr endpoint or the stockpricequote pages. No throttling behaviour observed at this volume -- untested at bulk-sweep volume (thousands of pages).",
+  "access": "Public, no login/paywall/CAPTCHA anywhere touched: autosuggest API, stockpricequote pages, and the markets/financials/capital-structure page all served plain to an unauthenticated curl with a browser User-Agent. Two legacy-URL guesses were dead, not gated: (1) https://www.moneycontrol.com/company-facts/relianceindustries/shareholding-pattern/RI -> HTTP 404, canonical https://www.moneycontrol.com/mc/error (the SHP_VERIFY_CAMPAIGN/fetch_shp_wayback_mc.py qtrid grammar is confirmed DEAD on the live site, archive-only); (2) https://www.moneycontrol.com/stocks/company_info/print_shareholding_pattern.php?sc_did=RI -> same app-level 404/mc-error. A third guess, https://www.moneycontrol.com/markets/financials/shareholding-pattern/relianceindustries-RI/, hit an Akamai edge error (HTTP 503, 'errors.edgesuite.net' reference page) -- also just a nonexistent route, not a rate-limit signal (single first-touch request).",
+  "notes": [
+    "GRAMMAR CHANGE vs the wayback-era knowledge: the old /company-facts/<slug>/shareholding-pattern/<scId>/<qtrid>.00 route (fetch_shp_wayback_mc.py) is completely dead on the live site. There is no separate shareholding-pattern page or JSON API at all today.",
+    "Live shareholding data instead lives INSIDE the ordinary per-stock quote page (https://www.moneycontrol.com/india/stockpricequote/<sector>/<slug>/<urlScid>), in a '#sharepattern' widget, as two inline JS string literals directly in the server-rendered HTML: `summary_jsn` (current/latest quarter only; a 4-5 key object) and `trend_jsn` (the SAME keys x the trailing 5 quarters). Both are trivially regex-extractable with a single curl GET -- no JS execution/rendering needed, hence machine_readable:true, needs_browser:false.",
+    "CATEGORY REGRESSION: the live widget prints only Promoter / FII / DII / Public / Others (Promoter also carries a Pledge sub-series, % of promoter shares pledged -- a different denominator, out of campaign scope per plan non-goals). There is NO Mutual Funds/UTI, NO Insurance, NO Financial-Institutions/Banks, NO Govt, NO QFI sub-row anywhere on the live page -- DII is printed only as a pre-aggregated total. This is strictly less detail than the old archived Clause-35 table this same site used to serve (which fetch_shp_wayback_mc.py's ROW_LABELS already documents) and less than what our shp_history.json stores (prom/fii/dii/mf/ins). Phase-2 mapping can compare fii and dii(as an opaque aggregate) but has literally nothing on this route to check mf or ins against, and no 'number of shareholders' (nsh) field exists either.",
+    "DEPTH IS THE HEADLINE FINDING: every one of the 6 stocks probed (RELIANCE, MCX, ETERNAL, TCS, ITC, HDFCBANK) shows EXACTLY 5 trailing quarters and no more -- there is no pagination, 'load more', or older-quarter link anywhere on the page or in its markup. This is a fixed template cap, not a per-stock data availability limit. Consequently Moneycontrol's LIVE current pages are unusable for the campaign's historical-depth comparisons (P2/P3/P4 need 2010-2026 overlap) -- they can only ever corroborate the last ~15 months, i.e. essentially only future/ongoing quarters, not the 2010-2015 wayback era, not the 2016-2019 BSE-ledger era, not even most of the post-2020 XBRL era. A bulk sweep of this route (P4) would yield a thin, currency-limited slice, not the 40-60k-cell full overlap the plan envisions -- recommend NOT promoting Moneycontrol as a P4 bulk-sweep candidate on this route; its real value to the campaign is the ALREADY-KNOWN wayback/archived pages for 2010-2016 (out of P1's live-site scope) plus this live route as one more thin currency check.",
+    "EVENT ROW CONFIRMED (T4): HDFCBANK's oldest of its 5 columns is labeled 'Aug 2025' rather than 'Jun 2025' -- a mid-quarter/event-triggered disclosure sitting inside the trailing-5 window, displacing what would otherwise be the Jun-2025 quarter-end column. Per campaign rule 8 this is an EVENT_SHP, not a like-for-like quarter-end comparison point.",
+    "Values are the raw embedded JS numbers, which JS float-serialization strips of trailing zeros (e.g. MCX Sep-2025 FII prints literally as 19, not 19.00; RELIANCE Jun-2026 FII prints as 16.9, not 16.90). The site's own on-page chart renderer for the trend tab does simple string concatenation of that same raw number (`''+this.y`), so the UI itself visibly shows '19' not '19.00' -- precision is effectively <=2dp but not zero-padded. The pie/summary chart formatter appends '%' but is the same underlying number.",
+    "Minor identity wrinkle noted but not chased further: MC's own ISIN for MCX (autosuggest pdt_dis_nm AND in-page) is INE745G01043, differing in the last two digits from this campaign brief's stated INE745G01035. Identity for MCX was confirmed instead via exact BSE scripcode 534091 plus company-name match, both present verbatim on the fetched page.",
+    "ETERNAL (ex-ZOMATO, T9) already resolves cleanly under its new name via autosuggest (slug 'eternal', ISIN/scripcode match exact) -- but since the live page shows only 5 trailing quarters total, the pre/post-rename split (old ZOMATO-era history) is moot on this route; there is no old history visible at all to test the rename-handling trap against.",
+    "No standalone shareholding-pattern URL was found despite two targeted guesses off the sibling 'markets/financials/capital-structure/<slug>-<scid>/' page (which itself is a separate, newer Next.js-rendered financials hub with no shareholding link in its own nav) -- if a dedicated page/API exists it was not discoverable from on-page navigation or plausible URL analogy in the time budgeted for this recon."
+  ]
+}
