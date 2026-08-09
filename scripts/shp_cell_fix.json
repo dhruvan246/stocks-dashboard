@@ -15,26 +15,888 @@
     "   reduction, pre-IPO pattern, ...). Exempts the cell from the write-time nsh scale gate so a",
     "   --reparse cannot punch a hole in correct data. See runbook §22g for how each was adjudicated."
   ],
-
   "fix": {
     "GHCL": {
       "2022-12-31": {
-        "cell": [19.05, 24.38, 12.0, 10.22, 0.78, "2023-01-07", 94479],
-        "was":  [61.35, 0.0, 38.65, 32.92, 2.5, "2023-01-07", 58],
+        "cell": [
+          19.05,
+          24.38,
+          12.0,
+          10.22,
+          0.78,
+          "2023-01-07",
+          94479
+        ],
+        "was": [
+          61.35,
+          0.0,
+          38.65,
+          32.92,
+          2.5,
+          "2023-01-07",
+          58
+        ],
         "src": "bse:500171_1012023101328_SHP.xml",
         "why": "NSE served ONE filing for this (sym,qe) and it describes 29,674,622 shares held by 58 holders; GHCL's ordinary equity was 95,585,786 shares / 94,479 holders. Not a mispick between two rows — the only NSE document is the wrong one. BSE's copy of the same quarter parses clean and matches both neighbours (prom 19.03 -> 19.05 -> 19.05)."
       }
     },
     "NDL": {
       "2020-12-31": {
-        "cell": [64.73, 1.51, 0.0, 0.0, 0.0, "2021-01-21", 28682],
-        "was":  [97.71, 2.27, 0.0, 0.0, 0.0, "2021-04-26", 18],
+        "cell": [
+          64.73,
+          1.51,
+          0.0,
+          0.0,
+          0.0,
+          "2021-01-21",
+          28682
+        ],
+        "was": [
+          97.71,
+          2.27,
+          0.0,
+          0.0,
+          0.0,
+          "2021-04-26",
+          18
+        ],
         "src": "bse:532641_2112021151810_SHP.xml",
         "why": "A late REVISION (submitted 2021-04-26, four months after the quarter) is defective and, being newest, displaced the good original under the newest-submission-wins rule. BSE's copy of the original (filed 2021-01-21) gives prom 64.73, matching both neighbours exactly (64.74 / 64.74)."
       }
+    },
+    "AKI": {
+      "2024-06-30": {
+        "cell": [
+          54.24,
+          3.39,
+          0.0,
+          0.0,
+          0.0,
+          "2024-07-20",
+          6765
+        ],
+        "was": [
+          54.72,
+          3.39,
+          0.0,
+          0.0,
+          0.0,
+          "2024-07-20",
+          6765
+        ],
+        "src": "bse:542020_207202420283_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=n/a); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge). Diffs: {'prom': '54.72->54.24'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
+    },
+    "ASMS": {
+      "2024-06-30": {
+        "cell": [
+          89.75,
+          0.0,
+          0.22,
+          0.0,
+          0.0,
+          "2024-08-09",
+          39610
+        ],
+        "was": [
+          90.0,
+          0.0,
+          0.22,
+          0.0,
+          0.0,
+          "2024-07-10",
+          39610
+        ],
+        "src": "bse:532694_98202412631_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=2024-08-09); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge). Diffs: {'prom': '90.0->89.75'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
+    },
+    "BCONCEPTS": {
+      "2025-06-30": {
+        "cell": [
+          48.34,
+          0.0,
+          0.49,
+          0.0,
+          0.0,
+          "2025-07-08",
+          11908
+        ],
+        "was": [
+          52.36,
+          0.0,
+          0.44,
+          0.0,
+          0.0,
+          "2025-07-08",
+          11908
+        ],
+        "src": "bse:543442_872025165831_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=n/a); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'prom': '52.36->48.34'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
+    },
+    "CELEBRITY": {
+      "2025-03-31": {
+        "cell": [
+          35.32,
+          15.12,
+          0.0,
+          0.0,
+          0.0,
+          "2025-04-19",
+          21899
+        ],
+        "was": [
+          33.47,
+          14.32,
+          0.0,
+          0.0,
+          0.0,
+          "2025-04-19",
+          21900
+        ],
+        "src": "bse:532695_194202515265_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=2025-04-19); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'fii': '14.32->15.12', 'prom': '33.47->35.32'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
+    },
+    "FCSSOFT": {
+      "2024-09-30": {
+        "cell": [
+          19.65,
+          0.04,
+          0.0,
+          0.0,
+          0.0,
+          "2024-11-04",
+          595866
+        ],
+        "was": [
+          19.65,
+          0.01,
+          0.0,
+          0.0,
+          0.0,
+          "2024-10-14",
+          663154
+        ],
+        "src": "bse:532666_411202417181_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=2024-11-04); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge). Diffs: {'nsh': '663154->595866'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
+    },
+    "FLEXITUFF": {
+      "2025-03-31": {
+        "cell": [
+          33.71,
+          0.74,
+          2.36,
+          0.0,
+          2.31,
+          "2025-04-18",
+          4777
+        ],
+        "was": [
+          32.24,
+          0.7,
+          2.26,
+          0.0,
+          2.21,
+          "2025-04-18",
+          4825
+        ],
+        "src": "bse:533638_1842025142959_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=n/a); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,tickertape). Diffs: {'dii': '2.26->2.36', 'ins': '2.21->2.31', 'prom': '32.24->33.71'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
+    },
+    "GUJRAFFIA": {
+      "2025-03-31": {
+        "cell": [
+          39.56,
+          0.44,
+          0.0,
+          0.0,
+          0.0,
+          "2025-04-21",
+          29621
+        ],
+        "was": [
+          39.59,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          "2025-04-21",
+          29846
+        ],
+        "src": "bse:523836_21420251841_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=n/a); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'fii': '0.0->0.44'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
+    },
+    "HILINFRA": {
+      "2025-09-30": {
+        "cell": [
+          70.04,
+          0.0,
+          2.01,
+          0.0,
+          0.5,
+          "2026-02-05",
+          65400
+        ],
+        "was": [
+          70.04,
+          0.0,
+          2.01,
+          0.0,
+          0.0,
+          "2025-10-13",
+          65400
+        ],
+        "src": "bse:544477_522026132333_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=2026-02-05); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (stockedge,tickertape). Diffs: {'ins': '0.0->0.5'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
+    },
+    "IL&FSTRANS": {
+      "2025-03-31": {
+        "cell": [
+          72.45,
+          0.0,
+          0.44,
+          0.0,
+          0.28,
+          "2025-04-17",
+          48045
+        ],
+        "was": [
+          73.22,
+          0.0,
+          0.45,
+          0.0,
+          0.29,
+          "2025-04-17",
+          48043
+        ],
+        "src": "bse:533177_1742025124839_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=n/a); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,tickertape). Diffs: {'prom': '73.22->72.45'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
+    },
+    "KRN": {
+      "2025-12-31": {
+        "cell": [
+          70.79,
+          5.3,
+          6.36,
+          2.29,
+          0.0,
+          "2026-01-14",
+          83766
+        ],
+        "was": [
+          69.62,
+          5.21,
+          6.25,
+          2.26,
+          0.0,
+          "2026-01-14",
+          83766
+        ],
+        "src": "bse:544263_141202620027_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=2026-01-14); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,tickertape). Diffs: {'dii': '6.25->6.36', 'fii': '5.21->5.3', 'prom': '69.62->70.79'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
+    },
+    "LAL": {
+      "2024-06-30": {
+        "cell": [
+          61.93,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          "2024-07-19",
+          9138
+        ],
+        "was": [
+          62.91,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          "2024-07-19",
+          9137
+        ],
+        "src": "bse:540952_1972024111810_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=2024-07-19); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge). Diffs: {'prom': '62.91->61.93'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
+    },
+    "LCCINFOTEC": {
+      "2025-06-30": {
+        "cell": [
+          45.85,
+          0.0,
+          0.05,
+          0.0,
+          0.0,
+          "2025-11-05",
+          44961
+        ],
+        "was": [
+          0.0,
+          0.0,
+          0.05,
+          0.0,
+          0.0,
+          "2025-08-04",
+          44962
+        ],
+        "src": "bse:532019_5112025145754_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=2025-11-05); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'prom': '0.0->45.85'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
+    },
+    "LOTUSEYE": {
+      "2025-12-31": {
+        "cell": [
+          40.67,
+          0.01,
+          0.02,
+          0.0,
+          0.0,
+          "2026-01-12",
+          10240
+        ],
+        "was": [
+          39.67,
+          0.01,
+          2.46,
+          0.0,
+          0.0,
+          "2026-01-09",
+          10241
+        ],
+        "src": "bse:532998_121202611717_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=2026-01-12); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,tickertape). Diffs: {'dii': '2.46->0.02', 'prom': '39.67->40.67'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
+    },
+    "MARKOLINES": {
+      "2026-03-31": {
+        "cell": [
+          55.0,
+          0.18,
+          0.11,
+          0.0,
+          0.0,
+          "2026-04-30",
+          6911
+        ],
+        "was": [
+          54.6,
+          0.18,
+          0.11,
+          0.0,
+          0.0,
+          "2026-04-18",
+          6914
+        ],
+        "src": "bse:543364_304202619397_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=2026-04-30); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'prom': '54.6->55.0'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
+    },
+    "MARKSANS": {
+      "2025-12-31": {
+        "cell": [
+          43.87,
+          8.12,
+          5.91,
+          4.41,
+          0.0,
+          "2026-02-10",
+          255153
+        ],
+        "was": [
+          43.87,
+          16.74,
+          5.91,
+          4.41,
+          0.0,
+          "2026-01-13",
+          255153
+        ],
+        "src": "bse:524404_102202612116_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=2026-02-10); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'fii': '16.74->8.12'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
+    },
+    "MBLINFRA": {
+      "2026-03-31": {
+        "cell": [
+          74.57,
+          0.0,
+          0.42,
+          0.0,
+          0.0,
+          "2026-06-05",
+          24120
+        ],
+        "was": [
+          74.01,
+          0.08,
+          0.36,
+          0.0,
+          0.0,
+          "2026-04-16",
+          24369
+        ],
+        "src": "bse:533152_562026144429_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=2026-06-05); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'fii': '0.08->0.0', 'prom': '74.01->74.57'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
+    },
+    "MODIRUBBER": {
+      "2025-09-30": {
+        "cell": [
+          62.2,
+          1.99,
+          0.01,
+          0.0,
+          0.0,
+          "2025-10-21",
+          14258
+        ],
+        "was": [
+          62.69,
+          2.01,
+          0.01,
+          0.0,
+          0.0,
+          "2025-10-21",
+          14258
+        ],
+        "src": "bse:500890_21102025164338_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=n/a); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'prom': '62.69->62.2'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      },
+      "2025-12-31": {
+        "cell": [
+          62.2,
+          1.99,
+          0.01,
+          0.0,
+          0.0,
+          "2026-01-21",
+          14576
+        ],
+        "was": [
+          62.69,
+          2.01,
+          0.01,
+          0.0,
+          0.0,
+          "2026-01-21",
+          14576
+        ],
+        "src": "bse:500890_2112026173336_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=n/a); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'prom': '62.69->62.2'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
+    },
+    "MSPL": {
+      "2024-09-30": {
+        "cell": [
+          42.34,
+          1.1,
+          1.91,
+          0.0,
+          0.0,
+          "2024-10-21",
+          58970
+        ],
+        "was": [
+          33.48,
+          0.87,
+          10.65,
+          0.0,
+          0.0,
+          "2024-10-21",
+          58974
+        ],
+        "src": "bse:532650_21102024192847_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=n/a); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge). Diffs: {'fii': '0.87->1.1', 'prom': '33.48->42.34'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
+    },
+    "NACLIND": {
+      "2025-03-31": {
+        "cell": [
+          63.08,
+          0.12,
+          0.0,
+          0.0,
+          0.0,
+          "2025-04-21",
+          33430
+        ],
+        "was": [
+          63.64,
+          0.12,
+          0.0,
+          0.0,
+          0.0,
+          "2025-04-21",
+          33428
+        ],
+        "src": "bse:524709_2142025201431_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=n/a); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'prom': '63.64->63.08'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
+    },
+    "PALREDTEC": {
+      "2025-09-30": {
+        "cell": [
+          30.06,
+          1.47,
+          0.0,
+          0.0,
+          0.0,
+          "2025-10-15",
+          15729
+        ],
+        "was": [
+          30.13,
+          1.47,
+          0.0,
+          0.0,
+          0.0,
+          "2025-10-15",
+          15729
+        ],
+        "src": "bse:532521_1510202518944_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=n/a); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'prom': '30.13->30.06'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
+    },
+    "PRAJIND": {
+      "2025-03-31": {
+        "cell": [
+          32.81,
+          17.16,
+          19.51,
+          17.92,
+          1.02,
+          "2025-05-07",
+          351432
+        ],
+        "was": [
+          32.81,
+          18.63,
+          18.2,
+          16.85,
+          0.69,
+          "2025-04-07",
+          353099
+        ],
+        "src": "bse:522205_75202513023_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=2025-05-07); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,tickertape). Diffs: {'dii': '18.2->19.51', 'fii': '18.63->17.16', 'ins': '0.69->1.02', 'mf': '16.85->17.92'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
+    },
+    "RAMRAT": {
+      "2025-12-31": {
+        "cell": [
+          69.3,
+          0.09,
+          0.42,
+          0.0,
+          0.0,
+          "2026-06-01",
+          20231
+        ],
+        "was": [
+          68.54,
+          0.09,
+          0.42,
+          0.0,
+          0.0,
+          "2026-01-16",
+          20231
+        ],
+        "src": "bse:522281_162026173642_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=2026-06-01); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'prom': '68.54->69.3'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
+    },
+    "S&SPOWER": {
+      "2024-06-30": {
+        "cell": [
+          74.97,
+          0.0,
+          0.21,
+          0.21,
+          0.0,
+          "2024-08-09",
+          19625
+        ],
+        "was": [
+          50.21,
+          0.0,
+          0.42,
+          0.41,
+          0.0,
+          "2024-07-16",
+          19621
+        ],
+        "src": "bse:517273_982024112328_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=2024-08-09); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge). Diffs: {'prom': '50.21->74.97'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
+    },
+    "SALASAR": {
+      "2024-06-30": {
+        "cell": [
+          55.97,
+          8.42,
+          0.0,
+          0.0,
+          0.0,
+          "2024-08-25",
+          441998
+        ],
+        "was": [
+          57.04,
+          6.67,
+          0.0,
+          0.0,
+          0.0,
+          "2024-07-20",
+          441996
+        ],
+        "src": "bse:540642_2582024163416_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=2024-08-25); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge). Diffs: {'fii': '6.67->8.42', 'prom': '57.04->55.97'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
+    },
+    "SAMHI": {
+      "2024-06-30": {
+        "cell": [
+          0.0,
+          63.4,
+          17.86,
+          15.71,
+          0.02,
+          "2024-08-07",
+          60390
+        ],
+        "was": [
+          0.0,
+          63.51,
+          17.89,
+          15.74,
+          0.02,
+          "2024-07-20",
+          60389
+        ],
+        "src": "bse:543984_782024195829_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=2024-08-07); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge). Diffs: {'fii': '63.51->63.4'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
+    },
+    "SANWARIA": {
+      "2025-12-31": {
+        "cell": [
+          12.42,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          "2026-01-30",
+          140382
+        ],
+        "was": [
+          12.42,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          "2026-01-21",
+          141893
+        ],
+        "src": "bse:519260_3012026152425_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=2026-01-30); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge). Diffs: {'nsh': '141893->140382'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      },
+      "2026-03-31": {
+        "cell": [
+          12.42,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          "2026-05-08",
+          139953
+        ],
+        "was": [
+          12.42,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          "2026-04-21",
+          141437
+        ],
+        "src": "bse:519260_852026154243_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=2026-05-08); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge). Diffs: {'nsh': '141437->139953'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
+    },
+    "SEMAC": {
+      "2024-06-30": {
+        "cell": [
+          63.86,
+          0.04,
+          0.0,
+          0.0,
+          0.0,
+          "2024-08-16",
+          6334
+        ],
+        "was": [
+          60.14,
+          0.04,
+          0.0,
+          0.0,
+          0.0,
+          "2024-07-15",
+          6334
+        ],
+        "src": "bse:505368_1682024124810_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=2024-08-16); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge). Diffs: {'prom': '60.14->63.86'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
+    },
+    "SPMLINFRA": {
+      "2026-03-31": {
+        "cell": [
+          40.19,
+          0.36,
+          15.11,
+          0.0,
+          0.0,
+          "2026-04-18",
+          22442
+        ],
+        "was": [
+          39.54,
+          0.31,
+          15.27,
+          0.0,
+          0.0,
+          "2026-04-18",
+          22977
+        ],
+        "src": "bse:500402_1842026114528_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=2026-04-18); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'prom': '39.54->40.19'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
+    },
+    "SRHHYPOLTD": {
+      "2025-12-31": {
+        "cell": [
+          61.84,
+          0.06,
+          0.05,
+          0.01,
+          0.0,
+          "2026-01-29",
+          42527
+        ],
+        "was": [
+          60.45,
+          0.06,
+          0.05,
+          0.01,
+          0.0,
+          "2026-01-13",
+          42527
+        ],
+        "src": "bse:532842_2912026133747_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=2026-01-29); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'prom': '60.45->61.84'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
+    },
+    "SUPREMEINF": {
+      "2025-09-30": {
+        "cell": [
+          34.68,
+          8.55,
+          0.0,
+          0.0,
+          0.0,
+          "2026-03-17",
+          8117
+        ],
+        "was": [
+          47.32,
+          3.02,
+          5.99,
+          0.0,
+          0.0,
+          "2025-10-14",
+          7907
+        ],
+        "src": "bse:532904_173202616359_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=2026-03-17); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,tickertape). Diffs: {'dii': '5.99->0.0', 'fii': '3.02->8.55', 'prom': '47.32->34.68'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      },
+      "2025-12-31": {
+        "cell": [
+          34.68,
+          8.55,
+          0.0,
+          0.0,
+          0.0,
+          "2026-01-16",
+          8047
+        ],
+        "was": [
+          47.32,
+          3.02,
+          5.99,
+          0.0,
+          0.0,
+          "2026-01-16",
+          7907
+        ],
+        "src": "bse:532904_1612026173510_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=n/a); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,tickertape). Diffs: {'dii': '5.99->0.0', 'fii': '3.02->8.55', 'prom': '47.32->34.68'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      },
+      "2026-03-31": {
+        "cell": [
+          46.95,
+          3.0,
+          5.95,
+          0.0,
+          0.0,
+          "2026-05-27",
+          7907
+        ],
+        "was": [
+          47.32,
+          3.02,
+          5.99,
+          0.0,
+          0.0,
+          "2026-04-21",
+          7907
+        ],
+        "src": "bse:532904_275202620036_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=2026-05-27); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'prom': '47.32->46.95'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
+    },
+    "TNTELE": {
+      "2024-06-30": {
+        "cell": [
+          63.63,
+          0.0,
+          11.86,
+          0.01,
+          0.0,
+          "2024-08-02",
+          24202
+        ],
+        "was": [
+          63.63,
+          7.18,
+          11.86,
+          0.01,
+          0.0,
+          "2024-07-21",
+          24254
+        ],
+        "src": "bse:523419_282024125127_SHP.xml",
+        "why": "Company REVISED its filing (BSE revised_date_time=2024-08-02); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge). Diffs: {'fii': '7.18->0.0'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+      }
     }
   },
-
   "accept": {
     "JPINFRATEC": {
       "2024-06-30": "Post-resolution (Suraksha): existing equity extinguished, company wholly owned by the resolution applicant. prom 100.00 / 1 holder is the real pattern, not a stub — it persists in every later filing.",
@@ -50,9 +912,16 @@
     },
     "FEDDERELEC": {
       "2021-12-31": "prom 100.00 / 7 holders persists across every filing from 2021-12 to 2025-03 and never recovers — consistent with a post-insolvency reduction rather than a one-off wrong document. NOT verified against BSE (symbol absent from bse_scrips by_id).",
-      "2022-03-31": "same", "2022-06-30": "same", "2022-12-31": "same", "2023-03-31": "same",
-      "2023-06-30": "same", "2023-09-30": "same", "2023-12-31": "same", "2024-09-30": "same",
-      "2024-12-31": "same", "2025-03-31": "same"
+      "2022-03-31": "same",
+      "2022-06-30": "same",
+      "2022-12-31": "same",
+      "2023-03-31": "same",
+      "2023-06-30": "same",
+      "2023-09-30": "same",
+      "2023-12-31": "same",
+      "2024-09-30": "same",
+      "2024-12-31": "same",
+      "2025-03-31": "same"
     }
   }
 }
