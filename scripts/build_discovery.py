@@ -41,6 +41,18 @@ try:
 except Exception:
     ORDSHARES = {}
 revop = json.load(open(dp("sf_revop.json"), encoding="utf-8"))
+# OWNERS-attributable PAT lives in sf_revop's mirror slots too, but the two files DISAGREE on 1,372
+# of 43,731 populated con-PAT cells (measured 2026-08-09, runbook §70) and sf_fundamentals is the
+# authoritative one -- stock.html: "never swap in sf_revop's PAT mirror slots". ttm_pat() below was
+# reading the mirror, so the TTM P/E on this page was computed off a copy that differs from the PAT
+# the site displays, on 298 cells in the 2025-26 window alone.
+FUNDPAT = {}
+for _s, _rows in json.load(open(dp("sf_fundamentals.json"), encoding="utf-8")).items():
+    for _r in _rows:
+        if len(_r) > 3:
+            _v = _r[3] if _r[3] not in (None, 0) else _r[1]
+            if _v is not None:
+                FUNDPAT[(_s, _r[0])] = _v
 slim = json.loads(gzip.decompress(open(dp("dash_slim.bin"), "rb").read()))
 classif = json.load(open(dp("sector_classification.json"), encoding="utf-8"))
 
@@ -214,7 +226,10 @@ def ttm_pat(sym):
     if last4[-1] < today - 10000 + 3000: return None   # latest quarter older than ~9 months -> stale
     tot = 0.0
     for q in last4:
-        v = pick(qmap[str(q)] if str(q) in qmap else qmap[q], 5, 4)
+        # authoritative first; the revop mirror only when sf_fundamentals has nothing for the cell
+        v = FUNDPAT.get((sym, q))
+        if v is None:
+            v = pick(qmap[str(q)] if str(q) in qmap else qmap[q], 5, 4)
         if v is None: return None
         tot += v
     return tot

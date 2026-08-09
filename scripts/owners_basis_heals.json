@@ -6,7 +6,8 @@
   "docstring and runbook \u00a769. Cells NOT changed but suspect: ATUL 20210630 (stored 165.15, the",
   "FY22 owners subtotal 604.26 implies 165.94) and SADBHAV 20200331 (stored 886.63 against a",
   "standalone of 8.18, wildly out of family -- no P&L page located in that filing).",
-  "2026-08-09 second pass: ATUL FY21+FY22 closed out (Jun-20, Mar-21, Jun-21, Sep-21, Dec-21). SADBHAV 2020-03-31 was RE-CHECKED and is CORRECT as stored: the Jun-2020 filing prints Mar-20 period 1280.78 and NCI 394.14 -> owners 886.64, and FY20 owners -8.07 + -15.94 + -69.79 + 886.63 = 792.83 exactly as printed. The value only looked wrong because it is a very large genuine one-off -- the RENUKA lesson (runbook \u00a769c)."
+  "2026-08-09 second pass: ATUL FY21+FY22 closed out (Jun-20, Mar-21, Jun-21, Sep-21, Dec-21). SADBHAV 2020-03-31 was RE-CHECKED and is CORRECT as stored: the Jun-2020 filing prints Mar-20 period 1280.78 and NCI 394.14 -> owners 886.64, and FY20 owners -8.07 + -15.94 + -69.79 + 886.63 = 792.83 exactly as printed. The value only looked wrong because it is a very large genuine one-off -- the RENUKA lesson (runbook \u00a769c).",
+  "2026-08-09 third pass: the named fund-vs-revop cells (ATUL Sep-25, SADBHAV Dec-20, RENUKA Dec-20 +Mar-21). Measuring them found sf_fundamentals and sf_revop disagree on 1,372 of 43,731 populated con-PAT cells (3.14%); the 603 where revop is exactly 0.0 against a real fundamentals value were resynced, the 716 genuine disagreements and 15 fundamentals==0 cells are NOT touched. build_discovery's TTM P/E was reading the divergent mirror. \u00a770."
  ],
  "generated": "2026-08-09",
  "cells": {
@@ -188,6 +189,58 @@
     "fundamentals.json": 156.91,
     "sf_revop.json": 114.9,
     "revop_fundamentals.json": 114.9
+   }
+  },
+  "ATUL|20250930|patC": {
+   "period": 182.37,
+   "nci": 3.13,
+   "owners": 179.24,
+   "stored_before": 182.37,
+   "note": "fundamentals held the TOTAL",
+   "prior_per_file": {
+    "sf_fundamentals.json": 182.37,
+    "fundamentals.json": 182.37,
+    "sf_revop.json": 87.95,
+    "revop_fundamentals.json": 87.95
+   }
+  },
+  "SADBHAV|20201231|patC": {
+   "period": -41.36,
+   "nci": -17.04,
+   "owners": -24.32,
+   "stored_before": -41.36,
+   "note": "fundamentals held the TOTAL; revop held +24.32, sign-flipped",
+   "prior_per_file": {
+    "sf_fundamentals.json": -41.36,
+    "fundamentals.json": -41.36,
+    "sf_revop.json": 24.32,
+    "revop_fundamentals.json": 24.32
+   }
+  },
+  "RENUKA|20201231|patC": {
+   "period": -141.1,
+   "nci": 0.1,
+   "owners": -141.2,
+   "stored_before": -141.1,
+   "note": "fundamentals held the period",
+   "prior_per_file": {
+    "sf_fundamentals.json": -141.1,
+    "fundamentals.json": -141.1,
+    "sf_revop.json": -172.0,
+    "revop_fundamentals.json": -172.0
+   }
+  },
+  "RENUKA|20210331|patC": {
+   "period": -44.9,
+   "nci": -0.9,
+   "owners": -44.0,
+   "stored_before": -44.9,
+   "note": "fundamentals held the period; needed to close FY21",
+   "prior_per_file": {
+    "sf_fundamentals.json": -44.9,
+    "fundamentals.json": -44.9,
+    "sf_revop.json": -44.9,
+    "revop_fundamentals.json": -44.9
    }
   }
  }

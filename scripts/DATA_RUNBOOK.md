@@ -4990,3 +4990,50 @@ Q4 one-off. **Second time in one session that an out-of-family value was real (R
 FY identity is what settles it, never the magnitude.** Being wrong about this one cost nothing
 because it was flagged rather than "fixed"; had it been corrected on plausibility it would have
 destroyed a correct value, which is exactly how TATACOFFEE broke.
+
+
+---
+
+## 70. ★★★ sf_fundamentals vs sf_revop DISAGREE ON 1,372 CELLS — and one page believed the wrong one  (2026-08-09)
+
+§69b noticed the two files disagreeing on a handful of ATUL quarters. Measured properly across the
+dataset: **sf_fundamentals `npCon` and sf_revop `patC` differ on 1,372 of 43,731 populated cells
+(3.14%)**, spread evenly over 2018-2026 (~3% every year). Nobody was running this comparison.
+
+| family | n | |
+|---|---|---|
+| revop is exactly 0.0, fundamentals has a real value | 603 | the XBRL owners=0 mis-tag |
+| genuinely different numbers | 716 | needs per-cell adjudication |
+| fundamentals is 0.0, revop has a value | 15 | fundamentals is the broken side |
+| sign flips / power-of-ten | 38 | |
+
+### 70a. Which file is authoritative — and who ignored that
+`stock.html`: *"Net profit comes from sf_fundamentals (point-in-time, OWNERS-attributable — never
+swap in sf_revop's PAT mirror slots)"*, and `build_quarterly_results` says the same. So
+**sf_fundamentals is authoritative and revop's idx4/idx5 are a mirror.**
+
+But `build_discovery.ttm_pat` read `pick(cell, 5, 4)` — exactly those mirror slots — so the
+**Discovery / Order-Wins TTM P/E was computed off a copy that differs from the PAT the site
+displays**: 298 divergent cells sit in the 2025-26 window it uses, across 203 symbols. Fixed: it now
+prefers `sf_fundamentals`, falling back to the mirror only where the authoritative file is empty.
+**When two files hold the same quantity, grep for every consumer — one of them will be reading the
+wrong one, and nothing will error.**
+
+### 70b. What was and was NOT resynced
+The 603 `revop == 0.0` cells were resynced from sf_fundamentals: a printed 0.00 PAT beside a real
+value on the other basis is implausible, and `apply_owners_full` already refuses to write a ~0 over
+a nonzero stored con for exactly this reason. Divergences fell **1,372 → 766**.
+The 716 genuine disagreements and the 15 `fundamentals == 0.0` cells are **left alone** — picking a
+winner without reading the filing is what created the defects this session has spent its time
+undoing. They are the next audit's work, and they now have a measurement to start from.
+
+### 70c. The four named cells, and what they showed
+```
+ATUL    2025-09-30  182.37 -> 179.24   period - NCI 3.13; H1 FY26 owners 307.01 EXACT
+SADBHAV 2020-12-31   -41.36 -> -24.32  BOTH files wrong: fundamentals had the TOTAL,
+                                       revop had +24.32 -- right magnitude, FLIPPED SIGN
+RENUKA  2020-12-31  -141.1 -> -141.2   period - NCI 0.1
+RENUKA  2021-03-31   -44.9 ->  -44.0   FY21 owners -34.9+105.4+-141.2+-44.0 = -114.7 EXACT
+```
+SADBHAV Dec-2020 is the one to remember: **neither file held the right number.** "The two files
+disagree" does not mean one of them is right.
