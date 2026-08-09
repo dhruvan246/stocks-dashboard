@@ -20,9 +20,10 @@ The user's question was: *are our FII/DII holdings correct?* — to be answered 
 | Earlier arbitration (P5) | 136 field-verdicts | 79 OURS_CONFIRMED, 0 OURS_WRONG |
 | **Cells where NO independent source agrees with us** | 179,424 checked | **0** |
 
-**Final arithmetic: 179,424 published values checked; 51 shown wrong (0.028%) — all healed the
-same day.** And the campaign's most important finding came LAST, from the user challenging the
-unanimity cases rather than from any phase of the plan.
+**Final arithmetic: 179,424 published values checked. 276 documents proved superseded or stale
+(~0.15% of values) — 260 healed the same day, 16 kept deliberately because the "revision" itself
+was the wrong document. Zero remain unexplained.** And the campaign's most important finding came
+LAST, from the user challenging the unanimity cases rather than from any phase of the plan.
 
 ### ★ The revision-miss defect class — found by the user, not the campaign
 
@@ -34,10 +35,27 @@ was yes, 35 times: companies file, then REVISE; BSE carries the revision (`revis
 while NSE's master keeps serving the original. Newest-submission-wins cannot see a revision that
 never appears in its list.
 
-Re-adjudicating all 103 "filing confirmed us" documents against BSE's independently received copy:
-**50 genuinely confirmed (sites genuinely wrong), 35 REVISED_ON_BSE — our value superseded, 51
-field-values wrong** — 15 BSE-absent, 3 unparseable. All 35 healed via `shp_cell_fix.json` with
-the revised BSE document + 2-3 agreeing sites as rule-6b evidence.
+Pulling that thread all the way — first the 103 contested documents, then a FULL-STORE sweep of
+every cell against BSE's revision timestamps (4,500 flagged revisions verified), then adjudication
+of every held and unanchorable case — produced the final ledger of the class:
+
+| revision-class outcome | docs | meaning |
+|---|---|---|
+| **HEALED** | **260** | our value was the superseded original; corrected via `shp_cell_fix.json` (35 site-contested + 199 full-sweep + 10 held-then-adjudicated + 9 ambiguous-resolved + 7 unanchorable-raw-read) |
+| **STORED-RIGHT** | **16** | the flagged "revision" is itself the wrong document — APTECHT's 35.06 against continuity+NSE+sites; FOCUS's 70-94-holder register vs its real ~25,000; SAGCEM's September filing misfiled under June |
+| **IMMATERIAL** | **183** | revised docs whose raw facts equal our stored values — refused by the parser on STRUCTURE (zero-institution filings), not substance |
+| seam-referred | 6 | late-filed XBRLs that EXIST for Dec-2015/Mar-2016 (a §22f premise correction) but conflict with the coverage session's fresh seam harvest — theirs to adjudicate (BHARATFORG's doc lumps institutions undifferentiated where the MC-derived split carries more information) |
+| retry-pending | 18 | documents that failed to fetch twice; deliberately NOT suppressed, so the Sunday sweep retries them |
+| **unexplained** | **0** | |
+
+Every adjudication is recorded in `scripts/_shp_revision_adjudicated.json` (the Sunday sweep skips
+them), and the deadlock-breakers that worked are reusable: **continuity sawtooths** (UPL's four
+March quarters dipped 8-9pp below both neighbours — a 2024 batch revision removed the sawtooth
+exactly, while the sites backed "stored" only because Screener's FY-end columns ARE the rewritten
+quarters); **the register fingerprint** (a bona fide revision shares the cell's own holder count —
+KALYANI's claimed 2,094 against a steady 467-471 exposed a wrong document); **adjacent-quarter
+clone tests** (SAGCEM); and **swap-invariance** (EPACKPEB's FII 13.25→3.0 with DII 8.81→19.06
+conserves the sum to 0.00 — a deliberate reclassification, not a different document).
 
 **The example previously showcased here was inverted.** LCCINFOTEC Jun-2025 promoter 0.0 — cited
 as "three sites unanimously wrong" — was OUR stale document; the company revised to **45.85** on
@@ -48,8 +66,11 @@ day's reparse heal (it read the pre-revision document).
 The 50 where BSE confirms us remain real site errors — UJJIVAN FII 30.91 (both exchanges) vs the
 sites' 40.48 stands. But the honest lesson is symmetric: **"ours equals the filing" is only
 evidence when it is not the same copy of the filing our pipeline already read.** Cross-exchange
-disagreement is now the first thing to check on any unanimous site-vs-us cell, and the daily
-pipeline needs a periodic BSE `revised_date_time` sweep so revisions stop going invisible.
+disagreement is now the first thing to check on any unanimous site-vs-us cell — and the guard is
+no longer an aspiration: `shp_revision_sweep.py` runs in CI every Sunday evening
+(refresh-shareholding.yml, continue-on-error, heals manual by policy), with the NSE-only cohort
+(BSE Ltd, CDSL, ~104 symbols) explicitly counted as UNCHECKABLE by this route rather than
+silently skipped.
 
 The single non-exact value in the entire cross-exchange set is CUMMINSIND Jun-2022 shareholder
 count: ours 109,068, BSE 109,067 — **one shareholder, across a decade of filings.**
