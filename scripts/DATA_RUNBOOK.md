@@ -4970,3 +4970,23 @@ page's own arithmetic before reaching for `scale_fix`.**
 implies 165.94) and SADBHAV 2020-03-31 (stored 886.63 against a standalone of 8.18 — wildly out of
 family, and no P&L page was located in that filing). Also open: the four remaining ATUL and one each
 SADBHAV/RENUKA fund-vs-revop divergences listed above.
+
+### 69d. Closing out ATUL — and a flagged cell that turned out to be RIGHT
+Reading ATUL Jun-2021 to settle the one cell §69 had flagged showed the same defect running back
+through FY21 and FY22, so both years were closed out (5 more cells: Jun-20, Mar-21, Jun-21, Sep-21,
+Dec-21). ATUL's consolidated PAT is now one convention across all 16 quarters Jun-2020 → Mar-2024,
+in **both** files, with each year closing exactly on its printed owners subtotal
+(FY21 655.76, FY22 604.26, FY23 514.09, FY24 323.02). Sep-2020 and Dec-2020 were already owners and
+were left alone; Dec-2020 is confirmed by subtraction against the FY21 subtotal.
+
+Sep-2021 was another stray: stored 148.82 matches **neither** the period (146.12) nor the owners
+(146.63) figure — the §69a shape again.
+
+**SADBHAV 2020-03-31 was re-checked and is CORRECT as stored.** It was flagged as suspect because
+886.63 sits absurdly against a standalone of 8.18 and a series otherwise in the tens of crore. The
+Jun-2020 filing settles it: Mar-20 period 1280.78, NCI 394.14 → owners 886.64, and FY20 owners
+`−8.07 + −15.94 + −69.79 + 886.63 = 792.83`, exactly the printed figure. It is a genuine very large
+Q4 one-off. **Second time in one session that an out-of-family value was real (RENUKA §69c) — the
+FY identity is what settles it, never the magnitude.** Being wrong about this one cost nothing
+because it was flagged rather than "fixed"; had it been corrected on plausibility it would have
+destroyed a correct value, which is exactly how TATACOFFEE broke.
