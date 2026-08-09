@@ -1,5 +1,8 @@
 # FILL-2020 CAMPAIGN — zero empty rev/PAT cells (std + con) for point-in-time Nifty-500, Dec-2019 → date
 
+> **★ NO ASSUMPTIONS. NO GUESSWORK.** (user-mandated 2026-08-10) Every value/claim must trace to a
+> source measured THIS session; unknown stays `unknown`. Full rule: DATA_RUNBOOK §0, top.
+
 Planned by Fable 2026-08-05 (session 8837b89a). Executor: Sonnet sessions, one phase per session.
 Mission (user): "fill every one of them from 2020 till date, rev and pat, both cons and std."
 Read `DATA_RUNBOOK.md` §0 (golden rules), §6 (multi-agent backfill), §3 (insurers), §38 (concurrency),

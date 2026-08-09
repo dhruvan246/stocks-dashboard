@@ -1,5 +1,8 @@
 # SHP VERIFY CAMPAIGN — our FII/DII holdings vs 5–7 external sites  (planned 2026-08-09)
 
+> **★ NO ASSUMPTIONS. NO GUESSWORK.** (user-mandated 2026-08-10) Every value/claim must trace to a
+> source measured THIS session; unknown stays `unknown`. Full rule: DATA_RUNBOOK §0, top.
+
 **Mission:** prove (or fix) every FII/DII holdings value we publish, by comparing our per-stock
 quarterly shareholding data against Moneycontrol, Trendlyne, and 3–5 more independent sites, across
 every era we hold (Sep-2010 → Jun-2026), every category we store (prom/FII/DII/MF/insurance/nsh),

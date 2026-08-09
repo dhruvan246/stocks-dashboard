@@ -1,4 +1,7 @@
 # PRE-2015 CAMPAIGN — rev + PAT 2002→2014 for every N500 ever-member, + membership 2002-2015
+
+> **★ NO ASSUMPTIONS. NO GUESSWORK.** (user-mandated 2026-08-10) Every value/claim must trace to a
+> source measured THIS session; unknown stays `unknown`. Full rule: DATA_RUNBOOK §0, top.
 _Designed 2026-08-04 (Fable session; every source claim below was PROBED live that day, not assumed).
 Execution model: **Sonnet sessions run one step at a time, `/clear` between steps.** Each step is
 self-contained. The judgment-heavy design is already done here — steps are recipes, not research._

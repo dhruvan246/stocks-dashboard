@@ -1,5 +1,8 @@
 # Insurer quarterly net-profit extraction — PLAYBOOK
 
+> **★ NO ASSUMPTIONS. NO GUESSWORK.** (user-mandated 2026-08-10) Every value/claim must trace to a
+> source measured THIS session; unknown stays `unknown`. Full rule: DATA_RUNBOOK §0, top.
+
 > ⚠️ **AS OF 2026-07-15 THIS IS AUTOMATED — use it only as a fallback.** `scripts/fetch_insurers.py`
 > (wired into `refresh-fundamentals.yml`, nightly) fills insurers unattended via the vision API with a
 > year-ago anchor guard (DATA_RUNBOOK §3). This playbook is now the MANUAL fallback for the rare cell

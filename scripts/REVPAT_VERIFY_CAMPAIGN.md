@@ -1,5 +1,8 @@
 # REV/PAT VERIFY CAMPAIGN — our revenue + net-profit vs 5-7 external sites  (planned 2026-08-09)
 
+> **★ NO ASSUMPTIONS. NO GUESSWORK.** (user-mandated 2026-08-10) Every value/claim must trace to a
+> source measured THIS session; unknown stays `unknown`. Full rule: DATA_RUNBOOK §0, top.
+
 **Mission:** prove (or fix) every quarterly REVENUE and PAT value we publish, by comparing against
 Screener, Trendlyne, StockEdge, Tickertape, Groww (+alternates: ET, Moneycontrol, marketsmojo),
 and — the real check — the exchange filings themselves, with the same multi-source acceptance rule

@@ -21,6 +21,14 @@ Rules that keep them from fighting (violated → the 2026-07-22 tangle, see DATA
 
 **Enforcement:** rules 1–2 are enforced by hooks (`.claude/settings.json` → `scripts/_concurrency_guard.py`). Editing a file that another session has dirty, or running a tree-wide git mutation in this checkout, pops a confirmation prompt; session start injects a list of files currently dirty. If the guard prompts you, it is almost always right — resolve the conflict (coordinate or use a worktree), don't route around it.
 
+## No assumptions, no guesswork — standing rule, ALL work
+
+Standing rule from the user (2026-08-10), applying to data, code, UI, and answers alike:
+**never assume, never guess.** Every value written and every claim made ("exists", "absent",
+"fixed", "live", "works") must trace to something measured or read this session. Don't know it?
+Go measure it. Can't measure it? Say "unknown" — a plausible guess presented as fact is worse
+than an admitted gap. (Top golden rule in DATA_RUNBOOK §0; every campaign doc carries the same line.)
+
 ## Data work
 
 Before ANY data work, read `scripts/DATA_RUNBOOK.md` and follow it — procedures there override improvisation.

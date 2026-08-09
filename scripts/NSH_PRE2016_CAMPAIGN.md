@@ -1,5 +1,8 @@
 # PRE-2016 SHAREHOLDER COUNTS — scoping document  (2026-08-09)
 
+> **★ NO ASSUMPTIONS. NO GUESSWORK.** (user-mandated 2026-08-10) Every value/claim must trace to a
+> source measured THIS session; unknown stays `unknown`. Full rule: DATA_RUNBOOK §0, top.
+
 **Target:** the `nsh` (total number of shareholders) slot for **4,118 cells across 523 companies,
 Dec-2010 → Mar-2016** — the only material shareholder-count gap left once the in-flight reparse
 lands. These cells have correct FII/DII/promoter percentages (harvested from archived Moneycontrol,

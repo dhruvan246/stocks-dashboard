@@ -60,6 +60,15 @@ loads every session. (README.md is just a short pointer here — this file is th
 ---
 
 ## 0. GOLDEN RULES (the things that bite if forgotten)
+- **★★★ NO ASSUMPTIONS. NO GUESSWORK. EVER.** User-mandated 2026-08-10; standing rule across
+  this runbook AND every campaign/playbook doc (each carries the same line). Every value written
+  and every claim made ("exists", "absent", "fixed", "live", "matches") must trace to something
+  MEASURED this session — a fetched document, a parsed row, a live read-back. Need a fact you
+  don't have? Go measure it. Can't measure it? Record `unknown` and say so — never bridge the
+  gap with a plausible guess, an inference from a company's category, or "it probably didn't
+  change". Corollaries already enforced elsewhere: never infer absence from our own gaps (§57),
+  verify against origin not logs (§38b), verify LIVE through the client (§39, §41).
+  (memory: feedback-no-assumptions-no-guesswork)
 - **★★ NEVER SAY "CAN'T BE FILLED". EXHAUST EVERY ROUTE, THEN SAY WHICH ONES YOU TRIED.**
   User-mandated 2026-08-06 after three misses in a row in one session (ANGELONE, ADANIGREEN,
   LICI — each declared out of reach, each filled from the announcement PDF minutes later once

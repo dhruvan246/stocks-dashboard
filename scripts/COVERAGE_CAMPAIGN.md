@@ -1,5 +1,8 @@
 # FACTOR-COVERAGE CAMPAIGN — step recipes (written 2026-08-02 by the audit session)
 
+> **★ NO ASSUMPTIONS. NO GUESSWORK.** (user-mandated 2026-08-10) Every value/claim must trace to a
+> source measured THIS session; unknown stays `unknown`. Full rule: DATA_RUNBOOK §0, top.
+
 Goal: every backtest filter factor usable for every N500 member-day where the input data can exist.
 Baseline audit + per-factor coverage table: memory `project-stocks-factor-coverage-audit`;
 harness pattern: scratchpad `factor_coverage.js` from that session (rebuild it from the notes below if needed).
