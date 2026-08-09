@@ -5285,6 +5285,37 @@ ARIHANTCAP 2026-03 and IRB 2020-09 (no header row places the target quarter); BA
 (no consolidated page with a profit block in any fetched PDF); SUBCAPCITY 2021-03 (§71f).
 
 
+### 71i. ★★ NEIGHBOUR-VALUE ANCHORING BEATS THE HEADER PARSER — 2 more of the last 5
+Three of the five leftovers had abstained with "no header row places the target quarter". That is a
+statement about `date_columns.quarter_columns`, not about the page. **§58's column anchor needs no
+header at all**: find the column whose value reproduces a con PAT we ALREADY STORE for a DIFFERENT
+quarter. Applying it settled two immediately.
+
+**IRB 2020-09-30 — CONFIRMED at −19.66.** Sep-2021 filing p20 (lakhs), "Profit after tax":
+`Sep-21 42.31 | Jun-21 71.91 | SEP-20 −19.66 | H1FY22 114.21 | H1FY21 −49.80 | FY21 117.15`, with
+x240 == stored 42.31 and x299 == stored 71.91. Two identities close, and the second is the strong
+one: `H1FY21 = −19.66 + stored Jun-20 −30.14 = −49.80`, **exactly as printed**. The mirror's −66.60
+was wrong; sf_fundamentals was right.
+
+**ARIHANTCAP 2026-03-31 — 1.28 → 0.50.** Own Mar-2026 filing p5 (lakhs),
+"Profit/(Loss) for the Year": `MAR-26 0.50 | Dec-25 5.18 | Mar-25 7.70 | FY26 31.46 | FY25 58.70`,
+anchored on stored Dec-25 5.18 and Mar-25 7.70. FY26 closes exactly:
+`12.70 + 13.08 + 5.18 + 0.50 = 31.46`. **Neither stored value was right** — fundamentals had 1.28,
+the mirror 10.96.
+
+**Reach for the neighbour anchor before declaring a column unplaceable.** The header parser is one
+route to a column and the weaker one; a value we already hold is self-validating.
+
+⚠️ **Tolerance floors manufacture false anchors on small numbers.** AXISCADES' only "anchor" was a
+cash-flow *Adjustments* row matching 0.12/0.11 against a stored 0.08 — inside the `max(0.05, …)`
+floor. On values of a few lakh that floor is most of the signal; require a relative match, or two
+anchors on *different rows*, before believing it.
+
+3 remain in `_fund_unconfirmed_cells.json`, none of them a regex gap: AXISCADES 2018-12 (OCR absorbs
+figures into row captions), BANCOINDIA 2019-03 (nothing anchors on two stored neighbours),
+SUBCAPCITY 2021-03 (no BSE listing, §71f).
+
+
 ## 72. ★★★ VERIFYING REV/PAT vs EXTERNAL SITES — the sites can only reach 10 of our 95 quarters  (campaign 2026-08-09)
 
 Full write-up `scripts/REVPAT_VERIFY_REPORT.md`; plan `REVPAT_VERIFY_CAMPAIGN.md`; phase findings and
