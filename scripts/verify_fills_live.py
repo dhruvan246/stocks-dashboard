@@ -43,6 +43,16 @@ LEDGERS = [
     ("con_pat_nse_reads.json",       "fund",  "con",  3),
     ("con_pat_fy_derived.json",      "fund",  "con",  3),
 ]
+# NESTED correction ledgers: {SYM: {QE: {...}}} rather than the flat "SYM|QE" shape above.
+# These carry DEFECT CORRECTIONS (a value we proved wrong and replaced), so a clobber here does not
+# merely lose a backfill -- it silently restores a number a filing already refuted. The basis is
+# read per entry where the ledger records one.
+#   (file, payload, value-key, default slot, basis-key -> {basis: slot})
+NESTED = [
+    ("pat_defects.json", "fund",  "correct_pat",     1, None, None),
+    ("pat_defects.json", "fund",  "correct_pat_con", 3, None, None),
+    ("rev_defects.json", "revop", "correct_rev",     0, "basis", {"std": 0, "con": 1}),
+]
 TOL = 0.011
 
 
@@ -80,6 +90,38 @@ def main():
                 missing.append((name, sym, qe, want, payload, slot))
             elif abs(cur - want) > TOL:
                 drift.append((name, sym, qe, want, cur))
+
+    for name, payload, key, dslot, bkey, bmap in NESTED:
+        p2 = os.path.join(HERE, name)
+        if not os.path.exists(p2):
+            continue
+        try:
+            led = json.load(open(p2))
+        except Exception:
+            continue
+        for sym, qd in led.items():
+            if not isinstance(qd, dict):
+                continue
+            for qe, v in qd.items():
+                if not isinstance(v, dict) or v.get("skip"):
+                    continue
+                want = v.get(key)
+                if want is None:                 # a deliberate null verdict is not a claim
+                    continue
+                slot = dslot
+                if bkey and bmap:
+                    slot = bmap.get(str(v.get(bkey, "")).lower(), dslot)
+                checked += 1
+                if payload == "revop":
+                    row = (revop.get(sym) or {}).get(str(qe))
+                    cur = row[slot] if row and len(row) > slot else None
+                else:
+                    row = (fmap.get(sym) or {}).get(int(qe))
+                    cur = row[slot] if row and len(row) > slot else None
+                if cur is None:
+                    missing.append((name, sym, str(qe), want, payload, slot))
+                elif abs(cur - want) > TOL:
+                    drift.append((name, sym, str(qe), want, cur))
 
     if not quiet:
         print("checked %d ledgered cells against the served payloads" % checked)
