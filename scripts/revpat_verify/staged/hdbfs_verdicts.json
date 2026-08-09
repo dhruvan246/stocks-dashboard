@@ -1,0 +1,149 @@
+{
+  "symbol": "HDBFS",
+  "company": "HDB Financial Services Limited",
+  "campaign": "REV/PAT verify — precedent AADHARHFC wrong-row class",
+  "scope": "docs/sf_revop.json[\"HDBFS\"][QE][0] (standalone revenue, revS); revC and PAT are read-only context",
+  "no_repo_writes": true,
+  "quarters": [
+    {
+      "quarter": "2024-06-30",
+      "role": "first defective quarter (per brief)",
+      "ours_revS": 3264.6,
+      "ours_revC": 3264.6,
+      "filed_total_revenue_from_operations": 3883.8,
+      "components": {
+        "interest_income": 3264.6,
+        "sale_of_services": 313.0,
+        "other_financial_charges": 286.2,
+        "net_gain_on_fair_value_changes": 20.2,
+        "net_gain_loss_on_derecognised_financial_instruments": -0.2
+      },
+      "filed_other_income": null,
+      "filed_total_income": null,
+      "other_income_note": "This NBFC-format statement has NO separate 'Other income'/'Total income' line — 'Total Revenue from operations' is itself the top-line figure that Total expenses is subtracted from (Profit before tax = I - II).",
+      "ours_matches_which_row": "Interest income, exact to the lakh (Rs 32,646 million /10 = 3264.6)",
+      "gap_explained_by": "Sale of services 313.0 + Other financial charges 286.2 + Net gain on FV changes 20.2 + Net gain/(loss) on derecognised financial instruments -0.2 = 619.2 = filed_total (3883.8) - ours (3264.6) exactly",
+      "verdict": "OURS_WRONG",
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/48e68fad-46ba-4f2f-9d50-f1b14ad634b2.pdf",
+      "filing_meta": {"filed_date": "2024-07-13", "title": "Unaudited Financial Results For The Quarter Ended June 30, 2024", "reached_via_scrip": "BSE debt-segment NCD scrips (960175/973562/976817/955445/957468 all returned the identical fan-out list; equity scrip 544429 has zero history before its 2025-07-02 listing)"},
+      "unit_declared": "Rupees in million (printed in statement header) -> divide by 10 for crore",
+      "row_labels_used": ["Interest income", "Sale of services", "Other financial charges", "Net gain on fair value changes", "Net gain/(loss) on derecognised financial instruments", "Total Revenue from operations", "Net Profit for the period/year"],
+      "column_anchor_evidence": "PAT: filed Jun-24 Net Profit 5,817mn/10=581.7 == stored npCon 581.7 exactly (stored npStd 582.0 is a 0.05% rounding, same figure). Comparative column: filed Mar-24 Total Revenue from operations 36,668mn/10=3666.8 == stored 2024-03-31 revS 3667.0 (0.005%), which independently confirms this is the correct COLUMN and that 2024-03-31 already holds the correct ROW.",
+      "second_check": "Component sum 32,646+3,130+2,862+202-2 = 38,838 = printed 'Total Revenue from operations' exactly. Standalone page (p.4) and Consolidated page (p.12) of this same PDF are digit-for-digit identical (see notes) — HDBFS has no subsidiaries, so con=std is a genuine identity here, not a scrape artefact.",
+      "routes_tried": [
+        "1: BSE detres Corp_detailedResult_Transpose_ng, equity scrip 544429, qid 122.00 -> empty 3-row stub (Type/Date Begin/Date End only, no financials) -- live-checked 2026-08-09",
+        "2: NSE per-basis XBRL / corporate-announcements -> NOT ATTEMPTED, known 403 lockdown (brief-stated; consistent with reference tree exchange_fetch.py module docstring)",
+        "3: BSE announcement stream via EQUITY scrip 544429, window 2024-04-01..2025-09-01 -> only 2 rows total, both dated 2025-07-15 (equity scrip's own history starts at listing) -- empty for this quarter",
+        "4: BSE announcement stream via BSE DEBT-segment scrip codes (runbook §44), tried 960175/973562/976817/955445/957468 (all Active NCDs) -> HIT, identical fan-out list on all 5 scrips, filing dated 2024-07-13"
+      ],
+      "confidence": "HIGH",
+      "notes": "Same defect class and same mechanism as AADHARHFC (staged/AADHARHFC.md): a pre-IPO NBFC/HFC's revenue got populated from a Screener-style pre-IPO scraper (screener_prerev.py) that grabs the Interest income sub-line rather than Total revenue from operations, gated only by a PAT match. HDBFS's own PAT match is near-exact (582.0/581.7 vs filed 581.7), consistent with that mechanism."
+    },
+    {
+      "quarter": "2024-12-31",
+      "role": "mid-window",
+      "ours_revS": 3516.9,
+      "ours_revC": 3516.9,
+      "filed_total_revenue_from_operations": 4143.6,
+      "components": {
+        "interest_income": 3516.9,
+        "sale_of_services": 305.4,
+        "other_financial_charges": 314.4,
+        "net_gain_on_fair_value_changes": 7.9,
+        "net_gain_loss_on_derecognised_financial_instruments": -1.0
+      },
+      "filed_other_income": null,
+      "filed_total_income": null,
+      "other_income_note": "Same statement format as 2024-06-30 -- no separate Other/Total income line.",
+      "ours_matches_which_row": "Interest income, exact to the lakh (Rs 35,169 million /10 = 3516.9)",
+      "gap_explained_by": "Sale of services 305.4 + Other financial charges 314.4 + Net gain on FV changes 7.9 + Net gain/(loss) on derecognised -1.0 = 626.7 = filed_total (4143.6) - ours (3516.9) exactly",
+      "verdict": "OURS_WRONG",
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/1f276a6c-c343-4a5c-86af-5018d78ff70b.pdf",
+      "filing_meta": {"filed_date": "2025-01-14", "title": "Submission Of Unaudited Financial Results ... For The Quarter And Nine Months Ended December 31, 2024", "reached_via_scrip": "same BSE debt-segment scrips as above"},
+      "unit_declared": "Rupees in million -> divide by 10 for crore",
+      "row_labels_used": ["Interest income", "Total Revenue from operations", "Net Profit for the period"],
+      "column_anchor_evidence": "PAT: filed Dec-24 Net Profit 4,723mn/10=472.3 close to stored npStd/npCon 472.0/472.0 (0.06%). Comparative column: filed Sep-24 Interest income 34,310mn/10=3431.0 == stored 2024-09-30 revS 3431.0 EXACT, and filed Sep-24 Net Profit 5,910mn/10=591.0 == stored npStd(2024-09-30) 591.0 EXACT -- two independent locks on the same (row,column) pair, both landing on Interest income for the neighbouring quarter too, confirming the defect is not isolated to this one cell.",
+      "second_check": "Component sum 35,169+3,054+3,144+79-10 = 41,436 = printed Total Revenue from operations exactly. Standalone (p.3) and Consolidated (p.11) pages of this PDF are identical (con=std genuine, no subsidiaries).",
+      "routes_tried": [
+        "1: BSE detres, equity scrip 544429, qid 124.00 -> empty 3-row stub, no financials -- live-checked 2026-08-09",
+        "2: NSE per-basis XBRL -> NOT ATTEMPTED, known 403 lockdown",
+        "3: BSE announcement via equity scrip 544429 -> empty for this quarter (pre-listing)",
+        "4: BSE announcement via BSE DEBT-segment scrips (§44) -> HIT, filing dated 2025-01-14"
+      ],
+      "confidence": "HIGH",
+      "notes": "Bonus corroboration: also read the 2024-09-30 filing directly (not one of the four assigned quarters) -- it independently shows Interest income 34,310mn = 3431.0 = our stored 2024-09-30 revS, and Total Revenue from operations 40,068mn = 4006.8, i.e. the SAME wrong-row defect exists at 2024-09-30 too (not adjudicated here, out of the assigned 4, flagged for completeness)."
+    },
+    {
+      "quarter": "2025-03-31",
+      "role": "last defective quarter (per brief) — audited annual + Q4",
+      "ours_revS": 3623.3,
+      "ours_revC": 3623.3,
+      "filed_total_revenue_from_operations": 4266.1,
+      "components": {
+        "interest_income": 3623.3,
+        "sale_of_services": 303.3,
+        "other_financial_charges": 332.5,
+        "net_gain_on_fair_value_changes": 8.0,
+        "net_gain_loss_on_derecognised_financial_instruments": -1.0
+      },
+      "filed_other_income": null,
+      "filed_total_income": null,
+      "other_income_note": "Same format -- no separate Other/Total income line.",
+      "ours_matches_which_row": "Interest income, exact to the lakh (Rs 36,233 million /10 = 3623.3)",
+      "gap_explained_by": "Sale of services 303.3 + Other financial charges 332.5 + Net gain on FV changes 8.0 + Net gain/(loss) on derecognised -1.0 = 642.8 = filed_total (4266.1) - ours (3623.3) exactly",
+      "verdict": "OURS_WRONG",
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/5276f6dc-237c-4393-8fa0-875e11252a44.pdf",
+      "filing_meta": {"filed_date": "2025-04-16", "title": "Submission Of Audited Financial Results Along With Audit Report For The Quarter And Year Ended March 31, 2025 (Standalone AND Consolidated pages both present)", "reached_via_scrip": "same BSE debt-segment scrips as above"},
+      "unit_declared": "Rupees in million -> divide by 10 for crore",
+      "row_labels_used": ["Interest income", "Total Revenue from operations", "Net Profit for the period/year"],
+      "column_anchor_evidence": "PAT: filed Mar-25 Net Profit 5,309mn/10=530.9 == stored npCon 530.9 EXACT (stored npStd 531.0 is a 0.02% rounding). Comparative column: filed Dec-24 Interest income 35,169mn/10=3516.9 == stored 2024-12-31 revS 3516.9 EXACT.",
+      "second_check": "Component sum 36,233+3,033+3,325+80-10 = 42,661 = printed Total Revenue from operations exactly. This filing prints FULL separate Standalone (p.5) and Consolidated (p.17) annual statements (audited, FY25) and they are digit-for-digit identical -- confirms the no-subsidiary identity holds even at the audited-annual level, not just the interim reviewed statements.",
+      "routes_tried": [
+        "1: BSE detres, equity scrip 544429, qid 125.00 -> empty 3-row stub, no financials -- live-checked 2026-08-09",
+        "2: NSE per-basis XBRL -> NOT ATTEMPTED, known 403 lockdown",
+        "3: BSE announcement via equity scrip 544429 -> empty for this quarter (pre-listing)",
+        "4: BSE announcement via BSE DEBT-segment scrips (§44) -> HIT, filing dated 2025-04-16"
+      ],
+      "confidence": "HIGH",
+      "notes": "This is the FY25 audited annual filing. FY sum identity as a bonus third check: quarters Jun-24(3883.8)+Sep-24(4006.8, from the bonus read)+Dec-24(4143.6)+Mar-25(4266.1) = 16,300.3 vs filed FY25 annual Total Revenue from operations column (Rs 1,63,003 million /10 = 16,300.3) -- EXACT match, proving the corrected (Total Revenue from operations) series is internally consistent across all four FY25 quarters, not just individually anchored."
+    },
+    {
+      "quarter": "2025-06-30",
+      "role": "CONTROL -- matching era, first post-IPO equity quarter",
+      "ours_revS": 4465.44,
+      "ours_revC": 3831.5,
+      "filed_total_revenue_from_operations": 4465.4,
+      "components": {
+        "interest_income": 3831.5,
+        "sale_of_services": 303.9,
+        "other_financial_charges": 305.8,
+        "net_gain_on_fair_value_changes": 24.9,
+        "net_gain_loss_on_derecognised_financial_instruments": -0.7
+      },
+      "filed_other_income": null,
+      "filed_total_income": null,
+      "other_income_note": "Same format -- no separate Other/Total income line.",
+      "ours_matches_which_row": "Total Revenue from operations -- the CORRECT row (Rs 44,654 million /10 = 4465.4, stored 4465.44, 0.001% off)",
+      "gap_explained_by": "n/a -- confirmed, no gap",
+      "verdict": "OURS_CONFIRMED",
+      "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/54d67906-cf08-45aa-9ed6-025f13110532.pdf",
+      "filing_meta": {"filed_date": "2025-07-15", "title": "Submission Of Unaudited Standalone Financial Results Along With Limited Review Report For The Quarter Ended June 30, 2025", "reached_via_scrip": "first filing under equity scrip 544429 (also fanned to the debt scrips) -- HDBFS listed on NSE/BSE 2025-07-02"},
+      "unit_declared": "Rupees in million -> divide by 10 for crore",
+      "row_labels_used": ["Interest income", "Total Revenue from operations", "Net Profit for the period/year"],
+      "column_anchor_evidence": "PAT: filed Jun-25 Net Profit 5,677mn/10=567.7 == stored npCon 567.7 EXACT (stored npStd 567.79 is a 0.02% rounding). Comparative column: filed Mar-25 Interest income 36,233mn/10=3623.3 == stored 2025-03-31 revS 3623.3 EXACT -- this filing's OWN comparative column re-confirms the Mar-25 defect independently.",
+      "second_check": "Component sum 38,315+3,039+3,058+249-7 = 44,654 = printed Total Revenue from operations exactly.",
+      "routes_tried": [
+        "1: BSE detres, equity scrip 544429, qid 126.00 -> empty 3-row stub, no financials, despite this quarter being POST-listing -- live-checked 2026-08-09 (detres index has not picked HDBFS up yet)",
+        "2: NSE per-basis XBRL -> NOT ATTEMPTED, known 403 lockdown",
+        "3: BSE announcement via equity scrip 544429 -> HIT (this quarter's filing IS the scrip's first-ever announcement)",
+        "4: BSE announcement via BSE DEBT-segment scrips -> also HIT, same PDF fanned out"
+      ],
+      "confidence": "HIGH",
+      "notes": "CONTROL PASSES for revS as the brief predicted: the method reports agreement here, licensing the OURS_WRONG calls on the other 3 quarters. IMPORTANT SIDE FINDING (outside the revS scope but bears on the brief's characterisation of this era as 'properly distinct'/fixed): Note 12 of this filing states verbatim 'The Company does not have investment in any subsidiaries, associates, joint ventures or controlled structure entity ... and thus requirement of the consolidated financial results for the quarter ended June 30, 2025 is not applicable' -- i.e. NO consolidated statement exists for this quarter at all. Yet our stored revC=3831.5 is not null -- it equals this SAME filing's Interest income (38,315mn/10=3831.5) exactly. So the con slot has NOT been fixed at the control boundary: it still holds the wrong row (Interest income), now merely LOOKING 'properly distinct' from revS only because revS itself got corrected via a different route (very likely the standard post-listing XBRL pipeline switching on) while revC kept coming from whatever produced it in the defect window. This was not one of the four assigned cells and is not adjudicated to a verdict here, but it means 'revC diverges from revS from 2025-06-30' should NOT be read as evidence the defect ended for con -- only revS's defect ended. Flagging for a future packet."
+    }
+  ],
+  "summary": {
+    "verdict_counts": {"OURS_WRONG": 3, "OURS_CONFIRMED": 1},
+    "mechanism": "The stored standalone-revenue slot for 2024-06-30 through 2025-03-31 (HDBFS's pre-IPO period, when only debt/NCD listings existed) holds the filing's 'Interest income' sub-line instead of 'Total revenue from operations' (Interest income + Sale of services + Other financial charges + Net gain on fair value changes + Net gain/(loss) on derecognised financial instruments). Root cause matches the AADHARHFC precedent exactly: a pre-IPO Screener-scrape route anchored only on PAT, blind to which revenue row it grabbed. The defect ends exactly at 2025-06-30, HDBFS's first quarter as an NSE/BSE-listed equity (IPO 2025-07-02), when the standard post-listing pipeline took over for revS. Because HDBFS has NO subsidiaries (confirmed explicitly in the 2025-06-30 filing's Note 12, and confirmed empirically -- the Standalone and Consolidated pages of the 2024-06-30/2024-12-31/2025-03-31 filings are digit-for-digit identical), con=std is a GENUINE identity in the defect window, not a scrape artefact -- both slots hold the same wrong number because the underlying truth (Total revenue from operations) is itself identical across bases. The revC slot's own defect persists past the control boundary (still Interest income at 2025-06-30) even though no consolidated statement exists to source it from at all -- an open item, not adjudicated here."
+  }
+}

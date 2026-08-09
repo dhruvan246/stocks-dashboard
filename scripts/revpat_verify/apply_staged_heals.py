@@ -81,6 +81,8 @@ def main():
     apply = "--apply" in sys.argv
     pat = json.load(open(os.path.join(STAGED, "pat_defects_staged.json"), encoding="utf-8"))["GICRE"]
     rev = json.load(open(os.path.join(STAGED, "rev_defects_staged.json"), encoding="utf-8"))["AADHARHFC"]
+    hdb_p = os.path.join(STAGED, "rev_defects_staged_HDBFS.json")
+    hdb = json.load(open(hdb_p, encoding="utf-8"))["HDBFS"] if os.path.exists(hdb_p) else {}
     con = json.load(open(os.path.join(STAGED, "con_copy_reads_staged.json"), encoding="utf-8"))["cells"]
 
     plan, problems, skipped = [], [], []
@@ -110,6 +112,7 @@ def main():
             problems.append("missing twin %s" % rel); continue
         for sym, q, idx, guard, want, lbl in (
                 [("AADHARHFC", q, 0, e["bad_rev"], e["correct_rev"], "revS") for q, e in rev.items()] +
+                [("HDBFS", q, 0, e["bad_rev"], e["correct_rev"], "revS") for q, e in hdb.items()] +
                 [(k.split("|")[0], k.split("|")[1], 1, v["was"], v["value"], "revC")
                  for k, v in con.items()]):
             row = (d.get(sym) or {}).get(q)
@@ -175,10 +178,13 @@ def main():
         json.dump(pd, fh, indent=1)
     rd_p = "scripts/rev_defects.json"
     rd = load(rd_p) or {}
-    rd.setdefault("AADHARHFC", {})
-    for q, e in rev.items():
-        rd["AADHARHFC"][q] = {"bad_rev": e["bad_rev"], "correct_rev": e["correct_rev"],
-                              "basis": "std", "defect": e["defect"], "source": e.get("source")}
+    for sym, cells in (("AADHARHFC", rev), ("HDBFS", hdb)):
+        if not cells:
+            continue
+        rd.setdefault(sym, {})
+        for q, e in cells.items():
+            rd[sym][q] = {"bad_rev": e["bad_rev"], "correct_rev": e["correct_rev"],
+                          "basis": "std", "defect": e["defect"], "source": e.get("source")}
     with open(os.path.join(TREE, rd_p), "w", encoding="utf-8") as fh:
         json.dump(rd, fh, indent=1)
     print("journalled provenance -> %s, %s" % (pd_p, rd_p))

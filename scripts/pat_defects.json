@@ -377,10 +377,11 @@
    "stored_pat_con": 1860.76
   },
   "20241231": {
-   "correct_pat_con": 1676.62,
-   "defect": "stored con PAT was an exact copy of the STANDALONE PAT; GIC Re files consolidated results quarterly and its consolidated statement prints owners' profit (profit after tax 1623.44 + share of associates 53.18 = 1676.62). Runbook 55c/2b.",
-   "source": "BSE 03267167-0a76-4de7-b41c-b8067114ee3d.pdf (filed 20250203, p18) | BSE 5019df0f-99f3-4c77-a734-1d648dc5023a.pdf (filed 20260207, p18)  || cumulative closure: 20241231: SQ(3 q) 4932.99 vs printed 4932.99 -> OK; 20250331: SQ(4 q) 7431.85 vs printed 7431.84 -> OK",
-   "stored_pat_con": 1623.43
+   "stored_pat": 1623.43,
+   "correct_pat": 1621.35,
+   "defect": "standalone slot holds the CONSOLIDATED pre-associate PAT row (con pre-associate 1623.43 == our stored value); true standalone from the standalone page",
+   "source": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/03267167-0a76-4de7-b41c-b8067114ee3d.pdf",
+   "quorum": "user 2026-08-09: explicitly accepted FILING + 1 SITE for these cells, a deliberate relaxation of campaign rule 6b (which asks for the filing AND >=2 independent sites). Recorded per cell so the bar this was taken at is never lost."
   },
   "20250331": {
    "correct_pat_con": 2498.86,
@@ -389,16 +390,18 @@
    "stored_pat_con": 2363.87
   },
   "20250630": {
-   "correct_pat_con": 2530.59,
-   "defect": "stored con PAT was an exact copy of the STANDALONE PAT; GIC Re files consolidated results quarterly and its consolidated statement prints owners' profit (profit after tax 2172.77 + share of associates 357.82 = 2530.59). Runbook 55c/2b.",
-   "source": "BSE 2995f5a3-9a07-4636-b4ad-b26afead8823.pdf (filed 20250807, p18) | BSE 4048b2b3-ec10-4538-8a41-878d65befe45.pdf (filed 20251112, p19)  || cumulative closure: 20250930: SQ(2 q) 5404.13 vs printed 5404.13 -> OK; 20251231: SQ(3 q) 7129.79 vs printed 7129.79 -> OK",
-   "stored_pat_con": 2172.77
+   "stored_pat": 2172.77,
+   "correct_pat": 1752.23,
+   "defect": "standalone slot holds the CONSOLIDATED statement's PRE-ASSOCIATE PAT row; the standalone page's own PAT row is the correct value",
+   "source": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/2995f5a3-9a07-4636-b4ad-b26afead8823.pdf",
+   "quorum": "user 2026-08-09: explicitly accepted FILING + 1 SITE for these cells, a deliberate relaxation of campaign rule 6b (which asks for the filing AND >=2 independent sites). Recorded per cell so the bar this was taken at is never lost."
   },
   "20250930": {
-   "correct_pat_con": 2873.54,
-   "defect": "stored con PAT was an exact copy of the STANDALONE PAT; GIC Re files consolidated results quarterly and its consolidated statement prints owners' profit (profit after tax 2698.01 + share of associates 175.53 = 2873.54). Runbook 55c/2b.",
-   "source": "BSE 4048b2b3-ec10-4538-8a41-878d65befe45.pdf (filed 20251112, p19) | BSE 5019df0f-99f3-4c77-a734-1d648dc5023a.pdf (filed 20260207, p18)  || cumulative closure: 20250930: SQ(2 q) 5404.13 vs printed 5404.13 -> OK; 20251231: SQ(3 q) 7129.79 vs printed 7129.79 -> OK",
-   "stored_pat_con": 2698.01
+   "stored_pat": 2698.01,
+   "correct_pat": 2866.79,
+   "defect": "standalone slot holds the CONSOLIDATED statement's PRE-ASSOCIATE PAT row; the standalone page's own PAT row is the correct value",
+   "source": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/4048b2b3-ec10-4538-8a41-878d65befe45.pdf",
+   "quorum": "user 2026-08-09: explicitly accepted FILING + 1 SITE for these cells, a deliberate relaxation of campaign rule 6b (which asks for the filing AND >=2 independent sites). Recorded per cell so the bar this was taken at is never lost."
   },
   "20251231": {
    "correct_pat_con": 1725.66,

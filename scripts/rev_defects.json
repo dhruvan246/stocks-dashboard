@@ -212,5 +212,44 @@
    "defect": "screener-annual derivation used a restated/transition FY total against as-filed quarters (mixed basis); as-filed BSE detailed-results value is 173.43",
    "source": "bse-detres arbitration 2026-08-02; PAT-anchored as-filed quarter from api.bseindia Corp_detailedResult_Transpose_ng"
   }
+ },
+ "AADHARHFC": {
+  "20230630": {
+   "bad_rev": 533.47,
+   "correct_rev": 578.01,
+   "basis": "std",
+   "defect": "stored value is the filing's 'Interest income' ROW, not 'Total revenue from operations'. Populated pre-IPO by screener_prerev.py, whose anchor checks PAT ONLY -- a wrong revenue row passes undetected.",
+   "source": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/99ea0928-7f15-4732-8857-78bf1e975d26.pdf"
+  },
+  "20231231": {
+   "bad_rev": 579.26,
+   "correct_rev": 658.54,
+   "basis": "std",
+   "defect": "stored value is the filing's 'Interest income' ROW, not 'Total revenue from operations'. Populated pre-IPO by screener_prerev.py, whose anchor checks PAT ONLY -- a wrong revenue row passes undetected.",
+   "source": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/d307a09a-5579-477f-8be5-49e2c23e3f59.pdf"
+  }
+ },
+ "HDBFS": {
+  "20240630": {
+   "bad_rev": 3264.6,
+   "correct_rev": 3883.8,
+   "basis": "std",
+   "defect": "Sale of services 313.0 + Other financial charges 286.2 + Net gain on FV changes 20.2 + Net gain/(loss) on derecognised financial instruments -0.2 = 619.2 = filed_total (3883.8) - ours (3264.6) exactly",
+   "source": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/48e68fad-46ba-4f2f-9d50-f1b14ad634b2.pdf"
+  },
+  "20241231": {
+   "bad_rev": 3516.9,
+   "correct_rev": 4143.6,
+   "basis": "std",
+   "defect": "Sale of services 305.4 + Other financial charges 314.4 + Net gain on FV changes 7.9 + Net gain/(loss) on derecognised -1.0 = 626.7 = filed_total (4143.6) - ours (3516.9) exactly",
+   "source": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/1f276a6c-c343-4a5c-86af-5018d78ff70b.pdf"
+  },
+  "20250331": {
+   "bad_rev": 3623.3,
+   "correct_rev": 4266.1,
+   "basis": "std",
+   "defect": "Sale of services 303.3 + Other financial charges 332.5 + Net gain on FV changes 8.0 + Net gain/(loss) on derecognised -1.0 = 642.8 = filed_total (4266.1) - ours (3623.3) exactly",
+   "source": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/5276f6dc-237c-4393-8fa0-875e11252a44.pdf"
+  }
  }
 }

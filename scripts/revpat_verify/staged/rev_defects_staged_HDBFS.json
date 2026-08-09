@@ -1,0 +1,60 @@
+{
+ "_meta": {
+  "STATUS": "STAGED -- NOT APPLIED. No builder reads this file.",
+  "shape": "scripts/rev_defects.json is {SYM:{QE:{bad_rev,basis,defect,source}}} -- a guarded NULL ledger. We also carry correct_rev, since the filing gives the true total.",
+  "promote": "(a) add bad_rev to rev_defects.json and let a corrected read refill, or (b) direct-correct per runbook 2b, guard-editing BOTH docs/sf_revop.json and scripts/revop_fundamentals.json with an assert on the old value",
+  "then": "re-run the nightlies and DIFF (runbook 41), verify LIVE ~20 min after the push",
+  "control_quarters_confirmed": [
+   "20250630"
+  ],
+  "authorised": "user 2026-08-09: accepted FILING + 1 SITE (explicit rule-6b relaxation); filing read is independent \u2014 our value equals the filing's Interest income row, which no site asserts",
+  "tree_read_for_guards": "/Users/dhruvan/stocks-wt/revpat-verify"
+ },
+ "HDBFS": {
+  "20240630": {
+   "bad_rev": 3264.6,
+   "correct_rev": 3883.8,
+   "basis": "std",
+   "defect": "Sale of services 313.0 + Other financial charges 286.2 + Net gain on FV changes 20.2 + Net gain/(loss) on derecognised financial instruments -0.2 = 619.2 = filed_total (3883.8) - ours (3264.6) exactly",
+   "ours_matches_row": "Interest income, exact to the lakh (Rs 32,646 million /10 = 3264.6)",
+   "source": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/48e68fad-46ba-4f2f-9d50-f1b14ad634b2.pdf",
+   "unit_declared": "Rupees in million (printed in statement header) -> divide by 10 for crore",
+   "column_anchor": "PAT: filed Jun-24 Net Profit 5,817mn/10=581.7 == stored npCon 581.7 exactly (stored npStd 582.0 is a 0.05% rounding, same figure). Comparative column: filed Mar-24 Total Revenue from operations 36,668mn/10=3666.8 == stored 2024-03-31 revS 3667.0 (0.005%), which independently confirms this is the correct COLUMN and that 2024-03-31 already holds the correct ROW.",
+   "second_check": "Component sum 32,646+3,130+2,862+202-2 = 38,838 = printed 'Total Revenue from operations' exactly. Standalone page (p.4) and Consolidated page (p.12) of this same PDF are digit-for-digit identical (see notes) \u2014 HDBFS has no subsidiaries, so con=std is a genuine identity here, not a scrape artefact.",
+   "confidence": "HIGH",
+   "quorum": "user 2026-08-09: accepted FILING + 1 SITE (explicit rule-6b relaxation); filing read is independent \u2014 our value equals the filing's Interest income row, which no site asserts"
+  },
+  "20241231": {
+   "bad_rev": 3516.9,
+   "correct_rev": 4143.6,
+   "basis": "std",
+   "defect": "Sale of services 305.4 + Other financial charges 314.4 + Net gain on FV changes 7.9 + Net gain/(loss) on derecognised -1.0 = 626.7 = filed_total (4143.6) - ours (3516.9) exactly",
+   "ours_matches_row": "Interest income, exact to the lakh (Rs 35,169 million /10 = 3516.9)",
+   "source": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/1f276a6c-c343-4a5c-86af-5018d78ff70b.pdf",
+   "unit_declared": "Rupees in million -> divide by 10 for crore",
+   "column_anchor": "PAT: filed Dec-24 Net Profit 4,723mn/10=472.3 close to stored npStd/npCon 472.0/472.0 (0.06%). Comparative column: filed Sep-24 Interest income 34,310mn/10=3431.0 == stored 2024-09-30 revS 3431.0 EXACT, and filed Sep-24 Net Profit 5,910mn/10=591.0 == stored npStd(2024-09-30) 591.0 EXACT -- two independent locks on the same (row,column) pair, both landing on Interest income for the neighbouring quarter too, confirming the defect is not isolated to this one cell.",
+   "second_check": "Component sum 35,169+3,054+3,144+79-10 = 41,436 = printed Total Revenue from operations exactly. Standalone (p.3) and Consolidated (p.11) pages of this PDF are identical (con=std genuine, no subsidiaries).",
+   "confidence": "HIGH",
+   "quorum": "user 2026-08-09: accepted FILING + 1 SITE (explicit rule-6b relaxation); filing read is independent \u2014 our value equals the filing's Interest income row, which no site asserts"
+  },
+  "20250331": {
+   "bad_rev": 3623.3,
+   "correct_rev": 4266.1,
+   "basis": "std",
+   "defect": "Sale of services 303.3 + Other financial charges 332.5 + Net gain on FV changes 8.0 + Net gain/(loss) on derecognised -1.0 = 642.8 = filed_total (4266.1) - ours (3623.3) exactly",
+   "ours_matches_row": "Interest income, exact to the lakh (Rs 36,233 million /10 = 3623.3)",
+   "source": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/5276f6dc-237c-4393-8fa0-875e11252a44.pdf",
+   "unit_declared": "Rupees in million -> divide by 10 for crore",
+   "column_anchor": "PAT: filed Mar-25 Net Profit 5,309mn/10=530.9 == stored npCon 530.9 EXACT (stored npStd 531.0 is a 0.02% rounding). Comparative column: filed Dec-24 Interest income 35,169mn/10=3516.9 == stored 2024-12-31 revS 3516.9 EXACT.",
+   "second_check": "Component sum 36,233+3,033+3,325+80-10 = 42,661 = printed Total Revenue from operations exactly. This filing prints FULL separate Standalone (p.5) and Consolidated (p.17) annual statements (audited, FY25) and they are digit-for-digit identical -- confirms the no-subsidiary identity holds even at the audited-annual level, not just the interim reviewed statements.",
+   "confidence": "HIGH",
+   "quorum": "user 2026-08-09: accepted FILING + 1 SITE (explicit rule-6b relaxation); filing read is independent \u2014 our value equals the filing's Interest income row, which no site asserts"
+  }
+ },
+ "dropped": [
+  {
+   "qe": "20250630",
+   "why": "OURS_CONFIRMED (control or clean quarter)"
+  }
+ ]
+}
