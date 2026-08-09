@@ -204,7 +204,11 @@ def save_shares(s):
 #      list so its real dates beat the MC ledger's QE+21d convention wherever both have a cell.
 #   4. shp_fill_nse_gaps.json.gz — NSE-sourced holes for the NSE-ONLY cohort (BSE Ltd, CDSL) that
 #      no BSE route can reach (fetch_shp_nse_gaps.py). Real per-filing dates.
-BSE_HIST_LEDGERS = [os.path.join(HERE, "shp_fill_nse_gaps.json.gz"),
+#   5. shp_fill_thirdparty.json.gz — THIRD-PARTY values, not parsed by us. Only for filings that have
+#      NO primary file anywhere (NSE lists them with a blank xbrl name). Every cell is tied to an
+#      exchange-side number before it is written; provenance names the source. Keep this list SHORT.
+BSE_HIST_LEDGERS = [os.path.join(HERE, "shp_fill_thirdparty.json.gz"),
+                    os.path.join(HERE, "shp_fill_nse_gaps.json.gz"),
                     os.path.join(HERE, "shp_fill_n500_gaps.json.gz"),
                     os.path.join(HERE, "shp_fill_hist_2016_2019.json.gz"),
                     os.path.join(HERE, "shp_fill_hist_2010_2016.json.gz")]
