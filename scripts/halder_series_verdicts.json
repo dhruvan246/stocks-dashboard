@@ -1,0 +1,145 @@
+{
+ "campaign": "HALDER (Halder Venture Ltd, BSE 539854) — the missing-quarters gap surfaced by runbook §77",
+ "measured_on": "2026-08-10",
+ "rule": "NO ASSUMPTIONS, NO GUESSWORK — every value below was read off a primary document this session and carries at least two independent locks.",
+ "why_the_store_was_empty": {
+  "nse_classic": "api/corporates-financial-results returns ZERO rows for HALDER — it is a BSE-first scrip.",
+  "nse_integrated": "api/integrated-filing-results has it for Dec-2025 and Mar-2026 ONLY — hence exactly two stored rows.",
+  "route_that_works": "BSE detres (§42) for standalone + the BSE announcement PDF (§58) for both bases."
+ },
+
+ "detres_reach": {
+  "scrip_cd": "539854",
+  "first_non_empty_qid": "88.00",
+  "first_quarter_served": "20151231",
+  "last_quarter_served": "20260331",
+  "quarters_served": 41,
+  "empty_before": "qids 81.00–87.00 (Mar-2014 … Sep-2015) all return an EMPTY table1 — measured, not assumed.",
+  "corroboration": "The BSE announcement stream's EARLIEST result filing for this scrip is 2016-05-03 'Standalone Financial Results, Limited Review Report for December 31, 2015' — the same quarter detres starts at. Two independent indexes agree the filing history begins at Dec-2015, so the pre-Dec-2015 blank is the company's, not ours (§63: never infer absence from our own gaps — here the absence is corroborated by a second source)."
+ },
+
+ "fy_quarter_sum_gate": {
+  "method": "§45 — sum the four detres .00 quarters, compare against the same year's .50 audited annual. Run for PAT and, independently, for revenue.",
+  "unit": "Rs MILLION as detres serves them (÷10 = crore)",
+  "table": [
+   {"fy": 2016, "pat_qsum": 0.08, "pat_annual": 0.11, "pat_diff": -0.03, "rev_qsum": 16.61, "rev_annual": 35.77, "rev_diff": -19.16, "quarters_with_values": 2, "verdict": "INCOMPLETE — Jun-2015 and Sep-2015 are pre-filing-history; the gate cannot run."},
+   {"fy": 2017, "pat_qsum": 0.12, "pat_annual": 0.12, "pat_diff": 0.0, "rev_qsum": 21.49, "rev_annual": 21.49, "rev_diff": 0.0, "quarters_with_values": 4, "verdict": "PAT GATE PASSES EXACT (4 of 4 quarters). Revenue has only 1 of 4 values so its agreement is not a second lock."},
+   {"fy": 2018, "pat_qsum": 1.81, "pat_annual": 2.68, "pat_diff": -0.87, "rev_qsum": 100.82, "rev_annual": 100.82, "rev_diff": 0.0, "quarters_with_values": 4, "verdict": "PAT FAILS, revenue EXACT — filer-side (see filer_side_mechanism)."},
+   {"fy": 2019, "pat_qsum": 0.28, "pat_annual": 0.32, "pat_diff": -0.04, "rev_qsum": 59.12, "rev_annual": 59.12, "rev_diff": 0.0, "quarters_with_values": 4, "verdict": "PAT FAILS, revenue EXACT — filer-side."},
+   {"fy": 2020, "pat_qsum": 2.53, "pat_annual": 2.38, "pat_diff": 0.15, "rev_qsum": 53.4, "rev_annual": 53.4, "rev_diff": 0.0, "quarters_with_values": 4, "verdict": "PAT FAILS, revenue EXACT — filer-side."},
+   {"fy": 2021, "pat_qsum": -0.03, "pat_annual": 0.62, "pat_diff": -0.65, "rev_qsum": 45.75, "rev_annual": 45.76, "rev_diff": -0.01, "quarters_with_values": 4, "verdict": "PAT FAILS, revenue exact to rounding — filer-side."},
+   {"fy": 2022, "pat_qsum": 7.33, "pat_annual": 8.37, "pat_diff": -1.04, "rev_qsum": 183.82, "rev_annual": 183.83, "rev_diff": -0.01, "quarters_with_values": 4, "verdict": "PAT FAILS, revenue exact to rounding — filer-side."},
+   {"fy": 2023, "pat_qsum": 8.96, "pat_annual": 5.48, "pat_diff": 3.48, "rev_qsum": 318.09, "rev_annual": 318.09, "rev_diff": 0.0, "quarters_with_values": 4, "verdict": "PAT FAILS, revenue EXACT — PROVEN filer-side from the FY23 annual PDF itself (see filer_side_mechanism)."},
+   {"fy": 2024, "pat_qsum": 12.63, "pat_annual": 13.09, "pat_diff": -0.46, "rev_qsum": 944.73, "rev_annual": 944.73, "rev_diff": 0.0, "quarters_with_values": 4, "verdict": "PAT FAILS, revenue EXACT — filer-side. NB BSE published two 'Discrepancies In Financial Results' notices for this scrip on 2024-09-05 and 2024-09-19."},
+   {"fy": 2025, "pat_qsum": 194.95, "pat_annual": 231.2, "pat_diff": -36.25, "rev_qsum": 5966.62, "rev_annual": 7722.67, "rev_diff": -1756.05, "quarters_with_values": 4, "verdict": "BOTH FAIL — MERGER RESTATEMENT, measured: the Nov-2025 filing reprints Sep-2024 standalone revenue as 12,903.54 lakh (restated) against the 6,176.00 lakh originally filed. The .50 annual is post-restatement; the quarters are as-filed. Not comparable by design (§45 'refuse rather than force')."},
+   {"fy": 2026, "pat_qsum": 99.96, "pat_annual": 99.95, "pat_diff": 0.01, "rev_qsum": 4506.78, "rev_annual": 4506.78, "rev_diff": 0.0, "quarters_with_values": 4, "verdict": "GATE PASSES on BOTH PAT and revenue → the two cells landed by this run are gated."}
+  ],
+  "filer_side_mechanism": {
+   "finding": "For FY2018–FY2024 the gate fails on PAT while revenue reconciles EXACTLY. That is not a defect in detres and not a defect in our store — HALDER's own audited annual PAT disagrees with the sum of its own four published quarterly PATs.",
+   "proof_document": "FY2023 annual results PDF, BSE attachment caf8cca8-ba25-4309-bb5a-004479148665.pdf page 10, 'STATEMENT OF AUDITED FINANCIAL RESULTS FOR THE QUARTER AND YEAR ENDED 31ST MARCH 2023', amounts in lakh.",
+   "what_that_one_page_prints": "STANDALONE Quarter-ended 31-03-2023 Net Profit 86.68; Quarter-ended 31-12-2022 Net Profit 32.30; Year-ended 31-03-2023 Net Profit 54.81; Year-ended 31-03-2022 Net Profit 83.69. Revenue on the same page: Q4 2,295.02, Q3 431.46, FY23 3,180.87, FY22 1,838.25.",
+   "arithmetic": "Published quarters sum to 33.10 − 62.50 + 32.30 + 86.68 = 89.58 lakh; the SAME document's audited FY23 total is 54.81 lakh. Revenue on the same document reconciles to the paisa (418.6 + 35.8 + 431.46 + 2,295.02 = 3,180.87... as-filed Rs-mn 41.86+3.58+43.15+229.50 = 318.09 = the .50 annual EXACT). So the annual's implied 9M differs from the published 9M on the profit line only.",
+   "detres_is_faithful": "Every one of those four printed figures equals detres to the last digit it carries: Mar-23 8.67 Rs-mn = 86.68 lakh, Dec-22 3.23 = 32.30, FY23 .50 5.48 = 54.81, FY22 .50 8.37 = 83.69. detres reproduces the filing; it is not the source of the residual.",
+   "consequence": "§45's identity cannot arbitrate HALDER's pre-FY2026 quarters — it fails for a reason that lives in the filings. Those quarters therefore need the §58 route (the printed column in the company's own PDF), one document at a time. NOT attempted by this run; scoped as a follow-up below."
+  }
+ },
+
+ "landed_fills": {
+  "HALDER|20250630": {
+   "npStd": 3.93,
+   "npStd_filing_lakh": 392.68,
+   "npCon": 2.83,
+   "npCon_filing_lakh": 282.66,
+   "npCon_basis": "owners-attributable (Equity shareholders of the parent)",
+   "revS": 106.72,
+   "revS_filing_lakh": 10671.66,
+   "revC": 103.21,
+   "revC_filing_lakh": 10320.58,
+   "ann": 20250813,
+   "src": "bse-announcement-pdf §58 + bse-detres §42",
+   "documents": [
+    "ac612db7-ea20-4779-b47e-55416218f4ba.pdf (filed 2025-08-13) — p05 Standalone, p12 Consolidated, 'All amount in Rs. lakhs'",
+    "7a67a306-3306-4bf7-b5cd-6c0288bc6a0a.pdf (filed 2025-11-14) — p04 Standalone, p12 Consolidated; its column 2 is 'Quarter ended 30th June, 2025' and is NOT marked restated",
+    "BSE detres qid 126.00, Un-Audited, Date Begin 01-Apr-25 / Date End 30-Jun-25 (span verified = 3 months)"
+   ],
+   "anchors": [
+    "COLUMN ANCHOR (§58 step 6): the Jun-2025 column appears in TWO independent filings and agrees exactly — std NP 392.68 in both, con owners 282.66 in both, con total 285.87 in both.",
+    "OWNERS+NCI IDENTITY: 282.66 + 3.21 = 285.87 = printed con Net Profit, exact.",
+    "H1 IDENTITY (Q2 filing prints the six-month column): owners 282.66 + (−1091.05) = −808.39 printed; NCI 3.21 + 3.75 = 6.96 printed; total 285.87 + (−1087.30) = −801.43 printed. All three legs exact.",
+    "H1 STANDALONE IDENTITY: 392.68 + 105.76 = 498.44 = printed six-month std Net Profit, exact.",
+    "FY26 STANDALONE IDENTITY on printed lakhs (FY26 annual PDF p06): 392.68 + 105.76 + 217.10 + 283.98 = 999.52 = printed Year-ended-31-03-2026 std Net Profit, EXACT.",
+    "REVENUE H1 IDENTITY: std 10,671.66 + 5,216.92 = 15,888.58 printed; con 10,320.58 + 9,782.32 = 20,102.90 printed. Both exact.",
+    "FY26 REVENUE IDENTITY: std 10,671.66 + 5,216.92 + 7,363.09 + 21,816.13 = 45,067.80 = printed FY26 std revenue, EXACT.",
+    "DETRES CROSS-CHECK: detres 39.27 Rs-mn = 392.7 lakh vs printed 392.68; revenue 1067.17 Rs-mn = 10,671.7 vs printed 10,671.66 (detres carries 2dp in Rs-mn, i.e. 0.001 cr resolution).",
+    "SCALE PROOF: the two ALREADY-STORED quarters reproduce exactly from the same source — detres Dec-25 21.71 Rs-mn = stored 2.17, Mar-26 28.40 = stored 2.84."
+   ],
+   "ann_evidence": "PDF page 1 header 'Date: 13/08/2025'; BSE announcement NEWS_DT 2025-08-13; ann > qe (impossible-pair guard passes). The SAME attachment carries both the standalone and the consolidated statement, so annStd == annCon."
+  },
+  "HALDER|20250930": {
+   "npStd": 1.06,
+   "npStd_filing_lakh": 105.76,
+   "npCon": -10.91,
+   "npCon_filing_lakh": -1091.05,
+   "npCon_basis": "owners-attributable (Equity shareholders of the parent)",
+   "revS": 52.17,
+   "revS_filing_lakh": 5216.92,
+   "revC": 97.82,
+   "revC_filing_lakh": 9782.32,
+   "ann": 20251114,
+   "src": "bse-announcement-pdf §58 + bse-detres §42",
+   "documents": [
+    "7a67a306-3306-4bf7-b5cd-6c0288bc6a0a.pdf (filed 2025-11-14) — p04 Standalone, p12 Consolidated, 'All amount in Rs. lakhs'; column 1 = 'Quarter ended 30th September, 2025 (Unaudited)'",
+    "0ba427bc-a01e-4397-82da-4ab98fa1e435.pdf (filed 2026-02-13) — p10 Consolidated, column 2 = the preceding quarter Sep-2025",
+    "BSE detres qid 127.00, Un-Audited, Date Begin 01-Jul-25 / Date End 30-Sep-25 (span verified = 3 months)"
+   ],
+   "anchors": [
+    "OWNERS+NCI IDENTITY: −1091.05 + 3.75 = −1087.30 = printed con Net Profit, exact.",
+    "H1 IDENTITY: see HALDER|20250630 — all three legs (owners / NCI / total) close exactly on the printed six-month column.",
+    "NINE-MONTH CHAIN, INDEPENDENT THIRD DOCUMENT: the Dec-2025 filing prints 9M-FY26 con owners 1,255.30 (and 1,255.30 + 21.54 = 1,276.84 printed total, exact). 9M owners − Q3 owners 2,063.68 = −808.38 = the H1 owners the Q2 filing prints as −808.39 (0.01, rounding).",
+    "FY26 CHAIN, FOURTH ROUTE: FY26 con owners 2,873.84 − Q3 2,063.68 − Q4 1,618.54 = −808.38, agreeing with the same H1.",
+    "H1 STANDALONE IDENTITY: 392.68 + 105.76 = 498.44 printed, exact.",
+    "FY26 STANDALONE IDENTITY on printed lakhs: 392.68 + 105.76 + 217.10 + 283.98 = 999.52 printed, EXACT.",
+    "EPS CROSS-CHECK: printed std EPS 0.85 × 124.381 lakh shares (paid-up 1,243.81 lakh ÷ ₹10 FV) = 105.7 lakh ≈ 105.76.",
+    "REVENUE H1 IDENTITY: std 5,216.92 + 10,671.66 = 15,888.58 printed; con 9,782.32 + 10,320.58 = 20,102.90 printed. Both exact.",
+    "DETRES CROSS-CHECK: detres 10.58 Rs-mn = 105.8 lakh vs printed 105.76; revenue 521.69 Rs-mn = 5,216.9 vs printed 5,216.92."
+   ],
+   "ann_evidence": "PDF page 1 header 'Date: 14/11/2025'; BSE announcement NEWS_DT 2025-11-14; ann > qe. Same attachment carries both bases, so annStd == annCon.",
+   "why_not_derivable": "The H1 consolidated owners figure is a LOSS of −808.39 lakh while Q1 is a PROFIT of +282.66, so neither H1 quarter can be inferred from the FY chain alone — both had to be read. Confirmed: they are opposite-signed."
+  }
+ },
+
+ "landed_corrections": {
+  "HALDER|20260331": {
+   "defect": "EVERY sf_revop slot for Mar-2026 held the H2 (Oct-2025..Mar-2026) figure instead of the Jan–Mar quarter. Same mechanism §77 healed for con PAT (the 29-May-2026 XBRL INTEGRATED_FILING_INDAS OneD DECLARES an Oct–Mar period), but §77 healed only the PAT slot and left revenue and the operating-profit slots poisoned.",
+   "proof": "Each stored value decomposes EXACTLY as the (correct, already-stored) Dec-2025 quarter plus the true Jan–Mar quarter read off the FY26 annual PDF — six independent confirmations:",
+   "decomposition": {
+    "revS": "73.63 + 218.16 = 291.79 = stored",
+    "revC": "145.26 + 299.91 = 445.17 = stored",
+    "opS": "1.68 + 6.32 = 8.00 ≈ stored 7.99 (7.9909 at full precision)",
+    "opC": "11.30 + 20.26 = 31.56 = stored",
+    "ebitS": "0.30 + 4.24 = 4.54 = stored",
+    "ebitC": "9.91 + 18.15 = 28.06 = stored"
+   },
+   "document": "90a07d75-6664-49f5-99db-18c056d3430e.pdf (filed 2026-05-29), p06 Standalone / p15 Consolidated, 'All amount in Rs. lakhs'. Columns: Quarter ended 31-03-2026 | Quarter ended 31-12-2025 | Quarter ended 31-03-2025 | Year ended 31-03-2026 | Year ended 31-03-2025.",
+   "printed_lakh": {
+    "std_rev_q4": 21816.13, "std_other_income_q4": 537.68, "std_pbeit_q4": 293.62, "std_finance_q4": 667.6, "std_dep_q4": 208.05,
+    "con_rev_q4": 29991.35, "con_other_income_q4": 871.05, "con_pbeit_q4": 2017.29, "con_finance_q4": 668.69, "con_dep_q4": 211.3
+   },
+   "op_formula": "build_revop.py's own definition: op = ProfitBeforeExceptionalItemsAndTax + FinanceCosts + Depreciation − OtherIncome; ebit = op − Depreciation. VALIDATED on the neighbouring stored quarter: Dec-2025 std 249.07+599.66+137.45−818.68 = 167.50 lakh = stored 1.68; Dec-2025 con 2121.32+596.13+139.39−1726.79 = 1130.05 lakh = stored 11.30. Both exact.",
+   "column_anchor": "The Dec-2025 column of this same page reproduces the stored Dec-2025 cells exactly (rev 7,363.09 = 73.63; con rev 14,525.70 = 145.26; std NP 217.10 = 2.17; con owners row → 20.64), and the FY26 columns close both quarter-sum identities. The Mar-2026 PAT cells (std 2.84 / con owners 16.19) are ALREADY correct — §77 healed them — and are left untouched.",
+   "fix": {"revS": 218.16, "revC": 299.91, "opS": 6.32, "opC": 20.26, "ebitS": 4.24, "ebitC": 18.15},
+   "was": {"revS": 291.79, "revC": 445.17, "opS": 7.99, "opC": 31.56, "ebitS": 4.54, "ebitC": 28.06}
+  }
+ },
+
+ "not_attempted": {
+  "pre_FY2026_quarters": {
+   "count": 37,
+   "range": "20151231 … 20250331",
+   "status": "MEASURED AND REACHABLE, NOT LANDED BY THIS RUN.",
+   "why": "detres serves all 37 (values recorded in the walk), but §42's landing rule requires either an EPS reconstruction or the FY-consistency gate, and neither is available here: HALDER's detres rows carry no EPS/Equity/FaceValue for 2017+ and the FY gate fails for the filer-side reason proven above. Landing them honestly needs the §58 route — the printed column in each of ~30 scanned BSE PDFs (10–17 MB each, OCR text layers demonstrably corrupted, so every read needs a render).",
+   "ready_for_follow_up": "The announcement index for the whole span is harvested and every annual filing prints Q4 + Q3 + year-ago-Q4 + FY + prior-FY, so ~3 quarters land per annual PDF read. FY2023 is already done as the worked example above (Mar-2023 std NP 86.68 lakh, Dec-2022 std NP 32.30 lakh — both printed, both matching detres exactly)."
+  },
+  "op_ebit_for_the_two_new_rows": "Left null deliberately. Operating profit is a RECONSTRUCTION from expense components, and a wrong OPM is a visible site bug — the same reason fill_std_rev_detres.py refuses to write it on a fill pass. The Mar-2026 op/ebit ARE written because those slots currently hold a proven-wrong non-null value and each corrected figure is confirmed twice (component formula + H2 decomposition against a stored-correct neighbour)."
+ }
+}

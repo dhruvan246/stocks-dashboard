@@ -49,8 +49,19 @@ LEDGERS = [
     # hand-read named cells (§57/§58): keyed SYM|QE with the whole anchor chain journalled beside
     # the value. A file is listed once per slot it can carry.
     ("named_rev_cell_fills.json",      "revop", "revS", 0),
+    # revC on this file was UNGUARDED until 2026-08-10 — 15 hand-read consolidated-revenue cells
+    # (AIIL/BALKRISIND/CGPOWER/CYIENT/INDUSINDBK×4/KNRCON/MCX×2/NMDC/SWANCORP/TIMKEN/WAAREEENER)
+    # sat in the ledger with nothing re-checking them after a refresh. All 15 verified present at
+    # registration time.
+    ("named_rev_cell_fills.json",      "revop", "revC", 1),
     ("named_rev_cell_fills_2019.json", "revop", "revC", 1),
     ("named_rev_cell_fills_2019.json", "revop", "revS", 0),
+    # hand-read PAT cells that no quarter-keyed index serves (§57/§58), keyed SYM|QE with the whole
+    # anchor chain beside the value — the PAT counterpart of named_rev_cell_fills.json. HALDER's
+    # Jun/Sep-2025 rows are the first entries: the scrip is BSE-first and BOTH NSE endpoints skip
+    # those quarters, so nothing but this ledger would notice them going missing again.
+    ("named_pat_cell_fills.json",      "fund",  "std",  1),
+    ("named_pat_cell_fills.json",      "fund",  "con",  3),
 ]
 # BASIS-IN-KEY ledgers: "SYM|QE|basis", not "SYM|QE" — the flat loop above would rsplit the BASIS
 # off as the quarter and check nothing. These were UNGUARDED until 2026-08-10: nse_xbrl_rev_fills

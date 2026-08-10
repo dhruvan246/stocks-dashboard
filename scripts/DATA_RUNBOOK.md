@@ -6680,3 +6680,109 @@ ann_date_fills is one minified line) and **appends rather than re-sorts** — th
 20180630 (detres std 1.69), 20200630/0930/1231 (2.19/2.26/2.33), 20210930 (5.38 — the own filing's
 OCR prints 637.6 but its H1 791.06 − Q1 253.53 forces 537.5x), and no std for 20210331 (2.00) or
 20211231 (8.01). Filling those is a backfill with its own anchor rules, not part of this heal.
+
+---
+
+## 79. ★★★ A BSE-FIRST SCRIP WITH TWO STORED QUARTERS — HALDER, and the H2-as-quarter poison §77 half-healed  (2026-08-10)
+
+**NO ASSUMPTIONS, NO GUESSWORK — every value below was read off a primary document this session.**
+
+HALDER (Halder Venture Ltd, BSE 539854) held exactly **two** quarters in `sf_fundamentals` for its
+entire history — 20251231 and 20260331 — because it is BSE-first: `api/corporates-financial-results`
+returns ZERO rows for it, and `api/integrated-filing-results` has it for those two quarters only.
+Verdicts + per-cell anchor chains: `scripts/halder_series_verdicts.json`; applier
+`scripts/_halder_apply.py` (§2b guard-edit + blast radius + all four twins).
+
+### 79a. What landed
+* **FILL 20250630 / 20250930, both bases + revenue.** std 3.93 / 1.06, con-owners 2.83 / **−10.91**,
+  revS 106.72 / 52.17, revC 103.21 / 97.82; ann 20250813 / 20251114.
+* **FIX 20260331 — six revop slots** that all held the **H2 (Oct–Mar)** figure, not the quarter:
+  revS 291.79→218.16, revC 445.17→299.91, opS 7.99→6.32, opC 31.56→20.26, ebitS 4.54→4.24,
+  ebitC 28.06→18.15. (PAT was already right — §77 healed it.)
+
+### 79b. ★ A HALF-HEALED DEFECT IS THE EASIEST ONE TO MISS
+§77 diagnosed HALDER's Mar-2026 con PAT as "the H2 owners figure stored as the quarter" (the
+29-May-2026 XBRL's OneD **declares** an Oct–Mar period) and healed **the PAT slot**. The same file
+fed `build_revop`, so **revenue and both operating-profit slots carried the identical poison and
+were left in place.** Nothing flagged them: the PAT anchor passed, so the row looked healed.
+> **When a filing declares the wrong PERIOD, every metric that filing feeds is wrong — heal the ROW,
+> not the metric you happened to be auditing** (the §67 lesson, one layer out). After healing a
+> period-declaration defect, re-derive **every** slot the same document populates.
+
+The proof needs no judgement, because each stored value decomposes exactly against the
+already-correct neighbouring quarter: `Dec-2025(stored) + Mar-2026(printed) == stored Mar-2026`
+holds for **all six** slots — 73.63+218.16=291.79, 145.26+299.91=445.17, 1.68+6.32≈7.99,
+11.30+20.26=31.56, 0.30+4.24=4.54, 9.91+18.15=28.06. Six independent confirmations of one mechanism.
+`build_revop`'s op formula (`PBEIT + finance + depreciation − other income`, `ebit = op − dep`) was
+validated on the stored Dec-2025 cells first (167.50 lakh == 1.68; 1,130.05 == 11.30) before being
+trusted for Mar-2026.
+
+### 79c. detres reach, and the gate that CANNOT arbitrate this scrip
+Walking `Corp_detailedResult_Transpose_ng` over qids 81.00–132.00: **41 quarters, 20151231 →
+20260331**; 81.00–87.00 (Mar-2014 … Sep-2015) return an EMPTY `table1`. That blank is corroborated,
+not inferred (§63): the BSE **announcement** stream's earliest result filing for this scrip is
+2016-05-03, for the **same** Dec-2015 quarter. Two independent indexes agree the history starts there.
+
+Then the §45 FY quarter-sum gate, run separately on PAT and on revenue:
+
+| FY | PAT Σq vs `.50` | rev Σq vs `.50` | verdict |
+|---|---|---|---|
+| 2016 | −0.03 | −19.16 | incomplete — pre-filing-history |
+| 2017 | **0.00** | 0.00 (1 of 4 values) | PAT gate passes exact |
+| 2018–2024 | −0.87 … +3.48 | **0.00 / ±0.01** | PAT fails, revenue EXACT — **filer-side** |
+| 2025 | −36.25 | −1756.05 | **merger restatement** — refuse (§45) |
+| 2026 | **+0.01** | **0.00** | gate passes → the two landed cells are gated |
+
+* **FY2025 is a restatement, measured not guessed:** the Nov-2025 filing reprints Sep-2024 standalone
+  revenue as 12,903.54 lakh against the 6,176.00 originally filed. The `.50` annual is
+  post-merger-restated; the quarters are as-filed. Not comparable by design.
+* **★ FY2018–FY2024: the identity fails INSIDE the filing.** Revenue reconciles to the paisa while
+  PAT does not — so the quarters are the right entity, quarter and scale, and the residual is the
+  company's. The FY2023 annual PDF (`caf8cca8…`, p10) prints, on ONE page: std Q4 NP **86.68**,
+  Q3 **32.30**, FY23 **54.81**, FY22 **83.69** lakh. Its own four published quarters sum to 89.58
+  against its own audited 54.81, while revenue on the same page sums exact. Every one of those four
+  figures equals detres to the last digit it carries — **detres reproduces the filing; it is not the
+  source of the residual.**
+> **A failing FY identity is not automatically OUR defect.** Before concluding the stored series is
+> wrong, check whether the ANNUAL and the QUARTERS disagree *in the filer's own document*. Run the
+> gate on revenue as well as PAT: revenue reconciling while PAT does not localises the residual to
+> the profit line and rules out wrong-entity / wrong-scale / wrong-period reads in one step.
+
+### 79d. Reading a scanned filer — what the OCR text layer got wrong
+Every HALDER PDF is a 10–17 MB scan whose text layer is legible-looking and **wrong** (§75). On the
+Q1-FY26 consolidated page it misread NCI `3.21`→"3.27" and owners `399.17`→"399.77" — each a single
+digit, each enough to break `owners + NCI == total`. Both were caught by that identity and settled
+by **rendering the row band at 400 dpi and reading it** (`crop.py` → page y-fraction → PNG). After
+the render all four columns reconciled exactly.
+* **The owners/NCI/total identity is the cheap detector here** — it fired on exactly the two columns
+  the OCR had corrupted and stayed silent on the two it had not.
+* Con owners came out **+282.66 lakh (Jun-25) and −1,091.05 (Sep-25)** — opposite signs, so neither
+  H1 quarter was derivable from the FY chain and both had to be read. Four independent routes agree
+  on their sum: printed H1 −808.39; 9M 1,255.30 − Q3 2,063.68 = −808.38; FY26 2,873.84 − Q3 − Q4 =
+  −808.38; and Q1+Q2 of the printed quarters themselves.
+* **EPS could not arbitrate**: this filer computes consolidated EPS on the **total**, not owners
+  (Jun-25: 7.39 × 38.658 lakh sh == 285.87 total, not 282.66 owners) — §77d's third case, live.
+
+### 79e. Guarding what was landed
+`named_pat_cell_fills.json` is **new** — the PAT counterpart of `named_rev_cell_fills.json`, for
+hand-read cells no quarter-keyed index serves. Both slots are registered in `verify_fills_live.py`.
+Registering it exposed that `named_rev_cell_fills.json`'s **`revC` was never registered**: 15
+hand-read consolidated-revenue cells (AIIL, BALKRISIND, CGPOWER, CYIENT, INDUSINDBK ×4, KNRCON,
+MCX ×2, NMDC, SWANCORP, TIMKEN, WAAREEENER) had nothing re-checking them after a refresh. All 15
+verified present, now guarded.
+> **When you add a ledger, grep the verifier for every SLOT that ledger can carry.** A file listed
+> once guards one slot and silently ignores the rest.
+
+`op`/`ebit` are deliberately left **null** on the two new rows: operating profit is a reconstruction
+and a wrong OPM is a visible site bug (§2c). They are written for Mar-2026 only because those slots
+already held a proven-wrong non-null value.
+
+### 79f. STILL OPEN — 37 reachable quarters, deliberately not landed
+20151231 … 20250331 are all served by detres, but §42's landing rule needs an EPS reconstruction or
+the FY gate, and HALDER has **neither** (no EPS/Equity/FaceValue rows after FY2016; gate fails
+filer-side per 78c). Landing them honestly means the §58 route — the printed column in ~30 scanned
+PDFs, each needing a render. The announcement index for the whole span is already harvested and each
+**annual** filing prints Q4 + Q3 + year-ago-Q4 + FY + prior-FY, so ~3 quarters land per PDF read.
+FY2023 is done as the worked example (Mar-23 std 86.68 lakh, Dec-22 32.30 — printed, both matching
+detres exactly). BSE also published two **"Discrepancies In Financial Results"** notices for this
+scrip (2024-09-05, 2024-09-19) — read those before trusting anything in the FY2024/FY2025 window.
