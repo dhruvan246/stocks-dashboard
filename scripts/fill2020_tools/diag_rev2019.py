@@ -36,6 +36,8 @@ import fitz                                     # noqa: E402
 import backfill_revop_gaps as BG                # noqa: E402  (module-level helpers only)
 import fetch_insurers as FI                     # noqa: E402
 
+BANK_PAGE = BG.re.compile(r"interest\s+earned", BG.re.I)   # §42 bank top line
+
 TARGETS = os.path.join(HERE, "_rev2020_targets.json")
 OUT = os.path.join(HERE, "_diag_rev2019.json")
 FUND = os.path.join(ROOT, "docs", "sf_fundamentals.json")
@@ -132,10 +134,17 @@ def main():
                 text = page.get_text()
                 if text.strip():
                     has_text = True
-                if not text.strip() or not BG.PL_PAGE.search(text):
+                # A BANK's P&L page has no "revenue from operations" line at all — its top line is
+                # Interest Earned (§42). Testing only PL_PAGE labelled every bank cell "no-pl-page",
+                # which reads as "the filing has no statement" when in fact the statement is there
+                # and the SWEEP is the thing that cannot read it (backfill_revop_gaps requires
+                # PL_PAGE and then bails on anything BANKISH, so for a bank the whole PDF route is
+                # off by construction). Count those pages as the bank format they are.
+                is_bank_page = bool(BANK_PAGE.search(text))
+                if not text.strip() or not (BG.PL_PAGE.search(text) or is_bank_page):
                     continue
                 pl_pages += 1
-                if BG.BANKISH.search(text[:2500]):
+                if BG.BANKISH.search(text[:2500]) or is_bank_page:
                     bankish += 1
                     continue
                 is_con = bool(BG.CON_HDR.search(text[:1200]))

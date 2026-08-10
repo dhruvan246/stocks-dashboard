@@ -795,6 +795,15 @@ def main():
 
     applied = 0
     for key, v in sorted(fills.items()):
+        # ★ "held" — a read that passed the PAT anchor AND the per-filing standalone control but
+        # failed the §55b con/std RATIO-FAMILY adjudication. That test is the one that rejected a
+        # LICI read which had already satisfied the anchor, so it must be able to STOP an apply
+        # rather than merely be noted: until now the verdict was advisory and the value landed
+        # anyway. The reason travels with the ledger entry so the cell can be re-adjudicated
+        # instead of re-read.
+        if v.get("held"):
+            print("HOLD %-11s %-8s %s" % (key.split("|")[0], key.split("|")[1], v["held"]))
+            continue
         sym, qe_s, basis = key.split("|")
         row = (revop.get(sym) or {}).get(qe_s)
         if row is None:

@@ -143,6 +143,16 @@ def qe_date(qe):
 # so the column can be identified WITHOUT our own stored values, which also removes the
 # circularity risk in anchoring on a stored PAT that may itself have come from this same column.
 # ---------------------------------------------------------------------------------------------
+# BANK / RBI statement format (§42): the top line is Interest Earned, not Revenue from operations.
+# Labels are matched with SEARCH, not MATCH, because merge_wrapped prepends the numeric-less
+# audit-status header to the first figure row — BANKBARODA's Interest Earned line comes back as
+# "Reviewed Audited Un-audited Audited 1 Interest earned (a)+(b)+(c)+(d) 1972331 ...", so an
+# anchored ^match finds nothing on a page that plainly has the row.
+BANK_PAGE = BG.re.compile(r"interest\s+earned", BG.re.I)
+BANK_REV = BG.re.compile(r"interest\s+earned", BG.re.I)
+BANK_OI = BG.re.compile(r"\bother\s+income\b", BG.re.I)
+BANK_TI = BG.re.compile(r"\btotal\s+income\b", BG.re.I)
+
 MONTHS = {m: i for i, m in enumerate(
     ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"], 1)}
 RE_DAY = BG.re.compile(r"^(\d{1,2})(?:st|nd|rd|th)?,?$", BG.re.I)
@@ -356,6 +366,7 @@ def main():
                 continue
             stored_pat = (fmap.get(sym, {}).get(qe) or [None] * 4)[1 if basis == "std" else 3]
             got, why, overlaid_seen = None, "no-overlaid-anchorable-page", False
+            why_sticky = False
             for annd, att, sub in fils[:10]:
                 if att not in pdfs:
                     pdfs[att] = BG.cached_pdf(sess, att)[0]
@@ -371,9 +382,17 @@ def main():
                     lines, was_overlaid = page_lines_deoverlay(page)
                     overlaid_seen = overlaid_seen or was_overlaid
                     txt = " ".join(t for _, t, _ in lines)
-                    if not BG.PL_PAGE.search(txt):
-                        continue
-                    if BG.BANKISH.search(txt[:2500]):
+                    # BANK FORMAT IS NOT A REASON TO SKIP — it is a reason to read different rows.
+                    # backfill_revop_gaps requires "revenue from operations" on the page and then
+                    # bails out on anything BANKISH, so for a bank the §58 PDF route is disabled by
+                    # construction and every cell files as "no-pl-page" — which reads exactly like
+                    # "the filing has no statement". Measured on the 72 open cells that DO have a
+                    # consolidated row in the NSE index: BANKBARODA's Mar-2019 filing (ann
+                    # 2019-05-22) carries a consolidated Interest Earned page, and its Jun-2019
+                    # filing carries another. Banks print Interest Earned as the top line (§42),
+                    # so switch rows rather than refuse the page.
+                    bank_mode = bool(BANK_PAGE.search(txt)) and not BG.PL_PAGE.search(txt)
+                    if not BG.PL_PAGE.search(txt) and not bank_mode:
                         continue
                     head = txt[:1200]
                     is_con, is_std = bool(BG.CON_HDR.search(head)), bool(BG.STD_HDR.search(head))
@@ -403,6 +422,34 @@ def main():
                     rev_row, rev_rank = pick_rev_row(merged)
                     if rev_row is not None:
                         rows["rev"] = rev_row
+                    if bank_mode:
+                        # A bank's operating revenue IS "Interest Earned" (§42, and what
+                        # build_revop's bank branch stores), so that row replaces the industrial one.
+                        brow = None
+                        for _, t, nums in merged:
+                            if nums and len(nums) >= 2 and BANK_REV.search(t):
+                                brow = nums
+                                break
+                        if brow is None:
+                            if not why_sticky:
+                                why = "bank page but no Interest Earned row parsed"
+                            continue
+                        rows["rev"] = brow
+                        for kk, pp in (("oi", BANK_OI), ("ti", BANK_TI)):
+                            for _, t, nums in merged:
+                                if nums and len(nums) >= 2 and pp.search(t):
+                                    rows[kk] = nums
+                                    break
+                        # THE PAT ROW BY VALUE, NOT BY LABEL (§55c precedent). The consolidated
+                        # bottom line is spread over merged lines here — BANKBARODA's is glued to
+                        # "13 Extraordinary items (net of tax expenses) - - - -" — so no label
+                        # pattern finds it reliably. The column is already fixed independently by
+                        # the printed header date, so the honest identification is: the row that
+                        # REPRODUCES our stored consolidated PAT at that column IS the PAT row.
+                        # A wrong page or wrong column reproduces nothing.
+                        rows.pop("own", None)
+                        rows.pop("pat", None)
+                        rows["_bank_rows"] = [nums for _, _, nums in merged if nums]
                     # OWNERS ROW: take the LAST match, not the first. These statements print
                     # "Profit for the period attributable to Owners of the Company" twice (a
                     # split/continued line); on ABCAPITAL's audited Mar-2019 page the FIRST copy
@@ -422,8 +469,9 @@ def main():
                         own_last = nums
                     if own_last is not None:
                         rows["own"] = own_last
-                    if "rev" not in rows or ("pat" not in rows and "own" not in rows):
-                        why = "page found but rev/PAT row unparsed"
+                    if "rev" not in rows or not (bank_mode or "pat" in rows or "own" in rows):
+                        if not why_sticky:
+                            why = "page found but rev/PAT row unparsed"
                         continue
                     # COLUMN IDENTITY comes from the printed header date (§55b) — independent of
                     # anything we store, so it also settles which quarter a comparative column is.
@@ -433,28 +481,93 @@ def main():
                     pat_row = rows.get("own") if (basis == "con" and rows.get("own")) else rows.get("pat")
                     xcol, colwhy = date_column(rows, hd, qe, guard_row=pat_row)
                     if xcol is None:
-                        why = "column-by-date: %s" % colwhy
+                        if not why_sticky:
+                            why = "column-by-date: %s" % colwhy
                         continue
                     # SCALE from the anchor, never from magnitude: the stored PAT for this exact
                     # cell must be reproduced at this exact column under one of the unit hypotheses.
                     scale = None
                     pv_raw = BG.val_at(pat_row or [], xcol)
-                    for sc in BG.SCALES:
-                        if pv_raw is not None and BG.close(pv_raw / sc, stored_pat):
-                            scale = sc
-                            break
+                    if bank_mode:
+                        # Value-anchor, taking the CLOSEST row rather than the first acceptable one.
+                        # A consolidated bank statement prints two profit lines a hair apart — BOB's
+                        # Mar-2019 shows "Net Profit from Ordinary Activities after tax" −817.49 and,
+                        # after minority interest and share of associates, −820.59, which is the
+                        # owners figure we store. close()'s 0.4% band admits BOTH, and first-match
+                        # took the pre-minority one: the §2d total-vs-owners confusion, arriving
+                        # through a tolerance instead of a label. Best-match picks the owners row.
+                        best = None
+                        for cand_row in rows.get("_bank_rows", []):
+                            v = BG.val_at(cand_row, xcol)
+                            if v is None:
+                                continue
+                            for sc in BG.SCALES:
+                                if BG.close(v / sc, stored_pat):
+                                    d = abs(v / sc - stored_pat)
+                                    if best is None or d < best[0]:
+                                        best = (d, v, sc, cand_row)
+                        if best is not None:
+                            _, pv_raw, scale, pat_row = best
+                    else:
+                        for sc in BG.SCALES:
+                            if pv_raw is not None and BG.close(pv_raw / sc, stored_pat):
+                                scale = sc
+                                break
                     if scale is None:
-                        why = ("printed-date column found for %d but its PAT %s reproduces no "
+                        if not why_sticky:
+                            why = ("printed-date column found for %d but its PAT %s reproduces no "
                                "stored value (%s) at any scale" % (qe, pv_raw, stored_pat))
                         continue
-                    m = BG.metrics_at(rows, xcol, scale)
-                    if not m:
-                        why = "date-anchored column carries no readable metrics"
-                        continue
-                    rev, op, ebit = m
+                    # ★ CROSS-BASIS DISCRIMINATION (§44's duplicate trap, §55's "refuse a
+                    # consolidated figure that comes from the page which just served as the
+                    # standalone control"). These 2019 filings routinely print BOTH statements
+                    # under one "Standalone and Consolidated" heading, so the page qualifies for
+                    # either basis and date_column takes the LEFTMOST column with the target date —
+                    # which is the STANDALONE one. CORPBANK Mar-2019 was caught exactly this way:
+                    # its anchored PAT −6581.49 is our stored STANDALONE PAT to the paisa, while
+                    # the consolidated is −6574.74, and the revenue it produced equalled stored
+                    # revS exactly (con/std ratio 1.0000). The PAT anchor alone cannot tell the two
+                    # apart when the bases are close. Require the anchored value to match the
+                    # TARGET basis STRICTLY BETTER than the other one.
+                    other_pat = (fmap.get(sym, {}).get(qe) or [None] * 4)[3 if basis == "std" else 1]
+                    if other_pat is not None:
+                        d_target = abs(pv_raw / scale - stored_pat)
+                        d_other = abs(pv_raw / scale - other_pat)
+                        if d_other <= d_target:
+                            # STICKY: a cross-basis rejection is an adjudication result (§58d),
+                            # not a page that simply did not parse. Later pages must not overwrite
+                            # it with a vaguer message — otherwise the ledger reports
+                            # "rev/PAT row unparsed" for a cell whose real story is that the only
+                            # readable column belonged to the other basis.
+                            why = ("cross-basis: the anchored PAT %.2f matches the OTHER basis "
+                                   "(%.2f, off %.2f) at least as well as %s (%.2f, off %.2f) — "
+                                   "this column is not provably %s"
+                                   % (pv_raw / scale, other_pat, d_other, basis, stored_pat,
+                                      d_target, basis))
+                            why_sticky = True
+                            continue
+                    if bank_mode:
+                        # metrics_at reconstructs op = PBET + finance costs + depreciation − other
+                        # income, which is meaningless for a bank (its "finance cost" IS interest
+                        # expended, and the RBI format prints no PBET row). Read the top line only;
+                        # op/ebit stay None, and this reader writes revenue anyway.
+                        rv = BG.val_at(rows["rev"], xcol)
+                        if rv is None:
+                            if not why_sticky:
+                                why = "bank page: no Interest Earned value at the dated column"
+                            continue
+                        rev, op, ebit = rv / scale, None, None
+                    else:
+                        m = BG.metrics_at(rows, xcol, scale)
+                        if not m:
+                            if not why_sticky:
+                                why = "date-anchored column carries no readable metrics"
+                            continue
+                        rev, op, ebit = m
                     colmap = {qe: xcol}
                     if rev is None or rev <= 0:
-                        why = "revenue absent or <=0 at the anchored column"
+                        if not why_sticky:
+                            why = "revenue absent or <=0 at the anchored column"
                         continue
                     ident = None
                     if "ti" in rows and "oi" in rows:
