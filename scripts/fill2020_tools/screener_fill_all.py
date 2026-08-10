@@ -69,6 +69,15 @@ def main():
             else:
                 failed += 1
             continue
+        # ZERO GUARD (2026-08-11): screener prints crore-rounded integers, so a genuine sub-0.5cr
+        # revenue and a NOT-REPORTED quarter both render as "0". Writing 0 asserts the company
+        # earned nothing — a far stronger claim than the source supports (a feed's 0 can mean NO
+        # BASE, not zero). Hold it for a filing read rather than guess which meaning applies.
+        # Caught OLAELEC 20231231 revS, whose sibling quarters read 60/9/6 — a holdco whose
+        # operations sit in the subsidiary, exactly where "0" is most ambiguous.
+        if val == 0:
+            held.append((key, val, "ZERO — may be not-reported rather than nil revenue"))
+            continue
         other = SLOT["revS" if field == "revC" else "revC"]
         row = (revop.get(sym) or {}).get(str(qe)) or []
         twin = row[other] if len(row) > other else None
