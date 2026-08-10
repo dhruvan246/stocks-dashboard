@@ -6213,6 +6213,59 @@ COVID pushed the real filing to 2020-09-14; CUB Mar-2022 con 20220525 vs the 27-
 and ZEAL Dec-2024, where stored 6.31 / detres 6.27 / screener 6.36 disagree three ways and no
 document read that session resolves it.
 
+### 73c. ★★★ THE LIVE RE-VERIFY EARNED ITS KEEP AGAIN — a heal can lose to another HEAL LEDGER
+
+§73a's live re-verify caught a stale con slot. §73b's caught something new and worse: **ZEAL
+20260331 con back at 6.53 on the served payload while std held at 2.04** — and not from CDN lag.
+`origin/main` itself had been rewritten, 18 minutes after the push, by the daily refresh's
+`apply_owners_full` step. Its log line names the culprit exactly:
+
+    set npCon=owners: 0 from _reattr_owners, 0 via rename-alias, 0 from filing-backfill, 1 from con_copy_heals
+
+**The heal did not lose to a cache. It lost to another HEAL LEDGER** —
+`owners_basis_heals.json`, which the §71d precedence (added 2026-08-09, correctly) makes outrank
+everything. A 2026-08-09 entry pinned `ZEAL|20260331|patC = 6.53`, so every nightly run re-asserted
+it over the new heal, forever.
+
+★ **Before leaving ANY con-PAT heal, check it against the ledgers that outrank you** — today
+`con_copy_heals.json` and `owners_basis_heals.json`, both consumed by `apply_owners_full.py`.
+§74 checked `_reattr_owners.json` (0 of 59 cells present) and stopped there; the heal ledgers are a
+SECOND, higher-precedence layer that check did not cover. One line settles it:
+
+```python
+led = {}
+for f in ("scripts/con_copy_heals.json", "scripts/owners_basis_heals.json"):
+    d = json.load(open(f)); led.update(d.get("cells", d))
+clashes = [k for sym, qe in my_healed_cells for k in ("%s|%s|patC" % (sym, qe),) if k in led]
+```
+
+★ **When you do clash, UPDATE the ledger entry — never route around it.** The precedence is
+correct and exists because heals used to be silently reverted; the fix is to own the entry, with
+the superseded record preserved inline so the next reader sees both readings.
+
+**Which value was right, and why the old one lost.** The 2026-08-09 entry's own note says it was
+written on *"screener 7 on both"* — a ROUNDED read — and anchored on *"a series of
+6.31/10.06/1.54/3.00/10.06"*, a neighbourhood that itself contained the FY2025 ANNUAL 10.06
+duplicated into TWO quarter slots. **An anchor is only as good as the row around it**
+(§68/§73b's own rule, arriving one campaign late). The company's own audited filing, BSE detres and
+screener's standalone table all say 2.04.
+
+**Durability, measured before leaving:** `apply_owners_full.py` re-run locally after the ledger
+edit reports `0 from con_copy_heals` and leaves the cell at 2.04; the other 21 cells were checked
+against both ledgers (ZEAL was the only clash); `verify_fills_live` exits 0 with ZEAL drift 0.
+
+⚠️ **`verify_fills_live` REPORTED this and did not stop it.** It exits `1 if missing else 0`, so a
+DRIFT — a ledgered cell whose live value was overwritten by a *different* number — prints and the
+run still goes green. The CI log for the very run that reverted ZEAL contains
+`DRIFT pat_defects.json ZEAL 20260331 ledger=2.04 live=6.53`, and nothing failed. Drift is exactly
+the clobber signature, so treat any DRIFT line in a CI log as a red flag to investigate by hand
+until that exit code is tightened.
+
+★ **Journals are append-only across campaigns — NEVER rewrite one with `sort_keys=True`.** Doing so
+reordered hundreds of untouched lines in `pat_defects.json` / `owners_basis_heals.json` and
+silently dropped the latter's `generated` key. `json.load` preserves file order; dump without
+`sort_keys` and every entry you did not touch stays byte-identical.
+
 
 ---
 
