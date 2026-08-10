@@ -724,11 +724,44 @@ V-recovery (Jun-2021: +48%)**.
   after the append step) and commits it with the version marker; `build_liquid_universe()` reads that sidecar and falls
   back to the frozen bin **with a loud ⚠ line** when it is missing. Any other job needing a fresh universe should read
   the sidecar — do NOT add a 193 MB release download to a job that runs 48×/day.
-- ⚠️ **OPEN (found 2026-08-10, NOT fixed):** the turnover screen takes each symbol's *last 250 bars whenever they
-  happened*, so **8 long-dead tickers** pass it and sit in "currently-listed companies trading ≥₹1cr/day" — SPSL
-  (last bar **2009**-05-04), RDEL (2017), HDIL (2020), HSIL (2022), SPICEJET + LANCER (2023), HINDMOTORS, RAJESHEXPO.
-  Their `alive` meta is stale-True (bin meta is frozen). A recency guard (last bar within ~60d of the bin's `end`)
-  would fix it, but it shifts universe membership, so it needs its own pass — not folded into the caption fix.
+- ✅ **RECENCY GUARD — CLOSED 2026-08-10** (was OPEN the same day). The turnover screen took each symbol's *last 250
+  bars whenever they happened*, so **8 symbols whose series had stopped** sat in "currently-listed companies trading
+  ≥₹1cr/day" on turnover measured from bars up to **17 years old** — SPSL (last bar **2009**-05-04), RDEL (2017),
+  HDIL (2020), HSIL (2022), SPICEJET + LANCER (2023), HINDMOTORS (2025-10-01), RAJESHEXPO (2025-12-24). `alive` cannot
+  catch them: bin meta is frozen with the bin, so it reads stale-True. **Fix:** `RECENCY_DAYS = 60` in
+  `scan_bin_universe()` — a member's LAST bar must be within 60d of the bin's **own `end`** (never today's date, or a
+  frozen fallback bin would screen out its entire universe). It lives in `scan_bin_universe()` on purpose, so the
+  sidecar bake AND the frozen-bin fallback are both guarded from one place; `bake_liquid_universe.py` stamps
+  `recencyDays` into `docs/liquid_universe.json` as the guarded-bake marker (a sidecar has no per-symbol dates, so it
+  can't be re-screened on read — a pre-guard file is still used, with a loud ⚠, and self-heals on the next append).
+  - **⚠️ THE OLD NOTE HERE CALLED THESE "long-dead tickers". THAT WAS WRONG — never repeat it.** Checked 2026-08-10
+    against NSE's own `EQUITY_L.csv` + Yahoo: **all 8 still trade.** Two real causes, both worth knowing:
+    · **Left the NSE cash segment, still on BSE** (absent from EQUITY_L.csv, `.NS` empty, `.BO` full): SPSL, RDEL
+      (→RNAVAL), HSIL (→AGI), SPICEJET, LANCER, HINDMOTORS, CRANESSOFT. This bin is NSE-sourced, so it CANNOT measure
+      their turnover — dropping them is the screen finally telling the truth.
+    · **NSE-listed but in series `BZ`**, which OUR OWN ingestion discards: `build_sf_data.py:73` keeps only
+      `("EQ","BE")`. Measured: **38 of NSE's 39 BZ symbols are stale in the bin, vs 0 of 2,086 EQ and 0 of 285 BE.**
+      That is HDIL and RAJESHEXPO — trading on NSE today, invisible to us since they were penalised into BZ. The guard
+      is right to drop them (we have no current turnover), but **the BZ feed gap is a separate OPEN defect.**
+  - **Why 60 days — measured, not taste.** Age-of-last-bar is bimodal with **nothing in between**: committed bin (end
+    2026-06-13) 1,426 of 1,434 passers ≤7d then a hole to 171d; fresh release bin (end 2026-08-07) 1,441 of 1,447 ≤7d
+    then a hole to 226d. **Every cutoff from ~8d to ~170d gives identical membership**, so 60d (≈40 sessions) leaves a
+    wide margin for a real trading halt. Only the LAST bar is tested, never gaps — a stock suspended then **resumed**
+    has a recent last bar and stays in, which is correct.
+  - **Measured membership delta** (guard isolated, same data both sides): frozen bin **1,433 → 1,426** (−7: HDIL,
+    HINDMOTORS, LANCER, RAJESHEXPO, RNAVAL, SPICEJET, SPSL); fresh bin **1,447 → 1,441** (−6: + CRANESSOFT, − RNAVAL/SPSL
+    which that bin already marks dead). 8 bin keys drop but only 7/6 names: HSIL's stale key collapses onto **AGI**,
+    which is fresh and stays. **All 27 index universes are byte-identical** — they take members from
+    `indices_history.json` and never touch the bin.
+  - **Chart effect:** `reported` falls 2–6 per quarter (e.g. Dec-2025 1,415→1,412); **medians move ≤0.5pp** — a 7-of-1,433
+    change can't move a median. **Totals move a lot in three quarters, and that is the real prize:** total PAT
+    Mar-2019 **−72.9% → −2.1%**, Dec-2019 **−99.5% → +10.1%**, Mar-2020 **−97.6% → −6.6%**.
+  - **⚠️ Those three bars were never economics — they were ONE corrupt company.** `LANCER` carries rupees-stored-as-crore
+    PAT cells in `sf_fundamentals`: Mar-2018 **21,816,965**, Dec-2018 **34,903,220**, Mar-2019 **5,789,416** (neighbours
+    are ₹1.7–2.5 cr, so these are ÷10⁷ — the scale-step class, §-see scale_fix.json). A ₹34,903,220-crore denominator
+    drags `sum(ago)` so far that `Σnow/Σago−1` pins to ≈−100%. The guard removes LANCER from the *liquid* universe so the
+    bars read sanely, **but it MASKS rather than heals — the corrupt cells are still in `sf_fundamentals` and still wrong
+    on LANCER's own stock page.** LANCER is in no index, so no index universe was ever affected. Heal via `scale_fix.json`.
 - **MEDIAN ↔ TOTAL toggle (2026-07-01, user compared to Trendlyne):** each metric carries BOTH `median` (per-company
   YoY, consolidated-preferred, positive base — "typical company") AND `total` (aggregate Σnow/Σago−1,
   **CONSOLIDATED-preferred** — the old "standalone" wording here was stale; con-pref is what reconciles to TL's

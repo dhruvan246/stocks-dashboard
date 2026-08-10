@@ -19,7 +19,8 @@ import os, sys, json
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-from build_results_season import scan_bin_universe, load_rename, TURN_FLOOR_CR, TURN_WINDOW, BIN, LIQ
+from build_results_season import (scan_bin_universe, load_rename,
+                                  TURN_FLOOR_CR, TURN_WINDOW, RECENCY_DAYS, BIN, LIQ)
 
 
 def main():
@@ -31,9 +32,12 @@ def main():
     if not end:
         print("REFUSING to write a universe with no `end` date (src=%s)" % src)
         return 1
+    # `recencyDays` is the guarded-bake MARKER as well as a parameter: a sidecar carries no per-symbol
+    # dates, so its reader cannot re-screen it — the key's presence is the only way build_liquid_universe()
+    # can tell a guarded file from a pre-guard one. Never drop it from this payload.
     json.dump({"asOf": end, "floorCr": TURN_FLOOR_CR, "window": TURN_WINDOW,
-               "symbols": sorted(U)}, open(LIQ, "w"), separators=(",", ":"))
-    print("Wrote %s: %d symbols, asOf=%s (src=%s)" % (LIQ, len(U), end, src))
+               "recencyDays": RECENCY_DAYS, "symbols": sorted(U)}, open(LIQ, "w"), separators=(",", ":"))
+    print("Wrote %s: %d symbols, asOf=%s recencyDays=%d (src=%s)" % (LIQ, len(U), end, RECENCY_DAYS, src))
     return 0
 
 

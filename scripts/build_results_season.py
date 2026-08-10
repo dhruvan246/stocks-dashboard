@@ -39,6 +39,7 @@ OUT = os.path.join(ROOT, "docs", "results_season.json")
 
 TURN_FLOOR_CR = 1.0
 TURN_WINDOW = 250
+RECENCY_DAYS = 60   # a member's LAST bar must be within this of the bin's own `end` — see scan_bin_universe
 MON = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
 
@@ -71,10 +72,46 @@ def scan_bin_universe(path, rename):
     NEW one (DATA_RUNBOOK §30 step 4 deletes the old key). Without this the company matches NOTHING and
     silently leaves the 'liquid' universe: GUJGASLTD→GUJENERGY (eff 2026-07-01) dropped out of all 29
     quarters this way. §30 step 4b names this map as exactly that bin-key bridge for this build; index
-    membership already applies it (snap_as_of), the turnover set did not."""
+    membership already applies it (snap_as_of), the turnover set did not.
+
+    ⚠️ RECENCY GUARD (added 2026-08-10, DATA_RUNBOOK §11). The screen takes each symbol's LAST
+    `TURN_WINDOW` BARS **whenever they happened**. When a symbol's series simply STOPS, those are its last
+    live bars, so it keeps passing a screen whose own note promises "currently-listed companies trading
+    ≥₹1cr/day" — off bars up to 17 years old. `alive` cannot catch it: bin meta is frozen alongside the
+    bin, so it still reads stale-True. Fix: require the symbol's LAST bar to be within RECENCY_DAYS of the
+    bin's OWN `end` — NOT of today's date. The fallback bin is a frozen snapshot and must be judged
+    against itself, or a stale-but-valid bin would screen out its whole universe.
+
+    ⚠️ These are NOT dead companies — do not repeat that. All 8 flagged on the committed bin were checked
+    against NSE's EQUITY_L.csv and Yahoo on 2026-08-10 and EVERY ONE still trades. Two real causes:
+      · LEFT THE NSE CASH SEGMENT, still on BSE (absent from EQUITY_L.csv; .BO has full bars, .NS none):
+        SPSL, RDEL(→RNAVAL), HSIL(→AGI), SPICEJET, LANCER, HINDMOTORS, CRANESSOFT. This bin is NSE-sourced,
+        so it CANNOT measure their turnover — dropping them is the screen telling the truth.
+      · NSE-LISTED IN SERIES **BZ**, which our own ingestion drops class-wide — build_sf_data.py:73 keeps
+        only ("EQ","BE"). Measured: of NSE's 39 BZ symbols 38 are stale in the bin, vs 0 of 2,086 EQ and
+        0 of 285 BE. That is HDIL and RAJESHEXPO: both trading on NSE today, both invisible to us since
+        they were penalised into BZ. The guard is right to drop them (we have no current turnover for
+        them) but the underlying feed gap is a SEPARATE defect — hence the loud per-symbol log below.
+    A rename is harmless here: HSIL's stale key is dropped, but its target AGI is fresh and stays in.
+
+    Why 60 days: measured to sit inside an EMPTY gap, not tuned to taste. On both bins the age-of-last-bar
+    histogram is bimodal with NOTHING in between — committed bin (end 2026-06-13): 1,426 of 1,434 passers
+    are ≤7d, then a hole all the way to 171d; fresh release bin (end 2026-08-07): 1,441 of 1,447 are ≤7d,
+    then a hole to 226d. Every cutoff from ~8d to ~170d yields the IDENTICAL membership, so 60d (≈40
+    sessions) buys a wide margin for a genuine trading halt without letting a stale series back in.
+    NOTE this tests only the LAST bar, never gaps: a stock suspended for months and then RESUMED has a
+    recent last bar and stays in, which is right — it is trading now. Only one still dark at `end` drops."""
     D = json.loads(gzip.decompress(open(path, "rb").read()))
     meta, data = D["meta"], D["data"]
-    U = set()
+    end = D.get("end")
+    cutoff = None                      # YYYYMMDD int, comparable straight against a `d` entry
+    try:
+        e = datetime.date(*(int(x) for x in str(end).split("-")))
+        c0 = e - datetime.timedelta(days=RECENCY_DAYS)
+        cutoff = c0.year * 10000 + c0.month * 100 + c0.day
+    except Exception:
+        print("  ⚠ bin has no usable `end` (%r) — RECENCY GUARD IS OFF, stale series may pass" % (end,))
+    U, stale = set(), []
     for s, m in meta.items():
         if not isinstance(m, dict) or m.get("alive") is False:
             continue
@@ -87,9 +124,20 @@ def scan_bin_universe(path, rename):
         n = min(len(c), len(v))
         vals = [c[i] * v[i] / 1e7 for i in range(max(0, n - TURN_WINDOW), n) if c[i] and v[i]]
         vals = [x for x in vals if x > 0]
-        if vals and statistics.median(vals) >= TURN_FLOOR_CR:
-            U.add(rename.get(s, s))
-    return U, D.get("end")
+        if not (vals and statistics.median(vals) >= TURN_FLOOR_CR):
+            continue
+        if cutoff is not None:
+            d = ser.get("d")
+            # no dates at all == cannot PROVE it still trades; drop it rather than guess (CLAUDE.md).
+            if not d or d[-1] < cutoff:
+                stale.append((s, (d[-1] if d else None)))
+                continue
+        U.add(rename.get(s, s))
+    if stale:
+        stale.sort(key=lambda t: (t[1] is not None, t[1]))
+        print("  recency guard (last bar within %dd of %s): dropped %d — %s"
+              % (RECENCY_DAYS, end, len(stale), ", ".join("%s@%s" % (s, d) for s, d in stale)))
+    return U, end
 
 
 def build_liquid_universe(rename=None):
@@ -104,12 +152,22 @@ def build_liquid_universe(rename=None):
     is ~193 MB — past GitHub's 100 MB file cap, so it CANNOT be committed fresh). Left to it this build
     dated its universe 2026-06-13 while prices ran to 2026-08-07: 41 newly-liquid names (SBIFUNDS,
     TURTLEMINT, MANIPALHOS …) were missing from the default universe and 28 names that had gone illiquid
-    were still counted — 4.8% of 1,433, and growing every day the snapshot stayed frozen."""
+    were still counted — 4.8% of 1,433, and growing every day the snapshot stayed frozen.
+
+    BOTH PATHS ARE GUARDED, but at different moments: the recency guard lives inside scan_bin_universe(),
+    so the sidecar is cut ALREADY-FILTERED and the fallback filters as it scans. A sidecar has no per-symbol
+    dates, so it cannot be re-screened on read — `recencyDays` in the file is how a guarded bake identifies
+    itself. A sidecar baked BEFORE the guard is still USED, not rejected: measured, it is 0.4% wrong (6 stale
+    series of 1,447) where the frozen bin is 4.8% wrong, so falling back would trade a small defect for a
+    bigger one. It says so loudly and self-heals the next time refresh-backtest-data.yml appends a day."""
     rename = rename if rename is not None else load_rename()
     try:
         S = json.load(open(LIQ, encoding="utf-8"))
         syms = {rename.get(s, s) for s in S["symbols"]}
         if syms and S.get("asOf"):
+            if not S.get("recencyDays"):
+                print("  ⚠ %s was baked BEFORE the recency guard — stale series may still be in it; "
+                      "it self-heals on the next refresh-backtest-data.yml append" % os.path.basename(LIQ))
             return syms, S["asOf"]
         print("  ⚠ %s present but empty — falling back to the frozen bin" % os.path.basename(LIQ))
     except FileNotFoundError:
