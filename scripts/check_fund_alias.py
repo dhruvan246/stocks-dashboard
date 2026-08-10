@@ -40,8 +40,12 @@ Run:
 META source: docs/search_index.json, which build_search_index.py cuts from the same payload meta
 the engine loads — verified 2026-08-10 to carry exactly the live universe (4468 rows / 2463 alive
 vs sf_meta.json nTot=4468 nDead=2005). SF_BIN reads a bin's meta directly instead.
+
+That source is GATED on age (MAX_META_AGE_DAYS): an unstamped or stale META cannot see recent
+renames, so it would report "in step" no matter how far the baked copies had drifted. This check
+refuses to judge on one rather than hand back a verdict it cannot support.
 """
-import json, os, re, subprocess, sys
+import datetime, json, os, re, subprocess, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -60,6 +64,19 @@ CONST_RE = re.compile(r"^const FUND_ALIAS = (\{.*?\});$", re.M)
 MIN_SYMBOLS = 1000
 MIN_ALIVE = 500
 
+# ...and a META that is merely OLD is the same hazard wearing a disguise: a rename that landed
+# last week is absent from a month-old index, so rule 2 never fires and the guard reports "in
+# step" while the engines are exactly as drifted as before. search_index.json's "v" (the sf bin's
+# `end` it was cut from) is the ONLY staleness signal it carries: feeds.json has no entry for that
+# file at all (checked 2026-08-10), so nothing else would ever notice an old cut — and "v" itself
+# shipped EMPTY for weeks (build_search_index.py's scanner missed a top-level `end` that sits
+# last). Treat an unstamped index as unusable rather than assume it is current.
+# Threshold: measured on docs/sf_meta.json's history — `end` advances every trading day, the
+# marker commit lands the same day (39 of 40 commits, worst lag 1 day), and the longest gap
+# between consecutive `end` values is 4 days (2026-06-25 -> 2026-06-29, weekend + holiday).
+# 10 days is comfortably clear of that and still catches a wedged pipeline within a week.
+MAX_META_AGE_DAYS = 10
+
 
 def _fmt(d):
     """The exact on-disk serialisation of both baked copies (verified byte-identical)."""
@@ -67,18 +84,31 @@ def _fmt(d):
 
 
 def load_meta():
-    """-> (alive:set, total:int, source:str). SF_BIN reads a bin's meta; else the search index."""
+    """-> (alive:set, total:int, source:str, stamp:str). SF_BIN reads a bin's meta; else the
+    search index. `stamp` is the data date behind that META (the bin's `end`), "" if unstamped."""
     binpath = os.environ.get("SF_BIN")
     if binpath:
         sys.path.insert(0, HERE)
         from build_search_index import _scan_top_level
-        meta = _scan_top_level(binpath, ["meta"])["meta"]
+        got = _scan_top_level(binpath, ["meta", "end"])
+        meta = got["meta"]
         return ({s for s, m in meta.items() if (m or {}).get("alive")}, len(meta),
-                "bin meta %s" % os.path.basename(binpath))
+                "bin meta %s" % os.path.basename(binpath), got.get("end") or "")
     with open(INDEX, encoding="utf-8") as fh:
         idx = json.load(fh)
     rows = idx["s"]
-    return ({r[0] for r in rows if r[2] == 1}, len(rows), "docs/search_index.json")
+    return ({r[0] for r in rows if r[2] == 1}, len(rows), "docs/search_index.json",
+            idx.get("v") or "")
+
+
+def stamp_age(stamp):
+    """Days between a YYYY-MM-DD data stamp and today; None if it is missing or unparseable."""
+    if not re.match(r"^\d{4}-\d{2}-\d{2}$", stamp or ""):
+        return None
+    try:
+        return (datetime.date.today() - datetime.date.fromisoformat(stamp)).days
+    except ValueError:
+        return None
 
 
 def resolve(old, rmap):
@@ -112,9 +142,11 @@ def audit():
     """-> report dict. Importable so check_feeds.py can surface drift on the health board."""
     with open(RENAME_MAP, encoding="utf-8") as fh:
         rmap = json.load(fh)
-    alive, total, source = load_meta()
+    alive, total, source, stamp = load_meta()
+    age = stamp_age(stamp)
     rep = {"ok": True, "status": "ok", "detail": "", "meta_source": source,
-           "meta_symbols": total, "meta_alive": len(alive), "rename_map": len(rmap),
+           "meta_symbols": total, "meta_alive": len(alive), "meta_stamp": stamp,
+           "meta_age_days": age, "rename_map": len(rmap),
            "missing": {}, "conflicts": {}, "extra": 0, "baked": 0, "identical": True}
 
     if total < MIN_SYMBOLS or len(alive) < MIN_ALIVE:
@@ -122,6 +154,21 @@ def audit():
                    detail="META looks broken (%d symbols, %d alive) — refusing to judge FUND_ALIAS "
                           "against it; check the alive flags before trusting any verdict"
                           % (total, len(alive)))
+        return rep
+
+    if age is None:
+        rep.update(ok=False, status="error",
+                   detail="%s carries no usable data stamp (%r) — its age is UNKNOWN, so a "
+                          "silently stale META would report FUND_ALIAS 'in step' while recent "
+                          "renames are missing from it; rebuild it "
+                          "(python3 scripts/build_search_index.py)" % (source, stamp))
+        return rep
+    if age > MAX_META_AGE_DAYS:
+        rep.update(ok=False, status="stale",
+                   detail="%s is cut from %s — %d days old (limit %d); renames newer than that "
+                          "cannot appear in it, so any 'in step' verdict would be worthless. "
+                          "Refresh the source before trusting this check"
+                          % (source, stamp, age, MAX_META_AGE_DAYS))
         return rep
 
     baked = []
@@ -187,10 +234,11 @@ def write(rep):
 def main():
     do_write = "--write" in sys.argv
     rep = audit()
-    print("META: %s — %d symbols, %d alive | _rename_map: %d | baked: %d"
-          % (rep["meta_source"], rep["meta_symbols"], rep["meta_alive"],
-             rep["rename_map"], rep["baked"]))
-    if rep["status"] in ("error", "mismatch"):
+    print("META: %s (cut from %s, %s) — %d symbols, %d alive | _rename_map: %d | baked: %d"
+          % (rep["meta_source"], rep["meta_stamp"] or "NO STAMP",
+             "%d d old" % rep["meta_age_days"] if rep["meta_age_days"] is not None else "age unknown",
+             rep["meta_symbols"], rep["meta_alive"], rep["rename_map"], rep["baked"]))
+    if rep["status"] in ("error", "mismatch", "stale"):
         print("!! %s: %s" % (rep["status"], rep["detail"]))
         return 1
     print("expected %d | missing %d | conflicts %d | extra (older hand-curated layer, kept) %d"

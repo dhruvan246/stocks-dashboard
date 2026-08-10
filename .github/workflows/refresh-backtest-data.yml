@@ -159,7 +159,10 @@ jobs:
       # Tiny (~190 KB) and committed, unlike the bin itself.
       - name: Rebuild search index
         if: ${{ hashFiles('docs/.sf_updated') != '' || github.event_name == 'workflow_dispatch' }}
-        run: python3 scripts/build_search_index.py || echo "search index rebuild failed — keeping committed copy"
+        # Non-fatal (a failed cut must not sink the day's data refresh) but NOT silent: the builder
+        # aborts rather than publish an index with no `v` stamp, and an unnoticed abort means site
+        # search and check_fund_alias.py quietly keep judging on an older cut. §39.
+        run: python3 scripts/build_search_index.py || echo "::warning::search index rebuild failed — keeping the committed copy (site search + check_fund_alias.py now run on an older cut)"
 
       # Commit ONLY the tiny version marker (docs/sf_meta.json, ~20 bytes) plus the search
       # index, and only when the updater actually appended a day (it rewrote sf_meta.json

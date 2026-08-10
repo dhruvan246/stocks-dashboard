@@ -2525,6 +2525,13 @@ Fix sweep (all steps, in order — verify against the LIVE release asset, never 
    kept, never pruned. The nightly feed monitor runs the same check (`fund_alias` special in
    `docs/feeds.json`), so drift now turns the health board red and opens the usual auto-closing alert
    issue instead of waiting to be noticed. Bump the sw CACHE after a `--write` (§39 step 5).
+   ⚠️ **The verdict is only as fresh as its META.** Live META comes from `docs/search_index.json`, and
+   a rename that landed last week is simply absent from a month-old cut of it — so a stale source
+   reports "in step" no matter how far the copies have drifted. The check therefore REFUSES to judge
+   when that source is unstamped or older than `MAX_META_AGE_DAYS` = 10 (measured: `end` advances every
+   trading day and the longest real gap between consecutive `end` values is 4 days). This is not
+   hypothetical — `search_index.json` shipped `"v": ""` for weeks (§39 table), and `SF_BIN=docs/
+   sf_stock_data.bin` points at the FROZEN committed bin, 58 days stale on 2026-08-10.
 5. `scripts/apply_owners_full.py` **ALIAS** += `"OLD":"NEW"` (_reattr_owners stays keyed by OLD).
 6. `scripts/bse_scrips.json` `by_id`: rename key (scrip code unchanged; `by_isin` already fine).
 7. `scripts/fno_history.json` **+ `docs/stock_data.bin` `fnoHistory`**: replace OLD→NEW in every
@@ -3109,6 +3116,7 @@ A named unverified corner costs one sentence; the same corner found by the user 
 | SW cache version bumped off a stale checkout, colliding with a version origin already shipped | **5** — read the current CACHE from `origin/main`, not the local file |
 | Quarterly Results stat tiles WHITE in dark theme for a month (`var(--surface-1,#fff)` — token never existed, #fff fallback won in every theme; invisible in light/soft) | **4** — dark check, plus: grep every `var(--…)` a page uses against the tokens theme.css actually defines; an undefined token silently renders its fallback |
 | old renamed symbol dead-ended stock.html ("not found", stuck Loading line) while FUND_ALIAS had drifted 71 vs the rename map's 797 | **3** — renamed-ticker path with a symbol renamed AFTER the alias map was last touched, not one already in it |
+| `search_index.json` shipped `"v": ""` for weeks — the only staleness stamp it carries — because the meta scanner needle-searched `"end":` and the LIVE payload puts `end` LAST (the committed bin puts it first, so it passed locally and failed only in CI) | **new** — (a) a streaming reader must be run against the file the JOB actually reads (here: the 193 MB release asset, fetched and scanned; key order was `data, meta, start, dailyFrom, end`), never only the copy sitting in the checkout, which can differ in *shape* and not just in age; (b) a field that stamps freshness gets a hard **ABORT** when it comes out empty — publishing it blank turns "unknown age" into "looks fine" for every consumer downstream |
 | Indices 1Y column read "0.0%" for a year-old index — NSE's `perChange365d` 0 is a NO-BASE SENTINEL, not a flat year (§37a) | **new** — for any *derived* number a feed hands over (a change, a ratio, a growth %), check whether the feed also publishes the **base**; if the base is missing/zero the derived value is **unknown**, never 0. An exact `0` in a change column is the shape this bug takes: unlike null it passes every non-null check and renders as fact. Gate on the CONJUNCTION (exact 0 **and** absent base) — an absent base alone can still carry a real number (NIFTY50 USD: no base, real −7.14) |
 
 ### If a bug ships anyway
