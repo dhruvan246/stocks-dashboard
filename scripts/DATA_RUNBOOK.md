@@ -2848,6 +2848,52 @@ Gotchas:
 - **In-browser live top-up:** §36 — the page ALSO fetches LiveIndicesWatch directly
   (CORS-open) every 60 s during market hours; level/1D%/52w go live, the rest stays baked.
 
+### 37a. ★★ NSE allIndices uses 0 as a NO-BASE SENTINEL on perChange365d/30d  (fixed 2026-08-10)
+
+**Symptom:** `docs/indices.json` carried `y1: 0` for NIFTY MIDSMALLCAP400 50:50, which the
+page rendered as a confident **"0.0%"** in the 1Y column — sitting next to Nifty Midcap
+Select's correct `null` → "—". A young index was being reported as *exactly flat over a
+year* rather than *unknown*, and its `rs1y` (relative strength vs Nifty 50) was a
+fabricated −0.89 derived from that fake zero.
+
+**Cause:** NSE `/api/allIndices` returns `perChange365d: 0` — not null — for an index with
+no value a year ago. The row says so three other ways: `oneYearAgoVal: 0`,
+`date365dAgo: null`, `chart365dPath: null`.
+
+**Measured, not assumed** (CI probe of `/api/allIndices`, all 139 indices, 2026-08-10 —
+raw IPs 403, so `probe-nse-api.yml` is the reachable path; it now takes an optional `jq`
+filter input so a big payload can be summarised without the 4000-char log cap):
+- 10 indices had `perChange365d == 0`; **all 10** also had `oneYearAgoVal == 0` +
+  `date365dAgo` null + `chart365dPath` null.
+- **Not one** index reported `perChange365d == 0` with a real base — so nothing legitimate
+  is lost by suppressing the pair.
+- The **30d field was clean**: every `oneMonthAgoVal` was a real level, and the single
+  `perChange30d == 0` (NIFTY FMCG) had a real base — a genuine flat month. Handled
+  symmetrically anyway so the class can't appear there unnoticed.
+- **1W is not exposed:** `w1` is computed only from our own rolling history, never from an
+  NSE field. The live-watch leg is also clean — every row had a real `previousClose`, and
+  `percChange` agreed with `last`/`previousClose` within 0.06 pp for all 131 rows, so the
+  `pc` column has no sentinel class either.
+
+**★ Suppress on the CONJUNCTION only — exact 0 AND a missing base.** Neither half is safe:
+- **Empty base alone is NOT enough:** `NIFTY50 USD` reports `oneYearAgoVal: 0` and
+  `date365dAgo: null` yet a real `perChange365d` of **−7.14**. Nulling on the empty base
+  (or on the null date) throws a good number away — this is the trap to avoid.
+- **Exact 0 alone is NOT enough:** a genuinely flat window rounds to 0.00 legally and
+  arrives with a real base (NIFTY FMCG's 1M).
+
+With `c365` set to None the fetcher falls back to `change_back()` over our own rolling
+history — null (→ "—") until 250 sessions accrue, then a real number. Same for `rs1y`.
+
+**Regression check** (§39): the fetcher logs the suppressed set every run *and* prints
+every surviving exactly-0.00 1M/1Y value, each of which is provably base-backed by
+construction. If the suppression ever regresses, the whole young-index cohort shows up in
+that second line instead of quietly rendering "0.0%".
+
+**Generalises:** an API that returns 0 where it means "no data" is a *silent* wrong value —
+unlike a null it passes every non-null check and renders as fact. When a feed exposes the
+base alongside the derived change, gate the change on the base.
+
 ## 38. CONCURRENCY — ONE WRITER PER TREE  (2026-07-22, after the vision-fill / backfill tangle)
 
 **WHO WRITES THIS REPO** (three actor classes, overlapping all day):
@@ -3020,6 +3066,7 @@ A named unverified corner costs one sentence; the same corner found by the user 
 | SW cache version bumped off a stale checkout, colliding with a version origin already shipped | **5** — read the current CACHE from `origin/main`, not the local file |
 | Quarterly Results stat tiles WHITE in dark theme for a month (`var(--surface-1,#fff)` — token never existed, #fff fallback won in every theme; invisible in light/soft) | **4** — dark check, plus: grep every `var(--…)` a page uses against the tokens theme.css actually defines; an undefined token silently renders its fallback |
 | old renamed symbol dead-ended stock.html ("not found", stuck Loading line) while FUND_ALIAS had drifted 71 vs the rename map's 797 | **3** — renamed-ticker path with a symbol renamed AFTER the alias map was last touched, not one already in it |
+| Indices 1Y column read "0.0%" for a year-old index — NSE's `perChange365d` 0 is a NO-BASE SENTINEL, not a flat year (§37a) | **new** — for any *derived* number a feed hands over (a change, a ratio, a growth %), check whether the feed also publishes the **base**; if the base is missing/zero the derived value is **unknown**, never 0. An exact `0` in a change column is the shape this bug takes: unlike null it passes every non-null check and renders as fact. Gate on the CONJUNCTION (exact 0 **and** absent base) — an absent base alone can still carry a real number (NIFTY50 USD: no base, real −7.14) |
 
 ### If a bug ships anyway
 Fix the **class**, not just the instance: ask *"what check would have caught this?"* and add it to the

@@ -13,6 +13,8 @@ SOURCES (layered, each best-effort so a partial failure never blanks the page):
      from many raw IPs): adds PE / PB / dividend yield and NSE's own perChange30d /
      perChange365d. When present these fill the PE/PB/DY columns and are the
      preferred 1M / 1Y numbers (available from day one, unlike our own window).
+     ⚠️ Its perChange365d/perChange30d use 0 as a NO-BASE SENTINEL — see
+     _fetch_nse_valuation() for the measured evidence and the suppression rule.
 
 TWO FILES, like index_monthly.json's split of snapshot vs history:
   * docs/indices_hist.json  — SIDE file, NOT shipped to the browser. Rolling daily
@@ -189,10 +191,33 @@ def _fetch_live():
 
 
 def _fetch_nse_valuation():
-    """{indexName_upper: {pe,pb,dy,c30,c365}} from NSE allIndices. Best-effort; {} on
-    any failure (403 from raw IPs is normal — CI fills it)."""
+    """({indexName_upper: {pe,pb,dy,c30,c365}}, [suppressed]) from NSE allIndices.
+    Best-effort; ({}, []) on any failure (403 from raw IPs is normal — CI fills it).
+
+    ⚠️ perChange365d / perChange30d use 0 as a NO-BASE SENTINEL, not a real return.
+    An index younger than the window comes back with perChange365d == 0 alongside
+    oneYearAgoVal == 0, date365dAgo == null and chart365dPath == null — NSE saying
+    "I have no value a year ago", not "this index is flat over a year". Left alone it
+    renders as a confident "0.0%" on the page (found live 2026-08-10 on NIFTY
+    MIDSMALLCAP400 50:50, next to Nifty Midcap Select's correct "—").
+
+    Measured from the payload itself, not assumed — CI probe of /api/allIndices on
+    2026-08-10, all 139 indices: exactly 10 carried perChange365d == 0, and all 10
+    had oneYearAgoVal == 0 + date365dAgo null + chart365dPath null. NOT ONE index
+    reported perChange365d == 0 with a real base. The 30d field was clean (every
+    oneMonthAgoVal was a real level; the one perChange30d == 0, NIFTY FMCG, had a
+    real base) — it is handled symmetrically so the class can't appear there unseen.
+
+    Suppress only on the CONJUNCTION — exact 0 AND a missing base — because neither
+    half is sufficient alone:
+      * empty base alone is NOT enough: NIFTY50 USD reports oneYearAgoVal == 0 and
+        date365dAgo null yet a real perChange365d of -7.14; nulling on the base
+        would throw a good number away.
+      * exact 0 alone is NOT enough: a genuinely flat year rounds to 0.00 legally,
+        and it comes with a real base.
+    """
     if B is None:
-        return {}
+        return {}, []
     try:
         hdr = {"User-Agent": B.UA, "Accept": "application/json, text/plain, */*",
                "Referer": "https://www.nseindia.com/market-data/live-equity-market"}
@@ -200,17 +225,24 @@ def _fetch_nse_valuation():
                               headers=hdr, jar=B.nse_jar(), timeout=30))
     except Exception as e:
         print("NSE allIndices unavailable (%s) — PE/PB/DY left to prior values" % type(e).__name__)
-        return {}
-    out = {}
+        return {}, []
+    out, suppressed = {}, []
     for r in j.get("data", []):
         key = str(r.get("index", "")).strip().upper()
         if not key:
             continue
+        c30, c365 = _num(r.get("perChange30d")), _num(r.get("perChange365d"))
+        if c365 == 0 and not _num(r.get("oneYearAgoVal")):
+            suppressed.append(key + " 1Y")
+            c365 = None       # no base → unknown, NOT zero (falls back to our history)
+        if c30 == 0 and not _num(r.get("oneMonthAgoVal")):
+            suppressed.append(key + " 1M")
+            c30 = None
         out[key] = {
             "pe": _num(r.get("pe")), "pb": _num(r.get("pb")), "dy": _num(r.get("dy")),
-            "c30": _num(r.get("perChange30d")), "c365": _num(r.get("perChange365d")),
+            "c30": c30, "c365": c365,
         }
-    return out
+    return out, suppressed
 
 
 # NSE allIndices spells a handful of names differently from the live watch; map the
@@ -260,7 +292,10 @@ def main():
     for k in ("pe", "pb", "dy"):
         hist.setdefault(k, {})
 
-    nse = _fetch_nse_valuation()
+    nse, nse_nobase = _fetch_nse_valuation()
+    if nse_nobase:
+        print("NSE no-base sentinel suppressed (0 -> null) on %d field(s): %s"
+              % (len(nse_nobase), ", ".join(sorted(nse_nobase))))
     mcount, members = _member_data()
 
     # --- session date from the feed's own timeVal (never the wall clock) ---
@@ -370,6 +405,14 @@ def main():
     if len(out_indices) < 50:
         print("only %d indices parsed — refusing to write (guard)" % len(out_indices))
         return 0
+
+    # §39 regression check for the no-base sentinel: every 1M/1Y value that survives
+    # as exactly 0.00 must trace to a real base — NSE's (verified above) or a real
+    # close in our own rolling history. List them, so if the suppression above ever
+    # regresses the whole young-index cohort shows up here instead of quietly
+    # rendering "0.0%" on the page.
+    flat = ["%s %s" % (x["k"], f) for x in out_indices for f in ("m1", "y1") if x[f] == 0]
+    print("exactly-0.00 change values (all base-backed): %s" % (", ".join(flat) or "none"))
 
     ist = dt.timezone(dt.timedelta(hours=5, minutes=30))
     now = dt.datetime.now(ist).strftime("%Y-%m-%dT%H:%M:%S+05:30")
