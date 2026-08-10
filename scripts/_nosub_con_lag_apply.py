@@ -37,12 +37,17 @@ def load(rel):
 
 def dump(rel, obj, pretty=False):
     """Payloads keep the builders' compact separators so diffs stay minimal; JOURNALS are pretty,
-    because a human reviews their provenance and minifying turns an addition into a whole-file rewrite."""
+    because a human reviews their provenance and minifying turns an addition into a whole-file rewrite.
+
+    ★ NEVER sort_keys on a journal. These files are appended to by many campaigns and are NOT in
+    sorted order; re-sorting them rewrites hundreds of untouched lines and buries the few that
+    changed (it also silently dropped a top-level key once). json.load preserves file order, so
+    dumping without sort_keys leaves every entry this run did not touch byte-identical."""
     p = os.path.join(ROOT, rel)
     tmp = p + ".tmp"
     with open(tmp, "w", encoding="utf-8") as fh:
         if pretty:
-            json.dump(obj, fh, indent=1, sort_keys=True)
+            json.dump(obj, fh, indent=1)
             fh.write("\n")
         else:
             json.dump(obj, fh, separators=(",", ":"))
