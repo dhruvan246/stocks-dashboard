@@ -46,7 +46,21 @@ LEDGERS = [
     # confirmed by the 2026-08-10 std-PAT adjudication (46 cells), so a rebuild that re-lands a
     # poisoned XBRL parse (wrong-year OneD, H1-as-quarter, double-indexed Mar-2019 files) trips here.
     ("stdpat_mirror_heals.json",     "revop", "patS", 4),
+    # hand-read named cells (§57/§58): keyed SYM|QE with the whole anchor chain journalled beside
+    # the value. A file is listed once per slot it can carry.
+    ("named_rev_cell_fills.json",      "revop", "revS", 0),
+    ("named_rev_cell_fills_2019.json", "revop", "revC", 1),
+    ("named_rev_cell_fills_2019.json", "revop", "revS", 0),
 ]
+# BASIS-IN-KEY ledgers: "SYM|QE|basis", not "SYM|QE" — the flat loop above would rsplit the BASIS
+# off as the quarter and check nothing. These were UNGUARDED until 2026-08-10: nse_xbrl_rev_fills
+# alone holds 154 cells that nothing re-checked after a refresh. Entries carrying "held" are
+# candidates the reader REFUSED to write (§58d), so they assert nothing and are skipped.
+BASIS_KEYED = [
+    ("nse_xbrl_rev_fills.json",      "revop", "rev"),
+    ("deoverlay_rev_fills2019.json", "revop", "rev"),
+]
+BASIS_SLOT = {"std": 0, "con": 1}
 # NESTED ledgers: {SYM: {QE: {...}}} rather than the flat "SYM|QE" shape above. The defect ledgers
 # carry CORRECTIONS (a value we proved wrong and replaced), so a clobber there does not merely lose
 # a backfill -- it silently restores a number a filing already refuted. The basis is read per entry
@@ -72,6 +86,33 @@ def main():
     fmap = {s: {r[0]: r for r in rows} for s, rows in fund.items()}
 
     missing, drift, checked = [], [], 0
+    for name, payload, key in BASIS_KEYED:
+        p = os.path.join(HERE, name)
+        if not os.path.exists(p):
+            continue
+        try:
+            led = json.load(open(p))
+        except Exception:
+            continue
+        for k, v in led.items():
+            parts = k.split("|")
+            if len(parts) != 3 or not isinstance(v, dict):
+                continue
+            if v.get("skip") or v.get("held") or v.get(key) is None:
+                continue
+            sym, qe, basis = parts
+            slot = BASIS_SLOT.get(basis)
+            if slot is None:
+                continue
+            want = v[key]
+            checked += 1
+            row = (revop.get(sym) or {}).get(qe)
+            cur = row[slot] if row and len(row) > slot else None
+            if cur is None:
+                missing.append((name, sym, qe, want, payload, slot))
+            elif abs(cur - want) > TOL:
+                drift.append((name, sym, qe, want, cur))
+
     for name, payload, key, slot in LEDGERS:
         p = os.path.join(HERE, name)
         if not os.path.exists(p):
