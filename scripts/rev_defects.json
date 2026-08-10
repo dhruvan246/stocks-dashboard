@@ -37,6 +37,12 @@
    "basis": "std",
    "defect": "screener-annual derivation used a restated/transition FY total against as-filed quarters (mixed basis); as-filed BSE detailed-results value is 57.42",
    "source": "bse-detres arbitration 2026-08-02; PAT-anchored as-filed quarter from api.bseindia Corp_detailedResult_Transpose_ng"
+  },
+  "20190331": {
+   "bad_rev": 45.22,
+   "basis": "std",
+   "defect": "adjacent-quarter rev co-poison (\u00a745 NSE double-indexing): Mar-2019 revS held Jun-2019's value; PAT twin healed in the 2026-08-10 campaign (pat_defects)",
+   "source": "nse xbrl INDAS_48325_135146_04092019040820_WEB.xml re-read 2026-08-10: FourD DECLARED 2019-01-01..2019-03-31 AUDITED rev 81.4895cr (pat 34.6363 == healed fund cell, EPS 11.76); OneD DECLARED Apr-Jun rev 45.2233 == stored bad value"
   }
  },
  "CENTENKA": {
@@ -77,6 +83,14 @@
    "basis": "std",
    "defect": "screener-annual derivation used a restated/transition FY total against as-filed quarters (mixed basis); as-filed BSE detailed-results value is 1544.96",
    "source": "bse-detres arbitration 2026-08-02; PAT-anchored as-filed quarter from api.bseindia Corp_detailedResult_Transpose_ng"
+  }
+ },
+ "GSFC": {
+  "20190331": {
+   "bad_rev": 1707.7,
+   "basis": "std",
+   "defect": "adjacent-quarter rev co-poison (\u00a745 NSE double-indexing): Mar-2019 revS held Jun-2019's value; PAT twin healed in the 2026-08-10 campaign (pat_defects)",
+   "source": "nse xbrl INDAS_48315_135073_04092019110019_WEB.xml re-read 2026-08-10: FourD DECLARED 2019-01-01..2019-03-31 AUDITED rev 2138.42cr (pat 99.76 == healed fund cell, EPS 2.50); OneD DECLARED Apr-Jun rev 1707.70 == stored bad value"
   }
  },
  "HDBFS": {
@@ -218,6 +232,14 @@
    "basis": "std",
    "defect": "screener-annual derivation used a restated/transition FY total against as-filed quarters (mixed basis); as-filed BSE detailed-results value is 283.25",
    "source": "bse-detres arbitration 2026-08-02; PAT-anchored as-filed quarter from api.bseindia Corp_detailedResult_Transpose_ng"
+  }
+ },
+ "ROLTA": {
+  "20220630": {
+   "bad_rev": 3.76,
+   "basis": "con",
+   "defect": "adjacent-quarter rev co-poison (\u00a745, filer-side byte-copy): Jun-2022 con file duplicates Sep's numbers; PAT twin healed in the 2026-08-10 campaign (pat_defects)",
+   "source": "re-derived 2026-08-10: H1 INDAS_117168_1337614_04012025043411.xml FourD DECLARED 2022-04-01..09-30 rev 8.84 minus Sep OneD 3.76 = 5.08; 9M INDAS_117170_1337623_04012025044150.xml FourD 13.24 - 3.76 - Dec OneD 4.40 = 5.08 exact both ways"
   }
  },
  "SEIL": {
