@@ -664,6 +664,61 @@
     "ebit": 131.7
    },
    "was_fund": 12.8
+  },
+  {
+   "sym": "LANCER",
+   "qe": "20180331",
+   "basis": "std",
+   "k": 7,
+   "file": null,
+   "why": "BSE-only scrip 539841 (ISIN INE359U01028); no NSE XBRL exists, the stored figure is the filing's RAW RUPEE print never divided by 1e7. PRIMARY: the 20-May-2019 audited filing (BSE ann 20190520, attachment a7c286eb-2351-4298-9f7d-9917dd609876.pdf) p4 'Statement of audited Financial Results ... 31st March, 2019 / Standalone results / (Figures in INR)' prints, on the row 'Profit/(Loss) for the period', column 'Quarter Ended 31.03.2018 (Audited)' = 21,816,965 -- byte-identical to the stored cell. TRUE = 2.18 cr. SECOND CHECK (independent): 9M-FY18 4,66,85,868 (20190213 filing) + 2,18,16,965 = 6,85,02,833 = the same p4 table's 'Year Ended 31.03.2018' column, EXACT. THIRD: BSE detres 97.50 (FY18 audited annual) NP 68.45mn matches note 4's previous-GAAP 68,452,228. k=7 is proven twice more on this same document (20181231, 20190331 below).",
+   "was_revop": {},
+   "was_fund": 21816965.0,
+   "fixed_fund": 2.18
+  },
+  {
+   "sym": "LANCER",
+   "qe": "20181231",
+   "basis": "std",
+   "k": 7,
+   "file": null,
+   "why": "Raw-rupee print stored as crore. PRIMARY: the 13-Feb-2019 own-quarter filing (BSE ann 20190213, attachment 8d2a6723-bd49-4a31-a7c7-ae000b54bf67.pdf) p2 'Statement of Standalone Unaudited Financial Results for the Quarter and Nine months ended 31st December, 2018' prints 'Profit/(Loss) for the period', column 'Quarter Ended 31.12.2018' = 3,49,03,220 -- byte-identical to the stored cell. TRUE = 3.49 cr. SECOND: the 20190520 audited filing p4 repeats it as 34,903,220 in its 31.12.2018 comparative column. THIRD (positive control on the same page): the 30.09.2018 column 2,46,57,574 -> 2.47 == the cell we already store clean for 20180930. FOURTH: FY19 quarters 1.687+2.466+3.490+0.579 = 8.222 = the FY19 audited annual 82,224,336, EXACT.",
+   "was_revop": {},
+   "was_fund": 34903220.0,
+   "fixed_fund": 3.49
+  },
+  {
+   "sym": "LANCER",
+   "qe": "20190331",
+   "basis": "std",
+   "k": 7,
+   "file": null,
+   "why": "Raw-rupee print stored as crore. PRIMARY: the 20190520 audited filing p4, row 'Profit/(Loss) for the period', column 'Quarter Ended 31.03.2019 (Audited)' = 5,789,416 -- byte-identical to the stored cell. TRUE = 0.58 cr. SECOND (different document, different unit): the 24-Jun-2020 audited filing (ann 20200624, ea35bbea-2cb7-4f8a-802e-7496619abf57) p5, '(Rs in Lakh)', column 'Quarter Ended 31.03.2019' = 57.89 lakh = 0.5789 cr. THIRD: BSE detres 101.00 Net Profit 5.79 mn.",
+   "was_revop": {},
+   "was_fund": 5789416.0,
+   "fixed_fund": 0.58
+  },
+  {
+   "sym": "LANCER",
+   "qe": "20221231",
+   "basis": "std",
+   "k": 2,
+   "file": null,
+   "why": "LAKH print stored as CRORE -- the scale-step class. PRIMARY: the 13-Feb-2023 own-quarter filing (BSE ann 20230213, attachment 919a9395-71f9-4dbf-9fe8-4e523b9f03ef.pdf) p3, header 'Statement of Standalone Unaudited Financial Results ... 31st December,2022' + unit line 'in Lakh', row 'Profit(Loss) for the period', column 'Quarter Ended 31.12.2022' = 903.43 lakh -- byte-identical to the stored cell. TRUE = 9.03 cr. COLUMN ANCHORS on the same page: 30.09.2022 = 1,222.00 lakh = 12.22 == stored 20220930 std; 31.12.2021 = 801.35. SECOND and THIRD documents repeat 903.43 in their 31.12.2022 comparative column (20230525 p7 audited FY23; 20240212 p3). FOURTH: BSE detres 116.00 Net Profit 90.34 mn = 9.034 cr. The CON slot for this quarter (13.62) is CORRECT -- 1,361.90 lakh on p6 -- so only std is scaled.",
+   "was_revop": {},
+   "was_fund": 903.43,
+   "fixed_fund": 9.03
+  },
+  {
+   "sym": "LANCER",
+   "qe": "20250930",
+   "basis": "std",
+   "k": 2,
+   "file": null,
+   "why": "LAKH print stored as CRORE. PRIMARY: the 14-Nov-2025 own-quarter filing (BSE ann 20251114, attachment 8988ea81-a546-424a-a742-09e75e6df959.pdf) p12 'UN-AUDITED STANDALONE STATEMENT OF PROFIT AND LOSS ... 30TH SEPTEMBER, 2025', unit 'in Lakh', row 'Profit for the period', first Quarter-Ended column = 506.82 lakh -- byte-identical to the stored cell. TRUE = 5.07 cr. SECOND: the 05-Feb-2026 filing (ann 20260205, c0ebba9a-6233-47f9-a79b-d9dbf5e1f540) p9 repeats 506.82 in its 30.09.2025 comparative column. THIRD: BSE detres 127.00 Net Profit 50.68 mn = 5.068 cr. The CON slot (6.77) is CORRECT -- 677.02 lakh, same filing p8.",
+   "was_revop": {},
+   "was_fund": 506.82,
+   "fixed_fund": 5.07
   }
  ]
 }

@@ -6608,3 +6608,75 @@ Same principle in the reader: land only when the anchored PAT reproduces the sto
 paisa **or** the page's own total-income identity holds. RAMCOCEM 2019-03 (0.28% off, no Total
 Income row, and the value would sit BELOW that quarter's standalone while every other RAMCOCEM
 quarter runs con ABOVE std) is held on exactly that rule.
+
+---
+
+## 78. ★★★ LANCER — ONE SERIES, FIVE DEFECT CLASSES, and why §74's detector never saw it  (2026-08-10)
+
+**NO ASSUMPTIONS, NO GUESSWORK — every value below traces to a document read this session.**
+
+LANCER (Lancer Container Lines, **BSE-only**, scrip **539841**, ISIN **INE359U01028** — resolved and
+gate-checked per §76, not assumed from the ticker match) was opened for three PAT cells storing raw
+RUPEES in the crore slot. Re-adjudicating the whole series found **16 wrong slot-values across 10
+quarters in five distinct classes** — the §45/§74 "a detector hit is a thread, not a cell" rule again.
+
+| class | cells | stored → true |
+|---|---|---|
+| raw ₹ never ÷1e7 (k=7) | 20180331, 20181231, 20190331 (both slots) | 21816965→2.18, 34903220→3.49, 5789416→0.58 |
+| ₹-lakh print as crore (k=2, §74's class) | 20221231 std, 20250930 std | 903.43→9.03, 506.82→5.07 |
+| con slot holds a COPY of std | 20210630, 20220630, 20230331 | 2.54→2.97, 11.86→13.29, 6.87→10.97 |
+| FY **annual** landed in a quarter slot | 20240630 std+con | 1.84→3.34, −0.35→12.06 |
+| wrong COLUMN of a LATER filing | 20240930 std+con | 202.27→2.92, 215.46→15.91 |
+| adjacent-quarter duplicate | 20250630 std+con | −1.69→−3.63, −32.44→−4.62 |
+
+### 78a. Why the §74 detector missed all of it
+§74 flags a triple whose mid/neighbour ratio sits in **[9,11] or [90,110] on BOTH sides**. LANCER's
+×100 cell (Dec-22, 903.43) has neighbours 15.86 and 6.87 → ratios **57.0 and 131.5**, both outside
+the band, because this filer's own quarters swing ±60%. The ×1e7 cells are ~10^6 out and clear every
+band. **A fixed ratio window only catches scale steps on a FLAT series.** If a symbol surfaces any
+other way, re-scan it by hand; don't treat "not in the 128" as clean.
+
+### 78b. The route that worked (all four are free, in this order)
+1. **§42 detres** `Corp_detailedResult_Transpose_ng` — reached 2016→2026 for this scrip and gave a
+   positive control on every *clean* cell (stored == NP÷10 to 2 dp), which is what made the corrupt
+   ones unambiguous. ⚠️ its `Net Profit` and `Net Profit … from Ordinary Activities after Tax` rows
+   **disagree** on tax-credit quarters (Mar-25 −16.86 vs −36.04 = PBT); `Net Profit` is the PAT row.
+2. **BSE announcement PDFs** (§58) — the primary record and the only source of the **consolidated**
+   basis, which detres does not serve at all.
+3. **Comparative columns of the NEXT filings** (§57 rung 6) — decisive here: **pre-2019 BSE
+   attachments 404 on both AttachHis and AttachLive**, so the Dec-2017 and Mar-2018 filings are
+   unfetchable, yet both values are printed verbatim in the Feb-2019 and May-2019 filings.
+4. **FY quarter-sum identity** (§45) as the closing check: FY18 4,66,85,868 + 2,18,16,965 =
+   6,85,02,833 and FY19 1.687+2.466+3.490+0.579 = 8.222, both EXACT against the audited annuals.
+
+### 78c. Traps this series adds to the list
+* **A half-yearly SME filer has no Q3/Q4 of its own.** The 2018-06-05 filing is headed *"for the
+  Half and Year Ended 31st March, 2018"*. Such quarters exist ONLY as later filings' comparatives —
+  an empty own-quarter route is the filing calendar, not a gap (§57a).
+* **A truncated Indian-grouped number is not a scale error.** Dec-2017 stored **152.0**, which is
+  the last comma group of `1,36,08,152`. No power of ten maps 152 → 1.36, so it cannot go in
+  `scale_fix.json`; that ledger is for 10^k only.
+* **The later filing can be the wrong witness.** The Sep-2025 filing prints its own Sep-2024
+  standalone comparative as **202.27** while the Sep-2024 filing, that same page's H1-FY25 total
+  (626.74 − 334.48 = 292.26) and detres all say **292.27**. Anchor on the OWN-quarter filing and let
+  the arithmetic arbitrate; and 215.46 in the con slot was never a Sep-2024 figure at all — it is
+  that same later page's **Half Year Ended** column, i.e. a column-index slip (§58 step 6).
+* **Two stored cells equal to a later year's ANNUAL pair** (1.84 = FY25 std 184.11 lakh, −0.35 =
+  FY25 con −34.77 lakh) is a signature, not a coincidence — check the annual columns whenever a
+  quarter pair looks jointly implausible.
+
+### 78d. `scripts/pat_defect_fix.py` — the pat_defects applier is now IN-REPO
+`pat_defects.json` has been tracked since §45 but its applier `_pat_defect_fix.py` only ever existed
+in the rev-mission worktree, which is gone — the ledger was a journal that could not be replayed
+(exactly the trap in `feedback-reset-replay-hits-tracked-scripts`). The replacement is tracked,
+dry-run by default, `--only SYM`-scoped, and guarded on the recorded `stored_pat`/`stored_pat_con`
+so it is idempotent and can never clobber a value some other lane has since corrected. It writes
+BOTH `docs/sf_fundamentals.json` and `scripts/fundamentals.json` (one quantity, two files).
+Ledger entries for this heal were generated by `scripts/lancer_ledger_entries.py`, which preserves
+each ledger's own dump style (scale_fix writes literal non-ASCII, pat_defects escapes it,
+ann_date_fills is one minified line) and **appends rather than re-sorts** — the §77 lesson.
+
+**Not attempted here (gaps, not defects — reported, never guessed):** LANCER has no row at all for
+20180630 (detres std 1.69), 20200630/0930/1231 (2.19/2.26/2.33), 20210930 (5.38 — the own filing's
+OCR prints 637.6 but its H1 791.06 − Q1 253.53 forces 537.5x), and no std for 20210331 (2.00) or
+20211231 (8.01). Filling those is a backfill with its own anchor rules, not part of this heal.
