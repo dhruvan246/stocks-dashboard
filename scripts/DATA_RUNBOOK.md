@@ -3413,6 +3413,32 @@ RPSGVENT/SPENCERS overlap the IPO-cohort queue above). Adjudicate each per this 
 context dates beat every inference; identical-to-the-paisa + same ann date is the tell, but flat
 quarters DO exist, so each pair still needs its document.
 
+**CAMPAIGN CLOSED 2026-08-10: all 58 pairs adjudicated, 71 cells healed, re-scan = 0 open.**
+Every pair got its own document (declared-period XBRL contexts / BSE detres span-verified rows /
+as-filed result PDFs incl. NSE .zip attachments and vision reads of scanned ones); heals are
+journalled per-cell in `pat_defects.json`, all three payload copies guard-edited, verify_fills_live
+exit 0. What the campaign established beyond round-2:
+* **Dominant shape (~40 cells):** one late combined filing, FourD DECLARES the Mar quarter and
+  OneD the Jun quarter; the toDate-keyed importer wrote OneD into BOTH cells. Heal = FourD.
+* **The dup can be FILER-side**: DHARSUGAR/ROLTA/EMKAY submitted byte-copies of a neighbouring
+  quarter's XBRL under new dates — there the DECLARED dates themselves lie, and only YTD/9M
+  identities plus the original PDF arbitrate (EMKAY's Aug refiling declared Jun's value under
+  Jan-Mar dates; the May audited original + detres + FY identity outvoted it).
+* **Genuine flats exist and are now ledgered** (yshift_genuine): AHLWEST (−1.2036 vs −1.1951 both
+  print −1.20), BLAL (9M-identity-exact), TALWALKARS (liquidator filed −2.699 three quarters
+  running; FY26 identity holds — as-filed stays).
+* **Sign-lost class (SGFL ×4):** the xbrl pat tag can carry |value| while the SAME file's EPS tag
+  keeps the sign — detres NP arbitrates; never trust an unsigned pat tag when EPS disagrees.
+* **Basis catches en route:** RPSGVENT con stored TOTAL-incl-NCI for Dec-17/Sep-18/Dec-18/Jun-19
+  (owners restored, EPS-row arbitrated per §2d); GARNETINT stores con TOTALS series-wide + its
+  2019-20 std series is shifted one quarter (two cells healed; whole-series rebuild = OPEN, joins
+  the LEHAR/MAFATIND club). DLF Mar/Jun-19 con were ×100-unit AND double-indexed (4.14 → 436.56 /
+  414.72, unit proven by an exact total-overlap between two filings).
+* **OPEN rev co-poisons** (same mechanism, rev slots — route via rev ledgers): GSFC revS 20190331
+  1707.7→2138.42, CARERATING revS 20190331 45.22→81.49, ROLTA revC 20220630 3.76→5.08. Fill
+  candidates seen in the documents: SPENCERS Jun-18 std 2.22/con 0.62, INFOBEAN Jun-18 std
+  5.05/con 5.24, SPENCERS Mar-18 con −8.94 (FY-derived).
+
 **Legit structural breaks vs the scale-spike nuller:** demerger boundaries (CHOLAHLDNG Mar-2017 =
 pre-demerger full Tube Investments, 1168.14 vs holdco-era ~65) and lumpy traders (OSWALGREEN Jun-2015
 316.44, two independent as-filed docs) are REAL spikes — allowlist in `sanity_ok.json`, never widen

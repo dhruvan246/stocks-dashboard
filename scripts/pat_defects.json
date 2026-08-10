@@ -47,6 +47,16 @@
    "stored_pat": 247.55
   }
  },
+ "ANGIND": {
+  "20180331": {
+   "correct_pat": -8.84,
+   "correct_pat_con": -8.86,
+   "defect": "adjacent-quarter dup: Mar-2018 con held Jun-2018's value; combined con filing listed under both toDates",
+   "source": "nse xbrl INDAS_38705_34582_13082018065012_WEB.xml: FourD DECLARED 2018-01-01..2018-03-31 pat -8.8609cr; OneD DECLARED Apr-Jun -3.6363 stays at Jun; EPS -22.03/-9.04 consistent (~0.402cr shares)",
+   "stored_pat": -3.84,
+   "stored_pat_con": -3.64
+  }
+ },
  "ASAHIINDIA": {
   "20161231": {
    "correct_pat": 25.87,
@@ -87,6 +97,20 @@
    "stored_pat_con": 113.2
   }
  },
+ "ATLASCYCLE": {
+  "20170331": {
+   "correct_pat": 1.15,
+   "defect": "thread-pull: Mar-2017 std held Mar-2018's audited value (INDAS_39284 also listed under toDate 31-Mar-2017, ann 20181022 tell)",
+   "source": "bse detres 505029 qtr 93.00 span 01-Jan-17..31-Mar-17 NP 11.50M = 1.15cr; FY17 identity EXACT: Jun-16 1.24 + Sep-16 3.65 + Dec-16 -2.99 + 1.15 = 3.05 == FY17 annual (93.50) 30.50M",
+   "stored_pat": -5.16
+  },
+  "20180331": {
+   "correct_pat": -5.16,
+   "defect": "adjacent-quarter dup: Mar-2018 std held Jun-2018's value (unaudited combined filing double-indexed); audited own-quarter value restores",
+   "source": "nse xbrl INDAS_39284_38696_19092018015556_WEB.xml (audited): OneD DECLARED 2018-01-01..2018-03-31 pat -5.1583cr, EPS -7.93 EXACT (0.65038cr sh); matches stored sf_revop patS Mar-18 -5.16 exactly; Jun keeps -1.7992 (INDAS_39229 OneD decl Apr-Jun, rev 143.3067 == revS)",
+   "stored_pat": -1.8
+  }
+ },
  "AURUS": {
   "20170930": {
    "correct_pat_con": 7.62,
@@ -100,6 +124,22 @@
    "defect": "same-FY adjacent-quarter duplicate (outside the \u00a745 PAT(q)==PAT(q+1y) scan): con slot held the Sep-2018 quarter's value; NSE triple-indexed the one late combined filing under toDate 30-Jun-2018/30-Sep-2018/30-Sep-2017",
    "source": "FourD context of nse xbrl INDAS_41001_60087_14112018070010_WEB.xml (only con filing bcast 28-Nov-2018 == stored ann 20181128; = BSE 534532 filing of 14-Nov-2018 'Quarter Ended 30th September 2018'): DECLARED period 2018-04-01..2018-06-30, Consolidated, ProfitLossForPeriod 60174000 = 6.0174cr, EPS 2.04 x 2.9484cr shares recon 0.04%. OneD (declared 2018-07-01..2018-09-30) PAT 40493000 = 4.05 stays at 20180930 - its rev 55.172cr == stored revC 20180930 exactly. FY19 audited con 14.4171 (INDAS_45866 FourD) coherent: 6.02+4.05+1.80 leaves 2.55 for the never-filed Dec-18 con",
    "stored_pat_con": 4.05
+  }
+ },
+ "BAFNAPHARM": {
+  "20180331": {
+   "correct_pat": -34.17,
+   "defect": "adjacent-quarter dup: Mar-2018 std held Jun-2018's value",
+   "source": "nse xbrl INDAS_38758_34703_14082018112047_WEB.xml: FourD DECLARED 2018-01-01..2018-03-31 pat -34.1674cr EPS -14.44 EXACT (2.36563cr sh); OneD DECLARED Apr-Jun -3.5129 stays (rev 11.9513 == revS Jun 11.95)",
+   "stored_pat": -3.51
+  }
+ },
+ "BARTRONICS": {
+  "20190331": {
+   "correct_pat": -2.65,
+   "defect": "adjacent-quarter dup: Mar-2019 std held Jun-2019's value",
+   "source": "nse xbrl INDAS_48193_133129_15082019050434_WEB.xml: FourD DECLARED 2019-01-01..2019-03-31 AUDITED pat -2.6526cr; OneD DECLARED Apr-Jun -11.4339 stays (rev 21.521 == revS Jun 21.52)",
+   "stored_pat": -11.43
   }
  },
  "BDL": {
@@ -138,6 +178,20 @@
    "defect": "year-shift duplicate (\u00a745 detector): CON slot held Jun-2019 con",
    "source": "FourD year-ago comparative of INDAS_48279_134187_26082019021217_WEB.xml; equals the Jun-2018 own std filing INDAS_38887 OneD -1.61 exactly",
    "stored_pat_con": -1.78
+  },
+  "20190331": {
+   "correct_pat": -45.47,
+   "defect": "adjacent-quarter dup: Mar-2019 std held Jun-2019's value",
+   "source": "nse xbrl INDAS_47241_130004_10082019123940_WEB.xml: FourD DECLARED 2019-01-01..2019-03-31 AUDITED pat -45.4669cr EPS -21.00 EXACT (2.16512cr sh); OneD Apr-Jun -1.7878 stays (rev 7.7095 == revS Jun 7.71)",
+   "stored_pat": -1.79
+  }
+ },
+ "BLUESTARCO": {
+  "20180331": {
+   "correct_pat": 25.57,
+   "defect": "adjacent-quarter dup: Mar-2018 std held Jun-2018's value",
+   "source": "nse xbrl INDAS_39241_37512_05092018024555_WEB.xml: FourD DECLARED 2018-01-01..2018-03-31 AUDITED pat 25.57cr EPS 2.67 (9.6cr sh); OneD Apr-Jun 85.81 stays (rev 1382.93 == revS Jun); con Mar-18 51.23 from separate con filing coherent",
+   "stored_pat": 85.81
   }
  },
  "BRFL": {
@@ -146,6 +200,22 @@
    "defect": "year-shift duplicate (\u00a745 detector): CON slot held Jun-2019 con (Q1FY20 -506.55)",
    "source": "FourD year-ago comparative of INDAS_48379_135493_07092019081423_WEB.xml (Q1 filing: YTD==current refuted, value coherent with own Jun-2018 std filing -339.21)",
    "stored_pat_con": -506.55
+  }
+ },
+ "CANDC": {
+  "20180630": {
+   "correct_pat_con": 9.12,
+   "defect": "adjacent-quarter dup: Jun-2018 con held Sep-2018's value; combined H1 con filing double-indexed",
+   "source": "nse xbrl INDAS_40794_59413_14112018125119_WEB_2.xml: FourD DECLARED 2018-04-01..2018-09-30 (H1) pat 10.5346 EPS 4.14 EXACT (2.54453cr sh) minus OneD DECLARED Jul-Sep 1.4149 (rev 277.3444 == revC Sep EXACT) = 9.1197; std analog 23.5408-14.8051=8.7357 == stored Jun std 8.74 EXACT",
+   "stored_pat_con": 1.41
+  }
+ },
+ "CARERATING": {
+  "20190331": {
+   "correct_pat": 34.64,
+   "defect": "adjacent-quarter dup: Mar-2019 std held Jun-2019's value (NOTE stored revS Mar-19 45.22 is also Jun's; true Mar rev 81.4895 - rev follow-up)",
+   "source": "nse xbrl INDAS_48325_135146_04092019040820_WEB.xml: FourD DECLARED 2019-01-01..2019-03-31 AUDITED pat 34.6363cr EPS 11.76 (2.94612cr sh); OneD Apr-Jun 13.0876 stays (rev 45.2233 == revS Jun)",
+   "stored_pat": 13.09
   }
  },
  "CENTENKA": {
@@ -228,6 +298,28 @@
    "stored_pat": 8.17
   }
  },
+ "DHARSUGAR": {
+  "20230930": {
+   "correct_pat": -6.84,
+   "defect": "adjacent-quarter dup (filer-side): Sep-2023 file's OneD is a byte-copy of Jun's (pat/income/eps identical)",
+   "source": "H1 identity: INDAS_109320 FourD DECLARED 2023-04-01..09-30 -14.2485 minus Jun -7.4068 = -6.8417; 9M identity: INDAS_109323 FourD -3mo chain 98.5201 - Dec 112.7687 - Jun(-7.4068) = -6.8418; two independent documents agree to 0.0001",
+   "stored_pat": -7.41
+  }
+ },
+ "DLF": {
+  "20190331": {
+   "correct_pat_con": 436.56,
+   "defect": "unit error x100 + adjacent dup: importer stored raw/1e7 of a hundreds-unit XBRL and landed it under both toDates; owners basis restored",
+   "source": "DLF FY19 audited con booklet (nsearchives DLFFINANCIALRESULTS_21052019214203.zip p2): owners-of-holding-co Mar-19 quarter 436.56cr, Dec-18 col 335.15 == stored Dec-18 con EXACT anchor, EPS 2.43 == xbrl INDAS_48363 eps; xbrl total 4.3477x100=434.77 unit-proven by Sep-19 file total overlap EXACT",
+   "stored_pat_con": 4.14
+  },
+  "20190630": {
+   "correct_pat_con": 414.72,
+   "defect": "same defect at Jun-2019 (other half of the double-indexed pair)",
+   "source": "nse xbrl INDAS_51314_178308_06122019061816_WEB.xml (Sep-19 con, sane units): FourD DECLARED 2019-04-01..09-30 H1 pat_own 860.574 minus OneD DECLARED Jul-Sep own 445.854 (== stored Sep-19 con 445.85 EXACT) = 414.72; total leg 857.35-443.41=413.94 == Mar-19 file's OneD x100 EXACT",
+   "stored_pat_con": 4.14
+  }
+ },
  "ELNET": {
   "20240930": {
    "correct_pat": 4.45,
@@ -242,6 +334,36 @@
    "defect": "year-shift duplicate (\u00a745 detector): std slot held the adjacent year's value",
    "source": "detres",
    "stored_pat": -1.13
+  },
+  "20190331": {
+   "correct_pat": -2.4,
+   "defect": "Mar-2019 std held Jun-2019's value: the Aug-2019 INDAS refiling mis-declared Jun's -1.1273 under Jan-Mar dates and NSE listed it under toDate 31-Mar-2019",
+   "source": "original audited Mar-19 filing NONINDAS_45154_105789_29052019033242_WEB.xml OneD PAT -2.3956cr rev 29.9504; bse detres 532737 qtr 101.00 span Jan-Mar-19 NP -23.96M EXACT match; Q1FY20 PDF (BSE f55d9a3b) standalone block proves -112.73 lakh belongs to Jun-19 (Jun keeps -1.13) with year-ago Jun-18 432.37 lakh == xbrl 4.3237",
+   "stored_pat": -1.13
+  }
+ },
+ "ESSDEE": {
+  "20180331": {
+   "correct_pat": -133.97,
+   "defect": "adjacent-quarter dup: Mar-2018 std held Jun-2018's value",
+   "source": "nse xbrl INDAS_39114_35741_16082018123820_WEB.xml: FourD DECLARED 2018-01-01..2018-03-31 AUDITED pat -133.9734cr EPS -41.80 EXACT (3.20478cr sh); OneD Apr-Jun -44.1169 EPS -13.77 EXACT stays",
+   "stored_pat": -44.12
+  }
+ },
+ "GARNETINT": {
+  "20200331": {
+   "correct_pat": -1.08,
+   "defect": "thread-pull (1-quarter shift): Mar-2020 std held Dec-2019's value (-236.01 lakh)",
+   "source": "FY20 audited PDF (BSE 10a682be) std statement: Mar-20 quarter -108.48 lakh = -1.0848cr, Dec-19 col -236.01 == stored Mar-20 -2.36 (the shift proof); FY20 col -1,156.16 chains to Q2FY21 PDF EXACT",
+   "stored_pat": -2.36
+  },
+  "20200630": {
+   "correct_pat": 0.42,
+   "correct_pat_con": -0.02,
+   "defect": "thread-pull (1-quarter shift): Jun-2020 std held Mar-2020's value",
+   "source": "Q2FY21 PDF (BSE 6d46d7b8) std statement: Jun-20 quarter +42.17 lakh = 0.4217cr EPS 0.22 EXACT (1.9635cr sh); H1 -125.18 = Sep -167.35 + Jun 42.17 EXACT; Sep-20 -167.35 == stored -1.67 EXACT",
+   "stored_pat": -1.08,
+   "stored_pat_con": -1.02
   }
  },
  "GAYAPROJ": {
@@ -258,6 +380,22 @@
    "defect": "year-shift/series poison (\u00a745 detector): late cell held Jun-2022's value (single-basis 23/23); detres Jun-2023 page prints 2.97",
    "source": "bse-detres scrip 504028 qtr 118 .00 page (Date-End checked)",
    "stored_pat": 3.5
+  },
+  "20230930": {
+   "correct_pat": 5.4,
+   "correct_pat_con": 5.4,
+   "defect": "con twin of the above: GEE files ONE statement (no standalone/consolidated marker) and the stored con series mirrors std throughout",
+   "source": "same detres/PDF evidence as the std cell; filing PDF carries a single results statement",
+   "stored_pat": 2.97,
+   "stored_pat_con": 2.97
+  }
+ },
+ "GENUSPAPER": {
+  "20180331": {
+   "correct_pat": 3.62,
+   "defect": "adjacent-quarter dup: Mar-2018 std held Jun-2018's value (Mar's rev 100.06 was stored correctly - only PAT clobbered)",
+   "source": "nse xbrl INDAS_37658_30928_31072018053930_WEB.xml: FourD DECLARED 2018-01-01..2018-03-31 AUDITED pat 3.6245cr rev 100.0551 == stored revS Mar EXACT, EPS 0.14 (25.7126cr sh); OneD Apr-Jun 5.0699 stays (rev 120.9973 == revS Jun)",
+   "stored_pat": 5.07
   }
  },
  "GICHSGFIN": {
@@ -434,6 +572,22 @@
    "stored_pat_con": -54.75
   }
  },
+ "GREAVESCOT": {
+  "20190331": {
+   "correct_pat": 37.39,
+   "defect": "adjacent-quarter dup: Mar-2019 std held Jun-2019's value (Mar rev stored correctly)",
+   "source": "nse xbrl INDAS_48397_135732_11092019011151_WEB.xml: FourD DECLARED 2019-01-01..2019-03-31 AUDITED pat 37.39cr rev 528.12 == stored revS Mar EXACT, EPS 1.53 EXACT (24.42cr sh); OneD Apr-Jun 38.17 EPS 1.56 EXACT stays (rev 476.84 == revS Jun)",
+   "stored_pat": 38.17
+  }
+ },
+ "GSFC": {
+  "20190331": {
+   "correct_pat": 99.76,
+   "defect": "adjacent-quarter dup: Mar-2019 std held Jun-2019's value (stored revS Mar-19 1707.7 is ALSO Jun's; true Mar rev 2138.42 - rev follow-up)",
+   "source": "nse xbrl INDAS_48315_135073_04092019110019_WEB.xml: FourD DECLARED 2019-01-01..2019-03-31 AUDITED pat 99.76cr EPS 2.50 EXACT (39.85cr sh); OneD Apr-Jun 63.33 EPS 1.59 EXACT stays (rev 1707.7 == revS Jun)",
+   "stored_pat": 63.33
+  }
+ },
  "GUJAPOLLO": {
   "20180630": {
    "correct_pat_con": -0.73,
@@ -562,6 +716,16 @@
    "stored_pat": 1631.93
   }
  },
+ "HPBL": {
+  "20200331": {
+   "correct_pat": -4.38,
+   "correct_pat_con": -4.38,
+   "defect": "con twin: HPBL Mar-20 filing (BSE b65ed67b) is STANDALONE-only; stored con series mirrors std",
+   "source": "same detres evidence; 15-page filing has no consolidated statement",
+   "stored_pat": -1.46,
+   "stored_pat_con": -1.46
+  }
+ },
  "IFCI": {
   "20180331": {
    "correct_pat": -566.64,
@@ -586,6 +750,24 @@
    "source": "IIFL_Q2FY19_nse.pdf (listcontract1_01112018171750_IIFL_911) p2+p13 + bse-detres qtr 98/99 pages",
    "stored_pat": 23.44,
    "stored_pat_con": 223.49
+  }
+ },
+ "INFOBEAN": {
+  "20180930": {
+   "correct_pat": 5.94,
+   "correct_pat_con": 5.65,
+   "defect": "triple-indexed copy: Sep-2018 con held Sep-2019's value",
+   "source": "same H1-FY19 filing p6 (con QUARTERLY stmt): Sep-18 quarter 565.48 lakh = 5.6548cr EPS 2.35 EXACT; H1 1089.48 = Jun 524.00 + Sep 565.48 EXACT; Jun-18 con 524.00 == Q1FY20 con year-ago col EXACT",
+   "stored_pat": 7.27,
+   "stored_pat_con": 7.15
+  },
+  "20190630": {
+   "correct_pat": 5.39,
+   "correct_pat_con": 5.04,
+   "defect": "triple-indexed copy: Jun-2019 con held Sep-2019's value",
+   "source": "same Q1FY20 filing p5 (con stmt): Jun-19 con 504.07 lakh = 5.0407cr EPS 2.10 EXACT; as-first-filed (H1-chain restated 4.6547 refused)",
+   "stored_pat": 7.27,
+   "stored_pat_con": 7.15
   }
  },
  "INTENTECH": {
@@ -622,6 +804,14 @@
    "stored_pat": 13.58
   }
  },
+ "JINDCOT": {
+  "20190331": {
+   "correct_pat": 12.17,
+   "defect": "adjacent-quarter dup: Mar-2019 std held Jun-2019's value",
+   "source": "nse xbrl INDAS_48033_132619_14082019062920_WEB.xml: FourD DECLARED 2019-01-01..2019-03-31 AUDITED pat 12.1693cr EPS 2.70 EXACT (4.50031cr sh); OneD Apr-Jun -1.3714 EPS -0.30 EXACT stays (rev 10.2799 == revS Jun); con Jun -1.3714 in separate con filing coherent",
+   "stored_pat": -1.37
+  }
+ },
  "JISLDVREQS": {
   "20170930": {
    "correct_pat": 16.04,
@@ -654,6 +844,16 @@
    "defect": "stored value fails the series FY-coherence test (page series annual-exact, stored series off)",
    "source": "series-review 2026-08-02: as-filed bse-detres page value; page quarter-sums match the audited .50 annual EXACTLY for this FY while the stored series does not",
    "stored_pat": 33.34
+  }
+ },
+ "KEIL": {
+  "20200630": {
+   "correct_pat": 4.02,
+   "correct_pat_con": 4.02,
+   "defect": "adjacent-quarter dup: Jun-2020 std held Mar-2020's value (Mar keeps: detres -20.16M == stored -2.02 == Mar-20 PDF -201.61 lakh EXACT)",
+   "source": "bse detres 539620 qtr 106.00 span 01-Apr-20..30-Jun-20 NP 40.18M = 4.018cr EPS 0.94 EXACT (4.2646cr sh, equity 2132.29 lakh fv5); Dec-20 17.86M == stored 1.79 EXACT",
+   "stored_pat": -2.02,
+   "stored_pat_con": -2.02
   }
  },
  "KRBL": {
@@ -822,6 +1022,12 @@
    "defect": "year-shift duplicate (\u00a745 detector): std slot held the adjacent year's value",
    "source": "detres",
    "stored_pat": 2.83
+  },
+  "20170930": {
+   "correct_pat": -0.15,
+   "defect": "adjacent-quarter dup: Sep-2017 std held Dec-2017's value (file also listed under toDate 31-Dec-2016)",
+   "source": "nse xbrl INDAS_36798_15720_20062018054334_WEB.xml: FourD DECLARED 2017-07-01..2017-09-30 pat -0.1517cr; OneD DECLARED Oct-Dec 2.2175 stays at Dec (rev 42.556 == revS Dec); neighbours clean: INDAS_41366 Mar-17 2.3947/Mar-18 4.1128 == stored EXACT",
+   "stored_pat": 2.22
   }
  },
  "NAGAFERT": {
@@ -852,6 +1058,14 @@
    "defect": "year-shift duplicate (\u00a745 detector): std slot held the adjacent year's value",
    "source": "detres",
    "stored_pat": 5.24
+  }
+ },
+ "NEUEON": {
+  "20180331": {
+   "correct_pat": -153.14,
+   "defect": "adjacent-quarter dup: Mar-2018 std held Jun-2018's value",
+   "source": "nse xbrl INDAS_38905_35095_14082018044645_WEB.xml: FourD DECLARED 2018-01-01..2018-03-31 AUDITED pat -153.1446cr EPS -27.08 EXACT (5.65445cr sh); OneD Apr-Jun -122.3673 EPS -21.64 EXACT stays (rev 14.9767 == revS Jun)",
+   "stored_pat": -122.37
   }
  },
  "NITINFIRE": {
@@ -946,6 +1160,12 @@
    "defect": "year-shift duplicate (\u00a745 detector): std slot held the adjacent year's value",
    "source": "detres",
    "stored_pat": 11.49
+  },
+  "20180930": {
+   "correct_pat": 11.18,
+   "defect": "adjacent-quarter dup: Sep-2018 std held Dec-2018's value (Mar-29-2019 file triple-indexed under 30-Sep-18/31-Dec-17/31-Dec-18; its Sep FourD context was all-zeros blank)",
+   "source": "bse detres 513228 qtr 99.00 span 01-Jul-18..30-Sep-18 NP 111.80M = 11.18cr; BOTH neighbours EXACT: Jun-18 (98.00) 112.10M == stored 11.21, Dec-18 (100.00) 114.90M == stored 11.49; FY19 annual 640.40M does not reconcile either value (merger-restated year - noted)",
+   "stored_pat": 11.49
   }
  },
  "PIIND": {
@@ -954,6 +1174,14 @@
    "defect": "year-shift duplicate (\u00a745 detector): CON slot held Jun-2019 con (101.6; PI began con quarterly reporting FY20 - Jun-2018 con was first published as this comparative)",
    "source": "FourD year-ago comparative of INDAS_46215_124979_25072019042934_WEB.xml (Q1 structure refutes YTD; coherent with own Jun-2018 std filing 81.7)",
    "stored_pat_con": 101.6
+  }
+ },
+ "POLYMED": {
+  "20190331": {
+   "correct_pat": 21.48,
+   "defect": "adjacent-quarter dup: Mar-2019 std held Jun-2019's value (Mar rev stored correctly)",
+   "source": "nse xbrl INDAS_48318_135085_04092019121231_WEB.xml: FourD DECLARED 2019-01-01..2019-03-31 AUDITED pat_own 21.4831cr rev 159.87 == stored revS Mar EXACT, EPS 2.43 EXACT (8.8237cr sh); OneD Apr-Jun 20.1835 EPS 2.29 EXACT stays (rev 152.3594 == revS Jun)",
+   "stored_pat": 20.18
   }
  },
  "RAJESHEXPO": {
@@ -974,6 +1202,14 @@
    "rev_ready": 12.67,
    "source": "bse-detres scrip 532826 qtr 93 (audited)",
    "stored_pat": -4.91
+  }
+ },
+ "RAJVIR": {
+  "20190331": {
+   "correct_pat": -9.6,
+   "defect": "adjacent-quarter dup: Mar-2019 std held Jun-2019's value",
+   "source": "nse xbrl INDAS_48393_135725_11092019121640_WEB.xml: FourD DECLARED 2019-01-01..2019-03-31 pat -9.5975cr; OneD Apr-Jun -7.4505 stays (rev 11.4605 == revS Jun 11.46); filer EPS inconsistent in both contexts (noted) - declared periods + Jun rev lock decide",
+   "stored_pat": -7.45
   }
  },
  "RELCAPITAL": {
@@ -1012,6 +1248,56 @@
    "defect": "year-shift duplicate (\u00a745 detector): std slot held the adjacent year's value",
    "source": "detres",
    "stored_pat": -4.57
+  }
+ },
+ "ROLTA": {
+  "20220630": {
+   "correct_pat_con": -354.49,
+   "defect": "adjacent-quarter dup (filer-side byte-copy): Jun-2022 con file duplicates Sep's numbers; identities restore Jun",
+   "source": "H1: INDAS_117168 FourD DECLARED 2022-04-01..09-30 -642.45 minus Sep OneD -287.96 (EPS -17.36 EXACT, rev 3.76 == revC Sep) = -354.49; 9M: INDAS_117170 -845.79 = -354.49 + -287.96 + -203.34 EXACT to the paisa; std side coherent (9M -1020.25 EXACT); revC Jun-22 3.76 also Sep's (true 5.08) - rev follow-up",
+   "stored_pat_con": -287.96
+  }
+ },
+ "RPSGVENT": {
+  "20171231": {
+   "correct_pat": 1.97,
+   "correct_pat_con": 41.0,
+   "defect": "triple-indexed copy + wrong basis: Dec-2017 con held the 9M-owners/Dec-total 55; owners restored",
+   "source": "Q3FY19 filing PDF con stmt (whole-crore print) owners year-ago col: 41; EPS-owners 15.51 x 2.651cr sh = 41.12",
+   "stored_pat": 3.14,
+   "stored_pat_con": 55.0
+  },
+  "20180331": {
+   "correct_pat": 2.13,
+   "defect": "year-shift copy (thread-pull, \u00a745 IPO-cohort queue): Mar-2018 std held Mar-2019's value (ann 20190517 == Mar-19 file bc)",
+   "source": "Q3FY19 filing PDF std stmt: FY18 audited col 2.30 minus 9M-Dec-17 col 0.17 = 2.13 (both directly printed)",
+   "stored_pat": 2.52
+  },
+  "20180630": {
+   "correct_pat": 1.65,
+   "defect": "year-shift copy (thread-pull): Jun-2018 std held Jun-2019's value (ann 20190904 == Jun-19 file bc)",
+   "source": "nse xbrl INDAS_48324_135139_04092019040116_WEB.xml (Jun-19 std): FourD DECLARED 2018-04-01..2018-06-30 pat 1.65cr EPS 0.62 - a directly declared year-ago context; 9M identity 1.65+58.46+3.14 = 63.25 EXACT",
+   "stored_pat": 2.15
+  },
+  "20180930": {
+   "correct_pat": 58.46,
+   "correct_pat_con": 26.0,
+   "defect": "triple-indexed copy + wrong basis: Sep-2018 con held 55; owners prev-qtr restored",
+   "source": "Q3FY19 filing PDF con stmt owners prev-qtr col: 26 (whole-crore print; EPS-owners 10.18 x 2.651 = 26.99, ~1 print-rounding unit - noted); cross-check NCI 43, total 69 = 26+43 EXACT",
+   "stored_pat": 3.14,
+   "stored_pat_con": 55.0
+  },
+  "20181231": {
+   "correct_pat_con": 11.0,
+   "defect": "wrong basis: Dec-2018 con stored the TOTAL-incl-NCI (55, NCI 44); owners-attributable is the store basis",
+   "source": "xbrl INDAS_42819_81509_12022019013525_WEB_2.xml OneD DECLARED Oct-Dec-18 pat_own 11.0 (total 55.0 nci 44.0); Q3FY19 PDF con owners Dec col: 11 printed; EPS-owners 4.06 x 2.651 = 10.76",
+   "stored_pat_con": 55.0
+  },
+  "20190630": {
+   "correct_pat_con": -5.78,
+   "defect": "wrong basis (\u00a72d class): Jun-2019 con stored the TOTAL (35.0); owners tag -5.78, EPS row arbitrates",
+   "source": "nse xbrl INDAS_48000_132514_14082019060218_WEB.xml OneD DECLARED Apr-Jun-19: pat 35.0 total / pat_own -5.78 / nci 40.78; EPS -2.18 == -5.78/2.651 EXACT; Sep-19 file H1 own -30.82 = -5.78 + -25.04 EXACT chain",
+   "stored_pat_con": 35.0
   }
  },
  "RSYSTEMS": {
@@ -1054,6 +1340,30 @@
    "stored_pat": 999.71
   }
  },
+ "SARLAPOLY": {
+  "20180331": {
+   "correct_pat": 3.58,
+   "defect": "adjacent-quarter dup: Mar-2018 std held Jun-2018's value (Jan-2019 combined file's Mar FourD was all-zeros blank)",
+   "source": "bse detres 526885 qtr 97.00 span 01-Jan-18..31-Mar-18 NP 35.83M = 3.583cr; FY18 identity EXACT: 10.249+16.073+10.362+3.583 = 40.267 == FY18 annual (97.50) 402.60M; Jun-18 (98.00) 55.00M == stored 5.5 EXACT",
+   "stored_pat": 5.5
+  },
+  "20190331": {
+   "correct_pat": 9.56,
+   "defect": "adjacent-quarter dup: Mar-2019 std held Jun-2019's value",
+   "source": "nse xbrl INDAS_48392_135722_11092019114830_WEB.xml: FourD DECLARED 2019-01-01..2019-03-31 AUDITED pat 9.56cr EPS 1.14 EXACT (8.35cr sh); OneD Apr-Jun 12.21 EPS 1.46 EXACT stays (rev 74.0 == revS Jun)",
+   "stored_pat": 12.21
+  }
+ },
+ "SASKEN": {
+  "20190630": {
+   "correct_pat": 21.01,
+   "correct_pat_con": 23.18,
+   "defect": "adjacent-quarter dup: Jun-2019 con held Sep-2019's value",
+   "source": "nse xbrl INDAS_48639_153752_18102019061019_WEB_2.xml AUDITED: FourD H1 con 45.9256 minus OneD Jul-Sep 22.7435 (rev 125.7025 == revC Sep EXACT) = 23.1821",
+   "stored_pat": 27.01,
+   "stored_pat_con": 22.74
+  }
+ },
  "SATIN": {
   "20170930": {
    "correct_pat": 12.69,
@@ -1070,6 +1380,32 @@
    "defect": "year-shift/series poison (\u00a745 detector): late cell held Jun-2023's value; detres Jun-2024 page prints 2.76 (rev was shifted too)",
    "source": "bse-detres scrip 539921 qtr 122 .00 page (Date-End checked)",
    "stored_pat": 2.33
+  }
+ },
+ "SGFL": {
+  "20170930": {
+   "correct_pat": -1.35,
+   "defect": "triple-indexed copy + sign lost: Sep-2017 std held the Nov-2018 file's unsigned OneD (file listed under 30-Sep-17/30-Jun-18/30-Sep-18)",
+   "source": "bse detres 532643 (scrip from co letterhead; resolver missed it) qtr 95.00 span 01-Jul-17..30-Sep-17 NP -13.45M = -1.345cr",
+   "stored_pat": 1.21
+  },
+  "20180331": {
+   "correct_pat": -1.04,
+   "defect": "thread-pull: Mar-2018 std stored 0.0 blank-template sentinel",
+   "source": "bse detres 532643 qtr 97.00 span 01-Jan-18..31-Mar-18 NP -10.37M = -1.037cr",
+   "stored_pat": 0.0
+  },
+  "20180630": {
+   "correct_pat": -1.16,
+   "defect": "adjacent-quarter dup + sign lost: Jun-2018 std held Sep's unsigned value; xbrl pat tags carried absolute values",
+   "source": "bse detres 532643 qtr 98.00 span 01-Apr-18..30-Jun-18 NP -11.59M = -1.159cr EPS -0.92 == xbrl INDAS_41387 FourD (DECLARED Apr-Jun) eps -0.92 EXACT (1.25005cr sh); own Aug-2018 filing exists (FinancialResults30062018 zip)",
+   "stored_pat": 1.21
+  },
+  "20180930": {
+   "correct_pat": -1.21,
+   "defect": "sign lost: Sep-2018 std magnitude correct but sign dropped by the importer from the unsigned xbrl pat tag",
+   "source": "bse detres 532643 qtr 99.00 span 01-Jul-18..30-Sep-18 NP -12.09M = -1.209cr; xbrl OneD eps -0.96 == -1.209/1.25005 EXACT; Dec-18 (100.00) -16.59M == stored -1.66 EXACT",
+   "stored_pat": 1.21
   }
  },
  "SHIVATEX": {
@@ -1092,6 +1428,20 @@
    "defect": "year-shift duplicate (\u00a745 detector): std slot held the adjacent year's value",
    "source": "detres",
    "stored_pat": 3.22
+  },
+  "20180630": {
+   "correct_pat": 4.01,
+   "defect": "adjacent-quarter dup: Jun-2018 std held Sep-2018's value (revs were stored per-quarter correctly - only PAT clobbered)",
+   "source": "nse xbrl INDAS_40358_58155_06112018113008_WEB.xml: FourD DECLARED 2018-04-01..2018-06-30 pat 4.0147cr rev 216.7784 == stored revS Jun EXACT, EPS 1.36 EXACT (2.9437cr sh); OneD Jul-Sep 2.5559 rev 233.7041 == revS Sep EXACT stays",
+   "stored_pat": 2.56
+  }
+ },
+ "SIMMOND": {
+  "20200630": {
+   "correct_pat": -9.37,
+   "defect": "adjacent-quarter dup: Jun-2020 std held Mar-2020's value (Mar keeps: detres -40.92M == stored -4.09); stored con Jun-20 -9.37 already held the true std value",
+   "source": "bse detres 507998 qtr 106.00 span 01-Apr-20..30-Jun-20 NP -93.65M = -9.365cr EPS -8.36 EXACT (1.12cr sh); Dec-19 (104.00) -25.90M == stored -2.59-class neighbour lock",
+   "stored_pat": -4.09
   }
  },
  "SIYSIL": {
@@ -1100,6 +1450,30 @@
    "defect": "year-shift duplicate (\u00a745 detector): std slot held the adjacent year's value",
    "source": "detres",
    "stored_pat": 46.73
+  }
+ },
+ "SPENCERS": {
+  "20171231": {
+   "correct_pat": -2.24,
+   "correct_pat_con": -4.79,
+   "defect": "triple-indexed copy (con): Dec-2017 con held Dec-2018's value",
+   "source": "Q3FY19 filing PDF con stmt year-ago col: (4.79); owners == total (NCI nil)",
+   "stored_pat": 1.46,
+   "stored_pat_con": -0.11
+  },
+  "20180331": {
+   "correct_pat": -6.58,
+   "defect": "year-shift copy (thread-pull): Mar-2018 std held Mar-2019's value (ann 20190517 tell)",
+   "source": "Q3FY19 filing PDF std stmt: FY18 audited col (9.10) minus 9M-Dec-17 col (2.52) = -6.58 (both directly printed)",
+   "stored_pat": 2.79
+  },
+  "20180930": {
+   "correct_pat": 1.47,
+   "correct_pat_con": 0.05,
+   "defect": "triple-indexed copy (con): Sep-2018 con held Dec-2018's value",
+   "source": "Q3FY19 filing PDF con stmt prev-qtr col: 0.05; EPS 0.01",
+   "stored_pat": 1.46,
+   "stored_pat_con": -0.11
   }
  },
  "SREINFRA": {
@@ -1154,12 +1528,44 @@
    "stored_pat": 92.2
   }
  },
+ "SRSLTD": {
+  "20180331": {
+   "correct_pat": -553.79,
+   "defect": "adjacent-quarter dup: Mar-2018 std held Jun-2018's value",
+   "source": "nse xbrl INDAS_45909_108269_07062019125523_WEB.xml: FourD DECLARED 2018-01-01..2018-03-31 pat -553.7869cr EPS -19.87 EXACT (27.8582cr sh; eps_cont -0.83 = discontinued-ops split); OneD Apr-Jun -43.1696 EPS -1.55 EXACT stays (rev 26.4349 == revS Jun)",
+   "stored_pat": -43.17
+  }
+ },
+ "STCINDIA": {
+  "20190331": {
+   "correct_pat": -58.78,
+   "defect": "adjacent-quarter dup: Mar-2019 std held Jun-2019's value",
+   "source": "nse xbrl INDAS_48396_135730_11092019125430_WEB.xml: FourD DECLARED 2019-01-01..2019-03-31 pat -58.78cr rev 710.34; OneD Apr-Jun -94.34 EPS -15.72 EXACT (6.0cr sh) stays (rev 2260.59 == revS Jun); FourD eps -5.00 not reconciling (noted) - declared period + Jun locks decide",
+   "stored_pat": -94.34
+  }
+ },
+ "STERLINBIO": {
+  "20180331": {
+   "correct_pat": -563.1,
+   "defect": "adjacent-quarter dup: Mar-2018 std held Jun-2018's value (the NCLT-era -2309 writeoff belongs to Jun)",
+   "source": "nse xbrl INDAS_42121_79342_02022019083652_WEB.xml: FourD DECLARED 2018-01-01..2018-03-31 pat -563.1022cr EPS -20.57 (27.217cr sh, 0.6%); OneD Apr-Jun -2309.2013 stays (rev 83.6708 == revS Jun 83.67)",
+   "stored_pat": -2309.2
+  }
+ },
  "SUDARCOLOR": {
   "20160331": {
    "correct_pat": 9.85,
    "defect": "stored 26.63 matches nothing as-filed; the entity (then Clariant Chemicals India, calendar-FY, scrip 506390 - later Heubach Colorants - now Sudarshan Colorants) filed the Jan-Mar-2016 transition stub with PAT 9.85",
    "source": "BSE detres scrip 506390 qtr 89 (Date Begin 01-Jan-16, Date End 31-Mar-16): Net Profit 98.50 M = 9.85 EXACT + Business Standard/Capital Market 21-May-2016: declined 7.51%% to Rs 9.85 crore (era-press EXACT agreement); sales 245.69 (net of excise) vs page 253.32 (inclusive)",
    "stored_pat": 26.63
+  }
+ },
+ "SUNDRMFAST": {
+  "20190331": {
+   "correct_pat": 107.35,
+   "defect": "adjacent-quarter dup: Mar-2019 std held Jun-2019's value",
+   "source": "nse xbrl INDAS_48351_135309_05092019083635_WEB.xml: FourD DECLARED 2019-01-01..2019-03-31 AUDITED pat 107.35cr EPS 5.11 EXACT (21.01cr sh); OneD Apr-Jun 93.11 EPS 4.43 EXACT stays (rev 945.35 == revS Jun)",
+   "stored_pat": 93.11
   }
  },
  "SUPRAJIT": {
@@ -1260,12 +1666,52 @@
    "stored_pat": -46.64
   }
  },
+ "TITAGARH": {
+  "20190331": {
+   "correct_pat": -96.18,
+   "defect": "adjacent-quarter dup: Mar-2019 std held Jun-2019's value (Q4FY19 provision quarter)",
+   "source": "nse xbrl INDAS_48398_135737_11092019025549_WEB.xml: FourD DECLARED 2019-01-01..2019-03-31 pat -96.18cr EPS -8.33 EXACT (11.5528cr sh); OneD Apr-Jun 13.6754 EPS 1.18 EXACT stays (rev 328.6838 == revS Jun)",
+   "stored_pat": 13.68
+  }
+ },
+ "TRANSWORLD": {
+  "20190331": {
+   "correct_pat": 9.53,
+   "defect": "adjacent-quarter dup: Mar-2019 std held Jun-2019's value",
+   "source": "nse xbrl INDAS_48305_134958_03092019053324_WEB.xml: FourD DECLARED 2019-01-01..2019-03-31 pat 9.53cr EPS 4.34 EXACT (2.19575cr sh); OneD Apr-Jun -1.41 EPS -0.64 EXACT stays (rev 142.27 == revS Jun)",
+   "stored_pat": -1.41
+  }
+ },
+ "TSFINV": {
+  "20180331": {
+   "correct_pat": 15.16,
+   "defect": "adjacent-row dup: Mar-2018 std held Mar-2019's value (May-2019 audited file listed under toDate 31-Mar-2018 AND 31-Mar-2019)",
+   "source": "original audited Mar-18 filing NONINDAS_35690_11429_25052018031032_WEB.xml OneD PAT 15.1634cr rev 21.5939 EPS 1.00 EXACT (15.1104cr sh); Mar-19 keeps 32.3936 (INDAS_44343 OneD DECLARED Jan-Mar-19, rev 41.771 == stored revS Mar-19 EXACT)",
+   "stored_pat": 32.39
+  }
+ },
  "TTML": {
   "20160630": {
    "correct_pat": -108.07,
    "defect": "stored PAT fails the FY quarter-sum identity; as-filed detres page value restores it (anchor-adjudicator 2026-08-04)",
    "source": "G2 identity: FY sum with as-filed page value -108.07 -> -2356.51 vs audited -2356.47 (stored -127.45 -> -2375.89); siblings as-filed detres pages",
    "stored_pat": -127.45
+  }
+ },
+ "TVSELECT": {
+  "20180331": {
+   "correct_pat": 0.16,
+   "defect": "adjacent-quarter dup: Mar-2018 std held Jun-2018's value",
+   "source": "nse xbrl INDAS_38240_33128_10082018121726_WEB.xml: FourD DECLARED 2018-01-01..2018-03-31 pat 0.16cr rev 1096.74; original Mar-18 filing NONINDAS_35135 OneD rev 1096.74 AND eps 0.08 both EXACT; OneD Apr-Jun 4.61 EPS 2.48 EXACT stays (rev 1937.83 == revS Jun)",
+   "stored_pat": 4.61
+  }
+ },
+ "UNIPLY": {
+  "20190331": {
+   "correct_pat": 3.85,
+   "defect": "adjacent-quarter dup: Mar-2019 std held Jun-2019's value",
+   "source": "nse xbrl INDAS_48331_135172_04092019052736_WEB.xml: FourD DECLARED 2019-01-01..2019-03-31 pat 3.8462cr EPS 0.24 (16.52cr sh); OneD Apr-Jun 7.5689 EPS 0.46 stays (rev 106.8511 == revS Jun); con Mar-19 7.12 == con file OneD independent",
+   "stored_pat": 7.57
   }
  },
  "VOITHPAPR": {
@@ -1336,6 +1782,14 @@
    "defect": "stored value fails the series FY-coherence test (page series annual-exact, stored series off)",
    "source": "series-review 2026-08-02: as-filed bse-detres page value; page quarter-sums match the audited .50 annual EXACTLY for this FY while the stored series does not",
    "stored_pat": 48.38
+  }
+ },
+ "ZENITHSTL": {
+  "20190331": {
+   "correct_pat": -81.07,
+   "defect": "adjacent-quarter dup: Mar-2019 std held Jun-2019's value",
+   "source": "nse xbrl INDAS_48388_135646_10092019021806_WEB.xml: FourD DECLARED 2019-01-01..2019-03-31 AUDITED pat -81.07cr EPS -6.18 EXACT (13.128cr sh); OneD Apr-Jun -3.16 EPS -0.24 EXACT stays (rev 23.1 == revS Jun)",
+   "stored_pat": -3.16
   }
  },
  "ZFCVINDIA": {
