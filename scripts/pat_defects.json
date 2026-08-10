@@ -168,6 +168,16 @@
    "stored_pat": -11.43
   }
  },
+ "BCCFUBA": {
+  "20241231": {
+   "correct_pat": 0.99,
+   "correct_pat_con": 0.99,
+   "defect": "scale-step 2026-08-10: x100 (lakh-as-crore class)",
+   "source": "detres 517246 Q 9.9mn=0.99cr eps 0.65; FY25 identity 0.87+0.92+0.99+0.96=3.74==.50 annual EXACT",
+   "stored_pat": 99.38,
+   "stored_pat_con": 99.38
+  }
+ },
  "BDL": {
   "20170630": {
    "correct_pat": 101.42,
@@ -342,6 +352,14 @@
    "stored_pat_con": 410.47
   }
  },
+ "DHABRIYA": {
+  "20231231": {
+   "correct_pat_con": 3.33,
+   "defect": "scale-step 2026-08-10: x100 lakh print",
+   "source": "Dec-23 filing e60462e8 con owners 333.45 lakh=3.33cr; Sep-23 col 358.68 lakh==stored 3.59 anchor EXACT; eps 3.08 (1.08cr sh)",
+   "stored_pat_con": 333.52
+  }
+ },
  "DHANI": {
   "20170930": {
    "correct_pat": 18.42,
@@ -376,6 +394,106 @@
    "defect": "same defect at Jun-2019 (other half of the double-indexed pair)",
    "source": "nse xbrl INDAS_51314_178308_06122019061816_WEB.xml (Sep-19 con, sane units): FourD DECLARED 2019-04-01..09-30 H1 pat_own 860.574 minus OneD DECLARED Jul-Sep own 445.854 (== stored Sep-19 con 445.85 EXACT) = 414.72; total leg 857.35-443.41=413.94 == Mar-19 file's OneD x100 EXACT",
    "stored_pat_con": 4.14
+  }
+ },
+ "DOLFIN": {
+  "20200331": {
+   "correct_pat": null,
+   "correct_pat_con": null,
+   "defect": "scale-step 2026-08-10: impossible vs audited annual",
+   "source": "raw rupees stored as crore; FY20 .50 annual is 2.564cr total; SME-era H2 split unsourced (quarterly detres empty)",
+   "stored_pat": 12909494.0,
+   "stored_pat_con": 12909494.0
+  },
+  "20200930": {
+   "correct_pat": null,
+   "correct_pat_con": null,
+   "defect": "scale-step 2026-08-10: impossible vs audited annual",
+   "source": "exceeds FY21 .50 annual 2.838 alone",
+   "stored_pat": 28.38,
+   "stored_pat_con": 28.38
+  },
+  "20201231": {
+   "correct_pat": null,
+   "correct_pat_con": null,
+   "defect": "scale-step 2026-08-10: impossible vs audited annual",
+   "source": "raw rupees; FY21 annual 2.838",
+   "stored_pat": 12203277.0,
+   "stored_pat_con": 12203277.0
+  },
+  "20210331": {
+   "correct_pat": null,
+   "correct_pat_con": null,
+   "defect": "scale-step 2026-08-10: impossible vs audited annual",
+   "source": "exceeds FY21 annual 2.838",
+   "stored_pat": 16.0,
+   "stored_pat_con": 16.0
+  },
+  "20210630": {
+   "correct_pat": null,
+   "correct_pat_con": null,
+   "defect": "scale-step 2026-08-10: impossible vs audited annual",
+   "source": "exceeds FY22 .50 annual 2.768; stored Dec-21+Mar-22 (0.87+1.89=2.76) already == the annual",
+   "stored_pat": 12.2,
+   "stored_pat_con": 12.2
+  },
+  "20210930": {
+   "correct_pat": null,
+   "correct_pat_con": null,
+   "defect": "scale-step 2026-08-10: impossible vs audited annual",
+   "source": "same FY22 impossibility",
+   "stored_pat": 16.18,
+   "stored_pat_con": 16.18
+  },
+  "20241231": {
+   "correct_pat": 0.71,
+   "correct_pat_con": 0.71,
+   "defect": "scale-step 2026-08-10: wrong value",
+   "source": "detres 542013 0.71cr eps 0.71; FY25 identity 1.84+1.04+0.71+1.54=5.12==annual EXACT",
+   "stored_pat": 1.49,
+   "stored_pat_con": 1.49
+  },
+  "20250331": {
+   "correct_pat": 1.54,
+   "correct_pat_con": 1.54,
+   "defect": "scale-step 2026-08-10: x100",
+   "source": "detres 1.54cr eps 1.54; same FY25 identity",
+   "stored_pat": 154.01,
+   "stored_pat_con": 154.01
+  },
+  "20250930": {
+   "correct_pat": 1.08,
+   "correct_pat_con": 1.08,
+   "defect": "scale-step 2026-08-10: x10",
+   "source": "detres 1.08cr eps 1.07",
+   "stored_pat": 10.7,
+   "stored_pat_con": 10.7
+  },
+  "20251231": {
+   "correct_pat": 1.54,
+   "correct_pat_con": 1.54,
+   "defect": "scale-step 2026-08-10: x100",
+   "source": "detres 1.54cr",
+   "stored_pat": 153.8,
+   "stored_pat_con": 153.8
+  },
+  "20260331": {
+   "correct_pat": 1.63,
+   "correct_pat_con": 1.63,
+   "defect": "scale-step 2026-08-10: x~8 junk",
+   "source": "detres as-filed 1.63cr; FY26 identity residual 0.28 vs .50 annual 5.54 noted (Q4 audit adj), as-filed primary",
+   "stored_pat": 13.0,
+   "stored_pat_con": 13.0
+  }
+ },
+ "DUNCANENG": {
+  "20230331": {
+   "correct_pat": 2.18,
+   "correct_pat_con": 2.18,
+   "defect": "scale-step 2026-08-10: x100",
+   "source": "detres 504908 2.18cr eps 5.89 (0.37cr sh); FY23 identity 2.02+3.33+2.38+2.18=9.90==annual EXACT",
+   "stored_pat": 217.76,
+   "stored_pat_con": 217.76
   }
  },
  "DVL": {
@@ -646,6 +764,32 @@
    "stored_pat_con": -54.75
   }
  },
+ "GOODRICKE": {
+  "20190630": {
+   "correct_pat": 5.84,
+   "correct_pat_con": 5.84,
+   "defect": "scale-step 2026-08-10: x100",
+   "source": "detres 500166 5.84cr; eps 2.70 x 2.16cr shares exact",
+   "stored_pat": 584.0,
+   "stored_pat_con": 584.0
+  },
+  "20200331": {
+   "correct_pat": -46.89,
+   "correct_pat_con": -46.89,
+   "defect": "scale-step 2026-08-10: x100",
+   "source": "detres -46.89cr; eps -21.71 x 2.16 exact (tea lean-season loss, cf Mar-19 -56.77 / Mar-21 -60.54 as-filed)",
+   "stored_pat": -4689.0,
+   "stored_pat_con": -4689.0
+  },
+  "20200630": {
+   "correct_pat": 16.17,
+   "correct_pat_con": 16.17,
+   "defect": "scale-step 2026-08-10: x100",
+   "source": "detres 16.17cr; eps 7.49 x 2.16 exact",
+   "stored_pat": 1617.0,
+   "stored_pat_con": 1617.0
+  }
+ },
  "GREAVESCOT": {
   "20190331": {
    "correct_pat": 37.39,
@@ -690,6 +834,92 @@
    "defect": "std-PAT two-files adjudication 2026-08-10",
    "source": "fund held H1 (INDAS_1570079 Apr-Sep 23.3256). Q2 file INDAS_1570946 14.2671, its YTD col == H1; chain 9.0621+14.2671=23.3292~23.3256",
    "stored_pat": 23.33
+  }
+ },
+ "HALDYNGL": {
+  "20211231": {
+   "correct_pat": 3.9,
+   "correct_pat_con": 3.86,
+   "defect": "scale-step 2026-08-10: con wrong value; std missing",
+   "source": "Dec-21 filing 51230fe1 con PAT+JV 386.35 lakh=3.86cr eps 0.72; std PAT 389.70 lakh=3.90cr; Mar-22 filing Dec-21 col 386.35 cross-anchor",
+   "stored_pat": null,
+   "stored_pat_con": 20.35
+  },
+  "20220331": {
+   "correct_pat_con": 3.05,
+   "defect": "scale-step 2026-08-10: x100 lakh print",
+   "source": "Mar-22 filing 991c52b3 exact print 'PAT+JV share 304.99' lakh, Dec-21 col 386.35 anchors; eps 0.57 x 5.32",
+   "stored_pat_con": 304.99
+  },
+  "20221231": {
+   "correct_pat": 4.98,
+   "defect": "scale-step 2026-08-10: x100 lakh print",
+   "source": "detres 515147 4.983cr eps 0.93 x 5.32cr shares",
+   "stored_pat": 495.25
+  },
+  "20230930": {
+   "correct_pat": 0.07,
+   "correct_pat_con": 2.89,
+   "defect": "scale-step 2026-08-10: wrong value",
+   "source": "Sep-23 filing 8bc5beb2 con 286.51 lakh eps 0.56; FY24 con identity 9.15+2.89+5.77+6.76=24.57==audited EXACT",
+   "stored_pat": 6.5,
+   "stored_pat_con": 2035.32
+  },
+  "20231231": {
+   "correct_pat": 5.65,
+   "correct_pat_con": 5.77,
+   "defect": "scale-step 2026-08-10: wrong value (9M-YTD flavored)",
+   "source": "Mar-24 audited filing fa6b733c Dec-23 con col 577.32 lakh",
+   "stored_pat": 65.28,
+   "stored_pat_con": 1761.12
+  },
+  "20240331": {
+   "correct_pat_con": 6.76,
+   "defect": "scale-step 2026-08-10: x100 lakh print",
+   "source": "Mar-24 audited filing con print 675.60 lakh; FY24 con identity EXACT",
+   "stored_pat_con": 675.6
+  },
+  "20240630": {
+   "correct_pat": 3.5,
+   "correct_pat_con": 5.1,
+   "defect": "scale-step 2026-08-10: std x100 lakh print; con slot held the std junk",
+   "source": "Jun-25 filing bf62a8a9 std yr-ago col 350.18 lakh=3.50cr; con owners yr-ago col 510.29 lakh=5.10cr; FY25 identities EXACT (std 12.97, con 18.81)",
+   "stored_pat": 350.18,
+   "stored_pat_con": 350.18
+  },
+  "20240930": {
+   "correct_pat_con": 5.23,
+   "defect": "scale-step 2026-08-10: x100 lakh print",
+   "source": "FY25 con identity: 5.10+5.2349+3.9763+4.50=18.81==filing FY25 con 1881.34 lakh EXACT to the paisa",
+   "stored_pat_con": 523.49
+  },
+  "20241231": {
+   "correct_pat": 3.31,
+   "correct_pat_con": 3.98,
+   "defect": "scale-step 2026-08-10: x100 lakh prints",
+   "source": "FY25 std identity 3.50+2.99+3.31+3.16=12.97 (filing) EXACT; FY25 con identity 5.10+5.23+3.98+4.50=18.81 (filing) EXACT to the paisa with stored/100",
+   "stored_pat": 331.31,
+   "stored_pat_con": 397.63
+  },
+  "20250331": {
+   "correct_pat_con": 4.5,
+   "defect": "scale-step 2026-08-10: x100 lakh print",
+   "source": "Jun-25 filing con owners prior-qtr col 449.93 lakh eps 0.84",
+   "stored_pat_con": 449.93
+  },
+  "20250630": {
+   "correct_pat": 4.01,
+   "correct_pat_con": 5.4,
+   "defect": "scale-step 2026-08-10: std x100; con slot held std junk",
+   "source": "detres 4.01cr eps 0.75 + filing print 401.46 lakh; con owners 539.57 lakh=5.40cr eps 1.00; FY26 std identity EXACT 18.32",
+   "stored_pat": 401.46,
+   "stored_pat_con": 401.46
+  },
+  "20251231": {
+   "correct_pat": 4.61,
+   "defect": "scale-step 2026-08-10: x100",
+   "source": "detres 4.61cr eps 0.86; FY26 identity EXACT",
+   "stored_pat": 460.91
   }
  },
  "HAWKINCOOK": {
@@ -848,6 +1078,54 @@
    "defect": "std-PAT two-files adjudication 2026-08-10",
    "source": "fund held H1 (INDAS_1569339 OneD Apr-Sep -66.622). Q2 file INDAS_1581024 -29.867; chain -36.755+-29.867=-66.622 EXACT",
    "stored_pat": -66.62
+  }
+ },
+ "INDPRUD": {
+  "20230930": {
+   "correct_pat": 2.15,
+   "defect": "scale-step 2026-08-10: junk",
+   "source": "Sep-23 filing 51b2c74a + Dec-23 filing 6cc23a8d both print std Sep-23 = 2,14.99 lakh = 2.15cr",
+   "stored_pat": 1763.27
+  },
+  "20231231": {
+   "correct_pat": 1.15,
+   "defect": "scale-step 2026-08-10: junk",
+   "source": "Dec-23 filing print 1,14.79 lakh = 1.15cr; 9M identity on page",
+   "stored_pat": 144.48
+  },
+  "20240630": {
+   "correct_pat": 0.96,
+   "defect": "scale-step 2026-08-10: held Sep-23 std's lakh print 2,14.99",
+   "source": "Jun-24 filing c4cc2c67 std print 96.47 lakh = 0.96cr",
+   "stored_pat": 214.99
+  },
+  "20240930": {
+   "correct_pat": 16.67,
+   "correct_pat_con": 18.22,
+   "defect": "scale-step 2026-08-10: both slots held Jun-24 std's lakh print 96.47 qtr-shifted",
+   "source": "con: FY25 annual 59,69.75 lakh minus documented 10.58(Jun own doc)+14.58+16.32 = 18.22; std: FY25 std annual 19,48.62 lakh (Mar-26 filing) minus 0.9647+1.2858+0.5677 = 16.67; all terms direct prints",
+   "stored_pat": 96.47,
+   "stored_pat_con": 96.47
+  },
+  "20241231": {
+   "correct_pat": 1.29,
+   "correct_pat_con": 14.58,
+   "defect": "scale-step 2026-08-10: con held Mar-24's 12,12.34 lakh print; std slot empty",
+   "source": "Mar-25 filing 0d54900f con Dec-24 col 14,58.21 lakh=14.58cr; std Dec-24 col 1,28.58 lakh=1.29cr",
+   "stored_pat": null,
+   "stored_pat_con": 1212.34
+  },
+  "20250331": {
+   "correct_pat_con": 16.32,
+   "defect": "scale-step 2026-08-10: held Dec-24's 14,58.21 lakh print qtr-shifted",
+   "source": "Mar-25 filing print 16,32.08 lakh; == std 56.77 + associate KSB 1,575.31 EXACT; eps 97.38 x 16.76L sh",
+   "stored_pat_con": 1458.21
+  },
+  "20260331": {
+   "correct_pat_con": 17.49,
+   "defect": "scale-step 2026-08-10: stored the doc's own OCR-typo'd NP row '17,29.41'",
+   "source": "Mar-26 filing 99badcbc owners 1,749.41 lakh == std 3.85 + associate 1,745.56 EXACT; eps 104.39 x 0.16757cr = 17.49",
+   "stored_pat_con": 1729.41
   }
  },
  "INFOBEAN": {
@@ -1098,6 +1376,32 @@
    "stored_pat": -5.0
   }
  },
+ "MAGNAELQ": {
+  "20180930": {
+   "correct_pat": 4.01,
+   "correct_pat_con": 4.01,
+   "defect": "scale-step 2026-08-10: x100",
+   "source": "detres 517449 4.014cr eps 8.76; FY19 identity 2.454+4.014+3.041+1.888=11.397==annual EXACT",
+   "stored_pat": 401.42,
+   "stored_pat_con": 401.42
+  },
+  "20230630": {
+   "correct_pat": 3.73,
+   "correct_pat_con": 3.73,
+   "defect": "scale-step 2026-08-10: x100",
+   "source": "detres 3.73cr eps 8.8; FY24 identity 3.73+3.77+3.53+4.09=15.11==annual EXACT",
+   "stored_pat": 372.49,
+   "stored_pat_con": 372.49
+  },
+  "20231231": {
+   "correct_pat": 3.53,
+   "correct_pat_con": 3.53,
+   "defect": "scale-step 2026-08-10: x100",
+   "source": "detres 3.53cr eps 8.34; same FY24 identity",
+   "stored_pat": 352.93,
+   "stored_pat_con": 352.93
+  }
+ },
  "MAPMYINDIA": {
   "20210930": {
    "correct_pat_con": 26.07,
@@ -1146,6 +1450,20 @@
    "defect": "year-shift duplicate (\u00a745 detector): held Jun-2018's value (IPO-cohort: listed Apr-2018, Jun-2017 pre-listing); single-basis filer (std==con every row) so both slots heal",
    "source": "FourD year-ago comparative of the Jun-2018 filing INDAS_38581_34213_11082018053643_WEB.xml; FY18 chain 8.19+19.11+26.48+77.48 == 131.26 detres .50 audited annual EXACT",
    "stored_pat": 12.82
+  }
+ },
+ "MKVENTURES": {
+  "20250331": {
+   "correct_pat": -5.35,
+   "defect": "scale-step 2026-08-10: wrong value (11.18 == FY26 annual total, provenance unknown)",
+   "source": "detres 514238 -5.35cr eps -13.92 (0.384cr sh); FY25 .50 annual 9.38 vs sum 9.62 within 2.6%",
+   "stored_pat": 11.18
+  },
+  "20250630": {
+   "correct_pat": 4.25,
+   "defect": "scale-step 2026-08-10: qtr-shift (held Mar-25's -5.35)",
+   "source": "detres 4.25cr eps 11.04; FY26 identity 4.25+3.492+2.34+1.104=11.18==.50 annual EXACT",
+   "stored_pat": -5.35
   }
  },
  "MMTC": {
@@ -1198,6 +1516,14 @@
    "defect": "year-shift duplicate (\u00a745 detector): std slot held the adjacent year's value",
    "source": "detres",
    "stored_pat": 5.24
+  }
+ },
+ "NEAGI": {
+  "20201231": {
+   "correct_pat": 1.46,
+   "defect": "scale-step 2026-08-10: wrong value",
+   "source": "detres 508670 1.46cr, eps 23.28 internally consistent (0.063cr sh)",
+   "stored_pat": 41.46
   }
  },
  "NEUEON": {
@@ -1324,12 +1650,30 @@
    "stored_pat": 7.09
   }
  },
+ "PJL": {
+  "20240331": {
+   "correct_pat": 4.1,
+   "correct_pat_con": 4.1,
+   "defect": "scale-step 2026-08-10: impossible (9.19 > audited FY24 total 6.17); half-yearly filer, Mar cell = H2",
+   "source": "Mar-24 filing 566bc392 H2FY24 NP 410.04 lakh; H1 207.27 + H2 410.04 = FY24 617.31 lakh == detres .50 annual 6.173 EXACT; eps 9.50 (0.43cr sh)",
+   "stored_pat": 9.19,
+   "stored_pat_con": 9.19
+  }
+ },
  "POLYMED": {
   "20190331": {
    "correct_pat": 21.48,
    "defect": "adjacent-quarter dup: Mar-2019 std held Jun-2019's value (Mar rev stored correctly)",
    "source": "nse xbrl INDAS_48318_135085_04092019121231_WEB.xml: FourD DECLARED 2019-01-01..2019-03-31 AUDITED pat_own 21.4831cr rev 159.87 == stored revS Mar EXACT, EPS 2.43 EXACT (8.8237cr sh); OneD Apr-Jun 20.1835 EPS 2.29 EXACT stays (rev 152.3594 == revS Jun)",
    "stored_pat": 20.18
+  }
+ },
+ "PREVEST": {
+  "20230930": {
+   "correct_pat": 3.74,
+   "defect": "scale-step 2026-08-10: x100 lakh print",
+   "source": "detres 543363 quarterly rows empty; .50 FY24 annual 16.124 minus stored 4.08+3.64+4.66 = 3.744 EXACT (\u00a742 FY-gate)",
+   "stored_pat": 374.04
   }
  },
  "RAJESHEXPO": {
@@ -1530,12 +1874,196 @@
    "stored_pat_con": 46.12
   }
  },
+ "SAYAJIHOTL": {
+  "20200331": {
+   "correct_pat": 5.9,
+   "correct_pat_con": 5.9,
+   "defect": "scale-step 2026-08-10: Jun-20's -11.708 x100, qtr-shifted (both rows announced 2020-07-30 together)",
+   "source": "detres 523710 Mar-20 5.898cr; FY20 identity -1.789-6.918+1.013+5.898=-1.796==.50 annual EXACT (page EPS row unreliable for this filer, identity outvotes)",
+   "stored_pat": -1170.79,
+   "stored_pat_con": -1170.79
+  },
+  "20200630": {
+   "correct_pat": -11.71,
+   "correct_pat_con": -11.71,
+   "defect": "scale-step 2026-08-10: wrong value",
+   "source": "detres -11.708cr eps -6.86; FY21 identity -11.708-4.515+0.345-5.862=-21.74==.50 annual EXACT",
+   "stored_pat": -56.0,
+   "stored_pat_con": -56.0
+  },
+  "20200930": {
+   "correct_pat": -4.51,
+   "correct_pat_con": -4.51,
+   "defect": "scale-step 2026-08-10: wrong value",
+   "source": "detres -4.515cr eps -2.75; FY21 identity EXACT",
+   "stored_pat": -0.56,
+   "stored_pat_con": -0.56
+  },
+  "20250331": {
+   "correct_pat": 1.7,
+   "defect": "scale-step 2026-08-10: wrong value",
+   "source": "detres 1.70cr eps 0.97 x 1.75cr shares exact",
+   "stored_pat": 2.68
+  },
+  "20250930": {
+   "correct_pat": -3.29,
+   "defect": "scale-step 2026-08-10: x100 lakh print",
+   "source": "detres -3.287cr eps -1.88 x 1.75 exact",
+   "stored_pat": -328.73
+  }
+ },
  "SEIL": {
   "20240630": {
    "correct_pat": 2.76,
    "defect": "year-shift/series poison (\u00a745 detector): late cell held Jun-2023's value; detres Jun-2024 page prints 2.76 (rev was shifted too)",
    "source": "bse-detres scrip 539921 qtr 122 .00 page (Date-End checked)",
    "stored_pat": 2.33
+  }
+ },
+ "SEKURITIND": {
+  "20171231": {
+   "correct_pat": 5.34,
+   "correct_pat_con": 5.34,
+   "defect": "scale-step 2026-08-10: year-shift (held Dec-18's 4.87)",
+   "source": "detres 515043 5.342cr eps 0.59; FY18 .50 annual 13.775",
+   "stored_pat": 4.87,
+   "stored_pat_con": 4.87
+  },
+  "20180331": {
+   "correct_pat": 3.77,
+   "correct_pat_con": 3.77,
+   "defect": "scale-step 2026-08-10: year-shift (held Mar-19's 4.198)",
+   "source": "detres 3.765cr eps 0.41",
+   "stored_pat": 4.2,
+   "stored_pat_con": 4.2
+  },
+  "20180930": {
+   "correct_pat": 3.73,
+   "correct_pat_con": 3.73,
+   "defect": "scale-step 2026-08-10: sentinel junk",
+   "source": "detres 3.732cr eps 0.41; FY19 identity 3.278+3.732+4.869+4.198=16.077==annual EXACT",
+   "stored_pat": 0.08,
+   "stored_pat_con": 0.08
+  },
+  "20181231": {
+   "correct_pat": 4.87,
+   "correct_pat_con": 4.87,
+   "defect": "scale-step 2026-08-10: sentinel",
+   "source": "detres 4.869cr; same FY19 identity",
+   "stored_pat": 0.0,
+   "stored_pat_con": 0.0
+  },
+  "20190331": {
+   "correct_pat": 4.2,
+   "correct_pat_con": 4.2,
+   "defect": "scale-step 2026-08-10: sentinel",
+   "source": "detres 4.198cr eps 0.46; FY19 identity",
+   "stored_pat": -0.07,
+   "stored_pat_con": -0.07
+  },
+  "20191231": {
+   "correct_pat": 5.22,
+   "correct_pat_con": 5.22,
+   "defect": "scale-step 2026-08-10: sentinel",
+   "source": "detres 5.215cr eps 0.57; FY20 identity 2.237+3.517+5.215+2.445=13.41==annual EXACT",
+   "stored_pat": 0.06,
+   "stored_pat_con": 0.06
+  },
+  "20200331": {
+   "correct_pat": 2.45,
+   "correct_pat_con": 2.45,
+   "defect": "scale-step 2026-08-10: year-shift (held Mar-21's 6.217)",
+   "source": "detres 2.445cr eps 0.27; FY20 identity EXACT",
+   "stored_pat": 6.22,
+   "stored_pat_con": 6.22
+  },
+  "20201231": {
+   "correct_pat": 5.59,
+   "correct_pat_con": 5.59,
+   "defect": "scale-step 2026-08-10: sentinel",
+   "source": "detres 5.591cr eps 0.61; FY21 identity -2.514+2.122+5.591+6.217=11.416==annual EXACT",
+   "stored_pat": 0.06,
+   "stored_pat_con": 0.06
+  },
+  "20210331": {
+   "correct_pat": 6.22,
+   "correct_pat_con": 6.22,
+   "defect": "scale-step 2026-08-10: sentinel",
+   "source": "detres 6.217cr eps 0.68; FY21 identity",
+   "stored_pat": -0.05,
+   "stored_pat_con": -0.05
+  },
+  "20210630": {
+   "correct_pat": 3.54,
+   "correct_pat_con": 3.54,
+   "defect": "scale-step 2026-08-10: year-shift (held Jun-22's 6.875)",
+   "source": "detres 3.543cr eps 0.39; FY22 identity 3.543+28.547+9.326+6.276=47.692==annual EXACT",
+   "stored_pat": 6.88,
+   "stored_pat_con": 6.88
+  },
+  "20211231": {
+   "correct_pat": 9.33,
+   "correct_pat_con": 9.33,
+   "defect": "scale-step 2026-08-10: sentinel",
+   "source": "detres 9.326cr eps 1.02; FY22 identity",
+   "stored_pat": 0.06,
+   "stored_pat_con": 0.06
+  },
+  "20220331": {
+   "correct_pat": 6.28,
+   "correct_pat_con": 6.28,
+   "defect": "scale-step 2026-08-10: sentinel",
+   "source": "detres 6.276cr eps 0.69; FY22 identity",
+   "stored_pat": 0.0,
+   "stored_pat_con": 0.0
+  },
+  "20220630": {
+   "correct_pat": 6.88,
+   "correct_pat_con": 6.88,
+   "defect": "scale-step 2026-08-10: sentinel",
+   "source": "detres 6.875cr eps 0.75; FY23 identity 6.875+6.449+7.394+8.154=28.872==annual EXACT",
+   "stored_pat": -0.05,
+   "stored_pat_con": -0.05
+  },
+  "20240630": {
+   "correct_pat": 7.61,
+   "correct_pat_con": 7.61,
+   "defect": "scale-step 2026-08-10: wrong value",
+   "source": "detres 7.614cr eps 0.84; FY25 identity 7.614+8.274+10.091+10.003=35.982==annual EXACT",
+   "stored_pat": 10.0,
+   "stored_pat_con": 10.0
+  },
+  "20250331": {
+   "correct_pat": 10.0,
+   "correct_pat_con": 10.0,
+   "defect": "scale-step 2026-08-10: qtr-shift (held Jun-25's 10.715)",
+   "source": "detres 10.003cr eps 1.1; FY25 identity",
+   "stored_pat": 10.71,
+   "stored_pat_con": 10.71
+  },
+  "20250630": {
+   "correct_pat": 10.72,
+   "correct_pat_con": 10.72,
+   "defect": "scale-step 2026-08-10: sentinel",
+   "source": "detres 10.715cr eps 1.18; FY26 identity 10.715+10.765+11.206+13.113=45.799==annual EXACT",
+   "stored_pat": -0.05,
+   "stored_pat_con": -0.05
+  },
+  "20251231": {
+   "correct_pat": 11.21,
+   "correct_pat_con": 11.21,
+   "defect": "scale-step 2026-08-10: sentinel",
+   "source": "detres 11.206cr eps 1.23; FY26 identity",
+   "stored_pat": 0.06,
+   "stored_pat_con": 0.06
+  },
+  "20260331": {
+   "correct_pat": 13.11,
+   "correct_pat_con": 13.11,
+   "defect": "scale-step 2026-08-10: sentinel",
+   "source": "detres 13.113cr eps 1.44; FY26 identity",
+   "stored_pat": -0.05,
+   "stored_pat_con": -0.05
   }
  },
  "SGFL": {
@@ -1578,6 +2106,42 @@
    "defect": "year-shift duplicate (\u00a745 detector): std slot held the adjacent year's value",
    "source": "detres",
    "stored_pat": 1.06
+  }
+ },
+ "SHRAAITECH": {
+  "20240331": {
+   "correct_pat": 1.84,
+   "defect": "scale-step 2026-08-10: x100",
+   "source": "detres 543976 1.84cr eps 0.75; FY24 identity 0.44+2.18+1.94+1.84=6.40 vs annual 6.39",
+   "stored_pat": 183.99
+  },
+  "20240630": {
+   "correct_pat_con": 2.14,
+   "defect": "scale-step 2026-08-10: con total-row lakh stored as crore",
+   "source": "Jun-25 filing bd42aa8c con owners yr-ago col 213.87 lakh=2.14cr (Mar-25 col==audited balancing anchor, eps 0.35)",
+   "stored_pat_con": 206.77
+  },
+  "20250331": {
+   "correct_pat": 2.22,
+   "correct_pat_con": 1.68,
+   "defect": "scale-step 2026-08-10: total-row stored, owners is 1.68",
+   "source": "Jun-25 filing con owners prior-qtr col 167.52 lakh; owners basis per store convention",
+   "stored_pat": 167.52,
+   "stored_pat_con": 2.07
+  },
+  "20250630": {
+   "correct_pat": 3.36,
+   "correct_pat_con": 3.3,
+   "defect": "scale-step 2026-08-10: total-row lakh as crore",
+   "source": "Jun-25 filing con owners 330.18 lakh=3.30cr eps 0.54",
+   "stored_pat": 336.29,
+   "stored_pat_con": 324.54
+  },
+  "20250930": {
+   "correct_pat": 2.77,
+   "defect": "scale-step 2026-08-10: x100",
+   "source": "detres 2.766cr eps 0.45; same FY26 identity",
+   "stored_pat": 276.59
   }
  },
  "SIGIND": {
@@ -1772,6 +2336,14 @@
    "defect": "year-shift duplicate (\u00a745 detector): std slot held the adjacent year's value",
    "source": "detres",
    "stored_pat": 4.99
+  }
+ },
+ "TECHKGREEN": {
+  "20240930": {
+   "correct_pat": 3.8,
+   "defect": "scale-step 2026-08-10: x100 lakh print (H1 figure; half-yearly SME filer)",
+   "source": "H1FY25 filing d0f78c40 (Rs lakh); eps 5.15 x 0.7373cr sh = 3.80; con slot already 3.8",
+   "stored_pat": 380.18
   }
  },
  "TECHNOE": {
