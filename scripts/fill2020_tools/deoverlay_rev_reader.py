@@ -153,6 +153,23 @@ BANK_REV = BG.re.compile(r"interest\s+earned", BG.re.I)
 BANK_OI = BG.re.compile(r"\bother\s+income\b", BG.re.I)
 BANK_TI = BG.re.compile(r"\btotal\s+income\b", BG.re.I)
 
+# ★ THE SLASH GLYPH (§51b corruption-tolerant fragments, measured 2026-08-10).
+# "Profit / (Loss) for the period" extracts from these 2019 PDFs with the slash rendered as a PIPE
+# or a capital I: CHENNPETRO Jun-2019 gives "x Profit I (Loss) for the period (VIII - IX)" and
+# EIHOTEL Jun-2019 "Profit I(Loss) for the period". ROW_PATS["pat"] allows an OPTIONAL "/" there
+# but no other glyph, so it misses BOTH — the page parses its revenue row fine and then reports
+# "rev/PAT row unparsed", which reads as a reader bug of unknown cause. Measured over the 20 such
+# cells: 11 are label misses, 6 are wholly glyph-corrupted text layers (values mangled too — those
+# need the vision rung, not a regex), 3 have no profit row with figures on the page at all.
+# Same treatment for the owners line: EIHOTEL prints "Profit attributable to: a) Owners of EIH
+# Limited", and the list marker "a)" breaks ROW_PATS["own"].
+PAT_TOLERANT = BG.re.compile(
+    r"(?:net\s+)?profit\s*(?:[/|Il1]\s*\(?\s*loss\s*\)?)?\s*(?:after\s+tax\s*)?"
+    r"for\s+the\s+(?:period|quarter|year)|profit\s+after\s+tax", BG.re.I)
+OWN_TOLERANT = BG.re.compile(
+    r"attributable\s+to\s*:?\s*(?:[a-z][\).]\s*)?(?:the\s+)?"
+    r"(?:owners?|equity\s+holders|shareholders)", BG.re.I)
+
 MONTHS = {m: i for i, m in enumerate(
     ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"], 1)}
 RE_DAY = BG.re.compile(r"^(\d{1,2})(?:st|nd|rd|th)?,?$", BG.re.I)
@@ -469,6 +486,19 @@ def main():
                         own_last = nums
                     if own_last is not None:
                         rows["own"] = own_last
+                    # FALLBACK on the corruption-tolerant patterns — only when the strict ones
+                    # found nothing, so a clean page is still read exactly as before.
+                    if "own" not in rows:
+                        for _, t, nums in merged:
+                            if nums and len(nums) >= 3 and OWN_TOLERANT.search(t) \
+                                    and not BG.re.search(r"comprehensive", t, BG.re.I):
+                                rows["own"] = nums
+                    if "pat" not in rows and "own" not in rows:
+                        for _, t, nums in merged:
+                            if nums and PAT_TOLERANT.search(t) \
+                                    and not BG.re.search(r"comprehensive|before\s+tax", t, BG.re.I):
+                                rows["pat"] = nums
+                                break
                     if "rev" not in rows or not (bank_mode or "pat" in rows or "own" in rows):
                         if not why_sticky:
                             why = "page found but rev/PAT row unparsed"
