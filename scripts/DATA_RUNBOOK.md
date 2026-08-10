@@ -3018,6 +3018,8 @@ A named unverified corner costs one sentence; the same corner found by the user 
 | backtest saved the same strategy twice | **2** — two writers of one record |
 | BSE feed merge silently dead in CI (top-level heavy import + `\|\| echo`) | **0** — import smoke test, no swallowed errors |
 | SW cache version bumped off a stale checkout, colliding with a version origin already shipped | **5** — read the current CACHE from `origin/main`, not the local file |
+| Quarterly Results stat tiles WHITE in dark theme for a month (`var(--surface-1,#fff)` — token never existed, #fff fallback won in every theme; invisible in light/soft) | **4** — dark check, plus: grep every `var(--…)` a page uses against the tokens theme.css actually defines; an undefined token silently renders its fallback |
+| old renamed symbol dead-ended stock.html ("not found", stuck Loading line) while FUND_ALIAS had drifted 71 vs the rename map's 797 | **3** — renamed-ticker path with a symbol renamed AFTER the alias map was last touched, not one already in it |
 
 ### If a bug ships anyway
 Fix the **class**, not just the instance: ask *"what check would have caught this?"* and add it to the
