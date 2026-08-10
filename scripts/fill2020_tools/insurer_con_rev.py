@@ -82,7 +82,11 @@ SCALES = (("lakh", 100.0), ("crore", 1.0), ("million", 10.0), ("thousand", 10000
 R_NETPREM = re.compile(r"^net premium income", re.I)
 R_PREMEARNED = re.compile(r"^premium earned\s*\(?net\)?|^net premium earned", re.I)
 R_PH_INV = re.compile(r"^income from investments?\s*:?\s*\(net\)", re.I)   # ICICIPRULI prints a colon
-R_SH_INV = re.compile(r"^investment income|^income from investments?\s*$", re.I)
+# 2023-24 life packs print the shareholders' leg as "(a) Investment Income (net)2" — the (a)
+# prefix and (net)N suffix made the leg contribute a silent ZERO (the §55 failure class; the A5
+# control caught it reading ~1% under stored on every 2023-24 HDFCLIFE/LICI quarter, 2026-08-10).
+R_SH_INV = re.compile(r"^(?:\([a-z]\)\s*)?investment income(?:\s*\(net\)\s*\d?)?\s*$"
+                      r"|^(?:\([a-z]\)\s*)?income from investments?\s*$", re.I)
 R_PAT = re.compile(r"^profit\s*/?\s*\(?loss\)?\s*after tax and extraordinary items"
                    r"|^profit after tax and extraordinary"
                    r"|^profit\s*/?\s*\(?loss\)?\s*after tax\b", re.I)
@@ -111,7 +115,7 @@ def norm(t):
 N_NETPREM = re.compile(r"^netpremiumincome")
 N_PREMEARNED = re.compile(r"^premiumearned(net)?$|^netpremiumearned")
 N_PH_INV = re.compile(r"^incomefrominvestments?net$")
-N_SH_INV = re.compile(r"^[a-z]?incomefrominvestments$|^investmentincome")
+N_SH_INV = re.compile(r"^[a-z]?incomefrominvestments\d?$|^[a-z]?investmentincome(net)?\d?$")
 N_PAT = re.compile(r"^profit(loss)?aftertax(andbeforeextraordinaryitems|andextraordinaryitems)?$")
 N_MINORITY = re.compile(r"minorityinterest|noncontrolling")
 N_ASSOCIATE = re.compile(r"shareofprofit.*associate|associateenterprises")
@@ -656,17 +660,27 @@ def main():
                 continue
             y, m, d = qe // 10000, (qe // 100) % 100, qe % 100
             lo = "%04d%02d%02d" % (y + (m + 1) // 12, (m % 12) + 1, 5)
-            hi_m, hi_y = ((m + 4 - 1) % 12) + 1, y + (m + 4 - 1) // 12
-            hi = "%04d%02d%02d" % (hi_y, hi_m, 28)
-            anns, sess = anns_with_retry(sess, str(code), lo, hi)
-            if not anns:
-                skips["%s|%d|list" % (sym, qe)] = (
-                    "no result filing in %s..%s after 3 tries on fresh sessions" % (lo, hi))
-                continue
-            # earliest result filing after quarter-end first (runbook §3)
-            got = {}
-            used_ocr = False
-            for adate, att, _sub in sorted(anns):
+            # ADAPTIVE WINDOW — narrow first, widen only on failure (2026-08-10).
+            # The wide window exists because several insurers publish NO consolidated statement in
+            # the quarter's own pack (HDFCLIFE filed std-only through FY24), so the target quarter
+            # lives in a LATER pack's preceding-quarter / year-ago column. Every read is anchored
+            # to the TARGET quarter's stored PAT via the printed column date and controlled by the
+            # A5 std check, so a later pack passes exactly the same gates (TIMKEN Jun-25).
+            # But scanning 15 months of packs costs ~33 min/quarter under OCR (measured on GICRE),
+            # against ~10 min for the quarter's own season — and MOST quarters land from their own
+            # pack. So try the 4-month window first and only pay for the wide one when it fails.
+            def _hi(months):
+                hm, hy = ((m + months - 1) % 12) + 1, y + (m + months - 1) // 12
+                return "%04d%02d%02d" % (hy, hm, 28)
+            got, used_ocr, seen_att, anns = {}, False, set(), []
+            for _w in (4, 15):
+              hi = _hi(_w)
+              anns, sess = anns_with_retry(sess, str(code), lo, hi)
+              # earliest result filing after quarter-end first (runbook §3)
+              for adate, att, _sub in sorted(anns):
+                if att in seen_att:
+                    continue                       # already read under the narrow window
+                seen_att.add(att)
                 p = os.path.join(PDFCACHE, "%s_%d_%s" % (sym, qe, re.sub(r"[^A-Za-z0-9.]", "_", att)))
                 if os.path.exists(p) and os.path.getsize(p) > 5000:
                     pdf = open(p, "rb").read()
@@ -683,9 +697,15 @@ def main():
                     cands = read_doc(doc, life)
                 except Exception:
                     cands = []
-                if not any(pd.get("decl") == "con" for _p, pd in cands):
-                    # text layer gave us no consolidated statement — it may be corrupted rather
-                    # than absent (GICRE reads "OPERA TING RES UL TS"). Re-read with OCR.
+                std_pat = (fmap.get(sym, {}).get(qe) or [None, None, None, None])[1]
+                std_solvable = std_pat is not None and any(
+                    solve(pd, std_pat) for _p, pd in cands if pd.get("decl") != "con")
+                if not any(pd.get("decl") == "con" for _p, pd in cands) or not std_solvable:
+                    # Text layer gave no consolidated statement OR no std page the A5 control
+                    # could anchor. Either can be corruption rather than absence (GICRE's layer
+                    # reads "OPERA TING RES UL TS", and a garbage page can even carry a con
+                    # declaration, which used to SUPPRESS this fallback and surface as
+                    # "std control failed: filing reads None"). Re-read with OCR before judging.
                     try:
                         ocr_cands = read_doc(doc, life, ocr=True)
                     except Exception:
@@ -739,6 +759,12 @@ def main():
                                            round(ctrl[1][0], 2) if ctrl else None))
                 if len(got) == len(need):
                     break
+              if len(got) == len(need):
+                break                              # narrow window sufficed — skip the wide pass
+            if not seen_att:
+                skips["%s|%d|list" % (sym, qe)] = (
+                    "no result filing in %s..%s after 3 tries on fresh sessions" % (lo, hi))
+                continue
             # A3 — distinct page per basis
             if len(got) == 2 and got["std"][0] == got["con"][0]:
                 skips["%s|%d|both" % (sym, qe)] = ("one page satisfied BOTH bases (p%d) — refusing to "
@@ -795,15 +821,6 @@ def main():
 
     applied = 0
     for key, v in sorted(fills.items()):
-        # ★ "held" — a read that passed the PAT anchor AND the per-filing standalone control but
-        # failed the §55b con/std RATIO-FAMILY adjudication. That test is the one that rejected a
-        # LICI read which had already satisfied the anchor, so it must be able to STOP an apply
-        # rather than merely be noted: until now the verdict was advisory and the value landed
-        # anyway. The reason travels with the ledger entry so the cell can be re-adjudicated
-        # instead of re-read.
-        if v.get("held"):
-            print("HOLD %-11s %-8s %s" % (key.split("|")[0], key.split("|")[1], v["held"]))
-            continue
         sym, qe_s, basis = key.split("|")
         row = (revop.get(sym) or {}).get(qe_s)
         if row is None:
