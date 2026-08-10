@@ -5818,3 +5818,55 @@ Open flags (measured, unresolved — in the verdicts file): KOHINOOR Mar-25 375.
 METROPOLIS Sep/Dec-18 (FY19 identity fails by +9.6 with Q1+Q4 filing-confirmed); HALDER Mar-26 con
 36.82 (H2−Q3 says 19.13, con EPS fails both filings); DBL Dec-25 con 829.85 > filing total
 (negative-NCI unverified).
+
+---
+
+## 74. ★★★ SCALE-STEP PAT CAMPAIGN — 128 candidates, the LAKH-AS-CRORE class, and the detres unit trap  (2026-08-10)
+
+**NO ASSUMPTIONS, NO GUESSWORK — every value written traces to a document read this session.**
+
+Detector (reproducible): consecutive non-null PAT triples per symbol/basis on origin/main
+sf_fundamentals; |mid|/|nbr| or its inverse in [9,11] or [90,110] on BOTH sides, same direction,
+min side > 0.05; exclude cells whose matching-basis revenue jumps ≥5× the same way; subtract
+scale_fix/pat_defects/sanity_ok. 2026-08-10 run: exactly **128 fresh (77 std, 51 con)**.
+Adjudicated 128/128 minus a measured open tail; commit 665a1d9d healed 97 slot-cells + 20 fills +
+12 nulls and allowlisted 65 genuine spikes. What the campaign established:
+
+* **The dominant defect is the filing's ₹-LAKH print stored as CRORE (×100)** — the stored junk
+  value LITERALLY EQUALS the number printed on the PDF's lakh table (HALDYNGL std Jun-25 401.46,
+  DHABRIYA con Dec-23 333.52, INDPRUD con Mar-26 1729.41 — which is the doc's own OCR-typo'd NP
+  row, owners row 1749.41 proven by std 3.85 + KSB-associate 1745.56 EXACT). Often combined with a
+  quarter/year SHIFT: INDPRUD stored each quarter's lakh print one quarter LATER (96.47 = Jun-24
+  std lakh → stored as Sep-24 in BOTH slots); SAYAJIHOTL Mar-20 held Jun-20's loss ×100 (both rows
+  announced together 2020-07-30); SEKURITIND's whole series is sentinel junk (0.06/−0.05/0.0)
+  with real values year-shifted — 18 heals + 16 fills, every FY18–FY26 identity EXACT.
+* **The mid of the triple is not always the sick cell.** HALDYNGL/MAGNAELQ/INDPRUD Dec-25: the
+  flagged mid was the HEALTHY value and both neighbours were ×100. Always adjudicate the whole
+  window (§45 re-scan rule), never just the flagged cell.
+* **§42 detres values are NOT always ₹ million.** SAYAJIHOTL rows mix lakh and million ACROSS
+  QUARTERS of the same scrip; the printed EPS row can also be wrong (Dec-20 prints 0.02 where the
+  identity forces 0.20). Arbitrate the unit per row with EPS×share-count, and let an EXACT FY
+  quarter-sum identity outvote a single row's EPS.
+* **Half-yearly filers poison quarterly cells**: PJL and TECHKGREEN (SMEs) file H1/H2 only; our
+  Mar cells hold H2 by series convention (PJL Mar-24 heal = H2 print 410.04 lakh, H1+H2 == the
+  detres .50 audited annual EXACT), and phantom Dec/Jun "quarters" hold misplaced H1 prints.
+* **xbrl_extra.json.gz is a free con-basis adjudicator** for NSE-parsed symbols (2,793): per-basis
+  eps_b/pbt/tax/exc straight from the filings settled ~15 con cells in minutes (BBTC Go-First
+  exceptional on-page; GFLLIMITED pbt 0.57 − tax 35.72 = −35.15 EXACT; ABAN eps −707.53). Check it
+  BEFORE fetching any PDF.
+* **Genuine ≠ small**: 65 spikes are real and allowlisted (DIXON eps 42.93, MAXVIL's gain sits in
+  discontinued-ops BELOW pbt, CANHLIFE = Canara HSBC Life, an insurer with 12 consistent March
+  spikes). sanity_ok.json, never wider tolerances.
+
+**Open queue (measured, no route left short of vision/NSE):** GVKPIL con Jun/Sep-21 (BSE has no
+filings in those windows — NSE lane untried); MKVENTURES con Mar-25/Jun-25/Dec-25/Mar-26 +
+TECHKGREEN Dec-24/Jun-25/Mar-25-con (result tables are scanned or custom-font glyphs → vision
+rung, ask first); AVONMORE Mar-24/Dec-25, MASTERTR Mar-25, GINNIFILA Jun-19 (detres empty);
+SHRAAITECH std Mar-23 50.82 (SME pre-migration era); pre-2015 tail with no detres (PEL×3 2011-12,
+ALOKTEXT Jun-12, ASIANELEC Dec-08, WOCKPHARMA Mar-06, SHREERAMA Dec-03, WIMCO Mar-04, GEORGWILIM
+Jun-04, REIAGROLTD Dec-13, FIRSTLEASE Mar-11, HINDOILEXP handled, USHAMART handled); unresolved
+con OTHERs (PNB Dec-18 437.93, BBOX Jun-20, TITAGARH Mar-16, RML Dec-17, PAISALO Mar-17 — already
+in §45's queue, AIIL Jun-23, MANINFRA Sep-20 −0.12, GLOBOFFS Mar-19 con); scrip-resolution class
+(JMTAUTOLTD, CLCIND, JMA, BILENERGY, SUPREMEENG had code, MAXVIL had code). Tooling for a rerun:
+the detector + detres/PDF readers live in this campaign's scratchpad pattern — detector spec is
+fully stated above; detres endpoint + QID formula in §42.
