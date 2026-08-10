@@ -6083,3 +6083,77 @@ fingerprint — con==std in ≥95% of a symbol's quarters, differing in ≤3. It
 verdict (§71g: that class of screen was right 6 times in 23). Two carry a strong scale signature:
 SIMPLEXCAS 2020-06 std −282.03 vs con −2.82 (**exactly ×100**) and VISHAL 2025-03 488.18 vs 7.35.
 None healed without a document.
+
+
+---
+
+## 75. ★★★ THE TRIPLE-RENDERED TEXT LAYER — a filing that is perfectly legible and unreadable  (found 2026-08-10)
+
+**NO ASSUMPTIONS, NO GUESSWORK** (§0) — everything below is measured on the documents named.
+
+A third corruption class, distinct from §51b's glyph substitution and from a plain scan. ABCAPITAL's
+2019 result PDFs carry a text layer **rendered three times, stacked at the same coordinates**:
+
+    Total Total Total Revenue Revenue Revenue from from from operations operations operations
+    [3,645.75, 3,845.75, 3,645.75, 4,729.82, 4,729.82, 4,729.82, ...]
+
+All three copies of a token start within ~0.5pt of each other (three `Total` tokens at x0=75.87,
+y centres 223.78/223.72/223.88). Consequences, and why it costs whole campaigns silently:
+* **No label regex can match** — `revenue\s+from\s+operations` never appears contiguously — so
+  `extract_rows` returns nothing and `backfill_revop_gaps` files the cell as
+  **`no-anchor-or-scanned`**, the same bucket a genuinely scanned PDF lands in.
+* **`PL_PAGE` still matches** (it finds the words), so the page is not flagged as unreadable
+  either. The filing looks tried-and-failed when it was never actually read.
+* Spelling-tolerant fragments (§51b's cure) do NOT help: the words are intact, they are duplicated.
+  The fix has to be positional.
+
+### 75a. The duplication is a GIFT — it is a built-in majority vote
+The copies come from independent render passes and **disagree on digits**: 3,645.75 / 3,845.75 /
+3,645.75 and 15,163.51 / 15,183.51 / 15,163.51. So collapse each position bucket
+(3pt × 3pt on (x0, y-centre)) to its **majority token, and DROP the bucket when no strict majority
+exists** — a noised figure then cannot reach the store at all. 2pt buckets are too tight: they split
+ABCAPITAL's own columns in two and a row comes back with the same column twice.
+Tool: `scripts/fill2020_tools/deoverlay_rev_reader.py` (`deoverlay_words`, `is_overlaid` — de-overlay
+fires only on pages measured to be overlaid, ≥35% of buckets holding ≥2 tokens, so normal pages are
+read exactly as before).
+
+### 75b. Two reader traps this exposed, both general
+* **`merge_wrapped` glues a section header onto its first component.** `1 Revenue from operations`
+  carries no figures, so it is prepended to `Interest Income 1,835.71 …` — and a first-match reader
+  then stores **interest income as revenue**. Rank the candidates: a label that IS
+  `Total revenue/income from operations` beats one that merely contains the phrase
+  (`pick_rev_row`).
+* **The owners-PAT row can appear twice** on these pages (`Profit for the period attributable to
+  owners…` printed on two lines); the first copy carried junk cells (−9.0, 10.0) and the second the
+  real vector. A quarter-vs-cumulative guard reading the first one sees `None`. Take the LAST
+  matching owners row, not the first.
+
+### 75c. What landed, and on what evidence
+**ABCAPITAL 2019-03 revC = 4,729.82** — read from TWO independent as-filed documents agreeing to
+the paisa: the audited Mar-2019 filing (BSE ann 2019-05-04, column headed *Quarter Ended 31st Mar
+2019*) and the Jun-2019 filing (ann 2019-08-02, comparative column headed *31st March, 2019 (Refer
+Note 6)*). Both print rev 4,729.82 · other income 0.98 · total income 4,730.80 · **profit
+attributable to Owners 258.40 == our stored con PAT exactly**; scale `crore` declared in the header.
+The **column is identified by its PRINTED DATE (§55b), not by position** — decisive here, because
+the Jun-2019 read is a comparative column, and because it removes the circularity of anchoring on a
+stored PAT that may itself have come from that same column.
+⚠️ **The FY identity does NOT reconcile and was NOT used**: the four stored FY19 con quarters sum to
+15,125.23 against the printed FY 15,163.51 (0.25%). Recorded as a non-reconciling corroboration
+rather than quietly dropped or quietly leaned on (§45). Ledger:
+`scripts/named_rev_cell_fills_2019.json`; the applier re-proves the PAT anchor against current data
+and refuses if it has moved.
+
+### 75d. Status of the reader — STAGED, NOT A WRITER
+`deoverlay_rev_reader.py` now parses these pages correctly (printed-date column selection +
+stored-PAT anchor + the rev+other-income==total-income identity, fill-only) but **lands nothing
+yet**: on some pages its owners-row pick hits the duplicate line first, so the quarter-vs-cumulative
+guard sees `None` and refuses. That is the honest state — a reader that refuses is safe; a reader
+that guesses is not. Fixing 75b's second bullet is the next step.
+
+### 75e. Diagnose the bucket, never accept it (§61)
+`scripts/fill2020_tools/diag_rev2019.py` replaces `no-anchor-or-scanned` with the stage that
+actually failed: `no-filing-listed` / `pdf-unfetchable` / `scanned-no-text` / `no-pl-page` /
+`bank-or-insurer-fmt` / `basis-absent` / `rows-unparsed` / `no-stored-pat-anchor` / `anchor-failed`.
+Each points at a DIFFERENT rung, which one bucket cannot. It also resolves **delisted** scrips from
+`_bse_master_all.json` — `bse_scrips.json` is built from the live master and returns nothing for
+ALBK / ANDHRABANK / CORPBANK / DHFL (§52b), which otherwise reads as "no filings".
