@@ -42,6 +42,10 @@ LEDGERS = [
     ("std_pat_detres_fills.json",    "fund",  "std",  1),
     ("con_pat_nse_reads.json",       "fund",  "con",  3),
     ("con_pat_fy_derived.json",      "fund",  "con",  3),
+    # sf_revop patS is a MIRROR of npStd (§70); this ledger holds every mirror value fixed or
+    # confirmed by the 2026-08-10 std-PAT adjudication (46 cells), so a rebuild that re-lands a
+    # poisoned XBRL parse (wrong-year OneD, H1-as-quarter, double-indexed Mar-2019 files) trips here.
+    ("stdpat_mirror_heals.json",     "revop", "patS", 4),
 ]
 # NESTED ledgers: {SYM: {QE: {...}}} rather than the flat "SYM|QE" shape above. The defect ledgers
 # carry CORRECTIONS (a value we proved wrong and replaced), so a clobber there does not merely lose

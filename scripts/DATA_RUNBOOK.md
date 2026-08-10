@@ -5761,3 +5761,60 @@ the mirror's 0.93 were wrong.
 **Before escalating anything to vision, re-fetch the own-quarter PDFs and read the NEXT-YEAR
 filing.** A failed fetch reads exactly like a scanned document in the logs, and a scan with an OCR
 layer is a text read, not a vision read — the expensive rung stays unused.
+
+---
+
+## 73. ★★★ std-PAT TWO-FILES SWEEP CLOSED AT ZERO — 46 cells adjudicated, both files lose  (2026-08-10)
+
+§70/§71 closed npCon-vs-patC; the SAME fingerprint on the std side (npStd vs sf_revop patS idx4,
+tol max(0.02, 0.5%)) found **46 disagreements**. Every one was taken to a primary document
+(cached/fetched filer XBRL, BSE detres §42 with the FY quarter-sum identity §45, announcement PDF
+§58) and EPS-recon where the tags allowed. Verdicts + per-cell provenance:
+`scripts/stdpat_adjud_verdicts.json`; applier `scripts/_stdpat_apply.py` (guard-edit §2b +
+blast-radius + all four twins). **Score: sf_fundamentals wrong 25, the mirror wrong 21** — the
+"authoritative file" lost more often than the copy. Six companion defects healed en route
+(DHARSUGAR Jun-23 swap twin, ABCOTS/SURAJEST/DBL con, KALYANI ×2), all document-proven.
+
+Defect classes worth re-detecting (each is a SCAN, not a one-off):
+* **H1/H2/FY-cumulative stored as the quarter in sf_fundamentals** — 13 cells, all SME/young
+  listings (+ SHIVAMAUTO holding the full FY). The filer submits an integrated-filing XBRL whose
+  OneD *declares* the 6/12-month span; update_fundamentals ignores context dates by design (§45's
+  double-indexing lesson cuts both ways). Detector: fund value ≈ sum of stored sibling quarters.
+* **Wrong-year/wrong-period OneD declarations** — KOHINOOR/SURAJEST/SIEMENS class: a filing
+  submitted in 2025-26 declares OneD dates a full year earlier (or a stale Apr-Jun label on a
+  FY-transition Oct-Dec quarter, SIEMENS). build_revop's cache re-parse trusts the declared dates →
+  the MIRROR gets poisoned while fund (announce-date keyed) stays right. The filename timestamp vs
+  the declared period is the tell (§45).
+* **NSE double-indexed Mar-2019 cluster** — 6 mirrors held the JUN-2019 quarter's value
+  (POLYMED/GSFC/CARERATING/EMKAY/GREAVESCOT + METROPOLIS blank-zero). detres + FY identity settled
+  every one; the fund std announce dates of that cluster still carry the Jun-19 filing date
+  (20190904) — ann-date heal candidates.
+* **Revised filings, and the principled line**: an ORIGINAL that contradicts its own YTD/EPS
+  (RUBYMILLS 8.0694 vs its printed H1; HOMEFIRST 93.325 vs its printed 179.993) is an arithmetic
+  error → adopt the correction (ann date moves to the revision date). An original that is
+  internally consistent (MADRASFERT +62.21 audited, EPS-recon exact; VIJSHAN −10.6554) is a
+  genuine RESTATEMENT → point-in-time keeps the first filing (§2d TRU precedent); the revision is
+  journalled, not stored.
+* **XBRL sign-flip vs the filer's own EPS row** — SGFL tagged +1.2092 while printing EPS −0.96;
+  the FY19 identity closes only with the corrected signs. The EPS row arbitrates sign, same as it
+  arbitrates the §2d tag-swap.
+* **★ WRONG COMPANY under a shared ticker — KALYANI.** Ours is Kalyani Commercials Ltd
+  (INE610E01010, NSE); `bse_scrips.json by_id` maps KALYANI → 544023, a DIFFERENT company
+  (INE0N6U01018). Stored Mar-24/Dec-24/Mar-25 came from the wrong company — its detres FY25 annual
+  (14.245) equals the stored 8.01+6.23 EXACTLY, while Kalyani Commercials' own filings print
+  0.319/0.255/0.7237 with a closing FY chain and its printed revenue 102.8994 == our stored revS.
+  Fourth ticker-identity trap after TRU/CCL/SHK (§72) — **a scrip_id equal to the symbol is a
+  coincidence to be disproved; gate on ISIN.** Series follow-up (missing Jun/Sep-24, revenue audit,
+  resolver guard) is an open task.
+
+Durability: mirror values now live in `scripts/stdpat_mirror_heals.json`, wired into
+verify_fills_live LEDGERS (patS slot 4); the two con heals whose `_reattr_owners` cache still
+holds the refuted number (SURAJEST Jun-24, DBL Sep-25) are in `owners_basis_heals.json` (§71d
+precedence). fund-side std heals are safe from nightlies (update_fundamentals is fill-only on
+non-null; apply_owners_full touches con only).
+
+Open flags (measured, unresolved — in the verdicts file): KOHINOOR Mar-25 375.64 / Mar-26 87.65
+(both files agree, out of family ×100, debt-settlement era unverified); RPSGVENT Sep-18 58.46;
+METROPOLIS Sep/Dec-18 (FY19 identity fails by +9.6 with Q1+Q4 filing-confirmed); HALDER Mar-26 con
+36.82 (H2−Q3 says 19.13, con EPS fails both filings); DBL Dec-25 con 829.85 > filing total
+(negative-NCI unverified).
