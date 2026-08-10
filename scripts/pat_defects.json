@@ -154,6 +154,30 @@
    "stored_pat_con": 4.05
   }
  },
+ "AUTOINT": {
+  "20240930": {
+   "correct_pat": 2.68,
+   "correct_pat_con": 2.68,
+   "defect": "nosub_con_lag \u00a773a (companion): both slots held the printed H1-FY25 cumulative 407.31 lakh with its leading 4 misread as 1; the quarter is 268.00 lakh",
+   "source": "AUTOINT own Q2-FY25 filing, BSE ann 2024-11-12 att af08b4b0-eaaf-434e-8bc6-37fd518b24a9.pdf 'STANDALONE UNAUDITED FINANCIAL RESULTS FOR THE QUARTER ENDED 30TH SEPTEMBER 2024 (Rs. In lacs)': 'Net Profit/(loss) after tax (7-8)' = 268.00 | 139.31 | 297.96 | 407.31 | 597.62 | 944.17 for Sep-24 | Jun-24 | Sep-23 | H1-FY25 | H1-FY24 | FY24; printed H1 407.31 = 268.00+139.31 EXACT, and the stored 107.31 is that H1 figure with its leading 4 misread as 1. Filing is STANDALONE-only (title + auditor's report)",
+   "stored_pat": 107.31,
+   "stored_pat_con": 107.31
+  },
+  "20250630": {
+   "correct_pat": 1.79,
+   "correct_pat_con": 1.79,
+   "defect": "nosub_con_lag \u00a773a (companion): both slots held the printed H1-FY26 CUMULATIVE 417.70 lakh as crore; the quarter is 17.87 Rs-mn = 1.79",
+   "source": "AUTOINT own Q2-FY26 filing, BSE ann 2025-11-10 att 1856eb67-0539-4632-9659-877321e0b310.pdf 'STANDALONE UNAUDITED FINANCIAL RESULTS ... 30TH SEPTEMBER 2025 (Rs. In lacs)', 'Net Profit/(loss) after tax': col1 Sep-25 = 239.2 lakh, col3 Sep-24 = 268.00 lakh, H1-FY26 = 417.70 lakh - so the stored Jun-25 value 417.7 is the H1-FY26 CUMULATIVE and the stored Sep-25 std 2.68 is the SEP-2024 value a year late. BSE detres period-verified: Jun-25 17.87 Rs-mn = 1.787, Sep-25 23.92 = 2.392, Dec-25 23.50 = 2.35, Mar-26 25.10 = 2.51, FY2026 Sum=90.39 vs .50 annual 90.38. screener.in prints Sep-25 2.39 on BOTH bases",
+   "stored_pat": 417.7,
+   "stored_pat_con": 417.7
+  },
+  "20250930": {
+   "correct_pat": 2.39,
+   "defect": "nosub_con_lag \u00a773a (screen): std held the SEP-2024 quarter's value (268.00 lakh = 2.68) one year late. con 2.39 CONFIRMED unchanged",
+   "source": "AUTOINT own Q2-FY26 filing, BSE ann 2025-11-10 att 1856eb67-0539-4632-9659-877321e0b310.pdf 'STANDALONE UNAUDITED FINANCIAL RESULTS ... 30TH SEPTEMBER 2025 (Rs. In lacs)', 'Net Profit/(loss) after tax': col1 Sep-25 = 239.2 lakh, col3 Sep-24 = 268.00 lakh, H1-FY26 = 417.70 lakh - so the stored Jun-25 value 417.7 is the H1-FY26 CUMULATIVE and the stored Sep-25 std 2.68 is the SEP-2024 value a year late. BSE detres period-verified: Jun-25 17.87 Rs-mn = 1.787, Sep-25 23.92 = 2.392, Dec-25 23.50 = 2.35, Mar-26 25.10 = 2.51, FY2026 Sum=90.39 vs .50 annual 90.38. screener.in prints Sep-25 2.39 on BOTH bases || AUTOINT own Q2-FY25 filing, BSE ann 2024-11-12 att af08b4b0-eaaf-434e-8bc6-37fd518b24a9.pdf 'STANDALONE UNAUDITED FINANCIAL RESULTS FOR THE QUARTER ENDED 30TH SEPTEMBER 2024 (Rs. In lacs)': 'Net Profit/(loss) after tax (7-8)' = 268.00 | 139.31 | 297.96 | 407.31 | 597.62 | 944.17 for Sep-24 | Jun-24 | Sep-23 | H1-FY25 | H1-FY24 | FY24; printed H1 407.31 = 268.00+139.31 EXACT, and the stored 107.31 is that H1 figure with its leading 4 misread as 1. Filing is STANDALONE-only (title + auditor's report)",
+   "stored_pat": 2.68
+  }
+ },
  "BAFNAPHARM": {
   "20180331": {
    "correct_pat": -34.17,
@@ -342,6 +366,14 @@
    "defect": "stored value fails the series FY-coherence test (page series annual-exact, stored series off)",
    "source": "series-review 2026-08-02: as-filed bse-detres page value; page quarter-sums match the audited .50 annual EXACTLY for this FY while the stored series does not",
    "stored_pat": 77.94
+  }
+ },
+ "CUB": {
+  "20220331": {
+   "correct_pat_con": 208.96,
+   "defect": "nosub_con_lag \u00a773a (screen): CUB has NO consolidated basis at all (0/79 NSE rows, 0/18 cached XBRLs, empty screener con table), so the con slot is the con=std identity and must equal the verified std 208.96. This is the \u00a773a class exactly",
+   "source": "CUB own Q4-FY22 press release, BSE ann 2022-05-27 att 9061f7de-de4d-43b3-96c6-fe483d80ee17.pdf: 'Net Profit 208.95' (Q4-FY2021-22 column) and FY 'Net Profit increased by 28% from Rs.593 crore to Rs.760 crore'. BSE detres period-verified Mar-22 2089.57 Rs-mn = 208.957; FY2022 Sum(4)=7601.65 = .50 annual 7601.65 EXACT. NO CONSOLIDATED BASIS EXISTS: 0 Consolidated rows in 79 NSE corporates-financial-results rows (target quarter serves only a Non-Consolidated row), 0 Consolidated nature tags across 18 cached XBRLs, and screener.in's consolidated quarterly table is EMPTY",
+   "stored_pat_con": 208.6
   }
  },
  "DBL": {
@@ -968,6 +1000,20 @@
    "stored_pat": 23.33
   }
  },
+ "HALDER": {
+  "20251231": {
+   "correct_pat_con": 20.64,
+   "defect": "con-PAT \u00a773 open-flag adjudication 2026-08-10",
+   "source": "COMPANION: the con slot held the TOTAL, not owners. The Dec-2025 con XBRL INTEGRATED_FILING_INDAS_1625562 carries NO attributable tags at all (only ProfitLossForPeriod 207,827,000 = 20.7827), so ingestion stored the total. The filing's own PDF does print the split \u2014 BSE att 0ba427bc-a01e-4397-82da-4ab98fa1e435.pdf p10, row 12 'Profit for the period/year attributable to': 'Equity shareholders of the parent' 2,063.68 lakh, 'Non-controlling interest' 14.59 lakh, sum 2,078.27 == row 9 total EXACT. Owners = 2,063.68 lakh = 20.64. Independently derived the same: H2 owners 3,682.23 - Q4 owners 1,618.54 = 2,063.69. 9M column agrees: owners 1,255.30 + NCI 21.54 = 1,276.84 total EXACT.",
+   "stored_pat_con": 20.78
+  },
+  "20260331": {
+   "correct_pat_con": 16.19,
+   "defect": "con-PAT \u00a773 open-flag adjudication 2026-08-10",
+   "source": "H2-OWNERS-AS-QUARTER (same class as ABCOTS/RAJESHEXPO/CAPITALSFB in \u00a773). The 29-May-2026 con filing INTEGRATED_FILING_INDAS_1676935 declares OneD 2025-10-01..2026-03-31 (H2, ReportingQuarter 'Yearly'): total 399,168,000 = 39.9168, owners 368,223,000 = 36.8223 <- the stored value, NCI 30,945,000. The CORRECTED 12-Jun-2026 filing INTEGRATED_FILING_INDAS_1681056 declares OneD 2026-01-01..2026-03-31 ('Fourth quarter', NameOfTheCompany 'Halder Venture Limited'): owners 161,854,000 = 16.1854, NCI 29,486,000, total 191,340,000; owners+NCI == total EXACT. Cross-checks: FY26 owners 2,873.84 lakh - 9M owners 1,255.30 lakh = 1,618.54; H2 owners 3,682.23 - Q3 owners 2,063.68 = 1,618.55. The 29-May PDF (BSE att 90a07d75-6664-49f5-99db-18c056d3430e.pdf p15) prints the Q4 column with NCI 294.86 lakh == the 12-Jun XBRL NCI 29,486,000 EXACT, confirming its first column IS the Jan-Mar quarter. (HALDER's printed EPS uses weighted-average shares against a paid-up capital that moved 115,973,000 -> 116,154,000 -> 124,381,000 within FY26, so EPS does not arbitrate here; the owners+NCI=total identity and the FY/9M/H2 chains do, and all close exactly.) Std side re-verified correct: 12-Jun std INDAS_1681055 OneD Jan-Mar 28,398,000 = 2.84 == stored.",
+   "stored_pat_con": 36.82
+  }
+ },
  "HALDYNGL": {
   "20211231": {
    "correct_pat": 3.9,
@@ -1280,6 +1326,14 @@
    "stored_pat_con": 7.15
   }
  },
+ "INTEGRAEN": {
+  "20211231": {
+   "correct_pat_con": 2.15,
+   "defect": "nosub_con_lag \u00a773a (screen): con 1.61 contradicts the company's OWN consolidated statement, which prints 215.28 lakh = 2.15 and whose printed 9M closes exactly against the stored Jun/Sep neighbours. std 2.15 CONFIRMED",
+   "source": "INTEGRAEN own Q3-FY22 filing, BSE ann 2022-02-04 att 215e0562-a2a9-4779-bf64-60de240bec57.pdf, p1 'Statement of Unaudited CONSOLIDATED Financial Results for the Quarter and Nine months ended 31st December, 2021' (Rs LAKH): 'Profit / (Loss) for the period (V-VI)' and 'Profit for the period (VII+VIII)' both = 215.28 | 259.66 | 204.75 | 691.67 | 379.92 | 540.64; 'Add: Share in net profit of Associates' = nil. The printed 9M 691.67 = 215.28 + 259.66 + 216.73 closes against the stored Sep-21 (2.60) and Jun-21 (2.17) neighbours EXACTLY. BSE detres standalone Dec-21 21.53 Rs-mn = 2.153",
+   "stored_pat_con": 1.61
+  }
+ },
  "INTENTECH": {
   "20191231": {
    "correct_pat_con": 1.38,
@@ -1358,26 +1412,38 @@
  },
  "KALYANI": {
   "20240331": {
+   "ann_now": 20240530,
+   "ann_source": "own std XBRL INDAS_108110_1146809_30052024 (NameOfTheCompany='Kalyani Commercials Limited', Symbol=KALYANI, OneD 2024-01-01..2024-03-31): rev 62.4657, PAT 0.3189. Announce date = NSE broadCastDate 30-May-2024 (board meeting 2024-05-29); the stored 20240527 came from BSE 544023 (Kalyani Cast-Tech), the wrong company.",
+   "ann_was": 20240527,
    "correct_pat": 0.32,
    "correct_pat_con": null,
    "defect": "std-PAT campaign con companion 2026-08-10",
    "source": "same: std-only filer in FY24; 3.71 is the other company's figure",
    "stored_pat": 3.73,
-   "stored_pat_con": 3.71,
-   "ann_was": 20240527,
-   "ann_now": 20240530,
-   "ann_source": "own std XBRL INDAS_108110_1146809_30052024 (NameOfTheCompany='Kalyani Commercials Limited', Symbol=KALYANI, OneD 2024-01-01..2024-03-31): rev 62.4657, PAT 0.3189. Announce date = NSE broadCastDate 30-May-2024 (board meeting 2024-05-29); the stored 20240527 came from BSE 544023 (Kalyani Cast-Tech), the wrong company."
+   "stored_pat_con": 3.71
+  },
+  "20240630": {
+   "correct_pat": 0.62,
+   "defect": "wrong-company series gap (KALYANI->BSE 544023 Kalyani Cast-Tech); quarter was absent",
+   "source": "own std XBRL INDAS_111487_1221613_12082024 (name+symbol verified in-document, OneD 2024-04-01..2024-06-30): rev 57.8483, PAT 0.6171. Locked by the Sep-24 filing's printed H1 (PAT 1.3534 == 0.6171+0.7363, rev 147.5047 == 57.8483+89.6564, both EXACT) and by the Q4-FY26 statement's FY25 comparative (233.24 lakh == the four quarters).",
+   "stored_pat": null
+  },
+  "20240930": {
+   "correct_pat": 0.74,
+   "defect": "wrong-company series gap (KALYANI->BSE 544023 Kalyani Cast-Tech); quarter was absent",
+   "source": "own std XBRL INDAS_115573_1308357_13112024 (name+symbol verified, OneD 2024-07-01..2024-09-30): rev 89.6564, PAT 0.7363. Same H1/9M/FY25 chains; the Sep-2025 statement re-prints this quarter as its year-ago column (rev 8,965.64 lakh, PAT 73.63 lakh) \u2014 an independent second document.",
+   "stored_pat": null
   },
   "20241231": {
+   "ann_now": 20250210,
+   "ann_source": "own std XBRL INDAS_119375_1376564_10022025 (name+symbol verified, OneD 2024-10-01..2024-12-31): rev 136.9005, PAT 0.2553, printed 9M rev 284.4052 == Q1+Q2+Q3 EXACT. Announce date = NSE broadCastDate 10-Feb-2025 (board meeting 2025-02-10); ann was the 0 date-unknown sentinel.",
+   "ann_was": 0,
    "correct_pat": 0.26,
    "correct_pat_con": null,
    "defect": "std-PAT campaign con companion 2026-08-10",
    "source": "same: std-only filer in FY25; 8.24 is the other company's figure",
    "stored_pat": 8.01,
-   "stored_pat_con": 8.24,
-   "ann_was": 0,
-   "ann_now": 20250210,
-   "ann_source": "own std XBRL INDAS_119375_1376564_10022025 (name+symbol verified, OneD 2024-10-01..2024-12-31): rev 136.9005, PAT 0.2553, printed 9M rev 284.4052 == Q1+Q2+Q3 EXACT. Announce date = NSE broadCastDate 10-Feb-2025 (board meeting 2025-02-10); ann was the 0 date-unknown sentinel."
+   "stored_pat_con": 8.24
   },
   "20250331": {
    "correct_pat": 0.72,
@@ -1387,23 +1453,11 @@
    "stored_pat": 6.23,
    "stored_pat_con": 6.03
   },
-  "20240630": {
-   "stored_pat": null,
-   "correct_pat": 0.62,
-   "defect": "wrong-company series gap (KALYANI->BSE 544023 Kalyani Cast-Tech); quarter was absent",
-   "source": "own std XBRL INDAS_111487_1221613_12082024 (name+symbol verified in-document, OneD 2024-04-01..2024-06-30): rev 57.8483, PAT 0.6171. Locked by the Sep-24 filing's printed H1 (PAT 1.3534 == 0.6171+0.7363, rev 147.5047 == 57.8483+89.6564, both EXACT) and by the Q4-FY26 statement's FY25 comparative (233.24 lakh == the four quarters)."
-  },
-  "20240930": {
-   "stored_pat": null,
-   "correct_pat": 0.74,
-   "defect": "wrong-company series gap (KALYANI->BSE 544023 Kalyani Cast-Tech); quarter was absent",
-   "source": "own std XBRL INDAS_115573_1308357_13112024 (name+symbol verified, OneD 2024-07-01..2024-09-30): rev 89.6564, PAT 0.7363. Same H1/9M/FY25 chains; the Sep-2025 statement re-prints this quarter as its year-ago column (rev 8,965.64 lakh, PAT 73.63 lakh) \u2014 an independent second document."
-  },
   "20250930": {
-   "stored_pat": 0.24,
    "correct_pat": 0.12,
    "defect": "filer printed PAT==PBT (blank quarter tax cell); own EPS + H1/9M chains arbitrate",
-   "source": "own integrated-filing XBRL INTEGRATED_FILING_INDAS_1573530_13112025 + its printed statement. The quarter's current-tax cell is BLANK so Net Profit was printed equal to PBT (24.10 lakh). The filing's OWN Basic EPS for that column is 1.24 -> 12.40 lakh on 1,000,000 shares. H1 75.39-63.01 == 12.38; 9M 138.61-63.01-63.22 == 12.38 (Dec-25 filing). -> 0.1238 cr."
+   "source": "own integrated-filing XBRL INTEGRATED_FILING_INDAS_1573530_13112025 + its printed statement. The quarter's current-tax cell is BLANK so Net Profit was printed equal to PBT (24.10 lakh). The filing's OWN Basic EPS for that column is 1.24 -> 12.40 lakh on 1,000,000 shares. H1 75.39-63.01 == 12.38; 9M 138.61-63.01-63.22 == 12.38 (Dec-25 filing). -> 0.1238 cr.",
+   "stored_pat": 0.24
   }
  },
  "KEIL": {
@@ -1414,6 +1468,14 @@
    "source": "bse detres 539620 qtr 106.00 span 01-Apr-20..30-Jun-20 NP 40.18M = 4.018cr EPS 0.94 EXACT (4.2646cr sh, equity 2132.29 lakh fv5); Dec-20 17.86M == stored 1.79 EXACT",
    "stored_pat": -2.02,
    "stored_pat_con": -2.02
+  }
+ },
+ "KENNAMET": {
+  "20241231": {
+   "correct_pat_con": 22.2,
+   "defect": "nosub_con_lag \u00a773a (screen): con 23.4 has no document: the Dec-2024 filing is a single-entity statement (auditor reports on 'the Company', zero occurrences of 'consolidated') and screener's consolidated series for this company ends Sep-2022. std 22.2 CONFIRMED",
+   "source": "KENNAMET own Q2-FY25 filing, BSE ann 2025-02-06 att 76b3539a-96e7-416d-9f12-08418533e4f4.pdf (Rs MILLION): p3 'Net profit for the period/year (V-VI)' = 222 | 250 | 249 | 472 | 420 | 1,105 for Dec-24 | Sep-24 | Dec-23 | H1-FY25 | H1-FY24 | FY-Jun-24; printed H1 472 = 222+250 EXACT. Revenue 2,870 matches detres 2870 Rs-mn. Price Waterhouse review report covers 'Kennametal India Limited (the Company)'; the 8-page filing contains ZERO occurrences of 'consolidated'. screener.in's CONSOLIDATED series for this company ENDS at Sep-2022. NB Kennametal's fiscal year ends 30 JUNE ('half year ended December 31'), which is why the \u00a742 .50 annual at Mar-2025 correctly refused",
+   "stored_pat_con": 23.4
   }
  },
  "KRBL": {
@@ -1600,6 +1662,14 @@
    "defect": "std-PAT two-files adjudication 2026-08-10",
    "source": "fund held H1 (INDAS_1569202 Apr-Sep 17.0344). Q2 file INDAS_1580731 13.3017; chain 3.7327+13.3017=17.0344 EXACT",
    "stored_pat": 17.03
+  }
+ },
+ "METROPOLIS": {
+  "20181231": {
+   "correct_pat": 22.8,
+   "defect": "std-PAT \u00a773 open-flag adjudication 2026-08-10",
+   "source": "PRINTED comparative column. BSE att 648d3237-5c5c-4438-8a1b-7d006d0c5cd6.pdf (Dec-2019 results, filed 06-Feb-2020), standalone page 4, row 7 'Profit for the period/year', column 3 = 'Quarter ended 31 December 2018': 2,280.23 lakh = 22.80. Column anchors on the same row: col2 'Quarter ended 30 September 2019' 3,167.72 == BSE detres Sep-19 316.77 Rs-mn EXACT; col6 'Year ended 31 March 2019 (Audited)' 10,145.70 == BSE detres FY19 .50 annual 1014.57 Rs-mn EXACT. Identities: 9M FY19 col5 6,196.05 = H1FY19 3,915.82 + 2,280.23 EXACT; FY19 = 6,196.05 + Q4 3,949.65 EXACT. EPS row col3 4.51 vs implied 2,280.23/501.785 lakh sh = 4.54 (stored 32.40 would imply 6.46). FY19 std chain after heal: 19.11+20.05+22.80+39.50 = 101.46 == 101.457.",
+   "stored_pat": 32.4
   }
  },
  "MIDHANI": {
@@ -1824,6 +1894,14 @@
    "defect": "adjacent-quarter dup: Mar-2019 std held Jun-2019's value (Mar rev stored correctly)",
    "source": "nse xbrl INDAS_48318_135085_04092019121231_WEB.xml: FourD DECLARED 2019-01-01..2019-03-31 AUDITED pat_own 21.4831cr rev 159.87 == stored revS Mar EXACT, EPS 2.43 EXACT (8.8237cr sh); OneD Apr-Jun 20.1835 EPS 2.29 EXACT stays (rev 152.3594 == revS Jun)",
    "stored_pat": 20.18
+  }
+ },
+ "PRECOT": {
+  "20200331": {
+   "correct_pat_con": -0.81,
+   "defect": "nosub_con_lag \u00a773a (screen): con 0.0 is a blank-template zero; BOTH of the filer's per-basis XBRLs print -8,100,000 = -0.81 for the quarter, EPS-recon exact. std -0.81 CONFIRMED",
+   "source": "PRECOT both NSE per-basis XBRLs for the quarter (index rows dated 2020-06-27): CONSOLIDATED INDAS_56763_269999_27062020011704_WEB.xml and STANDALONE INDAS_56762_269995_27062020011514_WEB.xml. Both declare OneD period 2020-01-01..2020-03-31 with NatureOfReportStandaloneConsolidated Consolidated / Standalone respectively, and BOTH print ProfitLossForPeriod OneD = -8,100,000 = -0.81 cr. EPS-recon EXACT: printed basic EPS -0.67 x (PaidUpValue 120,000,000 / FaceValue 10 = 12,000,000 shares) reproduces -8.1e6. Stored con 0.0 is the blank-template-zero class (\u00a773)",
+   "stored_pat_con": 0.0
   }
  },
  "PREVEST": {
@@ -2302,6 +2380,14 @@
    "stored_pat": 276.59
   }
  },
+ "SHRADDHA": {
+  "20220630": {
+   "correct_pat_con": -0.32,
+   "defect": "nosub_con_lag \u00a773a (screen): con 0.51 has no document: the Jun-2022 filing is standalone-only (no subsidiary/group language anywhere) and prints (31.74) lakh. std -0.32 CONFIRMED",
+   "source": "SHRADDHA own Q1-FY23 filing, BSE ann 2022-08-10 att 5b3cf31c-82b0-474c-a1ce-b08adf983b93.pdf 'Statement of Unaudited Financial Results for the Quarter Ended as on June 30th, 2022 (Rs in Lakhs)': 'Profit/ (Loss) for the period' = (31.74) | (1.69) | (8.11) | (30.94) for Jun-22 | Mar-22 | Jun-21 | FY22. The 6-page filing contains ZERO occurrences of 'consolidated' and ZERO of 'subsidiary'/'group'/'joint venture'; the limited-review report covers 'Shraddha Prime Projects Limited' alone. BSE detres Jun-22 -3.17 Rs-mn = -0.317",
+   "stored_pat_con": 0.51
+  }
+ },
  "SIGIND": {
   "20170930": {
    "correct_pat": 1.43,
@@ -2328,6 +2414,56 @@
    "defect": "adjacent-quarter dup: Jun-2020 std held Mar-2020's value (Mar keeps: detres -40.92M == stored -4.09); stored con Jun-20 -9.37 already held the true std value",
    "source": "bse detres 507998 qtr 106.00 span 01-Apr-20..30-Jun-20 NP -93.65M = -9.365cr EPS -8.36 EXACT (1.12cr sh); Dec-19 (104.00) -25.90M == stored -2.59-class neighbour lock",
    "stored_pat": -4.09
+  }
+ },
+ "SIMPLEXCAS": {
+  "20190630": {
+   "correct_pat": 11.15,
+   "correct_pat_con": 11.2,
+   "defect": "nosub_con_lag \u00a773a (companion): both slots hold the Jun-2020 filing's Rs-LAKH comparative column as CRORE (std 1114.93, con 1119.98)",
+   "source": "SIMPLEXCAS own Q1-FY21 filing, BSE ann 2020-09-14 att 3fc3ee9b-e2b8-4801-957b-df8f725c6c2c.pdf (Rs in LAKH): p2 STANDALONE '11.Profit for the period' = (282.03) | (2190.01) | 1114.93 | (2855.38) for Jun-20 | Mar-20 | Jun-19 | FY20; p6 CONSOLIDATED '13.Profit for the period' and '16.Net Profit attributable to a) Owner of the Company' = (278.28) | (2190.61) | 1119.98 | (2857.52), NCI blank; auditor APAS & Co 'REVIEW OF INTERIM CONSOLIDATED FINANCIAL RESULTS ... its joint venture'",
+   "stored_pat": 1114.93,
+   "stored_pat_con": 1114.93
+  },
+  "20200331": {
+   "correct_pat": -21.9,
+   "correct_pat_con": -21.91,
+   "defect": "nosub_con_lag \u00a773a (companion): both slots hold the Jun-2020 filing's Rs-LAKH comparative column as CRORE (std 2190.01, con 2190.61)",
+   "source": "SIMPLEXCAS own Q1-FY21 filing, BSE ann 2020-09-14 att 3fc3ee9b-e2b8-4801-957b-df8f725c6c2c.pdf (Rs in LAKH): p2 STANDALONE '11.Profit for the period' = (282.03) | (2190.01) | 1114.93 | (2855.38) for Jun-20 | Mar-20 | Jun-19 | FY20; p6 CONSOLIDATED '13.Profit for the period' and '16.Net Profit attributable to a) Owner of the Company' = (278.28) | (2190.61) | 1119.98 | (2857.52), NCI blank; auditor APAS & Co 'REVIEW OF INTERIM CONSOLIDATED FINANCIAL RESULTS ... its joint venture'",
+   "stored_pat": -2190.01,
+   "stored_pat_con": -2190.01
+  },
+  "20200630": {
+   "correct_pat": -2.82,
+   "correct_pat_con": -2.78,
+   "defect": "nosub_con_lag \u00a773a (screen): std held the filing's Rs-LAKH print (282.03) as CRORE (x100, \u00a774 lakh-as-crore); con held a COPY of the standalone value instead of the filing's consolidated owners figure (278.28 lakh = -2.78)",
+   "source": "SIMPLEXCAS own Q1-FY21 filing, BSE ann 2020-09-14 att 3fc3ee9b-e2b8-4801-957b-df8f725c6c2c.pdf (Rs in LAKH): p2 STANDALONE '11.Profit for the period' = (282.03) | (2190.01) | 1114.93 | (2855.38) for Jun-20 | Mar-20 | Jun-19 | FY20; p6 CONSOLIDATED '13.Profit for the period' and '16.Net Profit attributable to a) Owner of the Company' = (278.28) | (2190.61) | 1119.98 | (2857.52), NCI blank; auditor APAS & Co 'REVIEW OF INTERIM CONSOLIDATED FINANCIAL RESULTS ... its joint venture' || BSE detres (runbook \u00a742) scrip 513472, each response period-verified against its own Date Begin/End: Jun-20 20200401..20200630 NP -28.2 Rs-mn = -2.82 cr; FY2021 Sum(4 qtrs) = 10.10 = the .50 AUDITED ANNUAL 10.10 EXACT; Dec-20 21.79 Rs-mn = 2.179 reproduces the undisputed stored 2.18 (scrip-identity anchor)",
+   "stored_pat": -282.03,
+   "stored_pat_con": -2.82
+  },
+  "20240930": {
+   "correct_pat": 3.64,
+   "correct_pat_con": 3.64,
+   "defect": "nosub_con_lag \u00a773a (companion): Rs-LAKH print stored as CRORE (x100); con already carried the con=std identity and keeps it",
+   "source": "BSE detres scrip 513472 period-verified: Sep-24 36.37 Rs-mn = 3.637; Jun-25 47.38 = 4.738; Sep-25 55.78 = 5.578. FY2025 Sum=151.30 vs .50 annual 151.31; FY2026 Sum=212.60 vs annual 212.59. screener.in standalone (\u00a760) prints 3.64 / 4.74 / 5.58 for the same quarters",
+   "stored_pat": 363.74,
+   "stored_pat_con": 363.74
+  },
+  "20250630": {
+   "correct_pat": 4.74,
+   "correct_pat_con": 4.74,
+   "defect": "nosub_con_lag \u00a773a (companion): Rs-LAKH print stored as CRORE (x100); con already carried the con=std identity and keeps it",
+   "source": "BSE detres scrip 513472 period-verified: Sep-24 36.37 Rs-mn = 3.637; Jun-25 47.38 = 4.738; Sep-25 55.78 = 5.578. FY2025 Sum=151.30 vs .50 annual 151.31; FY2026 Sum=212.60 vs annual 212.59. screener.in standalone (\u00a760) prints 3.64 / 4.74 / 5.58 for the same quarters",
+   "stored_pat": 473.75,
+   "stored_pat_con": 473.75
+  },
+  "20250930": {
+   "correct_pat": 5.58,
+   "correct_pat_con": 5.58,
+   "defect": "nosub_con_lag \u00a773a (companion): Rs-LAKH print stored as CRORE (x100); con already carried the con=std identity and keeps it",
+   "source": "BSE detres scrip 513472 period-verified: Sep-24 36.37 Rs-mn = 3.637; Jun-25 47.38 = 4.738; Sep-25 55.78 = 5.578. FY2025 Sum=151.30 vs .50 annual 151.31; FY2026 Sum=212.60 vs annual 212.59. screener.in standalone (\u00a760) prints 3.64 / 4.74 / 5.58 for the same quarters",
+   "stored_pat": 557.77,
+   "stored_pat_con": 557.77
   }
  },
  "SIYSIL": {
@@ -2634,6 +2770,46 @@
    "stored_pat": 14.79
   }
  },
+ "VISHAL": {
+  "20200331": {
+   "correct_pat": 5.12,
+   "correct_pat_con": 5.12,
+   "defect": "nosub_con_lag \u00a773a (companion): Rs-LAKH print (512.42) stored as CRORE; VISHAL had no consolidated basis before Jun-2024, so the con slot keeps the con=std identity it already held",
+   "source": "BSE detres scrip 538598, every response period-verified against its own Date Begin/End, with the FY quarter-sum identity closing EXACTLY on all three years: FY2020 Sum(4)=300.99 = .50 audited annual 300.99 (Mar-20 51.24 Rs-mn = 5.124); FY2021 Sum=181.03 = annual 181.03 (Jun-20 -81.61 = -8.161); FY2026 Sum=321.78 = annual 321.78 (Jun-25 80.84 = 8.084). Each stored value is the filing's Rs-LAKH print held as CRORE (512.42 / 816.06 / 808.37). screener.in standalone independently prints Jun-25 8.08. For Jun-25 CON, screener's consolidated series prints 9.16 and docs/bse_fundamentals.json carries an independent VISION read of the same filing at 9.16. VISHAL's consolidated basis begins Jun-2024 (screener's con series starts there), so the FY20/FY21 con slots carry the con=std identity they already held",
+   "stored_pat": 512.42,
+   "stored_pat_con": 512.42
+  },
+  "20200630": {
+   "correct_pat": -8.16,
+   "correct_pat_con": -8.16,
+   "defect": "nosub_con_lag \u00a773a (companion): Rs-LAKH print (816.06) stored as CRORE; pre-Jun-2024, con carries the con=std identity",
+   "source": "BSE detres scrip 538598, every response period-verified against its own Date Begin/End, with the FY quarter-sum identity closing EXACTLY on all three years: FY2020 Sum(4)=300.99 = .50 audited annual 300.99 (Mar-20 51.24 Rs-mn = 5.124); FY2021 Sum=181.03 = annual 181.03 (Jun-20 -81.61 = -8.161); FY2026 Sum=321.78 = annual 321.78 (Jun-25 80.84 = 8.084). Each stored value is the filing's Rs-LAKH print held as CRORE (512.42 / 816.06 / 808.37). screener.in standalone independently prints Jun-25 8.08. For Jun-25 CON, screener's consolidated series prints 9.16 and docs/bse_fundamentals.json carries an independent VISION read of the same filing at 9.16. VISHAL's consolidated basis begins Jun-2024 (screener's con series starts there), so the FY20/FY21 con slots carry the con=std identity they already held",
+   "stored_pat": -816.06,
+   "stored_pat_con": -816.06
+  },
+  "20240630": {
+   "correct_pat": 4.78,
+   "correct_pat_con": 4.79,
+   "defect": "nosub_con_lag \u00a773a (companion): both slots held the Rs-LAKH print (477.83) as CRORE; std 4.778 by detres + the exact FY2025 identity, con 4.79 by screener's consolidated series (validated on this company by its exact reproduction of the stored Dec-24 9.59 and Mar-25 7.35)",
+   "source": "BSE detres scrip 538598 period-verified: Mar-25 20250101..20250331 NP 48.82 Rs-mn = 4.882; Jun-24 47.78 = 4.778. FY2025 Sum(4 qtrs)=238.38 = .50 AUDITED ANNUAL 238.38 EXACT. screener.in STANDALONE prints Jun-24 4.78 / Mar-25 4.88; screener.in CONSOLIDATED prints Jun-24 4.79 / Dec-24 9.59 / Mar-25 7.35 - and its 9.59 and 7.35 reproduce our stored con cells EXACTLY, which validates that reader on this company's consolidated basis",
+   "stored_pat": 477.83,
+   "stored_pat_con": 477.83
+  },
+  "20250331": {
+   "correct_pat": 4.88,
+   "defect": "nosub_con_lag \u00a773a (screen): std held the filing's Rs-LAKH print (488.18) as CRORE (x100). con 7.35 CONFIRMED unchanged",
+   "source": "BSE detres scrip 538598 period-verified: Mar-25 20250101..20250331 NP 48.82 Rs-mn = 4.882; Jun-24 47.78 = 4.778. FY2025 Sum(4 qtrs)=238.38 = .50 AUDITED ANNUAL 238.38 EXACT. screener.in STANDALONE prints Jun-24 4.78 / Mar-25 4.88; screener.in CONSOLIDATED prints Jun-24 4.79 / Dec-24 9.59 / Mar-25 7.35 - and its 9.59 and 7.35 reproduce our stored con cells EXACTLY, which validates that reader on this company's consolidated basis",
+   "stored_pat": 488.18
+  },
+  "20250630": {
+   "correct_pat": 8.08,
+   "correct_pat_con": 9.16,
+   "defect": "nosub_con_lag \u00a773a (companion): both slots held the standalone Rs-LAKH print (808.37) as CRORE; std is 8.084 by detres + the exact FY2026 identity, and con is 9.16 by two independent readers (screener's consolidated series and the vision read already stored in docs/bse_fundamentals.json)",
+   "source": "BSE detres scrip 538598, every response period-verified against its own Date Begin/End, with the FY quarter-sum identity closing EXACTLY on all three years: FY2020 Sum(4)=300.99 = .50 audited annual 300.99 (Mar-20 51.24 Rs-mn = 5.124); FY2021 Sum=181.03 = annual 181.03 (Jun-20 -81.61 = -8.161); FY2026 Sum=321.78 = annual 321.78 (Jun-25 80.84 = 8.084). Each stored value is the filing's Rs-LAKH print held as CRORE (512.42 / 816.06 / 808.37). screener.in standalone independently prints Jun-25 8.08. For Jun-25 CON, screener's consolidated series prints 9.16 and docs/bse_fundamentals.json carries an independent VISION read of the same filing at 9.16. VISHAL's consolidated basis begins Jun-2024 (screener's con series starts there), so the FY20/FY21 con slots carry the con=std identity they already held",
+   "stored_pat": 808.37,
+   "stored_pat_con": 808.37
+  }
+ },
  "VOITHPAPR": {
   "20200930": {
    "correct_pat": 7.94,
@@ -2724,6 +2900,32 @@
    "stored_pat": -2312.36
   }
  },
+ "ZEAL": {
+  "20250331": {
+   "correct_pat": 5.42,
+   "correct_pat_con": 5.42,
+   "defect": "nosub_con_lag \u00a773a (companion): both slots held the FY2025 ANNUAL 1,005.933 lakh = 10.06 cr instead of the quarter (542.273 lakh = 5.42)",
+   "source": "ZEAL own Q4-FY26 filing, BSE ann 2026-05-28 att ac278e87-b6fb-489e-b29c-622cdba3d086.pdf, p4 'STATEMENT OF STANDALONE AUDITED FINANCIAL RESULT FOR THE QUARTER AND YEAR ENDED 31.03.2026, Amounts in Lakh': 'Profit for the period' = 203.818 | 753.396 | 542.273 | 1,411.427 | 1,005.933 for Mar-26 | Dec-25 | Mar-25 | FY26 | FY25. THE STORED 10.06 IN BOTH THE Mar-25 AND Dec-25 SLOTS IS THE FY2025 ANNUAL 1,005.933 lakh = 10.06 cr. Column map fixed by the revenue row, which matches detres to the paisa (13,685.651 lakh = 136.857 cr = detres 1368.57 Rs-mn; 22,207.703 = 222.077; 9,694.13 = 96.941). NO CONSOLIDATED BASIS: the 12-page audited filing contains ZERO occurrences of 'consolidated' (title, auditor's report and opinion are all Standalone), screener.in's consolidated quarterly table is EMPTY, and ZEAL is not NSE-listed. BSE detres period-verified Mar-26 20.38 Rs-mn = 2.038, Dec-25 75.34 = 7.534, Mar-25 54.23 = 5.423; FY2026 Sum(4)=141.11 = .50 annual 141.11 EXACT",
+   "stored_pat": 10.06,
+   "stored_pat_con": 10.06
+  },
+  "20251231": {
+   "correct_pat": 7.53,
+   "correct_pat_con": 7.53,
+   "defect": "nosub_con_lag \u00a773a (companion): both slots held the FY2025 ANNUAL 10.06 cr instead of the quarter (753.396 lakh = 7.53) - the same value duplicated into two different quarters",
+   "source": "ZEAL own Q4-FY26 filing, BSE ann 2026-05-28 att ac278e87-b6fb-489e-b29c-622cdba3d086.pdf, p4 'STATEMENT OF STANDALONE AUDITED FINANCIAL RESULT FOR THE QUARTER AND YEAR ENDED 31.03.2026, Amounts in Lakh': 'Profit for the period' = 203.818 | 753.396 | 542.273 | 1,411.427 | 1,005.933 for Mar-26 | Dec-25 | Mar-25 | FY26 | FY25. THE STORED 10.06 IN BOTH THE Mar-25 AND Dec-25 SLOTS IS THE FY2025 ANNUAL 1,005.933 lakh = 10.06 cr. Column map fixed by the revenue row, which matches detres to the paisa (13,685.651 lakh = 136.857 cr = detres 1368.57 Rs-mn; 22,207.703 = 222.077; 9,694.13 = 96.941). NO CONSOLIDATED BASIS: the 12-page audited filing contains ZERO occurrences of 'consolidated' (title, auditor's report and opinion are all Standalone), screener.in's consolidated quarterly table is EMPTY, and ZEAL is not NSE-listed. BSE detres period-verified Mar-26 20.38 Rs-mn = 2.038, Dec-25 75.34 = 7.534, Mar-25 54.23 = 5.423; FY2026 Sum(4)=141.11 = .50 annual 141.11 EXACT",
+   "stored_pat": 10.06,
+   "stored_pat_con": 10.06
+  },
+  "20260331": {
+   "correct_pat": 2.04,
+   "correct_pat_con": 2.04,
+   "defect": "nosub_con_lag \u00a773a (screen): both slots held values no document contains; the audited filing prints 203.818 lakh = 2.04. ZEAL files NO consolidated result, so the con slot carries the con=std identity",
+   "source": "ZEAL own Q4-FY26 filing, BSE ann 2026-05-28 att ac278e87-b6fb-489e-b29c-622cdba3d086.pdf, p4 'STATEMENT OF STANDALONE AUDITED FINANCIAL RESULT FOR THE QUARTER AND YEAR ENDED 31.03.2026, Amounts in Lakh': 'Profit for the period' = 203.818 | 753.396 | 542.273 | 1,411.427 | 1,005.933 for Mar-26 | Dec-25 | Mar-25 | FY26 | FY25. THE STORED 10.06 IN BOTH THE Mar-25 AND Dec-25 SLOTS IS THE FY2025 ANNUAL 1,005.933 lakh = 10.06 cr. Column map fixed by the revenue row, which matches detres to the paisa (13,685.651 lakh = 136.857 cr = detres 1368.57 Rs-mn; 22,207.703 = 222.077; 9,694.13 = 96.941). NO CONSOLIDATED BASIS: the 12-page audited filing contains ZERO occurrences of 'consolidated' (title, auditor's report and opinion are all Standalone), screener.in's consolidated quarterly table is EMPTY, and ZEAL is not NSE-listed. BSE detres period-verified Mar-26 20.38 Rs-mn = 2.038, Dec-25 75.34 = 7.534, Mar-25 54.23 = 5.423; FY2026 Sum(4)=141.11 = .50 annual 141.11 EXACT",
+   "stored_pat": 7.15,
+   "stored_pat_con": 6.53
+  }
+ },
  "ZENITHSTL": {
   "20190331": {
    "correct_pat": -81.07,
@@ -2812,27 +3014,5 @@
    "stored_pat": 54.76
   }
  },
- "_README": "Confirmed WRONG stored PAT cells in docs/sf_fundamentals.json, with the as-filed correct value and its source. Found while rev-backfilling: the cell's revenue could not be written because the stored PAT failed the anchor rule (see scripts/_apply_reads.py). sf_fundamentals is CI-rebuilt and is owned by refresh.yml / the bse-vision-fill routine (DATA_RUNBOOK hot-file ownership), so DO NOT hand-edit it from another tree - route the fix through that lane, then re-run the rev applier and these cells will anchor and fill.",
- "METROPOLIS": {
-  "20181231": {
-   "stored_pat": 32.4,
-   "correct_pat": 22.8,
-   "defect": "std-PAT \u00a773 open-flag adjudication 2026-08-10",
-   "source": "PRINTED comparative column. BSE att 648d3237-5c5c-4438-8a1b-7d006d0c5cd6.pdf (Dec-2019 results, filed 06-Feb-2020), standalone page 4, row 7 'Profit for the period/year', column 3 = 'Quarter ended 31 December 2018': 2,280.23 lakh = 22.80. Column anchors on the same row: col2 'Quarter ended 30 September 2019' 3,167.72 == BSE detres Sep-19 316.77 Rs-mn EXACT; col6 'Year ended 31 March 2019 (Audited)' 10,145.70 == BSE detres FY19 .50 annual 1014.57 Rs-mn EXACT. Identities: 9M FY19 col5 6,196.05 = H1FY19 3,915.82 + 2,280.23 EXACT; FY19 = 6,196.05 + Q4 3,949.65 EXACT. EPS row col3 4.51 vs implied 2,280.23/501.785 lakh sh = 4.54 (stored 32.40 would imply 6.46). FY19 std chain after heal: 19.11+20.05+22.80+39.50 = 101.46 == 101.457."
-  }
- },
- "HALDER": {
-  "20260331": {
-   "stored_pat_con": 36.82,
-   "correct_pat_con": 16.19,
-   "defect": "con-PAT \u00a773 open-flag adjudication 2026-08-10",
-   "source": "H2-OWNERS-AS-QUARTER (same class as ABCOTS/RAJESHEXPO/CAPITALSFB in \u00a773). The 29-May-2026 con filing INTEGRATED_FILING_INDAS_1676935 declares OneD 2025-10-01..2026-03-31 (H2, ReportingQuarter 'Yearly'): total 399,168,000 = 39.9168, owners 368,223,000 = 36.8223 <- the stored value, NCI 30,945,000. The CORRECTED 12-Jun-2026 filing INTEGRATED_FILING_INDAS_1681056 declares OneD 2026-01-01..2026-03-31 ('Fourth quarter', NameOfTheCompany 'Halder Venture Limited'): owners 161,854,000 = 16.1854, NCI 29,486,000, total 191,340,000; owners+NCI == total EXACT. Cross-checks: FY26 owners 2,873.84 lakh - 9M owners 1,255.30 lakh = 1,618.54; H2 owners 3,682.23 - Q3 owners 2,063.68 = 1,618.55. The 29-May PDF (BSE att 90a07d75-6664-49f5-99db-18c056d3430e.pdf p15) prints the Q4 column with NCI 294.86 lakh == the 12-Jun XBRL NCI 29,486,000 EXACT, confirming its first column IS the Jan-Mar quarter. (HALDER's printed EPS uses weighted-average shares against a paid-up capital that moved 115,973,000 -> 116,154,000 -> 124,381,000 within FY26, so EPS does not arbitrate here; the owners+NCI=total identity and the FY/9M/H2 chains do, and all close exactly.) Std side re-verified correct: 12-Jun std INDAS_1681055 OneD Jan-Mar 28,398,000 = 2.84 == stored."
-  },
-  "20251231": {
-   "stored_pat_con": 20.78,
-   "correct_pat_con": 20.64,
-   "defect": "con-PAT \u00a773 open-flag adjudication 2026-08-10",
-   "source": "COMPANION: the con slot held the TOTAL, not owners. The Dec-2025 con XBRL INTEGRATED_FILING_INDAS_1625562 carries NO attributable tags at all (only ProfitLossForPeriod 207,827,000 = 20.7827), so ingestion stored the total. The filing's own PDF does print the split \u2014 BSE att 0ba427bc-a01e-4397-82da-4ab98fa1e435.pdf p10, row 12 'Profit for the period/year attributable to': 'Equity shareholders of the parent' 2,063.68 lakh, 'Non-controlling interest' 14.59 lakh, sum 2,078.27 == row 9 total EXACT. Owners = 2,063.68 lakh = 20.64. Independently derived the same: H2 owners 3,682.23 - Q4 owners 1,618.54 = 2,063.69. 9M column agrees: owners 1,255.30 + NCI 21.54 = 1,276.84 total EXACT."
-  }
- }
+ "_README": "Confirmed WRONG stored PAT cells in docs/sf_fundamentals.json, with the as-filed correct value and its source. Found while rev-backfilling: the cell's revenue could not be written because the stored PAT failed the anchor rule (see scripts/_apply_reads.py). sf_fundamentals is CI-rebuilt and is owned by refresh.yml / the bse-vision-fill routine (DATA_RUNBOOK hot-file ownership), so DO NOT hand-edit it from another tree - route the fix through that lane, then re-run the rev applier and these cells will anchor and fill."
 }

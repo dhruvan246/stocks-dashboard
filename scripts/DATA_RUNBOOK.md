@@ -6125,6 +6125,77 @@ verdict (§71g: that class of screen was right 6 times in 23). Two carry a stron
 SIMPLEXCAS 2020-06 std −282.03 vs con −2.82 (**exactly ×100**) and VISHAL 2025-03 488.18 vs 7.35.
 None healed without a document.
 
+### 73b. ★★★ THE 17-CELL SCREEN ADJUDICATED — 9 real, 8 false, and the screen's "certain" half was half-wrong  (2026-08-10)
+
+**NO ASSUMPTIONS, NO GUESSWORK — every value written below traces to a document read that session.**
+
+All 17 cells of §73a's `nosub_con_lag_screen` taken to primary documents. **9 healed, 8 confirmed
+correct.** Verdicts + per-cell provenance: `scripts/nosub_con_lag_verdicts.json`; applier
+`scripts/_nosub_con_lag_apply.py` (guard-edit §2b + blast radius + both fund twins). 13 COMPANION
+cells fell out of the same documents and were healed with them (§73 precedent) — 22 cells / 60
+slot-values in all.
+
+**The screen's two "strong scale signature" cells are the lesson.** It called SIMPLEXCAS 2020-06
+(std −282.03 vs con −2.82, "exactly ×100") and VISHAL 2025-03. Both were indeed ×100 — *and trusting
+that would still have written a wrong number*:
+* **SIMPLEXCAS: BOTH slots were wrong.** The filing (Rs LAKH) prints std **(282.03)** and consolidated
+  owners **(278.28)**. So std was the lakh print held as crore, and con was holding a *copy of
+  standalone* — the real con is −2.78. Healing "con is right, fix std to match" would have locked in a
+  wrong con.
+* **VISHAL: only std was wrong.** con 7.35 was correct all along (screener's consolidated series prints
+  7.35 exactly). The screen's framing — "the two disagree, one is stale" — had no way to tell which.
+
+**The §73a recipe held, with one addition.** Establish whether the company files consolidated AT ALL
+first; then *verify the std against a filing before propagating it into con*, because **the
+disagreeing side was std in 4 of the 9 heals**. Added: for the 9 BSE-only names the NSE index is
+empty **because they are not NSE-listed** (absent from EQUITY_L's 2,410 rows) — that emptiness is a
+listing fact, not evidence, and the question has to be answered on the filing itself plus screener.
+
+**Defect classes found (each a re-detectable scan):**
+* **Rs-LAKH print stored as CRORE (×100)** — the §74 class, 11 cells (SIMPLEXCAS ×6, VISHAL ×4, …).
+* **FY ANNUAL stored as a quarter** — ZEAL's FY2025 annual (1,005.933 lakh = 10.06 cr) sat in *two*
+  different quarter slots, Mar-25 and Dec-25.
+* **H1 CUMULATIVE stored as a quarter** — AUTOINT Jun-25 held the printed H1-FY26 417.70 lakh.
+* **OCR digit misread** — AUTOINT Sep-24 held **107.31** where the filing prints H1 **407.31**; a
+  reader turned the leading 4 into a 1, and our store kept it.
+* **Year-shifted value** — AUTOINT Sep-25 std held the SEP-2024 figure (2.68).
+* **con slot holding a COPY of std** where a real consolidated figure exists (SIMPLEXCAS).
+* **blank-template zero** — PRECOT Mar-20 con 0.0 against both XBRLs printing −0.81 (§73's METROPOLIS class).
+
+**Four tooling facts worth more than the cells** (each cost a wrong turn):
+1. **§42's QID formula: the "FY" is the CALENDAR year of the quarter END, not the fiscal-year label.**
+   Reading it as fiscal returned a response a full year off (asked Jun-2020, got `Date End 30-Jun-21`).
+   85 = Mar-2015 anchors the calendar reading. The period discipline caught it — *always* read the
+   response's own Date Begin/End and refuse a mismatch.
+2. **BSE `AnnSubCategoryGetData` returns at most 50 rows for `pageno=1`.** A 12-month window on a busy
+   filer silently truncates, so **"N consolidated mentions in that window" is a LOWER BOUND and never
+   proof of absence.** The first scan's 0-counts (BCCFUBA, AUTOINT, ZEAL, CUB) were discarded for this
+   reason; every no-consolidated verdict here rests on the filing itself and/or screener + the NSE index.
+3. **`fetch_bse_fund.py` sets `basis` as `"C" if "consol" in headline.lower()`** — the exact substring
+   bug `build_fundamentals.is_con_basis` exists to kill (`"consol" in "non-consolidated"` is True, and
+   "Standalone and Consolidated …" is the commonest headline of all). The `basis` field in
+   `docs/bse_fundamentals.json` is therefore not evidence.
+4. **A fiscal year is not always Apr–Mar.** KENNAMET's ends 30 JUNE ("quarter & half year ended
+   December 31"), so its `.50` audited annual lives on the JUNE quarter — which is why the Mar-2025
+   `.50` correctly refused.
+
+**screener.in as a CON-basis reader (§60 extended).** Where screener's consolidated series reproduces
+stored cells we already trust *exactly*, it is a validated second reader for that company's con basis
+(it settled VISHAL con 7.35 / 4.79 / 9.16 after reproducing our Dec-24 9.59 and Mar-25 7.35 to the
+paisa). It quotes TOTAL PAT (§71g), so it still cannot arbitrate an owners-vs-total question.
+
+**Identity traps re-confirmed.** `KALIND` (scrip 526935) now files as **ARUNIS ABODE LIMITED** — the
+identity guard tripped on the stale master name and was right to; gate on scrip+ISIN, not name.
+`PRECOT` has no `bse_scrips.by_id` entry at all (its BSE scrip_id is `PRECM`, code 521184,
+BSE-delisted) and had to be resolved by ISIN.
+
+**Measured and deliberately NOT written** (in the verdicts file's `open` list): ZEAL's Mar-2026
+*revenue* (revS 114.0 vs the filing's 136.86 — a revenue defect, routes through `rev_defects.json`);
+two announce-date defects (SIMPLEXCAS Jun-2020 stored 20200730, the date of its MAR-2020 filing —
+COVID pushed the real filing to 2020-09-14; CUB Mar-2022 con 20220525 vs the 27-May board meeting);
+and ZEAL Dec-2024, where stored 6.31 / detres 6.27 / screener 6.36 disagree three ways and no
+document read that session resolves it.
+
 
 ---
 
