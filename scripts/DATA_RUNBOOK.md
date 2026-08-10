@@ -57,6 +57,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§72** ★★★ VERIFYING REV/PAT vs EXTERNAL SITES — sites reach 10 of 95 quarters; con PAT has no site quorum
 - **§76** ★★★ A `scrip_id` EQUAL TO THE TICKER IS A COINCIDENCE — gate symbol→BSE-scrip on ISIN (**read before any BSE-keyed fill**)
 - **§59** ★★ STANDALONE-SLOT-HOLDS-CONSOLIDATED AUDIT — the screen is not a defect count (**read before acting on any std/con equality screen**)
+- **§80** ★★★ SERIES **BZ** WAS NEVER INGESTED — a live trading series discarded for years (**read before touching the bhavcopy filter or a price-series gap**)
 
 ---
 
@@ -139,6 +140,10 @@ loads every session. (README.md is just a short pointer here — this file is th
 Auto: `.github/workflows/refresh-backtest-data.yml` — **cron 15:15 UTC = 20:45 IST, weekdays**
 (after NSE's ~19:00 IST bhavcopy). **Self-heals:** `update_sf_data.py` appends EVERY missing day
 since the file's `end`, so a skipped run is caught up by the next.
+
+**Which bhavcopy rows are equity: `("EQ","BE","BZ")` — see §80.** BZ (trade-for-trade +
+surveillance) was excluded until 2026-08-10, which silently truncated a stock's series on the day it
+was penalised into BZ. Do not "tidy" that filter back to two series.
 
 Pipeline (the workflow, in order — to run by hand do the same):
 1. `python3 scripts/build_corp_actions.py` — refresh official split/bonus ratios (exact ex-date factors).
@@ -6786,3 +6791,151 @@ PDFs, each needing a render. The announcement index for the whole span is alread
 FY2023 is done as the worked example (Mar-23 std 86.68 lakh, Dec-22 32.30 — printed, both matching
 detres exactly). BSE also published two **"Discrepancies In Financial Results"** notices for this
 scrip (2024-09-05, 2024-09-19) — read those before trusting anything in the FY2024/FY2025 window.
+
+---
+
+## 80. ★★★ SERIES **BZ** WAS NEVER INGESTED — a live trading series thrown away for years  (2026-08-10)
+
+`build_sf_data.parse_rows` kept `("EQ","BE")` and dropped everything else. **BZ is not "everything
+else."** NSE's equity cash segment is three series, and all three are ordinary listed companies
+trading every session:
+
+| series | what it is | in the bin before 2026-08-10? |
+|---|---|---|
+| EQ | normal rolling settlement | yes |
+| BE | trade-for-trade (compulsory delivery) | yes |
+| **BZ** | **trade-for-trade + surveillance** — the company has not complied with a listing/regulatory requirement | **NO** |
+
+Everything else in the bhavcopy genuinely is another instrument (SM/ST = SME platform, GS/GB/TB =
+govt securities and bonds, IV = InvIT, N\*/Y\*/Z\* = debt, RR/E1/MF = rights entitlements, ETFs) and
+stays out. **BZ was the only live equity series being discarded.**
+
+### 80a. What the gap actually did — three defects, all measured
+
+**(1) A stock's series STOPS the day it is penalised into BZ.** Measured 2026-08-10 against NSE's
+live `EQUITY_L.csv` (2,411 rows) and the release-asset bin (`end` 2026-08-07):
+
+```
+EQ  2,086 symbols — 2,086 fresh (last bar within 60d),  0 stale
+BE    285 symbols —   284 fresh,                        0 stale, 1 absent
+BZ     39 symbols —     1 fresh,                       38 STALE
+```
+
+The one fresh BZ name, ASTRON, is the mechanism caught in the act: it still traded **BE** on
+2026-08-07 and appears in `EQUITY_L` as BZ on 2026-08-10 — i.e. its series was about to stop.
+
+**(2) Mid-series HOLES for stocks promoted back out of BZ.** UNITECH went BZ 2020-03 → 2025-10 and
+traded **₹16.1 cr on a sampled day inside the hole** (2024-06-14, verified in BOTH the
+`sec_bhavdata_full` CSV and the legacy `cm14JUN2024bhav.csv.zip` — they agree exactly: EQ 1,928 /
+BE 234 / BZ 21).
+
+**(3) PHANTOM corporate actions, caused by (2).** When a stock was promoted back, the daily append
+saw one enormous ratio across the invisible hole and `ca_factor()` divided it out as a split. **21
+blocks over 18 symbols** carry a corporate action that never happened (ATLASCYCLE ×2/3, KERNEX ×2/3,
+RAJRAYON ×1/3, SUPREMEINF ×6 and ×3, TIL ×2 twice, JYOTISTRUC ×5/6, TAKE ×3/5 …), each confirmed
+against NSE's official corporate-action feed as having **no action at all** on that date. Every one
+of their pre-hole bars is mis-scaled.
+
+Total measured over the 2016 → 2026-08-07 window: **61,306 bars missing across 249 symbols**
+(271 blocks). The 38 stale names are the visible tip; the hole class is far bigger.
+
+### 80b. The decision: INGEST IT. Nothing downstream assumes EQ/BE
+
+The bin carries **no series field at all** — `meta` is `{name, ind, alive, raw, isin}` — so no
+consumer can distinguish EQ from BE today, and BE is *already* trade-for-trade with the same
+`DELIV_*` convention. BZ therefore introduces **zero** new semantic assumptions; it is the BE
+precedent exactly. Checked:
+- **Delivery %.** BE and BZ both print `DELIV_QTY` **and** `DELIV_PER` as `'-'` — that IS the
+  compulsory-delivery signature (measured 2026-08-07: all 291 BE and all 27 BZ rows dashed, all
+  2,416 EQ rows numeric). So `parse_rows` now applies the existing BE heal to BZ: `dv = 100`.
+- **`fetch_delivery.py` (Delivery Spikes, Volume Shockers)** is `SERIES == "EQ"` only and stays
+  that way — it needs `DELIV_QTY`, which BZ does not have. It already excludes BE; BZ matches.
+- **The ₹1cr/day liquidity screen** (§11) is a pure turnover screen, which is the right instrument
+  for "is this tradable". Result below.
+
+### 80c. Does the liquid universe re-admit HDIL / RAJESHEXPO? Measured, not assumed
+
+Ledger applied to the 2026-08-07 bin, then `scan_bin_universe()` run on both:
+
+```
+liquid universe BEFORE 1,441   AFTER 1,442
+ADDED:   RAJESHEXPO        REMOVED: (none)
+
+of NSE's 39 current BZ symbols, FRESH (last bar within 60d of the bin's end): before 1  ->  after 39
+```
+
+- **RAJESHEXPO comes back, legitimately** — median ₹**3.47 cr**/day over its last 250 REAL sessions,
+  well over the ₹1 cr floor, on bars ending 2026-08-07.
+- **HDIL does NOT** — ₹**0.029 cr**/day (₹2.9 lakh). It fails the turnover floor on its own merits.
+
+So the §11 recency guard was masking two different things: RAJESHEXPO was genuinely liquid and
+merely frozen; HDIL is genuinely illiquid. **The guard stays** — it is what protects against the
+next feed gap — but it is no longer doing BZ's job. No name is lost by ingesting BZ.
+
+### 80d. Flipping the filter alone would have CORRUPTED data — the backfill is not optional
+
+The updater only appends days after `end`, so it cannot reach backwards; and appending today's BZ
+row onto a years-stale series hands `ca_factor()` a multi-year ratio to misread:
+
+```
+HDIL        1.57 / 2.20   = 0.714  -> ca_factor snaps to 3/4  -> 3,108 bars silently rescaled
+RAJESHEXPO 83.58 / 223.97 = 0.373  -> ca_factor snaps to 2/5  -> 5,822 bars silently rescaled
+```
+
+Both phantom. **Ship the filter and the ledger together, never the filter alone.**
+
+### 80e. The tooling
+
+- `scripts/build_bz_backfill.py` — `--scan A B` (fetch bhavcopies, resumable, cache
+  `scripts/_bz_scan/` gitignored) → `--anchors` (one file per gap) → `--build` (writes
+  `scripts/bz_backfill.json.gz`). Use `--bin <path>` to point at a downloaded release asset.
+- `update_sf_data.insert_bz_history()` applies the ledger to the release-asset bin **before** the
+  day loop, idempotently (a block whose first bar is already present is skipped whole, so `pre` can
+  never be applied twice, and a from-scratch rebuild — which now ingests BZ itself — no-ops).
+- `build_sf_data.parse_rows` cache rows gained a 13th column, `series`, which doubles as the
+  **cache version marker**: `fetch_day`/`needs_fetch` demand ≥13 columns, so any day cached under
+  the old EQ/BE-only filter is refetched instead of being replayed BZ-less.
+
+### 80f. Five traps this hit, worth not repeating
+
+1. **A failed fetch is not "no data".** The first scan ran 8 workers, tripped NSE's 403 lockdown,
+   and cached every failure as `[]` — reporting the whole of 2026 as holiday. Only a confirmed
+   **404 from both URLs** may be cached as "no session"; everything else stays uncached so a later
+   run retries. The `.miss` markers this produced were then checkable, and they were all genuine
+   (2016-01-26 Republic Day, 2016-03-07 Mahashivratri, weekends).
+2. **Judge adjacency against the BIN's calendar, not your own downloads.** NSE re-serves the prior
+   session's file on holidays/weekends, so "every day I fetched" contains Sundays — 279 of them
+   here. A phantom 2025-12-25 sat in front of RAJESHEXPO's first BZ bar, broke the adjacency test,
+   and dropped the very symbol the exercise started from.
+3. **`PREV_CLOSE` is only usable across ONE session.** NSE mis-states it by ~1–6% on random days,
+   and a security that stops trading altogether can come back at a re-established price: HDIL's
+   first BZ row prints `PREV_CLOSE` 4.30 against a bin close of 2.20. Reading that as "scale
+   0.5116" would have invented a corporate action out of a suspension.
+4. **Snap a phantom factor to what the code would have produced, not to what you measured.**
+   `ca_factor()` only ever returns a `CA_FRACS` member or a product of them, so the correction is an
+   exact reciprocal. JYOTISTRUC measures 0.8228 against a baked-in 5/6 = 0.8333 — un-snapped, the
+   "fix" would have left the series 1.3% wrong forever.
+5. **A thin stock does not trade every session.** Splitting gap blocks on session adjacency
+   shattered illiquid names into hundreds of unanchorable one-bar blocks. A block is a maximal run
+   of missing bars with **no bin bar between them**.
+
+### 80g. Still open (measured, not hand-waved)
+
+- **6 symbols appear in BZ but have no series in the bin at all** (SPENTEX, INDOSOLAR, BINANIIND,
+  8KMILES, EBIXFOREX, WEIZFOREX — 1,567 bars). They need a series CREATED, not spliced; the ledger
+  format only splices. Left out deliberately.
+- **23 blocks are deliberately NOT shipped**, each with a measured reason printed by `--build`. Most
+  are a real corporate action hiding inside the hole, caught by the exit control: SDBL 0.200,
+  REFEX 0.200, PVP 0.170, PARASPETRO 0.100, WINSOME 0.150, PBAINFRA 0.344 — all clean face-value
+  splits that NSE's official feed does not carry for those dates. Filling them needs the ratio from
+  the corporate-action record, not from the price.
+- **The ledger covers 2016-01-01 → 2026-08-07.** The `--scan` back to 2002 was still running when
+  this shipped; re-run `--scan 2002-01-01 2016-01-01` → `--anchors` → `--build` to extend it. Older
+  BZ stints are therefore still missing.
+- **A separate, non-BZ hole class exists.** 215 symbols have an internal hole ≥20 sessions since
+  2018; a sample shows two causes — BZ (UNITECH, fixed here) and genuine absence from the bhavcopy
+  (GOODYEAR/KENNAMET/NOVARTIND/KIRLFER/KOVAI/GRAUWEIL all vanish 2023-10-25 → 2026-04-20 and are in
+  **neither** the new nor the legacy file, so it is not our filter). That class is unexplained and
+  unfixed — do not assume it is the same defect.
+- **The weekend-session ledger predates this fix.** `weekend_sessions.json.gz` rows were captured
+  under the EQ/BE filter, so those ~30 special sessions are still missing their BZ bars.

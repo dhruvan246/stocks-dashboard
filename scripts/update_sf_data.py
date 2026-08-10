@@ -397,6 +397,74 @@ def insert_weekend_sessions(data, j):
     return total
 
 
+def insert_bz_history(data):
+    """Splice in the series-BZ bars that build_sf_data's old ("EQ","BE") filter threw away.
+
+    BZ is trade-for-trade + surveillance: a company that has not complied with a listing/regulatory
+    requirement. It is still LISTED and still trades every session, but until 2026-08-10 we never
+    ingested it, so a stock's series simply STOPPED the day it was penalised into BZ (38 of NSE's 39
+    current BZ symbols were stale in the bin; measured 43k+ bars missing across 265 symbols since
+    2016). Flipping the filter only fixes tomorrow — the updater appends days after `end` and can
+    never reach backwards — so the history rides in on scripts/bz_backfill.json.gz, built by
+    scripts/build_bz_backfill.py straight from NSE's own daily bhavcopies. DATA_RUNBOOK §80.
+
+    Each block also carries `pre`: the factor needed to UNDO a phantom corporate action. When a stock
+    was promoted back out of BZ the daily append saw one huge ratio across the invisible hole and
+    ca_factor() divided it out as a split — 21 symbols measured, none with any official action on
+    NSE's corporate-action feed (ATLASCYCLE x2/3, AHLWEST x1/2, GVKPIL x2, SUPREMEENG x6, ...).
+    `pre` is scoped to [`from`, `after`], ONE segment, because a symbol with two holes carries a
+    different phantom product on each (A = p1*p2, B = p2, C = 1) — applying it series-wide would
+    fix the near segment and break the far one.
+
+    Idempotent: a block whose first bar is already present is skipped whole, so `pre` can never be
+    applied twice, and a from-scratch rebuild (which now ingests BZ itself) no-ops every block.
+    Returns bars inserted."""
+    import bisect
+    lp = os.path.join(HERE, "bz_backfill.json.gz")
+    if not os.path.exists(lp): return 0
+    try:
+        led = json.load(gzip.open(lp, "rt", encoding="utf-8"))
+    except Exception as ex:
+        print("  bz_backfill ledger unreadable (%s) — skipped" % ex); return 0
+    total = scaled = skipped = 0
+    for sym, blocks in (led.get("blocks") or {}).items():
+        e = data.get(sym)
+        if not e or not e.get("d"): continue
+        if any(k not in e for k in ("c", "t", "h", "l", "op", "v", "dv", "vw")): continue
+        for b in sorted(blocks, key=lambda x: x["after"]):
+            bars = b.get("bars") or []
+            if not bars: continue
+            ds = e["d"]
+            i = bisect.bisect_left(ds, bars[0][0])
+            if i < len(ds) and ds[i] == bars[0][0]: continue      # already applied — zero-cost steady state
+            j = bisect.bisect_left(ds, b["after"])
+            if not (j < len(ds) and ds[j] == b["after"]):
+                skipped += 1; continue                            # anchor bar gone (rename/merge) — don't guess
+            pre = float(b.get("pre") or 1.0)
+            if abs(pre - 1.0) > 1e-9:
+                # (`from`, `after`] — bisect_RIGHT, because `from` is the previous block's LAST
+                # inserted bar, which already sits at the right scale. bisect_left would drag that
+                # bar into this segment and scale it twice.
+                lo = bisect.bisect_right(ds, int(b.get("from") or 0))
+                for key in ("c", "h", "l", "op", "vw"):
+                    if key in e:
+                        e[key][lo:j + 1] = [round(x * pre, 2) for x in e[key][lo:j + 1]]
+                scaled += 1
+                print("  BZ-BACKFILL %s: undid a phantom corporate action x%.4f on bars %d..%d"
+                      % (sym, pre, ds[lo], ds[j]))
+            at = j + 1
+            for k, (ymd, c, t, h, l, op, v, dv, vw) in enumerate(bars):
+                p = at + k
+                e["d"].insert(p, ymd); e["c"].insert(p, c); e["t"].insert(p, t)
+                e["h"].insert(p, h); e["l"].insert(p, l); e["op"].insert(p, op)
+                e["v"].insert(p, int(v)); e["dv"].insert(p, dv); e["vw"].insert(p, vw)
+            total += len(bars)
+    if total:
+        print("BZ backfill: %d bars spliced in (%d phantom CAs undone, %d blocks skipped), ledger built %s"
+              % (total, scaled, skipped, led.get("built")))
+    return total
+
+
 def main():
     if os.path.exists(MARK): os.remove(MARK)
     if "--base" in sys.argv:
@@ -519,6 +587,12 @@ def main():
                 if nm.get("isin"): isin2sym[nm["isin"]] = new
                 data.pop(old, None); meta.pop(old, None); merged += 1
                 print("  MANUAL RENAME MERGE %s -> %s (%d pts prepended, adj=%.4f)" % (old, new, len(idx), adj))
+    # BEFORE anything that reads a bar's neighbours: the series-BZ history our old ("EQ","BE") filter
+    # dropped. Runs after MANUAL_MERGE so the ledger's current tickers are already consolidated, and
+    # before the day loop because appending today's BZ row onto a years-stale series would hand
+    # ca_factor() a multi-year ratio to mis-read as a split (measured: HDIL 1.57/2.20 -> "3/4",
+    # RAJESHEXPO 83.58/223.97 -> "2/5", both phantom).
+    bz = insert_bz_history(data)
     mr = apply_manual_rights(data)   # hand-verified per-stock rights adjustments to match Trendlyne
     wk = insert_weekend_sessions(data, j)   # backfill missing weekend special sessions (budget Sats etc.)
     if wk: print("Weekend special sessions: %d bars inserted." % wk)
@@ -600,8 +674,8 @@ def main():
     # refreshes the on-disk bin but does NOT publish the release, bump clients, or commit a marker.
     blob = gzip.compress(json.dumps(D, separators=(",", ":")).encode(), 6)
     open(OUT, "wb").write(blob)
-    if not appended and not healed and not merged and not mr and not dvf and not wk:
-        print("No new day / heal / merge / manual-rights / dv-fill / weekend-insert — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
+    if not appended and not healed and not merged and not mr and not dvf and not wk and not bz:
+        print("No new day / heal / merge / manual-rights / dv-fill / weekend-insert / BZ-backfill — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
     open(MARK, "w").write(D["end"])
     # tiny version marker — committed daily, lets the browser cache the big bin in IndexedDB
     # keyed to this `end` and skip re-downloading 80 MB until the data actually changes.

@@ -70,18 +70,40 @@ def parse_rows(text):
     for r in rows[1:]:
         if len(r) <= max(iS, iC): continue
         ser = (r[iSer].strip() if iSer >= 0 else "EQ")
-        if ser not in ("EQ", "BE"): continue
+        # THE EQUITY CASH SEGMENT IS THREE SERIES, NOT TWO. All of EQ/BE/BZ are ordinary listed
+        # companies trading every session; everything else in this file is a different instrument
+        # (SM/ST = SME platform, GS/GB/TB = govt securities & bonds, IV = InvIT, N*/Y*/Z* = debt,
+        # RR/E1/MF/... = rights entitlements, ETFs and friends) and stays out.
+        #   EQ = normal rolling settlement.
+        #   BE = trade-for-trade (compulsory delivery, no intraday netting).
+        #   BZ = trade-for-trade PLUS surveillance — companies that have not complied with a
+        #        listing/regulatory requirement. A BZ stock is still LISTED and still trades daily.
+        # BZ was excluded until 2026-08-10 and that silently TRUNCATED a live series: a stock's
+        # bars simply stopped on the day it was penalised into BZ and resumed only if it was
+        # promoted back. Measured that day against NSE's EQUITY_L.csv + the fresh bin (end
+        # 2026-08-07): EQ 2,086 symbols / 0 stale, BE 285 / 0 stale, BZ 39 / 38 STALE — HDIL frozen
+        # at 2020-03-02 and RAJESHEXPO at 2025-12-24 while both traded that very week (verified in
+        # the bhavcopy and independently on Yahoo). The bars are all there in the file: a BZ row
+        # carries the same OPEN/HIGH/LOW/CLOSE/PREV_CLOSE/TTL_TRD_QNTY/TURNOVER_LACS/NO_OF_TRADES
+        # as an EQ row. Mid-series holes were the same defect: UNITECH went BZ 2020-03 -> 2025-10
+        # and traded Rs16 cr on a sampled day inside the hole. See DATA_RUNBOOK §80.
+        if ser not in ("EQ", "BE", "BZ"): continue
         c = num(r, iC)
         if c <= 0: continue
         dlv = num(r, iD)
-        # BE = trade-to-trade: every trade settles with delivery, so NSE prints DELIV_PER as '-'
-        # there. Store the true 100 instead of the 0 sentinel (0 must mean "unavailable" only).
-        if ser == "BE" and iD >= 0 and dlv == 0: dlv = 100.0
+        # BE and BZ are both trade-for-trade: every trade settles with delivery, so NSE prints
+        # DELIV_QTY *and* DELIV_PER as '-' for both (measured 2026-08-07: every one of the 291 BE
+        # and 27 BZ rows dashed, every one of the 2,416 EQ rows numeric). Store the true 100
+        # instead of the 0 sentinel (0 must mean "unavailable" only).
+        if ser in ("BE", "BZ") and iD >= 0 and dlv == 0: dlv = 100.0
         # FULL row cached so future factor additions never need a refetch:
-        # [sym, close, prevclose, turnover, high, low, open, volume, deliv%, vwap, trades, isin]
+        # [sym, close, prevclose, turnover, high, low, open, volume, deliv%, vwap, trades, isin, series]
+        # `series` is last and is also the CACHE VERSION MARKER — fetch_day/needs_fetch require >=13
+        # columns, so any day cached under the old EQ/BE-only filter is refetched instead of being
+        # replayed BZ-less. Append new columns at the END only; readers index by position.
         out.append([r[iS].strip(), c, num(r, iP), num(r, iT), num(r, iH, c), num(r, iL, c),
                     num(r, iO, c), num(r, iV), dlv, num(r, iW), num(r, iN),
-                    (r[iI].strip() if 0 <= iI < len(r) else "")])
+                    (r[iI].strip() if 0 <= iI < len(r) else ""), ser])
     return out
 
 
@@ -120,8 +142,9 @@ def fetch_day(d, j):
     if os.path.exists(cf):
         try:
             rows = json.load(open(cf))
-            # older cache rows lack the full column set (v3 = 12 cols) — refetch; holiday [] reusable
-            if not rows or len(rows[0]) >= 12:
+            # older cache rows lack the full column set (v3 = 12 cols, v4 = 13 with `series`, which
+            # is also the marker for "parsed under the EQ/BE/BZ filter") — refetch; holiday [] reusable
+            if not rows or len(rows[0]) >= 13:
                 return rows
         except Exception: pass
     ddmmyyyy = d.strftime("%d%m%Y")
@@ -152,7 +175,7 @@ def needs_fetch(d):
     if not os.path.exists(cf): return True
     try:
         rows = json.load(open(cf))
-        return bool(rows) and len(rows[0]) < 12   # pre-v3 cache (missing columns) -> refetch
+        return bool(rows) and len(rows[0]) < 13   # pre-v4 cache (no `series` col / BZ-less) -> refetch
     except Exception:
         return True
 
