@@ -6013,7 +6013,8 @@ non-null; apply_owners_full touches con only).
 
 Open flags: **ALL SIX ADJUDICATED AND CLOSED the same day — see §77.** Score: 5 of the flagged
 cells were CORRECT and 2 were wrong, one of them a heal *this campaign itself* made backwards.
-(The KALYANI series follow-up is the only item left open.)
+The KALYANI series follow-up closed the same day too (§76, commit e346d2e8), so **nothing from
+this campaign remains open.**
 
 ---
 
