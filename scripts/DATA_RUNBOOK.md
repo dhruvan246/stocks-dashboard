@@ -5887,3 +5887,11 @@ the Sep-2022 con filing's ONLY context periods are Q2-FY23, H1-FY23 and two inst
 period is present in the file at all**. Both index routes and the comparative route are therefore
 measured-negative; what remains is the announcement PDF of the late 2021 filings or vision. Recorded
 so the next pass does not re-walk them.
+
+**Durability, measured before leaving (not assumed).** Three jobs could undo these heals, so each was
+checked: `update_fundamentals.py` is fill-only on missing fields (non-null heals are safe);
+`apply_owners_full.py` rewrites con PAT from `_reattr_owners.json`, and **0 of the 59 healed con
+cells appear in that 23,839-entry cache**, so tonight's run cannot re-poison them (§71d would
+otherwise need owners_basis_heals entries); `ci_preserve_merge.py` + `verify_fills_live.py` run
+inside refresh-fundamentals, and the 77 new pat_defects entries are now in the watched set, so a
+future clobber turns CI red instead of failing silently.
