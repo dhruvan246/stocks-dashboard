@@ -41,7 +41,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 import _n500_member_bin as MB  # noqa: E402
-import bse_resolve as BR  # noqa: E402  — ISIN guard on symbol->scrip (runbook §75)
+import bse_resolve as BR  # noqa: E402  — ISIN guard on symbol->scrip (runbook §76)
 
 QES = [y * 10000 + md for y in range(2002, 2015) for md in (331, 630, 930, 1231)]  # 2002Q1..2014Q4
 
@@ -191,7 +191,7 @@ def resolve_codes(symbols, rmap, byid, scrip_extra, master):
             new_extra[sym] = hit[0]
             continue
 
-    # ISIN GUARD (§75) — applied to the FINAL map so it covers all five routes above, including
+    # ISIN GUARD (§76) — applied to the FINAL map so it covers all five routes above, including
     # scrip_id_match and name_match, which match on a BSE-side label and so can land a different
     # company whose scrip_id happens to equal our ticker (the KALYANI trap).
     for s in list(code_of):

@@ -1,5 +1,5 @@
 {
- "_README": "NSE symbols whose bse_scrips by_id / BSE scrip_id match points at a DIFFERENT company (ISINs disagree). Consumed by bse_resolve.py, which refuses to resolve these symbols to a BSE scrip. Regenerate with scan_scrip_isin_conflicts.py --write. Runbook \u00a775.",
+ "_README": "NSE symbols whose bse_scrips by_id / BSE scrip_id match points at a DIFFERENT company (ISINs disagree). Consumed by bse_resolve.py, which refuses to resolve these symbols to a BSE scrip. Regenerate with scan_scrip_isin_conflicts.py --write. Runbook \u00a776.",
  "conflicts": {
   "FOCUS": {
    "bse_code": "543312",
@@ -14,7 +14,7 @@
    "bse_isin": "INE0N6U01018",
    "bse_name": "Kalyani Cast-Tech Ltd",
    "isin_maps_to": null,
-   "note": "Our KALYANI = Kalyani Commercials Ltd, NSE-only \u2014 it has NO BSE listing at all (0 records for INE610E01010 in the 10,786-row active-equity master). BSE 544023's scrip_id is the string 'KALYANI' by coincidence. It poisoned std PAT Mar-24/Dec-24/Mar-25, invented con values for a std-only filer, and supplied the Mar-24 announce date. Healed 2026-08-10 (runbook \u00a773/\u00a775).",
+   "note": "Our KALYANI = Kalyani Commercials Ltd, NSE-only \u2014 it has NO BSE listing at all (0 records for INE610E01010 in the 10,786-row active-equity master). BSE 544023's scrip_id is the string 'KALYANI' by coincidence. It poisoned std PAT Mar-24/Dec-24/Mar-25, invented con values for a std-only filer, and supplied the Mar-24 announce date. Healed 2026-08-10 (runbook \u00a773/\u00a776).",
    "nse_isin": "INE610E01010"
   }
  }

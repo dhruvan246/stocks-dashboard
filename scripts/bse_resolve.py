@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""ISIN-GUARDED NSE-symbol -> BSE-scrip resolution.  (2026-08-10, after the KALYANI trap)
+"""ISIN-GUARDED NSE-symbol -> BSE-scrip resolution.  (2026-08-10, after the KALYANI trap; §76)
 
 ★ THE RULE: a BSE `scrip_id` that equals our NSE ticker is a COINCIDENCE TO BE DISPROVED, never
 a match to be trusted. Gate on ISIN — the only identifier both exchanges agree on.

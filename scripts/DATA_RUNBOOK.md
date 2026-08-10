@@ -55,6 +55,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§70** ★★★ sf_fundamentals vs sf_revop DISAGREE — authority is fundamentals; the mirror is not rendered
 - **§71** ★★★ THE ADJUDICATION THAT WAS ABANDONED — when your "truth" source is the corrupted one
 - **§72** ★★★ VERIFYING REV/PAT vs EXTERNAL SITES — sites reach 10 of 95 quarters; con PAT has no site quorum
+- **§76** ★★★ A `scrip_id` EQUAL TO THE TICKER IS A COINCIDENCE — gate symbol→BSE-scrip on ISIN (**read before any BSE-keyed fill**)
 - **§59** ★★ STANDALONE-SLOT-HOLDS-CONSOLIDATED AUDIT — the screen is not a defect count (**read before acting on any std/con equality screen**)
 
 ---
@@ -6157,3 +6158,119 @@ actually failed: `no-filing-listed` / `pdf-unfetchable` / `scanned-no-text` / `n
 Each points at a DIFFERENT rung, which one bucket cannot. It also resolves **delisted** scrips from
 `_bse_master_all.json` — `bse_scrips.json` is built from the live master and returns nothing for
 ALBK / ANDHRABANK / CORPBANK / DHFL (§52b), which otherwise reads as "no filings".
+---
+
+## 76. ★★★ A `scrip_id` EQUAL TO THE TICKER IS A COINCIDENCE TO BE DISPROVED — gate on ISIN  (2026-08-10, KALYANI)
+
+**NO ASSUMPTIONS, NO GUESSWORK — every value below traces to a document read this session.**
+
+`bse_scrips.json` `by_id` is BSE's **`scrip_id` → `SCRIP_CD`**. Every consumer in this repo uses it
+as **"NSE symbol → BSE scrip code"**. Those are two different namespaces that happen to collide, and
+when they collide the resolver hands you a *different company's* filings.
+
+    our KALYANI = Kalyani Commercials Ltd   INE610E01010   NSE-only — NOT on BSE at all
+    by_id[KALYANI] -> 544023 = Kalyani Cast-Tech Ltd  INE0N6U01018   (scrip_id happens to be "KALYANI")
+
+Damage before it was caught (§73 found it via the std-PAT two-files sweep): three std PAT cells held
+Cast-Tech's profits (Mar-24 3.73, Dec-24 8.01, Mar-25 6.23 — its detres FY25 annual 14.245 == the
+stored 8.01+6.23 EXACTLY), three **con** slots were invented for a company that files standalone
+only, and Mar-24's announce date was taken from Cast-Tech's calendar.
+
+### 76a. Why nothing else catches it
+This is the failure mode every other guard is blind to. A wrong scrip code fails **no** magnitude
+check, **no** anchor, **no** identity guard that only verifies "the document I fetched is the
+document I asked for" — the filing is internally perfect, consistent, and correctly parsed. It just
+belongs to somebody else. Name similarity actively *helps* the trap (Kalyani/Kalyani, Focus/Focus).
+**Only ISIN — the one identifier both exchanges agree on — separates them.**
+
+Corollary to §71f: a symbol with no BSE scrip is *normal*, not a gap to be filled. 1,193 of our
+3,942 symbols have no BSE code, and Kalyani Commercials is one of them (0 records for its ISIN in
+the 10,786-row active-equity master). **Never "fix" a missing mapping by reaching for a same-string
+scrip_id.**
+
+### 76b. The scan — measured, and mercifully small
+`scripts/scan_scrip_isin_conflicts.py` joins three identifiers: NSE `EQUITY_L.csv` SYMBOL→ISIN, the
+BSE master SCRIP_CD→ISIN_NUMBER, and our by_id claim. Result over sf_fundamentals' 3,942 symbols:
+
+| outcome | count |
+|---|---|
+| ISINs agree | 2,225 |
+| **CONFLICT (wrong company)** | **2 — KALYANI, FOCUS** |
+| no BSE code (normal) | 1,193 |
+| uncheckable (delisted/renamed, absent from EQUITY_L) | 522 |
+
+FOCUS = Focus Lighting and Fixtures (INE593W01028) mapped to BSE 543312 Focus Business Solution
+(INE0DXR01010). Its stored rows' announce dates all match its OWN NSE broadcast dates, so the
+mis-map had not yet been used to fill them — **mapping proven wrong, values not audited.**
+The 522 uncheckable ones are reported as uncheckable, never merged into the pass count (§57a rule 4).
+
+### 76c. The guard — `scripts/bse_resolve.py`
+```python
+import bse_resolve as BR
+by_id = BR.by_id()            # bse_scrips by_id with conflicting symbols REMOVED
+BR.guard(sym, code)           # -> code, or None when sym is a known conflict
+BR.guard_map(m)               # filter any {SYM: code} map
+BR.blocked(sym)               # -> human-readable reason, or None
+```
+Deny-list: `scripts/bse_scrip_isin_conflicts.json` (tracked). Refresh with
+`python3 scripts/scan_scrip_isin_conflicts.py --write` — it exits 1 on any conflict not already
+recorded, so it can fail CI loudly.
+
+Applied in three layers, because one is not enough:
+1. **KALYANI and FOCUS removed from `bse_scrips.json` by_id** — fixes all ~11 direct consumers at
+   once, with no code change. (`by_isin` is left intact: ISIN keys are unambiguous by construction.)
+2. **`backfill_ann_dates_bse.scrip_map()` guarded** — cleaning by_id is NOT sufficient there: it
+   falls back to `bse_universe.json` rows whose `r[1]` is the same BSE scrip_id, which would have
+   re-supplied 544023. Verified after the change: `scrip_map()` returns 4,966 symbols with
+   KALYANI/FOCUS absent and RELIANCE still 500325.
+3. **`cut_gaps_0214.resolve()` guarded at the RETURN**, so the guard covers all five of its routes —
+   including `scrip_id_match` and `name_match`, which match on BSE-side labels and are the same trap
+   wearing a different hat.
+
+⚠️ `bse_scrips.json` is generated from the BSE live master by an ad-hoc fetch, not by a repo script,
+so a naive regeneration will reintroduce both rows. **The deny-list is what makes the fix durable —
+re-run the scanner after any refresh.**
+
+### 76d. The KALYANI series close-out, and a defect the trap was hiding
+Applier `scripts/_kalyani_apply.py` (§2b guard-edit of all four twins + blast radius; journals to
+pat_defects / rev_defects / stdpat_mirror_heals / ann_date_fills). Every value re-read from Kalyani
+Commercials' own filings — the earlier session's notes were re-fetched, not trusted.
+
+| quarter | action | value | anchor |
+|---|---|---|---|
+| Jun-2024 | FILL std + rev | 0.62 / 57.85 | H1 chain EXACT |
+| Sep-2024 | FILL std + rev | 0.74 / 89.66 | H1 + 9M chains EXACT |
+| Mar-2024 | FILL rev, ann 20240527→20240530 | 62.47 | own XBRL; old date was Cast-Tech's |
+| Dec-2024 | FILL rev, ann 0→20250210 | 136.90 | 9M chain EXACT |
+| Sep-2025 | **HEAL std 0.24 → 0.12** | 0.1238 | EPS + H1 + 9M, 4 locks |
+| Mar-2026 | **left at 1.24, flagged** | — | see below |
+
+The chains, all from primary documents: H1 FY25 0.6171+0.7363 == printed 1.3534 and rev
+57.8483+89.6564 == printed 147.5047; 9M +0.2553 == printed 1.6087, rev == printed 284.4052; and —
+decisively, from an **independent later filing** (the Q4-FY26 statement filed 2026-05-28, which
+prints FY25 as its comparative) — the four quarters sum to 233.24 lakh and rev 38,730.46 lakh, both
+EXACT. con stays NULL: every NSE list row is Non-Consolidated from Jun-2022 onward (§51/§54).
+
+**★ Sep-2025 — a filer error the wrong-company noise was masking.** The printed Q2-FY26 statement
+leaves the quarter's **current-tax cell blank**, so its "Net Profit" row simply repeats PBT (24.10
+lakh) — and we had stored that. The company's **own Basic EPS for that same column reads 1.24**,
+i.e. 12.40 lakh on 1,000,000 shares (denominator confirmed by Q1 EPS 6.3 == 63.01 lakh and H1 EPS
+7.54 == 75.39 lakh). H1 75.39−63.01 == 12.38; 9M 138.61−63.01−63.22 == 12.38. Healed to 0.12.
+*The EPS row arbitrates a missing tax line exactly as it arbitrates a §2d tag-swap.*
+
+**★ Mar-2026 — measured, and deliberately NOT written.** FY26 identity misses by 0.0417: filed FY
+2.6718 − 9M 1.3861 = **1.2857**, but the Q4 column prints **1.2440**. The cause is isolated, not
+guessed: the Q4 current-tax cell repeats the 9M tax **byte-for-byte** (49.52 lakh; the true Q4 tax
+is 96.03 − 49.52 − 1.16 = 45.35), and Q4 PBT 173.92 == FY 362.05 − 9M 188.13 EXACTLY, so the PBT
+column *is* the balancing figure while the tax line is not. Revenue and PBT chains both close
+exactly ⇒ tax-line error, not a restatement. **It was still not healed**, because 1.2857 is a
+subtraction *no document asserts* while 1.2440 is both printed and tagged — §45's "neither side
+reconciles → refuse", and the standing rule never to write a value no source asserts. The filing's
+EPS cannot break the tie either: its Q4 EPS cell is **blank**, and the 13.86 on that row sits in the
+**Q3 column** (where 6.32 belongs), proven by x-position — this filer's EPS row is unreliable in
+that document. Journalled in `stdpat_adjud_verdicts.json` open_flags.
+
+**Reading a value out of a printed statement: use x-positions, not text order.** Blank cells collapse
+in `get_text()`, so a row with 4 numbers across 5 columns silently shifts. `page.get_text('words')`
++ column x-ranges taken from an unambiguous row (Revenue) is what showed the Q4 EPS cell was empty
+(memory: rows-are-geometry-too, now columns too).

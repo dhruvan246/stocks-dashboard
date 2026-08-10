@@ -35,7 +35,7 @@ import os, sys, json, time, argparse, datetime
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 import fetch_insurers as FI                      # _opener/bse_get/datebound — proven BSE helpers
-import bse_resolve as BR                         # ISIN guard on symbol->scrip (runbook §75)
+import bse_resolve as BR                         # ISIN guard on symbol->scrip (runbook §76)
 from fetch_announcements import parse_qe         # anchored period parser (runbook §15)
 
 SF = os.path.join(ROOT, "docs", "sf_fundamentals.json")
@@ -61,7 +61,7 @@ def plus(qe, days):
     return int((qe_date(qe) + datetime.timedelta(days=days)).strftime("%Y%m%d"))
 
 def scrip_map():
-    # ISIN-GUARDED (§75). Both sources key on a BSE-side label that can collide with an NSE
+    # ISIN-GUARDED (§76). Both sources key on a BSE-side label that can collide with an NSE
     # ticker: by_id is BSE's scrip_id, and bse_universe rows carry the same scrip_id in r[1].
     # Cleaning by_id alone is NOT enough here — the universe fallback would re-supply the wrong
     # code (that is exactly how KALYANI would have picked Kalyani Cast-Tech's announce dates).

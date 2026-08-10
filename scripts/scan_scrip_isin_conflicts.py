@@ -2,7 +2,7 @@
 """SCAN for the wrong-company ticker trap: NSE symbols whose bse_scrips `by_id` match points at a
 BSE scrip with a DIFFERENT ISIN.  Regenerates scripts/bse_scrip_isin_conflicts.json.
 
-This is the detector behind `bse_resolve.py` (runbook §75). It is a SCAN, not a one-off: BSE adds
+This is the detector behind `bse_resolve.py` (runbook §76). It is a SCAN, not a one-off: BSE adds
 scrips continuously, and every new `scrip_id` is a fresh chance to collide with an NSE ticker.
 Re-run it after any bse_scrips.json refresh.
 
@@ -131,7 +131,7 @@ def main():
             "_README": ("NSE symbols whose bse_scrips by_id / BSE scrip_id match points at a "
                         "DIFFERENT company (ISINs disagree). Consumed by bse_resolve.py, which "
                         "refuses to resolve these symbols to a BSE scrip. Regenerate with "
-                        "scan_scrip_isin_conflicts.py --write. Runbook §75."),
+                        "scan_scrip_isin_conflicts.py --write. Runbook §76."),
             "conflicts": merged,
         }, open(OUT, "w", encoding="utf-8"), indent=1, sort_keys=True)
         print("wrote %s (%d conflicts)" % (OUT, len(merged)))
