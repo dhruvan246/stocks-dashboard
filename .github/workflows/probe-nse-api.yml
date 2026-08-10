@@ -10,6 +10,10 @@ on:
         description: 'Comma-separated NSE API paths (e.g. /api/live-analysis-volume-gainers)'
         required: true
         default: '/api/live-analysis-volume-gainers'
+      jq:
+        description: 'Optional jq filter applied to each response (full filtered output, no 4000-char cap)'
+        required: false
+        default: ''
 jobs:
   probe:
     runs-on: ubuntu-latest
@@ -18,6 +22,7 @@ jobs:
       - name: fetch each path with cookie warmup
         env:
           PATHS: ${{ inputs.paths }}
+          FILTER: ${{ inputs.jq }}
         run: |
           UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
           jar=$(mktemp)
@@ -28,9 +33,16 @@ jobs:
             [ -z "$p" ] && continue
             echo ""
             echo "===== $p ====="
-            curl -s -b "$jar" -A "$UA" \
-              -H "Accept: application/json, text/plain, */*" \
-              -H "Referer: https://www.nseindia.com/market-data/live-market-indices" \
-              "https://www.nseindia.com$p" | head -c 4000
+            if [ -n "$FILTER" ]; then
+              curl -s -b "$jar" -A "$UA" \
+                -H "Accept: application/json, text/plain, */*" \
+                -H "Referer: https://www.nseindia.com/market-data/live-market-indices" \
+                "https://www.nseindia.com$p" | jq "$FILTER" || echo "(jq failed — response was not JSON?)"
+            else
+              curl -s -b "$jar" -A "$UA" \
+                -H "Accept: application/json, text/plain, */*" \
+                -H "Referer: https://www.nseindia.com/market-data/live-market-indices" \
+                "https://www.nseindia.com$p" | head -c 4000
+            fi
             echo ""
           done
