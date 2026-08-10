@@ -5876,3 +5876,14 @@ with correct suppression (pat_defects is NESTED `{SYM:{QE:{}}}`; sanity_ok is a 
 a suppression reader that misses either shape reports every healed cell as still-open, which is how
 the first re-scan printed a bogus 104): **128 → 31 open, 73 suppressed**, and all 31 are exactly the
 documented queue above — no unexpected residue, no heal re-firing.
+
+**GVKPIL Jun/Sep-2021 con — the NSE lane walked, and why it is still open (measured, not assumed).**
+BSE `datebound` returned nothing for those windows because GVKPIL filed its whole 2020-21 backlog
+LATE (the Mar-2021 rows carry `_29122021` filing stamps) — an empty date-bound window is a filing-
+CALENDAR artefact here, not absence. The NSE `corporates-financial-results` index DOES list Jun-21 /
+Sep-21 / Dec-21 on both bases, so the results exist — but every one of those rows serves
+`.../corporate/xbrl/-` (an empty attachment link). The §45 year-ago-comparative fallback also fails:
+the Sep-2022 con filing's ONLY context periods are Q2-FY23, H1-FY23 and two instants — **no 2021
+period is present in the file at all**. Both index routes and the comparative route are therefore
+measured-negative; what remains is the announcement PDF of the late 2021 filings or vision. Recorded
+so the next pass does not re-walk them.
