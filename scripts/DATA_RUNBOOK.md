@@ -3434,10 +3434,13 @@ exit 0. What the campaign established beyond round-2:
   2019-20 std series is shifted one quarter (two cells healed; whole-series rebuild = OPEN, joins
   the LEHAR/MAFATIND club). DLF Mar/Jun-19 con were ×100-unit AND double-indexed (4.14 → 436.56 /
   414.72, unit proven by an exact total-overlap between two filings).
-* **OPEN rev co-poisons** (same mechanism, rev slots — route via rev ledgers): GSFC revS 20190331
-  1707.7→2138.42, CARERATING revS 20190331 45.22→81.49, ROLTA revC 20220630 3.76→5.08. Fill
-  candidates seen in the documents: SPENCERS Jun-18 std 2.22/con 0.62, INFOBEAN Jun-18 std
-  5.05/con 5.24, SPENCERS Mar-18 con −8.94 (FY-derived).
+* **Rev co-poisons HEALED 2026-08-10** (commit 11e8263d; same mechanism, rev slots): GSFC revS
+  20190331 1707.7→2138.42, CARERATING revS 20190331 45.22→81.49, ROLTA revC 20220630 3.76→5.08 —
+  every value re-verified against refetched primary XBRLs, defects in `rev_defects.json`,
+  corrected values in `std_rev_nse_reads.json`/`con_rev_nse_reads.json`. Fill candidates from the
+  same documents also landed: SPENCERS Jun-18 std 2.22/con 0.62 + INFOBEAN Jun-18 std 5.05/con
+  5.24 (new rows, `xbrl_comparative_fills.json` both forms), SPENCERS Mar-18 con −8.94
+  (FY-derived, `con_pat_fy_derived.json`).
 
 **Legit structural breaks vs the scale-spike nuller:** demerger boundaries (CHOLAHLDNG Mar-2017 =
 pre-demerger full Tube Investments, 1168.14 vs holdco-era ~65) and lumpy traders (OSWALGREEN Jun-2015
