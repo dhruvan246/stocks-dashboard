@@ -5970,11 +5970,9 @@ holds the refuted number (SURAJEST Jun-24, DBL Sep-25) are in `owners_basis_heal
 precedence). fund-side std heals are safe from nightlies (update_fundamentals is fill-only on
 non-null; apply_owners_full touches con only).
 
-Open flags (measured, unresolved — in the verdicts file): KOHINOOR Mar-25 375.64 / Mar-26 87.65
-(both files agree, out of family ×100, debt-settlement era unverified); RPSGVENT Sep-18 58.46;
-METROPOLIS Sep/Dec-18 (FY19 identity fails by +9.6 with Q1+Q4 filing-confirmed); HALDER Mar-26 con
-36.82 (H2−Q3 says 19.13, con EPS fails both filings); DBL Dec-25 con 829.85 > filing total
-(negative-NCI unverified).
+Open flags: **ALL SIX ADJUDICATED AND CLOSED the same day — see §77.** Score: 5 of the flagged
+cells were CORRECT and 2 were wrong, one of them a heal *this campaign itself* made backwards.
+(The KALYANI series follow-up is the only item left open.)
 
 ---
 
@@ -6274,3 +6272,127 @@ that document. Journalled in `stdpat_adjud_verdicts.json` open_flags.
 in `get_text()`, so a row with 4 numbers across 5 columns silently shifts. `page.get_text('words')`
 + column x-ranges taken from an unambiguous row (Revenue) is what showed the Q4 EPS cell was empty
 (memory: rows-are-geometry-too, now columns too).
+
+---
+
+## 77. ★★★ THE §73 OPEN FLAGS — 5 of 7 flagged cells were RIGHT, and the campaign's own heal was one of the wrong ones  (2026-08-10)
+
+**NO ASSUMPTIONS, NO GUESSWORK — every value below traces to a document read this session.**
+
+The six measured-but-unresolved flags §73 left behind, taken to primary documents. Verdicts +
+per-cell provenance: `scripts/stdpat_openflag_verdicts.json`; applier
+`scripts/_stdpat_openflag_apply.py` (guard-edit §2b + blast radius + all four twins).
+**Score: 5 flagged cells CONFIRMED CORRECT, 2 DEFECTIVE, + 2 companion defects found en route.**
+
+### 77a. The governing lesson: an identity that fails does not name the cell that failed it
+
+Four of the five value flags were raised because a **neighbour** was wrong, not the flagged cell.
+The flag text in each case named a plausible mechanism ("wrong-context grab", "H2−Q3 says 19.13",
+"out of family ×100") and in each case the mechanism was real but pointed at the wrong quarter.
+
+> **Close the FY chain with every member INDEPENDENTLY sourced before naming a culprit.** A
+> residual is a property of the whole chain. Deriving the suspect *from* the chain and then
+> "confirming" it against the same chain is circular — the derivation just relocates the error
+> into whichever cell you chose to solve for.
+
+RPSGVENT is the cautionary case. Deriving Sep-18 from the 9M column gave 57.96 and the FY annual
+agreed — two "independent" anchors, both wrong, because BOTH inherited the same poisoned Jun-18.
+Only re-reading Jun-18's own source document broke the loop.
+
+### 77b. ★ A DOUBLE-INDEXED FILE CUTS BOTH WAYS — §73's own retracted heal
+
+`stdpat_adjud_verdicts.json` fund_fix `RPSGVENT|20180630` changed 1.65 → 2.15 on the reasoning
+"fund took the FourD context; OneD 2.15 is the quarter". **Backwards.**
+`INDAS_48324_135139_04092019040116_WEB.xml` is the **Jun-2019** filing (`ReportingQuarter` "First
+quarter"; OneD `DateOfStartOfReportingPeriod` 2019-04-01 / end 2019-06-30). NSE double-indexes that
+one file under BOTH the Jun-18 and Jun-19 list rows, so for the **Jun-18** row the correct context
+is the FourD *year-ago* comparative (2018-04-01..2018-06-30) = 1.65 — the value the store already
+had. 2.15 belongs to Jun-2019, where it is also stored, correctly.
+
+* **The tell is always the context's OWN dates, never its NAME.** OneD is "the current period of
+  whatever filing this is", and on a double-indexed row that filing is the NEXT one.
+* Both contexts EPS-reconcile (0.81→2.15, 0.62→1.65 on 2.651e7 sh), so **EPS cannot arbitrate a
+  double-index** — it validates arithmetic, not period. Only the dates do (memory: "an anchor that
+  validates one field does NOT validate another").
+* **A retraction must un-pin every artefact, not just the payload.** Three separate things held the
+  wrong 2.15: `stdpat_adjud_verdicts.fund_fix`, `pat_defects.json`, `stdpat_mirror_heals.json`. Left
+  alone, a re-run of `_stdpat_apply.py` re-applies it (its guard accepts `was`) and a
+  `verify_fills_live --repair` re-lands the mirror. The verdict is now moved to a `retracted`
+  section carrying `do_not_reapply`.
+
+### 77c. What the documents said
+
+| cell | flagged as | verdict | proof |
+|---|---|---|---|
+| KOHINOOR Mar-25 375.64 / Mar-26 87.65 | out of family ×100 | **CORRECT** | detres 512559: Exceptional Item 3,827.4 / 959.8 Rs-mn; both FY identities close on the `.50` audited annual (364.77, 80.68) |
+| RPSGVENT Sep-18 58.46 | wrong-context grab | **CORRECT** | 9M 63.25 − 1.65 − 3.14; FY 65.77 (2 sources); implied EPS 22.05 = 23.86−0.62−1.19 |
+| RPSGVENT Jun-18 2.15 | *(not flagged)* | **DEFECT → 1.65** | §77b |
+| METROPOLIS Sep-18 20.05 | FY19 off by +9.6 | **CORRECT** | Sep-19 PDF col3 = 2,004.50 lakh, printed |
+| METROPOLIS Dec-18 32.40 | *(not flagged)* | **DEFECT → 22.80** | Dec-19 PDF col3 = 2,280.23 lakh; 9M and FY both close EXACT |
+| HALDER Mar-26 con 36.82 | con EPS fails | **DEFECT → 16.19** | 36.82 is H2 *owners*; corrected 12-Jun filing gives Q4 owners 161,854,000 |
+| HALDER Dec-25 con 20.78 | *(not flagged)* | **DEFECT → 20.64** | slot held the TOTAL; PDF prints owners 2,063.68 + NCI 14.59 |
+| DBL Dec-25 con 829.85 | > filing total | **CORRECT** | owners 8,298,518,000 + NCI **−408,683,000** == total 7,889,835,000 |
+
+### 77d. Three re-usable rules this produced
+
+1. **`owners > total` is NOT a defect signature — negative NCI is ordinary.** DBL Dec-25
+   (NCI −40.87cr) and METROPOLIS Sep-18 con (NCI −47.36 lakh) both look impossible and are both
+   correct. Test `owners + NCI == total`, never `owners <= total`.
+2. **A quarter whose XBRL carries NO attributable tags silently stores the TOTAL in the con slot.**
+   HALDER Dec-25's con XBRL has neither owners nor NCI tags, so ingestion took
+   `ProfitLossForPeriod`. The filing's **PDF prints the split** even when its XBRL omits it.
+   Detector: con cells whose filing has no attributable tags *while the neighbouring quarters do*.
+3. **EPS is not universally an arbiter.** It fails on a double-index (both contexts reconcile),
+   on filers who compute con EPS on TOTAL rather than owners (DBL 48.57 = 788.98/16.24cr exactly;
+   also SAGCEM §2d), and on any company whose paid-up capital moved mid-year so the printed EPS is
+   on weighted-average shares (HALDER: 115,973,000 → 116,154,000 → 124,381,000 within FY26). When
+   EPS disagrees, establish WHICH of those it is before letting it overrule an identity.
+
+### 77e. The Mar-2019 announce-date cluster — and why the ledger alone was not enough
+
+The double-indexed Mar-2019 filings also carry the *next* quarter's date in `annStd`. Measured
+from the BSE announcement archive (Result category, window Apr–Jul 2019) and healed:
+GSFC 20190904→**20190522**, POLYMED →**20190510**, CARERATING →**20190521**, plus the same
+fingerprint on EMKAY 20190813→**20190528** and GREAVESCOT 20190911→**20190502**.
+
+* `backfill_ann_dates_bse.py` is **fill-only on `ann == 0`** — it can never correct a wrong
+  non-zero date. `ann_date_fills.json` got the entries for provenance/durability, but the actual
+  repair had to be a §2b guard-edit.
+* CARERATING filed the same audited results **twice** (05-21 "Outcome of Board Meeting" enclosing
+  them, 05-22 the formal "Results" filing). Point-in-time takes the FIRST dissemination.
+* GREAVESCOT's stored 20190911 corresponds to **no BSE filing of any category** — measured, not
+  inferred. That is what distinguishes "wrong date" from "date we haven't found".
+* **Left UNKNOWN on purpose:** the *con* dates of the same cluster are demonstrably wrong too
+  (GREAVESCOT annCon 20190911; CARERATING annCon 20190525 matches neither of its two filings), but
+  whether each board released the consolidated statement in the same filing is not established by
+  the announcement metadata, so no con date was written. Recorded under `observed_not_healed`.
+
+### 77f. Do not pin a mirror that does not exist
+
+`stdpat_mirror_heals.json` was first given a `METROPOLIS|20181231` entry — and `verify_fills_live`
+immediately reported it MISSING forever. That quarter has **no `sf_revop` row at all** (pre-IPO
+comparative, never filed, so `build_revop` has nothing to build from), and `--repair` only refills
+rows that already exist. Note also that `scripts/revop_fundamentals.json` is **build_revop's own
+OUTPUT, not an input ledger** — synthesising a row there is transient noise no rebuild reproduces.
+A cell with no served mirror is pinned fund-side in `pat_defects.json` (watched on idx1) and
+nowhere else; the verdicts file carries `no_mirror: true` to say so out loud.
+
+Durability wiring used: `pat_defects.json` (fund std idx1 + con idx3, both watched),
+`stdpat_mirror_heals.json` (revop patS idx4), `owners_basis_heals.json` (**required** for HALDER
+Mar-26 — `_reattr_owners.json` still holds the refuted 36.82 and `apply_owners_full` would restore
+it nightly, §71d). `verify_fills_live` exit 0, MISSING 0, and the 7 DRIFT lines were confirmed
+**pre-existing** by re-running the verifier against pristine `origin/main` content (identical 7).
+
+### 77g. Pushing this: the minified-payload rebase, done the §2b way
+
+The first push attempt rebased onto ~10 CI commits and conflicted on every minified single-line
+payload at once (`sf_fundamentals`, `sf_revop`, `fundamentals`, `revop_fundamentals`,
+`pat_defects`, `ann_date_fills`, `stdpat_adjud_verdicts`) — §2b predicts exactly this. The fix is
+NOT to resolve those conflicts: `git rebase --abort`, `git reset --hard origin/main`, keep only the
+NEW files aside, and **re-run the guarded applier against the fresh payloads**. The guard is what
+makes this safe — if CI had meanwhile touched one of the 24 target cells, the re-run aborts instead
+of silently reasserting a stale number. It also caught that another session had taken §76 in the
+meantime, so this section renumbered to §77 — something a git merge would have carried through
+wrong. Journal dumps keep `indent=1`, the repo's `\uXXXX` escaping, the file's own trailing-newline
+habit, and **never `sort_keys`** (re-sorting rewrote 260/246 lines of `owners_basis_heals.json` for
+a two-entry addition and buried the actual change).

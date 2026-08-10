@@ -163,11 +163,6 @@
    "src": "BSE detres 513519 Sep-19: PAT 7.012 EPS 2.19; FY20 identity 4.49+7.012+4.059+1.535=17.10 == .50 annual 17.095. revop already held 7.01",
    "was": 7.09
   },
-  "RPSGVENT|20180630": {
-   "now": 2.15,
-   "src": "fund took the FourD context. Jun-18 std XBRL INDAS_48324_135139_04092019 (filed with Jun-19 results, IPO-cohort): OneD 2.15, EPS 0.81 == implied 0.811 (2.651e7 sh); the stored 1.65 is that file's FourD. revop already held 2.15",
-   "was": 1.65
-  },
   "RUBYMILLS|20230930": {
    "ann_now": 20240115,
    "ann_was": 20231105,
@@ -470,5 +465,27 @@
   "KALYANI 20250930 std HEALED 0.24 -> 0.12 (NOT part of the wrong-company class): the filer's printed Q2-FY26 statement leaves the quarter's current-tax cell BLANK, so its Net Profit row repeats PBT (24.10 lakh). Its OWN Basic EPS for that column is 1.24 -> 12.40 lakh on 1,000,000 shares; H1 75.39-63.01 = 12.38 and 9M 138.61-63.01-63.22 = 12.38. Four locks.",
   "KALYANI 20260331 std 1.24 OPEN (measured, NOT healed): FY26 identity misses by 0.0417 - filed FY 2.6718 minus 9M 1.3861 = 1.2857, but the Q4 column prints 1.2440. Cause is isolated: the Q4 current-tax cell repeats the 9M tax byte-for-byte (49.52 lakh; true Q4 tax = 96.03-49.52-1.16 = 45.35). Revenue AND PBT chains both close EXACTLY, so it is a tax-line error, not a restatement. NOT written because 1.2857 is a subtraction no document asserts while 1.2440 is printed and tagged (\u00a745 'neither side reconciles -> refuse'). The filing's EPS cannot arbitrate: its Q4 EPS cell is blank and 13.86 sits in the Q3 column (where 6.32 belongs).",
   "FOCUS: bse_scrips by_id mapped FOCUS (Focus Lighting and Fixtures, INE593W01028) -> BSE 543312 Focus Business Solution (INE0DXR01010). Mapping removed + guarded 2026-08-10. Its stored rows' announce dates all match its OWN NSE broadcast dates, so the mis-map had not been used to fill them - but FOCUS values were NOT value-audited. Its Dec-2024 con 0.02 vs std 5.93 is unverified."
- ]
+ ],
+ "retracted": {
+  "RPSGVENT|20180630": {
+   "was_applied": {
+    "now": 2.15,
+    "src": "fund took the FourD context. Jun-18 std XBRL INDAS_48324_135139_04092019 (filed with Jun-19 results, IPO-cohort): OneD 2.15, EPS 0.81 == implied 0.811 (2.651e7 sh); the stored 1.65 is that file's FourD. revop already held 2.15",
+    "was": 1.65
+   },
+   "retracted_on": "2026-08-10",
+   "reason": "WRONG DIRECTION. INDAS_48324_135139_04092019 is the JUN-2019 filing (OneD 2019-04-01..2019-06-30 = 2.15); NSE double-indexes it under Jun-18 as well, so Jun-2018 takes its FourD (2018-04-01..2018-06-30) = 1.65 \u2014 the value the store already had. Restored to 1.65; see stdpat_openflag_verdicts.json std_fix.",
+   "do_not_reapply": true
+  }
+ },
+ "open_flags_resolved_2026_08_10": {
+  "verdicts": "scripts/stdpat_openflag_verdicts.json",
+  "KOHINOOR 20250331 / 20260331 std": "CONFIRMED CORRECT (genuine exceptional items; both FY identities close on the BSE detres audited annual)",
+  "RPSGVENT 20180930 std 58.46": "CONFIRMED CORRECT; the real defect was this campaign's own Jun-2018 heal (retracted above)",
+  "METROPOLIS 20180930 std 20.05": "CONFIRMED CORRECT (printed Sep-18 column). Defect was DEC-2018 std 32.40 -> 22.80",
+  "HALDER 20260331 con 36.82": "DEFECT -> 16.19 (H2 owners stored as the quarter); companion Dec-2025 con 20.78 -> 20.64 (total stored as owners)",
+  "DBL 20251231 con 829.85": "CONFIRMED CORRECT (owners 8,298,518,000 + NCI -408,683,000 == total 7,889,835,000)",
+  "Mar-2019 cluster ann dates": "HEALED for GSFC/POLYMED/CARERATING + EMKAY/GREAVESCOT (same fingerprint), measured from the BSE announcement archive",
+  "still open": "KALYANI series (Jun-24/Sep-24 std missing, revenue slots unaudited, ISIN resolver guard) \u2014 untouched by this run"
+ }
 }

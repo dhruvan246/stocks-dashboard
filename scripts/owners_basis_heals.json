@@ -320,6 +320,20 @@
    "owners": 181.49,
    "stored_before": 410.47,
    "note": "stored H1 con owners (410.466) as the quarter; Q2 con INDAS_1686466 owners OneD 181.493 (owners+NCI==total closes); H1 owners chain 228.97+181.493 EXACT. _reattr_owners still holds 410.47."
+  },
+  "HALDER|20260331|patC": {
+   "period": 19.134,
+   "nci": 2.9486,
+   "owners": 16.19,
+   "stored_before": 36.82,
+   "note": "stored the H2 OWNERS figure (29-May-26 XBRL INDAS_1676935 OneD declares Oct-Mar: owners 36.8223). True Q4 = corrected 12-Jun-26 INDAS_1681056 OneD Jan-Mar: owners 161,854,000, NCI 29,486,000, total 191,340,000. _reattr_owners.json still holds 36.82, so this entry must outrank it (\u00a771d)."
+  },
+  "HALDER|20251231|patC": {
+   "period": 20.7827,
+   "nci": 0.1459,
+   "owners": 20.64,
+   "stored_before": 20.78,
+   "note": "con slot held the TOTAL: the Dec-25 con XBRL INDAS_1625562 carries no attributable tags. The filing's PDF prints the split (owners 2,063.68 lakh + NCI 14.59 = 2,078.27 total). Not in _reattr_owners today; pinned so a later ingestion cannot reintroduce the total."
   }
  }
 }

@@ -1,0 +1,100 @@
+{
+  "_README": [
+    "Adjudication of the SEVEN open flags left by the 2026-08-10 std-PAT two-files sweep (runbook §73,",
+    "scripts/stdpat_adjud_verdicts.json 'open_flags'). NO ASSUMPTIONS, NO GUESSWORK: every verdict below",
+    "cites a primary document read this session — BSE detres (§42) with the FY quarter-sum identity (§45),",
+    "the filer's own NSE XBRL (classic corporates-financial-results and the 2025+ integrated-filing-results",
+    "endpoint), or the BSE announcement PDF read by COLUMN ANCHOR (§58).",
+    "",
+    "Score: 5 flagged cells CONFIRMED CORRECT, 2 flagged cells DEFECTIVE, plus 2 companion defects found",
+    "en route — one of which is a heal the §73 campaign itself made in the WRONG direction.",
+    "",
+    "THE LESSON (new sub-class of the §73 'wrong-year OneD' family): a value that is out of family is not",
+    "thereby wrong, and an identity that fails does not tell you WHICH cell failed it. Four of the five",
+    "flags were raised because a neighbour was wrong, not the flagged cell. Always close the FY chain with",
+    "every member independently sourced before naming the culprit."
+  ],
+
+  "std_fix": {
+    "METROPOLIS|20181231": {
+      "was": 32.4, "now": 22.8,
+      "no_mirror": true,
+      "_no_mirror_why": "METROPOLIS has NO sf_revop row for 20181231 (pre-IPO comparative quarter, never filed with an exchange, so build_revop has nothing to build from). Both revop files are derived, and verify_fills_live --repair only refills rows that already exist, so a stdpat_mirror_heals entry here would report MISSING forever. The value is pinned fund-side in pat_defects.json (watched on sf_fundamentals idx1).",
+      "src": "PRINTED comparative column. BSE att 648d3237-5c5c-4438-8a1b-7d006d0c5cd6.pdf (Dec-2019 results, filed 06-Feb-2020), standalone page 4, row 7 'Profit for the period/year', column 3 = 'Quarter ended 31 December 2018': 2,280.23 lakh = 22.80. Column anchors on the same row: col2 'Quarter ended 30 September 2019' 3,167.72 == BSE detres Sep-19 316.77 Rs-mn EXACT; col6 'Year ended 31 March 2019 (Audited)' 10,145.70 == BSE detres FY19 .50 annual 1014.57 Rs-mn EXACT. Identities: 9M FY19 col5 6,196.05 = H1FY19 3,915.82 + 2,280.23 EXACT; FY19 = 6,196.05 + Q4 3,949.65 EXACT. EPS row col3 4.51 vs implied 2,280.23/501.785 lakh sh = 4.54 (stored 32.40 would imply 6.46). FY19 std chain after heal: 19.11+20.05+22.80+39.50 = 101.46 == 101.457."
+    },
+    "RPSGVENT|20180630": {
+      "was": 2.15, "now": 1.65,
+      "retracts": "stdpat_adjud_verdicts.json fund_fix RPSGVENT|20180630 (2026-08-10)",
+      "src": "RETRACTION of a §73 heal that read a double-indexed file's OneD as the target quarter. INDAS_48324_135139_04092019040116_WEB.xml is the JUN-2019 filing (ReportingQuarter 'First quarter', Symbol CESCVENT): OneD DateOfStartOfReportingPeriod 2019-04-01 / DateOfEnd 2019-06-30 = 2.15, FourD 2018-04-01..2018-06-30 = 1.65. NSE double-indexes that one file under BOTH the Jun-18 and Jun-19 list rows, so Jun-18 must take the FourD (year-ago) context = 1.65, and 2.15 belongs to Jun-2019 (where it is also stored, correctly). Identities with 1.65: 9M FY19 1.65+58.46+3.14 = 63.25 == the Dec-18 filing's own FourD (INDAS_42819 WEB, 2018-04-01..2018-12-31) EXACT; FY19 63.25+2.52 = 65.77 == Mar-19 filing FourD (INDAS_44334 WEB) AND BSE detres 542333 .50 audited annual 657.7 Rs-mn EXACT. EPS chain on 2.651e7 sh: Q1 0.62 (1.644), Q3 1.19 (3.155), Q4 0.95 (2.519), 9M 23.86, FY 24.81; implied Q2 EPS 23.86-0.62-1.19 = 22.05 -> 58.46 EXACT. Jun-2019 independently: Sep-19 filing INDAS_50741 H1FY20 FourD 76.77 - OneD Q2 74.62 = 2.15."
+    }
+  },
+
+  "con_fix": {
+    "HALDER|20260331": {
+      "was": 36.82, "now": 16.19,
+      "src": "H2-OWNERS-AS-QUARTER (same class as ABCOTS/RAJESHEXPO/CAPITALSFB in §73). The 29-May-2026 con filing INTEGRATED_FILING_INDAS_1676935 declares OneD 2025-10-01..2026-03-31 (H2, ReportingQuarter 'Yearly'): total 399,168,000 = 39.9168, owners 368,223,000 = 36.8223 <- the stored value, NCI 30,945,000. The CORRECTED 12-Jun-2026 filing INTEGRATED_FILING_INDAS_1681056 declares OneD 2026-01-01..2026-03-31 ('Fourth quarter', NameOfTheCompany 'Halder Venture Limited'): owners 161,854,000 = 16.1854, NCI 29,486,000, total 191,340,000; owners+NCI == total EXACT. Cross-checks: FY26 owners 2,873.84 lakh - 9M owners 1,255.30 lakh = 1,618.54; H2 owners 3,682.23 - Q3 owners 2,063.68 = 1,618.55. The 29-May PDF (BSE att 90a07d75-6664-49f5-99db-18c056d3430e.pdf p15) prints the Q4 column with NCI 294.86 lakh == the 12-Jun XBRL NCI 29,486,000 EXACT, confirming its first column IS the Jan-Mar quarter. (HALDER's printed EPS uses weighted-average shares against a paid-up capital that moved 115,973,000 -> 116,154,000 -> 124,381,000 within FY26, so EPS does not arbitrate here; the owners+NCI=total identity and the FY/9M/H2 chains do, and all close exactly.) Std side re-verified correct: 12-Jun std INDAS_1681055 OneD Jan-Mar 28,398,000 = 2.84 == stored."
+    },
+    "HALDER|20251231": {
+      "was": 20.78, "now": 20.64,
+      "src": "COMPANION: the con slot held the TOTAL, not owners. The Dec-2025 con XBRL INTEGRATED_FILING_INDAS_1625562 carries NO attributable tags at all (only ProfitLossForPeriod 207,827,000 = 20.7827), so ingestion stored the total. The filing's own PDF does print the split — BSE att 0ba427bc-a01e-4397-82da-4ab98fa1e435.pdf p10, row 12 'Profit for the period/year attributable to': 'Equity shareholders of the parent' 2,063.68 lakh, 'Non-controlling interest' 14.59 lakh, sum 2,078.27 == row 9 total EXACT. Owners = 2,063.68 lakh = 20.64. Independently derived the same: H2 owners 3,682.23 - Q4 owners 1,618.54 = 2,063.69. 9M column agrees: owners 1,255.30 + NCI 21.54 = 1,276.84 total EXACT."
+    }
+  },
+
+  "ann_fix": {
+    "GSFC|20190331": {
+      "ann_was": 20190904, "ann_now": 20190522, "match": "bse:exact",
+      "src": "BSE announcement archive, scrip 500690, Result/Financial Results, submitted 2019-05-22T17:38:04, NEWSSUB 'Standalone And Consolidated Audited Financial Results For The Year Ended On 31St March, 2019' (states the period). Sole result filing 01-Apr..31-Jul-2019. Stored 20190904 is the date NSE broadcast the JUN-2019 standalone XBRL, the file that was double-indexed onto Mar-2019 (§73)."
+    },
+    "POLYMED|20190331": {
+      "ann_was": 20190904, "ann_now": 20190510, "match": "bse:solo",
+      "src": "BSE scrip 531768, Result/Financial Results, submitted 2019-05-10T18:10:51 ('Outcome of Board Meeting', Reg 30/33), sole result filing 01-Apr..31-Jul-2019. Corroborated in-store: this row's own annCon already reads 20190510."
+    },
+    "CARERATING|20190331": {
+      "ann_was": 20190904, "ann_now": 20190521, "match": "bse:first-declaration",
+      "src": "BSE scrip 534804 filed the Mar-2019 audited results TWICE: 2019-05-21T18:54:18 (Result/Financial Results, headline 'Enclosed herewith the Audited Standalone and Consolidated Financial Result for the quarter and Year ended March 31, 2019') and 2019-05-22T17:18:26 (Result/Financial Results, NEWSSUB 'Results - Financial Results For 31-03-2019'). Point-in-time takes the FIRST public dissemination = 20190521; the 05-22 refiling is journalled here."
+    },
+    "EMKAY|20190331": {
+      "ann_was": 20190813, "ann_now": 20190528, "match": "bse:solo",
+      "src": "BSE scrip 532737, Result/Financial Results, submitted 2019-05-28T17:38:50 ('Outcome of the Board Meeting held on 28.05.2019'), sole result filing 01-Apr..31-Jul-2019. Same duplicate-date fingerprint as the named three: stored annStd 20190813 is this row's JUN-2019 announce date."
+    },
+    "GREAVESCOT|20190331": {
+      "ann_was": 20190911, "ann_now": 20190502, "match": "bse:exact",
+      "src": "BSE scrip 501455, Result/Financial Results, submitted 2019-05-02T14:01:16, NEWSSUB 'Audited Financial Results Of The Company For The Quarter And Financial Year Ended 31St March, 2019' (states the period). Sole result filing 01-Apr..31-Jul-2019; MEASURED: the archive holds NO filing at all in Sep-2019, so the stored 20190911 is an NSE-side broadcast date, not an announcement."
+    }
+  },
+
+  "observed_not_healed": {
+    "Mar-2019 cluster CON announce dates": {
+      "what": "EMKAY|20190331 annCon 20190813, GREAVESCOT|20190331 annCon 20190911, CARERATING|20190331 annCon 20190525.",
+      "measured": "GREAVESCOT's BSE archive holds NO filing of any category in September 2019, so 20190911 cannot be an announcement date. CARERATING's two Mar-2019 result filings are dated 05-21 and 05-22, so 20190525 matches neither. EMKAY's sole Mar-2019 result filing is 05-28, so 20190813 is its Jun-2019 date.",
+      "why_not_healed": "The flag, and the evidence gathered, are about the STANDALONE announce dates. Whether each of these boards also released the consolidated statement in the SAME filing is not established by the announcement metadata alone (GSFC's and CARERATING's NEWSSUB/headline say 'Standalone and Consolidated'; EMKAY's and GREAVESCOT's do not say). A con date is therefore UNKNOWN, not guessable — writing the std date into the con slot would be exactly the assumption this repo forbids. Left for a run that reads the filings themselves."
+    }
+  },
+
+  "confirmed_no_change": {
+    "KOHINOOR|20250331": {
+      "value": 375.64,
+      "src": "GENUINE, not a scale error. BSE detres 512559 qid 125.00 (Audited, Date Begin 01-Jan-25 / End 31-Mar-25): Net Sales 196.60 Rs-mn = 19.66 == stored revS EXACT; Exceptional Item 3,827.40 Rs-mn = 382.74; Net Profit 3,756.40 Rs-mn = 375.64 == stored. EPS 101.29 x 3.708e7 sh = 375.6. FY25 identity: -2.50 + -0.08 + -8.28 + 375.64 = 364.78 == .50 audited annual 3,647.70 Rs-mn = 364.77. (The exceptional item is confirmed as an exceptional item by the filing's own line; its NATURE — debt settlement/OTS — was NOT read and remains unverified. It does not affect the value.)"
+    },
+    "KOHINOOR|20260331": {
+      "value": 87.65,
+      "src": "BSE detres 512559 qid 129.00 (Audited, 01-Jan-26..31-Mar-26): Net Sales 277.40 Rs-mn = 27.74 == stored revS EXACT; Exceptional Item 959.80 Rs-mn; Net Profit 876.50 Rs-mn = 87.65 == stored. EPS 23.63. FY26 identity: -2.05 + -0.69 + -4.23 + 87.65 = 80.68 == .50 audited annual 806.80 Rs-mn = 80.68 EXACT."
+    },
+    "RPSGVENT|20180930": {
+      "value": 58.46,
+      "src": "CORRECT — the flag's wrong-context-grab hypothesis is REFUTED. 58.46 is exactly what the FY19 chain requires once Jun-18 is restored to 1.65 (see std_fix RPSGVENT|20180630): 9M FY19 63.25 (Dec-18 filing FourD) - 1.65 - 3.14 = 58.46, and FY19 65.77 (Mar-19 filing FourD + BSE detres .50 audited) - 1.65 - 3.14 - 2.52 = 58.46. Implied EPS 22.05 == 9M 23.86 - Q1 0.62 - Q3 1.19 EXACT. RPSG Ventures (then CESCVENT) never filed a standalone Sep-2018 quarter of its own — the NSE list's Jul-Sep-2018 row is the double-indexed Dec-2018 file — so the value is only reachable through this chain, and the chain closes two independent ways."
+    },
+    "METROPOLIS|20180930": {
+      "value": 20.05,
+      "src": "CORRECT — PRINTED. BSE att 74a4a6f5-4514-40bf-be35-06b5f71b39d0.pdf (Sep-2019 results), standalone page 4, row 7, column 3 'Quarter ended 30 September 2018': 2,004.50 lakh = 20.045. Same-row anchors: col2 'Quarter ended 30 June 2019' 1,831.97 == stored 18.32; col6 'Year ended 31 March 2019' 10,145.70 == BSE detres .50 audited EXACT. H1FY19 col5 3,915.82 - 2,004.50 = 1,911.32 = Jun-18 19.11 == stored."
+    },
+    "DBL|20251231": {
+      "value": 829.85,
+      "src": "CORRECT — negative-NCI hypothesis CONFIRMED. Q3FY26 con INTEGRATED_FILING_INDAS_1622346 (NameOfTheCompany 'DILIP BUILDCON LIMITED', Symbol DBL, OneD 2025-10-01..2025-12-31): ProfitOrLossAttributableToOwnersOfParent 8,298,518,000 = 829.85 == stored; ProfitOrLossAttributableToNonControllingInterests -408,683,000 = -40.87; ProfitLossForPeriod 7,889,835,000 = 788.98. owners + NCI == total EXACT, so owners LEGITIMATELY exceeds the total. 9M FourD owners 12,403,182,000 = 1,240.32 == chain 228.97 + 181.49 + 829.85 EXACT. Revenue OneD std 1,718.24 / con 2,137.90 == stored revS/revC EXACT. The filer's con EPS 48.57 is computed on the TOTAL (788.98 / 16.24448 cr sh = 48.57 exactly), not on owners — benign, same pattern as SAGCEM (§2d), so EPS is not the arbiter here."
+    },
+    "METROPOLIS|FY19-con": {
+      "value": "23.97 / 30.48 / 31.20 / 34.49",
+      "src": "Swept while adjudicating the std side; ALL FOUR con cells confirmed. Sep-19 PDF page 10, row 12 'Profit attributable to: Owners of the Company': 4,298.05 | 2,678.00 | 3,048.37 | 6,976.05 | 5,445.83 | 12,014.79, with 'Non-controlling interest' 14.98 | 13.46 | (47.36) | 28.44 | 299.13 | 346.49 — every column's owners+NCI reproduces the row-9 total EXACTLY. Sep-18 owners 3,048.37 = 30.48 == stored (its NCI is NEGATIVE, -47.36 lakh, so owners exceeds the total there too). H1FY19 owners 5,445.83 - 3,048.37 = 2,397.46 = Jun-18 23.97 == stored. FY19 owners 12,014.79 - 2,397.46 - 3,048.37 - Q4 3,449.00 = 3,119.96 = Dec-18 31.20 == stored."
+    }
+  }
+}
