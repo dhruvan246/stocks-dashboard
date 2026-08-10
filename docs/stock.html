@@ -192,7 +192,7 @@ let TKR=null, CHART=null, RANGE='Max';
    the financials file so the quarterly table can say "loading" instead of "nothing on file". */
 let SLICE=null, FIN_STATE='pending';
 
-function fail(msg){ $('ov').style.display='none'; $('sSym').textContent=SYM||'?'; $('sName').innerHTML=`<span class="neg">${esc(msg)}</span>`; }
+function fail(msg){ $('ov').style.display='none'; $('sSym').textContent=SYM||'?'; $('sName').innerHTML=`<span class="neg">${esc(msg)}</span>`; const sh=$('shp'); if(sh&&/Loading/.test(sh.textContent)) sh.textContent='—'; }
 
 /* ---------- events on the price chart ----------------------------------------------------------
  * Sources: results announce dates (fin slice), dividends & corp actions (slice.act), insider
@@ -1075,6 +1075,12 @@ async function liveQuote(){
   let slice=null;
   try{ slice=await loadStockSlice(SYM); }catch(e){ console.warn('no slice for '+SYM+' ('+(e&&e.message||e)+') — falling back to the full engine'); }
 
+  // A renamed ticker's old symbol has no slice of its own — hop to the current name
+  // instead of booting the 17 MB engine just to fail (GUJGASLTD→GUJENERGY class, §30).
+  if(!slice && typeof FUND_ALIAS!=='undefined' && FUND_ALIAS[SYM]){
+    location.replace('stock.html?sym='+encodeURIComponent(FUND_ALIAS[SYM])); return;
+  }
+
   if(slice){
     const finP=loadStockFin(SYM);                 // in flight while we render prices
     TKR=installStockSlice(slice); SLICE=slice;
@@ -1099,7 +1105,11 @@ async function liveQuote(){
     $('ovT').textContent='Loading market data (~17 MB, once)…';
     try{ await loadEngineData(m=>{ const t=$('ovT'); if(t&&m) t.textContent=m; }); }
     catch(e){ fail('Could not load market data: '+(e&&e.message||e)); return; }
-    if(!META[SYM]){ fail('“'+SYM+'” not found in the dataset.'); return; }
+    if(!META[SYM]){
+      const nw=(typeof FUND_ALIAS!=='undefined'&&FUND_ALIAS[SYM])||null;
+      if(nw&&META[nw]){ location.replace('stock.html?sym='+encodeURIComponent(nw)); return; }
+      fail('“'+SYM+'” not found in the dataset.'); return;
+    }
     TKR=SYM;
     FIN_STATE='ok';                                // FUND came with the engine; REVOP lands below
     try{ render(); }catch(e){ fail('Render error: '+(e&&e.message||e)); console.error(e); return; }
