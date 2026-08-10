@@ -112,7 +112,8 @@ def main():
             continue
         stages = []
         pl_pages = con_pages = std_pages = bankish = rowsok = anchorok = 0
-        ndocs = ntext = 0
+        ndocs = ntext = big_docs = 0
+        best_cpp = 0.0
         for annd, att, sub in fils[:10]:
             if att in pdf_cache:
                 raw = pdf_cache[att]
@@ -129,9 +130,12 @@ def main():
                 stages.append("pdf-unopenable")
                 continue
             has_text = False
-            for pi in range(min(len(doc), 40)):
+            npages = min(len(doc), 40)
+            doc_chars = 0
+            for pi in range(npages):
                 page = doc[pi]
                 text = page.get_text()
+                doc_chars += len(text)
                 if text.strip():
                     has_text = True
                 # A BANK's P&L page has no "revenue from operations" line at all — its top line is
@@ -170,11 +174,23 @@ def main():
                     anchorok += 1
             if has_text:
                 ntext += 1
+            if npages >= 8:                       # plausibly carries a statement
+                big_docs += 1
+                best_cpp = max(best_cpp, doc_chars / float(npages))
             doc.close()
+        # ⚠️ "ANY document had text" is the WRONG test for scannedness, and it mislabelled 8 cells.
+        # DLF Mar-2019 lists three result-flagged announcements: a 4-page compliance letter WITH a
+        # text layer, and the two that actually matter — "Audited Financial Results" (30 pages) and
+        # the Q1 results (24 pages) — with ZERO characters, i.e. pure scans. `ntext > 0` was
+        # satisfied by the compliance letter, so the cell reported `no-pl-page` (read as "wrong
+        # attachment, fixable by selection") when the truth is "every results document is an image
+        # and only the vision rung reaches it". Judge scannedness on the documents that could
+        # plausibly CARRY a statement (>=8 pages), by characters per page.
         if ndocs == 0:
             stage = "pdf-unfetchable"
-        elif ntext == 0:
-            stage = "scanned-no-text"
+        elif ntext == 0 or (big_docs and best_cpp < 600):
+            stage = ("scanned-no-text" if ntext == 0 else
+                     "scanned-results-docs (best %.0f chars/page over >=8-page attachments)" % best_cpp)
         elif pl_pages == 0:
             stage = "no-pl-page"
         elif bankish and pl_pages == bankish:
@@ -193,6 +209,7 @@ def main():
             stage = "anchored-but-not-written(see sweep guards)"
         out[key] = {"stage": stage, "filings": len(fils), "docs": ndocs, "text_docs": ntext,
                     "pl_pages": pl_pages, "con_pages": con_pages, "std_pages": std_pages,
+                    "best_chars_per_page": round(best_cpp, 1), "big_docs": big_docs,
                     "bankish_pages": bankish, "rows_ok": rowsok, "anchor_ok": anchorok,
                     "stored_pat": stored_pat, "notes": sorted(set(stages))}
         print("%-13s %d %-3s  %s (docs %d, PL pages %d, con %d, rows %d, anchor %d)" % (
