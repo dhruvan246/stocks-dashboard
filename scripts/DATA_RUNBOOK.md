@@ -704,7 +704,30 @@ V-recovery (Jun-2021: +48%)**.
   the snapshot whose effectiveDate ≤ the quarter-end), so no survivorship bias (today's Nifty 50 is NOT applied to 2019).
   The join is ~100% (renames via `_rename_map.json`). Financial-heavy indexes (Nifty Bank/PSU Bank) show **PAT only**
   — banks have no comparable rev/op, and `MIN_N=5` suppresses medians over <5 cos. `build_results_season.py` emits
-  `{defaultUniverse, dataAsOf, universes:[{key,label,note,quarters:[{...,rev:{median,n,total,tn},op,ebit,pat}]}]}`.
+  `{defaultUniverse, universeAsOf, updated, universes:[{key,label,note,quarters:[{...,rev:{median,n,total,tn},op,ebit,pat}]}]}`.
+- **`universeAsOf` DATES THE TURNOVER SNAPSHOT — IT IS NOT A PRICE DATE** (renamed from `dataAsOf` 2026-08-10).
+  Nothing on this chart is priced: the bars are rev/op/PAT YoY out of `sf_fundamentals` + `sf_revop`, whose freshness
+  is `updated` (the "data refreshed …" line). The price bin is read for exactly ONE thing — the ≥₹1cr/day turnover
+  screen that picks the **`liquid`** universe's members. Index universes take members from `indices_history.json` and
+  never touch it, so the page must NOT stamp this date on them. It used to: the caption appended
+  `· prices as of <date>` to EVERY universe, so Season Trends read **"Nifty 500 · prices as of 2026-06-13"** over a
+  payload rebuilt 20 minutes earlier — a date that was wrong twice over (nothing priced, and the bin plays no part in
+  Nifty 500). Now only the liquid universe shows it, worded `· universe as of <date>`.
+- **The committed `docs/sf_stock_data.bin` is FROZEN — never date anything user-facing off it without saying so.**
+  `refresh-market-mood` overwrites it in the runner and deliberately never commits it, and the real bin is ~193 MB —
+  past GitHub's 100 MB file cap — so it CANNOT be committed fresh. It last advanced on a **hand** heal (2026-06-19,
+  bars to 2026-06-13) while live prices ran to 2026-08-07. Left to it the liquid universe was **4.8% wrong** (of 1,433:
+  41 newly-liquid names missing — SBIFUNDS, TURTLEMINT, MANIPALHOS … — and 28 gone-illiquid still counted), drifting
+  further every day. Fix: `scripts/bake_liquid_universe.py` cuts a ~14 KB `docs/liquid_universe.json`
+  `{asOf, floorCr, window, symbols[]}` inside **refresh-backtest-data.yml** (the one job that HAS a fresh bin, right
+  after the append step) and commits it with the version marker; `build_liquid_universe()` reads that sidecar and falls
+  back to the frozen bin **with a loud ⚠ line** when it is missing. Any other job needing a fresh universe should read
+  the sidecar — do NOT add a 193 MB release download to a job that runs 48×/day.
+- ⚠️ **OPEN (found 2026-08-10, NOT fixed):** the turnover screen takes each symbol's *last 250 bars whenever they
+  happened*, so **8 long-dead tickers** pass it and sit in "currently-listed companies trading ≥₹1cr/day" — SPSL
+  (last bar **2009**-05-04), RDEL (2017), HDIL (2020), HSIL (2022), SPICEJET + LANCER (2023), HINDMOTORS, RAJESHEXPO.
+  Their `alive` meta is stale-True (bin meta is frozen). A recency guard (last bar within ~60d of the bin's `end`)
+  would fix it, but it shifts universe membership, so it needs its own pass — not folded into the caption fix.
 - **MEDIAN ↔ TOTAL toggle (2026-07-01, user compared to Trendlyne):** each metric carries BOTH `median` (per-company
   YoY, consolidated-preferred, positive base — "typical company") AND `total` (aggregate Σnow/Σago−1,
   **CONSOLIDATED-preferred** — the old "standalone" wording here was stale; con-pref is what reconciles to TL's

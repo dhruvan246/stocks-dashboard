@@ -19,7 +19,8 @@ YoY needs the year-ago quarter on the SAME basis: consistent() picks con/con whe
 filed consolidated, else std/std, and that ONE pair feeds both the median and the total (a base
 may be negative — Trendlyne's (cur-base)/ABS(base) convention, DATA_RUNBOOK §11).
 
-Out: docs/results_season.json = { defaultUniverse, basis, dataAsOf, universes:[{key,label,note,quarters}] }
+Out: docs/results_season.json = { defaultUniverse, basis, universeAsOf, updated,
+                                  universes:[{key,label,note,quarters}] }
 Run:  python -X utf8 build_results_season.py
 """
 import os, json, gzip, statistics, datetime
@@ -31,6 +32,7 @@ if not os.path.exists(FUND): FUND = os.path.join(HERE, "fundamentals.json")
 REVOP = os.path.join(ROOT, "docs", "sf_revop.json")
 if not os.path.exists(REVOP): REVOP = os.path.join(HERE, "revop_fundamentals.json")
 BIN = os.path.join(ROOT, "docs", "sf_stock_data.bin")
+LIQ = os.path.join(ROOT, "docs", "liquid_universe.json")
 INDICES = os.path.join(HERE, "indices_history.json")
 RENAME = os.path.join(HERE, "_rename_map.json")
 OUT = os.path.join(ROOT, "docs", "results_season.json")
@@ -61,8 +63,8 @@ def load_rename():
         return {}
 
 
-def build_liquid_universe(rename=None):
-    """Turnover universe, keyed by the CURRENT ticker.
+def scan_bin_universe(path, rename):
+    """Turnover universe straight out of a price bin -> (symbols, that bin's last bar date).
 
     ⚠️ Map every bin symbol through `rename` — the committed bin lags a rename (it is refreshed on its
     own cadence), so it can still hold the OLD key while fundamentals/sf_revop have already moved to the
@@ -70,8 +72,7 @@ def build_liquid_universe(rename=None):
     silently leaves the 'liquid' universe: GUJGASLTD→GUJENERGY (eff 2026-07-01) dropped out of all 29
     quarters this way. §30 step 4b names this map as exactly that bin-key bridge for this build; index
     membership already applies it (snap_as_of), the turnover set did not."""
-    rename = rename if rename is not None else load_rename()
-    D = json.loads(gzip.decompress(open(BIN, "rb").read()))
+    D = json.loads(gzip.decompress(open(path, "rb").read()))
     meta, data = D["meta"], D["data"]
     U = set()
     for s, m in meta.items():
@@ -89,6 +90,35 @@ def build_liquid_universe(rename=None):
         if vals and statistics.median(vals) >= TURN_FLOOR_CR:
             U.add(rename.get(s, s))
     return U, D.get("end")
+
+
+def build_liquid_universe(rename=None):
+    """Turnover universe + the date it was measured on.
+
+    Reads `docs/liquid_universe.json` — the tiny sidecar `bake_liquid_universe.py` writes each evening
+    in refresh-backtest-data.yml, where the freshly appended bin actually lives — and falls back to
+    scanning the committed bin.
+
+    The fallback is a LAST RESORT, not the normal path: `docs/sf_stock_data.bin` is a frozen snapshot
+    on purpose (refresh-market-mood overwrites it in the runner but never commits it, and the real bin
+    is ~193 MB — past GitHub's 100 MB file cap, so it CANNOT be committed fresh). Left to it this build
+    dated its universe 2026-06-13 while prices ran to 2026-08-07: 41 newly-liquid names (SBIFUNDS,
+    TURTLEMINT, MANIPALHOS …) were missing from the default universe and 28 names that had gone illiquid
+    were still counted — 4.8% of 1,433, and growing every day the snapshot stayed frozen."""
+    rename = rename if rename is not None else load_rename()
+    try:
+        S = json.load(open(LIQ, encoding="utf-8"))
+        syms = {rename.get(s, s) for s in S["symbols"]}
+        if syms and S.get("asOf"):
+            return syms, S["asOf"]
+        print("  ⚠ %s present but empty — falling back to the frozen bin" % os.path.basename(LIQ))
+    except FileNotFoundError:
+        pass
+    except Exception as e:
+        print("  ⚠ %s unreadable (%s) — falling back to the frozen bin" % (os.path.basename(LIQ), e))
+    U, end = scan_bin_universe(BIN, rename)
+    print("  ⚠ liquid universe from the FROZEN committed bin (as of %s) — sidecar missing" % end)
+    return U, end
 
 
 def consistent(cur, base):
@@ -346,8 +376,13 @@ def main():
                  "filed, else standalone. Total = consolidated-preferred aggregate (matches Trendlyne). Revenue "
                  "& Operating profit include banks/NBFCs (bank rev = interest earned, op = pre-provision profit). "
                  "Index universes use point-in-time membership (whoever was in the index at each quarter's rebalance).",
-        "dataAsOf": end,
-        # when THIS build ran — distinct from dataAsOf (the price bin's date). Lets the page show
+        # NOT a price date, and NOT an as-of for anything the chart plots: the bars are rev/op/PAT YoY
+        # out of sf_fundamentals + sf_revop, which `updated` below timestamps. This dates ONE thing —
+        # the turnover snapshot that picks the "liquid" universe's members. Index universes don't use
+        # it at all (their membership comes from indices_history.json), so the page must NOT stamp it
+        # on them: it read "Nifty 500 · prices as of 2026-06-13" over data rebuilt 20 min earlier.
+        "universeAsOf": end,
+        # when THIS build ran — distinct from universeAsOf (the turnover snapshot). Lets the page show
         # "refreshed HH:MM IST" so a stale open tab doesn't read as a dead pipeline (runbook §11).
         "updated": ist.strftime("%Y-%m-%d %H:%M IST"),
         "universes": universes,

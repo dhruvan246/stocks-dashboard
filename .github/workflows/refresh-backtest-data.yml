@@ -60,6 +60,15 @@ jobs:
       - name: Append missing trading days to sf_stock_data.bin
         run: python3 scripts/update_sf_data.py
 
+      # The Season Trends default universe ("all liquid stocks") is a turnover screen over the price
+      # bin — but its baker runs in refresh-fundamentals.yml, which only ever sees the COMMITTED bin,
+      # frozen since 2026-06-13 (the real one is ~193 MB, past GitHub's 100 MB file cap, so it can
+      # never be committed fresh). This job is the one place a fresh bin exists, so cut the ~20 KB
+      # symbol list here and commit it below. Non-fatal: the baker falls back to the frozen bin and
+      # says so in its log.
+      - name: Bake liquid-universe sidecar (fresh turnover snapshot)
+        run: python3 -X utf8 scripts/bake_liquid_universe.py || echo "(liquid-universe bake failed — season chart keeps the frozen snapshot)"
+
       # TRIPWIRE: an ISIN-changed rename (GUJGASLTD->GUJENERGY class) starts a FRESH series the
       # ISIN auto-merge can't catch — the stock looks like a days-old IPO with its history
       # stranded on the dead ticker. Detect via NSE's symbolchange.csv + company-name match and
@@ -167,6 +176,7 @@ jobs:
           [ -f docs/search_index.json ] && cp docs/search_index.json /tmp/search_index.json
           [ -f scripts/_rename_suspects.json ] && cp scripts/_rename_suspects.json /tmp/_rename_suspects.json
           [ -f scripts/demerger_adj.json ] && cp scripts/demerger_adj.json /tmp/demerger_adj.json
+          [ -f docs/liquid_universe.json ] && cp docs/liquid_universe.json /tmp/liquid_universe.json
           for attempt in 1 2 3 4 5; do
             git fetch origin main && git reset --hard origin/main
             cp /tmp/sf_meta.json docs/sf_meta.json
@@ -174,6 +184,7 @@ jobs:
             [ -f /tmp/search_index.json ] && cp /tmp/search_index.json docs/search_index.json && git add docs/search_index.json
             [ -f /tmp/_rename_suspects.json ] && cp /tmp/_rename_suspects.json scripts/_rename_suspects.json && git add -f scripts/_rename_suspects.json
             [ -f /tmp/demerger_adj.json ] && cp /tmp/demerger_adj.json scripts/demerger_adj.json && git add scripts/demerger_adj.json
+            [ -f /tmp/liquid_universe.json ] && cp /tmp/liquid_universe.json docs/liquid_universe.json && git add docs/liquid_universe.json
             if git diff --cached --quiet; then echo "marker unchanged"; exit 0; fi
             git commit -m "Backtest data version marker $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
             if git push origin HEAD:main; then echo "pushed marker (attempt #$attempt)"; exit 0; fi

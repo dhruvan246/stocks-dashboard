@@ -1226,7 +1226,16 @@ function rsRenderChart(){
     { key:'pat', name:'PAT',              color:'#fbbf24' },
   ];
   const uni=$('rsUniverse'); if(uni) uni.textContent=RS_CUR.note||'';
-  const asof=$('rsAsOf'); if(asof) asof.textContent=(RS_CUR.label||'')+(RS_DATA.dataAsOf?' · prices as of '+RS_DATA.dataAsOf:'');
+  // The chart plots rev/op/PAT YoY — nothing here is priced, so there is no "prices as of" to show.
+  // universeAsOf dates ONE thing: the turnover snapshot that picks the liquid universe's members.
+  // Index universes get their members from indices_history.json and never touch it, so stamping it
+  // on them was pure noise — "Nifty 500 · prices as of 2026-06-13" over data rebuilt 20 min earlier.
+  // Freshness of the numbers themselves is the "data refreshed …" line (rsAgeText), which is separate.
+  const asof=$('rsAsOf');
+  if(asof){
+    const snap=(RS_CUR.key==='liquid'&&RS_DATA.universeAsOf)?' · universe as of '+RS_DATA.universeAsOf:'';
+    asof.textContent=(RS_CUR.label||'')+snap;
+  }
   rsTickAge();
   const foot=$('rsFootnote');
   if(foot) foot.textContent=(RS_MODE==='median'
