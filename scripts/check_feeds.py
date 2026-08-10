@@ -122,6 +122,18 @@ def check_special(s):
                     r.update(status="stale",
                              detail=f"newest '{s['match']}' row is {age/24:.1f} d old "
                                     f"(limit {s['max_age_hours']/24:.1f} d) — that source has stopped feeding")
+        elif s["type"] == "fund_alias":
+            # The baked FUND_ALIAS in backtest-engine.js + stock-backtest.html drifting away
+            # from scripts/_rename_map.json is SILENT: a renamed stock just returns null profit
+            # for its old-name era and drops out of every profit screen. See check_fund_alias.py
+            # for the rule; fix with `python3 scripts/check_fund_alias.py --write`.
+            sys.path.insert(0, os.path.join(ROOT, "scripts"))
+            from check_fund_alias import audit
+            a = audit()
+            r["bytes"] = a["baked"]
+            if not a["ok"]:
+                r.update(status="drift" if a["status"] == "drift" else a["status"],
+                         detail=a["detail"])
         elif s["type"] == "supabase_rpc":
             req = urllib.request.Request(
                 s["url"], data=b"{}", method="POST",

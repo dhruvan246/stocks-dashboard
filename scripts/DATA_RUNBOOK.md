@@ -2487,6 +2487,20 @@ Fix sweep (all steps, in order — verify against the LIVE release asset, never 
    regeneration. Without it a renamed ex-member silently drops out of those builds once the old key
    leaves the bin (GUJGASLTD sat in 11 N500 snapshots and this step was missed on day one — fixed with
    the 2026-07-17 batch). A full rebuild regenerates the file, but the entry is needed until then.
+4c. **`python3 scripts/check_fund_alias.py --write`** — re-syncs the baked `FUND_ALIAS` from 4b's map
+   into BOTH client copies (`docs/backtest-engine.js` + the `docs/stock-backtest.html` inline engine;
+   they must stay byte-identical) and `node --check`s the result. Nothing did this automatically until
+   2026-08-10, so the constants drifted from the map for months. **The drift is SILENT:** an old ticker
+   with no alias returns null profit for its whole old-name era and the stock vanishes from every
+   profit-based screen — no error anywhere. The rule (measured, not assumed): alias `OLD→TARGET` when
+   TARGET is the END of the rename chain, TARGET is **alive** in live META, and OLD is **not alive** —
+   ABSENT counts, because a merged rename's old symbol leaves the bin entirely (GUJGASLTD/ZOMATO/PVR/
+   LTIM are all absent from live META; only TATAMOTORS survives as `dead`). "OLD must not be alive" is
+   also the reused-ticker guard: a recycled symbol now owned by a different live company is never
+   aliased. Writes are fill-only — the ~400 older hand-curated entries whose target is itself dead are
+   kept, never pruned. The nightly feed monitor runs the same check (`fund_alias` special in
+   `docs/feeds.json`), so drift now turns the health board red and opens the usual auto-closing alert
+   issue instead of waiting to be noticed. Bump the sw CACHE after a `--write` (§39 step 5).
 5. `scripts/apply_owners_full.py` **ALIAS** += `"OLD":"NEW"` (_reattr_owners stays keyed by OLD).
 6. `scripts/bse_scrips.json` `by_id`: rename key (scrip code unchanged; `by_isin` already fine).
 7. `scripts/fno_history.json` **+ `docs/stock_data.bin` `fnoHistory`**: replace OLD→NEW in every
@@ -3022,6 +3036,10 @@ injected site-wide. Never push those unchecked. Never let `|| echo` swallow a fa
 - Shared JS (`sw-sync.js`, `sw-watchlist.js`, `backtest-engine.js`) → `grep -rl` every consumer, open each.
 - `stock-backtest.html` has its **OWN inline engine** — any factor/logic added to one MUST be ported
   to `backtest-engine.js` and vice-versa (memory: feedback-backtest-engines-sync).
+- **A constant duplicated into two files needs a GENERATOR, not discipline.** `FUND_ALIAS` lives in
+  both engines and silently fell months behind `_rename_map.json` because nothing regenerated it —
+  hand-syncing a duplicate works exactly once. Any constant derived from a file that keeps growing
+  gets a `--write` generator plus a nightly check (`scripts/check_fund_alias.py`, §30 step 4c).
 - Changed a JSON's shape → check every reader of that JSON, plus the writer that bakes it.
 - New page → `NAV_GROUPS` in theme.js + an `index.html` blurb (§34), else it exists but is unreachable.
 
@@ -3063,6 +3081,7 @@ A named unverified corner costs one sentence; the same corner found by the user 
 | Live Picks / holdings anchored to `SF.end`, missing same-day filings & prices | **3** — verify vs real current data, not the baked snapshot |
 | backtest saved the same strategy twice | **2** — two writers of one record |
 | BSE feed merge silently dead in CI (top-level heavy import + `\|\| echo`) | **0** — import smoke test, no swallowed errors |
+| baked `FUND_ALIAS` months behind `_rename_map.json`; renamed stocks silently null-profit (2026-08-10) | **2** — a duplicated constant needs a generator + nightly check, not hand-syncing |
 | SW cache version bumped off a stale checkout, colliding with a version origin already shipped | **5** — read the current CACHE from `origin/main`, not the local file |
 | Quarterly Results stat tiles WHITE in dark theme for a month (`var(--surface-1,#fff)` — token never existed, #fff fallback won in every theme; invisible in light/soft) | **4** — dark check, plus: grep every `var(--…)` a page uses against the tokens theme.css actually defines; an undefined token silently renders its fallback |
 | old renamed symbol dead-ended stock.html ("not found", stuck Loading line) while FUND_ALIAS had drifted 71 vs the rename map's 797 | **3** — renamed-ticker path with a symbol renamed AFTER the alias map was last touched, not one already in it |

@@ -678,6 +678,13 @@
       "apikey": "sb_publishable_MDlQwiVc5deii91__UNeDg_z9r4Fk98",
       "workflow": "backup-backtest-history.yml",
       "note": "kept awake by the daily backup; if red, restore the project in the Supabase dashboard"
+    },
+    {
+      "type": "fund_alias",
+      "name": "FUND_ALIAS in step with _rename_map",
+      "schedule": "checked nightly",
+      "workflow": "refresh-backtest-data.yml",
+      "note": "the two baked copies (backtest-engine.js + the stock-backtest.html inline engine) must carry every rename whose old ticker is dead and whose target is alive, and must stay byte-identical; drift is SILENT - the renamed stock returns null profit for its old-name era and drops out of every profit screen. Fix: python3 scripts/check_fund_alias.py --write"
     }
   ]
 }
