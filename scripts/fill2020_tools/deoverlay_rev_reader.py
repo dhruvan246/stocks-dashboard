@@ -172,9 +172,14 @@ OWN_TOLERANT = BG.re.compile(
 
 MONTHS = {m: i for i, m in enumerate(
     ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"], 1)}
-RE_DAY = BG.re.compile(r"^(\d{1,2})(?:st|nd|rd|th)?,?$", BG.re.I)
+RE_DAY = BG.re.compile(r"^(\d{1,2})(?:st|nd|rd|th)?[-,]?$", BG.re.I)
 RE_YEAR = BG.re.compile(r"^((?:19|20)\d{2})[.,]?$")
 RE_NUMDATE = BG.re.compile(r"^(\d{1,2})[./-](\d{1,2})[./-]((?:19|20)\d{2})[.,]?$")
+# KOTAKBANK's header prints "31- Dec-19  30-Sep-19  31-Dec-18 …" — a compact dd-Mon-yy form with a
+# TWO-DIGIT year, sometimes split so the day carries a trailing hyphen. Neither the numeric nor the
+# day/month/year token walk read it, so header_dates returned [] and every one of its cells failed
+# with "no printed dates in the header" on a page that states its periods plainly.
+RE_COMPACT = BG.re.compile(r"^(\d{1,2})[-/]([A-Za-z]{3})[a-z]*[-/](\d{2}|\d{4})[.,]?$")
 LAST_DAY = {3: 31, 6: 30, 9: 30, 12: 31}
 
 
@@ -196,6 +201,16 @@ def header_dates(words):
         m = RE_NUMDATE.match(tok)
         if m:
             d, mo, y = int(m.group(1)), int(m.group(2)), int(m.group(3))
+            if mo in LAST_DAY and d == LAST_DAY[mo]:
+                out.append((ws[i][2], y * 10000 + mo * 100 + d, (ws[i][1] + ws[i][3]) / 2))
+            i += 1
+            continue
+        mc = RE_COMPACT.match(tok)
+        if mc:
+            d = int(mc.group(1))
+            mo = _month(mc.group(2))
+            y = int(mc.group(3))
+            y = y + 2000 if y < 100 else y
             if mo in LAST_DAY and d == LAST_DAY[mo]:
                 out.append((ws[i][2], y * 10000 + mo * 100 + d, (ws[i][1] + ws[i][3]) / 2))
             i += 1
@@ -308,16 +323,16 @@ def date_column(rows, hdates, target_qe, guard_row=None):
     if not hits:
         return None, "header prints no column for %d" % target_qe
     hits.sort()
-    x = hits[0]
-    if len(hits) > 1:
-        vq = BG.val_at(guard, x)
-        for other in hits[1:]:
-            vo = BG.val_at(guard, other)
-            if vq is None or vo is None or not (abs(vo) > abs(vq)):
-                return None, ("two columns print %d and the later one is not larger on the guard "
-                              "row (%s vs %s) — cannot tell quarter from cumulative"
-                              % (target_qe, vq, vo))
-    return x, "printed-date column (leftmost of %d occurrence(s))" % len(hits)
+    # RETURN EVERY column carrying this date and let the ANCHOR decide which one it is.
+    # Taking the leftmost was wrong on a COMBINED page: BANKINDIA's Mar-2019 filing prints
+    # "Standalone Consolidated" over four standalone columns and then four consolidated ones,
+    # all four dates repeated — so the leftmost 31.03.2019 is the STANDALONE column, and a
+    # consolidated read either grabbed it or (once the cross-basis gate existed) refused the cell
+    # outright. The caller tests each candidate against the stored PAT for the TARGET basis and
+    # keeps the one that matches it best AND strictly better than the other basis, which picks the
+    # right half of a combined page and rejects a cumulative column (an FY column cannot reproduce
+    # a quarter's PAT) without needing the old larger-value heuristic.
+    return hits, "printed-date column(s): %d occurrence(s) of %d" % (len(hits), target_qe)
 
 
 def main():
@@ -508,41 +523,47 @@ def main():
                     words = (deoverlay_words(page.get_text("words")) if was_overlaid
                              else page.get_text("words"))
                     hd = header_dates(words)
-                    pat_row = rows.get("own") if (basis == "con" and rows.get("own")) else rows.get("pat")
-                    xcol, colwhy = date_column(rows, hd, qe, guard_row=pat_row)
-                    if xcol is None:
+                    base_pat_row = (rows.get("own") if (basis == "con" and rows.get("own"))
+                                    else rows.get("pat"))
+                    cand_cols, colwhy = date_column(rows, hd, qe, guard_row=base_pat_row)
+                    if not cand_cols:
                         if not why_sticky:
                             why = "column-by-date: %s" % colwhy
                         continue
-                    # SCALE from the anchor, never from magnitude: the stored PAT for this exact
-                    # cell must be reproduced at this exact column under one of the unit hypotheses.
-                    scale = None
-                    pv_raw = BG.val_at(pat_row or [], xcol)
-                    if bank_mode:
-                        # Value-anchor, taking the CLOSEST row rather than the first acceptable one.
-                        # A consolidated bank statement prints two profit lines a hair apart — BOB's
-                        # Mar-2019 shows "Net Profit from Ordinary Activities after tax" −817.49 and,
-                        # after minority interest and share of associates, −820.59, which is the
-                        # owners figure we store. close()'s 0.4% band admits BOTH, and first-match
-                        # took the pre-minority one: the §2d total-vs-owners confusion, arriving
-                        # through a tolerance instead of a label. Best-match picks the owners row.
-                        best = None
-                        for cand_row in rows.get("_bank_rows", []):
-                            v = BG.val_at(cand_row, xcol)
+                    # ANCHOR-CHOOSES-THE-COLUMN. Every column printing the target date is a
+                    # candidate; the one we keep is the one whose PAT reproduces the stored value
+                    # for THIS basis best. On a combined "Standalone / Consolidated" page that
+                    # selects the correct half, and a cumulative column drops out on its own
+                    # because an FY figure cannot reproduce a quarter's PAT.
+                    # SCALE comes from the anchor too, never from magnitude.
+                    chosen = None                       # (dist, xcol, pv_raw, scale, pat_row)
+                    for xc in cand_cols:
+                        if bank_mode:
+                            # Value-anchor over every figure row: the consolidated bottom line is
+                            # spread across merged lines here, so no label pattern finds it. Take
+                            # the CLOSEST match — BOB prints "Net Profit from Ordinary Activities
+                            # after tax" −817.49 a hair from the owners figure we store (−820.59),
+                            # and close()'s 0.4% band admits both, so first-match picked the
+                            # pre-minority convention (§2d arriving through a tolerance).
+                            search_rows = rows.get("_bank_rows", [])
+                        else:
+                            search_rows = [base_pat_row] if base_pat_row else []
+                        for cand_row in search_rows:
+                            v = BG.val_at(cand_row, xc)
                             if v is None:
                                 continue
                             for sc in BG.SCALES:
                                 if BG.close(v / sc, stored_pat):
                                     d = abs(v / sc - stored_pat)
-                                    if best is None or d < best[0]:
-                                        best = (d, v, sc, cand_row)
-                        if best is not None:
-                            _, pv_raw, scale, pat_row = best
+                                    if chosen is None or d < chosen[0]:
+                                        chosen = (d, xc, v, sc, cand_row)
+                    scale = None
+                    if chosen is not None:
+                        _, xcol, pv_raw, scale, pat_row = chosen
                     else:
-                        for sc in BG.SCALES:
-                            if pv_raw is not None and BG.close(pv_raw / sc, stored_pat):
-                                scale = sc
-                                break
+                        xcol = cand_cols[0]
+                        pv_raw = BG.val_at(base_pat_row or [], xcol)
+                        pat_row = base_pat_row
                     if scale is None:
                         if not why_sticky:
                             why = ("printed-date column found for %d but its PAT %s reproduces no "
