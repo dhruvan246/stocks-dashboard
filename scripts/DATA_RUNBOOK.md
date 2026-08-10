@@ -3522,8 +3522,8 @@ exit 0. What the campaign established beyond round-2:
   keeps the sign — detres NP arbitrates; never trust an unsigned pat tag when EPS disagrees.
 * **Basis catches en route:** RPSGVENT con stored TOTAL-incl-NCI for Dec-17/Sep-18/Dec-18/Jun-19
   (owners restored, EPS-row arbitrated per §2d); GARNETINT stores con TOTALS series-wide + its
-  2019-20 std series is shifted one quarter (two cells healed; whole-series rebuild = OPEN, joins
-  the LEHAR/MAFATIND club). DLF Mar/Jun-19 con were ×100-unit AND double-indexed (4.14 → 436.56 /
+  2019-20 std series is shifted one quarter (two cells healed then; **whole-series rebuild DONE
+  2026-08-10 — see §45a**). DLF Mar/Jun-19 con were ×100-unit AND double-indexed (4.14 → 436.56 /
   414.72, unit proven by an exact total-overlap between two filings).
 * **Rev co-poisons HEALED 2026-08-10** (commit 11e8263d; same mechanism, rev slots): GSFC revS
   20190331 1707.7→2138.42, CARERATING revS 20190331 45.22→81.49, ROLTA revC 20220630 3.76→5.08 —
@@ -3532,6 +3532,73 @@ exit 0. What the campaign established beyond round-2:
   same documents also landed: SPENCERS Jun-18 std 2.22/con 0.62 + INFOBEAN Jun-18 std 5.05/con
   5.24 (new rows, `xbrl_comparative_fills.json` both forms), SPENCERS Mar-18 con −8.94
   (FY-derived, `con_pat_fy_derived.json`).
+
+### 45a. ★★ THE WHOLE-SERIES REBUILD — GARNETINT, and the five defect classes one series can hold
+NO ASSUMPTIONS, NO GUESSWORK: every value below was read off a BSE announcement PDF this session
+and corroborated by a second document. GARNETINT (BSE 512493, no NSE list rows, detres empty) was
+left OPEN by the adjacent-quarter campaign as "con TOTALS + a 1-quarter std shift". Rebuilding all
+22 stored quarters found **five distinct defect classes in ONE 22-row series** — the lesson is that
+a pair-detector hit is a thread, and the thread is usually attached to more than one knot:
+
+1. **Wrong-basis, series-wide (20 cells).** Every con cell held the filings' printed TOTAL
+   (incl. NCI) while the store's convention is OWNERS-attributable (`build_stock_fin.py`'s own
+   docstring: "point-in-time quarterly net profit, OWNERS-attributable"). Converted whole-series.
+   The basis is not cosmetic here: Jun-2020 **flips sign** (group −2.27 lakh vs owners +11.02, NCI
+   −13.29), and Sep-2021 goes 0.24 → 0.01.
+2. **Value-in-the-wrong-slot (4 cells).** Jun-19 std held Mar-19's value; Jun-19 con held Jun-19's
+   *standalone*; Mar-19 con held Jun-18's *Ind-AS restated standalone*; Jun-18 con held Jun-19's
+   con total. One quarter can be wrong in the row, the column, AND the statement at once.
+3. **A YEAR figure in a quarter slot.** Mar-2023 con stored −5.98 = the **FY24 annual** total
+   (−598.40 lakh) — wrong sign and ~16× too large; the real quarter is owners +37.80 lakh (+0.38).
+4. **Lakh-as-crore (LEHAR class).** Sep-2024 con stored **56.45** — the filing's ₹ lakh figure in a
+   crore slot (true 0.56). Cheapest tell: the company's whole-quarter revenue was 146.08 lakh, so
+   a 56.45-crore profit is arithmetically impossible. Scan for |PAT| ≫ revenue before believing it.
+5. **Absent rows (2).** Sep-19 and Dec-19 were missing outright — the shift had swallowed them.
+
+**Ann dates can point at documents that are not filings.** Three were wrong: Jun-19's `20190805` is
+a letter *deferring* the quarter to 14-Sep-2019 (first-time Ind-AS, SEBI circular
+CIR/CFD/FAC/62/2016 cl. 2.6.1) with no numbers in it; Jun-21's `20210702` is a related-party
+disclosure; Jun-20's `20200804` was the FY20 annual's date dragged along by the shift. Corrected to
+20190914 / 20210814 / 20200918. **Before trusting a stored ann date, open the document it names.**
+
+**When the filing contradicts itself, the arithmetic wins — and say which arithmetic.** Two printed
+PAT figures here are refuted by their own columns:
+* FY21 annual, Mar-21 quarter: printed total −70.09, but that column's own tax components
+  (13.13 + 126.16 − 2.04 − 20.22) sum to 117.03, not the printed 137.25 — the MAT-credit line was
+  dropped. PBT 67.16 − 117.03 = **−49.87**, which the FY21 quarter-sum identity confirms EXACTLY
+  (−2.27 −81.13 −221.57 −49.87 = −354.84 = audited FY21) and which both later filings re-print.
+* FY24 annual, Mar-24 quarter: printed total −444.06, but (owners + NCI) = −501.96 and
+  (FY24 − 9M) = −501.96 for PAT, owners AND NCI independently. We store the **owners** row
+  (−485.60), the one every identity agrees on.
+
+**Two identities that will NOT reconcile here — by design, do not "heal" them.**
+* FY20 Apr–Mar quarter-sum: the Q2FY20 filing RESTATED Jun-19 (std −1,290.61 → −534.30) and the
+  audited FY20 chains to the restated series. The store is point-in-time on FIRST filing (the TRU
+  rule), so the stored Jun-19 deliberately does not sum to FY20. Both values are in the ledger.
+* FY21 owners-basis sum: the annual's year-column owners/NCI split (−372.73 / 17.89) differs from
+  the sum of the as-filed quarterly splits (−387.53 / 32.70) by 14.80 — a year-end consolidation
+  adjustment. Both sides are internally consistent (owners + NCI = total); only the TOTALS identity
+  is exact. **An owners-basis FY check needs a tolerance the totals check does not.**
+
+**EPS is a weak arbiter for a sloppy filer.** This one computes con EPS on OWNERS in Q1FY20 and on
+the TOTAL in Q2FY20 — the same statement two quarters apart. Anchor on `owners = total − NCI` plus
+the H1/9M/FY column identities; use EPS×shares only as a tiebreak (it did prove Mar-19 and Jun-19,
+where share count moved 195.287 → 196.35 lakh mid-year on a warrant conversion + bonus issue).
+
+**Unreachable ≠ unknowable.** Jun-2018's original filing is gone (AttachHis/AttachLive/
+CorpAttachment all 404, Wayback 404, detres empty — the §52 pre-2016-style wall, here in 2018).
+The value survives in the *next year's* filing: the Q1FY20 note-9 GAAP→Ind-AS reconciliation prints
+Jun-18 con −1,762.49 lakh. A company's own restatement note is a primary document — walk §57's
+ladder into the notes before writing a cell off.
+
+Rebuild: 21 of 22 rows changed (Dec-24 unchanged — owners −18.98 and total −18.58 both round to
+−0.19), 2 rows inserted, 3 ann dates fixed. Per-cell provenance in `pat_defects.json`
+(22 GARNETINT keys, each naming its BSE GUID, column, and the identity that proved it); all three
+payload copies guard-edited (22/22 guards held vs fresh origin/main, blast radius = GARNETINT only);
+`verify_fills_live.py` exit 0, MISSING 0. Still OPEN for this symbol (measured, not yet stored):
+std fills Mar-23 +8.39 / Mar-24 / Sep-24 / Dec-24 lakh-scale cells, absent rows Sep-22 (owners
+64.78) / Jun-23 (15.49) / Jun-24 (76.82), and the whole FY26 stretch (Mar-25 → Mar-26 filings are
+downloaded but unread).
 
 **Legit structural breaks vs the scale-spike nuller:** demerger boundaries (CHOLAHLDNG Mar-2017 =
 pre-demerger full Tube Investments, 1168.14 vs holdco-era ~65) and lumpy traders (OSWALGREEN Jun-2015

@@ -537,19 +537,149 @@
   }
  },
  "GARNETINT": {
+  "20180630": {
+   "correct_pat_con": -17.62,
+   "defect": "con slot held JUN-2019's con TOTAL (-1,275.34 lakh) -- one filing's value in a prior-year slot. The Aug-2018 original filing is UNREACHABLE (BSE AttachHis/AttachLive/CorpAttachment 404 on 4ba957b9-9115-4b37-a1f0-4ce57effd247.pdf, Wayback 404, detres empty for 512493), so the only document asserting a Jun-2018 number is the company's own note-9 GAAP->Ind-AS reconciliation.",
+   "source": "Q1FY20 PDF (BSE d1c041e4-c327-4370-b562-3dfd8ee2c408, filed 14-Sep-2019) note 9, table 'Quarter Ended 30.06.2018': 'Net Profit reported as per Indian GAAP' CONSOLIDATED -1,762.49 lakh = -17.62 cr (std column of the same note: -1,768.85). CAVEAT: that note prints no owners/minority split for Jun-2018, so this cell is the GAAP as-reported net profit line (which in the company's own pre-Ind-AS format WAS the after-minority figure, see the FY19 audited layout 'Net Profit (Loss) for the period (11-12)'), not a separately printed owners row. Same note gives the Ind-AS RESTATED con for Jun-18 as -2,291.72 lakh -- not stored, the store is point-in-time on first filing. unit: filings are in Rs lakh; store = round(lakh/100, 2) crore.",
+   "stored_pat_con": -12.75
+  },
+  "20190331": {
+   "correct_pat": -9.29,
+   "correct_pat_con": -8.98,
+   "defect": "std was NULL; con slot held JUN-2018's Ind-AS restated STANDALONE value (-2,298.08 lakh) -- wrong quarter AND wrong basis AND wrong statement.",
+   "source": "FY19 audited PDF (BSE 7904e023-96d5-418c-910a-0c2915366aef, filed 29-May-2019, scanned -> rendered+read). Standalone stmt, col 'Quarter ended 31/03/2019': 'Net Profit (Loss) for the period' -928.76 lakh; EPS -4.76 x 195.287 lakh sh (paid-up 1,952.87 / FV 10) = -4.755 EXACT. Consolidated stmt same col: NP after tax -884.85, Minority Interest 12.66, 'Net Profit (Loss) for the period (11-12)' -897.52 lakh = OWNERS; EPS -4.60 x 195.287 = -4.596 EXACT. GAAP era (pre-Ind-AS); the FY20 annual's Mar-19 comparatives are Ind-AS RESTATED (-1,032.55 std) and are NOT stored. BASIS: con converted from the filings' printed TOTAL (incl. NCI) to OWNERS-attributable, the documented store convention (build_stock_fin.py: 'point-in-time quarterly net profit, OWNERS-attributable'). Whole-series conversion 2026-08-10; every quarter's owners row is printed in its own filing and reconciles total - NCI. unit: filings are in Rs lakh; store = round(lakh/100, 2) crore.",
+   "stored_pat": null,
+   "stored_pat_con": -22.98
+  },
+  "20190630": {
+   "correct_pat": -12.91,
+   "correct_pat_con": -12.8,
+   "defect": "std slot held the FY20 annual's MAR-2019 Ind-AS column (-1,032.55 lakh); con slot held this quarter's own STANDALONE value (-1,290.61). Ann date 20190805 pointed at a DEFERRAL LETTER, not a filing.",
+   "source": "Q1FY20 PDF (BSE d1c041e4-...-3dfd8ee2c408 = 3F651DAB_24D7_4869_BF2F_97C3A8B01E65_174113, board meeting + first filing 14-Sep-2019). Col 'Qtr ended 30.06.2019': std XI Profit for the Period -1,290.61 lakh, EPS -6.57 x 196.35 lakh sh (paid-up 1,963.50/10) = -6.573 EXACT; con total -1,275.34, NCI +4.57, XIV 'Owners of the Parents' -1,279.90 (= total - NCI EXACT), con EPS -6.52 x 196.35 = -6.518 EXACT on OWNERS. Owners -1,279.90 independently re-printed as the year-ago column of the Q1FY21 filing (88873d63, -1,279.91). ANN DATE 20190805 -> 20190914: the 05-Aug-2019 document (BSE 67b381da-a489-464c-abb4-6b1dd00e8f7f) is a letter DEFERRING the quarter to 14-Sep-2019 under SEBI circular CIR/CFD/FAC/62/2016 cl.2.6.1 (first-time Ind-AS adoption) and contains NO results. RESTATEMENT (journalled, NOT stored): the Q2FY20 filing (13-Dec-2019) restates Jun-19 to std -534.30 / con total -519.03 (fair-value-change line 1,210.58 -> 454.27), and the FY20 audited annual chains to the RESTATED series (-534.30 -277.38 -236.01 -108.48 = -1,156.17 == FY20 -1,156.16). Store is point-in-time on FIRST filing, so an Apr-Mar quarter-sum identity check on FY20 will NOT reconcile against this cell BY DESIGN -- do not 'heal' it. BASIS: con converted from the filings' printed TOTAL (incl. NCI) to OWNERS-attributable, the documented store convention (build_stock_fin.py: 'point-in-time quarterly net profit, OWNERS-attributable'). Whole-series conversion 2026-08-10; every quarter's owners row is printed in its own filing and reconciles total - NCI. unit: filings are in Rs lakh; store = round(lakh/100, 2) crore.",
+   "stored_pat": -10.33,
+   "stored_pat_con": -12.91
+  },
+  "20190930": {
+   "correct_pat": -2.77,
+   "correct_pat_con": -2.77,
+   "defect": "ROW ABSENT from the store entirely (the 1-quarter shift swallowed it) -- inserted.",
+   "source": "Q2FY20 PDF (BSE 937cfee7-369c-425a-a9a4-00ee3e721ace, filed 13-Dec-2019; identical bytes also served as 4a3e0de5 / 547f734f; scanned -> rendered+read). Col 'Quarter ended 30.09.2019': std XI Profit -277.38 lakh (EPS -1.41 x 196.35 = -1.4127 EXACT); con total -255.21, NCI +21.68, Owners of the Parents -276.88 (total - NCI EXACT); H1 owners -800.49 == -276.88 + -523.61 EXACT. std -277.38 re-printed as the preceding-quarter column of the Q3FY20 filing (78959b01). NOTE for future dup-detectors: std -2.77 and con -2.77 are equal only after rounding (-277.38 vs -276.88 lakh are distinct) -- NOT a std-slot-holds-con defect. BASIS: con converted from the filings' printed TOTAL (incl. NCI) to OWNERS-attributable, the documented store convention (build_stock_fin.py: 'point-in-time quarterly net profit, OWNERS-attributable'). Whole-series conversion 2026-08-10; every quarter's owners row is printed in its own filing and reconciles total - NCI. unit: filings are in Rs lakh; store = round(lakh/100, 2) crore.",
+   "stored_pat": null,
+   "stored_pat_con": null
+  },
+  "20191231": {
+   "correct_pat": -2.36,
+   "correct_pat_con": -2.01,
+   "defect": "ROW ABSENT from the store entirely -- inserted. (Its std value -236.01 lakh is what the pre-campaign store had mis-parked in the MAR-2020 slot as -2.36.)",
+   "source": "Q3FY20 PDF (BSE 78959b01-c4d8-4c72-a1ef-5940dd056aea = 6e8e3a54, filed 15-Feb-2020). Col 'Quarter ended 31.12.2019': std XI Profit -236.01 lakh; con total -185.82, NCI +15.01, Owners -200.82 (total - NCI EXACT). Both re-printed by the FY20 audited annual (10a682be, std -236.01) and the Q3FY21 filing (c1890fc8, con owners -200.82). BASIS: con converted from the filings' printed TOTAL (incl. NCI) to OWNERS-attributable, the documented store convention (build_stock_fin.py: 'point-in-time quarterly net profit, OWNERS-attributable'). Whole-series conversion 2026-08-10; every quarter's owners row is printed in its own filing and reconciles total - NCI. unit: filings are in Rs lakh; store = round(lakh/100, 2) crore.",
+   "stored_pat": null,
+   "stored_pat_con": null
+  },
   "20200331": {
    "correct_pat": -1.08,
-   "defect": "thread-pull (1-quarter shift): Mar-2020 std held Dec-2019's value (-236.01 lakh)",
-   "source": "FY20 audited PDF (BSE 10a682be) std statement: Mar-20 quarter -108.48 lakh = -1.0848cr, Dec-19 col -236.01 == stored Mar-20 -2.36 (the shift proof); FY20 col -1,156.16 chains to Q2FY21 PDF EXACT",
-   "stored_pat": -2.36
+   "correct_pat_con": -1.12,
+   "defect": "std already healed 2026-08-10 (-2.36 -> -1.08, 1-quarter shift); con held the printed TOTAL -102.02 lakh, now the OWNERS row.",
+   "source": "FY20 audited PDF (BSE 10a682be-b7b5-431a-a06b-5a705e6ba32a, filed 04-Aug-2020), col 'Quarter ended 31/03/2020': std -108.48 lakh; con total -102.02, Owners -112.28, NCI 10.27 (total - NCI EXACT). Re-printed identically by the 01-Sep-2020 REVISED FY20 filing (f953e6df) and by the FY21 annual's comparative (cb442070). The Q1FY21 filing (88873d63) later restates the SPLIT only (owners -103.95 / NCI 1.93, same total) -- first filing wins. BASIS: con converted from the filings' printed TOTAL (incl. NCI) to OWNERS-attributable, the documented store convention (build_stock_fin.py: 'point-in-time quarterly net profit, OWNERS-attributable'). Whole-series conversion 2026-08-10; every quarter's owners row is printed in its own filing and reconciles total - NCI. unit: filings are in Rs lakh; store = round(lakh/100, 2) crore.",
+   "stored_pat": -1.08,
+   "stored_pat_con": -1.02
   },
   "20200630": {
    "correct_pat": 0.42,
-   "correct_pat_con": -0.02,
-   "defect": "thread-pull (1-quarter shift): Jun-2020 std held Mar-2020's value",
-   "source": "Q2FY21 PDF (BSE 6d46d7b8) std statement: Jun-20 quarter +42.17 lakh = 0.4217cr EPS 0.22 EXACT (1.9635cr sh); H1 -125.18 = Sep -167.35 + Jun 42.17 EXACT; Sep-20 -167.35 == stored -1.67 EXACT",
-   "stored_pat": -1.08,
-   "stored_pat_con": -1.02
+   "correct_pat_con": 0.11,
+   "defect": "std already healed 2026-08-10 (-1.08 -> 0.42, 1-quarter shift). con chain: -1.02 (Mar-20's con total) -> -0.02 (this quarter's con TOTAL, 2026-08-10) -> 0.11 (OWNERS, this session). The basis change FLIPS THE SIGN: the group lost 2.27 lakh while the parent's owners EARNED 11.02 (NCI -13.29). Ann date 20200804 was the FY20 annual's date, copied in by the shift.",
+   "source": "Q1FY21 PDF (BSE 88873d63-f518-4ea6-845c-1dfe084e353e, filed 18-Sep-2020 -- the BSE announcement date, hence ann 20200804 -> 20200918). Col 'Quarter ended 30.06.2020': std XI Profit 42.17 lakh (EPS 0.22 x 196.35 EXACT); con total -2.27, NCI -13.29, Owners +11.02 (total - NCI EXACT). Owners 11.02 re-printed by the Q2FY21 (6d46d7b8) and Q3FY21 (c1890fc8 9M column chain) filings. BASIS: con converted from the filings' printed TOTAL (incl. NCI) to OWNERS-attributable, the documented store convention (build_stock_fin.py: 'point-in-time quarterly net profit, OWNERS-attributable'). Whole-series conversion 2026-08-10; every quarter's owners row is printed in its own filing and reconciles total - NCI. unit: filings are in Rs lakh; store = round(lakh/100, 2) crore.",
+   "stored_pat": 0.42,
+   "stored_pat_con": -0.02
+  },
+  "20200930": {
+   "correct_pat_con": -1.09,
+   "defect": "con held the printed TOTAL -81.13 lakh; owners is -109.21 (NCI +28.09).",
+   "source": "Q2FY21 PDF (BSE 6d46d7b8-be61-42b5-aa7a-9e98e115bdb7, filed 13-Nov-2020), col 'Quarter ended 30.09.2020': con total -81.13, NCI 28.09, Owners -109.21 (total - NCI EXACT); std -167.35 (stored, unchanged). Owners -109.21 re-printed by Q3FY21 (c1890fc8) and Q2FY22 (eb14dfa5). BASIS: con converted from the filings' printed TOTAL (incl. NCI) to OWNERS-attributable, the documented store convention (build_stock_fin.py: 'point-in-time quarterly net profit, OWNERS-attributable'). Whole-series conversion 2026-08-10; every quarter's owners row is printed in its own filing and reconciles total - NCI. unit: filings are in Rs lakh; store = round(lakh/100, 2) crore.",
+   "stored_pat_con": -0.81
+  },
+  "20201231": {
+   "correct_pat_con": -2.21,
+   "defect": "con held the printed TOTAL -221.57 lakh; owners is -221.23 (NCI -0.34).",
+   "source": "Q3FY21 PDF (BSE c1890fc8-964c-424f-b6ef-86415410f300, filed 13-Feb-2021), col 'Quarter ended 31.12.2020': total -221.57, NCI -0.34, Owners -221.23 (total - NCI EXACT); re-printed identically by the FY21 audited annual (cb442070). BASIS: con converted from the filings' printed TOTAL (incl. NCI) to OWNERS-attributable, the documented store convention (build_stock_fin.py: 'point-in-time quarterly net profit, OWNERS-attributable'). Whole-series conversion 2026-08-10; every quarter's owners row is printed in its own filing and reconciles total - NCI. unit: filings are in Rs lakh; store = round(lakh/100, 2) crore.",
+   "stored_pat_con": -2.22
+  },
+  "20210331": {
+   "correct_pat_con": -0.68,
+   "defect": "con held the FY21 annual's PRINTED quarter total -70.09 lakh, which is a MISPRINT: that column's own tax components (13.13 + 126.16 - 2.04 - 20.22) sum to 117.03, not the printed 137.25 -- the MAT-credit line was dropped from the quarter total only. PBT 67.16 - 117.03 = -49.87 = the true total; owners -68.11.",
+   "source": "FY21 audited PDF (BSE cb442070-c1bd-437a-93e0-6dd3c2476d4f, filed 30-Jun-2021, scanned -> rendered+read) col 'Quarter ended 31.03.2021': printed total -70.09 (REFUTED), NCI 18.24, Owners -68.11. FOUR independent proofs of -49.87/-68.11: (1) the column's own tax components sum to 117.03; (2) owners - NCI arithmetic: -49.87 - 18.24 = -68.11 EXACT (whereas -70.09 - 18.24 = -88.33 != -68.11); (3) FY21 quarter-sum identity EXACT: -2.27 -81.13 -221.57 -49.87 = -354.84 == audited FY21 (with -70.09 it is -375.06); (4) the Q1FY22 (98e5e00b) and FY22 annual (d3c2e9b0) comparatives both print -49.87. NOTE: the FY21 annual's YEAR owners/NCI split (-372.73 / 17.89) differs from the sum of the as-filed quarterly splits (-387.53 / 32.70) by 14.80 -- a year-end consolidation adjustment; both are internally consistent (owners+NCI=total), so an OWNERS-basis FY identity check on FY21 will not be exact BY DESIGN. BASIS: con converted from the filings' printed TOTAL (incl. NCI) to OWNERS-attributable, the documented store convention (build_stock_fin.py: 'point-in-time quarterly net profit, OWNERS-attributable'). Whole-series conversion 2026-08-10; every quarter's owners row is printed in its own filing and reconciles total - NCI. unit: filings are in Rs lakh; store = round(lakh/100, 2) crore.",
+   "stored_pat_con": -0.7
+  },
+  "20210630": {
+   "correct_pat_con": -1.62,
+   "defect": "con held the printed TOTAL -149.07 lakh; owners is -161.50 (NCI +12.42). Ann date 20210702 pointed at a related-party-transactions disclosure, not a results filing.",
+   "source": "Q1FY22 PDF (BSE 98e5e00b-3562-4ff0-a989-5f666f968420 = d2bf4208, filed 14-Aug-2021 -> ann 20210702 corrected to 20210814), col 'Quarter ended 30.06.2021': total -149.07, NCI 12.42, Owners -161.50 (total - NCI EXACT); std -190.62 (stored, unchanged). Re-printed by Q2FY22 (eb14dfa5). BASIS: con converted from the filings' printed TOTAL (incl. NCI) to OWNERS-attributable, the documented store convention (build_stock_fin.py: 'point-in-time quarterly net profit, OWNERS-attributable'). Whole-series conversion 2026-08-10; every quarter's owners row is printed in its own filing and reconciles total - NCI. unit: filings are in Rs lakh; store = round(lakh/100, 2) crore.",
+   "stored_pat_con": -1.49
+  },
+  "20210930": {
+   "correct_pat_con": 0.01,
+   "defect": "con held the printed TOTAL +24.42 lakh; owners is +1.01 (NCI +23.41).",
+   "source": "Q2FY22 PDF (BSE eb14dfa5-a3a9-487a-8a52-80f5ca00c835 = cdd3d293, filed 01-Nov-2021), col 'Quarter ended 30.09.2021': total 24.42, NCI 23.41, Owners 1.01 (total - NCI EXACT); re-printed by Q3FY22 (bea45a9c). BASIS: con converted from the filings' printed TOTAL (incl. NCI) to OWNERS-attributable, the documented store convention (build_stock_fin.py: 'point-in-time quarterly net profit, OWNERS-attributable'). Whole-series conversion 2026-08-10; every quarter's owners row is printed in its own filing and reconciles total - NCI. unit: filings are in Rs lakh; store = round(lakh/100, 2) crore.",
+   "stored_pat_con": 0.24
+  },
+  "20211231": {
+   "correct_pat_con": 0.02,
+   "defect": "con held the printed TOTAL +9.65 lakh; owners is +2.04 (NCI +7.60).",
+   "source": "Q3FY22 PDF (BSE bea45a9c-46bb-4e92-bc9d-950aa4f0e8d7 = 19d6eefb, filed 09-Feb-2022), col 'Quarter ended 31.12.2021': total 9.65, NCI 7.60, Owners 2.04; re-printed by the FY22 annual (d3c2e9b0) and Q3FY23 (9d4adc74). BASIS: con converted from the filings' printed TOTAL (incl. NCI) to OWNERS-attributable, the documented store convention (build_stock_fin.py: 'point-in-time quarterly net profit, OWNERS-attributable'). Whole-series conversion 2026-08-10; every quarter's owners row is printed in its own filing and reconciles total - NCI. unit: filings are in Rs lakh; store = round(lakh/100, 2) crore.",
+   "stored_pat_con": 0.1
+  },
+  "20220331": {
+   "correct_pat_con": -0.14,
+   "defect": "con held the printed TOTAL -9.92 lakh; owners is -13.83 (NCI +3.91).",
+   "source": "FY22 audited PDF (BSE d3c2e9b0-9e0e-45ea-9b06-bcf472accd61, filed 30-May-2022), col 'Quarter ended 31.03.2022': total -9.92, Owners -13.83; re-printed by the FY23 annual (197cca4d). BASIS: con converted from the filings' printed TOTAL (incl. NCI) to OWNERS-attributable, the documented store convention (build_stock_fin.py: 'point-in-time quarterly net profit, OWNERS-attributable'). Whole-series conversion 2026-08-10; every quarter's owners row is printed in its own filing and reconciles total - NCI. unit: filings are in Rs lakh; store = round(lakh/100, 2) crore.",
+   "stored_pat_con": -0.1
+  },
+  "20220630": {
+   "correct_pat_con": 1.42,
+   "defect": "con held the printed TOTAL +162.63 lakh; owners is +142.02 (NCI +20.61).",
+   "source": "Q1FY23 PDF (BSE 74ee315f-a4cd-4c0b-9c02-06300bcc8ec5 = e95b6451, filed 25-Jul-2022), col 'Quarter ended 30.06.2022': total 162.63, NCI 20.61, Owners 142.02 (total - NCI EXACT); re-printed by the revised Q1FY24 (5661482a). BASIS: con converted from the filings' printed TOTAL (incl. NCI) to OWNERS-attributable, the documented store convention (build_stock_fin.py: 'point-in-time quarterly net profit, OWNERS-attributable'). Whole-series conversion 2026-08-10; every quarter's owners row is printed in its own filing and reconciles total - NCI. unit: filings are in Rs lakh; store = round(lakh/100, 2) crore.",
+   "stored_pat_con": 1.63
+  },
+  "20221231": {
+   "correct_pat_con": 0.4,
+   "defect": "con held the printed TOTAL +46.96 lakh; owners is +39.62 (NCI +7.34).",
+   "source": "Q3FY23 PDF (BSE 9d4adc74-9f00-4226-a90f-e15734eb89cd = 6dd28b30, filed 11-Feb-2023, scanned -> rendered+read), col 'Quarter ended 31.12.2022': total 46.96, NCI 7.34, Owners 39.62 (total - NCI EXACT); re-printed by the FY23 annual (197cca4d) and Q3FY24 (18480027). BASIS: con converted from the filings' printed TOTAL (incl. NCI) to OWNERS-attributable, the documented store convention (build_stock_fin.py: 'point-in-time quarterly net profit, OWNERS-attributable'). Whole-series conversion 2026-08-10; every quarter's owners row is printed in its own filing and reconciles total - NCI. unit: filings are in Rs lakh; store = round(lakh/100, 2) crore.",
+   "stored_pat_con": 0.47
+  },
+  "20230331": {
+   "correct_pat_con": 0.38,
+   "defect": "con slot held -5.98 = the FY24 ANNUAL total (-598.40 lakh) -- a YEAR figure from a LATER-YEAR document in a quarter slot; no Mar-2023 column in any filing carries it. The true quarter is total +50.35 / owners +37.80, i.e. the stored value had the WRONG SIGN and was ~16x too large.",
+   "source": "FY23 audited PDF (BSE 197cca4d-f7b4-43d8-b863-5d0a45038e0e, filed 30-May-2023), col 'Quarter ended 31.03.2023': total 50.35, NCI 12.55, Owners 37.80 (total - NCI EXACT); std same col 8.39 (still NULL in the store -- a fill candidate, not touched here). Re-printed by the FY24 annual's comparative (06115e5e). FY23 quarter-sum identity EXACT on totals: 162.63 + 66.33 + 46.96 + 50.35 = 326.27 == audited FY23. BASIS: con converted from the filings' printed TOTAL (incl. NCI) to OWNERS-attributable, the documented store convention (build_stock_fin.py: 'point-in-time quarterly net profit, OWNERS-attributable'). Whole-series conversion 2026-08-10; every quarter's owners row is printed in its own filing and reconciles total - NCI. unit: filings are in Rs lakh; store = round(lakh/100, 2) crore.",
+   "stored_pat_con": -5.98
+  },
+  "20230930": {
+   "correct_pat_con": -2.76,
+   "defect": "con held the printed TOTAL -315.35 lakh; owners is -276.08 (NCI -39.26).",
+   "source": "Q2FY24 PDF (BSE ffed7b00-b3fe-4049-80f3-bc4d570fb40e, filed 14-Nov-2023), col 'Quarter ended 30.09.2023': total -315.35, Owners -276.08; the Q3FY24 (18480027) and Q2FY25 (9383c3b4) comparatives print -276.09 (1 paisa, rounding) -- first filing kept. BASIS: con converted from the filings' printed TOTAL (incl. NCI) to OWNERS-attributable, the documented store convention (build_stock_fin.py: 'point-in-time quarterly net profit, OWNERS-attributable'). Whole-series conversion 2026-08-10; every quarter's owners row is printed in its own filing and reconciles total - NCI. unit: filings are in Rs lakh; store = round(lakh/100, 2) crore.",
+   "stored_pat_con": -3.15
+  },
+  "20231231": {
+   "correct_pat_con": 1.87,
+   "defect": "con held the printed TOTAL +175.82 lakh; owners is +187.49 (NCI -11.66).",
+   "source": "Q3FY24 PDF (BSE 18480027-ff0d-4c25-9ca0-8eeeea3b4bce, filed 25-Jan-2024), col 'Quarter ended 31.12.2023': total 175.82, NCI -11.66, Owners 187.49 (total - NCI EXACT); re-printed by the FY24 annual (06115e5e) and Q3FY25 (a6117079). BASIS: con converted from the filings' printed TOTAL (incl. NCI) to OWNERS-attributable, the documented store convention (build_stock_fin.py: 'point-in-time quarterly net profit, OWNERS-attributable'). Whole-series conversion 2026-08-10; every quarter's owners row is printed in its own filing and reconciles total - NCI. unit: filings are in Rs lakh; store = round(lakh/100, 2) crore.",
+   "stored_pat_con": 1.76
+  },
+  "20240331": {
+   "correct_pat_con": -4.86,
+   "defect": "con held the FY24 annual's printed quarter TOTAL -444.06 lakh; owners is -485.60. That column is internally contradictory: (PBT - tax) gives -444.06 but (owners + NCI) gives -501.96, and year-minus-9M gives -501.96 too -- so the printed PAT is the odd one out. The OWNERS row we now store is the one every identity agrees on.",
+   "source": "FY24 audited PDF (BSE 06115e5e-0319-4bbe-b117-6b1ff5c2f11a, filed 30-May-2024), col 'Quarter ended 31.03.2024' (marked 'Refer Note 15'): printed total -444.06, NCI -16.36, Owners -485.60. THREE exact identities support owners -485.60: FY24 owners -599.35 minus 9M-FY24 owners -113.75 = -485.60; FY24 NCI 0.95 minus 9M NCI 17.31 = -16.36; FY24 total -598.40 minus 9M total -96.44 = -501.96 = -485.60 + -16.36. (9M FY24 itself checks out: 43.08 - 315.35 + 175.82 = -96.45.) Owners -485.60 re-printed by the Q1FY25 comparative (21922b84). BASIS: con converted from the filings' printed TOTAL (incl. NCI) to OWNERS-attributable, the documented store convention (build_stock_fin.py: 'point-in-time quarterly net profit, OWNERS-attributable'). Whole-series conversion 2026-08-10; every quarter's owners row is printed in its own filing and reconciles total - NCI. unit: filings are in Rs lakh; store = round(lakh/100, 2) crore.",
+   "stored_pat_con": -4.44
+  },
+  "20240930": {
+   "correct_pat_con": 0.56,
+   "defect": "LAKH-AS-CRORE: the stored 56.45 is the filing's figure in Rs LAKH written straight into a crore slot -- a x100 unit error (the LEHAR class). True quarter = 56.45 lakh = 0.56 cr; owners 56.04 lakh = 0.56 cr.",
+   "source": "Q2FY25 PDF (BSE 9383c3b4-e099-4f11-8804-2744010b6130, filed 14-Nov-2024, fully SCANNED -> rendered+read), col 'Quarter ended 30.09.2024': total 56.45 lakh, NCI 0.41, Owners 56.04 (total - NCI EXACT); header reads '(Rs. in Lakhs except EPS)'. Re-printed by the Q3FY25 comparative (a6117079: total 56.45 / owners 56.04). Sanity: the company's whole-quarter revenue is 146.08 lakh, so a 56.45 CRORE profit is impossible. BASIS: con converted from the filings' printed TOTAL (incl. NCI) to OWNERS-attributable, the documented store convention (build_stock_fin.py: 'point-in-time quarterly net profit, OWNERS-attributable'). Whole-series conversion 2026-08-10; every quarter's owners row is printed in its own filing and reconciles total - NCI. unit: filings are in Rs lakh; store = round(lakh/100, 2) crore.",
+   "stored_pat_con": 56.45
+  },
+  "20241231": {
+   "correct_pat_con": -0.19,
+   "defect": "BASIS-ONLY entry (no value change): con was the printed TOTAL -18.58 lakh, now the OWNERS row -18.98 lakh; both round to -0.19 cr. Journalled so a later basis audit can see this cell WAS converted rather than skipped.",
+   "source": "Q3FY25 PDF (BSE a6117079-0224-40dc-89d5-227e44586721, filed 14-Feb-2025), col 'Quarter ended 31.12.2024': total -18.58, NCI 0.41, Owners -18.98 (total - NCI EXACT). BASIS: con converted from the filings' printed TOTAL (incl. NCI) to OWNERS-attributable, the documented store convention (build_stock_fin.py: 'point-in-time quarterly net profit, OWNERS-attributable'). Whole-series conversion 2026-08-10; every quarter's owners row is printed in its own filing and reconciles total - NCI. unit: filings are in Rs lakh; store = round(lakh/100, 2) crore.",
+   "stored_pat_con": -0.19
   }
  },
  "GAYAPROJ": {
