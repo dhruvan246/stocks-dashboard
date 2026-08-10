@@ -5984,3 +5984,35 @@ cells appear in that 23,839-entry cache**, so tonight's run cannot re-poison the
 otherwise need owners_basis_heals entries); `ci_preserve_merge.py` + `verify_fills_live.py` run
 inside refresh-fundamentals, and the 77 new pat_defects entries are now in the watched set, so a
 future clobber turns CI red instead of failing silently.
+
+### 73a. ★★ THE LIVE RE-VERIFY EARNED ITS KEEP — a std heal does NOT reach a no-sub company's con slot
+
+The §73 batch verified clean at push time and clean on the served payloads (all 55 verdict cells,
+live scan 0 disagreements). The SAMPLE printout is what caught the miss: ASTRAZEN's live row read
+`std 18.63 / con 186.35` — the con slot still holding the ×10 value the FY identity had refuted.
+
+**Mechanism.** For a company that files no consolidated result, `update_fundamentals.is_nosub`
+sets `npCon = npStd` (accounting identity). That fill is FILL-ONLY and runs once. Correct the std
+later and **nothing propagates** — the con slot keeps the refuted number forever, and because the
+std-vs-mirror scan only compares npStd against patS, the stale con is INVISIBLE to it.
+
+Three cells healed on this (ASTRAZEN 2020-06, HOMEFIRST 2024-09, VENKEYS 2025-03), each with the
+no-sub premise PROVEN rather than assumed: zero Consolidated rows across the full NSE history
+(84/17/79 classic rows all Non-Consolidated; integrated rows Standalone) and **135 nature tags
+across 95 cached XBRLs, every one Standalone, zero Consolidated.**
+
+★ **Do not CREATE a con mirror value where none exists.** The applier initially wanted to write
+`patC` for these cells. `patC` is null in every other quarter of a no-sub filer (build_revop only
+records what a filing prints), so writing one would make the healed quarter the sole cell asserting
+a consolidated figure no document contains. Fund `npCon` legitimately carries the identity — that
+is its documented convention; the mirror does not. **Correct what is there; never invent.**
+
+★ **Whenever you heal a std cell, check the con slot of the same row before you commit** — and
+after any heal, print the neighbourhood live rather than only asserting the cell equals its target.
+A per-cell equality check passes while the row beside it stays broken.
+
+**Store-wide screen (17 cells / 17 symbols, `nosub_con_lag_screen` in the verdicts file):** same
+fingerprint — con==std in ≥95% of a symbol's quarters, differing in ≤3. It is a SCREEN, not a
+verdict (§71g: that class of screen was right 6 times in 23). Two carry a strong scale signature:
+SIMPLEXCAS 2020-06 std −282.03 vs con −2.82 (**exactly ×100**) and VISHAL 2025-03 488.18 vs 7.35.
+None healed without a document.

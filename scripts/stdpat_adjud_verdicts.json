@@ -1,88 +1,471 @@
 {
-  "_README": [
-    "TWO-FILES-ONE-QUANTITY std-PAT campaign, 2026-08-10 (runbook §70/§71 method applied to npStd vs sf_revop patS idx4).",
-    "Fresh scan vs origin/main found 46 disagreements (> max(0.02, 0.5%)), not the 35 in the stale sweep list.",
-    "EVERY verdict below is document-based: filer's own XBRL (scripts/_xbrl_cache or freshly fetched from the NSE list),",
-    "BSE detres (§42, quarter + all FY siblings + .50 audited annual), or the announcement PDF (§58 column anchor).",
-    "fund_fix = sf_fundamentals npStd was wrong (25 scan cells + 3 companions); mirror_fix = sf_revop patS was wrong (21+1).",
-    "Defect classes: H1/H2/FY-cumulative-as-quarter in fund (13); wrong-year/wrong-period OneD declarations poisoning the",
-    "mirror re-parse (KOHINOOR/SURAJEST/SIEMENS-class, 3); NSE double-indexed next-quarter filings poisoning the mirror at",
-    "Mar-2019 (6); revised-filing splits (4: RUBYMILLS/HOMEFIRST arithmetic-error corrections -> take revision;",
-    "MADRASFERT/VIJSHAN genuine restatements -> point-in-time first filing stays, §2d TRU precedent); XBRL sign-flip vs",
-    "own EPS row (SGFL ×3); blank-template zero (METROPOLIS); ×10 scale (ASTRAZEN); junk series (WORTH ×3);",
-    "WRONG COMPANY (KALYANI = Kalyani Commercials INE610E01010, but bse_scrips maps KALYANI->544023, a different company",
-    "whose FY25 detres annual 14.245 == our stored 8.01+6.23 exactly).",
-    "Revision rule used: a correction of an arithmetic error (original contradicts its own YTD/EPS) adopts the corrected",
-    "figure; a genuine restatement (original internally consistent) stays point-in-time on the first filing."
-  ],
-  "fund_fix": {
-    "WORTH|20210331":   {"was": -1148.31, "now": 3.15,   "src": "WORTHPERI (renamed) Mar-21 std XBRL INDAS_71580_461781_21062021064015: PAT 3.1539, EPS 2.00 == implied 2.002 (shares 1.5751e7); revop already held 3.15"},
-    "WORTH|20211231":   {"was": 2076.33,  "now": 7.24,   "src": "INDAS_82051_607001_11022022095312: PAT 7.2423, EPS 4.60==4.598; 9M FY22 chain 3.8254+4.0166+7.2423=15.0843 == filing's own YTD EXACT"},
-    "WORTH|20220331":   {"was": -2312.36, "now": 4.07,   "src": "INDAS_86130_665313_28052022043028: PAT 4.0748, EPS 2.59==2.587; FY22 chain 15.0843+4.0748=19.1591 == filing FY EXACT"},
-    "ASTRAZEN|20200630":{"was": 186.35,   "now": 18.63,  "src": "x10 scale error. BSE detres 506820 qtr Jun-20: PAT 18.635 (rs-mn/10), FY21 identity 18.635+26.338+21.052+27.279=93.30 == .50 audited annual 93.304 EXACT"},
-    "DBL|20250930":     {"was": 163.53,   "now": 40.85,  "src": "fund held H1 (INTEGRATED_FILING_INDAS_1574276 declares OneD Apr-Sep 163.5349). True Q2 = INDAS_1686465 Jul-Sep 40.8478, EPS ok; 9M chain 122.687+40.8478+611.0031=774.5379 == Dec-25 filing YTD 774.538 EXACT"},
-    "SHIVAMAUTO|20260331":{"was": -81.33, "now": -26.72, "src": "fund held FY26 total. Q4 file INDAS_1688912 Jan-Mar -26.7186; chain H1 -30.0793 + Q3 -24.5333 + Q4 -26.7186 = -81.3312 == the mislabelled 'Oct-Mar' file's -81.3316 (=FY) EXACT"},
-    "INDIQUBE|20250930":{"was": -66.62,   "now": -29.87, "src": "fund held H1 (INDAS_1569339 OneD Apr-Sep -66.622). Q2 file INDAS_1581024 -29.867; chain -36.755+-29.867=-66.622 EXACT"},
-    "ATUL|20240331":    {"was": 58.79,    "now": 74.90,  "src": "BSE detres 500027 Mar-24: PAT 74.9, EPS 25.4==25.39 (2.95e7 sh); FY24 identity 96.58+103.33+109.76+74.9=384.57 == .50 audited annual EXACT. revop already held 74.9"},
-    "GLOTTIS|20250930": {"was": 24.30,    "now": 12.36,  "src": "fund held H1 (INDAS_1575509 Apr-Sep 24.2994). Q2 file INDAS_1580938 12.3581; chain 11.9413+12.3581=24.2994 EXACT"},
-    "DVL|20190331":     {"was": -14.38,   "now": -2.91,  "src": "BSE detres 523736 Mar-19: PAT -2.907, EPS -0.82; FY19 identity 11.364+21.549+20.854-2.907=50.86 == .50 annual EXACT. revop already held -2.91"},
-    "GUJTHEM|20250930": {"was": 23.33,    "now": 14.27,  "src": "fund held H1 (INDAS_1570079 Apr-Sep 23.3256). Q2 file INDAS_1570946 14.2671, its YTD col == H1; chain 9.0621+14.2671=23.3292~23.3256"},
-    "BMWVENTLTD|20250930":{"was": 15.14,  "now": 7.11,   "src": "fund held H1 (INDAS_1570632 Apr-Sep 15.1396). Q2 file INDAS_1580031 7.1139; chain 8.0258+7.1139=15.1397 EXACT"},
-    "VIKRAN|20250930":  {"was": 14.79,    "now": 9.14,   "src": "fund held H1 (INDAS_1570391 Apr-Sep 14.79). Q2 file INDAS_1571465 9.14 with YTD col 14.79; chain 5.65+9.14=14.79 EXACT"},
-    "KALYANI|20250331": {"was": 6.23,     "now": 0.72,   "src": "WRONG COMPANY: 6.23 belongs to BSE scrip 544023 (detres FY25 annual PAT 14.245 == stored 8.01+6.23 EXACT). Our KALYANI = Kalyani Commercials Ltd (INE610E01010, name in XBRL): Jan-Mar-25 std PAT 0.7237 (INDAS_1686726), FY25 2.3325 closes vs own original quarters 0.617+0.736+0.255+0.7237=2.332; its printed rev 102.8994 == our stored revS 102.9 EXACT"},
-    "KALYANI|20240331": {"was": 3.73,     "now": 0.32,   "src": "same wrong-company class. Kalyani Commercials' own Mar-24 std XBRL INDAS_108110_1146809_30052024 (name verified): PAT 0.319, FY24 2.363, rev 62.47"},
-    "KALYANI|20241231": {"was": 8.01,     "now": 0.26,   "src": "same class. Own Dec-24 std XBRL INDAS_119375_1376564_10022025 (name verified): PAT 0.255, 9M FY25 1.609 (0.617+0.736+0.255=1.608), rev 136.90"},
-    "TIGERLOGS|20250930":{"was": 13.33,   "now": 8.62,   "src": "fund held H1 (INDAS_1571730 Apr-Sep 13.3259). Q2 file INDAS_1580823 8.619; chain 4.7069+8.619=13.3259 EXACT"},
-    "KRISHIVAL|20250930":{"was": 9.71,    "now": 5.41,   "src": "fund held H1 (INDAS_1572450 Apr-Sep 9.7142). BSE detres 544416 Sep-25 PAT 5.412 EPS 2.43; FY26 identity 4.147+5.412+5.882+5.346=20.79 == .50 annual 20.788 EXACT"},
-    "ABCOTS|20250331":  {"was": 5.96,     "now": 1.88,   "src": "fund held H2 (INDAS_1491997 24-Jul-25 declares Oct-Mar 5.9646). Original 26-May-25 Q4 file INDAS_1451352: Jan-Mar 1.8839; chain Q4 1.8839 within H2 5.9646 within FY 9.9903 (both filings print same FY)"},
-    "VENKEYS|20250331": {"was": 15.83,    "now": 11.88,  "src": "fund held the Jun-25 quarter value (15.83, three Jun-25 filings). Own Mar-25 file INDAS_1436411 (12-May-25 == stored ann): 11.88; FY25 identity 75.18+7.76+20.38+11.88=115.2 == filing FY EXACT"},
-    "MEIL|20250930":    {"was": 17.03,    "now": 13.30,  "src": "fund held H1 (INDAS_1569202 Apr-Sep 17.0344). Q2 file INDAS_1580731 13.3017; chain 3.7327+13.3017=17.0344 EXACT"},
-    "RUBYMILLS|20230930":{"was": 8.07,    "now": 9.98,   "ann_was": 20231105, "ann_now": 20240115, "src": "arithmetic-error correction: original 05-Nov-23 filing (8.0694) fails its own EPS (implied 2.42 vs printed 2.98) AND its own H1 (7.3461+8.0694!=17.3278); revised 15-Jan-24 filing INDAS_101053: 9.9817, EPS 2.988==2.98, H1 7.3461+9.9817=17.3278 EXACT"},
-    "HOMEFIRST|20240930":{"was": 93.33,   "now": 92.22,  "ann_was": 20241025, "ann_now": 20241220, "src": "arithmetic-error correction: original 25-Oct-24 NBFC_INDAS_113308 prints Q2 93.325 against its OWN YTD 179.993 (87.768+93.325=181.093 fails); revised 20-Dec-24 NBFC_INDAS_117113: 92.225, 87.768+92.225=179.993 EXACT"},
-    "DHARSUGAR|20230930":{"was": -6.84,   "now": -7.41,  "src": "Jun/Sep-23 SWAPPED in fund. Sep-23 filing INDAS_109320 (23-Jul-24): OneD -7.4068, own H1 col -14.2485 -> Q1=-6.8417; Dec-23 filing 9M 98.5201 = -6.8417+-7.4068+112.7687 EXACT"},
-    "DHARSUGAR|20230630":{"was": -7.41,   "now": -6.84,  "src": "companion of the swap: Q1 = H1(-14.2485) - Q2(-7.4068) = -6.8417, confirmed by Dec-23 filing's 9M 98.5201 EXACT; the Jun-23 file's own -7.4068 is the filer's copy-paste error, refuted by two of its own later YTD columns"},
-    "RPSGVENT|20180630":{"was": 1.65,     "now": 2.15,   "src": "fund took the FourD context. Jun-18 std XBRL INDAS_48324_135139_04092019 (filed with Jun-19 results, IPO-cohort): OneD 2.15, EPS 0.81 == implied 0.811 (2.651e7 sh); the stored 1.65 is that file's FourD. revop already held 2.15"},
-    "BHANDARI|20201231":{"was": 1.54,     "now": 1.35,   "src": "BSE detres 512608 Dec-20: PAT 1.352 EPS 0.09; FY21 identity -2.505+1.323+1.352+1.5=1.67 == .50 annual 1.669 EXACT. revop already held 1.35"},
-    "PITTIENG|20190930":{"was": 7.09,     "now": 7.01,   "src": "BSE detres 513519 Sep-19: PAT 7.012 EPS 2.19; FY20 identity 4.49+7.012+4.059+1.535=17.10 == .50 annual 17.095. revop already held 7.01"}
+ "_README": [
+  "TWO-FILES-ONE-QUANTITY std-PAT campaign, 2026-08-10 (runbook \u00a770/\u00a771 method applied to npStd vs sf_revop patS idx4).",
+  "Fresh scan vs origin/main found 46 disagreements (> max(0.02, 0.5%)), not the 35 in the stale sweep list.",
+  "EVERY verdict below is document-based: filer's own XBRL (scripts/_xbrl_cache or freshly fetched from the NSE list),",
+  "BSE detres (\u00a742, quarter + all FY siblings + .50 audited annual), or the announcement PDF (\u00a758 column anchor).",
+  "fund_fix = sf_fundamentals npStd was wrong (25 scan cells + 3 companions); mirror_fix = sf_revop patS was wrong (21+1).",
+  "Defect classes: H1/H2/FY-cumulative-as-quarter in fund (13); wrong-year/wrong-period OneD declarations poisoning the",
+  "mirror re-parse (KOHINOOR/SURAJEST/SIEMENS-class, 3); NSE double-indexed next-quarter filings poisoning the mirror at",
+  "Mar-2019 (6); revised-filing splits (4: RUBYMILLS/HOMEFIRST arithmetic-error corrections -> take revision;",
+  "MADRASFERT/VIJSHAN genuine restatements -> point-in-time first filing stays, \u00a72d TRU precedent); XBRL sign-flip vs",
+  "own EPS row (SGFL \u00d73); blank-template zero (METROPOLIS); \u00d710 scale (ASTRAZEN); junk series (WORTH \u00d73);",
+  "WRONG COMPANY (KALYANI = Kalyani Commercials INE610E01010, but bse_scrips maps KALYANI->544023, a different company",
+  "whose FY25 detres annual 14.245 == our stored 8.01+6.23 exactly).",
+  "Revision rule used: a correction of an arithmetic error (original contradicts its own YTD/EPS) adopts the corrected",
+  "figure; a genuine restatement (original internally consistent) stays point-in-time on the first filing.",
+  "POST-PUSH ADDENDUM: the live re-verify exposed a companion class my first batch missed - for a no-sub filer the con slot carries the con=std identity, and update_fundamentals is fill-only, so a std CORRECTION never propagates: ASTRAZEN/HOMEFIRST/VENKEYS con still held the refuted std. Healed (con only in fund; patC deliberately NOT created where the mirror had none - every other quarter of a no-sub filer has patC null and inventing one would make the healed quarter the only cell asserting a consolidated figure no filing prints)."
+ ],
+ "fund_fix": {
+  "WORTH|20210331": {
+   "was": -1148.31,
+   "now": 3.15,
+   "src": "WORTHPERI (renamed) Mar-21 std XBRL INDAS_71580_461781_21062021064015: PAT 3.1539, EPS 2.00 == implied 2.002 (shares 1.5751e7); revop already held 3.15"
   },
-  "mirror_fix": {
-    "SIEMENS|20250630":  {"was": 208.9,  "now": 369.1,  "src": "mirror poisoned by INDAS_1620148 (06-Feb-26, = the Oct-Dec-25 quarter of the FY-transition period, OneD falsely declares Apr-Jun-25; its 208.9 == stored Dec-25 and its YTD 2234.8 == Oct-24..Dec-25 sum EXACT). True Jun-25 = INDAS_1507699 (08-Aug-25): 369.1, YTD 1606.3 == 562.7+674.5+369.1 EXACT"},
-    "CAPITALSFB|20250331":{"was": 68.29, "now": 34.24,  "src": "mirror held H2 (BANKING_1427451/1434147 print 68.29, one even under Jan-Mar dates). Corrected quarterly BANKING_1470212 (24-Jun-25): 34.24; FY identity 30.02+33.34+34.05+34.24=131.65 == filing FY EXACT"},
-    "KOHINOOR|20240630": {"was": -2.05,  "now": -2.5,   "src": "mirror poisoned by INTEGRATED_FILING_INDAS_1511622 (13-Aug-2025 = the Jun-2025 filing, OneD falsely declares Apr-Jun-2024; fund Jun-25 = -2.05 ann 20250813 confirms). True Jun-24 = INDAS_111843 (13-Aug-24, == stored ann): -2.5 std, con twin -2.5, EPS ok"},
-    "RAJESHEXPO|20260331":{"was": -3.62, "now": -17.09, "src": "mirror held H2 (INDAS_1678857 declares Oct-Mar -3.618). True Q4 = INDAS_1681677 Jan-Mar -17.094 EPS ok; chain Q3 13.476 + Q4 -17.094 = -3.618 == H2 EXACT"},
-    "HALDER|20260331":   {"was": 5.01,   "now": 2.84,   "src": "mirror held H2 (INDAS_1676933 Oct-Mar 5.0108). Q4 = H2 - Q3 = 5.0108 - 2.171 = 2.8398 == fund 2.84 EXACT (Q3 from INDAS_1625xxx EPS ok)"},
-    "BOSCH-HCIL|20250930":{"was": -24.71,"now": -39.96, "src": "mirror held H1 (15.25 + -39.96 = -24.71 EXACT). Dec-25 filing INDAS_1611727 9M col -43.73: 15.25 + Q2 + -19.03 = -43.73 -> Q2 = -39.95 == fund"},
-    "SURAJEST|20240630": {"was": 23.77,  "now": 32.47,  "src": "mirror poisoned by INDAS_1494122 (25-Jul-2025 = the Jun-2025 filing, wrong-year OneD; fund Jun-25 = 23.77 ann 20250725 confirms). True Jun-24 = INDAS_110029 (01-Aug-24): 32.473 EPS ok; Sep-24 filing H1 64.81 - 32.336 = 32.474 EXACT; 9M chain 86.934 EXACT"},
-    "MADRASFERT|20200331":{"was": -2.76, "now": 62.21,  "src": "genuine restatement, point-in-time first filing stays (TRU §2d precedent): original audited 19-Jun-20 NDAS_56121: +62.21 EPS 3.86==3.862; revised 28-Aug-20 NDAS_60821: -2.76 (FY restated -69.91 -> -134.88). Store keeps 62.21 (== fund, ann 20200619); revision journalled here"},
-    "METROPOLIS|20190331":{"was": 0.0,   "now": 39.5,   "src": "mirror's 0.0 = blank-template zero in the Mar-19 XBRL (annual-only filing; OneD prints 0.0, FY 101.457). True quarter from the Jun-19 announcement PDF (BSE att 8213dca8, std page col 2): 3,949.65 lakh = 39.50; anchors: Jun-19 col 1831.97==stored 18.32, Jun-18 col 1911.32==stored 19.11, FY col 10145.70==annual filing EXACT"},
-    "POLYMED|20190331":  {"was": 20.18,  "now": 21.48,  "src": "Mar-19 mirror cluster: NSE double-indexed the Jun-19 filing under Mar-19; mirror took Jun-19's 20.18. BSE detres 531768 Mar-19: 21.483 == fund; FY19 identity sum 66.40 vs .50 annual 66.28 (0.17%)"},
-    "GSFC|20190331":     {"was": 63.33,  "now": 99.76,  "src": "same double-index class (mirror held Jun-19's 63.33). BSE detres 500690 Mar-19: 99.76 == fund; FY19 identity 70.74+224.25+98.94+99.76=493.69 == .50 annual EXACT"},
-    "CARERATING|20190331":{"was": 13.09, "now": 34.64,  "src": "same class (mirror held Jun-19's 13.09). BSE detres 534804 Mar-19: 34.636 == fund; FY19 identity 134.99 == .50 annual EXACT"},
-    "EMKAY|20190331":    {"was": -1.13,  "now": -2.4,   "src": "same class (mirror held Jun-19's -1.13). BSE detres 532737 Mar-19: -2.396 == fund; FY19 identity 6.37 == .50 annual EXACT"},
-    "GREAVESCOT|20190331":{"was": 38.17, "now": 37.39,  "src": "same class (mirror held Jun-19's 38.17). BSE detres 501455 Mar-19: 37.39 == fund; FY19 identity 169.30 == .50 annual EXACT"},
-    "GENUSPAPER|20180331":{"was": 5.07,  "now": 3.62,   "src": "mirror held Jun-18's 5.07. BSE detres 538961 Mar-18: 3.625 == fund; FY18 identity 2.383+4.134+4.798+3.625=14.94 == .50 annual EXACT"},
-    "SIGIND|20180630":   {"was": 2.56,   "now": 4.01,   "src": "mirror held Sep-18's 2.56. BSE detres 512131 Jun-18: 4.015 == fund; FY19 identity 4.015+2.556+3.94+3.218=13.73 == .50 annual EXACT"},
-    "ITI|20250331":      {"was": -4.38,  "now": -4.84,  "src": "BSE detres 523610 Mar-25: -4.84 == fund; FY25 identity -91.086+-70.103+-67.118+-4.84=-233.15 == .50 annual EXACT"},
-    "VIJSHAN|20190331":  {"was": -10.85, "now": -10.66, "src": "genuine restatement, point-in-time stays: original 18-Jun-19 INDAS_45934 -10.6554 EPS -4.1==implied -4.07 (== fund, ann 20190618); revised 20-Jul-19 INDAS_46070 -10.8521 (mirror's value). H1FY20 chain in later filings confirms the surrounding series"},
-    "SGFL|20180331":     {"was": 0.0,    "now": -1.04,  "src": "mirror's 0.0 = blank-template Mar-18 XBRL (INDAS_36542, shares tag 100, PAT 0.0). Its own EPS row -0.82 x 1.25e7 sh = -1.025 supports fund's -1.04 (1.4%)"},
-    "SGFL|20180630":     {"was": 1.21,   "now": -1.16,  "src": "SIGN-FLIP class: 26-Nov-18 filing INDAS_41387 tags Sep-18 PAT +1.2092 while its own EPS row prints -0.96 (implied |0.967|); preceding-qtr col 1.1588 likewise flipped = Jun-18. FY19 identity with corrected signs -1.1588+-1.2092+-1.6588+-1.3667=-5.394 == Mar-19 filing FY -5.3954. fund already holds -1.16"},
-    "SGFL|20180930":     {"was": 1.21,   "now": -1.21,  "src": "same sign-flip file: OneD -1.2092 (per EPS row), fund already holds -1.21; FY19 identity EXACT as above"}
+  "WORTH|20211231": {
+   "was": 2076.33,
+   "now": 7.24,
+   "src": "INDAS_82051_607001_11022022095312: PAT 7.2423, EPS 4.60==4.598; 9M FY22 chain 3.8254+4.0166+7.2423=15.0843 == filing's own YTD EXACT"
   },
-  "con_fix": {
-    "ABCOTS|20250331":   {"was": 6.18,  "now": 2.11,   "src": "same H2-as-quarter defect on con: original 26-May-25 con file INDAS_1451358 Jan-Mar 2.1137, FY 10.2124; the 24-Jul H2 file prints 6.1795/same FY. Both fund npCon and mirror patC held 6.18"},
-    "SURAJEST|20240630": {"was": 21.28, "now": 30.13,  "src": "fund con poisoned by the wrong-year Jun-25 con file (INDAS_1494123, 21.282). True Jun-24 con = INDAS_110030 (01-Aug-24): 30.134 EPS ok; H1 chain 61.9661-31.832=30.134 EXACT. _reattr_owners holds 21.28 -> owners_basis_heals entry added"},
-    "DBL|20250930":      {"was": 410.47,"now": 181.49, "src": "H1-owners-as-quarter: stored 410.47 == H1 con owners (INDAS_1574277 owners tag 410.466). Q2 con file INDAS_1686466: owners OneD 181.493, NCI 32.579, total 214.072 (identity closes); H1 owners chain 228.97+181.493=410.46 EXACT. _reattr_owners holds 410.47 -> owners_basis_heals entry added"},
-    "KALYANI|20250331":  {"was": 6.03,  "now": null,   "src": "wrong-company value (BSE 544023). Kalyani Commercials files Non-Consolidated only in FY24/FY25 (NSE list: every FY24/FY25 row Non-Consolidated) -> con slot NULLED, §51/§54 index-as-evidence"},
-    "KALYANI|20240331":  {"was": 3.71,  "now": null,   "src": "same: std-only filer in FY24; 3.71 is the other company's figure"},
-    "KALYANI|20241231":  {"was": 8.24,  "now": null,   "src": "same: std-only filer in FY25; 8.24 is the other company's figure"}
+  "WORTH|20220331": {
+   "was": -2312.36,
+   "now": 4.07,
+   "src": "INDAS_86130_665313_28052022043028: PAT 4.0748, EPS 2.59==2.587; FY22 chain 15.0843+4.0748=19.1591 == filing FY EXACT"
   },
-  "open_flags": [
-    "KOHINOOR 20250331 std 375.64 (and 20260331 87.65): out-of-family x100, both files agree so invisible to the diff scan; debt-settlement-gain era plausible but UNVERIFIED",
-    "RPSGVENT 20180930 std 58.46: out of family (~2-3 neighbours), revop None; likely another wrong-context grab from the double-indexed INDAS_42819 (its 9M/FY col 63.25)",
-    "METROPOLIS 20180930/20181231 std (20.05/32.40): FY19 identity fails by +9.6 with Q1 19.11 and Q4 39.50 both filing-confirmed; pre-IPO comparative cells need re-adjudication",
-    "HALDER 20260331 con 36.82 (both files): H2con(39.9168)-Q3con(20.7827)=19.13 != 36.82 and con EPS fails on both filings; needs the con PDF",
-    "DBL 20251231 con 829.85 > filing total 788.98: negative-NCI hypothesis unverified",
-    "KALYANI series: Jun-24 (0.617) and Sep-24 (0.736) std missing in fund; revenue slots unaudited vs own filings (Dec-24 rev 136.90 stored None); resolver maps KALYANI->BSE 544023 (different company, ISIN INE0N6U01018 vs ours INE610E01010) - needs ISIN guard",
-    "Mar-2019 double-index cluster fund ann dates (GSFC/POLYMED/CARERATING std ann 20190904 = the Jun-19 filing date, real announce ~May-2019): ann-date heal candidates for ann_date_fills.json"
+  "ASTRAZEN|20200630": {
+   "was": 186.35,
+   "now": 18.63,
+   "src": "x10 scale error. BSE detres 506820 qtr Jun-20: PAT 18.635 (rs-mn/10), FY21 identity 18.635+26.338+21.052+27.279=93.30 == .50 audited annual 93.304 EXACT"
+  },
+  "DBL|20250930": {
+   "was": 163.53,
+   "now": 40.85,
+   "src": "fund held H1 (INTEGRATED_FILING_INDAS_1574276 declares OneD Apr-Sep 163.5349). True Q2 = INDAS_1686465 Jul-Sep 40.8478, EPS ok; 9M chain 122.687+40.8478+611.0031=774.5379 == Dec-25 filing YTD 774.538 EXACT"
+  },
+  "SHIVAMAUTO|20260331": {
+   "was": -81.33,
+   "now": -26.72,
+   "src": "fund held FY26 total. Q4 file INDAS_1688912 Jan-Mar -26.7186; chain H1 -30.0793 + Q3 -24.5333 + Q4 -26.7186 = -81.3312 == the mislabelled 'Oct-Mar' file's -81.3316 (=FY) EXACT"
+  },
+  "INDIQUBE|20250930": {
+   "was": -66.62,
+   "now": -29.87,
+   "src": "fund held H1 (INDAS_1569339 OneD Apr-Sep -66.622). Q2 file INDAS_1581024 -29.867; chain -36.755+-29.867=-66.622 EXACT"
+  },
+  "ATUL|20240331": {
+   "was": 58.79,
+   "now": 74.9,
+   "src": "BSE detres 500027 Mar-24: PAT 74.9, EPS 25.4==25.39 (2.95e7 sh); FY24 identity 96.58+103.33+109.76+74.9=384.57 == .50 audited annual EXACT. revop already held 74.9"
+  },
+  "GLOTTIS|20250930": {
+   "was": 24.3,
+   "now": 12.36,
+   "src": "fund held H1 (INDAS_1575509 Apr-Sep 24.2994). Q2 file INDAS_1580938 12.3581; chain 11.9413+12.3581=24.2994 EXACT"
+  },
+  "DVL|20190331": {
+   "was": -14.38,
+   "now": -2.91,
+   "src": "BSE detres 523736 Mar-19: PAT -2.907, EPS -0.82; FY19 identity 11.364+21.549+20.854-2.907=50.86 == .50 annual EXACT. revop already held -2.91"
+  },
+  "GUJTHEM|20250930": {
+   "was": 23.33,
+   "now": 14.27,
+   "src": "fund held H1 (INDAS_1570079 Apr-Sep 23.3256). Q2 file INDAS_1570946 14.2671, its YTD col == H1; chain 9.0621+14.2671=23.3292~23.3256"
+  },
+  "BMWVENTLTD|20250930": {
+   "was": 15.14,
+   "now": 7.11,
+   "src": "fund held H1 (INDAS_1570632 Apr-Sep 15.1396). Q2 file INDAS_1580031 7.1139; chain 8.0258+7.1139=15.1397 EXACT"
+  },
+  "VIKRAN|20250930": {
+   "was": 14.79,
+   "now": 9.14,
+   "src": "fund held H1 (INDAS_1570391 Apr-Sep 14.79). Q2 file INDAS_1571465 9.14 with YTD col 14.79; chain 5.65+9.14=14.79 EXACT"
+  },
+  "KALYANI|20250331": {
+   "was": 6.23,
+   "now": 0.72,
+   "src": "WRONG COMPANY: 6.23 belongs to BSE scrip 544023 (detres FY25 annual PAT 14.245 == stored 8.01+6.23 EXACT). Our KALYANI = Kalyani Commercials Ltd (INE610E01010, name in XBRL): Jan-Mar-25 std PAT 0.7237 (INDAS_1686726), FY25 2.3325 closes vs own original quarters 0.617+0.736+0.255+0.7237=2.332; its printed rev 102.8994 == our stored revS 102.9 EXACT"
+  },
+  "KALYANI|20240331": {
+   "was": 3.73,
+   "now": 0.32,
+   "src": "same wrong-company class. Kalyani Commercials' own Mar-24 std XBRL INDAS_108110_1146809_30052024 (name verified): PAT 0.319, FY24 2.363, rev 62.47"
+  },
+  "KALYANI|20241231": {
+   "was": 8.01,
+   "now": 0.26,
+   "src": "same class. Own Dec-24 std XBRL INDAS_119375_1376564_10022025 (name verified): PAT 0.255, 9M FY25 1.609 (0.617+0.736+0.255=1.608), rev 136.90"
+  },
+  "TIGERLOGS|20250930": {
+   "was": 13.33,
+   "now": 8.62,
+   "src": "fund held H1 (INDAS_1571730 Apr-Sep 13.3259). Q2 file INDAS_1580823 8.619; chain 4.7069+8.619=13.3259 EXACT"
+  },
+  "KRISHIVAL|20250930": {
+   "was": 9.71,
+   "now": 5.41,
+   "src": "fund held H1 (INDAS_1572450 Apr-Sep 9.7142). BSE detres 544416 Sep-25 PAT 5.412 EPS 2.43; FY26 identity 4.147+5.412+5.882+5.346=20.79 == .50 annual 20.788 EXACT"
+  },
+  "ABCOTS|20250331": {
+   "was": 5.96,
+   "now": 1.88,
+   "src": "fund held H2 (INDAS_1491997 24-Jul-25 declares Oct-Mar 5.9646). Original 26-May-25 Q4 file INDAS_1451352: Jan-Mar 1.8839; chain Q4 1.8839 within H2 5.9646 within FY 9.9903 (both filings print same FY)"
+  },
+  "VENKEYS|20250331": {
+   "was": 15.83,
+   "now": 11.88,
+   "src": "fund held the Jun-25 quarter value (15.83, three Jun-25 filings). Own Mar-25 file INDAS_1436411 (12-May-25 == stored ann): 11.88; FY25 identity 75.18+7.76+20.38+11.88=115.2 == filing FY EXACT"
+  },
+  "MEIL|20250930": {
+   "was": 17.03,
+   "now": 13.3,
+   "src": "fund held H1 (INDAS_1569202 Apr-Sep 17.0344). Q2 file INDAS_1580731 13.3017; chain 3.7327+13.3017=17.0344 EXACT"
+  },
+  "RUBYMILLS|20230930": {
+   "was": 8.07,
+   "now": 9.98,
+   "ann_was": 20231105,
+   "ann_now": 20240115,
+   "src": "arithmetic-error correction: original 05-Nov-23 filing (8.0694) fails its own EPS (implied 2.42 vs printed 2.98) AND its own H1 (7.3461+8.0694!=17.3278); revised 15-Jan-24 filing INDAS_101053: 9.9817, EPS 2.988==2.98, H1 7.3461+9.9817=17.3278 EXACT"
+  },
+  "HOMEFIRST|20240930": {
+   "was": 93.33,
+   "now": 92.22,
+   "ann_was": 20241025,
+   "ann_now": 20241220,
+   "src": "arithmetic-error correction: original 25-Oct-24 NBFC_INDAS_113308 prints Q2 93.325 against its OWN YTD 179.993 (87.768+93.325=181.093 fails); revised 20-Dec-24 NBFC_INDAS_117113: 92.225, 87.768+92.225=179.993 EXACT"
+  },
+  "DHARSUGAR|20230930": {
+   "was": -6.84,
+   "now": -7.41,
+   "src": "Jun/Sep-23 SWAPPED in fund. Sep-23 filing INDAS_109320 (23-Jul-24): OneD -7.4068, own H1 col -14.2485 -> Q1=-6.8417; Dec-23 filing 9M 98.5201 = -6.8417+-7.4068+112.7687 EXACT"
+  },
+  "DHARSUGAR|20230630": {
+   "was": -7.41,
+   "now": -6.84,
+   "src": "companion of the swap: Q1 = H1(-14.2485) - Q2(-7.4068) = -6.8417, confirmed by Dec-23 filing's 9M 98.5201 EXACT; the Jun-23 file's own -7.4068 is the filer's copy-paste error, refuted by two of its own later YTD columns"
+  },
+  "RPSGVENT|20180630": {
+   "was": 1.65,
+   "now": 2.15,
+   "src": "fund took the FourD context. Jun-18 std XBRL INDAS_48324_135139_04092019 (filed with Jun-19 results, IPO-cohort): OneD 2.15, EPS 0.81 == implied 0.811 (2.651e7 sh); the stored 1.65 is that file's FourD. revop already held 2.15"
+  },
+  "BHANDARI|20201231": {
+   "was": 1.54,
+   "now": 1.35,
+   "src": "BSE detres 512608 Dec-20: PAT 1.352 EPS 0.09; FY21 identity -2.505+1.323+1.352+1.5=1.67 == .50 annual 1.669 EXACT. revop already held 1.35"
+  },
+  "PITTIENG|20190930": {
+   "was": 7.09,
+   "now": 7.01,
+   "src": "BSE detres 513519 Sep-19: PAT 7.012 EPS 2.19; FY20 identity 4.49+7.012+4.059+1.535=17.10 == .50 annual 17.095. revop already held 7.01"
+  }
+ },
+ "mirror_fix": {
+  "SIEMENS|20250630": {
+   "was": 208.9,
+   "now": 369.1,
+   "src": "mirror poisoned by INDAS_1620148 (06-Feb-26, = the Oct-Dec-25 quarter of the FY-transition period, OneD falsely declares Apr-Jun-25; its 208.9 == stored Dec-25 and its YTD 2234.8 == Oct-24..Dec-25 sum EXACT). True Jun-25 = INDAS_1507699 (08-Aug-25): 369.1, YTD 1606.3 == 562.7+674.5+369.1 EXACT"
+  },
+  "CAPITALSFB|20250331": {
+   "was": 68.29,
+   "now": 34.24,
+   "src": "mirror held H2 (BANKING_1427451/1434147 print 68.29, one even under Jan-Mar dates). Corrected quarterly BANKING_1470212 (24-Jun-25): 34.24; FY identity 30.02+33.34+34.05+34.24=131.65 == filing FY EXACT"
+  },
+  "KOHINOOR|20240630": {
+   "was": -2.05,
+   "now": -2.5,
+   "src": "mirror poisoned by INTEGRATED_FILING_INDAS_1511622 (13-Aug-2025 = the Jun-2025 filing, OneD falsely declares Apr-Jun-2024; fund Jun-25 = -2.05 ann 20250813 confirms). True Jun-24 = INDAS_111843 (13-Aug-24, == stored ann): -2.5 std, con twin -2.5, EPS ok"
+  },
+  "RAJESHEXPO|20260331": {
+   "was": -3.62,
+   "now": -17.09,
+   "src": "mirror held H2 (INDAS_1678857 declares Oct-Mar -3.618). True Q4 = INDAS_1681677 Jan-Mar -17.094 EPS ok; chain Q3 13.476 + Q4 -17.094 = -3.618 == H2 EXACT"
+  },
+  "HALDER|20260331": {
+   "was": 5.01,
+   "now": 2.84,
+   "src": "mirror held H2 (INDAS_1676933 Oct-Mar 5.0108). Q4 = H2 - Q3 = 5.0108 - 2.171 = 2.8398 == fund 2.84 EXACT (Q3 from INDAS_1625xxx EPS ok)"
+  },
+  "BOSCH-HCIL|20250930": {
+   "was": -24.71,
+   "now": -39.96,
+   "src": "mirror held H1 (15.25 + -39.96 = -24.71 EXACT). Dec-25 filing INDAS_1611727 9M col -43.73: 15.25 + Q2 + -19.03 = -43.73 -> Q2 = -39.95 == fund"
+  },
+  "SURAJEST|20240630": {
+   "was": 23.77,
+   "now": 32.47,
+   "src": "mirror poisoned by INDAS_1494122 (25-Jul-2025 = the Jun-2025 filing, wrong-year OneD; fund Jun-25 = 23.77 ann 20250725 confirms). True Jun-24 = INDAS_110029 (01-Aug-24): 32.473 EPS ok; Sep-24 filing H1 64.81 - 32.336 = 32.474 EXACT; 9M chain 86.934 EXACT"
+  },
+  "MADRASFERT|20200331": {
+   "was": -2.76,
+   "now": 62.21,
+   "src": "genuine restatement, point-in-time first filing stays (TRU \u00a72d precedent): original audited 19-Jun-20 NDAS_56121: +62.21 EPS 3.86==3.862; revised 28-Aug-20 NDAS_60821: -2.76 (FY restated -69.91 -> -134.88). Store keeps 62.21 (== fund, ann 20200619); revision journalled here"
+  },
+  "METROPOLIS|20190331": {
+   "was": 0.0,
+   "now": 39.5,
+   "src": "mirror's 0.0 = blank-template zero in the Mar-19 XBRL (annual-only filing; OneD prints 0.0, FY 101.457). True quarter from the Jun-19 announcement PDF (BSE att 8213dca8, std page col 2): 3,949.65 lakh = 39.50; anchors: Jun-19 col 1831.97==stored 18.32, Jun-18 col 1911.32==stored 19.11, FY col 10145.70==annual filing EXACT"
+  },
+  "POLYMED|20190331": {
+   "was": 20.18,
+   "now": 21.48,
+   "src": "Mar-19 mirror cluster: NSE double-indexed the Jun-19 filing under Mar-19; mirror took Jun-19's 20.18. BSE detres 531768 Mar-19: 21.483 == fund; FY19 identity sum 66.40 vs .50 annual 66.28 (0.17%)"
+  },
+  "GSFC|20190331": {
+   "was": 63.33,
+   "now": 99.76,
+   "src": "same double-index class (mirror held Jun-19's 63.33). BSE detres 500690 Mar-19: 99.76 == fund; FY19 identity 70.74+224.25+98.94+99.76=493.69 == .50 annual EXACT"
+  },
+  "CARERATING|20190331": {
+   "was": 13.09,
+   "now": 34.64,
+   "src": "same class (mirror held Jun-19's 13.09). BSE detres 534804 Mar-19: 34.636 == fund; FY19 identity 134.99 == .50 annual EXACT"
+  },
+  "EMKAY|20190331": {
+   "was": -1.13,
+   "now": -2.4,
+   "src": "same class (mirror held Jun-19's -1.13). BSE detres 532737 Mar-19: -2.396 == fund; FY19 identity 6.37 == .50 annual EXACT"
+  },
+  "GREAVESCOT|20190331": {
+   "was": 38.17,
+   "now": 37.39,
+   "src": "same class (mirror held Jun-19's 38.17). BSE detres 501455 Mar-19: 37.39 == fund; FY19 identity 169.30 == .50 annual EXACT"
+  },
+  "GENUSPAPER|20180331": {
+   "was": 5.07,
+   "now": 3.62,
+   "src": "mirror held Jun-18's 5.07. BSE detres 538961 Mar-18: 3.625 == fund; FY18 identity 2.383+4.134+4.798+3.625=14.94 == .50 annual EXACT"
+  },
+  "SIGIND|20180630": {
+   "was": 2.56,
+   "now": 4.01,
+   "src": "mirror held Sep-18's 2.56. BSE detres 512131 Jun-18: 4.015 == fund; FY19 identity 4.015+2.556+3.94+3.218=13.73 == .50 annual EXACT"
+  },
+  "ITI|20250331": {
+   "was": -4.38,
+   "now": -4.84,
+   "src": "BSE detres 523610 Mar-25: -4.84 == fund; FY25 identity -91.086+-70.103+-67.118+-4.84=-233.15 == .50 annual EXACT"
+  },
+  "VIJSHAN|20190331": {
+   "was": -10.85,
+   "now": -10.66,
+   "src": "genuine restatement, point-in-time stays: original 18-Jun-19 INDAS_45934 -10.6554 EPS -4.1==implied -4.07 (== fund, ann 20190618); revised 20-Jul-19 INDAS_46070 -10.8521 (mirror's value). H1FY20 chain in later filings confirms the surrounding series"
+  },
+  "SGFL|20180331": {
+   "was": 0.0,
+   "now": -1.04,
+   "src": "mirror's 0.0 = blank-template Mar-18 XBRL (INDAS_36542, shares tag 100, PAT 0.0). Its own EPS row -0.82 x 1.25e7 sh = -1.025 supports fund's -1.04 (1.4%)"
+  },
+  "SGFL|20180630": {
+   "was": 1.21,
+   "now": -1.16,
+   "src": "SIGN-FLIP class: 26-Nov-18 filing INDAS_41387 tags Sep-18 PAT +1.2092 while its own EPS row prints -0.96 (implied |0.967|); preceding-qtr col 1.1588 likewise flipped = Jun-18. FY19 identity with corrected signs -1.1588+-1.2092+-1.6588+-1.3667=-5.394 == Mar-19 filing FY -5.3954. fund already holds -1.16"
+  },
+  "SGFL|20180930": {
+   "was": 1.21,
+   "now": -1.21,
+   "src": "same sign-flip file: OneD -1.2092 (per EPS row), fund already holds -1.21; FY19 identity EXACT as above"
+  }
+ },
+ "con_fix": {
+  "ABCOTS|20250331": {
+   "was": 6.18,
+   "now": 2.11,
+   "src": "same H2-as-quarter defect on con: original 26-May-25 con file INDAS_1451358 Jan-Mar 2.1137, FY 10.2124; the 24-Jul H2 file prints 6.1795/same FY. Both fund npCon and mirror patC held 6.18"
+  },
+  "SURAJEST|20240630": {
+   "was": 21.28,
+   "now": 30.13,
+   "src": "fund con poisoned by the wrong-year Jun-25 con file (INDAS_1494123, 21.282). True Jun-24 con = INDAS_110030 (01-Aug-24): 30.134 EPS ok; H1 chain 61.9661-31.832=30.134 EXACT. _reattr_owners holds 21.28 -> owners_basis_heals entry added"
+  },
+  "DBL|20250930": {
+   "was": 410.47,
+   "now": 181.49,
+   "src": "H1-owners-as-quarter: stored 410.47 == H1 con owners (INDAS_1574277 owners tag 410.466). Q2 con file INDAS_1686466: owners OneD 181.493, NCI 32.579, total 214.072 (identity closes); H1 owners chain 228.97+181.493=410.46 EXACT. _reattr_owners holds 410.47 -> owners_basis_heals entry added"
+  },
+  "KALYANI|20250331": {
+   "was": 6.03,
+   "now": null,
+   "src": "wrong-company value (BSE 544023). Kalyani Commercials files Non-Consolidated only in FY24/FY25 (NSE list: every FY24/FY25 row Non-Consolidated) -> con slot NULLED, \u00a751/\u00a754 index-as-evidence"
+  },
+  "KALYANI|20240331": {
+   "was": 3.71,
+   "now": null,
+   "src": "same: std-only filer in FY24; 3.71 is the other company's figure"
+  },
+  "KALYANI|20241231": {
+   "was": 8.24,
+   "now": null,
+   "src": "same: std-only filer in FY25; 8.24 is the other company's figure"
+  },
+  "ASTRAZEN|20200630": {
+   "was": 186.35,
+   "now": 18.63,
+   "src": "no-sub identity companion of the x10 std heal: ASTRAZEN files NO consolidated result EVER (NSE classic index 84 rows all Non-Consolidated, integrated 17 all Standalone/unlabelled; 59 nature tags across 34 cached XBRLs are Standalone, zero Consolidated), so con==std is the derived identity (ladder rung 8/\u00a76A) - it held the same x10 value 186.35 the detres FY21 identity refuted (18.635+26.338+21.052+27.279=93.30 == .50 audited annual EXACT). con==std in 48/48 of its other quarters."
+  },
+  "HOMEFIRST|20240930": {
+   "was": 93.33,
+   "now": 92.22,
+   "ann_was": 20241025,
+   "ann_now": 20241220,
+   "src": "no-sub identity companion of the revised-filing std heal: HOMEFIRST files NO consolidated result (NSE 17 rows all Non-Consolidated, integrated all Standalone; 42 Standalone nature tags across 24 cached XBRLs, zero Consolidated). Original 25-Oct-24 filing's 93.325 fails its OWN YTD (87.768+93.325 != 179.993); revised 20-Dec-24 NBFC_INDAS_117113 prints 92.225, 87.768+92.225=179.993 EXACT. con==std in 25/25 other quarters; ann follows the same board filing."
+  },
+  "VENKEYS|20250331": {
+   "was": 15.83,
+   "now": 11.88,
+   "src": "no-sub identity companion: VENKEYS files NO consolidated result (NSE 79 rows all Non-Consolidated, integrated all Standalone; 64 Standalone nature tags across 37 cached XBRLs, zero Consolidated). Stored 15.83 is the JUN-2025 quarter's value; own Mar-25 filing INDAS_1436411 (12-May-25 == stored ann) prints 11.88 and its FY25 identity 75.18+7.76+20.38+11.88=115.2 == the filing's own FY EXACT. con==std in 44/44 other quarters."
+  }
+ },
+ "open_flags": [
+  "KOHINOOR 20250331 std 375.64 (and 20260331 87.65): out-of-family x100, both files agree so invisible to the diff scan; debt-settlement-gain era plausible but UNVERIFIED",
+  "RPSGVENT 20180930 std 58.46: out of family (~2-3 neighbours), revop None; likely another wrong-context grab from the double-indexed INDAS_42819 (its 9M/FY col 63.25)",
+  "METROPOLIS 20180930/20181231 std (20.05/32.40): FY19 identity fails by +9.6 with Q1 19.11 and Q4 39.50 both filing-confirmed; pre-IPO comparative cells need re-adjudication",
+  "HALDER 20260331 con 36.82 (both files): H2con(39.9168)-Q3con(20.7827)=19.13 != 36.82 and con EPS fails on both filings; needs the con PDF",
+  "DBL 20251231 con 829.85 > filing total 788.98: negative-NCI hypothesis unverified",
+  "KALYANI series: Jun-24 (0.617) and Sep-24 (0.736) std missing in fund; revenue slots unaudited vs own filings (Dec-24 rev 136.90 stored None); resolver maps KALYANI->BSE 544023 (different company, ISIN INE0N6U01018 vs ours INE610E01010) - needs ISIN guard",
+  "Mar-2019 double-index cluster fund ann dates (GSFC/POLYMED/CARERATING std ann 20190904 = the Jun-19 filing date, real announce ~May-2019): ann-date heal candidates for ann_date_fills.json"
+ ],
+ "nosub_con_lag_screen": {
+  "_note": "Store-wide screen for the SAME fingerprint (con==std in >=95% of a symbol's quarters, differing in <=3): 17 cells / 17 symbols. A SCREEN, NOT A VERDICT (\u00a771g: the out-of-family screen was right about 6 of 23) - each needs a filing read before any write. Two carry a strong scale fingerprint: SIMPLEXCAS 20200630 std -282.03 vs con -2.82 is EXACTLY x100, VISHAL 20250331 std 488.18 vs con 7.35. Not healed here.",
+  "cells": [
+   {
+    "sym": "SIMPLEXCAS",
+    "qe": 20200630,
+    "std": -282.03,
+    "con": -2.82,
+    "eq_qtrs": 21,
+    "tot_qtrs": 22
+   },
+   {
+    "sym": "JAYSYNTH",
+    "qe": 20241231,
+    "std": 5.93,
+    "con": 5.46,
+    "eq_qtrs": 21,
+    "tot_qtrs": 22
+   },
+   {
+    "sym": "CINEVISTA",
+    "qe": 20191231,
+    "std": -0.3,
+    "con": -0.27,
+    "eq_qtrs": 25,
+    "tot_qtrs": 26
+   },
+   {
+    "sym": "BCCFUBA",
+    "qe": 20260331,
+    "std": 1.95,
+    "con": 1.83,
+    "eq_qtrs": 30,
+    "tot_qtrs": 31
+   },
+   {
+    "sym": "SHRADDHA",
+    "qe": 20220630,
+    "std": -0.32,
+    "con": 0.51,
+    "eq_qtrs": 19,
+    "tot_qtrs": 20
+   },
+   {
+    "sym": "KENNAMET",
+    "qe": 20241231,
+    "std": 22.2,
+    "con": 23.4,
+    "eq_qtrs": 43,
+    "tot_qtrs": 44
+   },
+   {
+    "sym": "CUB",
+    "qe": 20220331,
+    "std": 208.96,
+    "con": 208.6,
+    "eq_qtrs": 44,
+    "tot_qtrs": 45
+   },
+   {
+    "sym": "SAMPANN",
+    "qe": 20180331,
+    "std": -1.32,
+    "con": -1.3,
+    "eq_qtrs": 29,
+    "tot_qtrs": 30
+   },
+   {
+    "sym": "CAPRIHANS",
+    "qe": 20251231,
+    "std": -15.96,
+    "con": -15.6,
+    "eq_qtrs": 22,
+    "tot_qtrs": 23
+   },
+   {
+    "sym": "VISHAL",
+    "qe": 20250331,
+    "std": 488.18,
+    "con": 7.35,
+    "eq_qtrs": 23,
+    "tot_qtrs": 24
+   },
+   {
+    "sym": "INTEGRAEN",
+    "qe": 20211231,
+    "std": 2.15,
+    "con": 1.61,
+    "eq_qtrs": 19,
+    "tot_qtrs": 20
+   },
+   {
+    "sym": "KMSUGAR",
+    "qe": 20191231,
+    "std": 4.66,
+    "con": 4.41,
+    "eq_qtrs": 27,
+    "tot_qtrs": 28
+   },
+   {
+    "sym": "PRECOT",
+    "qe": 20200331,
+    "std": -0.81,
+    "con": 0.0,
+    "eq_qtrs": 25,
+    "tot_qtrs": 26
+   },
+   {
+    "sym": "AUTOINT",
+    "qe": 20250930,
+    "std": 2.68,
+    "con": 2.39,
+    "eq_qtrs": 20,
+    "tot_qtrs": 21
+   },
+   {
+    "sym": "ZEAL",
+    "qe": 20260331,
+    "std": 7.15,
+    "con": 6.53,
+    "eq_qtrs": 28,
+    "tot_qtrs": 29
+   },
+   {
+    "sym": "MODISONLTD",
+    "qe": 20260331,
+    "std": 36.03,
+    "con": 36.0,
+    "eq_qtrs": 19,
+    "tot_qtrs": 20
+   },
+   {
+    "sym": "KALIND",
+    "qe": 20221231,
+    "std": 0.94,
+    "con": 0.89,
+    "eq_qtrs": 19,
+    "tot_qtrs": 20
+   }
   ]
+ }
 }

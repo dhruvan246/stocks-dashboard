@@ -24,11 +24,19 @@ def load(rel):
     return json.load(open(os.path.join(ROOT, rel), encoding="utf-8"))
 
 
-def dump(rel, obj):
+def dump(rel, obj, pretty=False):
+    """Payloads are written with the builders' compact separators so their diffs stay minimal.
+    JOURNALS (pat_defects / owners_basis_heals / the mirror ledger) are written PRETTY - they are
+    read by humans reviewing provenance, and minifying them turns a 3-line addition into a
+    whole-file rewrite that hides what changed."""
     p = os.path.join(ROOT, rel)
     tmp = p + ".tmp"
     with open(tmp, "w", encoding="utf-8") as fh:
-        json.dump(obj, fh, separators=(",", ":"))
+        if pretty:
+            json.dump(obj, fh, indent=1, sort_keys=True)
+            fh.write("\n")
+        else:
+            json.dump(obj, fh, separators=(",", ":"))
     os.replace(tmp, p)
 
 
@@ -123,13 +131,23 @@ for k, e in sorted(V["con_fix"].items()):
         row[3] = tgt
         if tgt is None:
             row[4] = None
+        elif "ann_now" in e:                      # revision moved the board-filing date
+            if row[4] not in (e["ann_was"], e["ann_now"]):
+                problems.append("%s %s: CON ANN GUARD FAILED now %s expected %s" % (rel, k, row[4], e["ann_was"])); continue
+            row[4] = e["ann_now"]
         plan.append((rel, k, "npCon", e["was"], tgt)); expect[rel].add((sym, qe))
     for rel in REVOP_TWINS:
-        cell = revop_cell(work[rel], rel, sym, qe, create=e["now"] is not None)
+        cell = revop_cell(work[rel], rel, sym, qe, create=False)
         if cell is None:
             continue
         cur = cell[5]
         tgt = e["now"]
+        # NEVER create a con mirror value where none exists: patC is null for every quarter of a
+        # no-sub filer (no consolidated XBRL is ever published), so writing one here would make the
+        # healed quarter the ONLY one asserting a consolidated figure. Correct what is there; do
+        # not invent. (fund npCon legitimately carries the con=std identity - that is its convention.)
+        if cur is None:
+            continue
         if (tgt is None and cur is None) or close(cur, tgt):
             continue
         if cur is not None and not close(cur, e["was"]):
@@ -195,7 +213,7 @@ for k, e in V["con_fix"].items():
     ent.update({"stored_pat_con": e["was"], "correct_pat_con": e["now"],
                 "defect": "std-PAT campaign con companion 2026-08-10",
                 "source": e["src"]})
-dump("scripts/pat_defects.json", pd)
+dump("scripts/pat_defects.json", pd, pretty=True)
 
 mh_path = os.path.join(HERE, "stdpat_mirror_heals.json")
 mh = json.load(open(mh_path)) if os.path.exists(mh_path) else {}
@@ -204,7 +222,8 @@ for sec in ("fund_fix", "mirror_fix"):
     for k, e in V[sec].items():
         mh[k] = {"patS": e["now"], "was_mirror": (e["was"] if sec == "mirror_fix" else None),
                  "verdict": sec}
-json.dump(mh, open(mh_path, "w", encoding="utf-8"), indent=1, sort_keys=True)
+with open(mh_path, "w", encoding="utf-8") as _fh:
+    json.dump(mh, _fh, indent=1, sort_keys=True); _fh.write("\n")
 
 ob = load("scripts/owners_basis_heals.json")
 ob["cells"]["SURAJEST|20240630|patC"] = {
@@ -213,5 +232,5 @@ ob["cells"]["SURAJEST|20240630|patC"] = {
 ob["cells"]["DBL|20250930|patC"] = {
     "period": 214.072, "nci": 32.579, "owners": 181.49, "stored_before": 410.47,
     "note": "stored H1 con owners (410.466) as the quarter; Q2 con INDAS_1686466 owners OneD 181.493 (owners+NCI==total closes); H1 owners chain 228.97+181.493 EXACT. _reattr_owners still holds 410.47."}
-dump("scripts/owners_basis_heals.json", ob)
+dump("scripts/owners_basis_heals.json", ob, pretty=True)
 print("APPLIED %d edits + journals" % len(plan))
