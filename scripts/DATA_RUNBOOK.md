@@ -6438,3 +6438,90 @@ meantime, so this section renumbered to §77 — something a git merge would hav
 wrong. Journal dumps keep `indent=1`, the repo's `\uXXXX` escaping, the file's own trailing-newline
 habit, and **never `sort_keys`** (re-sorting rewrote 260/246 lines of `owners_basis_heals.json` for
 a two-entry addition and buried the actual change).
+
+
+---
+
+## 76. ★★★ THE BANK PDF ROUTE WAS DISABLED BY CONSTRUCTION — and the cross-basis gate that was missing  (2026-08-10)
+
+**NO ASSUMPTIONS, NO GUESSWORK** (§0). Everything below is measured on the filings named.
+
+### 76a. Why every bank cell read "no-pl-page"
+`backfill_revop_gaps` qualifies a page with `PL_PAGE` = *revenue|income from operations*, and then
+**bails out of anything matching `BANKISH`** (*interest earned | premium earned*). A bank P&L
+**never prints the former and always prints the latter** (§42), so for a bank the §58 PDF route is
+off by construction and every one of its cells is filed under a reason — `no-anchor-or-scanned`,
+or `no-pl-page` in §75e's finer diagnosis — that reads exactly like *"this filing has no
+statement"*. It is not. Measured: BANKBARODA's Mar-2019 filing (BSE ann 2019-05-22) carries a
+consolidated **Interest Earned** page, and its Jun-2019 filing carries another with Mar-2019 as a
+comparative. **Banks need different ROWS, not refusal.** Fixed in
+`fill2020_tools/deoverlay_rev_reader.py` (bank branch) and in `diag_rev2019.py`, which now counts
+those pages as bank-format instead of implying the statement is absent.
+
+Bank branch, and what each piece is for:
+* `rev` = the **Interest Earned** row (what `build_revop`'s bank branch stores as revenue).
+* Second check = the statement's own printed **`Total Income (1+2) = Interest Earned + Other
+  Income`**. BOB Mar-2019: 1,419,142 + 257,835 = 1,676,977 exactly, in lakh as declared.
+* `op`/`ebit` are **not** computed: `metrics_at` reconstructs PBET + finance costs + depreciation −
+  other income, which is meaningless for a bank (its "finance cost" IS interest expended, and the
+  RBI format prints no PBET). This reader writes revenue only anyway.
+* Labels are matched with **search, not match**: `merge_wrapped` prepends the numeric-less
+  audit-status line, so BOB's row arrives as *"Reviewed Audited Un-audited Audited 1 Interest
+  earned (a)+(b)+(c)+(d) 1972331 …"* and an anchored `^match` finds nothing on a page that plainly
+  has the row.
+* The consolidated bottom line is spread across merged lines, so the PAT row is found **by VALUE at
+  the date-fixed column** (§55c's precedent for unreadable labels), taking the **CLOSEST** match —
+  see 76c.
+
+### 76b. ★ THE CROSS-BASIS GATE — a wrong value caught before it was written
+CORPBANK 2019-03 read consolidated revenue **3,643.37, exactly its stored STANDALONE revenue**
+(con/std 1.0000). The tell: its anchored PAT −6,581.49 is our stored **standalone** PAT to the
+paisa, while consolidated is −6,574.74. These 2019 filings routinely print both statements under
+one *"Standalone and Consolidated"* heading, so the page qualifies for either basis and
+`date_column` takes the **leftmost** column carrying the target date — the standalone one. A PAT
+anchor **cannot separate two bases that sit 0.1% apart**; `close()`'s 0.4% band admits both.
+
+    GATE: the anchored PAT must match the TARGET basis STRICTLY BETTER than the other basis.
+          d(other) <= d(target)  ->  refuse: "this column is not provably <basis>"
+
+This is §44's duplicate trap and §55's *"refuse a consolidated figure that comes from the page which
+just served as the standalone control"*, finally expressed as code. Re-run with it armed: 6 cells
+land, CORPBANK 2019-03 refused. **Refusals of this kind are STICKY** — a later page must not
+overwrite an adjudication result with a vaguer message, or the ledger ends up reporting
+"rev/PAT row unparsed" for a cell whose real story is that the only readable column was the other
+basis.
+
+**Screen your own landed cells with it.** `con == std to the paisa` is the fingerprint; run it over
+anything a PAT-anchored reader produced. Retro-checked over the 21 cells this campaign had already
+pushed: no corrections needed, and the four that tripped the screen each had a documented reason —
+GUJENERGY/KTKBANK are E1-E5 identity fills (con := std is their semantics), MOIL's con revenue
+equals standalone in **all 11** stored neighbouring quarters (associate equity-accounted, con PAT
+differs by exactly the pickup), PETRONET has 5.4% PAT separation, and ATGL came from XBRL with a
+**declared** basis rather than an inferred one.
+
+### 76c. Closest-match, not first-match, when value-anchoring
+A consolidated bank statement prints two profit lines a hair apart: BOB Mar-2019 shows *Net Profit
+from Ordinary Activities after tax* **−817.49** and, after minority interest and share of
+associates, **−820.59** — the owners figure we store. `close()`'s 0.4% band admits BOTH, and
+first-match took the pre-minority one. That is the §2d total-vs-owners confusion **arriving through
+a tolerance instead of a label**. Take the closest match, always.
+
+### 76d. Landed on these rules (all fill-only, revenue slot only)
+ALBK 2019-06 4,335.53 · ALBK 2019-09 4,124.62 · ANDHRABANK 2019-09 5,030.45 · BANKBARODA 2019-03
+14,191.42 · CORPBANK 2019-09 4,009.09 · RBLBANK 2019-09 2,190.45 (con/std 1.030 against neighbours
+1.030/1.031/1.033) · NIACL 2019-12 8,406.07 (§55 insurer route). Ledger
+`scripts/deoverlay_rev_fills2019.json`; every entry carries the printed header dates, the anchor
+chain and the identity check.
+
+### 76e. A ledger verdict must be able to STOP an apply
+`insurer_con_rev.py --apply` re-applied its whole ledger and had **no notion of a held entry**, so
+the §55b con/std ratio-family verdict — the test that once rejected a LICI read which had already
+passed the PAT anchor — was advisory: the value landed anyway. `--apply` now skips entries carrying
+`held`, and the reason travels with the entry so the cell is re-adjudicated rather than re-read.
+First use: **NIACL 2019-06** implies con/std 1.0068 against NIACL's **measured** family
+1.0020–1.0061 over 21 stored quarters, so it is held — even though its PAT anchor (279.59) and its
+per-filing standalone control (6,888.04 == stored revS) are both exact.
+Same principle in the reader: land only when the anchored PAT reproduces the stored one to ~the
+paisa **or** the page's own total-income identity holds. RAMCOCEM 2019-03 (0.28% off, no Total
+Income row, and the value would sit BELOW that quarter's standalone while every other RAMCOCEM
+quarter runs con ABOVE std) is held on exactly that rule.
