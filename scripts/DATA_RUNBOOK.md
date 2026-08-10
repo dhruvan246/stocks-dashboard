@@ -3339,8 +3339,15 @@ STRUCTURED JSON, back to at least Mar-2015 (and 2014 responds too), including DE
 SUSPENDED scrips and the &-symbol companies whose NSE archive pages are 0-byte (J&KBANK, M&MFIN):
 
     https://api.bseindia.com/BseIndiaAPI/api/Corp_detailedResult_Transpose_ng/w?scrip_cd=<CODE>&qtr=<QID>
-    QID = "NN.00" where NN = 85 + 4*(FY-2015) + {Mar:0, Jun:1, Sep:2, Dec:3}   (85 = Mar-2015)
+    QID = "NN.00" where NN = 85 + 4*(Y-2015) + {Mar:0, Jun:1, Sep:2, Dec:3}   (85 = Mar-2015)
+        ★ Y is the CALENDAR year of the quarter END, not a fiscal-year label. This line used to
+          read "FY-2015", which is the same number for MARCH quarters (so every Mar example
+          worked) and a year WRONG for Jun/Sep/Dec. Measured 2026-08-10: the fiscal reading sent
+          Jun-2020 to 110.00, whose response declares `Date Begin 01-Apr-21 / Date End 30-Jun-21`.
+          Jun-2020 is 106.00. This is exactly why the period check below is not optional.
     QID = "NN.50" on the fiscal-year-END quarter = the audited ANNUAL row
+        ★ and the fiscal year is NOT always Apr-Mar — KENNAMET's ends 30 JUNE, so its annual row
+          is the JUNE .50, and asking for a March .50 correctly returns nothing.
           (Mar for Apr-Mar filers; DEC for calendar-year filers like AMBUJACEM/ACC)
 
 Facts that matter:
@@ -3353,6 +3360,11 @@ Facts that matter:
   for PAT fills where no stored anchor exists (±6%).
 * ALWAYS verify Date Begin/End span == 3 months (annual/H1 rows exist in the same id space).
 * Standalone/primary basis only. No working consolidated endpoint found (2026-08-02).
+* ★ The sibling announcements endpoint `AnnSubCategoryGetData` (used to find a scrip's result
+  filings and their attachment PDFs) returns **at most 50 rows for `pageno=1`**, silently. A
+  12-month window on a busy filer therefore TRUNCATES, so a count of "filings mentioning X in
+  that window" is a LOWER BOUND and is never evidence of absence (measured 2026-08-10, §73b).
+  Page through it, or narrow the window, before drawing any conclusion from a small count.
 * Scrip codes for dead companies: ListofScripData/w?...&status=Delisted|Suspended|(blank=all
   10,786) — scrip_id equals the NSE symbol for most; resolve the rest by name.
 
