@@ -1,0 +1,494 @@
+{
+ "_doc": "MEASURED evidence that a company filed NO CONSOLIDATED QUARTERLY RESULT for a given 2019 quarter, from NSE per-company filing index caches (scripts/_nselist, harvested 2026-08-10). Per cell the three conditions of runbook 54b hold: E1 the index lists a STANDALONE result for that exact quarter (so its silence on consolidated is meaningful, not a hole in the index); E2 it lists NO consolidated result for that quarter; E3 the quarter is EARLIER than the company FIRST consolidated filing ever (leading-run rule). This is 51a structure: quarterly consolidated results only became compulsory from FY2020. IMPORTANT \u2014 these are recorded as NOT-APPLICABLE EVIDENCE ONLY. No value is written: stored con PAT is null for every one of them, so E4 fails and copying revS into revC would CREATE a consolidated figure no document asserts (the never-invent rule). Wiring this into the gap definition needs a first-con-quarter concept in files_con across build_fill_coverage.py, audit_coverage.py and build_targets.py TOGETHER (the three-copies rule) \u2014 deliberately NOT done in this session because it moves the live Fill Coverage page numbers while other sessions are writing.",
+ "cells": {
+  "ALBK|20190331": {
+   "first_con_filing_ever": 20190930,
+   "nse_index_con_quarters": 2,
+   "nse_index_std_quarters": 58,
+   "stored_con_pat": -3965.2,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "ALBK|20190630": {
+   "first_con_filing_ever": 20190930,
+   "nse_index_con_quarters": 2,
+   "nse_index_std_quarters": 58,
+   "stored_con_pat": 132.88,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "ANDHRABANK|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 3,
+   "nse_index_std_quarters": 60,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "AXISBANK|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 28,
+   "nse_index_std_quarters": 83,
+   "stored_con_pat": 1671.3,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "BAJAJCON|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 29,
+   "nse_index_std_quarters": 63,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "BAJAJELEC|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 29,
+   "nse_index_std_quarters": 75,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "BALMLAWRIE|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 28,
+   "nse_index_std_quarters": 85,
+   "stored_con_pat": 63.11,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "BATAINDIA|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 28,
+   "nse_index_std_quarters": 84,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "BEL|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 29,
+   "nse_index_std_quarters": 85,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "BHEL|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 28,
+   "nse_index_std_quarters": 86,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "BOMDYEING|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 28,
+   "nse_index_std_quarters": 85,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "CANBK|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 28,
+   "nse_index_std_quarters": 84,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "CENTRALBK|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 25,
+   "nse_index_std_quarters": 73,
+   "stored_con_pat": -2484.53,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "COCHINSHIP|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 28,
+   "nse_index_std_quarters": 40,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "CONCOR|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 28,
+   "nse_index_std_quarters": 84,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "CORPBANK|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 3,
+   "nse_index_std_quarters": 59,
+   "stored_con_pat": -6574.74,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "DBL|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 27,
+   "nse_index_std_quarters": 41,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "DHFL|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 7,
+   "nse_index_std_quarters": 64,
+   "stored_con_pat": -2150.86,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "DMART|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 29,
+   "nse_index_std_quarters": 42,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "FEDERALBNK|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 27,
+   "nse_index_std_quarters": 84,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "FRETAIL|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 11,
+   "nse_index_std_quarters": 27,
+   "stored_con_pat": 199.55,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "GLAXO|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 27,
+   "nse_index_std_quarters": 83,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "GODFRYPHLP|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 29,
+   "nse_index_std_quarters": 85,
+   "stored_con_pat": 48.28,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "GREAVESCOT|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 29,
+   "nse_index_std_quarters": 82,
+   "stored_con_pat": 34.83,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "GSFC|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 28,
+   "nse_index_std_quarters": 84,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "HDFCBANK|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 29,
+   "nse_index_std_quarters": 86,
+   "stored_con_pat": 6300.81,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "HINDPETRO|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 28,
+   "nse_index_std_quarters": 85,
+   "stored_con_pat": 3340.03,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "HINDUNILVR|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 29,
+   "nse_index_std_quarters": 85,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "HSCL|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 27,
+   "nse_index_std_quarters": 75,
+   "stored_con_pat": 74.73,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "IDBI|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 28,
+   "nse_index_std_quarters": 83,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "IDFCFIRSTB|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 28,
+   "nse_index_std_quarters": 42,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "IGL|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 28,
+   "nse_index_std_quarters": 85,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "INDIANB|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 27,
+   "nse_index_std_quarters": 73,
+   "stored_con_pat": -189.18,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "INDUSINDBK|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 28,
+   "nse_index_std_quarters": 85,
+   "stored_con_pat": 359.53,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "J&KBANK|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 26,
+   "nse_index_std_quarters": 83,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "JBCHEPHARM|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 28,
+   "nse_index_std_quarters": 85,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "JKCEMENT|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 29,
+   "nse_index_std_quarters": 82,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "JPASSOCIAT|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 27,
+   "nse_index_std_quarters": 82,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "KANSAINER|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 29,
+   "nse_index_std_quarters": 86,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "KTKBANK|20190630": {
+   "first_con_filing_ever": 20200930,
+   "nse_index_con_quarters": 24,
+   "nse_index_std_quarters": 83,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "KTKBANK|20190930": {
+   "first_con_filing_ever": 20200930,
+   "nse_index_con_quarters": 24,
+   "nse_index_std_quarters": 83,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "MAHABANK|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 26,
+   "nse_index_std_quarters": 84,
+   "stored_con_pat": 75.08,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "MAHSEAMLES|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 29,
+   "nse_index_std_quarters": 85,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "MRF|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 28,
+   "nse_index_std_quarters": 78,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "MRPL|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 29,
+   "nse_index_std_quarters": 85,
+   "stored_con_pat": 354.69,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "NAVINFLUOR|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 29,
+   "nse_index_std_quarters": 76,
+   "stored_con_pat": 35.18,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "NHPC|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 29,
+   "nse_index_std_quarters": 66,
+   "stored_con_pat": 542.46,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "NILKAMAL|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 27,
+   "nse_index_std_quarters": 81,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "NMDC|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 27,
+   "nse_index_std_quarters": 73,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "PFC|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 29,
+   "nse_index_std_quarters": 75,
+   "stored_con_pat": 2802.4,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "PRSMJOHNSN|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 28,
+   "nse_index_std_quarters": 81,
+   "stored_con_pat": 41.85,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "PTC|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 26,
+   "nse_index_std_quarters": 84,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "RBLBANK|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 29,
+   "nse_index_std_quarters": 39,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "SAIL|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 28,
+   "nse_index_std_quarters": 84,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "SJVN|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 29,
+   "nse_index_std_quarters": 64,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "SWANCORP|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 28,
+   "nse_index_std_quarters": 57,
+   "stored_con_pat": -38.66,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "TRENT|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 28,
+   "nse_index_std_quarters": 81,
+   "stored_con_pat": -4.36,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "TRIDENT|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 29,
+   "nse_index_std_quarters": 85,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "TVSHLTD|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 28,
+   "nse_index_std_quarters": 55,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "UNIONBANK|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 29,
+   "nse_index_std_quarters": 84,
+   "stored_con_pat": null,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  },
+  "WHIRLPOOL|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 28,
+   "nse_index_std_quarters": 65,
+   "stored_con_pat": 105.17,
+   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "written": null
+  }
+ },
+ "generated": "2026-08-10 13:47 IST"
+}

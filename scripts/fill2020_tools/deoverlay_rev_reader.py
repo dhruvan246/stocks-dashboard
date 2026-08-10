@@ -170,7 +170,7 @@ def header_dates(words):
         if m:
             d, mo, y = int(m.group(1)), int(m.group(2)), int(m.group(3))
             if mo in LAST_DAY and d == LAST_DAY[mo]:
-                out.append((ws[i][2], y * 10000 + mo * 100 + d))
+                out.append((ws[i][2], y * 10000 + mo * 100 + d, (ws[i][1] + ws[i][3]) / 2))
             i += 1
             continue
         md = RE_DAY.match(tok)
@@ -199,13 +199,26 @@ def header_dates(words):
                             abs(ws[kk][0] - ws[k][0]) < 6:
                         xr = max(xr, ws[kk][2])
                         kk += 1
-                    out.append((xr, yr * 10000 + mon * 100 + day))
+                    out.append((xr, yr * 10000 + mon * 100 + day, (ws[k][1] + ws[k][3]) / 2))
                     i = kk
                     continue
         i += 1
+    # RESTRICT TO THE HEADER BAND. The document TITLE contains a date too — ABCAPITAL's audited
+    # filing is headed "…For The Quarter And Year Ended 31st March, 2019" — and that stray date
+    # sits near a figure column, so it presents itself as a second Mar-2019 column and defeats the
+    # quarter-vs-cumulative guard. Keep only the y-band carrying the MOST dates (>=2); a lone date
+    # on a line is prose (§64's `date_columns.py` note, made concrete here).
+    if not out:
+        return []
+    bands = collections.defaultdict(list)
+    for x, qe, y in out:
+        bands[round(y / 4.0)].append((x, qe))
+    best = max(bands.values(), key=len)
+    if len(best) < 2:
+        return []
     # collapse near-identical x for the same date (overlay jitter)
     dedup = []
-    for x, qe in sorted(out):
+    for x, qe in sorted(best):
         if dedup and dedup[-1][1] == qe and abs(dedup[-1][0] - x) < 8:
             dedup[-1] = (max(dedup[-1][0], x), qe)
         else:
@@ -390,6 +403,25 @@ def main():
                     rev_row, rev_rank = pick_rev_row(merged)
                     if rev_row is not None:
                         rows["rev"] = rev_row
+                    # OWNERS ROW: take the LAST match, not the first. These statements print
+                    # "Profit for the period attributable to Owners of the Company" twice (a
+                    # split/continued line); on ABCAPITAL's audited Mar-2019 page the FIRST copy
+                    # carries junk cells (-9.0, 10.0 at x 234/248) and the second the real vector
+                    # (258.40 at the Mar-2019 column). Requiring >=3 figure cells drops the junk
+                    # line outright; taking the last one is what fixes the general case.
+                    own_last = None
+                    for _, t, nums in merged:
+                        if not nums or len(nums) < 3 or not BG.ROW_PATS["own"].search(t):
+                            continue
+                        # "Other/Total COMPREHENSIVE Income attributable to Owners" matches the
+                        # same pattern and sits BELOW the profit row, so a plain last-match takes
+                        # 272.13 where the owners' PROFIT is 258.40. Comprehensive income is a
+                        # different quantity — exclude it explicitly.
+                        if BG.re.search(r"comprehensive", t, BG.re.I):
+                            continue
+                        own_last = nums
+                    if own_last is not None:
+                        rows["own"] = own_last
                     if "rev" not in rows or ("pat" not in rows and "own" not in rows):
                         why = "page found but rev/PAT row unparsed"
                         continue
@@ -450,7 +482,9 @@ def main():
                 if got:
                     break
             if not got:
-                skips[key] = why if overlaid_seen else "no-overlaid-page-in-any-filing"
+                # report the ACTUAL last failure; `overlaid_seen` only records whether the
+                # de-overlay path fired, since this reader also reads normal pages.
+                skips[key] = "%s%s" % (why, " [no overlaid page seen]" if not overlaid_seen else "")
                 continue
             if got["identity"] is not None and not got["identity"]["ok"]:
                 skips[key] = "identity-failed rev+oi %.2f vs printed total income %.2f" % (
@@ -463,10 +497,10 @@ def main():
                     continue
             fills[key] = got
             nread += 1
-            print("%-13s %d %-3s rev %-12.2f op %-11s cols %s identity %s" % (
-                sym, qe, basis, got["rev"], got["op"], got["anchor_quarters"],
-                "n/a" if got["identity"] is None else ("OK" if got["identity"]["ok"] else "FAIL")),
-                flush=True)
+            print("%-13s %d %-3s rev %-12.2f op %-11s pat@col %-9s (stored %-9s) identity %s%s" % (
+                sym, qe, basis, got["rev"], got["op"], got["pat_at_column"], got["stored_pat"],
+                "n/a" if got["identity"] is None else ("OK" if got["identity"]["ok"] else "FAIL"),
+                "  [de-overlaid]" if got["deoverlaid"] else ""), flush=True)
         if si % 10 == 0:
             print("  [%d/%d syms] read %d" % (si, len(by_sym), nread), flush=True)
             json.dump(fills, open(FILLS, "w"), indent=1, sort_keys=True)
@@ -480,13 +514,34 @@ def main():
         print("(dry run — ledgers written, data files untouched. Re-run with --apply)")
         return
 
-    applied = 0
+    # ★ THE ACCEPT RULE — two gates, and ONE of them must be essentially exact.
+    # BG.close() admits a 0.4% PAT difference, which is fine as a COLUMN FINDER but far too loose
+    # to be the only thing standing behind a written value: RAMCOCEM Mar-2019 reads 165.37 against
+    # a stored 164.91 (0.28%, passes) on a page with no Total Income row, so nothing else checks
+    # it. Land a cell only when the anchored PAT reproduces the stored one to ~the paisa, OR the
+    # page's own rev+other-income==total-income identity holds. Everything else is HELD, with the
+    # reason recorded — a near-miss anchor is a §58d result to adjudicate, not a value to write.
+    applied = held = 0
     for key, v in sorted(fills.items()):
         sym, qe_s, basis = key.split("|")
         row = (revop.get(sym) or {}).get(qe_s)
         if row is None:
             continue
-        for field in ("rev", "op", "ebit"):
+        pv, sp = v.get("pat_at_column"), v.get("stored_pat")
+        exact = (pv is not None and sp is not None
+                 and abs(pv - sp) <= max(0.05, 0.001 * abs(sp)))
+        ident_ok = bool(v.get("identity") and v["identity"].get("ok"))
+        if not (exact or ident_ok):
+            v["held"] = ("anchor %.2f vs stored %.2f (%.2f%%) and no total-income identity on the "
+                         "page — held for adjudication (§58d)"
+                         % (pv, sp, 100.0 * abs(pv - sp) / max(abs(sp), 1e-9)))
+            held += 1
+            print("HOLD %-13s %s %-3s  %s" % (sym, qe_s, basis, v["held"]))
+            continue
+        # REVENUE ONLY (slot 0/1). op and ebit are reconstructions from expense components and a
+        # wrong OPM is a visible site bug, so read_std_rev_nse.py / read_con_rev_nse.py both refuse
+        # to write them and this reader follows the same convention. They stay in the ledger.
+        for field in ("rev",):
             slot = SLOT[basis][field]
             if v.get(field) is None or row[slot] is not None:
                 continue
@@ -499,7 +554,8 @@ def main():
                 lrow[slot] = v[field]
     json.dump(revop, open(REVOP_DOCS, "w"), separators=(",", ":"))
     json.dump(ledger, open(REVOP_LEDGER, "w"), separators=(",", ":"))
-    print("APPLIED %d cell-values to sf_revop.json + revop_fundamentals.json" % applied)
+    json.dump(fills, open(FILLS, "w"), indent=1, sort_keys=True)
+    print("APPLIED %d cell-values; HELD %d for adjudication" % (applied, held))
 
 
 if __name__ == "__main__":
