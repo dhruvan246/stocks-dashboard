@@ -5870,3 +5870,9 @@ in §45's queue, AIIL Jun-23, MANINFRA Sep-20 −0.12, GLOBOFFS Mar-19 con); scr
 (JMTAUTOLTD, CLCIND, JMA, BILENERGY, SUPREMEENG had code, MAXVIL had code). Tooling for a rerun:
 the detector + detres/PDF readers live in this campaign's scratchpad pattern — detector spec is
 fully stated above; detres endpoint + QID formula in §42.
+
+**Post-heal re-scan (closure evidence).** Re-running the detector against the pushed origin/main
+with correct suppression (pat_defects is NESTED `{SYM:{QE:{}}}`; sanity_ok is a flat `SYM|QE` list —
+a suppression reader that misses either shape reports every healed cell as still-open, which is how
+the first re-scan printed a bogus 104): **128 → 31 open, 73 suppressed**, and all 31 are exactly the
+documented queue above — no unexpected residue, no heal re-firing.
