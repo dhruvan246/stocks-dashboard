@@ -1,6 +1,6 @@
 {
  "campaign": "FILL-2020 revenue track (scripts/FILL2020_CAMPAIGN.md)",
- "companies": 21,
+ "companies": 22,
  "evidence_source": "NSE api/corporates-financial-results per-company filing index",
  "fills": {
   "ATHERENERG": {
@@ -119,6 +119,14 @@
     "evidence": "NSE filing index: 79 standalone quarters, 0 consolidated, first consolidated NEVER \u2014 no consolidated result filed for this quarter",
     "opC": 436.0,
     "revC": 1478.74
+   }
+  },
+  "GUJENERGY": {
+   "20190331": {
+    "ebitC": 181.91,
+    "evidence": "NSE filing index: 44 standalone quarters, 27 consolidated, first consolidated 20190630 \u2014 no consolidated result filed for this quarter",
+    "opC": 254.14,
+    "revC": 1963.26
    }
   },
   "GULFOILLUB": {
@@ -377,6 +385,11 @@
    }
   },
   "KTKBANK": {
+   "20191231": {
+    "evidence": "NSE filing index: 83 standalone quarters, 24 consolidated, first consolidated 20200930 \u2014 no consolidated result filed for this quarter",
+    "opC": 501.79,
+    "revC": 1621.55
+   },
    "20200331": {
     "evidence": "NSE filing index: 77 standalone quarters, 18 consolidated, first consolidated 20200930 \u2014 no consolidated result filed for this quarter",
     "opC": 391.54,
@@ -837,8 +850,8 @@
  "generated": "2026-08-06",
  "held_null": {},
  "last_run_companies": 2,
- "last_run_values": 36,
+ "last_run_values": 5,
  "method": "consolidated = standalone where the exchange's filing index shows NO consolidated result was filed for that quarter (SEBI LODR Reg 33 identity)",
  "user_gate": "approved 2026-08-06 for the 91 non-bank values; banks approved the same day when the user chose 'include banks everywhere'",
- "values": 373
+ "values": 378
 }
