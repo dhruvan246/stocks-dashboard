@@ -62,9 +62,10 @@ def main():
         nc = load("scripts/no_con_filing.json")
         never = set(nc.get("never_filed_con", []))
         stopped = nc.get("stopped_filing_con", {})
+        started = nc.get("started_filing_con", {})
         ceased = nc.get("ceased_filing", {})
     except Exception:
-        never, stopped, ceased = set(), {}, {}
+        never, stopped, started, ceased = set(), {}, {}, {}
     # POSITIVE-EVIDENCE consolidated-filer set. Replaces the trailing-4-quarter divergence test,
     # which was circular: it read divergence from OUR OWN stored con PAT, so a company whose con
     # data was merely MISSING produced no signal and got recorded as "does not file consolidated".
@@ -119,6 +120,15 @@ def main():
             return False
         st = stopped.get(sym)
         if st and qe >= st:
+            return False
+        # SYMMETRIC COUNTERPART of the stop date: quarters BEFORE a company began filing
+        # consolidated are not-applicable, not gaps. IOB filed standalone-only until Mar-2022
+        # (runbook §51c: all 8 quarters Mar-2020..Dec-2021 checked against BSE announcements with
+        # a glyph-tolerant detector, positive-controlled at Mar-2022) -- its Jun/Sep/Dec-2021 con
+        # cells were the last three "open" PAT cells in the 2020+ window and were never fillable.
+        # POSITIVE evidence only; never inferred from our own null cells (measured 63% wrong).
+        sc = started.get(sym)
+        if sc and qe < sc:
             return False
         ev = EV.get(sym)
         if ev is not None:

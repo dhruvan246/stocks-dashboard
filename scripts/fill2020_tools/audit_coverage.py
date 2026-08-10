@@ -85,10 +85,11 @@ def quarter_ends(first=20150331, last=20260630):
 try:
     _nc = load("scripts/no_con_filing.json")
     NO_CON = _nc.get("stopped_filing_con", {})
+    STARTED_CON = _nc.get("started_filing_con", {})   # con cells BEFORE this quarter are n/a
     NEVER_CON = set(_nc.get("never_filed_con", []))
     CEASED = _nc.get("ceased_filing", {})     # entity gone: NO metric is a gap from this quarter
 except Exception:
-    NO_CON, NEVER_CON, CEASED = {}, set(), {}
+    NO_CON, STARTED_CON, NEVER_CON, CEASED = {}, {}, set(), {}
 
 
 def ceased(sym, qe):
@@ -145,6 +146,11 @@ def files_con(sym, qe):
         return False
     start = NO_CON.get(sym)
     if start and qe >= start:
+        return False
+    # Symmetric counterpart: quarters BEFORE a company began consolidating are n/a, not gaps
+    # (IOB std-only until Mar-2022, runbook §51c). Positive evidence only.
+    began = STARTED_CON.get(sym)
+    if began and qe < began:
         return False
     ev = EV.get(sym)
     if ev is not None:

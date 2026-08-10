@@ -1,5 +1,5 @@
 {
- "_doc": "Companies that do NOT file consolidated results. Their consolidated cells are NOT data gaps -- there is nothing to fill -- so coverage audits must exclude them from gap counts. Two classes: never_filed_con (no consolidated filing at any point) and stopped_filing_con (filed consolidated, then stopped -- excluded from that quarter onward). Evidence for never_filed_con: scripts/xbrl_nature.json shows >=4 cached filings and ZERO NatureOfReportStandaloneConsolidated=Consolidated declarations, AND our stored con never diverges from std. CUB and ENRIN added on the user's primary-source check (screener.in, 2026-08-06): CUB carries a single 2022-03 divergence and ENRIN too few cached filings, so the automated test could not clear them. Built 2026-08-06 after the is_con_basis fix.",
+ "_doc": "Companies that do NOT file consolidated results. Their consolidated cells are NOT data gaps -- there is nothing to fill -- so coverage audits must exclude them from gap counts. Two classes: never_filed_con (no consolidated filing at any point) and stopped_filing_con (filed consolidated, then stopped -- excluded from that quarter onward). Evidence for never_filed_con: scripts/xbrl_nature.json shows >=4 cached filings and ZERO NatureOfReportStandaloneConsolidated=Consolidated declarations, AND our stored con never diverges from std. CUB and ENRIN added on the user's primary-source check (screener.in, 2026-08-06): CUB carries a single 2022-03 divergence and ENRIN too few cached filings, so the automated test could not clear them. Built 2026-08-06 after the is_con_basis fix.  started_filing_con {sym: first consolidated quarter-end}: quarters BEFORE this are not-applicable (the company had not begun filing consolidated). Positive evidence only \u2014 an exchange filing-index leading run or a documented per-quarter check; NEVER inferred from our own null cells (that inference was measured 63% wrong).",
  "_evidence_notes": {
   "ALIVUS": "user check on screener.in 2026-08-06: never filed consolidated. Missed by the first automated pass because it requires >=4 cached XBRL filings and ALIVUS has 1; its own stored data (25 quarters holding both bases, ZERO divergent) was always sufficient evidence.",
   "ALKYLAMINE": "user check 2026-08-06: last consolidated filing Mar-2020, none since.",
@@ -7,6 +7,7 @@
   "CUB": "user primary-source check on screener.in, 2026-08-06: never filed consolidated",
   "ENRIN": "user primary-source check on screener.in, 2026-08-06: never filed consolidated",
   "FACT": "user check on screener.in 2026-08-06: last consolidated filing Dec-2025.",
+  "IOB__started_filing_con": "Indian Overseas Bank filed STANDALONE-ONLY quarterly results until Dec-2021; its first consolidated filing is 2022-03-31 (stored con PAT 551.78 vs std 552.38, and unbroken con every quarter after). Runbook \u00a751c closed this by checking all 8 quarters Mar-2020..Dec-2021 (plus Dec-2019) against BSE announcements with a glyph-corruption-tolerant detector, POSITIVE-CONTROLLED against Mar-2022 where the consolidated statement is known to exist. Consolidated quarterlies became compulsory for companies with subsidiaries from FY2020 (\u00a751a); IOB began complying at Mar-2022. So con cells before 20220331 are NOT-APPLICABLE, not gaps. Symmetric counterpart to stopped_filing_con.",
   "JUSTDIAL": "Q1FY26 filing note 6: \"The Company does not have any subsidiary or associate company and consequently, the Company is not required to prepare consolidated financial results as per applicable laws and regulations.\" Primary evidence, 2026-08-06.",
   "JYOTHYLAB": "user check on screener.in 2026-08-06: last consolidated filing Mar-2025. Its own Q1FY26 filing note says the company \"had then published consolidated segment results\" -- past tense.",
   "SBFC": "user primary-source check 2026-08-06: last consolidated filing Mar-2025, none for the four quarters since. Matches stored data exactly -- patC diverges through 20250331 (93.94 vs std 94.39) then is identical from 20250630.",
@@ -782,6 +783,9 @@
   "ZFSTEERING",
   "ZODIAC"
  ],
+ "started_filing_con": {
+  "IOB": 20220331
+ },
  "stopped_filing_con": {
   "3MINDIA": 20240930,
   "3PLAND": 20220930,

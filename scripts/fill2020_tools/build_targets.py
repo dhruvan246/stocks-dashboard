@@ -65,6 +65,7 @@ def main():
     nc = load("scripts/no_con_filing.json")
     never = set(nc.get("never_filed_con", []))
     stopped = nc.get("stopped_filing_con", {})
+    started = nc.get("started_filing_con", {})   # con cells BEFORE this quarter are n/a
     ceased = nc.get("ceased_filing", {})
     # Positive-evidence consolidated-filer set -- replaces the circular trailing-4-quarter
     # divergence test that excluded ONGC, ITC, HDFCBANK and ~4,000 other pre-2020 cells as
@@ -114,6 +115,8 @@ def main():
                 if field == "revC":
                     if k in never or (stopped.get(k) and q >= stopped[k]):
                         continue
+                    if started.get(k) and q < started[k]:
+                        continue        # before the company began consolidating — n/a, not a gap
                     if ceased.get(k) and q >= ceased[k]:
                         continue
                     ev = EV.get(k)
