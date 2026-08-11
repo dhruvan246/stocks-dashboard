@@ -1985,8 +1985,23 @@ along in their **`navigateurl`** field, which nobody followed:
   2002 **74.4%** · 2003-05 78-84% · 2006-09 80-88% · 2010-14 **89-93%** · 2015 81.5% · 2016+ unchanged.
   **The whole pre-2010 era went 0% → 74-88%** — a wall three separate audits had recorded as sourceless.
 - **1,963 refusals logged to `scripts/_shp_aspx_rejects.json`** (not-found-via:bseaspx, §57 rule 2 —
-  OPEN, not closed): recon 790 (concentrated at **Jun-2006, the format-transition quarter**, which
-  refuses under BOTH flags), no-fii 580, absent 564, no-prom 26, zero-vs-neighbour 3.
+  OPEN, not closed): recon 790, no-fii 580, absent 564, no-prom 26, zero-vs-neighbour 3.
+  ⚠️ My first read said recon was "mostly Jun-2006" — WRONG, an artifact of the log's 8-per-class
+  print cap sampling the alphabetical head. The journal says recon clustered at **2014-12→2015-09**
+  (79+66+59+42) and no-fii at 2006-07. Diagnose reject classes from the JOURNAL, never the capped log.
+- **✅ ROUND 2 (same evening, cache-only, +970 net cells → coverage 93.8%): both clusters were ONE
+  parser gap each.** (a) recon 2014-15 = **SEBI's FPI migration** — the institutions block carries
+  "Foreign Portfolio Invest*" as its own row or itemised under "Any Others (Specify)" (ADANIPORTS
+  Sep-15: Any-Others 9.29 == FPI 9.29, count ONCE); FPI is foreign → fii. An anonymous Any-Others
+  row folds into dii ONLY when reconciliation needs it, keeping the ~22k stored MC-family cells and
+  these on one dii convention (mf+banks+ins). 22 already-applied cells now read ≤0.95pp higher fii
+  (small FPI rows previously inside the 1pp tolerance) — fill-only keeps the stored value, drift
+  journalled here. (b) no-fii 2006-07 = **early Clause-35 pages omit empty rows** (AGRODUTCH Sep-06:
+  block = MF+banks only, subtotal proves fii) — residual-as-fii accepted at |r|≤0.15 outright, r>0.15
+  only with a stored neighbour within 5pp, negative refused. **The zero-guard then caught 81 derived
+  zeros beside neighbours holding >1%** — pages whose own subtotal is missing the foreign block (the
+  Dec-2015 defect appearing sporadically earlier). Rejects now 1,055: absent 564, recon 364,
+  zero-vs-neighbour 84, no-prom 26, no-fii 17.
 - **⚠️ A PASS THAT CHANGES ONLY PARSING MUST BE `--cache-only`.** The first recovery re-parse re-ran
   the fetcher normally: >75 min elapsed for **45 s of CPU**. Every refusal was retrying the alternate
   Flag whose page does not exist, and `fetch_page`'s 3-attempt backoff spends ~18 s per dead cell.

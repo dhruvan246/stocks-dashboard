@@ -178,6 +178,8 @@ ROW_LABELS = {   # ported verbatim from fetch_shp_wayback_mc (same Clause-35 tab
     "qfi": r"Qualified Foreign Investor",
     "vcf": r"^Venture Capital Funds",
     "fvci": r"Foreign Venture Capital Investors",
+    "fpi": r"Foreign Portfolio Invest",          # 2014-15: SEBI's FPI category, printed either as
+    "anyoth": r"^Any Others?\s*\(Specify\)|^Any Others?$",   # its own row or under "Any Others"
     "pubtot": r"Total Public shareholding\s*\(B\)",
 }
 
@@ -237,7 +239,7 @@ def parse_new(html):
         if blk_lo is not None: break
     if blk_lo is not None:
         hi = blk_hi if blk_hi is not None else min(blk_lo + 160, len(cells))
-        for slot in ("mf", "banks", "govt", "ins", "fii", "qfi", "vcf", "fvci"):
+        for slot in ("mf", "banks", "govt", "ins", "fii", "qfi", "vcf", "fvci", "fpi", "anyoth"):
             p = find_row(ROW_LABELS[slot], blk_lo, hi)
             if p: out[slot] = p
         if blk_hi is not None:
@@ -344,9 +346,18 @@ def _attempt(fr, dirp, neigh, used):
             p = cols.get(slot)
             if not p: return None
             return p[1] if p[1] is not None else p[0]     # %of(A+B+C), stored convention
+        # 2014-15 FPI rows: "Foreign Portfolio Invest*" appears as its own row or itemised under
+        # "Any Others (Specify)" (ADANIPORTS Sep-15: Any-Others 9.29 == FPI 9.29 — same block,
+        # count ONCE). FPI is foreign -> fii. An Any-Others row with NO FPI itemisation is
+        # anonymous other-institutions -> dii (the OLD_OTHER_TO_DII calibration).
+        fpi, anyoth = val("fpi"), val("anyoth")
+        fpi_add = oth_add = 0.0
+        if anyoth is not None and fpi is not None:
+            if abs(anyoth - fpi) <= 0.02: fpi_add = anyoth
+            else: fpi_add = fpi; oth_add = max(0.0, anyoth - fpi)
+        elif fpi is not None: fpi_add = fpi
+        elif anyoth is not None: oth_add = anyoth
         fii = val("fii")
-        if fii is None:
-            return ("no-fii", None, "fii row absent/dashes")
         prom = val("prom")
         if prom is None:
             pt = cols.get("pubtot")
@@ -356,9 +367,44 @@ def _attempt(fr, dirp, neigh, used):
             else:
                 return ("no-prom", None, "no promoter total")
         mf = val("mf") or 0.0
-        dii = mf + (val("banks") or 0.0) + (val("ins") or 0.0)
+        # family convention (Wayback-MC ledger): dii = mf + banks + ins. An anonymous Any-Others
+        # row folds in ONLY when reconciliation needs it — keeps the ~22k stored 2010-16 cells and
+        # these on one convention, while still closing the pages where the row is material.
+        dii_base = round(mf + (val("banks") or 0.0) + (val("ins") or 0.0), 2)
+        dii = dii_base
         inst = val("inst_sub")
-        if inst is not None:
+        derived = False
+        if fii is not None:
+            fii = round(fii + fpi_add, 2)
+            if inst is not None and oth_add:
+                gap0 = abs(fii + dii_base + (val("govt") or 0.0) + (val("qfi") or 0.0) - inst)
+                gap1 = abs(fii + dii_base + oth_add + (val("govt") or 0.0) + (val("qfi") or 0.0) - inst)
+                if gap0 > 1.0 and gap1 <= 1.0:
+                    dii = round(dii_base + oth_add, 2)
+        else:
+            # early Clause-35 pages omit empty rows (AGRODUTCH Sep-06: block = MF+banks only).
+            # The block's own subtotal proves the foreign residual — same arithmetic the seam
+            # derivation used, gated: ~0 accepted outright, positive only with a stored
+            # neighbour within 5pp, negative refused.
+            if inst is None:
+                return ("no-fii", None, "fii row absent, no subtotal")
+            # deriving: the residual cannot tell foreign from anonymous-other, so fold Any-Others
+            # into dii FIRST (the calibrated direction) and let the remainder be foreign.
+            if oth_add:
+                dii = round(dii_base + oth_add, 2)
+            r = inst - (dii + (val("govt") or 0.0) + (val("qfi") or 0.0) + fpi_add)
+            if -0.15 <= r <= 0.15:
+                fii = round(max(0.0, r) + fpi_add, 2); derived = True
+            elif r > 0.15:
+                nb = [neigh[k] for k in ((sym, _adj(qe, -1)), (sym, _adj(qe, 1)),
+                                         (sym, _adj(qe, -2)), (sym, _adj(qe, 2))) if neigh and k in neigh]
+                if nb and min(abs(r + fpi_add - v) for v in nb) <= 5.0:
+                    fii = round(r + fpi_add, 2); derived = True
+                else:
+                    return ("no-fii", None, "residual %.2f unanchored" % r)
+            else:
+                return ("recon", None, "negative residual %.2f" % r)
+        if inst is not None and not derived:
             if abs(fii + dii + (val("govt") or 0.0) + (val("qfi") or 0.0) - inst) > 1.0:
                 return ("recon", None, "inst recon fail")
         ins = round(val("ins") or 0.0, 2)
