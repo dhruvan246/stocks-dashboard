@@ -7837,8 +7837,12 @@ company's history split across two keys.
    gap <=78d, weekend residue excluded from the old end). Verified: no live fundamentals rows under
    any old key, none in F&O history, only AKZOINDIA/GET&D/MAHINDCIE in index membership history
    (first two already in build_membership_v2 supplement; MAHINDCIE added).
-3. **insert_weekend_sessions is now rename-aware** (old->new via MANUAL_MERGE): 233 ledger rows
-   keyed by merged-away tickers re-home onto the survivor series next run instead of being lost.
+3. **insert_weekend_sessions is now rename-aware** (old->new via MANUAL_MERGE). MEASURED CAVEAT
+   (first post-merge run, 2026-08-11): the day-level short-circuit (probe symbols already carry the
+   bar) skips covered session days before row iteration, so the 233 old-key ledger rows re-home only
+   when a session day is genuinely reapplied (fresh ledger day / from-scratch rebuild) — in nightly
+   steady state those ~10 special-session bars per merged symbol stay absent from the survivor.
+   Known, accepted loss; the mapping makes any future reapply land them correctly.
 
 ### 86d. What is deliberately NOT done (queue)
 - **MUNJALAUTO -> MUNJALAU: do NOT MANUAL_MERGE.** The 2006 event is a court scheme (2 old shares
