@@ -8308,8 +8308,17 @@ that was never itself mis-attributed.
 4. **dv_fill_hist.json.gz: 1,192 DVL cells ≥2015-01-20 PRUNED** — they were §88b's re-key to the
    bin's then-DTIL volumes; after surgery they'd be wrong-company again and fill-only would
    re-inject them wherever a repaired bar has dv=0. Surgery bars carry dv inline instead.
-   **§88b's queued 601-cell live dv overwrite: SUPERSEDED — all 602 queue rows were DVL** (the
-   queue file ~/.cache/mto_sweep/wrong_cells.json must NOT be replayed).
+   **§88b's 601-cell dv overwrite leg: it SHIPPED (fbefe9cb, dv_overwrite.json) while §89 was
+   being built, and §89 then RETIRED it** — all 602 cells were DVL, the surgery replaces those
+   bars wholesale (DPL volume + DPL dv), so the leg's `v == vol` anchor can never match again;
+   its cells were emptied (note in `_meta.superseded`) to silence a permanently-firing "left
+   alone" tripwire. Same session-race lesson as §38: two heals aimed at one defect from
+   different layers — the LOWER layer (bar replacement) wins and must retire the upper one.
+4b. **The surgery ledger stores turnover in ₹ LACS** (the bin-wide unit since §88a's
+   normalization, which landed the same evening). This is load-bearing: `normalize_turnover_
+   units` skips lacs-median days, and post-normalization EVERY day is one — a rupee-unit bar
+   spliced in later is invisible to it forever. Any future ledger that inserts bars into the
+   bin must emit lacs itself (classify with §88a's own r = t/(c·v) test on raw values).
 5. **crash_raw_prices.json seeded** with DVL 20100714/20100715 (169.95/144.20, the era's
    old-DTIL closes): self_heal's raw_close for the 2010-07-15 noadjust event resolved via the
    rename-map alias that step 3 removed; the committed fallback keeps full-window heals (§87)

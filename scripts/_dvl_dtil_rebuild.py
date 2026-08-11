@@ -105,7 +105,16 @@ def build():
             dvx = round(dlv, 2) if dlv else 0
             if not dvx:
                 dvx = mto_pct(ymd, sym, int(v))
-            bar = [ymd, round(c, 2), round(t, 1), hi, lo_, opx, int(v), dvx, vwx]
+            # turnover in ₹ LACS — the bin-wide unit since §88a's normalization (2026-08-11).
+            # Old-format files carry RUPEES; classify with §88a's own r = t/(c*v) test on RAW
+            # values (rupee bar r ~ 1, lacs bar r ~ 1e-5, empty band between) and convert with
+            # the same rounding normalize_turnover_units uses. Cannot rely on that pass to fix
+            # spliced bars: it skips lacs-median days, and post-normalization every day is one.
+            tv = round(t, 1)
+            if v > 0 and c > 0 and tv / (c * v) > 0.01:
+                nt = tv / 1e5
+                tv = round(nt, 4) if nt < 100 else round(nt, 1)
+            bar = [ymd, round(c, 2), tv, hi, lo_, opx, int(v), dvx, vwx]
             if tgt == "DTIL" and ymd < BONUS_EX:
                 for i in (1, 3, 4, 5, 8): bar[i] = round(bar[i] * BONUS_F, 2)
             ser[tgt].append(bar)
