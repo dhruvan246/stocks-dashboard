@@ -2048,7 +2048,27 @@ along in their **`navigateurl`** field, which nobody followed:
   - **STILL OPEN: 50 symbols / ~590 cells MC's search can't surface** (GESHIPPING, BILT,
     HINDMOTOR, L&T-as-era-symbol, the ESSAR/JINDAL families…) — need per-symbol ISIN/era-master
     evidence, journalled in the rejects file's unresolved set, NOT closed. Whole-population reject
-    journal now 1,269 cells.
+    journal now 1,269 cells. **Measured-empty for these 50 (don't re-probe): MC autosuggest ×3
+    modes, `fill2020_tools/_mc_codes.json` (`None` — that campaign hit the same wall), the Wayback
+    census `map.json` (`None`), NSE's symbolchange archive (the nsearchives "full" file IS the same
+    1,054-row recent window), and era bhavcopies (2003 measured: NO ISIN column).**
+- **✅ ROUND 4 — THE SEAM, from BSE's own pages (2026-08-11 late night): +159 cells, 96.0%.
+  Dec-2015 72.1% → 98.4%; Mar-2016 79.4% → 85.0%.** `scripts/seam_derive.py` inverts the
+  institutions identity on the aspx q88/89 pages (fii = inst_sub − mf−banks−ins−govt−vcf, never
+  subtracting foreign rows, no clamp), ledger **`shp_fill_seam_aspx.json.gz`** — a SEPARATE file,
+  7th in `BSE_HIST_LEDGERS`, so no aspx-harvest rebuild can clobber it (stage-order trap).
+  `_shp_seam_adjudicated.json` cells skipped (BBTC's drop stays deliberate).
+  - **The two seam quarters are NOT equally broken.** Dec-15 batch-derives at **0.81pp median vs
+    stored Sep-15** (n=127 — matches the MC route's 0.87pp; run-gate passed, 139 cells written).
+    Mar-16 FAILED the 3.0pp run-gate at **5.73pp** — so q89 cells were written ONLY with per-cell
+    corroboration (|derived − stored Jun-16| ≤ 3.0pp; 20 written, 69 held).
+  - **★★ NEW DEFECT CLASS EXPOSED IN STORED DATA: Jun-2016 fii=0.0 fabrications.** 15 of the q89
+    failures are the ANCHOR's fault, not the derivation's — LICHSGFIN derived 27.53 vs stored
+    Jun-16 **0.0** (LIC Housing with zero foreign holding in 2016 is absurd; KSCL, SUPREMEIND
+    same shape). These stored cells came from the 2016-19 old-XBRL ledger. Journalled to
+    **`scripts/_shp_seam_suspect_jun2016_zeros.json`** for their own audit — do NOT trust a
+    stored fii=0.0 at Jun-2016 as an anchor, and the eventual heal likely un-blocks most of the
+    69 held q89 cells too.
 - **⚠️ A PASS THAT CHANGES ONLY PARSING MUST BE `--cache-only`.** The first recovery re-parse re-ran
   the fetcher normally: >75 min elapsed for **45 s of CPU**. Every refusal was retrying the alternate
   Flag whose page does not exist, and `fetch_page`'s 3-attempt backoff spends ~18 s per dead cell.

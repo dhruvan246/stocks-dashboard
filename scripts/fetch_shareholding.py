@@ -219,7 +219,8 @@ BSE_HIST_LEDGERS = [os.path.join(HERE, "shp_fill_thirdparty.json.gz"),
                     os.path.join(HERE, "shp_fill_n500_gaps.json.gz"),
                     os.path.join(HERE, "shp_fill_hist_2016_2019.json.gz"),
                     os.path.join(HERE, "shp_fill_hist_2010_2016.json.gz"),
-                    os.path.join(HERE, "shp_fill_bse_aspx.json.gz")]
+                    os.path.join(HERE, "shp_fill_bse_aspx.json.gz"),
+                    os.path.join(HERE, "shp_fill_seam_aspx.json.gz")]
 def apply_bse_hist_ledger(h):
     n_total = 0
     for path in BSE_HIST_LEDGERS:
