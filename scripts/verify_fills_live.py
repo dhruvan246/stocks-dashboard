@@ -81,8 +81,24 @@ BASIS_KEYED = [
     # 52 cells (HDFCLIFE/ICICIPRULI/NIACL/GICRE) sat in this ledger with nothing re-checking them
     # after a refresh, the same gap the named_rev_cell_fills revC note above describes.
     ("insurer_con_rev_fills.json",   "revop", "rev"),
+    # Moneycontrol quarterly (runbook §81). The 2018 campaign's single biggest route — 184 cells,
+    # each gated on MC's own series reproducing >=3 of our stored quarters on the SAME basis with
+    # ZERO disagreements. Registered at creation time rather than after the fact.
+    ("mc_quarterly_fills.json",        "revop", "rev"),
+    # screener FY-annual derivations (§60d). UNGUARDED until 2026-08-11 despite holding 213 cells
+    # across three campaigns — the same gap the named_rev_cell_fills revC note above describes.
+    ("annual_derived_fills.json",      "revop", "revC"),
+    # hand-read 2018 cells (§45/§57/§58): HINDALCO's two, one of them a RETRACTION of a value this
+    # campaign itself wrote off a digit-fused text layer (§83), so a clobber here would restore a
+    # number a filing has already refuted.
+    ("named_rev_cell_fills_2018.json", "revop", "revC"),
 ]
-BASIS_SLOT = {"std": 0, "con": 1}
+# "revS"/"revC" are accepted as basis tokens alongside "std"/"con": several ledgers key their third
+# part by FIELD rather than by BASIS, and the loop below silently `continue`s on any token it cannot
+# map — so annual_derived_fills.json (213 cells) and named_rev_cell_fills_2018.json would have LOOKED
+# registered while checking nothing at all. A monitor that silently monitors nothing is worse than
+# no monitor, because it reports "MISSING 0".
+BASIS_SLOT = {"std": 0, "con": 1, "revS": 0, "revC": 1}
 # NESTED ledgers: {SYM: {QE: {...}}} rather than the flat "SYM|QE" shape above. The defect ledgers
 # carry CORRECTIONS (a value we proved wrong and replaced), so a clobber there does not merely lose
 # a backfill -- it silently restores a number a filing already refuted. The basis is read per entry
