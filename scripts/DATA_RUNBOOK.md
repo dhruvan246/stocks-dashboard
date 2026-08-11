@@ -8492,3 +8492,88 @@ still a CLAIM; the raw tape + an independent recorder arbitrate** — same-famil
 same-day actions are exactly where feeds swap symbols. Full-window self-heal cannot re-break the
 repaired series either way: the reconciliation guard (raw_ratio/off outside [0.75,1.30]) rejects
 the factor on DVL's tape, and converges it on DTIL's.
+
+---
+
+## 90. ★★★ GATE E — filling a quarter that sits OUTSIDE our own series  (2026-08-12, pre-2015 std PAT)
+
+The 2002-2014 standalone-PAT hole is 2,598 cells over 512 companies (point-in-time N500). §81's
+aggregator gate cannot decide any of them, and the reason is structural rather than a tolerance
+that needs loosening.
+
+### 90a. Why gate A is unusable in this era
+Gate A wants ≥2 reproduced anchors within ±6 quarters of the target. Before 2015 our stored series
+usually **begins after the gap ends**, so the anchors are not merely distant, they are on the wrong
+side of the hole. KSB is the shape of it: MC's standalone table reproduces **74 of our stored
+quarters**, every anchor 2008 or later, every open cell 2005-2007. Gate A prints
+"0 anchors inside ±6q" and refuses a series whose identity is not in doubt.
+
+### 90b. GATE E — `scripts/agg_tools/agg_era_gate.py`
+Keeps the identity requirement, drops the locality it cannot satisfy, replaces it with a test that
+reaches the target directly:
+* **E1** ≥8 anchors globally, ≤2 disagreements and ≤3%, and **none within ±6q of the target**.
+* **E2** the site's own four quarters == the site's own annual, at the target FY **and both
+  neighbours**. ⚠️ **The FY-end month is read LOCALLY**, from the annual keys nearest the target —
+  `agg_fy_check.fy_end_month` takes a whole-table majority and KSB filed to March until 2001 and to
+  December from 2002, so a global answer is wrong for one era or the other and silently turns the
+  identity into a NO-TEST. MRF closes in September, KENNAMET in June, RAIN in December.
+* **E3** the target and both immediate neighbour periods must exist in the site's table.
+* **E4/E5** B/C/D from agg_gate unchanged; precision and nearest-anchor distance journalled.
+
+Applier: `agg_tools/apply_agg_pat_fills.py` (fill-only, blast-radius diff, idempotent), ledger
+`scripts/agg_pat_cell_fills.json`, registered in `verify_fills_live.py` at creation time.
+**It creates rows**, unlike `apply_agg_fills.py` — in sf_revop a missing row means out-of-frame, but
+in sf_fundamentals the pre-2015 era IS an assembled frame (21,788 rows, against 968 in the
+scripts/fundamentals.json twin), so a 2004 quarter with no row is a hole.
+
+### 90c. THE ERA CONTROL — measure the route in the era you are filling, not the one it was proven in
+`agg_tools/era_control.py`. Every pre-2015 quarter where our npStd and MC's PAT both exist is a
+free hold-out test. **Across all symbols MC disagrees on 5.2% of 13,170 cells — and worst exactly
+where the holes are: 13.1% in 2002, 10.7% 2003, 9.1% 2004, decaying to ~0.6% by 2013-14.**
+Restricted to the 105 symbols GATE E passed: **32 of 3,766 (0.85%), and zero in 2003-2004.**
+★ A route's accuracy is a property of the ERA as much as of the site. §81 measured this route in
+2019-2026 and it is ~10x less reliable in 2002-2004. The gap between 5.2% and 0.85% is the anchor
+rule doing its job, and it is why E1 was not loosened further.
+
+### 90d. Adjudicating the disagreement instead of obeying it — and the trap inside that
+1,010 of 1,613 refusals were "the site disagrees with one of OUR cells within ±6q". A disagreement
+names two cells and indicts neither, so `agg_era_adjudicate.py` puts each one to the §45 identity:
+the site's FY closes AND swapping our value in breaks it ⇒ **OURS-IS-THE-OUTLIER**, and the veto is
+lifted (the cell is reported, never patched — §58d). Verdicts: 491 ours, 398 site-incoherent,
+367 undecided.
+
+⚠️ **Two caps had to be added, and they cut the yield from 254 cells to 8.**
+* **ANNUAL INDEPENDENCE.** "The site's four quarters sum to its own annual" is worthless if the
+  site COMPUTED that annual from those quarters. GLAXO 2011: MC prints **0.46** for Mar-2011
+  between quarters of 115.70 and 147.54 (we store 186.33), and its CY2011 annual is 430.60 =
+  0.46+147.54+145.86+136.74 **exactly** — the annual inherited the bad quarter and "closed"
+  perfectly. So a company only gets an FY verdict if there is ≥1 FY in its own history where the
+  annual DIFFERS from its quarters. **122 of 466 companies fail that test.**
+* **EXCUSAL MUST STAY RARE** (≤2 per symbol, ≤2% of the overlap). Each excusal asserts our cell is
+  the broken one; a series needing many of them is not meeting many of our defects, it DIFFERS from
+  ours — and excusing them all launders it through E1, which counts disagreements. NOVARTIND wanted
+  12, HUHTAMAKI 5.
+★ **A rule that lifts a veto needs a tighter cap than the veto it lifts.**
+
+### 90e. What it landed, and what the residue actually is
+**444 cells** (2002 51.2%→57.8%, 2003 57.9%→64.5%, 2004 45.4%→55.5% of point-in-time N500), 105
+companies, median 73 anchors, median worst-anchor error 0.010. Plus **175 suspect cells of ours**
+in `scripts/_era_suspect_cells.json` — BHARTIARTL Mar-2005 stored **−13.96** where MC's own FY
+closes at 1,210.68 against its 1,210.69 annual, TATAELXSI Jun-2003 stored 189.20 against 1.89 (100x).
+
+The residue is **reach**, not filing absence, and the difference matters (§0, never infer absence):
+of the 363 cells where MC has the company but not the quarter, **278 are simply older than MC's
+table starts** for that company, 70 sit in a hole in its table, and only 2 look like a half-yearly
+filer. 283 more cells are on 46 companies MC could not resolve at all.
+
+### 90f. A bug that manufactured absence, in the shared reader
+`agg_sources.mc_id` interpolated the symbol into the query string unencoded, so `query=M&M` reached
+the server as `query=M` and the exact-symbol gate never matched — M&M and J&KBANK both reported
+"no exact symbol match in autosuggest", which reads exactly like a company MC does not carry.
+Encoded, they resolve to `MM` and `JKB`. Fixed, with the suggest cache key bumped so the bodies
+fetched through the broken URL are not replayed. ★ **When a resolver reports absence, re-read the
+URL it actually sent** (memory: feedback-url-encode-symbol-queries).
+`mc_era.py` adds an ISIN rung for names that changed since the era — MC's autosuggest answers an
+ISIN query exactly (INE168A01041 → Jammu and Kashmir Bank / JKB), and ISIN survives renames where
+the symbol does not. Gated on ISIN equality, never on name similarity.
+

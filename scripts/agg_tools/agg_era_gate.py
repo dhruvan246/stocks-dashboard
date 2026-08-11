@@ -111,8 +111,15 @@ def site_fy(q, ann, cand, fyend):
             {"fy_end": fyend, "sum4Q": s, "annual": target, "diff": round(s - target, 2)})
 
 
-def check(sym, qe, field="patS", site="mc", ident=None):
-    """-> (value|None, report). Never writes."""
+def check(sym, qe, field="patS", site="mc", ident=None, excused=None):
+    """-> (value|None, report). Never writes.
+
+    `excused` is a set of quarters whose disagreement has been ADJUDICATED as ours, by the FY
+    quarter-sum identity in agg_era_adjudicate.py. They are dropped from the comparison entirely --
+    not counted as agreement, not counted as disagreement -- so an excused cell can never inflate
+    the anchor count. Passing None keeps the strict first-pass behaviour.
+    """
+    excused = excused or set()
     con = field.endswith("C")
     rep = {"sym": sym, "qe": qe, "field": field, "site": site, "gate": "E", "notes": []}
     if ident is not None:
@@ -134,7 +141,7 @@ def check(sym, qe, field="patS", site="mc", ident=None):
 
     for cand in G.FIELD_CANDS[field]:
         hits = [(q, ours[q], series[q][cand]) for q in sorted(series)
-                if q in ours and series[q].get(cand) is not None]
+                if q in ours and series[q].get(cand) is not None and q not in excused]
         if not hits:
             continue
         bad = [h for h in hits if G._agree(h[1], h[2]) == "no"]
@@ -218,7 +225,8 @@ def check(sym, qe, field="patS", site="mc", ident=None):
         near = min(abs(qord(q) - qord(qe)) for q, _, _ in good)
         precision = "site-exact" if worst <= 0.01 else "rounded(%.2f)" % worst
         r.update({"worst_anchor": round(worst, 4), "nearest_anchor_q": near,
-                  "precision": precision, "row": (series[qe].get(cand + "_label") or cand)})
+                  "precision": precision, "row": (series[qe].get(cand + "_label") or cand),
+                  "excused": sorted(excused) or None})
         rep["chosen"] = {"site": site, "cand": cand, "row": r["row"], "anchors": len(good),
                          "worst_anchor": round(worst, 4), "precision": precision,
                          "nearest_anchor_q": near}
