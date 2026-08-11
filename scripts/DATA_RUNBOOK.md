@@ -1887,11 +1887,21 @@ IDENTICAL in every quarter by construction (parse_shp writes both or neither).
 | Jun-2016 → Jun-2019 | 6,502 | 79% → **98.8%** | BSE-XBRL ledger + the 2026-08-07 sweep |
 | Sep-2019 → Jun-2026 | 14,014 | 98% → **99.8%** | live NSE pipeline + the sweep |
 
-Whole-sample: 49.7% after the 2026-08-07 sweep, **~51.4% after the 2026-08-09 seam fill — and MOVING**
-(wayback harvest round 2 + a Trendlyne seam fill are in flight). Re-run
+Whole-sample: 49.7% after the 2026-08-07 sweep, ~51.4% after the 2026-08-09 seam fill, **51.8% measured
+2026-08-11** (24,568 / 47,433; eras 0.0 / 31.6 / 75.8 / 100.0 / 100.0%). Re-run
 `python3 -X utf8 scripts/audit_shp_coverage.py` rather than trusting any number printed here;
-what remains open after those land is pre-2010 (no source found, 7 sites + BSE measured empty)
+what remains open is pre-2010 (no source found, 7 sites + BSE measured empty)
 and the un-captured share of 2010-2015.
+
+**Post-Jun-2016 is THREE cells, all of them** (measured 2026-08-11 via `--missing 2016-06-30`):
+JMTAUTOLTD Sep-16, MONSANTO Sep-16 (both mid-series — the symbol has rows either side), JBCHEPHARM
+Jun-26 (continuous through Mar-26, SEBI deadline was 2026-07-21). Everything else Jun-2016→date is
+covered. Don't re-derive "1,706 missing" from the historical block below — that was closed by the sweep.
+
+**Year-wise view: `--year`** rolls up by calendar year of the QE and prints each year's worst and best
+quarter. The spread is the point: 2010-2015 averages ~30-40% a year but swings 10.2% (Mar-15) to 72.1%
+(Dec-15) — that era's coverage tracks which Wayback captures exist, not anything about the stocks, so a
+yearly average there is a number you should never quote on its own.
 
 **✅ SWEPT SAME DAY (2026-08-07): +1,604 cells, Jun-16→Jun-19 79%→98.8%, Sep-19→Jun-26 97.8%→99.8%.**
 `scripts/fetch_shp_bse_hist.py` (rebuilt) → ledger `scripts/shp_fill_n500_gaps.json.gz` → applied by
@@ -1988,7 +1998,8 @@ both feeds, no network). 3 min at 5 threads for 1,649 targets. The gap was 1,706
 - **`fetch_shp_bse_hist.py` (the 2016-19 ledger builder) was never committed** — only its output
   `shp_fill_hist_2016_2019.json.gz` is tracked. Re-running that route means rewriting the fetcher.
 - **Re-run it: `python3 -X utf8 scripts/audit_shp_coverage.py`** (reads ORIGIN/MAIN, not the checkout;
-  `--local`, `--csv out.csv`, `--missing <QE>` to list who is missing quarter by quarter).
+  `--year` for the calendar-year rollup + each year's worst/best quarter, `--local`, `--csv out.csv`,
+  `--missing <QE>` to list who is missing quarter by quarter).
 - **Two ledgers, opposite meanings — don't merge them.** `scripts/shp_no_filing.json` = no filing was EVER
   made (entity merged/delisted mid-quarter, confirmed absent at BOTH exchanges) → the cell leaves the
   DENOMINATOR. `scripts/_shp_bse_absent.json` = one source didn't serve it → stays IN the denominator,

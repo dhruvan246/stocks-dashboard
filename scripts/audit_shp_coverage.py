@@ -38,6 +38,7 @@ def main():
     ap.add_argument("--local", action="store_true")
     ap.add_argument("--csv", default="")
     ap.add_argument("--missing", default="", metavar="QE", help="list the missing cells from this quarter on")
+    ap.add_argument("--year", action="store_true", help="roll up by calendar year of the quarter-end instead of by era")
     a = ap.parse_args()
 
     IH = load("scripts/indices_history.json", a.local)
@@ -91,15 +92,30 @@ def main():
 
     print("point-in-time Nifty 500 x FII/DII, %s .. %s   (%d cells excluded as never-filed)"
           % (qes[0], qes[-1], len(skip)))
-    print("\n%-22s %5s %12s %9s %7s" % ("era", "qtrs", "member-qtrs", "covered", "cov%"))
-    for lbl, lo, hi in ERAS:
-        sel = [r for r in rows if lo <= r[0] <= hi]
-        if not sel:
-            continue
-        t, c = sum(r[1] for r in sel), sum(r[2] for r in sel)
-        print("%-22s %5d %12d %9d %6.1f%%" % (lbl, len(sel), t, c, 100.0 * c / t if t else 0))
+    if a.year:
+        # calendar year of the quarter-end. worst/best quarter matter: the 2010-2015
+        # Wayback era is LUMPY (Mar-2015 10.2% next to Jun-2015 49.6%) — an annual
+        # average there hides that coverage tracks archive luck, not the stocks.
+        print("\n%-6s %5s %12s %9s %7s   %s" %
+              ("year", "qtrs", "member-qtrs", "covered", "cov%", "worst qtr .. best qtr"))
+        for y in sorted({int(r[0][:4]) for r in rows}):
+            sel = [r for r in rows if int(r[0][:4]) == y]
+            t, c = sum(r[1] for r in sel), sum(r[2] for r in sel)
+            pcts = sorted((100.0 * r[2] / r[1] if r[1] else 0, r[0]) for r in sel)
+            print("%-6d %5d %12d %9d %6.1f%%   %s %.1f%% .. %s %.1f%%" %
+                  (y, len(sel), t, c, 100.0 * c / t if t else 0,
+                   pcts[0][1][:7], pcts[0][0], pcts[-1][1][:7], pcts[-1][0]))
+    else:
+        print("\n%-22s %5s %12s %9s %7s" % ("era", "qtrs", "member-qtrs", "covered", "cov%"))
+        for lbl, lo, hi in ERAS:
+            sel = [r for r in rows if lo <= r[0] <= hi]
+            if not sel:
+                continue
+            t, c = sum(r[1] for r in sel), sum(r[2] for r in sel)
+            print("%-22s %5d %12d %9d %6.1f%%" % (lbl, len(sel), t, c, 100.0 * c / t if t else 0))
     t, c = sum(r[1] for r in rows), sum(r[2] for r in rows)
-    print("%-22s %5d %12d %9d %6.1f%%" % ("WHOLE SAMPLE", len(rows), t, c, 100.0 * c / t))
+    print("%-*s %5d %12d %9d %6.1f%%" % (6 if a.year else 22, "TOTAL" if a.year else "WHOLE SAMPLE",
+                                         len(rows), t, c, 100.0 * c / t))
 
     if missing:
         print("\nmissing cells from %s:" % a.missing)
