@@ -1651,7 +1651,7 @@ only through SECURITY DEFINER RPCs; daily GitHub backups = recovery). **Schema: 
   `saved-strategies.html?logpicks=1` (bake-style: DOM signal `#logpicksOut` "✅ LogPicks done"/"LogPicks error").
   That mode: per unique saved strategy (identityKey; canonical variant = longest window; sid = `'st'+hash36(key)`)
   logs `{n,f:freqMonths,tn:topN,picks:[{s,t,p}]}` into `sw_picks_log` upserted on (data-day SF.end, sid) — then
-  rebuilds NAV: value holdings daily via `markPrice` (delisting→0), rotate into that day's logged picks when the
+  rebuilds NAV: value holdings daily via `markPrice` (a dead series is carried at its last traded close since 2026-08-11, was delisting→0), rotate into that day's logged picks when the
   `floor(monthKey/freq)` bucket changes, Nifty benchmark from `nearestNifty`. Chains off "Bake backtest snapshots"
   success. A missed day = one fewer NAV point (fine). Picks depend on cfg+topN, NOT the backtest window.
 - **Backups:** backup-backtest-history.yml also snapshots the 4 kv docs + sw_picks_get daily (7-day window,
@@ -7853,5 +7853,8 @@ company's history split across two keys.
   fragment, WOCKHARDT, MORAREALTY, NXTDIGITAL, ...): each needs its official corp-action terms
   verified before a join factor is written. The queue is COMMITTED: scripts/orphan_needs_factor.json
   (per-pair evidence class, CA-adj, measured drift, gap).
-- Parallel-entity mergers: decide separately whether death-by-merger should exit at last real
-  close instead of 0 (affects EICHER-class trades; engine-semantics decision for the user).
+- Parallel-entity mergers: RESOLVED 2026-08-11 — the user pointed at the repo's own precedent
+  (§22 build_shp_backtest.py: "delisted exits at last close", the convention used for every
+  2020-2026 case). markPrice in BOTH engines now carries a dead series at its last traded close,
+  so any death (merger, scheme, true delisting) exits at the last print on the next rebalance.
+  Loss up to that print is still fully counted; the forced last-print→0 step is gone.

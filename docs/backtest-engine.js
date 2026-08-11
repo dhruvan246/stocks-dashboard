@@ -424,7 +424,13 @@ function idxLE(arr, off) { let lo = 0, hi = arr.length - 1, ans = -1; while (lo 
 function priceAt(tkr, off) { const s = SERIES[tkr]; if (!s) return null; const i = idxLE(s.d, off); return i < 0 ? null : s.p[i] / 100; }
 function turnoverAt(tkr, off) { const s = TURN[tkr]; if (!s) return 0; const i = idxLE(s.d, off); return i < 0 ? 0 : s.t[i]; }
 // held position that stops trading >1 quarter before data end → marked to zero (loss realised)
-function markPrice(tkr, off) { const s = SERIES[tkr]; if (!s) return null; const ld = s.d[s.d.length - 1]; if (off > ld && ld < SF_END_OFF - 90) return 0; return priceAt(tkr, off); }
+// Mark a HOLDING's value. A series that ended (delisting/merger/scheme) is carried at its LAST
+// TRADED CLOSE, so the position exits at that price on the next rebalance — the same convention
+// build_shp_backtest.py has always used ("delisted exits at last close", runbook §22/§86d). It was
+// `return 0` ("delisting→0") until 2026-08-11: honest for bankruptcies but a phantom -100% for
+// merger absorptions (EICHER→EICHERMOT holders got shares, not zero). Loss up to the last print is
+// still fully counted; entries into already-dead series are blocked by factorsAt's freshness gate.
+function markPrice(tkr, off) { const s = SERIES[tkr]; if (!s) return null; return priceAt(tkr, off); }
 // 52-week high/low over [off-365, off] using TRUE intraday highs/lows when the data
 // carries them (hb/lb = per-mil offsets from close); falls back to closes otherwise.
 function hl52(tkr, off) {
@@ -679,7 +685,7 @@ function allocateBasket(picks, capital) {
   const rows = picks.map(r => { const shares = Math.floor(per / r.price); const alloc = shares * r.price; deployed += alloc; return { ...r, shares, alloc }; });
   return { rows, deployed, cash: capital - deployed };
 }
-// buy top-N once at `start`, hold unchanged to `end` (equal-weight, delisting→0)
+// buy top-N once at `start`, hold unchanged to `end` (equal-weight; a delisted holding stays valued at its last traded close)
 function computeHold(cfg, start, end, capital) {
   _histGuard(start);
   const picks = screenAsOf(cfg, start).slice(0, cfg.topN);
