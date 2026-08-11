@@ -595,6 +595,81 @@ def insert_bz_history(data):
     return total
 
 
+def apply_series_surgery(data, meta):
+    """Wrong-company stitch repair (scripts/dvl_dtil_surgery.json.gz, DATA_RUNBOOK §89).
+
+    The NSE ticker DTIL was RECYCLED: today's DVL traded as DTIL until 2010-07-26
+    (DTIL->DPTL->DPL->DVL), and the tea company demerged out of it listed FRESH as DTIL on
+    2015-01-20 (different ISIN, a different company). build_sf_data's symchg.csv supplement had
+    no recycled-ticker guard, so the 2026-08-02 full rebuild funneled the tea company's whole
+    bhavcopy history into DVL; the same-day dedup keeps the higher-close row, making bin DVL
+    2015-2023 a two-company chimera (measured vs MTO volume identity) and leaving DTIL a 7-bar
+    stub. The fake ~2x "moves" where the chain switched company also fed ca_factor(), and on
+    2021-08-05 the live updater applied a 1:2 bonus factor that reconciled against the TEA
+    company's ex-drop — NSE's CA feed mis-keys that bonus under DVL (§89e; the true DVL tape has
+    no CA-sized move anywhere 2015->date). Net: the surviving pre-2015 history sits at a
+    measured 0.7118x raw when the whole true DVL series is simply RAW.
+
+    The ledger carries bhavcopy-true replacement bars for both symbols plus a one-shot `pre`
+    factor that rescales the kept pre-2015 DVL bars onto the right adjustment level. Idempotent:
+    the stored segment is compared to the ledger segment and everything (including `pre`) is
+    skipped when they already match; `pre` is additionally gated on an anchor bar still holding
+    its recorded WRONG close, so a future clean rebuild can never be double-scaled. Bars the
+    daily updater appended after the ledger was built are preserved untouched."""
+    import bisect
+    lp = os.path.join(HERE, "dvl_dtil_surgery.json.gz")
+    if not os.path.exists(lp): return 0
+    try:
+        led = json.load(gzip.open(lp, "rt", encoding="utf-8"))
+    except Exception as ex:
+        print("  series-surgery ledger unreadable (%s) — skipped" % ex); return 0
+    KEYS = ("d", "c", "t", "h", "l", "op", "v", "dv", "vw")
+    changed = 0
+    jobs = [(sym, spec, False) for sym, spec in (led.get("replace") or {}).items()] + \
+           [(sym, spec, True) for sym, spec in (led.get("create") or {}).items()]
+    for sym, spec, is_create in jobs:
+        bars = spec.get("bars") or []
+        if not bars: continue
+        frm = int(spec.get("from") or bars[0][0])
+        e = data.get(sym)
+        if e is None:
+            if not is_create:
+                print("  SURGERY %s: series absent — replace skipped" % sym); continue
+            data[sym] = e = {k: [] for k in KEYS}
+        i0 = bisect.bisect_left(e["d"], frm)
+        i1 = bisect.bisect_right(e["d"], bars[-1][0])
+        cur_seg = [[e[k][i] for k in KEYS] for i in range(i0, i1)]
+        new_seg = [list(b) for b in bars]
+        if cur_seg == new_seg: continue                    # steady state — zero-cost no-op
+        pre = float(spec.get("pre") or 1.0)
+        if abs(pre - 1.0) > 1e-9 and i0 > 0:
+            anc = spec.get("pre_anchor") or {}
+            ai = bisect.bisect_left(e["d"], int(anc.get("ymd") or 0))
+            ok = (ai < i0 and e["d"][ai] == int(anc.get("ymd") or 0)
+                  and anc.get("c") and abs(e["c"][ai] / anc["c"] - 1) < 0.005)
+            if ok:
+                for key in ("c", "h", "l", "op", "vw"):
+                    e[key][:i0] = [round(x * pre, 2) for x in e[key][:i0]]
+                print("  SURGERY %s: pre-%d history rescaled x%.6f onto the official CA level"
+                      % (sym, frm, pre))
+            else:
+                print("  SURGERY %s: pre-anchor %s no longer matches — prescale skipped "
+                      "(history already on a different level; verify by hand)" % (sym, anc))
+        kept_tail = len(e["d"]) - i1
+        for ki, key in enumerate(KEYS):
+            e[key][i0:i1] = [b[ki] for b in new_seg]
+        changed += len(new_seg)
+        lm = spec.get("meta") or {}
+        m = meta.get(sym)
+        if lm and (m is None or m.get("name") in (None, sym) or not m.get("isin")):
+            mm = meta.setdefault(sym, {})
+            for k2, v2 in lm.items(): mm[k2] = v2
+            mm.setdefault("raw", bars[-1][1])
+        print("  SURGERY %s: %d ledger bars %d..%d spliced (%d replaced, %d later-appended kept)"
+              % (sym, len(new_seg), new_seg[0][0], new_seg[-1][0], len(cur_seg), kept_tail))
+    return changed
+
+
 def main():
     if os.path.exists(MARK): os.remove(MARK)
     if "--base" in sys.argv:
@@ -758,6 +833,8 @@ def main():
     # ca_factor() a multi-year ratio to mis-read as a split (measured: HDIL 1.57/2.20 -> "3/4",
     # RAJESHEXPO 83.58/223.97 -> "2/5", both phantom).
     bz = insert_bz_history(data)
+    sg = apply_series_surgery(data, meta)   # wrong-company stitch repair (DVL/DTIL, §89) — before the
+                                            # day loop so appends land on the repaired series
     mr = apply_manual_rights(data)   # hand-verified per-stock rights adjustments to match Trendlyne
     wk = insert_weekend_sessions(data, j, {o: n for n, o in MANUAL_MERGE.items()})   # backfill missing weekend special sessions (budget Sats etc.); old->new so merged-away tickers' sessions land on the survivor
     if wk: print("Weekend special sessions: %d bars inserted." % wk)
@@ -846,8 +923,8 @@ def main():
     # refreshes the on-disk bin but does NOT publish the release, bump clients, or commit a marker.
     blob = gzip.compress(json.dumps(D, separators=(",", ":")).encode(), 6)
     open(OUT, "wb").write(blob)
-    if not appended and not healed and not merged and not mr and not dvf and not dvo and not wk and not bz and not tunits:
-        print("No new day / heal / merge / manual-rights / dv-fill / dv-overwrite / weekend-insert / BZ-backfill / turnover-unit fix — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
+    if not appended and not healed and not merged and not mr and not dvf and not dvo and not wk and not bz and not sg and not tunits:
+        print("No new day / heal / merge / manual-rights / dv-fill / dv-overwrite / weekend-insert / BZ-backfill / series-surgery / turnover-unit fix — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
     open(MARK, "w").write(D["end"])
     # tiny version marker — committed daily, lets the browser cache the big bin in IndexedDB
     # keyed to this `end` and skip re-downloading 80 MB until the data actually changes.

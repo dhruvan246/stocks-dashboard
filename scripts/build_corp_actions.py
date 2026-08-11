@@ -176,6 +176,19 @@ def main():
         pass
     except Exception as e:
         print("  (corp_actions_hist.json unreadable: %s)" % e)
+    # HAND-VERIFIED FEED MIS-KEYS (2026-08-11, RUNBOOK §89e): NSE's CA feed itself can file an
+    # action under a sister company's symbol. "Bonus 1:2 ex 2021-08-05" is served with
+    # symbol=DVL/"Dhunseri Ventures", but the ex-drop is on DTIL's tape (Dhunseri Tea,
+    # 521.15->346.65 = x0.665) while DVL moved -6.5%; Yahoo records the 3:2 split on DTIL.NS and
+    # none ever on DVL, and DVL's equity capital is unchanged across 2021. Refetching re-imports
+    # the wrong row every run, so re-key it here. {(feed_sym, ex): true_sym} — factor moved whole.
+    MISKEYED = {("DVL", 20210805): "DTIL"}
+    for (ws, ex), rs in MISKEYED.items():
+        f = (cmap.get(ws) or {}).pop(ex, None)
+        if f is not None:
+            cmap.setdefault(rs, {})[ex] = f
+            if not cmap.get(ws): cmap.pop(ws, None)
+            print("  MISKEYED feed row re-keyed: %s ex %d f=%s -> %s" % (ws, ex, f, rs))
     # Merge the hardcoded/auto-detected false-CA (crash) overrides so they survive this daily
     # regeneration (NSE's feed doesn't list market crashes, so they'd vanish otherwise). BUT a
     # crash-flag on a date that ALSO carries an official split/bonus is a FALSE POSITIVE: the big

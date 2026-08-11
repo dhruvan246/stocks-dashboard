@@ -8223,9 +8223,10 @@ fetch → build → merge; MTO_SP env = cache dir):
   stored DPL's pct). Rule: candidate MTO rows (exact + rename-mapped, series EQ/BE/BZ) for a bin
   bar are accepted only where `MTO traded == bin v` (99.9% of comparable rows match exactly).
   Controls on the overlap: existing dv == volume-matched MTO pct on 4,624,694 cells at 99.987%;
-  the 602 contradictions ARE the wrong-company class (601 corrected in-ledger; live bins keep the
-  baked wrong value until an overwrite pass — fill-only can't touch dv>0 — QUEUED, and bin DVL's
-  2015 bars carrying DTIL's volume says the PRICE series stitch is suspect too, §86-class).
+  the 602 contradictions ARE the wrong-company class (601 corrected in-ledger; the queued live
+  overwrite is **SUPERSEDED by §89** — all 602 rows were DVL, whose price series itself was a
+  wrong-company chimera; the §89 surgery replaces bars+dv together. Do NOT replay
+  ~/.cache/mto_sweep/wrong_cells.json).
 - **Ceiling, measured**: residual dv==0 bars per year = securities absent from that day's MTO
   (era MTO lists ~700-1,800 securities vs more bin symbols trading; 2005 dips to 88.9%, 2014 to
   88.8%) + ~7k no-volume-match skips + ~19k MTO rows whose bin bars don't exist (TELCO/AVAYAGCL
@@ -8255,3 +8256,89 @@ AARTIDRUGS 2002-01-18 → 2003-09-19). Queue as an audit, not yet a defect claim
 Dividends never adjusted (documented, uniform); F&O membership 2001→date; N500 membership
 2002→date (<500-sag fixed); weekend sessions immaterial pre-2002 (weekly bars); index history
 pre-2007 via niftyindices; §86 death-at-last-close now uniform across all eras.
+
+---
+
+## 89. ★★★ A RECYCLED TICKER IS TWO COMPANIES UNDER ONE SYMBOL — the DVL/DTIL chimera  (2026-08-11)
+**Found by §88b's volume-identity rule** (bin DVL 2015-03-02 v=5,950 == DTIL's MTO traded, while
+DPL traded 26,573). Every claim below measured against the LIVE release asset + official NSE files.
+
+### 89a. The class
+NSE re-issues old symbols to unrelated companies. Lineage (symbolchange.csv + EQUITY_L ISINs):
+today's **DVL** (Dhunseri Ventures, ISIN INE477B01010, listed 2008) traded as **DTIL** until
+2010-07-26, then DPTL (→2014-11-12), then DPL (→2019-01-02). The tea business demerged out in
+2014 and listed FRESH as **DTIL on 2015-01-20** — Dhunseri Tea & Industries, ISIN INE341R01014,
+a DIFFERENT company that still trades today. symbolchange.csv has no row for it (it never
+renamed); only the ISINs reveal the recycle.
+
+### 89b. What the 2026-08-02 full rebuild did with that
+`build_sf_data.py`'s ISIN auto-merge is recycle-safe, but its **symchg.csv supplement was not**:
+it mapped DTIL→DPTL→DPL→DVL dateless, funneling ALL DTIL bhavcopy rows (both companies) into
+DVL. The same-day dedup `dd[rec[0]] = rec` over `sorted()` tuples keeps the LARGER tuple — i.e.
+**the higher close wins each collision day**. Measured vs MTO volume identity, bin DVL was:
+correct through 2015-01-19; ~100% TEA-company bars 2015-02→2020 (tea priced above DPL/DVL
+throughout); an alternating price-crossover mix 2021-22 (2021: 203 DTIL/44 DVL; 2022: 138/109);
+DVL's own bars only from 2023-01-23. The tea company itself was left a 7-bar stub (created
+2026-08-03 by the first post-rebuild daily run, which does NOT funnel).
+**Worse: the chain poisons bars it never touched.** The fake ~2× "moves" where the series
+switched company fed `ca_factor()` inference, the 2021-08-05 live-append day "reconciled" a
+bonus factor against the TEA company's ex-drop (see 89e — the factor wasn't even DVL's), and
+the re-anchor (last=raw) pushed it all backward: every pre-2015 bar sat at a UNIFORM 0.7118×
+raw (measured 2008→2015-01-19, 10 samples) when the true DVL tape has NO corporate-action
+factor anywhere 2015→date — the whole series should be RAW. −28.8% on seven years of history
+that was never itself mis-attributed.
+
+### 89c. The fixes (all 2026-08-11)
+1. **RECYCLED-TICKER GUARD** in build_sf_data.py's symchg supplement: if the old symbol still
+   has bars >45d past its own rename date, it was recycled — merge only bars ≤ cutoff into the
+   chain, keep the later company under its own key, and keep the pair OUT of _rename_map.json.
+   Swept the whole map for other live collisions: `_rename_map keys ∩ EQUITY_L` = **DTIL only**.
+2. **`scripts/dvl_dtil_surgery.json.gz`** + `apply_series_surgery()` in update_sf_data.py (§80
+   bz_backfill pattern): bhavcopy-true replacement bars for DVL [2015-01-20→build date] (DPL
+   rows →2018, DVL rows 2019→, RAW throughout — see 89e; dv from DELIV_PER, MTO-pct overlay
+   only on exact volume identity) + the tea company's full series under DTIL (×0.666667 before
+   its 2021-08-05 bonus). A one-shot `pre` factor rescales the kept pre-2015 DVL bars
+   0.7118×raw→raw, gated on BOTH segment inequality AND an anchor bar still holding its
+   recorded WRONG close — a future clean rebuild can never be double-scaled (§87e-bis: second
+   run must report 0).
+3. **`scripts/_rename_map.json`: DTIL entry REMOVED** (a live company must not be rewritten to
+   another key by present-era joins — the §30-7b/GUJGASLTD silent-vanish class, inverted).
+   FUND_ALIAS never had DTIL (§30-4c's "OLD must not be alive" already refused it). BSE scrips,
+   membership snapshots (none hold any Dhunseri symbol), F&O history: verified clean.
+4. **dv_fill_hist.json.gz: 1,192 DVL cells ≥2015-01-20 PRUNED** — they were §88b's re-key to the
+   bin's then-DTIL volumes; after surgery they'd be wrong-company again and fill-only would
+   re-inject them wherever a repaired bar has dv=0. Surgery bars carry dv inline instead.
+   **§88b's queued 601-cell live dv overwrite: SUPERSEDED — all 602 queue rows were DVL** (the
+   queue file ~/.cache/mto_sweep/wrong_cells.json must NOT be replayed).
+5. **crash_raw_prices.json seeded** with DVL 20100714/20100715 (169.95/144.20, the era's
+   old-DTIL closes): self_heal's raw_close for the 2010-07-15 noadjust event resolved via the
+   rename-map alias that step 3 removed; the committed fallback keeps full-window heals (§87)
+   able to reconcile it. The 2014-09-18 event still resolves via the kept DPTL/DPL aliases.
+
+### 89d. The lessons
+- **A rename bridge without a date is a wrong-company merge waiting to happen.** Any (old→new)
+  map consulted for a LIVE symbol must pass the §30-4c aliveness test; any merge driven by one
+  must check the old key's bars actually STOP near the rename date.
+- **A chimera's damage is not confined to the chimera window** — ratio-chain + re-anchor smears
+  fake factors onto clean history. After fixing a wrong-company stitch, measure the bin/raw
+  scale of the SURVIVING segments too, don't assume them clean.
+- The §88b identity rule ("assign by volume identity, never symbol preference") is what caught
+  this; symbol-keyed heals had quietly agreed with the wrong series for weeks.
+
+### 89e. ★★★ NSE'S OWN CA FEED MIS-KEYS AN ACTION UNDER A SISTER COMPANY — the tape arbitrates
+The corp_actions "DVL 2021-08-05 Bonus 1:2" (straight from NSE's corporates-corporateActions
+API, symbol=DVL, comp="Dhunseri Ventures Limited") is NOT DVL's action. Proof, three independent
+legs: (1) the tape — DTIL's raw close drops 521.15→346.65 (×0.665, a textbook 1:2 bonus) on the
+ex-date while DVL moves 300.75→281.05 (−6.5%, and no CA-sized move exists ANYWHERE on the true
+DPL/DVL tape 2015→date); (2) Yahoo independently records the 3:2 split on DTIL.NS that exact day
+and none ever on DVL.NS; (3) share-capital math — DVL's equity capital is unchanged across 2021,
+the tea co's grew ×1.5. Both companies had same-day actions (DVL's was the ₹2.50 dividend), which
+is presumably how the filing/feed swapped them. **The validation gate that caught it:** requiring
+the constructed series' bonus seam to be continuous AFTER applying the official factor — it
+wasn't, and the CA-jump scan found the drop on the OTHER symbol. Fixes: `MISKEYED` re-key table
+in build_corp_actions.py (feed refetch would re-import the wrong row every run) + committed
+corp_actions.json moved the factor DVL→DTIL. Lesson: **an "official" corporate-action record is
+still a CLAIM; the raw tape + an independent recorder arbitrate** — same-family companies with
+same-day actions are exactly where feeds swap symbols. Full-window self-heal cannot re-break the
+repaired series either way: the reconciliation guard (raw_ratio/off outside [0.75,1.30]) rejects
+the factor on DVL's tape, and converges it on DTIL's.
