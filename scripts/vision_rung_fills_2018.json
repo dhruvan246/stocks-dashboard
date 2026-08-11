@@ -28,6 +28,26 @@
   "route": "vision-rung triage -> YEAR-LATER filing, read from TEXT (no vision needed)",
   "src": "BSE ann 20200207 (Godfrey Phillips Dec-2019 filing), p1, '(Rs in lakhs)', combined Standalone+Consolidated page. Header prints the three periods TWICE: Q 31.12.2019 | 9M 31.12.2019 | Q 31.12.2018 (standalone) then the same three (consolidated). Row 'Total Income from Operations' = 78811 236707 69017 | 79722 238933 69733."
  },
+ "MRPL|20181231|con": {
+  "corroboration": [
+   "\u26a0 THE 200dpi RENDER WAS NOT TRUSTWORTHY: at 200dpi the CON 31.12.2019 cell read '16,417.86' against a stored 16,417.66, and the STD PAT read '(287.72)' against a stored -267.72. Re-rendering the same cells at 420dpi in a tight crop resolved the first to 66 (exact). Fine image detail is a GUESS until it is magnified (memory: feedback-image-detail-reads-are-guesses)."
+  ],
+  "gate": "THREE exact controls on the same page: STD 31.12.2019 16,744.59 == stored revS; STD 31.12.2018 20,249.62 == stored revS; CON 31.12.2019 16,417.66 == stored revC. All to the paisa.",
+  "revC": 20432.83,
+  "route": "VISION rung (\u00a717b) on the YEAR-LATER filing, 420dpi crop",
+  "src": "BSE ann 20200203 (MRPL Dec-2019 filing) p8 'EXTRACT OF FINANCIAL RESULTS FOR THE QUARTER AND NINE MONTH ENDED 31ST DECEMBER, 2019', '(All amounts are in Rs in Crore)'. STANDALONE | CONSOLIDATED blocks; CONSOLIDATED Quarter Ended 31.12.2018, row 1 'Total Income from Operations' = 20,432.83. Rendered at 420dpi, cropped to the header+row-1 band."
+ },
+ "PFC|20181231|con": {
+  "caveat": "This is a RESTATED comparative, not an as-filed figure: the same page's STANDALONE Dec-2018 comparative reads 7,380.24 against our stored as-filed revS of 7,362.29 (0.24% apart), and the filing itself says the 31.12.2018 comparatives were not reviewed. Journalled rather than smoothed over (\u00a758d).",
+  "corroboration": [
+   "EPS anchor: basic EPS 12.38 on paid-up equity 2,640.08 cr at Rs10 face = 264.008 cr shares -> implied con PAT 3,268.42 vs our stored 3,267.99 (0.013%, EPS rounds to 2dp)",
+   "\u2605 THE PAGE STATES \u00a751a OUTRIGHT: 'the consolidated figures for the comparative period ended 31.12.2018 ... have not been subjected to limited review since the requirement of submission of quarterly consolidated financial results has become mandatory from April 01, 2019.' Direct documentary confirmation of the compulsion date the whole campaign is shaped by."
+  ],
+  "gate": "THE PAGE'S OWN Dec-2019 COLUMNS REPRODUCE BOTH OUR STORED BASES TO THE PAISA: standalone 8,210.66 == stored revS 20191231, consolidated 15,873.14 == stored revC 20191231.",
+  "revC": 14045.26,
+  "route": "VISION rung (\u00a717b) on the YEAR-LATER filing",
+  "src": "BSE ann 20200212 (Power Finance Corporation Dec-2019 filing) p9, fully scanned document (0 chars on every page), rendered at 150-300dpi. Header 'Statement of Un-Audited Consolidated Financial Results for the Quarter and Nine Months Ended 31.12.2019', '(Rs in Crore)', column 'Quarter Ended 31.12.2018'. Row I 'Total Revenue from Operations' = 15,873.14 | 15,529.60 | 14,045.26 | 45,998.65 | 39,742.31 | 54,105.65."
+ },
  "RADICO|20180930|con": {
   "corroboration": [
    "equals our stored revS 1906.10 - RADICO's MEASURED convention: its 2019 quarters store con==std EXACTLY (2520.05/2520.05, 2011.65/2011.65) while con PAT differs (79.94 vs 78.59), the MOIL/SCI equity-accounted shape",
@@ -64,6 +84,10 @@
   "CENTRALBK|20190930|revS": {
    "note": "equals the page's TOTAL INCOME (670,371 lakh), while CENTRALBK's other stored quarters hold INTEREST EARNED (Sep-2018 5,685.05 = 568,505 lakh). Our own bank revenue series is inconsistent across quarters for this scrip. Reported, not patched (\u00a758d) - it is a non-null cell, outside a fill-only pass.",
    "stored": 6703.71
+  },
+  "MRPL|20181231|patS": {
+   "note": "MRPL's Dec-2019 filing prints STANDALONE 'Net Profit/(Loss) for the period after tax' for 31.12.2018 as (287.72), read at 420dpi, against our stored -267.72. Non-null cell, outside a fill-only pass - reported, not patched (\u00a758d).",
+   "stored": -267.72
   }
  }
 }
