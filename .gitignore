@@ -74,3 +74,7 @@ scripts/xbrl_extra.json
 # SHP review artifact — regenerated per run, adjudicate then record in shp_cell_fix.json (runbook §22g)
 scripts/shp_quarantine.json
 scripts/_bz_scan/
+# fii==0.0 audit tooling (§22i): BSE-XBRL re-read + the row-identity proof that arbitrates
+# a swallowed foreign block. Both re-runnable; caches/outputs go to $ZFII_WORKDIR.
+!scripts/_shp_zero_fii_adjudicate.py
+!scripts/_shp_zero_fii_rowidentity.py

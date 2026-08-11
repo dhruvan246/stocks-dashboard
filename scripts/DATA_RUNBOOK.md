@@ -30,7 +30,8 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§19** SITE FEATURES ON SUPABASE
 - **§20** RESULTS COVERAGE DASHBOARD
 - **§21** MARKET BREADTH
-- **§22** FII/DII HOLDINGS PER STOCK  (22h = verification vs external sites + cross-exchange, 2026-08-09)
+- **§22** FII/DII HOLDINGS PER STOCK  (22h = verification vs external sites + cross-exchange, 2026-08-09;
+  **22i = the swallowed foreign block — 162 stored fii=0.0 cells healed, 2026-08-12**)
 - **§23** BULK & BLOCK DEALS
 - **§24** INSIDER TRADES
 - **§25** NEW-LISTING (IPO) YEAR-AGO BASE BACKFILL
@@ -1926,6 +1927,10 @@ TTM profit were complete the whole time.
   stocks, old parsed both ways vs stored new-format Sep-2022), median |seam| = 1.25pp with Other→DII vs
   1.83 with Other→FII; per-stock it's not close (HEROMOTOCO 2.36 vs 30.52 — its 14pp "other institutions"
   is clearly domestic). Residual seam ≈ genuine QoQ drift + definitional noise; documented, not fixable.
+  - **⚠️ IT IS RIGHT ON AVERAGE AND WRONG PER FILING — see §22i.** Some filers put their WHOLE foreign
+    block in `OtherInstitutionsMember`, so this rule silently books it as domestic and stores
+    `fii = 0.00` with `fii + dii` still correct. 162 such cells were healed 2026-08-12. Do not flip the
+    flag (the calibration stands); detect the per-filing case with §22i's row-identity proof.
 - **⚠️ The Jun→Sep-2022 DELTA is NOT a stake change for DR-heavy stocks.** The new format dissolved the
   old separate "Overseas Depositories" bucket into the investor categories (SEBI look-through): INFY's
   14.2% ADR block "appears" inside FII/DII at Sep-2022 (dii 18.87→32.38 — a reclassification, both values
@@ -1956,8 +1961,11 @@ IDENTICAL in every quarter by construction (parse_shp writes both or neither).
 | Jun-2016 → Jun-2019 | 6,502 | 79% → **98.8%** | BSE-XBRL ledger + the 2026-08-07 sweep |
 | Sep-2019 → Jun-2026 | 14,014 | 98% → **99.8%** | live NSE pipeline + the sweep |
 
-Whole-sample: 49.7% after the 2026-08-07 sweep, ~51.4% after the 2026-08-09 seam fill, **51.8% measured
-2026-08-11** (24,568 / 47,433; eras 0.0 / 31.6 / 75.8 / 100.0 / 100.0%). Re-run
+Whole-sample: 49.7% after the 2026-08-07 sweep, ~51.4% after the 2026-08-09 seam fill, 51.8% on
+2026-08-11 (24,568 / 47,433), then the aspx rounds took it to 96.0% and the round-5 + §22i seam
+re-run to **96.4% measured 2026-08-12** (45,739 / 47,433; every calendar year ≥ 87%, 2017-2025 at
+100.0%). ⚠️ **Coverage says nothing about correctness** — §22i healed 162 wrong cells that were
+counted as covered the whole time. Re-run
 `python3 -X utf8 scripts/audit_shp_coverage.py` rather than trusting any number printed here;
 what remains open is pre-2010 (no source found, 7 sites + BSE measured empty)
 and the un-captured share of 2010-2015.
@@ -2130,7 +2138,8 @@ along in their **`navigateurl`** field, which nobody followed:
     same shape). These stored cells came from the 2016-19 old-XBRL ledger. Journalled to
     **`scripts/_shp_seam_suspect_jun2016_zeros.json`** for their own audit — do NOT trust a
     stored fii=0.0 at Jun-2016 as an anchor, and the eventual heal likely un-blocks most of the
-    69 held q89 cells too.
+    69 held q89 cells too. **→ AUDITED AND HEALED 2026-08-12, §22i below. The "BSE fabrication"
+    reading was WRONG: those zeros are OURS.**
 - **⚠️ A PASS THAT CHANGES ONLY PARSING MUST BE `--cache-only`.** The first recovery re-parse re-ran
   the fetcher normally: >75 min elapsed for **45 s of CPU**. Every refusal was retrying the alternate
   Flag whose page does not exist, and `fetch_page`'s 3-attempt backoff spends ~18 s per dead cell.
@@ -2405,6 +2414,95 @@ public, the anchor resolves. All five slots are then wrong together. **Confirmed
   falls back `mf ← o_mf`. Latent until now — the tracked BSE ledgers are all pre-Sep-2022 old-format —
   but it would have bitten the moment any post-2022 quarter was filled from BSE, which is exactly what
   this fix does. Check this first if a BSE-sourced fill comes back with a suspiciously round mf.
+
+### 22i. ★★★ THE SWALLOWED FOREIGN BLOCK — 162 stored `fii = 0.0` cells healed  (2026-08-12)
+**The §22f round-4 "Jun-2016 fabrications" were not fabricated by BSE. We wrote them.** A filing
+in this era can tag its ENTIRE foreign-institution block `OtherInstitutionsMember` (BSE's own aspx
+renders it as an unlabelled **"Any Others (Specify)"** row inside the institutions block).
+`parse_shp`'s old-format branch reads fii from `InstitutionsForeignPortfolioInvestorMember` + FVCI
+only, and `OLD_OTHER_TO_DII = True` sends the block to **dii** — so `fii = 0.00` and the whole
+holding sits one slot over. **`fii + dii` is right; only the SPLIT is wrong**, which is exactly why
+no reconciliation gate, partition check or inst-recon ever fired on 162 defective cells.
+
+- **Screen (use this one, not the edge screen):** every maximal run of consecutive stored
+  `fii == 0.0` cells whose nearest stored anchor within 2 quarters of either edge holds >1pp —
+  **1,152 cells over 266 runs**. An edge-only screen (`0.0` beside a >1% neighbour) sees only
+  **253**, because the defect persists as long as the filer keeps the habit: CANFINHOME ran 25
+  quarters, EIHOTEL 18, APLAPOLLO 16. **Run-expand before you count.**
+- **Route:** BSE's own copy of each filing (`SHPQNewFormat` → `XbrlFile`) re-read with today's
+  `parse_shp` (1,126 fetches, 131 s at 6 threads) **plus BSE's rendered `ShareholdingPattern.aspx`
+  for the SAME filing**, whose ROW LABELS and **HOLDER COUNTS** carry what the XBRL tag threw away.
+  Per-cell journal with evidence: **`scripts/_shp_zero_fii_audit.json`** (heals / zero-confirmed /
+  open). Heals land in `shp_cell_fix.json`, provenance `bsexbrl:<scripcode>:<file>`.
+- **★★★ THE ARBITER — THE ROW-IDENTITY PROOF.** When a symbol's *itemised* quarters also show a
+  genuine domestic "other institutions" holding, "is the swallowed block wholly foreign?" is a real
+  question and the percentages cannot answer it. The answer: find a **same-regime** quarter (foreign
+  row empty, block on Any-Others) where shp_history holds an **independently sourced** fii, and
+  compare it against that quarter's Any-Others row. SUPREMEIND Dec-15 renders Any-Others **20.74**
+  == the Wayback-MC-derived stored fii **20.74**; MRF **8.58 == 8.58**; NITINFIRE **11.19 ==
+  11.19**; KSCL 16.42 vs 16.43. **9 of 11 disputed symbols proved, 0 contradicted.**
+  - **⚠️ THE REGIME GATE IS LOAD-BEARING.** Once a filer starts itemising the foreign row, its
+    Any-Others row means something else entirely. Counting those quarters as evidence produced 4-6
+    "contradictions" per symbol and turned every verdict into HOLD. **A quarter can only speak for
+    another quarter rendered the same way.**
+  - **⚠️ A HOLDER-COUNT HEURISTIC GOT THE HARD CELLS WRONG — the lesson worth keeping.** Comparing
+    the disputed Any-Others holder count against the next itemised quarter's FPI-vs-other split
+    said "mixed" for SUPREMEIND (132 holders ≈ 91 FPI + 50 other) and would have written **9.31
+    against a true 22.03**; NITINFIRE 4.68 against 9.48. It was reading a LATER regime's residue
+    backwards onto an earlier one. It had passed three validations first — leave-one-out residue
+    error median **0.000pp**, healed-vs-nearest-as-filed median **0.18pp**, identity preserved on
+    161/162 — and was still wrong exactly where it mattered. **A statistic that fits the 141 easy
+    cells does not license the 20 hard ones; find evidence that speaks to the hard ones.**
+- **Cross-validation, the strongest evidence in this campaign:** all **14** healed Jun-2016 cells
+  corroborate the completely independent §22f Mar-2016 seam derivation (aspx institutions-identity
+  inversion — different quarter, different arithmetic, no shared code or input): RATNAMANI **12.04
+  vs 12.04** and MRF **8.49 vs 8.47** to the cent, median ≈0.5pp, every one inside the 3.0pp gate.
+- **Result: 162 heals / 33 symbols, 570 zeros CONFIRMED as-filed, 423 held OPEN.** The heals add no
+  cells — they correct existing ones — so **a coverage audit cannot see this defect class at all**.
+- **The zero-confirmations were audited, not assumed:** all 570 re-read from their own cached XBRL
+  hunting a nonzero foreign-ish member. 44 hits, **all** either foreign *promoters* (`ForeignMember`
+  is the promoter block's Indian/Foreign split — ASIANHOTNR 50.53) or non-institutional foreign
+  public (`ForeignCompaniesMember`, `OtherForeignShareholders`, `NonResidentIndividuals…`), neither
+  of which is FII by our definition. The one institutional-looking hit, INDOSTAR Jun-2020
+  `ForeignPortfolioInvestorMember` 1.88, is a **promoter-group** FPI (1.88 + 43.62 = 45.50 = the
+  promoter total exactly). **0 false zeros.**
+- **PRE-2016 IS OPEN, NOT CLOSED — 305 cells, and the pages cannot decide.** All 305 re-read from
+  both aspx flags: **178 `row_absent_closes`** (foreign row missing AND the block's own subtotal
+  closes without it) + **127 `printed_zero`**. Such a page is self-consistent whether the truth is
+  0 or 10.94, so **zero heals were written** — logged `not-found-via:bseaspx` (§57 rule 2).
+  GEOMETRIC Mar-2003 is the type specimen: stored 0.00 sitting between 0.00 and 10.94.
+- **Still open (journalled, none closed):** 80 cells / 14 NSE-SME symbols with no BSE scripcode
+  (AKG, MOKSH, NBIFIN, SRPL…), 15 no-BSE-row, 7 CAPTRUST (the filer classifies the same 17.27 block
+  FPI-explicit-zero in Dec-21 and Foreign in Dec-22 — per-quarter truth unknowable), 5
+  identity-unproven (NESCO; SHANTIGEAR ×4, whose render and own XBRL disagree on the split by up to
+  3pp), LICHSGFIN Jun-16 + RUCHISOYA ×3 + LMW Dec-16 unanchored, 1 prom-drift, 1 negative residual,
+  plus the 305 pre-2016.
+- **★ RE-RUN EVERY GATE THAT CONSUMED THE BAD VALUE.** The 69 q89 cells round 4 held were held
+  against these very anchors: re-running `seam_derive.py` after the heal wrote **+15 cells,
+  Mar-2016 85.0% → 88.0%, whole-sample 96.0% → 96.4%** — on exactly the healed cohort, nothing
+  forced. The other 54 are genuine derivation-vs-anchor disagreements. **A heal is not finished
+  until the gates that rejected work because of it have been re-run.**
+- **Three bugs that made `seam_derive.py` un-re-runnable, all fixed:** it read two UNTRACKED scratch
+  files (now falls back to `_shp_aspx_resolved_era_syms.json` / `_bse_master_all.json`); it dumped
+  its ledger WHOLE while a re-run's frontier only holds cells history still LACKS, so a second run
+  would have silently shrunk the tracked ledger **159 → 15** (now a UNION, existing cells win — the
+  §22f stage-order trap in a new costume); and its Dec-15 batch gate `sys.exit`ed at `n < 30`, which
+  on a re-run means *unmeasurable*, not *failed*, and took the per-cell-corroborated q89 cells down
+  with it (now falls back to per-cell; a MEASURED failure still stops the run).
+- **Verified LIVE through the client feed** (§41): 162/162 heals and 15/15 new seam cells present in
+  `docs/shp_engine.json` served from the origin — ASIANPAINT Jun-16 `[18.79, 7.46]`, SUPREMEIND
+  `[22.03, 6.93]`, MARKSANS `[13.62, 0.16]`, ASIANPAINT Mar-16 `[18.01, 9.06]`. Applied twice;
+  second pass changes 0 cells.
+- **⚠️ NOT SHAPE-SPECIFIC TO fii, and NOT covered here:** the same screen pointed at the **dii**
+  slot returns **1,313 run cells / 200 edge cells** on the healed history (measured 2026-08-12,
+  post-heal), of which only **1** is a cell this campaign touched — so ~199 edge cells are a
+  pre-existing, unexamined population, concentrated 2020-2026 (24-35 per year). **Open work.**
+  Whoever takes it: a `dii = 0` is far likelier to be genuine than a `fii = 0` (small caps really
+  do have no domestic institutions), so expect a much lower hit rate and gate on the same
+  row-identity evidence, never on the screen alone.
+- **⚠️ AND THE RESIDUAL fii SCREEN IS STILL 1,006 RUN CELLS**, because a heal creates new anchors:
+  healed cells become >1% neighbours, so zero-runs that previously had no qualifying anchor now
+  qualify (+16 net after removing the 162). The screen is a THREAD, not a defect count (§78).
 
 ### 22h. ★★ VERIFICATION vs EXTERNAL SITES + THE OTHER EXCHANGE  (campaign 2026-08-09)
 Full write-up: `scripts/SHP_VERIFY_REPORT.md`; plan `SHP_VERIFY_CAMPAIGN.md`; per-phase findings
