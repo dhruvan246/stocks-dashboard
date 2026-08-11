@@ -1,0 +1,1212 @@
+{
+ "_caveats": [
+  "30% of entries use a low-confidence mapping (<60% agreement or n<3) \u2014 see conf/n per entry",
+  "93 Unknown symbols remain unmapped; 68% left the Nifty 500 before 2006-11, the earliest archived list that exists",
+  "2004-2006 is the weakest stretch; 2007+ is >=91% filled"
+ ],
+ "_note": "Industry backfill for stocks BSE no longer classifies (delisted names lose their BSE classification, so a survivorship-free universe shows 32% Unknown in 2004 falling to 0.6% today). Source: 13 archived NSE Nifty-500 constituent CSVs (Wayback), which carry a point-in-time Industry column. NSE 105-value taxonomy folded into BSE IndustryNew via a mapping LEARNED from 846 stocks carrying both. Built 2026-08-12.",
+ "map": {
+  "ABGSHIP": "Services",
+  "ABIRLANUVO": "Textiles",
+  "ADVANTA": "Fast Moving Consumer Goods",
+  "AFTEK": "Information Technology",
+  "AGRODUTCH": "Fast Moving Consumer Goods",
+  "AJRINFRA": "Realty",
+  "ALBK": "Financial Services",
+  "ALFALAVAL": "Capital Goods",
+  "ALOKTEXT": "Textiles",
+  "AMTEKAUTO": "Automobile and Auto Components",
+  "ANDHRABANK": "Financial Services",
+  "ASIANELEC": "Capital Goods",
+  "ASIANHOTEL": "Consumer Services",
+  "AZTECSOFT": "Information Technology",
+  "BALLARPUR": "Forest Materials",
+  "BHARATFIN": "Financial Services",
+  "BILT": "Forest Materials",
+  "BLUESTINFO": "Information Technology",
+  "BONGAIREFN": "Oil, Gas & Consumable Fuels",
+  "BOSCHCHASY": "Automobile and Auto Components",
+  "BRFL": "Textiles",
+  "CAIRN": "Oil, Gas & Consumable Fuels",
+  "CAPF": "Financial Services",
+  "CAROLINFO": "Healthcare",
+  "CASTEXTECH": "Automobile and Auto Components",
+  "CASTROL": "Chemicals",
+  "CEAT": "Automobile and Auto Components",
+  "CHEMPLAST": "Chemicals",
+  "CMC": "Information Technology",
+  "COLGATE": "Fast Moving Consumer Goods",
+  "CONSOFINVT": "Financial Services",
+  "COREEDUTEC": "Information Technology",
+  "CORPBANK": "Financial Services",
+  "COX&KINGS": "Services",
+  "CRESTANI": "Media, Entertainment & Publication",
+  "DCHL": "Media, Entertainment & Publication",
+  "DENABANK": "Financial Services",
+  "DHANI": "Financial Services",
+  "DHFL": "Financial Services",
+  "DISHMAN": "Healthcare",
+  "DRDATSONS": "Healthcare",
+  "DSKULKARNI": "Realty",
+  "EDUCOMP": "Information Technology",
+  "EICHER": "Financial Services",
+  "ELDERPHARM": "Healthcare",
+  "EQUITAS": "Financial Services",
+  "ERAINFRA": "Realty",
+  "EROSMEDIA": "Media, Entertainment & Publication",
+  "ESSAROIL": "Oil, Gas & Consumable Fuels",
+  "ESSARSHIP": "Services",
+  "ESSDEE": "Fast Moving Consumer Goods",
+  "ESTL": "Capital Goods",
+  "EXCELCROP": "Chemicals",
+  "FCONSUMER": "Fast Moving Consumer Goods",
+  "FIRSTLEASE": "Financial Services",
+  "FKONCO": "Healthcare",
+  "FLEXCHEM": "Capital Goods",
+  "FRETAIL": "Fast Moving Consumer Goods",
+  "GAMMONIND": "Realty",
+  "GARDENSILK": "Textiles",
+  "GDL": "Services",
+  "GEOMETRIC": "Information Technology",
+  "GITANJALI": "Consumer Durables",
+  "GODAVRFERT": "Chemicals",
+  "GRUH": "Financial Services",
+  "GSKCONS": "Fast Moving Consumer Goods",
+  "GSPL": "Oil, Gas & Consumable Fuels",
+  "GTNIND": "Textiles",
+  "GTOFFSHORE": "Oil, Gas & Consumable Fuels",
+  "GUJNRECOKE": "Metals & Mining",
+  "GUJRATGAS": "Oil, Gas & Consumable Fuels",
+  "HDFC": "Financial Services",
+  "HEXAWARE": "Information Technology",
+  "HIMACHLFUT": "Telecommunication",
+  "HINDMOTOR": "Capital Goods",
+  "HINVDIR": "Financial Services",
+  "HTMT": "Information Technology",
+  "IBP": "Oil, Gas & Consumable Fuels",
+  "IDFC": "Financial Services",
+  "IGS": "Information Technology",
+  "INDIABULLS": "Financial Services",
+  "INFINITE": "Information Technology",
+  "INGVYSYABK": "Financial Services",
+  "INNOIND": "Metals & Mining",
+  "INOXLEISUR": "Media, Entertainment & Publication",
+  "IPCL": "Chemicals",
+  "ISEC": "Financial Services",
+  "IVRCLINFRA": "Realty",
+  "JAINSTUDIO": "Media, Entertainment & Publication",
+  "JBCHEPHARM": "Healthcare",
+  "JBFIND": "Textiles",
+  "JETAIRWAYS": "Services",
+  "JPASSOCIAT": "Realty",
+  "JPINFRATEC": "Services",
+  "JSLHISAR": "Metals & Mining",
+  "JSWISPAT": "Capital Goods",
+  "KBL": "Capital Goods",
+  "KGL": "Fast Moving Consumer Goods",
+  "KIRLOSOIL": "Capital Goods",
+  "KOUTONS": "Textiles",
+  "KSK": "Power",
+  "KSOILS": "Fast Moving Consumer Goods",
+  "LAKSHMIEFL": "Fast Moving Consumer Goods",
+  "LAKSHVILAS": "Financial Services",
+  "LGBROS": "Metals & Mining",
+  "LITL": "Realty",
+  "MAARSOFTW": "Information Technology",
+  "MAHINDUGIN": "Capital Goods",
+  "MANDHANA": "Textiles",
+  "MANGCHEFER": "Chemicals",
+  "MANPASAND": "Fast Moving Consumer Goods",
+  "MATRIXLABS": "Healthcare",
+  "MAXINDIA": "Healthcare",
+  "MELSTAR": "Information Technology",
+  "MERCATOR": "Metals & Mining",
+  "MICRO": "Services",
+  "MINDTREE": "Information Technology",
+  "MONNETISPA": "Capital Goods",
+  "MONSANTO": "Chemicals",
+  "MOSERBAER": "Information Technology",
+  "NAGARFERT": "Chemicals",
+  "NAHAREXP": "Textiles",
+  "NAHARSPG": "Textiles",
+  "NARMDCHEMA": "Chemicals",
+  "NEPCMICON": "Capital Goods",
+  "NITINFIRE": "Capital Goods",
+  "NOVAPETRO": "Textiles",
+  "OENCONNECT": "Capital Goods",
+  "OPTOCIRCUI": "Healthcare",
+  "ORBITCORP": "Realty",
+  "ORCHIDPHAR": "Healthcare",
+  "ORIENTBANK": "Financial Services",
+  "ORIENTINFO": "Information Technology",
+  "PATNI": "Information Technology",
+  "PEL": "Healthcare",
+  "POLARIS": "Information Technology",
+  "PRICOL": "Automobile and Auto Components",
+  "PROVOGUE": "Textiles",
+  "PSL": "Services",
+  "PUNJABTRAC": "Capital Goods",
+  "PUNJLLOYD": "Realty",
+  "RAINCALCIN": "Chemicals",
+  "RANBAXY": "Healthcare",
+  "RANEBRAKE": "Automobile and Auto Components",
+  "REIAGROLTD": "Fast Moving Consumer Goods",
+  "RELCAPITAL": "Financial Services",
+  "RELINFRA": "Power",
+  "RELMEDIA": "Media, Entertainment & Publication",
+  "REVL": "Automobile and Auto Components",
+  "RNAVAL": "Capital Goods",
+  "RNRL": "Oil, Gas & Consumable Fuels",
+  "ROLTA": "Information Technology",
+  "RUCHISOYA": "Fast Moving Consumer Goods",
+  "SAMTEL": "Consumer Durables",
+  "SATYAMCOMP": "Information Technology",
+  "SB&TINTL": "Consumer Durables",
+  "SBBJ": "Financial Services",
+  "SBT": "Financial Services",
+  "SHASUNPHAR": "Healthcare",
+  "SHREEASHTA": "Media, Entertainment & Publication",
+  "SHRENUJ": "Consumer Durables",
+  "SHRIRAMCIT": "Financial Services",
+  "SINTEX": "Capital Goods",
+  "SIRPAPER": "Forest Materials",
+  "SKUMARSYNF": "Textiles",
+  "SPTL": "Capital Goods",
+  "SREINFRA": "Financial Services",
+  "SRIADIKARI": "Media, Entertainment & Publication",
+  "STER": "Metals & Mining",
+  "STERLINBIO": "Healthcare",
+  "SUNDRMCLAY": "Automobile and Auto Components",
+  "SUPPETRO": "Chemicals",
+  "SYNDIBANK": "Financial Services",
+  "TATACOFFEE": "Fast Moving Consumer Goods",
+  "TATAMETALI": "Capital Goods",
+  "TATASTLBSL": "Metals & Mining",
+  "TATASTLLP": "Metals & Mining",
+  "TECHNO": "Realty",
+  "THIRUSUGAR": "Fast Moving Consumer Goods",
+  "TINPLATE": "Metals & Mining",
+  "TODAYS": "Services",
+  "TUBEINVEST": "Consumer Durables",
+  "TULIP": "Telecommunication",
+  "TV-18": "Media, Entertainment & Publication",
+  "TV18": "Media, Entertainment & Publication",
+  "TV18BRDCST": "Media, Entertainment & Publication",
+  "UBHOLDINGS": "Financial Services",
+  "UJJIVAN": "Financial Services",
+  "UNITY": "Realty",
+  "UTTAMSTL": "Capital Goods",
+  "UTVSOF": "Media, Entertainment & Publication",
+  "VALUEIND": "Consumer Durables",
+  "VARUNSHIP": "Services",
+  "VIDEOIND": "Consumer Durables",
+  "VIJAYABANK": "Financial Services",
+  "VISHALEXPO": "Services",
+  "VISUALSOFT": "Information Technology",
+  "WYETH": "Healthcare",
+  "ZANDUREALT": "Healthcare",
+  "ZENITHCOMP": "Information Technology"
+ },
+ "provenance": {
+  "ABGSHIP": {
+   "conf": 1.0,
+   "n": 2,
+   "via_nse": "SHIPPING"
+  },
+  "ABIRLANUVO": {
+   "conf": 0.67,
+   "n": 6,
+   "via_nse": "TEXTILES - SYNTHETIC"
+  },
+  "ADVANTA": {
+   "conf": 0.75,
+   "n": 4,
+   "via_nse": "FOOD AND FOOD PROCESSING"
+  },
+  "AFTEK": {
+   "conf": 0.62,
+   "n": 16,
+   "via_nse": "COMPUTERS - SOFTWARE"
+  },
+  "AGRODUTCH": {
+   "conf": 0.75,
+   "n": 4,
+   "via_nse": "FOOD AND FOOD PROCESSING"
+  },
+  "AJRINFRA": {
+   "conf": 0.46,
+   "n": 46,
+   "via_nse": "CONSTRUCTION"
+  },
+  "ALBK": {
+   "conf": 1.0,
+   "n": 21,
+   "via_nse": "BANKS"
+  },
+  "ALFALAVAL": {
+   "conf": 0.5,
+   "n": 4,
+   "via_nse": "ENGINEERING"
+  },
+  "ALOKTEXT": {
+   "conf": 0.67,
+   "n": 6,
+   "via_nse": "TEXTILES - SYNTHETIC"
+  },
+  "AMTEKAUTO": {
+   "conf": 0.92,
+   "n": 13,
+   "via_nse": "AUTO ANCILLARIES"
+  },
+  "ANDHRABANK": {
+   "conf": 1.0,
+   "n": 21,
+   "via_nse": "BANKS"
+  },
+  "ASIANELEC": {
+   "conf": 0.67,
+   "n": 3,
+   "via_nse": "ELECTRONICS - INDUSTRIAL"
+  },
+  "ASIANHOTEL": {
+   "conf": 1.0,
+   "n": 4,
+   "via_nse": "HOTELS"
+  },
+  "AZTECSOFT": {
+   "conf": 0.62,
+   "n": 16,
+   "via_nse": "COMPUTERS - SOFTWARE"
+  },
+  "BALLARPUR": {
+   "conf": 1.0,
+   "n": 3,
+   "via_nse": "PAPER AND PAPER PRODUCTS"
+  },
+  "BHARATFIN": {
+   "conf": 0.97,
+   "n": 33,
+   "via_nse": "FINANCIAL SERVICES"
+  },
+  "BILT": {
+   "conf": 1.0,
+   "n": 3,
+   "via_nse": "PAPER AND PAPER PRODUCTS"
+  },
+  "BLUESTINFO": {
+   "conf": 0.62,
+   "n": 16,
+   "via_nse": "COMPUTERS - SOFTWARE"
+  },
+  "BONGAIREFN": {
+   "conf": 1.0,
+   "n": 6,
+   "via_nse": "REFINERIES"
+  },
+  "BOSCHCHASY": {
+   "conf": 0.92,
+   "n": 13,
+   "via_nse": "AUTO ANCILLARIES"
+  },
+  "BRFL": {
+   "conf": 0.8,
+   "n": 5,
+   "via_nse": "TEXTILE PRODUCTS"
+  },
+  "CAIRN": {
+   "conf": 0.75,
+   "n": 4,
+   "via_nse": "OIL EXPLORATION/PRODUCTION"
+  },
+  "CAPF": {
+   "conf": 0.97,
+   "n": 33,
+   "via_nse": "FINANCIAL SERVICES"
+  },
+  "CAROLINFO": {
+   "conf": 0.96,
+   "n": 23,
+   "via_nse": "PHARMACEUTICALS"
+  },
+  "CASTEXTECH": {
+   "conf": 0.92,
+   "n": 13,
+   "via_nse": "AUTO ANCILLARIES"
+  },
+  "CASTROL": {
+   "conf": 0.6,
+   "n": 5,
+   "via_nse": "PETROCHEMICALS"
+  },
+  "CEAT": {
+   "conf": 0.67,
+   "n": 3,
+   "via_nse": "TYRES"
+  },
+  "CHEMPLAST": {
+   "conf": 0.6,
+   "n": 5,
+   "via_nse": "PETROCHEMICALS"
+  },
+  "CMC": {
+   "conf": 1.0,
+   "n": 5,
+   "via_nse": "COMPUTERS - HARDWARE"
+  },
+  "COLGATE": {
+   "conf": 1.0,
+   "n": 5,
+   "via_nse": "PERSONAL CARE"
+  },
+  "CONSOFINVT": {
+   "conf": 1.0,
+   "n": 10,
+   "via_nse": "FINANCE"
+  },
+  "COREEDUTEC": {
+   "conf": 0.67,
+   "n": 9,
+   "via_nse": "IT"
+  },
+  "CORPBANK": {
+   "conf": 1.0,
+   "n": 21,
+   "via_nse": "BANKS"
+  },
+  "COX&KINGS": {
+   "conf": 0.59,
+   "n": 17,
+   "via_nse": "SERVICES"
+  },
+  "CRESTANI": {
+   "conf": 0.88,
+   "n": 17,
+   "via_nse": "MEDIA & ENTERTAINMENT"
+  },
+  "DCHL": {
+   "conf": 0.75,
+   "n": 4,
+   "via_nse": "PRINTING AND PUBLISHING"
+  },
+  "DENABANK": {
+   "conf": 1.0,
+   "n": 21,
+   "via_nse": "BANKS"
+  },
+  "DHANI": {
+   "conf": 1.0,
+   "n": 10,
+   "via_nse": "FINANCE"
+  },
+  "DHFL": {
+   "conf": 0.97,
+   "n": 33,
+   "via_nse": "FINANCIAL SERVICES"
+  },
+  "DISHMAN": {
+   "conf": 0.96,
+   "n": 23,
+   "via_nse": "PHARMACEUTICALS"
+  },
+  "DRDATSONS": {
+   "conf": 1.0,
+   "n": 15,
+   "via_nse": "PHARMA"
+  },
+  "DSKULKARNI": {
+   "conf": 0.46,
+   "n": 46,
+   "via_nse": "CONSTRUCTION"
+  },
+  "EDUCOMP": {
+   "conf": 0.62,
+   "n": 16,
+   "via_nse": "COMPUTERS - SOFTWARE"
+  },
+  "EICHER": {
+   "conf": 1.0,
+   "n": 10,
+   "via_nse": "FINANCE"
+  },
+  "ELDERPHARM": {
+   "conf": 0.96,
+   "n": 23,
+   "via_nse": "PHARMACEUTICALS"
+  },
+  "EQUITAS": {
+   "conf": 0.97,
+   "n": 33,
+   "via_nse": "FINANCIAL SERVICES"
+  },
+  "ERAINFRA": {
+   "conf": 0.46,
+   "n": 46,
+   "via_nse": "CONSTRUCTION"
+  },
+  "EROSMEDIA": {
+   "conf": 0.88,
+   "n": 17,
+   "via_nse": "MEDIA & ENTERTAINMENT"
+  },
+  "ESSAROIL": {
+   "conf": 1.0,
+   "n": 6,
+   "via_nse": "REFINERIES"
+  },
+  "ESSARSHIP": {
+   "conf": 1.0,
+   "n": 2,
+   "via_nse": "SHIPPING"
+  },
+  "ESSDEE": {
+   "conf": 0.39,
+   "n": 38,
+   "via_nse": "CONSUMER GOODS"
+  },
+  "ESTL": {
+   "conf": 0.5,
+   "n": 10,
+   "via_nse": "STEEL AND STEEL PRODUCTS"
+  },
+  "EXCELCROP": {
+   "conf": 1.0,
+   "n": 2,
+   "via_nse": "FERTILISERS & PESTICIDES"
+  },
+  "FCONSUMER": {
+   "conf": 0.39,
+   "n": 38,
+   "via_nse": "CONSUMER GOODS"
+  },
+  "FIRSTLEASE": {
+   "conf": 1.0,
+   "n": 10,
+   "via_nse": "FINANCE"
+  },
+  "FKONCO": {
+   "conf": 0.96,
+   "n": 23,
+   "via_nse": "PHARMACEUTICALS"
+  },
+  "FLEXCHEM": {
+   "conf": 1.0,
+   "n": 1,
+   "via_nse": "PACKAGING"
+  },
+  "FRETAIL": {
+   "conf": 0.39,
+   "n": 38,
+   "via_nse": "CONSUMER GOODS"
+  },
+  "GAMMONIND": {
+   "conf": 0.46,
+   "n": 46,
+   "via_nse": "CONSTRUCTION"
+  },
+  "GARDENSILK": {
+   "conf": 0.67,
+   "n": 6,
+   "via_nse": "TEXTILES - SYNTHETIC"
+  },
+  "GDL": {
+   "conf": 0.67,
+   "n": 3,
+   "via_nse": "TRAVEL AND TRANSPORT"
+  },
+  "GEOMETRIC": {
+   "conf": 0.62,
+   "n": 16,
+   "via_nse": "COMPUTERS - SOFTWARE"
+  },
+  "GITANJALI": {
+   "conf": 1.0,
+   "n": 1,
+   "via_nse": "GEMS"
+  },
+  "GODAVRFERT": {
+   "conf": 1.0,
+   "n": 7,
+   "via_nse": "FERTILISERS"
+  },
+  "GRUH": {
+   "conf": 0.97,
+   "n": 33,
+   "via_nse": "FINANCIAL SERVICES"
+  },
+  "GSKCONS": {
+   "conf": 0.75,
+   "n": 4,
+   "via_nse": "FOOD AND FOOD PROCESSING"
+  },
+  "GSPL": {
+   "conf": 0.75,
+   "n": 4,
+   "via_nse": "GAS"
+  },
+  "GTNIND": {
+   "conf": 1.0,
+   "n": 5,
+   "via_nse": "TEXTILES - COTTON"
+  },
+  "GTOFFSHORE": {
+   "conf": 0.75,
+   "n": 4,
+   "via_nse": "OIL EXPLORATION/PRODUCTION"
+  },
+  "GUJNRECOKE": {
+   "conf": 1.0,
+   "n": 2,
+   "via_nse": "MINING"
+  },
+  "GUJRATGAS": {
+   "conf": 0.75,
+   "n": 4,
+   "via_nse": "GAS"
+  },
+  "HDFC": {
+   "conf": 1.0,
+   "n": 2,
+   "via_nse": "FINANCE - HOUSING"
+  },
+  "HEXAWARE": {
+   "conf": 0.62,
+   "n": 16,
+   "via_nse": "COMPUTERS - SOFTWARE"
+  },
+  "HIMACHLFUT": {
+   "conf": 1.0,
+   "n": 1,
+   "via_nse": "TELECOMMUNICATION - EQUIPMENT"
+  },
+  "HINDMOTOR": {
+   "conf": 0.5,
+   "n": 6,
+   "via_nse": "AUTOMOBILES - 4 WHEELERS"
+  },
+  "HINVDIR": {
+   "conf": 1.0,
+   "n": 10,
+   "via_nse": "FINANCE"
+  },
+  "HTMT": {
+   "conf": 0.62,
+   "n": 16,
+   "via_nse": "COMPUTERS - SOFTWARE"
+  },
+  "IBP": {
+   "conf": 1.0,
+   "n": 6,
+   "via_nse": "REFINERIES"
+  },
+  "IDFC": {
+   "conf": 1.0,
+   "n": 4,
+   "via_nse": "FINANCIAL INSTITUTION"
+  },
+  "IGS": {
+   "conf": 0.62,
+   "n": 16,
+   "via_nse": "COMPUTERS - SOFTWARE"
+  },
+  "INDIABULLS": {
+   "conf": 1.0,
+   "n": 10,
+   "via_nse": "FINANCE"
+  },
+  "INFINITE": {
+   "conf": 0.67,
+   "n": 9,
+   "via_nse": "IT"
+  },
+  "INGVYSYABK": {
+   "conf": 1.0,
+   "n": 21,
+   "via_nse": "BANKS"
+  },
+  "INNOIND": {
+   "conf": 0.57,
+   "n": 14,
+   "via_nse": "METALS"
+  },
+  "INOXLEISUR": {
+   "conf": 0.88,
+   "n": 17,
+   "via_nse": "MEDIA & ENTERTAINMENT"
+  },
+  "IPCL": {
+   "conf": 0.6,
+   "n": 5,
+   "via_nse": "PETROCHEMICALS"
+  },
+  "ISEC": {
+   "conf": 0.97,
+   "n": 33,
+   "via_nse": "FINANCIAL SERVICES"
+  },
+  "IVRCLINFRA": {
+   "conf": 0.46,
+   "n": 46,
+   "via_nse": "CONSTRUCTION"
+  },
+  "JAINSTUDIO": {
+   "conf": 0.88,
+   "n": 17,
+   "via_nse": "MEDIA & ENTERTAINMENT"
+  },
+  "JBCHEPHARM": {
+   "conf": 0.96,
+   "n": 23,
+   "via_nse": "PHARMACEUTICALS"
+  },
+  "JBFIND": {
+   "conf": 1.0,
+   "n": 9,
+   "via_nse": "TEXTILES"
+  },
+  "JETAIRWAYS": {
+   "conf": 0.67,
+   "n": 3,
+   "via_nse": "TRAVEL AND TRANSPORT"
+  },
+  "JPASSOCIAT": {
+   "conf": 0.46,
+   "n": 46,
+   "via_nse": "CONSTRUCTION"
+  },
+  "JPINFRATEC": {
+   "conf": 0.59,
+   "n": 17,
+   "via_nse": "SERVICES"
+  },
+  "JSLHISAR": {
+   "conf": 0.57,
+   "n": 14,
+   "via_nse": "METALS"
+  },
+  "JSWISPAT": {
+   "conf": 0.5,
+   "n": 10,
+   "via_nse": "STEEL AND STEEL PRODUCTS"
+  },
+  "KBL": {
+   "conf": 1.0,
+   "n": 3,
+   "via_nse": "COMPRESSORS / PUMPS"
+  },
+  "KGL": {
+   "conf": 0.39,
+   "n": 38,
+   "via_nse": "CONSUMER GOODS"
+  },
+  "KIRLOSOIL": {
+   "conf": 1.0,
+   "n": 3,
+   "via_nse": "DIESEL ENGINES"
+  },
+  "KOUTONS": {
+   "conf": 0.8,
+   "n": 5,
+   "via_nse": "TEXTILE PRODUCTS"
+  },
+  "KSK": {
+   "conf": 0.62,
+   "n": 13,
+   "via_nse": "ENERGY"
+  },
+  "KSOILS": {
+   "conf": 1.0,
+   "n": 1,
+   "via_nse": "SOLVENT EXTRACTION"
+  },
+  "LAKSHMIEFL": {
+   "conf": 0.75,
+   "n": 4,
+   "via_nse": "FOOD AND FOOD PROCESSING"
+  },
+  "LAKSHVILAS": {
+   "conf": 1.0,
+   "n": 21,
+   "via_nse": "BANKS"
+  },
+  "LGBROS": {
+   "conf": 0.57,
+   "n": 14,
+   "via_nse": "METALS"
+  },
+  "LITL": {
+   "conf": 0.46,
+   "n": 46,
+   "via_nse": "CONSTRUCTION"
+  },
+  "MAARSOFTW": {
+   "conf": 0.62,
+   "n": 16,
+   "via_nse": "COMPUTERS - SOFTWARE"
+  },
+  "MAHINDUGIN": {
+   "conf": 0.5,
+   "n": 10,
+   "via_nse": "STEEL AND STEEL PRODUCTS"
+  },
+  "MANDHANA": {
+   "conf": 1.0,
+   "n": 9,
+   "via_nse": "TEXTILES"
+  },
+  "MANGCHEFER": {
+   "conf": 1.0,
+   "n": 2,
+   "via_nse": "FERTILISERS & PESTICIDES"
+  },
+  "MANPASAND": {
+   "conf": 0.39,
+   "n": 38,
+   "via_nse": "CONSUMER GOODS"
+  },
+  "MATRIXLABS": {
+   "conf": 0.96,
+   "n": 23,
+   "via_nse": "PHARMACEUTICALS"
+  },
+  "MAXINDIA": {
+   "conf": 1.0,
+   "n": 4,
+   "via_nse": "HEALTHCARE SERVICES"
+  },
+  "MELSTAR": {
+   "conf": 0.62,
+   "n": 16,
+   "via_nse": "COMPUTERS - SOFTWARE"
+  },
+  "MERCATOR": {
+   "conf": 0.57,
+   "n": 14,
+   "via_nse": "METALS"
+  },
+  "MICRO": {
+   "conf": 0.21,
+   "n": 14,
+   "via_nse": "MISCELLANEOUS"
+  },
+  "MINDTREE": {
+   "conf": 0.62,
+   "n": 16,
+   "via_nse": "COMPUTERS - SOFTWARE"
+  },
+  "MONNETISPA": {
+   "conf": 0.5,
+   "n": 10,
+   "via_nse": "STEEL AND STEEL PRODUCTS"
+  },
+  "MONSANTO": {
+   "conf": 1.0,
+   "n": 1,
+   "via_nse": "PESTICIDES AND AGROCHEMICALS"
+  },
+  "MOSERBAER": {
+   "conf": 1.0,
+   "n": 5,
+   "via_nse": "COMPUTERS - HARDWARE"
+  },
+  "NAGARFERT": {
+   "conf": 1.0,
+   "n": 7,
+   "via_nse": "FERTILISERS"
+  },
+  "NAHAREXP": {
+   "conf": 1.0,
+   "n": 5,
+   "via_nse": "TEXTILES - COTTON"
+  },
+  "NAHARSPG": {
+   "conf": 0.67,
+   "n": 6,
+   "via_nse": "TEXTILES - SYNTHETIC"
+  },
+  "NARMDCHEMA": {
+   "conf": 0.6,
+   "n": 5,
+   "via_nse": "PETROCHEMICALS"
+  },
+  "NEPCMICON": {
+   "conf": 0.86,
+   "n": 7,
+   "via_nse": "ELECTRICAL EQUIPMENT"
+  },
+  "NITINFIRE": {
+   "conf": 0.72,
+   "n": 18,
+   "via_nse": "INDUSTRIAL MANUFACTURING"
+  },
+  "NOVAPETRO": {
+   "conf": 0.67,
+   "n": 6,
+   "via_nse": "TEXTILES - SYNTHETIC"
+  },
+  "OENCONNECT": {
+   "conf": 0.67,
+   "n": 3,
+   "via_nse": "ELECTRONICS - INDUSTRIAL"
+  },
+  "OPTOCIRCUI": {
+   "conf": 1.0,
+   "n": 15,
+   "via_nse": "PHARMA"
+  },
+  "ORBITCORP": {
+   "conf": 0.46,
+   "n": 46,
+   "via_nse": "CONSTRUCTION"
+  },
+  "ORCHIDPHAR": {
+   "conf": 0.96,
+   "n": 23,
+   "via_nse": "PHARMACEUTICALS"
+  },
+  "ORIENTBANK": {
+   "conf": 1.0,
+   "n": 21,
+   "via_nse": "BANKS"
+  },
+  "ORIENTINFO": {
+   "conf": 0.62,
+   "n": 16,
+   "via_nse": "COMPUTERS - SOFTWARE"
+  },
+  "PATNI": {
+   "conf": 0.62,
+   "n": 16,
+   "via_nse": "COMPUTERS - SOFTWARE"
+  },
+  "PEL": {
+   "conf": 1.0,
+   "n": 15,
+   "via_nse": "PHARMA"
+  },
+  "POLARIS": {
+   "conf": 0.62,
+   "n": 16,
+   "via_nse": "COMPUTERS - SOFTWARE"
+  },
+  "PRICOL": {
+   "conf": 0.92,
+   "n": 13,
+   "via_nse": "AUTO ANCILLARIES"
+  },
+  "PROVOGUE": {
+   "conf": 0.8,
+   "n": 5,
+   "via_nse": "TEXTILE PRODUCTS"
+  },
+  "PSL": {
+   "conf": 0.21,
+   "n": 14,
+   "via_nse": "MISCELLANEOUS"
+  },
+  "PUNJABTRAC": {
+   "conf": 0.5,
+   "n": 6,
+   "via_nse": "AUTOMOBILES - 4 WHEELERS"
+  },
+  "PUNJLLOYD": {
+   "conf": 0.46,
+   "n": 46,
+   "via_nse": "CONSTRUCTION"
+  },
+  "RAINCALCIN": {
+   "conf": 0.6,
+   "n": 5,
+   "via_nse": "PETROCHEMICALS"
+  },
+  "RANBAXY": {
+   "conf": 0.96,
+   "n": 23,
+   "via_nse": "PHARMACEUTICALS"
+  },
+  "RANEBRAKE": {
+   "conf": 0.92,
+   "n": 13,
+   "via_nse": "AUTO ANCILLARIES"
+  },
+  "REIAGROLTD": {
+   "conf": 0.75,
+   "n": 4,
+   "via_nse": "FOOD AND FOOD PROCESSING"
+  },
+  "RELCAPITAL": {
+   "conf": 1.0,
+   "n": 10,
+   "via_nse": "FINANCE"
+  },
+  "RELINFRA": {
+   "conf": 1.0,
+   "n": 9,
+   "via_nse": "POWER"
+  },
+  "RELMEDIA": {
+   "conf": 0.88,
+   "n": 17,
+   "via_nse": "MEDIA & ENTERTAINMENT"
+  },
+  "REVL": {
+   "conf": 0.92,
+   "n": 13,
+   "via_nse": "AUTO ANCILLARIES"
+  },
+  "RNAVAL": {
+   "conf": 0.72,
+   "n": 18,
+   "via_nse": "INDUSTRIAL MANUFACTURING"
+  },
+  "RNRL": {
+   "conf": 0.75,
+   "n": 4,
+   "via_nse": "GAS"
+  },
+  "ROLTA": {
+   "conf": 0.62,
+   "n": 16,
+   "via_nse": "COMPUTERS - SOFTWARE"
+  },
+  "RUCHISOYA": {
+   "conf": 1.0,
+   "n": 1,
+   "via_nse": "SOLVENT EXTRACTION"
+  },
+  "SAMTEL": {
+   "conf": 0.5,
+   "n": 2,
+   "via_nse": "CONSUMER DURABLES"
+  },
+  "SATYAMCOMP": {
+   "conf": 0.62,
+   "n": 16,
+   "via_nse": "COMPUTERS - SOFTWARE"
+  },
+  "SB&TINTL": {
+   "conf": 1.0,
+   "n": 1,
+   "via_nse": "GEMS"
+  },
+  "SBBJ": {
+   "conf": 0.97,
+   "n": 33,
+   "via_nse": "FINANCIAL SERVICES"
+  },
+  "SBT": {
+   "conf": 0.97,
+   "n": 33,
+   "via_nse": "FINANCIAL SERVICES"
+  },
+  "SHASUNPHAR": {
+   "conf": 1.0,
+   "n": 15,
+   "via_nse": "PHARMA"
+  },
+  "SHREEASHTA": {
+   "conf": 0.88,
+   "n": 17,
+   "via_nse": "MEDIA & ENTERTAINMENT"
+  },
+  "SHRENUJ": {
+   "conf": 1.0,
+   "n": 1,
+   "via_nse": "GEMS"
+  },
+  "SHRIRAMCIT": {
+   "conf": 0.97,
+   "n": 33,
+   "via_nse": "FINANCIAL SERVICES"
+  },
+  "SINTEX": {
+   "conf": 0.5,
+   "n": 4,
+   "via_nse": "PLASTIC AND PLASTIC PRODUCTS"
+  },
+  "SIRPAPER": {
+   "conf": 1.0,
+   "n": 3,
+   "via_nse": "PAPER AND PAPER PRODUCTS"
+  },
+  "SKUMARSYNF": {
+   "conf": 0.8,
+   "n": 5,
+   "via_nse": "TEXTILE PRODUCTS"
+  },
+  "SPTL": {
+   "conf": 0.72,
+   "n": 18,
+   "via_nse": "INDUSTRIAL MANUFACTURING"
+  },
+  "SREINFRA": {
+   "conf": 0.97,
+   "n": 33,
+   "via_nse": "FINANCIAL SERVICES"
+  },
+  "SRIADIKARI": {
+   "conf": 0.88,
+   "n": 17,
+   "via_nse": "MEDIA & ENTERTAINMENT"
+  },
+  "STER": {
+   "conf": 0.57,
+   "n": 14,
+   "via_nse": "METALS"
+  },
+  "STERLINBIO": {
+   "conf": 0.96,
+   "n": 23,
+   "via_nse": "PHARMACEUTICALS"
+  },
+  "SUNDRMCLAY": {
+   "conf": 0.92,
+   "n": 13,
+   "via_nse": "AUTO ANCILLARIES"
+  },
+  "SUPPETRO": {
+   "conf": 0.6,
+   "n": 5,
+   "via_nse": "PETROCHEMICALS"
+  },
+  "SYNDIBANK": {
+   "conf": 1.0,
+   "n": 21,
+   "via_nse": "BANKS"
+  },
+  "TATACOFFEE": {
+   "conf": 0.67,
+   "n": 3,
+   "via_nse": "TEA AND COFFEE"
+  },
+  "TATAMETALI": {
+   "conf": 0.5,
+   "n": 10,
+   "via_nse": "STEEL AND STEEL PRODUCTS"
+  },
+  "TATASTLBSL": {
+   "conf": 0.57,
+   "n": 14,
+   "via_nse": "METALS"
+  },
+  "TATASTLLP": {
+   "conf": 0.57,
+   "n": 14,
+   "via_nse": "METALS"
+  },
+  "TECHNO": {
+   "conf": 0.46,
+   "n": 46,
+   "via_nse": "CONSTRUCTION"
+  },
+  "THIRUSUGAR": {
+   "conf": 0.89,
+   "n": 9,
+   "via_nse": "SUGAR"
+  },
+  "TINPLATE": {
+   "conf": 0.57,
+   "n": 14,
+   "via_nse": "METALS"
+  },
+  "TODAYS": {
+   "conf": 0.21,
+   "n": 14,
+   "via_nse": "MISCELLANEOUS"
+  },
+  "TUBEINVEST": {
+   "conf": 1.0,
+   "n": 1,
+   "via_nse": "CYCLES"
+  },
+  "TULIP": {
+   "conf": 1.0,
+   "n": 5,
+   "via_nse": "TELECOMMUNICATION - SERVICES"
+  },
+  "TV-18": {
+   "conf": 0.88,
+   "n": 17,
+   "via_nse": "MEDIA & ENTERTAINMENT"
+  },
+  "TV18": {
+   "conf": 0.88,
+   "n": 17,
+   "via_nse": "MEDIA & ENTERTAINMENT"
+  },
+  "TV18BRDCST": {
+   "conf": 0.88,
+   "n": 17,
+   "via_nse": "MEDIA & ENTERTAINMENT"
+  },
+  "UBHOLDINGS": {
+   "conf": 0.97,
+   "n": 33,
+   "via_nse": "FINANCIAL SERVICES"
+  },
+  "UJJIVAN": {
+   "conf": 0.97,
+   "n": 33,
+   "via_nse": "FINANCIAL SERVICES"
+  },
+  "UNITY": {
+   "conf": 0.46,
+   "n": 46,
+   "via_nse": "CONSTRUCTION"
+  },
+  "UTTAMSTL": {
+   "conf": 0.5,
+   "n": 10,
+   "via_nse": "STEEL AND STEEL PRODUCTS"
+  },
+  "UTVSOF": {
+   "conf": 0.88,
+   "n": 17,
+   "via_nse": "MEDIA & ENTERTAINMENT"
+  },
+  "VALUEIND": {
+   "conf": 0.5,
+   "n": 2,
+   "via_nse": "CONSUMER DURABLES"
+  },
+  "VARUNSHIP": {
+   "conf": 1.0,
+   "n": 2,
+   "via_nse": "SHIPPING"
+  },
+  "VIDEOIND": {
+   "conf": 0.5,
+   "n": 2,
+   "via_nse": "CONSUMER DURABLES"
+  },
+  "VIJAYABANK": {
+   "conf": 1.0,
+   "n": 21,
+   "via_nse": "BANKS"
+  },
+  "VISHALEXPO": {
+   "conf": 0.33,
+   "n": 6,
+   "via_nse": "TRADING"
+  },
+  "VISUALSOFT": {
+   "conf": 0.62,
+   "n": 16,
+   "via_nse": "COMPUTERS - SOFTWARE"
+  },
+  "WYETH": {
+   "conf": 0.96,
+   "n": 23,
+   "via_nse": "PHARMACEUTICALS"
+  },
+  "ZANDUREALT": {
+   "conf": 0.96,
+   "n": 23,
+   "via_nse": "PHARMACEUTICALS"
+  },
+  "ZENITHCOMP": {
+   "conf": 1.0,
+   "n": 5,
+   "via_nse": "COMPUTERS - HARDWARE"
+  }
+ }
+}

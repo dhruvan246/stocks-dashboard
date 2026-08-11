@@ -176,8 +176,56 @@
   const OFFDATA = new Map(); // off -> { R, FV: [Float64Array per FILTFIELDS], ORD: Map('field|dir' -> Int32Array) }
   {
     const t0 = Date.now();
+    // DROP_UNCLASSIFIED=1 — measurement mode for the `indRank` defect (2026-08-12).
+    // The BSE industry map is a CURRENT snapshot, so in a survivorship-free universe the further
+    // back you go the more delisted names carry ind='Unknown': 31.9% of the universe in 2004,
+    // 0.6% today. indRank pools them into ONE pseudo-industry, whose average return then earns a
+    // single shared rank — and in 41 of 268 months that rank was <=3, admitting up to 163
+    // unrelated stocks through an `indRank<=3` filter in one clump.
+    // This flag drops unclassified rows and re-ranks industries without them, so the SAME strategy
+    // can be scored with and without the contamination. It deliberately does NOT change the engine.
+    const DROP_UNC = !!process.env.DROP_UNCLASSIFIED;
+    const UNCLASSIFIED = new Set(['Unknown', 'Uncategorized', 'Other', '', null, undefined]);
+    // IND_OVERRIDE=<json {symbol: bseSector}> — backfilled industries for stocks BSE no longer
+    // classifies (delisted names lose their classification, so a survivorship-free universe shows
+    // 32% 'Unknown' in 2004 falling to 0.6% today). Source: 13 archived NSE Nifty-500 constituent
+    // CSVs from the Wayback Machine, which carry a point-in-time Industry column; NSE's ~72-value
+    // taxonomy is folded into BSE's 23 via a mapping LEARNED from 846 stocks that have both.
+    // Applied BEFORE indRank is re-derived, so the fills actually change the industry ranking.
+    // IND_OVERRIDE may point at either the tracked scripts/industry_backfill.json (which wraps the
+    // data in {map, provenance, _caveats}) or a bare {symbol: sector} file.
+    const OVR = (() => {
+      if (!process.env.IND_OVERRIDE) return null;
+      const j = JSON.parse(fs.readFileSync(process.env.IND_OVERRIDE, 'utf8'));
+      return j && j.map ? j.map : j;
+    })();
+    let ovrHits = 0;
+    let droppedTot = 0, droppedOffs = 0;
     for (const off of ALLOFFS) {
-      const R = CACHE.get(off), n = R.length;
+      let R = CACHE.get(off);
+      if (OVR) {
+        for (const r of R) {
+          if (UNCLASSIFIED.has(r.ind) && OVR[r.sym]) { r.ind = OVR[r.sym]; ovrHits++; }
+        }
+        // industries changed ⇒ the cached indRank is stale; re-derive it exactly as the engine does
+        const byInd = {}; R.forEach(r => { (byInd[r.ind] = byInd[r.ind] || []).push(r.chg); });
+        const indAvg = Object.entries(byInd).map(([k, v]) => [k, v.reduce((a, b) => a + b, 0) / v.length])
+                             .sort((a, b) => b[1] - a[1]);
+        const map = {}; indAvg.forEach(([k], i) => { map[k] = Math.min(10, 1 + Math.floor(i / Math.max(1, indAvg.length / 10))); });
+        R.forEach(r => { r.indRank = map[r.ind] || 10; });
+      }
+      if (DROP_UNC) {
+        const keep = R.filter(r => !UNCLASSIFIED.has(r.ind));
+        if (keep.length !== R.length) { droppedTot += R.length - keep.length; droppedOffs++; }
+        R = keep;
+        // re-derive indRank over the surviving industries, same decile formula as the engine
+        const byInd = {}; R.forEach(r => { (byInd[r.ind] = byInd[r.ind] || []).push(r.chg); });
+        const indAvg = Object.entries(byInd).map(([k, v]) => [k, v.reduce((a, b) => a + b, 0) / v.length])
+                             .sort((a, b) => b[1] - a[1]);
+        const map = {}; indAvg.forEach(([k], i) => { map[k] = Math.min(10, 1 + Math.floor(i / Math.max(1, indAvg.length / 10))); });
+        R.forEach(r => { r.indRank = map[r.ind] || 10; });
+      }
+      const n = R.length;
       const FV = FILTFIELDS.map(f => { const a = new Float64Array(n);
         for (let i = 0; i < n; i++) { const x = fieldVal(R[i], f); a[i] = (x == null || typeof x !== 'number') ? NaN : Math.round(x * 1e6) / 1e6; }
         return a; });
@@ -190,6 +238,14 @@
         ORD.set(sfld + '|high', Int32Array.from(hi)); ORD.set(sfld + '|low', Int32Array.from(lo));
       }
       OFFDATA.set(off, { R, FV, ORD });
+    }
+    if (DROP_UNC) {
+      if (!droppedTot) throw new Error('DROP_UNCLASSIFIED set but NOTHING was dropped — the flag is a no-op (stale _gridmega_run.js?)');
+      console.error('DROP_UNCLASSIFIED: removed ' + droppedTot + ' unclassified rows across ' + droppedOffs + ' of ' + ALLOFFS.length + ' dates');
+    }
+    if (OVR) {
+      if (!ovrHits) throw new Error('IND_OVERRIDE set but NOTHING was filled — the flag is a no-op (stale _gridmega_run.js?)');
+      console.error('IND_OVERRIDE: filled ' + ovrHits + ' stock-months from ' + Object.keys(OVR).length + ' backfilled symbols');
     }
     console.error('presort built in ' + ((Date.now()-t0)/1000|0) + 's');
   }
