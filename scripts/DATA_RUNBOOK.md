@@ -1903,6 +1903,42 @@ quarter. The spread is the point: 2010-2015 averages ~30-40% a year but swings 1
 (Dec-15) — that era's coverage tracks which Wayback captures exist, not anything about the stocks, so a
 yearly average there is a number you should never quote on its own.
 
+**★★ THE §81 AGGREGATOR ROUTE DOES NOT TRANSFER TO SHAREHOLDING — all three MC surfaces MEASURED
+2026-08-11, and Trendlyne's floor with them.** Asked directly ("can we fill the rest through
+Moneycontrol the same way rev/PAT is getting filled?"), the answer is no, and the reason is
+structural rather than a matter of effort. §81's power comes from
+`appfeeds.moneycontrol.com/jsonapi/stocks/quarterly_results_responsive?...&limit=200` serving DEEP
+history (111 quarters, back to 1998-12, for WESTLIFE). **There is no shareholding analogue.** What
+exists, measured:
+
+| MC surface | what it serves | verdict |
+|---|---|---|
+| `appfeeds…/jsonapi/stocks/shareholding?sc_id=<id>&start=0&limit=200` | 2–4 rows, newest **Jun-2020** | **dead legacy feed.** `fii` is the literal string `"0"` on 5/5 companies (RI/TCS/INE/HDF01/ITC) and `dii` carries TOTAL institutions (RI Jun-20 38.06 ≈ FII 24.3 + DII 13.6). Unusable, and it is a §61a mode-4 trap: HTTP 200, well-formed JSON, plausible promoter/public, silently wrong FII/DII |
+| quote page `/india/stockpricequote/<sector>/<slug>/<sc_id>` | `showTrendGraph()` server-renders a JSON literal with real Promoter/FII/DII/Public/Others — **exactly 5 quarters** (RELIANCE Jun-2025→Jun-2026) | correct values, no history. A recent-window second opinion only |
+| `/company-facts/<slug>/shareholding-pattern/<sc_id>[/<qtrid>.00]` | the DEEP per-quarter route | **dead on live MC** — serves the `/mc/error` page. It survives ONLY in Wayback, which is exactly what `fetch_shp_wayback_mc.py` already harvests (43,984 captures, two rounds, union ledger) |
+
+Naming the endpoint suffix wrong also returns **HTTP 200** with the 7-byte body `BAD URL`
+(`shareholding_responsive`, `shareholding_pattern`, `share_holding`, `shp`, `stock_holding`,
+`holding_responsive` all did) — never gate an MC probe on the status code alone.
+
+**TRENDLYNE's shareholding floor is Dec-2015, measured, and it lies with a 200.**
+`trendlyne.com/equity/share-holding/<tid>/<SYM>/<DD-MM-YYYY>/x/` answers **200 for a 2011 or 2014
+date** and the page still carries percentages (from unrelated widgets) — but the body says
+*"Shareholding data of <company> is not available."*, the row set loses `foreign portfolio` and
+`insurance compan`, and **the page's own quarter menu starts at Dec 2015 on every URL** (RELIANCE
+2011-03-31 and 2014-03-31 came back byte-identical at 113,180 — the date is ignored). Gate on the
+category ROWS, never on the status code or on the presence of `%`. So Trendlyne cannot reach the
+2010-2015 residual either; it was the seam fixer (Dec-15/Mar-16) and a Sep-2019+ gap filler, which
+is precisely the window where it does have data.
+
+**Therefore the 2010-2015 residual (7,147 member-qtrs) is bounded by WHICH WAYBACK CAPTURES EXIST**,
+as §22f already said — not by an untried site. Pre-Sep-2010 (15,473) has no source at all: the
+ledger's earliest row anywhere is 2010-09-30. **Untested lead, recorded so it is not mistaken for
+a closed door** ([[§57]] — a route returning nothing is never proof the value is unreachable): the
+Wayback census enumerates the `moneycontrol.com/company-facts/*` prefix ONLY. MC's era quote pages
+(`/india/stockpricequote/*`) are a SECOND capture family that was never enumerated, and whether
+2011-2015 captures of those carry a shareholding block is **unknown — not measured**.
+
 **✅ SWEPT SAME DAY (2026-08-07): +1,604 cells, Jun-16→Jun-19 79%→98.8%, Sep-19→Jun-26 97.8%→99.8%.**
 `scripts/fetch_shp_bse_hist.py` (rebuilt) → ledger `scripts/shp_fill_n500_gaps.json.gz` → applied by
 `python3 scripts/fetch_shareholding.py --apply-ledgers` (new offline entry point: merge ledgers + rebuild
