@@ -2568,6 +2568,7 @@
   "row_label": "Net Sales/Income from operations",
   "sc_id": "BES",
   "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
+  "superseded": "DRIFT LEFT UNRESOLVED, deliberately. Live 840.62 is the 2018 session's \u00a760d FY-annual derivation (annual minus three crore-rounded siblings, so its own error envelope is ~2 crore); this ledger's 840.45 is a direct quarterly read whose con differs from MC's own std by 8.91, so the consolidated table is genuine. The 0.17 gap sits INSIDE the derivation's rounding envelope, so neither value is proven more accurate and overwriting a live value needs proof, not a preference. The tiebreak, if it is ever worth it: make MC's own four quarters sum to MC's own annual for FY2019.",
   "type_format": "cons_quarterly"
  },
  "BHAGERIA|20190930|con": {
@@ -13648,6 +13649,7 @@
   "row_label": "Total Income From Operations",
   "sc_id": "MMT",
   "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
+  "superseded": "SUPERSEDED by a DOCUMENT. Live 9449.02 comes from vision_rung_fills_2018 \u2014 a read of the filing itself, which outranks an aggregator (\u00a757 ladder). MC's 9437.4 is a genuine consolidated figure (its con differs from its own std by 70.62) but it is the weaker source.",
   "type_format": "cons_quarterly"
  },
  "MMTC|20190331|con": {
@@ -19498,6 +19500,7 @@
   "row_label": "Total Income From Operations",
   "sc_id": "S",
   "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
+  "superseded": "SUPERSEDED, and this ledger value is on the WRONG ROW. Live 2753.3 is Moneycontrol's own 'Net Sales/Income from operations' for this quarter; 2825.9 is its 'Total Income From Operations', i.e. Net Sales plus other income. Both are real MC rows and they differ by 72.60 \u2014 the store's convention here is Net Sales. Never re-apply this value.",
   "type_format": "cons_quarterly"
  },
  "SIGMAADV|20201231|con": {
