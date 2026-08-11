@@ -625,10 +625,12 @@ function renderFunds(){
   const gCell=g=>`<td class="text-right px-2 ${g==null?'':(g>=0?'pos':'neg')}">${g==null?'—':pct(g)}</td>`;
   const rxCell=e=>{ const q=fundBy[e], rr=q?reactionAt(annOf(q)):null;
     return `<td class="text-right px-2 ${rr==null?'':(rr.rx>=0?'pos':'neg')}">${rr==null?'—':pct(rr.rx)}</td>`; };
+  const annCell=e=>{ const q=fundBy[e], a=q?annOf(q):null;
+    return `<td class="text-right px-2 text-slate-500 whitespace-nowrap">${a==null?'—':ymd2iso(a)}</td>`; };
   $('funds').innerHTML=`<table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>`+
     `<th class="text-left py-1 pr-2">Quarter end</th><th class="text-right px-2">Revenue</th><th class="text-right px-2">Rev YoY</th>`+
     `<th class="text-right px-2">Op profit</th><th class="text-right px-2">OPM</th><th class="text-right px-2">EBIT</th>`+
-    `<th class="text-right px-2">Net profit</th><th class="text-right px-2">PAT YoY</th><th class="text-right px-2">React</th><th class="text-right px-2">Basis</th>`+
+    `<th class="text-right px-2">Net profit</th><th class="text-right px-2">PAT YoY</th><th class="text-right px-2" title="Date the result was filed with the exchange">Announced</th><th class="text-right px-2">React</th><th class="text-right px-2">Basis</th>`+
     `</tr></thead><tbody>`+
     show.map(e=>{ const p=pat(e), r=vOf(rev(e)), o=vOf(op(e)), eb=vOf(ebit(e)), mg=opm(e);
       return `<tr class="border-b border-slate-50"><td class="py-1 pr-2 font-medium whitespace-nowrap">${fq(e)}</td>`+
@@ -636,7 +638,7 @@ function renderFunds(){
         num(o,o!=null&&o<0?'neg':'')+
         `<td class="text-right px-2 ${mg==null?'':(mg>=0?'':'neg')}">${mg==null?'—':mg.toFixed(1)+'%'}</td>`+
         num(eb,eb!=null&&eb<0?'neg':'')+
-        num(p,p!=null&&p<0?'neg':'font-semibold')+gCell(patYoY(e))+rxCell(e)+
+        num(p,p!=null&&p<0?'neg':'font-semibold')+gCell(patYoY(e))+annCell(e)+rxCell(e)+
         `<td class="text-right px-2 text-[11px] text-slate-400 uppercase">${basis(e)}</td></tr>`;
     }).join('')+`</tbody></table>`;
 
@@ -644,7 +646,7 @@ function renderFunds(){
     'Net profit is the owners-attributable share; “Basis” shows whether the row is consolidated or standalone. '+
     'Op profit = EBITDA (revenue less operating expenses, before interest and depreciation); EBIT is after depreciation. '+
     'YoY always compares both periods on the <i>same</i> basis (consolidated when both filed it, else standalone) — it is blank when the two share no basis, because mixing them invents growth that never happened. '+
-    '“React” is the close-to-close move on the first trading day on/after the results announcement.'];
+    '“Announced” is the date the result was filed with the exchange; “React” is the close-to-close move on the first trading day on/after the results announcement.'];
   // basis note — only says something the Basis column doesn't already
   if(!anyCon) notes.push('This company files <b>standalone</b> results only — no consolidated filing on file, so there is nothing to switch to.');
   else if(!anyStd) notes.push('This company files <b>consolidated</b> results only.');

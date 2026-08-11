@@ -205,7 +205,7 @@
               <th data-s="py"   class="text-right px-2">PAT YoY ⇅</th>
               <th data-s="pq"   class="text-right px-2">PAT QoQ ⇅</th>
               <th data-s="v"    class="text-center px-1" title="Rule-based verdict from PAT growth, revenue growth and margin change">✓ ⇅</th>
-              <th data-s="ann"  class="text-right px-2" title="Result announcement date (post-close filings dated next trading day)">Date ⇅</th>
+              <th data-s="ann"  class="text-right px-2" title="Result announcement date (post-close filings dated next trading day)">Announced ⇅</th>
               <th data-s="rx"   class="text-right px-2" title="% price move on result day">Reaction ⇅</th>
               <th data-s="sr"   class="text-right px-2" title="% price drift from result-day close to latest close">Since ⇅</th>
             </tr></thead>
@@ -1092,6 +1092,9 @@ function openModal(sym){
   let rxRow='<tr><th>Reaction</th>';
   for(let i=cols-1;i>=0;i--){ const v=c.q[i]?c.q[i][7]:null; rxRow+='<td class="font-bold '+pctCls(v)+'">'+fmtPct(v)+'</td>'; }
   rxRow+='</tr>';
+  let annRow='<tr><th>Announced</th>';
+  for(let i=cols-1;i>=0;i--){ const v=c.q[i]?c.q[i][6]:null; annRow+='<td class="text-slate-500">'+fmtDate8(v)+'</td>'; }
+  annRow+='</tr>';
   const feedRow=FEEDROWS.find(r=>r[0]===sym&&r[5]);
   const latest=c.q[ST.qi]||c.q.find(r=>r);
   $('modal').innerHTML=
@@ -1111,8 +1114,8 @@ function openModal(sym){
         '<div class="text-lg font-extrabold mt-1">'+(avgAbs!=null?('±'+avgAbs.toFixed(1)+'%'):'—')+'</div>'+
         '<div class="text-[11px] text-slate-500">typical move · up '+(upRate==null?'—':upRate+'%')+' of '+rxs.length+' results'+(c.e?' · next ~'+esc(c.e):'')+'</div></div></div>'+
     '<div class="overflow-x-auto mt-4 rounded-lg border border-slate-100"><table class="qtbl w-full">'+
-      '<thead class="text-[10px] uppercase text-slate-500 bg-slate-50">'+head+'</thead><tbody class="divide-y divide-slate-100">'+rowsHtml+rxRow+'</tbody></table></div>'+
-    '<div class="text-[10.5px] text-slate-400 mt-1.5">₹ crore · consolidated preferred (owners-attributable PAT) · sub-figures = YoY growth · Reaction = result-day price move</div>'+
+      '<thead class="text-[10px] uppercase text-slate-500 bg-slate-50">'+head+'</thead><tbody class="divide-y divide-slate-100">'+rowsHtml+rxRow+annRow+'</tbody></table></div>'+
+    '<div class="text-[10.5px] text-slate-400 mt-1.5">₹ crore · consolidated preferred (owners-attributable PAT) · sub-figures = YoY growth · Reaction = result-day price move · Announced = result filing date</div>'+
     '<div class="flex flex-wrap gap-2 mt-4">'+
       (feedRow?'<a class="docbtn" target="_blank" rel="noopener" href="'+esc(feedRow[5].indexOf('http')===0?feedRow[5]:PDF_PREFIX+feedRow[5])+'">Latest filing PDF ↗</a>':'')+
       (c.bse
