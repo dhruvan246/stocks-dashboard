@@ -143,11 +143,24 @@ def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
     try: _RAW = json.load(open(os.path.join(HERE, "crash_raw_prices.json")))
     except Exception: _RAW = {}
     daycache = {}
+    # a renamed symbol's PRE-RENAME day rows carry the era ticker (TMPV's old rows say
+    # TATAMOTORS), so raw_close on a current key misses them — try the rename-map aliases
+    # (same rule build_demerger_adj uses). Matters for pre-2016 heal events (2026-08-11).
+    try:
+        _ren = json.load(open(os.path.join(HERE, "_rename_map.json")))
+    except Exception:
+        _ren = {}
+    _alias = {}
+    for _o, _n in _ren.items(): _alias.setdefault(_n, []).append(_o)
     def raw_close(ymd, sym):
         if ymd not in daycache:
             rows = B.fetch_day(datetime.date(ymd // 10000, ymd // 100 % 100, ymd % 100), jar) or []
             daycache[ymd] = {r[0]: r[1] for r in rows}
         v = daycache[ymd].get(sym)
+        if v is None:
+            for _a in _alias.get(sym, ()):
+                v = daycache[ymd].get(_a)
+                if v is not None: break
         if v is None:   # CI runners get blocked/rate-limited fetching NSE's archive -> fall back to the
             v = (_RAW.get(sym) or {}).get(str(ymd))   # committed raw ex-date prices so self_heal still works
         return v

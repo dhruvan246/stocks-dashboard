@@ -74,6 +74,11 @@ def official_factor(subj):
     """Return (price_factor, label) for a split/bonus subject, else (None, None).
     Split: face value Rs X -> Rs Y  => factor Y/X.   Bonus B:A (B new per A held) => A/(A+B)."""
     s = (subj or "").lower()
+    # A bonus/split of a DIFFERENT instrument class is not an equity price factor: preference
+    # shares (TVSHLTD "Bonus Ncrps 1:116"), DVRs ("Bonus 1 Dvr : 10 Eq"), debentures. Never
+    # multiply these in (2026-08-11 campaign; previously only the numeric gate excluded them).
+    if re.search(r"\bncrps\b|\bdvr\b|preference|debenture", s):
+        return (None, None)
     factor = 1.0; parts = []
     # A single NSE subject can carry a bonus AND a split together ("Bonus 1:1/Face Value Split - From
     # Rs 10 To Re 1") -> the price factor is their PRODUCT. The old code returned on the FIRST match and
@@ -83,6 +88,10 @@ def official_factor(subj):
     # so accept BOTH (the rs-only regex silently dropped every split down to Re.1, e.g. GAEL Rs2->Re1).
     # NSE also files abbreviated subjects ("Fv Splt Frm Rs 10 To Rs 2") — accept frm/splt variants
     m = re.search(r'f(?:ro|r)m\s*(?:r[se]\.?\s*)?([\d.]+).*?to\s*(?:r[se]\.?\s*)?([\d.]+)', s)
+    # pre-2016 era format has NO "From" word at all: "Fv Split Rs.10/- To Rs.2/" (66x in the
+    # 2006-2015 feed), even "Split-Rs.10toRs.2". Fall back to a bare Rs-to-Rs pattern.
+    if not m:
+        m = re.search(r'r[se]\.?\s*([\d.]+)\s*/?-?\s*to\s*r[se]\.?\s*([\d.]+)', s.replace("tors", "to rs"))
     if m and ("split" in s or "splt" in s or "sub-division" in s or "sub division" in s or "subdivision" in s):
         x, y = float(m.group(1)), float(m.group(2))
         if x and 0 < y < x: factor *= y / x; parts.append("split FV %s->%s" % (m.group(1), m.group(2)))
@@ -112,7 +121,11 @@ def fetch():
             ex = F.iso(r.get("exDate"))
             if not ex: continue
             f, _ = official_factor(subj)
-            if f and 0.05 < f < 0.95:
+            # gate was 0.05 < f < 0.95: a combined "Bonus 1:1 + FV split 10->1" computes to
+            # EXACTLY 0.05 and was silently dropped (SUNILHITEC 2016-12-01 — the very case the
+            # combined parser was built for), and small bonuses like 1:26 (0.963, INFINITE
+            # 2017-11-01) fell off the top. Real combined events go as low as 1/23 x 1/10.
+            if f and 0.002 < f < 0.98:
                 dd = cmap.setdefault(r.get("symbol"), {})   # combine same-day actions (e.g. BAJFINANCE
                 dd[int(ex)] = round(dd.get(int(ex), 1.0) * f, 6); n += 1   # 1:2 split x 4:1 bonus = 0.10
             elif is_demerger(subj):
@@ -123,6 +136,24 @@ def fetch():
 
 def main():
     cmap, demap = fetch()
+    # PRE-2016 HISTORY (2026-08-11 campaign): the API loop above starts at 2016. Verified
+    # split/bonus factors and demerger/scheme keep-drop dates for 1999-2015 live in the TRACKED
+    # ledger scripts/corp_actions_hist.json (built once from the same NSE feed + BSE/Yahoo
+    # verification — see DATA_RUNBOOK); merge it here so daily regeneration never loses them.
+    try:
+        _h = json.load(open(os.path.join(HERE, "corp_actions_hist.json")))
+        for sym, evs in _h.get("factors", {}).items():
+            dd = cmap.setdefault(sym, {})
+            for ex, f in evs:
+                dd.setdefault(int(ex), f)
+        for sym, exs in _h.get("noadjust", {}).items():
+            demap.setdefault(sym, set()).update(int(e) for e in exs)
+        print("Merged corp_actions_hist.json: %d factor symbols, %d noadjust symbols"
+              % (len(_h.get("factors", {})), len(_h.get("noadjust", {}))))
+    except FileNotFoundError:
+        pass
+    except Exception as e:
+        print("  (corp_actions_hist.json unreadable: %s)" % e)
     # Merge the hardcoded/auto-detected false-CA (crash) overrides so they survive this daily
     # regeneration (NSE's feed doesn't list market crashes, so they'd vanish otherwise). BUT a
     # crash-flag on a date that ALSO carries an official split/bonus is a FALSE POSITIVE: the big

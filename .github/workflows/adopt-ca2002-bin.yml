@@ -1,0 +1,32 @@
+# ONE-SHOT adopter for the 2026-08-11 pre-2016 corporate-actions heal (runbook §87).
+# A session can't `gh release upload` a 190MB bin (permission classifier) or commit it
+# (>100MB). So the healed bin is byte-split onto the orphan branch `ca2002-bin`; this
+# workflow joins the chunks and replaces the release asset. Delete branch + this file
+# after adoption is verified live (same pattern as the 2026-08-02 rebuild).
+name: Adopt CA-2002 healed bin (one-shot)
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  adopt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ca2002-bin
+      - name: Join chunks and verify
+        run: |
+          cat sf_stock_data.bin.part* > sf_stock_data.bin
+          python3 - <<'EOF'
+          import json, gzip
+          d = json.loads(gzip.decompress(open('sf_stock_data.bin','rb').read()))
+          assert d['end'] >= '2026-08-11', d['end']
+          assert len(d['data']) > 4000, len(d['data'])
+          print('joined OK: end=%s symbols=%d' % (d['end'], len(d['data'])))
+          EOF
+      - name: Replace release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload data sf_stock_data.bin --clobber -R "$GITHUB_REPOSITORY"
+          echo "release asset replaced"

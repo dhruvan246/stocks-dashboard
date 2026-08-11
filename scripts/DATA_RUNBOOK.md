@@ -7858,3 +7858,96 @@ company's history split across two keys.
   2020-2026 case). markPrice in BOTH engines now carries a dead series at its last traded close,
   so any death (merger, scheme, true delisting) exits at the last print on the next rebalance.
   Loss up to that print is still fully counted; the forced last-print→0 step is gone.
+
+
+## 87. ★★★ PRE-2016 CORPORATE ACTIONS — the 2002→2016 extension of the price-adjustment layer  (2026-08-11)
+**NO ASSUMPTIONS, NO GUESSWORK** — every factor written traces to an official record or two independent readers; every count below was measured this session.
+
+### 87a. The gap this closed
+The price builds adjust splits/bonuses via `corp_actions.json` — whose NSE-feed loop STARTED AT 2016.
+Everything earlier rode on `ca_factor()` inference alone (ratio snaps to a CA fraction within 8%),
+which has four measured failure modes:
+1. **Ex-day move >8% off the fraction → the whole split is silently KEPT.** Flagship: ITC
+   2005-09-21 (1:2 bonus + FV 10→1 = 1/15; +9% ex-day rally put the raw ratio at 0.0727, snapping
+   to nothing) — the live bin carried a fake −92.7% "crash", all pre-2005 ITC ~15× off basis.
+   Same class: BERGEPAINT-2015, HAVELLS-2014, BRITANNIA-2010, ABB-2007, JINDALSTEL-2008,
+   KOTAKBANK-2005, UNITECH-2006 (1:1... actually 12:1 bonus × split = 0.0154), EIHOTEL-2006.
+2. **Crashes divided out as phantom splits** (the LEGACY_FALSE_CA class, pre-2016 era).
+3. **Demergers divided out as splits** (RELIANCE 2006-01-18's −25% separation was divided out as
+   a phantom 3/4; IDFC 2015-10-01 as 2/5).
+4. **Wrong fraction on ex-day pops** (VENKEYS 2015: true 2/3 baked as 3/4; SURANAT&P 1/5 as 1/4).
+
+### 87b. Sources and their measured floors
+- NSE corporates-corporateActions API: serves back to 1999, but split/bonus subjects are only
+  dense from **2006** (2005: 829 rows, ONE bonus). 2002-2005 = dividends/AGM only.
+- Era subject format differs: `Fv Split Rs.10/- To Rs.2/` — NO "From" word; the parser now
+  accepts it (build_corp_actions.official_factor). Gate widened (0.05,0.95)→(0.002,0.98):
+  combined "Bonus 1:1 + split 10→1" = exactly 0.05 was being dropped (SUNILHITEC-2016 —
+  ironically the case the combined parser was written for); pref/NCRPS/DVR bonuses now excluded
+  by CLASS, not by the numeric gate.
+- BSE per-scrip CA API (`DefaultData/w ... scripcode=`): reaches 2002+, ISIN-gated resolution
+  only (bse_scrips.json by_isin). Blanket (no-scrip) queries are silently capped — never use them.
+- Yahoo chart API split events: good 2002+ coverage for survivors, but records only ONE leg of
+  combined bonus+split events (ITC → "10:1" only) and has wrong-date rows — NEVER write a Yahoo
+  factor without the open-gap gate.
+
+### 87c. The arbiters (calibrated on 566 ground-truth events)
+- **PREV_CLOSE does NOT arbitrate**: measured UNADJUSTED on ex-dates in every era (562/566).
+  (Its BZ-gap use — resumption-day re-basings — is a different situation.)
+- **The OPEN does**: on a real CA the ex-day OPEN prints at the adjusted basis —
+  (open/prev)/factor ∈ [0.957, 1.100] for p5..p95 of true CAs; equity crashes sit ≥ 1.19
+  (they open near flat and fall intraday). Gate: ≤1.12 = CA-like, ≥1.18 = crash-like.
+- Volume rescale (~1/factor) is too noisy to decide factor-2 events; supporting evidence only.
+- Special dividends explain drops via the feed's dividend rows (amount ≈ drop in ₹).
+- 2016+ only: absence from BOTH dense feeds = phantom (the audit_phantom_ca standing rule).
+
+### 87c-bis. Measured outcome (this campaign)
+- `corp_actions_hist.json`: **714 factor events / 538 symbols** (24 wrong-fraction fixes —
+  VENKEYS 3/4→2/3, KARURVYSYA 2/3→5/7, ENGINERSIN 1/5→1/6...; 111 verdict-confirmed additions;
+  8+ sweep additions incl. ITC 1/15 and UNITECH 1/13×... combined events; 11 feed rows the tape
+  contradicts EXCLUDED; DPSCLTD 20111215 excluded as pathological). noadjust: 99 dates.
+- `phantom_crashes.json`: +104 keep-drop dates / 78 symbols (era crashes; special-dividend drops
+  PFIZER-2013 ₹360, STAR-2013 ₹500; penny-tick reverse factors; 2016-17 dual-feed-absent).
+- `rights_terp.json`: +51 (total 253). `demerger_adj.json`: +11 (total 94).
+- Heal preview: **307 series rescales**; largest-history: VENKEYS ×0.889 over 3,773 bars,
+  BERGEPAINT ×0.5 over 3,543, HAVELLS ×0.2 over 3,182, ITC ×0.0667 over 1,252.
+- Readers run: Yahoo 1,856 symbols (499 event-boundaries, 76 missed + 54 oddball), BSE ~190
+  per-scrip records, 25,173 dividend rows crossed, open-gap + volume + panic-day breadth local.
+- Residue: 209-item manual queue committed at `scripts/ca2002_campaign/manual_queue.json`
+  (+ verdicts.json.gz, kept_drops.json.gz — full evidence per event).
+
+### 87d. What was written where
+- `scripts/corp_actions_hist.json` (NEW, tracked): pre-2016 factors + noadjust, keyed by CURRENT
+  bin symbol; merged into corp_actions.json by build_corp_actions.py on every regeneration.
+- `scripts/phantom_crashes.json`: pre-2016 verified crash keep-drops appended.
+- `scripts/rights_terp.json`: 1999-2013 parseable rights TERP entries (issue price = FV+premium;
+  FV reconstructed from the feed's own FV-transition records + EQUITY_L — "premium" is NOT the
+  issue price). Residual semantics vs baked state (M&MFIN-2020 pattern).
+- `scripts/demerger_adj.json`: pre-2016 strict-demerger entries (factor = ex-open/prev from the
+  era bhavcopy) incl. record-verified RELIANCE 2006-01-18 (0.6248 — the special-session price)
+  and ZEEL 2006-12-18.
+- `scripts/update_sf_data.py`: self_heal raw_close is rename-alias-aware (era tickers).
+- Heal applied via SF_HEAL_WINDOW full reconciliation run locally (bhav cache required — CI's
+  28-day window never revisits these, so CI needs no old bhavcopies).
+
+### 87e. Rerun recipe
+1. Worktree from origin/main + `scripts/_bhav_cache` (APFS-clone the backup: /Users/dhruv/...
+   stocks-dashboard-oldpc-backup — 1996→2026 raw day rows, 1GB).
+2. `python3 scripts/build_corp_actions.py` (merges hist ledger).
+3. `SF_HEAL_WINDOW=99999 python3 scripts/update_sf_data.py` — self_heal reconciles every ledger
+   event against the bin using raw cache closes; idempotent (re-run = no-ops).
+4. STOP-GATE: heal log vs heal_preview, ITC/RELIANCE/IDFC/VENKEYS spot series, end not regressed.
+5. Publish: split + orphan-branch + one-shot join/upload workflow (§1 rebuild pattern) →
+   `gh workflow run refresh-backtest-data.yml` → verify live rev + client.
+
+### 87f. Residue (documented, NOT healed — never guess)
+- ~140 AMBIGUOUS boundaries (evidence recorded in the campaign files): mostly delisted microcaps
+  no reader reaches. Left as baked.
+- Sub-noise small CAs on penny stocks (a 1:10 bonus on a ₹2 stock hides inside paise rounding).
+- Pre-2006 demergers beyond the record-verified set (feed blind; kept-drop candidates with
+  open-gap ≤0.92 live in the campaign queue for future record checks).
+- Rights with unparseable terms / partly-paid / PCD classes: skipped, same policy as the 2014+
+  sweep.
+- Suspension-gap boundaries (~120): factors riding on resumption gaps; only Yahoo can arbitrate
+  and mostly doesn't reach. Left as baked.
+
