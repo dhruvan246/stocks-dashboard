@@ -46,6 +46,9 @@ _strag_*
 # so this surgical one must ship alongside it
 !scripts/_shp_merge_nsh.py
 !scripts/_shp_revision_adjudicated.json
+# fii==0.0-vs-neighbour audit: per-cell verdicts (healed / zero-confirmed / open) for the
+# swallowed-foreign-block class — the evidence behind every cell shp_cell_fix.json corrects
+!scripts/_shp_zero_fii_audit.json
 
 # One-off backfill/scratch scripts swept out of the way (never tracked)
 scripts/archive/
