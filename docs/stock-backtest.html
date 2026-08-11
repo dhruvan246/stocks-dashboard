@@ -1070,6 +1070,8 @@ function render(r,cfg){
       <a href="./backtest-history.html" class="text-xs text-indigo-600 hover:underline ml-auto">View history →</a>
     </div>`;
   html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2"><span class="text-blue-700">Strategy</span> vs <span class="text-amber-600">Nifty 500</span> — ₹${cfg.capital.toLocaleString('en-IN')} grows to… <span class="text-slate-400 font-normal">(hover for values)</span></div><div id="eqc"></div></div>`;
+  // ----- drawdown (underwater) curve: % below the running peak, strategy vs benchmark -----
+  html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2">📉 Drawdown — <span class="text-blue-700">Strategy</span> vs <span class="text-amber-600">Nifty 500</span> <span class="text-slate-400 font-normal">— % below the running peak; 0% = at a new high, the deepest dip = max drawdown (hover for values)</span></div><div id="ddc"></div></div>`;
   // ----- returns over the backtest period (per-rebalance bar chart) -----
   html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2">📊 Returns over the backtest period <span class="text-slate-400 font-normal">— each rebalance period's return (blue = up, red = down)</span></div><div id="prc" class="overflow-x-auto"></div></div>`;
   // ----- qualifying universe over time (count of ALL stocks meeting the strategy's filters) -----
@@ -1129,6 +1131,7 @@ function render(r,cfg){
     <div id="tradePager" class="flex flex-wrap items-center justify-center gap-1 mt-3 text-xs"></div></div>`;
   $('out').innerHTML=html;
   drawEquity(r);
+  drawDrawdown(r);
   drawPeriodReturns(r);
   setupQual(cfg);
   TRADE_PAGE=0; renderTradePage(0);
@@ -1399,6 +1402,47 @@ function drawEquity(r){
     const sr=(sv/base-1)*100, nr=nv!=null?(nv/base-1)*100:null;
     tip.innerHTML=`<b>${eq[i][0]}</b><br><span style="color:#60a5fa">●</span> Strategy ${fmtINR(sv)} <span style="color:${sr>=0?'#4ade80':'#f87171'}">(${sr>=0?'+':''}${sr.toFixed(1)}%)</span>`
       +(nv!=null?`<br><span style="color:#fbbf24">●</span> Nifty 500 ${fmtINR(nv)} <span style="color:${nr>=0?'#4ade80':'#f87171'}">(${nr>=0?'+':''}${nr.toFixed(1)}%)</span>`:'');
+    tip.style.display=''; tip.style.left=(sx/W*rect.width)+'px'; tip.style.top=(Math.min(y(sv), nv!=null?y(nv):y(sv))/H*rect.height)+'px';
+  }
+  hit.addEventListener('mousemove',at);
+  svgEl.addEventListener('mouseleave',()=>{[tip,g,d1,d2].forEach(e=>e.style.display='none');});
+}
+// underwater curve: % below the running peak at every point (0 = new high). The equity chart shows
+// growth; this shows the pain along the way — the deepest dip is the "Max drawdown" card's number.
+function drawDrawdown(r){
+  const el=$('ddc'); if(!el) return;
+  const eq=r.equity, bn=((r.bench500&&r.bench500.length?r.bench500:r.bench)||[]); const n=eq.length; if(n<2)return;
+  const dd=arr=>{ let peak=null; return arr.map(p=>{ const v=p?p[1]:null; if(v==null) return null;
+    if(peak==null||v>peak) peak=v; return peak>0?-(peak-v)/peak*100:0; }); };
+  const ds=dd(eq), db=dd(bn);
+  const W=900,H=230,PL=64,PR=16,PT=12,PB=28;
+  const mn=Math.min(-1,...ds.filter(v=>v!=null),...db.filter(v=>v!=null));   // -1 floor: a flat run still gets an axis
+  const x=i=>PL+(W-PL-PR)*i/(n-1), y=v=>PT+(H-PT-PB)*(1-(v-mn)/(0-mn)), y0=y(0);
+  const path=arr=>arr.map((v,i)=>v==null?'':((arr.slice(0,i).every(q=>q==null)?'M':'L')+x(i).toFixed(1)+' '+y(v).toFixed(1))).filter(Boolean).join(' ');
+  let yl=''; for(let k=0;k<=3;k++){const v=mn*(1-k/3),yy=y(v);yl+=`<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="#f1f5f9"/><text x="${PL-4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${v.toFixed(0)}%</text>`;}
+  let xl=''; const step=Math.ceil(n/8); eq.forEach((p,i)=>{if(i%step)return; xl+=`<text x="${x(i).toFixed(1)}" y="${H-8}" font-size="9" fill="#94a3b8" text-anchor="middle">${p[0].slice(0,7)}</text>`;});
+  // worst point of the strategy curve — the max-drawdown trough, marked in red
+  let ti=0; ds.forEach((v,i)=>{ if(v!=null&&v<ds[ti]) ti=i; });
+  const trough=ds[ti]<0?`<circle cx="${x(ti).toFixed(1)}" cy="${y(ds[ti]).toFixed(1)}" r="3.5" fill="#dc2626" stroke="#fff"/><text x="${x(ti).toFixed(1)}" y="${(y(ds[ti])+14).toFixed(1)}" font-size="10" font-weight="700" fill="#dc2626" text-anchor="middle">${ds[ti].toFixed(1)}%</text>`:'';
+  const svg=`<svg id="ddsvg" viewBox="0 0 ${W} ${H}" class="w-full">${yl}${xl}`
+    +`<path d="M ${x(0).toFixed(1)} ${y0.toFixed(1)} ${ds.map((v,i)=>'L '+x(i).toFixed(1)+' '+y(v).toFixed(1)).join(' ')} L ${x(n-1).toFixed(1)} ${y0.toFixed(1)} Z" fill="rgba(37,99,235,.10)"/>`
+    +`<path d="${path(db)}" fill="none" stroke="#f59e0b" stroke-width="1.6"/><path d="${path(ds)}" fill="none" stroke="#2563eb" stroke-width="2"/>`
+    +`<line x1="${PL}" y1="${y0.toFixed(1)}" x2="${W-PR}" y2="${y0.toFixed(1)}" stroke="#cbd5e1"/>`+trough
+    +`<line id="ddg" x1="0" y1="${PT}" x2="0" y2="${H-PB}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3" style="display:none"/>`
+    +`<circle id="ddd1" r="3.5" fill="#2563eb" stroke="#fff" style="display:none"/><circle id="ddd2" r="3.5" fill="#f59e0b" stroke="#fff" style="display:none"/>`
+    +`<rect id="ddhit" x="${PL}" y="${PT}" width="${W-PL-PR}" height="${H-PT-PB}" fill="transparent" style="cursor:crosshair"/></svg>`;
+  el.innerHTML=`<div style="position:relative">${svg}<div id="ddtip" style="position:absolute;display:none;pointer-events:none;background:#0f172a;color:#fff;font-size:11px;line-height:1.5;padding:6px 9px;border-radius:6px;white-space:nowrap;transform:translate(-50%,calc(-100% - 10px));z-index:20;box-shadow:0 2px 10px rgba(0,0,0,.3)"></div></div>`;
+  const svgEl=$('ddsvg'), tip=$('ddtip'), g=$('ddg'), d1=$('ddd1'), d2=$('ddd2'), hit=$('ddhit');
+  const fmtDD=v=>v>=-0.005?'at high (0%)':v.toFixed(2)+'%';
+  function at(ev){
+    const rect=svgEl.getBoundingClientRect();
+    let i=Math.round((((ev.clientX-rect.left)/rect.width*W)-PL)/(W-PL-PR)*(n-1));
+    i=Math.max(0,Math.min(n-1,i)); const sx=x(i), sv=ds[i], nv=db[i]!=null?db[i]:null;
+    g.setAttribute('x1',sx); g.setAttribute('x2',sx); g.style.display='';
+    d1.setAttribute('cx',sx); d1.setAttribute('cy',y(sv)); d1.style.display='';
+    if(nv!=null){ d2.setAttribute('cx',sx); d2.setAttribute('cy',y(nv)); d2.style.display=''; } else d2.style.display='none';
+    tip.innerHTML=`<b>${eq[i][0]}</b><br><span style="color:#60a5fa">●</span> Strategy ${fmtDD(sv)}`
+      +(nv!=null?`<br><span style="color:#fbbf24">●</span> Nifty 500 ${fmtDD(nv)}`:'');
     tip.style.display=''; tip.style.left=(sx/W*rect.width)+'px'; tip.style.top=(Math.min(y(sv), nv!=null?y(nv):y(sv))/H*rect.height)+'px';
   }
   hit.addEventListener('mousemove',at);

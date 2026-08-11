@@ -6,7 +6,7 @@
  *     requests (the sf-data repo, Supabase, the live-quote Worker) — those stay network-only
  *     so data is always fresh and the cache never bloats.
  * Bump CACHE when the shell asset list changes. */
-const CACHE = 'sw-shell-v79';   // v79: delisted holdings exit at LAST CLOSE, not 0 (the §22 SHP-backtest convention; v78: entry-freshness gate)
+const CACHE = 'sw-shell-v80';   // v80: results announced date (All Results header, modal row, stock-page column) + backtest drawdown chart (v79: delisted exit at last close; v78: entry-freshness gate)
 const SHELL = [
   './', './index.html', './nse-bse-dashboard.html', './stock-backtest.html', './saved-strategies.html',
   './backtest-history.html', './strategy-backtest.html', './all-picks.html', './strategy-mixer.html', './mutual-funds.html', './fii-dii.html',
