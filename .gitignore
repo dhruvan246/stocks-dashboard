@@ -36,6 +36,8 @@ _strag_*
 !scripts/_shp_seam_continuity_gate.py
 # BSE-aspx harvest refusals — not-found-via evidence (§57 rule 2), NOT a closed-cell list
 !scripts/_shp_aspx_rejects.json
+# era-symbol -> BSE scripcode resolutions (MC autosuggest, per-symbol via+ISIN evidence)
+!scripts/_shp_aspx_resolved_era_syms.json
 # parse_shp regression harness — old vs new parser on the same bytes, keep it runnable
 !scripts/_shp_anchor_regression.py
 # nsh-fill merger: the stock stage-merger drops same-submission-date enrichments,

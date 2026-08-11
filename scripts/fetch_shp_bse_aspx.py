@@ -334,8 +334,12 @@ def _attempt(fr, dirp, neigh, used):
     # containment). Override-resolved rows (bname == "") carry per-entry evidence in
     # _shp_scripcode_override.json and the aspx prints the CURRENT registered name for era
     # quarters (RUCHISOYA 2002 -> "Patanjali Foods Ltd"), so the era-name gate must not apply.
+    # mc:symbol resolutions carry an exact NSE-symbol + ISIN match — stronger evidence than a
+    # name comparison across era renames (SATYAMCOMP's page prints "Satyam Computer Services",
+    # MC's current name is "Mahindra Satyam" — same entity, the gate must not refuse it).
     pn, ln, bn = norm_name(nm), norm_name(fr.get("lname")), norm_name(fr.get("bname"))
-    if fr.get("bname") != "" and pn and (ln or bn) \
+    if fr.get("bname") != "" and not str(fr.get("via", "")).startswith("mc:symbol") \
+            and pn and (ln or bn) \
             and not (ln and (ln in pn or pn in ln)) and not (bn and (bn in pn or pn in bn)):
         return ("identity", None, "page='%s' vs '%s'/'%s'" % (nm, fr.get("lname"), fr.get("bname")))
 
@@ -501,13 +505,15 @@ def main():
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--cache-only", action="store_true",
                     help="re-parse pages already on disk; never fetch (recovery passes)")
+    ap.add_argument("--frontier", default="frontier.json",
+                    help="frontier file inside --dir (e.g. frontier_unres.json)")
     a = ap.parse_args()
     global CACHE_ONLY
     CACHE_ONLY = a.cache_only
     os.makedirs(os.path.join(a.dir, "cache"), exist_ok=True)
     if a.cmd == "frontier":
         cmd_frontier(a.dir); return
-    front = json.load(open(os.path.join(a.dir, "frontier.json")))
+    front = json.load(open(os.path.join(a.dir, a.frontier)))
     if a.cmd == "pilot":
         # stratified: spread across years, plus deliberate OVERLAP cells (already-stored) as the gate
         hist = gitshow("scripts/shp_history.json")

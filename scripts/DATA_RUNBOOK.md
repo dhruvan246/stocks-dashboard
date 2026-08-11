@@ -2028,6 +2028,27 @@ along in their **`navigateurl`** field, which nobody followed:
   zeros beside neighbours holding >1%** — pages whose own subtotal is missing the foreign block (the
   Dec-2015 defect appearing sporadically earlier). Rejects now 1,055: absent 564, recon 364,
   zero-vs-neighbour 84, no-prom 26, no-fii 17.
+- **✅ ROUND 3 (2026-08-11 night): the 131 no-scripcode era symbols → 81 RESOLVED, +906 cells,
+  coverage 95.7%. Every year is now ≥85.8%.** Resolver `scratchpad→scripts` route: MC autosuggest
+  (`pdt_dis_nm` = "<ISIN>, <NSE SYMBOL>, <BSE code>", works for DEAD companies) — 63 by exact
+  NSE-symbol match, 3 by ledger-name, 15 by symbol-word-in-name (CASTROL→500870, COLGATE→500830,
+  NESTLE, CEAT, 3IINFOTECH…), single-candidate gated; per-symbol evidence in
+  **`scripts/_shp_aspx_resolved_era_syms.json`**. `symchg.csv` does NOT reach these renames
+  (~2002-2010, before its window).
+  - **Era renames make the page-name identity gate WRONG for mc:symbol rows** — SATYAMCOMP's page
+    prints "Satyam Computer Services" (era name), MC's current name is "Mahindra Satyam"; the gate
+    refused 58 correct cells across 4 symbols. Exact NSE-symbol+ISIN resolution outranks a
+    cross-rename name fuzz → the gate is skipped for `via=mc:symbol` rows only. All 58 recovered
+    cache-only. Eyeball: SATYAMCOMP promoter 20.74 (Mar-03) → 2.18 (Dec-08) — the Raju collapse,
+    exactly as history records.
+  - **Wrong-era resolutions self-neutralize as absents** (ASIANHOTEL→"(East)" is the post-2010
+    demerger entity; its 2002-09 qtrids have no pages → 194 absent refusals, no poison possible).
+  - Era-symbol cells are keyed by the ERA symbol (sf_revop precedent). If a rename pair later
+    enters `_rename_map`, the audit's norm() merges them — fill-only union, no conflict.
+  - **STILL OPEN: 50 symbols / ~590 cells MC's search can't surface** (GESHIPPING, BILT,
+    HINDMOTOR, L&T-as-era-symbol, the ESSAR/JINDAL families…) — need per-symbol ISIN/era-master
+    evidence, journalled in the rejects file's unresolved set, NOT closed. Whole-population reject
+    journal now 1,269 cells.
 - **⚠️ A PASS THAT CHANGES ONLY PARSING MUST BE `--cache-only`.** The first recovery re-parse re-ran
   the fetcher normally: >75 min elapsed for **45 s of CPU**. Every refusal was retrying the alternate
   Flag whose page does not exist, and `fetch_page`'s 3-attempt backoff spends ~18 s per dead cell.
