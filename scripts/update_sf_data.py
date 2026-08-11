@@ -110,8 +110,17 @@ def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
     for sym, fl in CA_OFF.items():
         for ex, fac in fl.items():
             if od(ex) >= cutoff: events.append((sym, ex, fac, False))
+    # CONTRADICTION GUARD (2026-08-11). A date can end up in BOTH maps when the feed files two
+    # rows for it — AHLEAST 2022-10-06 carries an official 2/3 factor AND a scheme row, so
+    # corp_actions.json holds factors[20221006]=0.666667 and noadjust[20221006]. The two events
+    # then fight over the same bar every run ("divide the drop out" vs "keep it"), each pass
+    # rescaling the pre-ex block x1.5 — AHLEAST's pre-2022 history was inflated x2.25 by two
+    # full-window runs. An explicit split/bonus RATIO outranks a keep-drop flag: drop the
+    # keep-drop side whenever the same date also carries a factor.
+    _fact_dates = {(s, e) for s, fl in CA_OFF.items() for e in fl}
     for sym, exset in NOADJ.items():
         for ex in exset:
+            if (sym, ex) in _fact_dates: continue
             if od(ex) >= cutoff: events.append((sym, ex, None, True))
     # Legacy false-CA corrections: reconciled every run regardless of age (idempotent), to converge
     # the release-asset loop on data the 28-day window + NSE-derived noadjust can never reach.
@@ -165,6 +174,8 @@ def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
             v = (_RAW.get(sym) or {}).get(str(ymd))   # committed raw ex-date prices so self_heal still works
         return v
     healed = 0
+    _quant_skips = []
+    PX_FLOOR_LOG = 0.25
     for sym, ex, off, is_dem in events:
         e = data.get(sym)
         if not e or not e.get("d"): continue
@@ -173,6 +184,17 @@ def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
         if j is None or j < 1: continue
         c = e["c"]
         if not c[j] or not c[j - 1]: continue
+        # QUANTIZATION GUARD (2026-08-11). Prices are stored to 2 decimals, so on a sub-rupee
+        # series the boundary ratio is dominated by rounding — 0.02/0.01 is EXACTLY 2.0 — and the
+        # recovered applied_f is noise. Healing on noise never converges: BIRLACOT, FARMAXIND,
+        # VKSPL and VISUINTL (all long-standing phantom_crashes entries, so reconciled on EVERY
+        # run) were being rescaled x0.5 nightly, eroding their history toward 0.00 — measured
+        # 0.05 -> 0.01 with 1,661 closes already at zero. A heal is only trustworthy when both
+        # boundary closes carry the precision to express it (0.005/0.25 = 2%).
+        PX_FLOOR = PX_FLOOR_LOG
+        if c[j] < PX_FLOOR or c[j - 1] < PX_FLOOR:
+            if len(_quant_skips) < 40: _quant_skips.append((sym, ex, round(c[j - 1], 4), round(c[j], 4)))
+            continue
         # demerger with a ledger factor on THIS EXACT bar boundary? its committed raw ex-day ratio
         # spares the bhavcopy refetch. Bar-exact only — a nearby event (phantom crash a day later)
         # must NOT borrow the factor; it falls through to the raw-price reconciliation below.
@@ -211,6 +233,11 @@ def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
             print("  SELF-HEAL %s ex %d: was f=%.4f -> %s  (rescaled %d pre-ex points x%.4f)"
                   % (sym, ex, applied_f, kind, j, corr))
             healed += 1
+    if _quant_skips:
+        print("  self-heal skipped %d event(s) below the 2-decimal precision floor (sub-%.2f "
+              "prices make the boundary ratio pure rounding): %s"
+              % (len(_quant_skips), PX_FLOOR_LOG,
+                 ", ".join("%s@%d(%.2f/%.2f)" % (s, x, a, b) for s, x, a, b in _quant_skips[:8])))
     return healed
 
 
