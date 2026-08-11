@@ -8013,6 +8013,30 @@ which has four measured failure modes:
 5. Publish: split + orphan-branch + one-shot join/upload workflow (§1 rebuild pattern) →
    `gh workflow run refresh-backtest-data.yml` → verify live rev + client.
 
+### 87e-bis. ★★★ A HEAL THAT RE-APPLIES IS A NIGHTLY REWRITE — two convergence guards
+Caught by diffing the SELF-HEAL lines of two consecutive full-window runs: **24 events healed in
+BOTH**. `self_heal` is only safe because it is idempotent; when it is not, CI re-scales the same
+block every night forever. Two independent causes, both now guarded in `update_sf_data.py`:
+
+1. **2-decimal QUANTIZATION on sub-rupee series.** The recovered `applied_f = raw_ratio /
+   adj_ratio` is meaningless when the stored closes are 0.01-0.05 — `0.02/0.01` is EXACTLY 2.0,
+   so the comparison against `correct_f` never converges. BIRLACOT / FARMAXIND / VKSPL /
+   VISUINTL are long-standing `phantom_crashes` entries, and phantom entries reconcile
+   UNCONDITIONALLY (no window), so **CI had been halving those series every night** — measured
+   0.05 → 0.01 with 1,661 closes already at 0.00. **This PREDATES the pre-2016 campaign**; the
+   full-window runs merely made it visible in one place. Guard: skip when either boundary close
+   is under ₹0.25 (0.005/0.25 = 2% precision) and PRINT every skip (30 events).
+2. **A date in BOTH corp_actions maps.** The feed can file two rows for one date — AHLEAST
+   2022-10-06 has an official 2/3 factor AND a scheme row — so `factors[]` and `noadjust[]` both
+   carry it and generate two events fighting over the same bar ("divide it out" vs "keep it"),
+   each pass rescaling the pre-ex block ×1.5 (×2.25 after two runs). Guard: an explicit
+   split/bonus RATIO outranks a keep-drop flag on the same date.
+
+**The test that proves it:** re-run the full-window heal over the healed bin — it must report
+**0** heals. Run this after ANY change to a heal ledger; a non-zero second pass is a bug, not a
+correction. (8 damaged series were restored to pre-campaign values in the same publish; final
+zero-close count is identical to pre-campaign, delta +0.)
+
 ### 87f. Residue (documented, NOT healed — never guess)
 `scripts/ca2002_campaign/manual_queue.json` — 230 rows, 225 genuinely open (5 annotated
 RESOLVED-by-class: bonus DEBENTURES — DRREDDY-2011 / NTPC-2015 / COROMANDEL-2012 — which issue no
