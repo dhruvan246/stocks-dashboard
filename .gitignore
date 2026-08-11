@@ -78,3 +78,6 @@ scripts/_bz_scan/
 # a swallowed foreign block. Both re-runnable; caches/outputs go to $ZFII_WORKDIR.
 !scripts/_shp_zero_fii_adjudicate.py
 !scripts/_shp_zero_fii_rowidentity.py
+# BSE aspx page cache (fetch_shp_bse_aspx / seam_derive default --dir is scripts/) — 1.8 MB of
+# rendered HTML per run, regenerable, must never be committed
+scripts/cache/
