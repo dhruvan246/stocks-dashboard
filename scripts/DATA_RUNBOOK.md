@@ -7951,3 +7951,48 @@ which has four measured failure modes:
 - Suspension-gap boundaries (~120): factors riding on resumption gaps; only Yahoo can arbitrate
   and mostly doesn't reach. Left as baked.
 
+
+---
+
+## 88. ★★★ ERA-FLOOR AUDIT — post-2020 conventions the PAST data never got  (2026-08-11)
+Prompted by §86 (the orphan -100% class was exactly this shape). Method: sweep the runbook for
+conventions with an era floor, then MEASURE the old data. §87's territory (pre-2016 price
+corp-actions, campaign in flight) deliberately excluded. All numbers measured on LIVE sf-data.
+
+### 88a. ★★★ TURNOVER UNITS FLIP AT A RAGGED 2019 SEAM — floors are a NO-OP before it
+Bars before each symbol's seam store turnover in **RUPEES**; after it, **₹ LACS** (the documented
+convention, TURN_OPTS/§ 'Avg daily turnover (₹ lacs)'). RELIANCE median: 2019 = 10,682,857,321
+(₹1,068 Cr in rupees) → 2020 = 257,944 (₹2,579 Cr in lacs). ITC and TATASTEEL flip identically.
+The seam is PER-SYMBOL, scattered across 2019 (sampled 40 symbols: flips at 2019-01-15, 02-07,
+10-02, 10-08, 12-31/2020-01-02, …) — so NO date constant fixes it.
+**Impact:** `turnoverAt() < mcapFloor` compares rupees to a lacs floor pre-seam ⇒ every turnover
+floor passes ~everything before 2020 (universes silently full of illiquids); the 'turnover' factor
+has a 1e5 cliff inside any window spanning the seam. Every preset starting 2020-03-31 is clean —
+which is why it was never noticed.
+**Fix design (QUEUED — do NOT race §87):** per-symbol prefix normalization (detect the >1000×
+step within a symbol's own series, divide the rupee prefix by 1e5), idempotent, in the master bin.
+Belongs in/right after §87's local SF_HEAL_WINDOW=99999 heal run, which rewrites the same bin.
+
+### 88b. ★★ DELIVERY-% COVERAGE: ~22% of bars pre-2017 vs ~90% from 2018
+Sampled every 7th bar: share of bars with dv>0 = 21-22% flat 2002-2016, 92% in 2018, ~90%+ since.
+The §1 dv_fill "2002-2019 MTO backfill" reached only a subset. Delivery-based screens quietly lose
+most of the pre-2018 universe. Queue: extend the MTO backfill sweep (NSE MTO archives reach 2003).
+
+### 88c. ★★ §12 15:30-GATE DRIFT: backfills bypass the look-ahead gate
+The gate ran ONCE (2026-07-08, 3,760 events → 1,000 bumped) and gates NEW NSE ingestion — but
+backfill writers (detres/vision/aggregator/scale-step campaigns) stamp ann-dates ungated. LIVE
+count today: 6,059 ann-cells sit ON month-end rebalance days (2018: 365, 2019: 518, 2020: 724 …)
+— roughly +1,000 cells of drift since July, concentrated in backfilled years. Fix = re-run the
+documented §12 tools (fetch_filing_times for new dates → gate_1530 --apply); conservative by
+construction. Consider adding gated_ann to the BACKFILL writers so the class stops regrowing.
+
+### 88d. ★ Internal series holes pre-2016 (the §80 shape, unadjudicated)
+412 resume-after->60d holes in 2002-2015 vs 400 in 2016+ (post-BZ-backfill; both counts include
+some weekend-residue artifacts and real suspensions). Whether a pre-2016 un-ingested series class
+exists (BZ didn't exist then; Z/T2T did) needs bhavcopy sampling inside sample holes (probe:
+AARTIDRUGS 2002-01-18 → 2003-09-19). Queue as an audit, not yet a defect claim.
+
+### 88e. Audited CLEAN (conventions that DO cover the past)
+Dividends never adjusted (documented, uniform); F&O membership 2001→date; N500 membership
+2002→date (<500-sag fixed); weekend sessions immaterial pre-2002 (weekly bars); index history
+pre-2007 via niftyindices; §86 death-at-last-close now uniform across all eras.
