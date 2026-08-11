@@ -7674,3 +7674,48 @@ Tool: `scripts/fill2020_tools/mc_con_fallback_screen.py` — source-agnostic, an
 reason in place, deletes nothing (a held cell is still a candidate for a real consolidated source).
 All MC appliers skip `held`. **Run it over ANY aggregator-sourced consolidated ledger, including
 retrospectively over cells already applied — the same test works after the fact.**
+
+---
+
+## 85. ★★★ A RETRACTED CELL CAME BACK — and no detector can see that class  (2026-08-11)
+
+**NO ASSUMPTIONS, NO GUESSWORK** (§0). Measured on origin the same afternoon it happened.
+
+28 cells were retracted as Moneycontrol consolidated-fallback (§81/§82's sibling defect: MC serves a
+`cons_quarterly` row even for quarters where no consolidated result was filed, carrying the
+STANDALONE figure). Hours later, **2 of them were live again**:
+
+    SHREECEM 2018-06  3070.15   exactly the value retracted
+    SYNGENE  2018-03    409.1   NOT the 409.0 retracted — a FRESH derivation, which is the tell
+                                that a DIFFERENT route re-applied it
+
+### 85a. The cause: a cell can be claimed by ledgers you have never heard of
+`scripts/mc_history_fills.json` and `scripts/mc_pat_fills.json` — sibling Moneycontrol ledgers
+belonging to another session's campaign — claimed both cells with `held: false`, and their fill-only
+appliers faithfully restored them. The retraction had annotated only `mc_quarterly_fills.json`,
+`annual_derived_fills.json` and `vision_rev_fills.json`, because those were the ledgers that had been
+found.
+
+> **BEFORE RETRACTING A CELL, GREP THE WHOLE `scripts/` TREE FOR ITS KEY.** Annotate `held` in every
+> ledger that claims it, in all three key shapes (`SYM|QE`, `SYM|QE|con`, `SYM|QE|revC`) plus the
+> nested `{SYM: {QE: …}}` stores. One un-annotated ledger is enough to undo the whole retraction, and
+> the applier that does it is behaving correctly.
+
+### 85b. ★ `verify_fills_live.py` IS STRUCTURALLY BLIND TO THIS
+It reported **MISSING 0 throughout**, and it was right to: it checks that a LEDGERED value is still
+PRESENT in the served payload. A retraction asserts the opposite — that a value must stay ABSENT —
+and nothing checks that. **A `held` entry reappearing is a class the detector cannot see by
+construction.**
+
+So a retraction is not finished when the push succeeds. **Re-read the LIVE payload for the retracted
+keys specifically** (§41/§56's rule, in the negative direction). That is how these two were found;
+no alarm fired.
+
+The natural fix is a `held`-aware pass in `verify_fills_live` — assert absence for every ledger entry
+carrying `held` — which would turn this into a monitored condition instead of a manual re-read.
+Recorded as the next improvement; not built here.
+
+### 85c. Why the wrong value is worse than the hole
+Both cells are the §67 con-copy shape: a consolidated slot holding the standalone figure. That is the
+defect class 18 heals were spent unpicking in §67, and an aggregator can re-create it silently at any
+time. `held` in the ledger is a claim about intent; only the DATA is a claim about fact.
