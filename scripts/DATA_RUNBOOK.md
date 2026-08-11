@@ -7689,12 +7689,54 @@ STANDALONE figure). Hours later, **2 of them were live again**:
     SYNGENE  2018-03    409.1   NOT the 409.0 retracted — a FRESH derivation, which is the tell
                                 that a DIFFERENT route re-applied it
 
-### 85a. The cause: a cell can be claimed by ledgers you have never heard of
-`scripts/mc_history_fills.json` and `scripts/mc_pat_fills.json` — sibling Moneycontrol ledgers
-belonging to another session's campaign — claimed both cells with `held: false`, and their fill-only
-appliers faithfully restored them. The retraction had annotated only `mc_quarterly_fills.json`,
-`annual_derived_fills.json` and `vision_rev_fills.json`, because those were the ledgers that had been
-found.
+### 85a. The cause — CORRECTED, because the first diagnosis was wrong
+`scripts/mc_history_fills.json` and `scripts/mc_pat_fills.json` claimed both cells with
+`held: false`, and their fill-only appliers restored them. **This was first written up as "those
+ledgers were never screened". That is wrong** — the owning session's screen had covered exactly those
+two ledgers all along (608 of 611 held cells across the tree are its output). The real gap: **neither
+ledger was ever REGISTERED in `verify_fills_live.py`**, so nothing re-checked either end of them.
+Both are registered now, `mc_pat_fills` with its own `{std:1, con:3}` slot map because it writes
+`sf_fundamentals` rather than `sf_revop`.
+
+The transferable point survives the correction, and is if anything sharper: **a cell can be claimed
+by ledgers from other campaigns, and a screen passing over a ledger is not the same as a detector
+watching it.** Before retracting, grep the whole `scripts/` tree for the key; and check the ledger is
+in the detector's registry, not merely that someone has screened it.
+
+### 85a-bis. ★★★ A FALLBACK IS A BYTE COPY — DO NOT TEST IT WITH A BAND
+The detector then refuted the retraction itself. `mc_con_fallback_retro_2018.py` used
+`EQ_REL = 0.001` — 0.1% RELATIVE — to decide "equals our standalone". On a 3,000-crore value that is
+3 crore of slack, and it retracted **7 of 28 cells that were NOT equal at all**:
+
+| cell | written con | our std | apart |
+|---|---|---|---|
+| SHREECEM 2018-06 | 3,070.15 | 3,069.91 | 0.24 |
+| COCHINSHIP 2018-12 | 717.11 | 716.42 | 0.69 |
+| SJVN 2018-09 | 751.52 | 751.90 | 0.38 |
+| GLAXO 2018-12 | 825.03 | 825.35 | 0.32 |
+| CENTURYPLY 2018-12 | 579.17 | 578.89 | 0.28 |
+| SJVN 2018-12 | 484.46 | 484.49 | 0.03 |
+
+A source repeating the standalone row repeats it **exactly**; a difference of any size is evidence of
+a real consolidated table. All six were restored. A retraction also has to leave the store
+*internally consistent* — emptying consolidated revenue while the consolidated PAT from the same
+source row stays live is its own defect.
+
+### 85a-ter. The rule that survives, and it is ONE-DIRECTIONAL
+Compare the SOURCE's consolidated row against the SOURCE'S OWN standalone row — same quarter, same
+label, **each field judged on its own row**:
+
+    differs   -> a genuine consolidated table FOR THAT FIELD. Writable.
+    identical -> UNRESOLVED. NOT writable and NOT proven a fallback.
+
+The second half matters: a company whose subsidiaries are equity-accounted files consolidated revenue
+EQUAL to standalone while its profit differs (MOIL/CHENNPETRO), and at an aggregator that is
+indistinguishable from a copy. **Neither a differing PAT nor a "Net P/L After M.I & Associates" row
+proves a genuine table** — GAYAPROJ 2019-03 and PIIND 2019-03 are proven fallbacks and show both.
+Settle the identical case from the FILING, not the aggregator.
+
+⚠️ `--repair-held` is destructive and must never ride on a general `--repair`: a `held` flag can
+itself be wrong, as 6 of these 28 were, and repairing on it deletes correct values.
 
 > **BEFORE RETRACTING A CELL, GREP THE WHOLE `scripts/` TREE FOR ITS KEY.** Annotate `held` in every
 > ledger that claims it, in all three key shapes (`SYM|QE`, `SYM|QE|con`, `SYM|QE|revC`) plus the
