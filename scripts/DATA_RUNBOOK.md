@@ -2052,6 +2052,25 @@ along in their **`navigateurl`** field, which nobody followed:
     modes, `fill2020_tools/_mc_codes.json` (`None` — that campaign hit the same wall), the Wayback
     census `map.json` (`None`), NSE's symbolchange archive (the nsearchives "full" file IS the same
     1,054-row recent window), and era bhavcopies (2003 measured: NO ISIN column).**
+- **✅ ROUND 5 — the route that DID crack the tail: Wayback captures of NSE's OWN securities
+  master (2026-08-12 早): +172 cells, 96.4%.** `EQUITY_L.csv` archived 2006-08-24 / 2010-02-05 /
+  2011-10-30 carries SYMBOL + NAME + ISIN — the exact missing link. **Fetch with the `id_` raw
+  modifier** (`web.archive.org/web/<ts>id_/<url>`) — without it Wayback serves a ~10KB HTML wrapper
+  that looks like a block page. 21 of the 50 matched; ISIN join to the blank-status BSE master
+  (field `ISIN_NUMBER`) + guarded name fallback resolved 16 to scripcodes (BILT 500102,
+  GESHIPPING 500620 page-verified of 10 candidates, HINDMOTOR 500500, LGBROS 500250…), evidence in
+  `_shp_aspx_resolved_era_syms.json` (via=`nse-era-master:<ts>+isin|name1|aspxname`).
+  - **⚠️ Name-containment fallback needs a ≥6-char norm floor** — without it "UT Ltd" ⊂
+    "fUTureventures" and "B & A" ⊂ "lgBAlakrishnan" resolved WRONG entities (caught pre-harvest;
+    the page-name identity gate was the backstop). Multi-candidate ties are settled by fetching one
+    era aspx page per candidate and matching the printed company name.
+  - **Relisted-code resolutions self-neutralize**: KIRLOSOIL→533293 / SUNDRMCLAY→544066 /
+    ESSARSHIP→533704 are post-scheme relistings whose era qtrids have no pages → 98 absent
+    refusals, zero poison. Their PRE-scheme era codes remain findable per-symbol.
+  - **STILL OPEN after round 5: 37 symbols** — 29 delisted before the earliest EQUITY_L capture
+    (Aug-2006: HTMT, INDOGULF, BOOTSPHARM, JINDLSTRIP, L&T-era…), 8 with ambiguous/absent BSE
+    joins (KBL two-way tie; MONNETISPA/MANDHANA/SRIADIKARI/SUJANATOW absent from even the
+    blank-status master). Reject journal 1,371 cells. Per-symbol archival work from here.
 - **✅ ROUND 4 — THE SEAM, from BSE's own pages (2026-08-11 late night): +159 cells, 96.0%.
   Dec-2015 72.1% → 98.4%; Mar-2016 79.4% → 85.0%.** `scripts/seam_derive.py` inverts the
   institutions identity on the aspx q88/89 pages (fii = inst_sub − mf−banks−ins−govt−vcf, never
