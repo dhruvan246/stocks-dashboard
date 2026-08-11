@@ -573,6 +573,11 @@ def main():
     # (pre-2020 bhavcopies have no DELIV_PER column). Fill-only where dv==0, so a re-run applies
     # 0 and is a no-op; a non-zero count flags a real change and rides the publish condition below.
     dvf = B.apply_dv_fill(data)
+    # §88b one-shot OVERWRITE leg (scripts/dv_overwrite.json): the 602 DVL cells the 2026-08-02 MTO
+    # backfill keyed to the WRONG COMPANY carry dv>0, which fill-only can never correct. Guarded on
+    # the bar still matching BOTH stored anchors (old dv AND the adjudicating MTO volume), so once
+    # every cell reads its corrected value this is a permanent no-op and publishes nothing.
+    dvo = B.apply_dv_overwrite(data)
     # MANUAL rename merges the ISIN-detector can't make: same security, but the ISIN CHANGED at the
     # rename so the ISIN-based auto-merge skips it (a safety guard against recycled tickers). These are
     # verified price-continuous. Idempotent: once the old series is folded in and dropped it's a no-op.
@@ -751,8 +756,8 @@ def main():
     # refreshes the on-disk bin but does NOT publish the release, bump clients, or commit a marker.
     blob = gzip.compress(json.dumps(D, separators=(",", ":")).encode(), 6)
     open(OUT, "wb").write(blob)
-    if not appended and not healed and not merged and not mr and not dvf and not wk and not bz:
-        print("No new day / heal / merge / manual-rights / dv-fill / weekend-insert / BZ-backfill — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
+    if not appended and not healed and not merged and not mr and not dvf and not dvo and not wk and not bz:
+        print("No new day / heal / merge / manual-rights / dv-fill / dv-overwrite / weekend-insert / BZ-backfill — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
     open(MARK, "w").write(D["end"])
     # tiny version marker — committed daily, lets the browser cache the big bin in IndexedDB
     # keyed to this `end` and skip re-downloading 80 MB until the data actually changes.

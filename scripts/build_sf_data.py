@@ -137,6 +137,39 @@ def apply_dv_fill(data):
     return n
 
 
+def apply_dv_overwrite(data):
+    """One-shot OVERWRITE ledger (scripts/dv_overwrite.json) for the §88b wrong-company delivery
+    cells — dv>0 values the fill-only ledgers can never reach. Each cell carries [old, new, vol];
+    a bar is rewritten only while it still matches BOTH anchors (dv == old ±0.011 AND v == vol,
+    the volume of the MTO row that adjudicated the cell), so the pass is idempotent (§87e-bis:
+    second run rewrites 0) and cannot touch a bar it did not adjudicate. Cells already at the
+    correct value count as done; anything else is LEFT ALONE and printed (silence lies, §38b)."""
+    p = os.path.join(HERE, "dv_overwrite.json")
+    if not os.path.exists(p): return 0
+    try:
+        cells = json.load(open(p)).get("cells", {})
+    except Exception as e:
+        print("dv_overwrite.json unreadable (%s) — skipped" % e, flush=True); return 0
+    n = done = left = 0
+    for sym, days in cells.items():
+        s = data.get(sym)
+        if not s:
+            left += len(days); continue
+        pos = {d: i for i, d in enumerate(s["d"])}
+        for ds, (oldv, newv, vol) in days.items():
+            i = pos.get(int(ds))
+            cur = s["dv"][i] if i is not None else None
+            if cur is None: left += 1
+            elif abs(cur - newv) <= 0.011: done += 1
+            elif abs(cur - oldv) <= 0.011 and s["v"][i] == vol:
+                s["dv"][i] = newv; n += 1
+            else: left += 1
+    if n or left:
+        print("dv_overwrite.json: %d cells overwritten, %d already correct, %d left alone (no matching bar)"
+              % (n, done, left), flush=True)
+    return n
+
+
 def fetch_day(d, j):
     cf = os.path.join(CACHE, d.strftime("%Y%m%d") + ".json")
     if os.path.exists(cf):
