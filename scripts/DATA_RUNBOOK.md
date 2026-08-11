@@ -8056,10 +8056,37 @@ which is why it was never noticed.
 step within a symbol's own series, divide the rupee prefix by 1e5), idempotent, in the master bin.
 Belongs in/right after §87's local SF_HEAL_WINDOW=99999 heal run, which rewrites the same bin.
 
-### 88b. ★★ DELIVERY-% COVERAGE: ~22% of bars pre-2017 vs ~90% from 2018
+### 88b. ★★ DELIVERY-% COVERAGE: ~22% of bars pre-2017 vs ~90% from 2018 — **RESOLVED 2026-08-11**
 Sampled every 7th bar: share of bars with dv>0 = 21-22% flat 2002-2016, 92% in 2018, ~90%+ since.
 The §1 dv_fill "2002-2019 MTO backfill" reached only a subset. Delivery-based screens quietly lose
 most of the pre-2018 universe. Queue: extend the MTO backfill sweep (NSE MTO archives reach 2003).
+
+**RESOLVED (2026-08-11): +3,525,793 cells → 2002-2017 now 88.8-96.9%** (was 18.7-21.6% measured
+on the full universe, not the 7th-bar sample). Root cause of the old gap: the 2026-08-02 build
+harvested MTO files ~WEEKLY (Mondays) for 2002-2017 — its "N500 coverage 100%" claim was true only
+on that sampled grid — while daily files exist for every date. Recipe (scripts/_mto_sweep_*.py,
+fetch → build → merge; MTO_SP env = cache dir):
+- **Source**: `nsearchives.nseindia.com/archives/equities/mto/MTO_DDMMYYYY.DAT`, HTTP/1.1 +
+  browser UA, validate CONTENT (`10,MTO` record present, no `<html`) never size/exit-code.
+  Floor measured: 2002-01-02 (2001 is 404). 16 dates 404 among 6,050 swept (5 in 2002-03,
+  the rest muhurat/special sessions).
+- **Two formats**: 2002-01-02..2002-02-11 rows are `20,SYM,SERIES,DELIV_QTY` (header total ==
+  sum(qty) PROVES qty is deliverable; pct = qty/bin-volume). From 2002-02-14:
+  `20,SR,SYM,SERIES,TRADED,DELIV,PCT`.
+- **⚠️ Row assignment is by VOLUME IDENTITY, never by symbol preference.** Exact-symbol-first
+  keyed ~600 Monday cells to the WRONG COMPANY in the 2026-08-02 ledger (DVL: rename map funnels
+  both DPL-Petrochem and DTIL-Tea into DVL; bin DVL's 2015 bars carry DTIL's volume, ledger had
+  stored DPL's pct). Rule: candidate MTO rows (exact + rename-mapped, series EQ/BE/BZ) for a bin
+  bar are accepted only where `MTO traded == bin v` (99.9% of comparable rows match exactly).
+  Controls on the overlap: existing dv == volume-matched MTO pct on 4,624,694 cells at 99.987%;
+  the 602 contradictions ARE the wrong-company class (601 corrected in-ledger; live bins keep the
+  baked wrong value until an overwrite pass — fill-only can't touch dv>0 — QUEUED, and bin DVL's
+  2015 bars carrying DTIL's volume says the PRICE series stitch is suspect too, §86-class).
+- **Ceiling, measured**: residual dv==0 bars per year = securities absent from that day's MTO
+  (era MTO lists ~700-1,800 securities vs more bin symbols trading; 2005 dips to 88.9%, 2014 to
+  88.8%) + ~7k no-volume-match skips + ~19k MTO rows whose bin bars don't exist (TELCO/AVAYAGCL
+  era fragments — §86 territory, not dv work). 1996-2001: no MTO exists (pre-rolling, weekly-bar
+  era) — stays 0%, correctly unfillable.
 
 ### 88c. ★★ §12 15:30-GATE DRIFT: backfills bypass the look-ahead gate
 The gate ran ONCE (2026-07-08, 3,760 events → 1,000 bumped) and gates NEW NSE ingestion — but
