@@ -8014,16 +8014,26 @@ which has four measured failure modes:
    `gh workflow run refresh-backtest-data.yml` → verify live rev + client.
 
 ### 87f. Residue (documented, NOT healed — never guess)
-- ~140 AMBIGUOUS boundaries (evidence recorded in the campaign files): mostly delisted microcaps
-  no reader reaches. Left as baked.
-- Sub-noise small CAs on penny stocks (a 1:10 bonus on a ₹2 stock hides inside paise rounding).
-- Pre-2006 demergers beyond the record-verified set (feed blind; kept-drop candidates with
-  open-gap ≤0.92 live in the campaign queue for future record checks).
-- Rights with unparseable terms / partly-paid / PCD classes: skipped, same policy as the 2014+
-  sweep.
-- Suspension-gap boundaries (~120): factors riding on resumption gaps; only Yahoo can arbitrate
-  and mostly doesn't reach. Left as baked.
-
+`scripts/ca2002_campaign/manual_queue.json` — 230 rows, 225 genuinely open (5 annotated
+RESOLVED-by-class: bonus DEBENTURES — DRREDDY-2011 / NTPC-2015 / COROMANDEL-2012 — which issue no
+equity and correctly carry no factor). The open set, by why it is open:
+- **182 "insufficient evidence to flip"** — the baked factor is neither confirmed nor refuted: no
+  Yahoo coverage (951 of 1,856 symbols returned nothing — mostly delisted microcaps), no BSE row,
+  and an open print that decides nothing. Left exactly as baked.
+- **16 "record contradicts the tape"** after the parser fix — e.g. SUNTV 2007-07-23
+  "Agm/Spl/Bon-1:1/Div-20%" prints a `Spl` with NO terms, so the second leg is unknowable from the
+  record; the open says the true factor is ~0.25, not the bonus-only 0.5. A number no record states
+  is a guess — not written.
+- **11 yahoo-event-without-open-confirmation**, 1 three-way disagreement.
+- Sub-noise CAs on penny stocks (a 1:10 bonus on a Rs2 stock hides inside paise rounding); ~120
+  suspension-gap boundaries (a factor riding a resumption gap — PREV_CLOSE is unusable across more
+  than one session, feedback-prevclose-arbitrates-a-gap); pre-2006 demergers beyond the
+  record-verified set (feed blind — kept-drop candidates with open-gap <=0.92 sit in
+  `kept_drops.json.gz` for a future record check); rights with unparseable / partly-paid / PCD
+  terms (same policy as the 2014+ sweep).
+- **Penny-floor artifact:** a correct 1/10 factor on BIRLAPOWER's Rs0.01 series rounds 5 more bars
+  to 0.00. That zero-close class is PRE-EXISTING and far larger (43,780 bars / 115 symbols / 0.47%
+  of all bars) — not introduced here, and not worth reverting a record-verified factor.
 
 ---
 
