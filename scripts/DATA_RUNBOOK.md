@@ -8113,19 +8113,53 @@ Prompted by §86 (the orphan -100% class was exactly this shape). Method: sweep 
 conventions with an era floor, then MEASURE the old data. §87's territory (pre-2016 price
 corp-actions, campaign in flight) deliberately excluded. All numbers measured on LIVE sf-data.
 
-### 88a. ★★★ TURNOVER UNITS FLIP AT A RAGGED 2019 SEAM — floors are a NO-OP before it
-Bars before each symbol's seam store turnover in **RUPEES**; after it, **₹ LACS** (the documented
-convention, TURN_OPTS/§ 'Avg daily turnover (₹ lacs)'). RELIANCE median: 2019 = 10,682,857,321
-(₹1,068 Cr in rupees) → 2020 = 257,944 (₹2,579 Cr in lacs). ITC and TATASTEEL flip identically.
-The seam is PER-SYMBOL, scattered across 2019 (sampled 40 symbols: flips at 2019-01-15, 02-07,
-10-02, 10-08, 12-31/2020-01-02, …) — so NO date constant fixes it.
-**Impact:** `turnoverAt() < mcapFloor` compares rupees to a lacs floor pre-seam ⇒ every turnover
-floor passes ~everything before 2020 (universes silently full of illiquids); the 'turnover' factor
-has a 1e5 cliff inside any window spanning the seam. Every preset starting 2020-03-31 is clean —
-which is why it was never noticed.
-**Fix design (QUEUED — do NOT race §87):** per-symbol prefix normalization (detect the >1000×
-step within a symbol's own series, divide the rupee prefix by 1e5), idempotent, in the master bin.
-Belongs in/right after §87's local SF_HEAL_WINDOW=99999 heal run, which rewrites the same bin.
+### 88a. ★★★ TURNOVER UNITS — FIXED 2026-08-11 (floors were a NO-OP before 2020)
+`t` was whatever the day's bhavcopy carried: the old NSE zip (TOTTRDVAL) is RAW RUPEES, the new
+sec_bhavdata_full (TURNOVER_LACS) is LACS. Everything downstream states LACS (TURN_OPTS, the
+"Avg daily turnover (₹ lacs)" factor, build_stock_slices `t`), so `turnoverAt() < mcapFloor`
+compared rupees against a lacs floor and passed ~everything. MEASURED distortion (₹100 cr/day
+floor): 2010 passed **1,914** stocks, should be **42**; ₹1 cr: 2,428 -> 622. 2023 also moved
+(2,641 -> 1,390) because a DEAD symbol's last bar is carried forward — stale pre-2020 rupee bars
+were passing floors years later. Every preset starts 2020-03-31, which is why it hid this long.
+
+**Shape (measured, 9.31M classifiable bars):** 1996-2019 rupees, 2020+ lacs, PLUS strays both ways
+— 9,845 lacs bars inside 2019 (BZ backfill / weekend sessions splicing modern-format bars into
+old-format days) and 1,974 rupee bars in 2022 (NSE served the old file on 2022-08-08). A single
+date cutoff is therefore wrong, and so is "one seam per symbol" (this section's first draft) — the
+unit is a property of the FILE, i.e. of the DAY: 7,556 of 7,576 dates are unanimous.
+
+**The test — r = t / (c * v).** `c` is split-ADJUSTED while `t`/`v` are RAW, so r is exactly the
+cumulative adjustment factor (rupee bar) or that / 1e5 (lacs bar): **price cancels**. That is
+strictly better than build_nifty500_turnover.py's t/v ("≈ traded price") test, which misreads
+sub-₹1 pennies and needs a per-date median to stay safe. r is sharply bimodal with an EMPTY band
+between 10^-3.0 and 10^-1.3.
+
+**`normalize_turnover_units()` in update_sf_data.py**, called LAST (after the day loop + self_heal,
+so it also catches bars appended this run) and counted in the publish condition:
+- verdict per DAY from that day's MEDIAN r (> 0.01 = rupees); a date with only zero-close rows
+  (43,779 measured) inherits the nearest measured date;
+- inside a rupee day, a bar >=1e4 BELOW the day median is a modern-format splice and is skipped —
+  that is what protects the 9,845 already-lacs 2019 bars;
+- rupee bars: t /= 1e5, kept to 4dp under 100 (a penny stock's whole day can be < 1 lac) else 1dp.
+
+⚠️ **THE IDEMPOTENCE TRAP (§87e-bis, caught in test, not in prod).** The first draft used a per-BAR
+absolute cut and pass 2 re-converted **601 bars**: floor-priced series (DHANUS, CIMCOBIRLA — adjusted
+close ₹0.01-0.05) carry an adjustment factor near 1e4, so one division still leaves them above any
+fixed rupee threshold and they get divided AGAIN. The day MEDIAN is immune to those outliers and
+makes idempotence structural: converting a day divides its median by 1e5 too, so it reads lacs for
+ever after. Verified on the real 201 MB bin: pass 1 = 5,977,197 bars, **pass 2 = 0**, 0 days still
+rupees, the 9,845 lacs-in-2019 bars byte-unchanged, and RELIANCE continuous across the seam
+(2019-12-31 ₹1,548 cr -> 2020-01-01 ₹970 cr, no 1e5 step).
+
+**Blast radius (checked, no other change needed):** build_results_season.py + bake_liquid_universe.py
+screen on c*v, not `t` — immune. build_stock_slices carries only the recent tail (already lacs).
+build_nifty500_turnover.py classifies per date and self-disarms on all-lacs data; its thin-date era
+fallback fires on ZERO dates in its emitted range (>=2009-10 all have >=5 liquid rows). build_volume
+reads bhavcopy columns, not the bin.
+
+**Spun off, NOT fixed here:** those floor-priced adjusted closes imply cumulative factors ~6,000x
+(DHANUS 2007 adj ₹0.05 vs an implied raw ₹307) — a phantom-CA smell for the §87 ledger to
+adjudicate, unrelated to units.
 
 ### 88b. ★★ DELIVERY-% COVERAGE: ~22% of bars pre-2017 vs ~90% from 2018 — **RESOLVED 2026-08-11**
 Sampled every 7th bar: share of bars with dv>0 = 21-22% flat 2002-2016, 92% in 2018, ~90%+ since.

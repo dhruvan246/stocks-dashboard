@@ -22,6 +22,9 @@ INPUTS (both verified against their real on-disk format, not assumed):
         few stray days like 2022-08-08/09 where NSE served the old file).
       - New sec_bhavdata_full (TURNOVER_LACS) -> turnover in LAKHS    (≈ all of 2020-01-01+, plus
         a scattering of stray new-file days in 2013-2019).
+    ** SINCE 2026-08-11 the bin is normalised to LACS at source (update_sf_data.normalize_turnover_units,
+    runbook 88a), so classify_units() below now sees an all-lacs file and converts nothing. It is kept
+    as a self-disarming safety net for any future old-format day that lands before the updater runs. **
     The two are interleaved by which file NSE returned that day, so a single date cutoff is wrong.
     The unit is a WHOLE-DAY property: every stock on a given date shares one unit. So we classify
     PER DATE, not per row. For each date take the median of (turnover/volume) over liquid rows

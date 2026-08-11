@@ -444,6 +444,89 @@ def insert_weekend_sessions(data, j, old2new=None):
     return total
 
 
+def normalize_turnover_units(data):
+    """Force every stored turnover onto ONE unit: ₹ LACS. Returns bars converted.
+
+    THE DEFECT (runbook §88a, measured 2026-08-11 on 9.31M classifiable bars): `t` is whatever
+    the day's bhavcopy carried — the old NSE zip (TOTTRDVAL) is RAW RUPEES, sec_bhavdata_full
+    (TURNOVER_LACS) is LACS. Result: 1996-2019 is rupees, 2020+ is lacs, plus strays both ways
+    (9,845 lacs bars inside 2019, 1,974 rupee bars in 2022 — NSE served the old file on
+    2022-08-08). Everything downstream states LACS (TURN_OPTS, the "Avg daily turnover (₹ lacs)"
+    factor, build_stock_slices' `t`), so a turnover FLOOR compared a rupee number against a lacs
+    threshold and passed ~every stock before 2020: pre-2020 backtest universes were silently
+    unfloored, and any window spanning the seam saw a 1e5 cliff in the turnover factor.
+
+    THE TEST — r = t / (c * v). `c` is split-ADJUSTED while `t` and `v` are RAW, so r is just the
+    cumulative adjustment factor (rupee bar) or that factor / 1e5 (lacs bar). **Price cancels**,
+    which is why this beats the t/v ("≈ average traded price") test build_nifty500_turnover.py
+    uses: that one misreads sub-₹1 penny stocks as lacs and inflates them 1e5x, and it must lean
+    on a per-date median to stay safe. Measured, r is sharply bimodal with an EMPTY band between
+    10^-3.0 and 10^-1.3, so the two DECISIVE_* cuts below sit in genuine empty space.
+
+    Bars that cannot self-classify (measured: 43,779 with a ZERO close, plus any with no volume)
+    fall back to the day's verdict, because the unit is a WHOLE-DAY property — one file per day,
+    so every stock on a date shares its unit (measured: 7,556 of 7,576 dates unanimous). The 20
+    mixed dates are late-2019 days where a LATER backfill (BZ series, weekend sessions) spliced
+    modern-format bars into an old-format day, so the per-BAR verdict deliberately wins wherever
+    it exists — a pure per-date rule would re-break those 449 bars.
+
+    The verdict is per DAY, off that day's MEDIAN r — never a per-bar absolute cut. A per-bar cut
+    is NOT idempotent: 601 floor-priced bars (adjusted close ₹0.01 — DHANUS, CIMCOBIRLA…) carry an
+    adjustment factor near 1e4, so one division leaves them still above any fixed rupee threshold
+    and a second pass divides them AGAIN. The median is immune to those outliers, and it is what
+    makes the whole function provably idempotent: converting a day divides its median by 1e5 too,
+    so the day reads lacs forever after (§87e-bis — run it twice, the second pass MUST report 0).
+
+    Within a rupee day, a bar sitting >=STRAY_RATIO below that day's median is a modern-format
+    splice (BZ backfill / weekend sessions wrote lacs bars into old-format days — 9,845 of them in
+    2019) and is left alone. That test is RELATIVE, so it too cannot re-fire once a day converts.
+    """
+    LACS_MED_CUT = 0.01        # a DAY's median r: ~1-3 on a rupee day, ~1e-5 on a lacs day (empty band between)
+    STRAY_RATIO = 1e4          # a bar this far BELOW its day's median is already-lacs (unit gap is 1e5)
+
+    samples = {}               # ymd -> [r, ...]
+    for e in data.values():
+        ds, ts = e.get("d") or [], e.get("t") or []
+        cs = e.get("c") or []; vs = e.get("v") or []
+        for i in range(min(len(ds), len(ts), len(cs), len(vs))):
+            t, c, v = ts[i], cs[i], vs[i]
+            if t > 0 and c > 0 and v > 0:
+                samples.setdefault(ds[i], []).append(t / (c * v))
+    import statistics as _st
+    med = {d: _st.median(rs) for d, rs in samples.items()}
+    # A date with no measurable bar (only zero-close rows) inherits the nearest date that has one —
+    # the unit is a property of the FILE served that day, and adjacent days come from the same era.
+    known = sorted(med)
+    def day_med(ymd):
+        if ymd in med: return med[ymd]
+        if not known: return None
+        import bisect as _bi
+        j = _bi.bisect_left(known, ymd)
+        cands = [k for k in (j - 1, j) if 0 <= k < len(known)]
+        return med[min(cands, key=lambda k: abs(known[k] - ymd))] if cands else None
+
+    converted = 0
+    for e in data.values():
+        ds, ts = e.get("d") or [], e.get("t") or []
+        cs = e.get("c") or []; vs = e.get("v") or []
+        n = len(ds)
+        for i in range(min(n, len(ts))):
+            t = ts[i]
+            if t <= 0: continue
+            m = day_med(ds[i])
+            if m is None or m <= LACS_MED_CUT: continue             # a lacs day — nothing to do
+            c = cs[i] if i < len(cs) else 0
+            v = vs[i] if i < len(vs) else 0
+            if c > 0 and v > 0 and (t / (c * v)) * STRAY_RATIO < m:
+                continue                                            # modern-format bar spliced into an old-format day
+            nt = t / 1e5
+            # keep small values honest (a penny stock's whole day can be < 1 lac); large ones stay
+            # at the file's usual 1dp so the ~190 MB payload doesn't grow for no information.
+            ts[i] = round(nt, 4) if nt < 100 else round(nt, 1)
+            converted += 1
+    return converted
+
+
 def insert_bz_history(data):
     """Splice in the series-BZ bars that build_sf_data's old ("EQ","BE") filter threw away.
 
@@ -748,6 +831,13 @@ def main():
     healed = self_heal(data, CA_OFF, NOADJ, int(D["end"].replace("-", "")), j)
     if healed: print("Self-heal corrected %d corporate action(s)." % healed)
 
+    # LAST, so it also catches bars appended/inserted THIS run: one turnover unit (₹ lacs) across
+    # the whole file. NSE's old zip served raw rupees and still does on stray days (2022-08-08),
+    # which silently disabled every turnover FLOOR before 2020. Idempotent — a converged file
+    # reports 0. See runbook §88a.
+    tunits = normalize_turnover_units(data)
+    if tunits: print("Turnover units: normalised %d bar(s) rupees -> lacs." % tunits)
+
     # ALWAYS rewrite the freshly-loaded MERGED base to disk — even on a no-op run — so the split/publish
     # step never reads the stale, UN-merged in-repo copy (frozen at an old `end`, still carrying
     # ZOMATO/RUCHI/BURGERKING as separate stubs) and trip split_sf_data.py's ZOMATO/ETERNAL publish-guard.
@@ -756,8 +846,8 @@ def main():
     # refreshes the on-disk bin but does NOT publish the release, bump clients, or commit a marker.
     blob = gzip.compress(json.dumps(D, separators=(",", ":")).encode(), 6)
     open(OUT, "wb").write(blob)
-    if not appended and not healed and not merged and not mr and not dvf and not dvo and not wk and not bz:
-        print("No new day / heal / merge / manual-rights / dv-fill / dv-overwrite / weekend-insert / BZ-backfill — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
+    if not appended and not healed and not merged and not mr and not dvf and not dvo and not wk and not bz and not tunits:
+        print("No new day / heal / merge / manual-rights / dv-fill / dv-overwrite / weekend-insert / BZ-backfill / turnover-unit fix — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
     open(MARK, "w").write(D["end"])
     # tiny version marker — committed daily, lets the browser cache the big bin in IndexedDB
     # keyed to this `end` and skip re-downloading 80 MB until the data actually changes.
