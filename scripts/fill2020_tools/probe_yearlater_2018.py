@@ -65,7 +65,22 @@ def date_tokens(qe):
 
 def main():
     diag = json.load(open(DIAG))
-    cells = [k for k, v in diag.items() if str((v or {}).get("stage", "")).startswith("scanned")]
+    if "--all-open" in sys.argv:
+        # SIZE THE WHOLE RESIDUE, not just the scanned cells. The year-later route closed 15 of 15
+        # vision cells; this measures how much of the rest it could reach before anyone spends a pass.
+        revop = json.load(open(os.path.join(ROOT, "docs", "sf_revop.json")))
+        tg = json.load(open(os.path.join(HERE, "_rev2018_targets.json")))
+        cells = []
+        for sym, v in sorted(tg.items()):
+            for qe in v.get("revC", []):
+                row = (revop.get(sym) or {}).get(str(qe))
+                if not row or len(row) < 2 or row[1] is None:
+                    cells.append("%s|%d|con" % (sym, qe))
+        lim = int(sys.argv[sys.argv.index("--limit") + 1]) if "--limit" in sys.argv else None
+        if lim:
+            cells = cells[:lim]
+    else:
+        cells = [k for k, v in diag.items() if str((v or {}).get("stage", "")).startswith("scanned")]
     by = scrip_map()
     o = FI.bse_session()
     out = {}

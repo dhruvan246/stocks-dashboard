@@ -1078,6 +1078,32 @@ if the NSE broadcast time > 15:30, the stored ann-date is the next weekday (engi
 since rebalances are always trading days). So new after-close filings need no re-run. Applies to ALL filings (not
 just month-end), which also future-proofs weekly/daily frequencies.
 
+**★ THE GATE IS NOW A NIGHTLY, NOT A ONE-OFF (2026-08-11, §88c).** `update_fundamentals.gated_ann`
+only guards NSE INGESTION — every backfill writer (detres/vision/aggregator/scale-step campaigns)
+stamps ann-dates through its own path and bypasses it, so month-end look-aheads REGROW. Measured
+2026-08-11: 3,627 month-end events live (vs 3,760 in July), **172 newly confirmed after-close →
+289 ann-cells bumped**, concentrated exactly in the backfilled years (2015: 67, 2016: 57, 2017: 47,
+2018: 30 — 201 of 289 in 2015-18). So the gate re-runs EVERY NIGHT in refresh-fundamentals.yml
+("15:30 gate re-run (nightly)", hour 15|16 UTC or a manual dispatch), before the commit step:
+`build_gate_events.py --calendar` → `fetch_filing_times.py` → `gate_1530.py --apply`.
+- **`scripts/build_gate_events.py`** (new) rebuilds `_gate_events/_gate_dates/_trading_days/_me_days`.
+  The calendar MUST come from sf price data — a muhurat SUNDAY can be a month's last session
+  (2016-10-30), and a generic weekday calendar would put the rebalance on the wrong day. The big bin
+  never exists in the fundamentals job, so refresh-backtest-data.yml cuts **`scripts/gate_calendar.json`**
+  (tracked, ~70 KB, {tdays, me_days}, `--calendar-only`) the same way it cuts the liquid-universe
+  sidecar, and the nightly reads it with `--calendar`.
+- **`scripts/filing_times_cache.json.gz`** (tracked, ~131 KB) carries the BSE broadcast times, so a
+  quiet night re-fetches ~nothing; only NEW month-end dates hit the API (`fetch_filing_times.py` is
+  resumable and skips stored dates). ⚠️ It fetches in `_gate_dates.json` order and OLD dates
+  (2008-2014) respond very slowly — sort NEWEST-FIRST for a manual run or it stalls in the archive
+  (measured: 11 dates in ~20 min oldest-first vs all 101 in ~15 min newest-first).
+- **CI gates `docs/sf_fundamentals.json` only** (the `scripts/fundamentals.json` mirror is not
+  committed from CI); a local `--apply` keeps the mirror in step. On 2026-08-11 the mirror took 278
+  of the 289 (6 quarters + 1 symbol absent from that thinner cut, 4 ann-cells null) — expected.
+- **Idempotence (both signals verified 2026-08-11):** an immediate second pass decides `bumped 0`
+  (events drop 3,627 → 3,455 because the bumped ones are no longer month-ends), and JSL's Oct-2020
+  proof case reports **NOT FOUND** — the PASS signal, since its ann-date is already 2020-11-02.
+
 **Residual (documented, low-risk):** NSE-only historical filings with no BSE same-date record can't be timed
 retroactively (NSE history endpoint is real-time only) → left un-bumped = status-quo conservative. **VALIDATE**
 further by re-running the 2020-21 StockView comparison (memory project-stocks-stockview-comparison) — JSL should
@@ -1651,7 +1677,7 @@ only through SECURITY DEFINER RPCs; daily GitHub backups = recovery). **Schema: 
   `saved-strategies.html?logpicks=1` (bake-style: DOM signal `#logpicksOut` "✅ LogPicks done"/"LogPicks error").
   That mode: per unique saved strategy (identityKey; canonical variant = longest window; sid = `'st'+hash36(key)`)
   logs `{n,f:freqMonths,tn:topN,picks:[{s,t,p}]}` into `sw_picks_log` upserted on (data-day SF.end, sid) — then
-  rebuilds NAV: value holdings daily via `markPrice` (delisting→0), rotate into that day's logged picks when the
+  rebuilds NAV: value holdings daily via `markPrice` (a dead series is carried at its last traded close since 2026-08-11, was delisting→0), rotate into that day's logged picks when the
   `floor(monthKey/freq)` bucket changes, Nifty benchmark from `nearestNifty`. Chains off "Bake backtest snapshots"
   success. A missed day = one fewer NAV point (fine). Picks depend on cfg+topN, NOT the backtest window.
 - **Backups:** backup-backtest-history.yml also snapshots the 4 kv docs + sw_picks_get daily (7-day window,
@@ -1978,6 +2004,104 @@ along in their **`navigateurl`** field, which nobody followed:
 - **Frontier: 22,622 missing member-qtrs Dec-2002→Sep-2015 (seam excluded), 20,912 with a scripcode**
   (master status-blank + `_shp_scripcode_override`), 131 symbols / 1,710 cells unresolved (era names
   needing ISIN or an era scrip master — log as not-found-via, they are NOT closed).
+- **✅ HARVESTED AND APPLIED 2026-08-11 21:50 IST: +18,949 cells, coverage 51.8% → 91.7%.**
+  20,912 fetched in 5,145s at 5 workers; 18,949 passed every gate (90.6%); ledger
+  `scripts/shp_fill_bse_aspx.json.gz` (750 symbols), registered LAST in `BSE_HIST_LEDGERS` so every
+  real-dated ledger wins on overlap. History 67,592 → 86,541 cells. Year-wise after:
+  2002 **74.4%** · 2003-05 78-84% · 2006-09 80-88% · 2010-14 **89-93%** · 2015 81.5% · 2016+ unchanged.
+  **The whole pre-2010 era went 0% → 74-88%** — a wall three separate audits had recorded as sourceless.
+- **1,963 refusals logged to `scripts/_shp_aspx_rejects.json`** (not-found-via:bseaspx, §57 rule 2 —
+  OPEN, not closed): recon 790, no-fii 580, absent 564, no-prom 26, zero-vs-neighbour 3.
+  ⚠️ My first read said recon was "mostly Jun-2006" — WRONG, an artifact of the log's 8-per-class
+  print cap sampling the alphabetical head. The journal says recon clustered at **2014-12→2015-09**
+  (79+66+59+42) and no-fii at 2006-07. Diagnose reject classes from the JOURNAL, never the capped log.
+- **✅ ROUND 2 (same evening, cache-only, +970 net cells → coverage 93.8%): both clusters were ONE
+  parser gap each.** (a) recon 2014-15 = **SEBI's FPI migration** — the institutions block carries
+  "Foreign Portfolio Invest*" as its own row or itemised under "Any Others (Specify)" (ADANIPORTS
+  Sep-15: Any-Others 9.29 == FPI 9.29, count ONCE); FPI is foreign → fii. An anonymous Any-Others
+  row folds into dii ONLY when reconciliation needs it, keeping the ~22k stored MC-family cells and
+  these on one dii convention (mf+banks+ins). 22 already-applied cells now read ≤0.95pp higher fii
+  (small FPI rows previously inside the 1pp tolerance) — fill-only keeps the stored value, drift
+  journalled here. (b) no-fii 2006-07 = **early Clause-35 pages omit empty rows** (AGRODUTCH Sep-06:
+  block = MF+banks only, subtotal proves fii) — residual-as-fii accepted at |r|≤0.15 outright, r>0.15
+  only with a stored neighbour within 5pp, negative refused. **The zero-guard then caught 81 derived
+  zeros beside neighbours holding >1%** — pages whose own subtotal is missing the foreign block (the
+  Dec-2015 defect appearing sporadically earlier). Rejects now 1,055: absent 564, recon 364,
+  zero-vs-neighbour 84, no-prom 26, no-fii 17.
+- **✅ ROUND 3 (2026-08-11 night): the 131 no-scripcode era symbols → 81 RESOLVED, +906 cells,
+  coverage 95.7%. Every year is now ≥85.8%.** Resolver `scratchpad→scripts` route: MC autosuggest
+  (`pdt_dis_nm` = "<ISIN>, <NSE SYMBOL>, <BSE code>", works for DEAD companies) — 63 by exact
+  NSE-symbol match, 3 by ledger-name, 15 by symbol-word-in-name (CASTROL→500870, COLGATE→500830,
+  NESTLE, CEAT, 3IINFOTECH…), single-candidate gated; per-symbol evidence in
+  **`scripts/_shp_aspx_resolved_era_syms.json`**. `symchg.csv` does NOT reach these renames
+  (~2002-2010, before its window).
+  - **Era renames make the page-name identity gate WRONG for mc:symbol rows** — SATYAMCOMP's page
+    prints "Satyam Computer Services" (era name), MC's current name is "Mahindra Satyam"; the gate
+    refused 58 correct cells across 4 symbols. Exact NSE-symbol+ISIN resolution outranks a
+    cross-rename name fuzz → the gate is skipped for `via=mc:symbol` rows only. All 58 recovered
+    cache-only. Eyeball: SATYAMCOMP promoter 20.74 (Mar-03) → 2.18 (Dec-08) — the Raju collapse,
+    exactly as history records.
+  - **Wrong-era resolutions self-neutralize as absents** (ASIANHOTEL→"(East)" is the post-2010
+    demerger entity; its 2002-09 qtrids have no pages → 194 absent refusals, no poison possible).
+  - Era-symbol cells are keyed by the ERA symbol (sf_revop precedent). If a rename pair later
+    enters `_rename_map`, the audit's norm() merges them — fill-only union, no conflict.
+  - **STILL OPEN: 50 symbols / ~590 cells MC's search can't surface** (GESHIPPING, BILT,
+    HINDMOTOR, L&T-as-era-symbol, the ESSAR/JINDAL families…) — need per-symbol ISIN/era-master
+    evidence, journalled in the rejects file's unresolved set, NOT closed. Whole-population reject
+    journal now 1,269 cells. **Measured-empty for these 50 (don't re-probe): MC autosuggest ×3
+    modes, `fill2020_tools/_mc_codes.json` (`None` — that campaign hit the same wall), the Wayback
+    census `map.json` (`None`), NSE's symbolchange archive (the nsearchives "full" file IS the same
+    1,054-row recent window), and era bhavcopies (2003 measured: NO ISIN column).**
+- **✅ ROUND 5 — the route that DID crack the tail: Wayback captures of NSE's OWN securities
+  master (2026-08-12 早): +172 cells, 96.4%.** `EQUITY_L.csv` archived 2006-08-24 / 2010-02-05 /
+  2011-10-30 carries SYMBOL + NAME + ISIN — the exact missing link. **Fetch with the `id_` raw
+  modifier** (`web.archive.org/web/<ts>id_/<url>`) — without it Wayback serves a ~10KB HTML wrapper
+  that looks like a block page. 21 of the 50 matched; ISIN join to the blank-status BSE master
+  (field `ISIN_NUMBER`) + guarded name fallback resolved 16 to scripcodes (BILT 500102,
+  GESHIPPING 500620 page-verified of 10 candidates, HINDMOTOR 500500, LGBROS 500250…), evidence in
+  `_shp_aspx_resolved_era_syms.json` (via=`nse-era-master:<ts>+isin|name1|aspxname`).
+  - **⚠️ Name-containment fallback needs a ≥6-char norm floor** — without it "UT Ltd" ⊂
+    "fUTureventures" and "B & A" ⊂ "lgBAlakrishnan" resolved WRONG entities (caught pre-harvest;
+    the page-name identity gate was the backstop). Multi-candidate ties are settled by fetching one
+    era aspx page per candidate and matching the printed company name.
+  - **Relisted-code resolutions self-neutralize**: KIRLOSOIL→533293 / SUNDRMCLAY→544066 /
+    ESSARSHIP→533704 are post-scheme relistings whose era qtrids have no pages → 98 absent
+    refusals, zero poison. Their PRE-scheme era codes remain findable per-symbol.
+  - **STILL OPEN after round 5: 37 symbols** — 29 delisted before the earliest EQUITY_L capture
+    (Aug-2006: HTMT, INDOGULF, BOOTSPHARM, JINDLSTRIP, L&T-era…), 8 with ambiguous/absent BSE
+    joins (KBL two-way tie; MONNETISPA/MANDHANA/SRIADIKARI/SUJANATOW absent from even the
+    blank-status master). Reject journal 1,371 cells. Per-symbol archival work from here.
+- **✅ ROUND 4 — THE SEAM, from BSE's own pages (2026-08-11 late night): +159 cells, 96.0%.
+  Dec-2015 72.1% → 98.4%; Mar-2016 79.4% → 85.0%.** `scripts/seam_derive.py` inverts the
+  institutions identity on the aspx q88/89 pages (fii = inst_sub − mf−banks−ins−govt−vcf, never
+  subtracting foreign rows, no clamp), ledger **`shp_fill_seam_aspx.json.gz`** — a SEPARATE file,
+  7th in `BSE_HIST_LEDGERS`, so no aspx-harvest rebuild can clobber it (stage-order trap).
+  `_shp_seam_adjudicated.json` cells skipped (BBTC's drop stays deliberate).
+  - **The two seam quarters are NOT equally broken.** Dec-15 batch-derives at **0.81pp median vs
+    stored Sep-15** (n=127 — matches the MC route's 0.87pp; run-gate passed, 139 cells written).
+    Mar-16 FAILED the 3.0pp run-gate at **5.73pp** — so q89 cells were written ONLY with per-cell
+    corroboration (|derived − stored Jun-16| ≤ 3.0pp; 20 written, 69 held).
+  - **★★ NEW DEFECT CLASS EXPOSED IN STORED DATA: Jun-2016 fii=0.0 fabrications.** 15 of the q89
+    failures are the ANCHOR's fault, not the derivation's — LICHSGFIN derived 27.53 vs stored
+    Jun-16 **0.0** (LIC Housing with zero foreign holding in 2016 is absurd; KSCL, SUPREMEIND
+    same shape). These stored cells came from the 2016-19 old-XBRL ledger. Journalled to
+    **`scripts/_shp_seam_suspect_jun2016_zeros.json`** for their own audit — do NOT trust a
+    stored fii=0.0 at Jun-2016 as an anchor, and the eventual heal likely un-blocks most of the
+    69 held q89 cells too.
+- **⚠️ A PASS THAT CHANGES ONLY PARSING MUST BE `--cache-only`.** The first recovery re-parse re-ran
+  the fetcher normally: >75 min elapsed for **45 s of CPU**. Every refusal was retrying the alternate
+  Flag whose page does not exist, and `fetch_page`'s 3-attempt backoff spends ~18 s per dead cell.
+  The same work from disk took **8 seconds** and recovered +213 cells (promoter-less complement + the
+  override-identity fix). **0.7% CPU over an hour is the tell that a job is sleeping, not working** —
+  check `ps -o time,%cpu` before trusting any long-run ETA.
+- **Identity-gate exception:** override-resolved rows carry `bname == ""`, and the aspx prints the
+  CURRENT registered name for era quarters (RUCHISOYA 2002 → "Patanjali Foods Ltd"), so the era-name
+  containment check must be SKIPPED for them — the override entry is itself the identity evidence.
+- **Promoter-less filers** (ITC/FEDERALBNK/HDFC class) print nothing in the 1997 promoter block;
+  prom is claimed as the complement ONLY when the two non-promoter Sub Totals close to 100 ±0.5.
+  SOUTHBANK/RIIL still refuse — they don't close, so they stay open rather than get a guessed 0.
+- Stock-page deep history (`shpH` in the per-stock fin slice) is rebuilt by `build_stock_fin.py` via
+  `refresh-stock-fin.yml`, so per-stock tables pick these quarters up on the next CI run, not at push.
 - Harvest → staging ledger → `_shp_merge_stage.py` flow (NEVER a direct shp_history write while the
   12:40/20:40 IST CI may run); after apply, re-run `audit_shp_coverage.py` + spot-verify LIVE.
 
@@ -3396,10 +3520,38 @@ Symptom to recognise: `git show origin/main:docs/fin/<SLUG>.json` HAS the healed
 the commit BEFORE the slice commit. That is not CDN lag and waiting will not fix it.
 
 Immediate fix after any rev/PAT heal: `gh workflow run pages.yml` (workflow_dispatch is enabled) —
-it publishes whatever is committed and is safe to repeat. Proper fix if this keeps biting: give the
-slice job a PAT for its push, or add a `workflow_run` trigger on pages.yml.
+it publishes whatever is committed and is safe to repeat.
 **This is §41's own lesson recurring one layer out** — the bytes were right in git, the derived slice
 was right in git, and the site still served nulls.
+
+**FIXED IN THE WORKFLOW 2026-08-11 (2bd29409) — no more hand-kicking.** `refresh-stock-fin.yml` now
+carries the same trailing `gh workflow run pages.yml` the other ~10 refresh workflows already had
+(`actions: write` + `GH_TOKEN: ${{ github.token }}`, dispatch INSIDE the push retry loop right after
+a successful push, exactly as in `refresh-fii-dii` / `refresh-announcements`). `workflow_dispatch` is
+the documented EXCEPTION to the recursion guard, which is why a GITHUB_TOKEN job can dispatch a deploy
+it cannot trigger by pushing. A PAT was NOT needed; neither was a `workflow_run` trigger.
+
+Place the dispatch INSIDE the loop, never after it: the loop retries a rejected push up to 5×, so a
+dispatch after `done` would fire once per attempt. Inside, the two `exit 0`s make it fire **at most
+once per run and only when a commit actually landed** — the `git diff --cached --quiet` branch leaves
+first (empty run ⇒ no pointless deploy), and the push branch exits immediately after dispatching.
+That is the whole burst guard; there is no `if:` condition to add. Verified before pushing by running
+the extracted step against stubbed `git`/`gh`: unchanged ⇒ 0 dispatches, push-ok ⇒ 1, push-rejected-
+twice-then-ok ⇒ 1 (not 3), push-fails-5× ⇒ 0 and the run goes red.
+
+Live proof (run 31513447604, 2026-08-11 22:08 IST): slice commit `3490d369` pushed at 16:38:42Z →
+pages run 31513485523 created 16:38:43Z **with headSha `3490d369`** — the slice commit's OWN sha, which
+had never once appeared as a deploy headSha before. It was then cancelled as superseded by a deploy
+18 s newer whose tip CONTAINS it (that is `pages-deploy`'s designed coalescing, not a failure: a later
+dispatch always sits on a tip ≥ ours, so the content still ships), and the live URL served the slice
+commit's exact bytes by 22:10. Expect this shape — "our dispatch was cancelled" is a healthy log line
+as long as a newer deploy carrying the commit succeeded.
+
+Rate check before worrying about the wedge hazard (§38b / memory `project-stocks-pages-wedged-
+concurrency`): measured 2026-08-11, `pages.yml` already ran ~100×/day, 69 of them `workflow_dispatch`
+vs 31 `push`, some 16 s apart, with zero non-completed runs. Slice commits peak at ~78/day
+(2026-08-04), and `refresh-stock-fin`'s own `cancel-in-progress: true` collapses upstream bursts
+before they reach the dispatch. So this rides an existing pattern rather than inventing load.
 
 **§41b-i — NEVER park the publish-wait poller inside a worktree you are about to delete** (2026-08-10,
 cost: six runaway loops, one of them spinning for 7h55m). The standard verify step is backgrounded as
@@ -7602,3 +7754,600 @@ calling `FI.datebound(None, …)`, and `bse_get` throws on a `None` opener while
 identical.** Use `FI.bse_session()`, and make the positive control prove itself before believing its
 verdict. Second, the first real probe used a GUID truncated by my own `print`, so its 404 meant
 nothing.
+
+
+---
+
+## 85. ★★★ MONEYCONTROL'S CONSOLIDATED TABLE FALLS BACK TO STANDALONE — the defect every gate passes  (2026-08-11)
+
+Sibling to §81's route spec. §81 tells you how to READ Moneycontrol; this tells you what NOT to
+believe once you have. Found before a single cell was written, on a 2,586-cell revenue ledger and a
+1,555-cell PAT ledger.
+
+**THE DEFECT.** Moneycontrol serves a `cons_quarterly` table for a company **even in quarters where
+no consolidated result was filed** — and in those quarters the row carries the **STANDALONE**
+figure. Apply it and you have manufactured a consolidated number that is really the standalone one:
+the con-copy defect class §67 spent 18 heals unpicking, arriving this time through an aggregator
+instead of a reader.
+
+**WHY EVERY GATE PASSES IT — the part that matters.** The series gate proves MC's consolidated
+series IS our company's consolidated series, by reproducing our stored con values elsewhere. It does
+that correctly. **The fallback is PER QUARTER inside a series that is otherwise right.** Anchors,
+the ±6-quarter local window, the global disagreement rate, the §83 magnitude band — all clean. This
+is the first defect in this campaign that no existing gate could see.
+
+### 85a. The discriminator — three states, and the third is the one people miss
+Costs nothing for the first two: no fetch, our own store only.
+
+| condition | verdict |
+|---|---|
+| MC con == our stored STD for that quarter, AND the company's own history shows con != std in ANY other quarter | **HOLD** — it consolidates differently, so an identical figure here is MC repeating standalone |
+| MC con == our stored STD, and our history NEVER shows con != std for that company | **KEEP** — genuine no-consolidation-difference (MOIL / CHENNPETRO shape: subsidiaries equity-accounted, so con revenue really does equal std) |
+| **our STD cell for that quarter is EMPTY** | see 85b — this is where a naive screen silently passes the cell |
+
+### 85b. ★ THE EMPTY-TWIN HOLE, and the better test hiding behind it
+Raised by the aggregator session after screening its own ledger clean: a con-vs-std comparison
+**cannot fire when our own std cell for that quarter is null**, and such cells were falling straight
+through UNCHECKED — neither held nor examined. Their ledger came back 0-held partly because all 11
+of its cells happened to have a populated twin: clean by draw, not by design.
+
+Holding blindly is not the fix. **Compare MC's consolidated to MC's OWN standalone for that
+quarter** — source-internal, needs nothing from our store, and is the direct form of the question.
+Only when that is also unavailable (no stored twin AND MC serves no std row) does it become an
+explicit `HOLD-NO-TWIN`: unverifiable rather than verified, and visible in the ledger rather than
+folded into "keep". Adding this arm caught 1 more revenue cell and 25 more PAT cells that the
+our-twin test structurally could not see.
+
+### 85c. Measured
+    con revenue  852 cells equal our stored std -> 528 HELD (206 companies), 328 kept
+    con PAT      256 cells equal our stored std -> 290 HELD (102 companies),  27 kept
+    total held across the three MC ledgers: 823
+Evidence against the held ones is not marginal — KRBL's own store shows con != std in **28**
+quarters, JHS 20, BILVYAPAR 17, MINDTREE 15, and MC still returns a figure identical to standalone.
+
+**Log the KEEP arm's evidence count, not a boolean.** "This company never shows con != std" is far
+stronger at 40 overlapping stored quarters than at 2, and a company can do both — RAJESHEXPO shows
+con != std in 41 of our quarters and con == std in 2.
+
+### 85d. Consequences beyond Moneycontrol
+* **Pre-FY2020 is the worst-affected era by construction.** Consolidated quarterlies only became
+  compulsory from FY2020 (§51a), so pre-2020 is exactly where companies filed standalone-only —
+  which is exactly where MC has nothing real to serve and substitutes. Any 2018-or-earlier
+  consolidated backfill from this source is dominated by it.
+* **It is probably in all three aggregators.** §81c establishes MC `Total Income From Operations` ==
+  Trendlyne `SR_Q` == Tickertape `qIncTrev` to the paisa — one upstream vendor. So a cell "three
+  sites agree on" may be three copies of one substitution. **Cross-aggregator agreement is not
+  corroboration.** The independent checks remain a FILING read or the FY-sum identity.
+* **A filing distinguishes the two bases by construction; an aggregator cannot.** The counter-example
+  worth copying is the insurer PDF route: GICRE cells each gated on the SAME filing's standalone page
+  reproducing our stored revS in three separate columns, every one landing con != std.
+
+Tool: `scripts/fill2020_tools/mc_con_fallback_screen.py` — source-agnostic, annotates `held` +
+reason in place, deletes nothing (a held cell is still a candidate for a real consolidated source).
+All MC appliers skip `held`. **Run it over ANY aggregator-sourced consolidated ledger, including
+retrospectively over cells already applied — the same test works after the fact.**
+
+---
+
+## 85. ★★★ A RETRACTED CELL CAME BACK — and no detector can see that class  (2026-08-11)
+
+**NO ASSUMPTIONS, NO GUESSWORK** (§0). Measured on origin the same afternoon it happened.
+
+28 cells were retracted as Moneycontrol consolidated-fallback (§81/§82's sibling defect: MC serves a
+`cons_quarterly` row even for quarters where no consolidated result was filed, carrying the
+STANDALONE figure). Hours later, **2 of them were live again**:
+
+    SHREECEM 2018-06  3070.15   exactly the value retracted
+    SYNGENE  2018-03    409.1   NOT the 409.0 retracted — a FRESH derivation, which is the tell
+                                that a DIFFERENT route re-applied it
+
+### 85a. The cause — CORRECTED, because the first diagnosis was wrong
+`scripts/mc_history_fills.json` and `scripts/mc_pat_fills.json` claimed both cells with
+`held: false`, and their fill-only appliers restored them. **This was first written up as "those
+ledgers were never screened". That is wrong** — the owning session's screen had covered exactly those
+two ledgers all along (608 of 611 held cells across the tree are its output). The real gap: **neither
+ledger was ever REGISTERED in `verify_fills_live.py`**, so nothing re-checked either end of them.
+Both are registered now, `mc_pat_fills` with its own `{std:1, con:3}` slot map because it writes
+`sf_fundamentals` rather than `sf_revop`.
+
+The transferable point survives the correction, and is if anything sharper: **a cell can be claimed
+by ledgers from other campaigns, and a screen passing over a ledger is not the same as a detector
+watching it.** Before retracting, grep the whole `scripts/` tree for the key; and check the ledger is
+in the detector's registry, not merely that someone has screened it.
+
+### 85a-bis. ★★★ A FALLBACK IS A BYTE COPY — DO NOT TEST IT WITH A BAND
+The detector then refuted the retraction itself. `mc_con_fallback_retro_2018.py` used
+`EQ_REL = 0.001` — 0.1% RELATIVE — to decide "equals our standalone". On a 3,000-crore value that is
+3 crore of slack, and it retracted **7 of 28 cells that were NOT equal at all**:
+
+| cell | written con | our std | apart |
+|---|---|---|---|
+| SHREECEM 2018-06 | 3,070.15 | 3,069.91 | 0.24 |
+| COCHINSHIP 2018-12 | 717.11 | 716.42 | 0.69 |
+| SJVN 2018-09 | 751.52 | 751.90 | 0.38 |
+| GLAXO 2018-12 | 825.03 | 825.35 | 0.32 |
+| CENTURYPLY 2018-12 | 579.17 | 578.89 | 0.28 |
+| SJVN 2018-12 | 484.46 | 484.49 | 0.03 |
+
+A source repeating the standalone row repeats it **exactly**; a difference of any size is evidence of
+a real consolidated table. All six were restored. A retraction also has to leave the store
+*internally consistent* — emptying consolidated revenue while the consolidated PAT from the same
+source row stays live is its own defect.
+
+### 85a-ter. The rule that survives, and it is ONE-DIRECTIONAL
+Compare the SOURCE's consolidated row against the SOURCE'S OWN standalone row — same quarter, same
+label, **each field judged on its own row**:
+
+    differs   -> a genuine consolidated table FOR THAT FIELD. Writable.
+    identical -> UNRESOLVED. NOT writable and NOT proven a fallback.
+
+The second half matters: a company whose subsidiaries are equity-accounted files consolidated revenue
+EQUAL to standalone while its profit differs (MOIL/CHENNPETRO), and at an aggregator that is
+indistinguishable from a copy. **Neither a differing PAT nor a "Net P/L After M.I & Associates" row
+proves a genuine table** — GAYAPROJ 2019-03 and PIIND 2019-03 are proven fallbacks and show both.
+Settle the identical case from the FILING, not the aggregator.
+
+⚠️ `--repair-held` is destructive and must never ride on a general `--repair`: a `held` flag can
+itself be wrong, as 6 of these 28 were, and repairing on it deletes correct values.
+
+> **BEFORE RETRACTING A CELL, GREP THE WHOLE `scripts/` TREE FOR ITS KEY.** Annotate `held` in every
+> ledger that claims it, in all three key shapes (`SYM|QE`, `SYM|QE|con`, `SYM|QE|revC`) plus the
+> nested `{SYM: {QE: …}}` stores. One un-annotated ledger is enough to undo the whole retraction, and
+> the applier that does it is behaving correctly.
+
+### 85b. ★ `verify_fills_live.py` IS STRUCTURALLY BLIND TO THIS
+It reported **MISSING 0 throughout**, and it was right to: it checks that a LEDGERED value is still
+PRESENT in the served payload. A retraction asserts the opposite — that a value must stay ABSENT —
+and nothing checks that. **A `held` entry reappearing is a class the detector cannot see by
+construction.**
+
+So a retraction is not finished when the push succeeds. **Re-read the LIVE payload for the retracted
+keys specifically** (§41/§56's rule, in the negative direction). That is how these two were found;
+no alarm fired.
+
+The natural fix is a `held`-aware pass in `verify_fills_live` — assert absence for every ledger entry
+carrying `held` — which would turn this into a monitored condition instead of a manual re-read.
+Recorded as the next improvement; not built here.
+
+
+### 85d. ★★★ NEVER HARDCODE AN AGGREGATOR'S REVENUE ROW — score the label, and treat a TIE as unresolved
+Moneycontrol serves SEVERAL revenue definitions in the SAME payload: `Net Sales/Income from
+operations`, `Total Income From Operations` (= net sales + other operating income), and for banks
+`Interest Earned`. **Picking the wrong one is invisible to every magnitude gate**, because both
+values are plausible and sit in the right column. SIEMENS 2018-12 drifted exactly so — 2,753.3 (net
+sales) vs 2,825.9 (total income), 72.60 apart, both real rows of the same payload.
+
+> **Score EVERY candidate label against our own stored quarters and take the STRICT winner. A TIE is
+> UNRESOLVED, never a fall-back to a preferred label** — a tie means the anchors cannot separate the
+> definitions, which for an insurer or an NBFC is the difference between premium income and total
+> income. Judge each FIELD on its own row; a revenue verdict must never be stamped onto a PAT ledger.
+
+Measured (2019 session, over 2,171 applied revenue cells): 525 used Total Income, and 318 of those
+had a materially different Net Sales row in the same payload — up to 58% apart (BAJAJFINSV 8,829 vs
+3,681; ICICIPRULI 15,896 vs 10,056). Scored both ways, the chosen label reproduces strictly better in
+**318 of 318**.
+
+**★ A LOUD CRASH BEAT A SILENT WRONG ANSWER, and it is worth noticing why.** The label-scoring code
+shipped with `ours` read one line before it was assigned, which raised `UnboundLocalError` on the
+first symbol of every run. That looks like a plain bug, but `ours` is exactly the anchor set the
+scorer chooses the row label against — **had it inherited a stale value from the previous iteration
+instead of crashing, it would have picked THIS company's revenue row using the PREVIOUS company's
+anchors**, and the wrong-row defect would have arrived silently on an unknown number of cells. A
+variable that selects an interpretation should fail closed; the crash was the good outcome.
+
+**★ AND IT OVERTURNED A REFUSAL.** The 2018 campaign closed its insurer route holding 11 cells on the
+claim that "our stored insurer standalone cannot be reconciled to the filings". It reconciles — the
+comparison was against the wrong row. On the winning label:
+
+| | Net Sales | Total Income From Operations |
+|---|---|---|
+| GICRE con | 0/10 | **9/10** |
+| NIACL con | 1/22 | **18/22** |
+| HDFCLIFE con | 0/22 | **17/22** |
+| ICICIPRULI con | 0/25 | **22/25** |
+
+The MC gate had rejected all four insurers with "0 reproduced, 10-25 disagreements", and that was
+recorded as evidence ABOUT THE DATA. It was evidence about the LABEL — §57's rule again, one level
+down: a route returning nothing is a fact about the route.
+
+### 85c. Why the wrong value is worse than the hole
+Both cells are the §67 con-copy shape: a consolidated slot holding the standalone figure. That is the
+defect class 18 heals were spent unpicking in §67, and an aggregator can re-create it silently at any
+time. `held` in the ledger is a claim about intent; only the DATA is a claim about fact.
+
+---
+
+## 86. ★★★ ORPHANED PRICE SERIES — the phantom -100% backtest class  (2026-08-11)
+**NO ASSUMPTIONS, NO GUESSWORK** — every number below was measured against the LIVE sf-data bins.
+
+### 86a. The defect
+`markPrice()` (both engines) deliberately marks a holding **0** when the asked date is past the
+series' last bar AND that bar is >90d before the dataset end ("delisted -> worth 0"). Correct for
+true delistings; WRONG when the listing continued under a new symbol — the old key's series just
+stops (rename/scheme relist) and a backtest that held it books a phantom -100%. Worse, `priceAt()`
+carries the last bar forward forever, so screens could ENTER such a series at a stale print
+(MUNJALAUTO: entered 2006-06-30 on a close 45 days old, exited 0.00).
+
+### 86b. Census (live bins, 2026-08-11)
+1,705 of 4,468 symbols are dead-ending series. Evidence classes: 57 pairs with direct rename
+evidence (34 _rename_map, 21 exact live-name match, 2 NSE symbolchange.csv); 884 unexplained
+deaths in the 2003+ daily era (mix of true delistings, mergers, unmapped renames). 4 measured
+PARALLEL-entity deaths (EICHER, GFL, IDBIBANK, OCCL) = absorbed by an already-listed company:
+NOT stitchable, -100% semantics a modeling choice, not a data bug. Fragment shape: several old
+keys hold pre-migration bars + weekend-special residue (TATAMOTORS 1996-2003+specials while TMPV
+holds 2003+; GET&D, ADORWELD, AKZOINDIA same) — zero date overlap with the survivor, i.e. one
+company's history split across two keys.
+
+### 86c. The fixes shipped
+1. **Entry-freshness gate** in `factorsAt()` (backtest-engine.js + stock-backtest.html, kept in
+   sync): no bar within 14d of the screen date (28d pre-2002 weekly era) -> not screenable.
+   Thresholds measured: daily-era gaps >14d = 0.044% of bar-transitions. At 2006-06-30 the gate
+   excludes 991 stale carry-forwards. A/B same config 2006-07: live engine 5 wipeouts, gated 3
+   (remaining 3 = real deaths); phantom entries cost that control run ~13% of final value.
+2. **MANUAL_MERGE batch (23 pairs)** in update_sf_data.py: rename_map-evidenced fragments whose
+   join is price-continuous on the survivor's adjusted scale (drift 0.93-1.07 after CA_OFF adj,
+   gap <=78d, weekend residue excluded from the old end). Verified: no live fundamentals rows under
+   any old key, none in F&O history, only AKZOINDIA/GET&D/MAHINDCIE in index membership history
+   (first two already in build_membership_v2 supplement; MAHINDCIE added).
+3. **insert_weekend_sessions is now rename-aware** (old->new via MANUAL_MERGE). MEASURED CAVEAT
+   (first post-merge run, 2026-08-11): the day-level short-circuit (probe symbols already carry the
+   bar) skips covered session days before row iteration, so the 233 old-key ledger rows re-home only
+   when a session day is genuinely reapplied (fresh ledger day / from-scratch rebuild) — in nightly
+   steady state those ~10 special-session bars per merged symbol stay absent from the survivor.
+   Known, accepted loss; the mapping makes any future reapply land them correctly.
+
+### 86d. What is deliberately NOT done (queue)
+- **MUNJALAUTO -> MUNJALAU: do NOT MANUAL_MERGE.** The 2006 event is a court scheme (2 old shares
+  -> 1 new + 1 Shivam Autotech share) — a stitch would fabricate a huge value-separation "crash"
+  inside a 2-month trading gap. corp_actions.json floor is 2016-01-05 (measured), so no official
+  factor exists to bridge it. The entry gate already kills its phantom trade.
+- 28 NEEDS-FACTOR / LONG-GAP pairs (NIIT->NIITLTD, CEAT->CEATLTD, TATAMOTORS->TMPV pre-2003
+  fragment, WOCKHARDT, MORAREALTY, NXTDIGITAL, ...): each needs its official corp-action terms
+  verified before a join factor is written. The queue is COMMITTED: scripts/orphan_needs_factor.json
+  (per-pair evidence class, CA-adj, measured drift, gap).
+- Parallel-entity mergers: RESOLVED 2026-08-11 — the user pointed at the repo's own precedent
+  (§22 build_shp_backtest.py: "delisted exits at last close", the convention used for every
+  2020-2026 case). markPrice in BOTH engines now carries a dead series at its last traded close,
+  so any death (merger, scheme, true delisting) exits at the last print on the next rebalance.
+  Loss up to that print is still fully counted; the forced last-print→0 step is gone.
+
+
+## 87. ★★★ PRE-2016 CORPORATE ACTIONS — the 2002→2016 extension of the price-adjustment layer  (2026-08-11)
+**NO ASSUMPTIONS, NO GUESSWORK** — every factor written traces to an official record or two independent readers; every count below was measured this session.
+
+### 87a. The gap this closed
+The price builds adjust splits/bonuses via `corp_actions.json` — whose NSE-feed loop STARTED AT 2016.
+Everything earlier rode on `ca_factor()` inference alone (ratio snaps to a CA fraction within 8%),
+which has four measured failure modes:
+1. **Ex-day move >8% off the fraction → the whole split is silently KEPT.** Flagship: ITC
+   2005-09-21 (1:2 bonus + FV 10→1 = 1/15; +9% ex-day rally put the raw ratio at 0.0727, snapping
+   to nothing) — the live bin carried a fake −92.7% "crash", all pre-2005 ITC ~15× off basis.
+   Same class: BERGEPAINT-2015, HAVELLS-2014, BRITANNIA-2010, ABB-2007, JINDALSTEL-2008,
+   KOTAKBANK-2005, UNITECH-2006 (1:1... actually 12:1 bonus × split = 0.0154), EIHOTEL-2006.
+2. **Crashes divided out as phantom splits** (the LEGACY_FALSE_CA class, pre-2016 era).
+3. **Demergers divided out as splits** (RELIANCE 2006-01-18's −25% separation was divided out as
+   a phantom 3/4; IDFC 2015-10-01 as 2/5).
+4. **Wrong fraction on ex-day pops** (VENKEYS 2015: true 2/3 baked as 3/4; SURANAT&P 1/5 as 1/4).
+
+### 87b. Sources and their measured floors
+- NSE corporates-corporateActions API: serves back to 1999, but split/bonus subjects are only
+  dense from **2006** (2005: 829 rows, ONE bonus). 2002-2005 = dividends/AGM only.
+- Era subject format differs, in THREE spellings, and each one silently dropped a whole leg:
+  `Fv Split Rs.10/- To Rs.2/` (no "From"), `Fv Spl-Rs10tors2` (abbreviated keyword + run-together
+  "tors"), `Bon-12:1` (abbreviated bonus). A subject can carry BOTH legs, so a missed spelling
+  writes a factor that is wrong by the OTHER leg — UNITECH-2006 read 1/13 instead of 1/65. The
+  open-gap gate caught all 19 of these as "record contradicts the tape" BEFORE they were applied;
+  that rejection list is what led back to the parser. `Spl` is accepted only adjacent to an Rs
+  amount, never as "Spl Dividend"/"Spl-50%" (77 of the 100 `spl` subjects are special dividends);
+  `\bbon\b` never matches "bond"; bonus DEBENTURES (`Bonus Deb1:1` — BRITANNIA-2010,
+  ASTRAZEN-2008) are excluded by class alongside NCRPS/DVR/preference. Gate widened (0.05,0.95)→(0.002,0.98):
+  combined "Bonus 1:1 + split 10→1" = exactly 0.05 was being dropped (SUNILHITEC-2016 —
+  ironically the case the combined parser was written for); pref/NCRPS/DVR bonuses now excluded
+  by CLASS, not by the numeric gate.
+- BSE per-scrip CA API (`DefaultData/w ... scripcode=`): reaches 2002+, ISIN-gated resolution
+  only (bse_scrips.json by_isin). Blanket (no-scrip) queries are silently capped — never use them.
+- Yahoo chart API split events: good 2002+ coverage for survivors, but records only ONE leg of
+  combined bonus+split events (ITC → "10:1" only) and has wrong-date rows — NEVER write a Yahoo
+  factor without the open-gap gate.
+
+### 87c. The arbiters (calibrated on 566 ground-truth events)
+- **PREV_CLOSE does NOT arbitrate**: measured UNADJUSTED on ex-dates in every era (562/566).
+  (Its BZ-gap use — resumption-day re-basings — is a different situation.)
+- **The OPEN does**: on a real CA the ex-day OPEN prints at the adjusted basis —
+  (open/prev)/factor ∈ [0.957, 1.100] for p5..p95 of true CAs; equity crashes sit ≥ 1.19
+  (they open near flat and fall intraday). Gate: ≤1.12 = CA-like, ≥1.18 = crash-like.
+- Volume rescale (~1/factor) is too noisy to decide factor-2 events; supporting evidence only.
+- Special dividends explain drops via the feed's dividend rows (amount ≈ drop in ₹).
+- 2016+ only: absence from BOTH dense feeds = phantom (the audit_phantom_ca standing rule).
+
+### 87c-bis. Measured outcome (this campaign)
+- `corp_actions_hist.json`: **716 factor events / 542 symbols** + 99 keep-drop dates. Includes 24
+  wrong-fraction fixes (VENKEYS 3/4→2/3, KARURVYSYA 2/3→5/7, ENGINERSIN 1/5→1/6...), 111
+  verdict-confirmed additions, and **21 events recovered only after the third era spelling was
+  found** — `Fv Spl-Rs10tors2/Bon-12:1` (UNITECH 1/65, VEDL 1/20, RAMCOCEM, STLTECH, NIITLTD,
+  JAICORPLTD, RAJESHEXPO, DPSCLTD 1/230...). 11 feed rows the tape contradicts were EXCLUDED.
+- `phantom_crashes.json`: +104 keep-drop dates / 78 symbols (era crashes; special-dividend drops
+  PFIZER-2013 ₹360, STAR-2013 ₹500; penny reverse factors; 2016-17 dual-feed-absent).
+  `crash_raw_prices.json` seeded with 205 era closes so the daily CI heal stays network-free.
+- `rights_terp.json`: 253 total (+51). `demerger_adj.json`: 94 total (+11).
+- Readers: Yahoo 1,856 symbols (499 event-boundaries → 76 missed + 54 oddball), ~190 BSE
+  per-scrip records, 25,173 dividend rows, open-gap + volume + market-breadth locally.
+- Residue: **231-item manual queue** at `scripts/ca2002_campaign/manual_queue.json`
+  (+ verdicts.json.gz, kept_drops.json.gz — per-event evidence).
+
+### 87d. What was written where
+- `scripts/corp_actions_hist.json` (NEW, tracked): pre-2016 factors + noadjust, keyed by CURRENT
+  bin symbol; merged into corp_actions.json by build_corp_actions.py on every regeneration.
+- `scripts/phantom_crashes.json`: pre-2016 verified crash keep-drops appended.
+- `scripts/rights_terp.json`: 1999-2013 parseable rights TERP entries (issue price = FV+premium;
+  FV reconstructed from the feed's own FV-transition records + EQUITY_L — "premium" is NOT the
+  issue price). Residual semantics vs baked state (M&MFIN-2020 pattern).
+- `scripts/demerger_adj.json`: pre-2016 strict-demerger entries (factor = ex-open/prev from the
+  era bhavcopy) incl. record-verified RELIANCE 2006-01-18 (0.6248 — the special-session price)
+  and ZEEL 2006-12-18.
+- `scripts/update_sf_data.py`: self_heal raw_close is rename-alias-aware (era tickers).
+- Heal applied via SF_HEAL_WINDOW full reconciliation run locally (bhav cache required — CI's
+  28-day window never revisits these, so CI needs no old bhavcopies).
+
+### 87e. Rerun recipe
+1. Worktree from origin/main + `scripts/_bhav_cache` (APFS-clone the backup: /Users/dhruv/...
+   stocks-dashboard-oldpc-backup — 1996→2026 raw day rows, 1GB).
+2. `python3 scripts/build_corp_actions.py` (merges hist ledger).
+3. `SF_HEAL_WINDOW=99999 python3 scripts/update_sf_data.py` — self_heal reconciles every ledger
+   event against the bin using raw cache closes; idempotent (re-run = no-ops).
+4. STOP-GATE: heal log vs heal_preview, ITC/RELIANCE/IDFC/VENKEYS spot series, end not regressed.
+5. Publish: split + orphan-branch + one-shot join/upload workflow (§1 rebuild pattern) →
+   `gh workflow run refresh-backtest-data.yml` → verify live rev + client.
+
+### 87e-bis. ★★★ A HEAL THAT RE-APPLIES IS A NIGHTLY REWRITE — two convergence guards
+Caught by diffing the SELF-HEAL lines of two consecutive full-window runs: **24 events healed in
+BOTH**. `self_heal` is only safe because it is idempotent; when it is not, CI re-scales the same
+block every night forever. Two independent causes, both now guarded in `update_sf_data.py`:
+
+1. **2-decimal QUANTIZATION on sub-rupee series.** The recovered `applied_f = raw_ratio /
+   adj_ratio` is meaningless when the stored closes are 0.01-0.05 — `0.02/0.01` is EXACTLY 2.0,
+   so the comparison against `correct_f` never converges. BIRLACOT / FARMAXIND / VKSPL /
+   VISUINTL are long-standing `phantom_crashes` entries, and phantom entries reconcile
+   UNCONDITIONALLY (no window), so **CI had been halving those series every night** — measured
+   0.05 → 0.01 with 1,661 closes already at 0.00. **This PREDATES the pre-2016 campaign**; the
+   full-window runs merely made it visible in one place. Guard: skip when either boundary close
+   is under ₹0.25 (0.005/0.25 = 2% precision) and PRINT every skip (30 events).
+2. **A date in BOTH corp_actions maps.** The feed can file two rows for one date — AHLEAST
+   2022-10-06 has an official 2/3 factor AND a scheme row — so `factors[]` and `noadjust[]` both
+   carry it and generate two events fighting over the same bar ("divide it out" vs "keep it"),
+   each pass rescaling the pre-ex block ×1.5 (×2.25 after two runs). Guard: an explicit
+   split/bonus RATIO outranks a keep-drop flag on the same date.
+
+**The test that proves it:** re-run the full-window heal over the healed bin — it must report
+**0** heals. Run this after ANY change to a heal ledger; a non-zero second pass is a bug, not a
+correction. (8 damaged series were restored to pre-campaign values in the same publish; final
+zero-close count is identical to pre-campaign, delta +0.)
+
+### 87f. Residue (documented, NOT healed — never guess)
+`scripts/ca2002_campaign/manual_queue.json` — 230 rows, 225 genuinely open (5 annotated
+RESOLVED-by-class: bonus DEBENTURES — DRREDDY-2011 / NTPC-2015 / COROMANDEL-2012 — which issue no
+equity and correctly carry no factor). The open set, by why it is open:
+- **182 "insufficient evidence to flip"** — the baked factor is neither confirmed nor refuted: no
+  Yahoo coverage (951 of 1,856 symbols returned nothing — mostly delisted microcaps), no BSE row,
+  and an open print that decides nothing. Left exactly as baked.
+- **16 "record contradicts the tape"** after the parser fix — e.g. SUNTV 2007-07-23
+  "Agm/Spl/Bon-1:1/Div-20%" prints a `Spl` with NO terms, so the second leg is unknowable from the
+  record; the open says the true factor is ~0.25, not the bonus-only 0.5. A number no record states
+  is a guess — not written.
+- **11 yahoo-event-without-open-confirmation**, 1 three-way disagreement.
+- Sub-noise CAs on penny stocks (a 1:10 bonus on a Rs2 stock hides inside paise rounding); ~120
+  suspension-gap boundaries (a factor riding a resumption gap — PREV_CLOSE is unusable across more
+  than one session, feedback-prevclose-arbitrates-a-gap); pre-2006 demergers beyond the
+  record-verified set (feed blind — kept-drop candidates with open-gap <=0.92 sit in
+  `kept_drops.json.gz` for a future record check); rights with unparseable / partly-paid / PCD
+  terms (same policy as the 2014+ sweep).
+- **Penny-floor artifact:** a correct 1/10 factor on BIRLAPOWER's Rs0.01 series rounds 5 more bars
+  to 0.00. That zero-close class is PRE-EXISTING and far larger (43,780 bars / 115 symbols / 0.47%
+  of all bars) — not introduced here, and not worth reverting a record-verified factor.
+
+---
+
+## 88. ★★★ ERA-FLOOR AUDIT — post-2020 conventions the PAST data never got  (2026-08-11)
+Prompted by §86 (the orphan -100% class was exactly this shape). Method: sweep the runbook for
+conventions with an era floor, then MEASURE the old data. §87's territory (pre-2016 price
+corp-actions, campaign in flight) deliberately excluded. All numbers measured on LIVE sf-data.
+
+### 88a. ★★★ TURNOVER UNITS — FIXED 2026-08-11 (floors were a NO-OP before 2020)
+`t` was whatever the day's bhavcopy carried: the old NSE zip (TOTTRDVAL) is RAW RUPEES, the new
+sec_bhavdata_full (TURNOVER_LACS) is LACS. Everything downstream states LACS (TURN_OPTS, the
+"Avg daily turnover (₹ lacs)" factor, build_stock_slices `t`), so `turnoverAt() < mcapFloor`
+compared rupees against a lacs floor and passed ~everything. MEASURED distortion (₹100 cr/day
+floor): 2010 passed **1,914** stocks, should be **42**; ₹1 cr: 2,428 -> 622. 2023 also moved
+(2,641 -> 1,390) because a DEAD symbol's last bar is carried forward — stale pre-2020 rupee bars
+were passing floors years later. Every preset starts 2020-03-31, which is why it hid this long.
+
+**Shape (measured, 9.31M classifiable bars):** 1996-2019 rupees, 2020+ lacs, PLUS strays both ways
+— 9,845 lacs bars inside 2019 (BZ backfill / weekend sessions splicing modern-format bars into
+old-format days) and 1,974 rupee bars in 2022 (NSE served the old file on 2022-08-08). A single
+date cutoff is therefore wrong, and so is "one seam per symbol" (this section's first draft) — the
+unit is a property of the FILE, i.e. of the DAY: 7,556 of 7,576 dates are unanimous.
+
+**The test — r = t / (c * v).** `c` is split-ADJUSTED while `t`/`v` are RAW, so r is exactly the
+cumulative adjustment factor (rupee bar) or that / 1e5 (lacs bar): **price cancels**. That is
+strictly better than build_nifty500_turnover.py's t/v ("≈ traded price") test, which misreads
+sub-₹1 pennies and needs a per-date median to stay safe. r is sharply bimodal with an EMPTY band
+between 10^-3.0 and 10^-1.3.
+
+**`normalize_turnover_units()` in update_sf_data.py**, called LAST (after the day loop + self_heal,
+so it also catches bars appended this run) and counted in the publish condition:
+- verdict per DAY from that day's MEDIAN r (> 0.01 = rupees); a date with only zero-close rows
+  (43,779 measured) inherits the nearest measured date;
+- inside a rupee day, a bar >=1e4 BELOW the day median is a modern-format splice and is skipped —
+  that is what protects the 9,845 already-lacs 2019 bars;
+- rupee bars: t /= 1e5, kept to 4dp under 100 (a penny stock's whole day can be < 1 lac) else 1dp.
+
+⚠️ **THE IDEMPOTENCE TRAP (§87e-bis, caught in test, not in prod).** The first draft used a per-BAR
+absolute cut and pass 2 re-converted **601 bars**: floor-priced series (DHANUS, CIMCOBIRLA — adjusted
+close ₹0.01-0.05) carry an adjustment factor near 1e4, so one division still leaves them above any
+fixed rupee threshold and they get divided AGAIN. The day MEDIAN is immune to those outliers and
+makes idempotence structural: converting a day divides its median by 1e5 too, so it reads lacs for
+ever after. Verified on the real 201 MB bin: pass 1 = 5,977,197 bars, **pass 2 = 0**, 0 days still
+rupees, the 9,845 lacs-in-2019 bars byte-unchanged, and RELIANCE continuous across the seam
+(2019-12-31 ₹1,548 cr -> 2020-01-01 ₹970 cr, no 1e5 step).
+
+**Blast radius (checked, no other change needed):** build_results_season.py + bake_liquid_universe.py
+screen on c*v, not `t` — immune. build_stock_slices carries only the recent tail (already lacs).
+build_nifty500_turnover.py classifies per date and self-disarms on all-lacs data; its thin-date era
+fallback fires on ZERO dates in its emitted range (>=2009-10 all have >=5 liquid rows). build_volume
+reads bhavcopy columns, not the bin.
+
+**Spun off, NOT fixed here:** those floor-priced adjusted closes imply cumulative factors ~6,000x
+(DHANUS 2007 adj ₹0.05 vs an implied raw ₹307) — a phantom-CA smell for the §87 ledger to
+adjudicate, unrelated to units.
+
+### 88b. ★★ DELIVERY-% COVERAGE: ~22% of bars pre-2017 vs ~90% from 2018 — **RESOLVED 2026-08-11**
+Sampled every 7th bar: share of bars with dv>0 = 21-22% flat 2002-2016, 92% in 2018, ~90%+ since.
+The §1 dv_fill "2002-2019 MTO backfill" reached only a subset. Delivery-based screens quietly lose
+most of the pre-2018 universe. Queue: extend the MTO backfill sweep (NSE MTO archives reach 2003).
+
+**RESOLVED (2026-08-11): +3,525,793 cells → 2002-2017 now 88.8-96.9%** (was 18.7-21.6% measured
+on the full universe, not the 7th-bar sample). Root cause of the old gap: the 2026-08-02 build
+harvested MTO files ~WEEKLY (Mondays) for 2002-2017 — its "N500 coverage 100%" claim was true only
+on that sampled grid — while daily files exist for every date. Recipe (scripts/_mto_sweep_*.py,
+fetch → build → merge; MTO_SP env = cache dir):
+- **Source**: `nsearchives.nseindia.com/archives/equities/mto/MTO_DDMMYYYY.DAT`, HTTP/1.1 +
+  browser UA, validate CONTENT (`10,MTO` record present, no `<html`) never size/exit-code.
+  Floor measured: 2002-01-02 (2001 is 404). 16 dates 404 among 6,050 swept (5 in 2002-03,
+  the rest muhurat/special sessions).
+- **Two formats**: 2002-01-02..2002-02-11 rows are `20,SYM,SERIES,DELIV_QTY` (header total ==
+  sum(qty) PROVES qty is deliverable; pct = qty/bin-volume). From 2002-02-14:
+  `20,SR,SYM,SERIES,TRADED,DELIV,PCT`.
+- **⚠️ Row assignment is by VOLUME IDENTITY, never by symbol preference.** Exact-symbol-first
+  keyed ~600 Monday cells to the WRONG COMPANY in the 2026-08-02 ledger (DVL: rename map funnels
+  both DPL-Petrochem and DTIL-Tea into DVL; bin DVL's 2015 bars carry DTIL's volume, ledger had
+  stored DPL's pct). Rule: candidate MTO rows (exact + rename-mapped, series EQ/BE/BZ) for a bin
+  bar are accepted only where `MTO traded == bin v` (99.9% of comparable rows match exactly).
+  Controls on the overlap: existing dv == volume-matched MTO pct on 4,624,694 cells at 99.987%;
+  the 602 contradictions ARE the wrong-company class (601 corrected in-ledger; the queued live
+  overwrite is **SUPERSEDED by §89** — all 602 rows were DVL, whose price series itself was a
+  wrong-company chimera; the §89 surgery replaces bars+dv together. Do NOT replay
+  ~/.cache/mto_sweep/wrong_cells.json).
+- **Ceiling, measured**: residual dv==0 bars per year = securities absent from that day's MTO
+  (era MTO lists ~700-1,800 securities vs more bin symbols trading; 2005 dips to 88.9%, 2014 to
+  88.8%) + ~7k no-volume-match skips + ~19k MTO rows whose bin bars don't exist (TELCO/AVAYAGCL
+  era fragments — §86 territory, not dv work). 1996-2001: no MTO exists (pre-rolling, weekly-bar
+  era) — stays 0%, correctly unfillable.
+
+### 88c. ★★ §12 15:30-GATE DRIFT — FIXED 2026-08-11 (one-off cleanup + nightly automation)
+The gate ran ONCE (2026-07-08, 3,760 events → 1,000 bumped) and gates NEW NSE ingestion — but
+backfill writers (detres/vision/aggregator/scale-step campaigns) stamp ann-dates ungated. LIVE
+count today: 6,059 ann-cells sit ON month-end rebalance days (2018: 365, 2019: 518, 2020: 724 …)
+— roughly +1,000 cells of drift since July, concentrated in backfilled years.
+**DONE:** 3,627 events re-decided → 172 confirmed after-close → **289 ann-cells bumped** (2015-18
+carried 201 of them); 902 confirmed before-close and kept; 1,912 with no BSE same-date record + 641
+with no scripcode left untouched — conservative by construction, since a bump can only ever EXCLUDE
+a pick, never add one. Four bumps re-verified straight from the raw BSE payload (BAYERCROP 17:02,
+AUROPHARMA 20:59, AMBUJACEM 17:28, BALKRISIND 18:34) and 0 invariant violations (every new date is
+a real trading day, strictly later). The class can no longer regrow: the gate now runs every night
+(recipe, calendar sidecar, times cache and idempotence signals in §12).
+
+### 88d. ★ Internal series holes pre-2016 (the §80 shape, unadjudicated)
+412 resume-after->60d holes in 2002-2015 vs 400 in 2016+ (post-BZ-backfill; both counts include
+some weekend-residue artifacts and real suspensions). Whether a pre-2016 un-ingested series class
+exists (BZ didn't exist then; Z/T2T did) needs bhavcopy sampling inside sample holes (probe:
+AARTIDRUGS 2002-01-18 → 2003-09-19). Queue as an audit, not yet a defect claim.
+
+### 88e. Audited CLEAN (conventions that DO cover the past)
+Dividends never adjusted (documented, uniform); F&O membership 2001→date; N500 membership
+2002→date (<500-sag fixed); weekend sessions immaterial pre-2002 (weekly bars); index history
+pre-2007 via niftyindices; §86 death-at-last-close now uniform across all eras.
+
+---
+
+## 89. ★★★ A RECYCLED TICKER IS TWO COMPANIES UNDER ONE SYMBOL — the DVL/DTIL chimera  (2026-08-11)
+**Found by §88b's volume-identity rule** (bin DVL 2015-03-02 v=5,950 == DTIL's MTO traded, while
+DPL traded 26,573). Every claim below measured against the LIVE release asset + official NSE files.
+
+### 89a. The class
+NSE re-issues old symbols to unrelated companies. Lineage (symbolchange.csv + EQUITY_L ISINs):
+today's **DVL** (Dhunseri Ventures, ISIN INE477B01010, listed 2008) traded as **DTIL** until
+2010-07-26, then DPTL (→2014-11-12), then DPL (→2019-01-02). The tea business demerged out in
+2014 and listed FRESH as **DTIL on 2015-01-20** — Dhunseri Tea & Industries, ISIN INE341R01014,
+a DIFFERENT company that still trades today. symbolchange.csv has no row for it (it never
+renamed); only the ISINs reveal the recycle.
+
+### 89b. What the 2026-08-02 full rebuild did with that
+`build_sf_data.py`'s ISIN auto-merge is recycle-safe, but its **symchg.csv supplement was not**:
+it mapped DTIL→DPTL→DPL→DVL dateless, funneling ALL DTIL bhavcopy rows (both companies) into
+DVL. The same-day dedup `dd[rec[0]] = rec` over `sorted()` tuples keeps the LARGER tuple — i.e.
+**the higher close wins each collision day**. Measured vs MTO volume identity, bin DVL was:
+correct through 2015-01-19; ~100% TEA-company bars 2015-02→2020 (tea priced above DPL/DVL
+throughout); an alternating price-crossover mix 2021-22 (2021: 203 DTIL/44 DVL; 2022: 138/109);
+DVL's own bars only from 2023-01-23. The tea company itself was left a 7-bar stub (created
+2026-08-03 by the first post-rebuild daily run, which does NOT funnel).
+**Worse: the chain poisons bars it never touched.** The fake ~2× "moves" where the series
+switched company fed `ca_factor()` inference, the 2021-08-05 live-append day "reconciled" a
+bonus factor against the TEA company's ex-drop (see 89e — the factor wasn't even DVL's), and
+the re-anchor (last=raw) pushed it all backward: every pre-2015 bar sat at a UNIFORM 0.7118×
+raw (measured 2008→2015-01-19, 10 samples) when the true DVL tape has NO corporate-action
+factor anywhere 2015→date — the whole series should be RAW. −28.8% on seven years of history
+that was never itself mis-attributed.
+
+### 89c. The fixes (all 2026-08-11)
+1. **RECYCLED-TICKER GUARD** in build_sf_data.py's symchg supplement: if the old symbol still
+   has bars >45d past its own rename date, it was recycled — merge only bars ≤ cutoff into the
+   chain, keep the later company under its own key, and keep the pair OUT of _rename_map.json.
+   Swept the whole map for other live collisions: `_rename_map keys ∩ EQUITY_L` = **DTIL only**.
+2. **`scripts/dvl_dtil_surgery.json.gz`** + `apply_series_surgery()` in update_sf_data.py (§80
+   bz_backfill pattern): bhavcopy-true replacement bars for DVL [2015-01-20→build date] (DPL
+   rows →2018, DVL rows 2019→, RAW throughout — see 89e; dv from DELIV_PER, MTO-pct overlay
+   only on exact volume identity) + the tea company's full series under DTIL (×0.666667 before
+   its 2021-08-05 bonus). A one-shot `pre` factor rescales the kept pre-2015 DVL bars
+   0.7118×raw→raw, gated on BOTH segment inequality AND an anchor bar still holding its
+   recorded WRONG close — a future clean rebuild can never be double-scaled (§87e-bis: second
+   run must report 0).
+3. **`scripts/_rename_map.json`: DTIL entry REMOVED** (a live company must not be rewritten to
+   another key by present-era joins — the §30-7b/GUJGASLTD silent-vanish class, inverted).
+   FUND_ALIAS never had DTIL (§30-4c's "OLD must not be alive" already refused it). BSE scrips,
+   membership snapshots (none hold any Dhunseri symbol), F&O history: verified clean.
+4. **dv_fill_hist.json.gz: 1,192 DVL cells ≥2015-01-20 PRUNED** — they were §88b's re-key to the
+   bin's then-DTIL volumes; after surgery they'd be wrong-company again and fill-only would
+   re-inject them wherever a repaired bar has dv=0. Surgery bars carry dv inline instead.
+   **§88b's 601-cell dv overwrite leg: it SHIPPED (fbefe9cb, dv_overwrite.json) while §89 was
+   being built, and §89 then RETIRED it** — all 602 cells were DVL, the surgery replaces those
+   bars wholesale (DPL volume + DPL dv), so the leg's `v == vol` anchor can never match again;
+   its cells were emptied (note in `_meta.superseded`) to silence a permanently-firing "left
+   alone" tripwire. Same session-race lesson as §38: two heals aimed at one defect from
+   different layers — the LOWER layer (bar replacement) wins and must retire the upper one.
+4b. **The surgery ledger stores turnover in ₹ LACS** (the bin-wide unit since §88a's
+   normalization, which landed the same evening). This is load-bearing: `normalize_turnover_
+   units` skips lacs-median days, and post-normalization EVERY day is one — a rupee-unit bar
+   spliced in later is invisible to it forever. Any future ledger that inserts bars into the
+   bin must emit lacs itself (classify with §88a's own r = t/(c·v) test on raw values).
+5. **crash_raw_prices.json seeded** with DVL 20100714/20100715 (169.95/144.20, the era's
+   old-DTIL closes): self_heal's raw_close for the 2010-07-15 noadjust event resolved via the
+   rename-map alias that step 3 removed; the committed fallback keeps full-window heals (§87)
+   able to reconcile it. The 2014-09-18 event still resolves via the kept DPTL/DPL aliases.
+
+### 89d. The lessons
+- **A rename bridge without a date is a wrong-company merge waiting to happen.** Any (old→new)
+  map consulted for a LIVE symbol must pass the §30-4c aliveness test; any merge driven by one
+  must check the old key's bars actually STOP near the rename date.
+- **A chimera's damage is not confined to the chimera window** — ratio-chain + re-anchor smears
+  fake factors onto clean history. After fixing a wrong-company stitch, measure the bin/raw
+  scale of the SURVIVING segments too, don't assume them clean.
+- The §88b identity rule ("assign by volume identity, never symbol preference") is what caught
+  this; symbol-keyed heals had quietly agreed with the wrong series for weeks.
+
+### 89e. ★★★ NSE'S OWN CA FEED MIS-KEYS AN ACTION UNDER A SISTER COMPANY — the tape arbitrates
+The corp_actions "DVL 2021-08-05 Bonus 1:2" (straight from NSE's corporates-corporateActions
+API, symbol=DVL, comp="Dhunseri Ventures Limited") is NOT DVL's action. Proof, three independent
+legs: (1) the tape — DTIL's raw close drops 521.15→346.65 (×0.665, a textbook 1:2 bonus) on the
+ex-date while DVL moves 300.75→281.05 (−6.5%, and no CA-sized move exists ANYWHERE on the true
+DPL/DVL tape 2015→date); (2) Yahoo independently records the 3:2 split on DTIL.NS that exact day
+and none ever on DVL.NS; (3) share-capital math — DVL's equity capital is unchanged across 2021,
+the tea co's grew ×1.5. Both companies had same-day actions (DVL's was the ₹2.50 dividend), which
+is presumably how the filing/feed swapped them. **The validation gate that caught it:** requiring
+the constructed series' bonus seam to be continuous AFTER applying the official factor — it
+wasn't, and the CA-jump scan found the drop on the OTHER symbol. Fixes: `MISKEYED` re-key table
+in build_corp_actions.py (feed refetch would re-import the wrong row every run) + committed
+corp_actions.json moved the factor DVL→DTIL. Lesson: **an "official" corporate-action record is
+still a CLAIM; the raw tape + an independent recorder arbitrate** — same-family companies with
+same-day actions are exactly where feeds swap symbols. Full-window self-heal cannot re-break the
+repaired series either way: the reconciliation guard (raw_ratio/off outside [0.75,1.30]) rejects
+the factor on DVL's tape, and converges it on DTIL's.

@@ -110,8 +110,17 @@ def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
     for sym, fl in CA_OFF.items():
         for ex, fac in fl.items():
             if od(ex) >= cutoff: events.append((sym, ex, fac, False))
+    # CONTRADICTION GUARD (2026-08-11). A date can end up in BOTH maps when the feed files two
+    # rows for it — AHLEAST 2022-10-06 carries an official 2/3 factor AND a scheme row, so
+    # corp_actions.json holds factors[20221006]=0.666667 and noadjust[20221006]. The two events
+    # then fight over the same bar every run ("divide the drop out" vs "keep it"), each pass
+    # rescaling the pre-ex block x1.5 — AHLEAST's pre-2022 history was inflated x2.25 by two
+    # full-window runs. An explicit split/bonus RATIO outranks a keep-drop flag: drop the
+    # keep-drop side whenever the same date also carries a factor.
+    _fact_dates = {(s, e) for s, fl in CA_OFF.items() for e in fl}
     for sym, exset in NOADJ.items():
         for ex in exset:
+            if (sym, ex) in _fact_dates: continue
             if od(ex) >= cutoff: events.append((sym, ex, None, True))
     # Legacy false-CA corrections: reconciled every run regardless of age (idempotent), to converge
     # the release-asset loop on data the 28-day window + NSE-derived noadjust can never reach.
@@ -143,15 +152,30 @@ def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
     try: _RAW = json.load(open(os.path.join(HERE, "crash_raw_prices.json")))
     except Exception: _RAW = {}
     daycache = {}
+    # a renamed symbol's PRE-RENAME day rows carry the era ticker (TMPV's old rows say
+    # TATAMOTORS), so raw_close on a current key misses them — try the rename-map aliases
+    # (same rule build_demerger_adj uses). Matters for pre-2016 heal events (2026-08-11).
+    try:
+        _ren = json.load(open(os.path.join(HERE, "_rename_map.json")))
+    except Exception:
+        _ren = {}
+    _alias = {}
+    for _o, _n in _ren.items(): _alias.setdefault(_n, []).append(_o)
     def raw_close(ymd, sym):
         if ymd not in daycache:
             rows = B.fetch_day(datetime.date(ymd // 10000, ymd // 100 % 100, ymd % 100), jar) or []
             daycache[ymd] = {r[0]: r[1] for r in rows}
         v = daycache[ymd].get(sym)
+        if v is None:
+            for _a in _alias.get(sym, ()):
+                v = daycache[ymd].get(_a)
+                if v is not None: break
         if v is None:   # CI runners get blocked/rate-limited fetching NSE's archive -> fall back to the
             v = (_RAW.get(sym) or {}).get(str(ymd))   # committed raw ex-date prices so self_heal still works
         return v
     healed = 0
+    _quant_skips = []
+    PX_FLOOR_LOG = 0.25
     for sym, ex, off, is_dem in events:
         e = data.get(sym)
         if not e or not e.get("d"): continue
@@ -160,6 +184,17 @@ def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
         if j is None or j < 1: continue
         c = e["c"]
         if not c[j] or not c[j - 1]: continue
+        # QUANTIZATION GUARD (2026-08-11). Prices are stored to 2 decimals, so on a sub-rupee
+        # series the boundary ratio is dominated by rounding — 0.02/0.01 is EXACTLY 2.0 — and the
+        # recovered applied_f is noise. Healing on noise never converges: BIRLACOT, FARMAXIND,
+        # VKSPL and VISUINTL (all long-standing phantom_crashes entries, so reconciled on EVERY
+        # run) were being rescaled x0.5 nightly, eroding their history toward 0.00 — measured
+        # 0.05 -> 0.01 with 1,661 closes already at zero. A heal is only trustworthy when both
+        # boundary closes carry the precision to express it (0.005/0.25 = 2%).
+        PX_FLOOR = PX_FLOOR_LOG
+        if c[j] < PX_FLOOR or c[j - 1] < PX_FLOOR:
+            if len(_quant_skips) < 40: _quant_skips.append((sym, ex, round(c[j - 1], 4), round(c[j], 4)))
+            continue
         # demerger with a ledger factor on THIS EXACT bar boundary? its committed raw ex-day ratio
         # spares the bhavcopy refetch. Bar-exact only — a nearby event (phantom crash a day later)
         # must NOT borrow the factor; it falls through to the raw-price reconciliation below.
@@ -198,6 +233,11 @@ def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
             print("  SELF-HEAL %s ex %d: was f=%.4f -> %s  (rescaled %d pre-ex points x%.4f)"
                   % (sym, ex, applied_f, kind, j, corr))
             healed += 1
+    if _quant_skips:
+        print("  self-heal skipped %d event(s) below the 2-decimal precision floor (sub-%.2f "
+              "prices make the boundary ratio pure rounding): %s"
+              % (len(_quant_skips), PX_FLOOR_LOG,
+                 ", ".join("%s@%d(%.2f/%.2f)" % (s, x, a, b) for s, x, a, b in _quant_skips[:8])))
     return healed
 
 
@@ -323,8 +363,14 @@ _WEEKEND_CONFIRMED = [
 WEEKEND_SESSIONS = [datetime.date(*t) for t in _WEEKEND_CONFIRMED]
 
 
-def insert_weekend_sessions(data, j):
-    """Insert missing weekend special-session bars in place. Returns bars inserted."""
+def insert_weekend_sessions(data, j, old2new=None):
+    """Insert missing weekend special-session bars in place. Returns bars inserted.
+
+    old2new: MANUAL_MERGE's old->new ticker map. A session traded under a since-merged old
+    symbol (GET&D's 2019 muhurat, ADORWELD's pre-rename Saturdays…) must land on the SURVIVOR
+    series — without the mapping those rows skip as "unknown symbol" and 200+ real session
+    bars stay lost after a rename merge (measured 2026-08-11: 233 ledger rows under merged-away
+    keys). The f = stored/raw anchor below already puts the bar on the target's adjusted scale."""
     import bisect
     ledger = {}
     lp = os.path.join(HERE, "weekend_sessions.json.gz")
@@ -369,7 +415,8 @@ def insert_weekend_sessions(data, j):
                 print("  WEEKEND %s: file duplicates the prior day — skipped" % day); continue
         ins = skip = 0
         for r in rows:
-            sym, c, p, t = r[0], r[1], r[2], r[3]
+            osym, c, p, t = r[0], r[1], r[2], r[3]
+            sym = (old2new or {}).get(osym, osym)      # merged-away old ticker -> survivor series
             h = r[4] if len(r) > 4 else c; l = r[5] if len(r) > 5 else c
             o_ = r[6] if len(r) > 6 else c; v = r[7] if len(r) > 7 else 0
             dlv = r[8] if len(r) > 8 else 0; vw = r[9] if len(r) > 9 else 0
@@ -379,7 +426,7 @@ def insert_weekend_sessions(data, j):
             ds = e["d"]; i = bisect.bisect_left(ds, ymd)
             if i < len(ds) and ds[i] == ymd: continue  # this symbol already has the bar
             if i == 0: skip += 1; continue             # listed ON the session — no prior bar to anchor
-            raw_prev = prev_raw.get(sym) or p          # exact anchor; file PREV_CLOSE only as fallback
+            raw_prev = prev_raw.get(osym) or p         # anchor is keyed by the AS-PRINTED symbol
             if not raw_prev: skip += 1; continue
             f = e["c"][i - 1] / raw_prev               # CA-adjustment level at the insertion point
             adj_c = round(c * f, 2)
@@ -395,6 +442,89 @@ def insert_weekend_sessions(data, j):
         total += ins
         print("  WEEKEND %s: inserted %d bars (%d rows skipped)" % (day, ins, skip))
     return total
+
+
+def normalize_turnover_units(data):
+    """Force every stored turnover onto ONE unit: ₹ LACS. Returns bars converted.
+
+    THE DEFECT (runbook §88a, measured 2026-08-11 on 9.31M classifiable bars): `t` is whatever
+    the day's bhavcopy carried — the old NSE zip (TOTTRDVAL) is RAW RUPEES, sec_bhavdata_full
+    (TURNOVER_LACS) is LACS. Result: 1996-2019 is rupees, 2020+ is lacs, plus strays both ways
+    (9,845 lacs bars inside 2019, 1,974 rupee bars in 2022 — NSE served the old file on
+    2022-08-08). Everything downstream states LACS (TURN_OPTS, the "Avg daily turnover (₹ lacs)"
+    factor, build_stock_slices' `t`), so a turnover FLOOR compared a rupee number against a lacs
+    threshold and passed ~every stock before 2020: pre-2020 backtest universes were silently
+    unfloored, and any window spanning the seam saw a 1e5 cliff in the turnover factor.
+
+    THE TEST — r = t / (c * v). `c` is split-ADJUSTED while `t` and `v` are RAW, so r is just the
+    cumulative adjustment factor (rupee bar) or that factor / 1e5 (lacs bar). **Price cancels**,
+    which is why this beats the t/v ("≈ average traded price") test build_nifty500_turnover.py
+    uses: that one misreads sub-₹1 penny stocks as lacs and inflates them 1e5x, and it must lean
+    on a per-date median to stay safe. Measured, r is sharply bimodal with an EMPTY band between
+    10^-3.0 and 10^-1.3, so the two DECISIVE_* cuts below sit in genuine empty space.
+
+    Bars that cannot self-classify (measured: 43,779 with a ZERO close, plus any with no volume)
+    fall back to the day's verdict, because the unit is a WHOLE-DAY property — one file per day,
+    so every stock on a date shares its unit (measured: 7,556 of 7,576 dates unanimous). The 20
+    mixed dates are late-2019 days where a LATER backfill (BZ series, weekend sessions) spliced
+    modern-format bars into an old-format day, so the per-BAR verdict deliberately wins wherever
+    it exists — a pure per-date rule would re-break those 449 bars.
+
+    The verdict is per DAY, off that day's MEDIAN r — never a per-bar absolute cut. A per-bar cut
+    is NOT idempotent: 601 floor-priced bars (adjusted close ₹0.01 — DHANUS, CIMCOBIRLA…) carry an
+    adjustment factor near 1e4, so one division leaves them still above any fixed rupee threshold
+    and a second pass divides them AGAIN. The median is immune to those outliers, and it is what
+    makes the whole function provably idempotent: converting a day divides its median by 1e5 too,
+    so the day reads lacs forever after (§87e-bis — run it twice, the second pass MUST report 0).
+
+    Within a rupee day, a bar sitting >=STRAY_RATIO below that day's median is a modern-format
+    splice (BZ backfill / weekend sessions wrote lacs bars into old-format days — 9,845 of them in
+    2019) and is left alone. That test is RELATIVE, so it too cannot re-fire once a day converts.
+    """
+    LACS_MED_CUT = 0.01        # a DAY's median r: ~1-3 on a rupee day, ~1e-5 on a lacs day (empty band between)
+    STRAY_RATIO = 1e4          # a bar this far BELOW its day's median is already-lacs (unit gap is 1e5)
+
+    samples = {}               # ymd -> [r, ...]
+    for e in data.values():
+        ds, ts = e.get("d") or [], e.get("t") or []
+        cs = e.get("c") or []; vs = e.get("v") or []
+        for i in range(min(len(ds), len(ts), len(cs), len(vs))):
+            t, c, v = ts[i], cs[i], vs[i]
+            if t > 0 and c > 0 and v > 0:
+                samples.setdefault(ds[i], []).append(t / (c * v))
+    import statistics as _st
+    med = {d: _st.median(rs) for d, rs in samples.items()}
+    # A date with no measurable bar (only zero-close rows) inherits the nearest date that has one —
+    # the unit is a property of the FILE served that day, and adjacent days come from the same era.
+    known = sorted(med)
+    def day_med(ymd):
+        if ymd in med: return med[ymd]
+        if not known: return None
+        import bisect as _bi
+        j = _bi.bisect_left(known, ymd)
+        cands = [k for k in (j - 1, j) if 0 <= k < len(known)]
+        return med[min(cands, key=lambda k: abs(known[k] - ymd))] if cands else None
+
+    converted = 0
+    for e in data.values():
+        ds, ts = e.get("d") or [], e.get("t") or []
+        cs = e.get("c") or []; vs = e.get("v") or []
+        n = len(ds)
+        for i in range(min(n, len(ts))):
+            t = ts[i]
+            if t <= 0: continue
+            m = day_med(ds[i])
+            if m is None or m <= LACS_MED_CUT: continue             # a lacs day — nothing to do
+            c = cs[i] if i < len(cs) else 0
+            v = vs[i] if i < len(vs) else 0
+            if c > 0 and v > 0 and (t / (c * v)) * STRAY_RATIO < m:
+                continue                                            # modern-format bar spliced into an old-format day
+            nt = t / 1e5
+            # keep small values honest (a penny stock's whole day can be < 1 lac); large ones stay
+            # at the file's usual 1dp so the ~190 MB payload doesn't grow for no information.
+            ts[i] = round(nt, 4) if nt < 100 else round(nt, 1)
+            converted += 1
+    return converted
 
 
 def insert_bz_history(data):
@@ -465,6 +595,81 @@ def insert_bz_history(data):
     return total
 
 
+def apply_series_surgery(data, meta):
+    """Wrong-company stitch repair (scripts/dvl_dtil_surgery.json.gz, DATA_RUNBOOK §89).
+
+    The NSE ticker DTIL was RECYCLED: today's DVL traded as DTIL until 2010-07-26
+    (DTIL->DPTL->DPL->DVL), and the tea company demerged out of it listed FRESH as DTIL on
+    2015-01-20 (different ISIN, a different company). build_sf_data's symchg.csv supplement had
+    no recycled-ticker guard, so the 2026-08-02 full rebuild funneled the tea company's whole
+    bhavcopy history into DVL; the same-day dedup keeps the higher-close row, making bin DVL
+    2015-2023 a two-company chimera (measured vs MTO volume identity) and leaving DTIL a 7-bar
+    stub. The fake ~2x "moves" where the chain switched company also fed ca_factor(), and on
+    2021-08-05 the live updater applied a 1:2 bonus factor that reconciled against the TEA
+    company's ex-drop — NSE's CA feed mis-keys that bonus under DVL (§89e; the true DVL tape has
+    no CA-sized move anywhere 2015->date). Net: the surviving pre-2015 history sits at a
+    measured 0.7118x raw when the whole true DVL series is simply RAW.
+
+    The ledger carries bhavcopy-true replacement bars for both symbols plus a one-shot `pre`
+    factor that rescales the kept pre-2015 DVL bars onto the right adjustment level. Idempotent:
+    the stored segment is compared to the ledger segment and everything (including `pre`) is
+    skipped when they already match; `pre` is additionally gated on an anchor bar still holding
+    its recorded WRONG close, so a future clean rebuild can never be double-scaled. Bars the
+    daily updater appended after the ledger was built are preserved untouched."""
+    import bisect
+    lp = os.path.join(HERE, "dvl_dtil_surgery.json.gz")
+    if not os.path.exists(lp): return 0
+    try:
+        led = json.load(gzip.open(lp, "rt", encoding="utf-8"))
+    except Exception as ex:
+        print("  series-surgery ledger unreadable (%s) — skipped" % ex); return 0
+    KEYS = ("d", "c", "t", "h", "l", "op", "v", "dv", "vw")
+    changed = 0
+    jobs = [(sym, spec, False) for sym, spec in (led.get("replace") or {}).items()] + \
+           [(sym, spec, True) for sym, spec in (led.get("create") or {}).items()]
+    for sym, spec, is_create in jobs:
+        bars = spec.get("bars") or []
+        if not bars: continue
+        frm = int(spec.get("from") or bars[0][0])
+        e = data.get(sym)
+        if e is None:
+            if not is_create:
+                print("  SURGERY %s: series absent — replace skipped" % sym); continue
+            data[sym] = e = {k: [] for k in KEYS}
+        i0 = bisect.bisect_left(e["d"], frm)
+        i1 = bisect.bisect_right(e["d"], bars[-1][0])
+        cur_seg = [[e[k][i] for k in KEYS] for i in range(i0, i1)]
+        new_seg = [list(b) for b in bars]
+        if cur_seg == new_seg: continue                    # steady state — zero-cost no-op
+        pre = float(spec.get("pre") or 1.0)
+        if abs(pre - 1.0) > 1e-9 and i0 > 0:
+            anc = spec.get("pre_anchor") or {}
+            ai = bisect.bisect_left(e["d"], int(anc.get("ymd") or 0))
+            ok = (ai < i0 and e["d"][ai] == int(anc.get("ymd") or 0)
+                  and anc.get("c") and abs(e["c"][ai] / anc["c"] - 1) < 0.005)
+            if ok:
+                for key in ("c", "h", "l", "op", "vw"):
+                    e[key][:i0] = [round(x * pre, 2) for x in e[key][:i0]]
+                print("  SURGERY %s: pre-%d history rescaled x%.6f onto the official CA level"
+                      % (sym, frm, pre))
+            else:
+                print("  SURGERY %s: pre-anchor %s no longer matches — prescale skipped "
+                      "(history already on a different level; verify by hand)" % (sym, anc))
+        kept_tail = len(e["d"]) - i1
+        for ki, key in enumerate(KEYS):
+            e[key][i0:i1] = [b[ki] for b in new_seg]
+        changed += len(new_seg)
+        lm = spec.get("meta") or {}
+        m = meta.get(sym)
+        if lm and (m is None or m.get("name") in (None, sym) or not m.get("isin")):
+            mm = meta.setdefault(sym, {})
+            for k2, v2 in lm.items(): mm[k2] = v2
+            mm.setdefault("raw", bars[-1][1])
+        print("  SURGERY %s: %d ledger bars %d..%d spliced (%d replaced, %d later-appended kept)"
+              % (sym, len(new_seg), new_seg[0][0], new_seg[-1][0], len(cur_seg), kept_tail))
+    return changed
+
+
 def main():
     if os.path.exists(MARK): os.remove(MARK)
     if "--base" in sys.argv:
@@ -526,6 +731,11 @@ def main():
     # (pre-2020 bhavcopies have no DELIV_PER column). Fill-only where dv==0, so a re-run applies
     # 0 and is a no-op; a non-zero count flags a real change and rides the publish condition below.
     dvf = B.apply_dv_fill(data)
+    # §88b one-shot OVERWRITE leg (scripts/dv_overwrite.json): the 602 DVL cells the 2026-08-02 MTO
+    # backfill keyed to the WRONG COMPANY carry dv>0, which fill-only can never correct. Guarded on
+    # the bar still matching BOTH stored anchors (old dv AND the adjudicating MTO volume), so once
+    # every cell reads its corrected value this is a permanent no-op and publishes nothing.
+    dvo = B.apply_dv_overwrite(data)
     # MANUAL rename merges the ISIN-detector can't make: same security, but the ISIN CHANGED at the
     # rename so the ISIN-based auto-merge skips it (a safety guard against recycled tickers). These are
     # verified price-continuous. Idempotent: once the old series is folded in and dropped it's a no-op.
@@ -552,7 +762,37 @@ def main():
                     # Axis MF's 9 ETF ticker renames of 2026-07-03 (NAV-continuous at the join):
                     "ITAXIS": "AXISTECETF", "NIFTYAXIS": "AXISNIFTY", "BNKETFAXIS": "AXISBNKETF",
                     "HEALTHAXIS": "AXISHCETF", "CONSUMAXIS": "AXISCETF", "SENSEXAXIS": "AXSENSEX",
-                    "GOLDAXIS": "AXISGOLD", "VALUEAXIS": "AXISVALUE", "SILVERAXIS": "AXISILVER"}
+                    "GOLDAXIS": "AXISGOLD", "VALUEAXIS": "AXISVALUE", "SILVERAXIS": "AXISILVER",
+                    # --- 2026-08-11 orphaned-series batch: old-key HISTORY FRAGMENTS stranded by
+                    # historical renames (census of all 1,705 dead-ending series; each pair is in
+                    # scripts/_rename_map.json AND measured price-continuous at the join on the new
+                    # key's adjusted scale: drift = new_first / (old_last_real x CA-adj) in 0.93-1.07,
+                    # gap <= 78d, weekend-special residue bars excluded from the old end. Old keys
+                    # hold NO live fundamentals rows and are absent from F&O history (verified).
+                    # Without the merge each old key dies mid-history and marks -100% in backtests.
+                    "ADOR": "ADORWELD",        # Ador Welding pre-2004 fragment (drift 1.058, 3d)
+                    "JSWDULUX": "AKZOINDIA",   # ICI/Akzo era pre-2010 fragment (drift 1.000, 1d)
+                    "SUNDROP": "ATFL",         # Agro Tech Foods pre-2003 (drift 1.014, 2d)
+                    "BANKADD": "BANKETFADD",   # DSP Bank ETF rename chain 2024 (drift 1.004, 1d)
+                    "SUDARCOLOR": "CLNINDIA",  # Colour-Chem/Clariant pre-2006 (drift 1.073, 3d)
+                    "LANDSMILL": "EXCEL",      # Excel Realty pre-2015 (drift 0.955 after 0.022 CA-adj)
+                    "SCHAEFFLER": "FAGBEARING",# FAG Bearings pre-2001 (drift 1.009 after 0.2 CA-adj)
+                    "GVPIL": "GEPIL",          # GE Power pre-2016 fragment (drift 0.974, 2d)
+                    "GVT&D": "GET&D",          # GE T&D pre-2016 fragment (drift 1.009, 2d)
+                    "GOLDADD": "GOLDETFADD",   # DSP Gold ETF rename chain 2024 (drift 1.002, 1d)
+                    "BIRLANU": "HIL",          # Hyderabad Inds pre-2012 fragment (drift 0.983, 1d)
+                    "STYRENIX": "INEOSSTYRO",  # Styrolution/INEOS pre-2016 (drift 1.024, 3d)
+                    "ITADD": "ITETFADD",       # DSP IT ETF rename chain 2024 (drift 1.008, 1d)
+                    "BOSCH-HCIL": "JCHAC",     # Johnson Controls-Hitachi pre-2016 (drift 0.983, 3d)
+                    "SUMMIT": "KECINFRA",      # KEC Infrastructures pre-2006 (drift 0.959, 1d)
+                    "CIEINDIA": "MAHINDCIE",   # Mahindra CIE pre-2013 fragment (drift 1.013, 1d)
+                    "NIFTYADD": "NIFTY50ADD",  # DSP Nifty ETF rename chain 2024 (drift 1.008, 1d)
+                    "PROZONER": "PROZONINTU",  # Prozone pre-2014 fragment (drift 0.956, 6d)
+                    "TRANSWORLD": "SHREYAS",   # Shreyas Shipping pre-2006 era (drift 0.974, 3d)
+                    "SMLMAH": "SMLISUZU",      # SML Isuzu pre-2011 fragment (drift 1.002, 3d)
+                    "TTML": "TATATELSER",      # Tata Tele (M) pre-2003 fragment (drift 0.960, 1d)
+                    "XLENERGY": "XLTELENE",    # XL Telecom pre-2009 fragment (drift 0.950, 1d)
+                    "IBULLSLTD": "YAARI"}      # Yaari Digital 2013-2020 fragment (drift 0.927, 1d)
     merged = 0
     for new, old in MANUAL_MERGE.items():
         on = data.get(new); oo = data.get(old)
@@ -593,8 +833,10 @@ def main():
     # ca_factor() a multi-year ratio to mis-read as a split (measured: HDIL 1.57/2.20 -> "3/4",
     # RAJESHEXPO 83.58/223.97 -> "2/5", both phantom).
     bz = insert_bz_history(data)
+    sg = apply_series_surgery(data, meta)   # wrong-company stitch repair (DVL/DTIL, §89) — before the
+                                            # day loop so appends land on the repaired series
     mr = apply_manual_rights(data)   # hand-verified per-stock rights adjustments to match Trendlyne
-    wk = insert_weekend_sessions(data, j)   # backfill missing weekend special sessions (budget Sats etc.)
+    wk = insert_weekend_sessions(data, j, {o: n for n, o in MANUAL_MERGE.items()})   # backfill missing weekend special sessions (budget Sats etc.); old->new so merged-away tickers' sessions land on the survivor
     if wk: print("Weekend special sessions: %d bars inserted." % wk)
     for day in days:
         rows = B.fetch_day(day, j)
@@ -666,6 +908,13 @@ def main():
     healed = self_heal(data, CA_OFF, NOADJ, int(D["end"].replace("-", "")), j)
     if healed: print("Self-heal corrected %d corporate action(s)." % healed)
 
+    # LAST, so it also catches bars appended/inserted THIS run: one turnover unit (₹ lacs) across
+    # the whole file. NSE's old zip served raw rupees and still does on stray days (2022-08-08),
+    # which silently disabled every turnover FLOOR before 2020. Idempotent — a converged file
+    # reports 0. See runbook §88a.
+    tunits = normalize_turnover_units(data)
+    if tunits: print("Turnover units: normalised %d bar(s) rupees -> lacs." % tunits)
+
     # ALWAYS rewrite the freshly-loaded MERGED base to disk — even on a no-op run — so the split/publish
     # step never reads the stale, UN-merged in-repo copy (frozen at an old `end`, still carrying
     # ZOMATO/RUCHI/BURGERKING as separate stubs) and trip split_sf_data.py's ZOMATO/ETERNAL publish-guard.
@@ -674,8 +923,8 @@ def main():
     # refreshes the on-disk bin but does NOT publish the release, bump clients, or commit a marker.
     blob = gzip.compress(json.dumps(D, separators=(",", ":")).encode(), 6)
     open(OUT, "wb").write(blob)
-    if not appended and not healed and not merged and not mr and not dvf and not wk and not bz:
-        print("No new day / heal / merge / manual-rights / dv-fill / weekend-insert / BZ-backfill — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
+    if not appended and not healed and not merged and not mr and not dvf and not dvo and not wk and not bz and not sg and not tunits:
+        print("No new day / heal / merge / manual-rights / dv-fill / dv-overwrite / weekend-insert / BZ-backfill / series-surgery / turnover-unit fix — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
     open(MARK, "w").write(D["end"])
     # tiny version marker — committed daily, lets the browser cache the big bin in IndexedDB
     # keyed to this `end` and skip re-downloading 80 MB until the data actually changes.

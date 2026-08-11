@@ -69,6 +69,13 @@ jobs:
       - name: Bake liquid-universe sidecar (fresh turnover snapshot)
         run: python3 -X utf8 scripts/bake_liquid_universe.py || echo "(liquid-universe bake failed — season chart keeps the frozen snapshot)"
 
+      # 15:30-gate calendar (runbook §12 + §88c): trading days + month-end rebalance dates, cut
+      # HERE because this job is the one place a fresh full bin exists (same reason as the
+      # liquid-universe sidecar). Consumed by the nightly gate re-run in refresh-fundamentals.yml
+      # (build_gate_events.py --calendar). Non-fatal: the committed copy keeps working.
+      - name: Refresh 15:30-gate calendar
+        run: python3 scripts/build_gate_events.py --bin docs/sf_stock_data.bin --calendar-only || echo "(gate calendar refresh failed — nightly gate uses the committed copy)"
+
       # TRIPWIRE: an ISIN-changed rename (GUJGASLTD->GUJENERGY class) starts a FRESH series the
       # ISIN auto-merge can't catch — the stock looks like a days-old IPO with its history
       # stranded on the dead ticker. Detect via NSE's symbolchange.csv + company-name match and
@@ -180,6 +187,7 @@ jobs:
           [ -f scripts/_rename_suspects.json ] && cp scripts/_rename_suspects.json /tmp/_rename_suspects.json
           [ -f scripts/demerger_adj.json ] && cp scripts/demerger_adj.json /tmp/demerger_adj.json
           [ -f docs/liquid_universe.json ] && cp docs/liquid_universe.json /tmp/liquid_universe.json
+          [ -f scripts/gate_calendar.json ] && cp scripts/gate_calendar.json /tmp/gate_calendar.json
           for attempt in 1 2 3 4 5; do
             git fetch origin main && git reset --hard origin/main
             cp /tmp/sf_meta.json docs/sf_meta.json
@@ -188,6 +196,7 @@ jobs:
             [ -f /tmp/_rename_suspects.json ] && cp /tmp/_rename_suspects.json scripts/_rename_suspects.json && git add -f scripts/_rename_suspects.json
             [ -f /tmp/demerger_adj.json ] && cp /tmp/demerger_adj.json scripts/demerger_adj.json && git add scripts/demerger_adj.json
             [ -f /tmp/liquid_universe.json ] && cp /tmp/liquid_universe.json docs/liquid_universe.json && git add docs/liquid_universe.json
+            [ -f /tmp/gate_calendar.json ] && cp /tmp/gate_calendar.json scripts/gate_calendar.json && git add scripts/gate_calendar.json
             if git diff --cached --quiet; then echo "marker unchanged"; exit 0; fi
             git commit -m "Backtest data version marker $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
             if git push origin HEAD:main; then echo "pushed marker (attempt #$attempt)"; exit 0; fi

@@ -10,6 +10,15 @@ name: Rebuild per-stock financial slices
 # to the sf-data repo by refresh-backtest-data.yml instead).
 #
 # No self-trigger: this job only ever commits docs/fin/**, which is not in the paths filter.
+#
+# It must dispatch pages.yml explicitly, though — runbook §41b. This job pushes as the default
+# GITHUB_TOKEN, and GitHub's recursion guard means a GITHUB_TOKEN push creates no new workflow
+# run, so pages.yml's `on: push: paths: docs/**` never fires for the slice commit. Left alone
+# the slices sit on main undeployed until some unrelated push happens to carry them to the
+# site: on 2026-08-11, commit 2b78445f produced no pages.yml run at all and the live slice
+# stayed at 54 shareholding quarters (93 in git) until the deploy was kicked by hand.
+# workflow_dispatch is the documented exception to the recursion guard, which is why the same
+# trailing dispatch works in refresh-bse / refresh-announcements / refresh-fii-dii and ~7 more.
 
 on:
   push:
@@ -26,6 +35,7 @@ on:
 
 permissions:
   contents: write
+  actions: write   # dispatch pages.yml after a change so the data publishes itself
 
 concurrency:
   group: refresh-stock-fin
@@ -53,6 +63,8 @@ jobs:
       # checkout, not the shared working tree CLAUDE.md rule 1 protects); --all is what stages the
       # DELETIONS for companies that dropped out of the feeds.
       - name: Commit refreshed slices
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -63,7 +75,16 @@ jobs:
             git add --all -- docs/fin
             if git diff --cached --quiet; then echo "financial slices unchanged"; exit 0; fi
             git commit -q -m "Per-stock financial slices $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
-            if git push origin HEAD:main; then echo "pushed (attempt #$attempt)"; exit 0; fi
+            if git push origin HEAD:main; then
+              echo "pushed (attempt #$attempt)"
+              # Guarded by the two exits above: the "unchanged" branch leaves before reaching
+              # here, and this one exits immediately after, so a run dispatches AT MOST ONE
+              # deploy and only when a commit actually landed. Bursts are already collapsed
+              # upstream by this workflow's own cancel-in-progress, and pages-deploy keeps a
+              # single pending run per group, so this cannot pile deploys up (runbook §41b).
+              gh workflow run pages.yml || echo "(pages deploy dispatch failed — will publish on next push)"
+              exit 0
+            fi
             sleep $(( attempt * 5 ))
           done
           echo "fin slice push failed after 5 attempts"; exit 1

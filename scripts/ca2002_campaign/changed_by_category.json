@@ -1,0 +1,2328 @@
+{
+ "_doc": "2026-08-11 pre-2016 corporate-action campaign (runbook 87): every stock whose stored prices changed, and why. A stock can carry two categories.",
+ "category_names": {
+  "missed_split": "Split/bonus MISSED entirely (fake crash in the chart)",
+  "wrong_fraction": "Split/bonus adjusted by the WRONG ratio",
+  "phantom_crash": "Real crash wrongly divided out as a split (drop restored)",
+  "special_dividend": "Large special dividend wrongly divided out (drop restored)",
+  "demerger_factor": "Demerger \u2014 exchange re-opening price applied",
+  "demerger_keepdrop": "Demerger/scheme \u2014 value separation restored as real",
+  "rights": "Rights issue \u2014 TERP dilution adjustment applied",
+  "unattributed": "Changed, cause not attributable to a single ledger row"
+ },
+ "by_category": {
+  "phantom_crash": [
+   "AMTEKAUTO",
+   "LCCINFOTEC",
+   "UNITECH",
+   "APOLLOTYRE",
+   "GTL",
+   "MPHASIS",
+   "ENERGYDEV",
+   "AUSTRAL",
+   "JKIL",
+   "IGL",
+   "63MOONS",
+   "ORCHIDPHAR",
+   "IVRCLINFRA",
+   "SKUMARSYNF",
+   "BONGAIREFN",
+   "CHAMBLFERT",
+   "ESSAROIL",
+   "MRPL",
+   "NAGARFERT",
+   "ARVIND",
+   "SUZLON",
+   "OSWALGREEN",
+   "REFEX",
+   "TULIP",
+   "NLCINDIA",
+   "MONNETISPA",
+   "STLTECH",
+   "RELMEDIA",
+   "RENUKA",
+   "IOLCP",
+   "COREEDUTEC",
+   "HCL-INSYS",
+   "IRB",
+   "APTECHT",
+   "SUNTV",
+   "JPASSOCIAT",
+   "GTLINFRA",
+   "ORIENTBANK",
+   "RELINFRA",
+   "PENINLAND",
+   "INFY",
+   "SASKEN",
+   "LITL",
+   "HUBTOWN",
+   "HINDPETRO",
+   "RNRL",
+   "JSWISPAT",
+   "KEYFINSERV",
+   "DHANUS",
+   "PARSVNATH",
+   "SITINET",
+   "HGS",
+   "SPCENET",
+   "IVRCLAH",
+   "PARASPETRO",
+   "SPICETELE",
+   "ANTGRAPHIC"
+  ],
+  "missed_split": [
+   "BERGEPAINT",
+   "HAVELLS",
+   "HERITGFOOD",
+   "GMBREW",
+   "PNBGILTS",
+   "BSOFT",
+   "SREINFRA",
+   "TTML",
+   "SUPREMEIND",
+   "BRITANNIA",
+   "NATIONALUM",
+   "ENTEGRA",
+   "RSSOFTWARE",
+   "NAVNETEDUL",
+   "HEXAWARE",
+   "OPTOCIRCUI",
+   "WINSOMYARN",
+   "IVC",
+   "BANKRAJAS",
+   "ECLERX",
+   "SOUTHBANK",
+   "JMTAUTOLTD",
+   "NITINFIRE",
+   "ELECTCAST",
+   "ABB",
+   "ANSALHSG",
+   "ASTRAL",
+   "OMAXE",
+   "LAKSHVILAS",
+   "VAKRANGEE",
+   "HINDDORROL",
+   "ALPSINDUS",
+   "TARIL",
+   "UNIWESTBNK",
+   "JINDALSTEL",
+   "GLODYNE",
+   "ITC",
+   "STCINDIA",
+   "KOTAKBANK",
+   "ASTRAZEN",
+   "INFODRIVE",
+   "PERSISTENT",
+   "AJRINFRA",
+   "GUJNRECOKE",
+   "CMAHENDRA",
+   "INDTERRAIN",
+   "ANTELOPUS",
+   "SUBROS",
+   "UNITY",
+   "CLASSIC",
+   "AURUS",
+   "DPSCLTD",
+   "NECLIFE",
+   "FDC",
+   "ZENITHSTL",
+   "BSLIMITED",
+   "NIITLTD",
+   "SHREEASHTA",
+   "DIAPOWER",
+   "PRADIP",
+   "NEXTMEDIA",
+   "TULSI",
+   "JBMA",
+   "DOLPHINOFF",
+   "APARINDS",
+   "SANWARIA",
+   "RELAXO",
+   "GUJAPOLLO",
+   "MVL",
+   "PANACEABIO",
+   "BANCOINDIA",
+   "RESURGERE",
+   "VIVIDHA",
+   "KERNEX",
+   "UPL",
+   "GEMINI",
+   "GEOJITFSL",
+   "HDIL",
+   "JYOTHYLAB",
+   "CORALHUB",
+   "GANDHITUBE",
+   "KANANIIND",
+   "KEI",
+   "JAGRAN",
+   "SYMPHONY",
+   "HIRECT",
+   "HERCULES",
+   "MMTC",
+   "KSOILS",
+   "RPOWER",
+   "VINATIORGA",
+   "PDPL",
+   "MINDACORP"
+  ],
+  "demerger_keepdrop": [
+   "MASTEK",
+   "ADANIENT",
+   "DVL",
+   "ORIENTPPR",
+   "JSL",
+   "ALEMBICLTD",
+   "HARRMALAYA",
+   "WEIZMANIND",
+   "KOTHARIPRO",
+   "BAJAJHLDNG",
+   "PGIL",
+   "MANAKSIA",
+   "MPSLTD",
+   "ZEEL",
+   "TEXINFRA",
+   "ORIENTCER",
+   "PARRYSUGAR",
+   "TRIVENI",
+   "CELEBRITY",
+   "SILINV",
+   "ZANDUREALT",
+   "INDIABULLS",
+   "ZEEMEDIA",
+   "ALICON"
+  ],
+  "wrong_fraction": [
+   "VENKEYS",
+   "BALMLAWRIE",
+   "AJANTPHARM",
+   "SURANAT&P",
+   "CUMMINSIND",
+   "INDNIPPON",
+   "CGPOWER",
+   "ENGINERSIN",
+   "ARE&M",
+   "KRBL",
+   "JKTYRE",
+   "INDOCO",
+   "SUTLEJTEX",
+   "NELCAST",
+   "INDIANHUME",
+   "SRSLTD",
+   "SHARONBIO",
+   "ALANKIT",
+   "GULFPETRO"
+  ],
+  "rights": [
+   "CANFINHOME",
+   "ASHIMASYN",
+   "ONIDA",
+   "TATAPOWER",
+   "WHEELS",
+   "EASUNREYRL",
+   "NCC",
+   "FEL",
+   "RAMCOSYS",
+   "KESORAMIND",
+   "BAJFINANCE",
+   "ASAHIINDIA",
+   "CUB",
+   "BAJAJHIND",
+   "EIHOTEL",
+   "KARURVYSYA",
+   "KTKBANK",
+   "GMRAIRPORT",
+   "ASAL",
+   "NEULANDLAB",
+   "SBIN",
+   "EXIDEIND",
+   "FEDERALBNK",
+   "HINDOILEXP",
+   "GODREJCP",
+   "UTTAMSUGAR",
+   "CEMPRO",
+   "JKPAPER",
+   "FELDVR",
+   "TV18BRDCST",
+   "IL&FSTRANS",
+   "EIHAHOTELS",
+   "VASCONEQ",
+   "SPARC",
+   "BAJAJFINSV",
+   "DHANBANK",
+   "GODREJPROP",
+   "CENTRALBK",
+   "INFOMEDIA",
+   "RELIGARE",
+   "REIAGROLTD",
+   "GAYAPROJ"
+  ],
+  "demerger_factor": [
+   "POLARIS",
+   "ZUARIIND",
+   "GREENPLY",
+   "IDFC",
+   "RELIANCE",
+   "UNITDSPR",
+   "ASAHISONG",
+   "MANINDS",
+   "SFCL"
+  ],
+  "unattributed": [
+   "BURNPUR",
+   "INFINITE",
+   "RADIOCITY"
+  ],
+  "special_dividend": [
+   "PFIZER",
+   "STAR",
+   "JBCHEPHARM",
+   "PALRED",
+   "SMARTLINK",
+   "SWELECTES",
+   "KILITCH",
+   "TATACOMM"
+  ]
+ },
+ "by_stock": {
+  "63MOONS": {
+   "bars_changed": 1996,
+   "first": 20050620,
+   "last": 20130731,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "ABB": {
+   "bars_changed": 1690,
+   "first": 19960101,
+   "last": 20070627,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "ADANIENT": {
+   "bars_changed": 3632,
+   "first": 19960102,
+   "last": 20150602,
+   "categories": [
+    "demerger_keepdrop"
+   ]
+  },
+  "AJANTPHARM": {
+   "bars_changed": 2994,
+   "first": 20000605,
+   "last": 20130916,
+   "categories": [
+    "wrong_fraction"
+   ]
+  },
+  "AJRINFRA": {
+   "bars_changed": 1175,
+   "first": 20080403,
+   "last": 20130122,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "ALANKIT": {
+   "bars_changed": 357,
+   "first": 20150630,
+   "last": 20161214,
+   "categories": [
+    "wrong_fraction"
+   ]
+  },
+  "ALEMBICLTD": {
+   "bars_changed": 2606,
+   "first": 19960102,
+   "last": 20110408,
+   "categories": [
+    "demerger_keepdrop"
+   ]
+  },
+  "ALICON": {
+   "bars_changed": 793,
+   "first": 20061003,
+   "last": 20100420,
+   "categories": [
+    "demerger_keepdrop"
+   ]
+  },
+  "ALPSINDUS": {
+   "bars_changed": 1376,
+   "first": 19960430,
+   "last": 20060921,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "AMTEKAUTO": {
+   "bars_changed": 3697,
+   "first": 19960101,
+   "last": 20150821,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "ANSALHSG": {
+   "bars_changed": 1604,
+   "first": 20061006,
+   "last": 20130409,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "ANTELOPUS": {
+   "bars_changed": 1040,
+   "first": 20060926,
+   "last": 20101230,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "ANTGRAPHIC": {
+   "bars_changed": 24,
+   "first": 20151020,
+   "last": 20151127,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "APARINDS": {
+   "bars_changed": 626,
+   "first": 20040712,
+   "last": 20070110,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "APOLLOTYRE": {
+   "bars_changed": 3160,
+   "first": 19960101,
+   "last": 20130612,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "APTECHT": {
+   "bars_changed": 1332,
+   "first": 20020927,
+   "last": 20080118,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "ARE&M": {
+   "bars_changed": 2002,
+   "first": 19960101,
+   "last": 20081013,
+   "categories": [
+    "wrong_fraction"
+   ]
+  },
+  "ARVIND": {
+   "bars_changed": 1823,
+   "first": 19960101,
+   "last": 20080118,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "ASAHIINDIA": {
+   "bars_changed": 3002,
+   "first": 19980318,
+   "last": 20130725,
+   "categories": [
+    "rights"
+   ]
+  },
+  "ASAHISONG": {
+   "bars_changed": 842,
+   "first": 20110829,
+   "last": 20150130,
+   "categories": [
+    "demerger_factor"
+   ]
+  },
+  "ASAL": {
+   "bars_changed": 1947,
+   "first": 20020312,
+   "last": 20110608,
+   "categories": [
+    "rights"
+   ]
+  },
+  "ASHIMASYN": {
+   "bars_changed": 3536,
+   "first": 19960101,
+   "last": 20151029,
+   "categories": [
+    "rights"
+   ]
+  },
+  "ASTRAL": {
+   "bars_changed": 1593,
+   "first": 20070320,
+   "last": 20130904,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "ASTRAZEN": {
+   "bars_changed": 1222,
+   "first": 19980730,
+   "last": 20060614,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "AURUS": {
+   "bars_changed": 896,
+   "first": 20131105,
+   "last": 20170711,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "AUSTRAL": {
+   "bars_changed": 2159,
+   "first": 20080904,
+   "last": 20170623,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "BAJAJFINSV": {
+   "bars_changed": 1053,
+   "first": 20080526,
+   "last": 20120905,
+   "categories": [
+    "rights"
+   ]
+  },
+  "BAJAJHIND": {
+   "bars_changed": 2644,
+   "first": 19960101,
+   "last": 20110920,
+   "categories": [
+    "rights"
+   ]
+  },
+  "BAJAJHLDNG": {
+   "bars_changed": 1860,
+   "first": 19960101,
+   "last": 20080313,
+   "categories": [
+    "demerger_keepdrop"
+   ]
+  },
+  "BAJFINANCE": {
+   "bars_changed": 3046,
+   "first": 19960101,
+   "last": 20130122,
+   "categories": [
+    "rights"
+   ]
+  },
+  "BALMLAWRIE": {
+   "bars_changed": 3143,
+   "first": 19960102,
+   "last": 20130522,
+   "categories": [
+    "wrong_fraction"
+   ]
+  },
+  "BANCOINDIA": {
+   "bars_changed": 525,
+   "first": 19960101,
+   "last": 20071122,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "BANKRAJAS": {
+   "bars_changed": 1996,
+   "first": 19960101,
+   "last": 20080917,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "BERGEPAINT": {
+   "bars_changed": 3543,
+   "first": 19960101,
+   "last": 20150107,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "BONGAIREFN": {
+   "bars_changed": 1833,
+   "first": 19960101,
+   "last": 20080118,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "BRITANNIA": {
+   "bars_changed": 2477,
+   "first": 19960102,
+   "last": 20100907,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "BSLIMITED": {
+   "bars_changed": 804,
+   "first": 20101027,
+   "last": 20140120,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "BSOFT": {
+   "bars_changed": 2629,
+   "first": 19991124,
+   "last": 20120312,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "BURNPUR": {
+   "bars_changed": 4130,
+   "first": 20080103,
+   "last": 20250129,
+   "categories": [
+    "unattributed"
+   ]
+  },
+  "CANFINHOME": {
+   "bars_changed": 3552,
+   "first": 19960101,
+   "last": 20150122,
+   "categories": [
+    "rights"
+   ]
+  },
+  "CELEBRITY": {
+   "bars_changed": 1174,
+   "first": 20060112,
+   "last": 20101013,
+   "categories": [
+    "demerger_keepdrop"
+   ]
+  },
+  "CEMPRO": {
+   "bars_changed": 1510,
+   "first": 19980729,
+   "last": 20071029,
+   "categories": [
+    "rights"
+   ]
+  },
+  "CENTRALBK": {
+   "bars_changed": 873,
+   "first": 20070821,
+   "last": 20110316,
+   "categories": [
+    "rights"
+   ]
+  },
+  "CGPOWER": {
+   "bars_changed": 2337,
+   "first": 19960102,
+   "last": 20100305,
+   "categories": [
+    "wrong_fraction"
+   ]
+  },
+  "CHAMBLFERT": {
+   "bars_changed": 1833,
+   "first": 19960101,
+   "last": 20080118,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "CLASSIC": {
+   "bars_changed": 919,
+   "first": 20040505,
+   "last": 20080110,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "CMAHENDRA": {
+   "bars_changed": 1090,
+   "first": 20110120,
+   "last": 20150617,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "CORALHUB": {
+   "bars_changed": 237,
+   "first": 20080811,
+   "last": 20090805,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "COREEDUTEC": {
+   "bars_changed": 1418,
+   "first": 20070525,
+   "last": 20130222,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "CUB": {
+   "bars_changed": 2881,
+   "first": 19980909,
+   "last": 20121121,
+   "categories": [
+    "rights"
+   ]
+  },
+  "CUMMINSIND": {
+   "bars_changed": 2721,
+   "first": 19960102,
+   "last": 20110919,
+   "categories": [
+    "wrong_fraction"
+   ]
+  },
+  "DHANBANK": {
+   "bars_changed": 955,
+   "first": 20040401,
+   "last": 20080122,
+   "categories": [
+    "rights"
+   ]
+  },
+  "DHANUS": {
+   "bars_changed": 287,
+   "first": 20071017,
+   "last": 20130913,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "DIAPOWER": {
+   "bars_changed": 718,
+   "first": 20100929,
+   "last": 20130823,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "DOLPHINOFF": {
+   "bars_changed": 664,
+   "first": 20061006,
+   "last": 20090626,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "DPSCLTD": {
+   "bars_changed": 844,
+   "first": 20080421,
+   "last": 20111214,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "DVL": {
+   "bars_changed": 3205,
+   "first": 20080111,
+   "last": 20210804,
+   "categories": [
+    "demerger_keepdrop"
+   ]
+  },
+  "EASUNREYRL": {
+   "bars_changed": 3212,
+   "first": 19970723,
+   "last": 20140312,
+   "categories": [
+    "rights"
+   ]
+  },
+  "ECLERX": {
+   "bars_changed": 1956,
+   "first": 20071231,
+   "last": 20151216,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "EIHAHOTELS": {
+   "bars_changed": 1345,
+   "first": 19960101,
+   "last": 20120910,
+   "categories": [
+    "rights"
+   ]
+  },
+  "EIHOTEL": {
+   "bars_changed": 2582,
+   "first": 19960101,
+   "last": 20110218,
+   "categories": [
+    "rights"
+   ]
+  },
+  "ELECTCAST": {
+   "bars_changed": 1738,
+   "first": 19960101,
+   "last": 20070914,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "ENERGYDEV": {
+   "bars_changed": 2188,
+   "first": 20071102,
+   "last": 20161116,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "ENGINERSIN": {
+   "bars_changed": 2243,
+   "first": 19970916,
+   "last": 20100505,
+   "categories": [
+    "wrong_fraction"
+   ]
+  },
+  "ENTEGRA": {
+   "bars_changed": 2281,
+   "first": 20011106,
+   "last": 20110923,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "ESSAROIL": {
+   "bars_changed": 1833,
+   "first": 19960101,
+   "last": 20080118,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "EXIDEIND": {
+   "bars_changed": 1798,
+   "first": 19960102,
+   "last": 20071207,
+   "categories": [
+    "rights"
+   ]
+  },
+  "FDC": {
+   "bars_changed": 806,
+   "first": 19970807,
+   "last": 20040428,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "FEDERALBNK": {
+   "bars_changed": 1790,
+   "first": 19960101,
+   "last": 20071116,
+   "categories": [
+    "rights"
+   ]
+  },
+  "FEL": {
+   "bars_changed": 3183,
+   "first": 20011105,
+   "last": 20141117,
+   "categories": [
+    "rights"
+   ]
+  },
+  "FELDVR": {
+   "bars_changed": 1405,
+   "first": 20090213,
+   "last": 20141117,
+   "categories": [
+    "rights"
+   ]
+  },
+  "GANDHITUBE": {
+   "bars_changed": 231,
+   "first": 20070131,
+   "last": 20080314,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "GAYAPROJ": {
+   "bars_changed": 124,
+   "first": 20110822,
+   "last": 20120221,
+   "categories": [
+    "rights"
+   ]
+  },
+  "GEMINI": {
+   "bars_changed": 413,
+   "first": 20070118,
+   "last": 20080916,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "GEOJITFSL": {
+   "bars_changed": 305,
+   "first": 20050701,
+   "last": 20060925,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "GLODYNE": {
+   "bars_changed": 1287,
+   "first": 20051110,
+   "last": 20110209,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "GMBREW": {
+   "bars_changed": 2955,
+   "first": 19960101,
+   "last": 20140515,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "GMRAIRPORT": {
+   "bars_changed": 2095,
+   "first": 20060821,
+   "last": 20150310,
+   "categories": [
+    "rights"
+   ]
+  },
+  "GODREJCP": {
+   "bars_changed": 1583,
+   "first": 20010620,
+   "last": 20080311,
+   "categories": [
+    "rights"
+   ]
+  },
+  "GODREJPROP": {
+   "bars_changed": 898,
+   "first": 20100105,
+   "last": 20130816,
+   "categories": [
+    "rights"
+   ]
+  },
+  "GREENPLY": {
+   "bars_changed": 2787,
+   "first": 19960306,
+   "last": 20141125,
+   "categories": [
+    "demerger_factor"
+   ]
+  },
+  "GTL": {
+   "bars_changed": 2659,
+   "first": 19960101,
+   "last": 20110617,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "GTLINFRA": {
+   "bars_changed": 1130,
+   "first": 20061109,
+   "last": 20110617,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "GUJAPOLLO": {
+   "bars_changed": 598,
+   "first": 19960924,
+   "last": 20081218,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "GUJNRECOKE": {
+   "bars_changed": 1107,
+   "first": 19960917,
+   "last": 20081016,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "GULFPETRO": {
+   "bars_changed": 265,
+   "first": 20040924,
+   "last": 20051019,
+   "categories": [
+    "wrong_fraction"
+   ]
+  },
+  "HARRMALAYA": {
+   "bars_changed": 2459,
+   "first": 19960101,
+   "last": 20100830,
+   "categories": [
+    "demerger_keepdrop"
+   ]
+  },
+  "HAVELLS": {
+   "bars_changed": 3182,
+   "first": 20010321,
+   "last": 20140825,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "HCL-INSYS": {
+   "bars_changed": 1353,
+   "first": 19960101,
+   "last": 20060217,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "HDIL": {
+   "bars_changed": 269,
+   "first": 20070724,
+   "last": 20080820,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "HERCULES": {
+   "bars_changed": 140,
+   "first": 20080220,
+   "last": 20080916,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "HERITGFOOD": {
+   "bars_changed": 3129,
+   "first": 19961128,
+   "last": 20130725,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "HEXAWARE": {
+   "bars_changed": 2158,
+   "first": 20020614,
+   "last": 20110223,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "HGS": {
+   "bars_changed": 150,
+   "first": 20070619,
+   "last": 20080118,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "HINDDORROL": {
+   "bars_changed": 1452,
+   "first": 19960102,
+   "last": 20061122,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "HINDOILEXP": {
+   "bars_changed": 1788,
+   "first": 19960101,
+   "last": 20071114,
+   "categories": [
+    "rights"
+   ]
+  },
+  "HINDPETRO": {
+   "bars_changed": 488,
+   "first": 19960102,
+   "last": 20020906,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "HIRECT": {
+   "bars_changed": 155,
+   "first": 20061226,
+   "last": 20070827,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "HUBTOWN": {
+   "bars_changed": 521,
+   "first": 20070207,
+   "last": 20090319,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "IDFC": {
+   "bars_changed": 2498,
+   "first": 20050812,
+   "last": 20150930,
+   "categories": [
+    "demerger_factor"
+   ]
+  },
+  "IGL": {
+   "bars_changed": 2050,
+   "first": 20031226,
+   "last": 20120409,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "IL&FSTRANS": {
+   "bars_changed": 1363,
+   "first": 20100330,
+   "last": 20151006,
+   "categories": [
+    "rights"
+   ]
+  },
+  "INDIABULLS": {
+   "bars_changed": 815,
+   "first": 20040924,
+   "last": 20071231,
+   "categories": [
+    "demerger_keepdrop"
+   ]
+  },
+  "INDIANHUME": {
+   "bars_changed": 978,
+   "first": 19960425,
+   "last": 20050826,
+   "categories": [
+    "wrong_fraction"
+   ]
+  },
+  "INDNIPPON": {
+   "bars_changed": 2559,
+   "first": 19970515,
+   "last": 20110919,
+   "categories": [
+    "wrong_fraction"
+   ]
+  },
+  "INDOCO": {
+   "bars_changed": 1808,
+   "first": 20050114,
+   "last": 20120516,
+   "categories": [
+    "wrong_fraction"
+   ]
+  },
+  "INDTERRAIN": {
+   "bars_changed": 1071,
+   "first": 20110311,
+   "last": 20151218,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "INFINITE": {
+   "bars_changed": 1906,
+   "first": 20100203,
+   "last": 20171031,
+   "categories": [
+    "unattributed"
+   ]
+  },
+  "INFODRIVE": {
+   "bars_changed": 1221,
+   "first": 20100108,
+   "last": 20141223,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "INFOMEDIA": {
+   "bars_changed": 780,
+   "first": 20061012,
+   "last": 20091217,
+   "categories": [
+    "rights"
+   ]
+  },
+  "INFY": {
+   "bars_changed": 632,
+   "first": 19960101,
+   "last": 20030409,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "IOLCP": {
+   "bars_changed": 1450,
+   "first": 20101108,
+   "last": 20170323,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "IRB": {
+   "bars_changed": 1338,
+   "first": 20080225,
+   "last": 20130731,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "ITC": {
+   "bars_changed": 1252,
+   "first": 19960101,
+   "last": 20050920,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "IVC": {
+   "bars_changed": 2016,
+   "first": 19990915,
+   "last": 20090915,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "IVRCLAH": {
+   "bars_changed": 110,
+   "first": 20070816,
+   "last": 20080121,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "IVRCLINFRA": {
+   "bars_changed": 1844,
+   "first": 20000308,
+   "last": 20090106,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "JAGRAN": {
+   "bars_changed": 174,
+   "first": 20060222,
+   "last": 20061031,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "JBCHEPHARM": {
+   "bars_changed": 2706,
+   "first": 19960102,
+   "last": 20110826,
+   "categories": [
+    "special_dividend"
+   ]
+  },
+  "JBMA": {
+   "bars_changed": 677,
+   "first": 20041217,
+   "last": 20071023,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "JINDALSTEL": {
+   "bars_changed": 1327,
+   "first": 19991004,
+   "last": 20080118,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "JKIL": {
+   "bars_changed": 2087,
+   "first": 20080212,
+   "last": 20160811,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "JKPAPER": {
+   "bars_changed": 1503,
+   "first": 20050616,
+   "last": 20110725,
+   "categories": [
+    "rights"
+   ]
+  },
+  "JKTYRE": {
+   "bars_changed": 1908,
+   "first": 20070319,
+   "last": 20141217,
+   "categories": [
+    "wrong_fraction"
+   ]
+  },
+  "JMTAUTOLTD": {
+   "bars_changed": 1845,
+   "first": 20070402,
+   "last": 20150624,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "JPASSOCIAT": {
+   "bars_changed": 1138,
+   "first": 20040614,
+   "last": 20090106,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "JSL": {
+   "bars_changed": 2962,
+   "first": 20031117,
+   "last": 20151118,
+   "categories": [
+    "demerger_keepdrop"
+   ]
+  },
+  "JSWISPAT": {
+   "bars_changed": 438,
+   "first": 20060420,
+   "last": 20080118,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "JYOTHYLAB": {
+   "bars_changed": 239,
+   "first": 20071219,
+   "last": 20081211,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "KANANIIND": {
+   "bars_changed": 223,
+   "first": 20111214,
+   "last": 20130131,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "KARURVYSYA": {
+   "bars_changed": 2581,
+   "first": 19960101,
+   "last": 20110216,
+   "categories": [
+    "rights"
+   ]
+  },
+  "KEI": {
+   "bars_changed": 189,
+   "first": 20060323,
+   "last": 20061220,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "KERNEX": {
+   "bars_changed": 454,
+   "first": 20051220,
+   "last": 20071015,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "KESORAMIND": {
+   "bars_changed": 3139,
+   "first": 19960101,
+   "last": 20130514,
+   "categories": [
+    "rights"
+   ]
+  },
+  "KEYFINSERV": {
+   "bars_changed": 380,
+   "first": 19960628,
+   "last": 20030305,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "KILITCH": {
+   "bars_changed": 480,
+   "first": 20100929,
+   "last": 20120921,
+   "categories": [
+    "special_dividend"
+   ]
+  },
+  "KOTAKBANK": {
+   "bars_changed": 1233,
+   "first": 19960101,
+   "last": 20050824,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "KOTHARIPRO": {
+   "bars_changed": 1901,
+   "first": 19980604,
+   "last": 20081202,
+   "categories": [
+    "demerger_keepdrop"
+   ]
+  },
+  "KRBL": {
+   "bars_changed": 1917,
+   "first": 20020124,
+   "last": 20100209,
+   "categories": [
+    "wrong_fraction"
+   ]
+  },
+  "KSOILS": {
+   "bars_changed": 74,
+   "first": 20070402,
+   "last": 20070717,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "KTKBANK": {
+   "bars_changed": 2360,
+   "first": 20000510,
+   "last": 20110224,
+   "categories": [
+    "rights"
+   ]
+  },
+  "LAKSHVILAS": {
+   "bars_changed": 1540,
+   "first": 19960101,
+   "last": 20061116,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "LCCINFOTEC": {
+   "bars_changed": 3662,
+   "first": 20000302,
+   "last": 20170628,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "LITL": {
+   "bars_changed": 522,
+   "first": 20061127,
+   "last": 20090106,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "MANAKSIA": {
+   "bars_changed": 1695,
+   "first": 20080108,
+   "last": 20141203,
+   "categories": [
+    "demerger_keepdrop"
+   ]
+  },
+  "MANINDS": {
+   "bars_changed": 658,
+   "first": 19960101,
+   "last": 20070412,
+   "categories": [
+    "demerger_factor"
+   ]
+  },
+  "MASTEK": {
+   "bars_changed": 3647,
+   "first": 19960101,
+   "last": 20150611,
+   "categories": [
+    "demerger_keepdrop"
+   ]
+  },
+  "MINDACORP": {
+   "bars_changed": 1,
+   "first": 20120319,
+   "last": 20120319,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "MMTC": {
+   "bars_changed": 139,
+   "first": 20100108,
+   "last": 20100728,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "MONNETISPA": {
+   "bars_changed": 1573,
+   "first": 19960101,
+   "last": 20081003,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "MPHASIS": {
+   "bars_changed": 2541,
+   "first": 19960913,
+   "last": 20110224,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "MPSLTD": {
+   "bars_changed": 1671,
+   "first": 20020124,
+   "last": 20081104,
+   "categories": [
+    "demerger_keepdrop"
+   ]
+  },
+  "MRPL": {
+   "bars_changed": 1833,
+   "first": 19960101,
+   "last": 20080118,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "MVL": {
+   "bars_changed": 576,
+   "first": 20080630,
+   "last": 20101115,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "NAGARFERT": {
+   "bars_changed": 1833,
+   "first": 19960101,
+   "last": 20080118,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "NATIONALUM": {
+   "bars_changed": 2425,
+   "first": 19990428,
+   "last": 20110314,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "NAVNETEDUL": {
+   "bars_changed": 2214,
+   "first": 19960101,
+   "last": 20090907,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "NCC": {
+   "bars_changed": 3203,
+   "first": 19960101,
+   "last": 20140917,
+   "categories": [
+    "rights"
+   ]
+  },
+  "NECLIFE": {
+   "bars_changed": 824,
+   "first": 20050718,
+   "last": 20081111,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "NELCAST": {
+   "bars_changed": 1027,
+   "first": 20070627,
+   "last": 20110905,
+   "categories": [
+    "wrong_fraction"
+   ]
+  },
+  "NEULANDLAB": {
+   "bars_changed": 1898,
+   "first": 19960101,
+   "last": 20140812,
+   "categories": [
+    "rights"
+   ]
+  },
+  "NEXTMEDIA": {
+   "bars_changed": 698,
+   "first": 20010404,
+   "last": 20040816,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "NIITLTD": {
+   "bars_changed": 755,
+   "first": 20040816,
+   "last": 20070823,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "NITINFIRE": {
+   "bars_changed": 1831,
+   "first": 20070605,
+   "last": 20141112,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "NLCINDIA": {
+   "bars_changed": 1582,
+   "first": 20000823,
+   "last": 20080121,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "OMAXE": {
+   "bars_changed": 1542,
+   "first": 20070809,
+   "last": 20131108,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "ONIDA": {
+   "bars_changed": 3453,
+   "first": 19960101,
+   "last": 20140917,
+   "categories": [
+    "rights"
+   ]
+  },
+  "OPTOCIRCUI": {
+   "bars_changed": 2132,
+   "first": 20030825,
+   "last": 20120328,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "ORCHIDPHAR": {
+   "bars_changed": 1861,
+   "first": 19960102,
+   "last": 20080314,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "ORIENTBANK": {
+   "bars_changed": 910,
+   "first": 19960101,
+   "last": 20040514,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "ORIENTCER": {
+   "bars_changed": 1446,
+   "first": 20051215,
+   "last": 20111109,
+   "categories": [
+    "demerger_keepdrop"
+   ]
+  },
+  "ORIENTPPR": {
+   "bars_changed": 3073,
+   "first": 19960101,
+   "last": 20130306,
+   "categories": [
+    "demerger_keepdrop"
+   ]
+  },
+  "OSWALGREEN": {
+   "bars_changed": 1809,
+   "first": 19960101,
+   "last": 20080121,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "PALRED": {
+   "bars_changed": 2365,
+   "first": 20040312,
+   "last": 20131015,
+   "categories": [
+    "special_dividend"
+   ]
+  },
+  "PANACEABIO": {
+   "bars_changed": 545,
+   "first": 19960418,
+   "last": 20030131,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "PARASPETRO": {
+   "bars_changed": 102,
+   "first": 20160331,
+   "last": 20160901,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "PARRYSUGAR": {
+   "bars_changed": 1327,
+   "first": 20070924,
+   "last": 20130320,
+   "categories": [
+    "demerger_keepdrop"
+   ]
+  },
+  "PARSVNATH": {
+   "bars_changed": 284,
+   "first": 20061130,
+   "last": 20080118,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "PDPL": {
+   "bars_changed": 16,
+   "first": 20100819,
+   "last": 20100909,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "PENINLAND": {
+   "bars_changed": 811,
+   "first": 20041018,
+   "last": 20080121,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "PERSISTENT": {
+   "bars_changed": 1216,
+   "first": 20100406,
+   "last": 20150309,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "PFIZER": {
+   "bars_changed": 3279,
+   "first": 19960101,
+   "last": 20131204,
+   "categories": [
+    "special_dividend"
+   ]
+  },
+  "PGIL": {
+   "bars_changed": 1791,
+   "first": 20070215,
+   "last": 20140529,
+   "categories": [
+    "demerger_keepdrop"
+   ]
+  },
+  "PNBGILTS": {
+   "bars_changed": 2927,
+   "first": 20000921,
+   "last": 20130702,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "POLARIS": {
+   "bars_changed": 3281,
+   "first": 19991124,
+   "last": 20141008,
+   "categories": [
+    "demerger_factor"
+   ]
+  },
+  "PRADIP": {
+   "bars_changed": 710,
+   "first": 20100405,
+   "last": 20130211,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "RADIOCITY": {
+   "bars_changed": 1450,
+   "first": 20170317,
+   "last": 20230112,
+   "categories": [
+    "unattributed"
+   ]
+  },
+  "RAMCOSYS": {
+   "bars_changed": 3145,
+   "first": 20000412,
+   "last": 20140421,
+   "categories": [
+    "rights"
+   ]
+  },
+  "REFEX": {
+   "bars_changed": 1640,
+   "first": 20091203,
+   "last": 20170323,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "REIAGROLTD": {
+   "bars_changed": 370,
+   "first": 20081125,
+   "last": 20100604,
+   "categories": [
+    "rights"
+   ]
+  },
+  "RELAXO": {
+   "bars_changed": 604,
+   "first": 20110617,
+   "last": 20131121,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "RELIANCE": {
+   "bars_changed": 1332,
+   "first": 19960101,
+   "last": 20060117,
+   "categories": [
+    "demerger_factor"
+   ]
+  },
+  "RELIGARE": {
+   "bars_changed": 523,
+   "first": 20071121,
+   "last": 20100114,
+   "categories": [
+    "rights"
+   ]
+  },
+  "RELINFRA": {
+   "bars_changed": 906,
+   "first": 19960101,
+   "last": 20040514,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "RELMEDIA": {
+   "bars_changed": 1561,
+   "first": 20010110,
+   "last": 20080118,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "RENUKA": {
+   "bars_changed": 1484,
+   "first": 20051031,
+   "last": 20111111,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "RESURGERE": {
+   "bars_changed": 498,
+   "first": 20080901,
+   "last": 20100914,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "RNRL": {
+   "bars_changed": 474,
+   "first": 20060301,
+   "last": 20080121,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "RPOWER": {
+   "bars_changed": 71,
+   "first": 20080211,
+   "last": 20080529,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "RSSOFTWARE": {
+   "bars_changed": 2245,
+   "first": 19990519,
+   "last": 20100618,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "SANWARIA": {
+   "bars_changed": 612,
+   "first": 20060327,
+   "last": 20080925,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "SASKEN": {
+   "bars_changed": 589,
+   "first": 20050909,
+   "last": 20080118,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "SBIN": {
+   "bars_changed": 1838,
+   "first": 19960101,
+   "last": 20080125,
+   "categories": [
+    "rights"
+   ]
+  },
+  "SFCL": {
+   "bars_changed": 360,
+   "first": 20131024,
+   "last": 20150422,
+   "categories": [
+    "demerger_factor"
+   ]
+  },
+  "SHARONBIO": {
+   "bars_changed": 555,
+   "first": 20111207,
+   "last": 20140219,
+   "categories": [
+    "wrong_fraction"
+   ]
+  },
+  "SHREEASHTA": {
+   "bars_changed": 749,
+   "first": 20070110,
+   "last": 20100129,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "SILINV": {
+   "bars_changed": 1160,
+   "first": 19960522,
+   "last": 20060609,
+   "categories": [
+    "demerger_keepdrop"
+   ]
+  },
+  "SITINET": {
+   "bars_changed": 257,
+   "first": 20070110,
+   "last": 20080118,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "SKUMARSYNF": {
+   "bars_changed": 1843,
+   "first": 19960101,
+   "last": 20080319,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "SMARTLINK": {
+   "bars_changed": 2363,
+   "first": 20010411,
+   "last": 20110530,
+   "categories": [
+    "special_dividend"
+   ]
+  },
+  "SOUTHBANK": {
+   "bars_changed": 1860,
+   "first": 19981214,
+   "last": 20081015,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "SPARC": {
+   "bars_changed": 1255,
+   "first": 20070718,
+   "last": 20120822,
+   "categories": [
+    "rights"
+   ]
+  },
+  "SPCENET": {
+   "bars_changed": 141,
+   "first": 20170110,
+   "last": 20171127,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "SPICETELE": {
+   "bars_changed": 77,
+   "first": 20080616,
+   "last": 20081003,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "SREINFRA": {
+   "bars_changed": 2518,
+   "first": 19960101,
+   "last": 20110209,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "SRSLTD": {
+   "bars_changed": 932,
+   "first": 20110916,
+   "last": 20150624,
+   "categories": [
+    "wrong_fraction"
+   ]
+  },
+  "STAR": {
+   "bars_changed": 2780,
+   "first": 20000202,
+   "last": 20131218,
+   "categories": [
+    "special_dividend"
+   ]
+  },
+  "STCINDIA": {
+   "bars_changed": 1243,
+   "first": 20030401,
+   "last": 20080318,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "STLTECH": {
+   "bars_changed": 1567,
+   "first": 20001208,
+   "last": 20080121,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "SUBROS": {
+   "bars_changed": 972,
+   "first": 19960102,
+   "last": 20071119,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "SUNTV": {
+   "bars_changed": 1258,
+   "first": 20060424,
+   "last": 20110601,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "SUPREMEIND": {
+   "bars_changed": 2502,
+   "first": 19960101,
+   "last": 20101013,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "SURANAT&P": {
+   "bars_changed": 2980,
+   "first": 20020522,
+   "last": 20141124,
+   "categories": [
+    "wrong_fraction"
+   ]
+  },
+  "SUTLEJTEX": {
+   "bars_changed": 1548,
+   "first": 20061214,
+   "last": 20130625,
+   "categories": [
+    "wrong_fraction"
+   ]
+  },
+  "SUZLON": {
+   "bars_changed": 1819,
+   "first": 20051019,
+   "last": 20130227,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "SWELECTES": {
+   "bars_changed": 1519,
+   "first": 20060509,
+   "last": 20120716,
+   "categories": [
+    "special_dividend"
+   ]
+  },
+  "SYMPHONY": {
+   "bars_changed": 166,
+   "first": 20110615,
+   "last": 20120214,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "TARIL": {
+   "bars_changed": 1336,
+   "first": 20071228,
+   "last": 20130612,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "TATACOMM": {
+   "bars_changed": 308,
+   "first": 19960101,
+   "last": 20020116,
+   "categories": [
+    "special_dividend"
+   ]
+  },
+  "TATAPOWER": {
+   "bars_changed": 3349,
+   "first": 19960101,
+   "last": 20140318,
+   "categories": [
+    "rights"
+   ]
+  },
+  "TEXINFRA": {
+   "bars_changed": 1505,
+   "first": 20040909,
+   "last": 20101029,
+   "categories": [
+    "demerger_keepdrop"
+   ]
+  },
+  "TRIVENI": {
+   "bars_changed": 1323,
+   "first": 20051213,
+   "last": 20110502,
+   "categories": [
+    "demerger_keepdrop"
+   ]
+  },
+  "TTML": {
+   "bars_changed": 2511,
+   "first": 20030625,
+   "last": 20130806,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "TULIP": {
+   "bars_changed": 1617,
+   "first": 20060105,
+   "last": 20120725,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "TULSI": {
+   "bars_changed": 696,
+   "first": 20080225,
+   "last": 20110106,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "TV18BRDCST": {
+   "bars_changed": 1379,
+   "first": 20070208,
+   "last": 20120913,
+   "categories": [
+    "rights"
+   ]
+  },
+  "UNITDSPR": {
+   "bars_changed": 1211,
+   "first": 20010927,
+   "last": 20061016,
+   "categories": [
+    "demerger_factor"
+   ]
+  },
+  "UNITECH": {
+   "bars_changed": 3637,
+   "first": 19960101,
+   "last": 20150602,
+   "categories": [
+    "phantom_crash"
+   ]
+  },
+  "UNITY": {
+   "bars_changed": 939,
+   "first": 20060612,
+   "last": 20100406,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "UNIWESTBNK": {
+   "bars_changed": 1329,
+   "first": 19960101,
+   "last": 20060116,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "UPL": {
+   "bars_changed": 419,
+   "first": 20040123,
+   "last": 20050926,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "UTTAMSUGAR": {
+   "bars_changed": 1581,
+   "first": 20060410,
+   "last": 20120904,
+   "categories": [
+    "rights"
+   ]
+  },
+  "VAKRANGEE": {
+   "bars_changed": 1476,
+   "first": 20060403,
+   "last": 20120411,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "VASCONEQ": {
+   "bars_changed": 1315,
+   "first": 20100215,
+   "last": 20150622,
+   "categories": [
+    "rights"
+   ]
+  },
+  "VENKEYS": {
+   "bars_changed": 3773,
+   "first": 19960103,
+   "last": 20151218,
+   "categories": [
+    "wrong_fraction"
+   ]
+  },
+  "VINATIORGA": {
+   "bars_changed": 64,
+   "first": 20090728,
+   "last": 20091029,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "VIVIDHA": {
+   "bars_changed": 468,
+   "first": 20130521,
+   "last": 20150527,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "WEIZMANIND": {
+   "bars_changed": 1908,
+   "first": 20000103,
+   "last": 20101207,
+   "categories": [
+    "demerger_keepdrop"
+   ]
+  },
+  "WHEELS": {
+   "bars_changed": 3231,
+   "first": 19960101,
+   "last": 20140212,
+   "categories": [
+    "rights"
+   ]
+  },
+  "WINSOMYARN": {
+   "bars_changed": 2106,
+   "first": 19960101,
+   "last": 20100120,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "ZANDUREALT": {
+   "bars_changed": 1148,
+   "first": 19960115,
+   "last": 20091221,
+   "categories": [
+    "demerger_keepdrop"
+   ]
+  },
+  "ZEEL": {
+   "bars_changed": 1587,
+   "first": 19960101,
+   "last": 20070209,
+   "categories": [
+    "demerger_keepdrop"
+   ]
+  },
+  "ZEEMEDIA": {
+   "bars_changed": 796,
+   "first": 20070110,
+   "last": 20100413,
+   "categories": [
+    "demerger_keepdrop"
+   ]
+  },
+  "ZENITHSTL": {
+   "bars_changed": 805,
+   "first": 20070430,
+   "last": 20100810,
+   "categories": [
+    "missed_split"
+   ]
+  },
+  "ZUARIIND": {
+   "bars_changed": 2849,
+   "first": 19960101,
+   "last": 20120404,
+   "categories": [
+    "demerger_factor"
+   ]
+  }
+ }
+}

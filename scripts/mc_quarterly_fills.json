@@ -147,6 +147,7 @@
    20201231,
    20210331
   ],
+  "held": "SOURCE-INTERNAL test 2026-08-11: Moneycontrol's consolidated row EQUALS Moneycontrol's OWN standalone row for this quarter, same label (con 673.07 vs std 673.07). UNRESOLVED, NOT a proven copy: identical is exactly what BOTH explanations predict \u2014 the aggregator repeating standalone, and a company whose subsidiaries are equity-accounted so consolidated revenue genuinely equals standalone. Calibrated against GAYAPROJ 2019-03 and PIIND 2019-03, both PROVEN fallbacks, which nonetheless show a differing PAT line and a consolidated-only minority-interest row \u2014 so neither of those signals settles it either. Withheld because an unverifiable consolidated figure is worse than an admitted gap; settle it from the FILING (\u00a757/\u00a758), not from this source.",
   "rev": 673.07,
   "sc_id": "BI01",
   "src": "moneycontrol appfeeds quarterly_results_responsive",
@@ -181,6 +182,7 @@
    20200630,
    20200930
   ],
+  "held": "SOURCE-INTERNAL test 2026-08-11: Moneycontrol's consolidated row EQUALS Moneycontrol's OWN standalone row for this quarter, same label (con 734.05 vs std 734.05). UNRESOLVED, NOT a proven copy: identical is exactly what BOTH explanations predict \u2014 the aggregator repeating standalone, and a company whose subsidiaries are equity-accounted so consolidated revenue genuinely equals standalone. Calibrated against GAYAPROJ 2019-03 and PIIND 2019-03, both PROVEN fallbacks, which nonetheless show a differing PAT line and a consolidated-only minority-interest row \u2014 so neither of those signals settles it either. Withheld because an unverifiable consolidated figure is worse than an admitted gap; settle it from the FILING (\u00a757/\u00a758), not from this source.",
   "rev": 734.05,
   "sc_id": "BEM",
   "src": "moneycontrol appfeeds quarterly_results_responsive",
@@ -289,6 +291,7 @@
   "type_format": "cons_quarterly"
  },
  "BOMDYEING|20180630|con": {
+  "fallback_check": "equals our standalone, but this company never shows con != std across 32 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "28 stored quarters reproduced, 0 disagreements",
   "gate_quarters": [
    20190630,
@@ -306,6 +309,7 @@
   "type_format": "cons_quarterly"
  },
  "BOMDYEING|20180930|con": {
+  "fallback_check": "equals our standalone, but this company never shows con != std across 32 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "28 stored quarters reproduced, 0 disagreements",
   "gate_quarters": [
    20190630,
@@ -323,6 +327,7 @@
   "type_format": "cons_quarterly"
  },
  "BOMDYEING|20181231|con": {
+  "fallback_check": "equals our standalone, but this company never shows con != std across 32 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "28 stored quarters reproduced, 0 disagreements",
   "gate_quarters": [
    20190630,
@@ -374,6 +379,7 @@
   "type_format": "cons_quarterly"
  },
  "CENTURYPLY|20181231|con": {
+  "fallback_check": "SOURCE-INTERNAL test 2026-08-11: Moneycontrol's consolidated row DIFFERS from Moneycontrol's OWN standalone row for this quarter, same label (con 579.17 vs std 578.89). It DIFFERS by 0.28, and a copy is not off by that, so MC is serving a real consolidated table for this field. The earlier hold rested on 'con equals OUR stored standalone', which is a different comparison and cannot tell the aggregator repeating standalone from a genuine equal-value consolidation. Hold LIFTED; value stands.",
   "gate": "29 stored quarters reproduced, 0 disagreements",
   "gate_quarters": [
    20190630,
@@ -385,7 +391,6 @@
    20201231,
    20210331
   ],
-  "held": "HOLD \u2014 this company consolidates differently in 16 of its own quarters, so a figure identical to standalone here is the aggregator repeating the standalone row",
   "rev": 579.17,
   "sc_id": "CP9",
   "src": "moneycontrol appfeeds quarterly_results_responsive",
@@ -428,6 +433,7 @@
   "type_format": "cons_quarterly"
  },
  "COCHINSHIP|20181231|con": {
+  "fallback_check": "SOURCE-INTERNAL test 2026-08-11: Moneycontrol's consolidated row DIFFERS from Moneycontrol's OWN standalone row for this quarter, same label (con 717.11 vs std 716.42). It DIFFERS by 0.69, and a copy is not off by that, so MC is serving a real consolidated table for this field. The earlier hold rested on 'con equals OUR stored standalone', which is a different comparison and cannot tell the aggregator repeating standalone from a genuine equal-value consolidation. Hold LIFTED; value stands.",
   "gate": "28 stored quarters reproduced, 0 disagreements",
   "gate_quarters": [
    20190630,
@@ -439,7 +445,6 @@
    20201231,
    20210331
   ],
-  "held": "HOLD \u2014 this company consolidates differently in 14 of its own quarters, so a figure identical to standalone here is the aggregator repeating the standalone row",
   "rev": 717.11,
   "sc_id": "CS17",
   "src": "moneycontrol appfeeds quarterly_results_responsive",
@@ -927,6 +932,7 @@
   "type_format": "cons_quarterly"
  },
  "GLAXO|20181231|con": {
+  "fallback_check": "SOURCE-INTERNAL test 2026-08-11: Moneycontrol's consolidated row DIFFERS from Moneycontrol's OWN standalone row for this quarter, same label (con 825.03 vs std 825.35). It DIFFERS by 0.32, and a copy is not off by that, so MC is serving a real consolidated table for this field. The earlier hold rested on 'con equals OUR stored standalone', which is a different comparison and cannot tell the aggregator repeating standalone from a genuine equal-value consolidation. Hold LIFTED; value stands.",
   "gate": "29 stored quarters reproduced, 0 disagreements",
   "gate_quarters": [
    20190630,
@@ -938,7 +944,6 @@
    20201231,
    20210331
   ],
-  "held": "HOLD \u2014 this company consolidates differently in 10 of its own quarters, so a figure identical to standalone here is the aggregator repeating the standalone row",
   "rev": 825.03,
   "sc_id": "GI",
   "src": "moneycontrol appfeeds quarterly_results_responsive",
@@ -1323,6 +1328,7 @@
   "type_format": "cons_quarterly"
  },
  "INDIGO|20181231|con": {
+  "fallback_check": "equals our standalone, but this company never shows con != std across 40 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "32 stored quarters reproduced, 0 disagreements",
   "gate_quarters": [
    20180630,
@@ -2383,6 +2389,7 @@
   "type_format": "cons_quarterly"
  },
  "PETRONET|20180630|con": {
+  "fallback_check": "equals our standalone, but this company never shows con != std across 32 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "29 stored quarters reproduced, 0 disagreements",
   "gate_quarters": [
    20190331,
@@ -2400,6 +2407,7 @@
   "type_format": "cons_quarterly"
  },
  "PETRONET|20180930|con": {
+  "fallback_check": "equals our standalone, but this company never shows con != std across 32 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "29 stored quarters reproduced, 0 disagreements",
   "gate_quarters": [
    20190331,
@@ -2417,6 +2425,7 @@
   "type_format": "cons_quarterly"
  },
  "PETRONET|20181231|con": {
+  "fallback_check": "equals our standalone, but this company never shows con != std across 32 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "29 stored quarters reproduced, 0 disagreements",
   "gate_quarters": [
    20190331,
@@ -2469,6 +2478,7 @@
   "type_format": "cons_quarterly"
  },
  "RCF|20180930|con": {
+  "fallback_check": "equals our standalone, but this company never shows con != std across 32 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "29 stored quarters reproduced, 0 disagreements",
   "gate_quarters": [
    20180630,
@@ -2486,6 +2496,7 @@
   "type_format": "cons_quarterly"
  },
  "RCF|20181231|con": {
+  "fallback_check": "equals our standalone, but this company never shows con != std across 32 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "29 stored quarters reproduced, 0 disagreements",
   "gate_quarters": [
    20180630,
@@ -2657,6 +2668,7 @@
   "type_format": "cons_quarterly"
  },
  "SHREECEM|20180630|con": {
+  "fallback_check": "SOURCE-INTERNAL test 2026-08-11: Moneycontrol's consolidated row DIFFERS from Moneycontrol's OWN standalone row for this quarter, same label (con 3070.15 vs std 3069.91). It DIFFERS by 0.24, and a copy is not off by that, so MC is serving a real consolidated table for this field. The earlier hold rested on 'con equals OUR stored standalone', which is a different comparison and cannot tell the aggregator repeating standalone from a genuine equal-value consolidation. Hold LIFTED; value stands.",
   "gate": "29 stored quarters reproduced, 0 disagreements",
   "gate_quarters": [
    20190630,
@@ -2668,7 +2680,6 @@
    20201231,
    20210331
   ],
-  "held": "HOLD \u2014 this company consolidates differently in 31 of its own quarters, so a figure identical to standalone here is the aggregator repeating the standalone row",
   "rev": 3070.15,
   "sc_id": "SC12",
   "src": "moneycontrol appfeeds quarterly_results_responsive",
@@ -2778,6 +2789,7 @@
   "type_format": "cons_quarterly"
  },
  "SJVN|20180930|con": {
+  "fallback_check": "SOURCE-INTERNAL test 2026-08-11: Moneycontrol's consolidated row DIFFERS from Moneycontrol's OWN standalone row for this quarter, same label (con 751.52 vs std 751.9). It DIFFERS by 0.38, and a copy is not off by that, so MC is serving a real consolidated table for this field. The earlier hold rested on 'con equals OUR stored standalone', which is a different comparison and cannot tell the aggregator repeating standalone from a genuine equal-value consolidation. Hold LIFTED; value stands.",
   "gate": "29 stored quarters reproduced, 0 disagreements",
   "gate_quarters": [
    20190630,
@@ -2789,13 +2801,13 @@
    20201231,
    20210331
   ],
-  "held": "HOLD \u2014 this company consolidates differently in 13 of its own quarters, so a figure identical to standalone here is the aggregator repeating the standalone row",
   "rev": 751.52,
   "sc_id": "S14",
   "src": "moneycontrol appfeeds quarterly_results_responsive",
   "type_format": "cons_quarterly"
  },
  "SJVN|20181231|con": {
+  "fallback_check": "SOURCE-INTERNAL test 2026-08-11: Moneycontrol's consolidated row DIFFERS from Moneycontrol's OWN standalone row for this quarter, same label (con 484.46 vs std 484.49). It DIFFERS by 0.03, and a copy is not off by that, so MC is serving a real consolidated table for this field. The earlier hold rested on 'con equals OUR stored standalone', which is a different comparison and cannot tell the aggregator repeating standalone from a genuine equal-value consolidation. Hold LIFTED; value stands.",
   "gate": "29 stored quarters reproduced, 0 disagreements",
   "gate_quarters": [
    20190630,
@@ -2807,7 +2819,6 @@
    20201231,
    20210331
   ],
-  "held": "HOLD \u2014 this company consolidates differently in 13 of its own quarters, so a figure identical to standalone here is the aggregator repeating the standalone row",
   "rev": 484.46,
   "sc_id": "S14",
   "src": "moneycontrol appfeeds quarterly_results_responsive",

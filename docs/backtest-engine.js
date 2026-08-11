@@ -424,7 +424,13 @@ function idxLE(arr, off) { let lo = 0, hi = arr.length - 1, ans = -1; while (lo 
 function priceAt(tkr, off) { const s = SERIES[tkr]; if (!s) return null; const i = idxLE(s.d, off); return i < 0 ? null : s.p[i] / 100; }
 function turnoverAt(tkr, off) { const s = TURN[tkr]; if (!s) return 0; const i = idxLE(s.d, off); return i < 0 ? 0 : s.t[i]; }
 // held position that stops trading >1 quarter before data end → marked to zero (loss realised)
-function markPrice(tkr, off) { const s = SERIES[tkr]; if (!s) return null; const ld = s.d[s.d.length - 1]; if (off > ld && ld < SF_END_OFF - 90) return 0; return priceAt(tkr, off); }
+// Mark a HOLDING's value. A series that ended (delisting/merger/scheme) is carried at its LAST
+// TRADED CLOSE, so the position exits at that price on the next rebalance — the same convention
+// build_shp_backtest.py has always used ("delisted exits at last close", runbook §22/§86d). It was
+// `return 0` ("delisting→0") until 2026-08-11: honest for bankruptcies but a phantom -100% for
+// merger absorptions (EICHER→EICHERMOT holders got shares, not zero). Loss up to the last print is
+// still fully counted; entries into already-dead series are blocked by factorsAt's freshness gate.
+function markPrice(tkr, off) { const s = SERIES[tkr]; if (!s) return null; return priceAt(tkr, off); }
 // 52-week high/low over [off-365, off] using TRUE intraday highs/lows when the data
 // carries them (hb/lb = per-mil offsets from close); falls back to closes otherwise.
 function hl52(tkr, off) {
@@ -605,11 +611,20 @@ function factorsAt(off, cfg) {
   const useTech = needsTech(cfg);
   const useFund = needsFund(cfg); const fundDate = useFund ? dateIntOff(off) : 0; const basis = cfg.earnBasis || 'con';
   const useShp = needsShp(cfg); const shpDate = useShp ? dateIntOff(off) : 0;
+  // Entry-freshness gate: a symbol with no bar in the last 14 days (28 in the pre-2002 weekly-bar
+  // era) is not tradeable at this screen date. priceAt() carries the last bar forward forever, so
+  // without this a screen "buys" a series that already died — a renamed/delisted symbol's stale
+  // print (MUNJALAUTO entered 2006-06-30 at a close 45 days old, then marked to 0 = phantom -100%).
+  // Suspended stocks are excluded only while suspended (couldn't be bought anyway) and re-admitted
+  // once bars resume. Daily-era gaps >14d are 0.044% of all bar-transitions (measured 2026-08-11).
+  const maxBarAge = off >= dayOff('2002-01-02') ? 14 : 28;   // (Sync: stock-backtest.html)
   const rows = [];
   for (const tkr in SERIES) {
     const m = META[tkr]; if (!m) continue;
     if (m.symbol.includes('DVR')) continue;   // skip differential-voting-rights shares (TATAMTRDVR, JISLDVREQS, …) — a secondary security of a company already in the universe via its ordinary share; avoids double-counting. StockView dedups the same way (members_on drops the DVR, keeps TMPV). The DVR stays in indicesHistory (it WAS a real constituent) but is excluded from screening. (Sync: stock-backtest.html)
     if (members && !members.has(m.symbol)) continue;
+    const s = SERIES[tkr]; const li = (s && s.d && s.d.length) ? idxLE(s.d, off) : -1;
+    if (li < 0 || off - s.d[li] > maxBarAge) continue;
     const price = priceAt(tkr, off); const p0 = priceAt(tkr, lookOff);
     if (price == null || p0 == null || p0 <= 0) continue;
     if (turnoverAt(tkr, off) < cfg.mcapFloor) continue;   // point-in-time daily turnover floor
@@ -670,7 +685,7 @@ function allocateBasket(picks, capital) {
   const rows = picks.map(r => { const shares = Math.floor(per / r.price); const alloc = shares * r.price; deployed += alloc; return { ...r, shares, alloc }; });
   return { rows, deployed, cash: capital - deployed };
 }
-// buy top-N once at `start`, hold unchanged to `end` (equal-weight, delisting→0)
+// buy top-N once at `start`, hold unchanged to `end` (equal-weight; a delisted holding stays valued at its last traded close)
 function computeHold(cfg, start, end, capital) {
   _histGuard(start);
   const picks = screenAsOf(cfg, start).slice(0, cfg.topN);

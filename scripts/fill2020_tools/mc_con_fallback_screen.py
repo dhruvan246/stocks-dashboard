@@ -12,7 +12,24 @@ It is invisible to the series gate. The gate proves MC's consolidated series is 
 consolidated series by reproducing stored con values elsewhere — and it does, correctly. The
 fallback is PER QUARTER, inside a series that is otherwise right.
 
-THE DISCRIMINATOR, and it costs nothing (no fetch, our own data):
+★ THE TEST APPLIED NOW (2026-08-11) IS SOURCE-INTERNAL, and it replaced the one below:
+
+    MC's consolidated  vs  MC's OWN standalone, same quarter, SAME LABEL.
+      differs   -> a real consolidated table FOR THAT FIELD. Kept.
+      identical -> UNRESOLVED. Held, and deliberately NOT called "fallback proven": identical is
+                   exactly what BOTH explanations predict — the aggregator repeating standalone, and
+                   an equity-accounted structure whose consolidated genuinely equals its standalone.
+                   Calibrated against GAYAPROJ 2019-03 and PIIND 2019-03, both PROVEN fallbacks,
+                   which nonetheless BOTH show a PAT line differing from their own standalone (4.39
+                   and 1.30) and a consolidated-only minority-interest row — so neither of those
+                   signals settles it either. Only the filing does (§57/§58).
+
+⚠️ THE OLD DISCRIMINATOR BELOW IS THE WEAK ONE, kept as the historical record. Comparing MC's
+consolidated to OUR stored standalone cannot separate the two explanations, and it refuted 6 of the
+10 cells it was re-run on — SHREECEM's retraction rested on "con equals our stored std" when 3070.15
+is not 3069.91. Our own store now only breaks ties when the source has no standalone twin at all.
+
+THE OLD DISCRIMINATOR (no fetch, our own data):
 
     MC's con value == our stored STD value for the same quarter
       AND the company's own history shows con != std in ANY other quarter
@@ -66,6 +83,17 @@ def same(a, b):
     return a is not None and b is not None and abs(a - b) <= 0.005
 
 
+def cur_value(sym, qe, basis, is_pat, revop, fmap):
+    """What the payload holds for this cell right now, or None."""
+    if is_pat:
+        row = (fmap.get(sym) or {}).get(qe)
+        slot = 1 if basis == "std" else 3
+    else:
+        row = (revop.get(sym) or {}).get(str(qe))
+        slot = 0 if basis == "std" else 1
+    return row[slot] if row and len(row) > slot else None
+
+
 def main():
     write = "--apply-flags" in sys.argv
     revop = json.load(open(REVOP))
@@ -85,7 +113,7 @@ def main():
             continue
         led = json.load(open(p))
         is_pat = name in PAT_LEDGERS
-        held = kept = 0
+        held = kept = review = 0
         for k, v in led.items():
             if k.count("|") != 2 or not isinstance(v, dict) or v.get("held"):
                 continue
@@ -136,6 +164,43 @@ def main():
                 else:
                     v["fallback_check"] = "no stored twin; MC's own con and std differ here — genuine"
                 continue
+            # ★ SOURCE-INTERNAL FIRST (2026-08-11). Whatever our own standalone says, the question
+            # is whether MC's consolidated table is a copy of MC's OWN standalone table. Fetch the
+            # same label from the std series and compare there; our store only breaks ties.
+            mc_twin = None
+            code = v.get("sc_id")
+            label = v.get("row_label")
+            if code and label:
+                for r2 in MC.series_raw(code, "std", 400):
+                    if MC.qe_of(r2.get("yrc0")) == int(qe):
+                        mc_twin = MC.row_value(r2, label)
+                        break
+            if mc_twin is not None and not same(val, mc_twin):
+                v["fallback_check"] = ("MC consolidated %.2f DIFFERS from MC's OWN standalone %.2f on "
+                                       "the same label — a real consolidated table for this field."
+                                       % (val, mc_twin))
+                kept += 1
+                continue
+            if mc_twin is not None and same(val, mc_twin):
+                why = ("MC's consolidated equals MC's OWN standalone to the cent on the same label "
+                       "for this quarter. UNRESOLVED, not a proven copy: identical is what BOTH "
+                       "explanations predict — the aggregator repeating standalone, and an "
+                       "equity-accounted structure whose consolidated really does equal its "
+                       "standalone. Settle from the filing (§57/§58), not this source.")
+                # ★ A LIVE CELL IS NOT HELD RETROACTIVELY. `held` asserts the slot must stay EMPTY,
+                # so stamping it on a value already in the payload manufactures a RESURRECTED alarm
+                # and, worse, invites --repair-held to delete a value that was never proven wrong.
+                # Unwritten -> held. Already applied -> flagged for review, and the decision to
+                # retract several hundred live cells is a deliberate one taken with evidence, not a
+                # side effect of tightening a screen.
+                live = cur_value(sym, int(qe), basis, is_pat, revop, fmap)
+                if live is not None and abs(live - val) <= 0.011:
+                    v["review_unresolved"] = why
+                    review += 1
+                else:
+                    v["held"] = why
+                    held += 1
+                continue
             if not same(val, std):
                 continue
             if proves:
@@ -157,7 +222,8 @@ def main():
                                        "no-consolidation-difference, kept" % n_same)
                 kept += 1
         total_held += held
-        print("%-28s HELD %4d  |  kept-as-genuine %4d" % (name, held, kept))
+        print("%-28s HELD %4d  |  kept %4d  |  LIVE-but-unresolved (review) %4d"
+              % (name, held, kept, review))
         if write:
             json.dump(led, open(p, "w"), indent=1, sort_keys=True)
     print("\ntotal held across ledgers: %d" % total_held)

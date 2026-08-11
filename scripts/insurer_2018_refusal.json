@@ -1,0 +1,79 @@
+{
+ "_doc": "FILL-2018 insurer cells (11) \u2014 REFUSED, with the blocker identified. Investigated 2026-08-11 after the vision rung closed. The blocker is NOT document access: all four companies have text-bearing year-later filings on BSE with 8-12 consolidated pages each (GICRE ann 20190814 30p/67k chars, NIACL ann 20200211 44p, HDFCLIFE ann 20191023 84p, ICICIPRULI ann 20190424 73p). The blocker is that OUR OWN STORED STANDALONE REVENUE FOR THESE COMPANIES CANNOT BE RECONCILED TO THOSE FILINGS, which removes the control every \u00a755 insurer read depends on. \u00a755's whole safety argument is the per-filing standalone control plus the con/std ratio family; with an unreconcilable standalone, a consolidated figure read from the document would be written beside a standalone on a DIFFERENT basis \u2014 the cross-basis inconsistency \u00a740b exists to prevent. Landing them needs the insurer revenue basis re-derived first (the \u00a743 IRDAI public-disclosures route plus a basis audit), which is its own campaign, not a fill.",
+ "measured_evidence": {
+  "NIACL": {
+   "verdict": "our stored figures do not appear in the filing AT ALL",
+   "detail": "The Dec-2019 filing (BSE ann, 44 pages, standalone Annexure-1 on p1, consolidated on p21) prints, in lakhs, for the 31/12/2018 column: Gross Premiums Written 6,78,023 \u00b7 Net Premium written 5,32,296 \u00b7 Premium Earned (Net) 5,50,306 \u00b7 Income from investments 85,429 \u00b7 Total income (3to5) 6,35,735. Our stored revS for 20181231 is 5,993.52 cr = 5,99,352 lakh, which matches NONE of them. A full-text search of the filing for 837286 / 840607 / 599352 (our stored 2019-12 revS, our 2019-12 revC and our 2018-12 revS) returns ZERO occurrences.",
+   "consequence": "NIACL was the ONE insurer whose stored series is otherwise clean (38 quarters, no duplicates, nothing out of family) and whose 2018-12 con/std PAT separation of 2.26% is wide enough for an anchor. It was the best candidate and it still cannot be gated."
+  },
+  "GICRE": {
+   "verdict": "stored standalone series is itself defective, and the con PAT is a copy",
+   "detail": "The Jun-2019 filing prints standalone Total income (3+4+5) of 17,82,776 lakh = 17,827.76 cr for the quarter, against our stored revS for 20190630 of 1,418.65 \u2014 off by 12.6x. Our four stored FY19 quarters sum to 44,080.43 against the filing's printed FY19 total income of 42,527.93 (3.6% apart). Separately, GICRE's stored con PAT EQUALS std PAT to the paisa for 23 CONSECUTIVE quarters (2016-06 -> 2021-12) and then differs by 0.24-44.4% from 2022-03 onward and never returns \u2014 the \u00a755c COPY class, bounded by measurement this campaign.",
+   "consequence": "no usable PAT anchor AND no usable standalone control. Its 3 cells are held twice over."
+  },
+  "ICICIPRULI": {
+   "verdict": "stored standalone series carries the \u00a755b column-misalignment fingerprint TWICE, and both pairs land in the 2018 window",
+   "detail": "stored revS 20180930 == 20181231 == 8,530.72 to the paisa, and stored revS 20180630 == 20190630 == 8,199.68 to the paisa. Two quarters of one company reporting the same revenue to the paisa is \u00a755b's misalignment fingerprint; here it happens twice and covers three of the four target quarters. Its con/std PAT separation is 0.09-0.22%, far inside close()'s 0.4% band, so a PAT anchor cannot separate the bases either (\u00a776b).",
+   "consequence": "all 4 cells held; the standalone side needs repair before the consolidated side can be read."
+  },
+  "HDFCLIFE": {
+   "verdict": "no tell inside the 2018 window, but no anchor either",
+   "detail": "stored series shows two out-of-family quarters (20161231, 20200331) but neither is in the target window. The blocker here is the anchor: con/std PAT separation is 0.37% (2018-09) and 0.43% (2018-12), inside close()'s 0.4% band, so \u00a776b's cross-basis gate cannot prove a column belongs to the consolidated basis rather than the standalone one.",
+   "consequence": "2 cells held pending either a reconciled standalone basis or a wider anchor."
+  }
+ },
+ "cells_held": [
+  "GICRE|20180630",
+  "GICRE|20180930",
+  "GICRE|20181231",
+  "NIACL|20180930",
+  "NIACL|20181231",
+  "HDFCLIFE|20180930",
+  "HDFCLIFE|20181231",
+  "ICICIPRULI|20180331",
+  "ICICIPRULI|20180630",
+  "ICICIPRULI|20180930",
+  "ICICIPRULI|20181231"
+ ],
+ "routes_walked": [
+  "\u00a755 insurer_con_rev.py PDF route \u2014 started, ran 2h of OCR without completing, stopped deliberately (not a failure); the measured triage below showed at most 1 landable cell",
+  "moneycontrol (\u00a781) \u2014 REJECTED BY THE GATE for all four: 0 of our stored quarters reproduced with 10-25 disagreements (e.g. HDFCLIFE 2019-12 ours 11,701.69 vs mc 7,854.98). Correct behaviour: insurers file in IRDAI format and 'Net Sales/Income from operations' is simply not the quantity we store for them",
+  "year-later BSE filing (the triage that closed the vision rung) \u2014 documents FOUND and text-bearing for all four, rows located and read; refused at the CONTROL stage, not the fetch stage",
+  "\u00a764 \u2014 NIACL 2018-09 has no stored con PAT at all, so no anchored reader can reach it regardless"
+ ],
+ "next_rung_not_walked": "\u00a743 IRDAI public disclosures \u2014 the one route that could establish what our stored insurer revenue basis actually IS. Recommended as the start of a separate insurer-basis campaign, since it must fix the STANDALONE side before any consolidated cell is safe.",
+ "generated": "2026-08-11",
+ "_CORRECTION_2026_08_11": "\u2605 THE CENTRAL CLAIM OF THIS REFUSAL WAS WRONG, and the correction came from the 2019 session's label-scoring work. I wrote that our stored insurer standalone 'cannot be reconciled to those filings'. It reconciles fine \u2014 I was comparing it against the wrong ROW. Moneycontrol serves several revenue definitions in one payload, and for insurers 'Net Sales/Income from operations' is only the premium leg. Scored against our own stored quarters: GICRE con 0/10 on Net Sales vs 9/10 on 'Total Income From Operations' (std 0/36 vs 30/36); NIACL con 1/22 vs 18/22 (std 1/38 vs 29/38); HDFCLIFE con 0/22 vs 17/22 (std 0/39 vs 32/39); ICICIPRULI con 0/25 vs 22/25 (std 0/38 vs 25/38). The moneycontrol gate rejected all four insurers earlier in this campaign for the same reason \u2014 it was reading the wrong label, not detecting a bad series. NEVER HARDCODE AN AGGREGATOR'S REVENUE ROW: score every candidate against our own stored quarters and take the strict winner (a TIE is unresolved).",
+ "_status_now": "CANDIDATES, not refused. Every one of the residual disagreements on the winning label sits in 2020-2025 and ZERO are near the 2018 window, which is the shape a locality-aware gate is built for. MC's consolidated Total-Income values for the 11 target cells are: GICRE 2018-06 15855.36 / 2018-09 13207.48 / 2018-12 8668.29; NIACL 2018-09 6849.11 / 2018-12 6879.24; HDFCLIFE 2018-09 7945.53 / 2018-12 9372.36; ICICIPRULI 2018-03 7290.28 / 2018-06 7899.10 / 2018-09 8972.16 / 2018-12 8669.71. DELIBERATELY NOT WRITTEN HERE: the tested locality-aware gate lives in the 2019 session's mc_quarterly_fetch, and improvising a substitute is how this campaign produced a 28-cell retraction. Two further cautions for whoever lands them: ICICIPRULI's stored STANDALONE carries the \u00a755b duplicate-quarter fingerprint inside this very window (8,530.72 at both 2018-09 and 2018-12; 8,199.68 at both 2018-06 and 2019-06), and GICRE's stored revS 2019-06 of 1,418.65 is a measured defect - so the standalone control is unreliable for those two even though the con series now gates.",
+ "_OUTCOME_2026_08_11": {
+  "resolved": "7 of the 11 cells are LIVE, landed by the 2019 session through its locality-aware gate after the label correction. It re-derived every value independently rather than accepting the handoff, and all 7 matched to the cent.",
+  "applied": {
+   "GICRE|20180630": 15855.36,
+   "GICRE|20180930": 13207.48,
+   "GICRE|20181231": 8668.29,
+   "ICICIPRULI|20180331": 7290.28,
+   "ICICIPRULI|20180630": 7899.1,
+   "ICICIPRULI|20180930": 8972.16,
+   "ICICIPRULI|20181231": 8669.71
+  },
+  "gated_out": {
+   "NIACL|20180930": "global disagreement 4/22 = 18.2%, over the 15% ceiling",
+   "NIACL|20181231": "same series",
+   "HDFCLIFE|20180930": "5/22 = 22.7%, over the ceiling",
+   "HDFCLIFE|20181231": "same series"
+  },
+  "why_the_4_stay_out": "Every one of those disagreements sits in 2020-2025 and NONE is near the 2018 window (NIACL's four are 2022-2025 at ratios 0.93-0.95; HDFCLIFE's five are 2020-2024), so the LOCAL picture is spotless and the cells look landable. They are still refused, deliberately: relaxing a threshold to admit cells is the exact move this campaign spent a day unpicking, and 'the far disagreements are probably our own defects' is an untested hypothesis. A document settles them cheaply later.",
+  "corroboration_note": "GICRE corroborates unusually hard: Moneycontrol's STANDALONE equals our stored standalone to the cent across all three quarters (15,695.00 / 13,180.25 / 8,550.96), which independently confirms both the series identity and the Total-Income label choice."
+ },
+ "_defect_reported_not_patched": {
+  "ICICIPRULI|20180930|revS": {
+   "stored": 8530.72,
+   "moneycontrol_std": 8971.65
+  },
+  "ICICIPRULI|20181231|revS": {
+   "stored": 8530.72,
+   "moneycontrol_std": 8668.96
+  },
+  "note": "Our stored STANDALONE carries 8,530.72 at BOTH quarters while Moneycontrol's standalone gives two distinct, plausible values \u2014 so \u00a755b's duplicate-quarter fingerprint is OURS, not a coincidence in the filings. CONFIRMED from both sides. Not patched: these are non-null cells outside a fill-only pass, and overwriting a standalone needs a document (\u00a72b/\u00a758d). The MC figures above are the starting point for that pass. Consolidated is unaffected."
+ }
+}

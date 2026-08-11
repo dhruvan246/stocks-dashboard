@@ -142,11 +142,16 @@ def cmd_frontier(dirp):
 
 
 # ---------------------------------------------------------------- fetch + parse
+CACHE_ONLY = False        # recovery passes re-parse what is on disk; no network, no retry storms
+
+
 def fetch_page(dirp, code, qtrid, flag):
     cf = os.path.join(dirp, "cache", "%d_%d_%s.html.gz" % (code, qtrid, flag))
     if os.path.exists(cf):
         with gzip.open(cf, "rt", encoding="utf-8", errors="replace") as fh:
             return fh.read(), True
+    if CACHE_ONLY:
+        return None, False
     u = ("https://www.bseindia.com/corporates/ShareholdingPattern.aspx"
          "?scripcd=%d&flag_qtr=1&qtrid=%d.00&Flag=%s" % (code, qtrid, flag))
     for attempt in range(3):
@@ -173,6 +178,8 @@ ROW_LABELS = {   # ported verbatim from fetch_shp_wayback_mc (same Clause-35 tab
     "qfi": r"Qualified Foreign Investor",
     "vcf": r"^Venture Capital Funds",
     "fvci": r"Foreign Venture Capital Investors",
+    "fpi": r"Foreign Portfolio Invest",          # 2014-15: SEBI's FPI category, printed either as
+    "anyoth": r"^Any Others?\s*\(Specify\)|^Any Others?$",   # its own row or under "Any Others"
     "pubtot": r"Total Public shareholding\s*\(B\)",
 }
 
@@ -232,7 +239,7 @@ def parse_new(html):
         if blk_lo is not None: break
     if blk_lo is not None:
         hi = blk_hi if blk_hi is not None else min(blk_lo + 160, len(cells))
-        for slot in ("mf", "banks", "govt", "ins", "fii", "qfi", "vcf", "fvci"):
+        for slot in ("mf", "banks", "govt", "ins", "fii", "qfi", "vcf", "fvci", "fpi", "anyoth"):
             p = find_row(ROW_LABELS[slot], blk_lo, hi)
             if p: out[slot] = p
         if blk_hi is not None:
@@ -272,6 +279,20 @@ def parse_old(html):
         _, v = val_after(r"^Sub\s*Total$", ip, inp)
         if v is not None: out["prom"] = v
     lo = inp if inp is not None else 0
+    # promoter-less filers (ITC/FEDERALBNK class): the promoter block prints nothing. The page
+    # still asserts prom≈0 arithmetically when the two non-promoter Sub Totals close to 100.
+    if out.get("prom") is None and inp is not None:
+        subs = []
+        for i in range(inp, len(cells)):
+            if re.fullmatch(r"Sub\s*Total", cells[i], re.I):
+                nums = []
+                for c2 in cells[i + 1:i + 4]:
+                    c2 = c2.replace(",", "").strip()
+                    if re.fullmatch(r"\d+(?:\.\d+)?", c2): nums.append(float(c2))
+                    else: break
+                if len(nums) >= 2: subs.append(nums[1])
+        if len(subs) >= 2 and 99.5 <= subs[0] + subs[1] <= 100.5:
+            out["prom"] = round(max(0.0, 100.0 - subs[0] - subs[1]), 2)
     _, v = val_after(r"^FIIS?\b", lo);                                out["fii"] = v
     _, v = val_after(r"Mutual Funds? and UTI", lo);                   out["mf"] = v
     _, v = val_after(r"Banks\s*,?\s*Financial Institutions?\s*,?\s*Insurance", lo); out["lump"] = v
@@ -285,27 +306,41 @@ def parse_old(html):
 
 
 def cell_of(fr, dirp, neigh=None):
-    """fetch + parse + derive one frontier cell -> (status, cell|None, detail)"""
-    code, q, qe, sym = fr["code"], fr["qtrid"], fr["qe"], fr["sym"]
-    flag_first = "New" if q >= 50 else "Old"
-    html, _ = fetch_page(dirp, code, q, flag_first)
-    used = flag_first
-    cols = nm = None
-    if html:
-        cols, nm = (parse_new if flag_first == "New" else parse_old)(html)
-    if cols is None:
-        flag2 = "Old" if flag_first == "New" else "New"
-        html2, _ = fetch_page(dirp, code, q, flag2)
-        if html2:
-            c2, nm2 = (parse_new if flag2 == "New" else parse_old)(html2)
-            if c2 is not None:
-                cols, nm, used, html = c2, nm2, flag2, html2
-    if cols is None:
-        return ("absent", None, "no category rows either flag")
+    """fetch + parse + derive one frontier cell -> (status, cell|None, detail).
+    Tries the era-appropriate Flag first; on ANY refusal (parse, identity, gate) tries the
+    other Flag — same filing, different render — and keeps the first attempt's verdict when
+    neither passes."""
+    first = "New" if fr["qtrid"] >= 50 else "Old"
+    verdict = None
+    for flag in (first, "Old" if first == "New" else "New"):
+        st, cell, det = _attempt(fr, dirp, neigh, flag)
+        if st == "ok":
+            return (st, cell, det)
+        if verdict is None or verdict[0] == "absent":
+            verdict = (st, cell, det)
+    return verdict
 
-    # identity: page company name vs ledger/master name (era renames make this fuzzy — containment)
+
+def _attempt(fr, dirp, neigh, used):
+    code, q, qe, sym = fr["code"], fr["qtrid"], fr["qe"], fr["sym"]
+    html, _ = fetch_page(dirp, code, q, used)
+    if not html:
+        return ("absent", None, "no page under Flag=%s" % used)
+    cols, nm = (parse_new if used == "New" else parse_old)(html)
+    if cols is None:
+        return ("absent", None, "no category rows Flag=%s" % used)
+
+    # identity: page company name vs ledger/master name (era renames make this fuzzy —
+    # containment). Override-resolved rows (bname == "") carry per-entry evidence in
+    # _shp_scripcode_override.json and the aspx prints the CURRENT registered name for era
+    # quarters (RUCHISOYA 2002 -> "Patanjali Foods Ltd"), so the era-name gate must not apply.
+    # mc:symbol resolutions carry an exact NSE-symbol + ISIN match — stronger evidence than a
+    # name comparison across era renames (SATYAMCOMP's page prints "Satyam Computer Services",
+    # MC's current name is "Mahindra Satyam" — same entity, the gate must not refuse it).
     pn, ln, bn = norm_name(nm), norm_name(fr.get("lname")), norm_name(fr.get("bname"))
-    if pn and (ln or bn) and not (ln and (ln in pn or pn in ln)) and not (bn and (bn in pn or pn in bn)):
+    if fr.get("bname") != "" and not str(fr.get("via", "")).startswith("mc:symbol") \
+            and pn and (ln or bn) \
+            and not (ln and (ln in pn or pn in ln)) and not (bn and (bn in pn or pn in bn)):
         return ("identity", None, "page='%s' vs '%s'/'%s'" % (nm, fr.get("lname"), fr.get("bname")))
 
     sub = (datetime.date(*map(int, qe.split("-"))) + datetime.timedelta(days=LAG_DAYS)).isoformat()
@@ -315,9 +350,18 @@ def cell_of(fr, dirp, neigh=None):
             p = cols.get(slot)
             if not p: return None
             return p[1] if p[1] is not None else p[0]     # %of(A+B+C), stored convention
+        # 2014-15 FPI rows: "Foreign Portfolio Invest*" appears as its own row or itemised under
+        # "Any Others (Specify)" (ADANIPORTS Sep-15: Any-Others 9.29 == FPI 9.29 — same block,
+        # count ONCE). FPI is foreign -> fii. An Any-Others row with NO FPI itemisation is
+        # anonymous other-institutions -> dii (the OLD_OTHER_TO_DII calibration).
+        fpi, anyoth = val("fpi"), val("anyoth")
+        fpi_add = oth_add = 0.0
+        if anyoth is not None and fpi is not None:
+            if abs(anyoth - fpi) <= 0.02: fpi_add = anyoth
+            else: fpi_add = fpi; oth_add = max(0.0, anyoth - fpi)
+        elif fpi is not None: fpi_add = fpi
+        elif anyoth is not None: oth_add = anyoth
         fii = val("fii")
-        if fii is None:
-            return ("no-fii", None, "fii row absent/dashes")
         prom = val("prom")
         if prom is None:
             pt = cols.get("pubtot")
@@ -327,9 +371,44 @@ def cell_of(fr, dirp, neigh=None):
             else:
                 return ("no-prom", None, "no promoter total")
         mf = val("mf") or 0.0
-        dii = mf + (val("banks") or 0.0) + (val("ins") or 0.0)
+        # family convention (Wayback-MC ledger): dii = mf + banks + ins. An anonymous Any-Others
+        # row folds in ONLY when reconciliation needs it — keeps the ~22k stored 2010-16 cells and
+        # these on one convention, while still closing the pages where the row is material.
+        dii_base = round(mf + (val("banks") or 0.0) + (val("ins") or 0.0), 2)
+        dii = dii_base
         inst = val("inst_sub")
-        if inst is not None:
+        derived = False
+        if fii is not None:
+            fii = round(fii + fpi_add, 2)
+            if inst is not None and oth_add:
+                gap0 = abs(fii + dii_base + (val("govt") or 0.0) + (val("qfi") or 0.0) - inst)
+                gap1 = abs(fii + dii_base + oth_add + (val("govt") or 0.0) + (val("qfi") or 0.0) - inst)
+                if gap0 > 1.0 and gap1 <= 1.0:
+                    dii = round(dii_base + oth_add, 2)
+        else:
+            # early Clause-35 pages omit empty rows (AGRODUTCH Sep-06: block = MF+banks only).
+            # The block's own subtotal proves the foreign residual — same arithmetic the seam
+            # derivation used, gated: ~0 accepted outright, positive only with a stored
+            # neighbour within 5pp, negative refused.
+            if inst is None:
+                return ("no-fii", None, "fii row absent, no subtotal")
+            # deriving: the residual cannot tell foreign from anonymous-other, so fold Any-Others
+            # into dii FIRST (the calibrated direction) and let the remainder be foreign.
+            if oth_add:
+                dii = round(dii_base + oth_add, 2)
+            r = inst - (dii + (val("govt") or 0.0) + (val("qfi") or 0.0) + fpi_add)
+            if -0.15 <= r <= 0.15:
+                fii = round(max(0.0, r) + fpi_add, 2); derived = True
+            elif r > 0.15:
+                nb = [neigh[k] for k in ((sym, _adj(qe, -1)), (sym, _adj(qe, 1)),
+                                         (sym, _adj(qe, -2)), (sym, _adj(qe, 2))) if neigh and k in neigh]
+                if nb and min(abs(r + fpi_add - v) for v in nb) <= 5.0:
+                    fii = round(r + fpi_add, 2); derived = True
+                else:
+                    return ("no-fii", None, "residual %.2f unanchored" % r)
+            else:
+                return ("recon", None, "negative residual %.2f" % r)
+        if inst is not None and not derived:
             if abs(fii + dii + (val("govt") or 0.0) + (val("qfi") or 0.0) - inst) > 1.0:
                 return ("recon", None, "inst recon fail")
         ins = round(val("ins") or 0.0, 2)
@@ -378,7 +457,7 @@ def run(dirp, front, workers, tag):
         for qe, v in qs.items():
             if isinstance(v, list) and len(v) > 1 and v[1] is not None:
                 neigh[(s, qe)] = v[1]
-    res, stats = {}, Counter()
+    res, stats, rejects = {}, Counter(), {}
     t0 = time.time()
 
     def one(fr):
@@ -387,15 +466,20 @@ def run(dirp, front, workers, tag):
             stats[st] += 1
             if st == "ok":
                 res.setdefault(fr["sym"], {})[fr["qe"]] = cell
-            elif stats[st] <= 8:
-                print("  [%s] %s %s: %s" % (st, fr["sym"], fr["qe"], det), flush=True)
-        time.sleep(0.4)
+            else:
+                rejects["%s|%s" % (fr["sym"], fr["qe"])] = "%s: %s" % (st, det)
+                if stats[st] <= 8:
+                    print("  [%s] %s %s: %s" % (st, fr["sym"], fr["qe"], det), flush=True)
+        if not CACHE_ONLY:
+            time.sleep(0.4)
 
     with ThreadPoolExecutor(max_workers=workers) as ex:
         list(ex.map(one, front))
     n = sum(len(v) for v in res.values())
     print("\n%s: %d cells parsed OK of %d fetched in %.0fs — %s"
           % (tag, n, len(front), time.time() - t0, dict(stats)), flush=True)
+    json.dump(rejects, open(os.path.join(dirp, "rejects.json"), "w"), indent=0)
+    print("rejects -> rejects.json (%d cells, not-found-via:bseaspx)" % len(rejects), flush=True)
 
     # overlap gate: everything we parsed that ALREADY exists in the ledger must reproduce
     diffs = []
@@ -419,11 +503,17 @@ def main():
     ap.add_argument("n", nargs="?", type=int, default=60)
     ap.add_argument("--dir", default=HERE)
     ap.add_argument("--workers", type=int, default=4)
+    ap.add_argument("--cache-only", action="store_true",
+                    help="re-parse pages already on disk; never fetch (recovery passes)")
+    ap.add_argument("--frontier", default="frontier.json",
+                    help="frontier file inside --dir (e.g. frontier_unres.json)")
     a = ap.parse_args()
+    global CACHE_ONLY
+    CACHE_ONLY = a.cache_only
     os.makedirs(os.path.join(a.dir, "cache"), exist_ok=True)
     if a.cmd == "frontier":
         cmd_frontier(a.dir); return
-    front = json.load(open(os.path.join(a.dir, "frontier.json")))
+    front = json.load(open(os.path.join(a.dir, a.frontier)))
     if a.cmd == "pilot":
         # stratified: spread across years, plus deliberate OVERLAP cells (already-stored) as the gate
         hist = gitshow("scripts/shp_history.json")
@@ -452,7 +542,7 @@ def main():
         res, stats, diffs = run(a.dir, front, a.workers, "HARVEST")
         out = os.path.join(a.dir, "shp_fill_bse_aspx.json.gz")
         with gzip.open(out, "wt", encoding="utf-8") as fh:
-            json.dump(res, fh)
+            json.dump({"_built": "fetch_shp_bse_aspx harvest", "fills": res}, fh)
         print("ledger -> %s  (%d syms, %d cells)" % (out, len(res), sum(len(v) for v in res.values())))
 
 

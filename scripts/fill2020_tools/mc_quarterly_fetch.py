@@ -10,8 +10,21 @@ guessable — it lives on a different host and is only visible in the browser's 
 
     type_format=quarterly       -> STANDALONE      type_format=cons_quarterly -> CONSOLIDATED
 
+⚠️ THE "60 QUARTERS" BELOW IS THIS SCRIPT'S OWN `limit`, NOT THE SITE'S REACH — limit=200 returns 77
+rows back to Jun-2007 for the same scrip. Quoting it as the source's depth is quoting your own
+parameter (memory: feedback-endpoint-caps-are-silent). The disk cache key includes the limit.
+
+⚠️ AND `Net Sales/Income from operations` IS NOT UNIVERSALLY "our exact basis" — the sentence below
+said so and it is wrong for whole sectors. MC serves BOTH that row and `Total Income From Operations`
+(net sales + other income) in the same payload, and for insurers the second is the right one:
+measured 2026-08-11, GICRE con reproduces 0/10 of our stored quarters on Net Sales against 9/10 on
+Total Income, NIACL 1/22 vs 18/22, HDFCLIFE 0/22 vs 17/22, ICICIPRULI 0/25 vs 22/25. Reading the
+wrong row is invisible to every magnitude gate because both values are plausible and correctly
+placed (SIEMENS 2018-12: 2753.3 vs 2825.9). So series() SCORES every candidate label against our own
+stored quarters and takes the winner — never trust a label by name, and treat a tie as unresolved.
+
 Measured on DLF (sc_id D04): **60 quarters back to Sep 2011**, at FILING PRECISION, under the row
-label `Net Sales/Income from operations` — our exact basis, not "total income". DLF Mar-2019 comes
+label `Net Sales/Income from operations` — the winning label FOR THAT COMPANY. DLF Mar-2019 comes
 back 2,500.43 where the §60d screener-annual derivation had produced 2,500.34; the 0.09 difference
 is precisely the crore-rounding of screener's annual total, so Moneycontrol both CONFIRMS that
 derivation and REFINES it (§60e's refinement step, satisfied by a second reader rather than a PDF).
@@ -33,12 +46,14 @@ scripts/fill2020_tools/_mc_skips.json (refusals).
 
 Run:  python -X utf8 scripts/fill2020_tools/mc_quarterly_fetch.py [--only SYM,SYM] [--qes 20190331,...] [--apply]
 """
+import html as html_lib
 import json
 import os
 import re
 import subprocess
 import sys
 import time
+import urllib.parse
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SCRIPTS = os.path.dirname(HERE)
@@ -59,12 +74,50 @@ SEARCH = ("https://www.moneycontrol.com/mccode/common/autosuggestion_solr.php"
           "?classic=true&query=%s&type=1&format=json")
 FMT = {"std": "quarterly", "con": "cons_quarterly"}
 SLOT = {"std": 0, "con": 1}
-REV_ROW = "Net Sales/Income from operations"
+# ⚠️ NOT ONE UNIVERSAL ROW. For insurers "Net Sales/Income from operations" is only the PREMIUM leg
+# — GICRE con reproduces 0/18 of our quarters on it and 16/18 on "Total Income From Operations";
+# NIACL 1/22 vs 18/22; IDEA 36/45 vs 45/45. DLF ties on both, which is why one industrial example
+# makes the choice look settled. Try every candidate and keep whichever REPRODUCES our stored
+# values — the same principle that makes bank ("Interest Earned") layouts safe (§53, §60c).
+# ★ BANKS GET A DIFFERENT SCHEMA ENTIRELY — not a different label, a different TABLE. Measured
+# 2026-08-11 on ALBK/CORPBANK/DENABANK/SYNDIBANK/VIJAYABANK: the bank payload has NO
+# "Net Sales/Income from operations", NO "Total Income From Operations" and — despite the name being
+# the obvious guess — NO "Interest Earned" row either. It itemises interest income instead, and our
+# stored revenue is their SUM. So the row we need is DERIVED, not served:
+#     Interest Earned = (a) Int./Disc. on Adv/Bills + (b) Income on Investment
+#                       + (c) Int. on balances With RBI + others
+# Reproduction against our own store, 269 overlapping quarters: ALBK 56/58, CORPBANK 62/62,
+# DENABANK 43/43, SYNDIBANK 51/51, VIJAYABANK 54/55 — exact to the paisa. Before this the entire
+# bank class was refused with "no candidate row reproduces", which reads like a wrong-company map
+# (§49) and is really a schema we had never looked at.
+# It is still scored like every other candidate, never assumed: a company only gets this row if the
+# sum reproduces its stored quarters better than the served rows do.
+BANK_COMPONENTS = ("(a) Int. /Disc. on Adv/Bills", "(b) Income on Investment",
+                   "(c) Int. on balances With RBI", "others")
+DERIVED_INTEREST = "Interest Earned (derived: sum of bank interest components)"
+REV_ROWS = ("Net Sales/Income from operations", "Total Income From Operations", "Interest Earned",
+            DERIVED_INTEREST)
+REV_ROW = REV_ROWS[0]
+
+
+def row_value(row, label):
+    """The value of `label` in a payload row, computing the derived bank row when asked for it."""
+    if label == DERIVED_INTEREST:
+        parts = [num(row.get(c)) for c in BANK_COMPONENTS]
+        if any(p is None for p in parts):
+            return None
+        return sum(parts)
+    return num(row.get(label))
+
+
 MON = {"Jan": 3, "Feb": 3, "Mar": 3, "Apr": 6, "May": 6, "Jun": 6,
        "Jul": 9, "Aug": 9, "Sep": 9, "Oct": 12, "Nov": 12, "Dec": 12}
 LAST = {3: 31, 6: 30, 9: 30, 12: 31}
 # the gate
 NEED_MATCH = 3
+NEED_LOCAL = 3
+LOCAL_WIN = 6
+MAX_GLOBAL_BAD = 0.15
 TOL_ABS, TOL_REL = 0.05, 0.002
 
 
@@ -134,30 +187,78 @@ def num(s):
     return -v if neg else v
 
 
-def resolve_code(sym, codes):
-    """MC sc_id for an NSE symbol, VERIFIED against the row's own symbol field (§49)."""
-    if sym in codes:
-        return codes[sym]
-    body = get(SEARCH % sym)
+def _search_for(query, want):
+    """One search request for `query`, returning the sc_id whose row carries symbol `want` (§49).
+
+    ★ THE QUERY MUST BE URL-ENCODED. It was not, and an ampersand in a symbol ENDS the query
+    parameter: `?query=M&M` asks the endpoint for "M" and passes a stray `M` alongside. It fails
+    SILENTLY — 13 perfectly plausible rows come back for "M", none of them Mahindra, and the symbol
+    gets written off as having no Moneycontrol page. Measured 2026-08-11: M&M unencoded -> no match,
+    encoded -> sc_id MM; J&KBANK -> JKB. Ten symbols in the store carry an ampersand."""
+    body = get(SEARCH % urllib.parse.quote(query, safe=""))
     try:
         rows = json.loads(body)
     except Exception:
-        codes[sym] = None
         return None
-    want = sym.upper()
     for r in rows:
         # pdt_dis_nm looks like: NAME<span>ISIN, NSESYMBOL, BSECODE</span>
         blob = re.sub(r"<[^>]+>", " ", r.get("pdt_dis_nm", "") or "")
         toks = [t.strip().upper() for t in re.split(r"[,\s]+", blob) if t.strip()]
         if want in toks or (r.get("stock_name", "") or "").upper() == want:
-            codes[sym] = r.get("sc_id")
-            return codes[sym]
+            return r.get("sc_id")
+    return None
+
+
+def resolve_code(sym, codes, renames=None, retry_negative=False):
+    """MC sc_id for an NSE symbol, VERIFIED against the row's own symbol field (§49).
+
+    Tries, in order: the symbol as stored; its HTML-unescaped form (our store holds double-escaped
+    variants like `M&AMP;M` and `IL&AMP;FSENGG`, symbols no exchange ever listed); and the symbol it
+    was RENAMED to, because Moneycontrol indexes a company under its CURRENT ticker and a merged-away
+    symbol is simply not there (TUBEINVEST -> TIINDIA, AMARAJABAT -> ARE&M). 50 of the 212 written-off
+    symbols are in scripts/_rename_map.json.
+
+    ⚠️ A NEGATIVE IS CACHED BUT NOT PERMANENT. `codes[sym] = None` used to end the story forever, so
+    one rate-limited minute wrote a symbol off for good — the same "an empty body is a run-time
+    condition, not evidence" rule (§0/§55a) the series fetchers already respect. Pass
+    retry_negative=True to re-attempt everything previously written off."""
+    if sym in codes and (codes[sym] is not None or not retry_negative):
+        return codes[sym]
+    want = sym.upper()
+    tried = []
+    for q in (sym, html_lib.unescape(sym.replace("&AMP;", "&")), (renames or {}).get(sym)):
+        if not q or q in tried:
+            continue
+        tried.append(q)
+        code = _search_for(q, want if q == sym else q.upper())
+        if code:
+            codes[sym] = code
+            return code
+        _jitter(0.3, 0.7)
     codes[sym] = None
     return None
 
 
-def series(code, basis, limit=200):
-    """{qe: revenue} from Moneycontrol, cached on disk.
+def series_raw(code, basis, limit=200):
+    """The RAW row dicts. The payload carries the WHOLE P&L, not just revenue, so PAT,
+    minority interest, EPS and equity capital come free from the same cached response —
+    the revenue pass originally threw all of that away."""
+    os.makedirs(CACHE, exist_ok=True)
+    p = os.path.join(CACHE, "%s_%s_%d.json" % (code, basis, limit))
+    if os.path.exists(p) and os.path.getsize(p) > 200:
+        raw = open(p, encoding="utf8").read()
+    else:
+        raw = get(FEED % (code, FMT[basis], limit))
+        if raw and len(raw) > 200:
+            open(p, "w", encoding="utf8").write(raw)
+    try:
+        return (json.loads(raw).get("data") or [])
+    except Exception:
+        return []
+
+
+def series(code, basis, limit=200, ours=None):
+    """({qe: revenue}, row_label) from Moneycontrol, cached on disk.
 
     ⚠️ `limit` IS A SILENT CAP, AND THE RESPONSE MIRRORS IT. The payload's `count` echoes whatever
     you asked for, so a truncated series reads as the site's own reach when it is really your own
@@ -183,20 +284,40 @@ def series(code, basis, limit=200):
         if raw and len(raw) > 200:
             open(p, "w", encoding="utf8").write(raw)
     try:
-        d = json.loads(raw)
+        rows = json.loads(raw).get("data") or []
     except Exception:
-        return {}
-    out = {}
-    for row in d.get("data") or []:
-        qe = qe_of(row.get("yrc0"))
-        v = num(row.get(REV_ROW))
-        if qe and v is not None:
-            out[qe] = v
-    return out
+        return {}, None
+    best, best_label, best_score = {}, None, -1
+    for label in REV_ROWS:
+        cand = {}
+        for row in rows:
+            qe = qe_of(row.get("yrc0"))
+            v = row_value(row, label)          # DERIVED_INTEREST is computed, not served
+            if qe and v is not None:
+                cand[qe] = v
+        if not cand:
+            continue
+        score = sum(1 for qe, v in (ours or {}).items()
+                    if qe in cand and abs(cand[qe] - v) <= max(TOL_ABS, TOL_REL * max(abs(v), abs(cand[qe]))))
+        if score > best_score:
+            best, best_label, best_score = cand, label, score
+    return best, best_label
 
 
-def gate(mc, ours):
-    """(ok, matched, disagreements). §60c: >=3 reproduced, ZERO disagreements."""
+def shift_q(qe, n):
+    """The quarter-end n quarters BEFORE qe (negative n = after)."""
+    y, m = qe // 10000, (qe // 100) % 100
+    i = y * 4 + {3: 0, 6: 1, 9: 2, 12: 3}[m] - n
+    yy, r = divmod(i, 4)
+    mm = [3, 6, 9, 12][r]
+    return yy * 10000 + mm * 100 + LAST[mm]
+
+
+def gate(mc, ours, target=None):
+    """(ok, matched, disagreements, why) — the series must be right WHERE WE READ.
+
+    A global zero-disagreement rule refuses a cell with a dozen exact local anchors over one miss
+    years away, and those distant misses are usually OUR bad cells."""
     match, bad = [], []
     for qe, v in sorted(ours.items()):
         if qe not in mc:
@@ -205,7 +326,21 @@ def gate(mc, ours):
             match.append(qe)
         else:
             bad.append((qe, v, mc[qe]))
-    return (len(match) >= NEED_MATCH and not bad), match, bad
+    n = len(match) + len(bad)
+    if len(match) < NEED_MATCH:
+        return False, match, bad, "only %d anchors" % len(match)
+    if n and len(bad) / float(n) > MAX_GLOBAL_BAD:
+        return False, match, bad, "global disagreement %d/%d" % (len(bad), n)
+    if target is not None:
+        lo, hi = shift_q(target, LOCAL_WIN), shift_q(target, -LOCAL_WIN)
+        lb = [b for b in bad if lo <= b[0] <= hi]
+        lo_ok = [q for q in match if lo <= q <= hi]
+        if lb:
+            return False, match, bad, ("disagreement inside +/-%d quarters: %d ours %.2f vs mc %.2f"
+                                       % (LOCAL_WIN, lb[0][0], lb[0][1], lb[0][2]))
+        if len(lo_ok) < NEED_LOCAL:
+            return False, match, bad, "only %d anchors within +/-%d quarters" % (len(lo_ok), LOCAL_WIN)
+    return True, match, bad, "ok"
 
 
 def main():
@@ -257,20 +392,27 @@ def main():
             for qe in qlist:
                 skips["%s|%d|%s" % (sym, qe, basis)] = "no verified moneycontrol code for this symbol"
             continue
-        mc = series(code, basis)
+        # ★ `ours` MUST be built BEFORE series() — it is what series() scores the candidate row
+        # labels against, and it decides which revenue definition gets read. Passing an unset (or,
+        # worse, the PREVIOUS symbol's) `ours` was an UnboundLocalError on the first symbol of every
+        # run; had it not crashed it would have chosen this company's row using another company's
+        # anchors, which is the wrong-row defect (§85, SIEMENS: Net Sales 2753.3 vs Total Income
+        # 2825.9, both real rows in the same payload) arriving silently instead of loudly.
+        ours = {int(q): r[SLOT[basis]] for q, r in (revop.get(sym) or {}).items()
+                if len(r) > SLOT[basis] and r[SLOT[basis]] is not None}
+        mc, label = series(code, basis, ours=ours)
         _jitter()
         if not mc:
             for qe in qlist:
-                skips["%s|%d|%s" % (sym, qe, basis)] = "moneycontrol returned no %s series" % basis
+                skips["%s|%d|%s" % (sym, qe, basis)] = (
+                    "RETRYABLE empty %s series (run-time, not evidence)" % basis)
             continue
-        ours = {int(q): r[SLOT[basis]] for q, r in (revop.get(sym) or {}).items()
-                if r[SLOT[basis]] is not None}
-        ok, match, bad = gate(mc, ours)
+        ok, match, bad, why = gate(mc, ours)          # gate returns 4: (ok, match, bad, why)
         if not ok:
             for qe in qlist:
                 skips["%s|%d|%s" % (sym, qe, basis)] = (
-                    "GATE: %d of our stored quarters reproduced, %d disagreements%s"
-                    % (len(match), len(bad),
+                    "GATE(%s): %s — %d of our stored quarters reproduced, %d disagreements%s"
+                    % (label, why, len(match), len(bad),
                        (" e.g. %d ours %.2f vs mc %.2f" % bad[0]) if bad else ""))
             continue
         for qe in qlist:
@@ -284,7 +426,7 @@ def main():
                 skips[key] = "moneycontrol value %.2f is not a positive revenue" % v
                 continue
             fills[key] = {"rev": round(v, 2), "src": "moneycontrol appfeeds quarterly_results_responsive",
-                          "sc_id": code, "type_format": FMT[basis],
+                          "sc_id": code, "type_format": FMT[basis], "row_label": label,
                           "gate": "%d stored quarters reproduced, 0 disagreements" % len(match),
                           "gate_quarters": match[:8]}
             read += 1
@@ -304,7 +446,13 @@ def main():
         return
 
     applied = 0
+    held = 0
     for key, v in sorted(fills.items()):
+        # HELD by the con-fallback screen (§85): MC's consolidated table repeats the STANDALONE
+        # figure in quarters with no consolidated filing.
+        if v.get("held"):
+            held += 1
+            continue
         sym, qe_s, basis = key.split("|")
         row = (revop.get(sym) or {}).get(qe_s)
         if row is None or row[SLOT[basis]] is not None:

@@ -137,6 +137,39 @@ def apply_dv_fill(data):
     return n
 
 
+def apply_dv_overwrite(data):
+    """One-shot OVERWRITE ledger (scripts/dv_overwrite.json) for the §88b wrong-company delivery
+    cells — dv>0 values the fill-only ledgers can never reach. Each cell carries [old, new, vol];
+    a bar is rewritten only while it still matches BOTH anchors (dv == old ±0.011 AND v == vol,
+    the volume of the MTO row that adjudicated the cell), so the pass is idempotent (§87e-bis:
+    second run rewrites 0) and cannot touch a bar it did not adjudicate. Cells already at the
+    correct value count as done; anything else is LEFT ALONE and printed (silence lies, §38b)."""
+    p = os.path.join(HERE, "dv_overwrite.json")
+    if not os.path.exists(p): return 0
+    try:
+        cells = json.load(open(p)).get("cells", {})
+    except Exception as e:
+        print("dv_overwrite.json unreadable (%s) — skipped" % e, flush=True); return 0
+    n = done = left = 0
+    for sym, days in cells.items():
+        s = data.get(sym)
+        if not s:
+            left += len(days); continue
+        pos = {d: i for i, d in enumerate(s["d"])}
+        for ds, (oldv, newv, vol) in days.items():
+            i = pos.get(int(ds))
+            cur = s["dv"][i] if i is not None else None
+            if cur is None: left += 1
+            elif abs(cur - newv) <= 0.011: done += 1
+            elif abs(cur - oldv) <= 0.011 and s["v"][i] == vol:
+                s["dv"][i] = newv; n += 1
+            else: left += 1
+    if n or left:
+        print("dv_overwrite.json: %d cells overwritten, %d already correct, %d left alone (no matching bar)"
+              % (n, done, left), flush=True)
+    return n
+
+
 def fetch_day(d, j):
     cf = os.path.join(CACHE, d.strftime("%Y%m%d") + ".json")
     if os.path.exists(cf):
@@ -254,6 +287,7 @@ def main():
         canon = max(syms, key=lambda s: max(o[0] for o in acc[s]))   # latest-trading ticker = current
         for s in syms:
             if s != canon: rename_to[s] = canon
+    recycled_split = {}   # old_sym -> (target, cutoff_ymd): ticker RE-USED by a different company later
     try:                                                             # symchg.csv supplement (old,new)
         sc = os.path.join(HERE, "symchg.csv")
         if not os.path.exists(sc): sc = os.path.join(os.path.dirname(ROOT), "symchg.csv")
@@ -262,13 +296,42 @@ def main():
                 o2, n2 = r[1].strip().upper(), r[2].strip().upper()
                 if o2 in acc and o2 not in rename_to:
                     tgt = rename_to.get(n2, n2)
-                    if tgt in acc and tgt != o2: rename_to[o2] = tgt
+                    if tgt in acc and tgt != o2:
+                        # RECYCLED-TICKER GUARD (2026-08-11, the DVL/DTIL chimera, RUNBOOK §89).
+                        # The ISIN merge above is recycle-safe by construction; this dateless
+                        # (old,new) bridge is NOT: NSE re-issues old symbols to unrelated companies
+                        # (DTIL = Dhunseri Ventures until its 2010-07-26 rename, then Dhunseri Tea —
+                        # a DIFFERENT company, different ISIN — from 2015-01-20). If the old symbol
+                        # still has bars well past its own rename date it was recycled: merge only
+                        # the pre-cutoff bars into the chain and keep the later company under its
+                        # own key, OUT of _rename_map.json. Unparseable date -> old behavior.
+                        cutoff = None
+                        try:
+                            cd = datetime.datetime.strptime(r[3].strip().title(), "%d-%b-%Y").date()
+                            cutoff = int((cd + datetime.timedelta(days=45)).strftime("%Y%m%d"))
+                        except Exception:
+                            pass
+                        if cutoff and max(o[0] for o in acc[o2]) > cutoff:
+                            recycled_split[o2] = (tgt, cutoff)
+                            print("  RECYCLED TICKER %s: bars continue past its %s rename to %s — "
+                                  "merging only bars <= %d; the later listing keeps the key"
+                                  % (o2, r[3].strip(), tgt, cutoff), flush=True)
+                        else:
+                            rename_to[o2] = tgt
     except Exception as e:
         print("  (symchg.csv not loaded for merge: %s)" % e, flush=True)
-    if rename_to:
+    if rename_to or recycled_split:
         merged = {}
         for sym, obs in acc.items():
-            merged.setdefault(rename_to.get(sym, sym), []).extend(obs)
+            sp = recycled_split.get(sym)
+            if sp:
+                tgt, cutoff = sp
+                pre_obs = [o for o in obs if o[0] <= cutoff]
+                post_obs = [o for o in obs if o[0] > cutoff]
+                if pre_obs: merged.setdefault(tgt, []).extend(pre_obs)
+                if post_obs: merged.setdefault(sym, []).extend(post_obs)
+            else:
+                merged.setdefault(rename_to.get(sym, sym), []).extend(obs)
         for sym in merged:
             dd = {}
             for rec in sorted(merged[sym]): dd[rec[0]] = rec        # sort by date + dedup same-day overlap
