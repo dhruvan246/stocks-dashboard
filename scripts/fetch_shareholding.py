@@ -209,11 +209,17 @@ def save_shares(s):
 #   5. shp_fill_thirdparty.json.gz — THIRD-PARTY values, not parsed by us. Only for filings that have
 #      NO primary file anywhere (NSE lists them with a blank xbrl name). Every cell is tied to an
 #      exchange-side number before it is written; provenance names the source. Keep this list SHORT.
+#   6. shp_fill_bse_aspx.json.gz — BSE's OWN ShareholdingPattern.aspx (fetch_shp_bse_aspx.py,
+#      §22f 2026-08-11): Clause-35 pages Jun-2006..Sep-2015 (Flag=New) + the 1997 format
+#      Dec-2002..Mar-2006 (Flag=Old — ins is None there: it sits inside the Banks/FI/Insurance
+#      lump and 0.0 would be fabricated). sub-dates are the QE+21d convention. LAST in the list:
+#      every earlier ledger's cell (real dates, itemised ins) wins where both have a quarter.
 BSE_HIST_LEDGERS = [os.path.join(HERE, "shp_fill_thirdparty.json.gz"),
                     os.path.join(HERE, "shp_fill_nse_gaps.json.gz"),
                     os.path.join(HERE, "shp_fill_n500_gaps.json.gz"),
                     os.path.join(HERE, "shp_fill_hist_2016_2019.json.gz"),
-                    os.path.join(HERE, "shp_fill_hist_2010_2016.json.gz")]
+                    os.path.join(HERE, "shp_fill_hist_2010_2016.json.gz"),
+                    os.path.join(HERE, "shp_fill_bse_aspx.json.gz")]
 def apply_bse_hist_ledger(h):
     n_total = 0
     for path in BSE_HIST_LEDGERS:

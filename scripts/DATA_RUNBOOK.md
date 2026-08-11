@@ -1978,6 +1978,29 @@ along in their **`navigateurl`** field, which nobody followed:
 - **Frontier: 22,622 missing member-qtrs Dec-2002→Sep-2015 (seam excluded), 20,912 with a scripcode**
   (master status-blank + `_shp_scripcode_override`), 131 symbols / 1,710 cells unresolved (era names
   needing ISIN or an era scrip master — log as not-found-via, they are NOT closed).
+- **✅ HARVESTED AND APPLIED 2026-08-11 21:50 IST: +18,949 cells, coverage 51.8% → 91.7%.**
+  20,912 fetched in 5,145s at 5 workers; 18,949 passed every gate (90.6%); ledger
+  `scripts/shp_fill_bse_aspx.json.gz` (750 symbols), registered LAST in `BSE_HIST_LEDGERS` so every
+  real-dated ledger wins on overlap. History 67,592 → 86,541 cells. Year-wise after:
+  2002 **74.4%** · 2003-05 78-84% · 2006-09 80-88% · 2010-14 **89-93%** · 2015 81.5% · 2016+ unchanged.
+  **The whole pre-2010 era went 0% → 74-88%** — a wall three separate audits had recorded as sourceless.
+- **1,963 refusals logged to `scripts/_shp_aspx_rejects.json`** (not-found-via:bseaspx, §57 rule 2 —
+  OPEN, not closed): recon 790 (concentrated at **Jun-2006, the format-transition quarter**, which
+  refuses under BOTH flags), no-fii 580, absent 564, no-prom 26, zero-vs-neighbour 3.
+- **⚠️ A PASS THAT CHANGES ONLY PARSING MUST BE `--cache-only`.** The first recovery re-parse re-ran
+  the fetcher normally: >75 min elapsed for **45 s of CPU**. Every refusal was retrying the alternate
+  Flag whose page does not exist, and `fetch_page`'s 3-attempt backoff spends ~18 s per dead cell.
+  The same work from disk took **8 seconds** and recovered +213 cells (promoter-less complement + the
+  override-identity fix). **0.7% CPU over an hour is the tell that a job is sleeping, not working** —
+  check `ps -o time,%cpu` before trusting any long-run ETA.
+- **Identity-gate exception:** override-resolved rows carry `bname == ""`, and the aspx prints the
+  CURRENT registered name for era quarters (RUCHISOYA 2002 → "Patanjali Foods Ltd"), so the era-name
+  containment check must be SKIPPED for them — the override entry is itself the identity evidence.
+- **Promoter-less filers** (ITC/FEDERALBNK/HDFC class) print nothing in the 1997 promoter block;
+  prom is claimed as the complement ONLY when the two non-promoter Sub Totals close to 100 ±0.5.
+  SOUTHBANK/RIIL still refuse — they don't close, so they stay open rather than get a guessed 0.
+- Stock-page deep history (`shpH` in the per-stock fin slice) is rebuilt by `build_stock_fin.py` via
+  `refresh-stock-fin.yml`, so per-stock tables pick these quarters up on the next CI run, not at push.
 - Harvest → staging ledger → `_shp_merge_stage.py` flow (NEVER a direct shp_history write while the
   12:40/20:40 IST CI may run); after apply, re-run `audit_shp_coverage.py` + spot-verify LIVE.
 

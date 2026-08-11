@@ -142,11 +142,16 @@ def cmd_frontier(dirp):
 
 
 # ---------------------------------------------------------------- fetch + parse
+CACHE_ONLY = False        # recovery passes re-parse what is on disk; no network, no retry storms
+
+
 def fetch_page(dirp, code, qtrid, flag):
     cf = os.path.join(dirp, "cache", "%d_%d_%s.html.gz" % (code, qtrid, flag))
     if os.path.exists(cf):
         with gzip.open(cf, "rt", encoding="utf-8", errors="replace") as fh:
             return fh.read(), True
+    if CACHE_ONLY:
+        return None, False
     u = ("https://www.bseindia.com/corporates/ShareholdingPattern.aspx"
          "?scripcd=%d&flag_qtr=1&qtrid=%d.00&Flag=%s" % (code, qtrid, flag))
     for attempt in range(3):
@@ -272,6 +277,20 @@ def parse_old(html):
         _, v = val_after(r"^Sub\s*Total$", ip, inp)
         if v is not None: out["prom"] = v
     lo = inp if inp is not None else 0
+    # promoter-less filers (ITC/FEDERALBNK class): the promoter block prints nothing. The page
+    # still asserts prom≈0 arithmetically when the two non-promoter Sub Totals close to 100.
+    if out.get("prom") is None and inp is not None:
+        subs = []
+        for i in range(inp, len(cells)):
+            if re.fullmatch(r"Sub\s*Total", cells[i], re.I):
+                nums = []
+                for c2 in cells[i + 1:i + 4]:
+                    c2 = c2.replace(",", "").strip()
+                    if re.fullmatch(r"\d+(?:\.\d+)?", c2): nums.append(float(c2))
+                    else: break
+                if len(nums) >= 2: subs.append(nums[1])
+        if len(subs) >= 2 and 99.5 <= subs[0] + subs[1] <= 100.5:
+            out["prom"] = round(max(0.0, 100.0 - subs[0] - subs[1]), 2)
     _, v = val_after(r"^FIIS?\b", lo);                                out["fii"] = v
     _, v = val_after(r"Mutual Funds? and UTI", lo);                   out["mf"] = v
     _, v = val_after(r"Banks\s*,?\s*Financial Institutions?\s*,?\s*Insurance", lo); out["lump"] = v
@@ -285,27 +304,37 @@ def parse_old(html):
 
 
 def cell_of(fr, dirp, neigh=None):
-    """fetch + parse + derive one frontier cell -> (status, cell|None, detail)"""
-    code, q, qe, sym = fr["code"], fr["qtrid"], fr["qe"], fr["sym"]
-    flag_first = "New" if q >= 50 else "Old"
-    html, _ = fetch_page(dirp, code, q, flag_first)
-    used = flag_first
-    cols = nm = None
-    if html:
-        cols, nm = (parse_new if flag_first == "New" else parse_old)(html)
-    if cols is None:
-        flag2 = "Old" if flag_first == "New" else "New"
-        html2, _ = fetch_page(dirp, code, q, flag2)
-        if html2:
-            c2, nm2 = (parse_new if flag2 == "New" else parse_old)(html2)
-            if c2 is not None:
-                cols, nm, used, html = c2, nm2, flag2, html2
-    if cols is None:
-        return ("absent", None, "no category rows either flag")
+    """fetch + parse + derive one frontier cell -> (status, cell|None, detail).
+    Tries the era-appropriate Flag first; on ANY refusal (parse, identity, gate) tries the
+    other Flag — same filing, different render — and keeps the first attempt's verdict when
+    neither passes."""
+    first = "New" if fr["qtrid"] >= 50 else "Old"
+    verdict = None
+    for flag in (first, "Old" if first == "New" else "New"):
+        st, cell, det = _attempt(fr, dirp, neigh, flag)
+        if st == "ok":
+            return (st, cell, det)
+        if verdict is None or verdict[0] == "absent":
+            verdict = (st, cell, det)
+    return verdict
 
-    # identity: page company name vs ledger/master name (era renames make this fuzzy — containment)
+
+def _attempt(fr, dirp, neigh, used):
+    code, q, qe, sym = fr["code"], fr["qtrid"], fr["qe"], fr["sym"]
+    html, _ = fetch_page(dirp, code, q, used)
+    if not html:
+        return ("absent", None, "no page under Flag=%s" % used)
+    cols, nm = (parse_new if used == "New" else parse_old)(html)
+    if cols is None:
+        return ("absent", None, "no category rows Flag=%s" % used)
+
+    # identity: page company name vs ledger/master name (era renames make this fuzzy —
+    # containment). Override-resolved rows (bname == "") carry per-entry evidence in
+    # _shp_scripcode_override.json and the aspx prints the CURRENT registered name for era
+    # quarters (RUCHISOYA 2002 -> "Patanjali Foods Ltd"), so the era-name gate must not apply.
     pn, ln, bn = norm_name(nm), norm_name(fr.get("lname")), norm_name(fr.get("bname"))
-    if pn and (ln or bn) and not (ln and (ln in pn or pn in ln)) and not (bn and (bn in pn or pn in bn)):
+    if fr.get("bname") != "" and pn and (ln or bn) \
+            and not (ln and (ln in pn or pn in ln)) and not (bn and (bn in pn or pn in bn)):
         return ("identity", None, "page='%s' vs '%s'/'%s'" % (nm, fr.get("lname"), fr.get("bname")))
 
     sub = (datetime.date(*map(int, qe.split("-"))) + datetime.timedelta(days=LAG_DAYS)).isoformat()
@@ -378,7 +407,7 @@ def run(dirp, front, workers, tag):
         for qe, v in qs.items():
             if isinstance(v, list) and len(v) > 1 and v[1] is not None:
                 neigh[(s, qe)] = v[1]
-    res, stats = {}, Counter()
+    res, stats, rejects = {}, Counter(), {}
     t0 = time.time()
 
     def one(fr):
@@ -387,15 +416,20 @@ def run(dirp, front, workers, tag):
             stats[st] += 1
             if st == "ok":
                 res.setdefault(fr["sym"], {})[fr["qe"]] = cell
-            elif stats[st] <= 8:
-                print("  [%s] %s %s: %s" % (st, fr["sym"], fr["qe"], det), flush=True)
-        time.sleep(0.4)
+            else:
+                rejects["%s|%s" % (fr["sym"], fr["qe"])] = "%s: %s" % (st, det)
+                if stats[st] <= 8:
+                    print("  [%s] %s %s: %s" % (st, fr["sym"], fr["qe"], det), flush=True)
+        if not CACHE_ONLY:
+            time.sleep(0.4)
 
     with ThreadPoolExecutor(max_workers=workers) as ex:
         list(ex.map(one, front))
     n = sum(len(v) for v in res.values())
     print("\n%s: %d cells parsed OK of %d fetched in %.0fs — %s"
           % (tag, n, len(front), time.time() - t0, dict(stats)), flush=True)
+    json.dump(rejects, open(os.path.join(dirp, "rejects.json"), "w"), indent=0)
+    print("rejects -> rejects.json (%d cells, not-found-via:bseaspx)" % len(rejects), flush=True)
 
     # overlap gate: everything we parsed that ALREADY exists in the ledger must reproduce
     diffs = []
@@ -419,7 +453,11 @@ def main():
     ap.add_argument("n", nargs="?", type=int, default=60)
     ap.add_argument("--dir", default=HERE)
     ap.add_argument("--workers", type=int, default=4)
+    ap.add_argument("--cache-only", action="store_true",
+                    help="re-parse pages already on disk; never fetch (recovery passes)")
     a = ap.parse_args()
+    global CACHE_ONLY
+    CACHE_ONLY = a.cache_only
     os.makedirs(os.path.join(a.dir, "cache"), exist_ok=True)
     if a.cmd == "frontier":
         cmd_frontier(a.dir); return
@@ -452,7 +490,7 @@ def main():
         res, stats, diffs = run(a.dir, front, a.workers, "HARVEST")
         out = os.path.join(a.dir, "shp_fill_bse_aspx.json.gz")
         with gzip.open(out, "wt", encoding="utf-8") as fh:
-            json.dump(res, fh)
+            json.dump({"_built": "fetch_shp_bse_aspx harvest", "fills": res}, fh)
         print("ledger -> %s  (%d syms, %d cells)" % (out, len(res), sum(len(v) for v in res.values())))
 
 
