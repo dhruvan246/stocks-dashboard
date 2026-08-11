@@ -1,0 +1,306 @@
+# -*- coding: utf-8 -*-
+"""MONEYCONTROL quarterly results — the deep-history second reader §60f demands  (found 2026-08-11)
+
+WHY THIS EXISTS. §82a measured every free aggregator as keeping only a TRAILING WINDOW of quarterly
+data (screener ~13 quarters, tickertape 10). Moneycontrol is the exception, and its endpoint is not
+guessable — it lives on a different host and is only visible in the browser's network tab:
+
+    https://appfeeds.moneycontrol.com/jsonapi/stocks/quarterly_results_responsive
+        ?sc_id=<MC code>&type_format=<quarterly|cons_quarterly>&start=0&limit=60
+
+    type_format=quarterly       -> STANDALONE      type_format=cons_quarterly -> CONSOLIDATED
+
+Measured on DLF (sc_id D04): **60 quarters back to Sep 2011**, at FILING PRECISION, under the row
+label `Net Sales/Income from operations` — our exact basis, not "total income". DLF Mar-2019 comes
+back 2,500.43 where the §60d screener-annual derivation had produced 2,500.34; the 0.09 difference
+is precisely the crore-rounding of screener's annual total, so Moneycontrol both CONFIRMS that
+derivation and REFINES it (§60e's refinement step, satisfied by a second reader rather than a PDF).
+
+⚠️ SYMBOL RESOLUTION IS THE DANGEROUS STEP (§49 wrong-map poison, one layer up). MC codes are opaque
+("D04" for DLF) and a guessed code returns a perfectly plausible page for the WRONG company. Resolve
+through MC's own search and then VERIFY the row's NSE symbol before trusting a single number:
+
+    moneycontrol.com/mccode/common/autosuggestion_solr.php?classic=true&query=<SYM>&type=1&format=json
+
+★ THE GATE (§60c's rule, applied to this source). A Moneycontrol number is never written on its own
+authority. Its series must reproduce values we ALREADY store on the SAME basis: at least 3 matches
+and ZERO disagreements. One disagreement means a different entity or a different basis, and the
+WHOLE series is rejected — never cherry-pick the one cell you wanted. That is what caught TMPV for
+screener and it applies here unchanged.
+
+Ledgers: scripts/mc_quarterly_fills.json (tracked, per-cell provenance + the gate evidence),
+scripts/fill2020_tools/_mc_skips.json (refusals).
+
+Run:  python -X utf8 scripts/fill2020_tools/mc_quarterly_fetch.py [--only SYM,SYM] [--qes 20190331,...] [--apply]
+"""
+import json
+import os
+import re
+import subprocess
+import sys
+import time
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+SCRIPTS = os.path.dirname(HERE)
+ROOT = os.path.dirname(SCRIPTS)
+
+REVOP = os.path.join(ROOT, "docs", "sf_revop.json")
+LEDGER = os.path.join(SCRIPTS, "revop_fundamentals.json")
+FILLS = os.path.join(SCRIPTS, "mc_quarterly_fills.json")
+SKIPS = os.path.join(HERE, "_mc_skips.json")
+CODES = os.path.join(HERE, "_mc_codes.json")
+CACHE = os.path.join(SCRIPTS, "_mc_qcache")
+
+UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+      "(KHTML, like Gecko) Chrome/126 Safari/537.36")
+FEED = ("https://appfeeds.moneycontrol.com/jsonapi/stocks/quarterly_results_responsive"
+        "?sc_id=%s&type_format=%s&start=0&limit=%d")
+SEARCH = ("https://www.moneycontrol.com/mccode/common/autosuggestion_solr.php"
+          "?classic=true&query=%s&type=1&format=json")
+FMT = {"std": "quarterly", "con": "cons_quarterly"}
+SLOT = {"std": 0, "con": 1}
+REV_ROW = "Net Sales/Income from operations"
+MON = {"Jan": 3, "Feb": 3, "Mar": 3, "Apr": 6, "May": 6, "Jun": 6,
+       "Jul": 9, "Aug": 9, "Sep": 9, "Oct": 12, "Nov": 12, "Dec": 12}
+LAST = {3: 31, 6: 30, 9: 30, 12: 31}
+# the gate
+NEED_MATCH = 3
+TOL_ABS, TOL_REL = 0.05, 0.002
+
+
+# ---------------------------------------------------------------------------------------------
+# RATE DISCIPLINE. One request per (symbol, basis) already returns ALL 60 quarters, so a company's
+# four open cells cost ONE fetch, and every response is cached on disk so re-runs cost nothing.
+# What remains is being unhurried and noticing a block instead of hammering through it: serial
+# requests, a jittered pause between them, exponential backoff on failure, and a consecutive-failure
+# tripwire that sleeps long rather than burning the endpoint. Same family as §0's rule that an empty
+# body is a run-time condition (rate limiting), never evidence about the data.
+# ---------------------------------------------------------------------------------------------
+PAUSE_LO, PAUSE_HI = 0.7, 1.6      # between symbols
+_state = {"consec_fail": 0}
+
+
+def _jitter(lo=PAUSE_LO, hi=PAUSE_HI):
+    import random
+    time.sleep(lo + random.random() * (hi - lo))
+
+
+def get(url, tries=4):
+    for i in range(tries):
+        try:
+            out = subprocess.run(
+                ["curl", "-s", "-L", "--max-time", "30", "--compressed", "-A", UA,
+                 "-H", "Referer: https://www.moneycontrol.com/",
+                 "-H", "Accept: application/json, text/plain, */*",
+                 "-H", "Accept-Language: en-GB,en;q=0.9",
+                 "-H", "Connection: keep-alive", url],
+                capture_output=True, text=True, timeout=45).stdout
+            if out and out.strip() and not out.lstrip().startswith("<"):
+                _state["consec_fail"] = 0
+                return out
+        except Exception:
+            pass
+        time.sleep(2.0 * (2 ** i))                       # 2s, 4s, 8s, 16s
+    _state["consec_fail"] += 1
+    if _state["consec_fail"] >= 3:                       # tripwire: back right off
+        print("   ...3 consecutive failures — pausing 60s before continuing", flush=True)
+        time.sleep(60)
+        _state["consec_fail"] = 0
+    return ""
+
+
+def qe_of(tok):
+    """"Mar '19" -> 20190331. Returns None for anything not a quarter label."""
+    m = re.match(r"([A-Za-z]{3})\s*'\s*(\d{2})", (tok or "").strip())
+    if not m or m.group(1).title() not in MON:
+        return None
+    mo = MON[m.group(1).title()]
+    y = 2000 + int(m.group(2))
+    return y * 10000 + mo * 100 + LAST[mo]
+
+
+def num(s):
+    if s is None:
+        return None
+    s = str(s).replace(",", "").strip()
+    if not s or s in ("--", "-", ""):
+        return None
+    neg = s.startswith("(") and s.endswith(")")
+    s = s.strip("()")
+    try:
+        v = float(s)
+    except ValueError:
+        return None
+    return -v if neg else v
+
+
+def resolve_code(sym, codes):
+    """MC sc_id for an NSE symbol, VERIFIED against the row's own symbol field (§49)."""
+    if sym in codes:
+        return codes[sym]
+    body = get(SEARCH % sym)
+    try:
+        rows = json.loads(body)
+    except Exception:
+        codes[sym] = None
+        return None
+    want = sym.upper()
+    for r in rows:
+        # pdt_dis_nm looks like: NAME<span>ISIN, NSESYMBOL, BSECODE</span>
+        blob = re.sub(r"<[^>]+>", " ", r.get("pdt_dis_nm", "") or "")
+        toks = [t.strip().upper() for t in re.split(r"[,\s]+", blob) if t.strip()]
+        if want in toks or (r.get("stock_name", "") or "").upper() == want:
+            codes[sym] = r.get("sc_id")
+            return codes[sym]
+    codes[sym] = None
+    return None
+
+
+def series(code, basis, limit=60):
+    """{qe: revenue} from Moneycontrol, cached on disk."""
+    os.makedirs(CACHE, exist_ok=True)
+    p = os.path.join(CACHE, "%s_%s.json" % (code, basis))
+    if os.path.exists(p) and os.path.getsize(p) > 200:
+        raw = open(p, encoding="utf8").read()
+    else:
+        raw = get(FEED % (code, FMT[basis], limit))
+        if raw and len(raw) > 200:
+            open(p, "w", encoding="utf8").write(raw)
+    try:
+        d = json.loads(raw)
+    except Exception:
+        return {}
+    out = {}
+    for row in d.get("data") or []:
+        qe = qe_of(row.get("yrc0"))
+        v = num(row.get(REV_ROW))
+        if qe and v is not None:
+            out[qe] = v
+    return out
+
+
+def gate(mc, ours):
+    """(ok, matched, disagreements). §60c: >=3 reproduced, ZERO disagreements."""
+    match, bad = [], []
+    for qe, v in sorted(ours.items()):
+        if qe not in mc:
+            continue
+        if abs(mc[qe] - v) <= max(TOL_ABS, TOL_REL * max(abs(v), abs(mc[qe]))):
+            match.append(qe)
+        else:
+            bad.append((qe, v, mc[qe]))
+    return (len(match) >= NEED_MATCH and not bad), match, bad
+
+
+def main():
+    argv = sys.argv
+    only = set(argv[argv.index("--only") + 1].split(",")) if "--only" in argv else None
+    qes = set(int(x) for x in argv[argv.index("--qes") + 1].split(",")) if "--qes" in argv \
+        else {20190331, 20190630, 20190930, 20191231}
+    apply_it = "--apply" in argv
+
+    revop = json.load(open(REVOP))
+    ledger = json.load(open(LEDGER))
+    # OWN targets file: _rev2020_targets.json is a single tracked file that every campaign
+    # writes, and the concurrent 2018 session now owns it (it holds 2018 quarters). Sharing it
+    # means silently running someone else's worklist — keep a separate one.
+    targets = json.load(open(os.path.join(HERE, "_rev2019_targets.json")))
+    fills = json.load(open(FILLS)) if os.path.exists(FILLS) else {}
+    skips = json.load(open(SKIPS)) if os.path.exists(SKIPS) else {}
+    codes = json.load(open(CODES)) if os.path.exists(CODES) else {}
+
+    want = []
+    for sym, t in sorted(targets.items()):
+        if only and sym not in only:
+            continue
+        for basis, field in (("std", "revS"), ("con", "revC")):
+            for qe in t[field]:
+                if qe not in qes:
+                    continue
+                row = (revop.get(sym) or {}).get(str(qe))
+                if row is not None and row[SLOT[basis]] is not None:
+                    continue
+                want.append((sym, qe, basis))
+    print("open target cells: %d across %d symbols" % (want and len(want) or 0,
+                                                       len({s for s, _, _ in want})), flush=True)
+
+    read = 0
+    by_sym = {}
+    for sym, qe, basis in want:
+        by_sym.setdefault((sym, basis), []).append(qe)
+
+    for n, ((sym, basis), qlist) in enumerate(sorted(by_sym.items()), 1):
+        pre = sym in codes
+        code = resolve_code(sym, codes)
+        if not pre:
+            _jitter(0.4, 0.9)                # the search call is a second request
+        if not code:
+            for qe in qlist:
+                skips["%s|%d|%s" % (sym, qe, basis)] = "no verified moneycontrol code for this symbol"
+            continue
+        mc = series(code, basis)
+        _jitter()
+        if not mc:
+            for qe in qlist:
+                skips["%s|%d|%s" % (sym, qe, basis)] = "moneycontrol returned no %s series" % basis
+            continue
+        ours = {int(q): r[SLOT[basis]] for q, r in (revop.get(sym) or {}).items()
+                if r[SLOT[basis]] is not None}
+        ok, match, bad = gate(mc, ours)
+        if not ok:
+            for qe in qlist:
+                skips["%s|%d|%s" % (sym, qe, basis)] = (
+                    "GATE: %d of our stored quarters reproduced, %d disagreements%s"
+                    % (len(match), len(bad),
+                       (" e.g. %d ours %.2f vs mc %.2f" % bad[0]) if bad else ""))
+            continue
+        for qe in qlist:
+            key = "%s|%d|%s" % (sym, qe, basis)
+            if qe not in mc:
+                skips[key] = "series passed the gate but has no row for %d (oldest %d)" % (
+                    qe, min(mc) if mc else 0)
+                continue
+            v = mc[qe]
+            if v <= 0:
+                skips[key] = "moneycontrol value %.2f is not a positive revenue" % v
+                continue
+            fills[key] = {"rev": round(v, 2), "src": "moneycontrol appfeeds quarterly_results_responsive",
+                          "sc_id": code, "type_format": FMT[basis],
+                          "gate": "%d stored quarters reproduced, 0 disagreements" % len(match),
+                          "gate_quarters": match[:8]}
+            read += 1
+            print("%-13s %d %-3s rev %-11.2f  (gate %d matched)" % (sym, qe, basis, v, len(match)),
+                  flush=True)
+        if n % 10 == 0:
+            json.dump(fills, open(FILLS, "w"), indent=1, sort_keys=True)
+            json.dump(skips, open(SKIPS, "w"), indent=0, sort_keys=True)
+            json.dump(codes, open(CODES, "w"), indent=1, sort_keys=True)
+
+    json.dump(fills, open(FILLS, "w"), indent=1, sort_keys=True)
+    json.dump(skips, open(SKIPS, "w"), indent=0, sort_keys=True)
+    json.dump(codes, open(CODES, "w"), indent=1, sort_keys=True)
+    print("\nREAD %d cells (%d ledgered)" % (read, len(fills)))
+    if not apply_it:
+        print("(dry run — ledgers written, data files untouched. Re-run with --apply)")
+        return
+
+    applied = 0
+    for key, v in sorted(fills.items()):
+        sym, qe_s, basis = key.split("|")
+        row = (revop.get(sym) or {}).get(qe_s)
+        if row is None or row[SLOT[basis]] is not None:
+            continue
+        row[SLOT[basis]] = v["rev"]
+        applied += 1
+        lr = ledger.setdefault(sym, {}).get(qe_s)
+        if lr is None:
+            ledger[sym][qe_s] = list(row)
+        elif lr[SLOT[basis]] is None:
+            lr[SLOT[basis]] = v["rev"]
+    json.dump(revop, open(REVOP, "w"), separators=(",", ":"))
+    json.dump(ledger, open(LEDGER, "w"), separators=(",", ":"))
+    print("APPLIED %d cells" % applied)
+
+
+if __name__ == "__main__":
+    main()
