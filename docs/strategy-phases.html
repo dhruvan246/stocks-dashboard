@@ -125,13 +125,12 @@
       const b=vp.querySelector('.vcard[data-v="'+v+'"]'); if(b){ b.dataset.off = r.ok?'':'1'; paintPills(); }}).catch(()=>{});});
 
   function buildCards(){
-    const DEFS = [
-      { key:'full', title:'Entire cycle',      sub:P[0].start+' → '+P[0].end, big:()=>C[cards.full[0]].p[0][0].toFixed(1)+'% CAGR' },
-      { key:'w1',   title:'Covid → Sep-21',    sub:P[1].start+' → '+P[1].end, big:()=>fmtTot(C[cards.w1[0]].p[1][1]) },
-      { key:'w2',   title:'Mar-23 → Sep-24',   sub:P[2].start+' → '+P[2].end, big:()=>fmtTot(C[cards.w2[0]].p[2][1]) },
-      { key:'w3',   title:'Mar-26 → today',    sub:P[3].start+' → '+P[3].end, big:()=>fmtTot(C[cards.w3[0]].p[3][1]) },
-      { key:'all4', title:'⭐ Best in ALL 4',  sub:'consistency ranking',     big:()=>'Top 100' },
-    ];
+    // Built FROM R.phases, not hardcoded — adding a phase to the build script (the 2018-20 bear
+    // window, 2026-08-11) must not require editing the page. Phase 0 is the whole cycle and shows
+    // CAGR; every later phase is a slice and shows total return.
+    const DEFS = P.map((p,i)=>({ key:p.key, title:p.card||p.label, sub:p.start+' → '+p.end,
+        big:()=> i===0 ? C[cards[p.key][0]].p[0][0].toFixed(1)+'% CAGR' : fmtTot(C[cards[p.key][0]].p[i][1]) }))
+      .concat([{ key:'all4', title:'⭐ Best in ALL '+P.length, sub:'consistency ranking', big:()=>'Top 100' }]);
     document.getElementById('cards').innerHTML = DEFS.map(d=>'<div class="pcard" data-k="'+d.key+'" role="button" tabindex="0">'+
         '<div class="t">'+d.title+'</div><div class="v pos">'+d.big()+'</div><div class="s">'+d.sub+'</div></div>').join('') +
       '<div class="pcard info"><div class="t">Nifty 500 benchmark</div><div class="v">'+P[0].bench.cagr.toFixed(1)+'% <span class="text-[12px] font-semibold">CAGR full cycle</span></div>'+
@@ -177,7 +176,8 @@
   }
   function headFor(k){
     const base = k==='all4'
-      ? [['rk','#'],['worst','Worst rank'],['r0','Full CAGR %'],['r1','Covid tot %'],['r2','23-24 tot %'],['r3','26 tot %'],['dd','Full DD %']]
+      ? [['rk','#'],['worst','Worst rank']].concat(
+          P.map((p,i)=>['r'+i, i===0 ? 'Full CAGR %' : (p.short||p.key)+' tot %']), [['dd','Full DD %']])
       : k==='allY'
         ? [['rk','#'],['worst','Worst yr rank'],['dd','Full DD %']].concat(YRS.map((y,j)=>['y'+j,"’"+y.key.slice(3)+' %']))
         : k==='full'
@@ -197,7 +197,8 @@
     if(col==='fam')return famOf(r.c); if(col==='f')return r.c.f;
     if(r.yr&&col[0]==='y'){ return r.yr[+col.slice(1)]; }
     if(r.y){ return col==='tot'?r.y.tot:col==='cg'?r.y.cg:col==='dd'?r.y.dd:r.y.win; }
-    if(k==='all4'){ const m={r0:r.c.p[0][0],r1:r.c.p[1][1],r2:r.c.p[2][1],r3:r.c.p[3][1],dd:r.c.p[0][2]}; return m[col]; }
+    if(k==='all4'){ if(col==='dd') return r.c.p[0][2];
+      const i=+col.slice(1); return i===0 ? r.c.p[0][0] : r.c.p[i][1]; }
     const pi = PI[k]||0;
     const ph=r.c.p[pi];
     return col==='r0'?ph[0]:col==='cg'?ph[0]:col==='tot'?ph[1]:col==='dd'?ph[2]:ph[3];
@@ -215,17 +216,20 @@
         if(ck==='fam')return '<td><span class="fam">'+esc(famOf(r.c))+'</span></td>';
         if(ck==='f')return '<td class="mono" style="font-size:12px">'+esc(r.c.f)+'</td>';
         let v=valOf(r,cur,ck), txt;
+        // r1..rN are per-phase TOTAL returns (any phase count); r0 is the full-cycle CAGR.
+        const isPhaseTot = cur==='all4' && /^r[1-9][0-9]*$/.test(ck);
         if(ck==='rk'||ck==='worst')txt=v.toLocaleString('en-IN');
-        else if(ck==='tot'||ck==='r1'||ck==='r2'||ck==='r3'||(cur==='allY'&&ck[0]==='y'))txt=fmtTot(v);
+        else if(ck==='tot'||isPhaseTot||(cur==='allY'&&ck[0]==='y'))txt=fmtTot(v);
         else txt=v.toFixed(1);
-        const cls=(ck==='dd'&&v>35)?' warn':((ck==='tot'||ck==='r0'||ck==='cg'||(cur==='allY'&&ck[0]==='y'&&v<0))?(v<0?' warn':' pos font-semibold'):'');
+        // A bear phase makes negative phase returns real, so colour them like the year columns.
+        const cls=(ck==='dd'&&v>35)?' warn':((ck==='tot'||ck==='r0'||ck==='cg'||isPhaseTot||(cur==='allY'&&ck[0]==='y'&&v<0))?(v<0?' warn':' pos font-semibold'):'');
         return '<td class="num mono'+cls+'">'+txt+'</td>';});
       return '<tr>'+cells.join('')+'</tr>';}).join('');
     document.getElementById('count').textContent = rows.length.toLocaleString('en-IN')+' strategies'+(needle?' · matching "'+needle+'"':'');
     document.querySelectorAll('.pcard[data-k]').forEach(el=>el.classList.toggle('on',el.dataset.k===cur));
     const Y=yearOf(cur), pi=PI[cur]||0;
     document.getElementById('foot').textContent = cur==='all4'
-      ? 'Worst rank = a strategy’s poorest rank across the 4 phases (out of 44.4 lakh). Lower = consistently elite. Total-% columns are absolute returns for each phase. All rows: '+basketDesc()+'.'
+      ? 'Worst rank = a strategy’s poorest rank across the '+P.length+' phases (out of 44.4 lakh). Lower = consistently elite. Total-% columns are absolute returns for each phase — the 2018-20 bear phase is the only one that is not carved out of the post-Covid bull run, so it is where most “consistent” strategies fall apart. All rows: '+basketDesc()+'.'
       : cur==='allY'
       ? 'Worst yearly rank = a strategy’s poorest rank across all '+YRS.length+' calendar years (out of 44.4 lakh). Year columns are absolute total returns. All rows: '+basketDesc()+'.'
       : Y ? 'Year '+Y.start+' → '+Y.end+' ('+Y.years+'y). Total % is absolute. Benchmark Nifty 500: '+(Y.bench?fmtTot(Y.bench.totRet):'—')+' total. All rows: Nifty 500 universe, '+basketDesc()+'.'

@@ -24,11 +24,17 @@ const S = p => path.join(ROOT, 'scripts', p);
 const VTAG = process.argv[2] || '';
 const END = process.env.GRID_END || null;          // required: the data end date these grids used
 
+// `card` = the tile title, `short` = the column header in the consistency table.
+// The BEAR phase is the only window here that is not carved out of the post-Covid bull run —
+// measured peak 2018-01-23 to trough 2020-03-23, Nifty 500 -36.8%. Without it the ⭐ ranking
+// was "consistent across four slices of one bull market": scored against it, 0 of the top 10
+// best-in-all-4 strategies made money and their median was -55%, worse than the index.
 const PHASES = [
-  { key: 'full', label: 'Full cycle',    start: '2020-03-31', end: 'END' },
-  { key: 'w1',   label: 'Covid recovery', start: '2020-03-31', end: '2021-09-30' },
-  { key: 'w2',   label: '2023-24 bull',  start: '2023-03-31', end: '2024-09-30' },
-  { key: 'w3',   label: '2026 YTD-ish',  start: '2026-03-31', end: 'END' },
+  { key: 'full', label: 'Full cycle',    card: 'Entire cycle',    short: 'Full',  start: '2020-03-31', end: 'END' },
+  { key: 'bear', label: '2018-20 bear',  card: 'Jan-18 → Mar-20', short: 'Bear',  start: '2018-01-23', end: '2020-03-23' },
+  { key: 'w1',   label: 'Covid recovery', card: 'Covid → Sep-21', short: 'Covid', start: '2020-03-31', end: '2021-09-30' },
+  { key: 'w2',   label: '2023-24 bull',  card: 'Mar-23 → Sep-24', short: '23-24', start: '2023-03-31', end: '2024-09-30' },
+  { key: 'w3',   label: '2026 YTD-ish',  card: 'Mar-26 → today',  short: '26',    start: '2026-03-31', end: 'END' },
 ];
 const YEARS = [
   { key: 'y2020', label: '2020 (Mar→Dec)', start: '2020-03-31', end: '2020-12-31' },
@@ -159,8 +165,8 @@ async function rankWindow(w) {
     totalCombos: N,
     universe: universeLabel + ' · monthly · ' + basket,
     dataEnd: END,
-    phases: PHASES.map(p => ({ key: p.key, label: p.label, start: p.start, end: resolve(p).end,
-      years: SEL[p.key].years, bench: SEL[p.key].bench })),
+    phases: PHASES.map(p => ({ key: p.key, label: p.label, card: p.card, short: p.short,
+      start: p.start, end: resolve(p).end, years: SEL[p.key].years, bench: SEL[p.key].bench })),
     combos,
     cards,
     years: YEARS.map(y => ({ key: y.key, label: y.label, start: y.start, end: resolve(y).end,

@@ -71,6 +71,16 @@
   const TOPN = +(process.env.TOPN || 5);
   const METHOD = process.env.METHOD || 'reset';
   const UNIVERSE = process.env.UNIVERSE || 'Nifty 500';
+  // Validate loudly. A malformed TOPN (e.g. zsh not word-splitting `env $v`, so TOPN became
+  // "3 METHOD=hold") yields NaN, and `target.length < NaN` is false for every candidate — so
+  // every basket comes out EMPTY and the whole 4.44M grid "succeeds" in 12 seconds with NaN
+  // CAGRs. That cost a silent bad run once; never again.
+  if (!Number.isInteger(TOPN) || TOPN < 1 || TOPN > 50)
+    throw new Error('TOPN must be an integer 1-50, got ' + JSON.stringify(process.env.TOPN));
+  if (METHOD !== 'reset' && METHOD !== 'hold')
+    throw new Error('METHOD must be reset|hold, got ' + JSON.stringify(METHOD));
+  if (UNIVERSE !== '__FNO__' && !/^Nifty \d+$/.test(UNIVERSE))
+    throw new Error('UNIVERSE must be __FNO__ or "Nifty <n>", got ' + JSON.stringify(UNIVERSE));
   const VTAG = (TOPN === 5 && METHOD === 'reset' && UNIVERSE === 'Nifty 500') ? ''
              : '_' + (UNIVERSE === '__FNO__' ? 'fno_' : '') + (METHOD === 'hold' ? 'h' : 'r') + TOPN;
   const TAG = (process.argv[3] ? START + '_' + END : START) + VTAG; // artifact naming

@@ -29,6 +29,7 @@ VARIANTS = [
 def windows(end):
     return [
         ("2020-03-31", end),           # full cycle — longest, start it first
+        ("2018-01-23", "2020-03-23"),  # 2018-20 bear: measured Nifty 500 peak -> trough, -36.8%
         ("2020-03-31", "2021-09-30"),  # covid recovery
         ("2023-03-31", "2024-09-30"),  # 2023-24 bull
         ("2020-03-31", "2020-12-31"),
