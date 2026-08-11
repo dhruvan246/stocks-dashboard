@@ -77,8 +77,37 @@ SLOT = {"std": 0, "con": 1}
 # NIACL 1/22 vs 18/22; IDEA 36/45 vs 45/45. DLF ties on both, which is why one industrial example
 # makes the choice look settled. Try every candidate and keep whichever REPRODUCES our stored
 # values — the same principle that makes bank ("Interest Earned") layouts safe (§53, §60c).
-REV_ROWS = ("Net Sales/Income from operations", "Total Income From Operations", "Interest Earned")
+# ★ BANKS GET A DIFFERENT SCHEMA ENTIRELY — not a different label, a different TABLE. Measured
+# 2026-08-11 on ALBK/CORPBANK/DENABANK/SYNDIBANK/VIJAYABANK: the bank payload has NO
+# "Net Sales/Income from operations", NO "Total Income From Operations" and — despite the name being
+# the obvious guess — NO "Interest Earned" row either. It itemises interest income instead, and our
+# stored revenue is their SUM. So the row we need is DERIVED, not served:
+#     Interest Earned = (a) Int./Disc. on Adv/Bills + (b) Income on Investment
+#                       + (c) Int. on balances With RBI + others
+# Reproduction against our own store, 269 overlapping quarters: ALBK 56/58, CORPBANK 62/62,
+# DENABANK 43/43, SYNDIBANK 51/51, VIJAYABANK 54/55 — exact to the paisa. Before this the entire
+# bank class was refused with "no candidate row reproduces", which reads like a wrong-company map
+# (§49) and is really a schema we had never looked at.
+# It is still scored like every other candidate, never assumed: a company only gets this row if the
+# sum reproduces its stored quarters better than the served rows do.
+BANK_COMPONENTS = ("(a) Int. /Disc. on Adv/Bills", "(b) Income on Investment",
+                   "(c) Int. on balances With RBI", "others")
+DERIVED_INTEREST = "Interest Earned (derived: sum of bank interest components)"
+REV_ROWS = ("Net Sales/Income from operations", "Total Income From Operations", "Interest Earned",
+            DERIVED_INTEREST)
 REV_ROW = REV_ROWS[0]
+
+
+def row_value(row, label):
+    """The value of `label` in a payload row, computing the derived bank row when asked for it."""
+    if label == DERIVED_INTEREST:
+        parts = [num(row.get(c)) for c in BANK_COMPONENTS]
+        if any(p is None for p in parts):
+            return None
+        return sum(parts)
+    return num(row.get(label))
+
+
 MON = {"Jan": 3, "Feb": 3, "Mar": 3, "Apr": 6, "May": 6, "Jun": 6,
        "Jul": 9, "Aug": 9, "Sep": 9, "Oct": 12, "Nov": 12, "Dec": 12}
 LAST = {3: 31, 6: 30, 9: 30, 12: 31}
@@ -231,7 +260,7 @@ def series(code, basis, limit=200, ours=None):
         cand = {}
         for row in rows:
             qe = qe_of(row.get("yrc0"))
-            v = num(row.get(label))
+            v = row_value(row, label)          # DERIVED_INTEREST is computed, not served
             if qe and v is not None:
                 cand[qe] = v
         if not cand:

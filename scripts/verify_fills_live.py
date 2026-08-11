@@ -99,6 +99,11 @@ BASIS_KEYED = [
     # (the value must persist AND a held cell must stay absent — see the resurrection check below).
     ("mc_history_fills.json",          "revop", "rev"),
     ("mc_pat_fills.json",              "fund",  "pat", {"std": 1, "con": 3}),
+    # §86 FY-identity route — cells our ANCHOR gate could never reach (<6 stored quarters on the
+    # basis), gated instead on Moneycontrol's own quarters summing to its own annual. Registered at
+    # creation this time rather than discovered unguarded weeks later, which is the whole lesson of
+    # the mc_history/mc_pat gap above.
+    ("mc_fyident_fills.json",          "revop", "rev"),
 ]
 # "revS"/"revC" are accepted as basis tokens alongside "std"/"con": several ledgers key their third
 # part by FIELD rather than by BASIS, and the loop below silently `continue`s on any token it cannot
