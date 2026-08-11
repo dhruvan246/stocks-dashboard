@@ -482,6 +482,49 @@ never got filtered, but `mdd6`+`d52<=10`+`profitYoyPct>0` = 65% CAGR, the #2 str
   (each combo ~3–8s; longer window = more rebalances = slower). Don't foreground it.
 - Ensure `FSETS` includes the meaningful filters incl. `[d52<=10, profitYoyPct>0]`. Cross-window compare tool: `scripts/_cross.js`.
 
+### 7.1b ★ RE-STAGE `_live/` AND MEASURE COVERAGE **LIVE**, EVERY RUN — a staging goes stale in HOURS
+Standing rule from the user (2026-08-11): **always take LIVE coverage.** A `scripts/_live/` directory
+staged earlier — even the same day — is a SNAPSHOT, and the backfill campaigns commit new cells all day.
+Measured 2026-08-11: a staging 5 days old had `fund_live.json` 70 KB smaller, `shp_live.json` **1.97 vs
+2.7 MB**, and an `end` of 2026-08-05 vs the live 2026-08-11 — a whole extra trading week plus that day's
+fills. Coverage measured off the stale copy is a claim about YESTERDAY'S data, and stating it as today's
+is exactly the "never infer absence from our own gaps" trap.
+
+**Before EVERY grid run, without exception:**
+```
+python3 scripts/gridmega_fetch_live.py          # re-stage; prints the live end date
+rm -f scripts/_gridmega_cache_*.json.gz         # MANDATORY — see below
+```
+1. **Purging the factor caches is not optional.** They are keyed by (start, end, universe) and carry NO
+   data revision, so a cache built from the previous staging is silently reused and feeds the OLD factor
+   values into the new grid. Nothing warns you. `gridmega_phases_all.sh` does this automatically; a
+   hand-run grid does not.
+2. **Re-measure per-year coverage after re-staging**, and quote it with the results.
+   **THE WORKED EXAMPLE — why this rule exists (2026-08-11).** The same probe run against a 5-day-old
+   staging vs the live one:
+
+   | year | `fiiPct` STALE | `fiiPct` LIVE | `profitYoyPct` stale → live |
+   |------|---------------|---------------|------------------------------|
+   | 2003 | **0%**        | **89%**       | 3% → 10%                     |
+   | 2004 | **0%**        | **92%**       | 27% → **51%**                |
+   | 2008 | **0%**        | **98%**       | 87% → 87%                    |
+   | 2011 | 44%           | **99%**       | 95% → 96%                    |
+
+   Off the stale copy the conclusion was "FII/DII does not exist before 2011, so a 2002 grid can only
+   crown technicals-only strategies." That was FALSE — an artefact of the snapshot, not a property of
+   the data. Live coverage is 89%+ from 2003 and the full factor set is usable across the window.
+   Never state a coverage claim from a staging you did not fetch in this session.
+3. **A missing filter value FAILS the test** (NaN comparisons are false), so a strategy filtering on a
+   factor that genuinely does not exist yet holds NOTHING for those years — under `method:hold` it sells
+   out and sits in cash, which looks like a low-drawdown star. Always check `avgPicks` on the leaders.
+   This is a REAL effect where coverage is genuinely thin (2002 itself: profitYoyPct 10%, composite 8%)
+   — just make sure the thinness is measured live before you attribute a result to it.
+4. `nifty500_live.json` starts **2012-01-02**, so the grid's own `bench` field is WRONG for any window
+   starting earlier. Take the real benchmark from `docs/index_monthly.json` (NIFTY 500 monthly from 1995;
+   Mar-2002 → Jul-2026 = +2,925%, 15.04% CAGR).
+5. Index membership before the first snapshot falls back to the FIRST snapshot (`lastSnap`), so a
+   Nifty-500 window starting before **2002-10-02** screens against the Oct-2002 list — a look-ahead.
+
 ### 7.2 ALWAYS out-of-sample validate (curve-fit guard)
 Top-of-N over ONE window is in-sample. Re-run the winners on ≥1 other window. A strategy that only wins from a
 **crash-bottom start (2020-03-31)** is regime-luck, not edge. Proven robust across 2020 & 2023 starts:
