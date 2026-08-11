@@ -1078,6 +1078,32 @@ if the NSE broadcast time > 15:30, the stored ann-date is the next weekday (engi
 since rebalances are always trading days). So new after-close filings need no re-run. Applies to ALL filings (not
 just month-end), which also future-proofs weekly/daily frequencies.
 
+**★ THE GATE IS NOW A NIGHTLY, NOT A ONE-OFF (2026-08-11, §88c).** `update_fundamentals.gated_ann`
+only guards NSE INGESTION — every backfill writer (detres/vision/aggregator/scale-step campaigns)
+stamps ann-dates through its own path and bypasses it, so month-end look-aheads REGROW. Measured
+2026-08-11: 3,627 month-end events live (vs 3,760 in July), **172 newly confirmed after-close →
+289 ann-cells bumped**, concentrated exactly in the backfilled years (2015: 67, 2016: 57, 2017: 47,
+2018: 30 — 201 of 289 in 2015-18). So the gate re-runs EVERY NIGHT in refresh-fundamentals.yml
+("15:30 gate re-run (nightly)", hour 15|16 UTC or a manual dispatch), before the commit step:
+`build_gate_events.py --calendar` → `fetch_filing_times.py` → `gate_1530.py --apply`.
+- **`scripts/build_gate_events.py`** (new) rebuilds `_gate_events/_gate_dates/_trading_days/_me_days`.
+  The calendar MUST come from sf price data — a muhurat SUNDAY can be a month's last session
+  (2016-10-30), and a generic weekday calendar would put the rebalance on the wrong day. The big bin
+  never exists in the fundamentals job, so refresh-backtest-data.yml cuts **`scripts/gate_calendar.json`**
+  (tracked, ~70 KB, {tdays, me_days}, `--calendar-only`) the same way it cuts the liquid-universe
+  sidecar, and the nightly reads it with `--calendar`.
+- **`scripts/filing_times_cache.json.gz`** (tracked, ~131 KB) carries the BSE broadcast times, so a
+  quiet night re-fetches ~nothing; only NEW month-end dates hit the API (`fetch_filing_times.py` is
+  resumable and skips stored dates). ⚠️ It fetches in `_gate_dates.json` order and OLD dates
+  (2008-2014) respond very slowly — sort NEWEST-FIRST for a manual run or it stalls in the archive
+  (measured: 11 dates in ~20 min oldest-first vs all 101 in ~15 min newest-first).
+- **CI gates `docs/sf_fundamentals.json` only** (the `scripts/fundamentals.json` mirror is not
+  committed from CI); a local `--apply` keeps the mirror in step. On 2026-08-11 the mirror took 278
+  of the 289 (6 quarters + 1 symbol absent from that thinner cut, 4 ann-cells null) — expected.
+- **Idempotence (both signals verified 2026-08-11):** an immediate second pass decides `bumped 0`
+  (events drop 3,627 → 3,455 because the bumped ones are no longer month-ends), and JSL's Oct-2020
+  proof case reports **NOT FOUND** — the PASS signal, since its ann-date is already 2020-11-02.
+
 **Residual (documented, low-risk):** NSE-only historical filings with no BSE same-date record can't be timed
 retroactively (NSE history endpoint is real-time only) → left un-bumped = status-quo conservative. **VALIDATE**
 further by re-running the 2020-21 StockView comparison (memory project-stocks-stockview-comparison) — JSL should
@@ -8112,13 +8138,18 @@ fetch → build → merge; MTO_SP env = cache dir):
   era fragments — §86 territory, not dv work). 1996-2001: no MTO exists (pre-rolling, weekly-bar
   era) — stays 0%, correctly unfillable.
 
-### 88c. ★★ §12 15:30-GATE DRIFT: backfills bypass the look-ahead gate
+### 88c. ★★ §12 15:30-GATE DRIFT — FIXED 2026-08-11 (one-off cleanup + nightly automation)
 The gate ran ONCE (2026-07-08, 3,760 events → 1,000 bumped) and gates NEW NSE ingestion — but
 backfill writers (detres/vision/aggregator/scale-step campaigns) stamp ann-dates ungated. LIVE
 count today: 6,059 ann-cells sit ON month-end rebalance days (2018: 365, 2019: 518, 2020: 724 …)
-— roughly +1,000 cells of drift since July, concentrated in backfilled years. Fix = re-run the
-documented §12 tools (fetch_filing_times for new dates → gate_1530 --apply); conservative by
-construction. Consider adding gated_ann to the BACKFILL writers so the class stops regrowing.
+— roughly +1,000 cells of drift since July, concentrated in backfilled years.
+**DONE:** 3,627 events re-decided → 172 confirmed after-close → **289 ann-cells bumped** (2015-18
+carried 201 of them); 902 confirmed before-close and kept; 1,912 with no BSE same-date record + 641
+with no scripcode left untouched — conservative by construction, since a bump can only ever EXCLUDE
+a pick, never add one. Four bumps re-verified straight from the raw BSE payload (BAYERCROP 17:02,
+AUROPHARMA 20:59, AMBUJACEM 17:28, BALKRISIND 18:34) and 0 invariant violations (every new date is
+a real trading day, strictly later). The class can no longer regrow: the gate now runs every night
+(recipe, calendar sidecar, times cache and idempotence signals in §12).
 
 ### 88d. ★ Internal series holes pre-2016 (the §80 shape, unadjudicated)
 412 resume-after->60d holes in 2002-2015 vs 400 in 2016+ (post-BZ-backfill; both counts include

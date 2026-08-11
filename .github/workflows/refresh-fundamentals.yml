@@ -241,6 +241,30 @@ jobs:
       - name: Guard — refuse to commit a broken or shrunken feed
         run: python3 scripts/guard_feed.py
 
+      # 15:30 look-ahead gate re-run (runbook §12 + §88c). Backfill campaigns stamp ann-dates
+      # through writers that skip gated_ann, so month-end look-aheads REGROW (~870 new events
+      # measured 2026-08-11). Nightly: rebuild events from the committed calendar, fetch BSE
+      # broadcast times for NEW dates only (fetch_filing_times.py is resumable over the tracked
+      # cache; a quiet day = ~0 requests), then bump confirmed after-close filings. Conservative
+      # by construction: no BSE record / any pre-close broadcast => cell untouched. CI gates the
+      # docs file only (scripts/fundamentals.json, the big mirror, is NOT committed from CI —
+      # local gate runs keep it in sync; bumps verified durable across nightlies, JSL §12).
+      # Ordering matters: this must run BEFORE the commit step snapshots /tmp copies.
+      - name: 15:30 gate re-run (nightly)
+        run: |
+          RUN=0
+          EV="${{ github.event_name }}"
+          [ "$EV" = "workflow_dispatch" ] && RUN=1
+          [ "$EV" = "schedule" ] && case "$(date -u +%H)" in 15|16) RUN=1;; esac
+          [ "$RUN" = "1" ] || { echo "not the nightly — skipped"; exit 0; }
+          ( set -e
+            [ -f scripts/filing_times_cache.json.gz ] && gunzip -c scripts/filing_times_cache.json.gz > scripts/_filing_times.json
+            python3 scripts/build_gate_events.py --calendar
+            python3 scripts/fetch_filing_times.py
+            python3 scripts/gate_1530.py --apply
+            gzip -c scripts/_filing_times.json > scripts/filing_times_cache.json.gz
+          ) || echo "::warning::15:30 gate re-run failed — retried next nightly"
+
       - name: Commit updated fundamentals + results pages
         env:
           GH_TOKEN: ${{ github.token }}
@@ -257,6 +281,7 @@ jobs:
           [ -f scripts/ipo_base_fills.json ] && cp scripts/ipo_base_fills.json /tmp/ipo_base_fills.json
           [ -f scripts/_ipo_base_skips.json ] && cp scripts/_ipo_base_skips.json /tmp/_ipo_base_skips.json
           [ -f scripts/excise_duty.json ] && cp scripts/excise_duty.json /tmp/excise_duty.json
+          [ -f scripts/filing_times_cache.json.gz ] && cp scripts/filing_times_cache.json.gz /tmp/filing_times_cache.json.gz
           for attempt in 1 2 3 4 5; do
             git fetch origin main && git reset --hard origin/main
             if [ "$FUND" = "1" ]; then
@@ -282,6 +307,7 @@ jobs:
             cp /tmp/quarterly_results.json docs/quarterly_results.json
             git add docs/quarterly_results.json
             [ -f /tmp/_ipo_base_skips.json ] && cp /tmp/_ipo_base_skips.json scripts/_ipo_base_skips.json && git add scripts/_ipo_base_skips.json
+            [ -f /tmp/filing_times_cache.json.gz ] && cp /tmp/filing_times_cache.json.gz scripts/filing_times_cache.json.gz && git add scripts/filing_times_cache.json.gz
             # Fill-coverage scoreboard (docs/fill-coverage.html) — built HERE, inside the loop and
             # AFTER the three-way merge, deliberately. It is derived from sf_revop + sf_fundamentals,
             # so building it earlier would compute over pre-merge data and then be wiped by the
