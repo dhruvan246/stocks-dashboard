@@ -65,15 +65,31 @@ CTRL_REL = 0.005
 
 # Industrial P&L rows. Every pattern also has a normalised twin (spaces/punctuation stripped) so
 # the same regex works on an OCR read — see insurer_con_rev.norm().
+# BANK BRANCH (2026-08-11). The reader was BLIND to every bank pack, and the failure was SILENT:
+# all 15 open bank cells refused with "no page anchored to stored PAT", which reads exactly like
+# "these filings do not carry the numbers". A positive control killed that reading — CANBK
+# 20220331 con is a cell we ALREADY HOLD (18226.88) and the reader could not read it either.
+# Two label families cause it:
+#   * revenue — banks print "Interest Earned (a)+(b)+(c)+(d)", never "Revenue from operations".
+#     Our stored bank revenue IS Interest Earned (verified on INDUSINDBK Mar-23: that pack's
+#     10,02,071 lakh == stored revS 10020.71, while its Total Income 12,17,431 lakh does not).
+#   * PAT — banks print "Net Profit (+) / Loss (-) from Ordinary Activities after Tax"; the old
+#     pattern died on the "(+)" and "(-)" glyphs sitting between "Profit" and "Loss".
+# Looser labels are safe BY DESIGN here: the PAT anchor, the cross-basis control and the neighbour
+# band decide what lands. The reader is allowed to be unreliable because the gates are not.
 R_REV = re.compile(r"^revenue from operations|^total revenue from operations"
-                   r"|^income from operations|^net sales\s*/\s*income from operations", re.I)
+                   r"|^income from operations|^net sales\s*/\s*income from operations"
+                   r"|^interest earned", re.I)
 N_REV = re.compile(r"^(total)?revenuefromoperations$|^incomefromoperations$"
-                   r"|^netsalesincomefromoperations")
+                   r"|^netsalesincomefromoperations|^interestearned")
 R_PAT_OWN = re.compile(r"owners of the (parent|company)|attributable to.*owners", re.I)
 N_PAT_OWN = re.compile(r"ownersofthe(parent|company)|attributableto.*owners")
 R_PAT = re.compile(r"^(net\s+)?profit\s*/?\s*\(?loss\)?\s*(for the period|after tax)"
-                   r"|^profit\s*/?\s*\(?loss\)?\s*for the period", re.I)
-N_PAT = re.compile(r"^(net)?profit(loss)?(fortheperiod|aftertax)")
+                   r"|^profit\s*/?\s*\(?loss\)?\s*for the period"
+                   r"|^net profit[\s\(\)\+\-/]*loss[\s\(\)\+\-/]*"
+                   r"(from ordinary activities\s*)?(after tax|for the period)", re.I)
+N_PAT = re.compile(r"^(net)?profit(loss)?(fortheperiod|aftertax)"
+                   r"|^netprofit.*(aftertax|fortheperiod)")
 
 IC.NORM_OF[id(R_REV)] = N_REV
 IC.NORM_OF[id(R_PAT_OWN)] = N_PAT_OWN
