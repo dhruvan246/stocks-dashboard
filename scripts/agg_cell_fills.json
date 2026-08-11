@@ -46,6 +46,53 @@
   "src": "moneycontrol quarterly-results API (runbook \u00a780)",
   "state": "FILLED-EXACT"
  },
+ "ACC|20211231": {
+  "applied": "2026-08-11 aggregator sweep",
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own revC series reproduces 36 of our stored quarters with zero disagreements, worst anchor error 0.0000; nearest anchor within 4 quarters",
+  "fy_check": {
+   "A5": {
+    "next": {
+     "diff": 0.0,
+     "fy": 20221231,
+     "site_annual": 17419.27,
+     "site_sum4Q": 17419.27,
+     "verdict": "OK"
+    },
+    "prev": {
+     "diff": 0.0,
+     "fy": 20201231,
+     "site_annual": 13785.98,
+     "site_sum4Q": 13785.98,
+     "verdict": "OK"
+    },
+    "target": {
+     "diff": 0.0,
+     "fy": 20211231,
+     "site_annual": 16151.67,
+     "site_sum4Q": 16151.67,
+     "verdict": "OK"
+    }
+   },
+   "our_fy_identity": {
+    "diff": 0.0,
+    "site_annual": 16151.67,
+    "sum4Q": 16151.67,
+    "verdict": "CONFIRMED"
+   },
+   "state": "PASS"
+  },
+  "precision": "site-exact",
+  "revC": 4225.76,
+  "row_label": "Total Income From Operations",
+  "site_reach": {
+   "mc": "mc: 79 quarters 20050630..20260630",
+   "tl": "tl: 13 quarters 20230630..20260630",
+   "tt": "tt(page): 10 quarters 20240331..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a780)",
+  "state": "FILLED-EXACT"
+ },
  "BSE|20220630": {
   "applied": "2026-08-11 aggregator sweep",
   "corroborated_by": [],
@@ -330,6 +377,53 @@
   "src": "moneycontrol quarterly-results API (runbook \u00a780)",
   "state": "FILLED-EXACT"
  },
+ "PFC|20220630": {
+  "applied": "2026-08-11 aggregator sweep",
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own revS series reproduces 71 of our stored quarters with zero disagreements, worst anchor error 0.1300; nearest anchor within 4 quarters",
+  "fy_check": {
+   "A5": {
+    "next": {
+     "diff": 0.0,
+     "fy": 20240331,
+     "site_annual": 46022.46,
+     "site_sum4Q": 46022.46,
+     "verdict": "OK"
+    },
+    "prev": {
+     "diff": 0.0,
+     "fy": 20220331,
+     "site_annual": 38545.4,
+     "site_sum4Q": 38545.4,
+     "verdict": "OK"
+    },
+    "target": {
+     "diff": 0.0,
+     "fy": 20230331,
+     "site_annual": 39651.75,
+     "site_sum4Q": 39651.75,
+     "verdict": "OK"
+    }
+   },
+   "our_fy_identity": {
+    "diff": 0.0,
+    "site_annual": 39651.75,
+    "sum4Q": 39651.75,
+    "verdict": "CONFIRMED"
+   },
+   "state": "PASS"
+  },
+  "precision": "rounded(0.13)",
+  "revS": 9033.52,
+  "row_label": "Total Income From Operations",
+  "site_reach": {
+   "mc": "mc: 117 quarters 19970630..20260630",
+   "tl": "tl: 13 quarters 20230630..20260630",
+   "tt": "tt(page): 0 quarters -..-; company reports consolidated only"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a780)",
+  "state": "FILLED-ROUNDED"
+ },
  "RAIN|20220630": {
   "applied": "2026-08-11 aggregator sweep",
   "corroborated_by": [],
@@ -568,6 +662,198 @@
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a780)",
   "state": "FILLED-ROUNDED"
+ },
+ "SHRIRAMCIT|20211231": {
+  "applied": "2026-08-11 aggregator sweep",
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own revS series reproduces 27 of our stored quarters with zero disagreements, worst anchor error 0.0000; nearest anchor within 4 quarters",
+  "fy_check": {
+   "A5": {
+    "next": {
+     "annual": null,
+     "fy": 20230331,
+     "have": 2,
+     "verdict": "NO-TEST"
+    },
+    "prev": {
+     "diff": 0.0,
+     "fy": 20210331,
+     "site_annual": 5730.9,
+     "site_sum4Q": 5730.9,
+     "verdict": "OK"
+    },
+    "target": {
+     "diff": 1.68,
+     "fy": 20220331,
+     "site_annual": 6526.76,
+     "site_sum4Q": 6528.44,
+     "verdict": "OK"
+    }
+   },
+   "our_fy_identity": {
+    "missing": [
+     20210630,
+     20210930,
+     20220331
+    ],
+    "site_annual": 6526.76,
+    "verdict": "NO-TEST"
+   },
+   "state": "PASS"
+  },
+  "precision": "site-exact",
+  "revS": 1700.53,
+  "row_label": "Net Sales/Income from operations",
+  "site_reach": {
+   "mc": "mc: 84 quarters 19990930..20220930",
+   "tl": "tl: symbol absent from trendlyne fundamental sitemap",
+   "tt": "tt: no page whose ticker equals SHRIRAMCIT"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a780)",
+  "state": "FILLED-EXACT"
+ },
+ "SHRIRAMCIT|20220331": {
+  "applied": "2026-08-11 aggregator sweep",
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own revS series reproduces 27 of our stored quarters with zero disagreements, worst anchor error 0.0000; nearest anchor within 4 quarters",
+  "fy_check": {
+   "A5": {
+    "next": {
+     "annual": null,
+     "fy": 20230331,
+     "have": 2,
+     "verdict": "NO-TEST"
+    },
+    "prev": {
+     "diff": 0.0,
+     "fy": 20210331,
+     "site_annual": 5730.9,
+     "site_sum4Q": 5730.9,
+     "verdict": "OK"
+    },
+    "target": {
+     "diff": 1.68,
+     "fy": 20220331,
+     "site_annual": 6526.76,
+     "site_sum4Q": 6528.44,
+     "verdict": "OK"
+    }
+   },
+   "our_fy_identity": {
+    "missing": [
+     20210630,
+     20210930,
+     20211231
+    ],
+    "site_annual": 6526.76,
+    "verdict": "NO-TEST"
+   },
+   "state": "PASS"
+  },
+  "precision": "site-exact",
+  "revS": 1749.84,
+  "row_label": "Net Sales/Income from operations",
+  "site_reach": {
+   "mc": "mc: 84 quarters 19990930..20220930",
+   "tl": "tl: symbol absent from trendlyne fundamental sitemap",
+   "tt": "tt: no page whose ticker equals SHRIRAMCIT"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a780)",
+  "state": "FILLED-EXACT"
+ },
+ "SHRIRAMCIT|20220630": {
+  "applied": "2026-08-11 aggregator sweep",
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own revS series reproduces 27 of our stored quarters with zero disagreements, worst anchor error 0.0000; nearest anchor within 4 quarters",
+  "fy_check": {
+   "A5": {
+    "next": {
+     "annual": null,
+     "fy": 20240331,
+     "have": 0,
+     "verdict": "NO-TEST"
+    },
+    "prev": {
+     "diff": 1.68,
+     "fy": 20220331,
+     "site_annual": 6526.76,
+     "site_sum4Q": 6528.44,
+     "verdict": "OK"
+    },
+    "target": {
+     "annual": null,
+     "fy": 20230331,
+     "have": 2,
+     "verdict": "NO-TEST"
+    }
+   },
+   "our_fy_identity": {
+    "missing": [
+     20221231,
+     20230331
+    ],
+    "site_annual": null,
+    "verdict": "NO-TEST"
+   },
+   "state": "PASS"
+  },
+  "precision": "site-exact",
+  "revS": 1841.79,
+  "row_label": "Net Sales/Income from operations",
+  "site_reach": {
+   "mc": "mc: 84 quarters 19990930..20220930",
+   "tl": "tl: symbol absent from trendlyne fundamental sitemap",
+   "tt": "tt: no page whose ticker equals SHRIRAMCIT"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a780)",
+  "state": "FILLED-EXACT"
+ },
+ "STAR|20211231": {
+  "applied": "2026-08-11 aggregator sweep",
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own revC series reproduces 35 of our stored quarters with zero disagreements, worst anchor error 0.0000; nearest anchor within 4 quarters",
+  "fy_check": {
+   "A5": {
+    "next": {
+     "diff": 0.0,
+     "fy": 20230331,
+     "site_annual": 3688.39,
+     "site_sum4Q": 3688.39,
+     "verdict": "OK"
+    },
+    "prev": {
+     "diff": 0.0,
+     "fy": 20210331,
+     "site_annual": 3315.87,
+     "site_sum4Q": 3315.87,
+     "verdict": "OK"
+    },
+    "target": {
+     "diff": 0.0,
+     "fy": 20220331,
+     "site_annual": 3070.25,
+     "site_sum4Q": 3070.25,
+     "verdict": "OK"
+    }
+   },
+   "our_fy_identity": {
+    "diff": 0.0,
+    "site_annual": 3070.25,
+    "sum4Q": 3070.25,
+    "verdict": "CONFIRMED"
+   },
+   "state": "PASS"
+  },
+  "precision": "site-exact",
+  "revC": 794.39,
+  "row_label": "Total Income From Operations",
+  "site_reach": {
+   "mc": "mc: 81 quarters 20050331..20260630",
+   "tl": "tl: 13 quarters 20230630..20260630",
+   "tt": "tt(page): 10 quarters 20240331..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a780)",
+  "state": "FILLED-EXACT"
  },
  "SUNDARMFIN|20220630": {
   "applied": "2026-08-11 aggregator sweep",

@@ -60,7 +60,15 @@ NEAR_Q = 4               # A2: an anchor must exist within this many quarters of
 # well-anchored 2022 fill because of a 2014 defect. Local windows, plus a global rate check that
 # still kills a whole-entity mismatch (TMPV-style ~40% disagreement).
 LOCAL_Q = 6              # anchors must live here, and NOTHING may disagree here
-GUARD_Q = 12             # ... nor within three years either side (restatement boundaries)
+# GUARD_Q was 12 (three years either side) and it was WRONG -- measured 2026-08-11. ACC 2021-12,
+# STAR 2021-12 and PFC 2022-06 each have TWELVE local anchors reproduced to the paisa, and each was
+# refused for one disagreement 11-12 quarters away. Those distant misses are usually OUR defective
+# cells (ADANIENT 2014-12 stored 2.44 vs 17,849.84; KSB 2018-12 stored 0.0), so the veto punished
+# the wrong cell. Restatement is A5's job -- the site's own quarters vs its own annual for the
+# target FY and both neighbours -- and A5 is what actually caught every real restatement (ICIL,
+# PEL, WELCORP, ADANIENT, EXIDEIND, SAMMAANCAP). A3 was redundant with it and cost real reach.
+# Distant disagreements are now RECORDED in provenance and reported as suspects, not used to veto.
+GUARD_Q = LOCAL_Q        # A3 collapses into A; see A5 in agg_fy_check.py
 GLOBAL_MAX_BAD = 0.15    # beyond that it is a different entity/basis, not a restated year
 # TOLERANCES ARE SET FROM MEASURED PRINT PRECISION, not inherited. screener.in prints crore-ROUNDED
 # integers, so screener_gate.py needs a 1.0-crore absolute floor. Moneycontrol and Trendlyne print

@@ -1,34 +1,45 @@
 # Aggregator route — per-cell outcome (Moneycontrol / Trendlyne / Tickertape)
 
-Generated 2026-08-11 15:27 IST. Sites tried per cell: mc, tl, tt. Terminal states are runbook §61b; a cell nobody reached is `not-found-via:<sites>`, never "unfillable" (§0/§57a).
+Generated 2026-08-11 16:05 IST. Sites tried per cell: mc, tl, tt. Terminal states are runbook §61b; a cell nobody reached is `not-found-via:<sites>`, never "unfillable" (§0/§57a).
 
 
-## FILLED (13)
+## FILLED (19)
 
 | cell | value | precision | site | row | local/total anchors | worst anchor | site FY identity (prev/target/next) | our FY identity |
 |---|---|---|---|---|---|---|---|---|
 | ABSLAMC 20220630 revS | 299.01 | site-exact | mc | Net Sales/Income from operations | 9/19 | 0.00 | OK/OK/OK | CONFIRMED |
+| ACC 20211231 revC | 4225.76 | site-exact | mc | Total Income From Operations | 12/36 | 0.00 | OK/OK/OK | CONFIRMED |
 | BSE 20220630 revS | 141.68 | site-exact | mc | Net Sales/Income from operations | 12/33 | 0.00 | OK/OK/OK | CONFIRMED |
-| IDEA 20220630 revC | 10410.10 | rounded(13.69) | mc | Total Income From Operations | 11/43 | 13.69 | OK/OK/OK | NO-TEST |
-| IDEA 20220930 revC | 10614.60 | rounded(13.69) | mc | Total Income From Operations | 11/43 | 13.69 | OK/OK/OK | NO-TEST |
+| IDEA 20220630 revC | 10410.10 | rounded(13.69) | mc | Total Income From Operations | 12/44 | 13.69 | OK/OK/OK | CONFIRMED |
+| IDEA 20220930 revC | 10614.60 | rounded(13.69) | mc | Total Income From Operations | 12/44 | 13.69 | OK/OK/OK | CONFIRMED |
 | JINDALSTEL 20220630 revC | 13045.41 | rounded(13.20) | mc | Total Income From Operations | 12/37 | 13.20 | OK/OK/OK | CONFIRMED |
 | MMTC 20220630 revC | 1511.34 | rounded(1.46) | mc | Total Income From Operations | 12/27 | 1.46 | OK/OK/OK | CONFIRMED |
 | NAM-INDIA 20220930 revS | 308.98 | site-exact | mc | Net Sales/Income from operations | 12/37 | 0.00 | OK/OK/OK | CONFIRMED |
+| PFC 20220630 revS | 9033.52 | rounded(0.13) | mc | Total Income From Operations | 12/71 | 0.13 | OK/OK/OK | CONFIRMED |
 | RAIN 20220630 revC | 5540.55 | site-exact | mc | Total Income From Operations | 12/40 | 0.00 | OK/OK/OK | CONFIRMED |
-| RAJESHEXPO 20200630 revC | 46054.27 | rounded(0.95) | mc | Net Sales/Income from operations | 8/37 | 0.95 | OK/OK/OK | NO-TEST |
-| RAJESHEXPO 20210331 revC | 64522.60 | rounded(0.95) | mc | Net Sales/Income from operations | 9/37 | 0.95 | OK/OK/OK | NO-TEST |
-| RAJESHEXPO 20210630 revC | 50897.02 | rounded(0.95) | mc | Net Sales/Income from operations | 9/37 | 0.95 | OK/OK/OK | NO-TEST |
-| RAJESHEXPO 20210930 revC | 41245.13 | rounded(0.95) | mc | Net Sales/Income from operations | 9/37 | 0.95 | OK/OK/OK | NO-TEST |
+| RAJESHEXPO 20200630 revC | 46054.27 | rounded(0.95) | mc | Net Sales/Income from operations | 11/40 | 0.95 | OK/OK/OK | CONFIRMED |
+| RAJESHEXPO 20210331 revC | 64522.60 | rounded(0.95) | mc | Net Sales/Income from operations | 12/40 | 0.95 | OK/OK/OK | CONFIRMED |
+| RAJESHEXPO 20210630 revC | 50897.02 | rounded(0.95) | mc | Net Sales/Income from operations | 12/40 | 0.95 | OK/OK/OK | CONFIRMED |
+| RAJESHEXPO 20210930 revC | 41245.13 | rounded(0.95) | mc | Net Sales/Income from operations | 12/40 | 0.95 | OK/OK/OK | CONFIRMED |
+| SHRIRAMCIT 20211231 revS | 1700.53 | site-exact | mc | Net Sales/Income from operations | 3/27 | 0.00 | OK/OK/NO-TEST | NO-TEST |
+| SHRIRAMCIT 20220331 revS | 1749.84 | site-exact | mc | Net Sales/Income from operations | 3/27 | 0.00 | OK/OK/NO-TEST | NO-TEST |
+| SHRIRAMCIT 20220630 revS | 1841.79 | site-exact | mc | Net Sales/Income from operations | 2/27 | 0.00 | OK/NO-TEST/NO-TEST | NO-TEST |
+| STAR 20211231 revC | 794.39 | site-exact | mc | Total Income From Operations | 12/35 | 0.00 | OK/OK/OK | CONFIRMED |
 | SUNDARMFIN 20220630 revS | 935.07 | rounded(0.02) | mc | Net Sales/Income from operations | 12/75 | 0.02 | OK/OK/OK | CONFIRMED |
 
-## GATED OUT after passing the quarterly gate — restated financial year (9)
+## GATED OUT after passing the quarterly gate — restated financial year (12)
 
 These are NOT absences. The quarterly series matched ours on 27-40 anchors; the site's own four quarters then failed to sum to its own annual for the target FY or a neighbour, which is the §60d restatement signature. State: `NEEDS-CROSSCHECK` — reachable from a filing read, not from this route.
 
 | cell | which FY is restated | site ΣQ | site annual | diff |
 |---|---|---|---|---|
 | ADANIENT 20220630 revC | next FY20240331 | 105472.18 | 96420.98 | +9051.20 |
+| ALOKINDS 20200930 revC | target FY20210331 | 3869.26 | 3847.59 | +21.67 |
 | EXIDEIND 20210331 revC | next FY20220331 | 15135.09 | 12789.22 | +2345.87 |
+| GICRE 20211231 revC | next FY20230331 | 45455.27 | 43502.71 | +1952.56 |
+| GICRE 20211231 revC | target FY20220331 | 48373.79 | 46936.71 | +1437.08 |
+| ICICIPRULI 20191231 revC | prev FY20190331 | 41437.02 | 1721.34 | +39715.68 |
+| ICICIPRULI 20191231 revC | target FY20200331 | 21024.94 | 2651.56 | +18373.38 |
 | ICIL 20210930 revC | target FY20220331 | 2862.87 | 2842.02 | +20.85 |
 | ICIL 20211231 revC | target FY20220331 | 2862.87 | 2842.02 | +20.85 |
 | PEL 20211231 revC | next FY20230331 | 9354.70 | 8934.30 | +420.40 |
@@ -113,33 +124,19 @@ These are NOT absences. The quarterly series matched ours on 27-40 anchors; the 
 | WESTLIFE 20220630 revS | **mc** rev_ops: GATE-A: disagreement inside +-6q: 20231231 ours=0.3 site=0.22 (6q away); 20230930 ours=0.47 site=0.21 (5q away); 20230331 ours=381.97 site=0.<br>**tl** quarter 20220630 absent (site holds 20230630..20260630)<br>**tt** tt(page): 0 quarters -..-; company reports consolidated only |
 | WESTLIFE 20220930 revS | **mc** rev_ops: GATE-A: disagreement inside +-6q: 20240331 ours=0.32 site=0.26 (6q away); 20231231 ours=0.3 site=0.22 (5q away); 20230930 ours=0.47 site=0.21<br>**tl** quarter 20220930 absent (site holds 20230630..20260630)<br>**tt** tt(page): 0 quarters -..-; company reports consolidated only |
 
-## NEEDS-CROSSCHECK (a site HAD the quarter; its series does not reproduce ours — GATE-A/GATE-A3) — 6 cells
+## NEEDS-CROSSCHECK (a site HAD the quarter; its series does not reproduce ours — GATE-A/GATE-A4) — 3 cells
 
 | cell | what each site said |
 |---|---|
-| ACC 20211231 revC | **mc** rev_ops: GATE-A: disagreement inside +-6q: 20220930 ours=3987.34 site=3910.49 (3q away); 20220630 ours=4468.42 site=4393.27 (2q away); 20220331 ours=4<br>**tl** quarter 20211231 absent (site holds 20230630..20260630)<br>**tt** quarter 20211231 absent (site holds 20240331..20260630) |
-| GICRE 20211231 revC | **mc** rev_ops: GATE-A: disagreement inside +-6q: 20230630 ours=11165.84 site=8696.42 (6q away); 20220630 ours=12645.84 site=10734.29 (2q away); rev_total: G<br>**tl** quarter 20211231 absent (site holds 20230331..20260331)<br>**tt** quarter 20211231 absent (site holds 20231231..20260331) |
-| ICICIPRULI 20191231 revC | **mc** rev_ops: GATE-A: disagreement inside +-6q: 20210630 ours=16211.27 site=6601.85 (6q away); 20210331 ours=19281.83 site=11879.28 (5q away); 20201231 our<br>**tl** quarter 20191231 absent (site holds 20230331..20260331)<br>**tt** quarter 20191231 absent (site holds 20231231..20260331) |
 | NIACL 20200331 revC | **mc** rev_ops: GATE-A: disagreement inside +-6q: 20210930 ours=9682.19 site=7518.54 (6q away); 20210630 ours=8115.95 site=6815.09 (5q away); 20210331 ours=9<br>**tl** quarter 20200331 absent (site holds 20230630..20260630)<br>**tt** quarter 20200331 absent (site holds 20240331..20260630) |
 | NIACL 20200630 revC | **mc** rev_ops: GATE-A: disagreement inside +-6q: 20211231 ours=9468.41 site=7434.71 (6q away); 20210930 ours=9682.19 site=7518.54 (5q away); 20210630 ours=8<br>**tl** quarter 20200630 absent (site holds 20230630..20260630)<br>**tt** quarter 20200630 absent (site holds 20240331..20260630) |
 | NIACL 20201231 revC | **mc** rev_ops: GATE-A: disagreement inside +-6q: 20220630 ours=8594.52 site=7229.53 (6q away); 20211231 ours=9468.41 site=7434.71 (4q away); 20210930 ours=9<br>**tl** quarter 20201231 absent (site holds 20230630..20260630)<br>**tt** quarter 20201231 absent (site holds 20240331..20260630) |
 
-## NEEDS-CROSSCHECK (a site HAD the quarter; its series does not reproduce ours — GATE-A3) — 7 cells
+## NEEDS-CROSSCHECK (a site HAD the quarter; its series does not reproduce ours — GATE-A4) — 2 cells
 
 | cell | what each site said |
 |---|---|
-| ALOKINDS 20200930 revC | **mc** rev_ops: GATE-A3: restatement boundary inside +-12q: 20220630 ours=2023.23 site=1971.52 (7q away); rev_total: GATE-A3: restatement boundary inside +-1<br>**tl** quarter 20200930 absent (site holds 20230630..20260630)<br>**tt** quarter 20200930 absent (site holds 20240331..20260630) |
-| PFC 20220630 revS | **mc** rev_ops: GATE-A3: restatement boundary inside +-12q: 20190930 ours=7989.83 site=8022.54 (11q away); 20190630 ours=7531.87 site=7580.62 (12q away); rev<br>**tl** quarter 20220630 absent (site holds 20230630..20260630)<br>**tt** tt(page): 0 quarters -..-; company reports consolidated only |
-| SHRIRAMCIT 20211231 revS | **mc** rev_ops: GATE-A3: restatement boundary inside +-12q: 20200331 ours=1488.58 site=1449.51 (7q away); 20190630 ours=1437.16 site=1493.47 (10q away); rev_<br>**tl** tl: symbol absent from trendlyne fundamental sitemap<br>**tt** tt: no page whose ticker equals SHRIRAMCIT |
-| SHRIRAMCIT 20220331 revS | **mc** rev_ops: GATE-A3: restatement boundary inside +-12q: 20200331 ours=1488.58 site=1449.51 (8q away); 20190630 ours=1437.16 site=1493.47 (11q away); rev_<br>**tl** tl: symbol absent from trendlyne fundamental sitemap<br>**tt** tt: no page whose ticker equals SHRIRAMCIT |
-| SHRIRAMCIT 20220630 revS | **mc** rev_ops: GATE-A3: restatement boundary inside +-12q: 20200331 ours=1488.58 site=1449.51 (9q away); 20190630 ours=1437.16 site=1493.47 (12q away); rev_<br>**tl** tl: symbol absent from trendlyne fundamental sitemap<br>**tt** tt: no page whose ticker equals SHRIRAMCIT |
-| STAR 20211231 revC | **mc** rev_ops: GATE-A3: restatement boundary inside +-12q: 20190331 ours=839.7 site=616.18 (11q away); rev_total: GATE-A3: restatement boundary inside +-12q<br>**tl** quarter 20211231 absent (site holds 20230630..20260630)<br>**tt** quarter 20211231 absent (site holds 20240331..20260630) |
-| TATACHEM 20211231 revC | **mc** rev_ops: GATE-A3: restatement boundary inside +-12q: 20190331 ours=2759.39 site=2561.4 (11q away); rev_total: GATE-A3: restatement boundary inside +-1<br>**tl** quarter 20211231 absent (site holds 20230630..20260630)<br>**tt** quarter 20211231 absent (site holds 20240331..20260630) |
-
-## NEEDS-CROSSCHECK (a site HAD the quarter; its series does not reproduce ours — GATE-A4) — 1 cells
-
-| cell | what each site said |
-|---|---|
+| TATACHEM 20211231 revC | **mc** rev_ops: GATE-A4: 9/51 of the whole series disagrees -- different entity/basis; rev_total: GATE-A4: 8/50 of the whole series disagrees -- different en<br>**tl** quarter 20211231 absent (site holds 20230630..20260630)<br>**tt** quarter 20211231 absent (site holds 20240331..20260630) |
 | TATASTLLP 20220630 revC | **mc** rev_ops: GATE-A4: 10/41 of the whole series disagrees -- different entity/basis; rev_total: GATE-A4: 8/39 of the whole series disagrees -- different e<br>**tl** tl: symbol absent from trendlyne fundamental sitemap<br>**tt** tt: no page whose ticker equals TATASTLLP |
 
 ## REJECT-EQUALS-OTHER-BASIS (gate C — the copied-con fingerprint; belongs to the §6A no-sub identity route, which writes it WITH evidence) — 5 cells
@@ -219,13 +216,13 @@ These are NOT absences. The quarterly series matched ours on 27-40 anchors; the 
 | ICICIPRULI 20230331 revC | 10983.81 | mc=10723.8, tl=10723.8 | mc 22/25, tl 11/13 |
 | ICICIPRULI 20230630 revC | 23383.59 | mc=23829.23, tl=23829.23 | mc 22/25, tl 11/13 |
 | IDFC 20180630 revS | 11.05 | mc=14.49 | mc 64/65 |
-| JINDALSTEL 20150630 revC | 4426.32 | mc=4405.73 | mc 37/40 |
-| JINDALSTEL 20150930 revC | 4707.48 | mc=4736.29 | mc 37/40 |
-| JINDALSTEL 20180630 revC | 9602.41 | mc=9665.35 | mc 37/40 |
+| JINDALSTEL 20150630 revC | 4426.32 | mc=4405.73 | mc 38/41 |
+| JINDALSTEL 20150930 revC | 4707.48 | mc=4736.29 | mc 38/41 |
+| JINDALSTEL 20180630 revC | 9602.41 | mc=9665.35 | mc 38/41 |
 | KSB 20181231 revC | 0.0 | mc=346.6 | mc 28/29 |
 | LICI 20230630 revC | 190163.06 | mc=189523.11, tl=189523.11 | mc 9/10, tl 8/9 |
 | LICI 20230630 revS | 188749.16 | mc=189300.06, tl=189300.06 | mc 16/17, tl 12/13 |
-| MMTC 20220331 revC | 2255.59 | mc=1701.65 | mc 26/27 |
+| MMTC 20220331 revC | 2255.59 | mc=1701.65 | mc 27/28 |
 | MOIL 20190331 revC | 436.59 | mc=427.98 | mc 10/11 |
 | NIACL 20230630 revC | 9900.04 | tl=9332.23 | tl 9/12 |
 | NIACL 20250331 revC | 11664.22 | tl=11008.74 | tl 9/12 |
@@ -233,9 +230,9 @@ These are NOT absences. The quarterly series matched ours on 27-40 anchors; the 
 | PFC 20170331 revS | 5966.84 | mc=5672.07 | mc 71/74 |
 | PFC 20190630 revS | 7531.87 | mc=7580.62 | mc 71/74 |
 | PFC 20190930 revS | 7989.83 | mc=8022.54 | mc 71/74 |
-| RAIN 20170630 revC | 2716.63 | mc=2637.12 | mc 40/41 |
-| RAJESHEXPO 20150630 revC | 8419.88 | mc=15144.26 | mc 37/39 |
-| RAJESHEXPO 20150930 revC | 51011.66 | mc=44319.65 | mc 37/39 |
+| RAIN 20170630 revC | 2716.63 | mc=2637.12 | mc 41/42 |
+| RAJESHEXPO 20150630 revC | 8419.88 | mc=15144.26 | mc 41/43 |
+| RAJESHEXPO 20150930 revC | 51011.66 | mc=44319.65 | mc 41/43 |
 | RAJESHEXPO 20240331 revC | 91444.96 | tl=91649.32 | tl 12/13 |
 | SHRIRAMCIT 20180331 revS | 1316.48 | mc=1242.79 | mc 27/30 |
 | SHRIRAMCIT 20190630 revS | 1437.16 | mc=1493.47 | mc 27/30 |

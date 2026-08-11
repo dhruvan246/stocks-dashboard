@@ -141,6 +141,12 @@ def main():
             b = {"verdict": "CONFIRMED" if _close(s, target) else "MISMATCH",
                  "sum4Q": round(s, 2), "site_annual": target, "diff": round(s - target, 2)}
 
+        # Gate B is now ENFORCED, not merely recorded. Where we hold the other three quarters of
+        # the FY, our own siblings plus the candidate must reproduce the site's annual. It is the
+        # §62 different-axis confirmation and it costs nothing; a MISMATCH means the candidate does
+        # not fit the financial year it claims to belong to.
+        if b["verdict"] == "MISMATCH":
+            veto = veto + ["our-FY-identity"]
         rec = {"A5": {t: {"verdict": v, **det} for t, (v, det) in a5.items()},
                "our_fy_identity": b,
                "state": "VETO-RESTATED-FY(%s)" % ",".join(veto) if veto else "PASS"}

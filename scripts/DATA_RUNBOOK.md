@@ -7187,8 +7187,7 @@ you wanted.** What this route adds:
   floor over made a holding company whose whole revenue is 0.2 cr "agree 13/16" while our
   0.47/0.30/0.32 sat against the site's 0.21/0.22/0.26. Floors here are one print-unit wide.
 * **A** ≥2 anchors within ±6 quarters of the target, **zero disagreements in that window**;
-  **A2** at least one anchor within 4 quarters; **A3** no disagreement within ±12 quarters
-  (a restatement boundary near the target); **A4** global disagreement rate <15% (a wholly
+  **A2** at least one anchor within 4 quarters; **A4** global disagreement rate <15% (a wholly
   different entity — the TMPV class).
   Why local rather than global: 45 of 97 refusals on the first pass were ≥90% agreement whose only
   disagreements sat 6–30 quarters away, several of them **our** known-bad cells (ADANIENT 2014-12
@@ -7332,3 +7331,29 @@ completes its own FY rather than helping another, so **do not plan on iteration 
 1. **moneycontrol's financials endpoint** — find it the approved way (`feedback-find-endpoints-in-js-bundle`): open the financials route in a real browser and read the NETWORK tab, rather than grepping the landing page's chunks.
 2. **Trendlyne** with a correct stock id (the public URL guessed here 200s but carries no 2019 rows; ids come from its shareholding sitemap — memory `feedback-check-aggregator-sites-before-unfillable`).
 3. **Paid/registered tiers** (Capitaline, AceEquity, CMIE Prowess, Tickertape/Trendlyne premium) genuinely do hold deep quarterly history — a commercial decision, not a technical one.
+
+### 81i. The ANNUAL lever, measured — worth far less here than on screener  (2026-08-11)
+
+`scripts/agg_tools/agg_annual_derive.py`, the §60d route (site's FY annual − our 3 stored quarters)
+applied to these three sites. Prompted by the observation that Trendlyne's annual table reaches
+FY2016 while its quarterly table stops at 13 quarters. Of the 129 cells the quarterly sweep left
+open, **47 have all three FY siblings stored** — the right shape. It produced **3**: ACC 2021-12,
+PFC 2022-06, STAR 2021-12 — and all three were *also* produced by the quarterly route once A3 was
+removed, so the annual lever contributed **0 unique cells** and acted purely as an independent
+arithmetic confirmation of three it already had.
+
+Why so thin, measured per cell: the binding gate is §60d's "≥3 FYs where our four quarters reproduce
+their annual". The companies with gaps are precisely the companies without three complete FYs —
+NIACL manages 2, SPICEJET 0–1, RBLBANK 0. The rest fail on A2 (a restated FY within two years:
+PEL, TATACHEM, WELCORP) or on the sibling-vintage gate S.
+
+**Keep the tool** — it is the correct route when we hold 3 of 4 and the site's annual is deep, and
+its Gate X (derived value must reproduce the site's own printed quarter) is a genuinely independent
+confirmation on the FY axis. Just do not expect the screener-style yield here: screener's quarterly
+table is 13 quarters deep and its annual 12 years, so there the annual IS the only lever;
+Moneycontrol already serves 40–113 quarters directly, so the annual has little left to add.
+
+⚠️ Crash found and fixed while building it: an annual table can carry a **non-quarter year end** —
+SPICEJET's Moneycontrol annual holds `May '94`, a 14-month transition year. Feeding that to a
+quarter-ordinal helper raises `ValueError: 5 is not in list`. Skip such rows, never assume every
+annual key is a quarter-end.
