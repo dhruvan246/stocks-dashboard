@@ -204,7 +204,10 @@ def main():
     # OWN targets file: _rev2020_targets.json is a single tracked file that every campaign
     # writes, and the concurrent 2018 session now owns it (it holds 2018 quarters). Sharing it
     # means silently running someone else's worklist — keep a separate one.
-    targets = json.load(open(os.path.join(HERE, "_rev2019_targets.json")))
+    # --targets lets a sibling campaign point this at ITS OWN worklist without
+    # touching the 2019 file (same one-file-per-campaign rule the 2019 note gives).
+    tf = argv[argv.index("--targets") + 1] if "--targets" in argv else "_rev2019_targets.json"
+    targets = json.load(open(os.path.join(HERE, tf)))
     fills = json.load(open(FILLS)) if os.path.exists(FILLS) else {}
     skips = json.load(open(SKIPS)) if os.path.exists(SKIPS) else {}
     codes = json.load(open(CODES)) if os.path.exists(CODES) else {}
