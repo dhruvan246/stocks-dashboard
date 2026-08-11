@@ -329,6 +329,18 @@ def main():
     revop_scr = load(REVOP_SCR, {})
     qr = json.load(open(QR))
     by_id = json.load(open(SCRIPS, encoding="utf-8"))["by_id"]
+    # bse_scrips.json is built from BSE's LIVE master, so a DELISTED/SUSPENDED company resolves to
+    # nothing (§52b) and is dropped from the worklist before a single PDF is fetched — measured on
+    # the 2018 campaign: 19 companies / 36 anchored cells never reached this route for that reason
+    # alone (ALBK, DHFL, FRETAIL, MINDTREE, RELCAPITAL, RELINFRA, IDFC, SREINFRA...). Those cells
+    # were NOT ATTEMPTED, not failed (§57a rule 4). The overrides below come from
+    # fill2020_tools/resolve_delisted_scrips.py, which matches _bse_master_all.json on scrip_id and
+    # then GATES ON ISIN against the one NSE prints on its own filing-index rows — never on the
+    # scrip_id alone, which is the KALYANI coincidence (§76).
+    _ovr = os.path.join(HERE, "fill2020_tools", "_delisted_scrip_overrides.json")
+    if os.path.exists(_ovr):
+        for _s, _v in json.load(open(_ovr)).items():
+            by_id.setdefault(_s, _v["scrip"])
     done = load(DONE, {})
     skips = load(SKIPS, {})
     pnl = load(PNL, {})

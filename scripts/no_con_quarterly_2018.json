@@ -1,0 +1,1974 @@
+{
+ "_doc": "MEASURED evidence that a company filed NO CONSOLIDATED QUARTERLY RESULT for a given 2018 quarter, from NSE per-company filing index caches (scripts/_nselist, harvested 2026-08-11). Per cell the three conditions of runbook 54b hold: E1 the index lists a STANDALONE result for that exact quarter (so its silence on consolidated is meaningful, not a hole in the index); E2 it lists NO consolidated result for that quarter; E3 the quarter is EARLIER than the company's FIRST consolidated filing ever (leading-run rule). This is 51a structure: quarterly consolidated results only became compulsory from FY2020, and 2018 sits a full year deeper into that era than the 2019 set. IMPORTANT - these are recorded as NOT-APPLICABLE EVIDENCE ONLY. No value is written: stored con PAT is null for every one of them, so E4 fails and copying revS into revC would CREATE a consolidated figure no document asserts (the never-invent rule). E6 (NEW, 2026-08-11) is what makes this set smaller and safer than the 2019 one: E1+E2+E3 only establishes that THIS index has no row. Measured over the 725 2018 target cells, 290 sit in a direct contradiction - the index reports no consolidated filing before 2019 while our own store holds a materially DIFFERENT consolidated figure in that same era (AXISBANK Jun-2018 con PAT 721.86 vs std 701.09, index first-con Jun-2019). For those companies the index's pre-first-con silence is measured-incomplete and proves nothing, so they are NOT recorded here. Only cells whose company shows no such contradiction survive. Wiring this into the gap definition needs a first-con-quarter concept in files_con across build_fill_coverage.py, audit_coverage.py and build_targets.py TOGETHER (the three-copies rule) - deliberately NOT done in this session because it moves the live Fill Coverage page numbers while other sessions are writing.",
+ "cells": [
+  [
+   "AGI|20180331",
+   {
+    "first_con_filing_ever": 20240930,
+    "nse_index_con_quarters": 8,
+    "nse_index_std_quarters": 86,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "AGI|20180630",
+   {
+    "first_con_filing_ever": 20240930,
+    "nse_index_con_quarters": 8,
+    "nse_index_std_quarters": 86,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "AGI|20180930",
+   {
+    "first_con_filing_ever": 20240930,
+    "nse_index_con_quarters": 8,
+    "nse_index_std_quarters": 86,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "AGI|20181231",
+   {
+    "first_con_filing_ever": 20240930,
+    "nse_index_con_quarters": 8,
+    "nse_index_std_quarters": 86,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "APOLLOHOSP|20180331",
+   {
+    "first_con_filing_ever": 20180630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 83,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "BAJAJCON|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 63,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "BAJAJCON|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 63,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "BAJAJCON|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 63,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "BAJAJELEC|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 75,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "BAJAJELEC|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 75,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "BAJAJELEC|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 75,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "BATAINDIA|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "BATAINDIA|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "BATAINDIA|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "BEL|20180331",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "BEL|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "BEL|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "BEL|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "BFUTILITIE|20180331",
+   {
+    "first_con_filing_ever": 20180630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 71,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "BGRENERGY|20180331",
+   {
+    "first_con_filing_ever": 20180630,
+    "nse_index_con_quarters": 30,
+    "nse_index_std_quarters": 74,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "BHARATFORG|20180331",
+   {
+    "first_con_filing_ever": 20190331,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "BHARATFORG|20180630",
+   {
+    "first_con_filing_ever": 20190331,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "BHARATFORG|20180930",
+   {
+    "first_con_filing_ever": 20190331,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "BHARATFORG|20181231",
+   {
+    "first_con_filing_ever": 20190331,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "BHEL|20180331",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 86,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "BHEL|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 86,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "BHEL|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 86,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "BHEL|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 86,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "BOMDYEING|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "BOMDYEING|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "BOMDYEING|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "BRFL|20180331",
+   {
+    "first_con_filing_ever": 20180630,
+    "nse_index_con_quarters": 14,
+    "nse_index_std_quarters": 65,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "CANBK|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "CANBK|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "CANBK|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "COCHINSHIP|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 40,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "COCHINSHIP|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 40,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "COCHINSHIP|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 40,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "CONCOR|20180331",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "CONCOR|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "CONCOR|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "DBL|20180331",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 27,
+    "nse_index_std_quarters": 41,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "DBL|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 27,
+    "nse_index_std_quarters": 41,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "DBL|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 27,
+    "nse_index_std_quarters": 41,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "DBL|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 27,
+    "nse_index_std_quarters": 41,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "DMART|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 42,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "DMART|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 42,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "DMART|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 42,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "EIHOTEL|20180331",
+   {
+    "first_con_filing_ever": 20180630,
+    "nse_index_con_quarters": 30,
+    "nse_index_std_quarters": 83,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "ENGINERSIN|20180331",
+   {
+    "first_con_filing_ever": 20180630,
+    "nse_index_con_quarters": 30,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "EVEREADY|20180331",
+   {
+    "first_con_filing_ever": 20180630,
+    "nse_index_con_quarters": 30,
+    "nse_index_std_quarters": 86,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "FDC|20180930",
+   {
+    "first_con_filing_ever": 20190331,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 81,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "FDC|20181231",
+   {
+    "first_con_filing_ever": 20190331,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 81,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "FEDERALBNK|20180331",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 27,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "FEDERALBNK|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 27,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "FEDERALBNK|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 27,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "FEDERALBNK|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 27,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "FINCABLES|20180331",
+   {
+    "first_con_filing_ever": 20180630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "GHCL|20180331",
+   {
+    "first_con_filing_ever": 20180630,
+    "nse_index_con_quarters": 30,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "GLAXO|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 27,
+    "nse_index_std_quarters": 83,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "GLAXO|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 27,
+    "nse_index_std_quarters": 83,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "GLAXO|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 27,
+    "nse_index_std_quarters": 83,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "GNFC|20180331",
+   {
+    "first_con_filing_ever": 20180630,
+    "nse_index_con_quarters": 30,
+    "nse_index_std_quarters": 86,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "GPPL|20180331",
+   {
+    "first_con_filing_ever": 20180630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 60,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "GREENPLY|20180331",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "GREENPLY|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "GREENPLY|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "GREENPLY|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "GSFC|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "GSFC|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "GSFC|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "GSPL|20180331",
+   {
+    "first_con_filing_ever": 20180630,
+    "nse_index_con_quarters": 26,
+    "nse_index_std_quarters": 79,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "GUJENERGY|20180331",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 27,
+    "nse_index_std_quarters": 44,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "HINDUNILVR|20180331",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "HINDUNILVR|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "HINDUNILVR|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "HINDUNILVR|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "IDBI|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 83,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "IDBI|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 83,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "IDBI|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 83,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "IDFCFIRSTB|20180331",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 42,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "IDFCFIRSTB|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 42,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "IDFCFIRSTB|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 42,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "IDFCFIRSTB|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 42,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "IGL|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "IGL|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "IGL|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "INDIACEM|20180331",
+   {
+    "first_con_filing_ever": 20180630,
+    "nse_index_con_quarters": 30,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "IPCALAB|20180331",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 82,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "IPCALAB|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 82,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "IPCALAB|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 82,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "IPCALAB|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 82,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "J&KBANK|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 26,
+    "nse_index_std_quarters": 83,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "J&KBANK|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 26,
+    "nse_index_std_quarters": 83,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "J&KBANK|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 26,
+    "nse_index_std_quarters": 83,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "JAICORPLTD|20180331",
+   {
+    "first_con_filing_ever": 20180630,
+    "nse_index_con_quarters": 27,
+    "nse_index_std_quarters": 82,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "JBCHEPHARM|20180331",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "JBCHEPHARM|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "JBCHEPHARM|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "JBCHEPHARM|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "JINDALSAW|20180331",
+   {
+    "first_con_filing_ever": 20180630,
+    "nse_index_con_quarters": 30,
+    "nse_index_std_quarters": 83,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "JKCEMENT|20180331",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 82,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "JKCEMENT|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 82,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "JKCEMENT|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 82,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "JKCEMENT|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 82,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "JKLAKSHMI|20180331",
+   {
+    "first_con_filing_ever": 20180630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 80,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "JPASSOCIAT|20180331",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 27,
+    "nse_index_std_quarters": 82,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "JPASSOCIAT|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 27,
+    "nse_index_std_quarters": 82,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "JPASSOCIAT|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 27,
+    "nse_index_std_quarters": 82,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "JPASSOCIAT|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 27,
+    "nse_index_std_quarters": 82,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "JSLHISAR|20180331",
+   {
+    "first_con_filing_ever": 20180630,
+    "nse_index_con_quarters": 14,
+    "nse_index_std_quarters": 29,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "KANSAINER|20180331",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 86,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "KANSAINER|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 86,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "KANSAINER|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 86,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "KANSAINER|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 86,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "KPIL|20180331",
+   {
+    "first_con_filing_ever": 20190331,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "KPIL|20180630",
+   {
+    "first_con_filing_ever": 20190331,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "KPIL|20180930",
+   {
+    "first_con_filing_ever": 20190331,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "KPIL|20181231",
+   {
+    "first_con_filing_ever": 20190331,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "KWALITY|20180331",
+   {
+    "first_con_filing_ever": 20180630,
+    "nse_index_con_quarters": 11,
+    "nse_index_std_quarters": 43,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "LICHSGFIN|20180630",
+   {
+    "first_con_filing_ever": 20190930,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "LICHSGFIN|20180930",
+   {
+    "first_con_filing_ever": 20190930,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "LICHSGFIN|20181231",
+   {
+    "first_con_filing_ever": 20190930,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "MCLEODRUSS|20180331",
+   {
+    "first_con_filing_ever": 20180630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 82,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "MRF|20180331",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 78,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "MRF|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 78,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "MRF|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 78,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "MRF|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 78,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "MTNL|20180331",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 74,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "MTNL|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 74,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "MUTHOOTFIN|20180331",
+   {
+    "first_con_filing_ever": 20180630,
+    "nse_index_con_quarters": 30,
+    "nse_index_std_quarters": 60,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "NAUKRI|20180331",
+   {
+    "first_con_filing_ever": 20180630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 77,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "NAVNETEDUL|20180331",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 86,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "NILKAMAL|20180331",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 27,
+    "nse_index_std_quarters": 81,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "NILKAMAL|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 27,
+    "nse_index_std_quarters": 81,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "NILKAMAL|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 27,
+    "nse_index_std_quarters": 81,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "NILKAMAL|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 27,
+    "nse_index_std_quarters": 81,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "NMDC|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 27,
+    "nse_index_std_quarters": 73,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "NMDC|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 27,
+    "nse_index_std_quarters": 73,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "NMDC|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 27,
+    "nse_index_std_quarters": 73,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "NTPC|20180331",
+   {
+    "first_con_filing_ever": 20180630,
+    "nse_index_con_quarters": 30,
+    "nse_index_std_quarters": 86,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "PCBL|20180331",
+   {
+    "first_con_filing_ever": 20180630,
+    "nse_index_con_quarters": 30,
+    "nse_index_std_quarters": 83,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "PTC|20180331",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 26,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "PTC|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 26,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "PTC|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 26,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "PTC|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 26,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "RBLBANK|20180331",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 39,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "RBLBANK|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 39,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "RBLBANK|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 39,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "RBLBANK|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 39,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "RCF|20180331",
+   {
+    "first_con_filing_ever": 20180630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "RECLTD|20180331",
+   {
+    "first_con_filing_ever": 20180630,
+    "nse_index_con_quarters": 30,
+    "nse_index_std_quarters": 70,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "RKFORGE|20180331",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 83,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "RKFORGE|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 83,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "RKFORGE|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 83,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "RKFORGE|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 83,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "RNAVAL|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 14,
+    "nse_index_std_quarters": 54,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "RNAVAL|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 14,
+    "nse_index_std_quarters": 54,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "RNAVAL|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 14,
+    "nse_index_std_quarters": 54,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "SAIL|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "SAIL|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "SJVN|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 64,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "SJVN|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 64,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "SJVN|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 64,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "SUNDARMFIN|20180331",
+   {
+    "first_con_filing_ever": 20180630,
+    "nse_index_con_quarters": 30,
+    "nse_index_std_quarters": 80,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "TVSHLTD|20180331",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 55,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "TVSHLTD|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 55,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "TVSHLTD|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 55,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "TVSSRICHAK|20180331",
+   {
+    "first_con_filing_ever": 20180630,
+    "nse_index_con_quarters": 30,
+    "nse_index_std_quarters": 77,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "UNIONBANK|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "UNIONBANK|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "UNIONBANK|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "UNITDSPR|20180331",
+   {
+    "first_con_filing_ever": 20190331,
+    "nse_index_con_quarters": 30,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "UNITDSPR|20180630",
+   {
+    "first_con_filing_ever": 20190331,
+    "nse_index_con_quarters": 30,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "UNITDSPR|20180930",
+   {
+    "first_con_filing_ever": 20190331,
+    "nse_index_con_quarters": 30,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "UNITDSPR|20181231",
+   {
+    "first_con_filing_ever": 20190331,
+    "nse_index_con_quarters": 30,
+    "nse_index_std_quarters": 85,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "YESBANK|20180630",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "YESBANK|20180930",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ],
+  [
+   "YESBANK|20181231",
+   {
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 84,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "written": null
+   }
+  ]
+ ]
+}
