@@ -74,6 +74,10 @@ LEDGERS = [
     # cells are the oldest in the dataset — the era CI never rebuilds, so a clobber here would be
     # silent for years. Registered at creation time.
     ("agg_pat_cell_fills.json",        "fund",  "std",  1),
+    # CORRECTIONS, not fills (§90g): a stored pre-2015 npStd the site's own FY identity indicted
+    # and gate H replaced. A clobber here does not lose a backfill, it silently RESTORES a value
+    # the identity refuted — the pat_defects class. Registered at creation time.
+    ("era_pat_corrections.json",       "fund",  "std",  1),
 ]
 # BASIS-IN-KEY ledgers: "SYM|QE|basis", not "SYM|QE" — the flat loop above would rsplit the BASIS
 # off as the quarter and check nothing. These were UNGUARDED until 2026-08-10: nse_xbrl_rev_fills

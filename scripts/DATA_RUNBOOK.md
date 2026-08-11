@@ -8577,3 +8577,62 @@ URL it actually sent** (memory: feedback-url-encode-symbol-queries).
 ISIN query exactly (INE168A01041 → Jammu and Kashmir Bank / JKB), and ISIN survives renames where
 the symbol does not. Gated on ISIN equality, never on name similarity.
 
+
+### 90g. GATE H — correcting a stored cell the identity indicts, and why 30 of 175 is the honest answer
+A correction is not a fill. A fill's worst case is a wrong new number; a correction destroys a value
+an earlier campaign put there on its own evidence, and its worst case is replacing a right number
+with a wrong one — the §71h class, where a blanket resync overwrote 3IINFOLTD's correct owners
+figure. `agg_tools/correct_era_suspects.py` is therefore strictly tighter than gate E:
+
+* **H1 the verdict must be credible** — annual independent of its quarters, ≤2 excusals (or ≤2%).
+  **121 of 175 suspects fail here**, and that is the point: GLAXO contributes 10 and STERLINBIO 15,
+  and GLAXO is a company where **MC, not we, is wrong** (0.46 printed between 115.70 and 147.54).
+* **H2 the neighbourhood must be clean** — the site must reproduce our ±1 and ±2 quarters exactly.
+  A site that also differs at a neighbour is on a different VINTAGE across that stretch, and nothing
+  available here says which vintage is right. Removes MRPL (Jun-08 845.40/869.80, Sep-08
+  24.92/62.40), WOCKPHARMA, EICHERMOT, HMT.
+* **H3/H4** the identity break and the disputed difference must both be material.
+* **H5 tolerance floors must not be most of the signal** — the identity carries a 0.5 cr floor,
+  larger than MELSTAR's entire quarterly PAT (±0.2 cr), so on such a company it discriminates
+  nothing.
+
+**30 corrected**, journalled to `scripts/era_pat_corrections.json` with the full ±2 neighbourhood,
+both FY sums and the annual — BHARTIARTL-class defects: FACT Mar-2008 −48.36 → 151.64,
+JPASSOCIAT Dec-2009 314.96 → 103.02, SANOFI Dec-2010 29.20 → 104.90, POLARIS Dec-2002 5.22 → 16.96.
+Every entry carries the caveat that MC/TL/TT are **one vendor** (§81c), so this is the site's own
+annual arbitrating its own quarterly row — a filing read outranks it.
+
+★ **Two caps that gate the same thing must be OR, not AND.** The first cut required ≤2 excusals AND
+≤2%, which is unreachable for any overlap under 100 quarters — AMBUJACEM's 2-in-90 was refused by a
+rule that could never have admitted it.
+
+### 90h. ★ A REGISTERED LEDGER CAN STILL CHECK NOTHING — confirm the COUNT moves
+`verify_fills_live.py` skips any entry whose registered value-key is absent (`key not in v:
+continue`). It registers `"std"`; the first version of `apply_agg_pat_fills.py` wrote the value
+under `"patS"`. All 753 cells were skipped and the run still printed **MISSING 0** — indistinguishable
+from a clean bill of health. It was caught only because `checked` did not move when the ledger grew
+by 309 entries (8,885 → 8,885, then 9,638 once fixed).
+★ **After registering a ledger, assert that the checked count rises by the number of cells you
+added.** This is the same failure the file's own comments describe for three-part keys; the lesson
+did not generalise because nobody checks the counter.
+
+### 90i. Final state of the pre-2015 std-PAT campaign (2026-08-12)
+| year | before | after |
+|---|---|---|
+| 2002 | 51.2% | **62.8%** |
+| 2003 | 57.9% | **70.2%** |
+| 2004 | 45.4% | **62.5%** |
+| 2005 | 90.9% | **92.8%** |
+| 2006 | 94.0% | **95.5%** |
+| 2007 | 93.5% | **94.8%** |
+| 2008-14 | 97.0-99.3% | 97.4-99.3% |
+
+**769 cells filled, 30 corrected, 0 lost, 0 unintended value changes.** Why it is not 100%, measured
+rather than asserted — of the 1,829 still open: **949 sit on companies whose MC series disagrees
+with ours too often to trust** (and it is NOT a basis mismatch: MC's consolidated table was probed
+on 25 of them and fits WORSE in every single one — UNITECH 80 std anchors vs 0 con), **912 are
+beyond MC's reach** (278 older than its table starts, 283 on companies it cannot resolve, 266 with
+no series, 70 in a hole in its table), 162 sit in an FY the site itself restates. Only 2 of 2,598
+look like a genuine half-yearly filer. **The wall is one vendor's reach, not "these results were
+never published"** — §57's ladder has rungs left (filing PDFs, Wayback, annual reports), and none of
+this residue may be reported as unfillable (§0, §61b).

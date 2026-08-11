@@ -125,7 +125,10 @@ def adjudicate_symbol(sym, ident, field="patS", hi=20141231):
     # gate E1, which counts disagreements. NOVARTIND wanted 12 excusals, HUHTAMAKI 5.
     if not indep:
         meta["excusal"] = "REFUSED: this company's annual never differs from its own quarters"
-    elif n_out > MAX_EXCUSED or (overlap and n_out / float(overlap) > MAX_EXCUSED_RATE):
+    # OR, not AND: an absolute cap of 2 combined with a 2% rate is unreachable for any overlap
+    # under 100 quarters, so AMBUJACEM's 2-in-90 was refused by a rule that could never have
+    # admitted it. A symbol qualifies on EITHER a small absolute count OR a small rate.
+    elif n_out > MAX_EXCUSED and (not overlap or n_out / float(overlap) > MAX_EXCUSED_RATE):
         meta["excusal"] = ("REFUSED: %d excusals over %d overlapping quarters exceeds the cap "
                            "(%d, %.0f%%)" % (n_out, overlap, MAX_EXCUSED, MAX_EXCUSED_RATE * 100))
     else:
