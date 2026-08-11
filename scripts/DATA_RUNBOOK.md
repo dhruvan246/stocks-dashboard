@@ -7775,6 +7775,14 @@ had a materially different Net Sales row in the same payload — up to 58% apart
 3,681; ICICIPRULI 15,896 vs 10,056). Scored both ways, the chosen label reproduces strictly better in
 **318 of 318**.
 
+**★ A LOUD CRASH BEAT A SILENT WRONG ANSWER, and it is worth noticing why.** The label-scoring code
+shipped with `ours` read one line before it was assigned, which raised `UnboundLocalError` on the
+first symbol of every run. That looks like a plain bug, but `ours` is exactly the anchor set the
+scorer chooses the row label against — **had it inherited a stale value from the previous iteration
+instead of crashing, it would have picked THIS company's revenue row using the PREVIOUS company's
+anchors**, and the wrong-row defect would have arrived silently on an unknown number of cells. A
+variable that selects an interpretation should fail closed; the crash was the good outcome.
+
 **★ AND IT OVERTURNED A REFUSAL.** The 2018 campaign closed its insurer route holding 11 cells on the
 claim that "our stored insurer standalone cannot be reconciled to the filings". It reconciles — the
 comparison was against the wrong row. On the winning label:
