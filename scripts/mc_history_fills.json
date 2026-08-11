@@ -6935,6 +6935,36 @@
   "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
   "type_format": "cons_quarterly"
  },
+ "GICRE|20180630|con": {
+  "fallback_check": "MC con 15855.36 differs from MC OWN std 15695.00 for this quarter -> a real consolidated table, not the standalone repeated (\u00a785).",
+  "gate": "21 anchors, 2 distant disagreements (2023 only), none within \u00b16 quarters",
+  "label_evidence": "\u00a755 insurer: the premium-only row is the WRONG one here \u2014 this series reproduces our stored consolidated quarters 9/10 (GICRE) and 22/25 (ICICIPRULI) on Total Income From Operations against 0/10 and 0/25 on Net Sales/Income from operations. Candidate raised by the 2018 session after its own insurer refusal turned out to be a wrong-ROW reading, not a data absence.",
+  "rev": 15855.36,
+  "row_label": "Total Income From Operations",
+  "sc_id": "GIC12",
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
+  "type_format": "cons_quarterly"
+ },
+ "GICRE|20180930|con": {
+  "fallback_check": "MC con 13207.48 differs from MC OWN std 13180.25 for this quarter -> a real consolidated table, not the standalone repeated (\u00a785).",
+  "gate": "21 anchors, 2 distant disagreements (2023 only), none within \u00b16 quarters",
+  "label_evidence": "\u00a755 insurer: the premium-only row is the WRONG one here \u2014 this series reproduces our stored consolidated quarters 9/10 (GICRE) and 22/25 (ICICIPRULI) on Total Income From Operations against 0/10 and 0/25 on Net Sales/Income from operations. Candidate raised by the 2018 session after its own insurer refusal turned out to be a wrong-ROW reading, not a data absence.",
+  "rev": 13207.48,
+  "row_label": "Total Income From Operations",
+  "sc_id": "GIC12",
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
+  "type_format": "cons_quarterly"
+ },
+ "GICRE|20181231|con": {
+  "fallback_check": "MC con 8668.29 differs from MC OWN std 8550.96 for this quarter -> a real consolidated table, not the standalone repeated (\u00a785).",
+  "gate": "21 anchors, 2 distant disagreements (2023 only), none within \u00b16 quarters",
+  "label_evidence": "\u00a755 insurer: the premium-only row is the WRONG one here \u2014 this series reproduces our stored consolidated quarters 9/10 (GICRE) and 22/25 (ICICIPRULI) on Total Income From Operations against 0/10 and 0/25 on Net Sales/Income from operations. Candidate raised by the 2018 session after its own insurer refusal turned out to be a wrong-ROW reading, not a data absence.",
+  "rev": 8668.29,
+  "row_label": "Total Income From Operations",
+  "sc_id": "GIC12",
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
+  "type_format": "cons_quarterly"
+ },
  "GICRE|20190630|con": {
   "gate": "16 anchors, 2 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 1.463,
@@ -9086,6 +9116,46 @@
   "rev": 352.52,
   "row_label": "Net Sales/Income from operations",
   "sc_id": "HEP",
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
+  "type_format": "cons_quarterly"
+ },
+ "ICICIPRULI|20180331|con": {
+  "fallback_check": "MC con 7290.28 differs from MC OWN std 7289.72 for this quarter -> a real consolidated table, not the standalone repeated (\u00a785).",
+  "gate": "26 anchors, 3 distant disagreements (2022-23 only), none within \u00b16 quarters",
+  "label_evidence": "\u00a755 insurer: the premium-only row is the WRONG one here \u2014 this series reproduces our stored consolidated quarters 9/10 (GICRE) and 22/25 (ICICIPRULI) on Total Income From Operations against 0/10 and 0/25 on Net Sales/Income from operations. Candidate raised by the 2018 session after its own insurer refusal turned out to be a wrong-ROW reading, not a data absence.",
+  "rev": 7290.28,
+  "row_label": "Total Income From Operations",
+  "sc_id": "IPL01",
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
+  "type_format": "cons_quarterly"
+ },
+ "ICICIPRULI|20180630|con": {
+  "fallback_check": "MC con 7899.10 differs from MC OWN std 7898.60 for this quarter -> a real consolidated table, not the standalone repeated (\u00a785).",
+  "gate": "26 anchors, 3 distant disagreements (2022-23 only), none within \u00b16 quarters",
+  "label_evidence": "\u00a755 insurer: the premium-only row is the WRONG one here \u2014 this series reproduces our stored consolidated quarters 9/10 (GICRE) and 22/25 (ICICIPRULI) on Total Income From Operations against 0/10 and 0/25 on Net Sales/Income from operations. Candidate raised by the 2018 session after its own insurer refusal turned out to be a wrong-ROW reading, not a data absence.",
+  "rev": 7899.1,
+  "row_label": "Total Income From Operations",
+  "sc_id": "IPL01",
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
+  "type_format": "cons_quarterly"
+ },
+ "ICICIPRULI|20180930|con": {
+  "fallback_check": "MC con 8972.16 differs from MC OWN std 8971.65 for this quarter -> a real consolidated table, not the standalone repeated (\u00a785).",
+  "gate": "26 anchors, 3 distant disagreements (2022-23 only), none within \u00b16 quarters",
+  "label_evidence": "\u00a755 insurer: the premium-only row is the WRONG one here \u2014 this series reproduces our stored consolidated quarters 9/10 (GICRE) and 22/25 (ICICIPRULI) on Total Income From Operations against 0/10 and 0/25 on Net Sales/Income from operations. Candidate raised by the 2018 session after its own insurer refusal turned out to be a wrong-ROW reading, not a data absence.",
+  "rev": 8972.16,
+  "row_label": "Total Income From Operations",
+  "sc_id": "IPL01",
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
+  "type_format": "cons_quarterly"
+ },
+ "ICICIPRULI|20181231|con": {
+  "fallback_check": "MC con 8669.71 differs from MC OWN std 8668.96 for this quarter -> a real consolidated table, not the standalone repeated (\u00a785).",
+  "gate": "26 anchors, 3 distant disagreements (2022-23 only), none within \u00b16 quarters",
+  "label_evidence": "\u00a755 insurer: the premium-only row is the WRONG one here \u2014 this series reproduces our stored consolidated quarters 9/10 (GICRE) and 22/25 (ICICIPRULI) on Total Income From Operations against 0/10 and 0/25 on Net Sales/Income from operations. Candidate raised by the 2018 session after its own insurer refusal turned out to be a wrong-ROW reading, not a data absence.",
+  "rev": 8669.71,
+  "row_label": "Total Income From Operations",
+  "sc_id": "IPL01",
   "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
   "type_format": "cons_quarterly"
  },

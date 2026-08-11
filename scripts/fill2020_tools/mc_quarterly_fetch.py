@@ -10,8 +10,21 @@ guessable — it lives on a different host and is only visible in the browser's 
 
     type_format=quarterly       -> STANDALONE      type_format=cons_quarterly -> CONSOLIDATED
 
+⚠️ THE "60 QUARTERS" BELOW IS THIS SCRIPT'S OWN `limit`, NOT THE SITE'S REACH — limit=200 returns 77
+rows back to Jun-2007 for the same scrip. Quoting it as the source's depth is quoting your own
+parameter (memory: feedback-endpoint-caps-are-silent). The disk cache key includes the limit.
+
+⚠️ AND `Net Sales/Income from operations` IS NOT UNIVERSALLY "our exact basis" — the sentence below
+said so and it is wrong for whole sectors. MC serves BOTH that row and `Total Income From Operations`
+(net sales + other income) in the same payload, and for insurers the second is the right one:
+measured 2026-08-11, GICRE con reproduces 0/10 of our stored quarters on Net Sales against 9/10 on
+Total Income, NIACL 1/22 vs 18/22, HDFCLIFE 0/22 vs 17/22, ICICIPRULI 0/25 vs 22/25. Reading the
+wrong row is invisible to every magnitude gate because both values are plausible and correctly
+placed (SIEMENS 2018-12: 2753.3 vs 2825.9). So series() SCORES every candidate label against our own
+stored quarters and takes the winner — never trust a label by name, and treat a tie as unresolved.
+
 Measured on DLF (sc_id D04): **60 quarters back to Sep 2011**, at FILING PRECISION, under the row
-label `Net Sales/Income from operations` — our exact basis, not "total income". DLF Mar-2019 comes
+label `Net Sales/Income from operations` — the winning label FOR THAT COMPANY. DLF Mar-2019 comes
 back 2,500.43 where the §60d screener-annual derivation had produced 2,500.34; the 0.09 difference
 is precisely the crore-rounding of screener's annual total, so Moneycontrol both CONFIRMS that
 derivation and REFINES it (§60e's refinement step, satisfied by a second reader rather than a PDF).
@@ -318,20 +331,27 @@ def main():
             for qe in qlist:
                 skips["%s|%d|%s" % (sym, qe, basis)] = "no verified moneycontrol code for this symbol"
             continue
-        mc, _label = series(code, basis, ours=ours)
+        # ★ `ours` MUST be built BEFORE series() — it is what series() scores the candidate row
+        # labels against, and it decides which revenue definition gets read. Passing an unset (or,
+        # worse, the PREVIOUS symbol's) `ours` was an UnboundLocalError on the first symbol of every
+        # run; had it not crashed it would have chosen this company's row using another company's
+        # anchors, which is the wrong-row defect (§85, SIEMENS: Net Sales 2753.3 vs Total Income
+        # 2825.9, both real rows in the same payload) arriving silently instead of loudly.
+        ours = {int(q): r[SLOT[basis]] for q, r in (revop.get(sym) or {}).items()
+                if len(r) > SLOT[basis] and r[SLOT[basis]] is not None}
+        mc, label = series(code, basis, ours=ours)
         _jitter()
         if not mc:
             for qe in qlist:
-                skips["%s|%d|%s" % (sym, qe, basis)] = "moneycontrol returned no %s series" % basis
+                skips["%s|%d|%s" % (sym, qe, basis)] = (
+                    "RETRYABLE empty %s series (run-time, not evidence)" % basis)
             continue
-        ours = {int(q): r[SLOT[basis]] for q, r in (revop.get(sym) or {}).items()
-                if r[SLOT[basis]] is not None}
-        ok, match, bad = gate(mc, ours)
+        ok, match, bad, why = gate(mc, ours)          # gate returns 4: (ok, match, bad, why)
         if not ok:
             for qe in qlist:
                 skips["%s|%d|%s" % (sym, qe, basis)] = (
-                    "GATE: %d of our stored quarters reproduced, %d disagreements%s"
-                    % (len(match), len(bad),
+                    "GATE(%s): %s — %d of our stored quarters reproduced, %d disagreements%s"
+                    % (label, why, len(match), len(bad),
                        (" e.g. %d ours %.2f vs mc %.2f" % bad[0]) if bad else ""))
             continue
         for qe in qlist:
@@ -345,7 +365,7 @@ def main():
                 skips[key] = "moneycontrol value %.2f is not a positive revenue" % v
                 continue
             fills[key] = {"rev": round(v, 2), "src": "moneycontrol appfeeds quarterly_results_responsive",
-                          "sc_id": code, "type_format": FMT[basis],
+                          "sc_id": code, "type_format": FMT[basis], "row_label": label,
                           "gate": "%d stored quarters reproduced, 0 disagreements" % len(match),
                           "gate_quarters": match[:8]}
             read += 1
