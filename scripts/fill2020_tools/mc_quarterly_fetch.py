@@ -46,12 +46,14 @@ scripts/fill2020_tools/_mc_skips.json (refusals).
 
 Run:  python -X utf8 scripts/fill2020_tools/mc_quarterly_fetch.py [--only SYM,SYM] [--qes 20190331,...] [--apply]
 """
+import html as html_lib
 import json
 import os
 import re
 import subprocess
 import sys
 import time
+import urllib.parse
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SCRIPTS = os.path.dirname(HERE)
@@ -185,24 +187,54 @@ def num(s):
     return -v if neg else v
 
 
-def resolve_code(sym, codes):
-    """MC sc_id for an NSE symbol, VERIFIED against the row's own symbol field (§49)."""
-    if sym in codes:
-        return codes[sym]
-    body = get(SEARCH % sym)
+def _search_for(query, want):
+    """One search request for `query`, returning the sc_id whose row carries symbol `want` (§49).
+
+    ★ THE QUERY MUST BE URL-ENCODED. It was not, and an ampersand in a symbol ENDS the query
+    parameter: `?query=M&M` asks the endpoint for "M" and passes a stray `M` alongside. It fails
+    SILENTLY — 13 perfectly plausible rows come back for "M", none of them Mahindra, and the symbol
+    gets written off as having no Moneycontrol page. Measured 2026-08-11: M&M unencoded -> no match,
+    encoded -> sc_id MM; J&KBANK -> JKB. Ten symbols in the store carry an ampersand."""
+    body = get(SEARCH % urllib.parse.quote(query, safe=""))
     try:
         rows = json.loads(body)
     except Exception:
-        codes[sym] = None
         return None
-    want = sym.upper()
     for r in rows:
         # pdt_dis_nm looks like: NAME<span>ISIN, NSESYMBOL, BSECODE</span>
         blob = re.sub(r"<[^>]+>", " ", r.get("pdt_dis_nm", "") or "")
         toks = [t.strip().upper() for t in re.split(r"[,\s]+", blob) if t.strip()]
         if want in toks or (r.get("stock_name", "") or "").upper() == want:
-            codes[sym] = r.get("sc_id")
-            return codes[sym]
+            return r.get("sc_id")
+    return None
+
+
+def resolve_code(sym, codes, renames=None, retry_negative=False):
+    """MC sc_id for an NSE symbol, VERIFIED against the row's own symbol field (§49).
+
+    Tries, in order: the symbol as stored; its HTML-unescaped form (our store holds double-escaped
+    variants like `M&AMP;M` and `IL&AMP;FSENGG`, symbols no exchange ever listed); and the symbol it
+    was RENAMED to, because Moneycontrol indexes a company under its CURRENT ticker and a merged-away
+    symbol is simply not there (TUBEINVEST -> TIINDIA, AMARAJABAT -> ARE&M). 50 of the 212 written-off
+    symbols are in scripts/_rename_map.json.
+
+    ⚠️ A NEGATIVE IS CACHED BUT NOT PERMANENT. `codes[sym] = None` used to end the story forever, so
+    one rate-limited minute wrote a symbol off for good — the same "an empty body is a run-time
+    condition, not evidence" rule (§0/§55a) the series fetchers already respect. Pass
+    retry_negative=True to re-attempt everything previously written off."""
+    if sym in codes and (codes[sym] is not None or not retry_negative):
+        return codes[sym]
+    want = sym.upper()
+    tried = []
+    for q in (sym, html_lib.unescape(sym.replace("&AMP;", "&")), (renames or {}).get(sym)):
+        if not q or q in tried:
+            continue
+        tried.append(q)
+        code = _search_for(q, want if q == sym else q.upper())
+        if code:
+            codes[sym] = code
+            return code
+        _jitter(0.3, 0.7)
     codes[sym] = None
     return None
 
