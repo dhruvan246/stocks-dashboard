@@ -147,6 +147,7 @@
    20201231,
    20210331
   ],
+  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "rev": 673.07,
   "sc_id": "BI01",
   "src": "moneycontrol appfeeds quarterly_results_responsive",
@@ -181,6 +182,7 @@
    20200630,
    20200930
   ],
+  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "rev": 734.05,
   "sc_id": "BEM",
   "src": "moneycontrol appfeeds quarterly_results_responsive",
@@ -289,6 +291,7 @@
   "type_format": "cons_quarterly"
  },
  "BOMDYEING|20180630|con": {
+  "fallback_check": "equals our standalone, but this company never shows con != std across 32 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "28 stored quarters reproduced, 0 disagreements",
   "gate_quarters": [
    20190630,
@@ -306,6 +309,7 @@
   "type_format": "cons_quarterly"
  },
  "BOMDYEING|20180930|con": {
+  "fallback_check": "equals our standalone, but this company never shows con != std across 32 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "28 stored quarters reproduced, 0 disagreements",
   "gate_quarters": [
    20190630,
@@ -323,6 +327,7 @@
   "type_format": "cons_quarterly"
  },
  "BOMDYEING|20181231|con": {
+  "fallback_check": "equals our standalone, but this company never shows con != std across 32 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "28 stored quarters reproduced, 0 disagreements",
   "gate_quarters": [
    20190630,
@@ -1323,6 +1328,7 @@
   "type_format": "cons_quarterly"
  },
  "INDIGO|20181231|con": {
+  "fallback_check": "equals our standalone, but this company never shows con != std across 40 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "32 stored quarters reproduced, 0 disagreements",
   "gate_quarters": [
    20180630,
@@ -2383,6 +2389,7 @@
   "type_format": "cons_quarterly"
  },
  "PETRONET|20180630|con": {
+  "fallback_check": "equals our standalone, but this company never shows con != std across 32 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "29 stored quarters reproduced, 0 disagreements",
   "gate_quarters": [
    20190331,
@@ -2400,6 +2407,7 @@
   "type_format": "cons_quarterly"
  },
  "PETRONET|20180930|con": {
+  "fallback_check": "equals our standalone, but this company never shows con != std across 32 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "29 stored quarters reproduced, 0 disagreements",
   "gate_quarters": [
    20190331,
@@ -2417,6 +2425,7 @@
   "type_format": "cons_quarterly"
  },
  "PETRONET|20181231|con": {
+  "fallback_check": "equals our standalone, but this company never shows con != std across 32 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "29 stored quarters reproduced, 0 disagreements",
   "gate_quarters": [
    20190331,
@@ -2469,6 +2478,7 @@
   "type_format": "cons_quarterly"
  },
  "RCF|20180930|con": {
+  "fallback_check": "equals our standalone, but this company never shows con != std across 32 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "29 stored quarters reproduced, 0 disagreements",
   "gate_quarters": [
    20180630,
@@ -2486,6 +2496,7 @@
   "type_format": "cons_quarterly"
  },
  "RCF|20181231|con": {
+  "fallback_check": "equals our standalone, but this company never shows con != std across 32 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "29 stored quarters reproduced, 0 disagreements",
   "gate_quarters": [
    20180630,

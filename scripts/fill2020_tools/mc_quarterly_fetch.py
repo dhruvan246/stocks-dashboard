@@ -59,12 +59,21 @@ SEARCH = ("https://www.moneycontrol.com/mccode/common/autosuggestion_solr.php"
           "?classic=true&query=%s&type=1&format=json")
 FMT = {"std": "quarterly", "con": "cons_quarterly"}
 SLOT = {"std": 0, "con": 1}
-REV_ROW = "Net Sales/Income from operations"
+# ⚠️ NOT ONE UNIVERSAL ROW. For insurers "Net Sales/Income from operations" is only the PREMIUM leg
+# — GICRE con reproduces 0/18 of our quarters on it and 16/18 on "Total Income From Operations";
+# NIACL 1/22 vs 18/22; IDEA 36/45 vs 45/45. DLF ties on both, which is why one industrial example
+# makes the choice look settled. Try every candidate and keep whichever REPRODUCES our stored
+# values — the same principle that makes bank ("Interest Earned") layouts safe (§53, §60c).
+REV_ROWS = ("Net Sales/Income from operations", "Total Income From Operations", "Interest Earned")
+REV_ROW = REV_ROWS[0]
 MON = {"Jan": 3, "Feb": 3, "Mar": 3, "Apr": 6, "May": 6, "Jun": 6,
        "Jul": 9, "Aug": 9, "Sep": 9, "Oct": 12, "Nov": 12, "Dec": 12}
 LAST = {3: 31, 6: 30, 9: 30, 12: 31}
 # the gate
 NEED_MATCH = 3
+NEED_LOCAL = 3
+LOCAL_WIN = 6
+MAX_GLOBAL_BAD = 0.15
 TOL_ABS, TOL_REL = 0.05, 0.002
 
 
@@ -156,8 +165,26 @@ def resolve_code(sym, codes):
     return None
 
 
-def series(code, basis, limit=200):
-    """{qe: revenue} from Moneycontrol, cached on disk.
+def series_raw(code, basis, limit=200):
+    """The RAW row dicts. The payload carries the WHOLE P&L, not just revenue, so PAT,
+    minority interest, EPS and equity capital come free from the same cached response —
+    the revenue pass originally threw all of that away."""
+    os.makedirs(CACHE, exist_ok=True)
+    p = os.path.join(CACHE, "%s_%s_%d.json" % (code, basis, limit))
+    if os.path.exists(p) and os.path.getsize(p) > 200:
+        raw = open(p, encoding="utf8").read()
+    else:
+        raw = get(FEED % (code, FMT[basis], limit))
+        if raw and len(raw) > 200:
+            open(p, "w", encoding="utf8").write(raw)
+    try:
+        return (json.loads(raw).get("data") or [])
+    except Exception:
+        return []
+
+
+def series(code, basis, limit=200, ours=None):
+    """({qe: revenue}, row_label) from Moneycontrol, cached on disk.
 
     ⚠️ `limit` IS A SILENT CAP, AND THE RESPONSE MIRRORS IT. The payload's `count` echoes whatever
     you asked for, so a truncated series reads as the site's own reach when it is really your own
@@ -183,20 +210,40 @@ def series(code, basis, limit=200):
         if raw and len(raw) > 200:
             open(p, "w", encoding="utf8").write(raw)
     try:
-        d = json.loads(raw)
+        rows = json.loads(raw).get("data") or []
     except Exception:
-        return {}
-    out = {}
-    for row in d.get("data") or []:
-        qe = qe_of(row.get("yrc0"))
-        v = num(row.get(REV_ROW))
-        if qe and v is not None:
-            out[qe] = v
-    return out
+        return {}, None
+    best, best_label, best_score = {}, None, -1
+    for label in REV_ROWS:
+        cand = {}
+        for row in rows:
+            qe = qe_of(row.get("yrc0"))
+            v = num(row.get(label))
+            if qe and v is not None:
+                cand[qe] = v
+        if not cand:
+            continue
+        score = sum(1 for qe, v in (ours or {}).items()
+                    if qe in cand and abs(cand[qe] - v) <= max(TOL_ABS, TOL_REL * max(abs(v), abs(cand[qe]))))
+        if score > best_score:
+            best, best_label, best_score = cand, label, score
+    return best, best_label
 
 
-def gate(mc, ours):
-    """(ok, matched, disagreements). §60c: >=3 reproduced, ZERO disagreements."""
+def shift_q(qe, n):
+    """The quarter-end n quarters BEFORE qe (negative n = after)."""
+    y, m = qe // 10000, (qe // 100) % 100
+    i = y * 4 + {3: 0, 6: 1, 9: 2, 12: 3}[m] - n
+    yy, r = divmod(i, 4)
+    mm = [3, 6, 9, 12][r]
+    return yy * 10000 + mm * 100 + LAST[mm]
+
+
+def gate(mc, ours, target=None):
+    """(ok, matched, disagreements, why) — the series must be right WHERE WE READ.
+
+    A global zero-disagreement rule refuses a cell with a dozen exact local anchors over one miss
+    years away, and those distant misses are usually OUR bad cells."""
     match, bad = [], []
     for qe, v in sorted(ours.items()):
         if qe not in mc:
@@ -205,7 +252,21 @@ def gate(mc, ours):
             match.append(qe)
         else:
             bad.append((qe, v, mc[qe]))
-    return (len(match) >= NEED_MATCH and not bad), match, bad
+    n = len(match) + len(bad)
+    if len(match) < NEED_MATCH:
+        return False, match, bad, "only %d anchors" % len(match)
+    if n and len(bad) / float(n) > MAX_GLOBAL_BAD:
+        return False, match, bad, "global disagreement %d/%d" % (len(bad), n)
+    if target is not None:
+        lo, hi = shift_q(target, LOCAL_WIN), shift_q(target, -LOCAL_WIN)
+        lb = [b for b in bad if lo <= b[0] <= hi]
+        lo_ok = [q for q in match if lo <= q <= hi]
+        if lb:
+            return False, match, bad, ("disagreement inside +/-%d quarters: %d ours %.2f vs mc %.2f"
+                                       % (LOCAL_WIN, lb[0][0], lb[0][1], lb[0][2]))
+        if len(lo_ok) < NEED_LOCAL:
+            return False, match, bad, "only %d anchors within +/-%d quarters" % (len(lo_ok), LOCAL_WIN)
+    return True, match, bad, "ok"
 
 
 def main():
@@ -257,7 +318,7 @@ def main():
             for qe in qlist:
                 skips["%s|%d|%s" % (sym, qe, basis)] = "no verified moneycontrol code for this symbol"
             continue
-        mc = series(code, basis)
+        mc, _label = series(code, basis, ours=ours)
         _jitter()
         if not mc:
             for qe in qlist:
@@ -304,7 +365,13 @@ def main():
         return
 
     applied = 0
+    held = 0
     for key, v in sorted(fills.items()):
+        # HELD by the con-fallback screen (§85): MC's consolidated table repeats the STANDALONE
+        # figure in quarters with no consolidated filing.
+        if v.get("held"):
+            held += 1
+            continue
         sym, qe_s, basis = key.split("|")
         row = (revop.get(sym) or {}).get(qe_s)
         if row is None or row[SLOT[basis]] is not None:

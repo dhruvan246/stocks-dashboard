@@ -7602,3 +7602,75 @@ calling `FI.datebound(None, …)`, and `bse_get` throws on a `None` opener while
 identical.** Use `FI.bse_session()`, and make the positive control prove itself before believing its
 verdict. Second, the first real probe used a GUID truncated by my own `print`, so its 404 meant
 nothing.
+
+
+---
+
+## 85. ★★★ MONEYCONTROL'S CONSOLIDATED TABLE FALLS BACK TO STANDALONE — the defect every gate passes  (2026-08-11)
+
+Sibling to §81's route spec. §81 tells you how to READ Moneycontrol; this tells you what NOT to
+believe once you have. Found before a single cell was written, on a 2,586-cell revenue ledger and a
+1,555-cell PAT ledger.
+
+**THE DEFECT.** Moneycontrol serves a `cons_quarterly` table for a company **even in quarters where
+no consolidated result was filed** — and in those quarters the row carries the **STANDALONE**
+figure. Apply it and you have manufactured a consolidated number that is really the standalone one:
+the con-copy defect class §67 spent 18 heals unpicking, arriving this time through an aggregator
+instead of a reader.
+
+**WHY EVERY GATE PASSES IT — the part that matters.** The series gate proves MC's consolidated
+series IS our company's consolidated series, by reproducing our stored con values elsewhere. It does
+that correctly. **The fallback is PER QUARTER inside a series that is otherwise right.** Anchors,
+the ±6-quarter local window, the global disagreement rate, the §83 magnitude band — all clean. This
+is the first defect in this campaign that no existing gate could see.
+
+### 85a. The discriminator — three states, and the third is the one people miss
+Costs nothing for the first two: no fetch, our own store only.
+
+| condition | verdict |
+|---|---|
+| MC con == our stored STD for that quarter, AND the company's own history shows con != std in ANY other quarter | **HOLD** — it consolidates differently, so an identical figure here is MC repeating standalone |
+| MC con == our stored STD, and our history NEVER shows con != std for that company | **KEEP** — genuine no-consolidation-difference (MOIL / CHENNPETRO shape: subsidiaries equity-accounted, so con revenue really does equal std) |
+| **our STD cell for that quarter is EMPTY** | see 85b — this is where a naive screen silently passes the cell |
+
+### 85b. ★ THE EMPTY-TWIN HOLE, and the better test hiding behind it
+Raised by the aggregator session after screening its own ledger clean: a con-vs-std comparison
+**cannot fire when our own std cell for that quarter is null**, and such cells were falling straight
+through UNCHECKED — neither held nor examined. Their ledger came back 0-held partly because all 11
+of its cells happened to have a populated twin: clean by draw, not by design.
+
+Holding blindly is not the fix. **Compare MC's consolidated to MC's OWN standalone for that
+quarter** — source-internal, needs nothing from our store, and is the direct form of the question.
+Only when that is also unavailable (no stored twin AND MC serves no std row) does it become an
+explicit `HOLD-NO-TWIN`: unverifiable rather than verified, and visible in the ledger rather than
+folded into "keep". Adding this arm caught 1 more revenue cell and 25 more PAT cells that the
+our-twin test structurally could not see.
+
+### 85c. Measured
+    con revenue  852 cells equal our stored std -> 528 HELD (206 companies), 328 kept
+    con PAT      256 cells equal our stored std -> 290 HELD (102 companies),  27 kept
+    total held across the three MC ledgers: 823
+Evidence against the held ones is not marginal — KRBL's own store shows con != std in **28**
+quarters, JHS 20, BILVYAPAR 17, MINDTREE 15, and MC still returns a figure identical to standalone.
+
+**Log the KEEP arm's evidence count, not a boolean.** "This company never shows con != std" is far
+stronger at 40 overlapping stored quarters than at 2, and a company can do both — RAJESHEXPO shows
+con != std in 41 of our quarters and con == std in 2.
+
+### 85d. Consequences beyond Moneycontrol
+* **Pre-FY2020 is the worst-affected era by construction.** Consolidated quarterlies only became
+  compulsory from FY2020 (§51a), so pre-2020 is exactly where companies filed standalone-only —
+  which is exactly where MC has nothing real to serve and substitutes. Any 2018-or-earlier
+  consolidated backfill from this source is dominated by it.
+* **It is probably in all three aggregators.** §81c establishes MC `Total Income From Operations` ==
+  Trendlyne `SR_Q` == Tickertape `qIncTrev` to the paisa — one upstream vendor. So a cell "three
+  sites agree on" may be three copies of one substitution. **Cross-aggregator agreement is not
+  corroboration.** The independent checks remain a FILING read or the FY-sum identity.
+* **A filing distinguishes the two bases by construction; an aggregator cannot.** The counter-example
+  worth copying is the insurer PDF route: GICRE cells each gated on the SAME filing's standalone page
+  reproducing our stored revS in three separate columns, every one landing con != std.
+
+Tool: `scripts/fill2020_tools/mc_con_fallback_screen.py` — source-agnostic, annotates `held` +
+reason in place, deletes nothing (a held cell is still a candidate for a real consolidated source).
+All MC appliers skip `held`. **Run it over ANY aggregator-sourced consolidated ledger, including
+retrospectively over cells already applied — the same test works after the fact.**
