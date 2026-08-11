@@ -323,8 +323,14 @@ _WEEKEND_CONFIRMED = [
 WEEKEND_SESSIONS = [datetime.date(*t) for t in _WEEKEND_CONFIRMED]
 
 
-def insert_weekend_sessions(data, j):
-    """Insert missing weekend special-session bars in place. Returns bars inserted."""
+def insert_weekend_sessions(data, j, old2new=None):
+    """Insert missing weekend special-session bars in place. Returns bars inserted.
+
+    old2new: MANUAL_MERGE's old->new ticker map. A session traded under a since-merged old
+    symbol (GET&D's 2019 muhurat, ADORWELD's pre-rename Saturdays…) must land on the SURVIVOR
+    series — without the mapping those rows skip as "unknown symbol" and 200+ real session
+    bars stay lost after a rename merge (measured 2026-08-11: 233 ledger rows under merged-away
+    keys). The f = stored/raw anchor below already puts the bar on the target's adjusted scale."""
     import bisect
     ledger = {}
     lp = os.path.join(HERE, "weekend_sessions.json.gz")
@@ -369,7 +375,8 @@ def insert_weekend_sessions(data, j):
                 print("  WEEKEND %s: file duplicates the prior day — skipped" % day); continue
         ins = skip = 0
         for r in rows:
-            sym, c, p, t = r[0], r[1], r[2], r[3]
+            osym, c, p, t = r[0], r[1], r[2], r[3]
+            sym = (old2new or {}).get(osym, osym)      # merged-away old ticker -> survivor series
             h = r[4] if len(r) > 4 else c; l = r[5] if len(r) > 5 else c
             o_ = r[6] if len(r) > 6 else c; v = r[7] if len(r) > 7 else 0
             dlv = r[8] if len(r) > 8 else 0; vw = r[9] if len(r) > 9 else 0
@@ -379,7 +386,7 @@ def insert_weekend_sessions(data, j):
             ds = e["d"]; i = bisect.bisect_left(ds, ymd)
             if i < len(ds) and ds[i] == ymd: continue  # this symbol already has the bar
             if i == 0: skip += 1; continue             # listed ON the session — no prior bar to anchor
-            raw_prev = prev_raw.get(sym) or p          # exact anchor; file PREV_CLOSE only as fallback
+            raw_prev = prev_raw.get(osym) or p         # anchor is keyed by the AS-PRINTED symbol
             if not raw_prev: skip += 1; continue
             f = e["c"][i - 1] / raw_prev               # CA-adjustment level at the insertion point
             adj_c = round(c * f, 2)
@@ -552,7 +559,37 @@ def main():
                     # Axis MF's 9 ETF ticker renames of 2026-07-03 (NAV-continuous at the join):
                     "ITAXIS": "AXISTECETF", "NIFTYAXIS": "AXISNIFTY", "BNKETFAXIS": "AXISBNKETF",
                     "HEALTHAXIS": "AXISHCETF", "CONSUMAXIS": "AXISCETF", "SENSEXAXIS": "AXSENSEX",
-                    "GOLDAXIS": "AXISGOLD", "VALUEAXIS": "AXISVALUE", "SILVERAXIS": "AXISILVER"}
+                    "GOLDAXIS": "AXISGOLD", "VALUEAXIS": "AXISVALUE", "SILVERAXIS": "AXISILVER",
+                    # --- 2026-08-11 orphaned-series batch: old-key HISTORY FRAGMENTS stranded by
+                    # historical renames (census of all 1,705 dead-ending series; each pair is in
+                    # scripts/_rename_map.json AND measured price-continuous at the join on the new
+                    # key's adjusted scale: drift = new_first / (old_last_real x CA-adj) in 0.93-1.07,
+                    # gap <= 78d, weekend-special residue bars excluded from the old end. Old keys
+                    # hold NO live fundamentals rows and are absent from F&O history (verified).
+                    # Without the merge each old key dies mid-history and marks -100% in backtests.
+                    "ADOR": "ADORWELD",        # Ador Welding pre-2004 fragment (drift 1.058, 3d)
+                    "JSWDULUX": "AKZOINDIA",   # ICI/Akzo era pre-2010 fragment (drift 1.000, 1d)
+                    "SUNDROP": "ATFL",         # Agro Tech Foods pre-2003 (drift 1.014, 2d)
+                    "BANKADD": "BANKETFADD",   # DSP Bank ETF rename chain 2024 (drift 1.004, 1d)
+                    "SUDARCOLOR": "CLNINDIA",  # Colour-Chem/Clariant pre-2006 (drift 1.073, 3d)
+                    "LANDSMILL": "EXCEL",      # Excel Realty pre-2015 (drift 0.955 after 0.022 CA-adj)
+                    "SCHAEFFLER": "FAGBEARING",# FAG Bearings pre-2001 (drift 1.009 after 0.2 CA-adj)
+                    "GVPIL": "GEPIL",          # GE Power pre-2016 fragment (drift 0.974, 2d)
+                    "GVT&D": "GET&D",          # GE T&D pre-2016 fragment (drift 1.009, 2d)
+                    "GOLDADD": "GOLDETFADD",   # DSP Gold ETF rename chain 2024 (drift 1.002, 1d)
+                    "BIRLANU": "HIL",          # Hyderabad Inds pre-2012 fragment (drift 0.983, 1d)
+                    "STYRENIX": "INEOSSTYRO",  # Styrolution/INEOS pre-2016 (drift 1.024, 3d)
+                    "ITADD": "ITETFADD",       # DSP IT ETF rename chain 2024 (drift 1.008, 1d)
+                    "BOSCH-HCIL": "JCHAC",     # Johnson Controls-Hitachi pre-2016 (drift 0.983, 3d)
+                    "SUMMIT": "KECINFRA",      # KEC Infrastructures pre-2006 (drift 0.959, 1d)
+                    "CIEINDIA": "MAHINDCIE",   # Mahindra CIE pre-2013 fragment (drift 1.013, 1d)
+                    "NIFTYADD": "NIFTY50ADD",  # DSP Nifty ETF rename chain 2024 (drift 1.008, 1d)
+                    "PROZONER": "PROZONINTU",  # Prozone pre-2014 fragment (drift 0.956, 6d)
+                    "TRANSWORLD": "SHREYAS",   # Shreyas Shipping pre-2006 era (drift 0.974, 3d)
+                    "SMLMAH": "SMLISUZU",      # SML Isuzu pre-2011 fragment (drift 1.002, 3d)
+                    "TTML": "TATATELSER",      # Tata Tele (M) pre-2003 fragment (drift 0.960, 1d)
+                    "XLENERGY": "XLTELENE",    # XL Telecom pre-2009 fragment (drift 0.950, 1d)
+                    "IBULLSLTD": "YAARI"}      # Yaari Digital 2013-2020 fragment (drift 0.927, 1d)
     merged = 0
     for new, old in MANUAL_MERGE.items():
         on = data.get(new); oo = data.get(old)
@@ -594,7 +631,7 @@ def main():
     # RAJESHEXPO 83.58/223.97 -> "2/5", both phantom).
     bz = insert_bz_history(data)
     mr = apply_manual_rights(data)   # hand-verified per-stock rights adjustments to match Trendlyne
-    wk = insert_weekend_sessions(data, j)   # backfill missing weekend special sessions (budget Sats etc.)
+    wk = insert_weekend_sessions(data, j, {o: n for n, o in MANUAL_MERGE.items()})   # backfill missing weekend special sessions (budget Sats etc.); old->new so merged-away tickers' sessions land on the survivor
     if wk: print("Weekend special sessions: %d bars inserted." % wk)
     for day in days:
         rows = B.fetch_day(day, j)

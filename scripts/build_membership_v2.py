@@ -55,7 +55,8 @@ def load_renames():
     # supplement: recent renames missing from symchg.csv; date resolved from SF price data below
     for old, new in [("GMRINFRA","GMRAIRPORT"), ("GET&D","GVT&D"), ("HBLPOWER","HBLENGINE"),
                      ("AKZOINDIA","JSWDULUX"), ("SWANENERGY","SWANCORP"), ("MFL","EPIGRAL"),
-                     ("GLS","ALIVUS"), ("ADANITRANS","ADANIENSOL"), ("MOTHERSUMI","MOTHERSON")]:
+                     ("GLS","ALIVUS"), ("ADANITRANS","ADANIENSOL"), ("MOTHERSUMI","MOTHERSON"),
+                     ("MAHINDCIE","CIEINDIA")]:   # MAHINDCIE 2026-08-11: in LargeMidcap250 history; bin key merged into CIEINDIA (orphan-series batch)
         ren.setdefault(old, (new, None))
     return ren
 

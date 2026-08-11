@@ -6,7 +6,7 @@
  *     requests (the sf-data repo, Supabase, the live-quote Worker) — those stay network-only
  *     so data is always fresh and the cache never bloats.
  * Bump CACHE when the shell asset list changes. */
-const CACHE = 'sw-shell-v77';   // v77: Season Trends caption — universe snapshot date, not a bogus "prices as of" (v76: FUND_ALIAS re-synced with _rename_map, guarded by check_fund_alias.py)
+const CACHE = 'sw-shell-v78';   // v78: entry-freshness gate in both engines — dead/renamed series can no longer be "bought" at stale prints (v77: Season Trends caption)
 const SHELL = [
   './', './index.html', './nse-bse-dashboard.html', './stock-backtest.html', './saved-strategies.html',
   './backtest-history.html', './strategy-backtest.html', './all-picks.html', './strategy-mixer.html', './mutual-funds.html', './fii-dii.html',

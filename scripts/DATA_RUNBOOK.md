@@ -7802,3 +7802,52 @@ down: a route returning nothing is a fact about the route.
 Both cells are the §67 con-copy shape: a consolidated slot holding the standalone figure. That is the
 defect class 18 heals were spent unpicking in §67, and an aggregator can re-create it silently at any
 time. `held` in the ledger is a claim about intent; only the DATA is a claim about fact.
+
+---
+
+## 86. ★★★ ORPHANED PRICE SERIES — the phantom -100% backtest class  (2026-08-11)
+**NO ASSUMPTIONS, NO GUESSWORK** — every number below was measured against the LIVE sf-data bins.
+
+### 86a. The defect
+`markPrice()` (both engines) deliberately marks a holding **0** when the asked date is past the
+series' last bar AND that bar is >90d before the dataset end ("delisted -> worth 0"). Correct for
+true delistings; WRONG when the listing continued under a new symbol — the old key's series just
+stops (rename/scheme relist) and a backtest that held it books a phantom -100%. Worse, `priceAt()`
+carries the last bar forward forever, so screens could ENTER such a series at a stale print
+(MUNJALAUTO: entered 2006-06-30 on a close 45 days old, exited 0.00).
+
+### 86b. Census (live bins, 2026-08-11)
+1,705 of 4,468 symbols are dead-ending series. Evidence classes: 57 pairs with direct rename
+evidence (34 _rename_map, 21 exact live-name match, 2 NSE symbolchange.csv); 884 unexplained
+deaths in the 2003+ daily era (mix of true delistings, mergers, unmapped renames). 4 measured
+PARALLEL-entity deaths (EICHER, GFL, IDBIBANK, OCCL) = absorbed by an already-listed company:
+NOT stitchable, -100% semantics a modeling choice, not a data bug. Fragment shape: several old
+keys hold pre-migration bars + weekend-special residue (TATAMOTORS 1996-2003+specials while TMPV
+holds 2003+; GET&D, ADORWELD, AKZOINDIA same) — zero date overlap with the survivor, i.e. one
+company's history split across two keys.
+
+### 86c. The fixes shipped
+1. **Entry-freshness gate** in `factorsAt()` (backtest-engine.js + stock-backtest.html, kept in
+   sync): no bar within 14d of the screen date (28d pre-2002 weekly era) -> not screenable.
+   Thresholds measured: daily-era gaps >14d = 0.044% of bar-transitions. At 2006-06-30 the gate
+   excludes 991 stale carry-forwards. A/B same config 2006-07: live engine 5 wipeouts, gated 3
+   (remaining 3 = real deaths); phantom entries cost that control run ~13% of final value.
+2. **MANUAL_MERGE batch (23 pairs)** in update_sf_data.py: rename_map-evidenced fragments whose
+   join is price-continuous on the survivor's adjusted scale (drift 0.93-1.07 after CA_OFF adj,
+   gap <=78d, weekend residue excluded from the old end). Verified: no live fundamentals rows under
+   any old key, none in F&O history, only AKZOINDIA/GET&D/MAHINDCIE in index membership history
+   (first two already in build_membership_v2 supplement; MAHINDCIE added).
+3. **insert_weekend_sessions is now rename-aware** (old->new via MANUAL_MERGE): 233 ledger rows
+   keyed by merged-away tickers re-home onto the survivor series next run instead of being lost.
+
+### 86d. What is deliberately NOT done (queue)
+- **MUNJALAUTO -> MUNJALAU: do NOT MANUAL_MERGE.** The 2006 event is a court scheme (2 old shares
+  -> 1 new + 1 Shivam Autotech share) — a stitch would fabricate a huge value-separation "crash"
+  inside a 2-month trading gap. corp_actions.json floor is 2016-01-05 (measured), so no official
+  factor exists to bridge it. The entry gate already kills its phantom trade.
+- 28 NEEDS-FACTOR / LONG-GAP pairs (NIIT->NIITLTD, CEAT->CEATLTD, TATAMOTORS->TMPV pre-2003
+  fragment, WOCKHARDT, MORAREALTY, NXTDIGITAL, ...): each needs its official corp-action terms
+  verified before a join factor is written. Census + verdicts: scratchpad orphans.json /
+  join_verdicts.json of session 2026-08-11; re-derivable from the census scripts.
+- Parallel-entity mergers: decide separately whether death-by-merger should exit at last real
+  close instead of 0 (affects EICHER-class trades; engine-semantics decision for the user).

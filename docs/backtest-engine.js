@@ -605,11 +605,20 @@ function factorsAt(off, cfg) {
   const useTech = needsTech(cfg);
   const useFund = needsFund(cfg); const fundDate = useFund ? dateIntOff(off) : 0; const basis = cfg.earnBasis || 'con';
   const useShp = needsShp(cfg); const shpDate = useShp ? dateIntOff(off) : 0;
+  // Entry-freshness gate: a symbol with no bar in the last 14 days (28 in the pre-2002 weekly-bar
+  // era) is not tradeable at this screen date. priceAt() carries the last bar forward forever, so
+  // without this a screen "buys" a series that already died — a renamed/delisted symbol's stale
+  // print (MUNJALAUTO entered 2006-06-30 at a close 45 days old, then marked to 0 = phantom -100%).
+  // Suspended stocks are excluded only while suspended (couldn't be bought anyway) and re-admitted
+  // once bars resume. Daily-era gaps >14d are 0.044% of all bar-transitions (measured 2026-08-11).
+  const maxBarAge = off >= dayOff('2002-01-02') ? 14 : 28;   // (Sync: stock-backtest.html)
   const rows = [];
   for (const tkr in SERIES) {
     const m = META[tkr]; if (!m) continue;
     if (m.symbol.includes('DVR')) continue;   // skip differential-voting-rights shares (TATAMTRDVR, JISLDVREQS, …) — a secondary security of a company already in the universe via its ordinary share; avoids double-counting. StockView dedups the same way (members_on drops the DVR, keeps TMPV). The DVR stays in indicesHistory (it WAS a real constituent) but is excluded from screening. (Sync: stock-backtest.html)
     if (members && !members.has(m.symbol)) continue;
+    const s = SERIES[tkr]; const li = (s && s.d && s.d.length) ? idxLE(s.d, off) : -1;
+    if (li < 0 || off - s.d[li] > maxBarAge) continue;
     const price = priceAt(tkr, off); const p0 = priceAt(tkr, lookOff);
     if (price == null || p0 == null || p0 <= 0) continue;
     if (turnoverAt(tkr, off) < cfg.mcapFloor) continue;   // point-in-time daily turnover floor
