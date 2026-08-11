@@ -6,7 +6,12 @@ without landing a value. That single bucket hides at least six different situati
 needs a DIFFERENT next rung:
 
   no-filing-listed      BSE returned no result announcement in the window  -> widen / §55a retry
-  pdf-unfetchable       listed but the attachment did not download          -> §52 pre-2016 class
+  bse-attachment-404    the announcement list HAS the filing but BOTH AttachHis and
+                        AttachLive return 404. Measured 2026-08-11: BSE no longer serves
+                        PRE-OCT-2018 attachments (Mar/Jun-2018 0 of 6 fetchable, Sep-2018
+                        2 of 3, Dec-2018 onward 3 of 3). This is a RETENTION BOUNDARY, not
+                        a fetch failure to retry and not something the vision rung can
+                        reach — there is no document. Runbook §84.
   scanned-no-text       PDF has no text layer at all                        -> §17b vision / OCR
   no-pl-page            text layer fine, no page carries a revenue row      -> wrong attachment (§55e)
   bank-or-insurer-fmt   pages are BANKISH, this reader refuses them         -> §42/§55 readers
@@ -125,7 +130,7 @@ def main():
                 raw, _ = BG.cached_pdf(sess, att)
                 pdf_cache[att] = raw
             if not raw:
-                stages.append("pdf-unfetchable")
+                stages.append("bse-attachment-404")
                 continue
             ndocs += 1
             try:
@@ -191,7 +196,7 @@ def main():
         # and only the vision rung reaches it". Judge scannedness on the documents that could
         # plausibly CARRY a statement (>=8 pages), by characters per page.
         if ndocs == 0:
-            stage = "pdf-unfetchable"
+            stage = "bse-attachment-404"
         elif ntext == 0 or (big_docs and best_cpp < 600):
             stage = ("scanned-no-text" if ntext == 0 else
                      "scanned-results-docs (best %.0f chars/page over >=8-page attachments)" % best_cpp)

@@ -7476,3 +7476,51 @@ The same document settles the cell it broke. `apply_hindalco_2018.py` writes bot
 Both are labelled `precision: crore-rounded` (§60e): the printed FY of 130,542 against a stored
 33,745.62 proves the source rounds, so the values are honest approximations with provenance, not
 filing-precision reads.
+
+---
+
+## 84. ★★★ BSE NO LONGER SERVES PRE-OCT-2018 ATTACHMENTS — the boundary that shapes every 2018 backfill  (2026-08-11)
+
+**NO ASSUMPTIONS, NO GUESSWORK** (§0) — measured on live fetches, 2026-08-11.
+
+§52 records "pre-2016 BSE attachments 404 on AttachHis/AttachLive". **The boundary has moved
+forward, and it now sits in the middle of the 2018 window.** The announcement LIST still indexes
+those filings perfectly — `AnnSubCategoryGetData` returns 2-4 result filings per 2018 quarter with
+GUIDs and headlines — but fetching the GUID returns 404 on **both** `AttachHis` and `AttachLive`.
+
+Measured over ACC / WIPRO / HINDALCO, first result filing after each quarter-end:
+
+| quarter filed for | PDF served | 404 |
+|---|---|---|
+| Mar-2018 | 0 | 3 |
+| Jun-2018 | 0 | 3 |
+| **Sep-2018** | **2** | **1** |
+| Dec-2018 … Dec-2019 | 15 | 0 |
+
+Corroborated across a wider sample: 10/10 of 2018-era attachments 404 while 9/9 of 2019/20-era
+attachments return a PDF (AARTIIND, ACC, WIPRO, HINDALCO, SADBHAV).
+
+### 84a. What this means for a pre-2019 campaign
+* **The §58 route cannot read a company's OWN pre-Oct-2018 filing.** Every 2018 cell the §58 sweep
+  landed came from a LATER filing's comparative column (`--rescue`) — visible in the ledger's `src`
+  dates, which are all 2019-11 / 2020-02 / 2020-05. That is not a preference; it is the only door.
+* **The VISION rung cannot help here either.** There is no document to render — this is not a scan
+  and not a corrupt text layer, it is a 404.
+* **Mar-2018 is squeezed from both sides**: its own filing is unretrievable, AND Moneycontrol's
+  consolidated series begins at Jun-2018 for most companies (§82's measurement). That, not reader
+  quality, is why Mar-2018 lags every other quarter on every route.
+
+### 84b. ★ AND THE DIAGNOSTIC MUST NOT CALL THIS A FETCH FAILURE
+`diag_rev2019.py` reports these as `pdf-unfetchable`, which reads as a run-time problem to retry —
+the §55a shape ("an empty list is rate-limiting, not absence"). It is the opposite: retrying forever
+will never help. **323 of 503 open 2018 cells land in this bucket**, so mislabelling it turns a hard
+availability boundary into an apparently-actionable backlog.
+
+⚠️ **Two traps this took, both worth avoiding next time.** First, when the bucket appeared I assumed
+rate limiting (my own session had just pulled ~1,350 PDFs) and "confirmed" it with a positive control
+that returned zero for filings I had demonstrably fetched minutes earlier — but the control was
+calling `FI.datebound(None, …)`, and `bse_get` throws on a `None` opener while `datebound`'s
+`except: break` swallows it and returns `[]`. **A broken probe and a blocked endpoint look
+identical.** Use `FI.bse_session()`, and make the positive control prove itself before believing its
+verdict. Second, the first real probe used a GUID truncated by my own `print`, so its 404 meant
+nothing.
