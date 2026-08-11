@@ -1,38 +1,6 @@
 {
- "_doc": "MEASURED evidence that a company filed NO CONSOLIDATED QUARTERLY RESULT for a given 2019 quarter, from NSE per-company filing index caches (scripts/_nselist, harvested 2026-08-10). Per cell the three conditions of runbook 54b hold: E1 the index lists a STANDALONE result for that exact quarter (so its silence on consolidated is meaningful, not a hole in the index); E2 it lists NO consolidated result for that quarter; E3 the quarter is EARLIER than the company FIRST consolidated filing ever (leading-run rule). This is 51a structure: quarterly consolidated results only became compulsory from FY2020. IMPORTANT \u2014 these are recorded as NOT-APPLICABLE EVIDENCE ONLY. No value is written: stored con PAT is null for every one of them, so E4 fails and copying revS into revC would CREATE a consolidated figure no document asserts (the never-invent rule). Wiring this into the gap definition needs a first-con-quarter concept in files_con across build_fill_coverage.py, audit_coverage.py and build_targets.py TOGETHER (the three-copies rule) \u2014 deliberately NOT done in this session because it moves the live Fill Coverage page numbers while other sessions are writing.",
+ "_doc": "MEASURED evidence that a company filed NO CONSOLIDATED QUARTERLY RESULT for a given 2019 quarter, from NSE per-company filing index caches (scripts/_nselist, harvested 2026-08-10). Per cell the three conditions of runbook 54b hold: E1 the index lists a STANDALONE result for that exact quarter (so its silence on consolidated is meaningful, not a hole in the index); E2 it lists NO consolidated result for that quarter; E3 the quarter is EARLIER than the company FIRST consolidated filing ever (leading-run rule). This is 51a structure: quarterly consolidated results only became compulsory from FY2020. IMPORTANT \u2014 these are recorded as NOT-APPLICABLE EVIDENCE ONLY. No value is written: stored con PAT is null for every one of them, so E4 fails and copying revS into revC would CREATE a consolidated figure no document asserts (the never-invent rule). Wiring this into the gap definition needs a first-con-quarter concept in files_con across build_fill_coverage.py, audit_coverage.py and build_targets.py TOGETHER (the three-copies rule) \u2014 deliberately NOT done in this session because it moves the live Fill Coverage page numbers while other sessions are writing. \n\n\u26a0\ufe0f CORRECTION 2026-08-11: 26 of the original 61 entries were REFUTED and moved to . E3 (\"the quarter precedes the company first consolidated filing ever\") was computed from the FIRST CONSOLIDATED ROW IN THE NSE INDEX, and for most of these symbols the index carries no consolidated rows at all before Jun-2019 \u2014 the quarter consolidated quarterlies became compulsory. That silence is a HOLE IN THE INDEX, not evidence the company never filed (\u00a757). The refutation test is cheap and must be part of the gate: if we ALREADY STORE consolidated revenue or consolidated PAT for any EARLIER quarter of the same company, E3 is false. Caught when the user asked whether aggregator sites had the data and screener.in derived INDUSINDBK and NHPC Mar-2019 \u2014 both sitting in this ledger as never-filed.",
  "cells": {
-  "ALBK|20190331": {
-   "first_con_filing_ever": 20190930,
-   "nse_index_con_quarters": 2,
-   "nse_index_std_quarters": 58,
-   "stored_con_pat": -3965.2,
-   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
-   "written": null
-  },
-  "ALBK|20190630": {
-   "first_con_filing_ever": 20190930,
-   "nse_index_con_quarters": 2,
-   "nse_index_std_quarters": 58,
-   "stored_con_pat": 132.88,
-   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
-   "written": null
-  },
-  "ANDHRABANK|20190331": {
-   "first_con_filing_ever": 20190630,
-   "nse_index_con_quarters": 3,
-   "nse_index_std_quarters": 60,
-   "stored_con_pat": null,
-   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
-   "written": null
-  },
-  "AXISBANK|20190331": {
-   "first_con_filing_ever": 20190630,
-   "nse_index_con_quarters": 28,
-   "nse_index_std_quarters": 83,
-   "stored_con_pat": 1671.3,
-   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
-   "written": null
-  },
   "BAJAJCON|20190331": {
    "first_con_filing_ever": 20190630,
    "nse_index_con_quarters": 29,
@@ -46,14 +14,6 @@
    "nse_index_con_quarters": 29,
    "nse_index_std_quarters": 75,
    "stored_con_pat": null,
-   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
-   "written": null
-  },
-  "BALMLAWRIE|20190331": {
-   "first_con_filing_ever": 20190630,
-   "nse_index_con_quarters": 28,
-   "nse_index_std_quarters": 85,
-   "stored_con_pat": 63.11,
    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
    "written": null
   },
@@ -97,14 +57,6 @@
    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
    "written": null
   },
-  "CENTRALBK|20190331": {
-   "first_con_filing_ever": 20190630,
-   "nse_index_con_quarters": 25,
-   "nse_index_std_quarters": 73,
-   "stored_con_pat": -2484.53,
-   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
-   "written": null
-  },
   "COCHINSHIP|20190331": {
    "first_con_filing_ever": 20190630,
    "nse_index_con_quarters": 28,
@@ -121,27 +73,11 @@
    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
    "written": null
   },
-  "CORPBANK|20190331": {
-   "first_con_filing_ever": 20190630,
-   "nse_index_con_quarters": 3,
-   "nse_index_std_quarters": 59,
-   "stored_con_pat": -6574.74,
-   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
-   "written": null
-  },
   "DBL|20190331": {
    "first_con_filing_ever": 20190630,
    "nse_index_con_quarters": 27,
    "nse_index_std_quarters": 41,
    "stored_con_pat": null,
-   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
-   "written": null
-  },
-  "DHFL|20190331": {
-   "first_con_filing_ever": 20190630,
-   "nse_index_con_quarters": 7,
-   "nse_index_std_quarters": 64,
-   "stored_con_pat": -2150.86,
    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
    "written": null
   },
@@ -161,35 +97,11 @@
    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
    "written": null
   },
-  "FRETAIL|20190331": {
-   "first_con_filing_ever": 20190630,
-   "nse_index_con_quarters": 11,
-   "nse_index_std_quarters": 27,
-   "stored_con_pat": 199.55,
-   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
-   "written": null
-  },
   "GLAXO|20190331": {
    "first_con_filing_ever": 20190630,
    "nse_index_con_quarters": 27,
    "nse_index_std_quarters": 83,
    "stored_con_pat": null,
-   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
-   "written": null
-  },
-  "GODFRYPHLP|20190331": {
-   "first_con_filing_ever": 20190630,
-   "nse_index_con_quarters": 29,
-   "nse_index_std_quarters": 85,
-   "stored_con_pat": 48.28,
-   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
-   "written": null
-  },
-  "GREAVESCOT|20190331": {
-   "first_con_filing_ever": 20190630,
-   "nse_index_con_quarters": 29,
-   "nse_index_std_quarters": 82,
-   "stored_con_pat": 34.83,
    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
    "written": null
   },
@@ -201,35 +113,11 @@
    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
    "written": null
   },
-  "HDFCBANK|20190331": {
-   "first_con_filing_ever": 20190630,
-   "nse_index_con_quarters": 29,
-   "nse_index_std_quarters": 86,
-   "stored_con_pat": 6300.81,
-   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
-   "written": null
-  },
-  "HINDPETRO|20190331": {
-   "first_con_filing_ever": 20190630,
-   "nse_index_con_quarters": 28,
-   "nse_index_std_quarters": 85,
-   "stored_con_pat": 3340.03,
-   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
-   "written": null
-  },
   "HINDUNILVR|20190331": {
    "first_con_filing_ever": 20190630,
    "nse_index_con_quarters": 29,
    "nse_index_std_quarters": 85,
    "stored_con_pat": null,
-   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
-   "written": null
-  },
-  "HSCL|20190331": {
-   "first_con_filing_ever": 20190630,
-   "nse_index_con_quarters": 27,
-   "nse_index_std_quarters": 75,
-   "stored_con_pat": 74.73,
    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
    "written": null
   },
@@ -254,22 +142,6 @@
    "nse_index_con_quarters": 28,
    "nse_index_std_quarters": 85,
    "stored_con_pat": null,
-   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
-   "written": null
-  },
-  "INDIANB|20190331": {
-   "first_con_filing_ever": 20190630,
-   "nse_index_con_quarters": 27,
-   "nse_index_std_quarters": 73,
-   "stored_con_pat": -189.18,
-   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
-   "written": null
-  },
-  "INDUSINDBK|20190331": {
-   "first_con_filing_ever": 20190630,
-   "nse_index_con_quarters": 28,
-   "nse_index_std_quarters": 85,
-   "stored_con_pat": 359.53,
    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
    "written": null
   },
@@ -329,14 +201,6 @@
    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
    "written": null
   },
-  "MAHABANK|20190331": {
-   "first_con_filing_ever": 20190630,
-   "nse_index_con_quarters": 26,
-   "nse_index_std_quarters": 84,
-   "stored_con_pat": 75.08,
-   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
-   "written": null
-  },
   "MAHSEAMLES|20190331": {
    "first_con_filing_ever": 20190630,
    "nse_index_con_quarters": 29,
@@ -350,30 +214,6 @@
    "nse_index_con_quarters": 28,
    "nse_index_std_quarters": 78,
    "stored_con_pat": null,
-   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
-   "written": null
-  },
-  "MRPL|20190331": {
-   "first_con_filing_ever": 20190630,
-   "nse_index_con_quarters": 29,
-   "nse_index_std_quarters": 85,
-   "stored_con_pat": 354.69,
-   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
-   "written": null
-  },
-  "NAVINFLUOR|20190331": {
-   "first_con_filing_ever": 20190630,
-   "nse_index_con_quarters": 29,
-   "nse_index_std_quarters": 76,
-   "stored_con_pat": 35.18,
-   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
-   "written": null
-  },
-  "NHPC|20190331": {
-   "first_con_filing_ever": 20190630,
-   "nse_index_con_quarters": 29,
-   "nse_index_std_quarters": 66,
-   "stored_con_pat": 542.46,
    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
    "written": null
   },
@@ -393,34 +233,10 @@
    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
    "written": null
   },
-  "PFC|20190331": {
-   "first_con_filing_ever": 20190630,
-   "nse_index_con_quarters": 29,
-   "nse_index_std_quarters": 75,
-   "stored_con_pat": 2802.4,
-   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
-   "written": null
-  },
-  "PRSMJOHNSN|20190331": {
-   "first_con_filing_ever": 20190630,
-   "nse_index_con_quarters": 28,
-   "nse_index_std_quarters": 81,
-   "stored_con_pat": 41.85,
-   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
-   "written": null
-  },
   "PTC|20190331": {
    "first_con_filing_ever": 20190630,
    "nse_index_con_quarters": 26,
    "nse_index_std_quarters": 84,
-   "stored_con_pat": null,
-   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
-   "written": null
-  },
-  "RBLBANK|20190331": {
-   "first_con_filing_ever": 20190630,
-   "nse_index_con_quarters": 29,
-   "nse_index_std_quarters": 39,
    "stored_con_pat": null,
    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
    "written": null
@@ -449,22 +265,6 @@
    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
    "written": null
   },
-  "TRENT|20190331": {
-   "first_con_filing_ever": 20190630,
-   "nse_index_con_quarters": 28,
-   "nse_index_std_quarters": 81,
-   "stored_con_pat": -4.36,
-   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
-   "written": null
-  },
-  "TRIDENT|20190331": {
-   "first_con_filing_ever": 20190630,
-   "nse_index_con_quarters": 29,
-   "nse_index_std_quarters": 85,
-   "stored_con_pat": null,
-   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
-   "written": null
-  },
   "TVSHLTD|20190331": {
    "first_con_filing_ever": 20190630,
    "nse_index_con_quarters": 28,
@@ -480,15 +280,243 @@
    "stored_con_pat": null,
    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
    "written": null
+  }
+ },
+ "generated": "2026-08-11 14:38 IST",
+ "refuted_2026_08_11": {
+  "ALBK|20190331": {
+   "first_con_filing_ever": 20190930,
+   "nse_index_con_quarters": 2,
+   "nse_index_std_quarters": 58,
+   "refuted_by": "we already store consolidated data for EARLIER quarters of this company (0 con-revenue quarters, 2 con-PAT quarters before 20190331), so the claim that this quarter precedes the first consolidated filing ever is false. The NSE index simply has no consolidated rows before Jun-2019 for this symbol \u2014 a hole in the index, not evidence of non-filing (\u00a757).",
+   "stored_con_pat": -3965.2,
+   "verdict": "REFUTED \u2014 this cell is a REAL GAP, not a never-filed quarter",
+   "written": null
+  },
+  "ALBK|20190630": {
+   "first_con_filing_ever": 20190930,
+   "nse_index_con_quarters": 2,
+   "nse_index_std_quarters": 58,
+   "refuted_by": "we already store consolidated data for EARLIER quarters of this company (0 con-revenue quarters, 3 con-PAT quarters before 20190630), so the claim that this quarter precedes the first consolidated filing ever is false. The NSE index simply has no consolidated rows before Jun-2019 for this symbol \u2014 a hole in the index, not evidence of non-filing (\u00a757).",
+   "stored_con_pat": 132.88,
+   "verdict": "REFUTED \u2014 this cell is a REAL GAP, not a never-filed quarter",
+   "written": null
+  },
+  "ANDHRABANK|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 3,
+   "nse_index_std_quarters": 60,
+   "refuted_by": "we already store consolidated data for EARLIER quarters of this company (3 con-revenue quarters, 0 con-PAT quarters before 20190331), so the claim that this quarter precedes the first consolidated filing ever is false. The NSE index simply has no consolidated rows before Jun-2019 for this symbol \u2014 a hole in the index, not evidence of non-filing (\u00a757).",
+   "stored_con_pat": null,
+   "verdict": "REFUTED \u2014 this cell is a REAL GAP, not a never-filed quarter",
+   "written": null
+  },
+  "AXISBANK|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 28,
+   "nse_index_std_quarters": 83,
+   "refuted_by": "we already store consolidated data for EARLIER quarters of this company (0 con-revenue quarters, 3 con-PAT quarters before 20190331), so the claim that this quarter precedes the first consolidated filing ever is false. The NSE index simply has no consolidated rows before Jun-2019 for this symbol \u2014 a hole in the index, not evidence of non-filing (\u00a757).",
+   "stored_con_pat": 1671.3,
+   "verdict": "REFUTED \u2014 this cell is a REAL GAP, not a never-filed quarter",
+   "written": null
+  },
+  "BALMLAWRIE|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 28,
+   "nse_index_std_quarters": 85,
+   "refuted_by": "we already store consolidated data for EARLIER quarters of this company (2 con-revenue quarters, 3 con-PAT quarters before 20190331), so the claim that this quarter precedes the first consolidated filing ever is false. The NSE index simply has no consolidated rows before Jun-2019 for this symbol \u2014 a hole in the index, not evidence of non-filing (\u00a757).",
+   "stored_con_pat": 63.11,
+   "verdict": "REFUTED \u2014 this cell is a REAL GAP, not a never-filed quarter",
+   "written": null
+  },
+  "CENTRALBK|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 25,
+   "nse_index_std_quarters": 73,
+   "refuted_by": "we already store consolidated data for EARLIER quarters of this company (0 con-revenue quarters, 3 con-PAT quarters before 20190331), so the claim that this quarter precedes the first consolidated filing ever is false. The NSE index simply has no consolidated rows before Jun-2019 for this symbol \u2014 a hole in the index, not evidence of non-filing (\u00a757).",
+   "stored_con_pat": -2484.53,
+   "verdict": "REFUTED \u2014 this cell is a REAL GAP, not a never-filed quarter",
+   "written": null
+  },
+  "CORPBANK|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 3,
+   "nse_index_std_quarters": 59,
+   "refuted_by": "we already store consolidated data for EARLIER quarters of this company (0 con-revenue quarters, 3 con-PAT quarters before 20190331), so the claim that this quarter precedes the first consolidated filing ever is false. The NSE index simply has no consolidated rows before Jun-2019 for this symbol \u2014 a hole in the index, not evidence of non-filing (\u00a757).",
+   "stored_con_pat": -6574.74,
+   "verdict": "REFUTED \u2014 this cell is a REAL GAP, not a never-filed quarter",
+   "written": null
+  },
+  "DHFL|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 7,
+   "nse_index_std_quarters": 64,
+   "refuted_by": "we already store consolidated data for EARLIER quarters of this company (2 con-revenue quarters, 3 con-PAT quarters before 20190331), so the claim that this quarter precedes the first consolidated filing ever is false. The NSE index simply has no consolidated rows before Jun-2019 for this symbol \u2014 a hole in the index, not evidence of non-filing (\u00a757).",
+   "stored_con_pat": -2150.86,
+   "verdict": "REFUTED \u2014 this cell is a REAL GAP, not a never-filed quarter",
+   "written": null
+  },
+  "FRETAIL|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 11,
+   "nse_index_std_quarters": 27,
+   "refuted_by": "we already store consolidated data for EARLIER quarters of this company (5 con-revenue quarters, 15 con-PAT quarters before 20190331), so the claim that this quarter precedes the first consolidated filing ever is false. The NSE index simply has no consolidated rows before Jun-2019 for this symbol \u2014 a hole in the index, not evidence of non-filing (\u00a757).",
+   "stored_con_pat": 199.55,
+   "verdict": "REFUTED \u2014 this cell is a REAL GAP, not a never-filed quarter",
+   "written": null
+  },
+  "GODFRYPHLP|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 29,
+   "nse_index_std_quarters": 85,
+   "refuted_by": "we already store consolidated data for EARLIER quarters of this company (0 con-revenue quarters, 3 con-PAT quarters before 20190331), so the claim that this quarter precedes the first consolidated filing ever is false. The NSE index simply has no consolidated rows before Jun-2019 for this symbol \u2014 a hole in the index, not evidence of non-filing (\u00a757).",
+   "stored_con_pat": 48.28,
+   "verdict": "REFUTED \u2014 this cell is a REAL GAP, not a never-filed quarter",
+   "written": null
+  },
+  "GREAVESCOT|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 29,
+   "nse_index_std_quarters": 82,
+   "refuted_by": "we already store consolidated data for EARLIER quarters of this company (2 con-revenue quarters, 3 con-PAT quarters before 20190331), so the claim that this quarter precedes the first consolidated filing ever is false. The NSE index simply has no consolidated rows before Jun-2019 for this symbol \u2014 a hole in the index, not evidence of non-filing (\u00a757).",
+   "stored_con_pat": 34.83,
+   "verdict": "REFUTED \u2014 this cell is a REAL GAP, not a never-filed quarter",
+   "written": null
+  },
+  "HDFCBANK|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 29,
+   "nse_index_std_quarters": 86,
+   "refuted_by": "we already store consolidated data for EARLIER quarters of this company (0 con-revenue quarters, 3 con-PAT quarters before 20190331), so the claim that this quarter precedes the first consolidated filing ever is false. The NSE index simply has no consolidated rows before Jun-2019 for this symbol \u2014 a hole in the index, not evidence of non-filing (\u00a757).",
+   "stored_con_pat": 6300.81,
+   "verdict": "REFUTED \u2014 this cell is a REAL GAP, not a never-filed quarter",
+   "written": null
+  },
+  "HINDPETRO|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 28,
+   "nse_index_std_quarters": 85,
+   "refuted_by": "we already store consolidated data for EARLIER quarters of this company (0 con-revenue quarters, 3 con-PAT quarters before 20190331), so the claim that this quarter precedes the first consolidated filing ever is false. The NSE index simply has no consolidated rows before Jun-2019 for this symbol \u2014 a hole in the index, not evidence of non-filing (\u00a757).",
+   "stored_con_pat": 3340.03,
+   "verdict": "REFUTED \u2014 this cell is a REAL GAP, not a never-filed quarter",
+   "written": null
+  },
+  "HSCL|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 27,
+   "nse_index_std_quarters": 75,
+   "refuted_by": "we already store consolidated data for EARLIER quarters of this company (2 con-revenue quarters, 3 con-PAT quarters before 20190331), so the claim that this quarter precedes the first consolidated filing ever is false. The NSE index simply has no consolidated rows before Jun-2019 for this symbol \u2014 a hole in the index, not evidence of non-filing (\u00a757).",
+   "stored_con_pat": 74.73,
+   "verdict": "REFUTED \u2014 this cell is a REAL GAP, not a never-filed quarter",
+   "written": null
+  },
+  "INDIANB|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 27,
+   "nse_index_std_quarters": 73,
+   "refuted_by": "we already store consolidated data for EARLIER quarters of this company (3 con-revenue quarters, 3 con-PAT quarters before 20190331), so the claim that this quarter precedes the first consolidated filing ever is false. The NSE index simply has no consolidated rows before Jun-2019 for this symbol \u2014 a hole in the index, not evidence of non-filing (\u00a757).",
+   "stored_con_pat": -189.18,
+   "verdict": "REFUTED \u2014 this cell is a REAL GAP, not a never-filed quarter",
+   "written": null
+  },
+  "INDUSINDBK|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 28,
+   "nse_index_std_quarters": 85,
+   "refuted_by": "we already store consolidated data for EARLIER quarters of this company (3 con-revenue quarters, 3 con-PAT quarters before 20190331), so the claim that this quarter precedes the first consolidated filing ever is false. The NSE index simply has no consolidated rows before Jun-2019 for this symbol \u2014 a hole in the index, not evidence of non-filing (\u00a757).",
+   "stored_con_pat": 359.53,
+   "verdict": "REFUTED \u2014 this cell is a REAL GAP, not a never-filed quarter",
+   "written": null
+  },
+  "MAHABANK|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 26,
+   "nse_index_std_quarters": 84,
+   "refuted_by": "we already store consolidated data for EARLIER quarters of this company (0 con-revenue quarters, 3 con-PAT quarters before 20190331), so the claim that this quarter precedes the first consolidated filing ever is false. The NSE index simply has no consolidated rows before Jun-2019 for this symbol \u2014 a hole in the index, not evidence of non-filing (\u00a757).",
+   "stored_con_pat": 75.08,
+   "verdict": "REFUTED \u2014 this cell is a REAL GAP, not a never-filed quarter",
+   "written": null
+  },
+  "MRPL|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 29,
+   "nse_index_std_quarters": 85,
+   "refuted_by": "we already store consolidated data for EARLIER quarters of this company (0 con-revenue quarters, 3 con-PAT quarters before 20190331), so the claim that this quarter precedes the first consolidated filing ever is false. The NSE index simply has no consolidated rows before Jun-2019 for this symbol \u2014 a hole in the index, not evidence of non-filing (\u00a757).",
+   "stored_con_pat": 354.69,
+   "verdict": "REFUTED \u2014 this cell is a REAL GAP, not a never-filed quarter",
+   "written": null
+  },
+  "NAVINFLUOR|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 29,
+   "nse_index_std_quarters": 76,
+   "refuted_by": "we already store consolidated data for EARLIER quarters of this company (0 con-revenue quarters, 3 con-PAT quarters before 20190331), so the claim that this quarter precedes the first consolidated filing ever is false. The NSE index simply has no consolidated rows before Jun-2019 for this symbol \u2014 a hole in the index, not evidence of non-filing (\u00a757).",
+   "stored_con_pat": 35.18,
+   "verdict": "REFUTED \u2014 this cell is a REAL GAP, not a never-filed quarter",
+   "written": null
+  },
+  "NHPC|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 29,
+   "nse_index_std_quarters": 66,
+   "refuted_by": "we already store consolidated data for EARLIER quarters of this company (3 con-revenue quarters, 3 con-PAT quarters before 20190331), so the claim that this quarter precedes the first consolidated filing ever is false. The NSE index simply has no consolidated rows before Jun-2019 for this symbol \u2014 a hole in the index, not evidence of non-filing (\u00a757).",
+   "stored_con_pat": 542.46,
+   "verdict": "REFUTED \u2014 this cell is a REAL GAP, not a never-filed quarter",
+   "written": null
+  },
+  "PFC|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 29,
+   "nse_index_std_quarters": 75,
+   "refuted_by": "we already store consolidated data for EARLIER quarters of this company (0 con-revenue quarters, 3 con-PAT quarters before 20190331), so the claim that this quarter precedes the first consolidated filing ever is false. The NSE index simply has no consolidated rows before Jun-2019 for this symbol \u2014 a hole in the index, not evidence of non-filing (\u00a757).",
+   "stored_con_pat": 2802.4,
+   "verdict": "REFUTED \u2014 this cell is a REAL GAP, not a never-filed quarter",
+   "written": null
+  },
+  "PRSMJOHNSN|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 28,
+   "nse_index_std_quarters": 81,
+   "refuted_by": "we already store consolidated data for EARLIER quarters of this company (0 con-revenue quarters, 3 con-PAT quarters before 20190331), so the claim that this quarter precedes the first consolidated filing ever is false. The NSE index simply has no consolidated rows before Jun-2019 for this symbol \u2014 a hole in the index, not evidence of non-filing (\u00a757).",
+   "stored_con_pat": 41.85,
+   "verdict": "REFUTED \u2014 this cell is a REAL GAP, not a never-filed quarter",
+   "written": null
+  },
+  "RBLBANK|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 29,
+   "nse_index_std_quarters": 39,
+   "refuted_by": "we already store consolidated data for EARLIER quarters of this company (0 con-revenue quarters, 4 con-PAT quarters before 20190331), so the claim that this quarter precedes the first consolidated filing ever is false. The NSE index simply has no consolidated rows before Jun-2019 for this symbol \u2014 a hole in the index, not evidence of non-filing (\u00a757).",
+   "stored_con_pat": null,
+   "verdict": "REFUTED \u2014 this cell is a REAL GAP, not a never-filed quarter",
+   "written": null
+  },
+  "TRENT|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 28,
+   "nse_index_std_quarters": 81,
+   "refuted_by": "we already store consolidated data for EARLIER quarters of this company (0 con-revenue quarters, 3 con-PAT quarters before 20190331), so the claim that this quarter precedes the first consolidated filing ever is false. The NSE index simply has no consolidated rows before Jun-2019 for this symbol \u2014 a hole in the index, not evidence of non-filing (\u00a757).",
+   "stored_con_pat": -4.36,
+   "verdict": "REFUTED \u2014 this cell is a REAL GAP, not a never-filed quarter",
+   "written": null
+  },
+  "TRIDENT|20190331": {
+   "first_con_filing_ever": 20190630,
+   "nse_index_con_quarters": 29,
+   "nse_index_std_quarters": 85,
+   "refuted_by": "we already store consolidated data for EARLIER quarters of this company (0 con-revenue quarters, 2 con-PAT quarters before 20190331), so the claim that this quarter precedes the first consolidated filing ever is false. The NSE index simply has no consolidated rows before Jun-2019 for this symbol \u2014 a hole in the index, not evidence of non-filing (\u00a757).",
+   "stored_con_pat": null,
+   "verdict": "REFUTED \u2014 this cell is a REAL GAP, not a never-filed quarter",
+   "written": null
   },
   "WHIRLPOOL|20190331": {
    "first_con_filing_ever": 20190630,
    "nse_index_con_quarters": 28,
    "nse_index_std_quarters": 65,
+   "refuted_by": "we already store consolidated data for EARLIER quarters of this company (15 con-revenue quarters, 16 con-PAT quarters before 20190331), so the claim that this quarter precedes the first consolidated filing ever is false. The NSE index simply has no consolidated rows before Jun-2019 for this symbol \u2014 a hole in the index, not evidence of non-filing (\u00a757).",
    "stored_con_pat": 105.17,
-   "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3)",
+   "verdict": "REFUTED \u2014 this cell is a REAL GAP, not a never-filed quarter",
    "written": null
   }
- },
- "generated": "2026-08-10 13:47 IST"
+ }
 }

@@ -6992,3 +6992,53 @@ Both phantom. **Ship the filter and the ledger together, never the filter alone.
   unfixed — do not assume it is the same defect.
 - **The weekend-session ledger predates this fix.** `weekend_sessions.json.gz` rows were captured
   under the EQ/BE filter, so those ~30 special sessions are still missing their BZ bars.
+
+
+---
+
+## 77. ★★★ I SKIPPED §60 AND MIS-CLASSIFIED 26 CELLS AS "NEVER FILED"  (2026-08-11, USER-CAUGHT)
+
+**The trigger, verbatim:** *"are they not in dhan, trendlyne or any other new age sites?"* — asked
+after a 2019 residue report listed 217 cells as unreachable. The honest answer was that the
+aggregator rung had **never been walked**. §60f is explicit and was written for exactly this:
+*"Before any cell is reported as unfillable, a SECOND INDEPENDENT READER must have been tried and
+must also have come back empty."* The 2019 campaign's ladder went NSE XBRL → BSE detres → identity
+gates → BSE announcement PDFs → insurer route, and stopped. screener.in was never tried.
+
+**What one run of the existing tool produced.** `screener_annual_sweep.py --from 20190101` derived
+**6 cells** on the §60d identity (screener's FY annual − the 3 stored sibling quarters), all gated:
+CHOLAHLDNG 2019-06 4,251.69 · DLF 2019-03 2,500.34 · HINDCOPPER 2019-03 450.76 ·
+INDUSINDBK 2019-03 5,991.29 · NHPC 2019-03 2,158.54 · TVSSRICHAK 2019-03 595.72.
+**DLF had been filed under "needs a vision read"** — its results PDFs are pure image scans, 0
+chars/page — and the annual identity walks straight past the unreadable document. A rung that needs
+no document at all outranks one that needs an expensive read of a bad one.
+Ledger: `scripts/screener_annual_derived_2019.json`, each cell labelled
+`precision: crore-rounded` per §60e (screener prints the annual as a crore-rounded integer, so the
+derived quarter inherits up to ±0.5 cr; the siblings are at filing precision).
+
+### 77a. ★ THE REAL DAMAGE — "never filed consolidated" inferred from a HOLE IN THE INDEX
+Two of the six (INDUSINDBK, NHPC) were sitting in `no_con_quarterly_2019.json` as
+**not-applicable, no consolidated quarterly ever filed**. They were not. The E1+E2+E3 gate had used
+**the first consolidated row in the NSE index** as "the company's first consolidated filing ever" —
+and for these symbols the index carries **no consolidated rows at all before Jun-2019**, the very
+quarter consolidated quarterlies became compulsory (§51a). E3 therefore passed vacuously on an
+index that simply does not go back that far.
+
+**The refutation test is one line, costs nothing, and must be part of the gate:**
+
+    if we ALREADY STORE consolidated revenue or consolidated PAT for ANY EARLIER quarter
+    of the same company, then E3 is FALSE — the cell is a real gap, not a never-filed quarter.
+
+Applied to the 61-cell ledger it **refuted 26**, including HDFCBANK, AXISBANK, INDUSINDBK, RBLBANK,
+CENTRALBK, CORPBANK, MAHABANK, INDIANB, WHIRLPOOL, FRETAIL and TRENT — companies that self-evidently
+publish consolidated accounts. 35 entries stand. The refuted 26 are kept in the same file under
+`refuted_2026_08_11` with the reason, rather than deleted, so the mistake stays visible.
+
+This is `feedback-never-infer-absence-from-own-gaps` wearing a new coat: the earlier version
+inferred absence from OUR gaps, this one from the INDEX's gap. Same error, same rule — §57's
+"a route returning nothing means THAT ROUTE has no row" applies to the index as much as to a reader.
+
+### 77b. The order the ladder should actually run in
+Put the **document-free** rungs BEFORE the expensive document ones. Deriving a quarter from a
+published annual needs no PDF, no OCR and no column anchor, so it should be attempted before the
+vision rung is even costed — and before any cell is described as blocked on document quality.
