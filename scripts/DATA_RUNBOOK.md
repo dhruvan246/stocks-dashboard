@@ -7230,11 +7230,26 @@ The other 129 are NOT "unfillable" — they are, per §61b:
   case; §6A writes it with evidence, a blind copy must not.
 * **~97 `NEEDS-CROSSCHECK` (gate refused)** — a site HAD the quarter and its series does not
   reproduce ours. Two large, informative classes:
-  - **Insurers.** MC's `Net Sales/Income from operations` is one leg of an insurer's revenue, not
-    the premium + investment-income total we store (GICRE/NIACL/HDFCLIFE/LICI: `rev_ops` matches
-    0 of our quarters, `rev_total` 9–17 of 22 but with local disagreements). The aggregators'
-    insurer revenue is a **different quantity** from ours — gate D is exactly what proves that,
-    and §43/§55 remain the routes for these.
+  - **Insurers — and ⚠️ THE FIRST WRITE-UP OF THIS WAS WRONG, corrected 2026-08-11 same day.**
+    I first recorded that "the aggregators' insurer revenue is a different quantity from ours".
+    **It is not.** MC's `Total Income From Operations` (== TL's `SR_Q`, §81c) reproduces our stored
+    `revC` **exactly, to the paisa**, on 9 of 10 overlapping GICRE quarters, 18 of 22 NIACL, 14 of
+    22 HDFCLIFE. The convention MATCHES. What misled me was that MC's *other* revenue row,
+    `Net Sales/Income from operations`, is only the premium leg (GICRE Mar-2025: 9,250.02 against
+    the 13,208.55 we store) and it is the candidate my reader tries first — so the rejection
+    message that reached the summary came from the wrong row.
+    **The real blocker is anchoring, and it is specific:** for these companies every stored quarter
+    we own is *newer* than the gap. GICRE's stored `revC` starts 2022-06 while its 17 open cells are
+    2019-12 → 2024-09, so the oldest targets have **no anchor within ±6 quarters** at all. And
+    Gate A5 cannot stand in for the missing anchor here either — measured on MC's own GICRE con
+    rows: FY2020 ΣQ 51,497.90 vs annual **802.66** (the annual row is broken, not merely restated),
+    FY2022 off 1,437.08, FY2023 off 1,952.56; NIACL fails A5 in 5 of 7 years. So in exactly the gap
+    years there is neither a local stored anchor nor a working FY identity, and a write there would
+    be unanchored — refused, correctly.
+    **What this means for the next session:** do NOT skip the aggregators for insurers on the
+    grounds of convention. The row exists and matches. These cells need ONE anchored quarter inside
+    the gap window from a primary source (§43 IRDAI / §55 filing PDF); with a single 2020-or-2021
+    anchor landed, MC's exact-matching series would carry the rest of the block through the gate.
   - **KENNAMET con** — MC *and* TL both differ from us by ~10% on three consecutive 2020 quarters
     (87.3 vs 95.6, 178.3 vs 197.1, 193.3 vs 216.8). Same vendor twice (§81c), so this is one
     disagreement, not two; it needs the filing.
