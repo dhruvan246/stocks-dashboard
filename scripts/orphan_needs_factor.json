@@ -1,0 +1,255 @@
+{
+ "_doc": "Orphaned-series follow-up queue (DATA_RUNBOOK 86d, census 2026-08-11). needs_factor: rename-evidenced pairs whose join has an unrecorded corp action (corp_actions.json floor is 2016) or a multi-year listing gap - each needs OFFICIAL terms verified before a join factor is written; never infer the factor from the price ratio (crash-vs-corp-action trap). parallel_mergers: absorbed by an already-listed company, NOT stitchable; engine treats death as -100% (modeling decision pending). Cleanly-merged pairs live in update_sf_data.py MANUAL_MERGE.",
+ "needs_factor": [
+  {
+   "old": "3IINFOTECH",
+   "new": "3IINFOLTD",
+   "evidence": "name_match",
+   "ca_adj": 1.0,
+   "drift": 3.1976,
+   "gap_days": 56
+  },
+  {
+   "old": "AGCNET",
+   "new": "BBOX",
+   "evidence": "rename_map",
+   "ca_adj": 0.2,
+   "drift": 0.4995,
+   "gap_days": 1
+  },
+  {
+   "old": "ANSALINFRA",
+   "new": "ANSALAPI",
+   "evidence": "rename_map",
+   "ca_adj": 1.0,
+   "drift": 7.4088,
+   "gap_days": 1803
+  },
+  {
+   "old": "APTECH",
+   "new": "APTECHT",
+   "evidence": "name_match",
+   "ca_adj": 0.7143,
+   "drift": 0.4596,
+   "gap_days": 242
+  },
+  {
+   "old": "AREVA",
+   "new": "GVT&D",
+   "evidence": "rename_map",
+   "ca_adj": 1.0,
+   "drift": 13.1006,
+   "gap_days": 5098
+  },
+  {
+   "old": "BLUESTAR",
+   "new": "BLUESTARCO",
+   "evidence": "name_match",
+   "ca_adj": 0.5,
+   "drift": 0.1485,
+   "gap_days": 59
+  },
+  {
+   "old": "CAREERP",
+   "new": "CPCAP",
+   "evidence": "rename_map",
+   "ca_adj": 1.0,
+   "drift": 0.6588,
+   "gap_days": 1
+  },
+  {
+   "old": "CEAT",
+   "new": "CEATLTD",
+   "evidence": "name_match",
+   "ca_adj": 1.0,
+   "drift": 0.8673,
+   "gap_days": 39
+  },
+  {
+   "old": "COREEMBLG",
+   "new": "AUSOMENT",
+   "evidence": "rename_map",
+   "ca_adj": 1.0,
+   "drift": 0.9533,
+   "gap_days": 519
+  },
+  {
+   "old": "DIGJAM",
+   "new": "DIGJAMLMTD",
+   "evidence": "name_match",
+   "ca_adj": 1.0,
+   "drift": 1.3477,
+   "gap_days": 2029
+  },
+  {
+   "old": "DIGJAMLTD",
+   "new": "DIGJAMLMTD",
+   "evidence": "name_match",
+   "ca_adj": 1.0,
+   "drift": 3.5567,
+   "gap_days": 230
+  },
+  {
+   "old": "FAZETHREE",
+   "new": "FAZE3Q",
+   "evidence": "name_match",
+   "ca_adj": 1.0,
+   "drift": 17.1229,
+   "gap_days": 8029
+  },
+  {
+   "old": "GKW",
+   "new": "GKWLIMITED",
+   "evidence": "name_match",
+   "ca_adj": 1.0,
+   "drift": 3.6016,
+   "gap_days": 27
+  },
+  {
+   "old": "GOLDIWIN",
+   "new": "ICICIGOLD",
+   "evidence": "rename_map",
+   "ca_adj": 1.0,
+   "drift": 0.1002,
+   "gap_days": 3
+  },
+  {
+   "old": "ICDS",
+   "new": "ICDSLTD",
+   "evidence": "name_match",
+   "ca_adj": 1.0,
+   "drift": 0.3008,
+   "gap_days": 305
+  },
+  {
+   "old": "INDIABULLS",
+   "new": "IBULLSLTD",
+   "evidence": "name_match",
+   "ca_adj": 1.0,
+   "drift": 0.2337,
+   "gap_days": 2822
+  },
+  {
+   "old": "MORAREALTY",
+   "new": "PENINLAND",
+   "evidence": "rename_map",
+   "ca_adj": 1.0,
+   "drift": 0.0905,
+   "gap_days": 4
+  },
+  {
+   "old": "MUKAND",
+   "new": "MUKANDLTD",
+   "evidence": "name_match",
+   "ca_adj": 1.0,
+   "drift": 0.3448,
+   "gap_days": 53
+  },
+  {
+   "old": "MUNJALAUTO",
+   "new": "MUNJALAU",
+   "evidence": "manual",
+   "ca_adj": 0.5,
+   "drift": 0.1035,
+   "gap_days": 64
+  },
+  {
+   "old": "NIIT",
+   "new": "NIITLTD",
+   "evidence": "name_match",
+   "ca_adj": 1.0,
+   "drift": 0.2262,
+   "gap_days": 39
+  },
+  {
+   "old": "NTL",
+   "new": "NEUEON",
+   "evidence": "rename_map",
+   "ca_adj": 1.0,
+   "drift": 1.8129,
+   "gap_days": 1
+  },
+  {
+   "old": "NXTDIGITAL",
+   "new": "NDLVENTURE",
+   "evidence": "rename_map",
+   "ca_adj": 1.0,
+   "drift": 0.1328,
+   "gap_days": 3
+  },
+  {
+   "old": "SASTASUNDR",
+   "new": "HEALTHX",
+   "evidence": "rename_map",
+   "ca_adj": 1.0,
+   "drift": 1.1466,
+   "gap_days": 1
+  },
+  {
+   "old": "SUBEX",
+   "new": "SUBEXLTD",
+   "evidence": "name_match",
+   "ca_adj": 1.0,
+   "drift": 1.1032,
+   "gap_days": 15
+  },
+  {
+   "old": "TATAMOTORS",
+   "new": "TMPV",
+   "evidence": "rename_map",
+   "ca_adj": 1.0,
+   "drift": 0.1168,
+   "gap_days": 2
+  },
+  {
+   "old": "USHAMARTIN",
+   "new": "USHAMART",
+   "evidence": "name_match",
+   "ca_adj": 1.0,
+   "drift": 0.66,
+   "gap_days": 863
+  },
+  {
+   "old": "WOCKHARDT",
+   "new": "WOCKPHARMA",
+   "evidence": "name_match",
+   "ca_adj": 1.0,
+   "drift": 0.7185,
+   "gap_days": 44
+  },
+  {
+   "old": "YUKENINDIA",
+   "new": "YUKEN",
+   "evidence": "name_match",
+   "ca_adj": 1.0,
+   "drift": 81.5867,
+   "gap_days": 7765
+  }
+ ],
+ "parallel_mergers": [
+  {
+   "old": "EICHER",
+   "new": "EICHERMOT",
+   "evidence": "manual"
+  },
+  {
+   "old": "GFL",
+   "new": "GFLLIMITED",
+   "evidence": "name_match"
+  },
+  {
+   "old": "IDBIBANK",
+   "new": "IDBI",
+   "evidence": "name_match"
+  },
+  {
+   "old": "OCCL",
+   "new": "OCCLLTD",
+   "evidence": "name_match"
+  }
+ ],
+ "special": {
+  "MUNJALAUTO": "2006 court scheme: 2 shares -> 1 new + 1 Shivam Autotech; do NOT stitch (86d)",
+  "EICHER": "Eicher Ltd absorbed into EICHERMOT (parallel listing 1996+); not stitchable"
+ }
+}
