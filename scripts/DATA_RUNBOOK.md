@@ -3434,10 +3434,38 @@ Symptom to recognise: `git show origin/main:docs/fin/<SLUG>.json` HAS the healed
 the commit BEFORE the slice commit. That is not CDN lag and waiting will not fix it.
 
 Immediate fix after any rev/PAT heal: `gh workflow run pages.yml` (workflow_dispatch is enabled) —
-it publishes whatever is committed and is safe to repeat. Proper fix if this keeps biting: give the
-slice job a PAT for its push, or add a `workflow_run` trigger on pages.yml.
+it publishes whatever is committed and is safe to repeat.
 **This is §41's own lesson recurring one layer out** — the bytes were right in git, the derived slice
 was right in git, and the site still served nulls.
+
+**FIXED IN THE WORKFLOW 2026-08-11 (2bd29409) — no more hand-kicking.** `refresh-stock-fin.yml` now
+carries the same trailing `gh workflow run pages.yml` the other ~10 refresh workflows already had
+(`actions: write` + `GH_TOKEN: ${{ github.token }}`, dispatch INSIDE the push retry loop right after
+a successful push, exactly as in `refresh-fii-dii` / `refresh-announcements`). `workflow_dispatch` is
+the documented EXCEPTION to the recursion guard, which is why a GITHUB_TOKEN job can dispatch a deploy
+it cannot trigger by pushing. A PAT was NOT needed; neither was a `workflow_run` trigger.
+
+Place the dispatch INSIDE the loop, never after it: the loop retries a rejected push up to 5×, so a
+dispatch after `done` would fire once per attempt. Inside, the two `exit 0`s make it fire **at most
+once per run and only when a commit actually landed** — the `git diff --cached --quiet` branch leaves
+first (empty run ⇒ no pointless deploy), and the push branch exits immediately after dispatching.
+That is the whole burst guard; there is no `if:` condition to add. Verified before pushing by running
+the extracted step against stubbed `git`/`gh`: unchanged ⇒ 0 dispatches, push-ok ⇒ 1, push-rejected-
+twice-then-ok ⇒ 1 (not 3), push-fails-5× ⇒ 0 and the run goes red.
+
+Live proof (run 31513447604, 2026-08-11 22:08 IST): slice commit `3490d369` pushed at 16:38:42Z →
+pages run 31513485523 created 16:38:43Z **with headSha `3490d369`** — the slice commit's OWN sha, which
+had never once appeared as a deploy headSha before. It was then cancelled as superseded by a deploy
+18 s newer whose tip CONTAINS it (that is `pages-deploy`'s designed coalescing, not a failure: a later
+dispatch always sits on a tip ≥ ours, so the content still ships), and the live URL served the slice
+commit's exact bytes by 22:10. Expect this shape — "our dispatch was cancelled" is a healthy log line
+as long as a newer deploy carrying the commit succeeded.
+
+Rate check before worrying about the wedge hazard (§38b / memory `project-stocks-pages-wedged-
+concurrency`): measured 2026-08-11, `pages.yml` already ran ~100×/day, 69 of them `workflow_dispatch`
+vs 31 `push`, some 16 s apart, with zero non-completed runs. Slice commits peak at ~78/day
+(2026-08-04), and `refresh-stock-fin`'s own `cancel-in-progress: true` collapses upstream bursts
+before they reach the dispatch. So this rides an existing pattern rather than inventing load.
 
 **§41b-i — NEVER park the publish-wait poller inside a worktree you are about to delete** (2026-08-10,
 cost: six runaway loops, one of them spinning for 7h55m). The standard verify step is backgrounded as
