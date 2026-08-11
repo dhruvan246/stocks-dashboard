@@ -7903,8 +7903,15 @@ which has four measured failure modes:
 ### 87b. Sources and their measured floors
 - NSE corporates-corporateActions API: serves back to 1999, but split/bonus subjects are only
   dense from **2006** (2005: 829 rows, ONE bonus). 2002-2005 = dividends/AGM only.
-- Era subject format differs: `Fv Split Rs.10/- To Rs.2/` — NO "From" word; the parser now
-  accepts it (build_corp_actions.official_factor). Gate widened (0.05,0.95)→(0.002,0.98):
+- Era subject format differs, in THREE spellings, and each one silently dropped a whole leg:
+  `Fv Split Rs.10/- To Rs.2/` (no "From"), `Fv Spl-Rs10tors2` (abbreviated keyword + run-together
+  "tors"), `Bon-12:1` (abbreviated bonus). A subject can carry BOTH legs, so a missed spelling
+  writes a factor that is wrong by the OTHER leg — UNITECH-2006 read 1/13 instead of 1/65. The
+  open-gap gate caught all 19 of these as "record contradicts the tape" BEFORE they were applied;
+  that rejection list is what led back to the parser. `Spl` is accepted only adjacent to an Rs
+  amount, never as "Spl Dividend"/"Spl-50%" (77 of the 100 `spl` subjects are special dividends);
+  `\bbon\b` never matches "bond"; bonus DEBENTURES (`Bonus Deb1:1` — BRITANNIA-2010,
+  ASTRAZEN-2008) are excluded by class alongside NCRPS/DVR/preference. Gate widened (0.05,0.95)→(0.002,0.98):
   combined "Bonus 1:1 + split 10→1" = exactly 0.05 was being dropped (SUNILHITEC-2016 —
   ironically the case the combined parser was written for); pref/NCRPS/DVR bonuses now excluded
   by CLASS, not by the numeric gate.
@@ -7925,19 +7932,19 @@ which has four measured failure modes:
 - 2016+ only: absence from BOTH dense feeds = phantom (the audit_phantom_ca standing rule).
 
 ### 87c-bis. Measured outcome (this campaign)
-- `corp_actions_hist.json`: **714 factor events / 538 symbols** (24 wrong-fraction fixes —
-  VENKEYS 3/4→2/3, KARURVYSYA 2/3→5/7, ENGINERSIN 1/5→1/6...; 111 verdict-confirmed additions;
-  8+ sweep additions incl. ITC 1/15 and UNITECH 1/13×... combined events; 11 feed rows the tape
-  contradicts EXCLUDED; DPSCLTD 20111215 excluded as pathological). noadjust: 99 dates.
+- `corp_actions_hist.json`: **716 factor events / 542 symbols** + 99 keep-drop dates. Includes 24
+  wrong-fraction fixes (VENKEYS 3/4→2/3, KARURVYSYA 2/3→5/7, ENGINERSIN 1/5→1/6...), 111
+  verdict-confirmed additions, and **21 events recovered only after the third era spelling was
+  found** — `Fv Spl-Rs10tors2/Bon-12:1` (UNITECH 1/65, VEDL 1/20, RAMCOCEM, STLTECH, NIITLTD,
+  JAICORPLTD, RAJESHEXPO, DPSCLTD 1/230...). 11 feed rows the tape contradicts were EXCLUDED.
 - `phantom_crashes.json`: +104 keep-drop dates / 78 symbols (era crashes; special-dividend drops
-  PFIZER-2013 ₹360, STAR-2013 ₹500; penny-tick reverse factors; 2016-17 dual-feed-absent).
-- `rights_terp.json`: +51 (total 253). `demerger_adj.json`: +11 (total 94).
-- Heal preview: **307 series rescales**; largest-history: VENKEYS ×0.889 over 3,773 bars,
-  BERGEPAINT ×0.5 over 3,543, HAVELLS ×0.2 over 3,182, ITC ×0.0667 over 1,252.
-- Readers run: Yahoo 1,856 symbols (499 event-boundaries, 76 missed + 54 oddball), BSE ~190
-  per-scrip records, 25,173 dividend rows crossed, open-gap + volume + panic-day breadth local.
-- Residue: 209-item manual queue committed at `scripts/ca2002_campaign/manual_queue.json`
-  (+ verdicts.json.gz, kept_drops.json.gz — full evidence per event).
+  PFIZER-2013 ₹360, STAR-2013 ₹500; penny reverse factors; 2016-17 dual-feed-absent).
+  `crash_raw_prices.json` seeded with 205 era closes so the daily CI heal stays network-free.
+- `rights_terp.json`: 253 total (+51). `demerger_adj.json`: 94 total (+11).
+- Readers: Yahoo 1,856 symbols (499 event-boundaries → 76 missed + 54 oddball), ~190 BSE
+  per-scrip records, 25,173 dividend rows, open-gap + volume + market-breadth locally.
+- Residue: **231-item manual queue** at `scripts/ca2002_campaign/manual_queue.json`
+  (+ verdicts.json.gz, kept_drops.json.gz — per-event evidence).
 
 ### 87d. What was written where
 - `scripts/corp_actions_hist.json` (NEW, tracked): pre-2016 factors + noadjust, keyed by CURRENT

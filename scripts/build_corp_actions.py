@@ -77,7 +77,9 @@ def official_factor(subj):
     # A bonus/split of a DIFFERENT instrument class is not an equity price factor: preference
     # shares (TVSHLTD "Bonus Ncrps 1:116"), DVRs ("Bonus 1 Dvr : 10 Eq"), debentures. Never
     # multiply these in (2026-08-11 campaign; previously only the numeric gate excluded them).
-    if re.search(r"\bncrps\b|\bdvr\b|preference|debenture", s):
+    # "Sch Of Agmt- Bonus Deb1:1" (BRITANNIA 2010-03-08, ASTRAZEN 2008-01-04) is a bonus DEBENTURE
+    # issue, not an equity bonus — the tape's open proves no basis change (open-gap 1.84-1.92).
+    if re.search(r"\bncrps\b|\bdvr\b|preference|debenture|\bdeb\s*\d+\s*:", s):
         return (None, None)
     factor = 1.0; parts = []
     # A single NSE subject can carry a bonus AND a split together ("Bonus 1:1/Face Value Split - From
@@ -87,15 +89,35 @@ def official_factor(subj):
     # reverted by self_heal. Also: NSE writes the currency as "Rs" for >Re.1 but "Re" for exactly Re.1,
     # so accept BOTH (the rs-only regex silently dropped every split down to Re.1, e.g. GAEL Rs2->Re1).
     # NSE also files abbreviated subjects ("Fv Splt Frm Rs 10 To Rs 2") — accept frm/splt variants
-    m = re.search(r'f(?:ro|r)m\s*(?:r[se]\.?\s*)?([\d.]+).*?to\s*(?:r[se]\.?\s*)?([\d.]+)', s)
+    # era abbreviations run the words together: "Rs10tors2" / "Rs10tore1" / "Rs.5tors.2".
+    sx = re.sub(r'tor([se])', r' to r\1', s)
+    m = re.search(r'f(?:ro|r)m\s*(?:r[se]\.?\s*)?([\d.]+).*?to\s*(?:r[se]\.?\s*)?([\d.]+)', sx)
     # pre-2016 era format has NO "From" word at all: "Fv Split Rs.10/- To Rs.2/" (66x in the
-    # 2006-2015 feed), even "Split-Rs.10toRs.2". Fall back to a bare Rs-to-Rs pattern.
+    # 2006-2015 feed), even "Split-Rs.10toRs.2". Fall back to a bare Rs-to-Rs pattern
+    # (second "Rs" optional — ALLCARGO files "Fv Spl-Rs10to2").
     if not m:
-        m = re.search(r'r[se]\.?\s*([\d.]+)\s*/?-?\s*to\s*r[se]\.?\s*([\d.]+)', s.replace("tors", "to rs"))
-    if m and ("split" in s or "splt" in s or "sub-division" in s or "sub division" in s or "subdivision" in s):
+        m = re.search(r'r[se]\.?\s*([\d.]+)\s*/?-?\s*to\s*(?:r[se]\.?\s*)?([\d.]+)', sx)
+    # ...and the currency can be missing entirely — CYIENT 2006 "Fv Spl-10 To 5 / Bon 1:2".
+    # Anchored on the split keyword itself so a bare "X to Y" elsewhere in the subject
+    # (a dividend clause) can never be read as a face-value change.
+    if not m:
+        m = re.search(r'spl[t]?[\s\-.]*(?:r[se]\.?\s*)?([\d.]+)\s*/?-?\s*to\s*(?:r[se]\.?\s*)?([\d.]+)', sx)
+    # ...and a THIRD spelling of the keyword: "Spl" (23 events 2005-2010 — UNITECH 2006-06-23
+    # "Fv Spl-Rs10tors2/Bon-12:1", VEDL/RAMCOCEM/ENGINERSIN/STLTECH...). Accept it ONLY in the
+    # face-value sense — "spl" adjacent to an Rs amount — never the SPECIAL-DIVIDEND sense
+    # ("Spl Dividend @120%", "Div Fin-30% + Spl-50%"), which is 77 of the 100 "spl" subjects.
+    spl_fv = bool(re.search(r'spl[\s\-.]*(?:r[se]\.?\s*)?[\d.]+\s*/?-?\s*to', sx)) and \
+             not re.search(r'spl[\s\-.]*div', sx)
+    if m and ("split" in s or "splt" in s or spl_fv or "sub-division" in s
+              or "sub division" in s or "subdivision" in s):
         x, y = float(m.group(1)), float(m.group(2))
         if x and 0 < y < x: factor *= y / x; parts.append("split FV %s->%s" % (m.group(1), m.group(2)))
     m = re.search(r'bonus[^0-9]*(\d+)\s*:\s*(\d+)', s)
+    # "Bon-12:1" / "Bon 1:2" — the same era abbreviation (21 events; UNITECH, VEDL, RAMCOCEM,
+    # NIITLTD, CYIENT...). \bbon\b never matches "bond" (8 subjects, none carrying a ratio),
+    # and the DVR guard above already rejects "Bon 1dvr:10eq".
+    if not m:
+        m = re.search(r'\bbon\b[^0-9]{0,3}(\d+)\s*:\s*(\d+)', s)
     if m:
         b, a = int(m.group(1)), int(m.group(2))
         if a + b and b <= 50 and a <= 250:           # ignore absurd parses (stray digits)
