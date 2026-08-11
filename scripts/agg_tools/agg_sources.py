@@ -44,6 +44,7 @@ import os
 import re
 import sys
 import time
+from urllib.parse import quote
 
 from curl_cffi import requests as cr
 
@@ -181,8 +182,13 @@ def mc_id(sym):
         _MC_IDS = json.load(open(_MC_IDS_PATH)) if os.path.exists(_MC_IDS_PATH) else {}
     if sym in _MC_IDS:
         return _MC_IDS[sym] or None
-    txt = _get("www.moneycontrol.com", MC_SUGGEST % sym, MC_PACE, "mc", "sugg_" + sym,
-               ttl=86400 * 30)
+    # ⚠️ URL-ENCODE THE SYMBOL. `MC_SUGGEST % sym` on M&M sent `...&query=M&M&type=1`, so the
+    # server saw query=M and the exact-symbol gate below never matched -- absence manufactured by
+    # our own request (measured 2026-08-12: M&M and J&KBANK both came back "no exact symbol match";
+    # encoded they resolve to sc_id MM and JKB). Memory: feedback-url-encode-symbol-queries.
+    # Cache key bumped to sugg1_ so bodies fetched with the broken URL are not replayed.
+    txt = _get("www.moneycontrol.com", MC_SUGGEST % quote(sym, safe=""), MC_PACE, "mc",
+               "sugg1_" + sym, ttl=86400 * 30)
     hit = None
     if txt:
         try:

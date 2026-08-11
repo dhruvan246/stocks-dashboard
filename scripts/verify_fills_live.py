@@ -69,6 +69,11 @@ LEDGERS = [
     # sat unguarded for weeks (see the named_rev_cell_fills revC note above).
     ("agg_cell_fills.json",            "revop", "revS", 0),
     ("agg_cell_fills.json",            "revop", "revC", 1),
+    # PRE-2015 standalone PAT from the same route (2026-08-12). Separate ledger because it writes a
+    # different file (docs/sf_fundamentals.json slot 1) through its own applier, and because these
+    # cells are the oldest in the dataset — the era CI never rebuilds, so a clobber here would be
+    # silent for years. Registered at creation time.
+    ("agg_pat_cell_fills.json",        "fund",  "std",  1),
 ]
 # BASIS-IN-KEY ledgers: "SYM|QE|basis", not "SYM|QE" — the flat loop above would rsplit the BASIS
 # off as the quarter and check nothing. These were UNGUARDED until 2026-08-10: nse_xbrl_rev_fills
