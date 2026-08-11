@@ -1939,6 +1939,48 @@ Wayback census enumerates the `moneycontrol.com/company-facts/*` prefix ONLY. MC
 (`/india/stockpricequote/*`) are a SECOND capture family that was never enumerated, and whether
 2011-2015 captures of those carry a shareholding block is **unknown — not measured**.
 
+**★★★ SUPERSEDING DISCOVERY, SAME DAY (2026-08-11 evening): BSE's OWN ASPX PAGES SERVE THE WHOLE
+PRE-XBRL ERA, LIVE — the "measured walls" above were walls in OUR ROUTES, not in the world.**
+Prompted by the user ("a friend has filled 2011-2016 at 100%, so the data is there somewhere") —
+and the friend is right. The `SHPQNewFormat` rows for pre-XBRL quarters have carried the answer all
+along in their **`navigateurl`** field, which nobody followed:
+`https://www.bseindia.com/corporates/ShareholdingPattern.aspx?scripcd=<code>&flag_qtr=1&qtrid=<q>.00&Flag=<New|Old>`
+- **`Flag=New`** = the Clause-35 category table (the exact layout MC's company-facts pages mirrored):
+  serves **Jun-2006 (qtrid 50) → Mar-2016**, measured full on RIL/HDFC(delisted)/MONSANTO/RUCHISOYA/
+  CAPF; Mar-2006 (q49) comes back as a 4.7KB shell under this flag.
+- **`Flag=Old`** = the 1997 SEBI format (`FIIS` / `Mutual Funds and UTI` / a
+  `Banks,Financial Institutions,Insurance Companies` LUMP): serves **≤ Mar-2006 back to at least
+  Mar-2001** (RIL Mar-2001 fii 17.34; HDFCBANK Dec-2002 18.55; HDFC Dec-2003 60.74). DII = mf + the
+  lump (same components as our definition); `ins` is inside the lump → store None, NEVER 0.0.
+- **qtrid is GLOBAL**: `(year−2001)×4 + {Mar:29, Jun:30, Sep:31, Dec:32}` — verified on 7 companies.
+- Old rows' `XbrlFile` is empty and `filing_date_time` null — **the XbrlFile gate correctly said "no
+  XBRL file" and everyone (2026-08-03, -07, -09) read it as "no BSE data"**. Different question.
+- **Why the audits missed it:** the XBRL sweep gated on `XbrlFile`; the Wayback harvest replayed MC's
+  MIRROR of these very tables; the aspx pages themselves were checked in Wayback ("never archived with
+  old qtrids") but never fetched from the ORIGIN server. §57 rule 1, textbook case: a route returning
+  nothing is evidence about THAT ROUTE only.
+- **Fetcher: `scripts/fetch_shp_bse_aspx.py`** (frontier → pilot → harvest; caches pages; ledger out
+  `shp_fill_bse_aspx.json.gz`, provenance `bseaspx:<code>:<qtrid>:<flag>`, sub = QE+21d convention).
+  Ports the wayback-mc derivation verbatim: %of(A+B+C) column, dii = mf+banks+ins, 1pp inst-recon
+  gate, prom fallback via pubtot≥99, fii never zero-defaulted. Flag=Old adds proven-zero (absent FIIS
+  counts as 0 only when inst_sub == mf+lump to 0.15) and a 0.15 recon on the single-column layout.
+- **PILOT (69 fetches, stratified 2002→2016 + 24 deliberate overlap cells): overlap gate 23/23 ≤
+  0.11pp — top disagreements are 0.00pp exact** (RELIANCE 2013-2015 ×5, CAPF, ITC…). The aspx
+  reproduces the Wayback-MC-derived cells digit-for-digit, which also independently validates that
+  whole 2026-08-03/09 campaign (BSE origin vs MC mirror, different transport, same numbers).
+- **⚠️ THE SEAM DEFECT IS IN BSE'S OWN TABLE, not just MC's mirror.** At qtrid 88/89 the aspx prints
+  a fabricated `FII 0.00` (ITC Dec-2015: aspx 0.00 vs our derived 20.77) or fails inst-recon (4 of 4
+  other pilot hits). MC mirrored the breakage faithfully. The harvest therefore SKIPS Dec-2015 +
+  Mar-2016 — the §22f seam-derivation route owns those. And the same fabricated zero appears at
+  qtrid 91 for MONSANTO/JMTAUTOLTD Sep-2016 (stored neighbours 3.75 / 17.74) — caught by the
+  fetcher's **zero-vs-neighbour guard** (exact 0.00 beside a stored neighbour >1% = refuse), so both
+  named holes STAY OPEN rather than get poisoned. Fabricated zeros are a BSE-side defect class.
+- **Frontier: 22,622 missing member-qtrs Dec-2002→Sep-2015 (seam excluded), 20,912 with a scripcode**
+  (master status-blank + `_shp_scripcode_override`), 131 symbols / 1,710 cells unresolved (era names
+  needing ISIN or an era scrip master — log as not-found-via, they are NOT closed).
+- Harvest → staging ledger → `_shp_merge_stage.py` flow (NEVER a direct shp_history write while the
+  12:40/20:40 IST CI may run); after apply, re-run `audit_shp_coverage.py` + spot-verify LIVE.
+
 **✅ SWEPT SAME DAY (2026-08-07): +1,604 cells, Jun-16→Jun-19 79%→98.8%, Sep-19→Jun-26 97.8%→99.8%.**
 `scripts/fetch_shp_bse_hist.py` (rebuilt) → ledger `scripts/shp_fill_n500_gaps.json.gz` → applied by
 `python3 scripts/fetch_shareholding.py --apply-ledgers` (new offline entry point: merge ledgers + rebuild
