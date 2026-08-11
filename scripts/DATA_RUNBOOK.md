@@ -7847,7 +7847,7 @@ company's history split across two keys.
   factor exists to bridge it. The entry gate already kills its phantom trade.
 - 28 NEEDS-FACTOR / LONG-GAP pairs (NIIT->NIITLTD, CEAT->CEATLTD, TATAMOTORS->TMPV pre-2003
   fragment, WOCKHARDT, MORAREALTY, NXTDIGITAL, ...): each needs its official corp-action terms
-  verified before a join factor is written. Census + verdicts: scratchpad orphans.json /
-  join_verdicts.json of session 2026-08-11; re-derivable from the census scripts.
+  verified before a join factor is written. The queue is COMMITTED: scripts/orphan_needs_factor.json
+  (per-pair evidence class, CA-adj, measured drift, gap).
 - Parallel-entity mergers: decide separately whether death-by-merger should exit at last real
   close instead of 0 (affects EICHER-class trades; engine-semantics decision for the user).
