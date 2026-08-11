@@ -77,6 +77,10 @@ LEDGERS = [
 BASIS_KEYED = [
     ("nse_xbrl_rev_fills.json",      "revop", "rev"),
     ("deoverlay_rev_fills2019.json", "revop", "rev"),
+    # §55 insurer consolidated revenue read out of the filing PDF. UNGUARDED until 2026-08-11 —
+    # 52 cells (HDFCLIFE/ICICIPRULI/NIACL/GICRE) sat in this ledger with nothing re-checking them
+    # after a refresh, the same gap the named_rev_cell_fills revC note above describes.
+    ("insurer_con_rev_fills.json",   "revop", "rev"),
 ]
 BASIS_SLOT = {"std": 0, "con": 1}
 # NESTED ledgers: {SYM: {QE: {...}}} rather than the flat "SYM|QE" shape above. The defect ledgers

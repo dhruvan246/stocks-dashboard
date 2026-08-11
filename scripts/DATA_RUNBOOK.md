@@ -7357,3 +7357,56 @@ Moneycontrol already serves 40–113 quarters directly, so the annual has little
 SPICEJET's Moneycontrol annual holds `May '94`, a 14-month transition year. Feeding that to a
 quarter-ordinal helper raises `ValueError: 5 is not in list`. Skip such rows, never assume every
 annual key is a quarter-end.
+
+### 81j. GICRE con revenue — 3 cells landed from the FILING, and what it taught about A5  (2026-08-11)
+
+**The route that worked, and it was not the aggregators.** GICRE's 17 open cells were blocked
+because every quarter we stored was NEWER than the gap, leaving nothing to anchor on (§81f). One
+BSE filing fixed that. `f9b4e410-d541-42dc-961b-a0576d69533c.pdf` (filed 2021-02-11, Q3 FY21) is a
+scanned pack whose text layer is §51b-corrupted ("Annuore-1", "Genenl ~ Carpondon of India"), so it
+was read by RENDERING the page at 4x and reading it visually — §57 rung 10, with the user's
+go-ahead per §61b.
+
+Its consolidated Annexure-1 (p18) and standalone Annexure-1 (p4) share one column layout:
+`[Q | prev Q | year-ago Q | YTD | prev YTD | prev FY]`, Rs in **Lakh**. Applying §55's general-insurer
+convention (Premium Earned (Net) + policyholders' Income from investments (net) + shareholders'
+Income from investments) to the STANDALONE page reproduced our stored `revS` **exactly, in three
+different columns of the one document**:
+
+| column | std legs (lakh) | = | stored revS |
+|---|---|---|---|
+| 31/12/2019 | 7,82,848 + 1,63,832 + 38,067 | 9,847.47 | 9,847.47 |
+| 30/09/2020 | 9,49,135 + 2,19,016 + 57,719 | 12,258.70 | 12,258.70 |
+| 31/12/2020 | 9,13,916 + 2,05,284 + 57,163 | 11,763.63 | 11,763.63 |
+
+Three positive controls on one document is as strong as this gets: page, column, scale and every
+revenue leg are proven, not assumed. The same recipe on p18 (a DIFFERENT page, so §44's duplicate
+trap is clear) gives the consolidated cells, each larger than its standalone twin as it must be:
+**2019-12 = 10,032.58 · 2020-09 = 12,308.04 · 2020-12 = 11,780.13.**
+Ledger `scripts/insurer_con_rev_fills.json` — which, discovered while doing this, was **not
+registered in `verify_fills_live.py`**: 52 insurer cells had been sitting unguarded. Registered now.
+
+**One filing carries three quarters.** GICRE's remaining 13 open `revC` cells need roughly five more
+packs, since each prints its own quarter plus two comparatives. That is the route — not the
+aggregators.
+
+### 81k. ⚠️ A5 CANNOT TELL A RESTATEMENT FROM A BROKEN ANNUAL ROW — known limitation
+
+With those three anchors stored, **9 of the 35 insurer cells passed the quarterly gate** (from 0) —
+the anchoring diagnosis in §81f was right. A5 then vetoed all nine, and inspecting why exposed a
+flaw in A5 itself:
+
+    GICRE FY2020  site ΣQ 51,497.90  vs site annual    802.66   (63x)
+    GICRE FY2019  site ΣQ 39,729.00  vs site annual  4,564.30    (9x)
+
+An annual of ₹802.66 cr for a company writing ~₹50,000 cr is not a restated year, it is a **broken
+cell in the site's annual table**. Real restatements differ by single-digit percents (ICIL 0.7%,
+PEL 4.5%, WELCORP 9.1%, ADANIENT 9.4%). A5 lumps both into `RESTATED`.
+
+**Not "fixed" here, deliberately.** The obvious patch — classify a >50% gap as an unusable annual
+(NO-TEST) rather than a restatement — would have let exactly the cells I was chasing through, and a
+gate loosened while staring at the company you want is a gate you can no longer trust. A large
+demerger can genuinely restate a year by a lot, so the discriminator has to be whether the annual
+row is an outlier against **its own neighbouring annuals**, and that wants its own measurement pass
+on a sample nobody is invested in. Until then: A5's `RESTATED` means "the annual and the quarters
+disagree", nothing finer, and the insurer cells stay open pending their filings.
