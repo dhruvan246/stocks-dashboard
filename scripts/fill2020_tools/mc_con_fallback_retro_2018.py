@@ -18,11 +18,23 @@ serve and falls back. This campaign's 725 con cells sit entirely in that window.
 
 THE DISCRIMINATOR (no fetch; uses only our own store):
 
-    written con == our stored std for the SAME quarter
+    written con is BYTE-EQUAL to our stored std for the SAME quarter
       AND the company's own history shows con != std in ANY other quarter
-        -> HOLD. It consolidates differently, so an identical figure here is MC repeating standalone.
-    written con == our stored std, and the company NEVER shows con != std anywhere
+        -> HOLD. It consolidates differently, so an identical figure here is the source repeating
+           standalone.
+    written con is byte-equal, and the company NEVER shows con != std anywhere
         -> KEEP. Genuine no-consolidation-difference (the MOIL / CHENNPETRO / SCI shape).
+
+★ THE STRONGER TEST, and the one to prefer when the source can be re-read (2019 session, 2026-08-11):
+compare the SOURCE's consolidated row against the SOURCE'S OWN standalone row, SAME QUARTER, SAME
+LABEL, judging each FIELD on its own row.
+    differs   -> a genuine consolidated table FOR THAT FIELD. Writable.
+    identical -> UNRESOLVED. Not writable and NOT proven a fallback — a company whose subsidiaries
+                 are equity-accounted files consolidated revenue EQUAL to standalone while its
+                 profit differs (the MOIL/CHENNPETRO shape), and that is indistinguishable from a
+                 copy at the aggregator. Settle it from the FILING, not the aggregator.
+⚠️ Neither a differing PAT nor the presence of a "Net P/L After M.I & Associates" row proves a
+genuine table: GAYAPROJ 2019-03 and PIIND 2019-03 are PROVEN fallbacks and show both.
 
 ⚠ THIS IS STRICTER THAN `screen_crossbasis_2018.py`, WHICH THIS CAMPAIGN ALREADY RAN. That screen
 cleared a cell when its con==std neighbours outnumbered the differing ones, and reasoned about
@@ -56,7 +68,13 @@ EXEMPT = {
                           "statements in one filing, so con revenue == std revenue is proven, not "
                           "inferred.",
 }
-EQ_REL = 0.001            # "equal to our standalone"
+# ★ A FALLBACK IS A BYTE COPY — TEST FOR EXACT EQUALITY, NOT A BAND.
+# This was 0.001 (0.1% RELATIVE), which on a 3,000-crore value is 3 crore of slack. It admitted 7 of
+# the 28 cells this screen retracted on 2026-08-11 as "equal to our standalone" when they were 0.03
+# to 0.69 apart — SHREECEM 3,070.15 vs 3,069.91, COCHINSHIP 717.11 vs 716.42, SJVN 484.46 vs 484.49.
+# A source repeating the standalone row repeats it EXACTLY; a difference of any size is evidence of a
+# real consolidated table. All 6 testable ones were restored (§85a).
+EQ_ABS = 0.005            # "byte-equal to our standalone"
 DIFF_REL = 0.01           # "this company consolidates differently"
 
 
@@ -80,7 +98,7 @@ def main():
             if not r or len(r) < 2 or r[1] is None or r[0] in (None, 0):
                 continue
             written_by_mc = ("%s|%d|con" % (sym, qe)) in mc
-            if abs(r[1] - r[0]) > EQ_REL * abs(r[0]):
+            if abs(r[1] - r[0]) > EQ_ABS:
                 notflag += 1
                 continue                                   # con != std here: not the fallback shape
             rec = {"con": r[1], "std": r[0], "by_moneycontrol": written_by_mc,
