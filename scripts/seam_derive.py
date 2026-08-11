@@ -38,7 +38,15 @@ def main():
     ih = gitshow("scripts/indices_history.json")
     rmap = gitshow("scripts/_rename_map.json")
     adj = gitshow("scripts/_shp_seam_adjudicated.json").get("cells", {})
-    era = json.load(open(SP + "/unres_evidence.json"))
+    # era-symbol -> scripcode. The tracked resolver output is the durable copy; the original
+    # run read an untracked scratch file of the same shape, so this stage could not be
+    # re-run outside that one worktree (found 2026-08-12 re-running the seam after the
+    # fii=0.0 heal). Same for the BSE master below.
+    era = {}
+    for path in (SP + "/unres_evidence.json", SP + "/_shp_aspx_resolved_era_syms.json"):
+        if os.path.exists(path):
+            era = json.load(open(path))
+            break
     override = gitshow("scripts/_shp_scripcode_override.json")
     names = hist.get("_names", {})
 
@@ -63,7 +71,10 @@ def main():
             else: break
         return best
 
-    master = json.load(open(SP + "/bse_master_all.json"))
+    mpath = SP + "/bse_master_all.json"
+    if not os.path.exists(mpath):
+        mpath = SP + "/_bse_master_all.json"     # the tracked copy
+    master = json.load(open(mpath))
     by_id = {}
     for row in master:
         sid = str(row.get("scrip_id") or "").strip().upper()
@@ -173,8 +184,30 @@ def main():
     diffs.sort()
     med = diffs[len(diffs) // 2] if diffs else None
     print("Dec-15 run gate vs Sep-15: n=%d median=%s" % (len(diffs), med))
-    if med is None or len(diffs) < 30 or med > 3.0:
-        sys.exit("STOP: Dec-15 run gate failed (n=%s median=%s)" % (len(diffs), med))
+    # A MEASURED failure still stops the run. But on a RE-RUN the frontier holds only the
+    # cells history still lacks (Dec-15 is 98%+ covered after round 4), so n<30 means the
+    # batch gate is UNMEASURABLE, not failed — aborting there would also throw away the q89
+    # cells, which carry their own per-cell corroboration. Fall back to per-cell instead.
+    q88_percell = False
+    if med is not None and med > 3.0:
+        sys.exit("STOP: Dec-15 run gate FAILED (n=%d median=%.2f)" % (len(diffs), med))
+    if med is None or len(diffs) < 30:
+        q88_percell = True
+        print("   n<30 -> batch trust NOT measurable this run; Dec-15 cells now need the same "
+              "per-cell corroboration as q89 (|derived - stored Sep-15| <= 3.0)")
+
+    held_q88 = 0
+    if q88_percell:
+        for sym in list(res):
+            qs = res[sym]
+            if "2015-12-31" not in qs:
+                continue
+            v = (hist.get(sym) or {}).get("2015-09-30")
+            anchor = v[1] if v and v[1] is not None else None
+            if anchor is None or abs(qs["2015-12-31"][1] - anchor) > 3.0:
+                del qs["2015-12-31"]
+                held_q88 += 1
+        print("   q88 per-cell: held %d" % held_q88)
 
     suspects, held_q89 = [], 0
     for sym in list(res):
@@ -185,9 +218,13 @@ def main():
             anchor = v[1] if v and v[1] is not None else None
             if anchor is None or abs(drv - anchor) > 3.0:
                 if anchor == 0.0 and drv > 5.0:
+                    # A stored Jun-16 fii of 0.0 is not an anchor: it is the swallowed-block
+                    # defect (§22f / scripts/_shp_zero_fii_audit.json). 14 of the 15 first
+                    # found were healed 2026-08-12; any that reappear here are new ones.
                     suspects.append({"sym": sym, "derived_mar16_fii": drv,
                                      "stored_jun16_fii": 0.0,
-                                     "note": "stored Jun-16 zero looks fabricated (old-XBRL ledger)"})
+                                     "note": "stored Jun-16 zero is not an anchor — see "
+                                             "scripts/_shp_zero_fii_audit.json"})
                 del qs["2016-03-31"]
                 held_q89 += 1
         if not qs:
@@ -197,10 +234,31 @@ def main():
           % (held_q89, len(suspects)))
     json.dump(suspects, open(os.path.join(SP, "_seam_suspect_jun2016_zeros.json"), "w"), indent=1)
 
+    # ⚠️ UNION, never overwrite. This ledger is written whole on every run, and a re-run's
+    # frontier only contains cells shp_history still LACKS — so everything a previous run
+    # landed is absent from `res` by construction. A plain dump would silently shrink the
+    # tracked ledger from 159 cells to whatever this run happened to add (the same
+    # stage-order trap §22f records for shp_fill_hist_2010_2016). Existing cells win: they
+    # were gated against the anchors of their own day.
     out = os.path.join(SP, "shp_fill_seam_aspx.json.gz")
+    prev, kept = {}, 0
+    if os.path.exists(out):
+        try:
+            with gzip.open(out, "rt", encoding="utf-8") as fh:
+                prev = json.load(fh).get("fills", {})
+        except Exception as e:
+            sys.exit("STOP: existing seam ledger unreadable (%s) — refusing to overwrite it" % e)
+    for sym, qs in prev.items():
+        dest = res.setdefault(sym, {})
+        for qe, cell in qs.items():
+            if qe not in dest:
+                dest[qe] = cell
+                kept += 1
+    total = sum(len(v) for v in res.values())
     with gzip.open(out, "wt", encoding="utf-8") as fh:
         json.dump({"_built": "seam_derive (aspx inst_sub inversion)", "fills": res}, fh)
-    print("ledger -> %s (%d syms, %d cells)" % (out, len(res), n2))
+    print("ledger -> %s (%d syms, %d cells: %d new this run + %d carried forward)"
+          % (out, len(res), total, n2, kept))
 
 
 if __name__ == "__main__":
