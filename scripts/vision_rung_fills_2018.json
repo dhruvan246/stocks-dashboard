@@ -1,0 +1,69 @@
+{
+ "BALKRISIND|20181231|con": {
+  "corroboration": [
+   "con/std 0.9936; BALKRISIND's own family runs 1.0046 / 1.0122 / 0.9959, so con slightly BELOW std is its normal shape"
+  ],
+  "gate": "THREE exact controls on the SAME page: standalone 31/12/2018 = 120559 lakh = 1,205.59 == our stored revS to the paisa (proves the block assignment); and the page's own 31/12/2019 columns 116050 / 115576 reproduce our stored revS 1,160.50 and revC 1,155.76 to the paisa.",
+  "revC": 1197.84,
+  "route": "VISION rung (\u00a717b) on the YEAR-LATER filing",
+  "src": "BSE ann 20200214 (Balkrishna Industries Dec-2019 filing) p1, rendered at 200dpi (text layer garbled). '(Rs. in Lakhs)'. Two blocks STAND ALONE | CONSOLIDATED, each QUARTER ENDED 31/12/2019 30/09/2019 31/12/2018. Row I 'Revenue from Operations' consolidated = 115576 108428 119784 -> 31/12/2018 = 119784 lakh = 1,197.84 cr."
+ },
+ "CENTRALBK|20180930|con": {
+  "corroboration": [
+   "bank format: Interest Earned is the revenue basis build_revop stores for a bank (\u00a742/\u00a776a)",
+   "our stored con PAT -935.54 differs from the page's consolidated -920.64 because that row is BEFORE minority interest / share of associates; ours is owners-attributable (\u00a70), which sits further down the statement"
+  ],
+  "gate": "TWO exact standalone controls in the SAME 30.09.2018 column: interest earned 568,505 lakh = 5,685.05 == our stored revS to the paisa, AND Net Profit after tax (92,360) lakh = -923.60 == our stored patS to the paisa. That fixes the block assignment beyond doubt.",
+  "revC": 5712.14,
+  "route": "VISION rung (\u00a717b) on the YEAR-LATER filing",
+  "src": "BSE ann 20191101 (Central Bank of India Sep-2019 filing) p6, rendered at 190dpi (text layer glyph-corrupted: the header extracts as '30,09.2019 30.0G.201S 30,09.2018'). '(Rs in Lakh)', two blocks Standalone | Consolidated. CONSOLIDATED Quarter Ended 30.09.2018, row 1 'Interest earned (a)+(b)+(c)+(d)' = 591,854 | 574,475 | 571,214 -> 571,214 lakh = 5,712.14 cr."
+ },
+ "GODFRYPHLP|20181231|con": {
+  "corroboration": [
+   "con/std 1.0104, inside GODFRYPHLP's own family 1.0041-1.0122 (2019-06/09/12)",
+   "stored con PAT 81.93 vs std 78.46 (4.4% apart) - a genuine consolidated series, not a copy"
+  ],
+  "gate": "STANDALONE CONTROL EXACT: the 3rd column 69017 lakh = 690.17 cr == our stored revS for 20181231 to the paisa, which is what proves the first triplet is standalone and the 6th column (69733 lakh = 697.33 cr) is the consolidated Dec-2018 quarter (\u00a755 per-filing standalone control).",
+  "revC": 697.33,
+  "route": "vision-rung triage -> YEAR-LATER filing, read from TEXT (no vision needed)",
+  "src": "BSE ann 20200207 (Godfrey Phillips Dec-2019 filing), p1, '(Rs in lakhs)', combined Standalone+Consolidated page. Header prints the three periods TWICE: Q 31.12.2019 | 9M 31.12.2019 | Q 31.12.2018 (standalone) then the same three (consolidated). Row 'Total Income from Operations' = 78811 236707 69017 | 79722 238933 69733."
+ },
+ "RADICO|20180930|con": {
+  "corroboration": [
+   "equals our stored revS 1906.10 - RADICO's MEASURED convention: its 2019 quarters store con==std EXACTLY (2520.05/2520.05, 2011.65/2011.65) while con PAT differs (79.94 vs 78.59), the MOIL/SCI equity-accounted shape",
+   "no stored con PAT for this quarter, so SS64 blocks every anchored reader - the column is identified by its PRINTED DATE (SS55b) instead"
+  ],
+  "gate": "page is CONSOLIDATED-ONLY (con header matches, standalone header does not; the standalone statement is p1 of the same filing), so this is not the SS76b combined-page trap.",
+  "revC": 1906.1,
+  "route": "vision-rung triage -> YEAR-LATER filing, read from TEXT (no vision needed)",
+  "src": "BSE ann 20191106 (Radico Khaitan Sep-2019 filing), p5, header 'Statement of Unaudited Consolidated Financial Results for the quarter and six months ended September 30, 2019', '(Rs in Lakhs,except EPS)', column (3) 'Quarter ended 30.09.2018'. Row '(a) Revenue from Operations' = 2,52,005.22 | 2,67,707.70 | 1,90,609.59 | ... -> 1,90,609.59 lakh = 1,906.10 cr."
+ },
+ "RECLTD|20181231|con": {
+  "corroboration": [
+   "bank/NBFC format: revenue is Interest Income + Other Operating Income, which is the basis build_revop stores for an NBFC (\u00a742)"
+  ],
+  "gate": "PAT ANCHOR EXACT in the SAME 31-12-2018 column: Profit before Tax 1,842.84 - current tax 807.56 + deferred tax 248.72 = 1,284.00 == our stored con PAT 1284.0 to the paisa.",
+  "revC": 5533.98,
+  "route": "VISION rung (\u00a717b) on the YEAR-LATER filing",
+  "src": "BSE ann 20200204 (REC Ltd Dec-2019 filing) p7, rendered at 200dpi (text layer garbled). Header 'Statement of Unaudited Consolidated Financial Results for the Period ended 31-12-2019', '(Rs in Crores)'. Columns Quarter Ended 31-12-2019 | 30-09-2019 | 31-12-2018. Row C 'Total Revenue from Operations (A+B)' = 7,712.75 | 7,653.11 | 5,533.98."
+ },
+ "RUPA|20181231|con": {
+  "corroboration": [
+   "PAT anchor exact: 'Net Profit for the period (5-6)' Dec-2018 = 1,671.95 lakh = 16.72 == our stored con PAT"
+  ],
+  "gate": "THE PAGE'S OWN LATER COLUMNS REPRODUCE OUR STORED revC EXACTLY under the same a)+b) rule: Dec-2019 30,673.49+85.92 = 307.59 == stored revC 20191231, and Sep-2019 28,672.84+117.49 = 287.90 == stored revC 20190930. That fixes BOTH the revenue convention (other income is EXCLUDED - row 1(c) belongs to 'Total Revenue', not to revenue from operations) and the column mapping.",
+  "revC": 291.06,
+  "route": "VISION rung (\u00a717b) on the YEAR-LATER filing",
+  "src": "BSE ann 20200210 (Rupa & Company Dec-2019 filing) p5, rendered at 190dpi (text layer glyph-corrupted: 'RUPA 8 COMPANY LIMlTED', 'Revenue from Operatlons'). Header 'Statement of Unaudited Consolidated Financial Results for the Quarter & Nine Months Ended December 31, 2019', '(in Rs lakhs)', column 'Quarter ended December 31 2018'. Revenue from Operations = a) Sales of Products and Services 29,041.15 + b) Other Operating income 64.58 = 29,105.73 lakh = 291.06 cr."
+ },
+ "_defects_found_not_touched": {
+  "CENTRALBK|20190630|revC": {
+   "note": "equals our stored STANDALONE 5,714.44 to the paisa, but the Sep-2019 filing prints consolidated interest earned for Jun-2019 as 574,475 lakh = 5,744.75. The con slot appears to hold the std figure (\u00a759/\u00a767 class). Reported, not patched.",
+   "stored": 5714.44
+  },
+  "CENTRALBK|20190930|revS": {
+   "note": "equals the page's TOTAL INCOME (670,371 lakh), while CENTRALBK's other stored quarters hold INTEREST EARNED (Sep-2018 5,685.05 = 568,505 lakh). Our own bank revenue series is inconsistent across quarters for this scrip. Reported, not patched (\u00a758d) - it is a non-null cell, outside a fill-only pass.",
+   "stored": 6703.71
+  }
+ }
+}
