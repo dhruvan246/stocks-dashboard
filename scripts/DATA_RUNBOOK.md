@@ -7757,6 +7757,39 @@ The natural fix is a `held`-aware pass in `verify_fills_live` — assert absence
 carrying `held` — which would turn this into a monitored condition instead of a manual re-read.
 Recorded as the next improvement; not built here.
 
+
+### 85d. ★★★ NEVER HARDCODE AN AGGREGATOR'S REVENUE ROW — score the label, and treat a TIE as unresolved
+Moneycontrol serves SEVERAL revenue definitions in the SAME payload: `Net Sales/Income from
+operations`, `Total Income From Operations` (= net sales + other operating income), and for banks
+`Interest Earned`. **Picking the wrong one is invisible to every magnitude gate**, because both
+values are plausible and sit in the right column. SIEMENS 2018-12 drifted exactly so — 2,753.3 (net
+sales) vs 2,825.9 (total income), 72.60 apart, both real rows of the same payload.
+
+> **Score EVERY candidate label against our own stored quarters and take the STRICT winner. A TIE is
+> UNRESOLVED, never a fall-back to a preferred label** — a tie means the anchors cannot separate the
+> definitions, which for an insurer or an NBFC is the difference between premium income and total
+> income. Judge each FIELD on its own row; a revenue verdict must never be stamped onto a PAT ledger.
+
+Measured (2019 session, over 2,171 applied revenue cells): 525 used Total Income, and 318 of those
+had a materially different Net Sales row in the same payload — up to 58% apart (BAJAJFINSV 8,829 vs
+3,681; ICICIPRULI 15,896 vs 10,056). Scored both ways, the chosen label reproduces strictly better in
+**318 of 318**.
+
+**★ AND IT OVERTURNED A REFUSAL.** The 2018 campaign closed its insurer route holding 11 cells on the
+claim that "our stored insurer standalone cannot be reconciled to the filings". It reconciles — the
+comparison was against the wrong row. On the winning label:
+
+| | Net Sales | Total Income From Operations |
+|---|---|---|
+| GICRE con | 0/10 | **9/10** |
+| NIACL con | 1/22 | **18/22** |
+| HDFCLIFE con | 0/22 | **17/22** |
+| ICICIPRULI con | 0/25 | **22/25** |
+
+The MC gate had rejected all four insurers with "0 reproduced, 10-25 disagreements", and that was
+recorded as evidence ABOUT THE DATA. It was evidence about the LABEL — §57's rule again, one level
+down: a route returning nothing is a fact about the route.
+
 ### 85c. Why the wrong value is worse than the hole
 Both cells are the §67 con-copy shape: a consolidated slot holding the standalone figure. That is the
 defect class 18 heals were spent unpicking in §67, and an aggregator can re-create it silently at any
