@@ -56,8 +56,21 @@ import agg_sources as A                                            # noqa: E402
 import mc_era as E                                                 # noqa: E402
 
 MIN_ANCHORS = 8          # E1: the identity claim, made globally rather than locally
-MAX_BAD = 2              # absolute number of disagreeing anchors tolerated ANYWHERE
-MAX_BAD_RATE = 0.03
+# ★ CALIBRATED BY HOLD-OUT (era_calibrate.py, 1,200 cells / 386 companies, 2026-08-12), not chosen.
+# The first cut was MAX_BAD=2 / 3%, which refused 949 cells on 210 companies agreeing with us
+# 92-97% of the time (KTKBANK 83 anchors / 3 disagreements, BASF 82/4, UNITECH 80/4) -- and the
+# disagreements sat 12-17 years from the target. Dropping each held cell in turn and asking what
+# the gate would have written:
+#     maxbad=2  rate=3%    fills 380/1200   mismatch 1.32%
+#     maxbad=4  rate=6%    fills 502/1200   mismatch 1.39%
+#     maxbad=10 rate=15%   fills 600/1200   mismatch 1.17%
+# +58% reach at a FLAT error rate, because the protection was never coming from the global cap --
+# it comes from "no disagreement within +-6q of the target" and from the FY identity. Same
+# conclusion runbook §81e reached when agg_gate's GUARD_Q was 12, and 15% is agg_gate's own
+# GLOBAL_MAX_BAD. (2 of the 7 residual mismatches are cells the FY identity indicts as OURS --
+# FACT 2008-03, FIRSTLEASE 2010-12 -- so the true gate error is below the measured bound.)
+MAX_BAD = 10             # absolute number of disagreeing anchors tolerated ANYWHERE
+MAX_BAD_RATE = 0.15
 NEAR_BAD_Q = 6           # ... but none of them may sit this close to the target
 FY_TOL_REL = 0.004
 FY_TOL_ABS = 0.5

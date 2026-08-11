@@ -53,6 +53,7 @@ FUND = os.path.join(ROOT, "docs", "sf_fundamentals.json")
 LEDGER = os.path.join(SCRIPTS, "agg_pat_cell_fills.json")
 SITE_NAME = {"mc": "moneycontrol", "tl": "trendlyne", "tt": "tickertape"}
 SLOT = {"patS": 1, "patC": 3}
+BASIS_KEY = {"patS": "std", "patC": "con"}   # the key verify_fills_live.py LEDGERS registers
 ANN_SLOT = {"patS": 2, "patC": 4}
 
 
@@ -109,7 +110,12 @@ def main():
         jkey = "%s|%d" % (sym, qe)
         journal.setdefault(jkey, {})
         journal[jkey].update({
-            field: p["value"],
+            # ⚠️ THE VALUE KEY IS THE BASIS NAME, "std"/"con" -- NOT the field name. verify_fills_live
+            # skips any entry where its registered key is absent (`key not in v: continue`), so a
+            # ledger written under "patS" against a registration of "std" is checked ZERO times and
+            # still reports MISSING 0. Caught here only because `checked` did not move when the
+            # ledger grew by 309 entries. Same class as the three-part-key trap noted below.
+            BASIS_KEY[field]: p["value"],
             "state": p["state"],
             "precision": ch["precision"],
             "src": "%s quarterly-results API (runbook §81)" % SITE_NAME.get(ch["site"], ch["site"]),
@@ -123,6 +129,7 @@ def main():
                          "quarters with zero disagreements in the local window, worst anchor error "
                          "%.4f; nearest anchor within 4 quarters" %
                          (field, ch["anchors"], ch["worst_anchor"])),
+            "field": field,
             "corroborated_by": [SITE_NAME.get(s, s) for s in p.get("corroborated_by", [])],
             "site_reach": p.get("sites", {}),
             "fy_check": p.get("fy_check"),
