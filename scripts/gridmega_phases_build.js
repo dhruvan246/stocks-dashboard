@@ -29,8 +29,17 @@ const END = process.env.GRID_END || null;          // required: the data end dat
 // measured peak 2018-01-23 to trough 2020-03-23, Nifty 500 -36.8%. Without it the ⭐ ranking
 // was "consistent across four slices of one bull market": scored against it, 0 of the top 10
 // best-in-all-4 strategies made money and their median was -55%, worse than the index.
+// `metric` picks what the tile and the consistency table show for a phase: 'cagr' for multi-year
+// windows (a 22-year total return is an unreadable 7,250x), 'tot' for the short slices.
+// `long` is the 22-year run — the only window spanning MULTIPLE cycles (2008, 2018-20, 2022, 2025),
+// so it is the strongest single test in the lab. `full` stays phase 0: the page treats phase 0 as
+// the headline and the source of the "Full DD %" column, so re-ordering would silently change both.
+// Caveat carried from the coverage probe: every factor in this window is >=98% covered in its worst
+// year EXCEPT `composite` (9% in 2004, 82% by 2008) — composite-based winners here are effectively
+// post-2008 results.
 const PHASES = [
-  { key: 'full', label: 'Full cycle',    card: 'Entire cycle',    short: 'Full',  start: '2020-03-31', end: 'END' },
+  { key: 'full', label: 'Full cycle',    card: 'Entire cycle',    short: 'Full',  metric: 'cagr', start: '2020-03-31', end: 'END' },
+  { key: 'long', label: 'Since 2004',    card: 'Since 2004 (22y)', short: '22y',  metric: 'cagr', start: '2004-03-31', end: 'END' },
   { key: 'bear', label: '2018-20 bear',  card: 'Jan-18 → Mar-20', short: 'Bear',  start: '2018-01-23', end: '2020-03-23' },
   { key: 'w1',   label: 'Covid recovery', card: 'Covid → Sep-21', short: 'Covid', start: '2020-03-31', end: '2021-09-30' },
   { key: 'w2',   label: '2023-24 bull',  card: 'Mar-23 → Sep-24', short: '23-24', start: '2023-03-31', end: '2024-09-30' },
@@ -166,7 +175,8 @@ async function rankWindow(w) {
     universe: universeLabel + ' · monthly · ' + basket,
     dataEnd: END,
     phases: PHASES.map(p => ({ key: p.key, label: p.label, card: p.card, short: p.short,
-      start: p.start, end: resolve(p).end, years: SEL[p.key].years, bench: SEL[p.key].bench })),
+      metric: p.metric || 'tot', start: p.start, end: resolve(p).end,
+      years: SEL[p.key].years, bench: SEL[p.key].bench })),
     combos,
     cards,
     years: YEARS.map(y => ({ key: y.key, label: y.label, start: y.start, end: resolve(y).end,
