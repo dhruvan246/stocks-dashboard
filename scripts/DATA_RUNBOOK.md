@@ -7042,3 +7042,225 @@ inferred absence from OUR gaps, this one from the INDEX's gap. Same error, same 
 Put the **document-free** rungs BEFORE the expensive document ones. Deriving a quarter from a
 published annual needs no PDF, no OCR and no column anchor, so it should be attempted before the
 vision rung is even costed — and before any cell is described as blocked on document quality.
+
+---
+
+## 81. ★★★ THE AGGREGATOR ROUTE — Moneycontrol / Trendlyne / Tickertape, discovered and MEASURED  (2026-08-11)
+
+Sibling of §60 (screener.in). Same rule, three more readers: **before a cell is reported
+unreachable, a second independent reader must also have come back empty** — and the reader must be
+a PARSER, never a prose summary (§60b is absolute).
+
+**★ NO ASSUMPTIONS, NO GUESSWORK (§0).** Every endpoint, parameter, row label, reach number and
+tolerance below was measured on 2026-08-11. Where something was not measured it says so.
+
+### 81a. How the endpoints were found — the method, because guessing failed first
+
+Guessed URLs failed three times before any of this worked: tickertape
+`/stocks/financials/income/<sid>/quarterly/normal` → **400** (the segment is `interim`, not
+`quarterly`), trendlyne's quarterly-results page → the table is **absent from the served HTML**,
+moneycontrol → **blocked** to a plain fetch. The method that worked is the one in memory
+`feedback-find-endpoints-in-js-bundle` (the StockEdge/BSE-Angular precedent):
+
+1. Load the page in the Browser pane (`preview_start` / `navigate`).
+2. **Read `performance.getEntriesByType('resource')` and filter `initiatorType` to
+   `fetch`/`xmlhttprequest`.** ← the step that actually mattered. `read_network_requests` returned
+   only the document and its sub-resources (CSS, chunks, images) and **no XHR at all**, which looks
+   exactly like "the page makes no API call". It does. The Performance API sees them, and it sees
+   them retroactively, so nothing has to be hooked before load.
+   (A `window.fetch` + `XMLHttpRequest.prototype.open` monkey-patch also works but only catches
+   calls made AFTER it is installed — useless for data fetched during page load.)
+3. For the request SHAPE, read the JS bundle: tickertape's route table is a literal in a Next.js
+   chunk — `GET_STOCK_FINANCIAL_STATEMENT:"/stocks/financials/:statement/:sid/:period/:view"`.
+4. For per-company IDs prefer the site's own **sitemap** over its search API: it is a complete,
+   cheap, stable map and it needs no calls per company.
+
+### 81b. The three endpoint specs (all verified answering 200 with real rows)
+
+**MONEYCONTROL** — the deepest of the three by a wide margin. No cookies, no Referer, no token.
+```
+id      GET https://www.moneycontrol.com/mccode/common/autosuggestion_solr.php
+            ?classic=true&query=<NSE SYMBOL>&type=1&format=json
+        pdt_dis_nm carries "<ISIN>, <NSE SYMBOL>, <BSE code>" -> accept ONLY the row whose SYMBOL
+        token equals ours (MOIL's top two hits are IOC and Oil India).
+quarters GET https://appfeeds.moneycontrol.com/jsonapi/stocks/quarterly_results_responsive
+            ?sc_id=<sc_id>&type_format=<quarterly|cons_quarterly>&start=0&limit=200
+annual   GET https://appfeeds.moneycontrol.com/jsonapi/stocks/yearly_results_responsive
+            ?sc_id=<sc_id>&type_format=<yearly|cons_yearly>&start=0&limit=200
+```
+`type_format=quarterly` is **STANDALONE**; `cons_quarterly` is CONSOLIDATED. Period key `yrc0`
+prints `"Jun '26"`. Rows are label→string: `Net Sales/Income from operations`,
+`Total Income From Operations`, bank layout `Interest Earned`, PAT `Net Profit/(Loss) For the
+Period`, consolidated owners-attributable `Net P/L After M.I & Associates`.
+
+⚠️ **TWO ids come back and they are not interchangeable.** The `sc_id` FIELD is the feed key; the
+code at the end of `link_src` is a legacy/SEO code that answers the feed **0 rows with HTTP 200**
+(§61a mode 4 — absence dressed as success). Measured: SPICEJET link `SJ01` → 0 rows, `sc_id`
+`ML04` → 73; MOIL `M18` → 0, `M11` → 67; ALOKINDS `AI54` → 0, `ATI` → 74. WESTLIFE has both equal
+to `DIC`, which is exactly how a wrong preference survives a one-company smoke test.
+
+**TRENDLYNE** — both bases in one payload; needs a session.
+```
+ids     GET https://trendlyne.com/fundamental-sitemap-quarter-result.xml
+        -> /fundamentals/financials/<tid>/<NSE SYMBOL>/<slug>/   (5,459 symbols, keyed by symbol)
+page    GET https://trendlyne.com/fundamentals/financials/<tid>/<SYM>/<slug>/
+        -> <main id="fundamental_tables" data-tablesurl="...">
+api     GET https://trendlyne.com/fundamentals/get-fundamental_results-v2/<tid>/<BASE32 TOKEN>/
+        headers: Cookie csrftoken (minted by the page GET) + X-Requested-With: XMLHttpRequest
+                 + Referer: <the page URL>
+```
+Without the session + those two headers the host answers **HTTP 444** and closes — that 444 is the
+"blocked to a plain fetch" symptom, not absence. The token is printed in the page HTML and is
+stable across sessions (same value from curl and from the browser). Body:
+`body.quarterlyDataDump.{standalone,consolidated}["Jun 2026"]` with `SR_Q` (revenue from
+operations incl. other operating income), `TOTAL_SR_Q` (incl. other income), `NP_Q`,
+`NetPLAfterMIAssociates_Q`; `body.annualDataDump` the same shape.
+**Pacing: `trendlyne.com/robots.txt` sets `Crawl-delay: 10` for ClaudeBot BY NAME** — honoured, as
+the repo already does in `fetch_shp_seam_trendlyne.py`. Its per-indicator chart endpoint
+(`data-fetchurl` → `*/fundamentals/chart/v2/`) is **Disallowed in robots.txt and is not used.**
+
+**TICKERTAPE** — discovered in full, and deliberately read the slow way.
+```
+API (NOT USED)  GET https://api.tickertape.in/stocks/financials/:statement/:sid/:period/:view?count=N
+                statement=income|balancesheet|cashflow  period=interim|annual  view=normal|margin|growth
+                GET https://api.tickertape.in/search?text=<SYM>&types=stock  -> data.stocks[].sid
+```
+⚠️ **`api.tickertape.in/robots.txt` is `User-agent: * / Disallow: /`** (measured). The spec is
+recorded because discovering it was the job; the reader does **not** fetch that host. The route it
+uses instead is the page, which robots permits:
+```
+ids   GET https://www.tickertape.in/sitemaps/stocks/sitemap.xml   -> /stocks/<slug>-<SID> (5,494)
+page  GET https://www.tickertape.in/stocks/<slug>-<SID>
+      -> __NEXT_DATA__.props.pageProps["income-normal-interim"|"income-normal-annual"]
+      rows {displayPeriod, endDate, reporting, qIncTrev, qIncNinc, ...}
+```
+The sitemap has no ticker, so the resolution is confirmed from the fetched page's
+`securityInfo.info.ticker` — a name match alone is a coincidence to be disproved (§76).
+**Tickertape carries ONE basis per company**, whatever its rows' `reporting` field says; `view` is
+presentation (normal/margin/growth), not basis. The page route serves 10 quarters, the API 40.
+
+### 81c. ★★ THEY ARE NOT THREE INDEPENDENT READERS — measured, and it changes what agreement means
+
+| quarter | MC `Total Income From Operations` | TL `SR_Q` | TL `TOTAL_SR_Q` | TT `qIncTrev` |
+|---|---|---|---|---|
+| WESTLIFE con 2026-06 | 735.64 | **735.64** | 742.23 | **742.23** |
+| GICRE con 2026-03 | 13018.27 | **13018.27** | 13663.35 | **13663.35** |
+| NIACL con 2025-12 | 12069.24 | **12069.24** | 12234.97 | **12234.97** |
+
+MC's total-from-operations **is** Trendlyne's `SR_Q`, and Trendlyne's `TOTAL_SR_Q` **is**
+Tickertape's `qIncTrev`, to the paisa, across every company sampled. All three are fed by the same
+upstream vendor with different row cuts. So **two of these sites agreeing is close to no evidence
+at all** — it is one reader counted twice. An independent confirmation is a FILING read. Record
+cross-site agreement, never treat it as corroboration. (ALOKINDS 2026-06 is the one sampled
+divergence: TL 998.24 vs TT 1015.44 — different vintages of the same feed.)
+
+### 81d. Reach — MEASURED per company, per basis (2026-08-11; 8 companies off the real gap list)
+
+Reach is a property of the COMPANY as much as the site. Quarters / oldest quarter — annual FYs / oldest FY:
+
+| company | MC std | MC con | TL std | TL con | TT (single basis) |
+|---|---|---|---|---|---|
+| WESTLIFE  | 111 · 1998-12 | 51 · 2013-06 | 13 · 2023-06 | 13 · 2023-06 | 10 con · 2024-03 |
+| SPICEJET  | 73 · 2007-09 | 39 · 2016-06 | 13 · 2022-12 | 13 · 2022-12 | 10 con · 2023-09 |
+| ZFCVINDIA | 73 · 2008-06 | 21 · 2021-06 | 13 · 2023-06 | 13 · 2023-06 | — (unresolved) |
+| KENNAMET  | 113 · 1998-03 | 15 · 2019-03 | 13 · 2023-03 | 13 · 2019-09 | 10 std · 2023-12 |
+| ALOKINDS  | 74 · 2008-03 | 33 · 2018-06 | 13 · 2023-06 | 13 · 2023-06 | 10 con · 2024-03 |
+| GICRE     | 40 · 2016-06 | 32 · 2018-06 | 13 · 2023-03 | 13 · 2023-03 | 10 con · 2023-12 |
+| NIACL     | 41 · 2016-06 | 33 · 2018-06 | 13 · 2023-06 | 13 · 2023-06 | 10 con · 2024-03 |
+| MOIL      | 67 · 2009-12 | 11 · 2018-06 | 13 · 2023-06 | 11 · 2018-06 | 10 std · 2024-03 |
+
+Annual tables: MC 13–35 FYs (WESTLIFE back to FY1998, KENNAMET to FY1990), TL 11 FYs (FY2016+),
+TT 9–11 FYs (FY2017+). Say what a site has: **Moneycontrol is the only one of the three that
+reaches the 2015–2022 window at all**; Trendlyne and Tickertape are a recent-window second opinion
+and a corroboration source, nothing more. Trendlyne's "13 quarters" is the last 13 it HOLDS, not
+the last 13 calendar quarters — KENNAMET con stops at 2022-09 and MOIL con at 2020-12 because the
+companies stopped filing that basis.
+
+### 81e. The gate — `scripts/agg_tools/agg_gate.py` + `agg_fy_check.py`
+
+§60c's rule stands and is not negotiable: **the site's own series must reproduce values we already
+store, with zero disagreements, or the WHOLE series is rejected — never cherry-pick the one cell
+you wanted.** What this route adds:
+
+* **Tolerances are set from MEASURED print precision.** screener prints crore-ROUNDED integers so
+  `screener_gate.py` needs a 1.0-crore floor; MC/TL print TWO DECIMALS of a crore. Carrying the 1.0
+  floor over made a holding company whose whole revenue is 0.2 cr "agree 13/16" while our
+  0.47/0.30/0.32 sat against the site's 0.21/0.22/0.26. Floors here are one print-unit wide.
+* **A** ≥2 anchors within ±6 quarters of the target, **zero disagreements in that window**;
+  **A2** at least one anchor within 4 quarters; **A3** no disagreement within ±12 quarters
+  (a restatement boundary near the target); **A4** global disagreement rate <15% (a wholly
+  different entity — the TMPV class).
+  Why local rather than global: 45 of 97 refusals on the first pass were ≥90% agreement whose only
+  disagreements sat 6–30 quarters away, several of them **our** known-bad cells (ADANIENT 2014-12
+  stored 2.44 against 17,849.84; KSB 2018-12 stored 0.0 against 346.6). §60d's own words are
+  "reject the YEAR, not the company".
+* **★ A5 — SITE-INTERNAL FY IDENTITY. The check that earned its keep.** The site's own four
+  quarters of the target FY must sum to the site's own annual for that FY, and so must both
+  neighbouring FYs (§60d: reject years adjacent to a restated one). It needs nothing from us, so it
+  works even where we hold no sibling quarter. It caught **9 of 22** cells that had already passed
+  the quarterly gate with 27–40 anchors and zero local disagreements:
+  ICIL FY2022 ΣQ 2,862.87 vs annual 2,842.02 · PEL FY2023 9,354.70 vs 8,934.30 (Piramal Pharma
+  demerger) · WELCORP FY2022 5,915.04 vs 6,505.11 · ADANIENT FY2024 off by 9,051 · EXIDEIND FY2022
+  off by 2,346 · SAMMAANCAP restated in all three FYs. Nothing else would have found these.
+* ⚠️ **The financial year is NOT always Apr–Mar** — RAIN closes in December, KENNAMET in June
+  (measured off their annual keys). A5 reads the FY-end month from the site's own annual table.
+  Assuming March turned every RAIN test into a silent NO-TEST, i.e. an untested cell reported as a
+  checked one.
+* **B** a printed 0 is the not-reported sentinel, held unless the other basis corroborates a real
+  nil; **C** never write a value equal to our stored OTHER basis (the copied-con fingerprint — that
+  belongs to the §6A no-sub identity route, which writes it WITH evidence); **D** the revenue row
+  is PROVEN, not assumed — every candidate label is tried and only the one that reproduces our
+  stored values is used, which is what makes bank (`Interest Earned`) and insurer layouts safe;
+  **E** where more than one site passes, their target values must agree (weak, per §81c);
+  **F** precision is measured from the anchors, not assumed — `site-exact` when every matched
+  anchor lands within 0.01, else `rounded(<worst anchor error>)`, journalled either way (§60e).
+
+### 81f. What it landed, honestly (142 open cells, the whole 2019-12 → 2026-03 window)
+
+**13 filled**, every one from Moneycontrol, 8–12 local anchors each, 5 at zero anchor error:
+ABSLAMC · BSE · IDEA×2 · JINDALSTEL · MMTC · NAM-INDIA · RAIN · RAJESHEXPO×4 · SUNDARMFIN.
+Per-cell table with every anchor count and both FY identities:
+`scripts/agg_tools/AGG_ROUTE_REPORT.md`. Ledger: `scripts/agg_cell_fills.json`, registered in
+`verify_fills_live.py` at creation time so it never joins the class of ledgers that sat unguarded.
+
+The other 129 are NOT "unfillable" — they are, per §61b:
+* **9 `NEEDS-CROSSCHECK` (restated FY)** — reachable, but only from a filing read (81e A5).
+* **5 `REJECT-EQUALS-OTHER-BASIS`** — ZFCVINDIA con 2021-06…2021-12: MC's consolidated series
+  passes the gate and its value equals our stored standalone exactly. That is the no-sub identity
+  case; §6A writes it with evidence, a blind copy must not.
+* **~97 `NEEDS-CROSSCHECK` (gate refused)** — a site HAD the quarter and its series does not
+  reproduce ours. Two large, informative classes:
+  - **Insurers.** MC's `Net Sales/Income from operations` is one leg of an insurer's revenue, not
+    the premium + investment-income total we store (GICRE/NIACL/HDFCLIFE/LICI: `rev_ops` matches
+    0 of our quarters, `rev_total` 9–17 of 22 but with local disagreements). The aggregators'
+    insurer revenue is a **different quantity** from ours — gate D is exactly what proves that,
+    and §43/§55 remain the routes for these.
+  - **KENNAMET con** — MC *and* TL both differ from us by ~10% on three consecutive 2020 quarters
+    (87.3 vs 95.6, 178.3 vs 197.1, 193.3 vs 216.8). Same vendor twice (§81c), so this is one
+    disagreement, not two; it needs the filing.
+* **`not-found-via:mc,tl,tt`** — the rest. Notable: **MOIL consolidated ends at 2020-12 on both
+  MC and TL**, which is evidence toward the §63 not-applicable ledger but is NOT proof — it is one
+  vendor, and never-infer-absence-from-our-own-gaps applies to theirs too.
+
+### 81g. 48 SUSPECT cells of OURS, surfaced in passing — reported, NEVER patched
+
+§61a mode 6: a site reproduces our series everywhere except one or two cells; the indictment is
+against us. Examples: 360ONE 2019-12 revS ours 101.71 vs 45.03 (24/26 elsewhere), ABB 2025-06 revC
+ours 3,144.52 vs 3,324.93, WESTLIFE revS 2021-12 and 2022-12 both stored 93.89 against 0.10/0.20,
+KSB 2018-12 revC stored 0.0. All listed in `AGG_ROUTE_REPORT.md`. Correcting a stored value is the
+§2b procedure with its own evidence — never a side effect of a fill pass (§58d).
+
+### 81h. Running it
+
+```
+python3 -X utf8 scripts/build_fill_coverage.py --out /tmp/fc.json      # current open set
+python3 -X utf8 scripts/agg_tools/agg_sweep.py   --coverage /tmp/fc.json --out /tmp/agg.json
+python3 -X utf8 scripts/agg_tools/agg_fy_check.py --props /tmp/agg.json --out-props /tmp/final.json
+python3 -X utf8 scripts/agg_tools/agg_report.py  --props /tmp/agg.json --final /tmp/final.json \
+        --md scripts/agg_tools/AGG_ROUTE_REPORT.md
+python3 -X utf8 scripts/agg_tools/apply_agg_fills.py --props /tmp/final.json [--apply]
+python3 -X utf8 scripts/agg_tools/agg_reach.py --syms A,B,C --md /tmp/reach.md
+```
+Fetch and write are separate scripts on purpose: the write replays a ledger in ~1s, which is short
+enough to win the rebase race on these single-line JSONs (CLAUDE.md rule 4 / §38). Responses are
+disk-cached under `~/.cache/agg_reader/`; a re-run after a reader change costs nothing.

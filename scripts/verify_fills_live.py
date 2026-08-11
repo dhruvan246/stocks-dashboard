@@ -62,6 +62,13 @@ LEDGERS = [
     # those quarters, so nothing but this ledger would notice them going missing again.
     ("named_pat_cell_fills.json",      "fund",  "std",  1),
     ("named_pat_cell_fills.json",      "fund",  "con",  3),
+    # aggregator route (runbook §81): Moneycontrol / Trendlyne quarterly-results feeds. Every cell
+    # is gated on that site's own series reproducing >=2 of our stored quarters with zero local
+    # disagreements, AND on the site's own four quarters summing to its own annual for the target
+    # FY and both neighbours. Registered at creation time so this ledger never joins the class that
+    # sat unguarded for weeks (see the named_rev_cell_fills revC note above).
+    ("agg_cell_fills.json",            "revop", "revS", 0),
+    ("agg_cell_fills.json",            "revop", "revC", 1),
 ]
 # BASIS-IN-KEY ledgers: "SYM|QE|basis", not "SYM|QE" — the flat loop above would rsplit the BASIS
 # off as the quarter and check nothing. These were UNGUARDED until 2026-08-10: nse_xbrl_rev_fills
