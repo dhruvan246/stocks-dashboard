@@ -133,8 +133,18 @@ def main():
         for qe in sorted(v.get("revC", [])):
             ps, pc = fund.get(sym, {}).get(qe, (None, None))
             row = (revop.get(sym) or {}).get(str(qe)) or [None] * 9
-            rec = {"anchored": pc is not None, "stored_con_pat": pc, "stored_std_pat": ps,
-                   "stored_rev_std": row[0]}
+            # ★ PSEUDO-ANCHORED (§76b). A cell counts as anchored when a con PAT is stored — but if
+            # that con PAT EQUALS the standalone one, the anchor cannot tell the two bases apart,
+            # and a reader anchoring on it will happily land the STANDALONE column of a combined
+            # "Standalone and Consolidated" page. Worse, the value may itself be an artefact: GICRE's
+            # con PAT equals std for 23 CONSECUTIVE quarters (2016-06 -> 2021-12) and then diverges
+            # 2-44% from 2022-03 and never returns — the §55c COPY class, measured. 15 of the 336
+            # anchored 2018 revC cells are in this state and should be expected to fail the
+            # cross-basis gate rather than counted as reachable.
+            pseudo = (ps is not None and pc is not None
+                      and abs(pc - ps) <= max(0.05, 0.001 * abs(ps)))
+            rec = {"anchored": pc is not None, "pseudo_anchored": pseudo,
+                   "stored_con_pat": pc, "stored_std_pat": ps, "stored_rev_std": row[0]}
             if idx is None:
                 rec["kind"] = "no-cached-index"
             else:
@@ -181,6 +191,9 @@ def main():
     for k, n in kinds.most_common():
         a = anch[(k, "anchored")]
         print("  %-16s %4d   (anchored %d / unanchored %d)" % (k, n, a, n - a))
+    ps_n = sum(1 for v in cells.values() if v.get("pseudo_anchored"))
+    print("\npseudo-anchored (con PAT == std, so the anchor cannot separate the bases): %d of %d "
+          "anchored" % (ps_n, sum(1 for v in cells.values() if v["anchored"])))
 
     # E4 audit on the na set: a stored con PAT would mean the identity route, not na.
     with_pat = [k for k, v in na.items() if v["stored_con_pat"] is not None]

@@ -54,7 +54,11 @@ import backfill_revop_gaps as BG                # noqa: E402
 import fetch_insurers as FI                     # noqa: E402
 
 TARGETS = os.path.join(HERE, "_rev2020_targets.json")
-FILLS = os.path.join(SCRIPTS, "deoverlay_rev_fills2019.json")
+# The evidence ledger is PER-CAMPAIGN, not global. The reader itself is year-agnostic (it reads
+# whatever _rev2020_targets.json currently holds), so `--ledger <name>` keeps one campaign's
+# anchor chains out of another's file. Default unchanged, so existing invocations still work.
+FILLS = os.path.join(SCRIPTS, sys.argv[sys.argv.index("--ledger") + 1]
+                     if "--ledger" in sys.argv else "deoverlay_rev_fills2019.json")
 SKIPS = os.path.join(HERE, "_deoverlay_skips.json")
 REVOP_DOCS = os.path.join(ROOT, "docs", "sf_revop.json")
 REVOP_LEDGER = os.path.join(SCRIPTS, "revop_fundamentals.json")

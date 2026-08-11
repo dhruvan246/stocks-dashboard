@@ -39,7 +39,11 @@ import fetch_insurers as FI                     # noqa: E402
 BANK_PAGE = BG.re.compile(r"interest\s+earned", BG.re.I)   # §42 bank top line
 
 TARGETS = os.path.join(HERE, "_rev2020_targets.json")
-OUT = os.path.join(HERE, "_diag_rev2019.json")
+# Per-campaign output: this diagnostic is year-agnostic (it diagnoses whatever _rev2020_targets.json
+# currently holds), so `--out <name>` keeps one campaign's per-cell verdicts out of another's file
+# and, just as importantly, stops a resume from treating another year's cells as already diagnosed.
+OUT = os.path.join(HERE, sys.argv[sys.argv.index("--out") + 1]
+                   if "--out" in sys.argv else "_diag_rev2019.json")
 FUND = os.path.join(ROOT, "docs", "sf_fundamentals.json")
 REVOP = os.path.join(ROOT, "docs", "sf_revop.json")
 SCRIPS = os.path.join(SCRIPTS, "bse_scrips.json")

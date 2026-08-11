@@ -407,8 +407,22 @@ def main():
         return mx > max(3 * m, 1000)
 
     # ---- build the gap worklist (a cell is open while ANY basis with stored PAT lacks rev)
+    #
+    # ⚠ THE WORKLIST UNIVERSE IS `quarterly_results.json`, AND IT HAS NO DELISTED COMPANIES. That is
+    # a SECOND scope bound on top of the bse_scrips one handled above, and it silently excluded the
+    # same cells: measured 2026-08-11, all 18 delisted 2018 targets (ALBK, DHFL, FRETAIL, MINDTREE,
+    # RELCAPITAL, RELINFRA, IDFC, SREINFRA, UJJIVAN, EQUITAS…) are absent from its 2,337-company map,
+    # so `--symfile` produced "gap: 0 companies, 0 cells" — which reads as "nothing to do" when the
+    # truth is "these were never in scope" (§57a rule 4).
+    # When the caller names symbols EXPLICITLY (--only / --symfile) they have already decided the
+    # universe, so honour it: iterate the union and default the metadata. Behaviour without those
+    # flags is unchanged.
+    universe = dict(qr["co"])
+    if symset is not None or only:
+        for _s in (symset or set()) | (only or set()):
+            universe.setdefault(_s, {})
     gaps = {}
-    for sym, meta in qr["co"].items():
+    for sym, meta in universe.items():
         if only and sym not in only:
             continue
         if symset is not None and sym not in symset:
