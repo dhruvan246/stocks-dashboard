@@ -7410,3 +7410,48 @@ demerger can genuinely restate a year by a lot, so the discriminator has to be w
 row is an outlier against **its own neighbouring annuals**, and that wants its own measurement pass
 on a sample nobody is invested in. Until then: A5's `RESTATED` means "the annual and the quarters
 disagree", nothing finer, and the insurer cells stay open pending their filings.
+
+### 81l. FINISHING THE GICRE BLOCK — the reader, and the two defects that stopped it  (2026-08-11)
+
+`scripts/agg_tools/insurer_filing_read.py` — automates §55: pick pages by declared basis
+(corruption-tolerantly), address columns by their printed date headers as x-bands (§62), sum the
+three general-insurer legs, and gate on the same filing's standalone statement reproducing our
+stored `revS`. **It wrote nothing.** Recorded here with its defects because a half-validated reader
+that has not written is a useful artefact; one that HAS written is a cleanup job.
+
+Two things it got right first, worth keeping:
+* The text layer of GICRE's 2022+ packs is **clean** — the §55 note that GICRE "needs render-and-OCR"
+  is true of the 2020-21 scans, not of the whole company. Do not skip the text route for these.
+* **A statement row is not one visual line.** On the Mar-2023 standalone page the figures for
+  "Income from investments (net)" sit on their own line ABOVE the label, so a single y-tolerance
+  finds a label with no numbers and reports "no revenue row" — absence that is really §61a mode 2.
+  Sweeping ytol over (3,5,7,9,12) and letting the control pick the winner fixes it, and costs
+  nothing because the control is what adjudicates.
+
+**Defect 1 — THE CONTROL MUST BE PER-COLUMN, NOT PER-PAGE.** Measured on the Mar-2023 standalone
+page: column `31/03/2023` reads **10,556.32** and our stored `revS` is **10,556.32** — exact. The
+column beside it reads 2,835.21 against a stored 11,448.57, because OCR split `"8,62, 198"` into two
+tokens. One proven column, one broken column, one page. A page-level control either discards the
+proven column or, worse, blesses the broken one. Anchor the COLUMN (§58 step 6), not the page.
+
+**Defect 2 — A STANDALONE CONTROL DOES NOT VOUCH FOR THE CONSOLIDATED PAGE.** §55 accepts a
+consolidated figure when the same filing's standalone reproduces a stored value, on the assumption
+that both statements share a layout. Measured counter-example in this very pack: the CONSOLIDATED
+page's shareholders'-investment leg extracts as `1` (a stray token), yielding consolidated revenue
+of 9,472.86 against a standalone 10,556.32 — consolidated BELOW standalone, which for GICRE is
+impossible. The standalone page read perfectly at the same time. So the control proves the reader on
+the page it ran on, and nothing more.
+**The fix (designed, not yet built):** verify the consolidated page against ITS OWN printed
+identities before using it — `Premium Earned + Income from investments + Other income == Total
+income (3+4+5)` for the policyholders' block, and the shareholders' block against
+`Income in shareholders' account (a+b+c)`. Both totals are printed on the page, so this is an
+on-page arithmetic check needing nothing external (§58 step 8), and it directly catches a dropped
+or stray leg. Add a con >= std sanity note as a report-only flag, never as a gate — insurer revenue
+legitimately swings on marked-to-market investment income (§55).
+
+**State of the block:** GICRE 3 cells landed (§81j, from the Dec-2020 pack, three exact controls);
+**13 revC + 1 revS still open**, with their filings identified and cached
+(Mar-2021 751d0ba2, Sep-2021 rectified 9d3262c0, Mar-2022 e1505c76, Dec-2022 edf1cd6a, Mar-2023
+123d1145, Mar-2024 00b2f677, Sep-2024 ca3e0f1b, Dec-2024 revised f96ce656). NIACL, LICI and HDFCLIFE
+are the same shape and the same route. Next session: build the two on-page identities above, then
+re-run — do not write a cell from this reader until it refuses the 9,472.86.
