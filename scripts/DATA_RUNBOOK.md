@@ -7187,7 +7187,8 @@ you wanted.** What this route adds:
   floor over made a holding company whose whole revenue is 0.2 cr "agree 13/16" while our
   0.47/0.30/0.32 sat against the site's 0.21/0.22/0.26. Floors here are one print-unit wide.
 * **A** ≥2 anchors within ±6 quarters of the target, **zero disagreements in that window**;
-  **A2** at least one anchor within 4 quarters; **A4** global disagreement rate <15% (a wholly
+  **A2** at least one anchor within 4 quarters; **A3** no disagreement within ±12 quarters
+  (a restatement boundary near the target); **A4** global disagreement rate <15% (a wholly
   different entity — the TMPV class).
   Why local rather than global: 45 of 97 refusals on the first pass were ≥90% agreement whose only
   disagreements sat 6–30 quarters away, several of them **our** known-bad cells (ADANIENT 2014-12
@@ -7279,179 +7280,188 @@ Fetch and write are separate scripts on purpose: the write replays a ledger in ~
 enough to win the rebase race on these single-line JSONs (CLAUDE.md rule 4 / §38). Responses are
 disk-cached under `~/.cache/agg_reader/`; a re-run after a reader change costs nothing.
 
+---
+
+## 82. ★★★ "NOT APPLICABLE" NEEDS AN INDEX-CREDIBILITY GATE — E6, and the two bounds that decide it  (2026-08-11, FILL-2018)
+
+**NO ASSUMPTIONS, NO GUESSWORK** (§0). Everything below is measured on the 2018 target set
+(292 companies / 730 cells) and on the committed 2019 ledger.
+
+§54b lets the NSE per-company filing index prove a NEGATIVE: E1 a standalone row exists for the
+quarter, E2 no consolidated row, E3 the quarter precedes the company's FIRST consolidated row ever
+⇒ no consolidated quarterly was filed. The 2019 campaign wrote 61 such records on that basis.
+
+**Run unchanged over 2018 the rule calls 336 of 725 cells (46%) not-applicable — and it is wrong.**
+Of those 336, **100 store a consolidated PAT for the very quarter being called unfiled, and 98 of
+those differ MATERIALLY from the standalone one**:
+
+| cell | stored con PAT | stored std PAT | index first-con |
+|---|---|---|---|
+| AXISBANK 2018-06 | 721.86 | 701.09 | 2019-06-30 |
+| BANKBARODA 2018-09 | 603.71 | 425.38 | 2019-03-31 |
+| GAIL 2018-09 | 1,787.16 | 1,962.96 | 2019-06-30 |
+| AARTIIND 2018-09 | 138.58 | 122.92 | 2019-06-30 |
+
+A *distinct* consolidated number had to be read from a document. So E3 did not measure the company's
+filing history — it measured **the index's own coverage horizon**, which for these names starts at
+the FY2020 compulsion date. This is §57 applied to an index ("a route returning nothing means THAT
+ROUTE has no row") and §63 in a new coat (that one inferred absence from OUR gaps; this one from the
+INDEX's gap).
+
+E3 is **not** vacuous in general — 185 of the 292 target companies (63.4%) do have pre-2019
+consolidated rows, some back to 2005 — so the fix is a gate, not deletion of the rule.
+
+### 82a. E6, and why both of its bounds are load-bearing
+> **E6.** The index's pre-first-con silence is evidence only if our own store holds no
+> **materially different** consolidated figure **strictly before** that first-con date.
+
+Both bounds were wrong on the first cut, and each one changes the verdict:
+
+* **STRICTLY BEFORE, not at-or-before.** A company whose index first-con is Jun-2019 — the quarter
+  consolidated quarterlies became compulsory (§51a) — and whose Jun-2019 filing shows con ≠ std has
+  demonstrated only that it HAS subsidiaries, never that it filed a consolidated quarterly earlier.
+  That is the textbook §51a shape and E3 stands. Counting the first-con quarter itself wrongly
+  retracted **27** such cells (BAJAJCON, BEL, BHEL, CANBK, CONCOR, DBL, DMART…).
+* **MATERIALLY DIFFERENT, not merely present.** Earlier passes in this repo manufactured con PAT by
+  COPYING std (§54b's own circularity warning), so a stored con equal to std is not independent
+  evidence of anything.
+
+Applied: 2018 na **336 → 179 cells** (`scripts/no_con_quarterly_2018.json`), E6 refuting 157.
+Tool: `fill2020_tools/classify_rev2018.py` (it also splits every target cell by what the exchange
+record actually says — `con-row-exists` / `no-con-row-but-con-evidence` / `con-gap-after` /
+`no-con-ever-yet` / `index-silent`, each pointing at a different rung).
+
+### 82b. Two sessions, one defect, two different halves of it
+While this ran, another session pushed `fe5af03e` diagnosing the same defect from the opposite end:
+a screener annual identity (§60d) produced consolidated values for INDUSINDBK and NHPC, **both of
+which were sitting in the na ledger as not-applicable**. Their test — any stored con rev/PAT for an
+EARLIER quarter — refuted 26 of the 61 and kept them visible under `refuted_2026_08_11`.
+
+The two tests are not nested, and each catches what the other cannot:
+* theirs fires on a stored con figure even when it EQUALS std (so it also flags identity-copy cells);
+* E6 additionally checks **the target quarter itself**, which an earlier-quarters-only test cannot
+  see. Applied on top of their surviving 35 it adds exactly one — **SWANCORP 2019-03**, which stores
+  a con PAT of −38.66 for the very quarter the record calls unfiled.
+
+`recheck_na_2019.py` re-audits the committed ledger in place and **preserves the other session's
+block untouched**. Nothing in the data moved: every record carries `written: null`, and no tool
+consumes that file (the ledger feeding the coverage definition is the separate `no_con_filing.json`,
+which contains none of them). What was wrong was the CLAIM.
+
+**The generalised rule: a negative claim inherits the coverage of the source that made it.** Before
+an index's silence is written down as non-existence, prove the index reaches that era for that
+company — and our own store is the cheapest available witness.
+
+### 82d. ★★★ E7 — AND OUR OWN STORE IS NOT ENOUGH EITHER
+E6 asks whether OUR DATA contradicts the index. That is still a claim about our store, and it was
+**not enough**. Of the 179 cells E6 left standing in 2018, **52 were then filled from Moneycontrol**
+— series reproducing 26–32 of our stored quarters with ZERO disagreements, publishing a consolidated
+revenue for the very quarter the record called unfiled. Among them BHARATFORG, BATAINDIA and
+BOMDYEING: companies that self-evidently file consolidated accounts.
+
+> **E7.** A cell may not be recorded as NEVER-FILED until an independent reader has been tried and
+> has ALSO come up empty.
+
+That is the exact mirror of §60f ("before any cell is reported unfillable, a second independent
+reader must have been tried"), applied to the negative claim instead of the positive one. Both
+directions of the same rule; only the positive one had been written down. **2018 na: 179 → 118.**
+
+The three gates in order, each catching what the previous one cannot:
+| gate | asks | what it caught in 2018 |
+|---|---|---|
+| E3 (§54b) | does the index show a con row before this quarter? | passes vacuously on an index that stops at the FY2020 compulsion date |
+| E6 | does OUR OWN store contradict the index? | 157 cells |
+| **E7** | does an INDEPENDENT READER contradict it? | **52 more** |
+
+### 82c. ★★ 36 CELLS WERE NEVER ATTEMPTED — the delisted-scrip drop (§52b × §57a rule 4)
+`bse_scrips.json` is built from BSE's **live** scrip master, so a delisted company resolves to
+nothing and `backfill_revop_gaps` drops it from the worklist **before fetching anything**. Measured
+on the 2018 anchored pool: **19 companies / 36 cells** — ALBK, DHFL, FRETAIL, MINDTREE, RELCAPITAL,
+RELINFRA, IDFC, SREINFRA, UJJIVAN, EQUITAS, SHRIRAMCIT, TV18BRDCST… Reporting those as residue reads
+as "tried and failed"; they were **not attempted** (§57a rule 4).
+
+`fill2020_tools/resolve_delisted_scrips.py` resolves them from `_bse_master_all.json` (which carries
+delisted rows) **gated on ISIN**, never on `scrip_id` — that is the KALYANI coincidence (§76). The
+gate is free here: NSE's own filing-index rows carry an `isin` field, so both sides of the
+comparison are exchange-published and neither is derived from our data. 29 resolved; 3 rejected for
+having no master row at all (CDSL, MAXINDIA, RNAVAL). `backfill_revop_gaps.py` now consults the map.
+
+**★ The refinement the gate forced: compare the ISSUER, not the whole ISIN.** Strict equality
+rejected CORPBANK (INE112A01015 vs INE112A01023) and HDFC (INE001A01028 vs INE001A01036) — the same
+company, security re-issued after a face-value change, which moves the ISIN's issue suffix and
+leaves the issuer untouched. Matching the 7-char issuer prefix admits both and still refuses KALYANI
+(INE610E vs INE0N6U — the *issuer* differs), which is the trap the gate exists for.
 
 ---
 
-## 82. ★★★ AGGREGATOR REACH, MEASURED ACROSS 28 SITES — quarterly is a trailing window, annual is deep  (2026-08-11)
+## 83. ★★★ A CORRUPTED TEXT LAYER THAT PRODUCES A **VALID NUMBER** — and the only screen that sees it  (2026-08-11, HINDALCO)
 
-**The user's challenge:** *"go and check 100s of sites apart from screener that offers fundamentals
-data. someone must have older data for sure."* Right instinct, and §60f makes it mandatory. Here is
-what 28 sites actually return, probed for DLF (a 2019 cell we needed), rather than assumed.
+**NO ASSUMPTIONS, NO GUESSWORK** (§0) — every claim below is measured on the named attachment.
 
-### 82a. THE STRUCTURAL FINDING — and why it decides the whole route
-**Free aggregators keep only a TRAILING WINDOW of QUARTERLY data (~10-13 quarters) while keeping
-10+ years of ANNUAL data.** Confirmed on two independent sites:
-* **screener.in** — quarterly table ~13 quarters; annual P&L FY2015→FY2026 both bases (§60a).
-* **tickertape.in** — `__NEXT_DATA__ .props.pageProps`: `income-normal-interim` runs
-  **2024-03-31 → 2026-06-30 only** (10 quarters), while `income-normal-annual` runs
-  **FY2017 → FY2026** with `reporting: "consolidated"` and `incTrev` at FILING precision
-  (DLF FY2019 = 9,156.73, decimals intact — screener rounds the same year to 8366).
+The 2018 §58 sweep landed **HINDALCO 2018-12 revC = 332,131.0**. The true figure is **33,213**.
+It is 10× out, and it passed *every* guard the sweep has.
 
-So "someone must have the older quarter" is **true for annual and false for quarterly** across the
-free tier. That is exactly why §60d's annual-minus-siblings identity is the productive route and a
-direct quarterly lookup is not. ⚠️ `incTrev` is TOTAL revenue (includes other income) — NOT our
-revenue-from-operations basis; DLF FY2019 9,156.73 vs screener Sales 8,366. Never mix them.
+### 83a. Why nothing caught it
+* the **column anchor passed** — the right column was picked; §58's anchor proves *which period*,
+  never *which magnitude*;
+* `con-rev-far-below-std` only fires **below** standalone; this sat 27.8× **above** it;
+* §54a rightly **forbids** banding against the other basis' stored twin — con/std is legitimately
+  44–61× for BBTC (it holds Britannia) and 4.6× for TMPV (JLR) — so the obvious check is the wrong
+  one and would reject real data;
+* the value is not absurd on its face: a ₹332,131 crore quarter is wrong for Hindalco but is the
+  right order of magnitude for a Reliance.
 
-### 82b. The probe table (DLF, 2026-08-11)
-| outcome | sites |
-|---|---|
-| usable, deep ANNUAL | screener.in · tickertape.in (filing-precision decimals) |
-| 200 but quarterly window too short / no 2019 rows | stockanalysis.com · finology · icicidirect · univest · marketsmojo · 5paisa · angelone · trendlyne (public page) |
-| client-rendered, data behind an API not found by URL guessing | **moneycontrol** — the old server-rendered `/financials/.../consolidated-quarterly-results/D04` now redirects to a React page whose `__NEXT_DATA__` carries only `stockInfo`; its 27 JS chunks expose `api.moneycontrol.com/mcapi/v1/...` for ipo/ecalendar/indices but **no financials path**. Its own page still links year tokens 15→26, so the history exists behind an endpoint this pass did not find. **Best remaining lead.** |
-| blocked (403/404) | investing.com · marketscreener · simplywall.st · valueresearch · equitymaster · dhan · smart-investing · strike · topstockresearch |
-| needs a paid key | alphavantage (demo returns empty) · financialmodelingprep (401) |
-| rate-limited | yahoo finance (429; its quarterly history is ~5 quarters anyway) |
+### 83b. The cause — a third corruption class, and the worst of the three
+The source (BSE attachment `0fee6aeb-7cdf-41b3-9b37-4324e37ea168`, filed 12-Feb-2020, reached by
+`--rescue` for its year-ago column) has a text layer corrupted **in the digits**. Page 35, the
+audited statement, extracts as:
 
-**Symbol resolution matters more than it looks:** DLF's moneycontrol code is **D04**, found from
-`moneycontrol.com/mccode/common/autosuggestion_solr.php?query=DLF&type=1&format=json`. A guessed
-code returns a valid-looking page for the WRONG company — the §49 wrong-map poison, one layer up.
+    Revenue from Operations | 29,197 | 29,657 | 33,2131 | 88,826 | 96,797 | 130,542
+                                            ^^^^^^^ printed 33,213, with a digit fused on
 
-### 82c. What this route actually yielded, and its ceiling
-`screener_annual_sweep.py --from 20190101` derived **6 cells** (§77, the 2026-08-11 one). The
-ceiling is **Gate A**, not effort: of 245 company/basis pairs, **120 were rejected** because our own
-4-quarter sums do not reproduce screener's annual for ≥3 FYs — restatements, demergers and basis
-mismatches. That gate is doing its job (it is what stops a TMPV-class 20,000-cr error), so the
-honest ceiling of the annual route on this residue is single digits, not dozens.
+Same page: `Other Income | 297 | 287. | 2701`, and `(26 | (29) | (25]`.
 
-**The identity also needs 3 of 4 siblings stored.** Measured over the 217 open 2019 cells: 109 have
-**zero** siblings, 20 have one, 51 have two, and only **37 have all three**. Deriving one quarter
-completes its own FY rather than helping another, so **do not plan on iteration cascading**.
+Compare the two classes already on file:
+* **§51b glyph substitution** (`Standalone` → `Slondolone`) — keyword search fails **loudly**;
+* **§75 triple-rendering** (`Total Total Total Revenue Revenue Revenue`) — no label regex matches,
+  so the row is simply not found.
 
-### 82d. Rungs worth trying next, in cost order
-1. **moneycontrol's financials endpoint** — find it the approved way (`feedback-find-endpoints-in-js-bundle`): open the financials route in a real browser and read the NETWORK tab, rather than grepping the landing page's chunks.
-2. **Trendlyne** with a correct stock id (the public URL guessed here 200s but carries no 2019 rows; ids come from its shareholding sitemap — memory `feedback-check-aggregator-sites-before-unfillable`).
-3. **Paid/registered tiers** (Capitaline, AceEquity, CMIE Prowess, Tickertape/Trendlyne premium) genuinely do hold deep quarterly history — a commercial decision, not a technical one.
+This one is worse than both, because **the corrupted token is a syntactically valid number**.
+`33,2131` → strip comma → `332131`. No label check, no regex, no unit test and no anchor can see
+anything wrong. The read looks perfect.
 
-### 81i. The ANNUAL lever, measured — worth far less here than on screener  (2026-08-11)
+### 83c. The screen that DOES see it — same-basis, ADJACENT quarters
+`scripts/fill2020_tools/screen_neighbour_band.py`. §54a's prescription, with one refinement:
+compare against the **nearest six same-basis quarters**, not the whole-series median. A global
+median is the wrong scale reference for a trending series (it produced 99.3% false positives in
+§74) and it is also too blunt in the other direction — Hindalco's consolidated revenue nearly
+doubles across the stored window, so its global median (53,151) made a 10× error look like 6.25×.
+Against the nearest six it reads **11.14×**.
 
-`scripts/agg_tools/agg_annual_derive.py`, the §60d route (site's FY annual − our 3 stored quarters)
-applied to these three sites. Prompted by the observation that Trendlyne's annual table reaches
-FY2016 while its quarterly table stops at 13 quarters. Of the 129 cells the quarterly sweep left
-open, **47 have all three FY siblings stored** — the right shape. It produced **3**: ACC 2021-12,
-PFC 2022-06, STAR 2021-12 — and all three were *also* produced by the quarterly route once A3 was
-removed, so the annual lever contributed **0 unique cells** and acted purely as an independent
-arithmetic confirmation of three it already had.
+Run it over **every cell a campaign writes**, not the suspicious-looking ones. Measured over this
+campaign's landed cells it flagged exactly two: HINDALCO (real) and MCLEODRUSS 2018-09 at 2.07×
+(false — its con/std of 1.30 is dead-centre of its own 30-quarter family 1.10–1.73; the flag is
+McLeod Russel's post-2018 collapse straddling the comparison window, a real regime change). A 3.0×
+band separates them; 2.0× does not.
 
-Why so thin, measured per cell: the binding gate is §60d's "≥3 FYs where our four quarters reproduce
-their annual". The companies with gaps are precisely the companies without three complete FYs —
-NIACL manages 2, SPICEJET 0–1, RBLBANK 0. The rest fail on A2 (a restated FY within two years:
-PEL, TATACHEM, WELCORP) or on the sibling-vintage gate S.
+**State the limit honestly: this screen catches ORDERS OF MAGNITUDE, not digits.** A corruption
+turning 33,213 into 33,713 is invisible to it, to the anchor, and to every other guard in the
+toolkit. The defence that would work is the one §75a already implies — **the same figure printed
+more than once is a majority vote.** Hindalco's document prints 33,213 five separate times (media
+release table p2, prose p3, segment tables p28/p32, statement p35) and the corruption appears in
+exactly one of them. Requiring a second print before writing is the next reader improvement; it is
+not built yet.
 
-**Keep the tool** — it is the correct route when we hold 3 of 4 and the site's annual is deep, and
-its Gate X (derived value must reproduce the site's own printed quarter) is a genuinely independent
-confirmation on the FY axis. Just do not expect the screener-style yield here: screener's quarterly
-table is 13 quarters deep and its annual 12 years, so there the annual IS the only lever;
-Moneycontrol already serves 40–113 quarters directly, so the annual has little left to add.
+### 83d. What the retraction recovered — and a second cell for free
+The same document settles the cell it broke. `apply_hindalco_2018.py` writes both, with the chain:
+* **2018-12 revC = 33,213** — printed five times in Rs Crore under `Q3 FY19`; the *same row*
+  reproduces our stored 29,657 (2019-09) and 29,197 (2019-12) to the rupee;
+* **FY19 130,542 − 9M FY19 96,797 = 33,745 against our stored 2019-03 revC of 33,745.62 (0.002%)** —
+  the check that proves the printed table shares our series' entity, basis and scale (§45);
+* **2018-09 revC = 32,506.47**, from `9M FY19 96,797 − Q1 31,077.53 − Q3 33,213`. That cell has **no
+  stored con PAT**, so §64 blocks every anchored reader from it — the printed 9-month total reaches
+  it by arithmetic alone.
 
-⚠️ Crash found and fixed while building it: an annual table can carry a **non-quarter year end** —
-SPICEJET's Moneycontrol annual holds `May '94`, a 14-month transition year. Feeding that to a
-quarter-ordinal helper raises `ValueError: 5 is not in list`. Skip such rows, never assume every
-annual key is a quarter-end.
-
-### 81j. GICRE con revenue — 3 cells landed from the FILING, and what it taught about A5  (2026-08-11)
-
-**The route that worked, and it was not the aggregators.** GICRE's 17 open cells were blocked
-because every quarter we stored was NEWER than the gap, leaving nothing to anchor on (§81f). One
-BSE filing fixed that. `f9b4e410-d541-42dc-961b-a0576d69533c.pdf` (filed 2021-02-11, Q3 FY21) is a
-scanned pack whose text layer is §51b-corrupted ("Annuore-1", "Genenl ~ Carpondon of India"), so it
-was read by RENDERING the page at 4x and reading it visually — §57 rung 10, with the user's
-go-ahead per §61b.
-
-Its consolidated Annexure-1 (p18) and standalone Annexure-1 (p4) share one column layout:
-`[Q | prev Q | year-ago Q | YTD | prev YTD | prev FY]`, Rs in **Lakh**. Applying §55's general-insurer
-convention (Premium Earned (Net) + policyholders' Income from investments (net) + shareholders'
-Income from investments) to the STANDALONE page reproduced our stored `revS` **exactly, in three
-different columns of the one document**:
-
-| column | std legs (lakh) | = | stored revS |
-|---|---|---|---|
-| 31/12/2019 | 7,82,848 + 1,63,832 + 38,067 | 9,847.47 | 9,847.47 |
-| 30/09/2020 | 9,49,135 + 2,19,016 + 57,719 | 12,258.70 | 12,258.70 |
-| 31/12/2020 | 9,13,916 + 2,05,284 + 57,163 | 11,763.63 | 11,763.63 |
-
-Three positive controls on one document is as strong as this gets: page, column, scale and every
-revenue leg are proven, not assumed. The same recipe on p18 (a DIFFERENT page, so §44's duplicate
-trap is clear) gives the consolidated cells, each larger than its standalone twin as it must be:
-**2019-12 = 10,032.58 · 2020-09 = 12,308.04 · 2020-12 = 11,780.13.**
-Ledger `scripts/insurer_con_rev_fills.json` — which, discovered while doing this, was **not
-registered in `verify_fills_live.py`**: 52 insurer cells had been sitting unguarded. Registered now.
-
-**One filing carries three quarters.** GICRE's remaining 13 open `revC` cells need roughly five more
-packs, since each prints its own quarter plus two comparatives. That is the route — not the
-aggregators.
-
-### 81k. ⚠️ A5 CANNOT TELL A RESTATEMENT FROM A BROKEN ANNUAL ROW — known limitation
-
-With those three anchors stored, **9 of the 35 insurer cells passed the quarterly gate** (from 0) —
-the anchoring diagnosis in §81f was right. A5 then vetoed all nine, and inspecting why exposed a
-flaw in A5 itself:
-
-    GICRE FY2020  site ΣQ 51,497.90  vs site annual    802.66   (63x)
-    GICRE FY2019  site ΣQ 39,729.00  vs site annual  4,564.30    (9x)
-
-An annual of ₹802.66 cr for a company writing ~₹50,000 cr is not a restated year, it is a **broken
-cell in the site's annual table**. Real restatements differ by single-digit percents (ICIL 0.7%,
-PEL 4.5%, WELCORP 9.1%, ADANIENT 9.4%). A5 lumps both into `RESTATED`.
-
-**Not "fixed" here, deliberately.** The obvious patch — classify a >50% gap as an unusable annual
-(NO-TEST) rather than a restatement — would have let exactly the cells I was chasing through, and a
-gate loosened while staring at the company you want is a gate you can no longer trust. A large
-demerger can genuinely restate a year by a lot, so the discriminator has to be whether the annual
-row is an outlier against **its own neighbouring annuals**, and that wants its own measurement pass
-on a sample nobody is invested in. Until then: A5's `RESTATED` means "the annual and the quarters
-disagree", nothing finer, and the insurer cells stay open pending their filings.
-
-### 81l. FINISHING THE GICRE BLOCK — the reader, and the two defects that stopped it  (2026-08-11)
-
-`scripts/agg_tools/insurer_filing_read.py` — automates §55: pick pages by declared basis
-(corruption-tolerantly), address columns by their printed date headers as x-bands (§62), sum the
-three general-insurer legs, and gate on the same filing's standalone statement reproducing our
-stored `revS`. **It wrote nothing.** Recorded here with its defects because a half-validated reader
-that has not written is a useful artefact; one that HAS written is a cleanup job.
-
-Two things it got right first, worth keeping:
-* The text layer of GICRE's 2022+ packs is **clean** — the §55 note that GICRE "needs render-and-OCR"
-  is true of the 2020-21 scans, not of the whole company. Do not skip the text route for these.
-* **A statement row is not one visual line.** On the Mar-2023 standalone page the figures for
-  "Income from investments (net)" sit on their own line ABOVE the label, so a single y-tolerance
-  finds a label with no numbers and reports "no revenue row" — absence that is really §61a mode 2.
-  Sweeping ytol over (3,5,7,9,12) and letting the control pick the winner fixes it, and costs
-  nothing because the control is what adjudicates.
-
-**Defect 1 — THE CONTROL MUST BE PER-COLUMN, NOT PER-PAGE.** Measured on the Mar-2023 standalone
-page: column `31/03/2023` reads **10,556.32** and our stored `revS` is **10,556.32** — exact. The
-column beside it reads 2,835.21 against a stored 11,448.57, because OCR split `"8,62, 198"` into two
-tokens. One proven column, one broken column, one page. A page-level control either discards the
-proven column or, worse, blesses the broken one. Anchor the COLUMN (§58 step 6), not the page.
-
-**Defect 2 — A STANDALONE CONTROL DOES NOT VOUCH FOR THE CONSOLIDATED PAGE.** §55 accepts a
-consolidated figure when the same filing's standalone reproduces a stored value, on the assumption
-that both statements share a layout. Measured counter-example in this very pack: the CONSOLIDATED
-page's shareholders'-investment leg extracts as `1` (a stray token), yielding consolidated revenue
-of 9,472.86 against a standalone 10,556.32 — consolidated BELOW standalone, which for GICRE is
-impossible. The standalone page read perfectly at the same time. So the control proves the reader on
-the page it ran on, and nothing more.
-**The fix (designed, not yet built):** verify the consolidated page against ITS OWN printed
-identities before using it — `Premium Earned + Income from investments + Other income == Total
-income (3+4+5)` for the policyholders' block, and the shareholders' block against
-`Income in shareholders' account (a+b+c)`. Both totals are printed on the page, so this is an
-on-page arithmetic check needing nothing external (§58 step 8), and it directly catches a dropped
-or stray leg. Add a con >= std sanity note as a report-only flag, never as a gate — insurer revenue
-legitimately swings on marked-to-market investment income (§55).
-
-**State of the block:** GICRE 3 cells landed (§81j, from the Dec-2020 pack, three exact controls);
-**13 revC + 1 revS still open**, with their filings identified and cached
-(Mar-2021 751d0ba2, Sep-2021 rectified 9d3262c0, Mar-2022 e1505c76, Dec-2022 edf1cd6a, Mar-2023
-123d1145, Mar-2024 00b2f677, Sep-2024 ca3e0f1b, Dec-2024 revised f96ce656). NIACL, LICI and HDFCLIFE
-are the same shape and the same route. Next session: build the two on-page identities above, then
-re-run — do not write a cell from this reader until it refuses the 9,472.86.
+Both are labelled `precision: crore-rounded` (§60e): the printed FY of 130,542 against a stored
+33,745.62 proves the source rounds, so the values are honest approximations with provenance, not
+filing-precision reads.

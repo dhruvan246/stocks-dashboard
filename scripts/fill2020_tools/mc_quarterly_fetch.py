@@ -156,10 +156,26 @@ def resolve_code(sym, codes):
     return None
 
 
-def series(code, basis, limit=60):
-    """{qe: revenue} from Moneycontrol, cached on disk."""
+def series(code, basis, limit=200):
+    """{qe: revenue} from Moneycontrol, cached on disk.
+
+    ⚠️ `limit` IS A SILENT CAP, AND THE RESPONSE MIRRORS IT. The payload's `count` echoes whatever
+    you asked for, so a truncated series reads as the site's own reach when it is really your own
+    parameter (memory: feedback-endpoint-caps-are-silent). Measured on DLF consolidated 2026-08-11:
+
+        limit=60  -> 60 rows, count:60, oldest Sep '11
+        limit=200 -> 77 rows, count:77, oldest Jun '07     (standalone: 98 rows back to Jun '98)
+
+    So the endpoint reaches ~13 years deeper than limit=60 shows, and quoting "60 quarters back to
+    Sep 2011" as MC's reach was quoting our own argument back at us. 200 is past the real tail for
+    every series measured so far; if a series ever returns exactly `limit` rows, raise it again
+    rather than believing the number.
+
+    THE CACHE KEY MUST INCLUDE THE LIMIT. It did not, so a body fetched at 60 was silently reused
+    for a later 200 request and the extra rows never appeared — the cap becoming permanent and
+    invisible."""
     os.makedirs(CACHE, exist_ok=True)
-    p = os.path.join(CACHE, "%s_%s.json" % (code, basis))
+    p = os.path.join(CACHE, "%s_%s_%d.json" % (code, basis, limit))
     if os.path.exists(p) and os.path.getsize(p) > 200:
         raw = open(p, encoding="utf8").read()
     else:

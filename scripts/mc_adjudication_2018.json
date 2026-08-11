@@ -1,0 +1,55 @@
+{
+ "corrected": {
+  "FINCABLES|20180930|con": {
+   "doc": "BSE ann 105e065f-e6b8-44c7-8eb6-085f3ce818d5, Finolex Sep-2019 filing p8, 'Rs. In crore', column '30-Sep-18': Revenue from Operations 713.97 / Total Income (I+II) 732.20",
+   "from": 732.2,
+   "second_reader": "moneycontrol cons_quarterly, series reproduces 30 of our other quarters",
+   "to": 713.97,
+   "why": "732.20 is TOTAL INCOME, not revenue from operations \u2014 the \u00a758 read took the figures from row III while matching row I's label (\u00a775b merge_wrapped class)"
+  }
+ },
+ "kept_after_adjudication": {
+  "CHAMBLFERT|20181231|con": {
+   "mc": 2828.57,
+   "ours": 2785.68,
+   "verdict": "OURS, CONTESTED \u2014 MC disagrees with 2 of our 3 stored FY19 siblings and overshoots screener's annual by 82.36; Gate A had proved screener's annual reproduces OUR sums on other FYs"
+  },
+  "MCLEODRUSS|20181231|con": {
+   "doc": "ann 79f73c24\u2026, 'Rs Lakhs', col 'December 31, 2018' Revenue from Operations 55,310",
+   "mc": 549.84,
+   "ours": 553.1,
+   "verdict": "OURS \u2014 printed in the filing"
+  },
+  "SADBHAV|20181231|con": {
+   "doc": "ann abdc47e6\u2026, 'Rs.in Lakhs', col 31/12/2018 Revenue From operations 130805.87; printed 9M 384894.13 lakh = 3848.94 cr == 1495.07 + 1045.81 + 1308.06 exactly (MC's three sum to 3768.14)",
+   "mc": 1227.26,
+   "ours": 1308.06,
+   "verdict": "OURS \u2014 \u00a745 nine-month identity is exact"
+  },
+  "SHRIRAMFIN|20181231|con": {
+   "mc": 3991.06,
+   "ours": 4115.92,
+   "verdict": "OURS \u2014 MC reproduces only 7 of ours with 26 disagreements, so its series is not credible for this company (\u00a760c)"
+  }
+ },
+ "suspects_reported_not_patched": {
+  "CARERATING|20180630|con": {
+   "mc": 59.99,
+   "mc_reproduces": 31,
+   "note": "2026-08-07 annual-derivation cell, outside this pass",
+   "ours": 67.95
+  },
+  "RPOWER|20180630|con": {
+   "mc": 2221.42,
+   "mc_reproduces": 35,
+   "note": "2026-08-07 annual-derivation cell, outside this pass",
+   "ours": 2231.91
+  },
+  "WIPRO|20180630|con": {
+   "mc": 13977.7,
+   "mc_reproduces": 39,
+   "note": "2026-08-07 annual-derivation cell, outside this pass",
+   "ours": 14257.6
+  }
+ }
+}

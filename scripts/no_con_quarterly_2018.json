@@ -1,5 +1,5 @@
 {
- "_doc": "MEASURED evidence that a company filed NO CONSOLIDATED QUARTERLY RESULT for a given 2018 quarter, from NSE per-company filing index caches (scripts/_nselist, harvested 2026-08-11). Per cell the three conditions of runbook 54b hold: E1 the index lists a STANDALONE result for that exact quarter (so its silence on consolidated is meaningful, not a hole in the index); E2 it lists NO consolidated result for that quarter; E3 the quarter is EARLIER than the company's FIRST consolidated filing ever (leading-run rule). This is 51a structure: quarterly consolidated results only became compulsory from FY2020, and 2018 sits a full year deeper into that era than the 2019 set. IMPORTANT - these are recorded as NOT-APPLICABLE EVIDENCE ONLY. No value is written: stored con PAT is null for every one of them, so E4 fails and copying revS into revC would CREATE a consolidated figure no document asserts (the never-invent rule). E6 (NEW, 2026-08-11) is what makes this set smaller and safer than the 2019 one: E1+E2+E3 only establishes that THIS index has no row. Measured over the 725 2018 target cells, 290 sit in a direct contradiction - the index reports no consolidated filing before 2019 while our own store holds a materially DIFFERENT consolidated figure in that same era (AXISBANK Jun-2018 con PAT 721.86 vs std 701.09, index first-con Jun-2019). For those companies the index's pre-first-con silence is measured-incomplete and proves nothing, so they are NOT recorded here. Only cells whose company shows no such contradiction survive. Wiring this into the gap definition needs a first-con-quarter concept in files_con across build_fill_coverage.py, audit_coverage.py and build_targets.py TOGETHER (the three-copies rule) - deliberately NOT done in this session because it moves the live Fill Coverage page numbers while other sessions are writing.",
+ "_doc": "MEASURED evidence that a company filed NO CONSOLIDATED QUARTERLY RESULT for a given 2018 quarter, from NSE per-company filing index caches (scripts/_nselist, harvested 2026-08-11). Per cell the three conditions of runbook 54b hold: E1 the index lists a STANDALONE result for that exact quarter (so its silence on consolidated is meaningful, not a hole in the index); E2 it lists NO consolidated result for that quarter; E3 the quarter is EARLIER than the company's FIRST consolidated filing ever (leading-run rule). This is 51a structure: quarterly consolidated results only became compulsory from FY2020, and 2018 sits a full year deeper into that era than the 2019 set. IMPORTANT - these are recorded as NOT-APPLICABLE EVIDENCE ONLY. No value is written: stored con PAT is null for every one of them, so E4 fails and copying revS into revC would CREATE a consolidated figure no document asserts (the never-invent rule). E6 (NEW, 2026-08-11) is what makes this set smaller and safer than the 2019 one: E1+E2+E3 only establishes that THIS index has no row. Measured over the 725 2018 target cells, 290 sit in a direct contradiction - the index reports no consolidated filing before 2019 while our own store holds a materially DIFFERENT consolidated figure in that same era (AXISBANK Jun-2018 con PAT 721.86 vs std 701.09, index first-con Jun-2019). For those companies the index's pre-first-con silence is measured-incomplete and proves nothing, so they are NOT recorded here. Only cells whose company shows no such contradiction survive. E7 (NEW, same day, and the one that matters most): E6 still only asks whether OUR OWN data contradicts the index, which is a claim about our store. It was not enough. Of the 179 cells E6 left standing, 52 were then FILLED from Moneycontrol - series reproducing 26-32 of our stored quarters with ZERO disagreements, publishing a consolidated revenue for the very quarter the record called unfiled (BHARATFORG, BATAINDIA, BOMDYEING among them, none of which is a company that never filed consolidated accounts). So the second reader is now part of the gate: a cell may not be recorded as NEVER-FILED until an independent reader has been tried and has also come up empty - the mirror of 60f's rule for 'unfillable'. 179 -> 118 cells. Wiring this into the gap definition needs a first-con-quarter concept in files_con across build_fill_coverage.py, audit_coverage.py and build_targets.py TOGETHER (the three-copies rule) - deliberately NOT done in this session because it moves the live Fill Coverage page numbers while other sessions are writing.",
  "cells": [
   [
    "AGI|20180331",
@@ -8,7 +8,7 @@
     "nse_index_con_quarters": 8,
     "nse_index_std_quarters": 86,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -19,7 +19,7 @@
     "nse_index_con_quarters": 8,
     "nse_index_std_quarters": 86,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -30,7 +30,7 @@
     "nse_index_con_quarters": 8,
     "nse_index_std_quarters": 86,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -41,7 +41,7 @@
     "nse_index_con_quarters": 8,
     "nse_index_std_quarters": 86,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -52,7 +52,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 83,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -63,7 +63,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 63,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -74,7 +74,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 63,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -85,7 +85,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 63,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -96,7 +96,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 75,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -107,7 +107,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 75,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -118,40 +118,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 75,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "BATAINDIA|20180630",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 28,
-    "nse_index_std_quarters": 84,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "BATAINDIA|20180930",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 28,
-    "nse_index_std_quarters": 84,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "BATAINDIA|20181231",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 28,
-    "nse_index_std_quarters": 84,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -162,7 +129,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 85,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -173,7 +140,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 85,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -184,7 +151,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 85,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -195,7 +162,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 85,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -206,7 +173,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 71,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -217,51 +184,7 @@
     "nse_index_con_quarters": 30,
     "nse_index_std_quarters": 74,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "BHARATFORG|20180331",
-   {
-    "first_con_filing_ever": 20190331,
-    "nse_index_con_quarters": 29,
-    "nse_index_std_quarters": 85,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "BHARATFORG|20180630",
-   {
-    "first_con_filing_ever": 20190331,
-    "nse_index_con_quarters": 29,
-    "nse_index_std_quarters": 85,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "BHARATFORG|20180930",
-   {
-    "first_con_filing_ever": 20190331,
-    "nse_index_con_quarters": 29,
-    "nse_index_std_quarters": 85,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "BHARATFORG|20181231",
-   {
-    "first_con_filing_ever": 20190331,
-    "nse_index_con_quarters": 29,
-    "nse_index_std_quarters": 85,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -272,7 +195,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 86,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -283,7 +206,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 86,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -294,7 +217,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 86,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -305,40 +228,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 86,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "BOMDYEING|20180630",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 28,
-    "nse_index_std_quarters": 85,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "BOMDYEING|20180930",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 28,
-    "nse_index_std_quarters": 85,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "BOMDYEING|20181231",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 28,
-    "nse_index_std_quarters": 85,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -349,7 +239,7 @@
     "nse_index_con_quarters": 14,
     "nse_index_std_quarters": 65,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -360,7 +250,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 84,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -371,7 +261,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 84,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -382,150 +272,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 84,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "COCHINSHIP|20180630",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 28,
-    "nse_index_std_quarters": 40,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "COCHINSHIP|20180930",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 28,
-    "nse_index_std_quarters": 40,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "COCHINSHIP|20181231",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 28,
-    "nse_index_std_quarters": 40,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "CONCOR|20180331",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 28,
-    "nse_index_std_quarters": 84,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "CONCOR|20180630",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 28,
-    "nse_index_std_quarters": 84,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "CONCOR|20180930",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 28,
-    "nse_index_std_quarters": 84,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "DBL|20180331",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 27,
-    "nse_index_std_quarters": 41,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "DBL|20180630",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 27,
-    "nse_index_std_quarters": 41,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "DBL|20180930",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 27,
-    "nse_index_std_quarters": 41,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "DBL|20181231",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 27,
-    "nse_index_std_quarters": 41,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "DMART|20180630",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 29,
-    "nse_index_std_quarters": 42,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "DMART|20180930",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 29,
-    "nse_index_std_quarters": 42,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "DMART|20181231",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 29,
-    "nse_index_std_quarters": 42,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -536,7 +283,7 @@
     "nse_index_con_quarters": 30,
     "nse_index_std_quarters": 83,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -547,7 +294,7 @@
     "nse_index_con_quarters": 30,
     "nse_index_std_quarters": 85,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -558,7 +305,7 @@
     "nse_index_con_quarters": 30,
     "nse_index_std_quarters": 86,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -569,7 +316,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 81,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -580,7 +327,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 81,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -591,7 +338,7 @@
     "nse_index_con_quarters": 27,
     "nse_index_std_quarters": 84,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -602,7 +349,7 @@
     "nse_index_con_quarters": 27,
     "nse_index_std_quarters": 84,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -613,7 +360,7 @@
     "nse_index_con_quarters": 27,
     "nse_index_std_quarters": 84,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -624,7 +371,7 @@
     "nse_index_con_quarters": 27,
     "nse_index_std_quarters": 84,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -635,7 +382,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 85,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -646,40 +393,7 @@
     "nse_index_con_quarters": 30,
     "nse_index_std_quarters": 85,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "GLAXO|20180630",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 27,
-    "nse_index_std_quarters": 83,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "GLAXO|20180930",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 27,
-    "nse_index_std_quarters": 83,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "GLAXO|20181231",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 27,
-    "nse_index_std_quarters": 83,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -690,7 +404,7 @@
     "nse_index_con_quarters": 30,
     "nse_index_std_quarters": 86,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -701,84 +415,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 60,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "GREENPLY|20180331",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 28,
-    "nse_index_std_quarters": 85,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "GREENPLY|20180630",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 28,
-    "nse_index_std_quarters": 85,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "GREENPLY|20180930",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 28,
-    "nse_index_std_quarters": 85,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "GREENPLY|20181231",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 28,
-    "nse_index_std_quarters": 85,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "GSFC|20180630",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 28,
-    "nse_index_std_quarters": 84,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "GSFC|20180930",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 28,
-    "nse_index_std_quarters": 84,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "GSFC|20181231",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 28,
-    "nse_index_std_quarters": 84,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -789,7 +426,7 @@
     "nse_index_con_quarters": 26,
     "nse_index_std_quarters": 79,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -800,7 +437,7 @@
     "nse_index_con_quarters": 27,
     "nse_index_std_quarters": 44,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -811,7 +448,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 85,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -822,7 +459,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 85,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -833,7 +470,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 85,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -844,7 +481,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 85,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -855,7 +492,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 83,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -866,7 +503,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 83,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -877,7 +514,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 83,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -888,7 +525,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 42,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -899,7 +536,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 42,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -910,7 +547,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 42,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -921,7 +558,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 42,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -932,7 +569,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 85,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -943,7 +580,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 85,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -954,7 +591,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 85,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -965,7 +602,7 @@
     "nse_index_con_quarters": 30,
     "nse_index_std_quarters": 85,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -976,7 +613,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 82,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -987,7 +624,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 82,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -998,7 +635,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 82,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1009,7 +646,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 82,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1020,7 +657,7 @@
     "nse_index_con_quarters": 26,
     "nse_index_std_quarters": 83,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1031,7 +668,7 @@
     "nse_index_con_quarters": 26,
     "nse_index_std_quarters": 83,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1042,7 +679,7 @@
     "nse_index_con_quarters": 26,
     "nse_index_std_quarters": 83,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1053,51 +690,7 @@
     "nse_index_con_quarters": 27,
     "nse_index_std_quarters": 82,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "JBCHEPHARM|20180331",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 28,
-    "nse_index_std_quarters": 85,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "JBCHEPHARM|20180630",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 28,
-    "nse_index_std_quarters": 85,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "JBCHEPHARM|20180930",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 28,
-    "nse_index_std_quarters": 85,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "JBCHEPHARM|20181231",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 28,
-    "nse_index_std_quarters": 85,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1108,7 +701,7 @@
     "nse_index_con_quarters": 30,
     "nse_index_std_quarters": 83,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1119,7 +712,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 82,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1130,7 +723,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 82,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1141,7 +734,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 82,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1152,7 +745,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 82,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1163,51 +756,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 80,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "JPASSOCIAT|20180331",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 27,
-    "nse_index_std_quarters": 82,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "JPASSOCIAT|20180630",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 27,
-    "nse_index_std_quarters": 82,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "JPASSOCIAT|20180930",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 27,
-    "nse_index_std_quarters": 82,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "JPASSOCIAT|20181231",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 27,
-    "nse_index_std_quarters": 82,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1218,7 +767,7 @@
     "nse_index_con_quarters": 14,
     "nse_index_std_quarters": 29,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1229,7 +778,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 86,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1240,7 +789,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 86,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1251,7 +800,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 86,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1262,51 +811,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 86,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "KPIL|20180331",
-   {
-    "first_con_filing_ever": 20190331,
-    "nse_index_con_quarters": 29,
-    "nse_index_std_quarters": 84,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "KPIL|20180630",
-   {
-    "first_con_filing_ever": 20190331,
-    "nse_index_con_quarters": 29,
-    "nse_index_std_quarters": 84,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "KPIL|20180930",
-   {
-    "first_con_filing_ever": 20190331,
-    "nse_index_con_quarters": 29,
-    "nse_index_std_quarters": 84,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "KPIL|20181231",
-   {
-    "first_con_filing_ever": 20190331,
-    "nse_index_con_quarters": 29,
-    "nse_index_std_quarters": 84,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1317,7 +822,7 @@
     "nse_index_con_quarters": 11,
     "nse_index_std_quarters": 43,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1328,7 +833,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 85,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1339,7 +844,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 85,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1350,7 +855,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 85,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1361,51 +866,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 82,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "MRF|20180331",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 28,
-    "nse_index_std_quarters": 78,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "MRF|20180630",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 28,
-    "nse_index_std_quarters": 78,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "MRF|20180930",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 28,
-    "nse_index_std_quarters": 78,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "MRF|20181231",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 28,
-    "nse_index_std_quarters": 78,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1416,7 +877,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 74,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1427,7 +888,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 74,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1438,7 +899,7 @@
     "nse_index_con_quarters": 30,
     "nse_index_std_quarters": 60,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1449,7 +910,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 77,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1460,84 +921,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 86,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "NILKAMAL|20180331",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 27,
-    "nse_index_std_quarters": 81,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "NILKAMAL|20180630",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 27,
-    "nse_index_std_quarters": 81,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "NILKAMAL|20180930",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 27,
-    "nse_index_std_quarters": 81,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "NILKAMAL|20181231",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 27,
-    "nse_index_std_quarters": 81,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "NMDC|20180630",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 27,
-    "nse_index_std_quarters": 73,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "NMDC|20180930",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 27,
-    "nse_index_std_quarters": 73,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "NMDC|20181231",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 27,
-    "nse_index_std_quarters": 73,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1548,7 +932,7 @@
     "nse_index_con_quarters": 30,
     "nse_index_std_quarters": 86,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1559,7 +943,7 @@
     "nse_index_con_quarters": 30,
     "nse_index_std_quarters": 83,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1570,7 +954,7 @@
     "nse_index_con_quarters": 26,
     "nse_index_std_quarters": 84,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1581,7 +965,7 @@
     "nse_index_con_quarters": 26,
     "nse_index_std_quarters": 84,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1592,7 +976,7 @@
     "nse_index_con_quarters": 26,
     "nse_index_std_quarters": 84,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1603,7 +987,7 @@
     "nse_index_con_quarters": 26,
     "nse_index_std_quarters": 84,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1614,7 +998,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 39,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1625,7 +1009,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 39,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1636,7 +1020,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 39,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1647,7 +1031,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 39,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1658,7 +1042,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 84,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1669,7 +1053,7 @@
     "nse_index_con_quarters": 30,
     "nse_index_std_quarters": 70,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1680,7 +1064,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 83,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1691,7 +1075,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 83,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1702,7 +1086,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 83,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1713,7 +1097,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 83,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1724,7 +1108,7 @@
     "nse_index_con_quarters": 14,
     "nse_index_std_quarters": 54,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1735,7 +1119,7 @@
     "nse_index_con_quarters": 14,
     "nse_index_std_quarters": 54,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1746,62 +1130,7 @@
     "nse_index_con_quarters": 14,
     "nse_index_std_quarters": 54,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "SAIL|20180630",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 28,
-    "nse_index_std_quarters": 84,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "SAIL|20180930",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 28,
-    "nse_index_std_quarters": 84,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "SJVN|20180630",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 29,
-    "nse_index_std_quarters": 64,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "SJVN|20180930",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 29,
-    "nse_index_std_quarters": 64,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
-    "written": null
-   }
-  ],
-  [
-   "SJVN|20181231",
-   {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 29,
-    "nse_index_std_quarters": 64,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1812,7 +1141,7 @@
     "nse_index_con_quarters": 30,
     "nse_index_std_quarters": 80,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1823,7 +1152,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 55,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1834,7 +1163,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 55,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1845,7 +1174,7 @@
     "nse_index_con_quarters": 28,
     "nse_index_std_quarters": 55,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1856,7 +1185,7 @@
     "nse_index_con_quarters": 30,
     "nse_index_std_quarters": 77,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1867,7 +1196,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 84,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1878,7 +1207,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 84,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1889,7 +1218,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 84,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1900,7 +1229,7 @@
     "nse_index_con_quarters": 30,
     "nse_index_std_quarters": 85,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1911,7 +1240,7 @@
     "nse_index_con_quarters": 30,
     "nse_index_std_quarters": 85,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1922,7 +1251,7 @@
     "nse_index_con_quarters": 30,
     "nse_index_std_quarters": 85,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1933,7 +1262,7 @@
     "nse_index_con_quarters": 30,
     "nse_index_std_quarters": 85,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1944,7 +1273,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 84,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1955,7 +1284,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 84,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ],
@@ -1966,7 +1295,7 @@
     "nse_index_con_quarters": 29,
     "nse_index_std_quarters": 84,
     "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated figure anywhere in this company's pre-first-con era)",
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
     "written": null
    }
   ]

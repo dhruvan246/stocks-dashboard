@@ -45,6 +45,8 @@ def main():
         ("nse-xbrl (§54a)", _load(os.path.join(SCRIPTS, "nse_xbrl_rev_fills.json"))),
         ("bse-detres (§42)", _load(os.path.join(SCRIPTS, "std_rev_detres_fills.json"))),
         ("no-con-filed identity (§54b)", _load(os.path.join(SCRIPTS, "con_nofile_identity_fills.json"))),
+        ("moneycontrol quarterly (§81)", _load(os.path.join(SCRIPTS, "mc_quarterly_fills.json"))),
+        ("aggregator gate (§81)", _load(os.path.join(SCRIPTS, "agg_cell_fills.json"))),
         ("screener annual identity (§60d)", _load(os.path.join(SCRIPTS, "annual_derived_fills.json"))),
         ("hand-read + FY/9M identity (§45)", _load(os.path.join(SCRIPTS, "named_rev_cell_fills_2018.json"))),
         ("deoverlay/date-column reader (§75/§76)", _load(os.path.join(SCRIPTS, "deoverlay_rev_fills2018.json"))),

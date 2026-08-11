@@ -61,6 +61,14 @@ NA_DOC = (
     "con PAT 721.86 vs std 701.09, index first-con Jun-2019). For those companies the index's "
     "pre-first-con silence is measured-incomplete and proves nothing, so they are NOT recorded "
     "here. Only cells whose company shows no such contradiction survive. "
+    "E7 (NEW, same day, and the one that matters most): E6 still only asks whether OUR OWN data "
+    "contradicts the index, which is a claim about our store. It was not enough. Of the 179 cells "
+    "E6 left standing, 52 were then FILLED from Moneycontrol - series reproducing 26-32 of our "
+    "stored quarters with ZERO disagreements, publishing a consolidated revenue for the very "
+    "quarter the record called unfiled (BHARATFORG, BATAINDIA, BOMDYEING among them, none of which "
+    "is a company that never filed consolidated accounts). So the second reader is now part of the "
+    "gate: a cell may not be recorded as NEVER-FILED until an independent reader has been tried and "
+    "has also come up empty - the mirror of 60f's rule for 'unfillable'. 179 -> 118 cells. "
     "Wiring this into the gap definition needs a first-con-quarter concept in files_con across "
     "build_fill_coverage.py, audit_coverage.py and build_targets.py TOGETHER (the three-copies "
     "rule) - deliberately NOT done in this session because it moves the live Fill Coverage page "
@@ -120,6 +128,23 @@ def _con_evidence_before(sym, firstcon, fund, revop):
     return out
 
 
+def _second_reader_refutes(sym, qe, revop):
+    """E7 — DOES AN INDEPENDENT READER PUBLISH A CONSOLIDATED FIGURE FOR THIS EXACT QUARTER?
+
+    E6 asks only whether OUR OWN store contradicts the index. That is still a claim about our data,
+    and it was not enough: measured 2026-08-11, **52 of the 179 cells E6 left standing were then
+    FILLED from Moneycontrol** — series that reproduce 26-32 of our stored quarters with ZERO
+    disagreements, publishing a consolidated revenue for the very quarter the record called unfiled.
+    BHARATFORG, BATAINDIA and BOMDYEING are not companies that never filed consolidated accounts.
+
+    §60f says a cell may not be called unfillable until a second reader has been tried. The mirror
+    applies to negatives: **a cell may not be called NEVER-FILED until a second reader has been tried
+    and has also come up empty.** A negative claim must survive every reader you have, not just your
+    own data."""
+    row = (revop.get(sym) or {}).get(str(qe))
+    return bool(row and len(row) > 1 and row[1] is not None)
+
+
 def main():
     targets = json.load(open(TARGETS))
     fund = {s: {int(r[0]): (r[1], r[3] if len(r) > 3 else None) for r in rows}
@@ -168,6 +193,10 @@ def main():
                     if pc is not None or con_era:
                         rec["kind"] = "no-con-row-but-con-evidence"
                         rec["con_evidence"] = con_era[:3]
+                    elif _second_reader_refutes(sym, qe, revop):
+                        # E7: an independent reader publishes a consolidated figure for this exact
+                        # quarter, so the index's silence is refuted from outside our own data.
+                        rec["kind"] = "second-reader-refutes-na"
                     else:
                         rec["kind"] = "no-con-ever-yet"
                 else:
@@ -182,8 +211,9 @@ def main():
                     "nse_index_std_quarters": rec["nse_index_std_quarters"],
                     "stored_con_pat": pc,
                     "verdict": "no consolidated quarterly result filed for this quarter "
-                               "(E1+E2+E3+E6: no stored con PAT, and no contradicting consolidated "
-                               "figure anywhere in this company's pre-first-con era)",
+                               "(E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated "
+                               "figure in this company's pre-first-con era, AND no independent "
+                               "reader publishes one for this quarter)",
                     "written": None}
 
     json.dump({"cells": cells}, open(OUT, "w"), indent=1, sort_keys=True)

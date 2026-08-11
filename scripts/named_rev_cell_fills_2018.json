@@ -1,0 +1,26 @@
+{
+ "HINDALCO|20180930|revC": {
+  "corroboration": [
+   "\u00a745 9-month identity; \u00a764 otherwise blocks this cell (no stored con PAT)",
+   "FY19 - 9M FY19 reproduces stored 2019-03-31 revC to 0.002%, proving the printed totals share our series' entity, basis and scale"
+  ],
+  "precision": "crore-rounded (derived; inherits the rounding of two printed totals)",
+  "revC": 32506.47,
+  "src": "BSE ann 0fee6aeb-7cdf-41b3-9b37-4324e37ea168 (Hindalco, filed 12-Feb-2020) p2: 9M FY19 96,797 minus Q1 (stored 31,077.53) minus Q3 (33,213)"
+ },
+ "HINDALCO|20181231|revC": {
+  "corroboration": [
+   "p3 prose: 'compared to Rs. 33,213 crore in the same quarter last year'",
+   "p28 + p32 segment tables print the identical row",
+   "same row reproduces stored revC 29,657.00 (2019-09-30) and 29,197.00 (2019-12-31)",
+   "FY19 130,542 - 9M FY19 96,797 = 33,745 vs stored 2019-03-31 revC 33,745.62 (0.002%)"
+  ],
+  "precision": "crore-rounded",
+  "retracts": {
+   "why": "text layer prints the token as '33,2131' - an extra digit fused onto 33,213 - which parses cleanly as 332131 and is 10x the true magnitude. Caught by the same-basis neighbour band (\u00a754a), invisible to every other guard.",
+   "wrong_value": 332131.0
+  },
+  "revC": 33213.0,
+  "src": "BSE ann 0fee6aeb-7cdf-41b3-9b37-4324e37ea168 (Hindalco, filed 12-Feb-2020) p2 'Consolidated Financial Highlights ... (Rs. Crore)', column 'Q3 FY19'"
+ }
+}
