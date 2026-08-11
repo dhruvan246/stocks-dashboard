@@ -1796,6 +1796,7 @@
  },
  "BATAINDIA|20180930|con": {
   "basis": "con",
+  "fallback_check": "SOURCE-INTERNAL test 2026-08-11: Moneycontrol's consolidated row DIFFERS from Moneycontrol's OWN standalone row for this quarter, same label (con 54.86 vs std 55.66). It DIFFERS by 0.80, and a copy is not off by that, so MC is serving a real consolidated table for this field. The earlier hold rested on 'con equals OUR stored standalone', which is a different comparison and cannot tell the aggregator repeating standalone from a genuine equal-value consolidation. Hold LIFTED; value stands.",
   "gate": "28 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 0.637,
   "pat": 54.86,
@@ -3184,6 +3185,7 @@
  },
  "COCHINSHIP|20181231|con": {
   "basis": "con",
+  "fallback_check": "SOURCE-INTERNAL test 2026-08-11: Moneycontrol's consolidated row DIFFERS from Moneycontrol's OWN standalone row for this quarter (con 717.11 vs std 716.42). A fallback is a byte-copy and this differs by 0.69, so MC is serving a REAL consolidated table. The earlier hold rested on 'con equals OUR stored standalone', which cannot tell the aggregator repeating standalone from a company whose consolidated really does equal its standalone. Hold LIFTED; value stands.",
   "gate": "28 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 1.001,
   "pat": 128.41,
@@ -5169,6 +5171,7 @@
  },
  "GLAXO|20181231|con": {
   "basis": "con",
+  "fallback_check": "SOURCE-INTERNAL test 2026-08-11: Moneycontrol's consolidated row DIFFERS from Moneycontrol's OWN standalone row for this quarter (con 825.03 vs std 825.35). A fallback is a byte-copy and this differs by 0.32, so MC is serving a REAL consolidated table. The earlier hold rested on 'con equals OUR stored standalone', which cannot tell the aggregator repeating standalone from a company whose consolidated really does equal its standalone. Hold LIFTED; value stands.",
   "gate": "29 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 1.087,
   "pat": 136.72,
@@ -13528,8 +13531,8 @@
  },
  "SHREECEM|20180630|con": {
   "basis": "con",
+  "fallback_check": "SOURCE-INTERNAL test 2026-08-11: Moneycontrol's consolidated row DIFFERS from Moneycontrol's OWN standalone row for this quarter, same label (con 279.36 vs std 279.48). It DIFFERS by 0.12, and a copy is not off by that, so MC is serving a real consolidated table for this field. The earlier hold rested on 'con equals OUR stored standalone', which is a different comparison and cannot tell the aggregator repeating standalone from a genuine equal-value consolidation. Hold LIFTED; value stands.",
   "gate": "29 anchors, 0 distant disagreements, none within \u00b16 quarters",
-  "held": "HELD 2026-08-11 \u2014 Moneycontrol consolidated FALLBACK. MC serves a cons_quarterly row even in quarters where no consolidated result was filed, carrying the STANDALONE figure. This cell's written con equals our stored std while the company consolidates differently in other quarters, so it cannot be distinguished from the aggregator repeating standalone. Retracted from the data; kept here as a candidate for a REAL consolidated source. Do not re-apply without a document.",
   "neighbour_ratio": 0.788,
   "pat": 279.36,
   "row_label": "Net P/L After M.I & Associates",
@@ -13825,6 +13828,7 @@
  },
  "SJVN|20180930|con": {
   "basis": "con",
+  "fallback_check": "SOURCE-INTERNAL test 2026-08-11: Moneycontrol's consolidated row DIFFERS from Moneycontrol's OWN standalone row for this quarter (con 751.52 vs std 751.9). A fallback is a byte-copy and this differs by 0.38, so MC is serving a REAL consolidated table. The earlier hold rested on 'con equals OUR stored standalone', which cannot tell the aggregator repeating standalone from a company whose consolidated really does equal its standalone. Hold LIFTED; value stands.",
   "gate": "29 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 1.049,
   "pat": 429.22,
@@ -13834,6 +13838,7 @@
  },
  "SJVN|20181231|con": {
   "basis": "con",
+  "fallback_check": "SOURCE-INTERNAL test 2026-08-11: Moneycontrol's consolidated row DIFFERS from Moneycontrol's OWN standalone row for this quarter (con 484.46 vs std 484.49). A fallback is a byte-copy and this differs by 0.03, so MC is serving a REAL consolidated table. The earlier hold rested on 'con equals OUR stored standalone', which cannot tell the aggregator repeating standalone from a company whose consolidated really does equal its standalone. Hold LIFTED; value stands.",
   "gate": "29 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 0.445,
   "pat": 182.23,

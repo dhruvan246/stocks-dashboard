@@ -92,6 +92,13 @@ BASIS_KEYED = [
     # campaign itself wrote off a digit-fused text layer (§83), so a clobber here would restore a
     # number a filing has already refuted.
     ("named_rev_cell_fills_2018.json", "revop", "revC"),
+    # ★ THE MONEYCONTROL WHOLE-HISTORY LEDGERS (§85), 2,598 revenue + 1,832 PAT entries, and they
+    # were UNREGISTERED until 2026-08-11 — the single largest unguarded block this detector has had.
+    # The 2018 session found them the hard way: it retracted two fallback cells, and they came back
+    # live because these ledgers claimed the same cells with held=False. Registered at both ends now
+    # (the value must persist AND a held cell must stay absent — see the resurrection check below).
+    ("mc_history_fills.json",          "revop", "rev"),
+    ("mc_pat_fills.json",              "fund",  "pat", {"std": 1, "con": 3}),
 ]
 # "revS"/"revC" are accepted as basis tokens alongside "std"/"con": several ledgers key their third
 # part by FIELD rather than by BASIS, and the loop below silently `continue`s on any token it cannot
@@ -124,7 +131,26 @@ def main():
     fmap = {s: {r[0]: r for r in rows} for s, rows in fund.items()}
 
     missing, drift, checked = [], [], 0
-    for name, payload, key in BASIS_KEYED:
+    # ★ RESURRECTED: a cell some reader REFUSED to write is live again with exactly the refused
+    # value. This class was invisible to every detector until 2026-08-11, and it is the mirror image
+    # of MISSING: MISSING asks "is the value we asserted still there?", and a held cell asserts the
+    # opposite — that the value must NOT be there. A fill-only applier is enough to resurrect one,
+    # because fill-only only promises never to overwrite; it promises nothing about a slot that a
+    # retraction deliberately emptied. Measured the day it was added: the 2018 session retracted
+    # SHREECEM 2018-06 and SYNGENE 2018-03 as Moneycontrol consolidated-fallback, both came back
+    # from sibling ledgers, and this detector reported MISSING 0 throughout.
+    resurrected = []
+
+    def live_value(payload, sym, qe, slot):
+        if payload == "revop":
+            row = (revop.get(sym) or {}).get(str(qe))
+        else:
+            row = (fmap.get(sym) or {}).get(int(qe))
+        return row[slot] if row and len(row) > slot else None
+
+    for entry in BASIS_KEYED:
+        name, payload, key = entry[0], entry[1], entry[2]
+        slotmap = entry[3] if len(entry) > 3 else BASIS_SLOT
         p = os.path.join(HERE, name)
         if not os.path.exists(p):
             continue
@@ -136,16 +162,21 @@ def main():
             parts = k.split("|")
             if len(parts) != 3 or not isinstance(v, dict):
                 continue
-            if v.get("skip") or v.get("held") or v.get(key) is None:
+            if v.get("skip") or v.get(key) is None:
                 continue
             sym, qe, basis = parts
-            slot = BASIS_SLOT.get(basis)
+            slot = slotmap.get(basis)
             if slot is None:
                 continue
             want = v[key]
+            cur = live_value(payload, sym, qe, slot)
+            if v.get("held"):
+                # the ledger's claim here is ABSENCE, so a match is the failure
+                checked += 1
+                if cur is not None and abs(cur - want) <= TOL:
+                    resurrected.append((name, sym, qe, basis, want, str(v["held"])[:70]))
+                continue
             checked += 1
-            row = (revop.get(sym) or {}).get(qe)
-            cur = row[slot] if row and len(row) > slot else None
             if cur is None:
                 missing.append((name, sym, qe, want, payload, slot))
             elif abs(cur - want) > TOL:
@@ -173,6 +204,10 @@ def main():
             else:
                 row = (fmap.get(sym) or {}).get(int(qe))
                 cur = row[slot] if row and len(row) > slot else None
+            if v.get("held"):                       # asserts ABSENCE — see the note above
+                if cur is not None and abs(cur - want) <= TOL:
+                    resurrected.append((name, sym, qe, "-", want, str(v["held"])[:70]))
+                continue
             if cur is None:
                 missing.append((name, sym, qe, want, payload, slot))
             elif abs(cur - want) > TOL:
@@ -216,12 +251,16 @@ def main():
 
     if not quiet:
         print("checked %d ledgered cells against the served payloads" % checked)
-        print("  MISSING (clobbered): %d" % len(missing))
-        print("  DRIFT   (superseded/corrected): %d" % len(drift))
+        print("  MISSING     (clobbered):            %d" % len(missing))
+        print("  DRIFT       (superseded/corrected): %d" % len(drift))
+        print("  RESURRECTED (a refused value is live again): %d" % len(resurrected))
         for m in missing[:15]:
             print("     MISSING %-30s %-12s %s  ledger=%s" % (m[0], m[1], m[2], m[3]))
         for d in drift[:10]:
             print("     DRIFT   %-30s %-12s %s  ledger=%s live=%s" % d)
+        for r in resurrected[:15]:
+            print("     RESURRECTED %-26s %-12s %s %-4s value=%s\n                 held because: %s"
+                  % (r[0], r[1], r[2], r[3], r[4], r[5]))
 
     if missing and repair:
         for name, sym, qe, want, payload, slot in missing:
@@ -244,7 +283,25 @@ def main():
         json.dump(fund, open(FUND, "w"), separators=(",", ":"))
         print("repaired %d cells into the served payloads "
               "(commit + push them, then re-run to confirm)" % len(missing))
-    sys.exit(1 if missing else 0)
+
+    # Emptying a slot is destructive and a held flag can itself be wrong (measured: of the three
+    # holds another session added on 2026-08-11, SHREECEM 2018-06 was refuted by Moneycontrol's own
+    # consolidated row differing from its own standalone row). So this never runs as a side effect
+    # of --repair; it needs its own flag, and the operator is expected to have read the held reason.
+    if resurrected and "--repair-held" in sys.argv:
+        for name, sym, qe, basis, want, _why in resurrected:
+            for payload, slot in (("revop", BASIS_SLOT.get(basis)), ("fund", {"std": 1, "con": 3}.get(basis))):
+                if slot is None:
+                    continue
+                row = ((revop.get(sym) or {}).get(str(qe)) if payload == "revop"
+                       else (fmap.get(sym) or {}).get(int(qe)))
+                if row and len(row) > slot and row[slot] is not None and abs(row[slot] - want) <= TOL:
+                    row[slot] = None
+        json.dump(revop, open(REVOP, "w"), separators=(",", ":"))
+        json.dump(fund, open(FUND, "w"), separators=(",", ":"))
+        print("re-retracted %d resurrected cells (commit + push, then re-run)" % len(resurrected))
+
+    sys.exit(1 if (missing or resurrected) else 0)
 
 
 if __name__ == "__main__":
