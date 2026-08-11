@@ -18,6 +18,17 @@
   "route": "VISION rung (\u00a717b) on the YEAR-LATER filing",
   "src": "BSE ann 20191101 (Central Bank of India Sep-2019 filing) p6, rendered at 190dpi (text layer glyph-corrupted: the header extracts as '30,09.2019 30.0G.201S 30,09.2018'). '(Rs in Lakh)', two blocks Standalone | Consolidated. CONSOLIDATED Quarter Ended 30.09.2018, row 1 'Interest earned (a)+(b)+(c)+(d)' = 591,854 | 574,475 | 571,214 -> 571,214 lakh = 5,712.14 cr."
  },
+ "GAIL|20181231|con": {
+  "corroboration": [
+   "the same row's FY column 76,234.17 matches the consolidated annual printed on GAIL's OWN Mar-2019 filing (p10, 'Revenue from Operation (Gross)'), read under vision earlier in this campaign \u2014 an independent document",
+   "passes the MC consolidated-fallback screen: con 20,229.38 != std 19,788.98",
+   "GAIL's own Mar-2019 filing carries CONSOLIDATED ANNUAL ONLY (p10 P&L and p11 segment report, both FY-only, no quarterly column) \u2014 the \u00a751a shape, and why the year-later filing was the only route"
+  ],
+  "gate": "the page's own consolidated columns reproduce our store EXACTLY: 31-Dec-2019 17,898.16 == stored revC 20191231, and 30-Sep-2019 18,249.90 == stored revC 20190930.",
+  "revC": 20229.38,
+  "route": "VISION rung (\u00a717b) on the YEAR-LATER filing, 400dpi crop",
+  "src": "BSE ann 20200210 (GAIL Dec-2019 filing) p5, fully scanned (0 chars), rendered at 400dpi. Header 'Statement of Consolidated Unaudited Financial Results for the Quarter and Nine Months Ended 31st December 2019', '(Rs in Crore Except EPS)'. Columns For the Quarter ended 31st December 2019 | 30th September 2019 | 31st December 2018. Row 1 Income 'Revenue from Operations' = 17,898.16 | 18,249.90 | 20,229.38 | 54,629.62 | 57,155.78 | 76,234.17."
+ },
  "GODFRYPHLP|20181231|con": {
   "corroboration": [
    "con/std 1.0104, inside GODFRYPHLP's own family 1.0041-1.0122 (2019-06/09/12)",
@@ -27,6 +38,36 @@
   "revC": 697.33,
   "route": "vision-rung triage -> YEAR-LATER filing, read from TEXT (no vision needed)",
   "src": "BSE ann 20200207 (Godfrey Phillips Dec-2019 filing), p1, '(Rs in lakhs)', combined Standalone+Consolidated page. Header prints the three periods TWICE: Q 31.12.2019 | 9M 31.12.2019 | Q 31.12.2018 (standalone) then the same three (consolidated). Row 'Total Income from Operations' = 78811 236707 69017 | 79722 238933 69733."
+ },
+ "HINDUNILVR|20181231|con": {
+  "corroboration": [
+   "passes the MC consolidated-fallback screen: con 9,841 != std 9,558",
+   "HUL files in whole crores, so integer values ARE its filing precision here"
+  ],
+  "gate": "the same summation reproduces our store EXACTLY on the page's own later columns: Dec-2019 9,953+25+125 = 10,103 == stored revC 20191231, and Sep-2019 9,931+26+148 = 10,105 == stored revC 20190930. That fixes BOTH the three-component summation rule and the column mapping.",
+  "revC": 9841.0,
+  "route": "VISION rung (\u00a717b) on the YEAR-LATER filing, 400dpi crop",
+  "src": "BSE ann 20200131 (Hindustan Unilever Dec-2019 filing) p8, rendered at 400dpi. Header 'CONSOLIDATED FINANCIAL RESULTS FOR THE QUARTER AND NINE MONTH ENDED 31ST DECEMBER, 2019', '(Rs in Crores)'. HUL's layout puts Particulars in the MIDDLE with quarter columns to the left. Revenue from operations for the quarter ended 31st December 2018 = Sale of products 9,582 + Sale of services 30 + Other operating revenue 229 = 9,841."
+ },
+ "MMTC|20181231|con": {
+  "corroboration": [
+   "passes the MC consolidated-fallback screen: con 9,449.02 != std 9,366.78",
+   "no stored con PAT for this quarter (\u00a764) - the column rests on its PRINTED DATE (\u00a755b) plus the controls above"
+  ],
+  "gate": "the page's own later columns reproduce our stored revC: 30-Sep-19 6,783.87 == stored revC 20190930 exactly, and 31-Dec-19 8,294.78 against stored 8,294.79 (0.01).",
+  "revC": 9449.02,
+  "route": "VISION rung (\u00a717b) on the YEAR-LATER filing, 400dpi crop",
+  "src": "BSE ann 20200214 (MMTC Dec-2019 filing) p6, fully scanned document, rendered at 400dpi. Header 'Statement of Consolidated Unaudited Financial Results for the Quarter and Nine Month Ended on 31/12/2019', '(Rs in crores, except per share data)'. Columns Quarter Ended 31-Dec-19 | 30-Sep-19 | 31-Dec-18. Row 1 Income 'Revenue From Operations' = 8,294.78 | 6,783.87 | 9,449.02 | 22,276.25 | 22,055.12 | 29,439.69."
+ },
+ "MRPL|20180930|con": {
+  "corroboration": [
+   "passes the MC consolidated-fallback screen: con 17,949.55 != std 17,732.90",
+   "consolidated-ONLY page (the standalone statement is p1 of the same filing), so not the \u00a776b combined-page trap"
+  ],
+  "gate": "the page's own consolidated columns reproduce our store EXACTLY: 30.09.2019 15,028.95 == stored revC 20190930, and 30.06.2019 11,175.60 == stored revC 20190630.",
+  "revC": 17949.55,
+  "route": "VISION rung (\u00a717b) on the YEAR-LATER filing, 400dpi crop",
+  "src": "BSE ann 20191104 (MRPL Sep-2019 filing) p2, rendered at 400dpi. Header 'STATEMENT OF CONSOLIDATED FINANCIAL RESULTS FOR THE QUARTER AND HALF YEAR ENDED 30TH SEPTEMBER, 2019', '(All amounts are in Rs in Crore)'. Columns Quarter Ended 30.09.2019 | 30.06.2019 | 30.09.2018. Row I 'Revenue from operations' = 15,028.95 | 11,175.60 | 17,949.55 | 26,204.55 | 34,795.64 | 73,494.08."
  },
  "MRPL|20181231|con": {
   "corroboration": [
@@ -75,6 +116,37 @@
   "revC": 291.06,
   "route": "VISION rung (\u00a717b) on the YEAR-LATER filing",
   "src": "BSE ann 20200210 (Rupa & Company Dec-2019 filing) p5, rendered at 190dpi (text layer glyph-corrupted: 'RUPA 8 COMPANY LIMlTED', 'Revenue from Operatlons'). Header 'Statement of Unaudited Consolidated Financial Results for the Quarter & Nine Months Ended December 31, 2019', '(in Rs lakhs)', column 'Quarter ended December 31 2018'. Revenue from Operations = a) Sales of Products and Services 29,041.15 + b) Other Operating income 64.58 = 29,105.73 lakh = 291.06 cr."
+ },
+ "SBIN|20180930|con": {
+  "caveat": "the page's Sep-2019 columns read 64,312.39 std / 67,356.24 con against our stored 64,312.80 / 67,356.58 \u2014 small differences consistent with a later restatement (or a digit at the render limit). The three EXACT controls above are what the read rests on, not these.",
+  "corroboration": [
+   "passes the MC consolidated-fallback screen: con 61,426.85 != std 58,793.48",
+   "bank format: Interest Earned is the revenue basis build_revop stores (\u00a742/\u00a776a)"
+  ],
+  "gate": "THREE exact controls on the same page: STD 30.09.2018 58,793.48 == stored revS; STD 30.06.2019 62,637.81 == stored revS; CON 30.06.2019 65,594.42 == stored revC. All to the paisa.",
+  "revC": 61426.85,
+  "route": "VISION rung (\u00a717b) on the YEAR-LATER filing, 380dpi crop",
+  "src": "BSE ann 20191025 (State Bank of India Sep-2019 filing) p2, rendered at 380dpi (the filing's text layer is glyph-corrupted: 'STATE BANK OF INDlA CORPORATT CENIIE', dates as '30.091019'). 'UNAUDITED FINANCIAL RESULTS FOR THE QUARTER AND HALF-YEAR ENDED 30TH SEPTEMBER, 2019', '(Rs in crore)', Standalone | Consolidated blocks. Row 1 'Interest earned (a)+(b)+(c)+(d)' consolidated = 67,356.24 | 65,594.42 | 61,426.85. Quarter ended 30.09.2018 = 61,426.85 cr."
+ },
+ "UNIONBANK|20180930|con": {
+  "corroboration": [
+   "passes the MC consolidated-fallback screen: con 8,602.09 != std 8,538.82",
+   "no stored con PAT for this quarter (\u00a764), so the column rests on its PRINTED DATE (\u00a755b) plus the five controls"
+  ],
+  "gate": "FIVE exact controls on one page: STD 30.09.2018 8,538.82 == stored revS; STD 30.09.2019 9,413.37 == stored revS; STD 30.06.2019 8,897.62 == stored revS; CON 30.09.2019 9,468.46 == stored revC; CON 30.06.2019 8,959.91 == stored revC. All to the paisa.",
+  "revC": 8602.09,
+  "route": "VISION rung (\u00a717b) on the YEAR-LATER filing, 430dpi crop",
+  "src": "BSE ann 20191114 (Union Bank of India Sep-2019 filing, 'Reviewed Unaudited Financial Results (Standalone & Consolidated)') p1, rendered at 430dpi. '(Rs In Lacs)', Standalone | Consolidated blocks. Row 1 'Interest Earned (a)+(b)+(c)+(d)': STD 9,41,337 | 8,89,762 | 8,53,882 ; CON 9,46,846 | 8,95,991 | 8,60,209. Consolidated Quarter Ended 30.09.2018 = 8,60,209 lakh = 8,602.09 cr."
+ },
+ "UNIONBANK|20181231|con": {
+  "corroboration": [
+   "passes the MC consolidated-fallback screen: con 8,563.56 != std 8,477.53, so this is not a source repeating the standalone row",
+   "bank format: Interest Earned is the revenue basis build_revop stores (\u00a742/\u00a776a). No stored con PAT for this quarter, so \u00a764 blocks every anchored reader - the column is fixed by its PRINTED DATE (\u00a755b) and by the five controls above."
+  ],
+  "gate": "FIVE exact controls on one page: STD 31.12.2018 8,477.53 == stored revS; STD 31.12.2019 9,630.72 == stored revS; STD 30.09.2019 9,413.37 == stored revS; CON 31.12.2019 9,687.88 == stored revC; CON 30.09.2019 9,468.46 == stored revC. All to the paisa.",
+  "revC": 8563.56,
+  "route": "VISION rung (\u00a717b) on the YEAR-LATER filing, 430dpi crop",
+  "src": "BSE ann 20200210 (Union Bank of India Dec-2019 filing) p1, fully scanned (0 chars), rendered at 430dpi. 'Reviewed Financial Results for the Third Quarter/Nine Months ended 31st December 2019', '(Rs In Lacs)', Standalone | Consolidated blocks. Row 1 'Interest Earned (a)+(b)+(c)+(d)': STD 9,63,072 | 9,41,337 | 8,47,753 ; CON 9,68,788 | 9,46,846 | 8,56,356. Consolidated Quarter Ended 31.12.2018 = 8,56,356 lakh = 8,563.56 cr."
  },
  "_defects_found_not_touched": {
   "CENTRALBK|20190630|revC": {

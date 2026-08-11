@@ -823,17 +823,11 @@
   "BALKRISIND|20181231|con": {
    "anchored": true,
    "basis": "con",
+   "evidence": null,
    "exchange_record": "con-gap-after",
-   "last_stage": "scanned-results-docs (best 259 chars/page over >=8-page attachments)",
-   "routes_walked": [
-    "nse-xbrl (\u00a754a)",
-    "no-con-filed identity (\u00a754b)",
-    "screener annual identity (\u00a760d)",
-    "\u00a758 announcement-PDF sweep",
-    "deoverlay reader (\u00a775/\u00a776)"
-   ],
-   "status": "not-found-via",
-   "value": null
+   "route": "filled (route ledger not matched \u2014 see git history)",
+   "status": "filled",
+   "value": 1197.84
   },
   "BALLARPUR|20180630|con": {
    "anchored": false,
@@ -1969,17 +1963,11 @@
   "CENTRALBK|20180930|con": {
    "anchored": true,
    "basis": "con",
+   "evidence": null,
    "exchange_record": "no-con-row-but-con-evidence",
-   "last_stage": "scanned-no-text",
-   "routes_walked": [
-    "nse-xbrl (\u00a754a)",
-    "no-con-filed identity (\u00a754b)",
-    "screener annual identity (\u00a760d)",
-    "\u00a758 announcement-PDF sweep",
-    "deoverlay reader (\u00a775/\u00a776)"
-   ],
-   "status": "not-found-via",
-   "value": null
+   "route": "filled (route ledger not matched \u2014 see git history)",
+   "status": "filled",
+   "value": 5712.14
   },
   "CENTRALBK|20181231|con": {
    "anchored": true,
@@ -2064,27 +2052,17 @@
   "CENTURYPLY|20181231|con": {
    "anchored": false,
    "basis": "con",
-   "evidence": {
-    "gate": "29 stored quarters reproduced, 0 disagreements",
-    "gate_quarters": [
-     20190630,
-     20190930,
-     20191231,
-     20200331,
-     20200630,
-     20200930,
-     20201231,
-     20210331
-    ],
-    "rev": 579.17,
-    "sc_id": "CP9",
-    "src": "moneycontrol appfeeds quarterly_results_responsive",
-    "type_format": "cons_quarterly"
-   },
    "exchange_record": "con-gap-after",
-   "route": "moneycontrol quarterly (\u00a781)",
-   "status": "filled",
-   "value": 579.17
+   "last_stage": "nse-xbrl-placeholder (row listed, XBRL never published)",
+   "routes_walked": [
+    "nse-xbrl (\u00a754a)",
+    "no-con-filed identity (\u00a754b)",
+    "screener annual identity (\u00a760d)",
+    "\u00a758 announcement-PDF sweep",
+    "deoverlay reader (\u00a775/\u00a776)"
+   ],
+   "status": "not-found-via",
+   "value": null
   },
   "CERA|20180331|con": {
    "anchored": false,
@@ -2292,76 +2270,46 @@
    "anchored": false,
    "basis": "con",
    "evidence": {
-    "gate": "28 stored quarters reproduced, 0 disagreements",
-    "gate_quarters": [
-     20190630,
-     20190930,
-     20191231,
-     20200331,
-     20200630,
-     20200930,
-     20201231,
-     20210331
-    ],
-    "rev": 658.73,
-    "sc_id": "CS17",
-    "src": "moneycontrol appfeeds quarterly_results_responsive",
-    "type_format": "cons_quarterly"
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 40,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
+    "written": null
    },
-   "exchange_record": "second-reader-refutes-na",
-   "route": "moneycontrol quarterly (\u00a781)",
-   "status": "filled",
-   "value": 658.73
+   "exchange_record": "no-con-ever-yet",
+   "status": "not-applicable",
+   "value": null
   },
   "COCHINSHIP|20180930|con": {
    "anchored": false,
    "basis": "con",
    "evidence": {
-    "gate": "28 stored quarters reproduced, 0 disagreements",
-    "gate_quarters": [
-     20190630,
-     20190930,
-     20191231,
-     20200331,
-     20200630,
-     20200930,
-     20201231,
-     20210331
-    ],
-    "rev": 799.4,
-    "sc_id": "CS17",
-    "src": "moneycontrol appfeeds quarterly_results_responsive",
-    "type_format": "cons_quarterly"
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 40,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
+    "written": null
    },
-   "exchange_record": "second-reader-refutes-na",
-   "route": "moneycontrol quarterly (\u00a781)",
-   "status": "filled",
-   "value": 799.4
+   "exchange_record": "no-con-ever-yet",
+   "status": "not-applicable",
+   "value": null
   },
   "COCHINSHIP|20181231|con": {
    "anchored": false,
    "basis": "con",
    "evidence": {
-    "gate": "28 stored quarters reproduced, 0 disagreements",
-    "gate_quarters": [
-     20190630,
-     20190930,
-     20191231,
-     20200331,
-     20200630,
-     20200930,
-     20201231,
-     20210331
-    ],
-    "rev": 717.11,
-    "sc_id": "CS17",
-    "src": "moneycontrol appfeeds quarterly_results_responsive",
-    "type_format": "cons_quarterly"
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 28,
+    "nse_index_std_quarters": 40,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
+    "written": null
    },
-   "exchange_record": "second-reader-refutes-na",
-   "route": "moneycontrol quarterly (\u00a781)",
-   "status": "filled",
-   "value": 717.11
+   "exchange_record": "no-con-ever-yet",
+   "status": "not-applicable",
+   "value": null
   },
   "COFORGE|20180630|con": {
    "anchored": false,
@@ -3318,27 +3266,17 @@
   "EVEREADY|20180930|con": {
    "anchored": true,
    "basis": "con",
-   "evidence": {
-    "gate": "30 stored quarters reproduced, 0 disagreements",
-    "gate_quarters": [
-     20180630,
-     20190630,
-     20190930,
-     20191231,
-     20200331,
-     20200630,
-     20200930,
-     20201231
-    ],
-    "rev": 383.49,
-    "sc_id": "EII02",
-    "src": "moneycontrol appfeeds quarterly_results_responsive",
-    "type_format": "cons_quarterly"
-   },
    "exchange_record": "con-gap-after",
-   "route": "moneycontrol quarterly (\u00a781)",
-   "status": "filled",
-   "value": 383.49
+   "last_stage": "no-anchor-or-scanned",
+   "routes_walked": [
+    "nse-xbrl (\u00a754a)",
+    "no-con-filed identity (\u00a754b)",
+    "screener annual identity (\u00a760d)",
+    "\u00a758 announcement-PDF sweep",
+    "deoverlay reader (\u00a775/\u00a776)"
+   ],
+   "status": "not-found-via",
+   "value": null
   },
   "EVEREADY|20181231|con": {
    "anchored": true,
@@ -3730,8 +3668,17 @@
   "GAIL|20181231|con": {
    "anchored": true,
    "basis": "con",
+   "evidence": null,
    "exchange_record": "no-con-row-but-con-evidence",
-   "last_stage": "scanned-results-docs (best 0 chars/page over >=8-page attachments)",
+   "route": "filled (route ledger not matched \u2014 see git history)",
+   "status": "filled",
+   "value": 20229.38
+  },
+  "GAYAPROJ|20180930|con": {
+   "anchored": true,
+   "basis": "con",
+   "exchange_record": "con-gap-after",
+   "last_stage": "no-anchor-or-scanned",
    "routes_walked": [
     "nse-xbrl (\u00a754a)",
     "no-con-filed identity (\u00a754b)",
@@ -3742,55 +3689,20 @@
    "status": "not-found-via",
    "value": null
   },
-  "GAYAPROJ|20180930|con": {
-   "anchored": true,
-   "basis": "con",
-   "evidence": {
-    "gate": "20 stored quarters reproduced, 0 disagreements",
-    "gate_quarters": [
-     20190630,
-     20190930,
-     20191231,
-     20200331,
-     20200630,
-     20200930,
-     20201231,
-     20210331
-    ],
-    "rev": 611.34,
-    "sc_id": "GP10",
-    "src": "moneycontrol appfeeds quarterly_results_responsive",
-    "type_format": "cons_quarterly"
-   },
-   "exchange_record": "con-gap-after",
-   "route": "moneycontrol quarterly (\u00a781)",
-   "status": "filled",
-   "value": 611.34
-  },
   "GAYAPROJ|20181231|con": {
    "anchored": true,
    "basis": "con",
-   "evidence": {
-    "gate": "20 stored quarters reproduced, 0 disagreements",
-    "gate_quarters": [
-     20190630,
-     20190930,
-     20191231,
-     20200331,
-     20200630,
-     20200930,
-     20201231,
-     20210331
-    ],
-    "rev": 877.87,
-    "sc_id": "GP10",
-    "src": "moneycontrol appfeeds quarterly_results_responsive",
-    "type_format": "cons_quarterly"
-   },
    "exchange_record": "con-gap-after",
-   "route": "moneycontrol quarterly (\u00a781)",
-   "status": "filled",
-   "value": 877.87
+   "last_stage": "no-anchor-or-scanned",
+   "routes_walked": [
+    "nse-xbrl (\u00a754a)",
+    "no-con-filed identity (\u00a754b)",
+    "screener annual identity (\u00a760d)",
+    "\u00a758 announcement-PDF sweep",
+    "deoverlay reader (\u00a775/\u00a776)"
+   ],
+   "status": "not-found-via",
+   "value": null
   },
   "GDL|20180331|con": {
    "anchored": false,
@@ -3901,76 +3813,46 @@
    "anchored": false,
    "basis": "con",
    "evidence": {
-    "gate": "29 stored quarters reproduced, 0 disagreements",
-    "gate_quarters": [
-     20190630,
-     20190930,
-     20191231,
-     20200331,
-     20200630,
-     20200930,
-     20201231,
-     20210331
-    ],
-    "rev": 735.65,
-    "sc_id": "GI",
-    "src": "moneycontrol appfeeds quarterly_results_responsive",
-    "type_format": "cons_quarterly"
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 27,
+    "nse_index_std_quarters": 83,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
+    "written": null
    },
-   "exchange_record": "second-reader-refutes-na",
-   "route": "moneycontrol quarterly (\u00a781)",
-   "status": "filled",
-   "value": 735.65
+   "exchange_record": "no-con-ever-yet",
+   "status": "not-applicable",
+   "value": null
   },
   "GLAXO|20180930|con": {
    "anchored": false,
    "basis": "con",
    "evidence": {
-    "gate": "29 stored quarters reproduced, 0 disagreements",
-    "gate_quarters": [
-     20190630,
-     20190930,
-     20191231,
-     20200331,
-     20200630,
-     20200930,
-     20201231,
-     20210331
-    ],
-    "rev": 816.31,
-    "sc_id": "GI",
-    "src": "moneycontrol appfeeds quarterly_results_responsive",
-    "type_format": "cons_quarterly"
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 27,
+    "nse_index_std_quarters": 83,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
+    "written": null
    },
-   "exchange_record": "second-reader-refutes-na",
-   "route": "moneycontrol quarterly (\u00a781)",
-   "status": "filled",
-   "value": 816.31
+   "exchange_record": "no-con-ever-yet",
+   "status": "not-applicable",
+   "value": null
   },
   "GLAXO|20181231|con": {
    "anchored": false,
    "basis": "con",
    "evidence": {
-    "gate": "29 stored quarters reproduced, 0 disagreements",
-    "gate_quarters": [
-     20190630,
-     20190930,
-     20191231,
-     20200331,
-     20200630,
-     20200930,
-     20201231,
-     20210331
-    ],
-    "rev": 825.03,
-    "sc_id": "GI",
-    "src": "moneycontrol appfeeds quarterly_results_responsive",
-    "type_format": "cons_quarterly"
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 27,
+    "nse_index_std_quarters": 83,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
+    "written": null
    },
-   "exchange_record": "second-reader-refutes-na",
-   "route": "moneycontrol quarterly (\u00a781)",
-   "status": "filled",
-   "value": 825.03
+   "exchange_record": "no-con-ever-yet",
+   "status": "not-applicable",
+   "value": null
   },
   "GMDCLTD|20180331|con": {
    "anchored": false,
@@ -4132,17 +4014,11 @@
   "GODFRYPHLP|20181231|con": {
    "anchored": true,
    "basis": "con",
+   "evidence": null,
    "exchange_record": "no-con-row-but-con-evidence",
-   "last_stage": "scanned-results-docs (best 205 chars/page over >=8-page attachments)",
-   "routes_walked": [
-    "nse-xbrl (\u00a754a)",
-    "no-con-filed identity (\u00a754b)",
-    "screener annual identity (\u00a760d)",
-    "\u00a758 announcement-PDF sweep",
-    "deoverlay reader (\u00a775/\u00a776)"
-   ],
-   "status": "not-found-via",
-   "value": null
+   "route": "filled (route ledger not matched \u2014 see git history)",
+   "status": "filled",
+   "value": 697.33
   },
   "GPPL|20180331|con": {
    "anchored": false,
@@ -4207,27 +4083,17 @@
   "GREAVESCOT|20180630|con": {
    "anchored": true,
    "basis": "con",
-   "evidence": {
-    "gate": "31 stored quarters reproduced, 0 disagreements",
-    "gate_quarters": [
-     20180930,
-     20181231,
-     20190630,
-     20190930,
-     20191231,
-     20200331,
-     20200630,
-     20200930
-    ],
-    "rev": 458.16,
-    "sc_id": "G",
-    "src": "moneycontrol appfeeds quarterly_results_responsive",
-    "type_format": "cons_quarterly"
-   },
    "exchange_record": "no-con-row-but-con-evidence",
-   "route": "moneycontrol quarterly (\u00a781)",
-   "status": "filled",
-   "value": 458.16
+   "last_stage": "no-anchor-or-scanned",
+   "routes_walked": [
+    "nse-xbrl (\u00a754a)",
+    "no-con-filed identity (\u00a754b)",
+    "screener annual identity (\u00a760d)",
+    "\u00a758 announcement-PDF sweep",
+    "deoverlay reader (\u00a775/\u00a776)"
+   ],
+   "status": "not-found-via",
+   "value": null
   },
   "GREENPLY|20180331|con": {
    "anchored": false,
@@ -4989,77 +4855,47 @@
   "HEG|20180630|con": {
    "anchored": false,
    "basis": "con",
-   "evidence": {
-    "gate": "29 stored quarters reproduced, 0 disagreements",
-    "gate_quarters": [
-     20190630,
-     20190930,
-     20191231,
-     20200331,
-     20200630,
-     20200930,
-     20201231,
-     20210331
-    ],
-    "rev": 1587.38,
-    "sc_id": "HEG",
-    "src": "moneycontrol appfeeds quarterly_results_responsive",
-    "type_format": "cons_quarterly"
-   },
    "exchange_record": "con-gap-after",
-   "route": "moneycontrol quarterly (\u00a781)",
-   "status": "filled",
-   "value": 1587.38
+   "last_stage": "nse-xbrl-placeholder (row listed, XBRL never published)",
+   "routes_walked": [
+    "nse-xbrl (\u00a754a)",
+    "no-con-filed identity (\u00a754b)",
+    "screener annual identity (\u00a760d)",
+    "\u00a758 announcement-PDF sweep",
+    "deoverlay reader (\u00a775/\u00a776)"
+   ],
+   "status": "not-found-via",
+   "value": null
   },
   "HEG|20180930|con": {
    "anchored": false,
    "basis": "con",
-   "evidence": {
-    "gate": "29 stored quarters reproduced, 0 disagreements",
-    "gate_quarters": [
-     20190630,
-     20190930,
-     20191231,
-     20200331,
-     20200630,
-     20200930,
-     20201231,
-     20210331
-    ],
-    "rev": 1793.8,
-    "sc_id": "HEG",
-    "src": "moneycontrol appfeeds quarterly_results_responsive",
-    "type_format": "cons_quarterly"
-   },
    "exchange_record": "con-gap-after",
-   "route": "moneycontrol quarterly (\u00a781)",
-   "status": "filled",
-   "value": 1793.8
+   "last_stage": "nse-xbrl-placeholder (row listed, XBRL never published)",
+   "routes_walked": [
+    "nse-xbrl (\u00a754a)",
+    "no-con-filed identity (\u00a754b)",
+    "screener annual identity (\u00a760d)",
+    "\u00a758 announcement-PDF sweep",
+    "deoverlay reader (\u00a775/\u00a776)"
+   ],
+   "status": "not-found-via",
+   "value": null
   },
   "HEG|20181231|con": {
    "anchored": false,
    "basis": "con",
-   "evidence": {
-    "gate": "29 stored quarters reproduced, 0 disagreements",
-    "gate_quarters": [
-     20190630,
-     20190930,
-     20191231,
-     20200331,
-     20200630,
-     20200930,
-     20201231,
-     20210331
-    ],
-    "rev": 1864.99,
-    "sc_id": "HEG",
-    "src": "moneycontrol appfeeds quarterly_results_responsive",
-    "type_format": "cons_quarterly"
-   },
    "exchange_record": "con-gap-after",
-   "route": "moneycontrol quarterly (\u00a781)",
-   "status": "filled",
-   "value": 1864.99
+   "last_stage": "nse-xbrl-placeholder (row listed, XBRL never published)",
+   "routes_walked": [
+    "nse-xbrl (\u00a754a)",
+    "no-con-filed identity (\u00a754b)",
+    "screener annual identity (\u00a760d)",
+    "\u00a758 announcement-PDF sweep",
+    "deoverlay reader (\u00a775/\u00a776)"
+   ],
+   "status": "not-found-via",
+   "value": null
   },
   "HEROMOTOCO|20180331|con": {
    "anchored": false,
@@ -5264,62 +5100,56 @@
   "HINDUNILVR|20180331|con": {
    "anchored": false,
    "basis": "con",
-   "evidence": {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 29,
-    "nse_index_std_quarters": 85,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
-    "written": null
-   },
-   "exchange_record": "no-con-ever-yet",
-   "status": "not-applicable",
+   "exchange_record": "no-con-row-but-con-evidence",
+   "last_stage": "nse-xbrl-placeholder (row listed, XBRL never published)",
+   "routes_walked": [
+    "nse-xbrl (\u00a754a)",
+    "no-con-filed identity (\u00a754b)",
+    "screener annual identity (\u00a760d)",
+    "\u00a758 announcement-PDF sweep",
+    "deoverlay reader (\u00a775/\u00a776)"
+   ],
+   "status": "not-found-via",
    "value": null
   },
   "HINDUNILVR|20180630|con": {
    "anchored": false,
    "basis": "con",
-   "evidence": {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 29,
-    "nse_index_std_quarters": 85,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
-    "written": null
-   },
-   "exchange_record": "no-con-ever-yet",
-   "status": "not-applicable",
+   "exchange_record": "no-con-row-but-con-evidence",
+   "last_stage": "nse-xbrl-placeholder (row listed, XBRL never published)",
+   "routes_walked": [
+    "nse-xbrl (\u00a754a)",
+    "no-con-filed identity (\u00a754b)",
+    "screener annual identity (\u00a760d)",
+    "\u00a758 announcement-PDF sweep",
+    "deoverlay reader (\u00a775/\u00a776)"
+   ],
+   "status": "not-found-via",
    "value": null
   },
   "HINDUNILVR|20180930|con": {
    "anchored": false,
    "basis": "con",
-   "evidence": {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 29,
-    "nse_index_std_quarters": 85,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
-    "written": null
-   },
-   "exchange_record": "no-con-ever-yet",
-   "status": "not-applicable",
+   "exchange_record": "no-con-row-but-con-evidence",
+   "last_stage": "no-pl-page",
+   "routes_walked": [
+    "nse-xbrl (\u00a754a)",
+    "no-con-filed identity (\u00a754b)",
+    "screener annual identity (\u00a760d)",
+    "\u00a758 announcement-PDF sweep",
+    "deoverlay reader (\u00a775/\u00a776)"
+   ],
+   "status": "not-found-via",
    "value": null
   },
   "HINDUNILVR|20181231|con": {
    "anchored": false,
    "basis": "con",
-   "evidence": {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 29,
-    "nse_index_std_quarters": 85,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
-    "written": null
-   },
-   "exchange_record": "no-con-ever-yet",
-   "status": "not-applicable",
-   "value": null
+   "evidence": null,
+   "exchange_record": "no-con-row-but-con-evidence",
+   "route": "filled (route ledger not matched \u2014 see git history)",
+   "status": "filled",
+   "value": 9841.0
   },
   "HSCL|20181231|con": {
    "anchored": true,
@@ -8194,17 +8024,11 @@
   "MMTC|20181231|con": {
    "anchored": false,
    "basis": "con",
+   "evidence": null,
    "exchange_record": "con-gap-after",
-   "last_stage": "scanned-results-docs (best 256 chars/page over >=8-page attachments)",
-   "routes_walked": [
-    "nse-xbrl (\u00a754a)",
-    "no-con-filed identity (\u00a754b)",
-    "screener annual identity (\u00a760d)",
-    "\u00a758 announcement-PDF sweep",
-    "deoverlay reader (\u00a775/\u00a776)"
-   ],
-   "status": "not-found-via",
-   "value": null
+   "route": "filled (route ledger not matched \u2014 see git history)",
+   "status": "filled",
+   "value": 9449.02
   },
   "MOTILALOFS|20180331|con": {
    "anchored": false,
@@ -8344,32 +8168,20 @@
   "MRPL|20180930|con": {
    "anchored": true,
    "basis": "con",
+   "evidence": null,
    "exchange_record": "no-con-row-but-con-evidence",
-   "last_stage": "scanned-results-docs (best 120 chars/page over >=8-page attachments)",
-   "routes_walked": [
-    "nse-xbrl (\u00a754a)",
-    "no-con-filed identity (\u00a754b)",
-    "screener annual identity (\u00a760d)",
-    "\u00a758 announcement-PDF sweep",
-    "deoverlay reader (\u00a775/\u00a776)"
-   ],
-   "status": "not-found-via",
-   "value": null
+   "route": "filled (route ledger not matched \u2014 see git history)",
+   "status": "filled",
+   "value": 17949.55
   },
   "MRPL|20181231|con": {
    "anchored": true,
    "basis": "con",
+   "evidence": null,
    "exchange_record": "no-con-row-but-con-evidence",
-   "last_stage": "scanned-results-docs (best 276 chars/page over >=8-page attachments)",
-   "routes_walked": [
-    "nse-xbrl (\u00a754a)",
-    "no-con-filed identity (\u00a754b)",
-    "screener annual identity (\u00a760d)",
-    "\u00a758 announcement-PDF sweep",
-    "deoverlay reader (\u00a775/\u00a776)"
-   ],
-   "status": "not-found-via",
-   "value": null
+   "route": "filled (route ledger not matched \u2014 see git history)",
+   "status": "filled",
+   "value": 20432.83
   },
   "MTNL|20180331|con": {
    "anchored": false,
@@ -8955,76 +8767,46 @@
    "anchored": false,
    "basis": "con",
    "evidence": {
-    "gate": "28 stored quarters reproduced, 0 disagreements",
-    "gate_quarters": [
-     20190630,
-     20190930,
-     20191231,
-     20200331,
-     20200630,
-     20200930,
-     20201231,
-     20210331
-    ],
-    "rev": 2421.99,
-    "sc_id": "NMD01",
-    "src": "moneycontrol appfeeds quarterly_results_responsive",
-    "type_format": "cons_quarterly"
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 27,
+    "nse_index_std_quarters": 73,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
+    "written": null
    },
-   "exchange_record": "second-reader-refutes-na",
-   "route": "moneycontrol quarterly (\u00a781)",
-   "status": "filled",
-   "value": 2421.99
+   "exchange_record": "no-con-ever-yet",
+   "status": "not-applicable",
+   "value": null
   },
   "NMDC|20180930|con": {
    "anchored": false,
    "basis": "con",
    "evidence": {
-    "gate": "28 stored quarters reproduced, 0 disagreements",
-    "gate_quarters": [
-     20190630,
-     20190930,
-     20191231,
-     20200331,
-     20200630,
-     20200930,
-     20201231,
-     20210331
-    ],
-    "rev": 2437.92,
-    "sc_id": "NMD01",
-    "src": "moneycontrol appfeeds quarterly_results_responsive",
-    "type_format": "cons_quarterly"
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 27,
+    "nse_index_std_quarters": 73,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
+    "written": null
    },
-   "exchange_record": "second-reader-refutes-na",
-   "route": "moneycontrol quarterly (\u00a781)",
-   "status": "filled",
-   "value": 2437.92
+   "exchange_record": "no-con-ever-yet",
+   "status": "not-applicable",
+   "value": null
   },
   "NMDC|20181231|con": {
    "anchored": false,
    "basis": "con",
    "evidence": {
-    "gate": "28 stored quarters reproduced, 0 disagreements",
-    "gate_quarters": [
-     20190630,
-     20190930,
-     20191231,
-     20200331,
-     20200630,
-     20200930,
-     20201231,
-     20210331
-    ],
-    "rev": 3649.44,
-    "sc_id": "NMD01",
-    "src": "moneycontrol appfeeds quarterly_results_responsive",
-    "type_format": "cons_quarterly"
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 27,
+    "nse_index_std_quarters": 73,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
+    "written": null
    },
-   "exchange_record": "second-reader-refutes-na",
-   "route": "moneycontrol quarterly (\u00a781)",
-   "status": "filled",
-   "value": 3649.44
+   "exchange_record": "no-con-ever-yet",
+   "status": "not-applicable",
+   "value": null
   },
   "NTPC|20180331|con": {
    "anchored": false,
@@ -9209,77 +8991,47 @@
   "PCBL|20180630|con": {
    "anchored": true,
    "basis": "con",
-   "evidence": {
-    "gate": "29 stored quarters reproduced, 0 disagreements",
-    "gate_quarters": [
-     20190630,
-     20190930,
-     20191231,
-     20200331,
-     20200630,
-     20200930,
-     20201231,
-     20210331
-    ],
-    "rev": 781.42,
-    "sc_id": "PCB01",
-    "src": "moneycontrol appfeeds quarterly_results_responsive",
-    "type_format": "cons_quarterly"
-   },
    "exchange_record": "con-row-exists",
-   "route": "moneycontrol quarterly (\u00a781)",
-   "status": "filled",
-   "value": 781.42
+   "last_stage": "no-overlaid-anchorable-page [no overlaid page seen]",
+   "routes_walked": [
+    "nse-xbrl (\u00a754a)",
+    "no-con-filed identity (\u00a754b)",
+    "screener annual identity (\u00a760d)",
+    "\u00a758 announcement-PDF sweep",
+    "deoverlay reader (\u00a775/\u00a776)"
+   ],
+   "status": "not-found-via",
+   "value": null
   },
   "PCBL|20180930|con": {
    "anchored": true,
    "basis": "con",
-   "evidence": {
-    "gate": "29 stored quarters reproduced, 0 disagreements",
-    "gate_quarters": [
-     20190630,
-     20190930,
-     20191231,
-     20200331,
-     20200630,
-     20200930,
-     20201231,
-     20210331
-    ],
-    "rev": 880.26,
-    "sc_id": "PCB01",
-    "src": "moneycontrol appfeeds quarterly_results_responsive",
-    "type_format": "cons_quarterly"
-   },
    "exchange_record": "con-gap-after",
-   "route": "moneycontrol quarterly (\u00a781)",
-   "status": "filled",
-   "value": 880.26
+   "last_stage": "no-overlaid-anchorable-page [no overlaid page seen]",
+   "routes_walked": [
+    "nse-xbrl (\u00a754a)",
+    "no-con-filed identity (\u00a754b)",
+    "screener annual identity (\u00a760d)",
+    "\u00a758 announcement-PDF sweep",
+    "deoverlay reader (\u00a775/\u00a776)"
+   ],
+   "status": "not-found-via",
+   "value": null
   },
   "PCBL|20181231|con": {
    "anchored": true,
    "basis": "con",
-   "evidence": {
-    "gate": "29 stored quarters reproduced, 0 disagreements",
-    "gate_quarters": [
-     20190630,
-     20190930,
-     20191231,
-     20200331,
-     20200630,
-     20200930,
-     20201231,
-     20210331
-    ],
-    "rev": 945.89,
-    "sc_id": "PCB01",
-    "src": "moneycontrol appfeeds quarterly_results_responsive",
-    "type_format": "cons_quarterly"
-   },
    "exchange_record": "con-gap-after",
-   "route": "moneycontrol quarterly (\u00a781)",
-   "status": "filled",
-   "value": 945.89
+   "last_stage": "no-overlaid-anchorable-page [no overlaid page seen]",
+   "routes_walked": [
+    "nse-xbrl (\u00a754a)",
+    "no-con-filed identity (\u00a754b)",
+    "screener annual identity (\u00a760d)",
+    "\u00a758 announcement-PDF sweep",
+    "deoverlay reader (\u00a775/\u00a776)"
+   ],
+   "status": "not-found-via",
+   "value": null
   },
   "PCJEWELLER|20180331|con": {
    "anchored": false,
@@ -9509,17 +9261,11 @@
   "PFC|20181231|con": {
    "anchored": true,
    "basis": "con",
+   "evidence": null,
    "exchange_record": "no-con-row-but-con-evidence",
-   "last_stage": "scanned-results-docs (best 0 chars/page over >=8-page attachments)",
-   "routes_walked": [
-    "nse-xbrl (\u00a754a)",
-    "no-con-filed identity (\u00a754b)",
-    "screener annual identity (\u00a760d)",
-    "\u00a758 announcement-PDF sweep",
-    "deoverlay reader (\u00a775/\u00a776)"
-   ],
-   "status": "not-found-via",
-   "value": null
+   "route": "filled (route ledger not matched \u2014 see git history)",
+   "status": "filled",
+   "value": 14045.26
   },
   "PHOENIXLTD|20180630|con": {
    "anchored": true,
@@ -9564,27 +9310,17 @@
   "PIIND|20181231|con": {
    "anchored": true,
    "basis": "con",
-   "evidence": {
-    "gate": "30 stored quarters reproduced, 0 disagreements",
-    "gate_quarters": [
-     20180630,
-     20180930,
-     20190630,
-     20190930,
-     20191231,
-     20200331,
-     20200630,
-     20200930
-    ],
-    "rev": 707.5,
-    "sc_id": "PII",
-    "src": "moneycontrol appfeeds quarterly_results_responsive",
-    "type_format": "cons_quarterly"
-   },
    "exchange_record": "con-gap-after",
-   "route": "moneycontrol quarterly (\u00a781)",
-   "status": "filled",
-   "value": 707.5
+   "last_stage": "no-anchor-or-scanned",
+   "routes_walked": [
+    "nse-xbrl (\u00a754a)",
+    "no-con-filed identity (\u00a754b)",
+    "screener annual identity (\u00a760d)",
+    "\u00a758 announcement-PDF sweep",
+    "deoverlay reader (\u00a775/\u00a776)"
+   ],
+   "status": "not-found-via",
+   "value": null
   },
   "PNBHOUSING|20180331|con": {
    "anchored": true,
@@ -9889,17 +9625,11 @@
   "RADICO|20180930|con": {
    "anchored": false,
    "basis": "con",
+   "evidence": null,
    "exchange_record": "con-gap-after",
-   "last_stage": "scanned-no-text",
-   "routes_walked": [
-    "nse-xbrl (\u00a754a)",
-    "no-con-filed identity (\u00a754b)",
-    "screener annual identity (\u00a760d)",
-    "\u00a758 announcement-PDF sweep",
-    "deoverlay reader (\u00a775/\u00a776)"
-   ],
-   "status": "not-found-via",
-   "value": null
+   "route": "filled (route ledger not matched \u2014 see git history)",
+   "status": "filled",
+   "value": 1906.1
   },
   "RADICO|20181231|con": {
    "anchored": false,
@@ -10224,17 +9954,11 @@
   "RECLTD|20181231|con": {
    "anchored": true,
    "basis": "con",
+   "evidence": null,
    "exchange_record": "con-gap-after",
-   "last_stage": "scanned-results-docs (best 129 chars/page over >=8-page attachments)",
-   "routes_walked": [
-    "nse-xbrl (\u00a754a)",
-    "no-con-filed identity (\u00a754b)",
-    "screener annual identity (\u00a760d)",
-    "\u00a758 announcement-PDF sweep",
-    "deoverlay reader (\u00a775/\u00a776)"
-   ],
-   "status": "not-found-via",
-   "value": null
+   "route": "filled (route ledger not matched \u2014 see git history)",
+   "status": "filled",
+   "value": 5533.98
   },
   "RELCAPITAL|20180331|con": {
    "anchored": true,
@@ -10584,27 +10308,17 @@
   "RTNPOWER|20180630|con": {
    "anchored": true,
    "basis": "con",
-   "evidence": {
-    "gate": "30 stored quarters reproduced, 0 disagreements",
-    "gate_quarters": [
-     20150331,
-     20150630,
-     20190930,
-     20191231,
-     20200331,
-     20200630,
-     20200930,
-     20201231
-    ],
-    "rev": 690.72,
-    "sc_id": "IP08",
-    "src": "moneycontrol appfeeds quarterly_results_responsive",
-    "type_format": "cons_quarterly"
-   },
    "exchange_record": "con-row-exists",
-   "route": "moneycontrol quarterly (\u00a781)",
-   "status": "filled",
-   "value": 690.72
+   "last_stage": "no-overlaid-anchorable-page [no overlaid page seen]",
+   "routes_walked": [
+    "nse-xbrl (\u00a754a)",
+    "no-con-filed identity (\u00a754b)",
+    "screener annual identity (\u00a760d)",
+    "\u00a758 announcement-PDF sweep",
+    "deoverlay reader (\u00a775/\u00a776)"
+   ],
+   "status": "not-found-via",
+   "value": null
   },
   "RUPA|20180331|con": {
    "anchored": true,
@@ -10654,17 +10368,11 @@
   "RUPA|20181231|con": {
    "anchored": true,
    "basis": "con",
+   "evidence": null,
    "exchange_record": "con-gap-after",
-   "last_stage": "scanned-results-docs (best 0 chars/page over >=8-page attachments)",
-   "routes_walked": [
-    "nse-xbrl (\u00a754a)",
-    "no-con-filed identity (\u00a754b)",
-    "screener annual identity (\u00a760d)",
-    "\u00a758 announcement-PDF sweep",
-    "deoverlay reader (\u00a775/\u00a776)"
-   ],
-   "status": "not-found-via",
-   "value": null
+   "route": "filled (route ledger not matched \u2014 see git history)",
+   "status": "filled",
+   "value": 291.06
   },
   "SADBHAV|20180331|con": {
    "anchored": false,
@@ -10834,17 +10542,11 @@
   "SBIN|20180930|con": {
    "anchored": true,
    "basis": "con",
+   "evidence": null,
    "exchange_record": "con-gap-after",
-   "last_stage": "scanned-results-docs (best 99 chars/page over >=8-page attachments)",
-   "routes_walked": [
-    "nse-xbrl (\u00a754a)",
-    "no-con-filed identity (\u00a754b)",
-    "screener annual identity (\u00a760d)",
-    "\u00a758 announcement-PDF sweep",
-    "deoverlay reader (\u00a775/\u00a776)"
-   ],
-   "status": "not-found-via",
-   "value": null
+   "route": "filled (route ledger not matched \u2014 see git history)",
+   "status": "filled",
+   "value": 61426.85
   },
   "SCI|20180331|con": {
    "anchored": false,
@@ -11019,27 +10721,17 @@
   "SHREECEM|20180630|con": {
    "anchored": false,
    "basis": "con",
-   "evidence": {
-    "gate": "29 stored quarters reproduced, 0 disagreements",
-    "gate_quarters": [
-     20190630,
-     20190930,
-     20191231,
-     20200331,
-     20200630,
-     20200930,
-     20201231,
-     20210331
-    ],
-    "rev": 3070.15,
-    "sc_id": "SC12",
-    "src": "moneycontrol appfeeds quarterly_results_responsive",
-    "type_format": "cons_quarterly"
-   },
    "exchange_record": "con-gap-after",
-   "route": "moneycontrol quarterly (\u00a781)",
-   "status": "filled",
-   "value": 3070.15
+   "last_stage": "nse-xbrl-placeholder (row listed, XBRL never published)",
+   "routes_walked": [
+    "nse-xbrl (\u00a754a)",
+    "no-con-filed identity (\u00a754b)",
+    "screener annual identity (\u00a760d)",
+    "\u00a758 announcement-PDF sweep",
+    "deoverlay reader (\u00a775/\u00a776)"
+   ],
+   "status": "not-found-via",
+   "value": null
   },
   "SHREECEM|20180930|con": {
    "anchored": false,
@@ -11282,76 +10974,46 @@
    "anchored": false,
    "basis": "con",
    "evidence": {
-    "gate": "29 stored quarters reproduced, 0 disagreements",
-    "gate_quarters": [
-     20190630,
-     20190930,
-     20191231,
-     20200331,
-     20200630,
-     20200930,
-     20201231,
-     20210331
-    ],
-    "rev": 614.22,
-    "sc_id": "S14",
-    "src": "moneycontrol appfeeds quarterly_results_responsive",
-    "type_format": "cons_quarterly"
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 64,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
+    "written": null
    },
-   "exchange_record": "second-reader-refutes-na",
-   "route": "moneycontrol quarterly (\u00a781)",
-   "status": "filled",
-   "value": 614.22
+   "exchange_record": "no-con-ever-yet",
+   "status": "not-applicable",
+   "value": null
   },
   "SJVN|20180930|con": {
    "anchored": false,
    "basis": "con",
    "evidence": {
-    "gate": "29 stored quarters reproduced, 0 disagreements",
-    "gate_quarters": [
-     20190630,
-     20190930,
-     20191231,
-     20200331,
-     20200630,
-     20200930,
-     20201231,
-     20210331
-    ],
-    "rev": 751.52,
-    "sc_id": "S14",
-    "src": "moneycontrol appfeeds quarterly_results_responsive",
-    "type_format": "cons_quarterly"
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 64,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
+    "written": null
    },
-   "exchange_record": "second-reader-refutes-na",
-   "route": "moneycontrol quarterly (\u00a781)",
-   "status": "filled",
-   "value": 751.52
+   "exchange_record": "no-con-ever-yet",
+   "status": "not-applicable",
+   "value": null
   },
   "SJVN|20181231|con": {
    "anchored": false,
    "basis": "con",
    "evidence": {
-    "gate": "29 stored quarters reproduced, 0 disagreements",
-    "gate_quarters": [
-     20190630,
-     20190930,
-     20191231,
-     20200331,
-     20200630,
-     20200930,
-     20201231,
-     20210331
-    ],
-    "rev": 484.46,
-    "sc_id": "S14",
-    "src": "moneycontrol appfeeds quarterly_results_responsive",
-    "type_format": "cons_quarterly"
+    "first_con_filing_ever": 20190630,
+    "nse_index_con_quarters": 29,
+    "nse_index_std_quarters": 64,
+    "stored_con_pat": null,
+    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
+    "written": null
    },
-   "exchange_record": "second-reader-refutes-na",
-   "route": "moneycontrol quarterly (\u00a781)",
-   "status": "filled",
-   "value": 484.46
+   "exchange_record": "no-con-ever-yet",
+   "status": "not-applicable",
+   "value": null
   },
   "SOBHA|20180630|con": {
    "anchored": true,
@@ -11747,24 +11409,17 @@
   "SYNGENE|20180331|con": {
    "anchored": true,
    "basis": "con",
-   "evidence": {
-    "applied": "2026-08-07 annual-derivation fill",
-    "confidence": "medium",
-    "evidence": "screener.in FY2018 annual Sales minus the 3 stored quarters",
-    "fy_total": 1423.0,
-    "precision": "crore-rounded",
-    "revC": 409.0,
-    "siblings": {
-     "20170630": 291.1,
-     "20170930": 335.2,
-     "20171231": 387.7
-    },
-    "src": "screener.in FY annual minus the three stored quarters"
-   },
    "exchange_record": "con-row-exists",
-   "route": "screener annual identity (\u00a760d)",
-   "status": "filled",
-   "value": 409.0
+   "last_stage": "no-anchor-or-scanned",
+   "routes_walked": [
+    "nse-xbrl (\u00a754a)",
+    "no-con-filed identity (\u00a754b)",
+    "screener annual identity (\u00a760d)",
+    "\u00a758 announcement-PDF sweep",
+    "deoverlay reader (\u00a775/\u00a776)"
+   ],
+   "status": "not-found-via",
+   "value": null
   },
   "TATACONSUM|20180331|con": {
    "anchored": true,
@@ -12550,47 +12205,35 @@
   "UNIONBANK|20180630|con": {
    "anchored": false,
    "basis": "con",
-   "evidence": {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 29,
-    "nse_index_std_quarters": 84,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
-    "written": null
-   },
-   "exchange_record": "no-con-ever-yet",
-   "status": "not-applicable",
+   "exchange_record": "no-con-row-but-con-evidence",
+   "last_stage": "no-anchor-or-scanned",
+   "routes_walked": [
+    "nse-xbrl (\u00a754a)",
+    "no-con-filed identity (\u00a754b)",
+    "screener annual identity (\u00a760d)",
+    "\u00a758 announcement-PDF sweep",
+    "deoverlay reader (\u00a775/\u00a776)"
+   ],
+   "status": "not-found-via",
    "value": null
   },
   "UNIONBANK|20180930|con": {
    "anchored": false,
    "basis": "con",
-   "evidence": {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 29,
-    "nse_index_std_quarters": 84,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
-    "written": null
-   },
-   "exchange_record": "no-con-ever-yet",
-   "status": "not-applicable",
-   "value": null
+   "evidence": null,
+   "exchange_record": "no-con-row-but-con-evidence",
+   "route": "filled (route ledger not matched \u2014 see git history)",
+   "status": "filled",
+   "value": 8602.09
   },
   "UNIONBANK|20181231|con": {
    "anchored": false,
    "basis": "con",
-   "evidence": {
-    "first_con_filing_ever": 20190630,
-    "nse_index_con_quarters": 29,
-    "nse_index_std_quarters": 84,
-    "stored_con_pat": null,
-    "verdict": "no consolidated quarterly result filed for this quarter (E1+E2+E3+E6+E7: no stored con PAT, no contradicting consolidated figure in this company's pre-first-con era, AND no independent reader publishes one for this quarter)",
-    "written": null
-   },
-   "exchange_record": "no-con-ever-yet",
-   "status": "not-applicable",
-   "value": null
+   "evidence": null,
+   "exchange_record": "no-con-row-but-con-evidence",
+   "route": "filled (route ledger not matched \u2014 see git history)",
+   "status": "filled",
+   "value": 8563.56
   },
   "UNITDSPR|20180331|con": {
    "anchored": false,
@@ -12797,27 +12440,17 @@
   "WHIRLPOOL|20181231|con": {
    "anchored": true,
    "basis": "con",
-   "evidence": {
-    "gate": "31 stored quarters reproduced, 0 disagreements",
-    "gate_quarters": [
-     20180630,
-     20180930,
-     20190630,
-     20190930,
-     20191231,
-     20200331,
-     20200630,
-     20200930
-    ],
-    "rev": 1211.54,
-    "sc_id": "WI",
-    "src": "moneycontrol appfeeds quarterly_results_responsive",
-    "type_format": "cons_quarterly"
-   },
    "exchange_record": "no-con-row-but-con-evidence",
-   "route": "moneycontrol quarterly (\u00a781)",
-   "status": "filled",
-   "value": 1211.54
+   "last_stage": "no-anchor-or-scanned",
+   "routes_walked": [
+    "nse-xbrl (\u00a754a)",
+    "no-con-filed identity (\u00a754b)",
+    "screener annual identity (\u00a760d)",
+    "\u00a758 announcement-PDF sweep",
+    "deoverlay reader (\u00a775/\u00a776)"
+   ],
+   "status": "not-found-via",
+   "value": null
   },
   "WIPRO|20180331|con": {
    "anchored": true,
@@ -12911,8 +12544,8 @@
   }
  },
  "summary": {
-  "filled": 227,
-  "not-applicable": 118,
-  "not-found-via": 385
+  "filled": 214,
+  "not-applicable": 123,
+  "not-found-via": 393
  }
 }
