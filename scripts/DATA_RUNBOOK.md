@@ -629,6 +629,26 @@ cache purge, costing a full rebuild-from-scratch before this refresh could even 
 window ~22–35 min at 4-way parallel, whole sweep ~2 h. Each process PEAKS ~3.3 GB parsing the 9.3M-bar
 dataset then settles ~1 GB, so 4-way fits 16 GB with the built-in 25 s start stagger.
 
+**7. NEVER let two processes claim the same window (learned the hard way 2026-08-12).** With ~45% of a
+10-core box idle at 4-way it is tempting to start extra "tail workers" that eat the job queue from the
+other end. That works — 40 short jobs cleared in ~90 min — but the tail workers' `mkdir` lockfiles only
+coordinated them with EACH OTHER, never with `gridmega_phases_run.py`. When the two fronts converged,
+two Node processes appended to one `_gridmega_all_*.csv.gz` and corrupted 5 of 65 CSVs (one showed
+**6,481,201 rows vs the expected 4,440,600** — MORE rows than combos exist). If you run extra workers,
+they must share ONE lock namespace with the driver, or be restricted to windows the driver provably
+cannot reach. Always finish with a row-count audit: every CSV must be exactly 4,440,600 data rows.
+The phases build already gates on this (`ROW COUNT MISMATCH … exit 3`) and refused to emit a page — but
+one variant's JSON *was* written from a CSV that was still mid-corruption, so DISCARD any page JSON
+built during a run where duplicates were possible.
+
+**8. `VAR=x` from a shell expansion is NOT an assignment — in bash OR zsh.** Two separate silent-ish
+failures on 2026-08-12 came from this. `env $v MAIN_ONLY=1 node …` under zsh (which does not word-split
+unquoted expansions) set TOPN to the whole string `"5 METHOD=reset"` → `+TOPN` = NaN → `target.length <
+NaN` false → EVERY basket empty → 4.44M combos "succeeded" in 12 s with NaN CAGRs and exit 0. And
+`MAIN_ONLY=1 "$@" node …` under bash tried to exec a command literally named `TOPN=3`. Always use
+`env VAR=x VAR2=y node …` with literal assignments, or `env "$@"`. `grid_search_mega.js` now validates
+TOPN/METHOD/UNIVERSE and aborts loudly, which is what turned the first one from silent into visible.
+
 ---
 
 ## 8. F&O MEMBERSHIP (survivorship-free; CURRENT-name labels)  ★ rebuilt + normalized 2026-06-23 ★
@@ -8397,9 +8417,23 @@ exists (BZ didn't exist then; Z/T2T did) needs bhavcopy sampling inside sample h
 AARTIDRUGS 2002-01-18 → 2003-09-19). Queue as an audit, not yet a defect claim.
 
 ### 88e. Audited CLEAN (conventions that DO cover the past)
-Dividends never adjusted (documented, uniform); F&O membership 2001→date; N500 membership
-2002→date (<500-sag fixed); weekend sessions immaterial pre-2002 (weekly bars); index history
-pre-2007 via niftyindices; §86 death-at-last-close now uniform across all eras.
+Dividends never adjusted (documented, uniform); N500 membership 2002→date (<500-sag fixed);
+weekend sessions immaterial pre-2002 (weekly bars); index history pre-2007 via niftyindices;
+§86 death-at-last-close now uniform across all eras.
+
+⚠️ **"F&O membership 2001→date" was listed here and it is FALSE (corrected 2026-08-12).** Both
+`docs/stock_data.bin` `fnoHistory` and `scripts/fno_history.json` start **2015-01-30** (78 snaps),
+and `membersAsOf('__FNO__', d)` → `lastSnap` FALLS BACK TO `list[0]` for any earlier date. So every
+F&O backtest rebalance from 2004 to Jan-2015 silently screened the **January-2015 roster** — an
+11-year look-ahead that flatters results (KOTAKBANK showed up as a 2004 pick at ₹55 lakh/day
+turnover because it was in F&O in 2015). Post-2015 is only 77 of 139 months, i.e. stale rather
+than wrong. Any F&O window starting before 2015-01-30 is INVALID until the backfill lands.
+Backfill in progress: 273 monthly snapshots 2001-11-29→2024-07-05 already fetched with zero gaps
+from the NSE F&O bhavcopies (`.../DERIVATIVES/<YYYY>/<MON>/fo<DD><MON><YYYY>bhav.csv.zip`, which
+NSE **retired after 2024-07** — later months need the UDiFF path
+`.../content/fo/BhavCopy_NSE_FO_0_0_0_<YYYYMMDD>_F_0000.csv.zip`, different column names).
+Lesson for this whole section: an entry in "audited CLEAN" is a CLAIM. Re-measure before trusting
+one — this line survived here while being wrong by eleven years.
 
 ---
 
