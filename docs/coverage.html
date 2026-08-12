@@ -155,6 +155,7 @@
       <div class="card p-3"><div class="text-[11px] uppercase tracking-wide text-slate-400 font-semibold">Members now</div><div id="sMem" class="text-2xl font-extrabold text-slate-800">–</div><div id="sMemSub" class="text-[11px] text-slate-400"></div></div>
       <div class="card p-3"><div class="text-[11px] uppercase tracking-wide text-slate-400 font-semibold">Parameters</div><div id="sPar" class="text-2xl font-extrabold text-slate-800">–</div><div id="sParSub" class="text-[11px] text-slate-400">in this matrix</div></div>
       <div class="card p-3"><div class="text-[11px] uppercase tracking-wide text-slate-400 font-semibold">Full-coverage families</div><div id="sFull" class="text-2xl font-extrabold text-emerald-600">–</div><div class="text-[11px] text-slate-400">≥99% at the latest date</div></div>
+      <div class="card p-3"><div class="text-[11px] uppercase tracking-wide text-slate-400 font-semibold">N/A (excluded)</div><div id="sNA" class="text-2xl font-extrabold text-slate-500">–</div><div id="sNASub" class="text-[11px] text-slate-400">cannot exist, not missing</div></div>
       <div class="card p-3"><div class="text-[11px] uppercase tracking-wide text-slate-400 font-semibold">Red flags</div><div id="sFlag" class="text-2xl font-extrabold text-rose-600">–</div><div id="sFlagSub" class="text-[11px] text-slate-400">in the shown range</div></div>
     </div>
 
@@ -226,9 +227,11 @@
       var idxs = f.params.map(function (p) { return pos[p.k]; });
       return U.dates.map(function (_, di) {
         if (U.members[di] < 0) return -1;
-        var lo = Infinity, which = 0;
-        idxs.forEach(function (pi, j) { var v = U.params[pi][di]; if (v < lo) { lo = v; which = j; } });
-        return [lo === Infinity ? 0 : lo, which];
+        var lo = Infinity, which = 0, whichPi = -1;
+        idxs.forEach(function (pi, j) { var v = U.params[pi][di]; if (v < lo) { lo = v; which = j; whichPi = pi; } });
+        // the family cell reports its WEAKEST parameter, so it must borrow that parameter's N/A too
+        var na = whichPi >= 0 ? ((U.na && U.na[whichPi] && U.na[whichPi] !== 0 && U.na[whichPi][di] > 0) ? U.na[whichPi][di] : 0) : 0;
+        return [lo === Infinity ? 0 : lo, which, na];
       });
     });
   }
@@ -330,10 +333,20 @@
   }
 
   var PCT = false;   // set once per render — this runs for every one of ~5,000 cells
-  function cell(count, mem, flagged, title) {
+  // How many of this date's members CANNOT have this parameter, as opposed to merely not having it.
+  // Payload emits `na` only for params that ever use it, as 0 otherwise — see the builder's note.
+  function naAt(pi, di) { var a = U.na && U.na[pi]; return (a && a !== 0 && a[di] > 0) ? a[di] : 0; }
+
+  // `na` members come OUT of the denominator: a column reads 100% when every member that could
+  // have a value has one. postDrift is the worked case — a stock whose last filing date precedes
+  // its own first traded bar (a pre-listing quarter carried in from a prospectus or demerger
+  // scheme) is being asked for a close on a day it did not trade. That is not a gap to fill.
+  function cell(count, mem, flagged, title, na) {
     if (count < 0 || mem < 0) return '<td><span class="pl na" title="no membership roll at this date">–</span></td>';
-    var r = mem > 0 ? count / mem : 0;
-    var txt = PCT ? (mem > 0 ? (r * 100).toFixed(mem > 400 ? 1 : 0) : '0') : String(count);
+    na = na || 0;
+    var den = Math.max(0, mem - na);
+    var r = den > 0 ? count / den : (count > 0 ? 1 : 0);
+    var txt = PCT ? (den > 0 ? (r * 100).toFixed(den > 400 ? 1 : 0) : '0') : String(count);
     // 8%→92% ink so even 0 keeps a visible cell edge, and 100% is not pure accent
     var a = (8 + Math.max(0, Math.min(1, r)) * 84).toFixed(0);
     var cls = 'pl' + (r >= 0.55 ? ' on' : '') + (flagged ? ' fg' : '');
@@ -382,17 +395,20 @@
         var fl = fmap[f.id][di];
         if (OPEN[f.id]) {
           f.params.forEach(function (p) {
-            var c = U.params[pKey[p.k]][di];
-            tr += cell(c, mem, false, p.k + ' · ' + U.dates[di] + ' · ' + c + ' of ' + mem);
+            var pi = pKey[p.k], c = U.params[pi][di], na = naAt(pi, di);
+            tr += cell(c, mem, false, p.k + ' · ' + U.dates[di] + ' · ' + c + ' of ' + (mem - na) +
+              (na ? ' (' + na + ' N/A — the parameter cannot exist for them, excluded)' : ''), na);
           });
         } else {
           var pair = FAM[fi][di];
           var c = (pair === -1) ? -1 : pair[0];
+          var fna = (pair === -1) ? 0 : (pair[2] || 0);
           var weakest = (pair === -1) ? '' : f.params[pair[1]].k;
-          var t = f.label + ' · ' + U.dates[di] + ' · ' + c + ' of ' + mem +
+          var t = f.label + ' · ' + U.dates[di] + ' · ' + c + ' of ' + (mem - fna) +
+            (fna ? ' (' + fna + ' N/A, excluded)' : '') +
             (weakest ? ' · weakest: ' + weakest : '') +
             (fl ? ' · FLAGGED (neighbours ≈ ' + fl.med + ')' : '');
-          tr += cell(c, mem, !!fl, t);
+          tr += cell(c, mem, !!fl, t, fna);
           if (fl) shownFlags.push({ fam: f, di: di, fl: fl, c: c, mem: mem, weakest: (pair === -1 ? 0 : pair[1]) });
         }
       });
@@ -422,6 +438,19 @@
       var p = FAM[fi][last]; return p !== -1 && U.members[last] > 0 && p[0] / U.members[last] >= 0.99;
     }).length;
     $('sFull').textContent = full + ' / ' + fams.length;
+    // N/A total over the shown range, itemised — a cell that CANNOT exist is excluded from the
+    // denominator above, so it has to be visible here or the 100% would be unexplained.
+    var naTot = 0, naBy = [];
+    U.paramKeys.forEach(function (k, pi) {
+      var a = U.na && U.na[pi];
+      if (!a || a === 0) return;
+      var n = 0;
+      rows.forEach(function (i) { if (U.members[i] > 0 && a[i] > 0) n += a[i]; });
+      if (n) { naTot += n; naBy.push(k + ' ' + n); }
+    });
+    $('sNA').textContent = naTot;
+    $('sNASub').textContent = naBy.length ? naBy.join(' · ') : 'cannot exist, not missing';
+
     $('sFlag').textContent = shownFlags.length;
     $('sFlagSub').textContent = 'in the shown range' + (anyOpen ? ' (collapsed families only)' : '');
     $('unote').innerHTML = '<b class="text-slate-600">' + esc(U.name) + '</b> — ' + esc(U.note) +

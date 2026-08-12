@@ -335,7 +335,8 @@ function run(ctx, C) {
   const zero = () => new Int32Array(NP);
   const counts = {};   // slug -> [date][param] = covered count
   const members = {};  // slug -> [date] = universe size at that date
-  for (const u of UNIVERSES) { counts[u.slug] = dates.map(zero); members[u.slug] = new Int32Array(dates.length); }
+  const naCounts = {};   // slug -> [date][param] = NOT-APPLICABLE count (excluded from the denominator)
+  for (const u of UNIVERSES) { counts[u.slug] = dates.map(zero); naCounts[u.slug] = dates.map(zero); members[u.slug] = new Int32Array(dates.length); }
 
   const CFG = {
     indexName: null, mcapFloor: 0, earnBasis: 'con', sortBy: 'composite',
@@ -349,7 +350,7 @@ function run(ctx, C) {
   let lastLog = 0;
   for (let di = 0; di < dates.length; di++) {
     const d = dates[di];
-    ctx.__OFF = d.off;
+    ctx.__OFF = d.off; ctx.__DATEINT = +d.iso.replace(/-/g, '');
     // pull only what we need across the boundary: symbol + one flag per engine parameter
     const rows = vm.runInContext(`(function(){
       const rows = factorsAt(__OFF, __CFG), keys = ${JSON.stringify(PARAMS.filter(p => !p.src).map(p => p.k))};
@@ -362,7 +363,23 @@ function run(ctx, C) {
           const ok = (v != null && typeof v === 'number' && isFinite(v)) && !(zeroIsNull[j] && v === 0);
           flags[j] = ok ? 1 : 0;
         }
-        out[i] = [r.sym, flags, r.turnover || 0, (r.ind && r.ind !== 'Other' && r.ind !== 'Unknown') ? 1 : 0];
+        // ---- NOT-APPLICABLE, as distinct from MISSING -------------------------------------
+        // A cell the stock COULD NOT have is not a coverage gap, and counting it as one makes the
+        // page ask for something that cannot exist. postDrift is the worked case: it is the return
+        // from the close on the last filing date, so it needs a PRICE on that date. A newly listed
+        // company carries pre-listing quarters (restated accounts from its prospectus or, for
+        // NSLNISP, the NMDC demerger scheme) whose announce dates precede its first bar — the
+        // engine then correctly asks for a close on a day the stock did not trade and correctly
+        // returns null. NSLNISP at 2023-04-28 resolves to 2021-05-30, nine months before it listed.
+        // Marked N/A, excluded from the denominator, and reported separately. Nothing is invented.
+        const na = new Array(keys.length).fill(0);
+        const jPD = keys.indexOf('postDrift');
+        if (jPD >= 0 && !flags[jPD]) {
+          const lrd = lastResultDate(r.sym, __DATEINT, __CFG.earnBasis);
+          const ser = SERIES[r.tkr];
+          if (lrd > 0 && ser && ser.d && ser.d.length && dayOff((String(lrd).slice(0,4)+'-'+String(lrd).slice(4,6)+'-'+String(lrd).slice(6,8))) < ser.d[0]) na[jPD] = 1;
+        }
+        out[i] = [r.sym, flags, r.turnover || 0, (r.ind && r.ind !== 'Other' && r.ind !== 'Unknown') ? 1 : 0, na];
       }
       return out;
     })()`, ctx);
@@ -375,7 +392,7 @@ function run(ctx, C) {
     const revCols = ['rev', 'op', 'ebit'].map(k => PARAMS.findIndex(p => p.k === k && p.src === 'revop'));
 
     // per-row flags for the non-engine families, computed once per row per date
-    const perRow = rows.map(([sym, flags, turnover, indKnown]) => {
+    const perRow = rows.map(([sym, flags, turnover, indKnown, na]) => {
       const rv = [0, 0, 0];
       const ridx = revFor(sym), rmap = revopFor(sym);
       if (ridx && rmap) {
@@ -387,11 +404,11 @@ function run(ctx, C) {
           rv[j] = (cell[ci] != null || cell[si] != null) ? 1 : 0;
         });
       }
-      return { sym, flags, turnover, indKnown, rv };
+      return { sym, flags, turnover, indKnown, rv, na };
     });
 
     for (const u of UNIVERSES) {
-      const cnt = counts[u.slug][di];
+      const cnt = counts[u.slug][di], nac = naCounts[u.slug][di];
       const set = u.kind === 'index' ? memberSets[u.slug][di] : null;
       if (u.kind === 'index' && !set) { members[u.slug][di] = -1; continue; }   // -1 = no roll yet
       let n = 0;
@@ -399,7 +416,10 @@ function run(ctx, C) {
         if (set && !set.has(r.sym)) continue;
         if (u.kind === 'liquid' && !(r.turnover >= LIQUID_FLOOR)) continue;
         n++;
-        for (let j = 0; j < engineCols.length; j++) if (r.flags[j]) cnt[engineCols[j]]++;
+        for (let j = 0; j < engineCols.length; j++) {
+          if (r.flags[j]) cnt[engineCols[j]]++;
+          else if (r.na && r.na[j]) nac[engineCols[j]]++;   // inapplicable, not missing
+        }
         if (r.indKnown) cnt[iIndustry]++;
         for (let j = 0; j < 3; j++) if (r.rv[j]) cnt[revCols[j]]++;
       }
@@ -422,7 +442,7 @@ function run(ctx, C) {
     }
   }
 
-  writeOut(UNIVERSES, dates, counts, members, C);
+  writeOut(UNIVERSES, dates, counts, members, C, naCounts);
 }
 
 /* ============================================================================
@@ -470,7 +490,7 @@ function computeFlags(series, memberArr, hasRoll) {
   return flags;
 }
 
-function writeOut(UNIVERSES, dates, counts, members, C) {
+function writeOut(UNIVERSES, dates, counts, members, C, naCounts) {
   fs.mkdirSync(OUT_DIR, { recursive: true });
   const stamp = new Date(Date.now() + 5.5 * 3600 * 1000).toISOString().slice(0, 16).replace('T', ' ') + ' IST';
 
@@ -487,7 +507,8 @@ function writeOut(UNIVERSES, dates, counts, members, C) {
   };
 
   for (const u of UNIVERSES) {
-    const cnt = counts[u.slug], mem = members[u.slug];
+    const cnt = counts[u.slug], mem = members[u.slug], nac = naCounts[u.slug];
+    const naTotals = PARAMS.map((_, pi) => dates.reduce((a, _d, di) => a + (mem[di] > 0 ? nac[di][pi] : 0), 0));
     // A family cell is the WEAKEST parameter in that family. Derived, not shipped: the page
     // recomputes it from `params` with the same one-line min. Shipping it too would be ~25% more
     // bytes AND a second source for one number — the exact split that lets two views disagree.
@@ -513,6 +534,12 @@ function writeOut(UNIVERSES, dates, counts, members, C) {
       dates: dates.map(d => d.iso), months: dates.map(d => d.label),
       members: Array.from(mem),
       params: PARAMS.map((p, pi) => dates.map((_, di) => (mem[di] < 0 ? -1 : cnt[di][pi]))),
+      // NOT-APPLICABLE per param per date — members for whom the parameter CANNOT exist, as
+      // opposed to members for whom it is merely absent. The page subtracts these from the
+      // denominator and shows them separately, so a column reads 100% when every member that
+      // COULD have a value has one. Emitted only for the params that ever use it, to keep the
+      // payload from doubling for 42 columns of zeros.
+      na: PARAMS.map((p, pi) => (naTotals[pi] ? dates.map((_, di) => (mem[di] < 0 ? -1 : nac[di][pi])) : 0)),
       paramKeys: PARAMS.map(p => p.k), paramFam: PARAMS.map(p => p.fam),
       flags: flagsByFam,
     };

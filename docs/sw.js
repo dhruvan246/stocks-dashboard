@@ -6,7 +6,7 @@
  *     requests (the sf-data repo, Supabase, the live-quote Worker) — those stay network-only
  *     so data is always fresh and the cache never bloats.
  * Bump CACHE when the shell asset list changes. */
-const CACHE = 'sw-shell-v90';   // v90: retPctAt allows short history like hl52 — a stock listed inside the window reports its return since listing (v89: profitMetrics basis fallback applies to the WHOLE result)
+const CACHE = 'sw-shell-v91';   // v91: coverage matrix separates NOT-APPLICABLE from missing (v90: retPctAt allows short history like hl52 — a stock listed inside the window reports its return since listing (v89: profitMetrics basis fallback))
 const SHELL = [
   './', './index.html', './nse-bse-dashboard.html', './stock-backtest.html', './saved-strategies.html',
   './backtest-history.html', './strategy-backtest.html', './all-picks.html', './strategy-mixer.html', './mutual-funds.html', './fii-dii.html',
