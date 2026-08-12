@@ -482,7 +482,28 @@ function monthsBetween(start, end) {
 
 /* ---- screening (the shared "screen → filter → rank" step) ---- */
 /* ---- extended technical factors (close + turnover + Nifty; no fundamentals) ---- */
-function retPctAt(tkr, off, days) { const p = priceAt(tkr, off), p0 = priceAt(tkr, off - days); return (p != null && p0 != null && p0 > 0) ? (p / p0 - 1) * 100 : null; }
+// SHORT HISTORY IS ALLOWED, exactly as hl52() allows it. The two were inconsistent: hl52 walks
+// whatever bars exist inside [off-365, off] — so a stock listed 60 days ago gets a 60-day high and
+// a real d52 — while this demanded a bar at exactly off-days and returned null otherwise. Every one
+// of the 950 empty ret12m cells on the Nifty-500 matrix was a recent listing (the OLDEST was 363
+// days at its missing month, against the 365 required); ret6m the same, oldest 180 against 182.
+// Now the base falls back to the FIRST bar in the window, i.e. the listing bar, so a young stock
+// reports its return since listing.
+// ⚠️ THE CONSEQUENCE, and it is deliberate — user's explicit call 2026-08-12, no minimum span:
+// the returned number is then measured over LESS than `days`. MANKIND four months after listing
+// contributes a 4-month return to a `ret12m` sort, ranked head-to-head against genuine 12-month
+// returns. That is the same compromise hl52 already makes when it calls a 60-day high a "52w high",
+// and it is why the 52w band was never flagged as a coverage hole while these were.
+function retPctAt(tkr, off, days) {
+  const p = priceAt(tkr, off); if (p == null) return null;
+  let p0 = priceAt(tkr, off - days);
+  if (p0 == null) {                       // listed inside the window — use its first bar
+    const s = SERIES[tkr];
+    if (!s || !s.d.length || s.d[0] > off) return null;
+    p0 = s.p[0] / 100;
+  }
+  return p0 > 0 ? (p / p0 - 1) * 100 : null;
+}
 function winCloses(tkr, off, days) { const s = SERIES[tkr]; if (!s) return null; const lo = off - days; let i = idxLE(s.d, off); if (i < 0) return null; const out = []; for (let k = i; k >= 0 && s.d[k] >= lo; k--) out.push(s.p[k] / 100); out.reverse(); return out; }
 function smaAt(tkr, off, days) { const v = winCloses(tkr, off, days); if (!v || !v.length) return null; return v.reduce((a, b) => a + b, 0) / v.length; }
 function retsOf(v) { const r = []; for (let i = 1; i < v.length; i++) if (v[i - 1] > 0) r.push(v[i] / v[i - 1] - 1); return r; }

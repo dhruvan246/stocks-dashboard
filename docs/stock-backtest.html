@@ -739,7 +739,15 @@ async function updateStrategyInPlace(){
 }
 
 /* ---- extended technical factors (close + turnover + Nifty; no fundamentals) ---- */
-function retPctAt(tkr, off, days){ const p=priceAt(tkr,off), p0=priceAt(tkr,off-days); return (p!=null&&p0!=null&&p0>0)?(p/p0-1)*100:null; }
+// Short history allowed, mirroring hl52() — a stock listed inside the window uses its FIRST bar as
+// the base, so the return is measured over less than `days` rather than refused. No minimum span
+// (user's call 2026-08-12). (Sync: backtest-engine.js retPctAt — keep these two identical.)
+function retPctAt(tkr, off, days){
+  const p=priceAt(tkr,off); if(p==null) return null;
+  let p0=priceAt(tkr,off-days);
+  if(p0==null){ const s=SERIES[tkr]; if(!s||!s.d.length||s.d[0]>off) return null; p0=s.p[0]/100; }
+  return p0>0 ? (p/p0-1)*100 : null;
+}
 function winCloses(tkr, off, days){ const s=SERIES[tkr]; if(!s)return null; const lo=off-days; let i=idxLE(s.d,off); if(i<0)return null; const out=[]; for(let k=i;k>=0&&s.d[k]>=lo;k--) out.push(s.p[k]/100); out.reverse(); return out; }
 function smaAt(tkr, off, days){ const v=winCloses(tkr,off,days); if(!v||!v.length)return null; return v.reduce((a,b)=>a+b,0)/v.length; }
 function retsOf(v){ const r=[]; for(let i=1;i<v.length;i++) if(v[i-1]>0) r.push(v[i]/v[i-1]-1); return r; }
