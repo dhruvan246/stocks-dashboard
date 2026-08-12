@@ -8636,3 +8636,48 @@ no series, 70 in a hole in its table), 162 sit in an FY the site itself restates
 look like a genuine half-yearly filer. **The wall is one vendor's reach, not "these results were
 never published"** — §57's ladder has rungs left (filing PDFs, Wayback, annual reports), and none of
 this residue may be reported as unfillable (§0, §61b).
+
+### 90j. RESOLVING AN ERA SYMBOL BY ITS NUMBERS — rungs 3 and 4  (2026-08-12)
+46 companies (283 cells) survived both rungs of `mc_era.resolve`, and the list gave the game away:
+CASTROL, CEAT, COLGATE, TUBEINVEST, GESHIPPING are alive and well on Moneycontrol. Our key is the
+ticker that traded THEN; MC prints the one that trades NOW.
+
+**Rung 3 (`mc_era_rename.py`) — the obvious idea, and it was WRONG.** NSE publishes
+`archives.nseindia.com/content/equities/symbolchange.csv`, which `detect_renames.py` already treats
+as authoritative. It loads fine — 1,054 pairs spanning 1999-2026 — and **resolves 0 of the 46**.
+Not one of them appears as an OLD symbol; ORCHIDPHAR appears only as a NEW one (ORCHIDCHEM →
+ORCHIDPHAR, 2015). ★ These are not NSE renames at all. Before building on a premise, check the
+premise against the file — the parse was fine, the theory was not.
+
+**Rung 4 (`mc_era_byseries.py`) — identity from the numbers.** MC's autosuggest returns candidates
+for the symbol text; fetch each candidate's standalone table and accept the one whose series
+reproduces our stored values for that key. A company's 8-quarter PAT sequence is not something a
+different company reproduces to the paisa. **12 of 31 resolved** (the other 15 hold <8 stored
+quarters, which is below the anchor bar and is reported as out of reach, not as absence):
+HIMACHLFUT→HFCL 19 anchors · ALOKTEXT→Alok 48 · CASTROL→Castrol India 17 · CEAT 20 · COLGATE 20 ·
+MANALIPET 15 · GUJRATGAS→GUJENERGY 18 (the §30 playbook) · SUPPETRO→SPLPETRO 63 ·
+RUCHISOYA→PATANJALI 62 · HINDMOTOR 27 · TUBEINVEST→CHOLAHLDNG 51 · HEXAWARE 67.
+* ⚠️ **The resolution bar must be the GATE it feeds, not a stricter one.** Requiring ZERO
+  disagreements first rejected HEXAWARE (67 reproduced, 2 missed), SUPPETRO (63/5) and RUCHISOYA
+  (62/2) — on a test that was never about identity. Aligned to E1's calibrated 15%, plus a
+  dominance rule (the winner must reproduce ≥2× the runner-up) so a tie writes nothing.
+* ⚠️ **HEXAWARE's winning row has junk display fields** — `sc_id "A"`, name `SJHCSJV`, no symbol, no
+  ISIN — while reproducing 67 quarters exactly (3.49/3.49 … 112.63/112.63). The other candidate
+  (HTL03/HEXT, the 2024 relisting) has 11 periods and zero overlap. **The numbers identified it; the
+  metadata would have rejected it.**
+* TUBEINVEST→CHOLAHLDNG is the legal continuation of the old entity (the tube business was demerged
+  into TIINDIA in 2017); every target here predates that, and the 51 anchors span both sides.
+
+**+30 cells.** 2011 99.1→99.3%, 2012 97.5→97.8%, 2013 97.4→97.8%, 2007 94.8→95.0%.
+
+### 90k. The 59 symbols with NO series at all — measured, not assumed
+258 cells sit on symbols absent from sf_fundamentals entirely. MC's autosuggest maps 15 of them to a
+key we DO hold — and **that mapping is text similarity, which is a coincidence to be disproved**:
+INDAL→JINDALSTEL and STDIND→PSB are plainly substring accidents (INDAL is Indian Aluminium, STDIND
+is Standard Industries).
+The decisive test is data, not names: **does the candidate key hold those quarters?** Measured —
+**0 of 15 do.** Every candidate's series starts 2005 or later (ITCHOTELS 2024, IGCL 2025, NESTLEIND
+2015). So these are genuine holes, the coverage denominator was not undercounting, and with no
+stored series there are no anchors — GATE E cannot establish identity for them at all. They need a
+filing read or a series built from scratch, and they are recorded as out of reach for this route
+rather than unfillable.
