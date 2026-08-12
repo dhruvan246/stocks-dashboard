@@ -1,14 +1,32 @@
 #!/usr/bin/env python3
-"""Normalize the F&O history's ticker names to CURRENT names (old -> current), matching how the
-price + fundamentals data is keyed (continuous history lives under the current name, e.g. TMPV) and
-how the index universes already work. The earlier point-in-time rebuild used old names (TATAMOTORS,
-GMRINFRA, PVR…); on the live data those series are split/truncated under the old key, so the stocks
-dropped out of F&O backtests. This remaps them to the current name so they resolve correctly.
-Survivorship-free INCLUSION is unchanged (delisted names with no successor, e.g. IDFC, stay as-is).
-Writes scripts/fno_history.json + patches docs/stock_data.bin.
+"""RETIRED 2026-08-12 — DO NOT RUN. Kept only so the history of the decision is readable.
+
+This used to be a MANDATORY post-rebuild step (old runbook 8). It is now a DEFECT generator.
+
+Measured over all 31,655 (snapshot x symbol) cells of the F&O history:
+    point-in-time labels  99.99% priceable
+    current-name labels   98.4%  priceable   <- what this script produces
+Running it breaks ~355 pre-2015 cells and 66 post-2015 ones, silently dropping those stocks from
+the F&O universe in exactly the eras they WERE members.
+
+Why: sf price data is PARTITIONED BY TICKER ERA. The current-name series carries a hole exactly
+where the old-name series lives, and the old name fills it (TATACONSUM has a gap 2010-07-19 ->
+2020-02-27; TATAGLOBAL covers 2010-07-21 -> 2020-02-26). The engine matches membership against each
+series' own key, so only the ticker that actually traded on date D resolves on date D.
+
+The original rationale -- "old-name series are split/truncated, e.g. TATAMOTORS ends 2003-12" --
+was true when this was written and is no longer: TATAMOTORS now runs 1996 -> 2025-10 (3085 bars).
+The true-daily-bars rebuild repaired the partitioning this was working around.
+
+Fundamentals (the other reason current names were wanted) are handled the designed way instead:
+FUND_ALIAS + fundFor() bridge the point-in-time name to sf_fundamentals -- see runbook 8 and
+scripts/check_fund_alias.py.
 """
-import json, gzip
+import json, gzip, sys
 from pathlib import Path
+
+if "--i-know-this-is-retired" not in sys.argv:
+    sys.exit(__doc__ + "\nRefusing to run. See DATA_RUNBOOK 8.\n")
 ROOT = Path(__file__).resolve().parent.parent
 HIST = ROOT / "scripts" / "fno_history.json"
 BIN = ROOT / "docs" / "stock_data.bin"

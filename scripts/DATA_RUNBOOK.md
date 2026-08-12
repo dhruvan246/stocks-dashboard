@@ -652,10 +652,21 @@ TOPN/METHOD/UNIVERSE and aborts loudly, which is what turned the first one from 
 
 ---
 
-## 8. F&O MEMBERSHIP (survivorship-free; CURRENT-name labels)  ★ rebuilt + normalized 2026-06-23 ★
+## 8. F&O MEMBERSHIP (survivorship-free; POINT-IN-TIME labels)  ★ extended to 2001 + de-normalized 2026-08-12 ★
 The backtest **"F&O stocks" universe** uses point-in-time *membership* (who was in F&O on each rebalance date)
-but **CURRENT ticker names** as labels: `membersAsOf('__FNO__', date)` → `fnoHistory` in `docs/stock_data.bin`,
-from `scripts/fno_history.json` (`{effectiveDate, symbols[]}`, **76 snapshots 2015-01-30 → date**, deduped).
+AND the **point-in-time ticker** as the label: `membersAsOf('__FNO__', date)` → `fnoHistory` in
+`docs/stock_data.bin`, from `scripts/fno_history.json` (`{effectiveDate, symbols[]}`,
+**187 snapshots 2001-11-29 → date**, deduped — one per month, 298 months, zero gaps).
+
+- **⚠️ THE 11-YEAR LOOK-AHEAD THIS FIXED (2026-08-12).** The file used to start **2015-01-30**, and
+  `lastSnap` ends `return best || list[0]` — so EVERY rebalance from 2001 to Jan-2015 screened the
+  **January-2015 roster**. Measured before the fix: `membersAsOf('__FNO__', d)` returned exactly 145
+  members for every d in 2004-2014, with KOTAKBANK "in F&O" in 2004 (it wasn't until 2006). After:
+  51 members at 2004-06-30, 150 at 2006-12-29, 266 at 2008-09-30, 200 at 2010-06-30, 135 at 2014-06-30.
+  Any pre-2015 F&O backtest run before this date is invalid — re-run it, don't cite it.
+- **A "missing" month is NOT a gap.** Consecutive identical membership is deduped and `lastSnap` carries
+  forward. Verified by re-fetching: 2015-02, 2016-03 and 2019-04 are byte-identical to the snapshot
+  they carry from. Judge coverage by months WALKED, not by snapshot count.
 - **Source of truth = NSE F&O bhavcopies** (every stock-future/option underlying actually trading that month,
   using the ticker that traded THEN). Two formats: old `fo<DD><MON><YYYY>bhav.csv.zip` (INSTRUMENT=FUTSTK/OPTSTK,
   col SYMBOL) for **≤2024-06**; UDiFF `BhavCopy_NSE_FO_0_0_0_<YYYYMMDD>_F_0000.csv.zip` (FinInstrmTp=STF/STO,
@@ -666,13 +677,21 @@ from `scripts/fno_history.json` (`{effectiveDate, symbols[]}`, **76 snapshots 20
 - **Full rebuild (occasional):** `python scripts/rebuild_fno_history.py [START_YEAR]` (default 2020; pass `2015`
   for the whole history). Walks each month, fetches the last trading day's bhavcopy, dedups, writes
   `fno_history.json` + patches `stock_data.bin`. ~110 NSE fetches for 2015→date, a few min.
-- **⚠️ AFTER ANY REBUILD, NORMALIZE NAMES TO CURRENT — `python scripts/normalize_fno_names.py`.** A bhavcopy
-  rebuild yields the name that traded THEN (TATAMOTORS, GMRINFRA, PVR…), but the price+fundamentals data keys the
-  continuous history under the CURRENT name (TMPV, GMRAIRPORT, PVRINOX) — and on the **live sf-data** the old-name
-  series are split/truncated (e.g. `TATAMOTORS` ends 2003-12, rest under `TMPV`), so point-in-time names make
-  renamed stocks DROP OUT of F&O backtests (Tata Motors missing from Jan-2024 = the bug this fixed). normalize
-  remaps old→current (25 names, same map as `FUND_ALIAS`), matching the data keying + the index universes (which
-  always use current names). Delisted-no-successor names (IDFC) stay. Verify on LIVE sf-data, never stale `docs/sf_stock_data.bin`.
+- **⚠️ DO NOT NORMALIZE NAMES TO CURRENT — `scripts/normalize_fno_names.py` IS RETIRED (2026-08-12).**
+  It used to be mandatory after a rebuild. **Measured across all 31,655 (snapshot × symbol) cells:
+  point-in-time labels are priceable 99.99% of the time, current-name labels only 98.4%** — normalizing
+  BREAKS ~355 pre-2015 cells and 66 post-2015 ones. Root cause: **sf price data is partitioned by ticker
+  era** — the current-name series carries a HOLE exactly where the old-name series lives, and the old name
+  fills it precisely (TATACONSUM gap 2010-07-19→2020-02-27 = TATAGLOBAL 2010-07-21→2020-02-26; likewise
+  RELINFRA/REL, STLTECH/STRTECH, MPHASIS/MPHASISBFL, VEDL/SSLT, PEL/PIRHEALTH). The engine matches
+  membership against **each series' own key** (`factorsAt`: `if (members && !members.has(m.symbol)) continue`,
+  and `_sfMeta` sets `symbol` = the sf data key), so the only label that resolves at date D is the one that
+  has bars at D — i.e. the ticker that actually traded then.
+  The old rationale ("old-name series are split/truncated, e.g. TATAMOTORS ends 2003-12") **no longer holds**:
+  on today's sf-data TATAMOTORS runs 1996→2025-10 (3085 bars). The true-daily-bars rebuild fixed the
+  partitioning that normalize was working around; the workaround then became the defect.
+  Fundamentals are handled the designed way instead — see the FUND_ALIAS bullet below. If you ever think you
+  need normalize again, re-run the cell audit first and let the number decide.
 - **⚠️ WHY the rebuild was needed (root cause, don't reintroduce):** the ORIGINAL `fno_history.json` keyed
   membership off **today's** tickers → it (a) **dropped every name since delisted/renamed** from the ENTIRE
   history (look-ahead/survivorship bias — IDFC, GMRINFRA, L&TFH, MCDOWELL-N, MOTHERSUMI, PVR, IBULHSGFIN,
@@ -8445,23 +8464,33 @@ exists (BZ didn't exist then; Z/T2T did) needs bhavcopy sampling inside sample h
 AARTIDRUGS 2002-01-18 → 2003-09-19). Queue as an audit, not yet a defect claim.
 
 ### 88e. Audited CLEAN (conventions that DO cover the past)
-Dividends never adjusted (documented, uniform); N500 membership 2002→date (<500-sag fixed);
-weekend sessions immaterial pre-2002 (weekly bars); index history pre-2007 via niftyindices;
-§86 death-at-last-close now uniform across all eras.
+Dividends never adjusted (documented, uniform); **F&O membership 2001→date — CLOSED 2026-08-12,
+see below**; N500 membership 2002→date (<500-sag fixed); weekend sessions immaterial pre-2002
+(weekly bars); index history pre-2007 via niftyindices; §86 death-at-last-close now uniform
+across all eras.
 
-⚠️ **"F&O membership 2001→date" was listed here and it is FALSE (corrected 2026-08-12).** Both
-`docs/stock_data.bin` `fnoHistory` and `scripts/fno_history.json` start **2015-01-30** (78 snaps),
-and `membersAsOf('__FNO__', d)` → `lastSnap` FALLS BACK TO `list[0]` for any earlier date. So every
-F&O backtest rebalance from 2004 to Jan-2015 silently screened the **January-2015 roster** — an
-11-year look-ahead that flatters results (KOTAKBANK showed up as a 2004 pick at ₹55 lakh/day
-turnover because it was in F&O in 2015). Post-2015 is only 77 of 139 months, i.e. stale rather
-than wrong. Any F&O window starting before 2015-01-30 is INVALID until the backfill lands.
-Backfill in progress: 273 monthly snapshots 2001-11-29→2024-07-05 already fetched with zero gaps
-from the NSE F&O bhavcopies (`.../DERIVATIVES/<YYYY>/<MON>/fo<DD><MON><YYYY>bhav.csv.zip`, which
-NSE **retired after 2024-07** — later months need the UDiFF path
-`.../content/fo/BhavCopy_NSE_FO_0_0_0_<YYYYMMDD>_F_0000.csv.zip`, different column names).
-Lesson for this whole section: an entry in "audited CLEAN" is a CLAIM. Re-measure before trusting
-one — this line survived here while being wrong by eleven years.
+⚠️ **"F&O membership 2001→date" sat in this AUDITED-CLEAN list while it was FALSE** (found
+2026-08-12, **fixed the same day**). Both `docs/stock_data.bin` `fnoHistory` and
+`scripts/fno_history.json` started **2015-01-30** (78 snaps), and `membersAsOf('__FNO__', d)` →
+`lastSnap` FALLS BACK TO `list[0]` for any earlier date. So every F&O backtest rebalance from 2004
+to Jan-2015 silently screened the **January-2015 roster** — an 11-year look-ahead that flatters
+results (KOTAKBANK showed up as a 2004 pick at ₹55 lakh/day turnover because it was in F&O in 2015).
+
+**CLOSED:** all 298 months walked from 2001-11, zero gaps — legacy archive
+(`.../DERIVATIVES/<YYYY>/<MON>/fo<DD><MON><YYYY>bhav.csv.zip`) through 2024-07, which NSE
+**retired after that**, then UDiFF (`.../content/fo/BhavCopy_NSE_FO_0_0_0_<YYYYMMDD>_F_0000.csv.zip`,
+`FinInstrmTp` STF/STO, col `TckrSymb`) from 2024-08. 187 snapshots after dedup. `membersAsOf` now
+returns 51 members at 2004-06-30 and 266 at 2008-09-30 instead of 145 everywhere. Full account in §8.
+
+**Two claims in the original note were themselves wrong, and both were fixed by measuring:**
+- *"Post-2015 is only 77 of 139 months, i.e. stale."* **No — that is the dedup working.** Consecutive
+  identical membership is dropped and `lastSnap` carries forward; re-fetching 2015-02, 2016-03 and
+  2019-04 returned sets byte-identical to the snapshot they carry from. Count months WALKED, not snapshots.
+- *"fnoHistory stores CURRENT ticker labels."* **That convention was itself the defect** — it breaks
+  ~355 pre-2015 cells. Labels are now point-in-time; see §8 and the retired `normalize_fno_names.py`.
+
+Lesson for this whole section: an entry in "audited CLEAN" is a CLAIM, and so is the note that
+corrects it. `firstSnap(fnoHistory)` would have caught the original in one line.
 
 ---
 
