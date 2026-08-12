@@ -8806,3 +8806,62 @@ in the browser. sw cache v81→v82→v83.
 ⚠️ **postDrift-sorted/filtered saved strategies now screen a WIDER universe**, so stored history
 numbers for them will not reproduce. This was an explicit user decision (2026-08-12), not a silent
 change. profitYoyPct-based strategies are unaffected.
+
+### 91i. The GATE E pass over the pre-2003 hole — 750 cells, and 2002 off zero
+Queue: the 3,784 (symbol, quarter-end) cells that actually block a postDrift rebalance, 854
+symbols, derived from the harness rather than from a year-coverage table. `agg_era_gate.py`
+UNCHANGED. **1,114 passed** (682 exact, 432 rounded); 2,105 refused by E1; 565 not printed by MC.
+**750 written** — the other 364 hit the applier's fill-only guard, which is itself a finding: those
+cells already hold a VALUE and were blocking for a missing DATE (§91k).
+Coverage: **2002 0%→28.5%**, 2003 66.6→70.6%, 2004→85.3%, 2006→97.4%, 2008-18 ≥98.6%, 2019+ 100%.
+Overall **78.63% → 95.05%**, +23,962 screen-rows.
+⚠️ `ann` is written **qe+45d, a CONVENTION** (the default 20,818 of 21,515 dated pre-2015 cells
+already carry, §52) — Moneycontrol's feed has no filing date. So pre-2015 postDrift is drift from
+an *availability convention*, not from a measured filing date. Never quote it as the latter.
+★ A CI fundamentals commit landed mid-run and the rebase conflicted. Resolved by **replaying the
+fill-only applier over CI's newer file**, never by taking my side of the conflict (§56). All 1,549
+ledger cells then verified present on the LIVE origin, 0 missing.
+
+### 91j. ★★★ "THE SITE DISAGREES WITH US" INDICTS BOTH SIDES — 37.5% of the time it is US
+**User-caught, 2026-08-12.** GATE E refused 2,105 cells because MC disagreed with our stored series
+too often to prove identity. The user's objection: *those disagreements might be OUR wrong values,
+stored wrong when we fetched them.* Correct, and measurable — `agg_era_adjudicate.py` puts each
+disagreeing quarter to the §45 FY identity. Over 994 adjudicated disagreements:
+**OURS-IS-THE-OUTLIER 373 (37.5%)** · SITE-INCOHERENT 338 (34.0%) · UNDECIDED 283 (28.5%).
+So in **more than a third** of the disagreements that vetoed a fill, the site's own FY closes to the
+paisa and OUR cell is what breaks it. Obeying the veto blind treats our data as truth.
+**But the yield is deliberately tiny: +3 cells.** The excusal caps (≤2 per symbol OR ≤2%, and the
+annual-independence test) refuse 111 of the 130 suspects' symbols — and they are right to:
+**GLAXO Mar-2011 is in this list and §90d proved MC is the wrong side there** (its annual inherited
+the bad quarter, closing perfectly on a corrupt number). A rule that lifts a veto needs a tighter
+cap than the veto it lifts.
+★ **128 of the 130 suspects were already found by §90's campaign** — an independent re-derivation
+landing on the same set is corroboration, not new information. **2 were new** (RUCHISOYA 2007-12
+59.47→68.72, 2010-03 31.38→17.31), both cleared GATE H and were corrected via
+`era_pat_corrections.json`; the 30 already-healed cells were correctly blocked by H's live-value
+guard. Suspects ledger 175 → 177.
+
+### 91k. ⚠️ AN EMPTY `--reach` SILENTLY DISABLED THE WHOLE ADJUDICATOR
+First run printed `adjudicated disagreements: {}` and "0 suspect cells" — which reads exactly like
+"nothing to find". It was not. `agg_era_adjudicate.main()` does
+`if not ident or not (reach.get(sym) or {}).get("resolved"): continue`, and I passed `{}`, so
+**every symbol was skipped and the loop body never executed.** Note the asymmetry that makes this
+easy to hit: `agg_era_gate.py` treats `--reach` as OPTIONAL (`if reach.get(sym) and not
+reach[sym].get("resolved")`), while the adjudicator REQUIRES `resolved: True`. Same flag, opposite
+default. Rebuilt the reach file from the ids the gate had already resolved (303 of 452 symbols) and
+the real numbers appeared.
+★ Same family as §90h: **a tool that checks nothing reports the same shape as a tool that found
+nothing.** Assert a COUNT moved — here, `adjudicated disagreements` must be non-empty when the
+queue contains known-disagreeing symbols.
+
+### 91l. What the residue is now, and what it is NOT
+7,232 gap rows remain of the original 31,194. **4,953 of them (68%) are 2002 alone**, and 2002 can
+never reach 100%: the Dec-2002 quarter was announced in Feb-2003, so a Jan–Dec-2002 rebalance has
+nothing to drift from — only Dec-2001..Sep-2002 fills can serve it, which is what the 28.5% is.
+The rest: **1,105 rows on 60 symbols with NO fundamentals series at all** — old-era tickers absent
+from FUND_ALIAS *and* `_rename_map.json` while their plausible targets (LT, NESTLEIND, UPL) DO
+exist in the file. `L&T` (Larsen & Toubro) alone blocks 27 rebalance-months. Spun off as its own
+task — and ⚠️ **a non-overlap price-series test is NOT sufficient to prove a rename**: it passed
+NESTLE→NESTLEIND on a **6.4-YEAR** price gap, BAYER→BAYERCROP on 6.8y, UNITEDBREW→UBL on 6y. Only
+tight handoffs (L&T→LT 1 month, UNITEDPHOS→UPL 7 weeks) are even candidates, and each still needs
+ISIN or series-reproduction proof (§89, §90k).
