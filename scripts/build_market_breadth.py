@@ -22,10 +22,12 @@ METHOD / CONVENTIONS
     The two agree EXACTLY on all 18 shared dates once rename-normed; the sparse file is a
     subset, not a contradiction. Bin keys are CURRENT names, which is what these snapshots
     carry (99.8% resolve directly, vs the sparse file's era names) — §48.
-  - DAILY ERA ONLY: the bin is weekly-sampled before top-level `dailyFrom` (2018-01-01).
-    A 200-DMA over weekly samples would span ~4 years, so every symbol's series is sliced
-    at dailyFrom and the output starts once the 52-week window has filled for most members
-    (n52 >= MIN_UNIVERSE, i.e. ~Jan-2019).
+  - DAILY ERA ONLY: the bin is weekly-sampled before top-level `dailyFrom` (2002-01-02 since
+    the true-daily-bars rebuild; was 2018-01-01). A 200-DMA over weekly samples would span
+    ~4 years, so every symbol's series is sliced at dailyFrom. Emission starts LATER of two
+    dated floors: the first N500 snapshot (2002-10-02 — no roster before it, see axis_from)
+    and the date the 52-week window has filled for most members (n52 >= MIN_UNIVERSE).
+    Today the second binds: the series opens 2003-01-02.
   - Windows are OBSERVATION-based (200 / 252 of the symbol's own trading days, including
     today) — same convention as the backtest engine's d52 (snap-to-trading-day, bc532f9).
   - New 52w high = today's close equals the max close of its trailing 252-session window
@@ -70,26 +72,32 @@ def main():
     union = set().union(*snap_sets)
     print("membership: %d snapshots, union %d symbols" % (len(snaps), len(union)), flush=True)
 
-    # --- global trading-day axis = union of member dates in the daily era ---
+    # --- global trading-day axis = union of member dates, from the first snapshot on ---
+    # NO max(0, ...) floor on the snapshot lookup: that silently handed the EARLIEST roster to
+    # any date before the first snapshot, i.e. measured breadth on a universe that did not exist
+    # yet (the engine's lastSnap had the same bug — a Nifty 50 screen at 2005 used the 2015
+    # roster). Breadth is simply UNDEFINED before the first roster, so the axis STARTS there —
+    # a DATED floor, not a flat one. The bin's daily era now opens 2002-01-02, ~9 months before
+    # the first N500 snapshot (2002-10-02); those pre-snapshot bars are still read below, purely
+    # to warm the 200/252 rolling windows, so the first emitted dates carry a real 200-DMA and
+    # 52w range instead of a short one.
+    axis_from = max(daily_from, snap_dates[0])
     all_dates = set()
     for sym in union:
         e = data.get(sym)
         if e:
-            all_dates.update(d for d in e["d"] if d >= daily_from)
+            all_dates.update(d for d in e["d"] if d >= axis_from)
     dates = sorted(all_dates)
     didx = {d: i for i, d in enumerate(dates)}
     n = len(dates)
-    print("axis: %d trading days %d..%d" % (n, dates[0], dates[-1]), flush=True)
+    print("axis: %d trading days %d..%d (warm-up from %d)" % (n, dates[0], dates[-1], daily_from), flush=True)
 
-    # which membership snapshot applies on each axis date (nearest prior; earliest as floor)
-    # NO max(0, ...) floor: that silently handed the EARLIEST roster to any date before the first
-    # snapshot, i.e. measured breadth on a universe that did not exist yet (the engine's lastSnap
-    # had the same bug — a Nifty 50 screen at 2005 used the 2015 roster). Unreachable today (N500
-    # snapshots start 2002-10-02, well before this axis), so fail LOUD if that ever stops holding.
-    if dates[0] < snap_dates[0]:
+    # which membership snapshot applies on each axis date (nearest prior). Guaranteed >= 0 by
+    # the axis_from clamp above; assert it rather than trust the clamp silently.
+    snap_of = [bisect_right(snap_dates, d) - 1 for d in dates]
+    if snap_of and snap_of[0] < 0:
         raise SystemExit("axis starts %d, before the first membership snapshot %d — refusing to "
                          "fabricate a universe" % (dates[0], snap_dates[0]))
-    snap_of = [bisect_right(snap_dates, d) - 1 for d in dates]
 
     above200 = [0]*n; n200 = [0]*n
     adv = [0]*n; dec = [0]*n
@@ -113,7 +121,6 @@ def main():
             c = cs[j]
             if not c or c <= 0:
                 continue
-            gi = didx[d]
             k += 1
             # rolling 200-sum
             win.append(c); s200 += c
@@ -127,7 +134,9 @@ def main():
             while mx[0][0] <= k - HL_WIN: mx.popleft()
             while mn[0][0] <= k - HL_WIN: mn.popleft()
 
-            if sym in snap_sets[snap_of[gi]]:
+            # warm-up bar (before the first snapshot): windows updated above, nothing counted
+            gi = didx.get(d)
+            if gi is not None and sym in snap_sets[snap_of[gi]]:
                 obs[gi] += 1
                 if prev is not None:
                     if c > prev: adv[gi] += 1
