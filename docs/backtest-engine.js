@@ -564,6 +564,23 @@ function profitAt(sym, dateInt, basis) {
 // Mirrors stock-backtest.html's profitMetrics so saved strategies rank identically across pages.
 function profitMetrics(sym, dateInt, basis) {
   const arr = fundFor(sym); if (!arr || !arr.length) return null;
+  // ⚠️ THE BASIS FALLBACK USED TO BE DECIDED BY THE ENTRY TEST ALONE, and that cost 1,144 of the
+  // 1,744 empty profitTTM cells on the Nifty-500 coverage matrix (2020-01..2026-06). `tries`
+  // declares con->std, but the loop committed to a basis the moment its CURRENT quarter was
+  // announced and its YoY resolved, then returned whatever that basis happened to produce. ttm
+  // needs EIGHT quarters and accel needs two: one hole anywhere in the consolidated window
+  // returned null while the standalone window sat complete in the same array. APOLLOHOSP at
+  // 2020-01-31 is the worked example — con is missing only Mar-2018, std holds all eight.
+  // What this does NOT do is switch basis wholesale. The consolidated result is kept for
+  // everything it could answer (yoy, base, streak, resultDate) and standalone fills ONLY the
+  // specific fields con left null. (Sync: stock-backtest.html profitMetrics.)
+  // ★ MEASURED COST, recorded so nobody has to rediscover it: over the 36,891 stock-months where
+  // BOTH bases resolve, std and con TTM growth agree in SIGN only 86.9% of the time (median gap
+  // 6.9 growth points, p90 125.5). So ~1 in 8 substituted cells will pass a `profitTTM > 0`
+  // filter that consolidated would have failed. On the user's own 12 affected tracked strategies
+  // this moved CAGR by -10.4pp to +1.4pp over 2020-01..2026-06; 18 unaffected strategies moved by
+  // exactly zero. Adopted 2026-08-12 on the user's explicit call, after that measurement.
+  let _pmPending = null;
   const tries = basis === 'std' ? [[1, 2]] : [[3, 4], [1, 2]];
   for (const [ni, ai] of tries) {
     // ann > 0, not != null — see profitAt above (0 = date-unknown sentinel, runbook §15/§91).
@@ -580,9 +597,17 @@ function profitMetrics(sym, dateInt, basis) {
       if (ok) for (let k = 0; k < 4; k++) { const v = npAt(arr[ci - k][0] - 10000); if (v == null) { ok = false; break; } prev4.push(v); }
       if (ok) { const s1 = last4.reduce((a, b) => a + b, 0), s0 = prev4.reduce((a, b) => a + b, 0); ttm = s0 !== 0 ? (s1 - s0) / Math.abs(s0) * 100 : null; } }
     let streak = 0; for (let i = ci; i >= 0; i--) { const y = yoyOf(arr[i]); if (y != null && y > 0) streak++; else break; }
+    // con answered, but not completely -> stash it and let std try. `ni === 3` gates this to the
+    // consolidated pass, so a std-only request can never fall through to anything.
+    if ((ttm == null || accel == null) && ni === 3) { _pmPending = { yoy, base, accel, ttm, streak, resultDate: cur[ai] }; continue; }
+    if (_pmPending) { const p = _pmPending; _pmPending = null;
+      // con wins every field it filled; std supplies only the ones con left null
+      return { yoy: p.yoy, base: p.base, streak: p.streak, resultDate: p.resultDate,
+               accel: p.accel != null ? p.accel : accel,
+               ttm: p.ttm != null ? p.ttm : ttm }; }
     return { yoy, base, accel, ttm, streak, resultDate: cur[ai] };
   }
-  return null;
+  return _pmPending;   // con answered partially and std could not be reached — keep the con result
 }
 // postDrift = (price / priceAt(lastResultDate) - 1) * 100 — it consumes ONLY the announce date,
 // never the YoY. profitMetrics() bails on `yoy == null`, which threw resultDate away with it, so a

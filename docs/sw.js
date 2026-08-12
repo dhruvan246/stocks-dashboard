@@ -6,7 +6,7 @@
  *     requests (the sf-data repo, Supabase, the live-quote Worker) — those stay network-only
  *     so data is always fresh and the cache never bloats.
  * Bump CACHE when the shell asset list changes. */
-const CACHE = 'sw-shell-v88';   // v88: FUND_ALIAS 501->627, the §95 issuer-prefix sweep (v87: membership clamp — lastSnap no longer floors to the earliest snapshot)
+const CACHE = 'sw-shell-v89';   // v89: profitMetrics basis fallback applies to the WHOLE result, so a con window with one hole no longer nulls ttm/accel (v88: FUND_ALIAS 501->627, the §95 issuer-prefix sweep)
 const SHELL = [
   './', './index.html', './nse-bse-dashboard.html', './stock-backtest.html', './saved-strategies.html',
   './backtest-history.html', './strategy-backtest.html', './all-picks.html', './strategy-mixer.html', './mutual-funds.html', './fii-dii.html',

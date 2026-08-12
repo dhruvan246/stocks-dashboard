@@ -837,6 +837,14 @@ function profitAt(sym, dateInt, basis){
 // acceleration (YoY trend), TTM growth (4Q vs prior 4Q, smoother), consecutive +YoY streak, last result date.
 function profitMetrics(sym, dateInt, basis){
   const arr=fundFor(sym); if(!arr||!arr.length) return null;
+  // BASIS FALLBACK APPLIES TO THE WHOLE RESULT, not just the entry test — `tries` declares
+  // con->std, but committing to a basis on "current quarter announced + YoY resolves" returned
+  // null for ttm/accel whenever the consolidated 8-quarter window had a single hole, while the
+  // standalone window sat complete in the same array (1,144 of 1,744 empty profitTTM cells on the
+  // Nifty-500 coverage matrix). con still wins every field it can fill; std supplies only the
+  // nulls. Measured cost: std and con TTM agree in sign 86.9% of the time over 36,891 stock-months
+  // where both resolve. (Sync: backtest-engine.js profitMetrics — keep these two identical.)
+  let _pmPending = null;
   const tries = basis==='std' ? [[1,2]] : [[3,4],[1,2]];
   for(const [ni,ai] of tries){
     // ann > 0, not != null — see profitAt above (0 = date-unknown sentinel, runbook §15/§91).
@@ -853,9 +861,13 @@ function profitMetrics(sym, dateInt, basis){
       if(ok) for(let k=0;k<4;k++){ const v=npAt(arr[ci-k][0]-10000); if(v==null){ok=false;break;} prev4.push(v); }
       if(ok){ const s1=last4.reduce((a,b)=>a+b,0), s0=prev4.reduce((a,b)=>a+b,0); ttm = s0!==0 ? (s1-s0)/Math.abs(s0)*100 : null; } }
     let streak=0; for(let i=ci;i>=0;i--){ const y=yoyOf(arr[i]); if(y!=null&&y>0) streak++; else break; }
+    if((ttm==null||accel==null) && ni===3){ _pmPending={yoy, base, accel, ttm, streak, resultDate:cur[ai]}; continue; }
+    if(_pmPending){ const p=_pmPending; _pmPending=null;
+      return {yoy:p.yoy, base:p.base, streak:p.streak, resultDate:p.resultDate,
+              accel: p.accel!=null?p.accel:accel, ttm: p.ttm!=null?p.ttm:ttm}; }
     return {yoy, base, accel, ttm, streak, resultDate:cur[ai]};
   }
-  return null;
+  return _pmPending;   // con answered partially and std could not be reached — keep the con result
 }
 // postDrift consumes ONLY the announce date, never the YoY — but profitMetrics() bails on
 // `yoy==null` and threw resultDate away with it, dropping stocks whose year-ago quarter we simply
