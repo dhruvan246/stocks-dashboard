@@ -8938,3 +8938,42 @@ already exiles its price data to a release asset. Not folded into `refresh-backt
 a backfill.** Payload is per-universe (`docs/coverage/<slug>.json`, ~50 KB) + `index.json`; the page
 loads exactly one universe. Family cells are NOT shipped — the page derives them with one `min()` over
 `params`, so there is no second copy to disagree.
+
+### 91m. ★★★ COVERAGE ≠ MEANING — before 2012 postDrift is a MOMENTUM factor, and it looks fine
+A 2004-start backtest is now well covered (2004 85.3%, 2006+ ≥97.4%) and the uncovered slice is not
+badly biased (2004-06-30: 419 covered vs 68 missing, median turnover ₹19L vs ₹10L, 1.9x; 1.2x by
+2005). **But the factor does not mean the same thing across the window.**
+
+Measured 2026-08-12 — share of announce dates that are the **qe+45d CONVENTION** rather than a real
+filing date: **2002-2011 ≈ 100%** · 2012-2014 ~85% · 2015-2017 ~18% · 2018+ ~5%. The pre-2012 era has
+essentially no real filing dates, because no source for it publishes one (§52, §91i).
+
+`qe+45d` depends only on the quarter-end, so **it is the same calendar day for every company**.
+Distinct `resultDate` values among ~490 screened N500 members:
+
+| rebalance | distinct result dates | top date's share | postDrift p90−p10 |
+|---|---|---|---|
+| 2004-06-30 | 7 | 20040515 — **84%** | 32.7pp |
+| 2008-06-30 | 6 | 20080515 — **98%** | 31.0pp |
+| 2010-06-30 | 8 | 20100515 — **97%** | 25.8pp |
+| 2012-06-30 | 28 | 20120515 — 87% | 24.9pp |
+| 2015-06-30 | 55 | 20150530 — 22% | 26.8pp |
+| 2019-06-28 | 57 | 20190509 — 11% | 25.6pp |
+| 2024-06-28 | 47 | 20240524 — 6% | 27.8pp |
+
+So in 2004-2011 `postDrift` = **"return since ~15 May"** for ~everyone — a common-window momentum
+factor reset quarterly, NOT differential reaction to individual earnings announcements.
+⚠️ **The cross-sectional spread stays 25-33pp, indistinguishable from 2024's 27.8pp**, so the
+backtest produces differentiated, plausible CAGRs and never looks broken. That is the trap.
+
+★ **THE DISTINCTION THAT MATTERS:** the convention date is *fine* for `profitYoyPct` / `profitTTM` /
+`profitStreak` / `profitAccel` / `composite`, where the date only gates **visibility** ("was this
+quarter known by the rebalance?") — and qe+45d is the SEBI deadline, i.e. the latest plausible date,
+so it is conservative and carries no look-ahead. It degrades **only** `postDrift`, which uses the
+date as a **measurement anchor** rather than a visibility gate.
+**Guidance:** long-window (2004+) work on the profit factors is honest. A genuine post-earnings-drift
+test should start **2015**, ideally **2018+**. A postDrift strategy fitted on 2004-2011 must be
+out-of-sample validated on 2018+ before it is called a PEAD edge (§7.2).
+Also for any pre-2012 window: `nifty500_live.json` starts 2012-01-02 so the grid's own `bench` is
+wrong — take the benchmark from `docs/index_monthly.json` (§7.1b.4) — and check `avgPicks` on the
+leaders (§7.1b.3).
