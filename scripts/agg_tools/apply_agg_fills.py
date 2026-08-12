@@ -43,10 +43,19 @@ def main():
     ap.add_argument("--props", required=True)
     ap.add_argument("--apply", action="store_true")
     ap.add_argument("--stamp", default=time.strftime("%Y-%m-%d"))
+    # Row creation is OFF by default and stays that way: in sf_revop a missing row USUALLY means the
+    # quarter is outside the dataset's frame, and silently materialising one there would invent a
+    # period. But "usually" is not "always" — POLICYBZR's revenue series starts 2022-03 while we hold
+    # its PAT from 2020-06, so Dec-2021 is a HOLE inside its life, not a period beyond it. The caller
+    # has to assert that distinction deliberately, per run, rather than have the applier guess.
+    ap.add_argument("--create-rows", action="store_true",
+                    help="materialise a sf_revop row for a quarter we do not hold. Only use when the "
+                         "company demonstrably existed and filed that quarter (e.g. we already hold "
+                         "its PAT for it) — otherwise the row is an invented period.")
     a = ap.parse_args()
 
     props = json.load(open(a.props))["proposals"]
-    journal, skipped, wrote = {}, [], 0
+    journal, skipped, wrote, created = {}, [], 0, []
 
     for path in (os.path.join(ROOT, "docs", "sf_revop.json"),
                  os.path.join(SCRIPTS, "revop_fundamentals.json")):
@@ -61,8 +70,12 @@ def main():
             p = props[key]
             row = (d.get(sym) or {}).get(qe)
             if row is None:
-                skipped.append("%s: no %s row in %s" % (key, qe, base))
-                continue
+                if not a.create_rows:
+                    skipped.append("%s: no %s row in %s" % (key, qe, base))
+                    continue
+                row = [None] * 9
+                d.setdefault(sym, {})[qe] = row
+                created.append("%s in %s" % (key, base))
             while len(row) < 9:
                 row.append(None)
             i = SLOT[field]
@@ -110,6 +123,8 @@ def main():
         led.update(journal)
         json.dump(led, open(LEDGER, "w"), indent=1, sort_keys=True)
         print("journalled %d -> %s" % (len(journal), os.path.basename(LEDGER)))
+    if created:
+        print("  CREATED %d row(s) that did not exist: %s" % (len(created), "; ".join(created[:6])))
     if not a.apply:
         print("DRY RUN -- nothing written.")
     return 0 if wrote or not props else 1
