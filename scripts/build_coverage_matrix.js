@@ -373,6 +373,26 @@ function run(ctx, C) {
         // returns null. NSLNISP at 2023-04-28 resolves to 2021-05-30, nine months before it listed.
         // Marked N/A, excluded from the denominator, and reported separately. Nothing is invented.
         const na = new Array(keys.length).fill(0);
+        // fiiPct / diiPct: a company's FIRST-EVER shareholding filing lands AFTER the quarter it
+        // covers — SEBI Reg 31 allows 21 days — so at a month-end that IS (or snaps to) that first
+        // quarter-end, no shareholding exists for it anywhere yet. CAMS' first filing covers
+        // 2021-03-31 and was submitted 2021-04-15; VALIANTORG 6 days after; HLEGLAS 12; KIRLFER 21;
+        // TBOTEK 17. Counting those as gaps asks us to fill a number that would be a look-ahead.
+        // Gated on the EARLIEST filing this symbol has: once anything has been filed, a later hole
+        // is a real gap again. ⚠️ This runs AFTER the bulk-stamp date corrections landed in
+        // scripts/shp_cell_fix.json — before them AFFLE's earliest filing read 2020-07-15 and this
+        // rule would have marked 3 genuine defects N/A, hiding them behind their own symptom.
+        const shp = (typeof SHPD !== 'undefined' && SHPD) ? (SHPD[r.sym] || (typeof FUND_ALIAS !== 'undefined' && FUND_ALIAS[r.sym] ? SHPD[FUND_ALIAS[r.sym]] : null)) : null;
+        if (shp && shp.length) {
+          let firstSub = 0;
+          for (const q of shp) if (q[3] > 0 && (!firstSub || q[3] < firstSub)) firstSub = q[3];
+          if (firstSub > __DATEINT) {
+            ['fiiPct', 'diiPct', 'fiiChgPp', 'diiChgPp'].forEach(function (k) {
+              const j = keys.indexOf(k);
+              if (j >= 0 && !flags[j]) na[j] = 1;
+            });
+          }
+        }
         const jPD = keys.indexOf('postDrift');
         if (jPD >= 0 && !flags[jPD]) {
           const lrd = lastResultDate(r.sym, __DATEINT, __CFG.earnBasis);
