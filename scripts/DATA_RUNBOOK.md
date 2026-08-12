@@ -4254,6 +4254,23 @@ snapshots re-render the OLD wrong results, and the sw shell (v86→v87).
   (2003) → 144 (2015). An earlier read of "78 snaps from 2015-01-30" came from a **stale local bin**
   before a rebase — re-read the bin after any fetch/rebase before concluding a history is missing.
 
+**⚠️ 2026-08-12c — NEAR MISS: "membership doesn't rename-normalise" was a MEASUREMENT ARTIFACT.**
+Match rates of roster symbols against `stock_data.bin`'s META looked alarming — F&O 2002 **43%**,
+N500 2005 **69%** — suggesting era tickers (INFOSYSTCH, L&T, HINDLEVER) were silently dropped, and
+a `FUND_ALIAS` normalisation in `membersAsOf` was written to fix it. **Measured against the bin the
+backtest ACTUALLY screens (`sf_stock_data.bin`, survivorship-free, 5,148 symbols) the same rosters
+match F&O 2002 100%, F&O 2010 100%, N500 2005 99%.** There was no bug: the SF bin keys the ERA name
+too. The core bin's META (4,785) is a different, non-survivorship-free universe — **never measure
+membership coverage against it.**
+
+The "fix" would have been a REGRESSION and was reverted before shipping. A raw+aliased UNION
+double-counts, because both keys carry OVERLAPPING history in the SF bin: INFOSYSTCH
+(1996→2011-06-27) *and* INFY (1996→date); likewise HINDLEVER/HINDUNILVR, GUJAMBCEM/AMBUJACEM,
+TELCO/TMPV, BAJAJAUTO/BAJAJHLDNG — 5 of 6 pairs sampled. A 2002 screen would have bought the same
+company twice at double weight. (L&T→LT is the clean case: the eras abut, 2004-05-17 / 2004-06-23.)
+**Before "fixing" a coverage gap, confirm the denominator is the dataset the code actually runs on**
+— same discipline as [[feedback-analyze-live-not-local-bin]] and §39's parity rule.
+
 
 ## 49. ★★ THE 100%% CLOSE-OUT PLAYBOOK — what finally landed the last ~40 cells  (2026-08-04)
 
