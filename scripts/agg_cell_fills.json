@@ -6102,6 +6102,20 @@
   "src": "moneycontrol quarterly-results API (runbook \u00a780)",
   "state": "FILLED-EXACT"
  },
+ "TMB|20221231": {
+  "applied": "2026-08-13 filing read",
+  "corroborated_by": [],
+  "evidence": "PDF text layer is CORRUPTED (masthead reads 'TAMILNAD MEReANTiLE BANK', 'TOTAI@NDITURE') so labels cannot be trusted \u2014 the read is anchored on ARITHMETIC instead, all of it internal to the filing: (1) net profit 27,970 lakh = 279.70 cr reproduces our stored patS for this quarter EXACTLY, which pins both the unit (lakh) and the column (Dec-2022); (2) interest earned 101,212 = 77,824+22,734+525+129, its own components; (3) total expenditure 76,808 = 47,785 interest expended + 29,023 opex (=15,228+13,795); (4) total income 117,288 = 101,212+16,076 = 76,808 expenditure + 40,480 operating profit. Every subtotal closes, so no inference from the mangled thousands separators was needed.",
+  "note": "revC=revS: TMB's consolidated equals standalone in every quarter we store and Moneycontrol serves no consolidated table for it at all (a bank with no material subsidiaries).",
+  "opC": 404.8,
+  "opS": 404.8,
+  "precision": "filing-exact",
+  "revC": 1012.12,
+  "revS": 1012.12,
+  "row_label": "1. Interest earned (a)+(b)+(c)+(d) = 101,212 lakh; 7. OPERATING PROFIT (3-6) = 40,480 lakh",
+  "src": "BSE corpfiling AttachHis e5a94fce-c0d3-42f1-9f19-d4b782f09387.pdf \u2014 TMB board-meeting outcome 2023-01-23, unaudited results for the quarter ended 2022-12-31",
+  "state": "FILLED-EXACT"
+ },
  "TMPV|20200630": {
   "applied": "2026-08-12 aggregator sweep",
   "corroborated_by": [],
