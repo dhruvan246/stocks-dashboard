@@ -157,6 +157,54 @@ const LIQUID_FLOOR = 100;   // ₹ lacs of 20d average daily turnover = ₹1 cro
 function readJSON(p) { return JSON.parse(fs.readFileSync(p, 'utf8')); }
 function readGz(p) { return JSON.parse(zlib.gunzipSync(fs.readFileSync(p))); }
 
+const MIN_BIN_BYTES = 5e7;   // the live asset is ~193 MB; anything this small is an error page
+
+/* Why a downloaded file can exist and still be junk: `curl -s` WITHOUT `--fail` exits 0 on an
+ * HTTP error and writes the error BODY to -o. gunzip then dies with "incorrect header check",
+ * naming neither the download nor the status — exactly how the 2026-08-12 nightly failed, while
+ * the release asset itself was intact and served a valid gzip minutes either side. Returns a
+ * human-readable complaint, or null when the file is a plausible gzip. update_sf_data.py fetches
+ * the same asset and has always retried and aborted loudly; this builder was the one caller
+ * that did not. */
+function gzipComplaint(p) {
+  if (!fs.existsSync(p)) return 'no file was written';
+  const size = fs.statSync(p).size;
+  if (size < MIN_BIN_BYTES) {
+    const head = fs.readFileSync(p).subarray(0, 300).toString('utf8').replace(/\s+/g, ' ').trim();
+    return `only ${size} bytes (expected >${(MIN_BIN_BYTES / 1e6) | 0}MB) — body starts: ${head || '(empty)'}`;
+  }
+  const fd = fs.openSync(p, 'r'), magic = Buffer.alloc(2);
+  fs.readSync(fd, magic, 0, 2, 0); fs.closeSync(fd);
+  if (magic[0] !== 0x1f || magic[1] !== 0x8b) return `${size} bytes but not gzip (magic 0x${magic.toString('hex')})`;
+  return null;
+}
+
+const sleepSync = ms => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+
+/* Download the live asset, retrying transient failures. -f makes curl exit non-zero on >=400 (so
+ * execFileSync throws a message that names the status); -S keeps that message visible under -s.
+ * A 200 carrying a non-gzip body still slips past curl, so every attempt is validated before it
+ * is accepted, and a rejected file is DELETED — never left behind for the next run's cache check
+ * to mistake for a good bin. */
+function downloadBin(dest) {
+  const TRIES = 4;
+  for (let attempt = 1; attempt <= TRIES; attempt++) {
+    let complaint;
+    try {
+      execFileSync('curl', ['-fsSL', '--connect-timeout', '20', '--max-time', '900',
+                            '-o', dest, RELEASE_BIN], { stdio: 'inherit' });
+      complaint = gzipComplaint(dest);
+      if (!complaint) return;
+    } catch (e) {
+      complaint = `curl failed: ${String(e.message).split('\n')[0]}`;
+    }
+    log(`download attempt ${attempt}/${TRIES} rejected — ${complaint}`);
+    try { fs.unlinkSync(dest); } catch { /* nothing to clean up */ }
+    if (attempt < TRIES) sleepSync(attempt * 15000);   // 15s → 30s → 45s
+  }
+  throw new Error(`could not download a valid ${RELEASE_BIN} after ${TRIES} attempts`);
+}
+
 function resolveBin() {
   if (BIN_ARG !== 'auto') {
     const p = path.resolve(ROOT, BIN_ARG);
@@ -164,9 +212,11 @@ function resolveBin() {
     return readGz(p);
   }
   const cache = path.join(os.tmpdir(), 'sf_stock_data_live.bin');
-  if (!fs.existsSync(cache) || fs.statSync(cache).size < 5e7) {
+  const stale = gzipComplaint(cache);
+  if (stale) {
+    if (fs.existsSync(cache)) log('discarding unusable cached bin —', stale);
     log('downloading LIVE release asset (the in-repo bin is a frozen snapshot)…');
-    execFileSync('curl', ['-sL', '-o', cache, RELEASE_BIN], { stdio: 'inherit' });
+    downloadBin(cache);
   } else {
     log('reusing cached live bin', cache, (fs.statSync(cache).size / 1e6).toFixed(0) + 'MB');
   }
