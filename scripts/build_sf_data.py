@@ -405,6 +405,15 @@ def main():
     # while and the scrape's bare except was silently leaving `cur` EMPTY. That marked EVERY symbol
     # alive=False + industry="Unknown" on every full rebuild (found 2026-08-02: RELIANCE/TCS/INFY
     # all alive=False on live data). dash_slim.bin IS the current source of truth for this now.
+    # Delisted-symbol industry/name ledger (see its own _doc). Missing file is not fatal — the
+    # build degrades to exactly the previous behaviour rather than aborting on a metadata nicety.
+    try:
+        INDUSTRY_FILLS = (json.load(open(os.path.join(HERE, "industry_fills.json"))) or {}).get("fills") or {}
+        print("  industry_fills: %d delisted symbols" % len(INDUSTRY_FILLS))
+    except Exception as e:
+        INDUSTRY_FILLS = {}
+        print("  (industry_fills unavailable:", e, ")")
+
     cur = {}
     try:
         slim = json.loads(gzip.decompress(open(os.path.join(ROOT, "docs", "dash_slim.bin"), "rb").read()))
@@ -531,8 +540,15 @@ def main():
         # ds[-1] is its last bar; `alive_cut` is None only if END is unparseable (never here).
         alive = (sym in cur) and (alive_cut is None or ds[-1] >= alive_cut)
         dead += (not alive)
-        meta[sym] = {"name": (cur.get(sym) or {}).get("name") or sym,
-                     "ind": (cur.get(sym) or {}).get("industry") or "Unknown", "alive": alive,
+        # `cur` is the CURRENTLY-LISTED universe, so a delisted symbol has no row there and used to
+        # fall straight through to name=<symbol>, ind="Unknown" — a survivorship gap in the metadata,
+        # not a classification gap. INDUSTRY_FILLS carries BSE's own IndustryNew (the same field
+        # fetch_sectors.py reads for live scrips, so the vocabulary matches by construction) for the
+        # dead symbols that need it. `cur` still wins wherever it has an answer.
+        _fill = INDUSTRY_FILLS.get(sym) or {}
+        meta[sym] = {"name": (cur.get(sym) or {}).get("name") or _fill.get("name") or sym,
+                     "ind": ((cur.get(sym) or {}).get("industry")
+                             or _fill.get("industry") or "Unknown"), "alive": alive,
                      "raw": round(obs[-1][1], 2)}   # latest RAW market close (adjusted series level can drift from market price)
         if sym in isin_of: meta[sym]["isin"] = isin_of[sym]
     print("Stored %d symbols (%d delisted/absent today); official split/bonus applied=%d (of which %d "

@@ -405,7 +405,15 @@ function run(ctx, C) {
       }
       // an INDEX universe's denominator is the roll itself, not what survived the price gate —
       // that difference is exactly what the Price column is there to show.
-      members[u.slug][di] = set ? [...set].filter(s => !s.includes('DVR')).length : n;
+      // ⚠️ …but NSE seeds the roll with `DUMMY*` placeholder tickers around corporate actions, and
+      // those are not securities: they have no series in the dataset at all, so they can never be
+      // covered by ANY parameter. Left in the denominator they became a floor that no amount of
+      // data work could lift — 7 of the 78 Nifty-500 month-ends 2020-2026 read 500/504 = 99.21%
+      // across THIRTY parameters including `price` itself, and the page said "the data is missing"
+      // when the truth was "the member is not a stock". 11 such tickers across 6 indices, e.g.
+      // DUMMYVEDL1-4 (2026-05/06), DUMMYABFRL/RAYMN/SIEMS (2025-06/07), DUMMYDBRLT, DUMMYHDLVR.
+      members[u.slug][di] = set
+        ? [...set].filter(s => !s.includes('DVR') && !/^DUMMY/.test(s)).length : n;
     }
 
     if (Date.now() - lastLog > 5000 || di === dates.length - 1) {

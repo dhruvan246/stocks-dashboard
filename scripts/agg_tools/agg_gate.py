@@ -88,18 +88,30 @@ FIELD_CANDS = {
     "revC": ("rev_ops", "rev_total"),
     "patS": ("pat_total",),
     "patC": ("pat_own", "pat_total"),
+    # Both op/ebit candidates are offered on BOTH bases and Gate D picks the strict winner. Scored
+    # over 12 companies x 2 bases on 2026-08-12, `*_pre` won 24 of 24 with zero ties (ATUL 24/0/0
+    # std and 22/0/0 con, ZFCVINDIA 18/0/0 both, POWERINDIA 23/0/0, UNOMINDA con 29/0/0), so the
+    # preference below is measured, not assumed -- and `*_post` stays a candidate because a tie or
+    # a reversal on some company must show up as UNRESOLVED rather than be defined away.
+    "opS":   ("op_pre", "op_post"),
+    "opC":   ("op_pre", "op_post"),
+    "ebitS": ("ebit_pre", "ebit_post"),
+    "ebitC": ("ebit_pre", "ebit_post"),
 }
-OTHER = {"revS": "revC", "revC": "revS", "patS": "patC", "patC": "patS"}
+OTHER = {"revS": "revC", "revC": "revS", "patS": "patC", "patC": "patS",
+         "opS": "opC", "opC": "opS", "ebitS": "ebitC", "ebitC": "ebitS"}
+# sf_revop cell layout: [revStd, revCon, opStd, opCon, patStd, patCon, fin, ebitStd, ebitCon]
+REVOP_SLOT = {"revS": 0, "revC": 1, "opS": 2, "opC": 3, "ebitS": 7, "ebitC": 8}
 _STORE = {}
 
 
 def ours_series(sym, field):
-    """{qe_int: value} -- revS/revC from sf_revop slots 0/1, patS/patC from sf_fundamentals 1/3."""
-    if field.startswith("rev"):
+    """{qe_int: value} -- rev/op/ebit from sf_revop (REVOP_SLOT), patS/patC from sf_fundamentals 1/3."""
+    if field in REVOP_SLOT:
         if "revop" not in _STORE:
             _STORE["revop"] = json.load(open(os.path.join(ROOT, "docs", "sf_revop.json")))
         d = _STORE["revop"].get(sym) or {}
-        i = 0 if field.endswith("S") else 1
+        i = REVOP_SLOT[field]
         return {int(q): v[i] for q, v in d.items()
                 if v and len(v) > i and v[i] is not None}
     if "fund" not in _STORE:
@@ -146,7 +158,9 @@ def check_series(series, ours, cand, qe, field=""):
         if mine is None or theirs is None or q == qe:
             continue
         dist = abs(qidx(q) - ti)
-        if field.startswith("rev") and mine == 0.0 and abs(theirs) > 1.0:
+        # op/ebit share the sentinel: an exactly-0.0 stored figure against a site printing a real
+        # magnitude is "we hold nothing here", not a disagreement. Logged as a suspect, never a veto.
+        if field in REVOP_SLOT and mine == 0.0 and abs(theirs) > 1.0:
             our_zeros.append("%d ours=0.0 site=%s" % (q, theirs))
             continue
         checked += 1

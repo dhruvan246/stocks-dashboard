@@ -224,6 +224,27 @@ MC_ROWS = {
     "rev_total": ("Total Income From Operations",),
     "pat_total": ("Net Profit/(Loss) For the Period", "P/L After Tax from Ordinary Activities"),
     "pat_own":   ("Net P/L After M.I & Associates",),
+    # ---- op / ebit (added 2026-08-12) -------------------------------------------------------
+    # build_revop.py defines ebit = PBET + FinanceCosts - OtherIncome, i.e. operating profit AFTER
+    # depreciation and BEFORE other income -- which is exactly what MC's "P/L Before Other Inc.,
+    # Int., Excpt. Items & Tax" row is. `op` is Trendlyne's "Oper Profit" (paisa-matched, runbook
+    # ~L900) = the same figure with depreciation added back, so it is DERIVED below, not a row.
+    # ⚠️ THE LABEL DIFFERS BY ONE CHARACTER BETWEEN THE TWO PAYLOADS: the standalone table prints
+    # "Other Inc. , Int." (space before the comma) and the consolidated one "Other Inc., Int.";
+    # depreciation is "depreciat" standalone and "Depreciation" consolidated. Hardcoding either
+    # spelling makes the other basis read as "this site has no such row" -- absence dressed as a
+    # clean miss (§61a mode 4). Both spellings are candidates; Gate D still has to prove the row.
+    "ebit_pre":  ("P/L Before Other Inc. , Int., Excpt. Items & Tax",
+                  "P/L Before Other Inc., Int., Excpt. Items & Tax"),
+    "ebit_post": ("P/L Before Int., Excpt. Items & Tax",),
+    "dep":       ("depreciat", "Depreciation"),
+}
+
+# Derived candidates: field -> (base, addend). Scored by the gate exactly like a printed row, so a
+# company whose depreciation treatment does not reproduce our series is rejected, not "close enough".
+MC_DERIVED = {
+    "op_pre":  ("ebit_pre", "dep"),
+    "op_post": ("ebit_post", "dep"),
 }
 
 
@@ -260,6 +281,10 @@ def mc_quarters(sym, con):
                         vals[field] = v
                         vals[field + "_label"] = lbl
                         break
+        for field, (base, add) in MC_DERIVED.items():
+            if vals.get(base) is not None and vals.get(add) is not None:
+                vals[field] = round(vals[base] + vals[add], 2)
+                vals[field + "_label"] = "%s + %s" % (vals[base + "_label"], vals[add + "_label"])
         if vals:
             out[qe] = vals
     for qe in dupes:
@@ -502,6 +527,12 @@ def mc_annuals(sym, con):
                     vals[field] = _num(r[lbl])
                     vals[field + "_label"] = lbl
                     break
+        # the same derivation as the quarterly table, so Gate A5's FY identity can be run on
+        # op/ebit as well -- an annual table missing the derived field is a silent NO-TEST (§81e)
+        for field, (base, add) in MC_DERIVED.items():
+            if vals.get(base) is not None and vals.get(add) is not None:
+                vals[field] = round(vals[base] + vals[add], 2)
+                vals[field + "_label"] = "%s + %s" % (vals[base + "_label"], vals[add + "_label"])
         if vals:
             out.setdefault(qe, vals)
     return out, "mc: %d FYs %s..%s" % (len(out), min(out, default="-"), max(out, default="-"))

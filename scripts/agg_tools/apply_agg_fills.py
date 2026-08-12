@@ -30,7 +30,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 SCRIPTS = os.path.dirname(HERE)
 ROOT = os.path.dirname(SCRIPTS)
 LEDGER = os.path.join(SCRIPTS, "agg_cell_fills.json")
-SLOT = {"revS": 0, "revC": 1}
+# sf_revop cell layout: [revStd, revCon, opStd, opCon, patStd, patCon, fin, ebitStd, ebitCon]
+SLOT = {"revS": 0, "revC": 1, "opS": 2, "opC": 3, "ebitS": 7, "ebitC": 8}
 SITE_NAME = {"mc": "moneycontrol", "tl": "trendlyne", "tt": "tickertape"}
 
 

@@ -1,0 +1,215 @@
+{
+ "_doc": "Industry/name for symbols that are DELISTED, hence absent from dash_slim.bin's currently-listed universe -- which is the only source build_sf_data.py has for meta.ind, so every one of them came out ind='Unknown', name=<symbol>. That is not a classification gap, it is a survivorship gap: the scrape only covers live scrips. 2,008 of the live bin's 4,445 symbols are affected; the 26 here are the ones that reached Nifty 500 membership between 2020-01 and 2026-06 and so showed up as holes on the coverage matrix (industry 857 cells).\nSOURCE: BSE ComHeadernew/w -> IndustryNew, the SAME field fetch_sectors.py reads for live scrips, so the vocabulary is identical by construction and needs no cross-map (verified: RELIANCE 500325 returns 'Oil, Gas & Consumable Fuels', which is exactly what dash_slim stores).\nIDENTITY GATE: the BSE code came from Moneycontrol's autosuggest and was accepted only when the ISIN matched ours -- exactly, or on the 7-char issuer prefix where a face-value change reissued it (runbook \u00a795). Then BSE's OWN returned ISIN had to confirm it again. A name match was never enough: MC's top hit for HDFC is HDFC *Bank* and for HEXAWARE is HEXT, both different securities.\nConsumed by build_sf_data.py when the live universe has no row for a symbol.",
+ "_generated": "2026-08-12 20:32 IST",
+ "fills": {
+  "DHANI": {
+   "bse_code": "532960",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Financial Services",
+   "isin": "INE274G01010",
+   "name": "Dhani Services",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "DHFL": {
+   "bse_code": "511072",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Financial Services",
+   "isin": "INE202B01012",
+   "name": "Dewan Housing Finance Corporation",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "EQUITAS": {
+   "bse_code": "539844",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Financial Services",
+   "isin": "INE988K01017",
+   "name": "Equitas Holdings",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "FCONSUMER": {
+   "bse_code": "533400",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Consumer Services",
+   "isin": "INE220J01025",
+   "name": "Future Consumer",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "FRETAIL": {
+   "bse_code": "540064",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Consumer Services",
+   "isin": "INE752P01024",
+   "name": "Future Retail",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "GSPL": {
+   "bse_code": "532702",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Oil, Gas & Consumable Fuels",
+   "isin": "INE246F01010",
+   "name": "Gujarat State Petronet",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "HDFC": {
+   "bse_code": "500010",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Financial Services",
+   "isin": "INE001A01036",
+   "name": "Housing Development Finance Corporation",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "HEXAWARE": {
+   "bse_code": "544362",
+   "identity_gate": "isin-issuer-prefix + bse-isin-confirmed",
+   "industry": "Information Technology",
+   "isin": "INE093A01041",
+   "name": "Hexaware Technologies",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "IDFC": {
+   "bse_code": "532659",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Financial Services",
+   "isin": "INE043D01016",
+   "name": "IDFC",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "INOXLEISUR": {
+   "bse_code": "532706",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Media, Entertainment & Publication",
+   "isin": "INE312H01016",
+   "name": "INOX Leisure",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "ISEC": {
+   "bse_code": "541179",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Financial Services",
+   "isin": "INE763G01038",
+   "name": "ICICI Securities",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "JBCHEPHARM": {
+   "bse_code": "506943",
+   "identity_gate": "isin-issuer-prefix + bse-isin-confirmed",
+   "industry": "Healthcare",
+   "isin": "INE572A01036",
+   "name": "JB Chemicals and Pharmaceuticals",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "JSLHISAR": {
+   "bse_code": "539597",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Capital Goods",
+   "isin": "INE455T01018",
+   "name": "Jindal Stainless (Hisar)",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "LAKSHVILAS": {
+   "bse_code": "534690",
+   "evidence": "MC's ISIN-gated sc_sector is 'Banks'. Measured, not mapped by assumption: (a) all 31 scheduled banks we hold carry 'Financial Services' in our own data, 31/31 unanimous; (b) the MC-sector->our-industry calibration over 520 ISIN-matched live symbols puts MC 'Banks' -> 'Financial Services' at 12/12.",
+   "identity_gate": "isin-exact (MC INE694C01018 == ours); BSE ISIN confirms the scrip, but its Sector/IndustryNew/IGroup are all '' and Industry is '-'",
+   "industry": "Financial Services",
+   "isin": "INE694C01018",
+   "name": "Lakshmi Vilas Bank",
+   "src": "our own data + moneycontrol (BSE returns EVERY classification field empty for this scrip)"
+  },
+  "MINDTREE": {
+   "bse_code": "532819",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Information Technology",
+   "isin": "INE018I01017",
+   "name": "MINDTREE",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "PEL": {
+   "bse_code": "500302",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Financial Services",
+   "isin": "INE140A01024",
+   "name": "Piramal Enterprises",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "RELCAPITAL": {
+   "bse_code": "500111",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Financial Services",
+   "isin": "INE013A01015",
+   "name": "Reliance Capital",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "RELINFRA": {
+   "bse_code": "500390",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Power",
+   "isin": "INE036A01016",
+   "name": "Reliance Infrastructure",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "SHRIRAMCIT": {
+   "bse_code": "532498",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Financial Services",
+   "isin": "INE722A01011",
+   "name": "Shriram City Union Finance",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "SUPPETRO": {
+   "bse_code": "500405",
+   "identity_gate": "isin-issuer-prefix + bse-isin-confirmed",
+   "industry": "Chemicals",
+   "isin": "INE663A01033",
+   "name": "Supreme Petrochem",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "TATACOFFEE": {
+   "bse_code": "532301",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Fast Moving Consumer Goods",
+   "isin": "INE493A01027",
+   "name": "Tata Coffee",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "TATASTLBSL": {
+   "bse_code": "500055",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Metals & Mining",
+   "isin": "INE824B01021",
+   "name": "Tata Steel BSL Limited",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "TATASTLLP": {
+   "bse_code": "513010",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Capital Goods",
+   "isin": "INE674A01014",
+   "name": "Tata Steel Long Products",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "TCNSBRANDS": {
+   "bse_code": "541700",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Textiles",
+   "isin": "INE778U01029",
+   "name": "TCNS Clothing Co",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "TV18BRDCST": {
+   "bse_code": "532800",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Media, Entertainment & Publication",
+   "isin": "INE886H01027",
+   "name": "TV18 Broadcast",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "UJJIVAN": {
+   "bse_code": "539874",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Financial Services",
+   "isin": "INE334L01012",
+   "name": "Ujjivan Financial Services",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  }
+ }
+}
