@@ -1,0 +1,98 @@
+name: Nightly coverage matrix
+
+# Bakes docs/coverage/*.json — the payload behind the private Coverage Matrix page
+# (docs/coverage.html): for every month-end × every universe, how many members carried a
+# usable value for each screening parameter.
+#
+# WHY ITS OWN JOB: the builder loads the live ~193 MB price dataset and runs the real
+# backtest engine over ~300 month-ends (~4 min). refresh-backtest-data.yml holds a fresh
+# bin already, but it is the critical daily data job on a 30-minute timeout — a scoreboard
+# must never be able to push it over. So this one downloads the release asset itself and
+# runs late, after every other refresh has landed.
+
+on:
+  schedule:
+    # WEEKLY, Sunday 19:40 UTC = 01:10 IST Monday — after the evening backtest-data refresh
+    # (15:15 UTC) and the nightly fundamentals/reconcile jobs.
+    #
+    # Weekly, not nightly, ON PURPOSE: the payload is ~2 MB across 30 files and is REWRITTEN
+    # whole each build (compact JSON, so git stores a fresh blob every time). Nightly would add
+    # roughly 300 MB a year to a repo that already exiles its price data to a release asset to
+    # avoid exactly that. A 24-year coverage matrix does not move overnight — and when it does,
+    # because you just landed a backfill, run this by hand from the Actions tab.
+    - cron: "40 19 * * 0"
+  workflow_dispatch: {}
+  # Bootstrap/self-test: rebuild when the builder itself changes.
+  push:
+    paths:
+      - "scripts/build_coverage_matrix.js"
+      - ".github/workflows/refresh-coverage.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-coverage
+  cancel-in-progress: false
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # --bin auto downloads the release asset. The in-repo docs/sf_stock_data.bin is a
+      # FROZEN snapshot (the real file is past GitHub's 100 MB cap and is never committed),
+      # so building off it would silently date the whole matrix to the last hand-commit.
+      - name: Bake coverage matrix
+        run: node --max-old-space-size=12288 scripts/build_coverage_matrix.js --bin auto --out docs/coverage
+
+      # A truncated or empty bake is worse than a stale one — the page would render a wall of
+      # zeroes that reads as "all our data vanished". Assert shape before it can be committed.
+      - name: Verify the bake
+        run: |
+          python3 - <<'PY'
+          import json, os, sys
+          idx = json.load(open('docs/coverage/index.json'))
+          n = len(idx['universes'])
+          assert n >= 25, f"only {n} universes"
+          assert idx['nDates'] >= 200, f"only {idx['nDates']} month-ends"
+          assert idx['dataEnd'], "no dataEnd stamp"
+          bad = []
+          for u in idx['universes']:
+              p = f"docs/coverage/{u['slug']}.json"
+              d = json.load(open(p))
+              if len(d['dates']) != idx['nDates']: bad.append(f"{u['slug']}: {len(d['dates'])} dates")
+              if len(d['params']) != idx['nParams']: bad.append(f"{u['slug']}: {len(d['params'])} params")
+          # the flagship universe must actually carry numbers, not just the right shape
+          n500 = json.load(open('docs/coverage/nifty-500.json'))
+          last = n500['members'][-1]
+          if not (400 <= last <= 520): bad.append(f"nifty-500 last members = {last}")
+          price = n500['params'][n500['paramKeys'].index('price')][-1]
+          if price < 0.9 * last: bad.append(f"nifty-500 latest price coverage {price}/{last}")
+          if bad:
+              print("::error::coverage bake failed verification: " + "; ".join(bad)); sys.exit(1)
+          print(f"ok — {n} universes, {idx['nDates']} month-ends, data to {idx['dataEnd']}")
+          PY
+
+      - name: Commit coverage payload
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -rf /tmp/coverage && cp -r docs/coverage /tmp/coverage
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main && git reset --hard origin/main
+            mkdir -p docs/coverage && cp /tmp/coverage/*.json docs/coverage/
+            git add docs/coverage
+            if git diff --cached --quiet; then echo "coverage unchanged"; exit 0; fi
+            git commit -m "Coverage matrix $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then echo "pushed coverage (attempt #$attempt)"; exit 0; fi
+            sleep $(( attempt * 3 ))
+          done
+          echo "coverage push failed after 5 attempts"; exit 1

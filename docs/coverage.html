@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Coverage</title>
+<meta name="description" content="Coverage per month-end × parameter family, for every universe — how much of the data a strategy could actually see at each date." />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; font-feature-settings:"tnum" 1; }
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:.75rem}
+
+  /* theme.css makes <body> a COLUMN flex container. A flex item's automatic minimum size
+   * then refuses to shrink below its content, so the matrix's natural width (~1380px) pushed
+   * <main> to 1424px inside a 1269px body and the whole PAGE panned sideways — measured, not
+   * guessed. min-width:0 is what lets the scroll stay inside .mwrap where it belongs. */
+  main{min-width:0;width:100%}
+
+  /* ---- the matrix -------------------------------------------------------
+   * Own scroller with sticky head + sticky Date/Members columns, so a 300-row
+   * × 20-column grid stays readable without the page itself scrolling sideways.
+   * .sw-grid opts out of theme.js's phone card-ification (see theme.js
+   * responsifyAll) — this IS a grid, cards would destroy it. */
+  .mwrap{overflow:auto;max-width:100%;max-height:70vh;border:1px solid var(--border);border-radius:.75rem;background:var(--surface)}
+  table.mx{border-collapse:separate;border-spacing:0;font-size:12px;width:max-content;min-width:100%}
+  table.mx th, table.mx td{padding:.28rem .3rem;white-space:nowrap;text-align:center}
+  table.mx thead th{position:sticky;top:0;z-index:3;background:var(--surface-2);
+    border-bottom:1px solid var(--border);font-weight:700;color:var(--text-muted);font-size:11px;
+    padding:.5rem .45rem;cursor:pointer;user-select:none}
+  table.mx thead th.plain{cursor:default}
+  table.mx thead th:hover:not(.plain){color:var(--accent)}
+  /* second header row (open families' parameters) sticks BELOW the first — --h1 is the
+     measured height of row 1, set after each render */
+  table.mx thead tr:nth-child(2) th{top:var(--h1,28px);z-index:2}
+  table.mx thead tr:nth-child(2) th.d,
+  table.mx thead tr:nth-child(2) th.m{z-index:4}
+  table.mx thead th.sub{font-weight:600;font-size:10px;color:var(--text-faint);background:var(--surface-3)}
+  table.mx tbody td.d, table.mx thead th.d{position:sticky;left:0;z-index:2;background:var(--surface);
+    text-align:left;font-weight:600;padding-left:.7rem;border-right:1px solid var(--border)}
+  table.mx thead th.d{z-index:4;background:var(--surface-2)}
+  table.mx tbody td.m, table.mx thead th.m{position:sticky;left:var(--dw,86px);z-index:2;background:var(--surface);
+    text-align:right;color:var(--text-faint);font-weight:600;padding-right:.7rem;border-right:1px solid var(--border)}
+  table.mx thead th.m{z-index:4;background:var(--surface-2)}
+  table.mx tbody tr:hover td{background:var(--surface-2)}
+  table.mx tbody tr.yr td.d{color:var(--accent);font-weight:800}
+
+  /* one cell = a tinted pill; the tint IS the ratio, so a column reads as a ramp */
+  .pl{display:block;min-width:2.6rem;border-radius:.4rem;padding:.2rem .3rem;font-weight:700;
+    font-variant-numeric:tabular-nums;background:rgba(99,102,241,.12);color:var(--text)}
+  .pl.on{color:#fff}
+  .pl.na{background:transparent;color:var(--text-faint);font-weight:500}
+  .pl.fg{outline:2px solid #f43f5e;outline-offset:-2px;color:#e11d48;background:rgba(244,63,94,.10);font-weight:800}
+  html[data-theme="dark"] .pl.fg{color:#fda4af;background:rgba(244,63,94,.16)}
+
+  .chip{display:inline-flex;align-items:center;gap:.3rem;padding:.15rem .5rem;border-radius:9999px;
+    font-size:11px;font-weight:700;background:var(--surface-3);color:var(--text-muted)}
+  select.ctl{background:var(--surface);border:1px solid var(--border);border-radius:.5rem;
+    padding:.35rem .6rem;font-size:12px;font-weight:600;color:var(--text)}
+  /* the low end of the ramp is nearly invisible on a dark surface — outline the swatch
+     so "0%" still reads as a swatch and not as a gap in the legend */
+  .lgd{width:.85rem;height:.85rem;border-radius:.25rem;display:inline-block;vertical-align:-2px;
+    box-shadow:inset 0 0 0 1px var(--border-strong)}
+  /* ---- phones -----------------------------------------------------------
+   * theme.js scrollifies EVERY table ≥4 columns: it adds .sw-scrollx to this
+   * holder, and theme.css then sets overflow-y:hidden on it — which would clip
+   * 290 rows down to the ~20 that fit and make the rest unreachable. This holder
+   * scrolls BOTH ways by design, so take the x-scroll and keep the y.
+   * The sub-header's first cells carry text ("month"/"size") for the same
+   * reason: a blank leading header cell trips theme.js's sw-pin2 heuristic,
+   * which would unpin the date column and pin Members instead. */
+  @media (max-width:640px){
+    html[data-theme] .mwrap.sw-scrollx{overflow:auto;max-height:70vh}
+    html[data-theme] .mwrap.sw-scrollx table th,
+    html[data-theme] .mwrap.sw-scrollx table td{padding:.3rem .32rem;font-size:11px}
+    html[data-theme] .mwrap.sw-scrollx table thead th{padding:.45rem .35rem}
+    /* theme.css pins the first header cell at z-index:2 and outranks this page on
+       specificity — so the scrolling family headings (z-index:3) painted straight over
+       "Date". Re-assert the stack from inside .mwrap, where we outrank it back. */
+    html[data-theme] .mwrap.sw-scrollx table thead th.d,
+    html[data-theme] .mwrap.sw-scrollx table thead th.m{z-index:6}
+    html[data-theme] .mwrap.sw-scrollx table tbody td.d,
+    html[data-theme] .mwrap.sw-scrollx table tbody td.m{z-index:3}
+    .pl{min-width:2.2rem}
+  }
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav></nav>
+  </div>
+</header>
+
+<main class="max-w-screen-2xl mx-auto px-4 py-6">
+  <div class="mb-4 flex items-start gap-3 flex-wrap">
+    <div class="min-w-0">
+      <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+        <span>🧭</span> Coverage
+      </h1>
+      <p class="text-sm text-slate-500 mt-1 max-w-3xl">
+        Every screening parameter the site holds, counted at every month-end, for every universe.
+        A cell is <b>how many of that date's members carried a usable value</b> — decided by the live
+        backtest engine's own <code class="text-[11px]">factorsAt()</code> / <code class="text-[11px]">fieldVal()</code>,
+        so it is literally what a strategy could see there. Columns are families; click one to open the
+        individual parameters underneath. Red rings are the smoke detector, not a verdict.
+      </p>
+    </div>
+  </div>
+
+  <div id="banner" class="card p-3 mb-4 text-xs text-slate-500">Loading coverage…</div>
+
+  <div id="body" class="hidden">
+
+    <!-- controls -->
+    <div class="card p-3 mb-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+      <label class="flex items-center gap-2 text-xs font-semibold text-slate-600">Universe
+        <select id="uni" class="ctl"></select>
+      </label>
+      <label class="flex items-center gap-2 text-xs font-semibold text-slate-600">From
+        <select id="from" class="ctl">
+          <option value="0">Everything</option>
+          <option value="2010">2010</option>
+          <option value="2015">2015</option>
+          <option value="2020" selected>2020</option>
+          <option value="2024">2024</option>
+        </select>
+      </label>
+      <label class="flex items-center gap-2 text-xs font-semibold text-slate-600">Show
+        <select id="mode" class="ctl">
+          <option value="n" selected>Counts</option>
+          <option value="p">% of members</option>
+        </select>
+      </label>
+      <label class="flex items-center gap-2 text-xs font-semibold text-slate-600">Order
+        <select id="ord" class="ctl">
+          <option value="desc" selected>Newest first</option>
+          <option value="asc">Oldest first</option>
+        </select>
+      </label>
+      <span class="grow"></span>
+      <span id="stamp" class="text-[11px] text-slate-400"></span>
+    </div>
+
+    <!-- summary -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+      <div class="card p-3"><div class="text-[11px] uppercase tracking-wide text-slate-400 font-semibold">Members now</div><div id="sMem" class="text-2xl font-extrabold text-slate-800">–</div><div id="sMemSub" class="text-[11px] text-slate-400"></div></div>
+      <div class="card p-3"><div class="text-[11px] uppercase tracking-wide text-slate-400 font-semibold">Parameters</div><div id="sPar" class="text-2xl font-extrabold text-slate-800">–</div><div id="sParSub" class="text-[11px] text-slate-400">in this matrix</div></div>
+      <div class="card p-3"><div class="text-[11px] uppercase tracking-wide text-slate-400 font-semibold">Full-coverage families</div><div id="sFull" class="text-2xl font-extrabold text-emerald-600">–</div><div class="text-[11px] text-slate-400">≥99% at the latest date</div></div>
+      <div class="card p-3"><div class="text-[11px] uppercase tracking-wide text-slate-400 font-semibold">Red flags</div><div id="sFlag" class="text-2xl font-extrabold text-rose-600">–</div><div id="sFlagSub" class="text-[11px] text-slate-400">in the shown range</div></div>
+    </div>
+
+    <div id="unote" class="text-[11px] text-slate-500 mb-2"></div>
+
+    <div class="mwrap mb-2"><table class="mx sw-grid"><thead id="mhead"></thead><tbody id="mbody"></tbody></table></div>
+
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-slate-500 mb-6">
+      <span class="font-semibold text-slate-600">Tint = share of members covered</span>
+      <span><i class="lgd" style="background:color-mix(in srgb, var(--accent) 8%, transparent)"></i> 0%</span>
+      <span><i class="lgd" style="background:color-mix(in srgb, var(--accent) 40%, transparent)"></i> 50%</span>
+      <span><i class="lgd" style="background:color-mix(in srgb, var(--accent) 92%, transparent)"></i> 100%</span>
+      <span><i class="lgd" style="outline:2px solid #f43f5e;outline-offset:-2px;background:rgba(244,63,94,.12)"></i> flagged</span>
+      <span class="text-slate-400">· “–” = no membership roll for that date</span>
+    </div>
+
+    <!-- red flags -->
+    <div id="flagsBox" class="card p-4 mb-6">
+      <div class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-2">Red flags <span id="flagN" class="text-rose-600"></span></div>
+      <p class="text-[11px] text-slate-500 mb-3">
+        A date is flagged when its coverage sits <b>below half its own neighbourhood median</b> (±6 month-ends,
+        and only where that median is a real population, &gt;200) — or, for a universe with a real membership
+        roll, when it covers <b>under 90% of that date's members while the neighbours clear it by ≥3 points</b>.
+        Both checks require established coverage <i>before</i> the date, so the first month of a ramp is not a
+        crater. This finds holes; it does not diagnose them.
+      </p>
+      <div id="flags" class="text-xs"></div>
+    </div>
+
+    <!-- what each parameter means -->
+    <div class="card p-4 mb-6">
+      <div class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-2">What each column counts</div>
+      <div id="rules" class="grid sm:grid-cols-2 gap-x-6 gap-y-2 text-[11px]"></div>
+    </div>
+
+    <div class="card p-4 mb-8">
+      <div class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-2">Deliberately absent</div>
+      <p class="text-[11px] text-slate-500 mb-2">These exist as fields but have no point-in-time history to count, so they get no column rather than a column of zeroes.</p>
+      <ul id="nohist" class="text-[11px] text-slate-600 space-y-1"></ul>
+    </div>
+  </div>
+</main>
+
+<script>
+(function () {
+  'use strict';
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  var $ = function (id) { return document.getElementById(id); };
+
+  // Owner-only page (client-side curtain; nav hides it for non-owners too).
+  function swLock(){ document.querySelector('main').innerHTML =
+    '<div class="max-w-md mx-auto text-center py-20"><div class="text-5xl mb-4">🔒</div>' +
+    '<h1 class="text-lg font-bold text-slate-800 mb-2">This page is private</h1>' +
+    '<p class="text-sm text-slate-500">It\'s a personal tool of the site owner. The rest of the site is open — head back to the <a class="text-indigo-600 font-semibold hover:underline" href="./index.html">home page</a>.</p></div>'; }
+  var SW_OWNER = (function(){ try { return !!localStorage.getItem('bt_owner_key'); } catch(e){ return false; } })();
+  if (!SW_OWNER) { swLock(); return; }
+
+  var IDX = null;          // coverage/index.json — families, rules, universe list
+  var U = null;            // the loaded universe payload
+  var CACHE = {};          // slug -> payload (a re-pick of the same universe is free)
+  var OPEN = {};           // family id -> expanded into its parameters?
+  var FAM = null;          // derived: [familyIndex][dateIndex] = [weakestCount, whichParam]
+
+  // A family cell is the weakest parameter in it. The payload deliberately does NOT ship this —
+  // it is one min() over numbers already present, and a shipped copy could drift from them.
+  function deriveFamilies() {
+    var pos = {}; U.paramKeys.forEach(function (k, i) { pos[k] = i; });
+    FAM = IDX.families.map(function (f) {
+      var idxs = f.params.map(function (p) { return pos[p.k]; });
+      return U.dates.map(function (_, di) {
+        if (U.members[di] < 0) return -1;
+        var lo = Infinity, which = 0;
+        idxs.forEach(function (pi, j) { var v = U.params[pi][di]; if (v < lo) { lo = v; which = j; } });
+        return [lo === Infinity ? 0 : lo, which];
+      });
+    });
+  }
+
+  // Universe menu grouping — 30 entries in one flat <select> is a wall.
+  var GROUPS = [
+    ['Whole market', ['all', 'liquid', 'fno']],
+    ['Nifty core',   ['nifty-50', 'nifty-next-50', 'nifty-100', 'nifty-200', 'nifty-500']],
+    ['By size',      ['nifty-midcap-50', 'nifty-midcap-100', 'nifty-midcap-150', 'nifty-smallcap-50',
+                      'nifty-smallcap-100', 'nifty-smallcap-250', 'nifty-largemidcap-250', 'nifty-midsmallcap-400']]
+  ];
+
+  function boot() {
+    fetch('./coverage/index.json', { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (d) { IDX = d; buildControls(); return pick(localStorage.getItem('cov_uni') || 'nifty-500'); })
+      .catch(function (e) {
+        $('banner').innerHTML = '<span class="text-rose-600 font-semibold">Could not load the coverage payload.</span> ' +
+          '<span class="text-slate-400">' + esc(e.message) + ' — it is baked by <code>scripts/build_coverage_matrix.js</code> in the weekly <code>refresh-coverage.yml</code> run.</span>';
+      });
+  }
+
+  function buildControls() {
+    var bySlug = {}; IDX.universes.forEach(function (u) { bySlug[u.slug] = u; });
+    var used = {}, html = '';
+    GROUPS.forEach(function (g) {
+      var opts = g[1].filter(function (s) { return bySlug[s]; });
+      if (!opts.length) return;
+      html += '<optgroup label="' + esc(g[0]) + '">' + opts.map(function (s) {
+        used[s] = 1; return '<option value="' + esc(s) + '">' + esc(bySlug[s].name) + '</option>';
+      }).join('') + '</optgroup>';
+    });
+    var rest = IDX.universes.filter(function (u) { return !used[u.slug]; });
+    if (rest.length) html += '<optgroup label="Sector indices">' + rest.map(function (u) {
+      return '<option value="' + esc(u.slug) + '">' + esc(u.name) + '</option>'; }).join('') + '</optgroup>';
+    $('uni').innerHTML = html;
+
+    $('stamp').textContent = 'built ' + IDX.updated + ' · prices to ' + IDX.dataEnd + ' · ' +
+      IDX.nDates + ' month-ends · ' + IDX.universes.length + ' universes';
+
+    $('rules').innerHTML = IDX.families.map(function (f) {
+      return '<div><div class="font-bold text-slate-700">' + esc(f.label) + '</div>' +
+        '<div class="text-slate-500 mb-1">' + esc(f.note) + '</div>' +
+        '<ul class="text-slate-500 space-y-0.5">' + f.params.map(function (p) {
+          return '<li><code class="text-[10px] text-indigo-600 font-bold">' + esc(p.k) + '</code> — ' + esc(p.rule) + '</li>';
+        }).join('') + '</ul></div>';
+    }).join('');
+
+    $('nohist').innerHTML = (IDX.noHistory || []).map(function (n) {
+      return '<li><code class="text-[10px] text-indigo-600 font-bold">' + esc(n.k) + '</code> — ' + esc(n.why) + '</li>';
+    }).join('');
+
+    ['uni', 'from', 'mode', 'ord'].forEach(function (id) {
+      $(id).addEventListener('change', function () {
+        if (id === 'uni') { localStorage.setItem('cov_uni', $('uni').value); pick($('uni').value); }
+        else render();
+      });
+    });
+  }
+
+  function pick(slug) {
+    if (!IDX.universes.some(function (u) { return u.slug === slug; })) slug = IDX.universes[0].slug;
+    $('uni').value = slug;
+    if (CACHE[slug]) { U = CACHE[slug]; deriveFamilies(); render(); return Promise.resolve(); }
+    $('banner').textContent = 'Loading ' + slug + '…';
+    return fetch('./coverage/' + slug + '.json', { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (d) { CACHE[slug] = d; U = d; deriveFamilies(); render(); })
+      .catch(function (e) { $('banner').innerHTML = '<span class="text-rose-600 font-semibold">Could not load ' + esc(slug) + '.</span> <span class="text-slate-400">' + esc(e.message) + '</span>'; });
+  }
+
+  // rows currently shown, newest- or oldest-first
+  function rowIdx() {
+    var minY = +$('from').value, out = [];
+    for (var i = 0; i < U.dates.length; i++) if (!minY || +U.dates[i].slice(0, 4) >= minY) out.push(i);
+    if ($('ord').value === 'desc') out.reverse();
+    return out;
+  }
+
+  var PCT = false;   // set once per render — this runs for every one of ~5,000 cells
+  function cell(count, mem, flagged, title) {
+    if (count < 0 || mem < 0) return '<td><span class="pl na" title="no membership roll at this date">–</span></td>';
+    var r = mem > 0 ? count / mem : 0;
+    var txt = PCT ? (mem > 0 ? (r * 100).toFixed(mem > 400 ? 1 : 0) : '0') : String(count);
+    // 8%→92% ink so even 0 keeps a visible cell edge, and 100% is not pure accent
+    var a = (8 + Math.max(0, Math.min(1, r)) * 84).toFixed(0);
+    var cls = 'pl' + (r >= 0.55 ? ' on' : '') + (flagged ? ' fg' : '');
+    var style = flagged ? '' : ' style="background:rgba(99,102,241,' + (a / 100) + ');background:color-mix(in srgb, var(--accent) ' + a + '%, transparent)"';
+    return '<td><span class="' + cls + '"' + style + ' title="' + esc(title) + '">' + txt + '</span></td>';
+  }
+
+  function render() {
+    if (!U) return;
+    PCT = $('mode').value === 'p';
+    var fams = IDX.families, rows = rowIdx();
+    var shownFlags = [];
+
+    // flag lookup: family -> {dateIndex: reason}
+    var fmap = {};
+    fams.forEach(function (f) {
+      var list = U.flags[f.id] || [];
+      var m = {}; list.forEach(function (x) { m[x.i] = x; });
+      fmap[f.id] = m;
+    });
+
+    // ---- header (two rows: families, then the open families' parameters)
+    var h1 = '<tr><th class="d plain">Date</th><th class="m plain" title="Universe size at this date">Members</th>';
+    var h2 = '<tr><th class="d sub plain">month</th><th class="m sub plain">size</th>';
+    var anyOpen = false;
+    fams.forEach(function (f) {
+      var open = !!OPEN[f.id], np = open ? f.params.length : 1;
+      if (open) anyOpen = true;
+      h1 += '<th colspan="' + np + '" data-fam="' + esc(f.id) + '" title="' + esc(f.note) + ' — click to ' + (open ? 'collapse' : 'expand') + '">' +
+        esc(f.label) + ' <span class="text-slate-400">' + (open ? '⌄' : '›') + '</span></th>';
+      h2 += open
+        ? f.params.map(function (p) { return '<th class="sub plain" title="' + esc(p.rule) + '">' + esc(p.k) + '</th>'; }).join('')
+        : '<th class="sub plain"></th>';
+    });
+    $('mhead').innerHTML = h1 + '</tr>' + (anyOpen ? h2 + '</tr>' : '');
+
+    // ---- body
+    var pKey = {}; U.paramKeys.forEach(function (k, i) { pKey[k] = i; });
+    var out = [], lastY = null;
+    rows.forEach(function (di) {
+      var mem = U.members[di], yr = U.dates[di].slice(0, 4);
+      var isY = yr !== lastY; lastY = yr;
+      var tr = '<tr' + (isY ? ' class="yr"' : '') + '><td class="d">' + esc(U.months[di].slice(0, 7)) +
+        '</td><td class="m">' + (mem < 0 ? '–' : mem) + '</td>';
+      fams.forEach(function (f, fi) {
+        var fl = fmap[f.id][di];
+        if (OPEN[f.id]) {
+          f.params.forEach(function (p) {
+            var c = U.params[pKey[p.k]][di];
+            tr += cell(c, mem, false, p.k + ' · ' + U.dates[di] + ' · ' + c + ' of ' + mem);
+          });
+        } else {
+          var pair = FAM[fi][di];
+          var c = (pair === -1) ? -1 : pair[0];
+          var weakest = (pair === -1) ? '' : f.params[pair[1]].k;
+          var t = f.label + ' · ' + U.dates[di] + ' · ' + c + ' of ' + mem +
+            (weakest ? ' · weakest: ' + weakest : '') +
+            (fl ? ' · FLAGGED (neighbours ≈ ' + fl.med + ')' : '');
+          tr += cell(c, mem, !!fl, t);
+          if (fl) shownFlags.push({ fam: f, di: di, fl: fl, c: c, mem: mem, weakest: (pair === -1 ? 0 : pair[1]) });
+        }
+      });
+      out.push(tr + '</tr>');
+    });
+    $('mbody').innerHTML = out.join('');
+
+    // family headings toggle open/closed
+    Array.prototype.forEach.call($('mhead').querySelectorAll('th[data-fam]'), function (th) {
+      th.addEventListener('click', function () { var k = th.getAttribute('data-fam'); OPEN[k] = !OPEN[k]; render(); });
+    });
+    // Pin offsets can only be MEASURED, not assumed: the date column's width changes with the
+    // theme's font and the phone padding override, and header row 2 has to sit under row 1.
+    var tbl = document.querySelector('table.mx');
+    var d0 = $('mbody').querySelector('td.d');
+    if (d0) tbl.style.setProperty('--dw', d0.getBoundingClientRect().width + 'px');
+    var r1 = $('mhead').rows[0];
+    if (r1) tbl.style.setProperty('--h1', r1.getBoundingClientRect().height + 'px');
+
+    // ---- summary + flags panel
+    var last = U.members.length - 1;
+    $('sMem').textContent = U.members[last] < 0 ? '–' : U.members[last];
+    $('sMemSub').textContent = U.name + ' · ' + U.dates[last];
+    $('sPar').textContent = U.paramKeys.length;
+    $('sParSub').textContent = fams.length + ' families';
+    var full = fams.filter(function (f, fi) {
+      var p = FAM[fi][last]; return p !== -1 && U.members[last] > 0 && p[0] / U.members[last] >= 0.99;
+    }).length;
+    $('sFull').textContent = full + ' / ' + fams.length;
+    $('sFlag').textContent = shownFlags.length;
+    $('sFlagSub').textContent = 'in the shown range' + (anyOpen ? ' (collapsed families only)' : '');
+    $('unote').innerHTML = '<b class="text-slate-600">' + esc(U.name) + '</b> — ' + esc(U.note) +
+      (U.rollFrom ? ' Its membership roll starts <b>' + esc(U.rollFrom) + '</b>; earlier month-ends are left blank rather than back-filled with the oldest roll.' : '');
+
+    $('flagN').textContent = '(' + shownFlags.length + ')';
+    $('flags').innerHTML = shownFlags.length
+      ? shownFlags.sort(function (a, b) { return b.di - a.di; }).map(function (x) {
+          var pct = x.mem > 0 ? (x.c / x.mem * 100).toFixed(1) + '%' : '–';
+          return '<div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 py-1 border-b border-slate-100 last:border-0">' +
+            '<span class="chip">' + esc(U.dates[x.di]) + '</span>' +
+            '<b class="text-slate-700">' + esc(x.fam.label) + '</b>' +
+            '<span class="text-rose-600 font-bold">' + x.c + '</span>' +
+            '<span class="text-slate-400">of ' + x.mem + ' members (' + pct + ')</span>' +
+            '<span class="text-slate-400">·</span>' +
+            '<span class="text-slate-500">' + (x.fl.why === 'half'
+              ? 'neighbourhood median is ' + x.fl.med
+              : 'neighbours cover ≈' + x.fl.med + ' of the same roll') + '</span>' +
+            '<span class="text-slate-400">· weakest: ' + esc(x.fam.params[x.weakest].k) + '</span>' +
+          '</div>';
+        }).join('')
+      : '<div class="text-slate-500">Nothing flagged in this range. Every family tracks its own neighbourhood.</div>';
+
+    $('banner').innerHTML = '<b class="text-slate-700">' + esc(U.name) + '</b>' +
+      '<span class="text-slate-300"> · </span>' + U.dates[0] + ' → ' + U.dates[last] +
+      '<span class="text-slate-300"> · </span>coverage measured with the live backtest engine' +
+      '<span class="text-slate-300"> · </span>data to ' + esc(U.dataEnd);
+    $('body').classList.remove('hidden');
+  }
+
+  boot();
+})();
+</script>
+</body>
+</html>

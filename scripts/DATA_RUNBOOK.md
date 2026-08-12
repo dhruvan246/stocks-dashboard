@@ -60,6 +60,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§59** ★★ STANDALONE-SLOT-HOLDS-CONSOLIDATED AUDIT — the screen is not a defect count (**read before acting on any std/con equality screen**)
 - **§80** ★★★ SERIES **BZ** WAS NEVER INGESTED — a live trading series discarded for years (**read before touching the bhavcopy filter or a price-series gap**)
 - **§91** ★★★ postDrift COVERAGE — annual ≠ rebalance coverage; the `ann=0` LOOK-AHEAD (`0 != null` is TRUE in JS); sf_fundamentals starts Dec-2002 (**read before any point-in-time factor-coverage claim**)
+- **§92** ★★★ COVERAGE MATRIX (private page) — measure THROUGH the engine in a `vm`; `lastSnap()` FABRICATES membership before an index existed (**read before any point-in-time membership read**)
 
 ---
 
@@ -8865,3 +8866,75 @@ task — and ⚠️ **a non-overlap price-series test is NOT sufficient to prove
 NESTLE→NESTLEIND on a **6.4-YEAR** price gap, BAYER→BAYERCROP on 6.8y, UNITEDBREW→UBL on 6y. Only
 tight handoffs (L&T→LT 1 month, UNITEDPHOS→UPL 7 weeks) are even candidates, and each still needs
 ISIN or series-reproduction proof (§89, §90k).
+
+---
+
+## 92. COVERAGE MATRIX — the private page that answers "what did we actually have, when?"  (2026-08-12)
+
+`docs/coverage.html` (🧭 Coverage Matrix, Owner console, PRIVATE) + `scripts/build_coverage_matrix.js`
++ `.github/workflows/refresh-coverage.yml`. Built on request: *"a page … which will have coverage data
+for all parameters that i hv for al universe"*. **43 parameters × 16 families × 296 month-ends
+(2002-01 → date) × 30 universes.** A cell = how many of that date's members carried a usable value.
+
+### 92a. ★★★ MEASURE THROUGH THE ENGINE, NOT A RE-IMPLEMENTATION
+The builder loads `docs/backtest-engine.js` **verbatim** into a Node `vm` context and asks
+`factorsAt()` + `fieldVal()` — the same accessors a backtest screens on — so a cell is by construction
+"what a strategy could see at that date", and the page cannot drift from the engine when the engine
+changes. §91d's lesson in the other direction: *a harness that re-implements the selection loop proves
+nothing about the code path you changed.*
+- **vm gotcha (same as §7.4 / the beta-coverage harness):** the engine's globals are `let`-declared,
+  which do NOT attach to a contextified sandbox as settable properties. Inject with an **in-context
+  assignment** inside `runInContext` (`SERIES = …`), never `sandbox.SERIES = …`.
+- `loadFund()` / `loadShp()` run **unmodified** against a `fetch` stub that reads `docs/` off disk —
+  so the FUND_ALIAS rename merge is not copied into a second place that can rot.
+- Series normalisation reuses the engine's own `_sfNorm` / `_sfMeta`.
+- One `factorsAt()` pass per date over the WHOLE market (`indexName: null`); every universe is then a
+  mask over those rows. 30 universes for the price of one scan — ~5 min end to end.
+- `filters:` in the builder's cfg exist ONLY to switch on `needsTech`/`needsFund`/`needsShp`.
+  `factorsAt` never applies filters (that is `screenAsOf`), so they cannot drop rows.
+
+### 92b. ★★★ `lastSnap()` FABRICATES MEMBERSHIP BEFORE AN INDEX EXISTED — gate on the first snapshot
+`lastSnap()` ends `best || list[0]`: asked for a date before its earliest snapshot it returns the
+**oldest roll**. Sane for a backtest; a lie on a coverage chart. **Only Nifty 500's roll reaches 2002
+(2002-10-02); every other index starts 2015-2021** (Nifty Healthcare 2021-03-31, Oil & Gas 2021-03-31,
+FMCG 2019-09-27, LargeMidcap 250 2018-02-05, F&O 2015-01-30). Uncaught, the page showed **F&O with 144
+"members" in Jan-2002**, 13 years before the roll begins. The builder now records
+`members = -1` for any date < the universe's first `effectiveDate` and the page prints `–`;
+`rollFrom` is stated under the universe name. **Any point-in-time membership read needs this gate.**
+
+### 92c. ★★ `!= null` ON A DATE FIELD — §91c bites new code too
+The revenue family is made point-in-time with sf_fundamentals' announce date for the same quarter
+(sf_revop carries none). The first draft picked it with `[q[2], q[4]].filter(x => x != null)` — which
+admits the **ann = 0 "unknown date" sentinel** and, via `Math.min(0, 20240515) = 0`, would also have
+**shadowed a perfectly dated other basis**. Fixed to `x > 0`. Grep every new point-in-time gate.
+
+### 92d. ★★ 0 IS NOT ALWAYS ABSENT — and it is not always present either. Measure it.
+- `turnAvgAt()` returns **0, never null**, when nothing is recorded — a plain non-null test reports
+  turnover as 100% covered forever. That column counts `> 0` (`zeroIsNull` in the builder's PARAMS).
+- The opposite check, **measured** before trusting `!= null` on sf_revop's value slots: `None` is the
+  absence marker there (revCon 45.1%, opCon 51.6%, ebitCon 54.7% null) and exact zeros are rare
+  (0.06-2.29%) — so `!= null` is right for values and `> 0` would have under-counted real zeros.
+- `profitStreak` 0 and `mdd6` 0 are real answers; `indRank` is assigned to every screened row
+  (`|| 10`), so it tracks Price rather than measuring anything of its own.
+
+### 92e. Deliberately NOT columns
+`mcap` / `hist_mcap` are verified always-0 in survivorship-free mode (no source exists — §factor
+coverage), and promoter/public holding has no long history (`shp_engine.json` is FII/DII only;
+`shareholding.json` keeps 8 quarters). They are listed on the page under "Deliberately absent" rather
+than rendered as columns of zeroes.
+
+### 92f. The flag rule (smoke detector, not a gate)
+Per family per date: coverage **< half its own ±6-month neighbourhood median** (median > 200 = a real
+population) — or, for a universe with a real roll, **< 90% of that date's members while the neighbours
+clear it by ≥3pp**. **Both require established coverage BEFORE the date** (`leftMedian > 200`),
+otherwise the first month of every ramp reads as a crater and the page teaches you to ignore it.
+
+### 92g. Cadence + cost
+**WEEKLY** (Sun 19:40 UTC) + `workflow_dispatch`, in its own workflow. Not nightly: the payload is
+~1.5 MB across 31 files, rewritten whole each build, so nightly would add ~300 MB/yr to a repo that
+already exiles its price data to a release asset. Not folded into `refresh-backtest-data.yml` either
+(which has a fresh bin on disk and would save the download) — that is the critical daily data job on a
+30-minute timeout, and a scoreboard must never be able to push it over. **Run it by hand after landing
+a backfill.** Payload is per-universe (`docs/coverage/<slug>.json`, ~50 KB) + `index.json`; the page
+loads exactly one universe. Family cells are NOT shipped — the page derives them with one `min()` over
+`params`, so there is no second copy to disagree.
