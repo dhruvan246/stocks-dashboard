@@ -61,8 +61,9 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§80** ★★★ SERIES **BZ** WAS NEVER INGESTED — a live trading series discarded for years (**read before touching the bhavcopy filter or a price-series gap**)
 - **§91** ★★★ postDrift COVERAGE — annual ≠ rebalance coverage; the `ann=0` LOOK-AHEAD (`0 != null` is TRUE in JS); sf_fundamentals starts Dec-2002 (**read before any point-in-time factor-coverage claim**)
 - **§92** ★★★ COVERAGE MATRIX (private page) — measure THROUGH the engine in a `vm`; `lastSnap()` FABRICATES membership before an index existed (**read before any point-in-time membership read**)
-- **§94** ★★★ `alive` WAS ASKED OF THE WRONG EXCHANGE — an NSE-tape flag answered by a BSE universe; a local recency guard is a note that the FIELD is wrong (**read before trusting `meta.alive` or adding a workaround around it**)
 - **§93** ★★★ ERA ORPHANS — measure an identity campaign's CEILING first; the successor pool IS the proof; PREVCLOSE has perfect recall and useless precision (**read before any rename/alias hunt**)
+- **§94** ★★★ `alive` WAS ASKED OF THE WRONG EXCHANGE — an NSE-tape flag answered by a BSE universe; a local recency guard is a note that the FIELD is wrong (**read before trusting `meta.alive` or adding a workaround around it**)
+- **§95** ★★★ ISSUER-PREFIX SWEEP — 104 renames the full-ISIN merge missed; the bhavcopy ISIN column starts 2011; a screen must be run against the cases you already know (**read before any ISIN/rename sweep or a build_sf_data merge change**)
 
 ---
 
@@ -9429,3 +9430,137 @@ live DOM/network A/B; the §17 ledger state for 500346.
 delisting, suspension, or a listing-condition failure) — no NSE circular or BSE announcement from
 that period was read this session, and nothing in this fix depends on the reason. Also unread: the
 other 86 symbols' individual exit stories (only their off-NSE status was verified, twice each).
+  → **SWEPT 2026-08-12, see §95: it is 104 pairs, not 2.**
+
+---
+
+## 95. ★★★ THE ISSUER-PREFIX SWEEP — 104 renames the FULL-ISIN merge missed, and the 1 it must never make  (2026-08-12)
+§93f left the class open: "the full-ISIN auto-merge class in 93d is almost certainly wider than
+these two pairs." Swept, and it is — **104 confirmed pairs over 96 chains, 225,727 stranded bars.**
+Tools (all read `scripts/_live/`, §7.0/§7.1b): `isin_sources_fetch.py` → `isin_issuer_sweep.py`
+→ `isin_seam_evidence.py` → `isin_seam_adjudicate.py` → `isin_seam_land.py` → `isin_seam_measure.py`.
+
+### 95a. ★★★ THE SCREEN'S RECALL WAS ZERO ON ITS OWN TWO KNOWN CASES — measure that FIRST
+Group the bin's keys by `meta.isin[:7]` and every issuer holding >1 key is a candidate. Run it
+straight and it finds 50 groups — and **neither pair §93d proved by hand**. Two independent causes,
+both measured, not guessed:
+* **NSE's bhavcopy has carried an ISIN column only since 2011.** Every one of the 1,003 keys whose
+  last bar is 2010 or earlier has NO isin; 30 of 30 that died in 2012 have one. BILT (last bar
+  2008-02-28) therefore has none, and its era is exactly where this class lives.
+* **A merged key loses it too.** TVSHLTD carries no isin although SUNCLAYTON, the key it should have
+  absorbed, carries INE105A01027 — the surviving side was a day-1 stub (§30).
+Fix the reach with NSE's own DATED security lists, each applied under a rule that cannot mis-attribute
+a re-issued symbol (§89): today's `EQUITY_L` only to a key still trading at the file's date; a Wayback
+`EQUITY_L` capture only to a key whose OWN BARS straddle the capture date. **2,245 → 3,080 keys
+resolved, 50 → 101 groups, and recall on the known set 0/2 → 2/2.**
+⚠️ **And one of those 51 extra groups came from a bug in the screen itself**: `read_equity_l` matched
+the ISIN column with `startswith("ISIN")`, which reads today's `ISIN NUMBER` but silently returns
+ZERO ISINs from the 2006 capture, whose column is `SEC_ISIN_CD`. Match on CONTAINS. The fix alone
+added 64 keys and 20 groups — a column-name change five files back was costing a fifth of the sweep.
+★★★ The general rule: **a screen calibrated on nothing has no measured recall. Run it against the
+cases you already know are true before you believe a single one of its hits** (§93c is the mirror
+image: perfect recall, useless precision — both numbers have to be taken).
+
+### 95b. CLASSIFY ON SHARED SESSIONS, NOT ON RANGES — and the segments that fake an overlap
+A shared issuer says one legal entity, nothing about whether the bin should join the keys:
+* **co-trading = decisive evidence AGAINST a rename** (§93b: one company cannot trade under two NSE
+  symbols at once). In today's whole cash universe — **2,401 symbols, 2,398 issuers — exactly ONE
+  issuer has more than one simultaneously-listed security**: INE224E, GATECH beside GATECHDVR. The
+  historical sweep finds the same single case, 1,454 shared sessions.
+* Partly-paid lines never reach the bin at all — §80's filter takes only EQ/BE/BZ.
+Raw `[first,last]` ranges are the wrong input: several dead keys hold isolated bars a decade past
+their life and would fake an overlap with their own successor. Split each tape where consecutive
+bars are >200 d apart, keep the segments with ≥15 bars, and classify on **shared BAR-DAYS**.
+⚠️ Keeping only the LARGEST segment is also wrong: NAGREEKA trades 1996-2002 (323 weekly bars) and
+again 2005-2007 (310 daily), and taking the larger one put its seam **1,977 days** from its
+successor instead of the true **89**. First real segment's start → last real segment's end.
+
+### 95c. ★★ THOSE ISOLATED BARS ARE REAL SESSIONS, FILED UNDER THE WRONG KEY  (adjacent defect, NOT fixed)
+The scattered post-life bars land on the SAME dates across unrelated symbols — 2012-01-07,
+2015-02-28, 2020-11-14, 2025-02-01 … **every one a Saturday or Sunday.** The first read called them
+junk; NSE's own file says otherwise. The 2015-02-28 bhavcopy (fetched this session) has **1,534
+rows**, TATAMOTORS at 593.35 on 4.1 m shares, AGCNET at 100.20 on 2,772 — budget Saturdays, muhurat
+Sundays and DR-drill Saturdays are full sessions (the same fact §30/update_sf_data already relies on).
+What is wrong is **where they are filed**: the weekday bars of those symbols were merged into the
+successor key while the weekend backfill landed under the ERA symbol. Measured over this sweep's
+population: **66 weekend sessions across 7 keys sit on a dead key and are MISSING from the live one**
+(TMPV 24, CPCAP 13, BBOX 11, HEALTHX 9, ANSALAPI 5, NEUEON 3, NDLVENTURE 1). Every merged key is a
+candidate; the census beyond these 101 groups has NOT been run.
+
+### 95d. THE EVIDENCE LADDER — and the volume identity that found the era symbol
+Per seam, off NSE's own dated files: `symbolchange.csv`; EQUITY_L name / DATE OF LISTING / FACE VALUE;
+the OLD key's last session and the NEW key's first session RAW (close, prevclose, ISIN, series).
+⚠️ §93c's blind spot bites here — **bin keys are post-merge canonical names, the bhavcopy carries the
+ERA name.** 29 of 109 seams had no row under the new key's own symbol. Resolved by ISIN prefix where
+the column exists (17) and otherwise by **§88b's volume identity** — the bin stores the session's raw
+traded quantity, so the row carrying that exact quantity IS the bar the key absorbed (12). That is how
+TVSHLTD's first session resolved to SUNCLAYLTD, CHOLAHLDNG's to TIFIN, BBOX's to AGCNET, PATANJALI's
+to RUCHI. **After it, 0 of 109 seams were left unidentified.**
+A seam is CONFIRMED on ≥2 legs or a symchg row; the legs are symchg · prevclose-exact-to-the-paise ·
+seam-day ISIN · EQUITY_L name · listed=first · **tape-continuous**. The last one is the pre-2011
+decider: NSE can only re-issue a symbol after the holder delists, which leaves a hole, so an unbroken
+daily tape from the seam to the date the ISIN was read means one company held that symbol throughout
+(SRIADIKARI→SABTN: no ISIN column in 2007, but SABTN's tape runs unbroken 2007-11-16 → 2024-01-23 and
+carries INE416A01036 once the column exists). **Result: 104 CONFIRMED, 5 REFUSED.**
+
+### 95e. ★★★ THE ONE REFUSAL THAT MATTERS: A RECYCLED TICKER ACROSS EXCHANGES
+`ARL → ARVINDREM` is airtight — NSE's EQUITY_L calls ARL "Arvind Remedies Limited" in 2006, 2010 AND
+2011, both ISINs (INE211C01029 → INE211C01037) come straight off the bhavcopy, and the PREVCLOSE
+carries ×10 exactly. **It must still not be landed.** The ticker ARL belongs TODAY to a live BSE
+company, Anand Rayons (`ARL.BO`, scrip 542721, a different issuer) — and because `build_sf_data`'s
+`cur` fill joins `dash_slim` on the BARE SYMBOL with no ISIN gate, the bin key holding Arvind
+Remedies' 2003-2012 NSE tape is stamped `name="Anand Rayons Ltd", ind=Textiles, alive=True`. So
+check_fund_alias's rule 2 (OLD must not be alive) refuses it, correctly: aliasing would hand Arvind
+Remedies' fundamentals to Anand Rayons. §89 in its cross-exchange form, and §76's "a symbol equal to
+a symbol is a COINCIDENCE" inside our own meta fill. Kept out of BOTH layers (§89 step 3).
+⚠️ **The refusal has to live in the GENERATOR.** Deleting the entry by hand after the first run and
+re-running put it straight back — a heal that re-applies is a nightly rewrite (§87e-bis). Both legs
+of `isin_seam_land.py` now apply the aliveness rule themselves and **a second pass writes 0.**
+
+### 95f. What landed, and the honest delta
+`_rename_map.json` 798 → 897 (+99; the 100th is ARL, refused). `check_fund_alias.py --write` then
+added **88** — more than the 99, because the new links UNBLOCK chains that previously dead-ended
+(ANAMALFIN→SHIVATEX, DEWANHOUS→PIRAMALFIN, FOURSOFT→PALREDTEC, HTMT→NDLVENTURE …) and re-pointed 2
+stale ones (PIPAVAVDOC, RDEL: RNAVAL→SWANDEF). 26 more whose TARGET is dead were hand-added with the
+script's own `_fmt` (§93d's bucket, "extra" 10 → 36). **Baked FUND_ALIAS 501 → 615, both copies
+byte-identical, checker green, sw CACHE v86 → v87.** Verified in the browser on all three consumers
+(saved-strategies, all-picks, stock-backtest): 615 entries, ARL absent, zero console errors.
+**The delta, stated the §93e way:** of the 104 aliased old keys only **8** have target quarters
+inside their own trading era — **133 quarters** made reachable (SUPPETRO 27, ALOKTEXT 23, HEXAWARE
+22, AGCNET 20, INTEGRA 16, KBL 9, CASTROL 8, RUCHISOYA 8). The other 95 are a better diagnosis, not
+better coverage: the successor's fundamentals start after the old key died.
+**The real prize is the price series, and it is untouched:** 104 dead keys still hold **225,727
+bars**, and the surviving keys start a median **11 years** after their own history — PIRAMALFIN
+begins 2025-11-07 with 4,867 bars of DHFL behind it, SPLPETRO 2022-05-24 with 5,336 of SUPPETRO.
+Every 52w hi/lo, RSI and return window on those keys is computed on a stub.
+
+### 95g. ★★★ WHY §86's CENSUS COULD NOT SEE THIS CLASS — and what a merge path must do
+§86 merges orphaned fragments gated on price continuity at the join (drift 0.93-1.07). **Only 12 of
+102 pairs here pass that gate** — the class is DEFINED by a price step, because the ISIN series moved
+when the FACE VALUE did. The two gates are complementary and disjoint; neither is a superset.
+Recommendation on the build_sf_data issuer-prefix merge path — **yes, but never bare, and never a
+naive splice.** Measured blast radius:
+| variant | groups seen | co-trading it would wrongly fuse | keys joined | bars |
+|---|---|---|---|---|
+| bhavcopy ISINs only (no new inputs) | 48 | **0** | 52 | 118,219 |
+| + EQUITY_L enrichment | 101 | **1** (GATECH/GATECHDVR) | 109 | 231,640 |
+All 52 seams the bhavcopy-only variant would make match this session's independent adjudication; 0
+were refused here. The non-overlap gate is what excludes the DVR, and it is the whole safety margin.
+⚠️ **The seam needs an explicit factor — joining the tapes is not enough.** build_sf_data chains on
+close/close and runs the ratio through `ca_factor()`, so an unhandled seam either fabricates a
+corporate action or passes a fake return: CIMCOBIRLA→CIMMCO lands at **10.32×**, inside the 8% window
+of the canonical 10 → divided out as a split that never happened; BELCERAMIC→BELLCERATL is **exactly
+3.000×**; DHFL→PIRAMALFIN is **67×** and CHEMPLAST→CHEMPLASTS **36×**, both far outside every
+fraction, so they would survive as genuine one-day moves. **74 of 104 seams carry the factor in NSE's
+own PREVCLOSE** (`prevclose_new / close_old`, exact to the paise) and that is the number to use; the
+other **28** are long-gap relistings with a nominal first prevclose (10.00, or the face value — TV-18
+opened at 5.00) and must be marked `noadjust`, the demerger convention, so nothing is fabricated and
+the discontinuity stays visible. §89b's lesson holds: a bad seam smears backwards over clean history.
+
+### 95h. The 5 REFUSED are a DIFFERENT defect — the merge's INPUT was missing, not its comparison
+SASTASUNDR/HEALTHX, TATAMOTORS/TMPV, NXTDIGITAL/NDLVENTURE, ANSALINFRA/ANSALAPI, CAREERP/CPCAP carry
+the **same full ISIN** on both keys, so the full-ISIN compare would have fired — it never saw the
+ISIN, because the successor was a day-1 stub (§30) or listed after mid-2020, when `sec_bhavdata_full`
+replaced the ISIN-bearing file. **Every rename after ~2020-07 is invisible to the ISIN auto-merge by
+construction** and depends entirely on symchg.csv + MANUAL_MERGE. All 5 are already bridged in
+`_rename_map`, so the alias layer covers them; the price series stays split. Not fixed here.
