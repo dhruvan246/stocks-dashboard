@@ -371,10 +371,11 @@ async function initUI(){
       run();
     }
     else if(runNow){ run(); }   // auto-run AND save to History (NOT view-only) — the run then nests under its strategy
-    // Show the SAVED result instantly (no recompute). The full equity curve / rebalance log / picks aren't
-    // stored, so they appear only when the user clicks ▶ Run Backtest.
-    else if(saved && saved.m && saved.m.cagr!=null) renderSaved(saved, c);
-    else $('runMsg').textContent='Loaded — click ▶ Run Backtest to compute the full results.';
+    // History "Load": paint the SAVED numbers instantly, then auto-run so the ENTIRE result page
+    // (equity curve, rebalance log, today's picks) fills in — only the summary metrics are stored.
+    // __fromLoad: this config IS the clicked history row, so the auto-run must not add a duplicate.
+    else if(saved && saved.m && saved.m.cagr!=null){ renderSaved(saved, c); window.__fromLoad=true; run(); }
+    else { window.__fromLoad=true; run(); }
   } }catch(e){}
 }
 function maxOffset(){ let mx=0; for(const k in SERIES){const d=SERIES[k].d; if(d&&d.length){const v=d[d.length-1]; if(v>mx)mx=v;}} return mx; }
