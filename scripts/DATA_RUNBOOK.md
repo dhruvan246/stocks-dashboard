@@ -61,6 +61,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§80** ★★★ SERIES **BZ** WAS NEVER INGESTED — a live trading series discarded for years (**read before touching the bhavcopy filter or a price-series gap**)
 - **§91** ★★★ postDrift COVERAGE — annual ≠ rebalance coverage; the `ann=0` LOOK-AHEAD (`0 != null` is TRUE in JS); sf_fundamentals starts Dec-2002 (**read before any point-in-time factor-coverage claim**)
 - **§92** ★★★ COVERAGE MATRIX (private page) — measure THROUGH the engine in a `vm`; `lastSnap()` FABRICATES membership before an index existed (**read before any point-in-time membership read**)
+- **§93** ★★★ ERA ORPHANS — measure an identity campaign's CEILING first; the successor pool IS the proof; PREVCLOSE has perfect recall and useless precision (**read before any rename/alias hunt**)
 
 ---
 
@@ -8989,3 +8990,134 @@ out-of-sample validated on 2018+ before it is called a PEAD edge (§7.2).
 Also for any pre-2012 window: `nifty500_live.json` starts 2012-01-02 so the grid's own `bench` is
 wrong — take the benchmark from `docs/index_monthly.json` (§7.1b.4) — and check `avgPicks` on the
 leaders (§7.1b.3).
+---
+
+## 93. ★★★ THE ERA ORPHANS — resolving a dead ticker cannot buy coverage that isn't in the file  (2026-08-12)
+60 point-in-time Nifty-500 symbols from the 1996-2008 era have a PRICE series in `sf_stock_data`
+but NO fundamentals series after `FUND_ALIAS` resolution, so `fundFor(sym)` returns null and
+`simulate()` drops them. §91's harness classes them `no-series`: **1,105 blocked rebalance-rows**.
+None appears in `FUND_ALIAS` or `_rename_map.json`, and plausible targets DO exist in
+sf_fundamentals — so the brief was "resolve them and re-measure". Tool:
+**`scripts/era_orphan_resolve.py`** → `scripts/_era_orphan_resolution.json` (tracked).
+
+### 93a. ★★★ MEASURE THE CEILING BEFORE HUNTING THE IDENTITY — and re-measure it, it MOVES
+`postDrift` needs a quarter whose **announce date ≤ the rebalance**, so every gap month earlier
+than the earliest announce date **anywhere in sf_fundamentals** is unwinnable by *any* alias,
+however correct. Ceiling(sym) = gap months on/after that floor. Two minutes of measurement, and it
+re-scoped the whole job before a single identity was chased.
+* Staged snapshot **16:35 IST**: floor **2003-02-14** (the Dec-2002 quarter, 316 symbols on one
+  deadline stamp) → **577 of the 1,105 rows structurally dead, ceiling 528**; the 44 symbols whose
+  gaps end by Jan-2004 were not worth an identity hunt at all.
+* Live file **~17:20 IST, the SAME SESSION**: floor **2002-02-14** → **ceiling 1,105, i.e. all of
+  them.** Another writer had landed §91i's GATE E pass over the pre-2003 hole while this ran (+773 rows,
+  521 of them at qe 2001-12-31…2002-09-30 across 160 keys), and CI deployed it.
+⚠️ **A ceiling computed off a staged snapshot has a shelf life measured in minutes in this repo**
+(§38: ~30 workflows plus other sessions write all day). Re-measure against LIVE before publishing
+a number, and — more important — **state the conclusion in a form that survives the move.** Here
+it did: the ceiling more than doubled and the answer did not change, because the binding
+constraint was never the ceiling (§93b).
+★ The generalisation: **an identity campaign's ceiling is a property of the CONSUMER's
+preconditions, not of the identities.** Compute what a perfect answer would be worth before
+looking for one.
+
+### 93b. ★★★ THE SUCCESSOR POOL IS THE PROOF — and at COMPANY level it is EMPTY
+Instead of proposing a target per symbol and testing it, enumerate every target that *could* buy a
+row and see what survives. A key T qualifies only if `annMin(T) ≤ OLD's last gap month`. Then:
+* **key-level filter** — T's own bin series must not start before OLD's last bar. Leaves **129
+  (old,target) pairs over just 5 distinct keys**: BBOX, PENINLAND, TMPV, NDLVENTURE, KIRLOSBROS.
+* **COMPANY-level filter** — no bar of T's whole company (T + rename-chain relatives + ISIN-issuer
+  siblings, union-found) may fall inside OLD's life. **One company cannot trade under two NSE
+  symbols at once**, so an overlap means T is a different company — usually a *merger* partner,
+  whose profits were never OLD's to inherit. BBOX's tape is continuous from 1996 under AGCNET,
+  PENINLAND's under MORAREALTY, TMPV's under TATAMOTORS, NDLVENTURE's under NXTDIGITAL.
+  **129 pairs → 1.**
+The one survivor was BILT→KIRLOSBROS (worth 1 row), refuted by ISIN: BILT is INE294A01011,
+KIRLOSBROS is INE732A01036.
+⇒ **The achievable postDrift gain from resolving this entire class is ZERO rows. Measured.**
+★★★ **And it held across the mid-session data change of §93a**: rerun against the live file whose
+floor had moved to 2002-02-14 — ceiling 528 → 1,105 — the key-level pool was still the same 129
+pairs over the same 5 keys, and company-level still **1**. The pre-frame backfill lands on
+CONTINUOUSLY-LISTED keys (ABB, ACC, ASHOKLEY, AXISBANK …), which by construction coexisted with
+these dead tickers and can never be their successors. More fundamentals in the era does not help a
+symbol whose successor is not in the file at all.
+Two independent controls confirm the pool is real and not an artefact of our own gaps:
+* **1,050 FUND keys are absent from the bin entirely, and NOT ONE has a dated quarter by 2009** —
+  so no off-bin successor could have helped either.
+* **Zero FUND keys hold a pre-2005Q1 row with a profit but no usable announce date**, so the
+  `ann=0` sentinel (§91c) is not hiding era coverage behind the `ann > 0` gate.
+
+### 93c. ★★ THE PREVCLOSE HANDOFF IS A CONFIRMATION TEST, NOT A DISCOVERY TEST
+NSE carries the previous close across a symbol change, so the new symbol's first bhavcopy row has
+`PREVCLOSE == old symbol's last close` (× the corporate-action factor when the face value changed
+with it). On the two pairs proven by ISIN it is **exact to the paise**: SUNCLAYLTD 2012-10-23
+prevclose 185.45 == SUNCLAYTON's 185.45 (×1); BALLARPUR 2008-03-31 prevclose 27.50 == BILT's
+137.50 ÷ 5 (face value 10→2). Perfect recall on the known-true set.
+**Then it was run as a discovery screen over 513 era bhavcopies — and it is useless.** Tightened
+to exact-to-the-paise, factor ∈ {1, ½, ⅕, ⅒, 2, 5, 10}, gap ≤ 120d, unique-or-nothing, the
+"unique survivors" were LAKSHAUTO→BHARTI, INDIAPHOTO→CROMPGREAV, INDAL→WELSPUNIND, ITCHOTEL→
+KALECONSUL — every one a company that had been trading for years. In a 4,000-row daily tape some
+symbol's PREVCLOSE matches any given number × a simple fraction nearly every session, and the two
+genuinely-true pairs both landed in the *ambiguous* bucket (BILT one of 5, SUNCLAYTON one of 2).
+★★ **Calibrating on true positives alone measures RECALL and tells you nothing about PRECISION.**
+A gate that reproduces every known-good pair can still be worthless. The false-positive rate is
+the number that decides whether a screen may write anything — measure it on the same run.
+⚠️ Its first pass also had a silent blind spot worth remembering: it probed candidates by **bin
+key**, but bin keys are post-merge canonical names while the bhavcopy carries the ERA name. The
+true successor SUNCLAYLTD is not a bin key at all (merged into TVSHLTD), so the scan could not see
+its own best case. **Scan the source file's own symbols, not your post-processed key space.**
+
+### 93d. What WAS resolved — 2 of 60, both on ISIN-issuer equality from NSE's own dated files
+`INE` + 3 + 1 identifies the **legal entity**; the trailing series digits change on a face-value
+split. That is exactly why these two were orphaned: **`build_sf_data.py`'s auto-merge compares the
+FULL ISIN**, so a rename that coincided with a face-value change looks like two unrelated
+securities and gets two bin keys. Neither pair is in `symbolchange.csv`.
+| old | → | evidence | rows bought |
+|---|---|---|---|
+| **BILT** | **BALLARPUR** | NSE EQUITY_L 2006-08-24 `BILT, Ballarpur Industries Ltd, INE294A01011, paid-up 10` + EQUITY_L 2010-02-05 `BALLARPUR, Ballarpur Industries Limited, INE294A01037, face 2`; same issuer, same name; last bar 2008-02-28 → first bar 2008-03-31 = its NSE listing date; PREVCLOSE confirms ×⅕ | **0** |
+| **SUNCLAYTON** | **TVSHLTD** | EQUITY_L 2010-02-05 `SUNCLAYTON, Sundaram Clayton Limited, INE105A01027, face 5`; live EQUITY_L `TVSHLTD, TVS Holdings Limited, INE105A01035`; symbolchange.csv `SUNCLAYLTD→TVSHLTD 10-AUG-2023`; same issuer INE105A; PREVCLOSE confirms ×1 | **0** |
+Both are dead in the live EQUITY_L, so neither is a recycled ticker (§30-4c / §89). The map points
+at **TVSHLTD, not the intermediate SUNCLAYLTD** — `_rename_map.json` is an old-ticker→**bin-key**
+bridge and SUNCLAYLTD is not a bin key (the ISIN merge already folded it into TVSHLTD).
+⚠️ `check_fund_alias.py --write` writes SUNCLAYTON→TVSHLTD but **refuses BILT→BALLARPUR**: its rule
+3 requires the TARGET to be alive, and BALLARPUR delisted in 2023. Hand-added to both baked copies
+with the script's own serializer — that is what the "extra (older hand-curated layer, kept)" bucket
+is for; it went 11 → 12 and the checker stays green.
+⚠️ `_rename_map.json` is **regenerated wholesale** by a full `build_sf_data` rebuild from ISIN +
+symchg, and neither pair is discoverable that way — so both entries will be dropped by the next
+full rebuild. The baked `FUND_ALIAS` is the durable copy (`--write` is union-only, never removes).
+
+### 93e. Re-measured, LIVE, and the honest delta
+`postdrift_coverage.js`, ZEROGUARD=1 NOYOY=1, N500 point-in-time, sf end 2026-08-11. Run **twice on
+the same bytes**: once against an engine copy with the two new `FUND_ALIAS` entries stripped, once
+against the shipped one — a clean A/B, not a comparison across snapshots.
+| live fundamentals ~17:20 IST | no-series | no-dated-quarter | no-price-at-result | **total gap rows** |
+|---|---|---|---|---|
+| before (aliases stripped) | 1,105 | 6,097 | 24 | **7,226** |
+| after (shipped) | 1,031 | 6,171 | 24 | **7,226** |
+**Every one of the 25 per-year rows is identical — delta 0 in all of them; 138,750 covered
+screen-rows either way.** The 74 rows (BILT 72 + SUNCLAYTON 2) moved from "we do not know what
+company this is" to "we know, and we do not hold its era quarters" — a better diagnosis, not
+better coverage. Reporting it as a win would have been false.
+(The earlier 16:35 snapshot gave 1,105 → 1,031 out of **9,382** total, also delta 0 in every year.
+Between the two runs the concurrent pre-frame backfill of §93a took 2002 from 0% to 28.6% and 2003
+from 66.6% to 70.6% — **none of that is this change**, and it is recorded here only so the two
+tables are not mistaken for each other.)
+
+### 93f. Where the rows actually are — and what NOT to re-attempt
+The blocker is **fundamentals reach, not identity**. Every plausible successor's series starts long
+after the era: LT 2005-05-15 · UPL 2005-05-15 · INDORAMA 2005-05-15 · JPASSOCIAT 2005-05-15 ·
+MUKANDLTD 2008-02-14 · BALLARPUR 2008-08-14 · BAYERCROP 2012-11-01 · TVSHLTD 2015-02-14 ·
+NESTLEIND 2015-05-30 · ITCHOTELS 2024-05-25 (live file, 2026-08-12 ~17:20). Only **160 keys** reach
+a quarter before Dec-2002 and **316** reach Dec-2002 itself — the continuously-listed ones.
+* **Do not re-run a rename hunt on these 60.** The ceiling is 528 and the successor pool is empty;
+  it cannot pay until era fundamentals land. §91f already measured the route that would change
+  that (Moneycontrol reaches 1997, 60% floor, GATE E unchanged).
+* The remaining 58 are recorded in `_era_orphan_resolution.json` as out of reach **for this route**,
+  never as "unfillable" (§57). Six carry a primary-source ISIN and none has a sibling anywhere in
+  our data or in today's NSE list — YOKOGAWA INE718A, SB&TINTL INE465B, KINETICMOT INE267B,
+  KOUTONS INE406I (delisted, no successor key exists to alias to). The rest died before the
+  earliest NSE security list on Wayback (**EQUITY_L starts 2006-08-24**, and that capture holds
+  839 symbols, not the full universe — presence in it is authoritative, absence proves nothing).
+* ⚠️ Two adjacent defects found while measuring, NOT fixed here: **PUNJCOMMU is alive** (BSE 500346)
+  yet its bin series stops 2003-03-31 and it is in no fundamentals file — the §80 shape; and the
+  full-ISIN auto-merge class in 93d is almost certainly wider than these two pairs.
