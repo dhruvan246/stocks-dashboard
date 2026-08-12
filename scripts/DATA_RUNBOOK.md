@@ -694,6 +694,23 @@ AND the **point-in-time ticker** as the label: `membersAsOf('__FNO__', date)` �
   pre-2015 F&O symbols still have their OWN series, and the current-name series carries a hole exactly where
   the old one lives. Hence point-in-time labels here and current names there. Both are right for their own
   data; neither is a style choice. Re-run the cell audit before changing either.
+- **✅ FULL RENAME AUDIT vs NSE's OWN `symchg.csv` (1,051 official symbol changes; 2026-08-12).**
+  Every consecutive-snapshot boundary classified, every symbol that left or arrived accounted for:
+  - **62 renames** happen at a membership boundary. **Every one** is corroborated by `symchg.csv` WITH its
+    official change date, plus some combination of `_rename_map`, identical ISIN, 100%-identical closes on
+    every shared date, or a zero-overlap series partition. **61 of 62 are clean handoffs** (old priceable to
+    the boundary, new priceable from it); the lone exception is AIRDECCAN→KFA, whose old series ends one day
+    before the 2008-09-30 snapshot.
+  - **69 rename pairs have BOTH names somewhere in the history, and OVERLAP = 0 on all 69** — no company is
+    ever a member under two names at the same rebalance. (Gaps between old-end and new-start are real: DCB
+    2012-08 → DCBBANK 2016-09, MAX 2012-08 → MFSL 2017-03 — the stock left F&O and rejoined later.)
+  - **394 departures that are NOT renames**: 362 "left F&O, still trading" (NSE culls), 31 delisted with the
+    series ending at that time, 1 with no series (SAMRUDDHI). **571 arrivals**: 569 priceable on arrival,
+    2 not (INDIANB, SAMRUDDHI — both in §8's 4-cell list).
+  - **THE TWO DIRECTIONAL CHECKS, both ZERO across all 31,863 cells:** no **stale label** (an old symbol still
+    present after its official rename date) and no **early label** (a modern ticker back-labelled onto an older
+    snapshot). That second one is the 2026-06-23 rebuild's defect (b) — "GMRAIRPORT shown in 2015" — now
+    measured at zero rather than asserted.
 - **Source of truth = NSE F&O bhavcopies** (every stock-future/option underlying actually trading that month,
   using the ticker that traded THEN). Two formats: old `fo<DD><MON><YYYY>bhav.csv.zip` (INSTRUMENT=FUTSTK/OPTSTK,
   col SYMBOL) for **≤2024-06**; UDiFF `BhavCopy_NSE_FO_0_0_0_<YYYYMMDD>_F_0000.csv.zip` (FinInstrmTp=STF/STO,
