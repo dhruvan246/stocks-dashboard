@@ -167,6 +167,37 @@ async function rankWindow(w) {
                   allY: allYIdx.map(i => ({ i: pos.get(i), worst: worstY[i], yrets: YEARS.map(y => Math.round(SEL[y.key].rows[pos.get(i)].tot)) })) };
   PHASES.forEach(p => { cards[p.key] = R[p.key].top.slice(0, TOP_PHASE).map(i => pos.get(i)); });
 
+  // The grid derives `bench` from nifty500.json, whose DAILY series only starts 2012-01-02 — so any
+  // window beginning earlier (the 2004 phase) comes back {totRet:null, cagr:null}, and the page then
+  // crashes on `.toFixed()`. Recover it from docs/index_monthly.json, which carries NIFTY 500
+  // month-end closes back to 1995. (Runbook §7.1b trap 4.)
+  const IDXM = (() => {
+    try { const j = JSON.parse(fs.readFileSync(path.join(ROOT, 'docs', 'index_monthly.json'), 'utf8'));
+          const n5 = (j.indices || []).find(i => i.key === 'NIFTY 500');
+          return n5 ? n5.closes : null; } catch (e) { return null; }
+  })();
+  const monthClose = iso => { if (!IDXM) return null;
+    const a = IDXM[iso.slice(0, 4)]; if (!a) return null;
+    const v = a[+iso.slice(5, 7) - 1]; return (v == null) ? null : v; };
+  for (const p of PHASES) {
+    const b = SEL[p.key].bench;
+    if (b && b.cagr != null) continue;
+    const e = resolve(p).end;
+    // month-end closes: use the start month and the last COMPLETE month before the end
+    const em = new Date(Date.parse(e + 'T00:00:00Z')); em.setUTCDate(0);
+    const a0 = monthClose(p.start), a1 = monthClose(em.toISOString().slice(0, 10));
+    if (a0 && a1) {
+      const yrs = SEL[p.key].years;
+      SEL[p.key].bench = { totRet: +((a1 / a0 - 1) * 100).toFixed(1),
+                           cagr: +(((a1 / a0) ** (1 / yrs) - 1) * 100).toFixed(2),
+                           src: 'index_monthly (daily NIFTY500 starts 2012)' };
+      console.error('  bench for "' + p.key + '" recovered from index_monthly: ' +
+                    SEL[p.key].bench.cagr + '% CAGR');
+    } else {
+      console.error('  WARNING: no benchmark for phase "' + p.key + '" — page must tolerate null');
+    }
+  }
+
   const universeLabel = VTAG === '_fno_h3' ? 'F&O stocks' : 'Nifty 500';
   const basket = 'top-' + (VTAG.includes('3') ? 3 : 5) + ' · ' + (VTAG.includes('h') ? 'hold' : 'reset');
   const out = {

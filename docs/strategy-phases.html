@@ -136,8 +136,13 @@
       .concat([{ key:'all4', title:'⭐ Best in ALL '+P.length, sub:'consistency ranking', big:()=>'Top 100' }]);
     document.getElementById('cards').innerHTML = DEFS.map(d=>'<div class="pcard" data-k="'+d.key+'" role="button" tabindex="0">'+
         '<div class="t">'+d.title+'</div><div class="v pos">'+d.big()+'</div><div class="s">'+d.sub+'</div></div>').join('') +
-      '<div class="pcard info"><div class="t">Nifty 500 benchmark</div><div class="v">'+P[0].bench.cagr.toFixed(1)+'% <span class="text-[12px] font-semibold">CAGR full cycle</span></div>'+
-      '<div class="s">'+P.slice(1).map(p=>p.label.split(' ')[0]+' '+fmtTot(p.bench.totRet)).join(' · ')+'</div></div>';
+      // Null-safe: a phase whose window predates the daily NIFTY500 series (starts 2012) can come
+      // back with bench null. The build recovers it from index_monthly, but never crash if it can't.
+      '<div class="pcard info"><div class="t">Nifty 500 benchmark</div><div class="v">'+
+        (P[0].bench&&P[0].bench.cagr!=null?P[0].bench.cagr.toFixed(1)+'%':'—')+
+        ' <span class="text-[12px] font-semibold">CAGR full cycle</span></div>'+
+      '<div class="s">'+P.slice(1).map(p=>p.label.split(' ')[0]+' '+
+        (p.bench&&p.bench.totRet!=null?fmtTot(p.bench.totRet):'—')).join(' · ')+'</div></div>';
     const yw=document.getElementById('ywrap');
     if(YRS.length){ yw.style.display='';
       document.getElementById('ycards').innerHTML = YRS.map(y=>'<div class="pcard" data-k="'+y.key+'" role="button" tabindex="0">'+
@@ -238,7 +243,7 @@
       : cur==='allY'
       ? 'Worst yearly rank = a strategy’s poorest rank across all '+YRS.length+' calendar years (out of 44.4 lakh). Year columns are absolute total returns. All rows: '+basketDesc()+'.'
       : Y ? 'Year '+Y.start+' → '+Y.end+' ('+Y.years+'y). Total % is absolute. Benchmark Nifty 500: '+(Y.bench?fmtTot(Y.bench.totRet):'—')+' total. All rows: Nifty 500 universe, '+basketDesc()+'.'
-      : 'Phase '+P[pi].start+' → '+P[pi].end+' ('+P[pi].years+'y). Total % is absolute (not annualised). Benchmark Nifty 500: '+fmtTot(P[pi].bench.totRet)+' total. All rows: Nifty 500 universe, '+basketDesc()+'.';
+      : 'Phase '+P[pi].start+' → '+P[pi].end+' ('+P[pi].years+'y). Total % is absolute (not annualised). Benchmark Nifty 500: '+(P[pi].bench&&P[pi].bench.totRet!=null?fmtTot(P[pi].bench.totRet):'—')+' total. All rows: Nifty 500 universe, '+basketDesc()+'.';
   }
   function basketDesc(){ return 'top-'+VDESC[curVar][0]+' equal-weight, '+(curVar[0]==='h'?'ride winners (hold)':'monthly reset'); }
   const onCard=e=>{const el=e.target.closest('.pcard[data-k]');if(!el)return;cur=el.dataset.k;sortK=null;render();};
