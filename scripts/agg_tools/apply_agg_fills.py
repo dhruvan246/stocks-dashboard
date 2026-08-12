@@ -32,7 +32,10 @@ ROOT = os.path.dirname(SCRIPTS)
 LEDGER = os.path.join(SCRIPTS, "agg_cell_fills.json")
 # sf_revop cell layout: [revStd, revCon, opStd, opCon, patStd, patCon, fin, ebitStd, ebitCon]
 SLOT = {"revS": 0, "revC": 1, "opS": 2, "opC": 3, "ebitS": 7, "ebitC": 8}
-SITE_NAME = {"mc": "moneycontrol", "tl": "trendlyne", "tt": "tickertape"}
+SITE_NAME = {"mc": "moneycontrol", "tl": "trendlyne", "tt": "tickertape",
+             # screener.in comes through screener_opebit.py, which carries its own gate because
+             # screener prints CRORE-ROUNDED integers where the other three print two decimals
+             "sc": "screener.in"}
 
 
 def main():
