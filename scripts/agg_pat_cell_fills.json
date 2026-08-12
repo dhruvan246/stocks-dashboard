@@ -41175,6 +41175,15 @@
   "state": "FILLED-EXACT",
   "std": 3.72
  },
+ "KIMS|20210331": {
+  "applied": "2026-08-13 filing/aggregator adjudication",
+  "evidence": "CORRECTION, not a fill \u2014 the stored value was 0.00, which is impossible between 47.56 (Dec-2020) and 76.16 (Jun-2021) for a hospital chain with revenue in both. Two INDEPENDENT readers agree: Moneycontrol prints 53.1 for this quarter, and screener.in's FY2021 annual net profit of 189.0 minus our own three held quarters (16.99 + 70.99 + 47.56 = 135.54) implies 53.46 \u2014 inside screener's crore-rounding band (188.5-189.5 -> 52.96-53.96), which contains MC's 53.1. Screener is the genuinely independent axis; MC/TL/TT are one vendor.",
+  "not_written": "CONSOLIDATED left at 0.00 and NOT corrected: MC says 57.8 while the same annual identity implies 61.60 (205.0 - 143.40), and 205 rounds to 204.5-205.5 -> 61.1-62.1, which does NOT contain 57.8. The two readers disagree by ~4 cr, so the con cell needs the filing. The primary source is blocked for now: KIMS's FY2021 annual report (BSE 543308, filed 2021-07-05) is a SCAN \u2014 2 of its 127 pages carry any text layer at all.",
+  "patS": 53.1,
+  "precision": "site-exact",
+  "src": "moneycontrol quarterly-results API, confirmed independently by screener.in's FY2021 annual",
+  "state": "CORRECTED"
+ },
  "KIRLOSBROS|20071231": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752). Moneycontrol's feed carries no filing date.",
   "ann_written": 20080214,

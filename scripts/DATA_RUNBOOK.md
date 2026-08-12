@@ -64,6 +64,8 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§93** ★★★ ERA ORPHANS — measure an identity campaign's CEILING first; the successor pool IS the proof; PREVCLOSE has perfect recall and useless precision (**read before any rename/alias hunt**)
 - **§94** ★★★ `alive` WAS ASKED OF THE WRONG EXCHANGE — an NSE-tape flag answered by a BSE universe; a local recency guard is a note that the FIELD is wrong (**read before trusting `meta.alive` or adding a workaround around it**)
 - **§95** ★★★ ISSUER-PREFIX SWEEP — 104 renames the full-ISIN merge missed; the bhavcopy ISIN column starts 2011; a screen must be run against the cases you already know (**read before any ISIN/rename sweep or a build_sf_data merge change**)
+- **§96** ★★★ NOT-APPLICABLE IS NOT MISSING — an impossible cell is not a gap; order the fixes so a rule cannot bury its own defect; a stored 0.0 was a DEFECT in one company and CORRECT in the next (**read before any coverage/completeness claim or a zero-base cell**)
+- **§97** ★★★ TWO ENGINE ASYMMETRIES THAT READ AS DATA GAPS — `retPctAt` vs `hl52`, and a basis fallback decided by the entry test; both closed more coverage than every fetch combined (**read before opening a data campaign against an empty factor column**)
 
 ---
 
@@ -9689,3 +9691,218 @@ ISIN, because the successor was a day-1 stub (§30) or listed after mid-2020, wh
 replaced the ISIN-bearing file. **Every rename after ~2020-07 is invisible to the ISIN auto-merge by
 construction** and depends entirely on symchg.csv + MANUAL_MERGE. All 5 are already bridged in
 `_rename_map`, so the alias layer covers them; the price series stays split. Not fixed here.
+
+---
+
+## 96. ★★★ NOT-APPLICABLE IS NOT MISSING — and four traps found closing the coverage matrix  (2026-08-13)
+
+**NO ASSUMPTIONS, NO GUESSWORK (§0).** Every number below was measured this session on the LIVE
+payload, not the local bake. Nifty 500, 78 month-ends 2020-01..2026-06, 38,984 member-months:
+parameters at a true 100% went **0 → 31**, total missing cells **14,223 → 8,539**.
+
+### 96a. ★★★ THE CONCEPT: a cell the stock COULD NOT have is not a gap to fill
+Counting it as one makes the page demand something that cannot exist, and — worse — it hides the
+real defects in a crowd of fake ones. `build_coverage_matrix.js` now emits a per-parameter `na`
+array beside `params`; the page subtracts it from the denominator and shows the total in its own
+stat card, **itemised by parameter**. A 100% has to be explainable ON the page, not only in a
+tooltip. Emitted as `0` for parameters that never use it, so the payload does not double for 42
+columns of zeros. The family roll-up borrows the N/A of the WEAKEST parameter — the one it reports.
+
+Three N/A rules are live, each gated on a *measured* impossibility, never on a hunch:
+* **postDrift** — its `lastResultDate` resolves to a day BEFORE the symbol's first traded bar.
+  NSLNISP at 2023-04-28: lastResultDate 2021-05-30, priceAt = null, tape starts 2023-02-20. The
+  pre-listing quarters come from the NMDC demerger scheme and carry announce dates from before the
+  company traded, so the engine asks for a close on a day there was none. 1 cell in the window,
+  5 across all 296 month-ends (2004-01, 2010-07, 2016-04, 2018-04, 2023-04) — the rule generalises.
+* **fiiPct / diiPct / fiiChgPp / diiChgPp** — the symbol's EARLIEST shareholding filing was
+  submitted AFTER this month-end. SEBI Reg 31 allows 21 days, so at a month-end that IS (or snaps
+  to) a company's first quarter-end, nothing exists anywhere yet: CAMS' first filing covers
+  2021-03-31 and was submitted 2021-04-15; VALIANTORG +6d, HLEGLAS +12d, KIRLFER +21d, TBOTEK +17d.
+  ⚠️ KIRLFER's month-end is 2023-09-**29**, one day BEFORE its quarter-end — 30 Sep 2023 was a
+  Saturday and the builder snaps to the last trading day. "The month-end IS the quarter-end" is
+  true for 4 of the 5, not 5.
+* **profitYoyPct / profitBase / profitStreak** — the year-ago quarter predates ANY row the company
+  has. KPITTECH at 2020-01-31 needs 2018-12; its oldest row is 2019-03 and it first traded
+  2019-04-22, because KPIT Technologies did not exist as that entity before the demerger. Same for
+  SBICARD (listed 2020-03), ROSSARI (2020-07), ROUTE (2020-01), MAZDOCK and UTIAMC (2020-10).
+  Gated on OUR OWN OLDEST ROW, so a hole in the MIDDLE of a series stays a real gap.
+
+### 96b. ★★★ ORDER THE FIXES SO A RULE CANNOT BURY ITS OWN DEFECT
+The N/A rule above would have marked AFFLE's three `fiiPct` cells "not applicable", because its
+earliest filing date READ 2020-07-15 — the very corruption being hunted. Marking them N/A would
+have declared the symptom to be the explanation and closed the case at 100%.
+★ **A rule that reads a field cannot be applied before that field is trusted.** Dates first, N/A
+second. After the correction AFFLE's earliest filing reads 2019-10-21 and its cells become COVERED,
+not excused.
+
+### 96c. ★★★ SHP FILING DATES — a scrape date in the filing slot, and the discriminator that saved the honest half
+790 of 88,767 dated shareholding rows carried a lag over 120 days. The values were fine; only the
+DATE was wrong, which made real public data invisible to the point-in-time engine AND to the stock
+page's 🕰️ Rewind (`shpHistView()` filters on exactly that field). A blanket "over 120 days = wrong"
+would have corrupted the honest half, because **a distressed company really does file years late**.
+Split, corrected through `scripts/shp_cell_fix.json` (which carries a `was` guard and cannot invent
+a cell), replacement = **QE+21d** — already this repo's convention for the MC/Wayback ledgers and
+the modal lag of our own clean rows (36.8% of 87,977 sit at exactly +21d, median +19d):
+
+| class | test | rows | action |
+|---|---|---|---|
+| bulk stamp | ≥3 quarters share ONE date | 327 | corrected |
+| within-symbol outlier | symbol's OWN median lag ≤30d, yet this row is months late — **and** the stamp signature is present (date shared with another quarter, or lag >365d) | 239 | corrected |
+| lone late date, 120-365d | — | 217 | **left alone**, unprovable |
+| habitually late filer | symbol's own median lag >30d (TALWGYM 39.5d, SYNCOM 45d) | 4 syms | **left alone** |
+
+>120d rows: **790 → 224**. AFFLE 2019-09 was 289d, now 21. BCG's six were 1,305d.
+⚠️ **The first pass used ≥3 quarters and MISSED AFFLE, which had only 2.** A threshold picked to be
+safe was silently too blunt; the within-symbol test is what caught it. Two corroborations make the
+corrections safe: under a stamp the fii/dii values still DIFFER quarter to quarter (so the data was
+read per-quarter and only the date overwritten), and the corrected names are UPL/HINDPETRO/CROMPTON/
+SBILIFE/BHARATFORG — companies that unquestionably filed on time.
+
+### 96d. ★★★ A STORED 0.0 IS NOT A ZERO UNTIL A SECOND READER SAYS SO — KIMS vs NSLNISP
+Both looked like the documented "null when the year-ago base is exactly 0" rule. They are opposites:
+* **KIMS 2021-03-31 stored 0.00 is a DEFECT.** It sits between 47.56 (Dec-2020) and 76.16
+  (Jun-2021) — a hospital chain with revenue in both quarters did not earn exactly nothing between
+  them. Moneycontrol prints 53.1, and screener.in's FY2021 annual of 189.0 minus our own three held
+  quarters (16.99+70.99+47.56 = 135.54) implies **53.46**, inside screener's crore-rounding band.
+  Two INDEPENDENT axes agree (MC/TL/TT are one vendor, §81c — screener is the independent one).
+  Corrected. It also freed `profitTTM` 600→597 and `profitAccel` 143→137, which consume the quarter.
+* **NSLNISP's zeros are REAL.** screener's FY2021 annual is −0.0 against our three zero quarters, so
+  the implied fourth is 0.00. A pre-operational demerged steel entity earning nothing is exactly
+  what it looks like. Left alone.
+★ The lesson is not "check zeros" — it is that **the same value in the same slot was a defect in one
+company and correct in the next**, and only an independent reader separated them.
+
+### 96e. ★★★ AND THE ANCHOR GATE REFUSED THE OTHER HALF OF THE SAME CELL
+KIMS *consolidated* looked equally fillable — MC prints 57.8. The user's own rule ("if our three
+quarters match MC, take their fourth") was run and **refused it**, three ways:
+  1. MC reproduces only **1 of our 3** held con quarters (Jun-2020 ours 11.13 vs 8.92; Dec-2020
+     48.79 vs 47.78) — the series is not our series, so its fourth cell is not evidence.
+  2. **MC fails its own FY identity**: its four quarters sum to 197.98 against its own FY2021
+     annual of 201.22, off by 3.24.
+  3. The screener-annual identity implies 61.60, outside MC's 57.8.
+So standalone was written and consolidated was not, from the same filing, the same company, the
+same quarter. **Per-FIELD adjudication, never per-cell-pair.** The primary source is blocked for
+now: KIMS's FY2021 annual report (BSE 543308, filed 2021-07-05) is a SCAN — 2 of 127 pages carry
+any text layer.
+
+### 96f. ★★ READING A FILING WHOSE TEXT LAYER IS CORRUPT — anchor on ARITHMETIC, not labels
+TMB Dec-2022 (BSE 543596, filed 2023-01-23) is §75/§83's class: the masthead reads "TAMILNAD
+MEReANTiLE BANK LIMITED", row 6 reads "TOTAI@NDITURE", and the thousands separators are mangled
+("101.212" for 1,01,212). Labels are unusable. The read is anchored on arithmetic INTERNAL to the
+filing, every subtotal closing:
+```
+net profit       27,970 lakh = 279.70 cr  == our stored patS EXACTLY -> pins the unit AND the column
+interest earned 101,212 = 77,824 + 22,734 + 525 + 129        (its own components)
+total expenditure 76,808 = 47,785 + 29,023  (29,023 = 15,228 + 13,795)
+total income     117,288 = 101,212 + 16,076 = 76,808 + 40,480
+```
+Nothing had to be inferred from a mangled separator. Written: rev 1,012.12, op 404.80.
+★ **A PAT anchor that reproduces our stored value to the paisa pins the UNIT and the COLUMN at
+once** — which is most of what a corrupt text layer takes away.
+
+### 96g. ⚠️ FOUR MECHANICAL TRAPS, each of which produced a silent wrong answer
+* **A regex inside a vm TEMPLATE LITERAL.** `/(\d{4})/` written in the builder's `runInContext`
+  template arrives as a literal backslash-d and matches NOTHING. `dayOff()` then returned null, the
+  N/A never fired, and there was no error anywhere — a regex that cannot match looks exactly like a
+  condition that is false. Use `slice()`.
+* **A heal that is not in the did-anything-change test is published NEVER.** update_sf_data logged
+  "Industry fills: 26 delisted symbol(s) classified" and on the very next line hit the no-op return,
+  rewrote the bin INSIDE the runner and published nothing. Every quiet day would have done the same,
+  forever, while the log said the heal ran. **Verify against the published artefact, never the log.**
+* **Moneycontrol spells the same row DIFFERENTLY in its two payloads**: standalone "P/L Before Other
+  Inc. **,** Int., Excpt. Items & Tax" and "depreciat"; consolidated "P/L Before Other Inc.,
+  Int., ..." and "Depreciation". Hardcoding either makes the other basis read as "this site has no
+  such row" — absence dressed as a clean miss (§61a mode 4).
+* **A discovery filter scoped by DATE excluded the population it was meant to sweep.** Probing "con
+  starts after 2019-04" silently skipped the whole 371-company 2018-06-30 cohort — the exact group
+  in question. The right test was structural, not calendar: does con start later than std? 77 cells
+  → 3,537.
+
+### 96h. THE CEILING, and why "100% everywhere" is the wrong target
+Of the ~8,500 cells still open, a large share are absences of FACT, not of data, and filling them
+would be fabrication:
+* **~1,499 fiiChgPp/diiChgPp** sit on Oct/Nov/Dec-2022, where `shpAt()` deliberately never computes
+  the QoQ change (`if (cur[0] !== 20220930)`) — SEBI reclassified DR blocks INTO FII/DII in Sep-2022,
+  so the "change" would be a definitional artifact reported as a flow. `fiiPct` is 500/500 in those
+  same months.
+* **~940 ebit symbol-quarters** are banks and insurers: `build_revop.py` produces `None` for them by
+  construction AND Moneycontrol's bank layout has no such row at all ("Operating Profit before
+  Provisions and contingencies" instead). Two independent confirmations of the same wall.
+* **momentum on young listings** was the reverse — it looked structural and was not. See §97.
+
+---
+
+## 97. ★★★ TWO ENGINE ASYMMETRIES THAT READ AS DATA GAPS — and what fixing them costs  (2026-08-13)
+
+Both were found by asking "which cells are missing, and WHY" rather than "how do we fetch more".
+Between them they closed **more coverage than every data campaign this session combined**, and both
+changed backtest results — so both were measured, shown, and adopted on the user's explicit call.
+
+### 97a. ★★★ `retPctAt` REFUSED SHORT HISTORY WHERE `hl52` ALLOWS IT — same window, opposite policy
+`hl52()` walks whatever bars exist inside `[off-365, off]`, so a stock listed 60 days ago gets a
+60-day high and a perfectly good `d52`. `retPctAt()` demanded a bar at exactly `off-days` and
+returned null otherwise. That is why the 52w band never showed as a coverage hole while the returns
+did — a policy difference, not a data difference.
+
+**Every one of the 950 empty `ret12m` cells was a recent listing, and all 950 were checked, not
+sampled: the OLDEST stock at any missing month was 363 days against the 365 required.** `ret6m`
+the same, 180 against 182. Not one cell was missing where the stock had enough history.
+
+Now the base falls back to the FIRST bar in the window:
+```
+MANKIND    @2023-10-31, 175d old   ret12m null -> 22.45   ret6m null -> 22.45
+CONCORDBIO @2024-01-31, 166d old   ret12m null -> 54.42
+AKUMS      @2024-12-31, 147d old   ret12m null -> -19.82
+RELIANCE   @2023-10-31, 10165d old  UNCHANGED -1.16 / 3.24 / -2.43
+MANKIND    @2022-10-31, not listed  still null — nothing is fabricated
+```
+⚠️ **NO MINIMUM SPAN, deliberately (user's call).** The figure is then measured over LESS than
+`days`, so a 4-month return is ranked head-to-head against genuine 12-month ones, and `ret12m` ==
+`ret6m` for any stock younger than 6 months. That is exactly the compromise `hl52` already makes
+when it calls a 60-day high a "52w high"; this makes the two consistent rather than adding a new one.
+Closed ret12m 950→0, ret6m/rsNifty 176→0, ret3m/riskMom 4→0. Backtest impact on the user's 30
+tracked strategies: **4 moved, +2.54pp to −1.42pp**, and it cuts both ways.
+
+### 97b. ★★★ `profitMetrics` CHOSE ITS BASIS ON THE ENTRY TEST AND THEN RETURNED WHATEVER THAT BASIS HAD
+`tries` has always declared con→std, but the loop committed to a basis the moment that basis's
+CURRENT quarter was announced and its YoY resolved. `ttm` needs EIGHT quarters and `accel` two, so
+one hole anywhere in the consolidated window returned null while the standalone window sat complete
+in the same array. APOLLOHOSP at 2020-01-31 is the worked example: con is missing only Mar-2018,
+std holds all eight → `ttm` null → the stock silently dropped from every `profitTTM > 0` screen.
+
+Now con is kept for everything it could answer (yoy, base, streak, resultDate) and std fills ONLY
+the fields con left null — not a wholesale basis switch. APOLLOHOSP returns `ttm 25.28` (std) with
+`yoy 36.00` (con Sep-2019, 86.24 vs 63.41). Closed profitTTM 1,744→600, profitAccel 323→143, and
+most of composite (2,202→600, it is built from profitTTM + ret12m + vol).
+
+★ **THE COST, MEASURED BEFORE ADOPTING IT.** Over the 36,891 stock-months where BOTH bases resolve,
+std and con TTM growth agree in SIGN only **86.9%** of the time (median gap 6.9 growth points, p75
+31.6, p90 125.5). So ~1 substituted cell in 8 passes a `profitTTM > 0` filter that consolidated
+would have failed. I recommended AGAINST it on that basis and was overruled with the number in hand
+— which is the right way round.
+
+**Backtest impact, the user's own 30 tracked strategies, 2020-01..2026-06, 78 monthly rebalances:**
+* 18 strategies using none of the affected fields: **ZERO change**, verified against the pre-fix
+  file pulled straight out of git. That control is what makes the rest believable.
+* 12 affected: 6 unchanged, 6 moved — CAGR −10.39pp (52w-Low + ProfitTTM>0 + Deliv≥60), −8.97,
+  −3.97, −1.74, +1.43, +1.05. Only 2-7 of 78 rebalances differ in each; six years of compounding
+  does the rest.
+* It mostly goes DOWN, **and that direction is the point**: stocks with no consolidated TTM were
+  FAILING the filter and being skipped, so the old numbers were flattered by an accidental
+  exclusion. DMART, INDUSINDBK, FEDERALBNK and DEEPAKNTR become eligible and displace JKCEMENT,
+  BRITANNIA, SBIN. Five of the six changes land in the COVID window, where the eligible pool was
+  most distorted.
+
+⚠️ **Both edits are mirrored in `docs/stock-backtest.html`'s inline engine.** After each, the two
+function bodies were extracted, comment-stripped, whitespace-normalised and diffed — identical, and
+both return the same numbers for APOLLOHOSP in a live browser. A/B harness:
+`scratchpad ab.js` pattern — build TWO vm contexts from the same bin, one per engine file, run every
+saved cfg through both, diff CAGR/maxDD/holdings per rebalance. `rebs[]` carries **`holds`**, not
+`picks`; reading the wrong key made every strategy look unchanged while CAGR moved 10pp.
+
+### 97c. ★ THE GENERAL RULE THIS SESSION KEEPS RE-PROVING
+**Before fetching anything, ask what the empty cell MEANS.** Of the 14,223 cells open at the start:
+~1,300 were an engine policy (97a), ~1,300 more an engine bug (97b), ~2,400 are absences of fact
+(§96h), 857 were a metadata survivorship gap needing no fetch at all (the delisted-industry
+ledger), and a phantom denominator accounted for 30 parameters reading 99.21% while nothing was
+missing at all. **The data campaigns — MC, screener, filings — landed ~800 cells between them.**

@@ -443,6 +443,35 @@ function run(ctx, C) {
             });
           }
         }
+        // profitYoyPct / profitBase / profitStreak: the YoY needs the SAME QUARTER A YEAR EARLIER.
+        // For a company that listed or demerged inside the window, that quarter is older than any
+        // row the company has — KPITTECH at 2020-01-31 needs 2018-12, its own oldest row is 2019-03
+        // and it first traded 2019-04-22, because KPIT Technologies did not exist as this entity
+        // before the demerger. Asking for its Dec-2018 profit is asking what a company earned
+        // before it was that company. Same shape for SBICARD (listed 2020-03), ROSSARI (2020-07),
+        // ROUTE (2020-01), MAZDOCK and UTIAMC (2020-10).
+        // Gated on OUR OWN OLDEST ROW for the symbol, so a hole in the MIDDLE of a series stays a
+        // real gap — CELLO needs 2022-12 while holding rows from 2022-06, and is deliberately NOT
+        // marked N/A here.
+        {
+          const arr = (typeof fundFor === 'function') ? fundFor(r.sym) : null;
+          if (arr && arr.length) {
+            let ci = -1, ni = 3;
+            for (let i = arr.length - 1; i >= 0; i--) { if (arr[i][3] != null && arr[i][4] > 0 && arr[i][4] <= __DATEINT) { ci = i; ni = 3; break; } }
+            if (ci < 0) for (let i = arr.length - 1; i >= 0; i--) { if (arr[i][1] != null && arr[i][2] > 0 && arr[i][2] <= __DATEINT) { ci = i; ni = 1; break; } }
+            if (ci >= 0) {
+              const need = arr[ci][0] - 10000;
+              let oldest = 99999999;
+              for (const q of arr) if (q[0] < oldest) oldest = q[0];
+              if (need < oldest) {
+                ['profitYoyPct', 'profitBase', 'profitStreak'].forEach(function (k) {
+                  const j = keys.indexOf(k);
+                  if (j >= 0 && !flags[j]) na[j] = 1;
+                });
+              }
+            }
+          }
+        }
         const jPD = keys.indexOf('postDrift');
         if (jPD >= 0 && !flags[jPD]) {
           const lrd = lastResultDate(r.sym, __DATEINT, __CFG.earnBasis);
