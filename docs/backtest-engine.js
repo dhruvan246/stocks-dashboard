@@ -529,7 +529,10 @@ function profitAt(sym, dateInt, basis) {
   const tries = basis === 'std' ? [[1, 2]] : [[3, 4], [1, 2]];   // con falls back to std
   for (const [npIdx, annIdx] of tries) {
     let cur = null;
-    for (let i = arr.length - 1; i >= 0; i--) { const q = arr[i]; if (q[npIdx] != null && q[annIdx] != null && q[annIdx] <= dateInt) { cur = q; break; } }
+    // ⚠️ ann must be TRUTHY, not merely non-null: 0 is the "announce date UNKNOWN" sentinel (runbook
+    // §15/§91) and `0 != null` is TRUE in JS, so `!= null` admitted it as "announced at time zero" —
+    // making a quarter years in the FUTURE visible at every past rebalance. (Sync: stock-backtest.html)
+    for (let i = arr.length - 1; i >= 0; i--) { const q = arr[i]; if (q[npIdx] != null && q[annIdx] > 0 && q[annIdx] <= dateInt) { cur = q; break; } }
     if (!cur) continue;
     const baseEnd = cur[0] - 10000; let base = null;
     for (const q of arr) { if (q[0] === baseEnd && q[npIdx] != null) { base = q; break; } }
@@ -549,7 +552,8 @@ function profitMetrics(sym, dateInt, basis) {
   const arr = fundFor(sym); if (!arr || !arr.length) return null;
   const tries = basis === 'std' ? [[1, 2]] : [[3, 4], [1, 2]];
   for (const [ni, ai] of tries) {
-    let ci = -1; for (let i = arr.length - 1; i >= 0; i--) { if (arr[i][ni] != null && arr[i][ai] != null && arr[i][ai] <= dateInt) { ci = i; break; } }
+    // ann > 0, not != null — see profitAt above (0 = date-unknown sentinel, runbook §15/§91).
+    let ci = -1; for (let i = arr.length - 1; i >= 0; i--) { if (arr[i][ni] != null && arr[i][ai] > 0 && arr[i][ai] <= dateInt) { ci = i; break; } }
     if (ci < 0) continue;
     const npAt = qe => { const q = arr.find(x => x[0] === qe); return (q && q[ni] != null) ? q[ni] : null; };
     const yoyOf = q => { const c = q[ni], b = npAt(q[0] - 10000); return (c != null && b != null && b !== 0) ? (c - b) / Math.abs(b) * 100 : null; };

@@ -59,6 +59,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§76** ★★★ A `scrip_id` EQUAL TO THE TICKER IS A COINCIDENCE — gate symbol→BSE-scrip on ISIN (**read before any BSE-keyed fill**)
 - **§59** ★★ STANDALONE-SLOT-HOLDS-CONSOLIDATED AUDIT — the screen is not a defect count (**read before acting on any std/con equality screen**)
 - **§80** ★★★ SERIES **BZ** WAS NEVER INGESTED — a live trading series discarded for years (**read before touching the bhavcopy filter or a price-series gap**)
+- **§91** ★★★ postDrift COVERAGE — annual ≠ rebalance coverage; the `ann=0` LOOK-AHEAD (`0 != null` is TRUE in JS); sf_fundamentals starts Dec-2002 (**read before any point-in-time factor-coverage claim**)
 
 ---
 
@@ -8681,3 +8682,86 @@ The decisive test is data, not names: **does the candidate key hold those quarte
 stored series there are no anchors — GATE E cannot establish identity for them at all. They need a
 filing read or a series built from scratch, and they are recorded as out of reach for this route
 rather than unfillable.
+
+---
+
+## 91. ★★★ postDrift COVERAGE — the ann=0 LOOK-AHEAD, and why 2002-03 is 0% and not 55%  (2026-08-12)
+
+Goal was "make `postDrift` 100% for every Nifty-500 member at every monthly rebalance, 2002→date".
+Two premises the brief carried were both wrong, and measuring them first changed the whole plan.
+
+### 91a. ★ ANNUAL COVERAGE IS NOT REBALANCE COVERAGE — measure the metric you are actually shipping
+"Company X has ≥1 dated quarter in year Y" (§90's metric) says nothing about whether a MONTHLY
+screen can rank X. `profitMetrics()` needs **three** things at each rebalance, not one:
+1. a quarterly row with np non-null **and** its announce date **and** date ≤ rebalance;
+2. **the YEAR-AGO same quarter's np** — `if (yoy == null) continue` drops the whole basis;
+3. a price bar at/before that announce date (`priceAt(tkr, resultDateOff) > 0`).
+Miss any one → `r.postDrift = null` → `simulate()` drops the stock from the screen entirely.
+Harness: **`scripts/postdrift_coverage.js`** (cat shim + engine + it, same recipe as
+grid_search_mega.js; reads `scripts/_live/` ONLY per §7.1b). It classifies every miss as
+`no-series` / `no-dated-quarter` / `no-yoy-base` / `no-price-at-result` / `ann-zero-sentinel`
+and emits the EXACT blocking cell. **Parity-checked against the engine's own `screenAsOf()` on 6
+dates, exact on all 6** — a re-implementation that is not parity-checked is not a measurement.
+
+### 91b. ★★★ sf_fundamentals HAS NO QUARTER BEFORE 2002-12-31 — so 2002-03 is structurally 0%
+Measured on the live file: **316 rows at qe=20021231 and ZERO earlier, across all 3,946 symbols.**
+Every symbol's series starts 2002-12-31 or later. Because postDrift needs the year-ago base, the
+earliest quarter it can ever use is Dec-2003 (base Dec-2002) → **the first non-zero rebalance is
+Feb-2004.** 2002 and 2003 are 0.0%, not the "~55% / ~63%" an annual-coverage read suggests.
+★ §90i's "2002 = 62.8%" is the share of N500 members holding the **Dec-2002 quarter** — the only
+2002 quarter in the dataset. Mar/Jun/Sep-2002 were never in any campaign's denominator.
+
+### 91c. ★★★ THE ann=0 SENTINEL WAS A LOOK-AHEAD — `0 != null` is TRUE in JS
+`ann = 0` is the documented "announce date UNKNOWN" sentinel (§15; consumers are supposed to skip
+it). Four production selection loops gated it with **`q[annIdx] != null`**, which **admits 0** —
+so a quarter with an unknown date read as *announced at the epoch* and became visible to **every
+past rebalance**. Measured at a **2002-03-31** screen: an ann=0 row was selected as "latest
+announced" for **513 symbols**, and **124 of them produced a non-null `profitYoyPct`** — from
+quarters as late as **Jun-2025**. A 23-year look-ahead in `profitYoyPct` / `profitTTM` /
+`profitStreak` / `profitBase` / `composite`. For postDrift it self-nulled (`dayOff('0--')` → NaN →
+`priceAt` null), so it read as a *coverage gap* and hid itself.
+It also **shadowed good data**: the sentinel row is newest, so it won the backward scan and the
+legitimately-dated quarter behind it was never reached (RELCAPITAL qe=2017-09 ann=0 beat the real
+Dec-2013 quarter at a 2014 screen).
+**Fix = `q[annIdx] > 0`** in all four sites — `docs/backtest-engine.js` `profitAt` + `profitMetrics`,
+and the inline twin in `docs/stock-backtest.html` (memory: feedback-backtest-engines-sync).
+★ **A falsy sentinel needs a TRUTHY test, never a null test.** Grep any new point-in-time gate for
+`!= null` on a date field.
+
+### 91d. What the one-condition fix bought (LIVE data, sf end 2026-08-11, N500 point-in-time)
+| year | before | after | | year | before | after |
+|---|---|---|---|---|---|---|
+| 2004 | 49.7% | **58.4%** | | 2011 | 83.0% | **97.6%** |
+| 2005 | 55.8% | **66.2%** | | 2012 | 69.2% | **81.4%** |
+| 2006 | 63.4% | **75.0%** | | 2013 | 81.7% | **94.3%** |
+| 2007 | 76.6% | **91.3%** | | 2014 | 77.7% | **88.1%** |
+| 2008 | 75.3% | **90.3%** | | 2015 | 85.0% | **91.0%** |
+| 2009 | 74.9% | **89.0%** | | 2016 | 91.1% | **94.3%** |
+| 2010 | 81.8% | **97.0%** | | 2017-18 | 96.3/98.0% | **98.2/99.3%** |
+**+9,034 screen-rows covered, zero data written.** 2019+ was already ≥99.1% and is unchanged.
+Verified through the engine's own `screenAsOf()` (2004-03-31 240→279, 2010-09-30 408→483,
+2016-03-31 424→449) and by unit-testing the SHIPPED inline copy in the browser.
+⚠️ **The first verification attempt proved nothing** — the harness re-implements the selection loop,
+so patching the engine left its output identical. Verify a code fix through *the code path you
+changed*, not through a parallel implementation of it.
+
+### 91e. The residue, as EXACT CELLS (not company-years)
+`scripts/_postdrift_needed_cells.json` — **5,758 distinct (symbol, quarter-end) cells over 930
+symbols**, unlocking **21,054 rebalance-months**. By quarter-end year: **2001: 443 · 2002: 1,857 ·
+2003: 554 · 2004: 759 · 2005: 283**, tail to 2023. 40% of the residue is the **pre-frame era
+(2000Q4-2002Q3) that does not exist in our file at all**. Dominant class is `no-yoy-base` (12,801
+rows) — the current quarter is present and dated, the year-ago base is not.
+
+### 91f. ★★ REACH IS MEASURED, AND MONEYCONTROL REACHES 1997
+`scripts/agg_tools/postdrift_reach_probe.py` (reach only — writes no value, no ledger). 20 symbols
+drawn from the real blocking-cell list, all blocked by a pre-frame quarter:
+**12 of 20 have all four needed quarters — 48 of 80 cells, a 60% hit rate**, uniform across
+2001-12/2002-03/2002-06/2002-09. MC tables run to **1997-06-30** (J&KBANK 117 quarters,
+BALRAMCHIN 117, SHANTIGEAR 116, ITI 116). The 8 misses: 4 empty tables, 3 tables starting 2008,
+1 unresolved symbol (VXL — a §90j rung-4 by-series candidate, so 60% is a FLOOR not a ceiling).
+★ **The pre-2003 era is REACHABLE.** It was never attempted because §90's queue was defined against
+our own series, and our series starts after it — "outside the frame" reads as "not a gap".
+⚠️ Reach ≠ accuracy: §90c measured MC at **13.1% wrong in 2002**, falling to 0.85% on the
+GATE-E-passing subset. Any fill MUST go through GATE E (`agg_era_gate.py`) unchanged — and the
+anchor situation here is exactly what GATE E was built for (§90a: anchors on the far side of the
+hole, our series resuming at Dec-2002).
