@@ -9503,28 +9503,42 @@ daily tape from the seam to the date the ISIN was read means one company held th
 (SRIADIKARI→SABTN: no ISIN column in 2007, but SABTN's tape runs unbroken 2007-11-16 → 2024-01-23 and
 carries INE416A01036 once the column exists). **Result: 104 CONFIRMED, 5 REFUSED.**
 
-### 95e. ★★★ THE ONE REFUSAL THAT MATTERS: A RECYCLED TICKER ACROSS EXCHANGES
-`ARL → ARVINDREM` is airtight — NSE's EQUITY_L calls ARL "Arvind Remedies Limited" in 2006, 2010 AND
+### 95e. ★★★ THE ONE CASE THE GUARD STOPPED — and why the SAME EVIDENCE flipped it hours later
+`ARL → ARVINDREM` is airtight: NSE's EQUITY_L calls ARL "Arvind Remedies Limited" in 2006, 2010 AND
 2011, both ISINs (INE211C01029 → INE211C01037) come straight off the bhavcopy, and the PREVCLOSE
-carries ×10 exactly. **It must still not be landed.** The ticker ARL belongs TODAY to a live BSE
-company, Anand Rayons (`ARL.BO`, scrip 542721, a different issuer) — and because `build_sf_data`'s
-`cur` fill joins `dash_slim` on the BARE SYMBOL with no ISIN gate, the bin key holding Arvind
-Remedies' 2003-2012 NSE tape is stamped `name="Anand Rayons Ltd", ind=Textiles, alive=True`. So
-check_fund_alias's rule 2 (OLD must not be alive) refuses it, correctly: aliasing would hand Arvind
-Remedies' fundamentals to Anand Rayons. §89 in its cross-exchange form, and §76's "a symbol equal to
-a symbol is a COINCIDENCE" inside our own meta fill. Kept out of BOTH layers (§89 step 3).
-⚠️ **The refusal has to live in the GENERATOR.** Deleting the entry by hand after the first run and
-re-running put it straight back — a heal that re-applies is a nightly rewrite (§87e-bis). Both legs
-of `isin_seam_land.py` now apply the aliveness rule themselves and **a second pass writes 0.**
+carries ×10 exactly. It was nevertheless **refused** on the first pass, and correctly on what was
+then known: the bin key holding Arvind Remedies' 2003-2012 NSE tape was stamped `name="Anand Rayons
+Ltd", ind=Textiles, **alive=True**` — Anand Rayons being a live **BSE** company (`ARL.BO`, scrip
+542721, a different issuer) that reuses the ticker — so check_fund_alias's rule 2 (OLD must not be
+alive) held it back. §89's recycled ticker in a cross-exchange form, and §76's "a symbol equal to a
+symbol is a COINCIDENCE" showing up inside our own meta fill.
+**Then §94 landed from another session and named that exact flag as the defect** — `alive` was being
+answered by an NSE+BSE universe with the suffix stripped, 87 dead NSE tapes reading live. On the
+rebuilt index (2026-08-12, alive 2463 → 2378) ARL reads **dead**, rule 2 no longer fires, and the
+pair was re-run and LANDED. The evidence about ARL never changed; the field the guard consulted was
+repaired. ★★★ **A refusal driven by a flag is only as good as the flag — when a peer fixes the
+field, re-run the decision instead of leaving the refusal standing.** (Memory's "a wall is a route,
+not the world", from the other side: this wall was real, and then it wasn't.)
+⚠️ **And the refusal has to live in the GENERATOR while it stands.** Deleting the entry by hand
+after the first run and re-running put it straight back — a heal that re-applies is a nightly
+rewrite (§87e-bis). Both legs of `isin_seam_land.py` apply the aliveness rule themselves, so the
+decision follows the data automatically and **a second pass writes 0** either way.
+⚠️ Still open: the bin key ARL keeps the NAME and INDUSTRY of the BSE company (§94 fixed `alive`,
+not the name/industry fill), so `build_sf_data`'s `cur` join on a bare symbol is still ungated.
 
 ### 95f. What landed, and the honest delta
-`_rename_map.json` 798 → 897 (+99; the 100th is ARL, refused). `check_fund_alias.py --write` then
-added **88** — more than the 99, because the new links UNBLOCK chains that previously dead-ended
-(ANAMALFIN→SHIVATEX, DEWANHOUS→PIRAMALFIN, FOURSOFT→PALREDTEC, HTMT→NDLVENTURE …) and re-pointed 2
-stale ones (PIPAVAVDOC, RDEL: RNAVAL→SWANDEF). 26 more whose TARGET is dead were hand-added with the
-script's own `_fmt` (§93d's bucket, "extra" 10 → 36). **Baked FUND_ALIAS 501 → 615, both copies
-byte-identical, checker green, sw CACHE v86 → v87.** Verified in the browser on all three consumers
-(saved-strategies, all-picks, stock-backtest): 615 entries, ARL absent, zero console errors.
+`_rename_map.json` 798 → 897 (+99), then 899 after the rebase onto §94 took in a concurrent entry
+and released ARL (95e). `check_fund_alias.py --write` added **88** — more than the 99, because the
+new links UNBLOCK chains that previously dead-ended (ANAMALFIN→SHIVATEX, DEWANHOUS→PIRAMALFIN,
+FOURSOFT→PALREDTEC, HTMT→NDLVENTURE …) and re-pointed 2 stale ones (PIPAVAVDOC, RDEL: RNAVAL→
+SWANDEF). 27 more whose TARGET is dead were hand-added with the script's own `_fmt` (§93d's bucket,
+"extra" 10 → 51). **Baked FUND_ALIAS 501 → 627, both copies byte-identical, checker green, sw CACHE
+v86 → v87.** ⚠️ The rebase's own conflict was resolved as a **UNION**, not a take-mine: origin/main
+had added 11 entries this session (ADLABSFILM, IBN18, L&T …) that a whole-constant overwrite would
+have silently deleted, and 3 keys where both sides disagreed were taken from this campaign because
+they extend the chain to the LIVE end (ORCHIDCHEM→ORCHPHARMA, PIPAVAVDOC/RDEL→SWANDEF). Verified in
+the browser on all three consumers (saved-strategies, all-picks, stock-backtest): the constant
+parses, expected targets resolve, zero console errors.
 **The delta, stated the §93e way:** of the 104 aliased old keys only **8** have target quarters
 inside their own trading era — **133 quarters** made reachable (SUPPETRO 27, ALOKTEXT 23, HEXAWARE
 22, AGCNET 20, INTEGRA 16, KBL 9, CASTROL 8, RUCHISOYA 8). The other 95 are a better diagnosis, not
