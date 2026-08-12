@@ -1020,6 +1020,12 @@ def main():
         if _m.get("name") in (None, "", _s) and _f.get("name"):
             _m["name"] = _f["name"]
     if _n: print("Industry fills: %d delisted symbol(s) classified from the ledger." % _n)
+    # ⚠️ _n MUST be in the publish gate below. It was not on the first cut (2026-08-12) and the
+    # consequence was silent and total: the 16:08 UTC run printed "Industry fills: 26 ... classified"
+    # and then, because that day appended no bars, hit the no-op return, rewrote the bin INSIDE the
+    # runner and published nothing. All 26 fills were computed and thrown away with the runner, and
+    # the same thing would have happened every quiet day forever. A heal that is not in the
+    # did-anything-change test is not a heal — it is a log line.
 
     # ALWAYS rewrite the freshly-loaded MERGED base to disk — even on a no-op run — so the split/publish
     # step never reads the stale, UN-merged in-repo copy (frozen at an old `end`, still carrying
@@ -1029,8 +1035,8 @@ def main():
     # refreshes the on-disk bin but does NOT publish the release, bump clients, or commit a marker.
     blob = gzip.compress(json.dumps(D, separators=(",", ":")).encode(), 6)
     open(OUT, "wb").write(blob)
-    if not appended and not healed and not merged and not mr and not ao and not dvf and not dvo and not wk and not bz and not sg and not tunits and not dead:
-        print("No new day / heal / merge / manual-rights / open-arbitrated CA / dv-fill / dv-overwrite / weekend-insert / BZ-backfill / series-surgery / turnover-unit fix / aliveness decay — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
+    if not appended and not healed and not merged and not mr and not ao and not dvf and not dvo and not wk and not bz and not sg and not tunits and not dead and not _n:
+        print("No new day / heal / merge / manual-rights / open-arbitrated CA / dv-fill / dv-overwrite / weekend-insert / BZ-backfill / series-surgery / turnover-unit fix / aliveness decay / industry fill — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
     open(MARK, "w").write(D["end"])
     # tiny version marker — committed daily, lets the browser cache the big bin in IndexedDB
     # keyed to this `end` and skip re-downloading 80 MB until the data actually changes.
