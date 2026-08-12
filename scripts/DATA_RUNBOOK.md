@@ -4155,6 +4155,33 @@ The backtest was NEVER affected — `membersAsOf` in the engine reads the SAME b
 The turnover page ignores the changes-replay too (snapshots only). If a new audit script needs
 membership, import `_n500_member_bin` — do not copy-paste a walk.
 
+**⚠️ 2026-08-12 — "only the audit layer had forked" was WRONG. THREE BUILDERS were still on the
+sparse `_n500_master_history.json` (19 archived constituent lists) and are now repointed:**
+`build_shp_backtest.py` (→ imports `_n500_member_bin`), `build_market_breadth.py` and
+`build_nifty500_turnover.py` (→ read `scripts/indices_history.json["Nifty 500"]` directly —
+same 121 snapshots, verified byte-identical to the bin's indicesHistory, but 1.4 MB instead of
+a 17 MB gzip). Found while auditing a peer's backtest critique: a Mar-2020 rebalance was
+screening the **Feb-2019** universe. Worst case was **1,389 days stale** (2013-09-30 → the
+2010-01-02 snapshot); now ≤25d.
+
+- **The sparse file is NOT wrong — it is 19 photographs where the bin has 121.** On all 18 shared
+  dates the two agree EXACTLY once rename-normed (0 residual symbols, checked 2006/2014/2019).
+  It carries **era** names (AMARAJABAT, ADANITRANS); the bin snapshots carry **CURRENT** names
+  (ARE&M, ADANIENSOL). Bin price keys are current names too — dense resolves 99.8% directly vs
+  the sparse file's 100% via era keys, and its union is 1,316 symbols vs 1,237.
+- **Membership matching must norm the symbol.** `shp_history` keys are FILING-ERA tickers, so
+  after repointing, `sym in members` silently fails — compare `_n500_member_bin.norm(sym)`.
+- **`max(0, bisect_right(...) - 1)` FABRICATES a universe** for any date before the first
+  snapshot (it floors to the earliest). Return an empty set instead; `_n500_member_bin` does.
+- **Measured impact, same bin, sparse→dense** (this is the parity discipline of §39 — running
+  new-vs-committed conflates the membership change with bin backfills like §88b, which made the
+  first pass read n200 +20.7 when the true effect is −2.2): turnover mean |chg| **4.07%** over
+  200 months (156 >1%, 59 >5%, 2009-10..12 **+22%**); breadth **85% of 1,841 days** move >0.1pp,
+  pct200 up to **+5.00pp** (2020-02-13: 53.5%→58.5%). The turnover docstring's v1 claim that
+  "membership drift barely moves the total" is now annotated as measured-false.
+- `docs/shp_backtest.json` is untracked, has no workflow and no page fetches it — that script is
+  dev/research only. The LIVE blast radius was breadth + turnover (`refresh-market-mood.yml`).
+
 
 ## 49. ★★ THE 100%% CLOSE-OUT PLAYBOOK — what finally landed the last ~40 cells  (2026-08-04)
 

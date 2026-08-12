@@ -15,8 +15,13 @@ Output: docs/market_breadth.json -- minified JSON the Market Mood page reads:
 
 METHOD / CONVENTIONS
   - Same inputs as build_nifty500_turnover.py: docs/sf_stock_data.bin (survivorship-free,
-    closes are corp-action adjusted by build_sf_data.py) + scripts/_n500_master_history.json
-    (19 archived full constituent lists 2006..date; nearest-prior snapshot per date).
+    closes are corp-action adjusted by build_sf_data.py) + scripts/indices_history.json
+    ["Nifty 500"] (121 EVENT-DRIVEN snapshots 2002..date; nearest-prior snapshot per date).
+    Was _n500_master_history.json until 2026-08-12 — only 19 archived constituent lists, so
+    membership went 1,389 days stale at worst (a Mar-2020 date screened a Feb-2019 universe).
+    The two agree EXACTLY on all 18 shared dates once rename-normed; the sparse file is a
+    subset, not a contradiction. Bin keys are CURRENT names, which is what these snapshots
+    carry (99.8% resolve directly, vs the sparse file's era names) — §48.
   - DAILY ERA ONLY: the bin is weekly-sampled before top-level `dailyFrom` (2018-01-01).
     A 200-DMA over weekly samples would span ~4 years, so every symbol's series is sliced
     at dailyFrom and the output starts once the 52-week window has filled for most members
@@ -40,7 +45,7 @@ from datetime import date
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 BIN = os.environ.get("SF_BIN") or os.path.join(ROOT, "docs", "sf_stock_data.bin")
-MEMB = os.path.join(HERE, "_n500_master_history.json")
+MEMB = os.path.join(HERE, "indices_history.json")   # §48 canonical point-in-time N500
 OUT = os.path.join(ROOT, "docs", "market_breadth.json")
 
 DMA_WIN = 200        # sessions in the moving average (includes today)
@@ -56,8 +61,10 @@ def main():
     print("bin: %d symbols, dailyFrom=%d, end=%s" % (len(data), daily_from, end_iso), flush=True)
 
     # --- membership snapshots (nearest-prior per date) ---
-    raw = json.load(open(MEMB))
-    snaps = sorted((int(k.replace("-", "")), frozenset(v)) for k, v in raw.items())
+    raw = json.load(open(MEMB, encoding="utf-8"))["Nifty 500"]
+    snaps = sorted((int(s["effectiveDate"].replace("-", "")),
+                    frozenset(x for x in s["symbols"] if not str(x).upper().startswith("DUMMY")))
+                   for s in raw)
     snap_dates = [s[0] for s in snaps]
     snap_sets = [s[1] for s in snaps]
     union = set().union(*snap_sets)

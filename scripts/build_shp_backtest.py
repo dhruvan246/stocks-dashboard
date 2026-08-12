@@ -9,9 +9,16 @@ METHOD (point-in-time honest, survivorship-free — DATA_RUNBOOK.md §22):
   - Rebalance day R(Q) = first trading day >= Q + 22 calendar days (SEBI filing deadline is
     21 days; by then ~all patterns are public). A filing submitted after R(Q) is EXCLUDED
     from that quarter's signal (sub_date <= R gate) — no look-ahead.
-  - Universe = point-in-time Nifty 500 (scripts/_n500_master_history.json, nearest-prior
-    snapshot per rebalance date) — no survivorship bias, no untradable microcaps. Filing-time
-    tickers resolved to price-series keys via scripts/_rename_map.json (transitive).
+  - Universe = point-in-time Nifty 500 via scripts/_n500_member_bin.py (bin indicesHistory,
+    121 event-driven snapshots 2002->date, nearest-prior per rebalance date, rename-normed,
+    DUMMY* filtered) — the §48 canonical source. It was _n500_master_history.json until
+    2026-08-12: that file holds only 19 archived constituent lists, so a Mar-2020 rebalance
+    screened a Feb-2019 universe (13 months stale) and 2020-07..2022-05 ran on one snapshot.
+    The two agree EXACTLY on all 18 shared dates once rename-normed — the sparse file was
+    never wrong, just 19 photographs where the bin has 121. No survivorship bias, no
+    untradable microcaps. Filing-time tickers resolved to price-series keys via
+    scripts/_rename_map.json (transitive); membership compares on the NORMED symbol, since
+    the bin snapshots carry CURRENT names while shp_history keys are filing-era names.
   - Signal "K-streak": stake change >= +MIN_STEP percentage points in EACH of the K most
     recent quarter-over-quarter pairs (adjacent calendar quarters, no gaps), and latest
     stake >= MIN_LEVEL % (kills 0.00->0.05 rounding noise). "cut" variants mirror with <=.
@@ -36,9 +43,10 @@ from bisect import bisect_left, bisect_right
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
+sys.path.insert(0, HERE)          # run from any cwd — _n500_member_bin lives beside this file
+import _n500_member_bin           # §48: the ONLY sanctioned point-in-time N500 source
 BIN = os.environ.get("SF_BIN") or os.path.join(ROOT, "docs", "sf_stock_data.bin")
 HIST = os.path.join(HERE, "shp_history.json")
-MEMB = os.path.join(HERE, "_n500_master_history.json")
 RENAME = os.path.join(HERE, "_rename_map.json")
 BENCH = os.path.join(ROOT, "docs", "nifty500.json")
 OUT = os.path.join(ROOT, "docs", "shp_backtest.json")
@@ -98,9 +106,6 @@ def main():
     qes = sorted({qe for s in syms for qe in hist[s]})
     print("history: %d symbols, %d quarters %s..%s" % (len(syms), len(qes), qes[0], qes[-1]), flush=True)
 
-    raw = json.load(open(MEMB, encoding="utf-8"))
-    snaps = sorted((int(k.replace("-", "")), frozenset(v)) for k, v in raw.items())
-    snap_dates = [s[0] for s in snaps]
     res = resolve_map(data)
 
     # benchmark: iso -> level
@@ -155,9 +160,16 @@ def main():
         while i >= 0 and not cs[i]: i -= 1
         return cs[i] if i >= 0 else None
 
+    nrm = _n500_member_bin.norm       # filing-era ticker -> CURRENT name (bin snapshots use current)
+    _mem_cache = {}
     def members_asof(dint):
-        i = max(0, bisect_right(snap_dates, dint) - 1)
-        return snaps[i][1]
+        """Nearest-prior bin snapshot, rename-normed, DUMMY* filtered. Empty before the first
+        snapshot (2002-10-02) — the old `max(0, bisect-1)` floor silently handed back the
+        EARLIEST snapshot for any earlier date, fabricating a universe that did not exist."""
+        m = _mem_cache.get(dint)
+        if m is None:
+            m = _mem_cache[dint] = frozenset(_n500_member_bin.membership(dint))
+        return m
 
     # rebalance calendar: quarters that have BOTH a signal history and a rebalance day on the axis
     rebs = []  # (qe_iso, reb_int)
@@ -213,7 +225,7 @@ def main():
             return out
         for sym in syms:
             bk = res(sym)
-            if not bk or (bk not in mem and sym not in mem): continue
+            if not bk or (bk not in mem and nrm(sym) not in mem): continue
             cum = streak_val(sym, qe0, metric, sign, K, reb_int)
             if cum is None: continue
             if close_at(bk, reb_int) is None: continue

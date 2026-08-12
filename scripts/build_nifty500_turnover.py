@@ -36,15 +36,23 @@ INPUTS (both verified against their real on-disk format, not assumed):
     lands in an ambiguous band, we fall back to the era rule (>=2020-01-01 => lakhs). Rupees-days
     are /1e5 to lakhs; everything is summed in LAKHS, then /100 -> CRORE.
 
-  scripts/_n500_master_history.json  -- {"YYYY-MM-DD":[SYMBOL,...]}, 19 archived NSE/
-    niftyindices full constituent lists, 2006-11-08 .. 2026-06-12. Symbols match the bin's
-    data keys. (A few junk entries -- a leaked 'Symbol' header, DUMMYVEDL* placeholders --
-    simply aren't in data and drop out.)
+  scripts/indices_history.json["Nifty 500"]  -- [{effectiveDate, symbols:[...]}, ...], 121
+    EVENT-DRIVEN snapshots 2002-10-02 .. date, CI-maintained by build_membership_v2.py. The
+    §48 canonical point-in-time source. Symbols are CURRENT names and match the bin's data
+    keys (99.8% resolve directly; the rest simply aren't in data and drop out, as DUMMY*
+    placeholders did before). Was _n500_master_history.json until 2026-08-12 -- 19 archived
+    constituent lists, i.e. membership up to 1,389 days stale between photographs. The two
+    agree EXACTLY on all 18 shared dates once rename-normed, so this is a resolution upgrade,
+    not a correction.
 
-SIMPLIFICATION (v1): members(M) = the snapshot whose date is the latest <= last day of
-  month M (nearest-prior). We do NOT replay the _n500_changes.json change-events between
-  snapshots. Total turnover is dominated by large, stable members, so membership drift
-  barely moves the total; this keeps the pipeline simple and robust.
+MEMBERSHIP: members(M) = the snapshot whose date is the latest <= last day of month M
+  (nearest-prior). We do NOT replay _n500_changes.json between snapshots -- with 121
+  event-driven snapshots there is little left to replay (§48 also warns that ledger has no
+  pre-2020 merger/delisting exclusions, so replaying it carries PHANTOM members).
+  ⚠️ v1 claimed "membership drift barely moves the total". MEASURED 2026-08-12, same bin,
+  sparse->dense: mean |change| 4.07% over 200 months, 156 months moved >1%, 59 moved >5%,
+  and 2009-10..12 moved +22% (they had been screening the 2006-11-08 universe, the sparse
+  file's nearest prior). The claim was wrong -- do not use it to justify a coarser source.
 
 Run:  python -X utf8 build_nifty500_turnover.py
 """
@@ -55,7 +63,7 @@ from datetime import date
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 BIN = os.path.join(ROOT, "docs", "sf_stock_data.bin")
-MEMB = os.path.join(HERE, "_n500_master_history.json")
+MEMB = os.path.join(HERE, "indices_history.json")   # §48 canonical point-in-time N500
 OUT = os.path.join(ROOT, "docs", "nifty500_turnover.json")
 
 START_YM = 200910        # first calendar month emitted (YYYYMM)
@@ -115,8 +123,10 @@ def main():
     print("bin: %d symbols, data end = %s" % (len(data), end_iso), flush=True)
 
     # --- membership snapshots, sorted by date ---
-    raw = json.load(open(MEMB))
-    snaps = sorted((date.fromisoformat(k), set(v)) for k, v in raw.items())
+    raw = json.load(open(MEMB, encoding="utf-8"))["Nifty 500"]
+    snaps = sorted((date.fromisoformat(s["effectiveDate"]),
+                    {x for x in s["symbols"] if not str(x).upper().startswith("DUMMY")})
+                   for s in raw)
     print("membership: %d snapshots, %s .. %s" %
           (len(snaps), snaps[0][0].isoformat(), snaps[-1][0].isoformat()), flush=True)
 
