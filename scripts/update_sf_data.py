@@ -92,6 +92,23 @@ def load_base():
             last = e; print("Base: release fetch attempt %d failed (%s)" % (attempt + 1, e)); time.sleep(10)
     raise SystemExit("ABORT: could not fetch the merged release-asset base after 3 tries (%s) — refusing to build from the un-merged in-repo copy" % last)
 
+def _open_confirms(e, j, applied_f, off):
+    """§87c open gate: does the ex-day OPEN print at the basis the OFFICIAL factor `off` implies?
+
+    The bin stores the ADJUSTED open, so op[j]/c[j-1] is the raw open gap divided by whatever factor
+    is currently baked across that boundary (`applied_f`) — multiply it back out to recover the raw
+    (open/prev), then divide by the official factor. On a true corporate action that lands at ~1.0;
+    an equity crash sits >= 1.19 because it opens near flat and falls intraday.
+
+    Band [0.88, 1.12] calibrated on this repo's own live data (2026-08-12): 1,350 official actions
+    verified applied in the served series give p5=0.9625, p50=1.0181, p95=1.0959, 97.0% <= 1.12 —
+    agreeing with §87c's independent calibration on 566 ground-truth events (p5..p95 0.957..1.100)."""
+    op = e.get("op"); c = e.get("c")
+    if not op or not c or j >= len(op) or not op[j] or not c[j - 1] or not applied_f or not off:
+        return False
+    return 0.88 <= (op[j] / c[j - 1]) * applied_f / off <= 1.12
+
+
 def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
     """Belt-and-suspenders. Re-correct any split/bonus/demerger whose ex-date fell in the last
     ~4 weeks but was processed by an EARLIER daily run before NSE had published the action (so the
@@ -220,6 +237,14 @@ def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
             correct_f = dem[0]   # demerger: scale out the SPOS open-gap (value moved to the spin-off)
         elif off is not None and 0.75 <= raw_ratio / off <= 1.30:
             correct_f = off
+        elif off is not None and _open_confirms(e, j, applied_f, off):
+            # THE OPEN ARBITRATES (§87c) — mirror of the same second chance in build_sf_data's
+            # reconcile. A real action landing on a violent day fails the close-to-close test above;
+            # its ex-day OPEN still prints at the adjusted basis. Without this branch a full-window
+            # run (SF_HEAL_WINDOW) would compute correct_f = ca_factor(raw_ratio) = 1.0 for exactly
+            # these events and UNDO the ca_open_arbitrated ledger's heal — JINDALSTEL-2008 would be
+            # re-inflated x5 by the very pass meant to converge it.
+            correct_f = off
         elif is_dem and not (0.75 <= raw_ratio <= 1.30):
             correct_f = 1.0
         else:
@@ -320,6 +345,49 @@ def apply_manual_rights(data):
                 if key in e: e[key] = [round(x * factor, 2) for x in e[key][:j]] + e[key][j:]
             n += 1
             print("  MANUAL-RIGHTS %s ex %d x%.4f (%d pre-ex points -> Trendlyne parity)" % (sym, ex, factor, j))
+    return n
+
+
+# OFFICIAL split/bonus factors whose ex-day CLOSE ratio the [0.75,1.30] reconcile window rejects but
+# whose ex-day OPEN prints at the adjusted basis — the record is right, the close is contaminated by a
+# genuine violent move the same day (§87a failure mode 1; §87c "the OPEN arbitrates"). build_sf_data
+# now accepts these itself, but the LIVE series is the release asset + daily appends and self_heal only
+# reaches ex-dates inside its 28-day window, so an old mis-baked action can never converge on its own.
+# This pass runs EVERY run, network-free (the ledger carries the raw ex-day ratio, so no bhavcopy
+# refetch) and idempotent by the apply_manual_rights test. See scripts/ca_open_arbitrated.json.
+try:
+    CA_ARBITRATED = [tuple(x[:4]) for x in json.load(
+        open(os.path.join(ROOT, "scripts", "ca_open_arbitrated.json")))["events"]]
+except Exception as _e:
+    CA_ARBITRATED = []
+    print("  (ca_open_arbitrated.json not loaded: %s)" % _e)
+
+def apply_ca_arbitrated(data):
+    """Divide out each open-arbitrated official split/bonus the close-ratio guard let through.
+    Same idempotence test as apply_manual_rights: the ex-date ratio is `raw_drop` before the
+    adjustment and `raw_drop/factor` after, so a series that already carries the factor — because
+    it was rebuilt from scratch, or healed on an earlier run — is a no-op. Scale-invariant."""
+    n = 0
+    for sym, ex, factor, raw_drop in CA_ARBITRATED:
+        e = data.get(sym)
+        if not e or not e.get("d"): continue
+        ds, c = e["d"], e["c"]
+        j = next((k for k in range(len(ds)) if ds[k] >= ex), None)   # first day on/after ex
+        if j is None or j < 1 or not c[j - 1] or not c[j]: continue
+        # PRECISION FLOOR (§87e-bis): at 2-decimal storage a sub-rupee series cannot express the
+        # adjusted level, so the ratio test above is pure rounding and the pass re-fires for ever.
+        # Measured on SOUISPAT (0.35 -> 0.04 across its 1/10): pass 2 wants another x1.1667 and its
+        # 979 pre-ex bars collapse to 17 distinct values. Excluded by class, not healed. (§87g)
+        if c[j] < 0.25 or c[j - 1] < 0.25:
+            print("  CA-OPEN-ARB %s ex %d SKIPPED: sub-Rs0.25 closes (%.2f/%.2f) — heal would not converge"
+                  % (sym, ex, c[j - 1], c[j])); continue
+        cur = c[j] / c[j - 1]                    # ex-date ratio currently baked into the series
+        if abs(cur - raw_drop) < abs(cur - raw_drop / factor):   # still ~raw drop -> not yet applied
+            for key in ("c", "h", "l", "op", "vw"):
+                if key in e: e[key] = [round(x * factor, 2) for x in e[key][:j]] + e[key][j:]
+            n += 1
+            print("  CA-OPEN-ARB %s ex %d x%.6f (%d pre-ex points; ratio %.6f -> %.6f)"
+                  % (sym, ex, factor, j, cur, cur / factor))
     return n
 
 
@@ -836,6 +904,8 @@ def main():
     sg = apply_series_surgery(data, meta)   # wrong-company stitch repair (DVL/DTIL, §89) — before the
                                             # day loop so appends land on the repaired series
     mr = apply_manual_rights(data)   # hand-verified per-stock rights adjustments to match Trendlyne
+    ao = apply_ca_arbitrated(data)   # official splits the close-ratio guard rejected, confirmed by the ex-day OPEN (§87g)
+    if ao: print("Open-arbitrated corporate actions: %d applied." % ao)
     wk = insert_weekend_sessions(data, j, {o: n for n, o in MANUAL_MERGE.items()})   # backfill missing weekend special sessions (budget Sats etc.); old->new so merged-away tickers' sessions land on the survivor
     if wk: print("Weekend special sessions: %d bars inserted." % wk)
     for day in days:
@@ -934,8 +1004,8 @@ def main():
     # refreshes the on-disk bin but does NOT publish the release, bump clients, or commit a marker.
     blob = gzip.compress(json.dumps(D, separators=(",", ":")).encode(), 6)
     open(OUT, "wb").write(blob)
-    if not appended and not healed and not merged and not mr and not dvf and not dvo and not wk and not bz and not sg and not tunits and not dead:
-        print("No new day / heal / merge / manual-rights / dv-fill / dv-overwrite / weekend-insert / BZ-backfill / series-surgery / turnover-unit fix / aliveness decay — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
+    if not appended and not healed and not merged and not mr and not ao and not dvf and not dvo and not wk and not bz and not sg and not tunits and not dead:
+        print("No new day / heal / merge / manual-rights / open-arbitrated CA / dv-fill / dv-overwrite / weekend-insert / BZ-backfill / series-surgery / turnover-unit fix / aliveness decay — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
     open(MARK, "w").write(D["end"])
     # tiny version marker — committed daily, lets the browser cache the big bin in IndexedDB
     # keyed to this `end` and skip re-downloading 80 MB until the data actually changes.

@@ -447,8 +447,8 @@ def main():
               (len(CA_OFF), len(NOADJ)), flush=True)
     except Exception as e:
         CA_OFF = {}; NOADJ = {}; print("  (corp_actions.json unavailable: %s — inference only)" % e, flush=True)
-    applied_off = bad_recon = demerger_skipped = 0
-    skip_log = []
+    applied_off = bad_recon = demerger_skipped = open_rescued = 0
+    skip_log = []; open_log = []
     data, meta, dead = {}, {}, 0
     for sym, obs in acc.items():
         obs.sort(); ds, cs, ts, hr, lr, orr, vol, dv, vr = [], [], [], [], [], [], [], [], []
@@ -472,6 +472,23 @@ def main():
                     cand = offlist[oi][1]; oi += 1
                     if 0.75 <= (r / cand) <= 1.30:   # implied ex-date move within circuit-ish bounds
                         f = cand; applied_off += 1
+                    elif base and o > 0 and 0.88 <= (o / base) / cand <= 1.12:
+                        # THE OPEN ARBITRATES (§87c). A real corporate action that lands on a violent
+                        # day fails the close-to-close reconcile above and used to fall through to
+                        # inference, which then snapped to nothing and KEPT THE WHOLE SPLIT — §87a
+                        # failure mode 1. Flagship: JINDALSTEL 2008-01-21 (1:5 split on one of the
+                        # worst days in Indian market history) — raw close ratio 0.1465, so
+                        # r/cand = 0.7325, a hair outside the 0.75 floor; the ex-day OPEN printed at
+                        # 493.50 vs a 2393.99 prev close = 0.2061, i.e. (open/prev)/factor = 1.031,
+                        # dead on the adjusted basis. Circuit filters don't bound this: F&O members
+                        # (JINDALSTEL since 2005-04-29) have no price band at all.
+                        # Band calibrated on THIS repo's live data — 1,350 verified-applied official
+                        # actions give (open/prev)/factor p5=0.9625, p50=1.0181, p95=1.0959, and 97.0%
+                        # <= 1.12; §87c's independent calibration on 566 ground-truth events agrees
+                        # (p5..p95 = 0.957..1.100) and puts equity crashes at >= 1.19, since a crash
+                        # opens near flat and falls intraday.
+                        f = cand; applied_off += 1; open_rescued += 1
+                        if len(open_log) < 40: open_log.append((sym, ymd, cand, round(r, 4), round((o / base) / cand, 4)))
                     else:
                         bad_recon += 1   # official ratio doesn't reconcile with the drop -> use inference
                 if f is None:
@@ -518,9 +535,13 @@ def main():
                      "ind": (cur.get(sym) or {}).get("industry") or "Unknown", "alive": alive,
                      "raw": round(obs[-1][1], 2)}   # latest RAW market close (adjusted series level can drift from market price)
         if sym in isin_of: meta[sym]["isin"] = isin_of[sym]
-    print("Stored %d symbols (%d delisted/absent today); official split/bonus applied=%d, non-reconciling=%d, "
+    print("Stored %d symbols (%d delisted/absent today); official split/bonus applied=%d (of which %d "
+          "rescued by the OPEN gate after the close-ratio reconcile failed), non-reconciling=%d, "
           "demerger/scheme drops kept (not divided out)=%d"
-          % (len(data), dead, applied_off, bad_recon, demerger_skipped), flush=True)
+          % (len(data), dead, applied_off, open_rescued, bad_recon, demerger_skipped), flush=True)
+    if open_log:
+        print("  OPEN-arbitrated official actions (sym, ex, factor, close-ratio, open-gate):", flush=True)
+        for s, y, cf, rr, og in open_log: print("    %-12s %d  f=%.6f  close r=%.4f  open/prev/f=%.4f" % (s, y, cf, rr, og), flush=True)
     apply_dv_fill(data)
     if skip_log:
         print("  demerger/scheme ex-dates kept as real drops (sym, date, ratio):", flush=True)

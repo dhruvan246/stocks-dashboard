@@ -1,0 +1,32 @@
+{
+  "_note": [
+    "OFFICIAL corporate actions (scripts/corp_actions.json / corp_actions_hist.json) whose ex-day",
+    "CLOSE-to-close ratio falls outside the [0.75, 1.30] reconcile window the price builds use, but",
+    "whose ex-day OPEN prints at the adjusted basis — i.e. the record is right and the close ratio is",
+    "contaminated by a genuine violent move on the same day (DATA_RUNBOOK 87a failure mode 1, 87c's",
+    "'the OPEN arbitrates'). Without this the whole split is silently KEPT and the pre-ex history sits",
+    "1/factor too high for ever.",
+    "",
+    "build_sf_data.py now accepts these on a from-scratch rebuild by itself (the open-gate second",
+    "chance in its official-factor reconcile). This ledger is the INCREMENTAL leg: the live series is",
+    "the release asset + daily appends, and self_heal only reaches ex-dates inside its 28-day window,",
+    "so an old mis-baked action can never converge on its own. update_sf_data.apply_ca_arbitrated()",
+    "reconciles every entry here on EVERY run, network-free and idempotent.",
+    "",
+    "Idempotence (the apply_manual_rights pattern, no marker needed): the ex-date ratio in the series",
+    "is `raw_drop` before adjustment and `raw_drop / factor` after, so the pass only fires while the",
+    "current ratio is still closer to the raw drop. Scale-invariant, so a later split re-anchoring the",
+    "whole series cannot fool it or double-apply, and a rebuilt bin (already correct) is a no-op.",
+    "",
+    "Entry = [symbol, ex_trading_ymd, factor, raw_ex_day_close_ratio, evidence].",
+    "NEVER add a row whose open gate is not measured — a factor no record and no print supports is a",
+    "guess. Sub-Rs0.25 series are EXCLUDED BY CLASS: at 2-decimal storage the heal does not converge",
+    "(see SOUISPAT in DATA_RUNBOOK 87g)."
+  ],
+  "events": [
+    [
+      "JINDALSTEL", 20080121, 0.2, 0.146496,
+      "1:5 split, ex 2008-01-21. Ledger factor 0.2 is record-verified (corp_actions_hist, 87 campaign). Live close 2393.99 -> 350.71 = 0.146496, so close-ratio/factor = 0.7325 -> just under the 0.75 reconcile floor -> rejected -> ca_factor(0.1465) snapped to nothing -> split KEPT. Measured live 2026-08-12 on sf_deep parts (rev 4f491f79ce): (a) OPEN GATE — ex-day open 493.50 / prev close 2393.99 = 0.20614, /0.2 = 1.0307, CA-like (<=1.12; crashes >=1.19); (b) TURNOVER STEP — r = t/(c*v) is the cumulative adjustment, and it is FLAT across the boundary (median step 0.9887 vs the 0.20 an applied factor would show), i.e. nothing was divided out; (c) VOLUME — 153,481 -> 1,579,112 shares, the ~1/factor rescale of a 1:5 split. 2008-01-21 was one of the worst single days in Indian market history: -26.8% from the adjusted basis, and F&O members (JINDALSTEL since 2005-04-29) carry no price band, which is why the close ratio lands 27% off the fraction."
+    ]
+  ]
+}
