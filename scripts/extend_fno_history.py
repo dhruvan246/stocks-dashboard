@@ -53,7 +53,11 @@ prev = set(hist[-1]['symbols']) if hist else set()
 added = []
 for yd in targets:
     syms = fno_stocks_on(yd)
-    if not syms or len(syms) < 50:   # sanity: a real F&O day has ~200 stocks
+    # Era-aware floor. Today a real F&O day has ~200 stocks, but the universe launched 2001-11 with
+    # 31 and only passed 50 on 2003-09-30 (min 29 at 2002-10-31). A flat 50 would silently discard
+    # every backfill date before 2003-09 — see min_expected() in rebuild_fno_history.py + runbook §8.
+    floor = 20 if yd < "20030901" else 50
+    if not syms or len(syms) < floor:
         if not LATEST: print(f"  {yd}: skipped (got {len(syms) if syms else 0})")
         continue
     eff = f"{yd[:4]}-{yd[4:6]}-{yd[6:]}"

@@ -7,7 +7,9 @@ older snapshots with modern tickers; this fixes both. Snapshots before START_YEA
 Then patches docs/stock_data.bin's fnoHistory in place.
 
   python rebuild_fno_history.py            # 2020-01 -> today (default)
-  python rebuild_fno_history.py 2015       # full history 2015-01 -> today
+  python rebuild_fno_history.py 2001       # full history 2001-11 -> today (the real start)
+
+Snapshots before START_YEAR are kept as-is, so a partial rebuild never truncates the deep history.
 """
 import calendar, datetime, io, zipfile, csv, json, gzip, subprocess, time, sys
 from pathlib import Path
@@ -41,6 +43,17 @@ def _parse(data, sym_keys, tp_key, tp_ok):
             if s and s not in IDX: out.add(s)
     return out or None
 
+def min_expected(dt):
+    """Floor for 'this looks like a real F&O day', by ERA.
+
+    ⚠️ A FLAT >=50 FLOOR SILENTLY TRUNCATES THE HISTORY. Stock derivatives launched 2001-11-09 with
+    31 underlyings and did not pass 50 until 2003-09-30 (measured on the rebuilt history: 8 months
+    sit below 50, min 29 at 2002-10-31). With a flat 50 every month before 2003-09 is discarded as
+    "not a real F&O day", the file starts late, and `lastSnap`'s `|| list[0]` turns that into a
+    look-ahead — the exact bug fixed on 2026-08-12 (runbook §8)."""
+    return 20 if dt < datetime.date(2003, 9, 1) else 50
+
+
 def fno_on(dt):
     ymd = dt.strftime('%Y%m%d')
     udiff = f"https://nsearchives.nseindia.com/content/fo/BhavCopy_NSE_FO_0_0_0_{ymd}_F_0000.csv.zip"
@@ -52,7 +65,7 @@ def fno_on(dt):
         if not data: continue
         if kind == 'udiff': s = _parse(data, ['TckrSymb','SYMBOL'], 'FinInstrmTp', {'STF','STO'})
         else:               s = _parse(data, ['SYMBOL','TckrSymb'], 'INSTRUMENT', {'FUTSTK','OPTSTK'})
-        if s and len(s) >= 50: return sorted(s)
+        if s and len(s) >= min_expected(dt): return sorted(s)
     return None
 
 def last_trading_snapshot(y, m):

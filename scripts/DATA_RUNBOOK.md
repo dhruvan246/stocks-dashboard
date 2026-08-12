@@ -667,6 +667,32 @@ AND the **point-in-time ticker** as the label: `membersAsOf('__FNO__', date)` �
 - **A "missing" month is NOT a gap.** Consecutive identical membership is deduped and `lastSnap` carries
   forward. Verified by re-fetching: 2015-02, 2016-03 and 2019-04 are byte-identical to the snapshot
   they carry from. Judge coverage by months WALKED, not by snapshot count.
+- **⚠️ THE ERA-AWARE SANITY FLOOR (latent truncation bug, fixed 2026-08-12).** `rebuild_fno_history.py`
+  rejected any day yielding `< 50` symbols as "not a real F&O day". **The universe launched 2001-11-09
+  with 31 underlyings and did not pass 50 until 2003-09-30** — measured on the rebuilt file, 8 months sit
+  below 50 (min **29** at 2002-10-31). So re-running the rebuilder would have silently discarded every
+  month before 2003-09, started the file late, and handed `lastSnap` its `|| list[0]` look-ahead all over
+  again. Now `min_expected(dt)` = 20 before 2003-09, 50 after; `extend_fno_history.py` carries the same
+  floor for backfill dates. **Any "does this look like real data?" floor must be dated** — a threshold
+  calibrated on today's universe is a truncation rule when pointed at the past.
+
+- **✅ AUDITED AGAINST THE NIFTY-500 MEMBERSHIP CONVENTIONS (2026-08-12).** Every N500 rule that transfers,
+  measured on the F&O history: **DUMMY*/malformed tickers** none · **index-derivative leakage** none ·
+  **duplicate/unsorted symbols** none · **redundant consecutive-identical snapshots** none ·
+  **phantom members** (a member with no tradeable series) 4 of 31,655 cells, all three named in §8 ·
+  **snapshot = the month's LAST F&O session** worst gap 3 days · **DVR shares** TATAMTRDVR is present and
+  that MATCHES N500 (a DVR was a real constituent, so it stays in history; `factorsAt` skips it at screen
+  time) · **carry-forward staleness** max 183 days but **EXACT, not stale** — dedup only drops a month whose
+  membership is identical to its predecessor, verified by re-fetching inside the longest gap (2002-01-31,
+  2002-03-28, 2002-04-30 all return the same 31 symbols as 2001-11-29). Also verified the one snapshot whose
+  source date was not month-end (2024-07-05, the legacy archive's last day): the real 2024-07-31 bhavcopy is
+  **181 symbols, identical to what the file carries** — zero missing, zero extra.
+- **⚠️ ONE N500 CONVENTION DELIBERATELY DOES NOT TRANSFER — labels.** `build_membership_v2.py` keys N500 on
+  CURRENT tickers *because* `build_sf_data` merges renamed series by ISIN, so the current key holds the whole
+  series. **That merge is incomplete, and for the F&O era-names it mostly did not happen**: 376 of 378
+  pre-2015 F&O symbols still have their OWN series, and the current-name series carries a hole exactly where
+  the old one lives. Hence point-in-time labels here and current names there. Both are right for their own
+  data; neither is a style choice. Re-run the cell audit before changing either.
 - **Source of truth = NSE F&O bhavcopies** (every stock-future/option underlying actually trading that month,
   using the ticker that traded THEN). Two formats: old `fo<DD><MON><YYYY>bhav.csv.zip` (INSTRUMENT=FUTSTK/OPTSTK,
   col SYMBOL) for **≤2024-06**; UDiFF `BhavCopy_NSE_FO_0_0_0_<YYYYMMDD>_F_0000.csv.zip` (FinInstrmTp=STF/STO,
@@ -8266,6 +8292,23 @@ which has four measured failure modes:
    a phantom 3/4; IDFC 2015-10-01 as 2/5).
 4. **Wrong fraction on ex-day pops** (VENKEYS 2015: true 2/3 baked as 3/4; SURANAT&P 1/5 as 1/4).
 
+### 87a-bis. ⚠️ A LEDGERED FACTOR IS NOT AN APPLIED FACTOR — JINDALSTEL 2008-01-21 (found 2026-08-12)
+Spot-checking §87's own flagship cases against the **LIVE** deep parts while extending F&O membership:
+6 of 7 are correctly adjusted, but **JINDALSTEL 2008-01-21 is not**, even though the factor sits in
+`corp_actions.json` (`[[20031219,0.5],[20080121,0.2],[20090914,0.166667]]`) and its two SIBLING factors
+on the same series ARE applied. Live bars: 20080118 close 2393.99 → 20080121 close **350.71**, a
+permanent 6.83× step (393.59 twenty bars later). 0.1465 ≈ 0.2 × 0.73 — the 1:5 split times a ~27% fall
+on one of the worst days in Indian market history, which is why `ca_factor()`'s 8% snap window misses it
+(failure mode 1 above). **The ledger was right and the bake was missing** — so "it's in the ledger" is
+not evidence the tape is fixed. Impact: JINDALSTEL is an F&O member from 2005-04-29 and **28 rebalances
+sit before that ex-date**, now reachable since the membership backfill (§8). Queued as a task, plus a
+full sweep of `factors` for the same "raw step ≈ ledger factor" signature.
+⚠️ **Two method traps this exposed, both cost a wrong answer first:**
+- **Check LIVE, never `docs/sf_stock_data.bin`.** The frozen local bin (bars to 2026-06-13) predates the
+  §87 campaign and says **ITC is still unadjusted**; live says ITC is fine. Opposite verdicts, same query.
+- **A relative tolerance false-positives on factors near 1.0.** `|step − factor| < 35%` flagged UNITECH's
+  0.925926 as unapplied when it is fine. Test factors near 1 by a different route, or exclude them.
+
 ### 87b. Sources and their measured floors
 - NSE corporates-corporateActions API: serves back to 1999, but split/bonus subjects are only
   dense from **2006** (2005: 829 rows, ONE bonus). 2002-2005 = dividends/AGM only.
@@ -9013,10 +9056,16 @@ nothing about the code path you changed.*
 
 ### 92b. ★★★ `lastSnap()` FABRICATES MEMBERSHIP BEFORE AN INDEX EXISTED — gate on the first snapshot
 `lastSnap()` ends `best || list[0]`: asked for a date before its earliest snapshot it returns the
-**oldest roll**. Sane for a backtest; a lie on a coverage chart. **Only Nifty 500's roll reaches 2002
-(2002-10-02); every other index starts 2015-2021** (Nifty Healthcare 2021-03-31, Oil & Gas 2021-03-31,
-FMCG 2019-09-27, LargeMidcap 250 2018-02-05, F&O 2015-01-30). Uncaught, the page showed **F&O with 144
-"members" in Jan-2002**, 13 years before the roll begins. The builder now records
+**oldest roll**. Sane for a backtest; a lie on a coverage chart. **Nifty 500's roll reaches 2002
+(2002-10-02) and F&O's now reaches 2001-11-29 (fixed 2026-08-12, §8); every other index starts
+2015-2021** (Nifty Healthcare 2021-03-31, Oil & Gas 2021-03-31, FMCG 2019-09-27, LargeMidcap 250
+2018-02-05). Uncaught, the page showed **F&O with 144 "members" in Jan-2002**, 13 years before the
+roll then began. ⚠️ **F&O's `rollFrom` was 2015-01-30 when this was written** — `build_coverage_matrix.js`
+derives it with `firstSnap(FNOH)` so it self-corrects, but any `rollFrom` you see QUOTED in prose is a
+snapshot of a moving value: re-derive it, never copy it.
+**And note what this gate does NOT do:** it protects the coverage *chart*, not the *backtest*. The
+engine still takes `list[0]` silently, which is exactly how the F&O look-ahead survived 11 years of
+backtests — a chart gate is not a data fix. The builder now records
 `members = -1` for any date < the universe's first `effectiveDate` and the page prints `–`;
 `rollFrom` is stated under the universe name. **Any point-in-time membership read needs this gate.**
 
