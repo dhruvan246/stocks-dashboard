@@ -996,6 +996,31 @@ def main():
     if dead: print("Aliveness: %d symbol(s) had no bar within %dd of %s -> alive=False."
                    % (dead, B.ALIVE_RECENCY_DAYS, D["end"]))
 
+    # Industry/name for DELISTED symbols. meta.ind is only ever derived from dash_slim's
+    # CURRENTLY-LISTED universe, so a symbol that stopped trading keeps ind="Unknown", name=<symbol>
+    # forever — a survivorship gap in the metadata that no amount of price work closes (2,008 of the
+    # live bin's 4,445 symbols carry it). scripts/industry_fills.json holds BSE's own IndustryNew for
+    # the ones that matter, in the same vocabulary. Applied HERE, in the nightly incremental, because
+    # the full rebuild that would otherwise pick it up is a multi-hour bhavcopy fetch that does not
+    # run on a schedule. ONE DIRECTION ONLY — it never overwrites an industry the universe supplied,
+    # so a symbol that comes back to life takes its live classification straight back. Idempotent:
+    # a converged file reports 0.
+    try:
+        _fills = (json.load(open(os.path.join(HERE, "industry_fills.json"))) or {}).get("fills") or {}
+    except Exception as e:
+        _fills = {}
+        print("  (industry_fills unavailable: %s)" % e)
+    _n = 0
+    for _s, _f in _fills.items():
+        _m = meta.get(_s)
+        if not isinstance(_m, dict):
+            continue
+        if _m.get("ind") in (None, "", "Unknown", "Other") and _f.get("industry"):
+            _m["ind"] = _f["industry"]; _n += 1
+        if _m.get("name") in (None, "", _s) and _f.get("name"):
+            _m["name"] = _f["name"]
+    if _n: print("Industry fills: %d delisted symbol(s) classified from the ledger." % _n)
+
     # ALWAYS rewrite the freshly-loaded MERGED base to disk — even on a no-op run — so the split/publish
     # step never reads the stale, UN-merged in-repo copy (frozen at an old `end`, still carrying
     # ZOMATO/RUCHI/BURGERKING as separate stubs) and trip split_sf_data.py's ZOMATO/ETERNAL publish-guard.
