@@ -155,7 +155,15 @@ let VIEW = 'board', RESULT = [], SKIPPED = [];
 let ASOF = null;
 try { const q = new URLSearchParams(location.search).get('asof'); if (q && /^\d{4}-\d{2}-\d{2}$/.test(q)) ASOF = q; } catch (e) {}
 const dayWord = () => ASOF ? 'move on ' + ASOF : "today's move";
-const noQual = () => ASOF ? 'No stock qualified on ' + ASOF : 'No stock qualifies right now';
+// `noData` (set by basketAt) = NOTHING in the universe had a computable factor on that date, so no
+// screen ran. That is a different fact from "it ran and nothing passed", and the deep end of the
+// rewind is full of it — daily bars start 2002-01-02, so 52-week and 6-month factors stay null for
+// about a year after. Wording it as "no stock qualified" / "in cash" would assert a screen that
+// never happened. Both views share these two helpers so they can't drift apart again (they had:
+// the board said "not started", the cards said "in cash", for the same empty basket).
+const noQual = r => (r && r.picksNoData) ? 'No factor data ' + (ASOF ? 'on ' + ASOF : 'yet')
+  : ASOF ? 'No stock qualified on ' + ASOF : 'No stock qualifies right now';
+const heldWord = r => !r.rebDate ? 'not started' : r.heldNoData ? 'no data' : 'in cash';
 // ap_view2, not the old ap_view: setView used to WRITE the key on every page load, so every
 // past visitor has ap_view:'cards' stored without ever choosing it — honoring it would keep
 // them on the old default forever. The new key is written only on an explicit toggle click.
@@ -203,20 +211,37 @@ function setUni(v) {
 /* ---------- strategy schedule ----------
  * A deployed strategy rebalances on MONTH-ENDS, every `freq` months, phased from its own start
  * month — the same cadence simulate() walks. The last such boundary before today is when the
- * basket now held was formed, so it is the only honest anchor for "how is it doing".            */
+ * basket now held was formed, so it is the only honest anchor for "how is it doing".
+ *
+ * The grid runs in BOTH directions from that phase month, so a rewind ALWAYS lands on a boundary.
+ * `cfg.start` is only the From box of the backtest window that happened to be on the form when the
+ * strategy was saved (stock-backtest.html readCfg) — bt-identity.js deliberately keeps it OUT of a
+ * strategy's identity, and applyCfg rolls `end` forward on every load while leaving `start` frozen.
+ * It is a research window, NOT a deployment date, so it must not gate anything. Until 2026-08-13
+ * this walked FORWARD from start and returned null when no boundary preceded the date, which the
+ * board rendered as "not started": a rewind to May-2023 blanked the return AND the holdings of the
+ * three strategies whose saved window began 2026-03-31 (the Wave-3 preset). For a MONTHLY strategy
+ * — every one saved so far — `start` moves the anchor not at all, so that null was its only effect.
+ * The phase still matters at freq > 1 (start 2020-01-31 vs 2020-03-31 anchors Apr vs Mar), so it
+ * is kept. Cross-check: the Strategy page never had this gate (strategy-backtest monthEndBefore()
+ * just walks back from the date), so the two pages disagreed on the same strategy.               */
 function monthEndOf(y, m) { return new Date(Date.UTC(y, m, 0)).toISOString().slice(0, 10); }   // m = 1..12
 function lastRebalanceDate(cfg, today) {
   const freq = Math.max(1, +cfg.freq || 1);
   const start = (cfg.start && /^\d{4}-\d{2}/.test(cfg.start)) ? cfg.start : '2020-01-31';
-  const y0 = +start.slice(0, 4), m0 = +start.slice(5, 7);
-  let last = null;
-  for (let k = 0; k < 800; k++) {
-    const t = y0 * 12 + (m0 - 1) + k * freq;
+  const t0 = (+start.slice(0, 4)) * 12 + (+start.slice(5, 7) - 1);      // the phase month, as an index
+  const tNow = (+today.slice(0, 4)) * 12 + (+today.slice(5, 7) - 1);
+  const floor = (typeof SF !== 'undefined' && SF) ? (SF.dailyFrom || SF.start || '') : '';
+  let k = Math.floor((tNow - t0) / freq);   // grid point in/before today's month — NEGATIVE when rewound past `start`
+  for (let i = 0; i < 3; i++, k--) {        // step back while today sits before its own month-end
+    const t = t0 + k * freq;
+    if (t < 0) break;                       // off the calendar
     const me = monthEndOf(Math.floor(t / 12), (t % 12) + 1);
-    if (me >= today) break;
-    last = me;
+    // Before the dataset begins there is no basket to screen — say "not started" rather than
+    // report an empty screen as "in cash", which would assert the rule found nothing.
+    if (me < today) return me < floor ? null : me;
   }
-  return last;
+  return null;
 }
 // A month-end can fall on a weekend/holiday — snap to the last day that actually traded, so the
 // entry price and the 52w window share one anchor (mirrors simulate()'s snapTD).
@@ -322,13 +347,16 @@ function normFilters(list) {
   }).filter(Boolean);
 }
 function basketAt(cfg, date, topN) {
-  let rows = rowsAt(cfg, date).filter(r => r.rsi != null && passFilters(r, cfg.filters));
+  const scored = rowsAt(cfg, date).filter(r => r.rsi != null);   // factors computable AT ALL on this date
+  let rows = scored.filter(r => passFilters(r, cfg.filters));
   rows = rows.filter(r => fieldVal(r, cfg.sortBy) != null);
   rows = rows.slice().sort((a, b) => {
     const x = fieldVal(a, cfg.sortBy), y = fieldVal(b, cfg.sortBy);
     return cfg.dir === 'high' ? y - x : x - y;
   });
-  return rows.slice(0, topN);
+  const out = rows.slice(0, topN);
+  out.noData = !scored.length;   // see noQual/heldWord — "couldn't screen" is not "screened, nothing passed"
+  return out;
 }
 
 /* ---------- pricing ----------
@@ -493,7 +521,7 @@ function renderCards() {
       <div class="flex items-start justify-between gap-2">
         <a href="${stratHref(r.s)}" class="text-[13.5px] font-bold text-slate-900 hover:text-indigo-600 leading-snug">${isFav(favs, r.cfg) ? FAV_MARK : ''}${esc(r.name)}</a>
         ${!r.held.length
-          ? '<span class="text-[11px] font-bold whitespace-nowrap px-2 py-0.5 rounded-full text-slate-500 bg-slate-100">in cash</span>'
+          ? `<span class="text-[11px] font-bold whitespace-nowrap px-2 py-0.5 rounded-full text-slate-500 bg-slate-100">${heldWord(r)}</span>`
           : `<span class="flex flex-col items-end gap-1 shrink-0">
               ${r.day == null
                 ? `<span class="text-[11px] font-bold whitespace-nowrap px-2 py-0.5 rounded-full text-slate-400 bg-slate-100" title="${ASOF ? 'No close on ' + ASOF : 'No live quote yet'}">—</span>`
@@ -511,7 +539,7 @@ function renderCards() {
         ${r.nf ? `<span class="chip text-slate-500 bg-slate-50">${r.nf} filter${r.nf > 1 ? 's' : ''}</span>` : ''}
       </div>
       ${r.empty ? `<div class="border-t border-dashed border-slate-200 py-4 text-center text-[12px] text-slate-400">
-          ${noQual()}.</div>` : ''}
+          ${noQual(r)}.</div>` : ''}
       <table class="w-full text-sm border-collapse ${r.empty ? 'hidden' : 'border-t border-dashed border-slate-200'}">
         <tbody>${r.picks.slice(0, PICK_CAP).map((p, i) => `
           <tr class="border-b border-slate-100">
@@ -536,20 +564,20 @@ function renderBoard() {
       <div class="text-[11px] text-slate-400 font-bold">${i + 1}</div>
       <div class="min-w-0">
         <a href="${stratHref(r.s)}" class="block text-[12.5px] font-semibold text-slate-800 hover:text-indigo-600">${isFav(favs, r.cfg) ? FAV_MARK : ''}${esc(r.name)}</a>
-        <div class="text-[10.5px] text-slate-400 truncate">${esc(r.uni)} · ${esc(r.freqL)} · ${r.rebDate ? 'since ' + esc(r.rebDate) : 'not started yet'}</div>
+        <div class="text-[10.5px] text-slate-400 truncate">${esc(r.uni)} · ${esc(r.freqL)} · ${r.rebDate ? 'since ' + esc(r.rebDate) : 'before our data'}</div>
       </div>
-      <div class="text-right text-[12.5px] font-bold ${kls(r.ret)}" title="${r.rebDate ? 'Held basket\'s return from the ' + esc(r.rebDate) + ' rebalance' + (ASOF ? ' to ' + esc(ASOF) : '') : 'No rebalance had happened yet'}">${
-        !r.held.length ? `<span class="text-slate-400 font-semibold text-[11px]">${r.rebDate ? 'in cash' : 'not started'}</span>`
+      <div class="text-right text-[12.5px] font-bold ${kls(r.ret)}" title="${r.rebDate ? 'Held basket\'s return from the ' + esc(r.rebDate) + ' rebalance' + (ASOF ? ' to ' + esc(ASOF) : '') : 'The rebalance before this date falls outside the dataset'}">${
+        !r.held.length ? `<span class="text-slate-400 font-semibold text-[11px]">${heldWord(r)}</span>`
         : r.ret == null ? '<span class="text-slate-400 font-semibold text-[11px]">—</span>' : sp(r.ret)}</div>
       <div class="text-right text-[12.5px] font-bold ${kls(r.day)}" title="Held basket's move over the ${ASOF ? esc(ASOF) + ' session' : 'session, from the previous close'}">${
         !r.held.length ? '<span class="text-slate-400 font-semibold text-[11px]">—</span>'
         : r.day == null ? '<span class="text-slate-400 font-semibold text-[11px]">—</span>' : sp(r.day)}</div>
       <div class="text-right text-[12px] text-slate-500">${r.topN}</div>
-      <div class="flex flex-wrap gap-1">${r.empty ? `<span class="text-[11px] text-slate-400">${noQual()}</span>` : ''}${r.picks.slice(0, PICK_CAP).map(p => `
+      <div class="flex flex-wrap gap-1">${r.empty ? `<span class="text-[11px] text-slate-400">${noQual(r)}</span>` : ''}${r.picks.slice(0, PICK_CAP).map(p => `
         <a href="./stock.html?sym=${encodeURIComponent(p.sym)}" class="tick ${p.day >= 0 ? 'up' : 'dn'}"
            title="₹${f2(p.live)} · ${dayWord()}"><b>${esc(p.sym)}</b><em>${sp(p.day)}</em></a>`).join('')}${
         r.picks.length > PICK_CAP ? `<a href="${stratHref(r.s)}" class="tick text-slate-500">+${r.picks.length - PICK_CAP} more</a>` : ''}</div>
-      <div class="flex flex-wrap gap-1">${!r.held.length ? `<span class="text-[11px] text-slate-400">${r.rebDate ? 'in cash' : 'not started'}</span>` : ''}${r.held.slice(0, PICK_CAP).map(h => `
+      <div class="flex flex-wrap gap-1">${!r.held.length ? `<span class="text-[11px] text-slate-400">${heldWord(r)}</span>` : ''}${r.held.slice(0, PICK_CAP).map(h => `
         <a href="./stock.html?sym=${encodeURIComponent(h.sym)}" class="tick ${h.ret >= 0 ? 'up' : 'dn'}"
            title="₹${f2(h.entry)} → ₹${f2(h.live)} · since the ${esc(r.rebDate)} rebalance"><b>${esc(h.sym)}</b><em>${sp(h.ret)}</em></a>`).join('')}${
         r.held.length > PICK_CAP ? `<a href="${stratHref(r.s)}" class="tick text-slate-500">+${r.held.length - PICK_CAP} more</a>` : ''}</div>
@@ -607,7 +635,12 @@ async function build(msg) {
   }
   // Rewind bounds come from the dataset, now that it's loaded. The floor is where TRUE daily bars
   // begin (2002-01-02) — before that the bars are weekly, so RSI/52w-style factors aren't real.
-  const rwMin = SF.dailyFrom || SF.start, rwMax = SF.end;
+  // Then push it to the 1st of the NEXT month: a date inside the data's own first month anchors to
+  // the month-end BEFORE the data exists, so no basket can be priced and the row would read
+  // "not started" no matter what. Every pickable date must be able to show a number.
+  const dFrom = SF.dailyFrom || SF.start;
+  const rwMin = new Date(Date.UTC(+dFrom.slice(0, 4), +dFrom.slice(5, 7), 1)).toISOString().slice(0, 10);
+  const rwMax = SF.end;
   $('rwPick').min = rwMin; $('rwPick').max = rwMax;
   if (ASOF) ASOF = ASOF < rwMin ? rwMin : ASOF > rwMax ? rwMax : ASOF;   // a hand-typed ?asof= can be anywhere
   else if (!$('rwPick').value) $('rwPick').value = rwMax;
@@ -651,8 +684,9 @@ async function build(msg) {
     // as "no filter" and screens all ~4,400 stocks with every factor family on, which takes minutes
     // per strategy and looks like a hang.
     if (!cfg.indexName || !membersAsOf(cfg.indexName, today)) { SKIPPED.push(s.name || 'unnamed'); continue; }
-    // No boundary before this date = the strategy hadn't started yet (its own start month is later —
-    // routine in a rewind). It holds nothing, but its rule still screens, so keep the card.
+    // A null anchor now means only one thing (see lastRebalanceDate): the boundary lands before the
+    // dataset begins — a rewind into the first weeks of 2002 — so there is nothing to screen there.
+    // It holds nothing, but its rule still screens on the date itself, so keep the card.
     const rebRaw = rebOf[i];
     const rebDate = rebRaw ? isoOff(snapTD(dayOff(rebRaw))) : null;
     const topN = cfg.topN || 5;
@@ -670,6 +704,9 @@ async function build(msg) {
       uni: universeLabel(cfg), freqL: FREQL[cfg.freq] || (cfg.freq + 'mo'),
       nf: (cfg.filters || []).length, rebDate, rebLabel: rebDate ? 'since ' + rebDate : 'not started', counts,
       picks, held, empty: !picks.length,
+      // read off the RAW basketAt arrays — `held`/`picks` above are .map() results, and a mapped
+      // array is a new one that drops the flag basketAt hangs on it
+      heldNoData: !!heldRows.noData, picksNoData: !!pickRows.noData,
       ret: avgOf(held, 'ret'), day: avgOf(held, 'day'),
     });
   }
