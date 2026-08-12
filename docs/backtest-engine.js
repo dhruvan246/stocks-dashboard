@@ -570,6 +570,27 @@ function profitMetrics(sym, dateInt, basis) {
   }
   return null;
 }
+// postDrift = (price / priceAt(lastResultDate) - 1) * 100 — it consumes ONLY the announce date,
+// never the YoY. profitMetrics() bails on `yoy == null`, which threw resultDate away with it, so a
+// stock whose year-ago quarter we simply don't hold was dropped from a postDrift screen for a
+// reason the factor does not depend on (12,801 screen-rows, runbook §91g). Resolved separately here;
+// profitYoyPct/accel/TTM/streak and their basis-fallback keep the old behaviour exactly.
+// Takes the LATEST real announce date across the bases in play, not the first basis that has one:
+// the earnings EVENT is basis-agnostic (one filing), and the two bases print different dates on
+// 3.5% of rows / 7.6% of symbols (measured 2026-08-12) where con-first would return a stale date.
+// ann > 0, not != null — 0 is the date-unknown sentinel (§15/§91c). (Sync: stock-backtest.html)
+function lastResultDate(sym, dateInt, basis) {
+  const arr = fundFor(sym); if (!arr || !arr.length) return null;
+  const tries = basis === 'std' ? [[1, 2]] : [[3, 4], [1, 2]];
+  let best = null;
+  for (const [ni, ai] of tries) {
+    for (let i = arr.length - 1; i >= 0; i--) {
+      const q = arr[i];
+      if (q[ni] != null && q[ai] > 0 && q[ai] <= dateInt) { if (best == null || q[ai] > best) best = q[ai]; break; }
+    }
+  }
+  return best;
+}
 async function loadFund() {
   if (Object.keys(FUND).length) return;
   try { FUND = await (await fetch('./sf_fundamentals.json')).json(); } catch (e) { console.warn('no fundamentals data', e); FUND = {}; }
@@ -642,7 +663,10 @@ function factorsAt(off, cfg) {
     if (useFund) { const pf = profitMetrics(m.symbol, fundDate, basis);
       r.profitYoyPct = pf ? pf.yoy : null; r.profitBase = pf ? pf.base : null;
       r.profitAccel = pf ? pf.accel : null; r.profitTTM = pf ? pf.ttm : null; r.profitStreak = pf ? pf.streak : null;
-      if (pf && pf.resultDate) { const ds = '' + pf.resultDate, ro = dayOff(ds.slice(0, 4) + '-' + ds.slice(4, 6) + '-' + ds.slice(6, 8)); const pr = priceAt(tkr, ro); r.postDrift = (pr != null && pr > 0) ? (price / pr - 1) * 100 : null; } else r.postDrift = null; }
+      // postDrift resolves its own result date — NOT pf.resultDate, which is null whenever the
+      // year-ago quarter is missing even though the drift itself never uses it (§91g).
+      const rd = lastResultDate(m.symbol, fundDate, basis);
+      if (rd) { const ds = '' + rd, ro = dayOff(ds.slice(0, 4) + '-' + ds.slice(4, 6) + '-' + ds.slice(6, 8)); const pr = priceAt(tkr, ro); r.postDrift = (pr != null && pr > 0) ? (price / pr - 1) * 100 : null; } else r.postDrift = null; }
     if (useShp) { const sh = shpAt(m.symbol, shpDate);
       r.fiiPct = sh ? sh.fii : null; r.fiiChgPp = sh ? sh.dfii : null;
       r.diiPct = sh ? sh.dii : null; r.diiChgPp = sh ? sh.ddii : null; }

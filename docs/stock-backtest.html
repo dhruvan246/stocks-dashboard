@@ -847,6 +847,22 @@ function profitMetrics(sym, dateInt, basis){
   }
   return null;
 }
+// postDrift consumes ONLY the announce date, never the YoY — but profitMetrics() bails on
+// `yoy==null` and threw resultDate away with it, dropping stocks whose year-ago quarter we simply
+// don't hold from a postDrift screen for a reason the factor doesn't depend on (runbook §91g).
+// LATEST real announce date across the bases in play (the earnings EVENT is basis-agnostic; the two
+// bases print different dates on 3.5% of rows). ann>0 — 0 is the date-unknown sentinel (§15/§91c).
+// (Sync: backtest-engine.js lastResultDate)
+function lastResultDate(sym, dateInt, basis){
+  const arr=fundFor(sym); if(!arr||!arr.length) return null;
+  const tries = basis==='std' ? [[1,2]] : [[3,4],[1,2]];
+  let best=null;
+  for(const [ni,ai] of tries){
+    for(let i=arr.length-1;i>=0;i--){ const q=arr[i];
+      if(q[ni]!=null && q[ai]>0 && q[ai]<=dateInt){ if(best==null||q[ai]>best) best=q[ai]; break; } }
+  }
+  return best;
+}
 function factorsAt(off, cfg){
   // returns map symbol-> {tkr, sym, name, ind, chg, rsi, d52, d52low, mcap, histMcap, price}
   const lookOff=off - 30;   // fixed 1-month window for r.chg (industry-momentum rank + legacy changePercent strategies)
@@ -886,7 +902,10 @@ function factorsAt(off, cfg){
     if(useFund){ const pf=profitMetrics(m.symbol, fundDate, basis);
       r.profitYoyPct=pf?pf.yoy:null; r.profitBase=pf?pf.base:null;
       r.profitAccel=pf?pf.accel:null; r.profitTTM=pf?pf.ttm:null; r.profitStreak=pf?pf.streak:null;
-      if(pf&&pf.resultDate){ const ds=''+pf.resultDate, ro=dayOff(ds.slice(0,4)+'-'+ds.slice(4,6)+'-'+ds.slice(6,8)); const pr=priceAt(tkr,ro); r.postDrift=(pr!=null&&pr>0)?(price/pr-1)*100:null; } else r.postDrift=null; }
+      // postDrift resolves its own result date — NOT pf.resultDate, which is null whenever the
+      // year-ago quarter is missing even though the drift never uses it (§91g).
+      const rd=lastResultDate(m.symbol, fundDate, basis);
+      if(rd){ const ds=''+rd, ro=dayOff(ds.slice(0,4)+'-'+ds.slice(4,6)+'-'+ds.slice(6,8)); const pr=priceAt(tkr,ro); r.postDrift=(pr!=null&&pr>0)?(price/pr-1)*100:null; } else r.postDrift=null; }
     if(useShp){ const sh=shpAt(m.symbol, shpDate);
       r.fiiPct=sh?sh.fii:null; r.fiiChgPp=sh?sh.dfii:null;
       r.diiPct=sh?sh.dii:null; r.diiChgPp=sh?sh.ddii:null; }

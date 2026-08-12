@@ -8765,3 +8765,44 @@ our own series, and our series starts after it — "outside the frame" reads as 
 GATE-E-passing subset. Any fill MUST go through GATE E (`agg_era_gate.py`) unchanged — and the
 anchor situation here is exactly what GATE E was built for (§90a: anchors on the far side of the
 hole, our series resuming at Dec-2002).
+
+### 91g. ★★★ postDrift WAS GATED ON A COMPUTATION IT NEVER CONSUMES — the second, larger lever
+`postDrift = (price / priceAt(resultDate) - 1) * 100`. It reads **one** field: the announce date.
+But it sourced that field from `profitMetrics()`, which computes five metrics and **bails wholesale**
+on `if (yoy == null) continue` — so a stock with a perfectly good, dated, announced quarter was
+dropped from a postDrift screen because we don't hold its **year-ago** PAT. That was the single
+largest residual class: **12,801 screen-rows, 58% of the whole gap.**
+★ **A shared helper's strictest requirement silently becomes every caller's requirement.** When one
+function returns N metrics and one `continue` discards all N, each caller inherits the union of all
+N preconditions — not its own.
+
+**Fix:** new `lastResultDate(sym, dateInt, basis)` in `docs/backtest-engine.js` (+ the inline twin in
+`docs/stock-backtest.html`), used by postDrift only. `profitMetrics` is **untouched**, so
+profitYoyPct / profitAccel / profitTTM / profitStreak and their con→std fallback keep their exact
+prior behaviour — asserted by a regression guard (`_pdregress.js`): profitYoyPct held at
+2004-03=279, 2010-09=483, 2016-03=449 across the change while only postDrift moved.
+* ⚠️ It takes the **LATEST** real announce date across the bases in play, not the first basis that
+  has one. The earnings EVENT is basis-agnostic (one filing), but the two bases print **different
+  dates on 3.5% of rows and 7.6% of symbols** (measured, not assumed) — con-first would return a
+  stale date for a company whose con series ends earlier than its std series.
+* `ann > 0` throughout, per §91c.
+
+### 91h. Coverage after BOTH fixes — LIVE, per rebalance, point-in-time N500
+| year | shipped before | after §91c | after §91c+§91g |
+|---|---|---|---|
+| 2002 | 0% | 0% | **0%** (structural, §91b) |
+| 2003 | 0% | 0% | **66.6%** |
+| 2004 | 49.7% | 58.4% | **84.6%** |
+| 2005 | 55.8% | 66.2% | **92.3%** |
+| 2006 | 63.4% | 75.0% | **97.1%** |
+| 2007 | 76.6% | 91.3% | **98.0%** |
+| 2008-2013 | 69-83% | 81-98% | **97.9-98.8%** |
+| 2014-2018 | 78-98% | 88-99% | **99.0-99.7%** |
+| 2019-2026 | 99.1-100% | 99.1-100% | **100%** (2023 99.98%) |
+Total gap rows 31,194 → **9,382**, of which **4,953 are 2002 alone**. Verified through the engine's
+own `screenAsOf()` at exact parity with the harness on 6 dates (2004-03-31 240→279→**414**,
+2006-06-30 345→406→**481**, 2016-03-31 424→449→**499**), and by unit-testing the shipped inline copy
+in the browser. sw cache v81→v82→v83.
+⚠️ **postDrift-sorted/filtered saved strategies now screen a WIDER universe**, so stored history
+numbers for them will not reproduce. This was an explicit user decision (2026-08-12), not a silent
+change. profitYoyPct-based strategies are unaffected.

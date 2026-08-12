@@ -64,6 +64,7 @@
   // the engine's `arr[i][ai] != null` admits it, because `0 != null` is TRUE in JS. Measuring both
   // ways shows what the sentinel is costing postDrift.
   const ZEROGUARD = process.env.ZEROGUARD === '1';
+  const NOYOY = process.env.NOYOY === '1';
   const annOK = v => ZEROGUARD ? (v != null && v > 0) : (v != null);
 
   // ---- per-row diagnosis: WHY is postDrift null? (mirrors profitMetrics + the postDrift line) ----
@@ -82,8 +83,10 @@
       const cur = arr[ci];
       const npAt = qe => { const q = arr.find(x => x[0] === qe); return (q && q[ni] != null) ? q[ni] : null; };
       const b = npAt(cur[0] - 10000);
+      // NOYOY=1 → model postDrift decoupled from the YoY computation it never consumes.
+      // postDrift = (price / priceAt(resultDate) - 1)*100; the year-ago base is irrelevant to it.
       // the EXACT cell whose absence blocks this row: the year-ago same quarter
-      if (b == null || b === 0) { lastFail = 'no-yoy-base'; lastNeed = cur[0] - 10000; continue; }
+      if (!NOYOY && (b == null || b === 0)) { lastFail = 'no-yoy-base'; lastNeed = cur[0] - 10000; continue; }
       if (cur[ai] === 0) return { why: 'ann-zero-sentinel', qe: cur[0], ann: 0 };
       const ds = '' + cur[ai];
       const ro = dayOff(ds.slice(0,4) + '-' + ds.slice(4,6) + '-' + ds.slice(6,8));
@@ -152,7 +155,7 @@
              worstMonth: rs.reduce((a,b)=> (a==null||b.pct<a.pct)?b:a, null).md, why: w };
   });
 
-  const out = path.join(ROOT, 'scripts', '_postdrift_coverage' + (ZEROGUARD?'_zg':'') + '.json');
+  const out = path.join(ROOT, 'scripts', '_postdrift_coverage' + (ZEROGUARD?'_zg':'') + (NOYOY?'_ny':'') + '.json');
   fs.writeFileSync(out, JSON.stringify({ measuredAt: process.env.STAMP || null, sfEnd: SF.end,
                                          basis: BASIS, start: START, end: END, byYear, byMonth,
                                          gaps: gapRows }, null, 0));

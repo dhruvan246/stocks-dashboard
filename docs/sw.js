@@ -6,7 +6,7 @@
  *     requests (the sf-data repo, Supabase, the live-quote Worker) — those stay network-only
  *     so data is always fresh and the cache never bloats.
  * Bump CACHE when the shell asset list changes. */
-const CACHE = 'sw-shell-v82';   // v82: point-in-time fix — ann=0 (date-unknown) quarters no longer visible to past screens (v81: History "Load" auto-runs the full result page)
+const CACHE = 'sw-shell-v83';   // v83: postDrift resolves its own result date (no longer gated on the YoY it never uses) (v82: ann=0 quarters no longer visible to past screens)
 const SHELL = [
   './', './index.html', './nse-bse-dashboard.html', './stock-backtest.html', './saved-strategies.html',
   './backtest-history.html', './strategy-backtest.html', './all-picks.html', './strategy-mixer.html', './mutual-funds.html', './fii-dii.html',
