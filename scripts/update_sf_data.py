@@ -915,6 +915,17 @@ def main():
     tunits = normalize_turnover_units(data)
     if tunits: print("Turnover units: normalised %d bar(s) rupees -> lacs." % tunits)
 
+    # ALSO last: let `alive` DECAY. It is only ever (re)derived by a full build_sf_data run or
+    # patch_sf_alive.py, so between rebuilds a symbol whose tape stops keeps alive=True for ever —
+    # that is how PUNJCOMMU, off the NSE tape since 2003-03-31, still read alive in 2026 (§94).
+    # This pass only ever turns a STALE True off (never on): the updater has no listing oracle here,
+    # and dash_slim — the one build_sf_data uses — is not one either (its NSE side is a subset of
+    # the tape). A symbol that resumes trading gets its True back from the next full rebuild /
+    # patch_sf_alive run. Idempotent: a converged file reports 0.
+    dead = B.veto_stale_alive(data, meta, D["end"])
+    if dead: print("Aliveness: %d symbol(s) had no bar within %dd of %s -> alive=False."
+                   % (dead, B.ALIVE_RECENCY_DAYS, D["end"]))
+
     # ALWAYS rewrite the freshly-loaded MERGED base to disk — even on a no-op run — so the split/publish
     # step never reads the stale, UN-merged in-repo copy (frozen at an old `end`, still carrying
     # ZOMATO/RUCHI/BURGERKING as separate stubs) and trip split_sf_data.py's ZOMATO/ETERNAL publish-guard.
@@ -923,8 +934,8 @@ def main():
     # refreshes the on-disk bin but does NOT publish the release, bump clients, or commit a marker.
     blob = gzip.compress(json.dumps(D, separators=(",", ":")).encode(), 6)
     open(OUT, "wb").write(blob)
-    if not appended and not healed and not merged and not mr and not dvf and not dvo and not wk and not bz and not sg and not tunits:
-        print("No new day / heal / merge / manual-rights / dv-fill / dv-overwrite / weekend-insert / BZ-backfill / series-surgery / turnover-unit fix — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
+    if not appended and not healed and not merged and not mr and not dvf and not dvo and not wk and not bz and not sg and not tunits and not dead:
+        print("No new day / heal / merge / manual-rights / dv-fill / dv-overwrite / weekend-insert / BZ-backfill / series-surgery / turnover-unit fix / aliveness decay — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
     open(MARK, "w").write(D["end"])
     # tiny version marker — committed daily, lets the browser cache the big bin in IndexedDB
     # keyed to this `end` and skip re-downloading 80 MB until the data actually changes.

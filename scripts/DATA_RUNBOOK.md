@@ -61,6 +61,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§80** ★★★ SERIES **BZ** WAS NEVER INGESTED — a live trading series discarded for years (**read before touching the bhavcopy filter or a price-series gap**)
 - **§91** ★★★ postDrift COVERAGE — annual ≠ rebalance coverage; the `ann=0` LOOK-AHEAD (`0 != null` is TRUE in JS); sf_fundamentals starts Dec-2002 (**read before any point-in-time factor-coverage claim**)
 - **§92** ★★★ COVERAGE MATRIX (private page) — measure THROUGH the engine in a `vm`; `lastSnap()` FABRICATES membership before an index existed (**read before any point-in-time membership read**)
+- **§94** ★★★ `alive` WAS ASKED OF THE WRONG EXCHANGE — an NSE-tape flag answered by a BSE universe; a local recency guard is a note that the FIELD is wrong (**read before trusting `meta.alive` or adding a workaround around it**)
 - **§93** ★★★ ERA ORPHANS — measure an identity campaign's CEILING first; the successor pool IS the proof; PREVCLOSE has perfect recall and useless precision (**read before any rename/alias hunt**)
 
 ---
@@ -9155,3 +9156,144 @@ a quarter before Dec-2002 and **316** reach Dec-2002 itself — the continuously
 * ⚠️ Two adjacent defects found while measuring, NOT fixed here: **PUNJCOMMU is alive** (BSE 500346)
   yet its bin series stops 2003-03-31 and it is in no fundamentals file — the §80 shape; and the
   full-ISIN auto-merge class in 93d is almost certainly wider than these two pairs.
+  → **PUNJCOMMU RESOLVED 2026-08-12 in §94, and it was NOT the §80 shape**: the NSE tape genuinely
+  ends (0 rows in 96 sampled sessions after it, no ISIN INE609A on NSE today). The defect was the
+  `alive` flag — derived from an NSE **+ BSE** universe with the exchange suffix stripped, so 87
+  dead NSE tapes read live. Fixed in all three writers. The auto-merge class is still open.
+
+
+---
+
+## 94. ★★★ `alive` WAS ASKED OF THE WRONG EXCHANGE — a dead NSE tape flagged live for 23 years  (2026-08-12)
+**NO ASSUMPTIONS, NO GUESSWORK** — every number below was measured this session against the LIVE
+sf-data bin (`end` 2026-08-11), raw NSE bhavcopies fetched here, and today's `EQUITY_L.csv`.
+
+Opened by §93f's parting note: **PUNJCOMMU** (Punjab Communications Ltd, BSE 500346) reads
+`alive=True` while its price series stops **2003-03-31**. The brief was "this is the §80 shape —
+a live series thrown away by the ingestion filter". **It is not.** §80's signature is a symbol
+that keeps appearing in the bhavcopy under a series we drop. This one stops appearing at all.
+
+### 94a. Ground truth — the tape genuinely ends, and it is not a filter gap
+Every probe reads the RAW bhavcopy with **no series filter at all**:
+| probe | result |
+|---|---|
+| 2003-03-20 → 2003-03-31, all series | 9 rows, every one **`SERIES=EQ`**, last = 2003-03-31 close 37.30 (open 42.20, low 36.00, vol 121,691) |
+| 2003-04-01 → 2003-04-30, all series (**20 sessions**) | **0 rows** |
+| quarterly sample 2003-04 → 2019-10 (**68 sessions**) | **0 rows** |
+| 2020-07 → 2026-08-11 (8 sessions) | **0 rows** |
+| today's `EQUITY_L.csv` (2,401 rows) | no `PUNJCOMMU`, and **no ISIN `INE609A*`** — the ISIN test (§76), so it is not back under another symbol |
+| `symchg.csv` (1,051 rows) | no PUNJCOMMU row — no NSE-recorded rename |
+| §80's `bz_backfill.json.gz` (249 symbols) | not present |
+So the NSE tape ends 2003-03-31 and never resumes. **The bin is right.** For the record, the era
+series inventory measured off those same files kills the "it moved to a surveillance series" theory
+outright: 2003 bhavcopies carry **EQ + BE** plus debt/warrant series only (`N1/N2/W1/P1/IL/E1…`),
+and **BZ does not appear in a sampled file until 2014-10**. In 2003 the trade-for-trade series WAS
+`BE`, which we have always ingested. (This also part-answers §88d: no un-ingested equity series
+existed in the 2003-2013 files sampled here.)
+The company is alive — on **BSE**: `dash_slim` carries `PUNJCOMMU.BO` (latest ₹48.84, mcap ₹58.72 cr)
+and `bse_universe.json` row `[500346, PUNJCOMMU, "Punjab Communications Ltd-$", INE609A01010, B, 10]`.
+
+### 94b. ★★★ THE REAL DEFECT — an NSE-tape flag answered by an NSE **+ BSE** universe
+`build_sf_data.py` set `alive = sym in cur`, where `cur` is built from `docs/dash_slim.bin`'s meta.
+dash_slim is keyed `SYM.NS` / `SYM.BO` and the lookup **strips the suffix** (`m["symbol"] or
+k.split(".")[0]`). The bin is a pure NSE tape. So *any* company that left the NSE cash segment but
+still trades on BSE marked its dead NSE series alive. Measured on the live bin:
+* dash_slim: **2,131 `.NS` + 2,739 `.BO`** keys → 4,870 distinct symbols, exchange erased.
+* **87 bin symbols carry `alive=True` with a last bar >60d before `end`.** Sourced through a
+  `.BO` key: **87 of 87. Through `.NS`: 0.** That is the whole class, one cause.
+* Independently confirmed off-NSE two ways: **0 of the 87** appear in the last **10 sessions** of
+  raw bhavcopy (all series, 3,456 distinct symbols on that tape) and **0 of the 87** are in today's
+  `EQUITY_L`. Oldest: PUNJCOMMU at **10,676 days**; also GUJCOTEX 1997, MODIPON 2000, GOODRICKE
+  2002, SPICEJET 2023-04-28, HINDMOTORS 2025-10-01.
+* Second cause, same flag: **it never DECAYS.** `alive` is only ever (re)derived by a full
+  `build_sf_data` run or `patch_sf_alive.py`, so between rebuilds a symbol whose tape stops keeps
+  `alive=True` indefinitely. `update_sf_data.py` only ever *added* it (`meta.setdefault(...,
+  alive=True)` for a new listing).
+⚠️ `build_results_season.scan_bin_universe` had already met this class and named it exactly
+("LEFT THE NSE CASH SEGMENT, still on BSE … SPSL, SPICEJET, LANCER, HINDMOTORS, CRANESSOFT" —
+"`alive` cannot catch it"). It fixed it **locally**, with a 60-day recency guard in that one
+screen. Every other consumer was left believing the flag. **A local workaround around a wrong
+field is a note that the field is wrong — go fix the field.**
+
+### 94c. What the wrong flag did, verified THROUGH THE CLIENT (§39)
+Live A/B on the deployed site, reading the DOM and the resource timeline:
+| page | `alive` | "delisted" badge | `?chart=SYM.NS` live quote |
+|---|---|---|---|
+| `stock.html?sym=PUNJCOMMU` | true | **hidden** — none shown | **fired**: `…workers.dev/?chart=PUNJCOMMU.NS` → **502** |
+| `stock.html?sym=DENABANK` (control, alive=False) | false | shown | none |
+So the page presented the **2003-03-31 close ₹37.30 as "as of 2026-08-11"**, with a `-13.26% 1-day`
+move that is the March-2003 crash, 1M/3M/6M/1Y/3Y/5Y returns all `+0.00%`, and no badge — while
+asking Yahoo every minute for an NSE quote that cannot exist. Other flag consumers:
+`build_quarterly_results` / `build_results_season` / `build_stock_slices` / `backfill_gaps` /
+both backtest engines' `nDead`.
+
+### 94d. The fix — freshness as a NECESSARY CONDITION, in all three writers
+`alive` now means what every consumer already assumed: **is this series still being appended?**
+* **`build_sf_data.alive_cutoff(end)`** + **`ALIVE_RECENCY_DAYS = 60`** — the last bar must be
+  within 60d of the **dataset's own `end`, never today's date** (a frozen snapshot judged against
+  today declares its whole universe dead — the §11 trap). Same window and same justification as
+  `build_results_season.RECENCY_DAYS`.
+* **`build_sf_data`**: `alive = (sym in cur) and ds[-1] >= alive_cut`. Membership AND freshness.
+* **`patch_sf_alive.py`**: same rule, so the live bin can be healed without a 30-year rebuild. Its
+  circuit-breaker now gates on the **membership** count (`matched`), not on `after_alive` — those
+  are no longer the same number, and the alive share falls a little every year as dead symbols
+  accumulate, so the old gate would have become a false tripwire on a healthy file.
+* **`update_sf_data.veto_stale_alive()`** (via `B.`), called last with the turnover-unit pass and
+  counted in the publish condition, so the flag decays **nightly**. It is deliberately
+  **ONE-DIRECTIONAL**: it turns a stale True off and never turns anything on. A resumed symbol gets
+  its True back from the next full rebuild / `patch_sf_alive` run.
+**Measured behaviour** (live bin copy, end 2026-08-11):
+```
+veto pass 1: 87 flips (alive 2,463 -> 2,376)   pass 2: 0     <- idempotent
+patch_sf_alive pass 1: changed 141, alive 2,463 -> 2,373     pass 2: changed 0
+   (-87 stale, -18 dropped from dash_slim, +15 re-added — the last two are the pre-existing
+    "recompute membership against a current dash_slim" delta, not this change)
+end=None / unparseable -> 0 flips + a loud warning (never a wipeout)
+meta entry with no series -> dead (cannot prove it trades)
+```
+**Blast radius, measured, not assumed:** `build_results_season`'s liquid universe is **1,445 before
+and 1,445 after — delta 0, nothing added, nothing removed** — because all 87 were already being
+dropped by that screen's own recency guard. PUNJCOMMU -> `alive=False`; RELIANCE stays True.
+
+### 94e. ★★★ THE OPPOSITE ERROR IS BIGGER — and it is NOT fixed here, on purpose
+The same measurement exposes the flag failing the other way, because dash_slim's NSE side is a
+**subset** of the tape (2,131 `.NS` keys vs 3,456 symbols on the last 10 sessions):
+```
+                        last bar <=60d   >60d
+alive = True                    2,376      87   <- fixed above
+alive = False                     384   1,598
+```
+**384 symbols trade and read `alive=False`** (378 of them are on the last-10-session tape;
+the other 6 are thin names 12-35d dark). They are being EXCLUDED from `build_results_season` and
+`build_quarterly_results` today. Tempting to fix with the same rule — and that is a trap:
+* Making `alive` purely tape-derived adds **129 names to the liquid universe**, of which
+  **126 are ETFs / non-EQUITY_L instruments** (GOLDBEES, BANKBEES, LIQUIDBEES …) and only **3** are
+  companies (RELINFRA, TIRUPATIFL, VIVIANA). Today's `alive=False` is the ONLY thing keeping ETFs
+  out of a "companies reporting results" screen — an accidental filter the universe now leans on.
+* Re-deriving membership from a current dash_slim instead would mark **RPPL and SIKKO** dead —
+  both in today's `EQUITY_L`, both traded 2026-08-11.
+★ **A flag that is wrong in two directions has two fixes, not one.** Shipping only the direction
+that is provably regression-free (delta 0 on every universe) is the whole point. The other
+direction needs an explicit INSTRUMENT filter (ETF/company) designed first — queued, not guessed.
+
+### 94f. PUNJCOMMU's fundamentals absence — a §17 miss, already RETIRED by the grind
+Absent from all four fundamentals files (`sf_fundamentals` 3,946 keys, `fundamentals` 3,237,
+`sf_revop` 3,600, `revop_fundamentals` 3,024). It is **BSE-only**, so §17 is the route — and that
+route has already tried it: scrip **500346 is in `scripts/_bse_fund_done.json`** and in
+`scripts/_bse_fund_fail.json` at **3 = `MAX_FAIL`**, i.e. the OCR+vision grind attempted it three
+times, anchored nothing, and retired it. It sits in `bse_results.json`'s **`pdf_only`** bucket
+(1,023 entries) — the page says "filing PDF only". `docs/fin/PUNJCOMMU.json` holds one SHP row
+(Dec-2002) and no financials. Per §0/§57 this is **not-found-via: BSE OCR + BSE vision**, NOT
+"unfillable" — the aggregator ladder (§81), screener (§60) and the announcement-PDF read (§58)
+have **not** been walked for this scrip. The company does still report: `results_calendar.json`
+carries `PUNJCOMMU … 2026-08-12 Financial Results`.
+
+### 94g. Measured vs still unknown
+**Measured here:** the tape's end date and its EQ series; absence across 96 sampled sessions + all
+of April 2003 + today's EQUITY_L by symbol AND by ISIN; the 87-symbol class and its single cause;
+the 0/87 cross-checks; the flag's two-direction confusion matrix; the delta-0 blast radius; the
+live DOM/network A/B; the §17 ledger state for 500346.
+**Still unknown / NOT established:** *why* Punjab Communications left NSE on 2003-03-31 (voluntary
+delisting, suspension, or a listing-condition failure) — no NSE circular or BSE announcement from
+that period was read this session, and nothing in this fix depends on the reason. Also unread: the
+other 86 symbols' individual exit stories (only their off-NSE status was verified, twice each).

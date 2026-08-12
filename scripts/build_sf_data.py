@@ -28,6 +28,62 @@ if len(sys.argv) > 1: START = datetime.datetime.strptime(sys.argv[1], "%Y-%m-%d"
 if len(sys.argv) > 2: DAILY_FROM = datetime.datetime.strptime(sys.argv[2], "%Y-%m-%d").date()
 END = datetime.date.today()
 
+# ---- ALIVENESS ------------------------------------------------------------------------------
+# `alive` answers ONE question for every consumer that reads it (stock.html's "delisted" badge AND
+# its `.NS` live-quote fetch, build_quarterly_results, build_results_season, build_stock_slices,
+# backfill_gaps, the two backtest engines' nDead): **is this NSE series still being appended?**
+# It used to be exactly `sym in cur`, i.e. membership of docs/dash_slim.bin — the WRONG oracle,
+# two ways (DATA_RUNBOOK §94):
+#   · dash_slim is an NSE **+ BSE** universe keyed `SYM.NS` / `SYM.BO` (measured 2026-08-12:
+#     2,131 .NS + 2,739 .BO) and the lookup below STRIPS the suffix. So a company that left the
+#     NSE cash segment but still trades on BSE marked its DEAD NSE tape alive. Measured on the
+#     live bin (end 2026-08-11): 87 symbols carried alive=True with a last bar >60d old, ALL 87
+#     matched through a `.BO` key and 0 through `.NS`; 0 of the 87 appear on the last 10 sessions
+#     of the raw bhavcopy or in today's EQUITY_L. PUNJCOMMU (BSE 500346) is the worked example —
+#     its NSE tape stopped 2003-03-31 and the flag still said alive 23 years later.
+#   · the flag is only recomputed by a FULL rebuild (or patch_sf_alive.py), so it never DECAYS:
+#     a stock that stops trading keeps alive=True until someone re-runs a multi-hour rebuild.
+# Fix: a freshness NECESSARY CONDITION, ANDed onto whatever the membership lookup says. It only
+# ever takes aliveness AWAY, so it cannot resurrect a symbol or invent one (see veto_stale_alive).
+ALIVE_RECENCY_DAYS = 60   # same window, and the same measured justification, as
+                          # build_results_season.RECENCY_DAYS — that docstring shows the
+                          # age-of-last-bar histogram is bimodal with nothing between ~8d and
+                          # ~170d, so every cutoff in that range gives identical membership.
+
+
+def alive_cutoff(end, days=ALIVE_RECENCY_DAYS):
+    """YYYYMMDD int that a series' LAST bar must reach to count as alive, or None if `end` is
+    unusable. `end` is the DATASET's own end, NEVER today's date: a frozen snapshot has to be
+    judged against itself or it declares its whole universe dead (§11 recency guard, same trap)."""
+    try:
+        e = datetime.date(*(int(x) for x in str(end).split("-")[:3]))
+    except Exception:
+        return None
+    c = e - datetime.timedelta(days=days)
+    return c.year * 10000 + c.month * 100 + c.day
+
+
+def veto_stale_alive(data, meta, end, days=ALIVE_RECENCY_DAYS):
+    """Clear `alive` on every series whose last bar is older than `days` before `end`; return how
+    many flags changed. ONE DIRECTION ONLY — it turns a stale True off and never turns anything on,
+    so it cannot mis-kill a symbol the caller has no listing oracle for (dash_slim's NSE side is a
+    SUBSET of the tape: 384 currently-trading symbols sit at alive=False today, §94c) and it cannot
+    resurrect one. Idempotent by construction: a converged file reports 0, so it is safe to run
+    every night (the daily updater does)."""
+    cutoff = alive_cutoff(end, days)
+    if cutoff is None:
+        print("  ⚠ alive-recency: bin has no usable `end` (%r) — flags left untouched" % (end,), flush=True)
+        return 0
+    n = 0
+    for sym, m in meta.items():
+        if not isinstance(m, dict) or not m.get("alive"):
+            continue
+        d = (data.get(sym) or {}).get("d")
+        if not d or d[-1] < cutoff:
+            m["alive"] = False
+            n += 1
+    return n
+
 
 def jar():
     j = http.cookiejar.CookieJar()
@@ -360,6 +416,7 @@ def main():
     if not cur:
         sys.exit("ABORT: currently-listed universe (dash_slim.bin meta) came out EMPTY — refusing to "
                   "mark every symbol dead. Fix the source before re-running (see commit that added this guard).")
+    alive_cut = alive_cutoff(END.isoformat())   # last bar must reach this to count as alive (§94)
 
     df = int(DAILY_FROM.strftime("%Y%m%d"))
     # Corporate-action ratios: bonus/split ex-dates appear as huge overnight "drops" because
@@ -453,7 +510,9 @@ def main():
         vws = [round(cs[i] * k * vr[i], 2) for i in range(len(ds))]
         cs = [round(x * k, 2) for x in cs]
         data[sym] = {"d": ds, "c": cs, "t": ts, "h": hs, "l": ls, "op": ops, "v": vol, "dv": dv, "vw": vws}
-        alive = sym in cur
+        # membership AND freshness — see ALIVE_RECENCY_DAYS. `ds` is this symbol's date list, so
+        # ds[-1] is its last bar; `alive_cut` is None only if END is unparseable (never here).
+        alive = (sym in cur) and (alive_cut is None or ds[-1] >= alive_cut)
         dead += (not alive)
         meta[sym] = {"name": (cur.get(sym) or {}).get("name") or sym,
                      "ind": (cur.get(sym) or {}).get("industry") or "Unknown", "alive": alive,

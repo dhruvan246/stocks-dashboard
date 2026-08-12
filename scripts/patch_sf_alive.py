@@ -12,6 +12,12 @@ build_sf_data.py now reads dash_slim.bin directly (see the commit that added thi
 script re-derives the same fields for a bin that was already built with the broken lookup,
 so the fix doesn't require re-fetching 30 years of bhavcopies.
 
+Second root cause (found 2026-08-12, DATA_RUNBOOK §94): dash_slim membership ALONE is the wrong
+oracle — it is an NSE **+ BSE** universe keyed `SYM.NS`/`SYM.BO` and the lookup strips the suffix,
+so a company that left the NSE cash segment but still trades on BSE marked its dead NSE tape alive
+(87 symbols on the live bin, PUNJCOMMU's stopped 2003-03-31). `alive` now also requires the series'
+LAST BAR to be within build_sf_data.ALIVE_RECENCY_DAYS of the bin's own `end`.
+
 Run: python3 -X utf8 scripts/patch_sf_alive.py [bin_path] [dash_slim_path]
 Defaults: docs/sf_stock_data.bin, docs/dash_slim.bin
 """
@@ -20,6 +26,13 @@ import os, sys, json, gzip
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 DOCS = os.path.join(ROOT, "docs")
+
+sys.path.insert(0, HERE)
+# build_sf_data parses sys.argv[1:] as its own START/DAILY_FROM dates at import time — hide our
+# args (bin_path / slim_path) from it or it crashes trying to read a path as a date.
+_argv = sys.argv; sys.argv = _argv[:1]
+import build_sf_data as B   # alive_cutoff / ALIVE_RECENCY_DAYS — one definition of "alive"
+sys.argv = _argv
 
 
 def main():
@@ -37,13 +50,24 @@ def main():
     print("currently-listed universe: %d symbols (from %s)" % (len(cur), slim_path))
 
     big = json.loads(gzip.decompress(open(bin_path, "rb").read()))
-    meta = big["meta"]
+    meta, data = big["meta"], big.get("data") or {}
     before_alive = sum(1 for m in meta.values() if m.get("alive"))
+    # freshness half of the rule — judged against the BIN's own `end`, never today's date, so a
+    # deliberately frozen snapshot isn't declared dead wholesale (§11 / §94).
+    cut = B.alive_cutoff(big.get("end"))
+    if cut is None:
+        sys.exit("ABORT: bin has no usable `end` (%r) — cannot judge series freshness." % big.get("end"))
+    print("alive also requires a bar on/after %d (%dd before the bin's end %s)"
+          % (cut, B.ALIVE_RECENCY_DAYS, big.get("end")))
 
-    changed = 0
+    changed = n_stale = 0
     for sym, m in meta.items():
         c = cur.get(sym)
-        new_alive = sym in cur
+        d = (data.get(sym) or {}).get("d")
+        fresh = bool(d) and d[-1] >= cut
+        new_alive = (sym in cur) and fresh
+        if sym in cur and not fresh:
+            n_stale += 1
         new_ind = (c or {}).get("industry") or "Unknown"
         new_name = (c or {}).get("name") or sym
         if m.get("alive") != new_alive or m.get("ind") != new_ind or m.get("name") != new_name:
@@ -53,14 +77,20 @@ def main():
         m["name"] = new_name
 
     after_alive = sum(1 for m in meta.values() if m.get("alive"))
-    print("meta entries: %d   changed: %d   alive before: %d   alive after: %d"
-          % (len(meta), changed, before_alive, after_alive))
-    # Sanity circuit-breaker: a healthy 30-year survivorship-free universe should have a solid
-    # majority currently listed. Anything under half smells like the same empty-`cur` failure mode
-    # this script exists to fix — refuse to publish rather than trade one bad state for another.
-    if after_alive < len(meta) * 0.5:
-        sys.exit("ABORT: only %d/%d symbols would be marked alive (<50%%) — suspiciously low, "
-                  "refusing to write. Investigate before re-running." % (after_alive, len(meta)))
+    print("meta entries: %d   changed: %d   alive before: %d   alive after: %d   "
+          "(in dash_slim but series stale -> dead: %d)"
+          % (len(meta), changed, before_alive, after_alive, n_stale))
+    # Sanity circuit-breaker. It guards ONE failure mode — the empty/degenerate `cur` this script
+    # exists to undo — so it must measure the MEMBERSHIP half, not the final alive count. Those are
+    # no longer the same number: `alive` now also requires a fresh series, and the share of the
+    # 30-year universe still trading falls a little every year purely because dead symbols
+    # accumulate (2026-08-12: matched 2,461, alive 2,373 of 4,445). Gating on `after_alive` would
+    # therefore have become a false tripwire on a healthy file.
+    matched = sum(1 for sym in meta if sym in cur)
+    if matched < len(meta) * 0.5:
+        sys.exit("ABORT: only %d/%d bin symbols matched the currently-listed universe (<50%%) — "
+                  "suspiciously low, refusing to write. Investigate before re-running."
+                  % (matched, len(meta)))
 
     blob = gzip.compress(json.dumps(big, separators=(",", ":")).encode(), 6)
     open(bin_path, "wb").write(blob)
