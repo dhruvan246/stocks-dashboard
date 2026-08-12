@@ -6,7 +6,7 @@
  *     requests (the sf-data repo, Supabase, the live-quote Worker) — those stay network-only
  *     so data is always fresh and the cache never bloats.
  * Bump CACHE when the shell asset list changes. */
-const CACHE = 'sw-shell-v84';   // v84: private Coverage Matrix page (v83: postDrift resolves its own result date)
+const CACHE = 'sw-shell-v85';   // v85: Coverage Matrix staleness strip (v84: private Coverage Matrix page)
 const SHELL = [
   './', './index.html', './nse-bse-dashboard.html', './stock-backtest.html', './saved-strategies.html',
   './backtest-history.html', './strategy-backtest.html', './all-picks.html', './strategy-mixer.html', './mutual-funds.html', './fii-dii.html',

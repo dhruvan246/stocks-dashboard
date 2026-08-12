@@ -12,15 +12,16 @@ name: Nightly coverage matrix
 
 on:
   schedule:
-    # WEEKLY, Sunday 19:40 UTC = 01:10 IST Monday — after the evening backtest-data refresh
-    # (15:15 UTC) and the nightly fundamentals/reconcile jobs.
+    # NIGHTLY, 19:40 UTC = 01:10 IST — after the evening backtest-data refresh (15:15 UTC), the
+    # nightly fundamentals jobs and the 23:45 IST Trendlyne reconcile, so the matrix reflects the
+    # whole day.
     #
-    # Weekly, not nightly, ON PURPOSE: the payload is ~2 MB across 30 files and is REWRITTEN
-    # whole each build (compact JSON, so git stores a fresh blob every time). Nightly would add
-    # roughly 300 MB a year to a repo that already exiles its price data to a release asset to
-    # avoid exactly that. A 24-year coverage matrix does not move overnight — and when it does,
-    # because you just landed a backfill, run this by hand from the Actions tab.
-    - cron: "40 19 * * 0"
+    # Nightly was a MEASURED call, not an assumed one. The payload is ~1.5 MB across 31 files and
+    # is rewritten whole each build, which looks expensive — but git delta-compresses it: seven
+    # simulated daily rebuilds (last row's date + counts drift, history untouched) cost **~13 KB
+    # packed per commit → ~4.5 MB/yr**, against a first-guess estimate of ~300 MB/yr that was wrong
+    # by 60×. Re-measure before changing this, don't re-estimate.
+    - cron: "40 19 * * *"
   workflow_dispatch: {}
   # Bootstrap/self-test: rebuild when the builder itself changes.
   push:

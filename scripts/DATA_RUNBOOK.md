@@ -8929,15 +8929,27 @@ population) — or, for a universe with a real roll, **< 90% of that date's memb
 clear it by ≥3pp**. **Both require established coverage BEFORE the date** (`leftMedian > 200`),
 otherwise the first month of every ramp reads as a crater and the page teaches you to ignore it.
 
-### 92g. Cadence + cost
-**WEEKLY** (Sun 19:40 UTC) + `workflow_dispatch`, in its own workflow. Not nightly: the payload is
-~1.5 MB across 31 files, rewritten whole each build, so nightly would add ~300 MB/yr to a repo that
-already exiles its price data to a release asset. Not folded into `refresh-backtest-data.yml` either
-(which has a fresh bin on disk and would save the download) — that is the critical daily data job on a
-30-minute timeout, and a scoreboard must never be able to push it over. **Run it by hand after landing
-a backfill.** Payload is per-universe (`docs/coverage/<slug>.json`, ~50 KB) + `index.json`; the page
-loads exactly one universe. Family cells are NOT shipped — the page derives them with one `min()` over
-`params`, so there is no second copy to disagree.
+### 92g. ★★ CADENCE — "rewritten whole" is NOT "stored whole". Measure the pack, not the file.
+**NIGHTLY** (19:40 UTC = 01:10 IST) + `workflow_dispatch`, in its own workflow.
+The first call was *weekly*, on the reasoning that ~1.5 MB across 31 files rewritten whole each build
+would add **~300 MB/yr**. That reasoning was **wrong by 60×** and the user's "u decide" was the prompt
+to go and measure it: git **delta-compresses** these payloads, and seven simulated daily rebuilds (last
+row's date + counts drift, history untouched) in a scratch repo with `gc --aggressive` cost
+**~13 KB packed per commit → ~4.5 MB/yr**. Even the pathological case — every day rewriting every
+historical cell — is bounded by the ~180 KB full baseline. Repo growth is a non-issue; nightly wins
+because a hole that opens today should not wait six days to show up.
+★ **Re-measure before changing this; do not re-estimate.** "Compact JSON so git stores a fresh blob
+every time" is the intuition that was wrong — git's blob delta does not care about line structure.
+- **Staleness is surfaced, not assumed:** the page fetches `sf_meta.json` (committed daily, ~20 bytes)
+  and, if its `end` is **≥2 days** past the payload's `dataEnd`, shows an amber strip saying the bake
+  has not landed. 1 day is the normal gap between the evening data push and the 01:10 bake. Fails
+  silent — a missing second opinion is not evidence of staleness ([[feedback-journalled-is-not-live]]).
+- Not folded into `refresh-backtest-data.yml` (which has a fresh bin on disk and would save the
+  193 MB download) — that is the critical daily data job on a 30-minute timeout, and a scoreboard must
+  never be able to push it over.
+- Payload is per-universe (`docs/coverage/<slug>.json`, ~50 KB) + `index.json`; the page loads exactly
+  one universe. Family cells are NOT shipped — the page derives them with one `min()` over `params`,
+  so there is no second copy to disagree.
 
 ### 91m. ★★★ COVERAGE ≠ MEANING — before 2012 postDrift is a MOMENTUM factor, and it looks fine
 A 2004-start backtest is now well covered (2004 85.3%, 2006+ ≥97.4%) and the uncovered slice is not

@@ -116,6 +116,7 @@
   </div>
 
   <div id="banner" class="card p-3 mb-4 text-xs text-slate-500">Loading coverage…</div>
+  <div id="stale" class="hidden card p-3 mb-4 text-xs" style="border-color:#f59e0b;background:rgba(245,158,11,.10);color:var(--text)"></div>
 
   <div id="body" class="hidden">
 
@@ -243,10 +244,10 @@
   function boot() {
     fetch('./coverage/index.json', { cache: 'no-store' })
       .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-      .then(function (d) { IDX = d; buildControls(); return pick(localStorage.getItem('cov_uni') || 'nifty-500'); })
+      .then(function (d) { IDX = d; buildControls(); checkStale(d); return pick(localStorage.getItem('cov_uni') || 'nifty-500'); })
       .catch(function (e) {
         $('banner').innerHTML = '<span class="text-rose-600 font-semibold">Could not load the coverage payload.</span> ' +
-          '<span class="text-slate-400">' + esc(e.message) + ' — it is baked by <code>scripts/build_coverage_matrix.js</code> in the weekly <code>refresh-coverage.yml</code> run.</span>';
+          '<span class="text-slate-400">' + esc(e.message) + ' — it is baked by <code>scripts/build_coverage_matrix.js</code> in the nightly <code>refresh-coverage.yml</code> run.</span>';
       });
   }
 
@@ -286,6 +287,27 @@
         else render();
       });
     });
+  }
+
+  // A BAKE IS NOT A GUARANTEE. refresh-coverage.yml is non-blocking and runs once a night; if it
+  // errors, the committed payload just sits there looking authoritative. sf_meta.json is committed
+  // every trading day and is ~20 bytes, so it is a free second opinion on how old these numbers are.
+  // Silent on any failure — a missing second opinion is not evidence of staleness.
+  function checkStale(idx) {
+    fetch('./sf_meta.json', { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (m) {
+        if (!m || !m.end || !idx.dataEnd) return;
+        var days = Math.round((Date.parse(m.end) - Date.parse(idx.dataEnd)) / 86400000);
+        if (!(days >= 2)) return;   // 1 day is just the gap between the evening data push and the 01:10 bake
+        var el = $('stale');
+        el.innerHTML = '<b>This matrix is ' + days + ' days behind the price data.</b> ' +
+          'It was built against ' + esc(idx.dataEnd) + '; the site now holds bars to ' + esc(m.end) + '. ' +
+          'The nightly <code>refresh-coverage.yml</code> has not landed since — re-run it from the Actions tab ' +
+          'before reading anything into the most recent rows.';
+        el.classList.remove('hidden');
+      })
+      .catch(function () {});
   }
 
   function pick(slug) {
