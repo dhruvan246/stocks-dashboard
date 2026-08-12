@@ -4201,6 +4201,32 @@ screening the **Feb-2019** universe. Worst case was **1,389 days stale** (2013-0
 - `docs/shp_backtest.json` is untracked, has no workflow and no page fetches it — that script is
   dev/research only. The LIVE blast radius was breadth + turnover (`refresh-market-mood.yml`).
 
+**⚠️ 2026-08-12b — THE SAME FABRICATION WAS LIVE IN THE ENGINE, and it was far worse.**
+`lastSnap()` ended `return best || list[0]` — before an index's FIRST snapshot it handed back the
+EARLIEST roster, so the backtest screened the past with companies that had already won. Measured
+against the real bin: **Nifty 50 @2005-06-30 used the 2015-09-28 roster (+10.2 years)**, Nifty Bank
+@2010 → 2017 (+6.8y), Nifty IT @2010 → 2016 (+6.2y). **Nifty 500 was the ONLY index that escaped**,
+being the one with snapshots back to 2002 — i.e. fixing N500 membership had masked the fact that
+every *other* universe was fabricated. Two copies (`backtest-engine.js`, `stock-backtest.html`),
+four consuming pages, and the date inputs carry no `min`.
+
+Fix (user chose clamp over hard-error): `lastSnap` returns null; `membersAsOf` returns an **empty
+set** — never null, which `factorsAt` would read as "no index filter" = every stock on the exchange;
+`simulate()` clamps to `membershipStart(cfg.indexName)` and returns `{effStart, membershipNote}`,
+also `console.warn`n. **NEVER mutate `cfg.start` to clamp** — `bt-identity.js` fingerprints cfg, so
+that forks a saved strategy's identity and duplicates it. Bump `ENGINE_VER` (e2→e3) or cached
+snapshots re-render the OLD wrong results, and the sw shell (v86→v87).
+
+- **Index first snapshots** (anything earlier is now clamped): Nifty 50/100/200/Energy/Media/Metal/
+  Midcap 50/MidSmallcap 400/Smallcap 100 = **2015-09-28**; Nifty IT/Midcap 150/Smallcap 250/50/PSU
+  Bank = 2016-09-30; Next 50/Auto/MNC = 2016-02-22; Bank = 2017-03-31; Realty = 2017-09-29; Pharma =
+  2018-04-02; LargeMidcap 250 = 2018-02-05; FMCG = 2019-09-27; Consumer Durables = 2020-03-27;
+  Healthcare/Oil & Gas = 2021-03-31; **Nifty 500 = 2002-10-02**; Midcap 100 = 2006-11-08.
+- **F&O is NOT affected** — `fnoHistory` is 187 snapshots from 2001-11-29, and they are REAL: 105
+  pre-2015 snapshots carry 105 DISTINCT rosters, none equal to the 2015 one, growing 31 (2001) → 42
+  (2003) → 144 (2015). An earlier read of "78 snaps from 2015-01-30" came from a **stale local bin**
+  before a rebase — re-read the bin after any fetch/rebase before concluding a history is missing.
+
 
 ## 49. ★★ THE 100%% CLOSE-OUT PLAYBOOK — what finally landed the last ~40 cells  (2026-08-04)
 

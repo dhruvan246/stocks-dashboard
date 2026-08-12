@@ -454,10 +454,24 @@ function rsi14(tkr, off) {
   if (avgG + avgL === 0) return 50;
   return 100 - 100 / (1 + avgG / (avgL || 1e-9));
 }
-function lastSnap(list, dstr) { let best = null; for (const s of list) { if (s.effectiveDate <= dstr && (!best || s.effectiveDate > best.effectiveDate)) best = s; } return best || (list.length ? list[0] : null); }
+// NO floor to list[0]. Before an index's FIRST snapshot its membership is UNKNOWN, and handing
+// back the earliest roster backtests the past with the companies that had already won by then —
+// a Nifty 50 run at 2005-06-30 was screening the 2015-09-28 roster (+10.2 years of look-ahead
+// AND survivorship). Only Nifty 500 escaped, being the one index with snapshots back to 2002.
+// Measured 2026-08-12: Nifty Bank @2010 -> 2017 roster (+6.8y), Nifty IT @2010 -> 2016 (+6.2y),
+// F&O @pre-2015 -> the 2015-01-30 roster. simulate() now clamps the start date instead.
+// (Sync: stock-backtest.html)
+function lastSnap(list, dstr) { let best = null; for (const s of list) { if (s.effectiveDate <= dstr && (!best || s.effectiveDate > best.effectiveDate)) best = s; } return best; }
+function snapList(name) { return (name === '__FNO__') ? (FNOH || []) : (IDXH[name] || []); }
+// Earliest date this universe's membership is KNOWN (null = no history at all for it).
+function membershipStart(name) { let m = null; for (const s of snapList(name)) { if (!m || s.effectiveDate < m) m = s.effectiveDate; } return m; }
 function membersAsOf(name, dstr) {
-  if (name === '__FNO__') { const snap = lastSnap(FNOH, dstr); return snap ? new Set(snap.symbols) : null; }
-  const snap = lastSnap(IDXH[name] || [], dstr); return snap ? new Set(snap.symbols) : null;
+  const list = snapList(name);
+  if (!list.length) return null;                     // unknown universe -> caller's "no index filter" path
+  const snap = lastSnap(list, dstr);
+  // Before the first snapshot membership is UNKNOWN — an EMPTY set (screen matches nothing, loudly)
+  // is the honest answer. Returning null here would silently mean "every stock on the exchange".
+  return snap ? new Set(snap.symbols) : new Set();
 }
 function maxOffset() { let mx = 0; for (const k in SERIES) { const d = SERIES[k].d; if (d && d.length) { const v = d[d.length - 1]; if (v > mx) mx = v; } } return mx; }
 function monthsBetween(start, end) {
@@ -731,8 +745,18 @@ function computeHold(cfg, start, end, capital) {
 
 /* ---- the backtester ---- */
 function simulate(cfg) {
-  _histGuard(cfg.start);   // LOUD failure beats silently backtesting years with no bars loaded
-  const months = monthsBetween(cfg.start, cfg.end);
+  // Membership clamp: a universe cannot be screened before its first snapshot (see lastSnap).
+  // NEVER mutate cfg — bt-identity.js fingerprints it, so changing cfg.start here would fork a
+  // saved strategy's identity and duplicate it. Use a local effective start instead.
+  const _msStart = cfg.indexName ? membershipStart(cfg.indexName) : null;
+  const _start = (_msStart && cfg.start < _msStart) ? _msStart : cfg.start;
+  const membershipNote = (_start !== cfg.start)
+    ? (cfg.indexName === '__FNO__' ? 'F&O' : cfg.indexName) + ' membership is only known from ' +
+      _msStart + ' — backtest starts there, not ' + cfg.start + '.'
+    : null;
+  if (membershipNote) console.warn('[backtest]', membershipNote);
+  _histGuard(_start);   // LOUD failure beats silently backtesting years with no bars loaded
+  const months = monthsBetween(_start, cfg.end);
   // Rebalance on the LAST TRADING DAY <= the calendar month-end (a month-end can fall on a weekend/holiday).
   // Standard/NSE 52w hi/lo = trailing 365d from the last TRADING day; anchoring the window on the raw calendar
   // date while pricing off the last trading day can drop a genuine 52w low just outside the calendar window.
@@ -794,11 +818,11 @@ function simulate(cfg) {
   { const lastOff = dayOff(cfg.end); for (const t in entryInfo) { const e = entryInfo[t]; const mp = markPrice(t, lastOff); const xp = (mp == null ? e.price : mp);
     trades.push({ sym: META[t].symbol, entryDate: e.date, exitDate: cfg.end, entryPrice: e.price, exitPrice: xp, retPct: (xp / e.price - 1) * 100, factor: e.factor, rsi: e.rsi, held: true }); } }
   // benchmark (Nifty 50) + Nifty 500 (headline benchmark — the backtest universe); keep in sync with stock-backtest.html
-  const bench = []; const startN = nearestNifty(cfg.start);
+  const bench = []; const startN = nearestNifty(_start);
   if (startN) for (const [d] of equity) { const nv = nearestNifty(d); bench.push([d, nv ? cfg.capital * nv / startN : null]); }
-  const bench500 = []; const startN5 = nearestIdx(NIFTY500, cfg.start);
+  const bench500 = []; const startN5 = nearestIdx(NIFTY500, _start);
   if (startN5) for (const [d] of equity) { const nv = nearestIdx(NIFTY500, d); bench500.push([d, nv ? cfg.capital * nv / startN5 : null]); }
-  const years = (Date.parse(cfg.end) - Date.parse(cfg.start)) / (365.25 * 864e5);
+  const years = (Date.parse(cfg.end) - Date.parse(_start)) / (365.25 * 864e5);   // CAGR over the period actually simulated
   const finalV = equity[equity.length - 1][1];
   const cagr = years > 0 ? (Math.pow(finalV / cfg.capital, 1 / years) - 1) * 100 : 0;
   const benchSeries = (bench500.length ? bench500 : bench);
@@ -810,6 +834,7 @@ function simulate(cfg) {
   const periodRebs = rebs.slice(1); const wins = periodRebs.filter(r => r.ret > 0).length;
   trades.sort((a, b) => a.entryDate < b.entryDate ? 1 : -1);
   return { equity, bench, bench500, rebs, trades, latest, latestCash, cfg, years, finalV, cagr, benchCagr, vol, fLabel, dispCols,
+           effStart: _start, membershipNote,
            maxDD: maxDrawdown(equity), winRate: periodRebs.length ? 100 * wins / periodRebs.length : 0 };
 }
 function nearestIdx(map, dstr) { if (map[dstr]) return map[dstr]; let d = new Date(dstr + 'T00:00:00Z'); for (let i = 0; i < 7; i++) { d.setUTCDate(d.getUTCDate() - 1); const k = d.toISOString().slice(0, 10); if (map[k]) return map[k]; } return null; }

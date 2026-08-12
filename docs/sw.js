@@ -6,7 +6,7 @@
  *     requests (the sf-data repo, Supabase, the live-quote Worker) — those stay network-only
  *     so data is always fresh and the cache never bloats.
  * Bump CACHE when the shell asset list changes. */
-const CACHE = 'sw-shell-v86';   // v86: FUND_ALIAS += BILT->BALLARPUR, SUNCLAYTON->TVSHLTD (§93 era orphans) (v85: Coverage Matrix staleness strip)
+const CACHE = 'sw-shell-v87';   // v87: membership clamp — lastSnap no longer floors to the earliest snapshot (v86: FUND_ALIAS += BILT->BALLARPUR, SUNCLAYTON->TVSHLTD §93 era orphans)
 const SHELL = [
   './', './index.html', './nse-bse-dashboard.html', './stock-backtest.html', './saved-strategies.html',
   './backtest-history.html', './strategy-backtest.html', './all-picks.html', './strategy-mixer.html', './mutual-funds.html', './fii-dii.html',

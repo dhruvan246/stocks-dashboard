@@ -82,7 +82,14 @@ def main():
     print("axis: %d trading days %d..%d" % (n, dates[0], dates[-1]), flush=True)
 
     # which membership snapshot applies on each axis date (nearest prior; earliest as floor)
-    snap_of = [max(0, bisect_right(snap_dates, d) - 1) for d in dates]
+    # NO max(0, ...) floor: that silently handed the EARLIEST roster to any date before the first
+    # snapshot, i.e. measured breadth on a universe that did not exist yet (the engine's lastSnap
+    # had the same bug — a Nifty 50 screen at 2005 used the 2015 roster). Unreachable today (N500
+    # snapshots start 2002-10-02, well before this axis), so fail LOUD if that ever stops holding.
+    if dates[0] < snap_dates[0]:
+        raise SystemExit("axis starts %d, before the first membership snapshot %d — refusing to "
+                         "fabricate a universe" % (dates[0], snap_dates[0]))
+    snap_of = [bisect_right(snap_dates, d) - 1 for d in dates]
 
     above200 = [0]*n; n200 = [0]*n
     adv = [0]*n; dec = [0]*n
