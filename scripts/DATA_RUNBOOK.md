@@ -9243,7 +9243,8 @@ Every probe reads the RAW bhavcopy with **no series filter at all**:
 So the NSE tape ends 2003-03-31 and never resumes. **The bin is right.** For the record, the era
 series inventory measured off those same files kills the "it moved to a surveillance series" theory
 outright: 2003 bhavcopies carry **EQ + BE** plus debt/warrant series only (`N1/N2/W1/P1/IL/E1…`),
-and **BZ does not appear in a sampled file until 2014-10**. In 2003 the trade-for-trade series WAS
+and **BZ appears in none of the 68 sampled files before 2014-07-15** (1 row that day; 2003's whole
+series set is `{EQ, BE, N1, N2, W1}`). In 2003 the trade-for-trade series WAS
 `BE`, which we have always ingested. (This also part-answers §88d: no un-ingested equity series
 existed in the 2003-2013 files sampled here.)
 The company is alive — on **BSE**: `dash_slim` carries `PUNJCOMMU.BO` (latest ₹48.84, mcap ₹58.72 cr)
