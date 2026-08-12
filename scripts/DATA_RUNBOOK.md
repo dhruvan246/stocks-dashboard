@@ -8460,6 +8460,82 @@ equity and correctly carry no factor). The open set, by why it is open:
   to 0.00. That zero-close class is PRE-EXISTING and far larger (43,780 bars / 115 symbols / 0.47%
   of all bars) — not introduced here, and not worth reverting a record-verified factor.
 
+### 87g. ★★★ A RIGHT LEDGER THE BAKE REJECTS — the OPEN arbitrates (2026-08-12)
+§87 fixed the LEDGER. This is the residue on the other side: an entry that is correct, committed,
+and still never reaches the served prices, because the code that consumes it throws it away.
+
+**The case.** `corp_actions.json["factors"]["JINDALSTEL"]` has carried `[20080121, 0.2]` (1:5 split)
+since the §87 campaign. LIVE (sf_deep parts, rev 4f491f79ce, measured 2026-08-12) the split was
+**never applied**: close 2393.99 (18-Jan) → 350.71 (21-Jan), still there 20 bars later. Both
+siblings — 20031219 0.5 and 20090914 0.166667 — ARE applied on the same series, so this is not a
+stale-parts problem. 2008-01-21 was one of the worst single days in Indian market history; the
+stock fell 26.8% *on top of* the split, so the raw close ratio is 0.146496 and
+**raw/factor = 0.7325 — a hair under the 0.75 floor** of the `[0.75, 1.30]` reconcile window in
+build_sf_data + self_heal. The rejected factor falls through to `ca_factor(0.1465)`, which matches
+no CA fraction within 8% (nearest: 1/6 at 12%), so it returns 1.0 and **the whole split is kept**.
+That is §87a failure mode 1, on the case §87a already named.
+
+⚠️ **Circuit filters do NOT bound an F&O member.** The window's comment justifies [0.75,1.30] as
+"circuit-ish". JINDALSTEL has been an F&O member since 2005-04-29 — no price band at all. Any
+window tuned to cash-segment circuits is wrong for exactly the liquid, heavily-backtested names.
+
+**THE OPEN ARBITRATES (§87c), and it is measurable from the bin alone.** On the ex-day the OPEN
+prints at the adjusted basis: 493.50 / 2393.99 = 0.20614, **/0.2 = 1.031**. Crashes sit ≥1.19 (they
+open near flat and fall intraday). Band `[0.88, 1.12]` re-calibrated here on the repo's own live
+data — **1,350 official actions verified applied** give p5=0.9625, p50=1.0181, p95=1.0959, 97.0%
+≤1.12, agreeing with §87c's independent 566-event calibration (0.957..1.100).
+
+**★★★ THE TURNOVER STEP IS A FREE SECOND READER on "was this factor applied?"** `t` and `v` are
+RAW while `c` is adjusted, and (Yahoo-style re-anchoring) `adjusted[i] = raw[i] × Π(f after i)`, so
+`r = t/(c·v)` IS the cumulative adjustment and **`r_post/r_pre == F` if the factor was applied, `==
+1` if it was not**. Independent of the day's price move (a crash cannot fool it), immune to
+2-decimal quantization, and — unlike any close-ratio test — still sharp when F is near 1.0.
+JINDALSTEL: step 0.9887, i.e. nothing divided out. Volume 153,481 → 1,579,112 (the ~1/F rescale)
+corroborates. Reuse this whenever a price-adjustment question needs a reader that is not the price.
+
+**THE SWEEP (all 1,463 ledger events × live series, both readers).** Close-cliff reader: 1,353
+verified applied, **2 flagged**, 1 cliff-of-another-shape, 92 structurally blind. Turnover reader:
+1,440 applied, the **same 2** not applied, 3 ambiguous, 2 unsplittable, 1 thin. Zero disagreements.
+- ⚠️ **Do NOT use a naive relative tolerance** — near-1.0 factors are a false-positive factory
+  (UNITECH 20060630, F=0.925926). The close-cliff test must require F itself OUTSIDE [0.75,1.30],
+  or "unapplied" and "applied" are not distinguishable hypotheses. Those 92 are then covered by the
+  turnover reader instead, which is sharp there.
+- ⚠️ **Two other confounds cost a first pass 7 false hits.** (1) The feed files DUPLICATE rows for
+  one action on adjacent dates (GENUSPOWER 22+27 Oct 2010 both 0.1; JINDALPOLY same; KARURVYSYA
+  17+18 Nov 2016 both 0.2) — never take the PRODUCT of the rows on one bar: build_sf_data's inner
+  loop does `f = cand` (overwrite, last reconciling row wins), it never multiplies. (2) A ±12-bar
+  turnover window straddling a NEIGHBOURING ex-date reads the product (UNITECH's 20060623 1/65 sat
+  5 bars before its 20060630 row). Trim every window to the gap between ledger bars.
+
+**THE FIX (both legs are needed).**
+1. `build_sf_data.py` — the official-factor reconcile gets a second chance on the ex-day OPEN. This
+   is the root-cause fix; a from-scratch rebuild now gets it right by itself. Blast radius measured
+   over all 1,463 events: **6 reach the new branch, exactly 1 is rescued** (JINDALSTEL); AHLEAST,
+   MAANALU, KMSUGAR, BIRLAPOWER, FCSSOFT stay rejected.
+2. `scripts/ca_open_arbitrated.json` (NEW tracked ledger) + `apply_ca_arbitrated()` — the
+   INCREMENTAL leg, and the only one that reaches the live series. **The bake path is not the
+   rebuild path**: LIVE = release asset + daily appends, and `self_heal` only reaches ex-dates
+   inside its 28-day window, so an old mis-baked action can *never* converge on its own no matter
+   how right the rebuild becomes. Entry = `[sym, ex, factor, raw_drop, evidence]`; runs EVERY run,
+   network-free (the raw ratio rides in the ledger, so no bhavcopy refetch in CI), idempotent by
+   the `apply_manual_rights` ratio test. Verified pass1=1, pass2=pass3=0 (§87e-bis).
+3. `self_heal` — the SAME open-gate second chance. Without it a full-window run (`SF_HEAL_WINDOW`)
+   computes `correct_f = ca_factor(raw_ratio) = 1.0` for exactly these events and **re-inflates the
+   healed series ×5**. A heal is not finished until every pass that can touch the bar agrees.
+
+**NOT healed, by class: sub-₹0.25 series.** SOUISPAT 20140922 (1/10) is the sweep's other hit —
+genuinely unapplied — and must stay that way. At 2-decimal storage 0.35→0.04 makes the ratio test
+pure rounding: measured pass 2 wants another ×1.1667 (a nightly rewrite, §87e-bis), and its 979
+pre-ex bars collapse from 0.19-1.79 to **17 distinct values** with 541 at ≤0.05. The existing
+PX_FLOOR guard was right; `apply_ca_arbitrated` carries the same floor. SOUISPAT is dead since
+2015-01-29, sub-₹1 all through — under every liquidity floor in the repo.
+
+**Residue (measured, NOT healed — a number no record states is a guess).** A different signature —
+the factor IS applied but a DIFFERENT fraction than the ledger's: MAANALU 20230727 (bin 1/6, ledger
+1/4), KMSUGAR (ledger ex 20100326 riding a 5-month suspension gap → bar 20100830), BIRLAPOWER
+20090424 (penny), MINDACORP 20120613 (no turnover/volume — undecidable). Each needs record
+adjudication, i.e. §87f's queue, not a fitted number.
+
 ---
 
 ## 88. ★★★ ERA-FLOOR AUDIT — post-2020 conventions the PAST data never got  (2026-08-11)
