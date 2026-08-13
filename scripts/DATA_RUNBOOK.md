@@ -67,6 +67,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§96** ★★★ NOT-APPLICABLE IS NOT MISSING — an impossible cell is not a gap; order the fixes so a rule cannot bury its own defect; a stored 0.0 was a DEFECT in one company and CORRECT in the next (**read before any coverage/completeness claim or a zero-base cell**)
 - **§97** ★★★ TWO ENGINE ASYMMETRIES THAT READ AS DATA GAPS — `retPctAt` vs `hl52`, and a basis fallback decided by the entry test; both closed more coverage than every fetch combined (**read before opening a data campaign against an empty factor column**)
 - **§98** ★★★ "IN FRAME" WAS A FACT ABOUT OUR DATA, NOT THE WORLD — an older row we hold is not proof the company was filing; the residue identity that adjudicates a single-anchor gate refusal to the paisa; BSE's nav table served another company's filings (**read before calling a hole "high-confidence" because you hold something older**)
+- **§99** ★★★ THE PRE-LISTING QUARTER — an aggregator really does hold quarters older than the company's tape, and the qe+45d ann convention FABRICATES their availability date; floor it at the first traded bar (**read before writing any quarter older than the symbol's first bar, and before trusting an ann date generally**)
 
 ---
 
@@ -10057,3 +10058,135 @@ Beyond ADANIGREEN 98d, the ones with an independent-looking indictment:
 Separately, **INDGN and TATATECH are stored at INTEGER precision** (30.0, 29.0, 80.0, 103.0, 192.0
 against the sites' 29.6, 29.3, 79.69, 103.45, 191.52) — a precision property of whatever wrote them,
 worth knowing before anyone reads those "disagreements" as defects.
+
+---
+
+## 99. ★★★ THE PRE-LISTING QUARTER — the class I called unfillable, and the ann date that would have made it a look-ahead  (2026-08-13)
+
+**NO ASSUMPTIONS, NO GUESSWORK (§0).** Every number here was measured this session: the sweep logs,
+the applier's own output, the coverage matrix baked before and after off the same 2026-08-12 bin.
+
+### 99a. ★★★ "OLDER THAN ANY ROW WE HOLD" IS A FACT ABOUT US, NOT ABOUT THE WORLD
+The `profitTTM` gap enumeration (scripts/ttm_gap_targets.json) put **217 quarters across 123
+symbols** in a class I wrote up as *not fillable* because they predate the company's own oldest row.
+The user made me reconfirm instead of accepting it, and the probe refuted it: **Moneycontrol holds
+35 of those 217 quarters (16%), across 15 symbols, including all four of KPITTECH 2018 — the very
+example §96a uses to explain why the year-ago quarter cannot exist.** Both statements are true at once, and that is the point:
+KPIT Technologies did not exist as that entity before the demerger, AND the aggregator carries its
+carve-out quarters from the scheme/prospectus. §57/§63 again — never infer absence from our own
+gaps, not even when the gap has a good story attached.
+
+**Landed, 15 symbols / 57 cells taken through the §81 gate + A5 + the §85 discriminator:**
+
+| outcome | cells | detail |
+|---|---|---|
+| **FILLED** | **25** (21 new rows) | CSBBANK×3 · HEMIPROP×3 · HOMEFIRST · IRFC · KPITTECH 3 std + 1 con · RESPONIND · ROSSARI 3 std + 3 con · ROUTE×3 · UTIAMC×3, all from Moneycontrol, 26–33 anchors each, worst anchor error 0.01 |
+| already live | 4 | SBICARD std, filled earlier the same day |
+| **REJECT-ZERO-SENTINEL** | 2 | KPITTECH 2018-09 both bases: MC prints 0 and no other basis corroborates a real nil (gate B) |
+| **HELD, §85 con-fallback** | 3 | KPITTECH 2018-03 + 2018-06 con == MC's OWN std to the cent; ARVINDFASN 2017-12 `HOLD-NO-TWIN` |
+| **not-found-via:mc,tl** | 23 | see 99d |
+
+Gate A5 passed 32 of 32 — but **19 of those were `NO-TEST` on the target FY**, because MC's annual
+table does not reach the pre-listing year either. A5 protected the ones it could reach and was
+silent on the rest; "passed the gate" and "was tested by the gate" are different sentences (§60e).
+
+### 99b. ★★★ THE ANN DATE IS WHERE THIS CLASS TURNS INTO A LOOK-AHEAD
+`apply_agg_pat_fills.py` dates a fill `qe+45d` — the convention 20,818 of the 21,515 dated pre-2015
+cells already carry (§52). For a pre-listing quarter that convention **fabricates a public date
+before the company had a tape**, and `docs/backtest-engine.js` selects on `q[annIdx] <= dateInt`.
+It is §91c's defect wearing a different date. It had already shipped: **SBICARD's Mar-2019 quarter
+went live at 08:37 this morning dated 2019-05-15 against a first traded bar of 2020-03-16 — ten
+months early** — and 23 more cells were queued to do the same.
+
+    ann = max(qe + 45d, the symbol's FIRST TRADED BAR)          scripts/agg_tools/_first_bar.json
+
+Safe in both directions, which is what makes it a floor and not a guess:
+* it cannot CREATE a look-ahead — for an IPO the prospectus is public before listing, for a
+  demerger the scheme is public before the record date, so the true public date is at or before
+  the first bar;
+* it cannot HIDE a cell from a date that mattered — nothing can screen, hold or price a stock
+  before its first bar, so no earlier ann date is reachable by any backtest. **Measured, not
+  argued: across all 296 month-ends and 43 parameters, in both the Nifty-500 and the whole-market
+  payloads, NOT ONE parameter lost a single covered cell.** That control is what makes the gains
+  believable.
+
+24 cells were floored on the way in (CSBBANK to 2019-12-04, HEMIPROP 2020-10-22, HOMEFIRST
+2021-02-03, IRFC 2021-01-29, KPITTECH 2019-04-22, ROSSARI 2020-07-23, ROUTE 2020-09-21, UTIAMC
+2020-10-12) and **6 already-live cells were re-floored**: SBICARD's four to 2020-03-16, plus
+**RITES 2018-03 (2018-05-15 → 2018-07-02) and PRINCEPIPE 2019-09 (2019-11-14 → 2019-12-30), which
+belong to §98's in-frame sweep** — the same defect, written by a sibling session an hour earlier,
+and both first bars are those companies' actual IPO dates. A look-ahead is not left standing
+because another campaign wrote it. RESPONIND is the control: it has traded since 2010-10-29, so its
+2017-12 fill kept qe+45d and the floor correctly did nothing; NESTLEIND 2018-03 (§98's fill) is the
+same, untouched at 2018-05-15.
+
+⚠️ **A FIRST BAR IS NOT ALWAYS A LISTING DATE, so the repair is scoped by symbol.** The same scan
+flagged KIRLOSBROS 2007-12 (first bar 2010-04-20) and BBOX 2002-12/2003-03 (2010-06-08) — both
+companies were listed years before those dates, so that is a tape/rename seam (§93/§95 shape), not
+a pre-listing quarter. Flooring there would replace a probably-correct filing date with a wrong
+one, and under a rename the old symbol's row can still reach the quarter through `FUND_ALIAS`, so
+it could even hide data. `--repair-syms` exists for exactly this; the three are **reported, not
+patched** (§58d).
+
+⚠️ **`docs/dash_slim.bin` cannot answer "when did this symbol first trade".** It is trimmed to
+`recentCutoffOff`: KPITTECH's series there starts at offset 10931 = 2021-12-31 against a real first
+bar of 2019-04-22. Read first bars off it and every symbol returns the CUTOFF — one number wearing
+4,727 disguises, and it would have silently disabled the floor for every company. The full tape is
+`sf_stock_data.bin` (the live release asset; the in-repo copy is frozen), decoded through the
+engine's own `_sfNorm` — `node scripts/build_first_bar_map.js`. Cross-check that landed: the map
+reproduces §96a's two independently measured values to the day (KPITTECH 2019-04-22, NSLNISP
+2023-02-20).
+
+### 99c. ★★★ AND THE SAME SCAN INDICTS 5,247 CELLS THIS SESSION DID NOT WRITE
+Sweeping all of `docs/sf_fundamentals.json` against the first-bar map: **5,247 of 167,934 dated ann
+cells (3.1%), across 394 symbols, carry an announce date EARLIER than their symbol's first traded
+bar.** CANHLIFE's FY2015 quarters are dated 2015 against a first bar of 2025-10-17; NDLVENTURE's
+2007-08 quarters against 2019-11-11. They are NOT one class — some are pre-listing (the fillable
+story above), some are tape/rename seams (99b) — and the split is **unmeasured**. Nothing was
+patched. It is a whole campaign, and the discriminator it needs is a listing date from an
+independent source, not another pass over our own files.
+
+### 99d. WHAT REFUSED, AND WHY EACH REFUSAL IS INFORMATION (§61b)
+* **VALIANTORG (8 cells)** — refused again, reproducing this morning's verdict exactly: MC's series
+  says 30.71 where we store 27.06 at 2020-09-30, three quarters from the target. A second run
+  reaching the same refusal on the same disagreement is the cheapest form of confirmation there is.
+* **ROUTE con, UTIAMC con, RAILTEL both bases (7)** — the site has the quarter, its series does not
+  reproduce ours locally. RAILTEL is the *near* miss worth recording: ours 16.14/16.36 against
+  16.19/16.32, 0.04–0.05 apart on a 0.02+0.2% tolerance. Refused correctly (§60c is zero
+  disagreements, not few), and it is a filing read away, not a dead cell.
+* **SBICARD con (4)** — MC serves an **empty `cons_quarterly` table** for the company. Nothing to
+  hold, nothing to fall back to.
+* **EQUITASBNK (2)** — one disagreement 3 quarters out: ours 67.87 vs 57.67 at 2020-06.
+* **ITCHOTELS (1)** — and this is the one to look at twice. MC and Trendlyne reproduce 7 of our 10
+  quarters and then print **0.74 / −0.42 / 1.75** where we store **228.0 / 105.0 / 102.0** for
+  Jun/Sep/Dec-2024. Our three are suspiciously round; theirs are what a dormant demerger shell
+  legitimately earns before the hotel business vests in it. Both readings are defensible and MC+TL
+  are ONE vendor (§81c), so this is one reader, not two. Reported as §61a mode-6 suspects,
+  **not patched** — it needs the scheme document.
+* The **108 symbols / 182 quarters** of this class that are not on MC at all are
+  `not-found-via:mc,tl`, never "unfillable" (§0): they need the prospectus/DRHP, which is a
+  different route, not a different aggregator (§81c — a second aggregator is the same vendor).
+
+### 99e. ⚠️ THE LEDGER WAS GUARDING HALF OF ITSELF
+`agg_pat_cell_fills.json` was registered in `verify_fills_live.py` under the `std` key only. It has
+held **278 `patC` entries since the pre-2015 campaign (ACC and ADANIENT 2009 among them) that
+nothing has ever re-checked** — the entry loop skips any record whose registered key is absent, so
+a std-only registration reports a serene `MISSING 0` for a ledger full of consolidated cells.
+The assertion is the CHECKED COUNT, measured both ways, never the absence of complaints:
+**10,485 → 10,767 cells checked (+282)** with the `con` line added. Same class as the three-part-key
+trap, and the same lesson: *a guard that checks nothing looks exactly like a guard that found
+nothing* (memory: feedback-ledger-guard-count-must-move).
+
+### 99f. Result on the coverage matrix (baked before and after off the same 2026-08-12 bin)
+Nifty 500, the class's own window 2020-01..2026-06, measured against origin/main **after** §98's
+four fills had landed: **profitTTM 567 → 521**, profitAccel 125 → 101, composite 567 → 521 (the
+same −46/−24/−46 either way; §98 and this sweep touch disjoint symbols). Over all 296 month-ends the Nifty-500 payload gains profitTTM +47, profitAccel
++25, composite +47, and profitYoyPct/profitBase/profitStreak +13 each — those three with **N/A −16**,
+i.e. cells that moved from *the year-ago quarter cannot exist* to *here it is*, which is §96a's rule
+correctly retiring itself as the data arrives. Whole market: profitTTM +55, profitAccel +56,
+composite +55, the pat family +42 each (N/A −38), postDrift +8 (N/A −1).
+
+★ **The N/A rule and the fill are not in competition.** §96a marked these cells not-applicable on
+OUR OWN OLDEST ROW, which was the honest statement at the time; the fill changed the fact, and the
+same rule now returns a different answer. A not-applicable that cannot become applicable again is a
+rule that has stopped measuring anything.

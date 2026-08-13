@@ -15340,6 +15340,164 @@
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
   "state": "FILLED-EXACT"
  },
+ "CSBBANK|20180331": {
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": "qe+45d was 20180515, FLOORED UP to the first traded bar 20191204 -- a pre-listing quarter (\u00a799)",
+  "ann_written": 20191204,
+  "applied": "2026-08-13 pre-listing profitTTM sweep (\u00a799)",
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own patS series reproduces 31 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0100; nearest anchor within 4 quarters",
+  "field": "patS",
+  "fy_check": {
+   "A5": {
+    "next": {
+     "diff": 0.0,
+     "fy": 20190331,
+     "site_annual": -197.42,
+     "site_sum4Q": -197.42,
+     "verdict": "OK"
+    },
+    "prev": {
+     "diff": -0.0,
+     "fy": 20170331,
+     "site_annual": 1.55,
+     "site_sum4Q": 1.55,
+     "verdict": "OK"
+    },
+    "target": {
+     "diff": 0.0,
+     "fy": 20180331,
+     "site_annual": -97.47,
+     "site_sum4Q": -97.47,
+     "verdict": "OK"
+    }
+   },
+   "our_fy_identity": {
+    "missing": [
+     20170630,
+     20170930,
+     20171231
+    ],
+    "site_annual": -97.47,
+    "verdict": "NO-TEST"
+   },
+   "state": "PASS"
+  },
+  "precision": "rounded(0.01)",
+  "resolved_via": "symbol",
+  "row_label": "Net Profit/(Loss) For the Period",
+  "site_reach": {
+   "mc": "mc: 55 quarters 20060331..20260630",
+   "tl": "tl: 13 quarters 20230630..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
+  "state": "FILLED-ROUNDED",
+  "std": -37.83
+ },
+ "CSBBANK|20180630": {
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": "qe+45d was 20180814, FLOORED UP to the first traded bar 20191204 -- a pre-listing quarter (\u00a799)",
+  "ann_written": 20191204,
+  "applied": "2026-08-13 pre-listing profitTTM sweep (\u00a799)",
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own patS series reproduces 31 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0100; nearest anchor within 4 quarters",
+  "field": "patS",
+  "fy_check": {
+   "A5": {
+    "next": {
+     "diff": 0.01,
+     "fy": 20200331,
+     "site_annual": 12.72,
+     "site_sum4Q": 12.73,
+     "verdict": "OK"
+    },
+    "prev": {
+     "diff": 0.0,
+     "fy": 20180331,
+     "site_annual": -97.47,
+     "site_sum4Q": -97.47,
+     "verdict": "OK"
+    },
+    "target": {
+     "diff": 0.0,
+     "fy": 20190331,
+     "site_annual": -197.42,
+     "site_sum4Q": -197.42,
+     "verdict": "OK"
+    }
+   },
+   "our_fy_identity": {
+    "missing": [
+     20180930
+    ],
+    "site_annual": -197.42,
+    "verdict": "NO-TEST"
+   },
+   "state": "PASS"
+  },
+  "precision": "rounded(0.01)",
+  "resolved_via": "symbol",
+  "row_label": "Net Profit/(Loss) For the Period",
+  "site_reach": {
+   "mc": "mc: 55 quarters 20060331..20260630",
+   "tl": "tl: 13 quarters 20230630..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
+  "state": "FILLED-ROUNDED",
+  "std": -15.54
+ },
+ "CSBBANK|20180930": {
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": "qe+45d was 20181114, FLOORED UP to the first traded bar 20191204 -- a pre-listing quarter (\u00a799)",
+  "ann_written": 20191204,
+  "applied": "2026-08-13 pre-listing profitTTM sweep (\u00a799)",
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own patS series reproduces 31 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0100; nearest anchor within 4 quarters",
+  "field": "patS",
+  "fy_check": {
+   "A5": {
+    "next": {
+     "diff": 0.01,
+     "fy": 20200331,
+     "site_annual": 12.72,
+     "site_sum4Q": 12.73,
+     "verdict": "OK"
+    },
+    "prev": {
+     "diff": 0.0,
+     "fy": 20180331,
+     "site_annual": -97.47,
+     "site_sum4Q": -97.47,
+     "verdict": "OK"
+    },
+    "target": {
+     "diff": 0.0,
+     "fy": 20190331,
+     "site_annual": -197.42,
+     "site_sum4Q": -197.42,
+     "verdict": "OK"
+    }
+   },
+   "our_fy_identity": {
+    "missing": [
+     20180630
+    ],
+    "site_annual": -197.42,
+    "verdict": "NO-TEST"
+   },
+   "state": "PASS"
+  },
+  "precision": "rounded(0.01)",
+  "resolved_via": "symbol",
+  "row_label": "Net Profit/(Loss) For the Period",
+  "site_reach": {
+   "mc": "mc: 55 quarters 20060331..20260630",
+   "tl": "tl: 13 quarters 20230630..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
+  "state": "FILLED-ROUNDED",
+  "std": -31.97
+ },
  "CUB|20040630": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752). Moneycontrol's feed carries no filing date.",
   "ann_written": 20040814,
@@ -29749,6 +29907,162 @@
   "state": "FILLED-EXACT",
   "std": -16.98
  },
+ "HEMIPROP|20190630": {
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": "qe+45d was 20190814, FLOORED UP to the first traded bar 20201022 -- a pre-listing quarter (\u00a799)",
+  "ann_written": 20201022,
+  "applied": "2026-08-13 pre-listing profitTTM sweep (\u00a799)",
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own patS series reproduces 26 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0000; nearest anchor within 4 quarters",
+  "field": "patS",
+  "fy_check": {
+   "A5": {
+    "next": {
+     "diff": -0.02,
+     "fy": 20210331,
+     "site_annual": -7.45,
+     "site_sum4Q": -7.47,
+     "verdict": "OK"
+    },
+    "prev": {
+     "annual": -0.13,
+     "fy": 20190331,
+     "have": 0,
+     "verdict": "NO-TEST"
+    },
+    "target": {
+     "diff": 0.0,
+     "fy": 20200331,
+     "site_annual": -0.76,
+     "site_sum4Q": -0.76,
+     "verdict": "OK"
+    }
+   },
+   "our_fy_identity": {
+    "missing": [
+     20190930,
+     20191231
+    ],
+    "site_annual": -0.76,
+    "verdict": "NO-TEST"
+   },
+   "state": "PASS"
+  },
+  "precision": "site-exact",
+  "resolved_via": "symbol",
+  "row_label": "Net Profit/(Loss) For the Period",
+  "site_reach": {
+   "mc": "mc: 29 quarters 20190630..20260630",
+   "tl": "tl: 13 quarters 20230630..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
+  "state": "FILLED-EXACT",
+  "std": -0.07
+ },
+ "HEMIPROP|20190930": {
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": "qe+45d was 20191114, FLOORED UP to the first traded bar 20201022 -- a pre-listing quarter (\u00a799)",
+  "ann_written": 20201022,
+  "applied": "2026-08-13 pre-listing profitTTM sweep (\u00a799)",
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own patS series reproduces 26 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0000; nearest anchor within 4 quarters",
+  "field": "patS",
+  "fy_check": {
+   "A5": {
+    "next": {
+     "diff": -0.02,
+     "fy": 20210331,
+     "site_annual": -7.45,
+     "site_sum4Q": -7.47,
+     "verdict": "OK"
+    },
+    "prev": {
+     "annual": -0.13,
+     "fy": 20190331,
+     "have": 0,
+     "verdict": "NO-TEST"
+    },
+    "target": {
+     "diff": 0.0,
+     "fy": 20200331,
+     "site_annual": -0.76,
+     "site_sum4Q": -0.76,
+     "verdict": "OK"
+    }
+   },
+   "our_fy_identity": {
+    "missing": [
+     20190630,
+     20191231
+    ],
+    "site_annual": -0.76,
+    "verdict": "NO-TEST"
+   },
+   "state": "PASS"
+  },
+  "precision": "site-exact",
+  "resolved_via": "symbol",
+  "row_label": "Net Profit/(Loss) For the Period",
+  "site_reach": {
+   "mc": "mc: 29 quarters 20190630..20260630",
+   "tl": "tl: 13 quarters 20230630..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
+  "state": "FILLED-EXACT",
+  "std": -0.01
+ },
+ "HEMIPROP|20191231": {
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": "qe+45d was 20200214, FLOORED UP to the first traded bar 20201022 -- a pre-listing quarter (\u00a799)",
+  "ann_written": 20201022,
+  "applied": "2026-08-13 pre-listing profitTTM sweep (\u00a799)",
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own patS series reproduces 26 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0000; nearest anchor within 4 quarters",
+  "field": "patS",
+  "fy_check": {
+   "A5": {
+    "next": {
+     "diff": -0.02,
+     "fy": 20210331,
+     "site_annual": -7.45,
+     "site_sum4Q": -7.47,
+     "verdict": "OK"
+    },
+    "prev": {
+     "annual": -0.13,
+     "fy": 20190331,
+     "have": 0,
+     "verdict": "NO-TEST"
+    },
+    "target": {
+     "diff": 0.0,
+     "fy": 20200331,
+     "site_annual": -0.76,
+     "site_sum4Q": -0.76,
+     "verdict": "OK"
+    }
+   },
+   "our_fy_identity": {
+    "missing": [
+     20190630,
+     20190930
+    ],
+    "site_annual": -0.76,
+    "verdict": "NO-TEST"
+   },
+   "state": "PASS"
+  },
+  "precision": "site-exact",
+  "resolved_via": "symbol",
+  "row_label": "Net Profit/(Loss) For the Period",
+  "site_reach": {
+   "mc": "mc: 29 quarters 20190630..20260630",
+   "tl": "tl: 13 quarters 20230630..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
+  "state": "FILLED-EXACT",
+  "std": -0.04
+ },
  "HEROMOTOCO|20011231": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752). Moneycontrol's feed carries no filing date.",
   "ann_written": 20020214,
@@ -31304,6 +31618,57 @@
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
   "state": "FILLED-EXACT",
   "std": 11.29
+ },
+ "HOMEFIRST|20191231": {
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": "qe+45d was 20200214, FLOORED UP to the first traded bar 20210203 -- a pre-listing quarter (\u00a799)",
+  "ann_written": 20210203,
+  "applied": "2026-08-13 pre-listing profitTTM sweep (\u00a799)",
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own patS series reproduces 26 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0100; nearest anchor within 4 quarters",
+  "field": "patS",
+  "fy_check": {
+   "A5": {
+    "next": {
+     "diff": -0.0,
+     "fy": 20210331,
+     "site_annual": 100.14,
+     "site_sum4Q": 100.14,
+     "verdict": "OK"
+    },
+    "prev": {
+     "annual": 45.72,
+     "fy": 20190331,
+     "have": 0,
+     "verdict": "NO-TEST"
+    },
+    "target": {
+     "annual": 79.55,
+     "fy": 20200331,
+     "have": 2,
+     "verdict": "NO-TEST"
+    }
+   },
+   "our_fy_identity": {
+    "missing": [
+     20190630,
+     20190930
+    ],
+    "site_annual": 79.55,
+    "verdict": "NO-TEST"
+   },
+   "state": "PASS"
+  },
+  "precision": "rounded(0.01)",
+  "resolved_via": "symbol",
+  "row_label": "Net Profit/(Loss) For the Period",
+  "site_reach": {
+   "mc": "mc: 27 quarters 20191231..20260630",
+   "tl": "tl: 13 quarters 20230630..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
+  "state": "FILLED-ROUNDED",
+  "std": 30.06
  },
  "HONDAPOWER|20011231": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752). Moneycontrol's feed carries no filing date.",
@@ -35482,6 +35847,57 @@
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
   "state": "FILLED-EXACT",
   "std": 10.65
+ },
+ "IRFC|20191231": {
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": "qe+45d was 20200214, FLOORED UP to the first traded bar 20210129 -- a pre-listing quarter (\u00a799)",
+  "ann_written": 20210129,
+  "applied": "2026-08-13 pre-listing profitTTM sweep (\u00a799)",
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own patS series reproduces 26 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0100; nearest anchor within 4 quarters",
+  "field": "patS",
+  "fy_check": {
+   "A5": {
+    "next": {
+     "diff": 0.0,
+     "fy": 20210331,
+     "site_annual": 4416.13,
+     "site_sum4Q": 4416.13,
+     "verdict": "OK"
+    },
+    "prev": {
+     "annual": 2254.75,
+     "fy": 20190331,
+     "have": 0,
+     "verdict": "NO-TEST"
+    },
+    "target": {
+     "annual": 3692.42,
+     "fy": 20200331,
+     "have": 2,
+     "verdict": "NO-TEST"
+    }
+   },
+   "our_fy_identity": {
+    "missing": [
+     20190630,
+     20190930
+    ],
+    "site_annual": 3692.42,
+    "verdict": "NO-TEST"
+   },
+   "state": "PASS"
+  },
+  "precision": "rounded(0.01)",
+  "resolved_via": "symbol",
+  "row_label": "Net Profit/(Loss) For the Period",
+  "site_reach": {
+   "mc": "mc: 63 quarters 19980630..20260630",
+   "tl": "tl: 13 quarters 20230630..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
+  "state": "FILLED-ROUNDED",
+  "std": 907.04
  },
  "ITC|20020630": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752). Moneycontrol's feed carries no filing date.",
@@ -42389,6 +42805,163 @@
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
   "state": "FILLED-ROUNDED"
+ },
+ "KPITTECH|20180331": {
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": "qe+45d was 20180515, FLOORED UP to the first traded bar 20190422 -- a pre-listing quarter (\u00a799)",
+  "ann_written": 20190422,
+  "applied": "2026-08-13 pre-listing profitTTM sweep (\u00a799)",
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own patS series reproduces 30 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0100; nearest anchor within 4 quarters",
+  "field": "patS",
+  "fy_check": {
+   "A5": {
+    "next": {
+     "diff": 0.0,
+     "fy": 20190331,
+     "site_annual": 74.45,
+     "site_sum4Q": 74.45,
+     "verdict": "OK"
+    },
+    "prev": {
+     "annual": null,
+     "fy": 20170331,
+     "have": 0,
+     "verdict": "NO-TEST"
+    },
+    "target": {
+     "annual": -0.27,
+     "fy": 20180331,
+     "have": 1,
+     "verdict": "NO-TEST"
+    }
+   },
+   "our_fy_identity": {
+    "missing": [
+     20170630,
+     20170930,
+     20171231
+    ],
+    "site_annual": -0.27,
+    "verdict": "NO-TEST"
+   },
+   "state": "PASS"
+  },
+  "precision": "rounded(0.01)",
+  "resolved_via": "symbol",
+  "row_label": "Net Profit/(Loss) For the Period",
+  "site_reach": {
+   "mc": "mc: 34 quarters 20180331..20260630",
+   "tl": "tl: 13 quarters 20230630..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
+  "state": "FILLED-ROUNDED",
+  "std": -0.27
+ },
+ "KPITTECH|20180630": {
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": "qe+45d was 20180814, FLOORED UP to the first traded bar 20190422 -- a pre-listing quarter (\u00a799)",
+  "ann_written": 20190422,
+  "applied": "2026-08-13 pre-listing profitTTM sweep (\u00a799)",
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own patS series reproduces 30 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0100; nearest anchor within 4 quarters",
+  "field": "patS",
+  "fy_check": {
+   "A5": {
+    "next": {
+     "diff": 0.01,
+     "fy": 20200331,
+     "site_annual": 178.45,
+     "site_sum4Q": 178.46,
+     "verdict": "OK"
+    },
+    "prev": {
+     "annual": -0.27,
+     "fy": 20180331,
+     "have": 1,
+     "verdict": "NO-TEST"
+    },
+    "target": {
+     "diff": 0.0,
+     "fy": 20190331,
+     "site_annual": 74.45,
+     "site_sum4Q": 74.45,
+     "verdict": "OK"
+    }
+   },
+   "our_fy_identity": {
+    "missing": [
+     20180930,
+     20181231
+    ],
+    "site_annual": 74.45,
+    "verdict": "NO-TEST"
+   },
+   "state": "PASS"
+  },
+  "precision": "rounded(0.01)",
+  "resolved_via": "symbol",
+  "row_label": "Net Profit/(Loss) For the Period",
+  "site_reach": {
+   "mc": "mc: 34 quarters 20180331..20260630",
+   "tl": "tl: 13 quarters 20230630..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
+  "state": "FILLED-ROUNDED",
+  "std": -0.01
+ },
+ "KPITTECH|20181231": {
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": "qe+45d was 20190214, FLOORED UP to the first traded bar 20190422 -- a pre-listing quarter (\u00a799)",
+  "ann_written": 20190422,
+  "applied": "2026-08-13 pre-listing profitTTM sweep (\u00a799)",
+  "con": 24.05,
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own patS series reproduces 30 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0100; nearest anchor within 4 quarters",
+  "field": "patS",
+  "fy_check": {
+   "A5": {
+    "next": {
+     "diff": 0.01,
+     "fy": 20200331,
+     "site_annual": 178.45,
+     "site_sum4Q": 178.46,
+     "verdict": "OK"
+    },
+    "prev": {
+     "annual": -0.27,
+     "fy": 20180331,
+     "have": 1,
+     "verdict": "NO-TEST"
+    },
+    "target": {
+     "diff": 0.0,
+     "fy": 20190331,
+     "site_annual": 74.45,
+     "site_sum4Q": 74.45,
+     "verdict": "OK"
+    }
+   },
+   "our_fy_identity": {
+    "missing": [
+     20180630,
+     20180930
+    ],
+    "site_annual": 74.45,
+    "verdict": "NO-TEST"
+   },
+   "state": "PASS"
+  },
+  "precision": "rounded(0.01)",
+  "resolved_via": "symbol",
+  "row_label": "Net Profit/(Loss) For the Period",
+  "site_reach": {
+   "mc": "mc: 34 quarters 20180331..20260630",
+   "tl": "tl: 13 quarters 20230630..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
+  "state": "FILLED-ROUNDED",
+  "std": -2.35
  },
  "KSB|20020331": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752). Moneycontrol's feed carries no filing date.",
@@ -53833,8 +54406,9 @@
   "std": 26.28
  },
  "PRINCEPIPE|20190930": {
-  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752). Moneycontrol's feed carries no filing date.",
-  "ann_written": 20191114,
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": "qe+45d was 20191114 and PRECEDED the first traded bar 20191230 -- re-floored 2026-08-13, the cell was written before the floor existed (\u00a799)",
+  "ann_written": 20191230,
   "applied": "2026-08-13 in-frame profitTTM hole sweep",
   "corroborated_by": [
    "screener"
@@ -56706,6 +57280,59 @@
   "state": "FILLED-EXACT",
   "std": 30.74
  },
+ "RESPONIND|20171231": {
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": null,
+  "ann_written": 20180214,
+  "applied": "2026-08-13 pre-listing profitTTM sweep (\u00a799)",
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own patS series reproduces 33 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0100; nearest anchor within 4 quarters",
+  "field": "patS",
+  "fy_check": {
+   "A5": {
+    "next": {
+     "diff": -0.01,
+     "fy": 20190331,
+     "site_annual": 28.42,
+     "site_sum4Q": 28.41,
+     "verdict": "OK"
+    },
+    "prev": {
+     "diff": -0.01,
+     "fy": 20170331,
+     "site_annual": 20.67,
+     "site_sum4Q": 20.66,
+     "verdict": "OK"
+    },
+    "target": {
+     "diff": -0.01,
+     "fy": 20180331,
+     "site_annual": 13.08,
+     "site_sum4Q": 13.07,
+     "verdict": "OK"
+    }
+   },
+   "our_fy_identity": {
+    "missing": [
+     20170630,
+     20170930
+    ],
+    "site_annual": 13.08,
+    "verdict": "NO-TEST"
+   },
+   "state": "PASS"
+  },
+  "precision": "rounded(0.01)",
+  "resolved_via": "symbol",
+  "row_label": "Net Profit/(Loss) For the Period",
+  "site_reach": {
+   "mc": "mc: 98 quarters 19991231..20260331",
+   "tl": "tl: 13 quarters 20230331..20260331"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
+  "state": "FILLED-ROUNDED",
+  "std": 4.92
+ },
  "RICOAUTO|20030331": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752). Moneycontrol's feed carries no filing date.",
   "ann_written": 20030515,
@@ -56747,8 +57374,9 @@
   "std": 4.97
  },
  "RITES|20180331": {
-  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752). Moneycontrol's feed carries no filing date.",
-  "ann_written": 20180515,
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": "qe+45d was 20180515 and PRECEDED the first traded bar 20180702 -- re-floored 2026-08-13, the cell was written before the floor existed (\u00a799)",
+  "ann_written": 20180702,
   "applied": "2026-08-13 in-frame profitTTM hole sweep",
   "corroborated_by": [
    "screener"
@@ -56785,6 +57413,321 @@
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
   "state": "FILLED-ADJUDICATED",
   "std": 82.73
+ },
+ "ROSSARI|20190630": {
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": "qe+45d was 20190814, FLOORED UP to the first traded bar 20200723 -- a pre-listing quarter (\u00a799)",
+  "ann_written": 20200723,
+  "applied": "2026-08-13 pre-listing profitTTM sweep (\u00a799)",
+  "con": 14.16,
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own patS series reproduces 26 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0000; nearest anchor within 4 quarters",
+  "field": "patS",
+  "fy_check": {
+   "A5": {
+    "next": {
+     "diff": 0.01,
+     "fy": 20210331,
+     "site_annual": 79.1,
+     "site_sum4Q": 79.11,
+     "verdict": "OK"
+    },
+    "prev": {
+     "annual": 45.46,
+     "fy": 20190331,
+     "have": 0,
+     "verdict": "NO-TEST"
+    },
+    "target": {
+     "diff": 0.01,
+     "fy": 20200331,
+     "site_annual": 65.52,
+     "site_sum4Q": 65.53,
+     "verdict": "OK"
+    }
+   },
+   "our_fy_identity": {
+    "missing": [
+     20190930,
+     20191231
+    ],
+    "site_annual": 65.52,
+    "verdict": "NO-TEST"
+   },
+   "state": "PASS"
+  },
+  "precision": "site-exact",
+  "resolved_via": "symbol",
+  "row_label": "Net Profit/(Loss) For the Period",
+  "site_reach": {
+   "mc": "mc: 29 quarters 20190630..20260630",
+   "tl": "tl: 13 quarters 20230630..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
+  "state": "FILLED-EXACT",
+  "std": 14.18
+ },
+ "ROSSARI|20190930": {
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": "qe+45d was 20191114, FLOORED UP to the first traded bar 20200723 -- a pre-listing quarter (\u00a799)",
+  "ann_written": 20200723,
+  "applied": "2026-08-13 pre-listing profitTTM sweep (\u00a799)",
+  "con": 17.74,
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own patS series reproduces 26 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0000; nearest anchor within 4 quarters",
+  "field": "patS",
+  "fy_check": {
+   "A5": {
+    "next": {
+     "diff": 0.01,
+     "fy": 20210331,
+     "site_annual": 79.1,
+     "site_sum4Q": 79.11,
+     "verdict": "OK"
+    },
+    "prev": {
+     "annual": 45.46,
+     "fy": 20190331,
+     "have": 0,
+     "verdict": "NO-TEST"
+    },
+    "target": {
+     "diff": 0.01,
+     "fy": 20200331,
+     "site_annual": 65.52,
+     "site_sum4Q": 65.53,
+     "verdict": "OK"
+    }
+   },
+   "our_fy_identity": {
+    "missing": [
+     20190630,
+     20191231
+    ],
+    "site_annual": 65.52,
+    "verdict": "NO-TEST"
+   },
+   "state": "PASS"
+  },
+  "precision": "site-exact",
+  "resolved_via": "symbol",
+  "row_label": "Net Profit/(Loss) For the Period",
+  "site_reach": {
+   "mc": "mc: 29 quarters 20190630..20260630",
+   "tl": "tl: 13 quarters 20230630..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
+  "state": "FILLED-EXACT",
+  "std": 17.69
+ },
+ "ROSSARI|20191231": {
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": "qe+45d was 20200214, FLOORED UP to the first traded bar 20200723 -- a pre-listing quarter (\u00a799)",
+  "ann_written": 20200723,
+  "applied": "2026-08-13 pre-listing profitTTM sweep (\u00a799)",
+  "con": 18.25,
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own patS series reproduces 26 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0000; nearest anchor within 4 quarters",
+  "field": "patS",
+  "fy_check": {
+   "A5": {
+    "next": {
+     "diff": 0.01,
+     "fy": 20210331,
+     "site_annual": 79.1,
+     "site_sum4Q": 79.11,
+     "verdict": "OK"
+    },
+    "prev": {
+     "annual": 45.46,
+     "fy": 20190331,
+     "have": 0,
+     "verdict": "NO-TEST"
+    },
+    "target": {
+     "diff": 0.01,
+     "fy": 20200331,
+     "site_annual": 65.52,
+     "site_sum4Q": 65.53,
+     "verdict": "OK"
+    }
+   },
+   "our_fy_identity": {
+    "missing": [
+     20190630,
+     20190930
+    ],
+    "site_annual": 65.52,
+    "verdict": "NO-TEST"
+   },
+   "state": "PASS"
+  },
+  "precision": "site-exact",
+  "resolved_via": "symbol",
+  "row_label": "Net Profit/(Loss) For the Period",
+  "site_reach": {
+   "mc": "mc: 29 quarters 20190630..20260630",
+   "tl": "tl: 13 quarters 20230630..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
+  "state": "FILLED-EXACT",
+  "std": 18.47
+ },
+ "ROUTE|20190630": {
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": "qe+45d was 20190814, FLOORED UP to the first traded bar 20200921 -- a pre-listing quarter (\u00a799)",
+  "ann_written": 20200921,
+  "applied": "2026-08-13 pre-listing profitTTM sweep (\u00a799)",
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own patS series reproduces 26 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0000; nearest anchor within 4 quarters",
+  "field": "patS",
+  "fy_check": {
+   "A5": {
+    "next": {
+     "diff": 0.0,
+     "fy": 20210331,
+     "site_annual": 22.33,
+     "site_sum4Q": 22.33,
+     "verdict": "OK"
+    },
+    "prev": {
+     "annual": 8.97,
+     "fy": 20190331,
+     "have": 0,
+     "verdict": "NO-TEST"
+    },
+    "target": {
+     "diff": 0.0,
+     "fy": 20200331,
+     "site_annual": 7.55,
+     "site_sum4Q": 7.55,
+     "verdict": "OK"
+    }
+   },
+   "our_fy_identity": {
+    "missing": [
+     20190930,
+     20191231
+    ],
+    "site_annual": 7.55,
+    "verdict": "NO-TEST"
+   },
+   "state": "PASS"
+  },
+  "precision": "site-exact",
+  "resolved_via": "symbol",
+  "row_label": "Net Profit/(Loss) For the Period",
+  "site_reach": {
+   "mc": "mc: 29 quarters 20190630..20260630",
+   "tl": "tl: 13 quarters 20230630..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
+  "state": "FILLED-EXACT",
+  "std": 4.21
+ },
+ "ROUTE|20190930": {
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": "qe+45d was 20191114, FLOORED UP to the first traded bar 20200921 -- a pre-listing quarter (\u00a799)",
+  "ann_written": 20200921,
+  "applied": "2026-08-13 pre-listing profitTTM sweep (\u00a799)",
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own patS series reproduces 26 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0000; nearest anchor within 4 quarters",
+  "field": "patS",
+  "fy_check": {
+   "A5": {
+    "next": {
+     "diff": 0.0,
+     "fy": 20210331,
+     "site_annual": 22.33,
+     "site_sum4Q": 22.33,
+     "verdict": "OK"
+    },
+    "prev": {
+     "annual": 8.97,
+     "fy": 20190331,
+     "have": 0,
+     "verdict": "NO-TEST"
+    },
+    "target": {
+     "diff": 0.0,
+     "fy": 20200331,
+     "site_annual": 7.55,
+     "site_sum4Q": 7.55,
+     "verdict": "OK"
+    }
+   },
+   "our_fy_identity": {
+    "missing": [
+     20190630,
+     20191231
+    ],
+    "site_annual": 7.55,
+    "verdict": "NO-TEST"
+   },
+   "state": "PASS"
+  },
+  "precision": "site-exact",
+  "resolved_via": "symbol",
+  "row_label": "Net Profit/(Loss) For the Period",
+  "site_reach": {
+   "mc": "mc: 29 quarters 20190630..20260630",
+   "tl": "tl: 13 quarters 20230630..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
+  "state": "FILLED-EXACT",
+  "std": -2.19
+ },
+ "ROUTE|20191231": {
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": "qe+45d was 20200214, FLOORED UP to the first traded bar 20200921 -- a pre-listing quarter (\u00a799)",
+  "ann_written": 20200921,
+  "applied": "2026-08-13 pre-listing profitTTM sweep (\u00a799)",
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own patS series reproduces 26 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0000; nearest anchor within 4 quarters",
+  "field": "patS",
+  "fy_check": {
+   "A5": {
+    "next": {
+     "diff": 0.0,
+     "fy": 20210331,
+     "site_annual": 22.33,
+     "site_sum4Q": 22.33,
+     "verdict": "OK"
+    },
+    "prev": {
+     "annual": 8.97,
+     "fy": 20190331,
+     "have": 0,
+     "verdict": "NO-TEST"
+    },
+    "target": {
+     "diff": 0.0,
+     "fy": 20200331,
+     "site_annual": 7.55,
+     "site_sum4Q": 7.55,
+     "verdict": "OK"
+    }
+   },
+   "our_fy_identity": {
+    "missing": [
+     20190630,
+     20190930
+    ],
+    "site_annual": 7.55,
+    "verdict": "NO-TEST"
+   },
+   "state": "PASS"
+  },
+  "precision": "site-exact",
+  "resolved_via": "symbol",
+  "row_label": "Net Profit/(Loss) For the Period",
+  "site_reach": {
+   "mc": "mc: 29 quarters 20190630..20260630",
+   "tl": "tl: 13 quarters 20230630..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
+  "state": "FILLED-EXACT",
+  "std": -7.13
  },
  "RPOWER|20080930": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752). Moneycontrol's feed carries no filing date.",
@@ -58553,8 +59496,9 @@
   "std": 112.17
  },
  "SBICARD|20190331": {
-  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752). Moneycontrol's feed carries no filing date.",
-  "ann_written": 20190515,
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": "qe+45d was 20190515 and PRECEDED the first traded bar 20200316 -- re-floored 2026-08-13, the cell was written before the floor existed (\u00a799)",
+  "ann_written": 20200316,
   "applied": "2026-08-13 aggregator pre-2015 std-PAT sweep",
   "corroborated_by": [],
   "evidence": "gate A/A2 passed: that site's own patS series reproduces 26 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0000; nearest anchor within 4 quarters",
@@ -58604,8 +59548,9 @@
   "std": 248.74
  },
  "SBICARD|20190630": {
-  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752). Moneycontrol's feed carries no filing date.",
-  "ann_written": 20190814,
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": "qe+45d was 20190814 and PRECEDED the first traded bar 20200316 -- re-floored 2026-08-13, the cell was written before the floor existed (\u00a799)",
+  "ann_written": 20200316,
   "applied": "2026-08-13 aggregator pre-2015 std-PAT sweep",
   "corroborated_by": [],
   "evidence": "gate A/A2 passed: that site's own patS series reproduces 26 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0000; nearest anchor within 4 quarters",
@@ -58655,8 +59600,9 @@
   "std": 345.6
  },
  "SBICARD|20190930": {
-  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752). Moneycontrol's feed carries no filing date.",
-  "ann_written": 20191114,
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": "qe+45d was 20191114 and PRECEDED the first traded bar 20200316 -- re-floored 2026-08-13, the cell was written before the floor existed (\u00a799)",
+  "ann_written": 20200316,
   "applied": "2026-08-13 aggregator pre-2015 std-PAT sweep",
   "corroborated_by": [],
   "evidence": "gate A/A2 passed: that site's own patS series reproduces 26 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0000; nearest anchor within 4 quarters",
@@ -58706,8 +59652,9 @@
   "std": 381.01
  },
  "SBICARD|20191231": {
-  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752). Moneycontrol's feed carries no filing date.",
-  "ann_written": 20200214,
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": "qe+45d was 20200214 and PRECEDED the first traded bar 20200316 -- re-floored 2026-08-13, the cell was written before the floor existed (\u00a799)",
+  "ann_written": 20200316,
   "applied": "2026-08-13 aggregator pre-2015 std-PAT sweep",
   "corroborated_by": [],
   "evidence": "gate A/A2 passed: that site's own patS series reproduces 26 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0000; nearest anchor within 4 quarters",
@@ -72320,6 +73267,162 @@
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
   "state": "FILLED-ROUNDED",
   "std": 5.07
+ },
+ "UTIAMC|20190630": {
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": "qe+45d was 20190814, FLOORED UP to the first traded bar 20201012 -- a pre-listing quarter (\u00a799)",
+  "ann_written": 20201012,
+  "applied": "2026-08-13 pre-listing profitTTM sweep (\u00a799)",
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own patS series reproduces 26 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0100; nearest anchor within 4 quarters",
+  "field": "patS",
+  "fy_check": {
+   "A5": {
+    "next": {
+     "diff": 0.0,
+     "fy": 20210331,
+     "site_annual": 351.67,
+     "site_sum4Q": 351.67,
+     "verdict": "OK"
+    },
+    "prev": {
+     "annual": 348.36,
+     "fy": 20190331,
+     "have": 0,
+     "verdict": "NO-TEST"
+    },
+    "target": {
+     "diff": -0.0,
+     "fy": 20200331,
+     "site_annual": 309.16,
+     "site_sum4Q": 309.16,
+     "verdict": "OK"
+    }
+   },
+   "our_fy_identity": {
+    "missing": [
+     20190930,
+     20191231
+    ],
+    "site_annual": 309.16,
+    "verdict": "NO-TEST"
+   },
+   "state": "PASS"
+  },
+  "precision": "rounded(0.01)",
+  "resolved_via": "symbol",
+  "row_label": "Net Profit/(Loss) For the Period",
+  "site_reach": {
+   "mc": "mc: 29 quarters 20190630..20260630",
+   "tl": "tl: 13 quarters 20230630..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
+  "state": "FILLED-ROUNDED",
+  "std": 72.06
+ },
+ "UTIAMC|20190930": {
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": "qe+45d was 20191114, FLOORED UP to the first traded bar 20201012 -- a pre-listing quarter (\u00a799)",
+  "ann_written": 20201012,
+  "applied": "2026-08-13 pre-listing profitTTM sweep (\u00a799)",
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own patS series reproduces 26 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0100; nearest anchor within 4 quarters",
+  "field": "patS",
+  "fy_check": {
+   "A5": {
+    "next": {
+     "diff": 0.0,
+     "fy": 20210331,
+     "site_annual": 351.67,
+     "site_sum4Q": 351.67,
+     "verdict": "OK"
+    },
+    "prev": {
+     "annual": 348.36,
+     "fy": 20190331,
+     "have": 0,
+     "verdict": "NO-TEST"
+    },
+    "target": {
+     "diff": -0.0,
+     "fy": 20200331,
+     "site_annual": 309.16,
+     "site_sum4Q": 309.16,
+     "verdict": "OK"
+    }
+   },
+   "our_fy_identity": {
+    "missing": [
+     20190630,
+     20191231
+    ],
+    "site_annual": 309.16,
+    "verdict": "NO-TEST"
+   },
+   "state": "PASS"
+  },
+  "precision": "rounded(0.01)",
+  "resolved_via": "symbol",
+  "row_label": "Net Profit/(Loss) For the Period",
+  "site_reach": {
+   "mc": "mc: 29 quarters 20190630..20260630",
+   "tl": "tl: 13 quarters 20230630..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
+  "state": "FILLED-ROUNDED",
+  "std": 119.37
+ },
+ "UTIAMC|20191231": {
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": "qe+45d was 20200214, FLOORED UP to the first traded bar 20201012 -- a pre-listing quarter (\u00a799)",
+  "ann_written": 20201012,
+  "applied": "2026-08-13 pre-listing profitTTM sweep (\u00a799)",
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own patS series reproduces 26 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0100; nearest anchor within 4 quarters",
+  "field": "patS",
+  "fy_check": {
+   "A5": {
+    "next": {
+     "diff": 0.0,
+     "fy": 20210331,
+     "site_annual": 351.67,
+     "site_sum4Q": 351.67,
+     "verdict": "OK"
+    },
+    "prev": {
+     "annual": 348.36,
+     "fy": 20190331,
+     "have": 0,
+     "verdict": "NO-TEST"
+    },
+    "target": {
+     "diff": -0.0,
+     "fy": 20200331,
+     "site_annual": 309.16,
+     "site_sum4Q": 309.16,
+     "verdict": "OK"
+    }
+   },
+   "our_fy_identity": {
+    "missing": [
+     20190630,
+     20190930
+    ],
+    "site_annual": 309.16,
+    "verdict": "NO-TEST"
+   },
+   "state": "PASS"
+  },
+  "precision": "rounded(0.01)",
+  "resolved_via": "symbol",
+  "row_label": "Net Profit/(Loss) For the Period",
+  "site_reach": {
+   "mc": "mc: 29 quarters 20190630..20260630",
+   "tl": "tl: 13 quarters 20230630..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
+  "state": "FILLED-ROUNDED",
+  "std": 87.08
  },
  "VAIBHAVGBL|20140630": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752). Moneycontrol's feed carries no filing date.",

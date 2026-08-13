@@ -74,6 +74,16 @@ LEDGERS = [
     # cells are the oldest in the dataset — the era CI never rebuilds, so a clobber here would be
     # silent for years. Registered at creation time.
     ("agg_pat_cell_fills.json",        "fund",  "std",  1),
+    # ★ AND THE con KEY. UNREGISTERED until 2026-08-13, and the ledger was NOT new: it already held
+    # 278 patC entries (ACC and ADANIENT 2009 among them) that nothing had ever re-checked. The
+    # entry loop skips any record whose registered key is absent (`key not in v: continue`), so a
+    # "std"-only registration reports a serene MISSING 0 for a ledger full of consolidated cells —
+    # a guard that checks nothing looks exactly like a guard that found nothing.
+    # ★ THE ASSERTION IS THE CHECKED COUNT, MEASURED BOTH WAYS, not the absence of complaints:
+    #   without this line  10,485 ledgered cells checked
+    #   with it            10,767   (+282 = 278 pre-existing patC + the 4 con cells written today)
+    # (memory: feedback-ledger-guard-count-must-move.)
+    ("agg_pat_cell_fills.json",        "fund",  "con",  3),
     # CORRECTIONS, not fills (§90g): a stored pre-2015 npStd the site's own FY identity indicted
     # and gate H replaced. A clobber here does not lose a backfill, it silently RESTORES a value
     # the identity refuted — the pat_defects class. Registered at creation time.

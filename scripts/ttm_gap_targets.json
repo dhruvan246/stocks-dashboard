@@ -2,6 +2,7 @@
  "_classes": {
   "in_frame_holes": {
    "note": "we hold OLDER quarters than the missing one, so the company existed and was filing. NESTLEIND is the clearest tell. Highest-confidence fills in this file.",
+   "outcome_2026_08_13": "SWEPT. 42 cells asked, 39 were actually empty (RITES 20171231 patS, RVNL 20180331 patS and TECHNOE 20180331 patS were already populated -- their holes are patC only). FILLED 4, all patS: NESTLEIND 20180331=424.03 and 20180630=395.03 (MC gate A/A2/A3/A4 + A5, screener corroborates the sum); RITES 20180331=82.73 and PRINCEPIPE 20190930=33.41 (quarterly gate REFUSED on one anchor, adjudicated on screener.in as the independent axis -- see runbook \u00a798c). profitTTM open on the Nifty-500 matrix 2020-01..2026-06: 585 -> 567. THE PREMISE WAS WRONG for 11 of the 12: the missing quarter PRE-DATES the listing and the older quarters we hold are DRHP/prospectus periods, so no quarterly filing exists to read (\u00a798a). REFUSED with cause: ADANIGREEN both bases (MC own FY2018 identity off by 266.70 std; screener a third value on con -- \u00a798d, and our own 2017-09/2017-12 rows are year-apart duplicates of the 2018 ones). NOT REACHED: ANGELONE, CELLO, INDGN, JSWCEMENT, KFINTECH, TATATECH, TECHNOE patC, RITES patC, RVNL patC, NESTLEIND patC, PRINCEPIPE patC, PRINCEPIPE 20190331 -- MC/TL do not hold the quarter and screener\u2019s quarterly table starts 2023-06 (2024-06 for JSWCEMENT). NEXT ROUTE is the DRHP, not another aggregator: \u00a798b lists the screener annual residues that a single anchored quarter would close.",
    "quarters": 21,
    "symbols": [
     "ADANIGREEN",
@@ -16,8 +17,7 @@
     "RVNL",
     "TATATECH",
     "TECHNOE"
-   ],
-   "outcome_2026_08_13": "SWEPT. 42 cells asked, 39 were actually empty (RITES 20171231 patS, RVNL 20180331 patS and TECHNOE 20180331 patS were already populated -- their holes are patC only). FILLED 4, all patS: NESTLEIND 20180331=424.03 and 20180630=395.03 (MC gate A/A2/A3/A4 + A5, screener corroborates the sum); RITES 20180331=82.73 and PRINCEPIPE 20190930=33.41 (quarterly gate REFUSED on one anchor, adjudicated on screener.in as the independent axis -- see runbook §98c). profitTTM open on the Nifty-500 matrix 2020-01..2026-06: 585 -> 567. THE PREMISE WAS WRONG for 11 of the 12: the missing quarter PRE-DATES the listing and the older quarters we hold are DRHP/prospectus periods, so no quarterly filing exists to read (§98a). REFUSED with cause: ADANIGREEN both bases (MC own FY2018 identity off by 266.70 std; screener a third value on con -- §98d, and our own 2017-09/2017-12 rows are year-apart duplicates of the 2018 ones). NOT REACHED: ANGELONE, CELLO, INDGN, JSWCEMENT, KFINTECH, TATATECH, TECHNOE patC, RITES patC, RVNL patC, NESTLEIND patC, PRINCEPIPE patC, PRINCEPIPE 20190331 -- MC/TL do not hold the quarter and screener’s quarterly table starts 2023-06 (2024-06 for JSWCEMENT). NEXT ROUTE is the DRHP, not another aggregator: §98b lists the screener annual residues that a single anchored quarter would close."
+   ]
   },
   "not_fillable_confirmed": {
    "FLUOROCHEM/JUBLINGREA": "MC starts exactly where we do.",
@@ -25,7 +25,82 @@
   },
   "pre_listing_mc_confirmed": {
    "cells": 53,
-   "note": "MC has these; 15 symbols. The other 108 symbols / 182 quarters are NOT on MC — those stay open and need the prospectus/DRHP, not another aggregator.",
+   "closed_2026_08_13": {
+    "already_live_from_the_earlier_pass": [
+     "SBICARD|20190331|patS",
+     "SBICARD|20190630|patS",
+     "SBICARD|20190930|patS",
+     "SBICARD|20191231|patS"
+    ],
+    "ann_dates": "EVERY pre-listing fill is dated max(qe+45d, the symbol's FIRST TRADED BAR), never qe+45d alone -- that convention claims a public date before the company had a tape and is a look-ahead (\u00a799b). 24 cells floored on the way in; 6 already-live cells re-floored -- SBICARD x4 to 2020-03-16, plus RITES 20180331 and PRINCEPIPE 20190930 from the sibling in-frame sweep (\u00a798), same defect, both first bars are those companies' IPO dates.",
+    "coverage_effect": "Nifty-500 2020-01..2026-06, on top of \u00a798's in-frame fills: profitTTM 567 -> 521, profitAccel 125 -> 101, composite 567 -> 521; profitYoyPct/Base/Streak N/A 29 -> 17. No parameter lost a covered cell anywhere (296 month-ends x 43 params, both payloads).",
+    "gated_ok": 32,
+    "refused_with_cause": {
+     "ARVINDFASN|20171231|patC": "HELD-\u00a785-HOLD-NO-TWIN",
+     "EQUITASBNK|20190930|patS": "NOT-FOUND",
+     "EQUITASBNK|20191231|patS": "NOT-FOUND",
+     "ITCHOTELS|20231231|patS": "NOT-FOUND",
+     "KPITTECH|20180331|patC": "HELD-\u00a785-HOLD",
+     "KPITTECH|20180630|patC": "HELD-\u00a785-HOLD",
+     "KPITTECH|20180930|patC": "REJECT-ZERO-SENTINEL",
+     "KPITTECH|20180930|patS": "REJECT-ZERO-SENTINEL",
+     "RAILTEL|20191231|patC": "NOT-FOUND",
+     "RAILTEL|20191231|patS": "NOT-FOUND",
+     "ROUTE|20190630|patC": "NOT-FOUND",
+     "ROUTE|20190930|patC": "NOT-FOUND",
+     "ROUTE|20191231|patC": "NOT-FOUND",
+     "SBICARD|20190331|patC": "NOT-FOUND",
+     "SBICARD|20190630|patC": "NOT-FOUND",
+     "SBICARD|20190930|patC": "NOT-FOUND",
+     "SBICARD|20191231|patC": "NOT-FOUND",
+     "UTIAMC|20190630|patC": "NOT-FOUND",
+     "UTIAMC|20190930|patC": "NOT-FOUND",
+     "UTIAMC|20191231|patC": "NOT-FOUND",
+     "VALIANTORG|20190630|patC": "NOT-FOUND",
+     "VALIANTORG|20190630|patS": "NOT-FOUND",
+     "VALIANTORG|20190930|patC": "NOT-FOUND",
+     "VALIANTORG|20190930|patS": "NOT-FOUND",
+     "VALIANTORG|20191231|patC": "NOT-FOUND",
+     "VALIANTORG|20191231|patS": "NOT-FOUND",
+     "VALIANTORG|20200331|patC": "NOT-FOUND",
+     "VALIANTORG|20200331|patS": "NOT-FOUND"
+    },
+    "route": "agg_sweep(mc,tl) -> agg_fy_check(A5) -> \u00a785 con-fallback discriminator -> apply_agg_pat_fills --repair-ann. Runbook \u00a799.",
+    "still_open": "108 symbols / 182 quarters: not-found-via:mc,tl (NOT unfillable). They need the prospectus/DRHP -- a second aggregator is the same vendor (\u00a781c). Plus the 23 cells refused above, each with its reason.",
+    "written": 25,
+    "written_cells": [
+     "CSBBANK|20180331|patS",
+     "CSBBANK|20180630|patS",
+     "CSBBANK|20180930|patS",
+     "HEMIPROP|20190630|patS",
+     "HEMIPROP|20190930|patS",
+     "HEMIPROP|20191231|patS",
+     "HOMEFIRST|20191231|patS",
+     "IRFC|20191231|patS",
+     "KPITTECH|20180331|patS",
+     "KPITTECH|20180630|patS",
+     "KPITTECH|20181231|patC",
+     "KPITTECH|20181231|patS",
+     "RESPONIND|20171231|patS",
+     "ROSSARI|20190630|patC",
+     "ROSSARI|20190630|patS",
+     "ROSSARI|20190930|patC",
+     "ROSSARI|20190930|patS",
+     "ROSSARI|20191231|patC",
+     "ROSSARI|20191231|patS",
+     "ROUTE|20190630|patS",
+     "ROUTE|20190930|patS",
+     "ROUTE|20191231|patS",
+     "SBICARD|20190331|patS",
+     "SBICARD|20190630|patS",
+     "SBICARD|20190930|patS",
+     "SBICARD|20191231|patS",
+     "UTIAMC|20190630|patS",
+     "UTIAMC|20190930|patS",
+     "UTIAMC|20191231|patS"
+    ]
+   },
+   "note": "MC has these; 15 symbols. The other 108 symbols / 182 quarters are NOT on MC \u2014 those stay open and need the prospectus/DRHP, not another aggregator.",
    "symbols": [
     "ARVINDFASN",
     "CSBBANK",
@@ -45,14 +120,14 @@
    ]
   },
   "short_history_but_mc_reaches": {
-   "note": "reconfirmed on the user's instruction and my 'not fillable' was wrong for these two: MC holds 4 quarters older than ours for each. FLUOROCHEM and JUBLINGREA genuinely have nothing older on MC — those two are real short-history.",
+   "note": "reconfirmed on the user's instruction and my 'not fillable' was wrong for these two: MC holds 4 quarters older than ours for each. FLUOROCHEM and JUBLINGREA genuinely have nothing older on MC \u2014 those two are real short-history.",
    "symbols": [
     "SBICARD",
     "VALIANTORG"
    ]
   }
  },
- "_doc": "profitTTM gap targets, enumerated 2026-08-13. profitTTM needs EIGHT quarters (last 4 + the 4 a year earlier), so it reaches back two years and catches far more of the IPO cohort than the one-year factors. 597 cells were open on the Nifty-500 matrix 2020-01..2026-06.\n⚠️ I FIRST CALLED THE BIGGEST CLASS 'not fillable' AND THAT WAS WRONG — the user made me reconfirm. 'The quarter predates our oldest row' is a fact about OUR data, not the world: aggregators carry pre-listing quarters from the prospectus (POLICYBZR listed 2021-11 and MC holds it from 2020-12). Probed: MC holds 35 of the 217 needed pre-listing quarters (16%) across 15 symbols, INCLUDING KPITTECH — the very example used to argue it was impossible. Never infer absence from our own gaps (§57/§63).\nRoute: the gated aggregator sweep, unchanged —\n  agg_sweep.py --cells scripts/ttm_gap_targets.json --sites mc,tl --out /tmp/t.json\n  agg_fy_check.py --props /tmp/t.json --out-props /tmp/final.json     (Gate A5)\n  the con-fallback discriminator (§85) on every patC proposal\n  apply_agg_pat_fills.py --props /tmp/final.json --apply    then run it TWICE, 2nd pass 0\nThen rebake docs/coverage and verify LIVE, not the log.",
+ "_doc": "profitTTM gap targets, enumerated 2026-08-13. profitTTM needs EIGHT quarters (last 4 + the 4 a year earlier), so it reaches back two years and catches far more of the IPO cohort than the one-year factors. 597 cells were open on the Nifty-500 matrix 2020-01..2026-06.\n\u26a0\ufe0f I FIRST CALLED THE BIGGEST CLASS 'not fillable' AND THAT WAS WRONG \u2014 the user made me reconfirm. 'The quarter predates our oldest row' is a fact about OUR data, not the world: aggregators carry pre-listing quarters from the prospectus (POLICYBZR listed 2021-11 and MC holds it from 2020-12). Probed: MC holds 35 of the 217 needed pre-listing quarters (16%) across 15 symbols, INCLUDING KPITTECH \u2014 the very example used to argue it was impossible. Never infer absence from our own gaps (\u00a757/\u00a763).\nRoute: the gated aggregator sweep, unchanged \u2014\n  agg_sweep.py --cells scripts/ttm_gap_targets.json --sites mc,tl --out /tmp/t.json\n  agg_fy_check.py --props /tmp/t.json --out-props /tmp/final.json     (Gate A5)\n  the con-fallback discriminator (\u00a785) on every patC proposal\n  apply_agg_pat_fills.py --props /tmp/final.json --apply    then run it TWICE, 2nd pass 0\nThen rebake docs/coverage and verify LIVE, not the log.",
  "_generated": "2026-08-13",
  "cells": [
   [
