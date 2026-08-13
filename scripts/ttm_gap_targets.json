@@ -16,7 +16,8 @@
     "RVNL",
     "TATATECH",
     "TECHNOE"
-   ]
+   ],
+   "outcome_2026_08_13": "SWEPT. 42 cells asked, 39 were actually empty (RITES 20171231 patS, RVNL 20180331 patS and TECHNOE 20180331 patS were already populated -- their holes are patC only). FILLED 4, all patS: NESTLEIND 20180331=424.03 and 20180630=395.03 (MC gate A/A2/A3/A4 + A5, screener corroborates the sum); RITES 20180331=82.73 and PRINCEPIPE 20190930=33.41 (quarterly gate REFUSED on one anchor, adjudicated on screener.in as the independent axis -- see runbook §98c). profitTTM open on the Nifty-500 matrix 2020-01..2026-06: 585 -> 567. THE PREMISE WAS WRONG for 11 of the 12: the missing quarter PRE-DATES the listing and the older quarters we hold are DRHP/prospectus periods, so no quarterly filing exists to read (§98a). REFUSED with cause: ADANIGREEN both bases (MC own FY2018 identity off by 266.70 std; screener a third value on con -- §98d, and our own 2017-09/2017-12 rows are year-apart duplicates of the 2018 ones). NOT REACHED: ANGELONE, CELLO, INDGN, JSWCEMENT, KFINTECH, TATATECH, TECHNOE patC, RITES patC, RVNL patC, NESTLEIND patC, PRINCEPIPE patC, PRINCEPIPE 20190331 -- MC/TL do not hold the quarter and screener’s quarterly table starts 2023-06 (2024-06 for JSWCEMENT). NEXT ROUTE is the DRHP, not another aggregator: §98b lists the screener annual residues that a single anchored quarter would close."
   },
   "not_fillable_confirmed": {
    "FLUOROCHEM/JUBLINGREA": "MC starts exactly where we do.",
@@ -24,7 +25,7 @@
   },
   "pre_listing_mc_confirmed": {
    "cells": 53,
-   "note": "MC has these; 15 symbols. The other 108 symbols / 182 quarters are NOT on MC \u2014 those stay open and need the prospectus/DRHP, not another aggregator.",
+   "note": "MC has these; 15 symbols. The other 108 symbols / 182 quarters are NOT on MC — those stay open and need the prospectus/DRHP, not another aggregator.",
    "symbols": [
     "ARVINDFASN",
     "CSBBANK",
@@ -44,14 +45,14 @@
    ]
   },
   "short_history_but_mc_reaches": {
-   "note": "reconfirmed on the user's instruction and my 'not fillable' was wrong for these two: MC holds 4 quarters older than ours for each. FLUOROCHEM and JUBLINGREA genuinely have nothing older on MC \u2014 those two are real short-history.",
+   "note": "reconfirmed on the user's instruction and my 'not fillable' was wrong for these two: MC holds 4 quarters older than ours for each. FLUOROCHEM and JUBLINGREA genuinely have nothing older on MC — those two are real short-history.",
    "symbols": [
     "SBICARD",
     "VALIANTORG"
    ]
   }
  },
- "_doc": "profitTTM gap targets, enumerated 2026-08-13. profitTTM needs EIGHT quarters (last 4 + the 4 a year earlier), so it reaches back two years and catches far more of the IPO cohort than the one-year factors. 597 cells were open on the Nifty-500 matrix 2020-01..2026-06.\n\u26a0\ufe0f I FIRST CALLED THE BIGGEST CLASS 'not fillable' AND THAT WAS WRONG \u2014 the user made me reconfirm. 'The quarter predates our oldest row' is a fact about OUR data, not the world: aggregators carry pre-listing quarters from the prospectus (POLICYBZR listed 2021-11 and MC holds it from 2020-12). Probed: MC holds 35 of the 217 needed pre-listing quarters (16%) across 15 symbols, INCLUDING KPITTECH \u2014 the very example used to argue it was impossible. Never infer absence from our own gaps (\u00a757/\u00a763).\nRoute: the gated aggregator sweep, unchanged \u2014\n  agg_sweep.py --cells scripts/ttm_gap_targets.json --sites mc,tl --out /tmp/t.json\n  agg_fy_check.py --props /tmp/t.json --out-props /tmp/final.json     (Gate A5)\n  the con-fallback discriminator (\u00a785) on every patC proposal\n  apply_agg_pat_fills.py --props /tmp/final.json --apply    then run it TWICE, 2nd pass 0\nThen rebake docs/coverage and verify LIVE, not the log.",
+ "_doc": "profitTTM gap targets, enumerated 2026-08-13. profitTTM needs EIGHT quarters (last 4 + the 4 a year earlier), so it reaches back two years and catches far more of the IPO cohort than the one-year factors. 597 cells were open on the Nifty-500 matrix 2020-01..2026-06.\n⚠️ I FIRST CALLED THE BIGGEST CLASS 'not fillable' AND THAT WAS WRONG — the user made me reconfirm. 'The quarter predates our oldest row' is a fact about OUR data, not the world: aggregators carry pre-listing quarters from the prospectus (POLICYBZR listed 2021-11 and MC holds it from 2020-12). Probed: MC holds 35 of the 217 needed pre-listing quarters (16%) across 15 symbols, INCLUDING KPITTECH — the very example used to argue it was impossible. Never infer absence from our own gaps (§57/§63).\nRoute: the gated aggregator sweep, unchanged —\n  agg_sweep.py --cells scripts/ttm_gap_targets.json --sites mc,tl --out /tmp/t.json\n  agg_fy_check.py --props /tmp/t.json --out-props /tmp/final.json     (Gate A5)\n  the con-fallback discriminator (§85) on every patC proposal\n  apply_agg_pat_fills.py --props /tmp/final.json --apply    then run it TWICE, 2nd pass 0\nThen rebake docs/coverage and verify LIVE, not the log.",
  "_generated": "2026-08-13",
  "cells": [
   [

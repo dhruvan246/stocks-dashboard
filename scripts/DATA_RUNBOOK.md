@@ -66,6 +66,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§95** ★★★ ISSUER-PREFIX SWEEP — 104 renames the full-ISIN merge missed; the bhavcopy ISIN column starts 2011; a screen must be run against the cases you already know (**read before any ISIN/rename sweep or a build_sf_data merge change**)
 - **§96** ★★★ NOT-APPLICABLE IS NOT MISSING — an impossible cell is not a gap; order the fixes so a rule cannot bury its own defect; a stored 0.0 was a DEFECT in one company and CORRECT in the next (**read before any coverage/completeness claim or a zero-base cell**)
 - **§97** ★★★ TWO ENGINE ASYMMETRIES THAT READ AS DATA GAPS — `retPctAt` vs `hl52`, and a basis fallback decided by the entry test; both closed more coverage than every fetch combined (**read before opening a data campaign against an empty factor column**)
+- **§98** ★★★ "IN FRAME" WAS A FACT ABOUT OUR DATA, NOT THE WORLD — an older row we hold is not proof the company was filing; the residue identity that adjudicates a single-anchor gate refusal to the paisa; BSE's nav table served another company's filings (**read before calling a hole "high-confidence" because you hold something older**)
 
 ---
 
@@ -9907,3 +9908,152 @@ saved cfg through both, diff CAGR/maxDD/holdings per rebalance. `rebs[]` carries
 (§96h), 857 were a metadata survivorship gap needing no fetch at all (the delisted-industry
 ledger), and a phantom denominator accounted for 30 parameters reading 99.21% while nothing was
 missing at all. **The data campaigns — MC, screener, filings — landed ~800 cells between them.**
+
+---
+
+## 98. ★★★ "IN-FRAME" WAS A FACT ABOUT OUR DATA, NOT THE WORLD — the profitTTM hole sweep  (2026-08-13)
+
+**NO ASSUMPTIONS, NO GUESSWORK (§0).** Every reach number, annual and residue below was measured
+this session. Target: the `in_frame_holes` class of `scripts/ttm_gap_targets.json` — 12 symbols,
+21 quarters, 42 cells — argued to be the highest-confidence set on the grounds that *we hold
+quarters OLDER than the missing one, so the company existed and was filing at that date*.
+
+Landed: **4 cells**, all `patS`. Nifty-500 matrix 2020-01..2026-06: **profitTTM open 585 → 567**
+(−18 stock-months), profitAccel 128 → 125, composite 585 → 567. The applier was run twice; the
+second pass filled **0** and skipped all four as already present, so this is a heal and not a
+nightly rewrite (memory: `feedback-a-heal-that-reapplies`).
+
+| cell | value | how it passed |
+|---|---|---|
+| NESTLEIND 2018-03-31 patS | 424.03 | quarterly gate A/A2/A3/A4 + A5, screener corroborates the SUM |
+| NESTLEIND 2018-06-30 patS | 395.03 | same |
+| RITES 2018-03-31 patS | 82.73 | gate REFUSED → adjudicated on the independent axis (98c) |
+| PRINCEPIPE 2019-09-30 patS | 33.41 | gate REFUSED → adjudicated on the independent axis (98c) |
+
+### 98a. ★★★ THE PREMISE WAS WRONG IN THE SAME DIRECTION §63 KEEPS WARNING ABOUT
+"We hold an older quarter" was read as "the company was filing then". It is not the same claim.
+For **11 of the 12 symbols the missing quarter predates the listing**, and the older quarters we
+hold are the DRHP/prospectus periods a backfill campaign landed — which is exactly why the holes
+sit where they do: a prospectus prints selected period-ends (a stub period, an FY), not every
+calendar quarter. CELLO holds 2022-06 and 2023-06 with 2022-09/2022-12/2023-03 empty; KFINTECH
+holds 2021-03 and 2021-12; TATATECH 2022-03 and 2022-12; JSWCEMENT 2022-06…2023-03 then 2024-06.
+Those are prospectus shapes, not filing gaps. A company that has not listed files no quarterly
+result with either exchange, so for those quarters **there is no filing to go and read** — the
+DRHP is the only primary source, and it is a different route from every one this campaign uses.
+★ The one genuine mid-series hole in a listed company — NESTLEIND — is the one that filled, along
+with two more that were only weeks pre-listing and already inside Moneycontrol's reach.
+**"In frame" must be tested against the tape, never against our own oldest row.**
+
+### 98b. Reach, MEASURED per cell — and screener could not reach a single target quarter
+Both aggregators were swept (`agg_sweep.py --sites mc,tl`, 42 cells, 110s). Trendlyne holds 13
+quarters for 11 of the 12 and 8 for JSWCEMENT — **every one of them starting 2023-06 or later**, so
+TL contributed nothing anywhere. Moneycontrol's own start per symbol is the whole story:
+
+| symbol | target quarters | MC std starts | MC con starts | verdict |
+|---|---|---|---|---|
+| NESTLEIND | 2018-03, 2018-06 | **1998-03** (114 q) | 2023-06 | std FILLED ×2, con absent |
+| RITES | 2017-12, 2018-03 | 2017-03 (38 q) | 2018-06 | std 2018-03 FILLED, con absent |
+| PRINCEPIPE | 2019-03, 2019-09 | 2018-12 (31 q) | **empty cons table** | 2019-09 FILLED |
+| RVNL | 2018-03 | 2018-03 (34 q) | 2018-06 | patS already held; con absent |
+| TECHNOE | 2018-03 | 2018-06 (33 q) | 2018-06 | absent both bases |
+| ADANIGREEN | 2018-03 | 2017-06 (37 q) | 2017-06 | HAS it — refused, see 98d |
+| ANGELONE | 2019-03 | 2019-06 | 2019-06 | absent |
+| KFINTECH | 2021-06, 2021-09 | 2021-12 | 2021-12 | absent |
+| TATATECH | 2022-06, 2022-09 | 2022-12 | 2022-12 | absent |
+| INDGN | 2022-09, 2022-12 | 2023-03 | 2023-03 | absent |
+| CELLO | 2022-09…2023-03 | 2023-06 | 2023-06 | absent |
+| JSWCEMENT | 2023-12, 2024-03 | 2024-06 | 2024-06 | absent |
+
+⚠️ **screener.in's quarterly table starts 2023-06-30 for eleven of the twelve and 2024-06-30 for
+JSWCEMENT — it reaches NONE of the 21 target quarters.** Its annual table does reach back (8–12
+FYs), but the annual identity needs **three** held siblings to imply the fourth, and only 2 of the
+21 quarters had them. Everywhere else it yields a residue over 2–4 unknown quarters, which is a
+LEAD, not a value. Recorded so the next session does not re-derive them:
+KFINTECH FY2022 70.71 std / 68.25 con over {2021-06, 2021-09} · TATATECH FY2023 96.27 / 258.62 over
+{2022-06, 2022-09} · INDGN FY2023 con 131.18 over {2022-09, 2022-12} · CELLO FY2023 con 223.12 over
+three · ANGELONE FY2019 51.46 / 54.41 over three · PRINCEPIPE FY2019 std 73.30 over three ·
+JSWCEMENT FY2024 221.0 std / 62.0 con over all four.
+**A two-quarter residue plus ONE anchored quarter from a DRHP closes each pair** — that is the
+cheapest remaining route, and it is a prospectus read (§57), not another aggregator.
+
+### 98c. ★★★ THE RESIDUE IDENTITY THAT ADJUDICATES A GATE REFUSAL — and it closed to the paisa
+Two cells were refused by Gate A for a **single** disagreeing anchor while the rest of the series
+matched exactly. The user's standing rule applies: do not override the gate, adjudicate on the
+INDEPENDENT axis (MC/TL/TT are one vendor, §81c; screener is the independent reader). The test that
+settled both is stronger than "the numbers are close":
+
+```
+RITES 2018-03-31 patS = 82.73
+  MC anchors            35 agree at EXACTLY 0.0000 error, 1 disagrees: 2017-09 ours 73.24, MC 78.23
+  MC's own FY2018 (A5)  69.23 + 78.23 + 106.62 + 82.73 = 336.81 == MC's own annual 336.81
+  our 3 held + proposed 69.23 + 73.24 + 106.62 + 82.73 = 331.82
+  screener FY2018       332.0  -> band [331.5, 332.5)   331.82 IS IN BAND
+  336.81 - 331.82 = 4.99   and   78.23 - 73.24 = 4.99   <- EXACT, to the paisa
+PRINCEPIPE 2019-09-30 patS = 33.41
+  27 anchors at 0.0000, 1 disagrees: 2019-06 ours 26.67, MC 26.54
+  MC's own FY2020 (A5)  26.54 + 33.41 + 24.28 + 28.28 = 112.51 == MC's own annual 112.51
+  our 3 held + proposed 112.64, screener FY2020 113.0 -> band [112.5, 113.5)   IN BAND
+  112.51 - 112.64 = -0.13   and   26.54 - 26.67 = -0.13   <- EXACT
+```
+★ **The whole annual difference between the site's vintage and ours is accounted for by the
+disagreeing cell ALONE.** That is what promotes "two readers disagree somewhere in this year" to
+"the two readers disagree on exactly ONE cell, and it is not the target" — the target is identical
+in both vintages, so the refusal does not reach it. Our figure is the restated one (RITES 2017-09
+carries announce date 2018-11-13, i.e. the comparative column of the following year's filing) and
+MC carries as-reported; screener's annual matches OUR vintage, which is the second confirmation.
+Both cells are journalled with `state: FILLED-ADJUDICATED` and an evidence string that says the
+quarterly gate refused them — `apply_agg_pat_fills.py` now honours a per-proposal `evidence` and a
+`--label`, because the stock sentence asserts a gate pass that did not happen (§96g's ledger class).
+⚠️ Run this identity BEFORE concluding anything from a single disagreement. Where it does NOT close,
+it refuses just as hard — see ADANIGREEN below.
+
+### 98d. ADANIGREEN — three readers, three answers, and OUR row is a year-apart duplicate
+MC has 2018-03 on both bases. Nothing was written.
+* **std** — MC's own FY2018 quarters sum to **238.09** against MC's own annual of **−28.61**
+  (off by 266.70). Gate A5 vetoes outright; screener says **−46.0**, a third number.
+* **con** — MC's own FY2018 closes fine (−64.84 vs its annual −64.85) but screener's independent
+  con annual is **−138.0**. Two independent axes, 73.15 apart.
+* **and our own anchors there are corrupt.** `ADANIGREEN 2017-09-30` is byte-identical to
+  `2018-09-30` — patS −17.12 AND announce date 2018-11-21 — and `2017-12-31` is byte-identical to
+  `2018-12-31` (−15.27 / −118.74 / 2019-02-19). A 2017 quarter cannot carry a 2018 filing's date:
+  the 2017 rows were written from the 2018 filings, one year off. Reported, **not patched** (§58d);
+  it is the §74/adjacent-quarter-dup class, year-apart variant.
+No reader survives, so the cell stays open — the VALIANTORG treatment of 2026-08-13.
+
+### 98e. ⚠️ BSE's FinancialResult NAV TABLE SERVED ANOTHER COMPANY'S FILINGS — identity guard earned its keep
+The NESTLEIND fills rest on MC for the **split** between the two quarters (screener's annual
+corroborates only their SUM: 1607.0 − 446.11 − 341.76 = 819.13 against MC's 424.03 + 395.03 =
+819.06). A filing read was attempted for the split — the genuinely independent axis — and refused:
+`FinancialResult/w?scripcode=500790` (500790 **is** NESTLEIND in our own `bse_scrips.json`) returns
+`/downloads1/BSE_Financial_Results_for_the_Mar_31_2018.zip` and `…Jun_30_2018.zip`, both of which
+download cleanly (3.6 MB / 3.2 MB, `PK\x03\x04`) and contain **BSE Limited's own** filings: the
+auditor masthead OCRs as S.R. Batliboi & Co. LLP and the third member is `InvestorpresentationQ4FY2018.pdf`
+addressed *"To, Listing Department, National Stock Exchange of India Limited"*. The 2019 link does
+the same. Nestlé India's FY ended in **December** in 2018, so a "Quarter Ended Mar 31 2018 / Q4FY18"
+filing is not even the right calendar for it.
+★ A 200 with a valid zip and a plausible filename is not evidence you got the right company's
+filing — `bse_fetch.py`'s identity guard exists for exactly this, and it is the same poisoned-feed
+class as FORCEMOT/500033. **The split therefore rests on one vendor and is journalled saying so.**
+What makes it acceptable: MC reproduces **43 of our 44** stored NESTLEIND quarters, 11 of them
+locally — that is 43 successful tests of MC's per-quarter *splitting* for this company, not of a sum
+— and A5 closes exactly on the target FY (1606.93) and on both neighbours (1225.19 / 1969.55).
+
+### 98f. NO CONSOLIDATED BASIS AT ALL — two cases where the empty cell is probably not a gap
+Not written and not claimed as not-applicable either; both need the §82 index-credibility gate
+before they go in the §63 ledger. Recorded because the measurement is done:
+* **NESTLEIND con** — MC's cons table starts 2023-06, screener's consolidated annuals start FY
+  2023-12 and its consolidated quarters 2023-12. Our own store shows `patC == patS` for all 36
+  quarters before 2024-09 and `patC != patS` in every quarter after — i.e. Nestlé India began
+  consolidating in FY2023-24, and our pre-2024 patC is the copy convention, not a filed number.
+  §85a's discriminator therefore lands on the **HOLD** arm and no 2018 con value was written.
+* **PRINCEPIPE con** — MC serves an **empty** cons_quarterly table and screener has **zero**
+  consolidated annuals and zero consolidated quarters. Two readers, one of them independent.
+
+### 98g. 36 SUSPECT cells of ours surfaced in passing — reported, never patched (§81g mode 6)
+Beyond ADANIGREEN 98d, the ones with an independent-looking indictment:
+`NESTLEIND 2024-03 patC ours 934.17 vs 1670.81` (MC and TL) · `RVNL 2018-09 patS ours 120.19 vs MC
+258.15` · `ADANIGREEN 2025-03 patS ours 113.0 vs 83.0` · `CELLO patC 2024-06/09/12 ours 89.12/86.79/
+92.50 vs 82.58/81.64/86.40` · `RITES patC 2023-12, 2025-03, 2026-03` · `TECHNOE 2022-12 patC`.
+Separately, **INDGN and TATATECH are stored at INTEGER precision** (30.0, 29.0, 80.0, 103.0, 192.0
+against the sites' 29.6, 29.3, 79.69, 103.45, 191.52) — a precision property of whatever wrote them,
+worth knowing before anyone reads those "disagreements" as defects.

@@ -68,6 +68,11 @@ def main():
     ap.add_argument("--props", required=True)
     ap.add_argument("--apply", action="store_true")
     ap.add_argument("--stamp", default=time.strftime("%Y-%m-%d"))
+    # ⚠️ THE JOURNAL MUST SAY WHICH CAMPAIGN WROTE THE CELL. The default below is this script's
+    # first caller (the pre-2015 sweep) and is kept so old ledger entries stay reproducible; any
+    # other campaign passes its own, because "aggregator pre-2015 std-PAT sweep" stamped on a 2019
+    # cell is provenance that misdirects the next reader (memory: provenance-every-backfill).
+    ap.add_argument("--label", default="aggregator pre-2015 std-PAT sweep")
     a = ap.parse_args()
 
     props = json.load(open(a.props))["proposals"]
@@ -125,7 +130,12 @@ def main():
             "ann_basis": ("CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of "
                           "the 21,515 dated pre-2015 cells already carry (runbook §52). "
                           "Moneycontrol's feed carries no filing date."),
-            "evidence": ("gate A/A2 passed: that site's own %s series reproduces %d of our stored "
+            # A proposal may carry its OWN evidence sentence. The template below describes a
+            # gate A/A2 pass and nothing else, so a cell the quarterly gate REFUSED and an
+            # independent axis then adjudicated would be journalled as something it is not --
+            # the ledger would assert a check that never ran (§96g, the ledger-guard class).
+            "evidence": p.get("evidence") or
+                        ("gate A/A2 passed: that site's own %s series reproduces %d of our stored "
                          "quarters with zero disagreements in the local window, worst anchor error "
                          "%.4f; nearest anchor within 4 quarters" %
                          (field, ch["anchors"], ch["worst_anchor"])),
@@ -133,7 +143,7 @@ def main():
             "corroborated_by": [SITE_NAME.get(s, s) for s in p.get("corroborated_by", [])],
             "site_reach": p.get("sites", {}),
             "fy_check": p.get("fy_check"),
-            "applied": "%s aggregator pre-2015 std-PAT sweep" % a.stamp,
+            "applied": "%s %s" % (a.stamp, a.label),
         })
 
     # ---- BLAST RADIUS: nothing may differ except the cells we meant to touch

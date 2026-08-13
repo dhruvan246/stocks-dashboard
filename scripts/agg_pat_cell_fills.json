@@ -49474,6 +49474,108 @@
   "state": "FILLED-EXACT",
   "std": -13.87
  },
+ "NESTLEIND|20180331": {
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752). Moneycontrol's feed carries no filing date.",
+  "ann_written": 20180515,
+  "applied": "2026-08-13 in-frame profitTTM hole sweep",
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own patS series reproduces 43 of our stored quarters with zero disagreements in the local window, worst anchor error 0.5400; nearest anchor within 4 quarters",
+  "field": "patS",
+  "fy_check": {
+   "A5": {
+    "next": {
+     "diff": -0.0,
+     "fy": 20191231,
+     "site_annual": 1969.55,
+     "site_sum4Q": 1969.55,
+     "verdict": "OK"
+    },
+    "prev": {
+     "diff": 0.0,
+     "fy": 20171231,
+     "site_annual": 1225.19,
+     "site_sum4Q": 1225.19,
+     "verdict": "OK"
+    },
+    "target": {
+     "diff": 0.0,
+     "fy": 20181231,
+     "site_annual": 1606.93,
+     "site_sum4Q": 1606.93,
+     "verdict": "OK"
+    }
+   },
+   "our_fy_identity": {
+    "missing": [
+     20180630
+    ],
+    "site_annual": 1606.93,
+    "verdict": "NO-TEST"
+   },
+   "state": "PASS"
+  },
+  "precision": "rounded(0.54)",
+  "resolved_via": "symbol",
+  "row_label": "Net Profit/(Loss) For the Period",
+  "site_reach": {
+   "mc": "mc: 114 quarters 19980331..20260630",
+   "tl": "tl: 13 quarters 20230630..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
+  "state": "FILLED-ROUNDED",
+  "std": 424.03
+ },
+ "NESTLEIND|20180630": {
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752). Moneycontrol's feed carries no filing date.",
+  "ann_written": 20180814,
+  "applied": "2026-08-13 in-frame profitTTM hole sweep",
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own patS series reproduces 43 of our stored quarters with zero disagreements in the local window, worst anchor error 0.5400; nearest anchor within 4 quarters",
+  "field": "patS",
+  "fy_check": {
+   "A5": {
+    "next": {
+     "diff": -0.0,
+     "fy": 20191231,
+     "site_annual": 1969.55,
+     "site_sum4Q": 1969.55,
+     "verdict": "OK"
+    },
+    "prev": {
+     "diff": 0.0,
+     "fy": 20171231,
+     "site_annual": 1225.19,
+     "site_sum4Q": 1225.19,
+     "verdict": "OK"
+    },
+    "target": {
+     "diff": 0.0,
+     "fy": 20181231,
+     "site_annual": 1606.93,
+     "site_sum4Q": 1606.93,
+     "verdict": "OK"
+    }
+   },
+   "our_fy_identity": {
+    "missing": [
+     20180331
+    ],
+    "site_annual": 1606.93,
+    "verdict": "NO-TEST"
+   },
+   "state": "PASS"
+  },
+  "precision": "rounded(0.54)",
+  "resolved_via": "symbol",
+  "row_label": "Net Profit/(Loss) For the Period",
+  "site_reach": {
+   "mc": "mc: 114 quarters 19980331..20260630",
+   "tl": "tl: 13 quarters 20230630..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
+  "state": "FILLED-ROUNDED",
+  "std": 395.03
+ },
  "NETWORK18|20110930": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752). Moneycontrol's feed carries no filing date.",
   "ann_written": 20111114,
@@ -53730,6 +53832,46 @@
   "state": "FILLED-ROUNDED",
   "std": 26.28
  },
+ "PRINCEPIPE|20190930": {
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752). Moneycontrol's feed carries no filing date.",
+  "ann_written": 20191114,
+  "applied": "2026-08-13 in-frame profitTTM hole sweep",
+  "corroborated_by": [
+   "screener"
+  ],
+  "evidence": "QUARTERLY GATE REFUSED (1) and the write rests on the INDEPENDENT axis instead: moneycontrol's patS series reproduces 27 of our stored quarters (worst 0.0000) and disagrees on 20190630 ours=26.67 mc=26.54 -- a vintage difference, ours being the restated figure. MC's own FY20200331 identity closes exactly (4 quarters = its annual 112.51). Our 3 held quarters + this value = 112.64, inside screener.in's crore-rounded FY annual of 113.0 (band [112.5, 113.5)) -- screener is the INDEPENDENT reader, MC/TL/TT being one vendor (runbook \u00a781c). The whole MC-vs-ours annual gap (-0.13) is accounted for by the disagreeing cell(s) alone (-0.13), so this quarter is unchanged between the two vintages.",
+  "field": "patS",
+  "fy_check": {
+   "A5": {
+    "target": {
+     "fy": 20200331,
+     "site_annual": 112.51,
+     "site_sum4Q": 112.51,
+     "verdict": "OK"
+    }
+   },
+   "screener_independent": {
+    "annual": 113.0,
+    "band": [
+     112.5,
+     113.5
+    ],
+    "fy": 20200331,
+    "our_three_plus_proposed": 112.64,
+    "verdict": "IN-BAND"
+   },
+   "state": "ADJUDICATED-BY-INDEPENDENT-AXIS"
+  },
+  "precision": "site-exact",
+  "resolved_via": "symbol",
+  "row_label": "Net Profit/(Loss) For the Period",
+  "site_reach": {
+   "mc": "mc: 31 quarters 20181231..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
+  "state": "FILLED-ADJUDICATED",
+  "std": 33.41
+ },
  "PRSMJOHNSN|20030331": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752). Moneycontrol's feed carries no filing date.",
   "ann_written": 20030515,
@@ -56603,6 +56745,46 @@
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
   "state": "FILLED-ROUNDED",
   "std": 4.97
+ },
+ "RITES|20180331": {
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752). Moneycontrol's feed carries no filing date.",
+  "ann_written": 20180515,
+  "applied": "2026-08-13 in-frame profitTTM hole sweep",
+  "corroborated_by": [
+   "screener"
+  ],
+  "evidence": "QUARTERLY GATE REFUSED (1) and the write rests on the INDEPENDENT axis instead: moneycontrol's patS series reproduces 35 of our stored quarters (worst 0.0000) and disagrees on 20170930 ours=73.24 mc=78.23 -- a vintage difference, ours being the restated figure. MC's own FY20180331 identity closes exactly (4 quarters = its annual 336.81). Our 3 held quarters + this value = 331.82, inside screener.in's crore-rounded FY annual of 332.0 (band [331.5, 332.5)) -- screener is the INDEPENDENT reader, MC/TL/TT being one vendor (runbook \u00a781c). The whole MC-vs-ours annual gap (4.99) is accounted for by the disagreeing cell(s) alone (4.99), so this quarter is unchanged between the two vintages.",
+  "field": "patS",
+  "fy_check": {
+   "A5": {
+    "target": {
+     "fy": 20180331,
+     "site_annual": 336.81,
+     "site_sum4Q": 336.81,
+     "verdict": "OK"
+    }
+   },
+   "screener_independent": {
+    "annual": 332.0,
+    "band": [
+     331.5,
+     332.5
+    ],
+    "fy": 20180331,
+    "our_three_plus_proposed": 331.82,
+    "verdict": "IN-BAND"
+   },
+   "state": "ADJUDICATED-BY-INDEPENDENT-AXIS"
+  },
+  "precision": "site-exact",
+  "resolved_via": "symbol",
+  "row_label": "Net Profit/(Loss) For the Period",
+  "site_reach": {
+   "mc": "mc: 38 quarters 20170331..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
+  "state": "FILLED-ADJUDICATED",
+  "std": 82.73
  },
  "RPOWER|20080930": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752). Moneycontrol's feed carries no filing date.",
