@@ -2703,6 +2703,34 @@ null and stocks drop out of SHP-sorted screens (correct, not a bug).
 
 ---
 
+### 22j. ★★★ THE FILER'S PERCENTAGE IS ROUNDED TO 2dp — A TINY HOLDING IS FILED AS A LITERAL "0"  (2026-08-13)
+
+`parse_shp` read `ShareholdingAsAPercentageOfTotalNumberOfShares`, which **the filer rounds to
+2dp**. Any holding below 0.005% is therefore filed as `0`, and we stored `0.00`. Proven on the
+documents: **ITI Mar-2022** (SHP_166082_625531) files pct=0 on every domestic row while carrying
+31,695 (banks) + 39,332 (MF) + 800 (insurance) shares — **0.0077%** of its base. **TRIDENT
+Mar-2022** likewise, 244,262 + 164,213 = **0.0080%**. Both match an independent reader to 4dp.
+
+**Why it is not cosmetic: a "lowest DII %" screen sorts ASCENDING, so 0.00 ranks FIRST. A filer's
+rounding artefact became a BUY.** 13,463 of 88,767 DII cells (15.2%) sit at exactly 0.00; 150 of
+those are sandwiched between two non-zero quarters (NEUEON 0.88 → 0.00 → 0.94), which no real
+institution does. Fix: recompute the institutional slots from per-category `NumberOfShares` and
+store **4dp** (`round(v, 4)`). The pass runs AFTER every gate, so which filings are accepted is
+bit-for-bit unchanged.
+
+**⚠️ THE DENOMINATOR IS NOT THE WHOLE-COMPANY `NumberOfShares`.** That tag is the FULL base (fully
+paid + partly paid + **depositary receipts**); the filer computes its percentages on a smaller base
+that excludes DRs. Using it silently understates every ADR-heavy large cap — measured on Mar-2026:
+**HDFCBANK fii 44.05 → 38.16** (base 15.4% too big), **INFY 28.45 → 26.31**, plus LT/RELIANCE/SBIN.
+Instead infer the filer's OWN base from its LARGEST category with a usable percentage,
+`base = shares / (pct/100)`; a category at ≥1% carries ≤±0.005pp of rounding (1 part in 200),
+negligible against the sub-0.005% rows this exists to recover. Accept it only when it lands in
+[0.70, 1.02] × the whole-company count, else fall back to the filed percentage.
+
+Regression bar for any future change here: re-parse ~15 known filings and require **zero** moving
+more than 0.02pp. The DR bug showed up as 5 of 14 — it would never have surfaced from the small-cap
+cells the change was written for. Display is unaffected (`shareholding.html` renders `.toFixed(2)`).
+
 ## 23. BULK & BLOCK DEALS  (docs/deals.html — "Bulk/Block Deals" nav, built 2026-07-16, SELF-UPDATING)
 <!-- renumbered from 22 (two sections were both born §22 the same day; FII/DII holdings kept it) -->
 **The smart-money tape:** every NSE bulk deal (>0.5% of equity traded by one client in a day) and block

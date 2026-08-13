@@ -430,6 +430,7 @@ def parse_shp(txt, qe_iso):
         ctx[c.get("id")] = mems[0] if (not typed and len(mems) == 1) else None
 
     vals = {}
+    shares = {}     # slot -> NumberOfShares for that category (see the precision pass below)
     nsh = None      # total no. of shareholders (whole-company context)
     nsh_pub = None  # public-only count, used purely as a consistency check on nsh
     for f in root.iter():
@@ -444,6 +445,16 @@ def parse_shp(txt, qe_iso):
                 if n is not None:
                     if who == "ShareholdingPatternMember": nsh = n
                     else: nsh_pub = n
+            continue
+        if tag == "NumberOfShares":
+            # Per-category share counts, used below to recompute the percentage at full precision.
+            slot = MEMBERS.get(ctx.get(f.get("contextRef")) or "")
+            if slot:
+                try:
+                    n = int(float(str(f.text).strip()))
+                except (TypeError, ValueError):
+                    n = None
+                if n is not None and n >= 0: shares[slot] = n
             continue
         if tag != "ShareholdingAsAPercentageOfTotalNumberOfShares": continue
         slot = MEMBERS.get(ctx.get(f.get("contextRef")) or "")
@@ -520,7 +531,53 @@ def parse_shp(txt, qe_iso):
     # is a presentation choice, not evidence of a bad parse.
     base = out["prom"] + out["pub"]
     if not (98.0 <= base + extra <= 102.0 or 98.0 <= base <= 102.0): return None
-    out = {k: round(v, 2) for k, v in out.items()}
+    # ---- PRECISION PASS: recompute the institutional slots from SHARE COUNTS ------------------
+    # The filer's own ShareholdingAsAPercentageOfTotalNumberOfShares is rounded to 2dp, so ANY
+    # holding below 0.005% is filed as a literal "0". ITI Mar-2022 files pct=0 on every domestic
+    # row while carrying 31,695 (banks) + 39,332 (MF) + 800 (insurance) real shares = 0.0077% of
+    # 933,522,869. Reading the percentage stored dii=0.00 — and a "lowest DII %" screen ranks 0.00
+    # FIRST, so a filer's rounding artefact became a BUY. 13,463 of 88,767 DII cells (15.2%) sit at
+    # exactly 0.00; this is how an unknown share of them got there. Verified 2026-08-13 against the
+    # filings: ITI -> 0.0077 and TRIDENT -> 0.0080, both matching an independent reader to 4dp.
+    # shares/total is also immune to the fraction-vs-percent scale ambiguity anchored above.
+    # Runs AFTER every gate, so which filings are accepted is bit-for-bit unchanged.
+    # The denominator is NOT the whole-company NumberOfShares: that is the full base (fully paid +
+    # partly paid + depositary receipts), while the filer computes its percentages on a SMALLER
+    # base that excludes DRs. Using it understated every ADR-heavy large cap — HDFCBANK Mar-2026
+    # fii 44.05 -> 38.16 (base 15.4% too big), INFY 28.45 -> 26.31, LT/RELIANCE/SBIN likewise.
+    # So infer the filer's OWN base from its LARGEST category that reports a usable percentage:
+    # base = shares / (pct/100). A category at >=1% carries at most ±0.005pp of rounding, i.e. 1
+    # part in 200 — negligible against the sub-0.005% rows this pass exists to recover.
+    tot_sh = None
+    _cand = [(shares[s], (vals.get(s) or 0.0) * scale) for s in shares
+             if s != "total" and shares.get(s) and (vals.get(s) or 0.0) * scale >= 1.0]
+    if _cand:
+        n_big, p_big = max(_cand)
+        b = n_big / (p_big / 100.0)
+        whole = shares.get("total")
+        # sane only if it lands at or below the full base and within a plausible DR/partly-paid gap
+        if not whole or 0.70 * whole <= b <= 1.02 * whole: tot_sh = b
+    if tot_sh:
+        def _sum(slots):
+            """Sum those slots from share counts — None unless EVERY contributor that reported a
+            percentage also reported a count, since a missing count would silently undercount."""
+            n = 0; seen = False
+            for s in slots:
+                if s in shares: n += shares[s]; seen = True
+                elif vals.get(s): return None      # contributed a percentage but no count -> bail
+            return n if seen else None
+        if is_new:
+            groups = {"fii": ["fii"], "dii": ["dii"], "mf": ["mf"], "ins": ["ins"]}
+            if "mf" not in shares and "o_mf" in shares: groups["mf"] = ["o_mf"]
+        else:
+            f_slots = ["o_fpi", "o_fvci"]
+            d_slots = ["o_mf", "o_aif", "o_vcf", "o_bank", "ins", "o_pf"]
+            (d_slots if OLD_OTHER_TO_DII else f_slots).append("o_other")
+            groups = {"fii": f_slots, "dii": d_slots, "mf": ["o_mf"], "ins": ["ins"]}
+        for key, slots in groups.items():
+            n = _sum(slots)
+            if n is not None: out[key] = n / tot_sh * 100.0
+    out = {k: round(v, 4) for k, v in out.items()}
     # nsh is OPTIONAL, so an implausible one gets dropped rather than published: the grand total
     # can never be below the public-shareholder count. BSE Ltd Sep-2024 files 248 against 539,914
     # public holders (its own grand total is broken, like its 6.9 "total %"), which would have
