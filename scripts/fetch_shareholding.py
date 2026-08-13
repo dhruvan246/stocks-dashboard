@@ -301,6 +301,22 @@ def load_cell_fix():
             print("WARN shp_cell_fix unreadable (%s) — no corrections applied" % e)
     return {}
 
+def _cell_eq(a, b):
+    """Cell comparison at 2dp. The §22j precision pass refines every stored value to 4dp, so an
+    EXACT match would make every ledger entry read "neither the fix nor the recorded bad value"
+    and skip — silently retiring the whole cell_fix ledger the moment a re-parse ran (9 entries
+    tripped this in the Mar-2022 batch alone). The ledger's intent is "this cell held THIS value";
+    a precision refinement of the same number is still that number."""
+    if a is None or b is None: return a is b
+    if len(a) != len(b): return False
+    for x, y in zip(a, b):
+        if isinstance(x, bool) or isinstance(y, bool):
+            if x != y: return False
+        elif isinstance(x, (int, float)) and isinstance(y, (int, float)):
+            if round(float(x), 2) != round(float(y), 2): return False
+        elif x != y: return False
+    return True
+
 def apply_cell_fix(h, led=None):
     """Override known-wrong cells. Runs AFTER the fetch so a --reparse cannot re-poison them."""
     led = load_cell_fix() if led is None else led
@@ -310,8 +326,8 @@ def apply_cell_fix(h, led=None):
             cur = (h.get(sym) or {}).get(qe)
             want, was = ent.get("cell"), ent.get("was")
             if cur is None: continue                      # correct only what exists — a fix
-            if cur == want: continue                      # ledger must never INVENT a cell
-            if was is not None and cur != was:
+            if _cell_eq(cur, want): continue              # ledger must never INVENT a cell
+            if was is not None and not _cell_eq(cur, was):
                 print("WARN cell_fix %s %s: stored cell is neither the fix nor the recorded bad "
                       "value (%s) — leaving it alone, re-adjudicate" % (sym, qe, cur))
                 continue
