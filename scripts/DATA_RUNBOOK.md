@@ -2731,6 +2731,42 @@ Regression bar for any future change here: re-parse ~15 known filings and requir
 more than 0.02pp. The DR bug showed up as 5 of 14 — it would never have surfaced from the small-cap
 cells the change was written for. Display is unaffected (`shareholding.html` renders `.toFixed(2)`).
 
+### 22k. ★★★ EVENT-DRIVEN (MID-QUARTER) SHPs — half the filings NSE serves, and we dropped them  (2026-08-13)
+
+Companies re-file a full shareholding pattern between quarters on capital changes and SAST events.
+`fetch_master` kept only `as-on == quarter end` and threw the rest away as a documented design
+choice ("quarter-end series only, Trendlyne-comparable"). Measured: for the Dec-2024 window NSE
+served 4,601 filings — **2,122 quarter-end rows kept, 2,479 event rows discarded.** Not an edge case.
+
+**What it cost, proven end-to-end (AWL):**
+
+| as-on | submitted | DII |
+|---|---|---|
+| 2024-12-31 | 2025-01-13 | 0.051 |
+| **2025-02-14** | **2025-02-28** | **8.7592**  ← dropped |
+| 2025-03-31 | 2025-04-11 | 8.9091 |
+
+A "lowest DII %" screen therefore held AWL on a reading of 0.05 from 13-Jan to 11-Apr while the
+public number was 8.76 from 28-Feb — six weeks, 170× wrong, and the stock only qualified BECAUSE
+the number was stale. Verified after the fix: a screen on 2025-02-28 now reads 8.7592, on 2025-01-31
+still 0.05 (the event row is invisible until its own submission date — no look-ahead).
+
+- **Own file, `scripts/shp_events.json`, keyed by AS-ON date**, same row shape. It CANNOT go in
+  `shp_history.json`: that is keyed by quarter-end and its consumers do calendar-quarter arithmetic
+  (`prev_qe`, K-streaks), which a 14-Feb key would silently corrupt.
+- **No ledgers are applied to event rows** — cell_fix / bse_hist / mf_heal are all keyed by
+  quarter-end and none of them describes an event row.
+- `build_engine_feed()` merges them by date; a quarter-end row wins a same-date collision (fuller
+  filing). The engines need no change to SEE them — `shpAt` already takes the latest row whose
+  `sub <= screen date`.
+- ⚠️ **The engines DID need a delta change.** An event row has no calendar-previous quarter, so the
+  QoQ walk left `dfii/ddii` null — and `factorsAt` FILTERS OUT null factors, which would have
+  dropped the stock from every `diiChgPp` strategy in the very month its stake moved. Event rows
+  now delta against the latest already-visible row (`isQuarterEnd()` picks the branch, both engine
+  copies).
+- Run: `fetch_shareholding.py --events [--backfill N | --quarters ...]`. The window is
+  `(quarter end, next quarter end]` so every filing is claimed by exactly one quarter.
+
 ## 23. BULK & BLOCK DEALS  (docs/deals.html — "Bulk/Block Deals" nav, built 2026-07-16, SELF-UPDATING)
 <!-- renumbered from 22 (two sections were both born §22 the same day; FII/DII holdings kept it) -->
 **The smart-money tape:** every NSE bulk deal (>0.5% of equity traded by one client in a day) and block

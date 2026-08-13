@@ -675,6 +675,9 @@ async function loadShp() {
   }
 }
 function prevQeInt(qe) { let y = Math.floor(qe / 10000), m = Math.floor(qe / 100) % 100 - 3; if (m <= 0) { y--; m += 12; } return y * 10000 + m * 100 + { 3: 31, 6: 30, 9: 30, 12: 31 }[m]; }
+// A row dated anything other than a March/June/September/December quarter end is an EVENT-driven
+// SHP (capital change / SAST) merged in by §22k — same shape, but no calendar-previous quarter.
+function isQuarterEnd(d) { return ({ 3: 31, 6: 30, 9: 30, 12: 31 }[Math.floor(d / 100) % 100] || 0) === d % 100; }
 function shpAt(sym, dateInt) {
   const arr = SHPD[sym] || (FUND_ALIAS[sym] ? SHPD[FUND_ALIAS[sym]] : null); if (!arr || !arr.length) return null;
   let ci = -1; for (let i = arr.length - 1; i >= 0; i--) { if (arr[i][3] <= dateInt) { ci = i; break; } }
@@ -684,8 +687,17 @@ function shpAt(sym, dateInt) {
   // Sep-2022 SEBI format change (DR blocks were reclassified into FII/DII — not a stake change).
   let dfii = null, ddii = null;
   if (cur[0] !== 20220930) {
-    const pq = prevQeInt(cur[0]);
-    for (let i = ci - 1; i >= 0; i--) { const q = arr[i]; if (q[0] === pq) { if (q[3] <= dateInt) { dfii = +(cur[1] - q[1]).toFixed(2); ddii = +(cur[2] - q[2]).toFixed(2); } break; } if (q[0] < pq) break; }
+    if (isQuarterEnd(cur[0])) {
+      const pq = prevQeInt(cur[0]);
+      for (let i = ci - 1; i >= 0; i--) { const q = arr[i]; if (q[0] === pq) { if (q[3] <= dateInt) { dfii = +(cur[1] - q[1]).toFixed(2); ddii = +(cur[2] - q[2]).toFixed(2); } break; } if (q[0] < pq) break; }
+    } else {
+      // EVENT row (mid-quarter as-on date, §22k): it has no calendar-previous quarter, so the
+      // QoQ walk above would leave the deltas null — and a null factor is FILTERED OUT of the
+      // screen, silently dropping the stock from every diiChgPp/fiiChgPp strategy in exactly the
+      // month its stake actually moved. Measure the change against the latest ALREADY-VISIBLE
+      // reading instead, which is what "change since we last knew" means for an event filing.
+      for (let i = ci - 1; i >= 0; i--) { const q = arr[i]; if (q[3] <= dateInt) { dfii = +(cur[1] - q[1]).toFixed(2); ddii = +(cur[2] - q[2]).toFixed(2); break; } }
+    }
   }
   return { fii: cur[1], dii: cur[2], dfii, ddii };
 }

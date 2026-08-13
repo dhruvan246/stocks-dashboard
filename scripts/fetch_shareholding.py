@@ -46,6 +46,10 @@ import build_fundamentals as B  # _get / nse_jar / UA (CI-proven NSE session)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 HIST = os.path.join(HERE, "shp_history.json")
+# Event-driven (mid-quarter) SHPs live in their OWN file, keyed by AS-ON date: shp_history.json is
+# keyed by quarter-end and its consumers do calendar-quarter arithmetic (prev_qe, K-streaks), which
+# a 14-Feb row would silently corrupt. Same row shape. Merged into the engine feed (§22k).
+EVENTS = os.path.join(HERE, "shp_events.json")
 OUT = os.path.join(HERE, "..", "docs", "shareholding.json")
 META_OUT = os.path.join(HERE, "..", "docs", "shp_meta.json")
 SLIM = os.path.join(HERE, "..", "docs", "dash_slim.bin")
@@ -301,19 +305,29 @@ def load_cell_fix():
             print("WARN shp_cell_fix unreadable (%s) — no corrections applied" % e)
     return {}
 
+CELL_TOL = 0.0100001   # one 2dp ulp — see _cell_eq
+
 def _cell_eq(a, b):
-    """Cell comparison at 2dp. The §22j precision pass refines every stored value to 4dp, so an
-    EXACT match would make every ledger entry read "neither the fix nor the recorded bad value"
-    and skip — silently retiring the whole cell_fix ledger the moment a re-parse ran (9 entries
-    tripped this in the Mar-2022 batch alone). The ledger's intent is "this cell held THIS value";
-    a precision refinement of the same number is still that number."""
+    """Cell comparison to within one 2dp step. The §22j precision pass recomputes values from
+    share counts, so an EXACT match would make every ledger entry read "neither the fix nor the
+    recorded bad value" and skip — silently retiring the whole cell_fix ledger the moment a
+    re-parse ran. The ledger's intent is "this cell held THIS value"; a precision refinement of
+    the same number is still that number.
+
+    Rounding to 2dp is NOT enough: the filer rounds from its own internal figure, so our
+    share-count value can land a half-step the other way — CELEBRITY Mar-2025 computes 14.3256
+    (rounds to 14.33) where the filer filed 14.32. That is the same holding, not a disagreement.
+    A tolerance of one full 2dp step absorbs the double-rounding while still separating real
+    corrections by a mile (CELEBRITY's fix moves prom 33.47 -> 35.32, MODIRUBBER's 62.69 -> 62.2).
+    Non-numeric fields stay EXACT, so a differing submission date still warns and re-adjudicates
+    (ATLANTAA Mar-2025: stored 2025-04-03 vs the ledger's recorded 2026-04-04)."""
     if a is None or b is None: return a is b
     if len(a) != len(b): return False
     for x, y in zip(a, b):
         if isinstance(x, bool) or isinstance(y, bool):
             if x != y: return False
         elif isinstance(x, (int, float)) and isinstance(y, (int, float)):
-            if round(float(x), 2) != round(float(y), 2): return False
+            if abs(float(x) - float(y)) > CELL_TOL: return False
         elif x != y: return False
     return True
 
@@ -357,8 +371,9 @@ def nsh_gate(h, sym, qe, nsh, accept):
     return None
 
 # ------------------------------------------------------------------ NSE fetch
-def fetch_master(jar, qe_iso):
-    """All SHP filings whose AS-ON date == qe. Returns [] on failure (self-healing).
+def fetch_master(jar, qe_iso, events=False):
+    """All SHP filings whose AS-ON date == qe (events=True: the MID-quarter ones instead).
+    Returns [] on failure (self-healing).
 
     ⚠️ from_date/to_date filter on the SUBMISSION date, NOT the pattern's as-on date. It was
     the other way round when this was written (runbook §22), and the switch was silent: the
@@ -381,6 +396,18 @@ def fetch_master(jar, qe_iso):
     except Exception as e:
         print("ERR master %s: %r" % (qe_iso, e))
         return []
+    if events:
+        # Mid-quarter as-on dates = EVENT-driven SHPs (capital changes, SAST). Strictly AFTER this
+        # quarter end and at or before the next one, so each filing is claimed by exactly one
+        # window. These were dropped outright until 2026-08-13 — and they are not a rounding
+        # error: this window keeps 2,122 quarter-end rows and threw away 2,479 event rows.
+        nxt = (d + datetime.timedelta(days=100)).replace(day=1) - datetime.timedelta(days=1)
+        nxt_iso = nxt.isoformat()
+        out = [r for r in recs
+               if (iso_date(r.get("date")) or "") > qe_iso and (iso_date(r.get("date")) or "") <= nxt_iso]
+        print("  master %s: %d filings, %d EVENT rows (as-on %s..%s]"
+              % (qe_iso, len(recs), len(out), qe_iso, nxt_iso))
+        return out
     out = [r for r in recs if iso_date(r.get("date")) == qe_iso]
     print("  master %s: %d filings submitted %s..%s, %d as-on this quarter"
           % (qe_iso, len(recs), fmt(d), fmt(to), len(out)))
@@ -697,6 +724,70 @@ def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
     print("history: %d cells (%+d), %d symbols" % (after, after - before, sum(1 for k in hist if not k.startswith("_"))))
     return stats
 
+def load_events():
+    try:
+        return json.load(open(EVENTS, encoding="utf-8"))
+    except Exception:
+        return {}
+
+def save_events(e):
+    tmp = EVENTS + ".tmp"
+    json.dump(e, open(tmp, "w", encoding="utf-8"), separators=(",", ":"), sort_keys=True)
+    os.replace(tmp, EVENTS)
+
+def refresh_events(qes, only=None, reparse=False):
+    """Ingest EVENT-driven (mid-quarter) SHP filings into scripts/shp_events.json.
+
+    Companies re-file a full shareholding pattern between quarters on capital changes and SAST
+    events, and NSE serves them from the same master endpoint — we simply threw them away, so a
+    stake sale stayed invisible until the next quarterly. AWL: DII was 0.05 at Dec-2024 and 8.76
+    on an as-on 14-Feb-2025 filing SUBMITTED 28-Feb, but our series only learned it on 11-Apr —
+    six weeks of a "lowest DII" screen holding a stock whose real DII was 170x what we showed.
+
+    Stored {SYM: {ASON_ISO: [prom, fii, dii, mf, ins, sub, nsh]}} — the shp_history row shape, so
+    the engine feed can merge the two without a second format. No ledgers are applied: those are
+    all keyed by quarter-end and none of them describes an event row."""
+    jar = B.nse_jar()
+    ev = load_events()
+    before = sum(len(v) for v in ev.values())
+    for qe in qes:
+        recs = fetch_master(jar, qe, events=True)
+        best = {}                       # (sym, as-on) -> newest submission wins
+        for r in recs:
+            sym = str(r.get("symbol") or "").strip().upper()
+            ason = iso_date(r.get("date"))
+            sub = iso_date(r.get("submissionDate")) or iso_date(r.get("broadcastDate"))
+            xb = str(r.get("xbrl") or "").strip()
+            if not sym or not ason or not sub or not xb.lower().startswith("http"): continue
+            if only is not None and sym not in only: continue
+            k = (sym, ason)
+            if k not in best or sub >= best[k]["sub"]: best[k] = {"sub": sub, "xb": xb}
+        todo = [(k, v) for k, v in best.items()
+                if reparse or not (ev.get(k[0]) or {}).get(k[1])
+                or str(((ev.get(k[0]) or {}).get(k[1]) or [None] * 6)[5]) < v["sub"]]
+        if not todo:
+            print("  events %s: nothing new" % qe); continue
+        def work(item):
+            (sym, ason), r = item
+            try:
+                return sym, ason, r, parse_shp(ET.fromstring(fetch_xbrl(r["xb"], jar)), ason)
+            except Exception as e:
+                return sym, ason, r, ("ERR", repr(e))
+        done = 0
+        with ThreadPoolExecutor(max_workers=THREADS) as ex:
+            for fut in as_completed([ex.submit(work, it) for it in todo]):
+                sym, ason, r, res = fut.result()
+                if not isinstance(res, dict): continue
+                cell = [res["prom"], res["fii"], res["dii"], res["mf"], res["ins"], r["sub"]]
+                if res.get("nsh"): cell.append(res["nsh"])
+                ev.setdefault(sym, {})[ason] = cell
+                done += 1
+        print("  events %s: %d parsed of %d" % (qe, done, len(todo)))
+        save_events(ev)
+    after = sum(len(v) for v in ev.values())
+    print("shp_events.json: %d rows (%+d), %d symbols" % (after, after - before, len(ev)))
+    return ev
+
 # ------------------------------------------------------------------ page feed
 def build_feed():
     hist = load_hist()
@@ -740,16 +831,28 @@ def build_engine_feed():
     {SYM: [[qeInt, fii, dii, subInt], ...] sorted by quarter}. ALL quarters (not the page's 8);
     the engines gate on subInt <= rebalance date so there is no look-ahead."""
     hist = load_hist()
+    events = load_events()
     out = {}
-    for sym, qs in hist.items():
-        if sym.startswith("_") or not isinstance(qs, dict): continue
+    def rows_of(qs):
         rows = []
-        for qe, c in qs.items():
+        for qe, c in (qs or {}).items():
             try:
                 rows.append([int(qe.replace("-", "")), c[1], c[2], int(str(c[5]).replace("-", ""))])
             except (ValueError, TypeError, IndexError):
                 continue
+        return rows
+    for sym in set(hist) | set(events):
+        if sym.startswith("_"): continue
+        qs = hist.get(sym)
+        rows = rows_of(qs if isinstance(qs, dict) else None)
+        # EVENT rows carry an AS-ON date in the same slot as a quarter end, so they sort into the
+        # series by date and the engines' "latest row whose sub <= screen date" picks them up with
+        # no engine change. A quarter-end row wins a same-date collision (it is the fuller filing).
+        seen = {r[0] for r in rows}
+        rows += [r for r in rows_of(events.get(sym)) if r[0] not in seen]
         if rows: out[sym] = sorted(rows)
+    n_ev = sum(len(v) for v in events.values())
+    if n_ev: print("  engine feed: merged %d event rows from %d symbols" % (n_ev, len(events)))
     ep = os.path.join(HERE, "..", "docs", "shp_engine.json")
     if len(out) < MIN_FEED_ROWS and os.path.exists(ep) and os.path.getsize(ep) > 200000:
         print("ABORT engine feed: only %d symbols — keeping existing shp_engine.json" % len(out))
@@ -786,6 +889,21 @@ if __name__ == "__main__":
         save_hist(h)
         print("history: %d cells (%+d) after ledgers" % (after, after - before))
         build_feed()
+        build_engine_feed()
+    elif "--events" in args:
+        # Ingest mid-quarter (event-driven) SHPs, then rebuild the engine feed so they are visible
+        # to the backtest engines. --backfill N / --quarters walk older windows. (runbook §22k)
+        n = TOPUP_QES
+        if "--backfill" in args: n = int(args[args.index("--backfill") + 1])
+        if "--quarters" in args:
+            qes = [q.strip() for q in args[args.index("--quarters") + 1].split(",") if q.strip()]
+        else:
+            qes = last_qes(n)
+        only = None
+        if "--symbols" in args:
+            only = {s.strip().upper() for s in args[args.index("--symbols") + 1].split(",") if s.strip()}
+        print("event quarters:", ", ".join(qes))
+        refresh_events(qes, only=only, reparse="--reparse" in args)
         build_engine_feed()
     elif "--feed-only" in args:
         build_feed()
