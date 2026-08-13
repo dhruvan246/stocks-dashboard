@@ -36,6 +36,13 @@ jobs:
       - name: Fetch new/revised shareholding filings (last 3 quarter-ends)
         run: python3 -X utf8 scripts/fetch_shareholding.py
 
+      # Event-driven (mid-quarter) SHPs — capital changes / SAST. Same master endpoint, same
+      # window; we dropped them until 2026-08-13 and a stake sale stayed invisible until the next
+      # quarterly (AWL: DII 0.05 shown for six weeks while the filed number was 8.76 — §22k).
+      # Runs after the quarterly pass so build_engine_feed merges both into shp_engine.json.
+      - name: Fetch event-driven (mid-quarter) shareholding filings
+        run: python3 -X utf8 scripts/fetch_shareholding.py --events
+
       # NOTE: the on-page backtest section was REMOVED per user preference (2026-07-16) —
       # backtests run on demand in chat via scripts/build_shp_backtest.py (runbook §22c).
       - name: Guard — refuse to commit a broken or shrunken feed
@@ -53,6 +60,9 @@ jobs:
           mkdir -p /tmp/shp/docs /tmp/shp/scripts
           cp docs/shareholding.json docs/shp_meta.json docs/shp_engine.json /tmp/shp/docs/
           cp scripts/shp_history.json scripts/shares_outstanding.json /tmp/shp/scripts/
+          # guarded: absent until the first --events run lands it, and a failed --events step
+          # must not take the whole quarterly refresh down with it
+          [ -f scripts/shp_events.json ] && cp scripts/shp_events.json /tmp/shp/scripts/ || echo "(no shp_events.json yet)"
 
           for attempt in 1 2 3 4 5; do
             git fetch origin main
@@ -62,8 +72,10 @@ jobs:
             cp /tmp/shp/docs/shp_engine.json   docs/shp_engine.json
             cp /tmp/shp/scripts/shp_history.json        scripts/shp_history.json
             cp /tmp/shp/scripts/shares_outstanding.json scripts/shares_outstanding.json
+            [ -f /tmp/shp/scripts/shp_events.json ] && cp /tmp/shp/scripts/shp_events.json scripts/shp_events.json || true
             git add docs/shareholding.json docs/shp_meta.json docs/shp_engine.json \
                     scripts/shp_history.json scripts/shares_outstanding.json
+            [ -f scripts/shp_events.json ] && git add scripts/shp_events.json || true
 
             if git diff --cached --quiet; then
               echo "No new shareholding data — nothing to commit"
