@@ -176,6 +176,11 @@ function fieldOptionsHtml(){
 }
 const fmtINR=n=>'₹'+Math.round(n).toLocaleString('en-IN');
 const pct=n=>(n>=0?'+':'')+n.toFixed(2)+'%';
+// Shareholding % is stored at 4dp (§22j): the filer rounds its own percentage to 2dp, so a sub
+// 0.005% stake files as a literal "0" and every such stock printed an identical 0.00 / 0.01 —
+// exactly the values a "lowest DII" screen ranks on. 2dp here would hide the number the sort used.
+const SHP_PCT_FIELDS=new Set(['fiiPct','diiPct','fiiChgPp','diiChgPp']);
+const fmtHold=v=>(+v).toFixed(4);
 const stockHref=sym=>'./stock.html?sym='+encodeURIComponent(sym);
 const stockLink=(sym,cls)=>'<a href="'+stockHref(sym)+'" class="'+(cls||'')+'" title="'+sym+' — full details">'+sym+'</a>';
 
@@ -528,7 +533,7 @@ function isAlreadySaved(cfg){
 // every key changes → the old snapshot is no longer found → the next view recomputes with the CURRENT
 // code + data and re-caches. Without this stamp a changed engine or a refreshed dataset would keep
 // serving a stale pre-computed result forever.
-const ENGINE_VER='e4';        // ⬆️ BUMP this whenever simulate()/engine logic changes → invalidates all snapshots
+const ENGINE_VER='e5';        // ⬆️ BUMP this whenever simulate()/engine logic changes → invalidates all snapshots
                               // e3 (2026-08-12): membership clamp — lastSnap no longer floors to the earliest
                               // snapshot, so pre-first-snapshot runs no longer use a later year's roster.
 let SNAP_DATAVER='';          // latest data date (data `end`); set from SF.end once loaded, else sf_meta.json
@@ -1189,7 +1194,7 @@ function render(r,cfg){
         <span class="text-xs text-slate-500">value ${fmtINR(rb.val)}</span>
         <span class="text-xs text-slate-500">${rb.holds.length} holdings${rb.nNew?` · <span class="text-emerald-600 font-semibold">${rb.nNew} new</span>`:''}${rb.cashWt>1?` · ${rb.cashWt.toFixed(0)}% cash`:''}</span></summary>
       <div class="px-3 pb-3 overflow-x-auto"><table class="w-full text-[13px]"><thead class="text-[10px] uppercase text-slate-400 border-b"><tr><th class="text-left py-1 px-2">Stock</th><th class="text-right px-2">Weight</th><th class="text-right px-2">Value</th>${r.dispCols.map(c=>`<th class="text-right px-2">${c.label}</th>`).join('')}<th class="text-right px-2">RSI</th><th class="text-left px-2"></th></tr></thead><tbody>
-        ${rb.holds.slice().sort((a,b)=>{const x=a.factor,y=b.factor; if(x==null)return 1; if(y==null)return -1; return r.cfg.dir==='high'?y-x:x-y;}).map(h=>`<tr class="border-b border-slate-50"><td class="px-2 py-1 font-medium">${stockLink(h.sym,'text-indigo-700 hover:underline')}</td><td class="text-right px-2 font-semibold">${h.wt.toFixed(1)}%</td><td class="text-right px-2 text-slate-500">${fmtINR(h.val)}</td>${r.dispCols.map(c=>{const x=h.fv?h.fv[c.field]:null; return `<td class="text-right px-2 text-slate-600">${x!=null?(Math.abs(x)>=1000?Math.round(x).toLocaleString('en-IN'):x.toFixed(2)):'·'}</td>`;}).join('')}<td class="text-right px-2 text-slate-500">${h.rsi!=null?h.rsi.toFixed(2):'·'}</td><td class="px-2">${h.isNew?'<span class="text-[9px] bg-emerald-100 text-emerald-700 px-1 rounded font-semibold">NEW</span>':'<span class="text-[9px] text-slate-400">held</span>'}</td></tr>`).join('')}
+        ${rb.holds.slice().sort((a,b)=>{const x=a.factor,y=b.factor; if(x==null)return 1; if(y==null)return -1; return r.cfg.dir==='high'?y-x:x-y;}).map(h=>`<tr class="border-b border-slate-50"><td class="px-2 py-1 font-medium">${stockLink(h.sym,'text-indigo-700 hover:underline')}</td><td class="text-right px-2 font-semibold">${h.wt.toFixed(1)}%</td><td class="text-right px-2 text-slate-500">${fmtINR(h.val)}</td>${r.dispCols.map(c=>{const x=h.fv?h.fv[c.field]:null; return `<td class="text-right px-2 text-slate-600">${x!=null?(SHP_PCT_FIELDS.has(c.field)?fmtHold(x):(Math.abs(x)>=1000?Math.round(x).toLocaleString('en-IN'):x.toFixed(2))):'·'}</td>`;}).join('')}<td class="text-right px-2 text-slate-500">${h.rsi!=null?h.rsi.toFixed(2):'·'}</td><td class="px-2">${h.isNew?'<span class="text-[9px] bg-emerald-100 text-emerald-700 px-1 rounded font-semibold">NEW</span>':'<span class="text-[9px] text-slate-400">held</span>'}</td></tr>`).join('')}
         ${rb.cash>1?`<tr class="bg-slate-50"><td class="px-2 py-1 text-slate-600">💵 Cash</td><td class="text-right px-2 font-semibold">${rb.cashWt.toFixed(1)}%</td><td class="text-right px-2 text-slate-500">${fmtINR(rb.cash)}</td><td colspan="${r.dispCols.length+2}"></td></tr>`:''}
       </tbody></table></div></details>`;}).join('')}
   </div>`;
@@ -1402,6 +1407,7 @@ async function goLive(silent){
       if(v==null||isNaN(v)) return '—';
       if(f==='changePercent') return `<span class="${v>=0?'pos':'neg'}">${pct(v)}</span>`;
       if(f==='d52'||f==='d52_low_pct') return (+v).toFixed(2)+'%';
+      if(SHP_PCT_FIELDS.has(f)) return fmtHold(v);          // 4dp — see fmtHold (§22j)
       return Math.abs(v)>=1000?Math.round(v).toLocaleString('en-IN'):(+v).toFixed(2); };
     const rowsHtml=ranked.map((r,i)=>{
       const inTop=i<topN;

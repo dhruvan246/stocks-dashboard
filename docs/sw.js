@@ -6,7 +6,7 @@
  *     requests (the sf-data repo, Supabase, the live-quote Worker) — those stay network-only
  *     so data is always fresh and the cache never bloats.
  * Bump CACHE when the shell asset list changes. */
-const CACHE = 'sw-shell-v93';   // v93: event-driven SHP rows merged into the engine feed (§22k) (v92: All Picks rewind anchors on the month-end grid in BOTH directions — cfg.start is a researc)
+const CACHE = 'sw-shell-v94';   // v94: shareholding %% shown at 4dp (§22j) (v93: event-driven SHP rows merged into the engine feed (§22k) (v92: All Picks rewind )
 const SHELL = [
   './', './index.html', './nse-bse-dashboard.html', './stock-backtest.html', './saved-strategies.html',
   './backtest-history.html', './strategy-backtest.html', './all-picks.html', './strategy-mixer.html', './mutual-funds.html', './fii-dii.html',
