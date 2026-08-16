@@ -33,5 +33,23 @@
   "evidence": "consolidated \"Revenue from operations\" 19,653 Rs million = 1,965.3 cr; API re_net_sale 196530 agrees",
   "why": "the con PAT fill made this quarter VISIBLE to the basis family, which then read an empty con revenue slot \u2014 twin-file completion",
   "fill_pass": "2026-08-16 lastmile-classC"
+ },
+ "JUSTDIAL|20230630|con": {
+  "con": 83.4,
+  "annCon": 20230714,
+  "basis": "con",
+  "src": "NSE per-basis XBRL (consolidated file), parsed with build_revop.metrics_for",
+  "evidence": "the con XBRL URL is PROVEN consolidated on the neighbouring quarter 20230930, where it returns 71.78 = our stored con and NOT the stored std 71.79; same extractor that built the file",
+  "note": "con equals std this quarter \u2014 accepted only because it was READ from the consolidated document; the API detail row echoed std and was refused",
+  "fill_pass": "2026-08-16 lastmile-classC"
+ },
+ "JUSTDIAL|20231231|con": {
+  "con": 92.01,
+  "annCon": 20240112,
+  "basis": "con",
+  "src": "NSE per-basis XBRL (consolidated file), parsed with build_revop.metrics_for",
+  "evidence": "the con XBRL URL is PROVEN consolidated on the neighbouring quarter 20230930, where it returns 71.78 = our stored con and NOT the stored std 71.79; same extractor that built the file",
+  "note": "con equals std this quarter \u2014 accepted only because it was READ from the consolidated document; the API detail row echoed std and was refused",
+  "fill_pass": "2026-08-16 lastmile-classC"
  }
 }
