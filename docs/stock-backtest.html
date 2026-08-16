@@ -18,11 +18,13 @@
   /* theme.css flattens Chrome's default bold optgroup label back to 400 — restore it so the
      factor groups read as headings, not as another selectable factor. */
   select optgroup{font-weight:700}
-  #ov{position:fixed;inset:0;background:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50}
+  /* NOTHING about loading lives in this stylesheet or in the markup below — the page used to ship a
+     full-screen #ov overlay reading "Loading price history (~17 MB)…", which the browser painted on
+     EVERY visit including the two paths that download nothing at all (👁 snapshot, direct-visit
+     builder). The progress surface is now created by LoadUI, only by code that is about to fetch. */
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
-<div id="ov"><div class="w-10 h-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-3"></div><p class="text-sm text-slate-600" id="ovT">Loading price history (~17 MB)…</p></div>
 
 <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
   <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
@@ -184,17 +186,115 @@ const fmtHold=v=>(+v).toFixed(4);
 const stockHref=sym=>'./stock.html?sym='+encodeURIComponent(sym);
 const stockLink=(sym,cls)=>'<a href="'+stockHref(sym)+'" class="'+(cls||'')+'" title="'+sym+' — full details">'+sym+'</a>';
 
+/* ---- LOADING UI ----------------------------------------------------------------------------
+ * Rule: nothing that mentions loading may exist before a fetch actually starts. The old
+ * full-screen #ov overlay was in the static markup, so it painted on every visit — including the
+ * 👁 snapshot render and the direct-visit builder, neither of which downloads a byte. It also
+ * never moved: the whole ~80 MB engine load sat behind one frozen line of text.
+ *
+ * LoadUI is created on demand by whoever is about to fetch, and picks its surface:
+ *   · a run the user launched from this page → the ▶ Run Backtest button fills in place
+ *   · a load-on-boot (Run / Load / result handed over from another page, where the button either
+ *     doesn't exist yet or sits inside a hidden #cfgCard) → a card above the builder
+ * Callers only say what they're loading; LoadUI decides where it shows. */
+const LoadUI=(()=>{
+  let mode=null, btnHTML=null;
+  function card(){
+    let c=$('loadCard');
+    if(!c){
+      c=document.createElement('div'); c.id='loadCard'; c.className='card p-4 mb-4 flex items-center gap-3';
+      c.innerHTML='<div class="w-5 h-5 border-2 border-blue-200 border-t-blue-600 rounded-full animate-spin shrink-0"></div>'
+        +'<div class="flex-1 min-w-0"><div class="text-sm text-slate-600" data-txt>Loading market data…</div>'
+        // the track is rgba, not bg-slate-200: theme.css remaps the card + text for dark mode but a
+        // fixed light-grey slab would stay light on the dark card. Translucent grey reads right on both.
+        +'<div class="mt-2 h-1 rounded-full overflow-hidden" style="background:rgba(148,163,184,.35)"><div class="h-full bg-blue-600 rounded-full" data-bar style="width:0%;transition:width .2s ease-out"></div></div></div>';
+      const cc=$('cfgCard');
+      if(cc&&cc.parentNode) cc.parentNode.insertBefore(c,cc); else document.querySelector('main').appendChild(c);
+    }
+    return c;
+  }
+  // The button is only a usable surface when it's actually on screen — the 👁 "result only" path
+  // hides #cfgCard, which takes #run with it (offsetParent goes null on a display:none ancestor).
+  function btnUsable(){ const b=$('run'); return !!(b && b.offsetParent!==null); }
+  // frac == null means "no byte count for this step" — then there is no bar at all rather than one
+  // frozen at 0%, which reads as a stall. Only the .bin files carry a usable content-length.
+  function paint(label,frac){
+    const shown=label+(frac==null?'…':' '+Math.round(frac*100)+'%');
+    if(mode==='btn'){
+      const b=$('run'); if(!b) return;
+      b.innerHTML=(frac==null?'':'<span style="position:absolute;top:0;bottom:0;left:0;width:'+(frac*100)+'%;background:rgba(255,255,255,.3);transition:width .2s ease-out"></span>')
+        +'<span style="position:relative">'+shown+'</span>';
+      return;
+    }
+    const c=card(); c.querySelector('[data-txt]').textContent=shown;
+    const bar=c.querySelector('[data-bar]');
+    bar.parentNode.style.display=(frac==null?'none':'');
+    bar.style.width=((frac||0)*100)+'%';
+  }
+  return {
+    // preferBtn: this load was launched from the ▶ button, so report progress on it if it's visible
+    start(label,preferBtn){
+      mode=(preferBtn&&btnUsable())?'btn':'card';
+      if(mode==='btn'){ const b=$('run'); if(btnHTML==null) btnHTML=b.innerHTML; b.disabled=true; b.style.position='relative'; b.style.overflow='hidden'; b.style.cursor='progress'; }
+      paint(label,null);
+    },
+    set(label,frac){ if(mode) paint(label,frac); },
+    // For a step that can be reached with no surface up yet (a second run only needs the smaller
+    // earnings/shareholding files, so ensureData() never ran).
+    ensure(label,preferBtn){ if(mode) paint(label,null); else this.start(label,preferBtn); },
+    active(){ return mode!==null; },
+    done(){
+      if(mode==='btn'){ const b=$('run'); if(b){ b.disabled=false; b.style.position=''; b.style.overflow=''; b.style.cursor=''; if(btnHTML!=null) b.innerHTML=btnHTML; } }
+      btnHTML=null; mode=null;
+      const c=$('loadCard'); if(c) c.remove();
+    },
+    // Keep the message where the user was already looking: a button-mode failure restores the button
+    // and writes next to it; anything else becomes the card, stripped of its spinner and bar.
+    fail(msg){
+      if(mode==='btn'){ this.done(); const m=$('runMsg'); if(m) m.textContent=msg; return; }
+      const c=card(); mode=null;
+      const sp=c.querySelector('.animate-spin'); if(sp) sp.remove();
+      c.querySelector('[data-txt]').textContent=msg;
+      const bar=c.querySelector('[data-bar]'); if(bar) bar.parentNode.remove();
+    }
+  };
+})();
+/* fetch → ArrayBuffer, reporting real byte progress instead of a made-up size. content-length is
+ * the wire (Pages-compressed) length while the reader yields the bytes AFTER the browser strips
+ * that layer — for our .bin files (already gzip, so Pages' second pass gains ~1%) the two are
+ * within ~1.5% of each other, hence the clamp. Bodies without a length just spin. */
+async function fetchProgress(url,label,init){
+  const resp=await fetch(url,init);
+  if(!resp.ok) throw new Error('HTTP '+resp.status+' '+url);
+  const total=+(resp.headers.get('content-length')||0);
+  if(!total||!resp.body||!resp.body.getReader){ LoadUI.set(label,null); return await resp.arrayBuffer(); }
+  const reader=resp.body.getReader(); const chunks=[]; let got=0;
+  for(;;){
+    const {done,value}=await reader.read();
+    if(done) break;
+    chunks.push(value); got+=value.length;
+    LoadUI.set(label,Math.min(got/total,1));
+  }
+  const out=new Uint8Array(got); let at=0;
+  for(const c of chunks){ out.set(c,at); at+=c.length; }
+  return out.buffer;
+}
+async function gunzipBuf(buf){
+  const stream=new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'));
+  return JSON.parse(await new Response(stream).text());
+}
+
 async function load(){
+  LoadUI.start('Loading market data',false);
   try{
-    const buf=await (await fetch('./stock_data.bin')).arrayBuffer();   // browser-cached (ETag); no cache-buster → instant on repeat loads
-    const stream=new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'));
-    const D=JSON.parse(await new Response(stream).text());
+    const buf=await fetchProgress('./stock_data.bin','Loading market data');   // browser-cached (ETag); no cache-buster → instant on repeat loads
+    const D=await gunzipBuf(buf);
     META=D.meta; SERIES=D.series; IDXH=D.indicesHistory||{}; FNOH=D.fnoHistory||[]; START_TS=D.startTs;
     SURV={meta:META, series:SERIES, idxh:IDXH, fnoh:FNOH, startTs:START_TS};
-  }catch(e){ $('ovT').textContent='Could not load stock_data.bin — has it been built yet?'; return; }
+  }catch(e){ console.error(e); LoadUI.fail('Could not load market data — the daily build may still be running. Reload to try again.'); return; }
   try{ NIFTY=(await (await fetch('./nifty.json')).json()).px||{}; }catch(e){ NIFTY={}; }
   try{ NIFTY500=(await (await fetch('./nifty500.json')).json()).px||{}; }catch(e){ NIFTY500={}; }
-  await initUI(); $('ov').remove();
+  await initUI(); LoadUI.done();
 }
 // Data lives in a dedicated same-origin repo (dhruvan246.github.io/sf-data/), force-pushed daily
 // and served from Pages — same origin as this page, so no CORS. Layout since 2026-08-03 is BY DATE
@@ -216,17 +316,14 @@ async function _sfClear(){ try{ const db=await _sfdb(); await new Promise(res=>{
 let _SF_CLEARED=false;
 async function _sfPart(file,key,ver,allowClear,label){
   let buf = ver ? await _sfGet(key+':'+ver) : null;
-  if(buf){ $('runMsg').textContent='Loading '+label+' (cached)…'; }
+  if(buf){ LoadUI.set('Loading '+label+' (cached)',null); }
   else{
-    $('runMsg').textContent='Loading '+label+'…';
+    LoadUI.set('Loading '+label,null);
     if(allowClear&&!_SF_CLEARED){ await _sfClear(); _SF_CLEARED=true; }   // evict any older version
-    const resp=await fetch(SF_BASE+file+'?v='+(ver||Date.now()),{cache:'reload'});
-    if(!resp.ok) throw new Error('HTTP '+resp.status+' '+file);
-    buf=await resp.arrayBuffer();
+    buf=await fetchProgress(SF_BASE+file+'?v='+(ver||Date.now()),'Loading '+label,{cache:'reload'});
     if(ver) _sfPut(key+':'+ver, buf);
   }
-  const stream=new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'));
-  return JSON.parse(await new Response(stream).text());
+  return await gunzipBuf(buf);
 }
 // Normalise one symbol's raw record into engine arrays (keep in sync with backtest-engine.js).
 function _sfNorm(o,ts){
@@ -269,7 +366,7 @@ async function loadSF(){
         nTot:M.nTot!=null?M.nTot:Object.keys(meta).length};
     SNAP_DATAVER=SF.end||SNAP_DATAVER;                        // authoritative data version for snapshot keys (see snapKey)
     $('runMsg').textContent=''; return true;
-  }catch(e){ $('runMsg').textContent='Could not load the market data — the survivorship-free build may still be running.'; console.error(e); return false; }
+  }catch(e){ console.error(e); LoadUI.fail('Could not load the market data — the survivorship-free build may still be running.'); return false; }
 }
 // Deep history (bars before SF.deepFrom) on demand — merge PREPENDS each symbol's older bars;
 // symbols that died before deepFrom arrive here for the first time. (Sync: backtest-engine.js.)
@@ -556,8 +653,7 @@ function renderSnapshotPage(snap, cfg){
   const ip=$('introP'); if(ip) ip.style.display='none';
   const h1=document.querySelector('h1'); if(h1) h1.textContent='📊 Backtest result';
   const hint=$('saveHint'); if(hint) hint.style.display='none';
-  render(snap, cfg);
-  const ov=$('ov'); if(ov) ov.remove();
+  render(snap, cfg);   // nothing to un-hide: this path never showed a loading state, because it never loads
 }
 
 // fundamentals (quarterly net profit) — loaded lazily, only when a profit factor is used
@@ -589,14 +685,14 @@ async function ensureData(){
   if(SF) return true;
   // Index/F&O membership + startTs come from stock_data.bin (SURV); prices come from the sf-data
   // parts via setMode('sf'). (SF mode overwrites SURV's price series, so only its membership is used.)
+  if(!LoadUI.active()) LoadUI.start('Loading market data',true);   // ⚡ Go Live and any other caller gets a surface too
   if(!SURV || !SURV.startTs){
     try{
-      const buf=await (await fetch('./stock_data.bin')).arrayBuffer();
-      const stream=new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'));
-      const D=JSON.parse(await new Response(stream).text());
+      const buf=await fetchProgress('./stock_data.bin','Loading market data');
+      const D=await gunzipBuf(buf);
       SURV={meta:D.meta, series:D.series, idxh:D.indicesHistory||{}, fnoh:D.fnoHistory||[], startTs:D.startTs};
       START_TS=D.startTs;
-    }catch(e){ $('runMsg').textContent='Could not load market data — please try again.'; console.error(e); return false; }
+    }catch(e){ console.error(e); LoadUI.fail('Could not load market data — please try again.'); return false; }
     try{ if(!NIFTY||!Object.keys(NIFTY).length) NIFTY=(await (await fetch('./nifty.json')).json()).px||{}; }catch(e){}
     try{ if(!NIFTY500||!Object.keys(NIFTY500).length) NIFTY500=(await (await fetch('./nifty500.json')).json()).px||{}; }catch(e){}
   }
@@ -608,15 +704,18 @@ async function run(){
   if(!cfg.start||!cfg.end||cfg.start>=cfg.end){ $('runMsg').textContent='Pick a valid date range.'; return; }
   window.__loadedSaved = isAlreadySaved(cfg);   // is this the config of an already-saved strategy? (hides a duplicate Save button)
   if(!SF){                                       // data deferred until a real Run — load it once now
-    $('runMsg').textContent='Loading price history (downloads once a day, then cached)…';
+    // The button the user just pressed IS the progress bar (LoadUI picks the card instead when it
+    // isn't on screen). Nothing announced a download before this line.
+    LoadUI.start('Preparing data',true);
     if(!await ensureData()) return;
     $('cFrom').value=cfg.start; $('cTo').value=cfg.end;   // setMode's updateModeUI resets the dates — restore the user's window
   }
-  if(needsDeepFor(cfg.start)){ try{ await ensureDeepHistory(); }catch(e){ $('runMsg').textContent='Could not load pre-'+SF.deepFrom.slice(0,4)+' history — try again.'; return; } }
-  if(needsFund(cfg)){ $('runMsg').textContent='Loading earnings data…'; await loadFund();
-    if(!Object.keys(FUND).length){ $('runMsg').textContent='Earnings data not available yet — try a non-fundamental factor.'; return; } }
-  if(needsShp(cfg)){ $('runMsg').textContent='Loading shareholding data…'; await loadShp();
-    if(!Object.keys(SHPD).length){ $('runMsg').textContent='Shareholding data not available yet — try another factor.'; return; } }
+  if(needsDeepFor(cfg.start)){ try{ await ensureDeepHistory(); }catch(e){ console.error(e); LoadUI.fail('Could not load pre-'+SF.deepFrom.slice(0,4)+' history — try again.'); return; } }
+  if(needsFund(cfg)){ LoadUI.ensure('Loading earnings data',true); await loadFund();
+    if(!Object.keys(FUND).length){ LoadUI.fail('Earnings data not available yet — try a non-fundamental factor.'); return; } }
+  if(needsShp(cfg)){ LoadUI.ensure('Loading shareholding data',true); await loadShp();
+    if(!Object.keys(SHPD).length){ LoadUI.fail('Shareholding data not available yet — try another factor.'); return; } }
+  LoadUI.done();
   $('runMsg').textContent='Running…';
   clearLiveOverlay();   // a previous ⚡ Go Live left a synthetic today-bar spliced on — the BACKTEST must never see it
   setTimeout(()=>{ try{ const res=simulate(cfg); LAST_RUN={cfg,res}; render(res,cfg); $('runMsg').textContent=res.membershipNote||''; saveSnapshot(cfg,res); autoSaveHistory().then(autoSaveStrategy); }
@@ -1361,7 +1460,7 @@ async function applyLiveOverlay(cfg, onProgress){
 }
 // Heavy market data on demand — a saved snapshot renders with none of it loaded.
 async function ensureLiveData(cfg, onMsg){
-  if(!SF){ onMsg&&onMsg('Loading price history (one-time, ~17 MB)…'); SUPPRESS_MODE_RESET=true;
+  if(!SF){ onMsg&&onMsg('Loading market data…'); SUPPRESS_MODE_RESET=true;   // ensureData() puts real progress on screen
     try{ if(!await ensureData()) return false; } finally{ SUPPRESS_MODE_RESET=false; } }
   if(needsFund(cfg)){ onMsg&&onMsg('Loading earnings data…'); await loadFund(); }
   if(needsShp(cfg)){ onMsg&&onMsg('Loading shareholding data…'); await loadShp(); }
@@ -1690,13 +1789,11 @@ async function bootBacktest(){
       await initUIStatic();
       await applyCfg(raw.cfg);                                     // DATA_MODE is already 'sf' → no engine load
       enterEditMode(raw);
-      const ov=$('ov'); if(ov) ov.remove();
       return;
     }
     if(raw){ await load(); return; }   // History/Saved "Load" or result-only — applyCfg loads the engine
   }catch(e){}
   await initUIStatic();                // direct visit — instant, no heavy data
-  const ov=$('ov'); if(ov) ov.remove();
 }
 bootBacktest();
 </script>
