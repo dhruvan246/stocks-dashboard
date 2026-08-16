@@ -29,8 +29,14 @@ NO ASSUMPTIONS (campaign golden rule)
 
 USAGE
   python3 scripts/n500_cov_cells.py build \
+      [--from 2020-01-01] [--to 9999-12-31] [--campaign N500_COVERAGE_100] \
       [--explain scripts/n500_cov_explain.json] [--out scripts/n500_cov_queue.json]
-  python3 scripts/n500_cov_cells.py --check
+  python3 scripts/n500_cov_cells.py --check [--out <queue>]   # window read FROM the queue file
+
+WINDOW (added for the 2015→2020 era campaign, PLAN_N500_COVERAGE_2015_2020.md)
+  --from/--to bound the payload AND explain dates. A queue file records its own from/to,
+  and --check uses THOSE — never the CLI defaults — so checking an era queue can't silently
+  re-window it. Defaults keep the original 2020→date behaviour byte-identical.
 """
 import argparse, gzip, json, os, re, sys, collections
 
@@ -38,6 +44,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOCS = os.path.join(ROOT, 'docs')
 SCRIPTS = os.path.join(ROOT, 'scripts')
 FROM = '2020-01-01'
+TO = '9999-12-31'
+CAMPAIGN = 'N500_COVERAGE_100'
 UNIVERSE = 'nifty-500'
 
 
@@ -54,7 +62,7 @@ def payload_missing(U):
         miss = den = 0
         per_date = {}
         for di, d in enumerate(U['dates']):
-            if d < FROM:
+            if d < FROM or d > TO:
                 continue
             mem, c = U['members'][di], U['params'][pi][di]
             if c < 0 or mem < 0:                      # "–" no roll at this date
@@ -114,7 +122,7 @@ def build(explain_path, out_path):
     cells = collections.defaultdict(lambda: collections.defaultdict(list))
     norow = collections.defaultdict(list)      # symbol -> [months] (missing EVERYTHING)
     for date, params in sorted(ex['byDate'].items()):
-        if date < FROM:
+        if date < FROM or date > TO:
             continue
         for pk, syms in params.items():
             if pk == '__norow':
@@ -158,8 +166,8 @@ def build(explain_path, out_path):
 
     parity = check_parity(rows, pm, verbose=True)
     doc = {
-        'campaign': 'N500_COVERAGE_100',
-        'universe': UNIVERSE, 'from': FROM,
+        'campaign': CAMPAIGN,
+        'universe': UNIVERSE, 'from': FROM, 'to': TO,
         'payload_updated': U['updated'], 'payload_dataEnd': U['dataEnd'],
         'explain_generated': ex.get('generated'),
         'n_rows': len(rows),
@@ -230,14 +238,23 @@ def check_parity(rows, pm, verbose=False):
 
 
 def main():
+    global FROM, TO, CAMPAIGN
     ap = argparse.ArgumentParser()
     ap.add_argument('cmd', nargs='?', default='build', choices=['build'])
     ap.add_argument('--explain', default=os.path.join(SCRIPTS, 'n500_cov_explain.json'))
     ap.add_argument('--out', default=os.path.join(SCRIPTS, 'n500_cov_queue.json'))
+    ap.add_argument('--from', dest='frm', default=FROM, help='first payload date counted (YYYY-MM-DD)')
+    ap.add_argument('--to', dest='to', default=TO, help='last payload date counted (YYYY-MM-DD)')
+    ap.add_argument('--campaign', default=CAMPAIGN)
     ap.add_argument('--check', action='store_true', help='re-assert parity of the existing queue')
     a = ap.parse_args()
+    FROM, TO, CAMPAIGN = a.frm, a.to, a.campaign
     if a.check:
         q = json.load(open(a.out))
+        # The queue's own window governs the check — CLI defaults must never re-window an era
+        # queue (a 2015-19 queue checked against the 2020→date window would read as total FAIL).
+        FROM = q.get('from', FROM)
+        TO = q.get('to', TO)
         U = load_payload()
         # ⚠️ BAKE SKEW comes first. A queue is only comparable to the payload it was built from.
         # Local bakes are reverted after building (the release asset lags CI — campaign P0 note 1),
@@ -252,8 +269,9 @@ def main():
             print(f"  payload on disk is      : {U['updated']}  (dataEnd {U['dataEnd']})")
             print('  Re-bake and rebuild the queue before trusting a parity result:')
             print('    node --max-old-space-size=12288 scripts/build_coverage_matrix.js --bin auto \\')
-            print('         --out docs/coverage --explain nifty-500 --explain-from 2020-01-01')
-            print('    python3 scripts/n500_cov_cells.py build')
+            print(f'         --out docs/coverage --explain nifty-500 --explain-from {FROM}' +
+                  (f' --explain-to {TO}' if TO < '9999-12-31' else ''))
+            print(f'    python3 scripts/n500_cov_cells.py build --from {FROM} --to {TO} --out {a.out}')
             print(f"  (stored parity at build time: {'PASS' if q.get('parity', {}).get('ok') else 'FAIL'})")
             return 2
         r = check_parity(q['rows'], pm := payload_missing(U), verbose=True)

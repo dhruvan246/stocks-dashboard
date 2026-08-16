@@ -1,6 +1,12 @@
 # PLAN — N500 COVERAGE 2015→2020: same method, the earlier era, ALL 43 parameters
 
-**Written 2026-08-16 15:45 IST; findings ledger added 16:05 IST. Executor: OPUS, fresh session. Status: NOT STARTED.**
+**Written 2026-08-16 15:45 IST; findings ledger added 16:05 IST. Executor: Fable, session started 2026-08-16 15:25 IST. Status: P0 DONE (2026-08-16 16:15 IST) — see §0b. NEXT: P4 non-ebit fills (industry / rev / price defects), P1 in-era N/A verification.**
+
+> ⚠️ **F19 DECIDED-DEFERRED (user, 2026-08-16 15:30 IST): ALL ebit work is ON HOLD.** Verbatim: *"do
+> other params first. EBIT part other session will let u know later. keep that on hold."* Until that
+> word arrives: no ebit fills, no NBFC decision assumed either way, no INDIANB retraction (F21), no
+> banking second-reader ledger writes (F22), no coverage_na_ledger ebit edits. ebit rows still get
+> MEASURED and queued (analysis); only writes are held. Every other parameter proceeds.
 Parent method: `scripts/N500_COVERAGE_100_CAMPAIGN.md` (2020→date; P0–P2 done, live at 2,252
 missing). Sibling: `scripts/PLAN_XBRL_FILER_FORMAT.md` (Phase A done; its verdicts feed this).
 
@@ -9,6 +15,92 @@ missing). Sibling: `scripts/PLAN_XBRL_FILER_FORMAT.md` (Phase A done; its verdic
 > *"do not miss any. work on every single stock"*; and **2026-08-16: "not just those 12 — other
 > cells which were filled for 2020-26 might be empty before 2020"** — scope is ALL 43 parameters,
 > never the 2020+ residue list.
+
+## 0b. P0 RESULTS — measured 2026-08-16 15:30–16:15 IST. Supersedes §2 where they differ.
+
+**Worktree:** `~/stocks-wt/n500-cov-2015` (fresh). ⚠️ `~/stocks-wt/n500-cov` is NOT free — the
+parent-campaign session owns it and was committing from it at 15:32 (`43d43e6f`). This session
+baked into it before noticing, then restored it file-scoped to clean; nothing of theirs was lost
+(every dirty file was this session's own bake, mtime 15:36).
+
+**The baseline moved before work started.** The peer session's lender-ebit N/A (`43d43e6f`, user
+decision "show nbfc and banks like screener do") landed mid-session and CI re-baked at 15:36
+(`66ef9378`). In-era effect: **ebit 20,840 → 19,923 missing (26.857% → 27.750%)**; total
+**37,789 → 36,872**. The other 42 params are unchanged; §2's table is otherwise still exact.
+
+**Queue: `scripts/n500_cov_queue_2015.json` — 2,627 rows · 36,356 named cells · PARITY PASS on all
+43 params, per-(param,date), against CI's COMMITTED payload** (`2026-08-16 15:36 IST`, dataEnd
+08-14) — not a local bake, so F5 holds by construction and the queue reconciles to what the live
+page serves. (36,872 − 36,356 = 516 = the 12 `__norow` cells counted against all 43 params.)
+Tools now take `--from/--to/--campaign` (`n500_cov_cells.py`), `--queue/--facts`
+(`n500_cov_adjudicate.py`), `--explain-to` (builder). Defaults keep 2020→date behaviour identical;
+`--check` reads the window from the queue file, so an era queue cannot be silently re-windowed.
+
+**First adjudication pass (P2 head start):** 1,377 cells C3 pre-history (measured), 34,991
+`needs-source`, 262 rows closed. No C1 appears in-era because ledger names are already excluded by
+the bake — correct, not a miss.
+
+### P0's four questions, answered by measurement
+
+**(a) The 12 price cells are 4 names and THREE different mechanisms — not one problem.**
+
+| name | cells | measured mechanism | verdict |
+|---|---|---|---|
+| HUDCO 2017-05-31 · DALBHARAT 2019-01-31 | 2 | listed 12 / 9 days before the month-end; `factorsAt` needs `p0 = priceAt(off−30)`, and the stock did not exist then → row skipped entirely | **C3, correct refusal.** A 1-month change cannot exist 9 days after listing. Not fillable. |
+| KIOCL 2017-01-31, 2017-02-28 | 2 | last bar 56d and 19d stale → fails the engine's 14-day entry-freshness gate; only 3 bars within 45d of 2017-01-31 | needs a source read: real suspension vs missing bars (§88 era-floor) |
+| RASOYPR 2015-01→2015-08 | 8 | **close/high/low/open/vwap all exactly 0.00 on all 246 bars of 2015 while volume and turnover are real** (96.7M shares, ₹441 lakh in one day) → engine's `p0 <= 0` skips the row | **C4 real defect.** True price recoverable from turnover÷volume: 286,300 ÷ 190,867 = **₹1.50** at 2015-01-01. |
+
+⚠️ **New defect class, bounded bin-wide: 115 symbols / 43,601 bars carry close==0 with v>0 and
+t>0** (VISESHINFO 4,041 · ANTGRAPHIC 3,486 · BLUECHIP 3,455 · KSERASERA 3,282 · SUJANAUNI 2,902 …);
+**15 symbols overlap 2015-2019.** Only RASOYPR is an N500 member in-window, but the class degrades
+`all`/`liquid` and any backtest screening them. t÷v is the free second reader
+([[feedback-turnover-step-reads-adjustment]]).
+
+**(b) `op`'s non-monotonic shape is an EXTRACTION-CAMPAIGN shape, not a source-reach shape.**
+Fill rate of sf_revop's op slot **per quarter**, over every symbol holding that quarter:
+
+| quarter block | symbols/qtr | op% | ebit% |
+|---|---|---|---|
+| 2013Q1–2014Q4 | ~490 | **10–13%** | 0.0% |
+| 20150331–20161231 | 519–604 | **71–93%** | ~0% |
+| **20170331–20171231** | 575–815 | **19–49%** | 0.7–32% |
+| 20180331 onward | **1,523–1,819** | **93–99%** | 86–96% |
+
+The 2018 step is `build_revop.py`'s `MIN_QE = 20180101` **and** the cache's own reach: a read-only
+census of all 104,331 cached filings (using build_revop's own regexes; 100% of filenames parsed,
+0 errors) finds submissions only from 2018 on. **Pre-2018 the cache holds just 318 (symbol,quarter)
+pairs across 5 QEs — 285 of them 20170331** (276 carrying all five industrial tags), then
+20170630: 20 · 20170930: 4 · 20171231: 8 · 20161231: 1. ⇒ **lowering MIN_QE recovers Mar-2017 for
+~285 names and essentially nothing else; Jun/Sep/Dec-2017 need a network route.**
+The 2017 cells are not empty rows: `revop_fundamentals.json` (reaches 2002; written by ~20 campaign
+scripts, not just build_revop) holds 2,541 quarters for 2017 with **rev ✓ and PAT ✓ but `op` =
+None** — GRINDWELL, SJVN and TIMKEN all show exactly that across the FY2017-18 quarters. So 2015-16
+op came from earlier backfill campaigns and **2017 got a rev/PAT-only pass with no op pass**: one
+column left unextracted from filings already read, which is why the year sags between two healthy
+neighbours. Route: whatever supplied rev/PAT for those same (name, quarter) cells.
+⚠️ The peer session reported the XBRL cache "absent on this Mac". It is **present** — 104,331 files
+at `/Users/dhruvan/stocks-dashboard/scripts/_xbrl_cache`, untracked, so it exists only in the MAIN
+checkout and appears in no worktree. Corrected to them 2026-08-16.
+
+**(c) `industry` is SURVIVORSHIP, not classification.** `build_sf_data.py:549-551` sets the bin's
+`meta.ind` from `cur` — the **currently-listed** universe — so every delisted era member falls
+through to `"Unknown"`, which `build_coverage_matrix.js:542` counts as not-covered. **2,008 of the
+live bin's 4,445 symbols carry this gap.** The route exists and is one-directional (never
+overwrites a live classification): `scripts/industry_fills.json` — BSE `IndustryNew` via
+ComHeadernew, gated `isin-exact + bse-isin-confirmed`, applied at `update_sf_data.py:1014-1022`,
+**26 entries today**. Extending it per delisted era member is P4's route. The monotonic year shape
+(88.4% → 97.6%) is exactly what a survivorship gap predicts.
+
+**(d) The 441 `rev` cells (144 names; 259 in 2016) are at least TWO defect classes.**
+- **Our-data quarter boundary / unextracted rev** — GRINDWELL's oldest fundamentals row is 20160331
+  (ann 20160515) with rev null; its first usable rev is 20160630 (ann 20160922), exactly where its
+  5 missing months end. SJVN is identical. Many names share the *same* window
+  2016-04-29..2016-08-31, so this is one systemic boundary, not 144 stories.
+- **Announce-date copy artifacts** — KRBL holds rev for 20150930 and 20151231, but those quarters
+  carry ann dates **20161114 and 20170214** — the *2016* quarters' dates (20160930→20161114 and
+  20161231→20170214 each appear twice). The 2015 rows are stamped a year late, so real revenue is
+  invisible for 11 month-ends. Heal via `ann_date_fills.json` with REAL announce dates only
+  (§99 — a fabricated date regrows as a look-ahead).
 
 ## 1. Scope & goal
 

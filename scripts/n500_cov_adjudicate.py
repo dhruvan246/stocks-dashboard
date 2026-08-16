@@ -21,14 +21,21 @@ INPUTS   scripts/n500_cov_queue.json, scripts/n500_cov_facts.json (from --facts)
          sf_revop, shp_engine, coverage_na_ledger
 OUTPUT   rewrites n500_cov_queue.json with class / evidence / status filled, and prints the split
 """
-import json, os, sys, collections, datetime
+import argparse, json, os, sys, collections, datetime
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOCS, SCRIPTS = os.path.join(ROOT, 'docs'), os.path.join(ROOT, 'scripts')
-TODAY = '2026-08-16'
+TODAY = datetime.date.today().isoformat()
 
-Q = json.load(open(os.path.join(SCRIPTS, 'n500_cov_queue.json')))
-F = json.load(open(os.path.join(SCRIPTS, 'n500_cov_facts.json')))
+_ap = argparse.ArgumentParser()
+_ap.add_argument('--queue', default=os.path.join(SCRIPTS, 'n500_cov_queue.json'),
+                 help='queue file to adjudicate IN PLACE (era campaigns pass their own)')
+_ap.add_argument('--facts', default=os.path.join(SCRIPTS, 'n500_cov_facts.json'))
+_A = _ap.parse_args()
+
+QUEUE_PATH = _A.queue
+Q = json.load(open(QUEUE_PATH))
+F = json.load(open(_A.facts))
 FUNDJ = json.load(open(os.path.join(DOCS, 'sf_fundamentals.json')))
 REVOP = json.load(open(os.path.join(DOCS, 'sf_revop.json')))
 LEDGER = json.load(open(os.path.join(SCRIPTS, 'coverage_na_ledger.json')))
@@ -123,12 +130,25 @@ for r in Q['rows']:
         slot = {'rev': (1, 0), 'op': (3, 2), 'ebit': (8, 7)}[param]
         have = sum(1 for c in rmap.values()
                    if (len(c) > slot[0] and c[slot[0]] is not None) or (len(c) > slot[1] and c[slot[1]] is not None))
-        in_ledger = sym in LEDGER.get(param, {})
+        # A ledger verdict may carry from/to bounds (format belongs to the FILING, not the company
+        # — BAJFINANCE flips F/N both directions). Months OUTSIDE the bounds are NOT covered by the
+        # verdict: only a row whose every month the entry actually covers may inherit C1. A partial
+        # overlap means the queue and the ledger disagree about the bake — flag, don't guess.
+        entry = LEDGER.get(param, {}).get(sym)
+        led_months = [mo for mo in months
+                      if entry and not (entry.get('from') and mo < entry['from'])
+                      and not (entry.get('to') and mo > entry['to'])] if entry else []
         d0 = int(months[0].replace('-', ''))
         vis0 = visible_quarters(sym, d0)
-        if in_ledger:
+        if entry and len(led_months) == len(months):
             cls, status = 'C1', 'adjudicated-na'
-            evidence = LEDGER[param][sym]['reader_1']
+            evidence = entry['reader_1']
+        elif entry and led_months:
+            cls, status = 'needs-source', 'open'
+            evidence = (f'LEDGER/BAKE SKEW: {len(led_months)} of {len(months)} months fall inside '
+                        f'the {param} ledger entry\'s bounds (from={entry.get("from")}, '
+                        f'to={entry.get("to")}) yet the bake counted them missing, not N/A. '
+                        f'Re-bake before adjudicating. [{facts_line(sym)}]')
         elif not vis0 and FUND.get(sym, {}).get('oldestQe'):
             cls, status = 'C3', 'adjudicated-na'
             evidence = (f'PRE-HISTORY (measured {TODAY}): no quarter of this symbol had been FILED '
@@ -169,7 +189,7 @@ for r in Q['rows']:
 
 Q['rows'] = out_rows
 Q['adjudicated'] = TODAY
-json.dump(Q, open(os.path.join(SCRIPTS, 'n500_cov_queue.json'), 'w'), indent=1)
+json.dump(Q, open(QUEUE_PATH, 'w'), indent=1)
 
 print(f'adjudicated {len(out_rows)} rows / {sum(r["n"] for r in out_rows)} cells\n')
 print(f"{'param':14s} {'class':14s} {'cells':>6s} {'names':>6s}")

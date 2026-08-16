@@ -50,12 +50,13 @@ const OUT_DIR = path.resolve(ROOT, arg('out', 'docs/coverage'));
 const BIN_ARG = arg('bin', 'auto');
 const FROM = arg('from', '2002-01');          // true daily bars start 2002-01-02; earlier is weekly
 const MAX_DATES = +arg('dates', 0) || 0;      // 0 = all (a small N is the dev/smoke setting)
-/* --explain <slug> [--explain-from YYYY-MM-DD] [--explain-out <path>]
+/* --explain <slug> [--explain-from YYYY-MM-DD] [--explain-to YYYY-MM-DD] [--explain-out <path>]
  * Names the symbols behind every sub-100 cell for ONE universe, emitted from the same scan that
  * writes the payload — so the queue file and the page can never disagree. Analysis only: it does
  * not change a single counted cell. Off unless asked for. */
 const EXPLAIN = arg('explain', '') || null;
 const EXPLAIN_FROM = arg('explain-from', '0000-00-00');
+const EXPLAIN_TO = arg('explain-to', '9999-12-31');
 const EXPLAIN_PATH = arg('explain-out', 'scripts/n500_cov_explain.json');
 const EXPLAIN_OUT = {};
 /* --facts <path>: dump per-symbol first-bar / oldest-filing / first-SHP boundaries from the engine's
@@ -585,7 +586,7 @@ function run(ctx, C) {
       let n = 0;
       // --explain: name the symbols behind every sub-100 cell, through THIS vm run (§92 — the
       // counts and the names must come from one measurement, or the queue can drift from the page).
-      const ex = (EXPLAIN && u.slug === EXPLAIN && d.iso >= EXPLAIN_FROM) ? (EXPLAIN_OUT[d.iso] = {}) : null;
+      const ex = (EXPLAIN && u.slug === EXPLAIN && d.iso >= EXPLAIN_FROM && d.iso <= EXPLAIN_TO) ? (EXPLAIN_OUT[d.iso] = {}) : null;
       const seen = ex ? new Set() : null;
       for (const r of perRow) {
         if (set && !set.has(r.sym)) continue;
@@ -673,7 +674,7 @@ function run(ctx, C) {
   if (EXPLAIN) {
     const p = path.resolve(ROOT, EXPLAIN_PATH);
     fs.writeFileSync(p, JSON.stringify({
-      universe: EXPLAIN, from: EXPLAIN_FROM, dataEnd: C.end,
+      universe: EXPLAIN, from: EXPLAIN_FROM, to: EXPLAIN_TO, dataEnd: C.end,
       generated: new Date().toISOString(), byDate: EXPLAIN_OUT,
     }));
     const nCells = Object.values(EXPLAIN_OUT).reduce((a, o) => a + Object.values(o).reduce((b, l) => b + l.length, 0), 0);
