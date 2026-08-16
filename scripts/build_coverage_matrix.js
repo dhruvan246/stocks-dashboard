@@ -698,12 +698,53 @@ function run(ctx, C) {
               const ps = String(pq);
               const pqOff = dayOff(ps.slice(0, 4) + '-' + ps.slice(4, 6) + '-' + ps.slice(6, 8));
               const serP = (SERIES[r.tkr] && SERIES[r.tkr].d && SERIES[r.tkr].d.length) ? SERIES[r.tkr].d[0] : null;
-              if (firstQe && firstQe > pq && serP != null && pqOff < serP) {
+              // Second reader, alias-aware: FUND_ALIAS bridges a predecessor's tape into a merged
+              // entity's ticker (DHFL/DEWANHOUS → PIRAMALFIN), so for those the series start is the
+              // OLD company's 1990s bar and the tape can never confirm a fresh listing. The SHP
+              // feed carries its own listing record for exactly this case: an IPO-anchor EVENT row
+              // (§22k) — a non-quarter-end row dated at listing and submitted within days of that
+              // date (PIRAMALFIN: 20251107, submitted 20251111 — a real filed document, not an
+              // inference from absence). Either reader confirming pre-listing suffices; both
+              // silent → verdict withheld, the cell stays visible.
+              let ipoAnchorOk = false;
+              if (firstQe && !isQuarterEnd(firstQe) && firstQe > pq) {
+                for (const q of shp) {
+                  if (q[0] === firstQe && q[3] > 0) {
+                    const fs = String(firstQe);
+                    const fOff = dayOff(fs.slice(0, 4) + '-' + fs.slice(4, 6) + '-' + fs.slice(6, 8));
+                    const ss = String(q[3]);
+                    const sOff = dayOff(ss.slice(0, 4) + '-' + ss.slice(4, 6) + '-' + ss.slice(6, 8));
+                    if (sOff != null && fOff != null && sOff - fOff >= 0 && sOff - fOff <= 10) ipoAnchorOk = true;
+                    break;
+                  }
+                }
+              }
+              if (firstQe && firstQe > pq && ((serP != null && pqOff < serP) || ipoAnchorOk)) {
                 ['fiiChgPp', 'diiChgPp'].forEach(function (k) {
                   const j = keys.indexOf(k);
                   if (j >= 0 && !flags[j]) na[j] = 1;
                 });
               }
+            }
+          } else if (cur && !isQuarterEnd(cur[0])) {
+            // LATE-FILED CURRENT — the same look-ahead refusal as LATE-FILED PRIOR, one row over.
+            // When the visible row is a mid-quarter EVENT row, the quarter-end row that SHOULD be
+            // current can exist in shp yet have been submitted only after this screen date —
+            // TBOTEK at 2024-09-30: visible row is the 2024-05-15 IPO anchor because its Jun-2024
+            // quarterly SHP was submitted 2024-12-31, six months late, and even the Sep-2024 one
+            // arrived 2024-10-17. No document a live trader could read carried a quarterly pair,
+            // so the delta was uncomputable on that date; it computes on its own once the late
+            // submission date passes. Gated on the row EXISTING with a real submission date that
+            // is provably later — an absent quarter-end row proves nothing and stays visible.
+            let nextQe = null;
+            for (const q of shp) {
+              if (isQuarterEnd(q[0]) && q[0] > cur[0] && (!nextQe || q[0] < nextQe[0])) nextQe = q;
+            }
+            if (nextQe && nextQe[3] > __DATEINT) {
+              ['fiiChgPp', 'diiChgPp'].forEach(function (k) {
+                const j = keys.indexOf(k);
+                if (j >= 0 && !flags[j]) na[j] = 1;
+              });
             }
           }
         }
