@@ -58,6 +58,9 @@ const EXPLAIN = arg('explain', '') || null;
 const EXPLAIN_FROM = arg('explain-from', '0000-00-00');
 const EXPLAIN_PATH = arg('explain-out', 'scripts/n500_cov_explain.json');
 const EXPLAIN_OUT = {};
+/* --facts <path>: dump per-symbol first-bar / oldest-filing / first-SHP boundaries from the engine's
+ * own loaded state, for adjudicating pre-history classes. Analysis only, like --explain. */
+const FACTS_PATH = arg('facts', '') || null;
 
 const log = (...a) => console.log('[coverage]', ...a);
 
@@ -506,15 +509,27 @@ function run(ctx, C) {
             for (let i = arr.length - 1; i >= 0; i--) { if (arr[i][3] != null && arr[i][4] > 0 && arr[i][4] <= __DATEINT) { ci = i; ni = 3; break; } }
             if (ci < 0) for (let i = arr.length - 1; i >= 0; i--) { if (arr[i][1] != null && arr[i][2] > 0 && arr[i][2] <= __DATEINT) { ci = i; ni = 1; break; } }
             if (ci >= 0) {
-              const need = arr[ci][0] - 10000;
               let oldest = 99999999;
               for (const q of arr) if (q[0] < oldest) oldest = q[0];
-              if (need < oldest) {
-                ['profitYoyPct', 'profitBase', 'profitStreak'].forEach(function (k) {
-                  const j = keys.indexOf(k);
-                  if (j >= 0 && !flags[j]) na[j] = 1;
-                });
-              }
+              // How far back each parameter REACHES, in quarters, from the latest visible one.
+              // Same test for all of them, and the same one this rule always applied to the YoY
+              // trio: is the quarter it reaches for older than any row this symbol has? Then it
+              // predates the company's existence as this entity and cannot be filled. If it falls
+              // INSIDE the symbol's own span the quarter should be on file, so a null there stays a
+              // visible gap — CELLO needs 2022-12 while holding rows from 2022-06 and is
+              // deliberately NOT marked N/A. Generalised beyond the YoY trio 2026-08-16: profitTTM
+              // reaches 7 quarters back and profitAccel 5, and both were counting a demerged or
+              // freshly-listed company's own pre-existence as a coverage gap — 440 and 61
+              // member-dates in Nifty 500 alone. composite is gated on profitTTM because it is null
+              // whenever profitTTM is (z(profitTTM) + z(ret12m) − z(vol)).
+              const REACH = { profitYoyPct: 4, profitBase: 4, profitStreak: 4, profitAccel: 5, profitTTM: 7, composite: 7 };
+              Object.keys(REACH).forEach(function (k) {
+                const j = keys.indexOf(k);
+                if (j < 0 || flags[j]) return;
+                let need = arr[ci][0];
+                for (let s = 0; s < REACH[k]; s++) need = prevQeInt(need);
+                if (need < oldest) na[j] = 1;
+              });
             }
           }
         }
@@ -614,6 +629,45 @@ function run(ctx, C) {
       lastLog = Date.now();
       log(`  ${di + 1}/${dates.length} ${d.iso} · ${rows.length} rows · ${((Date.now() - C.t0) / 1000).toFixed(0)}s`);
     }
+  }
+
+  /* --facts: per-symbol point-in-time boundaries, read from the ENGINE's own loaded state, for
+   * adjudicating whether a missing cell could ever have existed (campaign class C3 PRE-HISTORY).
+   * firstBar is the only one of these the repo cannot answer locally — it lives in the 193 MB bin —
+   * so it has to come from here. Emitted once per symbol, not per date. */
+  if (FACTS_PATH) {
+    const syms = vm.runInContext(`(function(){
+      const out = {};
+      for (const tkr in SERIES) {
+        const m = META[tkr]; if (!m) continue;
+        const s = SERIES[tkr];
+        if (!s || !s.d || !s.d.length) continue;
+        out[m.symbol] = { firstBar: isoOff(s.d[0]), lastBar: isoOff(s.d[s.d.length - 1]), nBars: s.d.length };
+      }
+      return out;
+    })()`, ctx);
+    const fundOldest = vm.runInContext(`(function(){
+      const out = {};
+      for (const sym in FUND) {
+        const a = FUND[sym]; if (!a || !a.length) continue;
+        let lo = 99999999, hi = 0;
+        for (const q of a) { if (q[0] < lo) lo = q[0]; if (q[0] > hi) hi = q[0]; }
+        out[sym] = { oldestQe: lo, newestQe: hi, nRows: a.length };
+      }
+      return out;
+    })()`, ctx);
+    const shpFirst = vm.runInContext(`(function(){
+      const out = {};
+      for (const sym in SHPD) {
+        const a = SHPD[sym]; if (!a || !a.length) continue;
+        let f = 0; for (const q of a) if (q[3] > 0 && (!f || q[3] < f)) f = q[3];
+        out[sym] = { firstSub: f, nRows: a.length, oldestQe: a[0] ? a[0][0] : null };
+      }
+      return out;
+    })()`, ctx);
+    const p = path.resolve(ROOT, FACTS_PATH);
+    fs.writeFileSync(p, JSON.stringify({ generated: new Date().toISOString(), dataEnd: C.end, series: syms, fund: fundOldest, shp: shpFirst }));
+    log(`--facts: wrote ${p} · ${Object.keys(syms).length} series · ${Object.keys(fundOldest).length} fund · ${Object.keys(shpFirst).length} shp`);
   }
 
   if (EXPLAIN) {
