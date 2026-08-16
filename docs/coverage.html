@@ -345,6 +345,15 @@
     if (count < 0 || mem < 0) return '<td><span class="pl na" title="no membership roll at this date">–</span></td>';
     na = na || 0;
     var den = Math.max(0, mem - na);
+    // EVERY member is N/A — there is no denominator, so there is no percentage to show. Printing
+    // "0" here reads as total data failure when the truth is that the question does not apply to
+    // anyone in this universe: Nifty Bank's ebit column is 78 straight month-ends of banks, none of
+    // which report an EBIT line at all. Same "–" as a date with no membership roll, because it
+    // means the same thing — nothing to measure — and the tooltip says which case it is.
+    if (den === 0 && na > 0) {
+      return '<td><span class="pl na" title="' + esc(title) +
+        '">–</span></td>';
+    }
     var r = den > 0 ? count / den : (count > 0 ? 1 : 0);
     var txt = PCT ? (den > 0 ? (r * 100).toFixed(den > 400 ? 1 : 0) : '0') : String(count);
     // 8%→92% ink so even 0 keeps a visible cell edge, and 100% is not pure accent
@@ -396,16 +405,24 @@
         if (OPEN[f.id]) {
           f.params.forEach(function (p) {
             var pi = pKey[p.k], c = U.params[pi][di], na = naAt(pi, di);
-            tr += cell(c, mem, false, p.k + ' · ' + U.dates[di] + ' · ' + c + ' of ' + (mem - na) +
-              (na ? ' (' + na + ' N/A — the parameter cannot exist for them, excluded)' : ''), na);
+            tr += cell(c, mem, false,
+              (mem - na <= 0 && na > 0)
+                ? p.k + ' · ' + U.dates[di] + ' · not applicable to any of the ' + na +
+                  ' members at this date — nothing to measure, so no percentage is shown'
+                : p.k + ' · ' + U.dates[di] + ' · ' + c + ' of ' + (mem - na) +
+                  (na ? ' (' + na + ' N/A — the parameter cannot exist for them, excluded)' : ''),
+              na);
           });
         } else {
           var pair = FAM[fi][di];
           var c = (pair === -1) ? -1 : pair[0];
           var fna = (pair === -1) ? 0 : (pair[2] || 0);
           var weakest = (pair === -1) ? '' : f.params[pair[1]].k;
-          var t = f.label + ' · ' + U.dates[di] + ' · ' + c + ' of ' + (mem - fna) +
-            (fna ? ' (' + fna + ' N/A, excluded)' : '') +
+          var t = ((mem - fna <= 0 && fna > 0)
+            ? f.label + ' · ' + U.dates[di] + ' · not applicable to any of the ' + fna +
+              ' members at this date — nothing to measure, so no percentage is shown'
+            : f.label + ' · ' + U.dates[di] + ' · ' + c + ' of ' + (mem - fna) +
+              (fna ? ' (' + fna + ' N/A, excluded)' : '')) +
             (weakest ? ' · weakest: ' + weakest : '') +
             (fl ? ' · FLAGGED (neighbours ≈ ' + fl.med + ')' : '');
           tr += cell(c, mem, !!fl, t, fna);

@@ -127,15 +127,15 @@ const FAMILIES = [
   { id: 'revenue', label: 'Revenue & margins', src: 'revop', note: 'From sf_revop, made point-in-time with sf_fundamentals\' filing date for the same quarter.', params: [
     { k: 'rev', src: 'revop', rule: 'Revenue (consolidated, else standalone) for the latest quarter filed on or before the date.' },
     { k: 'op', src: 'revop', rule: 'Operating profit (consolidated, else standalone) for that same quarter.' },
-    { k: 'ebit', src: 'revop', rule: 'EBIT for that same quarter — the sparsest slot in the file.' },
+    { k: 'ebit', src: 'revop', rule: 'EBIT for that same quarter — the sparsest slot in the file. Derived upstream as Operating Profit − Depreciation. Banking-format filers are N/A: their P&L runs Interest Earned → Interest Expended → Operating Profit BEFORE provisions, so interest is already deducted and "earnings before interest" does not exist for them — no filing, and neither screener.in nor Moneycontrol, carries the line. Per-name evidence in scripts/coverage_na_ledger.json; nothing is excluded without it.' },
   ] },
   { id: 'fii', label: 'FII', note: 'Quarterly shareholding filings, visible from their submission date.', params: [
     { k: 'fiiPct', rule: 'FII holding % from the latest SHP filing submitted on or before the date.' },
-    { k: 'fiiChgPp', rule: 'QoQ change in pp — needs the calendar-previous quarter too, and is deliberately never computed across the Sep-2022 SEBI reclassification.' },
+    { k: 'fiiChgPp', rule: 'QoQ change in pp — needs the calendar-previous quarter too, and is deliberately never computed across the Sep-2022 SEBI reclassification (DR blocks moved into FII/DII — a paperwork change, not a stake change). Rows whose visible filing IS 2022-09-30 are N/A, not missing: that is a refusal, not a gap. Companies whose visible filing is a mid-quarter event row dated after 30-Sep keep a real delta and stay in the denominator.' },
   ] },
   { id: 'dii', label: 'DII', note: 'Same filings as FII.', params: [
     { k: 'diiPct', rule: 'DII holding % from that same filing.' },
-    { k: 'diiChgPp', rule: 'QoQ change in pp — same previous-quarter and Sep-2022 rules as FII.' },
+    { k: 'diiChgPp', rule: 'QoQ change in pp — same previous-quarter, Sep-2022 refusal and N/A rules as FII.' },
   ] },
   { id: 'industry', label: 'Industry', src: 'meta', note: 'Classification is a CURRENT attribute, not point-in-time — it answers "is this stock classified today", asked of that date\'s members.', params: [
     { k: 'industry', src: 'meta', rule: 'The dataset\'s industry for the symbol is known (not "Unknown"/"Other").' },
@@ -260,6 +260,27 @@ function main() {
   const NIFTY = (readJSON(path.join(DOCS, 'nifty.json')).px) || {};
   const REVOP = readJSON(path.join(DOCS, 'sf_revop.json'));
   const FUNDJ = readJSON(path.join(DOCS, 'sf_fundamentals.json'));
+  /* Adjudicated NOT-APPLICABLE verdicts (scripts/coverage_na_ledger.json). Deliberately NOT a list
+   * of names in this file: an N/A is a claim about a specific filer, and the claim's evidence has
+   * to live beside it where a later session can audit or overturn it. Absent file = no verdicts and
+   * the page is unchanged, so the ledger can never fail open into hiding a real gap. */
+  const NA_LEDGER = (() => {
+    const p = path.join(ROOT, 'scripts', 'coverage_na_ledger.json');
+    if (!fs.existsSync(p)) { log('na ledger: absent — no N/A verdicts applied'); return {}; }
+    const j = JSON.parse(fs.readFileSync(p, 'utf8'));
+    const out = {};
+    for (const k in j) if (!k.startsWith('_')) out[k] = j[k];
+    log('na ledger: ' + (Object.keys(out).map(k => `${k}=${Object.keys(out[k]).length}`).join(' ') || 'empty'));
+    return out;
+  })();
+  // param -> sym -> entry, honouring optional from/to bounds on a verdict
+  const naLedgerHit = (param, sym, iso) => {
+    const e = NA_LEDGER[param] && NA_LEDGER[param][sym];
+    if (!e) return false;
+    if (e.from && iso < e.from) return false;
+    if (e.to && iso > e.to) return false;
+    return true;
+  };
 
   /* ---- context: the live engine, verbatim ---- */
   const ctx = vm.createContext({
@@ -301,12 +322,12 @@ function main() {
 
   return ctx.__loaded.then(([nf, ns]) => {
     log(`engine ready · ${Object.keys(vm.runInContext('META', ctx)).length} symbols · FUND ${nf} · SHPD ${ns}`);
-    run(ctx, { IDXH, FNOH, START_TS, REVOP, FUNDJ, end: RAW.end, t0 });
+    run(ctx, { IDXH, FNOH, START_TS, REVOP, FUNDJ, end: RAW.end, t0, naLedgerHit });
   });
 }
 
 function run(ctx, C) {
-  const { IDXH, FNOH, START_TS, REVOP, FUNDJ, end } = C;
+  const { IDXH, FNOH, START_TS, REVOP, FUNDJ, end, naLedgerHit } = C;
 
   /* ---- revenue visibility index: QE -> filing date, from sf_fundamentals ------------------
    * sf_revop carries no filing date of its own. sf_fundamentals does (idx2 std / idx4 con) for
@@ -450,6 +471,23 @@ function run(ctx, C) {
               if (j >= 0 && !flags[j]) na[j] = 1;
             });
           }
+          // fiiChgPp / diiChgPp: the engine NEVER computes a QoQ change across the Sep-2022 SEBI
+          // reclassification — depository-receipt blocks were moved into the FII/DII buckets, so
+          // the delta would report a paperwork change as a stake change (backtest-engine.js:689,
+          // the cur[0] !== 20220930 guard). Where the visible filing IS 2022-09-30 the change is not
+          // missing data, it is a refusal, and the page must not ask anyone to fill it. Gated on
+          // the row the engine would actually read, so the handful of companies whose visible
+          // filing is a mid-quarter EVENT row dated after 30-Sep (§22k) keep a real, computable
+          // delta and stay in the denominator: Nifty 500 goes 4/500, 8/500, 14/500 -> 4/4, 8/8,
+          // 14/14 across Oct/Nov/Dec-2022 rather than reading ~0%.
+          let cur = null;
+          for (let i = shp.length - 1; i >= 0; i--) { if (shp[i][3] > 0 && shp[i][3] <= __DATEINT) { cur = shp[i]; break; } }
+          if (cur && cur[0] === 20220930) {
+            ['fiiChgPp', 'diiChgPp'].forEach(function (k) {
+              const j = keys.indexOf(k);
+              if (j >= 0 && !flags[j]) na[j] = 1;
+            });
+          }
         }
         // profitYoyPct / profitBase / profitStreak: the YoY needs the SAME QUARTER A YEAR EARLIER.
         // For a company that listed or demerged inside the window, that quarter is older than any
@@ -511,7 +549,18 @@ function run(ctx, C) {
           rv[j] = (cell[ci] != null || cell[si] != null) ? 1 : 0;
         });
       }
-      return { sym, flags, turnover, indKnown, rv, na };
+      // ---- NOT-APPLICABLE for the revenue family, from the adjudicated ledger ----------------
+      // A banking-format filer has no EBIT line to report: its P&L runs Interest Earned → Interest
+      // Expended → Operating Profit BEFORE provisions, and interest is already deducted by then, so
+      // "earnings before interest" is not a quantity that exists for it. Counting that as a gap
+      // asked the page to fill a number no filing contains — 2,819 of the 3,402 missing ebit
+      // member-dates in Nifty 500 were this. Only symbols with per-name evidence in the ledger are
+      // marked; a name whose evidence is absent stays a visible gap on purpose.
+      const rvna = [0, 0, 0];
+      ['rev', 'op', 'ebit'].forEach((k, j) => {
+        if (!rv[j] && naLedgerHit(k, sym, d.iso)) rvna[j] = 1;
+      });
+      return { sym, flags, turnover, indKnown, rv, rvna, na };
     });
 
     for (const u of UNIVERSES) {
@@ -536,6 +585,7 @@ function run(ctx, C) {
         if (r.indKnown) cnt[iIndustry]++; else if (ex) (ex.industry ||= []).push(r.sym);
         for (let j = 0; j < 3; j++) {
           if (r.rv[j]) cnt[revCols[j]]++;
+          else if (r.rvna && r.rvna[j]) nac[revCols[j]]++;   // inapplicable, not missing
           else if (ex) (ex[PARAMS[revCols[j]].k] ||= []).push(r.sym);
         }
       }
@@ -603,11 +653,38 @@ const ROLL_MARGIN = 0.03;   // …and must miss the neighbours by ≥3pp before 
 // Both checks require the LEFT neighbourhood to be a real population. Without that, the first
 // month of every ramp reads as a crater: FII/DII coverage starting at 0 in 2002 is a floor, not
 // a hole, and a page that shouts about it teaches you to ignore it.
-function computeFlags(series, memberArr, hasRoll) {
+// ⚠️ Judged on COVERAGE RATIOS against the effective denominator (members − N/A), never on raw
+// counts. A count alone cannot tell a hole from a refusal: at Oct–Dec-2022 the FII/DII count
+// collapses to 4/8/14 because the engine declines to compute a QoQ change across the Sep-2022 SEBI
+// reclassification, and a raw-count detector called that a crater — three amber flags on Nifty 500
+// (and on eight other universes) pointing at deliberate behaviour. On ratios those dates read
+// 4/4, 8/8, 14/14 = 100% and correctly raise nothing. `den` also collapses to 0 where a parameter
+// applies to nobody (Nifty Bank's ebit), which is skipped outright — there is no coverage to judge.
+function computeFlags(series, denArr, memberArr, hasRoll) {
   const flags = [];
   for (let i = 0; i < series.length; i++) {
     const v = series[i]; if (v < 0) continue;
+    // ---- N/A guard, ahead of the count-based tests -------------------------------------------
+    // The tests below read RAW COUNTS, and a raw count cannot tell a hole from a refusal. At
+    // Oct–Dec-2022 the FII/DII count collapses to 4/8/14 because the engine declines to compute a
+    // QoQ change across the Sep-2022 SEBI reclassification — deliberate behaviour that lit three
+    // amber flags on Nifty 500 and fifteen more across other universes. Judge coverage of the
+    // population the parameter APPLIES to first: if that is healthy, the drop is explained and
+    // there is nothing to smell. (4/4, 8/8, 14/14 = 100%.) Deliberately narrow — a date whose
+    // applicable coverage is genuinely poor still falls through to the original tests unchanged.
+    const den = denArr[i];
+    if (den <= 0) continue;                          // applies to nobody — nothing to measure
     const lo = Math.max(0, i - NEIGH), hi = Math.min(series.length - 1, i + NEIGH);
+    {
+      // Compare against the NEIGHBOURS' applicable-coverage, not a flat floor. A flat floor would
+      // also swallow the live-edge `roll` flags, which are the ones worth keeping: a results season
+      // still landing genuinely reads worse than its neighbours and should smell. Only a date that
+      // keeps pace with its neighbourhood once N/A is excluded is let through silently.
+      const nbR = [];
+      for (let k = lo; k <= hi; k++) if (k !== i && denArr[k] > 0 && series[k] >= 0) nbR.push(series[k] / denArr[k]);
+      const nmedR = medianOf(nbR);
+      if (nmedR > 0 && v / den >= nmedR - ROLL_MARGIN) continue;
+    }
     const left = [], neigh = [];
     for (let k = lo; k <= hi; k++) { if (k === i || series[k] < 0) continue; neigh.push(series[k]); if (k < i) left.push(series[k]); }
     const med = medianOf(neigh), lmed = medianOf(left);
@@ -655,10 +732,22 @@ function writeOut(UNIVERSES, dates, counts, members, C, naCounts) {
         return lo === Infinity ? 0 : lo;
       });
     });
+    // The family's effective denominator: members minus the N/A of whichever parameter is the
+    // weakest here — the same pairing the page renders, so a flag is judged on the number the
+    // reader actually sees.
+    const famDen = FAMILIES.map(f => {
+      const idxs = f.params.map(p => PARAMS.findIndex(q => q.k === p.k && q.fam === f.id));
+      return dates.map((_, di) => {
+        if (mem[di] < 0) return -1;
+        let lo = Infinity, na = 0;
+        idxs.forEach(pi => { const v = cnt[di][pi]; if (v < lo) { lo = v; na = nac[di][pi] || 0; } });
+        return Math.max(0, mem[di] - na);
+      });
+    });
     const flagsByFam = {};
     let nFlags = 0;
     FAMILIES.forEach((f, fi) => {
-      const fl = computeFlags(famSeries[fi], Array.from(mem), u.kind === 'index');
+      const fl = computeFlags(famSeries[fi], famDen[fi], Array.from(mem), u.kind === 'index');
       if (fl.length) { flagsByFam[f.id] = fl; nFlags += fl.length; }
     });
 
