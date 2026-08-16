@@ -9353,6 +9353,18 @@ every time" is the intuition that was wrong — git's blob delta does not care a
   and, if its `end` is **≥2 days** past the payload's `dataEnd`, shows an amber strip saying the bake
   has not landed. 1 day is the normal gap between the evening data push and the 01:10 bake. Fails
   silent — a missing second opinion is not evidence of staleness ([[feedback-journalled-is-not-live]]).
+  The strip **re-hides** on a refresh that finds the bake caught up, and links straight at the workflow.
+- **Refreshing it (2026-08-16).** Two controls in the filter bar, because there are two different
+  "refresh"es and conflating them is how a user concludes the button is broken:
+  **`↻ Refresh`** drops the tab's per-universe cache and re-reads `index.json` + the shown universe
+  (`cache:'no-store'`; `sw.js` never intercepts `.json`, so this really hits origin). It CANNOT bake —
+  so it reports which of the two happened, comparing `index.updated` before/after: *"new bake · <stamp>"*
+  in green vs *"no new bake · checked HH:MM:SS"*. A failed re-read says so and **keeps the loaded
+  matrix standing** (IDX/U are replaced only on a successful parse) rather than blanking the page.
+  **`⚙ Re-run bake ↗`** opens `refresh-coverage.yml` on GitHub (it is `workflow_dispatch`-enabled) —
+  no token in the browser, same pattern as `status.html`'s workflow links. ⚠️ `buildControls()` re-runs
+  on every refresh, so its `change` listeners attach **once** behind a `WIRED` flag; without it one
+  universe change would fire N concurrent `pick()`s (verified by request count, not by reading).
 - Not folded into `refresh-backtest-data.yml` (which has a fresh bin on disk and would save the
   193 MB download) — that is the critical daily data job on a 30-minute timeout, and a scoreboard must
   never be able to push it over.

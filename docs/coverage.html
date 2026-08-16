@@ -57,8 +57,17 @@
 
   .chip{display:inline-flex;align-items:center;gap:.3rem;padding:.15rem .5rem;border-radius:9999px;
     font-size:11px;font-weight:700;background:var(--surface-3);color:var(--text-muted)}
-  select.ctl{background:var(--surface);border:1px solid var(--border);border-radius:.5rem;
+  select.ctl, button.ctl, a.ctl{background:var(--surface);border:1px solid var(--border);border-radius:.5rem;
     padding:.35rem .6rem;font-size:12px;font-weight:600;color:var(--text)}
+  button.ctl, a.ctl{display:inline-flex;align-items:center;gap:.35rem;cursor:pointer;
+    text-decoration:none;line-height:1.25;white-space:nowrap}
+  button.ctl:hover:not(:disabled), a.ctl:hover{border-color:var(--accent);color:var(--accent)}
+  button.ctl:disabled{opacity:.6;cursor:progress}
+  /* the ↻ spins while a re-read is in flight. The payload only changes when the nightly bake has
+     landed, so most refreshes come back byte-identical — without motion (and the note beside it)
+     a working button is indistinguishable from a dead one. */
+  .spin{display:inline-block;animation:sw-spin .9s linear infinite}
+  @keyframes sw-spin{to{transform:rotate(360deg)}}
   /* the low end of the ramp is nearly invisible on a dark surface — outline the swatch
      so "0%" still reads as a swatch and not as a gap in the legend */
   .lgd{width:.85rem;height:.85rem;border-radius:.25rem;display:inline-block;vertical-align:-2px;
@@ -148,6 +157,14 @@
       </label>
       <span class="grow"></span>
       <span id="stamp" class="text-[11px] text-slate-400"></span>
+      <span id="rfNote" class="text-[11px] text-slate-400"></span>
+      <button id="rfBtn" type="button" class="ctl"
+        title="Re-read the baked payload from the server without reloading the page. It cannot make a new bake — it shows you whether one has landed.">
+        <span id="rfIco">↻</span> Refresh
+      </button>
+      <a id="rfWf" class="ctl" target="_blank" rel="noopener"
+        href="https://github.com/dhruvan246/stocks-dashboard/actions/workflows/refresh-coverage.yml"
+        title="The matrix is baked by CI (nightly, 01:10 IST). This opens the workflow so you can run it now; hit ↻ Refresh here once it lands (~3 min).">⚙ Re-run bake ↗</a>
     </div>
 
     <!-- summary -->
@@ -213,11 +230,17 @@
   var SW_OWNER = (function(){ try { return !!localStorage.getItem('bt_owner_key'); } catch(e){ return false; } })();
   if (!SW_OWNER) { swLock(); return; }
 
+  // one source of truth for the bake's workflow URL: the ⚙ link in the controls. The stale strip
+  // reads it back rather than repeating the string (a hand-synced duplicate drifts — §39).
+  var WF = $('rfWf').getAttribute('href');
+
   var IDX = null;          // coverage/index.json — families, rules, universe list
   var U = null;            // the loaded universe payload
   var CACHE = {};          // slug -> payload (a re-pick of the same universe is free)
   var OPEN = {};           // family id -> expanded into its parameters?
   var FAM = null;          // derived: [familyIndex][dateIndex] = [weakestCount, whichParam]
+  var WIRED = false;       // control listeners attach ONCE — buildControls() re-runs on every refresh
+  var BUSY = false;        // a refresh in flight; the button is the only re-entry point
 
   // A family cell is the weakest parameter in it. The payload deliberately does NOT ship this —
   // it is one min() over numbers already present, and a shipped copy could drift from them.
@@ -244,15 +267,51 @@
                       'nifty-smallcap-100', 'nifty-smallcap-250', 'nifty-largemidcap-250', 'nifty-midsmallcap-400']]
   ];
 
-  function boot() {
-    fetch('./coverage/index.json', { cache: 'no-store' })
+  function loadIndex() {
+    return fetch('./coverage/index.json', { cache: 'no-store' })
       .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-      .then(function (d) { IDX = d; buildControls(); checkStale(d); return pick(localStorage.getItem('cov_uni') || 'nifty-500'); })
+      .then(function (d) { IDX = d; buildControls(); checkStale(d); return d; });
+  }
+
+  function boot() {
+    $('rfBtn').addEventListener('click', refresh);
+    loadIndex()
+      .then(function () { return pick(localStorage.getItem('cov_uni') || 'nifty-500'); })
       .catch(function (e) {
         $('banner').innerHTML = '<span class="text-rose-600 font-semibold">Could not load the coverage payload.</span> ' +
           '<span class="text-slate-400">' + esc(e.message) + ' — it is baked by <code>scripts/build_coverage_matrix.js</code> in the nightly <code>refresh-coverage.yml</code> run.</span>';
       });
   }
+
+  // "Refresh" = throw away what this TAB is holding and re-read every file from the server. It
+  // cannot bake a new matrix (that is the ⚙ link), so it must SAY which of the two happened —
+  // an honest no-op and a broken button look identical otherwise. IDX/U are replaced only on a
+  // successful parse, so a failed refresh leaves the working view standing instead of blanking it.
+  function refresh() {
+    if (BUSY) return;
+    BUSY = true;
+    var slug = $('uni').value, was = IDX ? IDX.updated : null;
+    $('rfBtn').disabled = true;
+    $('rfIco').className = 'spin';
+    $('rfNote').textContent = 'refreshing…';
+    CACHE = {};                                   // every universe re-reads, not just the shown one
+    loadIndex()
+      .then(function (d) { return pick(slug).then(function (ok) { return ok ? d : null; }); })
+      .then(function (d) {
+        $('rfNote').innerHTML = d
+          ? (was && d.updated !== was
+              ? '<b class="text-emerald-600">new bake · ' + esc(d.updated) + '</b>'
+              : 'no new bake') + ' · checked ' + clock()
+          : '<span class="text-rose-600 font-semibold">refresh failed</span> · kept the loaded matrix';
+      })
+      .catch(function (e) {
+        $('rfNote').innerHTML = '<span class="text-rose-600 font-semibold">refresh failed</span> <span class="text-slate-400">' +
+          esc(e.message) + '</span> · kept the loaded matrix';
+      })
+      .then(function () { BUSY = false; $('rfBtn').disabled = false; $('rfIco').className = ''; });
+  }
+
+  function clock() { var d = new Date(); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + ':' + ('0' + d.getSeconds()).slice(-2); }
 
   function buildControls() {
     var bySlug = {}; IDX.universes.forEach(function (u) { bySlug[u.slug] = u; });
@@ -284,6 +343,10 @@
       return '<li><code class="text-[10px] text-indigo-600 font-bold">' + esc(n.k) + '</code> — ' + esc(n.why) + '</li>';
     }).join('');
 
+    // buildControls() re-runs on every refresh (the family/universe list can change with a bake),
+    // so the listeners must attach exactly once — a second set would double every render.
+    if (WIRED) return;
+    WIRED = true;
     ['uni', 'from', 'mode', 'ord'].forEach(function (id) {
       $(id).addEventListener('change', function () {
         if (id === 'uni') { localStorage.setItem('cov_uni', $('uni').value); pick($('uni').value); }
@@ -297,17 +360,20 @@
   // every trading day and is ~20 bytes, so it is a free second opinion on how old these numbers are.
   // Silent on any failure — a missing second opinion is not evidence of staleness.
   function checkStale(idx) {
+    var el = $('stale');
     fetch('./sf_meta.json', { cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (m) {
         if (!m || !m.end || !idx.dataEnd) return;
         var days = Math.round((Date.parse(m.end) - Date.parse(idx.dataEnd)) / 86400000);
-        if (!(days >= 2)) return;   // 1 day is just the gap between the evening data push and the 01:10 bake
-        var el = $('stale');
+        // re-hide, not just show: this re-runs on every refresh, and a warning that survives the
+        // bake it was complaining about is a false alarm the second time it is read
+        if (!(days >= 2)) { el.classList.add('hidden'); return; }   // 1 day is just the gap between the evening data push and the 01:10 bake
         el.innerHTML = '<b>This matrix is ' + days + ' days behind the price data.</b> ' +
           'It was built against ' + esc(idx.dataEnd) + '; the site now holds bars to ' + esc(m.end) + '. ' +
-          'The nightly <code>refresh-coverage.yml</code> has not landed since — re-run it from the Actions tab ' +
-          'before reading anything into the most recent rows.';
+          'The nightly <code>refresh-coverage.yml</code> has not landed since — ' +
+          '<a class="font-semibold underline" target="_blank" rel="noopener" href="' + WF + '">run it now</a>, ' +
+          'then hit ↻ Refresh, before reading anything into the most recent rows.';
         el.classList.remove('hidden');
       })
       .catch(function () {});
@@ -316,12 +382,14 @@
   function pick(slug) {
     if (!IDX.universes.some(function (u) { return u.slug === slug; })) slug = IDX.universes[0].slug;
     $('uni').value = slug;
-    if (CACHE[slug]) { U = CACHE[slug]; deriveFamilies(); render(); return Promise.resolve(); }
+    if (CACHE[slug]) { U = CACHE[slug]; deriveFamilies(); render(); return Promise.resolve(true); }
     $('banner').textContent = 'Loading ' + slug + '…';
+    // resolves true/false rather than rejecting: the banner already reports the failure, and
+    // refresh() needs to know whether the re-read actually landed
     return fetch('./coverage/' + slug + '.json', { cache: 'no-store' })
       .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-      .then(function (d) { CACHE[slug] = d; U = d; deriveFamilies(); render(); })
-      .catch(function (e) { $('banner').innerHTML = '<span class="text-rose-600 font-semibold">Could not load ' + esc(slug) + '.</span> <span class="text-slate-400">' + esc(e.message) + '</span>'; });
+      .then(function (d) { CACHE[slug] = d; U = d; deriveFamilies(); render(); return true; })
+      .catch(function (e) { $('banner').innerHTML = '<span class="text-rose-600 font-semibold">Could not load ' + esc(slug) + '.</span> <span class="text-slate-400">' + esc(e.message) + '</span>'; return false; });
   }
 
   // rows currently shown, newest- or oldest-first
