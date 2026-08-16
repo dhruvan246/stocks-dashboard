@@ -102,6 +102,57 @@ ComHeadernew, gated `isin-exact + bse-isin-confirmed`, applied at `update_sf_dat
   invisible for 11 month-ends. Heal via `ann_date_fills.json` with REAL announce dates only
   (§99 — a fabricated date regrows as a look-ahead).
 
+## 0c. REPORTING-BASIS COLUMNS (user request, 2026-08-16 16:40 IST) — 43 params → 47
+
+User: *"add these columns on my coverage dashboard and then fill the pre-2020 con gap for rev and
+pat"*, then *"dont wire NA, add empty values. NA part i'll check later"*.
+
+New family **`basis` — "Reporting basis"**: `revCon`, `revStd`, `patCon`, `patStd`. Why it was
+needed: the existing `rev` column is *consolidated ELSE standalone*, so a company that never files
+consolidated still reads 100% and the con thinness is invisible; and **net profit had no column at
+all** — the PAT families show only derived measures (YoY/TTM/streak/drift).
+
+- **Own family on purpose.** A family cell is its WEAKEST parameter, so folding a ~60%-covered
+  column into `revenue` would have silently redefined an existing column.
+- **Each basis is visible from its OWN announce date** (con → sf_fundamentals idx4, std → idx2),
+  not from the `min(annStd, annCon)` quarter the `rev` column resolves. A consolidated cell gated
+  on a standalone filing that precedes it by weeks would be a look-ahead on that basis.
+- **No N/A wired, per the user.** An empty cell means only "we hold no figure on that basis here".
+
+**RAW numbers, 60 month-ends 2015-01→2019-12 vs 2020-01→date** (measured off the bake, member-dates):
+
+| param | 2015-19 | 2020+ |
+|---|---:|---:|
+| rev (con-else-std, existing) | 98.530% | 99.997% |
+| **revCon** | **59.95%** | 98.01% |
+| revStd | 98.29% | 99.69% |
+| **patCon** | **67.45%** | 98.76% |
+| patStd | 99.63% | 99.95% |
+
+### ⚠️ `scripts/no_con_filing.json` CANNOT be applied as written — measured before deciding N/A
+
+Trialled as the N/A source, then checked against sf_fundamentals the way the ebit ledger's guard
+caught INDIANB. **344 of its 760 `never_filed_con` names hold a dated con PAT, and 133 of the 200
+`started_filing_con` names hold one BEFORE their declared start.** The split that resolves it is
+**DIVERGENCE, not presence**:
+
+- **326 of those 344 have `con == std` to the paisa on EVERY quarter** — the con-slot-holds-a-COPY
+  defect, which is exactly what the ledger's own build test keyed on ("our stored con never
+  diverges"). For these the ledger is right and our stored value is the artifact.
+- **18 never-filed names genuinely diverge** — JUSTDIAL (12 divergent quarters of 35), HDBFS 6/25,
+  DHARMAJ 5/6, KALIND 3/20, SILGO, BLBLIMITED, RUBYMILLS, KAYCEEI, DHINDIA… The ledger is simply
+  wrong for them.
+- **130 of the 133 pre-start values diverge**, typically the four FY2019 quarters from **20180630 —
+  a full year before the FY2020 mandate**: AARTIIND (declared start 20190630, real con from
+  20180630), AXISBANK, BANKBARODA, ASHOKLEY, ATUL, BALKRISIND, LICHSGFIN, TATAINVEST, IMAGICAA
+  (12), SHRIRAMCIT (8), GMDCLTD (7)… ⇒ **`started_filing_con` is ~a year late for ~65% of its
+  entries**, and any earlier campaign that used those dates to write off pre-2019 con cells as
+  never-filed wrote off cells that are real.
+
+A trial N/A pass with a divergence guard refused **3,884** verdicts. When the N/A question is
+revisited, that guard is mandatory: honour a verdict only where no divergent consolidated figure of
+ours already covers the quarter. With it, the era read revCon 80.887% / patCon 91.206%.
+
 ## 1. Scope & goal
 
 Universe **nifty-500**, month-ends **2015-01-30 → 2019-12-31 (60)**, all 43 parameters.

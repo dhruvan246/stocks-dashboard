@@ -133,6 +133,17 @@ const FAMILIES = [
     { k: 'op', src: 'revop', rule: 'Operating profit (consolidated, else standalone) for that same quarter.' },
     { k: 'ebit', src: 'revop', rule: 'EBIT for that same quarter — the sparsest slot in the file. Derived upstream as Operating Profit − Depreciation. Banking-format filers are N/A: their P&L runs Interest Earned → Interest Expended → Operating Profit BEFORE provisions, so interest is already deducted and "earnings before interest" does not exist for them — no filing, and neither screener.in nor Moneycontrol, carries the line. Per-name evidence in scripts/coverage_na_ledger.json; nothing is excluded without it.' },
   ] },
+  /* Reporting basis — deliberately its OWN family. The `rev` column above is "consolidated ELSE
+   * standalone", so a company that never files consolidated still reads 100% there; that fallback
+   * is right for a backtest but it HIDES how thin the consolidated basis is before FY2020. These
+   * four decompose it. Kept OUT of the Revenue family because a family cell is its WEAKEST
+   * parameter, so folding a ~60%-covered column in would have silently redefined an existing one. */
+  { id: 'basis', label: 'Reporting basis', src: 'basis', note: 'Consolidated vs standalone counted SEPARATELY — the rev column merges them with a con-else-std fallback, so it cannot show how thin the consolidated basis is. Each basis is visible from its OWN announce date. RAW view: nothing is marked not-applicable here, so an empty cell means only "we hold no figure on that basis at that date". Note that quarterly consolidated results became compulsory only from FY2020 (runbook §51a), so much of the pre-2020 emptiness is a filing that never existed rather than a gap to fill.', params: [
+    { k: 'revCon', src: 'basis', rule: 'Consolidated revenue (sf_revop slot 1) for the latest quarter whose CONSOLIDATED result was announced on or before the date (sf_fundamentals idx4 > 0). No N/A is applied — empty means we hold nothing on this basis.' },
+    { k: 'revStd', src: 'basis', rule: 'Standalone revenue (sf_revop slot 0) for the latest quarter whose STANDALONE result was announced on or before the date (sf_fundamentals idx2 > 0).' },
+    { k: 'patCon', src: 'basis', rule: 'Consolidated net profit (sf_fundamentals idx3, visible from its own announce date idx4). No N/A applied. Net profit has no column of its own anywhere else on this page — the PAT families show only DERIVED measures (YoY, TTM, streak, drift).' },
+    { k: 'patStd', src: 'basis', rule: 'Standalone net profit (sf_fundamentals idx1, visible from its own announce date idx2).' },
+  ] },
   { id: 'fii', label: 'FII', note: 'Quarterly shareholding filings, visible from their submission date.', params: [
     { k: 'fiiPct', rule: 'FII holding % from the latest SHP filing submitted on or before the date.' },
     { k: 'fiiChgPp', rule: 'QoQ change in pp — needs the calendar-previous quarter too, and is deliberately never computed across the Sep-2022 SEBI reclassification (DR blocks moved into FII/DII — a paperwork change, not a stake change). Rows whose visible filing IS 2022-09-30 are N/A, not missing: that is a refusal, not a gap. Companies whose visible filing is a mid-quarter event row dated after 30-Sep keep a real delta and stay in the denominator.' },
@@ -358,9 +369,63 @@ function run(ctx, C) {
     }
     if (out.length) { out.sort((a, b) => a[0] - b[0]); REV_INDEX[sym] = out; }
   }
+  /* ---- PER-BASIS index: each basis visible from ITS OWN announce date -----------------------
+   * The `rev` column above resolves ONE quarter with min(annStd, annCon) and then takes con-else-std
+   * from it. That answers "could a backtest see a revenue number", which is the right question for
+   * that column but merges the two bases. The `basis` family asks a different question — "was the
+   * CONSOLIDATED number itself available" — so a consolidated cell must be gated on the
+   * consolidated filing's own date (idx4), never on the standalone one that may precede it by
+   * weeks. Same `> 0` sentinel rule as everywhere else (§91c: ann = 0 means UNKNOWN, and
+   * `0 != null` is true in JS).
+   *   BASIS_IDX[sym] = { con: [[ann, qeStr], …], std: [[ann, qeStr], …] }, each ascending. */
+  const BASIS_IDX = {};
+  for (const sym in FUNDJ) {
+    const con = [], std = [];
+    for (const q of FUNDJ[sym] || []) {
+      if (q[4] > 0) con.push([q[4], String(q[0])]);
+      if (q[2] > 0) std.push([q[2], String(q[0])]);
+    }
+    if (con.length || std.length) {
+      con.sort((a, b) => a[0] - b[0]); std.sort((a, b) => a[0] - b[0]);
+      BASIS_IDX[sym] = { con, std };
+    }
+  }
+  // sf_fundamentals row by quarter-end, for the PAT value lookup
+  const FUND_BY_QE = {};
+  for (const sym in FUNDJ) {
+    const m = {};
+    for (const q of FUNDJ[sym] || []) m[String(q[0])] = q;
+    FUND_BY_QE[sym] = m;
+  }
+
+  /* ---- NO N/A ON THE BASIS FAMILY, DELIBERATELY (user, 2026-08-16: "dont wire NA, add empty
+   * values. NA part i'll check later") ------------------------------------------------------
+   * An empty consolidated cell here means EXACTLY "we hold no consolidated figure at this date",
+   * with nothing excluded from the denominator. That is the raw view the user asked to inspect
+   * before any not-applicable policy is decided.
+   *   Context for whoever wires it later — quarterly consolidated results only became compulsory
+   * from FY2020 (runbook §51a), so much of the pre-2020 emptiness is a filing that never existed
+   * rather than a backfill miss, and `scripts/no_con_filing.json` already holds per-company
+   * verdicts. ⚠️ That ledger CANNOT be applied as written: measured 2026-08-16 against
+   * sf_fundamentals, 344 of its 760 `never_filed_con` names hold a dated con PAT and 133 of the
+   * 200 `started_filing_con` names hold one BEFORE their declared start. The split that resolves
+   * it is DIVERGENCE, not presence — for 326 of those 344, con == std to the paisa on every
+   * quarter (the con-slot-holds-a-copy defect, which is what the ledger's own build test keyed
+   * on), but 18 never-filed names genuinely diverge, and 130 of the 133 pre-start values diverge,
+   * typically the four FY2019 quarters from 20180630 — a full year before the mandate. So any
+   * future N/A pass needs a guard that refuses a verdict wherever a divergent consolidated figure
+   * of ours already covers that quarter (3,884 verdicts were refused when this was trialled). */
+
   const FUND_ALIAS = vm.runInContext('FUND_ALIAS', ctx);
   const revFor = sym => REV_INDEX[sym] || (FUND_ALIAS[sym] ? REV_INDEX[FUND_ALIAS[sym]] : null) || null;
   const revopFor = sym => REVOP[sym] || (FUND_ALIAS[sym] ? REVOP[FUND_ALIAS[sym]] : null) || null;
+  const basisFor = sym => BASIS_IDX[sym] || (FUND_ALIAS[sym] ? BASIS_IDX[FUND_ALIAS[sym]] : null) || null;
+  const fundQeFor = sym => FUND_BY_QE[sym] || (FUND_ALIAS[sym] ? FUND_BY_QE[FUND_ALIAS[sym]] : null) || null;
+  const lastVisible = (arr, dateInt) => {           // latest [ann, qe] with ann <= dateInt
+    if (!arr) return null;
+    for (let i = arr.length - 1; i >= 0; i--) if (arr[i][0] <= dateInt) return arr[i];
+    return null;
+  };
 
   /* ---- dates ---- */
   const dayOff = d => vm.runInContext(`dayOff(${JSON.stringify(d)})`, ctx);
@@ -551,6 +616,8 @@ function run(ctx, C) {
     const iIndustry = PARAMS.findIndex(p => p.k === 'industry');
     const iTurnover = PARAMS.findIndex(p => p.k === 'turnover');
     const revCols = ['rev', 'op', 'ebit'].map(k => PARAMS.findIndex(p => p.k === k && p.src === 'revop'));
+    const BASIS_KEYS = ['revCon', 'revStd', 'patCon', 'patStd'];
+    const basisCols = BASIS_KEYS.map(k => PARAMS.findIndex(p => p.k === k && p.src === 'basis'));
 
     // per-row flags for the non-engine families, computed once per row per date
     const perRow = rows.map(([sym, flags, turnover, indKnown, na]) => {
@@ -576,7 +643,20 @@ function run(ctx, C) {
       ['rev', 'op', 'ebit'].forEach((k, j) => {
         if (!rv[j] && naLedgerHit(k, sym, d.iso)) rvna[j] = 1;
       });
-      return { sym, flags, turnover, indKnown, rv, rvna, na };
+
+      /* ---- reporting basis: revCon, revStd, patCon, patStd ---------------------------------
+       * Each basis resolves its OWN visible quarter from its OWN announce date, then reads that
+       * basis's slot. No N/A is applied (see the note above): an empty cell means we hold no
+       * figure on that basis at that date, full stop. */
+      const bs = [0, 0, 0, 0];
+      const bidx = basisFor(sym), fqe = fundQeFor(sym);
+      const vCon = bidx ? lastVisible(bidx.con, dateInt) : null;
+      const vStd = bidx ? lastVisible(bidx.std, dateInt) : null;
+      if (rmap && vCon) { const c = rmap[vCon[1]]; if (c && c[1] != null) bs[0] = 1; }
+      if (rmap && vStd) { const c = rmap[vStd[1]]; if (c && c[0] != null) bs[1] = 1; }
+      if (fqe && vCon) { const q = fqe[vCon[1]]; if (q && q[3] != null) bs[2] = 1; }
+      if (fqe && vStd) { const q = fqe[vStd[1]]; if (q && q[1] != null) bs[3] = 1; }
+      return { sym, flags, turnover, indKnown, rv, rvna, na, bs };
     });
 
     for (const u of UNIVERSES) {
@@ -603,6 +683,10 @@ function run(ctx, C) {
           if (r.rv[j]) cnt[revCols[j]]++;
           else if (r.rvna && r.rvna[j]) nac[revCols[j]]++;   // inapplicable, not missing
           else if (ex) (ex[PARAMS[revCols[j]].k] ||= []).push(r.sym);
+        }
+        for (let j = 0; j < 4; j++) {
+          if (r.bs[j]) cnt[basisCols[j]]++;
+          else if (ex) (ex[PARAMS[basisCols[j]].k] ||= []).push(r.sym);   // no N/A here by design
         }
       }
       // roll members that never reached factorsAt carry NO parameter at all — they are the Price
