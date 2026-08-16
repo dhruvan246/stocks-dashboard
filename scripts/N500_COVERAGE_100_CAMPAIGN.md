@@ -1,8 +1,48 @@
 # N500 COVERAGE-100 CAMPAIGN — every parameter 100% on 🧭 Coverage Matrix, Nifty 500, 2020-01 → date
 
 **Written 2026-08-16 13:11 IST (Fable, planning session). Executor: Opus, fresh session.**
-**Status: PHASE 0 COMPLETE (2026-08-16 13:30 IST, commit 11128752). NEXT: PHASE 1.**
+**Status: PHASE 1 COMPLETE and LIVE (2026-08-16 14:33 IST, commits 1a699bdb + CI 41ed68ed). NEXT: PHASE 2.**
 Update this line as phases close.
+
+### P1 results — SHIPPED AND VERIFIED LIVE (payload 2026-08-16 14:24 IST, dataEnd 2026-08-14)
+
+Live nifty-500, 2020-01 -> date: **ebit 91.487 -> 96.688%** · **fiiChgPp/diiChgPp 95.808 -> 99.548%**
+(Oct/Nov/Dec-2022 now 4/4, 8/8, 14/14 = **100%**) · total missing **8,329 -> 3,228**. The 31
+already-100% params are untouched. Nifty Bank's ebit renders "–" on 78 month-ends. The three false
+`half` flags on N500 fii/dii: **gone**.
+
+**The user's "dont assume" rule changed the outcome, twice.** Asked to check what screener.in and
+Moneycontrol publish, the answer was: **neither publishes EBIT for anyone** — ours is derived
+upstream as `Operating Profit − Depreciation` (proved on SUNPHARMA Jun-2026: 4417.67 − 738.7 =
+3678.95 = our `ebit_con` to the paisa). And of the 46 candidates fetched ONE AT A TIME, only **33**
+serve the banking layout. **13 do not** — all 12 insurers plus SPICEJET and LAKSHVILAS carry a
+normal `Operating Profit` row, so **~670 cells that a category rule would have buried as N/A are
+real gaps** and stay visible. `INDIANB` was refused by the ledger's own guard (our data holds one
+ebit quarter — the known op-copy artifact) and still needs adjudication.
+
+**Second reader is INCOMPLETE and recorded as such.** Moneycontrol corroborates HDFCBANK exactly
+(RBI format, no EBIT row in 79 labels; its PPOP 30,996 == our `op_con` 30996.0) but **rate-limited
+after the first name**. The other 31 entries carry `reader_2: "NOT YET SECOND-READ"` verbatim in
+`scripts/coverage_na_ledger.json`. **P2 owes them a second reader** — the ledger is honest about
+this rather than looking complete.
+
+**Also fixed (found by using it, not by reading it):**
+- `computeFlags` judged raw counts, which cannot tell a hole from a refusal — **28 amber flags
+  across nine universes were false alarms on deliberate behaviour.** The guard is RELATIVE to the
+  neighbourhood's applicable-coverage, not a flat floor: a flat floor (first attempt) also swallowed
+  the live-edge results-season flags. Blast radius measured across all 30 universes both ways —
+  ratios-everywhere: 91 -> 107, **74 added** (rejected); relative guard: 91 -> 63, 28 removed,
+  **ZERO added**, all 8 live-edge `revenue` roll flags kept. `all`/`liquid` correctly KEEP their
+  2022 flags — 33-38% applicable coverage there is a genuine gap of ~158 names outside N500.
+- `coverage.html`: an all-N/A cell rendered `0`. I had told the user no cell would ever be
+  fully-N/A — **true only until banks were marked**; Nifty Bank's ebit is 78 straight month-ends of
+  it. Now "–" + tooltip. §39 gate run on the served page: console clean (only the known Tailwind CDN
+  warning), 82 dash cells, mobile 375px no horizontal overflow, dark and light.
+- The parity gate was TOTALS-ONLY and `--check` compared across bakes. Both fixed in P0's tail
+  (commit d0b5b187): per-(param,date) reconciliation, and bake-skew detection that exits 2 with the
+  re-bake recipe instead of crying "PARITY FAIL" at a correct queue.
+
+**Queue now 688 rows / 3,228 cells**, parity PASS on totals and per-date.
 
 ### P0 results — measured, supersedes §2 and §8 where they differ
 
