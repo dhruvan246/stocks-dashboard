@@ -259,5 +259,39 @@
    "decision": "user 2026-08-16 chose option A: mark N/A rather than derive a PPOP-minus-depreciation number that would not mean EBIT (interest is already deducted before PPOP for a bank)",
    "adjudicated": "2026-08-16"
   }
+ },
+ "_p2_findings_ebit_nonbanking": {
+  "_note": "Phase 2, 2026-08-16. The 13 candidates that are NOT banking-format. screener.in read per name. NONE are adjudicated yet \u2014 recorded so the next session does not re-derive, and so nobody 'fills' these from a sentinel.",
+  "SPICEJET": {
+   "verdict": "C4 \u2014 FILLABLE, source has both inputs",
+   "evidence": "screener.in consolidated quarterly: Operating Profit populated in 13 of 13 shown quarters (Dec-2025 = -181) AND Depreciation populated in 13 of 13 (Dec-2025 = 146). Our schema's EBIT = OP - Depreciation, so it derives cleanly (-327). Our sf_revop holds op in only 4 of 22 quarters, so `op` is a gap here too.",
+   "next": "P3 fill via the revop ledger; verify one quarter against the filed PDF before trusting a derived series."
+  },
+  "_insurers_op_present_dep_zero": {
+   "symbols": [
+    "GICRE",
+    "HDFCLIFE",
+    "ICICIPRULI",
+    "LICI",
+    "NIACL"
+   ],
+   "verdict": "UNRESOLVED \u2014 do NOT derive",
+   "evidence": "screener.in shows Operating Profit populated in 13 of 13 quarters but Depreciation as literal 0 in every quarter. Under the IRDAI account format depreciation is not broken out of 'Operating Expenses related to Insurance Business'. A 0 here is therefore a NOT-DISCLOSED sentinel, not a measured zero (feedback-zero-is-a-no-base-sentinel / feedback-falsy-sentinel-needs-truthy-test). Deriving EBIT = OP - 0 = OP would silently assert 'this insurer has no depreciation', which no filing says.",
+   "next": "Read one actual filed result per name and establish whether the format discloses depreciation at all. If it does not, these are C1 (report-absent) exactly like the banks. If it does, C4."
+  },
+  "_no_op_values_either": {
+   "symbols": [
+    "ICICIGI",
+    "SBILIFE",
+    "STARHEALTH",
+    "GODIGIT",
+    "NIVABUPA",
+    "CANHLIFE",
+    "LAKSHVILAS"
+   ],
+   "verdict": "UNRESOLVED \u2014 source is empty too",
+   "evidence": "screener.in carries the 'Operating Profit' ROW LABEL for these (which is why they separate from the 33 banking-format names) but no non-zero values in the quarters shown. So the aggregator does not answer the question either way.",
+   "next": "Primary filing read per name (NSE archive first, then BSE PDF + vision-fill per runbook 17b). LAKSHVILAS is a merged bank (into DBS Nov-2020) so expect a truncated series; treat its post-merger months as C3, not C4."
+  }
  }
 }
