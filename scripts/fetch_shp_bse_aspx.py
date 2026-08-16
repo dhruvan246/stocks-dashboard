@@ -32,6 +32,7 @@ H_HTML = {"Referer": "https://www.bseindia.com/", "Accept": "text/html,applicati
 LAG_DAYS = 21
 QOFF = {3: 29, 6: 30, 9: 31, 12: 32}
 _lk = threading.Lock()
+REFINE = "--refine" in sys.argv      # §22j: target EXISTING 2dp cells, not gaps
 
 
 def gitshow(path):
@@ -94,7 +95,15 @@ def cmd_frontier(dirp):
                           # seam route owns those cells; a raw read here would poison them.
         for s in members(qe):
             if (s, qe) in skip: continue
-            if qe not in have.get(s, {}):
+            if REFINE:
+                # §22j precision refresh: the INVERSE selection — cells we already hold but which
+                # carry the filer's 2dp percentage. Same page, same derivation; parse_new now
+                # recomputes %(A+B+C) from the share-count column.
+                c = have.get(s, {}).get(qe)
+                if c and len(c) > 2 and all(isinstance(v, (int, float)) and round(v, 2) == v
+                                            for v in (c[1], c[2])):
+                    missing.append((s, qe))
+            elif qe not in have.get(s, {}):
                 missing.append((s, qe))
     # the two named post-window holes this route was measured to serve
     for s, qe in (("MONSANTO", "2016-09-30"), ("JMTAUTOLTD", "2016-09-30")):
@@ -209,9 +218,26 @@ def parse_new(html):
             else: break
         return nums
 
+    # 4dp (§22j): the printed percentage is the filer's, rounded to 2dp — anything under 0.005%
+    # prints as a literal 0, and a "lowest DII" screen ranks 0 FIRST. Every Clause-35 row also
+    # prints its SHARE COUNT (col 1: [holders, shares, demat, %A+B, %A+B+C]), so recompute
+    # %(A+B+C) — the column val() actually reads — as shares/base. base comes from the LARGEST
+    # row's own printed pct: a row at >=1% carries at most ±0.005pp of rounding, 1 part in 200.
+    # Validated 2026-08-16 across 36 documents / 212 rows: every recomputed pct landed within
+    # 0.0071pp of the printed one. Falls back to the printed pct when a page omits share counts.
+    _base = None
+    _c = []
+    for _i in range(len(cells)):
+        _n = row_nums(_i)
+        if len(_n) >= 5 and _n[1] and _n[4] and _n[4] >= 1.0: _c.append((_n[4], _n[1]))
+    if _c:
+        _p_big, _sh_big = max(_c)
+        _base = _sh_big / (_p_big / 100.0)
+
     def pair(nums):
-        if len(nums) >= 5: return (nums[3], nums[4])
-        if len(nums) == 4: return (nums[3], nums[3])
+        abc = (nums[1] / _base * 100.0) if (_base and len(nums) >= 2 and nums[1]) else None
+        if len(nums) >= 5: return (nums[3], abc if abc is not None else nums[4])
+        if len(nums) == 4: return (nums[3], abc if abc is not None else nums[3])
         return None
 
     def find_row(rxs, lo=0, hi=None):
@@ -367,24 +393,24 @@ def _attempt(fr, dirp, neigh, used):
             pt = cols.get("pubtot")
             pab = pt[0] if pt and pt[0] is not None else None
             if pab is not None and pab >= 99.0:
-                prom = round(max(0.0, 100.0 - pab), 2)
+                prom = round(max(0.0, 100.0 - pab), 4)
             else:
                 return ("no-prom", None, "no promoter total")
         mf = val("mf") or 0.0
         # family convention (Wayback-MC ledger): dii = mf + banks + ins. An anonymous Any-Others
         # row folds in ONLY when reconciliation needs it — keeps the ~22k stored 2010-16 cells and
         # these on one convention, while still closing the pages where the row is material.
-        dii_base = round(mf + (val("banks") or 0.0) + (val("ins") or 0.0), 2)
+        dii_base = round(mf + (val("banks") or 0.0) + (val("ins") or 0.0), 4)
         dii = dii_base
         inst = val("inst_sub")
         derived = False
         if fii is not None:
-            fii = round(fii + fpi_add, 2)
+            fii = round(fii + fpi_add, 4)
             if inst is not None and oth_add:
                 gap0 = abs(fii + dii_base + (val("govt") or 0.0) + (val("qfi") or 0.0) - inst)
                 gap1 = abs(fii + dii_base + oth_add + (val("govt") or 0.0) + (val("qfi") or 0.0) - inst)
                 if gap0 > 1.0 and gap1 <= 1.0:
-                    dii = round(dii_base + oth_add, 2)
+                    dii = round(dii_base + oth_add, 4)
         else:
             # early Clause-35 pages omit empty rows (AGRODUTCH Sep-06: block = MF+banks only).
             # The block's own subtotal proves the foreign residual — same arithmetic the seam
@@ -395,15 +421,15 @@ def _attempt(fr, dirp, neigh, used):
             # deriving: the residual cannot tell foreign from anonymous-other, so fold Any-Others
             # into dii FIRST (the calibrated direction) and let the remainder be foreign.
             if oth_add:
-                dii = round(dii_base + oth_add, 2)
+                dii = round(dii_base + oth_add, 4)
             r = inst - (dii + (val("govt") or 0.0) + (val("qfi") or 0.0) + fpi_add)
             if -0.15 <= r <= 0.15:
-                fii = round(max(0.0, r) + fpi_add, 2); derived = True
+                fii = round(max(0.0, r) + fpi_add, 4); derived = True
             elif r > 0.15:
                 nb = [neigh[k] for k in ((sym, _adj(qe, -1)), (sym, _adj(qe, 1)),
                                          (sym, _adj(qe, -2)), (sym, _adj(qe, 2))) if neigh and k in neigh]
                 if nb and min(abs(r + fpi_add - v) for v in nb) <= 5.0:
-                    fii = round(r + fpi_add, 2); derived = True
+                    fii = round(r + fpi_add, 4); derived = True
                 else:
                     return ("no-fii", None, "residual %.2f unanchored" % r)
             else:
@@ -411,7 +437,7 @@ def _attempt(fr, dirp, neigh, used):
         if inst is not None and not derived:
             if abs(fii + dii + (val("govt") or 0.0) + (val("qfi") or 0.0) - inst) > 1.0:
                 return ("recon", None, "inst recon fail")
-        ins = round(val("ins") or 0.0, 2)
+        ins = round(val("ins") or 0.0, 4)
     else:
         fii, mf, lump, prom, inst = cols.get("fii"), cols.get("mf"), cols.get("lump"), cols.get("prom"), cols.get("inst_sub")
         if fii is None:
@@ -436,7 +462,7 @@ def _attempt(fr, dirp, neigh, used):
         nb = [neigh[k] for k in ((sym, _adj(qe, -1)), (sym, _adj(qe, +1))) if k in neigh]
         if any(v > 1.0 for v in nb):
             return ("zero-vs-neighbour", None, "fii 0.00 beside stored %.2f" % max(nb))
-    return ("ok", [round(prom, 2), round(fii, 2), round(dii, 2), round(mf, 2), ins, sub, None, src],
+    return ("ok", [round(prom, 4), round(fii, 4), round(dii, 4), round(mf, 4), ins, sub, None, src],
             used)
 
 
@@ -501,6 +527,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("cmd", choices=["frontier", "pilot", "harvest"])
     ap.add_argument("n", nargs="?", type=int, default=60)
+    ap.add_argument("--refine", action="store_true",
+                    help="22j: target EXISTING 2dp cells instead of gaps; own ledger")
     ap.add_argument("--dir", default=HERE)
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--cache-only", action="store_true",
@@ -540,7 +568,7 @@ def main():
         return
     if a.cmd == "harvest":
         res, stats, diffs = run(a.dir, front, a.workers, "HARVEST")
-        out = os.path.join(a.dir, "shp_fill_bse_aspx.json.gz")
+        out = os.path.join(a.dir, "shp_refine_aspx.json.gz" if REFINE else "shp_fill_bse_aspx.json.gz")
         with gzip.open(out, "wt", encoding="utf-8") as fh:
             json.dump({"_built": "fetch_shp_bse_aspx harvest", "fills": res}, fh)
         print("ledger -> %s  (%d syms, %d cells)" % (out, len(res), sum(len(v) for v in res.values())))
