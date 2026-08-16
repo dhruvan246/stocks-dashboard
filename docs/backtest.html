@@ -756,7 +756,7 @@ function strategyHTML(funds,s){
       </div>
       ${cmp}
       <div class="text-[10px] uppercase text-slate-500 mt-2 mb-1">Decision log — trailing ${s.lb}-mo returns &rarr; action</div>
-      <div class="overflow-x-auto max-h-64 overflow-y-auto">${dlog}</div>
+      <div class="overflow-x-auto tscroll" style="--tscroll-h:16rem">${dlog}</div>
       <div class="text-[10px] uppercase text-slate-500 mt-3 mb-1">Holding periods</div>
       <div class="overflow-x-auto">${plog}</div>
       ${equityChart(res.eq,eqRef,'rotation','hold '+funds[0].n)}
@@ -889,7 +889,7 @@ function catBody(res,cfg){
     </div>
     ${cmp}
     <div class="text-[10px] uppercase text-slate-500 mt-3 mb-1">Decision log — each re-check</div>
-    <div class="overflow-x-auto max-h-64 overflow-y-auto">${dlog}</div>
+    <div class="overflow-x-auto tscroll" style="--tscroll-h:16rem">${dlog}</div>
     <div class="text-[10px] uppercase text-slate-500 mt-3 mb-1">Holding periods</div>
     <div class="overflow-x-auto">${plog}</div>
     ${equityChart(res.eq,eqRef,(cfg.dir==='mom'?'momentum':'contrarian')+' rotation','hold '+catNameOf(res.startRef))}`;
@@ -1028,7 +1028,7 @@ function bobBody(res,cfg){
     </div>
     ${cmp}
     <div class="text-[10px] uppercase text-slate-500 mt-3 mb-1">Decision log — each re-check (which leader won)</div>
-    <div class="overflow-x-auto max-h-64 overflow-y-auto">${dlog}</div>
+    <div class="overflow-x-auto tscroll" style="--tscroll-h:16rem">${dlog}</div>
     <div class="text-[10px] uppercase text-slate-500 mt-3 mb-1">Holding periods</div>
     <div class="overflow-x-auto">${plog}</div>
     ${equityChart(res.eq,eqRef,'best-of-breed','hold '+bobNm(res.firstCode))}`;

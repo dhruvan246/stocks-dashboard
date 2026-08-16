@@ -384,7 +384,7 @@ async function openDetail(name){
       </div>
       <div>
         <div class="text-xs font-semibold text-slate-600 mb-1">Constituents <span class="text-slate-400 font-normal">— ${ST.period} return (sorted best → worst)</span></div>
-        <div class="overflow-y-auto" style="max-height:320px">
+        <div class="overflow-x-auto tscroll" style="--tscroll-h:320px">
           <table class="tbl">
             <thead class="text-[10px] uppercase text-slate-400 border-b border-slate-200"><tr><th class="text-left py-1 pr-2">Stock</th><th class="text-right px-2">Last</th><th class="text-right px-2">${ST.period}</th><th class="text-right px-2">Mkt cap</th></tr></thead>
             <tbody>${st.mem.map(m=>`<tr class="border-b border-slate-50"><td class="py-1 pr-2"><a href="./stock.html?sym=${encodeURIComponent((META[m.t]&&META[m.t].symbol)||m.t)}" class="font-medium text-indigo-600 hover:underline">${esc((META[m.t]&&META[m.t].symbol)||m.t)}</a> <span class="text-slate-400 text-[11px]">${esc(m.name)}</span></td><td class="text-right px-2">₹${m.p1>=1000?Math.round(m.p1).toLocaleString('en-IN'):m.p1.toFixed(2)}</td><td class="text-right px-2 ${clsPN(m.r)}">${fmtPct(m.r)}</td><td class="text-right px-2 text-slate-500">${fmtCr(m.mc)}</td></tr>`).join('')}</tbody>

@@ -202,7 +202,7 @@ function historyTable(list) {
   }).join('');
   return `<div class="text-base font-bold text-slate-900 mb-2 flex items-center justify-between">
       <span>Run history</span><span class="text-xs font-normal text-slate-400">${list.length} backtest${list.length > 1 ? 's' : ''}</span></div>
-    <div class="card overflow-x-auto"><table class="w-full text-sm border-collapse">
+    <div class="card overflow-x-auto tscroll"><table class="w-full text-sm border-collapse">
       <thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
         <th class="text-left font-semibold px-4 py-2.5">Period</th>
         <th class="text-left font-semibold px-3 py-2.5">Holdings</th>
@@ -258,7 +258,7 @@ function renderBakedPicks(c) {
       <td class="py-1.5 pr-2 text-slate-400 whitespace-nowrap">${i + 1} ⭐</td>
       <td class="pr-3 font-semibold">${stockLink(p.s, 'text-indigo-700 hover:underline')}</td>
       <td class="text-right px-2">${p.p != null ? (+p.p).toFixed(2) : '—'}</td></tr>`).join('');
-  $('pkOut').innerHTML = `<div class="overflow-x-auto"><table class="w-full text-sm border-collapse">
+  $('pkOut').innerHTML = `<div class="overflow-x-auto tscroll"><table class="w-full text-sm border-collapse">
     <thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
       <th class="text-left px-2 py-2">#</th><th class="text-left pr-3 py-2">Symbol</th>
       <th class="text-right px-2 py-2">Close ₹</th></tr></thead>
@@ -331,7 +331,7 @@ async function renderFullPicks(c) {
     : `<span class="text-slate-400">prices = last close (${esc(SF.end)})</span>`;
   msg.innerHTML = `As of <b>${esc(date)}</b> · ${liveTag} · <b>${ranked.length}</b> qualifying · Top ${topN} ⭐ = the basket · sorted by <b>${esc(shortLabel(c.sortBy))}</b> (${c.dir === 'high' ? 'high → low' : 'low → high'}) · universe ${esc(universeLabel(c))}`;
   const headCells = dispFields.map(f => `<th class="text-right px-2 py-2">${esc(shortLabel(f))}${f === c.sortBy ? ' ' + (c.dir === 'high' ? '▾' : '▴') : ''}${conds[f] ? `<span class="block normal-case text-[9px] font-normal text-slate-400">${esc(conds[f].join(' & '))}</span>` : ''}</th>`).join('');
-  $('pkOut').innerHTML = ranked.length ? `<div class="overflow-x-auto"><table class="w-full text-sm border-collapse">
+  $('pkOut').innerHTML = ranked.length ? `<div class="overflow-x-auto tscroll"><table class="w-full text-sm border-collapse">
     <thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
       <th class="text-left px-2 py-2">#</th><th class="text-left pr-3 py-2">Symbol</th><th class="text-left pr-3 py-2 hidden sm:table-cell">Industry</th>
       ${headCells}<th class="text-right px-2 py-2">${live.n ? 'Price ₹' : 'Close ₹'}</th></tr></thead>
@@ -397,7 +397,7 @@ async function runRewind(c) {
     <td class="text-right px-2">${r.d52low == null ? '—' : r.d52low.toFixed(2) + '%'}</td>
     <td class="text-right px-2">${r.rsi == null ? '—' : r.rsi.toFixed(2)}</td>
     <td class="text-right px-2">${r.price == null ? '—' : r.price.toFixed(2)}</td></tr>`).join('');
-  $('rwOut').innerHTML = ranked.length ? `<div class="overflow-x-auto"><table class="w-full text-sm border-collapse">
+  $('rwOut').innerHTML = ranked.length ? `<div class="overflow-x-auto tscroll"><table class="w-full text-sm border-collapse">
     <thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
       <th class="text-left px-2 py-2">#</th><th class="text-left pr-3 py-2">Symbol</th><th class="text-left pr-3 py-2 hidden sm:table-cell">Industry</th>
       <th class="text-right px-2 py-2">${esc(sortL)}</th><th class="text-right px-2 py-2">Chg %</th><th class="text-right px-2 py-2">% 52wHi</th>

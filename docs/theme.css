@@ -415,6 +415,49 @@ html[data-theme] table{ -webkit-overflow-scrolling:touch; }
   }
 }
 
+/* -------- tall tables scroll INSIDE their card (.tscroll) — OPT-IN ---------
+ * A screener result / holdings / rebalance list has no natural row limit: one
+ * loose filter and Live Picks is 300 rows, the page runs hundreds of screens
+ * tall and everything below it is out of reach. .tscroll keeps the table's box
+ * a sane height and scrolls the ROWS in place under a pinned header instead.
+ *
+ * Use it on the div that DIRECTLY wraps the <table> (the same .overflow-x-auto
+ * holder pages already have) — theme.js re-uses that node as its phone
+ * .sw-scrollx holder, so both treatments must land on ONE element or the two
+ * scroll boxes nest and the sticky header resolves against the wrong one.
+ * Per-table height: style="--tscroll-h:20rem".
+ * Small lists are untouched — max-height only bites once the rows exceed it. */
+html[data-theme] .tscroll{
+  max-height: var(--tscroll-h, clamp(300px, 62vh, 720px));
+  overflow-y:auto; overscroll-behavior:contain;   /* the page doesn't lurch on when the list ends */
+  -webkit-overflow-scrolling:touch;
+}
+/* border-collapse hands a sticky header's own border to the collapsed grid, so
+ * the header's underline scrolls away with row 1 — draw it as an inset shadow. */
+html[data-theme] .tscroll table thead th{
+  position:sticky; top:0; z-index:3;
+  background:var(--surface-2);
+  box-shadow:inset 0 -1px 0 var(--border);
+}
+@media (max-width:640px){
+  /* .sw-scrollx pins overflow-y:hidden for its sideways scroll — keep the
+   * vertical axis alive, and let the pinned first COLUMN (z-index:2) pass
+   * under the pinned header ROW at the corner cell. */
+  html[data-theme] .sw-scrollx.tscroll{ overflow-y:auto; }
+  html[data-theme] .sw-scrollx.tscroll table thead th{ z-index:4; }
+  /* .sw-pin2 turns the rank gutter position:static so it scrolls away sideways
+   * UNDER the pinned name column — which also drops that cell out of the pinned
+   * header ROW, leaving a hole the rows scroll through. Pin it on the TOP axis
+   * only (left stays free, so it still slides away horizontally). */
+  html[data-theme] .sw-scrollx.tscroll table.sw-pin2 thead th:first-child{
+    position:sticky; top:0; left:auto; z-index:4;
+  }
+  /* the CORNER cell (pinned column × pinned header) is the one both axes cross,
+   * so it outranks both — .sw-pin2 leaves it on the body column's own z-index:2,
+   * and a tie is broken by DOM order, i.e. the ROWS would paint over the header. */
+  html[data-theme] .sw-scrollx.tscroll table.sw-pin2 thead th:nth-child(2){ z-index:5; }
+}
+
 /* =========================================================================
  * V2 VISUAL OVERHAUL — aurora background, entrance animations, hover lifts,
  * animated logo, header scroll shadow, and the uniform injected footer

@@ -145,7 +145,7 @@
       <div class="text-sm font-bold text-slate-900 mb-1">💼 The combined portfolio</div>
       <div class="text-[11px] text-slate-400 mb-2" id="holdSub"></div>
       <div id="splitMath" class="hidden text-[12px] mb-3 rounded-lg px-3 py-2" style="background:var(--surface-2,#f8fafc)"></div>
-      <div class="overflow-x-auto"><table class="w-full text-sm border-collapse" id="holdTbl"></table></div>
+      <div class="overflow-x-auto tscroll"><table class="w-full text-sm border-collapse" id="holdTbl"></table></div>
     </section>
 
     <!-- pooled mode only: how the split moved from one rebalance to the next -->
@@ -954,7 +954,7 @@ function renderRebalances(M){
   if (!rows.length){ $('rbOut').innerHTML = '<div class="text-xs text-slate-400 py-4">No rebalances in this window.</div>'; $('rbMore').innerHTML = ''; return; }
   const shown = RB_ALL ? rows : rows.slice(0, RB_CAP);
   const HOLD_CAP = 10;
-  $('rbOut').innerHTML = `<div class="overflow-x-auto"><table class="w-full text-sm border-collapse">
+  $('rbOut').innerHTML = `<div class="overflow-x-auto tscroll"><table class="w-full text-sm border-collapse">
     <thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
       <th class="text-left font-semibold px-3 py-2.5">Date</th>
       <th class="text-left font-semibold px-2 py-2.5">Strategy</th>
@@ -1001,7 +1001,7 @@ function renderTrades(M){
     + chip('Average', pct(avg), avg >= 0 ? 'pos' : 'neg') + chip('Best', esc(best.t.sym) + ' ' + pct(best.t.retPct), 'pos')
     + chip('Worst', esc(worst.t.sym) + ' ' + pct(worst.t.retPct), 'neg') + chip('Still held', open);
   const shown = TD_ALL ? rows : rows.slice(0, TD_CAP);
-  $('tdOut').innerHTML = `<div class="overflow-x-auto"><table class="w-full text-sm border-collapse">
+  $('tdOut').innerHTML = `<div class="overflow-x-auto tscroll"><table class="w-full text-sm border-collapse">
     <thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
       <th class="text-left font-semibold px-3 py-2.5">Stock</th>
       <th class="text-left font-semibold px-2 py-2.5">Strategy</th>
@@ -1048,7 +1048,7 @@ function renderPoolRebs(M){
   const p = pal(), rows = (M.pool.rebs || []).slice().reverse();
   if (!rows.length){ $('poolRebOut').innerHTML = '<div class="text-xs text-slate-400 py-4">No rebalances in this window.</div>'; $('poolRebMore').innerHTML = ''; return; }
   const shown = PR_ALL ? rows : rows.slice(0, PR_CAP), CAP = 14;
-  $('poolRebOut').innerHTML = `<div class="overflow-x-auto"><table class="w-full text-sm border-collapse">
+  $('poolRebOut').innerHTML = `<div class="overflow-x-auto tscroll"><table class="w-full text-sm border-collapse">
     <thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
       <th class="text-left font-semibold px-3 py-2.5">Date</th>
       <th class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">Portfolio</th>
