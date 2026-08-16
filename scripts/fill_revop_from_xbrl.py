@@ -79,18 +79,32 @@ def fetch(url):
 NAT_RE = re.compile(r'NatureOfReportStandaloneConsolidated[^>]*>([^<]+)<')
 
 
-def parse(xml):
-    """{basis: {'rev','op','ebit','pat','owners'}} for the CURRENT quarter of this filing."""
+NAT_ALL = re.compile(r'NatureOfReportStandaloneConsolidated contextRef="([^"]+)"[^>]*>([^<]+)<')
+
+
+def parse(xml, basis_hint=None):
+    """{basis: {'rev','op','ebit','pat','owners'}} for the CURRENT quarter of this filing.
+
+    ⚠️ FourD IS NOT AUTOMATICALLY "THE OTHER BASIS". That assumption was this tool's own bug (found
+    2026-08-16 by its anchor gate, which refused 136 writes): in a SINGLE-basis filing FourD is the
+    SAME basis's YEAR-TO-DATE period — ABB's Jun-2020 standalone has OneD 90 days and FourD 181,
+    so reading FourD as 'con' offered 80.92 against a stored quarter of 16.28. Mirrors
+    build_revop.xbrl_revop exactly: take FourD only when it DECLARES a different basis AND its
+    period is a quarter (is_quarter_ctx). Anything cumulative is skipped, not stored."""
+    nat = {m.group(1): m.group(2).strip().lower() for m in NAT_ALL.finditer(xml)}
+    hint = (basis_hint or '').lower()
     out = {}
-    nat = (NAT_RE.search(xml) or [None, ''])[1] if NAT_RE.search(xml) else ''
-    one = B.metrics_for(xml, 'OneD')
-    four = B.metrics_for(xml, 'FourD')
-    onc = 'con' if 'onsol' in nat else 'std'
-    oth = 'std' if onc == 'con' else 'con'
-    if any(v is not None for v in one):
-        out[onc] = dict(zip(('rev', 'op', 'ebit', 'pat', 'owners'), one))
-    if any(v is not None for v in four):
-        out[oth] = dict(zip(('rev', 'op', 'ebit', 'pat', 'owners'), four))
+    one_nat = nat.get('OneD', '') or hint
+    if B.is_quarter_ctx(xml, 'OneD'):
+        v = B.metrics_for(xml, 'OneD')
+        if any(x is not None for x in v):
+            out['con' if 'consol' in one_nat else 'std'] = dict(zip(('rev', 'op', 'ebit', 'pat', 'owners'), v))
+    four_nat = nat.get('FourD', '')
+    if four_nat and four_nat != one_nat and B.is_quarter_ctx(xml, 'FourD'):
+        v = B.metrics_for(xml, 'FourD')
+        b = 'con' if 'consol' in four_nat else 'std'
+        if any(x is not None for x in v) and b not in out:
+            out[b] = dict(zip(('rev', 'op', 'ebit', 'pat', 'owners'), v))
     return out
 
 
@@ -159,11 +173,18 @@ def main():
         got = {}
         filed_at = {}
         for basis, url, filed in cand:
-            try:
-                pr = parse(fetch(url))
-            except Exception as e:
-                stats['fetch_fail'] += 1
-                refusals.append({'sym': sym, 'qe': qe, 'why': 'fetch/parse: %s %s' % (type(e).__name__, str(e)[:60]), 'url': url})
+            pr = None
+            for attempt in (1, 2):
+                try:
+                    pr = parse(fetch(url), basis_hint=('consolidated' if basis == 'con' else 'standalone'))
+                    break
+                except Exception as e:
+                    if attempt == 1:
+                        time.sleep(3.0)     # transient rate-limit / connection reset
+                        continue
+                    stats['fetch_fail'] += 1
+                    refusals.append({'sym': sym, 'qe': qe, 'why': 'fetch/parse: %s %s' % (type(e).__name__, str(e)[:60]), 'url': url})
+            if pr is None:
                 continue
             for b, m in pr.items():
                 if b not in got or (m.get('rev') is not None and got[b].get('rev') is None):
