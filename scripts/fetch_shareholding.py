@@ -292,15 +292,28 @@ def apply_refine_ledger(h, path=None):
             if swallowed:
                 bad.append({"sym": sym, "qe": qe, "stored": cur, "refined": new[:7],
                             "verdict": "REFUSED_swallowed_foreign_block_22i"}); skip += 1; continue
-            # Accept band is 0.02pp on the five holding percentages, not _cell_eq's one 2dp step:
-            # the stored value often came from a 2dp LEDGER derivation while the refined one is
-            # computed from the primary document's share counts, so a legitimate double-rounding
-            # gap can reach two steps. Anything wider is a genuine conflict and is reported.
-            if any(abs(float(x) - float(y)) > 0.0200001
-                   for x, y in zip(cur[:5], new[:5])
-                   if isinstance(x, (int, float)) and isinstance(y, (int, float))):
+            # PER-FIELD, not all-or-nothing. Accept band is 0.02pp — the stored value often came
+            # from a 2dp LEDGER derivation while the refined one is computed from the primary
+            # document's share counts, so legitimate double-rounding can reach two 2dp steps.
+            # Rejecting the WHOLE cell when one field conflicts threw away good precision: 75 of
+            # 172 conflicts were promoter-only (BHARATFORG prom 44.76 vs 45.25) while fii and dii
+            # agreed to 0.002pp — the two fields this campaign exists for. Each of the five is
+            # independently sourced from the same document, so take the ones that agree and KEEP
+            # the stored value for any that does not. A conflicting field is never imported.
+            merged5, refused = [], []
+            for i, nm in enumerate(("prom", "fii", "dii", "mf", "ins")):
+                x, y = cur[i], new[i]
+                if isinstance(x, (int, float)) and isinstance(y, (int, float)):
+                    if abs(float(x) - float(y)) <= 0.0200001: merged5.append(y); continue
+                    refused.append(nm); merged5.append(x)          # keep stored, refuse the field
+                else:
+                    merged5.append(y if x is None else x)
+                    if x != y and x is not None: refused.append(nm)
+            if refused:
                 bad.append({"sym": sym, "qe": qe, "stored": cur, "refined": new[:7],
-                            "verdict": "CONFLICT_needs_adjudication"}); skip += 1; continue
+                            "verdict": "FIELD_CONFLICT_kept_stored", "fields": refused})
+                skip += 1
+            new = merged5 + list(new[5:])
             merged = new[:5] + list(cur[5:])         # refined values, stored provenance
             if merged == cur: continue               # already applied — keeps the run idempotent
             dest[qe] = merged
