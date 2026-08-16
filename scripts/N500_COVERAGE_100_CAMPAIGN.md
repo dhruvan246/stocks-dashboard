@@ -1,7 +1,64 @@
 # N500 COVERAGE-100 CAMPAIGN — every parameter 100% on 🧭 Coverage Matrix, Nifty 500, 2020-01 → date
 
 **Written 2026-08-16 13:11 IST (Fable, planning session). Executor: Opus, fresh session.**
-**Status: PHASE 0 NOT STARTED.** Update this line as phases close.
+**Status: PHASE 0 COMPLETE (2026-08-16 13:30 IST, commit 11128752). NEXT: PHASE 1.**
+Update this line as phases close.
+
+### P0 results — measured, supersedes §2 and §8 where they differ
+
+Worktree `~/stocks-wt/n500-cov`. Two full bakes (plain, then `--explain`), queue built, parity PASS.
+
+**Deliverables shipped:** `build_coverage_matrix.js --explain <slug> [--explain-from] [--explain-out]`
+(names the symbols behind every sub-100 cell from the SAME vm scan that writes the payload — proven
+analysis-only: `--dates 5` baked with and without it, 31 payloads / 429 keys byte-identical);
+`scripts/n500_cov_cells.py` (build + `--check`); `scripts/n500_cov_queue.json`
+(**1,634 rows · 615 distinct symbols · all 8,329 missing member-dates**);
+`scripts/n500_cov_explain.json` (provenance).
+
+**PARITY PASS on all 12 gap params** against the payload from the same bake
+(window 2020-01-31 → 2026-08-12, 80 month-ends):
+
+| param | missing | vs §2 | composition |
+|---|---|---|---|
+| ebit | 3,402 | −2 | 45 never-has-ebit names / 2,819 cells + 94 names / 583 |
+| fiiChgPp | 1,649 | −27 | 1,474 in the three SEBI months + **175 residue over 107 names** |
+| diiChgPp | 1,649 | −27 | identical cells |
+| profitTTM | 525 | +1 | 128 names |
+| composite | 525 | +1 | 128 names, tracks profitTTM |
+| op | 398 | = | 67 names |
+| profitAccel | 101 | = | 30 names |
+| profitYoyPct / profitBase / profitStreak | 24 each | = | **exactly 2 names: NSLNISP 19, CELLO 5** |
+| delivPct | 7 | = | **7 names, one cell each**: GVT&D, HEMIPROP, HGS, PATANJALI, PTCIL, RELINFRA, TTML |
+| rev | 1 | = | NSLNISP @ 2023-04-28 |
+
+**Five corrections to this plan, all measured this session — do not re-derive:**
+
+1. **NEVER commit a locally-baked payload.** `--bin auto` downloads the release asset, which lags
+   CI's freshly-appended bin: local bake ended **2026-08-12** while the committed payload from CI's
+   01:26 run ended **2026-08-14**. Committing the local bake would have regressed the page by two
+   days. Local bakes are for ANALYSIS ONLY; let CI (nightly 01:10 + `workflow_dispatch`) write the
+   payload. **P1/P3/P5's "bake → push" means push CODE/LEDGERS, then dispatch the workflow.**
+2. **8 of the 12 gap params have NO `na` rule at all** — `ebit`, `op`, `rev`, `profitTTM`,
+   `composite`, `profitAccel`, `delivPct`. Only fiiPct/diiPct/fiiChgPp/diiChgPp (first-filing),
+   profitYoyPct/profitBase/profitStreak (oldest-row), and postDrift (first-bar) have one. This is
+   the whole of P1's surface, and it is larger than §4 P1 implied — §4 P1 named only the revenue
+   family.
+3. **`na = -1` is the no-roll sentinel, not a negative count** (it sits at dates where `members`
+   and `count` are also −1, which `cell()` renders as "–"). Sum an `na` array naively and postDrift
+   reads "−4 cells". Not a defect — do not "fix" it.
+4. **`__norow` = 0.** Every Nifty-500 roll member in 2020+ had a `factorsAt` row, so Price is
+   genuinely 100% and no gap hides behind a missing row. (The bucket stays in the tool: it is the
+   guard that would catch it if that ever changed.)
+5. **A full bake takes ~1.0 min, not ~5.** §4 P0's estimate was wrong; budget accordingly.
+
+**Shape of the residue (hypotheses for P2 to test per name, NOT verdicts):** the profit-family names
+are dominated by recent listings/demergers — NSLNISP, JUBLINGREA, CAMPUS, CELLO, FLUOROCHEM,
+VALIANTORG, MAZDOCK, KPITTECH, SBICARD, DOMS, IGIL, MEDPLUS, POWERINDIA, SAILIFE, VMM, ABLBL,
+HAPPYFORGE, ENRIN — consistent with C3, but each needs its own listing/first-row measurement.
+Note the builder's existing profitYoy* na rule **deliberately does not fire for CELLO** (comment at
+`build_coverage_matrix.js:461-463`: CELLO needs 2022-12 while holding rows from 2022-06), so CELLO
+is a genuine C4 by the builder's own reasoning while NSLNISP may be C3 — **the same param, two
+different classes, which is exactly why per-name adjudication is mandatory.**
 
 > **Golden rule (standing, from the user):** never assume, never guess. Every value written and
 > every claim made ("exists", "absent", "fixed", "live", "works") must trace to something measured
