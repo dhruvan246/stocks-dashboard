@@ -625,6 +625,25 @@ function run(ctx, C) {
               if (j >= 0 && !flags[j]) na[j] = 1;
             });
           }
+          // LATE-FILED PRIOR is the same refusal, found by the SHP session (2026-08-16) while
+          // validating this page's 174-cell residue: in 62 of them the calendar-previous
+          // quarter's row EXISTS but was SUBMITTED after this screen date (HINDALCO's Sep-2019
+          // SHP filed 2020-09-21, eight months after its Dec-2019 filing) — shpAt correctly
+          // refuses it, because a live trader could not compute a delta from a document that did
+          // not exist yet. Filling would be a look-ahead; the metric is N/A at these dates and
+          // computes on its own once the late submission date passes. Spot-verified against
+          // shp_engine before wiring (peer count: 62 of 62, no exceptions).
+          if (cur && cur[0] !== 20220930 && isQuarterEnd(cur[0])) {
+            const pq = prevQeInt(cur[0]);
+            let prior = null;
+            for (let i = 0; i < shp.length; i++) if (shp[i][0] === pq) { prior = shp[i]; break; }
+            if (prior && prior[3] > __DATEINT) {
+              ['fiiChgPp', 'diiChgPp'].forEach(function (k) {
+                const j = keys.indexOf(k);
+                if (j >= 0 && !flags[j]) na[j] = 1;
+              });
+            }
+          }
         }
         // profitYoyPct / profitBase / profitStreak: the YoY needs the SAME QUARTER A YEAR EARLIER.
         // For a company that listed or demerged inside the window, that quarter is older than any
