@@ -39465,7 +39465,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2007-04-11 \u00b7 fundRows=33 oldestQe=20081231 \u00b7 shpRows=21 firstSub=20110721]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 532682, ISIN-confirmed INE067H01016. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -39495,7 +39495,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1996-01-01 \u00b7 fundRows=56 oldestQe=20030630 \u00b7 shpRows=57 firstSub=20030121]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 500303, ISIN-confirmed INE069A01017. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -39552,7 +39552,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2006-10-10 \u00b7 fundRows=54 oldestQe=20120331 \u00b7 shpRows=46 firstSub=20131021]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 no ISIN in the bin; BSE master match is scrip_id-only, which \u00a776 forbids as identity. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -39580,7 +39580,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2007-04-19 \u00b7 fundRows=22 oldestQe=20091231 \u00b7 shpRows=17 firstSub=20120121]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 532840, ISIN-confirmed INE517H01028. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -39607,10 +39607,10 @@
     "2016-03-31"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2008-04-03 \u00b7 fundRows=60 oldestQe=20110930 \u00b7 shpRows=45 firstSub=20120121]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Construction' for scrip 532959 (AJR Infra And Tolling Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -39680,7 +39680,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2002-11-29 \u00b7 fundRows=67 oldestQe=20030630 \u00b7 shpRows=62 firstSub=20041021]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 532480, ISIN-confirmed INE428A01015. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -39718,10 +39718,10 @@
     "2017-02-28"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1996-01-02 \u00b7 fundRows=56 oldestQe=20050930 \u00b7 shpRows=44 firstSub=20030121]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Textiles' for scrip 521070 (Alok Industries Ltd), gate: issuer-prefix (ISIN INExxxxxNN, face-value/IBC reissue) + bse-isin-confirmed on the successor + same-business continuity checked against our own series span. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -39763,10 +39763,10 @@
     "2017-08-31"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1996-01-01 \u00b7 fundRows=67 oldestQe=20031231 \u00b7 shpRows=62 firstSub=20040121]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Automobile and Auto Components' for scrip 520077 (Amtek Auto Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -39836,7 +39836,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2001-04-04 \u00b7 fundRows=69 oldestQe=20021231 \u00b7 shpRows=69 firstSub=20030121]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 532418, ISIN-confirmed INE434A01013. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -39892,10 +39892,10 @@
     "2018-08-31"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2008-03-31 \u00b7 fundRows=51 oldestQe=20080630 \u00b7 shpRows=74 firstSub=20030121]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Forest Materials' for scrip 500102 (Ballarpur Industries Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -39954,7 +39954,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2010-08-16 \u00b7 fundRows=30 oldestQe=20111231 \u00b7 shpRows=29 firstSub=20120121]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 533228, ISIN-confirmed INE180K01011. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -39989,10 +39989,10 @@
     "2018-08-31"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2005-12-05 \u00b7 fundRows=48 oldestQe=20080930 \u00b7 shpRows=50 firstSub=20090121]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Textiles' for scrip 532678 (Bombay Rayon Fashions Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -40025,7 +40025,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2007-01-09 \u00b7 fundRows=23 oldestQe=20091231 \u00b7 shpRows=23 firstSub=20110421]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 532792, ISIN-confirmed INE910H01017. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -40086,7 +40086,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2008-02-01 \u00b7 fundRows=29 oldestQe=20110930 \u00b7 shpRows=28 firstSub=20120121]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 532938, ISIN-confirmed INE688I01017. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -40118,10 +40118,10 @@
     "2016-08-31"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2005-06-27 \u00b7 fundRows=51 oldestQe=20081231 \u00b7 shpRows=39 firstSub=20090121]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Automobile and Auto Components' for scrip 532282 (Castex Technologies Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -40134,7 +40134,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1998-09-23 \u00b7 fundRows=50 oldestQe=20021231 \u00b7 shpRows=50 firstSub=20030121]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 517326, ISIN-confirmed INE314A01017. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -40149,7 +40149,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2007-05-25 \u00b7 fundRows=20 oldestQe=20110930 \u00b7 shpRows=15 firstSub=20111021]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 512199, ISIN-confirmed INE247G01024. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -40212,7 +40212,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1997-12-05 \u00b7 fundRows=73 oldestQe=20011231 \u00b7 shpRows=66 firstSub=20030121]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 532179, ISIN-confirmed INE112A01023. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -40235,10 +40235,10 @@
     "2019-11-29"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2009-12-11 \u00b7 fundRows=37 oldestQe=20111231 \u00b7 shpRows=29 firstSub=20110721]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Consumer Services' for scrip 533144 (Cox & Kings Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -40273,7 +40273,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2011-01-27 \u00b7 fundRows=15 oldestQe=20160331 \u00b7 shpRows=8 firstSub=20160715]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 533309, ISIN-confirmed INE439L01019. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -40334,7 +40334,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1997-01-22 \u00b7 fundRows=69 oldestQe=20011231 \u00b7 shpRows=65 firstSub=20030121]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 532121, ISIN-confirmed INE077A01010. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -40371,7 +40371,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2004-04-22 \u00b7 fundRows=48 oldestQe=20050331 \u00b7 shpRows=47 firstSub=20050421]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 532526, ISIN-confirmed INE353G01020. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -40385,10 +40385,10 @@
     "2015-02-28"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2006-01-13 \u00b7 fundRows=60 oldestQe=20081231 \u00b7 shpRows=49 firstSub=20090121]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Consumer Services' for scrip 532696 (Educomp Solutions Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -40401,7 +40401,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2000-04-28 \u00b7 fundRows=48 oldestQe=20011231 \u00b7 shpRows=46 firstSub=20031021]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 532322, ISIN-confirmed INE975A01015. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -40416,7 +40416,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2006-03-29 \u00b7 fundRows=35 oldestQe=20061231 \u00b7 shpRows=32 firstSub=20070721]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 530323, ISIN-confirmed INE039E01020. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -40478,10 +40478,10 @@
     "2019-02-28"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2010-10-06 \u00b7 fundRows=53 oldestQe=20130630 \u00b7 shpRows=55 firstSub=20110721]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Media, Entertainment & Publication' for scrip 533261 (Eros International Media Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -40511,10 +40511,10 @@
     "2016-08-31"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2006-12-28 \u00b7 fundRows=22 oldestQe=20130930 \u00b7 shpRows=18 firstSub=20110121]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Fast Moving Consumer Goods' for scrip 532787 (Ess Dee Aluminium Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -40530,7 +40530,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2004-06-16 \u00b7 fundRows=18 oldestQe=20150331 \u00b7 shpRows=1 firstSub=20190108]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 532511, ISIN-confirmed INE223G01017. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -40550,10 +40550,10 @@
     "2015-08-31"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1996-10-18 \u00b7 fundRows=92 oldestQe=20021231 \u00b7 shpRows=73 firstSub=20030121]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Construction' for scrip 509550 (Gammon India Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -40619,10 +40619,10 @@
     "2019-08-30"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2005-03-31 \u00b7 fundRows=63 oldestQe=20060331 \u00b7 shpRows=64 firstSub=20060121]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Services' for scrip 532622 (Gateway Distriparks Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -40648,7 +40648,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2000-03-29 \u00b7 fundRows=56 oldestQe=20020630 \u00b7 shpRows=44 firstSub=20030121]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 532312, ISIN-confirmed INE797A01021. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -40675,10 +40675,10 @@
     "2016-03-31"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2006-03-10 \u00b7 fundRows=45 oldestQe=20060930 \u00b7 shpRows=38 firstSub=20070121]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Consumer Durables' for scrip 532715 (Gitanjali Gems Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -40693,10 +40693,10 @@
     "2016-08-31"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2007-05-03 \u00b7 fundRows=24 oldestQe=20150331 \u00b7 shpRows=7 firstSub=20160715]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Services' for scrip 501848 (Garware Offshore Services Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -40763,7 +40763,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2004-09-10 \u00b7 fundRows=25 oldestQe=20130630 \u00b7 shpRows=26 firstSub=20111021]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 511288, ISIN-confirmed INE580B01029. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -40832,7 +40832,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1996-01-01 \u00b7 fundRows=62 oldestQe=20040930 \u00b7 shpRows=64 firstSub=20030121]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 500676, ISIN-confirmed INE264A01014. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -40847,7 +40847,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2006-12-21 \u00b7 fundRows=21 oldestQe=20111231 \u00b7 shpRows=13 firstSub=20120121]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 532786, ISIN-confirmed INE892H01017. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -40867,10 +40867,10 @@
     "2015-08-31"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1996-09-17 \u00b7 fundRows=50 oldestQe=20050630 \u00b7 shpRows=42 firstSub=20050721]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Oil, Gas & Consumable Fuels' for scrip 512579 (Gujarat NRE Coke Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -40883,7 +40883,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1996-01-01 \u00b7 fundRows=60 oldestQe=20050331 \u00b7 shpRows=49 firstSub=20030121]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 523477, ISIN-confirmed INE374A01029. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -40898,7 +40898,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2010-02-03 \u00b7 fundRows=21 oldestQe=20130930 \u00b7 shpRows=15 firstSub=20110121]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 533154, ISIN-confirmed INE486J01014. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -40913,7 +40913,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1996-01-01 \u00b7 fundRows=51 oldestQe=20020630 \u00b7 shpRows=50 firstSub=20030121]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 531807, ISIN-confirmed INE166A01011. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -40940,10 +40940,10 @@
     "2016-03-31"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2000-03-08 \u00b7 fundRows=91 oldestQe=20020630 \u00b7 shpRows=73 firstSub=20030121]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Construction' for scrip 530773 (IVRCL Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -40997,10 +40997,10 @@
     "2018-08-31"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1996-01-01 \u00b7 fundRows=53 oldestQe=20130630 \u00b7 shpRows=52 firstSub=20111021]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Chemicals' for scrip 514034 (JBF Industries Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -41051,10 +41051,10 @@
     "2019-08-30"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2005-03-14 \u00b7 fundRows=66 oldestQe=20051231 \u00b7 shpRows=71 firstSub=20060121]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Services' for scrip 532617 (Jet Airways (India) Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -41081,10 +41081,10 @@
     "2017-08-31"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2007-04-02 \u00b7 fundRows=25 oldestQe=20150331 \u00b7 shpRows=23 firstSub=20140121]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Automobile and Auto Components' for scrip 513691 (JMT Auto Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -41150,10 +41150,10 @@
     "2019-08-30"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2004-06-14 \u00b7 fundRows=83 oldestQe=20050331 \u00b7 shpRows=85 firstSub=20050421]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Construction' for scrip 532532 (Jaiprakash Associates Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -41189,10 +41189,10 @@
     "2017-02-28"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2010-05-21 \u00b7 fundRows=54 oldestQe=20110930 \u00b7 shpRows=45 firstSub=20110721]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Construction' for scrip 533207 (Jaypee Infratech Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -41222,10 +41222,10 @@
     "2016-08-31"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2008-07-14 \u00b7 fundRows=33 oldestQe=20110930 \u00b7 shpRows=26 firstSub=20110121]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Power' for scrip 532997 (KSK Energy Ventures Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -41264,10 +41264,10 @@
     "2018-08-31"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2010-01-08 \u00b7 fundRows=23 oldestQe=20160331 \u00b7 shpRows=26 firstSub=20130421]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Fast Moving Consumer Goods' for scrip 531882 (Kwality Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -41304,7 +41304,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2006-11-27 \u00b7 fundRows=38 oldestQe=20080930 \u00b7 shpRows=33 firstSub=20090121]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 532778, ISIN-confirmed INE785C01048. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -41327,10 +41327,10 @@
     "2015-11-30"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2010-05-19 \u00b7 fundRows=26 oldestQe=20130930 \u00b7 shpRows=0 firstSub=?]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Textiles' for scrip 533204 (GB Global Ltd), gate: issuer-prefix (ISIN INExxxxxNN, face-value/IBC reissue) + bse-isin-confirmed on the successor + same-business continuity checked against our own series span. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -41348,10 +41348,10 @@
     "2015-08-31"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2007-10-22 \u00b7 fundRows=49 oldestQe=20130630 \u00b7 shpRows=39 firstSub=20111021]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Chemicals' for scrip 530011 (Mangalore Chemicals & Fertilizers Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -41396,10 +41396,10 @@
     "2019-02-28"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2015-07-09 \u00b7 fundRows=24 oldestQe=20150331 \u00b7 shpRows=34 firstSub=20160706]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Fast Moving Consumer Goods' for scrip 539207 (Manpasand Beverages Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -41443,7 +41443,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2016-07-14 \u00b7 fundRows=12 oldestQe=20170331 \u00b7 shpRows=13 firstSub=20170503]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 539981, ISIN-confirmed INE153U01017. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -41470,10 +41470,10 @@
     "2016-03-31"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2005-06-20 \u00b7 fundRows=68 oldestQe=20060630 \u00b7 shpRows=56 firstSub=20060721]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Oil, Gas & Consumable Fuels' for scrip 526235 (Mercator Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -41490,10 +41490,10 @@
     "2016-03-31"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1996-01-01 \u00b7 fundRows=34 oldestQe=20150331 \u00b7 shpRows=22 firstSub=20150421]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Automobile and Auto Components' for scrip 513335 (Metalyst Forgings Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -41511,10 +41511,10 @@
     "2015-08-31"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1996-01-01 \u00b7 fundRows=60 oldestQe=20050331 \u00b7 shpRows=0 firstSub=?]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Capital Goods' for scrip 513446 (JSW Ispat Special Products Ltd), gate: issuer-prefix (ISIN INExxxxxNN, face-value/IBC reissue) + bse-isin-confirmed on the successor + same-business continuity checked against our own series span. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -41569,7 +41569,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2000-01-20 \u00b7 fundRows=61 oldestQe=20030630 \u00b7 shpRows=62 firstSub=20030121]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 524084, ISIN-confirmed INE274B01011. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -41588,7 +41588,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2009-07-28 \u00b7 fundRows=8 oldestQe=20150331 \u00b7 shpRows=5 firstSub=20150121]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 532200, ISIN-confirmed INE651A01020. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -41630,10 +41630,10 @@
     "2017-08-31"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2007-06-05 \u00b7 fundRows=46 oldestQe=20150331 \u00b7 shpRows=34 firstSub=20110121]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Capital Goods' for scrip 532854 (Nitin Fire Protection Industries Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -41648,7 +41648,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1996-01-09 \u00b7 fundRows=14 oldestQe=20150331 \u00b7 shpRows=7 firstSub=20110121]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 502165, ISIN-confirmed INE290B01025. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -41675,10 +41675,10 @@
     "2016-03-31"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2003-08-25 \u00b7 fundRows=42 oldestQe=20110930 \u00b7 shpRows=27 firstSub=20110121]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Healthcare' for scrip 532391 (Opto Circuits (India) Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -41691,7 +41691,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2007-04-12 \u00b7 fundRows=22 oldestQe=20110930 \u00b7 shpRows=15 firstSub=20110121]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 532837, ISIN-confirmed INE628H01015. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -41711,10 +41711,10 @@
     "2015-08-31"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1996-01-02 \u00b7 fundRows=68 oldestQe=20030331 \u00b7 shpRows=56 firstSub=20030121]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Healthcare' for scrip 524372 (Orchid Pharma Ltd), gate: issuer-prefix (ISIN INExxxxxNN, face-value/IBC reissue) + bse-isin-confirmed on the successor + same-business continuity checked against our own series span. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -41784,7 +41784,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1996-01-01 \u00b7 fundRows=62 oldestQe=20030331 \u00b7 shpRows=69 firstSub=20030121]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 500315, ISIN-confirmed INE141A01014. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -41821,7 +41821,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1999-11-24 \u00b7 fundRows=66 oldestQe=20011231 \u00b7 shpRows=60 firstSub=20030121]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 532254, ISIN-confirmed INE763A01023. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -41865,10 +41865,10 @@
     "2017-08-31"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2006-01-06 \u00b7 fundRows=53 oldestQe=20060930 \u00b7 shpRows=57 firstSub=20091021]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Construction' for scrip 532693 (Punj Lloyd Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -41881,7 +41881,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1996-01-01 \u00b7 fundRows=49 oldestQe=20021231 \u00b7 shpRows=50 firstSub=20030121]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 500359, ISIN-confirmed INE015A01028. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -41896,7 +41896,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2008-11-25 \u00b7 fundRows=22 oldestQe=20110930 \u00b7 shpRows=20 firstSub=20110121]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 532106, ISIN-confirmed INE385B01031. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -41958,10 +41958,10 @@
     "2019-02-28"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2009-10-09 \u00b7 fundRows=52 oldestQe=20111231 \u00b7 shpRows=43 firstSub=20130721]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Capital Goods' for scrip 533107 (Swan Defence And Heavy Industries Ltd), gate: issuer-prefix (ISIN INExxxxxNN, face-value/IBC reissue) + bse-isin-confirmed on the successor + same-business continuity checked against our own series span. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -42003,10 +42003,10 @@
     "2017-08-31"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1996-01-01 \u00b7 fundRows=92 oldestQe=20021231 \u00b7 shpRows=84 firstSub=20030121]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Information Technology' for scrip 500366 (Rolta India Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -42048,10 +42048,10 @@
     "2017-08-31"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1996-01-01 \u00b7 fundRows=64 oldestQe=20021231 \u00b7 shpRows=59 firstSub=20030121]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Fast Moving Consumer Goods' for scrip 500368 (Patanjali Foods Ltd), gate: issuer-prefix (ISIN INExxxxxNN, face-value/IBC reissue) + bse-isin-confirmed on the successor + same-business continuity checked against our own series span. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -42088,7 +42088,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1998-02-04 \u00b7 fundRows=22 oldestQe=20110930 \u00b7 shpRows=25 firstSub=20110121]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 501061, ISIN-confirmed INE648A01026. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -42122,7 +42122,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1998-03-03 \u00b7 fundRows=22 oldestQe=20110930 \u00b7 shpRows=20 firstSub=20111021]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 532191, ISIN-confirmed INE654A01024. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -42139,7 +42139,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2013-10-24 \u00b7 fundRows=20 oldestQe=20150331 \u00b7 shpRows=2 firstSub=20161027]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 536666, ISIN-confirmed INE935O01010. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -42154,7 +42154,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1996-01-01 \u00b7 fundRows=56 oldestQe=20011231 \u00b7 shpRows=37 firstSub=20030121]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 524552, ISIN-confirmed INE317A01028. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -42182,7 +42182,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1996-01-02 \u00b7 fundRows=54 oldestQe=20011231 \u00b7 shpRows=53 firstSub=20030121]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 523236, ISIN-confirmed INE633A01028. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -42220,10 +42220,10 @@
     "2017-02-28"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1998-11-05 \u00b7 fundRows=78 oldestQe=20021231 \u00b7 shpRows=69 firstSub=20030121]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Textiles' for scrip 502742 (Sintex Industries Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -42236,7 +42236,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1996-01-01 \u00b7 fundRows=38 oldestQe=20050331 \u00b7 shpRows=48 firstSub=20030121]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 514304, ISIN-confirmed INE772A01016. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -42265,10 +42265,10 @@
     "2019-08-30"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2017-08-08 \u00b7 fundRows=27 oldestQe=20170630 \u00b7 shpRows=22 firstSub=20180718]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Capital Goods' for scrip 540653 (Sintex Plastics Technology Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -42334,10 +42334,10 @@
     "2019-08-30"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1996-01-01 \u00b7 fundRows=88 oldestQe=20011231 \u00b7 shpRows=81 firstSub=20030421]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Financial Services' for scrip 523756 (SREI Infrastructure Finance Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -42354,10 +42354,10 @@
     "2016-03-31"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1996-01-02 \u00b7 fundRows=18 oldestQe=20150630 \u00b7 shpRows=12 firstSub=20141021]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Capital Goods' for scrip 513605 (Srikalahasthi Pipes Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -42427,7 +42427,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1999-12-27 \u00b7 fundRows=73 oldestQe=20011231 \u00b7 shpRows=69 firstSub=20030121]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 532276, ISIN-confirmed INE667A01018. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -42483,7 +42483,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2010-11-10 \u00b7 fundRows=26 oldestQe=20130930 \u00b7 shpRows=21 firstSub=20111021]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 533281, ISIN-confirmed INE286K01024. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -42497,10 +42497,10 @@
     "2015-02-28"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1996-01-02 \u00b7 fundRows=37 oldestQe=20110930 \u00b7 shpRows=31 firstSub=20120121]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Capital Goods' for scrip 504966 (Tinplate Company of India Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -42539,7 +42539,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1996-01-01 \u00b7 fundRows=59 oldestQe=20011231 \u00b7 shpRows=58 firstSub=20030121]",
+   "evidence": "WITHHELD 2026-08-16: our series ends 2017-08-23 = pre-demerger Tube Investments of India (manufacturer). The ISIN successor INE149A01033 is Cholamandalam Financial Holdings (BSE IndustryNew=Financial Services) while the manufacturing business went to a SEPARATE listing TIINDIA (Automobile and Auto Components, bars from 2017-11-02). Filling from the successor would misclassify the historical series and corrupt indRank for this era. Needs adjudication.",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -42559,7 +42559,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2010-03-18 \u00b7 fundRows=10 oldestQe=20170630 \u00b7 shpRows=5 firstSub=20171011]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 533171, ISIN-confirmed INE695A01019. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -42586,10 +42586,10 @@
     "2016-03-31"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1996-01-02 \u00b7 fundRows=76 oldestQe=20030331 \u00b7 shpRows=66 firstSub=20030121]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Capital Goods' for scrip 513216 (Uttam Galva Steels Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -42638,10 +42638,10 @@
     "2018-03-28"
    ],
    "class_proposed": "unclassified",
-   "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=1996-01-01 \u00b7 fundRows=63 oldestQe=20060930 \u00b7 shpRows=60 firstSub=20061021]",
-   "status": "open",
-   "ledger": "",
+   "class": "C4",
+   "evidence": "BSE ComHeadernew IndustryNew='Consumer Durables' for scrip 511389 (Videocon Industries Ltd), gate: isin-exact + bse-isin-confirmed. Measured 2026-08-16. Lands on the next nightly update_sf_data run (fill count is in its publish gate) then the following coverage bake.",
+   "status": "fill-pending",
+   "ledger": "scripts/industry_fills.json",
    "note": ""
   },
   {
@@ -42700,7 +42700,7 @@
    ],
    "class_proposed": "unclassified",
    "class": "needs-source",
-   "evidence": "unclassified param industry. [firstBar=2001-01-10 \u00b7 fundRows=69 oldestQe=20011231 \u00b7 shpRows=64 firstSub=20030121]",
+   "evidence": "not-found-via:bse-comheadernew (measured 2026-08-16) \u2014 BSE ComHeadernew returned an EMPTY classification block (IndustryNew, Sector, IGroup and Industry all blank) for scrip 532401, ISIN-confirmed INE705A01016. NOT evidence of absence: next rung is the aggregator route (\u00a757).",
    "status": "open",
    "ledger": "",
    "note": ""
@@ -70834,5 +70834,10 @@
    "note": "roll member with no factorsAt row \u2014 missing EVERY parameter at these dates"
   }
  ],
- "adjudicated": "2026-08-16"
+ "adjudicated": "2026-08-16",
+ "industry_pass_2026_08_16": {
+  "filled": 43,
+  "not_found_via_bse": 45,
+  "withheld": 1
+ }
 }
