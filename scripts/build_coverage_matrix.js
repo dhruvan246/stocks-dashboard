@@ -427,6 +427,27 @@ function run(ctx, C) {
     return null;
   };
 
+  /* First REAL filing date per symbol: min announce date that is not before the symbol's first
+   * traded bar (§99 — scheme/prospectus carry-ins are stamped pre-listing qe+45d defaults and are
+   * not filings). Lets the revenue family mark "nothing about this entity was public yet" as N/A,
+   * the same rule the profit family applies in-vm. NSLNISP @2023-04-28 is the measured case. */
+  const FIRSTBAR = vm.runInContext(`(function(){ const o = {};
+    for (const t in SERIES) { const m = META[t]; if (!m) continue; const s = SERIES[t];
+      if (s && s.d && s.d.length) o[m.symbol] = +isoOff(s.d[0]).replace(/-/g, ''); }
+    return o; })()`, ctx);
+  const FIRSTREAL = {};
+  for (const sym in FUNDJ) {
+    const fb = FIRSTBAR[sym];
+    let fr = 0;
+    for (const q of FUNDJ[sym]) {
+      for (const a of [q[2], q[4]]) {
+        if (a > 0 && (fb == null || a >= fb) && (!fr || a < fr)) fr = a;
+      }
+    }
+    if (fr) FIRSTREAL[sym] = fr;
+  }
+  const firstRealAnn = sym => FIRSTREAL[sym] || (FUND_ALIAS[sym] ? FIRSTREAL[FUND_ALIAS[sym]] : null) || null;
+
   /* ---- dates ---- */
   const dayOff = d => vm.runInContext(`dayOff(${JSON.stringify(d)})`, ctx);
   let dates = monthEnds(FROM + '-01', end.slice(0, 7));
@@ -571,12 +592,57 @@ function run(ctx, C) {
         {
           const arr = (typeof fundFor === 'function') ? fundFor(r.sym) : null;
           if (arr && arr.length) {
+            // An announce date is REAL only if it does not predate the symbol's first traded bar —
+            // §99: scheme/prospectus carry-ins get stamped qe+45d defaults from before the entity
+            // was listed, and treating those as filings creates both phantom "current quarters"
+            // (NSLNISP's five 2020-era rows, anns 20200530.., listed 2023-02) and phantom history
+            // (CELLO's Jun-2022 row, ann exactly qe+45d, 449 days pre-listing).
+            const ser0 = (SERIES[r.tkr] && SERIES[r.tkr].d && SERIES[r.tkr].d.length) ? SERIES[r.tkr].d[0] : null;
+            const annOk = function (a) {
+              if (!(a > 0)) return false;
+              if (ser0 == null) return true;
+              const s = String(a);
+              return dayOff(s.slice(0, 4) + '-' + s.slice(4, 6) + '-' + s.slice(6, 8)) >= ser0;
+            };
             let ci = -1, ni = 3;
-            for (let i = arr.length - 1; i >= 0; i--) { if (arr[i][3] != null && arr[i][4] > 0 && arr[i][4] <= __DATEINT) { ci = i; ni = 3; break; } }
-            if (ci < 0) for (let i = arr.length - 1; i >= 0; i--) { if (arr[i][1] != null && arr[i][2] > 0 && arr[i][2] <= __DATEINT) { ci = i; ni = 1; break; } }
+            for (let i = arr.length - 1; i >= 0; i--) { if (arr[i][3] != null && annOk(arr[i][4]) && arr[i][4] <= __DATEINT) { ci = i; ni = 3; break; } }
+            if (ci < 0) for (let i = arr.length - 1; i >= 0; i--) { if (arr[i][1] != null && annOk(arr[i][2]) && arr[i][2] <= __DATEINT) { ci = i; ni = 1; break; } }
+            if (ci < 0) {
+              // Rows exist but the first REAL filing (ann >= first bar) is still in the future —
+              // nothing about this entity was public at this date, so the whole profit family is
+              // N/A, exactly like the first-SHP-filing rule above. NSLNISP at 2023-04-28 is the
+              // measured case: first real filing 2023-05-23, three weeks after the month-end;
+              // screener's series starts Jun-2023 and its plant only began production Aug-2023.
+              ['profitYoyPct', 'profitBase', 'profitStreak', 'profitAccel', 'profitTTM', 'composite'].forEach(function (k) {
+                const j = keys.indexOf(k);
+                if (j >= 0 && !flags[j]) na[j] = 1;
+              });
+            }
             if (ci >= 0) {
+              // "Our own oldest row" must mean OUR OWN FILED HISTORY. A newly-listed company
+              // carries pre-listing quarters in from its prospectus/scheme, stamped with the
+              // qe+45d DEFAULT rather than a real filing date (§99, §52) — that is not evidence
+              // the company was reporting then, and treating it as the start of history turns an
+              // unobtainable quarter into a "real gap". CELLO is the measured case: one Jun-2022
+              // row with ann 2022-08-14 == qe+45d exactly, 449 days BEFORE its first traded bar
+              // (2023-11-06). Its own Dec-2023 and Mar-2024 filings carry no year-ago quarter
+              // column at all, and screener's series starts Jun-2023 — the quarter was never
+              // published by anyone, yet that single row made it look fillable.
+              // A row counts toward the oldest-row test only when it carries a real announce date
+              // that is not before the symbol's first traded bar. Same first-bar test postDrift uses.
+              const ser0 = (SERIES[r.tkr] && SERIES[r.tkr].d && SERIES[r.tkr].d.length) ? SERIES[r.tkr].d[0] : null;
               let oldest = 99999999;
-              for (const q of arr) if (q[0] < oldest) oldest = q[0];
+              for (const q of arr) {
+                const anns = [q[2], q[4]].filter(function (x) { return x > 0; });
+                if (!anns.length) continue;                  // undated: not evidence of filing
+                if (ser0 != null) {
+                  const a = Math.min.apply(null, anns);
+                  const aIso = String(a).slice(0, 4) + '-' + String(a).slice(4, 6) + '-' + String(a).slice(6, 8);
+                  if (dayOff(aIso) < ser0) continue;         // pre-listing carry-in (§99)
+                }
+                if (q[0] < oldest) oldest = q[0];
+              }
+              if (oldest === 99999999) for (const q of arr) if (q[0] < oldest) oldest = q[0];  // no dated row survives -> fall back, never widen the gap
               // How far back each parameter REACHES, in quarters, from the latest visible one.
               // Same test for all of them, and the same one this rule always applied to the YoY
               // trio: is the quarter it reaches for older than any row this symbol has? Then it
@@ -596,6 +662,36 @@ function run(ctx, C) {
                 for (let s = 0; s < REACH[k]; s++) need = prevQeInt(need);
                 if (need < oldest) na[j] = 1;
               });
+              // ZERO BASE is a refusal, not a gap: YoY against a base of exactly 0 is
+              // arithmetically undefined, and the parameter's own rule says so ("Null when the
+              // year-ago base is exactly 0"). Only a MEASURED zero counts — the base row must
+              // carry a real (annOk) announce date, because a 0 without one is the unknown
+              // sentinel (§91c) and stays a visible gap. NSLNISP is the measured case: its
+              // pre-production quarters filed PAT of literally 0.00 (screener shows the same),
+              // so every YoY against them is undefined forever — 18 month-ends no fill can close.
+              {
+                const rowAt = function (qe) { for (let i = 0; i < arr.length; i++) if (arr[i][0] === qe) return arr[i]; return null; };
+                const patOf = function (row) { return row == null ? null : (ni === 3 ? row[3] : row[1]); };
+                const annOf = function (row) { return row == null ? 0 : (ni === 3 ? row[4] : row[2]); };
+                const zeroBase = function (qe) { const b = rowAt(qe); return b != null && patOf(b) === 0 && annOk(annOf(b)); };
+                const cur = arr[ci][0];
+                const b4 = prevQeInt(prevQeInt(prevQeInt(prevQeInt(cur))));
+                ['profitYoyPct', 'profitBase', 'profitStreak'].forEach(function (k) {
+                  const j = keys.indexOf(k);
+                  if (j >= 0 && !flags[j] && !na[j] && zeroBase(b4)) na[j] = 1;
+                });
+                const jA = keys.indexOf('profitAccel');
+                if (jA >= 0 && !flags[jA] && !na[jA] && (zeroBase(b4) || zeroBase(prevQeInt(b4)))) na[jA] = 1;
+                // TTM: prior-4 window summing to exactly 0 (all rows present, dated, measured)
+                var pr = [], q = b4, allz = true;
+                for (var s2 = 0; s2 < 4; s2++) { var rw = rowAt(q); if (rw == null || !annOk(annOf(rw)) || patOf(rw) == null) { allz = false; break; } if (patOf(rw) !== 0) allz = false; pr.push(rw); q = prevQeInt(q); }
+                if (allz && pr.length === 4) {
+                  ['profitTTM', 'composite'].forEach(function (k) {
+                    const j = keys.indexOf(k);
+                    if (j >= 0 && !flags[j] && !na[j]) na[j] = 1;
+                  });
+                }
+              }
             }
           }
         }
@@ -640,8 +736,11 @@ function run(ctx, C) {
       // member-dates in Nifty 500 were this. Only symbols with per-name evidence in the ledger are
       // marked; a name whose evidence is absent stays a visible gap on purpose.
       const rvna = [0, 0, 0];
+      const fra = firstRealAnn(sym);
       ['rev', 'op', 'ebit'].forEach((k, j) => {
         if (!rv[j] && naLedgerHit(k, sym, d.iso)) rvna[j] = 1;
+        // first REAL filing still in the future -> nothing was public for this entity yet (§99)
+        else if (!rv[j] && fra && fra > dateInt) rvna[j] = 1;
       });
 
       /* ---- reporting basis: revCon, revStd, patCon, patStd ---------------------------------
