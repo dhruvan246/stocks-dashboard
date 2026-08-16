@@ -1,6 +1,14 @@
 # PLAN — N500 COVERAGE 2015→2020: same method, the earlier era, ALL 43 parameters
 
-**Written 2026-08-16 15:45 IST; findings ledger added 16:05 IST. Executor: Fable, session started 2026-08-16 15:25 IST. Status: P0 DONE (2026-08-16 16:15 IST) — see §0b. NEXT: P4 non-ebit fills (industry / rev / price defects), P1 in-era N/A verification.**
+**Written 2026-08-16 15:45 IST; findings ledger added 16:05 IST. Executor: Fable, session started 2026-08-16 15:25 IST.**
+**Status 2026-08-16 17:40 IST: P0 DONE (§0b) · basis columns LIVE (§0c) · con gap BOUNDED (§0d) · industry pass 43 names (§0e).
+NEXT: the 2,631-cell con fill of §0d, then P1 in-era N/A verification.**
+
+> **Deploy note (§F6, re-confirmed today):** GitHub Pages does NOT redeploy on CI's own payload
+> commits. The 16:29 payload went live only because a CODE push happened to follow it; the gated
+> 16:33 bake then sat committed-but-not-served until this doc commit carried it. **After any
+> `refresh-coverage.yml` dispatch, push something to main — or the live page keeps serving the
+> previous bake, and a `?cb=` cache-buster is needed to see through the Pages CDN either way.**
 
 > ⚠️ **F19 DECIDED-DEFERRED (user, 2026-08-16 15:30 IST): ALL ebit work is ON HOLD.** Verbatim: *"do
 > other params first. EBIT part other session will let u know later. keep that on hold."* Until that
