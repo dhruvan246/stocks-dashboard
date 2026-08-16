@@ -206,7 +206,7 @@
   "SBIN": {
    "class": "C1",
    "reader_1": "screener.in/company/SBIN/consolidated/ quarterly table read 2026-08-16: banking format \u2014 \"Financing Profit\"/\"Financing Margin %\" in place of \"Operating Profit\"/\"OPM %\"; no EBIT row in either layout",
-   "reader_2": "NOT YET SECOND-READ \u2014 MoneyControl rate-limited 2026-08-16 after the first name; Phase 2 to complete",
+   "reader_2": "moneycontrol.com quarterly results 2026-08-16 (/markets/financials/quarterly-results/statebankindia-SBI/) \u2014 RBI banking format: Interest Earned / Interest Expended / Other Expenses / Depreciation / Operating Profit before Provisions and contingencies / Provisions And Contingencies / Net Profit. No EBIT row and no plain 'Operating Profit' row in any table label.",
    "our_data": "sf_revop: ebit null in all 95 quarters (corroboration only \u2014 never the basis for the verdict)",
    "decision": "user 2026-08-16 chose option A: mark N/A rather than derive a PPOP-minus-depreciation number that would not mean EBIT (interest is already deducted before PPOP for a bank)",
    "adjudicated": "2026-08-16"
@@ -293,5 +293,27 @@
    "evidence": "screener.in carries the 'Operating Profit' ROW LABEL for these (which is why they separate from the 33 banking-format names) but no non-zero values in the quarters shown. So the aggregator does not answer the question either way.",
    "next": "Primary filing read per name (NSE archive first, then BSE PDF + vision-fill per runbook 17b). LAKSHVILAS is a merged bank (into DBS Nov-2020) so expect a truncated series; treat its post-merger months as C3, not C4."
   }
+ },
+ "_second_reader_status": {
+  "_rule": "DATA_RUNBOOK \u00a763e \u2014 an exclusion must rest on evidence ABOUT THE COMPANY and be tested on a sample against 2-3 sources. \u00a763 is USER-CAUGHT precedent: inferring 'does not file' from our own gaps was 63% wrong.",
+  "reader_1_all_33": "screener.in, fetched PER NAME 2026-08-16. Banking-format filers show 'Financing Profit'/'Financing Margin %' where every other filer shows 'Operating Profit'/'OPM %'. Neither layout carries an EBIT row \u2014 screener publishes no EBIT for ANY company; ours is derived as OP - Depreciation.",
+  "reader_2_sampled": "moneycontrol.com, 2 of 33 read in full: HDFCBANK (private) and SBIN (public sector). Both serve the RBI banking format with no EBIT row. HDFCBANK ties out numerically: its PPOP 30,996 == our sf_revop op_con 30996.0 for 20260630.",
+  "coverage_of_rule": "\u00a763e asks for a SAMPLE against 2-3 sources; reader_1 is per-name across all 33 and reader_2 samples two bank types. Bar met, but NOT per-name for reader_2 \u2014 moneycontrol blocks scripted fetches and its URL codes are not derivable, so a full sweep needs 33 manual navigations.",
+  "implications_test_\u00a763e_rule_3": "PASSED, and it caught a real error. The selected population is exactly 'banking-format filers' \u2014 a real accounting-format class, not an absurd one. Critically, the 13 non-banking names a category rule would have swept in (12 insurers + SPICEJET + LAKSHVILAS) WERE caught and excluded, ~670 cells kept visible.",
+  "outstanding": "31 of 33 still have no per-name second reader. Upgrade opportunistically; the format claim is not in doubt, the per-name discipline is what is incomplete."
+ },
+ "_p3_root_cause_ebit": {
+  "_finding": "THE WHOLE ebit GAP IS EXPLAINED BY FILER FORMAT, and it is documented in our own XBRL extractor \u2014 scripts/build_revop.py metrics_for(). Found 2026-08-16 while walking the \u00a757 route ladder. This supersedes the aggregator-based reasoning: build_revop reads the XBRL of the actual filings and branches on tags, so it is a statement about the filings, not about our coverage.",
+  "ebit_is_None_for_FOUR_formats": {
+   "life_insurer_IRDAI_LI": "detected by the NetPremiumIncome tag; returns ebit=None (build_revop.py:236). rev = NetPremiumIncome + IncomeFromInvestmentsNet + InvestmentIncome; op = ProfitLossBeforeTax - other income. e.g. HDFCLIFE, ICICIPRULI, SBILIFE, LICI.",
+   "general_insurer_IRDAI_GI": "detected by the PremiumEarned tag; returns ebit=None (:250). rev = PremiumEarned + investments; op = rev - OperatingExpenses - NonOperatingExpense. e.g. ICICIGI, GODIGIT, STARHEALTH, NIACL.",
+   "bank": "detected by InterestEarned + OperatingProfitBeforeProvisionAndContingencies; ':261 # ebit not reproduced for banks'. rev = InterestEarned, op = pre-provision profit.",
+   "nbfc_ind_as": "detected by InterestEarned with NO bank op tag; ':276 # ebit not reproduced for NBFCs'. op = PBET + FC + Dep - OI - OtherRevenueFromOperations."
+  },
+  "ebit_is_computed_ONLY_for_industrial": "ebit = ProfitBeforeExceptionalItemsAndTax + FinanceCosts - OtherIncome (build_revop.py:280), i.e. operating profit after depreciation. For a bank or NBFC FinanceCosts IS the core cost of the business, so the formula would not mean 'earnings before interest' \u2014 consistent with the user's option-A decision.",
+  "why_this_is_better_evidence": "It names the XBRL tags that distinguish the formats, and the rev/op values these branches produce are Trendlyne-exact per format (ICICIGI Q1FY27 rev 7088.22 / op 522.10; HDFCLIFE Q1FY27 con 33758.51). It is not an inference from our own gaps (\u00a763).",
+  "what_it_implies_for_the_remaining_1251_ebit_cells": "The 12 unresolved non-banking names are LI/GI insurers \u2014 same structural class as the banks. Many of the 94 'has-ebit-somewhere' names are NBFCs/financials (SHRIRAMFIN, SAMMAANCAP, 360ONE, POONAWALLA, BAJFINANCE, CHOLAFIN, MUTHOOTFIN, LICHSGFIN, PFC, RECLTD, HDFCAMC, SBICARD ...), whose ebit plausibly STOPS at an Ind-AS/NBFC format transition rather than being a hole.",
+  "BLOCKED_ON": "Per-name format determination needs the XBRL itself. There is NO local _xbrl_cache on this Mac (the path in scan_xbrl_nature.py is the old Windows one), so this is a fetch campaign, not a code change. Do NOT mark these N/A from the sf_revop pattern alone \u2014 that is exactly the circular inference \u00a763 was written about.",
+  "NEXT": "Fetch XBRL per name for the 107 ebit-gap and 67 op-gap names, branch with build_revop's own metrics_for() detection, and record the format per name. Names that resolve to LI/GI/bank/NBFC become C1; industrial names with missing quarters become C4 fills. SPICEJET is already confirmed industrial and fillable."
  }
 }
