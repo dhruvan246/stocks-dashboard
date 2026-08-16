@@ -674,6 +674,36 @@ function run(ctx, C) {
                 const j = keys.indexOf(k);
                 if (j >= 0 && !flags[j]) na[j] = 1;
               });
+            } else if (!prior) {
+              // PRE-LISTING PRIOR — the same refusal one step earlier, and the case the rule above
+              // cannot see. There the prior row EXISTS and was filed late; here it does not exist
+              // at all, because the company was not listed yet and never filed a shareholding
+              // pattern for that quarter. BSE correctly returns nothing: there is no document to
+              // fetch and the delta cannot be computed by anyone. This is the 2021-2025 IPO cohort
+              // (PAYTM, NYKAA, LODHA, SWIGGY, HYUNDAI, MEESHO, GROWW …) plus every later listing.
+              //
+              // TWO gates, and the SECOND one is load-bearing. "Our earliest shp row is later than
+              // the prior quarter" is a claim about OUR OWN DATA, and a hole in our history looks
+              // exactly like a company that had not listed — the circular inference §57a forbids.
+              // So the TAPE arbitrates independently: the prior quarter must also fall before the
+              // symbol's first traded bar. Measured 2026-08-16 against the authoritative --explain
+              // (§92, same vm scan that writes the payload): 79 of the 87 residue member-dates
+              // match the shp shape, and 78 of those are pre-listing on the tape. The one that is
+              // NOT is HLEGLAS — first traded 2021-02-22, prior quarter 2021-09-30, seven months
+              // after it listed — a genuine missing Sep-2021 filing. Without the tape gate this
+              // rule would have marked that real defect N/A and hidden it behind its own symptom.
+              // No tape row at all means no second reader, so the verdict is withheld, not assumed.
+              let firstQe = 0;
+              for (const q of shp) if (q[0] > 0 && (!firstQe || q[0] < firstQe)) firstQe = q[0];
+              const ps = String(pq);
+              const pqOff = dayOff(ps.slice(0, 4) + '-' + ps.slice(4, 6) + '-' + ps.slice(6, 8));
+              const serP = (SERIES[r.tkr] && SERIES[r.tkr].d && SERIES[r.tkr].d.length) ? SERIES[r.tkr].d[0] : null;
+              if (firstQe && firstQe > pq && serP != null && pqOff < serP) {
+                ['fiiChgPp', 'diiChgPp'].forEach(function (k) {
+                  const j = keys.indexOf(k);
+                  if (j >= 0 && !flags[j]) na[j] = 1;
+                });
+              }
             }
           }
         }
