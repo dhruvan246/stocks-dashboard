@@ -1,8 +1,66 @@
 # N500 COVERAGE-100 CAMPAIGN — every parameter 100% on 🧭 Coverage Matrix, Nifty 500, 2020-01 → date
 
 **Written 2026-08-16 13:11 IST (Fable, planning session). Executor: Opus, fresh session.**
-**Status: PHASE 1 COMPLETE and LIVE (2026-08-16 14:33 IST, commits 1a699bdb + CI 41ed68ed). NEXT: PHASE 2.**
+**Status: PHASE 2 CLASSIFICATION COMPLETE and LIVE (2026-08-16, commits 9f67812c + 6694410e). NEXT: PHASE 2 source reads / PHASE 3 fills.**
 Update this line as phases close.
+
+### P2 results — classification done; every remaining cell is real filling work
+
+**Live nifty-500 2020→date after P2: total missing 3,228 → 2,250.**
+`profitTTM` 98.687 → **99.830%** · `composite` likewise · `profitAccel` 99.747 → **99.902%**.
+
+**The fix was to generalise a rule the builder already had, not to add a name list.** It already
+asked, for `profitYoyPct`/`profitBase`/`profitStreak`: *is the quarter this parameter reaches for
+older than any row this symbol has?* `profitTTM` reaches 7 quarters back and `profitAccel` 5, and
+neither was gated — so a demerged or freshly-listed company's own pre-existence counted as a gap
+(440 and 61 member-dates in N500 alone). One `REACH` table now drives all six, so it keeps working
+for companies that list next year.
+
+⚠️ **The count-based version of that rule was wrong and nearly shipped.** Asking "how many quarters
+have been filed" conflates *this company is young* with *this specific quarter is missing* — it
+classed **CELLO** as pre-history, when `build_coverage_matrix.js:461-463` names CELLO as the
+deliberate counter-example (needs 2022-12, holds rows from 2022-06 — a hole in the middle). The
+shipped test asks whether the needed quarter falls INSIDE the symbol's own span. `profitYoyPct`
+still reads exactly 24 missing (CELLO 5 + NSLNISP 19), unchanged.
+
+**New tooling:** `--facts <path>` dumps per-symbol firstBar / oldest filing / first SHP submission
+from the engine's loaded state (firstBar is the one boundary the repo cannot answer locally);
+`n500_cov_adjudicate.py` classes every row **and refuses to class what it cannot measure** — only C3
+is decidable from our own data, and only because it is a fact about the symbol's own history rather
+than about the outside world. It adjudicates each affected month separately, since a young company
+crosses from pre-history into real-gap partway through its run.
+
+**Queue: 428 rows / 2,250 cells, ALL `needs-source`.** The measurable N/A verdicts are now builder
+rules; what remains is genuine filling:
+
+| param | cells | names |
+|---|---|---|
+| ebit | 1,251 | 107 |
+| op | 398 | 67 |
+| fiiChgPp / diiChgPp | 174 each | 107 |
+| profitTTM / composite | 67 each | 10 |
+| profitAccel | 39 | 6 |
+| profitYoyPct / profitBase / profitStreak | 24 each | 2 (CELLO, NSLNISP) |
+| delivPct | 7 | 7 |
+| rev | 1 | 1 (NSLNISP @ 2023-04-28) |
+
+**The 13 non-banking ebit candidates were read and recorded (ledger `_p2_findings_ebit_nonbanking`)
+— 1 fillable, 12 UNRESOLVED, none adjudicated:**
+- **SPICEJET → C4, clean.** screener carries Operating Profit AND Depreciation in all 13 shown
+  quarters, so our OP−Depreciation EBIT derives. Its `op` is a gap too (4 of 22 quarters).
+- ⚠️ **GICRE, HDFCLIFE, ICICIPRULI, LICI, NIACL: REFUSED.** Operating Profit is populated but
+  **Depreciation reads literal 0 in every quarter** — the IRDAI format folds depreciation into
+  "Operating Expenses related to Insurance Business", so that 0 is a NOT-DISCLOSED sentinel, not a
+  measured zero. Deriving `EBIT = OP − 0 = OP` would assert "this insurer has no depreciation",
+  which no filing says. Needs a primary filing read to settle C1 vs C4.
+- **ICICIGI, SBILIFE, STARHEALTH, GODIGIT, NIVABUPA, CANHLIFE, LAKSHVILAS:** the row label exists
+  but carries no values, so the aggregator answers neither way. Primary filing read per name.
+  LAKSHVILAS merged into DBS Nov-2020 — expect a truncated series; post-merger months are C3.
+
+**Still owed from P1:** 31 of the 32 banking-format ledger entries carry
+`reader_2: "NOT YET SECOND-READ"` (Moneycontrol rate-limits after ~1 page). `INDIANB` remains
+unadjudicated — our data holds one ebit quarter, the known op-copy artifact, which the ledger's own
+guard refuses to N/A over.
 
 ### P1 results — SHIPPED AND VERIFIED LIVE (payload 2026-08-16 14:24 IST, dataEnd 2026-08-14)
 
