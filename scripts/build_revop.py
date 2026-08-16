@@ -199,6 +199,51 @@ def orfo_other_income(xml, ctx):
     return tot
 
 
+def lender_ebit_na_symbols():
+    """Symbols adjudicated NO-EBIT (banks + screener-layout lenders), from the evidence ledger.
+
+    User decision 2026-08-16 ("show nbfc and banks like screener do" + "go ahead with the sf_revop
+    data alignment"): these filers carry no ebit in the DATA, not just on the coverage page. The
+    ledger (scripts/coverage_na_ledger.json) holds per-name evidence; this reads its ebit keys and
+    widens through FUND_ALIAS in both directions, since a renamed lender's history lives under its
+    old key and old symbols still appear in era rosters. Absent ledger = empty set (fail open to
+    UNCHANGED behaviour, never to hidden stripping)."""
+    import re as _re
+    out = set()
+    try:
+        led = json.load(open(os.path.join(HERE, "coverage_na_ledger.json")))
+        base = {s for s in led.get("ebit", {}) if not s.startswith("_")}
+        out |= base
+        eng = open(os.path.join(os.path.dirname(HERE), "docs", "backtest-engine.js")).read()
+        m = _re.search(r"FUND_ALIAS\s*=\s*(\{.*?\})\s*;", eng, _re.S)
+        if m:
+            alias = json.loads(_re.sub(r"(\w+)\s*:", r'"\1":', m.group(1)).replace("'", '"'))
+            for s in base:
+                if alias.get(s):
+                    out.add(alias[s])
+            for k, v in alias.items():
+                if v in base:
+                    out.add(k)
+    except Exception as e:
+        print("[lender-ebit guard] ledger unreadable (%s) — stripping NOTHING" % e)
+    return out
+
+
+LENDER_EBIT_NA = lender_ebit_na_symbols()
+
+
+def strip_lender_ebit(sym, row9):
+    """Null slots 7/8 (ebitStd/ebitCon) for adjudicated no-ebit filers. EVERY writer that computes
+    an ebit must pass its row through this, or a rebuild/upsert resurrects what the 2026-08-16
+    alignment removed (feedback-a-heal-that-reapplies / feedback-retraction-needs-every-ledger —
+    a structural guard at the writers beats N ledger annotations)."""
+    if sym in LENDER_EBIT_NA and len(row9) > 7:
+        row9[7] = None
+        if len(row9) > 8:
+            row9[8] = None
+    return row9
+
+
 def metrics_for(xml, ctx):
     """Reconstruct (revenue_cr, op_cr, ebit_cr, pat_total_cr, pat_owners_cr) for one context.
     Returns rupee->crore values. Three formats (all Trendlyne-verified to the paisa, 2026-07-11):
@@ -450,6 +495,7 @@ def main():
             ow, tot = r["con"]["owners"], r["con"]["pat"]
             con_pat = tot if (ow is None or (abs(ow) < 0.005 and tot is not None and abs(tot) > 2)) else ow
             put(row, 5, con_pat)
+        strip_lender_ebit(r["sym"], row)   # adjudicated no-ebit filers — see the guard's docstring
 
     todo = files[start_i:]
     processed = 0

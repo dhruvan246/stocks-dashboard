@@ -44,6 +44,7 @@ sys.path.insert(0, HERE)
 
 import fitz                      # PyMuPDF — text-layer only here (scanned pages -> skip+flag)
 import fetch_insurers as FI      # bse session/datebound/fetch_pdf/_tv — proven helpers
+from build_revop import strip_lender_ebit   # adjudicated no-ebit filers (2026-08-16 alignment)
 
 REVOP_DOCS = os.path.join(ROOT, "docs", "sf_revop.json")
 REVOP_SCR = os.path.join(HERE, "revop_fundamentals.json")
@@ -467,6 +468,10 @@ def main():
             if rr[i[0]] is None and rev is not None: rr[i[0]] = rev; changed = True
             if rr[i[1]] is None and op is not None: rr[i[1]] = op; changed = True
             if rr[i[2]] is None and ebit is not None: rr[i[2]] = ebit; changed = True
+            # Adjudicated no-ebit filers (banks + screener-layout lenders, 2026-08-16 alignment).
+            # This sweep DERIVES ebit = op - dep off PDF/HTML columns, so it can mint an ebit for a
+            # lender the XBRL path would never produce. Guard at the WRITE, not at the source.
+            strip_lender_ebit(sym, rr)
             # PAT mirror slots (4=std,5=con) — copy the anchored stored PAT for consistency
             pv = pat_of(sym, qe, basis)
             if rr[{"std": 4, "con": 5}[basis]] is None and pv is not None:

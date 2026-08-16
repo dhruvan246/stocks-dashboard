@@ -49,7 +49,7 @@ def gated_ann(bstr):
             nd += datetime.timedelta(days=1)
         return nd.strftime("%Y%m%d")
     return d
-from build_revop import xbrl_revop   # revenue + operating profit from the SAME filing XBRL
+from build_revop import xbrl_revop, strip_lender_ebit   # revenue + operating profit from the SAME filing XBRL
 
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE)
 DOCS = os.path.join(ROOT, "docs", "sf_fundamentals.json")
@@ -266,6 +266,10 @@ def main():
             if rFin: rr[6] = 1
             if rr[7] is None and eStd is not None: rr[7] = eStd
             if rr[8] is None and eCon is not None: rr[8] = eCon
+            # Adjudicated no-ebit filers (banks + screener-layout lenders). This 15-min upsert is
+            # the path that would resurrect the 2026-08-16 alignment one new quarter at a time —
+            # exactly how a heal becomes a nightly rewrite.
+            strip_lender_ebit(sym, rr)
             d[str(qe)] = rr; revop_changed += 1
 
     # No-subsidiary auto-fill: a company that has never reported con != std files only a standalone
