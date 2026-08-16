@@ -144,6 +144,25 @@ const FAMILIES = [
     { k: 'patCon', src: 'basis', rule: 'Consolidated net profit (sf_fundamentals idx3, visible from its own announce date idx4). No N/A applied. Net profit has no column of its own anywhere else on this page — the PAT families show only DERIVED measures (YoY, TTM, streak, drift).' },
     { k: 'patStd', src: 'basis', rule: 'Standalone net profit (sf_fundamentals idx1, visible from its own announce date idx2).' },
   ] },
+  /* PAT under the backtest's STANDALONE switch. The PAT families above are measured with the
+   * engine's DEFAULT basis — 'con', which falls back to standalone FIELD-BY-FIELD — but the
+   * dashboard's "Earnings basis" selector is part of a strategy's identity, and a Standalone
+   * strategy sees a genuinely different series: profitMetrics('std') reads only idx1/idx2, no
+   * fill-in. Measured 2026-08-12 (backtest-engine.js): where both bases resolve, std and con TTM
+   * growth agree in SIGN only 86.9% of the time. These columns are factorsAt() run a SECOND time
+   * with earnBasis:'std' — through the engine, never re-derived — so each cell is exactly what a
+   * standalone-basis strategy could screen on at that date. RAW view like the basis family above:
+   * no N/A wired (the blended family's N/A rules were adjudicated per-name against the BLEND and
+   * are not assumed to transfer to the std series). */
+  { id: 'patstd', label: 'PAT std basis', src: 'engstd', note: 'The PAT / PAT TTM / drift / composite columns above are measured under the engine\'s DEFAULT Earnings basis — consolidated, falling back to standalone field-by-field. The backtest dashboard\'s "Earnings basis" switch is part of a strategy\'s identity, and a Standalone strategy sees a different series: no consolidated values, no fill-in (std and con TTM growth agree in sign only 86.9% of the time where both exist). These columns are the same factorsAt() engine pass run again with earnBasis = standalone. RAW view: no not-applicable is wired yet, so an empty cell means only "the engine returns null on the standalone basis at that date".', params: [
+    { k: 'profitYoyStd', src: 'engstd', eng: 'profitYoyPct', rule: 'Standalone net-profit YoY % — latest quarter whose STANDALONE result was announced on or before the date (idx2 > 0, §91c sentinel rule), vs the same quarter a year earlier on the standalone slot. Null when the year-ago base is exactly 0. No consolidated fallback anywhere in this family.' },
+    { k: 'profitBaseStd', src: 'engstd', eng: 'profitBase', rule: 'The year-ago quarter\'s standalone net profit. Moves in lockstep with the std YoY by construction — profitMetrics(\'std\') answers both or neither — but profitBase is separately screenable on the dashboard, so it keeps its own column.' },
+    { k: 'profitAccelStd', src: 'engstd', eng: 'profitAccel', rule: 'This-quarter standalone YoY minus last-quarter standalone YoY — reaches 5 quarters back on the std slot alone.' },
+    { k: 'profitTTMStd', src: 'engstd', eng: 'profitTTM', rule: 'Last 4 standalone quarters vs the 4 before them — needs all 8 on the std slot. The blended profitTTM can substitute a standalone value into any hole; this one cannot substitute anything, so it is the honest availability for a Standalone-basis strategy.' },
+    { k: 'profitStreakStd', src: 'engstd', eng: 'profitStreak', rule: 'Consecutive positive standalone-YoY quarters — 0 is a real answer, so every row where the std series resolves counts.' },
+    { k: 'postDriftStd', src: 'engstd', eng: 'postDrift', rule: 'Return since the last STANDALONE announce date — under the std switch lastResultDate() reads only idx2, and the two bases print different dates on 3.5% of rows (measured 2026-08-12), so this can differ from the blended postDrift.' },
+    { k: 'compositeStd', src: 'engstd', eng: 'composite', rule: 'z(std profitTTM) + z(ret12m) − z(vol), cross-sectional over the same rows — null whenever the std TTM is. What a composite screen ranks on with the Standalone switch set.' },
+  ] },
   { id: 'fii', label: 'FII', note: 'Quarterly shareholding filings, visible from their submission date.', params: [
     { k: 'fiiPct', rule: 'FII holding % from the latest SHP filing submitted on or before the date.' },
     { k: 'fiiChgPp', rule: 'QoQ change in pp — needs the calendar-previous quarter too, and is deliberately never computed across the Sep-2022 SEBI reclassification (DR blocks moved into FII/DII — a paperwork change, not a stake change). Rows whose visible filing IS 2022-09-30 are N/A, not missing: that is a refusal, not a gap. Companies whose visible filing is a mid-quarter event row dated after 30-Sep keep a real delta and stay in the denominator.' },
@@ -524,6 +543,17 @@ function run(ctx, C) {
     filters: [{ field: 'fiiPct' }, { field: 'profitTTM' }, { field: 'ret12m' }],
   };
   ctx.__CFG = CFG;
+  // Second engine pass for the PAT-std family: the same CFG with the dashboard's Standalone
+  // switch flipped. fiiPct is dropped — SHP is basis-independent and already measured by the
+  // main pass, so skipping shpAt() here is pure saving. sortBy stays 'composite' so this pass
+  // computes compositeStd's cross-sectional z-scores exactly as a std-basis screen would.
+  const CFG_STD = {
+    indexName: null, mcapFloor: 0, earnBasis: 'std', sortBy: 'composite',
+    filters: [{ field: 'profitTTM' }, { field: 'ret12m' }],
+  };
+  ctx.__CFG_STD = CFG_STD;
+  // engine field name behind each PAT-std column, in family order
+  const STD_ENG_KEYS = PARAMS.filter(p => p.src === 'engstd').map(p => p.eng);
 
   const revopIdx = { rev: [1, 0], op: [3, 2], ebit: [8, 7] };   // [con, std] slots in sf_revop
   let lastLog = 0;
@@ -534,6 +564,13 @@ function run(ctx, C) {
     const rows = vm.runInContext(`(function(){
       const rows = factorsAt(__OFF, __CFG), keys = ${JSON.stringify(PARAMS.filter(p => !p.src).map(p => p.k))};
       const zeroIsNull = ${JSON.stringify(PARAMS.filter(p => !p.src).map(p => !!p.zeroIsNull))};
+      // PAT-std: the SAME engine run again with the dashboard's Standalone basis switch on.
+      // The row set is identical by construction (basis changes only r.profit* values, never the
+      // price/freshness gates that admit a row) — so a length mismatch means the join below
+      // would silently mislabel stocks; fail the bake loudly instead.
+      const stdRows = factorsAt(__OFF, __CFG_STD), stdKeys = ${JSON.stringify(STD_ENG_KEYS)};
+      if (stdRows.length !== rows.length) throw new Error('std-basis pass row-set mismatch at off=' + __OFF + ': ' + stdRows.length + ' vs ' + rows.length);
+      const stdByTkr = new Map(); for (const s of stdRows) stdByTkr.set(s.tkr, s);
       const out = new Array(rows.length);
       for (let i = 0; i < rows.length; i++) {
         const r = rows[i], flags = new Array(keys.length);
@@ -711,7 +748,15 @@ function run(ctx, C) {
           const ser = SERIES[r.tkr];
           if (lrd > 0 && ser && ser.d && ser.d.length && dayOff((String(lrd).slice(0,4)+'-'+String(lrd).slice(4,6)+'-'+String(lrd).slice(6,8))) < ser.d[0]) na[jPD] = 1;
         }
-        out[i] = [r.sym, flags, r.turnover || 0, (r.ind && r.ind !== 'Other' && r.ind !== 'Unknown') ? 1 : 0, na];
+        // PAT-std flags, from the std-basis pass's row for this same stock. Same non-null test
+        // as the engine columns; no zeroIsNull (a streak of 0 is a real answer, §91).
+        const sr = stdByTkr.get(r.tkr);
+        const sflags = new Array(stdKeys.length);
+        for (let j = 0; j < stdKeys.length; j++) {
+          const v = sr ? fieldVal(sr, stdKeys[j]) : null;
+          sflags[j] = (v != null && typeof v === 'number' && isFinite(v)) ? 1 : 0;
+        }
+        out[i] = [r.sym, flags, r.turnover || 0, (r.ind && r.ind !== 'Other' && r.ind !== 'Unknown') ? 1 : 0, na, sflags];
       }
       return out;
     })()`, ctx);
@@ -724,9 +769,11 @@ function run(ctx, C) {
     const revCols = ['rev', 'op', 'ebit'].map(k => PARAMS.findIndex(p => p.k === k && p.src === 'revop'));
     const BASIS_KEYS = ['revCon', 'revStd', 'patCon', 'patStd'];
     const basisCols = BASIS_KEYS.map(k => PARAMS.findIndex(p => p.k === k && p.src === 'basis'));
+    // PAT-std column positions, in the same family order STD_ENG_KEYS (and so `es`) is built in
+    const stdCols = PARAMS.map((p, i) => (p.src === 'engstd' ? i : -1)).filter(i => i >= 0);
 
     // per-row flags for the non-engine families, computed once per row per date
-    const perRow = rows.map(([sym, flags, turnover, indKnown, na]) => {
+    const perRow = rows.map(([sym, flags, turnover, indKnown, na, es]) => {
       const rv = [0, 0, 0];
       const ridx = revFor(sym), rmap = revopFor(sym);
       if (ridx && rmap) {
@@ -765,7 +812,7 @@ function run(ctx, C) {
       if (rmap && vStd) { const c = rmap[vStd[1]]; if (c && c[0] != null) bs[1] = 1; }
       if (fqe && vCon) { const q = fqe[vCon[1]]; if (q && q[3] != null) bs[2] = 1; }
       if (fqe && vStd) { const q = fqe[vStd[1]]; if (q && q[1] != null) bs[3] = 1; }
-      return { sym, flags, turnover, indKnown, rv, rvna, na, bs };
+      return { sym, flags, turnover, indKnown, rv, rvna, na, bs, es };
     });
 
     for (const u of UNIVERSES) {
@@ -796,6 +843,10 @@ function run(ctx, C) {
         for (let j = 0; j < 4; j++) {
           if (r.bs[j]) cnt[basisCols[j]]++;
           else if (ex) (ex[PARAMS[basisCols[j]].k] ||= []).push(r.sym);   // no N/A here by design
+        }
+        for (let j = 0; j < stdCols.length; j++) {
+          if (r.es[j]) cnt[stdCols[j]]++;
+          else if (ex) (ex[PARAMS[stdCols[j]].k] ||= []).push(r.sym);   // RAW view — no N/A by design
         }
       }
       // roll members that never reached factorsAt carry NO parameter at all — they are the Price
