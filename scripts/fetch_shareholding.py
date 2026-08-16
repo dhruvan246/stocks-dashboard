@@ -289,9 +289,14 @@ def apply_refine_ledger(h, path=None):
                              and abs((cur[1] + cur[2]) - (new[1] + new[2])) <= 0.02)
             except (TypeError, IndexError):
                 swallowed = False
-            if swallowed:
-                bad.append({"sym": sym, "qe": qe, "stored": cur, "refined": new[:7],
-                            "verdict": "REFUSED_swallowed_foreign_block_22i"}); skip += 1; continue
+            # A swallowed block condemns fii and dii ONLY. The document is genuinely ambiguous
+            # about those two — MANAPPURAM 2018-03 files OtherInstitutionsMember 37.78 with NO
+            # ForeignPortfolioInvestor row at all, so nothing in it says which part is foreign;
+            # the stored split came from NSE, whose archive no longer reaches 2018. But prom, mf
+            # and ins are read from their OWN rows and are not affected by where the lump lands,
+            # so they still gain precision. Falling through to the per-field pass below refines
+            # those and refuses fii/dii, instead of throwing the whole cell away.
+            force_keep = ("fii", "dii") if swallowed else ()
             # PER-FIELD, not all-or-nothing. Accept band is 0.02pp — the stored value often came
             # from a 2dp LEDGER derivation while the refined one is computed from the primary
             # document's share counts, so legitimate double-rounding can reach two 2dp steps.
@@ -303,6 +308,8 @@ def apply_refine_ledger(h, path=None):
             merged5, refused = [], []
             for i, nm in enumerate(("prom", "fii", "dii", "mf", "ins")):
                 x, y = cur[i], new[i]
+                if nm in force_keep:                               # §22i: ambiguous in this doc
+                    refused.append(nm + "(22i)"); merged5.append(x); continue
                 if isinstance(x, (int, float)) and isinstance(y, (int, float)):
                     if abs(float(x) - float(y)) <= 0.0200001: merged5.append(y); continue
                     refused.append(nm); merged5.append(x)          # keep stored, refuse the field
@@ -311,7 +318,8 @@ def apply_refine_ledger(h, path=None):
                     if x != y and x is not None: refused.append(nm)
             if refused:
                 bad.append({"sym": sym, "qe": qe, "stored": cur, "refined": new[:7],
-                            "verdict": "FIELD_CONFLICT_kept_stored", "fields": refused})
+                            "verdict": ("REFUSED_swallowed_foreign_block_22i" if swallowed
+                                        else "FIELD_CONFLICT_kept_stored"), "fields": refused})
                 skip += 1
             new = merged5 + list(new[5:])
             merged = new[:5] + list(cur[5:])         # refined values, stored provenance
