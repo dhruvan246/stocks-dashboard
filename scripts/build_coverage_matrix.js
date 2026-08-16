@@ -369,34 +369,14 @@ function run(ctx, C) {
     }
     if (out.length) { out.sort((a, b) => a[0] - b[0]); REV_INDEX[sym] = out; }
   }
-  /* ---- PER-BASIS index: each basis visible from ITS OWN announce date -----------------------
-   * The `rev` column above resolves ONE quarter with min(annStd, annCon) and then takes con-else-std
-   * from it. That answers "could a backtest see a revenue number", which is the right question for
-   * that column but merges the two bases. The `basis` family asks a different question — "was the
-   * CONSOLIDATED number itself available" — so a consolidated cell must be gated on the
-   * consolidated filing's own date (idx4), never on the standalone one that may precede it by
-   * weeks. Same `> 0` sentinel rule as everywhere else (§91c: ann = 0 means UNKNOWN, and
-   * `0 != null` is true in JS).
-   *   BASIS_IDX[sym] = { con: [[ann, qeStr], …], std: [[ann, qeStr], …] }, each ascending. */
-  const BASIS_IDX = {};
-  for (const sym in FUNDJ) {
-    const con = [], std = [];
-    for (const q of FUNDJ[sym] || []) {
-      if (q[4] > 0) con.push([q[4], String(q[0])]);
-      if (q[2] > 0) std.push([q[2], String(q[0])]);
-    }
-    if (con.length || std.length) {
-      con.sort((a, b) => a[0] - b[0]); std.sort((a, b) => a[0] - b[0]);
-      BASIS_IDX[sym] = { con, std };
-    }
-  }
-  // sf_fundamentals row by quarter-end, for the PAT value lookup
+  // sf_fundamentals row by quarter-end, for the PAT value lookup (basis family)
   const FUND_BY_QE = {};
   for (const sym in FUNDJ) {
     const m = {};
     for (const q of FUNDJ[sym] || []) m[String(q[0])] = q;
     FUND_BY_QE[sym] = m;
   }
+  // BASIS_IDX is built AFTER FIRSTBAR below — it has to gate on the first traded bar (§99).
 
   /* ---- NO N/A ON THE BASIS FAMILY, DELIBERATELY (user, 2026-08-16: "dont wire NA, add empty
    * values. NA part i'll check later") ------------------------------------------------------
@@ -447,6 +427,36 @@ function run(ctx, C) {
     if (fr) FIRSTREAL[sym] = fr;
   }
   const firstRealAnn = sym => FIRSTREAL[sym] || (FUND_ALIAS[sym] ? FIRSTREAL[FUND_ALIAS[sym]] : null) || null;
+
+  /* ---- PER-BASIS index: each basis visible from ITS OWN announce date -----------------------
+   * The `rev` column resolves ONE quarter with min(annStd, annCon) and takes con-else-std from it.
+   * That answers "could a backtest see a revenue number", which is right for that column but merges
+   * the two bases. The `basis` family asks a different question — "was the CONSOLIDATED number
+   * itself available" — so a consolidated cell is gated on the consolidated filing's own date
+   * (idx4), never on a standalone one that can precede it by weeks.
+   *   Two gates on every announce date, and both are load-bearing:
+   *   `a > 0`  — §91c, ann = 0 is the UNKNOWN sentinel and `0 != null` is true in JS.
+   *   `a >= FIRSTBAR[sym]` — §99, the SAME rule annOk applies in-vm. Pre-listing qe+45d stamps
+   *     from prospectus/scheme carry-ins are not filings, and counting one as "visible" would
+   *     make this column report data a strategy could not have seen. 5,247 such stamps still
+   *     exist repo-wide, so an ungated index would have re-imported the look-ahead class the
+   *     profit family just removed.
+   *   BASIS_IDX[sym] = { con: [[ann, qeStr], …], std: [[ann, qeStr], …] }, each ascending. */
+  const BASIS_IDX = {};
+  let basisAnnDropped = 0;
+  for (const sym in FUNDJ) {
+    const fb = FIRSTBAR[sym];
+    const con = [], std = [];
+    for (const q of FUNDJ[sym] || []) {
+      if (q[4] > 0) { if (fb == null || q[4] >= fb) con.push([q[4], String(q[0])]); else basisAnnDropped++; }
+      if (q[2] > 0) { if (fb == null || q[2] >= fb) std.push([q[2], String(q[0])]); else basisAnnDropped++; }
+    }
+    if (con.length || std.length) {
+      con.sort((a, b) => a[0] - b[0]); std.sort((a, b) => a[0] - b[0]);
+      BASIS_IDX[sym] = { con, std };
+    }
+  }
+  log(`basis family: ${basisAnnDropped} pre-listing announce stamps ignored (§99 look-ahead gate)`);
 
   /* ---- dates ---- */
   const dayOff = d => vm.runInContext(`dayOff(${JSON.stringify(d)})`, ctx);
