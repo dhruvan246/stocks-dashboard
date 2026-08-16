@@ -114,6 +114,50 @@
     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 169d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
    }
   },
+  "AARTIIND": {
+   "2015-09-30": {
+    "cell": [
+     54.795,
+     2.9787,
+     12.7601,
+     12.7028,
+     0.0,
+     "2015-10-21"
+    ],
+    "was": [
+     54.795,
+     2.7,
+     12.7601,
+     12.7028,
+     0.0,
+     "2015-10-21"
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: fii"
+   }
+  },
+  "ADANIGREEN": {
+   "2021-03-31": {
+    "cell": [
+     56.29,
+     21.4646,
+     0.3039,
+     0.1223,
+     0.0021,
+     "2021-09-20",
+     166387
+    ],
+    "was": [
+     56.05,
+     21.4646,
+     0.3039,
+     0.1223,
+     0.0021,
+     "2021-09-20",
+     166387
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: prom"
+   }
+  },
   "ADANIPOWER": {
    "2023-09-30": {
     "cell": [
@@ -160,6 +204,29 @@
      40411
     ],
     "why": "BSE revision 2024-04-15 supersedes stored (sub 2024-04-08); diffs {'prom': [36.25, 36.42]}; corroboration=SITES_BACK_REVISION (revision sweep 2026-08-09)"
+   }
+  },
+  "ADL": {
+   "2020-09-30": {
+    "cell": [
+     72.96,
+     0.0,
+     0.0294,
+     0.0,
+     0.0,
+     "2020-10-23",
+     11742
+    ],
+    "was": [
+     72.92,
+     1.32,
+     0.4,
+     0.0,
+     0.0,
+     "2020-10-23",
+     11742
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: prom,fii,dii"
    }
   },
   "ADROITINFO": {
@@ -211,6 +278,27 @@
    }
   },
   "ADVENZYMES": {
+   "2020-03-31": {
+    "cell": [
+     57.88,
+     11.1,
+     8.8834,
+     8.7777,
+     0.0,
+     "2020-07-07",
+     53086
+    ],
+    "was": [
+     57.96,
+     11.1,
+     8.8834,
+     8.7777,
+     0.0,
+     "2020-07-07",
+     53086
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: prom"
+   },
    "2020-06-30": {
     "cell": [
      58.13,
@@ -2234,6 +2322,29 @@
     "why": "foreign block swallowed by OtherInstitutionsMember (o_other 11.36, no domestic other-institutions residue in the symbol's itemised filings); chain-corroborated <=3pp"
    }
   },
+  "BASF": {
+   "2021-06-30": {
+    "cell": [
+     73.33,
+     1.9715,
+     7.66,
+     2.3901,
+     5.1877,
+     "2021-07-22",
+     47062
+    ],
+    "was": [
+     73.33,
+     1.9715,
+     5.59,
+     2.3901,
+     3.12,
+     "2021-07-22",
+     47062
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: dii,ins"
+   }
+  },
   "BBOX": {
    "2021-03-31": {
     "cell": [
@@ -3279,6 +3390,90 @@
     ],
     "why": "BULK STAMP: 8 quarters of this symbol all carry the single submission date 2022-07-25, which is 2032 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
    },
+   "2017-03-31": {
+    "cell": [
+     56.72,
+     0.7343,
+     0.7484,
+     0.0045,
+     0.0838,
+     "2017-04-13",
+     49134
+    ],
+    "was": [
+     55.97,
+     0.7343,
+     0.7484,
+     0.0045,
+     0.0838,
+     "2017-04-13",
+     49134
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: prom"
+   },
+   "2017-06-30": {
+    "cell": [
+     56.72,
+     0.8202,
+     0.5412,
+     0.0045,
+     0.0838,
+     "2017-07-17",
+     49936
+    ],
+    "was": [
+     55.97,
+     0.8202,
+     0.5412,
+     0.0045,
+     0.0838,
+     "2017-07-17",
+     49936
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: prom"
+   },
+   "2017-09-30": {
+    "cell": [
+     56.72,
+     0.7772,
+     0.4569,
+     0.0045,
+     0.0838,
+     "2017-10-16",
+     49547
+    ],
+    "was": [
+     55.97,
+     0.7772,
+     0.4569,
+     0.0045,
+     0.0838,
+     "2017-10-16",
+     49547
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: prom"
+   },
+   "2017-12-31": {
+    "cell": [
+     56.72,
+     0.8561,
+     0.7505,
+     0.0045,
+     0.0838,
+     "2018-01-13",
+     44633
+    ],
+    "was": [
+     55.97,
+     0.8561,
+     0.7505,
+     0.0045,
+     0.0838,
+     "2018-01-13",
+     44633
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: prom"
+   },
    "2018-03-31": {
     "cell": [
      56.73,
@@ -3385,6 +3580,111 @@
      48141
     ],
     "why": "BULK STAMP: 8 quarters of this symbol all carry the single submission date 2022-07-25, which is 1212 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+   },
+   "2019-06-30": {
+    "cell": [
+     56.73,
+     0.4754,
+     0.7926,
+     0.0045,
+     0.0838,
+     "2019-07-17",
+     47507
+    ],
+    "was": [
+     55.98,
+     0.4754,
+     0.7926,
+     0.0045,
+     0.0838,
+     "2019-07-17",
+     47507
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: prom"
+   },
+   "2019-09-30": {
+    "cell": [
+     56.74,
+     0.2281,
+     0.683,
+     0.0045,
+     0.0838,
+     "2019-10-17",
+     48800
+    ],
+    "was": [
+     55.99,
+     0.2281,
+     0.683,
+     0.0045,
+     0.0838,
+     "2019-10-17",
+     48800
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: prom"
+   },
+   "2019-12-31": {
+    "cell": [
+     56.74,
+     0.1281,
+     0.7218,
+     0.0045,
+     0.0838,
+     "2020-01-14",
+     44509
+    ],
+    "was": [
+     55.99,
+     0.1281,
+     0.7218,
+     0.0045,
+     0.0838,
+     "2020-01-14",
+     44509
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: prom"
+   },
+   "2020-03-31": {
+    "cell": [
+     56.74,
+     0.2935,
+     1.0663,
+     0.0045,
+     0.0838,
+     "2020-05-15",
+     44091
+    ],
+    "was": [
+     55.99,
+     0.2935,
+     1.0663,
+     0.0045,
+     0.0838,
+     "2020-05-15",
+     44091
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: prom"
+   },
+   "2020-06-30": {
+    "cell": [
+     56.74,
+     0.2935,
+     0.2123,
+     0.0045,
+     0.0838,
+     "2020-07-13",
+     44387
+    ],
+    "was": [
+     55.99,
+     0.2935,
+     0.2123,
+     0.0045,
+     0.0838,
+     "2020-07-13",
+     44387
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: prom"
    },
    "2021-03-31": {
     "cell": [
@@ -6046,6 +6346,50 @@
     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 142d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
    }
   },
+  "DCW": {
+   "2021-03-31": {
+    "cell": [
+     46.76,
+     5.9745,
+     0.0257,
+     0.0042,
+     0.0,
+     "2021-05-20",
+     58978
+    ],
+    "was": [
+     46.69,
+     5.9745,
+     0.0257,
+     0.0042,
+     0.0,
+     "2021-05-20",
+     58978
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: prom"
+   }
+  },
+  "DEEPAKFERT": {
+   "2015-09-30": {
+    "cell": [
+     50.7455,
+     14.6263,
+     4.3016,
+     2.2157,
+     2.0544,
+     "2015-10-21"
+    ],
+    "was": [
+     50.7455,
+     14.1,
+     4.3016,
+     2.2157,
+     2.0544,
+     "2015-10-21"
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: fii"
+   }
+  },
   "DEEPAKNTR": {
    "2020-12-31": {
     "cell": [
@@ -6114,6 +6458,29 @@
      84914
     ],
     "why": "BSE revision 2023-02-06 supersedes stored (sub 2023-01-13); diffs {'fii': [9.2, 69.12]}; corroboration=NO_SITE_WINDOW (revision sweep 2026-08-09)"
+   }
+  },
+  "DHANUKA": {
+   "2019-09-30": {
+    "cell": [
+     75.0,
+     0.0,
+     12.2462,
+     11.9251,
+     0.0446,
+     "2019-10-14",
+     25711
+    ],
+    "was": [
+     75.0,
+     0.0,
+     12.2462,
+     10.89,
+     0.0446,
+     "2019-10-14",
+     25711
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: mf"
    }
   },
   "DHARSUGAR": {
@@ -6456,6 +6823,27 @@
      22727
     ],
     "why": "BULK STAMP: 6 quarters of this symbol all carry the single submission date 2025-02-27, which is 1519 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+   }
+  },
+  "ECLERX": {
+   "2015-09-30": {
+    "cell": [
+     52.2395,
+     26.9803,
+     12.1428,
+     12.1083,
+     0.0,
+     "2015-10-21"
+    ],
+    "was": [
+     51.42,
+     26.9803,
+     12.1428,
+     12.1083,
+     0.0,
+     "2015-10-21"
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: prom"
    }
   },
   "EDUCOMP": {
@@ -7127,6 +7515,29 @@
      120927
     ],
     "why": "AMBIGUOUS cell adjudicated REVISION_RIGHT: fingerprint SAME_SECURITY (local nsh window) + last-word principle. fii+dii swap-invariant to 0.00 (13.25+8.81 == 3.0+19.06) = deliberate reclassification; post-IPO holder spike explains the nsh profile Diffs {'fii': [13.25, 3.0], 'dii': [8.81, 19.06]} (2026-08-09)"
+   }
+  },
+  "EPL": {
+   "2019-09-30": {
+    "cell": [
+     83.02,
+     3.9005,
+     2.0683,
+     0.9997,
+     0.8252,
+     "2020-01-10",
+     35133
+    ],
+    "was": [
+     75.0,
+     3.9005,
+     2.0683,
+     0.9997,
+     0.8252,
+     "2020-01-10",
+     35133
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: prom"
    }
   },
   "ERIS": {
@@ -8202,6 +8613,27 @@
    }
   },
   "GAYAPROJ": {
+   "2020-09-30": {
+    "cell": [
+     45.18,
+     23.64,
+     10.74,
+     1.1778,
+     0.0,
+     "2020-11-02",
+     18523
+    ],
+    "was": [
+     45.18,
+     23.64,
+     10.74,
+     1.1778,
+     0.44,
+     "2020-11-02",
+     18523
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: ins"
+   },
    "2024-03-31": {
     "cell": [
      3.94,
@@ -8250,6 +8682,25 @@
    }
   },
   "GEOJITFSL": {
+   "2015-09-30": {
+    "cell": [
+     63.2258,
+     2.9269,
+     2.6602,
+     2.6504,
+     0.0,
+     "2015-10-21"
+    ],
+    "was": [
+     63.2258,
+     2.33,
+     2.6602,
+     2.6504,
+     0.0,
+     "2015-10-21"
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: fii"
+   },
    "2016-06-30": {
     "cell": [
      62.71,
@@ -9087,6 +9538,27 @@
      5429
     ],
     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 389d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+   },
+   "2019-12-31": {
+    "cell": [
+     52.21,
+     0.0,
+     5.2659,
+     0.0,
+     5.2569,
+     "2020-10-27",
+     5425
+    ],
+    "was": [
+     51.39,
+     0.0,
+     5.2659,
+     0.0,
+     5.2569,
+     "2020-10-27",
+     5425
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: prom"
    },
    "2020-03-31": {
     "cell": [
@@ -10056,6 +10528,50 @@
     "why": "BULK STAMP: 4 quarters of this symbol all carry the single submission date 2025-08-11, which is 133 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
    }
   },
+  "IOB": {
+   "2015-09-30": {
+    "cell": [
+     73.8019,
+     1.3114,
+     15.1629,
+     0.4377,
+     0.379,
+     "2015-10-21"
+    ],
+    "was": [
+     73.8019,
+     1.14,
+     15.1629,
+     0.4377,
+     0.379,
+     "2015-10-21"
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: fii"
+   }
+  },
+  "IRB": {
+   "2020-09-30": {
+    "cell": [
+     58.01,
+     15.3684,
+     11.3367,
+     6.0391,
+     0.0241,
+     "2020-10-22",
+     109028
+    ],
+    "was": [
+     58.01,
+     15.3684,
+     6.06,
+     6.0391,
+     0.0241,
+     "2020-10-22",
+     109028
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: dii"
+   }
+  },
   "JAGSNPHARM": {
    "2021-12-31": {
     "cell": [
@@ -10908,6 +11424,29 @@
     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 133d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
    }
   },
+  "JKCEMENT": {
+   "2021-03-31": {
+    "cell": [
+     57.65,
+     16.8618,
+     20.6282,
+     18.8576,
+     1.7118,
+     "2021-06-01",
+     69238
+    ],
+    "was": [
+     52.64,
+     16.8618,
+     20.6282,
+     18.8576,
+     1.7118,
+     "2021-06-01",
+     69238
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: prom"
+   }
+  },
   "JPPOWER": {
    "2021-06-30": {
     "cell": [
@@ -10929,6 +11468,27 @@
      531829
     ],
     "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom,ins"
+   }
+  },
+  "JSWDULUX": {
+   "2015-09-30": {
+    "cell": [
+     72.9621,
+     1.8953,
+     8.5233,
+     4.1138,
+     4.3487,
+     "2015-10-21"
+    ],
+    "was": [
+     72.9621,
+     1.85,
+     8.5233,
+     4.1138,
+     4.3487,
+     "2015-10-21"
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: fii"
    }
   },
   "JYOTISTRUC": {
@@ -11113,6 +11673,27 @@
     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 131d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
    }
   },
+  "KEC": {
+   "2015-09-30": {
+    "cell": [
+     50.5412,
+     5.8737,
+     25.9858,
+     22.9737,
+     2.7676,
+     "2015-10-21"
+    ],
+    "was": [
+     50.5412,
+     5.72,
+     25.9858,
+     22.9737,
+     2.7676,
+     "2015-10-21"
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: fii"
+   }
+  },
   "KIRIINDUS": {
    "2024-03-31": {
     "cell": [
@@ -11137,6 +11718,48 @@
     "why": "HELD cell adjudicated REVISION_RIGHT: stored fii 24.65 is a V-dip between 45.73 and 39.73; revision (11 days post-QE) restores continuity. Votes cont=revision nse=stored sites=stored; diffs {'fii': [24.65, 42.07]} (2026-08-09)"
    }
   },
+  "KITEX": {
+   "2015-03-31": {
+    "cell": [
+     54.2434,
+     2.4001,
+     0.1677,
+     0.0007,
+     0.0,
+     "2015-04-21"
+    ],
+    "was": [
+     54.2434,
+     2.03,
+     0.1677,
+     0.0007,
+     0.0,
+     "2015-04-21"
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: fii"
+   }
+  },
+  "KKCL": {
+   "2015-09-30": {
+    "cell": [
+     74.2105,
+     12.0695,
+     9.0947,
+     9.0947,
+     0.0,
+     "2015-10-21"
+    ],
+    "was": [
+     74.2105,
+     11.64,
+     9.0947,
+     9.0947,
+     0.0,
+     "2015-10-21"
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: fii"
+   }
+  },
   "KOLTEPATIL": {
    "2016-06-30": {
     "cell": [
@@ -11159,6 +11782,27 @@
      42188
     ],
     "why": "foreign block swallowed by OtherInstitutionsMember; BSE's render puts it on an unlabelled 'Any Others (Specify)' institutions row. PROOF that row is this company's foreign block: 2015-12-31 renders Any-Others 11.87 == the independently sourced stored fii 11.86 (24 holders). fii = o_other 11.80 whole."
+   }
+  },
+  "KRBL": {
+   "2015-09-30": {
+    "cell": [
+     58.813,
+     5.1659,
+     0.0331,
+     0.0145,
+     0.0,
+     "2015-10-21"
+    ],
+    "was": [
+     58.813,
+     4.47,
+     0.0331,
+     0.0145,
+     0.0,
+     "2015-10-21"
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: fii"
    }
   },
   "KRN": {
@@ -11917,6 +12561,29 @@
     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 171d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
    }
   },
+  "LICHSGFIN": {
+   "2020-09-30": {
+    "cell": [
+     40.31,
+     34.4368,
+     10.4187,
+     4.49,
+     5.0412,
+     "2020-12-02",
+     296740
+    ],
+    "was": [
+     40.31,
+     34.4368,
+     12.65,
+     6.72,
+     5.0412,
+     "2020-12-02",
+     296740
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: dii,mf"
+   }
+  },
   "LMW": {
    "2016-06-30": {
     "cell": [
@@ -12121,6 +12788,29 @@
     "why": "BSE revision 2022-02-04 supersedes stored (sub 2022-01-07); diffs {'prom': [73.61, 73.95]}; corroboration=NO_SITE_WINDOW (revision sweep 2026-08-09)"
    }
   },
+  "MAHEPC": {
+   "2020-03-31": {
+    "cell": [
+     54.51,
+     0.0026,
+     0.0007,
+     0.0,
+     0.0,
+     "2020-05-15",
+     19882
+    ],
+    "was": [
+     53.32,
+     0.0026,
+     0.0007,
+     0.0,
+     0.0,
+     "2020-05-15",
+     19882
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: prom"
+   }
+  },
   "MAHLIFE": {
    "2016-06-30": {
     "cell": [
@@ -12323,7 +13013,114 @@
     "why": "foreign block swallowed by OtherInstitutionsMember (o_other 37.78, no domestic other-institutions residue in the symbol's itemised filings); chain-corroborated <=3pp"
    }
   },
+  "MANINDS": {
+   "2020-12-31": {
+    "cell": [
+     42.62,
+     4.2537,
+     0.2037,
+     0.0004,
+     0.1964,
+     "2021-01-15",
+     35861
+    ],
+    "was": [
+     42.57,
+     4.2537,
+     0.2037,
+     0.0004,
+     0.1964,
+     "2021-01-15",
+     35861
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: prom"
+   },
+   "2021-03-31": {
+    "cell": [
+     42.62,
+     5.5411,
+     0.2055,
+     0.0004,
+     0.1964,
+     "2021-04-17",
+     35402
+    ],
+    "was": [
+     42.57,
+     5.5411,
+     0.2055,
+     0.0004,
+     0.1964,
+     "2021-04-17",
+     35402
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: prom"
+   },
+   "2021-06-30": {
+    "cell": [
+     42.62,
+     4.3943,
+     0.1988,
+     0.0004,
+     0.1964,
+     "2021-07-19",
+     32870
+    ],
+    "was": [
+     42.57,
+     4.3943,
+     0.1988,
+     0.0004,
+     0.1964,
+     "2021-07-19",
+     32870
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: prom"
+   }
+  },
   "MANPASAND": {
+   "2021-03-31": {
+    "cell": [
+     44.33,
+     1.0289,
+     5.3822,
+     5.3822,
+     0.0,
+     "2021-05-08",
+     47123
+    ],
+    "was": [
+     44.33,
+     1.0289,
+     22.95,
+     5.3822,
+     0.0,
+     "2021-05-08",
+     47123
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: dii"
+   },
+   "2021-06-30": {
+    "cell": [
+     44.33,
+     1.0289,
+     5.3822,
+     5.3822,
+     0.0,
+     "2021-07-07",
+     47116
+    ],
+    "was": [
+     44.33,
+     1.0289,
+     22.95,
+     5.3822,
+     0.0,
+     "2021-07-07",
+     47116
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: dii"
+   },
    "2021-09-30": {
     "cell": [
      44.33,
@@ -13161,6 +13958,29 @@
     "why": "BSE revision 2019-12-09 supersedes stored (sub 2019-12-06); diffs {'prom': [66.6, 65.47]}; corroboration=NO_SITE_WINDOW (revision sweep 2026-08-09)"
    }
   },
+  "MPHASIS": {
+   "2021-03-31": {
+    "cell": [
+     56.03,
+     21.822,
+     17.152,
+     12.3416,
+     4.0961,
+     "2021-04-16",
+     65810
+    ],
+    "was": [
+     55.96,
+     21.79,
+     17.152,
+     12.3416,
+     4.0961,
+     "2021-04-16",
+     65810
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: prom,fii"
+   }
+  },
   "MRF": {
    "2016-06-30": {
     "cell": [
@@ -13416,6 +14236,27 @@
      23252
     ],
     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 165d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+   }
+  },
+  "NIITLTD": {
+   "2015-09-30": {
+    "cell": [
+     34.1909,
+     9.2346,
+     13.0617,
+     12.6579,
+     0.3328,
+     "2015-10-21"
+    ],
+    "was": [
+     34.1909,
+     9.1,
+     13.0617,
+     12.6579,
+     0.3328,
+     "2015-10-21"
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: fii"
    }
   },
   "NIPPOBATRY": {
@@ -13946,6 +14787,29 @@
     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 329d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
    }
   },
+  "PFIZER": {
+   "2021-06-30": {
+    "cell": [
+     63.92,
+     2.0731,
+     15.1431,
+     8.4764,
+     0.49,
+     "2021-07-14",
+     131308
+    ],
+    "was": [
+     63.92,
+     1.95,
+     14.96,
+     8.7,
+     4.67,
+     "2021-07-14",
+     131308
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: fii,dii,mf,ins"
+   }
+  },
   "PGHL": {
    "2018-12-31": {
     "cell": [
@@ -13990,6 +14854,46 @@
      32142
     ],
     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 157d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+   }
+  },
+  "PIDILITIND": {
+   "2014-12-31": {
+    "cell": [
+     69.8069,
+     15.4991,
+     4.0478,
+     3.2238,
+     0.7998,
+     "2015-01-21"
+    ],
+    "was": [
+     69.8069,
+     15.28,
+     4.0478,
+     3.2238,
+     0.7998,
+     "2015-01-21"
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: fii"
+   },
+   "2015-03-31": {
+    "cell": [
+     69.7386,
+     15.3983,
+     4.2318,
+     3.3267,
+     0.8885,
+     "2015-04-21"
+    ],
+    "was": [
+     69.7386,
+     14.45,
+     4.2318,
+     3.3267,
+     0.8885,
+     "2015-04-21"
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: fii"
    }
   },
   "PIGL": {
@@ -14444,6 +15348,29 @@
     "why": "BSE revision 2023-06-02 supersedes stored (sub 2023-04-21); diffs {'prom': [54.58, 66.84]}; corroboration=SITES_BACK_REVISION (revision sweep 2026-08-09)"
    }
   },
+  "PSB": {
+   "2021-03-31": {
+    "cell": [
+     97.07,
+     0.0,
+     1.0519,
+     0.0,
+     1.0411,
+     "2021-05-05",
+     126560
+    ],
+    "was": [
+     83.06,
+     0.0,
+     6.08,
+     0.0,
+     6.02,
+     "2021-05-05",
+     126560
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: prom,dii,ins"
+   }
+  },
   "RACE": {
    "2023-03-31": {
     "cell": [
@@ -14466,6 +15393,29 @@
      754
     ],
     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 432d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+   }
+  },
+  "RADIOCITY": {
+   "2019-09-30": {
+    "cell": [
+     73.86,
+     0.79,
+     15.7286,
+     9.7036,
+     0.0,
+     "2019-11-06",
+     21822
+    ],
+    "was": [
+     73.86,
+     0.79,
+     10.79,
+     9.7036,
+     0.0,
+     "2019-11-06",
+     21822
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: dii"
    }
   },
   "RAJESHEXPO": {
@@ -14914,6 +15864,27 @@
      9362
     ],
     "why": "foreign block swallowed by OtherInstitutionsMember (o_other 14.93, no domestic other-institutions residue in the symbol's itemised filings); chain-corroborated <=3pp"
+   }
+  },
+  "RCF": {
+   "2015-09-30": {
+    "cell": [
+     80.0006,
+     3.3312,
+     6.9122,
+     0.0313,
+     6.3718,
+     "2015-10-21"
+    ],
+    "was": [
+     80.0006,
+     2.4,
+     6.9122,
+     0.0313,
+     6.3718,
+     "2015-10-21"
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: fii"
    }
   },
   "RCOM": {
@@ -16411,6 +17382,29 @@
     "why": "Company REVISED its filing (BSE revised_date_time=2024-08-16); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge). Diffs: {'prom': '60.14->63.86'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
    }
   },
+  "SEPC": {
+   "2019-09-30": {
+    "cell": [
+     28.76,
+     0.0463,
+     66.902,
+     0.0,
+     0.0,
+     "2019-12-18",
+     19759
+    ],
+    "was": [
+     28.8,
+     0.0,
+     66.902,
+     0.0,
+     0.0,
+     "2019-12-18",
+     19759
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: prom,fii"
+   }
+  },
   "SETUINFRA": {
    "2024-06-30": {
     "cell": [
@@ -16621,6 +17615,50 @@
      56947
     ],
     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 441d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+   }
+  },
+  "SOMATEX": {
+   "2020-12-31": {
+    "cell": [
+     63.68,
+     0.0012,
+     0.0374,
+     0.0071,
+     0.0,
+     "2021-01-11",
+     10593
+    ],
+    "was": [
+     63.68,
+     0.0012,
+     0.0374,
+     0.0071,
+     0.03,
+     "2021-01-11",
+     10593
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: ins"
+   },
+   "2021-03-31": {
+    "cell": [
+     63.68,
+     0.0012,
+     0.0374,
+     0.0071,
+     0.0,
+     "2021-04-06",
+     11241
+    ],
+    "was": [
+     63.68,
+     0.0012,
+     0.0374,
+     0.0071,
+     0.03,
+     "2021-04-06",
+     11241
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: ins"
    }
   },
   "SPMLINFRA": {
@@ -17539,6 +18577,46 @@
     "why": "Unanchorable-revision adjudication (zero-institution filing, prom-only): same register (doc nsh == stored 10,454); volatile series, revision is last word. Raw prom read off the promoter context; institutional zeros kept from stored. (2026-08-09)"
    }
   },
+  "TATAELXSI": {
+   "2014-12-31": {
+    "cell": [
+     45.0163,
+     6.9728,
+     3.4772,
+     0.0016,
+     3.4085,
+     "2015-01-21"
+    ],
+    "was": [
+     45.0163,
+     6.93,
+     3.4772,
+     0.0016,
+     3.4085,
+     "2015-01-21"
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: fii"
+   },
+   "2015-03-31": {
+    "cell": [
+     44.9521,
+     8.154,
+     3.3175,
+     0.6906,
+     2.5574,
+     "2015-04-21"
+    ],
+    "was": [
+     44.9521,
+     8.06,
+     3.3175,
+     0.6906,
+     2.5574,
+     "2015-04-21"
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: fii"
+   }
+  },
   "TATASTEEL": {
    "2018-03-31": {
     "cell": [
@@ -17881,6 +18959,48 @@
     "why": "BSE revision 2023-02-01 supersedes stored (sub 2023-01-20); diffs {'prom': [60.32, 61.06]}; corroboration=NO_SITE_WINDOW (revision sweep 2026-08-09)"
    }
   },
+  "TITAN": {
+   "2014-12-31": {
+    "cell": [
+     53.0542,
+     21.566,
+     2.926,
+     1.7402,
+     1.1313,
+     "2015-01-21"
+    ],
+    "was": [
+     53.0542,
+     21.18,
+     2.926,
+     1.7402,
+     1.1313,
+     "2015-01-21"
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: fii"
+   }
+  },
+  "TNPL": {
+   "2015-09-30": {
+    "cell": [
+     35.3196,
+     10.7722,
+     21.1725,
+     6.4474,
+     13.9844,
+     "2015-10-21"
+    ],
+    "was": [
+     35.3196,
+     10.01,
+     21.1725,
+     6.4474,
+     13.9844,
+     "2015-10-21"
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: fii"
+   }
+  },
   "TNTELE": {
    "2019-09-30": {
     "cell": [
@@ -18145,6 +19265,29 @@
      24254
     ],
     "why": "Company REVISED its filing (BSE revised_date_time=2024-08-02); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge). Diffs: {'fii': '7.18->0.0'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+   }
+  },
+  "TRENT": {
+   "2021-06-30": {
+    "cell": [
+     37.01,
+     30.274,
+     10.6833,
+     6.2731,
+     4.0227,
+     "2021-07-23",
+     88528
+    ],
+    "was": [
+     37.01,
+     30.274,
+     7.76,
+     6.2731,
+     1.1,
+     "2021-07-23",
+     88528
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: dii,ins"
    }
   },
   "TRIDENT": {
@@ -18567,6 +19710,27 @@
      16651
     ],
     "why": "BSE revision 2024-03-14 supersedes stored (sub 2024-01-04); diffs {'fii': [0.0, 1.85], 'dii': [4.99, 3.13]}; corroboration=SITES_BACK_REVISION (revision sweep 2026-08-09)"
+   }
+  },
+  "TVSMOTOR": {
+   "2015-09-30": {
+    "cell": [
+     57.3964,
+     12.9841,
+     16.0861,
+     13.0863,
+     2.7233,
+     "2015-10-21"
+    ],
+    "was": [
+     57.3964,
+     12.06,
+     16.0861,
+     13.0863,
+     2.7233,
+     "2015-10-21"
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: fii"
    }
   },
   "UGARSUGAR": {
@@ -20067,6 +21231,29 @@
      2044109
     ],
     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 483d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+   }
+  },
+  "ZENITHSTL": {
+   "2020-12-31": {
+    "cell": [
+     15.64,
+     0.0,
+     0.2978,
+     0.0005,
+     0.0,
+     "2021-03-15",
+     54245
+    ],
+    "was": [
+     8.57,
+     0.0,
+     0.32,
+     0.0005,
+     0.0,
+     "2021-03-15",
+     54245
+    ],
+    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: prom,dii"
    }
   },
   "ZENSARTECH": {
