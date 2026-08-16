@@ -1,0 +1,29 @@
+{
+ "_doc": "BSE scrip codes for DELISTED/merged symbols, which scripts/bse_scrips.json cannot carry: its by_id map is built from BSE's ACTIVE-equity scrape (ListofScripData?status=Active), so a company that has since delisted or merged simply is not in it -- the same survivorship gap that leaves meta.ind='Unknown' for these names (see scripts/industry_fills.json). Consumers that look a symbol up to fetch its BSE announcements then fail with 'no-scrip' and record a skip, and the quarter's real declared date stays unrecoverable. Merged by backfill_ann_dates_bse.scrip_map() BEFORE bse_resolve.guard_map(), so the ISIN conflict guard still gets the final say (runbook 76: a scrip_id equal to the ticker is a COINCIDENCE, never identity).",
+ "_identity_gate": "EXACT ISIN match between docs/sf_stock_data.bin meta[SYM].isin and ISIN_NUMBER in BSE's all-status master (ListofScripData?...&status= , 10,812 rows -- Active 4,975 + Delisted 4,612 + Suspended 1,222; the nightly workflow fetches status=Active only, which is why these are missing). Each row's returned scrip_id and company name were read and agree with the symbol. No name-only or scrip_id-only match was accepted.",
+ "_generated": "2026-08-16 17:55 IST",
+ "_campaign": "scripts/PLAN_N500_COVERAGE_2015_2020.md (revStd/patStd -> 100%, the ann=0 class)",
+ "scrips": {
+  "JSLHISAR": {
+   "bse_code": "539597",
+   "isin": "INE455T01018",
+   "name": "Jindal Stainless (Hisar) Ltd",
+   "status": "Delisted",
+   "identity_gate": "isin-exact + scrip_id and name agree"
+  },
+  "SPTL": {
+   "bse_code": "540653",
+   "isin": "INE501W01021",
+   "name": "Sintex Plastics Technology Ltd",
+   "status": "Delisted",
+   "identity_gate": "isin-exact + scrip_id and name agree"
+  },
+  "UNITEDBNK": {
+   "bse_code": "533171",
+   "isin": "INE695A01019",
+   "name": "United Bank of India",
+   "status": "Delisted",
+   "identity_gate": "isin-exact + scrip_id and name agree"
+  }
+ }
+}

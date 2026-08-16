@@ -196,6 +196,55 @@ ladder (NSE archive → BSE detres → aggregator), provenance per cell, ledger-
 `revop_fundamentals.json`; (2) the residue where neither is present (1,921 quarters) needs a filing
 discovery pass first. Batch ~10 names → rebuild → bake → parity → push → LIVE.
 
+## 0e. revStd / patStd → 100% (user, 2026-08-16 17:45 IST, scoped: *"u just handle ur years i.e. 2015-20"*)
+
+Baseline in-era: **revStd 625 missing (97.919%) · patStd 76 (99.753%)**. Every missing cell
+classified by MECHANISM off a full-window `--explain` (same builder run that counts them; the
+classification reconciles to the payload exactly, 625 and 76):
+
+| class | revStd | patStd | meaning |
+|---|---:|---:|---|
+| **SLOT-NULL** | **551** | **0** | a dated std quarter IS visible; sf_revop's slot 0 is null. 244 distinct (sym, quarter) pairs |
+| **DATASET-START** | 47 | 47 | the company was TRADING, but our fundamentals hold no dated std quarter yet — the prior quarter is missing from our data entirely |
+| **ANN-ZERO** | 17 | 17 | quarter + PAT present, `ann == 0` sentinel → invisible to every point-in-time screen |
+| price-defect (`__norow`) | 9 | 11 | RASOYPR/KIOCL et al, §0b(a) — not an earnings problem |
+| PRE-HISTORY | 2 | 2 | CERA |
+
+★ **patStd has ZERO missing VALUES.** Every one of its 76 cells is a *visibility* failure — an
+absent or zeroed announce date, or a quarter our dataset never got. Nothing to re-extract.
+
+### ANN-ZERO closed: 19 REAL declared dates recovered, 22 cells healed
+
+`scripts/backfill_ann_dates_bse.py --only …` (existing tool, BSE archive metadata, `exact`/`seq`
+rules — never a guessed date). All 21 target pairs were **never previously attempted**; every one is
+a **2017 quarter**, the same 2017 pass that wrote PAT and no announce date which §0b(b) found for
+`op`. Recovered 13 first run, then **6 more after breaking the `no-scrip` wall**, measured effect
+**revStd −11, patStd −11, postDrift −2**. Heal is idempotent: `--reapply` second pass applied 0.
+
+★ **`no-scrip` was a missing IDENTITY, not a missing filing** — and it is the survivorship gap
+again. `scrip_map()` merges `bse_scrips.json.by_id` + `bse_universe.json`, both built from BSE's
+**ACTIVE**-equity scrape, so JSLHISAR / SPTL / UNITEDBNK (all merged or delisted) resolved to
+nothing and every quarter of theirs skipped. New **`scripts/bse_scrips_delisted.json`** carries
+their codes, each gated on an **exact ISIN match** against BSE's all-status master, merged with
+`setdefault` before `BR.guard_map` so a live answer always wins and §76's conflict guard keeps the
+final say. Unblocked 6 of the 10 skips immediately. Residual skips carry named reasons
+(`other-period` ×2 — the only period-stated filing was a different quarter, correctly refused).
+
+### What still stands between here and 100%
+
+1. **revStd 551 cells / 244 (sym, quarter) pairs** — revenue never extracted into sf_revop slot 0
+   although the filing is dated and visible. Worst: KRBL 20150331 (11 cells), INTELLECT 20150930
+   (10), SPTL 20180630 (6), then a large 20160331 cohort (SNOWMAN, DALMIABHA, GRANULES, GRINDWELL,
+   GUJENERGY, JINDALPOLY, JMTAUTOLTD, KWALITY, MANAPPURAM… 4 cells each). Same re-extraction class
+   as §0d's con work — a filing we already hold a date for.
+2. **DATASET-START 47 cells / 25 names** — needs the PRIOR quarter backfilled, not a re-read:
+   KPRMILL / NATCOPHARM / VIVIDHA / APARINDS / JKCEMENT / MBLINFRA / NITINFIRE / PCBL / RATNAMANI /
+   SUVEN / AVANTIFEED all have their oldest row at **20150331**, i.e. our series simply starts at
+   the window's edge; CERA 20160630, MAXINDIA 20170331 (demerger), ASTERDM 20170630, SHANKARA
+   20170331, VARROC 20170630, ADANIGREEN 20170930. Pre-2015 campaign territory.
+3. **price-defect 9–11 cells** — RASOYPR's zero-close series and KIOCL's stale bars (§0b(a)).
+4. **CERA 2 cells** — pre-history.
+
 ## 1. Scope & goal
 
 Universe **nifty-500**, month-ends **2015-01-30 → 2019-12-31 (60)**, all 43 parameters.

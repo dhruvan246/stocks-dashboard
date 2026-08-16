@@ -68,6 +68,14 @@ def scrip_map():
     m = dict((jload(os.path.join(HERE, "bse_scrips.json"), {}) or {}).get("by_id") or {})
     for r in (jload(os.path.join(ROOT, "docs", "bse_universe.json"), {}) or {}).get("rows") or []:
         m.setdefault(str(r[1]).upper(), r[0])
+    # DELISTED/merged names: both sources above come from BSE's ACTIVE-equity scrape, so a company
+    # that has since merged or delisted is in neither, and every one of its quarters skips as
+    # "no-scrip" — a missing IDENTITY, not a missing filing. bse_scrips_delisted.json carries those
+    # codes, each gated on an EXACT ISIN match against BSE's all-status master. setdefault, so a
+    # live answer always wins; guard_map below still has the final say (§76).
+    for sym, e in ((jload(os.path.join(HERE, "bse_scrips_delisted.json"), {}) or {}).get("scrips") or {}).items():
+        if e.get("bse_code"):
+            m.setdefault(str(sym).upper(), str(e["bse_code"]))
     return BR.guard_map(m)
 
 def targets(fund):
