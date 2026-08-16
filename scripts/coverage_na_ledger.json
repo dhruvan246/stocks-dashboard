@@ -638,5 +638,21 @@
   "DHFL": "screener returns HTTP 404 (delisted/merged into PIRAMALFIN). Not adjudicated here; its 3 alias-shadowed ebit quarters remain a separate open item.",
   "DATA_vs_PAGE_DIVERGENCE_KNOWN": "This marks the COVERAGE PAGE N/A. The underlying sf_revop still holds ebit for ~795 lender quarters (784 of them produced by our own XBRL parse, not by aggregators \u2014 measured), so the backtest engine can still screen on them. Aligning the data means fixing build_revop.py's filer detection and rebuilding from the XBRL cache, which does not exist on this Mac. Recorded as an OPEN follow-up, not silently left.",
   "adjudicated": "2026-08-16"
+ },
+ "patCon": {
+  "IOB": {
+   "class": "C-basis",
+   "to": "2022-05-18",
+   "reader_1": "IOB first-ever CONSOLIDATED results filing is 19-May-2022 (Q4FY22). Verified 2026-08-16 across five sources: NSE quarterly stream (first con row 20220331 filed 20220519), NSE annual stream (FY20/FY21 filings Non-Consolidated only), BSE announcements (no con results in window), screener (con ANNUALS only, starting FY2021 758 vs std 831 \u2014 annual-report sourced), Moneycontrol rendered consolidated quarterly (hard floor Jun-2021 = the year-ago comparative of the first con filings; values 329/376/451 published only inside FY23 filings). No consolidated quarterly figure was public at any date before 2022-05-19.",
+   "user_approved": "2026-08-16 (option: N/A, IOB only via ledger)"
+  }
+ },
+ "postDriftCon": {
+  "IOB": {
+   "class": "C-basis",
+   "to": "2022-05-18",
+   "reader_1": "IOB first-ever CONSOLIDATED results filing is 19-May-2022 (Q4FY22). Verified 2026-08-16 across five sources: NSE quarterly stream (first con row 20220331 filed 20220519), NSE annual stream (FY20/FY21 filings Non-Consolidated only), BSE announcements (no con results in window), screener (con ANNUALS only, starting FY2021 758 vs std 831 \u2014 annual-report sourced), Moneycontrol rendered consolidated quarterly (hard floor Jun-2021 = the year-ago comparative of the first con filings; values 329/376/451 published only inside FY23 filings). No consolidated quarterly figure was public at any date before 2022-05-19.",
+   "user_approved": "2026-08-16 (option: N/A, IOB only via ledger)"
+  }
  }
 }

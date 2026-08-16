@@ -934,6 +934,8 @@ function run(ctx, C) {
     // PAT-std / PAT-con column positions, in the same family order the flag arrays are built in
     const stdCols = PARAMS.map((p, i) => (p.src === 'engstd' ? i : -1)).filter(i => i >= 0);
     const conCols = PARAMS.map((p, i) => (p.src === 'engcon' ? i : -1)).filter(i => i >= 0);
+    const STD_KEYS = stdCols.map(i => PARAMS[i].k);
+    const CON_KEYS = conCols.map(i => PARAMS[i].k);
 
     // per-row flags for the non-engine families, computed once per row per date
     const perRow = rows.map(([sym, flags, turnover, indKnown, na, es, ec]) => {
@@ -997,6 +999,14 @@ function run(ctx, C) {
         for (let j = 0; j < es.length; j++) if (!es[j]) esna[j] = 1;
         for (let j = 0; j < ec.length; j++) if (!ec[j]) ecna[j] = 1;
       }
+      // Adjudicated per-name verdicts from coverage_na_ledger.json also apply to these families —
+      // the same naLedgerHit the revenue family consults, honouring from/to bounds. First user-
+      // approved case 2026-08-16: IOB patCon/postDriftCon before its first-ever consolidated
+      // filing (19-May-2022, five-source evidence in the ledger). Name-scoped and reversible;
+      // no category rule.
+      for (let j = 0; j < 4; j++) if (!bs[j] && !bsna[j] && naLedgerHit(BASIS_KEYS[j], sym, d.iso)) bsna[j] = 1;
+      for (let j = 0; j < es.length; j++) if (!es[j] && !esna[j] && naLedgerHit(STD_KEYS[j], sym, d.iso)) esna[j] = 1;
+      for (let j = 0; j < ec.length; j++) if (!ec[j] && !ecna[j] && naLedgerHit(CON_KEYS[j], sym, d.iso)) ecna[j] = 1;
       return { sym, flags, turnover, indKnown, rv, rvna, na, bs, bsna, es, esna, ec, ecna };
     });
 
