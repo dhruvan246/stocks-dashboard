@@ -693,8 +693,23 @@ function run(ctx, C) {
               // after it listed — a genuine missing Sep-2021 filing. Without the tape gate this
               // rule would have marked that real defect N/A and hidden it behind its own symptom.
               // No tape row at all means no second reader, so the verdict is withheld, not assumed.
+              // The symbol's OWN earliest row. loadShp() (backtest-engine.js:678-683) merges a
+              // renamed/merged predecessor's whole era under the CURRENT key — filings really were
+              // made under the old name — so SHPD['PIRAMALFIN'] carries DHFL's 37 rows back to
+              // 2011-12-31 and a naive min() answers a question about a DIFFERENT COMPANY. That is
+              // why the first cut of the IPO-anchor reader below never fired for the one case it
+              // was written for. Subtract the predecessor's quarters, so "earliest" means earliest
+              // for THIS entity; with no alias the set is empty and this is a plain min().
+              const predQ = {};
+              if (typeof FUND_ALIAS !== 'undefined') {
+                for (const old in FUND_ALIAS) {
+                  if (FUND_ALIAS[old] === r.sym && SHPD[old]) {
+                    for (const z of SHPD[old]) predQ[z[0]] = 1;
+                  }
+                }
+              }
               let firstQe = 0;
-              for (const q of shp) if (q[0] > 0 && (!firstQe || q[0] < firstQe)) firstQe = q[0];
+              for (const q of shp) if (q[0] > 0 && !predQ[q[0]] && (!firstQe || q[0] < firstQe)) firstQe = q[0];
               const ps = String(pq);
               const pqOff = dayOff(ps.slice(0, 4) + '-' + ps.slice(4, 6) + '-' + ps.slice(6, 8));
               const serP = (SERIES[r.tkr] && SERIES[r.tkr].d && SERIES[r.tkr].d.length) ? SERIES[r.tkr].d[0] : null;
@@ -706,15 +721,21 @@ function run(ctx, C) {
               // date (PIRAMALFIN: 20251107, submitted 20251111 — a real filed document, not an
               // inference from absence). Either reader confirming pre-listing suffices; both
               // silent → verdict withheld, the cell stays visible.
+              // CALENDAR arithmetic, deliberately NOT dayOff. dayOff maps a date to a TRADING
+              // SESSION offset; an IPO-anchor date or its submission date can be a day the session
+              // set does not contain, and the comparison then yields no verdict silently — which is
+              // exactly how the first cut of this rule shipped as dead code, marking nothing.
+              // Plain date maths asks the question actually being asked: was this filed within days
+              // of the listing event.
+              const ordOf = function (n) {
+                return Date.UTC(Math.floor(n / 10000), (Math.floor(n / 100) % 100) - 1, n % 100) / 86400000;
+              };
               let ipoAnchorOk = false;
               if (firstQe && !isQuarterEnd(firstQe) && firstQe > pq) {
                 for (const q of shp) {
                   if (q[0] === firstQe && q[3] > 0) {
-                    const fs = String(firstQe);
-                    const fOff = dayOff(fs.slice(0, 4) + '-' + fs.slice(4, 6) + '-' + fs.slice(6, 8));
-                    const ss = String(q[3]);
-                    const sOff = dayOff(ss.slice(0, 4) + '-' + ss.slice(4, 6) + '-' + ss.slice(6, 8));
-                    if (sOff != null && fOff != null && sOff - fOff >= 0 && sOff - fOff <= 10) ipoAnchorOk = true;
+                    const lag = ordOf(q[3]) - ordOf(firstQe);
+                    if (lag >= 0 && lag <= 15) ipoAnchorOk = true;
                     break;
                   }
                 }
