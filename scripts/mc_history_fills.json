@@ -18423,8 +18423,8 @@
   "type_format": "cons_quarterly"
  },
  "MINDTREE|20190331|con": {
+  "fallback_check": "SETTLED FROM THE FILING 2026-08-16 \u2014 the route this hold itself named (\u00a757/\u00a758). NSE archive XBRL https://nsearchives.nseindia.com/corporate/xbrl/INDAS_43578_96014_17042019041708_WEB_2.xml (filed 23-Apr-2019 18:41) self-declares NatureOfReportStandaloneConsolidated=Consolidated, and its OneD context is exactly 2019-01-01..2019-03-31, the target quarter (checked against the filing's own DateOfStart/EndOfReportingPeriod; the FourD context on the Q4 files is the FULL YEAR and was NOT used \u2014 reading FourD as 'the other basis' is a known bug of this tool). On that context RevenueFromOperations = 18394000000.00 = Rs 1839.4 cr, the value now live, and ProfitLossForPeriod = 1984000000.00 = Rs 198.4 cr, matching the stored consolidated-PAT anchor 198.4 to the paisa \u2014 so the right document and the right context were read. The earlier hold rested on 'MC consolidated == our standalone', which cannot tell an aggregator repeating standalone from a company whose consolidated genuinely equals its standalone; the primary document settles it \u2014 a consolidated result WAS filed for this quarter and its revenue is this number. Hold LIFTED; value stands, and is guarded from the other side by nse_xbrl_rev_fills.json.",
   "gate": "14 anchors, 0 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 1.358,
   "rev": 1839.4,
   "row_label": "Net Sales/Income from operations",
@@ -18463,8 +18463,8 @@
   "type_format": "cons_quarterly"
  },
  "MINDTREE|20200331|con": {
+  "fallback_check": "SETTLED FROM THE FILING 2026-08-16 \u2014 the route this hold itself named (\u00a757/\u00a758). NSE archive XBRL https://nsearchives.nseindia.com/corporate/xbrl/INDAS_54946_243786_24042020054626_WEB.xml (filed 08-May-2020 14:31) self-declares NatureOfReportStandaloneConsolidated=Consolidated, and its OneD context is exactly 2020-01-01..2020-03-31, the target quarter (checked against the filing's own DateOfStart/EndOfReportingPeriod; the FourD context on the Q4 files is the FULL YEAR and was NOT used \u2014 reading FourD as 'the other basis' is a known bug of this tool). On that context RevenueFromOperations = 20505000000.00 = Rs 2050.5 cr, the value now live, and ProfitLossForPeriod = 2062000000.00 = Rs 206.2 cr, matching the stored consolidated-PAT anchor 206.2 to the paisa \u2014 so the right document and the right context were read. The earlier hold rested on 'MC consolidated == our standalone', which cannot tell an aggregator repeating standalone from a company whose consolidated genuinely equals its standalone; the primary document settles it \u2014 a consolidated result WAS filed for this quarter and its revenue is this number. Hold LIFTED; value stands, and is guarded from the other side by nse_xbrl_rev_fills.json.",
   "gate": "17 anchors, 0 distant disagreements, none within \u00b16 quarters",
-  "held": "MC's consolidated equals MC's OWN standalone to the cent on the same label for this quarter. UNRESOLVED, not a proven copy: identical is what BOTH explanations predict \u2014 the aggregator repeating standalone, and an equity-accounted structure whose consolidated really does equal its standalone. Settle from the filing (\u00a757/\u00a758), not this source.",
   "neighbour_ratio": 1.208,
   "rev": 2050.5,
   "row_label": "Net Sales/Income from operations",
@@ -19873,8 +19873,8 @@
   "type_format": "cons_quarterly"
  },
  "NESCO|20220331|con": {
+  "fallback_check": "SETTLED FROM THE FILING 2026-08-16 \u2014 the route this hold itself named (\u00a757/\u00a758). NSE archive XBRL https://nsearchives.nseindia.com/corporate/xbrl/INDAS_85494_661289_26052022014106_WEB.xml (filed 26-May-2022 13:41) self-declares NatureOfReportStandaloneConsolidated=Consolidated, and its OneD context is exactly 2022-01-01..2022-03-31, the target quarter (checked against the filing's own DateOfStart/EndOfReportingPeriod; the FourD context on the Q4 files is the FULL YEAR and was NOT used \u2014 reading FourD as 'the other basis' is a known bug of this tool). On that context RevenueFromOperations = 910655000.00 = Rs 91.07 cr, the value now live, and ProfitLossForPeriod = 535210000.00 = Rs 53.52 cr, matching the stored consolidated-PAT anchor 53.52 to the paisa \u2014 so the right document and the right context were read. The earlier hold rested on 'MC consolidated == our standalone', which cannot tell an aggregator repeating standalone from a company whose consolidated genuinely equals its standalone; the primary document settles it \u2014 a consolidated result WAS filed for this quarter and its revenue is this number. Hold LIFTED; value stands, and is guarded from the other side by nse_xbrl_rev_fills.json.",
   "gate": "16 anchors, 1 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 1.169,
   "rev": 91.07,
   "row_label": "Net Sales/Income from operations",
@@ -19883,8 +19883,8 @@
   "type_format": "cons_quarterly"
  },
  "NESCO|20220630|con": {
+  "fallback_check": "SETTLED FROM THE FILING 2026-08-16 \u2014 the route this hold itself named (\u00a757/\u00a758). NSE archive XBRL https://nsearchives.nseindia.com/corporate/xbrl/INDAS_640104_3242_09082022122211_WEB.xml (filed 09-Aug-2022 12:22) self-declares NatureOfReportStandaloneConsolidated=Consolidated, and its OneD context is exactly 2022-04-01..2022-06-30, the target quarter (checked against the filing's own DateOfStart/EndOfReportingPeriod; the FourD context on the Q4 files is the FULL YEAR and was NOT used \u2014 reading FourD as 'the other basis' is a known bug of this tool). On that context RevenueFromOperations = 1030591000 = Rs 103.06 cr, the value now live, and ProfitLossForPeriod = 537028000 = Rs 53.7 cr, matching the stored consolidated-PAT anchor 53.7 to the paisa \u2014 so the right document and the right context were read. The earlier hold rested on 'MC consolidated == our standalone', which cannot tell an aggregator repeating standalone from a company whose consolidated genuinely equals its standalone; the primary document settles it \u2014 a consolidated result WAS filed for this quarter and its revenue is this number. Hold LIFTED; value stands, and is guarded from the other side by nse_xbrl_rev_fills.json.",
   "gate": "16 anchors, 1 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 1.323,
   "rev": 103.06,
   "row_label": "Net Sales/Income from operations",
