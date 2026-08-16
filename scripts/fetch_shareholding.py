@@ -401,10 +401,14 @@ def fetch_master(jar, qe_iso, events=False):
         # quarter end and at or before the next one, so each filing is claimed by exactly one
         # window. These were dropped outright until 2026-08-13 — and they are not a rounding
         # error: this window keeps 2,122 quarter-end rows and threw away 2,479 event rows.
+        # STRICTLY between this quarter end and the next: the next quarter end is a REGULAR filing
+        # and belongs to that quarter's own pass, where the ledgers (cell_fix, nsh_gate, bse_hist)
+        # apply. An inclusive upper bound pulled it in here too — 93.8% of the first backfill was
+        # quarter-end rows that bypass every one of those gates if they ever fill a hist gap.
         nxt = (d + datetime.timedelta(days=100)).replace(day=1) - datetime.timedelta(days=1)
         nxt_iso = nxt.isoformat()
         out = [r for r in recs
-               if (iso_date(r.get("date")) or "") > qe_iso and (iso_date(r.get("date")) or "") <= nxt_iso]
+               if qe_iso < (iso_date(r.get("date")) or "") < nxt_iso]
         print("  master %s: %d filings, %d EVENT rows (as-on %s..%s]"
               % (qe_iso, len(recs), len(out), qe_iso, nxt_iso))
         return out
