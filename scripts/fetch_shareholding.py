@@ -278,8 +278,29 @@ def apply_refine_ledger(h, path=None):
             # A disagreement in any of the five is a different document or a real defect: reported,
             # never auto-applied.
             new = list(cell)
-            if not _cell_eq(cur[:5], new[:5]):
-                bad.append({"sym": sym, "qe": qe, "stored": cur, "refined": new[:7]}); skip += 1; continue
+            # §22i SWALLOWED FOREIGN BLOCK — REFUSE, never apply. The BSE copy files the foreign
+            # block under OtherInstitutionsMember and the OLD_OTHER_TO_DII calibration sweeps it
+            # into dii, so the re-read comes back fii=0 with fii+dii PRESERVED. MANAPPURAM 2018-03:
+            # stored 37.78/6.57, re-read 0.00/44.35 — same sum, FII zeroed across 8 quarters. The
+            # stored value is the correct one; a "more precise" read is not a licence to zero a
+            # real foreign holding. Measured 161 of 1,434 held-back cells.
+            try:
+                swallowed = (new[1] == 0.0 and cur[1] > 0.0
+                             and abs((cur[1] + cur[2]) - (new[1] + new[2])) <= 0.02)
+            except (TypeError, IndexError):
+                swallowed = False
+            if swallowed:
+                bad.append({"sym": sym, "qe": qe, "stored": cur, "refined": new[:7],
+                            "verdict": "REFUSED_swallowed_foreign_block_22i"}); skip += 1; continue
+            # Accept band is 0.02pp on the five holding percentages, not _cell_eq's one 2dp step:
+            # the stored value often came from a 2dp LEDGER derivation while the refined one is
+            # computed from the primary document's share counts, so a legitimate double-rounding
+            # gap can reach two steps. Anything wider is a genuine conflict and is reported.
+            if any(abs(float(x) - float(y)) > 0.0200001
+                   for x, y in zip(cur[:5], new[:5])
+                   if isinstance(x, (int, float)) and isinstance(y, (int, float))):
+                bad.append({"sym": sym, "qe": qe, "stored": cur, "refined": new[:7],
+                            "verdict": "CONFLICT_needs_adjudication"}); skip += 1; continue
             merged = new[:5] + list(cur[5:])         # refined values, stored provenance
             if merged == cur: continue               # already applied — keeps the run idempotent
             dest[qe] = merged
