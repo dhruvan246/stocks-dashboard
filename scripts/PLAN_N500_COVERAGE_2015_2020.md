@@ -1,6 +1,6 @@
 # PLAN — N500 COVERAGE 2015→2020: same method, the earlier era, ALL 43 parameters
 
-**Written 2026-08-16 15:45 IST. Executor: a FRESH session. Status: NOT STARTED.**
+**Written 2026-08-16 15:45 IST; findings ledger added 16:05 IST. Executor: OPUS, fresh session. Status: NOT STARTED.**
 Parent method: `scripts/N500_COVERAGE_100_CAMPAIGN.md` (2020→date; P0–P2 done, live at 2,252
 missing). Sibling: `scripts/PLAN_XBRL_FILER_FORMAT.md` (Phase A done; its verdicts feed this).
 
@@ -66,6 +66,80 @@ FALSE as a file statement; what collapses pre-2018 is specifically the **op/ebit
 - Traps: rows:0 ≠ absence (17 zero-row names incl. every insurer + SPICEJET); ABBOTINDIA-style
   silent truncation; `xbrl` field can be literal `"-"`; date-range queries silently return 0.
 
+## 3b. FULL FINDINGS LEDGER — everything the 2020→26 campaign learned, carried over. Cite by F-number; re-derive nothing.
+
+- **F1** Measure THROUGH the engine: `build_coverage_matrix.js --explain <slug>` names the symbols
+  behind every sub-100 cell from the SAME vm scan that writes the payload. Proven analysis-only
+  (31 payloads / 429 keys byte-identical with and without).
+- **F2** `--facts <path>` dumps per-symbol firstBar / oldestQe / firstSub from engine state —
+  firstBar exists nowhere else locally (the 193 MB bin).
+- **F3** Parity gates must be per (param, DATE), not totals — a totals-only gate passed while the
+  composition was wrong.
+- **F4** `n500_cov_cells.py --check` exits 2 on BAKE SKEW, naming both bakes — a queue compared
+  against a different bake reports a false "PARITY FAIL" and sends you hunting phantoms.
+- **F5** NEVER commit a locally-baked payload: the `--bin auto` release asset ran 2 days behind
+  CI's bin (2026-08-12 vs 08-14, measured). CI bakes via `gh workflow run refresh-coverage.yml`.
+- **F6** GitHub Pages does NOT redeploy on CI's own payload commits — a later code push carries it.
+  Verify LIVE by fetching the origin URL; observed lag 14:24→14:43 payloads.
+- **F7** N/A verdicts live in `scripts/coverage_na_ledger.json` — evidence beside each claim,
+  optional `from`/`to` bounds, absent-file = no verdicts. Its guard REFUSES a name whose own data
+  contradicts the verdict (that guard caught INDIANB).
+- **F8** User decision (option A): banks' ebit is N/A, never derived. Our schema's EBIT is
+  `Operating Profit − Depreciation` (SUNPHARMA paisa-proof 4417.67 − 738.7 = 3678.95); nobody
+  publishes EBIT directly; a bank's `op` == its PPOP (HDFCBANK 30,996 tie-out).
+- **F9** Only 33 of the 46 never-has-ebit names are banking-format. The 12 insurers + SPICEJET +
+  LAKSHVILAS are NOT: SPICEJET is fillable (screener holds OP AND Dep, 13/13 quarters);
+  **insurers' Depreciation=0 on screener is a NOT-DISCLOSED sentinel** — deriving EBIT=OP−0 was
+  refused; LAKSHVILAS merged into DBS Nov-2020 → post-merger months are C3.
+- **F10** `build_revop.py::metrics_for()` documents four ebit-less formats by TAG: life insurer
+  (NetPremiumIncome, :236), general insurer (PremiumEarned, :250), bank (InterestEarned+PPOP,
+  :261), NBFC Ind-AS (InterestEarned alone, :276); industrial formula at :280.
+- **F11** Pre-history REACH rule: {YoY trio 4, profitAccel 5, profitTTM 7, composite 7} quarters
+  back vs the symbol's own oldest row. The count-of-quarters version was WRONG — it classed CELLO
+  N/A when the builder names CELLO the deliberate counter-example (:461-463). Split verdicts
+  per MONTH: a young company crosses pre-history → real-gap partway through its run.
+- **F12** The adjudicator refuses what it cannot measure: only C3 is decidable from our own data;
+  everything else stays `needs-source`. Measured and assumed verdicts never share a field.
+- **F13** Coverage flags: raw counts cannot tell a hole from a refusal (28 false ambers). The fix
+  is an N/A-guard RELATIVE to neighbours' applicable coverage — a flat floor swallowed the
+  live-edge roll flags, ratios-everywhere added 74 new ones; both rejected. Result 91→63, 0 added.
+- **F14** An all-N/A cell rendered "0" (reads as total failure). Now "–" + explanatory tooltip;
+  Nifty Bank's ebit is 78 straight such month-ends. §39-verified (console, 375px, dark+light).
+- **F15** NSE list API mechanics: `?index=equities&symbol=X&period=Quarterly` (a date-range query
+  silently returns 0); warm the cookie jar on the LISTING page (bare root 403s); the `xbrl` field
+  can be the literal `"-"`; rows reach ~2005 and pre-XBRL rows still carry the `bank` flag.
+- **F16** 17 names return zero rows from that API — EVERY insurer + SPICEJET, HDBFS, ICICIAMC,
+  KENNAMET, PIRAMALFIN, TATACAP. Route absence, not filing absence (§57a). Insurers need §43/IRDAI
+  or BSE routes.
+- **F17** Silent truncation is real: ABBOTINDIA 1 row vs 31 quarters we hold; BAYERCROP 1/31;
+  BAJAJHFL 2/12; IREDA 5/13. A short list is a diagnosis.
+- **F18** The filename/flag shortcut is DEAD for N/A in both directions (nbfc-flagged quarters
+  carry ebit 89%; industrial-flagged miss it 67.7%). Bank flag alone is clean: 1 impurity in 692.
+  **Format belongs to the FILING, not the company** — BAJFINANCE flips F/N both directions.
+- **F19** 795 NBFC quarters hold aggregator-derived ebit that the XBRL branch refuses to produce —
+  two definitions of one series. **OPEN USER DECISION (fill-to-match vs N/A+retract) — gates ALL
+  NBFC/industrial ebit work in any era. Ask before P3.**
+- **F20** 2,390 industrial-flagged quarters missing ebit across 70 names (ARE&M 60, ABREL 57,
+  LICHSGFIN 55, SHRIRAMFIN 55 …) are real extraction gaps — the sibling plan's fill list; many of
+  those quarters fall inside THIS era.
+- **F21** INDIANB 20180630 `ebit_con = op_con = 383.28` — a copy artifact, reconfirmed
+  independently (the only bank-flagged quarter with ebit in 692). **It is inside THIS window:
+  retract it here** (annotate EVERY ledger — `feedback-retraction-needs-every-ledger`), after
+  which the ledger guard admits INDIANB to the bank N/A set.
+- **F22** Second-reader debt: 30 of 33 banking ledger entries are single-reader (Moneycontrol
+  blocks scripted fetches; URL codes not derivable). `scripts/xbrl_filer_format.json` (committed,
+  5,844 rows, 110 names) now supplies a per-name second reader from the filings themselves —
+  close the debt from it in P1.
+- **F23** This era's baseline is §2 above — all 43 sub-100; 37,789 cells; ebit is an
+  EXTRACTION-era wall (rev 98.5% in the same years); op's year shape non-monotonic (P0 question);
+  industry 2,123; twelve single-stock price cells.
+- **F24** Already verified in-era: the banking na fires (2016-06-30 na=23); REACH is date-neutral;
+  DUMMY/DVR roll exclusions are in the builder.
+- **F25** Process law: own files only; worktree; cherry-pick push when the shared checkout is
+  dirty; heals run TWICE (2nd pass = 0); §57 ladder before any "unreachable"; §63 needs 2-3
+  sources for any exclusion; §58 column-anchor reads; ann dates must be REAL announce dates —
+  look-aheads REGROW nightly (§99: 5,247 pre-listing qe+45d cells still exist; add none).
+
 ## 4. Phases
 
 **P0 — Re-baseline + full-scope queue (no data edits).**
@@ -85,7 +159,7 @@ FALSE as a file statement; what collapses pre-2018 is specifically the **op/ebit
    era members (locate the source in code before choosing a route); (d) per-name shape of the 441
    `rev` cells (2016-heavy — one source's hole?).
 
-**P1 — Verify existing N/A machinery in-era; add none without evidence.** Banking ledger, REACH
+**P1 — Verify existing N/A machinery in-era; add none without evidence.** Also: retract the INDIANB stray (F21) and close the banks' second-reader debt from `xbrl_filer_format.json` (F22). Banking ledger, REACH
 rule, SEBI rule (n/a here — 2022 is out of window), first-SHP rule: re-bake and confirm each fires
 where it should. Any NEW class (e.g. a 2015-era filer format) needs per-name primary evidence into
 `coverage_na_ledger.json` with `from`/`to` bounds — **date-bounded, because format belongs to the
