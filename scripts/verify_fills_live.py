@@ -123,6 +123,18 @@ BASIS_KEYED = [
     # creation this time rather than discovered unguarded weeks later, which is the whole lesson of
     # the mc_history/mc_pat gap above.
     ("mc_fyident_fills.json",          "revop", "rev"),
+    # ★ conpat_filing_fills.json — the 2026-08-16 "lastmile-classC" route: consolidated PAT read
+    # straight out of the filing (per-basis NSE XBRL, or the results-data row where no XBRL was
+    # filed) for quarters mc_pat_fills had HELD. It shipped UNREGISTERED in f24388563/6ae9d2a81,
+    # which is the exact gap the mc_history/mc_pat note above was written about: these six cells
+    # are the ones that settle a contradiction between two other ledgers, so a clobber here would
+    # re-open it silently. Two registrations because the ledger carries both fields under different
+    # key shapes — the PAT entries are "SYM|QE|con" with value key "con", and the one revenue entry
+    # is "SYM|QE|con_rev" with value key "rev_con". Each registration skips the other's entries
+    # (the loop `continue`s when the registered value-key is absent or the basis token is unmapped),
+    # so neither silently checks nothing.
+    ("conpat_filing_fills.json",       "fund",  "con",     {"con": 3}),
+    ("conpat_filing_fills.json",       "revop", "rev_con", {"con_rev": 1}),
 ]
 # "revS"/"revC" are accepted as basis tokens alongside "std"/"con": several ledgers key their third
 # part by FIELD rather than by BASIS, and the loop below silently `continue`s on any token it cannot
