@@ -1,6 +1,35 @@
 # PLAN — XBRL FILER-FORMAT CAMPAIGN: close the last 2,252 cells of N500 coverage
 
-**Written 2026-08-16 ~15:10 IST. Executor: a fresh session. Status: NOT STARTED.**
+**Written 2026-08-16 ~15:10 IST. Status: PHASE A DONE (2026-08-16 15:40 IST) — see verdict below.**
+
+### Phase A results + the Phase B gate verdict (measured, supersedes §2's optimism)
+
+Sweep: `scripts/xbrl_format_sweep.py` → `scripts/xbrl_filer_format.json` (committed, 2.3 MB) +
+`scripts/_xbrl_format_refusals.json`. **110 of 127 resolved · 17 zero-rows (the insurers again —
+CANHLIFE GICRE GODIGIT HDBFS HDFCLIFE ICICIAMC ICICIGI ICICIPRULI KENNAMET LICI NIACL NIVABUPA
+PIRAMALFIN SBILIFE SPICEJET STARHEALTH TATACAP — all certainly file; §57a rule 1 applies) ·
+4 short-lists (silent truncation suspects).**
+
+**`scripts/xbrl_format_validate.py` verdict: the filename/flag shortcut is DEAD for writing N/A,
+in both directions** (tested against what build_revop actually produced, per (symbol, quarter)):
+
+| NSE signal | quarters | of which carry ebit | P(no ebit) |
+|---|---|---|---|
+| bank | 692 | **1** | 99.9% |
+| nbfc | 892 | **795** | 10.9% |
+| industrial | 3,530 | 1,140 | 67.7% missing |
+
+- The single bank-flagged quarter WITH ebit is **INDIANB 20180630 ebit_con=383.28** — the known
+  op-copy artifact, independently reconfirmed. Bank flag alone is a clean 2nd reader for the 33.
+- **795 NBFC-flagged quarters DO hold ebit** — aggregator-era fills wrote an OP−Dep ebit for NBFCs
+  that the XBRL branch refuses to produce. Two definitions of one series
+  (`feedback-two-files-one-quantity` class). **USER DECISION needed before Phase C:** fill the
+  missing NBFC quarters to match the 795 (data reality; the engine already screens on them), or
+  declare NBFC ebit N/A and retract the 795 (retraction touches every ledger). Do not proceed on
+  either silently.
+- **2,390 industrial-flagged quarters missing ebit across 70 names** (ARE&M 60, ABREL 57,
+  LICHSGFIN 55, SHRIRAMFIN 55 …) are REAL extraction gaps → the Phase D fill list.
+
 Parent campaign: `scripts/N500_COVERAGE_100_CAMPAIGN.md` (P0–P2 done and live).
 
 > **Golden rule:** never assume, never guess. Every value written and every claim made must trace to
