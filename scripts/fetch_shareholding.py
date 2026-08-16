@@ -245,6 +245,52 @@ def apply_bse_hist_ledger(h):
         n_total += n
     return n_total
 
+# §22j PRECISION REFRESH ledger (scripts/fetch_shp_bse_hist.py --refine). Cells parsed before the
+# share-count pass carry the filer's 2dp percentage; these are the SAME filings re-read so
+# parse_shp recomputes them at 4dp. REFINE-ONLY: a cell is replaced only when the new value is
+# the same number to within one 2dp step (_cell_eq / CELL_TOL). Anything that genuinely DISAGREES
+# is a different document or a real defect — it is reported for human adjudication and never
+# auto-applied, because "more precise" must never become a licence to overwrite a value a human
+# already adjudicated. Runs AFTER the gap ledgers and BEFORE apply_cell_fix, which outranks it.
+REFINE_LEDGER = os.path.join(HERE, "shp_refine_4dp.json.gz")
+REFINE_REPORT = os.path.join(HERE, "_shp_refine_disagreements.json")
+def apply_refine_ledger(h, path=None):
+    path = path or REFINE_LEDGER
+    if not os.path.exists(path): return 0
+    try:
+        with gzip.open(path, "rt", encoding="utf-8") as fh:
+            fills = json.load(fh).get("fills", {})
+    except Exception as e:
+        print("%s unreadable (%s) — skipped" % (os.path.basename(path), e)); return 0
+    n = skip = 0
+    bad = []
+    for sym, qs in fills.items():
+        dest = h.get(sym)
+        if not isinstance(dest, dict): continue      # refine never CREATES a cell
+        for qe, cell in qs.items():
+            cur = dest.get(qe)
+            if cur is None: continue
+            # Compare ONLY the five holding percentages. `sub` and `nsh` describe WHICH DOCUMENT
+            # was read, not the holding: BSE commonly serves a company's REVISION where NSE served
+            # the original, so 73% of the first pass disagreed on `sub` alone while every value
+            # matched. Refining those is safe and is the whole point; overwriting our provenance
+            # with the other exchange's is not — so the numbers are taken and slots 5+ are KEPT.
+            # A disagreement in any of the five is a different document or a real defect: reported,
+            # never auto-applied.
+            new = list(cell)
+            if not _cell_eq(cur[:5], new[:5]):
+                bad.append({"sym": sym, "qe": qe, "stored": cur, "refined": new[:7]}); skip += 1; continue
+            merged = new[:5] + list(cur[5:])         # refined values, stored provenance
+            if merged == cur: continue               # already applied — keeps the run idempotent
+            dest[qe] = merged
+            n += 1
+    if n or skip:
+        print("shp_refine_4dp applied: %d cells refined, %d disagreements held back" % (n, skip))
+    if bad:
+        json.dump(bad, open(REFINE_REPORT, "w", encoding="utf-8"), indent=1)
+        print("  -> %s (%d rows) — adjudicate, do NOT bulk-apply" % (os.path.basename(REFINE_REPORT), len(bad)))
+    return n
+
 # The mf-slot repair ledger (scripts/heal_shp_mf.py, runbook §22g). Until 2026-08-07 MEMBERS
 # mapped only MutualFundsOrUTIMember, so every new-format filing spelling the member the old way
 # (MutualFundsOrUtiMember — all BSE copies, every NSE filing before ~Jul-2025) stored mf = 0.0,
@@ -637,6 +683,7 @@ def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
     jar = B.nse_jar()
     hist = load_hist()
     apply_bse_hist_ledger(hist)   # STEP 5 2016-2019 backfill — fill-only, no-ops once applied
+    apply_refine_ledger(hist)     # §22j 4dp precision refresh — refine-only, no-ops once applied
     apply_mf_heal_ledger(hist)    # mf-slot repair — patch-only, no-ops once applied
     cellfix = load_cell_fix()     # load_hist already applied it; re-applied post-fetch below
     names = hist.setdefault("_names", {})
@@ -885,6 +932,7 @@ if __name__ == "__main__":
         h = load_hist()
         before = cells_of(h)
         n = apply_bse_hist_ledger(h)
+        apply_refine_ledger(h)
         apply_mf_heal_ledger(h)
         apply_cell_fix(h)             # §22g per-cell corrections (load_hist applied them too)
         after = cells_of(h)

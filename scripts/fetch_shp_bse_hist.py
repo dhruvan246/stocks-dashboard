@@ -242,7 +242,18 @@ def main():
     ap.add_argument("--from-qe", default=FIRST_QE)
     ap.add_argument("--limit", type=int, default=0, help="stop after N cells (smoke test)")
     ap.add_argument("--threads", type=int, default=THREADS)
+    # §22j PRECISION REFRESH: the opposite selection to a gap fill — target cells that ALREADY
+    # EXIST but were parsed off the filer's 2dp percentage, and re-read them from the same BSE
+    # XBRL so parse_shp recomputes them from share counts. Its own ledger + absent list so a
+    # refine run can never be mistaken for, or pollute, the gap-fill ledger.
+    ap.add_argument("--refine", action="store_true",
+                    help="re-read cells that exist but are 2dp-only, into shp_refine_4dp.json.gz")
     a = ap.parse_args()
+
+    global LEDGER, MISSES
+    if a.refine:
+        LEDGER = os.path.join(HERE, "shp_refine_4dp.json.gz")
+        MISSES = os.path.join(HERE, "_shp_refine_absent.json")
 
     hist = FS.load_hist()
     FS.apply_bse_hist_ledger(hist)          # what we'd have after the existing ledgers merge
@@ -276,17 +287,34 @@ def main():
     cmap, by_name = build_codemap(names)
 
     todo = []
-    for qe in qes:
-        for sym in sorted(set(members_asof(snaps, qe))):
-            if qe in have.get(sym, {}):
-                continue
-            if qe in fills.get(keyfor.get(sym, sym), {}):
-                continue
-            if (sym, qe) in absent:
-                continue
-            todo.append((sym, qe))
-    print("gaps to fetch: %d over %d quarters (%s .. %s)"
-          % (len(todo), len(qes), qes[-1] if qes else "-", qes[0] if qes else "-"))
+    if a.refine:
+        # EVERY symbol we hold, not just point-in-time N500 members: a 2dp cell is wrong whoever
+        # holds it, and the members_asof filter exists to bound a GAP hunt, not a re-read.
+        two_dp = lambda c: all(isinstance(v, (int, float)) and round(v, 2) == v for v in (c[1], c[2]))
+        for qe in qes:
+            for sym, qs in have.items():
+                c = qs.get(qe)
+                if not c or len(c) < 3 or not two_dp(c):
+                    continue
+                if qe in fills.get(keyfor.get(sym, sym), {}):
+                    continue
+                if (sym, qe) in absent:
+                    continue
+                todo.append((sym, qe))
+        print("2dp cells to re-read: %d over %d quarters (%s .. %s)"
+              % (len(todo), len(qes), qes[-1] if qes else "-", qes[0] if qes else "-"))
+    else:
+        for qe in qes:
+            for sym in sorted(set(members_asof(snaps, qe))):
+                if qe in have.get(sym, {}):
+                    continue
+                if qe in fills.get(keyfor.get(sym, sym), {}):
+                    continue
+                if (sym, qe) in absent:
+                    continue
+                todo.append((sym, qe))
+        print("gaps to fetch: %d over %d quarters (%s .. %s)"
+              % (len(todo), len(qes), qes[-1] if qes else "-", qes[0] if qes else "-"))
     if a.limit:
         todo = todo[:a.limit]
 
