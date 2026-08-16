@@ -3615,6 +3615,24 @@ injected site-wide. Never push those unchecked. Never let `|| echo` swallow a fa
 `read_page` and confirm the new thing is really in the DOM **with real values** — not `Loading…`,
 `NaN`, `undefined`, `null`, `—`, or an empty table. Reading your own diff is not verification.
 
+**1b. ★ A COVERAGE RULE OR A DATA FILL MUST BE SHOWN TO MOVE A COUNT** (added 2026-08-16 after this
+bit three times in one session). Compiling is not working — a rule can read perfectly and mark
+NOTHING. Bake and diff the payload BEFORE committing; `--explain` names the exact cells, so a rule
+firing on zero of its intended targets is visible immediately.
+- **Dead-code rules.** The chgPp IPO-anchor rule shipped twice doing nothing: first because `dayOff`
+  maps to TRADING-SESSION offsets and the anchor dates were not sessions (the comparison silently
+  yielded no verdict), then because `loadShp()` merges a RENAMED PREDECESSOR's whole era under the
+  current key (`backtest-engine.js:678-683`), so `min(qe)` for PIRAMALFIN answered for DHFL back to
+  2011. Two wrong hypotheses in a row; the fix came from READING `loadShp`, not from theorising.
+- **★ TWIN-FILE VISIBILITY SIDE-EFFECT — a fill in one file OPENS a gap in another.** Writing a con
+  PAT into `sf_fundamentals` makes that quarter newly VISIBLE to the basis family, which then reads
+  `sf_revop`'s con REVENUE slot for the same quarter. MINDTREE's first bake closed 87 cells and
+  **opened 3 fresh revCon gaps** because Dec-2019 held no `rev_con`. The same filing carries both
+  numbers on the same page — fill BOTH twins in one pass.
+- **Diff EVERY parameter and treat any INCREASE as a stop**, not just the one you aimed at:
+  `regressions = [k for k, d in deltas.items() if d > 0]` must be empty. A fill that trades cells
+  between families nets out to far less than it appears to.
+
 **2. Blast radius — everything else that uses what you touched.**
 - `theme.js` / `theme.css` / nav / footer / tiles → **all pages**; spot-check ≥3 (home, a table page, a chart page).
 - Shared JS (`sw-sync.js`, `sw-watchlist.js`, `backtest-engine.js`) → `grep -rl` every consumer, open each.
