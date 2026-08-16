@@ -975,7 +975,29 @@ function run(ctx, C) {
       if (rmap && vStd) { const c = rmap[vStd[1]]; if (c && c[0] != null) bs[1] = 1; }
       if (fqe && vCon) { const q = fqe[vCon[1]]; if (q && q[3] != null) bs[2] = 1; }
       if (fqe && vStd) { const q = fqe[vStd[1]]; if (q && q[1] != null) bs[3] = 1; }
-      return { sym, flags, turnover, indKnown, rv, rvna, na, bs, es, ec };
+      /* ---- NOTHING WAS PUBLIC YET (§99) — the ONE N/A the basis + raw PAT families carry -------
+       * Both families were built deliberately with no not-applicable logic: an empty cell means
+       * "we hold nothing on this basis", full stop. That stays true, with one exception approved
+       * by the user 2026-08-16: a company whose FIRST REAL FILING is still in the future had
+       * published nothing at all on this date, so there is no figure for anyone to have held.
+       * NSLNISP is the measured case — NMDC Steel listed 2023-02-20 and filed its first result
+       * 2023-05-23, so at the 2023-04-28 month-end it had been listed nine weeks with nothing
+       * filed. Verified against the exchange rather than inferred: NSE serves ZERO filings for it
+       * in that window on either the quarterly or the annual stream, so the cell cannot be filled
+       * by anyone. Its pre-2023 rows are demerger-scheme carry-ins stamped before the tape starts
+       * (§99), and screener shows the entity at 0.0 revenue until FY2024 — an empty shell, not a
+       * gap in our data. `firstRealAnn` already encodes exactly this test for the revenue family,
+       * so this reuses it instead of adding a second rule or a name list. */
+      const nothingPublicYet = !!(fra && fra > dateInt);
+      const bsna = [0, 0, 0, 0];
+      const esna = es.map(() => 0);
+      const ecna = ec.map(() => 0);
+      if (nothingPublicYet) {
+        for (let j = 0; j < 4; j++) if (!bs[j]) bsna[j] = 1;
+        for (let j = 0; j < es.length; j++) if (!es[j]) esna[j] = 1;
+        for (let j = 0; j < ec.length; j++) if (!ec[j]) ecna[j] = 1;
+      }
+      return { sym, flags, turnover, indKnown, rv, rvna, na, bs, bsna, es, esna, ec, ecna };
     });
 
     for (const u of UNIVERSES) {
@@ -1005,15 +1027,18 @@ function run(ctx, C) {
         }
         for (let j = 0; j < 4; j++) {
           if (r.bs[j]) cnt[basisCols[j]]++;
-          else if (ex) (ex[PARAMS[basisCols[j]].k] ||= []).push(r.sym);   // no N/A here by design
+          else if (r.bsna && r.bsna[j]) nac[basisCols[j]]++;   // nothing was public yet (§99)
+          else if (ex) (ex[PARAMS[basisCols[j]].k] ||= []).push(r.sym);   // otherwise no N/A by design
         }
         for (let j = 0; j < stdCols.length; j++) {
           if (r.es[j]) cnt[stdCols[j]]++;
-          else if (ex) (ex[PARAMS[stdCols[j]].k] ||= []).push(r.sym);   // RAW view — no N/A by design
+          else if (r.esna && r.esna[j]) nac[stdCols[j]]++;     // nothing was public yet (§99)
+          else if (ex) (ex[PARAMS[stdCols[j]].k] ||= []).push(r.sym);   // otherwise RAW — no N/A
         }
         for (let j = 0; j < conCols.length; j++) {
           if (r.ec[j]) cnt[conCols[j]]++;
-          else if (ex) (ex[PARAMS[conCols[j]].k] ||= []).push(r.sym);   // RAW view — no N/A by design
+          else if (r.ecna && r.ecna[j]) nac[conCols[j]]++;     // nothing was public yet (§99)
+          else if (ex) (ex[PARAMS[conCols[j]].k] ||= []).push(r.sym);   // otherwise RAW — no N/A
         }
       }
       // roll members that never reached factorsAt carry NO parameter at all — they are the Price
