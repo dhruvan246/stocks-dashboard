@@ -285,16 +285,37 @@ def parse_old(html):
             nm = cells[i + 1] if cells[i + 1] != "Shareholding Pattern" else (cells[i + 2] if i + 2 < len(cells) else "")
             break
 
+    def _nums_at(i):
+        nums = []
+        for c2 in cells[i + 1:i + 4]:
+            c2 = c2.replace(",", "").strip()
+            if re.fullmatch(r"\d+(?:\.\d+)?", c2): nums.append(float(c2))
+            else: break
+        return nums
+
+    # 4dp (§22j), same treatment the Clause-35 table already gets: each 1997-format row prints
+    # (shares, pct) and that pct is the FILER's 2dp figure, so a sub-0.005% holding prints as a
+    # literal 0 — the value a "lowest DII" screen ranks first. Recompute pct = shares/base, base
+    # inferred from the LARGEST row's own printed pct (>=1% carries at most ±0.005pp of rounding).
+    # SELF-CHECK: the base must reproduce EVERY row's printed pct within 0.02pp, otherwise this
+    # page's two columns are not a (shares, pct) pair at all and the printed pct is used unchanged.
+    _base = None
+    _rows = [n for n in (_nums_at(i) for i in range(len(cells))) if len(n) >= 2 and n[0] and n[1]]
+    _cand = [(n[1], n[0]) for n in _rows if n[1] >= 1.0]
+    if _cand:
+        _p, _s = max(_cand)
+        _b = _s / (_p / 100.0)
+        if _b > 0 and all(abs(n[0] / _b * 100.0 - n[1]) <= 0.02 for n in _rows):
+            _base = _b
+
     def val_after(rxs, lo=0, hi=None):
         rx = re.compile(rxs, re.I)
         for i in range(lo, hi if hi is not None else len(cells)):
             if rx.search(cells[i]):
-                nums = []
-                for c2 in cells[i + 1:i + 4]:
-                    c2 = c2.replace(",", "").strip()
-                    if re.fullmatch(r"\d+(?:\.\d+)?", c2): nums.append(float(c2))
-                    else: break
-                if len(nums) >= 2: return (i, nums[1])     # (shares, pct) -> pct
+                nums = _nums_at(i)
+                if len(nums) >= 2:
+                    if _base and nums[0]: return (i, nums[0] / _base * 100.0)
+                    return (i, nums[1])                   # (shares, pct) -> pct
         return (None, None)
 
     out = {}
