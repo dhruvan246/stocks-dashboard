@@ -153,6 +153,41 @@ A trial N/A pass with a divergence guard refused **3,884** verdicts. When the N/
 revisited, that guard is mandatory: honour a verdict only where no divergent consolidated figure of
 ours already covers the quarter. With it, the era read revCon 80.887% / patCon 91.206%.
 
+## 0d. THE PRE-2020 CON GAP IS BOUNDED — 2,631 fillable cells, not ~21,000
+
+User: *"fill the pre-2020 con gap for rev and pat"*. Classified every missing con member-date
+2015-01→2019-12 (30,007 member-dates each). "Did this company really file consolidated for quarter
+Q" is answered by **DIVERGENCE, never presence** — the con slot frequently holds a copy of
+standalone — so each company's real con span runs from its first to its last quarter with
+`|con − std| > 0.005` and a dated con announce.
+
+| class | revCon | patCon |
+|---|---:|---:|
+| covered | 18,157 (60.51%) | 20,921 (69.72%) |
+| **before-first-con** — no consolidated filing existed yet (§51a) | **8,522 (28.40%)** | **8,258 (27.52%)** |
+| never-filed-con (no divergent quarter, ever) | 909 (3.03%) | 492 (1.64%) |
+| no filing of any kind at that date | 62 (0.21%) | 62 (0.21%) |
+| **★ REAL HOLE — inside the company's OWN con span** | **2,357 (7.85%) over 302 names** | **274 (0.91%) over 35 names** |
+
+⇒ **~17,300 of the ~21,000 empty con cells are documents that never existed** (quarterly
+consolidated became compulsory only from FY2020). They are not fillable by any source; they are the
+N/A question the user has reserved. **The fillable target is 2,357 + 274 = 2,631 cells.**
+
+**Route, measured — most of it needs no new filing.** Across the 302 revCon-hole names, quarters
+2014-2019: **1,303 quarters hold consolidated PAT but NO consolidated revenue** (vs 3,360 holding
+both). The consolidated filing exists *and we already read it* — sf_revop simply never got the
+revenue column from it. Worked cases: ENIL 20140331 conPAT 21.29 / conREV None; PRAJIND 20140331
+conPAT 20.77 / conREV None. This is the [[feedback-two-files-one-quantity]] class, the same shape as
+the 2017 `op` hole in §0b(b) — one column unextracted from a filing already in hand.
+Worst names: ICICIBANK 52 cells, ESCORTS 50, SBIN 44, LTF 40, RTNPOWER 33, M&M 30, HFCL 29, IDFC 27.
+patCon holes are 35 names at exactly 12 cells each — annual-cadence con filers, where one missing
+annual consolidated costs a full 12 month-ends of visibility.
+
+**Fill order:** (1) the 1,303 PAT-anchored quarters — re-read the same filing for revenue, §57
+ladder (NSE archive → BSE detres → aggregator), provenance per cell, ledger-routed via
+`revop_fundamentals.json`; (2) the residue where neither is present (1,921 quarters) needs a filing
+discovery pass first. Batch ~10 names → rebuild → bake → parity → push → LIVE.
+
 ## 1. Scope & goal
 
 Universe **nifty-500**, month-ends **2015-01-30 → 2019-12-31 (60)**, all 43 parameters.
