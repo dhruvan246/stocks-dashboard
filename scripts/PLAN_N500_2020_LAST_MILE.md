@@ -186,16 +186,22 @@ changing that is § E3, the user's call, not the executor's.
 
 ## E. USER DECISIONS the executor must have before the semantic edits (ask FIRST, in one round)
 
-* **E1 — insurer quarterly ebit (632 cells, 69% of the ebit residue)**: N/A with per-name IRDAI
-  evidence (mirrors the user's own lender decision, "show like screener does" — screener shows
-  insurers OP but a meaningless Dep=0) — or per-name primary-filing check first, holding cells
-  visible meanwhile? (Answer recorded 2026-08-16: ____)
-* **E2 — basis-family N/A policy** for "no filing on that basis existed yet" (IOB 28 pre-2022-03,
-  NSLNISP 1): wire date-bounded N/A into revCon/revStd (breaks the family's stated no-N/A design)
-  — or accept a permanent sub-100 on revCon? (Answer: ____)
-* **E3 — patcon/patstd families**: wire the same never-filed / §99 N/A machinery the original
-  profit family uses (peer sessions left them raw deliberately) — or fill-only and accept the
-  never-filed floor? (Answer: ____)
+All three were put to the user 2026-08-16 ~18:15 IST and ANSWERED — the executor asks nothing,
+these are settled:
+
+* **E1 — insurer quarterly ebit (632 cells)** → **"Check per name first."** Read one recent BSE
+  filing per insurer (all 11 names: LICI SBILIFE HDFCLIFE ICICIPRULI ICICIGI GICRE NIACL
+  STARHEALTH GODIGIT NIVABUPA CANHLIFE) for any expense schedule carrying depreciation. A name
+  whose filing PROVES non-disclosure gets the N/A entry with that evidence line; a name whose
+  filing carries depreciation gets FILLED (ebit = OP − Dep, PAT-anchored). Cells stay visible
+  until their name's verdict is recorded. No category shortcut — per-name, both readers logged.
+* **E2 — basis-family N/A** → **"Keep no-N/A design."** revCon/revStd keep their strict meaning.
+  IOB's 28 pre-first-con cells and NSLNISP's 1 are USER-ACCEPTED permanent visible gaps — the
+  definition-of-done enumerates them as signed-off; do NOT wire N/A, do NOT re-raise.
+* **E3 — patcon/patstd families** → **"Decide after measuring."** Run the § D measurement, class
+  the composition per name (never-filed vs reach-back vs extractable), present it to the user
+  with counts, and STOP for their call before any semantic change. Fills that need no semantic
+  change (genuinely extractable con/std PAT) may proceed under the normal gates meanwhile.
 
 ## F. Execution order (each step ends with the § 0.8 ship gate)
 
@@ -210,5 +216,6 @@ changing that is § E3, the user's call, not the executor's.
 
 **Definition of done**: every one of the 61 params reads exactly 100.000% on the live page for
 window 2020-01-31→dataEnd, with every excluded cell carrying a per-name evidence line in
-`coverage_na_ledger.json`, or the specific cells that cannot reach 100 are enumerated with their
-measured reason and the user has signed off on each class.
+`coverage_na_ledger.json` — EXCEPT the cells the user has already signed off as permanent visible
+(E2: IOB revCon 28, NSLNISP revStd 1 — revCon's ceiling is 99.93% and revStd's 99.997% by the
+user's own decision), plus whatever E3's post-measurement call adds to either list.
