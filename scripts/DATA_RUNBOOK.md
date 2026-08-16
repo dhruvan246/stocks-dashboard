@@ -89,6 +89,12 @@ loads every session. (README.md is just a short pointer here — this file is th
   or "never filed", unless the **full ladder in §57** has been walked AND primary evidence says
   the company did not report. Do not infer absence from a company's category ("it's an insurer,
   so it needs the special route") — open the document. **Full procedure: §57.**
+  ⚠️ **RE-MANDATED 2026-08-16 — the rule above FAILED AGAIN, three times in one day** (SPICEJET,
+  the 13 non-banking names ~670 cells, and delivPct where I said "NSE publishes no delivery for
+  these at all" at rung TWO and the user's *"try it one last time"* found 609 cells on rung
+  three). A rule is not enough: **§57d is now a GATE** — before any N/A reaches the user, show the
+  ladder with per-rung status; any rung reading `not-tried` means the verdict is not yet allowed.
+  User's words: *"haar nahi maanni hai kabhi"*. **Full gate: §57d.**
 - **★ EVERY SUCCESS GETS WRITTEN HERE, IMMEDIATELY.** The moment a route/recipe/fix WORKS
   (verified, not hoped), append it to this runbook in the same session — a new § for a new
   route, or a line in the matching § for a refinement. Procedures live HERE; facts/state live
@@ -5132,6 +5138,43 @@ minutes each, every time only after the user named the company.
   where the thing is known to exist (§51b).
 * **Pre-2016 BSE attachments 404** on AttachHis/AttachLive (§52).
 * **Blank-template pages** print every row as 0.00 — a zero is a blank row, not a result (§53b).
+
+### 57d. ★★★ HAAR NAHI MAANNI HAI — the rule failed AGAIN on 2026-08-16, so it is now a GATE  (USER-MANDATED)
+
+**§57 has existed since 2026-08-06 and I still stopped early three times in one day.** The rule
+alone does not work; the SEQUENCE has to be enforced. User, after the third: *"if it was possible,
+then why do you always say it is not possible first?"* and *"haar nahi maanni hai kabhi"*.
+
+**The three, same session:**
+1. **SPICEJET** — an airline sitting in the "never reports EBIT" set. A sector shortcut would have
+   buried it. Caught only because the user demanded per-name evidence.
+2. **The 13 non-banking names** — ~670 cells nearly marked N/A by a "banks and insurers" category
+   rule. screener showed all 12 insurers a normal Operating Profit layout.
+3. **delivPct, the worst.** I told the user *"NSE publishes no delivery figure for these at all —
+   'not published', not 'missing'"* after walking TWO rungs (MTO absent; bhavdata prints `-`), and
+   steered toward N/A. User: *"mark rest as NA … but try it one last time."* **Rung three, BSE's
+   gross-delivery file, printed the literal 100.00 for the same scrip-days. 609 cells filled that
+   afternoon**, per-day verified (SERIES in BE/BZ + DELIV_QTY `-`).
+
+**WHY it keeps happening — the mechanism, not "try harder":** a *story that explains the absence*
+("trade-to-trade doesn't publish delivery", "it's an insurer, wrong format") FEELS like evidence and
+grants permission to stop. It is a hypothesis, and the untried rungs are its test. And the negative
+is treated as the cheap/safe claim when it is the STRONG one: "found it" needs one document;
+"cannot be filled" is a claim about EVERY route including the ones not tried. Backwards polarity —
+"conservative" becomes "confidently wrong".
+
+**THE GATE (mandatory, before any N/A / unfillable / not-published reaches the user):**
+Produce the ladder table for that cell class with per-rung status —
+`tried-and-empty | not-tried | n/a-to-this-class`. **If any rung reads `not-tried`, the verdict is
+NOT YET ALLOWED to be stated.** Say *"N rungs remain"* instead. The user's "try it one last time"
+is the built-in FINAL STEP of every negative verdict, never a correction they must issue.
+
+**Counterweight, so this does not swing into never concluding:** the same day produced negatives
+that were RIGHT and load-bearing — banks' EBIT (692 filings checked, one artifact), NSLNISP's
+pre-history (its own filings AND screener agree the quarter never existed), and the insurer
+Depreciation-0 **refusal** that stopped plausible-but-wrong numbers being written. The goal is not
+zero N/A. It is that every N/A is EARNED by a complete ladder — and these were being granted at
+rung two.
 
 
 ---
