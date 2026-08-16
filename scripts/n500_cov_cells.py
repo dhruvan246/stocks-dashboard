@@ -185,24 +185,45 @@ def check_parity(rows, pm, verbose=False):
         if r['param'] != '__norow':
             by_param[r['param']] += r['n']
 
+    # PER-DATE counts too. A totals-only gate passes while the composition is wrong — the queue
+    # could name the right NUMBER of cells on the wrong DATES and nothing would flag it.
+    per_date = collections.defaultdict(collections.Counter)
+    for r in rows:
+        if r['param'] == '__norow':
+            continue
+        for d in r['months']:
+            per_date[r['param']][d] += 1
+
     results, ok = {}, True
     gap_params = sorted(p for p, v in pm.items() if v['missing'] > 0)
     for pk in gap_params:
         want = pm[pk]['missing']
         got = by_param.get(pk, 0) + sum(norow_dates.values())
         good = (got == want)
+        bad_dates = []
+        for d, m in pm[pk]['per_date'].items():
+            if per_date[pk].get(d, 0) + norow_dates.get(d, 0) != m:
+                bad_dates.append((d, per_date[pk].get(d, 0) + norow_dates.get(d, 0), m))
+        for d, n in per_date[pk].items():
+            if d not in pm[pk]['per_date'] and n:
+                bad_dates.append((d, n, 0))
+        good = good and not bad_dates
         ok &= good
-        results[pk] = {'queue': got, 'payload': want, 'ok': good}
+        results[pk] = {'queue': got, 'payload': want, 'ok': good,
+                       'bad_dates': bad_dates[:5], 'n_bad_dates': len(bad_dates)}
     # a param with zero missing must have zero queue rows
     for pk, n in by_param.items():
         if pm.get(pk, {}).get('missing', 0) == 0 and n:
             results[pk] = {'queue': n, 'payload': 0, 'ok': False}
             ok = False
     if verbose:
-        print(f"{'param':14s} {'queue':>8s} {'payload':>8s}  parity")
+        print(f"{'param':14s} {'queue':>8s} {'payload':>8s}  parity (totals + per-date)")
         for pk in sorted(results):
             r = results[pk]
-            print(f"{pk:14s} {r['queue']:8d} {r['payload']:8d}  {'OK' if r['ok'] else 'MISMATCH'}")
+            tag = 'OK' if r['ok'] else f"MISMATCH ({r.get('n_bad_dates', 0)} bad dates)"
+            print(f"{pk:14s} {r['queue']:8d} {r['payload']:8d}  {tag}")
+            for d, got, want in r.get('bad_dates', []):
+                print(f"                 └─ {d}: queue {got} vs payload {want}")
         print(f"\nPARITY {'PASS' if ok else 'FAIL'} · {len(gap_params)} params with gaps · "
               f"{sum(pm[p]['missing'] for p in gap_params):,} missing cells total")
     return {'ok': bool(ok), 'params': results}
@@ -217,8 +238,25 @@ def main():
     a = ap.parse_args()
     if a.check:
         q = json.load(open(a.out))
-        pm = payload_missing(load_payload())
-        r = check_parity(q['rows'], pm, verbose=True)
+        U = load_payload()
+        # ⚠️ BAKE SKEW comes first. A queue is only comparable to the payload it was built from.
+        # Local bakes are reverted after building (the release asset lags CI — campaign P0 note 1),
+        # so docs/coverage/ normally holds CI's payload, NOT the one behind this queue. Comparing
+        # across bakes reports "PARITY FAIL" for a queue that is perfectly correct; that false
+        # alarm is worse than no check at all, because it sends the next session hunting a
+        # phantom. Measured case, 2026-08-16: queue built at 13:22 (dataEnd 08-12) vs CI's 01:26
+        # payload (dataEnd 08-14) -> profitTTM read 525 vs 524 and the run said FAIL.
+        if q.get('payload_updated') != U['updated']:
+            print('BAKE SKEW — not a parity failure.')
+            print(f"  queue was built against : {q.get('payload_updated')}  (dataEnd {q.get('payload_dataEnd')})")
+            print(f"  payload on disk is      : {U['updated']}  (dataEnd {U['dataEnd']})")
+            print('  Re-bake and rebuild the queue before trusting a parity result:')
+            print('    node --max-old-space-size=12288 scripts/build_coverage_matrix.js --bin auto \\')
+            print('         --out docs/coverage --explain nifty-500 --explain-from 2020-01-01')
+            print('    python3 scripts/n500_cov_cells.py build')
+            print(f"  (stored parity at build time: {'PASS' if q.get('parity', {}).get('ok') else 'FAIL'})")
+            return 2
+        r = check_parity(q['rows'], pm := payload_missing(U), verbose=True)
         return 0 if r['ok'] else 1
     return build(a.explain, a.out)
 
