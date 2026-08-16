@@ -50,6 +50,14 @@ const OUT_DIR = path.resolve(ROOT, arg('out', 'docs/coverage'));
 const BIN_ARG = arg('bin', 'auto');
 const FROM = arg('from', '2002-01');          // true daily bars start 2002-01-02; earlier is weekly
 const MAX_DATES = +arg('dates', 0) || 0;      // 0 = all (a small N is the dev/smoke setting)
+/* --explain <slug> [--explain-from YYYY-MM-DD] [--explain-out <path>]
+ * Names the symbols behind every sub-100 cell for ONE universe, emitted from the same scan that
+ * writes the payload — so the queue file and the page can never disagree. Analysis only: it does
+ * not change a single counted cell. Off unless asked for. */
+const EXPLAIN = arg('explain', '') || null;
+const EXPLAIN_FROM = arg('explain-from', '0000-00-00');
+const EXPLAIN_PATH = arg('explain-out', 'scripts/n500_cov_explain.json');
+const EXPLAIN_OUT = {};
 
 const log = (...a) => console.log('[coverage]', ...a);
 
@@ -511,16 +519,33 @@ function run(ctx, C) {
       const set = u.kind === 'index' ? memberSets[u.slug][di] : null;
       if (u.kind === 'index' && !set) { members[u.slug][di] = -1; continue; }   // -1 = no roll yet
       let n = 0;
+      // --explain: name the symbols behind every sub-100 cell, through THIS vm run (§92 — the
+      // counts and the names must come from one measurement, or the queue can drift from the page).
+      const ex = (EXPLAIN && u.slug === EXPLAIN && d.iso >= EXPLAIN_FROM) ? (EXPLAIN_OUT[d.iso] = {}) : null;
+      const seen = ex ? new Set() : null;
       for (const r of perRow) {
         if (set && !set.has(r.sym)) continue;
         if (u.kind === 'liquid' && !(r.turnover >= LIQUID_FLOOR)) continue;
         n++;
+        if (seen) seen.add(r.sym);
         for (let j = 0; j < engineCols.length; j++) {
           if (r.flags[j]) cnt[engineCols[j]]++;
           else if (r.na && r.na[j]) nac[engineCols[j]]++;   // inapplicable, not missing
+          else if (ex) (ex[PARAMS[engineCols[j]].k] ||= []).push(r.sym);   // missing, not N/A
         }
-        if (r.indKnown) cnt[iIndustry]++;
-        for (let j = 0; j < 3; j++) if (r.rv[j]) cnt[revCols[j]]++;
+        if (r.indKnown) cnt[iIndustry]++; else if (ex) (ex.industry ||= []).push(r.sym);
+        for (let j = 0; j < 3; j++) {
+          if (r.rv[j]) cnt[revCols[j]]++;
+          else if (ex) (ex[PARAMS[revCols[j]].k] ||= []).push(r.sym);
+        }
+      }
+      // roll members that never reached factorsAt carry NO parameter at all — they are the Price
+      // column's gap. Recorded separately so the queue can never silently omit them.
+      if (ex && set) {
+        for (const s of set) {
+          if (s.includes('DVR') || /^DUMMY/.test(s) || seen.has(s)) continue;
+          (ex.__norow ||= []).push(s);
+        }
       }
       // an INDEX universe's denominator is the roll itself, not what survived the price gate —
       // that difference is exactly what the Price column is there to show.
@@ -539,6 +564,16 @@ function run(ctx, C) {
       lastLog = Date.now();
       log(`  ${di + 1}/${dates.length} ${d.iso} · ${rows.length} rows · ${((Date.now() - C.t0) / 1000).toFixed(0)}s`);
     }
+  }
+
+  if (EXPLAIN) {
+    const p = path.resolve(ROOT, EXPLAIN_PATH);
+    fs.writeFileSync(p, JSON.stringify({
+      universe: EXPLAIN, from: EXPLAIN_FROM, dataEnd: C.end,
+      generated: new Date().toISOString(), byDate: EXPLAIN_OUT,
+    }));
+    const nCells = Object.values(EXPLAIN_OUT).reduce((a, o) => a + Object.values(o).reduce((b, l) => b + l.length, 0), 0);
+    log(`--explain: wrote ${p} · ${Object.keys(EXPLAIN_OUT).length} dates · ${nCells} named missing cells`);
   }
 
   writeOut(UNIVERSES, dates, counts, members, C, naCounts);
