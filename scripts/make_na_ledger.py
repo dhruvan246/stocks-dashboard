@@ -85,17 +85,24 @@ def main():
             'adjudicated': TODAY,
         }
 
-    doc = {
-        '_doc': 'Adjudicated NOT-APPLICABLE verdicts consumed by build_coverage_matrix.js. '
-                'Keyed param -> symbol. A symbol here is excluded from that parameter\'s '
-                'DENOMINATOR on the coverage page (not counted as covered, and not counted as '
-                'missing). Optional "from"/"to" (YYYY-MM-DD) bound the verdict to a date range; '
-                'absent means all dates. Every entry carries per-name evidence — no category rules.',
-        '_campaign': 'scripts/N500_COVERAGE_100_CAMPAIGN.md',
-        '_updated': TODAY,
-        'ebit': entries,
-    }
     out = os.path.join(ROOT, 'scripts', 'coverage_na_ledger.json')
+    # ⚠️ MERGE, never overwrite. This generator only knows the BANKING_FORMAT verdicts; the ledger
+    # also carries hand-adjudicated entries (the 35 screener-layout lenders, INDIANB's retraction
+    # record, the _-prefixed findings blocks). An overwrite here silently deleted none of them only
+    # because nobody re-ran this after 2026-08-16 — fixed 2026-08-16 so it never can.
+    doc = {}
+    if os.path.exists(out):
+        doc = json.load(open(out))
+    doc.setdefault('_doc', 'Adjudicated NOT-APPLICABLE verdicts consumed by build_coverage_matrix.js. '
+                           'Keyed param -> symbol. A symbol here is excluded from that parameter\'s '
+                           'DENOMINATOR on the coverage page (not counted as covered, and not counted '
+                           'as missing). Optional "from"/"to" (YYYY-MM-DD) bound the verdict to a date '
+                           'range; absent means all dates. Every entry carries per-name evidence — no '
+                           'category rules.')
+    doc.setdefault('_campaign', 'scripts/N500_COVERAGE_100_CAMPAIGN.md')
+    doc['_updated'] = TODAY
+    doc.setdefault('ebit', {})
+    doc['ebit'].update(entries)          # refresh only the entries this generator owns
     with open(out, 'w') as f:
         json.dump(doc, f, indent=1, sort_keys=False)
     print(f'wrote {out}')

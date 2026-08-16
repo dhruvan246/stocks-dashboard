@@ -503,6 +503,14 @@
    "reader_2": "NSE corporate-financial-results filing list: this symbol files under the NBFC form (bank flag \"F\" / NBFC_INDAS_* XBRL). Independent of screener.",
    "decision": "user 2026-08-16: \"i want u to show nbfc and banks like screener do\" \u2014 lenders are presented the way screener presents them, i.e. no EBIT. Same treatment as the 33 banking-format filers.",
    "adjudicated": "2026-08-16"
+  },
+  "INDIANB": {
+   "class": "C1",
+   "reader_1": "screener.in/company/INDIANB/consolidated/ quarterly table read 2026-08-16: banking format \u2014 \"Financing Profit\"/\"Financing Margin %\" in place of \"Operating Profit\"; no EBIT row (part of the 46-name per-name sweep).",
+   "reader_2": "NSE corporate-financial-results list 2026-08-16: every INDIANB filing is the BANKING XBRL form (bank flag \"B\"). Across ALL 692 bank-flagged quarters in the format sweep, exactly one carried an ebit \u2014 INDIANB 20180630, ebit_con == op_con == 383.28, the known copy artifact.",
+   "stray_retraction": "The 20180630 stray was nulled by scripts/align_lender_ebit.py on 2026-08-16 (this entry admits INDIANB to the guard AFTER the retraction, so the ledger guard that refuses contradicted verdicts stays honest).",
+   "decision": "user 2026-08-16 option A + \"show nbfc and banks like screener do\".",
+   "adjudicated": "2026-08-16"
   }
  },
  "_p2_findings_ebit_nonbanking": {
