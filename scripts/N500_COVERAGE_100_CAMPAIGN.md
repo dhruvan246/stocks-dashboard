@@ -1,7 +1,28 @@
 # N500 COVERAGE-100 CAMPAIGN — every parameter 100% on 🧭 Coverage Matrix, Nifty 500, 2020-01 → date
 
 **Written 2026-08-16 13:11 IST (Fable, planning session). Executor: Opus, fresh session.**
-**Status: PHASE 2 CLASSIFICATION COMPLETE and LIVE (2026-08-16, commits 9f67812c + 6694410e). NEXT: PHASE 2 source reads / PHASE 3 fills.**
+**Status: FILL PHASE SUBSTANTIALLY COMPLETE (2026-08-16 evening; commits e1ca89d2, 04625cf0,
+2543d000, 0a61ba03, d4975acd, 1c391485, 43d43e6f, bea2ee11, 4196af0c). The page grew 43→61 params
+same-day (peer sessions: basis + patstd + patcon families). Remaining residue is class-labelled
+with named routes — see the evening summary below.**
+
+### Evening close (2026-08-16): the day's arc and what remains
+
+Morning: 8,383 missing member-dates across 43 params. Evening (like-for-like 43): ~1,500;
+every closure either a primary-document fill or an evidence-backed refusal. Landed: lender/bank
+sf_revop DATA alignment + writer guards · pre-listing look-ahead rules (annOk, first-real-filing,
+zero-base refusal) · 609 be-t2t delivery days (LIVE at 0) · KPITTECH/ADANIGREEN comparative-column
+fills · 100 anchored XBRL rev/op/ebit cells (fill_revop_from_xbrl.py, committed tool) · 23
+screener-parity ordinary-ebit cells (measured: screener derives by company classification,
+ignoring the NBFC form) · late-filed-prior chgPp refusal (62 cells, found by the SHP session).
+
+OPEN, with owners: chgPp 112 = 79 missing SHP docs (SHP session, in flight) · insurers ~240
+(NSE list serves nothing; §43/BSE route) · cumulative-context anchor refusals 119+17 (Dec-FY
+filers: file shows YTD in OneD — needs period-dated context selection, the CELLO technique) ·
+basis-context-absent 127 (fetch sibling filings) · fetch-fail 76 (retry) · ABBOTINDIA 23 (list
+truncated to 1 row; BSE/detres) · LAKSHVILAS 4 (bank shown ordinary by screener — needs value
+check) · NSLNISP patStd 1 (one untried rung: the listing Information Memorandum) · KPITTECH
+profitAccel-blend 4 = zero-base na (already excused).
 Update this line as phases close.
 
 ### P2 results — classification done; every remaining cell is real filling work
