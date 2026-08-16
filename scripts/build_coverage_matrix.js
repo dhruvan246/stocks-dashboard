@@ -154,6 +154,24 @@ const FAMILIES = [
    * standalone-basis strategy could screen on at that date. RAW view like the basis family above:
    * no N/A wired (the blended family's N/A rules were adjudicated per-name against the BLEND and
    * are not assumed to transfer to the std series). */
+  /* PAT on the consolidated slots with NO standalone fallback. The dashboard's "Consolidated"
+   * setting is the BLEND (con, then std field-by-field — that is what the default PAT families
+   * above measure), so pure-con is a series no strategy can screen on; the user asked for it
+   * anyway (2026-08-16) as the diagnostic: how much of the blended coverage is secretly leaning
+   * on standalone quarters. Measured through the engine like everything else — factorsAt() with
+   * earnBasis:'conOnly', an additive measurement-only basis wired into BOTH engine twins
+   * (backtest-engine.js + stock-backtest.html, same ternary in profitAt/profitMetrics/
+   * lastResultDate; no UI offers it, ENGINE_VER deliberately not bumped because no saved
+   * strategy can carry it). RAW view, no N/A, same as the std family below. */
+  { id: 'patcon', label: 'PAT con basis', src: 'engcon', note: 'The PAT / PAT TTM / drift / composite columns above are the engine\'s DEFAULT basis, which is a BLEND: consolidated first, standalone filling any hole field-by-field. These columns are PURE consolidated — no fallback — so blend minus con is exactly how much the default screens lean on standalone quarters. No strategy can run on this series (the dashboard offers only the blend and pure-std); it exists as the honest measure of the consolidated basis itself. RAW view: no not-applicable is wired, and quarterly consolidated filing was only made compulsory from FY2020 (§51a), so deep pre-2020 emptiness here is largely filings that never existed.', params: [
+    { k: 'profitYoyCon', src: 'engcon', eng: 'profitYoyPct', rule: 'Consolidated-only net-profit YoY % — latest quarter whose CONSOLIDATED result was announced on or before the date (idx4 > 0, §91c sentinel rule), vs the same quarter a year earlier on the consolidated slot. Null when the year-ago base is exactly 0. Never borrows a standalone value.' },
+    { k: 'profitBaseCon', src: 'engcon', eng: 'profitBase', rule: 'The year-ago quarter\'s consolidated net profit. Lockstep with the con-only YoY by construction (profitMetrics answers both or neither).' },
+    { k: 'profitAccelCon', src: 'engcon', eng: 'profitAccel', rule: 'This-quarter con-only YoY minus last-quarter con-only YoY — reaches 5 quarters back on the consolidated slot alone.' },
+    { k: 'profitTTMCon', src: 'engcon', eng: 'profitTTM', rule: 'Last 4 consolidated quarters vs the 4 before them — all 8 must be consolidated. The gap between this and the blended profitTTM is the std-substitution the default basis performs silently (std and con TTM growth agree in sign only 86.9% where both exist).' },
+    { k: 'profitStreakCon', src: 'engcon', eng: 'profitStreak', rule: 'Consecutive positive con-only YoY quarters — 0 is a real answer, so every row where the con series resolves counts.' },
+    { k: 'postDriftCon', src: 'engcon', eng: 'postDrift', rule: 'Return since the last CONSOLIDATED announce date (idx4 only) — differs from the blended postDrift where the bases print different dates (3.5% of rows, measured 2026-08-12).' },
+    { k: 'compositeCon', src: 'engcon', eng: 'composite', rule: 'z(con-only profitTTM) + z(ret12m) − z(vol), cross-sectional over the same rows — null whenever the con-only TTM is.' },
+  ] },
   { id: 'patstd', label: 'PAT std basis', src: 'engstd', note: 'The PAT / PAT TTM / drift / composite columns above are measured under the engine\'s DEFAULT Earnings basis — consolidated, falling back to standalone field-by-field. The backtest dashboard\'s "Earnings basis" switch is part of a strategy\'s identity, and a Standalone strategy sees a different series: no consolidated values, no fill-in (std and con TTM growth agree in sign only 86.9% of the time where both exist). These columns are the same factorsAt() engine pass run again with earnBasis = standalone. RAW view: no not-applicable is wired yet, so an empty cell means only "the engine returns null on the standalone basis at that date".', params: [
     { k: 'profitYoyStd', src: 'engstd', eng: 'profitYoyPct', rule: 'Standalone net-profit YoY % — latest quarter whose STANDALONE result was announced on or before the date (idx2 > 0, §91c sentinel rule), vs the same quarter a year earlier on the standalone slot. Null when the year-ago base is exactly 0. No consolidated fallback anywhere in this family.' },
     { k: 'profitBaseStd', src: 'engstd', eng: 'profitBase', rule: 'The year-ago quarter\'s standalone net profit. Moves in lockstep with the std YoY by construction — profitMetrics(\'std\') answers both or neither — but profitBase is separately screenable on the dashboard, so it keeps its own column.' },
@@ -552,8 +570,17 @@ function run(ctx, C) {
     filters: [{ field: 'profitTTM' }, { field: 'ret12m' }],
   };
   ctx.__CFG_STD = CFG_STD;
-  // engine field name behind each PAT-std column, in family order
+  // Third engine pass for the PAT-con family: 'conOnly' is the measurement-only basis added to
+  // both engine twins — consolidated slots, no standalone fallback. Same filter/sortBy shape as
+  // the std pass and for the same reasons.
+  const CFG_CON = {
+    indexName: null, mcapFloor: 0, earnBasis: 'conOnly', sortBy: 'composite',
+    filters: [{ field: 'profitTTM' }, { field: 'ret12m' }],
+  };
+  ctx.__CFG_CON = CFG_CON;
+  // engine field name behind each PAT-std / PAT-con column, in family order
   const STD_ENG_KEYS = PARAMS.filter(p => p.src === 'engstd').map(p => p.eng);
+  const CON_ENG_KEYS = PARAMS.filter(p => p.src === 'engcon').map(p => p.eng);
 
   const revopIdx = { rev: [1, 0], op: [3, 2], ebit: [8, 7] };   // [con, std] slots in sf_revop
   let lastLog = 0;
@@ -571,6 +598,11 @@ function run(ctx, C) {
       const stdRows = factorsAt(__OFF, __CFG_STD), stdKeys = ${JSON.stringify(STD_ENG_KEYS)};
       if (stdRows.length !== rows.length) throw new Error('std-basis pass row-set mismatch at off=' + __OFF + ': ' + stdRows.length + ' vs ' + rows.length);
       const stdByTkr = new Map(); for (const s of stdRows) stdByTkr.set(s.tkr, s);
+      // PAT-con: the same engine once more with the 'conOnly' measurement basis — pure
+      // consolidated, no standalone fallback. Same row-set identity, same loud guard.
+      const conRows = factorsAt(__OFF, __CFG_CON), conKeys = ${JSON.stringify(CON_ENG_KEYS)};
+      if (conRows.length !== rows.length) throw new Error('con-basis pass row-set mismatch at off=' + __OFF + ': ' + conRows.length + ' vs ' + rows.length);
+      const conByTkr = new Map(); for (const s of conRows) conByTkr.set(s.tkr, s);
       const out = new Array(rows.length);
       for (let i = 0; i < rows.length; i++) {
         const r = rows[i], flags = new Array(keys.length);
@@ -775,7 +807,13 @@ function run(ctx, C) {
           const v = sr ? fieldVal(sr, stdKeys[j]) : null;
           sflags[j] = (v != null && typeof v === 'number' && isFinite(v)) ? 1 : 0;
         }
-        out[i] = [r.sym, flags, r.turnover || 0, (r.ind && r.ind !== 'Other' && r.ind !== 'Unknown') ? 1 : 0, na, sflags];
+        const cr = conByTkr.get(r.tkr);
+        const cflags = new Array(conKeys.length);
+        for (let j = 0; j < conKeys.length; j++) {
+          const v = cr ? fieldVal(cr, conKeys[j]) : null;
+          cflags[j] = (v != null && typeof v === 'number' && isFinite(v)) ? 1 : 0;
+        }
+        out[i] = [r.sym, flags, r.turnover || 0, (r.ind && r.ind !== 'Other' && r.ind !== 'Unknown') ? 1 : 0, na, sflags, cflags];
       }
       return out;
     })()`, ctx);
@@ -788,11 +826,12 @@ function run(ctx, C) {
     const revCols = ['rev', 'op', 'ebit'].map(k => PARAMS.findIndex(p => p.k === k && p.src === 'revop'));
     const BASIS_KEYS = ['revCon', 'revStd', 'patCon', 'patStd'];
     const basisCols = BASIS_KEYS.map(k => PARAMS.findIndex(p => p.k === k && p.src === 'basis'));
-    // PAT-std column positions, in the same family order STD_ENG_KEYS (and so `es`) is built in
+    // PAT-std / PAT-con column positions, in the same family order the flag arrays are built in
     const stdCols = PARAMS.map((p, i) => (p.src === 'engstd' ? i : -1)).filter(i => i >= 0);
+    const conCols = PARAMS.map((p, i) => (p.src === 'engcon' ? i : -1)).filter(i => i >= 0);
 
     // per-row flags for the non-engine families, computed once per row per date
-    const perRow = rows.map(([sym, flags, turnover, indKnown, na, es]) => {
+    const perRow = rows.map(([sym, flags, turnover, indKnown, na, es, ec]) => {
       const rv = [0, 0, 0];
       const ridx = revFor(sym), rmap = revopFor(sym);
       if (ridx && rmap) {
@@ -831,7 +870,7 @@ function run(ctx, C) {
       if (rmap && vStd) { const c = rmap[vStd[1]]; if (c && c[0] != null) bs[1] = 1; }
       if (fqe && vCon) { const q = fqe[vCon[1]]; if (q && q[3] != null) bs[2] = 1; }
       if (fqe && vStd) { const q = fqe[vStd[1]]; if (q && q[1] != null) bs[3] = 1; }
-      return { sym, flags, turnover, indKnown, rv, rvna, na, bs, es };
+      return { sym, flags, turnover, indKnown, rv, rvna, na, bs, es, ec };
     });
 
     for (const u of UNIVERSES) {
@@ -866,6 +905,10 @@ function run(ctx, C) {
         for (let j = 0; j < stdCols.length; j++) {
           if (r.es[j]) cnt[stdCols[j]]++;
           else if (ex) (ex[PARAMS[stdCols[j]].k] ||= []).push(r.sym);   // RAW view — no N/A by design
+        }
+        for (let j = 0; j < conCols.length; j++) {
+          if (r.ec[j]) cnt[conCols[j]]++;
+          else if (ex) (ex[PARAMS[conCols[j]].k] ||= []).push(r.sym);   // RAW view — no N/A by design
         }
       }
       // roll members that never reached factorsAt carry NO parameter at all — they are the Price

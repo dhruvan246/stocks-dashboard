@@ -561,7 +561,10 @@ function needsFund(cfg) { return FUND_FIELDS.has(cfg.sortBy) || (cfg.filters || 
 function dateIntOff(off) { return parseInt(isoOff(off).replace(/-/g, ''), 10); }
 function profitAt(sym, dateInt, basis) {
   const arr = fundFor(sym); if (!arr || !arr.length) return null;
-  const tries = basis === 'std' ? [[1, 2]] : [[3, 4], [1, 2]];   // con falls back to std
+  // 'conOnly' reads the consolidated slots with NO standalone fallback. It is a MEASUREMENT
+  // basis for the coverage matrix (scripts/build_coverage_matrix.js) — no UI offers it and no
+  // saved strategy can carry it, so 'con' (blend) and 'std' behaviour is untouched.
+  const tries = basis === 'std' ? [[1, 2]] : basis === 'conOnly' ? [[3, 4]] : [[3, 4], [1, 2]];   // con falls back to std
   for (const [npIdx, annIdx] of tries) {
     let cur = null;
     // ⚠️ ann must be TRUTHY, not merely non-null: 0 is the "announce date UNKNOWN" sentinel (runbook
@@ -602,7 +605,11 @@ function profitMetrics(sym, dateInt, basis) {
   // this moved CAGR by -10.4pp to +1.4pp over 2020-01..2026-06; 18 unaffected strategies moved by
   // exactly zero. Adopted 2026-08-12 on the user's explicit call, after that measurement.
   let _pmPending = null;
-  const tries = basis === 'std' ? [[1, 2]] : [[3, 4], [1, 2]];
+  // 'conOnly' = consolidated slots, no std fill-in (coverage measurement only — see profitAt).
+  // With a single [[3,4]] try the partial-pending path still behaves: a con pass that answered
+  // yoy but not ttm/accel stashes _pmPending, the loop ends, and the partial con result is
+  // returned — exactly "pure con": the missing fields stay null instead of borrowing std.
+  const tries = basis === 'std' ? [[1, 2]] : basis === 'conOnly' ? [[3, 4]] : [[3, 4], [1, 2]];
   for (const [ni, ai] of tries) {
     // ann > 0, not != null — see profitAt above (0 = date-unknown sentinel, runbook §15/§91).
     let ci = -1; for (let i = arr.length - 1; i >= 0; i--) { if (arr[i][ni] != null && arr[i][ai] > 0 && arr[i][ai] <= dateInt) { ci = i; break; } }
@@ -641,7 +648,8 @@ function profitMetrics(sym, dateInt, basis) {
 // ann > 0, not != null — 0 is the date-unknown sentinel (§15/§91c). (Sync: stock-backtest.html)
 function lastResultDate(sym, dateInt, basis) {
   const arr = fundFor(sym); if (!arr || !arr.length) return null;
-  const tries = basis === 'std' ? [[1, 2]] : [[3, 4], [1, 2]];
+  // 'conOnly': consolidated announce dates only (coverage measurement only — see profitAt)
+  const tries = basis === 'std' ? [[1, 2]] : basis === 'conOnly' ? [[3, 4]] : [[3, 4], [1, 2]];
   let best = null;
   for (const [ni, ai] of tries) {
     for (let i = arr.length - 1; i >= 0; i--) {

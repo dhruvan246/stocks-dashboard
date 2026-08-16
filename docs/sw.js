@@ -6,7 +6,7 @@
  *     requests (the sf-data repo, Supabase, the live-quote Worker) — those stay network-only
  *     so data is always fresh and the cache never bloats.
  * Bump CACHE when the shell asset list changes. */
-const CACHE = 'sw-shell-v95';   // v95: .tscroll — long tables scroll in place under a pinned header (v94: shareholding %% shown at 4dp (§22j) (v93: event-driven SHP rows merged into the engine feed (§22k) )
+const CACHE = 'sw-shell-v96';   // v96: 'conOnly' measurement basis in both engine twins (coverage matrix; inert for strategies) (v95: .tscroll — long tables scroll in place under a pinned header (v94: shareholding %% shown at 4dp (§22j) )
 const SHELL = [
   './', './index.html', './nse-bse-dashboard.html', './stock-backtest.html', './saved-strategies.html',
   './backtest-history.html', './strategy-backtest.html', './all-picks.html', './strategy-mixer.html', './mutual-funds.html', './fii-dii.html',
