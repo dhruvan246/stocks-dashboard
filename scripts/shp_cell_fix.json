@@ -686,6 +686,29 @@
     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 128d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
    }
   },
+  "AMBER": {
+   "2020-03-31": {
+    "cell": [
+     44.02,
+     12.3564,
+     7.2422,
+     7.2216,
+     0.0,
+     "2020-07-15",
+     32779
+    ],
+    "was": [
+     41.76,
+     12.3564,
+     7.2422,
+     7.2216,
+     0.0,
+     "2020-07-15",
+     32779
+    ],
+    "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom"
+   }
+  },
   "AMBICAAGAR": {
    "2019-09-30": {
     "cell": [
@@ -1116,6 +1139,52 @@
      8627
     ],
     "why": "BSE revision 2024-05-13 supersedes stored (sub 2024-04-18); diffs {'prom': [51.41, 59.52], 'dii': [47.86, 39.64]}; corroboration=SITES_BACK_REVISION (revision sweep 2026-08-09)"
+   }
+  },
+  "ARE&M": {
+   "2020-09-30": {
+    "cell": [
+     28.06,
+     18.6334,
+     14.2237,
+     8.7918,
+     1.3837,
+     "2020-12-08",
+     80328
+    ],
+    "was": [
+     28.06,
+     18.6334,
+     14.2237,
+     8.7918,
+     5.03,
+     "2020-12-08",
+     80328
+    ],
+    "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: ins"
+   }
+  },
+  "ARIHANT": {
+   "2020-03-31": {
+    "cell": [
+     42.87,
+     9.5777,
+     0.0,
+     0.0,
+     0.0,
+     "2020-09-15",
+     2327
+    ],
+    "was": [
+     52.45,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     "2020-09-15",
+     2327
+    ],
+    "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom,fii"
    }
   },
   "ARIHANTSUP": {
@@ -1636,6 +1705,29 @@
      15798
     ],
     "why": "AMBIGUOUS cell adjudicated REVISION_RIGHT: fingerprint SAME_SECURITY (local nsh window) + last-word principle.  Diffs {'prom': [30.15, 32.83], 'fii': [6.18, 6.9]} (2026-08-09)"
+   }
+  },
+  "ATCOM": {
+   "2021-06-30": {
+    "cell": [
+     14.1,
+     0.0,
+     1.3019,
+     0.0026,
+     0.0,
+     "2021-07-23",
+     13666
+    ],
+    "was": [
+     17.95,
+     0.0,
+     1.3019,
+     0.0026,
+     0.0,
+     "2021-07-23",
+     13666
+    ],
+    "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom"
    }
   },
   "ATLANTAA": {
@@ -3209,6 +3301,69 @@
     ],
     "why": "BULK STAMP: 8 quarters of this symbol all carry the single submission date 2022-07-25, which is 1577 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
    },
+   "2018-06-30": {
+    "cell": [
+     56.73,
+     0.9513,
+     0.4811,
+     0.0045,
+     0.0838,
+     "2018-08-03",
+     46904
+    ],
+    "was": [
+     55.98,
+     0.9513,
+     0.4811,
+     0.0045,
+     0.0838,
+     "2018-08-03",
+     46904
+    ],
+    "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom"
+   },
+   "2018-09-30": {
+    "cell": [
+     56.73,
+     0.8529,
+     0.5577,
+     0.0045,
+     0.0838,
+     "2018-10-10",
+     47222
+    ],
+    "was": [
+     55.98,
+     0.8529,
+     0.5577,
+     0.0045,
+     0.0838,
+     "2018-10-10",
+     47222
+    ],
+    "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom"
+   },
+   "2018-12-31": {
+    "cell": [
+     56.73,
+     0.6662,
+     0.3672,
+     0.0045,
+     0.0838,
+     "2019-01-11",
+     48015
+    ],
+    "was": [
+     55.98,
+     0.6662,
+     0.3672,
+     0.0045,
+     0.0838,
+     "2019-01-11",
+     48015
+    ],
+    "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom"
+   },
    "2019-03-31": {
     "cell": [
      56.73,
@@ -3387,6 +3542,27 @@
     ],
     "why": "BULK STAMP: 5 quarters of this symbol all carry the single submission date 2022-05-31, which is 1887 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
    },
+   "2017-06-30": {
+    "cell": [
+     46.24,
+     19.7684,
+     15.6875,
+     6.7082,
+     1.1039,
+     "2017-07-15",
+     101935
+    ],
+    "was": [
+     45.75,
+     19.7684,
+     15.6875,
+     6.7082,
+     1.1039,
+     "2017-07-15",
+     101935
+    ],
+    "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom"
+   },
    "2017-09-30": {
     "cell": [
      46.24,
@@ -3408,6 +3584,90 @@
      111037
     ],
     "why": "BULK STAMP: 5 quarters of this symbol all carry the single submission date 2022-05-31, which is 1704 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+   },
+   "2017-12-31": {
+    "cell": [
+     46.24,
+     20.8313,
+     13.2244,
+     7.8243,
+     1.2708,
+     "2018-01-18",
+     116593
+    ],
+    "was": [
+     45.75,
+     20.8313,
+     13.2244,
+     7.8243,
+     1.2708,
+     "2018-01-18",
+     116593
+    ],
+    "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom"
+   },
+   "2018-03-31": {
+    "cell": [
+     46.24,
+     21.354,
+     12.7046,
+     7.4877,
+     1.2797,
+     "2018-04-25",
+     120548
+    ],
+    "was": [
+     45.75,
+     21.354,
+     12.7046,
+     7.4877,
+     1.2797,
+     "2018-04-25",
+     120548
+    ],
+    "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom"
+   },
+   "2018-06-30": {
+    "cell": [
+     46.24,
+     20.1653,
+     12.9332,
+     7.9084,
+     1.3945,
+     "2018-07-19",
+     126813
+    ],
+    "was": [
+     45.75,
+     20.1653,
+     12.9332,
+     7.9084,
+     1.3945,
+     "2018-07-19",
+     126813
+    ],
+    "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom"
+   },
+   "2018-09-30": {
+    "cell": [
+     46.25,
+     20.1941,
+     12.1882,
+     7.0933,
+     1.4924,
+     "2018-10-20",
+     132832
+    ],
+    "was": [
+     45.76,
+     20.1941,
+     12.1882,
+     7.0933,
+     1.4924,
+     "2018-10-20",
+     132832
+    ],
+    "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom"
    },
    "2018-12-31": {
     "cell": [
@@ -3452,6 +3712,153 @@
      142062
     ],
     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 1156d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+   },
+   "2019-06-30": {
+    "cell": [
+     46.25,
+     18.8916,
+     13.4953,
+     7.5091,
+     1.5997,
+     "2019-07-19",
+     146265
+    ],
+    "was": [
+     45.76,
+     18.8916,
+     13.4953,
+     7.5091,
+     1.5997,
+     "2019-07-19",
+     146265
+    ],
+    "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom"
+   },
+   "2019-09-30": {
+    "cell": [
+     46.25,
+     19.1825,
+     13.8958,
+     7.8531,
+     1.5997,
+     "2019-10-18",
+     144115
+    ],
+    "was": [
+     45.76,
+     19.1825,
+     13.8958,
+     7.8531,
+     1.5997,
+     "2019-10-18",
+     144115
+    ],
+    "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom"
+   },
+   "2019-12-31": {
+    "cell": [
+     46.25,
+     20.4876,
+     15.2392,
+     8.3774,
+     1.5997,
+     "2020-01-18",
+     137458
+    ],
+    "was": [
+     45.76,
+     20.4876,
+     15.2392,
+     8.3774,
+     1.5997,
+     "2020-01-18",
+     137458
+    ],
+    "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom"
+   },
+   "2020-03-31": {
+    "cell": [
+     46.25,
+     20.7132,
+     15.7062,
+     8.951,
+     1.5567,
+     "2020-05-13",
+     132757
+    ],
+    "was": [
+     45.76,
+     20.7132,
+     15.7062,
+     8.951,
+     1.5567,
+     "2020-05-13",
+     132757
+    ],
+    "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom"
+   },
+   "2020-06-30": {
+    "cell": [
+     46.25,
+     22.1344,
+     15.0789,
+     8.3712,
+     1.5567,
+     "2020-07-11",
+     141297
+    ],
+    "was": [
+     45.76,
+     22.1344,
+     15.0789,
+     8.3712,
+     1.5567,
+     "2020-07-11",
+     141297
+    ],
+    "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom"
+   },
+   "2020-09-30": {
+    "cell": [
+     46.25,
+     21.9134,
+     11.5158,
+     9.5201,
+     1.4998,
+     "2020-10-20",
+     150263
+    ],
+    "was": [
+     45.76,
+     21.9134,
+     11.5158,
+     9.5201,
+     1.4998,
+     "2020-10-20",
+     150263
+    ],
+    "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom"
+   },
+   "2020-12-31": {
+    "cell": [
+     46.25,
+     23.4637,
+     12.3303,
+     10.6288,
+     1.2235,
+     "2021-01-19",
+     144820
+    ],
+    "was": [
+     45.76,
+     23.4637,
+     12.3303,
+     10.6288,
+     1.2235,
+     "2021-01-19",
+     144820
+    ],
+    "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom"
    },
    "2021-03-31": {
     "cell": [
@@ -4061,6 +4468,27 @@
    }
   },
   "BPL": {
+   "2019-09-30": {
+    "cell": [
+     63.24,
+     0.0265,
+     0.5093,
+     0.0018,
+     0.2919,
+     "2019-10-18",
+     29793
+    ],
+    "was": [
+     63.2,
+     0.0265,
+     0.5093,
+     0.0018,
+     0.2919,
+     "2019-10-18",
+     29793
+    ],
+    "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom"
+   },
    "2023-12-31": {
     "cell": [
      63.13,
@@ -6562,6 +6990,29 @@
      87196
     ],
     "why": "foreign block swallowed by OtherInstitutionsMember (o_other 2.27, no domestic other-institutions residue in the symbol's itemised filings); chain-corroborated <=3pp"
+   }
+  },
+  "EMAMILTD": {
+   "2019-09-30": {
+    "cell": [
+     52.74,
+     11.718,
+     25.5126,
+     21.5932,
+     0.0,
+     "2019-10-24",
+     80464
+    ],
+    "was": [
+     52.71,
+     11.718,
+     25.5126,
+     21.5932,
+     0.0,
+     "2019-10-24",
+     80464
+    ],
+    "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom"
    }
   },
   "EMCO": {
@@ -9422,6 +9873,27 @@
      24852
     ],
     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 152d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+   },
+   "2021-06-30": {
+    "cell": [
+     58.69,
+     2.291,
+     19.23,
+     18.62,
+     0.1332,
+     "2021-08-17",
+     24518
+    ],
+    "was": [
+     58.54,
+     2.291,
+     19.23,
+     18.62,
+     0.1332,
+     "2021-08-17",
+     24518
+    ],
+    "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom"
    }
   },
   "INDOWIND": {
@@ -10434,6 +10906,29 @@
      219218
     ],
     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 133d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+   }
+  },
+  "JPPOWER": {
+   "2021-06-30": {
+    "cell": [
+     26.02,
+     0.58,
+     35.13,
+     0.0,
+     1.4325,
+     "2021-07-09",
+     531829
+    ],
+    "was": [
+     28.26,
+     0.58,
+     35.13,
+     0.0,
+     1.56,
+     "2021-07-09",
+     531829
+    ],
+    "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom,ins"
    }
   },
   "JYOTISTRUC": {
@@ -12857,6 +13352,27 @@
    }
   },
   "NEUEON": {
+   "2021-03-31": {
+    "cell": [
+     37.27,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     "2021-04-20",
+     20767
+    ],
+    "was": [
+     37.8,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     "2021-04-20",
+     20767
+    ],
+    "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom"
+   },
    "2024-03-31": {
     "cell": [
      36.31,
@@ -15716,6 +16232,27 @@
     "why": "BULK STAMP: 3 quarters of this symbol all carry the single submission date 2020-09-29, which is 182 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
    }
   },
+  "SBBJ": {
+   "2015-09-30": {
+    "cell": [
+     75.0713,
+     9.72,
+     6.7,
+     6.69,
+     2.3581,
+     "2015-10-21"
+    ],
+    "was": [
+     74.87,
+     9.72,
+     6.7,
+     6.69,
+     0.0,
+     "2015-10-21"
+    ],
+    "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom,ins"
+   }
+  },
   "SBILIFE": {
    "2018-09-30": {
     "cell": [
@@ -15968,6 +16505,29 @@
     "why": "BSE revision 2024-02-09 supersedes stored (sub 2024-01-19); diffs {'prom': [48.49, 47.71], 'fii': [0.22, 1.82]}; corroboration=NO_SITE_WINDOW (revision sweep 2026-08-09)"
    }
   },
+  "SKIL": {
+   "2022-12-31": {
+    "cell": [
+     52.8,
+     6.8148,
+     0.0,
+     0.0,
+     0.0,
+     "2023-01-12",
+     8642
+    ],
+    "was": [
+     54.68,
+     5.44,
+     0.0,
+     0.0,
+     0.0,
+     "2023-01-12",
+     8642
+    ],
+    "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom,fii"
+   }
+  },
   "SKYGOLD": {
    "2024-03-31": {
     "cell": [
@@ -15990,6 +16550,29 @@
      14436
     ],
     "why": "BSE revision 2024-05-02 supersedes stored (sub 2024-04-15); diffs {'dii': [1.91, 0.0]}; corroboration=SITES_BACK_REVISION (revision sweep 2026-08-09)"
+   }
+  },
+  "SMSPHARMA": {
+   "2020-03-31": {
+    "cell": [
+     67.29,
+     0.5316,
+     0.0,
+     0.0,
+     0.0,
+     "2020-05-16",
+     15747
+    ],
+    "was": [
+     68.69,
+     0.51,
+     0.0,
+     0.0,
+     0.0,
+     "2020-05-16",
+     15747
+    ],
+    "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom,fii"
    }
   },
   "SOFTTECH": {
@@ -19160,6 +19743,29 @@
     "why": "BULK STAMP: 7 quarters of this symbol all carry the single submission date 2023-02-01, which is 124 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
    }
   },
+  "VIDHIING": {
+   "2021-06-30": {
+    "cell": [
+     64.27,
+     0.2205,
+     0.3003,
+     0.0,
+     0.0,
+     "2021-07-22",
+     18943
+    ],
+    "was": [
+     12.22,
+     0.2205,
+     0.3003,
+     0.0,
+     0.0,
+     "2021-07-22",
+     18943
+    ],
+    "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom"
+   }
+  },
   "VIKASLIFE": {
    "2022-03-31": {
     "cell": [
@@ -19342,6 +19948,29 @@
      22998
     ],
     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 178d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+   }
+  },
+  "WAAREEINDO": {
+   "2019-12-31": {
+    "cell": [
+     56.9,
+     0.0511,
+     1.3235,
+     0.0,
+     0.0,
+     "2020-04-03",
+     56869
+    ],
+    "was": [
+     36.89,
+     0.0511,
+     1.3235,
+     0.0,
+     0.0,
+     "2020-04-03",
+     56869
+    ],
+    "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom"
    }
   },
   "WEL": {
