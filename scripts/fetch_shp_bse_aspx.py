@@ -227,12 +227,31 @@ def parse_new(html):
     # 0.0071pp of the printed one. Falls back to the printed pct when a page omits share counts.
     _base = None
     _c = []
+    # A row is only real if its leading cell is a LABEL. _cells() also yields the numeric cells,
+    # so scanning every index produces SHIFTED phantom rows ('32', '23546314') whose columns are
+    # offset by one — some land a plausible <=100 value in the pct slot and silently poison both
+    # the base candidate and the self-check. Anchor on non-numeric labels only.
+    _islabel = lambda i: not re.fullmatch(r'[\d,.]+', cells[i].strip())
     for _i in range(len(cells)):
+        if not _islabel(_i): continue
         _n = row_nums(_i)
-        if len(_n) >= 5 and _n[1] and _n[4] and _n[4] >= 1.0: _c.append((_n[4], _n[1]))
+        # 1.0 <= pct <= 100: _cells() yields numeric cells as row starts too, so an unanchored
+        # scan produces SHIFTED rows whose 'pct' is really a pledged SHARE COUNT. One such
+        # candidate (24,440,172) drove base to 476 and broke every pre-2013 page.
+        if len(_n) >= 5 and _n[1] and _n[4] and 1.0 <= _n[4] <= 100.0: _c.append((_n[4], _n[1]))
     if _c:
         _p_big, _sh_big = max(_c)
-        _base = _sh_big / (_p_big / 100.0)
+        _b = _sh_big / (_p_big / 100.0)
+        # SELF-CHECK, same as parse_old: the inferred base must reproduce EVERY row's printed
+        # %(A+B+C) within 0.02pp. Older Clause-35 pages (pre~2013) carry a DIFFERENT column
+        # layout, so nums[1] is not the share count there and the base comes out absurd —
+        # APOLLOHOSP 2011-03-31 produced prom=(34.07, 8706911.15). The refine gate refused every
+        # one of those, but they showed up as 74% "out of range" refusals in a retry pass, i.e.
+        # a silent loss of reach. Without a reproducible base, use the filer's printed pct.
+        if _b > 0 and all(abs(_n[1] / _b * 100.0 - _n[4]) <= 0.02
+                          for _n in (row_nums(_j) for _j in range(len(cells)) if _islabel(_j))
+                          if len(_n) >= 5 and _n[1] and _n[4] and _n[4] <= 100.0):
+            _base = _b
 
     def pair(nums):
         abc = (nums[1] / _base * 100.0) if (_base and len(nums) >= 2 and nums[1]) else None
@@ -300,12 +319,14 @@ def parse_old(html):
     # SELF-CHECK: the base must reproduce EVERY row's printed pct within 0.02pp, otherwise this
     # page's two columns are not a (shares, pct) pair at all and the printed pct is used unchanged.
     _base = None
-    _rows = [n for n in (_nums_at(i) for i in range(len(cells))) if len(n) >= 2 and n[0] and n[1]]
-    _cand = [(n[1], n[0]) for n in _rows if n[1] >= 1.0]
+    _islabel_o = lambda i: not re.fullmatch(r'[\d,.]+', cells[i].strip())
+    _rows = [n for n in (_nums_at(i) for i in range(len(cells)) if _islabel_o(i))
+             if len(n) >= 2 and n[0] and n[1]]
+    _cand = [(n[1], n[0]) for n in _rows if 1.0 <= n[1] <= 100.0]
     if _cand:
         _p, _s = max(_cand)
         _b = _s / (_p / 100.0)
-        if _b > 0 and all(abs(n[0] / _b * 100.0 - n[1]) <= 0.02 for n in _rows):
+        if _b > 0 and all(abs(n[0] / _b * 100.0 - n[1]) <= 0.02 for n in _rows if n[1] <= 100.0):
             _base = _b
 
     def val_after(rxs, lo=0, hi=None):
