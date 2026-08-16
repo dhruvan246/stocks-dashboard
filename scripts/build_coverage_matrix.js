@@ -708,11 +708,24 @@ function run(ctx, C) {
                   }
                 }
               }
-              let firstQe = 0;
-              for (const q of shp) if (q[0] > 0 && !predQ[q[0]] && (!firstQe || q[0] < firstQe)) firstQe = q[0];
               const ps = String(pq);
               const pqOff = dayOff(ps.slice(0, 4) + '-' + ps.slice(4, 6) + '-' + ps.slice(6, 8));
               const serP = (SERIES[r.tkr] && SERIES[r.tkr].d && SERIES[r.tkr].d.length) ? SERIES[r.tkr].d[0] : null;
+              // …and a PRE-LISTING row pollutes "earliest" the same way an alias does. VALIANTORG
+              // holds an shp row dated 2019-05-04 while it first traded 2020-10-05 — a pre-IPO/SAST
+              // disclosure — so a naive min() returned 2019 and the rule refused to fire even though
+              // the tape says the company was not listed at the Sep-2020 prior quarter and no
+              // shareholding pattern could exist for it. Same §99 gate the profit family applies to
+              // announce dates: a row dated before the first traded bar is not this listed entity's
+              // filing history. Both exclusions are about the SAME question — is this row ours, now?
+              const ownRow = (q) => {
+                if (!(q > 0) || predQ[q]) return false;
+                if (serP == null) return true;
+                const qs = String(q);
+                return dayOff(qs.slice(0, 4) + '-' + qs.slice(4, 6) + '-' + qs.slice(6, 8)) >= serP;
+              };
+              let firstQe = 0;
+              for (const q of shp) if (ownRow(q[0]) && (!firstQe || q[0] < firstQe)) firstQe = q[0];
               // Second reader, alias-aware: FUND_ALIAS bridges a predecessor's tape into a merged
               // entity's ticker (DHFL/DEWANHOUS → PIRAMALFIN), so for those the series start is the
               // OLD company's 1990s bar and the tape can never confirm a fresh listing. The SHP
