@@ -3632,6 +3632,36 @@ firing on zero of its intended targets is visible immediately.
 - **Diff EVERY parameter and treat any INCREASE as a stop**, not just the one you aimed at:
   `regressions = [k for k, d in deltas.items() if d > 0]` must be empty. A fill that trades cells
   between families nets out to far less than it appears to.
+- **★ THE COUNT THAT MOVES IS NOT ALWAYS THE HOLE COUNT.** Filling a cell the N/A ledger already
+  covered leaves the headline total UNCHANGED — the cell was never counted as a hole. IOB's 2021
+  fills moved nothing on the total and moved exactly what mattered underneath: `profitYoyCon`
+  covered +37 / N/A −9, `profitTTMCon` +39/−8, `compositeCon` +39/−8, `profitAccelCon` +42/−9.
+  Measure covered-vs-N/A for any fill that lands inside an adjudicated window, or a real ~160-cell
+  improvement reads as "no effect".
+
+**1c. ★★★ A HEAL THAT IS NOT PINNED IS REVERTED THE SAME NIGHT** (added 2026-08-17, con-triad
+campaign). `apply_owners_full.py` runs nightly and sets `npCon` from `scripts/_reattr_owners.json`
+— built from the same XBRL, so **it carries the identical wrong number**. Measured: the cache held
+FDC|20190630 = 55.27 (comprehensive income, not PAT) and IPCALAB|20190331 = 109.47 (a copy of
+standalone). Cells listed in `scripts/owners_basis_heals.json` (`SYM|qe|patC` → `{"owners": v}`)
+outrank it — the same precedence that saved NUCLEUS in §71c.
+- **Prove the pin, don't assume it.** Inject the wrong value back, run the applier, and require it
+  to print `1 from con_copy_heals`, restore your value, and leave the file byte-identical. Both
+  pins added this session were verified that way; one of them (DBL) turned out to need no cache
+  defence at all, and the other (FDC) would have been silently undone by 21:15 the same night.
+- **The cache's earliest key per symbol IS the convention boundary.** Every stored con cell OLDER
+  than it still holds the raw TOTAL row while newer ones hold owners — EXIDEIND (cache starts
+  20190930; its three older cells were total-basis) and BHEL (cache holds only 20190930, the one
+  owners cell in the series). That makes the mixed-convention defect *predictable* rather than
+  something you stumble on: check the boundary first, then read only the cells older than it.
+- **The twins are NOT mirrors.** 4,166 con cells exist only in `docs/sf_fundamentals.json`
+  (`update_fundamentals.py` and `apply_owners_full.py` both write DOCS only). A writer must accept
+  an empty twin, still write both, and abort on any unexpected third value.
+- **A screen finds defects; it does not name their class.** The annual-in-quarter-slot screen
+  (con/std > 2.5 AND con ≈ the FY standalone sum) produced 15 candidates. FDC was a true
+  annual-in-slot; HEG was flagged correctly as WRONG but was not an annual at all — 2581.58 matches
+  nothing in any HEG filing, and the true Q4FY19 (482.27) came from the FY20 audited comparative.
+  Read the filing before writing the class into a ledger, or the ledger inherits the screen's guess.
 
 **2. Blast radius — everything else that uses what you touched.**
 - `theme.js` / `theme.css` / nav / footer / tiles → **all pages**; spot-check ≥3 (home, a table page, a chart page).

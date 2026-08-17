@@ -9,7 +9,7 @@
   "2026-08-09 second pass: ATUL FY21+FY22 closed out (Jun-20, Mar-21, Jun-21, Sep-21, Dec-21). SADBHAV 2020-03-31 was RE-CHECKED and is CORRECT as stored: the Jun-2020 filing prints Mar-20 period 1280.78 and NCI 394.14 -> owners 886.64, and FY20 owners -8.07 + -15.94 + -69.79 + 886.63 = 792.83 exactly as printed. The value only looked wrong because it is a very large genuine one-off -- the RENUKA lesson (runbook \u00a769c).",
   "2026-08-09 third pass: the named fund-vs-revop cells (ATUL Sep-25, SADBHAV Dec-20, RENUKA Dec-20 +Mar-21). Measuring them found sf_fundamentals and sf_revop disagree on 1,372 of 43,731 populated con-PAT cells (3.14%); the 603 where revop is exactly 0.0 against a real fundamentals value were resynced, the 716 genuine disagreements and 15 fundamentals==0 cells are NOT touched. build_discovery's TTM P/E was reading the divergent mirror. \u00a770."
  ],
- "generated": "2026-08-17 20:35 IST",
+ "generated": "2026-08-17 21:10 IST",
  "cells": {
   "ATUL|20220331|patC": {
    "period": 136.56,
@@ -642,6 +642,342 @@
    "source": "IOB Q2FY23 CONSOLIDATED results (BSE, 2022-11-05) p3, preceding-quarter column 30.06.2022",
    "identity": "9M Dec-21 con 1,15,746 lakhs (Q3FY23 filing) = H1 Sep-21 70,618 (Q2FY23 filing) + Dec-21 45,128 (Q3FY23) \u2014 EXACT, and the two subtotals come from different filings. Jun-21 = H1 70,618 - Sep-21 37,651 = 32,967. MoneyControl's independent con series for these three quarters (329 / 376 / 451) matches all three to its rounding.",
    "when": "2026-08-17 20:35 IST"
+  },
+  "FEDERALBNK|20181231|patC": {
+   "owners": 339.8,
+   "stored_before": null,
+   "note": "owners 339.80. Components printed on the same page: row 14 Net Profit for the period 34,089, row 15 Minority interest 136, row 16 Share in Profit of Associates 27 -> 34,089 - 136 + 27 = 33,980, arithmetic verified. Total-before-MI would have been 340.89; owners is the series convention. Read by VISION from a rendered scan (this filing has no usable text layer, pages 2-12 are 0-char images). The auditor's report on p7 of the same filing states the Dec-2018 consolidated comparatives were approved by the Board but not reviewed, 'since the requirement of submission of quarterly consolidated financial results has become mandatory only from 1 April 2019' - the structural reason this cell was empty.",
+   "source": "Federal Bank Q3FY20 consolidated unaudited results (NSE filingDate 2020-01-27), PDF page 10, column 'Quarter ended 31.12.2018', row 17 'Consolidated Net Profit of the group' = 33,980 (Rs in Lakhs) -> 339.80 cr",
+   "identity": "All figures row 17, lakhs->crore. (a) CROSS-FILING H1+Q3=9M: H1 FY19 = 55,356 lakhs = 553.56 (printed in the Q2FY20 filing) + Dec-2018 quarter 33,980 = 339.80 (printed in the Q3FY20 filing) = 893.36 == the 9M-FY19 column 89,336 printed in the Q3FY20 filing -> closes EXACTLY to the paisa. (b) 9M+Q4=FY: 9M FY19 893.36 + Mar-2019 quarter 422.92 = 1316.28 == FY19 annual 131,628 lakhs, which is printed identically in all four filings read (Q1FY20, Q2FY20, Q3FY20, Q4FY20) -> closes EXACTLY. (c) four-quarter sum: Jun-18 272.94 + Sep-18 280.61 + Dec-18 339.80 + Mar-19 422.92 = 1316.27 vs printed FY19 1316.28, a 0.01 cr residue which is fully explained filer-side: the associates line rounds 169 + 130 = 299 lakhs but the printed H1 associates figure is 300 lakhs. Both clean subtotal chains (a) and (b) close to the paisa and neither of the two cells written is derived - both are printed quarter columns.",
+   "when": "2026-08-17 20:45 IST"
+  },
+  "FEDERALBNK|20190331|patC": {
+   "owners": 422.92,
+   "stored_before": null,
+   "note": "owners 422.92. Components (Q1FY20 page 10): row 14 39,107, row 15 Minority interest 44, row 16 Associates 3,229 -> 39,107 - 44 + 3,229 = 42,292, arithmetic verified; the Q4FY20 page 16 prints the same three components. TWO INDEPENDENT FILINGS agree to the rupee. ANN DATE: the earliest public printing I measured is the Q1FY20 filing of 2019-09-09, NOT the Q4FY20 filing of 2020-06-03 - using the later date would understate how early this was knowable, using anything earlier would be look-ahead. 2019-09-09 is also exactly the stored conAnnDate of the 20190630 cell that comes from the same filing, so the date convention matches the existing series. NSE has no consolidated filing for FEDERALBNK with toDate <= 20190331 at all (first consolidated row is toDate 20190630), so no earlier printing exists on that route.",
+   "source": "Federal Bank Q1FY20 consolidated unaudited results (NSE filingDate 2019-09-09), PDF page 10, column 'Quarter ended 31.03.2019 (Refer Note 13 below)', row 17 'Consolidated Net Profit of the group' = 42,292 (Rs in Lakhs) -> 422.92 cr. Reprinted identically as 42,292 in the Q4FY20 audited consolidated results (filed 2020-06-03) page 16, column 'Quarter ended 31.03.2019'.",
+   "identity": "All figures row 17, lakhs->crore. (a) CROSS-FILING H1+Q3=9M: H1 FY19 = 55,356 lakhs = 553.56 (printed in the Q2FY20 filing) + Dec-2018 quarter 33,980 = 339.80 (printed in the Q3FY20 filing) = 893.36 == the 9M-FY19 column 89,336 printed in the Q3FY20 filing -> closes EXACTLY to the paisa. (b) 9M+Q4=FY: 9M FY19 893.36 + Mar-2019 quarter 422.92 = 1316.28 == FY19 annual 131,628 lakhs, which is printed identically in all four filings read (Q1FY20, Q2FY20, Q3FY20, Q4FY20) -> closes EXACTLY. (c) four-quarter sum: Jun-18 272.94 + Sep-18 280.61 + Dec-18 339.80 + Mar-19 422.92 = 1316.27 vs printed FY19 1316.28, a 0.01 cr residue which is fully explained filer-side: the associates line rounds 169 + 130 = 299 lakhs but the printed H1 associates figure is 300 lakhs. Both clean subtotal chains (a) and (b) close to the paisa and neither of the two cells written is derived - both are printed quarter columns.",
+   "when": "2026-08-17 20:45 IST"
+  },
+  "ASHOKA|20180930|patC": {
+   "owners": -2.48,
+   "stored_before": null,
+   "note": "-247.77 lakh / 100 = -2.4777 -> round(-2.4777,2) = -2.48. Total for that column is (369.37) = -3.69 with NCI (121.60). Filing note 6 flags that the Sep-2018 comparative and the H1FY18-19 figures were approved by the Board but not subjected to limited review by the auditors - normal for a pre-mandate consolidated comparative; the FY19 identity closes on it exactly. CAVEAT on the announce date: 20191114 is the NSE filingDate of the filing actually read. Stored con for Dec-2018 carries ann 20190201, implying a consolidated Q3FY19 result existed off-NSE (NSE lists no consolidated filing for 20181231) whose Sep-2018 comparative column would have made this value public earlier. That earlier filing was NOT read, so the conservative verified date is used - it is late, never look-ahead.",
+   "source": "ASHOKA Q2FY20 unaudited consolidated financial results (filed 2019-11-14) p11, column 'Quarter Ended 30-Sep-18', row 'Profit / (Loss) for the year attributable to: Owners of the Group' = (247.77) (Rs In Lakh)",
+   "identity": "FY19 annual owners (Year Ended 31-Mar-19) = -3,346.02 lakh = -33.46 cr. Stored FY19 con quarters + this cell: -5.02 (Jun-18) + -2.48 (Sep-18) + -15.72 (Dec-18) + -10.24 (Mar-19) = -33.46 -> closes EXACTLY. Half-year cross-check in the same table: H1FY19 owners -750.17 lakh = -502.40 (Jun-18) + -247.77 (Sep-18) -> exact in lakhs.",
+   "when": "2026-08-17 20:47 IST"
+  },
+  "BAJAJELEC|20190331|patC": {
+   "owners": 24.73,
+   "stored_before": null,
+   "note": "2,473 lakh / 100 = 24.73 cr. Total for that column is 2,308 = 23.08 with NCI (165). Announce date VERIFIED not assumed: the consolidated FY19 annual filing (filed 2019-05-24) was fetched and read - it presents Consolidated as 'Year Ended' columns ONLY, with no consolidated quarter column (standalone quarters only), so the Mar-2019 consolidated QUARTER first became public in the Q4FY20 filing on 2020-06-20.",
+   "source": "BAJAJELEC consolidated financial results for the quarter and year ended 31st March 2020 (filed 2020-06-20) p17, column 'Quarter ended 31-Mar-19 (Unaudited)', row 12 'Net Profit /(Loss) attributable to: - Owners' = 2,473 (Rs. In Lakhs)",
+   "identity": "REPORTED AND DOES NOT CLOSE - and the failure is proven to sit outside this cell. FY19 annual owners = 15,640 lakh = 156.40 cr, printed identically in the FY19 audited consolidated filing (2019-05-24, total 15,358 / owners 15,640 / NCI (282)) and in the FY20 comparative column (same three numbers), so FY19 was NOT restated. That fixes 9M FY19 owners at 15,640 - 2,473 = 13,167 lakh = 131.67 cr. Stored Jun-18 40.14 + Sep-18 30.21 + Dec-18 68.12 = 138.47, which is 6.80 cr too high. Per the protocol only the PRINTED quarter column is written and nothing is derived through the broken subtotal; the 6.80 cr gap belongs to one or more of the FY19 Q1-Q3 cells and is reported in refusals_D.json rather than acted on (a failing identity does not name the guilty cell).",
+   "when": "2026-08-17 20:47 IST"
+  },
+  "BOMDYEING|20190331|patC": {
+   "owners": 1201.06,
+   "stored_before": null,
+   "note": "statement is in crore, no conversion. Total for that column = 1,201.06 + (8.50) NCI = 1,192.56. Announce date VERIFIED not merely assumed: the FY19 consolidated annual filing (filed 2019-05-09) was fetched and read - it prints Consolidated as 'Year Ended' columns ONLY, with no consolidated quarter column, so the Mar-2019 consolidated QUARTER first became public in the Q4FY20 filing on 2020-06-10. The auditor's report in that filing states the Mar-2020 and corresponding prior-year quarter figures are balancing figures between the audited full year and the published nine-month figures.",
+   "source": "BOMDYEING Q4FY20 statement of audited financial results (filed 2020-06-10) p14, Consolidated / Quarter Ended March 31 2019 (Audited), row i 'Net Profit /(Loss) attributable to: a. Owners of the Company' = 1,201.06 (Rs In crore)",
+   "identity": "FY19 consolidated owners (Year Ended March 31 2019) = 1,241.72 cr. Stored FY19 con quarters + this cell: -93.70 (Jun-18) + 324.51 (Sep-18) + -190.15 (Dec-18) + 1,201.06 (Mar-19) = 1,241.72 -> closes EXACTLY to the paisa. That 1,241.72 is independently printed in TWO filings: the FY19 audited results (filed 2019-05-09) and the FY20 comparative (filed 2020-06-10), so it was never restated. FY20 check: 27.65 + 89.20 + 162.42 + 48.57 = 327.84 vs printed 327.83, a 1-paisa artefact of rounding each quarter to 2dp.",
+   "when": "2026-08-17 20:47 IST"
+  },
+  "CANBK|20180930|patC": {
+   "owners": 367.92,
+   "stored_before": null,
+   "note": "owners 367.92. Components printed in the same column: row 14 Net Profit for the period 356.55, row 15 Share of Earnings in Associates 36.94, row 16 Minority Interest 25.57 -> 356.55 + 36.94 - 25.57 = 367.92, arithmetic verified. Total-before-MI would have been 356.55. Sits inside the exact cross-filing H1 identity: 340.68 + 367.92 = 708.60 = printed H1 FY19. ann = the NSE filingDate of the Q2FY20 filing, which is also exactly the stored conAnnDate of the 20190930 cell that comes from the same filing. This is the earliest printing: the Q1FY20 filing (2019-08-05) prints Jun-2018, Mar-2019 and Jun-2019 but not Sep-2018.",
+   "source": "Canara Bank Q2FY20 reviewed results (NSE filingDate 2019-11-20), PDF page 2, CONSOLIDATED block, column 'QUARTER ENDED 30.09.2018 (UNAUDITED)', row 17 'Net Profit (+)/Loss(-) after Minority Interest (14+15-16)' = 367.92 (Rs in Crore)",
+   "identity": "All figures row 17, crore. (a) CROSS-FILING H1: Jun-2018 340.68 (printed in the Q1FY20 filing) + Sep-2018 367.92 (printed in the Q2FY20 filing) = 708.60 == the H1-FY19 column printed in the Q2FY20 filing -> EXACT. (b) CROSS-FILING 9M: H1 FY19 708.60 (Q2FY20 filing) + Dec-2018 384.57 (Q3FY20 filing) = 1093.17 == the 9M-FY19 column printed in the Q3FY20 filing -> EXACT to the paisa. (c) FY CLOSE FAILS BY 0.04: 9M FY19 1093.17 + Mar-2019 -491.36 = 601.81 vs the printed FY19 annual 601.85 - a 4-lakh filer-side residue. It decomposes as row14 -0.08 (9M 1027.77 + printed Mar-19 -480.71 = 547.06 vs printed FY19 547.14) and row16 minority -0.04 (9M 58.19 + printed 35.97 = 94.16 vs printed FY19 94.20), with the associates line closing exactly (123.59 + 25.32 = 148.91). CONTROL: the identical test one year later closes PERFECTLY - 9M FY20 1223.55 + Mar-2020 -3209.98 = -1986.43 == printed FY20 -1986.43 - so the method is sound and the residue is specific to the FY19 comparative columns. Per protocol gate 3 I therefore write ONLY printed quarter columns (all three cells below are printed columns, none is derived) and derive nothing through Mar-2019.",
+   "when": "2026-08-17 20:47 IST"
+  },
+  "CANBK|20181231|patC": {
+   "owners": 384.57,
+   "stored_before": null,
+   "note": "owners 384.57. Components: row 14 357.64, row 15 Associates 44.58, row 16 Minority Interest 17.65 -> 357.64 + 44.58 - 17.65 = 384.57, arithmetic verified. Total-before-MI would have been 357.64. Pinned by the exact cross-filing 9M identity: H1 FY19 708.60 (from the Q2FY20 filing) + 384.57 = 1093.17 = the 9M FY19 column printed in this filing. ann = NSE filingDate of the Q3FY20 filing, matching the stored conAnnDate of the 20191231 cell from the same filing. Earliest printing: Dec-2018 appears in no earlier consolidated filing.",
+   "source": "Canara Bank Q3FY20 reviewed results (NSE filingDate 2020-02-20), PDF page 2, CONSOLIDATED block, column 'QUARTER ENDED 31.12.2018 (UNAUDITED)', row 17 'Net Profit (+)/Loss(-) after Minority Interest (14+15-16)' = 384.57 (Rs in Crore)",
+   "identity": "All figures row 17, crore. (a) CROSS-FILING H1: Jun-2018 340.68 (printed in the Q1FY20 filing) + Sep-2018 367.92 (printed in the Q2FY20 filing) = 708.60 == the H1-FY19 column printed in the Q2FY20 filing -> EXACT. (b) CROSS-FILING 9M: H1 FY19 708.60 (Q2FY20 filing) + Dec-2018 384.57 (Q3FY20 filing) = 1093.17 == the 9M-FY19 column printed in the Q3FY20 filing -> EXACT to the paisa. (c) FY CLOSE FAILS BY 0.04: 9M FY19 1093.17 + Mar-2019 -491.36 = 601.81 vs the printed FY19 annual 601.85 - a 4-lakh filer-side residue. It decomposes as row14 -0.08 (9M 1027.77 + printed Mar-19 -480.71 = 547.06 vs printed FY19 547.14) and row16 minority -0.04 (9M 58.19 + printed 35.97 = 94.16 vs printed FY19 94.20), with the associates line closing exactly (123.59 + 25.32 = 148.91). CONTROL: the identical test one year later closes PERFECTLY - 9M FY20 1223.55 + Mar-2020 -3209.98 = -1986.43 == printed FY20 -1986.43 - so the method is sound and the residue is specific to the FY19 comparative columns. Per protocol gate 3 I therefore write ONLY printed quarter columns (all three cells below are printed columns, none is derived) and derive nothing through Mar-2019.",
+   "when": "2026-08-17 20:47 IST"
+  },
+  "CANBK|20190331|patC": {
+   "owners": -491.36,
+   "stored_before": null,
+   "note": "owners -491.36, a loss. Components, identical in both filings: row 14 -480.71, row 15 Associates 25.32, row 16 Minority Interest 35.97 -> -480.71 + 25.32 - 35.97 = -491.36, arithmetic verified. TWO INDEPENDENT FILINGS eleven months apart agree to the paisa. This is a PRINTED column, not derived - which matters because the FY19 year-close carries a 0.04 cr filer-side residue (see identity note (c)); deriving Mar-2019 from 601.85 - 1093.17 would have given -491.32 and I did NOT use that. ANN DATE: earliest measured printing is the Q1FY20 filing of 2019-08-05, not the Q4FY20 filing of 2020-07-16; 2019-08-05 is also exactly the stored conAnnDate of the 20190630 cell from that same filing. NSE lists no consolidated CANBK filing with toDate <= 20190331 (first consolidated row is toDate 20190630), so no earlier printing exists on that route.",
+   "source": "Canara Bank Q1FY20 reviewed results (NSE filingDate 2019-08-05), PDF page 2, CONSOLIDATED block, column 'QUARTER ENDED 31.03.2019 (UNAUDITED)', row 17 = (491.36) (Rs in Crore). Reprinted identically as (491.36) in the Q4FY20 audited results (filed 2020-07-16) page 4, column 'QUARTER ENDED 31.03.2019 (UNAUDITED)'.",
+   "identity": "All figures row 17, crore. (a) CROSS-FILING H1: Jun-2018 340.68 (printed in the Q1FY20 filing) + Sep-2018 367.92 (printed in the Q2FY20 filing) = 708.60 == the H1-FY19 column printed in the Q2FY20 filing -> EXACT. (b) CROSS-FILING 9M: H1 FY19 708.60 (Q2FY20 filing) + Dec-2018 384.57 (Q3FY20 filing) = 1093.17 == the 9M-FY19 column printed in the Q3FY20 filing -> EXACT to the paisa. (c) FY CLOSE FAILS BY 0.04: 9M FY19 1093.17 + Mar-2019 -491.36 = 601.81 vs the printed FY19 annual 601.85 - a 4-lakh filer-side residue. It decomposes as row14 -0.08 (9M 1027.77 + printed Mar-19 -480.71 = 547.06 vs printed FY19 547.14) and row16 minority -0.04 (9M 58.19 + printed 35.97 = 94.16 vs printed FY19 94.20), with the associates line closing exactly (123.59 + 25.32 = 148.91). CONTROL: the identical test one year later closes PERFECTLY - 9M FY20 1223.55 + Mar-2020 -3209.98 = -1986.43 == printed FY20 -1986.43 - so the method is sound and the residue is specific to the FY19 comparative columns. Per protocol gate 3 I therefore write ONLY printed quarter columns (all three cells below are printed columns, none is derived) and derive nothing through Mar-2019.",
+   "when": "2026-08-17 20:47 IST"
+  },
+  "MAZDOCK|20191231|patC": {
+   "owners": 208.72,
+   "stored_before": null,
+   "note": "20,872 lakh / 100 = 208.72 cr. NB there is currently NO ROW AT ALL for qe=20191231 in sf_fundamentals - MAZDOCK's series starts at 20200331 - so applying this creates a new row whose stdPAT stays null. The standalone Dec-2019 figure is printed on p3 of the same PDF (btD_MAZDOCK_20201231.pdf) if the row should be completed. MAZDOCK listed Oct-2020, so no as-filed Dec-2019 result exists; this comparative is the primary public source.",
+   "source": "MAZDOCK Q3FY21 consolidated statement (filed 2021-02-12) p2, column 'Quarter Ended December 31 2019', row 11 Profit for the year = 20,872 (Rs in lakhs)",
+   "identity": "cannot be closed for FY20 from stored data: MAZDOCK's stored series begins at 20200331, so Jun-2019 and Sep-2019 have no stored con to sum against the printed 9M FY20 of 39,636 lakh (= 396.36 cr). What IS printed and used here is the Dec-2019 quarter column itself, not a derived residue. ANOMALY on a DIFFERENT cell: FY20 annual 47,706 - 9M FY20 39,636 = 8,070 lakh = 80.70 cr for the Mar-2020 quarter, but stored 20200331 con = 74.68 (gap 6.02 cr). Not touched, reported in refusals_D.json.",
+   "when": "2026-08-17 20:47 IST"
+  },
+  "ROUTE|20191231|patC": {
+   "owners": 18.77,
+   "stored_before": null,
+   "note": "1,877.25 lakh / 100 = 18.7725 -> 18.77. Total for the same column is 1,717.80 = 17.18 (NCI -159.45); owners is written because the stored series is owners on every cell except the defective Dec-2020. Filing note 3: the Dec-2019 quarter is 'compiled by the management in accordance with Ind AS, which have not been subjected to review or audit by statutory auditors' - it is nonetheless a printed, board-approved column in an exchange filing, and Route Mobile listed only 2020-09-21 so no as-filed Dec-2019 result exists.",
+   "source": "ROUTE Q3FY21 consolidated statement (filed 2021-01-28) p6, column 'Quarter ended 31.12.2019', row 10 Profit attributable to: Owners of the Holding Company = 1,877.25 (Rs in lakhs)",
+   "identity": "9M FY21 owners printed 9,795.15 lakh; with owners for all three quarters 27.09 + 32.87 + 37.99 = 97.95 = 9,795.15/100 -> closes EXACTLY. With the stored (total-row) Dec-2020 37.62 it gives 97.58 and does NOT close - which is what pins the convention as owners. For the target's own year: FY20 annual owners 5,826.99 - 9M FY20 owners 4,475.90 = 1,351.09 = 13.51 == stored Mar-2020 EXACT.",
+   "when": "2026-08-17 20:47 IST"
+  },
+  "SHREECEM|20180930|patC": {
+   "owners": 60.42,
+   "stored_before": null,
+   "note": "statement is in crore, no conversion. Total for that column is 63.77 with NCI 3.35 (60.42 + 3.35 = 63.77). CAVEAT on the announce date: 20191019 is the NSE filingDate of the filing actually read. Stored con for Dec-2018 carries ann 20190123, implying a consolidated Q3FY19 result existed off-NSE (NSE lists no consolidated filing for 20180930 or 20181231) whose Sep-2018 comparative column would have made this value public earlier. That filing was NOT read, so the conservative verified date is used - late, never look-ahead.",
+   "source": "SHREECEM Q2FY20 statement of consolidated unaudited financial results (filed 2019-10-19) p11, column 'Quarter ended 30.09.2018', row 'Profit/(Loss) attributable to: Owners of the Company' = 60.42 (Rs. in Crores)",
+   "identity": "Six Months Ended 30-Sep-2018 owners = 339.78 cr (printed). Stored Jun-2018 con 279.36 + this cell 60.42 = 339.78 -> closes EXACTLY to the paisa. Same-table control: H1FY20 owners 690.29 = 379.67 + 310.62, also exact.",
+   "when": "2026-08-17 20:47 IST"
+  },
+  "SUMICHEM|20191231|patC": {
+   "owners": 0.68,
+   "stored_before": 0.0,
+   "note": "6.78 million = 0.678 cr -> round(0.678,2) = 0.68. Printed identically in two independent filings 12 months apart. Announce date unchanged (20200213) - the value was already public on the original filing date; only the value is corrected.",
+   "source": "SUMICHEM Q3FY20 consolidated statement (filed 2020-02-13) p7, column 'Quarter Ended 31st December 2019', row 9 Net Profit After Tax = 6.78 (Rs in million); reconfirmed as the comparative column of the Q3FY21 consolidated statement (filed 2021-02-05) p5, identical 6.78",
+   "identity": "Q3FY20 filing: 9M FY20 = 1,817.89 mn = 181.79 cr; stored Jun-19 53.36 + stored Sep-19 127.75 + this cell 0.68 = 181.79 -> closes exactly. The 9M FY20 figure is printed IDENTICALLY (1,817.89 mn) in both the as-filed Q3FY20 and the Q3FY21 comparative, so the FY20 nine-month aggregate was never restated. CAVEAT (other cells, not this one): the Q3FY20 filing restates Sep-2019 to 1,298.31 mn = 129.83 vs stored 127.75, and implies Jun-2019 = 512.80 mn = 51.28 vs stored 53.36 - i.e. 2.08 cr shifted Q1->Q2 on the Excel Crop Care amalgamation, with H1 unchanged at 181.11. Not touched.",
+   "when": "2026-08-17 20:47 IST"
+  },
+  "TATACOFFEE|20190630|patC": {
+   "owners": 22.14,
+   "stored_before": null,
+   "note": "2214 lakh / 100 = 22.14 cr. Total for that column is 3,484 = 34.84 with NCI 1,270. IMPORTANT on the announce date: unlike most cells in this campaign this quarter WAS filed consolidated in its own right - NSE carries a Consolidated row for toDate 30-Jun-2019 filed 2019-07-26 - so ann is 20190726, twelve months earlier than the comparative-route date of 20200729 would have been. Verified by fetching and reading that original filing, not assumed.",
+   "source": "TATACOFFEE statement of consolidated financial results for the quarter ended June 30 2019 (filed 2019-07-26) p5, column 'Quarter ended June 30, 2019 (UNAUDITED)', row 8 'Net Profit/(Loss) attributable to: - Shareholders of the Company (B)' = 2214 (Rs. Lakh); the identical 2214 appears as the Jun-2019 comparative column of the Q1FY21 filing (filed 2020-07-29) p7",
+   "identity": "TWO full-year closures. FY20 annual owners 8,240 lakh = 82.40: this cell 22.14 + stored Sep-19 25.50 + stored Dec-19 24.90 + stored Mar-20 9.86 = 82.40 EXACT. FY19 annual owners 6,877 lakh = 68.77: Jun-18 21.63 (printed in the same original filing, currently an empty cell) + stored Sep-18 25.42 + stored Dec-18 11.23 + stored Mar-19 10.49 = 68.77 EXACT.",
+   "when": "2026-08-17 20:47 IST"
+  },
+  "UNIONBANK|20190331|patC": {
+   "owners": -3331.45,
+   "stored_before": null,
+   "note": "-3331.45 cr, a large loss quarter. No non-controlling interest exists (row J is a dash in every consolidated column), so this total IS the owners figure - stated from the printed statement, not assumed. Components, identical in both filings: row H Net Profit from Ordinary activity after tax -333,262, row I extraordinary nil, row J Minority Interest nil, row K Share of Profit in Associate 117 -> -333,262 + 117 = -333,145, arithmetic verified. The whole Mar-2019 consolidated column cross-checks between the two filings on the other lines too (Interest Earned 8,38,699; Total Income 9,92,053; Operating Profit 1,76,357; Provisions 5,78,345; PBT (401988); Tax (68726) - all identical). ANN DATE: earliest measured printing is the Q1FY20 filing, NSE filingDate 2019-09-09, which is also exactly the stored conAnnDate of the 20190630 cell from that same filing; the Q4FY20 date 2020-07-19 would be unnecessarily late. NSE lists no consolidated UNIONBANK filing with toDate <= 20190331 (first consolidated row is toDate 20190630), so no earlier printing exists on that route. Read by VISION - this filing has no usable text layer (all 12 pages are 0-char scans).",
+   "source": "Union Bank of India Q1FY20 reviewed results (NSE filingDate 2019-09-09), PDF page 2, CONSOLIDATED block, column 'Quarter Ended 31.03.2019 (Unaudited) (Refer Note 2)', row L 'Net Profit/(Loss) for the period (H-I-J+K)' = (333145) (Rs In Lacs) -> -3331.45 cr. Reprinted identically as (3,33,145) in the Q4FY20 audited results (filed 2020-07-19) page 2, column 'Quarter Ended 31.03.2019 (Unaudited) (Refer Note 3)'.",
+   "identity": "FOUR-QUARTER YEAR CLOSE, EXACT TO THE PAISA, and it uses three already-stored cells plus the new one: stored Jun-2018 140.50 + stored Sep-2018 85.63 + stored Dec-2018 182.97 + new Mar-2019 -3331.45 = -2922.35, which is exactly the printed FY19 consolidated annual (-2,92,235 lacs), a figure printed identically in BOTH the Q1FY20 filing and the Q4FY20 filing. Equivalently, note 2 of the Q1FY20 filing states 'The figures of the last quarter in each of the financial years are the balancing figures between audited figures in respect of the full financial year and the published year to date figures upto the end of third quarter' - so Mar-2019 is by construction FY19 minus 9M FY19, and FY19 -2922.35 minus 9M FY19 (140.50+85.63+182.97 = 409.10) = -3331.45, matching the printed column exactly. No residue anywhere in this chain. Within-column arithmetic also verified: row H -333,262 + row K associates 117 (row J minority nil) = row L -333,145.",
+   "when": "2026-08-17 20:47 IST"
+  },
+  "UTIAMC|20191231|patC": {
+   "owners": 84.12,
+   "stored_before": null,
+   "note": "statement is already in crore, no conversion. Total 'Profit for the year' for the same column is 89.75 with NCI 5.63 (84.12 + 5.63 = 89.75). Column is marked Reviewed. UTI AMC listed 2020-10-12, so no as-filed Dec-2019 exchange result exists.",
+   "source": "UTIAMC Q3FY21 consolidated statement (filed 2021-01-30) p8, column 'Quarter Ended December 31 2019' (Reviewed), row 6 Owners of the Company = 84.12 (Rs. in Crore)",
+   "identity": "FY20 annual owners 271.46 - 9M FY20 owners 296.94 = -25.48 = the Mar-2020 quarter owners, == stored 20200331 con -25.48 EXACTLY. (Both inputs are printed columns of this same table.) The target cell sits inside that same printed 9M FY20 owners figure of 296.94.",
+   "when": "2026-08-17 20:47 IST"
+  },
+  "CENTURYPLY|20181231|patC": {
+   "owners": 30.76,
+   "stored_before": null,
+   "note": "printed comparative; owners 3,076.48 lacs -> 30.76 crore (round(3076.48/100,2)); total 'Net Profit/(Loss) For The Period' 3,013.20 -> 30.13, NCI (63.28). Unit declared '(Rs in Lacs)'. Scanned PDF - read by vision, not by the text layer. No consolidated filing of its own exists for Dec-2018 (NSE con list jumps 20130331 -> 20190630).",
+   "source": "CENTURY PLYBOARDS (INDIA) Q3FY20 'Statement of Unaudited Consolidated Financial Results ... 31st December 2019' (NSE filingDate 03-Feb-2020 18:21) p6, column 'Quarter Ended 31.12.2018'",
+   "identity": "FY19 owners closes on the owners basis to ~1 paisa: Q1 4,187.17 + Q2 2,131.32 + Q3 3,076.48 + Q4 5,450.03 = 14,845.00 lacs vs printed FY19 owners 14,845.01 (Rs 1,000 rounding). Cross-filing, Dec-2018 is pinned twice over: 9M FY19 owners 9,394.97 (Q3FY20) - H1 FY19 owners 6,318.49 (Q2FY20 filed 08-Nov-2019) = 3,076.48 == the printed Dec-2018 column 3,076.48 EXACT. Mar-2019: FY19 owners 14,845.01 - 9M owners 9,394.97 = 5,450.04 vs printed 5,450.03 (Rs 1,000); both are 54.50 crore. Note the Q4FY20 filing's note 10 states the Mar-2019 quarter column IS the balancing figure between the audited year and the published 9M - i.e. the printed column and the identity are the same quantity by construction.",
+   "when": "2026-08-17 21:03 IST"
+  },
+  "CENTURYPLY|20190331|patC": {
+   "owners": 54.5,
+   "stored_before": null,
+   "note": "printed comparative; owners 5,450.03 lacs -> 54.50 crore; total 5,542.16 -> 55.42, NCI 92.13. Rs in Lacs. Scanned PDF - read by vision.",
+   "source": "CENTURY PLYBOARDS (INDIA) Q4FY20 'Statement of Audited Consolidated Financial Results ... 31st March 2020' (NSE filingDate 26-Jun-2020 18:16) p11, column 'Quarter Ended 31.03.2019 (Audited) (refer note 10)'",
+   "identity": "FY19 owners closes on the owners basis to ~1 paisa: Q1 4,187.17 + Q2 2,131.32 + Q3 3,076.48 + Q4 5,450.03 = 14,845.00 lacs vs printed FY19 owners 14,845.01 (Rs 1,000 rounding). Cross-filing, Dec-2018 is pinned twice over: 9M FY19 owners 9,394.97 (Q3FY20) - H1 FY19 owners 6,318.49 (Q2FY20 filed 08-Nov-2019) = 3,076.48 == the printed Dec-2018 column 3,076.48 EXACT. Mar-2019: FY19 owners 14,845.01 - 9M owners 9,394.97 = 5,450.04 vs printed 5,450.03 (Rs 1,000); both are 54.50 crore. Note the Q4FY20 filing's note 10 states the Mar-2019 quarter column IS the balancing figure between the audited year and the published 9M - i.e. the printed column and the identity are the same quantity by construction.",
+   "when": "2026-08-17 21:03 IST"
+  },
+  "JSWDULUX|20180930|patC": {
+   "owners": 36.75,
+   "stored_before": null,
+   "note": "printed comparative; row 7 'Profit for the period from operations (5-6)' 367.5 -> 36.75 crore (round(367.5/10,2); statement declares '(Rs. in Million)', 1 crore = 10 million). No NCI block -> this is the owners figure. Scanned PDF - read by vision. No consolidated filing of its own exists for Sep-2018 (NSE con list jumps 20180331 -> 20190630).",
+   "source": "Akzo Nobel India (now JSWDULUX) Q2FY20 'Statement of Consolidated Unaudited Financial Results for the quarter and six months ended 30 September 2019' (NSE filingDate 09-Nov-2019 15:51) p7, column 'Quarter ended 30 September 2018 (Refer Note 1)'",
+   "identity": "Cross-filing, to the paisa: 9M Dec-2018 profit 1,406.4 mn (Q3FY20) - H1 Sep-2018 profit 802.6 mn (Q2FY20) = 603.8 mn == the printed Dec-2018 quarter column 603.8 EXACT. And for Sep-2018: stored Jun-2018 std 43.51 + Sep-2018 43.51+36.75 = 80.26 == printed H1 Sep-2018 802.6 mn = 80.26 crore EXACT. FY19 cross-check: printed FY19 2,110.0 mn = 211.00 crore; 211.00 - 140.64 (9M) = 70.36 vs stored Mar-2019 con 70.34 (0.02 = rounding of the derivation; the FY19 filing's own printed Q4 column is what is stored, and is not disturbed).",
+   "when": "2026-08-17 21:03 IST"
+  },
+  "JSWDULUX|20181231|patC": {
+   "owners": 60.38,
+   "stored_before": null,
+   "note": "printed comparative; row 7 603.8 -> 60.38 crore. Rs in Million. No NCI block. Scanned PDF - read by vision.",
+   "source": "Akzo Nobel India (now JSWDULUX) Q3FY20 'Statement of Consolidated Unaudited Financial Results ... 31 December 2019' (NSE filingDate 07-Feb-2020 12:49) p7, column 'Quarter ended 31 December 2018'",
+   "identity": "Cross-filing, to the paisa: 9M Dec-2018 profit 1,406.4 mn (Q3FY20) - H1 Sep-2018 profit 802.6 mn (Q2FY20) = 603.8 mn == the printed Dec-2018 quarter column 603.8 EXACT. And for Sep-2018: stored Jun-2018 std 43.51 + Sep-2018 43.51+36.75 = 80.26 == printed H1 Sep-2018 802.6 mn = 80.26 crore EXACT. FY19 cross-check: printed FY19 2,110.0 mn = 211.00 crore; 211.00 - 140.64 (9M) = 70.36 vs stored Mar-2019 con 70.34 (0.02 = rounding of the derivation; the FY19 filing's own printed Q4 column is what is stored, and is not disturbed).",
+   "when": "2026-08-17 21:03 IST"
+  },
+  "KPIL|20180930|patC": {
+   "owners": 115.0,
+   "stored_before": null,
+   "note": "printed comparative; owners 115, NCI 3, profit for the period 118. Declared '(Rs. in Crores)' - no conversion. No consolidated filing of its own exists for Sep-2018 (NSE con list starts 20190331).",
+   "source": "KALPATARU POWER TRANSMISSION (now KPIL) Q2FY20 'Statement of Consolidated Unaudited Financial Results for the Quarter and Half Year Ended September 30, 2019' (NSE filingDate 11-Nov-2019 13:04) p8, column 'For the Quarter ended September 30, 2018'",
+   "identity": "Cross-filing and exact: H1 Sep-2018 owners 200 (Q2FY20) + Dec-2018 quarter owners 109 (Q3FY20) = 309 == the printed 9M Dec-2018 owners column 309 EXACT. In-table: owners 115 + NCI 3 = 118 == printed Sep-2018 'Profit for the period' 118 EXACT; owners 109 + NCI 5 = 114 == printed Dec-2018 'Profit for the period' 114 EXACT. Row identity: the Q2FY20 key-standalone table prints Sep-2018 net profit after tax 91, matching stored stdPAT 91.37 at this filing's whole-crore grain. Pre-existing anomaly NOT touched: stored Mar-2019 con 134.22 matches neither FY19 owners 467 - 9M owners 309 = 158 nor the total-basis 487-321 = 166; reported in refusals_C.json.",
+   "when": "2026-08-17 21:03 IST"
+  },
+  "KPIL|20181231|patC": {
+   "owners": 109.0,
+   "stored_before": null,
+   "note": "printed comparative; owners 109, NCI 5, profit for the period 114. Rs. in Crores.",
+   "source": "KALPATARU POWER TRANSMISSION (now KPIL) Q3FY20 'Statement of Consolidated Unaudited Financial Results for the Quarter and Nine Months Ended December 31, 2019' (NSE filingDate 11-Feb-2020 16:28) p3, column 'For the Quarter ended December 31, 2018'",
+   "identity": "Cross-filing and exact: H1 Sep-2018 owners 200 (Q2FY20) + Dec-2018 quarter owners 109 (Q3FY20) = 309 == the printed 9M Dec-2018 owners column 309 EXACT. In-table: owners 115 + NCI 3 = 118 == printed Sep-2018 'Profit for the period' 118 EXACT; owners 109 + NCI 5 = 114 == printed Dec-2018 'Profit for the period' 114 EXACT. Row identity: the Q2FY20 key-standalone table prints Sep-2018 net profit after tax 91, matching stored stdPAT 91.37 at this filing's whole-crore grain. Pre-existing anomaly NOT touched: stored Mar-2019 con 134.22 matches neither FY19 owners 467 - 9M owners 309 = 158 nor the total-basis 487-321 = 166; reported in refusals_C.json.",
+   "when": "2026-08-17 21:03 IST"
+  },
+  "TTKPRESTIG|20181231|patC": {
+   "owners": 58.25,
+   "stored_before": null,
+   "note": "printed comparative; row XVI owners 58.25, row XIII profit for the period 58.25, NCI printed '-' (nil) so owners == total. Rs in Crores, no unit conversion. No consolidated filing of its own exists for Dec-2018 (NSE con list jumps 20180331 -> 20190630), so 31-Jan-2020 is the first public date.",
+   "source": "TTK PRESTIGE Q3FY20 consolidated statement (NSE filingDate 31-Jan-2020 12:08) p3, column 'Quarter Ended 31.12.2018', consolidated block",
+   "identity": "Q4FY20 p2 prints FY19 12-months consolidated owners 192.35 and the Mar-2019 quarter column 44.76; Q3FY20 p3 prints 9M Dec-2018 owners 147.58. 147.58 + 44.76 = 192.34 vs printed 192.35 (0.01 = independent 2dp rounding of each column); the PRINTED quarter column 44.76 is used, not the 192.35-147.58=44.77 derivation. Row identity on standalone in the same tables: Dec-2018 std 56.84 == stored stdPAT 56.84, Mar-2019 std 43.80 == stored 43.8, Dec-2019 std 60.91 == stored 60.91 - confirms these are TTK Prestige's own columns.",
+   "when": "2026-08-17 21:03 IST"
+  },
+  "TTKPRESTIG|20190331|patC": {
+   "owners": 44.76,
+   "stored_before": null,
+   "note": "printed comparative; row XVI owners 44.76, row XIII 44.76, NCI printed '-' (nil). Rs in Crores. No consolidated filing of its own exists for Mar-2019, so 26-Jun-2020 is the first public date.",
+   "source": "TTK PRESTIGE Q4FY20 audited statement (NSE filingDate 26-Jun-2020 19:22) p2, column 'Quarter Ended 31.03.2019', consolidated block",
+   "identity": "Q4FY20 p2 prints FY19 12-months consolidated owners 192.35 and the Mar-2019 quarter column 44.76; Q3FY20 p3 prints 9M Dec-2018 owners 147.58. 147.58 + 44.76 = 192.34 vs printed 192.35 (0.01 = independent 2dp rounding of each column); the PRINTED quarter column 44.76 is used, not the 192.35-147.58=44.77 derivation. Row identity on standalone in the same tables: Dec-2018 std 56.84 == stored stdPAT 56.84, Mar-2019 std 43.80 == stored 43.8, Dec-2019 std 60.91 == stored 60.91 - confirms these are TTK Prestige's own columns.",
+   "when": "2026-08-17 21:03 IST"
+  },
+  "UNITDSPR|20181231|patC": {
+   "owners": 204.1,
+   "stored_before": null,
+   "note": "printed comparative; owners 2,041 -> 204.1 crore (round(2041/10,2); statement declares '(INR in Millions except for earnings per share data)', 1 crore = 10 million). Total profit for the period 2,014 -> 201.4, NCI (27). No consolidated filing of its own exists for Dec-2018 (NSE con list starts 20190331). NSE serves this symbol's attachments under the old code MCDOWELL-N.",
+   "source": "UNITED SPIRITS Q3FY20 'Unaudited Consolidated Statement of Financial Results for the quarter and nine months ended December 31, 2019' (NSE filingDate 28-Jan-2020 13:35) p3, column '3 months ended December 31, 2018'",
+   "identity": "Cross-filing and exact: H1 FY19 owners 3,731 mn (Q2FY20, filed 25-Oct-2019) + Dec-2018 quarter owners 2,041 mn = 5,772 mn == the printed 9M Dec-2018 owners column 5,772 EXACT. In-table: owners 2,041 + NCI (27) = 2,014 == printed row 9 'Profit/(loss) for the period' 2,014 EXACT. Note an unrelated pre-existing anomaly: stored Mar-2019 con 125.46 reconciles with neither basis of this filing (FY19 owners 700.2 - 9M owners 577.2 = 123.0; totals give 116.9) - reported in refusals_C.json, not touched here.",
+   "when": "2026-08-17 21:03 IST"
+  },
+  "ROUTE|20201231|patC": {
+   "owners": 37.99,
+   "stored_before": 37.62,
+   "note": "stored 37.62 is EXACTLY the total row 3,762.03/100; owners is 3,799.22/100 = 37.99, and only that value closes the printed 9M owners subtotal",
+   "source": "ROUTE Q3FY21 consolidated statement (filed 2021-01-28) p6, quarter ended 31.12.2020: 'Profit for the period' 3,762.03 vs 'Owners of the Holding Company' 3,799.22, NCI (37.19)",
+   "identity": "printed 9M FY21 owners 9,795.15 lakhs = Jun-20 27.09 + Sep-20 32.87 + Dec-20 37.99 = 97.95 EXACT. With the stored 37.62 it gives 97.58 and does NOT close \u2014 which is what pins the convention and names the defective cell.",
+   "when": "2026-08-17 21:03 IST"
+  },
+  "TATACOFFEE|20180630|patC": {
+   "owners": 21.63,
+   "stored_before": null,
+   "note": "owners 2,163 lakhs -> 21.63 cr (total 3,122 = 31.22, NCI 959) \u2014 a large NCI, so the owners/total distinction is material here",
+   "source": "TATACOFFEE Q1FY20 consolidated filing (filed 2019-07-26) p5, column 'Quarter ended June 30, 2018 (UNAUDITED)', row 'Shareholders of the Company (B)' = 2,163 lakhs",
+   "identity": "FY19 annual owners printed in the same table = 6,877 lakhs = 68.77 cr, and 21.63 + stored Sep-18 25.42 + stored Dec-18 11.23 + stored Mar-19 10.49 = 68.77 \u2014 closes EXACTLY.",
+   "when": "2026-08-17 21:03 IST"
+  },
+  "ESCORTS|20180930|patC": {
+   "owners": 101.51,
+   "stored_before": null,
+   "note": "printed comparative; owners of the parent 101.51, NCI (0.31), net profit for the period 101.20. Rs. in Crores, no conversion. No consolidated filing of its own exists for Sep-2018 (NSE con list: 20180630 then 20190630 onward), so 19-Nov-2019 is the first public date.",
+   "source": "ESCORTS Q2FY20 'Statement of Consolidated Unaudited Financial Results for the quarter and six months ended September 30, 2019' (NSE filingDate 19-Nov-2019 18:25) p9, column 'Corresponding 3 months ended in the previous year 30-09-2018 (Refer note 3)'",
+   "identity": "The printed OWNERS subtotals close EXACTLY on the values written, which is the 69 window test: H1 FY19 - Q1 121.26 + Q2 101.51 = 222.77 == printed 'six months ended 30-09-2018' owners 222.77 EXACT. 9M FY19 - 222.77 + Q3 139.46 = 362.23 == printed 'nine months ended 31-12-2018' owners 362.23 EXACT. FY19 - 121.26 + 101.51 + 139.46 + 116.70 = 478.93 == printed 'year ended 31-03-2019' owners 478.93 EXACT (this last one closes only once the stored Mar-2019 cell is healed 116.42 -> 116.70; see refusals_C.json). In-table cross-check at each written column: owners 101.51 + NCI (0.31) = 101.20 == printed 'Net profit for the period' 101.20, and owners 139.46 + NCI (0.25) = 139.21 == printed 139.21.",
+   "when": "2026-08-17 21:07 IST"
+  },
+  "ESCORTS|20181231|patC": {
+   "owners": 139.46,
+   "stored_before": null,
+   "note": "printed comparative; owners of the parent 139.46, NCI (0.25), net profit for the period 139.21. Rs. in Crores. No consolidated filing of its own exists for Dec-2018.",
+   "source": "ESCORTS Q3FY20 'Statement of Consolidated Unaudited Financial Results for the quarter and nine months ended December 31, 2019' (NSE filingDate 03-Feb-2020 19:47) p7, column 'Corresponding 3 months ended in the previous year 31-12-2018 (Refer note 3)'",
+   "identity": "The printed OWNERS subtotals close EXACTLY on the values written, which is the 69 window test: H1 FY19 - Q1 121.26 + Q2 101.51 = 222.77 == printed 'six months ended 30-09-2018' owners 222.77 EXACT. 9M FY19 - 222.77 + Q3 139.46 = 362.23 == printed 'nine months ended 31-12-2018' owners 362.23 EXACT. FY19 - 121.26 + 101.51 + 139.46 + 116.70 = 478.93 == printed 'year ended 31-03-2019' owners 478.93 EXACT (this last one closes only once the stored Mar-2019 cell is healed 116.42 -> 116.70; see refusals_C.json). In-table cross-check at each written column: owners 101.51 + NCI (0.31) = 101.20 == printed 'Net profit for the period' 101.20, and owners 139.46 + NCI (0.25) = 139.21 == printed 139.21.",
+   "when": "2026-08-17 21:07 IST"
+  },
+  "BLUESTARCO|20181231|patC": {
+   "owners": -0.94,
+   "stored_before": 0.0,
+   "note": "read from the quarter's own filing as 69 requires, NOT from the Q3FY20 comparative (which restates the same quarter to owners (0.91) / period (0.86)). Rows: 7 Net Profit after Tax 13.20, 8a Share in Profit/(Loss) of Joint Ventures (14.09), 8b NCI (0.05), 9 Net Profit/(Loss) for the Period (0.94) = the owners figure. Currency \u20b9 in Crores, no conversion. ann is UNCHANGED at 20190212 - the value was public on the original filing date, so it must not be moved forward to the FY20 filing.",
+   "source": "BLUE STAR 'Unaudited Consolidated Financial Results for the quarter and nine months ended December 31, 2018' - the quarter's OWN filing (NSE filingDate 12-Feb-2019 13:32, which is exactly the stored conAnnDate) p9, column 'Quarter Ended 31.12.18'",
+   "identity": "The printed 9M FY19 OWNERS subtotal closes EXACTLY on the written value - the 69 window test: Q1 owners 91.58 (the stored cell, itself already on the owners basis) + Q2 owners 19.55 + Q3 owners (0.94) = 110.19 == printed 'nine months ended 31.12.18' row 9 of 110.19 EXACT. (That closure needs the Sep-2018 cell healed 19.66 -> 19.55 in the same window, per 69's across-the-window rule; it is out of this batch and is listed in refusals_C.json.) Cross-checks: printed H1 FY19 owners 111.13 + (0.94) = 110.19 EXACT; and in-table 13.20 + (14.09) + (0.05) = (0.94) EXACT. Row identity for the company: the same filing's standalone note prints Dec-2018 profit after tax (19.86) == stored stdPAT -19.86.",
+   "when": "2026-08-17 21:07 IST"
+  },
+  "HEG|20180930|patC": {
+   "owners": 902.79,
+   "stored_before": null,
+   "note": "printed comparative 902.79; the column's own components reproduce it EXACTLY: PBT 1,365.66 - current tax 475.38 - deferred tax 1.38 + share of associates 13.89 = 902.79. No NCI block in the statement, so this is the owners figure. ann matches the stored conAnnDate of the anchor quarter in the same filing (con 20190930 ann = 20191114).",
+   "source": "HEG Q2FY20 consolidated statement (NSE filingDate 2019-11-14) p14, column 'Quarter Ended 30-09-2018' (Unaudited)",
+   "identity": "FY19 consolidated annual = 3,026.16, printed identically in FOUR filings (FY19 audited p3 'Financial Year Ended 31/03/2019'; Q2FY20 p14 'Year Ended 31-03-2019'; Q3FY20 p13 'Year Ended 31-03-2019'; FY20 audited p10 'Year Ended 31-03-2019') - i.e. NOT restated. H1FY19 = 1,678.45 (Q2FY20 p14). 9M FY19 = 2,543.89 (Q3FY20 p13). Quarters: Q1FY19 = 1,678.45-902.79 = 775.66 (derived); Q2FY19 = 902.79 (printed); Q3FY19 = 865.45 (printed); Q4FY19 = 482.27 (printed AUDITED in FY20 p10). 9M closes: 775.66+902.79+865.45 = 2,543.90 vs printed 2,543.89 (\u03b40.01, the filer's own rounding family). FY closes EXACTLY: 2,543.89 + 482.27 = 3,026.16 == printed annual to the paisa. Q4FY19 is pinned TWO independent ways that agree exactly: printed audited column 482.27, and annual minus 9M = 3,026.16 - 2,543.89 = 482.27. Q3FY21 9M identity: 14.33+(-15.36)+(-0.80) = -1.83 vs printed 9M Dec-2020 (1.86) - \u03b40.03 traceable to the stored Jun-2020 14.33 vs the filing's implied 14.30; does not touch any cell written here.",
+   "when": "2026-08-17 21:07 IST"
+  },
+  "HEG|20181231|patC": {
+   "owners": 865.45,
+   "stored_before": null,
+   "note": "printed comparative 865.45; components reproduce it EXACTLY: PBT 1,328.60 - current tax 458.78 - deferred tax 2.99 + associates (1.38) = 865.45. Cross-filing check: 9M Dec-2018 2,543.89 - H1 Sep-2018 1,678.45 = 865.44, agreeing to 0.01. ann matches the stored conAnnDate of the anchor quarter in the same filing (con 20191231 ann = 20200211).",
+   "source": "HEG Q3FY20 consolidated statement (NSE filingDate 2020-02-11) p13, column 'Quarter Ended 31-12-2018' (Unaudited)",
+   "identity": "FY19 consolidated annual = 3,026.16, printed identically in FOUR filings (FY19 audited p3 'Financial Year Ended 31/03/2019'; Q2FY20 p14 'Year Ended 31-03-2019'; Q3FY20 p13 'Year Ended 31-03-2019'; FY20 audited p10 'Year Ended 31-03-2019') - i.e. NOT restated. H1FY19 = 1,678.45 (Q2FY20 p14). 9M FY19 = 2,543.89 (Q3FY20 p13). Quarters: Q1FY19 = 1,678.45-902.79 = 775.66 (derived); Q2FY19 = 902.79 (printed); Q3FY19 = 865.45 (printed); Q4FY19 = 482.27 (printed AUDITED in FY20 p10). 9M closes: 775.66+902.79+865.45 = 2,543.90 vs printed 2,543.89 (\u03b40.01, the filer's own rounding family). FY closes EXACTLY: 2,543.89 + 482.27 = 3,026.16 == printed annual to the paisa. Q4FY19 is pinned TWO independent ways that agree exactly: printed audited column 482.27, and annual minus 9M = 3,026.16 - 2,543.89 = 482.27. Q3FY21 9M identity: 14.33+(-15.36)+(-0.80) = -1.83 vs printed 9M Dec-2020 (1.86) - \u03b40.03 traceable to the stored Jun-2020 14.33 vs the filing's implied 14.30; does not touch any cell written here.",
+   "when": "2026-08-17 21:07 IST"
+  },
+  "HEG|20190331|patC": {
+   "owners": 482.27,
+   "stored_before": 2581.58,
+   "note": "THE SWEEP'S DIAGNOSIS IS WRONG IN ITS SPECIFICS THOUGH RIGHT THAT THE CELL IS BAD. HEG's FY19 consolidated ANNUAL net profit is 3,026.16, not 2581.58 - printed identically in all four consolidated filings read, including the FY20 audited filing, so it was never restated. 2581.58 matches NO line in any of them: not the annual (3,026.16), not 9M FY19 (2,543.89), not H1FY19 (1,678.45), not the quarter (482.27), not FY19 total comprehensive income (3,025.57), not standalone FY19 (3,050.43). A grep of the five HEG PDFs finds '3,026' on three pages and '2581'/'2,581' on none. In-repo provenance is a dead end: scripts/fundamentals.json carries the value with a NULL conAnnDate (docs/sf_fundamentals.json then shows 20190520, inherited from the stdAnnDate), and 2581.58 appears nowhere else in the dataset. The true audited Q4FY19 consolidated quarter is 482.27, pinned two independent ways that agree to the paisa: (a) printed as an audited quarter column in the FY20 filing, (b) FY19 annual 3,026.16 - printed 9M FY19 2,543.89 = 482.27. The column's own components give 806.22 - 278.98 - 2.82 - 42.14 = 482.28, i.e. the filer's printed 482.27 is 1 paisa off its own arithmetic - the same rounding family seen on Jun-19/Sep-19; the derivation route independently returns the PRINTED 482.27, so 482.27 is the value to write. ann moves 20190520 -> 20200617 because nothing resembling this quarter figure was public in May 2019; the earliest date it became derivable is 2020-02-11 (when the 9M FY19 subtotal was first published), so 20200617 is the conservative choice and 20200211 is the defensible alternative if the main session prefers earliest-knowable.",
+   "source": "HEG FY20 audited consolidated statement (NSE filingDate 2020-06-17) p10, column 'Quarter Ended 31-03-2019' (Audited)",
+   "identity": "FY19 consolidated annual = 3,026.16, printed identically in FOUR filings (FY19 audited p3 'Financial Year Ended 31/03/2019'; Q2FY20 p14 'Year Ended 31-03-2019'; Q3FY20 p13 'Year Ended 31-03-2019'; FY20 audited p10 'Year Ended 31-03-2019') - i.e. NOT restated. H1FY19 = 1,678.45 (Q2FY20 p14). 9M FY19 = 2,543.89 (Q3FY20 p13). Quarters: Q1FY19 = 1,678.45-902.79 = 775.66 (derived); Q2FY19 = 902.79 (printed); Q3FY19 = 865.45 (printed); Q4FY19 = 482.27 (printed AUDITED in FY20 p10). 9M closes: 775.66+902.79+865.45 = 2,543.90 vs printed 2,543.89 (\u03b40.01, the filer's own rounding family). FY closes EXACTLY: 2,543.89 + 482.27 = 3,026.16 == printed annual to the paisa. Q4FY19 is pinned TWO independent ways that agree exactly: printed audited column 482.27, and annual minus 9M = 3,026.16 - 2,543.89 = 482.27. Q3FY21 9M identity: 14.33+(-15.36)+(-0.80) = -1.83 vs printed 9M Dec-2020 (1.86) - \u03b40.03 traceable to the stored Jun-2020 14.33 vs the filing's implied 14.30; does not touch any cell written here.",
+   "when": "2026-08-17 21:07 IST"
+  },
+  "HEG|20201231|patC": {
+   "owners": -0.8,
+   "stored_before": 0.0,
+   "note": "printed (0.80); components reproduce it EXACTLY: PBT 4.28 - current tax nil - deferred tax (0.40) + share of associates (5.48) = -0.80. Standalone for the same quarter is +4.68, so the sign flip is real (the associate loss drives it). ann UNCHANGED - stored conAnnDate is already 20210209, the filing date.",
+   "source": "HEG Q3FY21 consolidated statement (NSE filingDate 2021-02-09) p11, column 'Quarter Ended 31-12-2020' (Unaudited)",
+   "identity": "FY19 consolidated annual = 3,026.16, printed identically in FOUR filings (FY19 audited p3 'Financial Year Ended 31/03/2019'; Q2FY20 p14 'Year Ended 31-03-2019'; Q3FY20 p13 'Year Ended 31-03-2019'; FY20 audited p10 'Year Ended 31-03-2019') - i.e. NOT restated. H1FY19 = 1,678.45 (Q2FY20 p14). 9M FY19 = 2,543.89 (Q3FY20 p13). Quarters: Q1FY19 = 1,678.45-902.79 = 775.66 (derived); Q2FY19 = 902.79 (printed); Q3FY19 = 865.45 (printed); Q4FY19 = 482.27 (printed AUDITED in FY20 p10). 9M closes: 775.66+902.79+865.45 = 2,543.90 vs printed 2,543.89 (\u03b40.01, the filer's own rounding family). FY closes EXACTLY: 2,543.89 + 482.27 = 3,026.16 == printed annual to the paisa. Q4FY19 is pinned TWO independent ways that agree exactly: printed audited column 482.27, and annual minus 9M = 3,026.16 - 2,543.89 = 482.27. Q3FY21 9M identity: 14.33+(-15.36)+(-0.80) = -1.83 vs printed 9M Dec-2020 (1.86) - \u03b40.03 traceable to the stored Jun-2020 14.33 vs the filing's implied 14.30; does not touch any cell written here.",
+   "when": "2026-08-17 21:07 IST"
+  },
+  "MMTC|20180930|patC": {
+   "owners": 36.92,
+   "stored_before": null,
+   "note": "printed comparative: row 9 'Net Profit for the Period' 36.92 and 'Net Profit attributable to Owners of the Company' 36.92, NCI '-'. Column reconciles: PBT 52.99 - total tax 16.07 = 36.92. Identity confirmation: H1FY19 50.58 - 36.92 = 13.66, which is exactly our already-stored con 20180630. ann matches the stored conAnnDate of the anchor quarter in the same filing (con 20190930 ann = 20191113).",
+   "source": "MMTC Q2FY20 consolidated statement (NSE filingDate 2019-11-13) p9, column 'Quarter Ended 30-Sep-18' (Unaudited)",
+   "identity": "FY19 consolidated annual = 108.72, printed in THREE filings (Q2FY20 p9 'Year Ended 31-Mar-19'; Q3FY20 p7 'Year Ended 31-Mar-19'; FY20 audited p11 'Consolidated / Year Ended 31-Mar-19'). H1FY19 = 50.58 (Q2FY20 p9). 9M FY19 = 83.52 (Q3FY20 p7). The four FY19 consolidated quarters close to the paisa with no residue: Q1FY19 = H1 50.58 - Q2 36.92 = 13.66, which reproduces our ALREADY-STORED con 20180630 = 13.66 EXACTLY (an independent third-party confirmation of the Sep-2018 read, since 13.66 was ingested in Aug-2018 from a different filing); 9M check 13.66 + 36.92 + 32.94 = 83.52 == printed 9M EXACTLY; FY check 83.52 + 25.20 = 108.72 == printed annual EXACTLY. Every column also reconciles internally as PBT minus total tax: Sep-18 52.99-16.07=36.92; Dec-18 47.00-14.06=32.94; 9M Dec-18 115.80-32.28=83.52; FY19 145.88-37.16=108.72.",
+   "when": "2026-08-17 21:07 IST"
+  },
+  "MMTC|20181231|patC": {
+   "owners": 32.94,
+   "stored_before": null,
+   "note": "printed comparative: row 9 'Net Profit for the Period' 32.94 and 'Net Profit attributable to Owners of the Company' 32.94, NCI '-'. Column reconciles: PBT 47.00 - total tax 14.06 = 32.94. Cross-filing identity closes EXACTLY: H1 Sep-2018 50.58 (Q2FY20 filing) + 32.94 = 83.52 == the printed 9M Dec-2018 column in this filing. ann matches the stored conAnnDate of the anchor quarter in the same filing (con 20191231 ann = 20200214).",
+   "source": "MMTC Q3FY20 consolidated statement (NSE filingDate 2020-02-14) p7, column 'Quarter Ended 31-Dec-18' (Unaudited)",
+   "identity": "FY19 consolidated annual = 108.72, printed in THREE filings (Q2FY20 p9 'Year Ended 31-Mar-19'; Q3FY20 p7 'Year Ended 31-Mar-19'; FY20 audited p11 'Consolidated / Year Ended 31-Mar-19'). H1FY19 = 50.58 (Q2FY20 p9). 9M FY19 = 83.52 (Q3FY20 p7). The four FY19 consolidated quarters close to the paisa with no residue: Q1FY19 = H1 50.58 - Q2 36.92 = 13.66, which reproduces our ALREADY-STORED con 20180630 = 13.66 EXACTLY (an independent third-party confirmation of the Sep-2018 read, since 13.66 was ingested in Aug-2018 from a different filing); 9M check 13.66 + 36.92 + 32.94 = 83.52 == printed 9M EXACTLY; FY check 83.52 + 25.20 = 108.72 == printed annual EXACTLY. Every column also reconciles internally as PBT minus total tax: Sep-18 52.99-16.07=36.92; Dec-18 47.00-14.06=32.94; 9M Dec-18 115.80-32.28=83.52; FY19 145.88-37.16=108.72.",
+   "when": "2026-08-17 21:07 IST"
+  },
+  "MMTC|20190331|patC": {
+   "owners": 25.2,
+   "stored_before": null,
+   "note": "NOT printed as a quarter anywhere. MMTC's FY20 audited filing (p11, 2020-07-31) puts standalone and consolidated side by side but the CONSOLIDATED block carries 'Year Ended 31-Mar-20 | 31-Mar-19' ONLY - there is no consolidated Mar-2019 quarter column in any MMTC filing. Derivation is safe under gate 3 because neither subtotal is restated across filings: 108.72 appears identically in three filings, and 83.52 decomposes exactly into the three quarters that make it (13.66 stored + 36.92 + 32.94 = 83.52). Residual check: 83.52 + 25.20 = 108.72 to the paisa. ann is the filingDate of the LATER of the two subtotals (the 9M column, first public 2020-02-14) per the never-backdate rule.",
+   "source": "DERIVED from two printed subtotals: FY19 consolidated annual 108.72 minus 9M FY19 consolidated 83.52, both from MMTC Q3FY20 consolidated statement (NSE filingDate 2020-02-14) p7, columns 'Year Ended 31-Mar-19' and 'Nine Month Ended 31-Dec-18'",
+   "identity": "FY19 consolidated annual = 108.72, printed in THREE filings (Q2FY20 p9 'Year Ended 31-Mar-19'; Q3FY20 p7 'Year Ended 31-Mar-19'; FY20 audited p11 'Consolidated / Year Ended 31-Mar-19'). H1FY19 = 50.58 (Q2FY20 p9). 9M FY19 = 83.52 (Q3FY20 p7). The four FY19 consolidated quarters close to the paisa with no residue: Q1FY19 = H1 50.58 - Q2 36.92 = 13.66, which reproduces our ALREADY-STORED con 20180630 = 13.66 EXACTLY (an independent third-party confirmation of the Sep-2018 read, since 13.66 was ingested in Aug-2018 from a different filing); 9M check 13.66 + 36.92 + 32.94 = 83.52 == printed 9M EXACTLY; FY check 83.52 + 25.20 = 108.72 == printed annual EXACTLY. Every column also reconciles internally as PBT minus total tax: Sep-18 52.99-16.07=36.92; Dec-18 47.00-14.06=32.94; 9M Dec-18 115.80-32.28=83.52; FY19 145.88-37.16=108.72.",
+   "when": "2026-08-17 21:07 IST"
+  },
+  "ESCORTS|20190331|patC": {
+   "owners": 116.7,
+   "stored_before": 116.42,
+   "note": "without this heal the FY19 owners year does not close on the two fills applied in the same pass",
+   "source": "ESCORTS Q1FY20 consolidated filing (filed 2019-09-12) p2, column Mar-2019: owners 116.70, NCI (0.28), period 116.42",
+   "identity": "REQUIRED companion to the Sep-18/Dec-18 fills: FY19 owners closes only with this heal \u2014 121.26 + 101.51 + 139.46 + 116.70 = 478.93 == printed FY19 owners.",
+   "when": "2026-08-17 21:07 IST"
+  },
+  "BLUESTARCO|20180930|patC": {
+   "owners": 19.55,
+   "stored_before": 19.66,
+   "note": "two filings print the same owners figure; the stored 19.66 is the pre-NCI period line",
+   "source": "BLUESTARCO Q2FY19 filing (filed 2018-11-23) p12 and Q3FY19 p9, both printing Sep-2018 owners 19.55",
+   "identity": "REQUIRED companion to the Dec-18 heal: the printed 9M FY19 owners subtotal closes only with this \u2014 91.58 + 19.55 + (-0.94) = 110.19 == printed.",
+   "when": "2026-08-17 21:07 IST"
+  },
+  "FEDERALBNK|20190930|patC": {
+   "owners": 425.34,
+   "stored_before": 424.4,
+   "note": "stored 424.40 is row 14 'Net Profit for the period' (42,440 lakhs); the series convention is row 17 (42,534 -> 425.34)",
+   "source": "Federal Bank Q4FY20 audited consolidated filing (NSE filed 2020-06-03) p16 row 17, plus the Q3FY20 and Q2FY20 subtotals",
+   "identity": "THREE nested subtotals, each from a DIFFERENT filing, all miss by exactly 0.94 with the stored value and close exactly with 425.34: FY20 annual 158,020 lakhs (Q4FY20 p16) = 374.20+425.34+451.62+329.04; 9M FY20 125,116 (Q3FY20 p10) = 374.20+425.34+451.62; H1 FY20 79,954 (Q2FY20 p11) = 374.20+425.34. The 0.94 gap is exactly row17 minus row14 (42,534 - 42,440)/100.",
+   "when": "2026-08-17 21:07 IST"
+  },
+  "KSCL|20180930|patC": {
+   "owners": 15.52,
+   "stored_before": null,
+   "note": "printed comparative, total row 'Net Profit after Tax (V-VI)' 1,552.48 lakhs -> 15.52 cr; owners row 'Equity Share Holders of the Company' 1,546.07 -> 15.46 cr; NCI 6.41. Attribution adds up: 1,546.07 + 6.41 = 1,552.48. Column reconciles: PBT 2,097.52 - total tax 545.04 = 1,552.48. REVIEW-STATUS CAVEAT from the filing's own note 4: 'The Consolidated results for the quarter ended June 30, 2018 and for the half year ended September 30, 2018 are not subjected to limited review' - the Sep-2018 consolidated comparative is company-prepared and unreviewed (it is still the officially filed comparative). ann matches the stored conAnnDate of the anchor quarter in the same filing (con 20190930 ann = 20191113).",
+   "source": "KSCL Q2FY20 combined standalone+consolidated statement (NSE filingDate 2019-11-13) p2, CONSOLIDATED block, column 'Quarter Ended 30-09-2018'",
+   "identity": "All in lakhs, TOTAL basis. FY19 annual = 21,740.46; H1FY19 = 22,562.48; 9M FY19 = 22,853.28 (KSCL's Q1 is its big seed quarter, hence the year-total below the 9M). Q1FY19 = H1 22,562.48 - Q2 1,552.48 = 21,010.00. 9M closes EXACTLY: 21,010.00 + 1,552.48 + 290.80 = 22,853.28 == printed 9M to the paisa. FY closes: 22,853.28 + (-1,112.81) = 21,740.47 vs printed 21,740.46 (\u03b40.01 lakh = \u20b91,000, the filer's own rounding). The owners basis closes the same way: 9M owners 22,853.80 + (-1,108.72) = 21,745.08 vs printed FY19 owners 21,745.07 (\u03b40.01). Note 8 of the FY20 filing states the arithmetic explicitly: 'The figures for quarter ended March 31, 2020 and March 31, 2019 are the balancing figures between audited figures in respect of the full financial year ... and unaudited published year to date figures up to December 31, 2019 and December 31, 2018 respectively' - so the printed Mar-2019 quarter column IS FY19 minus 9M FY19, which is what the identity above independently reproduces. Every column also reconciles as PBT minus total tax: Sep-18 2,097.52-545.04=1,552.48; Dec-18 452.42-161.62=290.80; Mar-19 balancing.",
+   "when": "2026-08-17 21:10 IST"
+  },
+  "KSCL|20181231|patC": {
+   "owners": 2.91,
+   "stored_before": null,
+   "note": "printed comparative, total row 290.80 lakhs -> 2.908 -> 2.91 cr; owners row 318.07 -> 3.18 cr; NCI (27.27). Attribution adds up: 318.07 + (-27.27) = 290.80. Column reconciles: PBT 452.42 - total tax 161.62 = 290.80. This quarter is the clearest illustration of why the basis matters here - owners (3.18) exceeds total (2.91) because the NCI share is a LOSS. ann matches the stored conAnnDate of the anchor quarter in the same filing (con 20191231 ann = 20200205).",
+   "source": "KSCL Q3FY20 consolidated statement (NSE filingDate 2020-02-05) p3, column 'Quarter Ended 31-12-2018'",
+   "identity": "All in lakhs, TOTAL basis. FY19 annual = 21,740.46; H1FY19 = 22,562.48; 9M FY19 = 22,853.28 (KSCL's Q1 is its big seed quarter, hence the year-total below the 9M). Q1FY19 = H1 22,562.48 - Q2 1,552.48 = 21,010.00. 9M closes EXACTLY: 21,010.00 + 1,552.48 + 290.80 = 22,853.28 == printed 9M to the paisa. FY closes: 22,853.28 + (-1,112.81) = 21,740.47 vs printed 21,740.46 (\u03b40.01 lakh = \u20b91,000, the filer's own rounding). The owners basis closes the same way: 9M owners 22,853.80 + (-1,108.72) = 21,745.08 vs printed FY19 owners 21,745.07 (\u03b40.01). Note 8 of the FY20 filing states the arithmetic explicitly: 'The figures for quarter ended March 31, 2020 and March 31, 2019 are the balancing figures between audited figures in respect of the full financial year ... and unaudited published year to date figures up to December 31, 2019 and December 31, 2018 respectively' - so the printed Mar-2019 quarter column IS FY19 minus 9M FY19, which is what the identity above independently reproduces. Every column also reconciles as PBT minus total tax: Sep-18 2,097.52-545.04=1,552.48; Dec-18 452.42-161.62=290.80; Mar-19 balancing.",
+   "when": "2026-08-17 21:10 IST"
+  },
+  "KSCL|20190331|patC": {
+   "owners": -11.13,
+   "stored_before": null,
+   "note": "printed audited comparative, total row (1,112.81) lakhs -> -11.13 cr; owners row (1,108.72) -> -11.09 cr; NCI (4.09). Attribution adds up: -1,108.72 + (-4.09) = -1,112.81. Independently reproduced by the year identity: FY19 21,740.46 - 9M FY19 22,853.28 = -1,112.82, agreeing with the printed -1,112.81 to 0.01 lakh. Standalone for the same quarter is -11.44, so the sign and magnitude are plausible. ann = 20200608: KSCL filed the consolidated FY20 results under a separate NSE row dated 2020-06-08 (the standalone row is 2020-05-30 and the PDF's cover letter is dated 2020-05-30); 20200608 matches the stored conAnnDate convention for the anchor quarter in the same filing (con 20200331 ann = 20200608) and is the conservative, never-backdated choice.",
+   "source": "KSCL FY20 audited consolidated statement (NSE filingDate 2020-06-08) p5, column 'Quarter Ended 31-03-2019' (Audited, balancing figure per note 8)",
+   "identity": "All in lakhs, TOTAL basis. FY19 annual = 21,740.46; H1FY19 = 22,562.48; 9M FY19 = 22,853.28 (KSCL's Q1 is its big seed quarter, hence the year-total below the 9M). Q1FY19 = H1 22,562.48 - Q2 1,552.48 = 21,010.00. 9M closes EXACTLY: 21,010.00 + 1,552.48 + 290.80 = 22,853.28 == printed 9M to the paisa. FY closes: 22,853.28 + (-1,112.81) = 21,740.47 vs printed 21,740.46 (\u03b40.01 lakh = \u20b91,000, the filer's own rounding). The owners basis closes the same way: 9M owners 22,853.80 + (-1,108.72) = 21,745.08 vs printed FY19 owners 21,745.07 (\u03b40.01). Note 8 of the FY20 filing states the arithmetic explicitly: 'The figures for quarter ended March 31, 2020 and March 31, 2019 are the balancing figures between audited figures in respect of the full financial year ... and unaudited published year to date figures up to December 31, 2019 and December 31, 2018 respectively' - so the printed Mar-2019 quarter column IS FY19 minus 9M FY19, which is what the identity above independently reproduces. Every column also reconciles as PBT minus total tax: Sep-18 2,097.52-545.04=1,552.48; Dec-18 452.42-161.62=290.80; Mar-19 balancing.",
+   "when": "2026-08-17 21:10 IST"
   }
  }
 }
