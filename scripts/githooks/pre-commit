@@ -1,0 +1,128 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""pre-commit: refuse a commit that would resurrect a HELD cell.
+
+WHY. Three times on 2026-08-16/17 an interactive session committed a fill that wrote a cell some
+ledger still flagged `held`. A held cell asserts ABSENCE (runbook 56b), so the blocking
+verify_fills_live step in refresh-fundamentals.yml went red ~20 min later, froze the entire
+fundamentals payload pre-commit, and auto-rerun mailed 6 notices per failed run. Every one of those
+commits was authored on THIS machine, which is why the check belongs here: it turns a 20-minute-later
+CI failure plus an inbox into an immediate "this commit contradicts a hold on CELL X", with the fix.
+
+SCOPED ON PURPOSE — three deliberate limits, because a hook that cries wolf gets bypassed:
+
+1. It only runs when the commit actually STAGES a payload or a ledger. Every other commit skips
+   instantly, so this costs nothing on normal work.
+2. It fails ONLY on RESURRECTED. It does NOT fail on MISSING, and that is measured, not lazy: in a
+   checkout whose docs/ payloads are older than its ledgers, MISSING fires purely from staleness (6 of
+   them in the main checkout on 2026-08-17, all artifacts of payloads predating that day's fills). A
+   hook that blocked on those would block every commit and be switched off within a day. MISSING is
+   still reported, and CI still blocks on it.
+3. It says so when the payloads it read are NOT what origin/main has, because then the check was
+   weaker than it looks — a resurrection can hide behind a stale payload. No silent "clean".
+
+Escape hatch: `git commit --no-verify`. Use it when you know better, not to get past a red cell.
+"""
+import json
+import os
+import subprocess
+import sys
+
+LEDGER_HINTS = ("fills", "heals", "defects", "_reads", "purge", "adjudicat")
+PAYLOADS = ("docs/sf_revop.json", "docs/sf_fundamentals.json")
+
+
+def sh(*args):
+    return subprocess.run(args, capture_output=True, text=True).stdout.strip()
+
+
+def main():
+    root = sh("git", "rev-parse", "--show-toplevel")
+    if not root:
+        return 0
+    staged = [p for p in sh("git", "diff", "--cached", "--name-only").splitlines() if p]
+    relevant = [p for p in staged
+                if p in PAYLOADS
+                or (p.startswith("scripts/") and p.endswith(".json")
+                    and any(h in os.path.basename(p) for h in LEDGER_HINTS))]
+    if not relevant:
+        return 0                                    # fast path: nothing ledger-shaped in this commit
+
+    det = os.path.join(root, "scripts", "verify_fills_live.py")
+    if not os.path.exists(det):
+        return 0
+    p = subprocess.run([sys.executable, "-X", "utf8", det],
+                       capture_output=True, text=True, cwd=root)
+    out = p.stdout
+    res = [l for l in out.splitlines() if "RESURRECTED " in l and "value=" in l]
+    nmiss = 0
+    for l in out.splitlines():
+        if l.strip().startswith("MISSING") and "(clobbered)" in l:
+            try:
+                nmiss = int(l.rsplit(":", 1)[1])
+            except Exception:
+                pass
+
+    # Was the payload we just checked actually current? Compares against the last-fetched origin/main,
+    # so it costs no network. A stale payload can hide a resurrection, and the operator should know.
+    stale = []
+    for f in PAYLOADS:
+        head = sh("git", "rev-parse", "origin/main:%s" % f)
+        wt = sh("git", "hash-object", os.path.join(root, f))
+        if head and wt and head != wt:
+            stale.append(f)
+
+    if not res:
+        if nmiss:
+            print("[pre-commit] note: verify_fills_live reports MISSING %d. Not blocking (in a checkout"
+                  % nmiss)
+            print("             whose docs/ payloads lag its ledgers this is a staleness artifact), but")
+            print("             CI DOES block on MISSING — check it before you push.")
+        if stale:
+            print("[pre-commit] note: %s differ(s) from origin/main, so the resurrection check ran"
+                  % ", ".join(stale))
+            print("             against payloads the site is not serving. Treat a clean result as")
+            print("             indicative; re-run scripts/verify_fills_live.py after you pull.")
+        return 0
+
+    print("=" * 78)
+    print("COMMIT REFUSED — this tree resurrects %d cell(s) a ledger says must stay ABSENT." % len(res))
+    print("A `held` entry is a reader's REFUSAL to write that value (runbook 56b). Committing this")
+    print("turns the blocking verify_fills_live step in refresh-fundamentals.yml red, which stops the")
+    print("WHOLE fundamentals payload from publishing and mails ~6 notices per run.")
+    print("=" * 78)
+    for l in res:
+        print("   " + l.strip())
+
+    # Classify: is this the mechanical case (a filing already answered the hold) or a real conflict?
+    settle = os.path.join(root, "scripts", "settle_stale_holds.py")
+    if os.path.exists(settle):
+        s = subprocess.run([sys.executable, "-X", "utf8", settle],
+                           capture_output=True, text=True, cwd=root)
+        first = next((l for l in s.stdout.splitlines() if l.startswith("RESURRECTED cells:")), "")
+        print("\n" + (first or "(settle_stale_holds produced no verdict)"))
+        if "NOT" in first and not first.rstrip().endswith("0 NOT"):
+            print("\n  At least one has NO filing-sourced ledger behind it. That is the case the guard")
+            print("  exists for — an aggregator's standalone copy landing in a consolidated slot. READ")
+            print("  THE FILING and adjudicate (57/58); do not lift the hold to get past this.")
+            print("  Detail:  python3 -X utf8 scripts/settle_stale_holds.py")
+        else:
+            print("\n  All of them are stale holds a filing has already answered. Fix and re-commit:")
+            print("      python3 -X utf8 scripts/settle_stale_holds.py --apply")
+            print("      git add scripts/mc_pat_fills.json scripts/mc_history_fills.json")
+    if stale:
+        print("\n  (%s differ from origin/main — pull before adjudicating so you are reading the"
+              % ", ".join(stale))
+        print("   payload the site actually serves.)")
+    print("\nOverride with `git commit --no-verify` only if you know why that is right.")
+    return 1
+
+
+if __name__ == "__main__":
+    try:
+        sys.exit(main())
+    except Exception as e:
+        # A hook must never wedge the repo. Fail OPEN, loudly.
+        print("[pre-commit] check errored (%s: %s) — allowing the commit. Run"
+              " scripts/verify_fills_live.py by hand." % (type(e).__name__, e))
+        sys.exit(0)
