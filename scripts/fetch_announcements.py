@@ -166,7 +166,12 @@ def qe_sane(qe, filed):
     return qe if str(filed) > "%04d-%02d-%02d" % (qe // 10000, qe // 100 % 100, qe % 100) else 0
 
 def parse_qe(*texts):
-    h = " ".join(str(t or "") for t in texts)
+    # collapse all whitespace (incl. newlines) to single spaces first: PDF text extraction often wraps a
+    # date across a line break ("Quarter Ended 30th \nJune, 2026"), and the anchor capture groups below use
+    # "." which never matches "\n" — an un-collapsed newline inside the date silently fails that anchor's
+    # match and lets a LATER, irrelevant date (e.g. a stray "year ended 31st March, 2026" mention) win
+    # instead. Confirmed live on LEHAR's 2026-08-10 outcome letter: 20260630 -> wrongly parsed as 20260331.
+    h = re.sub(r"\s+", " ", " ".join(str(t or "") for t in texts))
     for rx in _ANCHOR_RES:
         for mm in rx.finditer(h):
             seg = mm.group(1)
