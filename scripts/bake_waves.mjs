@@ -38,8 +38,12 @@ const PAGES_WAIT_MS = 8 * 60 * 1000;    // max wait for both GitHub Pages deploy
 // BAKE_WAIT_MIN/BAKE_MAX_ITERS raised rather than being squeezed in here.
 const BAKE_WAIT_MS  = (+process.env.BAKE_WAIT_MIN || 70) * 60 * 1000;   // must stay under the job's timeout-minutes, minus ~5 min of setup
 const PER_ITER_MS   = 15 * 60 * 1000;   // per-batch ceiling — NOT what actually ends a batch, see MAX_ITERS
-// ⚠️ A batch never lasts anywhere near PER_ITER_MS: the page's renderer dies ~30s in (it holds ~100 MB of
-// market data), so batches end on their own and the ITERATION CAP, not the time budget, is what ends a run.
+// ⚠️ HISTORICAL NOTE, NOW CORRECTED (2026-08-17): this used to read "a batch never lasts anywhere near
+// PER_ITER_MS: the page's renderer dies ~30s in (it holds ~100 MB of market data)". That diagnosis was
+// wrong. Batches ended at ~31s because the per-batch timeout was passed in waitForFunction's `arg`
+// position and never applied, so Playwright's 30s default governed every wait (see bakeOnce). The
+// renderer was alive throughout — it answered page.evaluate with a readable status every single batch.
+// With the argument fixed, a batch now runs until the page finishes, OOMs, or the budget expires.
 // Each batch still makes progress — the page saves after every strategy and the next one resumes — at
 // roughly 4-5 strategies/batch on the 6.3-yr `cycle` wave and 10-30 on the shorter ones. At 14 the run hit
 // the cap in 8m47s having left `cycle` at 27/45 (run 30765373241), which is why that tab kept serving stale
@@ -104,10 +108,19 @@ async function bakeOnce(budgetMs) {
     page.on('response', r => { if (r.status() >= 400) console.log('[page-net]', r.status(), r.url()); });
     await page.goto(BAKE_URL, { waitUntil: 'domcontentloaded', timeout: 120000 });
     try {
+      // ⚠️ OPTIONS GO IN THE THIRD ARGUMENT. Playwright declares
+      //   waitForFunction(pageFunction, arg?, options?)
+      // so passing `{timeout, polling}` second hands it to the page function as `arg` and leaves
+      // options UNDEFINED — every wait then ran on Playwright's 30 s DEFAULT, silently ignoring the
+      // budget computed above. Measured on run 32013243427 (2026-08-17): 13 batch intervals, mean
+      // 31.1 s (min 25, max 35) against a configured 900 s. The note below used to blame an
+      // OOM-killed renderer for that cadence; it was wrong — every batch returned a READABLE status
+      // ("Baking w1 15/40"), and a dead renderer cannot answer page.evaluate at all. Same bug hit
+      // log_picks.mjs, which died with "Timeout 30000ms exceeded" while asking for 12 minutes.
       await page.waitForFunction(() => {
         const o = document.getElementById('bakeOut');
         return o && (/✅ Done/.test(o.textContent) || /Bake error/.test(o.textContent));
-      }, { timeout: budgetMs, polling: 5000 });
+      }, null, { timeout: budgetMs, polling: 5000 });
     } catch { /* per-batch timeout OR context destroyed by a crash */ }
     try {
       status = await page.evaluate(() => {

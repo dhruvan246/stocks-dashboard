@@ -23,6 +23,9 @@ const PAGES_WAIT_MS = 8 * 60 * 1000;   // max wait for both GitHub Pages deploys
 const BAKE_WAIT_MS  = 25 * 60 * 1000;  // overall budget for the bake across all reload batches
 const PER_ITER_MS   = 8 * 60 * 1000;   // per-batch wait (one browser session before it OOMs/finishes)
 const MAX_ITERS     = 12;              // reload the page this many times at most (each resets browser memory)
+// Consecutive transient data failures to ride out before failing the run — see the TRANSIENT matcher in
+// main(). A persistent failure still exits 1; the point is not to email over one 503.
+const DATA_RETRIES  = process.env.BAKE_DATA_RETRIES != null ? +process.env.BAKE_DATA_RETRIES : 3;
 
 async function fetchEnd(url) {
   try {
@@ -62,15 +65,28 @@ async function bakeOnce(iter, budgetMs) {
   });
   let status = '(no status)', done = false, crashed = false;
   try {
-    const page = await browser.newPage();
+    // ⚠️ BLOCK SERVICE WORKERS — theme.js reloads the page on `controllerchange`, restarting the batch.
+    // bake_waves.mjs documented and fixed this; this driver never got it, and the cost is visible in
+    // run 29350543209: the Tailwind banner printed TWICE per batch (the page loading twice) while
+    // progress crawled 28 -> 42 -> 46 -> 49 -> 53 of 63 with "0 baked" over and over, never finishing.
+    const page = await (await browser.newContext({ serviceWorkers: 'block' })).newPage();
     page.on('console', m => console.log('[page]', m.text()));
     page.on('pageerror', e => console.log('[page-error]', e.message));
+    // Name a failed resource: Chromium's console line carries the status but not the url.
+    page.on('requestfailed', r => console.log('[page-net] FAILED', r.url(), '—', (r.failure() || {}).errorText || '?'));
+    page.on('response', r => { if (r.status() >= 400) console.log('[page-net]', r.status(), r.url()); });
     await page.goto(BAKE_URL, { waitUntil: 'domcontentloaded', timeout: 120000 });
     try {
+      // ⚠️ OPTIONS GO IN THE THIRD ARGUMENT — waitForFunction(pageFunction, arg?, options?). Passed
+      // second, `{timeout, polling}` became the page function's `arg` and options stayed undefined, so
+      // every wait ran on Playwright's 30 s DEFAULT instead of budgetMs. Measured in the sibling bake
+      // (run 32013243427): 13 intervals, mean 31.1 s against a configured 900 s, with a readable status
+      // every batch — so the old "the renderer dies ~30s in" theory was wrong; a dead renderer cannot
+      // answer page.evaluate. Fixing this is what lets a batch use the budget it was given.
       await page.waitForFunction(() => {
         const o = document.getElementById('out');
         return o && (/✅ Done/.test(o.textContent) || /Bake error/.test(o.textContent));
-      }, { timeout: budgetMs, polling: 5000 });
+      }, null, { timeout: budgetMs, polling: 5000 });
     } catch { /* per-batch timeout OR the page context was destroyed by an OOM crash */ }
     try {
       status = await page.evaluate(() => {
@@ -92,17 +108,42 @@ async function main() {
   console.log(`[bake] starting bake against data end=${dataEnd || '(unknown)'}`);
 
   const deadline = Date.now() + BAKE_WAIT_MS;
-  let done = false, prevStatus = '';
+  let done = false, best = -1, flat = 0, dataFails = 0;
+  // Progress = the N in the page's "Baking snapshots — N/63". Compare the NUMBER, not the whole string:
+  // the old guard was `status === prevStatus`, and bake_waves.mjs already learned the hard way that
+  // string equality reads a batch which died part-way through job N+1 (so it still prints N) as stuck,
+  // and stops runs that were progressing fine. The tail of the status carries the current job NAME, so
+  // two batches working on different jobs at the same index also differ as strings while being flat.
+  const parse = s => { const m = /(\d+)\s*\/\s*(\d+)/.exec(s || ''); return m ? +m[1] : null; };
+  // Transient shapes the page's OUTER catch can surface. Everything thrown inside the per-job loop is
+  // already caught there and counted as `fail`, so a "Bake error" here means the whole bake could not
+  // start — in practice a data load: ensureLiveData throws 'market data unavailable', and the fetch
+  // helper throws 'HTTP <status> <url>'. Anything else stays immediately fatal.
+  const TRANSIENT = /market data|HTTP (5\d\d|429|408)\b|Failed to fetch|NetworkError|load failed/i;
   for (let iter = 1; iter <= MAX_ITERS && Date.now() < deadline; iter++) {
     const budget = Math.max(30000, Math.min(PER_ITER_MS, deadline - Date.now()));
     const { status, done: d, crashed } = await bakeOnce(iter, budget);
     console.log(`[bake] batch ${iter}: ${status}`);
     if (d) { done = true; break; }
-    if (/Bake error/.test(status)) { console.error('[bake] page reported a bake error'); process.exit(1); }
-    // Stall guard: identical readable status two batches running = stuck on the same job (not just OOM
-    // progressing). Crashes read no status, so they never trip this and keep looping (they DO progress).
-    if (!crashed && status === prevStatus) { console.warn('[bake] no progress across two batches — stopping'); break; }
-    if (!crashed) prevStatus = status;
+    // A transient data failure is retried, not fatal — the page persists each snapshot (snapSet) and
+    // skips what is already cached, so the next fresh browser resumes. Counted CONSECUTIVELY: any batch
+    // that gets past the load clears it. This mirrors the fix bake_waves.mjs needed on 2026-08-17.
+    if (/Bake error/.test(status)) {
+      if (TRANSIENT.test(status) && ++dataFails <= DATA_RETRIES) {
+        console.warn(`[bake] transient data failure (${dataFails}/${DATA_RETRIES}) — retrying in a fresh browser`);
+        continue;
+      }
+      console.error('[bake] page reported a bake error'
+        + (dataFails ? ` — data load failed ${dataFails} batches in a row, past the ${DATA_RETRIES} allowed` : ''));
+      process.exit(1);
+    }
+    dataFails = 0;
+    const p = parse(status);
+    if (crashed || p == null) continue;                       // unreadable status; crashes DO progress
+    if (p > best) { best = p; flat = 0; continue; }           // advanced
+    // Genuinely flat: same-or-lower index. One batch can legitimately fail to finish a single long
+    // backtest (some saved windows span ~24 years), so allow a few before giving up.
+    if (++flat >= 4) { console.warn(`[bake] no progress across ${flat} batches (stuck at ${best}) — stopping`); break; }
   }
 
   if (done) { console.log('[bake] done — all snapshots pre-warmed'); return; }
