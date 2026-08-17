@@ -1410,6 +1410,14 @@
    "stored_pat": 33.34
   }
  },
+ "JSWDULUX": {
+  "20180331": {
+   "correct_pat_con": null,
+   "defect": "FY18 ANNUAL figures stored in the 2018-03 QUARTER slot. The consolidated XBRL of the 12-Jun-2018 submission (INDAS_35021_9038_11052018113258_WEB_2.xml) tags the SAME value on its quarter context and its year context \u2014 OneD 2018-01-01..2018-03-31 and FourD 2017-04-01..2018-03-31 both carry RevenueFromOperations 2719.35 and ProfitLossForPeriod 400.14 \u2014 while the standalone twin (_WEB.xml) distinguishes them correctly (OneD 700.41 / 237.86, FourD 2719.35 / 400.57). NSE's results-data row repeats the annual as 'Non-Cumulative' too. The filing's own consolidated statement is titled 'for TWELVE MONTHS ended 31 March 2018 and 31 March 2017' and prints NO quarter column, and no consolidated filing exists for any other FY18 quarter, so no Q4FY18 consolidated figure exists to correct to and it is not derivable. Retracted to null rather than assumed equal to the standalone 700.41.",
+   "source": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_35021_9038_11052018113258_WEB_2.xml (consolidated) vs ..._WEB.xml (standalone); attachment AKZOINDIA_NA_12062018201445_1.zip -> Financialresult31Mar2018.pdf p10",
+   "stored_pat_con": 400.14
+  }
+ },
  "KALYANI": {
   "20240331": {
    "ann_now": 20240530,
@@ -1492,6 +1500,58 @@
    "defect": "std-PAT two-files adjudication 2026-08-10",
    "source": "fund held H1 (INDAS_1572450 Apr-Sep 9.7142). BSE detres 544416 Sep-25 PAT 5.412 EPS 2.43; FY26 identity 4.147+5.412+5.882+5.346=20.79 == .50 annual 20.788 EXACT",
    "stored_pat": 9.71
+  }
+ },
+ "LANCER": {
+  "20171231": {
+   "correct_pat": 1.36,
+   "correct_pat_con": 1.36,
+   "defect": "stored 152.0 is not any scale of the true value -- it is the LAST comma group of the filing's Indian-grouped raw-rupee print 1,36,08,152. TRUE = Rs 1,36,08,152 = 1.36 cr. ANCHORS: (a) the 20190213 filing p2 column 'Quarter Ended 31.12.2017' prints exactly that; (b) the same page's 9M column 31.12.2017 = 4,66,85,868 and the 20190520 filing's 'Year Ended 31.03.2018' = 6,85,02,833, so Q4-FY18 = 2,18,16,965 -- which is precisely the 31.03.2018 quarter column of that later filing, so the whole FY18 chain closes EXACTLY; (c) EPS 2.17 x 62,79,400 shares (equity 6,27,94,000 at FV Rs 10, printed on the same page) = 1.36 cr. LANCER filed HALF-YEARLY in FY18 (BSE ann 20180605 is headed '... for the Half and Year Ended 31st March, 2018'), so this quarter exists only as a later filing's comparative column -- which is why no own-quarter filing carries it.",
+   "source": "BSE ann 20190213 attachment 8d2a6723-bd49-4a31-a7c7-ae000b54bf67.pdf p2 (standalone, figures in raw INR)",
+   "stored_pat": 152.0,
+   "stored_pat_con": 152.0
+  },
+  "20210630": {
+   "correct_pat_con": 2.97,
+   "defect": "con slot held a COPY of the standalone (std 2.54 is CORRECT). TRUE con = 297.39 lakh = 2.97 cr. ANCHORS: (a) BSE ann 20220810 attachment d762cc07-d971-4674-acec-c7773ea586ea p6 'Statement of Consolidated Financial Results ... 30th June 2022', 'Figures in Rupees -Lakhs', column 'Quarter Ended 30.06.2021' = 297.39; (b) the own-half-year filing ann 20211112 p8 prints 297.38 in its 30.06.2021 column; (c) that page's H1-FY22 con 898.83 = 297.38 + Q2 601.45, EXACT.",
+   "source": "BSE ann 20220810 attachment d762cc07-d971-4674-acec-c7773ea586ea.pdf p6 (consolidated, Rs lakh); corroborated by ann 20211112 fce335eb-7fca-4a9e-a0d4-741cc53767d4.pdf p8",
+   "stored_pat_con": 2.54
+  },
+  "20220630": {
+   "correct_pat_con": 13.29,
+   "defect": "con slot held a COPY of the standalone (std 11.86 is CORRECT = 1,186.16 lakh). TRUE con = 1,329.01 lakh = 13.29 cr. ANCHORS: (a) the own-quarter filing ann 20220810 p6, column 'Quarter Ended 30.06.2022' = 1,329.01, with the neighbouring column 30.06.2021 = 297.39 and 31.03.2022 = 1,163.18 = our stored 11.63; (b) the Jun-2023 filing (ann 20230810, attachment 4739a375-8575-4a94-89f4-ca7198c75fdc.pdf) p11 repeats 1,329.01 in its 30.06.2022 comparative column.",
+   "source": "BSE ann 20220810 attachment d762cc07-d971-4674-acec-c7773ea586ea.pdf p6 (consolidated, Rs lakh); second document ann 20230810 4739a375-8575-4a94-89f4-ca7198c75fdc.pdf p11",
+   "stored_pat_con": 11.86
+  },
+  "20230331": {
+   "correct_pat_con": 10.97,
+   "defect": "con slot held a COPY of the standalone (std 6.87 is CORRECT = 687.33 lakh). TRUE con = 1,096.77 lakh = 10.97 cr. ANCHORS: (a) the audited FY23 filing ann 20230525 attachment bad72123-197c-4980-bc05-cd48a3f5dad8.pdf p14 'Consolidated audited Financial Results ... 31st March, 2023', column 31.03.2023 = 1,096.77, with 31.12.2022 = 1,361.90 = our stored 13.62 and 31.03.2022 = 1,163.20 = our stored 11.63; (b) the Jun-2023 filing p11 repeats 1,096.77 in its 31.03.2023 comparative column.",
+   "source": "BSE ann 20230525 attachment bad72123-197c-4980-bc05-cd48a3f5dad8.pdf p14 (consolidated, Rs lakh); second document ann 20230810 4739a375-8575-4a94-89f4-ca7198c75fdc.pdf p11",
+   "stored_pat_con": 6.87
+  },
+  "20240630": {
+   "correct_pat": 3.34,
+   "correct_pat_con": 12.06,
+   "defect": "BOTH slots held the FY2025 FULL-YEAR figures, not the June-2024 quarter: FY25 std annual = 184.11 lakh = 1.84 and FY25 con annual = (34.77) lakh = -0.35, exactly the stored pair (20250611 filing p7/p15 'Year Ended 31.03.2025'). TRUE quarter = std 334.49 lakh = 3.34, con 1,206.31 lakh = 12.06. COLUMN ANCHORS in the own-quarter filing: std 31.03.2024 = 489.63 = our stored 4.90 and 30.06.2023 = 706.91 = our stored 7.07; con 31.03.2024 = 1,598.56 = our stored 15.99 and 30.06.2023 = 1,411.99 = our stored 14.12 -- four independent locks. CORROBORATION: the Sep-2024 filing repeats 334.48 / 1,206.32 and BSE detres 122.00 prints std 33.45 mn = 3.345 cr.",
+   "source": "BSE ann 20240812 attachment 6e593734-9a61-4248-98e2-5d6af072768f.pdf (p5 standalone / p8 consolidated, 'INR in Lakh')",
+   "stored_pat": 1.84,
+   "stored_pat_con": -0.35
+  },
+  "20240930": {
+   "correct_pat": 2.92,
+   "correct_pat_con": 15.91,
+   "defect": "Wrong column AND lakh-read-as-crore. The stored pair comes from the LATER Sep-2025 filing (ann 20251114): its standalone p12 prints 202.27 in the 30.09.2024 comparative column, and 215.46 is that filing's CONSOLIDATED 'Half Year Ended' (H1-FY26) column, not any Sep-2024 figure. TRUE = std 292.27 lakh = 2.92, con 1,590.93 lakh = 15.91, from the own-quarter filing. THREE anchors settle std against the later filing's 202.27: (a) the own filing prints 292.27; (b) that same later filing's own H1-FY25 column 626.74 minus the twice-confirmed Q1 334.48 = 292.26; (c) BSE detres 123.00 Net Profit 29.23 mn = 2.923 cr. CON column anchors in the own filing: 30.06.2024 = 1,206.32 (= the healed Jun cell) and 30.09.2023 = 1,420.69 = our stored 14.21.",
+   "source": "BSE ann 20241113 attachment e9bd9049-1f9a-47ac-95b7-5ab02dd1a733.pdf (p5 standalone / p10 consolidated, 'INR in Lakh')",
+   "stored_pat": 202.27,
+   "stored_pat_con": 215.46
+  },
+  "20250630": {
+   "correct_pat": -3.63,
+   "correct_pat_con": -4.62,
+   "defect": "adjacent-quarter DUPLICATE: both slots held the Mar-2025 values (-168.62 lakh / -3,244.20 lakh, i.e. -1.69 / -32.44), which are themselves correct in the 20250331 row. TRUE Jun-2025 = std (362.94) lakh = -3.63, con (461.56) lakh = -4.62. COLUMN ANCHORS in the own-quarter filing: std 31.03.2025 = (168.62) = our stored -1.69 and 30.06.2024 = 334.47; con 31.03.2025 = (3,244.20) = our stored -32.44 and 30.06.2024 = 1,206.31. CORROBORATION: BSE detres 126.00 std Net Profit -36.30 mn = -3.63 cr; and the Dec-2025 filing's 9M columns give Q1 by subtraction -- std -116.74-(-260.62)-506.82 = -362.94 and con -527.30-(-742.77)-677.02 = -461.55.",
+   "source": "BSE ann 20250812 attachment 64665bdc-5128-4f21-9989-9856630d1b8d.pdf (p5 standalone / p8 consolidated, 'INR in Lakh')",
+   "stored_pat": -1.69,
+   "stored_pat_con": -32.44
   }
  },
  "LEHAR": {
@@ -3014,57 +3074,5 @@
    "stored_pat": 54.76
   }
  },
- "_README": "Confirmed WRONG stored PAT cells in docs/sf_fundamentals.json, with the as-filed correct value and its source. Found while rev-backfilling: the cell's revenue could not be written because the stored PAT failed the anchor rule (see scripts/_apply_reads.py). sf_fundamentals is CI-rebuilt and is owned by refresh.yml / the bse-vision-fill routine (DATA_RUNBOOK hot-file ownership), so DO NOT hand-edit it from another tree - route the fix through that lane, then re-run the rev applier and these cells will anchor and fill.",
- "LANCER": {
-  "20171231": {
-   "stored_pat": 152.0,
-   "correct_pat": 1.36,
-   "stored_pat_con": 152.0,
-   "correct_pat_con": 1.36,
-   "defect": "stored 152.0 is not any scale of the true value -- it is the LAST comma group of the filing's Indian-grouped raw-rupee print 1,36,08,152. TRUE = Rs 1,36,08,152 = 1.36 cr. ANCHORS: (a) the 20190213 filing p2 column 'Quarter Ended 31.12.2017' prints exactly that; (b) the same page's 9M column 31.12.2017 = 4,66,85,868 and the 20190520 filing's 'Year Ended 31.03.2018' = 6,85,02,833, so Q4-FY18 = 2,18,16,965 -- which is precisely the 31.03.2018 quarter column of that later filing, so the whole FY18 chain closes EXACTLY; (c) EPS 2.17 x 62,79,400 shares (equity 6,27,94,000 at FV Rs 10, printed on the same page) = 1.36 cr. LANCER filed HALF-YEARLY in FY18 (BSE ann 20180605 is headed '... for the Half and Year Ended 31st March, 2018'), so this quarter exists only as a later filing's comparative column -- which is why no own-quarter filing carries it.",
-   "source": "BSE ann 20190213 attachment 8d2a6723-bd49-4a31-a7c7-ae000b54bf67.pdf p2 (standalone, figures in raw INR)"
-  },
-  "20210630": {
-   "stored_pat_con": 2.54,
-   "correct_pat_con": 2.97,
-   "defect": "con slot held a COPY of the standalone (std 2.54 is CORRECT). TRUE con = 297.39 lakh = 2.97 cr. ANCHORS: (a) BSE ann 20220810 attachment d762cc07-d971-4674-acec-c7773ea586ea p6 'Statement of Consolidated Financial Results ... 30th June 2022', 'Figures in Rupees -Lakhs', column 'Quarter Ended 30.06.2021' = 297.39; (b) the own-half-year filing ann 20211112 p8 prints 297.38 in its 30.06.2021 column; (c) that page's H1-FY22 con 898.83 = 297.38 + Q2 601.45, EXACT.",
-   "source": "BSE ann 20220810 attachment d762cc07-d971-4674-acec-c7773ea586ea.pdf p6 (consolidated, Rs lakh); corroborated by ann 20211112 fce335eb-7fca-4a9e-a0d4-741cc53767d4.pdf p8"
-  },
-  "20220630": {
-   "stored_pat_con": 11.86,
-   "correct_pat_con": 13.29,
-   "defect": "con slot held a COPY of the standalone (std 11.86 is CORRECT = 1,186.16 lakh). TRUE con = 1,329.01 lakh = 13.29 cr. ANCHORS: (a) the own-quarter filing ann 20220810 p6, column 'Quarter Ended 30.06.2022' = 1,329.01, with the neighbouring column 30.06.2021 = 297.39 and 31.03.2022 = 1,163.18 = our stored 11.63; (b) the Jun-2023 filing (ann 20230810, attachment 4739a375-8575-4a94-89f4-ca7198c75fdc.pdf) p11 repeats 1,329.01 in its 30.06.2022 comparative column.",
-   "source": "BSE ann 20220810 attachment d762cc07-d971-4674-acec-c7773ea586ea.pdf p6 (consolidated, Rs lakh); second document ann 20230810 4739a375-8575-4a94-89f4-ca7198c75fdc.pdf p11"
-  },
-  "20230331": {
-   "stored_pat_con": 6.87,
-   "correct_pat_con": 10.97,
-   "defect": "con slot held a COPY of the standalone (std 6.87 is CORRECT = 687.33 lakh). TRUE con = 1,096.77 lakh = 10.97 cr. ANCHORS: (a) the audited FY23 filing ann 20230525 attachment bad72123-197c-4980-bc05-cd48a3f5dad8.pdf p14 'Consolidated audited Financial Results ... 31st March, 2023', column 31.03.2023 = 1,096.77, with 31.12.2022 = 1,361.90 = our stored 13.62 and 31.03.2022 = 1,163.20 = our stored 11.63; (b) the Jun-2023 filing p11 repeats 1,096.77 in its 31.03.2023 comparative column.",
-   "source": "BSE ann 20230525 attachment bad72123-197c-4980-bc05-cd48a3f5dad8.pdf p14 (consolidated, Rs lakh); second document ann 20230810 4739a375-8575-4a94-89f4-ca7198c75fdc.pdf p11"
-  },
-  "20240630": {
-   "stored_pat": 1.84,
-   "correct_pat": 3.34,
-   "stored_pat_con": -0.35,
-   "correct_pat_con": 12.06,
-   "defect": "BOTH slots held the FY2025 FULL-YEAR figures, not the June-2024 quarter: FY25 std annual = 184.11 lakh = 1.84 and FY25 con annual = (34.77) lakh = -0.35, exactly the stored pair (20250611 filing p7/p15 'Year Ended 31.03.2025'). TRUE quarter = std 334.49 lakh = 3.34, con 1,206.31 lakh = 12.06. COLUMN ANCHORS in the own-quarter filing: std 31.03.2024 = 489.63 = our stored 4.90 and 30.06.2023 = 706.91 = our stored 7.07; con 31.03.2024 = 1,598.56 = our stored 15.99 and 30.06.2023 = 1,411.99 = our stored 14.12 -- four independent locks. CORROBORATION: the Sep-2024 filing repeats 334.48 / 1,206.32 and BSE detres 122.00 prints std 33.45 mn = 3.345 cr.",
-   "source": "BSE ann 20240812 attachment 6e593734-9a61-4248-98e2-5d6af072768f.pdf (p5 standalone / p8 consolidated, 'INR in Lakh')"
-  },
-  "20240930": {
-   "stored_pat": 202.27,
-   "correct_pat": 2.92,
-   "stored_pat_con": 215.46,
-   "correct_pat_con": 15.91,
-   "defect": "Wrong column AND lakh-read-as-crore. The stored pair comes from the LATER Sep-2025 filing (ann 20251114): its standalone p12 prints 202.27 in the 30.09.2024 comparative column, and 215.46 is that filing's CONSOLIDATED 'Half Year Ended' (H1-FY26) column, not any Sep-2024 figure. TRUE = std 292.27 lakh = 2.92, con 1,590.93 lakh = 15.91, from the own-quarter filing. THREE anchors settle std against the later filing's 202.27: (a) the own filing prints 292.27; (b) that same later filing's own H1-FY25 column 626.74 minus the twice-confirmed Q1 334.48 = 292.26; (c) BSE detres 123.00 Net Profit 29.23 mn = 2.923 cr. CON column anchors in the own filing: 30.06.2024 = 1,206.32 (= the healed Jun cell) and 30.09.2023 = 1,420.69 = our stored 14.21.",
-   "source": "BSE ann 20241113 attachment e9bd9049-1f9a-47ac-95b7-5ab02dd1a733.pdf (p5 standalone / p10 consolidated, 'INR in Lakh')"
-  },
-  "20250630": {
-   "stored_pat": -1.69,
-   "correct_pat": -3.63,
-   "stored_pat_con": -32.44,
-   "correct_pat_con": -4.62,
-   "defect": "adjacent-quarter DUPLICATE: both slots held the Mar-2025 values (-168.62 lakh / -3,244.20 lakh, i.e. -1.69 / -32.44), which are themselves correct in the 20250331 row. TRUE Jun-2025 = std (362.94) lakh = -3.63, con (461.56) lakh = -4.62. COLUMN ANCHORS in the own-quarter filing: std 31.03.2025 = (168.62) = our stored -1.69 and 30.06.2024 = 334.47; con 31.03.2025 = (3,244.20) = our stored -32.44 and 30.06.2024 = 1,206.31. CORROBORATION: BSE detres 126.00 std Net Profit -36.30 mn = -3.63 cr; and the Dec-2025 filing's 9M columns give Q1 by subtraction -- std -116.74-(-260.62)-506.82 = -362.94 and con -527.30-(-742.77)-677.02 = -461.55.",
-   "source": "BSE ann 20250812 attachment 64665bdc-5128-4f21-9989-9856630d1b8d.pdf (p5 standalone / p8 consolidated, 'INR in Lakh')"
-  }
- }
+ "_README": "Confirmed WRONG stored PAT cells in docs/sf_fundamentals.json, with the as-filed correct value and its source. Found while rev-backfilling: the cell's revenue could not be written because the stored PAT failed the anchor rule (see scripts/_apply_reads.py). sf_fundamentals is CI-rebuilt and is owned by refresh.yml / the bse-vision-fill routine (DATA_RUNBOOK hot-file ownership), so DO NOT hand-edit it from another tree - route the fix through that lane, then re-run the rev applier and these cells will anchor and fill."
 }
