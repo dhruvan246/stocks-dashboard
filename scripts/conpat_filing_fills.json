@@ -128,5 +128,68 @@
   "evidence": "Q4FY20 AUDITED con statement (vision): owners row 10,886.52; anchors Mar-20 8,482.14=84.82 EXACT + Dec-19 5,188.53=51.89 EXACT",
   "convention": "OWNERS row \u2014 stored series verified consistent owners across 4 quarters (85.90/42.89/51.89/84.82 all exact)",
   "fill_pass": "2026-08-17 con-triad"
+ },
+ "DBL|20180630|con": {
+  "con": 223.47,
+  "annCon": 20190807,
+  "basis": "con",
+  "src": "NSE corporates-financial-results-data -> attachment zip -> filed PDF (scan-grade, vision read)",
+  "when": "2026-08-17 19:30 IST",
+  "evidence": "Q1FY20 con filing (filed 2019-08-07) p11, comparative column 30-Jun-18: Owners of the Parent 22,347.29 lakhs -> 223.47 cr. SECOND READER (different filing, arithmetic): H1 Sep-18 owners 28,322.10 (Q2FY20 p16) - Sep-18 5,974.81 = 22,347.29 EXACT.",
+  "convention": "owners-attributable row \"Owners of the Parent\". FY IDENTITY proves this is the series convention, exact to the paisa in BOTH years: FY20 audited annual owners 35,776.19 == 10,248.51+2,861.33+5,986.13+16,680.22 ; FY19 audited annual owners 55,230.85 == 22,347.29+5,974.81+18,140.58+8,768.17",
+  "no_earlier_con_filing": "NSE quarterly list: first Consolidated row is 20190630 filed 2019-08-07 \u2014 DBL published NO consolidated quarterly before that, so each FY19 comparative column is that value first becoming public",
+  "rounding": "round(lakhs/100, 2) \u2014 pipeline convention (_stepw_nse_pre15.py:196, bse_text.py:171)",
+  "anchor": "same p11 table: Jun-19 TOTAL row 10,042.38 -> 100.42 == stored EXACT (company/scale/period proven); the owners row of that same quarter is the heal below"
+ },
+ "DBL|20180930|con": {
+  "con": 59.75,
+  "annCon": 20200318,
+  "basis": "con",
+  "src": "NSE corporates-financial-results-data -> attachment zip -> filed PDF (scan-grade, vision read)",
+  "when": "2026-08-17 19:30 IST",
+  "evidence": "Q2FY20 con filing (filed 2020-03-18) p16, comparative column 30-Sep-18 (Management Certified): Owners of the Parent 5,974.81 lakhs -> 59.75 cr. SECOND READER: H1 Sep-18 owners 28,322.10 (same filing) - Jun-18 22,347.29 (Q1FY20 filing) = 5,974.81 EXACT.",
+  "convention": "owners-attributable row \"Owners of the Parent\". FY IDENTITY proves this is the series convention, exact to the paisa in BOTH years: FY20 audited annual owners 35,776.19 == 10,248.51+2,861.33+5,986.13+16,680.22 ; FY19 audited annual owners 55,230.85 == 22,347.29+5,974.81+18,140.58+8,768.17",
+  "no_earlier_con_filing": "NSE quarterly list: first Consolidated row is 20190630 filed 2019-08-07 \u2014 DBL published NO consolidated quarterly before that, so each FY19 comparative column is that value first becoming public",
+  "rounding": "round(lakhs/100, 2) \u2014 pipeline convention (_stepw_nse_pre15.py:196, bse_text.py:171)",
+  "anchor": "p16 current quarter Sep-19 owners 2,861.33 -> 28.61 == stored EXACT"
+ },
+ "DBL|20181231|con": {
+  "con": 181.41,
+  "annCon": 20200211,
+  "basis": "con",
+  "src": "NSE corporates-financial-results-data -> attachment zip -> filed PDF (scan-grade, vision read)",
+  "when": "2026-08-17 19:30 IST",
+  "evidence": "Q3FY20 con filing (filed 2020-02-11) p12, comparative column 31-Dec-18 (Management Certified): Owners of the Parent 18,140.58 lakhs -> 181.41 cr. SECOND READER: 9M Dec-18 owners 46,462.69 (same filing) - H1 Sep-18 28,322.10 (Q2FY20 filing) = 18,140.59 -> 181.41 at crore precision.",
+  "convention": "owners-attributable row \"Owners of the Parent\". FY IDENTITY proves this is the series convention, exact to the paisa in BOTH years: FY20 audited annual owners 35,776.19 == 10,248.51+2,861.33+5,986.13+16,680.22 ; FY19 audited annual owners 55,230.85 == 22,347.29+5,974.81+18,140.58+8,768.17",
+  "no_earlier_con_filing": "NSE quarterly list: first Consolidated row is 20190630 filed 2019-08-07 \u2014 DBL published NO consolidated quarterly before that, so each FY19 comparative column is that value first becoming public",
+  "rounding": "round(lakhs/100, 2) \u2014 pipeline convention (_stepw_nse_pre15.py:196, bse_text.py:171)",
+  "anchor": "p12 DOUBLE ANCHOR: Dec-19 owners 5,986.13 -> 59.86 == stored EXACT AND Sep-19 owners 2,861.33 -> 28.61 == stored EXACT"
+ },
+ "DBL|20190331|con": {
+  "con": 87.68,
+  "annCon": 20200608,
+  "basis": "con",
+  "src": "NSE corporates-financial-results-data -> attachment zip -> filed PDF (scan-grade, vision read)",
+  "when": "2026-08-17 19:30 IST",
+  "evidence": "Q4FY20 con filing (filed 2020-06-08) p20, AUDITED comparative column 31-Mar-19: Owners of the Parent 8,768.17 lakhs -> 87.68 cr. SECOND READER: FY19 annual owners 55,230.85 - 9M Dec-18 46,462.69 (Q3FY20 filing) = 8,768.16 -> 87.68 at crore precision.",
+  "convention": "owners-attributable row \"Owners of the Parent\". FY IDENTITY proves this is the series convention, exact to the paisa in BOTH years: FY20 audited annual owners 35,776.19 == 10,248.51+2,861.33+5,986.13+16,680.22 ; FY19 audited annual owners 55,230.85 == 22,347.29+5,974.81+18,140.58+8,768.17",
+  "no_earlier_con_filing": "NSE quarterly list: first Consolidated row is 20190630 filed 2019-08-07 \u2014 DBL published NO consolidated quarterly before that, so each FY19 comparative column is that value first becoming public",
+  "rounding": "round(lakhs/100, 2) \u2014 pipeline convention (_stepw_nse_pre15.py:196, bse_text.py:171)",
+  "anchor": "p20 DOUBLE ANCHOR: Mar-20 owners 16,680.22 -> 166.80 == stored EXACT AND Dec-19 owners 5,986.13 -> 59.86 == stored EXACT",
+  "restatement_note": "Q1FY20 p11 had shown Mar-19 owners 8,762.24 (pre-audit). That value misses the FY19 audited annual by 5.93 lakhs; the audited 8,768.17 closes the identity exactly, so the audited figure is written."
+ },
+ "DBL|20190630|con-HEAL": {
+  "con": 102.49,
+  "was": 100.42,
+  "annCon": 20190807,
+  "basis": "con",
+  "src": "NSE corporates-financial-results-data -> attachment zip -> filed PDF (scan-grade, vision read)",
+  "when": "2026-08-17 19:30 IST",
+  "mode": "heal",
+  "evidence": "stored 100.42 == the filing TOTAL row \"Profit after Tax, share of Profit/(Loss) of associates\" 10,042.38 lakhs, i.e. INCLUDING non-controlling interest (-206.12). Every other stored con quarter of DBL holds the OWNERS row (Sep-19 28.61, Dec-19 59.86, Mar-20 166.80 \u2014 all exact owners matches, and their total-row values 25.87/88.07/191.06 match nothing stored). Owners for Jun-19 is 10,248.51 (Q2FY20 p16; 10,248.50 in Q1FY20 p11) -> 102.49 cr.",
+  "why_heal_is_safe": "FY20 audited annual owners is 35,776.19 lakhs. Sum of stored quarters as-was = 35,570.06 (short by exactly the Jun-19 NCI, 206.13). With 10,248.51 the four quarters sum to 35,776.19 EXACTLY \u2014 the identity arbitrates the row, no judgement involved.",
+  "convention": "owners-attributable row \"Owners of the Parent\". FY IDENTITY proves this is the series convention, exact to the paisa in BOTH years: FY20 audited annual owners 35,776.19 == 10,248.51+2,861.33+5,986.13+16,680.22 ; FY19 audited annual owners 55,230.85 == 22,347.29+5,974.81+18,140.58+8,768.17",
+  "rounding": "round(lakhs/100, 2) \u2014 pipeline convention (_stepw_nse_pre15.py:196, bse_text.py:171)",
+  "defect_class": "mixed total/owners convention inside one stored con series \u2014 same class as NMDC / BHARATFORG / JKCEMENT (those were REFUSED because no identity could arbitrate which row each quarter should hold). DBL is the first of the class where the audited annual pins it, so it is healable."
  }
 }

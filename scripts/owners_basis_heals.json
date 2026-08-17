@@ -9,7 +9,7 @@
   "2026-08-09 second pass: ATUL FY21+FY22 closed out (Jun-20, Mar-21, Jun-21, Sep-21, Dec-21). SADBHAV 2020-03-31 was RE-CHECKED and is CORRECT as stored: the Jun-2020 filing prints Mar-20 period 1280.78 and NCI 394.14 -> owners 886.64, and FY20 owners -8.07 + -15.94 + -69.79 + 886.63 = 792.83 exactly as printed. The value only looked wrong because it is a very large genuine one-off -- the RENUKA lesson (runbook \u00a769c).",
   "2026-08-09 third pass: the named fund-vs-revop cells (ATUL Sep-25, SADBHAV Dec-20, RENUKA Dec-20 +Mar-21). Measuring them found sf_fundamentals and sf_revop disagree on 1,372 of 43,731 populated con-PAT cells (3.14%); the 603 where revop is exactly 0.0 against a real fundamentals value were resynced, the 716 genuine disagreements and 15 fundamentals==0 cells are NOT touched. build_discovery's TTM P/E was reading the divergent mirror. \u00a770."
  ],
- "generated": "2026-08-09",
+ "generated": "2026-08-17 19:40 IST",
  "cells": {
   "ATUL|20220331|patC": {
    "period": 136.56,
@@ -343,6 +343,73 @@
    "owners": 20.64,
    "stored_before": 20.78,
    "note": "con slot held the TOTAL: the Dec-25 con XBRL INDAS_1625562 carries no attributable tags. The filing's PDF prints the split (owners 2,063.68 lakh + NCI 14.59 = 2,078.27 total). Not in _reattr_owners today; pinned so a later ingestion cannot reintroduce the total."
+  },
+  "DBL|20190630|patC": {
+   "period": 100.42,
+   "nci": -2.06,
+   "owners": 102.49,
+   "stored_before": 100.42,
+   "note": "held the TOTAL row (\"Profit after Tax, share of Profit/(Loss) of associates\" 10,042.38 lakhs) while Sep-19 / Dec-19 / Mar-20 all hold owners \u2014 mixed convention inside one series",
+   "source": "Q2FY20 con filing 2020-03-18 p16 owners 10,248.51 lakhs (Q1FY20 2019-08-07 p11: 10,248.50)",
+   "identity": "FY IDENTITY, exact to the paisa in both years: FY20 audited annual owners 35,776.19 lakhs == 10,248.51+2,861.33+5,986.13+16,680.22 ; FY19 audited annual owners 55,230.85 == 22,347.29+5,974.81+18,140.58+8,768.17. Sum of the stored quarters BEFORE the heal was 35,570.06 \u2014 short by exactly the Jun-19 NCI (206.13 lakhs).",
+   "why_cache_missed_it": "_reattr_owners.json has no DBL|20190630 entry, so nothing ever put this cell on the owners basis",
+   "prior_per_file": {
+    "sf_fundamentals.json": 100.42,
+    "fundamentals.json": 100.42
+   },
+   "when": "2026-08-17 19:40 IST"
+  },
+  "DBL|20180630|patC": {
+   "owners": 223.47,
+   "lakhs": 22347.29,
+   "stored_before": null,
+   "note": "comparative-column fill (DBL published no consolidated quarterly before 2019-08-07); pinned so a future cache rebuild cannot substitute the total row",
+   "source": "Q1FY20 con filing 2019-08-07 p11 comparative col 30-Jun-18",
+   "identity": "FY IDENTITY, exact to the paisa in both years: FY20 audited annual owners 35,776.19 lakhs == 10,248.51+2,861.33+5,986.13+16,680.22 ; FY19 audited annual owners 55,230.85 == 22,347.29+5,974.81+18,140.58+8,768.17. Sum of the stored quarters BEFORE the heal was 35,570.06 \u2014 short by exactly the Jun-19 NCI (206.13 lakhs).",
+   "prior_per_file": {
+    "sf_fundamentals.json": null,
+    "fundamentals.json": null
+   },
+   "when": "2026-08-17 19:40 IST"
+  },
+  "DBL|20180930|patC": {
+   "owners": 59.75,
+   "lakhs": 5974.81,
+   "stored_before": null,
+   "note": "comparative-column fill (DBL published no consolidated quarterly before 2019-08-07); pinned so a future cache rebuild cannot substitute the total row",
+   "source": "Q2FY20 con filing 2020-03-18 p16 comparative col 30-Sep-18 (Management Certified)",
+   "identity": "FY IDENTITY, exact to the paisa in both years: FY20 audited annual owners 35,776.19 lakhs == 10,248.51+2,861.33+5,986.13+16,680.22 ; FY19 audited annual owners 55,230.85 == 22,347.29+5,974.81+18,140.58+8,768.17. Sum of the stored quarters BEFORE the heal was 35,570.06 \u2014 short by exactly the Jun-19 NCI (206.13 lakhs).",
+   "prior_per_file": {
+    "sf_fundamentals.json": null,
+    "fundamentals.json": null
+   },
+   "when": "2026-08-17 19:40 IST"
+  },
+  "DBL|20181231|patC": {
+   "owners": 181.41,
+   "lakhs": 18140.58,
+   "stored_before": null,
+   "note": "comparative-column fill (DBL published no consolidated quarterly before 2019-08-07); pinned so a future cache rebuild cannot substitute the total row",
+   "source": "Q3FY20 con filing 2020-02-11 p12 comparative col 31-Dec-18 (Management Certified)",
+   "identity": "FY IDENTITY, exact to the paisa in both years: FY20 audited annual owners 35,776.19 lakhs == 10,248.51+2,861.33+5,986.13+16,680.22 ; FY19 audited annual owners 55,230.85 == 22,347.29+5,974.81+18,140.58+8,768.17. Sum of the stored quarters BEFORE the heal was 35,570.06 \u2014 short by exactly the Jun-19 NCI (206.13 lakhs).",
+   "prior_per_file": {
+    "sf_fundamentals.json": null,
+    "fundamentals.json": null
+   },
+   "when": "2026-08-17 19:40 IST"
+  },
+  "DBL|20190331|patC": {
+   "owners": 87.68,
+   "lakhs": 8768.17,
+   "stored_before": null,
+   "note": "comparative-column fill (DBL published no consolidated quarterly before 2019-08-07); pinned so a future cache rebuild cannot substitute the total row",
+   "source": "Q4FY20 con filing 2020-06-08 p20 AUDITED col 31-Mar-19",
+   "identity": "FY IDENTITY, exact to the paisa in both years: FY20 audited annual owners 35,776.19 lakhs == 10,248.51+2,861.33+5,986.13+16,680.22 ; FY19 audited annual owners 55,230.85 == 22,347.29+5,974.81+18,140.58+8,768.17. Sum of the stored quarters BEFORE the heal was 35,570.06 \u2014 short by exactly the Jun-19 NCI (206.13 lakhs).",
+   "prior_per_file": {
+    "sf_fundamentals.json": null,
+    "fundamentals.json": null
+   },
+   "when": "2026-08-17 19:40 IST"
   }
  }
 }
