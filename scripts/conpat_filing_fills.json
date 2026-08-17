@@ -496,5 +496,107 @@
   "why_refused": "Jun-18 and Mar-19 can only be reached through one of those disputed subtotals, and the two paths give different answers for Mar-19 (FY19 8,741.30 - 9M 7,030.69 = 1,710.61 -> 17.11 vs FY19 minus the three printed quarters = 1,985.69 -> 19.86). Picking one would be a guess about which filing is right.",
   "what_was_written": "only the two PRINTED quarter columns: Sep-18 20.64 and Dec-18 19.57",
   "next_step": "read the FY19 annual consolidated filing (2019-05-28) \u2014 its own Q4 column and attribution note should settle which split is correct"
+ },
+ "BHEL|20180630|con": {
+  "con": 40.68,
+  "annCon": 20191113,
+  "basis": "con",
+  "when": "2026-08-17 20:27 IST",
+  "src": "BHEL Q2FY20 consolidated results (NSE attachment, filed 2019-11-13) p5: H1 Sep-18 owners 127.15 - Sep-18 owners 86.47",
+  "evidence": "derived inside one table from two printed columns; confirmed by the FY19 year closing exactly",
+  "convention": "owners-attributable (\"Owners of the Company\"). The stored series was MIXED and the _reattr_owners cache explains it exactly: the cache holds only BHEL|20190930 (121.70, owners) and that is the ONE stored cell on the owners basis \u2014 Jun-19 (-218.93) and Dec-19 (161.81) are the raw TOTAL row (owners -217.72 / 162.67). Same pattern as EXIDEIND: cache coverage = convention boundary.",
+  "identity": "Everything closes to the paisa. H1 Sep-18 owners 127.15 = Jun-18 40.68 + Sep-18 86.47. 9M Dec-18 owners 323.63 = H1 127.15 (Q2FY20 filing) + Dec-18 196.48 (Q3FY20 filing) \u2014 subtotals from DIFFERENT filings. FY19 owners 1011.84 = 40.68 + 86.47 + 196.48 + 688.21.",
+  "anchor": "Q2FY20 p5 DOUBLE: Sep-19 owners 121.70 == stored EXACT and Jun-19 TOTAL -218.93 == stored EXACT (the mix itself, proving company/scale/period). Q3FY20 p4 DOUBLE: Sep-19 owners 121.70 == stored EXACT and Dec-19 TOTAL 161.81 == stored EXACT.",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": null,
+   "scripts/fundamentals.json": null
+  }
+ },
+ "BHEL|20180930|con": {
+  "con": 86.47,
+  "annCon": 20191113,
+  "basis": "con",
+  "when": "2026-08-17 20:27 IST",
+  "src": "BHEL Q2FY20 consolidated results (filed 2019-11-13) p5, corresponding-quarter column 30.09.2018",
+  "evidence": "printed comparative, owners 86.47 (total 85.24, NCI -1.23)",
+  "convention": "owners-attributable (\"Owners of the Company\"). The stored series was MIXED and the _reattr_owners cache explains it exactly: the cache holds only BHEL|20190930 (121.70, owners) and that is the ONE stored cell on the owners basis \u2014 Jun-19 (-218.93) and Dec-19 (161.81) are the raw TOTAL row (owners -217.72 / 162.67). Same pattern as EXIDEIND: cache coverage = convention boundary.",
+  "identity": "Everything closes to the paisa. H1 Sep-18 owners 127.15 = Jun-18 40.68 + Sep-18 86.47. 9M Dec-18 owners 323.63 = H1 127.15 (Q2FY20 filing) + Dec-18 196.48 (Q3FY20 filing) \u2014 subtotals from DIFFERENT filings. FY19 owners 1011.84 = 40.68 + 86.47 + 196.48 + 688.21.",
+  "anchor": "Q2FY20 p5 DOUBLE: Sep-19 owners 121.70 == stored EXACT and Jun-19 TOTAL -218.93 == stored EXACT (the mix itself, proving company/scale/period). Q3FY20 p4 DOUBLE: Sep-19 owners 121.70 == stored EXACT and Dec-19 TOTAL 161.81 == stored EXACT.",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": null,
+   "scripts/fundamentals.json": null
+  }
+ },
+ "BHEL|20181231|con": {
+  "con": 196.48,
+  "annCon": 20200212,
+  "basis": "con",
+  "when": "2026-08-17 20:27 IST",
+  "src": "BHEL Q3FY20 consolidated results (filed 2020-02-12) p4, corresponding-quarter column 31.12.2018",
+  "evidence": "printed comparative, owners 196.48 (total 196.43, NCI -0.05)",
+  "convention": "owners-attributable (\"Owners of the Company\"). The stored series was MIXED and the _reattr_owners cache explains it exactly: the cache holds only BHEL|20190930 (121.70, owners) and that is the ONE stored cell on the owners basis \u2014 Jun-19 (-218.93) and Dec-19 (161.81) are the raw TOTAL row (owners -217.72 / 162.67). Same pattern as EXIDEIND: cache coverage = convention boundary.",
+  "identity": "Everything closes to the paisa. H1 Sep-18 owners 127.15 = Jun-18 40.68 + Sep-18 86.47. 9M Dec-18 owners 323.63 = H1 127.15 (Q2FY20 filing) + Dec-18 196.48 (Q3FY20 filing) \u2014 subtotals from DIFFERENT filings. FY19 owners 1011.84 = 40.68 + 86.47 + 196.48 + 688.21.",
+  "anchor": "Q2FY20 p5 DOUBLE: Sep-19 owners 121.70 == stored EXACT and Jun-19 TOTAL -218.93 == stored EXACT (the mix itself, proving company/scale/period). Q3FY20 p4 DOUBLE: Sep-19 owners 121.70 == stored EXACT and Dec-19 TOTAL 161.81 == stored EXACT.",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": null,
+   "scripts/fundamentals.json": null
+  }
+ },
+ "BHEL|20190331|con": {
+  "con": 688.21,
+  "annCon": 20200212,
+  "basis": "con",
+  "when": "2026-08-17 20:27 IST",
+  "src": "BHEL Q3FY20 consolidated results (filed 2020-02-12) p4: FY19 owners 1011.84 - 9M Dec-18 owners 323.63",
+  "evidence": "Q4FY19 owners 688.21; standalone Mar-19 is 682.70, same size. Year closes exactly with the other three.",
+  "convention": "owners-attributable (\"Owners of the Company\"). The stored series was MIXED and the _reattr_owners cache explains it exactly: the cache holds only BHEL|20190930 (121.70, owners) and that is the ONE stored cell on the owners basis \u2014 Jun-19 (-218.93) and Dec-19 (161.81) are the raw TOTAL row (owners -217.72 / 162.67). Same pattern as EXIDEIND: cache coverage = convention boundary.",
+  "identity": "Everything closes to the paisa. H1 Sep-18 owners 127.15 = Jun-18 40.68 + Sep-18 86.47. 9M Dec-18 owners 323.63 = H1 127.15 (Q2FY20 filing) + Dec-18 196.48 (Q3FY20 filing) \u2014 subtotals from DIFFERENT filings. FY19 owners 1011.84 = 40.68 + 86.47 + 196.48 + 688.21.",
+  "anchor": "Q2FY20 p5 DOUBLE: Sep-19 owners 121.70 == stored EXACT and Jun-19 TOTAL -218.93 == stored EXACT (the mix itself, proving company/scale/period). Q3FY20 p4 DOUBLE: Sep-19 owners 121.70 == stored EXACT and Dec-19 TOTAL 161.81 == stored EXACT.",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": null,
+   "scripts/fundamentals.json": null
+  }
+ },
+ "BHEL|20190630|con-HEAL": {
+  "con": -217.72,
+  "annCon": 20190809,
+  "basis": "con",
+  "when": "2026-08-17 20:27 IST",
+  "src": "BHEL Q2FY20 consolidated results (filed 2019-11-13) p5, preceding-quarter column 30.06.2019",
+  "evidence": "stored -218.93 is EXACTLY the total row ('Net Profit/(Loss) for the period'); owners is -217.72 (NCI -1.21). Announce date unchanged \u2014 both rows were in the quarter's own filing.",
+  "convention": "owners-attributable (\"Owners of the Company\"). The stored series was MIXED and the _reattr_owners cache explains it exactly: the cache holds only BHEL|20190930 (121.70, owners) and that is the ONE stored cell on the owners basis \u2014 Jun-19 (-218.93) and Dec-19 (161.81) are the raw TOTAL row (owners -217.72 / 162.67). Same pattern as EXIDEIND: cache coverage = convention boundary.",
+  "identity": "Everything closes to the paisa. H1 Sep-18 owners 127.15 = Jun-18 40.68 + Sep-18 86.47. 9M Dec-18 owners 323.63 = H1 127.15 (Q2FY20 filing) + Dec-18 196.48 (Q3FY20 filing) \u2014 subtotals from DIFFERENT filings. FY19 owners 1011.84 = 40.68 + 86.47 + 196.48 + 688.21.",
+  "anchor": "Q2FY20 p5 DOUBLE: Sep-19 owners 121.70 == stored EXACT and Jun-19 TOTAL -218.93 == stored EXACT (the mix itself, proving company/scale/period). Q3FY20 p4 DOUBLE: Sep-19 owners 121.70 == stored EXACT and Dec-19 TOTAL 161.81 == stored EXACT.",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": -218.93,
+   "scripts/fundamentals.json": -218.93
+  },
+  "was": -218.93,
+  "mode": "heal",
+  "defect_class": "PRE-CACHE-CELL-HOLDS-TOTAL"
+ },
+ "BHEL|20191231|con-HEAL": {
+  "con": 162.67,
+  "annCon": 20200212,
+  "basis": "con",
+  "when": "2026-08-17 20:27 IST",
+  "src": "BHEL Q3FY20 consolidated results (filed 2020-02-12) p4, current-quarter column 31.12.2019",
+  "evidence": "stored 161.81 is EXACTLY the total row; owners is 162.67 (NCI -0.86). Announce date unchanged.",
+  "convention": "owners-attributable (\"Owners of the Company\"). The stored series was MIXED and the _reattr_owners cache explains it exactly: the cache holds only BHEL|20190930 (121.70, owners) and that is the ONE stored cell on the owners basis \u2014 Jun-19 (-218.93) and Dec-19 (161.81) are the raw TOTAL row (owners -217.72 / 162.67). Same pattern as EXIDEIND: cache coverage = convention boundary.",
+  "identity": "Everything closes to the paisa. H1 Sep-18 owners 127.15 = Jun-18 40.68 + Sep-18 86.47. 9M Dec-18 owners 323.63 = H1 127.15 (Q2FY20 filing) + Dec-18 196.48 (Q3FY20 filing) \u2014 subtotals from DIFFERENT filings. FY19 owners 1011.84 = 40.68 + 86.47 + 196.48 + 688.21.",
+  "anchor": "Q2FY20 p5 DOUBLE: Sep-19 owners 121.70 == stored EXACT and Jun-19 TOTAL -218.93 == stored EXACT (the mix itself, proving company/scale/period). Q3FY20 p4 DOUBLE: Sep-19 owners 121.70 == stored EXACT and Dec-19 TOTAL 161.81 == stored EXACT.",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": 161.81,
+   "scripts/fundamentals.json": 161.81
+  },
+  "was": 161.81,
+  "mode": "heal",
+  "defect_class": "PRE-CACHE-CELL-HOLDS-TOTAL"
  }
 }
