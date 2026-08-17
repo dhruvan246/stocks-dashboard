@@ -9,7 +9,7 @@
   "2026-08-09 second pass: ATUL FY21+FY22 closed out (Jun-20, Mar-21, Jun-21, Sep-21, Dec-21). SADBHAV 2020-03-31 was RE-CHECKED and is CORRECT as stored: the Jun-2020 filing prints Mar-20 period 1280.78 and NCI 394.14 -> owners 886.64, and FY20 owners -8.07 + -15.94 + -69.79 + 886.63 = 792.83 exactly as printed. The value only looked wrong because it is a very large genuine one-off -- the RENUKA lesson (runbook \u00a769c).",
   "2026-08-09 third pass: the named fund-vs-revop cells (ATUL Sep-25, SADBHAV Dec-20, RENUKA Dec-20 +Mar-21). Measuring them found sf_fundamentals and sf_revop disagree on 1,372 of 43,731 populated con-PAT cells (3.14%); the 603 where revop is exactly 0.0 against a real fundamentals value were resynced, the 716 genuine disagreements and 15 fundamentals==0 cells are NOT touched. build_discovery's TTM P/E was reading the divergent mirror. \u00a770."
  ],
- "generated": "2026-08-17 19:40 IST",
+ "generated": "2026-08-17 19:51 IST",
  "cells": {
   "ATUL|20220331|patC": {
    "period": 136.56,
@@ -410,6 +410,46 @@
     "fundamentals.json": null
    },
    "when": "2026-08-17 19:40 IST"
+  },
+  "FDC|20180630|patC": {
+   "owners": 48.87,
+   "stored_before": null,
+   "note": "comparative-column fill; pinned so a cache rebuild cannot substitute another row",
+   "source": "FDC Q2FY20 consolidated statement (NSE attachment, filed 2019-11-08) p8, row 11 \"Profit for the period\"",
+   "identity": "FY19 identity exact: 4,887.37+4,028.46+4,577.86+3,485.19 = 16,978.88 = FY19 annual PAT; and H1 8,915.83 + Dec-18 4,577.86 = 13,493.69 = the 9M column of a different filing",
+   "when": "2026-08-17 19:51 IST"
+  },
+  "FDC|20180930|patC": {
+   "owners": 40.28,
+   "stored_before": null,
+   "note": "comparative-column fill; pinned so a cache rebuild cannot substitute another row",
+   "source": "FDC Q2FY20 consolidated statement (NSE attachment, filed 2019-11-08) p8, row 11 \"Profit for the period\"",
+   "identity": "FY19 identity exact: 4,887.37+4,028.46+4,577.86+3,485.19 = 16,978.88 = FY19 annual PAT; and H1 8,915.83 + Dec-18 4,577.86 = 13,493.69 = the 9M column of a different filing",
+   "when": "2026-08-17 19:51 IST"
+  },
+  "FDC|20181231|patC": {
+   "owners": 45.78,
+   "stored_before": null,
+   "note": "comparative-column fill; pinned so a cache rebuild cannot substitute another row",
+   "source": "FDC Q3FY20 consolidated statement (NSE attachment, filed 2020-02-07) p6, row 11 \"Profit for the period\"",
+   "identity": "FY19 identity exact: 4,887.37+4,028.46+4,577.86+3,485.19 = 16,978.88 = FY19 annual PAT; and H1 8,915.83 + Dec-18 4,577.86 = 13,493.69 = the 9M column of a different filing",
+   "when": "2026-08-17 19:51 IST"
+  },
+  "FDC|20190331|patC": {
+   "owners": 34.85,
+   "stored_before": 169.79,
+   "note": "heal: annual parked in the quarter slot",
+   "source": "FDC Q3FY20 consolidated statement (NSE attachment, filed 2020-02-07) p6, row 11 \"Profit for the period\"",
+   "identity": "FY19 identity exact: 4,887.37+4,028.46+4,577.86+3,485.19 = 16,978.88 = FY19 annual PAT; and H1 8,915.83 + Dec-18 4,577.86 = 13,493.69 = the 9M column of a different filing",
+   "when": "2026-08-17 19:51 IST"
+  },
+  "FDC|20190630|patC": {
+   "owners": 56.22,
+   "stored_before": 55.27,
+   "note": "heal: comprehensive income stored as PAT",
+   "source": "FDC Q2FY20 consolidated statement (NSE attachment, filed 2019-11-08) p8, row 11 \"Profit for the period\"",
+   "identity": "FY19 identity exact: 4,887.37+4,028.46+4,577.86+3,485.19 = 16,978.88 = FY19 annual PAT; and H1 8,915.83 + Dec-18 4,577.86 = 13,493.69 = the 9M column of a different filing",
+   "when": "2026-08-17 19:51 IST"
   }
  }
 }

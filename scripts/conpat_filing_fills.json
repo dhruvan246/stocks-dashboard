@@ -191,5 +191,62 @@
   "convention": "owners-attributable row \"Owners of the Parent\". FY IDENTITY proves this is the series convention, exact to the paisa in BOTH years: FY20 audited annual owners 35,776.19 == 10,248.51+2,861.33+5,986.13+16,680.22 ; FY19 audited annual owners 55,230.85 == 22,347.29+5,974.81+18,140.58+8,768.17",
   "rounding": "round(lakhs/100, 2) \u2014 pipeline convention (_stepw_nse_pre15.py:196, bse_text.py:171)",
   "defect_class": "mixed total/owners convention inside one stored con series \u2014 same class as NMDC / BHARATFORG / JKCEMENT (those were REFUSED because no identity could arbitrate which row each quarter should hold). DBL is the first of the class where the audited annual pins it, so it is healable."
+ },
+ "FDC|20180630|con": {
+  "con": 48.87,
+  "annCon": 20191108,
+  "basis": "con",
+  "when": "2026-08-17 19:51 IST",
+  "src": "FDC Q2FY20 consolidated statement (NSE attachment, filed 2019-11-08) p8, row 11 \"Profit for the period\"",
+  "evidence": "derived inside one table: H1 Sep-18 8,915.83 - Sep-18 4,028.46 = 4,887.37 lakhs",
+  "identity": "FY19 identity exact: 4,887.37+4,028.46+4,577.86+3,485.19 = 16,978.88 = FY19 annual PAT; and H1 8,915.83 + Dec-18 4,577.86 = 13,493.69 = the 9M column of a different filing",
+  "anchor": "same table Sep-19 5,402.71 -> 54.03 == stored EXACT",
+  "nci": "none \u2014 equity-method JV only, so \"profit for the period\" is the owners figure"
+ },
+ "FDC|20180930|con": {
+  "con": 40.28,
+  "annCon": 20191108,
+  "basis": "con",
+  "when": "2026-08-17 19:51 IST",
+  "src": "FDC Q2FY20 consolidated statement (NSE attachment, filed 2019-11-08) p8, row 11 \"Profit for the period\"",
+  "evidence": "printed comparative column 30.09.2018: 4,028.46 lakhs",
+  "identity": "FY19 identity exact: 4,887.37+4,028.46+4,577.86+3,485.19 = 16,978.88 = FY19 annual PAT; and H1 8,915.83 + Dec-18 4,577.86 = 13,493.69 = the 9M column of a different filing",
+  "anchor": "same table Sep-19 5,402.71 -> 54.03 == stored EXACT"
+ },
+ "FDC|20181231|con": {
+  "con": 45.78,
+  "annCon": 20200207,
+  "basis": "con",
+  "when": "2026-08-17 19:51 IST",
+  "src": "FDC Q3FY20 consolidated statement (NSE attachment, filed 2020-02-07) p6, row 11 \"Profit for the period\"",
+  "evidence": "printed comparative column 31.12.2018: 4,577.86 lakhs",
+  "identity": "FY19 identity exact: 4,887.37+4,028.46+4,577.86+3,485.19 = 16,978.88 = FY19 annual PAT; and H1 8,915.83 + Dec-18 4,577.86 = 13,493.69 = the 9M column of a different filing",
+  "anchor": "DOUBLE: Dec-19 7,414.86 -> 74.15 == stored EXACT and Sep-19 5,402.71 -> 54.03 == stored EXACT"
+ },
+ "FDC|20190331|con-HEAL": {
+  "con": 34.85,
+  "was": 169.79,
+  "annCon": 20200207,
+  "annCon_was": 20190524,
+  "basis": "con",
+  "mode": "heal",
+  "when": "2026-08-17 19:51 IST",
+  "src": "FDC Q3FY20 consolidated statement (NSE attachment, filed 2020-02-07) p6, row 11 \"Profit for the period\"",
+  "evidence": "stored 169.79 == the FY19 ANNUAL consolidated PAT (16,978.88 lakhs) sitting in a QUARTER slot \u2014 5x the standalone Q4 (33.66). True Q4FY19 = annual 16,978.88 - 9M Dec-18 13,493.69 = 3,485.19 lakhs -> 34.85 cr",
+  "announce_date_change": "2019-05-24 -> 2020-02-07: the 9M comparative that makes the quarter derivable was first published in the Q3FY20 filing. Keeping the earlier date would make a value visible before it could be known (look-ahead).",
+  "identity": "FY19 identity exact: 4,887.37+4,028.46+4,577.86+3,485.19 = 16,978.88 = FY19 annual PAT; and H1 8,915.83 + Dec-18 4,577.86 = 13,493.69 = the 9M column of a different filing",
+  "defect_class": "ANNUAL-IN-QUARTER-SLOT \u2014 new class this session; worth a store-wide sweep"
+ },
+ "FDC|20190630|con-HEAL": {
+  "con": 56.22,
+  "was": 55.27,
+  "annCon": 20190803,
+  "basis": "con",
+  "mode": "heal",
+  "when": "2026-08-17 19:51 IST",
+  "src": "FDC Q2FY20 consolidated statement (NSE attachment, filed 2019-11-08) p8, row 11 \"Profit for the period\"",
+  "evidence": "stored 55.27 == TOTAL COMPREHENSIVE INCOME for Jun-19 (5,527.38 lakhs), not PAT. PAT is 5,621.92 -> 56.22, confirmed by the same table's H1 identity 5,402.71 + 5,621.92 = 11,024.63",
+  "cache_hazard": "_reattr_owners.json holds FDC|20190630 = 55.27, i.e. the SAME wrong number, so this heal is reverted nightly by apply_owners_full.py unless pinned",
+  "defect_class": "COMPREHENSIVE-INCOME-IN-PAT-SLOT"
  }
 }
