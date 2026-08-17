@@ -79,10 +79,20 @@ def main():
             print("             whose docs/ payloads lag its ledgers this is a staleness artifact), but")
             print("             CI DOES block on MISSING — check it before you push.")
         if stale:
-            print("[pre-commit] note: %s differ(s) from origin/main, so the resurrection check ran"
-                  % ", ".join(stale))
-            print("             against payloads the site is not serving. Treat a clean result as")
-            print("             indicative; re-run scripts/verify_fills_live.py after you pull.")
+            # Say WHY it differs. On a commit that edits the payload itself this is your own staged
+            # change and entirely expected; it only means "behind origin" when you did not touch it.
+            own = [f for f in stale if f in relevant]
+            lag = [f for f in stale if f not in relevant]
+            if lag:
+                print("[pre-commit] note: %s differ(s) from origin/main and this commit does NOT touch"
+                      % ", ".join(lag))
+                print("             them — this checkout is behind, so the resurrection check ran against")
+                print("             a payload the site is not serving. A clean result here is indicative;")
+                print("             pull, then re-run scripts/verify_fills_live.py.")
+            if own:
+                print("[pre-commit] checked against your staged version of %s (expected — this commit"
+                      % ", ".join(own))
+                print("             edits it). Re-verify LIVE ~20 min after the push, per CLAUDE.md rule 5.")
         return 0
 
     print("=" * 78)
