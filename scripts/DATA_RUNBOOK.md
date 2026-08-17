@@ -3657,6 +3657,13 @@ outrank it — the same precedence that saved NUCLEUS in §71c.
 - **The twins are NOT mirrors.** 4,166 con cells exist only in `docs/sf_fundamentals.json`
   (`update_fundamentals.py` and `apply_owners_full.py` both write DOCS only). A writer must accept
   an empty twin, still write both, and abort on any unexpected third value.
+- **★ DIFF ONLY THE SHARED DATE GRID.** Two bakes taken hours apart do not have the same columns —
+  the newest one is whatever the last data cut was (2026-08-14 in the 20:47 payload, 2026-08-17 in
+  the 21:22 one). Summing each payload over its OWN grid and differencing charges the newer file
+  for a date the older never had: that alone produced `revCon 330->333, ebit 871->872` after a run
+  the local gate had already passed clean, and `--explain` then named ZERO of the 35 filled symbols
+  behind either. Intersect the date labels first and print what you dropped. A regression you
+  cannot name a symbol for is a bug in the comparison until proven otherwise.
 - **A screen finds defects; it does not name their class.** The annual-in-quarter-slot screen
   (con/std > 2.5 AND con ≈ the FY standalone sum) produced 15 candidates. FDC was a true
   annual-in-slot; HEG was flagged correctly as WRONG but was not an annual at all — 2581.58 matches
