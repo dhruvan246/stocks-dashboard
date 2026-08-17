@@ -182,6 +182,19 @@ jobs:
       # this step failing aborts the run BEFORE the commit step, i.e. clobbered payloads don't publish.
       # If it turns red: run scripts/verify_fills_live.py locally, adjudicate per §56b (repair vs re-key
       # vs skip-flag the ledger entry) — do NOT re-add `|| true` (runbook §39).
+      # ★ SELF-HEAL THE ONE RESURRECTED CLASS THAT IS MECHANICAL, so it stops mailing.
+      # Measured three times in two days (2026-08-16 x2, 2026-08-17): a fill pass READ a consolidated
+      # cell out of a primary filing and journalled it, while an AGGREGATOR ledger still flagged that
+      # same cell `held` — and a held cell asserts ABSENCE, so the step below was guaranteed red. Each
+      # time the resolution was the same: the hold was stale, because these holds rest on "this source's
+      # con == our std" and their OWN text says "Settle from the filing (§57/§58), not this source".
+      # This step applies exactly that rule and NOTHING else: it lifts a hold only when a filing-sourced
+      # ledger asserts the same cell at the same value, it never touches a payload cell, and it is
+      # all-or-nothing. A resurrected value with NO document behind it — the case the guard actually
+      # exists for — is left standing so the blocking step below still fails it. Never `|| true` (§39).
+      - name: Settle stale aggregator holds a filing already answered
+        run: python3 -X utf8 scripts/settle_stale_holds.py --apply
+
       - name: Detect clobbered ledger cells in the served payloads (blocking)
         run: python3 -X utf8 scripts/verify_fills_live.py
 
@@ -299,6 +312,17 @@ jobs:
               [ -f /tmp/excise_duty.json ] && cp /tmp/excise_duty.json scripts/excise_duty.json && git add scripts/excise_duty.json
               git add docs/sf_fundamentals.json docs/sf_revop.json
             fi
+            # ★ Persist the stale-hold settle, and do it HERE — inside the loop, AFTER the reset+merge.
+            # The step earlier in the job ran against the pre-reset tree, and `git reset --hard` above
+            # just threw those ledger edits away. Re-running recomputes against whatever other writers
+            # landed while this job ran, instead of pasting a pre-reset snapshot over their work — which
+            # is the 2026-08-06 clobber class this whole block exists to avoid. Idempotent: a hold that
+            # is already lifted produces no diff. Non-fatal: exit 1 means "a resurrected cell needs a
+            # human", which the BLOCKING step above already reported and failed on, and a scripts/
+            # ledger must never stop the payload itself from publishing.
+            python3 -X utf8 scripts/settle_stale_holds.py --apply \
+              || echo "::warning::settle_stale_holds: something needs adjudication (see the blocking step above)"
+            git add scripts/mc_pat_fills.json scripts/mc_history_fills.json
             # season chart + coverage commit UNCONDITIONALLY (2026-07-21): they also move when the
             # vision routine committed new fills — i.e. exactly when no .fund_updated exists
             cp /tmp/results_season.json  docs/results_season.json
