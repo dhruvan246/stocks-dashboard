@@ -626,13 +626,12 @@
    "stored_before": -27.82
   },
   "JSWDULUX|20180630|patC": {
-   "anchor": "SAME ROW, two stored cells reproduced EXACTLY: 30-Jun-2019 571.4 mn = 57.14 == stored con, 31-Mar-2019 703.4 mn = 70.34 == stored con. The Jun-2019 figure is confirmed twice more independently: that filing's XBRL ProfitLossForPeriod on OneD 2019-04-01..2019-06-30 = 571400000, and NSE results-data seq 1066336 re_net_profit = 5714 Rs lakh.",
-   "caveat": "Note 1 of the statement: the figures for the quarter ended 30 June 2018 were approved by the Board but have NOT been subjected to limited review/audit by the statutory auditors.",
-   "identity": "Printed FY19 2,110.0 mn vs the four printed quarters 435.1 + 367.5 + 603.8 + 703.4 = 2,109.8 \u2014 0.2 mn apart, the expected rounding at 0.1 mn per quarter with a balancing Q4 (Note 2). Also closes the identity the SIBLING fill rested on but never wrote: 43.51 + 36.75 = 80.26 == the printed H1 Sep-2018 802.6 mn, EXACT.",
-   "note": "printed comparative; row 7 'Profit for the period from operations (5-6)' 435.1 -> 43.51 crore (statement declares '(Rs. in Million)', 1 crore = 10 million). No NCI block, and the Limited Review Report states the sole subsidiary's net profit after tax is Rs. Nil -> row 7 IS the owners figure. Scanned page, read by rendering it at 230 dpi. No consolidated filing of its own exists for Jun-2018 (NSE con list jumps 20180331 -> 20190630).",
    "owners": 43.51,
-   "source": "Akzo Nobel India (now JSWDULUX) Q1FY20 'Statement of Consolidated Unaudited Financial Results for the quarter ended 30 June 2019' (NSE filingDate 09-Aug-2019 12:14, attachment AKZOINDIA_NA_09082019121424_1.zip -> ANILJunQuarterResults.pdf) p5, column 'Quarter ended 30 June 2018 (Refer Note 1)'",
-   "stored_before": null
+   "stored_before": null,
+   "note": "Completes the FY19 chain this campaign started. It also makes the H1 identity that the Sep-2018 fill rests on reproducible from our own store, which it was not while this cell sat empty. The Moneycontrol hold on this cell values it identically at 43.51; that hold rested on the weak 'con == std so maybe a copy' test, and for this company con == std is genuine \u2014 the subsidiary is wholly owned and contributes ~0, which is exactly why the printed consolidated H1 equals the sum of the two standalone quarters.",
+   "source": "Akzo Nobel India Q2FY20 consolidated results (NSE attachment, filed 2019-11-09) p7: H1 Sep-2018 802.6 mn less the Sep-2018 quarter column 367.5 mn",
+   "identity": "The printed H1 Sep-2018 consolidated subtotal is 802.6 mn = 80.26 cr, and the printed Sep-2018 quarter column is 367.5 mn = 36.75 cr. 80.26 - 36.75 = 43.51 EXACTLY. Independently, Moneycontrol's own consolidated series holds this quarter at 43.51 \u2014 two sources agreeing to the paisa, one of them a filing.",
+   "when": "2026-08-17 23:48 IST"
   },
   "JSWDULUX|20180930|patC": {
    "identity": "Cross-filing, to the paisa: 9M Dec-2018 profit 1,406.4 mn (Q3FY20) - H1 Sep-2018 profit 802.6 mn (Q2FY20) = 603.8 mn == the printed Dec-2018 quarter column 603.8 EXACT. And for Sep-2018: stored Jun-2018 std 43.51 + Sep-2018 43.51+36.75 = 80.26 == printed H1 Sep-2018 802.6 mn = 80.26 crore EXACT. FY19 cross-check: printed FY19 2,110.0 mn = 211.00 crore; 211.00 - 140.64 (9M) = 70.36 vs stored Mar-2019 con 70.34 (0.02 = rounding of the derivation; the FY19 filing's own printed Q4 column is what is stored, and is not disturbed).",
@@ -667,28 +666,28 @@
    "when": "2026-08-17 21:03 IST"
   },
   "KSCL|20180930|patC": {
-   "identity": "All in lakhs, TOTAL basis. FY19 annual = 21,740.46; H1FY19 = 22,562.48; 9M FY19 = 22,853.28 (KSCL's Q1 is its big seed quarter, hence the year-total below the 9M). Q1FY19 = H1 22,562.48 - Q2 1,552.48 = 21,010.00. 9M closes EXACTLY: 21,010.00 + 1,552.48 + 290.80 = 22,853.28 == printed 9M to the paisa. FY closes: 22,853.28 + (-1,112.81) = 21,740.47 vs printed 21,740.46 (\u03b40.01 lakh = \u20b91,000, the filer's own rounding). The owners basis closes the same way: 9M owners 22,853.80 + (-1,108.72) = 21,745.08 vs printed FY19 owners 21,745.07 (\u03b40.01). Note 8 of the FY20 filing states the arithmetic explicitly: 'The figures for quarter ended March 31, 2020 and March 31, 2019 are the balancing figures between audited figures in respect of the full financial year ... and unaudited published year to date figures up to December 31, 2019 and December 31, 2018 respectively' - so the printed Mar-2019 quarter column IS FY19 minus 9M FY19, which is what the identity above independently reproduces. Every column also reconciles as PBT minus total tax: Sep-18 2,097.52-545.04=1,552.48; Dec-18 452.42-161.62=290.80; Mar-19 balancing.",
-   "note": "printed comparative, total row 'Net Profit after Tax (V-VI)' 1,552.48 lakhs -> 15.52 cr; owners row 'Equity Share Holders of the Company' 1,546.07 -> 15.46 cr; NCI 6.41. Attribution adds up: 1,546.07 + 6.41 = 1,552.48. Column reconciles: PBT 2,097.52 - total tax 545.04 = 1,552.48. REVIEW-STATUS CAVEAT from the filing's own note 4: 'The Consolidated results for the quarter ended June 30, 2018 and for the half year ended September 30, 2018 are not subjected to limited review' - the Sep-2018 consolidated comparative is company-prepared and unreviewed (it is still the officially filed comparative). ann matches the stored conAnnDate of the anchor quarter in the same filing (con 20190930 ann = 20191113).",
-   "owners": 15.52,
-   "source": "KSCL Q2FY20 combined standalone+consolidated statement (NSE filingDate 2019-11-13) p2, CONSOLIDATED block, column 'Quarter Ended 30-09-2018'",
-   "stored_before": null,
-   "when": "2026-08-17 21:10 IST"
+   "owners": 15.46,
+   "stored_before": 15.52,
+   "note": "owners 1,546.07 lakhs -> 15.46 cr; NCI 6.41; printed total 1,552.48 -> 15.52 cr == was EXACT (the anchor). owners_alt REUSED from spec_kscl.json and independently re-verified this session by a fresh vision read of the same page. Attribution closes EXACT: 1,546.07 + 6.41 = 1,552.48. Review-status caveat from the filing's own note: the Sep-2018 consolidated comparative was not subjected to limited review (company-prepared, still the officially filed comparative).",
+   "source": "KSCL Q2FY20 combined std+con statement (NSE con row filed 2019-11-13) p2, CONSOLIDATED block, column 'Quarter Ended 30-09-2018' (printed comparative)",
+   "identity": "Within every source filing the attribution block closes to the printed paisa in ALL columns (owners + NCI = total), except two documented filer pennies of 0.01 lakh (Rs 1,000): Dec-2019 (825.46+27.39=852.85 vs 852.86, identical in its own filing AND the Q4FY20 reprint) and Sep-2022 (530.07+15.81=545.88 vs 545.89, identical in its own filing AND the Q3FY23 reprint); neither can move a 2dp-crore value. Cross-filing: H1FY20 owners 24,320.92 and FY19 owners 21,745.07 print identically in Q2FY20/Q3FY20/Q4FY20; FY22 owners 21,245.19 prints identically in Q4FY22/Q2FY23/Q3FY23. Sum checks: H1FY21 = Q1+Q2 EXACT in lakhs (29,528.92+2,346.20=31,875.12); 9M FY23 owners EXACT (24,382.11+530.07+3,809.32=28,721.50); 9M FY25 owners EXACT in lakhs with implied Q1 = 28,949.44 -> 289.49 == cache Jun-24; FY26 owners col 295.84 == sum of the four cache-owners quarters EXACT; FY16 owners year closes to the paisa across four filings (21,843.91-4,752.55+923.04-745.94 = 17,268.46 == printed). Filer-side RESTATEMENTS (comparatives that later filings changed) are documented and NOT healed through: Jun-2019 (own 230.72 -> restated 229.58 from Q2FY20 on), Dec-2021 (own 8.32 -> restated 7.64), Jun-2022 (own 243.5 -> restated 243.82), Dec-2023 (own 12.12 -> restated 11.78); every stored/cache value stays on the quarter's OWN filing per the house rule, and the affected year identities (FY20/FY22/FY23) close exactly on the restated figures, confirming both the restatements and the heal values.",
+   "when": "2026-08-17 23:49 IST"
   },
   "KSCL|20181231|patC": {
-   "identity": "All in lakhs, TOTAL basis. FY19 annual = 21,740.46; H1FY19 = 22,562.48; 9M FY19 = 22,853.28 (KSCL's Q1 is its big seed quarter, hence the year-total below the 9M). Q1FY19 = H1 22,562.48 - Q2 1,552.48 = 21,010.00. 9M closes EXACTLY: 21,010.00 + 1,552.48 + 290.80 = 22,853.28 == printed 9M to the paisa. FY closes: 22,853.28 + (-1,112.81) = 21,740.47 vs printed 21,740.46 (\u03b40.01 lakh = \u20b91,000, the filer's own rounding). The owners basis closes the same way: 9M owners 22,853.80 + (-1,108.72) = 21,745.08 vs printed FY19 owners 21,745.07 (\u03b40.01). Note 8 of the FY20 filing states the arithmetic explicitly: 'The figures for quarter ended March 31, 2020 and March 31, 2019 are the balancing figures between audited figures in respect of the full financial year ... and unaudited published year to date figures up to December 31, 2019 and December 31, 2018 respectively' - so the printed Mar-2019 quarter column IS FY19 minus 9M FY19, which is what the identity above independently reproduces. Every column also reconciles as PBT minus total tax: Sep-18 2,097.52-545.04=1,552.48; Dec-18 452.42-161.62=290.80; Mar-19 balancing.",
-   "note": "printed comparative, total row 290.80 lakhs -> 2.908 -> 2.91 cr; owners row 318.07 -> 3.18 cr; NCI (27.27). Attribution adds up: 318.07 + (-27.27) = 290.80. Column reconciles: PBT 452.42 - total tax 161.62 = 290.80. This quarter is the clearest illustration of why the basis matters here - owners (3.18) exceeds total (2.91) because the NCI share is a LOSS. ann matches the stored conAnnDate of the anchor quarter in the same filing (con 20191231 ann = 20200205).",
-   "owners": 2.91,
-   "source": "KSCL Q3FY20 consolidated statement (NSE filingDate 2020-02-05) p3, column 'Quarter Ended 31-12-2018'",
-   "stored_before": null,
-   "when": "2026-08-17 21:10 IST"
+   "owners": 3.18,
+   "stored_before": 2.91,
+   "note": "owners 318.07 lakhs -> 3.18 cr; NCI -27.27; printed total 290.8 -> 2.91 cr == was EXACT (the anchor). owners_alt REUSED from spec_kscl.json and re-verified by fresh vision read. Attribution closes EXACT: 318.07 + (-27.27) = 290.80. Owners exceeds total because the NCI share is a loss.",
+   "source": "KSCL Q3FY20 consolidated statement (NSE filed 2020-02-05) p3, column 'Quarter Ended 31-12-2018' (printed comparative)",
+   "identity": "Within every source filing the attribution block closes to the printed paisa in ALL columns (owners + NCI = total), except two documented filer pennies of 0.01 lakh (Rs 1,000): Dec-2019 (825.46+27.39=852.85 vs 852.86, identical in its own filing AND the Q4FY20 reprint) and Sep-2022 (530.07+15.81=545.88 vs 545.89, identical in its own filing AND the Q3FY23 reprint); neither can move a 2dp-crore value. Cross-filing: H1FY20 owners 24,320.92 and FY19 owners 21,745.07 print identically in Q2FY20/Q3FY20/Q4FY20; FY22 owners 21,245.19 prints identically in Q4FY22/Q2FY23/Q3FY23. Sum checks: H1FY21 = Q1+Q2 EXACT in lakhs (29,528.92+2,346.20=31,875.12); 9M FY23 owners EXACT (24,382.11+530.07+3,809.32=28,721.50); 9M FY25 owners EXACT in lakhs with implied Q1 = 28,949.44 -> 289.49 == cache Jun-24; FY26 owners col 295.84 == sum of the four cache-owners quarters EXACT; FY16 owners year closes to the paisa across four filings (21,843.91-4,752.55+923.04-745.94 = 17,268.46 == printed). Filer-side RESTATEMENTS (comparatives that later filings changed) are documented and NOT healed through: Jun-2019 (own 230.72 -> restated 229.58 from Q2FY20 on), Dec-2021 (own 8.32 -> restated 7.64), Jun-2022 (own 243.5 -> restated 243.82), Dec-2023 (own 12.12 -> restated 11.78); every stored/cache value stays on the quarter's OWN filing per the house rule, and the affected year identities (FY20/FY22/FY23) close exactly on the restated figures, confirming both the restatements and the heal values.",
+   "when": "2026-08-17 23:49 IST"
   },
   "KSCL|20190331|patC": {
-   "identity": "All in lakhs, TOTAL basis. FY19 annual = 21,740.46; H1FY19 = 22,562.48; 9M FY19 = 22,853.28 (KSCL's Q1 is its big seed quarter, hence the year-total below the 9M). Q1FY19 = H1 22,562.48 - Q2 1,552.48 = 21,010.00. 9M closes EXACTLY: 21,010.00 + 1,552.48 + 290.80 = 22,853.28 == printed 9M to the paisa. FY closes: 22,853.28 + (-1,112.81) = 21,740.47 vs printed 21,740.46 (\u03b40.01 lakh = \u20b91,000, the filer's own rounding). The owners basis closes the same way: 9M owners 22,853.80 + (-1,108.72) = 21,745.08 vs printed FY19 owners 21,745.07 (\u03b40.01). Note 8 of the FY20 filing states the arithmetic explicitly: 'The figures for quarter ended March 31, 2020 and March 31, 2019 are the balancing figures between audited figures in respect of the full financial year ... and unaudited published year to date figures up to December 31, 2019 and December 31, 2018 respectively' - so the printed Mar-2019 quarter column IS FY19 minus 9M FY19, which is what the identity above independently reproduces. Every column also reconciles as PBT minus total tax: Sep-18 2,097.52-545.04=1,552.48; Dec-18 452.42-161.62=290.80; Mar-19 balancing.",
-   "note": "printed audited comparative, total row (1,112.81) lakhs -> -11.13 cr; owners row (1,108.72) -> -11.09 cr; NCI (4.09). Attribution adds up: -1,108.72 + (-4.09) = -1,112.81. Independently reproduced by the year identity: FY19 21,740.46 - 9M FY19 22,853.28 = -1,112.82, agreeing with the printed -1,112.81 to 0.01 lakh. Standalone for the same quarter is -11.44, so the sign and magnitude are plausible. ann = 20200608: KSCL filed the consolidated FY20 results under a separate NSE row dated 2020-06-08 (the standalone row is 2020-05-30 and the PDF's cover letter is dated 2020-05-30); 20200608 matches the stored conAnnDate convention for the anchor quarter in the same filing (con 20200331 ann = 20200608) and is the conservative, never-backdated choice.",
-   "owners": -11.13,
-   "source": "KSCL FY20 audited consolidated statement (NSE filingDate 2020-06-08) p5, column 'Quarter Ended 31-03-2019' (Audited, balancing figure per note 8)",
-   "stored_before": null,
-   "when": "2026-08-17 21:10 IST"
+   "owners": -11.09,
+   "stored_before": -11.13,
+   "note": "owners -1,108.72 lakhs -> -11.09 cr; NCI -4.09; printed total -1,112.81 -> -11.13 cr == was EXACT (the anchor). owners_alt REUSED from spec_kscl.json and re-verified by fresh vision read. Attribution closes EXACT: -1,108.72 + (-4.09) = -1,112.81.",
+   "source": "KSCL FY20 audited consolidated statement (NSE con row filed 2020-06-08) p5, column 'Quarter Ended 31-03-2019' (audited balancing figure per the filing's note)",
+   "identity": "Within every source filing the attribution block closes to the printed paisa in ALL columns (owners + NCI = total), except two documented filer pennies of 0.01 lakh (Rs 1,000): Dec-2019 (825.46+27.39=852.85 vs 852.86, identical in its own filing AND the Q4FY20 reprint) and Sep-2022 (530.07+15.81=545.88 vs 545.89, identical in its own filing AND the Q3FY23 reprint); neither can move a 2dp-crore value. Cross-filing: H1FY20 owners 24,320.92 and FY19 owners 21,745.07 print identically in Q2FY20/Q3FY20/Q4FY20; FY22 owners 21,245.19 prints identically in Q4FY22/Q2FY23/Q3FY23. Sum checks: H1FY21 = Q1+Q2 EXACT in lakhs (29,528.92+2,346.20=31,875.12); 9M FY23 owners EXACT (24,382.11+530.07+3,809.32=28,721.50); 9M FY25 owners EXACT in lakhs with implied Q1 = 28,949.44 -> 289.49 == cache Jun-24; FY26 owners col 295.84 == sum of the four cache-owners quarters EXACT; FY16 owners year closes to the paisa across four filings (21,843.91-4,752.55+923.04-745.94 = 17,268.46 == printed). Filer-side RESTATEMENTS (comparatives that later filings changed) are documented and NOT healed through: Jun-2019 (own 230.72 -> restated 229.58 from Q2FY20 on), Dec-2021 (own 8.32 -> restated 7.64), Jun-2022 (own 243.5 -> restated 243.82), Dec-2023 (own 12.12 -> restated 11.78); every stored/cache value stays on the quarter's OWN filing per the house rule, and the affected year identities (FY20/FY22/FY23) close exactly on the restated figures, confirming both the restatements and the heal values.",
+   "when": "2026-08-17 23:49 IST"
   },
   "MAZDOCK|20191231|patC": {
    "identity": "cannot be closed for FY20 from stored data: MAZDOCK's stored series begins at 20200331, so Jun-2019 and Sep-2019 have no stored con to sum against the printed 9M FY20 of 39,636 lakh (= 396.36 cr). What IS printed and used here is the Dec-2019 quarter column itself, not a derived residue. ANOMALY on a DIFFERENT cell: FY20 annual 47,706 - 9M FY20 39,636 = 8,070 lakh = 80.70 cr for the Mar-2020 quarter, but stored 20200331 con = 74.68 (gap 6.02 cr). Not touched, reported in refusals_D.json.",
@@ -986,7 +985,431 @@
     "owners": 6.53,
     "stored_before": 4114.27
    }
+  },
+  "ABB|20250331|patC": {
+   "owners": 474.63,
+   "stored_before": 474.63,
+   "note": "batch F dated this from the CY2026 filings because the Q1/Q2 CY25 filings genuinely contain no consolidated statement; the Q3CY25 filing does, and the value was derivable the day it appeared. Moving a date EARLIER is done only on this direct read of the printing filing.",
+   "source": "ABB Q3CY25 consolidated results (BSE 2025-11-06) p7: YTD 1,235.41 minus the two printed quarters",
+   "identity": "ABB Q3CY25 CONSOLIDATED statement (BSE, announced 2025-11-06), p7, verified by my own read of the cached PDF: quarter columns Sep-25 409.04 | Jun-25 351.74 | Sep-24 440.45, YTD Sep-25 1,235.41. Mar-25 = 1,235.41 - 351.74 - 409.04 = 474.63 \u2014 three printed columns of one table.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "ABB|20250630|patC": {
+   "owners": 351.74,
+   "stored_before": 351.74,
+   "note": "printed directly; 8 months earlier than the batch-F date.",
+   "source": "ABB Q3CY25 consolidated results (BSE 2025-11-06) p7, preceding-quarter column June 30 2025: 351.74 printed outright",
+   "identity": "ABB Q3CY25 CONSOLIDATED statement (BSE, announced 2025-11-06), p7, verified by my own read of the cached PDF: quarter columns Sep-25 409.04 | Jun-25 351.74 | Sep-24 440.45, YTD Sep-25 1,235.41. Mar-25 = 1,235.41 - 351.74 - 409.04 = 474.63 \u2014 three printed columns of one table.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "CREDITACC|20250331|patC": {
+   "owners": 47.21,
+   "stored_before": null,
+   "note": "line VII 'Profit/(Loss) for the period / year' = 47.21; no NCI line exists. Reprinted as the 31-Mar-25 column of the Q1FY26 consolidated statement. Equals stored std[20250331]=47.21 (the Sec-8 subsidiary contributes nothing measurable).",
+   "source": "CreditAccess Grameen Q4FY25 'Statement of consolidated financial results for the quarter and year ended March 31, 2025' (BSE filed 2025-05-16 17:38, F_cache/CREDITACC_Q4FY25.pdf p12), column 'Quarter ended 31-Mar-25 (Refer Note 7)'",
+   "identity": "FY25 consolidated annual = 531.40 crore, printed identically in the Q4FY25 filing and again in the Q1FY26 filing. The Q3FY25 consolidated filing prints nine months ended 31-Dec-24 = 484.19; 484.19 + 47.21 (Q4, printed in the Q4FY25 filing) = 531.40 EXACT. Cross-filing subtotal agreement holds. Quarter-by-quarter: Jun-24 397.66 + Sep-24 186.06 (printed in the Q3FY25 filing) + Dec-24 (99.52) + Mar-25 47.21 = 531.41 vs printed 531.40, a 1-paisa residue from four independently rounded quarters (the printed 9M subtotal 484.19 vs 484.20 carries the same single paisa).",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "CREDITACC|20250630|patC": {
+   "owners": 60.19,
+   "stored_before": null,
+   "note": "line VII = 60.19; no NCI line. Same table reprints Mar-25 47.21 and FY25 531.40, both matching the Q4FY25 filing exactly. Equals stored std[20250630]=60.19.",
+   "source": "CreditAccess Grameen Q1FY26 'Statement of unaudited consolidated financial results for the quarter ended June 30, 2025' (BSE filed 2025-07-22 17:13, F_cache/CREDITACC_Q1FY26.pdf p9), column 'Quarter ended 30-Jun-25 (Unaudited)'",
+   "identity": "FY25 consolidated annual = 531.40 crore, printed identically in the Q4FY25 filing and again in the Q1FY26 filing. The Q3FY25 consolidated filing prints nine months ended 31-Dec-24 = 484.19; 484.19 + 47.21 (Q4, printed in the Q4FY25 filing) = 531.40 EXACT. Cross-filing subtotal agreement holds. Quarter-by-quarter: Jun-24 397.66 + Sep-24 186.06 (printed in the Q3FY25 filing) + Dec-24 (99.52) + Mar-25 47.21 = 531.41 vs printed 531.40, a 1-paisa residue from four independently rounded quarters (the printed 9M subtotal 484.19 vs 484.20 carries the same single paisa).",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "KEI|20250331|patC": {
+   "owners": 226.55,
+   "stored_before": null,
+   "note": "owners 2,265.48 million = 226.548 cr -> 226.55 (unique: the printed 2dp-in-million value pins the crore figure to [226.5475, 226.5485), all of which round to 226.55). Total = owners, NCI '-'. Same 2,265.48 reprinted as the preceding-quarter column of the Q1FY26 filing. Equals stored std[20250331]=226.55: KEI's associate share of profit is '-' in FY25/FY26, so con == std.",
+   "source": "KEI Industries Q4FY25 'STATEMENT OF AUDITED CONSOLIDATED FINANCIAL RESULTS FOR THE QUARTER AND YEAR ENDED MARCH 31, 2025' (BSE filed 2025-05-06 20:07, F_cache/KEI_Q4FY25.pdf p12), column 'Quarter ended 31-03-2025'",
+   "identity": "FY25 consolidated annual (printed in BOTH filings) = 6,964.14 mn. Printed quarters: Jun-24 1,502.49 + Dec-24 1,648.05 + Mar-25 2,265.48 = 5,416.02; residue for Sep-24 = 1,548.12 mn = 154.812 cr, which independently reproduces stored std[20240930] = 154.81. Jun-24 1,502.49 mn = 150.249 cr reproduces stored std[20240630] = 150.25. The FY25 year therefore closes to the million.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "KEI|20250630|patC": {
+   "owners": 195.75,
+   "stored_before": null,
+   "note": "row 9 'Profit for the period' 1,957.47 million and row 12 'attributable to Equity Shareholders of Company' 1,957.47, NCI '-'. 1,957.47 mn = 195.747 cr -> 195.75 (unique across the [195.7465, 195.7475) band). Equals stored std[20250630]=195.75.",
+   "source": "KEI Industries Q1FY26 'STATEMENT OF UNAUDITED CONSOLIDATED FINANCIAL RESULTS FOR THE QUARTER ENDED JUNE 30, 2025' (BSE filed 2025-07-22 17:26, F_cache/KEI_Q1FY26.pdf p5), column 'Quarter ended 30-06-2025'",
+   "identity": "FY25 consolidated annual (printed in BOTH filings) = 6,964.14 mn. Printed quarters: Jun-24 1,502.49 + Dec-24 1,648.05 + Mar-25 2,265.48 = 5,416.02; residue for Sep-24 = 1,548.12 mn = 154.812 cr, which independently reproduces stored std[20240930] = 154.81. Jun-24 1,502.49 mn = 150.249 cr reproduces stored std[20240630] = 150.25. The FY25 year therefore closes to the million.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "POONAWALLA|20250331|patC": {
+   "owners": 62.33,
+   "stored_before": null,
+   "note": "row 15 'attributable to (a) Owners of the Company' = 62.33, NCI '-'; row 9 total = 62.33 (identical, no NCI in FY25 after the Poonawalla Housing Finance disposal). Reprinted as the 31-March-2025 column of the Q1FY26 consolidated statement. Equals stored std[20250331]=62.33.",
+   "source": "Poonawalla Fincorp Q4FY25 'Statement of Consolidated Audited Financial Results for the Quarter and Year Ended 31 March 2025' (BSE filed 2025-04-25 17:16, F_cache/POONAWALLA_Q4FY25.pdf p8), column 'Quarter Ended 31 March 2025 (Refer Note 10)'",
+   "identity": "FY25 consolidated annual owners = (98.34), printed identically in the Q4FY25 and Q1FY26 filings. 291.64 (Jun-24, printed in the Q1FY26 filing) + (471.04) (Sep-24, stored std) + 18.73 (Dec-24, printed in the Q4FY25 filing) + 62.33 (Mar-25, printed in both) = (98.34) EXACT. The identity therefore also pins Sep-24 consolidated at exactly (471.04). Secondary: FY23 annual owners 683.98 printed in the Q2FY24 filing vs stored con quarters 140.68 + 162.81 + 182.11 + 198.37 = 683.97, a 1-paisa rounding residue.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "POONAWALLA|20250630|patC": {
+   "owners": 62.6,
+   "stored_before": null,
+   "note": "row 9 'Profit/(loss) for the period/year attributable to (a) Owners of the Company' = 62.60, NCI '-'; row 5 total 'Profit/(loss) after tax' = 62.60. Equals stored std[20250630]=62.60.",
+   "source": "Poonawalla Fincorp Q1FY26 'Statement of Consolidated Unaudited Financial Results for the Quarter Ended 30 June 2025' (BSE filed 2025-07-25 16:49, F_cache/POONAWALLA_Q1FY26.pdf p9), column 'Quarter Ended 30 June 2025 (Unaudited)'",
+   "identity": "FY25 consolidated annual owners = (98.34), printed identically in the Q4FY25 and Q1FY26 filings. 291.64 (Jun-24, printed in the Q1FY26 filing) + (471.04) (Sep-24, stored std) + 18.73 (Dec-24, printed in the Q4FY25 filing) + 62.33 (Mar-25, printed in both) = (98.34) EXACT. The identity therefore also pins Sep-24 consolidated at exactly (471.04). Secondary: FY23 annual owners 683.98 printed in the Q2FY24 filing vs stored con quarters 140.68 + 162.81 + 182.11 + 198.37 = 683.97, a 1-paisa rounding residue.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "AADHARHFC|20250630|patC": {
+   "owners": 237.28,
+   "stored_before": null,
+   "note": "line 5 'Profit after tax (3-4)' = 23,728 lakhs = 237.28 crore. Stored std[20250630] = 237.30, so consolidated is 0.02 crore BELOW standalone - the same sign and order of magnitude as every other quarter in this series (Mar-25 std 245.24 / con 244.84; Sep-24 std 227.56 / con 227.51). Do not 'correct' it to 237.30.",
+   "source": "Aadhar Housing Finance Q1FY26 'Statement of consolidated financial results for the quarter ended June 30, 2025' (BSE filed 2025-07-25 16:25, F_cache/AADHARHFC_Q1FY26.pdf p10), column 'For the quarter ended June 30, 2025 (Unaudited)'",
+   "identity": "FY25 consolidated annual = 91,183 lakhs = 911.83 crore. 20,014 (Jun-24, printed) + 22,751 (Sep-24, stored con 227.51) + 23,934 (Dec-24, stored con 239.34) + 24,484 (Mar-25, printed) = 91,183 EXACT, in lakhs, no residue. Column arithmetic also checks: PBT 30,515 - tax 6,787 = 23,728; 31,591 - 7,107 = 24,484; 25,724 - 5,710 = 20,014; 1,17,326 - 26,143 = 91,183.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "TRENT|20220331|patC": {
+   "owners": 0.16,
+   "stored_before": 0.0,
+   "note": "owners 0.16, NCI (21.03), total (20.87). Note the printed consolidated basic EPS for that quarter is 0.00 - a plausible source of the stored 0.0 if an extractor picked the EPS row. ann is unchanged (stored conAnnDate for this cell is already 20220427 and matches the NSE filingDate).",
+   "source": "TRENT Q4FY22 'Statement of Standalone and Consolidated Financial Results for the Quarter and Year ended 31st March, 2022' (NSE filed 2022-04-27 21:35, na_audit/cache/F_TRENT_20220331.pdf p22, consolidated block, 'For Quarter ended 31st March, 2022'), row 11",
+   "identity": "FY22 consolidated annual owners = 105.83 (printed). Stored con quarters (126.59) + 92.58 + 139.69 plus the healed 0.16 = 105.84, a 1-paisa residue from four independently rounded quarters. The standalone column of the same sheet reproduces stored std exactly for all three quarters shown (Mar-22 74.87, Dec-21 132.89, Mar-21 56.87), confirming the column mapping.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "WESTLIFE|20240331|patC": {
+   "owners": 0.76,
+   "stored_before": 0.0,
+   "note": "76.35 lakhs = 0.7635 crore -> 0.76. PBT 195.45 less total tax 119.10 = 76.35, so the row is arithmetically self-checking. ann unchanged (stored conAnnDate is already 20240508 and matches the NSE filingDate).",
+   "source": "Westlife Foodworld Q4FY24 'Statement of Audited Consolidated Financial Results for the quarter and year ended March 31, 2024' (NSE filed 2024-05-08 17:51, na_audit/cache/F_WESTLIFE_20240331.pdf p5), column '3 months ended 31/03/2024 (refer note 7) Audited', line 5",
+   "identity": "FY24 consolidated annual = 6,921.07 lakhs = 69.21 crore. Stored con quarters 28.83 (Jun-23) + 22.37 (Sep-23) + 17.24 (Dec-23) + the healed 0.76 (Mar-24) = 69.20, a 1-paisa residue caused by Jun-23/Sep-23 being stored only to crore precision (in lakhs the printed year is 6,921.07 vs 6,920.67 reconstructed). FY23 cross-check: printed 11,157.98 lakhs = 111.58 crore.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "RBA|20210331|patC": {
+   "owners": -48.49,
+   "stored_before": -48.49,
+   "note": "369-day look-ahead: the value is right, the date said it was knowable a year before the only filing that carries it. Any point-in-time backtest rebalancing in that window saw a consolidated profit that did not exist yet.",
+   "source": "RBA Q4FY22 consolidated statement (NSE filed 2022-05-31), comparative column 31-Mar-2021",
+   "identity": "Both stored values reproduce EXACTLY from the Q4FY22 consolidated statement (NSE filed 2022-05-31), in millions: -598.53 - (-113.67) = -484.86 -> -48.49 cr (Mar-21) and -264.76 - (-37.94) = -226.82 -> -22.68 cr (Dec-21).",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "RBA|20211231|patC": {
+   "owners": -22.68,
+   "stored_before": -22.68,
+   "note": "127-day look-ahead, same filing and same arithmetic as the Mar-21 cell.",
+   "source": "RBA Q4FY22 consolidated statement (NSE filed 2022-05-31), comparative column 31-Dec-2021",
+   "identity": "Both stored values reproduce EXACTLY from the Q4FY22 consolidated statement (NSE filed 2022-05-31), in millions: -598.53 - (-113.67) = -484.86 -> -48.49 cr (Mar-21) and -264.76 - (-37.94) = -226.82 -> -22.68 cr (Dec-21).",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "RBA|20210630|patC": {
+   "owners": -57.91,
+   "stored_before": -57.91,
+   "note": "364-day look-ahead closed: the stored date was the standalone filing date, a year before any consolidated figure existed publicly.",
+   "source": "RBA Q1FY23 consolidated results (BSE attachment d1cfcb92, filed 2022-08-12) p4, quarter column June 30 2021: Equity holders of the parent (579.14) mn",
+   "identity": "Q1FY23 con table (BSE, filed 2022-08-12) TRIPLE anchor: Jun-22 owners -475.03 mn -> -47.50 == stored EXACT, Mar-22 quarter owners -670.74 -> -67.07 == stored EXACT, and the Jun-21 column -579.14 -> -57.91 == the stored value. Q2FY23 con table (BSE, filed 2022-11-11) DOUBLE anchor: Jun-22 -475.03 -> -47.50 == stored EXACT, and the Sep-21 column -482.58 -> -48.26 == the stored value.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "RBA|20210930|patC": {
+   "owners": -48.26,
+   "stored_before": -48.26,
+   "note": "364-day look-ahead closed, same shape. This completes the RBA look-ahead class: all four FY22 con quarters now carry the date of the filing that first printed them.",
+   "source": "RBA Q2FY23 consolidated results (BSE attachment ab17a39f, filed 2022-11-11) p11, quarter column 30-Sep-21: Equity holders of the parent (482.58) mn",
+   "identity": "Q1FY23 con table (BSE, filed 2022-08-12) TRIPLE anchor: Jun-22 owners -475.03 mn -> -47.50 == stored EXACT, Mar-22 quarter owners -670.74 -> -67.07 == stored EXACT, and the Jun-21 column -579.14 -> -57.91 == the stored value. Q2FY23 con table (BSE, filed 2022-11-11) DOUBLE anchor: Jun-22 -475.03 -> -47.50 == stored EXACT, and the Sep-21 column -482.58 -> -48.26 == the stored value.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "RTNINDIA|20210630|patC": {
+   "owners": -0.83,
+   "stored_before": 0.0,
+   "note": "printed (82.66) in Rs. Lakh -> round(-82.66/100, 2) = -0.83 cr. No NCI/owners split anywhere on the page, so total == owners. EXPECTED VALIDATOR FLAG 'SIGN-DIFFERS-FROM-STD': the standalone profit for the same quarter is +28.04 lakh (+0.28 cr) while consolidated is a loss, and the statement prints exactly why \u2014 row 5 'Share of loss in associate' (110.58) lakh appears only in the consolidated column set (standalone PBT 33.04 vs consolidated PBT-after-associate (77.66)). Note 4 identifies the associate: REL acquired 33.33% of Revolt Intellicorp Private Limited during the quarter. The sign flip is real and printed, not a scale or basis error. The page is a pure scan with a garbage OCR text layer (GlyphLessFont; it renders row 8 as '(82,66)}'), so every figure here was read from a 4x render, not from get_text(). Note 2 on the same page confirms the board approved these results on 13 August 2021. Announce date unchanged from the stored 20210813.",
+   "source": "RattanIndia Enterprises Limited (formerly RattanIndia Infrastructure Limited), 'Statement of Consolidated Unaudited Financial Results for the Quarter Ended 30 June 2021', NSE filing 13-Aug-2021 20:43, p3 of 8, column 'Quarter ended 30.06.2021 (Unaudited)', row 8 '(Loss)/ profit for the period (6-7)'",
+   "identity": "Year ended 31.03.2021 printed 0.70 lakh = 0.01 cr; stored FY21 con quarters 0.08 (Jun-20) + 0.05 (Sep-20) + 0.10 (Dec-20) + (-0.22) (Mar-21) = 0.01 cr \u2014 closes at 2dp. In lakh: 7.54 + Sep20 + Dec20 - 22.25 = 0.70 implies Sep20+Dec20 = 15.41 lakh; stored 0.05+0.10 = 0.15 cr = 15 lakh, consistent within the 2dp-crore rounding of the two stored cells. Cross-basis check: the standalone statement on p2 of the SAME filing reproduces all three stored std values exactly \u2014 Jun-21 28.04 lakh -> 0.28 == stored 0.28, Mar-21 (22.13) -> -0.22 == stored -0.22, Jun-20 7.54 -> 0.08 == stored 0.08.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "KIMS|20210331|patC": {
+   "owners": 57.8,
+   "stored_before": 0.0,
+   "note": "printed 578.02 in Rupees millions -> round(578.02/10, 2) = 57.80 cr (total for that quarter is 586.21 mn = 58.62 cr; NCI 8.19 mn). Pure-scan page, read from a 2.6x/8x render. ANNOUNCE DATE MOVED FORWARD, never back: the stored 20210703 filing is KIMS's first NSE submission (attachment KIMSFinancials31march2021.pdf, 125 pages) and it is the full audited annual Ind AS financial statements \u2014 standalone auditor's report + statements p1-59, consolidated auditor's report + statements p60-125 \u2014 whose only columns are 'For the year ended 31 March 2021' and '31 March 2020'. It contains no quarterly column anywhere; its consolidated P&L (p68, signed 25 May 2021) prints FY21 profit 2,054.79 / owners 2,012.19 / NCI 42.60, which is the same FY21 column the Q4FY22 filing repeats. The March-2021 QUARTER therefore first became public on 11-Aug-2021, the NSE filingDate of the Q1FY22 statement, which is also the stored conAnnDate of that filing's anchor quarter Jun-2021.",
+   "source": "Krishna Institute of Medical Sciences Limited, 'Statement of Unaudited Consolidated Financial Results for the quarter ended 30 June 2021', NSE filing 11-Aug-2021 15:37 (attachment Q1fy22Financialresults.pdf), p4, column 'Quarter Ended 31-Mar-21 (Unaudited) Refer note 2', row 'Attributable to: Owners of the Company'",
+   "identity": "Cross-filing, to the paisa: FY2021 consolidated owners 2,012.19 mn (printed in the audited annual Ind AS financial statements filed 03-Jul-2021 p68, AND re-printed as the 'Year ended 31-Mar-21' column of the Q4FY22 filing) minus nine-months-FY21 owners 1,434.17 mn (printed audited in the Q3FY22 filing, column '9M ended 31-Dec-20') = 578.02 mn \u2014 exactly the printed Mar-2021 quarter owners figure. The same subtraction on the total basis closes too: 2,054.79 - 1,468.58 = 586.21 = the printed Mar-2021 total. Within the Mar-2021 column the split is internally consistent: 578.02 + 8.19 (NCI) = 586.21.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "VALIANTORG|20191231|patC": {
+   "owners": 29.59,
+   "stored_before": null,
+   "note": "printed 2,959.33 in Rs. Lakhs -> round(2959.33/100, 2) = 29.59 cr. Total for that quarter is 2,705.27 lakh = 27.05 cr (NCI (254.06)); 2,959.33 + (254.06) = 2,705.27 checks. Not on NSE: NSE's quarterly-results list for VALIANTORG begins at to=20210630 filed 14-Aug-2021, so the whole FY20-FY21 window is BSE-only. This is the FIRST printing of the Oct-Dec 2019 quarter anywhere \u2014 through FY20 the company reported HALF-YEARLY (its FY20 audited results print only 'Half Year 31-Mar-2020', 'Half Year 30-Sep-2019' and 'Year Ended' columns) and only moved to quarterly reporting from Q1FY21. Announce date is the measured BSE dissemination timestamp, not the 10-Feb-2021 signature date it happens to share.",
+   "source": "Valiant Organics Limited (CIN L24230MH2005PLC151348), ANNEXURE I 'Statement of Standalone and Consolidated Audited Financial Results', quarter and nine months ended 31-12-2020, BSE announcement 2021-02-10 14:55:06 (scripcode 540145, 'Financial Results For The Quarter And Nine Months Ended December 31, 2020'), statement page 2, Consolidated block, column '3 Months ended 31-12-2019 (unaudited)', row 11 'Profit attributable to: Owner of the Company'",
+   "identity": "Mar-2020: FY2020 consolidated owners 12,392.74 lakh (Year Ended 31-Mar-2020 column, printed in the Q4FY21 filing) minus nine-months-FY20 owners 10,207.68 lakh (9 Months ended 31-12-2019 column, printed in the Q3FY21 filing) = 2,185.06 vs the printed quarter 2,185.05 \u2014 0.01 lakh, i.e. identical at 2dp in crore (21.85). Dec-2019: 9M-FY20 owners 10,207.68 (Q3FY21 filing) minus H1-FY20 owners 7,248.34 (6 Months ended 30-Sep-2019 column, printed in the Q2FY21 filing) = 2,959.34 vs the printed quarter 2,959.33 \u2014 again 0.01 lakh, 29.59 either way. All three subtotals are on the Ind AS restated basis (note 2 of the Q2FY21 filing: 'The Company has adopted Indian Accounting Standards (Ind AS) from financial year 2020-21 and year ended 31.3.2020 has been restated as per Ind AS'), which is the basis the whole stored series is on; the ORIGINAL FY20 audited results were IGAAP, half-yearly, and printed con FY20 profit 14,053.29 / minority 200.82 / owners 13,852.47 \u2014 deliberately NOT used.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "VALIANTORG|20200331|patC": {
+   "owners": 21.85,
+   "stored_before": null,
+   "note": "printed 2,185.05 in Rs. Lakhs -> round(2185.05/100, 2) = 21.85 cr. Total for that quarter is 2,591.45 lakh = 25.91 cr (NCI 406.40); 2,185.05 + 406.40 = 2,591.45 checks. First printing of the Jan-Mar 2020 quarter anywhere, for the same half-yearly-reporting reason as the Dec-2019 cell. Announce date 20210525 is the measured BSE dissemination timestamp and matches the cover letter ('the Board of Directors of the Company at its meeting held on Tuesday, May 25, 2021'); the stored 20210516 on the Mar-2021 anchor row is 9 days EARLIER than the board approval and is flagged as a look-ahead in refusals_E.json.",
+   "source": "Valiant Organics Limited, ANNEXURE I 'Statement of Standalone and Consolidated Audited Financial Results', quarter and year ended 31-03-2021, BSE announcement 2021-05-25 14:51:05 (scripcode 540145, 'Audited Standalone And Consolidated Financial Results For The Quarter And Year Ended March 31, 2021'), statement page 2, Consolidated block, column 'Quarter Ended 31-03-2020 (Unaudited)', row 11 'Profit attributable to: Owners of the Company'",
+   "identity": "Mar-2020: FY2020 consolidated owners 12,392.74 lakh (Year Ended 31-Mar-2020 column, printed in the Q4FY21 filing) minus nine-months-FY20 owners 10,207.68 lakh (9 Months ended 31-12-2019 column, printed in the Q3FY21 filing) = 2,185.06 vs the printed quarter 2,185.05 \u2014 0.01 lakh, i.e. identical at 2dp in crore (21.85). Dec-2019: 9M-FY20 owners 10,207.68 (Q3FY21 filing) minus H1-FY20 owners 7,248.34 (6 Months ended 30-Sep-2019 column, printed in the Q2FY21 filing) = 2,959.34 vs the printed quarter 2,959.33 \u2014 again 0.01 lakh, 29.59 either way. All three subtotals are on the Ind AS restated basis (note 2 of the Q2FY21 filing: 'The Company has adopted Indian Accounting Standards (Ind AS) from financial year 2020-21 and year ended 31.3.2020 has been restated as per Ind AS'), which is the basis the whole stored series is on; the ORIGINAL FY20 audited results were IGAAP, half-yearly, and printed con FY20 profit 14,053.29 / minority 200.82 / owners 13,852.47 \u2014 deliberately NOT used.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "KIMS|20211231|patC": {
+   "owners": 81.17,
+   "stored_before": 84.19,
+   "note": "stored 84.19 = the total 841.87 mn; every other KIMS quarter holds owners. Announce date unchanged.",
+   "source": "KIMS Q3FY22 consolidated statement (NSE filed 2022-02-10) p9 / Q4FY22 (2022-05-20) p13, owners row 811.75 mn",
+   "identity": "Q4FY22 p13 and Q3FY22 p9 both print for 31-Dec-2021 (Rs mn): period 841.87 = owners 811.75 + NCI 30.12 exactly. FY22 owners identity closes on 81.17.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "VALIANTORG|20200930|patC": {
+   "owners": 30.71,
+   "stored_before": 28.68,
+   "note": "con healed to the printed owners figure. The standalone twin (27.06, also matching nothing; printed std is the same 30.71) is NOT touched here \u2014 std belongs to a different campaign and its own ledger; recorded in conpat_filing_fills for the std owner to pick up.",
+   "source": "VALIANTORG Q2FY21 results (BSE scrip 540145, disseminated 2020-11-13) \u2014 consolidated owners row 3,070.71 lakh",
+   "identity": "Q2FY21 filing (BSE, disseminated 2020-11-13) prints Sep-2020: standalone Net Profit 3,070.71 lakh and consolidated owners 3,070.71 -> both 30.71; the H1 identity 2,468.05 + 3,070.71 = 5,538.76 closes exactly. Stored 28.68 (con) and 27.06 (std) match nothing printed in either filing carrying the quarter.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "VALIANTORG|20210331|patC": {
+   "owners": 27.59,
+   "stored_before": 27.59,
+   "note": "9-day look-ahead: results could not be public before the board approved them. Value unchanged.",
+   "source": "VALIANTORG Q4FY21 cover letter: board meeting Tuesday 25 May 2021; auditor reports dated 25-May-2021; BSE announcement 2021-05-25 14:51",
+   "identity": "Q2FY21 filing (BSE, disseminated 2020-11-13) prints Sep-2020: standalone Net Profit 3,070.71 lakh and consolidated owners 3,070.71 -> both 30.71; the H1 identity 2,468.05 + 3,070.71 = 5,538.76 closes exactly. Stored 28.68 (con) and 27.06 (std) match nothing printed in either filing carrying the quarter.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "CREDITACC|20231231|patC": {
+   "owners": 353.34,
+   "stored_before": null,
+   "note": "line VII 'Profit for the period / year (V-VI)' = 353.34; no NCI line exists. Re-printed identically as the 31-Dec-23 column of the Q4FY24 filing (p17) and of the Q3FY25 filing (p11). Stored std[20231231] = 353.42, so con != std here - this is a real consolidation difference, not a copy.",
+   "source": "CreditAccess Grameen Q3FY24 'Statement of unaudited consolidated financial results for the quarter and Nine Months ended December 31, 2023' (BSE filed 2024-01-19 16:50, Outcome of Board Meeting; F_cache/CREDITACC_Q3FY24.pdf p12), column 'Quarter ended 31-Dec-23 (Unaudited)'",
+   "identity": "Every YTD subtotal closes on the quarters. FY24 chain: 9M-FY24 printed 1,048.84 = Jun-23 348.46 (stored con) + Sep-23 347.04 (stored con) + Dec-23 353.34 EXACT; FY24 printed 1,445.93 vs the four quarters 348.46+347.04+353.34+397.08 = 1,445.92, a 1-paisa residue from four independently rounded quarters. FY25 chain: H1-FY25 printed 583.72 = 397.66 + 186.06 EXACT; 9M-FY25 printed 484.19 vs 397.66+186.06-99.52 = 484.20, again 1 paisa; FY25 printed 531.40 (Q4FY25 and Q1FY26 filings, already-applied batch-F cells). FY26 chain: H1-FY26 printed 186.00 = 60.19 + 125.81 EXACT; 9M-FY26 printed 438.09 = 60.19+125.81+252.09 EXACT. Revenue closes even harder: 9M-FY25 rev 4,345.70 = 1,512.03+1,453.29+1,380.38 EXACT, H1-FY26 rev 2,971.24 EXACT, 9M-FY26 rev 4,461.65 EXACT.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "CREDITACC|20240331|patC": {
+   "owners": 397.08,
+   "stored_before": null,
+   "note": "line VII = 397.08. Re-printed identically as the 31-Mar-24 column of the Q1FY25 filing (p9). Same-table anchor Mar-23 296.57 == stored con EXACT. Stored std[20240331] = 396.99.",
+   "source": "CreditAccess Grameen Q4FY24 'Statement of consolidated financial results for the quarter and year ended March 31, 2024' (BSE filed 2024-05-07 17:46, Outcome of Board Meeting; F_cache/CREDITACC_Q4FY24.pdf p17), column 'Quarter ended 31-Mar-24 (Refer Note 7)'",
+   "identity": "Every YTD subtotal closes on the quarters. FY24 chain: 9M-FY24 printed 1,048.84 = Jun-23 348.46 (stored con) + Sep-23 347.04 (stored con) + Dec-23 353.34 EXACT; FY24 printed 1,445.93 vs the four quarters 348.46+347.04+353.34+397.08 = 1,445.92, a 1-paisa residue from four independently rounded quarters. FY25 chain: H1-FY25 printed 583.72 = 397.66 + 186.06 EXACT; 9M-FY25 printed 484.19 vs 397.66+186.06-99.52 = 484.20, again 1 paisa; FY25 printed 531.40 (Q4FY25 and Q1FY26 filings, already-applied batch-F cells). FY26 chain: H1-FY26 printed 186.00 = 60.19 + 125.81 EXACT; 9M-FY26 printed 438.09 = 60.19+125.81+252.09 EXACT. Revenue closes even harder: 9M-FY25 rev 4,345.70 = 1,512.03+1,453.29+1,380.38 EXACT, H1-FY26 rev 2,971.24 EXACT, 9M-FY26 rev 4,461.65 EXACT.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "CREDITACC|20240630|patC": {
+   "owners": 397.66,
+   "stored_before": null,
+   "note": "line VII = 397.66. Re-printed identically as the 30-Jun-24 column of the Q2FY25 filing (p13). Same-table anchor Jun-23 348.46 == stored con EXACT. Equals stored std[20240630] = 397.66 (the Section-8 subsidiary contributes nothing measurable this quarter), but the figure is read off the consolidated statement, not copied.",
+   "source": "CreditAccess Grameen Q1FY25 'Statement of unaudited consolidated financial results for the quarter ended June 30, 2024' (BSE filed 2024-07-19 16:53, Outcome of Board Meeting; F_cache/CREDITACC_Q1FY25.pdf p9), column 'Quarter ended 30-Jun-24 (Unaudited)'",
+   "identity": "Every YTD subtotal closes on the quarters. FY24 chain: 9M-FY24 printed 1,048.84 = Jun-23 348.46 (stored con) + Sep-23 347.04 (stored con) + Dec-23 353.34 EXACT; FY24 printed 1,445.93 vs the four quarters 348.46+347.04+353.34+397.08 = 1,445.92, a 1-paisa residue from four independently rounded quarters. FY25 chain: H1-FY25 printed 583.72 = 397.66 + 186.06 EXACT; 9M-FY25 printed 484.19 vs 397.66+186.06-99.52 = 484.20, again 1 paisa; FY25 printed 531.40 (Q4FY25 and Q1FY26 filings, already-applied batch-F cells). FY26 chain: H1-FY26 printed 186.00 = 60.19 + 125.81 EXACT; 9M-FY26 printed 438.09 = 60.19+125.81+252.09 EXACT. Revenue closes even harder: 9M-FY25 rev 4,345.70 = 1,512.03+1,453.29+1,380.38 EXACT, H1-FY26 rev 2,971.24 EXACT, 9M-FY26 rev 4,461.65 EXACT.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "CREDITACC|20240930|patC": {
+   "owners": 186.06,
+   "stored_before": null,
+   "note": "line VII = 186.06. Re-printed identically in the Q3FY25 filing (p11) and the Q2FY26 filing (p12). Same-table anchor Sep-23 347.04 == stored con EXACT; H1-FY25 printed 583.72 = 397.66 + 186.06 EXACT. Equals stored std[20240930].",
+   "source": "CreditAccess Grameen Q2FY25 'Statement of unaudited consolidated financial results for the quarter and half year ended September 30, 2024' (BSE filed 2024-10-25 17:11, Financial Results; F_cache/CREDITACC_Q2FY25.pdf p13), column 'Quarter ended 30-Sep-24 (Unaudited)'",
+   "identity": "Every YTD subtotal closes on the quarters. FY24 chain: 9M-FY24 printed 1,048.84 = Jun-23 348.46 (stored con) + Sep-23 347.04 (stored con) + Dec-23 353.34 EXACT; FY24 printed 1,445.93 vs the four quarters 348.46+347.04+353.34+397.08 = 1,445.92, a 1-paisa residue from four independently rounded quarters. FY25 chain: H1-FY25 printed 583.72 = 397.66 + 186.06 EXACT; 9M-FY25 printed 484.19 vs 397.66+186.06-99.52 = 484.20, again 1 paisa; FY25 printed 531.40 (Q4FY25 and Q1FY26 filings, already-applied batch-F cells). FY26 chain: H1-FY26 printed 186.00 = 60.19 + 125.81 EXACT; 9M-FY26 printed 438.09 = 60.19+125.81+252.09 EXACT. Revenue closes even harder: 9M-FY25 rev 4,345.70 = 1,512.03+1,453.29+1,380.38 EXACT, H1-FY26 rev 2,971.24 EXACT, 9M-FY26 rev 4,461.65 EXACT.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "CREDITACC|20241231|patC": {
+   "owners": -99.52,
+   "stored_before": null,
+   "note": "line VII '(Loss) / profit for the period / year' = (99.52), i.e. a loss. Re-printed identically as the 31-Dec-24 column of the Q3FY26 filing (p10). Equals stored std[20241231] = -99.52.",
+   "source": "CreditAccess Grameen Q3FY25 'Statement of unaudited consolidated financial results for the quarter and nine months ended December 31, 2024' (BSE filed 2025-01-24 17:35, Financial Results; F_cache/CREDITACC_Q3FY25.pdf p11), column 'Quarter ended 31-Dec-24 (Unaudited)'",
+   "identity": "Every YTD subtotal closes on the quarters. FY24 chain: 9M-FY24 printed 1,048.84 = Jun-23 348.46 (stored con) + Sep-23 347.04 (stored con) + Dec-23 353.34 EXACT; FY24 printed 1,445.93 vs the four quarters 348.46+347.04+353.34+397.08 = 1,445.92, a 1-paisa residue from four independently rounded quarters. FY25 chain: H1-FY25 printed 583.72 = 397.66 + 186.06 EXACT; 9M-FY25 printed 484.19 vs 397.66+186.06-99.52 = 484.20, again 1 paisa; FY25 printed 531.40 (Q4FY25 and Q1FY26 filings, already-applied batch-F cells). FY26 chain: H1-FY26 printed 186.00 = 60.19 + 125.81 EXACT; 9M-FY26 printed 438.09 = 60.19+125.81+252.09 EXACT. Revenue closes even harder: 9M-FY25 rev 4,345.70 = 1,512.03+1,453.29+1,380.38 EXACT, H1-FY26 rev 2,971.24 EXACT, 9M-FY26 rev 4,461.65 EXACT.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "CREDITACC|20250930|patC": {
+   "owners": 125.81,
+   "stored_before": null,
+   "note": "line VII = 125.81. Re-printed identically as the 30-Sep-25 column of the Q3FY26 filing (p10). Same-table anchor Jun-25 60.19 == stored con EXACT; H1-FY26 printed 186.00 = 60.19 + 125.81 EXACT. Equals stored std[20250930].",
+   "source": "CreditAccess Grameen Q2FY26 'Statement of unaudited consolidated financial results for the quarter and half year ended September 30, 2025' (BSE filed 2025-10-28 20:23, Financial Results; F_cache/CREDITACC_Q2FY26.pdf p12), column 'Quarter ended 30-Sep-25 (Unaudited)'",
+   "identity": "Every YTD subtotal closes on the quarters. FY24 chain: 9M-FY24 printed 1,048.84 = Jun-23 348.46 (stored con) + Sep-23 347.04 (stored con) + Dec-23 353.34 EXACT; FY24 printed 1,445.93 vs the four quarters 348.46+347.04+353.34+397.08 = 1,445.92, a 1-paisa residue from four independently rounded quarters. FY25 chain: H1-FY25 printed 583.72 = 397.66 + 186.06 EXACT; 9M-FY25 printed 484.19 vs 397.66+186.06-99.52 = 484.20, again 1 paisa; FY25 printed 531.40 (Q4FY25 and Q1FY26 filings, already-applied batch-F cells). FY26 chain: H1-FY26 printed 186.00 = 60.19 + 125.81 EXACT; 9M-FY26 printed 438.09 = 60.19+125.81+252.09 EXACT. Revenue closes even harder: 9M-FY25 rev 4,345.70 = 1,512.03+1,453.29+1,380.38 EXACT, H1-FY26 rev 2,971.24 EXACT, 9M-FY26 rev 4,461.65 EXACT.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "CREDITACC|20251231|patC": {
+   "owners": 252.09,
+   "stored_before": null,
+   "note": "line VII 'Profit / (Loss) for the period / year (V-VI)' = 252.09. 9M-FY26 printed 438.09 = 60.19+125.81+252.09 EXACT. Equals stored std[20251231]. Only one filing prints this quarter so far (Q4FY26 is not out yet); the identity is the second reader.",
+   "source": "CreditAccess Grameen Q3FY26 'Statement of unaudited consolidated financial results for the quarter and nine months ended December 31, 2025' (BSE filed 2026-01-20 18:43, Financial Results; F_cache/CREDITACC_Q3FY26.pdf p10), column 'Quarter ended 31-Dec-25 (Unaudited)'",
+   "identity": "Every YTD subtotal closes on the quarters. FY24 chain: 9M-FY24 printed 1,048.84 = Jun-23 348.46 (stored con) + Sep-23 347.04 (stored con) + Dec-23 353.34 EXACT; FY24 printed 1,445.93 vs the four quarters 348.46+347.04+353.34+397.08 = 1,445.92, a 1-paisa residue from four independently rounded quarters. FY25 chain: H1-FY25 printed 583.72 = 397.66 + 186.06 EXACT; 9M-FY25 printed 484.19 vs 397.66+186.06-99.52 = 484.20, again 1 paisa; FY25 printed 531.40 (Q4FY25 and Q1FY26 filings, already-applied batch-F cells). FY26 chain: H1-FY26 printed 186.00 = 60.19 + 125.81 EXACT; 9M-FY26 printed 438.09 = 60.19+125.81+252.09 EXACT. Revenue closes even harder: 9M-FY25 rev 4,345.70 = 1,512.03+1,453.29+1,380.38 EXACT, H1-FY26 rev 2,971.24 EXACT, 9M-FY26 rev 4,461.65 EXACT.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "POONAWALLA|20231231|patC": {
+   "owners": 265.14,
+   "stored_before": null,
+   "note": "row 15(a) 'Owners of the Company' = 265.14, NCI '-'; row 9 total = 265.14 (identical, no NCI that quarter). Same table's DOUBLE anchor Sep-23 860.17 and Dec-22 182.11 both == stored con EXACT. Re-printed identically in the Q4FY24 (p10) and Q3FY25 (p7) filings. Stored std[20231231] = 265.14.",
+   "source": "Poonawalla Fincorp Q3FY24 'Statement of Consolidated Unaudited Financial Results for the Quarter and Nine Months Ended 31 December 2023' (BSE filed 2024-01-18 15:39; F_cache/POONAWALLA_Q3FY24.pdf p15 total / p16 attribution), column 'Quarter Ended 31 December 2023 (Unaudited)'",
+   "identity": "Every owners subtotal closes EXACTLY, with no residue anywhere. FY24: 9M-FY24 owners printed 1,351.05 = Jun-23 225.74 (stored con) + Sep-23 860.17 (stored con) + Dec-23 265.14 EXACT; FY24 owners printed 1,682.75 = those three + Mar-24 331.70 EXACT. FY25: H1-FY25 owners printed (179.40) = 291.64 + (471.04) EXACT; 9M-FY25 owners printed (160.67) = + 18.73 EXACT; FY25 owners printed (98.34) = + Mar-25 62.33 (already-applied batch-F cell) EXACT. FY26: H1-FY26 printed 136.80 = 62.60 + 74.20 EXACT; 9M-FY26 printed 287.02 = + 150.22 EXACT. Revenue closes the same way inside each filing: H1-FY25 rev 1,966.46 = 977.59+988.87 EXACT, 9M-FY25 rev 3,023.49 = +1,057.03 EXACT, FY24 rev 3,109.01 = 9M 2,194.01 + 915.00 EXACT, H1-FY26 rev 2,856.27 EXACT, 9M-FY26 rev 4,674.69 EXACT.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "POONAWALLA|20240331|patC": {
+   "owners": 331.7,
+   "stored_before": null,
+   "note": "row 15(a) owners = 331.70, NCI '-'; row 9 total = 331.70. Same-table anchor Mar-23 owners 198.37 == stored con EXACT (total 198.55 does not). FY24 owners 1,682.75 = 225.74+860.17+265.14+331.70 EXACT. Re-printed identically in the Q1FY25 filing (p7). Stored std[20240331] = 331.7.",
+   "source": "Poonawalla Fincorp Q4FY24 'Statement of Consolidated Audited Financial Results for the Quarter and Year Ended 31 March 2024' (BSE filed 2024-04-29 16:41; F_cache/POONAWALLA_Q4FY24.pdf p9 total / p10 attribution), column 'Quarter Ended 31 March 2024 (Refer Note 13)'",
+   "identity": "Every owners subtotal closes EXACTLY, with no residue anywhere. FY24: 9M-FY24 owners printed 1,351.05 = Jun-23 225.74 (stored con) + Sep-23 860.17 (stored con) + Dec-23 265.14 EXACT; FY24 owners printed 1,682.75 = those three + Mar-24 331.70 EXACT. FY25: H1-FY25 owners printed (179.40) = 291.64 + (471.04) EXACT; 9M-FY25 owners printed (160.67) = + 18.73 EXACT; FY25 owners printed (98.34) = + Mar-25 62.33 (already-applied batch-F cell) EXACT. FY26: H1-FY26 printed 136.80 = 62.60 + 74.20 EXACT; 9M-FY26 printed 287.02 = + 150.22 EXACT. Revenue closes the same way inside each filing: H1-FY25 rev 1,966.46 = 977.59+988.87 EXACT, 9M-FY25 rev 3,023.49 = +1,057.03 EXACT, FY24 rev 3,109.01 = 9M 2,194.01 + 915.00 EXACT, H1-FY26 rev 2,856.27 EXACT, 9M-FY26 rev 4,674.69 EXACT.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "POONAWALLA|20240630|patC": {
+   "owners": 291.64,
+   "stored_before": null,
+   "note": "row 15(a) owners = 291.64, NCI '-'; row 9 total = 291.64. Same-table anchor Jun-23 owners 225.74 == stored con EXACT (total 225.99 does not). Re-printed identically in the Q2FY25 filing (p5). Stored std[20240630] = 291.64.",
+   "source": "Poonawalla Fincorp Q1FY25 'Statement of Consolidated Unaudited Financial Results for the Quarter Ended 30 June 2024' (BSE filed 2024-07-20 17:25; F_cache/POONAWALLA_Q1FY25.pdf p6 total / p7 attribution - pure scan, contact-sheet located), column 'Quarter Ended 30 June 2024 (Unaudited)'",
+   "identity": "Every owners subtotal closes EXACTLY, with no residue anywhere. FY24: 9M-FY24 owners printed 1,351.05 = Jun-23 225.74 (stored con) + Sep-23 860.17 (stored con) + Dec-23 265.14 EXACT; FY24 owners printed 1,682.75 = those three + Mar-24 331.70 EXACT. FY25: H1-FY25 owners printed (179.40) = 291.64 + (471.04) EXACT; 9M-FY25 owners printed (160.67) = + 18.73 EXACT; FY25 owners printed (98.34) = + Mar-25 62.33 (already-applied batch-F cell) EXACT. FY26: H1-FY26 printed 136.80 = 62.60 + 74.20 EXACT; 9M-FY26 printed 287.02 = + 150.22 EXACT. Revenue closes the same way inside each filing: H1-FY25 rev 1,966.46 = 977.59+988.87 EXACT, 9M-FY25 rev 3,023.49 = +1,057.03 EXACT, FY24 rev 3,109.01 = 9M 2,194.01 + 915.00 EXACT, H1-FY26 rev 2,856.27 EXACT, 9M-FY26 rev 4,674.69 EXACT.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "POONAWALLA|20240930|patC": {
+   "owners": -471.04,
+   "stored_before": null,
+   "note": "row 15(a) owners = (471.04), NCI '-'; row 9 total = (471.04). A genuine loss quarter (impairment on financial instruments 909.63 crore). Same-table anchor Sep-23 owners 860.17 == stored con EXACT. H1-FY25 owners printed (179.40) = 291.64 + (471.04) EXACT. Re-printed identically in the Q3FY25 (p7) and Q2FY26 (p5) filings. Stored std[20240930] = -471.04. Independently, batch F derived exactly this value as the FY25 residue.",
+   "source": "Poonawalla Fincorp Q2FY25 'Statement of Consolidated Unaudited Financial Results for the Quarter and Half Year Ended 30 September 2024' (BSE filed 2024-10-25 14:49; F_cache/POONAWALLA_Q2FY25.pdf p5), column 'Quarter Ended 30 September 2024 (Unaudited)'",
+   "identity": "Every owners subtotal closes EXACTLY, with no residue anywhere. FY24: 9M-FY24 owners printed 1,351.05 = Jun-23 225.74 (stored con) + Sep-23 860.17 (stored con) + Dec-23 265.14 EXACT; FY24 owners printed 1,682.75 = those three + Mar-24 331.70 EXACT. FY25: H1-FY25 owners printed (179.40) = 291.64 + (471.04) EXACT; 9M-FY25 owners printed (160.67) = + 18.73 EXACT; FY25 owners printed (98.34) = + Mar-25 62.33 (already-applied batch-F cell) EXACT. FY26: H1-FY26 printed 136.80 = 62.60 + 74.20 EXACT; 9M-FY26 printed 287.02 = + 150.22 EXACT. Revenue closes the same way inside each filing: H1-FY25 rev 1,966.46 = 977.59+988.87 EXACT, 9M-FY25 rev 3,023.49 = +1,057.03 EXACT, FY24 rev 3,109.01 = 9M 2,194.01 + 915.00 EXACT, H1-FY26 rev 2,856.27 EXACT, 9M-FY26 rev 4,674.69 EXACT.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "POONAWALLA|20241231|patC": {
+   "owners": 18.73,
+   "stored_before": null,
+   "note": "row 15(a) owners = 18.73, NCI '-'; row 9 total = 18.73. 9M-FY25 owners printed (160.67) = 291.64+(471.04)+18.73 EXACT. Re-printed identically in the Q3FY26 filing (p11). ANN DATE: the BSE announcement is timestamped 2025-01-31 16:31 (a Friday), but our store dates the SAME results 20250203 for the standalone (stdAnnDate[20241231] = 20250203, presumably the NSE filingDate after the weekend). I have written the pipeline-consistent 20250203, which is 3 days LATER than the true public date and therefore cannot create look-ahead; use 20250131 instead if the main session prefers the measured first-public date.",
+   "source": "Poonawalla Fincorp Q3FY25 'Statement of Unaudited Consolidated Financial Results for the Quarter and Nine Months Ended 31 December 2024' (BSE filed 2025-01-31 16:31; F_cache/POONAWALLA_Q3FY25.pdf p7 - pure scan, contact-sheet located), column 'Quarter Ended 31 December 2024 (Unaudited)'",
+   "identity": "Every owners subtotal closes EXACTLY, with no residue anywhere. FY24: 9M-FY24 owners printed 1,351.05 = Jun-23 225.74 (stored con) + Sep-23 860.17 (stored con) + Dec-23 265.14 EXACT; FY24 owners printed 1,682.75 = those three + Mar-24 331.70 EXACT. FY25: H1-FY25 owners printed (179.40) = 291.64 + (471.04) EXACT; 9M-FY25 owners printed (160.67) = + 18.73 EXACT; FY25 owners printed (98.34) = + Mar-25 62.33 (already-applied batch-F cell) EXACT. FY26: H1-FY26 printed 136.80 = 62.60 + 74.20 EXACT; 9M-FY26 printed 287.02 = + 150.22 EXACT. Revenue closes the same way inside each filing: H1-FY25 rev 1,966.46 = 977.59+988.87 EXACT, 9M-FY25 rev 3,023.49 = +1,057.03 EXACT, FY24 rev 3,109.01 = 9M 2,194.01 + 915.00 EXACT, H1-FY26 rev 2,856.27 EXACT, 9M-FY26 rev 4,674.69 EXACT.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "POONAWALLA|20250930|patC": {
+   "owners": 74.2,
+   "stored_before": null,
+   "note": "row 9(a) 'Profit/(loss) for the period/year attributable to Owners of the Company' = 74.20, NCI '-'; row 5 PAT = 74.20. Same-table anchor Jun-25 owners 62.60 == stored con EXACT. H1-FY26 printed 136.80 = 62.60 + 74.20 EXACT. Re-printed identically in the Q3FY26 filing (p11). Stored std[20250930] = 74.2.",
+   "source": "Poonawalla Fincorp Q2FY26 'Statement of Consolidated Unaudited Financial Results for the Quarter and Half Year Ended 30 September 2025' (BSE filed 2025-10-17 16:32; F_cache/POONAWALLA_Q2FY26.pdf p5), column 'Quarter Ended 30 September 2025 (Unaudited)'",
+   "identity": "Every owners subtotal closes EXACTLY, with no residue anywhere. FY24: 9M-FY24 owners printed 1,351.05 = Jun-23 225.74 (stored con) + Sep-23 860.17 (stored con) + Dec-23 265.14 EXACT; FY24 owners printed 1,682.75 = those three + Mar-24 331.70 EXACT. FY25: H1-FY25 owners printed (179.40) = 291.64 + (471.04) EXACT; 9M-FY25 owners printed (160.67) = + 18.73 EXACT; FY25 owners printed (98.34) = + Mar-25 62.33 (already-applied batch-F cell) EXACT. FY26: H1-FY26 printed 136.80 = 62.60 + 74.20 EXACT; 9M-FY26 printed 287.02 = + 150.22 EXACT. Revenue closes the same way inside each filing: H1-FY25 rev 1,966.46 = 977.59+988.87 EXACT, 9M-FY25 rev 3,023.49 = +1,057.03 EXACT, FY24 rev 3,109.01 = 9M 2,194.01 + 915.00 EXACT, H1-FY26 rev 2,856.27 EXACT, 9M-FY26 rev 4,674.69 EXACT.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "POONAWALLA|20251231|patC": {
+   "owners": 150.22,
+   "stored_before": null,
+   "note": "row 9(a) owners = 150.22, NCI '-'; row 5 PAT = 150.22. 9M-FY26 printed 287.02 = 62.60+74.20+150.22 EXACT. Stored std[20251231] = 150.22. Only one filing prints this quarter so far; the identity is the second reader.",
+   "source": "Poonawalla Fincorp Q3FY26 'Statement of Consolidated Unaudited Financial Results for the Quarter and Nine Months Ended 31 December 2025' (BSE filed 2026-01-16 16:11; F_cache/POONAWALLA_Q3FY26.pdf p11), column 'Quarter Ended 31 December 2025 (Unaudited)'",
+   "identity": "Every owners subtotal closes EXACTLY, with no residue anywhere. FY24: 9M-FY24 owners printed 1,351.05 = Jun-23 225.74 (stored con) + Sep-23 860.17 (stored con) + Dec-23 265.14 EXACT; FY24 owners printed 1,682.75 = those three + Mar-24 331.70 EXACT. FY25: H1-FY25 owners printed (179.40) = 291.64 + (471.04) EXACT; 9M-FY25 owners printed (160.67) = + 18.73 EXACT; FY25 owners printed (98.34) = + Mar-25 62.33 (already-applied batch-F cell) EXACT. FY26: H1-FY26 printed 136.80 = 62.60 + 74.20 EXACT; 9M-FY26 printed 287.02 = + 150.22 EXACT. Revenue closes the same way inside each filing: H1-FY25 rev 1,966.46 = 977.59+988.87 EXACT, 9M-FY25 rev 3,023.49 = +1,057.03 EXACT, FY24 rev 3,109.01 = 9M 2,194.01 + 915.00 EXACT, H1-FY26 rev 2,856.27 EXACT, 9M-FY26 rev 4,674.69 EXACT.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "KEI|20240630|patC": {
+   "owners": 150.25,
+   "stored_before": null,
+   "note": "row 11 'Profit for the Year (9+10)' 1,502.49 mn and row 14 owners 1,502.49 mn, NCI '-'. 1,502.49/10 = 150.249 -> 150.25. Re-printed identically as the 30-06-2024 column of the Q2FY25 filing (p9). Same-table DOUBLE anchor Jun-23 121.38 and Mar-24 168.49. Equals stored std[20240630] = 150.25.",
+   "source": "KEI Industries Q1FY25 'STATEMENT OF UNAUDITED CONSOLIDATED FINANCIAL RESULTS FOR THE QUARTER ENDED JUNE 30, 2024' (BSE filed 2024-07-29 17:12; F_cache/KEI_Q1FY25.pdf p9), column 'Quarter ended 30-06-2024 (Unaudited)'",
+   "identity": "All in millions, all EXACT to the paisa-equivalent. FY25: H1-FY25 printed 3,050.61 = 1,502.49 + 1,548.12; 9M-FY25 printed 4,698.66 = + 1,648.05; FY25 annual printed 6,964.14 (in the Q2FY26 and Q3FY26 filings) = + Mar-25 2,265.48 (the already-applied batch-F cell) = 6,964.14 EXACT - the FY25 year closes on the nose. FY26: H1-FY26 printed 3,992.60 = 1,957.47 + 2,035.13 EXACT; 9M-FY26 printed 6,341.21 = + 2,348.61 EXACT. Revenue: H1-FY25 43,401.45 = 20,604.97+22,796.48 EXACT; 9M-FY25 68,074.12 = +24,672.67 EXACT; 9M-FY26 82,713.69 = 25,903.16+27,263.49+29,547.04 EXACT. Cross-check on our own stored crore series: FY25 annual owners 6,964.14 mn = 696.41 cr vs stored/filled quarters 150.25+154.81+164.81+226.55 = 696.42, a 1-paisa residue from four independently rounded quarters.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "KEI|20240930|patC": {
+   "owners": 154.81,
+   "stored_before": null,
+   "note": "row 11 total 1,548.12 mn and row 14 owners 1,548.12 mn, NCI '-'. 1,548.12/10 = 154.812 -> 154.81. H1-FY25 printed 3,050.61 = 1,502.49 + 1,548.12 EXACT. Re-printed identically in the Q3FY25 (p7) and Q2FY26 (p7) filings. Equals stored std[20240930] = 154.81. ANN RULE applied here and to POONAWALLA|20241231: the con and std for this quarter come out of the SAME PDF, so where the store's stdAnnDate for that filing is LATER than the BSE timestamp I take the store's date rather than invent an earlier one. BSE announced 2024-10-15 18:10 (after market close); the store dates the standalone 20241016; I wrote 20241016. Every other batch-G ann matches the BSE announcement date exactly.",
+   "source": "KEI Industries Q2FY25 'STATEMENT OF UNAUDITED CONSOLIDATED FINANCIAL RESULTS FOR THE QUARTER AND HALF YEAR ENDED SEPTEMBER 30, 2024' (BSE filed 2024-10-15 18:10; F_cache/KEI_Q2FY25.pdf p9), column 'Quarter ended 30-09-2024 (Unaudited)'",
+   "identity": "All in millions, all EXACT to the paisa-equivalent. FY25: H1-FY25 printed 3,050.61 = 1,502.49 + 1,548.12; 9M-FY25 printed 4,698.66 = + 1,648.05; FY25 annual printed 6,964.14 (in the Q2FY26 and Q3FY26 filings) = + Mar-25 2,265.48 (the already-applied batch-F cell) = 6,964.14 EXACT - the FY25 year closes on the nose. FY26: H1-FY26 printed 3,992.60 = 1,957.47 + 2,035.13 EXACT; 9M-FY26 printed 6,341.21 = + 2,348.61 EXACT. Revenue: H1-FY25 43,401.45 = 20,604.97+22,796.48 EXACT; 9M-FY25 68,074.12 = +24,672.67 EXACT; 9M-FY26 82,713.69 = 25,903.16+27,263.49+29,547.04 EXACT. Cross-check on our own stored crore series: FY25 annual owners 6,964.14 mn = 696.41 cr vs stored/filled quarters 150.25+154.81+164.81+226.55 = 696.42, a 1-paisa residue from four independently rounded quarters.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "KEI|20241231|patC": {
+   "owners": 164.81,
+   "stored_before": null,
+   "note": "row 11 total 1,648.05 mn and row 14 owners 1,648.05 mn, NCI '-'. 1,648.05/10 = 164.805 -> 164.81 (verified: python round and half-up agree here because 164.805 in float sits above the tie). 9M-FY25 printed 4,698.66 = 1,502.49+1,548.12+1,648.05 EXACT. Re-printed identically in the Q3FY26 filing (p6). Same-table anchor Dec-23 owners 150.67 == stored con EXACT. Equals stored std[20241231] = 164.81.",
+   "source": "KEI Industries Q3FY25 'STATEMENT OF UNAUDITED CONSOLIDATED FINANCIAL RESULTS FOR THE QUARTER AND NINE MONTHS ENDED DECEMBER 31, 2024' (BSE filed 2025-01-21 17:19; F_cache/KEI_Q3FY25.pdf p7), column 'Quarter ended 31-12-2024 (Unaudited)'",
+   "identity": "All in millions, all EXACT to the paisa-equivalent. FY25: H1-FY25 printed 3,050.61 = 1,502.49 + 1,548.12; 9M-FY25 printed 4,698.66 = + 1,648.05; FY25 annual printed 6,964.14 (in the Q2FY26 and Q3FY26 filings) = + Mar-25 2,265.48 (the already-applied batch-F cell) = 6,964.14 EXACT - the FY25 year closes on the nose. FY26: H1-FY26 printed 3,992.60 = 1,957.47 + 2,035.13 EXACT; 9M-FY26 printed 6,341.21 = + 2,348.61 EXACT. Revenue: H1-FY25 43,401.45 = 20,604.97+22,796.48 EXACT; 9M-FY25 68,074.12 = +24,672.67 EXACT; 9M-FY26 82,713.69 = 25,903.16+27,263.49+29,547.04 EXACT. Cross-check on our own stored crore series: FY25 annual owners 6,964.14 mn = 696.41 cr vs stored/filled quarters 150.25+154.81+164.81+226.55 = 696.42, a 1-paisa residue from four independently rounded quarters.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "KEI|20250930|patC": {
+   "owners": 203.51,
+   "stored_before": null,
+   "note": "row 9 'Profit for the period (7-8)' 2,035.13 mn and row 12 owners 2,035.13 mn, NCI '-'. 2,035.13/10 = 203.513 -> 203.51. Same-table anchor Jun-25 owners 195.75 == stored con EXACT. H1-FY26 printed 3,992.60 = 1,957.47 + 2,035.13 EXACT. Re-printed identically in the Q3FY26 filing (p6). Equals stored std[20250930] = 203.51.",
+   "source": "KEI Industries Q2FY26 'STATEMENT OF UNAUDITED CONSOLIDATED FINANCIAL RESULTS FOR THE QUARTER AND HALF YEAR ENDED SEPTEMBER 30, 2025' (BSE filed 2025-10-15 17:09; F_cache/KEI_Q2FY26.pdf p7), column 'Quarter ended 30-09-2025 (Unaudited)'",
+   "identity": "All in millions, all EXACT to the paisa-equivalent. FY25: H1-FY25 printed 3,050.61 = 1,502.49 + 1,548.12; 9M-FY25 printed 4,698.66 = + 1,648.05; FY25 annual printed 6,964.14 (in the Q2FY26 and Q3FY26 filings) = + Mar-25 2,265.48 (the already-applied batch-F cell) = 6,964.14 EXACT - the FY25 year closes on the nose. FY26: H1-FY26 printed 3,992.60 = 1,957.47 + 2,035.13 EXACT; 9M-FY26 printed 6,341.21 = + 2,348.61 EXACT. Revenue: H1-FY25 43,401.45 = 20,604.97+22,796.48 EXACT; 9M-FY25 68,074.12 = +24,672.67 EXACT; 9M-FY26 82,713.69 = 25,903.16+27,263.49+29,547.04 EXACT. Cross-check on our own stored crore series: FY25 annual owners 6,964.14 mn = 696.41 cr vs stored/filled quarters 150.25+154.81+164.81+226.55 = 696.42, a 1-paisa residue from four independently rounded quarters.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "KEI|20251231|patC": {
+   "owners": 234.86,
+   "stored_before": null,
+   "note": "row 9 2,348.61 mn and row 12 owners 2,348.61 mn, NCI '-'. 2,348.61/10 = 234.861 -> 234.86. 9M-FY26 printed 6,341.21 = 1,957.47+2,035.13+2,348.61 EXACT. Equals stored std[20251231] = 234.86. Only one filing prints this quarter so far; the identity is the second reader.",
+   "source": "KEI Industries Q3FY26 'STATEMENT OF UNAUDITED CONSOLIDATED FINANCIAL RESULTS FOR THE QUARTER AND NINE MONTHS ENDED DECEMBER 31, 2025' (BSE filed 2026-01-21 17:48; F_cache/KEI_Q3FY26.pdf p6), column 'Quarter ended 31-12-2025 (Unaudited)'",
+   "identity": "All in millions, all EXACT to the paisa-equivalent. FY25: H1-FY25 printed 3,050.61 = 1,502.49 + 1,548.12; 9M-FY25 printed 4,698.66 = + 1,648.05; FY25 annual printed 6,964.14 (in the Q2FY26 and Q3FY26 filings) = + Mar-25 2,265.48 (the already-applied batch-F cell) = 6,964.14 EXACT - the FY25 year closes on the nose. FY26: H1-FY26 printed 3,992.60 = 1,957.47 + 2,035.13 EXACT; 9M-FY26 printed 6,341.21 = + 2,348.61 EXACT. Revenue: H1-FY25 43,401.45 = 20,604.97+22,796.48 EXACT; 9M-FY25 68,074.12 = +24,672.67 EXACT; 9M-FY26 82,713.69 = 25,903.16+27,263.49+29,547.04 EXACT. Cross-check on our own stored crore series: FY25 annual owners 6,964.14 mn = 696.41 cr vs stored/filled quarters 150.25+154.81+164.81+226.55 = 696.42, a 1-paisa residue from four independently rounded quarters.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "ABB|20240930|patC": {
+   "owners": 440.45,
+   "stored_before": null,
+   "note": "row 10 'Profit for the period/year (7 + 9)' = 440.45; 'Profit attributable to Shareholders of the Company' = 440.45, NCI '-'. This is a PRINTED consolidated comparative column, not a standalone copy - but it does equal stored std[20240930] = 440.45, because ABB had nothing to consolidate in CY2024. ANN: 2025-11-06 is the date this consolidated figure first became public; ABB's own Q3CY24 filing (2024-11-04) contained no consolidated statement, so do NOT backdate to 2024-11-04.",
+   "source": "ABB India Q3CY25 'Statement of consolidated financial results for the quarter and year to date ended September 30, 2025' (BSE filed 2025-11-06 16:48; F_cache/ABB_Q3CY25.pdf p7), column 'Corresponding quarter ended September 30, 2024 in previous year (Unaudited)'",
+   "identity": "CY2024, from the Q3CY25 consolidated table alone: printed 9M-2024 = 1,343.23 and printed FY2024 = 1,871.64. 1,343.23 = stored std Mar-24 459.29 + Jun-24 443.49 + Sep-24 440.45 EXACT, and the printed Sep-2024 quarter column is 440.45 itself. FY2024 - 9M-2024 = 1,871.64 - 1,343.23 = 528.41, which the Q4CY25 table then prints OUTRIGHT as its 'Corresponding quarter ended December 31, 2024' column = 528.41, and which equals stored std[20241231] = 528.41. Revenue behaves identically: 12,188.31 - 8,823.38 = 3,364.93, printed outright as 3,364.93 in the Q4CY25 table. CY2025: printed 9M-2025 = 1,235.41 = 474.63 + 351.74 + 409.04 EXACT; printed FY2025 = 1,668.26 = + 432.85 EXACT.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "ABB|20241231|patC": {
+   "owners": 528.41,
+   "stored_before": null,
+   "note": "row 10 = 528.41, 'attributable to Shareholders of the Company' = 528.41, NCI '-'. Equals stored std[20241231] = 528.41. ANN CHOICE, stated so the main session can overrule: I have written 20251106 because the value was publicly computable on that date from two printed consolidated columns of one table (FY24 minus 9M-24, exact, no interpolation). The conservative alternative is 20260219, the date it is printed as a quarter column - later, so also free of look-ahead. Do NOT use any 2025-02-17 date (ABB's CY2024 annual filing, F_cache/ABB_Q4CY24.pdf, contains the string 'consolidat' ZERO times on all 9 pages - measured).",
+   "source": "PRIMARY (printed outright): ABB India Q4CY25 'Statement of consolidated financial results for the quarter and year ended December 31, 2025' (BSE filed 2026-02-19 17:10; F_cache/ABB_Q4CY25.pdf p10, image scan), column 'Corresponding quarter ended December 31, 2024 in the previous year' = 528.41. SECONDARY (residue, earlier): ABB Q3CY25 p7, printed FY2024 1,871.64 minus printed 9M-2024 1,343.23 = 528.41, both consolidated columns of the SAME table.",
+   "identity": "CY2024, from the Q3CY25 consolidated table alone: printed 9M-2024 = 1,343.23 and printed FY2024 = 1,871.64. 1,343.23 = stored std Mar-24 459.29 + Jun-24 443.49 + Sep-24 440.45 EXACT, and the printed Sep-2024 quarter column is 440.45 itself. FY2024 - 9M-2024 = 1,871.64 - 1,343.23 = 528.41, which the Q4CY25 table then prints OUTRIGHT as its 'Corresponding quarter ended December 31, 2024' column = 528.41, and which equals stored std[20241231] = 528.41. Revenue behaves identically: 12,188.31 - 8,823.38 = 3,364.93, printed outright as 3,364.93 in the Q4CY25 table. CY2025: printed 9M-2025 = 1,235.41 = 474.63 + 351.74 + 409.04 EXACT; printed FY2025 = 1,668.26 = + 432.85 EXACT.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "ABB|20250930|patC": {
+   "owners": 409.04,
+   "stored_before": null,
+   "note": "row 10 = 409.04; 'attributable to Shareholders of the Company' = 409.04, NCI '-'. Re-printed identically as the 'Preceding quarter ended September 30, 2025' column of the Q4CY25 statement (p10). Equals stored std[20250930] = 409.04. NOTE our store carries stdAnnDate[20250930] = 20260304, which is four months after ABB actually announced this quarter (BSE 2025-11-06 16:48) - flagged separately in refusals_G as an observation on the standalone row.",
+   "source": "ABB India Q3CY25 consolidated statement (BSE filed 2025-11-06 16:48; F_cache/ABB_Q3CY25.pdf p7), column 'Quarter ended September 30, 2025 (Unaudited)'",
+   "identity": "CY2024, from the Q3CY25 consolidated table alone: printed 9M-2024 = 1,343.23 and printed FY2024 = 1,871.64. 1,343.23 = stored std Mar-24 459.29 + Jun-24 443.49 + Sep-24 440.45 EXACT, and the printed Sep-2024 quarter column is 440.45 itself. FY2024 - 9M-2024 = 1,871.64 - 1,343.23 = 528.41, which the Q4CY25 table then prints OUTRIGHT as its 'Corresponding quarter ended December 31, 2024' column = 528.41, and which equals stored std[20241231] = 528.41. Revenue behaves identically: 12,188.31 - 8,823.38 = 3,364.93, printed outright as 3,364.93 in the Q4CY25 table. CY2025: printed 9M-2025 = 1,235.41 = 474.63 + 351.74 + 409.04 EXACT; printed FY2025 = 1,668.26 = + 432.85 EXACT.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "ABB|20251231|patC": {
+   "owners": 432.85,
+   "stored_before": null,
+   "note": "row 10 = 432.85; 'Profit for the year attributable to Shareholders of the Company' = 432.85, NCI '-'. Printed FY2025 = 1,668.26 = 474.63+351.74+409.04+432.85 EXACT. Equals stored std[20251231] = 432.85. This is the earliest publication: the Q1CY26 filing (2026-05-08) reprints the same 432.85 as its preceding-quarter column, which is where batch F would have found it two and a half months later.",
+   "source": "ABB India Q4CY25 'Statement of consolidated financial results for the quarter and year ended December 31, 2025' (BSE filed 2026-02-19 17:10; F_cache/ABB_Q4CY25.pdf p10, image scan located by contact sheet), column 'Quarter ended December 31, 2025 (Refer note 6)'",
+   "identity": "CY2024, from the Q3CY25 consolidated table alone: printed 9M-2024 = 1,343.23 and printed FY2024 = 1,871.64. 1,343.23 = stored std Mar-24 459.29 + Jun-24 443.49 + Sep-24 440.45 EXACT, and the printed Sep-2024 quarter column is 440.45 itself. FY2024 - 9M-2024 = 1,871.64 - 1,343.23 = 528.41, which the Q4CY25 table then prints OUTRIGHT as its 'Corresponding quarter ended December 31, 2024' column = 528.41, and which equals stored std[20241231] = 528.41. Revenue behaves identically: 12,188.31 - 8,823.38 = 3,364.93, printed outright as 3,364.93 in the Q4CY25 table. CY2025: printed 9M-2025 = 1,235.41 = 474.63 + 351.74 + 409.04 EXACT; printed FY2025 = 1,668.26 = + 432.85 EXACT.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "KSCL|20190930|patC": {
+   "owners": 13.63,
+   "stored_before": 13.52,
+   "note": "owners 1,363.07 lakhs -> 13.63 cr; NCI -10.72; printed total 1,352.35 -> 13.52 cr == was EXACT (the anchor). One of the three quarters the previous agent used to PROVE the total-basis defect. Attribution closes EXACT: 1,363.07 + (-10.72) = 1,352.35. Same trio reprinted EXACTLY in the Q2FY21 filing's comparative. Std block anchors: 693.12->6.93, 22,893.49->228.93, 1,193.76->11.94 all == stored std EXACT.",
+   "source": "KSCL Q2FY20 combined std+con statement (NSE con row filed 2019-11-13) p2, CONSOLIDATED block, column 'Quarter Ended 30-09-2019' (the filing's OWN quarter)",
+   "identity": "Within every source filing the attribution block closes to the printed paisa in ALL columns (owners + NCI = total), except two documented filer pennies of 0.01 lakh (Rs 1,000): Dec-2019 (825.46+27.39=852.85 vs 852.86, identical in its own filing AND the Q4FY20 reprint) and Sep-2022 (530.07+15.81=545.88 vs 545.89, identical in its own filing AND the Q3FY23 reprint); neither can move a 2dp-crore value. Cross-filing: H1FY20 owners 24,320.92 and FY19 owners 21,745.07 print identically in Q2FY20/Q3FY20/Q4FY20; FY22 owners 21,245.19 prints identically in Q4FY22/Q2FY23/Q3FY23. Sum checks: H1FY21 = Q1+Q2 EXACT in lakhs (29,528.92+2,346.20=31,875.12); 9M FY23 owners EXACT (24,382.11+530.07+3,809.32=28,721.50); 9M FY25 owners EXACT in lakhs with implied Q1 = 28,949.44 -> 289.49 == cache Jun-24; FY26 owners col 295.84 == sum of the four cache-owners quarters EXACT; FY16 owners year closes to the paisa across four filings (21,843.91-4,752.55+923.04-745.94 = 17,268.46 == printed). Filer-side RESTATEMENTS (comparatives that later filings changed) are documented and NOT healed through: Jun-2019 (own 230.72 -> restated 229.58 from Q2FY20 on), Dec-2021 (own 8.32 -> restated 7.64), Jun-2022 (own 243.5 -> restated 243.82), Dec-2023 (own 12.12 -> restated 11.78); every stored/cache value stays on the quarter's OWN filing per the house rule, and the affected year identities (FY20/FY22/FY23) close exactly on the restated figures, confirming both the restatements and the heal values.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "KSCL|20191231|patC": {
+   "owners": 8.25,
+   "stored_before": 8.53,
+   "note": "owners 825.46 lakhs -> 8.25 cr; NCI 27.39; printed total 852.86 -> 8.53 cr == was EXACT (the anchor). Attribution: 825.46 + 27.39 = 852.85 vs printed total 852.86 -- delta 0.01 lakh (Rs 1,000), the filer's own last-digit rounding; the OTHER five columns of the same block close EXACT, the 9M owners row equals the sum of quarter owners EXACT, and the Q4FY20 filing reprints the identical trio (owners 825.46 / NCI 27.39 / total 852.86). The 0.01 lakh cannot move the 2dp-crore value (8.2546 -> 8.25).",
+   "source": "KSCL Q3FY20 consolidated statement (NSE filed 2020-02-05) p3, column 'Quarter Ended 31-12-2019' (the filing's OWN quarter)",
+   "identity": "Within every source filing the attribution block closes to the printed paisa in ALL columns (owners + NCI = total), except two documented filer pennies of 0.01 lakh (Rs 1,000): Dec-2019 (825.46+27.39=852.85 vs 852.86, identical in its own filing AND the Q4FY20 reprint) and Sep-2022 (530.07+15.81=545.88 vs 545.89, identical in its own filing AND the Q3FY23 reprint); neither can move a 2dp-crore value. Cross-filing: H1FY20 owners 24,320.92 and FY19 owners 21,745.07 print identically in Q2FY20/Q3FY20/Q4FY20; FY22 owners 21,245.19 prints identically in Q4FY22/Q2FY23/Q3FY23. Sum checks: H1FY21 = Q1+Q2 EXACT in lakhs (29,528.92+2,346.20=31,875.12); 9M FY23 owners EXACT (24,382.11+530.07+3,809.32=28,721.50); 9M FY25 owners EXACT in lakhs with implied Q1 = 28,949.44 -> 289.49 == cache Jun-24; FY26 owners col 295.84 == sum of the four cache-owners quarters EXACT; FY16 owners year closes to the paisa across four filings (21,843.91-4,752.55+923.04-745.94 = 17,268.46 == printed). Filer-side RESTATEMENTS (comparatives that later filings changed) are documented and NOT healed through: Jun-2019 (own 230.72 -> restated 229.58 from Q2FY20 on), Dec-2021 (own 8.32 -> restated 7.64), Jun-2022 (own 243.5 -> restated 243.82), Dec-2023 (own 12.12 -> restated 11.78); every stored/cache value stays on the quarter's OWN filing per the house rule, and the affected year identities (FY20/FY22/FY23) close exactly on the restated figures, confirming both the restatements and the heal values.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "KSCL|20200331|patC": {
+   "owners": 7.57,
+   "stored_before": 7.61,
+   "note": "owners 757.35 lakhs -> 7.57 cr; NCI 3.73; printed total 761.08 -> 7.61 cr == was EXACT (the anchor). Attribution closes EXACT: 757.35 + 3.73 = 761.08. FY20 col closes EXACT: 25,903.74 + 86.71 = 25,990.45.",
+   "source": "KSCL FY20 audited consolidated statement (NSE con row filed 2020-06-08) p5, column 'Quarter Ended 31-03-2020' (audited, the filing's OWN quarter; balancing figure per the filing's note)",
+   "identity": "Within every source filing the attribution block closes to the printed paisa in ALL columns (owners + NCI = total), except two documented filer pennies of 0.01 lakh (Rs 1,000): Dec-2019 (825.46+27.39=852.85 vs 852.86, identical in its own filing AND the Q4FY20 reprint) and Sep-2022 (530.07+15.81=545.88 vs 545.89, identical in its own filing AND the Q3FY23 reprint); neither can move a 2dp-crore value. Cross-filing: H1FY20 owners 24,320.92 and FY19 owners 21,745.07 print identically in Q2FY20/Q3FY20/Q4FY20; FY22 owners 21,245.19 prints identically in Q4FY22/Q2FY23/Q3FY23. Sum checks: H1FY21 = Q1+Q2 EXACT in lakhs (29,528.92+2,346.20=31,875.12); 9M FY23 owners EXACT (24,382.11+530.07+3,809.32=28,721.50); 9M FY25 owners EXACT in lakhs with implied Q1 = 28,949.44 -> 289.49 == cache Jun-24; FY26 owners col 295.84 == sum of the four cache-owners quarters EXACT; FY16 owners year closes to the paisa across four filings (21,843.91-4,752.55+923.04-745.94 = 17,268.46 == printed). Filer-side RESTATEMENTS (comparatives that later filings changed) are documented and NOT healed through: Jun-2019 (own 230.72 -> restated 229.58 from Q2FY20 on), Dec-2021 (own 8.32 -> restated 7.64), Jun-2022 (own 243.5 -> restated 243.82), Dec-2023 (own 12.12 -> restated 11.78); every stored/cache value stays on the quarter's OWN filing per the house rule, and the affected year identities (FY20/FY22/FY23) close exactly on the restated figures, confirming both the restatements and the heal values.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "KSCL|20200930|patC": {
+   "owners": 23.46,
+   "stored_before": 23.41,
+   "note": "owners 2,346.2 lakhs -> 23.46 cr; NCI -5.65; printed total 2,340.55 -> 23.41 cr == was EXACT (the anchor). Attribution closes EXACT: 2,346.20 + (-5.65) = 2,340.55; all six columns of the block close EXACT; H1 = sum of quarters EXACT on both rows. Comparative anchors in the same table: Jun-20 owners 29,528.92 -> 295.29 == stored (cache-owners) EXACT and Sep-19 total 1,352.35 -> 13.52 == stored (pre-cache total) EXACT.",
+   "source": "KSCL Q2FY21 consolidated statement (NSE filed 2020-11-10) p6, column 'Quarter Ended 30-09-2020' (the filing's OWN quarter)",
+   "identity": "Within every source filing the attribution block closes to the printed paisa in ALL columns (owners + NCI = total), except two documented filer pennies of 0.01 lakh (Rs 1,000): Dec-2019 (825.46+27.39=852.85 vs 852.86, identical in its own filing AND the Q4FY20 reprint) and Sep-2022 (530.07+15.81=545.88 vs 545.89, identical in its own filing AND the Q3FY23 reprint); neither can move a 2dp-crore value. Cross-filing: H1FY20 owners 24,320.92 and FY19 owners 21,745.07 print identically in Q2FY20/Q3FY20/Q4FY20; FY22 owners 21,245.19 prints identically in Q4FY22/Q2FY23/Q3FY23. Sum checks: H1FY21 = Q1+Q2 EXACT in lakhs (29,528.92+2,346.20=31,875.12); 9M FY23 owners EXACT (24,382.11+530.07+3,809.32=28,721.50); 9M FY25 owners EXACT in lakhs with implied Q1 = 28,949.44 -> 289.49 == cache Jun-24; FY26 owners col 295.84 == sum of the four cache-owners quarters EXACT; FY16 owners year closes to the paisa across four filings (21,843.91-4,752.55+923.04-745.94 = 17,268.46 == printed). Filer-side RESTATEMENTS (comparatives that later filings changed) are documented and NOT healed through: Jun-2019 (own 230.72 -> restated 229.58 from Q2FY20 on), Dec-2021 (own 8.32 -> restated 7.64), Jun-2022 (own 243.5 -> restated 243.82), Dec-2023 (own 12.12 -> restated 11.78); every stored/cache value stays on the quarter's OWN filing per the house rule, and the affected year identities (FY20/FY22/FY23) close exactly on the restated figures, confirming both the restatements and the heal values.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "KSCL|20220331|patC": {
+   "owners": -11.77,
+   "stored_before": -11.82,
+   "note": "owners -1,176.95 lakhs -> -11.77 cr; NCI -5.36; printed total -1,182.31 -> -11.82 cr == was EXACT (the anchor). Attribution closes EXACT: -1,176.95 + (-5.36) = -1,182.31; all five columns close EXACT. Comparative anchor: Mar-21 owners (1,736.80) -> -17.37 == stored (cache-owners) EXACT. The Dec-21 comparative in this filing (owners 764.42/total 704.50) matches stored 8.32 on NEITHER basis -- a filer-side restatement; stored 8.32 is the own-filing owners figure, cache-protected, untouched here.",
+   "source": "KSCL Q4FY22 audited consolidated statement (NSE filed 2022-05-23) p5, column 'Quarter Ended 31/03/22' (the filing's OWN quarter)",
+   "identity": "Within every source filing the attribution block closes to the printed paisa in ALL columns (owners + NCI = total), except two documented filer pennies of 0.01 lakh (Rs 1,000): Dec-2019 (825.46+27.39=852.85 vs 852.86, identical in its own filing AND the Q4FY20 reprint) and Sep-2022 (530.07+15.81=545.88 vs 545.89, identical in its own filing AND the Q3FY23 reprint); neither can move a 2dp-crore value. Cross-filing: H1FY20 owners 24,320.92 and FY19 owners 21,745.07 print identically in Q2FY20/Q3FY20/Q4FY20; FY22 owners 21,245.19 prints identically in Q4FY22/Q2FY23/Q3FY23. Sum checks: H1FY21 = Q1+Q2 EXACT in lakhs (29,528.92+2,346.20=31,875.12); 9M FY23 owners EXACT (24,382.11+530.07+3,809.32=28,721.50); 9M FY25 owners EXACT in lakhs with implied Q1 = 28,949.44 -> 289.49 == cache Jun-24; FY26 owners col 295.84 == sum of the four cache-owners quarters EXACT; FY16 owners year closes to the paisa across four filings (21,843.91-4,752.55+923.04-745.94 = 17,268.46 == printed). Filer-side RESTATEMENTS (comparatives that later filings changed) are documented and NOT healed through: Jun-2019 (own 230.72 -> restated 229.58 from Q2FY20 on), Dec-2021 (own 8.32 -> restated 7.64), Jun-2022 (own 243.5 -> restated 243.82), Dec-2023 (own 12.12 -> restated 11.78); every stored/cache value stays on the quarter's OWN filing per the house rule, and the affected year identities (FY20/FY22/FY23) close exactly on the restated figures, confirming both the restatements and the heal values.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "KSCL|20220930|patC": {
+   "owners": 5.3,
+   "stored_before": 5.46,
+   "note": "owners 530.07 lakhs -> 5.30 cr; NCI 15.81; printed total 545.89 -> 5.46 cr == was EXACT (the anchor). NSE-first failed: both NSE rows for this quarter return no attachment, so the PDF came from the BSE announcement (public 2022-11-14; stored conAnnDate 20221115 = NSE dissemination, kept unchanged). Attribution: 530.07 + 15.81 = 545.88 vs printed 545.89 -- delta 0.01 lakh, and the Q3FY23 filing reprints the identical trio including the same penny; other five columns close EXACT, H1 = sum of quarters EXACT on owners and total. Comparative anchor: Sep-21 owners 1,283.48 -> 12.83 == stored (cache-owners) EXACT; FY22 column reproduces the Q4FY22 audited figures EXACT. The 0.01 lakh cannot move the 2dp-crore value (5.3007 -> 5.30).",
+   "source": "KSCL Q2FY23 consolidated statement (BSE announcement 2022-11-14, scrip 532899; NSE row filed 2022-11-15 carries NO attachment) p7, column 'Quarter Ended 30-09-2022' (the filing's OWN quarter)",
+   "identity": "Within every source filing the attribution block closes to the printed paisa in ALL columns (owners + NCI = total), except two documented filer pennies of 0.01 lakh (Rs 1,000): Dec-2019 (825.46+27.39=852.85 vs 852.86, identical in its own filing AND the Q4FY20 reprint) and Sep-2022 (530.07+15.81=545.88 vs 545.89, identical in its own filing AND the Q3FY23 reprint); neither can move a 2dp-crore value. Cross-filing: H1FY20 owners 24,320.92 and FY19 owners 21,745.07 print identically in Q2FY20/Q3FY20/Q4FY20; FY22 owners 21,245.19 prints identically in Q4FY22/Q2FY23/Q3FY23. Sum checks: H1FY21 = Q1+Q2 EXACT in lakhs (29,528.92+2,346.20=31,875.12); 9M FY23 owners EXACT (24,382.11+530.07+3,809.32=28,721.50); 9M FY25 owners EXACT in lakhs with implied Q1 = 28,949.44 -> 289.49 == cache Jun-24; FY26 owners col 295.84 == sum of the four cache-owners quarters EXACT; FY16 owners year closes to the paisa across four filings (21,843.91-4,752.55+923.04-745.94 = 17,268.46 == printed). Filer-side RESTATEMENTS (comparatives that later filings changed) are documented and NOT healed through: Jun-2019 (own 230.72 -> restated 229.58 from Q2FY20 on), Dec-2021 (own 8.32 -> restated 7.64), Jun-2022 (own 243.5 -> restated 243.82), Dec-2023 (own 12.12 -> restated 11.78); every stored/cache value stays on the quarter's OWN filing per the house rule, and the affected year identities (FY20/FY22/FY23) close exactly on the restated figures, confirming both the restatements and the heal values.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "KSCL|20221231|patC": {
+   "owners": 38.09,
+   "stored_before": 38.15,
+   "note": "owners 3,809.32 lakhs -> 38.09 cr; NCI 6.01; printed total 3,815.33 -> 38.15 cr == was EXACT (the anchor). Attribution closes EXACT: 3,809.32 + 6.01 = 3,815.33; 9M FY23 closes EXACT (28,721.50 + 132.19 = 28,853.69). Second anchor: Sep-22 comparative total 545.89 -> 5.46 == stored EXACT (pre-cache total, healed by this same spec). FY22 column == Q4FY22 audited EXACT.",
+   "source": "KSCL Q3FY23 consolidated statement (NSE filed 2023-01-25) p3, column 'Quarter Ended 31-12-2022' (the filing's OWN quarter)",
+   "identity": "Within every source filing the attribution block closes to the printed paisa in ALL columns (owners + NCI = total), except two documented filer pennies of 0.01 lakh (Rs 1,000): Dec-2019 (825.46+27.39=852.85 vs 852.86, identical in its own filing AND the Q4FY20 reprint) and Sep-2022 (530.07+15.81=545.88 vs 545.89, identical in its own filing AND the Q3FY23 reprint); neither can move a 2dp-crore value. Cross-filing: H1FY20 owners 24,320.92 and FY19 owners 21,745.07 print identically in Q2FY20/Q3FY20/Q4FY20; FY22 owners 21,245.19 prints identically in Q4FY22/Q2FY23/Q3FY23. Sum checks: H1FY21 = Q1+Q2 EXACT in lakhs (29,528.92+2,346.20=31,875.12); 9M FY23 owners EXACT (24,382.11+530.07+3,809.32=28,721.50); 9M FY25 owners EXACT in lakhs with implied Q1 = 28,949.44 -> 289.49 == cache Jun-24; FY26 owners col 295.84 == sum of the four cache-owners quarters EXACT; FY16 owners year closes to the paisa across four filings (21,843.91-4,752.55+923.04-745.94 = 17,268.46 == printed). Filer-side RESTATEMENTS (comparatives that later filings changed) are documented and NOT healed through: Jun-2019 (own 230.72 -> restated 229.58 from Q2FY20 on), Dec-2021 (own 8.32 -> restated 7.64), Jun-2022 (own 243.5 -> restated 243.82), Dec-2023 (own 12.12 -> restated 11.78); every stored/cache value stays on the quarter's OWN filing per the house rule, and the affected year identities (FY20/FY22/FY23) close exactly on the restated figures, confirming both the restatements and the heal values.",
+   "when": "2026-08-17 23:49 IST"
+  },
+  "KSCL|20241231|patC": {
+   "owners": 15.44,
+   "stored_before": 14.85,
+   "note": "owners 1,544.27 lakhs -> 15.44 cr; NCI -58.86; printed total 1,485.41 -> 14.85 cr == was EXACT (the anchor). Attribution closes EXACT in all six columns: 1,544.27 + (-58.86) = 1,485.41. Comparative anchor: Sep-24 owners (66.64) -> -0.67 == stored (cache-owners) EXACT. 9M identity closes EXACT in lakhs: implied Q1 owners 30,427.07 - (-66.64) - 1,544.27 = 28,949.44 -> 289.4944 -> 289.49 == stored Jun-24 (cache) EXACT. The Dec-23 comparative here (owners 1,177.92) was restated filer-side (FY25 buyback; capital 1,118.44 -> 1,028.78) and does not match stored 12.12, which is the own-filing cache value -- untouched.",
+   "source": "KSCL Q3FY25 consolidated statement (NSE filed 2025-02-12) p4, column 'Quarter Ended 31-12-2024' (the filing's OWN quarter)",
+   "identity": "Within every source filing the attribution block closes to the printed paisa in ALL columns (owners + NCI = total), except two documented filer pennies of 0.01 lakh (Rs 1,000): Dec-2019 (825.46+27.39=852.85 vs 852.86, identical in its own filing AND the Q4FY20 reprint) and Sep-2022 (530.07+15.81=545.88 vs 545.89, identical in its own filing AND the Q3FY23 reprint); neither can move a 2dp-crore value. Cross-filing: H1FY20 owners 24,320.92 and FY19 owners 21,745.07 print identically in Q2FY20/Q3FY20/Q4FY20; FY22 owners 21,245.19 prints identically in Q4FY22/Q2FY23/Q3FY23. Sum checks: H1FY21 = Q1+Q2 EXACT in lakhs (29,528.92+2,346.20=31,875.12); 9M FY23 owners EXACT (24,382.11+530.07+3,809.32=28,721.50); 9M FY25 owners EXACT in lakhs with implied Q1 = 28,949.44 -> 289.49 == cache Jun-24; FY26 owners col 295.84 == sum of the four cache-owners quarters EXACT; FY16 owners year closes to the paisa across four filings (21,843.91-4,752.55+923.04-745.94 = 17,268.46 == printed). Filer-side RESTATEMENTS (comparatives that later filings changed) are documented and NOT healed through: Jun-2019 (own 230.72 -> restated 229.58 from Q2FY20 on), Dec-2021 (own 8.32 -> restated 7.64), Jun-2022 (own 243.5 -> restated 243.82), Dec-2023 (own 12.12 -> restated 11.78); every stored/cache value stays on the quarter's OWN filing per the house rule, and the affected year identities (FY20/FY22/FY23) close exactly on the restated figures, confirming both the restatements and the heal values.",
+   "when": "2026-08-17 23:49 IST"
   }
  },
- "generated": "2026-08-17 21:10 IST"
+ "generated": "2026-08-17 23:49 IST"
 }

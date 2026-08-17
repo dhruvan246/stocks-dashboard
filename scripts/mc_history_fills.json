@@ -5819,8 +5819,8 @@
   "type_format": "quarterly"
  },
  "CREDITACC|20231231|con": {
+  "fallback_check": "STALE HOLD SETTLED AUTOMATICALLY 2026-08-17 23:49 IST by scripts/settle_stale_holds.py. This hold asked to be settled from the filing (57/58), and conpat_filing_fills.json now asserts the same value 1292.2 for this cell from a primary filing, which outranks this aggregator read. The payload was NOT changed. Provenance in that ledger under key CREDITACC|20231231|con_rev: src=Q3FY24 consolidated, F_cache/CREDITACC_Q3FY24.pdf p12, line I 'Total revenue from operations', column 'Quarter ended 31-Dec-23' | evidence=Total income 1,295.23 (= rev 1,292.20 + other income 3.03) - not used. Reprinted identically in Q4FY24 p17 and Q3FY25 p11. | why=revenue twin of the con-PAT fill \u2014 without it the newly visible quarter opens a revCon hole | when=2026-08-17 23:49 IST",
   "gate": "19 anchors, 2 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 1.31,
   "rev": 1292.2,
   "row_label": "Net Sales/Income from operations",
@@ -5829,8 +5829,8 @@
   "type_format": "cons_quarterly"
  },
  "CREDITACC|20240331|con": {
+  "fallback_check": "STALE HOLD SETTLED AUTOMATICALLY 2026-08-17 23:49 IST by scripts/settle_stale_holds.py. This hold asked to be settled from the filing (57/58), and conpat_filing_fills.json now asserts the same value 1457.49 for this cell from a primary filing, which outranks this aggregator read. The payload was NOT changed. Provenance in that ledger under key CREDITACC|20240331|con_rev: src=Q4FY24 consolidated, F_cache/CREDITACC_Q4FY24.pdf p17, line I, column 'Quarter ended 31-Mar-24' | evidence=Reprinted identically in Q1FY25 p9. FY24 rev 5,166.67 = 9M 3,709.17 + 1,457.49 (1-paisa residue). | why=revenue twin of the con-PAT fill \u2014 without it the newly visible quarter opens a revCon hole | when=2026-08-17 23:49 IST",
   "gate": "19 anchors, 2 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 1.477,
   "rev": 1457.49,
   "row_label": "Net Sales/Income from operations",
@@ -5839,8 +5839,8 @@
   "type_format": "cons_quarterly"
  },
  "CREDITACC|20240630|con": {
+  "fallback_check": "STALE HOLD SETTLED AUTOMATICALLY 2026-08-17 23:49 IST by scripts/settle_stale_holds.py. This hold asked to be settled from the filing (57/58), and conpat_filing_fills.json now asserts the same value 1512.03 for this cell from a primary filing, which outranks this aggregator read. The payload was NOT changed. Provenance in that ledger under key CREDITACC|20240630|con_rev: src=Q1FY25 consolidated, F_cache/CREDITACC_Q1FY25.pdf p9, line I, column 'Quarter ended 30-Jun-24' | evidence=Reprinted identically in Q2FY25 p13. | why=revenue twin of the con-PAT fill \u2014 without it the newly visible quarter opens a revCon hole | when=2026-08-17 23:49 IST",
   "gate": "19 anchors, 2 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 1.353,
   "rev": 1512.03,
   "row_label": "Net Sales/Income from operations",
@@ -5849,8 +5849,8 @@
   "type_format": "cons_quarterly"
  },
  "CREDITACC|20240930|con": {
+  "fallback_check": "STALE HOLD SETTLED AUTOMATICALLY 2026-08-17 23:49 IST by scripts/settle_stale_holds.py. This hold asked to be settled from the filing (57/58), and conpat_filing_fills.json now asserts the same value 1453.29 for this cell from a primary filing, which outranks this aggregator read. The payload was NOT changed. Provenance in that ledger under key CREDITACC|20240930|con_rev: src=Q2FY25 consolidated, F_cache/CREDITACC_Q2FY25.pdf p13, line I, column 'Quarter ended 30-Sep-24' | evidence=H1-FY25 rev printed 2,965.32 = 1,512.03 + 1,453.29 EXACT. Reprinted in Q3FY25 p11 and Q2FY26 p12. | why=revenue twin of the con-PAT fill \u2014 without it the newly visible quarter opens a revCon hole | when=2026-08-17 23:49 IST",
   "gate": "19 anchors, 2 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 1.203,
   "rev": 1453.29,
   "row_label": "Net Sales/Income from operations",
@@ -5859,8 +5859,8 @@
   "type_format": "cons_quarterly"
  },
  "CREDITACC|20241231|con": {
+  "fallback_check": "STALE HOLD SETTLED AUTOMATICALLY 2026-08-17 23:49 IST by scripts/settle_stale_holds.py. This hold asked to be settled from the filing (57/58), and conpat_filing_fills.json now asserts the same value 1380.38 for this cell from a primary filing, which outranks this aggregator read. The payload was NOT changed. Provenance in that ledger under key CREDITACC|20241231|con_rev: src=Q3FY25 consolidated, F_cache/CREDITACC_Q3FY25.pdf p11, line I, column 'Quarter ended 31-Dec-24' | evidence=9M-FY25 rev printed 4,345.70 = 1,512.03+1,453.29+1,380.38 EXACT. Reprinted in Q3FY26 p10. | why=revenue twin of the con-PAT fill \u2014 without it the newly visible quarter opens a revCon hole | when=2026-08-17 23:49 IST",
   "gate": "19 anchors, 2 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 1.142,
   "rev": 1380.38,
   "row_label": "Net Sales/Income from operations",
@@ -5869,8 +5869,8 @@
   "type_format": "cons_quarterly"
  },
  "CREDITACC|20250331|con": {
+  "fallback_check": "STALE HOLD SETTLED AUTOMATICALLY 2026-08-17 23:49 IST by scripts/settle_stale_holds.py. This hold asked to be settled from the filing (57/58), and conpat_filing_fills.json now asserts the same value 1406.63 for this cell from a primary filing, which outranks this aggregator read. The payload was NOT changed. Provenance in that ledger under key CREDITACC|20250331|con_rev: src=CreditAccess Grameen Q4FY25, 'Statement of consolidated financial results for the quarter and year ended March 31, 2025' (BSE scrip 541770, filed 2025-05-16 17:38, F_cache/CREDITACC_Q4FY25.pdf p12), column 'Quarter ended 31-Mar-25 (Refer Note 7)', line I 'Total revenue from operations (I)' | evidence=Rs in crore, no conversion. ANCHOR: line VII 'Profit/(Loss) for the period / year' in the same column = 47.21, matching stored con PAT 47.21. Internal check: components 1,354.25 + 32.34 + 11.99 + 8.45 - 0.40 = 1,406.63 exact; line III Total income 1,407.71 = 1,406.63 + 1.08 other income exact. Deliberately NOT total income. CROSS-FILING: the same 1,406.63 is reprinted as the 31-Mar-25 column of th | why=revenue twin of the con-PAT fill \u2014 without it the newly visible quarter opens a revCon hole | when=2026-08-17 23:49 IST",
   "gate": "19 anchors, 2 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 1.164,
   "rev": 1406.63,
   "row_label": "Net Sales/Income from operations",
@@ -15733,8 +15733,8 @@
   "type_format": "cons_quarterly"
  },
  "KEI|20240630|con": {
+  "fallback_check": "STALE HOLD SETTLED AUTOMATICALLY 2026-08-17 23:49 IST by scripts/settle_stale_holds.py. This hold asked to be settled from the filing (57/58), and conpat_filing_fills.json now asserts the same value 2060.5 for this cell from a primary filing, which outranks this aggregator read. The payload was NOT changed. Provenance in that ledger under key KEI|20240630|con_rev: src=Q1FY25 consolidated, F_cache/KEI_Q1FY25.pdf p9, line 1(a) 'Revenue from operations', column 'Quarter ended 30-06-2024' = 20,604.97 million | evidence=20,604.97/10 = 2,060.497 -> 2,060.50 cr. Confirmed by the segment block on the same page: 'Revenue from Continuing Operations' 20,604.97. Total income 20,783.43 (incl. other income 178.46) - not used. Segment 'Net Segment Results' 2,322.68 mn is NOT an operating profit. | why=revenue twin of the con-PAT fill \u2014 without it the newly visible quarter opens a revCon hole | when=2026-08-17 23:49 IST",
   "gate": "24 anchors, 0 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 1.056,
   "rev": 2060.5,
   "row_label": "Net Sales/Income from operations",
@@ -15743,8 +15743,8 @@
   "type_format": "cons_quarterly"
  },
  "KEI|20240930|con": {
+  "fallback_check": "STALE HOLD SETTLED AUTOMATICALLY 2026-08-17 23:49 IST by scripts/settle_stale_holds.py. This hold asked to be settled from the filing (57/58), and conpat_filing_fills.json now asserts the same value 2279.65 for this cell from a primary filing, which outranks this aggregator read. The payload was NOT changed. Provenance in that ledger under key KEI|20240930|con_rev: src=Q2FY25 consolidated, F_cache/KEI_Q2FY25.pdf p9, line 1(a), column 'Quarter ended 30-09-2024' = 22,796.48 million | evidence=-> 2,279.648 -> 2,279.65 cr. H1-FY25 rev printed 43,401.45 = 20,604.97 + 22,796.48 EXACT. Restated to 22,838.20 mn in the FY26 filings - see _README. | why=revenue twin of the con-PAT fill \u2014 without it the newly visible quarter opens a revCon hole | when=2026-08-17 23:49 IST",
   "gate": "24 anchors, 0 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 1.135,
   "rev": 2279.65,
   "row_label": "Net Sales/Income from operations",
@@ -15753,8 +15753,8 @@
   "type_format": "cons_quarterly"
  },
  "KEI|20241231|con": {
+  "fallback_check": "STALE HOLD SETTLED AUTOMATICALLY 2026-08-17 23:49 IST by scripts/settle_stale_holds.py. This hold asked to be settled from the filing (57/58), and conpat_filing_fills.json now asserts the same value 2467.27 for this cell from a primary filing, which outranks this aggregator read. The payload was NOT changed. Provenance in that ledger under key KEI|20241231|con_rev: src=Q3FY25 consolidated, F_cache/KEI_Q3FY25.pdf p7, line 1(a), column 'Quarter ended 31-12-2024' = 24,672.67 million | evidence=-> 2,467.267 -> 2,467.27 cr; segment block on the same page repeats 24,672.67. 9M-FY25 rev printed 68,074.12 EXACT. Restated to 24,722.51 mn (2,472.25 cr) in the Q3FY26 filing - see _README. | why=revenue twin of the con-PAT fill \u2014 without it the newly visible quarter opens a revCon hole | when=2026-08-17 23:49 IST",
   "gate": "24 anchors, 0 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 1.229,
   "rev": 2467.27,
   "row_label": "Net Sales/Income from operations",
@@ -15763,8 +15763,8 @@
   "type_format": "cons_quarterly"
  },
  "KEI|20250331|con": {
+  "fallback_check": "STALE HOLD SETTLED AUTOMATICALLY 2026-08-17 23:49 IST by scripts/settle_stale_holds.py. This hold asked to be settled from the filing (57/58), and conpat_filing_fills.json now asserts the same value 2914.79 for this cell from a primary filing, which outranks this aggregator read. The payload was NOT changed. Provenance in that ledger under key KEI|20250331|con_rev: src=KEI Industries Q4FY25, 'STATEMENT OF AUDITED CONSOLIDATED FINANCIAL RESULTS FOR THE QUARTER AND YEAR ENDED MARCH 31, 2025' (BSE scrip 517569, filed 2025-05-06 20:07, F_cache/KEI_Q4FY25.pdf p12), column 'Quarter ended 31-03-2025 (Audited)', row 1(a) 'Revenue from operations' | evidence=Rs in Million -> crore = /10. Printed 29,147.88 mn = 2,914.788 cr -> 2,914.79 (the printed 2dp-in-million value pins the crore figure to [2914.7875, 2914.7885), all of which round to 2914.79). ANCHOR: row 9 'Profit for the Year from Continuing Operations (7-8)' = 2,265.48 mn = 226.548 -> 226.55, matching stored con PAT 226.55; row 14 'attributable to Equity Shareholders of Company' is the same 2,2 | why=revenue twin of the con-PAT fill \u2014 without it the newly visible quarter opens a revCon hole | when=2026-08-17 23:49 IST",
   "gate": "24 anchors, 0 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 1.331,
   "rev": 2914.79,
   "row_label": "Net Sales/Income from operations",
@@ -15773,8 +15773,8 @@
   "type_format": "cons_quarterly"
  },
  "KEI|20250630|con": {
+  "fallback_check": "STALE HOLD SETTLED AUTOMATICALLY 2026-08-17 23:49 IST by scripts/settle_stale_holds.py. This hold asked to be settled from the filing (57/58), and conpat_filing_fills.json now asserts the same value 2590.32 for this cell from a primary filing, which outranks this aggregator read. The payload was NOT changed. Provenance in that ledger under key KEI|20250630|con_rev: src=KEI Industries Q1FY26, 'STATEMENT OF UNAUDITED CONSOLIDATED FINANCIAL RESULTS FOR THE QUARTER ENDED JUNE 30, 2025' (BSE scrip 517569, filed 2025-07-22 17:26, F_cache/KEI_Q1FY26.pdf p5), column 'Quarter ended 30-06-2025 (Unaudited)', row 1(a) 'Revenue from operations' | evidence=Rs in Million -> crore = /10. Printed 25,903.16 mn = 2,590.316 cr -> 2,590.32 (unique across the [2590.3155, 2590.3165) band). ANCHOR: row 9 'Profit for the period (7-8)' = 1,957.47 mn = 195.747 -> 195.75, matching stored con PAT 195.75; row 12 'attributable to Equity Shareholders of Company' is the same 1,957.47 with NCI '-'. Internal check: Total income 26,299.27 = 25,903.16 + 396.11 exact; the  | why=revenue twin of the con-PAT fill \u2014 without it the newly visible quarter opens a revCon hole | when=2026-08-17 23:49 IST",
   "gate": "24 anchors, 0 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 1.183,
   "rev": 2590.32,
   "row_label": "Net Sales/Income from operations",
@@ -15783,8 +15783,8 @@
   "type_format": "cons_quarterly"
  },
  "KEI|20250930|con": {
+  "fallback_check": "STALE HOLD SETTLED AUTOMATICALLY 2026-08-17 23:49 IST by scripts/settle_stale_holds.py. This hold asked to be settled from the filing (57/58), and conpat_filing_fills.json now asserts the same value 2726.35 for this cell from a primary filing, which outranks this aggregator read. The payload was NOT changed. Provenance in that ledger under key KEI|20250930|con_rev: src=Q2FY26 consolidated, F_cache/KEI_Q2FY26.pdf p7, line 1(a), column 'Quarter ended 30-09-2025' = 27,263.49 million | evidence=-> 2,726.349 -> 2,726.35 cr; segment block repeats 27,263.49. Reprinted identically in Q3FY26 p6. | why=revenue twin of the con-PAT fill \u2014 without it the newly visible quarter opens a revCon hole | when=2026-08-17 23:49 IST",
   "gate": "24 anchors, 0 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 1.245,
   "rev": 2726.35,
   "row_label": "Net Sales/Income from operations",
@@ -22383,8 +22383,8 @@
   "type_format": "cons_quarterly"
  },
  "POONAWALLA|20231231|con": {
+  "fallback_check": "STALE HOLD SETTLED AUTOMATICALLY 2026-08-17 23:49 IST by scripts/settle_stale_holds.py. This hold asked to be settled from the filing (57/58), and conpat_filing_fills.json now asserts the same value 762.61 for this cell from a primary filing, which outranks this aggregator read. The payload was NOT changed. Provenance in that ledger under key POONAWALLA|20231231|con_rev: src=Q3FY24 consolidated, F_cache/POONAWALLA_Q3FY24.pdf p15, line 'Total revenue from operations', column 'Quarter Ended 31 December 2023' | evidence=Total income 773.76 (rev 762.61 + other income 11.15) - not used. Reprinted identically in Q4FY24 p9 and Q3FY25 p7. | why=revenue twin of the con-PAT fill \u2014 without it the newly visible quarter opens a revCon hole | when=2026-08-17 23:49 IST",
   "gate": "36 anchors, 0 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 1.155,
   "rev": 762.61,
   "row_label": "Total Income From Operations",
@@ -22393,8 +22393,8 @@
   "type_format": "cons_quarterly"
  },
  "POONAWALLA|20240331|con": {
+  "fallback_check": "STALE HOLD SETTLED AUTOMATICALLY 2026-08-17 23:49 IST by scripts/settle_stale_holds.py. This hold asked to be settled from the filing (57/58), and conpat_filing_fills.json now asserts the same value 915.0 for this cell from a primary filing, which outranks this aggregator read. The payload was NOT changed. Provenance in that ledger under key POONAWALLA|20240331|con_rev: src=Q4FY24 consolidated, F_cache/POONAWALLA_Q4FY24.pdf p9, 'Total revenue from operations', column 'Quarter Ended 31 March 2024' | evidence=FY24 rev printed 3,109.01 = 9M 2,194.01 + 915.00 EXACT. Reprinted in Q1FY25 p6. | why=revenue twin of the con-PAT fill \u2014 without it the newly visible quarter opens a revCon hole | when=2026-08-17 23:49 IST",
   "gate": "36 anchors, 0 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 1.386,
   "rev": 915.0,
   "row_label": "Total Income From Operations",
@@ -22403,8 +22403,8 @@
   "type_format": "cons_quarterly"
  },
  "POONAWALLA|20240630|con": {
+  "fallback_check": "STALE HOLD SETTLED AUTOMATICALLY 2026-08-17 23:49 IST by scripts/settle_stale_holds.py. This hold asked to be settled from the filing (57/58), and conpat_filing_fills.json now asserts the same value 977.59 for this cell from a primary filing, which outranks this aggregator read. The payload was NOT changed. Provenance in that ledger under key POONAWALLA|20240630|con_rev: src=Q1FY25 consolidated, F_cache/POONAWALLA_Q1FY25.pdf p6 (image scan), 'Total revenue from operations', column 'Quarter Ended 30 June 2024' | evidence=Reprinted identically in Q2FY25 p5. | why=revenue twin of the con-PAT fill \u2014 without it the newly visible quarter opens a revCon hole | when=2026-08-17 23:49 IST",
   "gate": "36 anchors, 0 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 1.405,
   "rev": 977.59,
   "row_label": "Total Income From Operations",
@@ -22413,8 +22413,8 @@
   "type_format": "cons_quarterly"
  },
  "POONAWALLA|20240930|con": {
+  "fallback_check": "STALE HOLD SETTLED AUTOMATICALLY 2026-08-17 23:49 IST by scripts/settle_stale_holds.py. This hold asked to be settled from the filing (57/58), and conpat_filing_fills.json now asserts the same value 988.87 for this cell from a primary filing, which outranks this aggregator read. The payload was NOT changed. Provenance in that ledger under key POONAWALLA|20240930|con_rev: src=Q2FY25 consolidated, F_cache/POONAWALLA_Q2FY25.pdf p5, 'Total revenue from operations', column 'Quarter Ended 30 September 2024' | evidence=H1-FY25 rev printed 1,966.46 = 977.59 + 988.87 EXACT. Revenue rose while PAT went to (471.04) - the loss is an impairment charge (909.63), not a revenue collapse. Reprinted in Q3FY25 p7 and Q2FY26 p5. | why=revenue twin of the con-PAT fill \u2014 without it the newly visible quarter opens a revCon hole | when=2026-08-17 23:49 IST",
   "gate": "36 anchors, 0 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 1.377,
   "rev": 988.87,
   "row_label": "Total Income From Operations",
@@ -22423,8 +22423,8 @@
   "type_format": "cons_quarterly"
  },
  "POONAWALLA|20241231|con": {
+  "fallback_check": "STALE HOLD SETTLED AUTOMATICALLY 2026-08-17 23:49 IST by scripts/settle_stale_holds.py. This hold asked to be settled from the filing (57/58), and conpat_filing_fills.json now asserts the same value 1057.03 for this cell from a primary filing, which outranks this aggregator read. The payload was NOT changed. Provenance in that ledger under key POONAWALLA|20241231|con_rev: src=Q3FY25 consolidated, F_cache/POONAWALLA_Q3FY25.pdf p7 (image scan), 'Total revenue from operations', column 'Quarter Ended 31 December 2024' | evidence=9M-FY25 rev printed 3,023.49 = 977.59+988.87+1,057.03 EXACT. Reprinted in Q3FY26 p11. | why=revenue twin of the con-PAT fill \u2014 without it the newly visible quarter opens a revCon hole | when=2026-08-17 23:49 IST",
   "gate": "36 anchors, 0 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 1.472,
   "rev": 1057.03,
   "row_label": "Total Income From Operations",
@@ -22433,8 +22433,8 @@
   "type_format": "cons_quarterly"
  },
  "POONAWALLA|20250331|con": {
+  "fallback_check": "STALE HOLD SETTLED AUTOMATICALLY 2026-08-17 23:49 IST by scripts/settle_stale_holds.py. This hold asked to be settled from the filing (57/58), and conpat_filing_fills.json now asserts the same value 1166.27 for this cell from a primary filing, which outranks this aggregator read. The payload was NOT changed. Provenance in that ledger under key POONAWALLA|20250331|con_rev: src=Poonawalla Fincorp Q4FY25, 'Statement of Consolidated Audited Financial Results for the Quarter and Year Ended 31 March 2025' (BSE scrip 524000, filed 2025-04-25 17:16, F_cache/POONAWALLA_Q4FY25.pdf p8), column 'Quarter Ended 31 March 2025 (Refer Note 10)', row 'Total revenue from operations' | evidence=Rs in crores, no conversion. ANCHOR: row 7 'Profit/(loss) after tax for the period/year from continuing operations (5-6)' = 62.33 and row 15(a) 'Owners of the Company' = 62.33 with NCI '-', matching stored con PAT 62.33. Internal check: components 1,068.47 + 3.39 + 67.06 + '-' + 27.35 = 1,166.27 exact; Total income 1,173.31 = 1,166.27 + 7.04 other income exact. Deliberately NOT total income. CROSS | why=revenue twin of the con-PAT fill \u2014 without it the newly visible quarter opens a revCon hole | when=2026-08-17 23:49 IST",
   "gate": "36 anchors, 0 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 1.624,
   "rev": 1166.27,
   "row_label": "Total Income From Operations",
