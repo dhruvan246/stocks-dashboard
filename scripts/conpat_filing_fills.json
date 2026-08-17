@@ -450,5 +450,51 @@
   "fy_identity": "FY19 owners 2,870.25 closes with Jun-18 = 1,773.59 (sum 2,870.26, 1 paisa) and does NOT close with 429.00",
   "why_not_healed": "the identity names a value but no filing I read PRINTS Jun-18 for this company, and NSE lists no consolidated filing for 20180630 \u2014 so the primary source of the stored 4.29 is unknown. Healing on arithmetic alone here would be a guess about which of two conflicting sources is right.",
   "next_step": "read the Q1FY19 consolidated filing from BSE (NSE has no con row for that quarter) and adjudicate"
+ },
+ "FMGOETZE|20180930|con": {
+  "con": 20.64,
+  "annCon": 20191110,
+  "basis": "con",
+  "when": "2026-08-17 20:19 IST",
+  "src": "Federal-Mogul Goetze Q2FY20 results (NSE attachment, filed 2019-11-10) p2, consolidated block, comparative column 30 September 2018",
+  "evidence": "printed comparative, owners row 2,064.39 lacs (total 2,339.46, NCI 275.07)",
+  "convention": "owners-attributable (\"Owner of the company\"). Stored Sep-19 9.21 and Jun-19 12.92 are owners (totals 10.82 / 15.04 match nothing stored), and stored Dec-19 8.11 is owners 810.52 lacs.",
+  "identity": "PARTIAL \u2014 the two filings agree on TOTALS (H1 Sep-18 5,261.39 + Dec-18 2,081.57 = 9M 7,342.96 vs printed 7,342.97) but NOT on the owners/NCI split (owners 4,798.77 + 1,956.84 = 6,755.61 vs printed 9M owners 7,030.69, off by 275.08 = exactly the Sep-18 NCI). Filer-side restatement of the attribution. Only PRINTED quarter columns are written; nothing derived through the disputed subtotal.",
+  "anchor": "Q2FY20 p2 DOUBLE: Sep-19 owners 921.01 -> 9.21 == stored EXACT and Jun-19 owners 1,292.45 -> 12.92 == stored EXACT. Q3FY20 p7 DOUBLE: Dec-19 owners 810.52 -> 8.11 == stored EXACT and Sep-19 owners 921.01 -> 9.21 == stored EXACT.",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": null,
+   "scripts/fundamentals.json": null
+  }
+ },
+ "FMGOETZE|20181231|con": {
+  "con": 19.57,
+  "annCon": 20200207,
+  "basis": "con",
+  "when": "2026-08-17 20:19 IST",
+  "src": "Federal-Mogul Goetze Q3FY20 results (filed 2020-02-07) p7, consolidated block, comparative column 31 December 2018",
+  "evidence": "printed comparative, owners row 1,956.84 lacs (total 2,081.57, NCI 124.73)",
+  "convention": "owners-attributable (\"Owner of the company\"). Stored Sep-19 9.21 and Jun-19 12.92 are owners (totals 10.82 / 15.04 match nothing stored), and stored Dec-19 8.11 is owners 810.52 lacs.",
+  "identity": "PARTIAL \u2014 the two filings agree on TOTALS (H1 Sep-18 5,261.39 + Dec-18 2,081.57 = 9M 7,342.96 vs printed 7,342.97) but NOT on the owners/NCI split (owners 4,798.77 + 1,956.84 = 6,755.61 vs printed 9M owners 7,030.69, off by 275.08 = exactly the Sep-18 NCI). Filer-side restatement of the attribution. Only PRINTED quarter columns are written; nothing derived through the disputed subtotal.",
+  "anchor": "Q2FY20 p2 DOUBLE: Sep-19 owners 921.01 -> 9.21 == stored EXACT and Jun-19 owners 1,292.45 -> 12.92 == stored EXACT. Q3FY20 p7 DOUBLE: Dec-19 owners 810.52 -> 8.11 == stored EXACT and Sep-19 owners 921.01 -> 9.21 == stored EXACT.",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": null,
+   "scripts/fundamentals.json": null
+  }
+ },
+ "FMGOETZE|20180630+20190331|con-REFUSED-FILER-SPLIT": {
+  "verdict": "REFUSED \u2014 derivable only through a subtotal the filer restated",
+  "when": "2026-08-17 20:19 IST",
+  "basis": "con",
+  "candidates": {
+   "20180630": 27.34,
+   "20190331": 17.11,
+   "20190331_alt": 19.86
+  },
+  "evidence": "Q2FY20 prints YTD Sep-18 owners 4,798.77; Q3FY20 prints YTD Dec-18 owners 7,030.69. Those two cannot both be right with the printed Dec-18 owners 1,956.84: 4,798.77 + 1,956.84 = 6,755.61, short by 275.08 \u2014 exactly the Sep-18 NCI (275.07). The TOTALS reconcile to the paisa (5,261.39 + 2,081.57 = 7,342.96 vs 7,342.97), so the filer restated the owners/NCI SPLIT between the two filings, not the profit.",
+  "why_refused": "Jun-18 and Mar-19 can only be reached through one of those disputed subtotals, and the two paths give different answers for Mar-19 (FY19 8,741.30 - 9M 7,030.69 = 1,710.61 -> 17.11 vs FY19 minus the three printed quarters = 1,985.69 -> 19.86). Picking one would be a guess about which filing is right.",
+  "what_was_written": "only the two PRINTED quarter columns: Sep-18 20.64 and Dec-18 19.57",
+  "next_step": "read the FY19 annual consolidated filing (2019-05-28) \u2014 its own Q4 column and attribution note should settle which split is correct"
  }
 }
