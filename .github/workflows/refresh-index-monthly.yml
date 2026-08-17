@@ -83,4 +83,17 @@ jobs:
         if: steps.commit.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run pages.yml
+        # ⚠️ RETRY, AND NEVER FAIL THE RUN ON THIS LINE. The data is already committed and pushed by
+        # the step above, so a GitHub-side 503 here turns a fully successful run red and mails about
+        # it. Measured 2026-08-17 on refresh-insider: "unable to determine default branch ... HTTP
+        # 503" fired AFTER "processed 22 new filings, 50 fresh rows". 14 of the 23 workflows already
+        # guarded this line with `|| echo`; these 8 were the stragglers. Retried rather than merely
+        # swallowed because the dispatch IS load-bearing (a CI payload cannot deploy itself), and
+        # warned rather than failed because the next push, or ci-janitor.yml, publishes it anyway.
+        run: |
+          for i in 1 2 3; do
+            gh workflow run pages.yml && exit 0
+            echo "::warning::pages dispatch attempt $i failed (GitHub-side); retrying in 15s"
+            sleep 15
+          done
+          echo "::warning::pages dispatch failed 3x — payload is committed; next push or ci-janitor publishes it"
