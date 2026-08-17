@@ -9,7 +9,7 @@
   "2026-08-09 second pass: ATUL FY21+FY22 closed out (Jun-20, Mar-21, Jun-21, Sep-21, Dec-21). SADBHAV 2020-03-31 was RE-CHECKED and is CORRECT as stored: the Jun-2020 filing prints Mar-20 period 1280.78 and NCI 394.14 -> owners 886.64, and FY20 owners -8.07 + -15.94 + -69.79 + 886.63 = 792.83 exactly as printed. The value only looked wrong because it is a very large genuine one-off -- the RENUKA lesson (runbook \u00a769c).",
   "2026-08-09 third pass: the named fund-vs-revop cells (ATUL Sep-25, SADBHAV Dec-20, RENUKA Dec-20 +Mar-21). Measuring them found sf_fundamentals and sf_revop disagree on 1,372 of 43,731 populated con-PAT cells (3.14%); the 603 where revop is exactly 0.0 against a real fundamentals value were resynced, the 716 genuine disagreements and 15 fundamentals==0 cells are NOT touched. build_discovery's TTM P/E was reading the divergent mirror. \u00a770."
  ],
- "generated": "2026-08-17 19:58 IST",
+ "generated": "2026-08-17 20:08 IST",
  "cells": {
   "ATUL|20220331|patC": {
    "period": 136.56,
@@ -482,6 +482,46 @@
    "source": "IPCA Q3FY20 consolidated statement (filed 2020-02-13) p5: FY19 owners 444.83 - 9M Dec-18 owners 346.28",
    "identity": "FY19 owners 444.83 == 68.55 + 118.54 + 159.19 + 98.55 (exact). Cross-filing: H1 Sep-18 187.09 (Q2FY20) + Dec-18 159.19 (Q3FY20) = 346.28 == the 9M Dec-18 owners column printed in the Q3FY20 filing (exact).",
    "when": "2026-08-17 19:58 IST"
+  },
+  "EXIDEIND|20180930|patC": {
+   "owners": 213.17,
+   "stored_before": null,
+   "note": "printed comparative, owners row 213.17 (total 213.87, NCI 0.70)",
+   "source": "EXIDE Q2FY20 consolidated results (NSE attachment, filed 2019-11-11) p10, comparative column 30 Sept 2018",
+   "identity": "Q2FY20 H1 Sep-18 owners 401.05 = Jun-18 187.88 + Sep-18 213.17 (exact). Q3FY20 9M Dec-18 owners 542.57 = H1 401.05 + Dec-18 141.52 (exact, and the two subtotals come from DIFFERENT filings). FY19 owners 845.55 - 9M 542.57 = Q4FY19 302.98.",
+   "when": "2026-08-17 20:08 IST"
+  },
+  "EXIDEIND|20181231|patC": {
+   "owners": 141.52,
+   "stored_before": null,
+   "note": "printed comparative, owners row 141.52 (total 141.94, NCI 0.42)",
+   "source": "EXIDE Q3FY20 consolidated results (filed 2020-02-05) p5, comparative column 31 Dec 2018",
+   "identity": "Q2FY20 H1 Sep-18 owners 401.05 = Jun-18 187.88 + Sep-18 213.17 (exact). Q3FY20 9M Dec-18 owners 542.57 = H1 401.05 + Dec-18 141.52 (exact, and the two subtotals come from DIFFERENT filings). FY19 owners 845.55 - 9M 542.57 = Q4FY19 302.98.",
+   "when": "2026-08-17 20:08 IST"
+  },
+  "EXIDEIND|20180630|patC": {
+   "owners": 187.88,
+   "stored_before": 188.6,
+   "note": "stored 188.60 is EXACTLY the total-row H1 402.47 - Sep-18 total 213.87, i.e. the total convention. Owners is 187.88. Announce date moved to the date the H1 owners subtotal was published rather than assumed to be in the original Q1FY19 filing (which NSE's list does not even carry as a consolidated row) \u2014 later is never look-ahead.",
+   "source": "EXIDE Q2FY20 consolidated results (filed 2019-11-11) p10: H1 Sep-18 owners 401.05 - Sep-18 owners 213.17",
+   "identity": "Q2FY20 H1 Sep-18 owners 401.05 = Jun-18 187.88 + Sep-18 213.17 (exact). Q3FY20 9M Dec-18 owners 542.57 = H1 401.05 + Dec-18 141.52 (exact, and the two subtotals come from DIFFERENT filings). FY19 owners 845.55 - 9M 542.57 = Q4FY19 302.98.",
+   "when": "2026-08-17 20:08 IST"
+  },
+  "EXIDEIND|20190630|patC": {
+   "owners": 161.87,
+   "stored_before": 161.58,
+   "note": "stored 161.58 is the total row ('Net profit after tax'); owners is 161.87 (NCI -0.29). Announce date unchanged \u2014 the quarter's own con filing of 2019-08-10 is where both rows were published.",
+   "source": "EXIDE Q2FY20 consolidated results (filed 2019-11-11) p10, preceding-quarter column 30 Jun 2019",
+   "identity": "Q2FY20 H1 Sep-18 owners 401.05 = Jun-18 187.88 + Sep-18 213.17 (exact). Q3FY20 9M Dec-18 owners 542.57 = H1 401.05 + Dec-18 141.52 (exact, and the two subtotals come from DIFFERENT filings). FY19 owners 845.55 - 9M 542.57 = Q4FY19 302.98.",
+   "when": "2026-08-17 20:08 IST"
+  },
+  "EXIDEIND|20190331|patC": {
+   "owners": 302.98,
+   "stored_before": 302.94,
+   "note": "stored 302.94 is EXACTLY the total-basis Q4 (FY19 total 847.35 - 9M total 544.41); the owners-basis Q4 is 302.98. Announce date moved to when the 9M owners subtotal became public.",
+   "source": "EXIDE Q3FY20 consolidated results (filed 2020-02-05) p5: FY19 owners 845.55 - 9M Dec-18 owners 542.57",
+   "identity": "Q2FY20 H1 Sep-18 owners 401.05 = Jun-18 187.88 + Sep-18 213.17 (exact). Q3FY20 9M Dec-18 owners 542.57 = H1 401.05 + Dec-18 141.52 (exact, and the two subtotals come from DIFFERENT filings). FY19 owners 845.55 - 9M 542.57 = Q4FY19 302.98.",
+   "when": "2026-08-17 20:08 IST"
   }
  }
 }

@@ -300,5 +300,96 @@
   "mode": "heal",
   "defect_class": "CON-SLOT-HOLDS-COPY-OF-STD",
   "annCon_was": 20190530
+ },
+ "EXIDEIND|20180930|con": {
+  "con": 213.17,
+  "annCon": 20191111,
+  "basis": "con",
+  "when": "2026-08-17 20:08 IST",
+  "src": "EXIDE Q2FY20 consolidated results (NSE attachment, filed 2019-11-11) p10, comparative column 30 Sept 2018",
+  "evidence": "printed comparative, owners row 213.17 (total 213.87, NCI 0.70)",
+  "convention": "owners-attributable (\"Owners of the Company\"). Stored Sep-19 247.53 and Dec-19 118.88 are owners (totals 247.18 / 118.15 match nothing stored); every cell OLDER than the _reattr_owners cache boundary (first entry EXIDEIND|20190930) still held the raw TOTAL row \u2014 the cache's coverage boundary is the convention boundary.",
+  "identity": "Q2FY20 H1 Sep-18 owners 401.05 = Jun-18 187.88 + Sep-18 213.17 (exact). Q3FY20 9M Dec-18 owners 542.57 = H1 401.05 + Dec-18 141.52 (exact, and the two subtotals come from DIFFERENT filings). FY19 owners 845.55 - 9M 542.57 = Q4FY19 302.98.",
+  "anchor": "Q2FY20 p10: Sep-19 owners 247.53 == stored EXACT. Q3FY20 p5 DOUBLE: Dec-19 owners 118.88 == stored EXACT and Sep-19 owners 247.53 == stored EXACT.",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": 213.17,
+   "scripts/fundamentals.json": null
+  }
+ },
+ "EXIDEIND|20181231|con": {
+  "con": 141.52,
+  "annCon": 20200205,
+  "basis": "con",
+  "when": "2026-08-17 20:08 IST",
+  "src": "EXIDE Q3FY20 consolidated results (filed 2020-02-05) p5, comparative column 31 Dec 2018",
+  "evidence": "printed comparative, owners row 141.52 (total 141.94, NCI 0.42)",
+  "convention": "owners-attributable (\"Owners of the Company\"). Stored Sep-19 247.53 and Dec-19 118.88 are owners (totals 247.18 / 118.15 match nothing stored); every cell OLDER than the _reattr_owners cache boundary (first entry EXIDEIND|20190930) still held the raw TOTAL row \u2014 the cache's coverage boundary is the convention boundary.",
+  "identity": "Q2FY20 H1 Sep-18 owners 401.05 = Jun-18 187.88 + Sep-18 213.17 (exact). Q3FY20 9M Dec-18 owners 542.57 = H1 401.05 + Dec-18 141.52 (exact, and the two subtotals come from DIFFERENT filings). FY19 owners 845.55 - 9M 542.57 = Q4FY19 302.98.",
+  "anchor": "Q2FY20 p10: Sep-19 owners 247.53 == stored EXACT. Q3FY20 p5 DOUBLE: Dec-19 owners 118.88 == stored EXACT and Sep-19 owners 247.53 == stored EXACT.",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": 141.52,
+   "scripts/fundamentals.json": null
+  }
+ },
+ "EXIDEIND|20180630|con-HEAL": {
+  "con": 187.88,
+  "annCon": 20191111,
+  "basis": "con",
+  "when": "2026-08-17 20:08 IST",
+  "src": "EXIDE Q2FY20 consolidated results (filed 2019-11-11) p10: H1 Sep-18 owners 401.05 - Sep-18 owners 213.17",
+  "evidence": "stored 188.60 is EXACTLY the total-row H1 402.47 - Sep-18 total 213.87, i.e. the total convention. Owners is 187.88. Announce date moved to the date the H1 owners subtotal was published rather than assumed to be in the original Q1FY19 filing (which NSE's list does not even carry as a consolidated row) \u2014 later is never look-ahead.",
+  "convention": "owners-attributable (\"Owners of the Company\"). Stored Sep-19 247.53 and Dec-19 118.88 are owners (totals 247.18 / 118.15 match nothing stored); every cell OLDER than the _reattr_owners cache boundary (first entry EXIDEIND|20190930) still held the raw TOTAL row \u2014 the cache's coverage boundary is the convention boundary.",
+  "identity": "Q2FY20 H1 Sep-18 owners 401.05 = Jun-18 187.88 + Sep-18 213.17 (exact). Q3FY20 9M Dec-18 owners 542.57 = H1 401.05 + Dec-18 141.52 (exact, and the two subtotals come from DIFFERENT filings). FY19 owners 845.55 - 9M 542.57 = Q4FY19 302.98.",
+  "anchor": "Q2FY20 p10: Sep-19 owners 247.53 == stored EXACT. Q3FY20 p5 DOUBLE: Dec-19 owners 118.88 == stored EXACT and Sep-19 owners 247.53 == stored EXACT.",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": 187.88,
+   "scripts/fundamentals.json": null
+  },
+  "was": 188.6,
+  "mode": "heal",
+  "defect_class": "PRE-CACHE-CELL-HOLDS-TOTAL",
+  "annCon_was": 20180811
+ },
+ "EXIDEIND|20190630|con-HEAL": {
+  "con": 161.87,
+  "annCon": 20190810,
+  "basis": "con",
+  "when": "2026-08-17 20:08 IST",
+  "src": "EXIDE Q2FY20 consolidated results (filed 2019-11-11) p10, preceding-quarter column 30 Jun 2019",
+  "evidence": "stored 161.58 is the total row ('Net profit after tax'); owners is 161.87 (NCI -0.29). Announce date unchanged \u2014 the quarter's own con filing of 2019-08-10 is where both rows were published.",
+  "convention": "owners-attributable (\"Owners of the Company\"). Stored Sep-19 247.53 and Dec-19 118.88 are owners (totals 247.18 / 118.15 match nothing stored); every cell OLDER than the _reattr_owners cache boundary (first entry EXIDEIND|20190930) still held the raw TOTAL row \u2014 the cache's coverage boundary is the convention boundary.",
+  "identity": "Q2FY20 H1 Sep-18 owners 401.05 = Jun-18 187.88 + Sep-18 213.17 (exact). Q3FY20 9M Dec-18 owners 542.57 = H1 401.05 + Dec-18 141.52 (exact, and the two subtotals come from DIFFERENT filings). FY19 owners 845.55 - 9M 542.57 = Q4FY19 302.98.",
+  "anchor": "Q2FY20 p10: Sep-19 owners 247.53 == stored EXACT. Q3FY20 p5 DOUBLE: Dec-19 owners 118.88 == stored EXACT and Sep-19 owners 247.53 == stored EXACT.",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": 161.87,
+   "scripts/fundamentals.json": 161.58
+  },
+  "was": 161.58,
+  "mode": "heal",
+  "defect_class": "PRE-CACHE-CELL-HOLDS-TOTAL"
+ },
+ "EXIDEIND|20190331|con-HEAL": {
+  "con": 302.98,
+  "annCon": 20200205,
+  "basis": "con",
+  "when": "2026-08-17 20:08 IST",
+  "src": "EXIDE Q3FY20 consolidated results (filed 2020-02-05) p5: FY19 owners 845.55 - 9M Dec-18 owners 542.57",
+  "evidence": "stored 302.94 is EXACTLY the total-basis Q4 (FY19 total 847.35 - 9M total 544.41); the owners-basis Q4 is 302.98. Announce date moved to when the 9M owners subtotal became public.",
+  "convention": "owners-attributable (\"Owners of the Company\"). Stored Sep-19 247.53 and Dec-19 118.88 are owners (totals 247.18 / 118.15 match nothing stored); every cell OLDER than the _reattr_owners cache boundary (first entry EXIDEIND|20190930) still held the raw TOTAL row \u2014 the cache's coverage boundary is the convention boundary.",
+  "identity": "Q2FY20 H1 Sep-18 owners 401.05 = Jun-18 187.88 + Sep-18 213.17 (exact). Q3FY20 9M Dec-18 owners 542.57 = H1 401.05 + Dec-18 141.52 (exact, and the two subtotals come from DIFFERENT filings). FY19 owners 845.55 - 9M 542.57 = Q4FY19 302.98.",
+  "anchor": "Q2FY20 p10: Sep-19 owners 247.53 == stored EXACT. Q3FY20 p5 DOUBLE: Dec-19 owners 118.88 == stored EXACT and Sep-19 owners 247.53 == stored EXACT.",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": 302.98,
+   "scripts/fundamentals.json": 302.94
+  },
+  "was": 302.94,
+  "mode": "heal",
+  "defect_class": "PRE-CACHE-CELL-HOLDS-TOTAL",
+  "annCon_was": 20190430
  }
 }
