@@ -248,5 +248,57 @@
   "evidence": "stored 55.27 == TOTAL COMPREHENSIVE INCOME for Jun-19 (5,527.38 lakhs), not PAT. PAT is 5,621.92 -> 56.22, confirmed by the same table's H1 identity 5,402.71 + 5,621.92 = 11,024.63",
   "cache_hazard": "_reattr_owners.json holds FDC|20190630 = 55.27, i.e. the SAME wrong number, so this heal is reverted nightly by apply_owners_full.py unless pinned",
   "defect_class": "COMPREHENSIVE-INCOME-IN-PAT-SLOT"
+ },
+ "IPCALAB|20180630|con": {
+  "con": 68.55,
+  "annCon": 20191108,
+  "basis": "con",
+  "when": "2026-08-17 19:58 IST",
+  "src": "IPCA Q2FY20 consolidated statement (NSE attachment, filed 2019-11-08) p8, 'Owners of the parent'",
+  "evidence": "derived inside one table: H1 Sep-18 owners 187.09 - Sep-18 owners 118.54 = 68.55 (Rs cr; statement is already in crores)",
+  "convention": "owners-attributable (\"Owners of the parent\"); stored Dec-19 197.61 and Sep-19 193.07 are the OWNERS figures, not the totals 197.54 / 193.54 \u2014 the series convention is proven on two exact anchors",
+  "identity": "FY19 owners 444.83 == 68.55 + 118.54 + 159.19 + 98.55 (exact). Cross-filing: H1 Sep-18 187.09 (Q2FY20) + Dec-18 159.19 (Q3FY20) = 346.28 == the 9M Dec-18 owners column printed in the Q3FY20 filing (exact).",
+  "anchor": "Q2FY20 p8 DOUBLE: Sep-19 193.07 == stored EXACT and Jun-19 129.63 == stored EXACT. Q3FY20 p5 DOUBLE: Dec-19 197.61 == stored EXACT and Sep-19 193.07 == stored EXACT.",
+  "campaign": "con-yoy-triad"
+ },
+ "IPCALAB|20180930|con": {
+  "con": 118.54,
+  "annCon": 20191108,
+  "basis": "con",
+  "when": "2026-08-17 19:58 IST",
+  "src": "IPCA Q2FY20 consolidated statement (filed 2019-11-08) p8, comparative column Sept 30, 2018",
+  "evidence": "printed comparative: owners 118.54, NCI nil for that quarter so owners == total",
+  "convention": "owners-attributable (\"Owners of the parent\"); stored Dec-19 197.61 and Sep-19 193.07 are the OWNERS figures, not the totals 197.54 / 193.54 \u2014 the series convention is proven on two exact anchors",
+  "identity": "FY19 owners 444.83 == 68.55 + 118.54 + 159.19 + 98.55 (exact). Cross-filing: H1 Sep-18 187.09 (Q2FY20) + Dec-18 159.19 (Q3FY20) = 346.28 == the 9M Dec-18 owners column printed in the Q3FY20 filing (exact).",
+  "anchor": "Q2FY20 p8 DOUBLE: Sep-19 193.07 == stored EXACT and Jun-19 129.63 == stored EXACT. Q3FY20 p5 DOUBLE: Dec-19 197.61 == stored EXACT and Sep-19 193.07 == stored EXACT.",
+  "campaign": "con-yoy-triad"
+ },
+ "IPCALAB|20181231|con": {
+  "con": 159.19,
+  "annCon": 20200213,
+  "basis": "con",
+  "when": "2026-08-17 19:58 IST",
+  "src": "IPCA Q3FY20 consolidated statement (filed 2020-02-13) p5, comparative column Dec 31, 2018",
+  "evidence": "printed comparative: owners 159.19 (total 159.11, NCI -0.08) \u2014 the OWNERS row, matching the series convention",
+  "convention": "owners-attributable (\"Owners of the parent\"); stored Dec-19 197.61 and Sep-19 193.07 are the OWNERS figures, not the totals 197.54 / 193.54 \u2014 the series convention is proven on two exact anchors",
+  "identity": "FY19 owners 444.83 == 68.55 + 118.54 + 159.19 + 98.55 (exact). Cross-filing: H1 Sep-18 187.09 (Q2FY20) + Dec-18 159.19 (Q3FY20) = 346.28 == the 9M Dec-18 owners column printed in the Q3FY20 filing (exact).",
+  "anchor": "Q2FY20 p8 DOUBLE: Sep-19 193.07 == stored EXACT and Jun-19 129.63 == stored EXACT. Q3FY20 p5 DOUBLE: Dec-19 197.61 == stored EXACT and Sep-19 193.07 == stored EXACT.",
+  "campaign": "con-yoy-triad"
+ },
+ "IPCALAB|20190331|con-HEAL": {
+  "con": 98.55,
+  "annCon": 20200213,
+  "basis": "con",
+  "when": "2026-08-17 19:58 IST",
+  "src": "IPCA Q3FY20 consolidated statement (filed 2020-02-13) p5: FY19 owners 444.83 - 9M Dec-18 owners 346.28",
+  "evidence": "stored 109.47 is EXACTLY the standalone Mar-19 PAT (109.47) \u2014 a copy, not a consolidated figure. True Q4FY19 owners = 444.83 - 346.28 = 98.55, and 68.55+118.54+159.19+98.55 = 444.83 closes the year exactly. _reattr_owners.json carries the same 109.47, so this heal is reverted nightly unless pinned. Announce date moves 2019-05-30 -> 2020-02-13: the 9M comparative that makes the quarter derivable was only published then, and dating it earlier would be look-ahead.",
+  "convention": "owners-attributable (\"Owners of the parent\"); stored Dec-19 197.61 and Sep-19 193.07 are the OWNERS figures, not the totals 197.54 / 193.54 \u2014 the series convention is proven on two exact anchors",
+  "identity": "FY19 owners 444.83 == 68.55 + 118.54 + 159.19 + 98.55 (exact). Cross-filing: H1 Sep-18 187.09 (Q2FY20) + Dec-18 159.19 (Q3FY20) = 346.28 == the 9M Dec-18 owners column printed in the Q3FY20 filing (exact).",
+  "anchor": "Q2FY20 p8 DOUBLE: Sep-19 193.07 == stored EXACT and Jun-19 129.63 == stored EXACT. Q3FY20 p5 DOUBLE: Dec-19 197.61 == stored EXACT and Sep-19 193.07 == stored EXACT.",
+  "campaign": "con-yoy-triad",
+  "was": 109.47,
+  "mode": "heal",
+  "defect_class": "CON-SLOT-HOLDS-COPY-OF-STD",
+  "annCon_was": 20190530
  }
 }

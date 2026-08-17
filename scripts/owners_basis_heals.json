@@ -9,7 +9,7 @@
   "2026-08-09 second pass: ATUL FY21+FY22 closed out (Jun-20, Mar-21, Jun-21, Sep-21, Dec-21). SADBHAV 2020-03-31 was RE-CHECKED and is CORRECT as stored: the Jun-2020 filing prints Mar-20 period 1280.78 and NCI 394.14 -> owners 886.64, and FY20 owners -8.07 + -15.94 + -69.79 + 886.63 = 792.83 exactly as printed. The value only looked wrong because it is a very large genuine one-off -- the RENUKA lesson (runbook \u00a769c).",
   "2026-08-09 third pass: the named fund-vs-revop cells (ATUL Sep-25, SADBHAV Dec-20, RENUKA Dec-20 +Mar-21). Measuring them found sf_fundamentals and sf_revop disagree on 1,372 of 43,731 populated con-PAT cells (3.14%); the 603 where revop is exactly 0.0 against a real fundamentals value were resynced, the 716 genuine disagreements and 15 fundamentals==0 cells are NOT touched. build_discovery's TTM P/E was reading the divergent mirror. \u00a770."
  ],
- "generated": "2026-08-17 19:51 IST",
+ "generated": "2026-08-17 19:58 IST",
  "cells": {
   "ATUL|20220331|patC": {
    "period": 136.56,
@@ -450,6 +450,38 @@
    "source": "FDC Q2FY20 consolidated statement (NSE attachment, filed 2019-11-08) p8, row 11 \"Profit for the period\"",
    "identity": "FY19 identity exact: 4,887.37+4,028.46+4,577.86+3,485.19 = 16,978.88 = FY19 annual PAT; and H1 8,915.83 + Dec-18 4,577.86 = 13,493.69 = the 9M column of a different filing",
    "when": "2026-08-17 19:51 IST"
+  },
+  "IPCALAB|20180630|patC": {
+   "owners": 68.55,
+   "stored_before": null,
+   "note": "derived inside one table: H1 Sep-18 owners 187.09 - Sep-18 owners 118.54 = 68.55 (Rs cr; statement is already in crores)",
+   "source": "IPCA Q2FY20 consolidated statement (NSE attachment, filed 2019-11-08) p8, 'Owners of the parent'",
+   "identity": "FY19 owners 444.83 == 68.55 + 118.54 + 159.19 + 98.55 (exact). Cross-filing: H1 Sep-18 187.09 (Q2FY20) + Dec-18 159.19 (Q3FY20) = 346.28 == the 9M Dec-18 owners column printed in the Q3FY20 filing (exact).",
+   "when": "2026-08-17 19:58 IST"
+  },
+  "IPCALAB|20180930|patC": {
+   "owners": 118.54,
+   "stored_before": null,
+   "note": "printed comparative: owners 118.54, NCI nil for that quarter so owners == total",
+   "source": "IPCA Q2FY20 consolidated statement (filed 2019-11-08) p8, comparative column Sept 30, 2018",
+   "identity": "FY19 owners 444.83 == 68.55 + 118.54 + 159.19 + 98.55 (exact). Cross-filing: H1 Sep-18 187.09 (Q2FY20) + Dec-18 159.19 (Q3FY20) = 346.28 == the 9M Dec-18 owners column printed in the Q3FY20 filing (exact).",
+   "when": "2026-08-17 19:58 IST"
+  },
+  "IPCALAB|20181231|patC": {
+   "owners": 159.19,
+   "stored_before": null,
+   "note": "printed comparative: owners 159.19 (total 159.11, NCI -0.08) \u2014 the OWNERS row, matching the series convention",
+   "source": "IPCA Q3FY20 consolidated statement (filed 2020-02-13) p5, comparative column Dec 31, 2018",
+   "identity": "FY19 owners 444.83 == 68.55 + 118.54 + 159.19 + 98.55 (exact). Cross-filing: H1 Sep-18 187.09 (Q2FY20) + Dec-18 159.19 (Q3FY20) = 346.28 == the 9M Dec-18 owners column printed in the Q3FY20 filing (exact).",
+   "when": "2026-08-17 19:58 IST"
+  },
+  "IPCALAB|20190331|patC": {
+   "owners": 98.55,
+   "stored_before": 109.47,
+   "note": "stored 109.47 is EXACTLY the standalone Mar-19 PAT (109.47) \u2014 a copy, not a consolidated figure. True Q4FY19 owners = 444.83 - 346.28 = 98.55, and 68.55+118.54+159.19+98.55 = 444.83 closes the year exactly. _reattr_owners.json carries the same 109.47, so this heal is reverted nightly unless pinned. Announce date moves 2019-05-30 -> 2020-02-13: the 9M comparative that makes the quarter derivable was only published then, and dating it earlier would be look-ahead.",
+   "source": "IPCA Q3FY20 consolidated statement (filed 2020-02-13) p5: FY19 owners 444.83 - 9M Dec-18 owners 346.28",
+   "identity": "FY19 owners 444.83 == 68.55 + 118.54 + 159.19 + 98.55 (exact). Cross-filing: H1 Sep-18 187.09 (Q2FY20) + Dec-18 159.19 (Q3FY20) = 346.28 == the 9M Dec-18 owners column printed in the Q3FY20 filing (exact).",
+   "when": "2026-08-17 19:58 IST"
   }
  }
 }
