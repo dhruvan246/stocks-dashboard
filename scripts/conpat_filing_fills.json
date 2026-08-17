@@ -51,5 +51,25 @@
   "evidence": "the con XBRL URL is PROVEN consolidated on the neighbouring quarter 20230930, where it returns 71.78 = our stored con and NOT the stored std 71.79; same extractor that built the file",
   "note": "con equals std this quarter \u2014 accepted only because it was READ from the consolidated document; the API detail row echoed std and was refused",
   "fill_pass": "2026-08-16 lastmile-classC"
+ },
+ "MRF|20180930|con": {
+  "con": 278.29,
+  "annCon": 20191108,
+  "basis": "con",
+  "src": "NSE detail-API attachment PDF (digital text layer)",
+  "evidence": "Q2FY20 con filing p9 \"Profit for the period\" row: cur 228.96=stored EXACT, prec 273.27=stored EXACT, H1 identity 502.23 exact; target col 30.09.2018",
+  "fill_pass": "2026-08-17 con-triad"
+ },
+ "MRF|20190331|con": {
+  "con": 282.49,
+  "annCon": 20200629,
+  "basis": "con",
+  "src": "NSE detail-API attachment PDF (digital text layer)",
+  "evidence": "Q4FY20 con filing p15 owners row: cur 689.68=stored EXACT, prec 244.98=stored EXACT; target col 31.03.2019; FY19 owners 1,129.83 printed same row",
+  "fill_pass": "2026-08-17 con-triad"
+ },
+ "MRF|20181231|con-REFUSED": {
+  "why": "Q3FY20 page anchor FAIL: cur col reads 241.32 vs stored 244.98 \u2014 Dec-19 was RESTATED between the Q3 and Q4 filings (Q4 preceding col 244.98=stored). Its Dec-18 col (290.83) is pre-restatement and NOT our convention; FY19 identity implies restated Dec-18 ~301.5. Route: MRF Q3FY19 filing (Dec-18 own quarter) or Q4FY19 preceding col.",
+  "fill_pass": "2026-08-17 con-triad"
  }
 }
