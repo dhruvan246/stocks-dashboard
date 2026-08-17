@@ -9,7 +9,7 @@
   "2026-08-09 second pass: ATUL FY21+FY22 closed out (Jun-20, Mar-21, Jun-21, Sep-21, Dec-21). SADBHAV 2020-03-31 was RE-CHECKED and is CORRECT as stored: the Jun-2020 filing prints Mar-20 period 1280.78 and NCI 394.14 -> owners 886.64, and FY20 owners -8.07 + -15.94 + -69.79 + 886.63 = 792.83 exactly as printed. The value only looked wrong because it is a very large genuine one-off -- the RENUKA lesson (runbook \u00a769c).",
   "2026-08-09 third pass: the named fund-vs-revop cells (ATUL Sep-25, SADBHAV Dec-20, RENUKA Dec-20 +Mar-21). Measuring them found sf_fundamentals and sf_revop disagree on 1,372 of 43,731 populated con-PAT cells (3.14%); the 603 where revop is exactly 0.0 against a real fundamentals value were resynced, the 716 genuine disagreements and 15 fundamentals==0 cells are NOT touched. build_discovery's TTM P/E was reading the divergent mirror. \u00a770."
  ],
- "generated": "2026-08-17 20:27 IST",
+ "generated": "2026-08-17 20:35 IST",
  "cells": {
   "ATUL|20220331|patC": {
    "period": 136.56,
@@ -610,6 +610,38 @@
    "source": "BHEL Q3FY20 consolidated results (filed 2020-02-12) p4, current-quarter column 31.12.2019",
    "identity": "Everything closes to the paisa. H1 Sep-18 owners 127.15 = Jun-18 40.68 + Sep-18 86.47. 9M Dec-18 owners 323.63 = H1 127.15 (Q2FY20 filing) + Dec-18 196.48 (Q3FY20 filing) \u2014 subtotals from DIFFERENT filings. FY19 owners 1011.84 = 40.68 + 86.47 + 196.48 + 688.21.",
    "when": "2026-08-17 20:27 IST"
+  },
+  "IOB|20210630|patC": {
+   "owners": 329.67,
+   "stored_before": null,
+   "note": "derived from two printed columns of one table; NSE serves no attachment for this filing, so it was fetched from BSE",
+   "source": "IOB Q2FY23 CONSOLIDATED results (BSE attachment, announced 2022-11-05, NSE-dated 2022-11-09) p3: H1 Sep-21 70,618 - Sep-21 37,651",
+   "identity": "9M Dec-21 con 1,15,746 lakhs (Q3FY23 filing) = H1 Sep-21 70,618 (Q2FY23 filing) + Dec-21 45,128 (Q3FY23) \u2014 EXACT, and the two subtotals come from different filings. Jun-21 = H1 70,618 - Sep-21 37,651 = 32,967. MoneyControl's independent con series for these three quarters (329 / 376 / 451) matches all three to its rounding.",
+   "when": "2026-08-17 20:35 IST"
+  },
+  "IOB|20210930|patC": {
+   "owners": 376.51,
+   "stored_before": null,
+   "note": "printed comparative: Net Profit 37,651 lakhs",
+   "source": "IOB Q2FY23 CONSOLIDATED results (BSE, 2022-11-05) p3, comparative column 30.09.2021",
+   "identity": "9M Dec-21 con 1,15,746 lakhs (Q3FY23 filing) = H1 Sep-21 70,618 (Q2FY23 filing) + Dec-21 45,128 (Q3FY23) \u2014 EXACT, and the two subtotals come from different filings. Jun-21 = H1 70,618 - Sep-21 37,651 = 32,967. MoneyControl's independent con series for these three quarters (329 / 376 / 451) matches all three to its rounding.",
+   "when": "2026-08-17 20:35 IST"
+  },
+  "IOB|20211231|patC": {
+   "owners": 451.28,
+   "stored_before": null,
+   "note": "printed comparative: Net Profit 45,128 lakhs. This is the page that refuted the ledger's 'never produced' sub-claim \u2014 the consolidated P&L prints Dec-21 in full even though the SEGMENT statement's Dec-21 columns are empty (Note 4).",
+   "source": "IOB Q3FY23 CONSOLIDATED results (NSE attachment, filed 2023-02-10) p3, comparative column 31.12.2021",
+   "identity": "9M Dec-21 con 1,15,746 lakhs (Q3FY23 filing) = H1 Sep-21 70,618 (Q2FY23 filing) + Dec-21 45,128 (Q3FY23) \u2014 EXACT, and the two subtotals come from different filings. Jun-21 = H1 70,618 - Sep-21 37,651 = 32,967. MoneyControl's independent con series for these three quarters (329 / 376 / 451) matches all three to its rounding.",
+   "when": "2026-08-17 20:35 IST"
+  },
+  "IOB|20220630|patC": {
+   "owners": 393.1,
+   "stored_before": 392.17,
+   "note": "stored 392.17 is EXACTLY the standalone Jun-22 PAT (392.17) \u2014 a copy. The consolidated figure is 39,310 lakhs = 393.10.",
+   "source": "IOB Q2FY23 CONSOLIDATED results (BSE, 2022-11-05) p3, preceding-quarter column 30.06.2022",
+   "identity": "9M Dec-21 con 1,15,746 lakhs (Q3FY23 filing) = H1 Sep-21 70,618 (Q2FY23 filing) + Dec-21 45,128 (Q3FY23) \u2014 EXACT, and the two subtotals come from different filings. Jun-21 = H1 70,618 - Sep-21 37,651 = 32,967. MoneyControl's independent con series for these three quarters (329 / 376 / 451) matches all three to its rounding.",
+   "when": "2026-08-17 20:35 IST"
   }
  }
 }
