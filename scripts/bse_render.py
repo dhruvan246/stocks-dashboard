@@ -27,7 +27,12 @@ PL_HINT = re.compile(r"profit|revenue from oper|total income|earnings per", re.I
 # says "financial results": a single filing that announces results AND an appointment must stay.
 NOT_RESULT = re.compile(r"chief financial officer|\bcfo\b|key managerial|annual report|annual general meeting"
                         r"|newspaper (publication|advertisement)|trading window|book closure"
-                        r"|certificate under regulation|resignation|appointment", re.I)
+                        r"|certificate under regulation|resignation|appointment"
+                        # "Voting Results and Scrutinizer's Report of the EGM" matches bare RESULT_HEAD's
+                        # "result" and has no parseable quarter-end date, so it fell through the period
+                        # check and got rendered as if it were the P&L (KALYANI, 2026-08 run: rendered its
+                        # scrutinizer's report instead of the June-quarter results 3 announcements older).
+                        r"|scrutinizer|postal ballot|extraordinary general meeting|e-?voting", re.I)
 STRONG_RESULT = re.compile(r"financial results?|results? for the (quarter|period|half|year)", re.I)
 BOARD_OUTCOME = re.compile(r"outcome of (the )?board|board meeting outcome", re.I)
 
