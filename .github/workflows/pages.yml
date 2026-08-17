@@ -55,7 +55,9 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      # Whichever attempt below actually succeeded owns the url — attempt 1's output is empty when
+      # it 503s, and an empty environment url shows the deployment as unlinked in the UI.
+      url: ${{ steps.deployment.outputs.page_url || steps.deploy_retry1.outputs.page_url || steps.deploy_retry2.outputs.page_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -65,12 +67,53 @@ jobs:
         uses: actions/upload-pages-artifact@v5
         with:
           path: docs
+
+      # ⚠️ RETRY THE CREATE — GitHub's Pages API 503s, and that is not our failure to report.
+      # Measured 2026-08-17 18:00–18:31 UTC: five runs died on
+      #   "Creating Pages deployment failed / HttpError: No server is currently available to service
+      #    your request" / "Failed to create deployment (status: 503)"
+      # while NINE others in the same half hour succeeded — flapping, not down. The site never went
+      # stale (live sf_meta.json stayed {"end":"2026-08-17"}, identical to origin/main) because a
+      # later deploy published the same content, so every one of those emails was pure noise about a
+      # self-healing condition. Same class as the bake-waves 503 fix: the transient was the ONE path
+      # with no second chance. `timeout` does NOT help — it governs polling AFTER the deployment is
+      # created, and these die at creation.
+      # Three attempts, and the third is NOT continue-on-error: a genuine multi-minute Pages outage
+      # still fails the run and still mails, which is the alarm we want to keep.
       - name: Deploy to GitHub Pages
         id: deployment
+        continue-on-error: true
         uses: actions/deploy-pages@v5
         with:
           # 600000 ms is the action's HARD MAXIMUM — asking for more is silently clamped with
           # "timeout value is greater than the allowed maximum". Stated explicitly so nobody
           # tries to ride out a queue backlog by raising it; fix the queue instead (see the
           # cancel-in-progress note above).
+          timeout: 600000
+
+      - name: Wait out the 503, then retry
+        if: steps.deployment.outcome == 'failure'
+        run: |
+          echo "::warning::Pages deploy attempt 1 failed (GitHub-side); retrying in 45s"
+          sleep 45
+      - name: Deploy to GitHub Pages (retry 1)
+        id: deploy_retry1
+        if: steps.deployment.outcome == 'failure'
+        continue-on-error: true
+        uses: actions/deploy-pages@v5
+        with:
+          timeout: 600000
+
+      - name: Wait again before the final attempt
+        if: steps.deployment.outcome == 'failure' && steps.deploy_retry1.outcome == 'failure'
+        run: |
+          echo "::warning::Pages deploy attempt 2 failed (GitHub-side); final retry in 90s"
+          sleep 90
+      # No continue-on-error here on purpose: if Pages is still refusing after ~2.5 minutes of
+      # retries, that is a real outage and the run SHOULD go red.
+      - name: Deploy to GitHub Pages (final attempt)
+        id: deploy_retry2
+        if: steps.deployment.outcome == 'failure' && steps.deploy_retry1.outcome == 'failure'
+        uses: actions/deploy-pages@v5
+        with:
           timeout: 600000
