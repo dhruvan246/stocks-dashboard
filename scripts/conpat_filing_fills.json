@@ -2791,5 +2791,290 @@
   "hit_rate": "~29% \u2014 the screen is a SEARCH heuristic, never a verdict; every hit needed its filing read",
   "second_reader_found": "NSE's resultsData2 is the company's OWN e-filed figures and matched the printed statement to the paisa on all 10 names tested \u2014 a free second reader for old filings, and sometimes the only source for a quarter that was never printed (JSWDULUX FY17/FY18)",
   "open_policy_question": "JSWDULUX 20170331 (247.02) and 20180331 (400.14) are PROVEN annual-in-slot, but the only quarter figure in existence is the e-filed record (72.65) \u2014 single-source, so not written. Same family: EXCELCROP 20180331 (81.15 proven) and 20150331. Vacate-or-keep is a user call."
+ },
+ "CUMMINSIND|20180630|con": {
+  "con": 184.15,
+  "annCon": 20190808,
+  "basis": "con",
+  "when": "2026-08-18 00:03 IST",
+  "src": "Cummins India Q1FY20 'Unaudited consolidated financial results for the quarter ended June 30, 2019' (NSE filingDate 08-Aug-2019 12:01) p5, column 'Quarter ended June 30, 2018 (Note 6)'",
+  "evidence": "printed comparative; row 7 Profit after tax 18,415 lakhs -> 184.15 cr; no attribution block exists so this is the owners figure. Column reconciles: PBT 25,930 - total tax 7,515 = 18,415. Note 6 = comparative prepared by management (con quarterly not mandatory pre-FY20). No consolidated filing of its own exists for Jun-2018 (NSE con list: 20160331 then 20190630), so 08-Aug-2019 is the first public date; matches stored conAnnDate of the anchor quarter in the same filing (con 20190630 ann = 20190808).",
+  "convention": "owners == total: Cummins India's consolidated statements carry NO attribution block (verified by vision on Q1FY20 p5 and Q2FY20 p6 - no 'owners of'/'non-controlling'/'minority' rows; subsidiaries are wholly owned and JVs/associate enter through row 'Share of profit of joint ventures and associate after tax'), so row 7 'Profit after tax (5-6)' IS the owners figure - same structural pattern as HEG. Unit '(Rs Lacs)' -> crore = /100. Stored Sep-19 182.93 == row 7 18,293 EXACT; stored Mar-19 156.31 (written earlier TODAY from the Q4FY20 filing) == the Q1FY20 filing's Mar-19 comparative 15,631 EXACT - two independent filings agree to the lakh.",
+  "identity": "CLOSES EXACTLY ACROSS THREE INDEPENDENT FILINGS: Jun-18 18,415 (printed, Q1FY20) + Sep-18 20,465 (printed, Q2FY20) = 38,880 == the printed 'Half year ended September 30, 2018' column in Q2FY20 - EXACT to the lakh. FY19: 184.15 + 204.65 + stored Dec-18 197.5 + stored Mar-19 156.31 = 742.61 == FY19 annual 74,261 printed identically in the Q1FY20, Q2FY20 and FY19-annual filings - EXACT to the paisa. In-table sanity H1FY20: 15,256 + 18,293 = 33,549 == printed EXACT.",
+  "anchor": "Q2FY20 p6 (NSE filingDate 24-Oct-2019 17:31) SINGLE-CLEAN EXACT: Sep-19 18,293 -> 182.93 == stored EXACT; the other in-window comparative Jun-19 prints 15,256 -> 152.56 vs stored 77.81 which matches NEITHER filing nor any row - a pre-existing wrong-value defect cell (see refusals_I.json CUMMINSIND|20190630; 77.81 = 0.51 x 152.56 exactly, a vendor-artifact signature, and the H1FY20 identity pins the true value at 152.56). Q1FY20 p5 (NSE filingDate 08-Aug-2019 12:01) SINGLE-CLEAN EXACT: Mar-19 15,631 -> 156.31 == stored EXACT (today's fill from the independent Q4FY20 filing - cross-filing agreement); same Jun-19 defect blocks that table's second anchor. The FY19 column 74,261 appearing identically in both tables plus the year identity closing to the paisa supplies the second, cross-filing pin for both cells.",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": null,
+   "scripts/fundamentals.json": null
+  }
+ },
+ "CUMMINSIND|20180930|con": {
+  "con": 204.65,
+  "annCon": 20191024,
+  "basis": "con",
+  "when": "2026-08-18 00:03 IST",
+  "src": "Cummins India Q2FY20 'Unaudited consolidated financial results for the quarter and half year ended September 30, 2019' (NSE filingDate 24-Oct-2019 17:31) p6, column 'Quarter ended September 30, 2018 (Note 8)'",
+  "evidence": "printed comparative; row 7 Profit after tax 20,465 lakhs -> 204.65 cr. Column reconciles: PBT 29,335 - total tax 8,870 = 20,465. H1FY19 identity closes EXACT (18,415 + 20,465 = 38,880 printed). ann matches stored conAnnDate of the anchor quarter in the same filing (con 20190930 ann = 20191024).",
+  "convention": "owners == total: Cummins India's consolidated statements carry NO attribution block (verified by vision on Q1FY20 p5 and Q2FY20 p6 - no 'owners of'/'non-controlling'/'minority' rows; subsidiaries are wholly owned and JVs/associate enter through row 'Share of profit of joint ventures and associate after tax'), so row 7 'Profit after tax (5-6)' IS the owners figure - same structural pattern as HEG. Unit '(Rs Lacs)' -> crore = /100. Stored Sep-19 182.93 == row 7 18,293 EXACT; stored Mar-19 156.31 (written earlier TODAY from the Q4FY20 filing) == the Q1FY20 filing's Mar-19 comparative 15,631 EXACT - two independent filings agree to the lakh.",
+  "identity": "CLOSES EXACTLY ACROSS THREE INDEPENDENT FILINGS: Jun-18 18,415 (printed, Q1FY20) + Sep-18 20,465 (printed, Q2FY20) = 38,880 == the printed 'Half year ended September 30, 2018' column in Q2FY20 - EXACT to the lakh. FY19: 184.15 + 204.65 + stored Dec-18 197.5 + stored Mar-19 156.31 = 742.61 == FY19 annual 74,261 printed identically in the Q1FY20, Q2FY20 and FY19-annual filings - EXACT to the paisa. In-table sanity H1FY20: 15,256 + 18,293 = 33,549 == printed EXACT.",
+  "anchor": "Q2FY20 p6 (NSE filingDate 24-Oct-2019 17:31) SINGLE-CLEAN EXACT: Sep-19 18,293 -> 182.93 == stored EXACT; the other in-window comparative Jun-19 prints 15,256 -> 152.56 vs stored 77.81 which matches NEITHER filing nor any row - a pre-existing wrong-value defect cell (see refusals_I.json CUMMINSIND|20190630; 77.81 = 0.51 x 152.56 exactly, a vendor-artifact signature, and the H1FY20 identity pins the true value at 152.56). Q1FY20 p5 (NSE filingDate 08-Aug-2019 12:01) SINGLE-CLEAN EXACT: Mar-19 15,631 -> 156.31 == stored EXACT (today's fill from the independent Q4FY20 filing - cross-filing agreement); same Jun-19 defect blocks that table's second anchor. The FY19 column 74,261 appearing identically in both tables plus the year identity closing to the paisa supplies the second, cross-filing pin for both cells.",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": null,
+   "scripts/fundamentals.json": null
+  }
+ },
+ "ESCORTS|20180630|con": {
+  "con": 121.26,
+  "annCon": 20190912,
+  "basis": "con",
+  "when": "2026-08-18 00:03 IST",
+  "src": "ESCORTS 'Statement of Standalone & Consolidated Unaudited Financial Results for the quarter ended June 30, 2019' p2, consolidated block, column 'Corresponding 3 months ended in the previous year 30/06/18 (Refer note 3)' - attached to the NSE row toDate 20180630 / Consolidated / Audited, filingDate 12-Sep-2019 12:14",
+  "evidence": "printed comparative; owners of the parent 121.26, NCI (0.19), net profit for the period 121.07. NOTE THE NSE ROW IS MISLABELLED: the 'toDate 20180630 Consolidated Audited' row's attachment is the Q1FY20 results bundle (statement + review + the 27-Jul-2019 investor annexure), NOT a standalone Jun-2018 filing - the Jun-2018 consolidated figures exist only as its comparative column (note 3 = management-prepared, unreviewed). ann = 20190912, the NSE filingDate of the document read; the same numbers were in the 27-Jul-2019 BSE annexure (pages 28-31 of the bundle) but the owners row for the Jun-18 column was not verifiable in that annexure's layout, so the conservative later date is used - flagged in refusals_I.json.",
+  "convention": "owners-attributable ('Profit attributable to: a) Owners of the parent'), per the house convention (DATA_RUNBOOK 69) and batch C's ESCORTS cells. Re-proven this session: Q2FY20 p9 Sep-19 owners 101.74 == stored EXACT (total 101.54, discriminates) and Sep-18 owners 101.51 == stored EXACT (batch C's cell, applied). The Q1FY20-family table read for this cell carries the TWO known TOTAL-era defect cells as its in-window comparatives (stored Jun-19 87.66 == total row, stored Mar-19 116.42 == total row - the refusals_C heal candidates 87.74/116.70), so its exact-anchor duty is discharged on the owners row by the cross-filing H1 identity plus the consolidated EPS reconciliation (see anchors). Rs. in Crores, no conversion.",
+  "identity": "H1 FY19 owners: Jun-18 121.26 (printed) + Sep-18 101.51 (stored, printed in Q2FY20) = 222.77 == the printed 'six months ended 30-09-2018' owners column in Q2FY20 p9 - EXACT to the paisa, re-verified by my own vision read this session (not inherited from batch C). In-table attribution: owners 121.26 + NCI (0.19) = 121.07 == printed 'Net profit for the period' EXACT. EPS pin: Escorts' consolidated EPS uses ~8.582 cr weighted shares (group excludes Escorts Benefit Trust holding); printed con EPS (disc+cont) Jun-18 14.13 x 8.582 = 121.26 EXACT, and the same share count reproduces Mar-19 (116.70/13.60) and FY19 (478.93/55.82) - three columns, one consistent share base, pinning both the column mapping and the owners row.",
+  "anchor": "Q2FY20 p9 (NSE filingDate 19-Nov-2019 18:25) DOUBLE EXACT on owners: Sep-19 101.74 == stored and Sep-18 101.51 == stored, both discriminating (totals 101.54 / 101.20). The source table itself (std+con statement of the 12-Sep-2019 filing, p2) has NO clean owners anchor because both its in-window stored quarters are the documented TOTAL-era defects - they anchor the TOTAL row exactly (87.66, 116.42), which still pins scale and column geometry; stated explicitly per gate 1, with the owners-row pin supplied by the H1 identity and EPS reconciliation above.",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": null,
+   "scripts/fundamentals.json": null
+  }
+ },
+ "FEDERALBNK|20180630|con": {
+  "con": 272.94,
+  "annCon": 20190909,
+  "basis": "con",
+  "when": "2026-08-18 00:03 IST",
+  "src": "Federal Bank Q1FY20 consolidated unaudited results (NSE filingDate 2019-09-09 12:43) PDF p10, column 'Quarter ended 30.06.2018 (Refer Note 13)', row 17 'Consolidated Net Profit of the group' = 27,294 lakhs -> 272.94 cr",
+  "evidence": "printed comparative; components row 14 = 27,125, row 15 MI = '-', row 16 associates = 169 -> 27,125 - 0 + 169 = 27,294 verified. Batch A read the same value and left it in also_fillable_not_written; this batch re-read it by vision and owns the write. No NSE consolidated filing exists with toDate <= 20190331 (first con row is 20190630), so 2019-09-09 is the first public date; equals the stored conAnnDate of the anchor quarter in the same filing (con 20190630 ann = 20190909).",
+  "convention": "row 17 'Consolidated Net Profit of the group (14-15+16)' = row 14 Net Profit - row 15 Minority interest + row 16 Share in Profit of Associates, the series convention batch A proved 3-of-4 and whose odd cell (Sep-2019, was 424.40 = row 14) HAS SINCE BEEN HEALED - the store now holds 425.34 == row 17, so all four FY20 anchor quarters now sit on row 17. Both cells below are row 17 reads, re-verified by vision this session from the cached batch-A renders (A_FEDERALBNK_20190630_p10.png, A_FEDERALBNK_20190930_p11.png); component arithmetic verified per column. Unit Rs in Lakhs -> crore = /100.",
+  "identity": "All row 17, lakhs. Q1FY20 table: Jun-18 = 27,125 - 0 + 169 = 27,294 (arithmetic verified). Q2FY20 table: Sep-18 = 27,931 - 0 + 130 = 28,061 (verified); H1 FY19 printed 55,356 vs Q1+Q2 = 27,294 + 28,061 = 55,355, delta exactly 1 lakh which the filing itself creates by rounding the H1 associates line to 300 vs components 169 + 130 = 299 (row 14 H1: 27,125 + 27,931 = 55,056 == printed EXACT; MI nil both quarters) - the same 0.01 cr residue batch A documented; both cells are PRINTED quarter columns, neither is derived through the H1 subtotal. Batch A's larger chains (H1+Q3=9M EXACT, 9M+Q4=FY19 131,628 EXACT) consume these same printed values and close to the paisa.",
+  "anchor": "Q1FY20 p10 (NSE filingDate 2019-09-09) NOW DOUBLE EXACT (batch A had one): Jun-19 37,420 -> 374.20 == stored EXACT (discriminating, row 14 gives 373.71) and Mar-19 42,292 -> 422.92 == stored EXACT (batch A's cell, applied since). Q2FY20 p11 (NSE filingDate 2019-11-04) DOUBLE EXACT (batch A had one clean): Jun-19 374.20 == stored EXACT and Sep-19 42,534 -> 425.34 == stored EXACT (the store was healed 424.40 -> 425.34 after batch A's identity pin; both discriminate).",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": null,
+   "scripts/fundamentals.json": null
+  }
+ },
+ "FEDERALBNK|20180930|con": {
+  "con": 280.61,
+  "annCon": 20191114,
+  "basis": "con",
+  "when": "2026-08-18 00:03 IST",
+  "src": "Federal Bank Q2FY20 consolidated unaudited results (NSE filingDate 2019-11-04 13:02) PDF p11, column 'Quarter ended 30.09.2018 (Note 8... refer filing)', row 17 'Consolidated Net Profit of the group' = 28,061 lakhs -> 280.61 cr",
+  "evidence": "printed comparative; components 27,931 - 0 + 130 = 28,061 verified. ANN CHOICE FLAGGED: the NSE row's filingDate is 2019-11-04 but the stored conAnnDate of the anchor quarter in the same filing (con 20190930) is 20191114; wrote the LATER 20191114 to stay consistent with the series' date for this same document (cannot introduce look-ahead; understates by at most 10 days). If the main session prefers raw NSE filingDates, use 20191104 - noted in refusals_I.json.",
+  "convention": "row 17 'Consolidated Net Profit of the group (14-15+16)' = row 14 Net Profit - row 15 Minority interest + row 16 Share in Profit of Associates, the series convention batch A proved 3-of-4 and whose odd cell (Sep-2019, was 424.40 = row 14) HAS SINCE BEEN HEALED - the store now holds 425.34 == row 17, so all four FY20 anchor quarters now sit on row 17. Both cells below are row 17 reads, re-verified by vision this session from the cached batch-A renders (A_FEDERALBNK_20190630_p10.png, A_FEDERALBNK_20190930_p11.png); component arithmetic verified per column. Unit Rs in Lakhs -> crore = /100.",
+  "identity": "All row 17, lakhs. Q1FY20 table: Jun-18 = 27,125 - 0 + 169 = 27,294 (arithmetic verified). Q2FY20 table: Sep-18 = 27,931 - 0 + 130 = 28,061 (verified); H1 FY19 printed 55,356 vs Q1+Q2 = 27,294 + 28,061 = 55,355, delta exactly 1 lakh which the filing itself creates by rounding the H1 associates line to 300 vs components 169 + 130 = 299 (row 14 H1: 27,125 + 27,931 = 55,056 == printed EXACT; MI nil both quarters) - the same 0.01 cr residue batch A documented; both cells are PRINTED quarter columns, neither is derived through the H1 subtotal. Batch A's larger chains (H1+Q3=9M EXACT, 9M+Q4=FY19 131,628 EXACT) consume these same printed values and close to the paisa.",
+  "anchor": "Q1FY20 p10 (NSE filingDate 2019-09-09) NOW DOUBLE EXACT (batch A had one): Jun-19 37,420 -> 374.20 == stored EXACT (discriminating, row 14 gives 373.71) and Mar-19 42,292 -> 422.92 == stored EXACT (batch A's cell, applied since). Q2FY20 p11 (NSE filingDate 2019-11-04) DOUBLE EXACT (batch A had one clean): Jun-19 374.20 == stored EXACT and Sep-19 42,534 -> 425.34 == stored EXACT (the store was healed 424.40 -> 425.34 after batch A's identity pin; both discriminate).",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": null,
+   "scripts/fundamentals.json": null
+  }
+ },
+ "GRINDWELL|20180630|con": {
+  "con": 43.28,
+  "annCon": 20180807,
+  "basis": "con",
+  "when": "2026-08-18 00:03 IST",
+  "src": "GRINDWELL NORTON 'Unaudited Consolidated Financial Results for the quarter ended June 30, 2018' - the quarter's OWN consolidated filing (NSE con row toDate 20180630, filingDate 07-Aug-2018 19:26) p4, column '30-06-2018 (Unaudited)'; reprinted identically in the Q2FY19 con filing (22-Nov-2018) p3 column '30-06-2018'",
+  "evidence": "own-filing current-quarter value (GRINDWELL filed consolidated EVERY quarter since 2014 - this cell was empty from an ingestion gap, not a filing gap): owners 4,328 lakhs -> 43.28 cr, NCI 34, net profit 4,362 -> 43.62. ann = 20180807, the NSE filingDate of the quarter's own con filing - consistent with the stored pattern (Mar-18 con ann 20180626, Sep-18 con ann 20181122 = own filings). The stored stdAnnDate for this quarter is 0 (unknown) - untouched, std is not this batch's scope.",
+  "convention": "owners-attributable (row 8 'Net Profit Attributable to: - Owners'), the house convention, written knowing the stored series is MIXED at the FY17 boundary: stored Mar-2018 44.0 == owners 4,400 lakhs EXACT (discriminating, total 4,433) and stored Sep-2018 40.3 == owners 4,030 EXACT (discriminating, total 4,066), while the two FY17-era cells match the TOTAL row (Jun-17 stored 30.32 == total 3,032 as printed in BOTH its own Q1FY18 filing and the Q1FY19 comparative - as-first-reported owners is 3,003 - and Mar-17 stored 34.18 == total 3,418, owners 3,373). The mixed-series defect and its exact owners heal candidates are logged in refusals_I.json; the cell below sits in the owners era (its neighbours Mar-18 and Sep-18 are both owners) and writing owners keeps the FY19 run internally consistent. Unit '(Rs. in Lakhs)' -> crore = /100.",
+  "identity": "Jun-2018 owners 4,328 is printed IDENTICALLY in two independent filings: its own Q1FY19 consolidated filing (current-quarter column) and the Q2FY19 consolidated filing (preceding-quarter column) - no restatement. H1 FY19 closes EXACTLY in the Q2FY19 table: Q1 owners 4,328 + Q2 owners 4,030 = 8,358 == printed 'Half year ended 30-09-2018' owners column EXACT (NCI: 34 + 36 = 70 == printed; total: 4,362 + 4,066 = 8,428 == printed - every attribution row closes). In-table attribution: 4,328 + 34 = 4,362 == row 5 Net Profit EXACT.",
+  "anchor": "Q1FY19 con filing p4 (NSE filingDate 07-Aug-2018 19:26) SINGLE EXACT on owners: Mar-2018 owners 4,400 -> 44.00 == stored EXACT (discriminating; total 44.33 fails). The table's other in-window stored cell Jun-2017 CANNOT anchor the owners row - it is one of the two TOTAL-era defect cells (matches total 3,032 exactly). Q2FY19 con filing p3 (NSE filingDate 22-Nov-2018 14:47) SINGLE EXACT on owners: Sep-2018 owners 4,030 -> 40.30 == stored EXACT (discriminating; total 40.66); its other comparative Sep-2017 has no stored con value. Two independent single-exact owners anchors + the H1 identity closing exactly on owners constitute the pin; stated explicitly per gate 1.",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": null,
+   "scripts/fundamentals.json": null
+  }
+ },
+ "HEG|20180630|con": {
+  "con": 775.66,
+  "annCon": 20190814,
+  "basis": "con",
+  "when": "2026-08-18 00:03 IST",
+  "src": "HEG Q1FY20 'Statement of Consolidated Unaudited Financial Results for the quarter ended 30th June, 2019' (NSE filingDate 14-Aug-2019 18:56) p13, column 'Quarter Ended 30-06-18 (Unaudited)'",
+  "evidence": "printed comparative 775.66; components reproduce EXACTLY (1,176.62 - 406.21 - 0.11 + 5.36) and EPS 194.11 x 3.996 cr shares = 775.66 EXACT; independently equals H1FY19 1,678.45 - Sep-18 902.79 from the Q2FY20 filing to the paisa. No consolidated filing of its own exists for Jun-2018 (HEG's con list: two annual rows filed 20-May-2019 for FY18+FY19, then quarterly from 20190630). ann = 20190814 matches the stored conAnnDate of the anchor quarter in the same filing (con 20190630 ann = 20190814) and is 3 months earlier than the Q2FY20 route batch C would have implied - never-backdated, measured.",
+  "convention": "owners == total: HEG's consolidated statements carry NO attribution block (batch C's finding, re-confirmed on the Q1FY20 statement read this session); row X 'Net Profit/(Loss) for the period (VII-VIII+IX)' is the owners figure, associates enter via row IX. Unit '\u20b9 in Crores' on every page. The 1-paisa family batch C documented (printed line occasionally 1p off its own components; stored series follows component arithmetic) is respected below - the cell written has printed line == component arithmetic EXACTLY, so no ambiguity touches it.",
+  "identity": "TWO INDEPENDENT ROUTES AGREE TO THE PAISA: (a) PRINTED: Q1FY20 p13 prints the Jun-2018 consolidated quarter column directly - 775.66, whose own components reproduce it EXACTLY (PBT 1,176.62 - current tax 406.21 - deferred tax 0.11 + associates 5.36 = 775.66) and whose EPS reconciles EXACTLY (194.11 x 3.996 cr shares = 775.66). (b) DERIVED: H1 FY19 owners 1,678.45 (Q2FY20 p14, components reproduce EXACTLY: 2,542.28 - 881.59 - 1.49 + 19.25) minus Sep-2018 902.79 (stored, batch C's cell, printed in the same Q2FY20 table, components exact) = 775.66. Chain checks: 9M FY19 775.66 + 902.79 + 865.45 = 2,543.90 vs printed 2,543.89 (delta 0.01, the filer's rounding family); FY19 2,543.89 + 482.27 = 3,026.16 == the annual printed identically in four filings (batch C) and in the Q1FY20 filing read this session.",
+  "anchor": "Q1FY20 p13 (NSE filingDate 14-Aug-2019 18:56): Jun-19 243.48 == stored EXACT (this filing prints the component-arithmetic value itself, no 1-paisa gap) - the second in-window column Mar-19 prints 482.28 vs stored 482.27, the documented HEG 1-paisa family (the FY20 audited filing prints 482.27 for the same quarter and the annual-minus-9M derivation returns 482.27; per the batch instruction this is noted, not treated as a failure). Q2FY20 p14 (NSE filingDate 14-Nov-2019 20:41): Sep-18 902.79 == stored EXACT (printed, components exact) and H1FY19 1,678.45 printed with exact components - the table batch C anchored DOUBLE on Sep-20/Dec-19 grounds re-verified here on its FY19-side columns.",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": null,
+   "scripts/fundamentals.json": null
+  }
+ },
+ "KPITTECH|20180331|con": {
+  "con": -0.27,
+  "annCon": 20190625,
+  "basis": "con",
+  "when": "2026-08-18 00:03 IST",
+  "src": "KPIT Technologies (erstwhile KPIT Engineering) 'Statement of Audited Consolidated Financial Results for the quarter and year ended March 31, 2019' (NSE con row filingDate 25-Jun-2019 18:11) p3, column 'March 31, 2018 (Audited) (Refer note 8)'",
+  "evidence": "printed audited comparative, shell period: profit/(loss) for the period (2.66) mn -> -0.27 cr (round(-2.66/10,2)); owners (2.66), NCI '-'; only expense line 'Other expenses 2.66'. Equals the FY18 year column (first accounting period == the quarter). Matches stored std Mar-18 -0.27 because the shell had no consolidation difference. ann = 20190625, the NSE filingDate of the consolidated FY19 row; the stored Mar-19 con cell carries 20190516 (the std filing date - the con value was evidently public with the 16-May results via BSE), but 20190625 is what this session MEASURED and cannot introduce look-ahead; flagged in refusals_I.json.",
+  "convention": "owners-attributable ('Profit/(loss) attributable to: Owners of the company'), proven DISCRIMINATING on two stored quarters: Mar-2019 stored 30.15 == owners 301.49 mn EXACT while total is 309.83 -> 30.98 (NCI 8.34 real); Jun-2019 stored 30.69 == owners 306.89 EXACT while total is 310.11 -> 31.01. Unit '\u20b9 in million' -> crore = /10. ENTITY CAVEAT, measured not assumed: today's KPITTECH is the demerged engineering entity (statements headed 'KPIT Technologies Limited (erstwhile KPIT Engineering Limited)', CIN U74999PN2018PLC174192, incorporated Jan-2018); its FY18/FY19-early quarters are the SHELL's own audited/filed history (capital 1.00 mn until the demerger allotment), and the stored STANDALONE series already stores exactly these shell values (std Mar-18 -0.27, Jun-18 -0.01), so the con cells below extend the store's existing representation - NOT the old KPIT Technologies (now Birlasoft) business, which is a different ticker's history.",
+  "identity": "Shell-period columns close trivially and exactly: FY18 'Year ended March 31, 2018' == 'Quarter ended March 31, 2018' == (2.66) mn in the FY19 audited con statement (the company's first accounting period, Jan-2018 to Mar-2018, was its entire FY18 - quarter == year by construction, printed both places). Jun-2018: expenses 0.12 == PBT (0.12) == PAT (0.12), tax nil, NCI '-'. EPS pins both columns EXACTLY on the shell's 0.1 mn shares (face \u20b910, capital 1.00 mn): Mar-18 EPS (26.60) x 0.1 = (2.66); Jun-18 EPS (1.20) x 0.1 = (0.12). Owners == total in both columns (NCI '-').",
+  "anchor": "FY19 audited con statement p3 (NSE con row toDate 20190331, filingDate 25-Jun-2019 18:11) DOUBLE EXACT: Mar-19 owners 301.49 -> 30.15 == stored EXACT (discriminating) and Dec-18 240.48 -> 24.05 == stored EXACT (NCI '-' that quarter). Q1FY20 con statement p4 (NSE filingDate 26-Jul-2019 18:02) DOUBLE EXACT: Jun-19 owners 306.89 -> 30.69 == stored EXACT (discriminating) and Mar-19 owners 301.49 -> 30.15 == stored EXACT.",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": null,
+   "scripts/fundamentals.json": null
+  }
+ },
+ "KPITTECH|20180630|con": {
+  "con": -0.01,
+  "annCon": 20190726,
+  "basis": "con",
+  "when": "2026-08-18 00:03 IST",
+  "src": "KPIT Technologies Q1FY20 'Statement of Unaudited Consolidated Financial Results for the quarter ended June 30, 2019' (NSE filingDate 26-Jul-2019 18:02) p4, column 'June 30, 2018 (Unaudited) (Refer note 8)'",
+  "evidence": "printed comparative, shell period: profit/(loss) for the period (0.12) mn -> -0.01 cr; owners (0.12), NCI '-'; EPS (1.20) x 0.1 mn shares = (0.12) EXACT. Matches stored std Jun-18 -0.01. ann matches the stored conAnnDate of the anchor quarter in the same filing (con 20190630 ann = 20190726).",
+  "convention": "owners-attributable ('Profit/(loss) attributable to: Owners of the company'), proven DISCRIMINATING on two stored quarters: Mar-2019 stored 30.15 == owners 301.49 mn EXACT while total is 309.83 -> 30.98 (NCI 8.34 real); Jun-2019 stored 30.69 == owners 306.89 EXACT while total is 310.11 -> 31.01. Unit '\u20b9 in million' -> crore = /10. ENTITY CAVEAT, measured not assumed: today's KPITTECH is the demerged engineering entity (statements headed 'KPIT Technologies Limited (erstwhile KPIT Engineering Limited)', CIN U74999PN2018PLC174192, incorporated Jan-2018); its FY18/FY19-early quarters are the SHELL's own audited/filed history (capital 1.00 mn until the demerger allotment), and the stored STANDALONE series already stores exactly these shell values (std Mar-18 -0.27, Jun-18 -0.01), so the con cells below extend the store's existing representation - NOT the old KPIT Technologies (now Birlasoft) business, which is a different ticker's history.",
+  "identity": "Shell-period columns close trivially and exactly: FY18 'Year ended March 31, 2018' == 'Quarter ended March 31, 2018' == (2.66) mn in the FY19 audited con statement (the company's first accounting period, Jan-2018 to Mar-2018, was its entire FY18 - quarter == year by construction, printed both places). Jun-2018: expenses 0.12 == PBT (0.12) == PAT (0.12), tax nil, NCI '-'. EPS pins both columns EXACTLY on the shell's 0.1 mn shares (face \u20b910, capital 1.00 mn): Mar-18 EPS (26.60) x 0.1 = (2.66); Jun-18 EPS (1.20) x 0.1 = (0.12). Owners == total in both columns (NCI '-').",
+  "anchor": "FY19 audited con statement p3 (NSE con row toDate 20190331, filingDate 25-Jun-2019 18:11) DOUBLE EXACT: Mar-19 owners 301.49 -> 30.15 == stored EXACT (discriminating) and Dec-18 240.48 -> 24.05 == stored EXACT (NCI '-' that quarter). Q1FY20 con statement p4 (NSE filingDate 26-Jul-2019 18:02) DOUBLE EXACT: Jun-19 owners 306.89 -> 30.69 == stored EXACT (discriminating) and Mar-19 owners 301.49 -> 30.15 == stored EXACT.",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": null,
+   "scripts/fundamentals.json": null
+  }
+ },
+ "KSCL|20180630|con": {
+  "con": 209.9,
+  "annCon": 20190813,
+  "basis": "con",
+  "when": "2026-08-18 00:04 IST",
+  "src": "KSCL Q1FY20 combined standalone+consolidated statement (NSE filingDate 13-Aug-2019 19:18) p3, CONSOLIDATED block, column 'Quarter Ended 30-06-2018 (Unaudited) (Refer Note.4)'",
+  "evidence": "printed comparative, total row 21,010.00 lakhs -> 210.10 cr; owners row 'Equity Share Holders of the Company' 20,989.66 -> 209.90 cr; NCI 20.34. Attribution adds up exactly. REVIEW-STATUS CAVEAT from the filing's own note 4: the consolidated results for the quarters ended March 31, 2019 and June 30, 2018 are not subjected to limited review (company-prepared comparative - same caveat class batch B recorded for Sep-2018). ann matches the stored conAnnDate of the anchor-quarter convention for this filing (stored Jun-19 con carries 20190813 from this same document). | WRITTEN ON THE OWNERS BASIS (209.9), not the total (210.1) the spec proposed: the KSCL series was flipped to owners in the same session (11 cells), so matching the old total-basis series would re-introduce the mix this campaign just removed.",
+  "convention": "*** TOTAL row, NOT owners - deliberately, to match KSCL's stored series (batch B's spec_kscl.json precedent; the series-level TOTAL-basis anomaly is already logged in refusals_B and a flip audit is running). *** The cell below is the row VII 'Net Profit for the Period (V-VI)' TOTAL, with the owners-attributable value recorded in owners_alt exactly as spec_kscl.json did, so a future convention sweep can flip the WHOLE series in one pass. Unit '(Rs in Lakhs)' -> crore = /100. Convention re-measured this session: stored Mar-2019 -11.13 == total (1,112.81) EXACT in the Q1FY20 table (owners row gives -11.09, discriminates).",
+  "identity": "The printed Jun-2018 column reproduces batch B's derivation TO THE PAISA: H1 FY19 total 22,562.48 (Q2FY20, batch B) - Q2 FY19 total 1,552.48 (batch B's applied Sep-18 cell) = 21,010.00 == the PRINTED 'Quarter Ended 30-06-2018' total column in KSCL's own Q1FY20 filing - EXACT. In-table: attribution closes EXACTLY (owners 20,989.66 + NCI 20.34 = 21,010.00) and the column reconciles as PBT 21,509.51 - total tax 499.51 = 21,010.00 EXACT. FY19 chain with batch B's applied cells: 21,010.00 + 1,552.48 + 290.80 + (-1,112.81) = 21,740.47 vs FY19 annual 21,740.46 printed in this filing AND in the FY19/FY18-era annual filings read this session (delta 0.01 lakh, the filer's own rounding, batch B documented the same).",
+  "anchor": "Q1FY20 con p3 (NSE filingDate 13-Aug-2019 19:18) SINGLE EXACT on total: Mar-2019 (1,112.81) -> -11.13 == stored EXACT (today's batch B fill from the independent FY20 filing - two filings agree to the lakh; owners row discriminates). The second in-window comparative Jun-2019 CANNOT anchor: stored 230.72 equals this filing's 'Total Comprehensive Income attributable to Equity Share Holders' 23,072.42 -> 230.72 EXACTLY, not its PAT rows (total 23,024.16 -> 230.24, owners 22,957.85 -> 229.58) - a wrong-row (TCI-for-PAT) defect cell, upgraded diagnosis over refusals_B's restatement theory, logged in refusals_I.json. Column geometry is additionally pinned by THREE standalone exact anchors in the same statement: std Jun-19 22,893.49 -> 228.93, std Mar-19 (1,143.97) -> -11.44, std Jun-18 21,058.19 -> 210.58, all == stored std EXACTLY.",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": null,
+   "scripts/fundamentals.json": null
+  }
+ },
+ "TTKPRESTIG|20180930|con": {
+  "con": 53.5,
+  "annCon": 20191108,
+  "basis": "con",
+  "when": "2026-08-18 00:04 IST",
+  "src": "TTK PRESTIGE Q2FY20 'Statement of UnAudited Financial Results for the Quarter and Half year ended 30th September 2019' (NSE filingDate 08-Nov-2019 18:16) p3, consolidated block, column 'Quarter Ended 30.9.2018'",
+  "evidence": "printed comparative; row XIII Profit for the Period 53.50, row XVI owners 53.50, NCI '-' (nil) so owners == total. Rs.in Crores, no conversion. Distinct from std 53.77 (real con value, not a copy). No consolidated filing of its own exists for Sep-2018 (NSE con list jumps 20180331 -> 20190630), so 08-Nov-2019 is the first public date; ann matches the stored conAnnDate of the anchor quarter in the same filing (con 20190930 ann = 20191108).",
+  "convention": "owners-attributable == total for the cell written (NCI printed '-' in every consolidated column of the Q2FY20 statement, and row XVI 'Profit attributable to: Owners' == row XIII 'Profit for the Period' value-for-value), so the basis question cannot bite - same basis-immunity batch C documented for Dec-2018/Mar-2019. Q2FY20 p3 is the combined std|con statement ('Rs.in Crores'), consolidated = RIGHT block, columns Quarter 30.9.2019 | 30.6.2019 | 30.9.2018, Half Year 30.9.2019 | 30.9.2018, Year 31.03.2019.",
+  "identity": "In-table: H1 FY19 con 89.32 - Sep-2018 con 53.50 = 35.82 implied Jun-2018 (that cell is NOT written - not in batch I's assignment). Cross-filing: 9M Dec-2018 con 147.58 (Q3FY20 p3, read by batch C from the same cached PDF family) - Dec-2018 58.25 (stored, printed in Q3FY20) = 89.33 vs the H1 89.32 printed here - delta 0.01, TTK's documented rounding family (spec_ttkprestig.json batch C recorded the same 0.01 on 9M+Q4 vs FY19). FY19 sanity: 89.32 + 58.25 + 44.76 = 192.33 vs printed Year column 192.35 here and in Q4FY20 - delta 0.02 from three independent 2dp roundings; the cell written is a PRINTED quarter column, nothing is derived through these residues. Standalone row-identity on the same page pins the columns: std Sep-19 80.28, Jun-19 36.47, Sep-18 53.77 ALL == stored stdPAT EXACTLY.",
+  "anchor": "Q2FY20 p3 (NSE filingDate 08-Nov-2019 18:16) consolidated block: Sep-19 80.34 == stored con EXACT (single exact con anchor). The other in-window comparative FAILS for a measured filer-side reason: Jun-19 column prints 35.81 while stored holds 35.49 (ann 20190813 = TTK's own Q1FY20 con filing) - a restated comparative, logged in refusals_I.json, same class as KSCL's Jun-2019 in refusals_B. Column geometry is instead pinned by THREE standalone exact anchors in the same table (80.28 / 36.47 / 53.77 all == stored std) and by the EPS row (con Sep-18 EPS 38.60 x 1.3872 cr bonus-adjusted weighted shares = 53.55 ~ 53.50, same small weighted-average delta as the std column shows).",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": null,
+   "scripts/fundamentals.json": null
+  }
+ },
+ "UNITDSPR|20180630|con": {
+  "con": 147.3,
+  "annCon": 20190723,
+  "basis": "con",
+  "when": "2026-08-18 00:04 IST",
+  "src": "UNITED SPIRITS Q1FY20 'Statement of Unaudited Consolidated Financial Results for the quarter ended June 30, 2019' (NSE filingDate 23-Jul-2019 12:41) p3, column '3 months ended June 30, 2018'",
+  "evidence": "printed comparative; owners 1,473 -> 147.3 (round(1473/10,2)), NCI (27), profit for the period 1,446 -> 144.6. Identity: 147.3 + 225.8 = 373.1 == printed H1FY19 owners EXACT. No consolidated filing of its own exists for Jun-2018 (NSE con list starts 20190331), so 23-Jul-2019 is the first public date; matches stored conAnnDate of the anchor quarter in the same filing (con 20190630 ann = 20190723). NSE serves attachments under the old code MCDOWELL-N.",
+  "convention": "owners-attributable (row 'Profit attributable to: Owners' / 'Owners of United Spirits Limited'), the convention batch C proved on four discriminating quarter-anchors; re-proven this session on two more: Q2FY20 p3 Sep-19 owners 1,631 mn -> 163.1 == stored EXACT (total 1,576 -> 157.6, discriminates) and Jun-19 owners 2,021 -> 202.1 == stored EXACT (total 1,817, discriminates); Q1FY20 p3 prints the same Jun-19 owners 2,021. Unit '(INR in Millions except for earnings per share data)' on both statements: crore = millions/10, round(v/10, 2).",
+  "identity": "CLOSES TO THE PAISA ON PRINTED COLUMNS ONLY: Jun-2018 owners 1,473 (printed, Q1FY20 p3) + Sep-2018 owners 2,258 (printed, Q2FY20 p3) = 3,731 == the printed 'six months ended September 30, 2018' owners column 3,731 in Q2FY20 - EXACT. Extending with batch C's applied cell: H1 3,731 + Dec-2018 owners 2,041 (stored 204.1, printed in Q3FY20) = 5,772 == printed 9M Dec-2018 owners (Q3FY20, batch C verified) - EXACT. FY19: 147.3 + 225.8 + 204.1 + Mar-19 = FY19 owners 700.2 requires Mar-19 = 123.0; the Q1FY20 filing indeed prints Mar-19 owners 1,231 -> 123.1 (delta 0.1mn cross-filing rounding) - but STORED Mar-19 is 125.46, the pre-existing anomaly refusals_C recorded; nothing written here is derived through it.",
+  "anchor": "Q2FY20 p3 (NSE filingDate 25-Oct-2019 12:15) DOUBLE EXACT: Sep-19 163.1 == stored and Jun-19 202.1 == stored, both discriminating owners-vs-total. Q1FY20 p3 (NSE filingDate 23-Jul-2019 12:41) SINGLE-CLEAN: Jun-19 202.1 == stored EXACT (discriminating); the second in-window comparative Mar-19 prints 123.1 vs stored 125.46 - that stored cell's own documented anomaly (refusals_C UNITDSPR|20190331), not a defect of this batch; the Jun-2018 cell drawn from that table is corroborated instead by the to-the-paisa H1 identity above.",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": null,
+   "scripts/fundamentals.json": null
+  }
+ },
+ "UNITDSPR|20180930|con": {
+  "con": 225.8,
+  "annCon": 20191025,
+  "basis": "con",
+  "when": "2026-08-18 00:04 IST",
+  "src": "UNITED SPIRITS Q2FY20 'Unaudited Consolidated Statement of Financial Results for the quarter and six months ended September 30, 2019' (NSE filingDate 25-Oct-2019 12:15) p3, column '3 months ended September 30, 2018'",
+  "evidence": "printed comparative; owners 2,258 -> 225.8, NCI (51), profit for the period 2,207 -> 220.7. Same H1 identity closes EXACT. ann matches stored conAnnDate of the anchor quarter in the same filing (con 20190930 ann = 20191025).",
+  "convention": "owners-attributable (row 'Profit attributable to: Owners' / 'Owners of United Spirits Limited'), the convention batch C proved on four discriminating quarter-anchors; re-proven this session on two more: Q2FY20 p3 Sep-19 owners 1,631 mn -> 163.1 == stored EXACT (total 1,576 -> 157.6, discriminates) and Jun-19 owners 2,021 -> 202.1 == stored EXACT (total 1,817, discriminates); Q1FY20 p3 prints the same Jun-19 owners 2,021. Unit '(INR in Millions except for earnings per share data)' on both statements: crore = millions/10, round(v/10, 2).",
+  "identity": "CLOSES TO THE PAISA ON PRINTED COLUMNS ONLY: Jun-2018 owners 1,473 (printed, Q1FY20 p3) + Sep-2018 owners 2,258 (printed, Q2FY20 p3) = 3,731 == the printed 'six months ended September 30, 2018' owners column 3,731 in Q2FY20 - EXACT. Extending with batch C's applied cell: H1 3,731 + Dec-2018 owners 2,041 (stored 204.1, printed in Q3FY20) = 5,772 == printed 9M Dec-2018 owners (Q3FY20, batch C verified) - EXACT. FY19: 147.3 + 225.8 + 204.1 + Mar-19 = FY19 owners 700.2 requires Mar-19 = 123.0; the Q1FY20 filing indeed prints Mar-19 owners 1,231 -> 123.1 (delta 0.1mn cross-filing rounding) - but STORED Mar-19 is 125.46, the pre-existing anomaly refusals_C recorded; nothing written here is derived through it.",
+  "anchor": "Q2FY20 p3 (NSE filingDate 25-Oct-2019 12:15) DOUBLE EXACT: Sep-19 163.1 == stored and Jun-19 202.1 == stored, both discriminating owners-vs-total. Q1FY20 p3 (NSE filingDate 23-Jul-2019 12:41) SINGLE-CLEAN: Jun-19 202.1 == stored EXACT (discriminating); the second in-window comparative Mar-19 prints 123.1 vs stored 125.46 - that stored cell's own documented anomaly (refusals_C UNITDSPR|20190331), not a defect of this batch; the Jun-2018 cell drawn from that table is corroborated instead by the to-the-paisa H1 identity above.",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": null,
+   "scripts/fundamentals.json": null
+  }
+ },
+ "CUMMINSIND|20190630|con-HEAL": {
+  "con": 152.56,
+  "annCon": 20190808,
+  "basis": "con",
+  "when": "2026-08-18 00:04 IST",
+  "src": "CUMMINSIND Q1FY20 own filing (2019-08-08) p5 and Q2FY20 comparative (2019-10-24) p6, both printing 15,256 lakhs",
+  "evidence": "stored 77.81 matches NO line of any filing, and 77.81 = 0.51 x 152.56 EXACTLY \u2014 a fractional artifact, not a restatement or a wrong row. Its announce date is the very filing that contradicts it.",
+  "convention": "no attribution block in CUMMINSIND's consolidated statements \u2014 the PAT row IS the owners figure.",
+  "identity": "H1FY20 33,549 lakhs (printed, Q2FY20 filing) - Sep-19 18,293 (stored 182.93 anchors EXACT) = 15,256 = Jun-19. Two filings print 15,256 outright: its own Q1FY20 (2019-08-08 p5) and the Q2FY20 comparative (2019-10-24 p6).",
+  "anchor": "Sep-19 182.93 stored EXACT in the same table; Mar-19 156.31 stored EXACT (written earlier this campaign from the same filing family).",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": 77.81,
+   "scripts/fundamentals.json": 77.81
+  },
+  "was": 77.81,
+  "mode": "heal",
+  "defect_class": "VENDOR-FRACTION-ARTIFACT"
+ },
+ "KSCL|20190630|con-HEAL": {
+  "con": 229.58,
+  "annCon": 20190813,
+  "basis": "con",
+  "when": "2026-08-18 00:04 IST",
+  "src": "KSCL Q1FY20 consolidated statement (2019-08-13), owners row 22,957.85 lakhs",
+  "evidence": "supersedes the earlier 'filer-side restatement' theory \u2014 measurement of the company's own filing shows a TCI artifact, not a restatement. Written on owners (229.58) to match the flipped series; the total-basis value would be 230.24.",
+  "convention": "owners-attributable \u2014 the series was flipped to owners this session (11 cells), so this cell takes the owners row too.",
+  "identity": "KSCL's own Q1FY20 filing (2019-08-13, the exact document the stored announce date points at) prints Jun-19 con PAT total 23,024.16 and PAT owners 22,957.85. Stored 230.72 matches NEITHER \u2014 it equals that filing's 'Total Comprehensive Income attributable to Equity Share Holders' 23,072.42 EXACTLY.",
+  "anchor": "the same filing's total row 23,024.16 and the Q2FY20 comparative reprint; the surrounding quarters were flipped to owners in the same pass.",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": 230.72,
+   "scripts/fundamentals.json": 230.72
+  },
+  "was": 230.72,
+  "mode": "heal",
+  "defect_class": "COMPREHENSIVE-INCOME-IN-PAT-SLOT"
+ },
+ "GRINDWELL|20170630|con-HEAL": {
+  "con": 30.03,
+  "annCon": 20170802,
+  "basis": "con",
+  "when": "2026-08-18 00:04 IST",
+  "src": "GRINDWELL Q1FY18 own filing (2017-08-02) p4 and the Q1FY19 comparative: owners 3,003 lakhs vs total 3,032",
+  "evidence": "announce date unchanged \u2014 both rows were in the quarter's own filing.",
+  "convention": "owners-attributable. The FY19-era stored cells are owners; the two FY17-era cells held the TOTAL row \u2014 the same mixed-series shape found on EXIDEIND/BHEL/KSCL, and the Jun-18 fill applied in this pass is on owners, so these two must follow or the series stays mixed across its own join.",
+  "identity": "Jun-17: owners 3,003 lakhs and total 3,032 are printed IDENTICALLY in both the quarter's own Q1FY18 filing (2017-08-02 p4) and the Q1FY19 comparative \u2014 so 30.32 is the total row, not a restatement. Mar-17: owners 3,373 printed in the Q1FY18 filing's audited Mar-17 column against the stored total 3,418.",
+  "anchor": "two filings print the Jun-17 pair identically; the stored values reproduce the TOTAL row exactly, which is what identifies the defect.",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": 30.32,
+   "scripts/fundamentals.json": 30.32
+  },
+  "was": 30.32,
+  "mode": "heal",
+  "defect_class": "PRE-CACHE-CELL-HOLDS-TOTAL"
+ },
+ "GRINDWELL|20170331|con-HEAL": {
+  "con": 33.73,
+  "annCon": 20170802,
+  "basis": "con",
+  "when": "2026-08-18 00:04 IST",
+  "src": "GRINDWELL Q1FY18 filing (2017-08-02), audited Mar-17 column: owners 3,373 lakhs vs the stored total 3,418",
+  "evidence": "its own Q4FY17 filing was NOT read this session, so the announce date moves to the filing actually read \u2014 later is never look-ahead.",
+  "convention": "owners-attributable. The FY19-era stored cells are owners; the two FY17-era cells held the TOTAL row \u2014 the same mixed-series shape found on EXIDEIND/BHEL/KSCL, and the Jun-18 fill applied in this pass is on owners, so these two must follow or the series stays mixed across its own join.",
+  "identity": "Jun-17: owners 3,003 lakhs and total 3,032 are printed IDENTICALLY in both the quarter's own Q1FY18 filing (2017-08-02 p4) and the Q1FY19 comparative \u2014 so 30.32 is the total row, not a restatement. Mar-17: owners 3,373 printed in the Q1FY18 filing's audited Mar-17 column against the stored total 3,418.",
+  "anchor": "two filings print the Jun-17 pair identically; the stored values reproduce the TOTAL row exactly, which is what identifies the defect.",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": 34.18,
+   "scripts/fundamentals.json": 34.18
+  },
+  "was": 34.18,
+  "mode": "heal",
+  "defect_class": "PRE-CACHE-CELL-HOLDS-TOTAL",
+  "annCon_was": 20170524
  }
 }
