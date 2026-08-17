@@ -2708,5 +2708,88 @@
   "formula": "build_revop.metrics_for Industrial: op = PBET + FinanceCosts + Depreciation - OtherIncome; ebit = op - Depreciation",
   "validation": "the same formula on the Q4FY21 STANDALONE Mar-21 column reproduces the stored op_std 36.52 and ebit_std 31.57 to the paisa before anything was written",
   "src": "VALIANTORG Q3FY21 / Q4FY21 combined statements (BSE), read by vision"
+ },
+ "MMTC|20200331|con-HEAL": {
+  "con": -266.11,
+  "annCon": 20200803,
+  "basis": "con",
+  "when": "2026-08-17 23:56 IST",
+  "src": "DERIVED from two printed subtotals: FY20 consolidated annual (273.72) [MMTC FY20 audited financial results p11, NSE filingDate 2020-07-31] minus 9M FY20 consolidated (7.61) [MMTC Q3FY20 consolidated results p7, column 'Nine Month Ended 31-Dec-19', NSE filingDate 2020-02-14]; both pages vision-read this session.",
+  "evidence": "-273.72 - (-7.61) = -266.11. The Mar-2020 consolidated quarter was never printed by MMTC (first con-quarterly FY20 filing wave: annual-only con block). Owners == total in every column (NCI '-'). ann left at the stored 20200803 (matches the sibling std cell's stored ann; the NSE con row is dated 2020-07-31 -- both subtotals public by either date, zero look-ahead; main session may prefer 20200731). Verifies the derivation flagged in refusals_B.json with independent vision reads of both statements.",
+  "convention": "owners-attributable == total, NCI is NIL. Both source filings print the explicit block 'Net Profit attributable to: a) Owners of the Company / b) Non-Controlling Interest' and the NCI row is '-' in EVERY column (vision-read this session: Q3FY20 p7 attribution block, FY20 audited p11). Unit is 'Rs in crores, except per share data' on both statements (vision-read), so no scaling. Stored series proven owners==net-profit on the anchors: Dec-2019 12.48 and Sep-2019 (47.78) equal stored con EXACTLY on both the net-profit row and the owners row.",
+  "identity": "FY20 consolidated closes to the paisa on printed subtotals: printed 9M FY20 (7.61) + derived Q4 (266.11) = printed FY20 annual (273.72). Both printed columns reconcile internally PBT - tax EXACTLY (vision-read): 9M Dec-19 column 16.84 - 24.45 = (7.61); FY20 annual column (272.81) - 0.91 = (273.72); FY19 annual column 145.88 - 37.16 = 108.72. Sanity: stored FY20 quarters 27.70 + (-47.78) + 12.48 = -7.60 vs printed 9M -7.61 -- the 0.01 is the documented Jun-2019 print family (stored 27.70 from MMTC's own Q1FY20 filing vs 27.69 re-rounded in Q2FY20; see spec_mmtc.json), which is why the heal uses the PRINTED 9M subtotal, not the stored sum. Fourth-quarter check: -7.61 + (-266.11) = -273.72 exactly.",
+  "anchor": "FY20 audited con+std statement p11 (NSE filingDate 2020-07-31) TRIPLE EXACT on the standalone block read in the same table (vision): Mar-2020 (271.37) == stored std EXACT, Dec-2019 0.98 == stored std EXACT, Mar-2019 11.76 == stored std EXACT; its consolidated block prints Year Ended 31-Mar-20 (273.72) == the stored (defective) con 20200331 EXACT and Year Ended 31-Mar-19 108.72 == 83.52 + 25.20 (both stored) EXACT. Q3FY20 con p7 (NSE filingDate 2020-02-14) DOUBLE EXACT: Dec-2019 12.48 == stored con EXACT and Sep-2019 (47.78) == stored con EXACT, on both net-profit and owners rows.",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": -273.72,
+   "scripts/fundamentals.json": -273.72
+  },
+  "was": -273.72,
+  "mode": "heal",
+  "defect_class": "annual-in-slot: FY20 consolidated ANNUAL (-273.72) stored in the Mar-2020 quarter slot. The FY20 audited filing's consolidated block carries YEAR columns ONLY ('Year Ended 31-Mar-20 | 31-Mar-19') -- no consolidated quarter column exists anywhere in the filing (vision-read this session, p11 header)."
+ },
+ "EXCELCROP|20190331|con-HEAL": {
+  "con": 4.98,
+  "annCon": 20190806,
+  "basis": "con",
+  "when": "2026-08-17 23:56 IST",
+  "src": "PRINTED preceding-quarter comparative: Excel Crop Care Q1FY20 consolidated statement (NSE filingDate 2019-08-06) p7, column 'Quarter Ended 31st March 2019 (Unaudited)', Net Profit After Tax / Equity holders of the parent 498.25 lakhs; vision-read this session.",
+  "evidence": "498.25 lakhs = 4.9825 -> 4.98 crore. Column reconciles EXACTLY: PBT 690.70 - current tax 75.07 + deferred credit 131.41 - earlier-years 248.79 = 498.25. The annual-minus-9M route does NOT exist for this name (no 9M/H1 con ever printed); the printed preceding-quarter column is the only -- and sufficient -- source. ann moves 20190529 -> 20190806: nothing resembling the quarter figure was public on the FY19 filing date (that filing is year-only); the quarter first became public in the Q1FY20 filing, whose date matches the stored conAnnDate of the Jun-2019 anchor cell (20190806). Revenue sanity: Mar-19 con quarter revenue 27299.03 lakhs vs std quarter 27322.90 (intra-group elimination), vs FY19 year 131906.03 -- the column is unambiguously a quarter.",
+  "convention": "owners-attributable == total, NCI is NIL. Both consolidated filings print 'Attributable to: Equity holders of the parent' equal to 'Net Profit After Tax' in every column, with 'Non controlling interest' = '-' everywhere (vision-read this session: FY19 audited con statement p8, Q1FY20 con statement p7). Unit 'Rs in Lacs' on both -> /100. Excel Crop Care filed consolidated results exactly TWICE ever (NSE list): the FY19 year-only audited statement (toDate 20190331) and the Q1FY20 quarterly (toDate 20190630); it delisted on merger into Sumitomo Chemical India before Q2FY20.",
+  "identity": "Every column reconciles PBT - tax to the paisa (vision-read, Rs lakhs): Mar-19 quarter 690.70 - 75.07 + 131.41 - 248.79 = 498.25; Jun-19 3460.17 - 1071.75 - 77.73 + 11.18 = 2321.87; Jun-18 5932.91 - 1893.42 - 146.87 = 3892.62; FY19 13345.87 - 4554.59 + 86.31 - 248.79 = 8628.80. FY19 consolidated annual 8628.80 is printed IDENTICALLY in both filings (FY19 audited p8; Q1FY20 p7 'Year Ended 31st March 2019 (Audited)'). Implied 9M FY19 con = 8628.80 - 498.25 = 8130.55, never printed anywhere (consistent: no FY19 con quarterlies were ever filed). Coherence: con FY19 86.29 vs std FY19 87.47 (subsidiaries net drag); Mar-19 con 4.98 vs std 4.73; Jun-18 con 38.93 vs std 38.50.",
+  "anchor": "Q1FY20 con statement p7 (NSE filingDate 2019-08-06) DOUBLE EXACT: 'Quarter Ended 30th June 2019' 2321.87 lakhs -> 23.22 == stored con 20190630 EXACT, and 'Year Ended 31st March 2019' 8628.80 -> 86.29 == the FY19 audited filing's own print EXACT (cross-filing) == the defective stored Mar-19 cell value. NSE's structured record independently reproduces both: Q1FY20 con row re_con_pro_loss 2321.87, FY19 con row re_con_pro_loss 8628.80 with year-scale revenue 131906.03 (second reader). FY18 comparative in the FY19 filing 8115.36 -> 81.15 == stored con 20180331 (see refusals: same defect family).",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": 86.29,
+   "scripts/fundamentals.json": 86.29
+  },
+  "was": 86.29,
+  "mode": "heal",
+  "defect_class": "annual-in-slot: FY19 consolidated ANNUAL (8628.80 lakhs = 86.29) stored in the Mar-2019 quarter slot. The FY19 consolidated audited statement carries 'Year Ended 31-Mar-2019 | 31-Mar-2018' columns ONLY (vision-read p8 header) -- the annual-only pre-FY20 consolidated format.",
+  "annCon_was": 20190529
+ },
+ "EXCELCROP|20180630|con": {
+  "con": 38.93,
+  "annCon": 20190806,
+  "basis": "con",
+  "when": "2026-08-17 23:56 IST",
+  "src": "PRINTED comparative: Excel Crop Care Q1FY20 consolidated statement (NSE filingDate 2019-08-06) p7, column 'Quarter Ended 30th June 2018 (Unaudited)', Net Profit After Tax / Equity holders of the parent 3892.62 lakhs; vision-read this session.",
+  "evidence": "3892.62 lakhs = 38.9262 -> 38.93 crore. Column reconciles EXACTLY: PBT 5932.91 - current tax 1893.42 - deferred 146.87 = 3892.62. NCI '-'. Fills a cell that is empty because FY19 con quarterlies were never filed; this comparative is the only print of the Jun-2018 consolidated quarter. std 20180630 = 38.50 for coherence. ann = the filing's NSE filingDate 20190806, same as the anchor quarter's stored conAnnDate.",
+  "convention": "owners-attributable == total, NCI is NIL. Both consolidated filings print 'Attributable to: Equity holders of the parent' equal to 'Net Profit After Tax' in every column, with 'Non controlling interest' = '-' everywhere (vision-read this session: FY19 audited con statement p8, Q1FY20 con statement p7). Unit 'Rs in Lacs' on both -> /100. Excel Crop Care filed consolidated results exactly TWICE ever (NSE list): the FY19 year-only audited statement (toDate 20190331) and the Q1FY20 quarterly (toDate 20190630); it delisted on merger into Sumitomo Chemical India before Q2FY20.",
+  "identity": "Every column reconciles PBT - tax to the paisa (vision-read, Rs lakhs): Mar-19 quarter 690.70 - 75.07 + 131.41 - 248.79 = 498.25; Jun-19 3460.17 - 1071.75 - 77.73 + 11.18 = 2321.87; Jun-18 5932.91 - 1893.42 - 146.87 = 3892.62; FY19 13345.87 - 4554.59 + 86.31 - 248.79 = 8628.80. FY19 consolidated annual 8628.80 is printed IDENTICALLY in both filings (FY19 audited p8; Q1FY20 p7 'Year Ended 31st March 2019 (Audited)'). Implied 9M FY19 con = 8628.80 - 498.25 = 8130.55, never printed anywhere (consistent: no FY19 con quarterlies were ever filed). Coherence: con FY19 86.29 vs std FY19 87.47 (subsidiaries net drag); Mar-19 con 4.98 vs std 4.73; Jun-18 con 38.93 vs std 38.50.",
+  "anchor": "Q1FY20 con statement p7 (NSE filingDate 2019-08-06) DOUBLE EXACT: 'Quarter Ended 30th June 2019' 2321.87 lakhs -> 23.22 == stored con 20190630 EXACT, and 'Year Ended 31st March 2019' 8628.80 -> 86.29 == the FY19 audited filing's own print EXACT (cross-filing) == the defective stored Mar-19 cell value. NSE's structured record independently reproduces both: Q1FY20 con row re_con_pro_loss 2321.87, FY19 con row re_con_pro_loss 8628.80 with year-scale revenue 131906.03 (second reader). FY18 comparative in the FY19 filing 8115.36 -> 81.15 == stored con 20180331 (see refusals: same defect family).",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": null,
+   "scripts/fundamentals.json": null
+  }
+ },
+ "VLSFINANCE|20190331|con-HEAL": {
+  "con": -2.15,
+  "annCon": 20200720,
+  "basis": "con",
+  "when": "2026-08-17 23:56 IST",
+  "src": "PRINTED audited comparative: VLS Finance FY20 audited consolidated statement (NSE filingDate 2020-07-20) p11, column 'Quarter Ended 31.03.2019', row 9 'Profit for the Period (7-8)' (214.70) lakhs [total row 7: (215.31), NCI (0.61)]; vision-read this session.",
+  "evidence": "-214.70 lakhs = -2.147 -> -2.15 crore (total basis -215.31 -> -2.15, identical at crore rounding). Pinned TWO independent ways that agree to the paisa: (a) the printed audited quarter column, (b) Ind-AS FY19 annual (417.42) minus printed 9M FY19 (202.72) = (214.70). BASIS FLAG: value is the Ind-AS-restated vintage -- the only basis on which this quarter was ever published (old-AS con was year-only and its quarter is underivable: no old-AS 9M exists). Neighbouring stored con cells (Dec-2019, Mar-2020) are already Ind-AS. ann moves 20190517 -> 20200720 (never-backdate): on 2019-05-17 the con filing carried year columns only -- nothing resembling a Mar-19 con quarter was public; the quarter first appeared in the FY20 audited filing. 20200214 is NOT a defensible alternative (the Q3FY20 filing gives only the 9M piece; the annual piece arrived 2020-07-20).",
+  "convention": "owners row = 'Profit for the Period (7-8)' (= PAT minus NCI); subsidiaries VLS Securities and VLS Asset Management are near-wholly-owned so NCI is paisa-scale. Stored FY20-era cells sit ON this table: Dec-2019 stored -16.78 == owners (1,677.85) AND total (1,677.91) (both round to -16.78, indistinguishable); Mar-2020 stored 82.74 == TOTAL row 8,273.54 EXACTLY while owners 8,273.32 -> 82.73 -- a 0.22-lakh NCI convention wobble on that stored cell, reported per gate 2 but NOT healed here (not my assignment). For the cell written below, owners (214.70) -> -2.15 and total (215.31) -> -2.15 are IDENTICAL at crore rounding, so the wobble cannot affect the written value. Unit 'Rs.in Lakhs' on every statement page (vision-read) -> /100.",
+  "identity": "FY19 consolidated closes to the paisa across two filings on BOTH bases (all vision-read): owners 9M FY19 (202.72) [Q3FY20 filing p6, 'Nine Months Ended 31.12.2018'] + Q4 (214.70) [FY20 audited filing p11, 'Quarter Ended 31.03.2019'] = (417.42) == printed 'Year Ended 31.03.2019' owners EXACT; total basis (202.72) + (215.31) = (418.03) == printed year total EXACT. Every column reconciles PBT - tax EXACTLY: Mar-19 (393.01) + 177.70 = (215.31), minus NCI (0.61) = (214.70); FY19 (1,306.89) + 888.86 = (418.03); Dec-19 (1,588.08) - 89.83 = (1,677.91). IMPORTANT VINTAGE FACT: these FY19 figures are the IND-AS RESTATED comparatives (VLS transitioned to Ind AS in FY20; fair-value P&L lines dominate). The FY19 filing itself (old AS-21/23 format, filed 2019-05-17) printed con YEAR columns only: owners 2247.48, pre-minority 2247.90, FY18 2515.89 -- no old-AS quarter or 9M con was ever published, so the Ind-AS comparative is the ONLY published Mar-2019 consolidated quarter in existence.",
+  "anchor": "FY20 audited con statement p11 (NSE filingDate 2020-07-20) DOUBLE EXACT: 'Quarter Ended 31.12.2019' owners (1,677.85) -> -16.78 == stored con 20191231 EXACT, and 'Quarter Ended 31.03.2020' total 8,273.54 -> 82.74 == stored con 20200331 EXACT. NSE's structured records agree on both (-1677.91 / 8273.54; second reader). Q3FY20 con statement p6 (NSE filingDate 2020-02-14): Dec-2019 owners (1,677.85) == stored EXACT (single in-window anchor there; its 9M column is pinned by the cross-filing year identity above). FY19 filing p5 (filed 2019-05-17): std Mar-19 quarter 696.22 -> 6.96 == stored std EXACT (anchors the old-AS document too).",
+  "campaign": "con-yoy-triad",
+  "prior_per_file": {
+   "docs/sf_fundamentals.json": 24.5,
+   "scripts/fundamentals.json": null
+  },
+  "was": 24.5,
+  "mode": "heal",
+  "defect_class": "wrong-value-in-quarter-slot, origin unattributable in filings (HEG class) -- the sweep flagged the cell rightly but 24.50 is NOT the printed annual: it matches NOTHING in any VLS filing read (FY19 old-AS con annual owners 2247.48 -> 22.47; pre-minority 2247.90 -> 22.48; FY18 con annual 2515.89 -> 25.16; Ind-AS restated FY19 annual (417.42) -> -4.17; Ind-AS Mar-19 quarter (214.70) -> -2.15; std FY19 1758.47 -> 17.58). It is annual-SCALE (FY19-era con annual +/- ~2 cr) but no printed line equals it; the FY19 auditor's report also confirms associates' share (364.50 lakh) is already inside 2247.48, killing the 'annual + associates' hypothesis.",
+  "annCon_was": 20190517
+ },
+ "SCREEN|annual-in-slot|CALIBRATION": {
+  "when": "2026-08-17 23:56 IST",
+  "screen": "con/std > 2.5 AND con ~ the FY standalone sum AND the FY's other three con quarters absent",
+  "result": "17 cells flagged across the campaign; 5 were real defects (FDC annual-in-slot, HEG unattributable, MMTC annual-in-slot, EXCELCROP annual-in-slot, VLSFINANCE unattributable) and 12 were NOT \u2014 IRB, UPL, GDL, GODREJIND, EPL, MOTILALOFS, PURVA, JMFINANCIL and CIEINDIA are genuine printed quarters whose con/std ratio is simply large, and 3 more were unverifiable (no con filing ever existed).",
+  "hit_rate": "~29% \u2014 the screen is a SEARCH heuristic, never a verdict; every hit needed its filing read",
+  "second_reader_found": "NSE's resultsData2 is the company's OWN e-filed figures and matched the printed statement to the paisa on all 10 names tested \u2014 a free second reader for old filings, and sometimes the only source for a quarter that was never printed (JSWDULUX FY17/FY18)",
+  "open_policy_question": "JSWDULUX 20170331 (247.02) and 20180331 (400.14) are PROVEN annual-in-slot, but the only quarter figure in existence is the e-filed record (72.65) \u2014 single-source, so not written. Same family: EXCELCROP 20180331 (81.15 proven) and 20150331. Vacate-or-keep is a user call."
  }
 }
