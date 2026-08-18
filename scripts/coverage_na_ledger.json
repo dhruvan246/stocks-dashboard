@@ -1019,6 +1019,69 @@
    "reader_2": "MoneyControl consolidated-quarterly feed, swept 2026-08-18: renders NO consolidated series for this company (status \"no_con_series\"). MC is measured in this project to OVER-report consolidated - on 98 of 120 names where both readers give a floor, MC starts EARLIER than the exchange, median 4 quarters, exactly the width of a filing's comparative columns. A source that invents consolidated data showing none is conservative evidence of absence.",
    "our_data": "40 fabricated consolidated cells were retracted for this symbol on 2026-08-18 (scripts/con_copy_retractions.json): each was an EXACT copy of the standalone value, written by a rule that inferred \"no subsidiary\" from a pattern in our own store rather than from any filing. With the copies gone the consolidated basis is empty here, which is the true state - no consolidated statement exists to fill it.",
    "user_approved": "2026-08-18 (user: \"ok this can be done in github its removal and na classification in coverage\")"
+  },
+  "BAJAJHFL": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2025-03-28",
+   "to": "2025-03-28",
+   "bound_derivation": "The 1 dates at which the engine reports this parameter unresolved for BAJAJHFL in the campaign window: first 2025-03-28, last 2025-03-28. A hole after 2025-03-28 is a different defect and stays visible.",
+   "reader_1": "Bajaj Housing Finance. Filing evidence 2026-08-18: Bajaj Financial Securities ceased to be its subsidiary on 10-Aug-2018 (FY2018-19 annual report p15), and the FY2018-19 report is the LAST to contain consolidated financial statements - from FY2019-20 that contents line is gone. FY2024-25 annual report p39: 'The Company does not have any subsidiaries, associates, or joint ventures. Accordingly, the requirement of attaching form AOC-1 is not applicable.' The 2026-07-29 filing note 6 repeats: 'The Company does not have any subsidiary/associate/joint venture entity(ies), hence consolidation is not applicable.' Equity listed 16-Sep-2024; no announcement of any kind exists under scrip 544252 before that date.",
+   "our_data": "2 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "HATSUN": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2023-02-28",
+   "bound_derivation": "The 38 dates at which the engine reports this parameter unresolved for HATSUN in the campaign window: first 2020-01-31, last 2023-02-28. A hole after 2023-02-28 is a different defect and stays visible.",
+   "reader_1": "Hatsun Agro Product. Third-reader filing evidence 2026-08-18: NO subsidiary, associate or joint venture existed between 13-Nov-2009 (Hatsun Ingredients FZE closed) and 27-Jan-2025 (Milk Mantra acquired). The annual reports say so every year - FY2014-15 p37 'no subsidiaries, joint ventures or associate companies', FY2017-18 p41 identical, FY2020-21 p109 'It is a Standalone entity', plus Deloitte's CARO report FY2020-FY2024 'The Company did not have any subsidiary or associate or joint venture during the year'. Twelve BSE result PDFs spanning 2019-2024 contain ZERO occurrences of 'Consolidat', with a positive control passing on the same company's Mar-2025 PDF (54 hits) - so the zeros are real, not a parser artifact. The Mar-2025 filing states the changeover: 'MMDPL has become a subsidiary ... Accordingly, the Company has prepared Consolidated Financial Statements for the quarter and year ended March 31, 2025.'",
+   "our_data": "35 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "IREDA": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2024-09-30",
+   "to": "2025-03-28",
+   "bound_derivation": "The 7 dates at which the engine reports this parameter unresolved for IREDA in the campaign window: first 2024-09-30, last 2025-03-28. A hole after 2025-03-28 is a different defect and stays visible.",
+   "reader_1": "IREDA. Second- and third-reader filing evidence 2026-08-18: its FIRST-EVER subsidiary, IREDA Global Green Energy Finance IFSC Ltd, was incorporated 07-May-2024 and received its IFSCA certificate 18-Feb-2025. The FY25 annual results (approved 15-Apr-2025) state in note 3: 'Consolidated financial results have been prepared w.e.f quarter ended 31.03.2025 in accordance with the Indian Accounting Standard 110.' Every quarterly filing from Dec-2023 through Dec-2024 is standalone-only with an explicit deferral note, and the first consolidated filing carries NO consolidated columns for any earlier period. C&AG letters corroborate independently: FY24 single-basis, FY25 '(Standalone & Consolidated)'. MoneyControl's apparent Mar-2024 consolidated series decodes as comparative artifact - those figures match the original standalone filings TO THE PAISA. IREDA's consolidated data from 2025-03-31 onward is GENUINE and differs from standalone; it is outside this verdict and untouched.",
+   "our_data": "15 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
+  },
+  "MGL": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2023-04-28",
+   "bound_derivation": "The 40 dates at which the engine reports this parameter unresolved for MGL in the campaign window: first 2020-01-31, last 2023-04-28. A hole after 2023-04-28 is a different defect and stays visible.",
+   "reader_1": "Mahanagar Gas. Second-reader filing evidence 2026-08-18: first consolidated result is the quarter ended 2023-12-31, and the trigger was Mahanagar LNG Private Limited, a subsidiary incorporated 26-Dec-2023 - NOT Unison Enviro, which became a subsidiary only on 01-Feb-2024. The Dec-2023 filing's note 6 states it: 'The JVC (Mahanagar LNG Private Limited) is a subsidiary of the Company and was incorporated on December 26, 2023 ... the consolidated financial results are same as the standalone financial results of the Parent Company.' Before that: the FY19, FY21 and FY23 AUDITED ANNUAL results plus the Jun-2023 and Sep-2023 quarterlies contain ZERO occurrences of 'consolidat' and 'subsidiar', with healthy positive controls. An audited annual with no consolidated section is legally incompatible with having any subsidiary under LODR 33(3). The FY24 filing enumerates the whole group and lists only those two 2023/24-dated subsidiaries.",
+   "our_data": "34 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
+  },
+  "NESTLEIND": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2024-09-30",
+   "bound_derivation": "The 57 dates at which the engine reports this parameter unresolved for NESTLEIND in the campaign window: first 2020-01-31, last 2024-09-30. A hole after 2024-09-30 is a different defect and stays visible.",
+   "reader_1": "Nestle India. Second-reader filing evidence 2026-08-18, and the company declares the defect itself. Its FIRST consolidated filing (17-Oct-2024, quarter ended 2024-09-30) carries note 2: 'The figures presented in all the comparative periods in the consolidated financial results are same as presented in the standalone financial results.' The trigger is not a subsidiary at all but a 49% ASSOCIATE - Dr. Reddy's and Nestle Health Science Ltd, associate w.e.f. 01-Aug-2024, consolidated by the equity method under s.129(3); the con P&L's 'Share of (Profit)/Loss of an Associate' line is 37.2 in Q Sep-2024 and NIL in every comparative. Purina PetCare India belongs to Nestle S.A., never to Nestle India. Before the floor: the audited annuals for CY2015 (headline itself reads '(Standalone)'), CY2018, CY2022 and the 15-month FY24, plus the Jun-2024 quarterly, all carry zero consolidated content. This is the name whose NSE list was thinnest - 9 rows across 60 quarters - and it is now closed on the filings themselves rather than on that index.",
+   "our_data": "36 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
+  },
+  "TIMKEN": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2025-01-31",
+   "bound_derivation": "The 61 dates at which the engine reports this parameter unresolved for TIMKEN in the campaign window: first 2020-01-31, last 2025-01-31. A hole after 2025-01-31 is a different defect and stays visible.",
+   "reader_1": "Timken India. Consolidated results begin only at Dec-2025. Our own scripts/con_copy_heals.json carries heals read from the company's actual consolidated statements (Dec-2025 filing p5, Mar-2026 filing p16) and records verbatim that 'TIMKEN filed standalone-only until Dec-2025'. Independently, the user checked MoneyControl 2026-08-18: its consolidated series starts Mar-2025. Both sources place the first consolidated data AFTER every cell retracted here (all <= Dec-2024). NSE's list reaches only to 2024-12-31, which is why Gate 1 reported 'never' - the truthful statement is 'not in any period covered by this verdict'.",
+   "our_data": "34 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "VINATIORGA": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2021-04-30",
+   "bound_derivation": "The 16 dates at which the engine reports this parameter unresolved for VINATIORGA in the campaign window: first 2020-01-31, last 2021-04-30. A hole after 2021-04-30 is a different defect and stays visible.",
+   "reader_1": "Vinati Organics. Second-reader filing evidence 2026-08-18: first consolidated result is the quarter/year ended 2021-03-31. The absence before it is stated IN WORDS by the filer - the Dec-2020 quarterly filing, note 5: 'The company has subscribed to the Memorandum and Articles of Association of Veeral Organics Pvt. Ltd, a subsidiary company on 5th October 2020. Sin[ce] ... are no transactions during the period, ending 31st December 2020 no consolidated financials resuts have been prepared.' (sic). Veeral Organics, incorporated 05-Oct-2020, was the company's FIRST-EVER subsidiary; Veeral Additives was never consolidated - it was amalgamated INTO Vinati (appointed date 01-Apr-2021), i.e. absorbed into standalone. The FY21 annual report's AOC-1 lists exactly one subsidiary.",
+   "our_data": "24 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
   }
  },
  "postDriftCon": {
@@ -1411,6 +1474,69 @@
    "reader_2": "MoneyControl consolidated-quarterly feed, swept 2026-08-18: renders NO consolidated series for this company (status \"no_con_series\"). MC is measured in this project to OVER-report consolidated - on 98 of 120 names where both readers give a floor, MC starts EARLIER than the exchange, median 4 quarters, exactly the width of a filing's comparative columns. A source that invents consolidated data showing none is conservative evidence of absence.",
    "our_data": "40 fabricated consolidated cells were retracted for this symbol on 2026-08-18 (scripts/con_copy_retractions.json): each was an EXACT copy of the standalone value, written by a rule that inferred \"no subsidiary\" from a pattern in our own store rather than from any filing. With the copies gone the consolidated basis is empty here, which is the true state - no consolidated statement exists to fill it.",
    "user_approved": "2026-08-18 (user: \"ok this can be done in github its removal and na classification in coverage\")"
+  },
+  "BAJAJHFL": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2025-03-28",
+   "to": "2025-03-28",
+   "bound_derivation": "The 1 dates at which the engine reports this parameter unresolved for BAJAJHFL in the campaign window: first 2025-03-28, last 2025-03-28. A hole after 2025-03-28 is a different defect and stays visible.",
+   "reader_1": "Bajaj Housing Finance. Filing evidence 2026-08-18: Bajaj Financial Securities ceased to be its subsidiary on 10-Aug-2018 (FY2018-19 annual report p15), and the FY2018-19 report is the LAST to contain consolidated financial statements - from FY2019-20 that contents line is gone. FY2024-25 annual report p39: 'The Company does not have any subsidiaries, associates, or joint ventures. Accordingly, the requirement of attaching form AOC-1 is not applicable.' The 2026-07-29 filing note 6 repeats: 'The Company does not have any subsidiary/associate/joint venture entity(ies), hence consolidation is not applicable.' Equity listed 16-Sep-2024; no announcement of any kind exists under scrip 544252 before that date.",
+   "our_data": "2 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "HATSUN": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2023-02-28",
+   "bound_derivation": "The 38 dates at which the engine reports this parameter unresolved for HATSUN in the campaign window: first 2020-01-31, last 2023-02-28. A hole after 2023-02-28 is a different defect and stays visible.",
+   "reader_1": "Hatsun Agro Product. Third-reader filing evidence 2026-08-18: NO subsidiary, associate or joint venture existed between 13-Nov-2009 (Hatsun Ingredients FZE closed) and 27-Jan-2025 (Milk Mantra acquired). The annual reports say so every year - FY2014-15 p37 'no subsidiaries, joint ventures or associate companies', FY2017-18 p41 identical, FY2020-21 p109 'It is a Standalone entity', plus Deloitte's CARO report FY2020-FY2024 'The Company did not have any subsidiary or associate or joint venture during the year'. Twelve BSE result PDFs spanning 2019-2024 contain ZERO occurrences of 'Consolidat', with a positive control passing on the same company's Mar-2025 PDF (54 hits) - so the zeros are real, not a parser artifact. The Mar-2025 filing states the changeover: 'MMDPL has become a subsidiary ... Accordingly, the Company has prepared Consolidated Financial Statements for the quarter and year ended March 31, 2025.'",
+   "our_data": "35 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "IREDA": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2024-09-30",
+   "to": "2025-03-28",
+   "bound_derivation": "The 7 dates at which the engine reports this parameter unresolved for IREDA in the campaign window: first 2024-09-30, last 2025-03-28. A hole after 2025-03-28 is a different defect and stays visible.",
+   "reader_1": "IREDA. Second- and third-reader filing evidence 2026-08-18: its FIRST-EVER subsidiary, IREDA Global Green Energy Finance IFSC Ltd, was incorporated 07-May-2024 and received its IFSCA certificate 18-Feb-2025. The FY25 annual results (approved 15-Apr-2025) state in note 3: 'Consolidated financial results have been prepared w.e.f quarter ended 31.03.2025 in accordance with the Indian Accounting Standard 110.' Every quarterly filing from Dec-2023 through Dec-2024 is standalone-only with an explicit deferral note, and the first consolidated filing carries NO consolidated columns for any earlier period. C&AG letters corroborate independently: FY24 single-basis, FY25 '(Standalone & Consolidated)'. MoneyControl's apparent Mar-2024 consolidated series decodes as comparative artifact - those figures match the original standalone filings TO THE PAISA. IREDA's consolidated data from 2025-03-31 onward is GENUINE and differs from standalone; it is outside this verdict and untouched.",
+   "our_data": "15 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
+  },
+  "MGL": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2023-04-28",
+   "bound_derivation": "The 40 dates at which the engine reports this parameter unresolved for MGL in the campaign window: first 2020-01-31, last 2023-04-28. A hole after 2023-04-28 is a different defect and stays visible.",
+   "reader_1": "Mahanagar Gas. Second-reader filing evidence 2026-08-18: first consolidated result is the quarter ended 2023-12-31, and the trigger was Mahanagar LNG Private Limited, a subsidiary incorporated 26-Dec-2023 - NOT Unison Enviro, which became a subsidiary only on 01-Feb-2024. The Dec-2023 filing's note 6 states it: 'The JVC (Mahanagar LNG Private Limited) is a subsidiary of the Company and was incorporated on December 26, 2023 ... the consolidated financial results are same as the standalone financial results of the Parent Company.' Before that: the FY19, FY21 and FY23 AUDITED ANNUAL results plus the Jun-2023 and Sep-2023 quarterlies contain ZERO occurrences of 'consolidat' and 'subsidiar', with healthy positive controls. An audited annual with no consolidated section is legally incompatible with having any subsidiary under LODR 33(3). The FY24 filing enumerates the whole group and lists only those two 2023/24-dated subsidiaries.",
+   "our_data": "34 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
+  },
+  "NESTLEIND": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2024-09-30",
+   "bound_derivation": "The 57 dates at which the engine reports this parameter unresolved for NESTLEIND in the campaign window: first 2020-01-31, last 2024-09-30. A hole after 2024-09-30 is a different defect and stays visible.",
+   "reader_1": "Nestle India. Second-reader filing evidence 2026-08-18, and the company declares the defect itself. Its FIRST consolidated filing (17-Oct-2024, quarter ended 2024-09-30) carries note 2: 'The figures presented in all the comparative periods in the consolidated financial results are same as presented in the standalone financial results.' The trigger is not a subsidiary at all but a 49% ASSOCIATE - Dr. Reddy's and Nestle Health Science Ltd, associate w.e.f. 01-Aug-2024, consolidated by the equity method under s.129(3); the con P&L's 'Share of (Profit)/Loss of an Associate' line is 37.2 in Q Sep-2024 and NIL in every comparative. Purina PetCare India belongs to Nestle S.A., never to Nestle India. Before the floor: the audited annuals for CY2015 (headline itself reads '(Standalone)'), CY2018, CY2022 and the 15-month FY24, plus the Jun-2024 quarterly, all carry zero consolidated content. This is the name whose NSE list was thinnest - 9 rows across 60 quarters - and it is now closed on the filings themselves rather than on that index.",
+   "our_data": "36 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
+  },
+  "TIMKEN": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2025-01-31",
+   "bound_derivation": "The 61 dates at which the engine reports this parameter unresolved for TIMKEN in the campaign window: first 2020-01-31, last 2025-01-31. A hole after 2025-01-31 is a different defect and stays visible.",
+   "reader_1": "Timken India. Consolidated results begin only at Dec-2025. Our own scripts/con_copy_heals.json carries heals read from the company's actual consolidated statements (Dec-2025 filing p5, Mar-2026 filing p16) and records verbatim that 'TIMKEN filed standalone-only until Dec-2025'. Independently, the user checked MoneyControl 2026-08-18: its consolidated series starts Mar-2025. Both sources place the first consolidated data AFTER every cell retracted here (all <= Dec-2024). NSE's list reaches only to 2024-12-31, which is why Gate 1 reported 'never' - the truthful statement is 'not in any period covered by this verdict'.",
+   "our_data": "34 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "VINATIORGA": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2021-04-30",
+   "bound_derivation": "The 16 dates at which the engine reports this parameter unresolved for VINATIORGA in the campaign window: first 2020-01-31, last 2021-04-30. A hole after 2021-04-30 is a different defect and stays visible.",
+   "reader_1": "Vinati Organics. Second-reader filing evidence 2026-08-18: first consolidated result is the quarter/year ended 2021-03-31. The absence before it is stated IN WORDS by the filer - the Dec-2020 quarterly filing, note 5: 'The company has subscribed to the Memorandum and Articles of Association of Veeral Organics Pvt. Ltd, a subsidiary company on 5th October 2020. Sin[ce] ... are no transactions during the period, ending 31st December 2020 no consolidated financials resuts have been prepared.' (sic). Veeral Organics, incorporated 05-Oct-2020, was the company's FIRST-EVER subsidiary; Veeral Additives was never consolidated - it was amalgamated INTO Vinati (appointed date 01-Apr-2021), i.e. absorbed into standalone. The FY21 annual report's AOC-1 lists exactly one subsidiary.",
+   "our_data": "24 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
   }
  },
  "profitYoyStd": {
@@ -2124,6 +2250,87 @@
    "reader_2": "MoneyControl consolidated-quarterly feed, swept 2026-08-18: renders NO consolidated series for this company (status \"no_con_series\"). MC is measured in this project to OVER-report consolidated - on 98 of 120 names where both readers give a floor, MC starts EARLIER than the exchange, median 4 quarters, exactly the width of a filing's comparative columns. A source that invents consolidated data showing none is conservative evidence of absence.",
    "our_data": "40 fabricated consolidated cells were retracted for this symbol on 2026-08-18 (scripts/con_copy_retractions.json): each was an EXACT copy of the standalone value, written by a rule that inferred \"no subsidiary\" from a pattern in our own store rather than from any filing. With the copies gone the consolidated basis is empty here, which is the true state - no consolidated statement exists to fill it.",
    "user_approved": "2026-08-18 (user: \"ok this can be done in github its removal and na classification in coverage\")"
+  },
+  "BAJAJHFL": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2025-11-28",
+   "to": "2026-03-30",
+   "bound_derivation": "The 5 dates at which the engine reports this parameter unresolved for BAJAJHFL in the campaign window: first 2025-11-28, last 2026-03-30. A hole after 2026-03-30 is a different defect and stays visible.",
+   "reader_1": "Bajaj Housing Finance. Filing evidence 2026-08-18: Bajaj Financial Securities ceased to be its subsidiary on 10-Aug-2018 (FY2018-19 annual report p15), and the FY2018-19 report is the LAST to contain consolidated financial statements - from FY2019-20 that contents line is gone. FY2024-25 annual report p39: 'The Company does not have any subsidiaries, associates, or joint ventures. Accordingly, the requirement of attaching form AOC-1 is not applicable.' The 2026-07-29 filing note 6 repeats: 'The Company does not have any subsidiary/associate/joint venture entity(ies), hence consolidation is not applicable.' Equity listed 16-Sep-2024; no announcement of any kind exists under scrip 544252 before that date.",
+   "our_data": "2 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "BLUEJET": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2025-09-30",
+   "to": "2026-04-30",
+   "bound_derivation": "The 8 dates at which the engine reports this parameter unresolved for BLUEJET in the campaign window: first 2025-09-30, last 2026-04-30. A hole after 2026-04-30 is a different defect and stays visible.",
+   "reader_1": "Blue Jet Healthcare. Filing evidence 2026-08-18, and the textbook 'consolidates ANNUALLY, files standalone QUARTERLIES' case: its only consolidated statements are the FY2020 and FY2021 ANNUALS, both entirely PRE-IPO (equity listed 01-Nov-2023). Its subsidiary Adhir Barter Private Limited ceased 20-Jul-2020 (IPO RHP p211, p249); RHP p178: 'As on the date of this Red Herring Prospectus, our Company does not have any subsidiary or joint venture.' The 2025-07-22 filing p4: 'The Company does not have any subsidiaries, associates, or joint ventures as on June 30, 2025. Consequently, the preparation of consolidated financial statements is not applicable.' screener.in shows a consolidated ANNUAL series of exactly two columns and a consolidated QUARTERLY table with ZERO columns. No consolidated quarterly result has ever existed.",
+   "our_data": "6 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "HATSUN": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2023-02-28",
+   "bound_derivation": "The 38 dates at which the engine reports this parameter unresolved for HATSUN in the campaign window: first 2020-01-31, last 2023-02-28. A hole after 2023-02-28 is a different defect and stays visible.",
+   "reader_1": "Hatsun Agro Product. Third-reader filing evidence 2026-08-18: NO subsidiary, associate or joint venture existed between 13-Nov-2009 (Hatsun Ingredients FZE closed) and 27-Jan-2025 (Milk Mantra acquired). The annual reports say so every year - FY2014-15 p37 'no subsidiaries, joint ventures or associate companies', FY2017-18 p41 identical, FY2020-21 p109 'It is a Standalone entity', plus Deloitte's CARO report FY2020-FY2024 'The Company did not have any subsidiary or associate or joint venture during the year'. Twelve BSE result PDFs spanning 2019-2024 contain ZERO occurrences of 'Consolidat', with a positive control passing on the same company's Mar-2025 PDF (54 hits) - so the zeros are real, not a parser artifact. The Mar-2025 filing states the changeover: 'MMDPL has become a subsidiary ... Accordingly, the Company has prepared Consolidated Financial Statements for the quarter and year ended March 31, 2025.'",
+   "our_data": "35 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "IREDA": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2024-09-30",
+   "to": "2026-05-29",
+   "bound_derivation": "The 21 dates at which the engine reports this parameter unresolved for IREDA in the campaign window: first 2024-09-30, last 2026-05-29. A hole after 2026-05-29 is a different defect and stays visible.",
+   "reader_1": "IREDA. Second- and third-reader filing evidence 2026-08-18: its FIRST-EVER subsidiary, IREDA Global Green Energy Finance IFSC Ltd, was incorporated 07-May-2024 and received its IFSCA certificate 18-Feb-2025. The FY25 annual results (approved 15-Apr-2025) state in note 3: 'Consolidated financial results have been prepared w.e.f quarter ended 31.03.2025 in accordance with the Indian Accounting Standard 110.' Every quarterly filing from Dec-2023 through Dec-2024 is standalone-only with an explicit deferral note, and the first consolidated filing carries NO consolidated columns for any earlier period. C&AG letters corroborate independently: FY24 single-basis, FY25 '(Standalone & Consolidated)'. MoneyControl's apparent Mar-2024 consolidated series decodes as comparative artifact - those figures match the original standalone filings TO THE PAISA. IREDA's consolidated data from 2025-03-31 onward is GENUINE and differs from standalone; it is outside this verdict and untouched.",
+   "our_data": "15 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
+  },
+  "MGL": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2024-12-31",
+   "bound_derivation": "The 58 dates at which the engine reports this parameter unresolved for MGL in the campaign window: first 2020-01-31, last 2024-12-31. A hole after 2024-12-31 is a different defect and stays visible.",
+   "reader_1": "Mahanagar Gas. Second-reader filing evidence 2026-08-18: first consolidated result is the quarter ended 2023-12-31, and the trigger was Mahanagar LNG Private Limited, a subsidiary incorporated 26-Dec-2023 - NOT Unison Enviro, which became a subsidiary only on 01-Feb-2024. The Dec-2023 filing's note 6 states it: 'The JVC (Mahanagar LNG Private Limited) is a subsidiary of the Company and was incorporated on December 26, 2023 ... the consolidated financial results are same as the standalone financial results of the Parent Company.' Before that: the FY19, FY21 and FY23 AUDITED ANNUAL results plus the Jun-2023 and Sep-2023 quarterlies contain ZERO occurrences of 'consolidat' and 'subsidiar', with healthy positive controls. An audited annual with no consolidated section is legally incompatible with having any subsidiary under LODR 33(3). The FY24 filing enumerates the whole group and lists only those two 2023/24-dated subsidiaries.",
+   "our_data": "34 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
+  },
+  "NESTLEIND": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2025-09-30",
+   "bound_derivation": "The 69 dates at which the engine reports this parameter unresolved for NESTLEIND in the campaign window: first 2020-01-31, last 2025-09-30. A hole after 2025-09-30 is a different defect and stays visible.",
+   "reader_1": "Nestle India. Second-reader filing evidence 2026-08-18, and the company declares the defect itself. Its FIRST consolidated filing (17-Oct-2024, quarter ended 2024-09-30) carries note 2: 'The figures presented in all the comparative periods in the consolidated financial results are same as presented in the standalone financial results.' The trigger is not a subsidiary at all but a 49% ASSOCIATE - Dr. Reddy's and Nestle Health Science Ltd, associate w.e.f. 01-Aug-2024, consolidated by the equity method under s.129(3); the con P&L's 'Share of (Profit)/Loss of an Associate' line is 37.2 in Q Sep-2024 and NIL in every comparative. Purina PetCare India belongs to Nestle S.A., never to Nestle India. Before the floor: the audited annuals for CY2015 (headline itself reads '(Standalone)'), CY2018, CY2022 and the 15-month FY24, plus the Jun-2024 quarterly, all carry zero consolidated content. This is the name whose NSE list was thinnest - 9 rows across 60 quarters - and it is now closed on the filings themselves rather than on that index.",
+   "our_data": "36 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
+  },
+  "SPLPETRO": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2026-03-30",
+   "to": "2026-06-30",
+   "bound_derivation": "The 4 dates at which the engine reports this parameter unresolved for SPLPETRO in the campaign window: first 2026-03-30, last 2026-06-30. A hole after 2026-06-30 is a different defect and stays visible.",
+   "reader_1": "Supreme Petrochem (NSE SPLPETRO; FUND_ALIAS SUPPETRO->SPLPETRO). Filing evidence 2026-08-18: consolidated quarterly results begin ONLY at the quarter ended 30-Jun-2025. The 2025-07-23 filing is the first headed 'Standalone | Consolidated'; its consolidated block carries exactly one column and a populated Non-Controlling Interest line, and its note records that Xmold Polymers became a subsidiary with control from 01-Apr-2025. Before that the company states it had none: 2024-10-21 filing p5 'no subsidiary, associate or joint venture as on September 30, 2024'; 2025-04-23 FY25 audited p6 the same as on 31-Mar-2025; AR 2024-25 p29 identical. The 2025-10-24 filing states there are NO corresponding prior-period consolidated figures, which also rules out comparative-column bleed as a source.",
+   "our_data": "40 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "TIMKEN": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2026-01-30",
+   "bound_derivation": "The 73 dates at which the engine reports this parameter unresolved for TIMKEN in the campaign window: first 2020-01-31, last 2026-01-30. A hole after 2026-01-30 is a different defect and stays visible.",
+   "reader_1": "Timken India. Consolidated results begin only at Dec-2025. Our own scripts/con_copy_heals.json carries heals read from the company's actual consolidated statements (Dec-2025 filing p5, Mar-2026 filing p16) and records verbatim that 'TIMKEN filed standalone-only until Dec-2025'. Independently, the user checked MoneyControl 2026-08-18: its consolidated series starts Mar-2025. Both sources place the first consolidated data AFTER every cell retracted here (all <= Dec-2024). NSE's list reaches only to 2024-12-31, which is why Gate 1 reported 'never' - the truthful statement is 'not in any period covered by this verdict'.",
+   "our_data": "34 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "VINATIORGA": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2022-04-29",
+   "bound_derivation": "The 28 dates at which the engine reports this parameter unresolved for VINATIORGA in the campaign window: first 2020-01-31, last 2022-04-29. A hole after 2022-04-29 is a different defect and stays visible.",
+   "reader_1": "Vinati Organics. Second-reader filing evidence 2026-08-18: first consolidated result is the quarter/year ended 2021-03-31. The absence before it is stated IN WORDS by the filer - the Dec-2020 quarterly filing, note 5: 'The company has subscribed to the Memorandum and Articles of Association of Veeral Organics Pvt. Ltd, a subsidiary company on 5th October 2020. Sin[ce] ... are no transactions during the period, ending 31st December 2020 no consolidated financials resuts have been prepared.' (sic). Veeral Organics, incorporated 05-Oct-2020, was the company's FIRST-EVER subsidiary; Veeral Additives was never consolidated - it was amalgamated INTO Vinati (appointed date 01-Apr-2021), i.e. absorbed into standalone. The FY21 annual report's AOC-1 lists exactly one subsidiary.",
+   "our_data": "24 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
   }
  },
  "profitBaseCon": {
@@ -2675,6 +2882,87 @@
    "reader_2": "MoneyControl consolidated-quarterly feed, swept 2026-08-18: renders NO consolidated series for this company (status \"no_con_series\"). MC is measured in this project to OVER-report consolidated - on 98 of 120 names where both readers give a floor, MC starts EARLIER than the exchange, median 4 quarters, exactly the width of a filing's comparative columns. A source that invents consolidated data showing none is conservative evidence of absence.",
    "our_data": "40 fabricated consolidated cells were retracted for this symbol on 2026-08-18 (scripts/con_copy_retractions.json): each was an EXACT copy of the standalone value, written by a rule that inferred \"no subsidiary\" from a pattern in our own store rather than from any filing. With the copies gone the consolidated basis is empty here, which is the true state - no consolidated statement exists to fill it.",
    "user_approved": "2026-08-18 (user: \"ok this can be done in github its removal and na classification in coverage\")"
+  },
+  "BAJAJHFL": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2025-11-28",
+   "to": "2026-03-30",
+   "bound_derivation": "The 5 dates at which the engine reports this parameter unresolved for BAJAJHFL in the campaign window: first 2025-11-28, last 2026-03-30. A hole after 2026-03-30 is a different defect and stays visible.",
+   "reader_1": "Bajaj Housing Finance. Filing evidence 2026-08-18: Bajaj Financial Securities ceased to be its subsidiary on 10-Aug-2018 (FY2018-19 annual report p15), and the FY2018-19 report is the LAST to contain consolidated financial statements - from FY2019-20 that contents line is gone. FY2024-25 annual report p39: 'The Company does not have any subsidiaries, associates, or joint ventures. Accordingly, the requirement of attaching form AOC-1 is not applicable.' The 2026-07-29 filing note 6 repeats: 'The Company does not have any subsidiary/associate/joint venture entity(ies), hence consolidation is not applicable.' Equity listed 16-Sep-2024; no announcement of any kind exists under scrip 544252 before that date.",
+   "our_data": "2 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "BLUEJET": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2025-09-30",
+   "to": "2026-04-30",
+   "bound_derivation": "The 8 dates at which the engine reports this parameter unresolved for BLUEJET in the campaign window: first 2025-09-30, last 2026-04-30. A hole after 2026-04-30 is a different defect and stays visible.",
+   "reader_1": "Blue Jet Healthcare. Filing evidence 2026-08-18, and the textbook 'consolidates ANNUALLY, files standalone QUARTERLIES' case: its only consolidated statements are the FY2020 and FY2021 ANNUALS, both entirely PRE-IPO (equity listed 01-Nov-2023). Its subsidiary Adhir Barter Private Limited ceased 20-Jul-2020 (IPO RHP p211, p249); RHP p178: 'As on the date of this Red Herring Prospectus, our Company does not have any subsidiary or joint venture.' The 2025-07-22 filing p4: 'The Company does not have any subsidiaries, associates, or joint ventures as on June 30, 2025. Consequently, the preparation of consolidated financial statements is not applicable.' screener.in shows a consolidated ANNUAL series of exactly two columns and a consolidated QUARTERLY table with ZERO columns. No consolidated quarterly result has ever existed.",
+   "our_data": "6 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "HATSUN": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2023-02-28",
+   "bound_derivation": "The 38 dates at which the engine reports this parameter unresolved for HATSUN in the campaign window: first 2020-01-31, last 2023-02-28. A hole after 2023-02-28 is a different defect and stays visible.",
+   "reader_1": "Hatsun Agro Product. Third-reader filing evidence 2026-08-18: NO subsidiary, associate or joint venture existed between 13-Nov-2009 (Hatsun Ingredients FZE closed) and 27-Jan-2025 (Milk Mantra acquired). The annual reports say so every year - FY2014-15 p37 'no subsidiaries, joint ventures or associate companies', FY2017-18 p41 identical, FY2020-21 p109 'It is a Standalone entity', plus Deloitte's CARO report FY2020-FY2024 'The Company did not have any subsidiary or associate or joint venture during the year'. Twelve BSE result PDFs spanning 2019-2024 contain ZERO occurrences of 'Consolidat', with a positive control passing on the same company's Mar-2025 PDF (54 hits) - so the zeros are real, not a parser artifact. The Mar-2025 filing states the changeover: 'MMDPL has become a subsidiary ... Accordingly, the Company has prepared Consolidated Financial Statements for the quarter and year ended March 31, 2025.'",
+   "our_data": "35 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "IREDA": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2024-09-30",
+   "to": "2026-05-29",
+   "bound_derivation": "The 21 dates at which the engine reports this parameter unresolved for IREDA in the campaign window: first 2024-09-30, last 2026-05-29. A hole after 2026-05-29 is a different defect and stays visible.",
+   "reader_1": "IREDA. Second- and third-reader filing evidence 2026-08-18: its FIRST-EVER subsidiary, IREDA Global Green Energy Finance IFSC Ltd, was incorporated 07-May-2024 and received its IFSCA certificate 18-Feb-2025. The FY25 annual results (approved 15-Apr-2025) state in note 3: 'Consolidated financial results have been prepared w.e.f quarter ended 31.03.2025 in accordance with the Indian Accounting Standard 110.' Every quarterly filing from Dec-2023 through Dec-2024 is standalone-only with an explicit deferral note, and the first consolidated filing carries NO consolidated columns for any earlier period. C&AG letters corroborate independently: FY24 single-basis, FY25 '(Standalone & Consolidated)'. MoneyControl's apparent Mar-2024 consolidated series decodes as comparative artifact - those figures match the original standalone filings TO THE PAISA. IREDA's consolidated data from 2025-03-31 onward is GENUINE and differs from standalone; it is outside this verdict and untouched.",
+   "our_data": "15 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
+  },
+  "MGL": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2024-12-31",
+   "bound_derivation": "The 58 dates at which the engine reports this parameter unresolved for MGL in the campaign window: first 2020-01-31, last 2024-12-31. A hole after 2024-12-31 is a different defect and stays visible.",
+   "reader_1": "Mahanagar Gas. Second-reader filing evidence 2026-08-18: first consolidated result is the quarter ended 2023-12-31, and the trigger was Mahanagar LNG Private Limited, a subsidiary incorporated 26-Dec-2023 - NOT Unison Enviro, which became a subsidiary only on 01-Feb-2024. The Dec-2023 filing's note 6 states it: 'The JVC (Mahanagar LNG Private Limited) is a subsidiary of the Company and was incorporated on December 26, 2023 ... the consolidated financial results are same as the standalone financial results of the Parent Company.' Before that: the FY19, FY21 and FY23 AUDITED ANNUAL results plus the Jun-2023 and Sep-2023 quarterlies contain ZERO occurrences of 'consolidat' and 'subsidiar', with healthy positive controls. An audited annual with no consolidated section is legally incompatible with having any subsidiary under LODR 33(3). The FY24 filing enumerates the whole group and lists only those two 2023/24-dated subsidiaries.",
+   "our_data": "34 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
+  },
+  "NESTLEIND": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2025-09-30",
+   "bound_derivation": "The 69 dates at which the engine reports this parameter unresolved for NESTLEIND in the campaign window: first 2020-01-31, last 2025-09-30. A hole after 2025-09-30 is a different defect and stays visible.",
+   "reader_1": "Nestle India. Second-reader filing evidence 2026-08-18, and the company declares the defect itself. Its FIRST consolidated filing (17-Oct-2024, quarter ended 2024-09-30) carries note 2: 'The figures presented in all the comparative periods in the consolidated financial results are same as presented in the standalone financial results.' The trigger is not a subsidiary at all but a 49% ASSOCIATE - Dr. Reddy's and Nestle Health Science Ltd, associate w.e.f. 01-Aug-2024, consolidated by the equity method under s.129(3); the con P&L's 'Share of (Profit)/Loss of an Associate' line is 37.2 in Q Sep-2024 and NIL in every comparative. Purina PetCare India belongs to Nestle S.A., never to Nestle India. Before the floor: the audited annuals for CY2015 (headline itself reads '(Standalone)'), CY2018, CY2022 and the 15-month FY24, plus the Jun-2024 quarterly, all carry zero consolidated content. This is the name whose NSE list was thinnest - 9 rows across 60 quarters - and it is now closed on the filings themselves rather than on that index.",
+   "our_data": "36 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
+  },
+  "SPLPETRO": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2026-03-30",
+   "to": "2026-06-30",
+   "bound_derivation": "The 4 dates at which the engine reports this parameter unresolved for SPLPETRO in the campaign window: first 2026-03-30, last 2026-06-30. A hole after 2026-06-30 is a different defect and stays visible.",
+   "reader_1": "Supreme Petrochem (NSE SPLPETRO; FUND_ALIAS SUPPETRO->SPLPETRO). Filing evidence 2026-08-18: consolidated quarterly results begin ONLY at the quarter ended 30-Jun-2025. The 2025-07-23 filing is the first headed 'Standalone | Consolidated'; its consolidated block carries exactly one column and a populated Non-Controlling Interest line, and its note records that Xmold Polymers became a subsidiary with control from 01-Apr-2025. Before that the company states it had none: 2024-10-21 filing p5 'no subsidiary, associate or joint venture as on September 30, 2024'; 2025-04-23 FY25 audited p6 the same as on 31-Mar-2025; AR 2024-25 p29 identical. The 2025-10-24 filing states there are NO corresponding prior-period consolidated figures, which also rules out comparative-column bleed as a source.",
+   "our_data": "40 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "TIMKEN": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2026-01-30",
+   "bound_derivation": "The 73 dates at which the engine reports this parameter unresolved for TIMKEN in the campaign window: first 2020-01-31, last 2026-01-30. A hole after 2026-01-30 is a different defect and stays visible.",
+   "reader_1": "Timken India. Consolidated results begin only at Dec-2025. Our own scripts/con_copy_heals.json carries heals read from the company's actual consolidated statements (Dec-2025 filing p5, Mar-2026 filing p16) and records verbatim that 'TIMKEN filed standalone-only until Dec-2025'. Independently, the user checked MoneyControl 2026-08-18: its consolidated series starts Mar-2025. Both sources place the first consolidated data AFTER every cell retracted here (all <= Dec-2024). NSE's list reaches only to 2024-12-31, which is why Gate 1 reported 'never' - the truthful statement is 'not in any period covered by this verdict'.",
+   "our_data": "34 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "VINATIORGA": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2022-04-29",
+   "bound_derivation": "The 28 dates at which the engine reports this parameter unresolved for VINATIORGA in the campaign window: first 2020-01-31, last 2022-04-29. A hole after 2022-04-29 is a different defect and stays visible.",
+   "reader_1": "Vinati Organics. Second-reader filing evidence 2026-08-18: first consolidated result is the quarter/year ended 2021-03-31. The absence before it is stated IN WORDS by the filer - the Dec-2020 quarterly filing, note 5: 'The company has subscribed to the Memorandum and Articles of Association of Veeral Organics Pvt. Ltd, a subsidiary company on 5th October 2020. Sin[ce] ... are no transactions during the period, ending 31st December 2020 no consolidated financials resuts have been prepared.' (sic). Veeral Organics, incorporated 05-Oct-2020, was the company's FIRST-EVER subsidiary; Veeral Additives was never consolidated - it was amalgamated INTO Vinati (appointed date 01-Apr-2021), i.e. absorbed into standalone. The FY21 annual report's AOC-1 lists exactly one subsidiary.",
+   "our_data": "24 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
   }
  },
  "profitStreakCon": {
@@ -3226,6 +3514,87 @@
    "reader_2": "MoneyControl consolidated-quarterly feed, swept 2026-08-18: renders NO consolidated series for this company (status \"no_con_series\"). MC is measured in this project to OVER-report consolidated - on 98 of 120 names where both readers give a floor, MC starts EARLIER than the exchange, median 4 quarters, exactly the width of a filing's comparative columns. A source that invents consolidated data showing none is conservative evidence of absence.",
    "our_data": "40 fabricated consolidated cells were retracted for this symbol on 2026-08-18 (scripts/con_copy_retractions.json): each was an EXACT copy of the standalone value, written by a rule that inferred \"no subsidiary\" from a pattern in our own store rather than from any filing. With the copies gone the consolidated basis is empty here, which is the true state - no consolidated statement exists to fill it.",
    "user_approved": "2026-08-18 (user: \"ok this can be done in github its removal and na classification in coverage\")"
+  },
+  "BAJAJHFL": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2025-11-28",
+   "to": "2026-03-30",
+   "bound_derivation": "The 5 dates at which the engine reports this parameter unresolved for BAJAJHFL in the campaign window: first 2025-11-28, last 2026-03-30. A hole after 2026-03-30 is a different defect and stays visible.",
+   "reader_1": "Bajaj Housing Finance. Filing evidence 2026-08-18: Bajaj Financial Securities ceased to be its subsidiary on 10-Aug-2018 (FY2018-19 annual report p15), and the FY2018-19 report is the LAST to contain consolidated financial statements - from FY2019-20 that contents line is gone. FY2024-25 annual report p39: 'The Company does not have any subsidiaries, associates, or joint ventures. Accordingly, the requirement of attaching form AOC-1 is not applicable.' The 2026-07-29 filing note 6 repeats: 'The Company does not have any subsidiary/associate/joint venture entity(ies), hence consolidation is not applicable.' Equity listed 16-Sep-2024; no announcement of any kind exists under scrip 544252 before that date.",
+   "our_data": "2 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "BLUEJET": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2025-09-30",
+   "to": "2026-04-30",
+   "bound_derivation": "The 8 dates at which the engine reports this parameter unresolved for BLUEJET in the campaign window: first 2025-09-30, last 2026-04-30. A hole after 2026-04-30 is a different defect and stays visible.",
+   "reader_1": "Blue Jet Healthcare. Filing evidence 2026-08-18, and the textbook 'consolidates ANNUALLY, files standalone QUARTERLIES' case: its only consolidated statements are the FY2020 and FY2021 ANNUALS, both entirely PRE-IPO (equity listed 01-Nov-2023). Its subsidiary Adhir Barter Private Limited ceased 20-Jul-2020 (IPO RHP p211, p249); RHP p178: 'As on the date of this Red Herring Prospectus, our Company does not have any subsidiary or joint venture.' The 2025-07-22 filing p4: 'The Company does not have any subsidiaries, associates, or joint ventures as on June 30, 2025. Consequently, the preparation of consolidated financial statements is not applicable.' screener.in shows a consolidated ANNUAL series of exactly two columns and a consolidated QUARTERLY table with ZERO columns. No consolidated quarterly result has ever existed.",
+   "our_data": "6 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "HATSUN": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2023-02-28",
+   "bound_derivation": "The 38 dates at which the engine reports this parameter unresolved for HATSUN in the campaign window: first 2020-01-31, last 2023-02-28. A hole after 2023-02-28 is a different defect and stays visible.",
+   "reader_1": "Hatsun Agro Product. Third-reader filing evidence 2026-08-18: NO subsidiary, associate or joint venture existed between 13-Nov-2009 (Hatsun Ingredients FZE closed) and 27-Jan-2025 (Milk Mantra acquired). The annual reports say so every year - FY2014-15 p37 'no subsidiaries, joint ventures or associate companies', FY2017-18 p41 identical, FY2020-21 p109 'It is a Standalone entity', plus Deloitte's CARO report FY2020-FY2024 'The Company did not have any subsidiary or associate or joint venture during the year'. Twelve BSE result PDFs spanning 2019-2024 contain ZERO occurrences of 'Consolidat', with a positive control passing on the same company's Mar-2025 PDF (54 hits) - so the zeros are real, not a parser artifact. The Mar-2025 filing states the changeover: 'MMDPL has become a subsidiary ... Accordingly, the Company has prepared Consolidated Financial Statements for the quarter and year ended March 31, 2025.'",
+   "our_data": "35 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "IREDA": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2024-09-30",
+   "to": "2026-05-29",
+   "bound_derivation": "The 21 dates at which the engine reports this parameter unresolved for IREDA in the campaign window: first 2024-09-30, last 2026-05-29. A hole after 2026-05-29 is a different defect and stays visible.",
+   "reader_1": "IREDA. Second- and third-reader filing evidence 2026-08-18: its FIRST-EVER subsidiary, IREDA Global Green Energy Finance IFSC Ltd, was incorporated 07-May-2024 and received its IFSCA certificate 18-Feb-2025. The FY25 annual results (approved 15-Apr-2025) state in note 3: 'Consolidated financial results have been prepared w.e.f quarter ended 31.03.2025 in accordance with the Indian Accounting Standard 110.' Every quarterly filing from Dec-2023 through Dec-2024 is standalone-only with an explicit deferral note, and the first consolidated filing carries NO consolidated columns for any earlier period. C&AG letters corroborate independently: FY24 single-basis, FY25 '(Standalone & Consolidated)'. MoneyControl's apparent Mar-2024 consolidated series decodes as comparative artifact - those figures match the original standalone filings TO THE PAISA. IREDA's consolidated data from 2025-03-31 onward is GENUINE and differs from standalone; it is outside this verdict and untouched.",
+   "our_data": "15 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
+  },
+  "MGL": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2024-12-31",
+   "bound_derivation": "The 58 dates at which the engine reports this parameter unresolved for MGL in the campaign window: first 2020-01-31, last 2024-12-31. A hole after 2024-12-31 is a different defect and stays visible.",
+   "reader_1": "Mahanagar Gas. Second-reader filing evidence 2026-08-18: first consolidated result is the quarter ended 2023-12-31, and the trigger was Mahanagar LNG Private Limited, a subsidiary incorporated 26-Dec-2023 - NOT Unison Enviro, which became a subsidiary only on 01-Feb-2024. The Dec-2023 filing's note 6 states it: 'The JVC (Mahanagar LNG Private Limited) is a subsidiary of the Company and was incorporated on December 26, 2023 ... the consolidated financial results are same as the standalone financial results of the Parent Company.' Before that: the FY19, FY21 and FY23 AUDITED ANNUAL results plus the Jun-2023 and Sep-2023 quarterlies contain ZERO occurrences of 'consolidat' and 'subsidiar', with healthy positive controls. An audited annual with no consolidated section is legally incompatible with having any subsidiary under LODR 33(3). The FY24 filing enumerates the whole group and lists only those two 2023/24-dated subsidiaries.",
+   "our_data": "34 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
+  },
+  "NESTLEIND": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2025-09-30",
+   "bound_derivation": "The 69 dates at which the engine reports this parameter unresolved for NESTLEIND in the campaign window: first 2020-01-31, last 2025-09-30. A hole after 2025-09-30 is a different defect and stays visible.",
+   "reader_1": "Nestle India. Second-reader filing evidence 2026-08-18, and the company declares the defect itself. Its FIRST consolidated filing (17-Oct-2024, quarter ended 2024-09-30) carries note 2: 'The figures presented in all the comparative periods in the consolidated financial results are same as presented in the standalone financial results.' The trigger is not a subsidiary at all but a 49% ASSOCIATE - Dr. Reddy's and Nestle Health Science Ltd, associate w.e.f. 01-Aug-2024, consolidated by the equity method under s.129(3); the con P&L's 'Share of (Profit)/Loss of an Associate' line is 37.2 in Q Sep-2024 and NIL in every comparative. Purina PetCare India belongs to Nestle S.A., never to Nestle India. Before the floor: the audited annuals for CY2015 (headline itself reads '(Standalone)'), CY2018, CY2022 and the 15-month FY24, plus the Jun-2024 quarterly, all carry zero consolidated content. This is the name whose NSE list was thinnest - 9 rows across 60 quarters - and it is now closed on the filings themselves rather than on that index.",
+   "our_data": "36 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
+  },
+  "SPLPETRO": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2026-03-30",
+   "to": "2026-06-30",
+   "bound_derivation": "The 4 dates at which the engine reports this parameter unresolved for SPLPETRO in the campaign window: first 2026-03-30, last 2026-06-30. A hole after 2026-06-30 is a different defect and stays visible.",
+   "reader_1": "Supreme Petrochem (NSE SPLPETRO; FUND_ALIAS SUPPETRO->SPLPETRO). Filing evidence 2026-08-18: consolidated quarterly results begin ONLY at the quarter ended 30-Jun-2025. The 2025-07-23 filing is the first headed 'Standalone | Consolidated'; its consolidated block carries exactly one column and a populated Non-Controlling Interest line, and its note records that Xmold Polymers became a subsidiary with control from 01-Apr-2025. Before that the company states it had none: 2024-10-21 filing p5 'no subsidiary, associate or joint venture as on September 30, 2024'; 2025-04-23 FY25 audited p6 the same as on 31-Mar-2025; AR 2024-25 p29 identical. The 2025-10-24 filing states there are NO corresponding prior-period consolidated figures, which also rules out comparative-column bleed as a source.",
+   "our_data": "40 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "TIMKEN": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2026-01-30",
+   "bound_derivation": "The 73 dates at which the engine reports this parameter unresolved for TIMKEN in the campaign window: first 2020-01-31, last 2026-01-30. A hole after 2026-01-30 is a different defect and stays visible.",
+   "reader_1": "Timken India. Consolidated results begin only at Dec-2025. Our own scripts/con_copy_heals.json carries heals read from the company's actual consolidated statements (Dec-2025 filing p5, Mar-2026 filing p16) and records verbatim that 'TIMKEN filed standalone-only until Dec-2025'. Independently, the user checked MoneyControl 2026-08-18: its consolidated series starts Mar-2025. Both sources place the first consolidated data AFTER every cell retracted here (all <= Dec-2024). NSE's list reaches only to 2024-12-31, which is why Gate 1 reported 'never' - the truthful statement is 'not in any period covered by this verdict'.",
+   "our_data": "34 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "VINATIORGA": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2022-04-29",
+   "bound_derivation": "The 28 dates at which the engine reports this parameter unresolved for VINATIORGA in the campaign window: first 2020-01-31, last 2022-04-29. A hole after 2022-04-29 is a different defect and stays visible.",
+   "reader_1": "Vinati Organics. Second-reader filing evidence 2026-08-18: first consolidated result is the quarter/year ended 2021-03-31. The absence before it is stated IN WORDS by the filer - the Dec-2020 quarterly filing, note 5: 'The company has subscribed to the Memorandum and Articles of Association of Veeral Organics Pvt. Ltd, a subsidiary company on 5th October 2020. Sin[ce] ... are no transactions during the period, ending 31st December 2020 no consolidated financials resuts have been prepared.' (sic). Veeral Organics, incorporated 05-Oct-2020, was the company's FIRST-EVER subsidiary; Veeral Additives was never consolidated - it was amalgamated INTO Vinati (appointed date 01-Apr-2021), i.e. absorbed into standalone. The FY21 annual report's AOC-1 lists exactly one subsidiary.",
+   "our_data": "24 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
   }
  },
  "profitTTMCon": {
@@ -3807,6 +4176,87 @@
    "reader_2": "MoneyControl consolidated-quarterly feed, swept 2026-08-18: renders NO consolidated series for this company (status \"no_con_series\"). MC is measured in this project to OVER-report consolidated - on 98 of 120 names where both readers give a floor, MC starts EARLIER than the exchange, median 4 quarters, exactly the width of a filing's comparative columns. A source that invents consolidated data showing none is conservative evidence of absence.",
    "our_data": "40 fabricated consolidated cells were retracted for this symbol on 2026-08-18 (scripts/con_copy_retractions.json): each was an EXACT copy of the standalone value, written by a rule that inferred \"no subsidiary\" from a pattern in our own store rather than from any filing. With the copies gone the consolidated basis is empty here, which is the true state - no consolidated statement exists to fill it.",
    "user_approved": "2026-08-18 (user: \"ok this can be done in github its removal and na classification in coverage\")"
+  },
+  "BAJAJHFL": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2025-04-30",
+   "to": "2026-08-14",
+   "bound_derivation": "The 17 dates at which the engine reports this parameter unresolved for BAJAJHFL in the campaign window: first 2025-04-30, last 2026-08-14. A hole after 2026-08-14 is a different defect and stays visible.",
+   "reader_1": "Bajaj Housing Finance. Filing evidence 2026-08-18: Bajaj Financial Securities ceased to be its subsidiary on 10-Aug-2018 (FY2018-19 annual report p15), and the FY2018-19 report is the LAST to contain consolidated financial statements - from FY2019-20 that contents line is gone. FY2024-25 annual report p39: 'The Company does not have any subsidiaries, associates, or joint ventures. Accordingly, the requirement of attaching form AOC-1 is not applicable.' The 2026-07-29 filing note 6 repeats: 'The Company does not have any subsidiary/associate/joint venture entity(ies), hence consolidation is not applicable.' Equity listed 16-Sep-2024; no announcement of any kind exists under scrip 544252 before that date.",
+   "our_data": "2 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "BLUEJET": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2025-09-30",
+   "to": "2026-08-14",
+   "bound_derivation": "The 12 dates at which the engine reports this parameter unresolved for BLUEJET in the campaign window: first 2025-09-30, last 2026-08-14. A hole after 2026-08-14 is a different defect and stays visible.",
+   "reader_1": "Blue Jet Healthcare. Filing evidence 2026-08-18, and the textbook 'consolidates ANNUALLY, files standalone QUARTERLIES' case: its only consolidated statements are the FY2020 and FY2021 ANNUALS, both entirely PRE-IPO (equity listed 01-Nov-2023). Its subsidiary Adhir Barter Private Limited ceased 20-Jul-2020 (IPO RHP p211, p249); RHP p178: 'As on the date of this Red Herring Prospectus, our Company does not have any subsidiary or joint venture.' The 2025-07-22 filing p4: 'The Company does not have any subsidiaries, associates, or joint ventures as on June 30, 2025. Consequently, the preparation of consolidated financial statements is not applicable.' screener.in shows a consolidated ANNUAL series of exactly two columns and a consolidated QUARTERLY table with ZERO columns. No consolidated quarterly result has ever existed.",
+   "our_data": "6 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "HATSUN": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2023-02-28",
+   "bound_derivation": "The 38 dates at which the engine reports this parameter unresolved for HATSUN in the campaign window: first 2020-01-31, last 2023-02-28. A hole after 2023-02-28 is a different defect and stays visible.",
+   "reader_1": "Hatsun Agro Product. Third-reader filing evidence 2026-08-18: NO subsidiary, associate or joint venture existed between 13-Nov-2009 (Hatsun Ingredients FZE closed) and 27-Jan-2025 (Milk Mantra acquired). The annual reports say so every year - FY2014-15 p37 'no subsidiaries, joint ventures or associate companies', FY2017-18 p41 identical, FY2020-21 p109 'It is a Standalone entity', plus Deloitte's CARO report FY2020-FY2024 'The Company did not have any subsidiary or associate or joint venture during the year'. Twelve BSE result PDFs spanning 2019-2024 contain ZERO occurrences of 'Consolidat', with a positive control passing on the same company's Mar-2025 PDF (54 hits) - so the zeros are real, not a parser artifact. The Mar-2025 filing states the changeover: 'MMDPL has become a subsidiary ... Accordingly, the Company has prepared Consolidated Financial Statements for the quarter and year ended March 31, 2025.'",
+   "our_data": "35 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "IREDA": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2024-09-30",
+   "to": "2026-08-14",
+   "bound_derivation": "The 24 dates at which the engine reports this parameter unresolved for IREDA in the campaign window: first 2024-09-30, last 2026-08-14. A hole after 2026-08-14 is a different defect and stays visible.",
+   "reader_1": "IREDA. Second- and third-reader filing evidence 2026-08-18: its FIRST-EVER subsidiary, IREDA Global Green Energy Finance IFSC Ltd, was incorporated 07-May-2024 and received its IFSCA certificate 18-Feb-2025. The FY25 annual results (approved 15-Apr-2025) state in note 3: 'Consolidated financial results have been prepared w.e.f quarter ended 31.03.2025 in accordance with the Indian Accounting Standard 110.' Every quarterly filing from Dec-2023 through Dec-2024 is standalone-only with an explicit deferral note, and the first consolidated filing carries NO consolidated columns for any earlier period. C&AG letters corroborate independently: FY24 single-basis, FY25 '(Standalone & Consolidated)'. MoneyControl's apparent Mar-2024 consolidated series decodes as comparative artifact - those figures match the original standalone filings TO THE PAISA. IREDA's consolidated data from 2025-03-31 onward is GENUINE and differs from standalone; it is outside this verdict and untouched.",
+   "our_data": "15 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
+  },
+  "MGL": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2025-09-30",
+   "bound_derivation": "The 69 dates at which the engine reports this parameter unresolved for MGL in the campaign window: first 2020-01-31, last 2025-09-30. A hole after 2025-09-30 is a different defect and stays visible.",
+   "reader_1": "Mahanagar Gas. Second-reader filing evidence 2026-08-18: first consolidated result is the quarter ended 2023-12-31, and the trigger was Mahanagar LNG Private Limited, a subsidiary incorporated 26-Dec-2023 - NOT Unison Enviro, which became a subsidiary only on 01-Feb-2024. The Dec-2023 filing's note 6 states it: 'The JVC (Mahanagar LNG Private Limited) is a subsidiary of the Company and was incorporated on December 26, 2023 ... the consolidated financial results are same as the standalone financial results of the Parent Company.' Before that: the FY19, FY21 and FY23 AUDITED ANNUAL results plus the Jun-2023 and Sep-2023 quarterlies contain ZERO occurrences of 'consolidat' and 'subsidiar', with healthy positive controls. An audited annual with no consolidated section is legally incompatible with having any subsidiary under LODR 33(3). The FY24 filing enumerates the whole group and lists only those two 2023/24-dated subsidiaries.",
+   "our_data": "34 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
+  },
+  "NESTLEIND": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2026-06-30",
+   "bound_derivation": "The 78 dates at which the engine reports this parameter unresolved for NESTLEIND in the campaign window: first 2020-01-31, last 2026-06-30. A hole after 2026-06-30 is a different defect and stays visible.",
+   "reader_1": "Nestle India. Second-reader filing evidence 2026-08-18, and the company declares the defect itself. Its FIRST consolidated filing (17-Oct-2024, quarter ended 2024-09-30) carries note 2: 'The figures presented in all the comparative periods in the consolidated financial results are same as presented in the standalone financial results.' The trigger is not a subsidiary at all but a 49% ASSOCIATE - Dr. Reddy's and Nestle Health Science Ltd, associate w.e.f. 01-Aug-2024, consolidated by the equity method under s.129(3); the con P&L's 'Share of (Profit)/Loss of an Associate' line is 37.2 in Q Sep-2024 and NIL in every comparative. Purina PetCare India belongs to Nestle S.A., never to Nestle India. Before the floor: the audited annuals for CY2015 (headline itself reads '(Standalone)'), CY2018, CY2022 and the 15-month FY24, plus the Jun-2024 quarterly, all carry zero consolidated content. This is the name whose NSE list was thinnest - 9 rows across 60 quarters - and it is now closed on the filings themselves rather than on that index.",
+   "our_data": "36 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
+  },
+  "SPLPETRO": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2026-03-30",
+   "to": "2026-08-14",
+   "bound_derivation": "The 6 dates at which the engine reports this parameter unresolved for SPLPETRO in the campaign window: first 2026-03-30, last 2026-08-14. A hole after 2026-08-14 is a different defect and stays visible.",
+   "reader_1": "Supreme Petrochem (NSE SPLPETRO; FUND_ALIAS SUPPETRO->SPLPETRO). Filing evidence 2026-08-18: consolidated quarterly results begin ONLY at the quarter ended 30-Jun-2025. The 2025-07-23 filing is the first headed 'Standalone | Consolidated'; its consolidated block carries exactly one column and a populated Non-Controlling Interest line, and its note records that Xmold Polymers became a subsidiary with control from 01-Apr-2025. Before that the company states it had none: 2024-10-21 filing p5 'no subsidiary, associate or joint venture as on September 30, 2024'; 2025-04-23 FY25 audited p6 the same as on 31-Mar-2025; AR 2024-25 p29 identical. The 2025-10-24 filing states there are NO corresponding prior-period consolidated figures, which also rules out comparative-column bleed as a source.",
+   "our_data": "40 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "TIMKEN": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2026-08-14",
+   "bound_derivation": "The 80 dates at which the engine reports this parameter unresolved for TIMKEN in the campaign window: first 2020-01-31, last 2026-08-14. A hole after 2026-08-14 is a different defect and stays visible.",
+   "reader_1": "Timken India. Consolidated results begin only at Dec-2025. Our own scripts/con_copy_heals.json carries heals read from the company's actual consolidated statements (Dec-2025 filing p5, Mar-2026 filing p16) and records verbatim that 'TIMKEN filed standalone-only until Dec-2025'. Independently, the user checked MoneyControl 2026-08-18: its consolidated series starts Mar-2025. Both sources place the first consolidated data AFTER every cell retracted here (all <= Dec-2024). NSE's list reaches only to 2024-12-31, which is why Gate 1 reported 'never' - the truthful statement is 'not in any period covered by this verdict'.",
+   "our_data": "34 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "VINATIORGA": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2023-01-31",
+   "bound_derivation": "The 37 dates at which the engine reports this parameter unresolved for VINATIORGA in the campaign window: first 2020-01-31, last 2023-01-31. A hole after 2023-01-31 is a different defect and stays visible.",
+   "reader_1": "Vinati Organics. Second-reader filing evidence 2026-08-18: first consolidated result is the quarter/year ended 2021-03-31. The absence before it is stated IN WORDS by the filer - the Dec-2020 quarterly filing, note 5: 'The company has subscribed to the Memorandum and Articles of Association of Veeral Organics Pvt. Ltd, a subsidiary company on 5th October 2020. Sin[ce] ... are no transactions during the period, ending 31st December 2020 no consolidated financials resuts have been prepared.' (sic). Veeral Organics, incorporated 05-Oct-2020, was the company's FIRST-EVER subsidiary; Veeral Additives was never consolidated - it was amalgamated INTO Vinati (appointed date 01-Apr-2021), i.e. absorbed into standalone. The FY21 annual report's AOC-1 lists exactly one subsidiary.",
+   "our_data": "24 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
   }
  },
  "compositeCon": {
@@ -4388,6 +4838,87 @@
    "reader_2": "MoneyControl consolidated-quarterly feed, swept 2026-08-18: renders NO consolidated series for this company (status \"no_con_series\"). MC is measured in this project to OVER-report consolidated - on 98 of 120 names where both readers give a floor, MC starts EARLIER than the exchange, median 4 quarters, exactly the width of a filing's comparative columns. A source that invents consolidated data showing none is conservative evidence of absence.",
    "our_data": "40 fabricated consolidated cells were retracted for this symbol on 2026-08-18 (scripts/con_copy_retractions.json): each was an EXACT copy of the standalone value, written by a rule that inferred \"no subsidiary\" from a pattern in our own store rather than from any filing. With the copies gone the consolidated basis is empty here, which is the true state - no consolidated statement exists to fill it.",
    "user_approved": "2026-08-18 (user: \"ok this can be done in github its removal and na classification in coverage\")"
+  },
+  "BAJAJHFL": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2025-04-30",
+   "to": "2026-08-14",
+   "bound_derivation": "The 17 dates at which the engine reports this parameter unresolved for BAJAJHFL in the campaign window: first 2025-04-30, last 2026-08-14. A hole after 2026-08-14 is a different defect and stays visible.",
+   "reader_1": "Bajaj Housing Finance. Filing evidence 2026-08-18: Bajaj Financial Securities ceased to be its subsidiary on 10-Aug-2018 (FY2018-19 annual report p15), and the FY2018-19 report is the LAST to contain consolidated financial statements - from FY2019-20 that contents line is gone. FY2024-25 annual report p39: 'The Company does not have any subsidiaries, associates, or joint ventures. Accordingly, the requirement of attaching form AOC-1 is not applicable.' The 2026-07-29 filing note 6 repeats: 'The Company does not have any subsidiary/associate/joint venture entity(ies), hence consolidation is not applicable.' Equity listed 16-Sep-2024; no announcement of any kind exists under scrip 544252 before that date.",
+   "our_data": "2 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "BLUEJET": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2025-09-30",
+   "to": "2026-08-14",
+   "bound_derivation": "The 12 dates at which the engine reports this parameter unresolved for BLUEJET in the campaign window: first 2025-09-30, last 2026-08-14. A hole after 2026-08-14 is a different defect and stays visible.",
+   "reader_1": "Blue Jet Healthcare. Filing evidence 2026-08-18, and the textbook 'consolidates ANNUALLY, files standalone QUARTERLIES' case: its only consolidated statements are the FY2020 and FY2021 ANNUALS, both entirely PRE-IPO (equity listed 01-Nov-2023). Its subsidiary Adhir Barter Private Limited ceased 20-Jul-2020 (IPO RHP p211, p249); RHP p178: 'As on the date of this Red Herring Prospectus, our Company does not have any subsidiary or joint venture.' The 2025-07-22 filing p4: 'The Company does not have any subsidiaries, associates, or joint ventures as on June 30, 2025. Consequently, the preparation of consolidated financial statements is not applicable.' screener.in shows a consolidated ANNUAL series of exactly two columns and a consolidated QUARTERLY table with ZERO columns. No consolidated quarterly result has ever existed.",
+   "our_data": "6 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "HATSUN": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2023-02-28",
+   "bound_derivation": "The 38 dates at which the engine reports this parameter unresolved for HATSUN in the campaign window: first 2020-01-31, last 2023-02-28. A hole after 2023-02-28 is a different defect and stays visible.",
+   "reader_1": "Hatsun Agro Product. Third-reader filing evidence 2026-08-18: NO subsidiary, associate or joint venture existed between 13-Nov-2009 (Hatsun Ingredients FZE closed) and 27-Jan-2025 (Milk Mantra acquired). The annual reports say so every year - FY2014-15 p37 'no subsidiaries, joint ventures or associate companies', FY2017-18 p41 identical, FY2020-21 p109 'It is a Standalone entity', plus Deloitte's CARO report FY2020-FY2024 'The Company did not have any subsidiary or associate or joint venture during the year'. Twelve BSE result PDFs spanning 2019-2024 contain ZERO occurrences of 'Consolidat', with a positive control passing on the same company's Mar-2025 PDF (54 hits) - so the zeros are real, not a parser artifact. The Mar-2025 filing states the changeover: 'MMDPL has become a subsidiary ... Accordingly, the Company has prepared Consolidated Financial Statements for the quarter and year ended March 31, 2025.'",
+   "our_data": "35 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "IREDA": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2024-09-30",
+   "to": "2026-08-14",
+   "bound_derivation": "The 24 dates at which the engine reports this parameter unresolved for IREDA in the campaign window: first 2024-09-30, last 2026-08-14. A hole after 2026-08-14 is a different defect and stays visible.",
+   "reader_1": "IREDA. Second- and third-reader filing evidence 2026-08-18: its FIRST-EVER subsidiary, IREDA Global Green Energy Finance IFSC Ltd, was incorporated 07-May-2024 and received its IFSCA certificate 18-Feb-2025. The FY25 annual results (approved 15-Apr-2025) state in note 3: 'Consolidated financial results have been prepared w.e.f quarter ended 31.03.2025 in accordance with the Indian Accounting Standard 110.' Every quarterly filing from Dec-2023 through Dec-2024 is standalone-only with an explicit deferral note, and the first consolidated filing carries NO consolidated columns for any earlier period. C&AG letters corroborate independently: FY24 single-basis, FY25 '(Standalone & Consolidated)'. MoneyControl's apparent Mar-2024 consolidated series decodes as comparative artifact - those figures match the original standalone filings TO THE PAISA. IREDA's consolidated data from 2025-03-31 onward is GENUINE and differs from standalone; it is outside this verdict and untouched.",
+   "our_data": "15 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
+  },
+  "MGL": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2025-09-30",
+   "bound_derivation": "The 69 dates at which the engine reports this parameter unresolved for MGL in the campaign window: first 2020-01-31, last 2025-09-30. A hole after 2025-09-30 is a different defect and stays visible.",
+   "reader_1": "Mahanagar Gas. Second-reader filing evidence 2026-08-18: first consolidated result is the quarter ended 2023-12-31, and the trigger was Mahanagar LNG Private Limited, a subsidiary incorporated 26-Dec-2023 - NOT Unison Enviro, which became a subsidiary only on 01-Feb-2024. The Dec-2023 filing's note 6 states it: 'The JVC (Mahanagar LNG Private Limited) is a subsidiary of the Company and was incorporated on December 26, 2023 ... the consolidated financial results are same as the standalone financial results of the Parent Company.' Before that: the FY19, FY21 and FY23 AUDITED ANNUAL results plus the Jun-2023 and Sep-2023 quarterlies contain ZERO occurrences of 'consolidat' and 'subsidiar', with healthy positive controls. An audited annual with no consolidated section is legally incompatible with having any subsidiary under LODR 33(3). The FY24 filing enumerates the whole group and lists only those two 2023/24-dated subsidiaries.",
+   "our_data": "34 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
+  },
+  "NESTLEIND": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2026-06-30",
+   "bound_derivation": "The 78 dates at which the engine reports this parameter unresolved for NESTLEIND in the campaign window: first 2020-01-31, last 2026-06-30. A hole after 2026-06-30 is a different defect and stays visible.",
+   "reader_1": "Nestle India. Second-reader filing evidence 2026-08-18, and the company declares the defect itself. Its FIRST consolidated filing (17-Oct-2024, quarter ended 2024-09-30) carries note 2: 'The figures presented in all the comparative periods in the consolidated financial results are same as presented in the standalone financial results.' The trigger is not a subsidiary at all but a 49% ASSOCIATE - Dr. Reddy's and Nestle Health Science Ltd, associate w.e.f. 01-Aug-2024, consolidated by the equity method under s.129(3); the con P&L's 'Share of (Profit)/Loss of an Associate' line is 37.2 in Q Sep-2024 and NIL in every comparative. Purina PetCare India belongs to Nestle S.A., never to Nestle India. Before the floor: the audited annuals for CY2015 (headline itself reads '(Standalone)'), CY2018, CY2022 and the 15-month FY24, plus the Jun-2024 quarterly, all carry zero consolidated content. This is the name whose NSE list was thinnest - 9 rows across 60 quarters - and it is now closed on the filings themselves rather than on that index.",
+   "our_data": "36 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
+  },
+  "SPLPETRO": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2026-03-30",
+   "to": "2026-08-14",
+   "bound_derivation": "The 6 dates at which the engine reports this parameter unresolved for SPLPETRO in the campaign window: first 2026-03-30, last 2026-08-14. A hole after 2026-08-14 is a different defect and stays visible.",
+   "reader_1": "Supreme Petrochem (NSE SPLPETRO; FUND_ALIAS SUPPETRO->SPLPETRO). Filing evidence 2026-08-18: consolidated quarterly results begin ONLY at the quarter ended 30-Jun-2025. The 2025-07-23 filing is the first headed 'Standalone | Consolidated'; its consolidated block carries exactly one column and a populated Non-Controlling Interest line, and its note records that Xmold Polymers became a subsidiary with control from 01-Apr-2025. Before that the company states it had none: 2024-10-21 filing p5 'no subsidiary, associate or joint venture as on September 30, 2024'; 2025-04-23 FY25 audited p6 the same as on 31-Mar-2025; AR 2024-25 p29 identical. The 2025-10-24 filing states there are NO corresponding prior-period consolidated figures, which also rules out comparative-column bleed as a source.",
+   "our_data": "40 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "TIMKEN": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2026-08-14",
+   "bound_derivation": "The 80 dates at which the engine reports this parameter unresolved for TIMKEN in the campaign window: first 2020-01-31, last 2026-08-14. A hole after 2026-08-14 is a different defect and stays visible.",
+   "reader_1": "Timken India. Consolidated results begin only at Dec-2025. Our own scripts/con_copy_heals.json carries heals read from the company's actual consolidated statements (Dec-2025 filing p5, Mar-2026 filing p16) and records verbatim that 'TIMKEN filed standalone-only until Dec-2025'. Independently, the user checked MoneyControl 2026-08-18: its consolidated series starts Mar-2025. Both sources place the first consolidated data AFTER every cell retracted here (all <= Dec-2024). NSE's list reaches only to 2024-12-31, which is why Gate 1 reported 'never' - the truthful statement is 'not in any period covered by this verdict'.",
+   "our_data": "34 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "VINATIORGA": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2023-01-31",
+   "bound_derivation": "The 37 dates at which the engine reports this parameter unresolved for VINATIORGA in the campaign window: first 2020-01-31, last 2023-01-31. A hole after 2023-01-31 is a different defect and stays visible.",
+   "reader_1": "Vinati Organics. Second-reader filing evidence 2026-08-18: first consolidated result is the quarter/year ended 2021-03-31. The absence before it is stated IN WORDS by the filer - the Dec-2020 quarterly filing, note 5: 'The company has subscribed to the Memorandum and Articles of Association of Veeral Organics Pvt. Ltd, a subsidiary company on 5th October 2020. Sin[ce] ... are no transactions during the period, ending 31st December 2020 no consolidated financials resuts have been prepared.' (sic). Veeral Organics, incorporated 05-Oct-2020, was the company's FIRST-EVER subsidiary; Veeral Additives was never consolidated - it was amalgamated INTO Vinati (appointed date 01-Apr-2021), i.e. absorbed into standalone. The FY21 annual report's AOC-1 lists exactly one subsidiary.",
+   "our_data": "24 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
   }
  },
  "profitAccelCon": {
@@ -4959,6 +5490,87 @@
    "reader_2": "MoneyControl consolidated-quarterly feed, swept 2026-08-18: renders NO consolidated series for this company (status \"no_con_series\"). MC is measured in this project to OVER-report consolidated - on 98 of 120 names where both readers give a floor, MC starts EARLIER than the exchange, median 4 quarters, exactly the width of a filing's comparative columns. A source that invents consolidated data showing none is conservative evidence of absence.",
    "our_data": "40 fabricated consolidated cells were retracted for this symbol on 2026-08-18 (scripts/con_copy_retractions.json): each was an EXACT copy of the standalone value, written by a rule that inferred \"no subsidiary\" from a pattern in our own store rather than from any filing. With the copies gone the consolidated basis is empty here, which is the true state - no consolidated statement exists to fill it.",
    "user_approved": "2026-08-18 (user: \"ok this can be done in github its removal and na classification in coverage\")"
+  },
+  "BAJAJHFL": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2025-04-30",
+   "to": "2026-06-30",
+   "bound_derivation": "The 11 dates at which the engine reports this parameter unresolved for BAJAJHFL in the campaign window: first 2025-04-30, last 2026-06-30. A hole after 2026-06-30 is a different defect and stays visible.",
+   "reader_1": "Bajaj Housing Finance. Filing evidence 2026-08-18: Bajaj Financial Securities ceased to be its subsidiary on 10-Aug-2018 (FY2018-19 annual report p15), and the FY2018-19 report is the LAST to contain consolidated financial statements - from FY2019-20 that contents line is gone. FY2024-25 annual report p39: 'The Company does not have any subsidiaries, associates, or joint ventures. Accordingly, the requirement of attaching form AOC-1 is not applicable.' The 2026-07-29 filing note 6 repeats: 'The Company does not have any subsidiary/associate/joint venture entity(ies), hence consolidation is not applicable.' Equity listed 16-Sep-2024; no announcement of any kind exists under scrip 544252 before that date.",
+   "our_data": "2 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "BLUEJET": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2025-09-30",
+   "to": "2026-07-31",
+   "bound_derivation": "The 11 dates at which the engine reports this parameter unresolved for BLUEJET in the campaign window: first 2025-09-30, last 2026-07-31. A hole after 2026-07-31 is a different defect and stays visible.",
+   "reader_1": "Blue Jet Healthcare. Filing evidence 2026-08-18, and the textbook 'consolidates ANNUALLY, files standalone QUARTERLIES' case: its only consolidated statements are the FY2020 and FY2021 ANNUALS, both entirely PRE-IPO (equity listed 01-Nov-2023). Its subsidiary Adhir Barter Private Limited ceased 20-Jul-2020 (IPO RHP p211, p249); RHP p178: 'As on the date of this Red Herring Prospectus, our Company does not have any subsidiary or joint venture.' The 2025-07-22 filing p4: 'The Company does not have any subsidiaries, associates, or joint ventures as on June 30, 2025. Consequently, the preparation of consolidated financial statements is not applicable.' screener.in shows a consolidated ANNUAL series of exactly two columns and a consolidated QUARTERLY table with ZERO columns. No consolidated quarterly result has ever existed.",
+   "our_data": "6 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "HATSUN": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2023-02-28",
+   "bound_derivation": "The 38 dates at which the engine reports this parameter unresolved for HATSUN in the campaign window: first 2020-01-31, last 2023-02-28. A hole after 2023-02-28 is a different defect and stays visible.",
+   "reader_1": "Hatsun Agro Product. Third-reader filing evidence 2026-08-18: NO subsidiary, associate or joint venture existed between 13-Nov-2009 (Hatsun Ingredients FZE closed) and 27-Jan-2025 (Milk Mantra acquired). The annual reports say so every year - FY2014-15 p37 'no subsidiaries, joint ventures or associate companies', FY2017-18 p41 identical, FY2020-21 p109 'It is a Standalone entity', plus Deloitte's CARO report FY2020-FY2024 'The Company did not have any subsidiary or associate or joint venture during the year'. Twelve BSE result PDFs spanning 2019-2024 contain ZERO occurrences of 'Consolidat', with a positive control passing on the same company's Mar-2025 PDF (54 hits) - so the zeros are real, not a parser artifact. The Mar-2025 filing states the changeover: 'MMDPL has become a subsidiary ... Accordingly, the Company has prepared Consolidated Financial Statements for the quarter and year ended March 31, 2025.'",
+   "our_data": "35 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "IREDA": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2024-09-30",
+   "to": "2026-07-31",
+   "bound_derivation": "The 23 dates at which the engine reports this parameter unresolved for IREDA in the campaign window: first 2024-09-30, last 2026-07-31. A hole after 2026-07-31 is a different defect and stays visible.",
+   "reader_1": "IREDA. Second- and third-reader filing evidence 2026-08-18: its FIRST-EVER subsidiary, IREDA Global Green Energy Finance IFSC Ltd, was incorporated 07-May-2024 and received its IFSCA certificate 18-Feb-2025. The FY25 annual results (approved 15-Apr-2025) state in note 3: 'Consolidated financial results have been prepared w.e.f quarter ended 31.03.2025 in accordance with the Indian Accounting Standard 110.' Every quarterly filing from Dec-2023 through Dec-2024 is standalone-only with an explicit deferral note, and the first consolidated filing carries NO consolidated columns for any earlier period. C&AG letters corroborate independently: FY24 single-basis, FY25 '(Standalone & Consolidated)'. MoneyControl's apparent Mar-2024 consolidated series decodes as comparative artifact - those figures match the original standalone filings TO THE PAISA. IREDA's consolidated data from 2025-03-31 onward is GENUINE and differs from standalone; it is outside this verdict and untouched.",
+   "our_data": "15 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
+  },
+  "MGL": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2025-04-30",
+   "bound_derivation": "The 64 dates at which the engine reports this parameter unresolved for MGL in the campaign window: first 2020-01-31, last 2025-04-30. A hole after 2025-04-30 is a different defect and stays visible.",
+   "reader_1": "Mahanagar Gas. Second-reader filing evidence 2026-08-18: first consolidated result is the quarter ended 2023-12-31, and the trigger was Mahanagar LNG Private Limited, a subsidiary incorporated 26-Dec-2023 - NOT Unison Enviro, which became a subsidiary only on 01-Feb-2024. The Dec-2023 filing's note 6 states it: 'The JVC (Mahanagar LNG Private Limited) is a subsidiary of the Company and was incorporated on December 26, 2023 ... the consolidated financial results are same as the standalone financial results of the Parent Company.' Before that: the FY19, FY21 and FY23 AUDITED ANNUAL results plus the Jun-2023 and Sep-2023 quarterlies contain ZERO occurrences of 'consolidat' and 'subsidiar', with healthy positive controls. An audited annual with no consolidated section is legally incompatible with having any subsidiary under LODR 33(3). The FY24 filing enumerates the whole group and lists only those two 2023/24-dated subsidiaries.",
+   "our_data": "34 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
+  },
+  "NESTLEIND": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2025-12-31",
+   "bound_derivation": "The 72 dates at which the engine reports this parameter unresolved for NESTLEIND in the campaign window: first 2020-01-31, last 2025-12-31. A hole after 2025-12-31 is a different defect and stays visible.",
+   "reader_1": "Nestle India. Second-reader filing evidence 2026-08-18, and the company declares the defect itself. Its FIRST consolidated filing (17-Oct-2024, quarter ended 2024-09-30) carries note 2: 'The figures presented in all the comparative periods in the consolidated financial results are same as presented in the standalone financial results.' The trigger is not a subsidiary at all but a 49% ASSOCIATE - Dr. Reddy's and Nestle Health Science Ltd, associate w.e.f. 01-Aug-2024, consolidated by the equity method under s.129(3); the con P&L's 'Share of (Profit)/Loss of an Associate' line is 37.2 in Q Sep-2024 and NIL in every comparative. Purina PetCare India belongs to Nestle S.A., never to Nestle India. Before the floor: the audited annuals for CY2015 (headline itself reads '(Standalone)'), CY2018, CY2022 and the 15-month FY24, plus the Jun-2024 quarterly, all carry zero consolidated content. This is the name whose NSE list was thinnest - 9 rows across 60 quarters - and it is now closed on the filings themselves rather than on that index.",
+   "our_data": "36 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
+  },
+  "SPLPETRO": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2026-03-30",
+   "to": "2026-08-14",
+   "bound_derivation": "The 6 dates at which the engine reports this parameter unresolved for SPLPETRO in the campaign window: first 2026-03-30, last 2026-08-14. A hole after 2026-08-14 is a different defect and stays visible.",
+   "reader_1": "Supreme Petrochem (NSE SPLPETRO; FUND_ALIAS SUPPETRO->SPLPETRO). Filing evidence 2026-08-18: consolidated quarterly results begin ONLY at the quarter ended 30-Jun-2025. The 2025-07-23 filing is the first headed 'Standalone | Consolidated'; its consolidated block carries exactly one column and a populated Non-Controlling Interest line, and its note records that Xmold Polymers became a subsidiary with control from 01-Apr-2025. Before that the company states it had none: 2024-10-21 filing p5 'no subsidiary, associate or joint venture as on September 30, 2024'; 2025-04-23 FY25 audited p6 the same as on 31-Mar-2025; AR 2024-25 p29 identical. The 2025-10-24 filing states there are NO corresponding prior-period consolidated figures, which also rules out comparative-column bleed as a source.",
+   "our_data": "40 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "TIMKEN": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2026-04-30",
+   "bound_derivation": "The 76 dates at which the engine reports this parameter unresolved for TIMKEN in the campaign window: first 2020-01-31, last 2026-04-30. A hole after 2026-04-30 is a different defect and stays visible.",
+   "reader_1": "Timken India. Consolidated results begin only at Dec-2025. Our own scripts/con_copy_heals.json carries heals read from the company's actual consolidated statements (Dec-2025 filing p5, Mar-2026 filing p16) and records verbatim that 'TIMKEN filed standalone-only until Dec-2025'. Independently, the user checked MoneyControl 2026-08-18: its consolidated series starts Mar-2025. Both sources place the first consolidated data AFTER every cell retracted here (all <= Dec-2024). NSE's list reaches only to 2024-12-31, which is why Gate 1 reported 'never' - the truthful statement is 'not in any period covered by this verdict'.",
+   "our_data": "34 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "VINATIORGA": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2022-07-29",
+   "bound_derivation": "The 31 dates at which the engine reports this parameter unresolved for VINATIORGA in the campaign window: first 2020-01-31, last 2022-07-29. A hole after 2022-07-29 is a different defect and stays visible.",
+   "reader_1": "Vinati Organics. Second-reader filing evidence 2026-08-18: first consolidated result is the quarter/year ended 2021-03-31. The absence before it is stated IN WORDS by the filer - the Dec-2020 quarterly filing, note 5: 'The company has subscribed to the Memorandum and Articles of Association of Veeral Organics Pvt. Ltd, a subsidiary company on 5th October 2020. Sin[ce] ... are no transactions during the period, ending 31st December 2020 no consolidated financials resuts have been prepared.' (sic). Veeral Organics, incorporated 05-Oct-2020, was the company's FIRST-EVER subsidiary; Veeral Additives was never consolidated - it was amalgamated INTO Vinati (appointed date 01-Apr-2021), i.e. absorbed into standalone. The FY21 annual report's AOC-1 lists exactly one subsidiary.",
+   "our_data": "24 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
   }
  },
  "revCon": {
@@ -5465,6 +6077,87 @@
    "reader_2": "MoneyControl consolidated-quarterly feed, swept 2026-08-18: renders NO consolidated series for this company (status \"no_con_series\"). MC is measured in this project to OVER-report consolidated - on 98 of 120 names where both readers give a floor, MC starts EARLIER than the exchange, median 4 quarters, exactly the width of a filing's comparative columns. A source that invents consolidated data showing none is conservative evidence of absence.",
    "our_data": "40 fabricated consolidated cells were retracted for this symbol on 2026-08-18 (scripts/con_copy_retractions.json): each was an EXACT copy of the standalone value, written by a rule that inferred \"no subsidiary\" from a pattern in our own store rather than from any filing. With the copies gone the consolidated basis is empty here, which is the true state - no consolidated statement exists to fill it.",
    "user_approved": "2026-08-18 (user: \"ok this can be done in github its removal and na classification in coverage\")"
+  },
+  "BAJAJHFL": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2025-03-28",
+   "to": "2025-03-28",
+   "bound_derivation": "The 1 dates at which the engine reports this parameter unresolved for BAJAJHFL in the campaign window: first 2025-03-28, last 2025-03-28. A hole after 2025-03-28 is a different defect and stays visible.",
+   "reader_1": "Bajaj Housing Finance. Filing evidence 2026-08-18: Bajaj Financial Securities ceased to be its subsidiary on 10-Aug-2018 (FY2018-19 annual report p15), and the FY2018-19 report is the LAST to contain consolidated financial statements - from FY2019-20 that contents line is gone. FY2024-25 annual report p39: 'The Company does not have any subsidiaries, associates, or joint ventures. Accordingly, the requirement of attaching form AOC-1 is not applicable.' The 2026-07-29 filing note 6 repeats: 'The Company does not have any subsidiary/associate/joint venture entity(ies), hence consolidation is not applicable.' Equity listed 16-Sep-2024; no announcement of any kind exists under scrip 544252 before that date.",
+   "our_data": "2 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "BLUEJET": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2025-09-30",
+   "to": "2025-10-31",
+   "bound_derivation": "The 2 dates at which the engine reports this parameter unresolved for BLUEJET in the campaign window: first 2025-09-30, last 2025-10-31. A hole after 2025-10-31 is a different defect and stays visible.",
+   "reader_1": "Blue Jet Healthcare. Filing evidence 2026-08-18, and the textbook 'consolidates ANNUALLY, files standalone QUARTERLIES' case: its only consolidated statements are the FY2020 and FY2021 ANNUALS, both entirely PRE-IPO (equity listed 01-Nov-2023). Its subsidiary Adhir Barter Private Limited ceased 20-Jul-2020 (IPO RHP p211, p249); RHP p178: 'As on the date of this Red Herring Prospectus, our Company does not have any subsidiary or joint venture.' The 2025-07-22 filing p4: 'The Company does not have any subsidiaries, associates, or joint ventures as on June 30, 2025. Consequently, the preparation of consolidated financial statements is not applicable.' screener.in shows a consolidated ANNUAL series of exactly two columns and a consolidated QUARTERLY table with ZERO columns. No consolidated quarterly result has ever existed.",
+   "our_data": "6 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "HATSUN": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2023-02-28",
+   "bound_derivation": "The 38 dates at which the engine reports this parameter unresolved for HATSUN in the campaign window: first 2020-01-31, last 2023-02-28. A hole after 2023-02-28 is a different defect and stays visible.",
+   "reader_1": "Hatsun Agro Product. Third-reader filing evidence 2026-08-18: NO subsidiary, associate or joint venture existed between 13-Nov-2009 (Hatsun Ingredients FZE closed) and 27-Jan-2025 (Milk Mantra acquired). The annual reports say so every year - FY2014-15 p37 'no subsidiaries, joint ventures or associate companies', FY2017-18 p41 identical, FY2020-21 p109 'It is a Standalone entity', plus Deloitte's CARO report FY2020-FY2024 'The Company did not have any subsidiary or associate or joint venture during the year'. Twelve BSE result PDFs spanning 2019-2024 contain ZERO occurrences of 'Consolidat', with a positive control passing on the same company's Mar-2025 PDF (54 hits) - so the zeros are real, not a parser artifact. The Mar-2025 filing states the changeover: 'MMDPL has become a subsidiary ... Accordingly, the Company has prepared Consolidated Financial Statements for the quarter and year ended March 31, 2025.'",
+   "our_data": "35 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "IREDA": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2024-09-30",
+   "to": "2025-03-28",
+   "bound_derivation": "The 7 dates at which the engine reports this parameter unresolved for IREDA in the campaign window: first 2024-09-30, last 2025-03-28. A hole after 2025-03-28 is a different defect and stays visible.",
+   "reader_1": "IREDA. Second- and third-reader filing evidence 2026-08-18: its FIRST-EVER subsidiary, IREDA Global Green Energy Finance IFSC Ltd, was incorporated 07-May-2024 and received its IFSCA certificate 18-Feb-2025. The FY25 annual results (approved 15-Apr-2025) state in note 3: 'Consolidated financial results have been prepared w.e.f quarter ended 31.03.2025 in accordance with the Indian Accounting Standard 110.' Every quarterly filing from Dec-2023 through Dec-2024 is standalone-only with an explicit deferral note, and the first consolidated filing carries NO consolidated columns for any earlier period. C&AG letters corroborate independently: FY24 single-basis, FY25 '(Standalone & Consolidated)'. MoneyControl's apparent Mar-2024 consolidated series decodes as comparative artifact - those figures match the original standalone filings TO THE PAISA. IREDA's consolidated data from 2025-03-31 onward is GENUINE and differs from standalone; it is outside this verdict and untouched.",
+   "our_data": "15 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
+  },
+  "MGL": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2023-12-29",
+   "bound_derivation": "The 48 dates at which the engine reports this parameter unresolved for MGL in the campaign window: first 2020-01-31, last 2023-12-29. A hole after 2023-12-29 is a different defect and stays visible.",
+   "reader_1": "Mahanagar Gas. Second-reader filing evidence 2026-08-18: first consolidated result is the quarter ended 2023-12-31, and the trigger was Mahanagar LNG Private Limited, a subsidiary incorporated 26-Dec-2023 - NOT Unison Enviro, which became a subsidiary only on 01-Feb-2024. The Dec-2023 filing's note 6 states it: 'The JVC (Mahanagar LNG Private Limited) is a subsidiary of the Company and was incorporated on December 26, 2023 ... the consolidated financial results are same as the standalone financial results of the Parent Company.' Before that: the FY19, FY21 and FY23 AUDITED ANNUAL results plus the Jun-2023 and Sep-2023 quarterlies contain ZERO occurrences of 'consolidat' and 'subsidiar', with healthy positive controls. An audited annual with no consolidated section is legally incompatible with having any subsidiary under LODR 33(3). The FY24 filing enumerates the whole group and lists only those two 2023/24-dated subsidiaries.",
+   "our_data": "34 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
+  },
+  "NESTLEIND": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2024-09-30",
+   "bound_derivation": "The 57 dates at which the engine reports this parameter unresolved for NESTLEIND in the campaign window: first 2020-01-31, last 2024-09-30. A hole after 2024-09-30 is a different defect and stays visible.",
+   "reader_1": "Nestle India. Second-reader filing evidence 2026-08-18, and the company declares the defect itself. Its FIRST consolidated filing (17-Oct-2024, quarter ended 2024-09-30) carries note 2: 'The figures presented in all the comparative periods in the consolidated financial results are same as presented in the standalone financial results.' The trigger is not a subsidiary at all but a 49% ASSOCIATE - Dr. Reddy's and Nestle Health Science Ltd, associate w.e.f. 01-Aug-2024, consolidated by the equity method under s.129(3); the con P&L's 'Share of (Profit)/Loss of an Associate' line is 37.2 in Q Sep-2024 and NIL in every comparative. Purina PetCare India belongs to Nestle S.A., never to Nestle India. Before the floor: the audited annuals for CY2015 (headline itself reads '(Standalone)'), CY2018, CY2022 and the 15-month FY24, plus the Jun-2024 quarterly, all carry zero consolidated content. This is the name whose NSE list was thinnest - 9 rows across 60 quarters - and it is now closed on the filings themselves rather than on that index.",
+   "our_data": "36 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
+  },
+  "TIMKEN": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2025-01-31",
+   "bound_derivation": "The 61 dates at which the engine reports this parameter unresolved for TIMKEN in the campaign window: first 2020-01-31, last 2025-01-31. A hole after 2025-01-31 is a different defect and stays visible.",
+   "reader_1": "Timken India. Consolidated results begin only at Dec-2025. Our own scripts/con_copy_heals.json carries heals read from the company's actual consolidated statements (Dec-2025 filing p5, Mar-2026 filing p16) and records verbatim that 'TIMKEN filed standalone-only until Dec-2025'. Independently, the user checked MoneyControl 2026-08-18: its consolidated series starts Mar-2025. Both sources place the first consolidated data AFTER every cell retracted here (all <= Dec-2024). NSE's list reaches only to 2024-12-31, which is why Gate 1 reported 'never' - the truthful statement is 'not in any period covered by this verdict'.",
+   "our_data": "34 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "TMB": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2023-03-31",
+   "to": "2024-08-30",
+   "bound_derivation": "The 12 dates at which the engine reports this parameter unresolved for TMB in the campaign window: first 2023-03-31, last 2024-08-30. A hole after 2024-08-30 is a different defect and stays visible.",
+   "reader_1": "Tamilnad Mercantile Bank. Filing evidence 2026-08-18: it has never had a subsidiary and does not consolidate even annually. Notes to Accounts note 15.7 (FY25 p213): 'Consolidated Financial Statements (AS-21) - The Bank has no subsidiaries/Joint ventures/Associates. Hence reporting under CFS is not applicable.' Basel III Pillar 3 (FY25 p218): 'The Bank does not belong to any group and does not have any associate, subsidiaries, joint venture, etc.' Directors' Report repeats it for FY23, FY24, FY25 and FY26. Every results announcement since the Sept-2022 listing is titled 'Financial Results of the Bank'; three read in full contain zero occurrences of 'consolidat', 'subsidiar', 'associate' or 'joint venture'. screener.in offers no consolidated toggle at all for this company.",
+   "our_data": "9 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: the six filing-verified Group A names)"
+  },
+  "VINATIORGA": {
+   "class": "C-basis (no consolidated statement exists - FILING-VERIFIED)",
+   "from": "2020-01-31",
+   "to": "2021-04-30",
+   "bound_derivation": "The 16 dates at which the engine reports this parameter unresolved for VINATIORGA in the campaign window: first 2020-01-31, last 2021-04-30. A hole after 2021-04-30 is a different defect and stays visible.",
+   "reader_1": "Vinati Organics. Second-reader filing evidence 2026-08-18: first consolidated result is the quarter/year ended 2021-03-31. The absence before it is stated IN WORDS by the filer - the Dec-2020 quarterly filing, note 5: 'The company has subscribed to the Memorandum and Articles of Association of Veeral Organics Pvt. Ltd, a subsidiary company on 5th October 2020. Sin[ce] ... are no transactions during the period, ending 31st December 2020 no consolidated financials resuts have been prepared.' (sic). Veeral Organics, incorporated 05-Oct-2020, was the company's FIRST-EVER subsidiary; Veeral Additives was never consolidated - it was amalgamated INTO Vinati (appointed date 01-Apr-2021), i.e. absorbed into standalone. The FY21 annual report's AOC-1 lists exactly one subsidiary.",
+   "our_data": "24 fabricated consolidated cells retracted for this symbol 2026-08-18 (scripts/con_copy_retractions.json), each an exact copy of the standalone value written by a pattern rule rather than read from a filing.",
+   "user_approved": "2026-08-18 (user: \"NA them\", re: MGL, VINATIORGA, NESTLEIND, IREDA - the four confirmed by the second filing reader)"
   }
  }
 }
