@@ -3270,5 +3270,13 @@
   "src": "BSE 505533 consolidated statement f11fe62d... (2019-08-26) p3",
   "evidence": "stored rev_con 0.11 was the STANDALONE revenue (10.71 lakh) mis-slotted into the con slot. The consolidated statement prints Total revenue from operations 38,196.95 lakh = 381.97 cr, with con PAT (112.65) = -1.13 matching our stored con PAT. The original 2019-07-25 filing prints 38,186.24 + other income 302.21 - the two filings reclassify exactly 10.71 between lines; Total Income is identical at 38,488.45 both times. CORRECTION of a wrong value, not a fill.",
   "why": "std-in-con-slot defect, the mirror of the con-copy class"
+ },
+ "MANAPPURAM|20190630|con_rev": {
+  "rev_con": 1174.19,
+  "was": 1774.19,
+  "when": "2026-08-18 18:58 IST",
+  "src": "BSE consolidated sheet, Q1FY20 filing 60249b45-9974-4e35-955f-4fb37f82d615",
+  "evidence": "DIGIT ERROR 1->7: stored 1774.19 vs filed 1174.19. Closed by the six-month identity printed in the Q2 filing: 1,174.19 + 1,286.79 = 2,460.98 exactly as printed.",
+  "why": "wrong value, not a gap"
  }
 }
