@@ -3205,5 +3205,62 @@
   "was": 109.47,
   "when": "2026-08-17 19:58 IST",
   "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Key deliberately carries NO pipe so ledger walkers cannot parse it back into a cell. Kept for audit; must not be re-applied."
+ },
+ "CENTRALBK|20190930|con": {
+  "con": 138.58,
+  "was": 129.93,
+  "when": "2026-08-18 17:34 IST",
+  "src": "filing read 2026-08-18 (independent reader)",
+  "evidence": "WRONG ROW. Stored value is row H 'Net Profit from Ordinary Activities After Tax' - BEFORE share of associates and minority interest. The owners bottom line (row L) is 13,858 lakh = 138.58 cr. Read from the 2019-11-01 filing p7 (BSE 532885, AttachHis/c4bae42c-c1d2-40f1-9fdb-2960895c15a8.pdf), anchored on the same page's standalone 13,407 lakh = 134.07 = our stored std, and total income 670,371 = 6703.71 = our stored rev. Corroborated three ways (Nov-2019, Jan-2020 and Nov-2020 statements) plus H1 26,019 - Q1 12,161. Our profit basis is OWNERS (runbook), so row L is the correct row.",
+  "why": "CORRECTION of a wrong value, not a fill - the cell held a number that no filing prints."
+ },
+ "CENTRALBK|20200930|con": {
+  "con": 128.44,
+  "was": 166.09,
+  "when": "2026-08-18 17:34 IST",
+  "src": "filing read 2026-08-18 (independent reader)",
+  "evidence": "WRONG ROW, same class. Stored 166.09 is row H; owners row L is 12,844 lakh = 128.44 cr. From the 2020-11-06 filing p2 (AttachHis/ebfa0cb6-4dd1-4c2c-ab7a-03f71a2426b9.pdf), anchored on the same page's standalone 16,079 = 160.79 = stored std and interest earned 605,325 = 6053.25 = stored rev.",
+  "why": "CORRECTION of a wrong value, not a fill - the cell held a number that no filing prints."
+ },
+ "CENTRALBK|20191231|con": {
+  "con": 164.28,
+  "was": 166.05,
+  "when": "2026-08-18 17:34 IST",
+  "src": "filing read 2026-08-18 (independent reader)",
+  "evidence": "Stored 166.05 matches NEITHER the owners line (16,428 lakh = 164.28) NOR row H (160.32) - it is not a row in the statement at all. Owners value read from the 2020-01-28 filing p2 (AttachHis/0e89c7e5-9016-4f61-8acf-e769c5171710.pdf), anchored on the same-day standalone filing p2: 15,532 lakh = 155.32 = our stored std, and interest earned 602,888 = 6028.88 = our stored rev.",
+  "why": "CORRECTION of a wrong value, not a fill - the cell held a number that no filing prints."
+ },
+ "CENTRALBK|20190331|con": {
+  "con": -2484.77,
+  "was": -2484.53,
+  "when": "2026-08-18 17:34 IST",
+  "src": "filing read 2026-08-18 (independent reader)",
+  "evidence": "Off by 0.24 cr. Filed consolidated owners loss is (248,477) lakh = -2484.77, comparative column of the 2019-08-06 filing p7 (AttachHis/f410d341-1742-4585-8f96-18c5f075bb4a.pdf), anchored on the same table's standalone 31.03.2019 (247,741) = -2477.41 = our stored std.",
+  "why": "CORRECTION of a wrong value, not a fill - the cell held a number that no filing prints."
+ },
+ "KTKBANK|20201231|con": {
+  "con": 135.37,
+  "was": 135.38,
+  "when": "2026-08-18 17:34 IST",
+  "src": "filing read 2026-08-18 (independent reader)",
+  "evidence": "CON SLOT HELD A COPY OF STANDALONE. Stored 135.38 equals our std exactly; the genuine consolidated filing for this quarter (12-Jan-2021, BSE 532652) prints 135.37. Post-floor cell - KTKBANK's first consolidated result is 20200930 - so this is a CORRECTION, not a retraction: a real consolidated figure exists, just not the one we stored.",
+  "why": "CORRECTION of a wrong value, not a fill - the cell held a number that no filing prints."
+ },
+ "RIIL|20190331|con": {
+  "con": 2.25,
+  "was": 2.55,
+  "when": "2026-08-18 17:34 IST",
+  "src": "filing read 2026-08-18 (independent reader)",
+  "evidence": "DERIVED WHERE A PRINTED FIGURE EXISTS. Stored 2.55 is a Year-minus-H1-minus-Q3 derivation; the filer prints 225.25 lakh = 2.25 cr as the 31-03-2019 comparative in its 2020-04-22 Q4FY20 filing p2 (AttachHis/a804c96d-d9b0-4958-b724-03672dacabec.pdf). Never derive where the filing prints. Note the filer's own FY19 quarters miss its FY19 year total by 29.6 lakh, so the derivation was unsound at source.",
+  "why": "CORRECTION of a wrong value, not a fill - the cell held a number that no filing prints."
+ },
+ "NAHARPOLY|20190331|std": {
+  "std": 5.37,
+  "ann": 20190530,
+  "when": "2026-08-18 17:34 IST",
+  "was": null,
+  "src": "filing read 2026-08-18",
+  "evidence": "NAHARPOLY 20190331 standalone PAT was MISSING from the store entirely - no row at all. Filed value 536.66 lakh = 5.37 cr, from the 2019-05-30 filing p2 (BSE 523391, AttachHis/c76316ac-9f62-46b9-9a1f-e97b044b1bb9.pdf), the audited standalone statement for the quarter and year ended 31-Mar-2019. Announce date 20190530 = the filing date. Found by an independent filing reader while adjudicating this company's consolidated floor.",
+  "why": "row did not exist - a FILL, not a correction"
  }
 }
