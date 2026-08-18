@@ -115,6 +115,19 @@ loads every session. (README.md is just a short pointer here — this file is th
   GUID → `corpfiling/AttachLive|AttachHis/<guid>` returns the **genuine** company. So poisoning is endpoint-specific, not
   scrip-specific. ANY BSE fetch must confirm CIN/auditor on the PDF (FM=L34102MH1958/Akurdi; BSE Ltd=L67120MH2005/Batliboi),
   never just the scrip label. Full writeup + the proven backfill recipe: `scripts/FORCEMOT_CONTAMINATION_FINDINGS.md`. (2026-06-22)
+  **2026-08-18 ESCALATION — it is no longer "some scrips", the endpoint IGNORES `scripcode` ENTIRELY.**
+  Measured: byte-identical `Data` (len 11251, md5 `0edc257277fb`) for 532885 / 500325 / 500002 / 532525 / 540777
+  in one process — bare urllib and cookie-warmed session alike. Asking for **HDFCLIFE 540777** returns a zip holding
+  `BSE SA FR Jun'2026_Signed.pdf` + `BSE CO FR Jun'2026_Signed.pdf` — BSE Ltd's own standalone/consolidated results.
+  `bse_fetch.quarters()` is now GUARDED (probes two unrelated scrips once per process, raises if they match) and
+  `bse_ocr_poc.py` routes through it instead of calling the endpoint raw — it had NO identity guard and its
+  `\bsa\b` pick matches `BSE SA FR…` exactly, so unguarded it printed BSE Ltd's PAT under an insurer's name.
+  **Contamination checked, none found:** the only file this path can write is `scripts/bse_fundamentals.json`
+  (`bse_fetch.OUTF`); `pdf_np()`'s identity guard was re-run against the live poisoned zip and returned
+  `identity_ok=False` on BOTH bases, so `main()` skips rather than writes. Its 14 stored rows carry `ann` dates that
+  `main()` (which writes `ann = None`) cannot produce, and match `docs/sf_fundamentals.json`'s **std** column to the
+  paisa in 11/14 — the insurers' own numbers. `docs/bse_fundamentals.json` never used this route at all
+  (`fetch_bse_fund.py` takes the announcement-attachment path). No CI job calls `quarters()`. (2026-08-18)
 - **⚠️ A 162-byte `/tmp/bse.json` is BSE's rate-limit 302, not a parser bug.** Over its per-IP quota
   `ListofScripData/w` answers `302 → api.bseindia.com/error_Bse.html` (a 162-byte "Object Moved" stub —
   the byte count is the fingerprint). `curl -s` **exits 0 on a 302** and saves the stub, so the junk only

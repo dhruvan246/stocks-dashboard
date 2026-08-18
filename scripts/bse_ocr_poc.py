@@ -8,9 +8,20 @@ Pipeline per symbol:
   FinancialResult/w (newest quarter zip) -> standalone PDF -> render page (PyMuPDF)
   -> OCR (RapidOCR) -> spatial row-group the "net profit after tax" line -> first
   numeric column = current quarter -> apply Lakh/Crore unit.
+
+WARNING - the FinancialResult route this POC is built on is ENTITY-POISONED. The endpoint has been
+observed to IGNORE scripcode entirely and serve BSE Limited's OWN results to every caller (measured
+2026-08-18: byte-identical payload for 532885/500325/500002/532525/540777, and asking for HDFCLIFE
+540777 returns a zip holding "BSE SA FR Jun'2026_Signed.pdf"). This POC has no identity guard of its
+own, and its `\bsa\b` pick matches that very file - so unguarded it would print BSE Ltd's net profit
+under an insurer's name. The quarter list therefore now goes through bse_fetch.quarters(), which
+probes the endpoint and REFUSES rather than return another company's filings. Production reads use
+the announcement-attachment route instead (fetch_insurers.py / fetch_bse_fund.py).
 """
-import urllib.request, json, gzip, io, zipfile, re, sys, fitz
+import urllib.request, json, gzip, io, zipfile, re, sys, os, fitz
 from rapidocr_onnxruntime import RapidOCR
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import bse_fetch as B          # for quarters(): the ONE guarded reader of FinancialResult
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36'
 OCR = RapidOCR()
@@ -39,12 +50,19 @@ def num(s):
 PAT = [r'net profit after tax', r'profit\s*/?\s*\(?loss\)?\s*after tax',
        r'\bprofit after tax\b', r'profit for the (?:period|quarter)', r'net profit\s*/?\s*\(?loss\)?']
 
+_OP = []
+def _session():
+    if not _OP: _OP.append(B.session())
+    return _OP[0]
+
 def extract(sym, code):
-    tbl = json.loads(get('https://api.bseindia.com/BseIndiaAPI/api/FinancialResult/w?scripcode=%d&type=Q' % code)).get('Data', '')
-    qlabel = (re.search(r'(\d{4}-\d{4})', tbl) or [None, '?'])[1] if re.search(r'(\d{4}-\d{4})', tbl) else '?'
-    link = re.findall(r"href='(/downloads1/[^']+\.zip)'", tbl)
-    if not link: return (sym, code, qlabel, None, 'no zip link', None)
-    z = zipfile.ZipFile(io.BytesIO(get('https://www.bseindia.com' + link[0], b=True)))
+    # GUARDED: B.quarters() raises if the endpoint is ignoring scripcode. Never inline the raw
+    # FinancialResult call again - that is what made this POC able to read the wrong company.
+    qs = B.quarters(_session(), code)
+    if not qs: return (sym, code, '?', None, 'no zip link', None)
+    qe, link = qs[0]
+    qlabel = str(qe)
+    z = zipfile.ZipFile(io.BytesIO(get('https://www.bseindia.com' + link, b=True)))
     pdfs = [n for n in z.namelist() if n.lower().endswith('.pdf') and 'present' not in n.lower()]
     pick = (next((n for n in pdfs if re.search(r'standalone|\bsa\b', n, re.I)), None)
             or next((n for n in pdfs if 'financ' in n.lower() or 'result' in n.lower()), None)
@@ -78,8 +96,12 @@ def main():
         try:
             s, c, q, cr, lbl, unit = extract(sym, code)
             print('%-12s %-8d %-10s %-14s %-6s %s' % (sym, code, q, ('%.2f' % cr) if cr is not None else 'FAIL', unit or '-', lbl))
+        except RuntimeError as e:
+            # endpoint-level refusal (see B.quarters) - applies to every symbol, so stop here
+            # rather than print the same failure nine times.
+            print('\nABORTED - %s' % e); return 1
         except Exception as e:
             print('%-12s %-8d ERROR %s' % (sym, code, str(e)[:50]))
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main() or 0)
