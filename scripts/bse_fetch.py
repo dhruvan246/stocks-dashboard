@@ -66,8 +66,39 @@ def num(s):
     v = float(s.strip('()').replace(',', ''))
     return -v if s.startswith('(') else v
 
+_FINRESULT_SENTINEL = []          # module-level, so the probe runs once per process
+
+def _finresult_honours_scripcode(op):
+    """BSE's FinancialResult endpoint has been observed to IGNORE scripcode entirely and serve
+    BSE Limited's OWN results to every caller (verified 2026-08-18: identical md5 for 532885 /
+    500325 / 500002 / 532525, and the Mar-2018 zip's auditor report is addressed to the 'Board of
+    Directors of BSE Limited'). Silently returning another company's filings is the worst failure
+    mode there is, so probe two unrelated scrips once and refuse to guess if they match."""
+    if _FINRESULT_SENTINEL:
+        return _FINRESULT_SENTINEL[0]
+    import hashlib
+    sigs = []
+    for probe in (500325, 532525):      # Reliance vs Bank of Maharashtra - nothing in common
+        cb = int(time.time() * 1000) + random.randint(0, 99999)
+        r = get(op, 'https://api.bseindia.com/BseIndiaAPI/api/FinancialResult/w?scripcode=%d&type=Q&rnd=%d' % (probe, cb))
+        sigs.append(hashlib.md5((r or '').encode('utf8', 'replace')).hexdigest())
+    ok = sigs[0] != sigs[1]
+    _FINRESULT_SENTINEL.append(ok)
+    return ok
+
 def quarters(op, code):
-    """Return [(qeInt, ziplink)] newest-first from BSE's FinancialResult navigation table."""
+    """Return [(qeInt, ziplink)] newest-first from BSE's FinancialResult navigation table.
+
+    GUARDED: raises if the endpoint is ignoring scripcode (see _finresult_honours_scripcode).
+    Do not "fix" this by removing the guard - the payload it returns in that state is a different
+    company's, and every downstream read built on it is wrong without looking wrong."""
+    if not _finresult_honours_scripcode(op):
+        raise RuntimeError(
+            "BSE FinancialResult endpoint is ignoring scripcode - it serves the SAME payload for "
+            "unrelated scrips (BSE Limited's own results). Refusing to return another company's "
+            "filings for scripcode %d. Use the BSE announcements API "
+            "(AnnSubCategoryGetData/w?strScrip=<code>&strType=C) and read the attachment, which "
+            "does honour its parameter." % code)
     cb = int(time.time() * 1000) + random.randint(0, 99999)
     t = get(op, 'https://api.bseindia.com/BseIndiaAPI/api/FinancialResult/w?scripcode=%d&type=Q&rnd=%d' % (code, cb))
     tbl = json.loads(t).get('Data', '')
