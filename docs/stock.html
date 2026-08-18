@@ -216,11 +216,19 @@ const fmtQtr=e=>{const s=String(e);return s.slice(0,4)+'-'+s.slice(4,6);};
 const fmtQty=v=>v==null?'—':(+v).toLocaleString('en-IN');
 const fmtRs=v=>{ if(v==null) return '—'; v=+v; if(Math.abs(v)>=1e7) return '₹'+(v/1e7).toFixed(2)+' cr'; if(Math.abs(v)>=1e5) return '₹'+(v/1e5).toFixed(2)+' L'; return '₹'+Math.round(v).toLocaleString('en-IN'); };
 function lbound(a,x){ let lo=0,hi=a.length; while(lo<hi){ const m=(lo+hi)>>1; if(a[m]<x) lo=m+1; else hi=m; } return lo; }
-function annOf(q){ const a=q[2],b=q[4]; if(a==null) return b; if(b==null) return a; return Math.min(a,b); }
+/* ann = the exchange FILING date, YYYYMMDD. ⚠️ 0 is the "date UNKNOWN" sentinel (runbook §15/§91,
+   1,442 cells across 666 stocks and permanent — the BSE archive can't date them), and `0 != null` is
+   TRUE in JS, so the old `!= null` tests took it for "announced at time zero": Math.min() let a 0 std
+   date beat a REAL con date (119 rows), the rewind gate below counted the quarter as known at EVERY
+   past date (a look-ahead), the table printed the date as "0--" (200 stocks), and dayOff(ymd2iso(0))
+   = dayOff('0--') = NaN reached the chart as <circle cx="NaN">. ann must be TRUTHY, the same
+   convention profitAt()/postDrift already use in backtest-engine.js + stock-backtest.html. */
+const annReal=v=>v>0?v:null;                                   // 0 / null / undefined → date unknown
+function annOf(q){ const a=annReal(q[2]),b=annReal(q[4]); if(a==null) return b; if(b==null) return a; return Math.min(a,b); }
 /* Result-day reaction — same convention as build_quarterly_results.py: % move of the close on the
    first trading day ON/AFTER the announce date (within 10 calendar days) vs the prior close. */
 function reactionAt(annYmd){
-  if(annYmd==null) return null;
+  if(annReal(annYmd)==null) return null;        // 0 = date unknown → no result day to measure from
   const s=SERIES[TKR]; if(!s) return null;
   const aoff=dayOff(ymd2iso(annYmd));
   const j=lbound(s.d,aoff);
@@ -288,7 +296,10 @@ function drawChart(){
   [0,Math.floor(pts.length/2),pts.length-1].forEach(i=>{ const d=isoOff(pts[i][0]); xlab+=`<text x="${X(pts[i][0]).toFixed(1)}" y="${H-6}" text-anchor="middle" font-size="10" fill="var(--text-faint,#94a3b8)">${d.slice(0,7)}</text>`; });
   // event markers: one dot per day on a strip under the line, coloured by the day's top event
   const evDays=new Map();
-  for(const e of EVENTS){ if(!EVSHOW.has(e.t)||e.off<x0||e.off>x1) continue;
+  // Number.isFinite FIRST: a NaN offset passes both range tests (NaN<x0 and NaN>x1 are each
+  // false), so a bad date slips through a range filter and lands in the SVG as cx="NaN". Belt to
+  // annOf's braces — the slice events below it (act/ins/dls/dsc) parse dates annOf never sees.
+  for(const e of EVENTS){ if(!EVSHOW.has(e.t)||!Number.isFinite(e.off)||e.off<x0||e.off>x1) continue;
     let d=evDays.get(e.off); if(!d){ d={types:[],lbls:[]}; evDays.set(e.off,d); }
     d.types.push(e.t); d.lbls.push(e.lbl); }
   let marks='';
@@ -466,8 +477,8 @@ function renderFunds(){
   // before the as-of date — the strict point-in-time gate. Rev-only quarters with no announce
   // date on file can't prove they were known, so they drop out of the rewound view.
   const KY=asofYmd(), rw=ASOF!=null;
-  const kStd=e=>{ const q=fundBy[e]; return !!(q&&q[2]!=null&&q[2]<=KY); };
-  const kCon=e=>{ const q=fundBy[e]; return !!(q&&q[4]!=null&&q[4]<=KY); };
+  const kStd=e=>{ const q=fundBy[e]; return !!(q&&q[2]>0&&q[2]<=KY); };   // >0, not !=null — see annOf:
+  const kCon=e=>{ const q=fundBy[e]; return !!(q&&q[4]>0&&q[4]<=KY); };   // ann=0 can't prove it was known
   const seen={};
   arr.forEach(q=>{ if(!rw||kStd(q[0])||kCon(q[0])) seen[q[0]]=1; });
   if(!rw) Object.keys(rv).forEach(k=>seen[+k]=1);
