@@ -22,6 +22,9 @@ _strag_*
 # BSE-only coverage state (must persist across CI runs)
 !scripts/_bse_fund_done.json
 !scripts/_bse_sectors.json
+# qe-probe attempt counts: CI needs these to persist, else every run re-probes the same
+# unreadable filings first and the fresh ones never get a turn (runbook 17c defect 1).
+!scripts/_qe_unreadable.json
 !scripts/_bse_fund_fail.json
 
 # SHP gap sweep: the (sym,qe) pairs BSE genuinely has no filing for — evidence, keep it tracked

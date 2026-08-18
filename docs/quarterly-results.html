@@ -1451,6 +1451,22 @@ async function load(){
       BSE_COUNT=added;
     }
     if(bse&&bse.pdf_only) PDF_ONLY=new Set(bse.pdf_only);   // filed but not machine-readable → label honestly
+    // DUAL-LISTED OVERLAY: a BSE scrip whose ticker is also an NSE symbol can't be merged into CO as a
+    // row (it would shadow the NSE company), but its numbers are still real. build_bse_results emits
+    // them separately; apply them to EMPTY cells only — same rule as vision_fills below, so a real
+    // NSE/XBRL value always supersedes. Without this, 47 tickers / 140 quarter-cells were unreachable
+    // and the biggest names on the "+N coming" list (FREDUN, KMCSHIL, INDOKEM, MIIL…) stayed pending
+    // forever despite having been read months earlier. See runbook §17d.
+    if(bse&&bse.nse_overlay&&JSON.stringify(bse.quarters)===JSON.stringify(qr.quarters)){
+      const oqix={}; qr.quarters.forEach((q,i)=>oqix[q]=i);
+      let ocells=0;
+      for(const sym in bse.nse_overlay){ const c=CO[sym]; if(!c) continue;
+        for(const qk in bse.nse_overlay[sym]){ const qi=oqix[+qk]; if(qi==null) continue;
+          const cur=c.q[qi];
+          if(cur&&(cur[0]!=null||cur[2]!=null||cur[3]!=null||cur[5]!=null)) continue;  // real value wins
+          c.q[qi]=bse.nse_overlay[sym][qk]; c.bsefill=1; ocells++; } }
+      if(ocells) console.log('bse overlay: filled '+ocells+' empty cells on dual-listed tickers');
+    }
     // NSE vision overlay: fill a company's quarter cell ONLY when it has no parsed number yet, so the
     // authoritative XBRL always supersedes the vision estimate the moment it lands. q row layout:
     // [revS,opS,patS,revC,opC,patC,ann,rx,sr].

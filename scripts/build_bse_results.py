@@ -54,13 +54,34 @@ def main():
     fund = json.load(open(FUND, encoding="utf-8"))["px"] if os.path.exists(FUND) else {}
     prices = load_prices()["px"]
 
-    co = {}
+    co, overlay = {}, {}
     for code, qs in fund.items():
         u = univ.get(code)
         if not u: continue
         scrip, tkr, name, isin, grp, fv, mc, sec = u
         tkr = (tkr or "").upper()
-        if not tkr or tkr in nse_syms or tkr in co: continue    # never shadow an NSE company
+        if not tkr or tkr in co: continue
+        # ⚠️ A ticker that IS an NSE symbol must never SHADOW the NSE company's row — but dropping it
+        # outright strands the numbers. Our NSE-keyed pipeline and the BSE grind cover different
+        # companies well, and for a dual-listed small-cap the BSE grind often reads a quarter the NSE
+        # side has no XBRL for. Before 2026-08-18 those cells simply could not reach the page: 47
+        # tickers / 90 quarter-cells, and they were the BIGGEST names in the pending list (FREDUN
+        # ₹2,386cr, KMCSHIL ₹2,312cr, INDOKEM, MIIL…), which is why the "+N coming" tile was full of
+        # real companies that had in fact already been read. Emit them as an OVERLAY instead — the
+        # page applies it to EMPTY cells only, exactly like vision_fills.json, so a real NSE/XBRL
+        # value always wins and the no-shadow rule is still honoured.
+        if tkr in nse_syms:
+            e = overlay.setdefault(tkr, {})
+            series_o = prices.get(code)
+            for qe, rec in qs.items():
+                if qidx.get(int(qe)) is None: continue
+                if rec.get("rev") is None and rec.get("pat") is None and rec.get("op") is None: continue
+                ann = rec.get("ann") or 0
+                rx, sr = reaction(series_o, ann) if ann else (None, None)
+                e[str(int(qe))] = [rec.get("rev"), rec.get("op"), rec.get("pat"),
+                                   rec.get("rev"), rec.get("op"), rec.get("pat"), ann or None, rx, sr]
+            if not e: overlay.pop(tkr, None)
+            continue
         q = [None] * len(quarters)
         series = prices.get(code)
         any_num = False
@@ -92,9 +113,13 @@ def main():
 
     ist = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=5, minutes=30)
     out = {"updated": ist.strftime("%Y-%m-%d %H:%M IST"), "asof": qr.get("asof"),
-           "quarters": quarters, "count": len(co), "co": co, "pdf_only": sorted(set(pdf_only))}
+           "quarters": quarters, "count": len(co), "co": co, "pdf_only": sorted(set(pdf_only)),
+           "nse_overlay": overlay}
     json.dump(out, open(OUT, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
-    print("WROTE %s: %d BSE-only companies with numbers, %d PDF-only" % (os.path.normpath(OUT), len(co), len(pdf_only)))
+    print("WROTE %s: %d BSE-only companies with numbers, %d PDF-only, %d dual-listed overlay tickers "
+          "(%d quarter-cells that would otherwise be unreachable)"
+          % (os.path.normpath(OUT), len(co), len(pdf_only), len(overlay),
+             sum(len(v) for v in overlay.values())))
 
 if __name__ == "__main__":
     main()

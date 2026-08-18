@@ -68,6 +68,18 @@ def render_pdf_pages(raw):
     scored = [pi for s, pi in cands if -s != SCAN_SCORE]
     blanks = [pi for s, pi in cands if -s == SCAN_SCORE]
     keep = sorted((scored + blanks)[:4])
+    if not keep:
+        # ⚠️ EVERY page carried a text layer and NONE matched PL_HINT, so the loop above `continue`d
+        # on all of them and this was about to return nothing at all. That is the FILTER hiding the
+        # statement, not the filing lacking one — the same family as the page_basis trap (§71k). A
+        # SCANNED filing with an OCR text layer never scores SCAN_SCORE (it isn't blank) and its
+        # garbled wording defeats PL_HINT, so it falls through both branches. 16 names were dropped
+        # this way on 2026-08-18, every one of them with a real P&L inside the PDF. Rank by numeric
+        # density alone — a results table is wall-to-wall figures whatever words survived OCR — and
+        # if no page is dense either, hand back the opening pages so a reader can still LOOK.
+        dens = sorted(((len(NUM_TOK.findall(doc[pi].get_text())), pi)
+                       for pi in range(min(len(doc), 30))), key=lambda t: -t[0])
+        keep = sorted(pi for n, pi in dens[:4] if n >= 25) or list(range(min(len(doc), 4)))
     return [doc[pi].get_pixmap(dpi=200).tobytes("png") for pi in keep]
 
 def pdf_period(raw):
@@ -78,6 +90,63 @@ def pdf_period(raw):
     except Exception: return 0
     txt = " ".join(doc[pi].get_text() for pi in range(min(len(doc), 4)))
     return FA.parse_qe(txt)
+
+MONTHS = ["january", "february", "march", "april", "may", "june",
+          "july", "august", "september", "october", "november", "december"]
+
+def names_quarter(txt, qe):
+    """True when TXT explicitly names the quarter-end we are filling.
+
+    Used on a BSE announcement's HEADLINE+NEWSSUB, which is an INDEPENDENT witness to the PDF's own
+    text layer — and on scanned or stale-templated filings it is the more reliable of the two.
+    HIPOLIN's 2026-08-14 filing has a text layer that parses to 20251231 and SUPERBAK's to 20160630,
+    so pdf_period vetoed both; 23 real June filings were refused that way on 2026-08-18, identically
+    on every run, with the log saying only "no candidate yielded a P&L". When the announcement names
+    the target quarter we render anyway and let the READER confirm the period printed on the page.
+    """
+    y, m, d = qe // 10000, qe // 100 % 100, qe % 100
+    mon = MONTHS[m - 1]
+    t = re.sub(r"\s+", " ", str(txt or "").lower())
+    pats = [r"%02d[./-]%02d[./-]%04d" % (d, m, y), r"\b%d[./-]%d[./-]%d\b" % (d, m, y),
+            r"%s\s*%d,?\s*%d" % (mon, d, y), r"%d(?:st|nd|rd|th)?\s+%s,?\s*%d" % (d, mon, y)]
+    return any(re.search(pt, t) for pt in pats)
+
+def pdf_mentions_qe(raw, qe):
+    """Does the filing itself print the target quarter-end anywhere in its opening pages?
+
+    pdf_period() joins several pages and returns ONE date, so a statement headed "Quarter ended
+    30/06/2026" that also carries "year ended 31/03/2026" columns can parse to the wrong quarter —
+    DAULAT|2026-08-14 did exactly that on 2026-08-18 and was about to be re-filed into March. When
+    both quarters appear the parse is AMBIGUOUS, and an ambiguous parse must never silently re-file
+    a row: render it and let the reader adjudicate off the printed header.
+    """
+    try: doc = fitz.open(stream=raw, filetype="pdf")
+    except Exception: return False
+    return names_quarter(" ".join(doc[pi].get_text() for pi in range(min(len(doc), 6))), qe)
+
+# ---------------- FIX 1: the qe==0 queue must not be head-of-line blocked ----------------
+QEFAIL = os.path.join(HERE, "_qe_unreadable.json")
+
+def qe_attempts():
+    try: return json.load(open(QEFAIL, encoding="utf-8"))
+    except Exception: return {}
+
+def pick_unknown(qelimit):
+    """The qe==0 rows to probe this run — FRESH ONES FIRST.
+
+    find_unknown_qe() ranks purely by market cap and main() used to call it with NO argument at all,
+    taking its default top 12. Names whose period the text layer simply cannot state (scanned cover
+    pages) never resolve, never leave the pending list, and — being the largest of the unresolved —
+    sit at the head of that ranking FOREVER. Measured 2026-08-18: 4 of the 12 probed slots were
+    permanently held by GRANDOAK / GOURMET / PANCM / JOHNPHARMA, leaving 8 usable probes a day
+    against a backlog of 79. Sorting by (attempts so far, then mcap) lets a repeatedly unreadable
+    name drift to the BACK of the queue without ever being dropped, so every fresh filing is probed
+    before any repeat offender, and the stuck ones still come round again.
+    """
+    rows = find_unknown_qe(10 ** 6)
+    att = qe_attempts()
+    rows.sort(key=lambda r: (int(att.get("%s|%s" % (r[0], r[4]), 0)), -(r[2] or 0)))
+    return rows[:qelimit], att
 
 def enrich_scrips(limit):
     """BSE-only companies we already cover but that are MISSING the year-ago quarter (filled by the
@@ -211,9 +280,24 @@ def main():
                "Sec-Fetch-Site": "same-site", "Sec-Fetch-Mode": "navigate", "Sec-Fetch-Dest": "document"}
         jar_box = [_nse_warm(NB)]     # mutable holder so a retry can swap in a fresh cookie jar
         for sym, name, mcap, fn, fdate in nse:
-            if not fn: continue
-            url = fn if str(fn).startswith("http") else NSE_PDF + fn
-            raw = _nse_pdf_with_retry(NB, url, hdr, jar_box, sym)
+            if not fn:
+                print("  ✗ NSE %-11s no attachment on the feed row — nothing to fetch" % sym); continue
+            # ⚠️ ROUTE BY HOST, NOT BY FEED SIDE. An NSE-side feed row routinely carries a BSE-hosted
+            # attachment URL (…bseindia.com/xml-data/corpfiling/AttachLive/<guid>.pdf). Sending that
+            # to _nse_pdf_with_retry with NSE cookies and an nsearchives Referer fetches the 1-page
+            # COVER LETTER to BSE (or junk); render_pdf_pages then returned [] and the loop fell out
+            # of the bottom with NO log line at all. 12 names were abandoned invisibly on every run
+            # (2026-08-18: ABAN, AJEL, AJIL, ANSALAPI, ARSHIYA, ASIANFR, MAHANIN, MYSPAPE, NAGAFERT,
+            # NDMETAL, PARSVNATH, NIWASSP) — the run log never even named them.
+            if "bseindia.com" in str(fn):
+                if bse_op_box[0] is None:
+                    bse_op_box[0] = B.session(); time.sleep(1)
+                raw = bse_render.fetch_pdf(bse_op_box[0], str(fn).rstrip("/").rsplit("/", 1)[-1])
+                if not raw:
+                    print("  NSE %-11s BSE-hosted attachment did not fetch" % sym)
+            else:
+                url = fn if str(fn).startswith("http") else NSE_PDF + fn
+                raw = _nse_pdf_with_retry(NB, url, hdr, jar_box, sym)
             if not raw:
                 # NSE blocked the download — read the SAME result off BSE (dual-listed names)
                 fb = _bse_fallback(sym, by_id, bse_op_box, outdir, qe)
@@ -237,12 +321,24 @@ def main():
             if pngs:
                 manifest.append({"exch": "NSE", "sym": sym, "scrip": "", "name": name, "mcap": mcap, "pngs": pngs})
                 print("  rendered NSE %-11s (%d pages)" % (sym, len(pngs)))
+            else:
+                # The attachment fetched but yielded no page — almost always a cover letter, with the
+                # statement filed as a SEPARATE announcement. Ask BSE for the sibling filings before
+                # giving up, and if that fails too, SAY SO. This branch is where the 12 names vanished.
+                fb = _bse_fallback(sym, by_id, bse_op_box, outdir, qe)
+                if fb:
+                    manifest.append({"exch": "NSE", "sym": sym, "scrip": "", "name": name, "mcap": mcap, "pngs": fb})
+                    print("  rendered NSE %-11s via BSE sibling announcement (%d pages)" % (sym, len(fb)))
+                else:
+                    print("  ✗ NSE %-11s: attachment carried no P&L page and no BSE sibling filing did "
+                          "either — NOT proof it didn't file; check the announcement pick" % sym)
             time.sleep(1.5)   # space downloads out so we don't trip NSE's per-IP rate limit
     # ---- qe==0 feed rows (period unstated in the filing text): resolve the REAL quarter from the
     # filing PDF itself, and — when it turns out to be the target quarter — render it right away so
     # the numbers fill in THIS run. Before 2026-07-21 these rows were invisible to every counter and
     # to this routine (YESBANK filed Sat 2026-07-18 13:41, sat unclassified for 3 days).
-    unknown = find_unknown_qe()
+    qelimit = int(sys.argv[sys.argv.index("--qelimit") + 1]) if "--qelimit" in sys.argv else 40
+    unknown, qeatt = pick_unknown(qelimit)
     if unknown:
         import build_fundamentals as NBu
         try: by_idu = json.load(open(os.path.join(HERE, "bse_scrips.json"), encoding="utf-8"))["by_id"]
@@ -274,10 +370,22 @@ def main():
                 print("  qe? %-11s %s -> %d IMPOSSIBLE (period ends on/after filing date) — left unclassified" % (sym, fdate, real)); real = 0
             if not real:
                 print("  qe? %-11s %s — period unreadable (scanned/blocked), left unclassified" % (sym, fdate))
+                qeatt["%s|%s" % (sym, fdate)] = int(qeatt.get("%s|%s" % (sym, fdate), 0)) + 1
                 continue
-            qfix["%s|%s" % (sym, fdate)] = real
-            print("  qe? %-11s %s -> %d%s" % (sym, fdate, real, " (target quarter — rendering now)" if real == qe else ""))
-            if real == qe:
+            # AMBIGUOUS: pdf_period joins several pages and returns ONE date, so a statement headed
+            # "Quarter ended 30/06/2026" that also carries year-ended-31/03/2026 columns can parse to
+            # the wrong quarter. DAULAT|2026-08-14 did exactly that (2026-08-18) and was one merge away
+            # from being re-filed into March. A ledgered quarter fix is not a guess we get to make on a
+            # coin toss — when the filing prints the target quarter TOO, write nothing and render it.
+            ambiguous = bool(real != qe and pdf_mentions_qe(raw, qe))
+            if ambiguous:
+                print("  qe? %-11s %s -> parsed %d BUT the filing also prints %d — ambiguous, no quarter "
+                      "fix ledgered; rendering for the reader to adjudicate" % (sym, fdate, real, qe))
+            else:
+                qfix["%s|%s" % (sym, fdate)] = real
+                print("  qe? %-11s %s -> %d%s" % (sym, fdate, real, " (target quarter — rendering now)" if real == qe else ""))
+            qeatt.pop("%s|%s" % (sym, fdate), None)      # resolved — clear any earlier failed attempts
+            if real == qe or ambiguous:
                 pngs = []
                 for i, png in enumerate(render_pdf_pages(raw)):
                     p = os.path.join(outdir, "%s_%s_p%d.png" % ("BSE" if scrip else "NSE", scrip or sym, i))
@@ -337,6 +445,17 @@ def main():
             else:
                 print("  ✗ BSE %s %-11s: no candidate yielded a %d P&L — NOT proof it didn't file; check "
                       "the announcement pick (runbook 17) before concluding anything" % (scrip, tkr, qe))
+
+    # Persist the qe-probe attempt counts so the NEXT run starts with names it has never tried.
+    # Without this the ranking is pure mcap and the same unreadable filings hold the head of the
+    # queue on every run — the head-of-line block that left 8 usable probes a day against 79 waiting.
+    try:
+        json.dump(qeatt, open(QEFAIL, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
+        stuck = sum(1 for v in qeatt.values() if int(v) >= 3)
+        print("WROTE %s: %d names with an unread period (%d tried 3+ times — they now sort LAST, "
+              "never dropped)" % (os.path.normpath(QEFAIL), len(qeatt), stuck))
+    except Exception as ex:
+        print("  ⚠ could not write %s (%s) — next run reverts to mcap-only order" % (QEFAIL, ex))
 
     json.dump(manifest, open(os.path.join(outdir, "manifest.json"), "w"))
     print("WROTE %s/manifest.json: %d companies ready to vision-read" % (outdir, len(manifest)))

@@ -1709,6 +1709,72 @@ the Quarterly Results page. **4 scripts + `.github/workflows/refresh-bse.yml` (2
   Needs the user's explicit deploy authorization (auto-mode blocks it otherwise). Manual fallback: paste the file
   in the quick editor + Deploy (LIVE_FEED_SETUP.md).
 
+### 17c. ★★★ THE FOUR READER DEFECTS THAT LEFT 118 DECLARED RESULTS UNFILLED  (found + fixed 2026-08-18)
+
+The Quarterly Results tile read `4,322 with numbers · +97 coming · 63 filing-only` for the Jun-2026
+quarter. The routine was NOT broken and NOT behind: it had run 4×/day all season and last landed at
+00:22 IST that morning. It was reaching **8 names a day against a backlog of 79** because of four
+independent reader defects — three of which fail SILENTLY, and all four of which fail IDENTICALLY on
+every run, so no amount of extra scheduling would ever have cleared them.
+
+Of the 160 the page showed pending, 44 were already filled in the repo (Pages was just behind) →
+118 real. After the fixes below, **118 of 118 rendered** (62 → 118) and 87 read on the first pass.
+
+| # | defect | names lost | why it is silent |
+|---|---|---|---|
+| 1 | `find_unknown_qe()` called with NO argument → default **12**, ranked by mcap | 67 of 79 | the queue looks "processed" |
+| 2 | `pdf_period` tripwire vetoes the RIGHT filing | 23 | logs "no candidate yielded a P&L" |
+| 3 | NSE loop fetches a **bseindia.com** URL through nsearchives | 12 | **no log line at all** |
+| 4 | `PL_HINT` excludes every page of an OCR'd scan | 16 | `render_pdf_pages` returns `[]` |
+
+**1. HEAD-OF-LINE BLOCKING — the cap that never moves.** `find_unknown_qe(limit=12)` ranks qe==0 rows
+by market cap; `main()` took its default. Names whose period the text layer cannot state are printed
+"left unclassified" and stay pending — so, being the biggest of the unresolved, they hold the head of
+that ranking **forever**. Measured: 4 of the 12 probed slots were permanently held by GRANDOAK /
+GOURMET / PANCM / JOHNPHARMA. Net 8 usable probes per run. ★ **A cap plus a never-resolving item is
+not a cap, it is a wall.** Fix: `pick_unknown()` sorts by *(attempts, then mcap)* against a new
+force-tracked ledger `scripts/_qe_unreadable.json`, so repeat offenders drift to the BACK without ever
+being dropped; `--qelimit` (default 40) makes the bound explicit.
+
+**2. THE TRIPWIRE VETOES THE CORRECT FILING.** §17's `pdf_period` guard refuses any candidate whose
+stated period ≠ target — right for GYANDEV (an older annual PDF rendered as June). But a filing's TEXT
+LAYER can be stale or garbled: HIPOLIN's 2026-08-14 filing parses to `20251231`, SUPERBAK's to
+`20160630`. Every candidate refused, every run, for 23 names with plainly-real June filings. Fix:
+`names_quarter(txt, qe)` makes the **announcement HEADLINE+NEWSSUB an independent witness** — when it
+names the target quarter we render anyway and let the reader confirm the period off the page. GYANDEV
+stays protected: its announcement said *year ended*, which does not match. ★ **When two witnesses
+disagree, ask a third — do not let the weaker one hold a veto.**
+
+**3. ROUTE BY HOST, NOT BY FEED SIDE.** An NSE-side feed row routinely carries a BSE-hosted
+attachment (`…bseindia.com/…/AttachLive/<guid>.pdf`). The NSE loop sent it to nsearchives with NSE
+cookies, got the 1-page COVER LETTER, rendered nothing, and `continue`d **without printing anything**.
+12 names (ABAN, AJEL, AJIL, ANSALAPI, ARSHIYA, ASIANFR, MAHANIN, MYSPAPE, NAGAFERT, NDMETAL,
+PARSVNATH, NIWASSP) were abandoned invisibly on every run — the log never even named them. Fix: branch
+on the URL host; on an empty render, try the BSE sibling announcements, and if that fails too, print
+`✗ NSE <sym> … NOT proof it didn't file`. ★ **Every `continue` in a fetch loop must print. A branch
+that can drop work without logging is a branch that hides a permanent failure.**
+
+**4. THE FILTER HID THE STATEMENT** (same family as the `page_basis` trap, §71k). A scanned filing
+with an OCR text layer is never blank (so never scores `SCAN_SCORE`) and its garbled wording defeats
+`PL_HINT` — so every page hit `continue` and `render_pdf_pages` returned `[]` for 16 filings that all
+contained a real P&L. Fix: when the PL_HINT/blank pass yields nothing, rank by **numeric density
+alone**, and failing that hand back the opening pages. It must never return `[]` for an openable PDF.
+★ **Check what your filters EXCLUDE before concluding a document lacks something.**
+
+**5. (found while fixing) AN AMBIGUOUS PERIOD MUST NOT RE-FILE A ROW.** `pdf_period` joins several
+pages and returns ONE date, so a statement headed *"Quarter ended 30/06/2026"* that also carries
+year-ended-31/03/2026 columns can parse to the wrong quarter. **DAULAT|2026-08-14 did exactly that**
+and was one merge away from being ledgered into March — a wrong `feed_qe_fix.json` entry is a
+mis-filed result, not a cosmetic slip. Fix: `pdf_mentions_qe()` — if the filing prints the target
+quarter TOO, the parse is ambiguous, so ledger NOTHING and render it for the reader to adjudicate.
+
+**Verification (2026-08-18):** `names_quarter` unit-tested on 8 real announcement strings incl. both
+GYANDEV negatives; `pick_unknown` shown to evict all 3 seeded repeat offenders from the head of the
+queue; `render_pdf_pages` re-run on BCP and CONTILI (the two that returned `[]`) now yields 4 and 2
+pages. The cloud routine picks all of this up with no prompt change — `--qelimit` defaults to 40.
+
+---
+
 ### 17b. VISION-FILL = CLOUD ROUTINE, 1×/day 23:30 IST  (ported off the desktop 2026-07-28; cut from 4×/day 2026-08-18)
 
 The `bse-vision-fill` reader — the thing that guarantees no declared result stays "numbers being
