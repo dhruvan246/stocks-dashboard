@@ -167,6 +167,7 @@ def main():
     fmap = {s: {r[0]: r for r in rows} for s, rows in fund.items()}
 
     missing, drift, checked = [], [], 0
+    odd_keys = []                       # ledger keys that are not quarters (e.g. _RETRACTED_*, _note)
     # ★ RESURRECTED: a cell some reader REFUSED to write is live again with exactly the refused
     # value. This class was invisible to every detector until 2026-08-11, and it is the mirror image
     # of MISSING: MISSING asks "is the value we asserted still there?", and a held cell asserts the
@@ -267,6 +268,18 @@ def main():
             for qe, v in qd.items():
                 if not isinstance(v, dict) or v.get("skip"):
                     continue
+                # ⚠️ A LEDGER KEY IS NOT ALWAYS A QUARTER. These defect ledgers use a
+                # `_RETRACTED_<QE>` key rename to withdraw an entry while keeping its audit trail
+                # (and `_note` for prose), so `int(qe)` below is not safe on every key. Unguarded it
+                # raised ValueError and CRASHED this whole step — which is BLOCKING, so it stopped the
+                # entire fundamentals payload from publishing (2026-08-18: b395fa35 added 24 such keys
+                # to pat_defects + 4 to rev_defects, and the first one alphabetically, ASTRAZEN
+                # _RETRACTED_20200630, killed the run). Skipping is also the right SEMANTICS: a
+                # retracted entry asserts nothing. Counted and reported rather than silently dropped,
+                # so a genuinely malformed key still shows up instead of hiding here.
+                if not (isinstance(qe, str) and qe.isdigit()):
+                    odd_keys.append("%s %s/%s" % (name, sym, qe))
+                    continue
                 want = v.get(key)
                 if want is None:                 # a deliberate null verdict is not a claim
                     continue
@@ -290,6 +303,11 @@ def main():
         print("  MISSING     (clobbered):            %d" % len(missing))
         print("  DRIFT       (superseded/corrected): %d" % len(drift))
         print("  RESURRECTED (a refused value is live again): %d" % len(resurrected))
+        if odd_keys:
+            print("  skipped %d non-quarter ledger key(s) — retracted/annotation entries, not claims:"
+                  % len(odd_keys))
+            for k in odd_keys[:8]:
+                print("     skip    %s" % k)
         for m in missing[:15]:
             print("     MISSING %-30s %-12s %s  ledger=%s" % (m[0], m[1], m[2], m[3]))
         for d in drift[:10]:
