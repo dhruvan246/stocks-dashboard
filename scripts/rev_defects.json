@@ -134,11 +134,12 @@
   }
  },
  "IGARASHI": {
-  "20180331": {
+  "_RETRACTED_20180331": {
    "bad_rev": 326.69,
    "basis": "std",
    "defect": "screener-annual derivation used a restated/transition FY total against as-filed quarters (mixed basis); as-filed BSE detailed-results value is 106.08",
-   "source": "bse-detres arbitration 2026-08-02; PAT-anchored as-filed quarter from api.bseindia Corp_detailedResult_Transpose_ng"
+   "source": "bse-detres arbitration 2026-08-02; PAT-anchored as-filed quarter from api.bseindia Corp_detailedResult_Transpose_ng",
+   "RETRACTED": "2026-08-18 12:33 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - the exchange record shows no consolidated filing for that quarter, so there is no cell for this entry to describe. Quarter key prefixed so walkers cannot parse it. Audit only; do not re-apply."
   }
  },
  "JSWDULUX": {
@@ -193,13 +194,6 @@
   }
  },
  "MGL": {
-  "20210930": {
-   "bad_rev": 666.85,
-   "basis": "con",
-   "correct_rev": 907.57,
-   "defect": "con slot held Jun-21's ENTIRE std row (revC=Jun-21 revS, opC=Jun-21 opS) \u2014 prev-quarter column copy from batch 766599a3; no con filing exists (first con 20231231, no subsidiary before 2024-02-01) so con==std identity",
-   "source": "NSE filing index + Unison Enviro completion 2024-02-01; revS 907.57 locked by Dec-21 XBRL 9M identity (2697.29 vs Jun+Sep+Dec sum, delta 0.02)"
-  },
   "20220630": {
    "bad_rev": 20.01,
    "basis": "std",
@@ -207,19 +201,29 @@
    "defect": "foreign junk in BOTH rev slots (batch 4d63e91d created the row); con slot healed to the same 1593.18 by identity in the same pass",
    "source": "H1-minus-Sep from own Sep-22 std XBRL https://nsearchives.nseindia.com/corporate/xbrl/INDAS_868110_6014_14112022121632_WEB.xml; PAT identity closes on stored 185.20 exactly"
   },
-  "20230331": {
+  "_RETRACTED_20210930": {
+   "bad_rev": 666.85,
+   "basis": "con",
+   "correct_rev": 907.57,
+   "defect": "con slot held Jun-21's ENTIRE std row (revC=Jun-21 revS, opC=Jun-21 opS) \u2014 prev-quarter column copy from batch 766599a3; no con filing exists (first con 20231231, no subsidiary before 2024-02-01) so con==std identity",
+   "source": "NSE filing index + Unison Enviro completion 2024-02-01; revS 907.57 locked by Dec-21 XBRL 9M identity (2697.29 vs Jun+Sep+Dec sum, delta 0.02)",
+   "RETRACTED": "2026-08-18 12:33 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - the exchange record shows no consolidated filing for that quarter, so there is no cell for this entry to describe. Quarter key prefixed so walkers cannot parse it. Audit only; do not re-apply."
+  },
+  "_RETRACTED_20230331": {
    "bad_rev": 33.64,
    "basis": "con",
    "correct_rev": 1771.81,
    "defect": "Unison-sized foreign junk in con slot (batch 0809d274); no con filing, no subsidiary until 2024-02-01 \u2014 con==std identity",
-   "source": "NSE filing index (std-listed, no con row) + Unison completion 2024-02-01"
+   "source": "NSE filing index (std-listed, no con row) + Unison completion 2024-02-01",
+   "RETRACTED": "2026-08-18 12:33 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - the exchange record shows no consolidated filing for that quarter, so there is no cell for this entry to describe. Quarter key prefixed so walkers cannot parse it. Audit only; do not re-apply."
   },
-  "20230630": {
+  "_RETRACTED_20230630": {
    "bad_rev": 38.95,
    "basis": "con",
    "correct_rev": 1690.18,
    "defect": "Unison-sized foreign junk in con slot (batch 0809d274); no con filing, no subsidiary until 2024-02-01 \u2014 con==std identity",
-   "source": "NSE filing index (std-listed, no con row) + Unison completion 2024-02-01"
+   "source": "NSE filing index (std-listed, no con row) + Unison completion 2024-02-01",
+   "RETRACTED": "2026-08-18 12:33 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - the exchange record shows no consolidated filing for that quarter, so there is no cell for this entry to describe. Quarter key prefixed so walkers cannot parse it. Audit only; do not re-apply."
   }
  },
  "MMTC": {
@@ -255,11 +259,12 @@
   }
  },
  "PFS": {
-  "20180331": {
+  "_RETRACTED_20180331": {
    "bad_rev": 285.83,
    "basis": "std",
    "defect": "screener-annual derivation used a restated/transition FY total against as-filed quarters (mixed basis); as-filed BSE detailed-results value is 290.47",
-   "source": "bse-detres arbitration 2026-08-02; PAT-anchored as-filed quarter from api.bseindia Corp_detailedResult_Transpose_ng"
+   "source": "bse-detres arbitration 2026-08-02; PAT-anchored as-filed quarter from api.bseindia Corp_detailedResult_Transpose_ng",
+   "RETRACTED": "2026-08-18 12:33 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - the exchange record shows no consolidated filing for that quarter, so there is no cell for this entry to describe. Quarter key prefixed so walkers cannot parse it. Audit only; do not re-apply."
   }
  },
  "PNBHOUSING": {

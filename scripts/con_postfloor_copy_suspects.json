@@ -1,0 +1,24 @@
+{
+ "_doc": "Cells where con == std EXACTLY but the quarter is AT OR AFTER the company's first consolidated filing, so a real consolidated statement exists and the stored value is a COPY of standalone. These must be CORRECTED from the filing, never retracted -- the cell should hold a number, just not this one. Precedent: KTKBANK 20201231 stored 135.38 (=std) where the filing prints 135.37.",
+ "HATSUN|20260331": {
+  "std": 50.89,
+  "con_stored": 50.89,
+  "ann": 20260519,
+  "found": "2026-08-18 12:35 IST",
+  "why": "Hatsun consolidates from Mar-2025 (Milk Mantra, 27-Jan-2025) and con DIFFERS from std in all four preceding quarters (43.01/49.64, 135.19/148.08, 109.54/120.18, 60.58/67.14). An exact equality here breaks that pattern. The 2026-05-19 board outcome confirms \"Audited Standalone and Consolidated Financial Results ... quarter and financial year ended 31 March 2026\", so a real consolidated figure exists and is not 50.89. No ledger backs this cell - it came from the daily pipeline.",
+  "action": "read the Mar-2026 consolidated attachment and correct; do NOT retract"
+ },
+ "KTKBANK|20201231": {
+  "std": 135.38,
+  "con_stored": 135.38,
+  "found": "2026-08-18 12:35 IST",
+  "why": "Filing read 2026-08-18: genuine consolidated filing exists for this quarter and prints 135.37, not 135.38.",
+  "action": "correct to 135.37; do NOT retract"
+ },
+ "_alias_std_discrepancy_SUPPETRO_SPLPETRO": {
+  "found": "2026-08-18 12:35 IST",
+  "what": "For the SAME company-quarter the two alias symbols hold DIFFERENT standalone PATs: 20170930 SUPPETRO 36.68 vs SPLPETRO 13.31; 20180331 SUPPETRO 41.16 vs SPLPETRO 64.52. The other 25 overlapping quarters agree exactly.",
+  "why_it_matters": "FUND_ALIAS merges SUPPETRO into SPLPETRO, so one of the two values wins silently depending on merge order. One of them is wrong and neither has been read against a filing.",
+  "action": "read the Q2FY18 and Q4FY18 filings for BSE 500405 and correct the loser; do NOT guess"
+ }
+}

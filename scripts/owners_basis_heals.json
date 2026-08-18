@@ -1577,7 +1577,47 @@
    "source": "GRINDWELL Q1FY18 filing (2017-08-02), audited Mar-17 column: owners 3,373 lakhs vs the stored total 3,418",
    "identity": "Jun-17: owners 3,003 lakhs and total 3,032 are printed IDENTICALLY in both the quarter's own Q1FY18 filing (2017-08-02 p4) and the Q1FY19 comparative \u2014 so 30.32 is the total row, not a restatement. Mar-17: owners 3,373 printed in the Q1FY18 filing's audited Mar-17 column against the stored total 3,418.",
    "when": "2026-08-18 00:04 IST"
+  },
+  "HDFC|20190930|patC": {
+   "owners": 10388.61,
+   "stored_before": null,
+   "note": "Already in crore, no unit conversion. Printed TWICE: Q2FY20 filing p16 (current quarter) and Q3FY20 filing p10 (preceding quarter) - identical 10,388.61. The quarter includes the GRUH-Bandhan one-offs (realised gain 1,473.75 + fair-value gain 6,526.54 in revenue). ann=20191231 is honest and NOT backdatable: HDFC filed NO consolidated for Q1FY20 or Q2FY20 with the 19-Nov-2019 standalone results; the Sep-2019 quarter con statement and the H1FY20 con statement (seq 1070124, same PDF) were both first filed 31-Dec-2019 14:30 (NSE list measured). BONUS not specced (batch says 20190930 ONLY): Jun-2019 con owners 3,094.38 is printed in the same p16 table (and re-printed in Q3FY20 9M identity and Q1FY21 corresponding column) and would carry the same ann 20191231; stored 20190630 con is currently null.",
+   "source": "HDFC Ltd 'Unaudited Consolidated Financial Results for the quarter and half year ended September 30, 2019' (Rs in Crore), NSE Consolidated filing seq 1070123 (from=01-Jul-2019) filed 31-Dec-2019 14:30 (zip HDFC_NA_31122019143046_1.zip), p16, column 'Quarter ended 30-Sep-19', row 11 'Profit Attributable to: Owners of the Corporation' = 10,388.61",
+   "identity": "9MFY20 closes TO THE PAISA through the target in the Q3FY20 filing: Jun-2019 3,094.38 + Sep-2019 10,388.61 + Dec-2019 3,835.38 = 17,318.37 == printed Nine Months owners EXACT (NCI: 445.34+360.08+361.10 = 1,166.52 == printed; NP: 3,539.72+10,748.69+4,196.48 = 18,484.89 == printed). FY20 closes TO THE PAISA through the target across filings: 3,094.38 + 10,388.61 + 3,835.38 + 4,116.20 = 21,434.57 == printed FY20 owners in BOTH the Q4FY20 (p23) and Q1FY21 (p12) filings. Within the Q2FY20 filing, H1FY20 owners 10,388.61 + 3,094.38 = 13,482.99 == printed EXACT. CAVEAT (filer-side, does not touch any quarter column): the FY19 YEAR comparative was RESTATED between filings - Q2FY20 prints FY19 owners 22,708.08 / NP 24,056.83 / PBT 28,575.28, while Q3FY20/Q4FY20 print FY19 owners 16,231.76 / NP 17,580.51 / PBT 22,098.96 (delta 6,476.32 pre-tax, GRUH/Bandhan merger-related re-presentation; NCI 1,348.75 unchanged). Per protocol gate 3 only printed quarter columns are written; nothing here is derived through the restated FY19 annual.",
+   "when": "2026-08-18 00:12 IST"
+  },
+  "MAZDOCK|20190930|patC": {
+   "owners": 103.29,
+   "stored_before": null,
+   "note": "10,329 lakh / 100 = 103.29 cr (split printed: 7,652 profit ex-associate + 2,677 share of associate). PRINTED comparative column. MAZDOCK listed 12-Oct-2020, so no as-filed Sep-2019 result exists; this is the primary public source, first public 13-Nov-2020. NO ROW exists for qe=20190930 in sf_fundamentals (series starts 20191231) - applying this creates a new row with stdPAT null; the standalone Sep-2019 comparative is printed on p4 of the same PDF if the row should be completed.",
+   "source": "Mazagon Dock Shipbuilders Ltd 'Statement of Consolidated Unaudited Financial Results for the quarter and six months ended September 30, 2020' (Rs in lakhs), NSE filing seq 1097935 filed 13-Nov-2020, p8, column 'Quarter Ended September 30, 2019', row 'Profit for the year / period (including associate)' = 10,329",
+   "identity": "Within the Q2FY21 filing: Sep-2020 9,938 + Jun-2020 1,400 = 11,338 == printed H1FY21 EXACT. Cross-filing on the comparatives: printed H1FY20 18,764 (Q2FY21 filing) + printed Dec-2019 quarter 20,872 (Q3FY21 filing, cached btD_MAZDOCK_20201231.pdf, already used for the stored 208.72 fill) = 39,636 == printed 9MFY20 in the Q3FY21 filing EXACT - the subtotals agree across filings to the rupee-lakh. FY20 audited annual 47,706 lakh is printed identically in both filings. KNOWN ANOMALY reconfirmed, not touched (already in refusals_D.json): FY20 47,706 - 9MFY20 39,636 = 8,070 lakh = 80.70 cr implied for Mar-2020, but stored 20200331 con = 74.68 (gap 6.02 cr; the Mar-2020 quarter column was never printed post-listing - MAZDOCK listed 12-Oct-2020).",
+   "when": "2026-08-18 00:12 IST"
+  },
+  "MAZDOCK|20190630|patC": {
+   "owners": 84.35,
+   "stored_before": null,
+   "note": "DERIVED, not a printed column - flagged for the main session per protocol's derived-from-subtotal allowance (both inputs are printed in the SAME filing; ann = that filing's date, no look-ahead). Two independent printed paths give the identical value: (a) H1FY20 18,764 - Sep-2019 10,329 = 8,435 (Q2FY21 filing alone); (b) 9MFY20 39,636 - Sep-2019 10,329 - Dec-2019 20,872 = 8,435 (across Q2FY21 + Q3FY21 filings, whose shared subtotals agree exactly: 18,764 + 20,872 = 39,636). No public Jun-2019 quarter column exists anywhere (listed Oct-2020; NSE list has no filing before Sep-2020). Drop this cell if derived values are unwanted - Sep-2019 above stands on its own.",
+   "source": "Same filing and table (H_MAZDOCK_20200930_C.pdf p8): printed column 'Half Year Ended September 30, 2019' = 18,764 lakh MINUS printed column 'Quarter Ended September 30, 2019' = 10,329 lakh -> Jun-2019 quarter = 8,435 lakh = 84.35 cr",
+   "identity": "Within the Q2FY21 filing: Sep-2020 9,938 + Jun-2020 1,400 = 11,338 == printed H1FY21 EXACT. Cross-filing on the comparatives: printed H1FY20 18,764 (Q2FY21 filing) + printed Dec-2019 quarter 20,872 (Q3FY21 filing, cached btD_MAZDOCK_20201231.pdf, already used for the stored 208.72 fill) = 39,636 == printed 9MFY20 in the Q3FY21 filing EXACT - the subtotals agree across filings to the rupee-lakh. FY20 audited annual 47,706 lakh is printed identically in both filings. KNOWN ANOMALY reconfirmed, not touched (already in refusals_D.json): FY20 47,706 - 9MFY20 39,636 = 8,070 lakh = 80.70 cr implied for Mar-2020, but stored 20200331 con = 74.68 (gap 6.02 cr; the Mar-2020 quarter column was never printed post-listing - MAZDOCK listed 12-Oct-2020).",
+   "when": "2026-08-18 00:12 IST"
+  },
+  "M&MFIN|20190930|patC": {
+   "owners": 261.45,
+   "stored_before": null,
+   "note": "26,145.09 lakh / 100 = 261.4509 -> 261.45 cr (total 26,360.14 = 263.60; NCI 215.05). This is the company's OWN Q2FY20 con filing (con quarterly was mandatory by FY20) - the con slot was empty only because NSE's detail API serves no attachment for symbols containing '&' (protocol-documented); routed via BSE announcement archive as instructed. ann=20191022 = the BSE announcement timestamp (board meeting 22-Oct-2019); consistent with stored neighbors (Dec-2019 conAnn 20200206). Stored stdAnnDate for this quarter is 0 - the main session may want to set it from the same filing.",
+   "source": "Mahindra & Mahindra Financial Services Ltd 'Statement of Unaudited Consolidated Financial Results for the quarter and half year ended 30 September 2019' (Rs. in Lakhs), BSE Regulation 33 & 52 filing 22-Oct-2019 17:28 (scrip 532720), p3, column '30 September 2019', row 'Profit for the period attributable to: Owners of the Company' = 26,145.09",
+   "identity": "H1FY20 closes to the paisa THROUGH the target: Jun-2019 107.23 + Sep-2019 261.45 = 368.68 == printed 'Half year ended 30 September 2019' owners 36,868.14 lakh EXACT. H1FY19 closes on stored: 315.91 (Jun-18) + 425.91 (Sep-18) = 741.82 == printed 74,182.15 EXACT. ANOMALY (neighbor periods, not touched, in refusals_H.json): the printed audited FY19 owners 182,729.83 -> 1,827.30 differs from the sum of the four stored FY19 con quarters (315.91+425.91+399.05+687.17 = 1,828.04) by 0.74 cr; since H1FY19 matches exactly, the 0.74 restatement sits in the H2FY19 comparatives (Dec-2018/Mar-2019 as-filed vs FY19 audited).",
+   "when": "2026-08-18 00:12 IST"
+  },
+  "TAKE|20180630|patC": {
+   "owners": 53.42,
+   "stored_before": null,
+   "note": "5,341.69 lakh / 100 = 53.4169 -> 53.42 cr (total for the quarter 5,416.85 = 54.17; NCI 75.16). The con quarterly filing EXISTS on NSE for this quarter - the pipeline simply missed it. ann uses the NSE filingDate 28-Aug-2018 of the consolidated filing (conservative: the outcome letter inside is dated 10-Aug-2018 and stored stdAnnDate is 20180814; never backdated my con value before its NSE con filing date). Second reader: Q2FY19 filing p6 preceding-quarter column prints the identical 5,341.69.",
+   "source": "TAKE Solutions Ltd 'Statement of Unaudited Consolidated Financial Results for the quarter ended June 30, 2018' (Rs in Lakhs), NSE Consolidated filing seq 1048504 filed 28-Aug-2018 14:24 (zip TAKE_NA_28082018142416_1.zip, member OUTCOME10082018.pdf), p8, column 'June 30, 2018', row 'Attributable to: Shareholders of the company' = 5,341.69",
+   "identity": "H1FY19 closes to the paisa inside the Q2FY19 filing ON THE TARGET: Jun-2018 owners 5,341.69 + Sep-2018 owners 6,023.86 = 11,365.55 == printed 'Half year ended Sep 30 2018' owners EXACT. Total basis closes too: 5,416.85 + 6,079.35 = 11,496.20 == printed. FY18 column printed identically in both filings (owners 16,045.76, total 15,986.22).",
+   "when": "2026-08-18 00:12 IST"
   }
  },
- "generated": "2026-08-18 00:04 IST"
+ "generated": "2026-08-18 00:12 IST"
 }
