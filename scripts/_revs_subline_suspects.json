@@ -1,0 +1,727 @@
+{
+ "_method": "Screen for the \u00a7100f sub-line signature in the REVENUE slots, run 2026-08-18 over the 104,538-file local XBRL cache. For every cached NSE results instance: take the context's own declared basis (NatureOfReportStandaloneConsolidated) and period, keep only 3-month contexts (build_revop.is_quarter_ctx, so YTD/half-year contexts cannot leak in), and read revenue with build_revop.metrics_for -- the SAME function that builds sf_revop, so a mismatch means a different UPSTREAM wrote the cell, not a parser difference. 125,151 rev facts / 2,804 symbols / QE 2016-12..2026-06; 98,344 cells were comparable against a stored value.",
+ "_signature": "stored < the filing's own RevenueFromOperations by MORE than 2-dp rounding (0.011 cr), in a series that NEVER overshoots (a definitional sub-line defect cannot make stored exceed the total), has >=3 exact matches (so the source is demonstrably right elsewhere), and gaps <5% (sub-line-sized, not a scale error). 87 cells / 27 series / 24 symbols. For scale: of all 98,344 comparable cells only 316 are stored-low at all and 177 stored-high; 97,851 reproduce the filing exactly.",
+ "_reach_limit": "\u2605 THIS SCREEN CANNOT SEE PRE-2018. The cache holds 328 facts before 2018-01 (1 in 2016, 327 in 2017) against 7,301 for 2018 alone, and build_revop's own MIN_QE is 20180101. Any pre-2018 revS carrying this defect is OUT OF FRAME here -- absent, not proven absent (\u00a7 never infer absence from own gaps).",
+ "_cannot_confirm_offline": "\u2605 The results taxonomy has NO sub-line element: across all 104,538 files ZERO carry OtherOperatingRevenue/OtherOperatingRevenues, and RevenueFromOperations is the only operating-revenue tag. So the XBRL can DETECT the signature (stored below the filed total) but can NEVER confirm the MECHANISM (that the shortfall is exactly the other-operating-revenue line). Confirming any cell below requires the filing's own statement (PDF/HTML), as HUHTAMAKI's was. These are SUSPECT, NOT CONFIRMED.",
+ "_closed": "HUHTAMAKI 20200331/0630/0930 std -- adjudicated and healed, see rev_defects.json + \u00a7100f.",
+ "cells": {
+  "TMPV": {
+   "20180630|std": {
+    "stored": 16592.33,
+    "filed_total": 16803.11,
+    "gap": 210.78,
+    "gap_pct": 1.254,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20190331|std": {
+    "stored": 18428.6,
+    "filed_total": 18561.41,
+    "gap": 132.81,
+    "gap_pct": 0.716,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20190630|std": {
+    "stored": 13250.19,
+    "filed_total": 13351.91,
+    "gap": 101.72,
+    "gap_pct": 0.762,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20191231|std": {
+    "stored": 10668.44,
+    "filed_total": 10842.91,
+    "gap": 174.47,
+    "gap_pct": 1.609,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20200331|std": {
+    "stored": 9653.8,
+    "filed_total": 9732.87,
+    "gap": 79.07,
+    "gap_pct": 0.812,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20220331|std": {
+    "stored": 17224.61,
+    "filed_total": 17338.27,
+    "gap": 113.66,
+    "gap_pct": 0.656,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20220630|std": {
+    "stored": 14793.12,
+    "filed_total": 14874.44,
+    "gap": 81.32,
+    "gap_pct": 0.547,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20220930|std": {
+    "stored": 14850.97,
+    "filed_total": 14946.78,
+    "gap": 95.81,
+    "gap_pct": 0.641,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20221231|std": {
+    "stored": 15693.0,
+    "filed_total": 15793.98,
+    "gap": 100.98,
+    "gap_pct": 0.639,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20230331|std": {
+    "stored": 19961.61,
+    "filed_total": 20142.13,
+    "gap": 180.52,
+    "gap_pct": 0.896,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20230630|std": {
+    "stored": 15733.0,
+    "filed_total": 15832.57,
+    "gap": 99.57,
+    "gap_pct": 0.629,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20230930|std": {
+    "stored": 18403.19,
+    "filed_total": 18541.7,
+    "gap": 138.51,
+    "gap_pct": 0.747,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20231231|std": {
+    "stored": 18500.95,
+    "filed_total": 18668.56,
+    "gap": 167.61,
+    "gap_pct": 0.898,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20240331|std": {
+    "stored": 20109.0,
+    "filed_total": 20260.24,
+    "gap": 151.24,
+    "gap_pct": 0.746,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20240630|std": {
+    "stored": 16732.0,
+    "filed_total": 16862.0,
+    "gap": 130.0,
+    "gap_pct": 0.771,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20240930|std": {
+    "stored": 15371.0,
+    "filed_total": 15518.0,
+    "gap": 147.0,
+    "gap_pct": 0.947,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20241231|std": {
+    "stored": 16897.0,
+    "filed_total": 17040.0,
+    "gap": 143.0,
+    "gap_pct": 0.839,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20250331|std": {
+    "stored": 19869.0,
+    "filed_total": 19999.0,
+    "gap": 130.0,
+    "gap_pct": 0.65,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   }
+  },
+  "SHRIRAMFIN": {
+   "20191231|con": {
+    "stored": 4263.57,
+    "filed_total": 4286.04,
+    "gap": 22.47,
+    "gap_pct": 0.524,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20200331|con": {
+    "stored": 4137.12,
+    "filed_total": 4168.42,
+    "gap": 31.3,
+    "gap_pct": 0.751,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20200630|con": {
+    "stored": 4119.83,
+    "filed_total": 4140.91,
+    "gap": 21.08,
+    "gap_pct": 0.509,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20201231|con": {
+    "stored": 4415.48,
+    "filed_total": 4438.37,
+    "gap": 22.89,
+    "gap_pct": 0.516,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20210331|con": {
+    "stored": 4461.79,
+    "filed_total": 4493.97,
+    "gap": 32.18,
+    "gap_pct": 0.716,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20210930|con": {
+    "stored": 4676.41,
+    "filed_total": 4697.86,
+    "gap": 21.45,
+    "gap_pct": 0.457,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20220331|con": {
+    "stored": 5061.73,
+    "filed_total": 5081.61,
+    "gap": 19.88,
+    "gap_pct": 0.391,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20220630|con": {
+    "stored": 5125.81,
+    "filed_total": 5144.81,
+    "gap": 19.0,
+    "gap_pct": 0.369,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20220930|con": {
+    "stored": 5290.19,
+    "filed_total": 5347.57,
+    "gap": 57.38,
+    "gap_pct": 1.073,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20191231|std": {
+    "stored": 4263.57,
+    "filed_total": 4286.04,
+    "gap": 22.47,
+    "gap_pct": 0.524,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20200331|std": {
+    "stored": 4137.12,
+    "filed_total": 4168.42,
+    "gap": 31.3,
+    "gap_pct": 0.751,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20200630|std": {
+    "stored": 4119.83,
+    "filed_total": 4140.91,
+    "gap": 21.08,
+    "gap_pct": 0.509,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20201231|std": {
+    "stored": 4415.48,
+    "filed_total": 4438.37,
+    "gap": 22.89,
+    "gap_pct": 0.516,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20210331|std": {
+    "stored": 4461.79,
+    "filed_total": 4493.97,
+    "gap": 32.18,
+    "gap_pct": 0.716,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20210930|std": {
+    "stored": 4676.41,
+    "filed_total": 4697.86,
+    "gap": 21.45,
+    "gap_pct": 0.457,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20211231|std": {
+    "stored": 4814.33,
+    "filed_total": 4827.86,
+    "gap": 13.53,
+    "gap_pct": 0.28,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20220630|std": {
+    "stored": 5125.81,
+    "filed_total": 5144.81,
+    "gap": 19.0,
+    "gap_pct": 0.369,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   }
+  },
+  "MOTHERSON": {
+   "20190630|std": {
+    "stored": 1826.91,
+    "filed_total": 1842.88,
+    "gap": 15.97,
+    "gap_pct": 0.867,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20200331|std": {
+    "stored": 1720.04,
+    "filed_total": 1735.21,
+    "gap": 15.17,
+    "gap_pct": 0.874,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20200630|std": {
+    "stored": 431.39,
+    "filed_total": 438.31,
+    "gap": 6.92,
+    "gap_pct": 1.579,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20220331|std": {
+    "stored": 1611.44,
+    "filed_total": 1630.6,
+    "gap": 19.16,
+    "gap_pct": 1.175,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   }
+  },
+  "ZFCVINDIA": {
+   "20190331|std": {
+    "stored": 637.76,
+    "filed_total": 662.8974,
+    "gap": 25.14,
+    "gap_pct": 3.792,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   }
+  },
+  "CIEINDIA": {
+   "20220331|con": {
+    "stored": 2570.86,
+    "filed_total": 2588.361,
+    "gap": 17.5,
+    "gap_pct": 0.676,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   }
+  },
+  "HEALTHX": {
+   "20191231|con": {
+    "stored": 103.34,
+    "filed_total": 103.3716,
+    "gap": 0.03,
+    "gap_pct": 0.031,
+    "tier": "T3-subcrore-or-rounded-source",
+    "status": "suspect"
+   },
+   "20200331|con": {
+    "stored": 115.88,
+    "filed_total": 115.9256,
+    "gap": 0.05,
+    "gap_pct": 0.039,
+    "tier": "T3-subcrore-or-rounded-source",
+    "status": "suspect"
+   },
+   "20200630|con": {
+    "stored": 135.29,
+    "filed_total": 136.425,
+    "gap": 1.14,
+    "gap_pct": 0.832,
+    "tier": "T2-lender-or-insurer-branch",
+    "status": "suspect"
+   },
+   "20200930|con": {
+    "stored": 141.11,
+    "filed_total": 141.5331,
+    "gap": 0.42,
+    "gap_pct": 0.299,
+    "tier": "T2-lender-or-insurer-branch",
+    "status": "suspect"
+   },
+   "20201231|con": {
+    "stored": 136.41,
+    "filed_total": 137.1057,
+    "gap": 0.7,
+    "gap_pct": 0.507,
+    "tier": "T2-lender-or-insurer-branch",
+    "status": "suspect"
+   },
+   "20210331|con": {
+    "stored": 130.71,
+    "filed_total": 133.135,
+    "gap": 2.42,
+    "gap_pct": 1.821,
+    "tier": "T2-lender-or-insurer-branch",
+    "status": "suspect"
+   },
+   "20210630|con": {
+    "stored": 173.02,
+    "filed_total": 173.3429,
+    "gap": 0.32,
+    "gap_pct": 0.186,
+    "tier": "T2-lender-or-insurer-branch",
+    "status": "suspect"
+   },
+   "20210930|con": {
+    "stored": 156.24,
+    "filed_total": 158.9074,
+    "gap": 2.67,
+    "gap_pct": 1.679,
+    "tier": "T2-lender-or-insurer-branch",
+    "status": "suspect"
+   },
+   "20211231|con": {
+    "stored": 140.73,
+    "filed_total": 142.5913,
+    "gap": 1.86,
+    "gap_pct": 1.305,
+    "tier": "T2-lender-or-insurer-branch",
+    "status": "suspect"
+   },
+   "20220630|con": {
+    "stored": 191.87,
+    "filed_total": 191.9944,
+    "gap": 0.12,
+    "gap_pct": 0.065,
+    "tier": "T3-subcrore-or-rounded-source",
+    "status": "suspect"
+   },
+   "20220930|con": {
+    "stored": 254.18,
+    "filed_total": 254.2934,
+    "gap": 0.11,
+    "gap_pct": 0.045,
+    "tier": "T3-subcrore-or-rounded-source",
+    "status": "suspect"
+   },
+   "20221231|con": {
+    "stored": 280.52,
+    "filed_total": 280.6331,
+    "gap": 0.11,
+    "gap_pct": 0.04,
+    "tier": "T3-subcrore-or-rounded-source",
+    "status": "suspect"
+   },
+   "20230331|con": {
+    "stored": 312.94,
+    "filed_total": 313.151,
+    "gap": 0.21,
+    "gap_pct": 0.067,
+    "tier": "T3-subcrore-or-rounded-source",
+    "status": "suspect"
+   },
+   "20230930|con": {
+    "stored": 352.92,
+    "filed_total": 358.4937,
+    "gap": 5.57,
+    "gap_pct": 1.555,
+    "tier": "T2-lender-or-insurer-branch",
+    "status": "suspect"
+   },
+   "20231231|con": {
+    "stored": 374.08,
+    "filed_total": 374.4971,
+    "gap": 0.42,
+    "gap_pct": 0.111,
+    "tier": "T2-lender-or-insurer-branch",
+    "status": "suspect"
+   },
+   "20240331|con": {
+    "stored": 306.56,
+    "filed_total": 306.6703,
+    "gap": 0.11,
+    "gap_pct": 0.036,
+    "tier": "T3-subcrore-or-rounded-source",
+    "status": "suspect"
+   },
+   "20240630|con": {
+    "stored": 270.18,
+    "filed_total": 270.2929,
+    "gap": 0.11,
+    "gap_pct": 0.042,
+    "tier": "T3-subcrore-or-rounded-source",
+    "status": "suspect"
+   },
+   "20240930|con": {
+    "stored": 273.41,
+    "filed_total": 273.5307,
+    "gap": 0.12,
+    "gap_pct": 0.044,
+    "tier": "T3-subcrore-or-rounded-source",
+    "status": "suspect"
+   },
+   "20241231|con": {
+    "stored": 281.18,
+    "filed_total": 281.2905,
+    "gap": 0.11,
+    "gap_pct": 0.039,
+    "tier": "T3-subcrore-or-rounded-source",
+    "status": "suspect"
+   }
+  },
+  "SCHNEIDER": {
+   "20170331|std": {
+    "stored": 302.81,
+    "filed_total": 316.247,
+    "gap": 13.44,
+    "gap_pct": 4.249,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   }
+  },
+  "SPLPETRO": {
+   "20200331|std": {
+    "stored": 661.58,
+    "filed_total": 662.8975,
+    "gap": 1.32,
+    "gap_pct": 0.199,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20201231|std": {
+    "stored": 928.79,
+    "filed_total": 929.7241,
+    "gap": 0.93,
+    "gap_pct": 0.1,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20210331|std": {
+    "stored": 1267.33,
+    "filed_total": 1269.1236,
+    "gap": 1.79,
+    "gap_pct": 0.141,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20211231|std": {
+    "stored": 1294.08,
+    "filed_total": 1296.0134,
+    "gap": 1.93,
+    "gap_pct": 0.149,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20220331|std": {
+    "stored": 1495.16,
+    "filed_total": 1497.7372,
+    "gap": 2.58,
+    "gap_pct": 0.172,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   }
+  },
+  "KAMATHOTEL": {
+   "20241231|con": {
+    "stored": 105.46,
+    "filed_total": 110.892,
+    "gap": 5.43,
+    "gap_pct": 4.898,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   }
+  },
+  "ASTRAZEN": {
+   "20170331|std": {
+    "stored": 111.58,
+    "filed_total": 116.8814,
+    "gap": 5.3,
+    "gap_pct": 4.536,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   }
+  },
+  "PARKHOTELS": {
+   "20240331|std": {
+    "stored": 145.0,
+    "filed_total": 148.98,
+    "gap": 3.98,
+    "gap_pct": 2.671,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   }
+  },
+  "IKIO": {
+   "20230331|con": {
+    "stored": 114.9,
+    "filed_total": 118.044,
+    "gap": 3.14,
+    "gap_pct": 2.663,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   }
+  },
+  "JUBLPHARMA": {
+   "20201231|std": {
+    "stored": 825.92,
+    "filed_total": 828.94,
+    "gap": 3.02,
+    "gap_pct": 0.364,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   }
+  },
+  "UNOMINDA": {
+   "20190331|std": {
+    "stored": 533.0,
+    "filed_total": 533.72,
+    "gap": 0.72,
+    "gap_pct": 0.135,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   }
+  },
+  "CAPITALSFB": {
+   "20250331|std": {
+    "stored": 231.0,
+    "filed_total": 231.46,
+    "gap": 0.46,
+    "gap_pct": 0.199,
+    "tier": "T2-lender-or-insurer-branch",
+    "status": "suspect"
+   }
+  },
+  "ACUTAAS": {
+   "20231231|con": {
+    "stored": 166.0,
+    "filed_total": 166.4449,
+    "gap": 0.44,
+    "gap_pct": 0.267,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   }
+  },
+  "ANDHRABANK": {
+   "20180630|std": {
+    "stored": 4527.28,
+    "filed_total": 4527.5,
+    "gap": 0.22,
+    "gap_pct": 0.005,
+    "tier": "T3-subcrore-or-rounded-source",
+    "status": "suspect"
+   },
+   "20191231|std": {
+    "stored": 4937.0,
+    "filed_total": 4937.19,
+    "gap": 0.19,
+    "gap_pct": 0.004,
+    "tier": "T3-subcrore-or-rounded-source",
+    "status": "suspect"
+   }
+  },
+  "BASML": {
+   "20260331|std": {
+    "stored": 220.39,
+    "filed_total": 220.7106,
+    "gap": 0.32,
+    "gap_pct": 0.145,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   },
+   "20260331|con": {
+    "stored": 220.39,
+    "filed_total": 220.7106,
+    "gap": 0.32,
+    "gap_pct": 0.145,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   }
+  },
+  "ALBK": {
+   "20180630|std": {
+    "stored": 4599.21,
+    "filed_total": 4599.5,
+    "gap": 0.29,
+    "gap_pct": 0.006,
+    "tier": "T3-subcrore-or-rounded-source",
+    "status": "suspect"
+   }
+  },
+  "RAJESHEXPO": {
+   "20260331|con": {
+    "stored": 236864.0,
+    "filed_total": 236864.206,
+    "gap": 0.21,
+    "gap_pct": 0.0,
+    "tier": "T3-subcrore-or-rounded-source",
+    "status": "suspect"
+   },
+   "20260331|std": {
+    "stored": 2441.0,
+    "filed_total": 2441.095,
+    "gap": 0.1,
+    "gap_pct": 0.004,
+    "tier": "T3-subcrore-or-rounded-source",
+    "status": "suspect"
+   }
+  },
+  "EMKAY": {
+   "20180630|std": {
+    "stored": 33.63,
+    "filed_total": 33.76,
+    "gap": 0.13,
+    "gap_pct": 0.385,
+    "tier": "T1-industrial-material-gap",
+    "status": "suspect"
+   }
+  },
+  "LTM": {
+   "20221231|std": {
+    "stored": 8325.8,
+    "filed_total": 8325.9,
+    "gap": 0.1,
+    "gap_pct": 0.001,
+    "tier": "T3-subcrore-or-rounded-source",
+    "status": "suspect"
+   }
+  },
+  "ALIVUS": {
+   "20210930|std": {
+    "stored": 561.7,
+    "filed_total": 561.761,
+    "gap": 0.06,
+    "gap_pct": 0.011,
+    "tier": "T3-subcrore-or-rounded-source",
+    "status": "suspect"
+   }
+  }
+ }
+}

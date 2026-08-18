@@ -371,5 +371,28 @@
    "defect": "column shift: the stored 20190630 consolidated row held the printed 30.6.2018 column on all three quantities at once (PAT 35.49, revenue 448.58, operating profit 55.72), while the printed 30.6.2019 column is 35.81 / 461.20 / 56.15. Three figures agreeing rules out coincidence; opC reproduces from the statement's own line items on both columns.",
    "source": "TTK Prestige Ltd 'Statement of UnAudited Financial Results for the Quarter ended 30th June 2019' (BSE announcement 13-Aug-2019, attachment TTKPRESTIG_q1fy20.pdf) p2, CONSOLIDATED block, columns 'Quarter Ended 30.6.2019 / 31.3.2019 / 30.6.2018' \u2014 statement declares 'Rs.in Crores'. Scanned page with a mangled text layer; read by rendering at 2.4x."
   }
+ },
+ "HUHTAMAKI": {
+  "20200331": {
+   "bad_rev": 567.49,
+   "basis": "std",
+   "correct_rev": 574.56,
+   "defect": "stored value is the standalone filing's revenue SUB-LINE 'a) Sale of Products & Services', not 'Total Revenue from Operations' (the row above the total). Same upstream and same wrong row as the \u00a7100 con-slot fabrication; before 20201231 it landed in the STD slot (con was then a byte-copy, retracted by copied_con_purge.json on the equality signature), from 20201231 in the con slot. opS from the same filing is EXACT, so only slot 0 was affected.",
+   "source": "own std XBRL INDAS_55157_259010_16052020010848_WEB (Symbol=PAPERPROD, OneD 2020-01-01..2020-03-31, NatureOfReport=Standalone): RevenueFromOperations 5,745,600,000 = 574.56, PAT 27.31 == stored patS (anchor). The Jun-2020 PDF's Mar-2020 column prints the sub-line 56,749 lakh = 567.49 = the stored value being replaced."
+  },
+  "20200630": {
+   "bad_rev": 630.6,
+   "basis": "std",
+   "correct_rev": 635.67,
+   "defect": "stored value is the standalone filing's revenue SUB-LINE 'a) Sale of Products & Services', not 'Total Revenue from Operations' (the row above the total). Same upstream and same wrong row as the \u00a7100 con-slot fabrication; before 20201231 it landed in the STD slot (con was then a byte-copy, retracted by copied_con_purge.json on the equality signature), from 20201231 in the con slot. opS from the same filing is EXACT, so only slot 0 was affected.",
+   "source": "own std XBRL INDAS_60360_307539_14082020081531_WEB (Symbol=PAPERPROD, OneD 2020-04-01..2020-06-30, NatureOfReport=Standalone): RevenueFromOperations 6,356,700,000 = 635.67, PAT 26.72 == stored patS (anchor). BSE PDF att c7191c19-2774-411c-8a08-dc8bed01b261 prints a) Sale of Products & Services 63,060 + b) Other Operating Revenue 507 = Total 63,567 lakh; 630.60 + 5.07 == 635.67 EXACTLY."
+  },
+  "20200930": {
+   "bad_rev": 673.3,
+   "basis": "std",
+   "correct_rev": 685.9,
+   "defect": "stored value is the standalone filing's revenue SUB-LINE 'a) Sale of Products & Services', not 'Total Revenue from Operations' (the row above the total). Same upstream and same wrong row as the \u00a7100 con-slot fabrication; before 20201231 it landed in the STD slot (con was then a byte-copy, retracted by copied_con_purge.json on the equality signature), from 20201231 in the con slot. opS from the same filing is EXACT, so only slot 0 was affected.",
+   "source": "own std XBRL INDAS_62373_350259_23102020095256_WEB (Symbol=PAPERPROD, OneD 2020-07-01..2020-09-30, NatureOfReport=Standalone): RevenueFromOperations 6,859,000,000 = 685.90, PAT 36.88 == stored patS (anchor). Stored 673.30 is 12.60 short \u2014 the other-operating-revenue line for the quarter."
+  }
  }
 }

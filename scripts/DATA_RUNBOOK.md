@@ -69,6 +69,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§98** ★★★ "IN FRAME" WAS A FACT ABOUT OUR DATA, NOT THE WORLD — an older row we hold is not proof the company was filing; the residue identity that adjudicates a single-anchor gate refusal to the paisa; BSE's nav table served another company's filings (**read before calling a hole "high-confidence" because you hold something older**)
 - **§99** ★★★ THE PRE-LISTING QUARTER — an aggregator really does hold quarters older than the company's tape, and the qe+45d ann convention FABRICATES their availability date; floor it at the first traded bar (**read before writing any quarter older than the symbol's first bar, and before trusting an ann date generally**)
 - **§100** ★★★ "DIFFERS FROM STANDALONE" IS NOT "A CONSOLIDATED TABLE EXISTS" — 22 quarters of consolidated revenue in a company that stopped filing con in 2016; the value was the standalone *sale-of-products sub-line*; the equality purge is blind to it by construction (**read before writing or trusting ANY con cell for a company in `stopped_filing_con`**)
+- **§100f** ★★★ …and the SAME wrong row was in the **STANDALONE** slot for the 3 quarters before it (one upstream, two slots). Healed + tripwired. Carries the cache-wide screen: 87 suspect cells / 24 symbols, **84 SUSPECT not confirmed** — and its two structural limits, that the screen is **blind before 2018** and that the XBRL **can detect this defect but never confirm it** (no sub-line element exists in the taxonomy)
 - **§101** ★★★ NSE's ANNOUNCEMENT ARCHIVE GOES AROUND THE BSE 2018 WALL — §84's boundary is a BSE fact, not a market fact; and the consolidated MARCH-2018 quarter was almost never filed (compulsory only from FY2020); the phantom "Consolidated Jan-Mar-2018" index row has two artifact causes, one of them an all-zero falsy sentinel (**read before calling any pre-2019 cell unreachable, and before trusting an NSE filing-index basis row**)
 
 ---
@@ -10552,6 +10553,82 @@ subsidiary Campus AI Pvt Ltd was merged in by NCLT order dated 2022-08-11. So th
 take 2022-09 while **leaving Jun-2022's genuine consolidated row untouched**, which it does
 (verified on the rendered page). `purge_copied_con.py`'s docstring says CAMPUS's last real con was
 2022-03; the filings say 2022-06 — the registry value 20220930 is right, that comment is a quarter early.
+
+### 100f. ★★★ THE SAME WRONG ROW WAS ALSO IN THE **STANDALONE** SLOT — and where the screen for it can and cannot see  (2026-08-18)
+
+§100 retracted the con-slot fabrication. The std slot carried the **same sub-line**, three quarters
+of it, and the two defects are one upstream: what changes at 20201231 is only which slot the wrong
+row lands in.
+
+| HUHTAMAKI std | stored (sub-line) | filed total | gap |
+|---|---|---|---|
+| 20200331 | 567.49 | **574.56** | 7.07 |
+| 20200630 | 630.60 | **635.67** | 5.07 |
+| 20200930 | 673.30 | **685.90** | 12.60 |
+
+Each replacement is that quarter's own NSE XBRL `RevenueFromOperations`, taken only after the
+instance's PAT matched stored `patS` to the paisa (27.31 / 26.72 / 36.88 — the anchor proves the
+instance is that quarter's filing, §61). The Jun-2020 BSE PDF names the defect outright: *a) Sale of
+Products & Services* 63,060 + *b) Other Operating Revenue* 507 = *Total* 63,567 lakh, i.e.
+630.60 + 5.07 == 635.67 EXACTLY.
+
+**`op` is what turns diagnosis into proof.** Stored `opS` 67.49 (Jun-20) and 77.43 (Sep-20) equal
+`metrics_for`'s value from those *same* instances exactly. One upstream read the operating-profit
+line correctly and the revenue line one row too high — so only slot 0 was ever wrong, and the heal
+must not touch the rest of the row.
+
+**The window is walled on BOTH sides.** revS reproduces the filed total to the paisa in all 31 other
+cached quarters, 20180331..20260630. §100 could only say "23 of 23 after"; the screen adds the eight
+before. The defect is exactly three cells.
+
+**A THIRD reader, and it was inside the repo the whole time.** `sf_revop` also carries a separate
+**`PAPERPROD`** key — 11 quarters, 20180331..20200930 — written by `build_revop.py` from the cached
+filings under the symbol that *filed* them. Its three disputed cells read **574.56 / 635.67 /
+685.90**, i.e. our own XBRL-built series agreed with this heal before it was made, and its 20200331
+row even carries the `opS` 53.34 / `ebitS` 28.53 that HUHTAMAKI's row is missing. So the mechanism is
+the rename-key lag (§ sf_revop keeps the PRE-RENAME key): `build_revop` wrote the filed totals under
+PAPERPROD while a different upstream populated HUHTAMAKI with the sub-line, and the two keys were
+never reconciled for these quarters. **`docs/fin/PAPERPROD.json` was therefore serving 635.67 while
+`docs/fin/HUHTAMAKI.json` served 630.60 — the same company, two tickers, two different revenues.**
+Rebuilt via `build_stock_fin.py --out <tmp>`, copying ONLY `HUHTAMAKI.json` back (four unrelated
+slices had pre-existing drift and were deliberately left alone).
+
+Healed by `scripts/_huhtamaki_revs_apply.py` (dry-run default, `was`-guard, blast-radius diff,
+idempotent) into both revop twins, journalled to `rev_defects.json` — whose existing `NESTED`
+registration in `verify_fills_live.py` makes each entry a standing tripwire. **Proved to fire, not
+assumed:** ledgered-cell count 9523 → 9526, regressing one cell to 630.60 moved DRIFT 25 → 26, and
+nulling it moved MISSING 0 → 1; files restored byte-identical after each injection. (The first
+injection *looked* silent — the DRIFT print list truncates. Read the COUNTS, not the printed rows.)
+
+#### The screen, and its two hard limits
+`scripts/_revs_subline_suspects.json` records a cache-wide screen: every 3-month context in all
+104,538 cached instances, basis taken from the context's own `NatureOfReportStandaloneConsolidated`,
+revenue read with **`build_revop.metrics_for` — the same function that builds `sf_revop`**, so a
+mismatch means a different UPSTREAM wrote the cell, not a parser difference. 125,151 rev facts,
+2,804 symbols; 98,344 cells comparable against a stored value.
+
+Of those 98,344, only **316 are stored-low at all** and 177 stored-high; **97,851 reproduce the
+filing exactly**. Applying the signature — never overshoots anywhere in the series (a definitional
+sub-line defect *cannot* make stored exceed the total), ≥3 exact matches, gap above 2-dp rounding,
+gap <5% — leaves **87 cells / 27 series / 24 symbols**. HUHTAMAKI's 3 are closed here; the other 84
+are **SUSPECT, NOT CONFIRMED**, tiered in the ledger (57 industrial-with-material-gap, incl. TMPV 18,
+SHRIRAMFIN 17, MOTHERSON 4).
+
+> ⚠️ **Use an ABSOLUTE tolerance, not a relative one.** A relative-only threshold returned 2,659
+> "hits"; almost all were rounding on small-cap values (`6.65 < 6.65 = 0.07%`). Both sides are 2-dp
+> crore values, so rounding can never exceed ~0.005 — anything under 0.011 is noise, at any scale.
+
+Two limits, both structural:
+
+* **★ THE SCREEN IS BLIND BEFORE 2018.** The cache holds 328 facts before 2018-01 (1 in 2016, 327 in
+  2017) against 7,301 for 2018 alone, and `build_revop`'s own `MIN_QE` is 20180101. Pre-2018 revS is
+  **out of frame, not clean** (§ never infer absence from your own gaps).
+* **★ THE XBRL CAN DETECT THIS DEFECT BUT CAN NEVER CONFIRM IT.** Across all 104,538 files, **zero**
+  carry `OtherOperatingRevenue`/`OtherOperatingRevenues`; `RevenueFromOperations` is the only
+  operating-revenue element. So the cache proves *stored is below the filed total* and can never
+  prove *the shortfall is the other-operating-revenue line*. Confirming any of the 84 requires the
+  company's own statement, exactly as HUHTAMAKI's did. Screening at scale and adjudicating a cell
+  are different instruments; do not let the first one's output be written as if it were the second's.
 
 ## 101. ★★★ NSE's ANNOUNCEMENT ARCHIVE GOES AROUND THE BSE 2018 WALL — and the quarter it reaches was never filed anyway  (2026-08-18, con-params L4)
 
