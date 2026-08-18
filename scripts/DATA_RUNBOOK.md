@@ -68,6 +68,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§97** ★★★ TWO ENGINE ASYMMETRIES THAT READ AS DATA GAPS — `retPctAt` vs `hl52`, and a basis fallback decided by the entry test; both closed more coverage than every fetch combined (**read before opening a data campaign against an empty factor column**)
 - **§98** ★★★ "IN FRAME" WAS A FACT ABOUT OUR DATA, NOT THE WORLD — an older row we hold is not proof the company was filing; the residue identity that adjudicates a single-anchor gate refusal to the paisa; BSE's nav table served another company's filings (**read before calling a hole "high-confidence" because you hold something older**)
 - **§99** ★★★ THE PRE-LISTING QUARTER — an aggregator really does hold quarters older than the company's tape, and the qe+45d ann convention FABRICATES their availability date; floor it at the first traded bar (**read before writing any quarter older than the symbol's first bar, and before trusting an ann date generally**)
+- **§100** ★★★ "DIFFERS FROM STANDALONE" IS NOT "A CONSOLIDATED TABLE EXISTS" — 22 quarters of consolidated revenue in a company that stopped filing con in 2016; the value was the standalone *sale-of-products sub-line*; the equality purge is blind to it by construction (**read before writing or trusting ANY con cell for a company in `stopped_filing_con`**)
 
 ---
 
@@ -10470,3 +10471,83 @@ composite +55, the pat family +42 each (N/A −38), postDrift +8 (N/A −1).
 OUR OWN OLDEST ROW, which was the honest statement at the time; the fill changed the fact, and the
 same rule now returns a different answer. A not-applicable that cannot become applicable again is a
 rule that has stopped measuring anything.
+---
+
+## 100. ★★★ "DIFFERS FROM STANDALONE" IS NOT "A CONSOLIDATED TABLE EXISTS" — the sub-line fabrication  (2026-08-18)
+
+**NO ASSUMPTIONS, NO GUESSWORK** (§0). Every number below was read from the company's own filings
+this session, not from an aggregator and not from our own store.
+
+HUHTAMAKI (Huhtamaki India, BSE 509820) carried a consolidated revenue for **22 quarters,
+2020-12-31 → 2026-03-31**, in a company that **stopped filing consolidated results after
+QE 2016-12-31**. Three independent primary-source lines say so:
+
+* **BSE announcement history, 2013–2026.** "Standalone Financial Results … and Consolidated
+  Financial Results" headlines for QE 2016-03/06/09/12 — the last announced 2017-02-21 — and **no
+  consolidated headline at any date after**. The QE 2015-12-31 headline reads "Standalone" only.
+* **28 cached NSE XBRL instances**, QE 2020-06-30…2026-06-30 (filed as PAPERPROD, then HUHTAMAKI).
+  Every one declares `NatureOfReportStandaloneConsolidated = Standalone`; **zero Consolidated**.
+  Each instance's `RevenueFromOperations` reproduces our stored **revS** to the paisa, 23 of 23.
+* **The Dec-2022 results PDF itself** (BSE `d2280993-…`): "the Board … approved the Audited
+  **Standalone** Financial Results".
+
+### 100a. What the stored "consolidated revenue" actually was
+The standalone statement's revenue **sub-line**, one row above the total:
+
+| Dec-2022 filing, Rs. in Million | printed | ÷10 = ₹cr | our slot |
+|---|---|---|---|
+| a) Sale of Products & Services | 6,765.2 | **676.52** | stored **revC** |
+| b) Other Operating Revenue | 161.9 | 16.19 | — |
+| **Total Revenue from Operations** | **6,927.1** | **692.71** | stored **revS** |
+
+`676.52 + 16.19 = 692.71` exactly. The same table's Sep-22 and Dec-21 columns give 753.46 and
+648.46 — our stored revC for those quarters, again to the paisa. This is §85d's "two revenue
+definitions" defect (net sales vs total income from operations) arriving in the **con** slot rather
+than as the wrong std row.
+
+One cell was not even that: **20241231 revC was a byte-copy of 20240930's** (both 634.67) while the
+Dec-2024 filing prints 6,012.3 Mn = 601.23 — the adjacent-quarter duplicate class.
+
+### 100b. ★★★ THE RULE, and why the existing purge is blind to this by construction
+`purge_copied_con.py` nulls a con cell that **exactly equals** its standalone twin — equality is the
+byte-copy signature (§85a-ter). These cells sit ~2.4% BELOW revS, so they survived. The boundary
+proves the blindness: `copied_con_purge.json` retracted HUHTAMAKI's revC at **20200331/0630/0930**,
+where the value was an exact copy, and the fabricated run starts at **20201231**, exactly where the
+upstream switched from copying the total to serving the sub-line.
+
+> **§85a-ter runs ONE WAY ONLY.** "identical ⇒ unresolved" is sound. Its converse is not:
+> **"differs" proves only "not a byte copy", never "a consolidated table exists."** When the
+> exchange record shows no consolidated filing for the quarter, ANY con value is fabricated no
+> matter how it compares to standalone — and the closer it looks to a plausible consolidated
+> figure, the longer it survives, because every magnitude gate passes it.
+
+### 100c. The pin
+`scripts/con_nofile_retractions.json` (54 entries: 30 cells nulled, 24 already-absent cells pinned)
++ `scripts/apply_con_nofile_retractions.py` (idempotent; refuses any cell whose live value has moved
+off the ledgered one, per §85a-bis). Registered **four times** in `verify_fills_live.py`'s
+`BASIS_KEYED` — one per con slot (revC 1, opC 3, patC 5, ebitC 8), because `BASIS_SLOT` maps only
+the revenue pair. Every entry carries `held`, so the §85b resurrection check asserts these cells
+stay ABSENT. **Verified by injecting all four field types back and watching the detector fire, then
+restoring** — a registration that is never proven to fire is the "monitor that monitors nothing".
+
+### 100d. Two things measured in passing
+* **`no_con_filing.json` had HUHTAMAKI's stop quarter WRONG**: 20160331, four quarters early — the
+  company filed consolidated for all of 2016. Corrected to **20170331** with the evidence recorded
+  in `_evidence_notes` (it had none). The error only ever under-counted gaps, and it did **not**
+  cause the fabrication, which begins in 2020.
+* **The class is not one company.** Across the 123 symbols in `stopped_filing_con`, **409 con cells
+  in 59 symbols** are non-null, at/after the stop quarter, and NOT equal to their std twin — i.e.
+  invisible to the equality purge. HUHTAMAKI (28) and CAMPUS (2) are adjudicated and closed here;
+  **the other 379 are SUSPECT, NOT CONFIRMED** and must be checked per company against the filings
+  before anyone touches them, because a `stopped_filing_con` date can itself be wrong — HUHTAMAKI's
+  was. ABB (revC 2100.27 vs revS 2119.74 and four more) has the exact sub-line shape and is the
+  obvious next read.
+
+### 100e. CAMPUS — the same class, and the precision it demands
+CAMPUS carried `opC 44.48` **and `ebitC 27.51`** at 20220930 with revC/patC already purged. Its XBRL
+shows QE 2022-03-31 and 2022-06-30 each filed as TWO instances, one Standalone and one Consolidated
+(con revenue 352.34 and 337.71 = our stored revC), and QE 2022-09-30 Standalone only — the sole
+subsidiary Campus AI Pvt Ltd was merged in by NCLT order dated 2022-08-11. So the retraction had to
+take 2022-09 while **leaving Jun-2022's genuine consolidated row untouched**, which it does
+(verified on the rendered page). `purge_copied_con.py`'s docstring says CAMPUS's last real con was
+2022-03; the filings say 2022-06 — the registry value 20220930 is right, that comment is a quarter early.

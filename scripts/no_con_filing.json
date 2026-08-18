@@ -214,7 +214,9 @@
   "VEEDOL__started_filing_con": "NSE filing index: 78 standalone rows, 30 consolidated (1 of them annual-Mar rows before any quarterly cadence); first QUARTERLY-cadence con 20190630; each never-filed cell has a std row for its exact quarter and no con row. Annual-Mar con cells themselves stay in the fill queue, not here.",
   "YESBANK__started_filing_con": "NSE filing index: 84 standalone rows, 29 consolidated (0 of them annual-Mar rows before any quarterly cadence); first QUARTERLY-cadence con 20190630; each never-filed cell has a std row for its exact quarter and no con row. Annual-Mar con cells themselves stay in the fill queue, not here.",
   "_ceased": "Entities that ceased filing ANY results. Verified across BSE announcements, BSE detailed-results and the NSE archive (see runbook \u00a751c/\u00a752c). Their cells are not gaps in ANY metric -- there is no company left to report.",
-  "_rule_4q": "USER RULE 2026-08-06: exclude any company with no real consolidated filing for the last 4+ quarters. Detected as: >=2 quarters where stored con genuinely diverges from std (proof it once consolidated), then >=4 later quarters with no divergence. Excluded from the quarter AFTER its last real consolidated filing."
+  "_rule_4q": "USER RULE 2026-08-06: exclude any company with no real consolidated filing for the last 4+ quarters. Detected as: >=2 quarters where stored con genuinely diverges from std (proof it once consolidated), then >=4 later quarters with no divergence. Excluded from the quarter AFTER its last real consolidated filing.",
+  "HUHTAMAKI__stopped_filing_con": "CORRECTED 2026-08-18 from 20160331 to 20170331 against primary sources. The old value asserted 'no consolidated filing from QE 2016-03-31 onward', but the company filed consolidated results for FOUR quarters after that date. BSE announcement history for scrip 509820 (2013-2026) carries 'Standalone Financial Results ... and Consolidated Financial Results' headlines for QE 2016-03-31 (announced 2016-05-10), 2016-06-30 (2016-08-10), 2016-09-30 (2016-11-09) and 2016-12-31 (2017-02-21), and NO consolidated headline at any date after 2017-02-21; the QE 2015-12-31 headline reads 'Standalone' only. So the last consolidated quarter is 2016-12-31 and the first quarter without one is 20170331. Corroborated for the modern era by 28 cached NSE XBRL instances covering QE 2020-06-30..2026-06-30, every one declaring NatureOfReportStandaloneConsolidated=Standalone and none Consolidated. The old value only ever under-counted gaps (it marked four real consolidated quarters as not-applicable); it did not cause the fabricated cells, which sit far later -- see scripts/con_nofile_retractions.json.",
+  "CAMPUS__stopped_filing_con": "VERIFIED 2026-08-18, value 20220930 is correct and unchanged. Cached NSE XBRL shows QE 2022-03-31 and QE 2022-06-30 EACH filed as two instances, one Standalone and one Consolidated (consolidated RevenueFromOperations 3,523,370,000 and 3,377,080,000 = our stored revC 352.34 and 337.71), while QE 2022-09-30 (INDAS_861046_6647_11112022173840) is Standalone only, as is every quarter through QE 2026-03-31. The sole subsidiary Campus AI Pvt Ltd was merged into the company by NCLT order dated 2022-08-11. Note purge_copied_con.py's docstring says CAMPUS's last real con was 2022-03; the filings show 2022-06 -- the registry value is right, that comment is a quarter early."
  },
  "ceased_filing": {
   "CAPF": 20181231,
@@ -1239,7 +1241,7 @@
   "HBSL": 20211231,
   "HINDCOMPOS": 20210630,
   "HINDCON": 20250630,
-  "HUHTAMAKI": 20160331,
+  "HUHTAMAKI": 20170331,
   "INDIAHOMES": 20230930,
   "INDLMETER": 20250630,
   "INDTONER": 20200930,

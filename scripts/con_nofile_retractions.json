@@ -1,0 +1,344 @@
+{
+ "_doc": "PINNED RETRACTION -- consolidated cells for quarters where the company filed NO consolidated result at all. Distinct from copied_con_purge.json, which nulls con cells that EXACTLY EQUAL their standalone twin (the byte-copy signature, runbook 85a-ter). These cells DIFFER from standalone and therefore survived that purge -- but 'differs' only proves 'not a byte copy', it never proves 'a consolidated table exists'. Where the exchange record shows no consolidated filing, ANY con value is fabricated regardless of whether it differs. Entries carry held=<reason>, so verify_fills_live.py's resurrection check (runbook 85b) asserts these cells stay ABSENT and reports them if an applier refills them. Apply with scripts/apply_con_nofile_retractions.py (idempotent, re-runnable).",
+ "_evidence": {
+  "HUHTAMAKI": {
+   "verified": "2026-08-18",
+   "last_consolidated_filing": "QE 2016-12-31, announced to BSE 2017-02-21",
+   "exchange_record": "BSE announcement history scrip 509820, 2013-2026: 'Standalone & Consolidated Financial Results' headlines for QE 2016-03/06/09/12 and NO consolidated headline after 2017-02-21. Dec-2015 headline reads Standalone only.",
+   "company_submissions": "28 cached NSE XBRL instances covering QE 2020-06-30..2026-06-30 (symbols PAPERPROD then HUHTAMAKI) -- every one declares NatureOfReportStandaloneConsolidated=Standalone; ZERO Consolidated. Each instance's RevenueFromOperations reproduces our stored revS to the paisa in 23 of 23 quarters.",
+   "defect_mechanism": "the stored revC is the STANDALONE statement's revenue sub-line 'a) Sale of Products & Services', not consolidated revenue. Proven to the paisa from the company's own PDFs: Dec-2022 filing (BSE d2280993-bc1c-4ebe-b329-2e2a38284c78.pdf) prints Sale of Products & Services 6,765.2 / 7,534.6 / 6,484.6 Mn for QE Dec-22 / Sep-22 / Dec-21 = our stored revC 676.52 / 753.46 / 648.46, while Total Revenue from Operations 6,927.1 / 7,690.3 / 6,615.7 Mn = our stored revS 692.71 / 769.03 / 661.57. 676.52 + 16.19 (Other Operating Revenue) = 692.71 exactly.",
+   "provenance": "values entered scripts/revop_fundamentals.json at commit 4d63e91d8a (2026-07-22, 'Complete revenue backfill: ever-member Nifty 500 sweep'); the 20241231 duplicate arrived later, present by a94fd2ef8 (2026-08-04). No fill ledger in scripts/ claims these keys in any of the four key shapes -- revop_fundamentals.json held them with no per-cell provenance.",
+   "note": "fiscal year is January-December; scale flips from 'Rs. in lacs' to 'Rs. in Million' at the Sep-2020 filing."
+  },
+  "CAMPUS": {
+   "verified": "2026-08-18",
+   "last_consolidated_filing": "QE 2022-06-30",
+   "company_submissions": "cached NSE XBRL: QE 2022-03-31 and QE 2022-06-30 each filed BOTH a Standalone and a Consolidated instance (con RevenueFromOperations 3,523,370,000 and 3,377,080,000 = our genuine revC 352.34 and 337.71). QE 2022-09-30 (INDAS_861046_6647_11112022173840) is Standalone ONLY, as is every quarter through 2026-03-31. Sole subsidiary Campus AI Pvt Ltd was merged into the company by NCLT order dated 2022-08-11, so no consolidated result was required from QE 2022-09-30 onward.",
+   "note": "scripts/no_con_filing.json stopped_filing_con CAMPUS=20220930 is CORRECT and was already there; copied_con_purge.json had nulled this quarter's revC and patC as std copies, but opC and ebitC differed from their std twins and survived."
+  }
+ },
+ "HUHTAMAKI|20201231|revC": {
+  "was": 547.41,
+  "std": 557.71,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "standalone revenue sub-line (same shape as the quarters proven against the PDFs; consistently below revS by the Other Operating Revenue line)"
+ },
+ "HUHTAMAKI|20201231|patC": {
+  "was": 5.08,
+  "std": 5.08,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "already nulled by copied_con_purge.json as a standalone byte-copy; pinned here because no consolidated filing exists for this quarter at all"
+ },
+ "HUHTAMAKI|20210331|revC": {
+  "was": 620.52,
+  "std": 632.34,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "standalone revenue sub-line (same shape as the quarters proven against the PDFs; consistently below revS by the Other Operating Revenue line)"
+ },
+ "HUHTAMAKI|20210331|patC": {
+  "was": 16.17,
+  "std": 16.17,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "already nulled by copied_con_purge.json as a standalone byte-copy; pinned here because no consolidated filing exists for this quarter at all"
+ },
+ "HUHTAMAKI|20210630|revC": {
+  "was": 650.46,
+  "std": 662.64,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "standalone revenue sub-line (same shape as the quarters proven against the PDFs; consistently below revS by the Other Operating Revenue line)"
+ },
+ "HUHTAMAKI|20210630|patC": {
+  "was": -3.5,
+  "std": -3.5,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "already nulled by copied_con_purge.json as a standalone byte-copy; pinned here because no consolidated filing exists for this quarter at all"
+ },
+ "HUHTAMAKI|20210930|revC": {
+  "was": 651.42,
+  "std": 668.73,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "standalone revenue sub-line (same shape as the quarters proven against the PDFs; consistently below revS by the Other Operating Revenue line)"
+ },
+ "HUHTAMAKI|20210930|opC": {
+  "was": 1.31,
+  "std": 31.28,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "no consolidated statement exists for this quarter, so this con cell has no filing behind it"
+ },
+ "HUHTAMAKI|20210930|patC": {
+  "was": -21.84,
+  "std": -21.84,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "already nulled by copied_con_purge.json as a standalone byte-copy; pinned here because no consolidated filing exists for this quarter at all"
+ },
+ "HUHTAMAKI|20210930|ebitC": {
+  "was": -21.73,
+  "std": 8.24,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "no consolidated statement exists for this quarter, so this con cell has no filing behind it"
+ },
+ "HUHTAMAKI|20211231|revC": {
+  "was": 648.46,
+  "std": 661.57,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "standalone 'Sale of Products & Services' sub-line, read from the filing (6484.6 Mn printed)"
+ },
+ "HUHTAMAKI|20211231|patC": {
+  "was": -13.52,
+  "std": -13.52,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "already nulled by copied_con_purge.json as a standalone byte-copy; pinned here because no consolidated filing exists for this quarter at all"
+ },
+ "HUHTAMAKI|20220331|revC": {
+  "was": 711.07,
+  "std": 728.51,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "standalone revenue sub-line (same shape as the quarters proven against the PDFs; consistently below revS by the Other Operating Revenue line)"
+ },
+ "HUHTAMAKI|20220331|patC": {
+  "was": 24.61,
+  "std": 24.61,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "already nulled by copied_con_purge.json as a standalone byte-copy; pinned here because no consolidated filing exists for this quarter at all"
+ },
+ "HUHTAMAKI|20220630|revC": {
+  "was": 775.45,
+  "std": 792.67,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "standalone revenue sub-line (same shape as the quarters proven against the PDFs; consistently below revS by the Other Operating Revenue line)"
+ },
+ "HUHTAMAKI|20220630|opC": {
+  "was": 40.33,
+  "std": 34.49,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "no consolidated statement exists for this quarter, so this con cell has no filing behind it"
+ },
+ "HUHTAMAKI|20220630|patC": {
+  "was": 8.15,
+  "std": 8.15,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "already nulled by copied_con_purge.json as a standalone byte-copy; pinned here because no consolidated filing exists for this quarter at all"
+ },
+ "HUHTAMAKI|20220630|ebitC": {
+  "was": 18.38,
+  "std": 12.54,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "no consolidated statement exists for this quarter, so this con cell has no filing behind it"
+ },
+ "HUHTAMAKI|20220930|revC": {
+  "was": 753.46,
+  "std": 769.03,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "standalone 'Sale of Products & Services' sub-line, read from the filing (7534.6 Mn printed)"
+ },
+ "HUHTAMAKI|20220930|opC": {
+  "was": 25.06,
+  "std": 22.95,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "no consolidated statement exists for this quarter, so this con cell has no filing behind it"
+ },
+ "HUHTAMAKI|20220930|patC": {
+  "was": 0.04,
+  "std": 0.04,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "already nulled by copied_con_purge.json as a standalone byte-copy; pinned here because no consolidated filing exists for this quarter at all"
+ },
+ "HUHTAMAKI|20220930|ebitC": {
+  "was": 4.03,
+  "std": 1.92,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "no consolidated statement exists for this quarter, so this con cell has no filing behind it"
+ },
+ "HUHTAMAKI|20221231|revC": {
+  "was": 676.52,
+  "std": 692.71,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "standalone 'Sale of Products & Services' sub-line, read from the filing (6765.2 Mn printed)"
+ },
+ "HUHTAMAKI|20221231|patC": {
+  "was": 16.84,
+  "std": 16.84,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "already nulled by copied_con_purge.json as a standalone byte-copy; pinned here because no consolidated filing exists for this quarter at all"
+ },
+ "HUHTAMAKI|20230331|revC": {
+  "was": 646.02,
+  "std": 661.53,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "standalone revenue sub-line (same shape as the quarters proven against the PDFs; consistently below revS by the Other Operating Revenue line)"
+ },
+ "HUHTAMAKI|20230331|patC": {
+  "was": 35.49,
+  "std": 35.49,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "already nulled by copied_con_purge.json as a standalone byte-copy; pinned here because no consolidated filing exists for this quarter at all"
+ },
+ "HUHTAMAKI|20230630|revC": {
+  "was": 605.82,
+  "std": 621.7,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "standalone revenue sub-line (same shape as the quarters proven against the PDFs; consistently below revS by the Other Operating Revenue line)"
+ },
+ "HUHTAMAKI|20230630|patC": {
+  "was": 14.46,
+  "std": 14.46,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "already nulled by copied_con_purge.json as a standalone byte-copy; pinned here because no consolidated filing exists for this quarter at all"
+ },
+ "HUHTAMAKI|20230930|revC": {
+  "was": 644.29,
+  "std": 662.48,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "standalone revenue sub-line (same shape as the quarters proven against the PDFs; consistently below revS by the Other Operating Revenue line)"
+ },
+ "HUHTAMAKI|20230930|patC": {
+  "was": 32.27,
+  "std": 32.27,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "already nulled by copied_con_purge.json as a standalone byte-copy; pinned here because no consolidated filing exists for this quarter at all"
+ },
+ "HUHTAMAKI|20231231|revC": {
+  "was": 585.19,
+  "std": 603.73,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "standalone 'Sale of Products & Services' sub-line, read from the filing (5851.9 Mn printed)"
+ },
+ "HUHTAMAKI|20231231|patC": {
+  "was": 327.42,
+  "std": 327.42,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "already nulled by copied_con_purge.json as a standalone byte-copy; pinned here because no consolidated filing exists for this quarter at all"
+ },
+ "HUHTAMAKI|20240331|revC": {
+  "was": 593.65,
+  "std": 610.12,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "standalone revenue sub-line (same shape as the quarters proven against the PDFs; consistently below revS by the Other Operating Revenue line)"
+ },
+ "HUHTAMAKI|20240331|patC": {
+  "was": 26.03,
+  "std": 26.03,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "already nulled by copied_con_purge.json as a standalone byte-copy; pinned here because no consolidated filing exists for this quarter at all"
+ },
+ "HUHTAMAKI|20240630|revC": {
+  "was": 620.98,
+  "std": 639.45,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "standalone revenue sub-line (same shape as the quarters proven against the PDFs; consistently below revS by the Other Operating Revenue line)"
+ },
+ "HUHTAMAKI|20240630|patC": {
+  "was": 38.54,
+  "std": 38.54,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "already nulled by copied_con_purge.json as a standalone byte-copy; pinned here because no consolidated filing exists for this quarter at all"
+ },
+ "HUHTAMAKI|20240930|revC": {
+  "was": 634.67,
+  "std": 652.5,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "standalone 'Sale of Products & Services' sub-line, read from the filing (6346.7 Mn printed)"
+ },
+ "HUHTAMAKI|20240930|patC": {
+  "was": 11.71,
+  "std": 11.71,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "already nulled by copied_con_purge.json as a standalone byte-copy; pinned here because no consolidated filing exists for this quarter at all"
+ },
+ "HUHTAMAKI|20241231|revC": {
+  "was": 634.67,
+  "std": 619.11,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "adjacent-quarter DUPLICATE: byte-identical to 20240930's revC; the Dec-2024 filing prints Sale of Products and Services 6,012.3 Mn (=601.23), not 634.67"
+ },
+ "HUHTAMAKI|20241231|patC": {
+  "was": 11.69,
+  "std": 11.69,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "already nulled by copied_con_purge.json as a standalone byte-copy; pinned here because no consolidated filing exists for this quarter at all"
+ },
+ "HUHTAMAKI|20250331|revC": {
+  "was": 593.04,
+  "std": 609.93,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "standalone revenue sub-line (same shape as the quarters proven against the PDFs; consistently below revS by the Other Operating Revenue line)"
+ },
+ "HUHTAMAKI|20250331|patC": {
+  "was": 26.15,
+  "std": 26.15,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "already nulled by copied_con_purge.json as a standalone byte-copy; pinned here because no consolidated filing exists for this quarter at all"
+ },
+ "HUHTAMAKI|20250630|revC": {
+  "was": 591.94,
+  "std": 612.23,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "standalone revenue sub-line (same shape as the quarters proven against the PDFs; consistently below revS by the Other Operating Revenue line)"
+ },
+ "HUHTAMAKI|20250630|patC": {
+  "was": 24.94,
+  "std": 24.94,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "already nulled by copied_con_purge.json as a standalone byte-copy; pinned here because no consolidated filing exists for this quarter at all"
+ },
+ "HUHTAMAKI|20250930|revC": {
+  "was": 604.93,
+  "std": 624.73,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "standalone revenue sub-line (same shape as the quarters proven against the PDFs; consistently below revS by the Other Operating Revenue line)"
+ },
+ "HUHTAMAKI|20250930|patC": {
+  "was": 36.77,
+  "std": 36.77,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "already nulled by copied_con_purge.json as a standalone byte-copy; pinned here because no consolidated filing exists for this quarter at all"
+ },
+ "HUHTAMAKI|20251231|revC": {
+  "was": 599.13,
+  "std": 622.52,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "standalone revenue sub-line (same shape as the quarters proven against the PDFs; consistently below revS by the Other Operating Revenue line)"
+ },
+ "HUHTAMAKI|20251231|patC": {
+  "was": 30.3,
+  "std": 30.3,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "already nulled by copied_con_purge.json as a standalone byte-copy; pinned here because no consolidated filing exists for this quarter at all"
+ },
+ "HUHTAMAKI|20260331|revC": {
+  "was": 593.63,
+  "std": 613.1,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "standalone revenue sub-line (same shape as the quarters proven against the PDFs; consistently below revS by the Other Operating Revenue line)"
+ },
+ "HUHTAMAKI|20260331|patC": {
+  "was": 25.6,
+  "std": 25.6,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "already nulled by copied_con_purge.json as a standalone byte-copy; pinned here because no consolidated filing exists for this quarter at all"
+ },
+ "CAMPUS|20220930|revC": {
+  "was": 333.17,
+  "std": 333.17,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "already nulled by copied_con_purge.json as a standalone byte-copy; pinned here because no consolidated filing exists for this quarter at all"
+ },
+ "CAMPUS|20220930|opC": {
+  "was": 44.48,
+  "std": 43.44,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "no consolidated statement exists for this quarter, so this con cell has no filing behind it"
+ },
+ "CAMPUS|20220930|patC": {
+  "was": 14.54,
+  "std": 14.54,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "already nulled by copied_con_purge.json as a standalone byte-copy; pinned here because no consolidated filing exists for this quarter at all"
+ },
+ "CAMPUS|20220930|ebitC": {
+  "was": 27.51,
+  "std": 26.47,
+  "held": "no consolidated filing exists for this quarter",
+  "why": "no consolidated statement exists for this quarter, so this con cell has no filing behind it"
+ }
+}

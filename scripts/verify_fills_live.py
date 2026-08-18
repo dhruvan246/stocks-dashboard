@@ -135,6 +135,18 @@ BASIS_KEYED = [
     # so neither silently checks nothing.
     ("conpat_filing_fills.json",       "fund",  "con",     {"con": 3}),
     ("conpat_filing_fills.json",       "revop", "rev_con", {"con_rev": 1}),
+    # ★ con_nofile_retractions.json (2026-08-18) — con cells for quarters with NO consolidated
+    # filing at all. EVERY entry carries `held`, so all four registrations feed the resurrection
+    # check below and nothing here asserts presence. This is the ledger's whole point: the cells
+    # differ from their standalone twin, so purge_copied_con.py's equality test can never re-null
+    # them, and the writer that produced them is still active (HUHTAMAKI's 20241231 duplicate
+    # landed two weeks after the other 21). Four registrations because sf_revop carries four con
+    # fields in different slots and BASIS_SLOT maps only the revenue pair; each one skips the
+    # other three fields' entries, so none of them silently checks nothing.
+    ("con_nofile_retractions.json",    "revop", "was",     {"revC": 1}),
+    ("con_nofile_retractions.json",    "revop", "was",     {"opC": 3}),
+    ("con_nofile_retractions.json",    "revop", "was",     {"patC": 5}),
+    ("con_nofile_retractions.json",    "revop", "was",     {"ebitC": 8}),
 ]
 # "revS"/"revC" are accepted as basis tokens alongside "std"/"con": several ledgers key their third
 # part by FIELD rather than by BASIS, and the loop below silently `continue`s on any token it cannot
