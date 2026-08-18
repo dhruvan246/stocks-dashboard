@@ -1717,6 +1717,14 @@ the user's plan: no API key, no laptop-awake dependency.
   The contract is also STRUCTURAL, not just timing: `find_pending` (results_pending.py) subtracts
   everything the crons already filled, and the NSE-side vision overlay applies to EMPTY cells only,
   so real XBRL always supersedes.
+- **The switch-back is AUTOMATED as a reminder, not as an action.** Routine
+  `vision-fill-season-restore-check` (`trig_013w3xTyqPckt82NxGHFQWDS`, cron `0 4 * 10,11 1` UTC =
+  every **Monday in Oct + Nov, 09:30 IST**) reads `docs/results_feed.json` from its own clone, counts
+  filings per day, and pushes a notification ONLY when the season has measurably restarted
+  (trailing-7 ≥ 100, or any single day ≥ 30; the off-season baseline measured 2026-08-18 was ~30 per
+  7 days). A quiet week sends nothing, so it cannot nag. It is STRICTLY READ-ONLY — it does not touch
+  the cron itself; restoring `0 8,11,15,18 * * *` UTC stays a human decision. **Delete this check once
+  the four slots are back**, or it will fire every Monday until end-Nov.
 - **Landing path — direct push to main is 403-blocked for cloud sessions.** The routine pushes a
   `claude/vision-fill-<timestamp>` branch → `gh pr create` → `gh pr merge --squash --delete-branch
   --admin` (merges within seconds; PRs #4/#5/#6 were the first three). A conflicted merge used to be
