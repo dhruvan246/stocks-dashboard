@@ -130,8 +130,6 @@ const FAMILIES = [
   ] },
   { id: 'revenue', label: 'Revenue & margins', src: 'revop', note: 'From sf_revop, made point-in-time with sf_fundamentals\' filing date for the same quarter.', params: [
     { k: 'rev', src: 'revop', rule: 'Revenue (consolidated, else standalone) for the latest quarter filed on or before the date.' },
-    { k: 'op', src: 'revop', rule: 'Operating profit (consolidated, else standalone) for that same quarter.' },
-    { k: 'ebit', src: 'revop', rule: 'EBIT for that same quarter — the sparsest slot in the file. Derived upstream as Operating Profit − Depreciation. Banking-format filers are N/A: their P&L runs Interest Earned → Interest Expended → Operating Profit BEFORE provisions, so interest is already deducted and "earnings before interest" does not exist for them — no filing, and neither screener.in nor Moneycontrol, carries the line. Per-name evidence in scripts/coverage_na_ledger.json; nothing is excluded without it.' },
   ] },
   /* Reporting basis — deliberately its OWN family. The `rev` column above is "consolidated ELSE
    * standalone", so a company that never files consolidated still reads 100% there; that fallback
@@ -928,7 +926,7 @@ function run(ctx, C) {
     const engineCols = []; PARAMS.forEach((p, i) => { if (!p.src) engineCols.push(i); });
     const iIndustry = PARAMS.findIndex(p => p.k === 'industry');
     const iTurnover = PARAMS.findIndex(p => p.k === 'turnover');
-    const revCols = ['rev', 'op', 'ebit'].map(k => PARAMS.findIndex(p => p.k === k && p.src === 'revop'));
+    const revCols = ['rev'].map(k => PARAMS.findIndex(p => p.k === k && p.src === 'revop'));
     const BASIS_KEYS = ['revCon', 'revStd', 'patCon', 'patStd'];
     const basisCols = BASIS_KEYS.map(k => PARAMS.findIndex(p => p.k === k && p.src === 'basis'));
     // PAT-std / PAT-con column positions, in the same family order the flag arrays are built in
@@ -939,13 +937,13 @@ function run(ctx, C) {
 
     // per-row flags for the non-engine families, computed once per row per date
     const perRow = rows.map(([sym, flags, turnover, indKnown, na, es, ec]) => {
-      const rv = [0, 0, 0];
+      const rv = [0];
       const ridx = revFor(sym), rmap = revopFor(sym);
       if (ridx && rmap) {
         let qe = null;
         for (let i = ridx.length - 1; i >= 0; i--) if (ridx[i][0] <= dateInt) { qe = ridx[i][1]; break; }
         const cell = qe ? rmap[qe] : null;
-        if (cell) ['rev', 'op', 'ebit'].forEach((k, j) => {
+        if (cell) ['rev'].forEach((k, j) => {
           const [ci, si] = revopIdx[k];
           rv[j] = (cell[ci] != null || cell[si] != null) ? 1 : 0;
         });
@@ -957,9 +955,9 @@ function run(ctx, C) {
       // asked the page to fill a number no filing contains — 2,819 of the 3,402 missing ebit
       // member-dates in Nifty 500 were this. Only symbols with per-name evidence in the ledger are
       // marked; a name whose evidence is absent stays a visible gap on purpose.
-      const rvna = [0, 0, 0];
+      const rvna = [0];
       const fra = firstRealAnn(sym);
-      ['rev', 'op', 'ebit'].forEach((k, j) => {
+      ['rev'].forEach((k, j) => {
         if (!rv[j] && naLedgerHit(k, sym, d.iso)) rvna[j] = 1;
         // first REAL filing still in the future -> nothing was public for this entity yet (§99)
         else if (!rv[j] && fra && fra > dateInt) rvna[j] = 1;
@@ -1030,7 +1028,7 @@ function run(ctx, C) {
           else if (ex) (ex[PARAMS[engineCols[j]].k] ||= []).push(r.sym);   // missing, not N/A
         }
         if (r.indKnown) cnt[iIndustry]++; else if (ex) (ex.industry ||= []).push(r.sym);
-        for (let j = 0; j < 3; j++) {
+        for (let j = 0; j < revCols.length; j++) {
           if (r.rv[j]) cnt[revCols[j]]++;
           else if (r.rvna && r.rvna[j]) nac[revCols[j]]++;   // inapplicable, not missing
           else if (ex) (ex[PARAMS[revCols[j]].k] ||= []).push(r.sym);
