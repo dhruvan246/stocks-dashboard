@@ -3278,5 +3278,13 @@
   "src": "BSE consolidated sheet, Q1FY20 filing 60249b45-9974-4e35-955f-4fb37f82d615",
   "evidence": "DIGIT ERROR 1->7: stored 1774.19 vs filed 1174.19. Closed by the six-month identity printed in the Q2 filing: 1,174.19 + 1,286.79 = 2,460.98 exactly as printed.",
   "why": "wrong value, not a gap"
+ },
+ "ATUL|20221231|con_rev": {
+  "rev_con": 1268.25,
+  "was": 1194.47,
+  "when": "2026-08-18 19:07 IST",
+  "src": "BSE 500027 d4522ae3-704c-4aec-815a-1ae3a0b0a7ea p5",
+  "evidence": "ATUL Dec-2022 filing (BSE 500027, AttachHis/d4522ae3-704c-4aec-815a-1ae3a0b0a7ea), QUARTER ended 31-Dec-2022 column - header verified as \"December 31, 2022 / Unaudited\", the FIRST numeric column; the nine-month column is plainly different (std rev 3,975.90 / con rev 4,232.37 / std profit 463.71 / con profit 414.42) so no SpiceJet-class column error. Rows read at 6x magnification: p2 \"01. INCOME / a) Revenue from operations\" 1,194.47 and \"05. Profit for the period\" 136.87 (standalone); p5 same revenue row 1,268.25, \"07. Profit for the period\" 102.88 TOTAL, \"Attributable to: Owners of the Company\" 105.10, \"Attributable to: Non-controlling interests\" (2.22). Three arithmetic closures: standalone 182.95-46.08=136.87; consolidated 142.28-39.40=102.88; 105.10+(2.22)=102.88.",
+  "why": "con revenue slot held the STANDALONE revenue - a basis mislabel, not a gap"
  }
 }
