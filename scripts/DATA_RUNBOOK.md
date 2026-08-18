@@ -25,7 +25,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§15** QUARTERLY RESULTS DASHBOARD
 - **§16** DISCOVERY BUCKETS
 - **§17** BSE-ONLY STOCK COVERAGE
-- **§17b** VISION-FILL = CLOUD ROUTINE 4×/day (13:30/16:30/20:30/23:30 IST)
+- **§17b** VISION-FILL = CLOUD ROUTINE 1×/day 23:30 IST (was 4×/day in season)
 - **§18** DATA HEALTH MONITORING + COMMIT GUARDS
 - **§19** SITE FEATURES ON SUPABASE
 - **§20** RESULTS COVERAGE DASHBOARD
@@ -1696,23 +1696,33 @@ the Quarterly Results page. **4 scripts + `.github/workflows/refresh-bse.yml` (2
   Needs the user's explicit deploy authorization (auto-mode blocks it otherwise). Manual fallback: paste the file
   in the quick editor + Deploy (LIVE_FEED_SETUP.md).
 
-### 17b. VISION-FILL = CLOUD ROUTINE, 4×/day  (ported off the desktop 2026-07-28)
+### 17b. VISION-FILL = CLOUD ROUTINE, 1×/day 23:30 IST  (ported off the desktop 2026-07-28; cut from 4×/day 2026-08-18)
 
 The `bse-vision-fill` reader — the thing that guarantees no declared result stays "numbers being
 parsed" — is a **Claude Code CLOUD routine** (claude.ai/code/routines, id
 `trig_01N3H7t8Dgn2XmLqwBg94j2r`), no longer a local desktop task. It runs on Anthropic's cloud on
 the user's plan: no API key, no laptop-awake dependency.
-- **Schedule: cron `0 8,11,15,18 * * *` UTC = 13:30 / 16:30 / 20:30 / 23:30 IST.** Each slot sits
-  just AFTER a free-reader wave, honoring the standing contract *"other fetches first; vision only
-  fills what they missed"*: 13:30 after the 12:10 BSE OCR grind; 16:30 for post-market filings;
-  20:30 right after the 15-min XBRL window closes (09:30–20:29 IST); 23:30 after the 22:10 BSE full
-  run + 23:15 XBRL nightly pass (the old desktop slot). The contract is also STRUCTURAL, not just
-  timing: `find_pending` (results_pending.py) subtracts everything the crons already filled, and the
-  NSE-side vision overlay applies to EMPTY cells only, so real XBRL always supersedes.
+- **Schedule: cron `0 18 * * *` UTC = 23:30 IST, ONCE a day.** It ran `0 8,11,15,18 * * *` UTC
+  (13:30 / 16:30 / 20:30 / 23:30 IST) through the Jun-2026 season; **cut to the single 23:30 slot on
+  2026-08-18** after measuring that new filings had collapsed from 756/day on 14-Aug (the SEBI 45-day
+  deadline) to 8/day, and that 23:30 was the only slot still landing work (17-Aug: it filled 18 of 48
+  while the other three landed nothing). **⚠️ RESTORE all four slots when the next season opens —
+  ~mid-Oct 2026 for the Sep-2026 quarter, whose deadline is 14-Nov-2026.**
+  23:30 is the correct SINGLE slot for two measured reasons. (a) It is LAST, so every free reader has
+  already had its turn — BSE 12:10 + 20:10, refresh-fundamentals every 30 min 09:30–20:00 plus the
+  21:15 nightly, refresh-announcements 21:30, refresh-results-hourly through 00:30 — honoring the
+  standing contract *"other fetches first; vision only fills what they missed"*. (b) Filings peak
+  16:00–19:00 IST and **99.5% of a day's arrive by 22:00** (measured across the 4,404-row
+  results_feed), so a 23:30 run sees the day COMPLETE — where 16:30 would see 33% and 13:30 only 17%.
+  The contract is also STRUCTURAL, not just timing: `find_pending` (results_pending.py) subtracts
+  everything the crons already filled, and the NSE-side vision overlay applies to EMPTY cells only,
+  so real XBRL always supersedes.
 - **Landing path — direct push to main is 403-blocked for cloud sessions.** The routine pushes a
   `claude/vision-fill-<timestamp>` branch → `gh pr create` → `gh pr merge --squash --delete-branch
-  --admin` (merges within seconds; PRs #4/#5/#6 were the first three). A conflicted merge = leave
-  the PR open and report; the next slot re-fills the same numbers.
+  --admin` (merges within seconds; PRs #4/#5/#6 were the first three). A conflicted merge used to be
+  cheap — "leave the PR open, the next slot re-fills it". **At 1×/day that is no longer true: there is
+  no next slot for 24 h.** The prompt was updated to match — 3 recovery cycles instead of 2, and an
+  still-unmerged PR must be flagged LOUDLY as needing a human merge that day.
 - **There is NO local fallback task anymore** — the old Windows scheduled task, its worktree and its
   SKILL.md went away with the Windows box (retired 2026-08-05). If the cloud routine breaks, fix and
   re-run the routine itself; do NOT recreate a local scheduled task.
@@ -3498,7 +3508,7 @@ base alongside the derived change, gate the change on the base.
 - **GitHub Actions** (~30 `refresh-*.yml` + `refresh.yml` + `pages.yml`…) — cloud checkouts,
   file-scoped `git add`, per-workflow `concurrency:` groups, rebase-retry push. Well-behaved;
   keep that pattern intact when editing workflows.
-- **Cloud Claude routines** (claude.ai/code/routines; today: bse-vision-fill 4×/day §17b +
+- **Cloud Claude routines** (claude.ai/code/routines; today: bse-vision-fill 1×/day §17b +
   deep-fundamentals nightly §50) — fresh throwaway VM per run, lands work via a `claude/*` branch +
   auto-merged PR. (The old LOCAL scheduled-task pattern — private persistent worktree under
   `~/stocks-wt/<task>`, never the interactive checkout — retired with the Windows box 2026-08-05,
