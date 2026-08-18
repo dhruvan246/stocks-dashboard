@@ -274,17 +274,6 @@
   ],
   "was": 8.66
  },
- "IREDA|20230630|revS": {
-  "agent_confidence": "medium",
-  "agent_reason": "the ratio (~8.6x) isn't clean, but this is the FIRST quarter of data we hold (pre-listing, before IREDA's Nov-2023 IPO) ",
-  "agent_slice": "triage_out_4.json",
-  "applied": "2026-08-07 agent-claim verification",
-  "now": 1143.0,
-  "verified_by": [
-   "T2 FY2024 identity fixed (4964.12 vs annual 4965.0)"
-  ],
-  "was": 132.73
- },
  "JMTAUTOLTD|20190630|revC": {
   "agent_confidence": "high",
   "agent_reason": "FY sum reconciles to screener's annual within 0.02% only after substituting screener's 122.0 for this cell (vs -15% off ",
@@ -735,5 +724,17 @@
    "T2 FY2024 identity fixed (1288.98 vs annual 1289.0)"
   ],
   "was": 248.73
+ },
+ "_RETRACTED_IREDA_20230630_revS": {
+  "agent_confidence": "medium",
+  "agent_reason": "the ratio (~8.6x) isn't clean, but this is the FIRST quarter of data we hold (pre-listing, before IREDA's Nov-2023 IPO) ",
+  "agent_slice": "triage_out_4.json",
+  "applied": "2026-08-07 agent-claim verification",
+  "now": 1143.0,
+  "verified_by": [
+   "T2 FY2024 identity fixed (4964.12 vs annual 4965.0)"
+  ],
+  "was": 132.73,
+  "RETRACTED": "2026-08-18 12:39 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Key deliberately carries NO pipe so ledger walkers cannot parse it back into a cell. Kept for audit; must not be re-applied."
  }
 }

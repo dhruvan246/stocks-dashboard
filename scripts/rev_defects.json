@@ -194,13 +194,6 @@
   }
  },
  "MGL": {
-  "20220630": {
-   "bad_rev": 20.01,
-   "basis": "std",
-   "correct_rev": 1593.18,
-   "defect": "foreign junk in BOTH rev slots (batch 4d63e91d created the row); con slot healed to the same 1593.18 by identity in the same pass",
-   "source": "H1-minus-Sep from own Sep-22 std XBRL https://nsearchives.nseindia.com/corporate/xbrl/INDAS_868110_6014_14112022121632_WEB.xml; PAT identity closes on stored 185.20 exactly"
-  },
   "_RETRACTED_20210930": {
    "bad_rev": 666.85,
    "basis": "con",
@@ -224,6 +217,14 @@
    "defect": "Unison-sized foreign junk in con slot (batch 0809d274); no con filing, no subsidiary until 2024-02-01 \u2014 con==std identity",
    "source": "NSE filing index (std-listed, no con row) + Unison completion 2024-02-01",
    "RETRACTED": "2026-08-18 12:33 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - the exchange record shows no consolidated filing for that quarter, so there is no cell for this entry to describe. Quarter key prefixed so walkers cannot parse it. Audit only; do not re-apply."
+  },
+  "_RETRACTED_20220630": {
+   "bad_rev": 20.01,
+   "basis": "std",
+   "correct_rev": 1593.18,
+   "defect": "foreign junk in BOTH rev slots (batch 4d63e91d created the row); con slot healed to the same 1593.18 by identity in the same pass",
+   "source": "H1-minus-Sep from own Sep-22 std XBRL https://nsearchives.nseindia.com/corporate/xbrl/INDAS_868110_6014_14112022121632_WEB.xml; PAT identity closes on stored 185.20 exactly",
+   "RETRACTED": "2026-08-18 12:39 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - the exchange record shows no consolidated filing for that quarter, so there is no cell for this entry to describe. Quarter key prefixed so walkers cannot parse it. Audit only; do not re-apply."
   }
  },
  "MMTC": {

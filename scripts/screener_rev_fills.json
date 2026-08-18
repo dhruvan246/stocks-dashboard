@@ -831,12 +831,6 @@
   "revS": 275.0,
   "src": "screener.in, gate-validated (\u00a760c)"
  },
- "IREDA|20230930": {
-  "std": {
-   "rev": 1177.0,
-   "src": "screener.in quarterly table (Sales row; np 285.0 anchored == stored 285.0)"
-  }
- },
  "ITCHOTELS|20240930|revC": {
   "applied": "2026-08-06 screener gate sweep",
   "evidence": "gate ok 8/8 neighbour quarters reproduce our stored revC (row 'Sales')",
@@ -1906,5 +1900,12 @@
    "src": "screener.in quarterly table (Sales row; np 378.0 anchored == stored 378.45)"
   },
   "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Key deliberately carries NO pipe so ledger walkers cannot parse it back into a cell. Kept for audit; must not be re-applied."
+ },
+ "_RETRACTED_IREDA_20230930": {
+  "std": {
+   "rev": 1177.0,
+   "src": "screener.in quarterly table (Sales row; np 285.0 anchored == stored 285.0)"
+  },
+  "RETRACTED": "2026-08-18 12:39 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Key deliberately carries NO pipe so ledger walkers cannot parse it back into a cell. Kept for audit; must not be re-applied."
  }
 }
