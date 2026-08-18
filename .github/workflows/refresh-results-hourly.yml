@@ -1,14 +1,27 @@
 name: Hourly results feed + calendar
 
-# Light hourly top-up for the Quarterly Results page during filing hours
-# (08:30–00:30 IST, every day — results land all day and past midnight in season).
+# Light top-up for the Quarterly Results page during filing hours (08:30–00:30 IST, every
+# day — results land all day and past midnight in season). Hourly IN SEASON; 6×/day off-season
+# (cut 2026-08-18, see the cron block).
 # Commits ONLY the two small side-files (results_feed.json ~100 KB, results_calendar.json
 # ~40 KB) — the big announcements.json stays on its own 4×/day cadence to avoid
 # bloating git history with 4.7 MB hourly snapshots.
 
 on:
   schedule:
-    - cron: "0 3-19 * * *"   # hourly, 03:00–19:00 UTC = 08:30–00:30 IST
+    # 6×/day IST: 08:30, 12:30, 16:30, 20:30, 22:30, 00:30 — CUT from hourly (17/day) on
+    # 2026-08-18, when the Jun-2026 season ended. Measured that day: new filings had fallen from
+    # 756/day (14-Aug, the SEBI 45-day deadline) to ~8/day, and 4 of the last 9 hourly commits had
+    # changed NOTHING but the `updated` timestamp — 44% pure churn on docs/results_feed.json, one of
+    # the single-line JSONs the bse-vision-fill routine must merge past every night.
+    #
+    # ⚠️ THE 22:30 SLOT IS LOAD-BEARING. bse-vision-fill runs at 23:30 IST and its find_pending reads
+    # this feed, so the feed has to be topped up shortly BEFORE it — not after. Do not drop 17 UTC.
+    # 00:30 keeps the late-evening catch.
+    #
+    # RESTORE "0 3-19 * * *" (hourly) when the next season opens ~mid-Oct 2026 — the
+    # vision-fill-season-restore-check routine (Mondays in Oct+Nov) measures and says when.
+    - cron: "0 3,7,11,15,17,19 * * *"   # 03/07/11/15/17/19 UTC = 08:30/12:30/16:30/20:30/22:30/00:30 IST
   repository_dispatch:
     types: [results-hourly]
   workflow_dispatch: {}

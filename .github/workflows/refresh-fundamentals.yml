@@ -2,8 +2,16 @@ name: Daily fundamentals refresh
 
 on:
   schedule:
-    # Twice hourly, 04:00–14:30 UTC = 09:30–20:00 IST, EVERY day (weekend board meetings
+    # Hourly at :00, 04:00–14:00 UTC = 09:30–19:30 IST, EVERY day (weekend board meetings
     # exist). Span covers the results-filing window (filings cluster 15:00–20:00 IST).
+    #
+    # 2026-08-18 — HALVED from twice-hourly (":00/:30", 22 runs) to hourly (":00", 11 runs) for the
+    # off-season. The Jun-2026 season closed 14-Aug and new filings fell 756/day -> ~8/day, so the
+    # second slot each hour bought nothing but git churn on single-line JSONs — the same files the
+    # bse-vision-fill routine has to merge past. This is a REDUCTION and does NOT contradict the
+    # throttling note below, which warns only against making the cron DENSER. The 19:30 IST last
+    # slot (was 20:00) is covered by refresh-bse 20:10 and the 21:15 IST nightly below.
+    # RESTORE "0,30 4-14 * * *" when the next season opens ~mid-Oct 2026.
     #
     # ⚠️ THE REQUESTED CADENCE IS NOT THE DELIVERED CADENCE. This was "*/15" until
     # 2026-07-22, on the theory that firing 4×/h makes a dropped slot cheap. Measuring the
@@ -21,7 +29,7 @@ on:
     # Idle runs are ~40 s (the updater skips iXBRL for quarters already stored) and the
     # 1.8 MB Quarterly Results baker stays GATED on docs/.fund_updated, so this costs
     # ~nothing and does NOT bloat git history. Actions minutes are free (public repo).
-    - cron: "0,30 4-14 * * *"
+    - cron: "0 4-14 * * *"
     # 15:45 UTC (21:15 IST) — the FULL nightly run: insurer vision fill + IPO-base fill +
     # an UNGATED baker rebuild (so reactions/drift track the 20:45 IST prices). It gets
     # hours 15 AND 16 UTC to itself — no dense cron there — because the steps below detect
