@@ -3262,5 +3262,13 @@
   "src": "filing read 2026-08-18",
   "evidence": "NAHARPOLY 20190331 standalone PAT was MISSING from the store entirely - no row at all. Filed value 536.66 lakh = 5.37 cr, from the 2019-05-30 filing p2 (BSE 523391, AttachHis/c76316ac-9f62-46b9-9a1f-e97b044b1bb9.pdf), the audited standalone statement for the quarter and year ended 31-Mar-2019. Announce date 20190530 = the filing date. Found by an independent filing reader while adjudicating this company's consolidated floor.",
   "why": "row did not exist - a FILL, not a correction"
+ },
+ "WESTLIFE|20190630|con_rev": {
+  "rev_con": 381.97,
+  "was": 0.11,
+  "when": "2026-08-18 18:41 IST",
+  "src": "BSE 505533 consolidated statement f11fe62d... (2019-08-26) p3",
+  "evidence": "stored rev_con 0.11 was the STANDALONE revenue (10.71 lakh) mis-slotted into the con slot. The consolidated statement prints Total revenue from operations 38,196.95 lakh = 381.97 cr, with con PAT (112.65) = -1.13 matching our stored con PAT. The original 2019-07-25 filing prints 38,186.24 + other income 302.21 - the two filings reclassify exactly 10.71 between lines; Total Income is identical at 38,488.45 both times. CORRECTION of a wrong value, not a fill.",
+  "why": "std-in-con-slot defect, the mirror of the con-copy class"
  }
 }
