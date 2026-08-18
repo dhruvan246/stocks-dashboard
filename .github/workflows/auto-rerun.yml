@@ -95,8 +95,33 @@ jobs:
             echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Retry the failed run until it succeeds (max 5, exponential backoff)
+      - name: Stand down on a DETERMINISTIC failure (a data guard tripped)
+        id: classify
         if: steps.platform.outputs.skip != 'true'
+        run: |
+          set -uo pipefail
+          # ⚠️ `gh run rerun --failed` re-runs the ORIGINAL COMMIT. So when a run failed because a data
+          # GUARD rejected the payload, a retry re-fetches similar data with the same code and fails
+          # identically — the ladder CANNOT clear it, and every attempt mails.
+          # Measured 2026-08-18: "Refresh announcements" reached attempt 5 and "Hourly results feed +
+          # calendar" attempt 2, both still on pre-fix commit 6e5c3c2f1, both dying on the same line —
+          #   FEED GUARD FAILED ... results_calendar.json: 1562 B < manifest min_bytes 10000
+          # — long after the fix for exactly that had already landed on main. Nothing was retryable.
+          # A guard trip is a signal for a HUMAN, not a transient. The original run is already red and
+          # has already mailed once; that is the right amount of noise, so stand down quietly (exit 0)
+          # rather than adding four more failure emails that carry no new information.
+          failed=$(gh run view "$RID" --repo "$REPO" --json jobs \
+                   -q '[.jobs[].steps[] | select(.conclusion=="failure") | .name] | join(" | ")' 2>/dev/null || echo "")
+          echo "failing step(s): ${failed:-unknown}"
+          if printf '%s' "$failed" | grep -qiE "guard|refuse to commit|detect clobbered"; then
+            echo "::notice::'$WF_NAME' failed on a data guard ($failed) — deterministic; rerunning the same commit cannot clear it. Standing down. Fix the data or the threshold, then the next scheduled run goes green on its own."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Retry the failed run until it succeeds (max 5, exponential backoff)
+        if: steps.platform.outputs.skip != 'true' && steps.classify.outputs.skip != 'true'
         run: |
           set -uo pipefail
           # Backoff grows 90s → 3m → 6m → 10m → 15m (was a flat 90s). A flat wait retried
