@@ -133,6 +133,18 @@ jobs:
               echo "::warning::'$wf' (run $id) has had $att attempts — leaving it red for a human"
               continue
             fi
+            # ⚠️ SAME STAND-DOWN AS auto-rerun.yml — this sweep is its sibling and needs the identical
+            # rule, which is exactly what was missed on 2026-08-18: auto-rerun.yml learned to skip
+            # deterministic failures at 186f2c2c, this loop did not, so it kept re-running the
+            # fundamentals guard failure an hour later and mailed again. `gh run rerun --failed` re-runs
+            # the ORIGINAL COMMIT, so when a data GUARD rejected the payload the retry re-fetches
+            # similar data with the same code and fails identically — it cannot clear, only mail.
+            failed_steps=$(gh run view "$id" --repo "$REPO" --json jobs \
+                             -q '[.jobs[].steps[] | select(.conclusion=="failure") | .name] | join(" | ")' 2>/dev/null || echo "")
+            if printf '%s' "$failed_steps" | grep -qiE "guard|refuse to commit|detect clobbered"; then
+              echo "::notice::'$wf' (run $id) failed on a data guard ($failed_steps) — deterministic; rerunning the same commit cannot clear it. Leaving it for a human."
+              continue
+            fi
             echo "::notice::re-running '$wf' (run $id, attempt $att)"
             gh run rerun "$id" --failed --repo "$REPO" || echo "  (rerun failed for $id)"
             sleep 20        # stagger: these workflows push commits, do not stampede the rebase
