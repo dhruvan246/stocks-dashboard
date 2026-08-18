@@ -361,5 +361,15 @@
    "defect": "screener-annual derivation used a restated/transition FY total against as-filed quarters (mixed basis); as-filed BSE detailed-results value is 173.43",
    "source": "bse-detres arbitration 2026-08-02; PAT-anchored as-filed quarter from api.bseindia Corp_detailedResult_Transpose_ng"
   }
+ },
+ "TTKPRESTIG": {
+  "20190630": {
+   "anchor": "SAME PAGE, STANDALONE block, four exact reproductions of stored cells: 30.6.2018 revenue 418.87 == stored rev_std and profit 35.90 == stored stdPAT; 30.6.2019 revenue 433.60 == stored rev_std and profit 36.47 == stored stdPAT. Consolidated 31.3.2019 prints 44.77 against stored conPAT 44.76 (1 paisa).",
+   "bad_rev": 448.58,
+   "basis": "con",
+   "correct_rev": 461.2,
+   "defect": "column shift: the stored 20190630 consolidated row held the printed 30.6.2018 column on all three quantities at once (PAT 35.49, revenue 448.58, operating profit 55.72), while the printed 30.6.2019 column is 35.81 / 461.20 / 56.15. Three figures agreeing rules out coincidence; opC reproduces from the statement's own line items on both columns.",
+   "source": "TTK Prestige Ltd 'Statement of UnAudited Financial Results for the Quarter ended 30th June 2019' (BSE announcement 13-Aug-2019, attachment TTKPRESTIG_q1fy20.pdf) p2, CONSOLIDATED block, columns 'Quarter Ended 30.6.2019 / 31.3.2019 / 30.6.2018' \u2014 statement declares 'Rs.in Crores'. Scanned page with a mangled text layer; read by rendering at 2.4x."
+  }
  }
 }

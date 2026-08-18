@@ -3098,5 +3098,78 @@
    "RETRACTED": "2026-08-18 12:33 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - the exchange record shows no consolidated filing for that quarter, so there is no cell for this entry to describe. Quarter key prefixed so walkers cannot parse it. Audit only; do not re-apply."
   }
  },
- "_README": "Confirmed WRONG stored PAT cells in docs/sf_fundamentals.json, with the as-filed correct value and its source. Found while rev-backfilling: the cell's revenue could not be written because the stored PAT failed the anchor rule (see scripts/_apply_reads.py). sf_fundamentals is CI-rebuilt and is owned by refresh.yml / the bse-vision-fill routine (DATA_RUNBOOK hot-file ownership), so DO NOT hand-edit it from another tree - route the fix through that lane, then re-run the rev applier and these cells will anchor and fill."
+ "_README": "Confirmed WRONG stored PAT cells in docs/sf_fundamentals.json, with the as-filed correct value and its source. Found while rev-backfilling: the cell's revenue could not be written because the stored PAT failed the anchor rule (see scripts/_apply_reads.py). sf_fundamentals is CI-rebuilt and is owned by refresh.yml / the bse-vision-fill routine (DATA_RUNBOOK hot-file ownership), so DO NOT hand-edit it from another tree - route the fix through that lane, then re-run the rev applier and these cells will anchor and fill.",
+ "BHARATFORG": {
+  "20190930": {
+   "correct_pat_con": 207.08,
+   "defect": "stored value was the printed TOTAL (row 9); replaced with the printed OWNERS profit (row 13), which is this project's declared basis for npCon. owners + NCI reproduces the printed total to the paisa, and the filing's own basic EPS reproduces the owners figure.",
+   "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(\u20b9 in Million)'.",
+   "stored_pat_con": 205.48
+  },
+  "20191231": {
+   "correct_pat_con": 41.79,
+   "defect": "stored value was the printed TOTAL (row 9); replaced with the printed OWNERS profit (row 13), which is this project's declared basis for npCon. owners + NCI reproduces the printed total to the paisa, and the filing's own basic EPS reproduces the owners figure.",
+   "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(\u20b9 in Million)'.",
+   "stored_pat_con": 40.44
+  },
+  "20200930": {
+   "correct_pat_con": 0.03,
+   "defect": "stored value was the printed TOTAL (row 9); replaced with the printed OWNERS profit (row 13), which is this project's declared basis for npCon. owners + NCI reproduces the printed total to the paisa, and the filing's own basic EPS reproduces the owners figure.",
+   "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(\u20b9 in Million)'.",
+   "stored_pat_con": -1.32
+  },
+  "20201231": {
+   "correct_pat_con": -209.21,
+   "defect": "stored value was the printed TOTAL (row 9); replaced with the printed OWNERS profit (row 13), which is this project's declared basis for npCon. owners + NCI reproduces the printed total to the paisa, and the filing's own basic EPS reproduces the owners figure.",
+   "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(\u20b9 in Million)'.",
+   "stored_pat_con": -210.45
+  },
+  "20210331": {
+   "correct_pat_con": 208.61,
+   "defect": "stored value was the printed TOTAL (row 9); replaced with the printed OWNERS profit (row 13), which is this project's declared basis for npCon. owners + NCI reproduces the printed total to the paisa, and the filing's own basic EPS reproduces the owners figure.",
+   "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(\u20b9 in Million)'.",
+   "stored_pat_con": 212.12
+  },
+  "20210630": {
+   "correct_pat_con": 153.65,
+   "defect": "stored value was the printed TOTAL (row 9); replaced with the printed OWNERS profit (row 13), which is this project's declared basis for npCon. owners + NCI reproduces the printed total to the paisa, and the filing's own basic EPS reproduces the owners figure.",
+   "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(\u20b9 in Million)'.",
+   "stored_pat_con": 152.75
+  },
+  "20210930": {
+   "correct_pat_con": 271.19,
+   "defect": "stored value was the printed TOTAL (row 9); replaced with the printed OWNERS profit (row 13), which is this project's declared basis for npCon. owners + NCI reproduces the printed total to the paisa, and the filing's own basic EPS reproduces the owners figure.",
+   "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(\u20b9 in Million)'.",
+   "stored_pat_con": 270.45
+  },
+  "20211231": {
+   "correct_pat_con": 421.19,
+   "defect": "stored value was the printed TOTAL (row 9); replaced with the printed OWNERS profit (row 13), which is this project's declared basis for npCon. owners + NCI reproduces the printed total to the paisa, and the filing's own basic EPS reproduces the owners figure.",
+   "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(\u20b9 in Million)'.",
+   "stored_pat_con": 422.0
+  },
+  "20220630": {
+   "correct_pat_con": 164.45,
+   "defect": "stored value was the printed TOTAL (row 9); replaced with the printed OWNERS profit (row 13), which is this project's declared basis for npCon. owners + NCI reproduces the printed total to the paisa, and the filing's own basic EPS reproduces the owners figure.",
+   "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(\u20b9 in Million)'.",
+   "stored_pat_con": 160.37
+  },
+  "20230331": {
+   "correct_pat_con": 135.5,
+   "defect": "stored value was the printed TOTAL (row 9); replaced with the printed OWNERS profit (row 13), which is this project's declared basis for npCon. owners + NCI reproduces the printed total to the paisa, and the filing's own basic EPS reproduces the owners figure.",
+   "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(\u20b9 in Million)'.",
+   "stored_pat_con": 127.74
+  }
+ },
+ "TTKPRESTIG": {
+  "20190630": {
+   "anchor": "SAME PAGE, STANDALONE block, four exact reproductions of stored cells: 30.6.2018 revenue 418.87 == stored rev_std and profit 35.90 == stored stdPAT; 30.6.2019 revenue 433.60 == stored rev_std and profit 36.47 == stored stdPAT. Consolidated 31.3.2019 prints 44.77 against stored conPAT 44.76 (1 paisa).",
+   "campaign": "con-params-L4",
+   "correct_pat_con": 35.81,
+   "defect": "column shift: the stored 20190630 consolidated row held the printed 30.6.2018 column on all three quantities at once (PAT 35.49, revenue 448.58, operating profit 55.72), while the printed 30.6.2019 column is 35.81 / 461.20 / 56.15. Three figures agreeing rules out coincidence; opC reproduces from the statement's own line items on both columns.",
+   "source": "TTK Prestige Ltd 'Statement of UnAudited Financial Results for the Quarter ended 30th June 2019' (BSE announcement 13-Aug-2019, attachment TTKPRESTIG_q1fy20.pdf) p2, CONSOLIDATED block, columns 'Quarter Ended 30.6.2019 / 31.3.2019 / 30.6.2018' \u2014 statement declares 'Rs.in Crores'. Scanned page with a mangled text layer; read by rendering at 2.4x.",
+   "stored_pat_con": 35.49,
+   "when": "2026-08-18"
+  }
+ }
 }

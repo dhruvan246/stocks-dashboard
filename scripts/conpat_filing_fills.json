@@ -3482,5 +3482,1186 @@
   "when": "2026-08-18 20:30 IST",
   "src": "BSE 543523 Reg-30 Investor Presentation attachment 4eee005e-8588-4242-917d-aaec97553021.pdf (11-Nov-2022) slide 21 quarterly PAT bar series; basis proven by exclusion against the Q4FY22 filing which prints both bases (FY21 268.63 con vs (165.03) std; Q3FY22 547.18 con vs 235.27 std)",
   "evidence": "two bars in the same series reproduce stored CON cells EXACT: Q2FY22 282.4mn == 28.24, Q3FY22 547.2mn == 54.72. Figure is total con PAT; FY21 NCI -0.11mn so owners differ by <=0.02cr"
+ },
+ "ALOKINDS|20180930|con": {
+  "anchor": "SAME TABLE, SAME ROW, two exact hits: 30.09.2019 (165.20) == stored conPAT -165.2 EXACT; 30.06.2019 (120.94) == stored conPAT -120.94 EXACT. Column identities close exactly (934.67+3.05=937.72 total income; 937.72-2,339.96=(1,402.24); (1,401.96)-0.94=(1,402.90)).",
+  "annCon": 20191114,
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "carrying_filing": true,
+  "con": -1402.9,
+  "con_nci": null,
+  "con_total": -1402.9,
+  "evidence": "NO NCI BLOCK: ALOK's consolidated statements of this era carry no 'attributable to Owners / Non-controlling interest' split at all, so con == con_total and con_nci is genuinely absent (null, not zero). op_con -81.74 is DERIVED, not printed: (Loss from operations before share of JV, exceptional items and tax (1,402.24)) + (finance costs 1,188.34) + (depreciation 135.21) - (other income 3.05); that convention was validated EXACTLY against stored opC for ALOKINDS 20200331 (-263.78+58.92+120.58-16.77 = -101.05 == stored -101.05). Cross-check on the target: printed H1-FY19 consolidated (2,621.38) minus this quarter (1,402.90) implies Q1FY19 (1,218.48) against our stored 20180630 conPAT -1217.93 - a 0.55 cr regrouping between the original Q1FY19 filing and this restated comparative, i.e. the target column is the RESTATED view.",
+  "fill_pass": "2026-08-18 con-fill wave W5",
+  "printed": "(1,402.90) net profit / 934.67 revenue from operations",
+  "read_by": "vision (rendered 2.4x, p5, plus a 2.4x crop of the profit rows to be certain of the digits)",
+  "routes_tried": [
+   {
+    "result": "no ALOKINDS entry for 2018-09-30, either basis.",
+    "rung": "xbrl cache"
+   },
+   {
+    "result": "no ALOKINDS rows before 2020 at all.",
+    "rung": "NSE filing index (harvested AND live)"
+   },
+   {
+    "result": "BSE lists two 14-Nov-2018 'Un-Audited Financial Results For Quarter Ended September 30, 2018' items (efc4ce56-... and 15bd2d2f-...); BOTH attachments 404 on AttachHis and AttachLive.",
+    "rung": "BSE own filing (Q2FY19)"
+   },
+   {
+    "result": "HIT.",
+    "rung": "route 4 - Q2FY20 comparative column"
+   }
+  ],
+  "row": "9  Net Profit / (Loss) for the period (7-8)",
+  "src": "Alok Industries Limited, 'Statement of Unaudited Consolidated Financial Results for the Quarter and Half Year Ended 30th September 2019' (BSE, announced 14-Nov-2019 18:38, attachment f43ed1e1-18e9-4e30-b2e1-47a2e9412c76.pdf) p5, column '30.09.2018 (Unaudited)' under the 'Quarter ended' band -> scratchpad/pdfs/ALOK_q2fy20_20191114.pdf, png/W5/ALOK_q2fy20_p5.png, png/W5/ALOK_q2fy20_p5_crop.png",
+  "unit": "Rs in Crore (except EPS)  [verbatim, top-right of the statement]",
+  "when": "2026-08-18 20:42 IST",
+  "writer_note": null
+ },
+ "ALOKINDS|20180930|con_rev": {
+  "anchor": "SAME TABLE, SAME ROW, two exact hits: 30.09.2019 (165.20) == stored conPAT -165.2 EXACT; 30.06.2019 (120.94) == stored conPAT -120.94 EXACT. Column identities close exactly (934.67+3.05=937.72 total income; 937.72-2,339.96=(1,402.24); (1,401.96)-0.94=(1,402.90)).",
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "fill_pass": "2026-08-18 con-fill wave W5",
+  "read_by": "vision (rendered 2.4x, p5, plus a 2.4x crop of the profit rows to be certain of the digits)",
+  "rev_con": 934.67,
+  "row": "9  Net Profit / (Loss) for the period (7-8)",
+  "src": "Alok Industries Limited, 'Statement of Unaudited Consolidated Financial Results for the Quarter and Half Year Ended 30th September 2019' (BSE, announced 14-Nov-2019 18:38, attachment f43ed1e1-18e9-4e30-b2e1-47a2e9412c76.pdf) p5, column '30.09.2018 (Unaudited)' under the 'Quarter ended' band -> scratchpad/pdfs/ALOK_q2fy20_20191114.pdf, png/W5/ALOK_q2fy20_p5.png, png/W5/ALOK_q2fy20_p5_crop.png",
+  "unit": "Rs in Crore (except EPS)  [verbatim, top-right of the statement]",
+  "when": "2026-08-18 20:42 IST"
+ },
+ "ALOKINDS|20181231|con": {
+  "anchor": "SAME TABLE, SAME ROW, two exact hits: 31.12.2019 (194.49) == stored conPAT -194.49 EXACT; 30.09.2019 (165.20) == stored conPAT -165.2 EXACT. Also SAME TABLE 31.12.2019 Revenue from Operations 873.33 == stored revC 873.33 EXACT. Column identities close exactly (711.76+2.88=714.64; 714.64-2,022.11=(1,307.47); (1,307.72)-(0.06)=(1,307.66)).",
+  "annCon": 20200214,
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "carrying_filing": true,
+  "con": -1307.66,
+  "con_nci": null,
+  "con_total": -1307.66,
+  "evidence": "NO NCI BLOCK (see 20180930 notes) - con_nci is genuinely absent, not zero. op_con -40.64 DERIVED: (1,307.47) + 1,128.67 (finance) + 141.04 (depreciation) - 2.88 (other income); convention validated exactly against stored ALOKINDS opC 20200331 = -101.05. ANN-DATE NOTE: the carrying filing was announced on BSE 14-Feb-2020 but reached NSE on 27-Feb-2020 - our store used 20200227 for the neighbouring Dec-2019 con cell (NSE date) while using 20191114 for Sep-2019 (BSE date), so the store's convention is inconsistent; I report the BSE announcement date 20200214 and leave the choice to the writer.",
+  "fill_pass": "2026-08-18 con-fill wave W5",
+  "printed": "(1,307.66) net profit / 711.76 revenue from operations",
+  "read_by": "vision (rendered 2.4x, p5)",
+  "routes_tried": [
+   {
+    "result": "no ALOKINDS entry for 2018-12-31, either basis.",
+    "rung": "xbrl cache"
+   },
+   {
+    "result": "no ALOKINDS rows before 2020 at all.",
+    "rung": "NSE filing index (harvested AND live)"
+   },
+   {
+    "result": "downloaded (7dc55564-...pdf) - BSE titles it 'Un-Audited STANDALONE Financial Results for Quarter and Nine Months Ended 31st December 2018', i.e. the own filing carried no consolidated.",
+    "rung": "BSE own filing (Q3FY19, 14-Feb-2019)"
+   },
+   {
+    "result": "HIT.",
+    "rung": "route 4 - Q3FY20 comparative column"
+   }
+  ],
+  "row": "9  Net Profit / (Loss) for the period (7-8)",
+  "src": "Alok Industries Limited, 'Statement of Unaudited Consolidated Financial Results for the Quarter and Nine months Ended 31st December 2019' (BSE, announced 14-Feb-2020 16:36, attachment 915c3523-258d-4cb2-9249-0cebf2670422.pdf) p5, column '31.12.2018 (Unaudited)' under the 'Quarter ended' band -> scratchpad/pdfs/ALOK_q3fy20_20200214.pdf, png/W5/ALOK_q3fy20_p5.png",
+  "unit": "Rs in Crore (except EPS)  [verbatim, top-right of the statement]",
+  "when": "2026-08-18 20:42 IST",
+  "writer_note": null
+ },
+ "ALOKINDS|20181231|con_rev": {
+  "anchor": "SAME TABLE, SAME ROW, two exact hits: 31.12.2019 (194.49) == stored conPAT -194.49 EXACT; 30.09.2019 (165.20) == stored conPAT -165.2 EXACT. Also SAME TABLE 31.12.2019 Revenue from Operations 873.33 == stored revC 873.33 EXACT. Column identities close exactly (711.76+2.88=714.64; 714.64-2,022.11=(1,307.47); (1,307.72)-(0.06)=(1,307.66)).",
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "fill_pass": "2026-08-18 con-fill wave W5",
+  "read_by": "vision (rendered 2.4x, p5)",
+  "rev_con": 711.76,
+  "row": "9  Net Profit / (Loss) for the period (7-8)",
+  "src": "Alok Industries Limited, 'Statement of Unaudited Consolidated Financial Results for the Quarter and Nine months Ended 31st December 2019' (BSE, announced 14-Feb-2020 16:36, attachment 915c3523-258d-4cb2-9249-0cebf2670422.pdf) p5, column '31.12.2018 (Unaudited)' under the 'Quarter ended' band -> scratchpad/pdfs/ALOK_q3fy20_20200214.pdf, png/W5/ALOK_q3fy20_p5.png",
+  "unit": "Rs in Crore (except EPS)  [verbatim, top-right of the statement]",
+  "when": "2026-08-18 20:42 IST"
+ },
+ "ALOKINDS|20190331|con": {
+  "anchor": "SAME TABLE, SAME ROW: 31.12.2019 (194.49) == stored conPAT -194.49 EXACT. SAME TABLE revenue row: 31.12.2019 873.33 == stored revC 873.33 EXACT and 31.03.2020 748.10 == stored revC 748.1 EXACT. ARITHMETIC CROSS-CHECK from an INDEPENDENT filing: consolidated FY19 2,076.16 minus consolidated 9M-FY19 (3,929.04) (printed in the Q3FY20 statement) = 6,005.20 against the printed 6,005.21 (1 paisa). Column identities close exactly (810.15+2.46=812.61; 812.61-1,854.12=(1,041.51); (1,041.74)+7,045.19=6,003.45).",
+  "annCon": 20200731,
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "carrying_filing": true,
+  "con": 6005.21,
+  "con_nci": null,
+  "con_total": 6005.21,
+  "evidence": "The huge positive figure is real: it is driven by the printed 'Exceptional Items 7,045.19' cr (the CIRP/resolution-plan interest-provision reversal), which appears identically in the Q4FY19 filing. NO NCI BLOCK - con_nci genuinely absent. op_con 2.29 DERIVED: (1,041.51) + 909.77 (finance) + 136.49 (depreciation) - 2.46 (other income); convention validated exactly against stored ALOKINDS opC 20200331. *** NEIGHBOUR-CELL DEFECT FOUND (not my cell, but it broke one of my anchors): our stored ALOKINDS 20200331 conPAT = -525.25 does NOT appear anywhere in this audited consolidated statement, which prints Q4FY20 net profit as +1,790.86 cr (and FY20 as +1,310.23 cr). I traced -525.25 to the NSE consolidated XBRL of the SAME filing (INDAS_59212_301861_01082020062715_WEB.xml): context OneD 2020-01-01 -> 2020-03-31, ProfitLossForPeriod = -5,252,500,000 = -525.25 cr, RevenueFromOperations = 748.10 cr (revenue agrees, profit does not); its FourD 2019-04-01 -> 2020-03-31 ProfitLossForPeriod = -1,484.97 cr against the audited FY20 +1,310.23 cr. The XBRL appears to omit the 2,052.55 cr exceptional item. Our stored STANDALONE Mar-2020 (1632.76) does match the audited PDF exactly, so the defect is isolated to the consolidated cell. Recommend a separate heal for ALOKINDS 20200331 conPAT.",
+  "fill_pass": "2026-08-18 con-fill wave W5",
+  "printed": "6,005.21 net profit / 810.15 revenue from operations",
+  "read_by": "vision (rendered 2.4x, p3) - PDF has no usable text layer past p1",
+  "routes_tried": [
+   {
+    "result": "no ALOKINDS entry for 2019-03-31, either basis.",
+    "rung": "xbrl cache"
+   },
+   {
+    "result": "no ALOKINDS rows before 2020 at all.",
+    "rung": "NSE filing index (harvested AND live)"
+   },
+   {
+    "result": "READ. Its consolidated block is 'Year ended 31.03.2019 / 31.03.2018' ONLY - the own filing published no consolidated Q4FY19.",
+    "rung": "BSE own filing (Q4FY19, 14-Jun-2019)"
+   },
+   {
+    "result": "HIT - this is the FIRST publication of ALOK's Mar-2019 consolidated quarter.",
+    "rung": "route 4 - Q4FY20 comparative column (31-Jul-2020)"
+   }
+  ],
+  "row": "9  Net Profit / (Loss) for the period (7-8)",
+  "src": "Alok Industries Limited, 'Statement of Audited Consolidated Financial Results for the Quarter and Year Ended 31st March 2020' (BSE, announced 31-Jul-2020 20:06, attachment 3a1344f0-2dc8-4208-85c2-f5c1add09223.pdf; NSE filing date 01-Aug-2020 18:27) p3, column '31.03.2019 (Audited)' under the 'Quarter ended' band -> scratchpad/pdfs/ALOK_q4fy20_20200731.pdf, png/W5/ALOK_q4fy20_p3.png",
+  "unit": "Rs in Crore (except EPS)  [verbatim, top-right of the statement]",
+  "when": "2026-08-18 20:42 IST",
+  "writer_note": null
+ },
+ "ALOKINDS|20190331|con_rev": {
+  "anchor": "SAME TABLE, SAME ROW: 31.12.2019 (194.49) == stored conPAT -194.49 EXACT. SAME TABLE revenue row: 31.12.2019 873.33 == stored revC 873.33 EXACT and 31.03.2020 748.10 == stored revC 748.1 EXACT. ARITHMETIC CROSS-CHECK from an INDEPENDENT filing: consolidated FY19 2,076.16 minus consolidated 9M-FY19 (3,929.04) (printed in the Q3FY20 statement) = 6,005.20 against the printed 6,005.21 (1 paisa). Column identities close exactly (810.15+2.46=812.61; 812.61-1,854.12=(1,041.51); (1,041.74)+7,045.19=6,003.45).",
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "fill_pass": "2026-08-18 con-fill wave W5",
+  "read_by": "vision (rendered 2.4x, p3) - PDF has no usable text layer past p1",
+  "rev_con": 810.15,
+  "row": "9  Net Profit / (Loss) for the period (7-8)",
+  "src": "Alok Industries Limited, 'Statement of Audited Consolidated Financial Results for the Quarter and Year Ended 31st March 2020' (BSE, announced 31-Jul-2020 20:06, attachment 3a1344f0-2dc8-4208-85c2-f5c1add09223.pdf; NSE filing date 01-Aug-2020 18:27) p3, column '31.03.2019 (Audited)' under the 'Quarter ended' band -> scratchpad/pdfs/ALOK_q4fy20_20200731.pdf, png/W5/ALOK_q4fy20_p3.png",
+  "unit": "Rs in Crore (except EPS)  [verbatim, top-right of the statement]",
+  "when": "2026-08-18 20:42 IST"
+ },
+ "APLLTD|20180630|con": {
+  "anchor": "SAME TABLE, same p2, consolidated columns: 31.03.2019 'Revenue from Operations' 926.95 == stored revC(20190331) 926.95 EXACT; 30.06.2019 'Revenue from Operations' 948.91 == stored revC(20190630) 948.91 EXACT. The store's opC identity also reproduces twice in this same table: 31.03.2019 926.95-(783.94-29.95-5.08)=178.04 == stored opC(20190331) EXACT, and 30.06.2019 948.91-(764.37-35.40-4.98)=224.92 == stored opC(20190630) EXACT. Four consolidated anchors, one table.",
+  "annCon": 20190729,
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "carrying_filing": true,
+  "con": 90.47,
+  "con_nci": -0.03,
+  "con_total": 90.45,
+  "evidence": "NCI IS PRESENT and is a small LOSS: the statement's row 'Non-controlling interests' 0.03 is ADDED to the before-NCI figure (90.45 + 0.03 = 90.48, printed 90.47 \u2014 1-paise rounding; the same arithmetic is exact for 31.03.2019: 123.70 + 0.30 = 124.00, and for FY19: 583.29 + 1.08 = 584.37). Confirmed by the 'Attributable to:' block, where Total Comprehensive Income for 30.06.2018 splits NCI (0.03) / Owners 97.80. So con=90.47 is OWNERS-attributable; con_total=90.45 is the group total INCLUDING the NCI loss; con_nci=-0.03. \u26a0 SCALE/REV TENSION: the target's own stored rev_con is 862.84 but this carrying filing prints 862.53 for the same quarter \u2014 a 0.31cr regrouping of the comparative (862.84 presumably came from the company's own Aug-2018 Q1FY19 filing). The writer should decide whether to overwrite rev_con; I report what the carrying filing prints. \u26a0 STORE DEFECT FLAG (does not affect this cell's read, but the writer must see it): APLLTD's stored conPAT for the NEIGHBOUR quarters does not reproduce anywhere in this table or in the cached consolidated XBRLs. Stored conPAT(20190331) = -0.30 while the filing prints 124.00 owners / 123.70 total \u2014 and 0.30 is exactly this table's 'Non-controlling interests' row for that column, sign-flipped. Stored conPAT(20190930) = 4.18 vs XBRL 250.45; stored conPAT(20190630) = 115.25 vs 123.72 owners / 119.49 total. The consolidated REVENUE column matches exactly everywhere, so the defect is confined to the conPAT row-pick. op_con 150.99 is NOT printed \u2014 no filing prints operating profit. It is 862.53 - (740.71 - 27.60 - 1.57) using this table's printed Revenue from Operations / Total Expenses / Depreciation & Amortization / Finance Costs. The formula was validated against the store on the two other quarter columns in the SAME table (178.04 and 224.92, both exact).",
+  "fill_pass": "2026-08-18 con-fill wave W6",
+  "printed": "90.47",
+  "read_by": "vision (rendered 2.4x p2; re-rendered 5x crops of the column header, the Total-Expenses/PBT block, the profit/NCI block and the attributable block)",
+  "rev_con_read_not_stored": "862.53 \u2014 read from the same statement but NOT written: sf_revop already holds 862.84 (a different vintage); a backfill never overwrites a stored value",
+  "routes_tried": [
+   {
+    "result": "NO xbrl of any basis with period end 2018-06-30 for APLLTD (cache does hold APLLTD Consolidated files for 2018-03-31, 2018-09-30, 2018-12-31, 2019-03-31, 2019-06-30, 2019-09-30, 2019-12-31 \u2014 just not the target quarter)",
+    "rung": "local XBRL cache /scripts/_xbrl_cache"
+   },
+   {
+    "result": "APLLTD DOES have its own 30-Jun-2018 Consolidated filing listed (filed 07-Aug-2018 17:07) but its xbrl link is the placeholder 'https://nsearchives.nseindia.com/corporate/xbrl/-' for both bases \u2014 no per-filing XBRL exists",
+    "rung": "NSE filing index (route 2)"
+   },
+   {
+    "result": "blocked by the pre-Oct-2018 attachment wall (see other cells; measured on 3 controls this session)",
+    "rung": "BSE announcements \u2014 own Q1FY19 filing (Aug-2018)"
+   },
+   {
+    "result": "HIT \u2014 the Q1FY20 filing (29-Jul-2019) prints a full CONSOLIDATED quarter table: Quarter Ended 30.06.2019 | 31.03.2019 | 30.06.2018, plus Year Ended 31.03.2019. Target column present and anchored.",
+    "rung": "Comparative column of a later filing (route 4)"
+   },
+   {
+    "result": "corroborates the same table: 2019-03-31 Consolidated ProfitLossForPeriod 123.70cr / rev 926.95cr; 2019-06-30 Consolidated 119.489cr / rev 948.914cr; 2019-09-30 Consolidated 250.45cr / rev 1240.873cr",
+    "rung": "NSE cached consolidated XBRLs for the anchor quarters"
+   }
+  ],
+  "row": "Net Profit after taxes, non-controlling interests and share of Profit / (Loss) of Associates and Joint Ventures",
+  "src": "Alembic Pharmaceuticals Limited \u2014 'Statement of Consolidated Unaudited Financial Results for the quarter 30th June, 2019.' (BSE, filed 29-Jul-2019 14:24, attachment fff87019-3cce-4b9d-ba03-4259358289ca.pdf) p2, column 'Quarter Ended | 30.06.2018 | (Unaudited)'",
+  "unit": "Rs. in Crores (printed top-right of the statement, verbatim: 'Rs. in Crores')",
+  "when": "2026-08-18 20:42 IST",
+  "writer_note": null
+ },
+ "BHARATFORG|20180630|con": {
+  "anchor": "SAME TABLE: 30-Jun-2019 owners 1,730.58mn = 173.06 == stored conPAT 173.06 EXACT; 30-Jun-2019 revenue 23,278.56mn = 2327.86 == stored revC 2327.86 EXACT; AND the target column's own revenue 24,137.00mn = 2413.70 == stored rev_con 2413.70 EXACT. Internal identities all close to the paisa (24,137.00+403.76=24,540.76 total income; 24,540.76-20,888.15=3,652.61 PBT-before-share; 3,649.60-1,262.14=2,387.46 profit; 2,395.01+(7.55)=2,387.46).",
+  "annCon": 20190813,
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "carrying_filing": true,
+  "con": 239.5,
+  "con_nci": -0.76,
+  "con_total": 238.75,
+  "evidence": "NCI IS PRESENT and NEGATIVE: owners 2,395.01mn EXCEEDS total 2,387.46mn (NCI -7.55mn). Rounding: owners 239.501 -> 239.50, total 238.746 -> 238.75, nci -0.755 -> -0.76; note 239.50 + (-0.76) = 238.74 != 238.75 at 2dp (rounding artefact, the mn figures reconcile exactly). op_con 482.65 is DERIVED, not printed: (PBT before share of assoc/JV, exceptional and tax 3,652.61) + (finance costs 316.11) + (depreciation 1,261.50) - (other income 403.76) = 4,826.46mn. That convention was validated EXACTLY against stored opC on four BHARATFORG quarters read this session (Jun-19 410.42, Sep-19 333.90, Dec-19 222.28, Mar-20 148.11). *** SERIES-CONVENTION WARNING (confirmed, not inherited): our stored BHARATFORG con series alternates TOTAL and OWNERS - Jun-19 173.06 = OWNERS (1,730.58), Sep-19 205.48 = TOTAL (2,054.83), Dec-19 40.44 = TOTAL (404.37), Mar-20 -72.09 = OWNERS (-720.95). I verified all four by vision this session. Per protocol rule 5 I report OWNERS as `con`; the writer must normalise the whole series to one convention before writing (this is the same blocker recorded as BHARATFORG|contriad|REFUSED-SERIES-INCONSISTENT, 2026-08-17).",
+  "fill_pass": "2026-08-18 con-fill wave W5",
+  "printed": "2,395.01 (owners) / 2,387.46 (total) / (7.55) (NCI) / 24,137.00 (revenue from operations)",
+  "read_by": "vision (rendered 2.4x, p3)",
+  "routes_tried": [
+   {
+    "result": "no BHARATFORG file with periodEnd 2018-06-30 in the cache at all (neither basis).",
+    "rung": "xbrl cache"
+   },
+   {
+    "result": "01-Apr-2018->30-Jun-2018 has ONLY a 'Non-Consolidated' row (filed 28-Aug-2018 11:51).",
+    "rung": "NSE filing index (harvested + LIVE)"
+   },
+   {
+    "result": "pre-Oct-2018 window - not served; and the own filing was standalone-only per NSE.",
+    "rung": "BSE own filing (Aug-2018)"
+   },
+   {
+    "result": "HIT. 'June 30, 2018 (See note 5)' consolidated quarter column present and legible.",
+    "rung": "route 4 - Q1FY20 comparative column"
+   }
+  ],
+  "row": "13 Of the total comprehensive income above, Profit for the year attributable to: - Owners of the parent  (con_total from row '9 Profit for the period/year (7-8)')",
+  "src": "Bharat Forge Limited, 'STATEMENT OF CONSOLIDATED UNAUDITED FINANCIAL RESULTS FOR THE QUARTER ENDED JUNE 30, 2019' (BSE, announced 13-Aug-2019 10:10, attachment e4375918-228c-4891-9e58-c85c50df4f77.pdf; NSE filing date 13-Aug-2019 18:17) p3, column 'June 30, 2018 (See note 5)' under the 'Quarter ended' band -> scratchpad/pdfs/BFL_q1fy20_20190813.pdf, png/W5/BFL_q1fy20_p3.png",
+  "unit": "(\u20b9 in Million)  [verbatim, top-right of the statement]",
+  "when": "2026-08-18 20:42 IST",
+  "writer_note": "RELEASED. The standing refusal BHARATFORG|contriad|REFUSED-SERIES-INCONSISTENT ('write NOTHING until the series is normalized to one convention') is settled: all 29 stored consolidated quarters were classified from the filings (10 held the printed TOTAL, 19 the printed OWNERS), and scripts/fill2020_tools/normalise_bharatforg_owners.py corrects the 10 and pins them in owners_basis_heals.json. This cell is the owners figure, on the same convention as the whole series."
+ },
+ "BHARATFORG|20180630|con_rev": {
+  "anchor": "SAME TABLE: 30-Jun-2019 owners 1,730.58mn = 173.06 == stored conPAT 173.06 EXACT; 30-Jun-2019 revenue 23,278.56mn = 2327.86 == stored revC 2327.86 EXACT; AND the target column's own revenue 24,137.00mn = 2413.70 == stored rev_con 2413.70 EXACT. Internal identities all close to the paisa (24,137.00+403.76=24,540.76 total income; 24,540.76-20,888.15=3,652.61 PBT-before-share; 3,649.60-1,262.14=2,387.46 profit; 2,395.01+(7.55)=2,387.46).",
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "fill_pass": "2026-08-18 con-fill wave W5",
+  "read_by": "vision (rendered 2.4x, p3)",
+  "rev_con": 2413.7,
+  "row": "13 Of the total comprehensive income above, Profit for the year attributable to: - Owners of the parent  (con_total from row '9 Profit for the period/year (7-8)')",
+  "src": "Bharat Forge Limited, 'STATEMENT OF CONSOLIDATED UNAUDITED FINANCIAL RESULTS FOR THE QUARTER ENDED JUNE 30, 2019' (BSE, announced 13-Aug-2019 10:10, attachment e4375918-228c-4891-9e58-c85c50df4f77.pdf; NSE filing date 13-Aug-2019 18:17) p3, column 'June 30, 2018 (See note 5)' under the 'Quarter ended' band -> scratchpad/pdfs/BFL_q1fy20_20190813.pdf, png/W5/BFL_q1fy20_p3.png",
+  "unit": "(\u20b9 in Million)  [verbatim, top-right of the statement]",
+  "when": "2026-08-18 20:42 IST"
+ },
+ "BHARATFORG|20180930|con": {
+  "anchor": "SAME TABLE: 30-Jun-2019 owners 1,730.58mn = 173.06 == stored conPAT EXACT; 30-Sep-2019 'Profit for the period' 2,054.83mn = 205.48 == stored conPAT EXACT (that stored cell is the TOTAL, not owners - see notes); 30-Sep-2019 revenue 21,552.05mn = 2155.20 == stored revC 2155.2 EXACT; AND target column revenue 25,972.68mn = 2597.27 == stored rev_con 2597.27 EXACT. Column identities close exactly (25,972.68+402.74=26,375.42; 26,375.42-22,530.02=3,845.40; 3,832.74-1,304.68=2,528.06; 2,540.65+(12.59)=2,528.06).",
+  "annCon": 20191108,
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "carrying_filing": true,
+  "con": 254.06,
+  "con_nci": -1.26,
+  "con_total": 252.81,
+  "evidence": "ROUNDING AMBIGUITY on `con`: 2,540.65mn is EXACTLY 254.065 cr. Python round() on the float gives 254.06 (which is the convention our store demonstrably uses - stored Mar-20 conPAT -72.09 comes from -720.95mn/10 = -72.095); half-up would give 254.07. I have written 254.06; writer should convert with the pipeline's own code path. NCI present and NEGATIVE (owners 2,540.65 > total 2,528.06). op_con 517.41 DERIVED: 3,845.40 + 374.56 (finance) + 1,356.87 (depreciation) - 402.74 (other income) = 5,174.09mn; convention validated EXACTLY on four stored BHARATFORG opC quarters. SERIES-CONVENTION WARNING applies (see BHARATFORG 20180630 notes): stored con series mixes TOTAL and OWNERS - do not write until normalised. Earlier campaign's candidates for this cell (total 2,528.06 / owners 2,540.65) REPRODUCED exactly by my independent vision read.",
+  "fill_pass": "2026-08-18 con-fill wave W5",
+  "printed": "2,540.65 (owners) / 2,528.06 (total) / (12.59) (NCI) / 25,972.68 (revenue from operations)",
+  "read_by": "vision (rendered 2.4x, p3)",
+  "routes_tried": [
+   {
+    "result": "INDAS_40091_57341_02112018052759_WEB_xml, BHARATFORG, periodEnd 2018-09-30, own tag = Standalone. No consolidated.",
+    "rung": "xbrl cache"
+   },
+   {
+    "result": "01-Jul-2018->30-Sep-2018 has ONLY a 'Non-Consolidated' row (filed 22-Nov-2018 11:32).",
+    "rung": "NSE filing index (harvested + LIVE)"
+   },
+   {
+    "result": "BSE lists only 02-Nov-2018 items for the Q2FY19 window; attachment 6e11b735-3b41-4e4a-9aa8-2e92c1df33d5.pdf 404s on BOTH AttachHis and AttachLive (so BSE's dead-attachment window extends past Oct-2018 for this company).",
+    "rung": "BSE own filing"
+   },
+   {
+    "result": "HIT.",
+    "rung": "route 4 - Q2FY20 comparative column"
+   }
+  ],
+  "row": "13 Of the total comprehensive income above, Profit for the year attributable to: - Owners of the parent  (con_total from row '9 Profit for the period/year (7-8)')",
+  "src": "Bharat Forge Limited, 'STATEMENT OF CONSOLIDATED UNAUDITED FINANCIAL RESULTS FOR THE QUARTER AND HALF YEAR ENDED SEPTEMBER 30, 2019' (BSE announced 08-Nov-2019; NSE filing date 08-Nov-2019 17:21) p3, column 'September 30, 2018 (see note 7)' under the 'Quarter ended' band -> scratchpad/pdfs/bfl_20190930.pdf, png/W5/BFL_q2fy20_p3.png",
+  "unit": "(\u20b9 in Million)  [verbatim, top-right of the statement]",
+  "when": "2026-08-18 20:42 IST",
+  "writer_note": "RELEASED. The standing refusal BHARATFORG|contriad|REFUSED-SERIES-INCONSISTENT ('write NOTHING until the series is normalized to one convention') is settled: all 29 stored consolidated quarters were classified from the filings (10 held the printed TOTAL, 19 the printed OWNERS), and scripts/fill2020_tools/normalise_bharatforg_owners.py corrects the 10 and pins them in owners_basis_heals.json. This cell is the owners figure, on the same convention as the whole series."
+ },
+ "BHARATFORG|20180930|con_rev": {
+  "anchor": "SAME TABLE: 30-Jun-2019 owners 1,730.58mn = 173.06 == stored conPAT EXACT; 30-Sep-2019 'Profit for the period' 2,054.83mn = 205.48 == stored conPAT EXACT (that stored cell is the TOTAL, not owners - see notes); 30-Sep-2019 revenue 21,552.05mn = 2155.20 == stored revC 2155.2 EXACT; AND target column revenue 25,972.68mn = 2597.27 == stored rev_con 2597.27 EXACT. Column identities close exactly (25,972.68+402.74=26,375.42; 26,375.42-22,530.02=3,845.40; 3,832.74-1,304.68=2,528.06; 2,540.65+(12.59)=2,528.06).",
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "fill_pass": "2026-08-18 con-fill wave W5",
+  "read_by": "vision (rendered 2.4x, p3)",
+  "rev_con": 2597.27,
+  "row": "13 Of the total comprehensive income above, Profit for the year attributable to: - Owners of the parent  (con_total from row '9 Profit for the period/year (7-8)')",
+  "src": "Bharat Forge Limited, 'STATEMENT OF CONSOLIDATED UNAUDITED FINANCIAL RESULTS FOR THE QUARTER AND HALF YEAR ENDED SEPTEMBER 30, 2019' (BSE announced 08-Nov-2019; NSE filing date 08-Nov-2019 17:21) p3, column 'September 30, 2018 (see note 7)' under the 'Quarter ended' band -> scratchpad/pdfs/bfl_20190930.pdf, png/W5/BFL_q2fy20_p3.png",
+  "unit": "(\u20b9 in Million)  [verbatim, top-right of the statement]",
+  "when": "2026-08-18 20:42 IST"
+ },
+ "BHARATFORG|20181231|con": {
+  "anchor": "SAME TABLE: 31-Dec-2019 'Profit for the period' 404.37mn = 40.44 == stored conPAT 40.44 EXACT; 30-Sep-2019 'Profit for the period' 2,054.83mn = 205.48 == stored conPAT EXACT; 31-Dec-2019 revenue 18,308.59mn = 1830.86 == stored revC 1830.86 EXACT; 30-Sep-2019 revenue 21,552.05mn = 2155.20 == stored revC EXACT; AND target column revenue 24,639.87mn = 2463.99 == stored rev_con 2463.99 EXACT. Column identities close exactly (24,639.87+527.07=25,166.94; -21,560.15=3,606.79; 3,577.75-1,408.19=2,169.56; 2,182.48+(12.92)=2,169.56).",
+  "annCon": 20200210,
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "carrying_filing": true,
+  "con": 218.25,
+  "con_nci": -1.29,
+  "con_total": 216.96,
+  "evidence": "NCI present and NEGATIVE (owners 2,182.48 > total 2,169.56). op_con 461.06 DERIVED: 3,606.79 + 211.62 (finance) + 1,319.30 (depreciation) - 527.07 (other income) = 4,610.64mn; convention validated EXACTLY on four stored BHARATFORG opC quarters. The prior campaign flagged this cell as 'needs vision (Q3FY20 fully scanned)' - done, and the page is clean and unambiguous at 2.4x. SERIES-CONVENTION WARNING applies (stored BHARATFORG con series mixes TOTAL and OWNERS).",
+  "fill_pass": "2026-08-18 con-fill wave W5",
+  "printed": "2,182.48 (owners) / 2,169.56 (total) / (12.92) (NCI) / 24,639.87 (revenue from operations)",
+  "read_by": "vision (rendered 2.4x, p9) - this PDF is a pure scan with ZERO text layer on all 13 pages",
+  "routes_tried": [
+   {
+    "result": "INDAS_43049_82173_13022019045458_WEB_xml, BHARATFORG, periodEnd 2018-12-31, own tag = Standalone. No consolidated.",
+    "rung": "xbrl cache"
+   },
+   {
+    "result": "01-Oct-2018->31-Dec-2018 has ONLY a 'Non-Consolidated' row (filed 26-Feb-2019 12:27).",
+    "rung": "NSE filing index (harvested + LIVE)"
+   },
+   {
+    "result": "downloaded aa39943d-2a33-43d3-9369-4f4098be27e4.PDF (announced 13-Feb-2019, 2.17MB) - the Q3FY19 own filing; not used because NSE shows it standalone-only and the later comparative is the cleaner read.",
+    "rung": "BSE own filing"
+   },
+   {
+    "result": "HIT. Located page by contact sheet (no text layer), read p9 by vision.",
+    "rung": "route 4 - Q3FY20 comparative column"
+   }
+  ],
+  "row": "13 Of the total comprehensive income above, Profit for the year attributable to: - Owners of the parent  (con_total from row '9 Profit for the period/year (7-8)')",
+  "src": "Bharat Forge Limited, 'STATEMENT OF CONSOLIDATED UNAUDITED FINANCIAL RESULTS FOR THE QUARTER AND NINE MONTHS ENDED DECEMBER 31, 2019' (BSE announced 10-Feb-2020; NSE filing date 10-Feb-2020 16:34) p9, column 'December 31, 2018 (see note 4)' under the 'Quarter ended' band -> scratchpad/pdfs/bfl_20191231.pdf, png/W5/BFL_q3fy20_p9.png",
+  "unit": "(\u20b9 in Million)  [verbatim, top-right of the statement]",
+  "when": "2026-08-18 20:42 IST",
+  "writer_note": "RELEASED. The standing refusal BHARATFORG|contriad|REFUSED-SERIES-INCONSISTENT ('write NOTHING until the series is normalized to one convention') is settled: all 29 stored consolidated quarters were classified from the filings (10 held the printed TOTAL, 19 the printed OWNERS), and scripts/fill2020_tools/normalise_bharatforg_owners.py corrects the 10 and pins them in owners_basis_heals.json. This cell is the owners figure, on the same convention as the whole series."
+ },
+ "BHARATFORG|20181231|con_rev": {
+  "anchor": "SAME TABLE: 31-Dec-2019 'Profit for the period' 404.37mn = 40.44 == stored conPAT 40.44 EXACT; 30-Sep-2019 'Profit for the period' 2,054.83mn = 205.48 == stored conPAT EXACT; 31-Dec-2019 revenue 18,308.59mn = 1830.86 == stored revC 1830.86 EXACT; 30-Sep-2019 revenue 21,552.05mn = 2155.20 == stored revC EXACT; AND target column revenue 24,639.87mn = 2463.99 == stored rev_con 2463.99 EXACT. Column identities close exactly (24,639.87+527.07=25,166.94; -21,560.15=3,606.79; 3,577.75-1,408.19=2,169.56; 2,182.48+(12.92)=2,169.56).",
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "fill_pass": "2026-08-18 con-fill wave W5",
+  "read_by": "vision (rendered 2.4x, p9) - this PDF is a pure scan with ZERO text layer on all 13 pages",
+  "rev_con": 2463.99,
+  "row": "13 Of the total comprehensive income above, Profit for the year attributable to: - Owners of the parent  (con_total from row '9 Profit for the period/year (7-8)')",
+  "src": "Bharat Forge Limited, 'STATEMENT OF CONSOLIDATED UNAUDITED FINANCIAL RESULTS FOR THE QUARTER AND NINE MONTHS ENDED DECEMBER 31, 2019' (BSE announced 10-Feb-2020; NSE filing date 10-Feb-2020 16:34) p9, column 'December 31, 2018 (see note 4)' under the 'Quarter ended' band -> scratchpad/pdfs/bfl_20191231.pdf, png/W5/BFL_q3fy20_p9.png",
+  "unit": "(\u20b9 in Million)  [verbatim, top-right of the statement]",
+  "when": "2026-08-18 20:42 IST"
+ },
+ "BHARATFORG|20190331|con": {
+  "anchor": "SAME TABLE: 31-Mar-2020 owners (720.95)mn = -72.09 == stored conPAT -72.09 EXACT; 31-Dec-2019 'Profit for the period' 404.37mn = 40.44 == stored conPAT EXACT; 31-Mar-2020 revenue 17,419.24mn = 1741.92 == stored revC EXACT; 31-Dec-2019 revenue 18,308.59mn = 1830.86 == stored revC EXACT; AND target column revenue 26,707.78mn = 2670.78 == stored rev_con 2670.78 EXACT. ARITHMETIC CROSS-CHECK: consolidated FY19 10,325.96mn minus 9M-FY19 7,085.08mn (printed in the Q3FY20 statement) = 3,240.88mn = the printed Q4FY19 total, to the paisa.",
+  "annCon": 20200629,
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "carrying_filing": true,
+  "con": 320.36,
+  "con_nci": 3.73,
+  "con_total": 324.09,
+  "evidence": "TWO filings print this quarter and they differ by 3-4 paise per million: Q4FY20 (audited, 29-Jun-2020) 3,240.88/3,203.59/37.29 vs Q1FY20 (13-Aug-2019) 3,240.84/3,203.56/37.28. In crore at 2dp: OWNERS is 320.36 either way; TOTAL is 324.09 (Q4FY20) vs 324.08 (Q1FY20). I report the Q4FY20 audited print. In BOTH filings the column is a balancing figure ('See note 5' / 'See note 7'), as BFL published no consolidated Q4FY19 of its own. op_con 594.45 DERIVED: 4,998.76 + 369.86 (finance) + 1,270.27 (depreciation) - 694.36 (other income) = 5,944.53mn (Q1FY20 operands give 5,944.50mn = the same 594.45); convention validated EXACTLY on four stored BHARATFORG opC quarters. SERIES-CONVENTION WARNING applies. Also: the earlier campaign's candidates for this cell (total 3,240.88 / owners 3,203.59) reproduced exactly.",
+  "fill_pass": "2026-08-18 con-fill wave W5",
+  "printed": "3,203.59 (owners) / 3,240.88 (total) / 37.29 (NCI) / 26,707.78 (revenue from operations)",
+  "read_by": "vision (rendered 2.4x, p3)",
+  "routes_tried": [
+   {
+    "result": "no BHARATFORG file with periodEnd 2019-03-31 in the cache (neither basis).",
+    "rung": "xbrl cache"
+   },
+   {
+    "result": "lists a 'Consolidated' row for 01-Jan-2019->31-Mar-2019 (seq 1061003, filed 20-May-2019 19:14) - but its xbrl link INDAS_44431_103072_20052019071450_WEB_2.xml 404s on nsearchives (tried twice), and the underlying BSE PDF shows that filing's consolidated block is ANNUAL-ONLY. The index's period field is misleading here.",
+    "rung": "NSE filing index"
+   },
+   {
+    "result": "DOWNLOADED AND READ. Consolidated block = 'Consolidated results for the Year ended March 31, 2019 / March 31, 2018' only. NO consolidated quarter column. So the 'A_own_con_filing' class on this cell is WRONG.",
+    "rung": "BSE own filing (Q4FY19, 20-May-2019)"
+   },
+   {
+    "result": "HIT - used as the source.",
+    "rung": "route 4 - Q4FY20 comparative column (29-Jun-2020)"
+   },
+   {
+    "result": "ALSO HIT, read independently: prints the same quarter as 3,240.84 (total) / 3,203.56 (owners) / 37.28 (NCI) / 26,707.78 (revenue).",
+    "rung": "route 4b - Q1FY20 comparative column (13-Aug-2019)"
+   }
+  ],
+  "row": "13 Of the total comprehensive (loss)/income above, (Loss)/Profit for the year/period attributable to: - Owners of the parent  (con_total from row '9 (Loss)/Profit for the period /year (7-8)')",
+  "src": "Bharat Forge Limited, 'STATEMENT OF CONSOLIDATED AUDITED FINANCIAL RESULTS FOR THE QUARTER AND YEAR ENDED MARCH 31, 2020' (BSE announced 29-Jun-2020; NSE filing date 29-Jun-2020 17:46) p3, column 'March 31, 2019 (See note 7)' under the 'Quarter ended' band -> scratchpad/pdfs/bfl_20200331.pdf, png/W5/BFL_q4fy20_p3.png",
+  "unit": "(\u20b9 in Million)  [verbatim, top-right of the statement]",
+  "when": "2026-08-18 20:42 IST",
+  "writer_note": "RELEASED. The standing refusal BHARATFORG|contriad|REFUSED-SERIES-INCONSISTENT ('write NOTHING until the series is normalized to one convention') is settled: all 29 stored consolidated quarters were classified from the filings (10 held the printed TOTAL, 19 the printed OWNERS), and scripts/fill2020_tools/normalise_bharatforg_owners.py corrects the 10 and pins them in owners_basis_heals.json. This cell is the owners figure, on the same convention as the whole series."
+ },
+ "BHARATFORG|20190331|con_rev": {
+  "anchor": "SAME TABLE: 31-Mar-2020 owners (720.95)mn = -72.09 == stored conPAT -72.09 EXACT; 31-Dec-2019 'Profit for the period' 404.37mn = 40.44 == stored conPAT EXACT; 31-Mar-2020 revenue 17,419.24mn = 1741.92 == stored revC EXACT; 31-Dec-2019 revenue 18,308.59mn = 1830.86 == stored revC EXACT; AND target column revenue 26,707.78mn = 2670.78 == stored rev_con 2670.78 EXACT. ARITHMETIC CROSS-CHECK: consolidated FY19 10,325.96mn minus 9M-FY19 7,085.08mn (printed in the Q3FY20 statement) = 3,240.88mn = the printed Q4FY19 total, to the paisa.",
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "fill_pass": "2026-08-18 con-fill wave W5",
+  "read_by": "vision (rendered 2.4x, p3)",
+  "rev_con": 2670.78,
+  "row": "13 Of the total comprehensive (loss)/income above, (Loss)/Profit for the year/period attributable to: - Owners of the parent  (con_total from row '9 (Loss)/Profit for the period /year (7-8)')",
+  "src": "Bharat Forge Limited, 'STATEMENT OF CONSOLIDATED AUDITED FINANCIAL RESULTS FOR THE QUARTER AND YEAR ENDED MARCH 31, 2020' (BSE announced 29-Jun-2020; NSE filing date 29-Jun-2020 17:46) p3, column 'March 31, 2019 (See note 7)' under the 'Quarter ended' band -> scratchpad/pdfs/bfl_20200331.pdf, png/W5/BFL_q4fy20_p3.png",
+  "unit": "(\u20b9 in Million)  [verbatim, top-right of the statement]",
+  "when": "2026-08-18 20:42 IST"
+ },
+ "COFORGE|20180630|con": {
+  "anchor": "SAME TABLE, THREE ANCHORS: (1) column (3) '3 Months ended 31 March 2019' owners 1,055 Mn = 105.50 == stored conPAT 20190331 105.5 EXACT; (2) column (2) '3 Months ended 30 June 2019' row IX total 898 Mn = 89.80 == stored conPAT 20190630 89.8 EXACT; (3) column (3) Revenue from Operations 9,722 Mn = 972.20 == stored revC 20190331 972.2 EXACT. Independent closure: stored con Q2+Q3+Q4 FY19 (111.8 + 100.2 + 105.5 = 317.5) + the value read here (85.8) = 403.3 == printed column (5) 'Accounting Year Ended 31 March, 2019' owners 4,033 Mn = 403.3 EXACT.",
+  "annCon": 20190723,
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "carrying_filing": true,
+  "con": 85.8,
+  "con_nci": 4.6,
+  "con_total": 90.4,
+  "evidence": "NCI IS PRESENT and material here: total 904 Mn vs owners 858 Mn, NCI 46 Mn. Internal consistency checked on every column: 876+22=898, 1055+44=1099, 858+46=904, 4033+188=4221. Per protocol rule 5 the OWNERS figure (85.80) is reported as `con`. STORE BASIS WARNING for the writer: our stored COFORGE con series is NOT internally consistent \u2014 stored conPAT 20190331 (105.5) matches the printed OWNERS figure while stored conPAT 20190630 (89.8) matches the printed TOTAL (owners there are 87.6). The FY19 sum test above closes on OWNERS, so 85.80 is the value consistent with the rest of the FY19 quarters. Company was NIIT Technologies Limited in 2018-19 (renamed Coforge); BSE now lists the scrip as 'Coforge Ltd', same scrip code 532541. The statement reports continuing operations only (the GIS business was being separated); there is no discontinued-operations line in this table. op_con left null \u2014 the statement prints no operating-profit subtotal and I will not derive one.",
+  "fill_pass": "2026-08-18 con-fill wave W7",
+  "printed": "858 (owners) / 904 (total) / 46 (NCI) / 8,249 (revenue from operations)",
+  "read_by": "vision (rendered 2.4x, p2 full page + crop of the header and profit rows)",
+  "routes_tried": [
+   {
+    "result": "no NIITTECH/COFORGE file for 2018-06-30 at all (neither Standalone nor Consolidated); the cache holds NIITTECH con XBRLs for 2018-03-31, 2018-09-30, 2018-12-31, 2019-03-31 but the Q1FY19 submission is missing entirely",
+    "rung": "xbrl cache"
+   },
+   {
+    "result": "30-Jun-2018 Consolidated row EXISTS (filed 03-Aug-2018 19:30) but its xbrl link is the '/-' placeholder and there is no resultDetailedDataLink \u2014 no fetchable artifact",
+    "rung": "NSE filing index"
+   },
+   {
+    "result": "Aug-2018 is inside the pre-Oct-2018 wall (re-measured this session on two other names: 404 on both AttachHis and AttachLive); not pursued",
+    "rung": "BSE own Q1FY19 filing"
+   },
+   {
+    "result": "REACHED AND READ \u2014 the consolidated block carries a full quarter column set including '3 Months ended 30 June 2018'. Value obtained.",
+    "rung": "Q1FY20 comparative column (main door)"
+   }
+  ],
+  "row": "Profit attributable to owners of NIIT Technologies Limited (858); parent row IX 'Profit for the period from continuing operations (VII-VIII)' (904); 'Profit attributable to Non-Controlling interests' (46); row I 'Revenue from Operations' (8,249)",
+  "src": "NIIT Technologies Limited, 'Statement of Unaudited Financial Results for the quarter ended June 30, 2019', table headed 'Consolidated Financial Results' (BSE, filed 23-Jul-2019 16:46, attachment 73a59a95-00ec-4fe6-8c99-6b2bd718db3f.pdf) p2, column (4) '3 Months ended 30 June 2018 (Unaudited)'",
+  "unit": "Rs. In Mn (printed at the top right of the table, verbatim)",
+  "when": "2026-08-18 20:42 IST",
+  "writer_note": null
+ },
+ "COFORGE|20180630|con_rev": {
+  "anchor": "SAME TABLE, THREE ANCHORS: (1) column (3) '3 Months ended 31 March 2019' owners 1,055 Mn = 105.50 == stored conPAT 20190331 105.5 EXACT; (2) column (2) '3 Months ended 30 June 2019' row IX total 898 Mn = 89.80 == stored conPAT 20190630 89.8 EXACT; (3) column (3) Revenue from Operations 9,722 Mn = 972.20 == stored revC 20190331 972.2 EXACT. Independent closure: stored con Q2+Q3+Q4 FY19 (111.8 + 100.2 + 105.5 = 317.5) + the value read here (85.8) = 403.3 == printed column (5) 'Accounting Year Ended 31 March, 2019' owners 4,033 Mn = 403.3 EXACT.",
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "fill_pass": "2026-08-18 con-fill wave W7",
+  "read_by": "vision (rendered 2.4x, p2 full page + crop of the header and profit rows)",
+  "rev_con": 824.9,
+  "row": "Profit attributable to owners of NIIT Technologies Limited (858); parent row IX 'Profit for the period from continuing operations (VII-VIII)' (904); 'Profit attributable to Non-Controlling interests' (46); row I 'Revenue from Operations' (8,249)",
+  "src": "NIIT Technologies Limited, 'Statement of Unaudited Financial Results for the quarter ended June 30, 2019', table headed 'Consolidated Financial Results' (BSE, filed 23-Jul-2019 16:46, attachment 73a59a95-00ec-4fe6-8c99-6b2bd718db3f.pdf) p2, column (4) '3 Months ended 30 June 2018 (Unaudited)'",
+  "unit": "Rs. In Mn (printed at the top right of the table, verbatim)",
+  "when": "2026-08-18 20:42 IST"
+ },
+ "FMGOETZE|20190331|con": {
+  "anchor": "SAME TABLE, CONSOLIDATED block, FOUR anchors: Quarter ended 31-Mar-2020 owners 225.69 lacs = 2.2569 -> 2.26 == stored conPAT 20200331 EXACT; Quarter ended 31-Mar-2020 Revenue From Operations 23,422.46 lacs = 234.2246 -> 234.22 == stored revC 20200331 EXACT; Quarter ended 31-Dec-2019 owners 810.52 lacs = 8.1052 -> 8.11 == stored conPAT 20191231 EXACT; Quarter ended 31-Dec-2019 Revenue 27,920.00 lacs = 279.20 == stored revC 20191231 EXACT",
+  "annCon": 20200628,
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "carrying_filing": true,
+  "con": 17.11,
+  "con_nci": 4.96,
+  "con_total": 22.07,
+  "evidence": "NCI IS PRESENT and material (496.23 lacs = 4.96 cr on a 22.07 cr total). Reported con = OWNERS 17.11 per protocol rule 5. annCon: I stamped 20200628 to match the store's own stamp for the sibling cell 20200331 read from this SAME filing; the BSE announcement timestamp is 2020-06-26 20:52 IST (board meeting held 26-Jun-2020) and the NSE index records the filing as 28-Jun-2020 - writer may prefer 20200626. The Mar-2019 consolidated column is marked '(Refer note-5)' i.e. it is a balancing figure between the audited FY and the published 9M - the filing itself flags this, it is NOT my derivation. op_con left null: the statement prints no operating-profit line and I will not infer the store's opC formula.",
+  "fill_pass": "2026-08-18 con-fill wave W8",
+  "printed": "Consolidated / Quarter ended 31 March 2019 (Refer note-5): Revenue From Operations 30,330.97 ; Profit for the period after tax (V-VI) 2,206.86 ; Profit and loss attributable to a) Owner of the company 1,710.63 ; b) Non controlling interest 496.23",
+  "read_by": "vision (rendered 2.4x, p2)",
+  "routes_tried": [
+   {
+    "result": "FMGOETZE Consolidated 2020-03-31 present (INDAS_56906_270541_28062020103436_WEB_xml) and it carries a real consolidated QUARTER context (2020-01-01..2020-03-31, ProfitLossForPeriod 31778000 = 3.1778cr total, NCI 9209000 = 0.9209 -> owners 2.2569 == stored conPAT 20200331). No Consolidated 2019-03-31 XBRL exists. INDAS quarterly XBRLs carry ONLY the current periods - never a prior-year comparative - so this rung can never yield the Mar-2019 comparative.",
+    "rung": "xbrl cache"
+   },
+   {
+    "result": "no Consolidated row for 31-Mar-2019; the FY19 Q4 row (filed 27-Jun-2019) is Non-Consolidated with xbrl link '/-'",
+    "rung": "nse filing index"
+   },
+   {
+    "result": "fetched (attachment 30437ed4-8f03-4579-bf7a-1f5b4451190b.pdf) p6: consolidated block is 'Year ended 31 March 2019 / Year ended 31 March 2018' ONLY - no consolidated quarter",
+    "rung": "bse own filing (Q4FY19, 28-May-2019)"
+   },
+   {
+    "result": "HIT - consolidated block carries FIVE columns incl. 'Quarter ended 31 March 2019'",
+    "rung": "comparative column of a later filing (Q4FY20, 26-Jun-2020)"
+   }
+  ],
+  "row": "'Profit and loss for the year / Attributable to / a) Owner of the company' (= 1,710.63); total row 'Profit for the period after tax (V-VI)' (= 2,206.86); 'b) Non controlling interest' (= 496.23)",
+  "src": "Federal-Mogul Goetze (India) Ltd, 'Statement of financial results for the quarter and year ended 31 March 2020' inside 'Outcome Of The Board Meeting Held On 26Th June 2020' (BSE scrip 505744, NEWS_DT 2020-06-26T20:52:30, attachment fa166214-16f8-4746-babf-273f094e7a8d.pdf) p2, column block 'Consolidated' -> 'Quarter ended 31 March 2019 (Refer note-5)'",
+  "unit": "'Rs in lacs except per share data' (verbatim, top-right of the statement) -> lacs, divide by 100",
+  "when": "2026-08-18 20:42 IST",
+  "writer_note": null
+ },
+ "FMGOETZE|20190331|con_rev": {
+  "anchor": "SAME TABLE, CONSOLIDATED block, FOUR anchors: Quarter ended 31-Mar-2020 owners 225.69 lacs = 2.2569 -> 2.26 == stored conPAT 20200331 EXACT; Quarter ended 31-Mar-2020 Revenue From Operations 23,422.46 lacs = 234.2246 -> 234.22 == stored revC 20200331 EXACT; Quarter ended 31-Dec-2019 owners 810.52 lacs = 8.1052 -> 8.11 == stored conPAT 20191231 EXACT; Quarter ended 31-Dec-2019 Revenue 27,920.00 lacs = 279.20 == stored revC 20191231 EXACT",
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "fill_pass": "2026-08-18 con-fill wave W8",
+  "read_by": "vision (rendered 2.4x, p2)",
+  "rev_con": 303.31,
+  "row": "'Profit and loss for the year / Attributable to / a) Owner of the company' (= 1,710.63); total row 'Profit for the period after tax (V-VI)' (= 2,206.86); 'b) Non controlling interest' (= 496.23)",
+  "src": "Federal-Mogul Goetze (India) Ltd, 'Statement of financial results for the quarter and year ended 31 March 2020' inside 'Outcome Of The Board Meeting Held On 26Th June 2020' (BSE scrip 505744, NEWS_DT 2020-06-26T20:52:30, attachment fa166214-16f8-4746-babf-273f094e7a8d.pdf) p2, column block 'Consolidated' -> 'Quarter ended 31 March 2019 (Refer note-5)'",
+  "unit": "'Rs in lacs except per share data' (verbatim, top-right of the statement) -> lacs, divide by 100",
+  "when": "2026-08-18 20:42 IST"
+ },
+ "KNRCON|20180630|con": {
+  "anchor": "SAME TABLE, CONSOLIDATED columns, four exact reproductions: (1) 30-Jun-2019 Revenue from Operations 53,071.57 lakh = 530.72 == stored revC 530.72 EXACT; (2) 30-Jun-2019 attributable to Shareholders 4,289.42 lakh = 42.89 == stored conPAT 42.89 EXACT; (3) 31-Mar-2019 Revenue from Operations 76,535.69 lakh = 765.36 == stored revC 765.36 EXACT; (4) 31-Mar-2019 attributable to Shareholders 10,886.52 lakh = 108.87 == stored conPAT 108.87 EXACT. Plus the target column itself: 30-Jun-2018 Revenue from Operations 59,188.02 lakh = 591.88 == the target cell's own stored rev_con 591.88 EXACT.",
+  "annCon": 20190814,
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "carrying_filing": true,
+  "con": 72.4,
+  "con_nci": -0.03,
+  "con_total": 72.37,
+  "evidence": "Row-11 arithmetic checks on the face: owners 7,239.87 + NCI (3.07) = 7,236.80 total. Rounded: owners 72.3987 -> 72.40, total 72.368 -> 72.37, NCI -0.0307 -> -0.03. PROVENANCE CAVEAT the writer must carry: note 3 of this filing states 'The Statutory Auditors have carried out limited review of the unaudited standalone and consolidated financials results for the Quarter ended June 30, 2019, and the unaudited consolidated figures for the Quarter ended March 31, 2019 and June 30, 2018 are not subjected to limited review by Statutory Auditor.' It is still a figure printed in a filed statement, but it is management-prepared, not reviewed. op_con left null: no printed line on this face reproduces our stored opC convention (checked against stored opC 115.82 for 20190630 - no combination of the printed rows reproduced it, so I did not guess).",
+  "fill_pass": "2026-08-18 con-fill wave W10",
+  "printed": "7,239.87 (owners) / 7,236.80 (total) / (3.07) (NCI) / 59,188.02 (revenue from operations)",
+  "read_by": "vision (rendered 2.4x, p2; notes page p3 read separately)",
+  "routes_tried": [
+   {
+    "result": "KNRCON 2018-06-30 hit is INDAS_38257_33226_10082018014503_WEB - Standalone. No consolidated.",
+    "rung": "xbrl cache (local)"
+   },
+   {
+    "result": "Q1FY19 (24-Aug-2018) listed Non-Consolidated only; first Consolidated row is Q1FY20 (16-Aug-2019).",
+    "rung": "NSE filing index"
+   },
+   {
+    "result": "parsed: NatureOfReport='Standalone', single context 2018-04-01..2018-06-30. Not a source for a consolidated value.",
+    "rung": "NSE per-filing XBRL of the Q1FY19 filing"
+   },
+   {
+    "result": "listed but 404 on AttachHis and AttachLive.",
+    "rung": "BSE attachment of the Q1FY19 filing (10-Aug-2018)"
+   },
+   {
+    "result": "SERVED (646,864 bytes). Carries a full CONSOLIDATED block with a June 30 2018 quarter column. This is the fill.",
+    "rung": "BSE attachment of the Q1FY20 filing (14-Aug-2019) - the 'corresponding quarter previous year' rung"
+   }
+  ],
+  "row": "'Net Profit/(Loss) after tax and share of profit / (loss) of associates and joint controlled entity (9 + 10)' -> 'Attributable to: Shareholders of the Company' (owners) and 'Non-Controlling Interest'",
+  "src": "KNR Constructions Limited, 'STATEMENT OF UNAUDITED STANDALONE AND CONSOLIDATED FINANCIAL RESULTS FOR THE QUARTER ENDED JUNE 30, 2019' (BSE, announced 14-Aug-2019 15:16, attachment 8f85c0d7-63e4-4b4e-b054-7454cd65ed5f.pdf) p2, CONSOLIDATED block, column 'Quarter ended / June 30 / 2018 / UnAudited'",
+  "unit": "'(Rupees In Lakhs, except share data)' (statement header, verbatim)",
+  "when": "2026-08-18 20:42 IST",
+  "writer_note": null
+ },
+ "KNRCON|20180630|con_rev": {
+  "anchor": "SAME TABLE, CONSOLIDATED columns, four exact reproductions: (1) 30-Jun-2019 Revenue from Operations 53,071.57 lakh = 530.72 == stored revC 530.72 EXACT; (2) 30-Jun-2019 attributable to Shareholders 4,289.42 lakh = 42.89 == stored conPAT 42.89 EXACT; (3) 31-Mar-2019 Revenue from Operations 76,535.69 lakh = 765.36 == stored revC 765.36 EXACT; (4) 31-Mar-2019 attributable to Shareholders 10,886.52 lakh = 108.87 == stored conPAT 108.87 EXACT. Plus the target column itself: 30-Jun-2018 Revenue from Operations 59,188.02 lakh = 591.88 == the target cell's own stored rev_con 591.88 EXACT.",
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "fill_pass": "2026-08-18 con-fill wave W10",
+  "read_by": "vision (rendered 2.4x, p2; notes page p3 read separately)",
+  "rev_con": 591.88,
+  "row": "'Net Profit/(Loss) after tax and share of profit / (loss) of associates and joint controlled entity (9 + 10)' -> 'Attributable to: Shareholders of the Company' (owners) and 'Non-Controlling Interest'",
+  "src": "KNR Constructions Limited, 'STATEMENT OF UNAUDITED STANDALONE AND CONSOLIDATED FINANCIAL RESULTS FOR THE QUARTER ENDED JUNE 30, 2019' (BSE, announced 14-Aug-2019 15:16, attachment 8f85c0d7-63e4-4b4e-b054-7454cd65ed5f.pdf) p2, CONSOLIDATED block, column 'Quarter ended / June 30 / 2018 / UnAudited'",
+  "unit": "'(Rupees In Lakhs, except share data)' (statement header, verbatim)",
+  "when": "2026-08-18 20:42 IST"
+ },
+ "KPIL|20180630|con": {
+  "anchor": "SAME TABLE, CONSOLIDATED columns, three exact reproductions: (1) 30-Jun-2019 Revenue from operations 2,771 == stored revC 2771.0 EXACT; (2) 30-Jun-2019 'Net Profit attributable to Owners of the Company' 100 == stored conPAT 100.0 EXACT; (3) 31-Mar-2019 Revenue from operations 3,514 == stored revC 3514.0 EXACT. Plus the target column itself: 30-Jun-2018 Revenue from operations 2,084 == the target cell's own stored rev_con 2084.0 EXACT.",
+  "annCon": 20190730,
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "carrying_filing": true,
+  "con": 85.0,
+  "con_nci": 4.0,
+  "con_total": 89.0,
+  "evidence": "Whole crore figures - this statement is printed in crores with no decimals, so 85 / 89 / 4 / 2,084 are exactly as printed (not rounded by me). PROVENANCE CAVEAT: note 2 of this filing states 'The Consolidated financial results for the quarter ended June 30, 2018 and March 31, 2019 were not subjected to Limited Review by the Statutory Auditors of the Company and were prepared by the Management.' SEPARATE FLAG FOR THE WRITER: this same table prints 31-Mar-2019 consolidated owners profit = 151 (total 159), which does NOT match our stored conPAT 134.22 for KPIL 20190331 (stored annCon 20190513). The 20190331 consolidated cell in our store may be wrong or sourced from the 13-May-2019 XBRL whose quarterly consolidated facts are all 0.00. I did not touch that cell - flagging only. op_con left null: the printed 'Profit before share of profit/(loss) of joint ventures, exceptional Items and tax' for Jun-2018 is 139, but no printed line reproduced our stored opC 364.0 for 20190630, so I could not establish the convention and refused to guess.",
+  "fill_pass": "2026-08-18 con-fill wave W10",
+  "printed": "85 (owners) / 89 (total) / 4 (NCI) / 2,084 (revenue from operations)",
+  "read_by": "vision (rendered 2.4x, p5)",
+  "routes_tried": [
+   {
+    "result": "no KPIL entry with a 2018-06-30 period.",
+    "rung": "xbrl cache (local)"
+   },
+   {
+    "result": "Q1FY19 (20-Aug-2018) listed Non-Consolidated only; first Consolidated quarterly row is Q4FY19 (13-May-2019), then Q1FY20 (31-Jul-2019).",
+    "rung": "NSE filing index"
+   },
+   {
+    "result": "parsed: NatureOfReport='Standalone', single context 2018-04-01..2018-06-30.",
+    "rung": "NSE per-filing XBRL of the Q1FY19 filing (INDAS_38045_32508_08082018030922_WEB.xml)"
+   },
+   {
+    "result": "listed but 404 on AttachHis and AttachLive.",
+    "rung": "BSE attachment of the Q1FY19 filing (07-Aug-2018)"
+   },
+   {
+    "result": "SERVED (4,980,987 bytes). p5 is a standalone CONSOLIDATED statement carrying a June 30 2018 quarter column. This is the fill.",
+    "rung": "BSE attachment of the Q1FY20 filing (30-Jul-2019) - the 'corresponding quarter previous year' rung"
+   }
+  ],
+  "row": "'Net Profit attributable to a) Owners of the Company' (owners) / 'Profit for the period (9-10)' (total) / 'b) Non-Controlling interest'",
+  "src": "Kalpataru Power Transmission Ltd., 'STATEMENT OF CONSOLIDATED UNAUDITED FINANCIAL RESULTS FOR THE QUARTER ENDED JUNE 30, 2019' (BSE, announced 30-Jul-2019 15:10, attachment f1bd2269-6a7e-4f28-8e58-3467571cd77d.pdf) p5, column 'For the Quarter ended / June 30, 2018 / (Unaudited) / (Refer note 2)'",
+  "unit": "'(Rs. in Crores)' (statement header, verbatim)",
+  "when": "2026-08-18 20:42 IST",
+  "writer_note": null
+ },
+ "KPIL|20180630|con_rev": {
+  "anchor": "SAME TABLE, CONSOLIDATED columns, three exact reproductions: (1) 30-Jun-2019 Revenue from operations 2,771 == stored revC 2771.0 EXACT; (2) 30-Jun-2019 'Net Profit attributable to Owners of the Company' 100 == stored conPAT 100.0 EXACT; (3) 31-Mar-2019 Revenue from operations 3,514 == stored revC 3514.0 EXACT. Plus the target column itself: 30-Jun-2018 Revenue from operations 2,084 == the target cell's own stored rev_con 2084.0 EXACT.",
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "fill_pass": "2026-08-18 con-fill wave W10",
+  "read_by": "vision (rendered 2.4x, p5)",
+  "rev_con": 2084.0,
+  "row": "'Net Profit attributable to a) Owners of the Company' (owners) / 'Profit for the period (9-10)' (total) / 'b) Non-Controlling interest'",
+  "src": "Kalpataru Power Transmission Ltd., 'STATEMENT OF CONSOLIDATED UNAUDITED FINANCIAL RESULTS FOR THE QUARTER ENDED JUNE 30, 2019' (BSE, announced 30-Jul-2019 15:10, attachment f1bd2269-6a7e-4f28-8e58-3467571cd77d.pdf) p5, column 'For the Quarter ended / June 30, 2018 / (Unaudited) / (Refer note 2)'",
+  "unit": "'(Rs. in Crores)' (statement header, verbatim)",
+  "when": "2026-08-18 20:42 IST"
+ },
+ "MOTILALOFS|20180331|con": {
+  "anchor": "SAME TABLE, adjacent column 'For the quarter ended 31 March 2019': 'Owners of parent' 14,609 lakhs = 146.09 == stored conPAT 20190331 146.09 EXACT; '(I) Total revenue from operations' 65,659 lakhs = 656.59 == stored revC 20190331 656.59 EXACT. Two anchors, same table, same rows as the target read. Independent corroboration of the owners-basis convention: MOTILALOFS Q1FY19 consolidated XBRL (nsearchives INDAS_39190_36395_21082018112052_WEB.xml, NatureOfReportStandaloneConsolidated=Consolidated) gives ProfitLossForPeriod 1,043,600,000 minus ProfitOrLossAttributableToNonControllingInterests 5,300,000 = 103.83 cr == stored conPAT 20180630 103.83 EXACT, and RevenueFromOperations 6,464,700,000 = 646.47 == stored revC 20180630 646.47 EXACT.",
+  "annCon": 20190511,
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "carrying_filing": true,
+  "con": 13.91,
+  "con_nci": -0.17,
+  "con_total": 13.73,
+  "evidence": "NCI IS present and negative for this quarter: owners 1,391 lakhs, NCI (17) lakhs. Printed (IX) total is 1,373, while owners+NCI = 1,374 - a 1-lakh (0.01 cr) rounding difference inside the printed statement itself; I report the printed figures, not a reconciliation. SCALE TRAP: statement is in LAKHS while the store is in crore. RESTATEMENT: note 3 of the filing says 'The Group has adopted Ind AS with effect from 1 April 2018 ... with comparative figures being restated', and the 31 Mar 2018 column is marked '(Unaudited)#' with '#See note 11'. So this Mar-2018 consolidated figure is the Ind-AS restated one, NOT the IGAAP figure the FY18 filings would have carried - our stored FY18 con neighbours (e.g. 20171231 conPAT 148.05 from the 2018-01-24 filing, revC 728.63) are on the older basis and do NOT reconcile with this column (the same table shows Dec-2018 owners 3,989 = 39.89 vs stored conPAT 39.90 and revenue 623.65 vs stored revC 647.59). Writer must decide whether a restated comparative is acceptable for this cell. p7 of the same PDF prints an explicit IGAAP->Ind AS reconciliation for the quarter ended 31 March 2018 ending at 'Net profit after tax (before OCI) as per Ind AS 1,390' - 1 lakh off the 1,391 owners figure, consistent with rounding.",
+  "fill_pass": "2026-08-18 con-fill wave W11",
+  "printed": "1,391 (owners) / 1,373 (profit after tax and share in profit of associates) / (17) (non-controlling interests) / 66,242 (total revenue from operations)",
+  "read_by": "vision (rendered 2.4x, p5, plus two crop re-renders of the revenue block and the PAT/NCI block)",
+  "routes_tried": [
+   {
+    "result": "miss - campaign index xhit.json lists (MOTILALOFS,20180331) among the 0-file misses; no consolidated XBRL in cache",
+    "rung": "1 local XBRL cache"
+   },
+   {
+    "result": "HIT as a pointer: index lists 01-Jan-2018->31-Mar-2018 CONSOLIDATED filed 04-Jul-2018 with xbrl NONINDAS_35476_12129_28052018034618_WEB.xml, but that URL 404s on nsearchives.nseindia.com, archives.nseindia.com and www.nseindia.com (3 attempts). 2018 INDAS files on the same host DO serve, so the NONINDAS family appears unavailable.",
+    "rung": "2 NSE filing index"
+   },
+   {
+    "result": "own Q4FY18 filing found (2018-05-21 19:33, attachment 32a8fd01-1f08-4b4e-bf1d-2caadbcd4832.pdf) but both AttachHis and AttachLive return HTTP 404 - pre-Oct-2018 attachments are not served",
+    "rung": "3 BSE announcements"
+   },
+   {
+    "result": "SUCCESS - consolidated statement carries three quarter columns (31 Mar 2019 / 31 Dec 2018 / 31 Mar 2018) plus two year columns",
+    "rung": "4 comparative column of the Q4FY19 filing"
+   }
+  ],
+  "row": "(XII) Net profit attributable to: Owners of parent  [con_total from row '(IX) Profit after tax and share in profit of associates (IX) = (VII)+(VIII)'; rev_con from row '(I) Total revenue from operations']",
+  "src": "Motilal Oswal Financial Services Limited, 'Statement Of Consolidated Financial Results For The Quarter And Year Ended 31 March 2019' (BSE announcement 2019-05-11 18:44, 'Audited Financial Results (Consolidated And Standalone) For The Quarter And Financial Year Ended March...', attachment fb232453-940a-4703-a187-6b6c384d5893.pdf) p5 of the PDF (marked 'Page 1 of 4'), column 'For the quarter ended / 31 March 2018 / (Unaudited)#'",
+  "unit": "(Rs. in Lakhs, unless otherwise stated) - printed verbatim at the head of the table; lakhs/100 = crore",
+  "when": "2026-08-18 20:42 IST",
+  "writer_note": null
+ },
+ "MOTILALOFS|20180331|con_rev": {
+  "anchor": "SAME TABLE, adjacent column 'For the quarter ended 31 March 2019': 'Owners of parent' 14,609 lakhs = 146.09 == stored conPAT 20190331 146.09 EXACT; '(I) Total revenue from operations' 65,659 lakhs = 656.59 == stored revC 20190331 656.59 EXACT. Two anchors, same table, same rows as the target read. Independent corroboration of the owners-basis convention: MOTILALOFS Q1FY19 consolidated XBRL (nsearchives INDAS_39190_36395_21082018112052_WEB.xml, NatureOfReportStandaloneConsolidated=Consolidated) gives ProfitLossForPeriod 1,043,600,000 minus ProfitOrLossAttributableToNonControllingInterests 5,300,000 = 103.83 cr == stored conPAT 20180630 103.83 EXACT, and RevenueFromOperations 6,464,700,000 = 646.47 == stored revC 20180630 646.47 EXACT.",
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "fill_pass": "2026-08-18 con-fill wave W11",
+  "read_by": "vision (rendered 2.4x, p5, plus two crop re-renders of the revenue block and the PAT/NCI block)",
+  "rev_con": 662.42,
+  "row": "(XII) Net profit attributable to: Owners of parent  [con_total from row '(IX) Profit after tax and share in profit of associates (IX) = (VII)+(VIII)'; rev_con from row '(I) Total revenue from operations']",
+  "src": "Motilal Oswal Financial Services Limited, 'Statement Of Consolidated Financial Results For The Quarter And Year Ended 31 March 2019' (BSE announcement 2019-05-11 18:44, 'Audited Financial Results (Consolidated And Standalone) For The Quarter And Financial Year Ended March...', attachment fb232453-940a-4703-a187-6b6c384d5893.pdf) p5 of the PDF (marked 'Page 1 of 4'), column 'For the quarter ended / 31 March 2018 / (Unaudited)#'",
+  "unit": "(Rs. in Lakhs, unless otherwise stated) - printed verbatim at the head of the table; lakhs/100 = crore",
+  "when": "2026-08-18 20:42 IST"
+ },
+ "MRF|20180630|con": {
+  "anchor": "SAME TABLE, THREE anchors: (a) TARGET COLUMN itself - 'Revenue from Operations' 3,882.99 == stored rev_con 20180630 3882.99 EXACT; (b) column 'Quarter ended 30.06.2019': row IX 273.27 == stored conPAT 20190630 273.27 EXACT; (c) same column revenue 4,470.82 == stored revC 20190630 4470.82 EXACT. Cross-filing check: the 'Year ended 31.03.2019' column here (revenue 16,062.46, profit 1,130.61) reproduces the consolidated FY19 column of MRF's Q4FY19 statement exactly.",
+  "annCon": 20190810,
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "carrying_filing": true,
+  "con": 267.56,
+  "con_nci": 0.0,
+  "con_total": 267.56,
+  "evidence": "NCI: the statement has NO 'net profit attributable to owners/NCI' split; the only attribution block is 'XI Total Comprehensive Income for the year attributable to: Owners of the Company / Non Controlling Interest', where the 30.06.2018 column reads Owners 279.69 and NCI '-' (nil). I therefore report row IX (profit for the period) as both con and con_total with con_nci 0.0; MRF's whole-year FY19 NCI is 0.01 cr, so NCI is immaterial. DO NOT confuse row IX with row XI: row XI is total comprehensive income, 279.69 for this quarter. WARNING FOR THE WRITER - the store is inconsistent about which of these two rows it calls conPAT: stored conPAT 20190630 273.27 and 20190930 228.96 both equal row IX, but stored conPAT 20191231 244.98 equals row XI (Total Comprehensive Income attributable to Owners) while row IX for that column is 241.32. I used row IX (net profit), matching the majority convention and the profit definition. ANNCON: the carrying filing was announced on BSE 2019-08-09 14:29 and its NSE filing date is 10-Aug-2019; I set annCon 20190810 to match the store's own annCon for the neighbouring cell from this same filing (20190630 -> 20190810). Also note the same table's 31.03.2019 column prints 293.93, while the store holds conPAT 20190331 = 282.49 from the later Q4FY20 filing (annCon 20200629) - a later restatement, flagged, not touched.",
+  "fill_pass": "2026-08-18 con-fill wave W11",
+  "printed": "267.56 (profit) / 3,882.99 (revenue from operations) / '-' (Non Controlling Interest)",
+  "read_by": "vision (rendered 2.4x, p7, plus two crop re-renders of the header/revenue rows and of row IX)",
+  "routes_tried": [
+   {
+    "result": "miss (xhit.json: 0 files for MRF 20180630)",
+    "rung": "1 local XBRL cache"
+   },
+   {
+    "result": "no consolidated row for 30-Jun-2018; earliest MRF consolidated row is 30-Jun-2019",
+    "rung": "2 NSE filing index"
+   },
+   {
+    "result": "attachment a9c672cc-f93d-4e54-aedf-e01dae2acebe.pdf 404s on AttachHis and AttachLive (pre-Oct-2018)",
+    "rung": "3 BSE own Q1FY19 filing"
+   },
+   {
+    "result": "SUCCESS - consolidated statement carries 30.06.2019 / 31.03.2019 / 30.06.2018 quarter columns",
+    "rung": "4 comparative column of the Q1FY20 filing (10-Aug-2019)"
+   }
+  ],
+  "row": "IX Profit for the period from Continuing operations ( VII - VIII)  [rev_con from row 'I Revenue from Operations']",
+  "src": "MRF LIMITED, 'Statement of Consolidated Financial Results for the Quarter ended 30th June,2019' (BSE announcement 2019-08-09 14:29 'Unaudited Financial Results Of The Company For The Quarter Ended 30Th June,2019', attachment a00c534d-5698-44ac-8e48-3ed053f469ca.pdf; NSE filing date 10-Aug-2019 12:30) p7, column 'Quarter ended 30.06.2018 (Unaudited)'",
+  "unit": "Rs.Crores (printed top-right of the statement)",
+  "when": "2026-08-18 20:42 IST",
+  "writer_note": null
+ },
+ "MRF|20180630|con_rev": {
+  "anchor": "SAME TABLE, THREE anchors: (a) TARGET COLUMN itself - 'Revenue from Operations' 3,882.99 == stored rev_con 20180630 3882.99 EXACT; (b) column 'Quarter ended 30.06.2019': row IX 273.27 == stored conPAT 20190630 273.27 EXACT; (c) same column revenue 4,470.82 == stored revC 20190630 4470.82 EXACT. Cross-filing check: the 'Year ended 31.03.2019' column here (revenue 16,062.46, profit 1,130.61) reproduces the consolidated FY19 column of MRF's Q4FY19 statement exactly.",
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "fill_pass": "2026-08-18 con-fill wave W11",
+  "read_by": "vision (rendered 2.4x, p7, plus two crop re-renders of the header/revenue rows and of row IX)",
+  "rev_con": 3882.99,
+  "row": "IX Profit for the period from Continuing operations ( VII - VIII)  [rev_con from row 'I Revenue from Operations']",
+  "src": "MRF LIMITED, 'Statement of Consolidated Financial Results for the Quarter ended 30th June,2019' (BSE announcement 2019-08-09 14:29 'Unaudited Financial Results Of The Company For The Quarter Ended 30Th June,2019', attachment a00c534d-5698-44ac-8e48-3ed053f469ca.pdf; NSE filing date 10-Aug-2019 12:30) p7, column 'Quarter ended 30.06.2018 (Unaudited)'",
+  "unit": "Rs.Crores (printed top-right of the statement)",
+  "when": "2026-08-18 20:42 IST"
+ },
+ "MRF|20181231|con": {
+  "anchor": "SAME TABLE, THREE anchors: (a) TARGET COLUMN itself - 'Revenue from Operations' 4,095.03 == stored rev_con 20181231 4095.03 EXACT; (b) column 'Quarter ended 30.09.2019': row IX 228.96 == stored conPAT 20190930 228.96 EXACT; (c) column 'Quarter ended 31.12.2019': row XI Owners 244.98 == stored conPAT 20191231 244.98 EXACT. Cross-filing: 'Year ended 31.03.2019' column (16,062.46 / 1,130.61) reproduces the Q4FY19 statement's consolidated FY19 column exactly.",
+  "annCon": 20200211,
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "carrying_filing": true,
+  "con": 290.83,
+  "con_nci": null,
+  "con_total": 290.83,
+  "evidence": "con_nci is null, not 0: the 'Non Controlling Interest' cell under 'XI Total Comprehensive Income for the year attributable to' is BLANK in the 31.12.2018 column (it prints '-' for 30.09.2019 and 0.01 for the FY19 year column) - blank is not the same as a printed zero, so I did not invent a value. MRF's group NCI is 0.01 cr for the whole of FY19, i.e. immaterial. Same row-choice warning as the Jun-2018 cell: row IX (net profit) for this column is 290.83, row XI (total comprehensive income attributable to Owners) is 314.89; the store's conPAT for 20191231 was taken from row XI, so the writer should decide the convention before applying. ANNCON 20200211 = the NSE filing date of the carrying filing, matching the store's annCon for 20191231 from this same filing; the BSE announcement timestamp is 2020-02-10 13:43.",
+  "fill_pass": "2026-08-18 con-fill wave W11",
+  "printed": "290.83 (profit) / 4,095.03 (revenue from operations) / NCI cell BLANK for this column",
+  "read_by": "vision (rendered 2.4x, p7, plus two crop re-renders of rows IX-XI and of the NCI row)",
+  "routes_tried": [
+   {
+    "result": "miss (xhit.json: 0 files for MRF 20181231)",
+    "rung": "1 local XBRL cache"
+   },
+   {
+    "result": "01-Oct-2018->31-Dec-2018 row is Non-Consolidated only (filed 19-Feb-2019); no consolidated row for that period",
+    "rung": "2 NSE filing index"
+   },
+   {
+    "result": "not pursued once the Q3FY20 comparative was in hand; the Q3FY19 filing is indexed at NSE as Non-Consolidated",
+    "rung": "3 BSE own Q3FY19 filing"
+   },
+   {
+    "result": "SUCCESS - consolidated statement carries 31.12.2019 / 30.09.2019 / 31.12.2018 quarter columns plus two nine-month columns and the FY19 year",
+    "rung": "4 comparative column of the Q3FY20 filing (10/11-Feb-2020)"
+   }
+  ],
+  "row": "IX Profit for the period from Continuing Operations ( VII - VIII)  [rev_con from row 'I Revenue from Operations']",
+  "src": "MRF LIMITED, 'Statement of Consolidated Unaudited Financial Results for the Quarter and Nine months ended 31st December,2019' (BSE announcement 2020-02-10 13:43 'Unaudited Financial Results For The Quarter And Nine Months Ended 31.12.2019', attachment bc6b613e-77c3-4d71-814c-8cf98e72a521.pdf; NSE filing date 11-Feb-2020 11:33) p7, column 'Quarter ended 31.12.2018 (Unaudited)'",
+  "unit": "Rs.Crores (printed top-right of the statement)",
+  "when": "2026-08-18 20:42 IST",
+  "writer_note": null
+ },
+ "MRF|20181231|con_rev": {
+  "anchor": "SAME TABLE, THREE anchors: (a) TARGET COLUMN itself - 'Revenue from Operations' 4,095.03 == stored rev_con 20181231 4095.03 EXACT; (b) column 'Quarter ended 30.09.2019': row IX 228.96 == stored conPAT 20190930 228.96 EXACT; (c) column 'Quarter ended 31.12.2019': row XI Owners 244.98 == stored conPAT 20191231 244.98 EXACT. Cross-filing: 'Year ended 31.03.2019' column (16,062.46 / 1,130.61) reproduces the Q4FY19 statement's consolidated FY19 column exactly.",
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "fill_pass": "2026-08-18 con-fill wave W11",
+  "read_by": "vision (rendered 2.4x, p7, plus two crop re-renders of rows IX-XI and of the NCI row)",
+  "rev_con": 4095.03,
+  "row": "IX Profit for the period from Continuing Operations ( VII - VIII)  [rev_con from row 'I Revenue from Operations']",
+  "src": "MRF LIMITED, 'Statement of Consolidated Unaudited Financial Results for the Quarter and Nine months ended 31st December,2019' (BSE announcement 2020-02-10 13:43 'Unaudited Financial Results For The Quarter And Nine Months Ended 31.12.2019', attachment bc6b613e-77c3-4d71-814c-8cf98e72a521.pdf; NSE filing date 11-Feb-2020 11:33) p7, column 'Quarter ended 31.12.2018 (Unaudited)'",
+  "unit": "Rs.Crores (printed top-right of the statement)",
+  "when": "2026-08-18 20:42 IST"
+ },
+ "PCJEWELLER|20190331|con": {
+  "anchor": "SAME TABLE, FOUR anchors: (a) TARGET COLUMN itself - 'Revenue from operations' 2,247.59 == stored rev_con 20190331 2247.59 EXACT; (b) column 'Three months ended 30 June 2019': profit 39.21 == stored conPAT 20190630 39.21 EXACT and revenue 1,411.45 == stored revC 20190630 1411.45 EXACT; (c) column 'Three months ended 30 June 2018': profit 152.57 == stored conPAT 20180630 152.57 EXACT and revenue 2,514.89 == stored revC 20180630 2514.89 EXACT. Cross-filing: the 'Year ended 31 March 2019' column (revenue 8,679.96, profit 0.61) reproduces the consolidated FY19 column of PCJEWELLER's own Q4FY19 statement exactly.",
+  "annCon": 20190810,
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "carrying_filing": true,
+  "con": -392.22,
+  "con_nci": null,
+  "con_total": -392.22,
+  "evidence": "con_nci is null because the consolidated statement prints NO owners/NCI attribution block at all - there is no 'attributable to' section in either the Q1FY20 or the Q4FY19 consolidated statement, so I did not invent a split; PCJEWELLER's consolidated profit line is a single figure. PROVENANCE CAVEAT the writer must carry: note 2 of the carrying filing reads verbatim 'Figures for the quarter ended 31 March 2019 represents the balancing figures between the audited figures for the full financial year ended 31 March 2019 and published year to date figures upto the third quarter ended 31 December 2018.' The company computed it, printed it and had it reviewed - it is a PRINTED figure, not a derivation of mine - but it is a balancing figure by construction. Cross-check that it hangs together: FY19 con profit 0.61 minus the store's 9M con (152.57 + 95.05 + 133.03 = 380.65) = -380.04, which is 12.18 away from the printed -392.22; the gap is the company's own restatement of the 9M comparatives inside the FY19 audit, which is exactly why the printed figure must be preferred over any arithmetic. ANNCON 20190810 = the NSE filing date of the carrying filing, matching the store's annCon for 20190630 from this same filing; the BSE announcement timestamp is 2019-08-09 19:54 and the signature block is dated 09 August 2019.",
+  "fill_pass": "2026-08-18 con-fill wave W11",
+  "printed": "(392.22) (profit/(loss) for the period) / 2,247.59 (revenue from operations)",
+  "read_by": "vision (rendered 2.4x, p10, plus a crop re-render of the header and rows I-VII)",
+  "routes_tried": [
+   {
+    "result": "miss (xhit.json: 0 files for PCJEWELLER 20190331)",
+    "rung": "1 local XBRL cache"
+   },
+   {
+    "result": "01-Jan-2019->31-Mar-2019 row is Non-Consolidated only (Audited, filed 31-May-2019) - the index does not show the consolidated figure that the Q1FY20 filing later printed",
+    "rung": "2 NSE filing index"
+   },
+   {
+    "result": "DOWNLOADED AND READ - consolidated block is annual only ('audited consolidated financial results for the year ended 31 March 2019'), so the company's own Q4 filing does NOT print this quarter",
+    "rung": "3 BSE own Q4FY19 filing (2019-05-30)"
+   },
+   {
+    "result": "SUCCESS",
+    "rung": "4 preceding-quarter column of the Q1FY20 filing"
+   }
+  ],
+  "row": "VII Profit/(loss) for the period (V - VI)  [rev_con from row 'I Revenue from operations']",
+  "src": "PC JEWELLER LIMITED, 'Statement of consolidated unaudited financial results for the quarter ended 30 June 2019' (BSE announcement 2019-08-09 19:54 'Financial Results For Quarter Ended June 30, 2019', attachment 4f6e8d09-bc11-4e4d-abf8-1e92fa8f6f4b.pdf; NSE filing date 10-Aug-2019 14:41) p10, column 'Three months ended 31 March 2019 (Refer note 2)'",
+  "unit": "(Rs. in crore) - printed top-right of PART I",
+  "when": "2026-08-18 20:42 IST",
+  "writer_note": null
+ },
+ "PCJEWELLER|20190331|con_rev": {
+  "anchor": "SAME TABLE, FOUR anchors: (a) TARGET COLUMN itself - 'Revenue from operations' 2,247.59 == stored rev_con 20190331 2247.59 EXACT; (b) column 'Three months ended 30 June 2019': profit 39.21 == stored conPAT 20190630 39.21 EXACT and revenue 1,411.45 == stored revC 20190630 1411.45 EXACT; (c) column 'Three months ended 30 June 2018': profit 152.57 == stored conPAT 20180630 152.57 EXACT and revenue 2,514.89 == stored revC 20180630 2514.89 EXACT. Cross-filing: the 'Year ended 31 March 2019' column (revenue 8,679.96, profit 0.61) reproduces the consolidated FY19 column of PCJEWELLER's own Q4FY19 statement exactly.",
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "fill_pass": "2026-08-18 con-fill wave W11",
+  "read_by": "vision (rendered 2.4x, p10, plus a crop re-render of the header and rows I-VII)",
+  "rev_con": 2247.59,
+  "row": "VII Profit/(loss) for the period (V - VI)  [rev_con from row 'I Revenue from operations']",
+  "src": "PC JEWELLER LIMITED, 'Statement of consolidated unaudited financial results for the quarter ended 30 June 2019' (BSE announcement 2019-08-09 19:54 'Financial Results For Quarter Ended June 30, 2019', attachment 4f6e8d09-bc11-4e4d-abf8-1e92fa8f6f4b.pdf; NSE filing date 10-Aug-2019 14:41) p10, column 'Three months ended 31 March 2019 (Refer note 2)'",
+  "unit": "(Rs. in crore) - printed top-right of PART I",
+  "when": "2026-08-18 20:42 IST"
+ },
+ "RAILTEL|20230930|con": {
+  "anchor": "SAME TABLE, 4 CONSOLIDATED anchors (all read by vision at 2.4x): p3 col '30.06.2023' PAT 3,839 lakhs = 38.39 == stored conPAT EXACT (stored stdPAT 37.46 NOT matched); p3 col '30.09.2022' PAT 5,524 = 55.24 == stored conPAT EXACT (stored stdPAT 55.17 NOT matched); p2 col '30.06.2023' Revenue from operations 46,761 = 467.61 == stored revC EXACT (stored revS 463.46 NOT matched); p2 col '30.09.2022' 42,871 = 428.71 == stored revC EXACT (stored revS 425.12 NOT matched)",
+  "annCon": 20231026,
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "carrying_filing": false,
+  "con": 68.15,
+  "con_nci": 0.0,
+  "con_total": 68.15,
+  "evidence": "THIS QUARTER'S STATEMENT IS ON THE CONSOLIDATED BASIS even though only ONE result set was filed. Proof: (i) note 3 says REL's figures are consolidated per Ind AS 110; (ii) the limited-review report's 'Other matter (b)' says REL's interim results are INCLUDED in these results; (iii) the statement carries consolidated-format rows 'Share of Profit/(Loss) of Joint Ventures' and 'Profit is attributable to: Owners of the Parent / Non Controlling Interest'; (iv) all four comparative anchors reproduce our stored CONSOLIDATED values and none reproduce the standalone ones. NCI is printed '-' (nil) in every column, so owners == total == 68.15. CAVEAT the writer must know: RailTel filed no separate standalone statement for this quarter and the XBRL it filed for it (INDAS_97982_968400_26102023080010_xml, NSE 'Non-Consolidated') declares Standalone while carrying these same numbers (599.15 / 68.15) \u2014 which is where our store's stdPAT/rev_std for this quarter came from. So con and std will legitimately be EQUAL for 20230930, and the true standalone (RCIL alone) was never separately published. op_con is left null: the statement prints no operating-profit line; revenue 59,915 minus the five operating expense lines (12,371+2,069+26,725+5,158+2,065 = 48,388) = 11,527 lakhs = 115.27 == our stored opS exactly, so op_con=115.27 is available as a DERIVED value from printed operands if the writer wants it.",
+  "fill_pass": "2026-08-18 con-fill wave W3",
+  "printed": "Profit/(Loss) for the period 6,815 ; 'Profit is attributable to: (a) Owners of the Parent' 6,815 ; '(b) Non Controlling Interest' '-' ; Revenue from operations 59,915",
+  "read_by": "vision (rendered 2.4x, p2 and p3; the PDF text layer is OCR and was used only to locate the pages)",
+  "routes_tried": [
+   {
+    "result": "RAILTEL files present for every target qe from 2023-09-30 on, but every one declares NatureOfReportStandaloneConsolidated='Standalone'; the last Consolidated RAILTEL file in the cache is INDAS_94713_901835_27072023062828_xml (qe 2023-06-30, RevenueFromOperations 467.61cr / ProfitLossForPeriod 38.39cr = our stored revC/conPAT for Jun-2023 EXACT)",
+    "rung": "xbrl cache"
+   },
+   {
+    "result": "28 rows; Consolidated+Non-Consolidated pairs for every quarter Dec-2020..Jun-2023, then Non-Consolidated ONLY from 01-Jul-2023->30-Sep-2023 onward (Sep-23, Dec-23, Mar-24, Jun-24, Sep-24, Dec-24 all single Non-Consolidated rows)",
+    "rung": "nse filing index"
+   },
+   {
+    "result": "scrip 543265, category Result: exactly ONE results attachment per quarter for the whole window; the 'Board Meeting' category carries only the same outcome letters, no second results set",
+    "rung": "bse announcements"
+   },
+   {
+    "result": "single statement; note 3 states the REL amalgamation order was communicated 09-Oct-2023 and 'The effect of the scheme in the accounts of transferee company ... is to be given in ensuing quarter. The figures of Transferor company are consolidated in the financial statements as per Ind AS 110.'; the LR report's Other matter (b) states 'We did not review the interim financial results of Erstwhile Railtel Enterprises Limited (Merged with the company) included in the unaudited financial results whose interim financial results reflect total assets of Rs. 6,586.43 lakhs at 30 September 2023, total revenue from operations of Rs 940.02 lakhs...'",
+    "rung": "own BSE filing PDF + vision"
+   }
+  ],
+  "row": "'9. Profit/(Loss) for the period/year (7-8)' and '12. Profit is attributable to : (a) Owners of the Parent'",
+  "src": "RailTel Corporation of India Ltd, 'Statement Of Financial Results For The Quarter & Half Year Ended September 30, 2023' (BSE, filed 26-Oct-2023 19:35, attachment becd7fb7-b6f0-423a-b13a-4ab73d4e701b.pdf) pp.2-3, column 'Quarter Ended / 30.09.2023 / (Unaudited)'",
+  "unit": "(Rs. in Lakhs)  [verbatim, top-right of the statement table]",
+  "when": "2026-08-18 20:42 IST",
+  "writer_note": null
+ },
+ "RAILTEL|20230930|con_rev": {
+  "anchor": "SAME TABLE, 4 CONSOLIDATED anchors (all read by vision at 2.4x): p3 col '30.06.2023' PAT 3,839 lakhs = 38.39 == stored conPAT EXACT (stored stdPAT 37.46 NOT matched); p3 col '30.09.2022' PAT 5,524 = 55.24 == stored conPAT EXACT (stored stdPAT 55.17 NOT matched); p2 col '30.06.2023' Revenue from operations 46,761 = 467.61 == stored revC EXACT (stored revS 463.46 NOT matched); p2 col '30.09.2022' 42,871 = 428.71 == stored revC EXACT (stored revS 425.12 NOT matched)",
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "fill_pass": "2026-08-18 con-fill wave W3",
+  "read_by": "vision (rendered 2.4x, p2 and p3; the PDF text layer is OCR and was used only to locate the pages)",
+  "rev_con": 599.15,
+  "row": "'9. Profit/(Loss) for the period/year (7-8)' and '12. Profit is attributable to : (a) Owners of the Parent'",
+  "src": "RailTel Corporation of India Ltd, 'Statement Of Financial Results For The Quarter & Half Year Ended September 30, 2023' (BSE, filed 26-Oct-2023 19:35, attachment becd7fb7-b6f0-423a-b13a-4ab73d4e701b.pdf) pp.2-3, column 'Quarter Ended / 30.09.2023 / (Unaudited)'",
+  "unit": "(Rs. in Lakhs)  [verbatim, top-right of the statement table]",
+  "when": "2026-08-18 20:42 IST"
+ },
+ "RELIANCE|20180331|con": {
+  "anchor": "SAME TABLE (own Q4FY18 filing p3): 31 Dec'17 quarter 'Owners of the Company' 9,423 == stored conPAT 9423.0 EXACT; 31 Dec'17 'Revenue from Operations' 102,500 == stored revC 102500.0 EXACT. SECOND FILING (Q4FY19 p5, BSE 18-Apr-2019 attachment 7b7b40a2-96c0-4745-a00f-466fe174856e.pdf): 31 Mar'19 Owners 10,362 == stored conPAT 10362.0 EXACT; 31 Dec'18 Owners 10,251 == stored conPAT 10251.0 EXACT; 31 Mar'19 Revenue 141,634 == stored revC EXACT; 31 Dec'18 Revenue 160,299 == stored revC EXACT. Six exact consolidated anchors across two independently-fetched filings.",
+  "annCon": 20180427,
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "carrying_filing": false,
+  "con": 9435.0,
+  "con_nci": 24.0,
+  "con_total": 9459.0,
+  "evidence": "TWO VINTAGES, both printed \u2014 the writer must pick knowingly. (1) Own Q4FY18 filing 27-Apr-2018: owners 9,435 / total 9,459 / NCI 24 / revenue 120,143. (2) Q4FY19 filing 18-Apr-2019 comparative column: owners 9,438 / total 9,467 / NCI 29 / revenue 120,143 (revenue identical, profit restated up by 3 cr). I report vintage (1) because that is the convention our store already follows: stored Dec-2017 conPAT 9,423 is the own-filing figure (the Q4FY18 comparative for Mar-2017 prints 8,046 while our stored Mar-2017 conPAT is 8,058, i.e. the original Q4FY17 vintage). If the writer prefers comparative-vintage values, use 9,438 with annCon 20190418. Store convention is OWNERS-attributable (proved: stored Mar-19 10,362 = Owners, not the 10,427 total). op_con: no operating-profit subtotal is printed in this statement, so null.",
+  "fill_pass": "2026-08-18 con-fill wave W12",
+  "printed": "9,435",
+  "read_by": "vision (rendered 2.4x; own Q4FY18 p3 and Q4FY19 p5)",
+  "routes_tried": [
+   {
+    "result": "RELIANCE Consolidated files exist for 2018-06-30 and 2019-03-31, but none for 2018-03-31; INDAS XBRLs carry only their own filing's periods, no prior-year comparative quarter",
+    "rung": "xbrl cache"
+   },
+   {
+    "result": "'01-Jan-2018..31-Mar-2018 | Consolidated | Audited | filed 13-Jun-2018' row exists but its xbrl link is the '/xbrl/-' placeholder \u2014 no file",
+    "rung": "NSE index"
+   },
+   {
+    "result": "listed 27-Apr-2018 \u2014 attachment 404s on AttachHis and AttachLive (pre-Oct-2018 wall verified directly)",
+    "rung": "BSE own Q4FY18"
+   },
+   {
+    "result": "WORKS \u2014 own Q4FY18 filing retrieved and read; consolidated block carries THREE quarter columns (31 Mar'18 / 31 Dec'17 / 31 Mar'17) plus two year columns",
+    "rung": "NSE announcements archive"
+   },
+   {
+    "result": "read as a second reader; its 'Quarter Ended 31 Mar'18' consolidated column gives the RESTATED figures",
+    "rung": "Q4FY19 comparative"
+   }
+  ],
+  "row": "'Net Profit attributable to : a) Owners of the Company' = 9,435; 'b) Non-Controlling Interest' = 24; 'Profit for the Period' = 9,459; 'Revenue from Operations' = 120,143 (Value of Sales & Services 129,120 less GST Recovered 8,977).",
+  "src": "Reliance Industries Limited, 'AUDITED CONSOLIDATED FINANCIAL RESULTS FOR THE QUARTER/ YEAR ENDED 31ST MARCH, 2018' (its OWN Q4FY18 filing; NSE announcements archive, filed 27-Apr-2018 18:24, 1542_001_27042018182435.zip -> 1542_001.pdf) p3, column 'Quarter Ended | 31 Mar'18'. The identical statement is BSE announcement 27-Apr-2018 attachment 6ee061c1-9a3e-48eb-bc93-12857e9691cc.pdf, which BSE 404s.",
+  "unit": "(Rs in crore, except per share data) \u2014 statement header, verbatim",
+  "when": "2026-08-18 20:42 IST",
+  "writer_note": null
+ },
+ "RELIANCE|20180331|con_rev": {
+  "anchor": "SAME TABLE (own Q4FY18 filing p3): 31 Dec'17 quarter 'Owners of the Company' 9,423 == stored conPAT 9423.0 EXACT; 31 Dec'17 'Revenue from Operations' 102,500 == stored revC 102500.0 EXACT. SECOND FILING (Q4FY19 p5, BSE 18-Apr-2019 attachment 7b7b40a2-96c0-4745-a00f-466fe174856e.pdf): 31 Mar'19 Owners 10,362 == stored conPAT 10362.0 EXACT; 31 Dec'18 Owners 10,251 == stored conPAT 10251.0 EXACT; 31 Mar'19 Revenue 141,634 == stored revC EXACT; 31 Dec'18 Revenue 160,299 == stored revC EXACT. Six exact consolidated anchors across two independently-fetched filings.",
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "fill_pass": "2026-08-18 con-fill wave W12",
+  "read_by": "vision (rendered 2.4x; own Q4FY18 p3 and Q4FY19 p5)",
+  "rev_con": 120143.0,
+  "row": "'Net Profit attributable to : a) Owners of the Company' = 9,435; 'b) Non-Controlling Interest' = 24; 'Profit for the Period' = 9,459; 'Revenue from Operations' = 120,143 (Value of Sales & Services 129,120 less GST Recovered 8,977).",
+  "src": "Reliance Industries Limited, 'AUDITED CONSOLIDATED FINANCIAL RESULTS FOR THE QUARTER/ YEAR ENDED 31ST MARCH, 2018' (its OWN Q4FY18 filing; NSE announcements archive, filed 27-Apr-2018 18:24, 1542_001_27042018182435.zip -> 1542_001.pdf) p3, column 'Quarter Ended | 31 Mar'18'. The identical statement is BSE announcement 27-Apr-2018 attachment 6ee061c1-9a3e-48eb-bc93-12857e9691cc.pdf, which BSE 404s.",
+  "unit": "(Rs in crore, except per share data) \u2014 statement header, verbatim",
+  "when": "2026-08-18 20:42 IST"
+ },
+ "ROUTE|20190630|con": {
+  "anchor": "SAME TABLE p6: quarter 30.09.2020 revenue from operations 34,927.72 lakhs=349.28 == stored revC(20200930) 349.28 EXACT; quarter 30.09.2020 Owners 3,287.06 lakhs=32.87 == stored conPAT(20200930) 32.87 EXACT; quarter 30.06.2020 Owners 2,708.87 lakhs=27.09 == stored conPAT(20200630) 27.09 EXACT; and the store's operating-profit formula reproduces on the same column: 34,927.72-(31,513.54-87.97-680.59)=4,182.74 lakhs=41.83 == stored opC(20200930) 41.83 EXACT. FOUR anchors",
+  "annCon": 20201028,
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "carrying_filing": true,
+  "con": 13.24,
+  "con_nci": 0.0,
+  "con_total": 13.24,
+  "evidence": "DERIVED \u2014 flag this for the writer. Protocol rule 2 permits it here because the filing prints the half-year and the Q2 sibling but NOT the Q1 quarter, and both operands come from the SAME row of the SAME table. If your policy is printed-only, downgrade this cell to COMPARATIVE_ONLY (what IS printed for the period is the half year ended 30.09.2019: rev 426.32, owners 25.99, total 26.23, NCI 0.25). CAVEAT from note 3 of the same filing, vision-read verbatim: 'The Statement includes results for the quarter ended 30 September 2019 and six months ended 30 September 2019 presented based on the information compiled by the management in accordance with Ind AS, which have not been subjected to review or audit by statutory auditors.' So both operands are management-compiled and unreviewed. NCI is present and non-zero in this group. annCon 20201028 = the BSE announcement date of the carrying filing, and matches the store's own annCon convention for the 20200930 row.",
+  "fill_pass": "2026-08-18 con-fill wave W4",
+  "mirror": "scripts/fundamentals.json has no row for this quarter (that mirror starts at 20191231 for this symbol); docs payload written, cell guarded by the conpat_filing_fills registration in verify_fills_live.py",
+  "printed": "DERIVED, not printed as a quarter. Exact printed operands, same table, same row: Half year ended 30.09.2019 'Owners of the Holding Company' 2,598.65 MINUS Quarter ended 30.09.2019 'Owners of the Holding Company' 1,275.05 = 1,323.60 lakhs = 13.236 -> 13.24. Total: 2,623.44 - 1,299.86 = 1,323.58 lakhs = 13.24. NCI: 24.79 - 24.81 = -0.02 lakhs = -0.0002 -> 0.00. Revenue from operations: 42,632.45 - 19,657.16 = 22,975.29 lakhs = 229.75. Operating profit: H1 3,786.40 - Q2 1,716.47 = 2,069.93 lakhs = 20.70",
+  "read_by": "vision (rendered 2.4x p6, plus 5x and 6x crops of the numeric block to confirm every digit)",
+  "routes_tried": [
+   {
+    "result": "INDAS_62501_351565_28102020075410_WEB_xml IS the consolidated XBRL of this very filing (NatureOfReportStandaloneConsolidated = Consolidated) but it declares only two contexts, OneD 2020-07-01..2020-09-30 and FourD 2020-04-01..2020-09-30 \u2014 NO comparative periods, so it cannot serve the target",
+    "rung": "xbrl cache"
+   },
+   {
+    "result": "34 rows; earliest is 01-Jul-2020\u219230-Sep-2020 (both bases, filed 28-Oct-2020). ROUTE listed 21-Sep-2020, so no exchange filing exists for any FY20 quarter",
+    "rung": "NSE filing index (live)"
+   },
+   {
+    "result": "all-category sweep 2020-09-01..2020-10-31 (26 rows): the first entry is 'Listing of equity shares of Route Mobile Ltd' 21-Sep-2020 and the first results filing is 28-Oct-2020. There is NO bulk historical-results filing at listing \u2014 so the store's annStd 20200921 on the FY20 quarters is a listing-date proxy, not a real announcement",
+    "rung": "BSE announcements"
+   },
+   {
+    "result": "the 28-Oct-2020 consolidated statement prints, per basis: quarters 30.09.2020 / 30.06.2020 / 30.09.2019, half-years 30.09.2020 / 30.09.2019, year 31.03.2020. The Jun-2019 QUARTER is not a column in it, nor in any later filing (a Q1 filing's comparative is the prior Q1: the 28-Jul-2021 Q1FY22 filing compares to Jun-2020)",
+    "rung": "comparative columns of a later filing"
+   },
+   {
+    "result": "read; digits re-confirmed on 5x/6x crops",
+    "rung": "vision"
+   },
+   {
+    "result": "its quarterly table starts at Jun 2023 \u2014 no 2019 data, no alternative route revealed",
+    "rung": "second reader (screener.in/company/ROUTE/consolidated/)"
+   }
+  ],
+  "row": "10 Profit attributable to: Owners of the Holding Company (and Non-controlling interest); total from '7 Profit for the period (5-6)'",
+  "src": "Route Mobile Limited 'Outcome Of Board Meeting - Financial Results For The Quarter And Half Year Ended September 30, 2020' (BSE, announced 28-Oct-2020 14:31, attachment fba31e2c-eb09-43e7-9b3c-9addd8d9d33d.pdf) p6, section 'A. STATEMENT OF CONSOLIDATED UNAUDITED FINANCIAL RESULTS FOR THE QUARTER AND HALF YEAR ENDED 30 SEPTEMBER 2020', columns 'Half year ended 30.09.2019 (Refer note 3)' and 'Quarter ended 30.09.2019 (Refer note 3)'",
+  "unit": "(\u20b9 in lakhs) \u2014 printed at the top right of the statement, verbatim",
+  "when": "2026-08-18 20:42 IST",
+  "writer_note": null
+ },
+ "ROUTE|20190630|con_rev": {
+  "anchor": "SAME TABLE p6: quarter 30.09.2020 revenue from operations 34,927.72 lakhs=349.28 == stored revC(20200930) 349.28 EXACT; quarter 30.09.2020 Owners 3,287.06 lakhs=32.87 == stored conPAT(20200930) 32.87 EXACT; quarter 30.06.2020 Owners 2,708.87 lakhs=27.09 == stored conPAT(20200630) 27.09 EXACT; and the store's operating-profit formula reproduces on the same column: 34,927.72-(31,513.54-87.97-680.59)=4,182.74 lakhs=41.83 == stored opC(20200930) 41.83 EXACT. FOUR anchors",
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "fill_pass": "2026-08-18 con-fill wave W4",
+  "read_by": "vision (rendered 2.4x p6, plus 5x and 6x crops of the numeric block to confirm every digit)",
+  "rev_con": 229.75,
+  "row": "10 Profit attributable to: Owners of the Holding Company (and Non-controlling interest); total from '7 Profit for the period (5-6)'",
+  "src": "Route Mobile Limited 'Outcome Of Board Meeting - Financial Results For The Quarter And Half Year Ended September 30, 2020' (BSE, announced 28-Oct-2020 14:31, attachment fba31e2c-eb09-43e7-9b3c-9addd8d9d33d.pdf) p6, section 'A. STATEMENT OF CONSOLIDATED UNAUDITED FINANCIAL RESULTS FOR THE QUARTER AND HALF YEAR ENDED 30 SEPTEMBER 2020', columns 'Half year ended 30.09.2019 (Refer note 3)' and 'Quarter ended 30.09.2019 (Refer note 3)'",
+  "unit": "(\u20b9 in lakhs) \u2014 printed at the top right of the statement, verbatim",
+  "when": "2026-08-18 20:42 IST"
+ },
+ "ROUTE|20190930|con": {
+  "anchor": "SAME TABLE p6: 30.09.2020 revenue from operations 34,927.72 lakhs=349.28 == stored revC 349.28 EXACT; 30.09.2020 Owners 3,287.06 lakhs=32.87 == stored conPAT 32.87 EXACT; 30.06.2020 Owners 2,708.87 lakhs=27.09 == stored conPAT 27.09 EXACT; operating-profit formula on 30.09.2020 gives 41.83 == stored opC 41.83 EXACT. FOUR anchors, gold standard",
+  "annCon": 20201028,
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "carrying_filing": true,
+  "con": 12.75,
+  "con_nci": 0.25,
+  "con_total": 13.0,
+  "evidence": "owners 1,275.05 + NCI 24.81 = 1,299.86 total, internally consistent. NCI is NON-ZERO and POSITIVE here while it is negative in the 2020 quarters \u2014 do not assume nil. CAVEAT, note 3 of the same filing verbatim: 'The Statement includes results for the quarter ended 30 September 2019 and six months ended 30 September 2019 presented based on the information compiled by the management in accordance with Ind AS, which have not been subjected to review or audit by statutory auditors.' It is a printed figure in an exchange filing, but unreviewed. op_con 17.16 is computed with the formula validated to the paisa against stored opC on the anchor column of this same table \u2014 the filing prints no 'operating profit' line.",
+  "fill_pass": "2026-08-18 con-fill wave W4",
+  "mirror": "scripts/fundamentals.json has no row for this quarter (that mirror starts at 20191231 for this symbol); docs payload written, cell guarded by the conpat_filing_fills registration in verify_fills_live.py",
+  "printed": "1,275.05 (owners) / 1,299.86 (total profit for the period) / 24.81 (non-controlling interest) / 19,657.16 (revenue from operations); operating profit computed from printed line items 19,657.16 - (18,572.90 - 99.45 - 532.76) = 1,716.47",
+  "read_by": "vision (rendered 2.4x p6, plus 5x and 6x crops of the numeric block to confirm every digit)",
+  "routes_tried": [
+   {
+    "result": "the consolidated XBRL of this filing exists (INDAS_62501_351565_28102020075410_WEB_xml, basis tag = Consolidated) but carries only the 2020-07-01..2020-09-30 and 2020-04-01..2020-09-30 contexts \u2014 no comparatives",
+    "rung": "xbrl cache"
+   },
+   {
+    "result": "earliest row 01-Jul-2020\u219230-Sep-2020, Consolidated + Non-Consolidated, filed 28-Oct-2020; nothing earlier (listed 21-Sep-2020)",
+    "rung": "NSE filing index (live)"
+   },
+   {
+    "result": "first results filing after listing is this one, 28-Oct-2020",
+    "rung": "BSE announcements"
+   },
+   {
+    "result": "SUCCESS \u2014 the Sep-2019 quarter is printed in full as the 'corresponding quarter' column of this filing's consolidated statement",
+    "rung": "comparative columns of a later filing"
+   },
+   {
+    "result": "read; digits re-confirmed on 5x/6x crops",
+    "rung": "vision"
+   }
+  ],
+  "row": "10 Profit attributable to: Owners of the Holding Company (owners) and Non-controlling interest; total from '7 Profit for the period (5-6)'",
+  "src": "Route Mobile Limited 'Outcome Of Board Meeting - Financial Results For The Quarter And Half Year Ended September 30, 2020' (BSE, announced 28-Oct-2020 14:31, attachment fba31e2c-eb09-43e7-9b3c-9addd8d9d33d.pdf) p6, section 'A. STATEMENT OF CONSOLIDATED UNAUDITED FINANCIAL RESULTS FOR THE QUARTER AND HALF YEAR ENDED 30 SEPTEMBER 2020', column 'Quarter ended / 30.09.2019 / (Refer note 3)'",
+  "unit": "(\u20b9 in lakhs) \u2014 printed at the top right of the statement, verbatim",
+  "when": "2026-08-18 20:42 IST",
+  "writer_note": null
+ },
+ "ROUTE|20190930|con_rev": {
+  "anchor": "SAME TABLE p6: 30.09.2020 revenue from operations 34,927.72 lakhs=349.28 == stored revC 349.28 EXACT; 30.09.2020 Owners 3,287.06 lakhs=32.87 == stored conPAT 32.87 EXACT; 30.06.2020 Owners 2,708.87 lakhs=27.09 == stored conPAT 27.09 EXACT; operating-profit formula on 30.09.2020 gives 41.83 == stored opC 41.83 EXACT. FOUR anchors, gold standard",
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "fill_pass": "2026-08-18 con-fill wave W4",
+  "read_by": "vision (rendered 2.4x p6, plus 5x and 6x crops of the numeric block to confirm every digit)",
+  "rev_con": 196.57,
+  "row": "10 Profit attributable to: Owners of the Holding Company (owners) and Non-controlling interest; total from '7 Profit for the period (5-6)'",
+  "src": "Route Mobile Limited 'Outcome Of Board Meeting - Financial Results For The Quarter And Half Year Ended September 30, 2020' (BSE, announced 28-Oct-2020 14:31, attachment fba31e2c-eb09-43e7-9b3c-9addd8d9d33d.pdf) p6, section 'A. STATEMENT OF CONSOLIDATED UNAUDITED FINANCIAL RESULTS FOR THE QUARTER AND HALF YEAR ENDED 30 SEPTEMBER 2020', column 'Quarter ended / 30.09.2019 / (Refer note 3)'",
+  "unit": "(\u20b9 in lakhs) \u2014 printed at the top right of the statement, verbatim",
+  "when": "2026-08-18 20:42 IST"
+ },
+ "TTKPRESTIG|20180630|con": {
+  "anchor": "SAME PAGE, STANDALONE block, four exact reproductions of stored cells: 30.6.2018 revenue 418.87 == stored rev_std and profit 35.90 == stored stdPAT; 30.6.2019 revenue 433.60 == stored rev_std and profit 36.47 == stored stdPAT. Consolidated 31.3.2019 prints 44.77 against stored conPAT 44.76 (1 paisa).",
+  "annCon": 20190813,
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "carrying_filing": true,
+  "con": 35.49,
+  "con_nci": 0.0,
+  "con_total": 35.49,
+  "paired_correction": "TTKPRESTIG|20190630 \u2014 the same column was sitting in the Jun-2019 row; filling this cell without that fix would have left two identical adjacent quarters",
+  "printed": "35.49",
+  "read_by": "vision (rendered 2.4x, p2)",
+  "row": "IX 'Profit/(Loss) for the period from Continuing operations' = XVI 'Profit attributable to - Owners' (NCI prints '-'), consolidated column 30.6.2018",
+  "src": "TTK Prestige Ltd 'Statement of UnAudited Financial Results for the Quarter ended 30th June 2019' (BSE announcement 13-Aug-2019, attachment TTKPRESTIG_q1fy20.pdf) p2, CONSOLIDATED block, columns 'Quarter Ended 30.6.2019 / 31.3.2019 / 30.6.2018' \u2014 statement declares 'Rs.in Crores'. Scanned page with a mangled text layer; read by rendering at 2.4x.",
+  "unit": "Rs.in Crores",
+  "when": "2026-08-18"
+ },
+ "TTKPRESTIG|20180630|con_rev": {
+  "anchor": "SAME PAGE, STANDALONE block, four exact reproductions of stored cells: 30.6.2018 revenue 418.87 == stored rev_std and profit 35.90 == stored stdPAT; 30.6.2019 revenue 433.60 == stored rev_std and profit 36.47 == stored stdPAT. Consolidated 31.3.2019 prints 44.77 against stored conPAT 44.76 (1 paisa).",
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "read_by": "vision (rendered 2.4x, p2)",
+  "rev_con": 448.58,
+  "row": "I 'Revenue from operations(Net of Discounts)', consolidated column 30.6.2018",
+  "src": "TTK Prestige Ltd 'Statement of UnAudited Financial Results for the Quarter ended 30th June 2019' (BSE announcement 13-Aug-2019, attachment TTKPRESTIG_q1fy20.pdf) p2, CONSOLIDATED block, columns 'Quarter Ended 30.6.2019 / 31.3.2019 / 30.6.2018' \u2014 statement declares 'Rs.in Crores'. Scanned page with a mangled text layer; read by rendering at 2.4x.",
+  "unit": "Rs.in Crores",
+  "when": "2026-08-18"
+ },
+ "UTIAMC|20190630|con": {
+  "anchor": "SAME TABLE p11: quarter 30-Sep-2020 Total Revenue from Operations 2,760.54mn=276.05 == stored revC(20200930) 276.05 EXACT; quarter 30-Sep-2020 Owners 1,186.10mn=118.61 == stored conPAT(20200930) 118.61 EXACT; quarter 30-Jun-2020 Owners 1,013.58mn=101.36 == stored conPAT(20200630) 101.36 EXACT; and the store's operating-profit formula reproduces on the same column: 2,760.54-(1,403.45-23.38-91.68)=1,472.15mn=147.22 == stored opC(20200930) 147.22 EXACT. FOUR anchors",
+  "annCon": 20201109,
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "carrying_filing": true,
+  "con": 78.0,
+  "con_nci": -0.56,
+  "con_total": 77.44,
+  "evidence": "DERIVED \u2014 flag for the writer. Permitted by protocol rule 2 (filing prints the half year and the Q2 sibling but not the Q1 quarter; both operands from the same row of the same table). If your policy is printed-only, downgrade to COMPARATIVE_ONLY (printed for the period: half year ended 30-Sep-2019 rev 473.20, owners 212.83, total 212.76, NCI -0.08). NOTE THE SIGN TRAP: H1FY20 NCI is NEGATIVE (0.76) while Q2FY20 NCI is POSITIVE 4.79, so the derived Q1FY20 NCI is -5.55mn and owners (78.00) EXCEED total (77.44). That is arithmetically consistent (779.96 + (-5.55) = 774.41) and is exactly the 'owners exceeds total' pattern; it is genuine here, not a defect. ANN-DATE WARNING: I set annCon 20201028 = the BSE announcement timestamp of the carrying filing, but the store's own neighbour rows date this SAME filing 20201109 (that is the NSE index filingDate, the company uploaded to NSE late). Use 20201109 if you want consistency with stored annCon(20200930)=20201109.",
+  "fill_pass": "2026-08-18 con-fill wave W4",
+  "mirror": "scripts/fundamentals.json has no row for this quarter (that mirror starts at 20191231 for this symbol); docs payload written, cell guarded by the conpat_filing_fills registration in verify_fills_live.py",
+  "printed": "DERIVED, not printed as a quarter. Exact printed operands, same table, same row: Half Yearly Ended 30th September 2019 'Owners of the Company (5-7)' 2,128.31 MINUS Quarter Ended 30th September 2019 'Owners of the Company (5-7)' 1,348.35 = 779.96 million = 77.996 -> 78.00. Total: 2,127.55 - 1,353.14 = 774.41 mn = 77.44. NCI: (0.76) - 4.79 = -5.55 mn = -0.555 -> -0.56. Total Revenue from Operations: 4,732.01 - 2,386.20 = 2,345.81 mn = 234.58. Operating profit: H1 2,350.06 - Q2 1,221.78 = 1,128.28 mn = 112.83",
+  "read_by": "vision (rendered 2.4x p11, plus 6x crops of the revenue/expense block and the profit-attributable block)",
+  "routes_tried": [
+   {
+    "result": "NBFC_INDAS_62559_352012_29102020061235_WEB_xml is the consolidated XBRL of this filing (basis tag Consolidated) but, like all BSE results XBRL of that era, carries only the current quarter and current YTD contexts \u2014 no comparatives",
+    "rung": "xbrl cache"
+   },
+   {
+    "result": "36 rows; earliest is 01-Jul-2020\u219230-Sep-2020, Consolidated + Non-Consolidated, filingDate 09-Nov-2020. UTIAMC listed 12-Oct-2020, so no exchange filing exists for any FY20 quarter",
+    "rung": "NSE filing index (live)"
+   },
+   {
+    "result": "all-category sweep 2020-10-01..2020-11-30 (34 rows): no historical-results filing at listing; the first results filing is 28-Oct-2020. The store's annStd 20201012 on the FY20 quarters is a listing-date proxy, not a real announcement",
+    "rung": "BSE announcements"
+   },
+   {
+    "result": "the 28-Oct-2020 consolidated statement prints quarters 30-Sep-2020 / 30-Jun-2020 / 30-Sep-2019, half years 30-Sep-2020 / 30-Sep-2019, year 31-Mar-2020. The Jun-2019 QUARTER is not a column in it, nor in any later filing (a Q1 filing compares to the prior Q1: the 30-Jul-2021 Q1FY22 filing compares to Jun-2020)",
+    "rung": "comparative columns of a later filing"
+   },
+   {
+    "result": "read; digits re-confirmed on 6x crops",
+    "rung": "vision"
+   }
+  ],
+  "row": "6. Owners of the Company (5-7) under 'Profit attributable to:'; total from '5. Profit for the year (3-4)'; NCI from '7. Non-controlling interests'",
+  "src": "UTI Asset Management Company Limited 'Submission Of Financial Results For The Quarter And Half Year Ended 30Th September, 2020 And Recommendation Of Final Dividend' (BSE, announced 28-Oct-2020 23:16, attachment 808714f4-905a-4fce-bb27-0dea89c7067a.pdf) p11, 'Statement of Consolidation Financial Results for the Quarter and Half Year Ended September 30,2020', columns 'Half Yearly Ended 30th September 2019 (Audited)' and 'Quarter Ended 30th September 2019 (Reviewed)'",
+  "unit": "(Rs. in Million except per equity share data) \u2014 printed at the top right of the statement, verbatim",
+  "when": "2026-08-18 20:42 IST",
+  "writer_note": "The reader dated the carrying filing 20201028 from its BSE announcement timestamp (28-Oct-2020 23:16). Our own store stamps that same Q2FY21 filing 20201109 on UTIAMC's 20200930 row. Rather than have one document carry two dates inside one symbol, the LATER of the two is used: it is the conservative choice, since an earlier stamp is the only one of the two that could create a look-ahead. The BSE timestamp is journalled here so the 12-day discrepancy is visible and can be settled separately."
+ },
+ "UTIAMC|20190630|con_rev": {
+  "anchor": "SAME TABLE p11: quarter 30-Sep-2020 Total Revenue from Operations 2,760.54mn=276.05 == stored revC(20200930) 276.05 EXACT; quarter 30-Sep-2020 Owners 1,186.10mn=118.61 == stored conPAT(20200930) 118.61 EXACT; quarter 30-Jun-2020 Owners 1,013.58mn=101.36 == stored conPAT(20200630) 101.36 EXACT; and the store's operating-profit formula reproduces on the same column: 2,760.54-(1,403.45-23.38-91.68)=1,472.15mn=147.22 == stored opC(20200930) 147.22 EXACT. FOUR anchors",
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "fill_pass": "2026-08-18 con-fill wave W4",
+  "read_by": "vision (rendered 2.4x p11, plus 6x crops of the revenue/expense block and the profit-attributable block)",
+  "rev_con": 234.58,
+  "row": "6. Owners of the Company (5-7) under 'Profit attributable to:'; total from '5. Profit for the year (3-4)'; NCI from '7. Non-controlling interests'",
+  "src": "UTI Asset Management Company Limited 'Submission Of Financial Results For The Quarter And Half Year Ended 30Th September, 2020 And Recommendation Of Final Dividend' (BSE, announced 28-Oct-2020 23:16, attachment 808714f4-905a-4fce-bb27-0dea89c7067a.pdf) p11, 'Statement of Consolidation Financial Results for the Quarter and Half Year Ended September 30,2020', columns 'Half Yearly Ended 30th September 2019 (Audited)' and 'Quarter Ended 30th September 2019 (Reviewed)'",
+  "unit": "(Rs. in Million except per equity share data) \u2014 printed at the top right of the statement, verbatim",
+  "when": "2026-08-18 20:42 IST"
+ },
+ "UTIAMC|20190930|con": {
+  "anchor": "SAME TABLE p11: 30-Sep-2020 Total Revenue from Operations 2,760.54mn=276.05 == stored revC 276.05 EXACT; 30-Sep-2020 Owners 1,186.10mn=118.61 == stored conPAT 118.61 EXACT; 30-Jun-2020 Owners 1,013.58mn=101.36 == stored conPAT 101.36 EXACT; operating-profit formula on 30-Sep-2020 gives 147.22 == stored opC 147.22 EXACT. FOUR anchors, gold standard",
+  "annCon": 20201109,
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "carrying_filing": true,
+  "con": 134.84,
+  "con_nci": 0.48,
+  "con_total": 135.31,
+  "evidence": "owners 1,348.35 + NCI 4.79 = 1,353.14 total, internally consistent. This column is marked '(Reviewed)' \u2014 unlike the ROUTE Sep-2019 comparative it is NOT an unreviewed management compilation. ROUNDING: 1,348.35mn / 10 = 134.835 cr; I report 134.84 using half-up, which is what the store does elsewhere (e.g. MANYAVAR 1,011.05mn -> stored 101.11). If your pipeline rounds half-to-even you would get 134.83 \u2014 the printed operand is 1,348.35 million. op_con 122.18 is computed with the formula validated to the paisa against stored opC on the anchor column of this same table; the filing prints no 'operating profit' line. ANN-DATE WARNING as for 20190630: BSE announcement 28-Oct-2020 vs NSE filingDate 09-Nov-2020, and the store's own annCon(20200930) is 20201109.",
+  "fill_pass": "2026-08-18 con-fill wave W4",
+  "mirror": "scripts/fundamentals.json has no row for this quarter (that mirror starts at 20191231 for this symbol); docs payload written, cell guarded by the conpat_filing_fills registration in verify_fills_live.py",
+  "printed": "1,348.35 (owners) / 1,353.14 (profit for the year) / 4.79 (non-controlling interests) / 2,386.20 (Total Revenue from Operations); operating profit computed from printed line items 2,386.20 - (1,262.70 - 19.42 - 78.86) = 1,221.78",
+  "read_by": "vision (rendered 2.4x p11, plus 6x crops of the revenue/expense block and the profit-attributable block)",
+  "routes_tried": [
+   {
+    "result": "the consolidated XBRL of this filing exists (NBFC_INDAS_62559_352012_29102020061235_WEB_xml) but carries only current-period contexts, no comparatives",
+    "rung": "xbrl cache"
+   },
+   {
+    "result": "earliest row 01-Jul-2020\u219230-Sep-2020 (both bases, filingDate 09-Nov-2020); nothing earlier (listed 12-Oct-2020)",
+    "rung": "NSE filing index (live)"
+   },
+   {
+    "result": "first results filing after listing is this one, 28-Oct-2020",
+    "rung": "BSE announcements"
+   },
+   {
+    "result": "SUCCESS \u2014 the Sep-2019 quarter is printed in full as the 'corresponding quarter' column of this filing's consolidated statement, marked (Reviewed)",
+    "rung": "comparative columns of a later filing"
+   },
+   {
+    "result": "read; digits re-confirmed on 6x crops",
+    "rung": "vision"
+   }
+  ],
+  "row": "6. Owners of the Company (5-7) under 'Profit attributable to:'; total from '5. Profit for the year (3-4)'; NCI from '7. Non-controlling interests'",
+  "src": "UTI Asset Management Company Limited 'Submission Of Financial Results For The Quarter And Half Year Ended 30Th September, 2020 And Recommendation Of Final Dividend' (BSE, announced 28-Oct-2020 23:16, attachment 808714f4-905a-4fce-bb27-0dea89c7067a.pdf) p11, 'Statement of Consolidation Financial Results for the Quarter and Half Year Ended September 30,2020', column 'Quarter Ended / 30th September 2019 / (Reviewed)'",
+  "unit": "(Rs. in Million except per equity share data) \u2014 printed at the top right of the statement, verbatim",
+  "when": "2026-08-18 20:42 IST",
+  "writer_note": "Same carrying filing and same reasoning as UTIAMC|20190630: store stamps this Q2FY21 filing 20201109 on the 20200930 row, BSE announced it 28-Oct-2020 23:16, the later date is used."
+ },
+ "UTIAMC|20190930|con_rev": {
+  "anchor": "SAME TABLE p11: 30-Sep-2020 Total Revenue from Operations 2,760.54mn=276.05 == stored revC 276.05 EXACT; 30-Sep-2020 Owners 1,186.10mn=118.61 == stored conPAT 118.61 EXACT; 30-Jun-2020 Owners 1,013.58mn=101.36 == stored conPAT 101.36 EXACT; operating-profit formula on 30-Sep-2020 gives 147.22 == stored opC 147.22 EXACT. FOUR anchors, gold standard",
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "fill_pass": "2026-08-18 con-fill wave W4",
+  "read_by": "vision (rendered 2.4x p11, plus 6x crops of the revenue/expense block and the profit-attributable block)",
+  "rev_con": 238.62,
+  "row": "6. Owners of the Company (5-7) under 'Profit attributable to:'; total from '5. Profit for the year (3-4)'; NCI from '7. Non-controlling interests'",
+  "src": "UTI Asset Management Company Limited 'Submission Of Financial Results For The Quarter And Half Year Ended 30Th September, 2020 And Recommendation Of Final Dividend' (BSE, announced 28-Oct-2020 23:16, attachment 808714f4-905a-4fce-bb27-0dea89c7067a.pdf) p11, 'Statement of Consolidation Financial Results for the Quarter and Half Year Ended September 30,2020', column 'Quarter Ended / 30th September 2019 / (Reviewed)'",
+  "unit": "(Rs. in Million except per equity share data) \u2014 printed at the top right of the statement, verbatim",
+  "when": "2026-08-18 20:42 IST"
+ },
+ "VTL|20180630|con": {
+  "anchor": "SAME TABLE, CONSOLIDATED, four exact hits: Quarter Ended March 31, 2019 owners = 179.39 == stored conPAT 20190331 EXACT; Quarter Ended June 30, 2019 owners = 116.08 == stored conPAT 20190630 EXACT; 'I. Revenue from operations' March 31, 2019 = 1,763.41 == stored revC 20190331 EXACT and June 30, 2019 = 1,650.36 == stored revC 20190630 EXACT",
+  "annCon": 20190813,
+  "basis": "con",
+  "campaign": "con-params-L4",
+  "carrying_filing": true,
+  "con": 159.13,
+  "con_nci": 3.61,
+  "con_total": 162.74,
+  "evidence": "OWNERS basis confirmed by the anchors themselves: stored conPAT 20190331 = 179.39 is the owners line (total was 182.01) and stored conPAT 20190630 = 116.08 is owners (total 120.99). Independent arithmetic cross-check from a DIFFERENT filing: the Q2FY19 consolidated XBRL gives H1FY19 355.54 minus Q2FY19 196.41 = 159.13, exactly the printed owners figure. op_con 292.20 is DERIVED from printed operands of the same consolidated column: revenue 1,699.97 - (total expenses 1,503.43 - finance cost 33.72 - depreciation 61.94) = 292.20; the same formula applied to the March 31, 2019 consolidated column gives 1,763.41 - (1,597.12 - 30.05 - 67.14) = 263.48 == stored opC 20190331 EXACT. CAUTION on revenue: our store already holds rev_con 1700.05 at this quarter while this filing prints 1,699.97 (0.08 lower) - the stored figure presumably came from VTL's own Q1FY19 consolidated submission, which I could not reach; the writer should decide whether to overwrite. Other printed operands of the target column: PBT 228.82, other income 27.27, share of profit of associates/JV 5.01.",
+  "fill_pass": "2026-08-18 con-fill wave W13",
+  "printed": "159.13",
+  "read_by": "vision (rendered 2.4x, p5)",
+  "rev_con_read_not_stored": "1699.97 \u2014 read from the same statement but NOT written: sf_revop already holds 1700.05 (a different vintage); a backfill never overwrites a stored value",
+  "routes_tried": [
+   {
+    "result": "checked by symbol+period+NatureOfReport token: NO Consolidated file covering the target period",
+    "rung": "xbrl cache (scripts/_xbrl_cache via xidx.json)"
+   },
+   {
+    "result": "lists a Consolidated row for 01-Apr-2018->30-Jun-2018 filed 28-Jan-2019 19:17 (seq 1048755) but its xbrl is the '/-' placeholder - the company's own consolidated Q1FY19 submission could not be opened this way",
+    "rung": "NSE filing index"
+   },
+   {
+    "result": "NOT FOUND / BLOCKED: BSE lists NO Result-category announcement for VTL between 01-Jan-2019 and 28-Feb-2019 except the 06-Feb-2019 Dec-2018 results; and the Q2FY19 announcement of 12-Nov-2018 (9f2c6ca9-e883-47ec-bd83-a16eac18aa76.pdf), whose preceding-quarter column would have been 30.06.2018, returns HTTP 404 on both AttachHis and AttachLive (retried once on a fresh opener)",
+    "rung": "BSE own consolidated Q1FY19 filing (the 28-Jan-2019 route suggested in my brief)"
+   },
+   {
+    "result": "fetched and parsed. Carries only OneD (Q2FY19: revenue 1685.10, ProfitLossForPeriod 196.41 == stored conPAT 20180930 EXACT) and FourD (H1FY19: revenue 3385.07, ProfitLossForPeriod 355.54). No comparative contexts.",
+    "rung": "NSE consolidated XBRL of the Q2FY19 filing (INDAS_40642_58964_13112018025703_WEB_2.xml, filed 22-Nov-2018)"
+   },
+   {
+    "result": "FILLED. The consolidated statement prints Quarter Ended June 30, 2019 / March 31, 2019 / June 30, 2018 and Year Ended March 31, 2019.",
+    "rung": "comparative columns of the Q1FY20 filing (BSE, in-window)"
+   }
+  ],
+  "row": "'XI. Profit for the period attributable to : Owners of the Company' = 159.13 (Non Controlling Interest 3.61; 'VIII. Profit for the period (VI-VII)' = 162.74)",
+  "src": "Vardhman Textiles Ltd, 'Consolidated Financial Results for the Quarter ended June 30, 2019' (BSE, ann 13-Aug-2019 13:47:09, attachment 0d84818e-9f1d-4a67-bbe2-36ea59419943.pdf) p5, column 'Quarter Ended June 30, 2018 (Unaudited)'",
+  "unit": "(Rs. In crores) (statement header, verbatim)",
+  "when": "2026-08-18 20:42 IST",
+  "writer_note": null
  }
 }

@@ -69,6 +69,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§98** ★★★ "IN FRAME" WAS A FACT ABOUT OUR DATA, NOT THE WORLD — an older row we hold is not proof the company was filing; the residue identity that adjudicates a single-anchor gate refusal to the paisa; BSE's nav table served another company's filings (**read before calling a hole "high-confidence" because you hold something older**)
 - **§99** ★★★ THE PRE-LISTING QUARTER — an aggregator really does hold quarters older than the company's tape, and the qe+45d ann convention FABRICATES their availability date; floor it at the first traded bar (**read before writing any quarter older than the symbol's first bar, and before trusting an ann date generally**)
 - **§100** ★★★ "DIFFERS FROM STANDALONE" IS NOT "A CONSOLIDATED TABLE EXISTS" — 22 quarters of consolidated revenue in a company that stopped filing con in 2016; the value was the standalone *sale-of-products sub-line*; the equality purge is blind to it by construction (**read before writing or trusting ANY con cell for a company in `stopped_filing_con`**)
+- **§101** ★★★ NSE's ANNOUNCEMENT ARCHIVE GOES AROUND THE BSE 2018 WALL — §84's boundary is a BSE fact, not a market fact; and the consolidated MARCH-2018 quarter was almost never filed (compulsory only from FY2020); the phantom "Consolidated Jan-Mar-2018" index row has two artifact causes, one of them an all-zero falsy sentinel (**read before calling any pre-2019 cell unreachable, and before trusting an NSE filing-index basis row**)
 
 ---
 
@@ -10551,3 +10552,80 @@ subsidiary Campus AI Pvt Ltd was merged in by NCLT order dated 2022-08-11. So th
 take 2022-09 while **leaving Jun-2022's genuine consolidated row untouched**, which it does
 (verified on the rendered page). `purge_copied_con.py`'s docstring says CAMPUS's last real con was
 2022-03; the filings say 2022-06 — the registry value 20220930 is right, that comment is a quarter early.
+
+## 101. ★★★ NSE's ANNOUNCEMENT ARCHIVE GOES AROUND THE BSE 2018 WALL — and the quarter it reaches was never filed anyway  (2026-08-18, con-params L4)
+
+Two findings, and the order matters: the route that was declared closed is **open**, and walking it
+proved the cells behind it are **empty at the source**. One without the other would have been a
+guess in either direction.
+
+### 101a. The route — `api/corporate-announcements` serves pre-Oct-2018 attachments
+§84 measured that BSE 404s every attachment filed before ~Oct-2018 on **both** AttachHis and
+AttachLive, and concluded that a company's own 2018 filing "cannot be read". That conclusion was one
+exchange too narrow. NSE serves the same documents:
+
+```
+https://www.nseindia.com/api/corporate-announcements?index=equities&symbol=<SYM>
+    &from_date=DD-MM-YYYY&to_date=DD-MM-YYYY
+```
+browser `User-Agent` + `Referer: https://www.nseindia.com/companies-listing/corporate-filings-announcements`.
+Each row's `attchmntFile` is an `nsearchives.nseindia.com/corporate/…` URL (`.pdf` or `.zip`) that
+downloads normally. **Measured 2026-08-18 across ~74 companies: every Q1FY19 (Jul-Aug 2018) and
+Q4FY18 (Apr-Jun 2018) results filing requested was served, with no failures**, while the matching
+BSE attachments 404'd. Helper: `scratchpad nseann.py list <SYM> <from> <to> [substr]` / `get <url> <out>`.
+⚠️ The results PDF is often inside a `.zip` — unzip and look at the members.
+⚠️ The **financial-results** index (`api/corporates-financial-results`) does NOT expose an
+attachment link, only `xbrl`; the announcements API is the one that carries the document.
+
+**So §84's boundary is a BSE fact, not a market fact.** Anywhere it appears as a reason a pre-2019
+cell "cannot be filled", the ladder has one rung left. This route is now rung 3b in §57b.
+
+### 101b. What it found: the consolidated MARCH-2018 QUARTER was almost never published
+The whole point of reaching a Q1FY19 filing is its column set — *3 months ended 30.06.2018 /
+**preceding 3 months ended 31.03.2018** / corresponding 3 months ended 30.06.2017*. Walked for 74
+Nifty-500 names, three readers per name (own Q4FY18 filing → Q1FY19 preceding-quarter column →
+Q4FY19 year-later comparative):
+
+| what the filings actually carry | names |
+|---|---|
+| Q1FY19 filing is **standalone-only** — the preceding-quarter column exists but there is no consolidated statement in the document at all | ~all |
+| Q4FY18 filing prints consolidated on **YEAR columns only** (31.03.2018 / 31.03.2017), standalone beside it carrying the quarter | ~all |
+| no consolidated 9M anywhere → the FY-minus-9M identity has **no operands** | verified by pulling Q3FY18 filings |
+
+This is not reader failure, it is the regime: **consolidated quarterly reporting became compulsory
+only from FY2020**, and for FY2019 a filer could opt out under Reg 33(3)(b)(i). Several said so in
+writing, which is the evidence that turns a refusal into a finding:
+* NMDC — *"The Company opts to publish the quarterly financial results on standalone basis and
+  yearly financial results on both standalone and consolidated basis."*
+* SUNDRMFAST Q1FY19 note 8 — *"the Company has opted to publish consolidated financial results only
+  on an annual basis."*
+* PNCINFRA Q1FY19 note 6 — *"The Company has opted not to submit the Consolidated Financial results
+  pursuant to regulation 33(3)(b)…"*
+* HEG / JBCHEPHARM / KNRCON / NLCINDIA — their own Reg 33(3)(b)(i) intimation letters.
+**RELIANCE is the counter-example that proves the route rather than the rule**: its own Q4FY18
+filing (27-Apr-2018, fetched by this route) prints a full consolidated quarter column — owners 9,435
+/ total 9,459 / NCI 24 — six exact consolidated anchors across two filings. Companies that *did*
+publish a consolidated Q4FY18 are reachable now; those that didn't were never reachable by anyone.
+
+### 101c. ★★ THE PHANTOM "Consolidated Jan-Mar-2018" INDEX ROW — two separate artifacts
+`api/corporates-financial-results` shows Consolidated rows for 31-Mar-2018 on names whose filings
+carry no such statement. Both causes were measured, and neither is data:
+1. **The all-zero quarter context.** A Q4FY18 consolidated XBRL declares `ReportingQuarter=Yearly`
+   and still emits a Jan-Mar-2018 context in which **every P&L fact is 0.00** (only share-capital
+   constants are non-zero); its FourD annual figures are real and reproduce the printed year column.
+   Confirmed on BALKRISIND's own `INDAS_35293_9979_18052018112257_WEB_2.xml` plus 7 more names
+   (ASHOKA, COCHINSHIP, DIVISLAB, KIRLOSENG, M&M, NILKAMAL, PCJEWELLER). **A falsy sentinel —
+   writing those zeros would poison the cell** (§0's `0 != null` family).
+2. **NSE duplicates each Consolidated row onto the prior-year period** — same `filingDate`, same
+   XBRL stem. Proved by downloading the twin of a 404ing `_WEB_2.xml` and finding its only context
+   is the current quarter. Explains the CESC, SUNTV, SHRIRAMCIT, HEG, JSL and LMW "own con filing"
+   rows, every one of which dissolves on contact.
+**Consequence for tooling:** a `nse_class`/`A_own_con_filing` label derived from that index is a
+HYPOTHESIS. Resolve it against the document before it becomes a plan.
+
+### 101d. And a per-filing XBRL can never serve a COMPARATIVE
+Measured by parsing instances directly: an NSE INDAS XBRL carries only its own filing's periods —
+`OneD` (that quarter) and `FourD` (that YTD). There is no prior-year-quarter context in it, ever. So
+rung 5 of §57b cannot reach a comparative column by construction, no matter how well it is fetched.
+Worth stating because "fetch the XBRL" reads like the cheap version of "read the filing", and for
+comparatives it is not a version of it at all.
