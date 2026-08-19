@@ -135,6 +135,17 @@ select,input[type=text],input[type=number],input[type=date]{
 .note{font-size:11.5px; color:var(--text-3); padding:6px 16px 0; line-height:1.5}
 .err{background:color-mix(in srgb,var(--down) 12%,var(--surface)); border-color:var(--down); color:var(--text)}
 #loading{padding:60px 20px; text-align:center; color:var(--text-3); font-size:14px}
+@media(max-width:640px){
+  .axis{font-size:11.5px}
+  table{font-size:13px}
+  th{font-size:11px}
+  .sym{font-size:11.5px}
+  .nm{max-width:none}
+  .card h2{font-size:15px}
+  .card .sub{font-size:12px}
+  .legend{font-size:12.5px}
+  .kpi .val{font-size:23px}
+}
 .empty{padding:26px; text-align:center; color:var(--text-3); font-size:12.5px}
 </style>
 </head>
@@ -528,6 +539,17 @@ function showTip(html,ev){
   TIP.style.left=Math.max(8,x)+'px'; TIP.style.top=Math.max(8,y)+'px';
 }
 function hideTip(){ TIP.classList.remove('show'); }
+function chartW(host){
+  let el=host, w=0;
+  while(el && !w){ w=el.clientWidth||0; el=el.parentElement; }   // 0 inside a hidden subtree
+  if(!w) w=Math.min(800, (document.documentElement.clientWidth||800)-32);
+  return Math.max(300, Math.round(w));            // 1 viewBox unit == 1 CSS px
+}
+function fitText(str,px,fs){                       // truncate to what actually fits
+  const max=Math.max(3, Math.floor(px/(fs*0.54)));
+  str=String(str);
+  return str.length<=max? str : str.slice(0,max-1)+'…';
+}
 const SLOT=['var(--s1)','var(--s2)','var(--s3)','var(--s4)','var(--s5)','var(--s6)','var(--s7)','var(--s8)'];
 function niceTicks(min,max,n){
   if(!isFinite(min)||!isFinite(max)) return [0];
@@ -540,7 +562,7 @@ function niceTicks(min,max,n){
 
 /* ---- multi-series line / area with crosshair ---- */
 function lineChart(host,o){
-  const W=800,H=o.h||280,P={t:12,r:14,b:26,l:58};
+  const W=chartW(host), narrow=W<520, H=o.h||(narrow?230:280), P={t:12,r:14,b:26,l:narrow?50:58};
   const n=o.cal.length;
   if(n<2){ host.innerHTML='<div class="empty">Not enough history to plot.</div>'; return; }
   let lo=Infinity,hi=-Infinity;
@@ -554,7 +576,7 @@ function lineChart(host,o){
   let s='<svg class="chart" viewBox="0 0 '+W+' '+H+'">';
   ticks.forEach(t=>{ s+='<line class="gridline" x1="'+P.l+'" x2="'+(W-P.r)+'" y1="'+Y(t).toFixed(1)+'" y2="'+Y(t).toFixed(1)+'"/>'
     +'<text class="axis" x="'+(P.l-7)+'" y="'+(Y(t)+3.5).toFixed(1)+'" text-anchor="end">'+o.fmtY(t)+'</text>'; });
-  const step=Math.max(1,Math.floor(n/5));
+  const step=Math.max(1,Math.floor(n/(narrow?3:5)));
   for(let i=0;i<n;i+=step) s+='<text class="axis" x="'+X(i).toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle">'+shortDate(offToISO(o.cal[i]))+'</text>';
   o.series.forEach(se=>{
     let d='',started=false,area='';
@@ -604,7 +626,11 @@ function lineChart(host,o){
 function barsH(host,items,o){
   o=o||{};
   if(!items.length){ host.innerHTML='<div class="empty">Nothing to show.</div>'; return; }
-  const rowH=o.rowH||22, W=800, H=items.length*rowH+16, labW=o.labW||150, valW=88;
+  const W=chartW(host), narrow=W<520;
+  const rowH=o.rowH||(narrow?26:22), H=items.length*rowH+16;
+  const fs=narrow?12:11;
+  const labW=Math.min(o.labW||150, Math.round(W*(narrow?0.44:0.32)));
+  const valW=Math.round(narrow?W*0.26:88);
   const vals=items.map(d=>d.value);
   const mx=Math.max(1e-9,...vals.map(Math.abs));
   const plotL=labW, plotW=W-labW-valW;
@@ -616,9 +642,9 @@ function barsH(host,items,o){
     const y=i*rowH+8, w=Math.max(1.5,scale(d.value)), neg=d.value<0;
     const x=neg? zeroX-w : zeroX;
     const col=d.color|| (diverging? (neg?'var(--down)':'var(--up)') : 'var(--s1)');
-    s+='<text class="axis" x="'+(labW-9)+'" y="'+(y+rowH/2-1)+'" text-anchor="end" fill="var(--text-2)" font-weight="600">'+esc(d.label)+'</text>';
+    s+='<text class="axis" x="'+(labW-8)+'" y="'+(y+rowH/2-1)+'" text-anchor="end" fill="var(--text-2)" font-weight="600" font-size="'+fs+'">'+esc(fitText(d.label,labW-12,fs))+'</text>';
     s+='<rect class="bar" data-i="'+i+'" x="'+x.toFixed(1)+'" y="'+(y+2)+'" width="'+w.toFixed(1)+'" height="'+(rowH-7)+'" rx="4" fill="'+col+'"/>';
-    s+='<text class="axis" x="'+(W-6)+'" y="'+(y+rowH/2-1)+'" text-anchor="end" fill="var(--text-2)" font-weight="700">'+esc(o.fmtV(d.value))+'</text>';
+    s+='<text class="axis" x="'+(W-4)+'" y="'+(y+rowH/2-1)+'" text-anchor="end" fill="var(--text-2)" font-weight="700" font-size="'+fs+'">'+esc(o.fmtV(d.value))+'</text>';
   });
   if(diverging) s+='<line class="zeroline" x1="'+zeroX+'" x2="'+zeroX+'" y1="4" y2="'+(H-8)+'"/>';
   s+='</svg>';
@@ -633,7 +659,7 @@ function barsH(host,items,o){
 /* ---- vertical bars (monthly) ---- */
 function barsV(host,items,o){
   if(!items.length){ host.innerHTML='<div class="empty">Nothing to show.</div>'; return; }
-  const W=800,H=240,P={t:14,r:10,b:34,l:52};
+  const W=chartW(host), narrow=W<520, H=narrow?210:240, P={t:14,r:10,b:34,l:narrow?46:52};
   const vals=items.map(d=>d.value), mx=Math.max(...vals.map(Math.abs),0.001);
   const lo=-mx*1.15, hi=mx*1.15;
   const bw=(W-P.l-P.r)/items.length;
@@ -645,7 +671,7 @@ function barsV(host,items,o){
     const x=P.l+i*bw+bw*0.16, w=bw*0.68;
     const y0=Y(0), y1=Y(d.value), y=Math.min(y0,y1), h=Math.max(1.5,Math.abs(y1-y0));
     s+='<rect class="bar" data-i="'+i+'" x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+w.toFixed(1)+'" height="'+h.toFixed(1)+'" rx="3" fill="'+(d.value<0?'var(--down)':'var(--up)')+'"/>';
-    s+='<text class="axis" x="'+(x+w/2).toFixed(1)+'" y="'+(H-20)+'" text-anchor="middle">'+esc(d.label)+'</text>';
+    if(!narrow || i%2===0) s+='<text class="axis" x="'+(x+w/2).toFixed(1)+'" y="'+(H-20)+'" text-anchor="middle">'+esc(d.label)+'</text>';
     s+='<text class="axis" x="'+(x+w/2).toFixed(1)+'" y="'+(d.value<0? (y+h+11) : (y-4)).toFixed(1)+'" text-anchor="middle" fill="var(--text-2)" font-weight="700">'+o.fmtV(d.value)+'</text>';
   });
   s+='<line class="zeroline" x1="'+P.l+'" x2="'+(W-P.r)+'" y1="'+Y(0).toFixed(1)+'" y2="'+Y(0).toFixed(1)+'"/></svg>';
@@ -660,7 +686,7 @@ function barsV(host,items,o){
 function donut(host,items,o){
   const tot=items.reduce((s,d)=>s+d.value,0);
   if(!(tot>0)){ host.innerHTML='<div class="empty">No value to allocate.</div>'; return; }
-  const W=360,H=260,cx=W/2,cy=H/2-4,R=88,r0=54;
+  const W=chartW(host),H=260,cx=W/2,cy=H/2-4,R=88,r0=54;
   let a=-Math.PI/2, s='<svg class="chart" viewBox="0 0 '+W+' '+H+'">';
   const arcs=[];
   items.forEach((d,i)=>{
@@ -689,7 +715,7 @@ function donut(host,items,o){
 /* ---- bubble scatter: return vs holding period ---- */
 function scatter(host,pts,o){
   if(!pts.length){ host.innerHTML='<div class="empty">Nothing to plot.</div>'; return; }
-  const W=800,H=300,P={t:14,r:18,b:34,l:52};
+  const W=chartW(host), narrow=W<520, H=narrow?260:300, P={t:14,r:18,b:34,l:narrow?46:52};
   const xs=pts.map(p=>p.x), ys=pts.map(p=>p.y);
   let x0=0, x1=Math.max(...xs)*1.06||1;
   let y0=Math.min(0,...ys), y1=Math.max(0,...ys);
@@ -948,8 +974,11 @@ function updateBadge(){
 async function boot(){
   try{
     await loadAll();
-    buildRows(); renderAll();
+    /* reveal BEFORE rendering: charts size themselves from clientWidth, and a
+       display:none subtree measures 0 — which silently drew every chart at the
+       800px fallback and shrank the labels to ~4px on a phone */
     $('loading').style.display='none'; $('app').style.display='';
+    buildRows(); renderAll();
     if(MODE==='web'){                              // deployed copy reads; the Mac writes
       $('btnSaveAcct').style.display='none';
       $('tblAcct').querySelectorAll('select').forEach(x=>x.disabled=true);
@@ -967,6 +996,11 @@ async function boot(){
     await refreshQuotes(); buildRows(); renderAll();
   }, CFG.refresh);
   setInterval(updateBadge, 30000);
+  let rt=null, lastW=innerWidth;
+  addEventListener('resize',()=>{                 // charts are width-derived; redraw on rotate/resize
+    if(innerWidth===lastW) return;
+    lastW=innerWidth; clearTimeout(rt); rt=setTimeout(()=>{ if(DOC) renderAll(); },220);
+  });
   document.addEventListener('visibilitychange',async()=>{
     if(!document.hidden && marketOpen()){ await refreshQuotes(); buildRows(); renderAll(); }
   });
