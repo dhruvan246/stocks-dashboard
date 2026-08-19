@@ -1,7 +1,7 @@
 {
  "_doc": "Adjudicated NOT-APPLICABLE verdicts consumed by build_coverage_matrix.js. Keyed param -> symbol. A symbol here is excluded from that parameter's DENOMINATOR on the coverage page (not counted as covered, and not counted as missing). Optional \"from\"/\"to\" (YYYY-MM-DD) bound the verdict to a date range; absent means all dates. Every entry carries per-name evidence \u2014 no category rules.",
  "_campaign": "scripts/N500_COVERAGE_100_CAMPAIGN.md",
- "_updated": "2026-08-18",
+ "_updated": "2026-08-19",
  "ebit": {
   "AUBANK": {
    "class": "C1",
@@ -4820,14 +4820,14 @@
  "profitYoyCon": {
   "NSLNISP": {
    "class": "C-basis (no consolidated statement exists - two readers)",
-   "from": "2024-11-29",
+   "from": "2023-05-31",
    "to": "2026-05-29",
    "bound_derivation": "The 19 dates at which the engine actually reports this parameter unresolved for NSLNISP in the campaign window: first 2024-11-29, last 2026-05-29. A hole after 2026-05-29 is a different defect and stays visible.",
    "reader_1": "NSE per-quarter filing coverage, fetched 2026-08-18 (Gate 1 v2): the exchange returns filing rows for 8 distinct quarters for NSLNISP, and NOT ONE of them is tagged Consolidated. Gate 1 v2 judges a quarter only where a filing row for THAT EXACT quarter exists, so this is a positive reading of the record rather than an inference from a date span.",
    "reader_2": "MoneyControl consolidated-quarterly feed, swept 2026-08-18: renders NO consolidated series for this company (status \"no_con_series\"). MC is measured in this project to OVER-report consolidated - on 98 of 120 names where both readers give a floor, MC starts EARLIER than the exchange, median 4 quarters, exactly the width of a filing's comparative columns. A source that invents consolidated data showing none is conservative evidence of absence.",
    "our_data": "8 fabricated consolidated cells were retracted for this symbol on 2026-08-18 (scripts/con_copy_retractions.json): each was an EXACT copy of the standalone value, written by a rule that inferred \"no subsidiary\" from a pattern in our own store rather than from any filing. With the copies gone the consolidated basis is empty here, which is the true state - no consolidated statement exists to fill it.",
-   "user_approved": "2026-08-18 (user: \"ok this can be done in github its removal and na classification in coverage\")",
-   "supersedes": "Widened from an earlier narrower verdict (from 2023-05-01 to 2024-10-31). That verdict was written before the con-copy retraction, when this symbol still held copied consolidated values that masked the true extent of the gap.",
+   "user_approved": "2026-08-19 (user: \"go ahead\", re-deriving a bound the retraction moved - same evidence, same verdict)",
+   "supersedes": "bound widened 2026-08-19: was 2024-11-29..2026-05-29, is 2023-05-31..2026-05-29. Same evidence (reader_1/reader_2/our_data below), only the arithmetic moved - the con-copy retraction emptied fabricated cells that used to sit inside this bound's complement, so the engine now reports unresolved dates the old bound never covered.",
    "prior_reader_1": "ZERO-BASE REFUSAL, user-approved 2026-08-17. NMDC Steel (demerged, listed 2023-02-20) filed its FY22-FY24Q1 quarters as literal 0.00/0 with REAL announce dates (pre-production plant; first revenue quarter 20230930 = -131.1). Every parameter here compares against or accumulates those zero quarters: YoY/base/streak against a 0.00 base is arithmetically undefined (the param rule text itself says \"Null when the year-ago base is exactly 0\"), TTM growth divides by a zero prior-4 sum, accel differences two undefined YoYs, composite is null wherever TTM is. This is the engine REFUSING a computation no one can make \u2014 not missing data. Filing evidence: first-ever filing 2023-05-23 restated the comparative era at 0.00; screener agrees (Sales 0.0 through FY2023)."
   },
   "CELLO": {
@@ -4849,14 +4849,14 @@
   },
   "SBICARD": {
    "class": "C-basis (no consolidated statement exists - two readers)",
-   "from": "2021-04-30",
+   "from": "2020-07-31",
    "to": "2026-03-30",
    "bound_derivation": "The 60 dates at which the engine actually reports this parameter unresolved for SBICARD in the campaign window: first 2021-04-30, last 2026-03-30. A hole after 2026-03-30 is a different defect and stays visible.",
    "reader_1": "NSE per-quarter filing coverage, fetched 2026-08-18 (Gate 1 v2): the exchange returns filing rows for 20 distinct quarters for SBICARD, and NOT ONE of them is tagged Consolidated. Gate 1 v2 judges a quarter only where a filing row for THAT EXACT quarter exists, so this is a positive reading of the record rather than an inference from a date span.",
    "reader_2": "MoneyControl consolidated-quarterly feed, swept 2026-08-18: renders NO consolidated series for this company (status \"no_con_series\"). MC is measured in this project to OVER-report consolidated - on 98 of 120 names where both readers give a floor, MC starts EARLIER than the exchange, median 4 quarters, exactly the width of a filing's comparative columns. A source that invents consolidated data showing none is conservative evidence of absence.",
    "our_data": "20 fabricated consolidated cells were retracted for this symbol on 2026-08-18 (scripts/con_copy_retractions.json): each was an EXACT copy of the standalone value, written by a rule that inferred \"no subsidiary\" from a pattern in our own store rather than from any filing. With the copies gone the consolidated basis is empty here, which is the true state - no consolidated statement exists to fill it.",
-   "user_approved": "2026-08-18 (user: \"ok this can be done in github its removal and na classification in coverage\")",
-   "supersedes": "Widened from an earlier narrower verdict (from 2020-01-31 to 2021-03-31). That verdict was written before the con-copy retraction, when this symbol still held copied consolidated values that masked the true extent of the gap.",
+   "user_approved": "2026-08-19 (user: \"go ahead\", re-deriving a bound the retraction moved - same evidence, same verdict)",
+   "supersedes": "bound widened 2026-08-19: was 2021-04-30..2026-03-30, is 2020-07-31..2026-03-30. Same evidence (reader_1/reader_2/our_data below), only the arithmetic moved - the con-copy retraction emptied fabricated cells that used to sit inside this bound's complement, so the engine now reports unresolved dates the old bound never covered.",
    "prior_reader_1": "SBI Cards & Payment Services Ltd FY2019-20 Annual Report, Corporate Governance Report p107, read 2026-08-17: the subsidiary-policy row states \"Not Applicable, since the Company does not have any subsidiaries\", and the same page repeats \"Further, the Company does not have any subsidiaries.\" A company with no subsidiary prepares no consolidated financial statement -- there is no document to read for any period, not merely none that we hold.",
    "prior_reader_2": "Same annual report, MGT-9 Annexure-7 section III \"Particulars of Holding, Subsidiary and Associate Companies\" p84, read 2026-08-17: the table lists exactly one entity -- State Bank of India, classified HOLDING. No subsidiary and no associate row exists. Second, independent statement of the same fact from a different statutory disclosure in the same filing.",
    "prior_our_data": "Measured 2026-08-18 against docs/sf_fundamentals.json + docs/sf_revop.json: SBICARD holds 30 quarters. 26 carry BOTH bases and in all 26 the consolidated PAT equals the standalone PAT to the paisa -- the arithmetic identity you get when there is nothing to consolidate. The only 4 quarters lacking con are 20190331, 20190630, 20190930 and 20191231. rev_con and op_con are likewise complete for all 26 post-listing quarters and absent for exactly those 4."
@@ -5683,14 +5683,14 @@
  "profitBaseCon": {
   "NSLNISP": {
    "class": "C-basis (no consolidated statement exists - two readers)",
-   "from": "2024-11-29",
+   "from": "2023-05-31",
    "to": "2026-05-29",
    "bound_derivation": "The 19 dates at which the engine actually reports this parameter unresolved for NSLNISP in the campaign window: first 2024-11-29, last 2026-05-29. A hole after 2026-05-29 is a different defect and stays visible.",
    "reader_1": "NSE per-quarter filing coverage, fetched 2026-08-18 (Gate 1 v2): the exchange returns filing rows for 8 distinct quarters for NSLNISP, and NOT ONE of them is tagged Consolidated. Gate 1 v2 judges a quarter only where a filing row for THAT EXACT quarter exists, so this is a positive reading of the record rather than an inference from a date span.",
    "reader_2": "MoneyControl consolidated-quarterly feed, swept 2026-08-18: renders NO consolidated series for this company (status \"no_con_series\"). MC is measured in this project to OVER-report consolidated - on 98 of 120 names where both readers give a floor, MC starts EARLIER than the exchange, median 4 quarters, exactly the width of a filing's comparative columns. A source that invents consolidated data showing none is conservative evidence of absence.",
    "our_data": "8 fabricated consolidated cells were retracted for this symbol on 2026-08-18 (scripts/con_copy_retractions.json): each was an EXACT copy of the standalone value, written by a rule that inferred \"no subsidiary\" from a pattern in our own store rather than from any filing. With the copies gone the consolidated basis is empty here, which is the true state - no consolidated statement exists to fill it.",
-   "user_approved": "2026-08-18 (user: \"ok this can be done in github its removal and na classification in coverage\")",
-   "supersedes": "Widened from an earlier narrower verdict (from 2023-05-01 to 2024-10-31). That verdict was written before the con-copy retraction, when this symbol still held copied consolidated values that masked the true extent of the gap.",
+   "user_approved": "2026-08-19 (user: \"go ahead\", re-deriving a bound the retraction moved - same evidence, same verdict)",
+   "supersedes": "bound widened 2026-08-19: was 2024-11-29..2026-05-29, is 2023-05-31..2026-05-29. Same evidence (reader_1/reader_2/our_data below), only the arithmetic moved - the con-copy retraction emptied fabricated cells that used to sit inside this bound's complement, so the engine now reports unresolved dates the old bound never covered.",
    "prior_reader_1": "ZERO-BASE REFUSAL, user-approved 2026-08-17. NMDC Steel (demerged, listed 2023-02-20) filed its FY22-FY24Q1 quarters as literal 0.00/0 with REAL announce dates (pre-production plant; first revenue quarter 20230930 = -131.1). Every parameter here compares against or accumulates those zero quarters: YoY/base/streak against a 0.00 base is arithmetically undefined (the param rule text itself says \"Null when the year-ago base is exactly 0\"), TTM growth divides by a zero prior-4 sum, accel differences two undefined YoYs, composite is null wherever TTM is. This is the engine REFUSING a computation no one can make \u2014 not missing data. Filing evidence: first-ever filing 2023-05-23 restated the comparative era at 0.00; screener agrees (Sales 0.0 through FY2023)."
   },
   "CELLO": {
@@ -5712,14 +5712,14 @@
   },
   "SBICARD": {
    "class": "C-basis (no consolidated statement exists - two readers)",
-   "from": "2021-04-30",
+   "from": "2020-07-31",
    "to": "2026-03-30",
    "bound_derivation": "The 60 dates at which the engine actually reports this parameter unresolved for SBICARD in the campaign window: first 2021-04-30, last 2026-03-30. A hole after 2026-03-30 is a different defect and stays visible.",
    "reader_1": "NSE per-quarter filing coverage, fetched 2026-08-18 (Gate 1 v2): the exchange returns filing rows for 20 distinct quarters for SBICARD, and NOT ONE of them is tagged Consolidated. Gate 1 v2 judges a quarter only where a filing row for THAT EXACT quarter exists, so this is a positive reading of the record rather than an inference from a date span.",
    "reader_2": "MoneyControl consolidated-quarterly feed, swept 2026-08-18: renders NO consolidated series for this company (status \"no_con_series\"). MC is measured in this project to OVER-report consolidated - on 98 of 120 names where both readers give a floor, MC starts EARLIER than the exchange, median 4 quarters, exactly the width of a filing's comparative columns. A source that invents consolidated data showing none is conservative evidence of absence.",
    "our_data": "20 fabricated consolidated cells were retracted for this symbol on 2026-08-18 (scripts/con_copy_retractions.json): each was an EXACT copy of the standalone value, written by a rule that inferred \"no subsidiary\" from a pattern in our own store rather than from any filing. With the copies gone the consolidated basis is empty here, which is the true state - no consolidated statement exists to fill it.",
-   "user_approved": "2026-08-18 (user: \"ok this can be done in github its removal and na classification in coverage\")",
-   "supersedes": "Widened from an earlier narrower verdict (from 2020-01-31 to 2021-03-31). That verdict was written before the con-copy retraction, when this symbol still held copied consolidated values that masked the true extent of the gap.",
+   "user_approved": "2026-08-19 (user: \"go ahead\", re-deriving a bound the retraction moved - same evidence, same verdict)",
+   "supersedes": "bound widened 2026-08-19: was 2021-04-30..2026-03-30, is 2020-07-31..2026-03-30. Same evidence (reader_1/reader_2/our_data below), only the arithmetic moved - the con-copy retraction emptied fabricated cells that used to sit inside this bound's complement, so the engine now reports unresolved dates the old bound never covered.",
    "prior_reader_1": "SBI Cards & Payment Services Ltd FY2019-20 Annual Report, Corporate Governance Report p107, read 2026-08-17: the subsidiary-policy row states \"Not Applicable, since the Company does not have any subsidiaries\", and the same page repeats \"Further, the Company does not have any subsidiaries.\" A company with no subsidiary prepares no consolidated financial statement -- there is no document to read for any period, not merely none that we hold.",
    "prior_reader_2": "Same annual report, MGT-9 Annexure-7 section III \"Particulars of Holding, Subsidiary and Associate Companies\" p84, read 2026-08-17: the table lists exactly one entity -- State Bank of India, classified HOLDING. No subsidiary and no associate row exists. Second, independent statement of the same fact from a different statutory disclosure in the same filing.",
    "prior_our_data": "Measured 2026-08-18 against docs/sf_fundamentals.json + docs/sf_revop.json: SBICARD holds 30 quarters. 26 carry BOTH bases and in all 26 the consolidated PAT equals the standalone PAT to the paisa -- the arithmetic identity you get when there is nothing to consolidate. The only 4 quarters lacking con are 20190331, 20190630, 20190930 and 20191231. rev_con and op_con are likewise complete for all 26 post-listing quarters and absent for exactly those 4."
@@ -6546,14 +6546,14 @@
  "profitStreakCon": {
   "NSLNISP": {
    "class": "C-basis (no consolidated statement exists - two readers)",
-   "from": "2024-11-29",
+   "from": "2023-05-31",
    "to": "2026-05-29",
    "bound_derivation": "The 19 dates at which the engine actually reports this parameter unresolved for NSLNISP in the campaign window: first 2024-11-29, last 2026-05-29. A hole after 2026-05-29 is a different defect and stays visible.",
    "reader_1": "NSE per-quarter filing coverage, fetched 2026-08-18 (Gate 1 v2): the exchange returns filing rows for 8 distinct quarters for NSLNISP, and NOT ONE of them is tagged Consolidated. Gate 1 v2 judges a quarter only where a filing row for THAT EXACT quarter exists, so this is a positive reading of the record rather than an inference from a date span.",
    "reader_2": "MoneyControl consolidated-quarterly feed, swept 2026-08-18: renders NO consolidated series for this company (status \"no_con_series\"). MC is measured in this project to OVER-report consolidated - on 98 of 120 names where both readers give a floor, MC starts EARLIER than the exchange, median 4 quarters, exactly the width of a filing's comparative columns. A source that invents consolidated data showing none is conservative evidence of absence.",
    "our_data": "8 fabricated consolidated cells were retracted for this symbol on 2026-08-18 (scripts/con_copy_retractions.json): each was an EXACT copy of the standalone value, written by a rule that inferred \"no subsidiary\" from a pattern in our own store rather than from any filing. With the copies gone the consolidated basis is empty here, which is the true state - no consolidated statement exists to fill it.",
-   "user_approved": "2026-08-18 (user: \"ok this can be done in github its removal and na classification in coverage\")",
-   "supersedes": "Widened from an earlier narrower verdict (from 2023-05-01 to 2024-10-31). That verdict was written before the con-copy retraction, when this symbol still held copied consolidated values that masked the true extent of the gap.",
+   "user_approved": "2026-08-19 (user: \"go ahead\", re-deriving a bound the retraction moved - same evidence, same verdict)",
+   "supersedes": "bound widened 2026-08-19: was 2024-11-29..2026-05-29, is 2023-05-31..2026-05-29. Same evidence (reader_1/reader_2/our_data below), only the arithmetic moved - the con-copy retraction emptied fabricated cells that used to sit inside this bound's complement, so the engine now reports unresolved dates the old bound never covered.",
    "prior_reader_1": "ZERO-BASE REFUSAL, user-approved 2026-08-17. NMDC Steel (demerged, listed 2023-02-20) filed its FY22-FY24Q1 quarters as literal 0.00/0 with REAL announce dates (pre-production plant; first revenue quarter 20230930 = -131.1). Every parameter here compares against or accumulates those zero quarters: YoY/base/streak against a 0.00 base is arithmetically undefined (the param rule text itself says \"Null when the year-ago base is exactly 0\"), TTM growth divides by a zero prior-4 sum, accel differences two undefined YoYs, composite is null wherever TTM is. This is the engine REFUSING a computation no one can make \u2014 not missing data. Filing evidence: first-ever filing 2023-05-23 restated the comparative era at 0.00; screener agrees (Sales 0.0 through FY2023)."
   },
   "CELLO": {
@@ -6575,14 +6575,14 @@
   },
   "SBICARD": {
    "class": "C-basis (no consolidated statement exists - two readers)",
-   "from": "2021-04-30",
+   "from": "2020-07-31",
    "to": "2026-03-30",
    "bound_derivation": "The 60 dates at which the engine actually reports this parameter unresolved for SBICARD in the campaign window: first 2021-04-30, last 2026-03-30. A hole after 2026-03-30 is a different defect and stays visible.",
    "reader_1": "NSE per-quarter filing coverage, fetched 2026-08-18 (Gate 1 v2): the exchange returns filing rows for 20 distinct quarters for SBICARD, and NOT ONE of them is tagged Consolidated. Gate 1 v2 judges a quarter only where a filing row for THAT EXACT quarter exists, so this is a positive reading of the record rather than an inference from a date span.",
    "reader_2": "MoneyControl consolidated-quarterly feed, swept 2026-08-18: renders NO consolidated series for this company (status \"no_con_series\"). MC is measured in this project to OVER-report consolidated - on 98 of 120 names where both readers give a floor, MC starts EARLIER than the exchange, median 4 quarters, exactly the width of a filing's comparative columns. A source that invents consolidated data showing none is conservative evidence of absence.",
    "our_data": "20 fabricated consolidated cells were retracted for this symbol on 2026-08-18 (scripts/con_copy_retractions.json): each was an EXACT copy of the standalone value, written by a rule that inferred \"no subsidiary\" from a pattern in our own store rather than from any filing. With the copies gone the consolidated basis is empty here, which is the true state - no consolidated statement exists to fill it.",
-   "user_approved": "2026-08-18 (user: \"ok this can be done in github its removal and na classification in coverage\")",
-   "supersedes": "Widened from an earlier narrower verdict (from 2020-01-31 to 2021-03-31). That verdict was written before the con-copy retraction, when this symbol still held copied consolidated values that masked the true extent of the gap.",
+   "user_approved": "2026-08-19 (user: \"go ahead\", re-deriving a bound the retraction moved - same evidence, same verdict)",
+   "supersedes": "bound widened 2026-08-19: was 2021-04-30..2026-03-30, is 2020-07-31..2026-03-30. Same evidence (reader_1/reader_2/our_data below), only the arithmetic moved - the con-copy retraction emptied fabricated cells that used to sit inside this bound's complement, so the engine now reports unresolved dates the old bound never covered.",
    "prior_reader_1": "SBI Cards & Payment Services Ltd FY2019-20 Annual Report, Corporate Governance Report p107, read 2026-08-17: the subsidiary-policy row states \"Not Applicable, since the Company does not have any subsidiaries\", and the same page repeats \"Further, the Company does not have any subsidiaries.\" A company with no subsidiary prepares no consolidated financial statement -- there is no document to read for any period, not merely none that we hold.",
    "prior_reader_2": "Same annual report, MGT-9 Annexure-7 section III \"Particulars of Holding, Subsidiary and Associate Companies\" p84, read 2026-08-17: the table lists exactly one entity -- State Bank of India, classified HOLDING. No subsidiary and no associate row exists. Second, independent statement of the same fact from a different statutory disclosure in the same filing.",
    "prior_our_data": "Measured 2026-08-18 against docs/sf_fundamentals.json + docs/sf_revop.json: SBICARD holds 30 quarters. 26 carry BOTH bases and in all 26 the consolidated PAT equals the standalone PAT to the paisa -- the arithmetic identity you get when there is nothing to consolidate. The only 4 quarters lacking con are 20190331, 20190630, 20190930 and 20191231. rev_con and op_con are likewise complete for all 26 post-listing quarters and absent for exactly those 4."
@@ -7409,14 +7409,14 @@
  "profitTTMCon": {
   "NSLNISP": {
    "class": "C-basis (no consolidated statement exists - two readers)",
-   "from": "2024-11-29",
+   "from": "2023-05-31",
    "to": "2026-08-14",
    "bound_derivation": "The 22 dates at which the engine actually reports this parameter unresolved for NSLNISP in the campaign window: first 2024-11-29, last 2026-08-14. A hole after 2026-08-14 is a different defect and stays visible.",
    "reader_1": "NSE per-quarter filing coverage, fetched 2026-08-18 (Gate 1 v2): the exchange returns filing rows for 8 distinct quarters for NSLNISP, and NOT ONE of them is tagged Consolidated. Gate 1 v2 judges a quarter only where a filing row for THAT EXACT quarter exists, so this is a positive reading of the record rather than an inference from a date span.",
    "reader_2": "MoneyControl consolidated-quarterly feed, swept 2026-08-18: renders NO consolidated series for this company (status \"no_con_series\"). MC is measured in this project to OVER-report consolidated - on 98 of 120 names where both readers give a floor, MC starts EARLIER than the exchange, median 4 quarters, exactly the width of a filing's comparative columns. A source that invents consolidated data showing none is conservative evidence of absence.",
    "our_data": "8 fabricated consolidated cells were retracted for this symbol on 2026-08-18 (scripts/con_copy_retractions.json): each was an EXACT copy of the standalone value, written by a rule that inferred \"no subsidiary\" from a pattern in our own store rather than from any filing. With the copies gone the consolidated basis is empty here, which is the true state - no consolidated statement exists to fill it.",
-   "user_approved": "2026-08-18 (user: \"ok this can be done in github its removal and na classification in coverage\")",
-   "supersedes": "Widened from an earlier narrower verdict (from 2023-05-01 to 2024-10-31). That verdict was written before the con-copy retraction, when this symbol still held copied consolidated values that masked the true extent of the gap.",
+   "user_approved": "2026-08-19 (user: \"go ahead\", re-deriving a bound the retraction moved - same evidence, same verdict)",
+   "supersedes": "bound widened 2026-08-19: was 2024-11-29..2026-08-14, is 2023-05-31..2026-08-14. Same evidence (reader_1/reader_2/our_data below), only the arithmetic moved - the con-copy retraction emptied fabricated cells that used to sit inside this bound's complement, so the engine now reports unresolved dates the old bound never covered.",
    "prior_reader_1": "ZERO-BASE REFUSAL, user-approved 2026-08-17. NMDC Steel (demerged, listed 2023-02-20) filed its FY22-FY24Q1 quarters as literal 0.00/0 with REAL announce dates (pre-production plant; first revenue quarter 20230930 = -131.1). Every parameter here compares against or accumulates those zero quarters: YoY/base/streak against a 0.00 base is arithmetically undefined (the param rule text itself says \"Null when the year-ago base is exactly 0\"), TTM growth divides by a zero prior-4 sum, accel differences two undefined YoYs, composite is null wherever TTM is. This is the engine REFUSING a computation no one can make \u2014 not missing data. Filing evidence: first-ever filing 2023-05-23 restated the comparative era at 0.00; screener agrees (Sales 0.0 through FY2023)."
   },
   "CELLO": {
@@ -7438,14 +7438,14 @@
   },
   "SBICARD": {
    "class": "C-basis (no consolidated statement exists - two readers)",
-   "from": "2022-01-31",
+   "from": "2020-07-31",
    "to": "2026-08-14",
    "bound_derivation": "The 56 dates at which the engine actually reports this parameter unresolved for SBICARD in the campaign window: first 2022-01-31, last 2026-08-14. A hole after 2026-08-14 is a different defect and stays visible.",
    "reader_1": "NSE per-quarter filing coverage, fetched 2026-08-18 (Gate 1 v2): the exchange returns filing rows for 20 distinct quarters for SBICARD, and NOT ONE of them is tagged Consolidated. Gate 1 v2 judges a quarter only where a filing row for THAT EXACT quarter exists, so this is a positive reading of the record rather than an inference from a date span.",
    "reader_2": "MoneyControl consolidated-quarterly feed, swept 2026-08-18: renders NO consolidated series for this company (status \"no_con_series\"). MC is measured in this project to OVER-report consolidated - on 98 of 120 names where both readers give a floor, MC starts EARLIER than the exchange, median 4 quarters, exactly the width of a filing's comparative columns. A source that invents consolidated data showing none is conservative evidence of absence.",
    "our_data": "20 fabricated consolidated cells were retracted for this symbol on 2026-08-18 (scripts/con_copy_retractions.json): each was an EXACT copy of the standalone value, written by a rule that inferred \"no subsidiary\" from a pattern in our own store rather than from any filing. With the copies gone the consolidated basis is empty here, which is the true state - no consolidated statement exists to fill it.",
-   "user_approved": "2026-08-18 (user: \"ok this can be done in github its removal and na classification in coverage\")",
-   "supersedes": "Widened from an earlier narrower verdict (from 2020-01-31 to 2021-12-31). That verdict was written before the con-copy retraction, when this symbol still held copied consolidated values that masked the true extent of the gap.",
+   "user_approved": "2026-08-19 (user: \"go ahead\", re-deriving a bound the retraction moved - same evidence, same verdict)",
+   "supersedes": "bound widened 2026-08-19: was 2022-01-31..2026-08-14, is 2020-07-31..2026-08-14. Same evidence (reader_1/reader_2/our_data below), only the arithmetic moved - the con-copy retraction emptied fabricated cells that used to sit inside this bound's complement, so the engine now reports unresolved dates the old bound never covered.",
    "prior_reader_1": "SBI Cards & Payment Services Ltd FY2019-20 Annual Report, Corporate Governance Report p107, read 2026-08-17: the subsidiary-policy row states \"Not Applicable, since the Company does not have any subsidiaries\", and the same page repeats \"Further, the Company does not have any subsidiaries.\" A company with no subsidiary prepares no consolidated financial statement -- there is no document to read for any period, not merely none that we hold.",
    "prior_reader_2": "Same annual report, MGT-9 Annexure-7 section III \"Particulars of Holding, Subsidiary and Associate Companies\" p84, read 2026-08-17: the table lists exactly one entity -- State Bank of India, classified HOLDING. No subsidiary and no associate row exists. Second, independent statement of the same fact from a different statutory disclosure in the same filing.",
    "prior_our_data": "Measured 2026-08-18 against docs/sf_fundamentals.json + docs/sf_revop.json: SBICARD holds 30 quarters. 26 carry BOTH bases and in all 26 the consolidated PAT equals the standalone PAT to the paisa -- the arithmetic identity you get when there is nothing to consolidate. The only 4 quarters lacking con are 20190331, 20190630, 20190930 and 20191231. rev_con and op_con are likewise complete for all 26 post-listing quarters and absent for exactly those 4."
@@ -9532,14 +9532,14 @@
  "compositeCon": {
   "NSLNISP": {
    "class": "C-basis (no consolidated statement exists - two readers)",
-   "from": "2024-11-29",
+   "from": "2023-05-31",
    "to": "2026-08-14",
    "bound_derivation": "The 22 dates at which the engine actually reports this parameter unresolved for NSLNISP in the campaign window: first 2024-11-29, last 2026-08-14. A hole after 2026-08-14 is a different defect and stays visible.",
    "reader_1": "NSE per-quarter filing coverage, fetched 2026-08-18 (Gate 1 v2): the exchange returns filing rows for 8 distinct quarters for NSLNISP, and NOT ONE of them is tagged Consolidated. Gate 1 v2 judges a quarter only where a filing row for THAT EXACT quarter exists, so this is a positive reading of the record rather than an inference from a date span.",
    "reader_2": "MoneyControl consolidated-quarterly feed, swept 2026-08-18: renders NO consolidated series for this company (status \"no_con_series\"). MC is measured in this project to OVER-report consolidated - on 98 of 120 names where both readers give a floor, MC starts EARLIER than the exchange, median 4 quarters, exactly the width of a filing's comparative columns. A source that invents consolidated data showing none is conservative evidence of absence.",
    "our_data": "8 fabricated consolidated cells were retracted for this symbol on 2026-08-18 (scripts/con_copy_retractions.json): each was an EXACT copy of the standalone value, written by a rule that inferred \"no subsidiary\" from a pattern in our own store rather than from any filing. With the copies gone the consolidated basis is empty here, which is the true state - no consolidated statement exists to fill it.",
-   "user_approved": "2026-08-18 (user: \"ok this can be done in github its removal and na classification in coverage\")",
-   "supersedes": "Widened from an earlier narrower verdict (from 2023-05-01 to 2024-10-31). That verdict was written before the con-copy retraction, when this symbol still held copied consolidated values that masked the true extent of the gap.",
+   "user_approved": "2026-08-19 (user: \"go ahead\", re-deriving a bound the retraction moved - same evidence, same verdict)",
+   "supersedes": "bound widened 2026-08-19: was 2024-11-29..2026-08-14, is 2023-05-31..2026-08-14. Same evidence (reader_1/reader_2/our_data below), only the arithmetic moved - the con-copy retraction emptied fabricated cells that used to sit inside this bound's complement, so the engine now reports unresolved dates the old bound never covered.",
    "prior_reader_1": "ZERO-BASE REFUSAL, user-approved 2026-08-17. NMDC Steel (demerged, listed 2023-02-20) filed its FY22-FY24Q1 quarters as literal 0.00/0 with REAL announce dates (pre-production plant; first revenue quarter 20230930 = -131.1). Every parameter here compares against or accumulates those zero quarters: YoY/base/streak against a 0.00 base is arithmetically undefined (the param rule text itself says \"Null when the year-ago base is exactly 0\"), TTM growth divides by a zero prior-4 sum, accel differences two undefined YoYs, composite is null wherever TTM is. This is the engine REFUSING a computation no one can make \u2014 not missing data. Filing evidence: first-ever filing 2023-05-23 restated the comparative era at 0.00; screener agrees (Sales 0.0 through FY2023)."
   },
   "CELLO": {
@@ -9561,14 +9561,14 @@
   },
   "SBICARD": {
    "class": "C-basis (no consolidated statement exists - two readers)",
-   "from": "2022-01-31",
+   "from": "2020-07-31",
    "to": "2026-08-14",
    "bound_derivation": "The 56 dates at which the engine actually reports this parameter unresolved for SBICARD in the campaign window: first 2022-01-31, last 2026-08-14. A hole after 2026-08-14 is a different defect and stays visible.",
    "reader_1": "NSE per-quarter filing coverage, fetched 2026-08-18 (Gate 1 v2): the exchange returns filing rows for 20 distinct quarters for SBICARD, and NOT ONE of them is tagged Consolidated. Gate 1 v2 judges a quarter only where a filing row for THAT EXACT quarter exists, so this is a positive reading of the record rather than an inference from a date span.",
    "reader_2": "MoneyControl consolidated-quarterly feed, swept 2026-08-18: renders NO consolidated series for this company (status \"no_con_series\"). MC is measured in this project to OVER-report consolidated - on 98 of 120 names where both readers give a floor, MC starts EARLIER than the exchange, median 4 quarters, exactly the width of a filing's comparative columns. A source that invents consolidated data showing none is conservative evidence of absence.",
    "our_data": "20 fabricated consolidated cells were retracted for this symbol on 2026-08-18 (scripts/con_copy_retractions.json): each was an EXACT copy of the standalone value, written by a rule that inferred \"no subsidiary\" from a pattern in our own store rather than from any filing. With the copies gone the consolidated basis is empty here, which is the true state - no consolidated statement exists to fill it.",
-   "user_approved": "2026-08-18 (user: \"ok this can be done in github its removal and na classification in coverage\")",
-   "supersedes": "Widened from an earlier narrower verdict (from 2020-01-31 to 2021-12-31). That verdict was written before the con-copy retraction, when this symbol still held copied consolidated values that masked the true extent of the gap.",
+   "user_approved": "2026-08-19 (user: \"go ahead\", re-deriving a bound the retraction moved - same evidence, same verdict)",
+   "supersedes": "bound widened 2026-08-19: was 2022-01-31..2026-08-14, is 2020-07-31..2026-08-14. Same evidence (reader_1/reader_2/our_data below), only the arithmetic moved - the con-copy retraction emptied fabricated cells that used to sit inside this bound's complement, so the engine now reports unresolved dates the old bound never covered.",
    "prior_reader_1": "SBI Cards & Payment Services Ltd FY2019-20 Annual Report, Corporate Governance Report p107, read 2026-08-17: the subsidiary-policy row states \"Not Applicable, since the Company does not have any subsidiaries\", and the same page repeats \"Further, the Company does not have any subsidiaries.\" A company with no subsidiary prepares no consolidated financial statement -- there is no document to read for any period, not merely none that we hold.",
    "prior_reader_2": "Same annual report, MGT-9 Annexure-7 section III \"Particulars of Holding, Subsidiary and Associate Companies\" p84, read 2026-08-17: the table lists exactly one entity -- State Bank of India, classified HOLDING. No subsidiary and no associate row exists. Second, independent statement of the same fact from a different statutory disclosure in the same filing.",
    "prior_our_data": "Measured 2026-08-18 against docs/sf_fundamentals.json + docs/sf_revop.json: SBICARD holds 30 quarters. 26 carry BOTH bases and in all 26 the consolidated PAT equals the standalone PAT to the paisa -- the arithmetic identity you get when there is nothing to consolidate. The only 4 quarters lacking con are 20190331, 20190630, 20190930 and 20191231. rev_con and op_con are likewise complete for all 26 post-listing quarters and absent for exactly those 4."
@@ -11655,14 +11655,14 @@
  "profitAccelCon": {
   "NSLNISP": {
    "class": "C-basis (no consolidated statement exists - two readers)",
-   "from": "2025-02-28",
+   "from": "2023-05-31",
    "to": "2026-08-14",
    "bound_derivation": "The 19 dates at which the engine actually reports this parameter unresolved for NSLNISP in the campaign window: first 2025-02-28, last 2026-08-14. A hole after 2026-08-14 is a different defect and stays visible.",
    "reader_1": "NSE per-quarter filing coverage, fetched 2026-08-18 (Gate 1 v2): the exchange returns filing rows for 8 distinct quarters for NSLNISP, and NOT ONE of them is tagged Consolidated. Gate 1 v2 judges a quarter only where a filing row for THAT EXACT quarter exists, so this is a positive reading of the record rather than an inference from a date span.",
    "reader_2": "MoneyControl consolidated-quarterly feed, swept 2026-08-18: renders NO consolidated series for this company (status \"no_con_series\"). MC is measured in this project to OVER-report consolidated - on 98 of 120 names where both readers give a floor, MC starts EARLIER than the exchange, median 4 quarters, exactly the width of a filing's comparative columns. A source that invents consolidated data showing none is conservative evidence of absence.",
    "our_data": "8 fabricated consolidated cells were retracted for this symbol on 2026-08-18 (scripts/con_copy_retractions.json): each was an EXACT copy of the standalone value, written by a rule that inferred \"no subsidiary\" from a pattern in our own store rather than from any filing. With the copies gone the consolidated basis is empty here, which is the true state - no consolidated statement exists to fill it.",
-   "user_approved": "2026-08-18 (user: \"ok this can be done in github its removal and na classification in coverage\")",
-   "supersedes": "Widened from an earlier narrower verdict (from 2023-05-01 to 2025-01-31). That verdict was written before the con-copy retraction, when this symbol still held copied consolidated values that masked the true extent of the gap.",
+   "user_approved": "2026-08-19 (user: \"go ahead\", re-deriving a bound the retraction moved - same evidence, same verdict)",
+   "supersedes": "bound widened 2026-08-19: was 2025-02-28..2026-08-14, is 2023-05-31..2026-08-14. Same evidence (reader_1/reader_2/our_data below), only the arithmetic moved - the con-copy retraction emptied fabricated cells that used to sit inside this bound's complement, so the engine now reports unresolved dates the old bound never covered.",
    "prior_reader_1": "ZERO-BASE REFUSAL, user-approved 2026-08-17. NMDC Steel (demerged, listed 2023-02-20) filed its FY22-FY24Q1 quarters as literal 0.00/0 with REAL announce dates (pre-production plant; first revenue quarter 20230930 = -131.1). Every parameter here compares against or accumulates those zero quarters: YoY/base/streak against a 0.00 base is arithmetically undefined (the param rule text itself says \"Null when the year-ago base is exactly 0\"), TTM growth divides by a zero prior-4 sum, accel differences two undefined YoYs, composite is null wherever TTM is. This is the engine REFUSING a computation no one can make \u2014 not missing data. Filing evidence: first-ever filing 2023-05-23 restated the comparative era at 0.00; screener agrees (Sales 0.0 through FY2023)."
   },
   "CELLO": {
@@ -11684,14 +11684,14 @@
   },
   "SBICARD": {
    "class": "C-basis (no consolidated statement exists - two readers)",
-   "from": "2021-07-30",
+   "from": "2020-07-31",
    "to": "2026-06-30",
    "bound_derivation": "The 60 dates at which the engine actually reports this parameter unresolved for SBICARD in the campaign window: first 2021-07-30, last 2026-06-30. A hole after 2026-06-30 is a different defect and stays visible.",
    "reader_1": "NSE per-quarter filing coverage, fetched 2026-08-18 (Gate 1 v2): the exchange returns filing rows for 20 distinct quarters for SBICARD, and NOT ONE of them is tagged Consolidated. Gate 1 v2 judges a quarter only where a filing row for THAT EXACT quarter exists, so this is a positive reading of the record rather than an inference from a date span.",
    "reader_2": "MoneyControl consolidated-quarterly feed, swept 2026-08-18: renders NO consolidated series for this company (status \"no_con_series\"). MC is measured in this project to OVER-report consolidated - on 98 of 120 names where both readers give a floor, MC starts EARLIER than the exchange, median 4 quarters, exactly the width of a filing's comparative columns. A source that invents consolidated data showing none is conservative evidence of absence.",
    "our_data": "20 fabricated consolidated cells were retracted for this symbol on 2026-08-18 (scripts/con_copy_retractions.json): each was an EXACT copy of the standalone value, written by a rule that inferred \"no subsidiary\" from a pattern in our own store rather than from any filing. With the copies gone the consolidated basis is empty here, which is the true state - no consolidated statement exists to fill it.",
-   "user_approved": "2026-08-18 (user: \"ok this can be done in github its removal and na classification in coverage\")",
-   "supersedes": "Widened from an earlier narrower verdict (from 2020-01-31 to 2021-06-30). That verdict was written before the con-copy retraction, when this symbol still held copied consolidated values that masked the true extent of the gap.",
+   "user_approved": "2026-08-19 (user: \"go ahead\", re-deriving a bound the retraction moved - same evidence, same verdict)",
+   "supersedes": "bound widened 2026-08-19: was 2021-07-30..2026-06-30, is 2020-07-31..2026-06-30. Same evidence (reader_1/reader_2/our_data below), only the arithmetic moved - the con-copy retraction emptied fabricated cells that used to sit inside this bound's complement, so the engine now reports unresolved dates the old bound never covered.",
    "prior_reader_1": "SBI Cards & Payment Services Ltd FY2019-20 Annual Report, Corporate Governance Report p107, read 2026-08-17: the subsidiary-policy row states \"Not Applicable, since the Company does not have any subsidiaries\", and the same page repeats \"Further, the Company does not have any subsidiaries.\" A company with no subsidiary prepares no consolidated financial statement -- there is no document to read for any period, not merely none that we hold.",
    "prior_reader_2": "Same annual report, MGT-9 Annexure-7 section III \"Particulars of Holding, Subsidiary and Associate Companies\" p84, read 2026-08-17: the table lists exactly one entity -- State Bank of India, classified HOLDING. No subsidiary and no associate row exists. Second, independent statement of the same fact from a different statutory disclosure in the same filing.",
    "prior_our_data": "Measured 2026-08-18 against docs/sf_fundamentals.json + docs/sf_revop.json: SBICARD holds 30 quarters. 26 carry BOTH bases and in all 26 the consolidated PAT equals the standalone PAT to the paisa -- the arithmetic identity you get when there is nothing to consolidate. The only 4 quarters lacking con are 20190331, 20190630, 20190930 and 20191231. rev_con and op_con are likewise complete for all 26 post-listing quarters and absent for exactly those 4."
