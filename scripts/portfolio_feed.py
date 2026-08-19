@@ -133,7 +133,7 @@ def main():
 
     doc = load_holdings()
     base_px, base_date = month_end_baseline(doc['holdings'])
-    print('holdings=%d  month-end baseline=%s (%d symbols priced)'
+    print('loaded %d holdings; month-end baseline %s (%d symbols)'
           % (len(doc['holdings']), base_date, len(base_px or {})))
 
     deadline = time.time() + loop_min * 60
@@ -143,7 +143,10 @@ def main():
             feed = compute(doc, base_px)
             push(feed)
             n += 1
-            print('%s  day=%s  mtd=%s  total=%s' % (feed['asOf'], feed['dayTxt'], feed['mtdTxt'], feed['totalTxt']))
+            # Deliberately NOT logging the percentages: this repo is public, and
+            # its Actions logs are readable by anyone. Counts prove the push worked
+            # without publishing how the portfolio is doing.
+            print('%s  pushed ok (%d priced of %d)' % (feed['asOf'], feed['priced'], feed['n']))
         except SystemExit:
             raise
         except Exception as e:                    # one bad tick must not end the session
