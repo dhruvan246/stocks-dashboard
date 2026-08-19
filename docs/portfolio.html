@@ -168,6 +168,10 @@ select,input[type=text],input[type=number],input[type=date]{
 
     <div class="kpis" id="kpis"></div>
 
+    <div class="card c12" style="margin-bottom:14px"><h2>Today, by strategy</h2>
+      <div class="sub" id="todaySub"></div>
+      <div class="body"><div class="twrap"><table id="tblToday"></table></div></div></div>
+
     <div class="filters" id="filters"></div>
 
     <div class="grid">
@@ -909,6 +913,33 @@ function renderAccounts(){
     buildRows(); renderAll(); $('saveMsg').textContent='unsaved changes';
   });
 }
+function renderToday(rows){
+  const t=totals(rows);
+  const list=[...groupBy(rows,r=>r.pfName).entries()].map(([name,rs])=>{
+    const a=agg(rs), base=a.value-a.day;
+    const pf=(DOC.portfolios||[]).find(p=>p.name===name)||{};
+    return {name, acct:pf.account?acctName(pf.account):'—', n:rs.length,
+            day:a.day, pct:base>0? a.day/base*100 : null, value:a.value};
+  }).sort((x,y)=>(y.pct==null?-1e9:y.pct)-(x.pct==null?-1e9:x.pct));
+  $('todaySub').innerHTML='Each strategy\u2019s move today, biggest first'+
+    (SEL.acct.size||SEL.pf.size? ' (filtered)':'')+'.';
+  /* On a phone the whole point is seeing today's move without scrolling sideways,
+     so the secondary columns are dropped rather than pushed off-screen. */
+  const narrow = innerWidth < 640;
+  let h='<thead><tr><th>Strategy</th>'+(narrow?'':'<th>Account</th><th>Holdings</th><th>Value</th>')+
+        '<th>Today</th><th>Today %</th></tr></thead><tbody>';
+  list.forEach(r=>{
+    h+='<tr><td><b>'+esc(r.name)+'</b>'+(narrow?'<br><span class="sym">'+esc(r.acct)+'</span>':'')+'</td>'+
+       (narrow?'':'<td><span class="sym">'+esc(r.acct)+'</span></td><td>'+r.n+'</td><td class="secret">'+inr(r.value)+'</td>')+
+       '<td class="'+cls(r.day)+' secret">'+inrSigned(r.day)+'</td>'+
+       '<td class="'+cls(r.pct)+'"><b>'+pct(r.pct)+'</b></td></tr>';
+  });
+  h+='</tbody><tfoot><tr class="pfhead"><td>All strategies</td>'+
+     (narrow?'':'<td></td><td>'+rows.length+'</td><td class="secret">'+inr(t.value)+'</td>')+
+     '<td class="'+cls(t.day)+' secret">'+inrSigned(t.day)+'</td>'+
+     '<td class="'+cls(t.dayPct)+'"><b>'+pct(t.dayPct)+'</b></td></tr></tfoot>';
+  $('tblToday').innerHTML=h;
+}
 function renderStrategyCard(rows, mode, ids){
   const M=strategyReturns(rows, mode);
   const sub=$(ids.sub), chart=$(ids.chart), tbl=$(ids.tbl);
@@ -957,7 +988,7 @@ function renderStrategyCard(rows, mode, ids){
 }
 function renderAll(){
   const rows=visibleRows();
-  renderKPIs(rows); renderFilters();
+  renderKPIs(rows); renderToday(rows); renderFilters();
   renderStrategyCard(rows,'close',{sub:'meSub',chart:'chMonthEnd',tbl:'tblMonthEnd'});
   renderStrategyCard(rows,'buy',  {sub:'buySub',chart:'chBuy',    tbl:'tblBuy'});
   renderCharts(rows); renderHoldings(rows); renderAccounts();
