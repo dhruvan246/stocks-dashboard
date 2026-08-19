@@ -98,6 +98,16 @@ jobs:
       - name: Fetch price history from Yahoo Finance
         run: python3 scripts/fetch_all.py
 
+      - name: Floor the fetch against the last published build
+        # fetch_all.py rebuilds stock_data.json from scratch, so whatever Yahoo returns IS
+        # what ships. Yahoo intermittently serves a series with one whole session missing
+        # (2026-07-31 went 4454 -> 598 bars between two builds 1h45m apart, and back the next
+        # morning), and the wholesale overwrite published the hole. This re-adds any bar the
+        # committed dash_slim.bin already has, plus the recorded heal ledger. Fill-only, and
+        # every re-added bar is gated on neighbouring closes matching, so a Yahoo split
+        # re-adjustment is never overwritten with a stale-basis close. DATA_RUNBOOK 1b.
+        run: python3 scripts/heal_price_series.py
+
       - name: Fetch sector metadata from BSE
         run: python3 scripts/fetch_sectors.py
 
@@ -106,6 +116,13 @@ jobs:
 
       - name: Guard — refuse to commit a broken or shrunken feed
         run: python3 scripts/guard_feed.py
+
+      - name: Guard — refuse to commit a half-loaded trading day
+        # guard_feed.py only sees file SIZE: the build that dropped 3,856 of 2026-07-31's
+        # bars still weighed 99.45% of the good build it replaced. This one counts bars PER
+        # SESSION and fails when a published session collapses or sits far below its
+        # neighbours. DATA_RUNBOOK 1b.
+        run: python3 scripts/guard_sessions.py
 
       - name: Commit updated dashboard
         run: |

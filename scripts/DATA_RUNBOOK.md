@@ -8,7 +8,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 
 ## TABLE OF CONTENTS
 - **§0** GOLDEN RULES
-- **§1** DAILY PRICE REFRESH
+- **§1** DAILY PRICE REFRESH · **§1b** ★ DASHBOARD (YAHOO) REFRESH — THE HALF-LOADED SESSION
 - **§2** FUNDAMENTALS BACKFILL
 - **§3** INSURERS
 - **§4** BUILD & DEPLOY
@@ -238,6 +238,99 @@ Trigger manually (today not in yet / missed run):
 - GitHub → Actions → **"Daily backtest data refresh"** → Run workflow, **or** `gh workflow run refresh-backtest-data.yml`,
   **or** POST `/repos/dhruvan246/stocks-dashboard/dispatches` `{"event_type":"backtest-data-refresh"}`.
 - Verify: `curl -s https://dhruvan246.github.io/sf-data/sf_meta.json` → `{"end"}` = target date.
+
+---
+
+## 1b. DASHBOARD PRICE REFRESH — THE HALF-LOADED SESSION  ★ read before touching refresh.yml / fetch_all.py ★
+*(found + fixed 2026-08-19, from a report that 2026-07-31 was only ~59% loaded in the live dash_slim.bin)*
+
+**There are TWO price stores and they are NOT the same pipeline.** Confusing them wastes a session:
+
+| store | source | producer | who reads it |
+|---|---|---|---|
+| `docs/sf_stock_data.bin` → sf-data repo | **NSE bhavcopy** | `refresh-backtest-data.yml` (§1) | backtest engine, strategies, screens |
+| `scripts/stock_data.json` → `docs/dash_slim.bin` + `docs/stock_data.bin` | **Yahoo chart API** | `refresh.yml` → `fetch_all.py` | dashboard, sectors, discovery, quarterly-results |
+
+The 2026-07-31 hole was **only in the Yahoo store**. Measured the same day: sf-data had 2,704 bars on
+2026-07-31 against 2,704 on 07-30 and 2,743 on 08-03 — dead on trend, no gap, and **every month-end
+session in sf-data back to 2019 is clean**. So no backtest/rebalance number was ever affected; the damage
+was confined to the pages that read dash_slim.bin.
+
+### The defect
+`fetch_all.py` rebuilds `scripts/stock_data.json` **from scratch every run** (`results = {}` →
+`OUT_JSON.write_text(...)`) — there is no merge with the previous build, so whatever Yahoo returns IS what
+ships. Yahoo intermittently serves a series with **one whole interior session missing**, and not the same
+session each time. Measured over the last 40 published `docs/dash_slim.bin` commits:
+
+```
+build 2026-08-05 11:43 IST   2026-07-31 = 4,454 bars
+build 2026-08-05 13:28 IST   2026-07-31 =   598 bars      <- collapsed, published
+build 2026-08-06 morning     2026-07-31 = 4,646 bars      <- back, by luck
+```
+17 of those 40 builds shipped a session at 10–27% of its real bar count (07-20, 07-22, 07-31, 08-13, 08-14).
+It is **not** a Yahoo data gap: re-fetching 120 of the symbols missing 07-31 with the exact request
+`fetch_all.py` makes returned the bar for 113 (the other 7 have no recent data at all). The upstream blip
+is transient; the wholesale overwrite is what made it permanent in the published file.
+
+**Why `guard_feed.py` never saw it:** it compares FILE SIZE (`min_ratio` 0.9). Dropping 3,856 whole bars
+cost 0.55% of the gzip stream — 2,064,777 B → 2,053,486 B, i.e. **99.45%** of the previous build. A
+size-ratio guard is structurally blind to a missing day.
+
+### The fix (both wired into `refresh.yml`)
+1. **`scripts/heal_price_series.py`** — runs between `fetch_all.py` and `build_compressed.py`.
+   - *floor pass*: re-adds any bar the committed `docs/dash_slim.bin` has and the fresh fetch lacks. **A bar
+     published yesterday can no longer vanish today.**
+   - *ledger pass*: applies `scripts/price_gap_fills.json`, the recorded heal for sessions lost before the
+     floor pass existed (CLAUDE.md rule 5 — heal via a ledger, never by editing the derived file).
+   - Both passes are **fill-only** (a date the fresh fetch has is never overwritten, so a genuine Yahoo close
+     correction still wins) and both are gated on **basis anchors**: the ticker's neighbouring closes must
+     still match between the two sources. Yahoo re-adjusts a whole series retroactively for a split/bonus, so
+     an un-anchored re-add would inject a scale error. A mismatch skips the bar and counts it — never rescales.
+   - Idempotent: a second run on a healed payload restores 0.
+2. **`scripts/guard_sessions.py`** — runs after `guard_feed.py`, before the commit step.
+   - *check A, regression*: a session already published may not drop below **90%** of the committed copy.
+     Calibrated on 40 real builds — benign build-to-build churn (Yahoo dropping whole symbols from the
+     universe) is 96.2% p1 / 97.3% p5, every observed decrease below 95% was this defect.
+   - *check B, trailing median*: no session may sit below **80%** of the median of the previous 20 sessions.
+     The newest session is exempt — it is still filling when refresh.yml runs 3× through the evening
+     (measured 91.9%–96.0% of trailing median across 40 builds, so the 80% floor has 12pp of headroom).
+   - A session **also** below the floor in the committed copy only WARNs. The guard refuses new damage; it
+     does not wedge the pipeline on damage it inherited.
+   - Replaying the real 2026-08-05 13:28 build against its 11:43 predecessor: **exit 1**, naming 2026-07-31
+     in both checks. That run would have been blocked.
+
+### The ledger — `scripts/price_gap_fills.json`
+`{"fills": {TICKER: [[date, close, prevDate, prevClose, nextDate, nextClose], …]}}`. The two anchors are the
+adjacent sessions' closes as published in the source build; at apply time at least one must still match the
+fresh series and none may contradict it, else the fill is skipped.
+
+Seeded 2026-08-19 with **4,157 cells across 2,106 tickers**, recovered from the union of the last 40 published
+dash_slim builds and accepted only where 6 neighbouring closes matched the current build exactly. Verified by
+re-fetching from Yahoo: **255/255 sampled cells matched to 1 paisa** (174 pre-apply across 90 random tickers,
+81 post-apply read back out of the rebuilt payload). Result:
+
+```
+session       before   after   trailing-20 median
+2026-07-20     2,600   4,512   4,505
+2026-07-22     4,327   4,546   4,508
+2026-07-31     2,678   4,559   4,514
+2026-08-14     4,436   4,575   4,555
+```
+
+**To extend it after a future collapse the floor pass could not catch:** pull the last N `docs/dash_slim.bin`
+blobs (`git show <sha>:docs/dash_slim.bin`), take bars the current build lacks, require the 6 nearest shared
+closes to be identical, record `[date, close, prevDate, prevClose, nextDate, nextClose]`, and re-verify a
+random sample against a live Yahoo fetch before committing. Never hand-write a close.
+
+### Two things this did NOT fix (measured, left open deliberately)
+- **2026-01-15 and 2026-05-01 carry ~1,800 Yahoo bars on days NSE did not trade** (no session in the
+  bhavcopy-derived store at all). Those are phantom sessions, a different defect from a half-loaded one;
+  deleting bars is riskier than adding them, so they are left in place and surface as a standing WARN from
+  `guard_sessions.py`. Every other month-end in `docs/stock_data.bin`'s 2020+ daily era is clean.
+- **Whole symbols still churn between builds** (series count oscillates 4,723 ↔ 4,863 — Yahoo dropping ~140
+  symbols outright in a run). The floor pass only restores bars for tickers the fresh fetch still returns, so
+  a symbol that vanishes entirely still vanishes for that build. Widening the floor to resurrect whole series
+  would also resurrect genuinely delisted ones — needs its own adjudication.
 
 ---
 
@@ -1858,6 +1951,11 @@ the user's plan: no API key, no laptop-awake dependency.
   its commit step: any modified docs/scripts .json/.bin/.html must parse (json), be ≥ min_bytes, and not
   shrink below min_ratio × committed size — else the step FAILS (visible red run; previous good data stays
   live). False trip on a legitimate shrink → raise that file's `min_ratio`/`min_bytes` in feeds.json.
+- **A SIZE GUARD CANNOT SEE A MISSING DAY (2026-08-19, §1b):** the build that dropped 3,856 of
+  2026-07-31's 4,454 bars still weighed **99.45%** of the good build it replaced, so `guard_feed.py`
+  passed it and the half-loaded day went live. `scripts/guard_sessions.py` now counts bars **per session**
+  in refresh.yml (regression <90% of the committed copy, or <80% of the trailing-20 median = red run).
+  Any feed whose payload is a per-date series needs a per-date count check, not just a byte-count floor.
 - **Fixed 2026-07-16 — mf_funds.json/mf_history.bin were built nightly then DISCARDED:** fetch_mf_returns.py
   always rebuilt `docs/mf_funds.json` + `docs/mf_history.bin` (+ gold via add_gold_instrument) in refresh-mf.yml,
   but the commit step's reset-and-replay only carried mutual-funds.html + scripts/mutual_funds.json, so the fresh
