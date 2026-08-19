@@ -4695,5 +4695,49 @@
   "basis": "con",
   "src": "BSE, \"Audited Financial Results For The Quarter/Year Ended 31.03.2022\" (filed 13-May-2022), same filing as 20210331 above, Consolidated Segment Reporting note, immediately-preceding-quarter column: Net Profit 31039 + Share in Profit of Associate (1766) = Consolidated Net Profit 29273 (Rs in Lakh)",
   "evidence": "Net Profit column 310.39 == stored std 20211231 EXACT"
+ },
+ "CANBK|20180630|con": {
+  "con": 340.68,
+  "annCon": 20190724,
+  "when": "2026-08-19 (user: \"fill them\")",
+  "basis": "con",
+  "src": "BSE 532483, \"Board Meeting - Announcement Of Reviewed Financial Results (Standalone & Consolidated) For The Quarter Ended 30th June 2019\" (filed 24-Jul-2019), page 2, geometric column extraction. Row 17 (Net Profit after Minority Interest) = Row 14 (raw consolidated profit 313.58) + Row 15 (Share of Earnings in Associates 42.07) - Row 16 (Minority Interest 14.97) = 340.68.",
+  "evidence": "Same table, same row, Jun-2019 and Mar-2019 columns both reproduce stored con EXACTLY (383.04 and -491.36); std Jun-2018 (281.49) and rev_std Jun-2018 (11359.55) both already stored and match this filing's own std block exactly - three independent anchors on one page."
+ },
+ "CANBK|20180630|con_rev": {
+  "rev_con": 11688.39,
+  "when": "2026-08-19 (user: \"fill them\")",
+  "src": "BSE 532483, \"Board Meeting - Announcement Of Reviewed Financial Results (Standalone & Consolidated) For The Quarter Ended 30th June 2019\" (filed 24-Jul-2019), page 2, geometric column extraction. Row 17 (Net Profit after Minority Interest) = Row 14 (raw consolidated profit 313.58) + Row 15 (Share of Earnings in Associates 42.07) - Row 16 (Minority Interest 14.97) = 340.68.",
+  "evidence": "Same table, same row, Jun-2019 and Mar-2019 columns both reproduce stored con EXACTLY (383.04 and -491.36); std Jun-2018 (281.49) and rev_std Jun-2018 (11359.55) both already stored and match this filing's own std block exactly - three independent anchors on one page."
+ },
+ "J&KBANK|20190630|con": {
+  "con": 21.15,
+  "annCon": 20190803,
+  "when": "2026-08-19 (user: \"fill them\")",
+  "basis": "con",
+  "src": "BSE 532209, \"Reviewed Financial Results Of The Bank For The Quarter Ended 30th June, 2019 (Standalone & Consolidated)\" (filed 03-Aug-2019), page 9, \"CONSOLIDATED FINANCIAL RESULTS FOR THE QUARTER ENDED 30th JUNE, 2019\" - read via vision at 6x zoom, OCR text layer unreliable.",
+  "evidence": "Row 12 = Row 10 (Profit before tax) - Row 11 (Tax), verified independently per column: 116.60-95.45=21.15 (Jun-19), 221.61-7.85=213.76 (Mar-19), 94.30-41.84=52.46 (Jun-18). CORRECTION: stored 21.87 exactly equalled std, a std-copy shape; this filing gives a genuinely different real figure"
+ },
+ "J&KBANK|20190331|con": {
+  "con": 213.76,
+  "annCon": 20190803,
+  "when": "2026-08-19 (user: \"fill them\")",
+  "basis": "con",
+  "src": "BSE 532209, \"Reviewed Financial Results Of The Bank For The Quarter Ended 30th June, 2019 (Standalone & Consolidated)\" (filed 03-Aug-2019), page 9, \"CONSOLIDATED FINANCIAL RESULTS FOR THE QUARTER ENDED 30th JUNE, 2019\" - read via vision at 6x zoom, OCR text layer unreliable.",
+  "evidence": "Row 12 = Row 10 (Profit before tax) - Row 11 (Tax), verified independently per column: 116.60-95.45=21.15 (Jun-19), 221.61-7.85=213.76 (Mar-19), 94.30-41.84=52.46 (Jun-18). FILL: was missing entirely"
+ },
+ "J&KBANK|20180630|con": {
+  "con": 52.46,
+  "annCon": 20190803,
+  "when": "2026-08-19 (user: \"fill them\")",
+  "basis": "con",
+  "src": "BSE 532209, \"Reviewed Financial Results Of The Bank For The Quarter Ended 30th June, 2019 (Standalone & Consolidated)\" (filed 03-Aug-2019), page 9, \"CONSOLIDATED FINANCIAL RESULTS FOR THE QUARTER ENDED 30th JUNE, 2019\" - read via vision at 6x zoom, OCR text layer unreliable.",
+  "evidence": "Row 12 = Row 10 (Profit before tax) - Row 11 (Tax), verified independently per column: 116.60-95.45=21.15 (Jun-19), 221.61-7.85=213.76 (Mar-19), 94.30-41.84=52.46 (Jun-18). FILL: the original target, was missing entirely"
+ },
+ "J&KBANK|20180630|con_rev": {
+  "rev_con": 1762.89,
+  "when": "2026-08-19 (user: \"fill them\")",
+  "src": "BSE 532209, \"Reviewed Financial Results Of The Bank For The Quarter Ended 30th June, 2019 (Standalone & Consolidated)\" (filed 03-Aug-2019), page 9, \"CONSOLIDATED FINANCIAL RESULTS FOR THE QUARTER ENDED 30th JUNE, 2019\" - read via vision at 6x zoom, OCR text layer unreliable.",
+  "evidence": "Row 1 Interest Earned Jun-2018 column = 1762.89, matches stored rev_std exactly (no minority/associate line in this table at all)."
  }
 }
