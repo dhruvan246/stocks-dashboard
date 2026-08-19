@@ -1,0 +1,41 @@
+# Widget feed for the private portfolio page — runs in the cloud so the numbers
+# stay live whether the Mac is awake, asleep or shut.
+#
+# Each run LOOPS for ~30 minutes pushing every 2 minutes, rather than relying on a
+# */5 cron: GitHub's scheduler routinely delays scheduled runs by tens of minutes,
+# which would leave the widget stale exactly when the market is moving. Overlapping
+# runs are harmless (the write is idempotent), so a late start just closes its own gap.
+#
+# Payload is percentages ONLY — no stock names, no portfolio names, no amounts.
+name: Portfolio widget feed
+
+on:
+  schedule:
+    # every 30 min, 03:30-10:00 UTC Mon-Fri = 09:00-15:30 IST (NSE hours)
+    - cron: '0,30 3-9 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      loop_minutes:
+        description: 'Minutes to keep pushing (0 = single shot)'
+        default: '0'
+
+permissions:
+  contents: read
+
+jobs:
+  feed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Push portfolio feed
+        env:
+          PF_HOLDINGS_TOKEN: ${{ secrets.PF_HOLDINGS_TOKEN }}
+          PF_FEED_TOKEN: ${{ secrets.PF_FEED_TOKEN }}
+        run: |
+          LOOP="${{ github.event.inputs.loop_minutes }}"
+          if [ -z "$LOOP" ]; then LOOP=30; fi
+          python3 scripts/portfolio_feed.py --loop "$LOOP" --every 120
