@@ -989,7 +989,12 @@ $('btnSaveAcct').onclick=async()=>{
 };
 (function initPrefs(){
   const th=localStorage.getItem('pf_theme'); if(th) document.documentElement.setAttribute('data-theme',th);
-  if(localStorage.getItem('pf_private')==='1'){ document.body.classList.add('private'); $('btnPrivate').classList.add('on'); }
+  /* On a phone the page opens wherever it was left, and whoever picks the phone
+     up sees it. So AWAY from the Mac, blur by default until told otherwise —
+     an explicit choice is still remembered either way. */
+  const pref=localStorage.getItem('pf_private');
+  const onWeb=!/^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  if(pref==='1' || (pref===null && onWeb)){ document.body.classList.add('private'); $('btnPrivate').classList.add('on'); }
 })();
 boot();
 </script>
