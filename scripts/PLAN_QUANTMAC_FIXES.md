@@ -175,10 +175,32 @@ checking that session's state; worktree only; own files only.
   a. F-1 unique-qe assert (A1). b. §102b membership-row wording fix once the addendum lands.
   c. Persistence pre-check (B4.4). d. Commit this plan + addendum.
 
-**P1 — matcher hardening pilot (~1h)**
-  30-symbol pilot spanning 2003-2025 out of `_staleness_fix/target_list.json`; eyeball every
-  match and every miss by era; fix the parse; record match-rate by era in this file. Gate:
-  ≥95% of 2009-2019 pilot targets matched, and every miss explained (no-record vs parse-miss).
+**P1 — matcher hardening pilot — PAUSED MID-RUN 2026-08-20 12:52 IST (user closing machine)**
+  36-symbol pilot (`pilot_target_list.json`) spanning pre2008/pre2015/2015-19/2020+, run via
+  4-way sharding (`run_sharded.py`) for wall-clock speed — this is plain parallel Python/HTTP,
+  NOT multiple agents (an agent per symbol would burn real tokens on a job needing zero
+  reasoning; sharding gets the same speedup for free). **14 of 36 done when stopped** (10 with
+  full match detail in `pilot_fetch_results.json`; 4 more — ANDHRSUGAR 12/35, CANFINHOME 26/50,
+  CANTABIL 1/4, ESSAROIL 26/45 — completed per the shard logs but lost their JSON checkpoint
+  when killed mid-shard; cheap to re-fetch, single-symbol, on resume).
+  **Results so far, v2 matcher (FILESTATUS filter dropped, text+intimation-exclusion instead):**
+  HINDUNILVR 49/49 (100%), JETAIRWAYS 38/38 (100%), ALFALAVAL 32/40 (80%), CANFINHOME 26/50
+  (52%), ESSAROIL 26/45 (58%), ANDHRSUGAR 12/35 (34%), DAVANGERE 1/1, DELPHIFX 2/4, CANTABIL
+  1/4, GCSL 2/2, ASSAMCO 0/1, AUSTRAL 0/1, FCSSOFT 1/10, ALOKTEXT/ARVEE 0 (no-scripcode — 2
+  symbols neither `bse_scrips.json` nor `_bse_master_all.json` can resolve; expected small-tail
+  gap, not a bug). **Not yet broken down by ERA** (the ≥95%-for-2009-2019 gate needs that split,
+  not raw per-symbol rates — some of the low numbers above are symbols whose targets skew
+  pre-2008, which is expected-low per B4.5) — do that breakdown FIRST on resume, before drawing
+  any go/no-go conclusion from the raw numbers.
+  **Observed during the run**: BSE throttling under 4-way concurrency — 3 of 4 shards hit
+  simultaneous timeouts in the same ~30s window at a similar page-depth, matching this
+  project's own documented BSE rate-limit history (§0's 162-byte-302 note). All recovered via
+  retry; none hit the 3-attempt ceiling or the page-cap abort. **Recommendation for resuming P1
+  and for P2: use 2-way sharding, not 4** — untested but the safer prior given this evidence.
+  **To resume:** `python3 scripts/_staleness_fix/run_sharded.py scripts/_staleness_fix/pilot_target_list.json scripts/_staleness_fix/pilot 2`
+  (resumable — skips symbols already in each shard's output; the 4 lost-checkpoint symbols will
+  simply re-run). Once the pilot's full 36 are in: do the era breakdown, check the gate, THEN
+  start P2 on the (already newest-first-sorted) full `target_list.json`.
 
 **P2 — the 36,027-cell re-dating campaign (background, resumable, worktree `staleness-fix`)**
   Fetch: `scripts/_staleness_fix/fetch_and_match.py` (v2, FILESTATUS filter removed, scripcode

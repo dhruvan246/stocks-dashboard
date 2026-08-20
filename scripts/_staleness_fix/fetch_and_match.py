@@ -78,14 +78,16 @@ def get(u, timeout=70):
         raw = gzip.decompress(raw)
     return raw.decode('utf-8', 'replace')
 
-def get_json_retry(u, attempts=5):
+def get_json_retry(u, attempts=3, log=None):
     last = None
     for i in range(attempts):
         try:
-            return json.loads(get(u))
+            return json.loads(get(u, timeout=30))
         except Exception as e:
             last = e
-            time.sleep(6 * (i + 1))
+            if log:
+                log(f'    retry {i+1}/{attempts} after {type(e).__name__}: {e}')
+            time.sleep(4 * (i + 1))
     raise last
 
 DATE_RE = re.compile(
@@ -142,14 +144,20 @@ def resolve_scripcode(sym, by_id, master_by_scripid):
         return master_by_scripid[sym], 'master_all'
     return None, None
 
-def fetch_symbol_rows(scripcode, d1, d2):
+MAX_PAGES_PER_SYMBOL = 120   # 6,000 rows / ~20yr history at 50/page is generous; a symbol
+                             # needing more almost certainly means a MISRESOLVED scripcode
+                             # (e.g. landed on an unrelated, high-announcement-volume company)
+
+def fetch_symbol_rows(scripcode, d1, d2, log=None):
     out = []
     page = 1
     while True:
+        if log:
+            log(f'    page {page} (d1={d1} d2={d2})')
         u = ('https://api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryGetData/w?'
              f'pageno={page}&strCat=-1&strPrevDate={d1}&strToDate={d2}'
              f'&strScrip={scripcode}&strSearch=P&strType=C&subcategory=-1')
-        j = get_json_retry(u)
+        j = get_json_retry(u, log=log)
         tbl = j.get('Table', []) or []
         t1 = j.get('Table1', [])
         total = (t1[0].get('ROWCNT') if t1 else 0) or 0
@@ -159,6 +167,11 @@ def fetch_symbol_rows(scripcode, d1, d2):
         if not tbl or page * 50 >= total:
             break
         page += 1
+        if page > MAX_PAGES_PER_SYMBOL:
+            if log:
+                log(f'    ABORT: exceeded {MAX_PAGES_PER_SYMBOL} pages ({total} total rows) — '
+                    f'suspected misresolved scripcode, not a real announcement history')
+            raise RuntimeError(f'page cap exceeded (total={total} rows)')
     return out
 
 def match_targets(rows, targets):
@@ -188,11 +201,16 @@ def main(target_list_path=TARGET_LIST, out_path=OUT_PATH, progress_path=PROGRESS
     symbols = list(targets.keys())
     if limit:
         symbols = symbols[:limit]
+    def log(msg):
+        with open(progress_path, 'a') as f:
+            f.write(f'{datetime.datetime.now().isoformat()} {msg}\n')
+
     done = 0
     t0 = time.time()
     for sym in symbols:
         if sym in results:
             continue
+        log(f'START {sym} ({done+1}/{len(symbols)})')
         rows_targets = targets[sym]
         scripcode, src = resolve_scripcode(sym, by_id, master_by_scripid)
         entry = {'scripcode': scripcode, 'scripcode_src': src, 'candidates_seen': 0, 'matches': {}, 'error': None}
@@ -205,22 +223,22 @@ def main(target_list_path=TARGET_LIST, out_path=OUT_PATH, progress_path=PROGRESS
             d2 = (datetime.date(qes[-1] // 10000, (qes[-1] // 100) % 100, qes[-1] % 100)
                   + datetime.timedelta(days=120)).strftime('%Y%m%d')
             try:
-                rows = fetch_symbol_rows(scripcode, d1, d2)
+                rows = fetch_symbol_rows(scripcode, d1, d2, log=log)
                 entry['candidates_seen'] = len(rows)
                 entry['matches'] = match_targets(rows, rows_targets)
+                log(f'  DONE {sym}: {len(rows)} candidates, {len(entry["matches"])}/{len(rows_targets)} matched')
             except Exception as e:
                 entry['error'] = f'{type(e).__name__}: {e}'
+                log(f'  FAILED {sym}: {entry["error"]}')
         results[sym] = entry
         done += 1
-        if done % 10 == 0 or done == len(symbols):
+        if done % 5 == 0 or done == len(symbols):
             json.dump(results, open(out_path, 'w'))
             elapsed = time.time() - t0
             rate = done / elapsed if elapsed > 0 else 0
             remaining = len(symbols) - done
             eta_min = (remaining / rate / 60) if rate > 0 else -1
-            with open(progress_path, 'a') as f:
-                f.write(f'{datetime.datetime.now().isoformat()} done={done}/{len(symbols)} '
-                        f'rate={rate:.2f}/s eta_min={eta_min:.1f}\n')
+            log(f'CHECKPOINT done={done}/{len(symbols)} rate={rate:.2f}/s eta_min={eta_min:.1f}')
         time.sleep(0.3)
     json.dump(results, open(out_path, 'w'))
     with open(progress_path, 'a') as f:
