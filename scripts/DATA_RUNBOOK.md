@@ -10950,3 +10950,101 @@ per-stock return columns to the constituent table (feature request, same commit)
    `stock-backtest.html` all have their own `ensureFull`-equivalent that replaces `SERIES` outright, and
    `stock.html` loads `stock_data.bin` as its primary source — same exposure to a stale full-history
    file, not yet given the merge guard. Only `sectors.html` (what was reported) was fixed this pass.
+
+---
+
+## 101. ★★★ THIRD quantmac CROSS-CHECK — high-mdd6 strategy, 97.0% pick overlap, and TWO ann-date
+bugs found + fixed live (2026-08-20, user-supplied CSV, not the browser API-poll recipe)
+
+User ran "Nifty 500 · monthly · sort mdd6 desc · d52<=10 · NP QoQ YoY>0 · top 20 · standalone ·
+reset-to-equal-weight" (the §7.2 "all-weather winner") on the site, 2020-03-31→2026-08-19.
+quantmac ran the identical config and exported a CSV (StockView's own export format — its
+"TRADES" section grouped by entry_date reconstructs monthly picks directly; no API polling
+needed, unlike [[project-stocks-stockview-comparison]]'s recipe). Full technique + first-pass
+findings already in [[project-stocks-quantmac-crossvalidation]] (memory) — this section is the
+durable record of what that session did, since a data correction was shipped.
+
+**Method note — this checkout was 579 commits behind `origin/main`** (~4 days of CI) when this
+started. Everything analytical (prices, fundamentals, membership, the engine itself) was
+fetched LIVE from the deployed site into a scratch dir, never from local files (§0/§7.0). A
+separate attempt to reconcile the local checkout's 21 unpushed commits onto origin (via an
+isolated worktree, never touching the shared checkout) found 14 of 15 cherry-picked commits
+came back EMPTY — origin already had the same content under different hashes from other
+sessions/cloud routines. Direct content checks (sectors.html's mergeSeries fix, stock.html's
+full-history fix, refresh.yml's staleness logic — all already on origin) confirmed it. Nothing
+pushed; the local checkout's own branch pointer is still behind, but nothing of substance is
+missing from origin. Lesson: a large commit-count gap does not imply a large content gap — check
+via empty-cherry-pick or direct grep before assuming a full rebase is owed.
+
+**Result: 97.0% symmetric pick overlap, 1,469/1,514 picks matched across 77 shared monthly
+rebalances (45/77 = 58% exact-match baskets); CAGR 43.9% vs 44.7%, maxDD 22.9% vs 22.7%.**
+Systematic scan of all 33 differing "their-only" picks (compare our computed profitYoyPct
+against their CSV's own recorded value per stock) found most matched exactly — pure mdd6-ranking
+boundary noise, no bug. **7 had genuinely different numbers**, adjudicated one at a time against
+primary sources, not assumed:
+
+- **SBICARD (Aug/Sep-2020) — CONFIRMED bug, FIXED.** Our `sf_fundamentals.json`/`fundamentals.json`
+  stored SBICARD's Jun-2020 (Q1FY21) announce date as `20201016`. BSE's own announcement archive
+  (scrip 543066, exact period match via `fetch_insurers.datebound` + `backfill_ann_dates_bse.
+  scrip_map` + `parse_qe`) has the actual filing — *"Unaudited Financial Results For The Quarter
+  Ended June 30, 2020"* — dated **2020-07-20**, 88 days earlier. Independently corroborated by
+  Business Standard (same PAT figures, 393.29 vs 345.6cr). Root cause: because the quarter looked
+  "not yet announced" as of the Aug/Sep-2020 screen dates, our engine fell back to the stale
+  Mar-2020 quarter (profit -66.4% YoY, fails the >0 filter) instead of the real, current Jun-2020
+  number (+13.8% YoY, matches quantmac's 13.79988% to 4 decimals). Downstream-checked, not
+  assumed: re-ranking by mdd6 with the profit filter dropped, SBICARD sits 19th/106 on 2020-09-30
+  (inside the top-20 cutoff — the date fix flips September to match quantmac) but 39th/70 on
+  2020-08-31 (the date fix alone would NOT have changed August's basket). **FIXED**: `scripts/
+  _sbicard_ann_fix.py --apply` — guarded (PAT + old-ann must match exactly or abort), blast-radius
+  checked (only this one row changed in either file). Applied to both `docs/sf_fundamentals.json`
+  and its mirror `scripts/fundamentals.json`. NOT YET committed/pushed — live financial data
+  feeding every profit-growth strategy, held for explicit user sign-off.
+- **SUZLON (Jun-2020) — checked, NOT a bug on our side; quantmac look-ahead.** quantmac's +86.53%
+  comes from comparing Mar-2020 vs Mar-2019. BSE's own archive: Suzlon's Mar-2020 results were
+  announced via "Outcome Of The Board Meeting Dated 6th July 2020" — i.e. 2020-07-06, a week
+  AFTER the Jun-30-2020 screen date. Our stored ann (`20200707`) is correct to within a day.
+  quantmac used a quarter that was not yet public — the same look-ahead class their own DII-
+  strategy cross-check already caught them on this same day ([[project-stocks-quantmac-
+  crossvalidation]] Finding 2). Not re-chased.
+- **SAIL (Jan-2026) — CONFIRMED bug, FIXED. Got the verdict WRONG on the first pass — recorded
+  here so the mistake isn't silently lost.** First check used NSE's `integrated-filing-results`
+  API (`build_fundamentals.py`'s live source for every 2025+ quarter's ann-date) — broadcast_Date
+  `31-Jan-2026 16:52`. Concluded (wrongly) that our stored `20260131` was correct and quantmac's
+  Jan-30 usage was a look-ahead. **User pushed back explicitly ("SAIL was declared on 30th Jan not
+  31st, go find 2-3 sources") and was right.** BSE's own announcement archive has a DIFFERENT,
+  EARLIER disclosure: *"Board Meeting Outcome for Unaudited Financial Results For The Quarter/
+  Nine Months Ended 31st December..."* — filed **2026-01-30**, exact period match. Independently
+  confirmed by PSU Connect ("results were announced on 30 Jan 2026", same ₹441.70cr PAT already
+  on file). **Root cause of my own error: NSE's integrated-filing broadcast_Date times the LATER
+  structured-XBRL data submission, not the SAME-DAY board-meeting-outcome disclosure SEBI LODR
+  actually requires within 30 minutes of the meeting — these are two different regulatory events,
+  and only the earlier one is what makes a result point-in-time-public.** `build_fundamentals.py`
+  uses ONLY the XBRL timestamp for 2025+ quarters, with no fallback to the earlier BSE/NSE
+  board-outcome announcement. **FIXED**: `scripts/_sail_ann_fix.py --apply`, same guarded pattern
+  as SBICARD — `20260131` → `20260130`, both fund twins, blast-radius verified.
+- **EMMVEE (May-2026) — not a bug, a genuine data limitation.** Excluded from our candidate set
+  entirely. Checked: it's in our Nifty 500 membership snapshot fine, but its price series only
+  starts 2025-11-18 (a ~6-month-old listing) — genuinely short of the 52 weeks `hl52()` needs for
+  a real 52w-high. Correctly excluded; quantmac likely uses a shorter-history fallback for recent
+  IPOs, a convention difference not a defect.
+- **CDSL (Jun-2025), WESTLIFE (Aug-2021), ACMESOLAR (Jul-2025) — flagged, NOT resolved.** CDSL:
+  sign-flip confirmed real, exact quarter-pair quantmac used not reverse-engineered from visible
+  combinations. WESTLIFE: our STANDALONE profit figures look suspiciously degenerate (near-zero
+  every quarter, e.g. -0.05, -0.22cr) versus a normal-looking CONSOLIDATED series — could be a
+  genuine near-zero-profit holding company (real) or a data defect (wrong field/scale) — not
+  determined which. ACMESOLAR: both sides' comparison base is near-zero (~₹1cr), so any %% swing
+  is statistically unstable — not clearly attributable to either side.
+
+**Still open — the actually big question, NOT measured, flagged to the user:** is the
+NSE-integrated-filing-vs-board-outcome gap that broke SAIL a SAIL-specific fluke, or does
+`build_fundamentals.py` run this same ~1-day-late pattern across every 2025+ quarter it touches?
+Unmeasured. If systematic, this reaches far more cells than the two fixed here — needs a sample
+check (BSE board-outcome date vs stored ann) across a spread of 2025+ symbols before deciding
+whether `build_fundamentals.py` needs a real fix (prefer the earlier of the two disclosure
+types) versus a one-off correction pattern like the two above.
+
+**How to apply:** before trusting ANY single "authoritative" API for an announce-date dispute,
+check whether an EARLIER same-day disclosure exists via a different channel (BSE's classic
+announcement archive vs NSE's newer integrated-filing endpoint gave two different answers for
+SAIL, a day apart) — this session got it wrong once by stopping at the first source. See
+[[feedback-verify-the-claim-you-assert]] (memory) for the generalized lesson.
