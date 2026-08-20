@@ -11,8 +11,12 @@ name: Portfolio widget feed
 
 on:
   schedule:
-    # every 30 min, 03:30-10:00 UTC Mon-Fri = 09:00-15:30 IST (NSE hours)
-    - cron: '0,30 3-9 * * 1-5'
+    # Every 20 min through the session (03:20-10:00 UTC = 08:50-15:30 IST, Mon-Fri).
+    # Deliberately MANY triggers with each run looping past the next one: GitHub drops
+    # or delays scheduled runs (2026-08-20: the 03:00 and 03:30 slots never fired at
+    # all while five other crons in this repo did), so overlapping coverage is the only
+    # thing that survives it. Writes are idempotent, so overlap costs nothing.
+    - cron: '0,20,40 3-9 * * 1-5'
   workflow_dispatch:
     inputs:
       loop_minutes:
@@ -25,7 +29,7 @@ permissions:
 jobs:
   feed:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 350
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -37,5 +41,7 @@ jobs:
           PF_FEED_TOKEN: ${{ secrets.PF_FEED_TOKEN }}
         run: |
           LOOP="${{ github.event.inputs.loop_minutes }}"
-          if [ -z "$LOOP" ]; then LOOP=30; fi
+          # 25 > the 20-minute gap on purpose: a run that starts late still overlaps
+          # the next one rather than leaving a hole.
+          if [ -z "$LOOP" ]; then LOOP=25; fi
           python3 scripts/portfolio_feed.py --loop "$LOOP" --every 120
