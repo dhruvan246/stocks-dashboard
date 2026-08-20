@@ -154,7 +154,7 @@ checking that session's state; worktree only; own files only.
 7. **Annual-vs-Q4 rows:** "year ended March 31, XXXX" prints match qe=Mar-31 targets via the
    earliest-'U'-row rule — correct (Q4 figures first become public with whichever print came
    first). Keep the rule; it is already conservative.
-8. **BSE quota:** watch for the 162-byte 302 stub (§0). Serial + 0.3s sleep first; consider
+8. **(superseded by addendum #1 — FILESTATUS filter removed.)** BSE quota: watch for the 162-byte 302 stub (§0). Serial + 0.3s sleep first; consider
    2-3 shards only if an hour of serial shows zero 302s. Newest-first symbol order is NOT
    needed (per-symbol windows span eras anyway), but keep the resumable checkpoint (it exists).
 
@@ -221,5 +221,23 @@ checking that session's state; worktree only; own files only.
 until they are.*
 
 * **Membership agent (PCBL / SANDESH / AJANTPHARM / GAEL / INOXLEISUR):** PENDING
-* **Staleness agent (CANFINHOME / GEOJITFSL / MUNJALSHOW / ALFALAVAL / DHANI + direction
-  stats):** PENDING
+* **Staleness agent: DONE — 5/5 CONFIRMED, all EARLIER than placeholder, document-level proof**
+  (each verified twice: BSE API row + the filed PDF itself via the AnnPdfOpen resolver).
+  CANFINHOME 2013-01-19 16:25 (Δ26d) · GEOJITFSL 2015-01-13 16:17 (Δ32d) · MUNJALSHOW
+  2009-07-27 18:40 (Δ18d) · ALFALAVAL 2011-10-21 15:01 (Δ24d) · DHANI 2014-04-22 11:24 (Δ23d).
+  All match quantmac to the minute where they gave one. So finding 3 is now 8/8 verified.
+  **THREE campaign-critical corrections from this verification:**
+  1. ★ **Drop the FILESTATUS='U' filter in `fetch_and_match.py` — it is WRONG for the pre-2015
+     era.** 4 of these 5 genuine results filings carry 'N', and 'U' appears on unrelated rows.
+     The current script would have silently dropped most pre-2015 results (§61's empty-result
+     class, caught BEFORE the burn). Discriminate on NEWSSUB/HEADLINE text + a `*_Rst.pdf`-style
+     ATTACHMENTNAME instead; P1's pilot must re-baseline match rates after this change.
+  2. **Scripcode resolution needs a fallback**: ALFALAVAL (505885) and DHANI (532960) are absent
+     from `bse_scrips.json` by_id — resolve via `scripts/_bse_master_all.json` (scrip_id + ISIN),
+     era names included ("Indiabulls Securities" filings sit on DHANI's code).
+  3. **March quarters are structurally look-ahead-biased** (era Clause 41: 60-day deadline for
+     audited Q4 vs 45 for Q1-Q3, so qe+45d lands BEFORE many real Q4 filings — OMAXE is that
+     class). 15,000-odd March cells deserve their own direction stats in P2's report, and the
+     agent's cheap screen — a RANDOM (unscreened) sample of March-quarter cells, lag
+     distribution vs 45 — belongs in P1. 8/8 EARLIER here says nothing about the base rate:
+     quantmac's screen could only surface the stale direction by construction.
