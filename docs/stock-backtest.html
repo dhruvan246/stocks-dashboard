@@ -630,7 +630,11 @@ function isAlreadySaved(cfg){
 // every key changes → the old snapshot is no longer found → the next view recomputes with the CURRENT
 // code + data and re-caches. Without this stamp a changed engine or a refreshed dataset would keep
 // serving a stale pre-computed result forever.
-const ENGINE_VER='e6';        // ⬆️ BUMP this whenever simulate()/engine logic changes → invalidates all snapshots
+const ENGINE_VER='e7';        // ⬆️ BUMP this whenever simulate()/engine logic changes → invalidates all snapshots
+                              // e7 (2026-08-20): TTM contiguity check strengthened to pairwise
+                              // gaps (each of 4 quarters exactly 3mo apart) — the e6 endpoint-only
+                              // check let a duplicate qe row through uncaught (APOLLOTYRE/
+                              // CARBORUNIV con TTM was double-counting one quarter, 17 instances).
                               // e6 (2026-08-20): profitMetrics TTM now requires the 4 quarters be
                               // calendar-consecutive (span <=10mo) — a hole in the filed-quarters array
                               // used to be stepped over silently, widening "4Q vs prior 4Q" past 12mo.
@@ -986,10 +990,12 @@ function profitMetrics(sym, dateInt, basis){
     let ttm=null; { let ok=true, last4=[], prev4=[];
       for(let k=0;k<4;k++){ const q=arr[ci-k]; const v=q?q[ni]:null; if(v==null){ok=false;break;} last4.push(v); }
       // last4 is 4 ARRAY-adjacent rows, not 4 CALENDAR-adjacent quarters — see backtest-engine.js
-      // profitMetrics for the full note. Quarter-ends are quantized to Mar/Jun/Sep/Dec, so 4 TRUE
-      // consecutive quarters are always exactly 9 months apart oldest-to-newest; reject wider. (Sync)
+      // profitMetrics for the full note, incl. the duplicate-qe corruption (APOLLOTYRE/CARBORUNIV)
+      // an endpoint-only span check let through. Check every PAIRWISE gap: quarter-ends are
+      // quantized to Mar/Jun/Sep/Dec, so 4 truly consecutive quarters step by EXACTLY 3 months
+      // each — never more (a gap) or less (a dupe). (Sync)
       if(ok){ const monthIdx=d=>Math.floor(d/10000)*12+Math.floor(d/100)%100;
-        if(monthIdx(arr[ci][0])-monthIdx(arr[ci-3][0])>10) ok=false; }
+        for(let k=0;k<3;k++){ if(monthIdx(arr[ci-k][0])-monthIdx(arr[ci-k-1][0])!==3){ok=false;break;} } }
       if(ok) for(let k=0;k<4;k++){ const v=npAt(arr[ci-k][0]-10000); if(v==null){ok=false;break;} prev4.push(v); }
       if(ok){ const s1=last4.reduce((a,b)=>a+b,0), s0=prev4.reduce((a,b)=>a+b,0); ttm = s0!==0 ? (s1-s0)/Math.abs(s0)*100 : null; } }
     let streak=0; for(let i=ci;i>=0;i--){ const y=yoyOf(arr[i]); if(y!=null&&y>0) streak++; else break; }

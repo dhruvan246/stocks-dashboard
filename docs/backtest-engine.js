@@ -625,10 +625,17 @@ function profitMetrics(sym, dateInt, basis) {
       // last4 is 4 ARRAY-adjacent rows, not 4 CALENDAR-adjacent quarters — a quarter our data never
       // captured is silently stepped over, so the "4Q vs prior 4Q" window can quietly widen past 12
       // months (external cross-validation, 2026-08-20, 24 trades: e.g. TCS 2011-01 summed
-      // 2008-09-30..2010-12-31, not a true trailing year). Quarter-ends are quantized to Mar/Jun/Sep/Dec,
-      // so 4 TRUE consecutive quarters are always exactly 9 months apart oldest-to-newest; reject wider.
+      // 2008-09-30..2010-12-31, not a true trailing year). An earlier version of this guard only
+      // checked the endpoint span (ci vs ci-3), which passes a DUPLICATE qe row silently: 4
+      // symbols (SUNPHARMA/CARBORUNIV/APOLLOTYRE/ADVANTA) carry a split std/con row pair for the
+      // same quarter-end, and when both land in the window the endpoint distance still reads 9
+      // months while one quarter is double-counted and a real one dropped — measured LIVE:
+      // APOLLOTYRE con TTM was fabricating 81.8% by summing 2014-03-31 twice (found in review,
+      // 2026-08-20, 17 reachable instances / 2 symbols). Checking every PAIRWISE gap closes both
+      // failure modes at once: quarter-ends are quantized to Mar/Jun/Sep/Dec, so 4 truly
+      // consecutive quarters step by EXACTLY 3 months each, never more (a gap) or less (a dupe).
       if (ok) { const monthIdx = d => Math.floor(d / 10000) * 12 + Math.floor(d / 100) % 100;
-        if (monthIdx(arr[ci][0]) - monthIdx(arr[ci - 3][0]) > 10) ok = false; }
+        for (let k = 0; k < 3; k++) { if (monthIdx(arr[ci - k][0]) - monthIdx(arr[ci - k - 1][0]) !== 3) { ok = false; break; } } }
       if (ok) for (let k = 0; k < 4; k++) { const v = npAt(arr[ci - k][0] - 10000); if (v == null) { ok = false; break; } prev4.push(v); }
       if (ok) { const s1 = last4.reduce((a, b) => a + b, 0), s0 = prev4.reduce((a, b) => a + b, 0); ttm = s0 !== 0 ? (s1 - s0) / Math.abs(s0) * 100 : null; } }
     let streak = 0; for (let i = ci; i >= 0; i--) { const y = yoyOf(arr[i]); if (y != null && y > 0) streak++; else break; }

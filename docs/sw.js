@@ -6,7 +6,7 @@
  *     requests (the sf-data repo, Supabase, the live-quote Worker) — those stay network-only
  *     so data is always fresh and the cache never bloats.
  * Bump CACHE when the shell asset list changes. */
-const CACHE = 'sw-shell-v99';   // v99: profitMetrics TTM requires 4 calendar-consecutive quarters, both engine twins (ENGINE_VER e5->e6) (v98: stock.html — ann=0 is "date unknown": no more cx="NaN" circle, no "0--" date, no rewind look-ahead (v97: Coverage Matrix ↻ Refresh + ⚙ Re-run bake controls (v96: 'conOnly' measurement basis in both engine twins (coverage matrix; inert for strategies) ...) )
+const CACHE = 'sw-shell-v100';  // v100: TTM contiguity check strengthened to pairwise gaps — a duplicate qe row (APOLLOTYRE/CARBORUNIV) slipped past the endpoint-only check (ENGINE_VER e6->e7) (v99: profitMetrics TTM requires 4 calendar-consecutive quarters, both engine twins (ENGINE_VER e5->e6) (v98: stock.html — ann=0 is "date unknown" ...) )
 const SHELL = [
   './', './index.html', './nse-bse-dashboard.html', './stock-backtest.html', './saved-strategies.html',
   './backtest-history.html', './strategy-backtest.html', './all-picks.html', './strategy-mixer.html', './mutual-funds.html', './fii-dii.html',
