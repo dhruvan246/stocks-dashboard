@@ -90,28 +90,49 @@ def get_json_retry(u, attempts=3, log=None):
             time.sleep(4 * (i + 1))
     raise last
 
-DATE_RE = re.compile(
-    r'ended\s+(?:(\d{1,2})(?:st|nd|rd|th)?\s+([A-Za-z]+)|([A-Za-z]+)\s+(\d{1,2})),?\s*(\d{4})',
+# Anchor word before the date: "ended" (most common) or "for" (INDORAMA's genuine 2009-06-30
+# disclosure: "Financial Results for Jun 30, 2009" — no "ended" anywhere). Two date forms, both
+# seen live: "ended June 30, 2016" / "ended 31st December, 2022" (month-name) and "ended
+# 30.09.2019" (numeric DD.MM.YYYY/DD/MM/YYYY/DD-MM-YYYY, Indian day-month-year order — GEOJITFSL's
+# real Sep-2019 disclosure uses ONLY this form).
+#
+# ⚠️ finditer(), not search() — a combined annual+quarterly announcement carries TWO dates
+# ("results for the year ended March 31, 2010 & ... for the quarter ended June 30, 2010", ESSAROIL
+# 2010-07-27 real filing): search() silently returns only the FIRST (the annual one), so the
+# quarter actually being targeted never matches even though the announcement plainly has it.
+# Every one of these three gaps (numeric dates, "for" not just "ended", multi-date text) was found
+# in the P1 pilot 2026-08-20 by asking why 2015+/2020+ match rates read LOWER than the older,
+# supposedly-worse-covered era — the opposite of what BSE's improving digital records would predict.
+DATE_RE_NAMED = re.compile(
+    r'(?:ended|for)\s+(?:(\d{1,2})(?:st|nd|rd|th)?\s+([A-Za-z]+)|([A-Za-z]+)\s+(\d{1,2})),?\s*(\d{4})',
     re.IGNORECASE)
+DATE_RE_NUMERIC = re.compile(r'(?:ended|for)\s+(\d{1,2})[./-](\d{1,2})[./-](\d{4})', re.IGNORECASE)
 
-def extract_qe(text):
+def extract_all_qes(text):
+    """-> set of YYYYMMDD ints, every date-after-ended/for phrase found in text."""
     if not text:
-        return None
-    m = DATE_RE.search(text)
-    if not m:
-        return None
-    if m.group(2):
-        day, mon_name, year = int(m.group(1)), m.group(2).lower(), int(m.group(5))
-    else:
-        mon_name, day, year = m.group(3).lower(), int(m.group(4)), int(m.group(5))
-    mon = MONTHS.get(mon_name)
-    if not mon:
-        return None
-    try:
-        datetime.date(year, mon, day)
-    except ValueError:
-        return None
-    return year * 10000 + mon * 100 + day
+        return set()
+    out = set()
+    for m in DATE_RE_NAMED.finditer(text):
+        if m.group(2):
+            day, mon_name, year = int(m.group(1)), m.group(2).lower(), int(m.group(5))
+        else:
+            mon_name, day, year = m.group(3).lower(), int(m.group(4)), int(m.group(5))
+        mon = MONTHS.get(mon_name)
+        if mon:
+            try:
+                datetime.date(year, mon, day)
+                out.add(year * 10000 + mon * 100 + day)
+            except ValueError:
+                pass
+    for m in DATE_RE_NUMERIC.finditer(text):
+        day, mon, year = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        try:
+            datetime.date(year, mon, day)
+            out.add(year * 10000 + mon * 100 + day)
+        except ValueError:
+            pass
+    return out
 
 def is_candidate(row):
     sub = (row.get('NEWSSUB') or '')
@@ -149,6 +170,13 @@ MAX_PAGES_PER_SYMBOL = 120   # 6,000 rows / ~20yr history at 50/page is generous
                              # (e.g. landed on an unrelated, high-announcement-volume company)
 
 def fetch_symbol_rows(scripcode, d1, d2, log=None):
+    # BSE's endpoint silently breaks when strToDate is even ONE DAY in the future: it returns
+    # Table1=None and a single Table row with every field null, instead of an error — found live
+    # 2026-08-20 (INGERRAND/TMPV/RAMANEWS/SOUTHWEST all read "0 candidates" this way; the true
+    # cause was a future-dated query, not an absence of filings). Never ask past today.
+    today = datetime.date.today().strftime('%Y%m%d')
+    if d2 > today:
+        d2 = today
     out = []
     page = 1
     while True:
@@ -160,6 +188,14 @@ def fetch_symbol_rows(scripcode, d1, d2, log=None):
         j = get_json_retry(u, log=log)
         tbl = j.get('Table', []) or []
         t1 = j.get('Table1', [])
+        # The degenerate-response signature: Table1 missing/empty but Table not empty (one null row).
+        # Treat it as a hard failure, never as "zero results" — an empty Table1 with rows present
+        # is never a legitimate answer from this endpoint (confirmed: every good response we've
+        # seen, including genuinely empty date windows, carries a real Table1 ROWCNT).
+        if not t1 and tbl:
+            raise RuntimeError(f'degenerate BSE response (Table1 empty, {len(tbl)} null-ish Table '
+                                f'rows) at page {page} d1={d1} d2={d2} — likely a future-dated or '
+                                f'otherwise malformed query, not a real empty result')
         total = (t1[0].get('ROWCNT') if t1 else 0) or 0
         for row in tbl:
             if is_candidate(row):
@@ -177,10 +213,12 @@ def fetch_symbol_rows(scripcode, d1, d2, log=None):
 def match_targets(rows, targets):
     by_qe = {}
     for row in rows:
-        qe = extract_qe(row.get('NEWSSUB')) or extract_qe(row.get('HEADLINE'))
-        if qe is None:
-            continue
-        by_qe.setdefault(qe, []).append(row)
+        # union, not first-match-wins: a combined annual+quarterly announcement carries two
+        # dates and both are real (see extract_all_qes docstring) — index the row under EVERY
+        # date it mentions so whichever one a target actually needs still finds it.
+        qes = extract_all_qes(row.get('NEWSSUB')) | extract_all_qes(row.get('HEADLINE'))
+        for qe in qes:
+            by_qe.setdefault(qe, []).append(row)
     matches = {}
     for qe, basis, _old in targets:
         cands = by_qe.get(qe)
