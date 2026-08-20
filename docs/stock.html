@@ -113,7 +113,7 @@
     <div id="fundBasis" class="flex items-center gap-1.5 flex-wrap mb-2" style="display:none"></div>
     <!-- sw-scrollx: stays a table on phones and scrolls sideways with the quarter
          column pinned (theme.css), instead of reflowing to one card per quarter -->
-    <div id="funds" class="sw-scrollx overflow-x-auto text-sm">—</div>
+    <div id="funds" class="sw-scrollx tscroll overflow-x-auto text-sm">—</div>
     <div id="fundNote" class="text-[11px] text-slate-400 mt-2"></div>
   </div>
 
@@ -630,8 +630,8 @@ function renderFunds(){
     break;
   }
 
-  // ---- quarter table (newest first) ----
-  const show=ends.slice(-12).reverse();
+  // ---- quarter table (newest first, back to Dec-2019 — the site's fixed history floor) ----
+  const show=ends.filter(e=>e>=20191231).reverse();
   const num=(v,cls)=>`<td class="text-right px-2 ${cls||''}">${crFmt(v)}</td>`;
   const gCell=g=>`<td class="text-right px-2 ${g==null?'':(g>=0?'pos':'neg')}">${g==null?'—':pct(g)}</td>`;
   const rxCell=e=>{ const q=fundBy[e], rr=q?reactionAt(annOf(q)):null;
