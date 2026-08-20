@@ -622,6 +622,13 @@ function profitMetrics(sym, dateInt, basis) {
     let accel = null; if (ci - 1 >= 0) { const py = yoyOf(arr[ci - 1]); if (py != null) accel = yoy - py; }
     let ttm = null; { let ok = true, last4 = [], prev4 = [];
       for (let k = 0; k < 4; k++) { const q = arr[ci - k]; const v = q ? q[ni] : null; if (v == null) { ok = false; break; } last4.push(v); }
+      // last4 is 4 ARRAY-adjacent rows, not 4 CALENDAR-adjacent quarters — a quarter our data never
+      // captured is silently stepped over, so the "4Q vs prior 4Q" window can quietly widen past 12
+      // months (external cross-validation, 2026-08-20, 24 trades: e.g. TCS 2011-01 summed
+      // 2008-09-30..2010-12-31, not a true trailing year). Quarter-ends are quantized to Mar/Jun/Sep/Dec,
+      // so 4 TRUE consecutive quarters are always exactly 9 months apart oldest-to-newest; reject wider.
+      if (ok) { const monthIdx = d => Math.floor(d / 10000) * 12 + Math.floor(d / 100) % 100;
+        if (monthIdx(arr[ci][0]) - monthIdx(arr[ci - 3][0]) > 10) ok = false; }
       if (ok) for (let k = 0; k < 4; k++) { const v = npAt(arr[ci - k][0] - 10000); if (v == null) { ok = false; break; } prev4.push(v); }
       if (ok) { const s1 = last4.reduce((a, b) => a + b, 0), s0 = prev4.reduce((a, b) => a + b, 0); ttm = s0 !== 0 ? (s1 - s0) / Math.abs(s0) * 100 : null; } }
     let streak = 0; for (let i = ci; i >= 0; i--) { const y = yoyOf(arr[i]); if (y != null && y > 0) streak++; else break; }
