@@ -10818,3 +10818,80 @@ Measured by parsing instances directly: an NSE INDAS XBRL carries only its own f
 rung 5 of §57b cannot reach a comparative column by construction, no matter how well it is fetched.
 Worth stating because "fetch the XBRL" reads like the cheap version of "read the filing", and for
 comparatives it is not a version of it at all.
+
+## 102. ★★★ QUANTMAC CROSS-VALIDATION — an external replication of the DII strategy found 3 real bugs; TTM fixed, membership/staleness/demerger still open  (2026-08-20)
+
+**NO ASSUMPTIONS, NO GUESSWORK (§0).** Every verdict below traces to something measured this
+session — a query against `scripts/indices_history.json`/`docs/sf_fundamentals.json`, a live BSE
+`AnnSubCategoryGetData` fetch, or a direct `profitMetrics()` call in a real browser — not to the
+external report's own framing.
+
+### 102a. What arrived
+A third party ("quantmac") independently reconstructed our exact strategy point-in-time — NIFTY 500
+· d52<=10 · NP YoY>25% · TTM>0 · sort DII asc · top 3 · hold winners — and reconciled it against our
+own `trade-log_diiPct_2009-01-01_2026-08-17.csv` (422 trades): 265 matched, 157 didn't, bucketed into
+5 named findings + 2 appendices (`StockWorld_data_findings_2026-08-20.xlsx`, saved in Downloads).
+
+### 102b. Verdict, each independently checked against primary sources or live code — not taken on the sheet's word
+| # | Finding | Trades | Verdict |
+|---|---|---|---|
+| 1 | Index membership not point-in-time (SANDESH/PCBL/CRESTANI/FOSECOIND/…) | 24 | **CONFIRMED, OPEN.** Queried `indices_history.json["Nifty 500"]` (the exact source `membersAsOf()` reads) for all 24 flagged symbol/date pairs — every one shows the symbol as a member on a date NSE's dated press releases say it wasn't. Same long-running completeness-gap class as §32/§48's membership-hunt saga, just not yet closed for these specific (mostly micro-cap, transient) names. Not a code bug — `membersAsOf`/`lastSnap` are correct; the underlying snapshot data is incomplete. |
+| 2 | Look-ahead: entries qualified on results filed after entry (DELTACORP, OMAXE) | 2 | **NOT CONFIRMED — the external report is wrong here.** Live BSE `AnnSubCategoryGetData` fetch: DELTACORP's Jun-2016 quarter broadcast **2016-08-01 20:00:07** (exactly matching our stored ann-date), 28 days before quantmac's claimed 2016-09-28 — nothing results-related exists near that date (closest hits are AGM notices). OMAXE's Mar-2012 quarter broadcast 2012-05-30, not their claimed 2012-06-14. Both trades were legitimately valid; don't re-chase this one. |
+| 3 | Stale fundamentals at rebalance (HINDUNILVR/MARICO/HEROMOTOCO/…) | 8 | **CONFIRMED, OPEN, root cause found.** Spot-checked 3 of 8 against live BSE records — quantmac's claimed filing dates matched to within 0-2 days every time (HINDUNILVR 2009-01-27, MARICO 2009-04-22 exact, HEROMOTOCO 2009-01-20 exact). Our OWN stored ann-dates for these are 10-25 days *later*, and every one is exactly `quarter-end + 45 days` — the aggregator-fill formulaic fallback (§99b's `apply_agg_pat_fills.py` convention), not the true filing date. So an already-public quarter reads as "not yet available" and the engine falls back to a stale, superseded one. Fix needs re-dating these older cells from real BSE/NSE filing timestamps where discoverable (same shape as §12's 15:30 gate, but for cells that were formula-dated rather than same-day-mistimed). |
+| 4 | TTM computed across missing quarters (OFSS/TCS/VENKEYS/GITANJALI/…) | 24 | **CONFIRMED and FIXED this session — see §102c.** |
+| 5 | Demerger booked as a price loss (ALEMBICLTD 2011-04-11) | 1 (+more likely) | **CONFIRMED, OPEN.** ALEMBICLTD's 2011-04-11 scheme of arrangement (pharma business → Alembic Pharmaceuticals) has zero entry in `demerger_adj.json`, `corp_actions_hist.json`, or `corp_actions.json` — the only ALEMBICLTD row anywhere is an unrelated 2019-08-26 event. Matches [[project-stocks-demerger-price-gap]]'s own documented residue verbatim: *"pre-2016 demergers (feed floor) still unadjusted in deep history."* This is one concrete, dated instance of that open class — the README's own suggestion ("sweep the log for other demerger ex-dates") is the right next step, via the §87e rerun recipe extended to non-split-adjustment demergers. |
+| A | Pre-2016 DII visibility (32 trades) | — | Not asserted as an error by quantmac either — a sourcing/documentation question (can we prove *when* a pre-2016 shareholding value became public), not a defect. |
+| B | Residual set (62 trades, "downstream of 1-4") | — | **The sheet's own "Our value" column is unreliable.** Checked 5 rows (TFCILTD, CANFINHOME×2, JSWSTEEL, KOTAKBANK×2) against the actual source CSV in Downloads — the real log matches quantmac's "their" value almost exactly every time (e.g. TFCILTD 2010-11: sheet claims our value was 58.87, the real trade log says 0.7364, identical to theirs). Looks like a row-alignment bug in how they built that summary tab. Don't spend time chasing Appendix B's numbers; worth telling them. |
+
+### 102c. Finding 4, fixed and verified — `profitMetrics()` TTM now requires 4 calendar-consecutive quarters
+**Root cause:** the trailing-12-month profit-growth calc (`docs/backtest-engine.js` + `docs/stock-backtest.html`,
+both self-contained copies, `profitMetrics()` ~L623) built its "last 4 quarters" window via `arr[ci-k]`
+for k=0..3 — 4 rows **adjacent in the array**, not 4 **calendar-adjacent** quarters. A quarter our data
+never captured got silently stepped over instead of widening the window, so "4Q vs prior 4Q" could
+quietly span 15-27 months instead of a true year (quantmac's TCS 2011-01 example: summed
+2008-09-30..2010-12-31). `yoy`/`profitAt` were unaffected — those match the year-ago quarter by exact
+date equality, never by array distance.
+
+**Fix:** quarter-ends are quantized to Mar/Jun/Sep/Dec, so 4 TRUE consecutive quarters are always
+exactly 9 months apart oldest-to-newest (`monthIdx(d) = floor(d/10000)*12 + floor(d/100)%100`); reject
+(`ok=false`) whenever `monthIdx(arr[ci][0]) - monthIdx(arr[ci-3][0]) > 10`. Mirrored in both engine
+copies (comment-stripped/whitespace-normalized diff confirmed byte-identical). `ENGINE_VER` e5→e6
+(invalidates stock-backtest.html's Supabase-baked snapshots — the designed mechanism, no separate
+action needed; `bake-waves.yml`'s wholesale-overwrite bake self-heals on its next scheduled run too).
+sw cache v97→v99 (v98 collided with a concurrent stock.html fix mid-session — both notes kept).
+
+**Verified, not hoped:**
+- Direct live sweep of the WHOLE fundamentals dataset (153,863 (symbol,quarter,basis) cells): **2,580
+  cells across 698 distinct symbols** were computing a TTM figure across a real gap as of this session
+  — far more than the 24 trades quantmac's one-strategy sample surfaced. Worst pre-fix offenders were
+  absurd (RGIL/MACPLASQ overflowed to ~2.6e20%; CUPIDALBV 6,198,900%; MIIL 682,362%; VAARAD 182,997%)
+  — exactly the kind of fabricated number that would dominate any `profitTTM`-sorted or `>0`-filtered
+  screen. All 2,580 now correctly return null.
+- No regression: 8 large caps (RELIANCE/TCS/INFY/HDFCBANK/ITC/LT/SBIN/MARUTI) × both bases still
+  compute sensible non-null TTM values.
+- ⚠️ The specific 24 example rows quantmac enumerated are **no longer reproducible today** — TCS/OFSS/
+  etc.'s once-missing quarters (e.g. TCS's 2009-03-31, 2010-03-31) are present in current
+  `sf_fundamentals.json`, closed by unrelated backfill work sometime between their audit and this
+  session. That does NOT mean the fix is inert — see the 2,580-cell sweep above; it means those 24
+  specific historical instances are a stale snapshot of a since-improved dataset, not evidence against
+  the bug class.
+- Ran the exact replicated strategy end-to-end via `readCfg()`+`simulate()` in a real browser,
+  2009-01-01→2026-08-14: 424 trades, 212 monthly rebalances, zero errors — matches quantmac's
+  independently-reconstructed 422 almost exactly, which is itself a strong signal the two replications
+  agree on everything except the bugs found.
+- Live-verified post-deploy (not just locally): `profitMetrics('RANEHOLDIN', 20221031, 'con').ttm` on
+  the actual production site now returns `null` (was a fabricated 576.8%), RELIANCE's normal case
+  unchanged.
+
+Commit `3c237408b` (cherry-picked via a worktree, `~/stocks-wt/ttm-fix-push` — the direct rebase in the
+main checkout was blocked by other sessions' dirty files, per rule 4/§38; the sw.js cache-version line
+conflicted with a concurrent stock.html fix and was resolved to v99 keeping both changelog notes).
+Pages deploy `32336943539` succeeded; verified live via cache-buster.
+
+### 102d. What's NOT done yet — pick up here
+Findings 1 (membership), 3 (staleness), 5 (demerger) are confirmed real and root-caused but **not
+fixed**. Suggested order: 3 (staleness) is the most surgical — a targeted re-dating campaign for
+qe+45d-fallback cells where a real BSE/NSE filing date is discoverable, same shape as §12. 5 (demerger)
+is a bounded sweep — extend the §87e recipe to demergers, starting with ALEMBICLTD 2011-04-11. 1
+(membership) is the largest lift — another pass of the §32 membership-hunt for the specific transient
+small-caps this run flagged, most of which are already on record as open in that section.
