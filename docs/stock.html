@@ -630,8 +630,8 @@ function renderFunds(){
     break;
   }
 
-  // ---- quarter table (newest first, back to Dec-2019 — the site's fixed history floor) ----
-  const show=ends.filter(e=>e>=20191231).reverse();
+  // ---- quarter table (newest first, full history — every quarter on file) ----
+  const show=ends.slice().reverse();
   const num=(v,cls)=>`<td class="text-right px-2 ${cls||''}">${crFmt(v)}</td>`;
   const gCell=g=>`<td class="text-right px-2 ${g==null?'':(g>=0?'pos':'neg')}">${g==null?'—':pct(g)}</td>`;
   const rxCell=e=>{ const q=fundBy[e], rr=q?reactionAt(annOf(q)):null;
