@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#131312">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="./pf-glance-manifest.json">
+<link rel="icon" href="./pf-icon-192.png">
+<link rel="apple-touch-icon" href="./pf-icon-192.png">
+<title>Portfolio</title>
+<style>
+:root{ color-scheme: dark;
+  --bg:#131312; --surface:#1a1a19; --text:#ffffff; --text-2:#8a8981;
+  --up:#22a559; --down:#e66767; --flat:#8a8981; --border:#333330;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+html,body{height:100%; margin:0; overscroll-behavior:none}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  font-feature-settings:"tnum" 1;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding: env(safe-area-inset-top,0) 20px env(safe-area-inset-bottom,0);
+  user-select:none; -webkit-user-select:none;
+}
+.up{color:var(--up)} .down{color:var(--down)} .flat{color:var(--flat)}
+.wrap{width:100%; max-width:420px; text-align:center}
+.lab{font-size:13px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-2)}
+.hero{font-size:88px; font-weight:800; letter-spacing:-.03em; line-height:1; margin:10px 0 26px; transition:opacity .15s}
+.row{display:flex; justify-content:center; gap:14px; margin-top:4px}
+.chip{
+  background:var(--surface); border:1px solid var(--border); border-radius:14px;
+  padding:12px 18px; min-width:118px;
+}
+.chip .l{font-size:10.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-2)}
+.chip .v{font-size:21px; font-weight:800; margin-top:4px}
+.status{margin-top:34px; font-size:12px; color:var(--text-2); display:flex; align-items:center; gap:7px}
+.dot{width:7px;height:7px;border-radius:50%; background:var(--flat)}
+.dot.on{background:var(--up); box-shadow:0 0 0 3px color-mix(in srgb,var(--up) 25%,transparent); animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.err{color:var(--down); font-size:14px; margin-top:16px; max-width:320px; line-height:1.5}
+.tapHint{position:fixed; bottom:18px; left:0; right:0; text-align:center; font-size:11px; color:var(--text-2); opacity:.7}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="lab" id="mainLab">TODAY</div>
+  <div class="hero flat" id="hero">···</div>
+  <div class="row">
+    <div class="chip"><div class="l">Month-end</div><div class="v flat" id="mtd">···</div></div>
+    <div class="chip"><div class="l">Overall</div><div class="v flat" id="total">···</div></div>
+  </div>
+  <div class="status"><span class="dot" id="dot"></span><span id="status">loading…</span></div>
+  <div class="err" id="err"></div>
+</div>
+<div class="tapHint">tap anywhere to refresh</div>
+<script>
+'use strict';
+const SUPA='https://nebjnsndgrhumnkuipqy.supabase.co/rest/v1/rpc/pf_feed_get';
+const ANON='sb_publishable_MDlQwiVc5deii91__UNeDg_z9r4Fk98';
+function readToken(){
+  const u=new URL(location.href), t=u.searchParams.get('t');
+  if(t){ try{localStorage.setItem('glance_token',t);}catch(e){}
+         u.searchParams.delete('t'); history.replaceState(null,'',u.pathname+u.search+u.hash); return t; }
+  try{ return localStorage.getItem('glance_token')||''; }catch(e){ return ''; }
+}
+function istParts(){
+  const f=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Kolkata',weekday:'short',hour:'2-digit',minute:'2-digit',hour12:false});
+  const p={}; f.formatToParts(new Date()).forEach(x=>p[x.type]=x.value); return p;
+}
+function marketOpen(){
+  const p=istParts();
+  if(p.weekday==='Sat'||p.weekday==='Sun') return false;
+  const m=(+p.hour)*60+(+p.minute);
+  return m>=555 && m<=930;
+}
+function cls(v){ return v==null?'flat':(v>0?'up':v<0?'down':'flat'); }
+async function load(){
+  const t=readToken();
+  if(!t){
+    document.getElementById('hero').textContent='—';
+    document.getElementById('err').textContent='Needs a key: open this page once with ?t=YOUR-TOKEN and it will remember it.';
+    return;
+  }
+  document.getElementById('status').textContent='updating…';
+  try{
+    const r=await fetch(SUPA+'?token='+encodeURIComponent(t)+'&apikey='+ANON+'&cb='+Date.now(),{cache:'no-store'});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const d=await r.json();
+    if(!d) throw new Error('no data for this key');
+    const hero=document.getElementById('hero');
+    hero.textContent=d.dayTxt||'—'; hero.className='hero '+cls(d.day);
+    const mtd=document.getElementById('mtd'); mtd.textContent=d.mtdTxt||'—'; mtd.className='v '+cls(d.mtd);
+    const tot=document.getElementById('total'); tot.textContent=d.totalTxt||'—'; tot.className='v '+cls(d.total);
+    document.getElementById('err').textContent='';
+    document.getElementById('dot').className='dot'+(marketOpen()?' on':'');
+    document.getElementById('status').textContent=(marketOpen()?'live · ':'market closed · ')+'as of '+ (d.asOf||'');
+  }catch(e){
+    document.getElementById('status').textContent='could not refresh';
+    document.getElementById('err').textContent=e.message;
+  }
+}
+document.body.addEventListener('click', load);
+load();
+setInterval(()=>{ if(!document.hidden && marketOpen()) load(); }, 30000);
+document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) load(); });
+</script>
+</body>
+</html>
