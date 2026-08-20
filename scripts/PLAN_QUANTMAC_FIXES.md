@@ -184,14 +184,22 @@ checking that session's state; worktree only; own files only.
   log before/after — the 8 flagged trades (minus any the addendum refutes) must resolve, and
   the full diff (both directions, incl. postDrift-strategy movement) gets recorded in §102.
 
-**P3 — membership (blocked on the addendum verdicts)**
-  If confirmed: trace the contributing snapshot source for each bad (symbol, window) —
-  suspicion for PCBL-class is a soft-checkpoint layer, e.g. `_mc_n500_snaps.json` — fix at the
-  source + `build_membership_v2.py` rebuild + `verify_sizes.py` + count-check (~500-504/date),
-  push, LIVE bin re-verify, re-run the strategy (membership diffs change the 24 trades).
-  If refuted: quantmac is wrong; correct §102b; reply. If UNVERIFIABLE: fetch NSE's
-  IndexInclExcl.xls / press releases directly (they cite it; we've never ingested it) before
-  any data edit. Fix source layer only — never `indices_history.json` directly.
+**P3 — membership (UNBLOCKED, confirmed; use IndexInclExcl.xls as the ground-truth ledger)**
+  1. Parse `IndexInclExcl.xls` fully (all 2,496 rows, all indexes it covers, not just Nifty 500)
+     into a clean per-index event ledger — this is a NEW, better-than-anything-we-have source;
+     don't just patch the 5 symbols, ingest the whole file.
+  2. Trace the exact `build_membership_v2.py` code path that re-admits a "continuously-listed
+     but excluded" name (the agent localized the SUSPECT guard, lines ~254-263, but did not
+     confirm the exact bug) — measure BEFORE fixing, per the phantom-floor precedent in §48.
+  3. Fix by feeding the new event ledger into the reconstruction (source layer + rebuild),
+     NEVER edit `indices_history.json` output directly (weekly refresh reverts it — standing
+     rule). Re-run `verify_sizes.py` + the ~500-504/date count-check after.
+  4. Push, LIVE bin re-verify, re-run the DII strategy end-to-end — the 24 flagged trades
+     should now resolve (PCBL×3, SANDESH×4, etc. drop out of the picks).
+  5. §102b's overclaimed sentence needs a one-line correction regardless (P0.b): "our data
+     disagreed with NSE's own record" is now fully measured, not partially assumed.
+  6. Note the file is frozen at 2020-09-14 — historical era only; anything past that still
+     needs the live/press-release route if a future gap appears.
 
 **P4 — demerger (bounded)**
   a. ALEMBICLTD 2011-04-11: factor = ex-day SPOS open / prev close from the era bhavcopy
@@ -220,7 +228,21 @@ checking that session's state; worktree only; own files only.
 *Slots below are completed by whichever session receives the agent reports; do not start P3
 until they are.*
 
-* **Membership agent (PCBL / SANDESH / AJANTPHARM / GAEL / INOXLEISUR):** PENDING
+* **Membership agent: DONE — 5/5 CONFIRMED via THREE independent primary sources.**
+  `https://archives.nseindia.com/content/indices/IndexInclExcl.xls` is LIVE and reachable —
+  NSE's own authoritative membership-EVENT file, 2,496 rows, ALL indices, 1998-08-01→2020-09-14
+  (frozen there). Saved: `scripts/_staleness_fix/IndexInclExcl.xls`. Every one of the 5 claimed
+  dates matches to the day (PCBL excl 2002-01-17/incl 2018-09-28; SANDESH excl 2009-03-27;
+  AJANTPHARM excl 2011-03-25/incl 2014-09-19; GAEL excl 2012-09-28; INOXLEISUR excl
+  2012-04-27/incl 2014-03-28), cross-read against the press-release PDFs and the archived
+  official constituent CSVs (`_wb_n500_snaps.json`, 39 captures — PCBL absent from all 26
+  captures 2002-2015). **Root-cause locus, self-documented in our own code**:
+  `build_membership_v2.py`'s backward-walk (`m = (m - inc) | exc`) has a phantom-floor guard
+  whose own comment admits it "does NOT floor already-listed names … that needs true
+  membership dates we don't reliably have" — PCBL is exactly that class (continuously listed
+  while excluded, so a price-history floor can't see it). Not yet traced to the exact line that
+  re-admits it for 2017; that's P3 step 1.
+  **This changes P3 substantially — see the revised P3 below.**
 * **Staleness agent: DONE — 5/5 CONFIRMED, all EARLIER than placeholder, document-level proof**
   (each verified twice: BSE API row + the filed PDF itself via the AnnPdfOpen resolver).
   CANFINHOME 2013-01-19 16:25 (Δ26d) · GEOJITFSL 2015-01-13 16:17 (Δ32d) · MUNJALSHOW
