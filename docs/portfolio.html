@@ -913,32 +913,63 @@ function renderAccounts(){
     buildRows(); renderAll(); $('saveMsg').textContent='unsaved changes';
   });
 }
+const TODAY_OPEN = new Set();          // which strategy rows are expanded, survives re-render
 function renderToday(rows){
   const t=totals(rows);
-  const list=[...groupBy(rows,r=>r.pfName).entries()].map(([name,rs])=>{
+  const groups=groupBy(rows,r=>r.pfName);
+  const list=[...groups.entries()].map(([name,rs])=>{
     const a=agg(rs), base=a.value-a.day;
     const pf=(DOC.portfolios||[]).find(p=>p.name===name)||{};
     return {name, acct:pf.account?acctName(pf.account):'—', n:rs.length,
             day:a.day, pct:base>0? a.day/base*100 : null, value:a.value};
   }).sort((x,y)=>(y.pct==null?-1e9:y.pct)-(x.pct==null?-1e9:x.pct));
-  $('todaySub').innerHTML='Each strategy\u2019s move today, biggest first'+
+  $('todaySub').innerHTML='Each strategy\u2019s move today, biggest first \u2014 tap a name for its stocks'+
     (SEL.acct.size||SEL.pf.size? ' (filtered)':'')+'.';
   /* On a phone the whole point is seeing today's move without scrolling sideways,
      so the secondary columns are dropped rather than pushed off-screen. */
   const narrow = innerWidth < 640;
+  const ncols = narrow ? 3 : 6;
   let h='<thead><tr><th>Strategy</th>'+(narrow?'':'<th>Account</th><th>Holdings</th><th>Value</th>')+
         '<th>Today</th><th>Today %</th></tr></thead><tbody>';
-  list.forEach(r=>{
-    h+='<tr><td><b>'+esc(r.name)+'</b>'+(narrow?'<br><span class="sym">'+esc(r.acct)+'</span>':'')+'</td>'+
+  list.forEach((r,gi)=>{
+    const open=TODAY_OPEN.has(r.name);
+    h+='<tr class="todayRow" data-pf="'+esc(r.name)+'" style="cursor:pointer">'+
+       '<td><b>'+(open?'\u25be ':'\u25b8 ')+esc(r.name)+'</b>'+(narrow?'<br><span class="sym">'+esc(r.acct)+'</span>':'')+'</td>'+
        (narrow?'':'<td><span class="sym">'+esc(r.acct)+'</span></td><td>'+r.n+'</td><td class="secret">'+inr(r.value)+'</td>')+
        '<td class="'+cls(r.day)+' secret">'+inrSigned(r.day)+'</td>'+
        '<td class="'+cls(r.pct)+'"><b>'+pct(r.pct)+'</b></td></tr>';
+    if(open){
+      const stocks=(groups.get(r.name)||[]).slice().sort((a,b)=>(b.dayPct==null?-1e9:b.dayPct)-(a.dayPct==null?-1e9:a.dayPct));
+      /* A nested <table> here forced 3 rigid columns wider than a phone screen —
+         the wrapper's own overflow-x hid the overflow instead of preventing it, so
+         the numbers scrolled out of view, defeating the point of the narrow layout.
+         flex + flex-wrap instead: name and numbers share a row when they fit, and
+         the numbers drop to their own line when they don't — no explicit breakpoint. */
+      h+='<tr class="todayDetail"><td colspan="'+ncols+'" style="padding:0;border-bottom:1px solid var(--grid)">';
+      stocks.forEach(s=>{
+        h+='<div style="display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 12px;'+
+           'padding:6px 9px 6px 28px;background:var(--surface-2);border-bottom:1px solid var(--grid);font-size:12.5px">'+
+           '<span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%">'+
+             '<span class="secret">'+esc((s.cname||s.sym).replace(/ (Ltd|Limited)\.?$/,''))+'</span> '+
+             '<span class="sym">'+esc(s.sym)+'</span></span>'+
+           '<span style="white-space:nowrap;flex-shrink:0">'+
+             '<span class="'+cls(s.day)+' secret">'+(s.day==null?'\u2014':inrSigned(s.day))+'</span>'+
+             '<b class="'+cls(s.dayPct)+'" style="margin-left:10px">'+pct(s.dayPct)+'</b></span>'+
+           '</div>';
+      });
+      h+='</td></tr>';
+    }
   });
   h+='</tbody><tfoot><tr class="pfhead"><td>All strategies</td>'+
      (narrow?'':'<td></td><td>'+rows.length+'</td><td class="secret">'+inr(t.value)+'</td>')+
      '<td class="'+cls(t.day)+' secret">'+inrSigned(t.day)+'</td>'+
      '<td class="'+cls(t.dayPct)+'"><b>'+pct(t.dayPct)+'</b></td></tr></tfoot>';
   $('tblToday').innerHTML=h;
+  $('tblToday').querySelectorAll('tr.todayRow').forEach(tr=>tr.addEventListener('click',()=>{
+    const name=tr.dataset.pf;
+    TODAY_OPEN.has(name)? TODAY_OPEN.delete(name) : TODAY_OPEN.add(name);
+    renderToday(visibleRows());
+  }));
 }
 function renderStrategyCard(rows, mode, ids){
   const M=strategyReturns(rows, mode);
