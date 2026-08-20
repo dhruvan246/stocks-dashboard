@@ -228,6 +228,20 @@ Full 36-symbol pilot, 3 clean runs after 3 real bugs were found and fixed (each 
 exactly) — the cap is working, not just tested. Determinism verified — 3 full runs of the same
 36 symbols produced identical or monotonically-improving results, no run-to-run drift.
 
+**4th bug, found while smoke-testing `apply_redating.py` against the pilot's own real data
+(2026-08-20, before P2 finished) — a year-ago COMPARISON figure can masquerade as a second real
+disclosure.** ALFALAVAL's genuine 2004-09-30 result headline: "...Rs 200 million for the quarter
+ended September 30, 2004 as compared to Rs 170.19 million for the quarter ended September 30,
+2003" — `extract_all_qes` (correctly, per bug #3) finds BOTH dates, but only one is this filing's
+real subject; the other is prose context. Unlike ESSAROIL's genuine combined annual+quarterly
+disclosure (both dates real subjects), this class can't be told apart by regex alone. Fixed at
+the APPLY layer, not the matcher: a real filing can never predate its own quarter-end and every
+verified case so far lags it by 13-60 days, so `apply_redating.py` rejects any candidate whose
+raw filing date falls outside `[qe, qe+120d]` — caught 8/670 (1.2%) in the pilot re-check, all
+now correctly left untouched instead of writing a ~1-year-wrong date. Surviving decisions:
+median lag 17 days, p90 29, max 47 — a sane distribution. **This guard is why every fetched
+match must go through `build_decisions()` before being trusted, not written directly.**
+
 **P2 — the 36,027-cell re-dating campaign (background, resumable, worktree `staleness-fix`)**
   Fetch: `scripts/_staleness_fix/fetch_and_match.py` (v2, FILESTATUS filter removed, scripcode
   fallback added — pilot-tested, see P1 results above). `target_list.json` is sorted
