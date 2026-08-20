@@ -135,10 +135,14 @@ jobs:
           # push. Avoids content-merge conflicts on the binary-ish HTML.
           # NOTE (runbook section 18): EVERY file the build step writes must be
           # carried through /tmp here, or reset-and-replay silently discards it.
-          # docs/stock_data.bin (17 MB) is the deliberate exception — it is
-          # committed weekly by refresh-membership.yml to cap repo growth.
+          # docs/stock_data.bin (17 MB) is committed on a capped cadence, not
+          # every run, to limit repo growth — see the content-based staleness
+          # check below (runbook §103: a schedule-based cap silently drifted
+          # into a ~10-week price freeze once refresh-membership.yml's weekly
+          # commits stopped actually touching the price series).
           cp docs/nse-bse-dashboard.html /tmp/new_dashboard.html
           cp docs/dash_slim.bin          /tmp/new_dash_slim.bin
+          cp docs/stock_data.bin         /tmp/new_stock_data.bin
 
           for attempt in 1 2 3 4 5; do
             git fetch origin main
@@ -154,6 +158,20 @@ jobs:
             if ! python3 scripts/dash_slim_same.py /tmp/new_dash_slim.bin docs/dash_slim.bin; then
               cp /tmp/new_dash_slim.bin docs/dash_slim.bin
               git add docs/dash_slim.bin
+            fi
+
+            # stock_data.bin (17 MB, full price history — sectors/movers/stock/
+            # stock-backtest pages' long-range views) is only worth the repo-size
+            # cost when its own committed copy's prices have actually gone stale.
+            # Checked by CONTENT (actual last price date inside the committed
+            # file), not by day-of-week or "did a commit land recently" — the
+            # latter is exactly what let a fnoHistory-only patch pass as a real
+            # refresh for ~10 weeks (runbook §103). Self-healing: any missed or
+            # failed run just means the NEXT run still sees it as stale and
+            # commits, so this can't silently drift again.
+            if ! python3 scripts/stock_bin_stale.py docs/stock_data.bin 5; then
+              cp /tmp/new_stock_data.bin docs/stock_data.bin
+              git add docs/stock_data.bin
             fi
 
             if git diff --cached --quiet; then
