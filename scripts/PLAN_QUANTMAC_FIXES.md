@@ -136,11 +136,20 @@ checking that session's state; worktree only; own files only.
    nightly gate a no-op on these cells (idempotent agreement, like §12's JSL PASS signal).
 3. **Both mirrors**: `docs/sf_fundamentals.json` AND `scripts/fundamentals.json` (CI commits
    only the former; local applies keep the mirror in step — §12 precedent).
-4. **Persistence pre-check (Phase 0):** §12's ann bumps persist across nightlies (verified
-   idempotence there), and `update_fundamentals.py` only ingests new filings — but CONFIRM by
-   grepping the nightly path for any writer that re-derives ann on OLD quarters before running
-   the campaign, and re-verify LIVE ~20min + next-day after the first batch lands (CLAUDE.md
-   rule 5).
+4. **Persistence pre-check: DONE — clean, one expected interaction, not a threat.**
+   `scripts/fundamentals.json` is NEVER staged by any CI commit step (grepped every workflow's
+   `git add` list) — unconditionally safe. `docs/sf_fundamentals.json` is safe from every writer
+   except the nightly 15:30 gate (`gate_1530.py`, via `refresh-fundamentals.yml`'s 21:15 IST
+   run): it rescans EVERY cell fresh each night with no new-vs-old distinction, and WILL move a
+   corrected date forward by one trading day IF it lands on a month-end trading day AND BSE's
+   own record shows the broadcast was after 15:30 IST. That is correct, intended look-ahead
+   logic (same as §12), not a revert-to-placeholder bug — it just means the apply step (B4.2)
+   must pre-apply the 15:30 rule itself, exactly as already planned, so the nightly gate finds
+   nothing left to do (idempotent agreement, the JSL PASS-signal pattern). Every other writer
+   checked (`update_fundamentals.py`, `apply_agg_pat_fills.py --repair-ann`, `fill_ann_dates.py`,
+   insurer writers, and everything not wired into a workflow at all) is fill-only, structurally
+   excluded from an already-dated old cell, or requires a deliberate human re-run — none pose a
+   silent-revert risk. Full citations in the agent transcript; safe to proceed to P2.
 5. **No-record cells stay put, recorded.** `not-found-via:bse-ann` per cell; never guess. The
    smoke test says the unmatched tail is almost entirely ≤2007 (BSE archive floor):
    3-symbol pilot matched 74/93 of 2008-2014 targets but 0/58 of 2001-2007. Expect ~8-9k
@@ -172,7 +181,12 @@ checking that session's state; worktree only; own files only.
   ≥95% of 2009-2019 pilot targets matched, and every miss explained (no-record vs parse-miss).
 
 **P2 — the 36,027-cell re-dating campaign (background, resumable, worktree `staleness-fix`)**
-  Fetch: `scripts/_staleness_fix/fetch_and_match.py` (exists; smoke-tested on 3 symbols).
+  Fetch: `scripts/_staleness_fix/fetch_and_match.py` (v2, FILESTATUS filter removed, scripcode
+  fallback added — pilot-tested, see P1 results above). `target_list.json` is sorted
+  NEWEST-FIRST by each symbol's latest target quarter (user directive, 2026-08-20) — matches
+  §12's own measured precedent that BSE's archive answers recent dates fast and old ones slowly
+  (11 dates in ~20min oldest-first vs all 101 in ~15min newest-first), so this ordering avoids
+  the run stalling on the slow 2002-2007 tail near the end rather than the start.
   Serial ETA at pilot rates ≈ 11-18h — run as a background job with progress checkpoints.
   Apply (to be written, `apply_redating.py`): for each matched cell —
     new_ann = 15:30-gated(NEWS_DT); skip if new_ann == stored; write BOTH mirrors; update the
