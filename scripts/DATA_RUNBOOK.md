@@ -10895,3 +10895,58 @@ qe+45d-fallback cells where a real BSE/NSE filing date is discoverable, same sha
 is a bounded sweep — extend the §87e recipe to demergers, starting with ALEMBICLTD 2011-04-11. 1
 (membership) is the largest lift — another pass of the §32 membership-hunt for the specific transient
 small-caps this run flagged, most of which are already on record as open in that section.
+
+## 103. ★★★ `docs/stock_data.bin`'s PRICE SERIES WAS FROZEN FOR ~10 WEEKS — weekly commits kept happening, prices didn't  (2026-08-20)
+
+**Symptom (user report, sectors.html):** opening any Sector/Industry/Sub-Industry detail modal showed
+a chart and 1M return that didn't match the card it was opened from, and after that, selecting the 1W
+period made every single sector/industry show exactly **+0.00%**.
+
+**Root cause, measured live (dhruvan246.github.io) and confirmed identical in the local repo's own
+committed `docs/stock_data.bin`:** every ticker checked (RELIANCE, HDFCBANK, TCS, SBIN, and the full
+Sugar sub-industry) has its price series in `docs/stock_data.bin` stopping dead at **2026-06-11**,
+~10 weeks before this was found (2026-08-20), while `docs/dash_slim.bin` (used for the main grid) was
+current to the actual latest session. This is NOT the intended weekly-lag documented elsewhere in this
+runbook (§4, "docs/stock_data.bin … committed weekly by refresh-membership.yml") — it is a silent total
+freeze that weekly commits made look healthy:
+
+- `refresh.yml` (daily) rebuilds a fresh `stock_data.bin` via `build_compressed.py` every run, but by
+  design never commits it ("the deliberate exception… to cap repo growth").
+- `refresh-membership.yml` (weekly, Sat 22:00 IST) is the one that DOES commit `docs/stock_data.bin` —
+  but its only write to that file is `extend_fno_history.py`, which opens the file **already sitting in
+  the repo** and patches only `D['fnoHistory']` in place. Nothing in that job's steps
+  (`build_changelog.py`, `build_membership_v2.py`, `extend_fno_history.py`, `audit_phantom_ca.py`)
+  ever touches `D['series']`. So every week the commit log gets a plausible "Weekly membership
+  refresh" entry while the price data underneath never moves. Confirmed by decompressing
+  `docs/stock_data.bin` at three commits spanning 2026-06-14 → 2026-06-20: all three already show
+  2026-06-11 as the last price date — the freeze starts at (or just before) the first "weekly
+  refresh" commit that used this fnoHistory-only patch path, and nothing since has caught it.
+
+**Downstream mechanism (sectors.html, and by the same pattern movers.html / nse-bse-dashboard.html /
+stock-backtest.html — all four call an `ensureFull()`-style lazy loader for this file; stock.html loads
+it directly):** `ensureFull()` did `SERIES=D.series` — an outright replace, not a merge. `priceAt()`
+does a "latest bar at-or-before this date" lookup with no staleness check, so once `SERIES` pointed at
+the frozen file it silently substituted the 2026-06-11 close everywhere a current price was asked for:
+long-range charts went flat near the end, 1M/YTD/1Y/3Y returns computed against a 10-week-old
+"current" price, and any window where BOTH endpoints post-date 2026-06-11 (e.g. 1W) resolved both
+sides to the identical stale bar → an exact, uniform **0.00%** for every group. `SERIES` is a shared
+global, so triggering this once (e.g. opening one modal) silently poisoned the main grid too for the
+rest of the session.
+
+**Fixed (frontend guard, shipped):** `docs/sectors.html` `ensureFull()` now merges — `D.series` (base)
+with the already-loaded fresh series (overlay, wins on date overlap) via a new `mergeSeries()` — instead
+of replacing. This makes the page correct regardless of how stale `stock_data.bin` gets: recent bars
+always come from whichever source is freshest. Verified live before/after: Sugar's 6M return matched
+the card exactly after the fix (21.98% both places, was 21.98% vs 7.33% before); 1W after forcing
+`ensureFull()` showed real varied per-sector returns, not uniform 0%. Also added Today/1W/1M/3M/6M/1Y
+per-stock return columns to the constituent table (feature request, same commit).
+
+**Still open — NOT done in this pass, flagged to the user:**
+1. **The pipeline gap itself.** Nothing currently regenerates `docs/stock_data.bin`'s price `series` on
+   any cadence — `refresh-membership.yml` needs to actually rebuild prices (not just patch fnoHistory)
+   before it commits, or a new job needs to own this. This is a shared-CI change (cost: weekly job would
+   need something like the daily job's fetch step) that wasn't made without the user's sign-off.
+2. **Same clobber pattern, unpatched, elsewhere.** `movers.html`, `nse-bse-dashboard.html`, and
+   `stock-backtest.html` all have their own `ensureFull`-equivalent that replaces `SERIES` outright, and
+   `stock.html` loads `stock_data.bin` as its primary source — same exposure to a stale full-history
+   file, not yet given the merge guard. Only `sectors.html` (what was reported) was fixed this pass.
