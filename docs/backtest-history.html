@@ -13,6 +13,28 @@
   body{font-feature-settings:"tnum" 1}
   .pos{color:#15803d;font-weight:600}.neg{color:#b91c1c;font-weight:600}
   .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
+  /* keep long strategy names on the KPI tiles to one tidy line */
+  .sw-stat .sw-d{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  /* expand chevron rotates instead of swapping glyphs */
+  .exparrow{display:inline-block;width:12px;color:var(--text-faint,#8b94a6);transition:transform .18s ease;font-size:10px}
+  tr.isopen .exparrow{transform:rotate(90deg)}
+  /* action buttons, themed via tokens so they work on light / soft / dark */
+  .btn-load{
+    font-size:11.5px;font-weight:700;padding:5px 13px;border-radius:999px;white-space:nowrap;
+    color:var(--accent,#4f46e5);background:var(--accent-soft,rgba(79,70,229,.10));
+    border:1px solid color-mix(in srgb, var(--accent,#4f46e5) 32%, transparent);
+  }
+  .btn-load:hover{background:color-mix(in srgb, var(--accent,#4f46e5) 20%, transparent)}
+  .btn-del{
+    font-size:11.5px;font-weight:600;padding:5px 11px;border-radius:999px;white-space:nowrap;
+    color:var(--neg,#b91c1c);background:transparent;
+    border:1px solid color-mix(in srgb, var(--neg,#b91c1c) 30%, transparent);opacity:.85;
+  }
+  .btn-del:hover{background:color-mix(in srgb, var(--neg,#b91c1c) 12%, transparent);opacity:1}
+  /* year-by-year panel inside the expand row */
+  .yby-panel{border:1px solid var(--border,#e7eaf2);border-radius:var(--radius-sm,10px);background:var(--surface,#fff);padding:12px 14px}
+  .yby-panel table td,.yby-panel table th{padding:3px 10px;white-space:nowrap}
+  .yby-panel .rowlab{font-weight:700;font-size:11.5px}
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
@@ -31,7 +53,8 @@
     <h1 class="text-xl md:text-2xl font-bold text-slate-900">📜 Backtest History</h1>
     <button id="clearAll" class="text-xs text-red-600 hover:underline font-semibold">Clear all</button>
   </div>
-  <p class="text-xs text-slate-500 mb-4">Shared backtest history — anyone can <b>run a backtest to add one</b>. Click <b>Load</b> to re-open &amp; re-run a setup. <a href="./stock-backtest.html" class="text-indigo-600 hover:underline">← back to Backtest</a></p>
+  <p class="text-xs text-slate-500 mb-4">Shared backtest history, newest first — anyone can <b>run a backtest to add one</b>. Click a row for its year-by-year returns, or <b>Load</b> to re-open &amp; re-run the setup. <a href="./stock-backtest.html" class="text-indigo-600 hover:underline">← back to Backtest</a></p>
+  <div id="stats" class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4"></div>
   <div id="list"></div>
 </main>
 
@@ -46,38 +69,74 @@ const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;'
 const num=v=>(typeof v==='number'&&isFinite(v))?v:null;
 const fmtINR=n=>num(n)==null?'—':'₹'+Math.round(n).toLocaleString('en-IN');
 const pct=n=>num(n)==null?'—':(n>=0?'+':'')+n.toFixed(2)+'%';
-const fdate=ts=>{const d=new Date(ts);return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});};
+const fdateD=ts=>{const t=num(ts);return t==null?'—':new Date(t).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});};
+const fdateT=ts=>{const t=num(ts);return t==null?'':new Date(t).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});};
+const rel=ts=>{const t=num(ts);if(t==null)return'';const s=(Date.now()-t)/1e3;
+  if(s<0)return'';if(s<3600)return Math.max(1,Math.round(s/60))+'m ago';
+  if(s<86400)return Math.round(s/3600)+'h ago';if(s<604800)return Math.round(s/86400)+'d ago';return'';};
+
+function renderStats(items){
+  if(!items.length){ $('stats').innerHTML=''; return; }
+  let beat=0,scored=0,best=null;
+  for(const it of items){const m=it.m||{},c=num(m.cagr),b=num(m.benchCagr);
+    if(c!=null&&b!=null){scored++; if(c>=b)beat++;}
+    if(c!=null&&(best==null||c>best.c))best={c,label:it.label};}
+  const latest=items.find(it=>num(it.ts)!=null);   // items arrive sorted newest-first
+  const hit=scored?Math.round(beat/scored*100):null;
+  $('stats').innerHTML=`
+    <div class="sw-stat"><div class="sw-lb">Backtests</div><div class="sw-v">${items.length}</div><div class="sw-d">in the shared history</div></div>
+    <div class="sw-stat"><div class="sw-lb">Beat Nifty 500</div><div class="sw-v ${hit==null?'':(hit>=50?'pos':'neg')}">${scored?beat+' / '+scored:'—'}</div><div class="sw-d">${hit==null?'no scored runs yet':hit+'% of scored runs'}</div></div>
+    <div class="sw-stat"><div class="sw-lb">Best CAGR</div><div class="sw-v ${best&&best.c<0?'neg':'pos'}">${best?pct(best.c):'—'}</div><div class="sw-d" title="${best?esc(best.label):''}">${best?esc(best.label||''):'run one to claim it'}</div></div>
+    <div class="sw-stat"><div class="sw-lb">Latest run</div><div class="sw-v">${latest?(rel(latest.ts)||fdateD(latest.ts)):'—'}</div><div class="sw-d" title="${latest?esc(latest.label):''}">${latest?esc(latest.label||''):''}</div></div>`;
+}
 
 function render(){
   // Always show newest-first by saved time — the shared array's stored order can drift
   // (concurrent appends, whole-array owner rewrites). ts is untrusted: num() guards it,
   // entries with a missing/invalid ts sink to the bottom.
   const items=load().sort((a,b)=>(num(b.ts)||0)-(num(a.ts)||0));
-  if(!items.length){ $('list').innerHTML='<div class="card p-8 text-center text-slate-400 text-sm">No backtests yet.</div>'; return; }
-  $('list').innerHTML=`<div class="card overflow-x-auto"><table class="w-full text-sm">
-    <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>
-      <th class="text-left py-2 px-3">Saved</th><th class="text-left px-3">Strategy</th><th class="text-left px-3">Period</th>
-      <th class="text-right px-3">CAGR</th><th class="text-right px-3">vs Nifty</th><th class="text-right px-3">Max DD</th><th class="text-right px-3">Final ₹1L</th><th class="px-3"></th></tr></thead>
-    <tbody>${items.map(it=>{const m=it.m||{},c=it.cfg||{},beat=num(m.benchCagr)!=null&&num(m.cagr)!=null&&m.cagr>=m.benchCagr;const hasY=Array.isArray(it.yby)&&it.yby.length;
-      return `<tr class="border-b border-slate-50 hover:bg-slate-50 ${hasY?'cursor-pointer':''}" ${hasY?`data-exp="${esc(it.id)}"`:''}>
-        <td class="px-3 py-2 text-xs text-slate-500 whitespace-nowrap">${hasY?'<span class="exparrow inline-block w-3 text-slate-400">▸</span> ':'<span class="inline-block w-3"></span> '}${fdate(it.ts)}</td>
-        <td class="px-3 font-medium">${esc(it.label||'')}</td>
-        <td class="px-3 text-xs text-slate-500 whitespace-nowrap">${esc(c.start||'?')} → ${esc(c.end||'?')}</td>
+  renderStats(items);
+  if(!items.length){
+    $('list').innerHTML=`<div class="card p-10 text-center">
+      <div class="text-4xl mb-3">📜</div>
+      <div class="font-bold text-slate-900 mb-1">No backtests yet</div>
+      <p class="text-xs text-slate-500 mb-5 max-w-sm mx-auto">Every backtest anyone runs lands here automatically — strategy, period, CAGR and how it did against the Nifty 500.</p>
+      <a href="./stock-backtest.html" class="inline-flex items-center gap-2 bg-indigo-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-indigo-700 transition">🚀 Run the first backtest</a>
+    </div>`; return; }
+  $('list').innerHTML=`<div class="card"><div class="overflow-x-auto tscroll" style="--tscroll-h:38rem"><table class="w-full text-sm">
+    <thead class="text-[11px] uppercase tracking-wider text-slate-500 border-b border-slate-200"><tr>
+      <th class="text-left py-2.5 px-4 font-semibold">Saved</th><th class="text-left px-3 font-semibold">Strategy</th>
+      <th class="text-right px-3 font-semibold">CAGR</th><th class="text-right px-3 font-semibold">vs Nifty 500</th>
+      <th class="text-right px-3 font-semibold">Max DD</th><th class="text-right px-3 font-semibold">Final ₹1L</th><th class="px-4"></th></tr></thead>
+    <tbody>${items.map(it=>{const m=it.m||{},c=it.cfg||{},beat=num(m.benchCagr)!=null&&num(m.cagr)!=null&&m.cagr>=m.benchCagr;
+      const hasY=Array.isArray(it.yby)&&it.yby.length, r=rel(it.ts), mult=num(m.finalV)!=null?(m.finalV/1e5):null;
+      return `<tr class="border-b border-slate-50 ${hasY?'cursor-pointer':''}" ${hasY?`data-exp="${esc(it.id)}"`:''}>
+        <td class="px-4 py-2.5 whitespace-nowrap"><div class="flex items-center gap-2">
+          <span class="exparrow">${hasY?'▶':''}</span>
+          <div><div class="sw-cellmain text-[13px]">${fdateD(it.ts)}</div><div class="sw-cellsub">${esc(fdateT(it.ts))}${r?' · '+r:''}</div></div>
+        </div></td>
+        <td class="px-3"><div class="sw-cellmain text-[13px]">${esc(it.label||'—')}</div><div class="sw-cellsub">${esc(c.start||'?')} → ${esc(c.end||'?')}</div></td>
         <td class="text-right px-3 ${(num(m.cagr)||0)>=0?'pos':'neg'}">${pct(m.cagr)}</td>
-        <td class="text-right px-3 text-xs ${beat?'pos':'neg'}">${pct(m.benchCagr)}</td>
+        <td class="text-right px-3 whitespace-nowrap"><span class="sw-chip ${beat?'pos':'neg'}" title="Nifty 500 CAGR over the same period — ${beat?'strategy beat it':'strategy lagged it'}"><span class="sw-dot"></span>${pct(m.benchCagr)}</span></td>
         <td class="text-right px-3 neg">${num(m.maxDD)!=null?'-'+m.maxDD.toFixed(2)+'%':'—'}</td>
-        <td class="text-right px-3">${fmtINR(m.finalV)}</td>
-        <td class="px-3 whitespace-nowrap text-right">
-          <button class="text-blue-600 hover:underline text-xs font-semibold" data-load="${esc(it.id)}">Load</button>
-          ${OWNER?`<button class="text-red-500 hover:underline text-xs ml-2" data-del="${esc(it.id)}">Delete</button>`:''}</td></tr>${hasY?`
-      <tr id="exp_${esc(it.id)}" style="display:none"><td colspan="8" class="px-3 pb-3 bg-slate-50">
-        <div class="text-[11px] uppercase text-slate-500 mb-1 pt-1">📅 Calendar-year returns — strategy vs Nifty</div>
-        <div class="overflow-x-auto"><table class="text-xs"><thead><tr><th class="px-2 text-left"></th>${it.yby.map(y=>`<th class="px-2 py-0.5 text-right">${esc(y&&y[0])}</th>`).join('')}</tr></thead><tbody>
-          <tr><td class="px-2 text-blue-700 font-semibold whitespace-nowrap">Strategy</td>${it.yby.map(y=>`<td class="px-2 text-right ${(num(y&&y[1])||0)>=0?'pos':'neg'}">${pct(y&&y[1])}</td>`).join('')}</tr>
-          <tr><td class="px-2 text-amber-600 font-semibold whitespace-nowrap">Nifty 500</td>${it.yby.map(y=>`<td class="px-2 text-right ${(num(y&&y[2])||0)>=0?'pos':'neg'}">${pct(y&&y[2])}</td>`).join('')}</tr>
-        </tbody></table></div></td></tr>`:''}`;}).join('')}
-    </tbody></table></div>`;
-  $('list').querySelectorAll('[data-exp]').forEach(row=>row.addEventListener('click',e=>{ if(e.target.closest('button'))return; const d=$('exp_'+row.dataset.exp); if(!d)return; const open=d.style.display==='none'; d.style.display=open?'table-row':'none'; const ar=row.querySelector('.exparrow'); if(ar)ar.textContent=open?'▾':'▸'; }));
+        <td class="text-right px-3"><div class="font-semibold">${fmtINR(m.finalV)}</div>${mult!=null?`<div class="sw-cellsub text-right">${mult.toFixed(1)}×</div>`:''}</td>
+        <td class="px-4 py-2 whitespace-nowrap text-right">
+          <button class="btn-load" data-load="${esc(it.id)}">Load ↗</button>
+          ${OWNER?`<button class="btn-del ml-1.5" data-del="${esc(it.id)}">Delete</button>`:''}</td></tr>${hasY?`
+      <tr id="exp_${esc(it.id)}" style="display:none"><td colspan="7" class="px-4 pb-4 pt-1 bg-slate-50">
+        <div class="yby-panel">
+          <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+            <div class="text-[11px] uppercase tracking-wider text-slate-500 font-semibold">📅 Calendar-year returns — strategy vs Nifty 500</div>
+            ${(w=>w.n?`<span class="sw-chip ${w.won>=w.n/2?'pos':'neg'}"><span class="sw-dot"></span>beat Nifty in ${w.won} of ${w.n} yrs</span>`:'')(
+              it.yby.reduce((a,y)=>{const s=num(y&&y[1]),b=num(y&&y[2]);if(s!=null&&b!=null){a.n++;if(s>=b)a.won++;}return a;},{n:0,won:0}))}
+          </div>
+          <div class="overflow-x-auto"><table class="text-xs"><thead><tr><th class="text-left"></th>${it.yby.map(y=>`<th class="text-right text-slate-500 font-semibold">${esc(y&&y[0])}</th>`).join('')}</tr></thead><tbody>
+            <tr><td class="rowlab text-blue-700 whitespace-nowrap">Strategy</td>${it.yby.map(y=>`<td class="text-right ${(num(y&&y[1])||0)>=0?'pos':'neg'}">${pct(y&&y[1])}</td>`).join('')}</tr>
+            <tr><td class="rowlab text-amber-600 whitespace-nowrap">Nifty 500</td>${it.yby.map(y=>`<td class="text-right ${(num(y&&y[2])||0)>=0?'pos':'neg'}">${pct(y&&y[2])}</td>`).join('')}</tr>
+          </tbody></table></div>
+        </div></td></tr>`:''}`;}).join('')}
+    </tbody></table></div></div>`;
+  $('list').querySelectorAll('[data-exp]').forEach(row=>row.addEventListener('click',e=>{ if(e.target.closest('button'))return; const d=$('exp_'+row.dataset.exp); if(!d)return; const open=d.style.display==='none'; d.style.display=open?'table-row':'none'; row.classList.toggle('isopen',open); }));
   $('list').querySelectorAll('[data-load]').forEach(b=>b.onclick=()=>{const it=load().find(x=>x.id===b.dataset.load); if(it){localStorage.setItem('bt_load',JSON.stringify({cfg:it.cfg, saved:{m:it.m, yby:it.yby, label:it.label}})); location.href='./stock-backtest.html';}});
   $('list').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{save(load().filter(x=>x.id!==b.dataset.del)); render();});
 }
