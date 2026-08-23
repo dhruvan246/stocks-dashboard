@@ -14,6 +14,8 @@
   body{font-feature-settings:"tnum" 1}
   .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
   .pos{color:#15803d}.neg{color:#b91c1c}
+  /* long strategy names on the KPI tiles stay one tidy line */
+  .sw-stat .sw-d{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   /* The hover card borrows .card for its theming, but theme.css gives every .card the sw-rise entrance
      animation — which restarts on each un-hide, so the tooltip would fade+slide in over 0.5s AND be
      measured 12px above where it lands. A tooltip must appear already in place. */
@@ -57,6 +59,7 @@
     <button id="clearAll" class="text-xs text-red-600 hover:underline font-semibold">Clear all</button>
   </div>
   <p class="text-xs text-slate-500 mb-4">Strategies you saved, ranked by survivorship-free CAGR. Click a strategy to open its page — 🎯 live picks, 📈 backtests &amp; 🕘 rewind live there. <a href="./stock-backtest.html" class="text-indigo-600 hover:underline">← back to Backtest</a></p>
+  <div id="ssStats" class="hidden grid-cols-2 lg:grid-cols-4 gap-3 mb-4"></div>
   <div class="flex items-center gap-1.5 mb-3 flex-wrap">
     <button id="tabBest" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">🏆 Best return</button>
     <button id="tabNew" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">🆕 New</button>
@@ -595,10 +598,36 @@ function render() {
   $('uniRow').classList.toggle('hidden', !items.length);   // paired with 'flex' like waveRow/customBar — a bare `hidden` loses to `flex`
   $('uniRow').classList.toggle('flex', !!items.length);
   if (!items.length) {
-    $('list').innerHTML = '<div class="card p-8 text-center text-slate-400 text-sm">No saved strategies yet. Run a backtest and click “⭐ Save as Strategy”.</div>';
+    $('ssStats').classList.add('hidden'); $('ssStats').classList.remove('grid');
+    $('list').className = '';
+    $('list').innerHTML = `<div class="card p-10 text-center">
+      <div class="text-4xl mb-3">⭐</div>
+      <div class="font-bold text-slate-900 mb-1">No saved strategies yet</div>
+      <p class="text-xs text-slate-500 max-w-md mx-auto mb-5">Build a screen in the strategy builder, run it, and hit “⭐ Save as Strategy” — it lands here ranked by survivorship-free CAGR, with 🎯 live picks and 🕘 rewind on its own page.</p>
+      <a href="./stock-backtest.html" class="inline-flex items-center gap-2 bg-indigo-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-indigo-700 transition">🧪 Create a strategy</a>
+    </div>`;
     return;
   }
   const groups = buildGroups(items);
+  // At-a-glance strip — computed across ALL strategies (never narrowed by tab or membership).
+  // Metrics come from the world-writable shared history: finite-check every number, esc() every name.
+  {
+    let best = null, newest = null, beat = 0, scored = 0;
+    for (const g of groups.values()) {
+      if (isFinite(g.cagr) && (best == null || g.cagr > best.c)) best = { c: g.cagr, name: g.rep.name };
+      if (!newest || (g.rep.ts || 0) > (newest.ts || 0)) newest = g.rep;
+      let bb = null;
+      for (const b of g.list) { const m = b.m || {}; if (typeof m.cagr === 'number' && isFinite(m.cagr) && (bb == null || m.cagr > bb.c)) bb = { c: m.cagr, bench: m.benchCagr }; }
+      if (bb && typeof bb.bench === 'number' && isFinite(bb.bench)) { scored++; if (bb.c >= bb.bench) beat++; }
+    }
+    const newestDate = newest && newest.ts ? new Date(newest.ts).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+    $('ssStats').classList.remove('hidden'); $('ssStats').classList.add('grid');
+    $('ssStats').innerHTML =
+      `<div class="sw-stat"><div class="sw-lb">Strategies</div><div class="sw-v">${groups.size}</div><div class="sw-d">${items.length} saved variant${items.length === 1 ? '' : 's'}</div></div>
+       <div class="sw-stat"><div class="sw-lb">Best CAGR</div><div class="sw-v ${best && best.c < 0 ? 'neg' : 'pos'}">${best ? pct(best.c) : '—'}</div><div class="sw-d" title="${best ? esc(best.name || '') : ''}">${best ? esc(best.name || '') : 'run a backtest to rank them'}</div></div>
+       <div class="sw-stat"><div class="sw-lb">Beat Nifty 500</div><div class="sw-v ${scored ? (beat >= scored / 2 ? 'pos' : 'neg') : ''}">${scored ? beat + ' / ' + scored : '—'}</div><div class="sw-d">${scored ? 'on each one’s best saved run' : 'no scored runs yet'}</div></div>
+       <div class="sw-stat"><div class="sw-lb">Latest save</div><div class="sw-v" style="font-size:22px">${newestDate}</div><div class="sw-d" title="${newest ? esc(newest.name || '') : ''}">${newest ? esc(newest.name || '') : ''}</div></div>`;
+  }
   const favs = loadFavs();
   // sort: 'new' = most-recently-saved; 'custom' = by the computed custom-window CAGR (uncomputed sink to the bottom); else headline CAGR
   const wmode = windowMode();

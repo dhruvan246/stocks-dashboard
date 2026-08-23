@@ -46,7 +46,21 @@
       <a href="./saved-strategies.html" class="text-amber-600 hover:underline font-semibold">⭐ Saved Strategies</a>
     </div>
   </div>
-  <p id="introP" class="text-xs text-slate-500 mb-4">Screen the whole market by momentum/technical factors, hold the top picks, rebalance, and compare to Nifty 500. Filter &amp; rank like a quant screener.</p>
+  <p id="introP" class="text-xs text-slate-500 mb-2">Screen the whole market by momentum/technical factors, hold the top picks, rebalance, and compare to Nifty 500. Filter &amp; rank like a quant screener.</p>
+  <div class="flex flex-wrap gap-x-5 gap-y-1 text-[11px] text-slate-400 mb-4">
+    <span><b class="text-slate-500">1 · Build</b> — pick universe, ranking &amp; filters</span>
+    <span><b class="text-slate-500">2 · Save</b> — 💾 adds it to ⭐ Saved Strategies</span>
+    <span><b class="text-slate-500">3 · Run</b> — backtest vs Nifty 500; 🎯 live picks &amp; 🕘 rewind on its page</span>
+  </div>
+
+  <!-- one-click starting points: fill the form only (no market-data load) — tweak, then save -->
+  <div id="presetRow" class="flex items-center gap-2 flex-wrap mb-3">
+    <span class="text-[11px] font-bold uppercase tracking-wide text-slate-500">Start from a template</span>
+    <button data-preset="momentum" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">🚀 Momentum rider</button>
+    <button data-preset="quality" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">💎 Quality compounders</button>
+    <button data-preset="lowvol" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">🛡️ Low-volatility</button>
+    <button data-preset="smart" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">🏦 Smart-money follow</button>
+  </div>
 
   <!-- controls -->
   <div id="cfgCard" class="card p-4 mb-4">
@@ -579,6 +593,25 @@ async function applyCfg(c){
     r.querySelector('.f-field').value=f.field; r.querySelector('.f-op').value=f.op; r.querySelector('.f-val').value=f.val; });
   if(!(c.filters||[]).length) addFilter();
 }
+// ---- "Start from a template" presets: fill the FORM ONLY (never applyCfg — that path
+// awaits setMode('sf') and would pull the big market bins just to prefill inputs).
+// Dates and universe are left as-is so a preset never stomps a range the user picked.
+const PRESETS={
+  momentum:{ freq:3, sortBy:'ret6m',    dir:'high', topN:10, method:'hold',  filters:[{field:'d52',op:'<=',val:10},{field:'rsi',op:'<',val:75}] },
+  quality:{  freq:3, sortBy:'composite',dir:'high', topN:10, method:'hold',  filters:[{field:'profitYoyPct',op:'>',val:25},{field:'profitTTM',op:'>',val:0}] },
+  lowvol:{   freq:3, sortBy:'vol',      dir:'low',  topN:15, method:'reset', filters:[{field:'beta',op:'<',val:1}] },
+  smart:{    freq:3, sortBy:'fiiChgPp', dir:'high', topN:10, method:'hold',  filters:[{field:'fiiPct',op:'>',val:5}] },
+};
+function fillPreset(name){
+  const p=PRESETS[name]; if(!p) return;
+  $('cFreq').value=p.freq; $('cSort').value=p.sortBy; $('cDir').value=p.dir;
+  $('cTopN').value=p.topN; $('cMethod').value=p.method;
+  document.querySelectorAll('.fRow').forEach(r=>r.remove());
+  p.filters.forEach(f=>{ addFilter(); const rows=document.querySelectorAll('.fRow'); const r=rows[rows.length-1];
+    r.querySelector('.f-field').value=f.field; r.querySelector('.f-op').value=f.op; r.querySelector('.f-val').value=f.val; });
+  $('runMsg').textContent='Template applied — tweak anything, then 💾 Save Strategy.';
+}
+document.querySelectorAll('#presetRow [data-preset]').forEach(b=>b.onclick=()=>fillPreset(b.dataset.preset));
 // Short field labels for the filter fingerprint below — distinct from the longer FIELD_LABEL used
 // in dropdowns/tables. Keep in sync with backtest-engine.js's SHORT_FIELD (this page inlines its
 // own engine copy rather than loading backtest-engine.js — see the "keep in sync" comments above).
