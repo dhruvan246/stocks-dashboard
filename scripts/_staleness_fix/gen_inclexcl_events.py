@@ -72,6 +72,49 @@ MANUAL = {
     'Jindal Stainless Ltd.': 'JSL',
     'Jindal Stainless (Hisar) Ltd.': 'JSLHISAR',        # separate listing 2016-2023
     'Asian Hotels (North) Ltd.': 'ASIANHOTNR',          # West/East are different companies
+    # 2026-08-24 (DATA_RUNBOOK §106g) — the 2012-09..2013-07 UNDER-count: the 2012-04-27 / 2012-09-28 /
+    # 2013-04-01 reviews were replayed one-legged because these joiners have no CURRENT-name row (renamed,
+    # merged or delisted since), so the walk dropped 3-4 members per review. Each key verified three ways:
+    # the bin tape covers the event date(s), the ISIN is on the bin meta, and symchg.csv / NSE EQUITY_L
+    # carries the name->symbol row (quoted). Keys are the ERA symbol where a rename chain exists
+    # (to_current() folds them) and the era symbol ALONE where today's listing is a DIFFERENT ISIN.
+    'WABCO India Ltd.': 'WABCOINDIA',                   # symchg WABCO-TVS->WABCOINDIA 2011-09-06; INE342J01019; tape 2011-2022 (-> ZFCVINDIA)
+    'Gati Ltd.': 'GATI',                                # symchg GATI->ACLGATI 2023-11-30; INE152B01027; tape 2006-2023
+    'Vakrangee Software Ltd.': 'VAKRANSOFT',            # symchg VAKRANSOFT->VAKRANGEE 2013-11-27; INE051B01021
+    'NIIT Technologies Ltd.': 'NIITTECH',               # symchg NIITTECH->COFORGE 2020-08-20; INE591G01017 (NOT NIITLTD, the parent)
+    'Bharti Infratel Ltd.': 'INFRATEL',                 # symchg INFRATEL->INDUSTOWER 2020-12-18; INE121J01017; tape 2012-12+
+    'PVR Ltd.': 'PVR',                                  # symchg PVR->PVRINOX 2023-05-12; INE191H01014
+    'Eros Intl Media Ltd.': 'EROSMEDIA',                # INE416L01017; tape 2010-2024; sole Eros key in the bin
+    'Swan Energy Ltd.': 'SWANENERGY',                   # symchg SWANENERGY->SWANCORP 2025-09-04; INE665A01038
+    'Alstom T&D India Ltd.': 'ALSTOMT&D',               # symchg AREVAT&D->ALSTOMT&D 2012-03-12, ->GET&D 2016-09-14; INE200A01026 (chain -> GVT&D; era emission back-maps pre-2012 events to AREVAT&D)
+    'Techno Elt & Eng Co. Ltd.': 'TECHNO',              # INE286K01024, tape 2010-11..2018-08 — NOT TECHNOE (INE285K01026, a 2018 relisting with no rename chain)
+    'Magma Fincorp Ltd.': 'MAGMA',                      # symchg MAGMA->POONAWALLA 2021-08-05; INE511C01022
+    'Arshiya International Ltd.': 'ARSHIYA',            # EQUITY_L ARSHIYA "Arshiya Limited" INE968D01022; tape 2009-2025
+    'Ramky Infra Ltd.': 'RAMKY',                        # EQUITY_L RAMKY "Ramky Infrastructure Limited" INE874I01013
+    'Flexituff International Ltd.': 'FLEXITUFF',        # EQUITY_L FLEXITUFF "Flexituff Ventures International" INE060J01017
+    'Dr. Datsons Labs Ltd.': 'DRDATSONS',               # INE928K01013; tape 2011-2015; sole DRDATSONS key
+    'S.E. Investments Ltd.': 'SEINV',                   # symchg SEINV->PAISALO 2018-01-24; INE420C01042
+    'Indiabulls Real Estate Ltd.': 'IBREALEST',         # INE069I01010; tape 2007-2024 (INDIABULLS = Indiabulls FINANCIAL, below)
+    'Indiabulls Financial Services Ltd.': 'INDIABULLS', # INE894F01025; tape 2004-2013 (merged into IBHFL 2013)
+    'NDTV Ltd.': 'NDTV',                                # INE155G01029; tape 2004-2026
+    'Lakshmi Energy & Foods Ltd.': 'LAKSHMIEFL',        # INE992B01026; tape 2007-2018
+    'Paper Products Ltd.': 'PAPERPROD',                 # symchg PAPERPROD->HUHTAMAKI 2020-11-26; INE275B01026
+    'Patni Computer Systems Ltd.': 'PATNI',             # INE660F01012; tape 2004-2012 (delisted 2012 after iGATE buyout; exc 2012-05-21 lands on the last tape months)
+    'First Leasing Co. of India Ltd.': 'FIRSTLEASE',    # INE492B01019; tape 1996-2013
+    'Reliance MediaWorks Ltd.': 'RELMEDIA',             # symchg ADLABSFILM->RELMEDIA 2009-10-20; INE540B01015
+    'Sterlite Industries (India) Ltd.': 'STER',         # INE268A01049; tape 2004-2013 (merged into Sesa Sterlite 2013) — NOT Sterlite Technologies
+    'Deccan Chronicle Holdings Ltd.': 'DCHL',           # INE137G01027; tape 2004-2013
+    'Sona Koyo Steering Systems Ltd.': 'SONASTEER',     # INE643A01035; tape 1996-2018 — NOT SONACOMS (Sona BLW, 2021 IPO)
+    'Future Consumer Enterprise Ltd.': 'FUTUREVENT',    # symchg FVIL->FCEL 2013-10-17, FCEL->FCONSUMER 2016-10-25; INE220J01017 (chain -> FCONSUMER)
+    'JSW ISPAT Steel Ltd.': 'JSWISPAT',                 # symchg ISPATIND->JSWISPAT 2011-08-16; INE136A01022; tape 2006-2013
+    'Sujana Towers Ltd.-old': 'SUJANATOW',              # INE333I01028; tape 2008-10..2013-08 (the "-old" listing; SUJANATWR INE333I01036 is the post-2013 one)
+    'Kemrock Industries and Exports Ltd.': 'KEMROCK',   # INE990B01012; tape 2009-2016
+    'Varun Shipping Co. Ltd.': 'VARUNSHIP',             # INE702A01013; tape 1996-2015
+    'Fresenius Kabi Oncology Ltd.': 'FKONCO',           # symchg DABURPHARM->FKONCO 2009-02-19; INE575G01010; tape 2004-2013
+    'Carol Info Services Ltd.': 'CAROLINFO',            # symchg WOCKLIFE->CAROLINFO 2004-09-27; INE198A01014; tape 2000-2012
+    'Zuari Global Ltd.': 'ZUARIGLOB',                   # symchg ZUARIAGRO->ZUARIGLOB 2012-09-25, ->ZUARIIND 2022-07-04; INE217A01012 (chain -> ZUARIIND)
+    # NOT mapped, on purpose: 'Innoventive Industries Ltd.' (inc 2012-09-28 / exc 2013-09-27) — no tape under any key
+    # in our universe, so there is nothing to screen; recorded in `unmapped` as before.
 }
 
 
