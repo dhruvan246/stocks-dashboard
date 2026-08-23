@@ -147,6 +147,31 @@ select,input[type=text],input[type=number],input[type=date]{
   .kpi .val{font-size:23px}
 }
 .empty{padding:26px; text-align:center; color:var(--text-3); font-size:12.5px}
+
+/* ---------- strategy vs model · rebalance calendar ---------- */
+.sblk{border-top:1px solid var(--grid); padding:12px 4px 6px}
+.sblk:first-child{border-top:0; padding-top:4px}
+.shead{display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 12px; margin-bottom:8px}
+.shead .nm2{font-size:13.5px; font-weight:800}
+.cyc{font-size:10px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--text-3);
+     border:1px solid var(--border); border-radius:5px; padding:2px 6px; vertical-align:1px; white-space:nowrap}
+.trio{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:8px; margin:4px 0 10px}
+.trio .t{background:var(--surface-2); border-radius:10px; padding:9px 12px}
+.trio .t .l{font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--text-3)}
+.trio .t .v{font-size:20px; font-weight:800; letter-spacing:-.02em; margin-top:2px; line-height:1.1}
+.trio .t .s{font-size:11px; color:var(--text-2); margin-top:2px}
+.tag{font-size:9.5px; font-weight:800; letter-spacing:.06em; padding:2px 6px; border-radius:4px; white-space:nowrap}
+.tag.keep{background:color-mix(in srgb,var(--up) 16%,transparent); color:var(--up)}
+.tag.new{background:color-mix(in srgb,var(--accent) 16%,transparent); color:var(--accent)}
+.tag.exit{background:color-mix(in srgb,var(--down) 16%,transparent); color:var(--down)}
+.tag.off{background:var(--surface-2); color:var(--text-3)}
+.cal{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:10px; margin:2px 0 12px}
+.cal .d{background:var(--surface-2); border-radius:10px; padding:10px 13px}
+.cal .d .l{font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--text-3)}
+.cal .d .v{font-size:17px; font-weight:800; margin-top:3px}
+.cal .d .s{font-size:11.5px; color:var(--text-2); margin-top:2px}
+.mstrip{display:flex; gap:4px; flex-wrap:wrap; margin:2px 0 8px}
+.mstrip span{font-size:11px; font-weight:700; padding:3px 7px; border-radius:6px; background:var(--surface-2)}
 </style>
 </head>
 <body>
@@ -168,13 +193,21 @@ select,input[type=text],input[type=number],input[type=date]{
 
     <div class="kpis" id="kpis"></div>
 
-    <div class="card c12" style="margin-bottom:14px"><h2>Today, by strategy</h2>
+    <div class="card c12" style="margin-bottom:14px"><h2 id="todayH">Today, by strategy</h2>
       <div class="sub" id="todaySub"></div>
       <div class="body"><div class="twrap"><table id="tblToday"></table></div></div></div>
 
     <div class="filters" id="filters"></div>
 
     <div class="grid">
+      <div class="card c12" id="cardModel"><h2>You vs the strategy — since its last rebalance</h2>
+        <div class="sub" id="modelSub"></div>
+        <div class="body" id="modelBody"></div></div>
+
+      <div class="card c12" id="cardCal"><h2>Rebalance calendar — what the screen says today</h2>
+        <div class="sub" id="calSub"></div>
+        <div class="body" id="calBody"></div></div>
+
       <div class="card c12"><h2>Strategy returns since last month-end</h2>
         <div class="sub" id="meSub"></div>
         <div class="body"><div id="chMonthEnd"></div>
@@ -203,7 +236,7 @@ select,input[type=text],input[type=number],input[type=date]{
         <div class="sub">How far below its own high-water mark the portfolio has been.</div>
         <div class="body"><div id="chDD"></div></div></div>
 
-      <div class="card c6"><h2>Today's contribution</h2>
+      <div class="card c6"><h2 id="dayH">Today's contribution</h2>
         <div class="sub" id="daySub">What each holding added to or took off today's P&amp;L.</div>
         <div class="body"><div id="chDay"></div></div></div>
 
@@ -262,7 +295,7 @@ const EPOCH = Date.UTC(1996,0,1);
 const offToISO = o => new Date(EPOCH + o*864e5).toISOString().slice(0,10);
 const isoToOff = s => Math.round((Date.parse(s+'T00:00:00Z') - EPOCH)/864e5);
 
-let DOC=null, META={}, SERIES={}, NIFTY=null, QUOTES={}, QASOF=0, ROWS=[], HIST=null;
+let DOC=null, META={}, SERIES={}, NIFTY=null, QUOTES={}, QASOF=0, ROWS=[], HIST=null, MODEL=null;
 let SEL = {acct:new Set(), pf:new Set(), alloc:'pf', sort:{k:'value',dir:-1}};
 
 /* ---------------- formatting (Indian) ---------------- */
@@ -296,6 +329,23 @@ function marketOpen(){
   const m=(+p.hour)*60+(+p.minute);
   return m>=555 && m<=930;                                     // 09:15 – 15:30 IST
 }
+/* The quote worker returns ltp + prevClose and no session date, so "today's move" is
+   really "the last session's move". On a weekend or before 09:15 on a weekday that
+   session is NOT today — say so, and name the session from the price file's last bar
+   instead of calling Friday's move "Today" on a Sunday. (Weekday NSE holidays are not
+   modelled: on one, this still says "Today".) */
+function sessionIsToday(){
+  const p=istParts();
+  if(p.weekday==='Sat'||p.weekday==='Sun') return false;
+  return ((+p.hour)*60+(+p.minute))>=555;
+}
+function lastSessionISO(){
+  let mx=-1;
+  (ROWS.length?ROWS:[]).forEach(r=>{ const s=SERIES[r.hist]; if(s&&s.d&&s.d.length) mx=Math.max(mx,s.d[s.d.length-1]); });
+  return mx<0?null:offToISO(mx);
+}
+function dayWord(){ return sessionIsToday()?'Today':'Last session'; }
+function dayWhen(){ if(sessionIsToday()) return ''; const d=lastSessionISO(); return d?' ('+shortDate(d)+')':''; }
 
 /* ---------------- loading ---------------- */
 async function gunzipJSON(url){
@@ -332,6 +382,32 @@ async function loadHoldings(){
   const st=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
   return JSON.parse(await new Response(st).text());
 }
+/* model.json — written by model_track.js (the site's backtest engine run under Node): the
+   strategy's basket at every rebalance with rebalance-close prices, and the screen's picks
+   as of the latest close. Local: the file beside this page. Web: its own token-gated row
+   (holdings token + '.model'), pushed by push_holdings.py. Missing → the two cards say so. */
+async function unzipRow(row){
+  const bytes=Uint8Array.from(atob(row.z),c=>c.charCodeAt(0));
+  const st=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+  return JSON.parse(await new Response(st).text());
+}
+async function loadModel(){
+  try{
+    if(MODE==='local'){ const r=await fetch('./model.json',{cache:'no-store'}); if(r.ok) MODEL=await r.json(); return; }
+    const t=readToken(); if(!t) return;
+    const r=await fetch(SUPA_GET+'?token='+encodeURIComponent(t+'.model')+'&apikey='+SUPA_ANON,{cache:'no-store'});
+    if(!r.ok) return; const row=await r.json(); if(row&&row.z) MODEL=await unzipRow(row);
+  }catch(e){ console.warn('model not loaded:',e.message); }
+}
+/* every symbol the model cards need a price for — basket at the last rebalance + today's picks */
+function modelSyms(){
+  const out=new Set();
+  if(MODEL&&MODEL.strategies) Object.values(MODEL.strategies).forEach(s=>{
+    const last=s.rebs&&s.rebs[s.rebs.length-1]; if(last) last.h.forEach(h=>out.add(h[0]+'.NS'));
+    (s.picks&&s.picks.rows||[]).forEach(r=>out.add(r.sym+'.NS'));
+  });
+  return [...out];
+}
 async function loadAll(){
   const [doc,slim,nif] = await Promise.all([
     loadHoldings(),
@@ -340,10 +416,11 @@ async function loadAll(){
   ]);
   DOC=doc; META=slim.meta||{}; SERIES=slim.series||{}; NIFTY=nif;
   DOC.holdings.forEach(h=>{ h.buyOff=isoToOff(h.date); });
+  await loadModel();
   await refreshQuotes();
 }
 async function refreshQuotes(){
-  const syms=[...new Set(DOC.holdings.map(h=>h.live).filter(Boolean))];
+  const syms=[...new Set(DOC.holdings.map(h=>h.live).filter(Boolean).concat(modelSyms()))];
   if(!syms.length) return;
   try{
     const r=await fetch(CFG.worker+'?quotes='+encodeURIComponent(syms.join(',')),{cache:'no-store'});
@@ -629,6 +706,10 @@ function lineChart(host,o){
 /* ---- horizontal bars, diverging around zero ---- */
 function barsH(host,items,o){
   o=o||{};
+  /* Privacy: the tables blur stock names and rupee amounts (.secret) but an SVG <text>
+     never got the class, so every bar chart stayed readable with 🙈 on. The chart says
+     which of its two columns are sensitive: stock names / ₹ are, strategy names / % are not. */
+  const secL=o.secretLabels?' secret':'', secV=o.secretValues?' secret':'';
   if(!items.length){ host.innerHTML='<div class="empty">Nothing to show.</div>'; return; }
   const W=chartW(host), narrow=W<520;
   const rowH=o.rowH||(narrow?26:22), H=items.length*rowH+16;
@@ -646,16 +727,16 @@ function barsH(host,items,o){
     const y=i*rowH+8, w=Math.max(1.5,scale(d.value)), neg=d.value<0;
     const x=neg? zeroX-w : zeroX;
     const col=d.color|| (diverging? (neg?'var(--down)':'var(--up)') : 'var(--s1)');
-    s+='<text class="axis" x="'+(labW-8)+'" y="'+(y+rowH/2-1)+'" text-anchor="end" fill="var(--text-2)" font-weight="600" font-size="'+fs+'">'+esc(fitText(d.label,labW-12,fs))+'</text>';
+    s+='<text class="axis'+secL+'" x="'+(labW-8)+'" y="'+(y+rowH/2-1)+'" text-anchor="end" fill="var(--text-2)" font-weight="600" font-size="'+fs+'">'+esc(fitText(d.label,labW-12,fs))+'</text>';
     s+='<rect class="bar" data-i="'+i+'" x="'+x.toFixed(1)+'" y="'+(y+2)+'" width="'+w.toFixed(1)+'" height="'+(rowH-7)+'" rx="4" fill="'+col+'"/>';
-    s+='<text class="axis" x="'+(W-4)+'" y="'+(y+rowH/2-1)+'" text-anchor="end" fill="var(--text-2)" font-weight="700" font-size="'+fs+'">'+esc(o.fmtV(d.value))+'</text>';
+    s+='<text class="axis'+secV+'" x="'+(W-4)+'" y="'+(y+rowH/2-1)+'" text-anchor="end" fill="var(--text-2)" font-weight="700" font-size="'+fs+'">'+esc(o.fmtV(d.value))+'</text>';
   });
   if(diverging) s+='<line class="zeroline" x1="'+zeroX+'" x2="'+zeroX+'" y1="4" y2="'+(H-8)+'"/>';
   s+='</svg>';
   host.innerHTML=s;
   host.querySelectorAll('rect.bar').forEach(r=>{
     r.addEventListener('mousemove',ev=>{ const d=items[+r.dataset.i];
-      showTip('<b>'+esc(d.full||d.label)+'</b>'+(d.tip||('<div class="r"><span>Value</span><b>'+o.fmtV(d.value)+'</b></div>')),ev); });
+      showTip('<b class="'+secL.trim()+'">'+esc(d.full||d.label)+'</b>'+(d.tip||('<div class="r"><span>Value</span><b class="'+secV.trim()+'">'+o.fmtV(d.value)+'</b></div>')),ev); });
     r.addEventListener('mouseleave',hideTip);
   });
 }
@@ -741,7 +822,7 @@ function scatter(host,pts,o){
   host.innerHTML=s;
   host.querySelectorAll('circle.pt').forEach(c=>{
     c.addEventListener('mousemove',ev=>{ const p=pts[+c.dataset.i];
-      showTip('<b>'+esc(p.label)+'</b><div class="r"><span>Return</span><b>'+pct(p.y)+'</b></div><div class="r"><span>Held</span><b>'+p.x+' days</b></div><div class="r"><span>Value</span><b class="secret">'+inr(p.v)+'</b></div>',ev); });
+      showTip('<b class="secret">'+esc(p.label)+'</b><div class="r"><span>Return</span><b>'+pct(p.y)+'</b></div><div class="r"><span>Held</span><b>'+p.x+' days</b></div><div class="r"><span>Value</span><b class="secret">'+inr(p.v)+'</b></div>',ev); });
     c.addEventListener('mouseleave',hideTip);
   });
 }
@@ -769,7 +850,7 @@ function renderKPIs(rows,H){
   const t=totals(rows), x=xirr(rows);
   const tiles=[
     {lab:'Market value', val:inr(t.value), sub:rows.length+' holdings · '+new Set(rows.map(r=>r.sym)).size+' stocks', secret:true},
-    {lab:"Today", val:inrSigned(t.day), sub:pct(t.dayPct), c:cls(t.day), secret:true},
+    {lab:dayWord()+dayWhen(), val:inrSigned(t.day), sub:pct(t.dayPct), c:cls(t.day), secret:true},
     {lab:'Unrealised P&L', val:inrSigned(t.pnl), sub:pct(t.pnlPct), c:cls(t.pnl), secret:true},
     {lab:'Invested', val:inr(t.cost), sub:'cost basis', secret:true},
     {lab:'XIRR', val:(x==null?'—':pct(x,1)), sub:'annualised, money-weighted', c:cls(x)}
@@ -843,29 +924,30 @@ function renderCharts(rows){
   });
   barsH($('chDay'), byStock.filter(d=>d.day!==0).sort((a,b)=>b.day-a.day)
       .map(d=>({label:d.label.slice(0,22), full:d.label, value:d.day,
-                tip:'<div class="r"><span>Today</span><b>'+inrSigned(d.day)+'</b></div><div class="r"><span>In</span><b>'+esc(d.pfs.join(', '))+'</b></div>'})),
-      {fmtV:v=>inrSigned(v), labW:160});
-  $('daySub').innerHTML='What each stock added to or took off today — '+inrSigned(t.day)+' in total'+(t.dayPct!=null?' ('+pct(t.dayPct)+')':'')+'.';
+                tip:'<div class="r"><span>'+dayWord()+'</span><b class="secret">'+inrSigned(d.day)+'</b></div><div class="r"><span>In</span><b>'+esc(d.pfs.join(', '))+'</b></div>'})),
+      {fmtV:v=>inrSigned(v), labW:160, secretLabels:true, secretValues:true});
+  $('dayH').textContent=(sessionIsToday()?'Today\u2019s':'Last session\u2019s')+' contribution';
+  $('daySub').innerHTML='What each stock added to or took off '+(sessionIsToday()?'today':'in the last session'+dayWhen())+' — <span class="secret">'+inrSigned(t.day)+'</span> in total'+(t.dayPct!=null?' ('+pct(t.dayPct)+')':'')+'.';
 
   barsH($('chPnl'), byStock.slice().sort((a,b)=>b.pnl-a.pnl)
       .map(d=>({label:d.label.slice(0,22), full:d.label, value:d.pnl,
-                tip:'<div class="r"><span>P&L</span><b>'+inrSigned(d.pnl)+'</b></div><div class="r"><span>Return</span><b>'+pct(d.pnlPct)+'</b></div>'})),
-      {fmtV:v=>inrSigned(v), labW:160});
+                tip:'<div class="r"><span>P&L</span><b class="secret">'+inrSigned(d.pnl)+'</b></div><div class="r"><span>Return</span><b>'+pct(d.pnlPct)+'</b></div>'})),
+      {fmtV:v=>inrSigned(v), labW:160, secretLabels:true, secretValues:true});
 
   barsH($('chSector'), [...groupBy(rows.filter(r=>r.value!=null),r=>r.sector).entries()]
       .map(([k,v])=>({label:k.slice(0,24), full:k, value:agg(v).value})).sort((a,b)=>b.value-a.value),
-      {fmtV:v=>inr(v), diverging:false, labW:170});
+      {fmtV:v=>inr(v), diverging:false, labW:170, secretValues:true});
 
   barsH($('chWeight'), byStock.filter(d=>d.value>0).sort((a,b)=>b.value-a.value)
       .map(d=>({label:d.label.slice(0,22), full:d.label, value:d.value,
                 tip:'<div class="r"><span>Weight</span><b>'+(t.value>0?(d.value/t.value*100).toFixed(1):'—')+'%</b></div>'})),
-      {fmtV:v=>inr(v), diverging:false, labW:160});
+      {fmtV:v=>inr(v), diverging:false, labW:160, secretLabels:true, secretValues:true});
 
   scatter($('chScatter'), rows.filter(r=>r.value!=null&&r.pnlPct!=null)
       .map(r=>({x:r.days, y:r.pnlPct, v:r.value, label:(r.cname||r.sym)+' · '+r.pfName})));
 }
 const COLS=[
-  {k:'cname',  t:'Stock',    f:r=>'<span class="nm secret">'+esc((r.cname||r.sym).replace(/ (Ltd|Limited)\.?$/,''))+'</span><br><span class="sym">'+esc(r.sym)+(r.psrc==='manual'?' <span class="badge warn">manual</span>':r.psrc==='eod'?' <span class="badge">EOD</span>':r.psrc==='none'?' <span class="badge warn">no price</span>':'')+'</span>'},
+  {k:'cname',  t:'Stock',    f:r=>'<span class="nm secret">'+esc((r.cname||r.sym).replace(/ (Ltd|Limited)\.?$/,''))+'</span><br><span class="sym"><span class="secret">'+esc(r.sym)+'</span>'+(r.psrc==='manual'?' <span class="badge warn">manual</span>':r.psrc==='eod'?' <span class="badge">EOD</span>':r.psrc==='none'?' <span class="badge warn">no price</span>':'')+'</span>'},
   {k:'pfName', t:'Portfolio',f:r=>'<span class="sym">'+esc(r.pfName)+(r.account?' · '+esc(acctName(r.account)):'')+'</span>'},
   {k:'qty',    t:'Qty',      f:r=>'<span class="secret">'+r.qty.toLocaleString('en-IN')+'</span>'},
   {k:'avg',    t:'Avg',      f:r=>'₹'+r.avg.toFixed(2)},
@@ -923,14 +1005,15 @@ function renderToday(rows){
     return {name, acct:pf.account?acctName(pf.account):'—', n:rs.length,
             day:a.day, pct:base>0? a.day/base*100 : null, value:a.value};
   }).sort((x,y)=>(y.pct==null?-1e9:y.pct)-(x.pct==null?-1e9:x.pct));
-  $('todaySub').innerHTML='Each strategy\u2019s move today, biggest first \u2014 tap a name for its stocks'+
+  $('todayH').textContent=dayWord()+', by strategy';
+  $('todaySub').innerHTML='Each strategy\u2019s move '+(sessionIsToday()?'today':'in the last session'+dayWhen())+', biggest first \u2014 tap a name for its stocks'+
     (SEL.acct.size||SEL.pf.size? ' (filtered)':'')+'.';
   /* On a phone the whole point is seeing today's move without scrolling sideways,
      so the secondary columns are dropped rather than pushed off-screen. */
   const narrow = innerWidth < 640;
   const ncols = narrow ? 3 : 6;
   let h='<thead><tr><th>Strategy</th>'+(narrow?'':'<th>Account</th><th>Holdings</th><th>Value</th>')+
-        '<th>Today</th><th>Today %</th></tr></thead><tbody>';
+        '<th>'+dayWord()+'</th><th>'+dayWord()+' %</th></tr></thead><tbody>';
   list.forEach((r,gi)=>{
     const open=TODAY_OPEN.has(r.name);
     h+='<tr class="todayRow" data-pf="'+esc(r.name)+'" style="cursor:pointer">'+
@@ -951,7 +1034,7 @@ function renderToday(rows){
            'padding:6px 9px 6px 28px;background:var(--surface-2);border-bottom:1px solid var(--grid);font-size:12.5px">'+
            '<span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%">'+
              '<span class="secret">'+esc((s.cname||s.sym).replace(/ (Ltd|Limited)\.?$/,''))+'</span> '+
-             '<span class="sym">'+esc(s.sym)+'</span></span>'+
+             '<span class="sym secret">'+esc(s.sym)+'</span></span>'+
            '<span style="white-space:nowrap;flex-shrink:0">'+
              '<span class="'+cls(s.day)+' secret">'+(s.day==null?'\u2014':inrSigned(s.day))+'</span>'+
              '<b class="'+cls(s.dayPct)+'" style="margin-left:10px">'+pct(s.dayPct)+'</b></span>'+
@@ -1017,9 +1100,145 @@ function renderStrategyCard(rows, mode, ids){
      '<td class="'+cls(M.total.ret)+'"><b>'+pct(M.total.ret)+'</b></td></tr></tfoot>';
   tbl.innerHTML=h;
 }
+/* ============================ you vs the strategy ============================ */
+/* Price for a MODEL symbol (NSE name): the live quote, else the site's last close (EOD). */
+function modelPx(sym){
+  const y=sym+'.NS', q=QUOTES[y];
+  if(q&&q.ltp!=null) return {px:q.ltp, src:'live'};
+  const m=META[y]; if(m&&m.latest!=null) return {px:m.latest, src:'eod'};
+  const s=SERIES[y]; if(s&&s.p&&s.p.length) return {px:s.p[s.p.length-1]/100, src:'eod'};
+  return {px:null, src:'none'};
+}
+function cycBadge(cyc){ const M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return '<span class="cyc">'+(cyc.length===4?'Q':cyc.length+'×')+' · '+cyc.map(m=>M[m-1]).join('·')+'</span>'; }
+function weekdayOnOrBefore(iso){ const d=new Date(iso+'T00:00:00Z'); while(d.getUTCDay()===0||d.getUTCDay()===6) d.setUTCDate(d.getUTCDate()-1); return d.toISOString().slice(0,10); }
+function prevWeekday(iso){ const d=new Date(iso+'T00:00:00Z'); do{ d.setUTCDate(d.getUTCDate()-1); }while(d.getUTCDay()===0||d.getUTCDay()===6); return d.toISOString().slice(0,10); }
+function monthEndISO(y,m){ return new Date(Date.UTC(y,m,0)).toISOString().slice(0,10); }
+/* Next rebalance = last weekday of the next cycle month (today counts). NSE holidays are not
+   modelled — a month-end holiday moves the real day one session earlier than shown. */
+function nextRebalance(cycle){
+  const today=istTodayISO(); let y=+today.slice(0,4), m=+today.slice(5,7);
+  for(let i=0;i<24;i++){ if(cycle.includes(m)){ const R=weekdayOnOrBefore(monthEndISO(y,m)); if(R>=today) return R; } m++; if(m>12){m=1;y++;} }
+  return null;
+}
+function daysBetween(a,b){ return Math.round((Date.parse(b+'T00:00:00Z')-Date.parse(a+'T00:00:00Z'))/864e5); }
+function longDate(iso){ return new Date(iso+'T00:00:00Z').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',timeZone:'UTC'}); }
+/* strategies to show = MTF portfolios with a model, honouring the account/portfolio chips */
+function modelStrategies(rows){
+  if(!MODEL||!MODEL.strategies) return [];
+  const vis=new Set(rows.map(r=>r.pf));
+  return (DOC.portfolios||[]).filter(p=>MODEL.strategies[p.id]&&p.cycle&&(SEL.pf.size===0&&SEL.acct.size===0 || vis.has(p.id)))
+    .map(p=>({pf:p, m:MODEL.strategies[p.id], next:nextRebalance(p.cycle)}))
+    .sort((a,b)=>(a.next||'9').localeCompare(b.next||'9'));
+}
+function renderModel(rows){
+  const body=$('modelBody'), sub=$('modelSub');
+  if(!MODEL){ sub.textContent='No model file yet.'; body.innerHTML='<div class="empty">Run <code>node model_track.js</code> on the Mac, then re-publish.</div>'; return; }
+  const list=modelStrategies(rows);
+  if(!list.length){ sub.textContent='No strategy in this selection.'; body.innerHTML='<div class="empty">Pick an MTF strategy.</div>'; return; }
+  sub.innerHTML='The strategy\u2019s basket from its last rebalance close vs. what you actually hold, both priced live. '+
+    'The gap is what your entry timing cost (or earned) — same stocks, different buy prices. Model run '+esc(MODEL.generated)+', bars to '+shortDate(MODEL.dataEnd)+'.';
+  let h='';
+  list.forEach(({pf,m})=>{
+    const last=m.rebs[m.rebs.length-1]; if(!last) return;
+    const mine=ROWS.filter(r=>r.pf===pf.id);
+    /* model basket: Σ weight × (now ÷ rebalance close) + cash → one return; per-stock rows */
+    let mnum=0, mden=0, eod=0;
+    const mrows=last.h.map(([sym,wt,px0,isNew])=>{ const p=modelPx(sym); if(p.src==='eod') eod++;
+      const r=(p.px!=null&&px0)?(p.px/px0-1)*100:null; if(r!=null){ mnum+=wt*(p.px/px0); mden+=wt; }
+      return {sym,wt,px0,isNew,px:p.px,src:p.src,ret:r}; });
+    const modelRet=mden>0? (mnum+(last.cashWt||0))/(mden+(last.cashWt||0))*100-100 : null;
+    const mine2=mine.filter(r=>r.px!=null); const yb=mine2.reduce((s,r)=>s+r.cost,0), yn=mine2.reduce((s,r)=>s+r.value,0);
+    const yourRet=yb>0?(yn/yb-1)*100:null;
+    const gap=(modelRet!=null&&yourRet!=null)?yourRet-modelRet:null;
+    const first=mine.map(r=>r.date).sort()[0], lastD=mine.map(r=>r.date).sort().slice(-1)[0];
+    const days=daysBetween(last.td, istTodayISO());
+    h+='<div class="sblk"><div class="shead"><span class="nm2">'+esc(pf.name)+'</span>'+cycBadge(pf.cycle)+
+       '<span class="meta">strategy rebalanced <b>'+shortDate(last.td)+'</b> ('+days+' days ago)'+
+       (first?' · you bought '+(first===lastD?shortDate(first):shortDate(first)+' – '+shortDate(lastD)):'')+'</span></div>';
+    h+='<div class="trio">'+
+      '<div class="t"><div class="l">Strategy basket</div><div class="v '+cls(modelRet)+'">'+pct(modelRet)+'</div><div class="s">from the '+shortDate(last.td)+' close'+(eod?' · '+eod+' at last close':'')+'</div></div>'+
+      '<div class="t"><div class="l">Your basket</div><div class="v '+cls(yourRet)+'">'+pct(yourRet)+'</div><div class="s">from your buy prices'+(mine.length!==mine2.length?' · '+(mine.length-mine2.length)+' unpriced':'')+'</div></div>'+
+      '<div class="t"><div class="l">Gap</div><div class="v '+cls(gap)+'">'+(gap==null?'—':(gap>=0?'+':'−')+Math.abs(gap).toFixed(2)+' pp')+'</div><div class="s">'+(gap==null?'':gap>=0?'you are ahead of the strategy':'entry timing cost you this much')+'</div></div></div>';
+    /* union of the two baskets, one row per stock */
+    const syms=[...new Set([...last.h.map(x=>x[0]), ...mine.map(r=>r.sym.replace(/\.(NS|BO)$/,''))])];
+    h+='<div class="twrap"><table><thead><tr><th>Stock</th><th>Strategy entry</th><th>Your avg</th><th>Entry slip</th><th>Now</th><th>Strategy</th><th>You</th></tr></thead><tbody>';
+    syms.forEach(sym=>{
+      const mr=mrows.find(x=>x.sym===sym), yr=mine.find(r=>r.sym.replace(/\.(NS|BO)$/,'')===sym);
+      const now=(yr&&yr.px!=null)?yr.px:(mr?mr.px:null);
+      const slip=(mr&&yr&&mr.px0)?(yr.avg/mr.px0-1)*100:null;
+      const yret=(yr&&yr.pnlPct!=null)?yr.pnlPct:null;
+      const note= !mr?'<span class="tag off">not in strategy</span>' : !yr?'<span class="tag off">not held</span>' : '';
+      h+='<tr><td><span class="secret"><b>'+esc(sym)+'</b></span>'+(note?' '+note:'')+(mr&&mr.wt!==20&&mr.wt!=null?' <span class="sym">'+mr.wt.toFixed(0)+'% wt</span>':'')+'</td>'+
+         '<td>'+(mr&&mr.px0?'₹'+mr.px0.toFixed(2):'—')+'</td>'+
+         '<td>'+(yr?'₹'+yr.avg.toFixed(2):'—')+'</td>'+
+         '<td class="'+(slip==null?'':slip>0?'down':'up')+'">'+(slip==null?'—':pct(slip))+'</td>'+
+         '<td>'+(now!=null?'₹'+now.toFixed(2):'—')+(mr&&mr.src==='eod'?' <span class="badge">EOD</span>':'')+'</td>'+
+         '<td class="'+cls(mr?mr.ret:null)+'">'+(mr?pct(mr.ret):'—')+'</td>'+
+         '<td class="'+cls(yret)+'"><b>'+pct(yret)+'</b></td></tr>';
+    });
+    h+='</tbody></table></div>';
+    /* the strategy's last few periods, for scale. A period's return runs from the PREVIOUS
+       rebalance to this one; a previous rebalance that found nothing to buy (cashWt 100)
+       means the whole period was spent in cash — say so rather than show a bare 0.0%. */
+    const n8=Math.min(8, m.rebs.length-1);
+    if(n8>0){ h+='<div class="note" style="padding:8px 4px 0">Strategy\u2019s last '+n8+' periods (to each rebalance):</div><div class="mstrip">';
+      for(let i=m.rebs.length-n8;i<m.rebs.length;i++){ const r=m.rebs[i], prev=m.rebs[i-1], allCash=prev&&prev.cashWt>=99.5;
+        const lab=new Date(r.d+'T00:00:00Z').toLocaleDateString('en-GB',{month:'short',year:'2-digit',timeZone:'UTC'});
+        h+='<span class="'+(allCash?'flat':cls(r.ret))+'" title="'+esc(prev?prev.td+' → '+r.td:r.td)+'">'+lab+' '+(allCash?'all cash':pct(r.ret,1))+'</span>'; }
+      h+='</div>'; }
+    h+='</div>';
+  });
+  body.innerHTML=h;
+}
+function renderCalendar(rows){
+  const body=$('calBody'), sub=$('calSub');
+  if(!MODEL){ sub.textContent='No model file yet.'; body.innerHTML='<div class="empty">Run <code>node model_track.js</code> on the Mac, then re-publish.</div>'; return; }
+  const list=modelStrategies(rows);
+  if(!list.length){ sub.textContent='No strategy in this selection.'; body.innerHTML='<div class="empty">Pick an MTF strategy.</div>'; return; }
+  const asOf=MODEL.picksAsOf||MODEL.dataEnd;
+  sub.innerHTML='Next rebalance per strategy, and the screen\u2019s top picks <b>as of the '+shortDate(asOf)+' close</b> — what it would buy if the rebalance were today. '+
+    'Picks move with every close until the day itself. MTF: sell the exits the session before, buy the entries on the day. '+
+    'Dates are calendar month-ends stepped back over weekends; NSE holidays are not modelled.';
+  const today=istTodayISO(); let h='';
+  list.forEach(({pf,m,next})=>{
+    const mine=ROWS.filter(r=>r.pf===pf.id);
+    const held=new Set(mine.map(r=>r.sym.replace(/\.(NS|BO)$/,'')));
+    const picks=(m.picks&&m.picks.rows)||[], pickSet=new Set(picks.map(r=>r.sym));
+    const dd=next?daysBetween(today,next):null, sell=next?prevWeekday(next):null;
+    const exits=[...held].filter(s=>!pickSet.has(s)), entries=picks.filter(r=>!held.has(r.sym)).length;
+    h+='<div class="sblk"><div class="shead"><span class="nm2">'+esc(pf.name)+'</span>'+cycBadge(pf.cycle)+'</div>';
+    h+='<div class="cal">'+
+      '<div class="d"><div class="l">Next rebalance</div><div class="v">'+(next?longDate(next):'—')+'</div><div class="s">'+(dd==null?'':dd===0?'today — ranks on today\u2019s close':dd+' day'+(dd===1?'':'s')+' to go')+'</div></div>'+
+      '<div class="d"><div class="l">Sell exits on</div><div class="v">'+(sell?longDate(sell):'—')+'</div><div class="s">MTF proceeds usable the next session</div></div>'+
+      '<div class="d"><div class="l">If it were today</div><div class="v">'+exits.length+' exit · '+entries+' new</div><div class="s">'+(m.picks?m.picks.qualifying+' stocks pass the filters':'')+'</div></div></div>';
+    h+='<div class="twrap"><table><thead><tr><th>#</th><th>Pick</th><th>'+esc((m.label||'').split(' ')[0]||'Factor')+' (sort)</th><th>From 52w high</th><th>Above 52w low</th><th>Close '+shortDate(asOf)+'</th><th>Now</th></tr></thead><tbody>';
+    picks.forEach(r=>{ const p=modelPx(r.sym);
+      h+='<tr><td>'+r.rank+'</td><td><span class="secret"><b>'+esc(r.sym)+'</b></span> '+(held.has(r.sym)?'<span class="tag keep">held</span>':'<span class="tag new">new</span>')+'</td>'+
+         '<td>'+(r.f==null?'—':r.f.toFixed(1)+'%')+'</td><td>'+(r.d52==null?'—':'−'+r.d52.toFixed(1)+'%')+'</td><td>'+(r.lo==null?'—':'+'+r.lo.toFixed(0)+'%')+'</td>'+
+         '<td>'+(r.px!=null?'₹'+(+r.px).toFixed(2):'—')+'</td><td>'+(p.px!=null?'₹'+p.px.toFixed(2):'—')+(p.src==='eod'?' <span class="badge">EOD</span>':'')+'</td></tr>'; });
+    /* your holdings that are NOT in today's top-N: where they stand */
+    const standing=m.standing||[];
+    const FN={d52:'from its 52-week high',d52_low_pct:'above its 52-week low',profitYoyPct:'profit growth YoY',profitTTM:'profit growth TTM'};
+    const OPW={'>':'needs more than','>=':'needs at least','<':'needs under','<=':'needs at most','=':'needs'};
+    const phrase=f=>{ if(!f) return 'no longer passes the screen'; const nm=FN[f.field]||f.field;
+      return f.x==null? 'no '+nm+' reading' : nm+' is '+f.x+'% \u2014 '+(OPW[f.op]||f.op)+' '+f.val+'%'; };
+    h+='</tbody></table></div>';
+    /* exits as wrapping rows, not table rows: on a phone the table scrolls sideways and the
+       reason — the one thing worth reading before a rebalance — would be the part cut off */
+    exits.forEach(sym=>{ const st=standing.find(x=>x.sym===sym);
+      const why= !st? 'not in the strategy\u2019s basket' : st.rank? 'now rank '+st.rank+' of '+m.picks.qualifying+' \u2014 below the top '+(m.topN||picks.length) : phrase(st.fail);
+      h+='<div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 12px;padding:7px 9px;border-bottom:1px solid var(--grid);font-size:12.5px">'+
+         '<span style="white-space:nowrap"><span class="secret"><b>'+esc(sym)+'</b></span> <span class="tag exit">exit</span></span>'+
+         '<span class="sym" style="min-width:0">'+esc(why)+'</span></div>'; });
+    h+='</div>';
+  });
+  body.innerHTML=h;
+}
 function renderAll(){
   const rows=visibleRows();
   renderKPIs(rows); renderToday(rows); renderFilters();
+  renderModel(rows); renderCalendar(rows);
   renderStrategyCard(rows,'close',{sub:'meSub',chart:'chMonthEnd',tbl:'tblMonthEnd'});
   renderStrategyCard(rows,'buy',  {sub:'buySub',chart:'chBuy',    tbl:'tblBuy'});
   renderCharts(rows); renderHoldings(rows); renderAccounts();
