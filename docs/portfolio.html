@@ -277,10 +277,6 @@ select,input[type=text],input[type=number],input[type=date]{
         <div class="sub">Time-weighted return per calendar month.</div>
         <div class="body"><div id="chMonth"></div></div></div>
 
-      <div class="card c6" data-card="scatter"><h2>Return vs holding period</h2>
-        <div class="sub">Each bubble is a position; size = current value.</div>
-        <div class="body"><div id="chScatter"></div></div></div>
-
       <div class="card c6" data-card="sector"><h2>Sector exposure</h2>
         <div class="sub">Current value grouped by sector.</div>
         <div class="body"><div id="chSector"></div></div></div>
@@ -1019,8 +1015,6 @@ function renderCharts(rows){
                 tip:'<div class="r"><span>Weight</span><b>'+(t.value>0?(d.value/t.value*100).toFixed(1):'—')+'%</b></div>'})),
       {fmtV:v=>inr(v), diverging:false, labW:160, secretLabels:true, secretValues:true});
 
-  scatter($('chScatter'), rows.filter(r=>r.value!=null&&r.pnlPct!=null)
-      .map(r=>({x:r.days, y:r.pnlPct, v:r.value, label:(r.cname||r.sym)+' · '+r.pfName})));
 }
 const COLS=[
   {k:'cname',  t:'Stock',    f:r=>'<span class="nm secret">'+esc((r.cname||r.sym).replace(/ (Ltd|Limited)\.?$/,''))+'</span><br><span class="sym"><span class="secret">'+esc(r.sym)+'</span>'+(r.psrc==='manual'?' <span class="badge warn">manual</span>':r.psrc==='eod'?' <span class="badge">EOD</span>':r.psrc==='none'?' <span class="badge warn">no price</span>':'')+'</span>'},
