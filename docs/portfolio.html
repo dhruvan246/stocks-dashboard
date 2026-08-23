@@ -166,6 +166,14 @@ select,input[type=text],input[type=number],input[type=date]{
 #secMenu label{display:flex; align-items:center; gap:9px; padding:7px 8px; border-radius:8px; font-size:13px; cursor:pointer; line-height:1.2}
 #secMenu label:hover{background:var(--surface-2)}
 #secMenu input{width:15px; height:15px; flex:0 0 auto; accent-color:var(--accent)}
+/* strategy tabs inside the model / calendar cards */
+.stabs{display:flex; gap:6px; flex-wrap:wrap; margin:2px 0 12px}
+.stab{border:1px solid var(--border); background:var(--surface); color:var(--text-2); border-radius:9px;
+  padding:6px 12px; font-size:12.5px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:7px}
+.stab:hover{border-color:var(--accent)}
+.stab.on{background:var(--text); color:var(--bg); border-color:var(--text)}
+.stab .dot2{width:8px; height:8px; border-radius:50%; flex:0 0 auto}
+@media(max-width:640px){ .stabs{flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none} .stabs::-webkit-scrollbar{display:none} .stab{flex:0 0 auto} }
 
 /* ---------- strategy vs model · rebalance calendar ---------- */
 .sblk{border-top:1px solid var(--grid); padding:12px 4px 6px}
@@ -323,7 +331,7 @@ const offToISO = o => new Date(EPOCH + o*864e5).toISOString().slice(0,10);
 const isoToOff = s => Math.round((Date.parse(s+'T00:00:00Z') - EPOCH)/864e5);
 
 let DOC=null, META={}, SERIES={}, NIFTY=null, NIFTY500=null, QUOTES={}, QASOF=0, ROWS=[], HIST=null, MODEL=null;
-let SEL = {acct:new Set(), pf:new Set(), alloc:'pf', sort:{k:'value',dir:-1}};
+let SEL = {acct:new Set(), pf:new Set(), alloc:'pf', sort:{k:'value',dir:-1}, stratTab:null};
 
 /* ---------------- formatting (Indian) ---------------- */
 function inr(x, dec){
@@ -1187,6 +1195,7 @@ function modelPx(sym){
   return {px:null, src:'none'};
 }
 function cycBadge(cyc){ const M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  if(cyc.length>=12) return '<span class="cyc">Monthly</span>';
   return '<span class="cyc">'+(cyc.length===4?'Q':cyc.length+'×')+' · '+cyc.map(m=>M[m-1]).join('·')+'</span>'; }
 function weekdayOnOrBefore(iso){ const d=new Date(iso+'T00:00:00Z'); while(d.getUTCDay()===0||d.getUTCDay()===6) d.setUTCDate(d.getUTCDate()-1); return d.toISOString().slice(0,10); }
 function prevWeekday(iso){ const d=new Date(iso+'T00:00:00Z'); do{ d.setUTCDate(d.getUTCDate()-1); }while(d.getUTCDay()===0||d.getUTCDay()===6); return d.toISOString().slice(0,10); }
@@ -1208,6 +1217,17 @@ function modelStrategies(rows){
     .map(p=>({pf:p, m:MODEL.strategies[p.id], next:nextRebalance(p.cycle)}))
     .sort((a,b)=>(a.next||'9').localeCompare(b.next||'9'));
 }
+function stratTabsHTML(list, sel){
+  let h='<div class="stabs">';
+  list.forEach(x=>{ const id=x.pf.id, i=(DOC.portfolios||[]).findIndex(p=>p.id===id);
+    h+='<button class="stab'+(sel===id?' on':'')+'" data-strat="'+esc(id)+'"><span class="dot2" style="background:'+SLOT[(i<0?0:i)%8]+'"></span>'+esc(x.pf.name)+'</button>'; });
+  h+='<button class="stab'+(sel==='__all__'?' on':'')+'" data-strat="__all__">All '+list.length+'</button></div>';
+  return h;
+}
+function resolveStratTab(list){ const ids=list.map(x=>x.pf.id); let sel=SEL.stratTab;
+  if(sel!=='__all__' && !ids.includes(sel)) sel=ids[0]; return sel; }
+function wireStratTabs(host){ host.querySelectorAll('.stab').forEach(b=>b.onclick=()=>{
+  SEL.stratTab=b.dataset.strat; const rows=visibleRows(); renderModel(rows); renderCalendar(rows); }); }
 function renderModel(rows){
   const body=$('modelBody'), sub=$('modelSub');
   if(!MODEL){ sub.textContent='No model file yet.'; body.innerHTML='<div class="empty">Run <code>node model_track.js</code> on the Mac, then re-publish.</div>'; return; }
@@ -1215,8 +1235,9 @@ function renderModel(rows){
   if(!list.length){ sub.textContent='No strategy in this selection.'; body.innerHTML='<div class="empty">Pick an MTF strategy.</div>'; return; }
   sub.innerHTML='The strategy\u2019s basket from its last rebalance close vs. what you actually hold, both priced live. '+
     'The gap is what your entry timing cost (or earned) — same stocks, different buy prices. Model run '+esc(MODEL.generated)+', bars to '+shortDate(MODEL.dataEnd)+'.';
-  let h='';
-  list.forEach(({pf,m})=>{
+  const sel=resolveStratTab(list), shown = sel==='__all__'? list : list.filter(x=>x.pf.id===sel);
+  let h = list.length>1 ? stratTabsHTML(list, sel) : '';
+  shown.forEach(({pf,m})=>{
     const last=m.rebs[m.rebs.length-1]; if(!last) return;
     const mine=ROWS.filter(r=>r.pf===pf.id);
     /* model basket: Σ weight × (now ÷ rebalance close) + cash → one return; per-stock rows */
@@ -1270,7 +1291,7 @@ function renderModel(rows){
       h+='</div>'; }
     h+='</div>';
   });
-  body.innerHTML=h;
+  body.innerHTML=h; wireStratTabs(body);
 }
 function renderCalendar(rows){
   const body=$('calBody'), sub=$('calSub');
@@ -1281,8 +1302,9 @@ function renderCalendar(rows){
   sub.innerHTML='Next rebalance per strategy, and the screen\u2019s top picks <b>as of the '+shortDate(asOf)+' close</b> — what it would buy if the rebalance were today. '+
     'Picks move with every close until the day itself. MTF: sell the exits the session before, buy the entries on the day. '+
     'Dates are calendar month-ends stepped back over weekends; NSE holidays are not modelled.';
-  const today=istTodayISO(); let h='';
-  list.forEach(({pf,m,next})=>{
+  const sel=resolveStratTab(list), shown = sel==='__all__'? list : list.filter(x=>x.pf.id===sel);
+  const today=istTodayISO(); let h = list.length>1 ? stratTabsHTML(list, sel) : '';
+  shown.forEach(({pf,m,next})=>{
     const mine=ROWS.filter(r=>r.pf===pf.id);
     const held=new Set(mine.map(r=>r.sym.replace(/\.(NS|BO)$/,'')));
     const picks=(m.picks&&m.picks.rows)||[], pickSet=new Set(picks.map(r=>r.sym));
@@ -1314,7 +1336,7 @@ function renderCalendar(rows){
          '<span class="sym" style="min-width:0">'+esc(why)+'</span></div>'; });
     h+='</div>';
   });
-  body.innerHTML=h;
+  body.innerHTML=h; wireStratTabs(body);
 }
 function renderAll(){
   const rows=visibleRows();
