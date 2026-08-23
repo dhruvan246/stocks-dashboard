@@ -575,3 +575,50 @@ contains "result"** — tight by construction, and harmless because targets are 
 **NET EFFECT vs section F:** Fable's Option A, 7-step order, shared classifier, secondary tier, and
 F4 all stand. Changed: no 400d cap (comparative rule + 200d instead), Bug 4 reclassified as a Bug-3
 symptom, F3 bounded with measured residue, Bug 3 widened per F5. Proceeding to implement.
+
+---
+
+## H. FINDING 5 (ALEMBICLTD demerger) — VERIFIED, HEALED, AND SWEPT (2026-08-23, Opus)
+
+**The trade:** ALEMBICLTD 2011-03-31 → 2011-04-30, booked −68.88%. quantmac: a scheme-of-arrangement
+ex-date (2011-04-11) inside the holding period was booked as a price loss.
+
+**Verified against primary sources, both leg and cause:**
+* NSE bhavcopy 2011-04-08: close 70.35 (EQ). 2011-04-11: OPEN 32.40, close 24.90, series flipped
+  EQ→BE — the classic scheme ex-day signature (pre-open discovery of the residual company).
+* BSE announcements (scrip 506235): 2011-02-23 "Approval of Scheme of Demerger … transfer of the
+  Pharmaceutical Undertaking", 2011-04-01 "Fixes Record Date [2011-04-14] for Scheme of Arrangement".
+* Root cause in OUR system, two layers: (1) `build_demerger_adj.py` sweeps the NSE CA feed from
+  **2016 only** — 2011 was structurally invisible; (2) `corp_actions.json` noadjust carries
+  ALEMBICLTD 20110411, i.e. the gap had been classified keep-the-drop (crash class) at some point.
+
+**Heal (ledger route, per the runbook):** appended `["ALEMBICLTD", 20110411, 0.4606, 0.3539]` to
+`scripts/demerger_adj.json` (factor = ex-open/prev = 32.40/70.35, the same convention as all 94
+existing rows; raw close-ratio rides along as the reconciliation anchor). Consumer verified before
+writing: `update_sf_data.self_heal` reconciles ledger demergers EVERY run regardless of age,
+bar-exact; the noadjust flag does NOT fight it (both enqueue paths converge on the bar-exact ledger
+factor — and ALEMBICLTD 20190826 already coexists in BOTH maps in production as the working
+precedent, so 20110411 was left in noadjust for symmetry). The bin heal lands on the next nightly
+self-heal; verify the series then (pre-ex history ×0.4606, the −54% ex-gap gone, the ex-day's own
+intraday move kept).
+
+**The sweep quantmac asked for ("other demerger ex-dates inside holding periods") — BOTH trade
+logs (548 trades, 2004-2026), two nets:**
+1. Every noadjust (keep-drop) date inside any holding window: exactly 2 hits — ALEMBICLTD (above)
+   and **WIPRO 2013-02-28→2013-04-30 (booked −16.33%), keep-drop 2013-04-09**. Verified the same
+   way: bhavcopy 2013-04-08 close 448.80 → 2013-04-09 OPEN 407.00 (−9.3% pre-open separation);
+   BSE 2013-04-01 "Wipro's scheme of arrangement for demerger [Diversified Business] effective from
+   March 31, 2013" + record-date fixing. No official split/bonus within ±3d (nearest 2010/2017).
+   Healed: `["WIPRO", 20130409, 0.9069, 0.8772]`. ~9.3 of the −16.33 points were mechanical.
+2. Every trade booked ≤−20% (23 of them), window-swept via BSE for scheme/demerger/record-date/
+   special-dividend signals: 19 clean (genuine market losses — Jan-2008, May-2004, COVID-2020,
+   IL&FS-2018 clusters). 3 adjudicated: KITEX bonus record date falls AFTER its window (clean);
+   ZODIACLOTH 1:1 bonus 2005-10-24 already carries factor 0.5 in corp_actions (clean);
+   **HGS 2021-12-31→2022-01-31 (booked −22.92%): ₹150/share special interim dividend (the
+   healthcare-sale payout), record date 2022-01-18 INSIDE the window — ~7.7% of the price was cash
+   handed to the holder, not a loss.** Logged as a CANDIDATE CLASS (large cash separations), not
+   healed: the engine is price-return by convention, quantmac's replication books the same number
+   (it reconciled — not in their 157), and adjusting dividends is a policy decision for the user.
+
+**Not yet done:** the nightly-rebuild verification of both healed series, and the backtest A/B on
+these 2 trades (fold into the P2 apply's A/B run).
