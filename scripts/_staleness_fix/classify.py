@@ -75,8 +75,19 @@ INTIMATION_RE = re.compile(
     r'\bintimation\b|\bnotice\s+of\b|\bprior\s+intimation\b|\bregulation\s*29\b|'
     r'board\s+meeting\s+(?:on|dated|to\b|will\b|is\b|scheduled|shall|for\b)|'
     r'for\s+(?:the\s+)?consideration\s+of|'
+    # Clause-41 option election: "has OPTED TO SUBMIT the Audited Financial Results ... WITHIN A
+    # PERIOD" is a notice of INTENT to publish later, not the results. v2's phrase list had
+    # "opted to submit"; dropping it in the v3 rewrite was a regression that surfaced on the
+    # exact cell quantmac's finding 2 is about — OMAXE qe20120331 matched the 2012-04-30
+    # election notice instead of the real 2012-05-30 17:50 disclosure (raw-cache re-match,
+    # 2026-08-23). "Publish Audited Results" headlines ride the same template.
+    r'opted?\s+to\s+(?:submit|publish)|\bpublish\s+audited\s+results\b|'
+    r'within\s+a\s+period\s+of|'
     r'\bto\s+(?:be\s+)?consider(?:ed)?\b|\bto\s+approve\b|\bto\s+transact\b|'
-    r'(?:is|are|was|were|will\s+be|shall\s+be|to\s+be)\s+(?:held|scheduled|convened)|'
+    # forward tenses ONLY — 'was/were held' is a PAST meeting, i.e. an outcome statement
+    # (PANORAMA qe20191231's real result read 'the Meeting … was held on 14th February'
+    # and got refused as an intimation until this narrowed, 2026-08-23).
+    r'(?:is|are|will\s+be|shall\s+be|to\s+be)\s+(?:held|scheduled|convened)|'
     r'\bresched|\bpostpone|\bprepone|change\s+in\s+(?:the\s+)?date|'
     r'analyst\s*/?\s*\&?\s*investor|investors?\s+meet|earnings\s+call|conference\s+call|'
     r'\bagenda\b|\bproposed\b',
@@ -90,9 +101,15 @@ OUTCOME_RE = re.compile(
     r'^\s*board\s+meeting\s+outcome\b|'
     r'outcome\s+of\s+(?:the\s+)?(?:\w+\s+){0,3}?(?:board\s+)?meeting|'
     r'board\s+meeting\s+held\b|'
-    r'\bhas\s+(?:approved|posted|informed|announced|submitted|declared)\b|'
+    # NB: "has INFORMED" is deliberately NOT here — every BSE headline reads "X has informed BSE
+    # that …", intimations included, so it rescued the OMAXE Clause-41 election notice back to
+    # 'result' (calibration fail, 2026-08-23). A genuine disclosure never needs that word: its
+    # own title carries the results language.
+    r'\bhas\s+(?:approved|posted|announced|submitted|declared)\b|'
     r'\bannounces?\s+|'
-    r'\bsubmission\s+of\b|\bsubmits?\b|'
+    # done-act forms only: bare "submit" also lives inside "opted to SUBMIT …", the Clause-41
+    # election notice (the OMAXE cell, 2026-08-23) — rescuing on it re-admits that intimation.
+    r'\bsubmission\s+of\b|\bsubmits\b|\bsubmitted\b|'
     r'\bhave\s+been\s+approved\b|\bwere\s+approved\b|\bapproved\s+the\s+(?:audited|unaudited|financial)',
     re.I)
 
