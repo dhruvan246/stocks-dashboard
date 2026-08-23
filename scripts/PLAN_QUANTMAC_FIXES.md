@@ -793,3 +793,14 @@ are DIRTY in the main checkout — another session owns SHP right now; coordinat
 **Dividend sweep (user-approved policy) RUNNING** in background over all 548 trade windows;
 candidates ≥2% of entry price recorded to dividend_sweep_results.json for bhavcopy-checked
 ledgering (first hit already: GFLLIMITED 2006-11, ₹2 = 6.57% of entry).
+
+
+**L.1 — Dividend sweep CLOSED (2026-08-23 15:20 IST).** 548 windows swept, 22 candidate
+windows, era-tape adjudication passed exactly 4 (CHENNPETRO 20260807 ₹54/4.18%, MRPL 20260303
+₹10/5.09%, APTECHT 20140204 ₹2/2.90% series-heal, UNIONBANK 20090513 ₹5/3.03%) — ledgered,
+pushed, origin-verified (user approved "write all 4"). 19 rejected with reasons recorded in
+dividend_adjudication.json; the split-adjusted-price inflation class (BAJFINANCE "416%") behaved
+exactly as predicted and died at era-materiality. Bhavcopy availability for the pre-2007
+no-signature rejects verified directly (they are genuine conservative misses, ≤3%). Next-day
+live sentinel re-check scheduled: cloud routine trig_01GdeqhgZrVUU4mcHS3Yjwok, 2026-08-24
+09:00 IST, read-only.
