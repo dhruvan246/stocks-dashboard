@@ -11133,6 +11133,17 @@ session's WIP on 2026-08-23 — the source comment is deferred; add it when that
 consumed by `shpAt()` in docs/backtest-engine.js + stock-backtest.html (comment added at both,
 2026-08-23). Post-2015 rows carry real dates from the XBRL/scores filings and are NOT affected.
 
-**Until the campaign lands:** treat qe+21d-pre-2016 as a KNOWN, DOCUMENTED assumption in force —
-never present pre-2016 SHP visibility as measured, and route every recovered date through the
-PLAN_SHP_DATES ledger (never cell-edit shp_engine.json — nightly regeneration reverts it).
+**CAMPAIGN LANDED 2026-08-23 (PLAN_SHP_DATES.md P0-P4).** BSE's `SHPQNewFormat` API carries a real
+`filing_date_time` from the March-2016 quarter onward (the XBRL mandate) and NOTHING before it —
+every other route measured zero for pre-2016 (NSE ~2021+ only, Wayback 0 captures pre-2012).
+Shipped: 3,781 convention cells re-dated + 1,330 NSE-lag staleness heals (max 337d, HINDALCO
+Sep-2019) + 24,688 15:30 gate shifts, all via `scripts/shp_history.json` (the durable store;
+`docs/shp_engine.json` regenerates ~2x/day and must never be cell-edited). Ledgers:
+`shp_sub_dates.json`, `shp_lag_fix.json`. ⚠️ Advancing a sub date REQUIRES advancing
+`shp_cell_fix.json`'s matching cell in lockstep — `_cell_eq` compares that string exactly, so
+otherwise those corrections silently stop applying (measured: WARNs 65 → 211).
+
+**PRE-2016 (25,867 cells) keeps the convention, with an EARNED negative verdict:** treat it as a
+KNOWN, DOCUMENTED assumption — never present pre-2016 SHP visibility as measured. Its defence is
+the 0e calibration: over 748 real post-2016 filings the median lag is 17d and only 4.0% exceed the
+21-day deadline, so the convention is empirically sound and deadline-anchored (conservative).

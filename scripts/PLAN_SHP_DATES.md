@@ -168,3 +168,46 @@ be one day early is the one error class this whole campaign exists to remove.
 **ALSO OPENED (bigger than the 7,093, not yet scoped):** the store's non-convention post-2016
 dates carry the §104 NSE-lag class — 27 of 630 pilot cells measurably stale, one by a month.
 A full BSE-vs-store reconciliation over all ~67k post-2016 SHP cells is now warranted.
+
+
+---
+
+## P2-P4 RESULTS — SHIPPED 2026-08-23 (Opus)
+
+**Phase 2 fetch:** 1,902/1,902 symbols, zero failures, raw cached (`raw_full*.jsonl`).
+**Phase 3 (convention cells):** 3,781 of the 7,093 re-dated from BSE `filing_date_time`;
+327 rejected by the 0-120d lag guard (years-later RE-UPLOADS), 244 no BSE row, 2,348 already
+correct. 85.4% needed the 15:30 gate — they were deadline-day EVENING filings, which is exactly
+why qe+21d looked plausible for so long.
+**Phase 4 fetch:** the remaining 701 symbols, 701/701, zero failures.
+**Phase 4 reconciliation (63,567 non-convention cells, user chose "both"):**
+* **1,330 STALENESS HEALS** — the §104 NSE-lag class, now confirmed in the SHP series:
+  median 9d, p95 133d, **max 337d (HINDALCO Sep-2019 stored 2020-09-21 vs a real 2019-10-18
+  filing — 11 months invisible)**; NESTLEIND Jun-2023 323d, POWERGRID Sep-2020 295d.
+* **24,688 GATE SHIFTS** — stored date IS BSE's raw broadcast date, filing after 15:30, so the
+  store marked it visible the same session (a 1-day look-ahead). Ends the split convention.
+* **LEFT ALONE, counted not guessed:** 1,659 genuinely-different BSE-later dates (cannot separate
+  NSE-filed-first from stored-too-early with two sources), 2,012 revised-only, 4,628 no BSE row,
+  76 lag-guard, 254 sub-materiality.
+
+**DURABLE ROUTE (both phases):** patched `scripts/shp_history.json`'s sub slot — the accumulator
+`build_engine_feed()` reads and whose slot the refine pass preserves — NOT `docs/shp_engine.json`,
+which regenerates ~2x/day and would have reverted within hours while looking fixed.
+
+**★ REGRESSION CAUGHT PRE-SHIP (and the reason to always four-way a guard):** `_cell_eq` compares
+the sub STRING exactly, so advancing it silently skipped `shp_cell_fix` corrections — WARNs went
+65 → 211. Fixed by advancing the ledger's own sub slot in lockstep (152 + 166 entries). Four-way
+comparison (pristine/patched × pristine/advanced) proves the shipping state is back at the 65
+pre-existing warnings: **zero regression**.
+
+**★ IMPACT MEASURED, NOT ASSUMED — and it is SMALL.** DII strategy A/B with engine and
+fundamentals held identical, only the SHP dates swapped: **CAGR 53.19 → 52.89, maxDD unchanged,
+1 of 212 monthly baskets changed.** Reason: SHP filings cluster on ~qe+21 (mid-month) while the
+strategy rebalances at month-END, so a 1-day shift rarely crosses a rebalance boundary and most
+staleness heals move a date from one mid-month to another. The data is materially more correct;
+the strategy barely moves. Recorded so nobody re-litigates this class expecting a big number —
+contrast the membership + TTM fixes, which moved 52 baskets and cut maxDD 4.2pp.
+
+**Residue, stated:** pre-2016 (25,867 cells) keeps the qe+21d convention with the earned negative
+verdict (§105) and the 0e calibration (median real lag 17d, 96% within the deadline); the 1,659
+ambiguous BSE-later cells; 350 symbols never fetched (no post-2016 non-convention cells).
