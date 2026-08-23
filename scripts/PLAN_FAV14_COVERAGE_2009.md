@@ -161,23 +161,29 @@ Skipping refresh.yml leaves the coverage builder on the OLD roster (I saw TANDHA
 CDN can serve a stale copy for a few minutes after upload; re-verify or re-dispatch if a heal you
 confirmed in the asset doesn't show on the page.
 
-**NEXT — P2 (SHP-level class, 40 member-months → ~5 symbols).** After P1, fiiPct/diiPct miss:
-MVL 16 (2011-12..2013-03), SHLAKSHMI 7 (2012-09..2013-03), INNOIND 6 (2013-08..2014-01),
-SPSL 4 (2009-01..2009-04), SUMMIT 2 (2009-01..2009-02). NONE have any SHP row today.
-Route PROVEN this session (read-only recon, nothing written yet):
-- Codes ISIN-verified: **MVL 532991, SHLAKSHMI 526049, INNOIND 533402, SPSL 533110** (each checked
-  via BSE ComHeadernew ISIN == the symbol's ISIN; my first INNOIND guess 533632 was WRONG — verify,
-  never guess). SUMMIT (INE852A01016) code still unresolved.
-- Instrument: `scripts/fetch_shp_bse_aspx.py` (frontier → pilot → harvest; reconciliation gates,
-  fii-never-zero, prom-fallback all built in). Add the 4 codes to `scripts/_shp_scripcode_override.json`
-  (evidence-backed, ISIN), run frontier, then harvest just these cells; it writes ledger
-  `shp_fill_bse_aspx.json.gz`. Applied to shp_history.json by the SHP campaign's applier — write to
-  shp_history.json NEVER docs/shp_engine.json (§105); pre-2016 sub-date = qe+21d 15:30 convention.
-- Verified reachable: aspx page `ShareholdingPattern.aspx?scripcd=<code>&flag_qtr=1&qtrid=<q>.00&Flag=New`
-  returns the Clause-35 table (MVL Sep-2011 = qtrid 71: Promoter 70.56%, MF/UTI 0.01% — extractable).
-  qtrid = (year-2001)*4 + {Mar:29,Jun:30,Sep:31,Dec:32}[month].
-- SPSL/SUMMIT are 2009 (pre-2010); aspx Flag=New covers Jun-2006+ so they SHOULD be reachable, but
-  the SHPQNewFormat feed only lists SPSL back to Sep-2009 — probe the aspx page directly per §57.
+**P2 (SHP-level) is DONE & LIVE for 4 of 5 symbols** (commit 7238cf621). fiiPct/diiPct 117→9 live.
+Residual: SPSL 2009-Q1 (source-limited — aspx empty pre-Sep-2009, try archived exchange pages) +
+the 4 P1 price-convention symbols (not SHP-fillable).
+
+**NEXT — three classes remain, all measured to root cells (queue: scripts/fav14_queue.json):**
+- **P5 diiChgPp — 614 (symbol, prior-quarter) SHP rows, live 2026 missing.** SAME instrument as P2
+  (fetch_shp_bse_aspx.py). This is the big SHP win. Build the frontier (cmd_frontier reads current
+  coverage gaps + _shp_scripcode_override for delisted codes), harvest into an ISOLATED ledger
+  (do NOT overwrite the shared shp_fill_bse_aspx.json.gz — narrow harvest wipes it; instead call
+  run() on a filtered frontier like the P2 driver did, or extend shp_fill_fav14). Fix the FVCI
+  parser gap first (parse_new must treat "Foreign Venture Capital Investors" as fii) — it will
+  recover many otherwise-rejected cells. Apply via fetch_shareholding --apply-ledgers.
+- **P3 pat_con — 586 root quarter-cells (109 symbols), F-con.** Ledger feed_qe_fix.json → rebuild
+  sf_fundamentals. Route ladder §2: BSE detres JSON (rung 1, 2008Q1+) is the workhorse for con.
+  95% of roots are FY2007-FY2015.
+- **P4 pat_std — 2,623 root quarter-cells (495 symbols), F-std.** NSE archive (rung 2, 2005+, both
+  bases) is the std workhorse. Batch by symbol so FY-identity (§45) can adjudicate each.
+
+**Propagation for each class (learned in P1, §4b top):**
+- roster change → refresh-membership → **refresh.yml (dash_slim)** → refresh-coverage → pages → ?cb=
+- SF-bin heal → refresh-backtest-data (release asset; watch CDN staleness) → refresh-coverage → pages
+- SHP/PAT fill → commit ledger+regenerated feed/sf_fundamentals → refresh-coverage → pages
+Always bake-and-measure locally first; §57 ladder logged per cell; run-twice idempotency; file-scoped adds.
 
 **THEN P3 (pat_con 586) / P4 (pat_std 2,623) / P5 (shp_prior_quarter 614).** Routes in §2.
 Rules that bind every step: §57 ladder logged per cell · run-twice idempotency · bake-and-measure
