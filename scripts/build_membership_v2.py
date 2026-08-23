@@ -326,7 +326,23 @@ def main():
     # different company, whose only reverse chain is MONNETISPA, so the generic fallback would land on
     # the wrong tape). Each applies only before the date the true successor's own tape begins.
     ERA_OVERRIDES = {"KPITTECH": ("KPIT", "2019-02-26"), "TIINDIA": ("TUBEINVEST", "2017-11-02"),
-                     "JSWISPL": ("JSWISPAT", "2018-09-14")}
+                     "JSWISPL": ("JSWISPAT", "2018-09-14"),
+                     # Three more of the same class, measured 2026-08-24 (evidence in
+                     # scripts/_n500_norow_handoff.json; each boundary = the wrong successor's own
+                     # first bar / the true era's end):
+                     # "Dalmia Bharat" pre-demerger (2010 slots): the listed company then was
+                     # Dalmia Cement (Bharat) -> renamed Dalmia Bharat SUGAR; DALBHARAT's own tape
+                     # (the 2019 re-listed entity) begins 2019-01-22, and the 2011-18 leg traded as
+                     # DALMIABHA. Boundary = DALMIABHA's first bar so only pre-demerger slots move.
+                     "DALBHARAT": ("DALMIACEM", "2011-01-27"),
+                     # "Shree Precoated Steels" 2008-09 slots: SPSL's own tape 2006-09-26..2009-05-08
+                     # covers them; SHPRE's tape only begins 2009-10-15. (SPSL fundamentals were
+                     # backfilled 2026-08-24: 2008-09/2008-12, EPS/chain-gated.)
+                     "SHPRE": ("SPSL", "2009-10-15"),
+                     # "Pantaloon/Future Retail" 2010 slots: FRETAIL (the 2016 demerged listing,
+                     # first bar 2016-08-29) cannot be the 2010 member; the undivided company is the
+                     # PANTALOONR -> FEL lineage (FEL tape 2001-11-05..).
+                     "FRETAIL": ("PANTALOONR", "2016-08-29")}
     import gzip as _gz2
     try:
         _sfd = json.loads(_gz2.decompress(open(os.path.join(ROOT, "docs", "sf_stock_data.bin"), "rb").read()))["data"]

@@ -22,6 +22,22 @@
    "PRICOLLTD": "era entity PRICOL: 27 rows 20050331..20110930, visible"
   }
  },
+ "RECHECK_2026_08_24_LATE": {
+  "RASOYPR_zero_close": "24 dates 2013-09..2015-08 are NOT suspension and NOT missing tape: 487/487 bars exist IN the window and every one has close == 0.0 (1,293 zero-close bars across its tape). The engine's p0<=0 gate refuses them - correctly. ALL 1,293 are derivable as price = t/v (sample 2013-09-30: t 232.6 lakh / v 1,585,865 = Rs 14.67, matching Rasoya's 2013 range). This belongs to the zero-close tape-heal pipeline (project-stocks-zero-close-price-defect), not to membership.",
+  "TANDHANIN_collision": "25 dates 2012-09..2015-11 from two register events: ['2012-09-28','TANDHANIN','inc'] and ['2015-12-14','TANDHANIN','exc'] in scripts/_n500_inclexcl_events.json. TANDHANIN = Tandhan Industries Ltd (BSE 512062, ISIN INE896J01014, Rs 7 lakh mcap, ZERO NSE filings ever) - cannot be an N500 member. The register name that produced it is NOT in the local IndexInclExcl.xls (which holds only Nifty 50 rows); the fuller register on the seams VM has it. Best local lead: norm('Sterlite Industries (India) Ltd')='sterliteindustries' vs 'tandhanindustries' ratio 0.63 - unproven. DO NOT guess; pull the register row for those two dates and remap or drop the events.",
+  "adjudicated_reality_not_defects": {
+   "stale_bar_suspension": "HFCL 2011-02-28 (last bar 02-07), PROVOGUE 2012-03-30 (03-06), VISHALEXPO 2009-11-30 (11-13): >14d bar age - the entry-freshness gate refusing an untradeable name, correct",
+   "summitsec": "SUMMITSEC 2009-01/02: tape starts 2011-01-28; the 2009 member is the pre-merger RPG-group entity - identity unresolved",
+   "tape_ended_roster_continues": "PUNJABTRAC 7 dates (tape ends 2009-02-24), BONGAIREFN 5 (2009-04-20), MICRO 3 (2010-04-05): merged/delisted companies the register still carries - either the register lacks the exclusion event or NSE genuinely kept them till review; needs the register's own exclusion rows to adjudicate",
+   "young_listing_month": "AJMERA 2009-06-30, BBOX 2010-06-30: first bar mid-month, the 30d lookback (p0) is null - the engine's deliberate young-listing convention (quantmac notes the same class)"
+  },
+  "era_overrides_added_by_this_session": {
+   "DALBHARAT": "('DALMIACEM','2011-01-27') - 2010 slots belong to the undivided Dalmia Cement (Bharat) -> DALMIASUG lineage; DALBHARAT's own tape begins 2019-01-22, the 2011-18 leg traded as DALMIABHA (tape 2011-01-27..2018-11-28, NOT in _rename_map - a candidate chain entry if 2011-18 slots ever surface)",
+   "FRETAIL": "('PANTALOONR','2016-08-29') - the 2010 slots are the undivided PANTALOONR->FEL lineage; FRETAIL (2016 demerged listing) first bar 2016-08-29",
+   "SHPRE": "('SPSL','2009-10-15') - the 2008-09 'Shree Precoated Steels' slots are covered by SPSL's own tape 2006-09-26..2009-05-08; SHPRE's tape begins 2009-10-15. SPSL fundamentals backfilled this session (2008-09, 2008-12)"
+  },
+  "register_progress": "Re-measured on the 327-snapshot register (was 320): no-row member-dates 229 -> 84, symbols 25 -> 14. FLUOROCHEM/GATEWAY/MAXIND/NAGAFERT/PRICOLLTD/FRETAIL(2016+)/DCHL/PATNI/CAROLINFO/JSWISPAT/TV-18/FCONSUMER resolved by the seams session's own pushes between my measurements."
+ },
  "generated": "2026-08-24 (N500 std-coverage campaign)",
  "not_touched_by": "the 2026-08-24 N500 std revenue campaign, deliberately - that session's files are in flight",
  "owner": "the era-aware roster / seam-stitching session (project-stocks-roster-rename-orphans, runbook 106)",

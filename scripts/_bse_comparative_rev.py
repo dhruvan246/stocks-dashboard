@@ -163,6 +163,12 @@ def main():
     out = json.load(open(OUT)) if os.path.exists(OUT) else {}
     vq = json.load(open(VQ)) if os.path.exists(VQ) else {}
     skips = {}
+
+    def _flush():
+        json.dump(out, open(OUT, "w"), indent=1, sort_keys=True)
+        json.dump(vq, open(VQ, "w"), indent=1, sort_keys=True)
+        json.dump(skips, open(SKIPS, "w"), indent=1, sort_keys=True)
+    _flush()          # truncate stale ledgers from a previous run IMMEDIATELY
     o = FI.bse_session()
     n = 0
     for sym, qe in cells:
@@ -175,14 +181,17 @@ def main():
         code = scrips.get(sym)
         if not code:
             skips[key] = "no-bse-scrip"
+            _flush()
             continue
         frow = fmap.get(sym, {}).get(qe)
         if not frow or frow[1] is None:
             skips[key] = "no-stored-std-pat"
+            _flush()
             continue
         stored, ann = frow[1], frow[2]
         if not ann:
             skips[key] = "no-ann-date"
+            _flush()
             continue
         n += 1
         # TWO windows, in order: this quarter's own filing, then the YEAR-LATER filing whose
@@ -207,6 +216,7 @@ def main():
             rows += [(dt, att, sub, wname) for dt, att, sub in r]
         if not rows:
             skips[key] = "no-bse-filing-in-either-window"
+            _flush()
             continue
         got = False
         for dt, att, sub, wname in rows[:4]:
@@ -245,9 +255,7 @@ def main():
             break
         if not got:
             skips[key] = "no attachment fetched (all bases + resolver)"
-        json.dump(out, open(OUT, "w"), indent=1, sort_keys=True)
-        json.dump(vq, open(VQ, "w"), indent=1, sort_keys=True)
-        json.dump(skips, open(SKIPS, "w"), indent=1, sort_keys=True)
+        _flush()
     print("DONE: %d cells read, %d queued for vision, %d skipped"
           % (sum(len(v) for v in out.values()), len(vq), len(skips)), flush=True)
 
