@@ -154,6 +154,18 @@ select,input[type=text],input[type=number],input[type=date]{
   .kpi .val{font-size:23px}
 }
 .empty{padding:26px; text-align:center; color:var(--text-3); font-size:12.5px}
+/* show/hide cards */
+.card-hidden{display:none!important}
+#secMenu{position:fixed; top:var(--hh,54px); right:12px; z-index:70; width:min(280px,calc(100vw - 24px));
+  max-height:72vh; overflow:auto; background:var(--surface); border:1px solid var(--border);
+  border-radius:12px; box-shadow:var(--shadow); padding:6px; display:none}
+#secMenu.open{display:block}
+#secMenu .hd{display:flex; justify-content:space-between; align-items:center; gap:10px; padding:6px 8px; border-bottom:1px solid var(--grid); margin-bottom:4px}
+#secMenu .hd b{font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--text-3)}
+#secMenu .hd a{font-size:12px; color:var(--accent); cursor:pointer; font-weight:600}
+#secMenu label{display:flex; align-items:center; gap:9px; padding:7px 8px; border-radius:8px; font-size:13px; cursor:pointer; line-height:1.2}
+#secMenu label:hover{background:var(--surface-2)}
+#secMenu input{width:15px; height:15px; flex:0 0 auto; accent-color:var(--accent)}
 
 /* ---------- strategy vs model · rebalance calendar ---------- */
 .sblk{border-top:1px solid var(--grid); padding:12px 4px 6px}
@@ -188,11 +200,13 @@ select,input[type=text],input[type=number],input[type=date]{
     <div class="brand"><span class="dot" id="liveDot"></span>Portfolio</div>
     <span class="meta" id="clock"></span>
     <div class="spacer"></div>
+    <button class="btn" id="btnSections" title="Show / hide cards">⊞ Cards</button>
     <button class="btn" id="btnPrivate" title="Blur every number">🙈 Privacy</button>
     <button class="btn" id="btnTheme">◐ Auto</button>
     <button class="btn" id="btnRefresh">↻ Refresh</button>
   </div>
 </header>
+<div id="secMenu"></div>
 
 <main>
   <div id="loading">Loading holdings, prices and history…</div>
@@ -202,78 +216,78 @@ select,input[type=text],input[type=number],input[type=date]{
 
     <div class="kpis" id="kpis"></div>
 
-    <div class="card c12" style="margin-bottom:14px"><h2 id="todayH">Today, by strategy</h2>
+    <div class="card c12" data-card="today" style="margin-bottom:14px"><h2 id="todayH">Today, by strategy</h2>
       <div class="sub" id="todaySub"></div>
       <div class="body"><div class="twrap"><table id="tblToday"></table></div></div></div>
 
     <div class="grid">
-      <div class="card c12" id="cardModel"><h2>You vs the strategy — since its last rebalance</h2>
+      <div class="card c12" id="cardModel" data-card="model"><h2>You vs the strategy — since its last rebalance</h2>
         <div class="sub" id="modelSub"></div>
         <div class="body" id="modelBody"></div></div>
 
-      <div class="card c12" id="cardCal"><h2>Rebalance calendar — what the screen says today</h2>
+      <div class="card c12" id="cardCal" data-card="calendar"><h2>Rebalance calendar — what the screen says today</h2>
         <div class="sub" id="calSub"></div>
         <div class="body" id="calBody"></div></div>
 
-      <div class="card c12"><h2>Strategy returns since last month-end</h2>
+      <div class="card c12" data-card="ret-monthend"><h2>Strategy returns since last month-end</h2>
         <div class="sub" id="meSub"></div>
         <div class="body"><div id="chMonthEnd"></div>
           <div class="twrap"><table id="tblMonthEnd"></table></div></div></div>
 
-      <div class="card c12"><h2>Strategy returns since purchase</h2>
+      <div class="card c12" data-card="ret-purchase"><h2>Strategy returns since purchase</h2>
         <div class="sub" id="buySub"></div>
         <div class="body"><div id="chBuy"></div>
           <div class="twrap"><table id="tblBuy"></table></div></div></div>
 
-      <div class="card c8"><h2>Portfolio value</h2>
+      <div class="card c8" data-card="value"><h2>Portfolio value</h2>
         <div class="sub" id="valueSub"></div>
         <div class="body"><div id="chValue"></div></div></div>
 
-      <div class="card c4"><h2>Allocation</h2>
+      <div class="card c4" data-card="allocation"><h2>Allocation</h2>
         <div class="sub">Share of current market value.</div>
         <div class="body">
           <div class="filters" style="margin:0 0 8px 4px" id="allocModes"></div>
           <div id="chAlloc"></div></div></div>
 
-      <div class="card c6"><h2>Growth of ₹100 vs Nifty 500</h2>
+      <div class="card c6" data-card="growth"><h2>Growth of ₹100 vs Nifty 500</h2>
         <div class="sub" id="twrSub">Time-weighted return — immune to money added or removed.</div>
         <div class="body"><div id="chTwr"></div></div></div>
 
-      <div class="card c6"><h2>Drawdown from peak</h2>
+      <div class="card c6" data-card="drawdown"><h2>Drawdown from peak</h2>
         <div class="sub">How far below its own high-water mark the portfolio has been.</div>
         <div class="body"><div id="chDD"></div></div></div>
 
-      <div class="card c6"><h2 id="dayH">Today's contribution</h2>
+      <div class="card c6" data-card="contribution"><h2 id="dayH">Today's contribution</h2>
         <div class="sub" id="daySub">What each holding added to or took off today's P&amp;L.</div>
         <div class="body"><div id="chDay"></div></div></div>
 
-      <div class="card c6"><h2>Unrealised P&amp;L by holding</h2>
+      <div class="card c6" data-card="pnl"><h2>Unrealised P&amp;L by holding</h2>
         <div class="sub">Market value minus cost, per stock, across every portfolio.</div>
         <div class="body"><div id="chPnl"></div></div></div>
 
-      <div class="card c6"><h2>Monthly return</h2>
+      <div class="card c6" data-card="monthly"><h2>Monthly return</h2>
         <div class="sub">Time-weighted return per calendar month.</div>
         <div class="body"><div id="chMonth"></div></div></div>
 
-      <div class="card c6"><h2>Return vs holding period</h2>
+      <div class="card c6" data-card="scatter"><h2>Return vs holding period</h2>
         <div class="sub">Each bubble is a position; size = current value.</div>
         <div class="body"><div id="chScatter"></div></div></div>
 
-      <div class="card c6"><h2>Sector exposure</h2>
+      <div class="card c6" data-card="sector"><h2>Sector exposure</h2>
         <div class="sub">Current value grouped by sector.</div>
         <div class="body"><div id="chSector"></div></div></div>
 
-      <div class="card c6"><h2>Position weights</h2>
+      <div class="card c6" data-card="weights"><h2>Position weights</h2>
         <div class="sub">Concentration — largest positions first.</div>
         <div class="body"><div id="chWeight"></div></div></div>
 
-      <div class="card c12"><div style="display:flex; align-items:baseline; justify-content:space-between; gap:10px">
+      <div class="card c12" data-card="holdings"><div style="display:flex; align-items:baseline; justify-content:space-between; gap:10px">
           <h2>Holdings</h2>
           <button class="btn" id="btnCsv" style="margin:11px 16px 0" title="Download the rows shown (respects the account/portfolio filter) as a spreadsheet">⭳ CSV</button></div>
         <div class="sub" id="holdSub"></div>
         <div class="body"><div class="twrap"><table id="tblHold"></table></div></div></div>
 
-      <div class="card c12"><h2>Accounts</h2>
+      <div class="card c12" data-card="accounts"><h2>Accounts</h2>
         <div class="sub">Tag each portfolio with the account that holds it — the account views above use this. Saved to holdings.json.</div>
         <div class="body"><div class="twrap"><table id="tblAcct"></table></div>
           <div style="padding:12px 9px 0; display:flex; align-items:center; gap:8px; flex-wrap:wrap">
@@ -1317,7 +1331,7 @@ async function boot(){
        display:none subtree measures 0 — which silently drew every chart at the
        800px fallback and shrank the labels to ~4px on a phone */
     $('loading').style.display='none'; $('app').style.display='';
-    buildRows(); renderAll();
+    buildRows(); renderAll(); applyHidden();
     if(MODE==='web'){                              // deployed copy reads; the Mac writes
       $('btnSaveAcct').style.display='none';
       $('tblAcct').querySelectorAll('select').forEach(x=>x.disabled=true);
@@ -1387,6 +1401,28 @@ $('btnSaveAcct').onclick=async()=>{
     $('saveMsg').textContent='✅ saved to holdings.json';
   }catch(e){ $('saveMsg').textContent='❌ '+e.message+' (is serve.py running?)'; }
 };
+/* ---- show/hide cards: the page got long, so let the user curate which sections show.
+   Keys are stable data-card attrs (h2 labels change), the hidden set persists in localStorage. ---- */
+function cardEls(){ return [...document.querySelectorAll('#app [data-card]')]; }
+function loadHidden(){ try{ return new Set(JSON.parse(localStorage.getItem('pf_hidden')||'[]')); }catch(e){ return new Set(); } }
+function saveHidden(set){ try{ localStorage.setItem('pf_hidden', JSON.stringify([...set])); }catch(e){} }
+function applyHidden(){ const hid=loadHidden(); let n=0;
+  cardEls().forEach(el=>{ const h=hid.has(el.dataset.card); el.classList.toggle('card-hidden',h); if(h) n++; });
+  const b=$('btnSections'); if(b) b.textContent='⊞ Cards'+(n?' ('+n+' hidden)':''); }
+function buildSectionMenu(){
+  const menu=$('secMenu'), hid=loadHidden();
+  let h='<div class="hd"><b>Cards to show</b><a id="secAll">Show all</a></div>';
+  cardEls().forEach(el=>{ const k=el.dataset.card, t=(el.querySelector('h2')||{}).textContent||k;
+    h+='<label><input type="checkbox" data-k="'+esc(k)+'"'+(hid.has(k)?'':' checked')+'>'+esc(t.replace(/\s+—.*$/,''))+'</label>'; });
+  menu.innerHTML=h;
+  menu.querySelectorAll('input').forEach(cb=>cb.onchange=()=>{
+    const set=loadHidden(); cb.checked? set.delete(cb.dataset.k) : set.add(cb.dataset.k);
+    saveHidden(set); applyHidden(); });
+  $('secAll').onclick=()=>{ saveHidden(new Set()); applyHidden(); menu.querySelectorAll('input').forEach(cb=>cb.checked=true); };
+}
+$('btnSections').onclick=e=>{ e.stopPropagation(); const m=$('secMenu'), open=!m.classList.contains('open');
+  if(open) buildSectionMenu(); m.classList.toggle('open',open); };
+document.addEventListener('click',e=>{ const m=$('secMenu'); if(m.classList.contains('open') && !m.contains(e.target) && e.target!==$('btnSections')) m.classList.remove('open'); });
 (function initPrefs(){
   const th=localStorage.getItem('pf_theme'); if(th) document.documentElement.setAttribute('data-theme',th);
   applyThemeBtn();
