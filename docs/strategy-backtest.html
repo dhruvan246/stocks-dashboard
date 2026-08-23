@@ -423,7 +423,7 @@ function setTab(t) {
 
 function renderStrategy(strat, list) {
   const c = strat.cfg;
-  $('title').textContent = strat.name || 'Strategy';
+  $('title').textContent = nameWithBasis(strat.name || 'Strategy', c);
   // config as chips (strategy fields come from the world-writable shared list — esc() everything)
   const fx = filterExpr(c) || '';
   const chip = (t, title) => `<span class="sw-chip" ${title ? `title="${esc(title)}"` : ''} style="max-width:360px;overflow:hidden;text-overflow:ellipsis">${t}</span>`;

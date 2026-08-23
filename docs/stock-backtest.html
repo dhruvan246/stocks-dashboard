@@ -632,7 +632,11 @@ function strategyLabel(c){
   const F={1:'Monthly',3:'Quarterly',6:'Half-yearly',12:'Yearly'}[c.freq]||c.freq+'mo';
   const uni=c.indexName?String(c.indexName).replace('__FNO__','F&O'):c.mcapFloor?'≥₹'+(+c.mcapFloor).toLocaleString('en-IN')+'L turnover':'All stocks';
   const fp=filterFingerprint(c.filters);
-  return `${S[c.sortBy]||FIELD_LABEL[c.sortBy]||c.sortBy} ${c.dir==='high'?'top':'bottom'}-${c.topN} · ${uni} · ${F}${fp?' · '+fp:''}`;
+  // Earnings basis is part of identity but was invisible in the name (two rules identical but for
+  // con/std looked like duplicates). Tag it only when the rule actually reads earnings. (Sync wording:
+  // #cEarn Consolidated/Standalone; sync tag with bt-identity.js:basisSuffix so display never doubles it.)
+  const basis=needsFund(c)?' · '+(c.earnBasis==='std'?'Standalone':'Consolidated'):'';
+  return `${S[c.sortBy]||FIELD_LABEL[c.sortBy]||c.sortBy} ${c.dir==='high'?'top':'bottom'}-${c.topN} · ${uni} · ${F}${fp?' · '+fp:''}${basis}`;
 }
 function loadLS(k){try{return JSON.parse(localStorage.getItem(k)||'[]');}catch(e){return[];}}
 function saveLS(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
