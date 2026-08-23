@@ -82,6 +82,13 @@ main{max-width:1360px; margin:0 auto; padding:16px 16px 60px}
 
 /* ---------- filters ---------- */
 .filters{display:flex; gap:7px; flex-wrap:wrap; align-items:center; margin-bottom:14px}
+#filters{position:sticky; top:var(--hh,54px); z-index:40; margin:0 -16px 14px; padding:9px 16px;
+  background:color-mix(in srgb,var(--bg) 90%, transparent); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border); border-radius:0}
+#filters:empty{display:none}
+/* On a phone the wrapped bar is ~7 rows tall — pinned, that buries the screen. Collapse it to one
+   horizontally-scrollable strip so the sticky bar stays slim. */
+@media(max-width:640px){ #filters{flex-wrap:nowrap; overflow-x:auto; gap:6px; padding:8px 16px; scrollbar-width:none} #filters::-webkit-scrollbar{display:none} #filters>*{flex:0 0 auto} }
 .chip{
   border:1px solid var(--border); background:var(--surface); color:var(--text-2);
   border-radius:999px; padding:5px 12px; font-size:12.5px; font-weight:600; cursor:pointer; display:inline-flex; gap:6px; align-items:center;
@@ -191,13 +198,13 @@ select,input[type=text],input[type=number],input[type=date]{
   <div id="loading">Loading holdings, prices and history…</div>
   <div id="app" style="display:none">
 
+    <div class="filters" id="filters"></div>
+
     <div class="kpis" id="kpis"></div>
 
     <div class="card c12" style="margin-bottom:14px"><h2 id="todayH">Today, by strategy</h2>
       <div class="sub" id="todaySub"></div>
       <div class="body"><div class="twrap"><table id="tblToday"></table></div></div></div>
-
-    <div class="filters" id="filters"></div>
 
     <div class="grid">
       <div class="card c12" id="cardModel"><h2>You vs the strategy — since its last rebalance</h2>
@@ -1278,6 +1285,7 @@ function updateBadge(){
     (age!=null?' · prices '+(age<90?'just now':Math.round(age/60)+' min old'):'');
 }
 /* ============================ boot ============================ */
+function syncStickyTop(){ const hd=document.querySelector('header'); if(hd) document.documentElement.style.setProperty('--hh', hd.offsetHeight+'px'); }
 async function boot(){
   try{
     await loadAll();
@@ -1304,7 +1312,9 @@ async function boot(){
   }, CFG.refresh);
   setInterval(updateBadge, 30000);
   let rt=null, lastW=innerWidth;
+  syncStickyTop();
   addEventListener('resize',()=>{                 // charts are width-derived; redraw on rotate/resize
+    syncStickyTop();                              // header wraps at narrow widths → its height changes
     if(innerWidth===lastW) return;
     lastW=innerWidth; clearTimeout(rt); rt=setTimeout(()=>{ if(DOC) renderAll(); },220);
   });
