@@ -112,3 +112,59 @@ convention silently ignores this for every cell it stamps.
   真 filed 2021-08-10 (41d, i.e. we carry 20 days of look-ahead on that cell today); SCHAEFFLER
   Mar-2016 filed 7 days EARLIER than assumed. Plus the 15:30 gate applies to 56% of them.
   → **Phases 1-3 re-scope to the post-2016 recoverable set** (same machinery, now with a truth source).
+
+
+---
+
+## P1-RESULTS — pilot run 2026-08-23 (36 symbols, 635 calibration cells). GATE FAILED AS WRITTEN — and the failure is informative, not fatal.
+
+**★ FIRST, A CORRECTION TO P0:** this ground is PARTLY ALREADY WORKED and my P0 write-up did not
+say so. `scripts/fetch_shp_bse_hist.py` + the `shp_fill_*` ledgers already use SHPQNewFormat for
+"real per-filing dates" (2016-03..2019-06 and the 2026-08-07 N500 gap sweep), and
+fetch_shareholding.py's own header already states pre-2016 has no real dates ("BSE deleted them").
+So SHPQNewFormat was a RE-discovery, and §105's "no per-filing source known" was wrong when
+written. What IS new: the 7,093 post-2016 cells those ledgers never reached (spread across every
+year 2016-2026, 4,064 N500-ever / 3,029 never-N500), and the measurements below.
+
+**Calibration outcome (pipeline vs the store's existing REAL dates):**
+| mode | exact | earlier | later |
+|---|---|---|---|
+| with 15:30 gate | 227/635 = 35.7% | 20 | 388 |
+| raw broadcast date | 567/635 = 89.3% | 27 | 41 |
+| raw + lag guard ≤120d | 565/630 = **89.7%** | 27 | 38 |
+
+**Why it fails, diagnosed not guessed — the REFERENCE is inconsistent, not the pipeline:**
+1. **The store applies NO time gate.** 553 of its same-day cells span broadcasts from 00:56 to
+   23:56. So the 388 "later" under gating are entirely our gate, not error.
+2. **The store is a MIXTURE of source conventions.** The 27 residual "earlier" cases are all
+   1-2 days with EVENING BSE timestamps (18:13, 19:22, 22:50, 23:48) — i.e. some ledgers did roll
+   evening filings over and others did not. There is no single stored convention to match, so no
+   mode can reach 90% against it.
+3. **★ INDEPENDENT cross-check breaks the circularity: BSE is right, the store's outliers carry
+   NSE lag.** BSE `filing_date_time` vs NSE `broadcastDate` over 258 overlapping 2021+ filings:
+   64.7% same date, and every difference has NSE LATER — BBTC's 2022 quarters all show NSE
+   `28-DEC-2023`, a bulk re-broadcast, against BSE's real 2022-04/07/10 filings. **This is exactly
+   DATA_RUNBOOK §104's class** (NSE broadcast lags the true first-public BSE disclosure), now
+   found in the SHP series too. RELIANCE Sep-2019: store 2019-11-20, BSE 2019-10-19 — a MONTH of
+   stale visibility sitting in production today.
+   → "pipeline earlier" is the pipeline being MORE correct, not a look-ahead risk. The gate's
+   premise ("stored is truth") does not hold for this dataset.
+4. **Real hazard found and guarded:** a "New" row can be a years-later RE-UPLOAD — TALWALKARS
+   Sep-2021 carries filing_date_time 2026-06-29. The ≤120d lag guard rejects those (5 in pilot).
+   Without it the campaign would write dates years late.
+
+**Recovery measured on the target cells:** 468 fixes / 182 no-ops across 36/36 symbols, 0 API
+misses. Extrapolates to roughly 5,000 of the 7,093 changing.
+
+**DECISION REQUIRED before Phase 2/3 (a convention choice, not a fact — user's call):**
+* **(a) RAW broadcast date** — matches the store's dominant behaviour; 89.7% agreement; but
+  knowingly marks a 23:48 filing as visible that same day (a 1-day look-ahead on ~56% of cells).
+* **(b) 15:30-gated** — the principled point-in-time rule and the one we already use for
+  fundamentals ann-dates (gate_1530.py); every gated cell is strictly more correct; cost is
+  intentional divergence from ~60k older SHP cells until they get the same treatment.
+Recommendation: **(b)**, plus logging the divergence, because writing a date we have measured to
+be one day early is the one error class this whole campaign exists to remove.
+
+**ALSO OPENED (bigger than the 7,093, not yet scoped):** the store's non-convention post-2016
+dates carry the §104 NSE-lag class — 27 of 630 pilot cells measurably stale, one by a month.
+A full BSE-vs-store reconciliation over all ~67k post-2016 SHP cells is now warranted.
