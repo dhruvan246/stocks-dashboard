@@ -71,6 +71,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§100** ★★★ "DIFFERS FROM STANDALONE" IS NOT "A CONSOLIDATED TABLE EXISTS" — 22 quarters of consolidated revenue in a company that stopped filing con in 2016; the value was the standalone *sale-of-products sub-line*; the equality purge is blind to it by construction (**read before writing or trusting ANY con cell for a company in `stopped_filing_con`**)
 - **§100f** ★★★ …and the SAME wrong row was in the **STANDALONE** slot for the 3 quarters before it (one upstream, two slots). Healed + tripwired. Carries the cache-wide screen: 87 suspect cells / 24 symbols, **84 SUSPECT not confirmed** — and its two structural limits, that the screen is **blind before 2018** and that the XBRL **can detect this defect but never confirm it** (no sub-line element exists in the taxonomy)
 - **§101** ★★★ NSE's ANNOUNCEMENT ARCHIVE GOES AROUND THE BSE 2018 WALL — §84's boundary is a BSE fact, not a market fact; and the consolidated MARCH-2018 quarter was almost never filed (compulsory only from FY2020); the phantom "Consolidated Jan-Mar-2018" index row has two artifact causes, one of them an all-zero falsy sentinel (**read before calling any pre-2019 cell unreachable, and before trusting an NSE filing-index basis row**)
+- **§107** ★★★ ONE SOURCE OF TRUTH — the shared checkout SYNCS ITSELF to origin/main (`scripts/sync_checkout.py`, session-start hook); 923-commit drift + 36 worktrees were all stale copies; every reported number names its source (synced HEAD sha or LIVE); this repo is a PARTIAL CLONE — blob reads stall
 
 ---
 
@@ -11385,3 +11386,71 @@ byte-identical once the bin was live.
 ★ Rule: **when a name-keyed ledger refuses a name, check whether the name table itself is
 survivorship-biased before calling the row unmappable** — and resolve through ISIN + tape span
 + the exchange's own rename register, never by prefix ([[feedback-never-say-unfillable]]).
+
+---
+
+## 107. ★★★ ONE SOURCE OF TRUTH — THE SHARED CHECKOUT SYNCS ITSELF; "DIRTY" AND "AHEAD" WERE ALL STALE COPIES  (2026-08-24)
+
+**User's complaint (2026-08-23):** "daily I see many stale files … many files have same params but
+different count — one model checks one file, another checks another file, and both say different
+coverage numbers or different backtest results. Can we solve all this at once?"
+
+**What was measured (2026-08-23 23:50 IST, shared checkout `~/stocks-dashboard`):**
+- local `main` **923 commits behind** origin/main, "23 ahead". `git cherry`: 18 were duplicate
+  patches; of the 5 "genuinely unpushed", 3 had subject+author-time twins on origin (the §38
+  cherry-pick-through-a-worktree signature) and 2 runbook commits were upstream in reworded form
+  (§17b's three-cuts text at line 1910; local "§100 stock_data.bin frozen" = origin's §103).
+  **Zero unique committed work.**
+- 10 tracked "dirty" files: 6 byte-identical to origin/main; 4 (`docs/sf_fundamentals.json`,
+  `scripts/fundamentals.json`, `DATA_RUNBOOK.md`, `_ann_recon_skips.json`) were exactly an OLDER
+  version origin committed that same day. 5 untracked files were byte-identical to tracked files on
+  origin. One 0-byte file named `2026-08-19 23:16` (a shell-redirect accident). **Zero unique WIP.**
+- **36 worktrees** (9 under `.claude/worktrees/`, 27 under `~/stocks-wt/`), 33 to 2,599 commits
+  behind, 21 holding nothing unique, 15 holding something (4 with real unpushed script edits:
+  `lastmile`, `n500-cov-2015`, `ret6m-floor`, `fill2018`; the rest untracked ledgers/caches).
+- Root cause of the drift: nobody could `pull` past other sessions' "dirty" files (rule 1 forbids
+  touching them), but nobody measured that those files were stale copies — so the banner grew
+  scarier every day and every model read a different snapshot. §38's "the counter lies" warning
+  was documented three times and never fixed at the source.
+
+**The fix — `scripts/sync_checkout.py`** (modes `status` read-only · `sync` · `gc`):
+1. A local commit is "upstream" iff every file it touched is byte-identical at origin/main, OR
+   origin has a same-subject commit within 15 min of the same author time, OR a human passes
+   `--trust SHA` after verifying. Otherwise it is UNIQUE → sync refuses and prints the §38 recipe.
+2. A dirty/untracked file is "stale" iff its bytes equal origin's copy, or equal a blob origin
+   committed for that path in its last 600 commits (`git log --raw`, tree-level). Otherwise it is
+   WIP: kept untouched; if origin also changed it since our HEAD → sync refuses (nothing overwritten).
+3. Stale copies are backed up to `~/stocks-backups/sync-<stamp>/`, refreshed with
+   `git checkout origin/main -- <path>`, then **`git reset --keep origin/main`** (keeps WIP, aborts
+   on collision — verified in a scratch repo: WIP on an untouched file survives; WIP on a file
+   origin changed → "Entry not uptodate. Cannot merge", HEAD unchanged). Dropped local commits stay
+   reachable as `backup/<branch>-<stamp>`.
+4. `gc` removes a worktree only if it has no unique commit, no WIP, no untracked leftover (except
+   `_cache/`, `.sf_updated`, `__pycache__`), and nothing written for ≥ N hours (HEAD/ORIG_HEAD and
+   dirty-file mtimes — NOT the index, a read-only `git status` rewrites it; NOT `logs/HEAD`, reflog
+   maintenance from the main repo touches every worktree's). Worktrees it keeps are listed with WHY.
+5. `_concurrency_guard.py session-start` runs `sync` then `gc --idle-hours 48` BEFORE the dirty-file
+   banner — but only if its own hook timeout in `.claude/settings.json` is ≥ 300 s (a day of CI
+   commits needs blob fetches; a hook killed mid-reset leaves a half-moved index). Below that it runs
+   `status` only and prints the command to run by hand.
+
+**Traps hit while building it:**
+- ⚠️ **This repo is a PARTIAL CLONE (`remote.origin.promisor=true`, filter `blob:none`).** Any command
+  that needs blob CONTENT for an object not yet fetched goes to GitHub silently: `git cat-file
+  --batch-check` on 600 `sha:path` lines stalled >3 min (300 lines "worked" only because those blobs
+  were local). `git cherry`/patch-id, `git show -p`, rename detection (`--name-only` without
+  `--no-renames`) all do this. History questions must use tree-level commands: `log --raw`,
+  `rev-parse sha:path`, `ls-tree`. `merge-base --is-ancestor HEAD origin/main` short-circuits the
+  patch-id pass in the common case.
+- ⚠️ An ad-hoc shell check (`git diff --stat origin/main $c -- $files`) called commit `586688aaf`
+  "content on origin"; the per-blob check in the tool shows `build_nifty500_turnover.py` differs
+  (origin evolved the file later). **Per-file blob identity beats a diff whose empty output you
+  didn't question** ([[feedback-verify-the-claim-you-assert]]).
+- Classification is ~1 s for the shared checkout; 36 worktrees ~10 s.
+
+**Standing rule (CLAUDE.md):** every number reported — coverage, backtest, cell count — is measured
+from the synced checkout (state its HEAD sha) or from LIVE, and the report says which. A checkout
+whose `status` shows it behind origin is not a source.
+
+**Manual commands:** `python3 scripts/sync_checkout.py status` (never writes) ·
+`… sync [--trust SHA,..]` · `… gc --dry-run` then `… gc [--idle-hours 24]`.
