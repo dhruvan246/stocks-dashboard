@@ -499,3 +499,79 @@ rate.
 
 195 intimation cells, 512 secondary cells, the lag-cap class, and the no-match recoveries all
 land in ONE reviewable ledger. Nothing writes until step 5, and step 5 runs once.
+
+---
+
+## G. OPUS VERIFICATION OF SECTION F (2026-08-20) — 2 of Fable's 4 additions corrected by measurement
+
+Every F claim was re-measured, and where it made a factual assertion I went to BSE live. Verdicts:
+
+**F1 CONFIRMED — my own audit regex was wrong. 16 of my 195 were FALSE POSITIVES.**
+Measured: 16 flagged rows carry BSE's genuine outcome template (VASWANI "Board Meeting Outcome for
+To Approve Financial Results For Quarter Ended September 30, 2022"; GUJRAFFIA/SFL/ARCHIES/VLEGOV/
+CEREBRAINT alike). My FWD regex fired on incidental words ("intimation", "meeting of the board")
+while my OUTCOME override was too narrow to rescue them. True intimation count ≈179, not 195.
+Fable's structural remedy — ONE shared `classify_row` imported by fetcher, auditor and applier —
+is adopted exactly as written; a parallel audit regex is what produced this error.
+
+**F0 / BUG 4 CONFIRMED as a count, but RE-DIAGNOSED as a SYMPTOM of Bug 3, not a peer defect.**
+501 newspaper + 11 "Updates on" reproduced exactly (472/501 later — the Reg-47 mechanism). But the
+CAUSE is date-extraction failure on the real row, proven live: RANEHOLDIN qe20240331 —
+`2024-05-15 14:57 "Results - Financial Results March 31, 2024"` extracts **[]** (no ended/for
+anchor before the date!), so the `2024-05-16 "Newspaper Publication"` row (which does parse) won by
+default. Fix Bug 3 and most of the 512 self-resolve into correct result matches. Keep the demoted
+'secondary' class as the last-resort tier (Fable's design is right), but expect its population to
+collapse after the regex fix — report the post-fix count, don't assume it stays 512.
+
+**F2 REFUTED — do NOT relax the lag cap to 400d. It would write ~209 dates each ~1 YEAR wrong.**
+Fable's premise (lag>120 = genuine late filers, multi-date = the ALFALAVAL class) fails on
+measurement. Proven live: CESC qe20030630 lag=396d matched
+`2004-07-30 HEADLINE "…net profit … for the quarter ended June 30, 2004 **as compared to** … quarter
+ended June 30, 2003"` → extracted [20030630, 20040630]. Our 2003 target matched the YEAR-AGO
+COMPARISON. All four CESC 2003 quarters show the same ~393-396d offset; IPCALAB likewise. So the
+120d cap is doing its job, and these are multi-date after all.
+  ⚠️ **My own F2 measurement was also flawed and I'm flagging it**: I reported "209 single-date"
+  using `extract_all_qes(NEWSSUB)` only — the second date lives in HEADLINE, which the matcher reads
+  but fetch_results.json does not store. "Single-date" was an artifact of my script, not the data.
+  Neither Fable's rule nor my check could be sound without the raw rows → **F4 is a PREREQUISITE,
+  not a nicety.**
+  **BUT Fable's underlying instinct is CORRECT and confirmed**: genuine late filers exist and a flat
+  120d cap discards them. Proven live: BHARATRAS qe20160930 broadcast **2017-03-10** (lag 161d),
+  `"Standalone Financial Results … for the period ended September 30, 2016"`, single date, no
+  comparative, HEADLINE confirms a real filing.
+  **REPLACEMENT RULE (supersedes both the flat 120 and the flat 400):**
+   1. **Year-ago comparative refusal** (the real fix, needs raw rows): refuse a target qe if the row
+      contains another extracted date LATER than it and an exact whole-year multiple apart on the
+      same month/day (CESC 2003-06-30 vs 2004-06-30 → refuse). This preserves ESSAROIL-style genuine
+      annual+quarterly combos (2010-03-31 & 2010-06-30 — different month/day, 3 months apart).
+   2. Lag window widened to **[0, 200]** — admits BHARATRAS-class real late filings; beyond 200d
+      accept ONLY when the row's extracted-date set is exactly {target qe} (nothing to compare
+      against). Re-measure the lag histogram post-fix and report anything >200d for eyeball.
+   3. lag<0 refused always (unchanged).
+
+**F3 CONFIRMED in principle; ROUTE measured and mostly a dead end — bound it, don't chase it.**
+No symbol→ISIN map exists in the files F3 named (checked `_isin_seam_verdicts.json`,
+`search_index.json`, `liquid_universe.json`: 0/251 hits). I fetched NSE's `EQUITY_L.csv` live
+(nsearchives worked though the nseindia.com warmup 403'd — the a-wall-is-a-route pattern) giving
+SYMBOL→ISIN for 2,553 names. Result on the 251: **3 symbols / 37 cells recovered**; 97 are in NSE
+with an ISIN absent from every BSE map (= genuinely **NSE-only**, exactly Fable's class, now
+measured); 151 aren't in the current NSE list at all (delisted, or our ticker is a legacy alias —
+our "COLGATE" is NSE's **COLPAL**, so a symbol-keyed lookup can never find it). Normalized
+company-name bridge adds ~21 more. **Decision: implement resolution chain by_id → master scrip_id →
+NSE-symbol ISIN → normalized-name, then CLASSIFY the remainder (`nse-only` / `unresolved-alias`)
+and leave the placeholder.** ~1,700 of 36,027 cells (4.7%) stay unfixed as a measured, named
+residue — future route is the FUND_ALIAS/rename machinery + an NSE-archive pass (NOT "unfillable").
+
+**F4 CONFIRMED and PROMOTED to prerequisite** — see F2 above; without raw rows neither the
+comparative rule nor any future matcher tweak can be evaluated offline.
+
+**F5 (Opus addition) — BUG 3 is bigger than stated: the anchor requirement itself drops real rows.**
+Beyond "Ended On" + 2-digit years, the RANEHOLDIN row proves a results row can carry a bare date
+with NO anchor word ("Results - Financial Results March 31, 2024"). Remedy: additionally accept an
+**anchor-less date only when it is a true quarter-end (Mar31/Jun30/Sep30/Dec31) AND the row text
+contains "result"** — tight by construction, and harmless because targets are only ever quarter-ends
+(a stray "Held On May 15, 2024" is not a quarter-end and can never match a target).
+
+**NET EFFECT vs section F:** Fable's Option A, 7-step order, shared classifier, secondary tier, and
+F4 all stand. Changed: no 400d cap (comparative rule + 200d instead), Bug 4 reclassified as a Bug-3
+symptom, F3 bounded with measured residue, Bug 3 widened per F5. Proceeding to implement.
