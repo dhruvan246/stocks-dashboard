@@ -72,5 +72,43 @@ Then: §105 rewrite (convention only for residue cells, counts stated), engine s
 update + sw bump, A/B rerun (DII strategy — quantmac's 32 dii_unknowable rows re-scored),
 workbook sheet A refresh, live verify, next-day sentinel re-check, memory + runbook §106 record.
 
-## P0-RESULTS (Opus fills in — measured, dated)
-(empty — Phase 0 not yet run)
+## P0-RESULTS — MEASURED 2026-08-23 (Opus). Ladder complete for the routes that matter.
+
+**★ 0a BSE per-scrip SHP API — FOUND, and it carries a REAL `filing_date_time`.**
+`https://api.bseindia.com/BseIndiaAPI/api/SHPQNewFormat/w?scripcode=<code>` (found by enumerating
+candidate endpoint names after the JS-bundle route dead-ended: the Angular bundle names the caller
+`O.url.sHPQNewFormat` but the URL map is server-config, not in any shipped chunk; browser-network
+inspection is blocked by policy for bseindia.com). Fields: yr, qtr, qtrid, status, **filing_date_time**,
+revised_date_time, revised_reson, XbrlFile, xbrlurl, navigateurl.
+**REACH BOUNDARY, measured on 5 symbols and consistent across all of them: timestamps begin at the
+March-2016 quarter (oldest seen 2016-04-13/14/18/19, 2016-05-16) — pre-2016 rows EXIST back to 2001
+but `filing_date_time` is null, `XbrlFile` empty.** The boundary is the SHP XBRL mandate, not a gap.
+→ pre-2016: BSE does not hold the answer. 2016+: BSE holds it exactly, to the second.
+
+**0b NSE — no pre-2016 route.** `corporate-share-holdings-master` has broadcastDate+time but returns
+20 rows (~2021+) and ignores from_date/to_date (0 rows for 2009). `corporate-filings-shareholding-pattern`
+and `corp-info?corpType=shareholding` both 404. No NSE pre-2016 SHP filing endpoint exists to find.
+
+**0c BSE XBRL/attachment — subsumed by 0a's boundary.** Old rows carry `XbrlFile:""` and a bare
+`xbrlurl:"/XBRL1/"`; the XBRL artifacts themselves start with the same 2016 mandate. No pre-2016 artifact.
+
+**0d Wayback CDX — thin, late, upper-bounds only.** `ShareholdingPattern.aspx*`: 0 captures before
+2012, then 1/64/104/84/147 for 2012-16 ACROSS ALL SCRIPS (per-scrip×quarter density is therefore
+~nil). NSE `shldStructure*`: 0 before 2012. Cannot date 25,867 cells; at best a bound for a handful.
+
+**★ 0e Empirical lag calibration — 748 real filings, 20 symbols, 2016+:**
+median **17d**, p90 **21d**, p99 41d, max 47d. **Only 4.0% filed LATER than qe+21d** → the convention
+is empirically sound for ~96% of filings and errs conservative (deadline-anchored) as argued in §105.
+**56.4% were broadcast after 15:30 IST**, i.e. the correct visibility date is the NEXT session — the
+convention silently ignores this for every cell it stamps.
+
+### VERDICT + REVISED SCOPE
+* **Pre-2016 (25,867 cells): NEGATIVE VERDICT, now EARNED not assumed.** Every route measured; the
+  data does not exist publicly. Convention stands there, documented (§105), with the 0e calibration
+  attached as its justification (median 17d, 96% within the 21d deadline).
+* **★ POST-2016 (7,093 cells / 1,902 symbols): RECOVERABLE RIGHT NOW — this is the real find.**
+  Our store still carries the qe+21d convention on 10.6% of post-2016 rows even though BSE publishes
+  the exact timestamp for that era. Spot-check: 9/9 resolved, and materially — ARVINDFASN Jun-2021
+  真 filed 2021-08-10 (41d, i.e. we carry 20 days of look-ahead on that cell today); SCHAEFFLER
+  Mar-2016 filed 7 days EARLIER than assumed. Plus the 15:30 gate applies to 56% of them.
+  → **Phases 1-3 re-scope to the post-2016 recoverable set** (same machinery, now with a truth source).
