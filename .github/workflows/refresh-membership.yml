@@ -41,8 +41,19 @@ jobs:
       - name: Refresh changelog from NSE press releases (auto-discovers new ones)
         run: python3 scripts/build_changelog.py || echo "changelog refresh failed — keeping committed copy"
 
+      # The builder judges "does this key trade on this date" (PHANTOM FLOOR + era-aware key
+      # emission, DATA_RUNBOOK §105) from docs/sf_stock_data.bin — the COMMITTED copy is a frozen
+      # snapshot (§0), so it must read the LIVE merged bin or it will emit keys the served series
+      # no longer carry (CASTROL after CASTROL->CASTROLIND merged). Best-effort: on failure the
+      # builder falls back to the committed copy and says so in the log.
+      - name: Fetch the LIVE sf price bin for the builder's date checks
+        run: python3 scripts/fetch_live_sf.py || echo "live sf fetch failed — builder will read the committed (stale) bin"
+
       - name: Rebuild point-in-time membership (validates vs official archives)
         run: python3 scripts/build_membership_v2.py
+
+      - name: Drop the fetched bin (never commit the 190 MB live copy)
+        run: git checkout -- docs/sf_stock_data.bin || true
 
       # Append the latest F&O constituents (survivorship-free) from NSE's derivatives bhavcopy and
       # patch docs/stock_data.bin's fnoHistory in place. build_membership_v2.py preserves fnoHistory,

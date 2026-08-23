@@ -428,7 +428,20 @@ _WEEKEND_CONFIRMED = [
     (2025, 2, 1),                                    # Budget Saturday (full session)
     (2026, 2, 1),                                    # Budget SUNDAY (full session)
 ]
-WEEKEND_SESSIONS = [datetime.date(*t) for t in _WEEKEND_CONFIRMED]
+# WEEKDAY sessions the bin has NO bars for although NSE traded (Nifty has a close, a bhavcopy exists
+# with >1,000 rows that differ from the prior day). Found 2026-08-23 by counting stock bars per Nifty
+# session 2007→ (DATA_RUNBOOK §105): 13 holes, 12 verified (1,200-1,600 rows each, closes differ from
+# the prior day). 2009-03-31 is a MONTH-END, so every month-end screen that day priced the whole
+# universe off 30-Mar (SANOFI/GODREJCP wrongly failed d52<=10 vs quantmac). Same insert path as the
+# weekend specials — the ledger carries each day's rows + prior-day anchors. NOT listed: 2021-11-04
+# (muhurat Thursday) — NSE's archive serves the 03-Nov file for it (1,829/1,829 closes identical),
+# so there is no session file to insert; the misdirect guard below would skip it anyway.
+_WEEKDAY_MISSING_CONFIRMED = [
+    (2008, 2, 19), (2009, 3, 31), (2010, 10, 14), (2010, 10, 26),
+    (2014, 2, 21), (2014, 7, 25), (2014, 10, 14),
+    (2015, 9, 3), (2016, 8, 17), (2016, 11, 17), (2017, 3, 24), (2017, 3, 27),
+]
+WEEKEND_SESSIONS = [datetime.date(*t) for t in _WEEKEND_CONFIRMED + _WEEKDAY_MISSING_CONFIRMED]
 
 
 def insert_weekend_sessions(data, j, old2new=None):
@@ -454,6 +467,23 @@ def insert_weekend_sessions(data, j, old2new=None):
         i = bisect.bisect_left(ds, ymd)
         return i < len(ds) and ds[i] == ymd
 
+    # As-printed ERA symbol -> surviving bin key. old2new covers MANUAL_MERGE's pairs only; renames the
+    # ISIN auto-merge consolidated long ago (AVENTIS->SANOFI, HEROHONDA->HEROMOTOCO, …) print their era
+    # symbol in that day's bhavcopy and skipped as "unknown symbol" — measured on the 2009-03-31 insert:
+    # 216 of 1,236 rows. Walk scripts/_rename_map.json until a key the bin holds. A symbol the bin holds
+    # under its own name is never redirected (recycled tickers keep their own series, §89), and the
+    # anchor/plausibility gates below still apply to every re-homed row.
+    try:
+        _rm = json.load(open(os.path.join(HERE, "_rename_map.json")))
+    except Exception:
+        _rm = {}
+    def _survivor(sym):
+        s = (old2new or {}).get(sym, sym)
+        if s in data: return s
+        seen = set()
+        while s not in data and s in _rm and s not in seen:
+            seen.add(s); s = _rm[s]
+        return s
     total = 0
     for day in WEEKEND_SESSIONS:
         ymd = int(day.strftime("%Y%m%d"))
@@ -466,11 +496,13 @@ def insert_weekend_sessions(data, j, old2new=None):
         if len(rows) < 300:   # stub/corrupt archive file (2010-05-16 has 7 rows), not a session
             print("  WEEKEND %s: only %d rows — stub file, skipped" % (day, len(rows))); continue
         prev_raw = led.get("prev") or {}
+        prev_ymd = led.get("prevDate") or 0            # date the `prev` anchors belong to (ledger-stamped)
+        _day_raw = {}                                  # per-date raw closes fetched for holed series
         if not prev_raw:                               # walk back to the previous trading day's file
             d0 = day - datetime.timedelta(days=1)
             for _ in range(7):
                 prows = B.fetch_day(d0, j)
-                if prows: prev_raw = {r[0]: r[1] for r in prows}; break
+                if prows: prev_raw = {r[0]: r[1] for r in prows}; prev_ymd = int(d0.strftime("%Y%m%d")); break
                 d0 -= datetime.timedelta(days=1)
         # misdirect guard: NSE's per-day URL can serve the PRIOR day's file — a "session" whose
         # closes are ~all identical to the previous trading day is that file, not a session.
@@ -484,7 +516,7 @@ def insert_weekend_sessions(data, j, old2new=None):
         ins = skip = 0
         for r in rows:
             osym, c, p, t = r[0], r[1], r[2], r[3]
-            sym = (old2new or {}).get(osym, osym)      # merged-away old ticker -> survivor series
+            sym = _survivor(osym)                      # merged-away / era ticker -> survivor series
             h = r[4] if len(r) > 4 else c; l = r[5] if len(r) > 5 else c
             o_ = r[6] if len(r) > 6 else c; v = r[7] if len(r) > 7 else 0
             dlv = r[8] if len(r) > 8 else 0; vw = r[9] if len(r) > 9 else 0
@@ -494,7 +526,22 @@ def insert_weekend_sessions(data, j, old2new=None):
             ds = e["d"]; i = bisect.bisect_left(ds, ymd)
             if i < len(ds) and ds[i] == ymd: continue  # this symbol already has the bar
             if i == 0: skip += 1; continue             # listed ON the session — no prior bar to anchor
-            raw_prev = prev_raw.get(osym) or p         # anchor is keyed by the AS-PRINTED symbol
+            # The anchor must be the raw close of the SAME date as our last stored bar. The prior
+            # session's file is that date only when the series has no hole just before the session;
+            # BEPL's tape lacks 15-25 Oct 2010, so pairing its 14-Oct stored close with NSE's 25-Oct
+            # close (or the file's PREV_CLOSE column) scaled the 26-Oct insert 3% low (measured
+            # 2026-08-23 vs Yahoo: 27.22 for 28.03). So: prior-day file when the dates agree, else
+            # that exact date's own bhavcopy (cached per date), else leave the row out — never guess.
+            pdate = ds[i - 1]
+            if pdate == prev_ymd: raw_prev = prev_raw.get(osym)
+            else:
+                if pdate not in _day_raw:
+                    try:
+                        _d = datetime.date(pdate // 10000, (pdate // 100) % 100, pdate % 100)
+                        _day_raw[pdate] = {r[0]: r[1] for r in (B.fetch_day(_d, j) or [])}
+                    except Exception:
+                        _day_raw[pdate] = {}
+                raw_prev = _day_raw[pdate].get(osym)
             if not raw_prev: skip += 1; continue
             f = e["c"][i - 1] / raw_prev               # CA-adjustment level at the insertion point
             adj_c = round(c * f, 2)
@@ -861,8 +908,57 @@ def main():
                     "TTML": "TATATELSER",      # Tata Tele (M) pre-2003 fragment (drift 0.960, 1d)
                     "XLENERGY": "XLTELENE",    # XL Telecom pre-2009 fragment (drift 0.950, 1d)
                     "IBULLSLTD": "YAARI"}      # Yaari Digital 2013-2020 fragment (drift 0.927, 1d)
+    # --- 2026-08-23 ISIN-SEAM batch (DATA_RUNBOOK §95g's open queue, landed in §105): the 103 seams
+    # the issuer-prefix sweep CONFIRMED as one company (scripts/_isin_seam_verdicts.json) were never
+    # stitched because the ISIN CHANGED at each seam (face-value change, scheme) — the auto-merge must
+    # refuse that. Each entry carries the SEAM factor NSE itself states: PREVCLOSE printed on the new
+    # symbol's first session / the old symbol's last close (exact to the paise), applied ON TOP of the
+    # new key's own later official factors (the CA-adj loop below). Landed only where the join is then
+    # continuous on the bin: drift = stored_new_first / (stored_old_last x seam x CA-adj) in [0.85,1.15]
+    # and gap <= 120d — 31 of 103. The other 71 (relistings with a nominal first prevclose, IBC capital
+    # reductions, unexplained steps such as PROVOGUE 0.48) stay SPLIT: joining them would hand
+    # retPctAt a stale base across the hole and mint a fake return; build_membership_v2's era-aware
+    # key emission makes those companies visible under the old key instead. Verified no live
+    # fundamentals rows under any old key here (FUND_ALIAS already bridges them, §95f).
+    # Value form {"old": OLD, "seam": f} is accepted alongside the plain "OLD" string.
+    SEAM_MERGES = {
+        "ARVINDREM": {"old": "ARL", "seam": 10},   # ARL 20120511→20120608: NSE prevclose 23.5/close 2.35; CA-adj 1, drift 0.994, gap 28d, 2319 bars
+        "ASHCONIUL": {"old": "ASHCO", "seam": 10},   # ASHCO 20100920→20101004: NSE prevclose 7.5/close 0.75; CA-adj 1, drift 1.067, gap 14d, 713 bars
+        "ASIANHOTNR": {"old": "ASIANHOTEL", "seam": 1},   # ASIANHOTEL 20100223→20100407: NSE prevclose 559.95/close 559.95; CA-adj 1, drift 0.898, gap 43d, 2339 bars
+        "AVANTIFEED": {"old": "AVANTI", "seam": 1.00197},   # AVANTI 20150129→20150415: NSE prevclose 1805.0/close 1801.45; CA-adj 0.06667, drift 0.984, gap 76d, 1179 bars
+        "BALLARPUR": {"old": "BILT", "seam": 0.2},   # BILT 20080228→20080331: NSE prevclose 27.5/close 137.5; CA-adj 1, drift 1.011, gap 32d, 1861 bars
+        "BELLCERATL": {"old": "BELCERAMIC", "seam": 3},   # BELCERAMIC 20100723→20100908: NSE prevclose 25.95/close 8.65; CA-adj 1, drift 0.990, gap 47d, 2413 bars
+        "BHAGYANGR": {"old": "BHAGYNAGAR", "seam": 1},   # BHAGYNAGAR 20170309→20170517: NSE prevclose 24.35/close 24.35; CA-adj 1, drift 1.092, gap 69d, 3509 bars
+        "CASTROLIND": {"old": "CASTROL", "seam": 1},   # CASTROL 20140226→20140314: NSE prevclose 287.7/close 287.7; CA-adj 0.5, drift 1.041, gap 16d, 2259 bars
+        "CENTUM": {"old": "SOLECTCENT", "seam": 0.69905},   # SOLECTCENT 20070807→20071005: NSE prevclose 195.0/close 278.95; CA-adj 1, drift 1.082, gap 59d, 979 bars
+        "COLPAL": {"old": "COLGATE", "seam": 1},   # COLGATE 20071128→20071217: NSE prevclose 382.1/close 382.1; CA-adj 0.5, drift 1.016, gap 19d, 1798 bars
+        "DSSL": {"old": "DYNASYS", "seam": 10},   # DYNASYS 20111102→20111201: NSE prevclose 9.0/close 0.9; CA-adj 1, drift 0.900, gap 29d, 134 bars
+        "ESSENTIA": {"old": "INTEGRA", "seam": 1},   # INTEGRA 20220228→20220314: NSE prevclose 1.7/close 1.7; CA-adj 0.5, drift 0.918, gap 14d, 954 bars
+        "GBGLOBAL": {"old": "MANDHANA", "seam": 1},   # MANDHANA 20190213→20190607: NSE prevclose 2.35/close 2.35; CA-adj 1, drift 1.043, gap 114d, 2155 bars
+        "GOCLCORP": {"old": "GULFOILCOR", "seam": 1},   # GULFOILCOR 20140603→20140626: NSE prevclose 164.6/close 164.6; CA-adj 1, drift 0.978, gap 23d, 1638 bars
+        "HFCL": {"old": "HIMACHLFUT", "seam": 1},   # HIMACHLFUT 20110207→20110309: NSE prevclose 9.4/close 9.4; CA-adj 1, drift 1.064, gap 30d, 2574 bars
+        "HINDMOTORS": {"old": "HINDMOTOR", "seam": 1},   # HINDMOTOR 20110125→20110221: NSE prevclose 20.05/close 20.05; CA-adj 1, drift 0.915, gap 27d, 2566 bars
+        "LGBBROSLTD": {"old": "LGBROS", "seam": 10},   # LGBROS 20100312→20100330: NSE prevclose 227.5/close 22.75; CA-adj 0.25, drift 1.072, gap 18d, 2328 bars
+        "MORARJEE": {"old": "MORARJETEX", "seam": 1},   # MORARJETEX 20120810→20120918: NSE prevclose 11.95/close 11.95; CA-adj 1, drift 1.054, gap 39d, 1036 bars
+        "NCOPPER": {"old": "NISSAN", "seam": 10},   # NISSAN 20110928→20111017: NSE prevclose 22.5/close 2.25; CA-adj 1, drift 1.129, gap 19d, 1164 bars
+        "NDL": {"old": "NANDAN", "seam": 10},   # NANDAN 20120306→20120323: NSE prevclose 23.0/close 2.3; CA-adj 0.03333, drift 1.070, gap 17d, 1524 bars
+        "NTL": {"old": "SUJANATOW", "seam": 10},   # SUJANATOW 20130806→20130911: NSE prevclose 9.5/close 0.95; CA-adj 1, drift 0.953, gap 36d, 1188 bars
+        "ORTINGLOBE": {"old": "ORTINLABSS", "seam": 1},   # ORTINLABSS 20210111→20210330: NSE prevclose 31.0/close 31.0; CA-adj 1, drift 1.048, gap 78d, 1334 bars
+        "PAISALO": {"old": "SEINVEST", "seam": 10},   # SEINVEST 20111003→20111017: NSE prevclose 101.0/close 10.1; CA-adj 0.05, drift 0.954, gap 14d, 567 bars
+        "PALREDTEC": {"old": "PALREDTECH", "seam": 2},   # PALREDTECH 20160425→20160509: NSE prevclose 121.9/close 60.95; CA-adj 1, drift 0.954, gap 14d, 133 bars
+        "RMMIL": {"old": "RESURGERE", "seam": 10},   # RESURGERE 20120613→20120627: NSE prevclose 2.0/close 0.2; CA-adj 1, drift 1.000, gap 14d, 927 bars
+        "SHIVATEX": {"old": "SHIVTEX", "seam": 1},   # SHIVTEX 20171102→20171226: NSE prevclose 401.4/close 401.4; CA-adj 1, drift 1.138, gap 54d, 3976 bars
+        "SIGNET": {"old": "SIGNETIND", "seam": 1.12671},   # SIGNETIND 20150129→20150313: NSE prevclose 127.6/close 113.25; CA-adj 0.1, drift 0.956, gap 43d, 657 bars   # CHAIN: must run before SIGIND<-SIGNET below (older seam first)
+        "SIGIND": {"old": "SIGNET", "seam": 10},   # SIGNET 20180810→20180829: NSE prevclose 65.0/close 6.5; CA-adj 1, drift 1.000, gap 19d, 838 bars
+        "SPLPETRO": {"old": "SUPPETRO", "seam": 1},   # SUPPETRO 20220406→20220524: NSE prevclose 921.3/close 921.3; CA-adj 0.5, drift 0.918, gap 48d, 5336 bars
+        "SUBEXLTD": {"old": "SUBEX", "seam": 1},   # SUBEX 20201021→20201105: NSE prevclose 16.95/close 16.95; CA-adj 1, drift 1.103, gap 15d, 4240 bars
+        "TVSHLTD": {"old": "SUNCLAYTON", "seam": 1},   # SUNCLAYTON 20120906→20121023: NSE prevclose 185.45/close 185.45; CA-adj 1, drift 1.084, gap 47d, 1034 bars
+    }
+    MANUAL_MERGE.update(SEAM_MERGES)
     merged = 0
-    for new, old in MANUAL_MERGE.items():
+    for new, spec in MANUAL_MERGE.items():
+        old = spec["old"] if isinstance(spec, dict) else spec
+        seam = float(spec.get("seam", 1.0)) if isinstance(spec, dict) else 1.0
         on = data.get(new); oo = data.get(old)
         if on and oo and on["d"] and oo["d"] and oo["d"][0] < on["d"][0]:
             idx = [i for i, dd in enumerate(oo["d"]) if dd < on["d"][0]]
@@ -871,7 +967,8 @@ def main():
                 # of `new`'s official factors whose ex-date is AFTER the old series ended, so the prepended
                 # prices land on the SAME adjusted scale (else a ratio-3 discontinuity at the join, e.g.
                 # PATANJALI's 2025-09 1:2 bonus f=0.3333 must scale RUCHI's 2020-22 prices down /3).
-                oldend = oo["d"][idx[-1]]; adj = 1.0
+                # SEAM_MERGES additionally carry NSE's own seam factor (face-value change at the rename).
+                oldend = oo["d"][idx[-1]]; adj = seam
                 for ex, f in CA_OFF.get(new, {}).items():
                     if ex > oldend: adj *= f
                 for f in ("d", "c", "t", "h", "l", "op", "v", "dv", "vw"):
@@ -906,7 +1003,7 @@ def main():
     mr = apply_manual_rights(data)   # hand-verified per-stock rights adjustments to match Trendlyne
     ao = apply_ca_arbitrated(data)   # official splits the close-ratio guard rejected, confirmed by the ex-day OPEN (§87g)
     if ao: print("Open-arbitrated corporate actions: %d applied." % ao)
-    wk = insert_weekend_sessions(data, j, {o: n for n, o in MANUAL_MERGE.items()})   # backfill missing weekend special sessions (budget Sats etc.); old->new so merged-away tickers' sessions land on the survivor
+    wk = insert_weekend_sessions(data, j, {(o["old"] if isinstance(o, dict) else o): n for n, o in MANUAL_MERGE.items()})   # backfill missing weekend special sessions (budget Sats etc.); old->new so merged-away tickers' sessions land on the survivor
     if wk: print("Weekend special sessions: %d bars inserted." % wk)
     for day in days:
         rows = B.fetch_day(day, j)

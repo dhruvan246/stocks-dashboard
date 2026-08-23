@@ -668,7 +668,7 @@ function isAlreadySaved(cfg){
 // every key changes → the old snapshot is no longer found → the next view recomputes with the CURRENT
 // code + data and re-caches. Without this stamp a changed engine or a refreshed dataset would keep
 // serving a stale pre-computed result forever.
-const ENGINE_VER='e7';        // ⬆️ BUMP this whenever simulate()/engine logic changes → invalidates all snapshots
+const ENGINE_VER='e8';        // ⬆️ BUMP this whenever simulate()/engine logic changes → invalidates all snapshots  (e8 2026-08-23: foldFundAliases — old-key fundamentals folded under the merged key, §105)
                               // e7 (2026-08-20): TTM contiguity check strengthened to pairwise
                               // gaps (each of 4 quarters exactly 3mo apart) — the e6 endpoint-only
                               // check let a duplicate qe row through uncaught (APOLLOTYRE/
@@ -706,6 +706,20 @@ async function loadFund(){
   if(Object.keys(FUND).length) return;
   try{ FUND=await (await fetch('./sf_fundamentals.json')).json(); console.log('fundamentals:', Object.keys(FUND).length, 'symbols'); }
   catch(e){ console.warn('no fundamentals data', e); FUND={}; }
+  foldFundAliases();
+}
+// merge renamed tickers' fundamentals under the CURRENT key (filed under the old name then) — same
+// fold as loadShp(); needed once the price build stitches an old tape into the current key (§105).
+// Same quarter on both keys: OLD row wins (§30 — true announce dates) unless it has no PAT.
+// (Sync: backtest-engine.js foldFundAliases.)
+function foldFundAliases(){
+  for(const old in FUND_ALIAS){
+    if(!FUND[old]) continue;
+    const nw=FUND_ALIAS[old], by={};
+    (FUND[nw]||[]).forEach(r=>{ by[r[0]]=r; });
+    FUND[old].forEach(r=>{ const cur=by[r[0]]; if(!cur||r[1]!=null||cur[1]==null) by[r[0]]=r; });
+    FUND[nw]=Object.values(by).sort((a,b)=>a[0]-b[0]);
+  }
 }
 // shareholding pattern (FII/DII %) — loaded lazily, only when an SHP factor is used
 async function loadShp(){

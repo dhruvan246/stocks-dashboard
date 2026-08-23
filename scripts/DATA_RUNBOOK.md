@@ -11147,3 +11147,90 @@ otherwise those corrections silently stop applying (measured: WARNs 65 → 211).
 KNOWN, DOCUMENTED assumption — never present pre-2016 SHP visibility as measured. Its defence is
 the 0e calibration: over 748 real post-2016 filings the median lag is 17d and only 4.0% exceed the
 21-day deadline, so the convention is empirically sound and deadline-anchored (conservative).
+
+## 106. ★★★ THE ISIN-SEAM QUEUE LANDED — 31 old tapes stitched, era-aware membership for the 71 that cannot be, 12 missing sessions restored  (2026-08-23)
+**NO ASSUMPTIONS, NO GUESSWORK** — every number here was measured on the LIVE bins (fetch_live_sf.py
+into `~/stocks-wt/seams`) and re-verified against Yahoo/NSE before anything was written.
+
+### 106a. How it surfaced
+Running "N500 · ret6m top-3 · 52wHi%<=10" 2009-01-01→2026-07-31 on both engines (ours vs quantmac
+#1761): 169/210 baskets identical, 41 not — 43 of the differing months in 2009-2016. Probing the 49
+quantmac-only picks through our own engine: 15 "non-members on our roster", 9 "not in our data", and
+every "not in our data" symbol turned out to be the SAME company under the ticker of the time
+(INVSTSMART = HINVDIR, AMTEKINDIA = CASTEXTECH, GATI = ACLGATI). Then the real class: **a Nifty-500
+member with no price bar on the rebalance day** — 633 member-months 2009-2010 where the roster key was
+the CURRENT ticker (CASTROLIND, HEXT, PATANJALI, TMCV …) while the bin's 2009 prices sat under the OLD
+key (CASTROL, HEXAWARE, RUCHISOYA …) that is on NO snapshot ever. From 2011 the PHANTOM FLOOR deletes
+the priceless current key, so the company vanishes until its new tape begins: Castrol 2009→2014-03,
+Hexaware 2009→2020 (NSE's register excludes it only 2020-09-25), Tube Investments 2009→2017 (excluded
+2017-05-26), Ruchi Soya 2009→2020, Orchid, Chemplast, Alok, Supreme Petrochem, MIC, 3i Infotech …
+Year-end invisible members measured: 2008: 30, 2009: 17, 2010: 25, 2011+: 0 (only because the floor
+had already removed them). 7 of quantmac's 15 "membership disputes" were this defect on OUR side
+(HEXAWARE ×4, TUBEINVEST, CHEMPLAST ×2). Root: §95f/g's open queue — 103 CONFIRMED seams whose ISIN
+changed at the seam, so the ISIN auto-merge correctly refused them and nobody stitched them.
+
+### 106b. What landed (three legs, one cause)
+1. **Price tapes — `update_sf_data.py` SEAM_MERGES (31 pairs).** MANUAL_MERGE now also accepts
+   `{"old": OLD, "seam": f}`; `f` = NSE's own PREVCLOSE printed on the new symbol's first session /
+   the old symbol's last close (exact to the paise, from `_isin_seam_verdicts.json`), applied on top of
+   the new key's later official factors. Landed only where the join is then continuous on the bin —
+   drift = stored_new_first / (stored_old_last × f × CA-adj) within [0.85, 1.15] and gap ≤ 120d.
+   CASTROL→CASTROLIND (f 1, CA 0.5, drift 1.04), HIMACHLFUT→HFCL, HINDMOTOR→HINDMOTORS, SUPPETRO→
+   SPLPETRO, COLGATE→COLPAL, BILT→BALLARPUR, AVANTI→AVANTIFEED, … Chains run older seam first
+   (SIGNETIND→SIGNET before SIGNET→SIGIND — the alphabetical order merged SIGNET away first and the
+   SIGNETIND leg found nothing; measured, fixed). **71 DEFERRED** (nominal first prevclose = relisting;
+   IBC capital reductions ALOKTEXT ×5.1, CHEMPLAST ×36, ORCHIDPHAR ×20, MIC ×11; unexplained steps
+   PROVOGUE 0.48, KALSTEELS 0.32, CINEMAX 0.46 …) — joining them hands `retPctAt` a stale base across
+   the hole and mints a fake 6-month return (3IINFOTECH would read +267% on its first new bar).
+2. **Membership — `build_membership_v2.py` era-aware emission.** When the current key has no bar on or
+   before the snapshot date but an OLD key in its `_rename_map` chain was trading then (first ≤ date ≤
+   last+45d), the snapshot carries the old key. 37 redirects, 4,265 member-slots on Nifty 500
+   (HEXT→HEXAWARE, CHEMPLASTS→CHEMPLAST, CHOLAHLDNG→TUBEINVEST, ALOKINDS→ALOKTEXT …). Plus
+   ERA_OVERRIDES for three name-mapped targets pointing at the WRONG successor: KPITTECH (the 2019
+   demerged entity — the 2002-2019 listing is BSOFT), TIINDIA (2017 spin-off — the old listing is
+   CHOLAHLDNG/TUBEINVEST) and JSWISPL (Monnet's successor; Ispat Industries is JSWISPAT, and JSWISPL's
+   only reverse chain is MONNETISPA, a different company — the generic fallback would have picked it).
+   Year-end roster sizes 2011-2021 moved 481-499 → 494-503; validation vs the 39 archived official
+   lists stays 100%. **refresh-membership.yml now fetches the LIVE sf bin before building** — the
+   committed bin is the frozen snapshot (§0) and these date checks must see the merged tapes, else the
+   builder emits CASTROL after CASTROL has been folded away.
+3. **12 missing weekday sessions** (Nifty has a close, the bin had ZERO stock bars): 2008-02-19,
+   **2009-03-31 (a month-end — every Mar-2009 screen priced off 30-Mar; SANOFI/GODREJCP wrongly failed
+   d52<=10, Yahoo confirms quantmac's values exactly)**, 2010-10-14, 2010-10-26, 2014-02-21, 2014-07-25,
+   2014-10-14, 2015-09-03, 2016-08-17, 2016-11-17, 2017-03-24, 2017-03-27. Same path as the weekend
+   specials (`_WEEKDAY_MISSING_CONFIRMED`, rows + anchors in `weekend_sessions.json.gz`, fetched from
+   nsearchives). 2021-11-04 (muhurat Thursday) is NOT listed: NSE serves the 03-Nov file for it
+   (1,829/1,829 closes identical). Two inserter defects found and fixed on the way: (a) the as-printed
+   ERA symbol (AVENTIS, HEROHONDA) skipped as unknown — 216 of 1,236 rows on 2009-03-31 — now resolved
+   through `_rename_map`; (b) the anchor paired our last stored bar with the PRIOR SESSION's raw close,
+   which is the same date only when the series has no hole just before the session — BEPL lacks 15-25
+   Oct 2010 and its 26-Oct insert landed 3% low (27.22 vs 28.03). The anchor is now the raw close of the
+   stored bar's OWN date (that day's bhavcopy, cached), else the row is left out; the ledger carries
+   `prevDate`. Validation: 40 N500 stocks × 12 sessions = 472 inserted bars, all within 1.5% of Yahoo.
+4. **Engine — `foldFundAliases()` in both twins (ENGINE_VER e7→e8, sw v111).** 13 of the 31 retired
+   keys hold fundamentals rows (CASTROL 24, COLGATE 26, HIMACHLFUT 36, HINDMOTOR 35, SUPPETRO 68 …);
+   after a merge the engine only asks for the new key, so those quarters would go dark. Folded at load
+   exactly as `loadShp()` already folds SHP eras; same quarter on both keys → the OLD row wins (§30 step
+   4) unless it has no PAT. A one-shot key move in the JSONs was rejected: those rows are written by
+   ledgers keyed to the old symbol (pre2015_reads_*.json) and would re-appear under it nightly.
+
+### 106c. Measured effect (harness = docs/backtest-engine.js in Node over the healed bins)
+Same strategy 2009→2026: identical-to-quantmac baskets 169 → **175/210**, CAGR 30.27% → **30.87%**
+(quantmac 34.17%), six months fixed exactly as predicted (2009-01 Castrol, 2009-03 session, 2011-03
++ 2013-08 Hexaware, 2012-04/05 Chemplast), **zero regressions** (a first pass had one — BEPL Oct-2010 —
+which is how defect 3b was found). The 35 still-different months are on quantmac's side or
+unverifiable: their dropped renamed tickers (CHOLAFIN ×5, OSWALGREEN ×4, CASTEXTECH ×3, MOTHERSON,
+PVRINOX, SECURKLOUD …), HDFC 2010 double-adjusted split (ret6m +512%), NTPC 2015 (base halved),
+GATI+ACLGATI / AMTEKINDIA+CASTEXTECH held twice, and the young-listing convention (AFFLE, JAINREC).
+
+### 106d. Deliberately NOT done / still open
+- The 71 deferred seams keep split tapes; visibility comes from the era-aware roster only. Stitching
+  them needs per-pair capital-change terms (§86d's queue grows by these).
+- CASTROLIND is absent from the roster 2014-03→2015-06 in the COMMITTED data too (pre-existing,
+  register/walk artifact, not touched). The builder's own SCI 2023-03-30 spot check was already failing.
+- BILT and COLGATE sit in `fno_history.json` under the old keys; SHP rows exist under 8 old keys —
+  both consumers already alias via FUND_ALIAS, left as-is.
+- Sequencing on push: the SEAM_MERGES publish with the next nightly sf-data run; the committed roster
+  was built against the MERGED bin, so until that publish CASTROLIND reads as a 2009 member with a
+  2014 tape (invisible — exactly as before, no regression) and the era-keyed companies (HEXAWARE …)
+  improve immediately. Snapshots keyed on data `end` stay cached until the next trading day's end.

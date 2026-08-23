@@ -679,6 +679,24 @@ function lastResultDate(sym, dateInt, basis) {
 async function loadFund() {
   if (Object.keys(FUND).length) return;
   try { FUND = await (await fetch('./sf_fundamentals.json')).json(); } catch (e) { console.warn('no fundamentals data', e); FUND = {}; }
+  foldFundAliases();
+}
+// Merge renamed tickers' fundamentals under the CURRENT key — the same fold loadShp() already does
+// for shareholding. fundFor() resolves OLD->new, which covers a series still keyed by the old name;
+// once the price build stitches the old tape into the current key (update_sf_data MANUAL_MERGE /
+// SEAM_MERGES, DATA_RUNBOOK §105) the engine only ever asks for the NEW key, and the quarters filed
+// under the old name (CASTROL 24, COLGATE 26, HIMACHLFUT 36, SUPPETRO 68 … measured 2026-08-23)
+// would go dark for every profit screen. Same quarter on both keys: the OLD row wins (§30 step 4 —
+// those carry the true announce dates; new-key rows are IPO-base backfills) unless it has no PAT.
+// (Sync: stock-backtest.html foldFundAliases.)
+function foldFundAliases() {
+  for (const old in FUND_ALIAS) {
+    if (!FUND[old]) continue;
+    const nw = FUND_ALIAS[old], by = {};
+    (FUND[nw] || []).forEach(r => { by[r[0]] = r; });
+    FUND[old].forEach(r => { const cur = by[r[0]]; if (!cur || r[1] != null || cur[1] == null) by[r[0]] = r; });
+    FUND[nw] = Object.values(by).sort((a, b) => a[0] - b[0]);
+  }
 }
 
 // ---- Shareholding pattern: point-in-time FII/DII holding % (quarterly SHP filings) ----

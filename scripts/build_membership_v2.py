@@ -280,6 +280,58 @@ def main():
         while s in RENAME and s not in seen: seen.add(s); s = RENAME[s]
         return s
 
+    # --- ERA-AWARE KEY EMISSION (2026-08-23, DATA_RUNBOOK §105) ---------------------------------------
+    # to_current() keys every snapshot to the CURRENT ticker on the premise that the price build has
+    # folded the old tape into that key. For 71 ISIN-seam pairs it has not (relistings / IBC capital
+    # reductions / unexplained steps — joining them would fabricate a return), so the current key has
+    # NO bars on the snapshot date, the PHANTOM FLOOR below then deletes the row (>= 2011) and the
+    # company is invisible for years: Hexaware 2011-2020, Chemplast 2011-2012, Tube Investments
+    # 2011-2017, Ruchi Soya 2011-2019 … (measured 2026-08-23: 30/17/25 invisible members at the
+    # 2008/09/10 year-ends, 7 of quantmac's 15 "membership disputes" were this). Rule: if the current
+    # key has no bar on or before the snapshot date but an OLD key in its rename chain was trading
+    # then (first bar <= date <= last bar + 45d), emit the old key — the engine screens SERIES by
+    # symbol, and FUND_ALIAS already bridges old keys to their fundamentals (§95f). A key the bin
+    # holds is never redirected, so merged pairs are unaffected.
+    # ERA_OVERRIDES repair three name-mapped targets that point at the WRONG successor for the era:
+    # the register/checkpoint mapper resolved "KPIT Cummins" to KPITTECH (the 2019 DEMERGED entity;
+    # the listed company became BSOFT), "Tube Investments" to TIINDIA (the 2017 spin-off; the old
+    # listing continued as CHOLAHLDNG) and "Ispat Industries" to JSWISPL (Monnet's successor — a
+    # different company, whose only reverse chain is MONNETISPA, so the generic fallback would land on
+    # the wrong tape). Each applies only before the date the true successor's own tape begins.
+    ERA_OVERRIDES = {"KPITTECH": ("KPIT", "2019-02-26"), "TIINDIA": ("TUBEINVEST", "2017-11-02"),
+                     "JSWISPL": ("JSWISPAT", "2018-09-14")}
+    import gzip as _gz2
+    try:
+        _sfd = json.loads(_gz2.decompress(open(os.path.join(ROOT, "docs", "sf_stock_data.bin"), "rb").read()))["data"]
+        _first = {k: str(o["d"][0]) for k, o in _sfd.items() if o.get("d")}
+        _last = {k: str(o["d"][-1]) for k, o in _sfd.items() if o.get("d")}
+        del _sfd
+    except Exception as _e:
+        _first = {}; _last = {}; print("  era-aware emission disabled (no sf_stock_data.bin):", _e)
+    _REV = {}
+    for _o in RENAME:
+        _c = to_current(_o)
+        if _c != _o: _REV.setdefault(_c, []).append(_o)
+    import datetime as _dt
+    def _plus_days(ymd, n):
+        return (_dt.date(int(ymd[:4]), int(ymd[4:6]), int(ymd[6:8])) + _dt.timedelta(days=n)).strftime("%Y%m%d")
+    _era_hits = {}
+    def era_key(cur, iso_date):
+        if not _first: return cur
+        dint = iso_date.replace("-", "")
+        if cur in _first and _first[cur] <= dint: return cur          # current key trades on/before date
+        cands = [o for o in _REV.get(cur, []) if o in _first and _first[o] <= dint <= _plus_days(_last[o], 45)]
+        if not cands: return cur
+        best = max(cands, key=lambda o: _last[o])                      # the tape alive closest to the date
+        _era_hits.setdefault(f"{cur}->{best}", [0, iso_date, iso_date])
+        h = _era_hits[f"{cur}->{best}"]; h[0] += 1; h[2] = iso_date
+        return best
+    def era_fix(s, iso_date):
+        ov = ERA_OVERRIDES.get(s)
+        return ov[0] if ov and iso_date < ov[1] else s
+    def emit(s, iso_date):
+        return era_key(to_current(canon(era_fix(s, iso_date))), iso_date)
+
     for idx, slug in SLUGS.items():
         events = changelog.get(idx, [])
         if not events:
@@ -376,8 +428,12 @@ def main():
                 raise SystemExit("ABORT: Nifty500 validation %.1f%% < 99%% — refusing to write "
                                  "(likely a missing input or NSE fetch issue); keeping committed data." % worst)
         # era-correct symbols per snapshot date so they match that period's bhavcopy series
-        new_snaps = [{"effectiveDate": d, "symbols": sorted(set(to_current(s) for s in S))}
+        new_snaps = [{"effectiveDate": d, "symbols": sorted(set(emit(s, d) for s in S))}
                      for d, S in snaps.items() if d != "1900-01-01"]
+        if idx == "Nifty 500" and _era_hits:
+            print(f"  era-aware emission: {len(_era_hits)} current->old key redirects on Nifty 500 "
+                  f"({sum(v[0] for v in _era_hits.values())} member-slots); e.g. "
+                  + "; ".join(f"{k} {v[1][:7]}..{v[2][:7]}" for k, v in sorted(_era_hits.items())[:12]))
         new_snaps.sort(key=lambda x: x["effectiveDate"])
         earliest = new_snaps[0]["effectiveDate"]
         kept_old = [s for s in H.get(idx, []) if s["effectiveDate"] < earliest]
