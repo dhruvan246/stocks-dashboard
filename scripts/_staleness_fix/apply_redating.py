@@ -26,6 +26,9 @@ Usage:  python3 apply_redating.py              # dry run -> redate_ledger.json (
 """
 import json, os, sys, bisect, datetime
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from classify import classify_row, is_year_ago_comparative   # THE shared rules (PLAN F1)
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 SCRIPTS = os.path.dirname(HERE)
 DOCS = os.path.join(SCRIPTS, '..', 'docs')
@@ -58,23 +61,29 @@ def days_between(a, b):
     db = datetime.date(b // 10000, (b // 100) % 100, b % 100)
     return (db - da).days
 
-# A real filing can never predate its own quarter-end, and every verified case this campaign
-# has actually confirmed (staleness agent + this session's own spot-checks) lags qe by 13-60
-# days. 120 is a generous buffer past even the 60-day audited-annual deadline. Anything outside
-# [0, 120] is almost certainly the OTHER kind of multi-date confusion `extract_all_qes` can't
-# tell apart from a genuine combined disclosure: a comparative mention, not the filing's real
-# subject — found live in the P2 smoke test (ALFA LAVAL's real 2004-09-30 result headline reads
-# "...Rs 200 million for the quarter ended September 30, 2004 as compared to Rs 170.19 million
-# for the quarter ended September 30, 2003" — the 2003 date is a YEAR-AGO COMPARISON figure, not
-# a second real disclosure like ESSAROIL's genuine annual+quarterly combo). Reject, don't guess.
+# A real filing can never predate its own quarter-end. The UPPER bound is subtler than v1's flat
+# 120 days (PLAN_QUANTMAC_FIXES.md §G, which overturned §F2's proposed flat 400):
+#
+#  * What the cap was really catching is the YEAR-AGO COMPARATIVE — proven live on CESC, whose
+#    four 2003 quarters each matched a 2004 filing ~394 days late because the headline reads
+#    "…for the quarter ended June 30, 2004 as compared to …quarter ended June 30, 2003". That is
+#    now caught precisely by classify.is_year_ago_comparative() using the row's OTHER dates, so a
+#    blunt lag cap no longer has to stand in for it.
+#  * But genuine LATE filings exist and a flat 120 discards them — proven live on BHARATRAS
+#    qe 2016-09-30, broadcast 2017-03-10 (lag 161d), a single-date real disclosure.
+#
+# So: [0, 200] normally; beyond that only when the row mentions NOTHING but this quarter (there was
+# no other date to confuse it with). lag < 0 refused always — a filing cannot predate its quarter.
 QE_LAG_MIN_DAYS = 0
-QE_LAG_MAX_DAYS = 120
+QE_LAG_MAX_DAYS = 200
+QE_LAG_ABSOLUTE_MAX = 400
 
 def build_decisions(target_list, fetch_results, tdays):
     """-> list of decision dicts, one per matched cell that resolves to a real date."""
     decisions = []
     reasons = {'matched': 0, 'no_match': 0, 'unparseable_news_dt': 0, 'no_next_td': 0, 'noop': 0,
-               'rejected_implausible_lag': 0}
+               'rejected_implausible_lag': 0, 'refused_intimation': 0,
+               'refused_year_ago_comparative': 0, 'written_from_secondary': 0}
 
     def next_td(d):
         i = bisect.bisect_right(tdays, d)
@@ -92,16 +101,43 @@ def build_decisions(target_list, fetch_results, tdays):
             if not m:
                 reasons['no_match'] += 1
                 continue
-            news_dt, newssub = m
+            # v3 stores [news_dt, newssub, cls, dates_in_row]; v2 stored just [news_dt, newssub].
+            news_dt, newssub = m[0], m[1]
+            cls = m[2] if len(m) > 2 else classify_row(newssub or '')
+            row_dates_ = set(m[3]) if len(m) > 3 else set()
+
+            # ── HARD REFUSAL 1: a board-meeting notice PRECEDES the results it announces, so
+            # writing one manufactures look-ahead — the exact defect quantmac caught (PAGEIND
+            # would have been stamped ~3 weeks early). Keep the safe qe+45d placeholder instead.
+            if cls == 'intimation':
+                reasons['refused_intimation'] += 1
+                continue
+
+            # ── HARD REFUSAL 2: this quarter is only a YEAR-AGO COMPARISON inside a row whose
+            # real subject is a later quarter (CESC 2003 → a 2004 filing, ~394d off).
+            if row_dates_ and is_year_ago_comparative(qe, row_dates_):
+                reasons['refused_year_ago_comparative'] += 1
+                continue
+
             raw_date = news_date(news_dt)
             mins = news_min(news_dt)
             if raw_date is None:
                 reasons['unparseable_news_dt'] += 1
                 continue
             lag = days_between(qe, raw_date)
-            if not (QE_LAG_MIN_DAYS <= lag <= QE_LAG_MAX_DAYS):
+            if lag < QE_LAG_MIN_DAYS:
                 reasons['rejected_implausible_lag'] += 1
                 continue
+            if lag > QE_LAG_MAX_DAYS:
+                # Past 200d, accept only a row that mentions this quarter and nothing else —
+                # there was no other date it could have been confused with (BHARATRAS class).
+                if not (row_dates_ == {qe} and lag <= QE_LAG_ABSOLUTE_MAX):
+                    reasons['rejected_implausible_lag'] += 1
+                    continue
+            # NB a 'secondary' (Reg-47 newspaper re-publication, measured 472/501 LATER than the
+            # filing) is still a better bound than a formulaic qe+45d, so it is written — tagged,
+            # and only ever because nothing of class 'result' dated this quarter. Counted from the
+            # final decision list, not here, so no-ops below don't inflate it.
             if mins is not None and mins > CUTOFF_MIN:
                 new_ann = next_td(raw_date)
                 gated = True
@@ -122,7 +158,7 @@ def build_decisions(target_list, fetch_results, tdays):
                 'direction': 'later' if delta_days > 0 else 'earlier',
                 'delta_days': abs(delta_days),
                 'gated_1530': gated,
-                'news_dt': news_dt, 'newssub': newssub,
+                'news_dt': news_dt, 'newssub': newssub, 'cls': cls,
             })
     return decisions, reasons
 
@@ -144,6 +180,14 @@ def main():
     print(f'  direction split        earlier={by_dir["earlier"]} later={by_dir["later"]}')
     gated_n = sum(1 for d in decisions if d['gated_1530'])
     print(f'  15:30-gated on write   {gated_n}')
+    sec_n = sum(1 for d in decisions if d.get('cls') == 'secondary')
+    print(f'  sourced from SECONDARY {sec_n}  (newspaper re-publication — a bound, not the filing)')
+    big = sorted((d for d in decisions if days_between(d['qe'], d['new_ann']) > QE_LAG_MAX_DAYS),
+                 key=lambda d: -days_between(d['qe'], d['new_ann']))
+    print(f'  accepted lag >{QE_LAG_MAX_DAYS}d      {len(big)}  (single-date rows only — eyeball these)')
+    for d in big[:10]:
+        print(f'      {d["sym"]:12s} qe={d["qe"]} lag={days_between(d["qe"], d["new_ann"])}d  '
+              f'{(d["newssub"] or "")[:70]}')
 
     json.dump(decisions, open(os.path.join(HERE, 'redate_ledger.json'), 'w'), indent=1)
     print(f'\naudit ledger written -> redate_ledger.json ({len(decisions)} entries)')
@@ -182,7 +226,8 @@ def main():
         lkey = f"{d['sym']}|{d['qe']}"
         if lkey in agg and agg[lkey].get('ann_written') == d['old_ann']:
             agg[lkey]['ann_written'] = d['new_ann']
-            agg[lkey]['ann_basis'] = f"bse-broadcast {d['news_dt']} (staleness campaign 2026-08-20, was CONVENTION quarter-end+45d)"
+            agg[lkey]['ann_basis'] = (f"bse-broadcast {d['news_dt']} [{d.get('cls','result')}] "
+                                      f"(staleness campaign 2026-08-20 v3, was CONVENTION quarter-end+45d)")
             agg_updated += 1
     if agg_updated:
         json.dump(agg, open(agg_path, 'w'), indent=1)

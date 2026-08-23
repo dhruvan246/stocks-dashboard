@@ -1,75 +1,76 @@
 #!/usr/bin/env python3
-"""Staleness campaign (DATA_RUNBOOK §102/§103, PLAN_QUANTMAC_FIXES.md P1/P2) — for every symbol
-in target_list.json, fetch its full BSE announcement history over the target date span and
-match each target quarter-end to its REAL filing date, so the quarter-end+45d placeholder
-(apply_agg_pat_fills.py's CONVENTION default) can be replaced with the truth.
+"""Staleness campaign (DATA_RUNBOOK §102/§103, PLAN_QUANTMAC_FIXES.md P2) — for every symbol in
+target_list.json, fetch its full BSE announcement history over the target span and match each
+target quarter-end to its REAL filing date, replacing apply_agg_pat_fills.py's quarter-end+45d
+CONVENTION placeholder with the truth.
 
-v2 (2026-08-20, P1 pilot): the v1 FILESTATUS='U' filter is WRONG and was never run at scale —
-a dedicated verification pass found 4 of 5 genuine pre-2015 results disclosures carry
-FILESTATUS='N', and 'U' shows up on unrelated rows (e.g. insider-trading disclosures). Dropped.
+v3 (2026-08-20) — rewritten after the v2 full run's pre-apply audit (PLAN §E/§F/§G) found the v2
+output unsafe to write. Four changes, each with a live proof case:
 
-Method, per symbol:
-1. Query AnnSubCategoryGetData with strCat=-1 (ALL categories) — the 'Result' category tag
-   itself is unreliable pre-~2012 (HINDUNILVR's genuine 2009 result disclosure is tagged
-   CATEGORYNAME='Others'; by 2013 CANFINHOME's is correctly 'Result' — the boundary is fuzzy,
-   so never filter on it, only use it as a confidence signal).
-2. Candidate = 'result' in NEWSSUB.lower() (fallback HEADLINE) AND an "ended <date>" phrase
-   extracts AND the text does NOT match an intimation phrase (a future-tense board-meeting
-   notice for the SAME quarter, not the disclosure itself — confirmed via CANFINHOME/DHANI
-   verification: intimations say "will be held", not "has announced"/"informed BSE about").
-3. Extract the quarter-end from NEWSSUB (fallback HEADLINE), handling both "Month Day, Year"
-   and "DDth Month, Year" forms.
-4. Match against target (qe, basis) pairs for that symbol. Multiple candidates for the same
-   qe (e.g. a same-quarter "Updates on Financial Results" follow-up days later, confirmed via
-   CANFINHOME 2012-12-31: real disclosure Jan-19, an "Updates" row Jan-21): prefer one whose
-   text names the matching basis (standalone/consolidated); otherwise take the EARLIEST (first
-   public disclosure is what a backtest could have seen; a later "Updates" row is a restatement
-   the market already had the substance of).
-5. No match -> left alone, recorded as not-found. NEVER guess.
+1. ★ LOOK-AHEAD FIX. v2 kept only a short intimation phrase-list and then took the EARLIEST
+   candidate per quarter. An intimation ALWAYS precedes the result, so it won: PAGEIND qe20171231
+   matched "Board Meeting On 08Th February 2018" (broadcast Jan 17) and would have stamped the
+   results ~3 WEEKS early. Now every row is classified by the SHARED classify.py
+   (result / secondary / intimation) and ranking is (class, then NEWS_DT) — a real result always
+   beats a notice. Intimations are still COLLECTED (auditability, and they prove a quarter existed)
+   but apply_redating.py refuses to write one.
 
-Scripcode resolution: bse_scrips.json['by_id'] first; falls back to scripts/_bse_master_all.json
-(scrip_id field) for symbols absent from the first map — confirmed needed for ALFALAVAL/DHANI,
-both of which sit only in the master list under their era name (DHANI filed as "Indiabulls
-Securities" in 2014).
+2. ★ DATE EXTRACTION (classify.py). "Ended On", 2-digit years, and anchor-less quarter-end dates in
+   results rows. Live proofs: SANWARIA "…Period Ended On 31.12.22" extracted nothing under v2;
+   RANEHOLDIN's real row "Results - Financial Results March 31, 2024" also extracted nothing, so the
+   NEXT-DAY newspaper ad won by default — which is why v2 produced 501 newspaper-sourced dates
+   (472 of them late). Bug 4 was a SYMPTOM of this, not a separate defect.
 
-Resumable: skips symbols already present in the output file.
+3. SCRIPCODE CHAIN. v2 keyed on symbol == scrip_id twice and lost 251 symbols / 1,866 cells,
+   including COLGATE (BSE "COLPAL"), CEAT ("CEATLTD"), TUBEINVEST ("TIINDIA"). Now:
+   by_id -> master scrip_id -> NSE EQUITY_L symbol->ISIN -> normalized company name -> and then
+   an explicit CLASSIFICATION of what is left ('nse-only' when the ISIN exists but no BSE code
+   does; 'unresolved-alias' otherwise). Measured residue is reported, never guessed at.
 
-Output: scripts/_staleness_fix/fetch_results.json
-  { SYMBOL: { "matches": {"qe|basis": [newsDt, newssub]}, "candidates_seen": N,
-              "scripcode": N or null, "scripcode_src": "by_id"|"master_all"|null,
-              "error": str or null } }
+4. ★ RAW-ROW CACHE. v2 stored only the winning match, so every matcher change cost another
+   multi-hour BSE crawl — and worse, the audit could not even SEE the other dates in a row (my own
+   "single-date" measurement was an artifact of that). Every candidate row is now written to
+   raw_rows jsonl so any future matcher tweak re-matches OFFLINE in seconds.
+
+The 15:30 IST gate, the future-date cap, the degenerate-response guard and the page cap are all
+carried over from v2 unchanged — each was itself a live-found bug.
+
+Output: {SYMBOL: {"matches": {"qe|basis": [news_dt, newssub, cls, [dates_in_row]]},
+                  "candidates_seen": N, "scripcode": N|null, "scripcode_src": str|null,
+                  "error": str|null}}
 """
-import json, re, os, sys, time, datetime
+import json, os, sys, time, datetime, csv, re
 import urllib.request, urllib.error, gzip, http.cookiejar
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from classify import classify_row, row_dates          # THE shared rules — never re-implement
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 TARGET_LIST = os.path.join(HERE, 'target_list.json')
 OUT_PATH = os.path.join(HERE, 'fetch_results.json')
 PROGRESS_PATH = os.path.join(HERE, 'progress.log')
+RAW_PATH = os.path.join(HERE, 'raw_rows.jsonl')
 
-UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36'
-MONTHS = {m.lower(): i for i, m in enumerate(
-    ['January','February','March','April','May','June','July','August','September','October','November','December'], 1)}
-MONTHS.update({m.lower()[:3]: i for i, m in enumerate(
-    ['January','February','March','April','May','June','July','August','September','October','November','December'], 1)})
+UA = ('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+      'Chrome/120 Safari/537.36')
 
-INTIMATION_PHRASES = [
-    'will be held', 'shall be held', 'is scheduled to be held', 'opted to submit',
-    'intimation for consideration', 'board meeting intimation',
-]
+CLASS_RANK = {'result': 0, 'secondary': 1, 'intimation': 2}
+
 
 def _req(u, ref='https://www.bseindia.com/corporates/ann.html'):
     return urllib.request.Request(u, headers={'User-Agent': UA, 'Accept': '*/*',
-                                               'Referer': ref, 'Origin': 'https://www.bseindia.com'})
+                                              'Referer': ref, 'Origin': 'https://www.bseindia.com'})
 
 _opener = None
 def opener():
     global _opener
     if _opener is None:
-        _opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
+        _opener = urllib.request.build_opener(
+            urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
         _opener.open(_req('https://www.bseindia.com/'), timeout=30).read()
     return _opener
+
 
 def get(u, timeout=70):
     r = opener().open(_req(u), timeout=timeout)
@@ -77,6 +78,7 @@ def get(u, timeout=70):
     if r.headers.get('Content-Encoding') == 'gzip':
         raw = gzip.decompress(raw)
     return raw.decode('utf-8', 'replace')
+
 
 def get_json_retry(u, attempts=3, log=None):
     last = None
@@ -90,95 +92,95 @@ def get_json_retry(u, attempts=3, log=None):
             time.sleep(4 * (i + 1))
     raise last
 
-# Anchor word before the date: "ended" (most common) or "for" (INDORAMA's genuine 2009-06-30
-# disclosure: "Financial Results for Jun 30, 2009" — no "ended" anywhere). Two date forms, both
-# seen live: "ended June 30, 2016" / "ended 31st December, 2022" (month-name) and "ended
-# 30.09.2019" (numeric DD.MM.YYYY/DD/MM/YYYY/DD-MM-YYYY, Indian day-month-year order — GEOJITFSL's
-# real Sep-2019 disclosure uses ONLY this form).
-#
-# ⚠️ finditer(), not search() — a combined annual+quarterly announcement carries TWO dates
-# ("results for the year ended March 31, 2010 & ... for the quarter ended June 30, 2010", ESSAROIL
-# 2010-07-27 real filing): search() silently returns only the FIRST (the annual one), so the
-# quarter actually being targeted never matches even though the announcement plainly has it.
-# Every one of these three gaps (numeric dates, "for" not just "ended", multi-date text) was found
-# in the P1 pilot 2026-08-20 by asking why 2015+/2020+ match rates read LOWER than the older,
-# supposedly-worse-covered era — the opposite of what BSE's improving digital records would predict.
-DATE_RE_NAMED = re.compile(
-    r'(?:ended|for)\s+(?:(\d{1,2})(?:st|nd|rd|th)?\s+([A-Za-z]+)|([A-Za-z]+)\s+(\d{1,2})),?\s*(\d{4})',
-    re.IGNORECASE)
-DATE_RE_NUMERIC = re.compile(r'(?:ended|for)\s+(\d{1,2})[./-](\d{1,2})[./-](\d{4})', re.IGNORECASE)
-
-def extract_all_qes(text):
-    """-> set of YYYYMMDD ints, every date-after-ended/for phrase found in text."""
-    if not text:
-        return set()
-    out = set()
-    for m in DATE_RE_NAMED.finditer(text):
-        if m.group(2):
-            day, mon_name, year = int(m.group(1)), m.group(2).lower(), int(m.group(5))
-        else:
-            mon_name, day, year = m.group(3).lower(), int(m.group(4)), int(m.group(5))
-        mon = MONTHS.get(mon_name)
-        if mon:
-            try:
-                datetime.date(year, mon, day)
-                out.add(year * 10000 + mon * 100 + day)
-            except ValueError:
-                pass
-    for m in DATE_RE_NUMERIC.finditer(text):
-        day, mon, year = int(m.group(1)), int(m.group(2)), int(m.group(3))
-        try:
-            datetime.date(year, mon, day)
-            out.add(year * 10000 + mon * 100 + day)
-        except ValueError:
-            pass
-    return out
 
 def is_candidate(row):
-    sub = (row.get('NEWSSUB') or '')
-    head = (row.get('HEADLINE') or '')
-    text = (sub + ' ' + head).lower()
-    if 'result' not in text:
-        return False
-    if any(p in text for p in INTIMATION_PHRASES):
-        return False
-    return True
+    """Broad net: anything mentioning a result. Classification (and refusal) happens later —
+    v2 dropped intimations here, which hid them from the audit AND from the ranking."""
+    text = ((row.get('NEWSSUB') or '') + ' ' + (row.get('HEADLINE') or '')).lower()
+    return 'result' in text
+
+
+# ---------------------------------------------------------------- scripcode resolution chain
+def _norm_name(x):
+    x = (x or '').lower()
+    x = re.sub(r'\b(ltd|limited|india|indian|the|company|co|corp|corporation|pvt|private|and|&)\b', ' ', x)
+    return re.sub(r'[^a-z0-9]', '', x)
+
 
 def load_scripcode_maps():
     by_id = json.load(open(os.path.join(ROOT, 'scripts', 'bse_scrips.json')))['by_id']
+    by_isin = json.load(open(os.path.join(ROOT, 'scripts', 'bse_scrips.json')))['by_isin']
     master = json.load(open(os.path.join(ROOT, 'scripts', '_bse_master_all.json')))
-    master_by_scripid = {}
+    master_by_scripid, master_by_isin, master_by_name = {}, {}, {}
     for row in master:
-        sid = row.get('scrip_id')
         cd = row.get('SCRIP_CD')
-        if sid and cd and sid not in master_by_scripid:
-            try:
-                master_by_scripid[sid] = int(cd)
-            except (TypeError, ValueError):
-                pass
-    return by_id, master_by_scripid
+        try:
+            cd = int(cd)
+        except (TypeError, ValueError):
+            continue
+        sid = row.get('scrip_id')
+        if sid and sid not in master_by_scripid:
+            master_by_scripid[sid] = cd
+        isin = (row.get('ISIN_NUMBER') or '').strip()
+        if isin and isin not in master_by_isin:
+            master_by_isin[isin] = cd
+        for f in ('Scrip_Name', 'Issuer_Name'):
+            k = _norm_name(row.get(f))
+            if k and k not in master_by_name:
+                master_by_name[k] = cd
+    # NSE EQUITY_L.csv: SYMBOL -> ISIN (fetched live 2026-08-20; nsearchives serves it even
+    # though a www.nseindia.com warmup 403s — see memory feedback-a-wall-is-a-route)
+    nse_isin, nse_name = {}, {}
+    p = os.path.join(HERE, 'nse_equity_l.csv')
+    if os.path.exists(p):
+        for r in csv.DictReader(open(p)):
+            sym = (r.get('SYMBOL') or '').strip()
+            isin = (r.get(' ISIN NUMBER') or r.get('ISIN NUMBER') or '').strip()
+            if sym:
+                if isin:
+                    nse_isin[sym] = isin
+                nse_name[sym] = (r.get('NAME OF COMPANY') or '').strip()
+    # our own symbol -> company name (docs/search_index.json), for the name bridge
+    sym_name = {}
+    sp = os.path.join(ROOT, 'docs', 'search_index.json')
+    if os.path.exists(sp):
+        for row in json.load(open(sp)).get('s', []):
+            if isinstance(row, list) and len(row) >= 2:
+                sym_name[row[0]] = row[1]
+    return {'by_id': by_id, 'by_isin': by_isin, 'm_scripid': master_by_scripid,
+            'm_isin': master_by_isin, 'm_name': master_by_name,
+            'nse_isin': nse_isin, 'nse_name': nse_name, 'sym_name': sym_name}
 
-def resolve_scripcode(sym, by_id, master_by_scripid):
-    if sym in by_id:
-        return by_id[sym], 'by_id'
-    if sym in master_by_scripid:
-        return master_by_scripid[sym], 'master_all'
-    return None, None
 
-MAX_PAGES_PER_SYMBOL = 120   # 6,000 rows / ~20yr history at 50/page is generous; a symbol
-                             # needing more almost certainly means a MISRESOLVED scripcode
-                             # (e.g. landed on an unrelated, high-announcement-volume company)
+def resolve_scripcode(sym, M):
+    """-> (scripcode|None, source_label). Never guesses: an unresolved symbol is CLASSIFIED
+    ('nse-only' when it has an ISIN that no BSE map knows) so the residue is measurable."""
+    if sym in M['by_id']:
+        return M['by_id'][sym], 'by_id'
+    if sym in M['m_scripid']:
+        return M['m_scripid'][sym], 'master_scripid'
+    isin = M['nse_isin'].get(sym)
+    if isin:
+        cd = M['by_isin'].get(isin) or M['m_isin'].get(isin)
+        if cd:
+            return int(cd), 'nse_isin'
+    for nm in (M['sym_name'].get(sym), M['nse_name'].get(sym)):
+        k = _norm_name(nm)
+        if k and k in M['m_name']:
+            return M['m_name'][k], 'name_bridge'
+    if isin:
+        return None, 'nse-only'          # listed on NSE, absent from every BSE map
+    return None, 'unresolved-alias'
+
+
+MAX_PAGES_PER_SYMBOL = 120
+
 
 def fetch_symbol_rows(scripcode, d1, d2, log=None):
-    # BSE's endpoint silently breaks when strToDate is even ONE DAY in the future: it returns
-    # Table1=None and a single Table row with every field null, instead of an error — found live
-    # 2026-08-20 (INGERRAND/TMPV/RAMANEWS/SOUTHWEST all read "0 candidates" this way; the true
-    # cause was a future-dated query, not an absence of filings). Never ask past today.
     today = datetime.date.today().strftime('%Y%m%d')
     if d2 > today:
         d2 = today
-    out = []
-    page = 1
+    out, page = [], 1
     while True:
         if log:
             log(f'    page {page} (d1={d1} d2={d2})')
@@ -188,14 +190,9 @@ def fetch_symbol_rows(scripcode, d1, d2, log=None):
         j = get_json_retry(u, log=log)
         tbl = j.get('Table', []) or []
         t1 = j.get('Table1', [])
-        # The degenerate-response signature: Table1 missing/empty but Table not empty (one null row).
-        # Treat it as a hard failure, never as "zero results" — an empty Table1 with rows present
-        # is never a legitimate answer from this endpoint (confirmed: every good response we've
-        # seen, including genuinely empty date windows, carries a real Table1 ROWCNT).
         if not t1 and tbl:
-            raise RuntimeError(f'degenerate BSE response (Table1 empty, {len(tbl)} null-ish Table '
-                                f'rows) at page {page} d1={d1} d2={d2} — likely a future-dated or '
-                                f'otherwise malformed query, not a real empty result')
+            raise RuntimeError(f'degenerate BSE response (Table1 empty, {len(tbl)} null-ish rows) '
+                               f'at page {page} d1={d1} d2={d2}')
         total = (t1[0].get('ROWCNT') if t1 else 0) or 0
         for row in tbl:
             if is_candidate(row):
@@ -204,56 +201,71 @@ def fetch_symbol_rows(scripcode, d1, d2, log=None):
             break
         page += 1
         if page > MAX_PAGES_PER_SYMBOL:
-            if log:
-                log(f'    ABORT: exceeded {MAX_PAGES_PER_SYMBOL} pages ({total} total rows) — '
-                    f'suspected misresolved scripcode, not a real announcement history')
             raise RuntimeError(f'page cap exceeded (total={total} rows)')
     return out
 
+
 def match_targets(rows, targets):
-    by_qe = {}
+    """Index every row under EVERY date it mentions, then per target quarter pick the best
+    candidate: a real result outranks a re-publication, which outranks a notice; within a class
+    the EARLIEST broadcast wins (first public disclosure is what a backtest could have seen)."""
+    enriched = []
     for row in rows:
-        # union, not first-match-wins: a combined annual+quarterly announcement carries two
-        # dates and both are real (see extract_all_qes docstring) — index the row under EVERY
-        # date it mentions so whichever one a target actually needs still finds it.
-        qes = extract_all_qes(row.get('NEWSSUB')) | extract_all_qes(row.get('HEADLINE'))
-        for qe in qes:
-            by_qe.setdefault(qe, []).append(row)
+        sub, head = row.get('NEWSSUB') or '', row.get('HEADLINE') or ''
+        cls = classify_row(sub, head)
+        dates = row_dates(row, cls)
+        enriched.append((row, cls, dates))
+    by_qe = {}
+    for row, cls, dates in enriched:
+        for qe in dates:
+            by_qe.setdefault(qe, []).append((row, cls, dates))
     matches = {}
     for qe, basis, _old in targets:
         cands = by_qe.get(qe)
         if not cands:
             continue
-        key = f'{qe}|{basis}'
         basis_word = 'standalone' if basis == 'std' else 'consolidated'
-        named = [r for r in cands if basis_word in ((r.get('NEWSSUB') or '') + (r.get('HEADLINE') or '')).lower()]
-        pool = named if named else cands
-        best = min(pool, key=lambda r: r.get('NEWS_DT') or '9999')
-        matches[key] = [best.get('NEWS_DT'), best.get('NEWSSUB')]
+
+        def _key(c):
+            # CLASS FIRST. v3's first cut pre-filtered on the basis word and only then ranked by
+            # class, which let RANEHOLDIN's newspaper ad beat the real filing purely because the
+            # ad's headline happened to read "(standalone & consolidated)". A genuine result with
+            # no basis word must always outrank a re-publication that has one.
+            row_, cls_, _ = c
+            txt = ((row_.get('NEWSSUB') or '') + (row_.get('HEADLINE') or '')).lower()
+            return (CLASS_RANK.get(cls_, 9), 0 if basis_word in txt else 1,
+                    row_.get('NEWS_DT') or '9999')
+
+        row, cls, dates = min(cands, key=_key)
+        matches[f'{qe}|{basis}'] = [row.get('NEWS_DT'), row.get('NEWSSUB'), cls, sorted(dates)]
     return matches
 
-def main(target_list_path=TARGET_LIST, out_path=OUT_PATH, progress_path=PROGRESS_PATH, limit=None):
+
+def main(target_list_path=TARGET_LIST, out_path=OUT_PATH, progress_path=PROGRESS_PATH,
+         raw_path=RAW_PATH, limit=None):
     targets = json.load(open(target_list_path))
-    by_id, master_by_scripid = load_scripcode_maps()
+    M = load_scripcode_maps()
     results = json.load(open(out_path)) if os.path.exists(out_path) else {}
     symbols = list(targets.keys())
     if limit:
         symbols = symbols[:limit]
+
     def log(msg):
         with open(progress_path, 'a') as f:
             f.write(f'{datetime.datetime.now().isoformat()} {msg}\n')
 
-    done = 0
-    t0 = time.time()
+    done, t0 = 0, time.time()
     for sym in symbols:
         if sym in results:
             continue
         log(f'START {sym} ({done+1}/{len(symbols)})')
         rows_targets = targets[sym]
-        scripcode, src = resolve_scripcode(sym, by_id, master_by_scripid)
-        entry = {'scripcode': scripcode, 'scripcode_src': src, 'candidates_seen': 0, 'matches': {}, 'error': None}
+        scripcode, src = resolve_scripcode(sym, M)
+        entry = {'scripcode': scripcode, 'scripcode_src': src, 'candidates_seen': 0,
+                 'matches': {}, 'error': None}
         if scripcode is None:
-            entry['error'] = 'no-scripcode'
+            entry['error'] = src                      # 'nse-only' | 'unresolved-alias'
+            log(f'  SKIP {sym}: {src}')
         else:
             qes = [r[0] for r in rows_targets]
             d1 = (datetime.date(qes[0] // 10000, (qes[0] // 100) % 100, qes[0] % 100)
@@ -264,7 +276,11 @@ def main(target_list_path=TARGET_LIST, out_path=OUT_PATH, progress_path=PROGRESS
                 rows = fetch_symbol_rows(scripcode, d1, d2, log=log)
                 entry['candidates_seen'] = len(rows)
                 entry['matches'] = match_targets(rows, rows_targets)
-                log(f'  DONE {sym}: {len(rows)} candidates, {len(entry["matches"])}/{len(rows_targets)} matched')
+                with open(raw_path, 'a') as rf:       # F4: never crawl twice for a matcher tweak
+                    rf.write(json.dumps({'sym': sym, 'scripcode': scripcode, 'rows': rows},
+                                        separators=(',', ':')) + '\n')
+                log(f'  DONE {sym}: {len(rows)} candidates, '
+                    f'{len(entry["matches"])}/{len(rows_targets)} matched')
             except Exception as e:
                 entry['error'] = f'{type(e).__name__}: {e}'
                 log(f'  FAILED {sym}: {entry["error"]}')
@@ -274,13 +290,13 @@ def main(target_list_path=TARGET_LIST, out_path=OUT_PATH, progress_path=PROGRESS
             json.dump(results, open(out_path, 'w'))
             elapsed = time.time() - t0
             rate = done / elapsed if elapsed > 0 else 0
-            remaining = len(symbols) - done
-            eta_min = (remaining / rate / 60) if rate > 0 else -1
+            eta_min = ((len(symbols) - done) / rate / 60) if rate > 0 else -1
             log(f'CHECKPOINT done={done}/{len(symbols)} rate={rate:.2f}/s eta_min={eta_min:.1f}')
         time.sleep(0.3)
     json.dump(results, open(out_path, 'w'))
     with open(progress_path, 'a') as f:
         f.write(f'{datetime.datetime.now().isoformat()} COMPLETE done={len(results)}\n')
+
 
 if __name__ == '__main__':
     main()
