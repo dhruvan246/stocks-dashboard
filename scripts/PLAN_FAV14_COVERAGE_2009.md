@@ -115,6 +115,9 @@ never commit a partial bake · push via the CLAUDE.md retry recipe · verify LIV
 
 ## 4. Progress log (append per session; counts are MEASURED post-bake, never projected)
 
+- 2026-08-24 03:05 IST — **P1 LIVE-VERIFIED on the page** (bake 02:25 IST): six technical params
+  84→5, all others improved (see §4b). Propagation needed refresh.yml (dash_slim rebuild) — recorded
+  as a lesson in §4b. RASOYPR heal live in the release asset (close 14.85).
 - 2026-08-24 02:20 IST — **P1 (price class) COMPLETE: 84 → 5 member-months** (bake on the healed bin +
   corrected roster, engine-faithful). RASOYPR = 3 phantom splits (tick-floor crashes 20140926/20171003/
   20171106) recorded in phantom_crashes.json → noadjust; 734 NSE-bhavcopy bars (row identity proven on
@@ -128,22 +131,48 @@ never commit a partial bake · push via the CLAUDE.md retry recipe · verify LIV
 - 2026-08-24 01:30 IST — P0 complete. Queue: price_norow 14 · shp_level 4 · shp_prior_quarter 614 ·
   pat_con 586 · pat_std 2,623. All `open`.
 
-## 4b. RESUME HERE (2026-08-24 02:40 IST — written for the next session, any model)
+## 4b. RESUME HERE (updated 2026-08-24 03:05 IST — P1 CLOSED & LIVE-VERIFIED)
 
-P1 pushed as 9a6b9b3e6. IN FLIGHT at time of writing — VERIFY, don't re-run blindly:
-1. refresh-backtest-data run 32663592806 — must apply the RASOYPR surgery to the LIVE release bin
-   (update_sf_data.apply_series_surgery). Verify: download the release asset (scripts/fetch_live_sf.py)
-   and check RASOYPR 20130930 close == 14.85. If the run failed, dispatch it again.
-2. refresh-membership run 32663570384/32663594605 — must reproduce scripts/indices_history.json
-   byte-identical to origin (the P1 roster: GBGLOBAL in, TANDHANIN out, SUMMIT era). Compare like
-   §106f/§106g did. My local build already matched 39/39 official lists.
-3. THEN dispatch refresh-coverage.yml (the 01:10 IST nightly bake ran BEFORE these landed), then
-   pages.yml, then verify LIVE with ?cb= : the six technical params must read ≥ 99% every month
-   2009+ (5 residual member-months are §5 decision items).
-4. THEN continue with P2 (shp_level: MVL/SHLAKSHMI/INNOIND/SPSL — 40 member-months after P1) and
-   P3 (pat_con 586 root cells, routes in §2). Queue statuses in scripts/fav14_queue.json.
+**P1 (price class) is DONE and LIVE.** Coverage page (2026-08-24 02:25 IST bake) reads, N500 2009→date:
+d52/d52_low_pct/daysHigh/ret6m/dma200/mdd6 **84 → 5 missing** each; side-effect improvements
+fiiPct/diiPct 117→40, diiChgPp 2132→2057, profitYoy 786→699, profitTTM 1833→1746, YoyStd 3871→3798,
+TTMStd 7548→7482. The 5 residual d52 months are engine conventions (§5 decision items), NOT fills:
+2009-05 SPSL suspended >14d · 2009-06 AJMERA listed mid-month · 2010-06 BBOX listed mid-month ·
+2011-02 HFCL suspended · 2012-03 PROVOGUE suspended.
+
+★★ **PROPAGATION LESSON (cost 3 extra bakes) — a ROSTER change needs FIVE steps to reach the page,
+not three.** The Coverage Matrix reads its ROSTER from `docs/dash_slim.bin` (indicesHistory), which
+is rebuilt ONLY by `refresh.yml` (build_compressed.py reads scripts/indices_history.json). The
+membership refresh updates indices_history.json + splices stock_data.bin, but NOT dash_slim.bin. So:
+  indices_history.json (refresh-membership) → **dash_slim.bin (refresh.yml)** → coverage (refresh-coverage)
+  → pages.yml → verify ?cb=
+Skipping refresh.yml leaves the coverage builder on the OLD roster (I saw TANDHANIN/PUNJABTRAC still
+"members" until refresh.yml ran). A PRICE-bin heal (RASOYPR) needs only the release-asset path
+(refresh-backtest-data uploads it; coverage --bin auto downloads it) — but beware the release-asset
+CDN can serve a stale copy for a few minutes after upload; re-verify or re-dispatch if a heal you
+confirmed in the asset doesn't show on the page.
+
+**NEXT — P2 (SHP-level class, 40 member-months → ~5 symbols).** After P1, fiiPct/diiPct miss:
+MVL 16 (2011-12..2013-03), SHLAKSHMI 7 (2012-09..2013-03), INNOIND 6 (2013-08..2014-01),
+SPSL 4 (2009-01..2009-04), SUMMIT 2 (2009-01..2009-02). NONE have any SHP row today.
+Route PROVEN this session (read-only recon, nothing written yet):
+- Codes ISIN-verified: **MVL 532991, SHLAKSHMI 526049, INNOIND 533402, SPSL 533110** (each checked
+  via BSE ComHeadernew ISIN == the symbol's ISIN; my first INNOIND guess 533632 was WRONG — verify,
+  never guess). SUMMIT (INE852A01016) code still unresolved.
+- Instrument: `scripts/fetch_shp_bse_aspx.py` (frontier → pilot → harvest; reconciliation gates,
+  fii-never-zero, prom-fallback all built in). Add the 4 codes to `scripts/_shp_scripcode_override.json`
+  (evidence-backed, ISIN), run frontier, then harvest just these cells; it writes ledger
+  `shp_fill_bse_aspx.json.gz`. Applied to shp_history.json by the SHP campaign's applier — write to
+  shp_history.json NEVER docs/shp_engine.json (§105); pre-2016 sub-date = qe+21d 15:30 convention.
+- Verified reachable: aspx page `ShareholdingPattern.aspx?scripcd=<code>&flag_qtr=1&qtrid=<q>.00&Flag=New`
+  returns the Clause-35 table (MVL Sep-2011 = qtrid 71: Promoter 70.56%, MF/UTI 0.01% — extractable).
+  qtrid = (year-2001)*4 + {Mar:29,Jun:30,Sep:31,Dec:32}[month].
+- SPSL/SUMMIT are 2009 (pre-2010); aspx Flag=New covers Jun-2006+ so they SHOULD be reachable, but
+  the SHPQNewFormat feed only lists SPSL back to Sep-2009 — probe the aspx page directly per §57.
+
+**THEN P3 (pat_con 586) / P4 (pat_std 2,623) / P5 (shp_prior_quarter 614).** Routes in §2.
 Rules that bind every step: §57 ladder logged per cell · run-twice idempotency · bake-and-measure
-before commit · file-scoped adds · worktree ~/stocks-wt/fav14-cov (this one) or a fresh one.
+before commit · file-scoped adds · worktree ~/stocks-wt/fav14-cov.
 
 ## 5. Decision checkpoints
 
