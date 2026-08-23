@@ -189,7 +189,7 @@ select,input[type=text],input[type=number],input[type=date]{
     <span class="meta" id="clock"></span>
     <div class="spacer"></div>
     <button class="btn" id="btnPrivate" title="Blur every number">🙈 Privacy</button>
-    <button class="btn" id="btnTheme" title="Light / dark">◐</button>
+    <button class="btn" id="btnTheme">◐ Auto</button>
     <button class="btn" id="btnRefresh">↻ Refresh</button>
   </div>
 </header>
@@ -1340,10 +1340,14 @@ $('btnPrivate').onclick=()=>{ document.body.classList.toggle('private');
   localStorage.setItem('pf_private', document.body.classList.contains('private')?'1':'0');
   $('btnPrivate').classList.toggle('on', document.body.classList.contains('private'));
   if(DOC) renderAll(); };   // redraw: SVG chart text is redacted at render time, not by CSS
+/* The button shows the ACTIVE mode (Auto follows the OS); tapping cycles Auto → Dark → Light → Auto. */
+function applyThemeBtn(){ const t=document.documentElement.getAttribute('data-theme');
+  const lbl=t==='dark'?'🌙 Dark':t==='light'?'☀️ Light':'◐ Auto';
+  const b=$('btnTheme'); b.textContent=lbl; b.title='Theme: '+lbl.replace(/^\S+\s/,'')+' — tap to change'; }
 $('btnTheme').onclick=()=>{ const cur=document.documentElement.getAttribute('data-theme');
   const next=cur==='dark'?'light':cur==='light'?'':'dark';
   if(next) document.documentElement.setAttribute('data-theme',next); else document.documentElement.removeAttribute('data-theme');
-  localStorage.setItem('pf_theme',next); };
+  localStorage.setItem('pf_theme',next); applyThemeBtn(); };
 $('btnSaveAcct').onclick=async()=>{
   $('saveMsg').textContent='saving…';
   try{
@@ -1354,6 +1358,7 @@ $('btnSaveAcct').onclick=async()=>{
 };
 (function initPrefs(){
   const th=localStorage.getItem('pf_theme'); if(th) document.documentElement.setAttribute('data-theme',th);
+  applyThemeBtn();
   /* On a phone the page opens wherever it was left, and whoever picks the phone
      up sees it. So AWAY from the Mac, blur by default until told otherwise —
      an explicit choice is still remembered either way. */
