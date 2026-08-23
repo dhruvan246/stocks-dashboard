@@ -21,6 +21,14 @@ Rules that keep them from fighting (violated → the 2026-07-22 tangle, see DATA
 
 **Enforcement:** rules 1–2 are enforced by hooks (`.claude/settings.json` → `scripts/_concurrency_guard.py`). Editing a file that another session has dirty, or running a tree-wide git mutation in this checkout, pops a confirmation prompt; session start injects a list of files currently dirty. If the guard prompts you, it is almost always right — resolve the conflict (coordinate or use a worktree), don't route around it.
 
+## Every change must go LIVE on the site — standing rule (2026-08-23)
+
+Standing rule from the user: when they ask for a change or addition (UI, code, data, fix), **"done" means it is LIVE on the GitHub Pages site** — not merely committed, and NOT left sitting on a `claude/*` feature branch. The site publishes **only from `main`** (`.github/workflows/pages.yml`, on push to `main` touching `docs/**`).
+
+A web/cloud task may hand you a `claude/*` branch and say "develop and push there" — treat that as a **starting point, not the finish line.** After the change is built and verified, land it on `main` via the push recipe above (file-scoped commit → `git fetch origin` → `git rebase origin/main` → `git push origin HEAD:main`, retrying through the data-bot race), then **confirm the Pages deploy ran and re-verify LIVE** (the change is under `docs/`, so the push triggers `pages.yml`; the button/feature appears on the live URL ~1–3 min later). Pushing to a feature branch and stopping is NOT finishing the task.
+
+This is the user's explicit, standing authorization to push their requested changes straight to `main`. Only stop short of going-live when the user explicitly asks for a PR / review instead.
+
 ## No assumptions, no guesswork — standing rule, ALL work
 
 Standing rule from the user (2026-08-10), applying to data, code, UI, and answers alike:
