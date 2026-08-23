@@ -228,7 +228,7 @@ select,input[type=text],input[type=number],input[type=date]{
           <div class="filters" style="margin:0 0 8px 4px" id="allocModes"></div>
           <div id="chAlloc"></div></div></div>
 
-      <div class="card c6"><h2>Growth of ₹100 vs Nifty 50</h2>
+      <div class="card c6"><h2>Growth of ₹100 vs Nifty 500</h2>
         <div class="sub" id="twrSub">Time-weighted return — immune to money added or removed.</div>
         <div class="body"><div id="chTwr"></div></div></div>
 
@@ -267,8 +267,12 @@ select,input[type=text],input[type=number],input[type=date]{
       <div class="card c12"><h2>Accounts</h2>
         <div class="sub">Tag each portfolio with the account that holds it — the account views above use this. Saved to holdings.json.</div>
         <div class="body"><div class="twrap"><table id="tblAcct"></table></div>
-          <div style="padding:10px 9px 0"><button class="btn" id="btnSaveAcct">Save accounts</button>
-          <span class="meta" id="saveMsg" style="margin-left:10px"></span></div></div></div>
+          <div style="padding:12px 9px 0; display:flex; align-items:center; gap:8px; flex-wrap:wrap">
+            <label class="flab" for="mtfRate" style="margin:0">MTF interest %/yr</label>
+            <input type="number" id="mtfRate" min="0" step="0.1" placeholder="e.g. 14.99" style="width:92px" title="Annual interest your broker charges on MTF-funded positions. Applied to MTF strategies' 'You vs the strategy' card. Leave blank = off.">
+            <span style="flex:1"></span>
+            <button class="btn" id="btnSaveAcct">Save</button>
+            <span class="meta" id="saveMsg"></span></div></div></div>
     </div>
   </div>
 </main>
@@ -295,7 +299,7 @@ const EPOCH = Date.UTC(1996,0,1);
 const offToISO = o => new Date(EPOCH + o*864e5).toISOString().slice(0,10);
 const isoToOff = s => Math.round((Date.parse(s+'T00:00:00Z') - EPOCH)/864e5);
 
-let DOC=null, META={}, SERIES={}, NIFTY=null, QUOTES={}, QASOF=0, ROWS=[], HIST=null, MODEL=null;
+let DOC=null, META={}, SERIES={}, NIFTY=null, NIFTY500=null, QUOTES={}, QASOF=0, ROWS=[], HIST=null, MODEL=null;
 let SEL = {acct:new Set(), pf:new Set(), alloc:'pf', sort:{k:'value',dir:-1}};
 
 /* ---------------- formatting (Indian) ---------------- */
@@ -412,9 +416,9 @@ async function loadAll(){
   const [doc,slim,nif] = await Promise.all([
     loadHoldings(),
     gunzipJSON(CFG.base+'dash_slim.bin'),
-    fetch(CFG.base+'nifty.json').then(r=>r.ok?r.json():null).catch(()=>null)
+    fetch(CFG.base+'nifty500.json').then(r=>r.ok?r.json():null).catch(()=>null)
   ]);
-  DOC=doc; META=slim.meta||{}; SERIES=slim.series||{}; NIFTY=nif;
+  DOC=doc; META=slim.meta||{}; SERIES=slim.series||{}; NIFTY500=nif;   // the strategies screen from Nifty 500 — benchmark against it, not Nifty 50
   DOC.holdings.forEach(h=>{ h.buyOff=isoToOff(h.date); });
   await loadModel();
   await refreshQuotes();
@@ -442,6 +446,10 @@ function priceFor(h){
   }
   return {px:null, prev:null, psrc:'none'};
 }
+function idxPxOnOrBefore(map, iso){ if(!map||!map.px) return null; let d=iso;
+  for(let i=0;i<12;i++){ const v=map.px[d]; if(v!=null) return v; const dt=new Date(d+'T00:00:00Z'); dt.setUTCDate(dt.getUTCDate()-1); d=dt.toISOString().slice(0,10); } return null; }
+function idxLatestPx(map){ if(!map||!map.px) return null; let mk=null,mv=null; for(const k in map.px){ if(mk==null||k>mk){ mk=k; mv=map.px[k]; } } return mv; }
+function idxRetSince(map, iso){ const a=idxPxOnOrBefore(map,iso), b=idxLatestPx(map); return (a&&b)?(b/a-1)*100:null; }
 function pfById(id){ return (DOC.portfolios||[]).find(p=>p.id===id)||{}; }
 function acctName(id){ const a=(DOC.accounts||[]).find(x=>x.id===id); return a?a.name:'Unassigned'; }
 
@@ -458,7 +466,8 @@ function buildRows(){
       cost, value, pnl:(value!=null?value-cost:null),
       pnlPct:(value!=null&&cost>0?(value-cost)/cost*100:null),
       day, dayPct:(p.px!=null&&p.prev)?((p.px-p.prev)/p.prev*100):null,
-      days:Math.max(1,Math.round((today-Date.parse(h.date+'T00:00:00Z'))/864e5))
+      days:Math.max(1,Math.round((today-Date.parse(h.date+'T00:00:00Z'))/864e5)),
+      d52h:(m.h52&&p.px!=null)?(p.px/m.h52-1)*100:null   // % from the 52-week high — the strategy's near-high entry gate
     });
   });
 }
@@ -530,15 +539,15 @@ function buildHistory(rows){
     if(v>0){ cal.push(todayOff); val.push(v); cost.push(c); twr.push(twr[last]*(den>0?num/den:1)); }
   }
   /* benchmark aligned to the same calendar, forward filled */
-  let nif=null;
-  if(NIFTY&&NIFTY.px){
-    let last=null; nif=cal.map(o=>{ const v=NIFTY.px[offToISO(o)]; if(v!=null) last=v; return last; });
-    const base=nif.find(v=>v!=null);
-    nif = base? nif.map(v=>v==null?null:v/base*100) : null;
+  let nif500=null;
+  if(NIFTY500&&NIFTY500.px){
+    let last=null; nif500=cal.map(o=>{ const v=NIFTY500.px[offToISO(o)]; if(v!=null) last=v; return last; });
+    const base=nif500.find(v=>v!=null);
+    nif500 = base? nif500.map(v=>v==null?null:v/base*100) : null;
   }
   const dd=[]; let peak=-Infinity;
   twr.forEach(v=>{ peak=Math.max(peak,v); dd.push((v/peak-1)*100); });
-  return {cal, val, cost, twr:twr.map(v=>v*100), nif, dd,
+  return {cal, val, cost, twr:twr.map(v=>v*100), nif500, dd,
           excluded: rows.length-used.length,
           exclValue: rows.filter(r=>!(SERIES[r.hist]&&SERIES[r.hist].d)).reduce((s,r)=>s+(r.value||0),0)};
 }
@@ -896,12 +905,12 @@ function renderCharts(rows){
     $('valueSub').innerHTML='Daily closes'+(H.excluded?' · <b>'+H.excluded+' holding'+(H.excluded>1?'s':'')+' with no price history excluded</b> ('+inr(H.exclValue)+' of current value)':'')+'. Cost basis steps up on each purchase.';
     lineChart($('chTwr'),{cal:H.cal,h:250,series:[
         {name:'Portfolio',color:'var(--s1)',vals:H.twr},
-        {name:'Nifty 50',color:'var(--s2)',vals:H.nif||[]}],
+        {name:'Nifty 500',color:'var(--s2)',vals:H.nif500||[]}],
       fmtY:v=>'₹'+v.toFixed(0), fmtT:v=>'₹'+v.toFixed(1)});
     const first=H.twr[0], lastT=H.twr[H.twr.length-1];
-    const nl=H.nif?H.nif[H.nif.length-1]:null;
+    const nl=H.nif500?H.nif500[H.nif500.length-1]:null;
     $('twrSub').innerHTML='Time-weighted — immune to money added or removed. Since '+shortDate(offToISO(H.cal[0]))+
-      ': portfolio <b class="'+cls(lastT-first)+'">'+pct(lastT-100)+'</b>'+(nl!=null?', Nifty 50 <b class="'+cls(nl-100)+'">'+pct(nl-100)+'</b>':'')+'.';
+      ': portfolio <b class="'+cls(lastT-first)+'">'+pct(lastT-100)+'</b>'+(nl!=null?', Nifty 500 <b class="'+cls(nl-100)+'">'+pct(nl-100)+'</b> \u2014 alpha <b class="'+cls(lastT-nl)+'">'+pct(lastT-nl)+'</b>':'')+'.';
     lineChart($('chDD'),{cal:H.cal,h:250,series:[{name:'Drawdown',color:'var(--down)',vals:H.dd,fill:true,fillOpacity:.18}],
       fmtY:v=>v.toFixed(0)+'%', fmtT:v=>pct(v), zero:true});
     barsV($('chMonth'),monthlyReturns(H).map(m=>({label:m.m.slice(5)+'/'+m.m.slice(2,4),full:m.m,value:m.r})),{fmtV:v=>pct(v,1)});
@@ -961,6 +970,7 @@ const COLS=[
   {k:'value',  t:'Value',    f:r=>'<span class="secret">'+inr(r.value)+'</span>'},
   {k:'pnl',    t:'P&L',      f:r=>'<span class="'+cls(r.pnl)+' secret">'+inrSigned(r.pnl)+'</span>'},
   {k:'pnlPct', t:'P&L %',    f:r=>'<span class="'+cls(r.pnlPct)+'">'+pct(r.pnlPct)+'</span>'},
+  {k:'d52h',   t:'52w Hi',   f:r=>r.d52h==null?'<span class="sym">—</span>':'<span class="'+(r.d52h>=-10?'up':'flat')+'" title="'+(r.d52h>=-10?'within 10% of its 52-week high (passes the strategy\u2019s near-high entry filter)':Math.abs(r.d52h).toFixed(0)+'% below its 52-week high — would fail the near-high entry filter')+'">'+(r.d52h>=0?'+':'')+r.d52h.toFixed(1)+'%</span>'},
   {k:'days',   t:'Held',     f:r=>r.days+'d'},
   {k:'trend',  t:'8-mo',     f:r=>sparkline(r.hist,64,20)||'<span class="sym">—</span>', nosort:true}
 ];
@@ -998,6 +1008,9 @@ function renderAccounts(){
     const p=(DOC.portfolios||[]).find(x=>x.id===sel.dataset.pf); if(p) p.account=sel.value;
     buildRows(); renderAll(); $('saveMsg').textContent='unsaved changes';
   });
+  const mr=$('mtfRate'); if(mr){ mr.value=(DOC.mtfRate!=null?DOC.mtfRate:''); mr.onchange=()=>{
+    const v=parseFloat(mr.value); DOC.mtfRate=(isFinite(v)&&v>=0)?v:null;
+    buildRows(); renderAll(); $('saveMsg').textContent='unsaved changes'; }; }
 }
 const TODAY_OPEN = new Set();          // which strategy rows are expanded, survives re-render
 function renderToday(rows){
@@ -1085,23 +1098,28 @@ function renderStrategyCard(rows, mode, ids){
           '<div class="r"><span>Base → now</span><b class="secret">'+inr(r.base)+' → '+inr(r.now)+'</b></div>'+
           (r.used<r.n?'<div class="r"><span>Measured</span><b>'+r.used+' of '+r.n+'</b></div>':'')})),
     {fmtV:v=>pct(v), labW:190, rowH:26});
-  const col2 = mode==='close' ? 'Measured from' : 'Bought';
-  const cell2 = r => mode==='close'
+  const isClose = mode==='close';
+  const benchRet = isClose ? idxRetSince(NIFTY500, M.iso) : null;   // Nifty 500 over the same window → alpha
+  if(isClose && benchRet!=null) sub.innerHTML+=' Nifty 500 <b class="'+cls(benchRet)+'">'+pct(benchRet)+'</b> over the same window.';
+  const col2 = isClose ? 'Measured from' : 'Bought';
+  const cell2 = r => isClose
       ? shortDate(M.iso)+' close'+(r.stale?' <span class="badge warn">'+r.stale+' pre-dated</span>':'')
       : (r.first===r.last? shortDate(r.first) : shortDate(r.first)+' – '+shortDate(r.last));
+  const aTh = (isClose && benchRet!=null) ? '<th>Alpha</th>' : '';
+  const aCell = ret => (isClose && benchRet!=null) ? '<td class="'+cls(ret-benchRet)+'"><b>'+pct(ret-benchRet)+'</b></td>' : '';
   let h='<thead><tr><th>Strategy</th><th>'+col2+'</th><th>Positions</th><th>Value at baseline</th>'+
-        '<th>Value now</th><th>Change</th><th>Return</th></tr></thead><tbody>';
+        '<th>Value now</th><th>Change</th><th>Return</th>'+aTh+'</tr></thead><tbody>';
   M.rows.forEach(r=>{ h+='<tr><td><b>'+esc(r.name)+'</b></td>'+
     '<td><span class="sym">'+cell2(r)+'</span></td>'+
     '<td>'+(r.used<r.n? '<span class="badge warn">'+r.used+' of '+r.n+'</span>' : r.n)+'</td>'+
     '<td class="secret">'+inr(r.base)+'</td><td class="secret">'+inr(r.now)+'</td>'+
     '<td class="'+cls(r.chg)+' secret">'+inrSigned(r.chg)+'</td>'+
-    '<td class="'+cls(r.ret)+'"><b>'+pct(r.ret)+'</b></td></tr>'; });
+    '<td class="'+cls(r.ret)+'"><b>'+pct(r.ret)+'</b></td>'+aCell(r.ret)+'</tr>'; });
   h+='</tbody><tfoot><tr class="pfhead"><td>All strategies</td><td></td>'+
      '<td>'+M.rows.reduce((a,r)=>a+r.used,0)+' of '+M.rows.reduce((a,r)=>a+r.n,0)+'</td>'+
      '<td class="secret">'+inr(M.total.base)+'</td><td class="secret">'+inr(M.total.now)+'</td>'+
      '<td class="'+cls(M.total.chg)+' secret">'+inrSigned(M.total.chg)+'</td>'+
-     '<td class="'+cls(M.total.ret)+'"><b>'+pct(M.total.ret)+'</b></td></tr></tfoot>';
+     '<td class="'+cls(M.total.ret)+'"><b>'+pct(M.total.ret)+'</b></td>'+aCell(M.total.ret)+'</tr></tfoot>';
   tbl.innerHTML=h;
 }
 /* ============================ you vs the strategy ============================ */
@@ -1157,13 +1175,17 @@ function renderModel(rows){
     const gap=(modelRet!=null&&yourRet!=null)?yourRet-modelRet:null;
     const first=mine.map(r=>r.date).sort()[0], lastD=mine.map(r=>r.date).sort().slice(-1)[0];
     const days=daysBetween(last.td, istTodayISO());
+    /* MTF interest drag on YOUR basket: cost × rate × days-held/365, per holding. Dormant at rate 0. */
+    const rate=(DOC.mtfRate!=null&&isFinite(DOC.mtfRate))?DOC.mtfRate:0;
+    let interest=0; if(rate>0) mine2.forEach(r=>{ interest+=r.cost*(rate/100)*(r.days/365); });
+    const netRet=(rate>0&&yb>0)?(yn-yb-interest)/yb*100:null;
     h+='<div class="sblk"><div class="shead"><span class="nm2">'+esc(pf.name)+'</span>'+cycBadge(pf.cycle)+
        '<span class="meta">strategy rebalanced <b>'+shortDate(last.td)+'</b> ('+days+' days ago)'+
        (first?' · you bought '+(first===lastD?shortDate(first):shortDate(first)+' – '+shortDate(lastD)):'')+'</span></div>';
     h+='<div class="trio">'+
       '<div class="t"><div class="l">Strategy basket</div><div class="v '+cls(modelRet)+'">'+pct(modelRet)+'</div><div class="s">from the '+shortDate(last.td)+' close'+(eod?' · '+eod+' at last close':'')+'</div></div>'+
       '<div class="t"><div class="l">Your basket</div><div class="v '+cls(yourRet)+'">'+pct(yourRet)+'</div><div class="s">from your buy prices'+(mine.length!==mine2.length?' · '+(mine.length-mine2.length)+' unpriced':'')+'</div></div>'+
-      '<div class="t"><div class="l">Gap</div><div class="v '+cls(gap)+'">'+(gap==null?'—':(gap>=0?'+':'−')+Math.abs(gap).toFixed(2)+' pp')+'</div><div class="s">'+(gap==null?'':gap>=0?'you are ahead of the strategy':'entry timing cost you this much')+'</div></div></div>';
+      '<div class="t"><div class="l">Gap</div><div class="v '+cls(gap)+'">'+(gap==null?'—':(gap>=0?'+':'−')+Math.abs(gap).toFixed(2)+' pp')+'</div><div class="s">'+(gap==null?'':gap>=0?'you are ahead of the strategy':'entry timing cost you this much')+'</div></div>'+(netRet!=null?'<div class="t"><div class="l">After MTF interest</div><div class="v '+cls(netRet)+'">'+pct(netRet)+'</div><div class="s">'+rate.toFixed(2)+'%/yr on cost, '+days+'d \u2014 <span class="secret">−'+inr(interest,2)+'</span></div></div>':'')+'</div>';
     /* union of the two baskets, one row per stock */
     const syms=[...new Set([...last.h.map(x=>x[0]), ...mine.map(r=>r.sym.replace(/\.(NS|BO)$/,''))])];
     h+='<div class="twrap"><table><thead><tr><th>Stock</th><th>Strategy entry</th><th>Your avg</th><th>Entry slip</th><th>Now</th><th>Strategy</th><th>You</th></tr></thead><tbody>';
