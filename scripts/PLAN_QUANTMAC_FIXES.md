@@ -404,3 +404,98 @@ no_candidates_at_all 727 (all from the no-scripcode/zero-match symbols). 0 fetch
 
 Nothing has been written to sf_fundamentals.json / fundamentals.json. Audit scripts:
 scratchpad/audit_redating.py, size_bugs.py (regenerable). redate_ledger.json is the current dry-run.
+
+---
+
+## F. FABLE REVIEW OF SECTION E (2026-08-20) — audit CONFIRMED, 4 additions, Option A binding
+
+Verdict on Opus's audit: all three bugs are real, correctly root-caused, and correctly sized;
+the contract stats (0 pre-qe, 0 future, lag mass in 14-60d) are the right frame. Four additions,
+one of them a 4th defect class Opus asked about and that I then MEASURED:
+
+**F0. BUG 4 — newspaper/secondary re-publication rows matched as the disclosure. 501 + 11 cells.**
+Reg 47 forces companies to re-publish results in newspapers AFTER filing; "Announcement under
+Regulation 30 (LODR)-Newspaper Publication" rows carry the same "quarter ended X" text and matched.
+Measured: 501 newspaper-sourced matches (472 later / 29 earlier — the later-skew is exactly the
+re-publication mechanism; the 29 earlier are likely cases where the REAL result row failed date
+extraction, i.e. Bug 3, and the ad won by default). Plus 11 "Updates on…" rows. Not look-ahead
+(mostly), but systematically-biased dates. Same remedy family as Bug 1: these become a DEMOTED
+class, not rejected — see F1.
+
+**F1. One classifier, three ranks — and it must be a single shared function.**
+Replace INTIMATION_PHRASES with `classify_row(sub, head) -> 'result' | 'secondary' | 'intimation'`:
+* 'intimation' = forward-meeting/notice language (board meeting on/to consider/intimation/
+  reschedul/notice of/analyst-investor meet/prior intimation/Reg 29) UNLESS outcome-override.
+  Outcome-override MUST include BSE's own post-2018 template prefix `board meeting outcome`
+  and the generic `outcome of (?:the )?(?:board )?meeting` — Opus's audit regex missed these and
+  wrongly flagged SFL/LAMBODHARA-style REAL outcomes; in the fetch-side classifier that mistake
+  would discard real results, the expensive direction.
+* 'secondary' = newspaper publication / "Updates on" / newspaper-advertisement re-publications.
+* 'result' = everything else that passed is_candidate.
+Ranking inside match_targets: (class_rank result<secondary<intimation, then NEWS_DT asc).
+An intimation may NEVER be written (apply-layer refuses, falls back to placeholder); a secondary
+MAY be written when it's the only source (better bound than the placeholder; provenance-tagged
+'secondary'). ⚠️ The audit script and apply_redating.py must IMPORT this same classify_row —
+Opus's audit used a parallel regex; two regexes drift and the audit stops measuring what ships.
+
+**F2. The 120d lag cap itself keeps a look-ahead class — relax it for single-date result rows.**
+A genuinely-late filer (IBC-era companies file 6-12 months late) has real ann ≫ qe+45; the current
+[0,120] reject KEEPS the placeholder = keeps the look-ahead. The ALFALAVAL comparative-confusion
+the cap was built for is a MULTI-date signature (year-ago comparison alongside the real quarter).
+So: rows whose extracted-qe set has exactly ONE date and classify as 'result' → accept lag up to
+400d; multi-date rows keep [0,120]. Direction asymmetry note: accepting a later-than-placeholder
+date is the safe direction (pessimistic); the only fatal error is accepting an EARLIER wrong date —
+which is why intimations are hard-refused rather than demoted. lag<0 stays refused always.
+
+**F3. NSE-only listings are a distinct, legitimate no-match class — classify, don't chase.**
+Bug 2a's remedy (ISIN/alias resolution) must end with: our-symbol → ISIN → if that ISIN appears
+NOWHERE in the BSE master, the name is NSE-only; record `error:'nse-only'` and leave the
+placeholder — a BSE campaign cannot date it (future NSE-archive pass, out of scope). Symbol→ISIN
+source: try scripts/_isin_seam_verdicts.json + FUND_ALIAS machinery (check_fund_alias.py) first;
+they exist for exactly this. Dead names with no ISIN route (SATYAMCOMP…): try era-name/Issuer_Name
+lookup in the master; if still unresolved, record 'unresolvable' with a count — never guess.
+
+**F4. Persist the raw candidate rows this time.** fetch_results.json stores only the winning
+match; every matcher change therefore re-hits BSE for hours. The re-run must write each symbol's
+raw candidate rows to a cache (jsonl, one file per shard is fine, ~tens of MB, worktree-local,
+NOT committed) so every future matcher tweak re-matches OFFLINE in seconds. This lesson is
+memory-worthy independent of this campaign.
+
+**SEQUENCING — Option A, and B is now argued CLOSED, not just dispreferred:** under B, the
+"clean 21,716" were screened by the AUDIT regex, not the shipping classifier; F1's corrected
+classifier will flag a (small) superset, so B would write cells the improved filter then wants
+back — and a retraction is the expensive class (retraction-needs-every-ledger). A single clean
+pass never writes a cell it later regrets. Scope measured, not guessed: 1,551 symbols carry ≥1
+unmatched cell; + symbols carrying flagged matches ≈ ~1,600 symbols ≈ ~2h at the observed 2-shard
+rate.
+
+**EXECUTION ORDER FOR OPUS (each step gates the next):**
+1. fetch_and_match.py v3: classify_row (F1) + date-regex extensions (Bug 3: optional on/as on/
+   as at after anchor, 2-digit year → 20xx, `Q.E.`/`QE` anchor, tolerate missing space after
+   anchor) + ISIN/alias scripcode resolution with 'nse-only'/'unresolvable' classification (F3)
+   + raw-row cache (F4). apply_redating.py: import classify_row for the refusal net; lag rule
+   per F2; provenance string carries the class ('result'/'secondary').
+2. OFFLINE calibration BEFORE any re-fetch (data already on disk): run classify_row over all
+   21,911 stored newssubs + the 195 flagged + the 5 document-verified real filings (CANFINHOME
+   2013-01-19 etc.) + SFL/LAMBODHARA outcome-prefix cases. Gates: 195/195 flagged ⊆
+   {intimation,secondary}; 5/5 verified real = 'result'; outcome-prefix cases = 'result';
+   newly-flagged among the 21,716 ≤ ~2% and 20 random newly-flagged eyeballed all genuinely
+   non-result. Fail any gate → fix classifier, rerun; do NOT proceed on a failed gate.
+3. Re-fetch the affected set (~1,600 syms: any-unmatched ∪ any-flagged-match), 2 shards,
+   newest-first, same monitor pattern, raw-row cache ON.
+4. Merge (replace re-fetched symbols' entries wholesale), dry-run apply, re-run the audit
+   (now importing classify_row). Gates: 0 intimation-sourced decisions; 0 new_ann<qe; 0 future;
+   lag histogram sane (March-quarter cells may legitimately sit 46-60d); secondary-sourced
+   count reported with direction split; single-date>120d acceptances listed for eyeball.
+5. --apply once. Verify: JSON-parse both fundamentals files; ledger-count == applied-count;
+   10 random cells diffed file-vs-ledger; agg_pat_cell_fills.json sync count == expected;
+   re-run --apply is a no-op (idempotency). Bump the sf cache rev (see memory
+   project-stocks-sf-cache-key-rev / runbook) so clients refetch.
+6. A/B: re-run the DII strategy backtest before/after; the 8 quantmac staleness trades must
+   resolve to their verified dates; record deltas in §102.
+7. Push via the worktree recipe; verify ON ORIGIN BY CONTENT; verify LIVE ~20 min later
+   (CI race); §39 gate on any touched page surface; write section G (final stats) here +
+   runbook §102/§103 update + memory. Report to user in layman terms per standing instruction.
+
+195 intimation cells, 512 secondary cells, the lag-cap class, and the no-match recoveries all
+land in ONE reviewable ledger. Nothing writes until step 5, and step 5 runs once.
