@@ -733,3 +733,63 @@ don't reproduce in-harness; their CELLS are origin+live-verified directly.
 VALUES disagree with the era's press figures: our Dec-07 std PAT 473.79 vs BS 631.44; Dec-08
 632.24 vs 615.74 -> our pair says +33.4%, truth -2.5%. Date healed; values are §101 class-2
 (HUL's Dec->Mar fiscal-year transition era). Not silently absorbed into the date campaign.
+
+
+---
+
+## L. FABLE VERIFICATION PASS (2026-08-23) — everything re-measured adversarially; 2 real classifier gaps found & shipped (v3.2)
+
+**VERIFIED CLEAN (independent re-measurement, not re-running Opus's own tests):**
+* LIVE CLIENT: the deployed stock_data.bin serves 319 N500 snapshots; PCBL/SANDESH/AJANTPHARM
+  non-member at flagged dates, RELIANCE + re-inclusions member — through the client origin, 6/6.
+* OTHER-INDEX BLAST RADIUS: every fixed-size index byte-equivalent at last common snapshot
+  (symdiff 0 across all 26); the two derived tiers (MidSmallcap 400 68→72, Smallcap 250 64→66)
+  grew snapshots BECAUSE they derive from N500 — expected, rosters unchanged on common dates.
+* GATE ARITHMETIC: 8/8 sampled 15:30-gated cells recompute exactly from gate_calendar tdays
+  (incl. Fri-evening→Tue cases).
+* SECONDARY RANKING: 0/8 sampled [secondary]-sourced cells had any result-class row available
+  for the same quarter — each was genuinely the only source.
+* >200d ACCEPTANCES: SAIL-2001/SANOFI-2008 are each the ONLY row in the raw cache mentioning
+  that quarter — nothing better existed; both later-direction (no look-ahead by construction).
+* DEMERGER FACTORS: all three re-derive exactly (0.4606 / 0.9069 / 0.9527 incl. HGS's
+  (prev−div)/prev choice).
+* COUNTER-CLAIMS: OMAXE — raw cache holds NO June-2012 results row at all; May-30 17:50 is BSE's
+  only results event. DELTACORP — live BSE re-pull: Jul-25 intimation, Aug-01 20:00:07 real
+  dual-basis disclosure, **nothing on Sep-28** (their date has no BSE counterpart). Both
+  outbound claims STRENGTHENED.
+* 157-ROW RE-RECONCILIATION (their appendix C, by their own buckets): membership 15 resolved /
+  0 still-picked (9 don't reproduce in-harness; data layer covers all 24 directly); yoy 6
+  resolved, 2 still = exactly the two KNOWN opens (HINDUNILVR values, DELTACORP dispute);
+  ttm_null still-picked rows are the backfill WORKING (windows now legitimately complete —
+  their replication lacked quarters we have since filled and dated); ranked_out/d52/
+  no_rebalance/dii_unknowable are their own convention/boundary diagnoses — not unilaterally
+  resolvable, correctly left to the joint re-reconciliation.
+
+**FOUND & FIXED (classifier v3.2, offline rematch, re-applied, pushed, origin-verified):**
+1. Results-led filings refused as intimations when the headline narrates its own agenda
+   ("meeting held today has considered and approved … to consider and take on record") — the
+   sibling outcome row lost its date to BSE's ~189-char headline truncation, so the cell kept
+   its placeholder. Counted exactly: 10 cells / 7 filings. Past-outcome forms added to the
+   OUTCOME rescue. VJTFEDU 20221231 → 20230215 recovered.
+2. "Announces Q1 (Standalone & Consolidated) results" — parenthetical broke RESULTS_CORE, a
+   bundled "Press Release" demoted 18 real filings to [secondary] (tag-level only). Fixed.
+Net: 22,581 → 22,671 decisions (+90), refusals 804 → 765, contract still 0/0/0, idempotent.
+(The push raced the 15:02 nightly commit — resolved per the minified-JSON rule again:
+reset to fresh origin, re-ran the applier.)
+
+**A/B caveat kept honest:** cfg basis (std) is INFERRED from quantmac's own sheet wording
+("Mar-16 standalone") + their 265/422 reconciliation; the saved strategy's JSON lives in
+Supabase and was not read. The membership A/B conclusions are basis-independent; the exact
+CAGR/maxDD figures assume std.
+
+**OBSERVATION A SCOPE, MEASURED: 25,867 of 25,867 pre-2016 SHP rows (100.0%) carry a
+submission date of exactly quarter-end + 21 days.** Pure convention, zero real dates anywhere
+in the store. Policy fork for the user: (i) keep + document the assumption; (ii) null pre-2016
+subs (kills DII-sorted screens before 2016 entirely); (iii) evidence campaign (BSE archive
+pages carry no timestamps per quantmac; Wayback captures give upper bounds only —
+project-stocks-shp-wayback-2010 is prior art). NB fetch_shareholding.py / fetch_shp_bse_aspx.py
+are DIRTY in the main checkout — another session owns SHP right now; coordinate before touching.
+
+**Dividend sweep (user-approved policy) RUNNING** in background over all 548 trade windows;
+candidates ≥2% of entry price recorded to dividend_sweep_results.json for bhavcopy-checked
+ledgering (first hit already: GFLLIMITED 2006-11, ₹2 = 6.57% of entry).
