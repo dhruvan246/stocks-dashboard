@@ -88,6 +88,11 @@ INTIMATION_RE = re.compile(
     # (PANORAMA qe20191231's real result read 'the Meeting … was held on 14th February'
     # and got refused as an intimation until this narrowed, 2026-08-23).
     r'(?:is|are|will\s+be|shall\s+be|to\s+be)\s+(?:held|scheduled|convened)|'
+    # results-TIMING notice: 'FY 09 results BY Jun 30, 2009' promises a future publication
+    # date; bare-date extraction reads the deadline as a quarter-end and earliest-wins then
+    # beats the real filing, which the lag<0 gate kills — losing the cell (MUNJALSHOW
+    # qe20090630 kept its placeholder that way, found post-push 2026-08-23).
+    r'\bresults?\s+by\b|'
     r'\bresched|\bpostpone|\bprepone|change\s+in\s+(?:the\s+)?date|'
     r'analyst\s*/?\s*\&?\s*investor|investors?\s+meet|earnings\s+call|conference\s+call|'
     r'\bagenda\b|\bproposed\b',
