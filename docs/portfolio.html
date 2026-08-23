@@ -631,6 +631,8 @@ function fitText(str,px,fs){                       // truncate to what actually 
   str=String(str);
   return str.length<=max? str : str.slice(0,max-1)+'…';
 }
+function privOn(){ return document.body.classList.contains('private'); }
+const DOTS='\u2022\u2022\u2022\u2022';   // shown in place of a name/amount when privacy is on
 const SLOT=['var(--s1)','var(--s2)','var(--s3)','var(--s4)','var(--s5)','var(--s6)','var(--s7)','var(--s8)'];
 function niceTicks(min,max,n){
   if(!isFinite(min)||!isFinite(max)) return [0];
@@ -654,9 +656,10 @@ function lineChart(host,o){
   const X=i=>P.l+(W-P.l-P.r)*(n===1?0:i/(n-1));
   const Y=v=>P.t+(H-P.t-P.b)*(1-(v-lo)/(hi-lo));
   const ticks=niceTicks(lo,hi,4);
+  const redY=o.secretY&&privOn();   // amounts on the Y axis (SVG text) — redact rather than rely on blur
   let s='<svg class="chart" viewBox="0 0 '+W+' '+H+'">';
   ticks.forEach(t=>{ s+='<line class="gridline" x1="'+P.l+'" x2="'+(W-P.r)+'" y1="'+Y(t).toFixed(1)+'" y2="'+Y(t).toFixed(1)+'"/>'
-    +'<text class="axis" x="'+(P.l-7)+'" y="'+(Y(t)+3.5).toFixed(1)+'" text-anchor="end">'+o.fmtY(t)+'</text>'; });
+    +'<text class="axis" x="'+(P.l-7)+'" y="'+(Y(t)+3.5).toFixed(1)+'" text-anchor="end">'+esc(redY?DOTS:o.fmtY(t))+'</text>'; });
   const step=Math.max(1,Math.floor(n/(narrow?3:5)));
   for(let i=0;i<n;i+=step) s+='<text class="axis" x="'+X(i).toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle">'+shortDate(offToISO(o.cal[i]))+'</text>';
   o.series.forEach(se=>{
@@ -693,8 +696,8 @@ function lineChart(host,o){
       dots[k].setAttribute('cx',X(i)); dots[k].setAttribute('cy',Y(v)); dots[k].setAttribute('opacity','1'); });
     let html='<b>'+shortDate(offToISO(o.cal[i]))+'</b>';
     o.series.forEach(se=>{ const v=se.vals[i];
-      html+='<div class="r"><span><i style="display:inline-block;width:9px;height:9px;border-radius:2px;background:'+se.color+';margin-right:6px"></i>'+esc(se.name)+'</span><b>'+(v==null?'—':o.fmtT(v))+'</b></div>'; });
-    if(o.extra) html+=o.extra(i);
+      html+='<div class="r"><span><i style="display:inline-block;width:9px;height:9px;border-radius:2px;background:'+se.color+';margin-right:6px"></i>'+esc(se.name)+'</span><b>'+(v==null?'—':redY?DOTS:o.fmtT(v))+'</b></div>'; });
+    if(o.extra && !redY) html+=o.extra(i);
     showTip(html,ev);
   }
   hit.addEventListener('mousemove',move);
@@ -706,9 +709,10 @@ function lineChart(host,o){
 /* ---- horizontal bars, diverging around zero ---- */
 function barsH(host,items,o){
   o=o||{};
-  /* Privacy: the tables blur stock names and rupee amounts (.secret) but an SVG <text>
-     never got the class, so every bar chart stayed readable with 🙈 on. The chart says
-     which of its two columns are sensitive: stock names / ₹ are, strategy names / % are not. */
+  /* Privacy: SVG <text> can't be blurred in Safari, so redact the CONTENT when 🙈 is on.
+     The caller says which of its two columns are sensitive: stock names / ₹ are, strategy
+     names / % are not. Tooltips stay HTML .secret (CSS blur works there). */
+  const priv=privOn(), redL=v=>(priv&&o.secretLabels)?DOTS:v, redV=v=>(priv&&o.secretValues)?DOTS:v;
   const secL=o.secretLabels?' secret':'', secV=o.secretValues?' secret':'';
   if(!items.length){ host.innerHTML='<div class="empty">Nothing to show.</div>'; return; }
   const W=chartW(host), narrow=W<520;
@@ -727,9 +731,9 @@ function barsH(host,items,o){
     const y=i*rowH+8, w=Math.max(1.5,scale(d.value)), neg=d.value<0;
     const x=neg? zeroX-w : zeroX;
     const col=d.color|| (diverging? (neg?'var(--down)':'var(--up)') : 'var(--s1)');
-    s+='<text class="axis'+secL+'" x="'+(labW-8)+'" y="'+(y+rowH/2-1)+'" text-anchor="end" fill="var(--text-2)" font-weight="600" font-size="'+fs+'">'+esc(fitText(d.label,labW-12,fs))+'</text>';
+    s+='<text class="axis" x="'+(labW-8)+'" y="'+(y+rowH/2-1)+'" text-anchor="end" fill="var(--text-2)" font-weight="600" font-size="'+fs+'">'+esc(redL(fitText(d.label,labW-12,fs)))+'</text>';
     s+='<rect class="bar" data-i="'+i+'" x="'+x.toFixed(1)+'" y="'+(y+2)+'" width="'+w.toFixed(1)+'" height="'+(rowH-7)+'" rx="4" fill="'+col+'"/>';
-    s+='<text class="axis'+secV+'" x="'+(W-4)+'" y="'+(y+rowH/2-1)+'" text-anchor="end" fill="var(--text-2)" font-weight="700" font-size="'+fs+'">'+esc(o.fmtV(d.value))+'</text>';
+    s+='<text class="axis" x="'+(W-4)+'" y="'+(y+rowH/2-1)+'" text-anchor="end" fill="var(--text-2)" font-weight="700" font-size="'+fs+'">'+esc(redV(o.fmtV(d.value)))+'</text>';
   });
   if(diverging) s+='<line class="zeroline" x1="'+zeroX+'" x2="'+zeroX+'" y1="4" y2="'+(H-8)+'"/>';
   s+='</svg>';
@@ -784,7 +788,7 @@ function donut(host,items,o){
     a=a2;
   });
   s+='<text x="'+cx+'" y="'+(cy-4)+'" text-anchor="middle" fill="var(--text-3)" font-size="10.5" font-weight="700">TOTAL</text>';
-  s+='<text x="'+cx+'" y="'+(cy+15)+'" text-anchor="middle" fill="var(--text)" font-size="16" font-weight="800" class="secret">'+inr(tot)+'</text>';
+  s+='<text x="'+cx+'" y="'+(cy+15)+'" text-anchor="middle" fill="var(--text)" font-size="16" font-weight="800">'+esc(privOn()?DOTS:inr(tot))+'</text>';
   s+='</svg>';
   let leg='<div class="legend">';
   items.forEach((d,i)=>leg+='<span><i style="background:'+(d.color||SLOT[i%8])+'"></i>'+esc(d.label)+' <b>'+(d.value/tot*100).toFixed(1)+'%</b></span>');
@@ -883,7 +887,7 @@ function renderCharts(rows){
 
   /* value + cost */
   if(H){
-    lineChart($('chValue'),{cal:H.cal,h:300,series:[
+    lineChart($('chValue'),{cal:H.cal,h:300,secretY:true,series:[
         {name:'Market value',color:'var(--s1)',vals:H.val,fill:true},
         {name:'Cost basis',  color:'var(--text-3)',vals:H.cost,dash:true}],
       fmtY:v=>inr(v,1), fmtT:v=>inr(v),
@@ -1289,7 +1293,8 @@ async function boot(){
 $('btnRefresh').onclick=async()=>{ $('btnRefresh').textContent='…'; await refreshQuotes(); buildRows(); renderAll(); $('btnRefresh').textContent='↻ Refresh'; };
 $('btnPrivate').onclick=()=>{ document.body.classList.toggle('private');
   localStorage.setItem('pf_private', document.body.classList.contains('private')?'1':'0');
-  $('btnPrivate').classList.toggle('on', document.body.classList.contains('private')); };
+  $('btnPrivate').classList.toggle('on', document.body.classList.contains('private'));
+  if(DOC) renderAll(); };   // redraw: SVG chart text is redacted at render time, not by CSS
 $('btnTheme').onclick=()=>{ const cur=document.documentElement.getAttribute('data-theme');
   const next=cur==='dark'?'light':cur==='light'?'':'dark';
   if(next) document.documentElement.setAttribute('data-theme',next); else document.documentElement.removeAttribute('data-theme');
