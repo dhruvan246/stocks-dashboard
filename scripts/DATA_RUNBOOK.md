@@ -11234,3 +11234,27 @@ GATI+ACLGATI / AMTEKINDIA+CASTEXTECH held twice, and the young-listing conventio
   was built against the MERGED bin, so until that publish CASTROLIND reads as a 2009 member with a
   2014 tape (invisible — exactly as before, no regression) and the era-keyed companies (HEXAWARE …)
   improve immediately. Snapshots keyed on data `end` stay cached until the next trading day's end.
+
+### 106e. ★★★ THE REGISTER MAPPER WAS INJECTING EVENTS ONTO THE WRONG COMPANY — collision guard + 22 manual names  (2026-08-23, same evening)
+Adjudicating the 35 months still differing from quantmac after 106b against NSE's raw IndexInclExcl.xls
+flipped four of "their" membership disputes onto US: UTV Software (member 2009-03-27..2012-03-09, we
+lacked it Jul-2011), L&T Finance Holdings (included 2012-03-09, we lacked it Dec-2012), Welspun India
+(EXCLUDED 2009-06-19, we held it Oct-2009), 8K Miles (included 2016-04-01, we held it Oct+Dec 2015).
+Cause, in `scripts/_staleness_fix/gen_inclexcl_events.py`: (1) 361 register names unmapped because our
+old-era bin keys carry name == symbol (UTVSOF, HIMACHLFUT …) so no name list can match them; (2) worse,
+`norm()` strips india/indian/corporation/of/co, so **"Bank of India", "Corporation Bank" and "Indian
+Bank" all became "bank" and first-feed-wins mapped every one of them onto INDIANB; "Indian Oil" and
+"Oil India" onto IOC; "Welspun India" onto WELCORP** — Corporation Bank's 2018-2019 exclusion/
+inclusion were sitting on Indian Bank's roster, Welspun India's 2009 exclusion on Welspun Corp's.
+Fix: a COLLISION GUARD — a normalised name two DIFFERENT companies share maps nobody — where
+"different" is decided by the tapes: two keys whose tapes never overlap are one company under two names
+(NESTLE 1996-2003 → NESTLEIND; CEAT → CEATLTD; NIIT → NIITLTD; WOCKHARDT → WOCKPHARMA …) and map to the
+LATEST key; overlapping tapes are two companies (SKFINDIA vs SKFINDUS, TMPV vs TMCV, ordinary vs DVR,
+Asian Hotels North/West/East) and are refused unless MANUAL. 22 MANUAL entries added, each target
+verified in the live bin with a tape covering its events. Result: 1,762 → 1,776 mapped events, 1 name
+still refused (IDBI Bank Ltd.: the 1999-2005 subsidiary IDBIBANK overlaps today's IDBI — genuinely two),
+355 unmapped (old-era names with no tape in our universe). Roster validation stays 100% on all 39
+archived lists; the ret6m 2009→2026 comparison moves 175 → **179/210** identical, 0 regressions.
+★ The rule this re-proves: **a first-match-wins join over a lossy key is a silent mis-attribution
+machine; count the keys with more than one candidate before trusting a single mapping** (§95a's
+"measure the screen's recall first", from the precision side).
