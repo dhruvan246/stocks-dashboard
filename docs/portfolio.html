@@ -267,7 +267,9 @@ select,input[type=text],input[type=number],input[type=date]{
         <div class="sub">Concentration — largest positions first.</div>
         <div class="body"><div id="chWeight"></div></div></div>
 
-      <div class="card c12"><h2>Holdings</h2>
+      <div class="card c12"><div style="display:flex; align-items:baseline; justify-content:space-between; gap:10px">
+          <h2>Holdings</h2>
+          <button class="btn" id="btnCsv" style="margin:11px 16px 0" title="Download the rows shown (respects the account/portfolio filter) as a spreadsheet">⭳ CSV</button></div>
         <div class="sub" id="holdSub"></div>
         <div class="body"><div class="twrap"><table id="tblHold"></table></div></div></div>
 
@@ -1344,6 +1346,26 @@ async function boot(){
     if(!document.hidden && marketOpen()){ await refreshQuotes(); buildRows(); renderAll(); }
   });
 }
+function csvCell(v){ v=(v==null||!isFinite(v)&&typeof v==='number')?'':String(v); return /[",\n\r]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }
+function exportCSV(){
+  const rows=visibleRows(); if(!rows.length) return;
+  const rnd=v=>v==null||!isFinite(v)?'':Math.round(v);           // whole rupees for money columns
+  const two=v=>v==null||!isFinite(v)?'':(+v).toFixed(2);
+  const cols=[['Stock',r=>r.cname],['Symbol',r=>r.sym],['Portfolio',r=>r.pfName],
+    ['Account',r=>r.account?acctName(r.account):''],['Sector',r=>r.sector],
+    ['Qty',r=>r.qty],['Avg',r=>two(r.avg)],['Price',r=>two(r.px)],['Value',r=>rnd(r.value)],
+    ['Cost',r=>rnd(r.cost)],['P&L',r=>rnd(r.pnl)],['P&L %',r=>two(r.pnlPct)],
+    ['Day',r=>rnd(r.day)],['Day %',r=>two(r.dayPct)],['% from 52w high',r=>r.d52h==null?'':(+r.d52h).toFixed(1)],
+    ['Days held',r=>r.days],['Buy date',r=>r.date],['Price source',r=>r.psrc]];
+  const lines=[cols.map(c=>c[0]).join(',')];
+  rows.forEach(r=>lines.push(cols.map(c=>csvCell(c[1](r))).join(',')));
+  const csv='\ufeff'+lines.join('\r\n');                       // BOM + CRLF so Excel opens it cleanly
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob), a=document.createElement('a');
+  a.href=url; a.download='portfolio-'+istTodayISO()+'.csv';
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+$('btnCsv').onclick=()=>{ const b=$('btnCsv'); exportCSV(); const t=b.textContent; b.textContent='✓ saved'; setTimeout(()=>b.textContent=t,1400); };
 $('btnRefresh').onclick=async()=>{ $('btnRefresh').textContent='…'; await refreshQuotes(); buildRows(); renderAll(); $('btnRefresh').textContent='↻ Refresh'; };
 $('btnPrivate').onclick=()=>{ document.body.classList.toggle('private');
   localStorage.setItem('pf_private', document.body.classList.contains('private')?'1':'0');
