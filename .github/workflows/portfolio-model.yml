@@ -1,0 +1,45 @@
+# Nightly rebuild of the private portfolio's strategy model (model.json).
+#
+# The "You vs the strategy" and "Rebalance calendar" cards on portfolio.html read a
+# model row from supabase. Its rebalance history + "today's picks" only change when a
+# new trading day's data lands, and the picks drift with every close until a rebalance
+# day — so the phone shows stale picks unless someone re-runs the model. This job does
+# that in the cloud: no need to touch the Mac between rebalances.
+#
+# It runs AFTER refresh-backtest-data.yml (15:15 UTC on weekdays) has rebuilt the
+# survivorship-free dataset this script prices against — this fires at 17:00 UTC, well
+# clear of that ~30-minute build.
+#
+# Reads holdings from the token-addressed supabase row (last published by the Mac's
+# Publish.command) and writes the model back to <token>.model. Percentages/prices of the
+# STRATEGY's own basket only — never the user's quantities or amounts. Tokens come from
+# repo secrets; nothing sensitive is printed (this repo, and its Actions logs, are public).
+name: Portfolio strategy model
+
+on:
+  schedule:
+    - cron: '0 17 * * 1-5'          # 17:00 UTC = 22:30 IST, after the weekday sf-data rebuild
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: portfolio-model
+  cancel-in-progress: false
+
+jobs:
+  model:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Rebuild and publish the strategy model
+        env:
+          PF_HOLDINGS_TOKEN: ${{ secrets.PF_HOLDINGS_TOKEN }}
+        run: |
+          if [ -z "$PF_HOLDINGS_TOKEN" ]; then echo "PF_HOLDINGS_TOKEN secret is not set"; exit 1; fi
+          node --max-old-space-size=8192 scripts/portfolio_model.js
