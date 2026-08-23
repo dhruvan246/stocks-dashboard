@@ -21,6 +21,31 @@ Rules that keep them from fighting (violated → the 2026-07-22 tangle, see DATA
 
 **Enforcement:** rules 1–2 are enforced by hooks (`.claude/settings.json` → `scripts/_concurrency_guard.py`). Editing a file that another session has dirty, or running a tree-wide git mutation in this checkout, pops a confirmation prompt; session start injects a list of files currently dirty. If the guard prompts you, it is almost always right — resolve the conflict (coordinate or use a worktree), don't route around it.
 
+## ONE source of truth: origin/main — the checkout syncs itself (2026-08-24, runbook §107)
+
+The shared checkout used to sit 900+ commits behind origin with a banner of "dirty" files and
+"unpushed" commits that were ALL stale copies of things already upstream — so one model read
+the checkout, another read a worktree, a third read the live site, and each reported a
+different coverage count or backtest result for the same question. Fixed structurally:
+
+- **`scripts/sync_checkout.py`** brings a tree to origin/main without losing anyone's work. It
+  MEASURES before it moves: a local commit counts as upstream only if its content is byte-
+  identical on origin or has a subject+author-time twin there; a dirty file counts as stale
+  only if its exact bytes are a version origin committed. Everything else is real WIP — kept,
+  and if it collides with origin the sync REFUSES (it uses `git reset --keep`, never `--hard`).
+  Refreshed copies go to `~/stocks-backups/sync-<stamp>/` first.
+- **It runs automatically at every session start** (via `_concurrency_guard.py`, once the hook
+  timeout in `.claude/settings.json` is ≥300 s), and `gc` removes worktrees idle ≥48 h that hold
+  nothing unique. By hand: `python3 scripts/sync_checkout.py status|sync|gc --dry-run`.
+- **Therefore: every number you report — coverage, backtest, cell count — is measured from the
+  synced checkout (state its HEAD sha) or from the LIVE site, and you say which.** Never from a
+  worktree copy, never from a checkout whose `status` shows it behind origin. If the sync is
+  blocked, fix the blocker it names before analysing anything.
+- This repo is a **partial clone (`blob:none`)**: old file contents are fetched from GitHub on
+  demand. Anything that reads blob CONTENT for many old commits (`cat-file`, `patch-id`,
+  `git cherry`, `diff` across hundreds of commits) silently goes to the network and can stall —
+  use tree-level commands (`log --raw`, `rev-parse sha:path`, `ls-tree`) for history questions.
+
 ## Every change must go LIVE on the site — standing rule (2026-08-23)
 
 Standing rule from the user: when they ask for a change or addition (UI, code, data, fix), **"done" means it is LIVE on the GitHub Pages site** — not merely committed, and NOT left sitting on a `claude/*` feature branch. The site publishes **only from `main`** (`.github/workflows/pages.yml`, on push to `main` touching `docs/**`).

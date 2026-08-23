@@ -7,8 +7,13 @@ Wired as Claude Code hooks in .claude/settings.json. Modes (argv[1]):
   post-edit      PostToolUse Edit|Write - record the file as touched by this session.
   pre-bash       PreToolUse Bash        - tree-wide git mutations in the shared checkout
                  (reset --hard, stash, add -A, commit -a, autostash rebase, ...) -> "ask".
-  session-start  SessionStart           - inject a heads-up listing files other sessions
-                 have dirty right now, plus stash pile-up / local-vs-origin divergence.
+  session-start  SessionStart           - FIRST bring the shared checkout to origin/main
+                 via scripts/sync_checkout.py (refreshes stale copies, keeps real WIP, never
+                 overwrites; runbook #107) and gc worktrees holding nothing unique; THEN
+                 inject a heads-up listing files still dirty, stash pile-up, divergence.
+                 Auto-sync only runs when this hook's timeout in .claude/settings.json is
+                 >= SYNC_MIN_TIMEOUT (a day of CI commits needs blob fetches; a hook killed
+                 mid-reset would leave a half-moved index).  Below that it only reports.
 
 Scope: only files/commands touching /Users/dhruvan/stocks-dashboard proper. Anything in
 a worktree (/Users/dhruvan/stocks-wt/* or .claude/worktrees/*) is exempt by design -
@@ -106,8 +111,56 @@ def pre_bash(h):
             return
 
 
-def session_start(h):
+SYNC_MIN_TIMEOUT = 300   # seconds; the SessionStart hook entry must allow at least this
+
+
+def hook_timeout():
+    """The SessionStart timeout configured for this guard in .claude/settings.json, or 0."""
+    try:
+        with open(os.path.join(MAIN, ".claude", "settings.json"), encoding="utf-8") as f:
+            cfg = json.load(f)
+        for entry in cfg.get("hooks", {}).get("SessionStart", []):
+            for hk in entry.get("hooks", []):
+                if "_concurrency_guard.py" in hk.get("command", ""):
+                    return int(hk.get("timeout", 60))
+    except Exception:
+        pass
+    return 0
+
+
+def sync_and_gc(h):
+    """Runbook #107. The checkout used to drift 900+ commits behind origin because nobody
+    could pull past other sessions' 'dirty' files - which were all stale copies. The sync
+    tool measures every file/commit against origin and only refreshes proven-stale copies."""
+    tool = os.path.join(MAIN, "scripts", "sync_checkout.py")
+    if not os.path.exists(tool):
+        return []
+    budget = hook_timeout()
+    if budget < SYNC_MIN_TIMEOUT:
+        jobs = [(["status", "--tree", MAIN], 60)]
+        tail = ("[sync] auto-sync is OFF: this hook's timeout is %ds (< %ds). Run it by hand: "
+                "python3 scripts/sync_checkout.py sync   (then: gc --dry-run)" % (budget, SYNC_MIN_TIMEOUT))
+    else:
+        jobs = [(["sync", "--tree", MAIN, "--for-hook"], budget - 120),
+                (["gc", "--idle-hours", "48", "--for-hook", "--protect", h.get("cwd") or MAIN], 90)]
+        tail = ""
     notes = []
+    for args, tmo in jobs:
+        try:
+            r = subprocess.run([sys.executable, tool] + args, cwd=MAIN, capture_output=True,
+                               text=True, encoding="utf-8", errors="replace", timeout=max(tmo, 30))
+            txt = (r.stdout or "").strip()
+            if txt:
+                notes.append(txt)
+        except Exception as e:  # never block a session on the sync
+            notes.append("[%s] skipped: %s" % (args[0], str(e)[:160]))
+    if tail:
+        notes.append(tail)
+    return notes
+
+
+def session_start(h):
+    notes = sync_and_gc(h)
     dirty = [l for l in git(["status", "--porcelain"]).splitlines() if l.strip()]
     if dirty:
         notes.append("Files with uncommitted changes right now (possibly ANOTHER session's "
