@@ -622,3 +622,13 @@ logs (548 trades, 2004-2026), two nets:**
 
 **Not yet done:** the nightly-rebuild verification of both healed series, and the backtest A/B on
 these 2 trades (fold into the P2 apply's A/B run).
+
+**H.1 addendum (2026-08-23): special dividends now adjust like demergers — USER-APPROVED policy.**
+HGS healed: `["HGS", 20220117, 0.9527, 0.9343]`. Factor differs from the demerger convention on
+purpose: a cash dividend's separation is EXACTLY the cash (₹150), so factor = (prev − div)/prev =
+(3168.30−150)/3168.30 — NOT open/prev, which would have wrongly adjusted out ₹73 of genuine market
+fall that day (open gapped −223). raw close-ratio 0.9343 rides as the anchor; idempotence
+arithmetic verified (post-heal applied_f == correct_f). Same ledger, same self_heal machinery.
+PENDING: sweep BOTH trade logs for other ≥2%-of-price cash separations (dividend record dates
+inside holding windows) — queued until the v3 BSE fetch finishes, to avoid a third query stream
+tripping the rate-limit. Pre-2016 dividend amounts will need the BSE announcements themselves.
