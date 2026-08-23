@@ -193,6 +193,14 @@ let TKR=null, CHART=null, RANGE='Max';
 let SLICE=null, FIN_STATE='pending';
 
 function fail(msg){ $('ov').style.display='none'; $('sSym').textContent=SYM||'?'; $('sName').innerHTML=`<span class="neg">${esc(msg)}</span>`; const sh=$('shp'); if(sh&&/Loading/.test(sh.textContent)) sh.textContent='—'; }
+// Friendly landing when the page is opened with no ?sym= at all (fail() is for real errors).
+function noSymbol(){
+  $('ov').style.display='none';
+  $('sSym').textContent='🔍 Pick a stock';
+  $('sName').innerHTML='Every listed NSE/BSE company has a page here — price history, returns vs Nifty, quarterly financials, shareholding &amp; seasonality.<br><span class="text-xs text-slate-400">Type a symbol in the box on the right (e.g. <b>RELIANCE</b>) and hit <b>Go</b>, or use the header search.</span>';
+  const sh=$('shp'); if(sh&&/Loading/.test(sh.textContent)) sh.textContent='—';
+  const s=$('sSearch'); if(s){ s.focus(); s.classList.add('ring-2','ring-indigo-400'); }
+}
 
 /* ---------- events on the price chart ----------------------------------------------------------
  * Sources: results announce dates (fin slice), dividends & corp actions (slice.act), insider
@@ -1081,7 +1089,7 @@ async function liveQuote(){
    as soon as they land. Financials follow a beat later in their own ~2 KB file. The full-engine
    path survives underneath for any symbol the slice builder hasn't caught up with yet. */
 (async function boot(){
-  if(!SYM){ fail('No symbol given. Add ?sym=RELIANCE to the URL.'); return; }
+  if(!SYM){ noSymbol(); return; }
   // Nifty closes power the benchmark column, beta and RS — small, and shared with other pages'
   // cache. Started first so it overlaps the slice fetch instead of following it.
   const niftyP=fetch('./nifty.json').then(r=>r.json()).then(j=>{NIFTY=j.px||{};}).catch(()=>{NIFTY={};});

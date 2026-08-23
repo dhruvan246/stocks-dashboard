@@ -729,7 +729,11 @@ function runBuild(msg) {
   BUILDING = true;
   return build(msg)
     .catch(e => { $('status').classList.remove('hidden');
-      $('status').innerHTML = '<span class="neg">Couldn\'t build the picks — ' + esc(e.message || e) + '</span>'; })
+      $('status').innerHTML = '<div class="text-3xl mb-2">📡</div>'
+        + '<div class="font-bold text-slate-900 mb-1">Couldn\'t build the picks</div>'
+        + '<div class="text-xs text-slate-500 mb-4 max-w-sm mx-auto">' + esc(e.message || e) + ' — usually a network blip while fetching market data. Your strategies are safe.</div>'
+        + '<button id="retryBuild" class="bg-indigo-600 text-white text-sm font-semibold px-5 py-2 rounded-xl hover:bg-indigo-700 transition">↻ Try again</button>';
+      const b = $('retryBuild'); if (b) b.onclick = () => runBuild('Retrying…'); })
     .finally(() => { BUILDING = false; });
 }
 function applyRewind(iso) {
