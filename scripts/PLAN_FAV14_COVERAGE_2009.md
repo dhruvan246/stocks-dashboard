@@ -115,6 +115,16 @@ never commit a partial bake · push via the CLAUDE.md retry recipe · verify LIV
 
 ## 4. Progress log (append per session; counts are MEASURED post-bake, never projected)
 
+- 2026-08-24 02:20 IST — **P1 (price class) COMPLETE: 84 → 5 member-months** (bake on the healed bin +
+  corrected roster, engine-faithful). RASOYPR = 3 phantom splits (tick-floor crashes 20140926/20171003/
+  20171106) recorded in phantom_crashes.json → noadjust; 734 NSE-bhavcopy bars (row identity proven on
+  all 734: TOTTRDQTY==v, TOTTRDVAL/1e5==t) landed via dvl_dtil_surgery.json.gz, idempotent (2nd pass 0).
+  Roster: Mandhana→GBGLOBAL (fuzzy had made TANDHANIN, a Rs 7-lakh shell, a "member"); PUNJABTRAC/
+  BONGAIREFN/MICRO/VISHALEXPO exclusions mapped (dead names, register had the dates); Summit seam
+  (SEAM_TWINS + ERA_OVERRIDES). Side effect: every other fav14 param improved as phantoms left the
+  denominator (fiiPct 117→40, diiChgPp 2132→2057, YoY-con 786→699, TTMstd 7548→7482). Residual 5 =
+  suspended >14d (SPSL/HFCL/PROVOGUE) + mid-month listings (AJMERA/BBOX) — engine conventions,
+  decision items in §5, not fills.
 - 2026-08-24 01:30 IST — P0 complete. Queue: price_norow 14 · shp_level 4 · shp_prior_quarter 614 ·
   pat_con 586 · pat_std 2,623. All `open`.
 

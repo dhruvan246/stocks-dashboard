@@ -342,7 +342,12 @@ def main():
                      # "Pantaloon/Future Retail" 2010 slots: FRETAIL (the 2016 demerged listing,
                      # first bar 2016-08-29) cannot be the 2010 member; the undivided company is the
                      # PANTALOONR -> FEL lineage (FEL tape 2001-11-05..).
-                     "FRETAIL": ("PANTALOONR", "2016-08-29")}
+                     "FRETAIL": ("PANTALOONR", "2016-08-29"),
+                     # Summit Securities (2026-08-24, PLAN_FAV14 P1): SUMMITSEC is a 2011-01-28 relisting
+                     # across an unjoined ISIN seam (SUMMIT closed 2010-02-02 at Rs 16.6, SUMMITSEC opened
+                     # at Rs 192). The register's one arc is mirrored onto both keys (gen_inclexcl_events
+                     # SEAM_TWINS); before SUMMITSEC's own first bar the member is the SUMMIT tape.
+                     "SUMMITSEC": ("SUMMIT", "2011-01-28")}
     import gzip as _gz2
     try:
         _sfd = json.loads(_gz2.decompress(open(os.path.join(ROOT, "docs", "sf_stock_data.bin"), "rb").read()))["data"]

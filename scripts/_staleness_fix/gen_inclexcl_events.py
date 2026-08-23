@@ -113,6 +113,19 @@ MANUAL = {
     'Fresenius Kabi Oncology Ltd.': 'FKONCO',           # symchg DABURPHARM->FKONCO 2009-02-19; INE575G01010; tape 2004-2013
     'Carol Info Services Ltd.': 'CAROLINFO',            # symchg WOCKLIFE->CAROLINFO 2004-09-27; INE198A01014; tape 2000-2012
     'Zuari Global Ltd.': 'ZUARIGLOB',                   # symchg ZUARIAGRO->ZUARIGLOB 2012-09-25, ->ZUARIIND 2022-07-04; INE217A01012 (chain -> ZUARIIND)
+    'Mandhana Industries Ltd.': 'GBGLOBAL',            # 2026-08-24 (PLAN_FAV14 P1): textiles, N500 2012-09-28..2015-12-14; symchg MIL->GBGLOBAL 2019-09-09, _rename_map MANDHANA->GBGLOBAL; tape GBGLOBAL 2010-05-19..2021-05-31 INE087J01028. The 0.90 fuzzy pass had sent it to TANDHANIN (Tandhan Industries, Rs 7 lakh mcap, never an N500 member) = 25 phantom member-months with no price row. MANUAL is checked before fuzzy, so this overrides it.
+    # 2026-08-24 (PLAN_FAV14 P1) — four DEAD companies whose EXCLUSION the register records but the
+    # current-name tables cannot map, so the roster carried them for months after NSE dropped them
+    # (PUNJABTRAC 7 / BONGAIREFN 5 / MICRO 3 / VISHALEXPO 1 member-months with no price row). Each
+    # tape ends within a day of NSE's exclusion date — the exclusion IS the delisting/merger.
+    'Punjab Tractors Ltd.': 'PUNJABTRAC',               # exc 2009-02-25; tape 1996..2009-02-24 (merged into Mahindra)
+    'Bongaigaon Refinery & Petrochemicals Ltd.': 'BONGAIREFN',  # exc 2009-04-21; tape 1996..2009-04-20 (merged into IOC)
+    'Micro Inks Ltd.': 'MICRO',                         # exc 2010-04-06; tape 1996..2010-04-05 (symchg HINDINKS->MICRO 2004-03-26; delisted)
+    'Vishal Exports Overseas Ltd.': 'VISHALEXPO',       # exc 2009-03-27; tape 2004-05..2009-11-13
+    # Summit Securities: the register row is the "- Old" entity, i.e. the 2008-era SUMMIT listing
+    # (symchg KECINFRA->SUMMIT 2008-04-21, tape 1996..2010-02-02), NOT SUMMITSEC (a 2011-01-28 relisting,
+    # INE519C01017). The automatic pass mapped it to SUMMITSEC, which has no bars in 2009.
+    'Summit Securities Ltd.- Old': 'SUMMIT',
     # NOT mapped, on purpose: 'Innoventive Industries Ltd.' (inc 2012-09-28 / exc 2013-09-27) — no tape under any key
     # in our universe, so there is nothing to screen; recorded in `unmapped` as before.
 }
@@ -227,6 +240,17 @@ def main():
           f'(of which ambiguous-key, refused: {len(ambiguous)}: {ambiguous[:12]})')
 
     events = sorted([d, name_map[n], k] for d, n, k in raw if n in name_map)
+    # SEAM TWINS (2026-08-24, PLAN_FAV14 P1): two bin keys that are ONE company across an ISIN seam the
+    # price build deliberately does not join (SUMMIT 1996..2010-02-02 closed at Rs 16.6; SUMMITSEC relisted
+    # 2011-01-28 at Rs 192 — an 11-month gap and a ~12x step, runbook §106). The register's single row
+    # names the company once; the Moneycontrol checkpoints carry the CURRENT key for every era. With the
+    # events on SUMMIT alone, nothing scrubbed SUMMITSEC from the 2008-2011 MC pins and the walk kept
+    # a phantom SUMMITSEC (no bars until 2011) on 30 snapshots. Mirroring the events onto the twin
+    # makes both keys follow the one arc; era emission then picks whichever tape was alive.
+    SEAM_TWINS = {'SUMMIT': 'SUMMITSEC'}
+    for a, b in SEAM_TWINS.items():
+        events += [[d, b, k] for d, sym, k in list(events) if sym == a]
+    events.sort()
     # sanity: no symbol may have two OPPOSITE events on the same date
     bad = [g for g, c in collections.Counter((d, s) for d, s, _ in events).items() if c > 1]
     for d, s in bad:
