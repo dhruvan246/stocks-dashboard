@@ -632,3 +632,39 @@ arithmetic verified (post-heal applied_f == correct_f). Same ledger, same self_h
 PENDING: sweep BOTH trade logs for other ≥2%-of-price cash separations (dividend record dates
 inside holding windows) — queued until the v3 BSE fetch finishes, to avoid a third query stream
 tripping the rate-limit. Pre-2016 dividend amounts will need the BSE announcements themselves.
+
+---
+
+## I. FINDING 1 (membership) — FIXED, VERIFIED, SHIPPED (2026-08-23)
+
+Root cause measured, two legs: (1) `_changelog.json` = 74 events from 2015-03-23 only, with holes
+even in-window (PCBL 2018-09-28 re-inclusion absent) → the backward walk never rolls pre-2015
+joiners out of the past; (2) the Moneycontrol soft checkpoints pin STALE rosters — 59 slots
+measured naming NSE-excluded stocks years later (wb official checkpoints: 0 conflicts, measured).
+
+Fix in build_membership_v2.py behind the existing wb≥99% gate, all three parts required:
+1. **Register merge** — `_n500_inclexcl_events.json` from NSE's IndexInclExcl.xls (generator:
+   `_staleness_fix/gen_inclexcl_events.py`; 2,495 events 1998-2020, 919/1,280 names mapped;
+   fuzzy blacklist for provably-wrong pairs (IPCL≠IGPL, BPL-Eng≠HBLENGINE, BIL≠ITL); manual
+   entries PCBL/CRESTANI/STYRENIX/SMLMAH; 361 unmapped RECORDED never guessed; NATIONALUM
+   1999-04-29 same-day inc+exc dropped as ambiguous). 187 pre-changelog event-days + 28
+   in-window HOLE event-days (logged each: PCBL, SBI-merger trio, FRETAIL/MAXIND…).
+2. **MC reconcile vs register** — register outranks the scraped MC page: −352 stale slots,
+   +776 joiners MC never showed. wb untouched (official, 0 conflicts).
+3. **`reanchor_segments()`** — between-pin snapshots re-derived from the LATER pin. The single
+   global walk COMPOUNDS one-legged-event drift with depth: first pass measured +60 members at
+   2006-06-30 (560), −28 at 2010; scrub-only then measured 434 at mid-2011. Segment anchoring +
+   the MC add-leg brought every month-end 2003-2026 into [481, 520], median 499.
+
+**Verification (all measured, before vs after):** 24/24 quantmac (sym, month) pairs member→
+NON-member; 11 positive controls intact incl. every re-inclusion era (AJANTPHARM-2015,
+INOXLEISUR-2015, PCBL-2019, GAEL-2021, DYNAMATECH-2016); SCI-2023 spot check unchanged
+(pre-existing quirk, verified not a regression); wb validation 100% at every checkpoint.
+
+**Ship state:** pushed (verified by content on origin: PCBL/SANDESH non-member, RELIANCE member,
+319 snapshots). `docs/stock_data.bin` deliberately NOT committed from this checkout (stale staged
+prices) — refresh.yml dispatched (run 32629715534) to bake indices_history.json with fresh prices;
+pages.yml dispatch + live `?cb=` verify PENDING after it lands. Known residue, recorded: 361
+unmapped register names (mostly dead, outside tracked universe); alias-space mismatches on a few
+in-window legs (CEATLTD-vs-CEAT class) — window-local, bounded by pins, strictly no worse than the
+missing-event status quo; 2008 MC-era months read up to 520 (+20 scraped-era slop).
