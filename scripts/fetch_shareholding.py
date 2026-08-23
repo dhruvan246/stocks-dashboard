@@ -224,7 +224,11 @@ BSE_HIST_LEDGERS = [os.path.join(HERE, "shp_fill_thirdparty.json.gz"),
                     os.path.join(HERE, "shp_fill_hist_2016_2019.json.gz"),
                     os.path.join(HERE, "shp_fill_hist_2010_2016.json.gz"),
                     os.path.join(HERE, "shp_fill_bse_aspx.json.gz"),
-                    os.path.join(HERE, "shp_fill_seam_aspx.json.gz")]
+                    os.path.join(HERE, "shp_fill_seam_aspx.json.gz"),
+                    # PLAN_FAV14 P2 (2026-08-24): SHP-level fill for 3 delisted N500 members
+                    # (MVL/SHLAKSHMI/INNOIND) — BSE ShareholdingPattern.aspx, reconciled <0.15pp.
+                    # Fill-only like the rest; these symbols had NO prior SHP cell.
+                    os.path.join(HERE, "shp_fill_fav14.json.gz")]
 def apply_bse_hist_ledger(h):
     n_total = 0
     for path in BSE_HIST_LEDGERS:

@@ -115,6 +115,15 @@ never commit a partial bake · push via the CLAUDE.md retry recipe · verify LIV
 
 ## 4. Progress log (append per session; counts are MEASURED post-bake, never projected)
 
+- 2026-08-24 03:40 IST — **P2 (SHP-level) DONE for 4 of 5 symbols** via BSE ShareholdingPattern.aspx
+  (isolated ledger scripts/shp_fill_fav14.json.gz, fill-only, wired into fetch_shareholding BSE_HIST_LEDGERS;
+  idempotent 2nd pass 0 cells). fiiPct/diiPct 40→9 (MVL 8q, SHLAKSHMI 5q, INNOIND 4q, SUMMIT 3q = 20 cells,
+  all reconciled <0.15pp). diiChgPp 2057→2026. Codes ISIN-verified in _shp_scripcode_override.json.
+  ★ FINDING for the SHP campaign: fetch_shp_bse_aspx.py parse_new MISSES the "Foreign Venture Capital
+  Investors" row (foreign→fii) — INNOIND failed recon by exactly the FVCI 4.36%; hand-derived here.
+  This causes MISSES (rejected cells), never wrong values, so it is safe to fix systemically later.
+  RESIDUAL: SPSL 4-5 months (2009-Q1 SHP — aspx empty pre-Sep-2009, MC Wayback from 2010; 2009 source-limit)
+  + the 4 P1 price-convention symbols (AJMERA/BBOX/HFCL/PROVOGUE, __norow, not SHP-fillable).
 - 2026-08-24 03:05 IST — **P1 LIVE-VERIFIED on the page** (bake 02:25 IST): six technical params
   84→5, all others improved (see §4b). Propagation needed refresh.yml (dash_slim rebuild) — recorded
   as a lesson in §4b. RASOYPR heal live in the release asset (close 14.85).
