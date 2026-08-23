@@ -18,7 +18,7 @@ survivorship-free bhavcopy price series keys of that period.
 Writes: scripts/indices_history.json  +  docs/stock_data.bin (indicesHistory).
 Run: python -X utf8 build_membership_v2.py
 """
-import os, re, csv, json, gzip, time, urllib.request
+import os, re, csv, json, gzip, time, datetime, urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE)
 UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
@@ -130,6 +130,39 @@ def reconstruct(anchor_today, events, checkpoints=None):
         for d, S in checkpoints.items(): snaps[d] = {canon(x) for x in S}
     return snaps
 
+def reanchor_segments(snaps, checkpoints, events):
+    """Re-derive every between-pin event-date snapshot from the LATER pin, walking only that
+    window's events (2026-08-23, finding-1 fix, second pass).
+
+    WHY: reconstruct()'s single global walk runs today -> 1998 through every event without ever
+    resetting at a checkpoint, so any event whose counterpart leg is missing (the IndexInclExcl
+    register maps 919 of 1,280 names — the rest are dead companies outside our universe, so
+    ~30%% of old reconstitutions are one-legged here) leaves a permanent residue that COMPOUNDS
+    with depth: measured +60 members at 2006-06-30 (560 vs NSE's 500), +48 at 2009, −28 at 2010.
+    Checkpoints pin their own dates exact but nothing in between. Walking each window from its
+    later pin bounds the error to that window's own unmapped legs (±ones, not ±tens).
+    Runs BEFORE checkpoint_continuity (which only ADDs and remains the changelog-hole healer).
+    Returns the count of event-date snapshots rewritten."""
+    if not checkpoints:
+        return 0
+    cps = sorted(d for d in checkpoints if d in snaps)
+    ev = merge_same_eff(events)
+    rewritten = 0
+    for a, b in zip(cps, cps[1:]):
+        window = [c for c in ev if a < c["eff"] <= b]
+        if not window:
+            continue
+        m = set(snaps[b])
+        for c in reversed(window):
+            inc = {canon(x) for x in c["included"]}
+            exc = {canon(x) for x in c["excluded"]}
+            if c["eff"] != b:            # b's own value is the pin — never overwrite it
+                snaps[c["eff"]] = set(m)
+                rewritten += 1
+            m = (m - inc) | exc
+    return rewritten
+
+
 def checkpoint_continuity(snaps, checkpoints, events):
     """Close the holes the BACKWARD walk cannot.
 
@@ -183,9 +216,44 @@ def validate_n500(snaps, wb):
         worst = min(worst, pct)
     return worst
 
+def load_inclexcl_register():
+    """NSE's own dated inclusion/exclusion register (IndexInclExcl.xls -> Nifty 500 sheet,
+    parsed by scripts/_staleness_fix/gen_inclexcl_events.py). 1,765 mapped events, 1998-2020.
+    Added 2026-08-23 (DATA_RUNBOOK §102 finding 1): _changelog.json starts 2015-03-23, so the
+    backward walk never rolled pre-2015 joiners out of the past — 24 externally-flagged trades
+    entered stocks NSE had excluded years earlier (PCBL excluded 2002-01-17 was screenable in
+    2017). Returns ({sym: [(iso_date, 'inc'|'exc'), ...] sorted}, [event dicts]) or ({}, [])."""
+    try:
+        reg = json.load(open(os.path.join(HERE, "_n500_inclexcl_events.json")))
+    except Exception as e:
+        print(f"(_n500_inclexcl_events.json not loaded: {e} — membership keeps changelog-only events)")
+        return {}, []
+    by_sym = {}
+    by_date = {}
+    for d, s, k in reg["events"]:
+        by_sym.setdefault(s, []).append((d, k))
+        e = by_date.setdefault(d, {"eff": d, "included": [], "excluded": [], "src": "IndexInclExcl"})
+        e["included" if k == "inc" else "excluded"].append(s)
+    for s in by_sym:
+        by_sym[s].sort()
+    return by_sym, [by_date[d] for d in sorted(by_date)]
+
+
+def register_state(reg_by_sym, sym, iso_date):
+    """'inc' | 'exc' | None — the register's view of sym's membership as of iso_date."""
+    st = None
+    for d, k in reg_by_sym.get(sym, []):
+        if d <= iso_date:
+            st = k
+        else:
+            break
+    return st
+
+
 def main():
     changelog = json.load(open(os.path.join(HERE, "_changelog.json")))
     wb = json.load(open(os.path.join(HERE, "_wb_n500_snaps.json")))
+    REG_BY_SYM, REG_EVENTS = load_inclexcl_register()
     # Official archived sub-index constituent CSVs (ground truth) pinned as hard
     # checkpoints for the 8 broad tiers, exactly like wb does for Nifty 500. Keys
     # are Wayback YYYYMMDD (or "LIVE") -> convert to ISO; LIVE == today's anchor, skip.
@@ -218,13 +286,76 @@ def main():
             print(f"{idx}: no change events — left as-is"); continue
         anchor = today_list(slug)
         if idx == "Nifty 500":
+            # Merge the IndexInclExcl register (2026-08-23, finding-1 fix). Pre-changelog events
+            # (< first changelog eff) go in wholesale — the changelog simply has nothing there.
+            # In-window register events are added ONLY when the changelog has no same-symbol
+            # same-direction event within ±10 days (its eff conventions differ by a day or two);
+            # each such addition is a hole in the changelog and is printed (PCBL's 2018-09-28
+            # re-inclusion is the proven case — present in NSE's register, absent from the
+            # changelog, and the reason PCBL read as a member back to 2002).
+            if REG_EVENTS:
+                first_cl = min(c["eff"] for c in events)
+                cl_keys = set()
+                for c in events:
+                    for s in c["included"]:
+                        cl_keys.add((canon(s), "inc", c["eff"]))
+                    for s in c["excluded"]:
+                        cl_keys.add((canon(s), "exc", c["eff"]))
+                def _cl_has(sym, kind, eff):
+                    lo = (datetime.date.fromisoformat(eff) - datetime.timedelta(days=10)).isoformat()
+                    hi = (datetime.date.fromisoformat(eff) + datetime.timedelta(days=10)).isoformat()
+                    return any(k[0] == canon(sym) and k[1] == kind and lo <= k[2] <= hi for k in cl_keys)
+                added_pre = added_gap = 0
+                for ev in REG_EVENTS:
+                    if ev["eff"] < first_cl:
+                        events = events + [ev]; added_pre += 1
+                    else:
+                        inc = [s for s in ev["included"] if not _cl_has(s, "inc", ev["eff"])]
+                        exc = [s for s in ev["excluded"] if not _cl_has(s, "exc", ev["eff"])]
+                        if inc or exc:
+                            events = events + [{"eff": ev["eff"], "included": inc, "excluded": exc,
+                                                "src": "IndexInclExcl-gap"}]
+                            added_gap += 1
+                            for s in inc:
+                                print(f"  register fills changelog HOLE: +{s} eff {ev['eff']}")
+                            for s in exc:
+                                print(f"  register fills changelog HOLE: -{s} eff {ev['eff']}")
+                print(f"  IndexInclExcl register merged: {added_pre} pre-changelog event-days, "
+                      f"{added_gap} in-window gap event-days")
             cps = {d: set(v) for d, v in wb.items()}
             # Moneycontrol-derived soft checkpoints for the 2007-13 dark windows (15 dates;
             # code-resolved + evidence-adjudicated, see PRE2015_CAMPAIGN.md STEP M2 and
             # _mc_code_supplement.json). Official wb lists win on any same-date collision.
+            # ⚠️ Register outranks MC (2026-08-23): MC's page served STALE rosters for years —
+            # measured 59 member-slots across its 18 checkpoints naming stocks NSE had already
+            # excluded (SANDESH, excluded 2009-03-27, still listed mid-2011). A checkpoint pins
+            # EXACT, so a stale member would survive the event merge above; scrub each MC set
+            # against the register's state on that date. wb needed no scrub (0 conflicts).
             try:
+                _scrubbed = _added = 0
                 for _d, _v in json.load(open(os.path.join(HERE, "_mc_n500_snaps.json"))).items():
-                    cps.setdefault(_d, set(_v))
+                    _keep, _drop = set(), []
+                    for _s in _v:
+                        if register_state(REG_BY_SYM, canon(_s), _d) == "exc":
+                            _drop.append(_s)
+                        else:
+                            _keep.add(_s)
+                    # symmetric leg: MC's staleness cuts BOTH ways — it kept showing leavers AND
+                    # kept not-showing joiners. Add every register-member the MC page missed
+                    # (measured cost of scrub-only: mid-2011 rosters fell to 434 vs NSE's 500).
+                    _joins = {s for s in REG_BY_SYM
+                              if register_state(REG_BY_SYM, s, _d) == "inc" and s not in
+                              {canon(x) for x in _keep}}
+                    if _joins:
+                        _added += len(_joins)
+                        _keep |= _joins
+                    if _drop:
+                        _scrubbed += len(_drop)
+                        print(f"  MC checkpoint {_d}: scrubbed {len(_drop)} register-excluded, "
+                              f"added {len(_joins)} register-members MC missed")
+                    cps.setdefault(_d, _keep)
+                if _scrubbed or _added:
+                    print(f"  MC reconcile total: -{_scrubbed} stale, +{_added} missed member-slots")
             except FileNotFoundError:
                 pass
         else:
@@ -235,6 +366,8 @@ def main():
         # fixed-size sub-indexes are already pinned to official CSVs at J=0.997 and adding to
         # them risks pushing a 50-name tier over its size check.
         if idx == "Nifty 500":
+            nr = reanchor_segments(snaps, cps, events)
+            print(f"  segment re-anchor: {nr} between-pin snapshots re-derived from their later pin")
             n = checkpoint_continuity(snaps, cps, events)
             print(f"  continuity repair: restored {n} member-slots between pinned checkpoints")
         if idx == "Nifty 500":
