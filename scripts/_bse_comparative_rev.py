@@ -151,6 +151,15 @@ def main():
     fund = json.load(open(os.path.join(ROOT, "docs", "sf_fundamentals.json")))
     fmap = {s: {r[0]: r for r in rows} for s, rows in fund.items()}
     scrips = json.load(open(os.path.join(HERE, "bse_scrips.json")))["by_id"]
+    # Codes bse_scrips.json lacks, resolved from BSE's own ListofScripData (all statuses) and
+    # accepted only when the ISIN ISSUER PREFIX matches NSE's for the same ticker (runbook 95).
+    # Full-ISIN equality is too strict — a face-value/series re-issue changes the last digits for
+    # the SAME company (ADVANTA INE517H01028 vs INE517H01010) — while the issuer prefix still
+    # rejects a recycled ticker (SPSL: BSE INE318K vs the NSE filer's INE298G, a different company).
+    _extra = os.path.join(HERE, "_bse_scrips_extra.json")
+    if os.path.exists(_extra):
+        for k, v in json.load(open(_extra)).items():
+            scrips.setdefault(k, v)
     out = json.load(open(OUT)) if os.path.exists(OUT) else {}
     vq = json.load(open(VQ)) if os.path.exists(VQ) else {}
     skips = {}
@@ -182,9 +191,13 @@ def main():
         # store, the original's revenue is the wrong vintage too, and only the comparative
         # column is anchored by our stored PAT (TORNTPOWER Jun/Sep-2016, measured).
         yl = fmap.get(sym, {}).get(int(qe) + 10000)          # same quarter, next year
-        windows = [(str(int(ann) - 7), str(int(ann) + 7), "own-quarter")]
+        # +-21d, not +-7: BSE's announcement stream carries the result under the board-meeting
+        # outcome whose date can sit well away from our stored announce date (which for old rows
+        # is often a qe+45d default, runbook 52). The tight window reported 39 false
+        # "no-bse-filing" refusals on the first pass.
+        windows = [(str(int(ann) - 21), str(int(ann) + 21), "own-quarter")]
         if yl and yl[2]:
-            windows.append((str(int(yl[2]) - 7), str(int(yl[2]) + 7), "year-later-comparative"))
+            windows.append((str(int(yl[2]) - 21), str(int(yl[2]) + 21), "year-later-comparative"))
         rows = []
         for lo, hi, wname in windows:
             try:
