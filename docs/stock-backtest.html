@@ -1301,7 +1301,8 @@ function render(r,cfg){
     </tbody></table></div></div>
     <div id="liveNote" class="text-[11px] text-slate-400 mt-2">Held basket as of the last rebalance (${r.rebs.length?r.rebs[r.rebs.length-1].date:cfg.end}) — click <b>⚡ Go Live</b> to re-screen on today's prices and filings.</div></div>`;
   // ----- rebalance log (expandable, with per-rebalance holdings: weight, NEW, factor) -----
-  html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2">🔄 Rebalance log <span class="text-slate-400 font-normal">(${r.rebs.length} rebalances — click any to see that period's basket, weights &amp; new entries)</span></div>
+  html+=`<div class="card p-4 mb-4"><div class="flex flex-wrap items-center justify-between gap-2 mb-2"><div class="text-sm font-semibold text-slate-700">🔄 Rebalance log <span class="text-slate-400 font-normal">(${r.rebs.length} rebalances — click any to see that period's basket, weights &amp; new entries)</span></div>
+      <button id="dlRebalCsv" class="shrink-0 inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-700">⬇️ Download CSV</button></div>
     ${r.rebs.slice().reverse().map((rb,ri)=>{const idx=r.rebs.length-ri;
       return `<details class="border border-slate-200 rounded-lg mb-2"><summary class="px-3 py-2 cursor-pointer select-none text-sm hover:bg-slate-50 rounded-lg flex flex-wrap items-center gap-x-3">
         <span class="font-semibold text-slate-700">#${idx} · ${rb.date}</span>
@@ -1329,6 +1330,8 @@ function render(r,cfg){
   TRADE_PAGE=0; renderTradePage(0);
   const dc=$('dlTradeCsv');
   if(dc) dc.onclick=()=>downloadTradeCsv(r,cfg);
+  const rbc=$('dlRebalCsv');
+  if(rbc) rbc.onclick=()=>downloadRebalCsv(r,cfg);
   const ss=$('btSaveStrat');
   if(ss) ss.onclick=saveStrategy;
   const gl=$('btGoLive'), gc=$('btLiveCfg');
@@ -1378,6 +1381,32 @@ function downloadTradeCsv(r,cfg){
   const tag=(cfg&&cfg.sortBy?cfg.sortBy:'backtest').replace(/[^a-z0-9]+/gi,'-');
   const dates=(cfg?`_${cfg.start||''}_${cfg.end||''}`:'');
   a.href=url; a.download=`trade-log_${tag}${dates}.csv`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+// ---- download the full rebalance log as CSV (one row per holding per rebalance, incl. cash) ----
+function downloadRebalCsv(r,cfg){
+  const q=v=>{ if(v==null) return ''; const s=String(v); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; };
+  const head=['Rebalance #','Date','Period Return %','Portfolio Value','Stock','Weight %','Value',
+    ...r.dispCols.map(c=>c.label),'RSI','Status'];
+  const rows=[];
+  r.rebs.forEach((rb,i)=>{
+    const meta=[i+1,rb.date,rb.ret!=null?rb.ret.toFixed(2):'',rb.val!=null?Math.round(rb.val):''];
+    rb.holds.slice().sort((a,b)=>{const x=a.factor,y=b.factor; if(x==null)return 1; if(y==null)return -1; return r.cfg.dir==='high'?y-x:x-y;}).forEach(h=>{
+      rows.push([...meta,h.sym,h.wt!=null?h.wt.toFixed(2):'',h.val!=null?Math.round(h.val):'',
+        ...r.dispCols.map(c=>{const x=h.fv?h.fv[c.field]:null; return x!=null?x:'';}),
+        h.rsi!=null?h.rsi.toFixed(2):'',h.isNew?'NEW':'held']);
+    });
+    if(rb.cash>1) rows.push([...meta,'Cash',rb.cashWt!=null?rb.cashWt.toFixed(2):'',Math.round(rb.cash),
+      ...r.dispCols.map(()=>''),'','']);
+  });
+  const csv=[head,...rows].map(row=>row.map(q).join(',')).join('\r\n');
+  const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const tag=(cfg&&cfg.sortBy?cfg.sortBy:'backtest').replace(/[^a-z0-9]+/gi,'-');
+  const dates=(cfg?`_${cfg.start||''}_${cfg.end||''}`:'');
+  a.href=url; a.download=`rebalance-log_${tag}${dates}.csv`;
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
