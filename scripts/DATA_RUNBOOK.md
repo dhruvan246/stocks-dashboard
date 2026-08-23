@@ -11336,3 +11336,52 @@ there; a different source is needed for those two windows.
 is the absence of the leg that would have said "out".** Before trusting any `state == inc`
 derived from an add/drop register, ask what an independent full snapshot says at the same date.
 Same family as [[feedback-held-cell-asserts-absence]] and §106e's first-match-wins join.
+
+### 106g. ★★ THE REGISTER PARSER ONLY KNOWS CURRENT NAMES — the 2012-09..2013-07 under-count  (2026-08-24)
+
+**Symptom** (user: "fix the 2012-2013 under-count too"): month-ends 2012-04..2013-07 at 496-499.
+The lopsided reviews said where: `2012-09-28 +11 −14`, `2013-04-01 +12 −14` — a real semi-annual
+review swaps roughly equal numbers. Cross-checking the raw `IndexInclExcl.xls` rows against the
+parser's `unmapped` list: those dates had **6 / 4 / 3 unmapped INCLUSIONS vs 3 / 3 / 1 unmapped
+exclusions**. The joiners existed in NSE's register; the parser just could not name them.
+
+**Why:** `gen_inclexcl_events.py` feeds its name→symbol candidates from `search_index.json`,
+today's `EQUITY_L` and the BSE master — all CURRENT names. A 2012 joiner that has since been
+renamed, merged or delisted has no row there: WABCO India → ZF Commercial, NIIT Technologies →
+Coforge, Bharti Infratel → Indus Towers, Gati → Allcargo Gati, Magma → Poonawalla, PVR → PVR
+INOX, Vakrangee Software, Eros, Swan Energy, Techno Electric, Alstom T&D, Ramky, Arshiya,
+Flexituff, S.E. Investments → Paisalo, Patni, Sterlite Industries, Deccan Chronicle… The
+register is complete; **the name table was survivorship-biased** ([[project-stocks-industry-survivorship-gap]]
+in a different coat).
+
+**Fix (58b15228a):** 35 `MANUAL` entries, each verified THREE ways and annotated inline: the bin
+tape covers the event date(s); the ISIN is on the bin meta; `symchg.csv` / NSE `EQUITY_L` carries
+the name→symbol row (quoted in the comment). Keys are the ERA symbol where a rename chain exists
+(`to_current`/`canon` fold them: ALSTOMT&D → GVT&D, GATI → ACLGATI, SEINV → PAISALO) and the era
+symbol ALONE where today's listing is a DIFFERENT ISIN with no chain — **TECHNO (INE286K01024,
+tape 2010-2018) is NOT TECHNOE (INE285K01026, a 2018 relisting)**; SUJANATOW is the "-old"
+listing, not SUJANATWR (INE333I01036); SONASTEER not SONACOMS; STER not Sterlite Technologies;
+INDIABULLS (Financial) ≠ IBREALEST. Innoventive Industries deliberately left unmapped: no tape
+under any key, nothing to screen. Register +89 events, 0 removed; unmapped 355 → 320.
+
+**Result:** 2012 month-ends outside 500-504 **9 → 0** (min 496 → 502); 2013 **10 → 4**. Total
+74 → 70 of 284. Side effects, all correct: newly dated events roll FROZEN states out of the past
+— JSWISPAT (exc 2005-12-08 / inc 2009-10-22) now absent 2006-2009 and present 2009-2013; Coforge/
+PVR/Gati/Paisalo/Swan no longer read as members back to 1998-08-01 when they were not yet listed
+(the backward walk, lacking their `inc`, could never remove them). 2007/2011 band counts move by
+1-2 symbols each (KEMROCK inc 2011-03-25, VARUNSHIP inc 2007-04-04, LAKSHMIEFL inc 2007-09-24,
+EMBDL/TV-18/NTL exits) — individually dated NSE events on trading tapes, i.e. fixes, in years
+whose remaining residue is the no-official-list class of §106f.
+
+**⚠️ Trap hit on the way, worth its own line:** a rerun against the COMMITTED `sf_stock_data.bin`
+(restored by `git checkout -- docs/*.bin` before the fix1 commit) produced spurious era-key drift
+on names I never touched — COLPAL→COLGATE (129 snaps), SPLPETRO→SUPPETRO (252), GUJENERGY→
+GUJGASLTD (a rename dated 2026-07-01), RBA→BURGERKING. The frozen bin still carries the
+pre-merge era tapes, so `era_key()` redirected to them. **Before ANY membership build, run
+`scripts/fetch_live_sf.py`** — this is exactly why `refresh-membership.yml` has that step. The
+tell: a diff containing symbols your change cannot explain. CI reproduced both fixes
+byte-identical once the bin was live.
+
+★ Rule: **when a name-keyed ledger refuses a name, check whether the name table itself is
+survivorship-biased before calling the row unmappable** — and resolve through ISIN + tape span
++ the exchange's own rename register, never by prefix ([[feedback-never-say-unfillable]]).
