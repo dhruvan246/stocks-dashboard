@@ -706,3 +706,30 @@ in _staleness_fix/). The 786 agg-ledger-backed cells are additionally sync-prote
 
 **Still pending:** live `?cb=` verify after pages deploy · next-day re-verify (CI race window) ·
 DII strategy A/B + full 422-trade re-reconciliation vs quantmac's log · response workbook rebuild.
+
+
+---
+
+## K. A/B BACKTEST — OLD world (pre-fix engine+data) vs NEW, DII strategy 2009-2026 (2026-08-23)
+
+Node harness (grid_search_full.js loader pattern + SHPD load replicated — without it diiPct is
+null and the screen buys nothing, which read as cagr=0 on the first run). OLD = commit c46c213fa~1
+(pre-TTM-fix engine, 121 N500 snapshots, pre-campaign fundamentals); NEW = origin/main (e7 engine,
+319 snapshots, 22,581 re-dated cells). SAME price tape both sides (committed sf bin) — the diff
+isolates the fixes. cfg: N500 · d52<=10 · NP YoY>25 · TTM>0 · sort diiPct asc · top 3 · hold
+winners · std basis · monthly, 2009-01-01..2026-08-17.
+
+**Headline: CAGR 53.65 -> 53.19 (-0.46pp), maxDD 52.69 -> 48.53 (-4.2pp better), 52 of 212
+monthly baskets changed.** Return ~unchanged while drawdown improved = the strategy's edge was
+NOT the phantom picks; the phantoms mostly added risk.
+
+**Finding-1 trades:** 15 of quantmac's 24 reproduce in the OLD harness run — ALL 15 GONE in NEW,
+0 still picked (the other 9 don't reproduce in-harness; data-layer membership verification
+already covers all 24 directly).
+**Finding-3 trades:** 4 of 8 reproduce in OLD (MARICO, HEROMOTOCO, ALFALAVAL, DHANI) — ALL 4
+RESOLVED in NEW (fresh failing quarter now visible at entry). CANFINHOME/GEOJITFSL/MUNJALSHOW
+don't reproduce in-harness; their CELLS are origin+live-verified directly.
+**HINDUNULVR residue — a DIFFERENT class, left OPEN and reported:** still picked because our PAT
+VALUES disagree with the era's press figures: our Dec-07 std PAT 473.79 vs BS 631.44; Dec-08
+632.24 vs 615.74 -> our pair says +33.4%, truth -2.5%. Date healed; values are §101 class-2
+(HUL's Dec->Mar fiscal-year transition era). Not silently absorbed into the date campaign.
