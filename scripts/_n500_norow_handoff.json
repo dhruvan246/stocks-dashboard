@@ -1,4 +1,27 @@
 {
+ "CORRECTION_2026_08_24": {
+  "genuinely_missing_pat_residue": {
+   "AJMERA": "1 date",
+   "FCONSUMER": "1 date 2013-07",
+   "HFCL": "1 date 2011-02",
+   "RASOYPR": "5 dates 2013-09..2014-01: own rows start 20131231, the Sep-2013 quarter row is absent \u2014 REAL fetch work once tape/roster is settled",
+   "SHPRE": "5 dates 2009: no fund key resolves",
+   "SUMMITSEC": "2 dates 2009",
+   "TANDHANIN": "25 dates, entity not identified (not in bin, no era candidate found) \u2014 identify the company first"
+  },
+  "net": "After the seams/era mapping lands, ~189 of 229 fill from EXISTING data under era keys or current keys; ~40 dates across 7 names need identification/fetch \u2014 those come back to the fill campaign.",
+  "verified": "Payload patStd shortfall == __norow exactly on all 212 month-ends (69 sub-100 months, worst 98.16%) \u2014 part 1 of the claim stands to the cell.",
+  "what_was_wrong": "The first version said 24 of 25 symbols 'have sf_fundamentals rows', implying a tape/roster fix alone closes patStd. That was a KEY-PRESENCE check. The per-date test says otherwise: of 229 member-dates, a std PAT is visible under the roster's CURRENT symbol at only 55; 174 would still not fill after a tape fix alone.",
+  "where_the_pat_actually_is": {
+   "DALBHARAT": "DALMIASUG visible at 2010 dates; DALMIABHA starts 2016 \u2014 successor adjudication needed",
+   "FLUOROCHEM": "era entity GFLLIMITED: 97 rows 20020630..20260630, visible at the needed 2009-10 dates",
+   "FRETAIL": "era entity FEL (Pantaloon Retail line): 73 rows 20030630..20220331, visible \u2014 WHICH successor owns the 2009 membership is a demerger-successor adjudication",
+   "GATEWAY": "era entity GDL: 63 rows 20060331..20210930, visible",
+   "MAXIND": "era entity MFSL (old MAX): visible at 2009 dates (measured True) \u2014 same successor question as FRETAIL",
+   "NAGAFERT": "era entity NAGARFERT: 26 rows 20050331..20110630, visible",
+   "PRICOLLTD": "era entity PRICOL: 27 rows 20050331..20110930, visible"
+  }
+ },
  "generated": "2026-08-24 (N500 std-coverage campaign)",
  "not_touched_by": "the 2026-08-24 N500 std revenue campaign, deliberately - that session's files are in flight",
  "owner": "the era-aware roster / seam-stitching session (project-stocks-roster-rename-orphans, runbook 106)",
