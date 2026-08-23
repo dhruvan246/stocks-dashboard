@@ -277,10 +277,6 @@ select,input[type=text],input[type=number],input[type=date]{
         <div class="sub">Time-weighted return per calendar month.</div>
         <div class="body"><div id="chMonth"></div></div></div>
 
-      <div class="card c6" data-card="sector"><h2>Sector exposure</h2>
-        <div class="sub">Current value grouped by sector.</div>
-        <div class="body"><div id="chSector"></div></div></div>
-
       <div class="card c6" data-card="weights"><h2>Position weights</h2>
         <div class="sub">Concentration — largest positions first.</div>
         <div class="body"><div id="chWeight"></div></div></div>
@@ -1006,9 +1002,6 @@ function renderCharts(rows){
                 tip:'<div class="r"><span>P&L</span><b class="secret">'+inrSigned(d.pnl)+'</b></div><div class="r"><span>Return</span><b>'+pct(d.pnlPct)+'</b></div>'})),
       {fmtV:v=>inrSigned(v), labW:160, secretLabels:true, secretValues:true});
 
-  barsH($('chSector'), [...groupBy(rows.filter(r=>r.value!=null),r=>r.sector).entries()]
-      .map(([k,v])=>({label:k.slice(0,24), full:k, value:agg(v).value})).sort((a,b)=>b.value-a.value),
-      {fmtV:v=>inr(v), diverging:false, labW:170, secretValues:true});
 
   barsH($('chWeight'), byStock.filter(d=>d.value>0).sort((a,b)=>b.value-a.value)
       .map(d=>({label:d.label.slice(0,22), full:d.label, value:d.value,
