@@ -169,7 +169,20 @@ def main():
         json.dump(vq, open(VQ, "w"), indent=1, sort_keys=True)
         json.dump(skips, open(SKIPS, "w"), indent=1, sort_keys=True)
     _flush()          # truncate stale ledgers from a previous run IMMEDIATELY
+    # ONE SESSION PER SYMBOL, NOT ONE PER RUN. BSE throttles a reused cookie jar after the first
+    # scrip and answers with an EMPTY LIST, not an error — so a loop that shares a session records
+    # "no-bse-filing-in-either-window" for every symbol after the first. Measured 2026-08-24:
+    # 8 scrips returned 0 rows on a shared session and 2-3 rows each on a fresh one (§57c: an empty
+    # BSE list is rate-limiting until proven otherwise).
     o = FI.bse_session()
+    _last_sym = [None]
+
+    def _session_for(sym):
+        if _last_sym[0] != sym:
+            _last_sym[0] = sym
+            time.sleep(1.5)
+            return FI.bse_session()
+        return o
     n = 0
     for sym, qe in cells:
         if limit and n >= limit:
@@ -208,9 +221,10 @@ def main():
         if yl and yl[2]:
             windows.append((str(int(yl[2]) - 21), str(int(yl[2]) + 21), "year-later-comparative"))
         rows = []
+        _sess = _session_for(sym)
         for lo, hi, wname in windows:
             try:
-                r = FI.datebound(o, str(code), lo, hi)
+                r = FI.datebound(_sess, str(code), lo, hi)
             except Exception:
                 r = []
             rows += [(dt, att, sub, wname) for dt, att, sub in r]
@@ -223,7 +237,7 @@ def main():
             p = os.path.join(PDFDIR, "%s_%d_%s" % (sym, qe, att))
             if not os.path.exists(p):
                 try:
-                    d = FI.fetch_pdf(o, att)
+                    d = FI.fetch_pdf(_sess, att)
                 except Exception:
                     d = None
                 if not d:
