@@ -129,7 +129,16 @@ def resolve(cands, qe, prev_ann=None, next_ann=None):
     return None, "ambiguous:%d-dates" % len(ok)
 
 def apply_ledger(ledger):
-    """Fill-only into both fundamentals files. Returns (cells_docs, cells_master)."""
+    """Ledger -> both fundamentals files. Returns (cells_docs, cells_master).
+
+    Two entry kinds:
+      normal              — FILL-ONLY (current ann==0, PAT present). Unchanged historic behavior.
+      "override": true    — CORRECTS a wrong-LATE date: applied when the stored ann is a real date
+                            LATER than the ledger's. Only ever moves a date EARLIER (toward the
+                            true first-public date, never later) — the NSE-broadcast-lag class
+                            (SBICARD 88d / MFSL 61d / DHANI 22d / ABB 118d...; runbook §104).
+                            This is what makes the heals REBUILD-PROOF: a full rebuild resurrects
+                            NSE's lagged dates, and the nightly --reapply re-asserts the truth."""
     counts = []
     for path in (SF, MASTER):
         data = jload(path, None)
@@ -140,16 +149,102 @@ def apply_ledger(ledger):
             sym, qe = key.split("|"); qe = int(qe); ann = int(rec["ann"])
             if ann <= qe:                                        # never store an impossible pair
                 continue
+            ovr = bool(rec.get("override"))
             for q in data.get(sym) or []:
                 if not (isinstance(q, list) and len(q) >= 5 and q[0] == qe):
                     continue
                 if q[1] is not None and q[2] == 0: q[2] = ann; n += 1
                 if q[3] is not None and q[4] == 0: q[4] = ann; n += 1
+                if ovr:   # earlier-only correction of populated dates
+                    if q[1] is not None and isinstance(q[2], int) and q[2] > ann: q[2] = ann; n += 1
+                    if q[3] is not None and isinstance(q[4], int) and q[4] > ann: q[4] = ann; n += 1
         if n:
             jsave(path, data)
         counts.append(n)
         print("applied %d cells -> %s" % (n, os.path.normpath(path)))
     return counts
+
+RSKIPS = os.path.join(HERE, "_ann_recon_skips.json")
+
+def reconcile_recent(ledger, args):
+    """§104 go-forward guard for the NSE-broadcast-lag class: for DATED cells in the actively-
+    filing window (qe within --recent days of today), resolve the true first-public date from the
+    BSE announcement archive; where it precedes the stored date by >=2 days, ledger an override
+    (earlier-only) and apply. Bounded (--limit/--max-minutes), resumable (skips keyed on the
+    stored date, so a cell is re-checked if its stored date ever changes), rate-limit aware."""
+    skips = jload(RSKIPS, {})
+    fund = jload(SF, {})
+    codes = scrip_map()
+    today = int(datetime.date.today().strftime("%Y%m%d"))
+    floor = int((datetime.date.today() - datetime.timedelta(days=args.recent)).strftime("%Y%m%d"))
+    todo = []
+    for sym, arr in fund.items():
+        for q in arr:
+            if not (isinstance(q, list) and len(q) >= 5 and isinstance(q[0], int)):
+                continue
+            if q[0] < floor:
+                continue
+            stored = min([a for a in (q[2], q[4]) if isinstance(a, int) and a > 0], default=None)
+            if stored is None:                       # undated cells are the FILL flow's job, not ours
+                continue
+            key = "%s|%d|%d" % (sym, q[0], stored)   # stored date in the key -> re-check on change
+            if key in skips or "%s|%d" % (sym, q[0]) in ledger:
+                continue
+            todo.append((sym, q[0], stored, key))
+    if args.only:
+        only = {s.strip().upper() for s in args.only.split(",")}
+        todo = [t for t in todo if t[0] in only]
+    todo.sort()
+    if args.limit:
+        todo = todo[:args.limit]
+    print("reconcile targets: %d dated cells (qe >= %d)" % (len(todo), floor))
+    known = {}
+    for sym, arr in fund.items():
+        for q in arr:
+            if isinstance(q, list) and len(q) >= 5 and isinstance(q[0], int):
+                ann = min([a for a in (q[2], q[4]) if a], default=None)
+                if ann: known[(sym, q[0])] = ann
+    o = FI.bse_session()
+    t0 = time.time(); done = corrected = 0
+    empty_streak = 0; streak_keys = []
+    for sym, qe, stored, key in todo:
+        if args.max_minutes and (time.time() - t0) / 60 > args.max_minutes:
+            print("time budget reached — stopping (resumable)"); break
+        code = codes.get(sym)
+        if not code:
+            skips[key] = "no-scrip"; done += 1; continue
+        try:
+            cands = FI.datebound(o, code, str(plus(qe, 1)), str(min(plus(qe, 240), today)))
+        except Exception as ex:
+            print("  %s fetch err: %s" % (key, str(ex)[:80])); cands = []
+        if not cands:
+            empty_streak += 1; streak_keys.append(key)
+        else:
+            empty_streak = 0; streak_keys = []
+        if empty_streak >= 8:
+            for k in streak_keys:
+                skips.pop(k, None)
+            print("8 consecutive empty windows — BSE likely rate-limiting; aborting run (burst "
+                  "not recorded), rerun later"); break
+        prv, nxt = q_neighbors(qe)
+        ann, how = resolve(cands, qe, known.get((sym, prv)), known.get((sym, nxt)))
+        if ann and ann > qe and (qe_date(stored) - qe_date(ann)).days >= 2:
+            ledger["%s|%d" % (sym, qe)] = {"ann": ann, "src": "bse:recon:" + how, "override": True,
+                                           "was": stored}
+            corrected += 1
+            print("  %-14s %d  stored=%d -> bse=%d (%s, %dd earlier)"
+                  % (sym, qe, stored, ann, how, (qe_date(stored) - qe_date(ann)).days))
+        else:
+            skips[key] = "ok:%s" % (how if not ann else "match")
+        done += 1
+        if done % 25 == 0:
+            jsave(LEDGER, ledger); jsave(RSKIPS, skips)
+            print("… %d/%d checked, %d corrections" % (done, len(todo), corrected))
+        time.sleep(0.6)
+    jsave(LEDGER, ledger); jsave(RSKIPS, skips)
+    print("reconciled: %d checked, %d lagged dates corrected" % (done, corrected))
+    if corrected:
+        apply_ledger(ledger)
 
 def main():
     ap = argparse.ArgumentParser()
@@ -158,11 +253,18 @@ def main():
     ap.add_argument("--reapply", action="store_true", help="apply ledger to files, no fetching")
     ap.add_argument("--retry-skips", action="store_true")
     ap.add_argument("--max-minutes", type=float, default=0)
+    ap.add_argument("--recent", type=int, default=0, metavar="DAYS",
+                    help="RECONCILE mode (runbook §104): re-check DATED cells whose qe is within "
+                         "DAYS of today against the BSE archive; where BSE's first-public date is "
+                         "EARLIER than the stored (NSE-broadcast) date by >=2 days, write an "
+                         "override ledger entry and apply. Stops the NSE-lag class regrowing.")
     args = ap.parse_args()
 
     ledger = jload(LEDGER, {})
     if args.reapply:
         apply_ledger(ledger); return
+    if args.recent:
+        reconcile_recent(ledger, args); return
 
     skips = jload(SKIPS, {})
     fund = jload(SF, {})

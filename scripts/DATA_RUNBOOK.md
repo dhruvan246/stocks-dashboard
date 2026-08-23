@@ -11048,3 +11048,47 @@ check whether an EARLIER same-day disclosure exists via a different channel (BSE
 announcement archive vs NSE's newer integrated-filing endpoint gave two different answers for
 SAIL, a day apart) — this session got it wrong once by stopping at the first source. See
 [[feedback-verify-the-claim-you-assert]] (memory) for the generalized lesson.
+
+## 104. ★★★ ANN-DATE TRUTH — NSE's broadcast_Date LAGS the real first-public date; ledger override + nightly BSE reconcile  (2026-08-23)
+
+**The defect class.** Every ann-date the pipeline stores comes from NSE (`corporates-financial-results`
+/ `integrated-filing-results` `broadcast_Date`). That field times an NSE SUBMISSION event, which can
+lag the true first-public disclosure — the BSE "Board Meeting Outcome" filing (SEBI LODR: within 30
+min of the board meeting) — by days to MONTHS: SBICARD Jun-2020 88d, MFSL 61d, ATLASCYCLE 408d,
+ABB Sep-2025 118d, HDFCAMC Sep-2019 5 months; median ~70d over the confirmed set. Point-in-time
+effect: between the true date and our stored date, screens see the quarter as "not yet filed" and
+use a STALE older quarter → wrong YoY → wrong backtest picks (found via the StockView/quantmac
+pick-parity cross-check, §101; DHANI made us wrongly HOLD, SBICARD made us wrongly DROP).
+The class REGROWS in normal operation: the first 10 cells the reconciler ever checked included two
+fresh Jun-2026 lags (20MICRONS, 3MINDIA — 3d each).
+
+**Heals shipped (2026-08-23).** 8 hand-verified cells (SBICARD/SAIL/EMMVEE/DHANI/WELCORP earlier;
+MFSL/HDFCBANK/KARURVYSYA commit acc6a59cb) + a 152-cell BSE-confirmed batch across 118 symbols
+(commit a479d6c4d; sweep tooling + provenance in `scripts/_parity_sweep/`, gitignored). Calibration
+of the sweep resolver vs independent press archives: 3/3 (MUTHOOTFIN, HDFCAMC, CHOLAFIN).
+
+**Root-cause fix (this section).** Three pieces, all in `scripts/backfill_ann_dates_bse.py`:
+1. **Override ledger entries.** `scripts/ann_date_fills.json` entries may carry `"override": true`
+   (+ optional `"was"`). `apply_ledger` corrects a POPULATED ann that is LATER than the ledger date
+   — earlier-only, never later, never `ann <= qe`. Normal entries stay strictly fill-only (ann==0).
+   All 158 confirmed heals live in the ledger → **rebuild-proof**: a full rebuild resurrects NSE's
+   lagged dates and the next `--reapply` re-asserts the truth.
+2. **`--recent DAYS` reconcile mode.** For DATED cells with qe within DAYS of today: resolve the
+   BSE first-public date (same `datebound`+`resolve` machinery as the ann=0 flow); where BSE
+   precedes the stored date by >=2d, write an override entry + apply. Bounded (`--limit`,
+   `--max-minutes`), resumable (`scripts/_ann_recon_skips.json`, keyed sym|qe|storedAnn so a cell
+   re-checks if its stored date changes), 8-empty-window rate-limit abort. ~120 cells/night
+   converges each results season within days.
+3. **Nightly wiring** (`refresh-fundamentals.yml`): a "Reconcile announcement dates" step
+   (`--reapply` then `--recent 220 --limit 120 --max-minutes 6`, non-fatal) after the null-date
+   backstop; ledger + skips snapshotted to /tmp and re-added inside the commit loop (they'd be
+   lost to `reset --hard` otherwise); and a second `--reapply` INSIDE the commit loop after the
+   three-way merge (same rationale as `settle_stale_holds`) with an unconditional
+   `git add docs/sf_fundamentals.json` — so corrections land on the actually-committed payload
+   even on FUND=0 days. The fast NSE upsert path is deliberately untouched (no new latency or
+   failure mode there); worst-case staleness for a new lag is ~1 nightly cycle.
+
+**Related classes from the same campaign (§101):** WELCORP-style cumulative-in-quarter values are
+class 2 — FY-identity sweep results + XBRL adjudication tooling in `scripts/_parity_sweep/` and the
+scratch `sweep_c2_verify.py`; fixes ONLY what the filer's own per-quarter XBRL contradicts,
+restatements are logged and left alone.

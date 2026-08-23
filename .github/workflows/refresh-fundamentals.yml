@@ -171,6 +171,19 @@ jobs:
       - name: Fill any null announcement dates (point-in-time safety)
         run: python3 scripts/fill_ann_dates.py
 
+      # ★ ANN-DATE TRUTH (runbook §104, wired 2026-08-23). The upsert stores NSE's broadcast_Date,
+      # which can LAG the true first-public BSE board-outcome date by days-to-months (SBICARD 88d,
+      # MFSL 61d, ABB 118d; 152-cell batch heal a479d6c4d). Two guards:
+      #   reapply — re-asserts the override ledger (scripts/ann_date_fills.json) so full rebuilds
+      #             can't resurrect lagged dates. Cheap, no fetching.
+      #   recent  — BSE-checks dated cells in the actively-filing window (bounded, resumable,
+      #             rate-limit aware) and ledgers an earlier-only override where BSE precedes the
+      #             stored date by >=2d. Stops the class regrowing on new quarters.
+      - name: Reconcile announcement dates vs BSE first-public record (runbook 104)
+        run: |
+          python3 -X utf8 scripts/backfill_ann_dates_bse.py --reapply || echo "(ledger reapply failed — stale dates stay this run)"
+          python3 -X utf8 scripts/backfill_ann_dates_bse.py --recent 220 --limit 120 --max-minutes 6 || echo "(BSE reconcile failed — lagged dates stay this run)"
+
       # Re-assert OWNERS-ATTRIBUTABLE consolidated profit from the reconciled XBRL cache. Without
       # this, newly-filed quarters land as total PAT, and (critically) renamed tickers never matched
       # the cache (keyed by the OLD name) so they silently kept total PAT — e.g. SWANCORP Dec-2022
@@ -303,6 +316,10 @@ jobs:
           [ -f scripts/_ipo_base_skips.json ] && cp scripts/_ipo_base_skips.json /tmp/_ipo_base_skips.json
           [ -f scripts/excise_duty.json ] && cp scripts/excise_duty.json /tmp/excise_duty.json
           [ -f scripts/filing_times_cache.json.gz ] && cp scripts/filing_times_cache.json.gz /tmp/filing_times_cache.json.gz
+          # ann-date truth ledger + reconcile skip tracker (runbook 104) — written by the reconcile
+          # step earlier in this job; must survive the reset --hard below or every night refetches
+          [ -f scripts/ann_date_fills.json ] && cp scripts/ann_date_fills.json /tmp/ann_date_fills.json
+          [ -f scripts/_ann_recon_skips.json ] && cp scripts/_ann_recon_skips.json /tmp/_ann_recon_skips.json
           for attempt in 1 2 3 4 5; do
             git fetch origin main && git reset --hard origin/main
             if [ "$FUND" = "1" ]; then
@@ -340,6 +357,15 @@ jobs:
             git add docs/quarterly_results.json
             [ -f /tmp/_ipo_base_skips.json ] && cp /tmp/_ipo_base_skips.json scripts/_ipo_base_skips.json && git add scripts/_ipo_base_skips.json
             [ -f /tmp/filing_times_cache.json.gz ] && cp /tmp/filing_times_cache.json.gz scripts/filing_times_cache.json.gz && git add scripts/filing_times_cache.json.gz
+            # ★ ann-date truth (runbook 104): persist ledger + skips, then RE-ASSERT the override
+            # ledger onto the post-reset/post-merge payload — same rationale as settle_stale_holds
+            # above: the reset threw away the pre-reset application, and other writers' payloads
+            # must still get the corrected dates. Earlier-only, idempotent, no fetching. Runs
+            # unconditionally (not FUND-gated): date corrections happen even on no-new-quarter days.
+            [ -f /tmp/ann_date_fills.json ] && cp /tmp/ann_date_fills.json scripts/ann_date_fills.json && git add scripts/ann_date_fills.json
+            [ -f /tmp/_ann_recon_skips.json ] && cp /tmp/_ann_recon_skips.json scripts/_ann_recon_skips.json && git add scripts/_ann_recon_skips.json
+            python3 -X utf8 scripts/backfill_ann_dates_bse.py --reapply || echo "::warning::ann-date ledger reapply failed"
+            git add docs/sf_fundamentals.json
             # Fill-coverage scoreboard (docs/fill-coverage.html) — built HERE, inside the loop and
             # AFTER the three-way merge, deliberately. It is derived from sf_revop + sf_fundamentals,
             # so building it earlier would compute over pre-merge data and then be wiped by the
