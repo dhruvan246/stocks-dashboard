@@ -339,3 +339,68 @@ until they are.*
      agent's cheap screen — a RANDOM (unscreened) sample of March-quarter cells, lag
      distribution vs 45 — belongs in P1. 8/8 EARLIER here says nothing about the base rate:
      quantmac's screen could only surface the stale direction by construction.
+
+---
+
+## E. P2 FULL-CAMPAIGN PRE-APPLY AUDIT (2026-08-20, Opus) — 3 matcher bugs, DO NOT APPLY as-is
+
+Full fetch completed 2,623/2,623 symbols clean (0 failures, ~3.5h, 2-way shard). Dry-run of
+`apply_redating.py`: 21,911 cells to re-date (15,819 earlier / 6,092 later), 2,844 noop, 389
+rejected-lag, 10,883 no-match. Contract checks PASS (0 cells with new_ann<qe, 0 future; new-date
+lag-after-qe sits 14-60d for 20,606 of 21,911, as real results should). BUT an Opus pre-apply audit
+of both the matches AND the no-matches found **three defects Sonnet's matcher shipped.** The 21,911
+are NOT safe to write as-is.  →  **FABLE: please review this section E — is the diagnosis complete
+(any 4th defect class?), is each remedy right, especially Bug 1's intimation discriminator, and
+which sequencing option below? I (Opus) will execute whatever you land.**
+
+**BUG 1 — intimations matched as results (LOOK-AHEAD, the cardinal sin). 195 / 21,911 (0.89%).**
+`INTIMATION_PHRASES` in fetch_and_match.py is too narrow. It misses "Board Meeting On <date>",
+"Board Meeting To Consider", "Intimation Of Board Meeting", "Change in Date of Board Meeting",
+"Analyst / Investor Meet - Intimation", "Newspaper Publication", "to consider/to approve". Because
+match_targets picks the EARLIEST candidate for a qe, an intimation (always broadcast BEFORE the
+result) WINS over the real filing. Proof: PAGEIND qe20171231 matched "Board Meeting On 08th
+February 2018" (bcast Jan 17) → would stamp 20180118, a ~3-WEEK look-ahead. MTNL qe20170630 (−27d),
+GMDCLTD qe20120930 (−40d), PRSMJOHNSN (−34d), ZFCVINDIA (−36d), FSL (−33d). 162 earlier / 33 later;
+32 are delta≥25d (the dangerous ones). Remedy: (a) reject intimations in is_candidate — flag
+forward-meeting/notice language UNLESS it's an "outcome of board meeting"/results-statement; (b)
+rank candidates (is_intimation asc, then NEWS_DT asc) so a real result always beats a stray
+intimation; (c) apply-layer safety net: refuse to write any re-date whose stored newssub is an
+intimation (those fall back to the safe qe+45d placeholder — no look-ahead). ⚠️ discriminator risk:
+a real result often reads "…Unaudited Financial Results for the quarter ended…", the SAME words an
+intimation uses — the only separator is the forward-meeting framing. Get this regex wrong and we
+either keep look-ahead or nuke thousands of real results. This is the piece most worth a 2nd read.
+
+**BUG 2a — scripcode resolution misses renamed/aliased names. 251 symbols / 1,866 cells.**
+Correction #2 (§ above) added a `_bse_master_all.json` fallback, but it too keys on scrip_id ==
+our-symbol, which fails whenever our fundamentals ticker ≠ BSE scrip_id. Confirmed live: COLGATE→
+BSE "COLPAL" (500830), CEAT→"CEATLTD" (500878), TUBEINVEST→"TIINDIA" (540762), ORCHIDPHAR→
+"ORCHPHARMA", SUPPETRO→"SPLPETRO", INDIABULLS→"IBULLSLTD". All resolvable via ISIN (bse_scrips.json
+has by_isin; master has ISIN_NUMBER) but we lack our_symbol→ISIN, so it needs the identity bridge
+(check_fund_alias.py / isin_seam_*). Some of the 251 are genuinely dead (STER, SATYAMCOMP,
+MONNETISPA) where even a correct code yields nothing. Remedy: resolve by ISIN/alias, not scrip_id
+string.
+
+**BUG 3 — date extractor drops "Ended On" and 2-digit years. Part of the 8,290 qe_not_found.**
+Live proof: SANWARIA qe20221231 HAS a real disclosure — "Unaudited Financial Results For The Period
+Ended On 31.12.22" (bcast 2023-02-13) — but extract_all_qes returned []. Two misses at once: the
+word "On" between anchor and date (regex wants `ended <digit>`), and the 2-digit year "22" (regex
+demands `\d{4}`). qe_not_found is concentrated 2003-2008 (~6,100, likely a real BSE
+electronic-filing sparsity floor — NOT yet proven, must sample) with a suspicious 2019-2025 lump
+(~2,100) that this bug explains. Remedy: allow optional "on"/"as on"/"as at" after the anchor;
+accept 2-digit years (→20xx); re-sample the pre-2008 floor to size the true-absence remainder.
+
+**NO-MATCH breakdown (10,883):** qe_not_found_among_candidates 8,290 · no_scripcode 1,866 ·
+no_candidates_at_all 727 (all from the no-scripcode/zero-match symbols). 0 fetch errors.
+
+**SEQUENCING — pick one (Fable/user):**
+* **Option A (one clean pass, recommended):** fix all 3 in fetch_and_match.py → re-run only the
+  affected symbols (any no-match or any intimation-flagged match) → merge over the clean matches →
+  apply once. Cleanest single reviewable diff; costs ~2-3h more wall-clock of unattended fetch.
+* **Option B (bank safe now):** apply the 21,716 non-intimation cells immediately (the 195 + the
+  10,883 keep the safe placeholder), then fix+targeted-re-run later to recover the rest. Two
+  apply/verify/push cycles; banks quantmac-class value now. Safe & additive — the 21,716 clean
+  cells won't change in a re-run.
+* **NEVER:** write the 195 intimation matches (Option C = apply-all-as-is is OFF the table).
+
+Nothing has been written to sf_fundamentals.json / fundamentals.json. Audit scripts:
+scratchpad/audit_redating.py, size_bugs.py (regenerable). redate_ledger.json is the current dry-run.
