@@ -193,13 +193,40 @@ let TKR=null, CHART=null, RANGE='Max';
 let SLICE=null, FIN_STATE='pending';
 
 function fail(msg){ $('ov').style.display='none'; $('sSym').textContent=SYM||'?'; $('sName').innerHTML=`<span class="neg">${esc(msg)}</span>`; const sh=$('shp'); if(sh&&/Loading/.test(sh.textContent)) sh.textContent='—'; }
-// Friendly landing when the page is opened with no ?sym= at all (fail() is for real errors).
+// Full landing when the page is opened with no ?sym= at all (fail() is for real errors).
+// The data sections below are meaningless husks without a symbol, so hide them and turn the
+// title card into a proper hero: big search, popular-stock chips, and what-you-get tiles.
+// The existing #sForm node is MOVED (not rebuilt) so its swSearch/submit listeners survive.
 function noSymbol(){
   $('ov').style.display='none';
-  $('sSym').textContent='🔍 Pick a stock';
-  $('sName').innerHTML='Every listed NSE/BSE company has a page here — price history, returns vs Nifty, quarterly financials, shareholding &amp; seasonality.<br><span class="text-xs text-slate-400">Type a symbol in the box on the right (e.g. <b>RELIANCE</b>) and hit <b>Go</b>, or use the header search.</span>';
-  const sh=$('shp'); if(sh&&/Loading/.test(sh.textContent)) sh.textContent='—';
-  const s=$('sSearch'); if(s){ s.focus(); s.classList.add('ring-2','ring-indigo-400'); }
+  document.title='STOCKSWORLD · Stocks';
+  const POPULAR=['RELIANCE','TCS','HDFCBANK','ICICIBANK','INFY','SBIN','BHARTIARTL','ITC','LT','TITAN'];
+  const tile=(ic,t,d)=>`<div class="rounded-xl border border-slate-200 bg-slate-50 p-4"><div class="text-xl">${ic}</div><div class="font-bold text-slate-900 text-sm mt-1.5">${t}</div><div class="text-xs text-slate-500 mt-1 leading-relaxed">${d}</div></div>`;
+  const card=$('sSym').closest('.card');
+  document.querySelectorAll('main > *').forEach(el=>{ if(el!==card) el.style.display='none'; });
+  [...card.children].forEach(el=>{ el.style.display='none'; });
+  const hero=document.createElement('div');
+  hero.className='text-center py-6 md:py-10';
+  hero.innerHTML='<div class="text-5xl mb-3">🔍</div>'
+    +'<h1 id="heroTitle" class="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">Every stock, decoded</h1>'
+    +'<p class="text-sm text-slate-500 mt-2 max-w-lg mx-auto">Price history since 1996, returns vs the Nifty, quarterly financials, shareholding pattern &amp; seasonality — for every NSE/BSE listing, delisted names included.</p>'
+    +'<div id="heroSlot" class="mt-6 flex justify-center"></div>'
+    +'<div class="mt-6 text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Popular</div>'
+    +'<div id="heroChips" class="mt-2.5 flex flex-wrap justify-center gap-2 max-w-xl mx-auto"></div>'
+    +'<div id="heroTiles" class="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-10 text-left">'
+    +tile('📈','Price &amp; returns','Split-adjusted closes with 1D → 10Y returns vs the Nifty 500, plus a rewind to any past date.')
+    +tile('💰','Quarterly financials','Point-in-time revenue, PAT &amp; margins with YoY growth — the numbers as originally filed.')
+    +tile('🏦','Shareholding','Promoter, FII, DII &amp; public stakes, quarter by quarter from the filings.')
+    +tile('📅','Seasonality','Month-by-month returns across every year of history — which months this stock likes.')
+    +'</div>';
+  card.appendChild(hero);
+  const form=$('sForm'); $('heroSlot').appendChild(form);
+  form.style.display=''; form.classList.add('gap-2');
+  const inp=$('sSearch');
+  inp.placeholder='Search any stock — name or symbol…';
+  inp.className='border border-slate-300 rounded-xl px-4 py-2.5 text-sm w-60 sm:w-80 md:w-96';
+  const go=form.querySelector('button'); if(go) go.className='px-4 py-2.5 rounded-xl text-sm font-semibold bg-indigo-600 text-white';
+  for(const s of POPULAR){ const a=document.createElement('a'); a.href='?sym='+s; a.textContent=s; a.className='sw-chip'; $('heroChips').appendChild(a); }
 }
 
 /* ---------- events on the price chart ----------------------------------------------------------

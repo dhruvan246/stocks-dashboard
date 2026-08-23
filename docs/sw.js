@@ -6,7 +6,7 @@
  *     requests (the sf-data repo, Supabase, the live-quote Worker) — those stay network-only
  *     so data is always fresh and the cache never bloats.
  * Bump CACHE when the shell asset list changes. */
-const CACHE = 'sw-shell-v103';  // v103: UI-audit polish — stock.html friendly no-symbol landing, all-picks styled build-error card with retry, backtest.html page hero (v102: backtest-history UI overhaul — KPI tiles, chips, tscroll, themed buttons; v101: history sorted newest-first) (v100: TTM contiguity check strengthened to pairwise gaps — a duplicate qe row (APOLLOTYRE/CARBORUNIV) slipped past the endpoint-only check (ENGINE_VER e6->e7) (v99: profitMetrics TTM requires 4 calendar-consecutive quarters, both engine twins (ENGINE_VER e5->e6) ...) )
+const CACHE = 'sw-shell-v104';  // v104: stock.html no-symbol state is a full landing — hero search, popular chips, feature tiles; empty data husks hidden (v103: UI-audit polish — stock landing v1, all-picks error card, backtest hero; v102: backtest-history overhaul) (v100: TTM contiguity check strengthened to pairwise gaps — a duplicate qe row (APOLLOTYRE/CARBORUNIV) slipped past the endpoint-only check (ENGINE_VER e6->e7) (v99: profitMetrics TTM requires 4 calendar-consecutive quarters, both engine twins (ENGINE_VER e5->e6) ...) )
 const SHELL = [
   './', './index.html', './nse-bse-dashboard.html', './stock-backtest.html', './saved-strategies.html',
   './backtest-history.html', './strategy-backtest.html', './all-picks.html', './strategy-mixer.html', './mutual-funds.html', './fii-dii.html',
