@@ -155,9 +155,16 @@ def apply_ledger(ledger):
                     continue
                 if q[1] is not None and q[2] == 0: q[2] = ann; n += 1
                 if q[3] is not None and q[4] == 0: q[4] = ann; n += 1
-                if ovr:   # earlier-only correction of populated dates
-                    if q[1] is not None and isinstance(q[2], int) and q[2] > ann: q[2] = ann; n += 1
-                    if q[3] is not None and isinstance(q[4], int) and q[4] > ann: q[4] = ann; n += 1
+                if ovr:   # earlier-only correction of populated dates.
+                    # GATE BUFFER (adjudicated 2026-08-23): ledger dates here are RAW BSE filing
+                    # dates, but the engine's PIT convention gates post-15:30/weekend/holiday
+                    # filings to the next trading day (runbook §12) — up to +4 calendar days
+                    # (Fri evening + Mon holiday). A stored date within [ann, ann+4] is the GATED
+                    # form of the same event, not a lag: overriding it re-introduces a half-day
+                    # look-ahead and ping-pongs with the nightly gate_1530 pass. Only a stored
+                    # date > ann+4 is a genuine NSE-broadcast-lag.
+                    if q[1] is not None and isinstance(q[2], int) and q[2] > plus(ann, 4): q[2] = ann; n += 1
+                    if q[3] is not None and isinstance(q[4], int) and q[4] > plus(ann, 4): q[4] = ann; n += 1
         if n:
             jsave(path, data)
         counts.append(n)
@@ -169,7 +176,8 @@ RSKIPS = os.path.join(HERE, "_ann_recon_skips.json")
 def reconcile_recent(ledger, args):
     """§104 go-forward guard for the NSE-broadcast-lag class: for DATED cells in the actively-
     filing window (qe within --recent days of today), resolve the true first-public date from the
-    BSE announcement archive; where it precedes the stored date by >=2 days, ledger an override
+    BSE announcement archive; where it precedes the stored date by >4 days (beyond the 15:30/
+    weekend/holiday gate window), ledger an override
     (earlier-only) and apply. Bounded (--limit/--max-minutes), resumable (skips keyed on the
     stored date, so a cell is re-checked if its stored date ever changes), rate-limit aware."""
     skips = jload(RSKIPS, {})
@@ -228,7 +236,7 @@ def reconcile_recent(ledger, args):
                   "not recorded), rerun later"); break
         prv, nxt = q_neighbors(qe)
         ann, how = resolve(cands, qe, known.get((sym, prv)), known.get((sym, nxt)))
-        if ann and ann > qe and (qe_date(stored) - qe_date(ann)).days >= 2:
+        if ann and ann > qe and (qe_date(stored) - qe_date(ann)).days > 4:   # >4d: beyond the 15:30/weekend/holiday gate window (runbook 12) — smaller deltas are the GATED form of the same filing, not a lag
             ledger["%s|%d" % (sym, qe)] = {"ann": ann, "src": "bse:recon:" + how, "override": True,
                                            "was": stored}
             corrected += 1
@@ -256,7 +264,8 @@ def main():
     ap.add_argument("--recent", type=int, default=0, metavar="DAYS",
                     help="RECONCILE mode (runbook §104): re-check DATED cells whose qe is within "
                          "DAYS of today against the BSE archive; where BSE's first-public date is "
-                         "EARLIER than the stored (NSE-broadcast) date by >=2 days, write an "
+                         "EARLIER than the stored (NSE-broadcast) date by >4 days (past the 15:30 "
+                         "gate window), write an "
                          "override ledger entry and apply. Stops the NSE-lag class regrowing.")
     args = ap.parse_args()
 
