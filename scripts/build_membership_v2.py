@@ -239,6 +239,33 @@ def load_inclexcl_register():
     return by_sym, [by_date[d] for d in sorted(by_date)]
 
 
+def register_inc_is_live(reg_by_sym, sym, iso_date, official):
+    """True when the register's 'inc' for sym at iso_date is still credible — i.e. NO official
+    archived full list dated after that inclusion and on-or-before iso_date omits the stock.
+
+    WHY (2026-08-24, the 2009-2011 over-count): the register is one-legged for ~30% of names, so a
+    stock whose EXCLUSION it lost keeps reading 'inc' forever — HINDMOTORS/CHEMPLASTS/NAGAFERT/
+    PATANJALI (Ruchi Soya)/MAXIND carry an 'inc' from 1998-08-01 and nothing after, yet NSE's own
+    full list of 2010-01-02 does not contain them. The symmetric join below trusted that stale 'inc'
+    and force-added them to every MC checkpoint: measured 776 joins, 285 of them contradicted by an
+    official list (17-20 per pin 2008-2011), rosters pinned at 517-528 and 510-513 after the later
+    trims vs NSE's 500. The official list is the higher authority: if it post-dates the inclusion
+    and omits the stock, the stock left — the register just never recorded it. A register 'inc'
+    dated AFTER the latest official list (a real short-arc joiner MC's stale page never showed,
+    e.g. BANCOINDIA inc 2010-04-08) is untouched: no list can contradict it yet.
+    Self-test: applied at each of the 22 official dates the rule accepts nothing that list omits."""
+    last_inc = None
+    for d, k in reg_by_sym.get(sym, []):
+        if d <= iso_date and k == "inc":
+            last_inc = d
+    if last_inc is None:
+        return False
+    for od, members in official.items():
+        if last_inc < od <= iso_date and sym not in members:
+            return False
+    return True
+
+
 def register_state(reg_by_sym, sym, iso_date):
     """'inc' | 'exc' | None — the register's view of sym's membership as of iso_date."""
     st = None
@@ -384,7 +411,8 @@ def main():
             # EXACT, so a stale member would survive the event merge above; scrub each MC set
             # against the register's state on that date. wb needed no scrub (0 conflicts).
             try:
-                _scrubbed = _added = 0
+                _scrubbed = _added = _stale_joins = 0
+                _wb_canon = {d: {canon(x) for x in v} for d, v in wb.items()}
                 for _d, _v in json.load(open(os.path.join(HERE, "_mc_n500_snaps.json"))).items():
                     _keep, _drop = set(), []
                     for _s in _v:
@@ -395,9 +423,13 @@ def main():
                     # symmetric leg: MC's staleness cuts BOTH ways — it kept showing leavers AND
                     # kept not-showing joiners. Add every register-member the MC page missed
                     # (measured cost of scrub-only: mid-2011 rosters fell to 434 vs NSE's 500).
-                    _joins = {s for s in REG_BY_SYM
+                    # ... but only joins the OFFICIAL lists do not contradict (register_inc_is_live):
+                    # a stale 'inc' whose exclusion the register lost is not a member (2026-08-24).
+                    _cands = {s for s in REG_BY_SYM
                               if register_state(REG_BY_SYM, s, _d) == "inc" and s not in
                               {canon(x) for x in _keep}}
+                    _joins = {s for s in _cands if register_inc_is_live(REG_BY_SYM, s, _d, _wb_canon)}
+                    _stale_joins += len(_cands - _joins)
                     if _joins:
                         _added += len(_joins)
                         _keep |= _joins
@@ -406,8 +438,9 @@ def main():
                         print(f"  MC checkpoint {_d}: scrubbed {len(_drop)} register-excluded, "
                               f"added {len(_joins)} register-members MC missed")
                     cps.setdefault(_d, _keep)
-                if _scrubbed or _added:
-                    print(f"  MC reconcile total: -{_scrubbed} stale, +{_added} missed member-slots")
+                if _scrubbed or _added or _stale_joins:
+                    print(f"  MC reconcile total: -{_scrubbed} stale, +{_added} missed member-slots, "
+                          f"{_stale_joins} stale register-inc joins refused (official list omits them)")
             except FileNotFoundError:
                 pass
         else:
