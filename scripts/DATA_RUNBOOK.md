@@ -11283,3 +11283,56 @@ archived lists; the ret6m 2009→2026 comparison moves 175 → **179/210** ident
 ★ The rule this re-proves: **a first-match-wins join over a lossy key is a silent mis-attribution
 machine; count the keys with more than one candidate before trusting a single mapping** (§95a's
 "measure the screen's recall first", from the precision side).
+
+### 106f. ★★★ AN OFFICIAL LIST OUTRANKS A STALE REGISTER INCLUSION — the 2007-2011 over-count  (2026-08-24)
+
+**Symptom** (user: "check latest correct nifty 500 membership", then "fix the 2009-2011 over-count"):
+on the live `dash_slim.bin`, Nifty 500 month-ends 2009-01..2011-12 ran **505-513** for 30 of 36
+months (NSE: 500), peaking +13 at Jul-2009/Apr-2010, while 2011-2022 ran UNDER (the §106e-era
+fix). Both signs came from the same one-legged register, via two different legs of its merge.
+
+**Mechanism, measured in a worktree** (control run of `build_membership_v2.py` reproduced origin's
+`indices_history.json` byte-identical FIRST — that is the only way a before/after is trustworthy):
+the MC-checkpoint reconcile (§106e, `baa8c6417`) has a *symmetric leg* that force-adds every
+symbol whose `register_state()` is `'inc'` on the pin date. `IndexInclExcl.xls` is one-legged for
+~30% of names (919/1,280 mapped), so a stock whose EXCLUSION it lost reads `'inc'` forever —
+HINDMOTORS, CHEMPLASTS, NAGAFERT, PATANJALI (Ruchi Soya), MAXIND, MIC, GATEWAY, PRICOLLTD,
+FLUOROCHEM all carry `inc 1998-08-01` and nothing after, yet **NSE's own full list of 2010-01-02
+does not contain them.** 776 joins total, **285 contradicted by a bracketing official list**
+(17-20 per pin 2008-2011); checkpoints were pinned at 517-528 and the later phantom-floor/era
+trims only brought them down to 510-513. `reanchor_segments` then faithfully propagated the
+inflated pin across its window.
+
+**Rule shipped** (`register_inc_is_live()` in build_membership_v2.py, `8bb6754f2`): a register
+`'inc'` is credible only if NO official archived full list dated AFTER that inclusion and
+on-or-before the pin omits the stock. A register `'inc'` that post-dates the latest official
+list is untouched — that is a real short-arc joiner MC's stale page never showed (BANCOINDIA
+inc 2010-04-08, ADSL 2011-03-25, PIRAMALFIN 2011-10-10…) and no list exists yet to contradict it.
+Self-test: applied AT each of the 22 official dates the rule accepts nothing that list omits.
+Three borderline refusals were checked by hand and are correct: PROVOGE (inc 2007-09),
+CASTROLIND (inc 2008-09), ESSARPORTS (inc 2008-09) all pre-date the 2010-01-02 list that omits
+them — the register claims they were in, NSE's list says no, the list wins.
+
+**Verified before push:** 39/39 official lists still 100%; the whole diff is **14 symbols
+REMOVED, 0 added**, 84 snapshots 2006-11-17..2012-08-06, nothing later; 13 of the 14 are absent
+from every official list AND every independent Moneycontrol capture; the 14th (BAJAJ-AUTO) is
+removed only 2006-11..2007-10, when the company traded as pre-demerger `BAJAJAUTO` (the
+`BAJAJ-AUTO` tape starts 2008-05-26; register has exc 2008-03-14 / inc 2008-09-10 around the
+demerger). Month-ends outside 500-504: **2009 11→6, 2010 11→2, 2011 8→2** (max 513→506);
+2007 12→3, 2008 12→9 as a bonus. 2012 drops exactly MIC (501→500, a crossing of the band from
+above — not a regression). Other 26 indexes byte-identical; `verify_sizes.py` BADs (Midcap
+150 / Smallcap 2020-21) pre-existing and unchanged.
+
+**Residue, deliberately left:** 2012-09..2013-07 at 496-497 is an UNDER-count — missing
+joiners, a different class (the register's lost INCLUSIONS; look at its `unmapped` names dated
+2012-09-28 / 2013-04-01); and 2008-2009 still 505-509 — the only official list in the whole
+2006-11→2014-01 window is 2010-01-02, so any `inc` dated 2006-11..2010-01 that NSE later quietly
+dropped cannot be caught by this rule. Wayback **IS reachable from this Mac** (the §11 note that
+it is not was true of the old environment): CDX enumeration of `nseindia.com/content/indices/*`
+2008-2012 found no CNX-500 full list other than 2010-01-02, so more pins are not available
+there; a different source is needed for those two windows.
+
+★ The rule this adds to §0: **a one-legged ledger's "still in" is not evidence of presence — it
+is the absence of the leg that would have said "out".** Before trusting any `state == inc`
+derived from an add/drop register, ask what an independent full snapshot says at the same date.
+Same family as [[feedback-held-cell-asserts-absence]] and §106e's first-match-wins join.
