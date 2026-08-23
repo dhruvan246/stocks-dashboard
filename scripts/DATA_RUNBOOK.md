@@ -11104,3 +11104,31 @@ of the sweep resolver vs independent press archives: 3/3 (MUTHOOTFIN, HDFCAMC, C
 class 2 — FY-identity sweep results + XBRL adjudication tooling in `scripts/_parity_sweep/` and the
 scratch `sweep_c2_verify.py`; fixes ONLY what the filer's own per-quarter XBRL contradicts,
 restatements are logged and left alone.
+
+## 105. ★★ PRE-2016 SHP VISIBILITY IS A DOCUMENTED CONVENTION — qe+21d, kept BY USER POLICY (2026-08-23)
+
+**The fact, measured to completeness:** every pre-2016 row in `docs/shp_engine.json` — **25,867 of
+25,867 (100.0%)** — carries a submission date of exactly quarter-end + 21 days. Not one real
+submission timestamp exists in the store for that era (external replication "quantmac" flagged 32
+trades on this; BSE's archived shareholding pages carry the data but no submission timestamp, so
+the truth is not publicly recoverable per-filing).
+
+**The policy (user decision 2026-08-23, option "keep + document"):** the convention STAYS. Nulling
+pre-2016 subs would erase every DII/FII-sorted screen before 2016 wholesale; an evidence campaign
+has no public per-filing source to mine (Wayback captures give only sparse upper bounds — see the
+shp-wayback-2010 prior art). So the engines keep gating on `sub <= date` with sub = qe+21d there.
+
+**Why 21 days is the defensible convention and not an arbitrary number:** it is the era's
+regulatory filing DEADLINE for the quarterly shareholding pattern (listing agreement Clause 35;
+carried into SEBI LODR Reg 31(1)(b)). For every COMPLIANT filer the truth is <= qe+21d, so the
+convention shows data at the latest-compliant moment — never earlier than a compliant filing could
+have been public. Residual look-ahead exists ONLY where a filer breached the deadline.
+
+**Where it lives:** stamped by fetch_shareholding.py's engine-feed writer (⚠️ that file was another
+session's WIP on 2026-08-23 — the source comment is deferred; add it when that session lands);
+consumed by `shpAt()` in docs/backtest-engine.js + stock-backtest.html (comment added at both,
+2026-08-23). Post-2015 rows carry real dates from the XBRL/scores filings and are NOT affected.
+
+**What would reopen this:** a per-filing submission-date source for 2006-2015 (none known), or the
+user choosing the null-pre-2016 policy. Until then, treat qe+21d-pre-2016 as a KNOWN, DOCUMENTED
+assumption — never "fix" it cell-by-cell, and never present pre-2016 SHP visibility as measured.

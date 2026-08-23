@@ -951,6 +951,7 @@ function needsShp(cfg){ return SHP_FIELDS.has(cfg.sortBy) || (cfg.filters||[]).s
 function prevQeInt(qe){ let y=Math.floor(qe/10000), m=Math.floor(qe/100)%100-3; if(m<=0){y--;m+=12;} return y*10000+m*100+{3:31,6:30,9:30,12:31}[m]; }
 // Any row not dated a Mar/Jun/Sep/Dec quarter end is an EVENT-driven SHP merged in by §22k.
 function isQuarterEnd(d){ return ({3:31,6:30,9:30,12:31}[Math.floor(d/100)%100]||0)===d%100; }
+// ⚠️ PRE-2016 sub dates are a CONVENTION (qe+21d = the Clause-35/LODR filing deadline), kept by user policy — runbook §105. (Sync: backtest-engine.js)
 function shpAt(sym, dateInt){
   const arr=SHPD[sym] || (FUND_ALIAS[sym] ? SHPD[FUND_ALIAS[sym]] : null); if(!arr||!arr.length) return null;
   let ci=-1; for(let i=arr.length-1;i>=0;i--){ if(arr[i][3]<=dateInt){ ci=i; break; } }

@@ -700,6 +700,11 @@ function prevQeInt(qe) { let y = Math.floor(qe / 10000), m = Math.floor(qe / 100
 // A row dated anything other than a March/June/September/December quarter end is an EVENT-driven
 // SHP (capital change / SAST) merged in by §22k — same shape, but no calendar-previous quarter.
 function isQuarterEnd(d) { return ({ 3: 31, 6: 30, 9: 30, 12: 31 }[Math.floor(d / 100) % 100] || 0) === d % 100; }
+// ⚠️ PRE-2016 sub dates are a CONVENTION, not measurements: every pre-2016 row carries
+// sub = quarter-end + 21 days exactly (25,867/25,867 measured 2026-08-23) — the era's
+// Clause-35/LODR filing DEADLINE, i.e. the latest a compliant filing could have gone
+// public. Kept by user policy (runbook §105): real per-filing dates for 2006-2015 are
+// not publicly recoverable, and nulling them would erase pre-2016 FII/DII screens.
 function shpAt(sym, dateInt) {
   const arr = SHPD[sym] || (FUND_ALIAS[sym] ? SHPD[FUND_ALIAS[sym]] : null); if (!arr || !arr.length) return null;
   let ci = -1; for (let i = arr.length - 1; i >= 0; i--) { if (arr[i][3] <= dateInt) { ci = i; break; } }

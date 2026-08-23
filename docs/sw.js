@@ -6,7 +6,7 @@
  *     requests (the sf-data repo, Supabase, the live-quote Worker) — those stay network-only
  *     so data is always fresh and the cache never bloats.
  * Bump CACHE when the shell asset list changes. */
-const CACHE = 'sw-shell-v106';  // v106: saved-strategies KPI strip + richer empty state; stock-backtest strategy templates row + 3-step guide (v105: strategy-backtest chips/record/picker; v104: stock.html landing; v103: UI-audit polish) (v100: TTM contiguity check strengthened to pairwise gaps — a duplicate qe row (APOLLOTYRE/CARBORUNIV) slipped past the endpoint-only check (ENGINE_VER e6->e7) (v99: profitMetrics TTM requires 4 calendar-consecutive quarters, both engine twins (ENGINE_VER e5->e6) ...) )
+const CACHE = 'sw-shell-v107';  // v107: shpAt convention comment in both engine twins (runbook §105) (v106: saved-strategies KPI strip + richer empty state; stock-backtest strategy templates row + 3-step guide (v105: strategy-backtest chips/record/picker; v104: stock.html landing; v103: UI-audit polish) (v100: TTM contiguity check strengthened to pairwise gaps — a duplicate qe row (APOLLOTYRE/CARBORUNIV) slipped past the endpoint-only check (ENGINE_VER e6->e7) (v99: profitMetrics TTM requires 4 calendar-consecutive quarters, both engine twins (ENGINE_VER e5->e6) ...) )
 const SHELL = [
   './', './index.html', './nse-bse-dashboard.html', './stock-backtest.html', './saved-strategies.html',
   './backtest-history.html', './strategy-backtest.html', './all-picks.html', './strategy-mixer.html', './mutual-funds.html', './fii-dii.html',
