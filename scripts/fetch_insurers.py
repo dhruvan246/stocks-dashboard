@@ -175,6 +175,18 @@ def fetch_pdf(o, att):
                 return d
         except Exception:
             pass
+    # THIRD BASE. Pre-~Nov-2018 attachments 404 on BOTH bases above and live at
+    # /xml-data/corpfiling/CorpAttachment/<YYYY>/<M>/<name>. Do not guess the year/month —
+    # AnnPdfOpen.aspx is BSE's own resolver and 302s to whichever base holds the file.
+    # Measured 2026-08-24 on TORNTPOWER's 2017-08-01 and 2017-11-06 filings: both known bases
+    # returned no PDF, the resolver returned 1.2 MB and 1.8 MB. Without this the whole pre-2018
+    # era reports a false "no attachment" (memory: reference-bse-attachment-resolver).
+    try:
+        d = bse_get(o, "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=%s" % att, b=True)
+        if d and d[:4] == b"%PDF":      # ~162 bytes = the 302 page, not a file
+            return d
+    except Exception:
+        pass
     return None
 
 

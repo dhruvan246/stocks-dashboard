@@ -57,7 +57,13 @@ def urls_for(sym, qe):
         if iso_qe(r.get('toDate')) != qe:
             continue
         u = (r.get('xbrl') or '').strip()
-        if not u or u == '-':
+        # NSE's xbrl placeholder has TWO spellings and the second masquerades as a transient
+        # failure: the bare '-' AND a full URL whose BASENAME is '-' (the placeholder pasted onto
+        # the archive prefix). Checking only `u == '-'` lets the second through, the fetch 404s,
+        # the one-shot retry refetches the same dead URL, and the cell lands in fetch_fail where
+        # it survives every "retry the transients" pass intact (measured 2026-08-16: 76/76
+        # identical across two runs). Gate on the basename and count it separately.
+        if not u or u == '-' or u.rsplit('/', 1)[-1] in ('-', ''):
             continue
         basis = 'con' if str(r.get('consolidated', '')).strip().lower() == 'consolidated' else 'std'
         out.append((basis, u, r.get('filingDate') or r.get('broadCastDate')))

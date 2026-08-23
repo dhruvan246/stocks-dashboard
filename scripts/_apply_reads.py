@@ -117,6 +117,45 @@ def main_pre2015():
                     skipped.append((sym, qe, "gate-S anchor drift at apply: stored=%s read=%s" % (row[1], pat)))
                     continue
                 stored_pat = row[1]
+            elif gate == "C":
+                # GATE C — IN-PAGE ARITHMETIC CHAIN (added 2026-08-24 for SPSL 2008-12-31).
+                # Last resort for a delisted filer that NO second publisher carries: screener
+                # 404s, Moneycontrol has no id, the BSE scrip of the same NAME is a different
+                # ISIN (INE318K01025 vs the filer's INE298G01019 — a recycled name, see
+                # feedback-scrip-id-ticker-coincidence), and the company never filed again so
+                # there is no year-later comparative. What IS available is the filing's own
+                # arithmetic, and a misparse of ANY line breaks it. The ledger must carry the
+                # whole chain; it is RE-COMPUTED here rather than trusted from harvest time,
+                # exactly as gates S/F re-verify. Every link must close within 0.01 cr.
+                ch = c.get("chain") or {}
+                need = ("rev", "totexp", "op_before", "other_income", "pbit", "interest", "pbt", "tax", "pat")
+                if any(ch.get(k) is None for k in need):
+                    skipped.append((sym, qe, "gate-C incomplete chain: missing %s"
+                                    % [k for k in need if ch.get(k) is None]))
+                    continue
+                links = [("rev-totexp=op_before", ch["rev"] - ch["totexp"], ch["op_before"]),
+                         ("op_before+oi=pbit", ch["op_before"] + ch["other_income"], ch["pbit"]),
+                         ("pbit-interest=pbt", ch["pbit"] - ch["interest"], ch["pbt"]),
+                         ("pbt-tax=pat", ch["pbt"] - ch["tax"], ch["pat"])]
+                bad = [n for n, got, want in links if abs(got - want) > 0.01]
+                if bad:
+                    skipped.append((sym, qe, "gate-C chain does not close: %s" % bad))
+                    continue
+                if not close(ch["pat"], pat):
+                    skipped.append((sym, qe, "gate-C chain pat %s != ledger pat %s" % (ch["pat"], pat)))
+                    continue
+                if row is not None and row[1] is not None:
+                    if not close(row[1], pat):
+                        skipped.append((sym, qe, "gate-C but stored PAT now present and disagrees: stored=%s read=%s"
+                                        % (row[1], pat)))
+                        continue
+                    stored_pat = row[1]
+                else:
+                    newrow = [qe, pat, c.get("ann"), None, None]
+                    frows.append(newrow)
+                    fmap[qe] = newrow
+                    fund_new += 1
+                    stored_pat = pat
             elif gate in ("F", "E", "X", "A"):
                 if row is not None and row[1] is not None:
                     # a PAT has landed since harvest time (another route/session) --
