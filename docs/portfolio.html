@@ -911,6 +911,23 @@ function renderKPIs(rows,H){
     '<div class="val '+(k.c||'')+(k.secret?' secret':'')+'">'+k.val+'</div>'+
     '<div class="sub2 '+(k.c||'')+'">'+k.sub+'</div></div>').join('');
 }
+/* ---- deep-link the account/portfolio filter into the URL hash (#acct=…&pf=…): bookmark or
+   open straight to a strategy on the phone, and a reload keeps the filter. Uses the HASH, so it
+   never touches the ?t= token query and is never sent to a server. replaceState = no history spam. ---- */
+function filterToHash(){
+  const parts=[];
+  if(SEL.acct.size) parts.push('acct='+[...SEL.acct].map(encodeURIComponent).join(','));
+  if(SEL.pf.size)   parts.push('pf='  +[...SEL.pf].map(encodeURIComponent).join(','));
+  const h=parts.join('&');
+  history.replaceState(null,'', location.pathname+location.search+(h?'#'+h:''));
+}
+function hashToFilter(){
+  SEL.acct.clear(); SEL.pf.clear();
+  const h=location.hash.replace(/^#/,''); if(!h) return;
+  h.split('&').forEach(kv=>{ const i=kv.indexOf('='); if(i<0) return;
+    const set=kv.slice(0,i)==='acct'?SEL.acct:kv.slice(0,i)==='pf'?SEL.pf:null; if(!set) return;
+    kv.slice(i+1).split(',').forEach(x=>{ const d=decodeURIComponent(x); if(d) set.add(d); }); });
+}
 function renderFilters(){
   const accs=[...new Set(ROWS.map(r=>r.account||''))];
   let h='<span class="flab">Account</span>';
@@ -925,7 +942,7 @@ function renderFilters(){
   $('filters').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{
     const set=c.dataset.t==='acct'?SEL.acct:SEL.pf, v=c.dataset.v;
     if(v===''){ set.clear(); } else { set.has(v)?set.delete(v):set.add(v); }
-    renderAll();
+    filterToHash(); renderAll();
   });
 }
 function renderCharts(rows){
@@ -1331,7 +1348,7 @@ async function boot(){
        display:none subtree measures 0 — which silently drew every chart at the
        800px fallback and shrank the labels to ~4px on a phone */
     $('loading').style.display='none'; $('app').style.display='';
-    buildRows(); renderAll(); applyHidden();
+    buildRows(); hashToFilter(); renderAll(); applyHidden();
     if(MODE==='web'){                              // deployed copy reads; the Mac writes
       $('btnSaveAcct').style.display='none';
       $('tblAcct').querySelectorAll('select').forEach(x=>x.disabled=true);
@@ -1351,6 +1368,7 @@ async function boot(){
   setInterval(updateBadge, 30000);
   let rt=null, lastW=innerWidth;
   syncStickyTop();
+  addEventListener('hashchange',()=>{ hashToFilter(); renderAll(); });   // manual URL edit / opened deep-link
   addEventListener('resize',()=>{                 // charts are width-derived; redraw on rotate/resize
     syncStickyTop();                              // header wraps at narrow widths → its height changes
     if(innerWidth===lastW) return;
