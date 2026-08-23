@@ -46,7 +46,8 @@
     </div>
     <button id="editBtn" class="hidden items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold bg-slate-800 text-white hover:bg-slate-900 shadow-sm transition">✏️ Edit Strategy</button>
   </div>
-  <p id="subtitle" class="text-xs text-slate-500 mb-4"></p>
+  <div id="subtitle" class="flex flex-wrap items-center gap-1.5 mb-4"></div>
+  <div id="stratStats" class="hidden grid-cols-2 lg:grid-cols-4 gap-3 mb-4"></div>
 
   <!-- Trendlyne-style action tabs: the strategy IS a live screen; backtests & rewind hang off it -->
   <div id="tabs" class="hidden items-center gap-1.5 mb-4 flex-wrap">
@@ -64,6 +65,7 @@ const $ = id => document.getElementById(id);
 const FREQ = { 1: 'Monthly', 3: 'Quarterly', 6: 'Half-yearly', 12: 'Yearly' };
 const SORTL = { changePercent: 'Change % desc', rsi: 'RSI', d52: '% from 52w High', d52_low_pct: '% from 52w Low', indRank: 'Industry rank', mcap: 'Mcap', hist_mcap: 'Hist mcap', profitYoyPct: 'Net Profit Qtr Growth YoY %', profitBase: 'Net Profit (year-ago Q)', profitAccel: 'Profit-growth acceleration', profitTTM: 'Profit growth TTM %', profitStreak: 'Profit-growth streak', postDrift: 'Post-result drift %', composite: 'Quality-Momentum composite' };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const num = v => (typeof v === 'number' && isFinite(v)) ? v : null;   // shared history is untrusted — guard every metric
 
 let HIST = [];
 let SF_END = '';   // latest data date (tiny sf_meta.json) → default End date for the run form
@@ -422,7 +424,30 @@ function setTab(t) {
 function renderStrategy(strat, list) {
   const c = strat.cfg;
   $('title').textContent = strat.name || 'Strategy';
-  $('subtitle').innerHTML = `${esc(universeLabel(c))} · ${FREQ[c.freq] || c.freq + 'mo'} · Top ${c.topN} · ${esc(SORTL[c.sortBy] || c.sortBy)} ${c.dir === 'high' ? '↓' : '↑'} · ${esc(filterExpr(c) || 'no filters')}`;
+  // config as chips (strategy fields come from the world-writable shared list — esc() everything)
+  const fx = filterExpr(c) || '';
+  const chip = (t, title) => `<span class="sw-chip" ${title ? `title="${esc(title)}"` : ''} style="max-width:360px;overflow:hidden;text-overflow:ellipsis">${t}</span>`;
+  $('subtitle').innerHTML = [
+    chip('🌐 ' + esc(universeLabel(c))),
+    chip('🔁 ' + esc(FREQ[c.freq] || c.freq + 'mo')),
+    chip('🧺 Top ' + (+c.topN || '?')),
+    chip('📊 ' + esc(SORTL[c.sortBy] || c.sortBy) + (c.dir === 'high' ? ' · prefer high' : ' · prefer low')),
+    chip('🔍 ' + esc(fx || 'no filters'), fx),
+  ].join('');
+  // at-a-glance record from this strategy's saved runs
+  let best = null, beat = 0, scored = 0, worstDD = null;
+  for (const b of list) { const m = b.m || {}, cg = num(m.cagr), bc = num(m.benchCagr), dd = num(m.maxDD);
+    if (cg != null && (best == null || cg > best.cg)) best = { cg, cfg: b.cfg || {} };
+    if (cg != null && bc != null) { scored++; if (cg >= bc) beat++; }
+    if (dd != null && (worstDD == null || dd > worstDD)) worstDD = dd; }
+  if (list.length) {
+    $('stratStats').classList.remove('hidden'); $('stratStats').classList.add('grid');
+    $('stratStats').innerHTML =
+      `<div class="sw-stat"><div class="sw-lb">Saved backtests</div><div class="sw-v">${list.length}</div><div class="sw-d">distinct windows for this strategy</div></div>
+       <div class="sw-stat"><div class="sw-lb">Best CAGR</div><div class="sw-v ${best && best.cg < 0 ? 'neg' : 'pos'}">${best ? (best.cg >= 0 ? '+' : '') + best.cg.toFixed(2) + '%' : '—'}</div><div class="sw-d">${best ? esc((best.cfg.start || '?') + ' → ' + (best.cfg.end || '?')) : 'run one to find out'}</div></div>
+       <div class="sw-stat"><div class="sw-lb">Beat Nifty 500</div><div class="sw-v ${scored ? (beat >= scored / 2 ? 'pos' : 'neg') : ''}">${scored ? beat + ' / ' + scored : '—'}</div><div class="sw-d">${scored ? Math.round(beat / scored * 100) + '% of scored runs' : 'no scored runs yet'}</div></div>
+       <div class="sw-stat"><div class="sw-lb">Worst drawdown</div><div class="sw-v ${worstDD != null ? 'neg' : ''}">${worstDD != null ? '-' + worstDD.toFixed(1) + '%' : '—'}</div><div class="sw-d">deepest fall across saved runs</div></div>`;
+  }
   $('tabs').classList.remove('hidden'); $('tabs').classList.add('flex');
   $('editBtn').classList.remove('hidden'); $('editBtn').classList.add('inline-flex');
   $('tabBt').textContent = `📈 Backtests (${list.length})`;
@@ -476,9 +501,24 @@ function renderStrategy(strat, list) {
   });
 }
 
-function renderNotFound() {
-  $('title').textContent = 'Strategy not found';
-  $('body').innerHTML = '<div class="card p-8 text-center text-slate-500 text-sm">Couldn\'t find this strategy. <a href="./saved-strategies.html" class="text-indigo-600 hover:underline">← Back to Saved Strategies</a></div>';
+// Landing when there's no strategy to show: a stale/deleted link (hadId) or no ?id= at all.
+// Instead of a dead end, offer the strategies this browser CAN open (names are untrusted — esc()).
+function renderNotFound(all, hadId) {
+  $('title').textContent = hadId ? 'Strategy not found' : 'Pick a strategy';
+  const strats = (all || []).filter(s => s && s.id && s.cfg).sort((a, b) => (+b.ts || 0) - (+a.ts || 0)).slice(0, 12);
+  const rows = strats.map(s => `<a href="?id=${encodeURIComponent(s.id)}" class="block rounded-xl border border-slate-200 bg-slate-50 p-4 hover:border-indigo-400 transition min-w-0">
+      <div class="font-bold text-slate-900 text-sm truncate">${esc(s.name || 'Unnamed strategy')}</div>
+      <div class="text-xs text-slate-500 mt-1 truncate">${esc(universeLabel(s.cfg))} · Top ${+s.cfg.topN || '?'} · ${esc(SORTL[s.cfg.sortBy] || s.cfg.sortBy || '')}</div>
+    </a>`).join('');
+  $('body').innerHTML = `<div class="card p-8 text-center">
+      <div class="text-4xl mb-3">🎯</div>
+      <div class="font-bold text-slate-900 mb-1">${hadId ? 'This strategy doesn’t exist any more' : strats.length ? 'Which strategy do you want to open?' : 'No strategies saved yet'}</div>
+      <p class="text-xs text-slate-500 max-w-md mx-auto mb-5">${hadId ? 'It may have been renamed or deleted. ' : ''}Every saved strategy gets a page like this — its 🎯 live picks, 📈 backtest history and 🕘 rewind all live here.${strats.length ? '' : ' Build one in the strategy builder and it shows up in Saved Strategies.'}</p>
+      ${strats.length ? `<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 text-left mb-6">${rows}</div>` : ''}
+      <div class="flex items-center justify-center gap-2 flex-wrap">
+        <a href="./saved-strategies.html" class="inline-flex items-center gap-2 bg-indigo-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-indigo-700 transition">⭐ Saved Strategies</a>
+        <a href="./stock-backtest.html" class="inline-flex items-center gap-2 border border-slate-300 text-sm font-semibold px-5 py-2.5 rounded-xl text-slate-700 hover:bg-slate-100 transition">🧪 Create a strategy</a>
+      </div></div>`;
 }
 
 (async function boot() {
@@ -493,7 +533,7 @@ function renderNotFound() {
   const all = loadLS('bt_strategies').concat(loadLS('bt_private_strategies'));   // 🔒 private strategies resolve by id/k too
   let strat = id ? all.find(s => s.id === id) : null;
   if (!strat && kParam) strat = all.find(s => identityKey(s.cfg) === kParam);
-  if (!strat) { renderNotFound(); return; }
+  if (!strat) { renderNotFound(all, !!(id || kParam)); return; }
   STRAT = strat;
   const k = identityKey(strat.cfg);
   const savedVars = all.filter(s => identityKey(s.cfg) === k);
