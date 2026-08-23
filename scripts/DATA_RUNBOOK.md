@@ -10896,6 +10896,18 @@ is a bounded sweep — extend the §87e recipe to demergers, starting with ALEMB
 (membership) is the largest lift — another pass of the §32 membership-hunt for the specific transient
 small-caps this run flagged, most of which are already on record as open in that section.
 
+### 102e. CLOSE-OUT (2026-08-23) — all 5 findings fixed at the data layer; record in PLAN_QUANTMAC_FIXES.md §E-J
+Membership: IndexInclExcl register merged + MC checkpoints reconciled + segment re-anchoring
+(24/24 flagged pairs non-member, controls intact, month-end sizes [481,520]). Staleness/look-ahead:
+ONE bidirectional placeholder defect; 22,581/36,027 cells re-dated from BSE broadcasts 15:30-gated
+(804 intimations, 206 year-ago comparatives, 230 bad lags REFUSED; classifier =
+scripts/_staleness_fix/classify.py, shared by fetcher/auditor/applier; raw rows cached so every
+rule tweak re-matches offline). 8/8 staleness trades verified ON ORIGIN; OMAXE = real 2012-05-30
+17:50 BSE disclosure (contradicts quantmac's 06-14); DELTACORP not reproduced. TTM: e7 pairwise
+(§102b). Demergers: ALEMBICLTD 2011 + WIPRO 2013 ledgered; HGS ₹150 special dividend = (prev−div)/prev
+(user-approved class). §104 pipeline measured DISJOINT (0-cell overlap). Pending: DII A/B +
+422-trade re-reconciliation, next-day live re-verify, cash-separation sweep.
+
 ## 103. ★★★ `docs/stock_data.bin`'s PRICE SERIES WAS FROZEN FOR ~10 WEEKS — weekly commits kept happening, prices didn't  (2026-08-20)
 
 **Symptom (user report, sectors.html):** opening any Sector/Industry/Sub-Industry detail modal showed
