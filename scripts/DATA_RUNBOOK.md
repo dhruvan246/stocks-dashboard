@@ -11105,7 +11105,7 @@ class 2 — FY-identity sweep results + XBRL adjudication tooling in `scripts/_p
 scratch `sweep_c2_verify.py`; fixes ONLY what the filer's own per-quarter XBRL contradicts,
 restatements are logged and left alone.
 
-## 105. ★★ PRE-2016 SHP VISIBILITY IS A DOCUMENTED CONVENTION — qe+21d, kept BY USER POLICY (2026-08-23)
+## 105. ★★ PRE-2016 SHP VISIBILITY = qe+21d CONVENTION — policy RESCINDED same day; recovery campaign in flight (2026-08-23)
 
 **The fact, measured to completeness:** every pre-2016 row in `docs/shp_engine.json` — **25,867 of
 25,867 (100.0%)** — carries a submission date of exactly quarter-end + 21 days. Not one real
@@ -11113,10 +11113,14 @@ submission timestamp exists in the store for that era (external replication "qua
 trades on this; BSE's archived shareholding pages carry the data but no submission timestamp, so
 the truth is not publicly recoverable per-filing).
 
-**The policy (user decision 2026-08-23, option "keep + document"):** the convention STAYS. Nulling
-pre-2016 subs would erase every DII/FII-sorted screen before 2016 wholesale; an evidence campaign
-has no public per-filing source to mine (Wayback captures give only sparse upper bounds — see the
-shp-wayback-2010 prior art). So the engines keep gating on `sub <= date` with sub = qe+21d there.
+**Policy history (both 2026-08-23):** the user first chose "keep + document", then RESCINDED it
+("find all") — correctly invoking §57: "no public per-filing source" had been asserted without a
+full route ladder. **Current state: scripts/PLAN_SHP_DATES.md is the campaign** — probe every
+route, recover real dates where they exist, and the convention survives ONLY on cells where every
+rung measured zero. First probes already run: BSE announcements stream = weak (SHP never rode
+it); NSE share-holdings-master carries broadcastDate+time but reaches ~2021+ only; BSE's SHP aspx
+page is a JS shell whose data API needs the js-bundle recipe. Nulling pre-2016 subs wholesale
+remains off the table (it would blind every pre-2016 FII/DII screen).
 
 **Why 21 days is the defensible convention and not an arbitrary number:** it is the era's
 regulatory filing DEADLINE for the quarterly shareholding pattern (listing agreement Clause 35;
@@ -11129,6 +11133,6 @@ session's WIP on 2026-08-23 — the source comment is deferred; add it when that
 consumed by `shpAt()` in docs/backtest-engine.js + stock-backtest.html (comment added at both,
 2026-08-23). Post-2015 rows carry real dates from the XBRL/scores filings and are NOT affected.
 
-**What would reopen this:** a per-filing submission-date source for 2006-2015 (none known), or the
-user choosing the null-pre-2016 policy. Until then, treat qe+21d-pre-2016 as a KNOWN, DOCUMENTED
-assumption — never "fix" it cell-by-cell, and never present pre-2016 SHP visibility as measured.
+**Until the campaign lands:** treat qe+21d-pre-2016 as a KNOWN, DOCUMENTED assumption in force —
+never present pre-2016 SHP visibility as measured, and route every recovered date through the
+PLAN_SHP_DATES ledger (never cell-edit shp_engine.json — nightly regeneration reverts it).

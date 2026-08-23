@@ -703,8 +703,8 @@ function isQuarterEnd(d) { return ({ 3: 31, 6: 30, 9: 30, 12: 31 }[Math.floor(d 
 // ⚠️ PRE-2016 sub dates are a CONVENTION, not measurements: every pre-2016 row carries
 // sub = quarter-end + 21 days exactly (25,867/25,867 measured 2026-08-23) — the era's
 // Clause-35/LODR filing DEADLINE, i.e. the latest a compliant filing could have gone
-// public. Kept by user policy (runbook §105): real per-filing dates for 2006-2015 are
-// not publicly recoverable, and nulling them would erase pre-2016 FII/DII screens.
+// public. A recovery campaign for the real dates is in flight (PLAN_SHP_DATES.md /
+// runbook §105); the convention stands per cell only until a measured date replaces it.
 function shpAt(sym, dateInt) {
   const arr = SHPD[sym] || (FUND_ALIAS[sym] ? SHPD[FUND_ALIAS[sym]] : null); if (!arr || !arr.length) return null;
   let ci = -1; for (let i = arr.length - 1; i >= 0; i--) { if (arr[i][3] <= dateInt) { ci = i; break; } }
