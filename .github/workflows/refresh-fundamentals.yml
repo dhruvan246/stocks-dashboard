@@ -362,8 +362,17 @@ jobs:
             # above: the reset threw away the pre-reset application, and other writers' payloads
             # must still get the corrected dates. Earlier-only, idempotent, no fetching. Runs
             # unconditionally (not FUND-gated): date corrections happen even on no-new-quarter days.
-            [ -f /tmp/ann_date_fills.json ] && cp /tmp/ann_date_fills.json scripts/ann_date_fills.json && git add scripts/ann_date_fills.json
-            [ -f /tmp/_ann_recon_skips.json ] && cp /tmp/_ann_recon_skips.json scripts/_ann_recon_skips.json && git add scripts/_ann_recon_skips.json
+            # UNION-merge, never cp: the /tmp snapshot predates the reset --hard above, and a
+            # session may have pushed NEW ledger entries while this job ran — a plain cp restores
+            # the stale snapshot over them (this exact clobber wiped 1,240 tier-2 entries on the
+            # 2026-08-23 15:02 run). Current tree (= origin, post-reset) wins per key; the
+            # snapshot only re-adds keys this run itself created before the reset.
+            for LF in scripts/ann_date_fills.json scripts/_ann_recon_skips.json; do
+              if [ -f "/tmp/$(basename $LF)" ]; then
+                python3 -c "import json,os; lf='$LF'; sn='/tmp/'+os.path.basename(lf); cur=json.load(open(lf)) if os.path.exists(lf) else {}; snap=json.load(open(sn)); m={**snap, **cur}; json.dump(m,open(lf,'w'),separators=(',',':')); print(lf,'union:',len(snap),'snap +',len(cur),'tree ->',len(m))"
+                git add "$LF"
+              fi
+            done
             python3 -X utf8 scripts/backfill_ann_dates_bse.py --reapply || echo "::warning::ann-date ledger reapply failed"
             git add docs/sf_fundamentals.json
             # Fill-coverage scoreboard (docs/fill-coverage.html) — built HERE, inside the loop and
