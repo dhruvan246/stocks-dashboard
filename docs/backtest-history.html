@@ -49,7 +49,10 @@ const pct=n=>num(n)==null?'—':(n>=0?'+':'')+n.toFixed(2)+'%';
 const fdate=ts=>{const d=new Date(ts);return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});};
 
 function render(){
-  const items=load();
+  // Always show newest-first by saved time — the shared array's stored order can drift
+  // (concurrent appends, whole-array owner rewrites). ts is untrusted: num() guards it,
+  // entries with a missing/invalid ts sink to the bottom.
+  const items=load().sort((a,b)=>(num(b.ts)||0)-(num(a.ts)||0));
   if(!items.length){ $('list').innerHTML='<div class="card p-8 text-center text-slate-400 text-sm">No backtests yet.</div>'; return; }
   $('list').innerHTML=`<div class="card overflow-x-auto"><table class="w-full text-sm">
     <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>
