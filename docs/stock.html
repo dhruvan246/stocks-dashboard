@@ -472,7 +472,8 @@ function render(){
  * Net profit comes from sf_fundamentals (point-in-time, OWNERS-attributable — never
  * swap in sf_revop's PAT mirror slots). Revenue / operating profit / EBIT come from
  * sf_revop, whose per-quarter cell is
- *   [revStd, revCon, opStd, opCon, patStd, patCon, fin, ebitStd, ebitCon]
+ *   [revStd, revCon, opStd, opCon, patStd*, patCon*, fin, ebitStd, ebitCon]
+ *   (* = PAT MIRROR, incomplete, never rendered or measured — runbook §70/§70d)
  * with op = EBITDA (revenue - opex excl. interest & depreciation) and ebit = op - dep.
  * fin=1 marks banks/NBFCs, whose "revenue" is interest earned and whose margins aren't
  * comparable to industrials — flagged in the note rather than hidden.

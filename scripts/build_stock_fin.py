@@ -19,7 +19,8 @@ WHAT IT REPLACES
   fund   point-in-time quarterly net profit, OWNERS-attributable
          [[qEndYYYYMMDD, npStd, annStd, npCon, annCon], …]  (sf_fundamentals.json)
   revop  {qEnd: [revStd, revCon, opStd, opCon, patStd, patCon, fin, ebitStd, ebitCon]}
-         (sf_revop.json — op = EBITDA, fin=1 marks banks/NBFCs)
+         (sf_revop.json — op = EBITDA, fin=1 marks banks/NBFCs; idx4/idx5 are a PAT
+         MIRROR only — incomplete, never rendered; PAT authority is `fund`, runbook §70)
   shpQ   quarter-end dates, newest first ] the stock's row of the quarterly
   shp    the matching holding cells       ] shareholding-pattern feed
   shpH   FULL shareholding history, oldest first (scripts/shp_history.json —

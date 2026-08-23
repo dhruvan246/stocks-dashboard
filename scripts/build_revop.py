@@ -23,9 +23,16 @@ and "operating profit" aren't comparable to industrials, so the aggregator drops
 two medians (keeps them in PAT) — matching how Trendlyne reports the results-season figure.
 
 Output: scripts/revop_fundamentals.json = { SYM: { "QE": [revStd, revCon, opStd, opCon,
-        patStd, patCon, fin], ... } }  (values in Rs crore; null where the basis wasn't filed;
-        fin = 1 if financial). LATEST filing wins per cell (revisions supersede provisional
-        results; a descriptive median wants the finalised figure).
+        patStd, patCon, fin, ebitStd, ebitCon], ... } }  (values in Rs crore; null where the
+        basis wasn't filed; fin = 1 if financial). LATEST filing wins per cell (revisions
+        supersede provisional results; a descriptive median wants the finalised figure).
+
+        ★ idx4/idx5 (patStd/patCon) are a PAT MIRROR, NOT the PAT store. Authority for net profit
+        is sf_fundamentals.json (npStd idx1 / npCon idx3) — runbook §70. The mirror is filled only
+        where an XBRL was parsed (2018+) or the 15-min upsert touched the row, so it is INCOMPLETE:
+        2026-08-23 measured 83-169 Nifty-500 quarters/yr (2018-2022) present in sf_fundamentals and
+        null here. The backtest engine never loads sf_revop; the Coverage Matrix's patStd/patCon
+        read sf_fundamentals. NEVER measure PAT coverage, or render PAT, from these two slots.
 
 Run:  python -X utf8 build_revop.py [--limit N] [--fresh]
 Resumable: checkpoints to scripts/_revop_progress.json every 10k files.

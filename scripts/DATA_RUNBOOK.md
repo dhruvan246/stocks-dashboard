@@ -53,7 +53,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§40** STOCK PAGE = PER-STOCK SLICES · **§40b** ★ REPORTING BASIS — one basis per comparison
 - **§41** ★ PUBLISHING A DATA HEAL — "live on the server" ≠ "the site uses it" (**read before ANY heal / backfill**)
 - **§42–§58** ROUTE & SOURCE DISCOVERIES (detres JSON, FY identity, pre-2020 std/con ceilings, CI clobber, the ROUTE LADDER, the STANDARD BACKFILL READ)
-- **§70** ★★★ sf_fundamentals vs sf_revop DISAGREE — authority is fundamentals; the mirror is not rendered
+- **§70** ★★★ sf_fundamentals vs sf_revop DISAGREE — authority is fundamentals; the mirror is not rendered · §70d the mirror is also SPARSE — never measure PAT coverage from sf_revop idx4/5
 - **§71** ★★★ THE ADJUDICATION THAT WAS ABANDONED — when your "truth" source is the corrupted one
 - **§72** ★★★ VERIFYING REV/PAT vs EXTERNAL SITES — sites reach 10 of 95 quarters; con PAT has no site quorum
 - **§76** ★★★ A `scrip_id` EQUAL TO THE TICKER IS A COINCIDENCE — gate symbol→BSE-scrip on ISIN (**read before any BSE-keyed fill**)
@@ -6380,6 +6380,31 @@ RENUKA  2021-03-31   -44.9 ->  -44.0   FY21 owners -34.9+105.4+-141.2+-44.0 = -1
 ```
 SADBHAV Dec-2020 is the one to remember: **neither file held the right number.** "The two files
 disagree" does not mean one of them is right.
+
+### 70d. The mirror is also INCOMPLETE — never measure PAT coverage from it  (2026-08-23)
+A session asked for Nifty-500 std-PAT coverage, counted `sf_revop` idx4 (`patStd`), and reported a
+fake **91-95% dip across 2018-2022** — the live Coverage Matrix (baked 2026-08-23 01:29 IST) reads
+**100.00% on all 80 month-ends 2020-01 → 2026-08** for the same parameter, because `patStd` there is
+`sf_fundamentals idx1` gated on its own announce date (build_coverage_matrix.js:145). The engine
+never loads `sf_revop.json` at all (backtest-engine.js fetches only sf_fundamentals + shp_engine).
+
+The mirror is not wrong where it holds a value (≤2 disagreements/yr after §71) — it is **sparse**.
+Measured, Nifty-500 point-in-time roster, std PAT present in sf_fundamentals but NULL in the mirror:
+
+| 2018 | 2019 | 2020 | 2021 | 2022 | 2023 | 2024 | 2025 |
+|---|---|---|---|---|---|---|---|
+| 83 | 137 | **169** | 140 | 128 | 61 | 7 | 14 |
+
+Cause: `build_revop.py` fills idx4/5 only from a parsed XBRL (cache era 2018+); the 15-min upsert
+(`update_fundamentals.py:264-265`) only touches rows it is already writing; the std-PAT fill
+campaigns write `sf_fundamentals` and never the mirror. Nothing is broken — but a reader who sees a
+slot named `patStd` in build_revop's docstring will trust it, exactly as `build_discovery.ttm_pat`
+did in §70a. Removal was considered and rejected 2026-08-23: the slots sit at positions 4/5 of a
+positional 9-column row read by 17 scripts + 2 pages, three writers populate them, and the
+fund-vs-revop diff is the free defect detector that found §70/§71. **Stamped instead**: the
+docstrings in `build_revop.py`, `build_stock_fin.py` and the `stock.html` financials block now say
+MIRROR. ★ **PAT coverage and PAT rendering come from `sf_fundamentals` only; `sf_revop` idx4/5 is
+for the fund-vs-revop diff and nothing else.**
 
 
 ---
