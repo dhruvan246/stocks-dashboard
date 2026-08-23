@@ -128,6 +128,23 @@ never commit a partial bake · push via the CLAUDE.md retry recipe · verify LIV
 - 2026-08-24 01:30 IST — P0 complete. Queue: price_norow 14 · shp_level 4 · shp_prior_quarter 614 ·
   pat_con 586 · pat_std 2,623. All `open`.
 
+## 4b. RESUME HERE (2026-08-24 02:40 IST — written for the next session, any model)
+
+P1 pushed as 9a6b9b3e6. IN FLIGHT at time of writing — VERIFY, don't re-run blindly:
+1. refresh-backtest-data run 32663592806 — must apply the RASOYPR surgery to the LIVE release bin
+   (update_sf_data.apply_series_surgery). Verify: download the release asset (scripts/fetch_live_sf.py)
+   and check RASOYPR 20130930 close == 14.85. If the run failed, dispatch it again.
+2. refresh-membership run 32663570384/32663594605 — must reproduce scripts/indices_history.json
+   byte-identical to origin (the P1 roster: GBGLOBAL in, TANDHANIN out, SUMMIT era). Compare like
+   §106f/§106g did. My local build already matched 39/39 official lists.
+3. THEN dispatch refresh-coverage.yml (the 01:10 IST nightly bake ran BEFORE these landed), then
+   pages.yml, then verify LIVE with ?cb= : the six technical params must read ≥ 99% every month
+   2009+ (5 residual member-months are §5 decision items).
+4. THEN continue with P2 (shp_level: MVL/SHLAKSHMI/INNOIND/SPSL — 40 member-months after P1) and
+   P3 (pat_con 586 root cells, routes in §2). Queue statuses in scripts/fav14_queue.json.
+Rules that bind every step: §57 ladder logged per cell · run-twice idempotency · bake-and-measure
+before commit · file-scoped adds · worktree ~/stocks-wt/fav14-cov (this one) or a fresh one.
+
 ## 5. Decision checkpoints
 
 1. **N/A classes:** 15,068 member-months across the 14 params are already excluded as evidence-backed
