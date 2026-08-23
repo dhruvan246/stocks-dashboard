@@ -355,6 +355,12 @@ function lastSessionISO(){
   (ROWS.length?ROWS:[]).forEach(r=>{ const s=SERIES[r.hist]; if(s&&s.d&&s.d.length) mx=Math.max(mx,s.d[s.d.length-1]); });
   return mx<0?null:offToISO(mx);
 }
+function lastCloseISO(){
+  // the session the shown prices belong to: post-close on a trading day that's TODAY (the live quote
+  // already carries today's close), else the most recent session in the data. NSE weekday holidays
+  // aren't modelled, so on one this names today rather than the real prior session.
+  return sessionIsToday()? istTodayISO() : lastSessionISO();
+}
 function dayWord(){ return sessionIsToday()?'Today':'Last session'; }
 function dayWhen(){ if(sessionIsToday()) return ''; const d=lastSessionISO(); return d?' ('+shortDate(d)+')':''; }
 
@@ -1280,9 +1286,16 @@ function renderAll(){
 function updateBadge(){
   const open=marketOpen(), p=istParts();
   $('liveDot').className='dot'+(open?' on':'');
-  const age=QASOF?Math.round((Date.now()-QASOF)/1000):null;
-  $('clock').textContent=(open?'LIVE · ':'Market closed · ')+p.hour+':'+p.minute+' IST'+
-    (age!=null?' · prices '+(age<90?'just now':Math.round(age/60)+' min old'):'');
+  if(open){
+    const age=QASOF?Math.round((Date.now()-QASOF)/1000):null;
+    $('clock').textContent='LIVE · '+p.hour+':'+p.minute+' IST'+
+      (age!=null?' · prices '+(age<90?'just now':Math.round(age/60)+' min old'):'');
+  } else {
+    // Closed: the fetch may be seconds old but the DATA is last session's close — say which session,
+    // not "just now" (which read as live even on a Sunday).
+    const d=lastCloseISO();
+    $('clock').textContent='Market closed · '+(d? 'last close '+longDate(d) : p.hour+':'+p.minute+' IST');
+  }
 }
 /* ============================ boot ============================ */
 function syncStickyTop(){ const hd=document.querySelector('header'); if(hd) document.documentElement.style.setProperty('--hh', hd.offsetHeight+'px'); }
