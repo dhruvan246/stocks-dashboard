@@ -558,16 +558,9 @@ const FUND_ALIAS = {"3IINFOTECH":"3IINFOLTD","4THDIM":"GVPTECH","8KMILES":"SECUR
 function fundFor(sym) { return FUND[sym] || (FUND_ALIAS[sym] ? FUND[FUND_ALIAS[sym]] : null) || null; }
 const FUND_FIELDS = new Set(['profitYoyPct', 'profitBase', 'profitAccel', 'profitTTM', 'profitStreak', 'postDrift', 'composite']);
 function needsFund(cfg) { return FUND_FIELDS.has(cfg.sortBy) || (cfg.filters || []).some(f => FUND_FIELDS.has(f.field)); }
-// Earnings-basis DISPLAY tag for a strategy name. `earnBasis` (consolidated/standalone) is part of
-// identity (ruleKey) but was invisible in the name — so two rules identical but for basis looked like
-// duplicates with different returns (the DII-holding pair, 2026-08-23). Tag only rules that actually READ
-// earnings (needsFund) — a technical-only rule ignores basis, so tagging it would be misleading noise.
-// Wording matches the #cEarn selector (Consolidated/Standalone); default 'con' mirrors `earnBasis||'con'`.
-// Home here because all three strategy-list pages (saved-strategies, strategy-backtest, all-picks) load
-// this engine; stock-backtest.html inlines the same tag in its own strategyLabel(). Keep the two in sync.
-function basisSuffix(c) { return (c && needsFund(c)) ? (' · ' + (c.earnBasis === 'std' ? 'Standalone' : 'Consolidated')) : ''; }
-// Append the tag to a display name, idempotently (a stored name already baked with it isn't doubled).
-function nameWithBasis(name, c) { const s = basisSuffix(c); name = name || ''; return (s && !name.endsWith(s)) ? name + s : name; }
+// Strategy-name DISPLAY helpers (basisSuffix / nameWithBasis / strategyEnglish) live in the shared
+// bt-names.js — loaded by every page that shows a strategy name, including the slim ones that don't
+// load this engine (live-tracking, backtest-history, stock-backtest). Not duplicated here.
 function dateIntOff(off) { return parseInt(isoOff(off).replace(/-/g, ''), 10); }
 function profitAt(sym, dateInt, basis) {
   const arr = fundFor(sym); if (!arr || !arr.length) return null;

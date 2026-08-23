@@ -7,6 +7,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
+<script src="./bt-names.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./bt-sync.js"></script>
 <style>
@@ -1290,7 +1291,7 @@ function render(r,cfg){
     ${card('Win rate', r.winRate.toFixed(0)+'%', r.rebs.length+' rebalances','')}
   </div>`;
   html+=`<div class="card p-3 mb-4 flex flex-wrap items-center gap-2">
-      <span class="text-xs text-slate-500 mr-1">${strategyLabel(cfg)}</span>
+      <span class="text-xs text-slate-500 mr-1" title="Code-name: ${esc(strategyLabel(cfg))}">${esc(strategyEnglish(cfg) || strategyLabel(cfg))}</span>
       ${window.__snapshotMode?'<span class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700">⚡ Instant saved result</span>':''}
       ${(window.__snapshotMode||window.__viewOnly)?'':'<span class="inline-flex items-center gap-1 text-xs font-semibold text-green-700">✓ Auto-saved to History</span>'}
       ${(window.__snapshotMode||window.__viewOnly)?'' : (window.__loadedSaved

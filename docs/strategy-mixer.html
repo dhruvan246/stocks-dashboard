@@ -7,6 +7,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
+<script src="./bt-names.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./bt-sync.js"></script>
 <style>
@@ -293,7 +294,7 @@ function saveState(){
 function loadState(){ try { return JSON.parse(localStorage.getItem('mix_state_v1') || 'null'); } catch(e){ return null; } }
 
 /* ---------- picker list ---------- */
-function stratName(s){ return s.name || strategyLabel(s.cfg); }
+function stratName(s){ return strategyEnglish(s.cfg) || s.name || (typeof strategyLabel === 'function' ? strategyLabel(s.cfg) : ''); }
 function stratHref(s){ return './strategy-backtest.html?id=' + encodeURIComponent(s.id); }
 function shortName(s, n){ const t = stratName(s); return t.length > n ? t.slice(0, n - 1) + '…' : t; }
 
@@ -602,7 +603,7 @@ function drawEq(M){
       d.setAttribute('cx', sx); d.setAttribute('cy', y(v)); d.style.display = '';
       topY = Math.min(topY, y(v));
       const base = s.vals.find(b => b != null), r = base ? (v / base - 1) * 100 : null;
-      html += `<br><span style="color:${s.color}">●</span> ${esc(s.name)} ${fmtINR(v)}${r == null ? '' : ` <span style="color:${r >= 0 ? '#4ade80' : '#f87171'}">(${r >= 0 ? '+' : ''}${r.toFixed(1)}%)</span>`}`;
+      html += `<br><span style="color:${s.color}">●</span> ${esc(stratName(s))} ${fmtINR(v)}${r == null ? '' : ` <span style="color:${r >= 0 ? '#4ade80' : '#f87171'}">(${r >= 0 ? '+' : ''}${r.toFixed(1)}%)</span>`}`;
     });
     tip.innerHTML = html; tip.style.display = '';
     tip.style.left = (sx / W * rect.width) + 'px';

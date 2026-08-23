@@ -7,6 +7,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
+<script src="./bt-names.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./bt-sync.js"></script>
 <style>
@@ -80,14 +81,14 @@ function renderStats(items){
   let beat=0,scored=0,best=null;
   for(const it of items){const m=it.m||{},c=num(m.cagr),b=num(m.benchCagr);
     if(c!=null&&b!=null){scored++; if(c>=b)beat++;}
-    if(c!=null&&(best==null||c>best.c))best={c,label:it.label};}
+    if(c!=null&&(best==null||c>best.c))best={c,label:it.label,cfg:it.cfg};}
   const latest=items.find(it=>num(it.ts)!=null);   // items arrive sorted newest-first
   const hit=scored?Math.round(beat/scored*100):null;
   $('stats').innerHTML=`
     <div class="sw-stat"><div class="sw-lb">Backtests</div><div class="sw-v">${items.length}</div><div class="sw-d">in the shared history</div></div>
     <div class="sw-stat"><div class="sw-lb">Beat Nifty 500</div><div class="sw-v ${hit==null?'':(hit>=50?'pos':'neg')}">${scored?beat+' / '+scored:'—'}</div><div class="sw-d">${hit==null?'no scored runs yet':hit+'% of scored runs'}</div></div>
-    <div class="sw-stat"><div class="sw-lb">Best CAGR</div><div class="sw-v ${best&&best.c<0?'neg':'pos'}">${best?pct(best.c):'—'}</div><div class="sw-d" title="${best?esc(best.label):''}">${best?esc(best.label||''):'run one to claim it'}</div></div>
-    <div class="sw-stat"><div class="sw-lb">Latest run</div><div class="sw-v">${latest?(rel(latest.ts)||fdateD(latest.ts)):'—'}</div><div class="sw-d" title="${latest?esc(latest.label):''}">${latest?esc(latest.label||''):''}</div></div>`;
+    <div class="sw-stat"><div class="sw-lb">Best CAGR</div><div class="sw-v ${best&&best.c<0?'neg':'pos'}">${best?pct(best.c):'—'}</div><div class="sw-d" title="${best?'Code-name: '+esc(nameWithBasis(best.label,best.cfg)):''}">${best?esc(strategyEnglish(best.cfg)||best.label||''):'run one to claim it'}</div></div>
+    <div class="sw-stat"><div class="sw-lb">Latest run</div><div class="sw-v">${latest?(rel(latest.ts)||fdateD(latest.ts)):'—'}</div><div class="sw-d" title="${latest?'Code-name: '+esc(nameWithBasis(latest.label,latest.cfg)):''}">${latest?esc(strategyEnglish(latest.cfg)||latest.label||''):''}</div></div>`;
 }
 
 function render(){
@@ -115,7 +116,7 @@ function render(){
           <span class="exparrow">${hasY?'▶':''}</span>
           <div><div class="sw-cellmain text-[13px]">${fdateD(it.ts)}</div><div class="sw-cellsub">${esc(fdateT(it.ts))}${r?' · '+r:''}</div></div>
         </div></td>
-        <td class="px-3"><div class="sw-cellmain text-[13px]">${esc(it.label||'—')}</div><div class="sw-cellsub">${esc(c.start||'?')} → ${esc(c.end||'?')}</div></td>
+        <td class="px-3"><div class="sw-cellmain text-[13px]" title="Code-name: ${esc(nameWithBasis(it.label,c))}">${esc(strategyEnglish(c)||it.label||'—')}</div><div class="sw-cellsub">${esc(c.start||'?')} → ${esc(c.end||'?')}</div></td>
         <td class="text-right px-3 ${(num(m.cagr)||0)>=0?'pos':'neg'}">${pct(m.cagr)}</td>
         <td class="text-right px-3 whitespace-nowrap"><span class="sw-chip ${beat?'pos':'neg'}" title="Nifty 500 CAGR over the same period — ${beat?'strategy beat it':'strategy lagged it'}"><span class="sw-dot"></span>${pct(m.benchCagr)}</span></td>
         <td class="text-right px-3 neg">${num(m.maxDD)!=null?'-'+m.maxDD.toFixed(2)+'%':'—'}</td>

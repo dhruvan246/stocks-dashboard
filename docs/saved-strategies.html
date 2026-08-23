@@ -7,6 +7,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
+<script src="./bt-names.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./bt-sync.js"></script>
 <script src="./bt-identity.js"></script>
@@ -461,7 +462,7 @@ function yearRows(g) {
 function yearCardHTML(g) {
   const rows = yearRows(g);
   const head = `<div class="px-3 py-1.5 border-b border-slate-200 bg-slate-50">
-      <div class="text-[11px] font-semibold text-slate-800 leading-snug line-clamp-2">${esc(nameWithBasis(g.rep.name, g.rep.cfg))}</div>
+      <div class="text-[11px] font-semibold text-slate-800 leading-snug line-clamp-2" title="Code-name: ${esc(nameWithBasis(g.rep.name, g.rep.cfg))}">${esc(strategyEnglish(g.rep.cfg))}</div>
       <div class="text-[10px] text-slate-500">Calendar-year returns${g.rep.cfg.topN != null ? ' · ' + g.rep.cfg.topN + ' stocks' : ''}</div>
     </div>`;
   // Empty is usually not a gap in the data but a stock-count mismatch: since counts became part of a
@@ -614,7 +615,7 @@ function render() {
   {
     let best = null, newest = null, beat = 0, scored = 0;
     for (const g of groups.values()) {
-      if (isFinite(g.cagr) && (best == null || g.cagr > best.c)) best = { c: g.cagr, name: g.rep.name };
+      if (isFinite(g.cagr) && (best == null || g.cagr > best.c)) best = { c: g.cagr, name: g.rep.name, cfg: g.rep.cfg };
       if (!newest || (g.rep.ts || 0) > (newest.ts || 0)) newest = g.rep;
       let bb = null;
       for (const b of g.list) { const m = b.m || {}; if (typeof m.cagr === 'number' && isFinite(m.cagr) && (bb == null || m.cagr > bb.c)) bb = { c: m.cagr, bench: m.benchCagr }; }
@@ -624,9 +625,9 @@ function render() {
     $('ssStats').classList.remove('hidden'); $('ssStats').classList.add('grid');
     $('ssStats').innerHTML =
       `<div class="sw-stat"><div class="sw-lb">Strategies</div><div class="sw-v">${groups.size}</div><div class="sw-d">${items.length} saved variant${items.length === 1 ? '' : 's'}</div></div>
-       <div class="sw-stat"><div class="sw-lb">Best CAGR</div><div class="sw-v ${best && best.c < 0 ? 'neg' : 'pos'}">${best ? pct(best.c) : '—'}</div><div class="sw-d" title="${best ? esc(best.name || '') : ''}">${best ? esc(best.name || '') : 'run a backtest to rank them'}</div></div>
+       <div class="sw-stat"><div class="sw-lb">Best CAGR</div><div class="sw-v ${best && best.c < 0 ? 'neg' : 'pos'}">${best ? pct(best.c) : '—'}</div><div class="sw-d" title="${best ? 'Code-name: ' + esc(nameWithBasis(best.name, best.cfg)) : ''}">${best ? esc(strategyEnglish(best.cfg)) : 'run a backtest to rank them'}</div></div>
        <div class="sw-stat"><div class="sw-lb">Beat Nifty 500</div><div class="sw-v ${scored ? (beat >= scored / 2 ? 'pos' : 'neg') : ''}">${scored ? beat + ' / ' + scored : '—'}</div><div class="sw-d">${scored ? 'on each one’s best saved run' : 'no scored runs yet'}</div></div>
-       <div class="sw-stat"><div class="sw-lb">Latest save</div><div class="sw-v" style="font-size:22px">${newestDate}</div><div class="sw-d" title="${newest ? esc(newest.name || '') : ''}">${newest ? esc(newest.name || '') : ''}</div></div>`;
+       <div class="sw-stat"><div class="sw-lb">Latest save</div><div class="sw-v" style="font-size:22px">${newestDate}</div><div class="sw-d" title="${newest ? 'Code-name: ' + esc(nameWithBasis(newest.name, newest.cfg)) : ''}">${newest ? esc(strategyEnglish(newest.cfg)) : ''}</div></div>`;
   }
   const favs = loadFavs();
   // sort: 'new' = most-recently-saved; 'custom' = by the computed custom-window CAGR (uncomputed sink to the bottom); else headline CAGR
@@ -705,7 +706,7 @@ function render() {
         <div class="flex items-center gap-3">
           <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">📈</span>
           <span class="min-w-0">
-            <span class="block font-semibold text-indigo-700 leading-snug"><span data-yrs="${esc(it.id)}" title="">${esc(nameWithBasis(it.name, c))}</span></span>
+            <span class="block font-semibold text-indigo-700 leading-snug"><span data-yrs="${esc(it.id)}" title="Code-name: ${esc(nameWithBasis(it.name, c))}">${esc(strategyEnglish(c))}</span></span>
             <span class="block text-[11px] text-slate-500 truncate">${esc(universeLabel(c))} · ${FREQ[c.freq] || c.freq + 'mo'} · ${countLabel} · ${SORTL[c.sortBy] || c.sortBy} ${c.dir === 'high' ? '↓' : '↑'} · ${n} backtest${n > 1 ? 's' : ''}</span>
             ${(c.filters || []).length ? `<span class="block text-[11px] text-slate-400 truncate" title="${esc(expr)}">Filters: ${esc(expr)}</span>` : ''}
           </span>
@@ -950,7 +951,7 @@ async function ensureEngine() {
 async function openPicks(id) {
   const it = DETAIL[id] || strategies().find(x => x.id === id); if (!it) return;
   CUR = it;
-  $('mTitle').innerHTML = `🎯 Today's Picks · ${esc(nameWithBasis(it.name, it.cfg))}`;
+  $('mTitle').innerHTML = `🎯 Today's Picks · ${esc(strategyEnglish(it.cfg))}`;
   $('mFilters').innerHTML = '<span class="text-slate-500">Loading market data…</span>';
   $('modal').classList.remove('hidden');
   if (!await ensureEngine()) { $('mFilters').innerHTML = '<span class="text-amber-600">Couldn’t load market data — try again.</span>'; return; }

@@ -7,6 +7,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
+<script src="./bt-names.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./bt-sync.js"></script>
 <script src="./bt-identity.js"></script>
@@ -423,7 +424,8 @@ function setTab(t) {
 
 function renderStrategy(strat, list) {
   const c = strat.cfg;
-  $('title').textContent = nameWithBasis(strat.name || 'Strategy', c);
+  $('title').textContent = strategyEnglish(c) || strat.name || 'Strategy';
+  $('title').title = 'Code-name: ' + nameWithBasis(strat.name || 'Strategy', c);
   // config as chips (strategy fields come from the world-writable shared list — esc() everything)
   const fx = filterExpr(c) || '';
   const chip = (t, title) => `<span class="sw-chip" ${title ? `title="${esc(title)}"` : ''} style="max-width:360px;overflow:hidden;text-overflow:ellipsis">${t}</span>`;

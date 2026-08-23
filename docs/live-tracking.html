@@ -7,6 +7,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
+<script src="./bt-names.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; font-feature-settings:"tnum" 1; }
@@ -94,7 +95,8 @@
 
   function drawChart(s){
     SEL = s.sid;
-    $('cTitle').textContent = s.name;
+    $('cTitle').textContent = strategyEnglish(s.cfg) || s.name;
+    $('cTitle').title = 'Code-name: ' + (nameWithBasis(s.name, s.cfg) || s.name || '');
     const cfgBits = s.cfg ? [ s.cfg.sortBy + ' (' + s.cfg.dir + ')', 'top ' + (s.topN || s.cfg.topN), (FREQL[s.freq] || s.freq + 'mo') + ' rebalance',
       s.cfg.indexName || null ].concat(s.cfg.filters || []).filter(Boolean) : ['top ' + s.topN, (FREQL[s.freq] || s.freq + 'mo') + ' rebalance'];
     $('cCfg').textContent = cfgBits.join(' · ');
@@ -146,7 +148,7 @@
     $('rows').innerHTML = list.map(s => {
       const nr = niftyRet(s), alpha = nr == null ? null : s.ret - nr;
       return '<tr class="hover:bg-slate-50 cursor-pointer" data-sid="' + esc(s.sid) + '">' +
-        '<td class="py-2.5 px-3"><div class="font-bold text-slate-900">' + esc(s.name) + '</div>' +
+        '<td class="py-2.5 px-3"><div class="font-bold text-slate-900" title="Code-name: ' + esc(nameWithBasis(s.name, s.cfg) || s.name || '') + '">' + esc(strategyEnglish(s.cfg) || s.name) + '</div>' +
           '<div class="text-[10.5px] text-slate-400">' + (FREQL[s.freq] || s.freq + 'mo') + ' · top ' + (s.topN || '?') + '</div></td>' +
         '<td class="text-right px-3 whitespace-nowrap text-slate-500">' + fmtD(s.since) + '</td>' +
         '<td class="text-right px-3 text-slate-500">' + s.points + '</td>' +
