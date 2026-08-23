@@ -668,3 +668,41 @@ pages.yml dispatch + live `?cb=` verify PENDING after it lands. Known residue, r
 unmapped register names (mostly dead, outside tracked universe); alias-space mismatches on a few
 in-window legs (CEATLTD-vs-CEAT class) — window-local, bounded by pins, strictly no worse than the
 missing-event status quo; 2008 MC-era months read up to 520 (+20 scraped-era slop).
+
+
+---
+
+## J. P2 CLOSE-OUT — APPLIED, PUSHED, ORIGIN-VERIFIED (2026-08-23)
+
+**Final numbers (v3.1 matcher, after 6 live-case classifier corrections):** 22,581 of 36,027
+placeholder cells re-dated from BSE broadcast timestamps, 15:30-gated (15,5xx earlier / 7,0xx
+later); refused rather than guessed: 804 intimation-sourced, 206 year-ago comparatives, 230
+implausible lags; 8,614 no-confident-match + ~3,3xx already-correct keep the placeholder; 328
+provenance-tagged [secondary]. Contract on the shipped ledger: 0 pre-qe, 0 future, 0
+intimation-sourced; apply idempotent (byte-identical second run); redate_ledger.json committed.
+
+**Post-push defect found & fixed (v3.1):** MUNJALSHOW qe20090630 kept its placeholder — an April
+"FY 09 results BY Jun 30, 2009" timing-notice bare-date-matched the quarter, beat the real July
+filing on earliest-wins, and died at the lag<0 gate, losing the cell. `results by <date>` →
+intimation; +284 cells recovered, lag-rejections 1,049→230. The raw-row cache made every such
+iteration an offline re-match (seconds), exactly as F4 intended.
+
+**All 8 quantmac staleness trades verified ON ORIGIN:** MARICO 20090422 exact · HEROMOTOCO
+20090121 (20th gated) · CANFINHOME 20130121 (Sat 16:25→Mon) · GEOJITFSL 20150114 (16:17→next day)
+· MUNJALSHOW 20090728 (18:40→next day) · ALFALAVAL 20111021 (15:01, same day) · DHANI 20140422
+(both bases) · HINDUNILVR 20090127 (BSE broadcast; their 2009-01-25 is a newspaper print — ours
+2d conservative, no look-ahead). Finding 2's OMAXE → 20120531 (real 2012-05-30 17:50 disclosure;
+NB BSE contradicts quantmac's 2012-06-14 — raise in the reply).
+
+**§104 coordination (the mid-campaign race):** another session's ann-date truth pipeline
+(override ledger + nightly BSE reconcile) landed while P2 ran. MEASURED disjoint: their 161
+override cells ∩ these 22,581 = 0; their fill-only entries need ann==0; their nightly --reapply
+is earlier-only. No fight. Race itself resolved per the minified-JSON rule (reset to fresh
+origin, re-ran the applier).
+
+**Rebuild-proofing note:** these 22,581 live as direct values + the committed redate_ledger.json;
+a hypothetical full placeholder-regeneration would need `apply_redating.py --apply` re-run (docs
+in _staleness_fix/). The 786 agg-ledger-backed cells are additionally sync-protected.
+
+**Still pending:** live `?cb=` verify after pages deploy · next-day re-verify (CI race window) ·
+DII strategy A/B + full 422-trade re-reconciliation vs quantmac's log · response workbook rebuild.
