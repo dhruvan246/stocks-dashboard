@@ -72,6 +72,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§100f** ★★★ …and the SAME wrong row was in the **STANDALONE** slot for the 3 quarters before it (one upstream, two slots). Healed + tripwired. Carries the cache-wide screen: 87 suspect cells / 24 symbols, **84 SUSPECT not confirmed** — and its two structural limits, that the screen is **blind before 2018** and that the XBRL **can detect this defect but never confirm it** (no sub-line element exists in the taxonomy)
 - **§101** ★★★ NSE's ANNOUNCEMENT ARCHIVE GOES AROUND THE BSE 2018 WALL — §84's boundary is a BSE fact, not a market fact; and the consolidated MARCH-2018 quarter was almost never filed (compulsory only from FY2020); the phantom "Consolidated Jan-Mar-2018" index row has two artifact causes, one of them an all-zero falsy sentinel (**read before calling any pre-2019 cell unreachable, and before trusting an NSE filing-index basis row**)
 - **§107** ★★★ ONE SOURCE OF TRUTH — the shared checkout SYNCS ITSELF to origin/main (`scripts/sync_checkout.py`, session-start hook); 923-commit drift + 36 worktrees were all stale copies; every reported number names its source (synced HEAD sha or LIVE); this repo is a PARTIAL CLONE — blob reads stall
+- **§108** ★★★ RESTATED-COMPARATIVE VINTAGE — an Ind-AS restated value wearing the as-filed ann date is a LOOK-AHEAD no scale/identity gate can see; SYNGENE's whole FY16 row healed (PAT ×4, op ×2, rev/op fills ×4, con-copy retraction, 4 ann dates); NEW `ann_cell_fix.json` moves a populated ann LATER — the direction §104 refuses (**read before trusting any FY16-FY17 transition-era cell an aggregator scrape filled, and whenever detres+MC agree against the store**)
 
 ---
 
@@ -11454,3 +11455,66 @@ whose `status` shows it behind origin is not a source.
 
 **Manual commands:** `python3 scripts/sync_checkout.py status` (never writes) ·
 `… sync [--trust SHA,..]` · `… gc --dry-run` then `… gc [--idle-hours 24]`.
+
+## 108. ★★★ THE RESTATED-COMPARATIVE VINTAGE CLASS — an Ind-AS restated value wearing the as-filed ann date  (2026-08-24, SYNGENE)
+
+**The defect class.** A stored quarter holds the LATER-vintage restated figure (Ind-AS transition
+comparatives, published in the NEXT fiscal year's filings) while its ann date says the value was
+public when the quarter was originally filed. Every value is "real" — it appears in a genuine
+filing — so no scale gate, FY-identity-against-restated-annual, or aggregator-vs-store comparison
+that mixes vintages can see it. It is a LOOK-AHEAD: on the stored ann date the public number was
+different. Store convention is AS-ORIGINALLY-FILED (§42's SHRIRAMFIN rule; detres and the MC deep
+std feed both serve that vintage).
+
+**The SYNGENE instance (all healed this session, worktree → origin).** FAV14 handoff flagged one
+cell (Sep-2015 std PAT 48.5 vs detres+MC 52.29); the whole-row check (feedback-heal-the-row-not-
+the-cell) found the ENTIRE FY16 row was the Ind-AS restated series, plus fabricated dates/copies
+on the pre-listing cells:
+
+| cell | stored (vintage) | as-filed (healed to) | proof |
+|---|---|---|---|
+| Jun-15 npStd | 46.6 = restated 466mn (Jun-16 filing) | **43.64** | Sep-15 filing preceding col 4,364 lakh; H1 9,593−5,229; FY16 2,212−(522.9+588+665); MC 43.60 |
+| Sep-15 npStd | 48.5 = restated 485mn (Sep-16 filing) | **52.29** | own filing 5,229 lakh + EPS 2.70/2.61; Dec-15 filing 523mn; detres 87.00 522.9mn; MC 52.29 |
+| Dec-15 npStd | 66.7 = restated 667mn (Dec-16 filing) | **58.8** | own filing 588mn; Mar-16 filing 588; detres 88.00; MC 58.80 |
+| Mar-16 npStd | 79.1 = restated 791mn (Jun-16 filing) | **66.5** | own audited filing 665mn; annual .50 2,212; MC 66.50 |
+| Dec-15 opStd | 78.0 = restated 780mn | **68.7** (own filing 687) | op line = "Profit from operations before other income & finance costs"; convention proven by stored Jun/Sep/Dec-16 = 622/778/840 |
+| Mar-16 opStd | 91.4 = restated 914mn | **77.1** (own filing 771) | same |
+
+Cross-proof the row was WHOLESALE the restated series: restated FY16 total 2,408mn (Jun-16 filing)
+= 466+485+667+791 = the stored 46.6+48.5+66.7+79.1. Also filled from the same documents: std
+rev/op for Jun-14 (178.59/38.09, H1−Q2 derivation), Mar-15 (251.8/61.0, audited comparative),
+Jun-15 (233.67/52.71), Sep-15 (261.4/62.03); retracted Mar-15 conPAT 55.6 (std-copy predating the
+first con filing Dec-2017 — the 2026-08-18 sweep's enumeration keyed off sf_revop rows and Mar-15
+had none, so it was missed); ann dates: Mar-16 20160530→20160426 (real broadcast; §104 override),
+and three FABRICATED-EARLY dates moved LATER to measured first-availability (Jun-14 & Jun-15 →
+20151021, Mar-15 → 20160122) — see below.
+
+**Detection signatures (cheap, generalisable):**
+* A refused fill whose reason is `pat-anchor X vs stored Y` where X = the as-filed detres/MC value
+  (_nsearch_skips had EXACTLY "58.8 vs 66.7" and "66.5 vs 79.1" sitting there since 2026-07-27 —
+  the refusal WAS the finding, §61b).
+* detres (as-filed by construction) + MC deep std feed agreeing against the store on a ~2016-17
+  transition-era quarter, with the store's FY sum ≈ the NEXT year's filings' restated annual.
+* The exact stored value appearing in the year-later filing's comparative column (×10).
+
+**Mechanisms (all was-guarded, dry-run default, none in CI):**
+* `fund_cell_fix.json` + `apply_fund_cell_fix.py` — npStd/npCon value corrections (pre-existing).
+* `revop_cell_fix.json` + `apply_revop_cell_fix.py` — now takes basis `op_std/op_con` (slots 2/3)
+  and `pat_std/pat_con` (4/5, the §70 mirror; only ever synced to a fund_cell_fix heal).
+* READS-FILE CORRECTION for replay-proofness: the defective `_nsearch_reads.json` entries were
+  corrected in place (op + pat_seen → as-filed, src documents the vintage error) so a
+  reset-and-replay of `_apply_reads.py` lands the right numbers — a heal that leaves the source
+  read wrong gets re-poisoned on replay (feedback-a-heal-that-reapplies). vision_rev_fills
+  provenance self-refreshes from the corrected reads on the next applier run.
+* **NEW `ann_cell_fix.json` + `apply_ann_cell_fix.py`** — the ann-date direction neither existing
+  mechanism reaches: moving a POPULATED ann LATER (§104 overrides are earlier-only; its fills
+  need ann==0). For FABRICATED-EARLY dates (a qe+45d default on a pre-listing quarter whose value
+  measurably wasn't public then — §99's floor covers only the first-bar boundary). Entries carry
+  the measured first-public date, GATED per §12, with the measurement in `why`.
+
+**⚠️ The class is NOT closed.** Every company that adopted Ind-AS (FY17 transition, and the
+AS→Ind-AS 115/116 waves) whose 2015-17 cells came from aggregator scrapes or comparative-column
+reads is a candidate. Sweep idea for a future campaign: for FY16-FY17 quarters, detres NP (÷10)
+vs stored npStd where both exist — any |diff| > max(2cr,3%) with detres Date-End == qe is either
+this class or §74's scale class; the FY16 restated-annual fingerprint separates them. NOT run
+this session (scope: the flagged row).

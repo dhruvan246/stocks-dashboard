@@ -65923,18 +65923,46 @@
 "src": "vision-manual band3/4 2026-07-27: vision R_SYNDIBANK STANDALONE col1 (Rs lakh /100); merged into Canara Bank Apr-2020, reachable only via scrip override 532276. Row 14 Net Profit 43,482 anchors stored con 434.92; std slot is empty so recorded on con"
 }
 },
+"SYNGENE|20140630": {
+"std": {
+"op": 38.09,
+"rev": 178.59,
+"src": "vision-manual band3/4 2026-07-27: 2026-08-24 derivation from ONE public filing (BSE ann 2015-10-20 19:14, CorpAttachment/2015/10/196A4865_E4EE_4EAD_9BF6_259895AF394F_191354.pdf p1, Rs in Lakhs): H1-FY15 YTD col minus Sep-2014 corresponding col \u2014 rev 38,048-20,189=17,859; op 8,216-4,407=3,809; NP 7,456-4,001=3,455 (34.55 cr, matches the stored FAV14 MC fill 34.6 within rounding). Annual-minus-siblings convention (pre2015 STEP A / BAJAJHIND precedent). Pre-listing quarter (first bar 2015-08-11)."
+}
+},
+"SYNGENE|20150331": {
+"std": {
+"op": 61.0,
+"rev": 251.8,
+"src": "vision-manual band3/4 2026-07-27: 2026-08-24 vision read of BSE ann 2016-04-26 (CorpAttachment/2016/4/D1DD5486_0A30_47CF_94CD_68E3FD0B6C79_185901.pdf p2, STATEMENT OF AUDITED RESULTS, Rs in Million), 'Corresponding 3 months ended 31.03.2015 (Audited)' col: total income 2,518; profit from operations 610; NP 556 (== stored npStd 55.6). Pre-listing comparative; no own Mar-2015 filing exists (first BSE Result ann for 539268 is 2015-10-20)."
+}
+},
+"SYNGENE|20150630": {
+"std": {
+"op": 52.71,
+"rev": 233.67,
+"src": "vision-manual band3/4 2026-07-27: 2026-08-24 vision read of BSE ann 2015-10-20 (CorpAttachment/2015/10/196A4865_E4EE_4EAD_9BF6_259895AF394F_191354.pdf p1, Rs in Lakhs), 'Preceding 3 months ended 30.06.2015' col: total income 23,367; profit from operations 5,271; NP 4,364 (== npStd healed to 43.64 via fund_cell_fix, 2026-08-24). Pre-listing quarter, no own filing."
+}
+},
+"SYNGENE|20150930": {
+"std": {
+"op": 62.03,
+"rev": 261.4,
+"src": "vision-manual band3/4 2026-07-27: 2026-08-24 vision read of BSE ann 2015-10-20 (CorpAttachment/2015/10/196A4865_E4EE_4EAD_9BF6_259895AF394F_191354.pdf p1, Rs in Lakhs), own-quarter col: total income 26,140; profit from operations 6,203; NP 5,229 (== npStd healed to 52.29 via fund_cell_fix, 2026-08-24). Matches detres 87.00 (2,614.0/522.9 mn \u00f710)."
+}
+},
 "SYNGENE|20151231": {
 "std": {
-"op": 78.0,
+"op": 68.7,
 "rev": 280.4,
-"src": "vision-manual band3/4 2026-07-27: nse-archive financial_res_SYNGENE_1017964.html (lakhs, Non Banking)"
+"src": "vision-manual band3/4 2026-07-27: nse-archive financial_res_SYNGENE_1017964.html (lakhs, Non Banking) \u2014 CORRECTED 2026-08-24: the archive page carried the FY17-filing IND-AS RESTATED comparatives (op 780/NP 667 mn); replaced with the own-filing as-filed values (BSE ann 2016-01-21, op 687/NP 588 mn) so a reset-and-replay of _apply_reads lands the right vintage. See revop_cell_fix.json + fund_cell_fix.json SYNGENE 20151231."
 }
 },
 "SYNGENE|20160331": {
 "std": {
-"op": 91.4,
+"op": 77.1,
 "rev": 331.5,
-"src": "vision-manual band3/4 2026-07-27: nse-archive financial_res_SYNGENE_1013783.html (lakhs, Non Banking)"
+"src": "vision-manual band3/4 2026-07-27: nse-archive financial_res_SYNGENE_1013783.html (lakhs, Non Banking) \u2014 CORRECTED 2026-08-24: page carried the Jun-2016 filing's IND-AS RESTATED comparatives (op 914/NP 791 mn); replaced with the own audited filing values (BSE ann 2016-04-26, op 771/NP 665 mn). See revop_cell_fix.json + fund_cell_fix.json SYNGENE 20160331."
 }
 },
 "SYNGENE|20171231": {

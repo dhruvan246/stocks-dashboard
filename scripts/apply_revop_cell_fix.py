@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Apply scripts/revop_cell_fix.json — REVIEWED revenue value corrections — to the revop JSONs.
 
-The revop analogue of apply_fund_cell_fix.py. Writes slot 0 (revStd) or slot 1 (revCon) of
-docs/sf_revop.json AND the build ledger scripts/revop_fundamentals.json, so the next incremental
-build_revop keeps the corrected value.
+The revop analogue of apply_fund_cell_fix.py. Writes docs/sf_revop.json AND the build ledger
+scripts/revop_fundamentals.json, so the next incremental build_revop keeps the corrected value.
+Basis names map to row slots: std/con = revenue 0/1 (the original pair), op_std/op_con = 2/3,
+pat_std/pat_con = 4/5 (the §70 PAT MIRROR — authority for net profit stays sf_fundamentals;
+a pat_* entry here only syncs the mirror to a fund_cell_fix heal, added 2026-08-24 SYNGENE).
 
 Guarded on `was`: idempotent, and refuses to overwrite a cell someone else has since moved (that
 case is reported and left alone, never forced). Dry run by default.
@@ -18,7 +20,7 @@ ROOT = os.path.dirname(HERE)
 LEDGER = os.path.join(HERE, "revop_cell_fix.json")
 TARGETS = [os.path.join(ROOT, "docs", "sf_revop.json"),
            os.path.join(HERE, "revop_fundamentals.json")]
-SLOT = {"std": 0, "con": 1}
+SLOT = {"std": 0, "con": 1, "op_std": 2, "op_con": 3, "pat_std": 4, "pat_con": 5}
 TOL = 0.01
 
 

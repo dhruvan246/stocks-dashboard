@@ -50,6 +50,42 @@
    "fixed": 36.68,
    "why": "Supreme Petrochem std Q2FY18. THREE independent documents agree the PAT is 36.68, not 13.31: (1) OWN-QUARTER filing (BSE ann, 'Statement of Standalone Unaudited Results for the Quarter/Half Year Ended September 30, 2017'), col '2nd Quarter Ended on 30/09/2017': Profit after tax 3,667.84 lakhs = 36.68; (2) YEAR-LATER filing (Sep-2018), 'Corresponding Quarter ended in the Previous Year on 30/09/2017' col: 3,667.84 lakhs = 36.68; (3) Moneycontrol standalone pat_total for 20170930 = 36.68. NOT a restatement - both filing vintages and the aggregator all read 36.68. The filing has no minority-interest line, so 36.68 is both total and owners. Our stored 13.31 is an isolated transcription/parse error.",
    "found": "N500 std-revenue campaign 2026-08-24: the revStd fill for this cell could not anchor because the stored PAT was the broken value"
+  },
+  {
+   "sym": "SYNGENE",
+   "qe": "20150630",
+   "basis": "std",
+   "was": 46.6,
+   "fixed": 43.64,
+   "why": "Syngene std Q1FY16 \u2014 a PRE-LISTING quarter (first traded bar 2015-08-11; measured: BSE Result announcements for scrip 539268 START 2015-10-20, so no own Jun-2015 filing exists). AS-FILED 43.64 cr: the company's FIRST-EVER result filing (BSE ann 2015-10-20 19:14, CorpAttachment/2015/10/196A4865_E4EE_4EAD_9BF6_259895AF394F_191354.pdf, Rs in Lakhs), 'Preceding 3 months ended 30.06.2015' col Net profit 4,364; same page's H1 identity exact (9,593 = 4,364 + 5,229). FY16 identity: audited annual 2,212.0 mn (detres 89.50) minus the three filed quarters (522.9+588+665) = 436.1 mn. Moneycontrol std sc_id SI62 prints 43.60. The stored 46.6 is the IND-AS RESTATED comparative first published 2016-07-21 (Jun-2016 filing 'Corresponding 3 months 30.06.2015' = 466 mn) sitting on a 2015 ann date \u2014 a vintage look-ahead, NOT a restatement dispute: store convention is as-originally-filed (runbook \u00a742 SHRIRAMFIN rule).",
+   "found": "FAV14 MC adjudication handoff 2026-08-24 (flagged Sep-2015; whole-row heal per feedback-heal-the-row-not-the-cell)"
+  },
+  {
+   "sym": "SYNGENE",
+   "qe": "20150930",
+   "basis": "std",
+   "was": 48.5,
+   "fixed": 52.29,
+   "why": "Syngene std Q2FY16, the company's FIRST result filing after its Aug-2015 listing (BSE ann 2015-10-20 19:14, CorpAttachment/2015/10/196A4865_E4EE_4EAD_9BF6_259895AF394F_191354.pdf, Rs in Lakhs): Net profit 5,229 = 52.29 cr, EPS 2.70 basic/2.61 diluted on equity 19,906 lakh FV 10 (52.29cr/199.06mn shares = 2.63, consistent; 48.5 would imply 2.44). SECOND vintage: Dec-2015 filing (BSE ann 2016-01-21) preceding col = 523 mn. THIRD: BSE detres qtr 87.00 (Date Begin/End 01-Jul-15/30-Sep-15) Net Profit 522.9 mn. FOURTH reader: Moneycontrol std SI62 = 52.29. Stored 48.5 is the IND-AS RESTATED comparative first published 2016-10-20 (Sep-2016 filing corresponding col = 485 mn) on the as-filed ann 20151021 \u2014 a 12-month vintage look-ahead.",
+   "found": "FAV14 MC adjudication handoff 2026-08-24 (the flagged cell; BSE detres + MC agreed on 52.29)"
+  },
+  {
+   "sym": "SYNGENE",
+   "qe": "20151231",
+   "basis": "std",
+   "was": 66.7,
+   "fixed": 58.8,
+   "why": "Syngene std Q3FY16 own filing (BSE ann 2016-01-21 18:22, Rs in Million): Net profit 588 = 58.8 cr, EPS 3.03/2.94. SECOND vintage: Mar-2016 audited filing (2016-04-26) preceding col = 588. THIRD: detres 88.00 = 588.0 mn. Moneycontrol SI62 = 58.80. Stored 66.7 is the IND-AS RESTATED comparative (Dec-2016 filing, BSE ann 2017-01-24, corresponding col = 667 mn) on the as-filed ann 20160122. The same read also poisoned opStd (restated 780 stored as 78.0) \u2014 healed via revop_cell_fix.json.",
+   "found": "whole-row sweep of the FAV14 SYNGENE flag 2026-08-24; _nsearch_skips already recorded 'pat-anchor 58.8 vs stored 66.7' \u2014 the refusal was the truth knocking"
+  },
+  {
+   "sym": "SYNGENE",
+   "qe": "20160331",
+   "basis": "std",
+   "was": 79.1,
+   "fixed": 66.5,
+   "why": "Syngene std Q4FY16 own AUDITED filing (BSE ann 2016-04-26 18:51, Rs in Million): Net profit 665 = 66.5 cr, EPS 3.43/3.32; FY16 annual on the same page 2,212 (= 436.4+522.9+588+665 to rounding). detres 89.00 = 665.0, audited annual 89.50 = 2,212.0. Moneycontrol SI62 = 66.50. Stored 79.1 is the IND-AS RESTATED comparative first published 2016-07-21 (Jun-2016 filing preceding col = 791 mn). Cross-proof the stored ROW was wholesale the restated series: restated FY16 total 2,408 mn (Jun-2016 filing) = 466+485+667+791 to rounding = our stored 46.6+48.5+66.7+79.1.",
+   "found": "whole-row sweep 2026-08-24; _nsearch_skips recorded 'pat-anchor 66.5 vs stored 79.1'"
   }
  ]
 }

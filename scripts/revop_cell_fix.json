@@ -20,10 +20,54 @@
  ],
  "fixes": [
   {
-   "sym": "LTF", "qe": "20190331", "basis": "std", "was": 3.09, "fixed": 303.15,
+   "sym": "LTF",
+   "qe": "20190331",
+   "basis": "std",
+   "was": 3.09,
+   "fixed": 303.15,
    "why": "L&T Finance Holdings std Q4FY19 'Total revenue from operations'. THREE-way proof it is 303.15, not 3.09: (1) the company's OWN Sep-2019 filing (BSE ann 2019-10-18), page 13 'STATEMENT OF STANDALONE FINANCIAL RESULTS ... SEPTEMBER 30, 2019' (Rs in Crore), Year-ended-31-March-2019 column, row (I) Total revenue from operations = 482.11; our three OTHER FY2019 quarters (Jun-18 32.38, Sep-18 97.71, Dec-18 48.87 = 178.96) each equal that filing's own quarter columns, so Q4 = 482.11 - 178.96 = 303.15. (2) Moneycontrol standalone rev_ops for 20190331 = 303.14. (3) our stored series matches MC standalone EXACTLY on the surrounding quarters (48.87, 29.21, 400.49), so only this one cell is out. NOT a restatement (no vintage shows 3.09) and NOT a clean power-of-ten (303.15/3.09 = 98.1, so scale_fix does not apply) -- an isolated wrong value.",
    "wrong_value_class": "wrong-line/mis-parse (NOT scale); if XBRL-sourced the extraction picked a component line, needs a parser check for a permanent fix",
    "found": "N500 std-revenue campaign 2026-08-24"
+  },
+  {
+   "sym": "SYNGENE",
+   "qe": "20151231",
+   "basis": "op_std",
+   "was": 78.0,
+   "fixed": 68.7,
+   "why": "Syngene std Q3FY16 'Profit from operations before other income and finance costs': own filing (BSE ann 2016-01-21, Rs mn) prints 687 = 68.7 cr; Mar-2016 filing preceding col repeats 687. Stored 78.0 is the IND-AS RESTATED comparative (Dec-2016 filing corresponding col = 780 mn): the 2026-07-27 vision-manual pass read an NSE-archive page carrying the FY17-filing comparative (financial_res_SYNGENE_1017964.html) and its pat_seen anchor 66.7 was itself the restated PAT \u2014 the anchor validated the read against the same contaminated vintage. Op-line convention proven by neighbours: stored Jun-2016 62.2 / Sep-2016 77.8 / Dec-2016 84.0 == own filings' 622/778/840.",
+   "wrong_value_class": "wrong-vintage (Ind-AS restated comparative in the as-filed slot); not scale, not wrong-line",
+   "found": "SYNGENE whole-row heal 2026-08-24"
+  },
+  {
+   "sym": "SYNGENE",
+   "qe": "20160331",
+   "basis": "op_std",
+   "was": 91.4,
+   "fixed": 77.1,
+   "why": "Syngene std Q4FY16 'Profit from operations before other income and finance costs': own audited filing (BSE ann 2016-04-26, Rs mn) prints 771 = 77.1 cr. Stored 91.4 is the IND-AS RESTATED 914 (Jun-2016 filing preceding col), via the same NSE-archive comparative-page read (financial_res_SYNGENE_1013783.html, pat_seen 79.1 = restated PAT). Same convention proof as the 20151231 entry.",
+   "wrong_value_class": "wrong-vintage (Ind-AS restated comparative in the as-filed slot); not scale, not wrong-line",
+   "found": "SYNGENE whole-row heal 2026-08-24"
+  },
+  {
+   "sym": "SYNGENE",
+   "qe": "20151231",
+   "basis": "pat_std",
+   "was": 66.7,
+   "fixed": 58.8,
+   "why": "sf_revop idx4 is a PAT MIRROR of npStd (runbook \u00a770; authority stays sf_fundamentals). Synced to the fund_cell_fix.json heal of the same cell (66.7 was the Ind-AS restated vintage; as-filed 58.8).",
+   "wrong_value_class": "mirror sync of the fund_cell_fix vintage heal",
+   "found": "SYNGENE whole-row heal 2026-08-24"
+  },
+  {
+   "sym": "SYNGENE",
+   "qe": "20160331",
+   "basis": "pat_std",
+   "was": 79.1,
+   "fixed": 66.5,
+   "why": "sf_revop idx4 PAT MIRROR sync \u2014 see the 20151231 pat_std entry and fund_cell_fix.json SYNGENE 20160331 (79.1 was the Ind-AS restated vintage; as-filed 66.5).",
+   "wrong_value_class": "mirror sync of the fund_cell_fix vintage heal",
+   "found": "SYNGENE whole-row heal 2026-08-24"
   }
  ]
 }

@@ -1,0 +1,47 @@
+{
+ "_README": [
+  "REVIEWED announce-date corrections for docs/sf_fundamentals.json ann slots (annStd/annCon).",
+  "",
+  "For the class neither existing ann mechanism reaches: a POPULATED ann that must move LATER.",
+  "ann_date_fills.json overrides are earlier-only by design (NSE-broadcast-lag, runbook 104);",
+  "its normal entries fill only ann==0. This ledger retires FABRICATED-EARLY dates - a qe+45d /",
+  "qe+60d default stamped on a pre-listing quarter whose value measurably was NOT public then",
+  "(runbook 99 / 108). Every entry must state the MEASUREMENT that dates first availability:",
+  "the filing (or single-document derivation) that first made the figure public, and the",
+  "measured absence of any earlier filing. Dates are stored GATED (runbook 12: next day for",
+  "post-15:30 broadcasts), because apply_ann_cell_fix.py writes the twins directly.",
+  "",
+  "Applied by scripts/apply_ann_cell_fix.py --apply, guarded on `was` (empty slots always",
+  "writable). NOT wired into any workflow; nothing nightly rewrites these eras' ann slots",
+  "(measured: the P2 broadcast re-dates of 2026-08-23 survived subsequent nightlies unchanged)."
+ ],
+ "fixes": [
+  {
+   "sym": "SYNGENE",
+   "qe": "20140630",
+   "basis": "std",
+   "was": 20140814,
+   "fixed": 20151021,
+   "why": "Pre-listing quarter (first traded bar 2015-08-11; Syngene listed Aug-2015). The stored 20140814 is the qe+45d SEBI-deadline convention stamped by the FAV14 P4 applier - it fabricates a public date 12 months before the company had a tape or a filing. Measured first availability: the company's FIRST-EVER result filing (BSE ann 2015-10-20 19:14, the Sep-2015 results, CorpAttachment/2015/10/196A4865_E4EE_4EAD_9BF6_259895AF394F_191354.pdf) prints H1-FY15 YTD and Sep-2014 columns whose difference IS this quarter (NP 7,456-4,001=3,455 lakh = 34.55cr, the stored 34.6); no earlier BSE Result announcement exists for scrip 539268 (AnnSubCategoryGetData Result list starts 2015-10-20). Gated next-day = 20151021, same date the sibling Sep-2015 cell already carries.",
+   "found": "SYNGENE whole-row heal 2026-08-24 (runbook 108)"
+  },
+  {
+   "sym": "SYNGENE",
+   "qe": "20150331",
+   "basis": "std",
+   "was": 20150530,
+   "fixed": 20160122,
+   "why": "Pre-listing quarter (first bar 2015-08-11); no own Mar-2015 filing exists. Stored 20150530 (qe+60d default) predates the tape itself - the 99c look-ahead class. The 99 floor (max(qe+45d, firstBar) = 20150811) is NOT used here because its prospectus-public argument fails: the RHP carried audited FY15 ANNUAL financials, not the Q4 quarterly split. Measured first availability of the quarterly figure: the Dec-2015 filing (BSE ann 2016-01-21 18:22, Rs mn) prints FY15 annual 1,750 AND 9M-FY15 1,194 in adjacent columns - Q4FY15 = 556 = 55.6cr emerges from that ONE public document by subtraction (same annual-minus-siblings convention as the repo's own Q4 derivations); printed outright as the audited corresponding column on 2016-04-26. Gated next-day of the first source = 20160122.",
+   "found": "SYNGENE whole-row heal 2026-08-24 (runbook 108)"
+  },
+  {
+   "sym": "SYNGENE",
+   "qe": "20150630",
+   "basis": "std",
+   "was": 20150814,
+   "fixed": 20151021,
+   "why": "Pre-listing quarter (quarter ended before the 2015-08-11 listing; measured: NO Jun-2015 result filing exists - the BSE Result announcement list for 539268 starts 2015-10-20, and detres qtr 86.00 returns an empty no-dateend shell). The stored 20150814 is the qe+45d convention and happens to be 3 days after listing, but the value (as-filed 43.64, healed via fund_cell_fix.json) was first printed in the Sep-2015 filing's 'Preceding 3 months' column, broadcast 2015-10-20 19:14. Gated next-day = 20151021.",
+   "found": "SYNGENE whole-row heal 2026-08-24 (runbook 108); the FAV14 handoff note flagged this quarter's value (ours 46.6 vs MC 43.6)"
+  }
+ ]
+}
