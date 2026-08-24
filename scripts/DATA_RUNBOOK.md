@@ -11822,3 +11822,201 @@ wire the applier into the job that rebuilds the derived file — otherwise the l
 the data *should* say while the payload keeps saying something else.
 Note `verify_fills_live.py` did not catch this: it checks FILL ledgers (a cell going null), not
 value-correction ledgers (a cell going back to a wrong number). Extending it is the next job.
+
+## 111. ★★★ THE §109e BY-PRODUCTS — three of the four "classes" were LABELLING BUGS, and the real defect was in our reader  (2026-08-25)
+
+§109e handed the next campaign four by-product classes: 313 "the std slot holds the CON value
+(§59)", 182 "two as-filed readers agree against the store", 11 scale-step (§74), 9 "the two readers
+disagree". **Re-derived from the same evidence, three of those four headline numbers were wrong** —
+not because the cells were wrong, but because the sub-classifier that labelled them was.
+
+### 111a. ★ THE THREE LABELLING BUGS IN `vintage108_report._subclass`
+
+| bug | what it did | measured |
+|---|---|---|
+| `abs(row[3] - v["stored"]) <= 0.011` as the §59 test | `row[3]` IS `v["stored"]` for a CONSOLIDATED cell, so the test fired unconditionally on every con cell | **310 of the 313** "std slot holds the CON value" were consolidated cells wearing a standalone label; only **3** were the §59 class |
+| `det is not None and not agree(...)` for "readers disagree", falling through to "two readers" | a MISSING detres reading was counted as an AGREEING one | **141 of the 182** "two as-filed readers vs the store" had no second reader at all |
+| `if not asf:` | a genuine as-filed PAT of **0.00** was labelled "no-readable-vintage" | all 12 such cells — and every one of those 0.00s was itself a reader defect (below) |
+
+★ **A classifier is code, and code that has never been checked against the thing it classifies is a
+guess with a table around it.** The cheapest test is the one that found all three: re-derive the
+labels independently and cross-tabulate old against new. `memory: feedback-detect-is-not-confirm`.
+
+### 111b. ★★★ THE READER DEFECT THE 0.00s WERE POINTING AT
+
+`vintage108_nse_vintages.PAT_ROWS` is an ORDERED tuple and took the first pattern that matched:
+`... after taxes, minority interest and share of associates` before `... for the period`. On a
+**standalone** filing there is no minority interest and the archive still prints that row, as a bare
+`0`. GRINDWELL Dec-2016 prints `after tax 2659.00 / for the period 2659.00 / after taxes, minority
+… 0` and the reader returned **0.0** — against a store, and a detres reading, of 26.59.
+
+**19 of 10,214 cached pages read that way** (re-extraction is free — the pages are on disk). Fixed at
+source: read every candidate row, prefer the minority-adjusted line only when it is POPULATED.
+Verified page-by-page — **19 corrected, 10,195 unchanged, 0 regressions.** Consequences:
+* 9 by-product cells were FALSE POSITIVES — the store had been right all along.
+* **GVPIL Sep-2015 std** was a genuine §108 cell the defect had HIDDEN (stored −48.02 is the Ind-AS
+  row filed 2016-12-05; as-filed −55.29, filed 2015-11-10). Healed here.
+* No §109-landed heal rested on a mis-read PAT (checked: the 5 heals that touch one of those pages
+  are all revenue/op values, which the defect does not reach).
+
+### 111c. ★★★ NSE'S ONLY ROW IS NOT AUTOMATICALLY THE AS-FILED ONE
+
+§109a's rule — earliest `filingDate` is as-filed — silently assumes there are two rows to rank. Where
+NSE holds ONE row it can be a LATE re-filing, and then it states the restatement:
+`CASTROLIND Dec-2016 filed 2018-03-12`, `EDELWEISS Jun-2016 filed 2017-11-17`, `TTML Mar-2016 filed
+2017-05-15`. **82 of 518 by-product cells (15.8%) have their only row filed >365 days after the
+quarter, against 3.8% (108/2,863) in the store-matches-NSE control** — a 4× enrichment, and BSE
+detres backs the STORE in every one checked. **GATE: an NSE row filed >180 days after quarter end
+cannot arbitrate the as-filed value.**
+
+### 111d. ★★★ THE ARCHIVE'S CONSOLIDATED BOTTOM LINE IS NOT THE OWNERS' FIGURE
+
+Our con slot holds owners-attributable profit (§profit-basis). The archive's
+`Net Profit … after taxes, minority interest and share of profit of associates` does not reliably
+compute it — the sign of the associate/NCI term goes the other way:
+
+    BAJAJHLDNG Mar-2016  P 92.64  associates +471.14  minority 0  -> page prints -378.50 = P - A
+                         store and MC both 563.78 = P + A   (BHIL's profit IS its associate share)
+    ASHOKA     Dec-2015  P -2.81  associates -6.33  minority +22.40 -> page -31.54 ; store/MC 13.26
+
+Measured over the 308 con by-product cells with an MC reading: **121 have the store on MC's OWNERS
+figure while the page's bottom line equals MC's TOTAL.** So "the con store matches no NSE vintage"
+was, for most of these cells, a statement about the reader. A con target is trusted only when MC's
+owners figure reproduces the page's line.
+
+### 111e. ★ CALIBRATING THE THIRD READER — MC IS 42% RESTATED, AND THAT IS STILL USABLE
+
+The 257 §109 heals are a known-answer set (as-filed value = `fixed`, restated value = `was`), so the
+Moneycontrol deep feed was calibrated on them before being used: **139 as-filed / 102 RESTATED / 1
+neither / 15 no reading — 42.1% restated.** That is not "MC is unreliable", it is a direction:
+* **MC == the NSE as-filed value CONFIRMS it** — either MC is on that vintage, or MC is on a
+  restatement that did not move the number, and then the number is right either way.
+* **MC == the STORE never clears a cell** — the store may be right, or store and MC may both be on a
+  restatement NSE does not list. It blocks a heal; it does not close one.
+
+The feed cost nothing: `~/.cache/agg_reader` already covered **425 of 518** cells offline.
+⚠️ Reading it offline needs `AG._MC_IDS_PATH` REDIRECTED, not `json.dump` stubbed — `json.dump(obj,
+open(path,"w"))` truncates while evaluating its arguments, so a no-op dump leaves an EMPTY id map
+(measured, the hard way). And an offline miss must never be written back as `"SYM": null`, or a later
+ONLINE run skips it: absence manufactured from our own gap.
+
+### 111f. ★★★ THE GATE, AND THE TWO PLACES IT LEAKED
+
+    target   = NSE's as-filed value, for the cell's own basis
+    timely   = that row filed <= 180d after quarter end            (111c)
+    evidence = detres agrees with the target (std), or MC does     (111e)
+    veto     = any available reader sits on the STORE instead
+    material = the store is outside near() of the target (0.35 cr / 0.5%)
+
+**Leak 1 — a reader on a THIRD value contradicts too.** "No reader may contradict" was first read as
+"no reader sits on the store". ASSAMCO Mar-2017: NSE −45.63, MC −45.63, store −48.52, **detres
+−49.81**. Nothing sits on the store, yet detres refuses the target. Queued, not healed.
+
+**Leak 2 — but dissent is not a vote; readers have PRECEDENCE.** detres is as-filed by construction
+(§42) and its dissent always vetoes. MC is an aggregator that is 42% restated, so a third value from
+MC is usually just another vintage: **DLF Mar-2016** has MC on pat 1441.53 AND rev 1968.15 — and
+1968.15 is exactly the revenue our store held, a coherent restated ROW — beside NSE 1088.94 and
+detres 1088.94, agreeing to the paisa. So MC may not veto a target both EXCHANGE readers reproduce;
+anywhere else it does. Both rules were written after the fact and re-run: 1 landed heal was
+withdrawn (TEXRAIL Sep-2016, a genuine three-way split) and 1 added (PSPPROJECT Mar-2017).
+
+★ The same precedence has to run on the rev/op pass, not just PAT. It did not at first, and DLF
+Mar-2016 ended up with its PAT on the as-filed vintage and its REVENUE still on the restated one —
+**half a row on each vintage**, which is worse than either. `feedback-heal-the-row-not-the-cell`.
+
+### 111g. What landed
+
+**243 cells in `fund_cell_fix.json`** (145 std, 98 con) over 193 symbols and **233 slots in
+`revop_cell_fix.json`** (133 pat_std, 27 pat_con, 69 rev_std, 3 rev_con, 1 op_std) over 146 symbols.
+Evidence: DETRES 75, DETRES+MC 68, MC 99.
+
+**The invariants that decide it shipped** (per-cell BEFORE→AFTER, reconstructed from each ledger
+entry's own `was`, so it re-runs at any time). Measured on the campaign's own tree, before the
+rebase brought in a parallel session's heals:
+
+| agreement with an independent reader | before | after | worsened |
+|---|---|---|---|
+| std PAT vs BSE detres (2,669 cells) | 95.9% | **98.5%** | **0** |
+| std revenue vs BSE detres (2,219) | 93.2% | **95.5%** | **0** |
+| con PAT vs MC owners (308) | 66.6% | **89.6%** | **0** |
+
+Re-measured after the rebase (so "before" already contains the parallel session's landing):
+std PAT 99.1%→99.1%, std revenue 95.3%→**95.9%**, con vs MC owners 51.0%→**74.0%**, **0 worsened**
+on all three. The con "before" fell from 66.6% to 51.0% purely because of the other session's
+heals — see §111i.
+
+A count of "how many disagree now" cannot see a cell that was fine and got worse; only the per-cell
+delta can. The residue is enumerated, not waved at: the 39 std-PAT cells still disagreeing are 30
+outside this population (§109g's own queues) plus 9 in the queues below.
+
+**Durability, measured not assumed.** `_reattr_owners.json` holds 2.38 for CCAVENUE Mar-2016 — the
+exact value healed away — and `apply_owners_full.py` runs nightly AFTER the heal, so it was PINNED in
+`con_copy_heals.json`; proven by running the script with and without the pin (1 revert vs 0).
+`fund_cell_fix.json` / `revop_cell_fix.json` were shaped `{"fixes":[…]}` rather than the flat
+`SYM|QE` dict `verify_fills_live.py` reads, so **1,998 adjudicated cells had nothing re-checking them
+after a refresh** — registered with the detector (11,553 cells checked now, exit 0; nulling one heal
+makes it exit 1, tested both ways).
+
+### 111h. Still open (each says WHY, none says "unfillable" — §57a)
+
+* **MC-BACKS-STORE 132** (123 con) — MC reproduces the stored value while NSE's page differs. Needs a
+  reader that is neither, i.e. the filing itself: BSE announcement PDFs for 2015-17 are scans, so
+  this is the vision rung and needs permission (`feedback-vision-reads-last-ask-first`).
+* **NSE-ROW-IS-LATE 32** — the only NSE row is a re-filing (111c). Includes HMVL ×2 and PRIVISCL ×2,
+  where the con slot holds a std COPY: the copy is a defect either way, but the as-filed con value is
+  not on record. These belong to `PLAN_CON_COPY_RETRACTION.md`, not here — a std→con copy is
+  RETRACTED, not substituted.
+* **READERS-DISAGREE 25** — three-way splits (111f). 9 of them are Mar-2017 REVENUE where NSE and
+  detres disagree with each other (AKSHARCHEM 57.98 vs 53.0, INDTERRAIN 117.66 vs 118.3, VINATIORGA
+  213.34 vs 207.57) — smells like the two-revenue-definitions split, not a vintage question.
+* **STORE-BACKED 80** — cleared, not open: an as-filed reader reproduces the stored value. Includes
+  8 of the 11 §74 scale-step cells, where the ratio is a clean power of ten **because the NSE page's
+  declared unit is wrong** (BSOFT/MPHASIS/THERMAX/PFC: detres and MC both sit on the store). Only
+  JAICORPLTD Mar-2016 and KMSUGAR Mar-2017 were real, and both healed.
+* **NO-SECOND-READER 5**, **STORE-CORRECT 2** (ASHIANA/MTNL — healed by the parallel N500 std-revenue
+  campaign the same day, from primary BSE filings, to exactly the values NSE's as-filed page carries:
+  an independent corroboration of this whole route).
+
+### 111i. ⚠️ A PARALLEL SESSION HEALED THE SAME BY-PRODUCTS, AND THE CON HALF WENT THE OTHER WAY
+
+Commit `0fdcc46c4` (§109i, "vintage108 by-product sweep 2026-08-24") landed **192 heals over the
+same population**, independently, while this campaign was running. That is a free replication and
+mostly a reassuring one:
+
+* **117 cells both campaigns healed — every value identical, zero conflicts.** Two toolchains, two
+  gates, same numbers.
+* Both sessions independently found the SAME PAT-row falsy-sentinel defect (111b) and fixed it;
+  re-run on the 19 pages, `pick_nonzero` (theirs, on origin/main) and this campaign's rule produce
+  **identical values on all 19, 0 differences**. Theirs also covers `op` and `rev`, so it is the
+  one kept. Both also found two of the three `_subclass` bugs.
+
+**But 59 of their consolidated heals are cells this gate DECLINED** (55 `MC-BACKS-STORE`,
+9 `READERS-DISAGREE`, 3 `NSE-ROW-IS-LATE`), and **52 of those move the cell AWAY from
+Moneycontrol's owners figure** — BHARTIARTL Mar-2017 373.4→219.8, GRASIM 775.0→1064.96, EICHERMOT
+459.44→406.6, DRREDDY 337.6→327.4. That is 111d's finding exactly: they healed the con slot toward
+the archive page's `Net Profit after taxes, minority interest and share of associates` line, which
+is **not** the owners-attributable figure our con slot keeps.
+
+**A third, DEFINITIONAL reader settles the eight of them that it reaches.**
+`_reattr_owners.json` is built from the filings' XBRL `ProfitOrLossAttributableToOwnersOfParent`:
+
+| cell | pre-heal | their heal | XBRL owners |
+|---|---|---|---|
+| TATACONSUM 20170331 | 31.41 | 84.36 | **31.41** |
+| BHARTIARTL-era peers: BIOCON / GODREJPROP / JINDALSTEL / PRESTIGE / RAYMOND / VBL / TATACONSUM Dec-16 | | | all back the **pre-heal** value |
+
+**8 of 8 back the pre-heal value; 0 back the heal.** And because `apply_owners_full.py` reads that
+same cache nightly, those 8 are reverted every night anyway — the ledger says one thing and the
+served payload says another, forever. Proven by running that script instrumented: it prints exactly
+those 8 `WOULD REVERT` lines.
+
+**Not corrected here, deliberately.** They are another session's adjudication, committed to main;
+overwriting them silently is the wrong move, and for the 51 with no XBRL reading this campaign's
+verdict is `MC-BACKS-STORE` = *ambiguous*, not *proven wrong* — MC agreeing with the store never
+closes a cell (111e). What was done instead is to make the disagreement IMPOSSIBLE TO MISS: the
+cell-fix ledgers are now read by `verify_fills_live.py`, so those 8 print as DRIFT on every run
+(DRIFT is reported, not fatal — exactly the right loudness for a cross-campaign conflict).
+**Next step for that queue: read the Mar-2017 consolidated filings themselves for the 51.**
+
+Tools: `vintage109_{reextract,recorrect,byprod_classify,mc_probe,mc_calib,con_components,rowid,
+adjudicate,checks,revop,land,invariant,invariant2,report}.py`.

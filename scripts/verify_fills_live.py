@@ -262,6 +262,44 @@ def main():
             elif abs(cur - want) > TOL:
                 drift.append((name, sym, qe, want, cur))
 
+    # ---- the REVIEWED CELL-FIX ledgers ------------------------------------------------
+    # fund_cell_fix / revop_cell_fix are shaped {"fixes":[{sym,qe,basis,was,fixed}]}, not the flat
+    # SYM|QE dict every other ledger uses, so they sat OUTSIDE this detector entirely: 2,101
+    # adjudicated cells with nothing re-checking them after a refresh (§74's durability rule — a
+    # heal CI cannot see gets clobbered silently). Registered 2026-08-25 (runbook §111g).
+    # DRIFT here is informative, not fatal, and that is deliberate: it is how a cross-campaign
+    # disagreement becomes visible instead of silent (§111i — 8 con cells whose ledger value
+    # apply_owners_full reverts every night).
+    for name, payload, slots in (("fund_cell_fix.json", "fund", {"std": 1, "con": 3}),
+                                 ("revop_cell_fix.json", "revop",
+                                  {"std": 0, "con": 1, "op_std": 2, "op_con": 3,
+                                   "pat_std": 4, "pat_con": 5})):
+        p3 = os.path.join(HERE, name)
+        if not os.path.exists(p3):
+            continue
+        try:
+            fixes = json.load(open(p3)).get("fixes") or []
+        except Exception:
+            continue
+        for f in fixes:
+            slot = slots.get(f.get("basis"))
+            sym, qe, want = f.get("sym"), str(f.get("qe")), f.get("fixed")
+            if slot is None or sym is None or qe is None:
+                continue
+            row = ((revop.get(sym) or {}).get(qe) if payload == "revop"
+                   else (fmap.get(sym) or {}).get(int(qe)))
+            cur = row[slot] if row and len(row) > slot else None
+            if want is None:                       # a null `fixed` is a RETRACTION: asserts absence
+                if cur is not None:
+                    resurrected.append((name, sym, qe, f.get("basis"), cur,
+                                        "ledger retracts this cell"))
+                continue
+            checked += 1
+            if cur is None:
+                missing.append((name, sym, qe, want, payload, slot))
+            elif abs(cur - want) > TOL:
+                drift.append((name, sym, qe, want, cur))
+
     for name, payload, key, dslot, bkey, bmap, root in NESTED:
         p2 = os.path.join(HERE, name)
         if not os.path.exists(p2):

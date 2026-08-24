@@ -38,7 +38,7 @@
   "was_healed_to": 153.72,
   "original": 142.35,
   "reason": "restatement, not a copy: the own Jun-2023 filing and its XBRL both print 142.35 (Total income 143.45); 153.72 is only the Sep-2023 filing's restated comparative. con==std was legitimate before Tanfac was consolidated.",
-  "route": "BSE announcement stream (\u00a758 rung 3)"
+  "route": "BSE announcement stream (§58 rung 3)"
  },
  "ATUL|20230630|patC": {
   "readjudicated": "2026-08-09",
@@ -46,7 +46,7 @@
   "was_healed_to": 102.05,
   "original": 96.58,
   "reason": "the heal wrote the TOTAL. Filing: owners 103.35 + NCI -1.30 = 102.05 exactly, at the Jun-2023 column, on two documents. We store owners-attributable.",
-  "route": "BSE announcement stream (\u00a758 rung 3)"
+  "route": "BSE announcement stream (§58 rung 3)"
  },
  "IDFCFIRSTB|20230630|patC": {
   "applied": "2026-08-09",
@@ -63,13 +63,13 @@
   "readjudicated": "2026-08-09",
   "value": 74.01,
   "reason": "superseded by the whole-series rebuild onto the owners convention; see kirlfer_con_series.json",
-  "route": "BSE announcement stream, own filing per quarter (\u00a758/\u00a768)"
+  "route": "BSE announcement stream, own filing per quarter (§58/§68)"
  },
  "KIRLFER|20240630|patC": {
   "readjudicated": "2026-08-09",
   "value": 69.75,
   "reason": "superseded by the whole-series rebuild onto the owners convention; see kirlfer_con_series.json",
-  "route": "BSE announcement stream, own filing per quarter (\u00a758/\u00a768)"
+  "route": "BSE announcement stream, own filing per quarter (§58/§68)"
  },
  "SPICEJET|20240630|patC": {
   "applied": "2026-08-09",
@@ -159,7 +159,14 @@
   "scale": 10.0,
   "src": "Dec-2025 filing, consolidated page (9M identity)",
   "confirm": "9M FY26 2565.82 - Q3 545.56 - Q2 935.99 = 1084.27 -> 108.43; the two subtrahends are themselves confirmed against stored con PAT; screener 108",
-  "reason": "con slot held a copy of standalone (104.22); quarter never filed on a consolidated basis, recovered by the nine-month identity (runbook \u00a745)",
+  "reason": "con slot held a copy of standalone (104.22); quarter never filed on a consolidated basis, recovered by the nine-month identity (runbook §45)",
   "applied": "2026-08-09"
+ },
+ "CCAVENUE|20160331|patC": {
+  "applied": "2026-08-25",
+  "now": 1.97,
+  "was": 2.38,
+  "reason": "PINNED so apply_owners_full cannot revert it. _reattr_owners.json holds 2.38 for this cell — the same wrong number the con slot held — and that script runs nightly AFTER this heal, so without a HEALS entry the correction would be undone every night (the TATACOFFEE mechanism recorded in apply_owners_full.py). Runbook §109e by-product: the stored value matched no vintage NSE holds. NSE's as-filed page for this quarter (Consolidated basis, filed 20160601 = qe+62d, seq 1010205) reads 1.969 cr against the stored 2.38. Moneycontrol's deep quarterly feed reads 1.95; MC serves the restated vintage 42% of the time (measured on the 257 §109 heals), so its agreement with the as-filed page means either MC is on that vintage or the restatement did not move the number — the as-filed value is confirmed either way. Consolidated: the target is the page's owners' bottom line and MC's owners figure reproduces it, which is what makes the page's line trustworthy here — the archive's consolidated bottom line is not reliably the owners' figure (BAJAJHLDNG Mar-2016). No available reader reproduces the stored value.",
+  "route": "vintage109 by-product campaign 2026-08-25: NSE as-filed page + Moneycontrol owners feed"
  }
 }
