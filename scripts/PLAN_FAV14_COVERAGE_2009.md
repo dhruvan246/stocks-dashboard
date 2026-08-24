@@ -1,13 +1,14 @@
-# ★ LIVE SCORECARD (2026-08-24 10:06 IST) — 17,694 → 5,635 missing member-months (68% closed)
-# 6 technical 84→5 · FII%/DII% 117→9 · diiChgPp 2132→1365 · NP-YoY-con 786→169 · TTM-con 1833→892
-# · NP-YoY-std 3871→538 · TTM-std 7548→2454.  std-PAT filled 2,459 cells (detres 1704+122 delisted,
-# NSE-archive 599, FY-identity 34). Delisted codes resolved from the FULL BSE master (ListofScripData
-# incl Delisted) + ISIN cross-check.
-# REMAINING (~5,635): TTM-std 2454 (pre-2008 delisted needs Wayback/MC §32; ~45 detres-gaps; 13
-# uncoded delisted; genuine sparse eras; 8-consecutive-qtr stickiness) · diiChgPp 1365 (2016+ needs
-# SHP XBRL — SHP campaign's 2016+ ledgers; 2015-12/2016-03 seam) · con params ride std.
-# Routes proven: detres (2008+ incl delisted), NSE api/corporates-financial-results (both bases, real
-# dates, 2005+), FY-identity (Q4=annual−9M). Applier: scripts/apply_fav14_pat_std.py (fill-only, idempotent).
+# ★ LIVE SCORECARD (2026-08-24 10:32 IST) — 17,694 → 5,547 missing member-months (68.7% closed)
+# 6 technical 84→5 · FII%/DII% 117→9 · diiChgPp 2132→1365 · NP-YoY-con 786→166 · TTM-con 1833→878
+# · NP-YoY-std 3871→518 · TTM-std 7548→2406. std-PAT ledger = 2,479 cells.
+# ★★ API ROUTES EXHAUSTED (§57 walked to the wall): detres (2008+ incl delisted), NSE
+# corporates-financial-results (Quarterly + Annual, both bases, real dates) and FY-identity are
+# all done. The remaining ~5,547 needs HARDER routes: pre-2008 std PAT (NSE API truncates at
+# ~Mar-2008 even with date params — NMDC/M&M verified; detres stubs below qid57) via Wayback of NSE
+# financial_res pages (§32) / Moneycontrol browser-driven (PRE2015 _mc_reads route) / BSE result
+# PDFs; whole-era-missing delisted symbols same; diiChgPp 1365 via SHP XBRL (2016+, SHP campaign).
+# All std fills route through scripts/fav14_pat_std_fills.json + apply_fav14_pat_std.py (fill-only,
+# idempotent). Applier tolerant of 3/4-elem cells.
 # PLAN — FAV14 COVERAGE 100%: the 14 parameters the favourite strategies use, Nifty 500, 2009-01 → date
 
 **Written 2026-08-24 01:30 IST (Fable). User mandate, verbatim: *"dont assume. everything can be
