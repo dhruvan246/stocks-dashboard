@@ -16,22 +16,40 @@
  ],
  "fixes": [
   {
-   "sym": "HINDUNILVR", "qe": "20070930", "basis": "std",
-   "was": 409.30, "fixed": 408.06,
+   "sym": "HINDUNILVR",
+   "qe": "20070930",
+   "basis": "std",
+   "was": 409.3,
+   "fixed": 408.06,
    "why": "BSE ann 2007-10-31 12:48 (own-quarter filing): 'net profit of Rs 4080.60 million for the quarter ended September 30, 2007' = 408.06 cr. SECOND, independent: BSE ann 2008-10-24 12:37 (the Sep-2008 filing) repeats it as the comparative, 'as compared to Rs 4080.60 million for the quarter ended September 30, 2007'. Not a restatement -- both documents agree.",
    "found": "quantmac cross-validation residue, HUL Dec-FY transition era audit 2026-08-23"
   },
   {
-   "sym": "HINDUNILVR", "qe": "20071231", "basis": "std",
-   "was": 473.79, "fixed": 631.44,
+   "sym": "HINDUNILVR",
+   "qe": "20071231",
+   "basis": "std",
+   "was": 473.79,
+   "fixed": 631.44,
    "why": "BSE ann 2008-02-13 12:42 ('Hindustan Unilever announces Q4 & FY 07 results' -- Dec-2007 was the LAST quarter of HUL's December-ending fiscal year, before the switch to a March year-end): 'The Company has posted a net profit of Rs 6314.40 million for the quarter ended December 31, 2007' = 631.44 cr. SECOND, independent: BSE ann 2009-01-27 (the Dec-2008 filing) carries it as the comparative, 'as compared to Rs 6314.40 million for the quarter ended December 31, 2007'. The stored 473.79 corresponds to no line in either filing.",
    "found": "quantmac finding 3 residue (HINDUNILVR Jan-2009 trade), audited 2026-08-23"
   },
   {
-   "sym": "HINDUNILVR", "qe": "20081231", "basis": "std",
-   "was": 632.24, "fixed": 615.74,
+   "sym": "HINDUNILVR",
+   "qe": "20081231",
+   "basis": "std",
+   "was": 632.24,
+   "fixed": 615.74,
    "why": "BSE ann 2009-01-27 08:44 (own-quarter filing): 'net profit of Rs 6157.40 million for the quarter ended December 31, 2008' = 615.74 cr. SECOND, independent: BSE ann 2010-01-27 08:12 (the Dec-2009 filing) repeats it as the comparative, 'as compared to Rs 6157.40 million for the quarter ended December 31, 2008' -- so it is NOT a figure the company later restated to 632.24. Note the stored 632.24 sits suspiciously close to the PRIOR year's 631.44, consistent with a comparative-column mis-read.",
    "found": "quantmac finding 3 residue (HINDUNILVR Jan-2009 trade), audited 2026-08-23"
+  },
+  {
+   "sym": "SPLPETRO",
+   "qe": "20170930",
+   "basis": "std",
+   "was": 13.31,
+   "fixed": 36.68,
+   "why": "Supreme Petrochem std Q2FY18. THREE independent documents agree the PAT is 36.68, not 13.31: (1) OWN-QUARTER filing (BSE ann, 'Statement of Standalone Unaudited Results for the Quarter/Half Year Ended September 30, 2017'), col '2nd Quarter Ended on 30/09/2017': Profit after tax 3,667.84 lakhs = 36.68; (2) YEAR-LATER filing (Sep-2018), 'Corresponding Quarter ended in the Previous Year on 30/09/2017' col: 3,667.84 lakhs = 36.68; (3) Moneycontrol standalone pat_total for 20170930 = 36.68. NOT a restatement - both filing vintages and the aggregator all read 36.68. The filing has no minority-interest line, so 36.68 is both total and owners. Our stored 13.31 is an isolated transcription/parse error.",
+   "found": "N500 std-revenue campaign 2026-08-24: the revStd fill for this cell could not anchor because the stored PAT was the broken value"
   }
  ]
 }

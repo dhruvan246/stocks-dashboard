@@ -1,0 +1,29 @@
+{
+ "_README": [
+  "REVIEWED value corrections for docs/sf_revop.json slot 0 (revStd) / slot 1 (revCon).",
+  "The revop analogue of fund_cell_fix.json (which does npStd/npCon in sf_fundamentals).",
+  "For cells whose stored REVENUE value is simply wrong against the filing itself -- the wrong",
+  "line, the wrong period, a mis-parse -- NOT scale errors (scale_fix.json, parse-time).",
+  "Every entry states the primary document AND a second independent source, because a restatement",
+  "looks exactly like an error until you check whether the later filing agrees. A cell whose",
+  "vintages genuinely DISAGREE (an amalgamation/demerger restatement, e.g. SUPRAJIT 2016) is NOT",
+  "an error and must NOT be listed here.",
+  "",
+  "Applied by scripts/apply_revop_cell_fix.py --apply, guarded on `was` (idempotent, refuses to",
+  "overwrite a cell someone else has moved). Writes BOTH docs/sf_revop.json and the build ledger",
+  "scripts/revop_fundamentals.json so the next incremental build_revop keeps the corrected value.",
+  "",
+  "DURABILITY CAVEAT: if a value is reproduced by build_revop's XBRL parse (not just a fill), a",
+  "`--fresh` rebuild can regenerate the wrong number. ci_preserve_merge normally keeps the",
+  "committed value, but for a permanent fix the XBRL extraction should be corrected too. Each",
+  "entry notes whether the wrong value is a scale issue (no -- use scale_fix) or a wrong-line pick."
+ ],
+ "fixes": [
+  {
+   "sym": "LTF", "qe": "20190331", "basis": "std", "was": 3.09, "fixed": 303.15,
+   "why": "L&T Finance Holdings std Q4FY19 'Total revenue from operations'. THREE-way proof it is 303.15, not 3.09: (1) the company's OWN Sep-2019 filing (BSE ann 2019-10-18), page 13 'STATEMENT OF STANDALONE FINANCIAL RESULTS ... SEPTEMBER 30, 2019' (Rs in Crore), Year-ended-31-March-2019 column, row (I) Total revenue from operations = 482.11; our three OTHER FY2019 quarters (Jun-18 32.38, Sep-18 97.71, Dec-18 48.87 = 178.96) each equal that filing's own quarter columns, so Q4 = 482.11 - 178.96 = 303.15. (2) Moneycontrol standalone rev_ops for 20190331 = 303.14. (3) our stored series matches MC standalone EXACTLY on the surrounding quarters (48.87, 29.21, 400.49), so only this one cell is out. NOT a restatement (no vintage shows 3.09) and NOT a clean power-of-ten (303.15/3.09 = 98.1, so scale_fix does not apply) -- an isolated wrong value.",
+   "wrong_value_class": "wrong-line/mis-parse (NOT scale); if XBRL-sourced the extraction picked a component line, needs a parser check for a permanent fix",
+   "found": "N500 std-revenue campaign 2026-08-24"
+  }
+ ]
+}
