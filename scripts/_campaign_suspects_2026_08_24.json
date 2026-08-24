@@ -256,5 +256,16 @@
    }
   },
   "owner": "runbook \u00a7108 restated-vintage sweep (project-stocks-restated-vintage-class). Healing 20160331 this session; 20150630/20150930/20151231 need original-filing confirmation before heal."
+ },
+ "THOMASCOOK|20150930|revStd": {
+  "status": "NOT FILLED - stored series is internally inconsistent; needs a whole-series basis investigation, not a single-cell fill.",
+  "as_filed_from_filing": "BSE 2015-10-29 Thomas Cook (India) Q2+H1 FY16 filing (Rs Lakhs). STANDALONE Quarter ended 30-Sept-2015: (a) Financial & Travel & Related Services 9,806.0 + (d) Other operating income 574.7 = Total Income from operations 10,480.7 lakhs = 104.81 cr; Net Profit for the period 673.9 lakhs = 6.74 cr. (b) Human Resource Services and (c) Vacation Ownership are dashes standalone - those are subsidiaries, consolidated only.",
+  "problems": {
+   "npStd_anchor_wrong": "stored npStd 20150930 = 10.04 but the filing (and MC) show 6.74. Yet stored Q1 (24.88) and Q3 (-3.13) DO match as-filed - so only Q2 npStd is off, not a clean restatement row. A revStd=104.81 fill would fail the PAT anchor (|10.04-6.74|=3.30 > tol 2.0).",
+   "revStd_basis_unexplained": "stored revStd Q1=717.22 and Q3=284.44 match NEITHER the as-filed standalone income-from-operations (Q1 138.96, Q3 84.67 per MC) NOR consolidated (~929 cr), NOR any 6M/15M period column. ~5x the as-filed net figure - possibly a gross-billings or Ind-AS-115 gross vintage, or a defect. Unknown until the series basis is pinned."
+  },
+  "context": "Thomas Cook India: changed year-end Dec->Mar in 2014-15 (a 15-month period ended 31-Mar-2015); amalgamated Sterling Holiday Resorts; Quess Corp / Vacation Ownership are subsidiaries (consolidated only). Travel revenue has a gross-vs-net presentation question.",
+  "recommendation": "Dedicated THOMASCOOK series audit: (1) pin the stored revStd basis by matching 717.22/284.44 to a specific filing/line; (2) adjudicate npStd 20150930 10.04 vs 6.74 (check the year-later filing for a restatement, else heal to as-filed 6.74); (3) then fill 20150930 revStd on the confirmed basis.",
+  "measured": "2026-08-24 vision read of the 2015-10-29 filing + MC standalone cross-check"
  }
 }
