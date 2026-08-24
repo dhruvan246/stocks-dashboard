@@ -8,6 +8,11 @@
    "moneycontrol rev_ops 296.76 both"
   ]
  },
+ "LTF|20190331|revStd": {
+  "action": "NOT patched. A near-100x ratio suggests a scale error on our side but it is not an exact 100x (303.14/3.09 = 98.1), so the value cannot be derived by rescaling. Needs the filing.",
+  "blocks": "LTF 2019-06 and 2019-09 revStd \u2014 the neighbourhood gate fails on this one outlier, so MC 16.56 / 29.18 were NOT written",
+  "observation": "ours 3.09 vs moneycontrol standalone 303.14 (ratio 98.1x). Our stored series matches MC STANDALONE EXACTLY on the surrounding quarters: 2018-12 48.87==48.87, 2019-12 29.21==29.21, 2020-03 400.49==400.49 \u2014 so the series identity is not in doubt, only this cell."
+ },
  "RAIN|CY2014|revStd-annual": {
   "action": "wrote the exchange zeros (primary source, unanimous, printed); the 5.26 divergence is an aggregator presentation question (likely other-income reclass under restatement), NOT adjudicated",
   "observation": "exchange as-filed CY2014 std revenue sums 2.74 (0+0+0+2.74, four PAT-anchored pages); screener annual Sales says 8",
@@ -15,5 +20,172 @@
    "financial_res_RAIN_* NSE archive pages Mar/Jun/Sep/Dec-2014",
    "screener.in/company/RAIN standalone P&L"
   ]
+ },
+ "_gate_failures_2026_08_24": {
+  "per_name": {
+   "ASHIANA|20160331": {
+    "bad": 2,
+    "matched": 1,
+    "mc_value": 362.25,
+    "tested": 3,
+    "worst_pct": 8.87
+   },
+   "BAJAJHIND|20110930": {
+    "bad": 5,
+    "matched": 7,
+    "mc_value": 1122.0,
+    "tested": 12,
+    "worst_pct": 15.28
+   },
+   "BLUESTARCO|20180331": {
+    "bad": 4,
+    "matched": 8,
+    "mc_value": 1371.97,
+    "tested": 12,
+    "worst_pct": 2.6
+   },
+   "DHAMPURSUG|20080630": {
+    "bad": 1,
+    "matched": 10,
+    "mc_value": 120.82,
+    "tested": 11,
+    "worst_pct": 2.65
+   },
+   "DHANI|20110331": {
+    "bad": 8,
+    "matched": 4,
+    "mc_value": 42.15,
+    "tested": 12,
+    "worst_pct": 29.62
+   },
+   "ESCORTS|20100930": {
+    "bad": 3,
+    "matched": 9,
+    "mc_value": 672.13,
+    "tested": 12,
+    "worst_pct": 5.21
+   },
+   "ICIL|20160331": {
+    "bad": 7,
+    "matched": 0,
+    "mc_value": 506.83,
+    "tested": 7,
+    "worst_pct": 14.03
+   },
+   "JMFINANCIL|20190930": {
+    "bad": 2,
+    "matched": 10,
+    "mc_value": 57.93,
+    "tested": 12,
+    "worst_pct": 1104.86
+   },
+   "LTF|20190630": {
+    "bad": 1,
+    "matched": 10,
+    "mc_value": 16.56,
+    "tested": 11,
+    "worst_pct": 9710.36
+   },
+   "LTF|20190930": {
+    "bad": 1,
+    "matched": 10,
+    "mc_value": 29.18,
+    "tested": 11,
+    "worst_pct": 9710.36
+   },
+   "MFSL|20190630": {
+    "bad": 2,
+    "matched": 10,
+    "mc_value": 196.13,
+    "tested": 12,
+    "worst_pct": 4.55
+   },
+   "MTNL|20160331": {
+    "bad": 1,
+    "matched": 6,
+    "mc_value": 833.66,
+    "tested": 7,
+    "worst_pct": 1.42
+   },
+   "PNBGILTS|20090331": {
+    "bad": 1,
+    "matched": 9,
+    "mc_value": -62.07,
+    "tested": 10,
+    "worst_pct": 53.27
+   },
+   "RKFORGE|20160331": {
+    "bad": 5,
+    "matched": 2,
+    "mc_value": 215.36,
+    "tested": 7,
+    "worst_pct": 12.28
+   },
+   "SPLPETRO|20170930": {
+    "bad": 1,
+    "matched": 1,
+    "mc_value": 703.7,
+    "tested": 2,
+    "worst_pct": 11.38
+   },
+   "STAR|20081231": {
+    "bad": 1,
+    "matched": 11,
+    "mc_value": 190.84,
+    "tested": 12,
+    "worst_pct": 6.43
+   },
+   "STYRENIX|20150331": {
+    "bad": 2,
+    "matched": 0,
+    "mc_value": 267.65,
+    "tested": 2,
+    "worst_pct": 13.92
+   },
+   "STYRENIX|20160331": {
+    "bad": 2,
+    "matched": 0,
+    "mc_value": 722.37,
+    "tested": 2,
+    "worst_pct": 13.92
+   },
+   "SUPRAJIT|20160630": {
+    "bad": 3,
+    "matched": 2,
+    "mc_value": 142.89,
+    "tested": 5,
+    "worst_pct": 33.93
+   },
+   "SUPRAJIT|20170630": {
+    "bad": 3,
+    "matched": 6,
+    "mc_value": 211.55,
+    "tested": 9,
+    "worst_pct": 33.93
+   },
+   "TEXRAIL|20151231": {
+    "bad": 3,
+    "matched": 2,
+    "mc_value": 253.83,
+    "tested": 5,
+    "worst_pct": 3.96
+   },
+   "THERMAX|20160331": {
+    "bad": 8,
+    "matched": 4,
+    "mc_value": 1291.96,
+    "tested": 12,
+    "worst_pct": 11.75
+   },
+   "THOMASCOOK|20150930": {
+    "bad": 11,
+    "matched": 1,
+    "mc_value": 99.06,
+    "tested": 12,
+    "worst_pct": 81.02
+   }
+  },
+  "what": "23 of 25 MC candidates failed the neighbourhood gate (site series must reproduce our stored revStd within +-6 quarters, >=4 tested, zero disagreements)",
+  "why_it_matters": "these are the aggregator TWO-REVENUE-DEFINITIONS class: the site quotes a different top line (gross vs net of excise, or total income) for those names, so its value for the gap quarter is not our quantity"
  }
 }
