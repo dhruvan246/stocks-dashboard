@@ -11785,3 +11785,40 @@ agree with each other.** Healed. It had never flagged, because 1.29 sits inside 
 
 Also landed here: SKFINDIA Jun-2016 std 93.22 -> 60.40, surfaced only once the sentinel fix let the
 page be read (NSE and detres both 60.4).
+
+### 109j. ★★★ THE HEAL LEDGERS WERE NEVER RE-APPLIED BY CI — so a heal CI derives differently reverts  (2026-08-25)
+
+**Found by re-running the applier before a push, not by a monitor.** Eight consolidated cells healed
+at 17:07 were back at their EXACT pre-heal values by the next refresh: BIOCON, GODREJPROP,
+JINDALSTEL, PRESTIGE, RAYMOND, TATACONSUM (Dec-16 and Mar-17), VBL. Traced through the payload's own
+history — `d20688777` set BIOCON con 142.9, "Daily fundamentals + results refresh" set it back to
+127.5, and every one landed on its ledger `was` value, which is what distinguishes a **silent
+revert** from another session's adjudication.
+
+**Why §56's three-way merge does not cover this.** `ci_preserve_merge.py` decides per slot:
+`ours != base → take OURS`. When CI's own rebuild DERIVES a value for a cell, that is a deliberate
+change by its rule, so OURS wins and the concurrent heal on origin is discarded. The merge is doing
+exactly what it was designed to do; the gap is that **nothing re-asserted the heal ledgers after the
+rebuild**. `ann_date_fills` had that reapply (§104) and value corrections did not —
+`fund_cell_fix.json` / `revop_cell_fix.json` were referenced by no workflow at all.
+
+**Fixed** in `refresh-fundamentals.yml`, in the push-retry loop immediately after
+`backfill_ann_dates_bse.py --reapply` and for the identical reason:
+
+    python3 -X utf8 scripts/apply_fund_cell_fix.py --apply  || echo "::warning::..."
+    python3 -X utf8 scripts/apply_revop_cell_fix.py --apply || echo "::warning::..."
+    git add docs/sf_fundamentals.json docs/sf_revop.json
+
+Proven before shipping, by running it rather than reasoning about it:
+* **idempotent** — on an already-healed tree: `to-write 0 | already-correct 478` (fund) and
+  `1,365` (revop), so a quiet run produces no diff;
+* **`was`-guarded** — with a cell forced to 999.99 to simulate another writer, the applier printed
+  `SKIP BIOCON 20170331 con: holds 999.99, ledger expected was=127.5 — re-adjudicate, not forcing`
+  and left it at 999.99. It can restore a reverted heal; it can never overwrite somebody's newer
+  adjudication.
+
+★ **A LEDGER NOTHING RE-APPLIES IS A COMMENT, NOT A HEAL.** Route the fix through a ledger (§5) AND
+wire the applier into the job that rebuilds the derived file — otherwise the ledger records what
+the data *should* say while the payload keeps saying something else.
+Note `verify_fills_live.py` did not catch this: it checks FILL ledgers (a cell going null), not
+value-correction ledgers (a cell going back to a wrong number). Extending it is the next job.

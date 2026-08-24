@@ -374,7 +374,20 @@ jobs:
               fi
             done
             python3 -X utf8 scripts/backfill_ann_dates_bse.py --reapply || echo "::warning::ann-date ledger reapply failed"
-            git add docs/sf_fundamentals.json
+            # ★ VALUE-CORRECTION LEDGERS, RE-ASSERTED — same rationale as the ann-date reapply
+            # directly above, for the same reason, one field over. fund_cell_fix.json /
+            # revop_cell_fix.json are the reviewed corrections a human adjudicated against the
+            # filings; nothing was re-applying them after CI's own rebuild, so a cell this job
+            # DERIVES differently wins the three-way merge (ours != base -> ours) and the heal is
+            # silently reverted. Measured 2026-08-24: the 21:55 refresh reverted 8 consolidated
+            # cells (BIOCON, GODREJPROP, JINDALSTEL, PRESTIGE, RAYMOND, TATACONSUM x2, VBL) to
+            # their exact pre-heal values a few hours after they landed — runbook 56/109j.
+            # Safe to run every attempt: both appliers are GUARDED ON `was`, so a cell another
+            # writer has since moved is reported and left alone rather than forced, and a cell
+            # already at `fixed` produces no diff. Non-fatal, like every other ledger step here.
+            python3 -X utf8 scripts/apply_fund_cell_fix.py --apply  || echo "::warning::fund_cell_fix reapply failed"
+            python3 -X utf8 scripts/apply_revop_cell_fix.py --apply || echo "::warning::revop_cell_fix reapply failed"
+            git add docs/sf_fundamentals.json docs/sf_revop.json
             # Fill-coverage scoreboard (docs/fill-coverage.html) — built HERE, inside the loop and
             # AFTER the three-way merge, deliberately. It is derived from sf_revop + sf_fundamentals,
             # so building it earlier would compute over pre-merge data and then be wiped by the
