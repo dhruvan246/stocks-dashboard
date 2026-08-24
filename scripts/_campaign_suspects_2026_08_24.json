@@ -28,6 +28,13 @@
    "screener.in/company/RAIN standalone P&L"
   ]
  },
+ "SPLPETRO|20170930|npStd": {
+  "blocks": "SPLPETRO 2017-09-30 revStd - the revenue is externally confirmed (filing Total income from ops net 707.46; MC rev_ops 703.70) but CANNOT be written because the stored-PAT anchor that gates every write is itself the broken value. Fill the revenue only after the PAT heal lands.",
+  "correct": 36.68,
+  "evidence": "Supreme Petrochem's OWN Sep-2018 filing (Statement of Standalone Unaudited Results, Rs in Lakhs), 'Corresponding Quarter ended in the Previous Year on 30/09/2017' column: Profit after tax 3,667.84 lakhs = 36.68. Moneycontrol standalone pat_total for 20170930 also = 36.68. No minority-interest/NCI line exists in the filing, so 36.68 is both total and owners. Two independent sources agree; our 13.31 is an isolated error.",
+  "status": "LIVE STD-PAT DEFECT found by the revenue campaign (2nd after LTF 2019-03) - NOT healed here (sf_fundamentals heal needs its own ledger)",
+  "stored_npStd": 13.31
+ },
  "_gate_failures_2026_08_24": {
   "per_name": {
    "ASHIANA|20160331": {
