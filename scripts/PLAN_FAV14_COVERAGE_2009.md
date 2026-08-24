@@ -182,7 +182,22 @@ the 4 P1 price-convention symbols (not SHP-fillable).
   run() on a filtered frontier like the P2 driver did, or extend shp_fill_fav14). Fix the FVCI
   parser gap first (parse_new must treat "Foreign Venture Capital Investors" as fii) — it will
   recover many otherwise-rejected cells. Apply via fetch_shareholding --apply-ledgers.
-- **P3 pat_con — 586 root quarter-cells (109 symbols), F-con.** Ledger feed_qe_fix.json → rebuild
+- **P3 pat_con — 586 root quarter-cells (109 symbols), P4 pat_std — 2,623 (495 symbols).** ⚠ These
+  are the LARGEST remaining gaps (live: profitTTMStd 7482, profitYoyStd 3798, profitTTM 1746,
+  profitYoy/Streak 699) and drive the strategies (con-blend = 6 of 7 favourites; std = strategy 1).
+  They route into docs/sf_fundamentals.json, which is built by a DEEP multi-applier pipeline (many
+  scripts/_*_apply.py + apply_fund_cell_fix.py + _stdpat_apply.py + _nse_archive_revop.py + nightly
+  CI). This is its own sub-campaign — STUDY the sf_fundamentals build order before writing any ledger
+  (a wrong ledger corrupts the fundamentals store). Route ladder §2: BSE detres JSON (rung 1, 2008Q1+,
+  QID = 85+4*(FY-2015)+{Mar:0,Jun:1,Sep:2,Dec:3}, .00 standalone / .50 consolidated) is the con/std
+  workhorse; NSE archive (rung 2, 2005+, both bases) for std. 95% of roots are FY2007-FY2015. Re-derive
+  the exact current roots first (the P0 method: bake --explain, reproduce the engine's REACH rule per
+  cell). Batch by symbol so FY-identity (§45) adjudicates. Do it in THIS worktree or a fresh one.
+- **diiChgPp residual 1365:** 2016+ (≈561) needs the XBRL/NSE route (SHP campaign's 2016+ ledgers);
+  pre-2016 (≈804) = 93 unserved aspx pages + 50 unresolved DELISTED scripcodes (242 cells, mostly
+  pre-2009 = low yield for the 2009+ window) + the 2015-12/2016-03 seam. Resolve delisted codes via
+  era BSE bhavcopy + ISIN-verify (as in P2) only for the 2009+ ones.
+- **(superseded line, see above)** P3 pat_con — 586 root quarter-cells (109 symbols), F-con.** Ledger feed_qe_fix.json → rebuild
   sf_fundamentals. Route ladder §2: BSE detres JSON (rung 1, 2008Q1+) is the workhorse for con.
   95% of roots are FY2007-FY2015.
 - **P4 pat_std — 2,623 root quarter-cells (495 symbols), F-std.** NSE archive (rung 2, 2005+, both
