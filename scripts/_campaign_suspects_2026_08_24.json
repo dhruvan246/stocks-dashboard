@@ -211,7 +211,7 @@
   "why_it_matters": "these are the aggregator TWO-REVENUE-DEFINITIONS class: the site quotes a different top line (gross vs net of excise, or total income) for those names, so its value for the gap quarter is not our quantity"
  },
  "MTNL|20160331|revStd": {
-  "status": "ANCHOR-MISMATCH / restatement-vintage - NOT filled from own filing",
+  "status": "\u00a7108 RESTATED-VINTAGE (not a plain fill). Stored npStd 188.64 is the Ind-AS RESTATED comparative (confirmed in the 2017-05-30 FY17 filing Corresponding-31/03/2016 column: Row XIV 188.64, Row I revenue 813.45). Store convention = AS-ORIGINALLY-FILED (runbook \u00a7108): original 2016-05-30 filing shows npStd 174.58 (PBT -317.68 + MAT 492.26) and Total income from ops 835.79; MC as-filed agrees (174.58 / 835.8). ACTION: heal npStd 188.64->174.58 (fund_cell_fix) + fill revStd 835.79 as-filed.",
   "own_filing": "BSE 2016-05-30 Annexure I (audited FY+Q4 ended 31/03/2016, Rs Cr). Standalone col 3 (3 months ended 31/03/2016, balancing figure): Total income from operations (Net) 835.79 (=833.66 net + 2.14 other op); Net Profit for the period 174.58 (PBT -317.68 + MAT write-back 492.26).",
   "stored_npStd": 188.64,
   "filing_npStd": 174.58,
@@ -220,10 +220,41 @@
   "measured": "2026-08-24 vision read of the scanned Annexure I"
  },
  "UJJIVAN|20170331|revStd": {
-  "status": "NOT filled - refetched doc is the WRONG ENTITY",
+  "status": "RESOLVED 2026-08-24 = 132.89. Fetched the holdcos OWN 2017-04-27 filing (Ujjivan Financial Services, scrip 539874); Note 9 Total Income from Operations (Net) Q4 = 13,289.29 lakhs = 132.89 cr, PAT 20.41 = stored. Filled via _vision_reads.",
   "doc_in_hand": "BSE 2017-05 UJJIVAN_20170331 bundle is Ujjivan SMALL FINANCE BANK Limited (the unlisted subsidiary) audited results for the STUB period Jul-4-2016 to Mar-31-2017; net profit Rs 350,765 (=Rs 3.5 lakh). Bank commenced ops 2017-02-01.",
   "why_wrong": "Our ticker UJJIVAN in FY17 = Ujjivan Financial Services Limited (the listed HOLDCO), stored npStd 20.41 cr / npCon 19.35 / revCon 314.53. The holdco transferred its lending business to the bank on 2017-02-01. The subject-filtered refetch picked the bank subsidiary attachment, not the holdco standalone.",
   "todo": "Refetch Ujjivan Financial Services Limiteds OWN standalone Q4FY17 results (the filing that also carries our con revCon 314.53). Its standalone total income from operations, anchored to npStd 20.41, is the value.",
   "measured": "2026-08-24 vision read of pages 0-4 of the bundle"
+ },
+ "MTNL|FY16_row|\u00a7108": {
+  "finding": "The ENTIRE MTNL FY16 std row holds Ind-AS RESTATED comparatives on original ann dates (a \u00a7108 look-ahead); FY17 quarters are clean as-filed (match MC exactly).",
+  "stored_vs_MC_asfiled": {
+   "20150630": {
+    "npStd_stored": -734.24,
+    "npStd_asfiled_MC": -744.97,
+    "revStd_stored": null,
+    "revStd_asfiled_MC": 803.63
+   },
+   "20150930": {
+    "npStd_stored": -730.35,
+    "npStd_asfiled_MC": -730.44,
+    "note": "borderline 0.09 - confirm vs original filing"
+   },
+   "20151231": {
+    "npStd_stored": -671.59,
+    "npStd_asfiled_MC": -704.93,
+    "revStd_stored": 756.21,
+    "revStd_asfiled_MC": 770.77,
+    "primary": "FY16-annual 2016-05-30 col 3-months-ended-31/12/2015"
+   },
+   "20160331": {
+    "npStd_stored": 188.64,
+    "npStd_asfiled_MC": 174.58,
+    "revStd_asfiled": 835.79,
+    "primary": "original 2016-05-30 filing + MC",
+    "status": "healing this session"
+   }
+  },
+  "owner": "runbook \u00a7108 restated-vintage sweep (project-stocks-restated-vintage-class). Healing 20160331 this session; 20150630/20150930/20151231 need original-filing confirmation before heal."
  }
 }

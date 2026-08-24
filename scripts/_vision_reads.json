@@ -247,6 +247,13 @@
    "pat_seen": 0.53,
    "rev": 0.0,
    "src": "2026-08-24 positional text read of the BSE attachment page 3 'Statement of Standalone Financial Results for the quarter ended June 30, 2019' (Rs. In lakhs). Row I 'Revenue from operations' is '-' for the Jun-2019 column (1,100.00 for Mar-2019 and 2,200.00 for the year); row II Other Income 252.92; row III Total Income 252.92 = 0 + 252.92, which closes the identity. Row IX Profit for the period 52.64 lakhs = 0.5264 == stored npStd 0.53. The auto-parser had produced 252.92 - Total Income, i.e. other income only."
+  },
+  "20170331": {
+   "basis": "std",
+   "rev": 132.89,
+   "pat_seen": 20.41,
+   "fin": 1,
+   "src": "BSE 2017-04-27 Ujjivan FINANCIAL SERVICES Ltd (holdco, scrip 539874) own standalone Q4+FY17 results (Deloitte-audited), Rs in Lakhs. Note 9 Details of Total operations, Quarter ended March 31 2017 col: Total Income from Operations (Net) = 13,289.29 lakhs = 132.89 cr; Net Profit for the period after tax = 2,041.17 lakhs = 20.41 cr = stored npStd EXACTLY. Total-operations basis (continuing 374.68 + discontinued 1,666.49 = 2,041.17 lakhs), consistent with our npStd 20.41 and revCon 314.53. The low Q4 (vs Q3 369.53) reflects the MFI business transfer to Ujjivan Small Finance Bank on 2017-02-01 (only ~1 month of lending in Q4; the rest is discontinued ops). NOTE: the earlier-refetched UJJIVAN_20170331 bundle (2017-05-29) was the BANK subsidiarys results - wrong entity; this 2017-04-27 filing is the holdcos own."
   }
  },
  "RKFORGE": {
@@ -315,6 +322,15 @@
    "pat_seen": 52.29,
    "rev": 261.4,
    "src": "2026-08-24 vision read of BSE ann 2015-10-20 (CorpAttachment/2015/10/196A4865_E4EE_4EAD_9BF6_259895AF394F_191354.pdf p1, Rs in Lakhs), own-quarter col: total income 26,140; profit from operations 6,203; NP 5,229 (== npStd healed to 52.29 via fund_cell_fix, 2026-08-24). Matches detres 87.00 (2,614.0/522.9 mn \u00f710)."
+  }
+ },
+ "MTNL": {
+  "20160331": {
+   "basis": "std",
+   "rev": 835.79,
+   "pat_seen": 174.58,
+   "fin": 0,
+   "src": "BSE 2016-05-30 MTNL FY16 AUDITED results (Annexure I, old-GAAP as-originally-filed, Rs Crore). Standalone col 3 (3 months ended 31/03/2016): Total income from operations (Net) 835.79 (=833.66 net + 2.14 other op); Net Profit 174.58 (PBT -317.68 + MAT write-back 492.26). This is the AS-FILED vintage (runbook \u00a7108 store convention); MC as-filed agrees (rev_total 835.8, pat 174.58). Stored npStd was the Ind-AS RESTATED 188.64 (from the 2017-05-30 FY17 filing comparative) - healed to 174.58 via fund_cell_fix this commit so this revenue anchors to the as-filed PAT."
   }
  }
 }
