@@ -442,12 +442,17 @@ def _attempt(fr, dirp, neigh, used):
         # family convention (Wayback-MC ledger): dii = mf + banks + ins. An anonymous Any-Others
         # row folds in ONLY when reconciliation needs it — keeps the ~22k stored 2010-16 cells and
         # these on one convention, while still closing the pages where the row is material.
-        dii_base = round(mf + (val("banks") or 0.0) + (val("ins") or 0.0), 4)
+        # VCF = domestic Venture Capital Funds -> dii; FVCI = Foreign VC Investors -> fii (added
+        # to fii below). Both rows are EXTRACTED by parse_new but were never summed into the family
+        # totals, so any filer holding them failed inst-recon and was silently rejected (INNOIND
+        # 2013 = recon gap == FVCI 4.36pp exactly; PLAN_FAV14 P2, 2026-08-24). Strictly additive:
+        # a filer without these rows reads 0 here, unchanged.
+        dii_base = round(mf + (val("banks") or 0.0) + (val("ins") or 0.0) + (val("vcf") or 0.0), 4)
         dii = dii_base
         inst = val("inst_sub")
         derived = False
         if fii is not None:
-            fii = round(fii + fpi_add, 4)
+            fii = round(fii + fpi_add + (val("fvci") or 0.0), 4)
             if inst is not None and oth_add:
                 gap0 = abs(fii + dii_base + (val("govt") or 0.0) + (val("qfi") or 0.0) - inst)
                 gap1 = abs(fii + dii_base + oth_add + (val("govt") or 0.0) + (val("qfi") or 0.0) - inst)
