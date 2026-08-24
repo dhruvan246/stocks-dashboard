@@ -61,7 +61,7 @@
   @media (max-width:520px){.hero-srch{padding:10px 12px;font-size:13.5px;}.hero-srch .hs-go{padding:6px 11px;}}
 
   /* index ticker */
-  .indices{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:30px 0 6px;}
+  .indices{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin:30px 0 6px;}
   .ix{display:block;position:relative;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 16px 14px;
     box-shadow:var(--shadow);overflow:hidden;transition:transform var(--tr),box-shadow var(--tr),border-color var(--tr);}
   .ix:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:color-mix(in srgb,var(--accent) 40%,var(--border));}
@@ -95,7 +95,8 @@
   .tile .td{font-size:12.5px;color:var(--text-muted);line-height:1.45;margin-top:4px;}
 
   main.wrap{padding-bottom:64px;}  /* beat .wrap's padding shorthand (else footer overlaps tiles) */
-  @media (max-width:860px){.indices{grid-template-columns:repeat(2,1fr);}.tiles{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:860px){.indices{grid-template-columns:repeat(2,1fr);}.tiles{grid-template-columns:repeat(2,1fr);}
+    .indices .ix:last-child{grid-column:1/-1;}}  /* odd 5th card (GIFT NIFTY) spans the row */
   @media (max-width:520px){.indices{grid-template-columns:1fr 1fr;}.tiles{grid-template-columns:1fr;}}
 </style>
 </head>
@@ -129,6 +130,11 @@
     <a class="ix" href="./index-chart.html?ix=nifty500"  data-src="nifty500.json"    data-ysym="%5ECRSLDX"   data-name="NIFTY 500"  data-kind="index"></a>
     <a class="ix" href="./index-chart.html?ix=banknifty" data-src="nifty_bank.json"  data-ysym="%5ENSEBANK"  data-name="NIFTY BANK" data-kind="index"></a>
     <a class="ix" href="./index-chart.html?ix=vix"       data-src="india_vix.json"   data-ysym="%5EINDIAVIX" data-name="INDIA VIX"  data-kind="vix"></a>
+    <!-- GIFT NIFTY (Nifty futures at NSE IX) has no Yahoo symbol and no committed
+         daily JSON — it's live-only via the Worker's ?gift=1 route (fallback: public
+         CORS proxies straight to nseix.com), so no data-src / data-ysym here. -->
+    <a class="ix" href="https://www.nseix.com/markets/derivatives-watch" target="_blank" rel="noopener"
+                                                         data-name="GIFT NIFTY" data-kind="gift"></a>
   </section>
 
   <!-- TILE GRID — rendered from window.SW_NAV (single source of truth in theme.js) -->
@@ -200,6 +206,9 @@
       var lvl = price < 13 ? 'Low' : price < 20 ? 'Moderate' : 'High';
       return 'Volatility <span class="pill">' + lvl + '</span>';
     }
+    if (el.getAttribute('data-kind') === 'gift') {
+      return 'Nifty futures · NSE IX' + (el._expiry ? ' <span class="pill">' + el._expiry + '</span>' : '');
+    }
     var w = el._rsi;
     if (w == null) return '&nbsp;';
     var tag = w >= 70 ? 'Overbought' : w <= 30 ? 'Oversold' : 'Neutral';
@@ -210,11 +219,16 @@
       ? '<span style="margin-left:6px;font-size:9px;font-weight:800;letter-spacing:.04em;color:var(--up)">● LIVE</span>'
       : '<span style="margin-left:6px;font-size:9px;font-weight:700;letter-spacing:.04em;color:var(--text-faint)">AT CLOSE</span>';
   }
+  // the GIFT card opens NSE IX's own live-watch page; the rest open index-chart.html
+  function openLabel(el) {
+    return el.getAttribute('data-kind') === 'gift' ? 'NSE IX ↗' : 'Chart →';
+  }
   function paint(el, price, prevClose, series, live) {
     if (price == null || prevClose == null) return;
     var chg = ((price - prevClose) / prevClose) * 100, up = chg >= 0;
+    el._painted = true;
     el.innerHTML =
-      '<span class="open">Chart →</span>' +
+      '<span class="open">' + openLabel(el) + '</span>' +
       '<div class="nm">' + el.getAttribute('data-name') + badge(live) + '</div>' +
       '<div class="px">' + fmt(price) + '</div>' +
       '<div class="chg ' + (up ? 'up' : 'down') + '">' + (up ? '▲' : '▼') + ' ' + Math.abs(chg).toFixed(2) + '%</div>' +
@@ -222,10 +236,13 @@
       spark(series && series.length > 1 ? series : el._daily || [], up);
   }
 
-  // 1) seed from the committed daily-close JSON — always available, never blank
+  // 1) seed from the committed daily-close JSON — always available, never blank.
+  //    The GIFT card has no committed JSON (live-only): skeleton now, first live
+  //    fetch paints it, refreshLive shows "data unavailable" if every route fails.
   function loadStatic(el) {
-    el.innerHTML = '<span class="open">Chart →</span><div class="nm">' + el.getAttribute('data-name') + '</div>' +
+    el.innerHTML = '<span class="open">' + openLabel(el) + '</span><div class="nm">' + el.getAttribute('data-name') + '</div>' +
       '<div class="px skeleton">00,000.00</div><div class="chg skeleton">0.00%</div><div class="rsi skeleton">RSI</div>';
+    if (!el.getAttribute('data-src')) return Promise.resolve();
     return fetch('./' + el.getAttribute('data-src'), { cache: 'no-store' })
       .then(function (r) { return r.json(); })
       .then(function (j) {
@@ -274,10 +291,59 @@
     }
     return tryNext();
   }
+  // GIFT NIFTY (Nifty futures at NSE IX) — Yahoo doesn't carry it. Primary: our
+  // Worker's ?gift=1 route (quote + sparkline series, see scripts/live-quote-worker.js).
+  // Fallback: public CORS proxies straight to the exchange's API (quote only).
+  var GIFT_API = 'https://www.nseix.com/api/derivatives-watch?inst_type1=IDX&type=live';
+  function pickGiftRow(j) {
+    // most-traded NIFTY futures contract = the quoted "GIFT Nifty" number
+    // (and rollover moves the pick to the new front month automatically)
+    var rows = ((j && j.data) || []).filter(function (x) {
+      return x && x.SYMBOL === 'NIFTY' && x.INSTRUMENTTYPE === 'FUTIDX' && x.LASTPRICE != null;
+    });
+    if (!rows.length) return null;
+    rows.sort(function (a, b) { return (b.CONTRACTSTRADED || 0) - (a.CONTRACTSTRADED || 0); });
+    return rows[0];
+  }
+  function fetchGift() {
+    return fetch(WORKER + '/?gift=1', { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .then(function (j) {
+        if (j.price == null || j.prevClose == null) throw 0;
+        return { price: j.price, prev: j.prevClose, series: j.series || [], expiry: j.expiry };
+      })
+      .catch(function () {
+        var i = 1;                       // PROXIES[0] is the Worker's Yahoo route — skip it here
+        function tryNext() {
+          if (i >= PROXIES.length) return Promise.reject('gift: all routes failed');
+          var p = PROXIES[i++](GIFT_API);
+          return fetch(p.url, { cache: 'no-store' })
+            .then(function (r) { if (!r.ok) throw 0; return r.text(); })
+            .then(function (t) {
+              var f = pickGiftRow(JSON.parse(p.wrap ? JSON.parse(t).contents : t));
+              if (!f || f.CLOSE == null) throw 0;
+              return { price: f.LASTPRICE, prev: f.CLOSE, series: [], expiry: f.EXPIRYDATE };
+            })
+            .catch(function () { return tryNext(); });
+        }
+        return tryNext();
+      });
+  }
+
   function refreshLive(el) {
-    return fetchLive(el.getAttribute('data-ysym'))
-      .then(function (q) { paint(el, q.price, q.prev, q.series, marketOpen()); })
-      .catch(function () { /* keep last good paint */ });
+    var gift = el.getAttribute('data-kind') === 'gift';
+    return (gift ? fetchGift() : fetchLive(el.getAttribute('data-ysym')))
+      .then(function (q) {
+        // "29-Sep-2026" -> "29 Sep" for the meta pill
+        if (q.expiry) el._expiry = String(q.expiry).replace(/^(\d{1,2})-([A-Za-z]{3}).*$/, '$1 $2');
+        paint(el, q.price, q.prev, q.series, gift ? giftOpen() : marketOpen());
+      })
+      .catch(function () {
+        // keep last good paint; the live-only GIFT card has none to keep
+        if (!el._painted) el.innerHTML = '<span class="open">' + openLabel(el) + '</span><div class="nm">' +
+          el.getAttribute('data-name') + '</div>' +
+          '<div class="px" style="font-size:15px;color:var(--text-faint)">—</div><div class="rsi">data unavailable</div>';
+      });
   }
 
   // NSE cash hours: Mon–Fri 09:15–15:30 IST (small pad). IST = UTC+5:30.
@@ -286,22 +352,36 @@
     var day = ist.getDay(), mins = ist.getHours() * 60 + ist.getMinutes();
     return day >= 1 && day <= 5 && mins >= 9 * 60 && mins <= 15 * 60 + 45;
   }
+  // GIFT Nifty trades Mon–Fri 06:30–15:40 IST and 16:35–02:45 IST next day (small pad)
+  function giftOpen() {
+    var ist = new Date(Date.now() + (new Date().getTimezoneOffset() * 60000) + 5.5 * 3600000);
+    var day = ist.getDay(), mins = ist.getHours() * 60 + ist.getMinutes();
+    if (day >= 1 && day <= 5 && ((mins >= 385 && mins <= 945) || mins >= 990)) return true;
+    return day >= 2 && day <= 6 && mins <= 170;   // evening session's past-midnight tail
+  }
 
   var cards = [].slice.call(document.querySelectorAll('#indices .ix'));
   var timer = null;
-  function pollOnce() { cards.forEach(refreshLive); }
+  // all=true refreshes every card (page load: show last traded even when closed);
+  // otherwise each card polls only while its own market is open
+  function pollOnce(all) {
+    cards.forEach(function (el) {
+      var open = el.getAttribute('data-kind') === 'gift' ? giftOpen() : marketOpen();
+      if (all || open) refreshLive(el);
+    });
+  }
   function startPolling() {
     if (timer) return;
     timer = setInterval(function () {
       if (document.hidden) return;              // pause when tab not visible
-      if (marketOpen()) pollOnce();             // live updates only during market hours
+      pollOnce(false);
     }, 45000);
   }
   Promise.all(cards.map(loadStatic)).then(function () {
-    pollOnce();          // one live fetch on load (shows last traded price even when closed)
+    pollOnce(true);      // one live fetch on load (shows last traded price even when closed)
     startPolling();
   });
-  document.addEventListener('visibilitychange', function () { if (!document.hidden && marketOpen()) pollOnce(); });
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) pollOnce(false); });
 
   // ---- tile grid from the shared nav ----------------------------------------
   var DESC = {

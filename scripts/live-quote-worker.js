@@ -34,6 +34,12 @@
  *   GET ?ipo=CMLL                  -> live subscription for ONE open IPO (NSE
  *        ipo-active-category): {asOf,symbol,updateTime,total,rows} where total =
  *        overall subscription multiple. Used by the IPOs page. Cached 60 s.
+ *   GET ?gift=1                    -> live GIFT NIFTY (Nifty futures at NSE IX,
+ *        Yahoo doesn't carry it): {asOf,price,prevClose,change,pchg,expiry,ts,
+ *        series} from www.nseix.com — most-traded NIFTY futures contract, plus
+ *        a ~40-point downsample of the exchange's intraday tick graph for the
+ *        home-page sparkline. Quote cached 30 s; the tick graph is ~1.2 MB so
+ *        it's refetched at most every 5 min. Used by the home-page ticker.
  *
  * DEPLOY:  see scripts/LIVE_FEED_SETUP.md  (paste this whole file over the old one)
  * ========================================================================== */
@@ -51,6 +57,8 @@ let ANN_CACHE = { ts: 0, body: null };         // per-isolate cache, 90 s
 const CHART_CACHE = new Map();                 // sym -> { ts, text }, 30 s
 const QUOTE_CACHE = new Map();                 // symbol-set -> { ts, text }, 30 s
 const NSE_CACHE = new Map();                   // nse-key -> { ts, text }, 60 s
+let GIFT_CACHE = { ts: 0, text: null };        // ?gift=1 quote envelope, 30 s
+let GIFT_GRAPH = { ts: 0, series: null };      // downsampled intraday graph, 5 min
 
 // Whitelisted NSE live-analysis endpoints (key -> [path, referer]). Only these
 // can be proxied — never a caller-supplied path.
@@ -81,6 +89,7 @@ export default {
     if (nse) return nseLive(nse);
     const ipo = url.searchParams.get('ipo');
     if (ipo) return ipoSubscription(ipo);
+    if (url.searchParams.get('gift')) return giftNifty();
     const filings = url.searchParams.get('filings');
     if (filings) return filingsPassthrough(url, filings);
     const pdf = url.searchParams.get('pdf');
@@ -310,6 +319,70 @@ async function ipoSubscription(sym) {
       rows: rows.map(x => [x.category, x.noOfShareOffered, x.noOfSharesBid, x.noOfTotalMeant]),
     });
     NSE_CACHE.set(key, { ts: now, text });
+    return new Response(text, { headers: { ...CORS, 'content-type': 'application/json' } });
+  } catch (e) {
+    return json({ error: String((e && e.message) || e) }, 502);
+  }
+}
+
+/* ---------------- live GIFT NIFTY from NSE IX (home-page ticker) -----------
+ * Yahoo has no GIFT Nifty symbol (verified 2026-08-25: search + every candidate
+ * chart symbol 404), and www.nseix.com sends no CORS headers — so the page
+ * can't fetch it itself. Quote = the most-traded NIFTY futures contract on the
+ * exchange's own derivatives-watch API (rollover then picks the new front month
+ * automatically). CLOSE on that row is the previous close — LASTPRICE-CLOSE
+ * reproduces the row's own CHANGE field exactly (checked live). */
+
+const NSEIX_HDRS = {
+  'User-Agent': NSE_UA,
+  'Accept': 'application/json, text/plain, */*',
+  'Referer': 'https://www.nseix.com/',
+};
+
+async function giftNifty() {
+  const now = Date.now();
+  if (GIFT_CACHE.text && now - GIFT_CACHE.ts < 30_000)
+    return new Response(GIFT_CACHE.text, { headers: { ...CORS, 'content-type': 'application/json' } });
+  try {
+    const r = await fetch('https://www.nseix.com/api/derivatives-watch?inst_type1=IDX&type=live',
+                          { headers: NSEIX_HDRS });
+    if (!r.ok) return json({ error: 'NSE IX HTTP ' + r.status }, 502);
+    const j = await r.json();
+    const futs = ((j && j.data) || []).filter(x =>
+      x && x.SYMBOL === 'NIFTY' && x.INSTRUMENTTYPE === 'FUTIDX' && x.LASTPRICE != null);
+    if (!futs.length) return json({ error: 'no NIFTY futures row in NSE IX response' }, 502);
+    futs.sort((a, b) => (b.CONTRACTSTRADED || 0) - (a.CONTRACTSTRADED || 0));
+    const f = futs[0];
+
+    // sparkline: the exchange's intraday tick graph is ~1.2 MB / ~50k points —
+    // refetch at most every 5 min and keep an even 40-point downsample
+    if (!GIFT_GRAPH.series || now - GIFT_GRAPH.ts > 300_000) {
+      try {
+        const g = await (await fetch('https://www.nseix.com/api/deep-intraday-graph',
+                                     { headers: NSEIX_HDRS })).json();
+        const pts = [];
+        for (const s of (g && g.data) || [])
+          for (const p of (s && s.data) || [])
+            if (p && p[1] != null) pts.push(p[1]);
+        if (pts.length > 1) {
+          const N = 40, out = [];
+          for (let i = 0; i < N; i++) out.push(pts[Math.round(i * (pts.length - 1) / (N - 1))]);
+          GIFT_GRAPH = { ts: now, series: out };
+        }
+      } catch (e) { /* sparkline is optional — quote still goes out */ }
+    }
+
+    const text = JSON.stringify({
+      asOf: now, source: 'nseix',
+      price: f.LASTPRICE,
+      prevClose: f.CLOSE != null ? f.CLOSE : null,
+      change: f.CHANGE != null ? f.CHANGE : null,
+      pchg: f.PERCHANGE != null ? f.PERCHANGE : null,
+      expiry: f.EXPIRYDATE || null,
+      ts: f.TIMESTMP || null,
+      series: GIFT_GRAPH.series || [],
+    });
+    GIFT_CACHE = { ts: now, text };
     return new Response(text, { headers: { ...CORS, 'content-type': 'application/json' } });
   } catch (e) {
     return json({ error: String((e && e.message) || e) }, 502);
