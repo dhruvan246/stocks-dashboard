@@ -115,6 +115,15 @@ never commit a partial bake · push via the CLAUDE.md retry recipe · verify LIV
 
 ## 4. Progress log (append per session; counts are MEASURED post-bake, never projected)
 
+- 2026-08-24 05:10 IST — **P5 (diiChgPp) MAJOR PASS: 2026→1365 (−661)** via BSE aspx frontier
+  harvest (912 cells / 236 symbols, 2008-09..2016-03, FVCI/VCF-fixed parser), isolated ledger
+  shp_fill_fav14.json.gz (now 932 cells), fill-only, idempotent (+912 then +0), all in-range,
+  0 collided with history. Also committed the FVCI/VCF parser fix (cb63019ac) — validated 0/40
+  existing cells changed. RESIDUAL diiChgPp 1365 by year: 2016=418 (aspx frontier stops 2016-03;
+  2016-06+ needs the XBRL/NSE route — SHP campaign's 2016+ ledgers), 2011=163/2012=141/2009=117
+  (absent pages 93 + 50 unresolved delisted scripcodes/242 cells + the 2015-12/2016-03 seam
+  exclusion), 2017-19=143 (post-aspx era). NEXT for diiChgPp: resolve the 50 delisted codes
+  (era bhavcopy + ISIN-verify, like P2) and the 2016+ XBRL route.
 - 2026-08-24 03:40 IST — **P2 (SHP-level) DONE for 4 of 5 symbols** via BSE ShareholdingPattern.aspx
   (isolated ledger scripts/shp_fill_fav14.json.gz, fill-only, wired into fetch_shareholding BSE_HIST_LEDGERS;
   idempotent 2nd pass 0 cells). fiiPct/diiPct 40→9 (MVL 8q, SHLAKSHMI 5q, INNOIND 4q, SUMMIT 3q = 20 cells,
