@@ -1,3 +1,9 @@
+# ★ LIVE SCORECARD (2026-08-24 09:03 IST) — 17,694 → 9,202 missing member-months (48% closed)
+# 6 technical 84→5 · FII%/DII% 117→9 · diiChgPp 2132→1365 · NPyoy-con/streak 786→289 · TTM-con 1833→1342
+# · NPyoy-std 3871→1513 · TTM-std 7548→4356.  Done: P1 price, P2+P5 SHP (932 cells), P4 std-PAT (1704 cells).
+# NEXT: NSE archive (api/corporates-financial-results — BOTH bases, REAL dates, 2005+; PAT in
+# resultDetailedDataLink) for std FY2007/detres-gaps + con-PAT (P3); 91 delisted std symbols (era codes);
+# diiChgPp 2016+ (XBRL). profitTTMStd is stickiest (8 consecutive quarters).
 # PLAN — FAV14 COVERAGE 100%: the 14 parameters the favourite strategies use, Nifty 500, 2009-01 → date
 
 **Written 2026-08-24 01:30 IST (Fable). User mandate, verbatim: *"dont assume. everything can be
