@@ -1,9 +1,11 @@
-# ★ LIVE SCORECARD (2026-08-24 09:03 IST) — 17,694 → 9,202 missing member-months (48% closed)
-# 6 technical 84→5 · FII%/DII% 117→9 · diiChgPp 2132→1365 · NPyoy-con/streak 786→289 · TTM-con 1833→1342
-# · NPyoy-std 3871→1513 · TTM-std 7548→4356.  Done: P1 price, P2+P5 SHP (932 cells), P4 std-PAT (1704 cells).
-# NEXT: NSE archive (api/corporates-financial-results — BOTH bases, REAL dates, 2005+; PAT in
-# resultDetailedDataLink) for std FY2007/detres-gaps + con-PAT (P3); 91 delisted std symbols (era codes);
-# diiChgPp 2016+ (XBRL). profitTTMStd is stickiest (8 consecutive quarters).
+# ★ LIVE SCORECARD (2026-08-24 09:39 IST) — 17,694 → 6,264 missing member-months (65% closed)
+# 6 technical 84→5 · FII%/DII% 117→9 · diiChgPp 2132→1365 · NP-YoY-con/streak 786→191 · TTM-con 1833→989
+# · NP-YoY-std 3871→676 · TTM-std 7548→2804.  Done: P1 price · P2+P5 SHP (932 cells) · P4 std-PAT
+# (2,337 cells: detres 1704 + NSE-archive 599 + FY-identity 34).
+# REMAINING (~6,264): TTM-std 2804 (sticky — 8 consecutive qtrs; ~189 delisted/renamed symbols NSE
+# doesn't serve → era BSE codes + detres, like P2) · diiChgPp 1365 (2016+ XBRL + delisted) · con
+# residual rides std. NSE archive (api/corporates-financial-results, BOTH bases + real dates + 2005+,
+# PAT in resultDetailedDataLink) is the proven route; period=Annual + FY-identity for the March gaps.
 # PLAN — FAV14 COVERAGE 100%: the 14 parameters the favourite strategies use, Nifty 500, 2009-01 → date
 
 **Written 2026-08-24 01:30 IST (Fable). User mandate, verbatim: *"dont assume. everything can be
