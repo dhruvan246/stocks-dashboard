@@ -11702,3 +11702,44 @@ NIFTY weekly options exist only from Feb-2019 (before that, 'weekly' resolves to
 FINNIFTY from 2021, MIDCPNIFTY from 2022. fo_spot_nse.json values are [o,h,l,c] arrays
 (legacy plain-close numbers still parse). The engine's byDate index is per-loaded-range —
 DTE falls back to weekday count when expiry > range end.
+
+### 109h. ★★ THE BY-PRODUCTS, SWEPT — and three cross-basis bugs in my own classifier  (2026-08-24)
+
+§109e reported the by-product classes off a helper with **two cross-basis bugs**, and the counts it
+printed were wrong. Recorded here because the shape recurs:
+
+* The cross-basis twin test read `row[3]` (npCon) whichever basis it was adjudicating, so every CON
+  cell was compared **with itself**, always "equal", and **310 consolidated cells were filed as
+  "the std slot holds the CON figure"**. A tautology dressed as a finding. The real §59 count is
+  **3**.
+* It then asked **detres** about con cells. detres is STANDALONE-ONLY (§42) and the scan ledger is
+  keyed `SYM|QE` with no basis in the key, so 108 consolidated cells were filed under "the two
+  readers disagree" on nothing but a std-vs-con comparison.
+
+★ **A ledger keyed without the basis will hand you the other basis's number and never say so.**
+Put the basis in the key, or assert it at every read.
+
+**Corrected classification of the same 527 cells:** 304 con (NSE vs the store, no detres for this
+basis) · 141 std (detres not yet read) · 41 std (both readers already agree against the store) ·
+12 no-readable-vintage · 11 scale-step · 9 readers genuinely disagree · 6 con-copy · 3 §59.
+
+**The consolidated basis needed a second reader of its own** (`vintage108_mc_con.py`): Moneycontrol,
+accepted only when its con reading DIFFERS from the same feed's std reading for that quarter —
+§85's silent fallback otherwise reads as agreement. Of 303 cells: 129 back NSE's as-filed, 103
+cannot separate, 42 back neither, **31 back the STORE** (so NSE's page is the suspect one there,
+and those cells were left alone — which is the whole reason one reader is not enough).
+
+★ **A LONE LATE-FILED PAGE MAY BE THE RESTATEMENT ITSELF.** Where NSE holds only one filing of a
+period and the second reader is not as-filed by construction, the page's own filing lag decides:
+19 consolidated candidates rested on a lone page filed **200-449 days** after quarter end
+(DRREDDY Sep-2015: 449). Healing to those would have written a restated figure onto an as-filed ann
+date — the very defect §108 exists to remove. Guard: target page must be filed ≤120 days after
+quarter end unless **detres** corroborates it (detres is as-filed by construction, so its agreement
+makes the page's date irrelevant).
+
+**Landed:** 191 cells (85 std, 106 con) over 162 symbols + 127 revop slots.
+Invariant, per basis: agreement with the second reader **0% → 100%** on both
+(85 std vs detres, 106 con vs MC), zero left disagreeing.
+Still queued: 194 second-reader-cannot-separate · 67 second-reader-BACKS-THE-STORE · 51 con with no
+second reader · 46 agrees-with-neither · 23 lag-guarded · 19 std with no detres reading · 4 §85
+fallbacks.

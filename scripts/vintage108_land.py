@@ -17,6 +17,7 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PROPS = os.path.join(HERE, "_vintage108_proposals.json")
+BP_PROPS = os.path.join(HERE, "_vintage108_bp_proposals.json")
 FUND_LEDGER = os.path.join(HERE, "fund_cell_fix.json")
 REVOP_LEDGER = os.path.join(HERE, "revop_cell_fix.json")
 
@@ -49,7 +50,9 @@ def merge(path, new, label, apply):
 
 def main():
     apply = "--apply" in sys.argv
-    p = json.load(open(PROPS, encoding="utf-8"))
+    src = BP_PROPS if "--byproduct" in sys.argv else PROPS
+    p = json.load(open(src, encoding="utf-8"))
+    print("source: %s" % os.path.basename(src))
     print("proposals: %d npStd, %d revop" % (len(p["proposals"]), len(p["revop"])))
     a1, c1 = merge(FUND_LEDGER, p["proposals"], "fund_cell_fix", apply)
     a2, c2 = merge(REVOP_LEDGER, p["revop"], "revop_cell_fix", apply)

@@ -100,7 +100,7 @@ def main():
                      if x.get("pat") is not None and x.get("cumulative") != "Cumulative"]
             if len(vints) < 2:
                 if v.get("verdict") in ("single-vintage-mismatch", "stored-in-neither"):
-                    byproduct[_subclass(v, scan.get(key, {}), fund)].append(key + "|" + basis)
+                    byproduct[_subclass(v, scan.get(key, {}), fund, basis)].append(key + "|" + basis)
                 continue
             asf = vints[0]
             seq = read_seq.get((sym, qe, basis))
@@ -272,22 +272,39 @@ def _fnum(f, *names):
     return None, None
 
 
-def _subclass(v, sc, fund):
+def _subclass(v, sc, fund, basis):
+    """Name the class of a store that matches no vintage NSE holds.
+
+    ⚠️ THE CROSS-BASIS TEST MUST LOOK AT THE *OTHER* BASIS. An earlier cut compared the stored
+    value against `row[3]` (npCon) whichever basis it was adjudicating — so every CON cell was
+    compared with itself, always "equal", and 310 consolidated cells were labelled "the std slot
+    holds the CON value". A tautology dressed as a finding. The cross-basis twin of `std` is
+    `con` and vice versa.
+    """
     asf = v.get("as_filed")
     if not asf:
         return "no-readable-vintage"
     sym, qe = v["sym"], v["qe"]
     row = next((r for r in fund.get(sym, []) if r[0] == qe), None)
-    con = row[3] if row and len(row) > 3 else None
+    other_slot = 3 if basis == "std" else 1
+    other = row[other_slot] if row and len(row) > other_slot else None
     ratio = v["stored"] / asf if asf else 0
     if any(abs(ratio - p) <= 0.02 * p for p in POWERS):
         return "scale-step (§74)"
-    if con is not None and abs(con - v["stored"]) <= 0.011:
-        return "std slot holds the CON value (§59)"
-    det = sc.get("detres")
+    if other is not None and abs(other - v["stored"]) <= 0.011:
+        return ("std slot holds the CON value (§59)" if basis == "std"
+                else "con slot is a STD copy (con-copy class)")
+    # detres is STANDALONE-ONLY (§42). The scan ledger is keyed SYM|QE with no basis in the key,
+    # so reading it for a `con` cell compares BSE's standalone figure with NSE's consolidated one —
+    # of course they differ, and 108 consolidated cells were filed under "the two readers disagree"
+    # on that alone. The same cross-basis slip as the twin test above.
+    det = sc.get("detres") if basis == "std" else None
     if det is not None and not agree(det, asf):
         return "the two readers disagree with each other — adjudicate"
-    return "two as-filed readers vs the store"
+    if basis == "con":
+        return "con: NSE as-filed vs the store (no detres for this basis)"
+    return "two as-filed readers vs the store" if det is not None else \
+        "std: NSE as-filed vs the store (detres not yet read)"
 
 
 if __name__ == "__main__":
