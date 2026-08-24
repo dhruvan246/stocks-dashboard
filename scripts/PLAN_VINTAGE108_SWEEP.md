@@ -167,3 +167,58 @@ Under Ind-AS the P&L has no "profit from operations before other income" subtota
 unreadable on ~350 restated pages. Where provenance names that page as the source, the value the
 pass recorded in `vision_rev_fills` IS the restated one — used instead of re-deriving a subtotal
 the document never printed.
+
+---
+
+# RESULTS — landed and live-verified 2026-08-24 (commit `15954aadc`, runbook §109)
+
+| route | coverage | result |
+|---|---|---|
+| BSE detres (§108's own recipe) | 2,637 of 6,159 cells | 125 flags |
+| NSE dual-vintage, standalone | **6,159 (all)** | **281 vintage-confirmed** |
+| NSE dual-vintage, consolidated | **2,638 (all)** | **80 vintage-confirmed** |
+| provenance (§109b) | 5,059 fill rows | **326 later-vintage** (239 std, 87 con) |
+
+**Healed:** 257 cells in `fund_cell_fix.json` (220 std, 37 con) over 97 symbols, and **1,231 slots
+in `revop_cell_fix.json`** (518 rev_std, 413 op_std, 195 pat_std, 37 pat_con, 35 rev_con, 33
+op_con) — a ROW defect, not a cell defect. Evidence split: DETRES 109, PROV+DETRES 43, PROV 105.
+321 reads entries replay-proofed (`vision_rev_fills.json` 316, `_nsearch_reads.json` 5).
+
+**The gate hole the invariant caught.** The first cut said "at least one line of evidence", which
+let a PROV-only cell be healed towards a value detres rejects. Agreement with detres rose
+54.7% → 97.5%, and all four cells left disagreeing were that hole — FSL Sep-2015 would have been
+divided by ten. The rule is now **evidence AND no available reader may contradict**; re-run, and:
+
+| agreement with BSE detres | before | after |
+|---|---|---|
+| std PAT (152 healed cells with a detres reading) | 53.9% | **100%** |
+| std revenue (463 healed cells) | 33.0% | **100%** |
+
+**Live verification.** All 257 fund cells and 1,231 revop slots present and correct in the served
+`sf_fundamentals.json` / `sf_revop.json` with a cache-buster, re-checked after a further CI cycle
+(0 missing, 0 drift both times), and the per-stock `fin/<SLUG>.json` slices — the layer
+`stock.html` actually reads — carry them too (§41b's dispatch worked without hand-kicking).
+
+**Rebase note.** A CI refresh and another session's heal landed on `docs/sf_*.json` mid-run. Per
+the minified-JSON rule these were NOT merged: the branch was reset onto the fresh `origin/main` and
+the appliers RE-RUN, which also proved the ledgers are the durable artifact (the count moved
+260 → 257 because the other session had already fixed three of them, reported as already-correct).
+
+## Open — the next campaign, not this one
+
+`no-nse-row` 362 std / 355 con (pre-listing quarters and BSE-only filers), `no-readable-vintage`
+270 / 42, and the queues in `_vintage108_proposals.json` (`restatement-gap-too-small` ≤180 days are
+corrections, not restatements; `*-no-independent-evidence`, mostly consolidated rev/op where detres
+cannot speak and provenance did not fire).
+
+**By-products — real findings, deliberately NOT healed here:**
+
+| class | cells |
+|---|---|
+| the std slot holds the CON value (§59) | 313 |
+| two as-filed readers agree against the store | 182 |
+| scale-step (§74) | 11 |
+| the two readers disagree with each other | 9 |
+
+Plus 65 `pat-anchor X vs stored Y` refusals already on disk in this window (39 symbols) — §108
+signature (1); 8 of those symbols were in this heal.
