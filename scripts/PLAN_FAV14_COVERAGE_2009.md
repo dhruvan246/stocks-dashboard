@@ -115,6 +115,17 @@ never commit a partial bake · push via the CLAUDE.md retry recipe · verify LIV
 
 ## 4. Progress log (append per session; counts are MEASURED post-bake, never projected)
 
+- 2026-08-24 09:00 IST — **P4 (std PAT) MAJOR PASS: 1,443 standalone-PAT cells filled** via BSE
+  detres (Corp_detailedResult_Transpose_ng, ÷10 Rs cr, Date-End validated, EPS cross-checked,
+  ann=SEBI deadline). Idempotent fill-only into both sf_fundamentals twins via
+  scripts/apply_fav14_pat_std.py + ledger scripts/fav14_pat_std_fills.json (rule-5 reproducible).
+  Measured (engine-faithful bake): profitYoyStd 3798->1751, profitTTMStd 7482->4924; AND the con
+  blend fell via std-fallback: profitYoyPct/Streak 699->333, profitTTM 1746->1369. Harvest 1443/1782
+  ok; rejects = 327 detres-not-served (older/NSE-only) + 12 non-standard fiscal quarters (PFIZER
+  Feb/May/Aug/Nov, MPHASIS Jan/Apr/Jul/Oct — correctly refused by Date-End guard, their rows use
+  real quarter-ends). 2 magnitude outliers (PVP) verified REAL to the paisa by EPS. 0 value-conflicts
+  with existing cells. RESIDUAL std PAT: ~2007 (needs NSE archive rung 2), 91 delisted no-code
+  symbols (560 cells, era bhavcopy + ISIN like P2), and detres-not-served quarters.
 - 2026-08-24 05:10 IST — **P5 (diiChgPp) MAJOR PASS: 2026→1365 (−661)** via BSE aspx frontier
   harvest (912 cells / 236 symbols, 2008-09..2016-03, FVCI/VCF-fixed parser), isolated ledger
   shp_fill_fav14.json.gz (now 932 cells), fill-only, idempotent (+912 then +0), all in-range,
