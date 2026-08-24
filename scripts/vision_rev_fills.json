@@ -15673,6 +15673,13 @@
 "src": "vision-manual band3/4 2026-07-27: vision: CorpBk Mar-19 filing p1 (Rs lakhs) year-ago col 31.03.2018, row14=-183839.64"
 }
 },
+"CORPBANK|20181231": {
+"std": {
+"op": null,
+"rev": 3818.1,
+"src": "vision-manual band3/4 2026-07-27: 2026-08-24 positional text read of the BSE attachment page 2 (Rs in Lakhs). Corporation Bank is a BANK, so revenue = INTEREST EARNED per build_revop's bank branch, NOT Total Income. Col 'Quarter Ended Dec-2018': Interest Earned 3,81,810.09 lakhs = 3,818.10; row 14 Net Profit 6,053.07 lakhs = 60.5307 == stored npStd. CONVENTION PROVED on our own data, not assumed: the same page's Dec-2017 Interest Earned column is 4,38,785.24 lakhs = 4,387.85 and our STORED 20171231 revStd is 4,387.85 exactly (fin=1). The BSE auto-parser had produced 4,112.32 = TOTAL INCOME, the wrong line for a bank."
+}
+},
 "CORPBANK|20190331": {
 "std": {
 "op": null,
@@ -37259,6 +37266,11 @@
 "op": null,
 "rev": 556.02,
 "src": "vision-manual band3/4 2026-07-27: OCR b1-b220-a721664f44b7.pdf p4 cache"
+},
+"std": {
+"op": null,
+"rev": 57.93,
+"src": "vision-manual band3/4 2026-07-27: 2026-08-24 positional text read of the BSE attachment, page 7 'JM FINANCIAL LIMITED, STATEMENT OF UNAUDITED STANDALONE FINANCIAL RESULTS FOR THE QUARTER AND HALF YEAR ENDED SEPTEMBER 30, 2019' (Rupees in Crore). 'Total revenue from operations' col 30.09.2019 = 57.93; row 5 'Net Profit/(Loss) for the period' = 49.02 == stored npStd EXACT. Moneycontrol independently reports 57.93. The BSE auto-parser had produced 2.00 - the (i) Interest income line."
 }
 },
 "JMTAUTOLTD|20151231": {
@@ -44908,6 +44920,13 @@
 "op": null,
 "rev": 11.85,
 "src": "vision-manual band3/4 2026-07-27: vision: MaxFinancialServices Mar-19 filing p3 STANDALONE (Rs crore) col 31.03.2018: TotalRevFromOps 11.85; holdco op=None; row10=-14.54"
+}
+},
+"MFSL|20190630": {
+"std": {
+"op": null,
+"rev": 196.13,
+"src": "vision-manual band3/4 2026-07-27: 2026-08-24 positional text read of the BSE attachment, page 3 'STATEMENT OF STANDALONE UNAUDITED FINANCIAL RESULTS FOR THE QUARTER ENDED JUNE 30, 2019' (Rs in Crores). Row 2 'Total revenue from operations' col 30.06.2019 = 196.13; row 10 'Profit/(loss) after tax' = 171.56 == stored npStd EXACT. Moneycontrol independently reports 196.13. The BSE auto-parser had produced 0.22 - the (a) Interest income line - which MC's cross-check refused."
 }
 },
 "MFSL|20190930": {
@@ -62876,6 +62895,11 @@
 "op": null,
 "rev": 1325.21,
 "src": "vision-manual band3/4 2026-07-27: OCR ee-bd13-38245741a556.pdf p1 live"
+},
+"std": {
+"op": null,
+"rev": 0.0,
+"src": "vision-manual band3/4 2026-07-27: 2026-08-24 positional text read of the BSE attachment page 6, note 5 'Key numbers of Standalone Financial Results of the Company for the quarter ended June 30, 2018' (Rs in Crores): Total Operating Income '-' (nil) for the Jun-2018 column, with 3.61 / 2.75 / 13.69 in the Mar-18 / Jun-17 / FY18 columns; 'Total Comprehensive Income (after tax)' Jun-2018 = 0.78 == stored npStd. The filing's main statement is CONSOLIDATED and the auto-parser read 2.62 off it."
 }
 },
 "SREINFRA|20150331": {
@@ -72086,6 +72110,11 @@
 "op": null,
 "rev": 625.95,
 "src": "vision-manual band3/4 2026-07-27: OCR 88-b44d-0813b61bd2a4.pdf p6 live"
+},
+"std": {
+"op": null,
+"rev": 0.0,
+"src": "vision-manual band3/4 2026-07-27: 2026-08-24 positional text read of the BSE attachment page 3 'Statement of Standalone Financial Results for the quarter ended June 30, 2019' (Rs. In lakhs). Row I 'Revenue from operations' is '-' for the Jun-2019 column (1,100.00 for Mar-2019 and 2,200.00 for the year); row II Other Income 252.92; row III Total Income 252.92 = 0 + 252.92, which closes the identity. Row IX Profit for the period 52.64 lakhs = 0.5264 == stored npStd 0.53. The auto-parser had produced 252.92 - Total Income, i.e. other income only."
 }
 },
 "ULTRACEMCO|20150331": {

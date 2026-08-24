@@ -1,4 +1,14 @@
 {
+ "CORPBANK": {
+  "20181231": {
+   "basis": "std",
+   "fin": 1,
+   "op": null,
+   "pat_seen": 60.53,
+   "rev": 3818.1,
+   "src": "2026-08-24 positional text read of the BSE attachment page 2 (Rs in Lakhs). Corporation Bank is a BANK, so revenue = INTEREST EARNED per build_revop's bank branch, NOT Total Income. Col 'Quarter Ended Dec-2018': Interest Earned 3,81,810.09 lakhs = 3,818.10; row 14 Net Profit 6,053.07 lakhs = 60.5307 == stored npStd. CONVENTION PROVED on our own data, not assumed: the same page's Dec-2017 Interest Earned column is 4,38,785.24 lakhs = 4,387.85 and our STORED 20171231 revStd is 4,387.85 exactly (fin=1). The BSE auto-parser had produced 4,112.32 = TOTAL INCOME, the wrong line for a bank."
+  }
+ },
  "DHAMPURSUG": {
   "20080630": {
    "basis": "std",
@@ -7,6 +17,26 @@
    "pat_seen": -23.54,
    "rev": 120.82,
    "src": "vision 2026-08-24: BSE ann (scanned) 'DHAMPUR SUGAR MILLS LIMITED, UNAUDITED FINANCIAL RESULTS FOR THE THIRD QUARTER ENDED 30.06.2009', Rs in Lacs. Dhampur is a SEPTEMBER-FY filer so that is its Q3 and the Jun-08 comparative column is our quarter. Total Revenue 1(c)+1(d) = 12,081.75 lacs = 120.82 (Net Sales 11,625.16 + Other operating income 456.59). PAT row 11 = (2,353.63) lacs = -23.5363 vs stored -23.54. Moneycontrol independently reports 120.82 for this quarter - two sources, same number, same line."
+  }
+ },
+ "JMFINANCIL": {
+  "20190930": {
+   "basis": "std",
+   "fin": 0,
+   "op": null,
+   "pat_seen": 49.02,
+   "rev": 57.93,
+   "src": "2026-08-24 positional text read of the BSE attachment, page 7 'JM FINANCIAL LIMITED, STATEMENT OF UNAUDITED STANDALONE FINANCIAL RESULTS FOR THE QUARTER AND HALF YEAR ENDED SEPTEMBER 30, 2019' (Rupees in Crore). 'Total revenue from operations' col 30.09.2019 = 57.93; row 5 'Net Profit/(Loss) for the period' = 49.02 == stored npStd EXACT. Moneycontrol independently reports 57.93. The BSE auto-parser had produced 2.00 - the (i) Interest income line."
+  }
+ },
+ "MFSL": {
+  "20190630": {
+   "basis": "std",
+   "fin": 0,
+   "op": null,
+   "pat_seen": 171.56,
+   "rev": 196.13,
+   "src": "2026-08-24 positional text read of the BSE attachment, page 3 'STATEMENT OF STANDALONE UNAUDITED FINANCIAL RESULTS FOR THE QUARTER ENDED JUNE 30, 2019' (Rs in Crores). Row 2 'Total revenue from operations' col 30.06.2019 = 196.13; row 10 'Profit/(loss) after tax' = 171.56 == stored npStd EXACT. Moneycontrol independently reports 196.13. The BSE auto-parser had produced 0.22 - the (a) Interest income line - which MC's cross-check refused."
   }
  },
  "RTNPOWER": {
@@ -77,6 +107,16 @@
    "src": "vision 2026-08-24: BSE ann (scanned), 'Shree Ashtavinayak Cine Vision Limited, Statement of Standalone Unaudited Financial Results', Rs in Lacs. Revenue row 1(a) and Total income from operations both '-' (nil). Sep-2013 filing, column '30/09/2013': PAT row 13 = (4,319.30) lacs = -43.193 vs stored -43.19. Three internal cross-checks on the Sep-2013 page: its 30/09/2012 column reads Total income 7,610.60 lacs = 76.11 == our STORED Sep-2012 revStd to the paisa (an anchor on a cell we already hold); its Half-Year-Ended 30/09/2013 column is also nil, so Jun+Sep 2013 are both zero; and its Year-Ended 31/03/2013 = 7,610.60 confirms FY2013 was entirely the Sep-2012 quarter. Note 6: 'revenue of the company is dependent on number of film/s released during the quarter'."
   }
  },
+ "SPTL": {
+  "20180630": {
+   "basis": "std",
+   "fin": 0,
+   "op": null,
+   "pat_seen": 0.78,
+   "rev": 0.0,
+   "src": "2026-08-24 positional text read of the BSE attachment page 6, note 5 'Key numbers of Standalone Financial Results of the Company for the quarter ended June 30, 2018' (Rs in Crores): Total Operating Income '-' (nil) for the Jun-2018 column, with 3.61 / 2.75 / 13.69 in the Mar-18 / Jun-17 / FY18 columns; 'Total Comprehensive Income (after tax)' Jun-2018 = 0.78 == stored npStd. The filing's main statement is CONSOLIDATED and the auto-parser read 2.62 off it."
+  }
+ },
  "THERMAX": {
   "20150630": {
    "basis": "std",
@@ -103,6 +143,16 @@
    "pat_seen": 148.01,
    "rev": 2675.69,
    "src": "vision 2026-08-24: BSE ann PDF via AnnPdfOpen resolver (scanned, no text layer); restated comparative column of the year-later filing c1ce5f43-95e7-4a1d-a...pdf p2 col '30.09.2016' (Rs crore); anchors: PAT 148.01==stored npStd, Jun-17 197.90 + Sep-17 307.45==stored, H1FY17 43.70+148.01==191.71 printed"
+  }
+ },
+ "UJJIVAN": {
+  "20190630": {
+   "basis": "std",
+   "fin": 0,
+   "op": null,
+   "pat_seen": 0.53,
+   "rev": 0.0,
+   "src": "2026-08-24 positional text read of the BSE attachment page 3 'Statement of Standalone Financial Results for the quarter ended June 30, 2019' (Rs. In lakhs). Row I 'Revenue from operations' is '-' for the Jun-2019 column (1,100.00 for Mar-2019 and 2,200.00 for the year); row II Other Income 252.92; row III Total Income 252.92 = 0 + 252.92, which closes the identity. Row IX Profit for the period 52.64 lakhs = 0.5264 == stored npStd 0.53. The auto-parser had produced 252.92 - Total Income, i.e. other income only."
   }
  }
 }
