@@ -1,11 +1,13 @@
-# ★ LIVE SCORECARD (2026-08-24 09:39 IST) — 17,694 → 6,264 missing member-months (65% closed)
-# 6 technical 84→5 · FII%/DII% 117→9 · diiChgPp 2132→1365 · NP-YoY-con/streak 786→191 · TTM-con 1833→989
-# · NP-YoY-std 3871→676 · TTM-std 7548→2804.  Done: P1 price · P2+P5 SHP (932 cells) · P4 std-PAT
-# (2,337 cells: detres 1704 + NSE-archive 599 + FY-identity 34).
-# REMAINING (~6,264): TTM-std 2804 (sticky — 8 consecutive qtrs; ~189 delisted/renamed symbols NSE
-# doesn't serve → era BSE codes + detres, like P2) · diiChgPp 1365 (2016+ XBRL + delisted) · con
-# residual rides std. NSE archive (api/corporates-financial-results, BOTH bases + real dates + 2005+,
-# PAT in resultDetailedDataLink) is the proven route; period=Annual + FY-identity for the March gaps.
+# ★ LIVE SCORECARD (2026-08-24 10:06 IST) — 17,694 → 5,635 missing member-months (68% closed)
+# 6 technical 84→5 · FII%/DII% 117→9 · diiChgPp 2132→1365 · NP-YoY-con 786→169 · TTM-con 1833→892
+# · NP-YoY-std 3871→538 · TTM-std 7548→2454.  std-PAT filled 2,459 cells (detres 1704+122 delisted,
+# NSE-archive 599, FY-identity 34). Delisted codes resolved from the FULL BSE master (ListofScripData
+# incl Delisted) + ISIN cross-check.
+# REMAINING (~5,635): TTM-std 2454 (pre-2008 delisted needs Wayback/MC §32; ~45 detres-gaps; 13
+# uncoded delisted; genuine sparse eras; 8-consecutive-qtr stickiness) · diiChgPp 1365 (2016+ needs
+# SHP XBRL — SHP campaign's 2016+ ledgers; 2015-12/2016-03 seam) · con params ride std.
+# Routes proven: detres (2008+ incl delisted), NSE api/corporates-financial-results (both bases, real
+# dates, 2005+), FY-identity (Q4=annual−9M). Applier: scripts/apply_fav14_pat_std.py (fill-only, idempotent).
 # PLAN — FAV14 COVERAGE 100%: the 14 parameters the favourite strategies use, Nifty 500, 2009-01 → date
 
 **Written 2026-08-24 01:30 IST (Fable). User mandate, verbatim: *"dont assume. everything can be
