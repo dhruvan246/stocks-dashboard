@@ -16,9 +16,13 @@
   "why_not_written": "the annual filing carries NO quarter column, and which of the two annual lines our stored quarters follow is not established for this filer - so the derivation is basis-ambiguous and MC sits between the two candidates. Needs the Jun-2010 NINE-MONTH filing: Q4 = FY - 9M from one document on one basis."
  },
  "LTF|20190331|revStd": {
-  "action": "NOT patched. A near-100x ratio suggests a scale error on our side but it is not an exact 100x (303.14/3.09 = 98.1), so the value cannot be derived by rescaling. Needs the filing.",
-  "blocks": "LTF 2019-06 and 2019-09 revStd \u2014 the neighbourhood gate fails on this one outlier, so MC 16.56 / 29.18 were NOT written",
-  "observation": "ours 3.09 vs moneycontrol standalone 303.14 (ratio 98.1x). Our stored series matches MC STANDALONE EXACTLY on the surrounding quarters: 2018-12 48.87==48.87, 2019-12 29.21==29.21, 2020-03 400.49==400.49 \u2014 so the series identity is not in doubt, only this cell."
+  "derivation": "L&T Finance Holdings' own Sep-2019 filing (page 13, standalone statement, Rs in Crore) prints FY2019 'Total revenue from operations' = 482.11 in its Year-ended-March-31-2019 column. Our three other FY2019 quarters are Jun-18 32.38, Sep-18 97.71, Dec-18 48.87 = 178.96, and EACH of those three equals the same filing's own columns exactly. 482.11 - 178.96 = 303.15, and Moneycontrol independently reports 303.14.",
+  "derived": 303.15,
+  "moneycontrol": 303.14,
+  "note": "the filing note elsewhere quotes 310.55 for Mar-2019 as TOTAL INCOME FROM OPERATIONS (line III, incl. other income) - not our line, and consistent with 303.15 + ~7.4 other income",
+  "status": "PROVEN WRONG - heal proposal, NOT written by this campaign (a heal is a different operation from a fill and needs its own ledger so the nightly rebuild does not clobber or re-apply it)",
+  "stored": 3.09,
+  "why_it_matters": "a ~98x understatement in a live cell; it also blocked the neighbourhood gate for the two Jun/Sep-2019 fills until the filing settled the convention directly"
  },
  "RAIN|CY2014|revStd-annual": {
   "action": "wrote the exchange zeros (primary source, unanimous, printed); the 5.26 divergence is an aggregator presentation question (likely other-income reclass under restatement), NOT adjudicated",
