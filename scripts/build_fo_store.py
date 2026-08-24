@@ -197,7 +197,9 @@ def main():
         blob = b"FOB1" + struct.pack("<I", len(hdr)) + hdr + body
         # gzip at rest: GitHub Pages does NOT compress .bin on the wire; browsers
         # decompress .bin.gz natively via DecompressionStream (fo-engine.js).
-        blob = gzip.compress(blob, 9)
+        # mtime=0 keeps output deterministic — unchanged years stay byte-identical
+        # across rebuilds so CI doesn't churn git history re-committing them.
+        blob = gzip.compress(blob, 9, mtime=0)
         fp = os.path.join(OUTDIR, f"{sym}_{year}.bin.gz")
         with open(fp, "wb") as f:
             f.write(blob)
