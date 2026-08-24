@@ -35,6 +35,18 @@
 # Date Begin/Date End with EMPTY values) when it has no filing — typically a PRE-LISTING comparative
 # (ALKEM Mar-2015, listed Dec-2015). Those quarters live in the IPO prospectus / the first post-listing
 # filing's comparative columns — that is the next rung, not another aggregator.
+# ★★★ PRE-LISTING YEAR-SHIFT DEFECT CLASS — FOUND & CLOSED 2026-08-24 (a defect class, not a gap).
+# A PRE-LISTING slot holding the SAME QUARTER ONE YEAR LATER (identical value AND ann date). Invisible
+# to this matrix (the cell is populated) and SELF-CANCELLING in YoY, so IPO-cohort names silently read
+# "flat" in their first post-listing year. Detector: compare every cell with qe < first traded bar
+# (scripts/agg_tools/_first_bar.json) against qe+1y on the same basis; KEEP the ann-date condition
+# (value-only adds ~715 mostly-genuine repeats). 14 real cells healed across 8 symbols + 3 gaps filled;
+# NSLNISP 2022-03 = 0 is a VERIFIED FALSE POSITIVE (NMDC Steel, pre-commissioning) - do not heal.
+# Record: memory project-stocks-prelisting-yearshift-duplicates. Commits 9f1ef5392, a011fbfaa, 0ae15920f.
+# READ DISCIPLINE that made it safe: never regex a results table (same end-date labels a QUARTER and a
+# YEAR column); render and read it, then gate TWICE - a column must reproduce a value we already store
+# to the paisa, AND the filing's own arithmetic must close (H1/9M/FY = sum of quarters, or deriving a
+# quarter we independently hold reproduces it). EPS x share count is a third check.
 # PLAN — FAV14 COVERAGE 100%: the 14 parameters the favourite strategies use, Nifty 500, 2009-01 → date
 
 **Written 2026-08-24 01:30 IST (Fable). User mandate, verbatim: *"dont assume. everything can be
