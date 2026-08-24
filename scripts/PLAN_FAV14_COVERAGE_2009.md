@@ -185,6 +185,13 @@ confirmed in the asset doesn't show on the page.
 Residual: SPSL 2009-Q1 (source-limited — aspx empty pre-Sep-2009, try archived exchange pages) +
 the 4 P1 price-convention symbols (not SHP-fillable).
 
+**P4 std-PAT LANDED (1,443 cells) — profitYoyStd 3798→1751, profitTTMStd 7548→4924 LIVE.**
+Remaining std PAT: FY2007 (detres starts 2008 → NSE archive rung 2), 327 detres-not-served quarters
+(→ NSE archive), 91 delisted symbols/560 cells (era bhavcopy + ISIN-verify → detres). profitTTMStd
+is stickiest (needs 8 CONSECUTIVE quarters, so any remaining hole keeps its window open). con-PAT
+(P3) still open: profitTTM 1369, profitYoyPct/Streak 333 (route via _reattr_owners.json owners
+ledger — patCon is recomputed nightly by apply_owners_full, so do NOT write patCon directly).
+
 **NEXT — three classes remain, all measured to root cells (queue: scripts/fav14_queue.json):**
 - **P5 diiChgPp — 614 (symbol, prior-quarter) SHP rows, live 2026 missing.** SAME instrument as P2
   (fetch_shp_bse_aspx.py). This is the big SHP win. Build the frontier (cmd_frontier reads current
