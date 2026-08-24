@@ -73,6 +73,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§101** ★★★ NSE's ANNOUNCEMENT ARCHIVE GOES AROUND THE BSE 2018 WALL — §84's boundary is a BSE fact, not a market fact; and the consolidated MARCH-2018 quarter was almost never filed (compulsory only from FY2020); the phantom "Consolidated Jan-Mar-2018" index row has two artifact causes, one of them an all-zero falsy sentinel (**read before calling any pre-2019 cell unreachable, and before trusting an NSE filing-index basis row**)
 - **§107** ★★★ ONE SOURCE OF TRUTH — the shared checkout SYNCS ITSELF to origin/main (`scripts/sync_checkout.py`, session-start hook); 923-commit drift + 36 worktrees were all stale copies; every reported number names its source (synced HEAD sha or LIVE); this repo is a PARTIAL CLONE — blob reads stall
 - **§108** ★★★ RESTATED-COMPARATIVE VINTAGE — an Ind-AS restated value wearing the as-filed ann date is a LOOK-AHEAD no scale/identity gate can see; SYNGENE's whole FY16 row healed (PAT ×4, op ×2, rev/op fills ×4, con-copy retraction, 4 ann dates); NEW `ann_cell_fix.json` moves a populated ann LATER — the direction §104 refuses (**read before trusting any FY16-FY17 transition-era cell an aggregator scrape filled, and whenever detres+MC agree against the store**)
+- **§109** ★★★ THE §108 SWEEP RAN — the class was ONE 2026-07-27 backfill pass with no vintage rule; **NSE's archive keeps BOTH vintages of a quarter** (earliest `filingDate` = as-filed), so the restated comparative is structured data, not a scanned PDF; 326 wrong-vintage reads enumerated from our own provenance; 260 cells + 1,233 rev/op/mirror slots healed, detres agreement 53.5%→100% (**read before touching any 2015-17 cell, and before trusting a single as-filed reader — no available reader may CONTRADICT the heal**)
 
 ---
 
@@ -11518,3 +11519,136 @@ reads is a candidate. Sweep idea for a future campaign: for FY16-FY17 quarters, 
 vs stored npStd where both exist — any |diff| > max(2cr,3%) with detres Date-End == qe is either
 this class or §74's scale class; the FY16 restated-annual fingerprint separates them. NOT run
 this session (scope: the flagged row).
+
+---
+
+## 109. ★★★ THE §108 SWEEP — the class was ONE BACKFILL PASS with no vintage rule, and NSE keeps both vintages  (2026-08-24)
+
+§108 left the restated-comparative class open with a proposed recipe: detres NP vs stored npStd
+over FY16-FY17, flag |diff| > max(2 cr, 3%). That sweep was run. It also turned out not to be the
+best route, and the class turned out not to be a scatter of unlucky cells.
+
+### 109a. ★ NSE's ARCHIVE KEEPS BOTH VINTAGES OF A QUARTER
+
+`corporates-financial-results` returns **more than one row for the same (period, basis)** when a
+company re-filed that period — the original and, a year later, the Ind-AS restatement, each with
+its own `filingDate`, `indAs` flag and its own detail page:
+
+    SYNGENE Dec-2015 std   filed 29-Apr-2016  Non-Ind-AS  ->   58.80 cr   (§108's healed value)
+    SYNGENE Dec-2015 std   filed 27-Jan-2017  Ind-AS      ->   66.70 cr   (what the store held)
+    BAJAJ-AUTO Jun-2015    filed 24-Jul-2015 / 04-Oct-2016 -> 1014.80 / 957.36
+    INFY Sep-2015          filed 13-Oct-2015 / 22-Dec-2016 -> 6306.00 / 3248.00
+
+So the restated comparative — the thing §108 said only the year-later filing carries — is
+STRUCTURED DATA with its filing date attached. No PDF, no OCR, no vision rung. (Which matters:
+the FY16-17 BSE attachments are overwhelmingly scanned — SYNGENE's two 2016 filings are 15 pages
+and 14 characters of text layer — and vision reads are last-rung and need permission.)
+
+**THE RULE: the AS-FILED vintage is the row with the EARLIEST `filingDate`.** Any later-filed row
+for the same period is a restatement. `indAs` usually labels the transition but is not the
+discriminator — a restatement can happen inside one standard — the DATE is.
+
+Matching is NEAREST-VINTAGE, not fixed-epsilon (cells are stored at 2 dp from feeds that round
+differently: ABFRL as-filed −73.09, restated −67.88, stored −68.00), with the earliest vintage
+given FIRST REFUSAL — an unchanged re-filing is common, and ranking by distance alone called ~450
+healthy cells "stored-in-neither".
+
+### 109b. ★ THE ROOT CAUSE, READ OFF OUR OWN PROVENANCE
+
+`vision_rev_fills.json` records the document each filled value came from; for the 2026-07-27
+"vision-manual band3/4" pass that is an NSE archive page cited by filename, and the id in the
+filename is NSE's `seqNumber`. Cross-checked against the archive list, the pass read the
+RESTATEMENT: `INFY|20150930 src financial_res_INFY_1014609.html` = the Ind-AS row filed 2016-12-22.
+
+**The class is one pass with no rule for choosing between two filings of a period.** That makes the
+population enumerable EXACTLY, offline, with no detection tolerance to calibrate:
+
+| provenance verdict (all 5,059 window fill rows) | rows |
+|---|---|
+| `single-row` — one filing on record, nothing to choose | 2,981 |
+| `src-is-earliest` — read the as-filed page ✔ | 1,752 |
+| **`src-is-later-vintage`** | **326** (239 std, 87 con) |
+
+It also reaches the CONSOLIDATED basis, which detres cannot serve at all (§42), and catches a
+wrong-vintage REVENUE or OP read even where the quarter's PAT is identical across vintages —
+invisible to every PAT screen there is.
+
+### 109c. What the sweep measured
+
+Window `20150630..20170331`: 6,159 stored npStd cells / 1,082 symbols, 2,638 npCon cells.
+148 symbols had no BSE scrip code (the ACTIVE-equity survivorship gap); **134 resolved by ISIN**
+(`vintage108_resolve_extra.py`, exact then issuer-prefix, §76/§95).
+
+| route | coverage | result |
+|---|---|---|
+| BSE detres (§108's recipe) | 2,637 cells | 125 flags |
+| NSE dual-vintage, std | **6,159 (all)** | **281 vintage-confirmed** |
+| NSE dual-vintage, con | **2,638 (all)** | **80 vintage-confirmed** |
+| provenance | 5,059 fill rows | 326 later-vintage |
+
+### 109d. The heal gate — and the hole the post-heal invariant found
+
+A slot is healed only when the stored value is measurably a LATER vintage AND an independent line
+of evidence says so: **PROV** (our provenance names the later page as the source, and the stored
+value is that page's value — a proof of the READ) or **DETRES** (the as-filed reader agrees with
+NSE's earliest vintage). Value-match alone is never enough.
+
+★ **AND NO AVAILABLE READER MAY CONTRADICT.** The first cut said "at least one line of evidence",
+which let a PROV-only cell be healed towards a value detres rejects. The post-heal invariant caught
+it: agreement with detres rose 54.7% → 97.5%, and **all four cells left disagreeing were this
+hole** — FSL Sep-2015 would have been divided by ten (as-filed page 4.66 vs detres 46.61), GAIL
+Sep/Dec-2016 moved 800 cr away from detres. Fixed, re-run, re-applied.
+
+**Landed:** 260 cells in `fund_cell_fix.json` (223 std, 37 con) over 98 symbols, and 1,233 in
+`revop_cell_fix.json` (519 rev_std, 413 op_std, 196 pat_std, 37 pat_con, 35 rev_con, 33 op_con) —
+because it is a ROW defect: 3MINDIA Dec-2015 stored `rev 546.32 / op 71.02 / pat 46.82`, the Ind-AS
+row exactly, against an as-filed `517.54 / 78.48 / 56.61`.
+Evidence split: DETRES 112, PROV+DETRES 43, PROV 105.
+
+**Post-heal invariant (the gate that decides the campaign shipped):**
+
+| agreement with BSE detres | before | after |
+|---|---|---|
+| std PAT (155 cells with a detres reading) | 53.5% | **100%** |
+| std revenue (464 cells) | 33.2% | **100%** |
+
+**Replay-proofed:** 321 reads entries corrected in place (`vision_rev_fills.json` 316,
+`_nsearch_reads.json` 5) — values AND `src` moved to the as-filed page, all-or-nothing per entry
+(a half-corrected read is worse than an honestly wrong one). Cells a reader contradicts are vetoed
+there too. Residue: CRISIL Jun-2016 (as-filed op line unreadable).
+
+### 109e. By-products — real findings, NOT healed here
+
+Cells whose store matches NO vintage NSE holds, sub-classified where cheap:
+
+| class | cells |
+|---|---|
+| the std slot holds the CON value (§59) | 313 |
+| two as-filed readers agree against the store | 182 |
+| scale-step (§74) | 11 |
+| the two readers disagree with each other | 9 |
+
+Also mined free: **65 `pat-anchor X vs stored Y` refusals** already sitting in the skip ledgers
+inside this window (39 symbols, 39 std / 26 con) — §108 signature (1); 8 of those symbols are in
+this heal.
+
+### 109f. Two reader defects found on the way
+
+* `fetch_insurers.is_result_filing` applies its NEWSSUB veto ("press release", "intimation", …)
+  BEFORE the results hit, so BSE's own wording *"Financial Results with Results Press Release &
+  Limited Review Report"* (SYNGENE 2016-01-21) is vetoed — and the row that survives for that date
+  carries no attachment, so the quarter reads as "no filing". Worked around locally in
+  `vintage108_documents.py` rather than widening a helper ~10 callers share.
+* The Ind-AS "New" archive layout prints **no operating-profit subtotal at all** (Ind-AS has no
+  such line), so `op` is unreadable on ~350 restated pages. Where provenance names that page, the
+  value the pass recorded IS the restated one — use the record, do not re-derive a subtotal the
+  document never printed.
+
+### 109g. Still open
+
+`no-nse-row` 362 std / 355 con (pre-listing quarters and BSE-only filers — NSE has no filing to
+compare), `no-readable-vintage` 270 std / 42 con, and the queues in `_vintage108_proposals.json`
+(`restatement-gap-too-small` ≤180 days = corrections not restatements; `*-no-independent-evidence`,
+mostly consolidated rev/op where detres cannot speak and provenance did not fire). Tools:
+`vintage108_{sweep,nse_vintages,provenance,adjudicate,report,land,fix_reads,resolve_extra,
+mine_skips,documents}.py`; plan `scripts/PLAN_VINTAGE108_SWEEP.md`.
