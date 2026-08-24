@@ -1,14 +1,18 @@
-# ★ LIVE SCORECARD (2026-08-24 10:32 IST) — 17,694 → 5,547 missing member-months (68.7% closed)
-# 6 technical 84→5 · FII%/DII% 117→9 · diiChgPp 2132→1365 · NP-YoY-con 786→166 · TTM-con 1833→878
-# · NP-YoY-std 3871→518 · TTM-std 7548→2406. std-PAT ledger = 2,479 cells.
-# ★★ API ROUTES EXHAUSTED (§57 walked to the wall): detres (2008+ incl delisted), NSE
-# corporates-financial-results (Quarterly + Annual, both bases, real dates) and FY-identity are
-# all done. The remaining ~5,547 needs HARDER routes: pre-2008 std PAT (NSE API truncates at
-# ~Mar-2008 even with date params — NMDC/M&M verified; detres stubs below qid57) via Wayback of NSE
-# financial_res pages (§32) / Moneycontrol browser-driven (PRE2015 _mc_reads route) / BSE result
-# PDFs; whole-era-missing delisted symbols same; diiChgPp 1365 via SHP XBRL (2016+, SHP campaign).
-# All std fills route through scripts/fav14_pat_std_fills.json + apply_fav14_pat_std.py (fill-only,
-# idempotent). Applier tolerant of 3/4-elem cells.
+# ★ LIVE SCORECARD (2026-08-24 12:05 IST) — 17,694 → 3,597 missing member-months (79.7% closed)
+# 6 technical → 0 · FII%/DII% → 4+4 · diiChgPp 1357 · NP-YoY-con 93 · TTM-con 427 · NP-YoY-std 251
+# · TTM-std 1368. std-PAT ledger = 2,743 cells (2,479 API + 264 MONEYCONTROL this pass).
+# ★★ MC ROUTE (2026-08-24, corrects "API routes exhausted"): appfeeds quarterly_results_responsive
+# with type_format=quarterly = STANDALONE serves ~1997+ (RI 117q to Jun-97) — cons_quarterly is the
+# SHALLOW basis (2013+); never measure MC depth from cons. Reader: scripts/agg_tools/agg_sources.py
+# (mc_id gated resolver — sc_id FIELD not link_src; autosuggest-by-BSE-code for delisted rows that
+# print "<ISIN>, <code>" with no symbol; series-anchor >=2 exact ±0.06cr & 0 conflicts, else
+# >=5 matches & rate>=85% & cell >=365d from any conflict). 264 cells landed: tierA 151 (71 syms),
+# tierB dist-gated 96 (46 syms), OSWALGREEN via code 14, 3IINFOTECH via name+series 3.
+# REMAINING 3,597: diiChgPp 1357 (SHP XBRL 2016+) · std/con residue 345 root cells = MC no-hit
+# (delisted-era: RPL/SATYAMCOMP/FUTUREVENT/ESSARSHIP…; non-calendar-fiscal: PFIZER/WYETH/MPHASIS/
+# GULFOILLUB; 31 near-conflict-held; SUMMIT pre-demerger) → Wayback NSE financial_res (§32) / BSE
+# result PDFs. All std fills via scripts/fav14_pat_std_fills.json + apply_fav14_pat_std.py
+# (fill-only, idempotent; RE-RUN it after any rebase over refreshed twins — never merge minified JSON).
 # PLAN — FAV14 COVERAGE 100%: the 14 parameters the favourite strategies use, Nifty 500, 2009-01 → date
 
 **Written 2026-08-24 01:30 IST (Fable). User mandate, verbatim: *"dont assume. everything can be
