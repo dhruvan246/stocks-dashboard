@@ -1,6 +1,9 @@
-# ★ LIVE SCORECARD (2026-08-24 12:05 IST) — 17,694 → 3,597 missing member-months (79.7% closed)
+# ★ LIVE SCORECARD (2026-08-24 15:0x IST) — 17,694 → 3,584 missing member-months (79.7% closed)
 # 6 technical → 0 · FII%/DII% → 4+4 · diiChgPp 1357 · NP-YoY-con 93 · TTM-con 427 · NP-YoY-std 251
-# · TTM-std 1368. std-PAT ledger = 2,743 cells (2,479 API + 264 MONEYCONTROL this pass).
+# · TTM-std 1356. std-PAT ledger = 2,747 cells (2,479 API + 268 MONEYCONTROL).
+# NOTE profitTTM 427→436 is NOT ours: another session healed SYNGENE (values + §99 ann floor +
+# RETRACTED a std-copy patCon at 2015-03), correctly breaking its con-blend TTM chain for 9
+# member-months. A retraction RAISES coverage-missing while making the data more honest.
 # ★★ MC ROUTE (2026-08-24, corrects "API routes exhausted"): appfeeds quarterly_results_responsive
 # with type_format=quarterly = STANDALONE serves ~1997+ (RI 117q to Jun-97) — cons_quarterly is the
 # SHALLOW basis (2013+); never measure MC depth from cons. Reader: scripts/agg_tools/agg_sources.py
@@ -13,6 +16,25 @@
 # GULFOILLUB; 31 near-conflict-held; SUMMIT pre-demerger) → Wayback NSE financial_res (§32) / BSE
 # result PDFs. All std fills via scripts/fav14_pat_std_fills.json + apply_fav14_pat_std.py
 # (fill-only, idempotent; RE-RUN it after any rebase over refreshed twins — never merge minified JSON).
+# ★★★ MC ROUTE CLOSED 2026-08-24 12:4x IST — walked to the wall, every rung measured.
+# After the 268 cells landed, 341 root cells remain and NONE is reachable from Moneycontrol with
+# acceptable proof. Per-cell record: scripts/fav14_residual_classified.json. Breakdown:
+#   174 mc-wrong-entity-only — the quarter exists on MC ONLY under a company that FAILS the series
+#        anchor (0 exact matches vs our store). Caught 179 such candidates; the archetype is
+#        MPHASIS→"MB02", a ~Rs 0.1cr SHELL holding all 6 wanted quarters (ours are Rs 10-112cr).
+#        NEVER write from a candidate that merely "has the quarter" — anchor first.
+#   119 mc-lacks-symbol — no MC entity holds the quarter at all (RPL/SATYAMCOMP-era, 28 in 2007).
+#    31 held-restatement-conflict (22 syms) — MC disagrees with our store on a NEARBY quarter, so
+#        its vintage is suspect. Adjudicated vs BSE detres: POWERGRID 2008-12 + PRSMJOHNSN 2009-06/09
+#        = OURS RIGHT (MC restated) -> correctly held; SYNGENE 2015-09 = MC RIGHT, OURS DEFECTIVE
+#        (48.5 vs BSE 52.29) -> spawned as its own heal task. The rest return detres stubs.
+#    17 off-cycle-fiscal — MPHASIS (Oct-FY to 2013), PFIZER + WYETH (Nov-FY): the company NEVER filed
+#        a quarter ending on that calendar date. NOT a data gap; a coverage-rule decision. Never
+#        substitute the neighbouring period. (memory: feedback-offcycle-fiscal-quarter-is-not-a-gap)
+# ⚠️ detres "no-dateend" (1,167 rejects in P4) is NOT a parser bug: BSE returns a 3-row STUB (Type/
+# Date Begin/Date End with EMPTY values) when it has no filing — typically a PRE-LISTING comparative
+# (ALKEM Mar-2015, listed Dec-2015). Those quarters live in the IPO prospectus / the first post-listing
+# filing's comparative columns — that is the next rung, not another aggregator.
 # PLAN — FAV14 COVERAGE 100%: the 14 parameters the favourite strategies use, Nifty 500, 2009-01 → date
 
 **Written 2026-08-24 01:30 IST (Fable). User mandate, verbatim: *"dont assume. everything can be
