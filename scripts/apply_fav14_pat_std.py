@@ -21,7 +21,8 @@ conflicts=[]; would=0
 base=json.load(open(TWINS[0]))
 for sym,qs in LED.items():
     m=rm(base.get(sym,[]))
-    for qe,(pat,ann,typ,how) in qs.items():
+    for qe,cell in qs.items():
+        pat,ann=cell[0],cell[1]
         qe=int(qe); r=m.get(qe)
         if r is None or (len(r)>1 and r[1] is None): would+=1
         elif len(r)>1 and r[1] is not None and abs(r[1]-pat)>max(0.5,abs(r[1])*0.03):
@@ -33,7 +34,8 @@ for tw in TWINS:
     d=json.load(open(tw)); ch=0
     for sym,qs in LED.items():
         rows=d.setdefault(sym,[]); m=rm(rows)
-        for qe,(pat,ann,typ,how) in qs.items():
+        for qe,cell in qs.items():
+            pat,ann=cell[0],cell[1]
             qe=int(qe)
             if qe in m:
                 r=m[qe]

@@ -121,6 +121,16 @@ never commit a partial bake · push via the CLAUDE.md retry recipe · verify LIV
 
 ## 4. Progress log (append per session; counts are MEASURED post-bake, never projected)
 
+- 2026-08-24 09:40 IST — **P4c (NSE archive std-PAT): +599 cells, REAL filing dates.** NSE
+  api/corporates-financial-results (both bases, 2005+; PAT in resultDetailedDataLink HTML, lakhs÷100
+  =Rs cr, non-cumulative + Non-Consolidated gated, ann=broadCastDate w/ 15:30 gate). Same-tree bake:
+  profitYoyStd 1746→714, profitTTMStd 4919→3188, profitYoyPct 328→223, profitTTM 1364→1353 (all
+  improved; PEL 2010-09 Rs12,570cr verified real = Piramal-Abbott deal, EPS 601.40). ledger 1704→2303.
+  ★ KEY REMAINING LEVER: MARCH quarters are systematically missing — NSE period=Quarterly EXCLUDES
+  annual (Q4/March) filings and detres serves them inconsistently. profitTTMStd stays ~3188 because
+  every TTM window spanning a missing March stays open. NEXT: fetch NSE period=Annual (parse the
+  QUARTER column, not YTD) OR FY-identity (Q4 = annual − 9M) for the March gaps; that is the main
+  unlock for profitTTMStd. Also: 189 symbols NSE didn't serve (delisted/renamed → era codes + detres).
 - 2026-08-24 09:00 IST — **P4 (std PAT) MAJOR PASS: 1,443 standalone-PAT cells filled** via BSE
   detres (Corp_detailedResult_Transpose_ng, ÷10 Rs cr, Date-End validated, EPS cross-checked,
   ann=SEBI deadline). Idempotent fill-only into both sf_fundamentals twins via
