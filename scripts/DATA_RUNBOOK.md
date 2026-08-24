@@ -12005,10 +12005,19 @@ is **not** the owners-attributable figure our con slot keeps.
 | TATACONSUM 20170331 | 31.41 | 84.36 | **31.41** |
 | BHARTIARTL-era peers: BIOCON / GODREJPROP / JINDALSTEL / PRESTIGE / RAYMOND / VBL / TATACONSUM Dec-16 | | | all back the **pre-heal** value |
 
-**8 of 8 back the pre-heal value; 0 back the heal.** And because `apply_owners_full.py` reads that
-same cache nightly, those 8 are reverted every night anyway — the ledger says one thing and the
-served payload says another, forever. Proven by running that script instrumented: it prints exactly
-those 8 `WOULD REVERT` lines.
+**8 of 8 back the pre-heal value; 0 back the heal.**
+
+⚠️ **CORRECTION, measured the next morning.** This section first said those 8 would be reverted
+nightly by `apply_owners_full.py`, so the disagreement was self-correcting. **It is not.** The
+script does still want to revert them — instrumented with a print at the revert site, it emits
+exactly those 8 `WOULD REVERT` lines — but §109j (commit `d18bc8678`, added the same night for this
+very symptom) re-applies `apply_fund_cell_fix` / `apply_revop_cell_fix` at the END of
+refresh-fundamentals, AFTER the owners pass and after CI's three-way merge. **The ledger now wins.**
+Checked live after a full nightly cycle and 8 further commits: all 8 still hold the LEDGER value,
+0 reverted. So a wrong entry in `fund_cell_fix.json` is now DURABLE and re-asserted every run —
+which raises the stakes on the queue below rather than lowering them, and is a general rule worth
+carrying: **once a ledger is re-applied post-merge, "the nightly will fix it" stops being true for
+every ledger it re-applies.**
 
 **Not corrected here, deliberately.** They are another session's adjudication, committed to main;
 overwriting them silently is the wrong move, and for the 51 with no XBRL reading this campaign's
@@ -12016,7 +12025,8 @@ verdict is `MC-BACKS-STORE` = *ambiguous*, not *proven wrong* — MC agreeing wi
 closes a cell (111e). What was done instead is to make the disagreement IMPOSSIBLE TO MISS: the
 cell-fix ledgers are now read by `verify_fills_live.py`, so those 8 print as DRIFT on every run
 (DRIFT is reported, not fatal — exactly the right loudness for a cross-campaign conflict).
-**Next step for that queue: read the Mar-2017 consolidated filings themselves for the 51.**
+**Next step for that queue, now that nothing self-corrects: read the Mar-2017 consolidated filings
+themselves for all 59.**
 
 Tools: `vintage109_{reextract,recorrect,byprod_classify,mc_probe,mc_calib,con_components,rowid,
 adjudicate,checks,revop,land,invariant,invariant2,report}.py`.

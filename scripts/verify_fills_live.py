@@ -268,8 +268,9 @@ def main():
     # adjudicated cells with nothing re-checking them after a refresh (§74's durability rule — a
     # heal CI cannot see gets clobbered silently). Registered 2026-08-25 (runbook §111g).
     # DRIFT here is informative, not fatal, and that is deliberate: it is how a cross-campaign
-    # disagreement becomes visible instead of silent (§111i — 8 con cells whose ledger value
-    # apply_owners_full reverts every night).
+    # disagreement becomes visible instead of silent (§111i — 8 con cells whose ledger value three
+    # independent readers contradict). Note this step runs BEFORE §109j's post-merge re-apply, so a
+    # ledger value that the owners pass reverted mid-run shows here and is restored afterwards.
     for name, payload, slots in (("fund_cell_fix.json", "fund", {"std": 1, "con": 3}),
                                  ("revop_cell_fix.json", "revop",
                                   {"std": 0, "con": 1, "op_std": 2, "op_con": 3,
