@@ -84,6 +84,32 @@ def qe_of(row):
     return d if d and d % 100 >= 28 else None
 
 
+def pick_nonzero(rows, pats):
+    """First matching row in preference order, treating an exact 0.0000 as UNFILLED.
+
+    ★ THE FALSY SENTINEL. On a STANDALONE filing there is no minority interest, so filers leave
+    "Net Profit after taxes, minority interest and share of profit of associates" blank — and NSE
+    stores it as 0.0000, not as empty. Taking the first matching row therefore reports a profit of
+    ZERO for a company that made 38.31 cr (GREAVESCOT Mar-2016: owners 0.0000, "for the period"
+    0.0000, "from ordinary activities after tax" 38.31 = the stored value; DREDGECORP Sep-2016:
+    owners 0.0000, "for the period" -14.37 = the stored value).
+
+    Fall through to the next candidate when a row reads exactly 0 and a later one does not. When
+    EVERY candidate is 0 the zero is kept — a dormant company really can earn nothing, and turning
+    that into `None` would be a different lie.
+    """
+    hits = []
+    for p in pats:
+        for lab, v in rows:
+            if p.search(lab.strip()):
+                hits.append((lab.strip(), v))
+                break
+    for lab, v in hits:
+        if v != 0:
+            return v, lab
+    return (hits[0][1], hits[0][0]) if hits else (None, None)
+
+
 def lines_of(html):
     """PAT, operating profit and operating revenue for one vintage, all scaled to crore.
 
@@ -96,17 +122,49 @@ def lines_of(html):
     out = {"unit": meta.get("unit"), "fmt": meta.get("fmt"),
            "basis": meta.get("Consolidated / Non-Consolidated"),
            "period": meta.get("Period Ended")}
-    for p in PAT_ROWS:
-        for lab, v in rows:
-            if p.search(lab.strip()):
-                out["pat"], out["pat_row"] = v, lab.strip()[:70]
-                break
-        if "pat" in out:
-            break
-    op = NA.pick(rows, NA.R_OP_IND, NA.R_OP_BANK)
-    rev = NA.pick(rows, NA.R_REV_IND, NA.R_REV_IND2, NA.R_REV_IND3, NA.R_REV_BANK, NA.R_REV_IND5)
-    out["op"], out["rev"] = op, rev
+    pat, prow = pick_nonzero(rows, PAT_ROWS)
+    out["pat"], out["pat_row"] = pat, (prow or "")[:70]
+    out["op"], _ = pick_nonzero(rows, (NA.R_OP_IND, NA.R_OP_BANK))
+    out["rev"], _ = pick_nonzero(rows, (NA.R_REV_IND, NA.R_REV_IND2, NA.R_REV_IND3,
+                                        NA.R_REV_BANK, NA.R_REV_IND5))
     return out
+
+
+def reparse():
+    """Re-extract every vintage from the CACHED pages — no network at all.
+
+    The pages were kept precisely so a reader fix could be applied to work already done
+    (memory: feedback-persist-raw-rows-for-offline-rematch). Verdicts are recomputed after.
+    """
+    import glob
+    idx = {}
+    for f in glob.glob(os.path.join(DETAIL_CACHE, "*.html")):
+        m = re.search(r"_(\d+)\.html$", f)
+        if m:
+            idx[m.group(1)] = f
+    for path in (OUT, OUT_CON):
+        if not os.path.exists(path):
+            continue
+        d = json.load(open(path, encoding="utf-8"))
+        n = changed = nofile = 0
+        for k, v in d.items():
+            for x in v.get("vintages", []):
+                seq = str(x.get("seq") or "")
+                f = idx.get(seq)
+                if not f:
+                    nofile += 1
+                    continue
+                new = lines_of(open(f, encoding="utf-8", errors="replace").read())
+                n += 1
+                for fld in ("pat", "op", "rev"):
+                    if new.get(fld) != x.get(fld):
+                        changed += 1
+                        x[fld] = new.get(fld)
+                if new.get("pat_row"):
+                    x["pat_row"] = new["pat_row"]
+        json.dump(d, open(path, "w"), indent=1)
+        print("  %s: %d vintage rows re-parsed, %d field values changed, %d pages not cached"
+              % (os.path.basename(path), n, changed, nofile))
 
 
 def verdict_of(got, stored):
@@ -172,6 +230,12 @@ def main():
         OUT = OUT_CON
     SLOT = 3 if con else 1
     BASIS_ROW = "Consolidated" if con else "Non-Consolidated"
+    if "--reparse" in args:
+        reparse()
+        for tgt in ("std", "con"):
+            globals()["OUT"] = OUT_CON if tgt == "con" else os.path.join(HERE, "_vintage108_nse.json")
+            reverdict()
+        return
     if "--reverdict" in args:
         return reverdict()
     limit = int(args[args.index("--limit") + 1]) if "--limit" in args else 10 ** 9

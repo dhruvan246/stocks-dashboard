@@ -11743,3 +11743,45 @@ Invariant, per basis: agreement with the second reader **0% → 100%** on both
 Still queued: 194 second-reader-cannot-separate · 67 second-reader-BACKS-THE-STORE · 51 con with no
 second reader · 46 agrees-with-neither · 23 lag-guarded · 19 std with no detres reading · 4 §85
 fallbacks.
+
+### 109i. ★★ CLEARING "THE SECOND READER BACKS THE STORE" — a queue closed with reasons, and a falsy sentinel  (2026-08-25)
+
+67 by-product cells had the store agreeing with its second reader against NSE's page. A queue entry
+is not a conclusion, so each was closed with a THIRD reader and a NAMED page defect
+(`vintage108_page_defects.py`). Every one resolved; only ONE was a real data error.
+
+**★ THE FALSY SENTINEL IN NSE'S PAT ROWS.** On a STANDALONE filing there is no minority interest,
+so filers leave *"Net Profit after taxes, minority interest and share of profit of associates"*
+blank — and NSE stores it as **0.0000, not empty**. The reader took the first matching row and
+reported a profit of ZERO for a company that made 38.31 cr (GREAVESCOT Mar-2016: owners 0.0000,
+"for the period" 0.0000, "from ordinary activities after tax" **38.31** = the stored value;
+DREDGECORP Sep-2016: owners 0.0000, "for the period" **-14.37** = the stored value). `pick_nonzero`
+now falls through a row that reads exactly 0 when a later candidate carries a real number, and
+keeps the zero only when EVERY candidate is 0 (a dormant company really can earn nothing).
+Re-applied to the 10,169 cached vintage rows OFFLINE — no refetch — 20 values corrected, 12
+verdicts flipped, 9 of the 67 cleared.
+**No landed heal had written a spurious zero: the "second reader must agree" rule (§109d) blocked
+every one.** Checked, not assumed.
+
+**Two more ways the page called "as-filed" is not the as-filed page** — a store that disagrees with
+it is then expected, not suspect:
+* the earliest filing's PAT is UNREADABLE, so the value came from a later one (GVT&D Mar-2016: the
+  40-day filing reads None, so the 420-day-later Ind-AS re-filing was labelled as-filed at 26.98,
+  while store and detres both hold 29.87);
+* the ONLY page NSE holds was filed a year later (MPHASIS Jun-2015: 459 days).
+
+**Page-level scale.** Where the page's figure ×10 reproduces the store to the paisa the page is off
+by a decade, and this must be tested BEFORE a third reader that read the same page's scale can
+re-open the cell (MPHASIS Jun-2016 con 20.4343 ×10 = 204.34; BSOFT Jun-2016 con 5.5054 ×10 = 55.05).
+
+**Outcome: 66 of 67 CLOSED, store confirmed, no data change.** Reasons: no page defect named — third reader backs the store x35, lag-guard: the page is the restatement x15, page mis-scaled by a power of ten x5, earliest filing unreadable x2, all PAT rows zero / page blank x1
+
+**The one real error — ASSAMCO Mar-2017 std, decided by the FY-CONSISTENCY IDENTITY.** Store
+-48.52, detres -49.807, NSE and MC both -45.63 — a 2-2 split no reader count can settle. The
+audited FY17 annual (detres 93.50) is -70.788 and its three sibling quarters, also from detres, are
+-19.993 / +15.391 / -16.378, so the implied Q4 is **-49.81**: detres to the paisa, the store out by
+1.29, NSE/MC out by 4.17. **The company's own audited annual arbitrates against two readers that
+agree with each other.** Healed. It had never flagged, because 1.29 sits inside max(2 cr, 3%).
+
+Also landed here: SKFINDIA Jun-2016 std 93.22 -> 60.40, surfaced only once the sentinel fix let the
+page be read (NSE and detres both 60.4).
