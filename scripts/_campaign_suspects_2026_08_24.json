@@ -209,5 +209,21 @@
   },
   "what": "23 of 25 MC candidates failed the neighbourhood gate (site series must reproduce our stored revStd within +-6 quarters, >=4 tested, zero disagreements)",
   "why_it_matters": "these are the aggregator TWO-REVENUE-DEFINITIONS class: the site quotes a different top line (gross vs net of excise, or total income) for those names, so its value for the gap quarter is not our quantity"
+ },
+ "MTNL|20160331|revStd": {
+  "status": "ANCHOR-MISMATCH / restatement-vintage - NOT filled from own filing",
+  "own_filing": "BSE 2016-05-30 Annexure I (audited FY+Q4 ended 31/03/2016, Rs Cr). Standalone col 3 (3 months ended 31/03/2016, balancing figure): Total income from operations (Net) 835.79 (=833.66 net + 2.14 other op); Net Profit for the period 174.58 (PBT -317.68 + MAT write-back 492.26).",
+  "stored_npStd": 188.64,
+  "filing_npStd": 174.58,
+  "gap": 14.06,
+  "verdict": "stored PAT 188.64 != original-filing PAT 174.58 by 14.06 -> stored is the Ind-AS-restated vintage (MTNL FY17 Ind-AS transition). The own-filing revenue 835.79 is the ORIGINAL vintage and must NOT anchor to the restated PAT. To fill, need the May-2017 (Q4FY17) filing whose corresponding 31/03/2016 column shows PAT 188.64; take its revenue there.",
+  "measured": "2026-08-24 vision read of the scanned Annexure I"
+ },
+ "UJJIVAN|20170331|revStd": {
+  "status": "NOT filled - refetched doc is the WRONG ENTITY",
+  "doc_in_hand": "BSE 2017-05 UJJIVAN_20170331 bundle is Ujjivan SMALL FINANCE BANK Limited (the unlisted subsidiary) audited results for the STUB period Jul-4-2016 to Mar-31-2017; net profit Rs 350,765 (=Rs 3.5 lakh). Bank commenced ops 2017-02-01.",
+  "why_wrong": "Our ticker UJJIVAN in FY17 = Ujjivan Financial Services Limited (the listed HOLDCO), stored npStd 20.41 cr / npCon 19.35 / revCon 314.53. The holdco transferred its lending business to the bank on 2017-02-01. The subject-filtered refetch picked the bank subsidiary attachment, not the holdco standalone.",
+  "todo": "Refetch Ujjivan Financial Services Limiteds OWN standalone Q4FY17 results (the filing that also carries our con revCon 314.53). Its standalone total income from operations, anchored to npStd 20.41, is the value.",
+  "measured": "2026-08-24 vision read of pages 0-4 of the bundle"
  }
 }

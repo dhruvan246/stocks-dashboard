@@ -248,5 +248,39 @@
    "rev": 0.0,
    "src": "2026-08-24 positional text read of the BSE attachment page 3 'Statement of Standalone Financial Results for the quarter ended June 30, 2019' (Rs. In lakhs). Row I 'Revenue from operations' is '-' for the Jun-2019 column (1,100.00 for Mar-2019 and 2,200.00 for the year); row II Other Income 252.92; row III Total Income 252.92 = 0 + 252.92, which closes the identity. Row IX Profit for the period 52.64 lakhs = 0.5264 == stored npStd 0.53. The auto-parser had produced 252.92 - Total Income, i.e. other income only."
   }
+ },
+ "RKFORGE": {
+  "20160331": {
+   "basis": "std",
+   "rev": 225.99,
+   "pat_seen": 11.11,
+   "fin": 0,
+   "src": "BSE 2016-05-30 audited Q4+FY results (RKFORGE_20160331 pg7), Part-I Standalone Quarter-Ended 31/Mar/16, Rs in Lakhs: Total Income from Operations (Net) 22,599.38 lakhs = 225.99 cr (Domestic 16,056.87 + Export 7,227.45 = 23,284.32 - Excise 1,747.83 = 21,536.49 + Other Op Rev 1,062.89). PAT identity: PBT 1,316.25 - Tax 205.00 = 1,111.25 lakhs = 11.11 cr = stored npStd."
+  }
+ },
+ "SFCL": {
+  "20160630": {
+   "basis": "std",
+   "rev": 0.0,
+   "pat_seen": -0.3,
+   "fin": 0,
+   "src": "BSE 2016-08-01 unaudited Q1 results (SFCL_20160630 FA225F70 pg8), Statement for Quarter ended 30.06.2016, Rs in Lacs. STANDALONE Q1 col: Total Income from Operations (Net) = \"-\" (filed NIL). Star Ferro is a pure holdco - its dividend income (FY16 = 2,375.38 lacs = 23.75 cr) sits in Other Income, operations row is a dash in every period incl the FY column. PAT anchor: PBT (29.52) lacs, tax nil = -0.30 cr = stored npStd -0.30."
+  },
+  "20160930": {
+   "basis": "std",
+   "rev": 0.0,
+   "pat_seen": -0.31,
+   "fin": 0,
+   "src": "BSE 2016-11-03 unaudited Q2 results (SFCL_20160930 pg5), Statement for Quarter and Six months ended 30.09.2016, Rs in Lacs. STANDALONE Q2 col: Total Income from Operations (Net) = \"-\" (filed NIL); holdco, dividend income sits in Other Income. PAT anchor: net profit for period (30.77) lacs = -0.31 cr = stored npStd -0.31."
+  }
+ },
+ "ONELIFECAP": {
+  "20130630": {
+   "basis": "std",
+   "rev": 0.0,
+   "pat_seen": 0.01,
+   "fin": 0,
+   "src": "BSE 2013-08-13 standalone unaudited Q1 results (ONELIFECAP ..._Rst pg1), Statement for quarter ended 30/06/2013, Rs in Lacs. STANDALONE Q1 col: Total income from operations (net) = \"-\" (filed NIL). Onelife Capital Advisors is a merchant banker under SEBI restraint (Dec-2011 order barring fresh business), so operating revenue is nil; its income (25.41 lacs) is all Other income (interest on IPO funds). PAT anchor: net profit for period 0.59 lacs = 0.01 cr = stored npStd 0.01."
+  }
  }
 }
