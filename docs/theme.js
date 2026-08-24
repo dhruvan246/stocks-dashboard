@@ -224,6 +224,7 @@
       ['https://dhruvan246.github.io/fno-dashboard/', '🎯', 'F&O']
     ] },
     { g: 'Tools', items: [
+      ['./options-backtest.html', '🪙', 'Options Backtest'],
       ['./saved-strategies.html', '⭐', 'Saved Strategies'],
       ['./all-picks.html',        '🎯', 'All Picks'],
       ['./strategy-mixer.html',   '🎛️', 'Strategy Mixer'],

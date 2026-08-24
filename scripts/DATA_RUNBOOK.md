@@ -11652,3 +11652,53 @@ compare), `no-readable-vintage` 270 std / 42 con, and the queues in `_vintage108
 mostly consolidated rev/op where detres cannot speak and provenance did not fire). Tools:
 `vintage108_{sweep,nse_vintages,provenance,adjudicate,report,land,fix_reads,resolve_extra,
 mine_skips,documents}.py`; plan `scripts/PLAN_VINTAGE108_SWEEP.md`.
+
+## 110. ★★★ OPTIONS BACKTEST — REAL NSE F&O EOD STORE + StockMock-style page  (2026-08-24)
+
+**What:** `docs/options-backtest.html` (+ `docs/fo-engine.js`) — index-options backtesting
+(NIFTY / BANKNIFTY / FINNIFTY / MIDCPNIFTY) modeled feature-for-feature on stockmock.in,
+running on REAL exchange EOD data at daily granularity. StockMock is minute-level intraday;
+our v1 is EOD — intraday-only controls (entry time, wait & trade, range breakout) are shown
+disabled with a "needs minute data — phase 2" note, never silently missing.
+
+**Data route (all measured live 2026-08-24):**
+- NSE F&O bhavcopy, two eras, both open at `nsearchives.nseindia.com`:
+  - OLD  (≥2016-01-01 … 2024-07-05): `/content/historical/DERIVATIVES/{YYYY}/{MMM}/fo{DD}{MMM}{YYYY}bhav.csv.zip`
+  - UDiFF (2024-07-08 … today):      `/content/fo/BhavCopy_NSE_FO_0_0_0_{YYYYMMDD}_F_0000.csv.zip`
+- Official index OHLC (spot for ATM + gap filters): `/content/indices/ind_close_all_{DDMMYYYY}.csv`
+- Yahoo (curl_cffi impersonate) only as spot cross-check; Midcap Select has NO Yahoo history.
+
+**⚠ EXPIRY-DAY SETTLE TRAP (measured in BOTH eras, cost a -₹31L phantom loss in testing):**
+on expiry day the option row's SETTLE_PR / SttlmPric is the UNDERLYING's final settlement
+level (e.g. 24154.9), NOT the option's price. Exit value on expiry must be intrinsic:
+CE = max(0, S−k), PE = max(0, k−S) with S = that settle field. Non-expiry marks use CLOSE.
+Also: strikes with volume 0 carry stale/theoretical closes — the engine treats vol==0 as
+NA (StockMock's NA concept); the store keeps vol+OI so this stays checkable.
+
+**Pipeline:** `scripts/fetch_fo_bhavcopy.py` (resumable; cache ~/stocks-wt/fo_raw_cache
+OUTSIDE any git tree; 404=holiday list, errors retried) → `scripts/fetch_fo_spot_nse.py`
+(index OHLC → scripts/fo_spot_nse.json, committed) → `scripts/build_fo_store.py`
+(→ docs/fo/{SYM}_{YYYY}.bin per-index-year binary + manifest.json; `--append` merges a thin
+CI cache into existing slices instead of clobbering the year — CI MUST use --append).
+Slice format documented in the builder header. CI: `.github/workflows/refresh-fo.yml`
+(19:30 + 22:00 IST weekdays; reset-replay commit of docs/fo + fo_spot_nse.json; pages dispatch).
+
+**Engine semantics (EOD):** entry at close of days passing filters (weekday chips, entry-DTE,
+VIX band, gap/prev-day-H/L/spot-change), non-overlapping trades; exits: per-leg SL/TP
+(premium % / pt, or spot-based) checked daily on close or vs option day-H/L (settings),
+trailing SL, re-entry modes (RE / RECOST / REI ×1-5, next-day close), move-SL-to-cost,
+square-off one-leg vs all-legs, hedge sub-legs (closest-premium ~ / ≥ / ≤), strategy-level
+MTM TP/SL (₹ or combined-premium %), protect-profits (lock / trail / lock+trail),
+hold-days / exit-DTE / expiry-settle exits. Dated lot-size schedules per index (StockMock's
+own tables) with user override. Slippage default 0.5% on entries/exits (not on expiry settle).
+Margin figure is a labeled ROUGH estimate (10% notional short + long premium), not SPAN.
+
+**Verified:** short-straddle P&L reproduced by hand to the paisa vs raw bhavcopy
+(96.5+33.7 sold 2026-08-17, settle 24154.9 → PE intrinsic 145.1 → −966 = (130.2−145.1)×65).
+Single-tab total == basket-tab combined total for the same strategy.
+
+**Gotchas for future work:** SENSEX/BANKEX = BSE derivatives (different archive) — not in v1.
+NIFTY weekly options exist only from Feb-2019 (before that, 'weekly' resolves to the monthly);
+FINNIFTY from 2021, MIDCPNIFTY from 2022. fo_spot_nse.json values are [o,h,l,c] arrays
+(legacy plain-close numbers still parse). The engine's byDate index is per-loaded-range —
+DTE falls back to weekday count when expiry > range end.

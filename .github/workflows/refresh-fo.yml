@@ -1,0 +1,81 @@
+name: Daily F&O options store refresh
+
+# Appends the latest NSE F&O bhavcopy EOD chain (NIFTY/BANKNIFTY/FINNIFTY/
+# MIDCPNIFTY options+futures) and official index OHLC into docs/fo/*.bin for
+# options-backtest.html. Bhavcopy publishes in the evening; two slots so a
+# late file still lands the same day. Holidays = 404 = clean no-op.
+
+on:
+  schedule:
+    - cron: "0 14 * * 1-5"    # 19:30 IST weekdays
+    - cron: "30 16 * * 1-5"   # 22:00 IST catch-up
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-fo
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Fetch recent bhavcopy days
+        env:
+          FO_CACHE: /tmp/fo_cache
+        run: python3 scripts/fetch_fo_bhavcopy.py --recent 10
+
+      - name: Fetch recent official index OHLC
+        run: |
+          python3 scripts/fetch_fo_spot_nse.py "$(date -u -d '10 days ago' +%F)" "$(date -u +%F)"
+
+      - name: Rebuild current-year slices (append)
+        env:
+          FO_CACHE: /tmp/fo_cache
+        run: python3 scripts/build_fo_store.py --append "$(date -u +%Y)"
+
+      - name: Commit
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          mkdir -p /tmp/fo_out
+          cp docs/fo/*.bin.gz docs/fo/manifest.json /tmp/fo_out/
+          cp scripts/fo_spot_nse.json /tmp/fo_out/spot.json
+
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/fo_out/*.bin.gz /tmp/fo_out/manifest.json docs/fo/
+            cp /tmp/fo_out/spot.json scripts/fo_spot_nse.json
+            git add docs/fo scripts/fo_spot_nse.json
+
+            if git diff --cached --quiet; then
+              echo "No new F&O data (holiday or already current) — nothing to commit"
+              exit 0
+            fi
+
+            git commit -m "Daily F&O options store refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then
+              echo "Pushed on attempt #$attempt"
+              gh workflow run pages.yml || echo "(pages dispatch failed — next push publishes)"
+              exit 0
+            fi
+            echo "Push attempt #$attempt rejected; retrying"
+            sleep $(( attempt * 3 ))
+          done
+          echo "Failed to push after 5 attempts"
+          exit 1
+        env:
+          GH_TOKEN: ${{ github.token }}
