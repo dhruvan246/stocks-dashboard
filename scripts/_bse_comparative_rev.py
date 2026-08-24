@@ -14,6 +14,13 @@ ROUTE. Stored ann date -> BSE AnnSubCategoryGetData in a window -> attachment ->
 before ~Nov-2018 404 on BOTH bases every fetcher tries; fetch_insurers.fetch_pdf now falls back to
 the AnnPdfOpen.aspx resolver, which is what makes the pre-2018 half of this reachable at all.
 
+⚠️ THE AUTO-PARSE IS PROPOSAL-ONLY — DO NOT WRITE ITS OUTPUT UNVERIFIED. Measured 2026-08-24 over
+12 auto-reads: only 4 survived a Moneycontrol cross-check. LTF 2019-06 parsed 3,312.77 against MC's
+16.56; MFSL 2019-06 parsed 0.22 against 196.13; IRCON 123.84 against 1,215.89. The PAT anchor proves
+the COLUMN carries the right PAT — it does NOT prove the revenue-row band picked the right cell in
+that column, and on multi-block statements it frequently does not. Every read must be MC-confirmed
+or vision-read before it reaches a ledger.
+
 GATE, identical in spirit to every other route here: the column whose PAT equals the STORED PAT
 for (sym, qe, std) under one scale (crore/lakh/million) is the column read; no anchor, no write.
 A restated cell is anchored against the YEAR-LATER filing's comparative, which is exactly the
@@ -25,7 +32,7 @@ cannot be parsed and are written to a VISION QUEUE with their rendered pages, fo
 Run: python -X utf8 scripts/_bse_comparative_rev.py --cells <json> [--limit N]
      cells = [[SYM, QE], ...]
 """
-import os, re, sys, json, time
+import os, re, sys, json, time, datetime
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -42,6 +49,21 @@ os.makedirs(PDFDIR, exist_ok=True)
 
 SCALES = (("crore", 1.0), ("lakh", 100.0), ("million", 10.0))
 NUM = re.compile(r"\(?-?[\d,]+\.\d{2}\)?")
+
+
+def _shift(yyyymmdd, days):
+    """Shift a YYYYMMDD stamp by N CALENDAR days.
+
+    ★ Do NOT do this with integer arithmetic. `20180514 - 21` is 20180493 — month 04, day 93 —
+    which BSE answers with an EMPTY LIST rather than an error, so every cell reports
+    "no-bse-filing-in-either-window" and the run looks like a wall of genuine absences. This
+    masqueraded as IP rate-limiting for a whole pass (2026-08-24): a +-7 window happened to stay
+    inside a valid month for mid-month announce dates and worked, so WIDENING the window to +-21
+    made the tool strictly worse while looking like a fix.
+    """
+    d = str(yyyymmdd)
+    dt = datetime.date(int(d[:4]), int(d[4:6]), int(d[6:8])) + datetime.timedelta(days=days)
+    return dt.strftime("%Y%m%d")
 
 
 def tonum(s):
@@ -180,7 +202,10 @@ def main():
     def _session_for(sym):
         if _last_sym[0] != sym:
             _last_sym[0] = sym
-            time.sleep(1.5)
+            # 1.5s was not enough: the throttle is IP-level, not per-cookie. A 66-symbol run at
+            # 1.5s still returned empty lists for 62 of them while the SAME scrips answered on an
+            # unhurried fresh session. Measured 2026-08-24.
+            time.sleep(8.0)
             return FI.bse_session()
         return o
     n = 0
@@ -217,9 +242,9 @@ def main():
         # outcome whose date can sit well away from our stored announce date (which for old rows
         # is often a qe+45d default, runbook 52). The tight window reported 39 false
         # "no-bse-filing" refusals on the first pass.
-        windows = [(str(int(ann) - 21), str(int(ann) + 21), "own-quarter")]
+        windows = [(_shift(ann, -21), _shift(ann, 21), "own-quarter")]
         if yl and yl[2]:
-            windows.append((str(int(yl[2]) - 21), str(int(yl[2]) + 21), "year-later-comparative"))
+            windows.append((_shift(yl[2], -21), _shift(yl[2], 21), "year-later-comparative"))
         rows = []
         _sess = _session_for(sym)
         for lo, hi, wname in windows:
