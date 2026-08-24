@@ -23,5 +23,14 @@
   "ONELIFECAP|20130630",
   "BLUESTARCO|20180331",
   "UJJIVAN|20170331 (bank-vs-holdco to disambiguate)"
- ]
+ ],
+ "FINDING_restatement_vintage_pattern": {
+  "summary": "The vision-read tail is dominated by RESTATEMENT-VINTAGE cells: our stored PAT is a later restated figure while the obvious document (own-quarter filing, press release, Moneycontrol) shows the ORIGINAL vintage. A quick read gives the WRONG number. Confirmed on:",
+  "SUPRAJIT_20160630": "stored npStd 21.28; press release AND MC both show original standalone PAT 12.80. Also SUPRAJIT 20161231 stored 27.01 vs MC 13.37. Likely Phoenix Lamps amalgamation restatement. 4 other SUPRAJIT quarters match MC exactly.",
+  "SPLPETRO_20170930": "stored 13.31; filing + MC both 36.68 (this one looks like a genuine defect, not just vintage - both vintages agree at 36.68)",
+  "ICIL_20160331": "stored 65.98; restated year-later shows 67.86",
+  "implication": "To fill each revenue cell at the vintage matching our stored PAT, need the specific filing whose comparative column reproduces the stored PAT - not the original filing and not MC. Expensive per cell (3-6 scanned reads each), and 3 of these may themselves be stored-PAT defects worth a separate audit.",
+  "reachable_by_more_vision": "MTNL 20160331, ONELIFECAP 20130630, BLUESTARCO 20180331 (need doc), UJJIVAN 20170331 (holdco not bank), SFCL 20160630/20160930 - tables buried in scanned multi-page filings, no vintage-mismatch known yet",
+  "structurally_unfillable": "STAR (con-only), DHANI (con-only), ASHIANA (FY wont close), THOMASCOOK (no BSE filing)"
+ }
 }
