@@ -12079,3 +12079,26 @@ construction, and §109's own invariant (agreement with detres 53.9% → 100%) w
 ★ **The cost of §109j's durability fix cuts both ways.** Once a ledger is re-applied after the merge,
 a WRONG entry is as durable as a right one. Ledger hygiene — retract, do not just stop writing —
 becomes mandatory the moment the applier joins CI.
+
+### 112a. ★★ `verify_fills_live.py` NOW SEPARATES *REVERTED* FROM *DRIFT*  (2026-08-25)
+
+§111g registered the cell-fix ledgers with the detector, which was the big step. But a §109j revert
+landed in the **DRIFT** bucket, labelled *"superseded/corrected"* — reading like somebody's decision
+when it is a clobber. The two need different names because they need different responses:
+
+| bucket | meaning | response |
+|---|---|---|
+| **REVERTED** | the payload holds the ledger's own `was` — the exact value the correction replaced | auto-repairable: the `was` match PROVES nobody adjudicated a third number |
+| **DRIFT** | the payload holds some OTHER value | a human chooses; never auto-anything |
+
+`--repair-reverted` restores from the ledger. Kept off `--repair` deliberately: `--repair` fills
+EMPTY slots, this OVERWRITES a populated one, and those deserve separate consent.
+
+**Proven by injection, both directions** (the count moving is the assertion — §ledger-guard):
+* a healed cell set back to its `was` → `REVERTED 1`, named correctly, and `--repair-reverted`
+  restored it to `fixed`;
+* a healed cell set to an unrelated third value → stayed in `DRIFT` (27→28) and `--repair-reverted`
+  **left it alone**.
+
+Baseline on a clean tree: 11,544 ledgered cells checked, MISSING 0, REVERTED 0, RESURRECTED 0,
+DRIFT 27 (all `mc_history_fills` rounding, ≤0.1%% except SADBHAV/SIEMENS).

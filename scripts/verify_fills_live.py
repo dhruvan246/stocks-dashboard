@@ -189,6 +189,15 @@ def main():
     # SHREECEM 2018-06 and SYNGENE 2018-03 as Moneycontrol consolidated-fallback, both came back
     # from sibling ledgers, and this detector reported MISSING 0 throughout.
     resurrected = []
+    # ★ REVERTED: a value-correction ledger says a cell was moved `was` -> `fixed`, and the payload
+    # holds `was` again — EXACTLY the value the correction replaced. That is not DRIFT: drift means
+    # somebody adjudicated a THIRD number and a human must choose; reverted means the heal was
+    # simply undone, by a rebuild that derives the cell and wins the three-way merge (§109j). The
+    # two need different names because they need different responses — one is auto-repairable from
+    # the ledger, the other must never be auto-anything. They were indistinguishable until
+    # 2026-08-25: every §109j revert was landing in the DRIFT bucket, where "superseded/corrected"
+    # reads like somebody's decision rather than a clobber.
+    reverted = []
 
     def live_value(payload, sym, qe, slot):
         if payload == "revop":
@@ -299,7 +308,11 @@ def main():
             if cur is None:
                 missing.append((name, sym, qe, want, payload, slot))
             elif abs(cur - want) > TOL:
-                drift.append((name, sym, qe, want, cur))
+                prev = f.get("was")
+                if prev is not None and abs(cur - prev) <= TOL:
+                    reverted.append((name, sym, qe, f.get("basis"), prev, want, payload, slot))
+                else:
+                    drift.append((name, sym, qe, want, cur))
 
     for name, payload, key, dslot, bkey, bmap, root in NESTED:
         p2 = os.path.join(HERE, name)
@@ -353,6 +366,8 @@ def main():
         print("checked %d ledgered cells against the served payloads" % checked)
         print("  MISSING     (clobbered):            %d" % len(missing))
         print("  DRIFT       (superseded/corrected): %d" % len(drift))
+        print("  REVERTED    (a correction was undone — the payload holds the ledger's `was`): %d"
+              % len(reverted))
         print("  RESURRECTED (a refused value is live again): %d" % len(resurrected))
         if odd_keys:
             print("  skipped %d non-quarter ledger key(s) — retracted/annotation entries, not claims:"
@@ -363,6 +378,12 @@ def main():
             print("     MISSING %-30s %-12s %s  ledger=%s" % (m[0], m[1], m[2], m[3]))
         for d in drift[:10]:
             print("     DRIFT   %-30s %-12s %s  ledger=%s live=%s" % d)
+        for r in reverted[:15]:
+            print("     REVERTED %-26s %-12s %s %-8s live=%s (the pre-heal value) ledger=%s"
+                  % (r[0], r[1], r[2], r[3] or "-", r[4], r[5]))
+        if reverted:
+            print("     ^ these are repairable from the ledger: --repair-reverted, or wait for the"
+                  " post-merge re-apply that refresh-fundamentals now runs (runbook 109j).")
         for r in resurrected[:15]:
             print("     RESURRECTED %-26s %-12s %s %-4s value=%s\n                 held because: %s"
                   % (r[0], r[1], r[2], r[3], r[4], r[5]))
@@ -388,6 +409,21 @@ def main():
         json.dump(fund, open(FUND, "w"), separators=(",", ":"))
         print("repaired %d cells into the served payloads "
               "(commit + push them, then re-run to confirm)" % len(missing))
+
+    # Reverted cells ARE safely repairable — unlike DRIFT, the ledger's own `was` proves nobody
+    # adjudicated a different number, they were simply overwritten with the value the correction
+    # replaced. Still its own flag rather than part of --repair: --repair fills EMPTY slots, this
+    # overwrites a populated one, and those deserve separate consent.
+    if reverted and "--repair-reverted" in sys.argv:
+        for name, sym, qe, basis, prev, want, payload, slot in reverted:
+            row = ((revop.get(sym) or {}).get(str(qe)) if payload == "revop"
+                   else (fmap.get(sym) or {}).get(int(qe)))
+            if row and len(row) > slot and row[slot] is not None and abs(row[slot] - prev) <= TOL:
+                row[slot] = want
+        json.dump(revop, open(REVOP, "w"), separators=(",", ":"))
+        json.dump(fund, open(FUND, "w"), separators=(",", ":"))
+        print("restored %d reverted cells from the ledgers (commit + push, then re-run)"
+              % len(reverted))
 
     # Emptying a slot is destructive and a held flag can itself be wrong (measured: of the three
     # holds another session added on 2026-08-11, SHREECEM 2018-06 was refuted by Moneycontrol's own
