@@ -730,7 +730,17 @@ cache purge, costing a full rebuild-from-scratch before this refresh could even 
 - `grid_search_mega.js` — env `TOPN` · `METHOD` · `UNIVERSE` select the basket variant; `VTAG` keeps
   each variant's artifacts apart (default top5/reset/N500 keeps the legacy un-suffixed names).
   `MAIN_ONLY=1` for phase grids. `SELECT_FILE=<json row indices>` re-scores a chosen set in a window
-  and emits EXACT cagr/totRet/dd/win.
+  and emits EXACT cagr/totRet/dd/win. `EARN_BASIS=con|std|conOnly` (2026-08-25) picks the earnings
+  basis for every profit* factor AND the re-scoring (default `con` = consolidated with std fallback,
+  the engine/UI default). The factor cache is keyed by basis (`_std`/`_conOnly` name suffix) so bases
+  never cross-contaminate; each window's `_gridmega_top_` marker stamps its basis, and
+  `gridmega_phases_build.js` exits 5 if the markers' basis ≠ its own `EARN_BASIS` (the build's
+  pass-2 SELECT re-scoring inherits the env, so a mismatch would silently mix bases in one JSON).
+  **The h3 (Top 3 · hold) page JSON is built with `EARN_BASIS=std` since 2026-08-25** (user request);
+  the other four variants remain default-basis. The page prints "· standalone earnings" from the
+  JSON's `earnBasis` field. Also 2026-08-25: the IND_OVERRIDE zero-fill guard is DATED — 0 fills
+  only throws for windows starting pre-2016 (the 200 backfilled names are long-delisted; a 2026
+  window legitimately fills 0 — measured: 2026 window = 0 fills, 2004 window = ~18k).
 - `gridmega_phases_run.py` — the 55-job driver; RESUMABLE (skips any window whose `_gridmega_top_` marker
   exists), longest windows first, staggered starts.
 - `gridmega_phases_build.js` — merges 11 windows → `docs/strategy_phases<vtag>.json`. Needs `GRID_END=`.

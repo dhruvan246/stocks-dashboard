@@ -71,6 +71,10 @@
   const TOPN = +(process.env.TOPN || 5);
   const METHOD = process.env.METHOD || 'reset';
   const UNIVERSE = process.env.UNIVERSE || 'Nifty 500';
+  // EARN_BASIS: 'con' (consolidated, falls back to standalone — the engine/UI default),
+  // 'std' (standalone only), 'conOnly' (consolidated only, no fallback). Flows into every
+  // profit* factor via factorsAt AND into simulate()/simFast re-scoring via BASECFG.
+  const EARN_BASIS = process.env.EARN_BASIS || 'con';
   // Validate loudly. A malformed TOPN (e.g. zsh not word-splitting `env $v`, so TOPN became
   // "3 METHOD=hold") yields NaN, and `target.length < NaN` is false for every candidate — so
   // every basket comes out EMPTY and the whole 4.44M grid "succeeds" in 12 seconds with NaN
@@ -81,12 +85,14 @@
     throw new Error('METHOD must be reset|hold, got ' + JSON.stringify(METHOD));
   if (UNIVERSE !== '__FNO__' && !/^Nifty \d+$/.test(UNIVERSE))
     throw new Error('UNIVERSE must be __FNO__ or "Nifty <n>", got ' + JSON.stringify(UNIVERSE));
+  if (EARN_BASIS !== 'con' && EARN_BASIS !== 'std' && EARN_BASIS !== 'conOnly')
+    throw new Error('EARN_BASIS must be con|std|conOnly, got ' + JSON.stringify(process.env.EARN_BASIS));
   const VTAG = (TOPN === 5 && METHOD === 'reset' && UNIVERSE === 'Nifty 500') ? ''
              : '_' + (UNIVERSE === '__FNO__' ? 'fno_' : '') + (METHOD === 'hold' ? 'h' : 'r') + TOPN;
   const TAG = (process.argv[3] ? START + '_' + END : START) + VTAG; // artifact naming
   const CAPITAL = 100000;
   const BASECFG = { start:START, end:END, indexName:UNIVERSE, freq:1, lookback:1, topN:TOPN,
-                    capital:CAPITAL, mode:'sf', earnBasis:'con', mcapFloor:0, method:METHOD };
+                    capital:CAPITAL, mode:'sf', earnBasis:EARN_BASIS, mcapFloor:0, method:METHOD };
   // trading-day snap — identical to simulate()
   const _tdset = new Set();
   for (const r of ['RELIANCE','TCS','HDFCBANK','INFY','ICICIBANK','ITC','SBIN','LT']) { const s = SERIES[r]; if (s && s.d) for (const o of s.d) _tdset.add(o); }
@@ -104,9 +110,11 @@
   const FULLCFG = { ...BASECFG, sortBy:'composite', filters:[{field:'fiiPct',op:'>',val:-1}] }; // triggers tech+fund+shp+composite
   const ALLOFFS = [...new Set([...MAIN.O, ...OOS1.O, ...OOS2.O])].sort((a,b)=>a-b);
   for (const o of [...OOS1.O, ...OOS2.O]) if (!MAIN.O.includes(o)) console.error('note: OOS off '+o+' ('+isoOff(o)+') outside main window set');
-  // Factor rows are universe-filtered (rowsAt → membersAsOf), so the cache is per-UNIVERSE.
+  // Factor rows are universe-filtered (rowsAt → membersAsOf), so the cache is per-UNIVERSE —
+  // and per-BASIS: every profit* factor and resultAge comes out of factorsAt already carrying
+  // cfg.earnBasis, so a 'std' run must never read a 'con' cache (or vice versa).
   // topN/method never reach factorsAt, so all basket sizes share one cache file.
-  const UTAG = UNIVERSE === 'Nifty 500' ? '' : '_fno';
+  const UTAG = (UNIVERSE === 'Nifty 500' ? '' : '_fno') + (EARN_BASIS === 'con' ? '' : '_' + EARN_BASIS);
   const CACHE_FILE = path.join(ROOT, 'scripts', '_gridmega_cache_' + START + '_' + END + UTAG + '.json.gz');
   let CACHE = new Map();
   if (fs.existsSync(CACHE_FILE)) {
@@ -244,7 +252,13 @@
       console.error('DROP_UNCLASSIFIED: removed ' + droppedTot + ' unclassified rows across ' + droppedOffs + ' of ' + ALLOFFS.length + ' dates');
     }
     if (OVR) {
-      if (!ovrHits) throw new Error('IND_OVERRIDE set but NOTHING was filled — the flag is a no-op (stale _gridmega_run.js?)');
+      // Dated guard (runbook: date the sanity floor). The 200 backfilled names are all long-
+      // delisted, so 0 fills is the TRUE value for a window whose offs never reach the
+      // delisted-heavy era — measured 2026-08-25: the 2026-03-31 window fills exactly 0 while
+      // the 2004 window fills ~18k. Zero is only evidence of a broken mechanism (key mismatch,
+      // stale _gridmega_run.js) when the window actually spans the era the override exists for.
+      if (!ovrHits && START < '2016-01-01')
+        throw new Error('IND_OVERRIDE set but NOTHING was filled in a pre-2016 window — the flag is a no-op (key mismatch or stale _gridmega_run.js?)');
       console.error('IND_OVERRIDE: filled ' + ovrHits + ' stock-months from ' + Object.keys(OVR).length + ' backfilled symbols');
     }
     console.error('presort built in ' + ((Date.now()-t0)/1000|0) + 's');
@@ -455,7 +469,7 @@
   console.error('best raw: ' + topC[0].dir + '-' + topC[0].sortBy + ' [' + fdesc(topC[0].fset) + '] cagr=' + topC[0].cagr.toFixed(2));
   if (process.env.MAIN_ONLY) {   // phase grids: CSV + top-2000 JSON only, skip refine/OOS/verify
     fs.writeFileSync(path.join(ROOT, 'scripts', '_gridmega_top_' + TAG + '.json'), JSON.stringify({
-      window: [START, END], top: topC.slice(0, 2000).map(r => ({ sortBy: r.sortBy, dir: r.dir, filters: fdesc(r.fset),
+      window: [START, END], earnBasis: EARN_BASIS, top: topC.slice(0, 2000).map(r => ({ sortBy: r.sortBy, dir: r.dir, filters: fdesc(r.fset),
         cagr: +r.cagr.toFixed(2), maxDD: +r.maxDD.toFixed(1), winRate: +r.winRate.toFixed(1), avgPicks: +r.avgPicks.toFixed(2) })) }));
     console.error('MAIN_ONLY done → _gridmega_top_' + TAG + '.json');
     process.exit(0);

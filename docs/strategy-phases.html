@@ -157,8 +157,11 @@
     R=j; P=R.phases; C=R.combos; cards=R.cards; YRS=R.years||[];
     PI={}; P.forEach((p,i)=>PI[p.key]=i);
     document.getElementById('builtAt').textContent='Built '+R.built+'.';
-    document.getElementById('vdesc').innerHTML='<b>every strategy = a TOP-'+VDESC[curVar][0]+' basket on '+VDESC[curVar][2]+', equal-weight, '+VDESC[curVar][1]+'</b>';
-    document.getElementById('basketChip').textContent=(curVar==='fno'?'F&O · ':'')+'Top-'+VDESC[curVar][0]+' basket · equal-weight · '+(VDESC[curVar][1].indexOf('ride')===0?'ride winners':'monthly reset');
+    // earnBasis is stamped by gridmega_phases_build.js; absent (older JSONs) = consolidated
+    // with standalone fallback, the engine default — say nothing for that case.
+    const basisNote=R.earnBasis==='std'?' · standalone earnings':R.earnBasis==='conOnly'?' · consolidated-only earnings':'';
+    document.getElementById('vdesc').innerHTML='<b>every strategy = a TOP-'+VDESC[curVar][0]+' basket on '+VDESC[curVar][2]+', equal-weight, '+VDESC[curVar][1]+basisNote+'</b>';
+    document.getElementById('basketChip').textContent=(curVar==='fno'?'F&O · ':'')+'Top-'+VDESC[curVar][0]+' basket · equal-weight · '+(VDESC[curVar][1].indexOf('ride')===0?'ride winners':'monthly reset')+basisNote;
     cur='all4'; sortK=null; needle=''; document.getElementById('q').value='';
     buildCards(); paintPills(); render();
   }

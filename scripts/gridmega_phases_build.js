@@ -69,6 +69,19 @@ if (missing.length) {
   process.exit(2);
 }
 
+// ---- gate: the grids' earnings basis must match this build's EARN_BASIS. The marker is written
+// by the same run that wrote the CSV, so this catches a build whose pass-2 re-scoring would use a
+// different basis than the pass-1 CSVs (markers from before the stamp existed count as 'con').
+const EARN_BASIS = process.env.EARN_BASIS || 'con';
+for (const w of WINDOWS) {
+  const mk = JSON.parse(fs.readFileSync(S('_gridmega_top_' + tagOf(w) + '.json'), 'utf8'));
+  const got = mk.earnBasis || 'con';
+  if (got !== EARN_BASIS) {
+    console.error('BASIS MISMATCH ' + w.key + ': marker says ' + got + ', build running with ' + EARN_BASIS);
+    process.exit(5);
+  }
+}
+
 // ---- pass 1: read each window's CSV, rank every combo by CAGR
 // Keeps one Int32Array of ranks per window (~18 MB each); the CAGR column is freed after ranking.
 async function rankWindow(w) {
@@ -200,10 +213,13 @@ async function rankWindow(w) {
 
   const universeLabel = VTAG === '_fno_h3' ? 'F&O stocks' : 'Nifty 500';
   const basket = 'top-' + (VTAG.includes('3') ? 3 : 5) + ' · ' + (VTAG.includes('h') ? 'hold' : 'reset');
+  const basisLabel = EARN_BASIS === 'std' ? ' · standalone earnings'
+                   : EARN_BASIS === 'conOnly' ? ' · consolidated-only earnings' : '';
   const out = {
     built: new Date().toISOString().slice(0, 10),
     totalCombos: N,
-    universe: universeLabel + ' · monthly · ' + basket,
+    universe: universeLabel + ' · monthly · ' + basket + basisLabel,
+    earnBasis: EARN_BASIS,
     dataEnd: END,
     phases: PHASES.map(p => ({ key: p.key, label: p.label, card: p.card, short: p.short,
       metric: p.metric || 'tot', start: p.start, end: resolve(p).end,
