@@ -12,11 +12,12 @@
   :root{ --up:#059669; --up-soft:rgba(5,150,105,.10); --down:#dc2626; --down-soft:rgba(220,38,38,.10); }
   html[data-theme="dark"]{ --up:#34d399; --up-soft:rgba(52,211,153,.14); --down:#f87171; --down-soft:rgba(248,113,113,.14); }
   *{box-sizing:border-box;}
-  body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;margin:0;color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;margin:0;color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    font-feature-settings:"tnum" 1;}
   body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
     background:
-     radial-gradient(60% 55% at 15% 8%,color-mix(in srgb,var(--accent) 12%,transparent),transparent 60%),
-     radial-gradient(55% 50% at 88% 4%,color-mix(in srgb,var(--accent-2) 12%,transparent),transparent 60%),
+     radial-gradient(60% 55% at 50% -5%,color-mix(in srgb,var(--accent) 14%,transparent),transparent 60%),
+     radial-gradient(55% 50% at 92% 12%,color-mix(in srgb,var(--accent-2) 10%,transparent),transparent 60%),
      radial-gradient(50% 45% at 50% 100%,color-mix(in srgb,var(--accent) 7%,transparent),transparent 60%);}
   a{text-decoration:none;color:inherit;}
   .wrap{max-width:1120px;margin:0 auto;padding:0 20px;}
@@ -35,52 +36,112 @@
      the theme pill ran into each other on a 360-400px screen. */
   @media (max-width:430px){.hd{gap:8px;}.logo{font-size:0;gap:0;}.logo .mark{font-size:12px;}}
 
-  /* hero */
-  .hero{padding:38px 0 6px;text-align:center;}
-  .eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--accent);
-    background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);padding:5px 12px;border-radius:999px;margin-bottom:16px;}
-  .live-dot{width:7px;height:7px;border-radius:50%;background:var(--up);box-shadow:0 0 0 0 var(--up-soft);animation:pulse 2s infinite;}
-  @keyframes pulse{0%{box-shadow:0 0 0 0 var(--up-soft);}70%{box-shadow:0 0 0 7px transparent;}100%{box-shadow:0 0 0 0 transparent;}}
-  h1{font-size:clamp(28px,4.4vw,42px);line-height:1.08;letter-spacing:-.03em;font-weight:800;margin:0;}
-  h1 .grad{background:linear-gradient(120deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent;}
-  .sub{margin:14px auto 0;max-width:560px;color:var(--text-muted);font-size:15px;line-height:1.5;}
+  /* ---- command center (replaces the old hero) ---- */
+  .ctr{padding:30px 0 22px;text-align:center;}
+  .ctr-status{font-size:12.5px;font-weight:600;color:var(--text-muted);letter-spacing:.02em;}
+  .ctr-status .on{color:var(--up);font-weight:700;}
+  .cmd{display:flex;align-items:center;gap:12px;width:100%;max-width:640px;margin:16px auto 0;padding:15px 20px;
+    background:var(--surface);border:1px solid var(--border-strong);border-radius:16px;
+    box-shadow:var(--shadow-lg),0 0 0 4px color-mix(in srgb,var(--accent) 8%,transparent);
+    color:var(--text-faint);font-size:15px;font-weight:500;text-align:left;cursor:pointer;transition:var(--tr);}
+  .cmd:hover,.cmd:focus-within{border-color:var(--accent);box-shadow:0 10px 30px -12px var(--glow),0 0 0 4px color-mix(in srgb,var(--accent) 12%,transparent);}
+  .cmd .hs-in{flex:1;min-width:0;border:0;outline:0;background:transparent;color:var(--text);font-size:15px;font-weight:600;font-family:inherit;}
+  .cmd .hs-in::placeholder{color:var(--text-faint);font-weight:500;}
+  .cmd .hs-in::-webkit-search-cancel-button{display:none;}
+  .cmd .kbd{flex:none;font-size:11px;font-weight:700;color:var(--text-faint);border:1px solid var(--border-strong);border-radius:6px;padding:2px 8px;}
+  .cmd .hs-go{display:none;}   /* keyboardless fallback still submits via Enter */
+  .chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:13px;}
+  .chip{font-size:11.5px;font-weight:600;color:var(--text-muted);background:var(--accent-soft);
+    border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);border-radius:999px;padding:5px 12px;transition:var(--tr);}
+  .chip:hover{color:var(--accent);border-color:var(--accent);}
+  @media (max-width:520px){.cmd{padding:12px 14px;font-size:13.5px;}}
 
-  /* hero search — looks like an input, opens theme.js's search palette */
-  .hero-srch{display:flex;align-items:center;gap:10px;width:100%;max-width:520px;margin:20px auto 0;padding:12px 14px;
-    background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius);box-shadow:var(--shadow);
-    color:var(--text-faint);font-size:14.5px;font-weight:500;text-align:left;cursor:pointer;transition:var(--tr);}
-  .hero-srch:hover{border-color:var(--accent);box-shadow:0 10px 26px -14px var(--glow);}
-  .hero-srch:focus-within{border-color:var(--accent);box-shadow:0 10px 26px -14px var(--glow);}
-  .hero-srch .hs-in{flex:1;min-width:0;border:0;outline:0;background:transparent;color:var(--text);
-    font-size:15px;font-weight:600;font-family:inherit;}
-  .hero-srch .hs-in::placeholder{color:var(--text-faint);font-weight:500;}
-  .hero-srch .hs-in::-webkit-search-cancel-button{display:none;}
-  .hero-srch .hs-go{flex:none;border:0;cursor:pointer;font-family:inherit;font-size:12.5px;font-weight:700;color:#fff;
-    padding:7px 14px;border-radius:var(--radius-sm);
-    background:linear-gradient(120deg,var(--accent),var(--accent-2));box-shadow:0 6px 16px -6px var(--glow);}
-  @media (max-width:520px){.hero-srch{padding:10px 12px;font-size:13.5px;}.hero-srch .hs-go{padding:6px 11px;}}
-
-  /* index ticker */
-  .indices{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin:30px 0 6px;}
-  .ix{display:block;position:relative;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 16px 14px;
-    box-shadow:var(--shadow);overflow:hidden;transition:transform var(--tr),box-shadow var(--tr),border-color var(--tr);}
-  .ix:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:color-mix(in srgb,var(--accent) 40%,var(--border));}
-  /* each card opens the index's own chart page */
-  .ix .open{position:absolute;top:13px;right:14px;font-size:10.5px;font-weight:700;color:var(--text-faint);opacity:0;transition:var(--tr);}
-  .ix:hover .open{opacity:1;color:var(--accent);transform:translateX(2px);}
-  @media (hover:none){.ix .open{opacity:.6;}}
-  .ix .nm{font-size:12.5px;font-weight:700;color:var(--text-muted);}
-  .ix .px{font-size:24px;font-weight:800;letter-spacing:-.02em;margin-top:6px;min-height:29px;}
-  .ix .chg{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:700;margin-top:8px;padding:3px 9px;border-radius:999px;min-height:22px;}
-  .up{color:var(--up);background:var(--up-soft);}
-  .down{color:var(--down);background:var(--down-soft);}
-  .ix .rsi{margin-top:11px;font-size:11px;color:var(--text-faint);display:flex;align-items:center;gap:6px;min-height:16px;}
-  .pill{font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px;background:var(--surface-3);color:var(--text-muted);}
-  .spark{position:absolute;right:0;bottom:0;width:96px;height:44px;opacity:.85;}
-  .skeleton{color:transparent;background:var(--surface-3);border-radius:6px;animation:sk 1.2s ease-in-out infinite;}
+  /* ---- bento deck ---- */
+  .deck{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));grid-auto-rows:96px;gap:14px;margin:4px 0 8px;}
+  .bt{position:relative;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px 16px;
+    box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;transition:transform var(--tr),box-shadow var(--tr),border-color var(--tr);}
+  a.bt:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);border-color:color-mix(in srgb,var(--accent) 40%,var(--border));}
+  .bt-h{display:flex;align-items:center;justify-content:space-between;font-size:10.5px;font-weight:800;letter-spacing:.09em;color:var(--text-faint);}
+  .bt-h .to{font-weight:700;letter-spacing:0;color:var(--text-faint);}
+  a.bt:hover .bt-h .to{color:var(--accent);}
+  .skel{color:transparent!important;background:var(--surface-3);border-radius:6px;animation:sk 1.2s ease-in-out infinite;}
   @keyframes sk{50%{opacity:.5;}}
 
-  /* sections + tiles */
+  #tIndices{grid-column:span 8;grid-row:span 2;}
+  #tHeat{grid-column:span 4;grid-row:span 3;}
+  #tBreadth{grid-column:span 4;grid-row:span 1;}
+  #tFlows{grid-column:span 4;grid-row:span 1;}
+  #tSpot{grid-column:span 8;grid-row:span 2;}
+  #tSeason{grid-column:span 2;grid-row:span 2;}
+  #tIpo{grid-column:span 2;grid-row:span 2;}
+  #tTools{grid-column:span 12;grid-row:span 1;flex-direction:row;align-items:center;gap:12px;}
+
+  /* indices sub-grid: the 5 live cards */
+  .ixg{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;flex:1;align-items:center;margin-top:4px;}
+  .ix{display:flex;flex-direction:column;gap:2px;border-radius:10px;padding:6px 8px;transition:background var(--tr);min-width:0;}
+  .ix:hover{background:var(--surface-2);}
+  .ix .nm{font-size:10.5px;font-weight:700;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ix .px{font-size:17.5px;font-weight:800;letter-spacing:-.02em;min-height:22px;}
+  .ix .chg{font-size:11.5px;font-weight:700;min-height:15px;}
+  .ix .chg.up{color:var(--up);}.ix .chg.down{color:var(--down);}
+  .ix .spark{width:100%;height:22px;margin-top:3px;opacity:.9;}
+  .lv{font-size:8px;font-weight:800;letter-spacing:.05em;color:var(--up);}
+  .ac{font-size:8px;font-weight:700;letter-spacing:.05em;color:var(--text-faint);}
+
+  /* sector heatmap cells */
+  .heat{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;flex:1;margin-top:12px;}
+  .hc{border-radius:9px;padding:9px 10px;display:flex;flex-direction:column;justify-content:space-between;min-height:0;}
+  .hc .n{font-size:11px;font-weight:700;color:var(--text);}
+  .hc .v{font-size:12.5px;font-weight:800;min-height:15px;}
+
+  /* small stat tiles */
+  .big{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;}
+  .big b{font-size:17px;font-weight:800;}
+  .big .lb{font-size:10.5px;color:var(--text-faint);font-weight:700;}
+  .bar{height:5px;border-radius:5px;background:var(--surface-3);overflow:hidden;display:flex;}
+  .bar i{display:block;height:100%;}
+  .foot{font-size:10px;color:var(--text-faint);}
+  .pos{color:var(--up);}.neg{color:var(--down);}
+
+  /* strategy spotlight */
+  #tSpot{background:linear-gradient(150deg,color-mix(in srgb,var(--accent) 12%,transparent),color-mix(in srgb,var(--accent-2) 8%,transparent) 55%,transparent),var(--surface);
+    border-color:var(--border-strong);}
+  .spot{display:flex;gap:22px;flex:1;min-height:0;margin-top:6px;}
+  .spot-l{flex:1;min-width:0;display:flex;flex-direction:column;gap:7px;}
+  .spot-nm{font-size:16.5px;font-weight:800;letter-spacing:-.01em;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .spot-pills{display:flex;gap:8px;flex-wrap:wrap;}
+  .pill{font-size:11px;font-weight:800;border-radius:999px;padding:4px 11px;background:var(--surface-3);color:var(--text-muted);}
+  .pill.up{color:var(--up);background:var(--up-soft);}
+  .spot-r{width:270px;flex:none;display:flex;flex-direction:column;justify-content:flex-end;}
+  .spot-r .yrs{display:flex;justify-content:space-between;font-size:10px;color:var(--text-faint);margin-top:4px;}
+  @media (max-width:640px){.spot{flex-direction:column;gap:10px;}.spot-r{width:100%;}}
+
+  /* season ring + ipo */
+  .ringw{flex:1;display:flex;align-items:center;justify-content:center;}
+  .colv{flex:1;display:flex;flex-direction:column;justify-content:space-between;gap:6px;margin-top:8px;font-size:11.5px;color:var(--text-muted);}
+  .colv b{font-size:14.5px;font-weight:800;color:var(--text);}
+
+  /* tools pills */
+  .tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  .tool{font-size:12px;font-weight:700;color:var(--text);background:var(--surface-3);border-radius:999px;padding:7px 15px;transition:var(--tr);}
+  .tool:hover{background:var(--accent-soft);color:var(--accent);}
+
+  /* responsive deck — ID selectors here on purpose: the base spans above are
+     ID-specificity, so a class rule can't override them in this media block */
+  @media (max-width:1020px){
+    .deck{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:auto;}
+    #tIndices,#tSpot,#tHeat,#tTools{grid-column:1/-1;grid-row:auto;}
+    #tBreadth,#tFlows,#tSeason,#tIpo{grid-column:auto;grid-row:auto;min-height:96px;}
+    .ixg{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .ixg .ix:last-child{grid-column:1/-1;}
+    .spot-r{width:220px;}
+  }
+  @media (max-width:520px){
+    .ctr{padding:22px 0 16px;}
+    .heat{grid-template-columns:repeat(3,minmax(0,1fr));}
+  }
+
+  /* sections + tiles (site directory below the deck) */
   .sec-h{display:flex;align-items:baseline;justify-content:space-between;margin:40px 0 16px;}
   .sec-h h2{font-size:19px;font-weight:800;letter-spacing:-.02em;margin:0;}
   .sec-h .grp{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-faint);}
@@ -95,9 +156,8 @@
   .tile .td{font-size:12.5px;color:var(--text-muted);line-height:1.45;margin-top:4px;}
 
   main.wrap{padding-bottom:64px;}  /* beat .wrap's padding shorthand (else footer overlaps tiles) */
-  @media (max-width:860px){.indices{grid-template-columns:repeat(2,1fr);}.tiles{grid-template-columns:repeat(2,1fr);}
-    .indices .ix:last-child{grid-column:1/-1;}}  /* odd 5th card (GIFT NIFTY) spans the row */
-  @media (max-width:520px){.indices{grid-template-columns:1fr 1fr;}.tiles{grid-template-columns:1fr;}}
+  @media (max-width:860px){.tiles{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:520px){.tiles{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -111,30 +171,103 @@
 
 <main class="wrap">
 
-  <section class="hero">
-    <span class="eyebrow"><span class="live-dot"></span> Live · NSE &amp; BSE</span>
-    <h1>Indian markets, <span class="grad">decoded.</span></h1>
-    <p class="sub">Live dashboards for stocks, sectors and mutual funds — plus a strategy backtester over 25+ years of data.</p>
-    <form class="hero-srch" id="heroSrch" action="./stock.html" method="get" role="search">
-      <span aria-hidden="true">🔍</span>
+  <!-- COMMAND CENTER — status line + search bar (opens theme.js's ⌘K palette) -->
+  <section class="ctr">
+    <div class="ctr-status" id="ctrStatus">&nbsp;</div>
+    <form class="cmd" id="heroSrch" action="./stock.html" method="get" role="search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" style="color:var(--accent);flex:none"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
       <input class="hs-in" type="search" name="sym" autocomplete="off" spellcheck="false"
-             placeholder="Search a stock — name or symbol…" aria-label="Search a stock by name or symbol" />
+             placeholder="Search any stock, index, mutual fund or strategy…" aria-label="Search stocks, indices, funds and strategies" />
+      <span class="kbd" aria-hidden="true">⌘K</span>
       <button class="hs-go" type="submit">Search</button>
     </form>
+    <div class="chips">
+      <a class="chip" href="./stock.html?sym=RELIANCE">RELIANCE</a>
+      <a class="chip" href="./sectors.html">Sector heatmap</a>
+      <a class="chip" href="./saved-strategies.html">Saved strategies</a>
+      <a class="chip" href="./quarterly-results.html">Results today</a>
+    </div>
   </section>
 
-  <!-- INDEX TICKER — populated from docs/*.json by JS below.
-       Each card is a link into that index's own chart page (index-chart.html). -->
-  <section class="indices" id="indices">
-    <a class="ix" href="./index-chart.html?ix=nifty"     data-src="nifty.json"       data-ysym="%5ENSEI"     data-name="NIFTY 50"   data-kind="index"></a>
-    <a class="ix" href="./index-chart.html?ix=nifty500"  data-src="nifty500.json"    data-ysym="%5ECRSLDX"   data-name="NIFTY 500"  data-kind="index"></a>
-    <a class="ix" href="./index-chart.html?ix=banknifty" data-src="nifty_bank.json"  data-ysym="%5ENSEBANK"  data-name="NIFTY BANK" data-kind="index"></a>
-    <a class="ix" href="./index-chart.html?ix=vix"       data-src="india_vix.json"   data-ysym="%5EINDIAVIX" data-name="INDIA VIX"  data-kind="vix"></a>
-    <!-- GIFT NIFTY (Nifty futures at NSE IX) has no Yahoo symbol and no committed
-         daily JSON — it's live-only via the Worker's ?gift=1 route (fallback: public
-         CORS proxies straight to nseix.com), so no data-src / data-ysym here. -->
-    <a class="ix" href="https://www.nseix.com/markets/derivatives-watch" target="_blank" rel="noopener"
-                                                         data-name="GIFT NIFTY" data-kind="gift"></a>
+  <!-- BENTO DECK -->
+  <section class="deck">
+
+    <!-- indices: the 5 live cards (same feeds as before — committed JSON seed, Worker/proxy live top-up) -->
+    <div class="bt" id="tIndices">
+      <div class="bt-h"><span>INDICES</span><a class="to" href="./indices.html">index browser →</a></div>
+      <div class="ixg" id="indices">
+        <a class="ix" href="./index-chart.html?ix=nifty"     data-src="nifty.json"       data-ysym="%5ENSEI"     data-name="NIFTY 50"   data-kind="index"></a>
+        <a class="ix" href="./index-chart.html?ix=nifty500"  data-src="nifty500.json"    data-ysym="%5ECRSLDX"   data-name="NIFTY 500"  data-kind="index"></a>
+        <a class="ix" href="./index-chart.html?ix=banknifty" data-src="nifty_bank.json"  data-ysym="%5ENSEBANK"  data-name="NIFTY BANK" data-kind="index"></a>
+        <a class="ix" href="./index-chart.html?ix=vix"       data-src="india_vix.json"   data-ysym="%5EINDIAVIX" data-name="INDIA VIX"  data-kind="vix"></a>
+        <!-- GIFT NIFTY (NSE IX futures) has no Yahoo symbol and no committed daily JSON — live-only
+             via the Worker's ?gift=1 route, falling back to public CORS proxies. -->
+        <a class="ix" href="https://www.nseix.com/markets/derivatives-watch" target="_blank" rel="noopener"
+                                                             data-name="GIFT NIFTY" data-kind="gift"></a>
+      </div>
+    </div>
+
+    <!-- sector heatmap: CORS-open niftyindices live feed (same source the Indices page reads) -->
+    <a class="bt" id="tHeat" href="./sectors.html">
+      <div class="bt-h"><span>SECTOR PULSE · 1D</span><span class="to" id="heatTs">sectors →</span></div>
+      <div class="heat" id="heat"></div>
+    </a>
+
+    <!-- market breadth: committed market_breadth.json (EOD, lazy-loaded) -->
+    <a class="bt" id="tBreadth" href="./market-mood.html">
+      <div class="bt-h"><span>BREADTH · NIFTY 500</span><span class="to" id="brDate"></span></div>
+      <div class="big" id="brNums"><b class="skel">000</b></div>
+      <div class="bar" id="brBar"></div>
+    </a>
+
+    <!-- FII/DII flows: committed fii_dii.json -->
+    <a class="bt" id="tFlows" href="./fii-dii.html">
+      <div class="bt-h"><span>FII / DII · CASH</span><span class="to" id="flDate"></span></div>
+      <div class="big" id="flNums"><b class="skel">+₹000 cr</b></div>
+      <div class="foot">provisional daily net · flows page →</div>
+    </a>
+
+    <!-- strategy spotlight: best saved strategy by its longest-window backtest (shared history) -->
+    <a class="bt" id="tSpot" href="./saved-strategies.html">
+      <div class="bt-h"><span>STRATEGY SPOTLIGHT</span><span class="to">saved strategies →</span></div>
+      <div class="spot" id="spot">
+        <div class="spot-l">
+          <div class="spot-nm skel">Loading the best saved strategy…</div>
+          <div class="spot-pills"></div>
+          <div class="foot"></div>
+        </div>
+        <div class="spot-r"></div>
+      </div>
+    </a>
+
+    <!-- results season ring: _season_coverage.json (tiny) -->
+    <a class="bt" id="tSeason" href="./quarterly-results.html">
+      <div class="bt-h"><span>SEASON</span></div>
+      <div class="ringw" id="ring"></div>
+      <div class="foot" id="ringFoot" style="text-align:center"></div>
+    </a>
+
+    <!-- IPO pipeline: ipos.json -->
+    <a class="bt" id="tIpo" href="./ipos.html">
+      <div class="bt-h"><span>IPO PIPELINE</span></div>
+      <div class="colv" id="ipoBody"><b class="skel">0 open</b></div>
+      <div class="foot">IPOs page →</div>
+    </a>
+
+    <!-- tools row -->
+    <div class="bt" id="tTools">
+      <div class="bt-h" style="flex:none"><span>TOOLS</span></div>
+      <div class="tools">
+        <a class="tool" href="./stock-backtest.html">Backtest</a>
+        <a class="tool" href="./strategy-mixer.html">Strategy Mixer</a>
+        <a class="tool" href="./all-picks.html">All Picks</a>
+        <a class="tool" href="./mutual-funds.html">Mutual Funds</a>
+        <a class="tool" href="./watchlist.html">Watchlist</a>
+        <a class="tool" href="./announcements.html">Announcements</a>
+        <a class="tool" href="./actions.html">Ex-Dates</a>
+        <a class="tool" href="./global.html">Global Cues</a>
+      </div>
+    </div>
   </section>
 
   <!-- TILE GRID — rendered from window.SW_NAV (single source of truth in theme.js) -->
@@ -147,101 +280,45 @@
 (function () {
   'use strict';
 
-  // ---- index ticker ----------------------------------------------------------
+  // ---- index tiles (same data plumbing as the old ticker, bento layout) ------
   var fmt = function (n) { return n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
-
-  // Wilder RSI(14) on a close array
-  function rsi(closes, period) {
-    period = period || 14;
-    if (closes.length <= period) return null;
-    var gain = 0, loss = 0, i;
-    for (i = 1; i <= period; i++) {
-      var d = closes[i] - closes[i - 1];
-      if (d >= 0) gain += d; else loss -= d;
-    }
-    gain /= period; loss /= period;
-    for (i = period + 1; i < closes.length; i++) {
-      var ch = closes[i] - closes[i - 1];
-      gain = (gain * (period - 1) + (ch > 0 ? ch : 0)) / period;
-      loss = (loss * (period - 1) + (ch < 0 ? -ch : 0)) / period;
-    }
-    if (loss === 0) return 100;
-    return 100 - 100 / (1 + gain / loss);
-  }
-
-  // resample a {date:close} map to one close per ISO week (last trading day of week)
-  function weekly(px) {
-    var dates = Object.keys(px).sort();
-    var out = [], lastKey = null;
-    dates.forEach(function (d) {
-      var dt = new Date(d + 'T00:00:00Z');
-      var day = dt.getUTCDay(), monday = new Date(dt);
-      monday.setUTCDate(dt.getUTCDate() - ((day + 6) % 7));
-      var key = monday.toISOString().slice(0, 10);
-      if (key === lastKey) out[out.length - 1] = px[d];
-      else { out.push(px[d]); lastKey = key; }
-    });
-    return out;
-  }
 
   function spark(closes, up) {
     var pts = closes.slice(-30);
     if (pts.length < 2) return '';
     var lo = Math.min.apply(null, pts), hi = Math.max.apply(null, pts), rng = hi - lo || 1;
-    var W = 96, H = 44, pad = 6;
+    var W = 96, H = 22, pad = 3;
     var s = pts.map(function (v, i) {
       var x = (i / (pts.length - 1)) * W;
       var y = H - pad - ((v - lo) / rng) * (H - 2 * pad);
       return x.toFixed(1) + ',' + y.toFixed(1);
     }).join(' ');
     var col = up ? 'var(--up)' : 'var(--down)';
-    return '<svg class="spark" viewBox="0 0 96 44" preserveAspectRatio="none"><polyline fill="none" stroke="' +
-      col + '" stroke-width="2" points="' + s + '"/></svg>';
+    return '<svg class="spark" viewBox="0 0 96 22" preserveAspectRatio="none"><polyline fill="none" stroke="' +
+      col + '" stroke-width="1.8" points="' + s + '"/></svg>';
   }
 
-  // metadata line (weekly RSI for indices, volatility band for VIX). RSI is cached
-  // from the daily JSON history (it barely moves intraday); VIX band tracks live price.
-  function metaLine(el, price) {
-    if (el.getAttribute('data-kind') === 'vix') {
-      var lvl = price < 13 ? 'Low' : price < 20 ? 'Moderate' : 'High';
-      return 'Volatility <span class="pill">' + lvl + '</span>';
-    }
-    if (el.getAttribute('data-kind') === 'gift') {
-      return 'Nifty futures · NSE IX' + (el._expiry ? ' <span class="pill">' + el._expiry + '</span>' : '');
-    }
-    var w = el._rsi;
-    if (w == null) return '&nbsp;';
-    var tag = w >= 70 ? 'Overbought' : w <= 30 ? 'Oversold' : 'Neutral';
-    return 'RSI(14)W ' + w.toFixed(1) + ' <span class="pill">' + tag + '</span>';
-  }
-  function badge(live) {
-    return live
-      ? '<span style="margin-left:6px;font-size:9px;font-weight:800;letter-spacing:.04em;color:var(--up)">● LIVE</span>'
-      : '<span style="margin-left:6px;font-size:9px;font-weight:700;letter-spacing:.04em;color:var(--text-faint)">AT CLOSE</span>';
-  }
-  // the GIFT card opens NSE IX's own live-watch page; the rest open index-chart.html
-  function openLabel(el) {
-    return el.getAttribute('data-kind') === 'gift' ? 'NSE IX ↗' : 'Chart →';
+  function badge(el, live) {
+    if (live) return ' <span class="lv">● LIVE</span>';
+    return ' <span class="ac">AT CLOSE</span>';
   }
   function paint(el, price, prevClose, series, live) {
     if (price == null || prevClose == null) return;
     var chg = ((price - prevClose) / prevClose) * 100, up = chg >= 0;
     el._painted = true;
     el.innerHTML =
-      '<span class="open">' + openLabel(el) + '</span>' +
-      '<div class="nm">' + el.getAttribute('data-name') + badge(live) + '</div>' +
+      '<div class="nm">' + el.getAttribute('data-name') + badge(el, live) + '</div>' +
       '<div class="px">' + fmt(price) + '</div>' +
       '<div class="chg ' + (up ? 'up' : 'down') + '">' + (up ? '▲' : '▼') + ' ' + Math.abs(chg).toFixed(2) + '%</div>' +
-      '<div class="rsi">' + metaLine(el, price) + '</div>' +
       spark(series && series.length > 1 ? series : el._daily || [], up);
   }
 
   // 1) seed from the committed daily-close JSON — always available, never blank.
   //    The GIFT card has no committed JSON (live-only): skeleton now, first live
-  //    fetch paints it, refreshLive shows "data unavailable" if every route fails.
+  //    fetch paints it, refreshLive shows "—" if every route fails.
   function loadStatic(el) {
-    el.innerHTML = '<span class="open">' + openLabel(el) + '</span><div class="nm">' + el.getAttribute('data-name') + '</div>' +
-      '<div class="px skeleton">00,000.00</div><div class="chg skeleton">0.00%</div><div class="rsi skeleton">RSI</div>';
+    el.innerHTML = '<div class="nm">' + el.getAttribute('data-name') + '</div>' +
+      '<div class="px skel">00,000.00</div><div class="chg skel">0.00%</div>';
     if (!el.getAttribute('data-src')) return Promise.resolve();
     return fetch('./' + el.getAttribute('data-src'), { cache: 'no-store' })
       .then(function (r) { return r.json(); })
@@ -249,13 +326,12 @@
         var px = j.px || {}, dates = Object.keys(px).sort();
         if (dates.length < 2) throw 0;
         el._daily = dates.map(function (d) { return px[d]; });
-        el._rsi = el.getAttribute('data-kind') === 'vix' ? null : rsi(weekly(px), 14);
         var last = px[dates[dates.length - 1]], prev = px[dates[dates.length - 2]];
         paint(el, last, prev, null, false);
       })
       .catch(function () {
-        el.innerHTML = '<span class="open">Chart →</span><div class="nm">' + el.getAttribute('data-name') + '</div>' +
-          '<div class="px" style="font-size:15px;color:var(--text-faint)">—</div><div class="rsi">data unavailable</div>';
+        el.innerHTML = '<div class="nm">' + el.getAttribute('data-name') + '</div>' +
+          '<div class="px" style="font-size:14px;color:var(--text-faint)">—</div>';
       });
   }
 
@@ -291,6 +367,7 @@
     }
     return tryNext();
   }
+
   // GIFT NIFTY (Nifty futures at NSE IX) — Yahoo doesn't carry it. Primary: our
   // Worker's ?gift=1 route (quote + sparkline series, see scripts/live-quote-worker.js).
   // Fallback: public CORS proxies straight to the exchange's API (quote only).
@@ -310,7 +387,7 @@
       .then(function (r) { if (!r.ok) throw 0; return r.json(); })
       .then(function (j) {
         if (j.price == null || j.prevClose == null) throw 0;
-        return { price: j.price, prev: j.prevClose, series: j.series || [], expiry: j.expiry };
+        return { price: j.price, prev: j.prevClose, series: j.series || [] };
       })
       .catch(function () {
         var i = 1;                       // PROXIES[0] is the Worker's Yahoo route — skip it here
@@ -322,7 +399,7 @@
             .then(function (t) {
               var f = pickGiftRow(JSON.parse(p.wrap ? JSON.parse(t).contents : t));
               if (!f || f.CLOSE == null) throw 0;
-              return { price: f.LASTPRICE, prev: f.CLOSE, series: [], expiry: f.EXPIRYDATE };
+              return { price: f.LASTPRICE, prev: f.CLOSE, series: [] };
             })
             .catch(function () { return tryNext(); });
         }
@@ -333,42 +410,50 @@
   function refreshLive(el) {
     var gift = el.getAttribute('data-kind') === 'gift';
     return (gift ? fetchGift() : fetchLive(el.getAttribute('data-ysym')))
-      .then(function (q) {
-        // "29-Sep-2026" -> "29 Sep" for the meta pill
-        if (q.expiry) el._expiry = String(q.expiry).replace(/^(\d{1,2})-([A-Za-z]{3}).*$/, '$1 $2');
-        paint(el, q.price, q.prev, q.series, gift ? giftOpen() : marketOpen());
-      })
+      .then(function (q) { paint(el, q.price, q.prev, q.series, gift ? giftOpen() : marketOpen()); })
       .catch(function () {
         // keep last good paint; the live-only GIFT card has none to keep
-        if (!el._painted) el.innerHTML = '<span class="open">' + openLabel(el) + '</span><div class="nm">' +
-          el.getAttribute('data-name') + '</div>' +
-          '<div class="px" style="font-size:15px;color:var(--text-faint)">—</div><div class="rsi">data unavailable</div>';
+        if (!el._painted) el.innerHTML = '<div class="nm">' + el.getAttribute('data-name') + '</div>' +
+          '<div class="px" style="font-size:14px;color:var(--text-faint)">—</div>';
       });
   }
 
-  // NSE cash hours: Mon–Fri 09:15–15:30 IST (small pad). IST = UTC+5:30.
+  // IST clock helpers. NSE cash: Mon–Fri 09:15–15:30 (small pad). IST = UTC+5:30.
+  function istNow() { return new Date(Date.now() + (new Date().getTimezoneOffset() * 60000) + 5.5 * 3600000); }
   function marketOpen() {
-    var ist = new Date(Date.now() + (new Date().getTimezoneOffset() * 60000) + 5.5 * 3600000);
-    var day = ist.getDay(), mins = ist.getHours() * 60 + ist.getMinutes();
+    var ist = istNow(), day = ist.getDay(), mins = ist.getHours() * 60 + ist.getMinutes();
     return day >= 1 && day <= 5 && mins >= 9 * 60 && mins <= 15 * 60 + 45;
   }
   // GIFT Nifty trades Mon–Fri 06:30–15:40 IST and 16:35–02:45 IST next day (small pad)
   function giftOpen() {
-    var ist = new Date(Date.now() + (new Date().getTimezoneOffset() * 60000) + 5.5 * 3600000);
-    var day = ist.getDay(), mins = ist.getHours() * 60 + ist.getMinutes();
+    var ist = istNow(), day = ist.getDay(), mins = ist.getHours() * 60 + ist.getMinutes();
     if (day >= 1 && day <= 5 && ((mins >= 385 && mins <= 945) || mins >= 990)) return true;
     return day >= 2 && day <= 6 && mins <= 170;   // evening session's past-midnight tail
   }
 
+  // ---- status line -----------------------------------------------------------
+  var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var MONS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function statusLine() {
+    var ist = istNow(), mins = ist.getHours() * 60 + ist.getMinutes();
+    var d = DAYS[ist.getDay()] + ' ' + ist.getDate() + ' ' + MONS[ist.getMonth()];
+    var st;
+    if (marketOpen()) st = '<span class="on">● NSE market open</span> · closes 15:30 IST';
+    else if (giftOpen()) st = '<span class="on">● GIFT session live</span> · NSE ' + (mins < 555 ? 'opens 09:15' : 'closed 15:30') + ' IST';
+    else st = 'Markets closed · NSE opens Mon–Fri 09:15 IST';
+    document.getElementById('ctrStatus').innerHTML = d + ' · ' + st;
+  }
+
+  // ---- polling: each card refreshes only while its own market is open --------
   var cards = [].slice.call(document.querySelectorAll('#indices .ix'));
   var timer = null;
-  // all=true refreshes every card (page load: show last traded even when closed);
-  // otherwise each card polls only while its own market is open
   function pollOnce(all) {
+    statusLine();
     cards.forEach(function (el) {
       var open = el.getAttribute('data-kind') === 'gift' ? giftOpen() : marketOpen();
       if (all || open) refreshLive(el);
     });
+    if (all || marketOpen()) loadHeat();
   }
   function startPolling() {
     if (timer) return;
@@ -382,6 +467,174 @@
     startPolling();
   });
   document.addEventListener('visibilitychange', function () { if (!document.hidden) pollOnce(false); });
+
+  // ---- sector heatmap: CORS-open niftyindices feed (the Indices page's source) --
+  var SECTORS = [
+    ['NIFTY IT', 'IT'], ['NIFTY PHARMA', 'Pharma'], ['NIFTY AUTO', 'Auto'],
+    ['NIFTY ENERGY', 'Energy'], ['NIFTY FMCG', 'FMCG'], ['NIFTY PSU BANK', 'PSU Bank'],
+    ['NIFTY BANK', 'Banks'], ['NIFTY REALTY', 'Realty'], ['NIFTY METAL', 'Metals']
+  ];
+  var heatEl = document.getElementById('heat');
+  heatEl.innerHTML = SECTORS.map(function (s) {
+    return '<div class="hc" style="background:var(--surface-3)"><span class="n">' + s[1] + '</span><span class="v skel">0.0%</span></div>';
+  }).join('');
+  function loadHeat() {
+    fetch('https://liveindexsa.niftyindices.com/jsonfiles/LiveIndicesWatch.json', { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        var rows = {}, ts = '';
+        ((j && j.data) || []).forEach(function (r) {
+          rows[String(r.indexName || '').toUpperCase()] = r;
+        });
+        heatEl.innerHTML = SECTORS.map(function (s) {
+          var r = rows[s[0]], chg = r ? parseFloat(r.percChange) : NaN;
+          if (r && r.timeVal) ts = r.timeVal;
+          if (isNaN(chg)) return '<div class="hc" style="background:var(--surface-3)"><span class="n">' + s[1] + '</span><span class="v" style="color:var(--text-faint)">—</span></div>';
+          var up = chg >= 0, a = Math.min(.22, .05 + Math.abs(chg) * .13);
+          var base = up ? '52,211,153' : '248,113,113';
+          return '<div class="hc" style="background:rgba(' + base + ',' + a.toFixed(2) + ')">' +
+            '<span class="n">' + s[1] + '</span>' +
+            '<span class="v ' + (up ? 'pos' : 'neg') + '">' + (up ? '+' : '−') + Math.abs(chg).toFixed(2) + '%</span></div>';
+        }).join('');
+        // "25-Aug-2026 13:10" -> "13:10 IST"
+        var m = /(\d{2}:\d{2})\s*$/.exec(ts || '');
+        document.getElementById('heatTs').textContent = m ? m[1] + ' IST →' : 'sectors →';
+      })
+      .catch(function () { /* keep last paint (or skeletons) */ });
+  }
+
+  // ---- lazy tiles (bigger fetches wait until after first paint) --------------
+  function lazy(fn, ms) { window.addEventListener('load', function () { setTimeout(fn, ms); }); }
+
+  // FII/DII flows (9 KB)
+  lazy(function () {
+    fetch('./fii_dii.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
+      var rows = Array.isArray(j) ? j : (j.rows || j.data || []);
+      var r = rows[rows.length - 1]; if (!r || r.fiiNet == null) throw 0;
+      function cr(v) { return (v >= 0 ? '+' : '−') + '₹' + Math.abs(v).toLocaleString('en-IN', { maximumFractionDigits: 0 }) + ' cr'; }
+      document.getElementById('flNums').innerHTML =
+        '<span class="lb">FII</span><b class="' + (r.fiiNet >= 0 ? 'pos' : 'neg') + '">' + cr(r.fiiNet) + '</b>' +
+        '<span class="lb">DII</span><b class="' + (r.diiNet >= 0 ? 'pos' : 'neg') + '">' + cr(r.diiNet) + '</b>';
+      var m = /^\d{4}-(\d{2})-(\d{2})$/.exec(r.date || '');
+      if (m) document.getElementById('flDate').textContent = (+m[2]) + ' ' + MONS[(+m[1]) - 1];
+    }).catch(function () { document.getElementById('flNums').innerHTML = '<b style="color:var(--text-faint)">—</b>'; });
+  }, 150);
+
+  // Season ring (2 KB)
+  lazy(function () {
+    fetch('./_season_coverage.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
+      var n5 = j && j.indexes && j.indexes['Nifty 500']; if (!n5 || n5.parsed == null) throw 0;
+      var total = 500, pct = Math.max(0, Math.min(100, n5.parsed / total * 100));
+      var qe = String(j.qe || ''), lbl = qe.length === 8 ? MONS[(+qe.slice(4, 6)) - 1] + ' ' + qe.slice(0, 4) : '';
+      var C = 2 * Math.PI * 34, on = C * pct / 100;
+      document.getElementById('ring').innerHTML =
+        '<svg width="84" height="84" viewBox="0 0 84 84">' +
+        '<circle cx="42" cy="42" r="34" fill="none" stroke="var(--surface-3)" stroke-width="9"/>' +
+        '<circle cx="42" cy="42" r="34" fill="none" stroke="var(--accent)" stroke-width="9" stroke-linecap="round" ' +
+          'stroke-dasharray="' + on.toFixed(1) + ' ' + C.toFixed(1) + '" transform="rotate(-90 42 42)"/>' +
+        '<text x="42" y="40" text-anchor="middle" fill="var(--text)" font-size="16" font-weight="800" font-family="Inter,sans-serif">' + Math.round(pct) + '%</text>' +
+        '<text x="42" y="55" text-anchor="middle" fill="var(--text-faint)" font-size="8.5" font-family="Inter,sans-serif">results in</text></svg>';
+      document.getElementById('ringFoot').textContent = n5.parsed + ' of ' + total + ' · ' + lbl;
+    }).catch(function () { document.getElementById('ring').innerHTML = '<span style="color:var(--text-faint)">—</span>'; });
+  }, 300);
+
+  // IPO pipeline (7 KB). upcoming rows: [sym,name,board,open,close,band,size,status,sub×]
+  lazy(function () {
+    fetch('./ipos.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
+      var up = (j.upcoming || []), open = up.filter(function (r) { return r && r[7] === 'Active'; });
+      var subs = open.map(function (r) { return r[8]; }).filter(function (v) { return v != null; });
+      var bestSub = subs.length ? Math.max.apply(null, subs) : null;
+      // the listed[] window is long — count only the week up to the newest list date
+      var dates = (j.listed || []).map(function (r) { return Date.parse(r && r[3] || ''); }).filter(function (t) { return !isNaN(t); });
+      var newest = dates.length ? Math.max.apply(null, dates) : 0;
+      var week = dates.filter(function (t) { return newest - t < 7 * 86400000; }).length;
+      document.getElementById('ipoBody').innerHTML =
+        '<div><b>' + (open.length ? open.length + ' open issue' + (open.length > 1 ? 's' : '') : 'No open issues') + '</b></div>' +
+        (bestSub != null ? '<div>best sub <b>' + bestSub.toFixed(1) + '×</b></div>' : '') +
+        (week ? '<div>' + week + ' listing' + (week > 1 ? 's' : '') + ' this week</div>' : '');
+    }).catch(function () { document.getElementById('ipoBody').innerHTML = '<b style="color:var(--text-faint)">—</b>'; });
+  }, 450);
+
+  // Market breadth (~200 KB, EOD — lazy)
+  lazy(function () {
+    fetch('./market_breadth.json').then(function (r) { return r.json(); }).then(function (j) {
+      var n = (j.dates || []).length; if (!n) throw 0;
+      var adv = j.adv[n - 1], dec = j.dec[n - 1], p200 = j.pct200 && j.pct200[n - 1];
+      document.getElementById('brNums').innerHTML =
+        '<b class="pos">' + adv + '</b><span class="lb">adv</span>' +
+        '<b class="neg">' + dec + '</b><span class="lb">dec</span>' +
+        (p200 != null ? '<span class="lb" style="margin-left:auto">' + Math.round(p200) + '% above 200-DMA</span>' : '');
+      var t = adv + dec || 1;
+      document.getElementById('brBar').innerHTML =
+        '<i style="width:' + (adv / t * 100).toFixed(1) + '%;background:var(--up)"></i><i style="flex:1;background:var(--down)"></i>';
+      var d = String(j.dates[n - 1]);   // 20260814
+      if (d.length === 8) document.getElementById('brDate').textContent = 'EOD ' + (+d.slice(6, 8)) + ' ' + MONS[(+d.slice(4, 6)) - 1];
+    }).catch(function () { document.getElementById('brNums').innerHTML = '<b style="color:var(--text-faint)">—</b>'; });
+  }, 600);
+
+  // Strategy spotlight: shared saved strategies + backtest history (Supabase RPCs,
+  // same public endpoints bt-sync.js uses; ~280 KB total so it loads last).
+  // "Best" = highest CAGR among each strategy's LONGEST-window run (the site's
+  // canonical-CAGR rule), window ≥ 3 years so a short lucky run can't headline.
+  lazy(function () {
+    var SB = 'https://nebjnsndgrhumnkuipqy.supabase.co/rest/v1/rpc/';
+    var KEY = 'sb_publishable_MDlQwiVc5deii91__UNeDg_z9r4Fk98';
+    function rpc(name) {
+      return fetch(SB + name, {
+        method: 'POST',
+        headers: { 'apikey': KEY, 'Content-Type': 'application/json' },
+        body: '{}'
+      }).then(function (r) { if (!r.ok) throw 0; return r.json(); });
+    }
+    Promise.all([rpc('bt_strats_public'), rpc('bt_public')]).then(function (res) {
+      var strats = res[0] || [], hist = res[1] || [];
+      var best = {};
+      hist.forEach(function (h) {
+        if (!h || !h.sid || !h.m || h.m.cagr == null) return;
+        var b = best[h.sid];
+        if (!b || (h.m.years || 0) > (b.m.years || 0) ||
+            ((h.m.years || 0) === (b.m.years || 0) && (h.ts || 0) > (b.ts || 0))) best[h.sid] = h;
+      });
+      var rows = strats.filter(function (s) { return s && best[s.id] && (best[s.id].m.years || 0) >= 3; })
+        .map(function (s) { return { s: s, h: best[s.id] }; })
+        .sort(function (a, b) { return b.h.m.cagr - a.h.m.cagr; });
+      if (!rows.length) throw 0;
+      var top = rows[0], m = top.h.m, cfg = top.s.cfg || {};
+      var el = document.getElementById('spot');
+      var pills =
+        '<span class="pill up">CAGR ' + m.cagr.toFixed(1) + '%</span>' +
+        (m.maxDD != null ? '<span class="pill">Max DD −' + Math.abs(m.maxDD).toFixed(0) + '%</span>' : '') +
+        (cfg.topN ? '<span class="pill">' + cfg.topN + ' stocks</span>' : '') +
+        (m.years ? '<span class="pill">' + m.years.toFixed(1) + ' yrs</span>' : '');
+      // year-by-year bars: yby rows are [year, strategy %, benchmark %]
+      var yby = top.h.yby || [], bars = '';
+      if (yby.length > 1) {
+        var mx = Math.max.apply(null, yby.map(function (r) { return Math.abs(r[1]); })) || 1;
+        var W = 270, H = 74, bw = Math.min(26, W / yby.length - 6), mid = H / 2;
+        bars = '<svg width="100%" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none">' +
+          '<line x1="0" y1="' + mid + '" x2="' + W + '" y2="' + mid + '" stroke="var(--border)" stroke-width="1"/>' +
+          yby.map(function (r, i) {
+            var x = (i + .5) * (W / yby.length) - bw / 2;
+            var h = Math.abs(r[1]) / mx * (mid - 4), up = r[1] >= 0;
+            return '<rect x="' + x.toFixed(1) + '" y="' + (up ? mid - h : mid).toFixed(1) + '" width="' + bw.toFixed(1) +
+              '" height="' + Math.max(1.5, h).toFixed(1) + '" rx="2" fill="var(--' + (up ? 'up' : 'down') + ')" opacity=".85"/>';
+          }).join('') + '</svg>' +
+          '<div class="yrs"><span>' + yby[0][0] + '</span><span>year-by-year return</span><span>' + yby[yby.length - 1][0] + '</span></div>';
+      }
+      el.innerHTML =
+        '<div class="spot-l">' +
+          '<div class="spot-nm">' + String(top.s.name || 'Saved strategy').replace(/</g, '&lt;') + '</div>' +
+          '<div class="spot-pills">' + pills + '</div>' +
+          '<div class="foot">best of ' + rows.length + ' saved strategies · longest-window backtest' +
+            (m.benchCagr != null ? ' · benchmark ' + m.benchCagr.toFixed(1) + '%' : '') + '</div>' +
+        '</div>' +
+        '<div class="spot-r">' + bars + '</div>';
+    }).catch(function () {
+      document.getElementById('spot').innerHTML =
+        '<div class="spot-l"><div class="spot-nm" style="color:var(--text-muted)">Community strategies, backtested over 25+ years</div>' +
+        '<div class="foot">open Saved Strategies to browse them →</div></div>';
+    });
+  }, 900);
 
   // ---- tile grid from the shared nav ----------------------------------------
   var DESC = {
@@ -446,7 +699,7 @@
     document.getElementById('tileSections').innerHTML = html;
   }
 
-  // ---- hero search box -------------------------------------------------------
+  // ---- command bar -----------------------------------------------------------
   // A REAL input, so it is always typable: focusing it hands off to theme.js's
   // palette (suggestions + keyboard nav), and if that isn't there — a stale cached
   // theme.js, JS blocked — the plain GET to stock.html?sym= still does the job.
