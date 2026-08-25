@@ -436,14 +436,16 @@ async function loadTrades(){
   try{
     const mk=a=>({sym:a[0],od:a[1],cd:a[2],qty:a[3],opx:a[4],cpx:a[5],pnl:a[6],gain:a[7]});
     if(MODE==='local'){ const r=await fetch('./trades.json',{cache:'no-store'}); if(!r.ok) return;
-      const d=await r.json(); TRADES={updated:d.updated, byPf:{}, summary:{}, partial:false};
+      const d=await r.json(); TRADES={updated:d.updated, byPf:{}, summary:{}, monthly:{}, partial:false};
       (d.trades||[]).forEach(t=>{ (TRADES.byPf[t.pf]=TRADES.byPf[t.pf]||[]).push({sym:t.invSym,od:t.openDate,cd:t.closeDate,qty:t.qty,opx:t.openPx,cpx:t.closePx,pnl:t.pnl,gain:t.gainPct});
-        const su=TRADES.summary[t.pf]=TRADES.summary[t.pf]||{n:0,pnl:0,wins:0}; su.n++; su.pnl+=t.pnl; if(t.pnl>0)su.wins++; });
+        const su=TRADES.summary[t.pf]=TRADES.summary[t.pf]||{n:0,pnl:0,wins:0}; su.n++; su.pnl+=t.pnl; if(t.pnl>0)su.wins++;
+        const mm=TRADES.monthly[t.pf]=TRADES.monthly[t.pf]||{}; const ym=t.closeDate.slice(0,7); mm[ym]=(mm[ym]||0)+t.pnl; });
+      for(const pf in TRADES.monthly){ TRADES.monthly[pf]=Object.entries(TRADES.monthly[pf]).map(([ym,v])=>[ym,v]).sort((a,b)=>a[0]<b[0]?-1:1); }
       return; }
     const t=readToken(); if(!t) return;
     const r=await fetch(SUPA_GET+'?token='+encodeURIComponent(t+'.trades')+'&apikey='+SUPA_ANON,{cache:'no-store'});
     if(!r.ok) return; const row=await r.json(); if(!row||!row.z) return;
-    const d=await unzipRow(row); TRADES={updated:d.u, byPf:{}, summary:{}, partial:false};
+    const d=await unzipRow(row); TRADES={updated:d.u, byPf:{}, summary:{}, monthly:(d.m||{}), partial:false};
     for(const pf in (d.s||{})){ const a=d.s[pf]; TRADES.summary[pf]={n:a[0],pnl:a[1],wins:a[2]}; }
     for(const pf in (d.r||{})){ TRADES.byPf[pf]=d.r[pf].map(mk); if(TRADES.byPf[pf].length<(TRADES.summary[pf]?TRADES.summary[pf].n:0)) TRADES.partial=true; }
   }catch(e){ console.warn('trades not loaded:',e.message); }
@@ -822,20 +824,24 @@ function barsV(host,items,o){
   const lo=-mx*1.15, hi=mx*1.15;
   const bw=(W-P.l-P.r)/items.length;
   const Y=v=>P.t+(H-P.t-P.b)*(1-(v-lo)/(hi-lo));
+  const priv=privOn(), secV=o.secretValues;                     // redact ₹ labels in privacy (SVG text won't CSS-blur in Safari)
+  const redV=v=>(priv&&secV)?DOTS:o.fmtV(v);
+  const showVals=items.length<=18;                              // per-bar value labels only when not crowded
+  const dstep=Math.max(1, Math.ceil(items.length/(narrow?6:16)));  // x-axis label density
   let s='<svg class="chart" viewBox="0 0 '+W+' '+H+'">';
   niceTicks(lo,hi,4).forEach(t=>{ s+='<line class="gridline" x1="'+P.l+'" x2="'+(W-P.r)+'" y1="'+Y(t).toFixed(1)+'" y2="'+Y(t).toFixed(1)+'"/>'
-    +'<text class="axis" x="'+(P.l-7)+'" y="'+(Y(t)+3.5).toFixed(1)+'" text-anchor="end">'+o.fmtV(t)+'</text>'; });
+    +'<text class="axis" x="'+(P.l-7)+'" y="'+(Y(t)+3.5).toFixed(1)+'" text-anchor="end">'+esc(redV(t))+'</text>'; });
   items.forEach((d,i)=>{
     const x=P.l+i*bw+bw*0.16, w=bw*0.68;
     const y0=Y(0), y1=Y(d.value), y=Math.min(y0,y1), h=Math.max(1.5,Math.abs(y1-y0));
     s+='<rect class="bar" data-i="'+i+'" x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+w.toFixed(1)+'" height="'+h.toFixed(1)+'" rx="3" fill="'+(d.value<0?'var(--down)':'var(--up)')+'"/>';
-    if(!narrow || i%2===0) s+='<text class="axis" x="'+(x+w/2).toFixed(1)+'" y="'+(H-20)+'" text-anchor="middle">'+esc(d.label)+'</text>';
-    s+='<text class="axis" x="'+(x+w/2).toFixed(1)+'" y="'+(d.value<0? (y+h+11) : (y-4)).toFixed(1)+'" text-anchor="middle" fill="var(--text-2)" font-weight="700">'+o.fmtV(d.value)+'</text>';
+    if(i%dstep===0) s+='<text class="axis" x="'+(x+w/2).toFixed(1)+'" y="'+(H-20)+'" text-anchor="middle">'+esc(d.label)+'</text>';
+    if(showVals) s+='<text class="axis" x="'+(x+w/2).toFixed(1)+'" y="'+(d.value<0? (y+h+11) : (y-4)).toFixed(1)+'" text-anchor="middle" fill="var(--text-2)" font-weight="700">'+esc(redV(d.value))+'</text>';
   });
   s+='<line class="zeroline" x1="'+P.l+'" x2="'+(W-P.r)+'" y1="'+Y(0).toFixed(1)+'" y2="'+Y(0).toFixed(1)+'"/></svg>';
   host.innerHTML=s;
   host.querySelectorAll('rect.bar').forEach(r=>{
-    r.addEventListener('mousemove',ev=>{ const d=items[+r.dataset.i]; showTip('<b>'+esc(d.full||d.label)+'</b><div class="r"><span>Return</span><b>'+o.fmtV(d.value)+'</b></div>',ev); });
+    r.addEventListener('mousemove',ev=>{ const d=items[+r.dataset.i]; showTip('<b>'+esc(d.full||d.label)+'</b><div class="r"><span>'+(o.tipLabel||'Value')+'</span><b class="'+(secV?'secret':'')+'">'+o.fmtV(d.value)+'</b></div>',ev); });
     r.addEventListener('mouseleave',hideTip);
   });
 }
@@ -1375,6 +1381,11 @@ function renderClosed(rows){
     '<button class="stab'+(sel==='__all__'?' on':'')+'" data-ctab="__all__">All '+ordered.reduce((a,x)=>a+x.sum.n,0)+'</button></div>'; }
   h+='<div class="trio"><div class="t"><div class="l">Realized P&L</div><div class="v '+cls(total)+' secret">'+inrSigned(total)+'</div><div class="s">'+nTot+' closed trade'+(nTot!==1?'s':'')+'</div></div>'+
      '<div class="t"><div class="l">Win rate</div><div class="v '+(wins/Math.max(1,nTot)>=0.5?'up':'')+'">'+(nTot?Math.round(wins/nTot*100):0)+'%</div><div class="s">'+wins+' up \u00b7 '+(nTot-wins)+' down</div></div></div>';
+  /* realized P&L by month (investing.com's "Revenue / Monthly P/L" — built from the trade log) */
+  const mAgg={};
+  shownSel.forEach(x=>{ (TRADES.monthly[x.pf]||[]).forEach(([ym,v])=>{ mAgg[ym]=(mAgg[ym]||0)+v; }); });
+  const mKeys=Object.keys(mAgg).sort().slice(-18);   // last ~18 months (like investing's Monthly P/L)
+  if(mKeys.length>1){ h+='<div class="note" style="padding:2px 4px 4px">Realized P&L by month'+(Object.keys(mAgg).length>mKeys.length?' (last '+mKeys.length+')':'')+'</div><div id="chClosedMonthly"></div>'; }
   h+='<div class="twrap tvscroll"><table><thead><tr><th>Stock</th><th>Bought</th><th>Sold</th><th>Qty</th><th>Buy</th><th>Sell</th><th>Gain</th><th>P&L</th></tr></thead><tbody>';
   trs.forEach(t=>{ h+='<tr><td><span class="secret"><b>'+esc(t.sym)+'</b></span></td>'+
     '<td><span class="sym">'+shortDate(t.od)+'</span></td><td><span class="sym">'+shortDate(t.cd)+'</span></td>'+
@@ -1382,6 +1393,7 @@ function renderClosed(rows){
     '<td class="'+cls(t.gain)+'">'+pct(t.gain)+'</td><td class="'+cls(t.pnl)+' secret">'+inrSigned(t.pnl)+'</td></tr>'; });
   h+='</tbody></table></div>';
   body.innerHTML=h;
+  if(mKeys.length>1 && $('chClosedMonthly')) barsV($('chClosedMonthly'), mKeys.map(ym=>({label:ym.slice(5)+'/'+ym.slice(2,4), full:ym, value:mAgg[ym]})), {fmtV:v=>inrSigned(v), secretValues:true});
   body.querySelectorAll('.stab').forEach(b=>b.onclick=()=>{ SEL.closedTab=b.dataset.ctab; renderClosed(visibleRows()); });
 }
 function renderAll(){
