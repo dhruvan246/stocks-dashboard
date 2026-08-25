@@ -826,7 +826,7 @@ function barsV(host,items,o){
   const Y=v=>P.t+(H-P.t-P.b)*(1-(v-lo)/(hi-lo));
   const priv=privOn(), secV=o.secretValues;                     // redact ₹ labels in privacy (SVG text won't CSS-blur in Safari)
   const redV=v=>(priv&&secV)?DOTS:o.fmtV(v);
-  const showVals=items.length<=18;                              // per-bar value labels only when not crowded
+  const showVals=items.length <= (narrow?9:18);                 // per-bar value labels only when they won't overlap (fewer allowed on a phone)
   const dstep=Math.max(1, Math.ceil(items.length/(narrow?6:16)));  // x-axis label density
   let s='<svg class="chart" viewBox="0 0 '+W+' '+H+'">';
   niceTicks(lo,hi,4).forEach(t=>{ s+='<line class="gridline" x1="'+P.l+'" x2="'+(W-P.r)+'" y1="'+Y(t).toFixed(1)+'" y2="'+Y(t).toFixed(1)+'"/>'
