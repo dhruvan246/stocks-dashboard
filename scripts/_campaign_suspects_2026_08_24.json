@@ -294,5 +294,16 @@
   "closed": "20 revStd fills + 5 npStd heals across ABSLAMC/AETHER/EQUITASBNK/JSL/LICI/RUSTOMJEE (commits 070203c71..c6b84bc06). LICI basis-swap: std slot held the CONSOLIDATED PAT for Mar/Jun/Dec-2022 (own filings standalone vs consolidated statements prove it; npCon slots were already correct - a duplication, now separated).",
   "ABSLAMC|20200630": "npStd 97.72. No MC row; earliest listed filing (Q2FY22) carries only Sep-2020 comparative. DRHP dig. 1 cell.",
   "AETHER|20201231": "npStd 15.25. No MC row; earliest listed filing (Q1FY23) carries only Jun-2021 comparative. DRHP dig. 1 cell."
+ },
+ "THREE_ERA_CLOSE_2026_08_25": {
+  "2018-19": "CLOSED - CSBBANK 4 (comparative cols + period identities), DALMIABHA 5 (whole-crore prints; round PATs genuine). Plus JSL Jun-22 double heal + LICI 2 con basis-swap heals (peer-supplied filing reads).",
+  "2012-16": "CLOSED - 5 fills + 6 vintage heals. KEY: THOMASCOOK FY16 row MIXED vintages (npStd as-filed, revStd from the 2016-17 re-filings) - that was the real cause of the earlier \"revStd about 5x off\" note, NOT a gross-vs-net basis. DALMIABHA Sep/Dec-15 + OSWALGREEN Dec-14 healed to earliest-filingDate. COFFEEDAY Jun-15 read from the parent standalone statement in the Q1FY17 bundle (entity trap: bundle also holds Coffee Day GLOBAL subsidiary tables).",
+  "pre-2010": "PVP 11 + IRB 2 + SUMMIT 2 filled = 0 (all investment holdcos; NSE as-filed has an explicit 0.00 revenue row or NO revenue row; every PAT matches stored exactly). PARSER NOTE: the pre-2009 NSE format labels PAT \"Net Profit (+) / Loss (-) for the period\" without \"from ordinary activities after tax\", so _nse_archive_revop skips those pages as pat-anchor-None - read them directly, they are NOT missing.",
+  "REMAINING": {
+   "OSWALGREEN|20070331+20070630": "NSE detail pages exist (filed 03-Jul-2007 / 02-Aug-2007) but NSE persistently 403s those two fetches; no BSE filing under any known code for 2007. Retry later. 2 cells.",
+   "PVP|20040930+20041231+20070930+20071231+20080331": "NSE list has no Non-Consolidated row for these 5 quarters. 5 cells.",
+   "AJMERA|20090331": "No source (NSE archive starts Jun-2009; BSE API no 2009). Wayback dig. 1 cell.",
+   "ABSLAMC|20200630 + AETHER|20201231": "Pre-IPO, DRHP-only. 2 cells."
+  }
  }
 }
