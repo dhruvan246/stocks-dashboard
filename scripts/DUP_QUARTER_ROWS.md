@@ -109,6 +109,22 @@ python3 scripts/fund_dup_guard.py            # report
 python3 scripts/fund_dup_guard.py --merge    # merge the conflict-free ones
 ```
 
+## Is the class anywhere else?
+
+Every `docs/*.json` and `scripts/*.json` payload shaped `{KEY: [[qe, ...], ...]}` was scanned for a
+repeated first element. Three symbol-keyed row stores exist, and the other two are **clean**:
+
+| store | symbol keys | rows | duplicate quarters |
+|---|---|---|---|
+| `docs/sf_fundamentals.json` | 3,955 | 109,408 | 1 (the registered conflict) |
+| `scripts/fundamentals.json` | 3,257 | 83,818 | **0** |
+| `docs/shp_engine.json` | 2,775 | 93,682 | **0** |
+
+`docs/delivery.json`, `docs/results_feed.json` and `scripts/_gaps_n500_stdfill_extras.json` also
+trip a naive repeated-first-element scan, but they are **not** this class — their top-level keys are
+section names (`spikes`, `rows`), the rows are flat event records, and a repeated leading date or
+symbol is legitimate there.
+
 ## No heal was silently swallowed
 
 A duplicate row can make a ledger write land on a row no reader reaches, so every
