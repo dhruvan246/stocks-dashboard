@@ -75,6 +75,8 @@ D_NCI = re.compile(r"non-?controllinginterest|minorityinterest", re.I)
 FOLD = str.maketrans({"0": "o", "1": "l", "5": "s", "8": "b", "9": "g", "6": "b", "2": "z"})
 CANON_OWN = ("ownersoftheparent", "ownersofparent", "ownersofthecompany", "equityholdersofparent",
              "equityholdersoftheparent", "shareholdersofthecompany", "ownersofthegroup")
+CANON_EQTY = ("equityattributabletoequityholders", "equityattributabletoowners",
+              "totalequity", "otherequity", "networth", "sharecapital")
 CANON_NCI = ("noncontrollinginterests", "noncontrollinginterest", "minorityinterest",
              "minorityinterests")
 
@@ -133,35 +135,47 @@ def unit_of(text):
     return None, None
 
 
-def page_rows(page):
-    """[(y, label, [values])] for one page, grouped on a 3pt y grid.
+def page_rows(page, tol=2.6):
+    """[(y, label, [values])] for one page, rows clustered by BASELINE PROXIMITY.
 
-    ★ A FIGURE ROW WITH NO LABEL BORROWS THE LABEL ABOVE IT. These statements wrap long row
-    captions over two or three lines and put the figures on the LAST line, so a strict y-grid
-    yields "Profit for the period attributable to" with no numbers followed by an anonymous row of
-    numbers — and every label-based classifier then sees nothing. The borrow is only from the
-    nearest preceding numberless row within 4 grid steps, and the borrowed text is marked so a
-    judgement can tell it apart from a label that really sat on the figures' own line.
+    ★ NOT A FIXED GRID. Bucketing y into 3pt cells splits a row whenever the label's baseline and
+    its figures' baselines differ by less than a line but fall either side of a bucket edge.
+    Measured on COX&KINGS' Mar-2018 statement: the five figures of the owners row sit at y0=319.2
+    and the words "a. Owners of the Company" at y0=320.1 — 0.9pt apart, opposite sides of the
+    edge at 319.5. The label row came out with no numbers, the figure row with no label, and the one
+    row that answers the question vanished. (The NCI row directly below survived only because its
+    offset happened not to straddle an edge, which is exactly how this hides.)
+
+    Words are sorted by baseline and grouped while they stay within `tol` of the group's first
+    baseline, so a row is held together by how close its glyphs actually are.
+
+    A figure row with no label still borrows the nearest LABEL-ONLY row — and now from either side,
+    because a caption can sit a fraction below its own figures as well as above them.
     """
-    buckets = defaultdict(list)
-    for w in page.get_text("words"):
-        buckets[round(w[1] / 3.0)].append((w[0], w[4]))
+    ws = sorted(page.get_text("words"), key=lambda w: (w[1], w[0]))
+    groups, cur = [], []
+    for w in ws:
+        if cur and w[1] - cur[0][1] > tol:
+            groups.append(cur)
+            cur = []
+        cur.append(w)
+    if cur:
+        groups.append(cur)
     raw = []
-    for b in sorted(buckets):
-        cells = sorted(buckets[b])
-        lab = " ".join(t for _, t in cells if not NUMW.match(t))
-        nums = [tv(t) for _, t in cells if NUMW.match(t) and tv(t) is not None]
-        raw.append((b, re.sub(r"\s+", " ", lab).strip(), nums))
-    out, carry = [], None
-    for b, lab, nums in raw:
-        if not nums:
-            carry = (b, lab) if lab else carry
-            out.append((b * 3.0, lab, nums))
-            continue
-        if not lab and carry and b - carry[0] <= 4:
-            out.append((b * 3.0, carry[1] + " \u21b5", nums))   # \u21b5 marks a borrowed label
-        else:
-            out.append((b * 3.0, lab, nums))
+    for g in groups:
+        cells = sorted(g, key=lambda w: w[0])
+        lab = " ".join(w[4] for w in cells if not NUMW.match(w[4]))
+        nums = [tv(w[4]) for w in cells if NUMW.match(w[4]) and tv(w[4]) is not None]
+        raw.append((g[0][1], re.sub(r"\s+", " ", lab).strip(), nums))
+    out = []
+    for i, (y, lab, nums) in enumerate(raw):
+        if nums and not lab:
+            for j in (i + 1, i - 1):          # look DOWN first, then up
+                if 0 <= j < len(raw) and raw[j][1] and not raw[j][2] \
+                        and abs(raw[j][0] - y) <= 12:
+                    lab = raw[j][1] + " \u21b5"
+                    break
+        out.append((y, lab, nums))
     return out
 
 
@@ -188,6 +202,13 @@ def classify(rows, i, attr=None):
             return "owners", block
         if R_NCI.search(lab) or D_NCI.search(ds):
             return "nci", block
+        # ★ THE BALANCE-SHEET GUARD HAS TO BE FUZZY TOO. R_BAL/R_EQTY reject "Equity attributable
+        # to equity holders of the parent" on the raw label, but OCR renders it "Equlty
+        # attrlbutable to equity holdsrs ol their parent" — which slips past the raw regex and is
+        # then matched by the FUZZY owners pattern, turning a net-worth row into a profit reading.
+        # A guard is only as strong as the weakest path into the thing it guards.
+        if fuzzy_has(lab, CANON_EQTY, 0.72)[0]:
+            return None, block
         ph, _ = fuzzy_has(lab, CANON_OWN)
         if ph:
             return "owners~ocr", block
@@ -273,6 +294,13 @@ def read_doc(path, cands, near_abs=0.35, near_rel=0.006):
                 for ix, v in enumerate(nums):
                     x = v * sc
                     for cname, cval in cands.items():
+                        # ★ A CANDIDATE OF 0.0 MATCHES NOISE. With an absolute tolerance, `cval == 0`
+                        # accepts every figure in [-0.35, 0.35] — TALWALKARS Mar-2017 (`was` 0.0)
+                        # collected 13 "owners" hits, on prose and on a BALANCE-SHEET equity row, and
+                        # came out as the only CONTRADICTS in the population. Same family as the
+                        # falsy-sentinel defects of §109i/§111b: a zero is not a value to match on.
+                        if cval == 0:
+                            continue
                         if abs(x - cval) <= max(near_abs, abs(cval) * near_rel):
                             hits.append({"cand": cname, "cand_val": cval, "page": p, "raw": v,
                                          "scale": sc_nm, "as_cr": round(x, 4), "ix": ix,

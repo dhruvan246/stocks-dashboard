@@ -74,7 +74,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§107** ★★★ ONE SOURCE OF TRUTH — the shared checkout SYNCS ITSELF to origin/main (`scripts/sync_checkout.py`, session-start hook); 923-commit drift + 36 worktrees were all stale copies; every reported number names its source (synced HEAD sha or LIVE); this repo is a PARTIAL CLONE — blob reads stall
 - **§108** ★★★ RESTATED-COMPARATIVE VINTAGE — an Ind-AS restated value wearing the as-filed ann date is a LOOK-AHEAD no scale/identity gate can see; SYNGENE's whole FY16 row healed (PAT ×4, op ×2, rev/op fills ×4, con-copy retraction, 4 ann dates); NEW `ann_cell_fix.json` moves a populated ann LATER — the direction §104 refuses (**read before trusting any FY16-FY17 transition-era cell an aggregator scrape filled, and whenever detres+MC agree against the store**)
 - **§109** ★★★ THE §108 SWEEP RAN — the class was ONE 2026-07-27 backfill pass with no vintage rule; **NSE's archive keeps BOTH vintages of a quarter** (earliest `filingDate` = as-filed), so the restated comparative is structured data, not a scanned PDF; 326 wrong-vintage reads enumerated from our own provenance; 260 cells + 1,233 rev/op/mirror slots healed, detres agreement 53.5%→100% (**read before touching any 2015-17 cell, and before trusting a single as-filed reader — no available reader may CONTRADICT the heal**)
-- **§113** ★★★ A RUNG IS ELIMINATED BY MEASURING THE DOCUMENT SET, NOT ONE DOCUMENT PER CELL — §112b closed the text route on "the Mar-2017 filing is a scan" (true) and so declared vision; the quarter is ALSO printed in the next quarter's and next year's filings, which are digital, and 30 of 59 cells read cleanly off a comparative column. **33 of 33 primary reads back the pre-heal store, 0 back the heal.** Also: MC `pat_own` is sometimes the TOTAL (4 of 308, 2 proven against filings) — it is a label, not a guarantee (**read before sending anything to a vision budget, and before letting an aggregator's owners field veto a document**)
+- **§113** ★★★ A RUNG IS ELIMINATED BY MEASURING THE DOCUMENT SET, NOT ONE DOCUMENT PER CELL — §112b closed the text route on "the Mar-2017 filing is a scan" (true) and so declared vision; the quarter is ALSO printed in the next quarter's and next year's filings, which are digital, and 30 of 59 cells read cleanly off a comparative column. **33 of 33 primary reads back the pre-heal store, 0 back the heal.** Also: MC `pat_own` is sometimes the TOTAL (4 of 308, 2 proven against filings) — it is a label, not a guarantee (**read before sending anything to a vision budget, and before letting an aggregator's owners field veto a document**) · **§113f-h**: a CANDIDATE LOCATOR IS BLIND TO A THIRD VALUE (P2 is named after them) — read FORWARD; and a FIXED y-GRID SPLITS ROWS 0.9pt apart, cluster by baseline instead
 
 ---
 
@@ -12333,3 +12333,84 @@ any of that, run the comparative-column route over §112b's P2 (34) and P3 (35) 
 here and closed 30 of 59.
 
 Tools: `vintage111_{documents,read,adjudicate,land,invariant}.py`.
+
+### 113f. ★★★ THE ROUTE RUN OVER §112b's P2/P3 RESIDUE — 1 of 53, and WHY is the useful part  (2026-08-25)
+
+§113e said to try the comparative-column route on §112b's P2 (34 "identity reconciles to neither")
+and P3 (35 "identity cannot separate") before spending a vision budget. Done. First measurement:
+**25 of the 69 were already read in §113** (16 with a document, 9 whose documents are scans), so the
+queue was 53, not 69.
+
+Over those 53: 460 documents fetched, and **one cell got a primary owners read.** Two things had to
+be fixed before that number meant anything.
+
+★ **A CANDIDATE LOCATOR IS BLIND TO A THIRD VALUE — AND THIS POPULATION IS *NAMED* AFTER THIRD
+VALUES.** `vintage111_read.py` is inverted on purpose (§113a): it hunts for the ledger's `was` and
+`fixed` and reports where they land, which is why it needs no general table parser. P2 is literally
+"identity reconciles to NEITHER". Run there it returned 0 reads — and COX&KINGS Mar-2017's carrying
+filing prints the answer plainly:
+
+    BSE ann 2018-05-28 p10 (Rs lakh), consolidated
+      Net Profit after taxes and share of profit of associates   -4,548  8,546  -2,816  44,388  21,174
+      a. Owners of the Company                                   -4,550  9,615    -365  36,928  14,696
+      b. Non controlling Interest                                     2 -1,069  -2,451   7,460   6,478
+
+`vintage113_forward.py` reads FORWARD instead — find the owners row, fit the column layout, report
+the target column whatever it says. Calibrated on §113's known-answer set: **where it fires it
+reproduces the hand reads every time** (ADANIENT 220.97, BHARTIARTL 373.4, CEATLTD 66.33, GRASIM
+774.54, TRIVENI 60.46, and the three third-value cells NAVA 36.99 / TATAPOWER −242.48 / COX&KINGS
+−3.65) — but it fires on only 11 of 67 against 30 by hand. **Precise, not sensitive**, so "1 of 53"
+is a LOWER BOUND on that population, not a proof of absence.
+
+★ **THE COLUMN MAP IS A PROPERTY OF THE PAGE, NOT OF ONE ROW.** The owners row usually cannot anchor
+itself here: our store holds the TOTAL for these cells, so the owners figures match nothing we hold
+and a row-local fit rejects the one row wanted. Fit the layout on whichever row DOES anchor (normally
+the total), then read the owners row at the same index. Two more traps closed on the way: an FY
+column must be labelled `("FY", year)` and never compared against a quarterly stored value (using
+20180331 for both the Mar quarter and FY18 made the year-ended column contradict itself out of every
+layout), and a row's leading small integer is a ROW INDEX, not data (§59d).
+
+### 113g. ★★★ A FIXED y-GRID SPLITS ROWS — CLUSTER BY BASELINE PROXIMITY INSTEAD
+
+The reason COX&KINGS' owners row was invisible is the row grouper, not the document. Bucketing y
+into 3pt cells splits a row whenever the label's baseline and its figures' baselines fall either
+side of a bucket edge:
+
+    figures  "(4,550) 9,615 (365) 36,928 14,696"   y0 = 319.2   -> bucket 106
+    label    "a. Owners of the Company"            y0 = 320.1   -> bucket 107
+
+0.9pt apart, and the row that answers the question disappears — one bucket with numbers and no
+label, one with a label and no numbers. The NCI row immediately below survived only because its
+offset happened not to straddle an edge, **which is exactly how this hides: it corrupts some rows on
+some pages and looks like a document problem.** Fixed by clustering words while they stay within
+2.6pt of the group's first baseline, and by letting a label-less figure row borrow the nearest
+label-only row from EITHER side (a caption can sit a fraction below its own figures).
+
+Two more defects fixed in the same pass, both found by checking the ONE cell that disagreed:
+* **a candidate of 0.0 matches noise** — with an absolute tolerance, `cval == 0` accepts everything
+  in [−0.35, 0.35]. TALWALKARS Mar-2017 (`was` 0.0) collected 13 "owners" hits, on prose and on a
+  balance-sheet equity row, and came out as the population's only CONTRADICTS. Same family as the
+  falsy sentinels of §109i/§111b: a zero is not a value to match on.
+* **the balance-sheet guard has to be fuzzy too** — `R_BAL` rejects "Equity attributable to equity
+  holders of the parent" on the raw label, but OCR renders it "Equlty attrlbutable to equity holdsrs
+  ol their parent", which slips past the raw regex and is then caught by the FUZZY owners pattern,
+  turning net worth into a profit reading. **A guard is only as strong as the weakest path into the
+  thing it guards.**
+* and the locator was reporting the CANDIDATE it matched rather than the figure on the page — the
+  0.35 cr locate tolerance is 5% on a 7 cr cell, and CLEDUCATE's page reads 7.28 against a live 7.03.
+  It now reports the page value and a `THIRD-VALUE` verdict.
+
+### 113h. ★★ COX&KINGS: A SERIES ON THE TOTAL BASIS, NOT ONE WRONG CELL — handed over, not healed
+
+The one cell the forward reader closed is live-wrong, and deliberately NOT changed here. The filing
+gives Mar-2017 owners **−3.65** (total −28.16 less NCI −24.51; MC `pat_own` independently reads
+−3.65) against a live **−28.16**. But the two anchors that fixed the column map are our stored
+Mar-2018 (−45.48) and Dec-2017 (85.46), and both sit on the **total** row — so does Mar-2017. Three
+consecutive stored cells are on the total convention: this is a SERIES-level basis defect, and
+moving one cell to the owners basis would leave the series half on each convention, which §111f
+already records as worse than either. Belongs to the con-basis campaign
+(`PLAN_CON_COPY_RETRACTION.md` / §112), with the evidence above.
+
+Still open on the con side after this pass: 52 of the 53 (the forward reader is a lower bound —
+a hand pass at §113's sensitivity is the cheap next step before vision), plus COX&KINGS' series.
+Tools: `vintage113_{p2p3,forward}.py`.
