@@ -12137,3 +12137,60 @@ retracted heals it says should be re-applied (CANDC, TV18BRDCST ×2, VOLTAS, WOC
 one constraint that contradicts a reader is precisely what produced §112; only the filing arbitrates.
 Queued by priority in `_vintage108_con_filing_queue.json` — **P1 is 12 cells, not 135**, which is the
 number that matters when deciding whether to spend the vision rung.
+
+### 112c. ★★★ THE 12 FILINGS READ — 12 of 12 back the heal, and the FY identity was the wrong arbiter  (2026-08-25)
+
+§112b left 12 consolidated cells where the owners reader and the FY-annual identity gave OPPOSITE
+answers, and said only the filing arbitrates. All 12 were read. **Every one backs the heal; none
+backs the store; none backs the FY identity.**
+
+| symbol | qe | store held | the FILING says | outcome |
+|---|---|---|---|---|
+| ASIANTILES | 201703 | 17.87 | **13.87** | kept |
+| CANDC | 201703 | 23.71 | **38.6** | RE-APPLIED |
+| LUMAXTECH | 201703 | 15.54 | **6.71** | kept |
+| RAJESHEXPO | 201506 | 121.46 | **237.16** | kept |
+| SHARDACROP | 201603 | 100.25 | **106.37** | kept |
+| SRF | 201606 | 154.56 | **144.19** | kept |
+| SRF | 201612 | 108.37 | **104.7** | kept |
+| TAKE | 201703 | 45.49 | **34.42** | kept |
+| TV18BRDCST | 201506 | 8.61 | **-0.04** | RE-APPLIED |
+| TV18BRDCST | 201512 | 84.88 | **78.29** | RE-APPLIED |
+| VOLTAS | 201509 | 67.26 | **44.43** | RE-APPLIED |
+| WOCKPHARMA | 201512 | 72.04 | **60.97** | RE-APPLIED |
+
+**Every verdict rests on an ON-PAGE IDENTITY, never a printed number alone** (a render is not a
+read): `period − minority + associates = the after-minority row`, and/or `EPS × share count = the
+owners figure`. Examples: LUMAXTECH 759.22 − 88.69 = 670.53; ASIANTILES 1,389.98 + 104.56 − 107.66
+= 1,386.88; TV18BRDCST Jun-15 −1,066.93 + 332.80 + 729.84 = (4.29); WOCKPHARMA 5,312 − (−785) =
+6,097; TAKE 3,608.27 − 166.38 = 3,441.89. VOLTAS was settled by the company's own press release
+("Net Profit (after Minority Interest) was Rs. 44 crores") plus EPS 1.34 × 33.07 cr shares.
+
+★ **WHAT THIS SAYS ABOUT THE FY-ANNUAL IDENTITY.** §112b used it as the tie-breaker precisely
+because §42/§52a call it "the stronger of the two" gates. On these 12 it was wrong every time. The
+reason is structural and worth carrying: the identity was run as `MC annual owners − our three
+stored sibling quarters`, so it inherits BOTH the vendor's annual AND the correctness of three
+other cells. **An identity is only as good as the terms you feed it** — where the siblings are
+themselves unverified, it does not arbitrate, it launders their error into a verdict about the
+fourth. It settled ASSAMCO and GAYAPROJ (§109i) because there the siblings came from detres, an
+as-filed reader, not from the store.
+
+★ And on the retraction itself: **§112 was still right to retract all 85.** The gate that produced
+them was structurally broken (two total-basis readers), so every one of them was unsupported at the
+time. 5 of these 12 came back only because a document was then read. The other 73 retractions stand
+until one is.
+
+### 112d. Where the consolidated residue now stands
+
+3 of the 12 needed no vision at all — their filings carry a text layer, and a geometry-based row
+read (words + y-clustering, §rows-are-geometry) got the numbers exactly. The other 9 were pure
+scans, located by CONTACT SHEET (a 5-column thumbnail grid per document) rather than by opening
+pages one at a time, then cropped at 250-380 dpi around the profit block. Two page-selection traps
+worth recording: ranking pages by the word "consolidated" picks the auditor's report and the
+covering letter over the statement (rank by NUMERIC DENSITY instead), and taking the largest PDF in
+the window picks a LATER filing whose comparative column is a different vintage (take the earliest
+one that actually carries a statement — a 1-2 page PDF is an intimation, not results).
+
+Still open on the consolidated side: 73 retracted cells whose gate was broken and which no owners
+reader has since confirmed, plus §112b's P2 (34 identity-reconciles-to-neither) and P3 (35
+identity-cannot-separate). Tools: `vintage108_vision_fetch.py`, `_vintage108_filing_verdicts.json`.

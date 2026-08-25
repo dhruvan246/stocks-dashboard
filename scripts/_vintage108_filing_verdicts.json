@@ -1,0 +1,113 @@
+{
+ "_doc": "Runbook \u00a7112c \u2014 filing reads for the 12 P1 cells where the owners reader and the FY-annual identity disagreed. Each verdict names the on-page identity that closes it; a printed number alone is never enough (memory: feedback-render-is-not-a-read).",
+ "verdicts": {
+  "LUMAXTECH|20170331": {
+   "read": "TEXT (page 2, 217 numeric tokens \u2014 no vision needed)",
+   "owners_cr": 6.71,
+   "evidence": "Net Profit for the period 759.22 lakh; Minority interest (88.69); Net Profit after taxes, minority interest = 670.53 lakh = 6.7053 cr. IDENTITY: 759.22 - 88.69 = 670.53 exactly.",
+   "was": 15.54,
+   "fixed": 6.71,
+   "fy_identity_implied": 12.65,
+   "verdict": "FILING BACKS THE HEAL \u2014 keep 6.71 (live). FY identity was wrong here."
+  },
+  "SHARDACROP|20160331": {
+   "read": "TEXT (page 7, AUDITED CONSOLIDATED FINANCIAL RESULTS, Rs in Lacs)",
+   "owners_cr": 106.37,
+   "evidence": "Net Profit from ordinary activities after tax 10,645.62 lakh; Minority Interest (8.81); Net Profit for the period 10,636.81 lakh = 106.37 cr. IDENTITY: 10,645.62 - 8.81 = 10,636.81 exactly.",
+   "was": 100.25,
+   "fixed": 106.37,
+   "fy_identity_implied": 100.1,
+   "verdict": "FILING BACKS THE HEAL \u2014 keep 106.37 (live)."
+  },
+  "RAJESHEXPO|20150630": {
+   "read": "TEXT (page 5, Statement of consolidated unaudited results, Rs in MILLION)",
+   "owners_cr": 237.16,
+   "evidence": "Net Profit for the period 2,371.62 mn; Share of profit of associates '-' ; Minority interest '-' ; Net Profit after taxes, minority interest and share of associates = 2,371.62 mn = 237.16 cr. IDENTITIES: (1) the after-minority row equals the period row because both minority and associates are NIL; (2) EPS 8.03 x paid-up 295.26 mn shares at Re.1 face = 2,371 mn.",
+   "was": 121.46,
+   "fixed": 237.16,
+   "fy_identity_implied": 125.53,
+   "verdict": "FILING BACKS THE HEAL \u2014 keep 237.16 (live)."
+  },
+  "VOLTAS|20150930": {
+   "read": "VISION (contact sheet -> page 1 press release; statement on page 3)",
+   "owners_cr": 44.43,
+   "evidence": "The company's own press release, page 1: 'Consolidated Results for quarter ended 30th September, 2015 ... Net Profit (after Minority Interest) was Rs. 44 crores as compared to Rs. 50 crores last year. Earnings per Share (not annualised) was at Rs. 1.34'. IDENTITY: EPS 1.34 x 33.07 cr shares (Re.1 face) = 44.3 cr, reproducing the stated figure. The store's 67.26 is irreconcilable with both.",
+   "was": 67.26,
+   "fixed": 44.43,
+   "fy_identity_implied": 50.8,
+   "verdict": "FILING BACKS THE HEAL \u2014 RE-APPLY 44.43 (currently retracted at 67.26)."
+  },
+  "WOCKPHARMA|20151231": {
+   "read": "VISION (filing 2016-02-11, page 5, STATEMENT OF CONSOLIDATED UNAUDITED RESULTS, Rs in Lakhs)",
+   "owners_cr": 60.97,
+   "evidence": "Row 11 Net Profit after tax 5,312; row 13 before minority 5,312; row 15 Minority Interest - Profit/(Loss) (785); row 16 Net Profit after taxes, minority interest & share of associates = 6,097 lakh = 60.97 cr. IDENTITY (1): 5,312 - (-785) = 6,097 exactly. IDENTITY (2): EPS 5.52 x (paid-up 5,525 lakh / Rs.5 face = 1,105 lakh shares) = 6,100 lakh.",
+   "was": 72.04,
+   "fixed": 60.97,
+   "fy_identity_implied": 56.9,
+   "verdict": "FILING BACKS THE HEAL \u2014 RE-APPLY 60.97 (currently retracted at 72.04)."
+  },
+  "TV18BRDCST|20151231": {
+   "read": "VISION (filing 2016-01-15, page 5, Statement of Consolidated Unaudited Financial Results, Rs in Lakhs)",
+   "owners_cr": 78.29,
+   "evidence": "Row 11 Net Profit for the period 7,803.83; row 12 Share of profit of associate 115.27; row 13 Minority interest (recovery) 90.50; row 14 Net Profit after taxes, minority interest and share of profit of associate (11+12-13) = 7,828.60 lakh = 78.286 cr. IDENTITY: 7,803.83 + 115.27 - 90.50 = 7,828.60 exactly.",
+   "was": 84.88,
+   "fixed": 78.29,
+   "fy_identity_implied": 74.59,
+   "verdict": "FILING BACKS THE HEAL \u2014 RE-APPLY 78.29 (currently retracted at 84.88)."
+  },
+  "SRF|20161231": {
+   "read": "VISION (filing 2017-02-10, page 10, SRF LIMITED-CONSOLIDATED statement, Rs. in Crores)",
+   "owners_cr": 104.7,
+   "evidence": "Row 9 PBT 131.81; row 10 Tax 27.11; row 11 Net Profit after tax 104.70; row 13 Net Profit for the period 104.70. No minority-interest line on the statement. IDENTITY (1): 131.81 - 27.11 = 104.70. IDENTITY (2): Basic EPS 18.23 x (paid-up 57.42 cr / Rs.10 = 5.742 cr shares) = 104.68.",
+   "was": 108.37,
+   "fixed": 104.7,
+   "fy_identity_implied": 122.32,
+   "verdict": "FILING BACKS THE HEAL \u2014 keep 104.70 (live)."
+  },
+  "SRF|20160630": {
+   "read": "VISION (filing 2016-08-08, page 10, consolidated statement, Rs. in Crores)",
+   "owners_cr": 144.19,
+   "evidence": "Row 9 PBT 194.32; row 10 Tax 50.13; row 11 Net Profit after tax 144.19; row 13 Net Profit for the period 144.19. No minority-interest line. IDENTITY (1): 194.32 - 50.13 = 144.19. IDENTITY (2): Basic EPS 25.11 x 5.742 cr shares = 144.2. Consolidated segment page confirms Total Profit Before Tax 194.32.",
+   "was": 154.56,
+   "fixed": 144.19,
+   "fy_identity_implied": 161.81,
+   "verdict": "FILING BACKS THE HEAL \u2014 keep 144.19 (live)."
+  },
+  "TAKE|20170331": {
+   "read": "VISION (filing 2017-05-18, page 15, Statement of Consolidated Audited Financial Results, Rs in Lakhs)",
+   "owners_cr": 34.42,
+   "evidence": "Row 9 Profit before Minority Interest 3,608.27; row 10 Minority Interest 166.38; row 11 Profit after Minority Interest (9-10) = 3,441.89 lakh = 34.42 cr. IDENTITY: 3,608.27 - 166.38 = 3,441.89 exactly. Basic EPS 2.63 (par Re.1) corroborates.",
+   "was": 45.49,
+   "fixed": 34.42,
+   "fy_identity_implied": 46.78,
+   "verdict": "FILING BACKS THE HEAL \u2014 keep 34.42 (live)."
+  },
+  "ASIANTILES|20170331": {
+   "read": "VISION (filing 2017-05-30, page 2 de-rotated, PART-I STATEMENT OF STANDALONE/CONSOLIDATED AUDITED FINANCIAL RESULTS, Rs in Lacs)",
+   "owners_cr": 13.87,
+   "evidence": "CONSOLIDATED Quarter Ended 31.03.2017 column: row 11 Net Profit for the period 1,389.98; row 12 Share of profit of associates 104.56; row 14 Minority interest (107.66); row 15 Net Profit after taxes, Minority interest and share of profit of associates (11+12+14) = 1,386.88 lakh = 13.87 cr. IDENTITY: 1,389.98 + 104.56 - 107.66 = 1,386.88 exactly. (The standalone column for the same quarter is 1,043.56 = 10.44 cr, so this is not a std/con mix-up.)",
+   "was": 17.87,
+   "fixed": 13.87,
+   "fy_identity_implied": 19.82,
+   "verdict": "FILING BACKS THE HEAL \u2014 keep 13.87 (live)."
+  },
+  "TV18BRDCST|20150630": {
+   "read": "VISION (filing 2015-07-22, page 6, Unaudited Consolidated Financial Results, Rs in Lakh)",
+   "owners_cr": -0.04,
+   "evidence": "Row 11 Net profit/(loss) after tax (1,066.93); row 12 Share in profit of associate 332.80; row 13 Minority interest (recovery) (729.84); row 14 Net profit/(loss) after tax, share in profit of associate and minority interest = (4.29) lakh = -0.0429 cr. IDENTITY: -1,066.93 + 332.80 + 729.84 = -4.29 exactly.",
+   "was": 8.61,
+   "fixed": -0.04,
+   "fy_identity_implied": -1.68,
+   "verdict": "FILING BACKS THE HEAL \u2014 RE-APPLY -0.04 (currently retracted at 8.61)."
+  },
+  "CANDC|20170331": {
+   "read": "VISION (filing 2017-06-16, pages 4-5, Extract of Consolidated Audited Financial Results, Rs in Lakhs)",
+   "owners_cr": 38.6,
+   "evidence": "Quarter ended 31/03/2017 consolidated column: Total income from operations (net) 35,098.35; Profit/(Loss) from ordinary Activities after tax 3,859.84 lakh = 38.60 cr; EPS 15.17. IDENTITY: EPS 15.17 x (paid-up 2,544.53 lakh / Rs.10 = 2.5445 cr shares) = 38.6 cr \u2014 and EPS is computed on the OWNERS figure by definition, which is what makes this an owners-basis read.",
+   "was": 23.71,
+   "fixed": 38.6,
+   "fy_identity_implied": 40.65,
+   "verdict": "FILING BACKS THE HEAL \u2014 RE-APPLY 38.60 (currently retracted at 23.71)."
+  }
+ }
+}
