@@ -4724,6 +4724,15 @@
    "fixed": 16.89,
    "why": "Isolated defect: stored npStd 28.4 for Q1FY19 but the OWN BSE filing (2018-08-08, Standalone Q1 ended 30-Jun-2018) prints Profit for the period after taxes = 1,689 lakhs = 16.89 cr, and Moneycontrol std pat = 16.89. The two neighbouring quarters (Mar-2018 16.51, Sep-2018 45.18) already match MC exactly, so only this cell was wrong. Not a vintage - a plain wrong value.",
    "found": "std-rev tail 2026-08-25"
+  },
+  {
+   "sym": "BLUESTARCO",
+   "qe": 20180331,
+   "basis": "std",
+   "was": 25.57,
+   "fixed": 45.05,
+   "why": "Isolated defect: stored npStd 25.57 for Q4FY18 is IMPOSSIBLE - the own BSE 2018-05-14 audited filing (note 4, Standalone Information) prints PBT-after-exceptional 63.48 and Total Comprehensive Income 46.32; a PAT of 25.57 on PBT 63.48 implies a 60% tax rate. As-filed PAT = 45.05 (Moneycontrol std pat; = PBT 63.48 less ~29% tax; = TCI 46.32 less ~1.27 OCI). Neighbours Jun/Sep-2018 (85.81/14.4) already match MC exactly - only this cell was wrong.",
+   "found": "std-rev tail 2026-08-25"
   }
  ],
  "retracted": [
