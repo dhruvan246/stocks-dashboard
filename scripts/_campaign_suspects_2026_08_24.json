@@ -304,6 +304,12 @@
    "PVP|20040930+20041231+20070930+20071231+20080331": "NSE list has no Non-Consolidated row for these 5 quarters. 5 cells.",
    "AJMERA|20090331": "No source (NSE archive starts Jun-2009; BSE API no 2009). Wayback dig. 1 cell.",
    "ABSLAMC|20200630 + AETHER|20201231": "Pre-IPO, DRHP-only. 2 cells."
+  },
+  "RESIDUAL_UPDATE_final": {
+   "CLOSED_now": "PVP final 5 (MC deep feed under former name SSI - all nil, PATs exact). OSWALGREEN Jun-2007 revStd 28.88 (NSE cached as-filed page, PAT 23.585 = stored exactly). The NSE 403s were only on RE-FETCH: both 2007 detail pages were already in scripts/_nsearch_cache - always check the cache before declaring an NSE page unreachable.",
+   "OSWALGREEN|20070331": "OPEN, needs a SECOND READER before any write. The NSE as-filed page (financial_res_OSWALGREEN_46560, unaudited Q4FY07) prints Net Sales/Income from Operations 40.76 and PAT 23.04, but stored npStd is 23.69 (2.7% apart). Single reader disagreeing with the store is not enough to heal (feedback-negative-claim-needs-second-reader / no-reader-may-contradict), and a Q4 unaudited-vs-audited gap is exactly where a legitimate revision lives. Next step: the FY2007 AUDITED annual filing (annual minus 9M identity) or MC under the correct sc_id - MC autosuggest returns empty for Oswal Greentech and sc_id OAM is a DIFFERENT company (Oswal Agro Mills, PATs -4.23/0.45). Do NOT fill revStd 40.76 against the unmatched anchor.",
+   "AJMERA|20090331": "OPEN - no source found (NSE archive starts Jun-2009, BSE API no 2009, no MC row). Wayback dig remains.",
+   "ABSLAMC|20200630 + AETHER|20201231": "OPEN - pre-IPO, DRHP-only."
   }
  }
 }
