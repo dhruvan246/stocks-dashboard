@@ -26,6 +26,7 @@ import os, sys, json, datetime, re, time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import build_fundamentals as B   # reuse _get / nse_jar / iso / xbrl_profit / MIN_QE
+import fund_dup_guard            # ONE row per (sym, quarter-end) -- the sibling-basis ann copy below walks EVERY row
 
 
 def gated_ann(bstr):
@@ -294,6 +295,7 @@ def main():
 
     if not changed and not newsyms and not revop_changed:
         print("no new earnings — nothing to update"); return
+    fund_dup_guard.assert_ok(data, "update_fundamentals")
     json.dump(data, open(DOCS, "w"), separators=(",", ":"))
     json.dump(revop, open(REVOP, "w"), separators=(",", ":"))
     open(MARK, "w").write(today.isoformat())

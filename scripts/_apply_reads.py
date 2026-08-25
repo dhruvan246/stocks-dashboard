@@ -11,6 +11,9 @@ Run: python -X utf8 scripts/_apply_reads.py [--dry]
 """
 import os, sys, json, glob
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import fund_dup_guard   # ONE row per (sym, quarter-end) -- this file is where 22 duplicates came from
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 DOCS = os.path.join(ROOT, "docs", "sf_revop.json")
@@ -95,7 +98,7 @@ def main_pre2015():
     revop = json.load(open(DOCS))
     scr = json.load(open(SCR)) if os.path.exists(SCR) else {}
 
-    applied, skipped, fund_new = [], [], 0
+    applied, skipped, fund_new, fund_fill = [], [], 0, 0
     touched_syms = set()
     for sym, cells in reads.items():
         frows = fund.setdefault(sym, [])
@@ -150,6 +153,21 @@ def main_pre2015():
                                         % (row[1], pat)))
                         continue
                     stored_pat = row[1]
+                elif row is not None:
+                    # THE ROW EXISTS, ONLY ITS STD SLOT IS EMPTY -- fill it IN PLACE.
+                    # This branch used to fall into the `else` below and APPEND a second row for
+                    # the quarter (found 2026-08-25): 22 quarters across SUNPHARMA / CARBORUNIV /
+                    # ADVANTA / APOLLOTYRE each had a con-only row here, and every consumer reads
+                    # `next((r for r in rows if r[0] == qe), None)`, so the std value landed on a
+                    # row no reader ever reached. See scripts/fund_dup_guard.py.
+                    # annStd is filled only when empty: 943 rows store-wide carry an annStd with a
+                    # null npStd (measured 2026-08-25), and this ledger's date is often an
+                    # `ann_approx` quarter-end+45d placeholder -- it must not overwrite a real one.
+                    row[1] = pat
+                    if row[2] is None:
+                        row[2] = c.get("ann")
+                    fund_fill += 1
+                    stored_pat = pat
                 else:
                     newrow = [qe, pat, c.get("ann"), None, None]
                     frows.append(newrow)
@@ -165,6 +183,21 @@ def main_pre2015():
                                         % (gate, row[1], pat)))
                         continue
                     stored_pat = row[1]
+                elif row is not None:
+                    # THE ROW EXISTS, ONLY ITS STD SLOT IS EMPTY -- fill it IN PLACE.
+                    # This branch used to fall into the `else` below and APPEND a second row for
+                    # the quarter (found 2026-08-25): 22 quarters across SUNPHARMA / CARBORUNIV /
+                    # ADVANTA / APOLLOTYRE each had a con-only row here, and every consumer reads
+                    # `next((r for r in rows if r[0] == qe), None)`, so the std value landed on a
+                    # row no reader ever reached. See scripts/fund_dup_guard.py.
+                    # annStd is filled only when empty: 943 rows store-wide carry an annStd with a
+                    # null npStd (measured 2026-08-25), and this ledger's date is often an
+                    # `ann_approx` quarter-end+45d placeholder -- it must not overwrite a real one.
+                    row[1] = pat
+                    if row[2] is None:
+                        row[2] = c.get("ann")
+                    fund_fill += 1
+                    stored_pat = pat
                 else:
                     newrow = [qe, pat, c.get("ann"), None, None]
                     frows.append(newrow)
@@ -199,11 +232,12 @@ def main_pre2015():
 
     from collections import Counter
     gc = Counter(g for _, _, g in applied)
-    print("pre2015: applied %d cells (%s) | %d new fundamentals rows | skipped %d" % (
-        len(applied), ", ".join("%s=%d" % kv for kv in sorted(gc.items())), fund_new, len(skipped)))
+    print("pre2015: applied %d cells (%s) | %d new fundamentals rows | %d std slots filled in place | skipped %d" % (
+        len(applied), ", ".join("%s=%d" % kv for kv in sorted(gc.items())), fund_new, fund_fill, len(skipped)))
     for s in skipped:
         print("  SKIP", s)
     if not dry:
+        fund_dup_guard.assert_ok(fund, "_apply_reads --pre2015")
         json.dump(fund, open(FUND, "w"), separators=(",", ":"))
         json.dump(revop, open(DOCS, "w"), separators=(",", ":"))
         json.dump(scr, open(SCR, "w"), separators=(",", ":"))

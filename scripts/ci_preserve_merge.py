@@ -39,11 +39,35 @@ a surprise can never make the refresh worse than it was.
 """
 import copy
 import json
+import os
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import fund_dup_guard
 
 
 def _rows_to_map(rows):
+    """qe -> row. NOTE this is LAST-wins, while every consumer of sf_fundamentals reads the FIRST
+    match (`next((r for r in rows if r[0] == qe), None)`). On a store carrying two rows for one
+    quarter the two disagree, so the merge would write into a row nobody reads -- which is why
+    main() deduplicates every input before merging (see scripts/fund_dup_guard.py)."""
     return {r[0]: r for r in rows if isinstance(r, list) and r}
+
+
+def _predup(name, obj):
+    """Merge conflict-free duplicate quarters out of a listrows payload, loudly. Never raises:
+    this script's contract is that a surprise can never make the refresh worse than it was."""
+    try:
+        n, conflicts = fund_dup_guard.dedup(obj)
+    except Exception as ex:                       # pragma: no cover - defensive, see contract above
+        print("ci_preserve_merge: dedup skipped for %s (%s: %s)" % (name, type(ex).__name__, ex))
+        return obj
+    if n or conflicts:
+        print("ci_preserve_merge: %s carried duplicate quarters -- %d merged, %d left as value "
+              "conflicts%s" % (name, n, len(conflicts),
+                               "".join("\n    CONFLICT %s %s %s" % (c["sym"], c["qe"], c["conflicts"])
+                                       for c in conflicts)))
+    return obj
 
 
 def merge_listrows(base, ours, theirs):
@@ -116,7 +140,11 @@ def main():
         if isinstance(sample, dict):
             out, ch, kept = merge_qmaps(base, ours, theirs)
         elif isinstance(sample, list):
+            base = _predup("base", base)
+            ours = _predup("ours", ours)
+            theirs = _predup("theirs", theirs)
             out, ch, kept = merge_listrows(base, ours, theirs)
+            out = _predup("merged", out)
         else:
             raise ValueError("unrecognised payload shape")
     except Exception as ex:

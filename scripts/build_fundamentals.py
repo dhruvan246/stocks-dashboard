@@ -22,6 +22,7 @@ Cache: scripts/_xbrl_cache/ (gitignored via scripts/_*). Resumable.
 """
 import os, sys, re, json, time, gzip, threading, concurrent.futures, urllib.request, urllib.parse, http.cookiejar
 import scale_fix   # a few filers' XBRL is scaled by 10^k — reviewed ledger, DATA_RUNBOOK §11
+import fund_dup_guard   # ONE row per (sym, quarter-end) in the published store
 
 MIN_QE = 20170101   # skip quarters ending before this — NSE's XBRL archive is sparse pre-2016
                     # and the backtest default starts 2020 (year-ago bases need ~2018). Cuts the 404 storm.
@@ -412,6 +413,7 @@ def main():
 
     docs = os.path.join(os.path.dirname(HERE), "docs", "sf_fundamentals.json")
     def flush():
+        fund_dup_guard.assert_ok(data, "build_fundamentals")
         json.dump(data, open(OUT, "w"), separators=(",", ":"))
         json.dump(data, open(docs, "w"), separators=(",", ":"))   # web copy stays usable mid-build
         json.dump(sorted(attempted), open(ATT, "w"))

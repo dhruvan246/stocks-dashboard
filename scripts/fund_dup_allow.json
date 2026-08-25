@@ -1,0 +1,40 @@
+{
+  "_why": "Duplicate (symbol, quarter-end) rows in docs/sf_fundamentals.json that are NOT safe to merge because two duplicate rows hold DIFFERENT non-null values in the same slot. scripts/fund_dup_guard.py refuses to pick between them and leaves the quarter untouched; listing it here keeps the guard hard-failing for anything NEW without reddening CI over an open question. Remove the entry once the cell is adjudicated, then re-run `python3 scripts/fund_dup_guard.py --merge`.",
+  "pending": {
+    "APOLLOTYRE|20140331": {
+      "found": "2026-08-25",
+      "slot": "annCon",
+      "values": [
+        20140530,
+        20140515
+      ],
+      "rows": [
+        [
+          20140331,
+          null,
+          null,
+          281.62,
+          20140530
+        ],
+        [
+          20140331,
+          129.62,
+          20140515,
+          281.62,
+          20140515
+        ]
+      ],
+      "note": "npCon agrees (281.62) in both rows; ONLY the consolidated announcement date differs. Every other slot merges cleanly.",
+      "evidence": [
+        "BOTH candidates are formulaic, so neither can be taken as a measured broadcast date:",
+        "20140515 = quarter-end + 45d -- the apply_agg_pat_fills.py placeholder convention (DATA_RUNBOOK line ~10868: 36,027 cells / 2,623 symbols carry this exact signature).",
+        "20140530 = quarter-end + 60d -- the era Clause-41 deadline for audited Q4 results.",
+        "scripts/pre2015_reads_d.json APOLLOTYRE 20140331 carries \"ann\": 20140515 WITH \"ann_approx\": true -- the source self-declares it an approximation (gate F, bse-detres scrip 500877 qtr 81).",
+        "Direction is NOT assumable: DATA_RUNBOOK's OMAXE Mar-2012 case has the +45d placeholder EARLIER than the real filing (real 2012-05-30, placeholder 2012-05-15), i.e. the same shape as this pair with the opposite answer.",
+        "Same-symbol neighbours are no help -- APOLLOTYRE 20130331 and 20150331 both carry the +60d 0530 stamp on std AND con, so the series cannot arbitrate.",
+        "20140530 entered with the ORIGINAL con-only row. 20140515 is not an independent reading at all: it is this row's own annStd copied into annCon by update_fundamentals.py's sibling-basis ann-date rule (`if _r[3] is not None and _r[4] is None and _r[2] is not None: _r[4] = _r[2]`) on 2026-08-11, commit 47437af31 -- whose parent row was [20140331, 129.62, 20140515, 281.62, None]. So the con date is a copy of an ann_approx standalone placeholder, and the two candidates are NOT two independent sources."
+      ],
+      "to_adjudicate": "Read APOLLOTYRE's actual Q4-FY14 consolidated broadcast date from BSE/NSE (the P1/P2 re-dating route in scripts/PLAN_QUANTMAC_FIXES.md), write it through scripts/ann_date_fills.json, then drop this entry."
+    }
+  }
+}
