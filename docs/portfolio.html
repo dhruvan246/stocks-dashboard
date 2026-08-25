@@ -249,6 +249,10 @@ select,input[type=text],input[type=number],input[type=date]{
         <div class="body"><div id="chBuy"></div>
           <div class="twrap"><table id="tblBuy"></table></div></div></div>
 
+      <div class="card c12" data-card="closed"><h2>Closed trades — realized P&amp;L</h2>
+        <div class="sub" id="closedSub"></div>
+        <div class="body" id="closedBody"></div></div>
+
       <div class="card c8" data-card="value"><h2>Portfolio value</h2>
         <div class="sub" id="valueSub"></div>
         <div class="body"><div id="chValue"></div></div></div>
@@ -324,8 +328,8 @@ const EPOCH = Date.UTC(1996,0,1);
 const offToISO = o => new Date(EPOCH + o*864e5).toISOString().slice(0,10);
 const isoToOff = s => Math.round((Date.parse(s+'T00:00:00Z') - EPOCH)/864e5);
 
-let DOC=null, META={}, SERIES={}, NIFTY=null, NIFTY500=null, QUOTES={}, QASOF=0, ROWS=[], HIST=null, MODEL=null;
-let SEL = {acct:new Set(), pf:new Set(), alloc:'pf', sort:{k:'value',dir:-1}, stratTab:null};
+let DOC=null, META={}, SERIES={}, NIFTY=null, NIFTY500=null, QUOTES={}, QASOF=0, ROWS=[], HIST=null, MODEL=null, TRADES=null;
+let SEL = {acct:new Set(), pf:new Set(), alloc:'pf', sort:{k:'value',dir:-1}, stratTab:null, closedTab:null};
 
 /* ---------------- formatting (Indian) ---------------- */
 function inr(x, dec){
@@ -426,6 +430,21 @@ async function unzipRow(row){
   const st=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
   return JSON.parse(await new Response(st).text());
 }
+/* trades.json (closed positions from investing.com). Local: the file; web: its token-gated row
+   (holdings token + '.trades'). Normalised to TRADES={updated, byPf:{pf:[{sym,od,cd,qty,opx,cpx,pnl,gain}]}}. */
+async function loadTrades(){
+  try{
+    if(MODE==='local'){ const r=await fetch('./trades.json',{cache:'no-store'}); if(!r.ok) return;
+      const d=await r.json(); TRADES={updated:d.updated, byPf:{}};
+      (d.trades||[]).forEach(t=>{ (TRADES.byPf[t.pf]=TRADES.byPf[t.pf]||[]).push({sym:t.invSym,od:t.openDate,cd:t.closeDate,qty:t.qty,opx:t.openPx,cpx:t.closePx,pnl:t.pnl,gain:t.gainPct}); });
+      return; }
+    const t=readToken(); if(!t) return;
+    const r=await fetch(SUPA_GET+'?token='+encodeURIComponent(t+'.trades')+'&apikey='+SUPA_ANON,{cache:'no-store'});
+    if(!r.ok) return; const row=await r.json(); if(!row||!row.z) return;
+    const d=await unzipRow(row); TRADES={updated:d.u, byPf:{}};
+    for(const pf in (d.t||{})) TRADES.byPf[pf]=d.t[pf].map(a=>({sym:a[0],od:a[1],cd:a[2],qty:a[3],opx:a[4],cpx:a[5],pnl:a[6],gain:a[7]}));
+  }catch(e){ console.warn('trades not loaded:',e.message); }
+}
 async function loadModel(){
   try{
     if(MODE==='local'){ const r=await fetch('./model.json',{cache:'no-store'}); if(r.ok) MODEL=await r.json(); return; }
@@ -452,6 +471,7 @@ async function loadAll(){
   DOC=doc; META=slim.meta||{}; SERIES=slim.series||{}; NIFTY500=nif;   // the strategies screen from Nifty 500 — benchmark against it, not Nifty 50
   DOC.holdings.forEach(h=>{ h.buyOff=isoToOff(h.date); });
   await loadModel();
+  await loadTrades();
   await refreshQuotes();
 }
 async function refreshQuotes(){
@@ -490,14 +510,20 @@ function buildRows(){
     const p=priceFor(h), pf=pfById(h.pf), m=META[h.hist]||META[h.live]||{};
     const cost=h.qty*h.avg;
     const value=p.px!=null? h.qty*p.px : null;
-    const day  =(p.px!=null&&p.prev!=null)? h.qty*(p.px-p.prev) : null;
+    /* Day-P&L baseline: normally the previous close, but for a FRESHLY bought position use the buy
+       price. A stock bought in the last few days (esp. a new listing like Pine Labs) can carry a
+       stale prevClose from before you owned it — pricing the day move off it shows a phantom gain.
+       Measuring from your buy price matches what investing.com shows. */
+    const heldDays=Math.max(1,Math.round((today-Date.parse(h.date+'T00:00:00Z'))/864e5));
+    const dayBase=(heldDays<=3)? h.avg : p.prev;
+    const day  =(p.px!=null&&dayBase!=null)? h.qty*(p.px-dayBase) : null;
     return Object.assign({},h,p,{
       pfName:pf.name||h.pf, account:pf.account||'', kind:pf.kind||'',
       cname:(h.name||m.name||h.sym), sector:(m.sector||'Unclassified'),
       cost, value, pnl:(value!=null?value-cost:null),
       pnlPct:(value!=null&&cost>0?(value-cost)/cost*100:null),
-      day, dayPct:(p.px!=null&&p.prev)?((p.px-p.prev)/p.prev*100):null,
-      days:Math.max(1,Math.round((today-Date.parse(h.date+'T00:00:00Z'))/864e5)),
+      day, dayPct:(p.px!=null&&dayBase)?((p.px-dayBase)/dayBase*100):null,
+      days:heldDays,
       d52h:(m.h52&&p.px!=null)?(p.px/m.h52-1)*100:null   // % from the 52-week high — the strategy's near-high entry gate
     });
   });
@@ -1327,10 +1353,37 @@ function renderCalendar(rows){
   });
   body.innerHTML=h; wireStratTabs(body);
 }
+function renderClosed(rows){
+  const body=$('closedBody'), sub=$('closedSub');
+  if(!TRADES){ sub.textContent='No trade log yet.'; body.innerHTML='<div class="empty">Fetch closed positions on the Mac, then re-publish.</div>'; return; }
+  const visPf=new Set(rows.map(r=>r.pf)), noFilter=(SEL.acct.size===0&&SEL.pf.size===0);
+  const pfs=Object.keys(TRADES.byPf).filter(pf=>noFilter||visPf.has(pf));
+  if(!pfs.length){ sub.textContent='No closed trades for this selection.'; body.innerHTML='<div class="empty">No closed trades here.</div>'; return; }
+  const ordered=pfs.map(pf=>({pf, name:(pfById(pf).name||pf), trades:TRADES.byPf[pf]}));
+  let sel=SEL.closedTab; if(sel!=='__all__' && !pfs.includes(sel)) sel=pfs[0];
+  const shown=(sel==='__all__'?ordered:ordered.filter(x=>x.pf===sel)).flatMap(x=>x.trades);
+  const total=shown.reduce((a,t)=>a+t.pnl,0), wins=shown.filter(t=>t.pnl>0).length;
+  sub.innerHTML='Positions you\u2019ve closed (or trimmed), pulled from investing.com \u2014 realized P&L from your <b>actual</b> entry &amp; exit. '+(TRADES.updated?'Fetched '+esc(TRADES.updated)+'.':'');
+  let h='';
+  if(ordered.length>1){ h+='<div class="stabs">'+ordered.map(x=>{ const i=(DOC.portfolios||[]).findIndex(p=>p.id===x.pf);
+    return '<button class="stab'+(sel===x.pf?' on':'')+'" data-ctab="'+esc(x.pf)+'"><span class="dot2" style="background:'+SLOT[(i<0?0:i)%8]+'"></span>'+esc(x.name)+' <span class="sym">'+x.trades.length+'</span></button>'; }).join('')+
+    '<button class="stab'+(sel==='__all__'?' on':'')+'" data-ctab="__all__">All '+ordered.reduce((a,x)=>a+x.trades.length,0)+'</button></div>'; }
+  h+='<div class="trio"><div class="t"><div class="l">Realized P&L</div><div class="v '+cls(total)+' secret">'+inrSigned(total)+'</div><div class="s">'+shown.length+' closed trade'+(shown.length!==1?'s':'')+'</div></div>'+
+     '<div class="t"><div class="l">Win rate</div><div class="v '+(wins/Math.max(1,shown.length)>=0.5?'up':'')+'">'+(shown.length?Math.round(wins/shown.length*100):0)+'%</div><div class="s">'+wins+' up \u00b7 '+(shown.length-wins)+' down</div></div></div>';
+  const trs=shown.slice().sort((a,b)=>a.cd<b.cd?1:-1);
+  h+='<div class="twrap tvscroll"><table><thead><tr><th>Stock</th><th>Bought</th><th>Sold</th><th>Qty</th><th>Buy</th><th>Sell</th><th>Gain</th><th>P&L</th></tr></thead><tbody>';
+  trs.forEach(t=>{ h+='<tr><td><span class="secret"><b>'+esc(t.sym)+'</b></span></td>'+
+    '<td><span class="sym">'+shortDate(t.od)+'</span></td><td><span class="sym">'+shortDate(t.cd)+'</span></td>'+
+    '<td class="secret">'+Number(t.qty).toLocaleString('en-IN')+'</td><td>\u20b9'+(+t.opx).toFixed(2)+'</td><td>\u20b9'+(+t.cpx).toFixed(2)+'</td>'+
+    '<td class="'+cls(t.gain)+'">'+pct(t.gain)+'</td><td class="'+cls(t.pnl)+' secret">'+inrSigned(t.pnl)+'</td></tr>'; });
+  h+='</tbody></table></div>';
+  body.innerHTML=h;
+  body.querySelectorAll('.stab').forEach(b=>b.onclick=()=>{ SEL.closedTab=b.dataset.ctab; renderClosed(visibleRows()); });
+}
 function renderAll(){
   const rows=visibleRows();
   renderKPIs(rows); renderToday(rows); renderFilters();
-  renderModel(rows); renderCalendar(rows);
+  renderModel(rows); renderCalendar(rows); renderClosed(rows);
   renderStrategyCard(rows,'close',{sub:'meSub',chart:'chMonthEnd',tbl:'tblMonthEnd'});
   renderStrategyCard(rows,'buy',  {sub:'buySub',chart:'chBuy',    tbl:'tblBuy'});
   renderCharts(rows); renderHoldings(rows); renderAccounts();
