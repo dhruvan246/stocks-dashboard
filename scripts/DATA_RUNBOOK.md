@@ -12102,3 +12102,38 @@ EMPTY slots, this OVERWRITES a populated one, and those deserve separate consent
 
 Baseline on a clean tree: 11,544 ledgered cells checked, MISSING 0, REVERTED 0, RESURRECTED 0,
 DRIFT 27 (all `mc_history_fills` rounding, ≤0.1%% except SADBHAV/SIEMENS).
+
+### 112b. ★★ THE CONSOLIDATED RESIDUE — the route ladder MEASURED, and 54 of 135 closed without a filing  (2026-08-25)
+
+§111i's next step was "read the Mar-2017 consolidated filings for all 59". The ladder was walked and
+measured first (§57), and three rungs were eliminated on evidence rather than on impression:
+
+| rung | measured reach | verdict |
+|---|---|---|
+| XBRL owners (`_reattr_owners.json`, DEFINITIONAL) | ~30 cells/quarter in FY16-17, against 245 for Mar-2018 and 812 for Mar-2023 | reaches **8 of 143** — the era predates per-basis XBRL |
+| Reconstructing owners from the NSE page's own components | `P − MI − associates` reproduces **3 of 8** XBRL-known cells | **FAILED CALIBRATION — not used** |
+| The Mar-2017 filing PDFs, text layer | **0 of 4** reachable ones carried one (1-14 pages, 0-13 characters) | scanned, as §75/§84 predict; this is the VISION rung |
+
+★ **The reconstruction failure is worth naming.** TATACONSUM Mar-2017 prints P 84.36 / associates
+33.24 / minority 0, and NO combination yields the XBRL owners figure 31.41 — the filer never
+populated the minority row. The page does not carry the owners number for these filers, so no
+cleverer parse rescues it. A reconstruction that fits 3 of 8 is a coincidence, not a rule.
+
+**What DID close 54 cells: the FY-annual identity.** The four consolidated quarters must sum to the
+year's audited consolidated annual. A series on the wrong BASIS will not reconcile to an OWNERS
+annual, and one on the wrong VINTAGE will not reconcile to the as-filed one. Still Moneycontrol, so
+not an independent VENDOR (the three aggregators are one) — but an independent ROW, and that is the
+part that constrains. Over the 135 con cells with no XBRL reading:
+
+| | cells |
+|---|---|
+| identity AGREES with what is live (two lines now agree) | **54** |
+| identity CONTRADICTS the owners reader | **12** |
+| inconclusive (reconciles to neither 34, cannot separate 31, no annual 4) | 69 |
+
+**NOTHING WAS CHANGED on the 12.** Two constraints, opposite answers — 7 kept heals the identity
+says should be retracted (ASIANTILES, LUMAXTECH, RAJESHEXPO, SHARDACROP, SRF ×2, TAKE) and 5
+retracted heals it says should be re-applied (CANDC, TV18BRDCST ×2, VOLTAS, WOCKPHARMA). Acting on
+one constraint that contradicts a reader is precisely what produced §112; only the filing arbitrates.
+Queued by priority in `_vintage108_con_filing_queue.json` — **P1 is 12 cells, not 135**, which is the
+number that matters when deciding whether to spend the vision rung.
