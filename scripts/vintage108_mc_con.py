@@ -13,7 +13,9 @@ same feed's standalone reading for the same quarter. Where they are identical th
 `mc-con-is-std-fallback` — an absence of evidence, never evidence of agreement.
 
 VERDICTS per cell:
-  mc-backs-nse-as-filed   MC agrees with NSE's earliest-filed vintage, not with the store -> heal
+  ⚠️ THE READING IS OWNERS-BASIS. NSE's consolidated page bottom line is NOT the owners figure
+  (§111d), so a con target is trusted only when an OWNERS reader reproduces it.
+  mc-backs-nse-as-filed   the owners reader agrees with NSE's earliest vintage, not the store
   mc-backs-store          MC agrees with the STORE -> do NOT heal; NSE's page needs re-reading
   mc-backs-neither        three readings, three answers -> adjudicate by hand
   mc-con-is-std-fallback / no-mc-id / no-mc-quarter   the route is absent, which is not a verdict
@@ -32,6 +34,11 @@ sys.path.insert(0, os.path.join(HERE, "agg_tools"))
 import agg_sources  # noqa: E402
 
 NSE_CON = os.path.join(HERE, "_vintage108_nse_con.json")
+OWNERS_XBRL = {}
+try:
+    OWNERS_XBRL = json.load(open(os.path.join(HERE, "_reattr_owners.json"), encoding="utf-8"))
+except Exception:
+    pass
 PROPS = os.path.join(HERE, "_vintage108_proposals.json")
 OUT = os.path.join(HERE, "_vintage108_mccon.json")
 ABS_TOL, REL_TOL = 2.0, 0.03
@@ -80,12 +87,27 @@ def main():
         v = nse[k]
         rec = {"sym": sym, "qe": qe, "class": cls, "stored": v["stored"],
                "nse_as_filed": v.get("as_filed"), "mc_note": cnote}
-        mc = (con.get(qe) or {}).get("pat_total")
+        # ★ OWNERS, NOT TOTAL. Our con PAT slot holds OWNERS-ATTRIBUTABLE profit (§profit-basis).
+        # This read `pat_total` and so compared a TOTAL-basis reader against the NSE archive page's
+        # bottom line — which is also not the owners figure (§111d) — two total-basis voices
+        # agreeing, and 85 cells written onto the wrong basis before an owners reader caught it
+        # (BHARTIARTL Mar-2017: store 373.40 = owners, the heal wrote 219.80 = total).
+        # The DEFINITIONAL reader wins where it reaches: _reattr_owners.json is built from the
+        # filings' XBRL ProfitOrLossAttributableToOwnersOfParent. MC's `pat_own` is the fallback.
+        # `pat_total` survives only as the §85 std-fallback probe, which is a same-basis test.
+        mc = OWNERS_XBRL.get("%s|%d" % (sym, qe))
+        mc_src = "XBRL owners"
+        if mc is None:
+            mc = (con.get(qe) or {}).get("pat_own")
+            mc_src = "MC pat_own"
         mcs = (std.get(qe) or {}).get("pat_total")
+        mc_tot = (con.get(qe) or {}).get("pat_total")
         rec["mc_con"], rec["mc_std"] = mc, mcs
+        rec["owners_src"], rec["mc_con_total"] = (mc_src if mc is not None else None), mc_tot
         if mc is None:
             rec["verdict"] = "no-mc-quarter" if con else "no-mc-id"
-        elif mcs is not None and abs(mc - mcs) < 0.011:
+        elif mc_src == "MC pat_own" and mcs is not None and mc_tot is not None \
+                and abs(mc_tot - mcs) < 0.011:
             rec["verdict"] = "mc-con-is-std-fallback"          # §85 — absence, not agreement
         else:
             a, st = v.get("as_filed"), v["stored"]

@@ -12030,3 +12030,52 @@ themselves for all 59.**
 
 Tools: `vintage109_{reextract,recorrect,byprod_classify,mc_probe,mc_calib,con_components,rowid,
 adjudicate,checks,revop,land,invariant,invariant2,report}.py`.
+
+## 112. ★★★ I WROTE 85 CONSOLIDATED CELLS ONTO THE WRONG BASIS — two total-basis readers agreeing  (2026-08-25, retracted)
+
+§111d caught this campaign's own defect and left the correction to its author. Confirmed cell by
+cell, retracted, root cause fixed.
+
+**The error.** Our `con` PAT slot holds OWNERS-ATTRIBUTABLE profit. Two mistakes compounded into one
+that no gate could see:
+1. **NSE's consolidated page bottom line is not the owners figure** (§111d) — "Net Profit … after
+   taxes, minority interest and share of profit of associates" gets the sign of the associate/NCI
+   term the other way round.
+2. **The second reader I gated on was Moneycontrol `pat_total`, not `pat_own`.** So the gate
+   compared a TOTAL-basis feed against a TOTAL-basis page, they agreed, and the result went into an
+   OWNERS-basis slot.
+
+★ **A SECOND READER ON THE SAME WRONG BASIS IS NOT A SECOND READER.** §109d's rule — evidence AND no
+reader contradicts — held perfectly and still passed a wrong value, because both voices were making
+the same category error. Independence has to be independence *of basis*, not just of source.
+BHARTIARTL Mar-2017: store 373.40 = owners; the heal wrote 219.80 = total.
+
+**Re-adjudication, owners-basis readers only**, in order: `_reattr_owners.json` (DEFINITIONAL — the
+filings' XBRL `ProfitOrLossAttributableToOwnersOfParent`), else MC `pat_own`. Over my 143 con heals:
+
+| verdict | cells |
+|---|---|
+| owners backs the PRE-HEAL value → REVERT | **78** |
+| owners backs the heal → keep | 58 |
+| owners backs neither | 6 |
+| no owners reader | 1 |
+
+**Retracted 85** — the 78, plus the 7 no owners reader can support. A heal whose gate was
+structurally wrong is not "unproven", it is *unsupported*, and it does not get to sit on live data
+waiting for a document. Entries were MOVED to a `retracted` list rather than deleted, which matters
+now that §109j re-applies these ledgers every refresh: **a stale entry left in `fixes` would be
+re-asserted nightly forever.** Guarded — a cell another writer had since moved would have been
+reported and skipped (0 were).
+
+**Root cause fixed in `vintage108_mc_con.py`**: it now reads the XBRL owners ledger first and MC
+`pat_own` second; `pat_total` survives only inside the §85 std-fallback probe, which is a same-basis
+test. Proven by re-running the four worst cells — all four now return `mc-backs-store`, i.e. the
+gate BLOCKS the heal it originally allowed.
+
+**What survives:** the 365 standalone heals and the 58 owners-confirmed con heals. The standalone
+half was never exposed to this — detres and NSE's standalone rows are the same basis by
+construction, and §109's own invariant (agreement with detres 53.9% → 100%) was measured on it.
+
+★ **The cost of §109j's durability fix cuts both ways.** Once a ledger is re-applied after the merge,
+a WRONG entry is as durable as a right one. Ledger hygiene — retract, do not just stop writing —
+becomes mandatory the moment the applier joins CI.
