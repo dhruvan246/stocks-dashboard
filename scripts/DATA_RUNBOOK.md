@@ -74,6 +74,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§107** ★★★ ONE SOURCE OF TRUTH — the shared checkout SYNCS ITSELF to origin/main (`scripts/sync_checkout.py`, session-start hook); 923-commit drift + 36 worktrees were all stale copies; every reported number names its source (synced HEAD sha or LIVE); this repo is a PARTIAL CLONE — blob reads stall
 - **§108** ★★★ RESTATED-COMPARATIVE VINTAGE — an Ind-AS restated value wearing the as-filed ann date is a LOOK-AHEAD no scale/identity gate can see; SYNGENE's whole FY16 row healed (PAT ×4, op ×2, rev/op fills ×4, con-copy retraction, 4 ann dates); NEW `ann_cell_fix.json` moves a populated ann LATER — the direction §104 refuses (**read before trusting any FY16-FY17 transition-era cell an aggregator scrape filled, and whenever detres+MC agree against the store**)
 - **§109** ★★★ THE §108 SWEEP RAN — the class was ONE 2026-07-27 backfill pass with no vintage rule; **NSE's archive keeps BOTH vintages of a quarter** (earliest `filingDate` = as-filed), so the restated comparative is structured data, not a scanned PDF; 326 wrong-vintage reads enumerated from our own provenance; 260 cells + 1,233 rev/op/mirror slots healed, detres agreement 53.5%→100% (**read before touching any 2015-17 cell, and before trusting a single as-filed reader — no available reader may CONTRADICT the heal**)
+- **§113** ★★★ A RUNG IS ELIMINATED BY MEASURING THE DOCUMENT SET, NOT ONE DOCUMENT PER CELL — §112b closed the text route on "the Mar-2017 filing is a scan" (true) and so declared vision; the quarter is ALSO printed in the next quarter's and next year's filings, which are digital, and 30 of 59 cells read cleanly off a comparative column. **33 of 33 primary reads back the pre-heal store, 0 back the heal.** Also: MC `pat_own` is sometimes the TOTAL (4 of 308, 2 proven against filings) — it is a label, not a guarantee (**read before sending anything to a vision budget, and before letting an aggregator's owners field veto a document**)
 
 ---
 
@@ -12204,3 +12205,131 @@ one that actually carries a statement — a 1-2 page PDF is an intimation, not r
 Still open on the consolidated side: 73 retracted cells whose gate was broken and which no owners
 reader has since confirmed, plus §112b's P2 (34 identity-reconciles-to-neither) and P3 (35
 identity-cannot-separate). Tools: `vintage108_vision_fetch.py`, `_vintage108_filing_verdicts.json`.
+
+## 113. ★★★ §112's VISION RUNG WAS PREMATURE — the quarter is printed in the NEXT filings, and those have text  (2026-08-25)
+
+§111i asked for the 59 disputed consolidated cells to be read against the Mar-2017 filings. While
+that was running, §112 found the same defect from owners-basis feeds and retracted 85 con heals, so
+**the values were already right before this read finished** — measured on the tree at `9e4eff244`:
+58 of the 59 hold the pre-heal value, the 59th (CANDC) was reinstated by §112c on its own filing
+read, and every one of my 59 verdicts agrees with what is live. Nothing needed moving. What was
+missing was EVIDENCE: §112d says the 73 retractions "stand until [a document] is read".
+
+### 113a. ★★★ THE ROUTE §112b CLOSED IS OPEN — IT ASKED THE WRONG DOCUMENT
+
+§112b eliminated the text rung on a measurement that is true and irrelevant:
+
+    "The Mar-2017 filing PDFs, text layer — 0 of 4 reachable ones carried one" -> VISION rung
+
+That is the quarter's OWN filing, and it is right: of the 59 own-quarter filings fetched here, **not
+one** carries the consolidated statement in a text layer. But a quarter is printed in about THREE
+filings (`memory: feedback-backfill-comparative-columns`) — its own, the NEXT quarter's (as the
+preceding-quarter column) and the NEXT YEAR's same quarter (as the year-ago column) — and the
+2018-era documents are digital. Measured: **579 documents over the 59 cells, and 30 cells got a
+clean owners read off a comparative column**, by geometry (words + y-clustering, §rows-are-geometry),
+no vision at all.
+
+| verdict over the 59 | cells |
+|---|---|
+| PRIMARY read of the owners row, column map confirmed by another column reproducing a stored cell | **17** |
+| PRIMARY via the statement's own identity (`total − NCI`, or the after-associates line) | **10** |
+| PRIMARY — the company's own results release states the figure | **3** |
+| XBRL owners (`_reattr_owners.json`, definitional) | 3 |
+| the comparative disagrees with BOTH candidates — a §109 VINTAGE question, logged not guessed | 3 |
+| no readable primary document — revert stands on §112, vision rung named | 23 |
+
+**All 33 primary/XBRL reads back the pre-heal store. None backs the heal. 33 of 33.** And they show
+the mechanism, not just the answer — the heal is the line BEFORE the split, every time:
+
+    HTMEDIA  Mar-17  "Net Profit after tax for the period"          43.97  <- the heal
+                     "Net Profit after taxes, non-controlling
+                      interest and share of associates"             25.55  <- our slot
+    TATACONSUM       "Net Profit after Tax" 84.36 -> "Group Consolidated Net Profit" 51.12
+                     -> "Owners of the Parent" 31.41   (the heal is TWO lines above the slot)
+    MOTHERSON        period 705.86 − NCI 231.08 = 474.78            (heal 663.51 = pre-associates)
+    CYIENT           period 77.10 − NCI (−1.30) = 78.40             (heal 73.80 = pre-associates)
+    VBL              68.94 − 23.86 = 45.08 Rs mn = 4.51             (heal 6.68)
+
+★ **A rung is eliminated by measuring the DOCUMENT SET, not one document per cell.** "The filing for
+quarter Q is a scan" and "quarter Q is unreadable" are different claims, and the second one closed a
+route that had 30 of 59 cells in it. `memory: feedback-a-wall-is-a-route-not-the-world`.
+
+Fetch mechanics worth keeping: attachments resolve through `stockinfo/AnnPdfOpen.aspx` (pre-Nov-2018
+files 404 on both `AttachHis` and `AttachLive` — the `CorpAttachment/<YYYY>/<M>/` base), and BSE
+answers a burst of announcement-list calls with **HTTP 200 and an empty `Table`**: 21 windows over 7
+symbols recorded "0 candidates" and returned 29-34 rows when retried minutes later. An empty list is
+not an empty window (`memory: feedback-endpoint-caps-are-silent`).
+
+### 113b. ★★★ MC `pat_own` IS NOT RELIABLY THE OWNERS FIGURE EITHER
+
+§112's root-cause fix — gate on XBRL owners first, MC `pat_own` second — is right in direction, but
+the fallback has the same disease one level out. The con-side invariant (agreement with MC owners
+over the 308 by-product con cells, per cell, reconstructed from the ledgers' own values so it re-runs
+at any time) reads **51.0% → 89.6%**, and every one of the 4 cells it calls a REGRESSION is a cell
+where MC's *owners* field is the TOTAL:
+
+| cell | our slot | MC `pat_own` | what the document says |
+|---|---|---|---|
+| WABAG Mar-17 | 75.73 | 79.48 | filing: owners 75.73 + NCI 3.75 = **79.48** — MC is on the total |
+| SUNPHARMA Mar-17 | 1223.71 | 1385.57 | own press release: "Q4 Net Profit at Rs. **1223** crores" |
+| JINDALSTEL Mar-17 | −49.51 | −100.01 | XBRL owners −49.51; −100.01 is the group total |
+| PRESTIGE Mar-17 | 89.25 | 113.57 | XBRL owners **89.25** |
+
+Two of the four are settled by a primary document read here. So `pat_own` is a LABEL on an
+aggregator field, not a guarantee about the row behind it — treat it as evidence that can be
+overturned by a filing, and never let it veto one. `memory: feedback-readers-have-precedence-not-votes`.
+
+### 113c. The component reconstruction, re-measured on a bigger known-answer set
+
+§112b measured `P − MI − associates` at 3 of 8 and dropped it. Re-measured against the 28 cells
+whose owners figure is now known from a document: **16 of 28** — better, still not a reader. The
+reason is structural and the same one §112b named: NSE's page prints the minority row as `0.00` when
+the filer never populated it, so no arithmetic over that page can recover a split it does not carry.
+A 57% rule is a coincidence with a bigger sample. `memory: feedback-detect-is-not-confirm`.
+
+### 113d. Four defects in MY OWN reader, each found by checking an exception
+
+Every one of these would have shipped a wrong verdict, and every one was caught by looking at the
+cell that disagreed rather than at the count:
+
+* **`quarter_of` off by a year.** A May-2018 filing reports Mar-**2018**; the code said Mar-2017.
+  That made the anchor-candidate set equal to the TARGET quarter, so no anchor ever matched and 13
+  genuinely column-confirmed reads were all labelled "no anchors". The anchors were right; the
+  calendar was wrong. `memory: feedback-a-classifier-is-code-too`.
+* **A hit in an ANCHORED column is a coincidence.** TV18BRDCST's Jun-2018 filing prints owners
+  `[-1248, -298, -1199, 862]` lakh and 8.62 looks like the store's 8.39 — but the first three
+  columns reproduce our Jun-2018, Mar-2018 and Jun-2017 cells exactly, so column 4 is YEAR-ENDED
+  Mar-2018. The anchors that prove the map also disqualify the hit. (The Mar-2018 filing then gave
+  the real answer: owners `(298) / 1,606 / 839`, and 839 lakh = 8.39.)
+* **A fuzzy label matcher needs a LENGTH gate.** OCR renders "Equity holders of Parent" as "Equity
+  hOIdera of Parart", so labels must be matched fuzzily — but without a cap the same matcher found
+  "owners of the company" inside *"...the Board of Directors of the Company at its meeting..."*, and
+  THOMASCOOK Sep-2016 was reported HEAL-CORRECT off a row whose only number was the YEAR 2017
+  (2017 lakh = 20.17 ≈ the heal 20.04). A row label that answers this question is a statement
+  caption; prose never is.
+* **A figure row with no label must borrow the one above it** — these statements wrap captions over
+  two or three lines and put the figures on the last one, so a strict y-grid yields an anonymous row
+  of numbers and every label-based classifier sees nothing.
+
+★ And the general one: **`ensure_ascii` is part of the file format.** Re-dumping this ledger with
+Python's default escaped `§` and `—` in 672 untouched entries — an 1,800-line diff for 58
+annotations, in a file a parallel campaign was writing at the same time.
+
+### 113e. What landed, and what is still open
+
+Written: **58 `confirmed_by_document` annotations** on the retracted entries in `fund_cell_fix.json`
+(33 confirmed, 3 vintage-open, 22 measured-absent), each naming the document, the row and the
+column-map anchor. No value moved — proven by running `apply_fund_cell_fix.py` before and after:
+identical output (`to-write 0 | already-correct 520`). `verify_fills_live.py`: 11,554 ledgered cells,
+MISSING 0, REVERTED 0, RESURRECTED 0, DRIFT 27 (all `mc_history_fills` rounding — §112a's baseline;
+the 8 cross-campaign DRIFTs of §111g are gone, retracted).
+
+Still open: **§112d's residue drops from 73 to 40** on the con side — 33 of the retractions now have
+their document. Of the rest, 22 need the vision rung for their own cell (the comparative route was
+tried and their next-quarter/next-year filings are scans too) and 3 are §109 vintage questions
+(ELECON, NAVA, TATAPOWER — the year-later comparative reads 30.05 / 36.99 / −242.48 against stored
+29.70 / 42.17 / −262.45, with FY18 having restated Tata Power for discontinued operations). Before
+any of that, run the comparative-column route over §112b's P2 (34) and P3 (35) — it cost nothing
+here and closed 30 of 59.
+
+Tools: `vintage111_{documents,read,adjudicate,land,invariant}.py`.
