@@ -1,0 +1,97 @@
+{
+ "generated": "2026-08-26",
+ "idents": {
+  "ASIANHOTEL": {
+   "isin": "INE363A01022",
+   "mc_sym": "ASIANHOTNR",
+   "note": "rung5: resolved via our own rename map ASIANHOTEL->ASIANHOTNR; identity still gated by E1 against values stored under ASIANHOTEL",
+   "sc_id": "AH",
+   "via": "symbol"
+  },
+  "BILT": {
+   "isin": "INE294A01037",
+   "mc_sym": "BALLARPUR",
+   "note": "rung5: resolved via our own rename map BILT->BALLARPUR; identity still gated by E1 against values stored under BILT",
+   "sc_id": "BI12",
+   "via": "symbol"
+  },
+  "GESHIPPING": {
+   "isin": "INE017A01032",
+   "mc_sym": "GESHIP",
+   "note": "rung5: resolved via our own rename map GESHIPPING->GESHIP; identity still gated by E1 against values stored under GESHIPPING",
+   "sc_id": "GES",
+   "via": "symbol"
+  },
+  "HTMT": {
+   "isin": "INE353A01023",
+   "mc_sym": "NDLVENTURE",
+   "note": "rung5: resolved via our own rename map HTMT->NDLVENTURE; identity still gated by E1 against values stored under HTMT",
+   "sc_id": "HFC01",
+   "via": "symbol"
+  },
+  "KIRLOSOIL": {
+   "isin": "INE250A01039",
+   "mc_sym": "KIRLOSIND",
+   "note": "rung5: resolved via our own rename map KIRLOSOIL->KIRLOSIND; identity still gated by E1 against values stored under KIRLOSOIL",
+   "sc_id": "KOE",
+   "via": "symbol"
+  },
+  "L&T": {
+   "isin": "INE018A01030",
+   "mc_sym": "LT",
+   "note": "rung5: resolved via our own rename map L&T->LT; identity still gated by E1 against values stored under L&T",
+   "sc_id": "LT",
+   "via": "symbol"
+  },
+  "NAHAREXP": {
+   "isin": "INE308A01027",
+   "mc_sym": "NAHARPOLY",
+   "note": "rung5: resolved via our own rename map NAHAREXP->NAHARPOLY; identity still gated by E1 against values stored under NAHAREXP",
+   "sc_id": "NE01",
+   "via": "symbol"
+  },
+  "NAHARSPG": {
+   "isin": "INE290A01027",
+   "mc_sym": "NAHARSPING",
+   "note": "rung5: resolved via our own rename map NAHARSPG->NAHARSPING; identity still gated by E1 against values stored under NAHARSPG",
+   "sc_id": "NSM",
+   "via": "symbol"
+  },
+  "NOVAPETRO": {
+   "isin": "INE787A01022",
+   "mc_sym": "GSLNOVA",
+   "note": "rung5: resolved via our own rename map NOVAPETRO->GSLNOVA; identity still gated by E1 against values stored under NOVAPETRO",
+   "sc_id": "NP09",
+   "via": "symbol"
+  },
+  "ORCHIDPHAR": {
+   "isin": "INE191A01027",
+   "mc_sym": "ORCHPHARMA",
+   "note": "rung5: resolved via our own rename map ORCHIDPHAR->ORCHPHARMA; identity still gated by E1 against values stored under ORCHIDPHAR",
+   "sc_id": "OCP",
+   "via": "symbol"
+  },
+  "SRIADIKARI": {
+   "isin": "INE416A01051",
+   "mc_sym": "AQYLON",
+   "note": "rung5: resolved via our own rename map SRIADIKARI->AQYLON; identity still gated by E1 against values stored under SRIADIKARI",
+   "sc_id": "SAB",
+   "via": "symbol"
+  },
+  "SUNDRMCLAY": {
+   "isin": "INE105A01035",
+   "mc_sym": "TVSHLTD",
+   "note": "rung5: resolved via our own rename map SUNDRMCLAY->TVSHLTD; identity still gated by E1 against values stored under SUNDRMCLAY",
+   "sc_id": "SC",
+   "via": "symbol"
+  },
+  "VINYLCHEM": {
+   "isin": "INE250B01029",
+   "mc_sym": "VINYLINDIA",
+   "note": "rung5: resolved via our own rename map VINYLCHEM->VINYLINDIA; identity still gated by E1 against values stored under VINYLCHEM",
+   "sc_id": "VCI02",
+   "via": "symbol"
+  }
+ },
+ "why": "RUNG 5 of the era resolver: MC id taken from OUR OWN rename authority (docs/backtest-engine.js FUND_ALIAS + scripts/_rename_map.json) when rungs 1-2 (exact symbol token, ISIN) both fail on an era ticker MC no longer prints. IDENTITY IS NOT ASSUMED FROM THE RENAME: every cell still has to pass GATE E1, whose anchors are the values stored under the OLD key, so a wrong rename fails on the first anchor. Symbols listed here that landed nothing failed exactly that way."
+}

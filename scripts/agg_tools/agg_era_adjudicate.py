@@ -143,8 +143,14 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--suspects", required=True)
     ap.add_argument("--syms")
+    ap.add_argument("--e2b", action="store_true",
+                    help="pass GATE E's E2b setting through to the re-checks this pass runs "
+                         "(target FY only; see agg_era_gate.NEIGHBOUR_FY_REQUIRED). Without it a "
+                         "run started under E2b would silently re-check under strict E2.")
     a = ap.parse_args()
 
+    if a.e2b:
+        EG.NEIGHBOUR_FY_REQUIRED = False
     cells = [tuple(c) for c in json.load(open(a.cells))]
     if a.syms:
         want = set(a.syms.split(","))
