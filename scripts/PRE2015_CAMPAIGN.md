@@ -662,6 +662,65 @@ after `web.archive.org` is added to that environment's allowed-domains list. (Tr
 a cloud run cannot show you its stdout, so have it **encode the answer in the branch name** and read
 it with `git ls-remote`.)
 
+## ✅ STEP X + E2b — pre-2009 std-PAT residue, 2026-08-26. **+221 cells; the MC route is now EXHAUSTED, measurably**
+
+Scope: the **1,852** pre-2009 cells of `_gaps_0214.json` that still had no `npStd` (429 symbols;
+2002:184 2003:592 2004:744 2005:142 2006:90 2007:75 2008:25). **Every one was a MISSING ROW**, not a
+null slot. Landed **221** (2002:24 2003:77 2004:90 2005:15 2006:10 2007:5) across 92 symbols.
+
+**First finding: this doc's "further progress needs a DIFFERENT PUBLISHER" was already half-answered.**
+Moneycontrol's LIVE deep feed is not an unprobed lead — runbook §90/§91 ran it through GATE E over
+this era in Aug-2026 and landed 444 + 750 cells. These 1,852 ARE that sweep's residue: 0 appear in
+`agg_pat_cell_fills.json`, and GATE E re-run over them today passes **exactly 1**.
+★ Re-measured MC reach over all 429 symbols (`agg_tools/_era_reach_pre09.json`): **374/429 symbols
+resolve; 749 of 1,852 gap quarters carry a standalone PAT = 40.4%.**
+
+| gate | cells | what proved it |
+|---|---|---|
+| **E2b** | 160 | E1 identity (median **83.5** of our stored quarters reproduced) + the site's own TARGET-FY quarter-sum identity + contiguity |
+| **E2b via rung-5** | 31 | same, on symbols MC no longer prints under our era ticker |
+| **X** | 30 | an exchange filing page and Moneycontrol print the SAME PAT to the paisa |
+
+* **E2b** = GATE E judging the TARGET FY only. E2's neighbour clause (§60d) is conservatism, not a
+  measurement, and it was refusing 159 cells whose own FY closed to the paisa. **Calibrated by
+  hold-out first** (`agg_tools/era_calibrate_e2.py`, 1,200 stored pre-2009 cells / 303 companies):
+  strict fills 24.9% at 2.01% mismatch, E2b fills 29.9% at 1.67%, and **the two mismatch SETS are
+  identical** — the 60 extra fills added zero disagreements. ⚠️ That base does not exist before 2002
+  (the store holds 120 rows in 2001, none earlier), so E2b is **not calibrated for 2000-2001**; every
+  cell says so in its ledger `calibration` field.
+* **RUNG 5** — resolve an era ticker MC no longer prints via OUR OWN rename authority (FUND_ALIAS +
+  `_rename_map.json`). The rename never carries identity; E1's anchors are the values stored under
+  the OLD key, so a wrong rename fails on the first one. 13 candidates, 6 landed (KIRLOSOIL→KIRLOSIND,
+  SUNDRMCLAY→TVSHLTD, NOVAPETRO→GSLNOVA, HTMT→NDLVENTURE, ORCHIDPHAR→ORCHPHARMA, VINYLCHEM→VINYLINDIA).
+* **STEP X** — this doc's own prediction for the class-D residue ("a third gate could close some
+  **without any new fetching**"), executed. On an EPS-recon refusal the attempted-ledgers journal
+  `implied=… seen=… FAIL`, and `seen` IS the page's PAT — invariant verified on all **3,915** landed
+  cells that carry the field, 0 exceptions. 76 open cells hold such a read; 38 also have an MC print;
+  **30 agree** within max(0.05cr, 0.5%) → landed as GATE X; 8 disagree and stay refused (CHOLAFIN
+  Dec-2003 NSE 11.65 vs MC 8.28). New ledger `pre2015_reads_x.json`, wired into `_apply_reads.py`.
+
+### What was tried and yielded NOTHING — do not re-run these expecting cells
+* **The adjudicator** (`agg_era_adjudicate.py --e2b`): 344 OURS-IS-THE-OUTLIER / 336 SITE-INCOHERENT /
+  303 UNDECIDED, 27 cells pass once the vetoes lift — **all 27 already landed by E2b**. Its 134
+  suspects are **all** already in `_era_suspect_cells.json`.
+* **Rung 4 by-series** on the 8 eligible unresolved symbols: **0 of 8** resolved.
+* **Annual-minus-3-siblings on MC**: 0 candidates — where MC lacks the target quarter it lacks the
+  siblings too (448 cells have the annual and **0 of 3** siblings).
+* **GATE F-solo** (`agg_tools/agg_era_gate_f.py`) — built for the 75 anchorless cells LANDING RULES
+  would allow single-source, then **REFUSED on its own hold-out**: 6.21% mismatch target-FY-only,
+  4.87% with both neighbours, against E2b's 1.67% on the same 1,200 cells. ★ **That is what E1 is
+  worth**: the anchor identity, not the FY identity, is what makes this route safe in this era.
+  Committed as the record of the refusal, not as a fill path.
+
+### The residue, named cell by cell → `agg_tools/_pre09_pat_residue_taxonomy.json`
+GATE E2b over the **1,631** still-open cells passes **0** — measured, not inferred.
+A1 187 MC cannot resolve the symbol · A2 441 resolves but EMPTY quarterly table · B1 477 has the
+company, not that quarter · B2 157 its own target FY does not close · B3 227 disagrees with one of
+OUR cells within ±6q · B4 66 too many global disagreements · B5 46 no FY testable · B6 26 <8 anchors
+· B7 4 neighbour period absent. **256 of the 1,631 sit on 59 symbols with NO `sf_fundamentals` key at
+all** (BAYER, BILT, INDAL, KELVINATOR…) — a roster/era-orphan seam, a different campaign.
+Checked and NOT the explanation: only **5** open cells are already covered by their FUND_ALIAS target.
+
 ## 🔎 STEP B candidate — BSE's ARCHIVED website (scoped 2026-08-07, NOT yet built)
 
 **The one live lead left for 2002-04.** The design-time verdict "no structured exchange source
