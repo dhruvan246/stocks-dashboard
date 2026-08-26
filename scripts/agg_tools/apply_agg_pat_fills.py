@@ -204,7 +204,12 @@ def main():
         filled += 1
         touched.add((sym, qe))
 
-        ch = p["chosen"]
+        # `chosen` is the aggregator gate's shape. A non-aggregator gate (e.g. the archived-exchange
+        # reader in scripts/wayback_nse/) has no site/row/precision in that form, and inventing one
+        # would put a Moneycontrol provenance string on a page that never came from Moneycontrol --
+        # the same wrong-source-named defect the `evidence` fallback below was just fixed for.
+        # So `chosen` is optional, and `src` is overridable by the proposal.
+        ch = p.get("chosen") or {}
         jkey = "%s|%d" % (sym, qe)
         journal.setdefault(jkey, {})
         journal[jkey].update({
@@ -215,9 +220,11 @@ def main():
             # ledger grew by 309 entries. Same class as the three-part-key trap noted below.
             BASIS_KEY[field]: p["value"],
             "state": p["state"],
-            "precision": ch["precision"],
-            "src": "%s quarterly-results API (runbook §81)" % SITE_NAME.get(ch["site"], ch["site"]),
-            "row_label": ch["row"],
+            "precision": ch.get("precision"),
+            "src": p.get("src") or (
+                "%s quarterly-results API (runbook §81)" % SITE_NAME.get(ch["site"], ch["site"])
+                if ch.get("site") else "unnamed source (proposal carried no src)"),
+            "row_label": ch.get("row"),
             "resolved_via": p.get("resolved_via", "symbol"),
             "ann_written": row[ai],
             "ann_basis": ANN_BASIS,
