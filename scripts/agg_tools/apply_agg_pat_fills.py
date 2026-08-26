@@ -144,6 +144,17 @@ def main():
                          "qe+45d stands. Read ann_for()'s docstring before adding one: it needs "
                          "evidence (older stored rows with REAL announce dates, or a rename map "
                          "entry), never a hunch.")
+    # ⚠️ THE GATE'S CALIBRATION BASE BELONGS IN THE LEDGER, NOT ONLY IN THE COMMIT MESSAGE.
+    # A commit message is invisible to the next sweep; the ledger is what the next sweep reads.
+    # GATE E2b was calibrated by hold-out against cells we ALREADY store, so its measured error
+    # rate is only meaningful where such cells exist: the store holds 120 rows in 2001 and NONE
+    # before, so a 2000-2001 fill is running an UNCALIBRATED gate and must say so per cell.
+    # Same for a thin-anchor symbol inside a calibrated era.
+    ap.add_argument("--gate", help="the gate name to journal per cell, e.g. 'E2b'.")
+    ap.add_argument("--calibration",
+                    help="one sentence naming the hold-out this gate's setting was calibrated on "
+                         "(population, era, measured mismatch) -- or the word 'none' when there is "
+                         "no ground truth to calibrate against in the era being filled.")
     a = ap.parse_args()
 
     props = json.load(open(a.props))["proposals"]
@@ -232,6 +243,10 @@ def main():
             "fy_check": p.get("fy_check"),
             "applied": "%s %s" % (a.stamp, a.label),
         })
+        if a.gate:
+            journal[jkey]["gate"] = a.gate
+        if a.calibration:
+            journal[jkey]["calibration"] = a.calibration
 
     # ---- REPAIR: ann dates this ledger wrote BEFORE the floor existed (§99)
     # Scoped three ways, because raising a date is still a write into a shared file:
