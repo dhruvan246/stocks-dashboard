@@ -437,16 +437,18 @@ async function loadTrades(){
   try{
     const mk=a=>({sym:a[0],od:a[1],cd:a[2],qty:a[3],opx:a[4],cpx:a[5],pnl:a[6],gain:a[7]});
     if(MODE==='local'){ const r=await fetch('./trades.json',{cache:'no-store'}); if(!r.ok) return;
-      const d=await r.json(); TRADES={updated:d.updated, byPf:{}, summary:{}, monthly:{}, partial:false};
+      const d=await r.json(); TRADES={updated:d.updated, byPf:{}, summary:{}, monthly:{}, byStock:{}, partial:false};
       (d.trades||[]).forEach(t=>{ (TRADES.byPf[t.pf]=TRADES.byPf[t.pf]||[]).push({sym:t.invSym,od:t.openDate,cd:t.closeDate,qty:t.qty,opx:t.openPx,cpx:t.closePx,pnl:t.pnl,gain:t.gainPct});
         const su=TRADES.summary[t.pf]=TRADES.summary[t.pf]||{n:0,pnl:0,wins:0}; su.n++; su.pnl+=t.pnl; if(t.pnl>0)su.wins++;
-        const mm=TRADES.monthly[t.pf]=TRADES.monthly[t.pf]||{}; const ym=t.closeDate.slice(0,7); mm[ym]=(mm[ym]||0)+t.pnl; });
+        const mm=TRADES.monthly[t.pf]=TRADES.monthly[t.pf]||{}; const ym=t.closeDate.slice(0,7); mm[ym]=(mm[ym]||0)+t.pnl;
+        const bs=TRADES.byStock[t.pf]=TRADES.byStock[t.pf]||{}; const b=bs[t.invSym]=bs[t.invSym]||[0,0]; b[0]+=t.pnl; b[1]++; });
       for(const pf in TRADES.monthly){ TRADES.monthly[pf]=Object.entries(TRADES.monthly[pf]).map(([ym,v])=>[ym,v]).sort((a,b)=>a[0]<b[0]?-1:1); }
+      for(const pf in TRADES.byStock){ TRADES.byStock[pf]=Object.entries(TRADES.byStock[pf]).map(([sym,v])=>[sym,v[0],v[1]]).sort((a,b)=>a[1]-b[1]); }
       return; }
     const t=readToken(); if(!t) return;
     const r=await fetch(SUPA_GET+'?token='+encodeURIComponent(t+'.trades')+'&apikey='+SUPA_ANON,{cache:'no-store'});
     if(!r.ok) return; const row=await r.json(); if(!row||!row.z) return;
-    const d=await unzipRow(row); TRADES={updated:d.u, byPf:{}, summary:{}, monthly:(d.m||{}), partial:false};
+    const d=await unzipRow(row); TRADES={updated:d.u, byPf:{}, summary:{}, monthly:(d.m||{}), byStock:(d.k||{}), partial:false};
     for(const pf in (d.s||{})){ const a=d.s[pf]; TRADES.summary[pf]={n:a[0],pnl:a[1],wins:a[2]}; }
     for(const pf in (d.r||{})){ TRADES.byPf[pf]=d.r[pf].map(mk); if(TRADES.byPf[pf].length<(TRADES.summary[pf]?TRADES.summary[pf].n:0)) TRADES.partial=true; }
   }catch(e){ console.warn('trades not loaded:',e.message); }
@@ -1380,13 +1382,22 @@ function renderClosed(rows){
   if(ordered.length>1){ h+='<div class="stabs">'+ordered.map(x=>{ const i=(DOC.portfolios||[]).findIndex(p=>p.id===x.pf);
     return '<button class="stab'+(sel===x.pf?' on':'')+'" data-ctab="'+esc(x.pf)+'"><span class="dot2" style="background:'+SLOT[(i<0?0:i)%8]+'"></span>'+esc(x.name)+' <span class="sym">'+x.sum.n+'</span></button>'; }).join('')+
     '<button class="stab'+(sel==='__all__'?' on':'')+'" data-ctab="__all__">All '+ordered.reduce((a,x)=>a+x.sum.n,0)+'</button></div>'; }
-  h+='<div class="trio"><div class="t"><div class="l">Realized P&L</div><div class="v '+cls(total)+' secret">'+inrSigned(total)+'</div><div class="s">'+nTot+' closed trade'+(nTot!==1?'s':'')+'</div></div>'+
+  const unreal=ROWS.filter(r=>shownSel.some(x=>x.pf===r.pf)&&r.pnl!=null).reduce((a,r)=>a+r.pnl,0);
+  h+='<div class="trio"><div class="t"><div class="l">Realized P&L</div><div class="v '+cls(total)+' secret">'+inrSigned(total)+'</div><div class="s">'+nTot+' closed \u00b7 booked</div></div>'+
+     '<div class="t"><div class="l">Open (unrealised)</div><div class="v '+cls(unreal)+' secret">'+inrSigned(unreal)+'</div><div class="s">still held</div></div>'+
      '<div class="t"><div class="l">Win rate</div><div class="v '+(wins/Math.max(1,nTot)>=0.5?'up':'')+'">'+(nTot?Math.round(wins/nTot*100):0)+'%</div><div class="s">'+wins+' up \u00b7 '+(nTot-wins)+' down</div></div></div>';
   /* realized P&L by month (investing.com's "Revenue / Monthly P/L" — built from the trade log) */
   const mAgg={};
   shownSel.forEach(x=>{ (TRADES.monthly[x.pf]||[]).forEach(([ym,v])=>{ mAgg[ym]=(mAgg[ym]||0)+v; }); });
-  const mKeys=Object.keys(mAgg).sort().slice(-18);   // last ~18 months (like investing's Monthly P/L)
-  if(mKeys.length>1){ h+='<div class="note" style="padding:2px 4px 4px">Realized P&L by month'+(Object.keys(mAgg).length>mKeys.length?' (last '+mKeys.length+')':'')+'</div><div id="chClosedMonthly"></div>'; }
+  const allM=Object.keys(mAgg).sort();
+  let cum=0; const cumSeries=allM.map(ym=>{ cum+=mAgg[ym]; return cum; });   // cumulative realized P&L over time
+  if(allM.length>1){ h+='<div class="note" style="padding:2px 4px 4px">Cumulative realized P&L</div><div id="chClosedCum"></div>'; }
+  const mKeys=allM.slice(-18);   // last ~18 months (like investing's Monthly P/L)
+  if(mKeys.length>1){ h+='<div class="note" style="padding:10px 4px 4px">Realized P&L by month'+(allM.length>mKeys.length?' (last '+mKeys.length+')':'')+'</div><div id="chClosedMonthly"></div>'; }
+  const stk={}; shownSel.forEach(x=>{ ((TRADES.byStock&&TRADES.byStock[x.pf])||[]).forEach(([sym,pnl,cnt])=>{ const e=stk[sym]=stk[sym]||[0,0]; e[0]+=pnl; e[1]+=cnt; }); });
+  const stkArr=Object.entries(stk).map(([sym,v])=>({sym,pnl:v[0],cnt:v[1]})).sort((a,b)=>b.pnl-a.pnl);
+  const stkShow=stkArr.length<=16?stkArr:stkArr.slice(0,8).concat(stkArr.slice(-8));
+  if(stkShow.length>1){ h+='<div class="note" style="padding:10px 4px 4px">Biggest winners &amp; losers by stock'+(stkArr.length>stkShow.length?' (top &amp; bottom 8)':'')+'</div><div id="chClosedStock"></div>'; }
   h+='<div class="twrap tvscroll"><table><thead><tr><th>Stock</th><th class="hide-sm">Bought</th><th>Sold</th><th class="hide-sm">Qty</th><th class="hide-sm">Buy</th><th class="hide-sm">Sell</th><th>Gain</th><th>P&L</th></tr></thead><tbody>';
   trs.forEach(t=>{ h+='<tr><td><span class="secret"><b>'+esc(t.sym)+'</b></span></td>'+
     '<td class="hide-sm"><span class="sym">'+shortDate(t.od)+'</span></td><td><span class="sym">'+shortDate(t.cd)+'</span></td>'+
@@ -1394,7 +1405,9 @@ function renderClosed(rows){
     '<td class="'+cls(t.gain)+'">'+pct(t.gain)+'</td><td class="'+cls(t.pnl)+' secret">'+inrSigned(t.pnl)+'</td></tr>'; });
   h+='</tbody></table></div>';
   body.innerHTML=h;
+  if(allM.length>1 && $('chClosedCum')) lineChart($('chClosedCum'), {cal:allM.map(ym=>isoToOff(ym+'-01')), h:190, secretY:true, series:[{name:'Realized P&L', color:'var(--s3)', vals:cumSeries, fill:true}], fmtY:v=>inr(v,1), fmtT:v=>inr(v)});
   if(mKeys.length>1 && $('chClosedMonthly')) barsV($('chClosedMonthly'), mKeys.map(ym=>({label:ym.slice(5)+'/'+ym.slice(2,4), full:ym, value:mAgg[ym]})), {fmtV:v=>inrSigned(v), secretValues:true});
+  if(stkShow.length>1 && $('chClosedStock')) barsH($('chClosedStock'), stkShow.map(x=>({label:x.sym, full:x.sym+' \u00b7 '+x.cnt+' trade'+(x.cnt!==1?'s':''), value:x.pnl, tip:'<div class="r"><span>Realized</span><b class="secret">'+inrSigned(x.pnl)+'</b></div><div class="r"><span>Trades</span><b>'+x.cnt+'</b></div>'})), {fmtV:v=>inrSigned(v), labW:110, secretLabels:true, secretValues:true, rowH:22});
   body.querySelectorAll('.stab').forEach(b=>b.onclick=()=>{ SEL.closedTab=b.dataset.ctab; renderClosed(visibleRows()); });
 }
 function renderAll(){
