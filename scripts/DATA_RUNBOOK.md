@@ -12604,3 +12604,46 @@ Wired at three points and each one was tested by injecting `M&AMP;M` and confirm
 "all duplicates") rather than the *measurement* that produced it, and both halves rotted. Re-measure
 against `origin/main` before acting on any recorded coverage claim — and check the SERVED payload, not
 the store you happen to have open.
+
+### e. ★★★ "SOURCE-EXHAUSTED" IS A CLAIM ABOUT THE SOURCE **RELATIVE TO THE CELLS YOU ASKED FOR**
+Same session, same shape, a third time — and this one is the general form.
+
+`PRE2015_CAMPAIGN.md` marks **STEP W COMPLETE**: 2,319 landed / 2,174 refused / **0 open**, refusals
+audited three separate ways offline against a 4,670-page cache, with an explicit instruction not to
+keep sweeping. That verdict is **correct and honest**. Its CDX enumeration was also complete —
+independently re-measured 2026-08-26: distinct archived `results.jsp` pages by capture year came to
+**891 / 2,966 / 4,792 / 1,923 / 299 = 10,871** against STEP W's reported **892 / 2,967 / 4,791 /
+1,925 / 299 = 10,874**. Three pages apart across five years.
+
+⚠️ A 2× gap appeared first and was nearly diagnosed as a silent endpoint cap (STEP W validated
+against a 60,000-ROW cap while CDX also truncates on BYTES). It was neither: **20,847 raw captures
+vs 10,871 distinct pages** — repeat snapshots of the same page. *Two numbers that measure different
+things, differenced.* Ask what your own number counts before diagnosing someone else's.
+
+**But STEP W's target set was 2002-2004.** The pages it had already indexed carry periods well
+before that — distinct pages by PERIOD-END year: **2000: 146 · 2001: 1,327** · 2002: 2,406 ·
+2003: 3,449 · 2004: 3,026 · 2005: 454 · 2006: 63. **1,473 pages with a period ending in 2000-2001
+were enumerated and never requested**, because at the time no gap cell existed to target them: the
+store holds 0 rows before 2001 and 120 in 2001, so nothing could ask. The source held the data all
+along and the exhaustion verdict was still honest.
+
+**Record the TARGET SET alongside any exhaustion verdict.** "Exhausted for 2002-2004 cells" is a
+durable claim; "exhausted" is not. Corollary, and the reason this keeps happening: **when the store
+later gains the ability to ASK for something — a new era, a new parameter, a longer reach-back —
+previously-exhausted sources reopen automatically and silently, and no sweep will tell you.**
+
+The three instances this session were all the same failure with correct measurements and too small a
+frame: a gap enumerated by calendar era instead of by what the parameters reach back to (§112c); a
+source exhausted against an incomplete target set (here); and the coverage matrix excusing cells for
+lacking rows we had simply never captured (§112a).
+
+### f. A GATE THAT REQUIRES A TOKEN ITS ERA NEVER PRINTED MEASURES THE GATE, NOT THE DATA
+The archived NSE page declares its basis in `Result Type` — but only from ~2002. The 2000-2001
+revision prints **two** axes (`Unaudited, Non-Cumulative`); the third (`Non-Consolidated`) does not
+exist yet. A harvester gate requiring it refused **44 of the first 75 true quarters** for lacking a
+token the era never emitted — absence manufactured by the instrument, the sibling of the byte-cap
+above and of STEP W's own "absent from cache during a wayback outage" audit flaw. Require a declared
+field only where that document revision declares it, and calibrate the relaxed form by hold-out
+before writing. ⚠️ And state the hold-out's own limit: a calibration against cells we already hold
+is evidence about **well-covered companies**, while the cells actually wanted are the ones with no
+stored value to check against.
