@@ -228,15 +228,23 @@ def main():
                                ("first bar declared a TAPE SEAM (--seam-syms), not a listing date, "
                                 "so the §99 floor is not applied and qe+45d stands"
                                 if floor_from == "SEAM" else None)),
-            # A proposal may carry its OWN evidence sentence. The template below describes a
-            # gate A/A2 pass and nothing else, so a cell the quarterly gate REFUSED and an
-            # independent axis then adjudicated would be journalled as something it is not --
-            # the ledger would assert a check that never ran (§96g, the ledger-guard class).
+            # A proposal may carry its OWN evidence sentence, and it SHOULD -- only the gate knows
+            # which gate it ran. The old fallback here asserted "gate A/A2 passed" unconditionally,
+            # and its own comment described that as a known limitation instead of fixing it, so
+            # every GATE-E and GATE-E2b cell was journalled as a gate-A pass that never ran
+            # (191 of this campaign's own cells among them, corrected 2026-08-26 from the
+            # DECISION-TIME proposals, never from a re-run -- a re-run anchors against the cells
+            # the batch itself wrote and reports stronger evidence than the decision had).
+            # ★ A comment that explains a wrong output is the defect's alibi, not its documentation.
+            # The fallback now claims only what it can see: a proposal carrying `fy_check` came
+            # from an FY-identity gate, not from gate A, and an unnamed gate says so.
             "evidence": p.get("evidence") or
-                        ("gate A/A2 passed: that site's own %s series reproduces %d of our stored "
-                         "quarters with zero disagreements in the local window, worst anchor error "
-                         "%.4f; nearest anchor within 4 quarters" %
-                         (field, ch["anchors"], ch["worst_anchor"])),
+                        ("gate %s: that site's own %s series reproduces %d of our stored quarters, "
+                         "worst anchor error %.4f. ⚠️ The GATE NAME was not supplied by the "
+                         "proposal, so this entry records what the applier could verify and no "
+                         "more -- re-derive it from the run that decided the cell if you need it."
+                         % ("with an FY-identity check (A5/E2-family)" if p.get("fy_check")
+                            else "UNNAMED", field, ch["anchors"], ch["worst_anchor"])),
             "field": field,
             "corroborated_by": [SITE_NAME.get(s, s) for s in p.get("corroborated_by", [])],
             "site_reach": p.get("sites", {}),
