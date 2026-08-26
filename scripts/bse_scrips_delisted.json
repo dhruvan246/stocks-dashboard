@@ -1,29 +1,575 @@
 {
- "_doc": "BSE scrip codes for DELISTED/merged symbols, which scripts/bse_scrips.json cannot carry: its by_id map is built from BSE's ACTIVE-equity scrape (ListofScripData?status=Active), so a company that has since delisted or merged simply is not in it -- the same survivorship gap that leaves meta.ind='Unknown' for these names (see scripts/industry_fills.json). Consumers that look a symbol up to fetch its BSE announcements then fail with 'no-scrip' and record a skip, and the quarter's real declared date stays unrecoverable. Merged by backfill_ann_dates_bse.scrip_map() BEFORE bse_resolve.guard_map(), so the ISIN conflict guard still gets the final say (runbook 76: a scrip_id equal to the ticker is a COINCIDENCE, never identity).",
- "_identity_gate": "EXACT ISIN match between docs/sf_stock_data.bin meta[SYM].isin and ISIN_NUMBER in BSE's all-status master (ListofScripData?...&status= , 10,812 rows -- Active 4,975 + Delisted 4,612 + Suspended 1,222; the nightly workflow fetches status=Active only, which is why these are missing). Each row's returned scrip_id and company name were read and agree with the symbol. No name-only or scrip_id-only match was accepted.",
- "_generated": "2026-08-16 17:55 IST",
  "_campaign": "scripts/PLAN_N500_COVERAGE_2015_2020.md (revStd/patStd -> 100%, the ann=0 class)",
+ "_doc": "BSE scrip codes for DELISTED/merged symbols, which scripts/bse_scrips.json cannot carry: its by_id map is built from BSE's ACTIVE-equity scrape (ListofScripData?status=Active), so a company that has since delisted or merged simply is not in it -- the same survivorship gap that leaves meta.ind='Unknown' for these names (see scripts/industry_fills.json). Consumers that look a symbol up to fetch its BSE announcements then fail with 'no-scrip' and record a skip, and the quarter's real declared date stays unrecoverable. Merged by backfill_ann_dates_bse.scrip_map() BEFORE bse_resolve.guard_map(), so the ISIN conflict guard still gets the final say (runbook 76: a scrip_id equal to the ticker is a COINCIDENCE, never identity).",
+ "_generated": "2026-08-16 17:55 IST",
+ "_identity_gate": "EXACT ISIN match between docs/sf_stock_data.bin meta[SYM].isin and ISIN_NUMBER in BSE's all-status master (ListofScripData?...&status= , 10,812 rows -- Active 4,975 + Delisted 4,612 + Suspended 1,222; the nightly workflow fetches status=Active only, which is why these are missing). Each row's returned scrip_id and company name were read and agree with the symbol. No name-only or scrip_id-only match was accepted.",
  "scrips": {
+  "ABGSHIP": {
+   "bse_code": "532682",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE067H01016, 532682) == BSE all-status master row",
+   "isin": "INE067H01016",
+   "name": "ABG Shipyard Ltd",
+   "status": "Delisted"
+  },
+  "ABHISHEK": {
+   "bse_code": "532831",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE004I01017, 532831) == BSE all-status master row",
+   "isin": "INE004I01017",
+   "name": "Abhishek Corporation Ltd",
+   "status": "Suspended"
+  },
+  "ADVANTA": {
+   "bse_code": "532840",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE517H01028, 532840) == BSE all-status master row",
+   "isin": "INE517H01028",
+   "name": "Advanta Ltd",
+   "status": "Delisted"
+  },
+  "AIFL": {
+   "bse_code": "535467",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE428O01016, 535467) == BSE all-status master row",
+   "isin": "INE428O01016",
+   "name": "Ashapura Intimates Fashion Ltd",
+   "status": "Suspended"
+  },
+  "ARCOTECH": {
+   "bse_code": "532914",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE574I01035, 532914) == BSE all-status master row",
+   "isin": "INE574I01035",
+   "name": "Arcotech Ltd",
+   "status": "Suspended"
+  },
+  "ARROWTEX": {
+   "bse_code": "533068",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE933J01015, 533068) == BSE all-status master row",
+   "isin": "INE933J01015",
+   "name": "Arrow Textiles Ltd",
+   "status": "Delisted"
+  },
+  "ARSSINFRA": {
+   "bse_code": "533163",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE267I01010, 533163) == BSE all-status master row",
+   "isin": "INE267I01010",
+   "name": "ARSS Infrastructure Projects Ltd",
+   "status": "Suspended"
+  },
+  "ASIL": {
+   "bse_code": "521076",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE988A01026, 521076) == BSE all-status master row",
+   "isin": "INE988A01026",
+   "name": "Amit Spinning Industries Ltd",
+   "status": "Suspended"
+  },
+  "ASSAMCO": {
+   "bse_code": "500024",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE442A01024, 500024) == BSE all-status master row",
+   "isin": "INE442A01024",
+   "name": "Assam Company India Ltd",
+   "status": "Delisted"
+  },
+  "BALLARPUR": {
+   "bse_code": "500102",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE294A01037, 500102) == BSE all-status master row",
+   "isin": "INE294A01037",
+   "name": "Ballarpur Industries Ltd",
+   "status": "Suspended"
+  },
+  "BILENERGY": {
+   "bse_code": "533321",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE607L01029, 533321) == BSE all-status master row",
+   "isin": "INE607L01029",
+   "name": "Bil Energy Systems Ltd",
+   "status": "Suspended"
+  },
+  "BRFL": {
+   "bse_code": "532678",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE589G01011, 532678) == BSE all-status master row",
+   "isin": "INE589G01011",
+   "name": "Bombay Rayon Fashions Ltd",
+   "status": "Suspended"
+  },
+  "CANDC": {
+   "bse_code": "532813",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE874H01015, 532813) == BSE all-status master row",
+   "isin": "INE874H01015",
+   "name": "C & C Constructions Ltd",
+   "status": "Suspended"
+  },
+  "CMC": {
+   "bse_code": "517326",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE314A01017, 517326) == BSE all-status master row",
+   "isin": "INE314A01017",
+   "name": "CMC Ltd",
+   "status": "Delisted"
+  },
+  "CNOVAPETRO": {
+   "bse_code": "533407",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE672K01025, 533407) == BSE all-status master row",
+   "isin": "INE672K01025",
+   "name": "True Green Bio Energy Ltd",
+   "status": "Active"
+  },
+  "CONSOFINVT": {
+   "bse_code": "500226",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE025A01027, 500226) == BSE all-status master row",
+   "isin": "INE025A01027",
+   "name": "Consolidated Finvest & Holdings Ltd",
+   "status": "Delisted"
+  },
+  "COX&KINGS": {
+   "bse_code": "533144",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE008I01026, 533144) == BSE all-status master row",
+   "isin": "INE008I01026",
+   "name": "Cox & Kings Ltd",
+   "status": "Delisted"
+  },
+  "DCHL": {
+   "bse_code": "532608",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE137G01027, 532608) == BSE all-status master row",
+   "isin": "INE137G01027",
+   "name": "Deccan Chronicle Holdings Ltd",
+   "status": "Delisted"
+  },
+  "ECEIND": {
+   "bse_code": "532491",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE588B01014, 532491) == BSE all-status master row",
+   "isin": "INE588B01014",
+   "name": "ECE Industries Ltd",
+   "status": "Delisted"
+  },
+  "ELDERPHARM": {
+   "bse_code": "532322",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE975A01015, 532322) == BSE all-status master row",
+   "isin": "INE975A01015",
+   "name": "Elder Pharmaceuticals Ltd",
+   "status": "Delisted"
+  },
+  "ENTEGRA": {
+   "bse_code": "532287",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE826A01028, 532287) == BSE all-status master row",
+   "isin": "INE826A01028",
+   "name": "Entegra Ltd",
+   "status": "Delisted"
+  },
+  "ERAINFRA": {
+   "bse_code": "530323",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE039E01020, 530323) == BSE all-status master row",
+   "isin": "INE039E01020",
+   "name": "Era Infra Engineering Ltd",
+   "status": "Suspended"
+  },
+  "ESSDEE": {
+   "bse_code": "532787",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE825H01017, 532787) == BSE all-status master row",
+   "isin": "INE825H01017",
+   "name": "Ess Dee Aluminium Ltd",
+   "status": "Delisted"
+  },
+  "GALLISPAT": {
+   "bse_code": "533265",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE528K01029, 533265) == BSE all-status master row",
+   "isin": "INE528K01029",
+   "name": "Gallantt Ispat Ltd",
+   "status": "Delisted"
+  },
+  "GARDENSILK": {
+   "bse_code": "500155",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE526A01016, 500155) == BSE all-status master row",
+   "isin": "INE526A01016",
+   "name": "Garden Silk Mills Ltd",
+   "status": "Delisted"
+  },
+  "GEOMETRIC": {
+   "bse_code": "532312",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE797A01021, 532312) == BSE all-status master row",
+   "isin": "INE797A01021",
+   "name": "Geometric Ltd",
+   "status": "Delisted"
+  },
+  "GOENKA": {
+   "bse_code": "533189",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE516K01024, 533189) == BSE all-status master row",
+   "isin": "INE516K01024",
+   "name": "Goenka Diamond & Jewels Ltd",
+   "status": "Suspended"
+  },
+  "GSCLCEMENT": {
+   "bse_code": "518029",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE542A01039, 518029) == BSE all-status master row",
+   "isin": "INE542A01039",
+   "name": "Gujarat Sidhee Cement Ltd",
+   "status": "Delisted"
+  },
+  "GSKCONS": {
+   "bse_code": "500676",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE264A01014, 500676) == BSE all-status master row",
+   "isin": "INE264A01014",
+   "name": "GlaxoSmithkline Consumer Healthcare Ltd",
+   "status": "Delisted"
+  },
+  "GTNIND": {
+   "bse_code": "500170",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE537A01013, 500170) == BSE all-status master row",
+   "isin": "INE537A01013",
+   "name": "GTN Industries Ltd",
+   "status": "Active"
+  },
+  "HDFC": {
+   "bse_code": "500010",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE001A01036, 500010) == BSE all-status master row",
+   "isin": "INE001A01036",
+   "name": "Housing Development Finance Corporation Ltd",
+   "status": "Delisted"
+  },
+  "HINDSYNTEX": {
+   "bse_code": "503881",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE155B01012, 503881) == BSE all-status master row",
+   "isin": "INE155B01012",
+   "name": "Hind Syntex Ltd",
+   "status": "Delisted"
+  },
+  "ICSA": {
+   "bse_code": "531524",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE306B01029, 531524) == BSE all-status master row",
+   "isin": "INE306B01029",
+   "name": "ICSA (India) Ltd",
+   "status": "Suspended"
+  },
+  "IMPEXFERRO": {
+   "bse_code": "532614",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE691G01015, 532614) == BSE all-status master row",
+   "isin": "INE691G01015",
+   "name": "Impex Ferro Tech Ltd",
+   "status": "Suspended"
+  },
+  "INOXLEISUR": {
+   "bse_code": "532706",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE312H01016, 532706) == BSE all-status master row",
+   "isin": "INE312H01016",
+   "name": "INOX Leisure Ltd",
+   "status": "Delisted"
+  },
+  "JINDCOT": {
+   "bse_code": "533103",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE904J01016, 533103) == BSE all-status master row",
+   "isin": "INE904J01016",
+   "name": "Jindal Cotex Ltd",
+   "status": "Delisted"
+  },
   "JSLHISAR": {
    "bse_code": "539597",
+   "identity_gate": "isin-exact + scrip_id and name agree",
    "isin": "INE455T01018",
    "name": "Jindal Stainless (Hisar) Ltd",
-   "status": "Delisted",
-   "identity_gate": "isin-exact + scrip_id and name agree"
+   "status": "Delisted"
+  },
+  "KOTHARIPET": {
+   "bse_code": "532096",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE720A01015, 532096) == BSE all-status master row",
+   "isin": "INE720A01015",
+   "name": "Kothari Engineers Ltd",
+   "status": "Delisted"
+  },
+  "KSK": {
+   "bse_code": "532997",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE143H01015, 532997) == BSE all-status master row",
+   "isin": "INE143H01015",
+   "name": "KSK Energy Ventures Ltd",
+   "status": "Suspended"
+  },
+  "KSOILS": {
+   "bse_code": "526209",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE727D01022, 526209) == BSE all-status master row",
+   "isin": "INE727D01022",
+   "name": "K S Oils Ltd",
+   "status": "Suspended"
+  },
+  "LAKSHMIEFL": {
+   "bse_code": "519570",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE992B01026, 519570) == BSE all-status master row",
+   "isin": "INE992B01026",
+   "name": "Lakshmi Overseas Industries Ltd",
+   "status": "Suspended"
+  },
+  "MANGTIMBER": {
+   "bse_code": "516007",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE805B01012, 516007) == BSE all-status master row",
+   "isin": "INE805B01012",
+   "name": "Mangalam Timber Products Ltd",
+   "status": "Delisted"
+  },
+  "MELSTAR": {
+   "bse_code": "532307",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE817A01019, 532307) == BSE all-status master row",
+   "isin": "INE817A01019",
+   "name": "Melstar Information Technologies Ltd",
+   "status": "Suspended"
+  },
+  "MERCATOR": {
+   "bse_code": "526235",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE934B01028, 526235) == BSE all-status master row",
+   "isin": "INE934B01028",
+   "name": "Mercator Ltd",
+   "status": "Suspended"
+  },
+  "MOHOTAIND": {
+   "bse_code": "530047",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE313D01013, 530047) == BSE all-status master row",
+   "isin": "INE313D01013",
+   "name": "Mohota Industries Ltd",
+   "status": "Delisted"
+  },
+  "NAGAROIL": {
+   "bse_code": "534184",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE453M01018, 534184) == BSE all-status master row",
+   "isin": "INE453M01018",
+   "name": "Nagarjuna Oil Refinery Ltd",
+   "status": "Delisted"
+  },
+  "NATNLSTEEL": {
+   "bse_code": "513179",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE088B01015, 513179) == BSE all-status master row",
+   "isin": "INE088B01015",
+   "name": "National Steel and Agro Industries Ltd",
+   "status": "Delisted"
+  },
+  "NRC": {
+   "bse_code": "503780",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE953C01018, 503780) == BSE all-status master row",
+   "isin": "INE953C01018",
+   "name": "NRC Ltd",
+   "status": "Delisted"
+  },
+  "OPTOCIRCUI": {
+   "bse_code": "532391",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE808B01016, 532391) == BSE all-status master row",
+   "isin": "INE808B01016",
+   "name": "Opto Circuits (India) Ltd",
+   "status": "Suspended"
+  },
+  "PAEL": {
+   "bse_code": "517230",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE766A01026, 517230) == BSE all-status master row",
+   "isin": "INE766A01026",
+   "name": "Aurique Ltd",
+   "status": "Suspended"
+  },
+  "PENPEBS": {
+   "bse_code": "539333",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE455O01019, 539333) == BSE all-status master row",
+   "isin": "INE455O01019",
+   "name": "Pennar Engineered Building Systems Ltd",
+   "status": "Delisted"
+  },
+  "PODDARHOUS": {
+   "bse_code": "523628",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE888B01018, 523628) == BSE all-status master row",
+   "isin": "INE888B01018",
+   "name": "Poddar Housing and Development Ltd",
+   "status": "Suspended"
+  },
+  "PRADIP": {
+   "bse_code": "533178",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE495J01015, 533178) == BSE all-status master row",
+   "isin": "INE495J01015",
+   "name": "Pradip Overseas Ltd",
+   "status": "Delisted"
+  },
+  "RAJVIR": {
+   "bse_code": "532665",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE011H01014, 532665) == BSE all-status master row",
+   "isin": "INE011H01014",
+   "name": "Rajvir Industries Ltd",
+   "status": "Suspended"
+  },
+  "RANBAXY": {
+   "bse_code": "500359",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE015A01028, 500359) == BSE all-status master row",
+   "isin": "INE015A01028",
+   "name": "Ranbaxy Laboratories Ltd",
+   "status": "Delisted"
+  },
+  "RANEENGINE": {
+   "bse_code": "532988",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE222J01013, 532988) == BSE all-status master row",
+   "isin": "INE222J01013",
+   "name": "Rane Engine Valve Ltd",
+   "status": "Delisted"
+  },
+  "RASOYPR": {
+   "bse_code": "531522",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE904G01038, 531522) == BSE all-status master row",
+   "isin": "INE904G01038",
+   "name": "Rasoya Proteins Ltd",
+   "status": "Delisted"
+  },
+  "RELCAPITAL": {
+   "bse_code": "500111",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE013A01015, 500111) == BSE all-status master row",
+   "isin": "INE013A01015",
+   "name": "Reliance Capital Ltd",
+   "status": "Delisted"
+  },
+  "RELMEDIA": {
+   "bse_code": "532399",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE540B01015, 532399) == BSE all-status master row",
+   "isin": "INE540B01015",
+   "name": "Reliance MediaWorks Ltd",
+   "status": "Delisted"
+  },
+  "RMCL": {
+   "bse_code": "532692",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE172H01014, 532692) == BSE all-status master row",
+   "isin": "INE172H01014",
+   "name": "Radha Madhav Corporation Ltd",
+   "status": "Suspended"
+  },
+  "SANGHVIFOR": {
+   "bse_code": "533411",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE263L01013, 533411) == BSE all-status master row",
+   "isin": "INE263L01013",
+   "name": "Sanghvi Forging & Engineering Ltd",
+   "status": "Delisted"
+  },
+  "SATHAISPAT": {
+   "bse_code": "526093",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE176C01016, 526093) == BSE all-status master row",
+   "isin": "INE176C01016",
+   "name": "Sathavahana Ispat Ltd",
+   "status": "Delisted"
+  },
+  "SHARONBIO": {
+   "bse_code": "532908",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE028B01029, 532908) == BSE all-status master row",
+   "isin": "INE028B01029",
+   "name": "Sharon Bio-Medicine Ltd",
+   "status": "Delisted"
+  },
+  "SKUMARSYNF": {
+   "bse_code": "514304",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE772A01016, 514304) == BSE all-status master row",
+   "isin": "INE772A01016",
+   "name": "S. Kumars Nationwide Ltd",
+   "status": "Delisted"
+  },
+  "SPECTACLE": {
+   "bse_code": "512413",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE409H01028, 512413) == BSE all-status master row",
+   "isin": "INE409H01028",
+   "name": "Spectacle Ventures Ltd",
+   "status": "Delisted"
   },
   "SPTL": {
    "bse_code": "540653",
+   "identity_gate": "isin-exact + scrip_id and name agree",
    "isin": "INE501W01021",
    "name": "Sintex Plastics Technology Ltd",
-   "status": "Delisted",
-   "identity_gate": "isin-exact + scrip_id and name agree"
+   "status": "Delisted"
+  },
+  "SUNILHITEC": {
+   "bse_code": "532711",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE305H01028, 532711) == BSE all-status master row",
+   "isin": "INE305H01028",
+   "name": "Sunil Hitech Engineers Ltd",
+   "status": "Delisted"
+  },
+  "SUPERFORGE": {
+   "bse_code": "513277",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE661A01011, 513277) == BSE all-status master row",
+   "isin": "INE661A01011",
+   "name": "Super Forgings & Steels Ltd",
+   "status": "Delisted"
+  },
+  "SURYAJYOTI": {
+   "bse_code": "521022",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE411C01017, 521022) == BSE all-status master row",
+   "isin": "INE411C01017",
+   "name": "Suryajyoti Spinning Mills Ltd",
+   "status": "Delisted"
+  },
+  "SYNDIBANK": {
+   "bse_code": "532276",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE667A01018, 532276) == BSE all-status master row",
+   "isin": "INE667A01018",
+   "name": "Syndicate Bank",
+   "status": "Delisted"
+  },
+  "TALWALKARS": {
+   "bse_code": "533200",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE502K01016, 533200) == BSE all-status master row",
+   "isin": "INE502K01016",
+   "name": "Talwalkars Better Value Fitness Ltd",
+   "status": "Suspended"
+  },
+  "THIRUSUGAR": {
+   "bse_code": "507450",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE409A01015, 507450) == BSE all-status master row",
+   "isin": "INE409A01015",
+   "name": "Thiru Arooran Sugars Ltd",
+   "status": "Delisted"
+  },
+  "TINPLATE": {
+   "bse_code": "504966",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE422C01014, 504966) == BSE all-status master row",
+   "isin": "INE422C01014",
+   "name": "Tinplate Company of India Ltd",
+   "status": "Delisted"
+  },
+  "TULIP": {
+   "bse_code": "532691",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE122H01027, 532691) == BSE all-status master row",
+   "isin": "INE122H01027",
+   "name": "Tulip Telecom Ltd",
+   "status": "Delisted"
   },
   "UNITEDBNK": {
    "bse_code": "533171",
+   "identity_gate": "isin-exact + scrip_id and name agree",
    "isin": "INE695A01019",
    "name": "United Bank of India",
-   "status": "Delisted",
-   "identity_gate": "isin-exact + scrip_id and name agree"
+   "status": "Delisted"
+  },
+  "UNIVAFOODS": {
+   "bse_code": "526683",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE275F01019, 526683) == BSE all-status master row",
+   "isin": "INE275F01019",
+   "name": "Univa Foods Ltd",
+   "status": "Suspended"
+  },
+  "VALUEIND": {
+   "bse_code": "500945",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE352A01017, 500945) == BSE all-status master row",
+   "isin": "INE352A01017",
+   "name": "Value Industries Ltd",
+   "status": "Suspended"
+  },
+  "VARUNSHIP": {
+   "bse_code": "500465",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE702A01013, 500465) == BSE all-status master row",
+   "isin": "INE702A01013",
+   "name": "Varun Shipping Company Ltd",
+   "status": "Suspended"
+  },
+  "VIDEOIND": {
+   "bse_code": "511389",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE703A01011, 511389) == BSE all-status master row",
+   "isin": "INE703A01011",
+   "name": "Videocon Industries Ltd",
+   "status": "Suspended"
+  },
+  "WYETH": {
+   "bse_code": "500095",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE378A01012, 500095) == BSE all-status master row",
+   "isin": "INE378A01012",
+   "name": "Wyeth Ltd",
+   "status": "Delisted"
+  },
+  "XLENERGY": {
+   "bse_code": "532788",
+   "identity_gate": "isin-exact: MC autosuggest exact-symbol row (INE183H01011, 532788) == BSE all-status master row",
+   "isin": "INE183H01011",
+   "name": "XL Energy Ltd",
+   "status": "Suspended"
   }
  }
 }
