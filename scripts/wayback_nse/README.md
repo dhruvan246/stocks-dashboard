@@ -1,7 +1,7 @@
 # Wayback NSE `results.jsp` — the archived exchange-native reader for 2000-2006
 
-**Status 2026-08-26: reader VALIDATED, index BUILT, gate NOT YET calibrated for the 2000-2001 page
-revision. No cell has been written from this tool. Do not write one until §4 is done.**
+**Status 2026-08-26: LICENSED AND USED. Hold-out clean at 0.00% (91 writes / 0 mismatches); 85 cells
+landed for 2001 (commit a1b5eb7f0) and 10 Moneycontrol cells healed against it (commit 0b497f21b).**
 
 ## 1. What this is
 
@@ -50,6 +50,9 @@ source *relative to the cells you asked for*.
 |---|---|
 | `wb_read.py` | `fetch(ts, original)` + `parse(html)` → declared period/role/type/basis/scale/bank + `pat_cr`, `eps`, `paidup`, `months`; `face_of(html)` |
 | `_wb_index.json` | `"SYM\|QEINT" -> [wayback_timestamp, original_url]`, 4,606 entries — only periods ENDING on a quarter-end, only symbols that are keys in `sf_fundamentals.json` |
+| `wbcache.py` | keep-alive fetcher + disk cache under `~/.cache/wayback_nse` (see the throttling note below) |
+| `wbgate.py` | **THE** gate, G1-G5, used by BOTH the calibration and the landing run — one classifier, never two copies |
+| `calibrate_gate.py` | the hold-out harness; **must exclude cells the current campaign wrote** |
 
 Rebuild the index from CDX:
 
@@ -60,16 +63,21 @@ curl -s "http://web.archive.org/cdx/search/cdx?url=nseindia.com%2Fmarketinfo%2Fc
 a byte limit, not the row cap. And note **20,847 raw captures collapse to 10,871 distinct pages**;
 differencing raw against distinct is what nearly produced a phantom "truncated index" diagnosis.
 
-⚠️ Wayback throttles hard under sustained fetching (measured: ~9 s/request after a few hundred).
-Slowness and failures are **infrastructure state, never evidence about the data** — the same trap
-STEP W's own audit #1 fell into ("absent from cache" during an outage read as "not fetchable").
+⚠️ **The throttling is CONNECTION CHURN, not a byte/rate limit — and the fix is counter-intuitive.**
+Measured: a new TCP connection per request gets `Connection refused` ~90% of the time under load,
+and a **4-worker pool made it worse (2 ok / 23 fail)**. The same pages over ONE persistent
+`requests.Session` at a 0.4 s pace: **420/420 fetched, 0 failures, ~1.0 s/page**. Use keep-alive and
+go serial; do not add workers. `wbcache.py` does this and caches every body under
+`~/.cache/wayback_nse`, so calibrate → audit → harvest costs one fetch per page total.
+A transport failure is **never** cached and **never** evidence about the data — the trap STEP W's
+own audit #1 fell into ("absent from cache" during an outage read as "not fetchable").
 
-## 4. The gate — and the one thing still unfinished
+## 4. The gate, and its calibration
 
 ```
 G1  the page's own "NSE Symbol" == the symbol asked for          (identity)
 G2  period spans exactly 3 months AND declares Non-Cumulative    (a true quarter)
-G3  declares Non-Consolidated                                    (standalone slot)   ← SEE BELOW
+G3  IF the page prints a basis axis, it must say Non-Consolidated (standalone)   ← see below
 G4  declares a scale we know (lakhs ÷100 → cr)
 G5  the page's OWN arithmetic closes: EPS == NetProfit × FaceValue / PaidUpCapital, ≤3%
 ```
@@ -77,14 +85,29 @@ G5  the page's OWN arithmetic closes: EPS == NetProfit × FaceValue / PaidUpCapi
 G5 is the third independent check the runbook asks for and needs **nothing from us** — which is the
 point, because in 2000-2004 we usually hold nothing nearby to anchor against.
 
-### ⚠️ G3 IS WRONG FOR THE 2000-2001 PAGE REVISION — this is the open item
-That revision prints only **two** axes (`Unaudited, Non-Cumulative`); the basis axis appears from
-~2002. As written, G3 refused **44 of the first 75 true quarters** for lacking a token the era never
-emitted — absence manufactured by the instrument (runbook §112f). The fix is to require the token
-only when the page prints three axes. **That relaxation is NOT yet calibrated, so it must not be
-used to write.**
+### G3 IS CONDITIONAL ON THE PAGE REVISION — and here is why, plus its calibration
+The 2000-2001 revision prints only **two** axes (`Unaudited, Non-Cumulative`); the basis axis appears
+from ~2002. Requiring it unconditionally refused **44 of the first 75 true quarters** for lacking a
+token the era never emitted — absence manufactured by the instrument (runbook §112f). So G3 applies
+only when the page prints three axes.
 
-**What IS measured so far:**
+**★ THE CALIBRATION HAS A TRAP IN IT, AND IT CAUGHT ME.** The first hold-out read **12% mismatch**
+on two-token pages and I nearly declared the relaxation unsafe. All three misses were **this
+session's own Moneycontrol fills, landed hours earlier** — I was calibrating a new reader against
+cells my own work had just written. Excluding them:
+
+| page revision | writes | matches | mismatch |
+|---|---|---|---|
+| 3-token (basis declared) | 80 | 80 | **0.00%** |
+| 2-token (no basis axis) | 11 | 11 | **0.00%** |
+| **total** | **91** | **91** | **0.00%** |
+
+**A hold-out is only a hold-out if the "truth" side is independent of the work you are validating** —
+and in a shared store that stops being true within hours. `calibrate_gate.py` must exclude any cell
+the current campaign wrote. ⚠️ The two-token sample is only **11** cells; do not let the 0.00%
+travel without that number.
+
+**Everything measured:**
 * Reader validation, 20 random cells we already hold (2001-2006): **true-quarter pages 8 MATCH / 0
   differ**; 10 "differs" were all *cumulative* pages the reader correctly refused; 2 READ-FAIL, both
   **banks** (BANKBARODA, SYNDIBANK — the banking template uses a different row schema, still unread).
@@ -93,9 +116,13 @@ used to write.**
   MASTEK Jun-02 prints `Basic EPS 0.00` with no face value, so **G5 rejects it on the page's own
   arithmetic**; BEL Mar-01 (87.92 vs our 97.49) is a Q4 marked *Unaudited*, i.e. a restatement
   boundary, not a reader failure.
-* **Hold-out of the FULL gate (mismatch rate among cells the gate would actually WRITE) was still
-  running when the session ended, throttled by Wayback.** `calib_full.py` pattern: take cells we
-  already hold, run G1-G5, and report MATCH/MISMATCH among the WRITEs only.
+* **Full-gate hold-out: 91 writes, 0 mismatches (see the table above).**
+* **Landed:** 85 of 210 open 2000-01 root cells passed (57 symbols, all 2001). Refusals: 76 not a
+  true quarter, 27 EPS untestable, 12 EPS identity fails, 7 banking template, 3 empty-shell pages.
+* **Used as a SECOND READER on this session's own MC batch:** 316 of 1,409 MC cells have a page, 85
+  adjudicable → **75 agree, 10 disagree (11.8%)**, all 10 healed to the archive value. The
+  cumulative-in-quarter hypothesis was tested and rejected for all 10, so these are restated vintage
+  (§108). Do NOT extrapolate 11.8% to the unadjudicable remainder.
 
 ### ⚠️ And state this limit next to whatever number that produces
 A hold-out against cells we already hold is evidence about **well-covered companies**. The 2000-2001
