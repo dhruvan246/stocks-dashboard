@@ -300,3 +300,70 @@ MC-vs-MC than the PAT lane, but ITC shows 53 cells is enough to hide a 2× defin
 * Added guard worth keeping: **G2a — the page's OWN declared period end must equal the quarter audited**, rather than trusting the index key.
 * `NullPointerException caught: null` pages render a valid header (period, type, scale) with a `null` body. They are a **captured server error**, not a filing without revenue — class them separately or they inflate "no data".
 * The peer caches at `~/stocks-wt/pre2015-stepw-harvest/scripts/_wb_cache` (4,702 files) and `~/stocks-wt/pre2009pat-bc68c8d0/scripts/_wbnse_cache` (1,290 gz) served **135 of 264** pages by exact timestamp+URL match. Check them before fetching — Wayback throttles to roughly 2 pages/min sustained.
+
+---
+
+# 🔴 THE ARCHIVE AUDIT SHOULD BE A STANDING GATE, NOT A ONE-OFF (2026-08-26, extended)
+
+## Combined result across both widenings
+| population | archived pages | adjudicable | agree | **disagree** |
+|---|---|---|---|---|
+| this campaign, direct true-quarter pages | 264 | 90 | 72 | **18 = 20.0%** |
+| this campaign, recovered by **cumulative differencing** | 83 | 30 | 23 | **7 = 23.3%** |
+| **earlier** campaigns' aggregator revenue cells | 9 | 4 | 2 | 2 *(n=4 — a count, not a rate)* |
+| **total** | | **124** | **98** | **26 = 21.0%** |
+
+25 healed; **ITC 2001-09 refused** because its PAT cross-check was inside 3% but not exact.
+The rate is ~20% under **two independent reading methods**, so it is not an artifact of one route.
+
+## ⚠️ The gate cannot detect this itself — the inference is invalid, not the evidence
+I first explained the 20% as contamination (evidence made of MC cells). **That was wrong and is
+withdrawn.** Measured, with this campaign's own fills excluded so it reflects what the gate saw:
+
+| what the gate could see | agree | disagree | |
+|---|---|---|---|
+| evidence **ALL exchange-derived** | 71 | 17 | **19.3% wrong** |
+| evidence includes earlier aggregator cells | 1 | 1 | |
+
+**88 of 90 had genuinely independent as-filed evidence and the gate still passed 17 wrong values.**
+"MC reproduces our as-filed values on the neighbouring quarters" does **not** imply "MC's value for
+THIS quarter is as-filed" — MC's series changes definition and vintage *per quarter* (ITC prints
+2371.66 / 1206.72 / 2542.82 across three consecutive quarters against page reads of 1047.89 and
+1195.27). Neighbour agreement is not transitive to the cell you are writing.
+
+## Calibration, three ways — the third is the real one
+| | ±2yr ≥5 | ±2yr ≥3 |
+|---|---|---|
+| as run | 0.987 | 0.985 |
+| campaign-excluded | 0.983 | 0.980 |
+| **aggregator-excluded (glob, all campaigns)** | **0.982** | **0.978** |
+
+The provenance filter barely moves it because **pre-2009 std revenue is only 14.4%
+aggregator-derived** (1,706 of 11,807) and 1,402 of those are this session's — an asymmetry with
+the PAT side, verified by checking the glob for silent skips (`agg_cell_fills`, `mc_quarterly_fills`,
+`screener_*`, `sweep_rev_fills`, `annual_derived_fills`, `named_rev_cell_fills` contribute **zero**
+pre-2009 std cells; `mc_history_fills`/`mc_fyident_fills` contribute 25 and 59, all `con`).
+
+**A store-based hold-out cannot close this gap in principle.** It scores quarters where we ALREADY
+hold a value; the gate WRITES quarters where we do not. Measured lower bound 2.2%, actual 21%.
+That is `calibrate_gate.py`'s own documented caveat, quantified.
+
+## RECOMMENDATION — make it a gate, run BEFORE landing
+**Yes. Any aggregator batch touching pre-2007 should intersect its proposals with
+`scripts/wayback_nse/_wb_index.json` and adjudicate the intersection BEFORE committing**, not after.
+Run after, it is a heal campaign; run before, it is a gate. Concretely:
+
+1. Intersect proposals with the index; adjudicate through G1–G5 **plus G2a** (the page's own
+   declared period END must equal the target quarter) and cumulative differencing.
+2. **Land only cells that AGREE or have no page**, and record the no-page cells as *unevidenced* —
+   never as agreement.
+3. **Report the measured disagreement rate as the batch's own error estimate.** This is the real
+   value: even though only 264 of 1,402 cells (19%) had a page, that subset *measures the batch*.
+4. Cost is no longer a reason not to: `wbcache.py`'s keep-alive serial fetcher did 48 pages with
+   **0 transport failures** at ~1s/page, and the three local caches make most re-reads free.
+
+⚠️ **The honest implication, stated as an implication.** If the 21% on 124 adjudicable cells
+generalises to the 1,278 of my cells the archive cannot reach, roughly **270 more wrong cells are
+still in the store and only 26 have been found**. That is an assumption, not a measurement — the
+adjudicable subset skews to large, well-archived companies — but it is the right assumption to plan
+against, and it is why the audit belongs in front of the batch rather than behind it.
