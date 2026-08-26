@@ -58,7 +58,28 @@ Rebuild the index from CDX:
 
 ```bash
 curl -s "http://web.archive.org/cdx/search/cdx?url=nseindia.com%2Fmarketinfo%2Fcompanyinfo%2Feod%2Fresults.jsp*&fl=timestamp,original&filter=statuscode:200&limit=30000" -o cdx.txt
+python3 -X utf8 scripts/wayback_nse/build_index.py --cdx cdx.txt
 ```
+
+### ⚠️ THE INDEX KEY IS ITSELF A CLAIM, AND THE FIRST BUILD GOT 81 OF THEM WRONG
+The first index took "the longest suffix that is a key in `sf_fundamentals`" as the symbol. When the
+TRUE symbol is **not** one of our keys (a rename, a delisting), a SHORTER suffix that happens to be
+a key captures the page instead — **BHARTI's page filed under `TI`** (Tube Investments), KLGSYSTEL's
+under `STEL`, TATAHONEY's under `EY`, UCALFUEL's under `UEL`, NAVNETPUBL's under `UBL`. One
+company's filing keyed to another: §76's "a matching token is a coincidence to be disproved".
+Nothing wrong was ever written from them — **G1 rejected every one**, which is the gate earning its
+keep on an index defect rather than a data defect — but the true symbols were then MISSING, so
+reachability was under-counted and the misses looked exactly like "no capture exists".
+
+`build_index.py` now applies two independent constraints: the text between the dates and the symbol
+must parse as PERIOD + at most 7 flag letters (so a suffix leaving `UNNNEBHAR` is rejected on sight),
+and where the page is cached its own declared NSE Symbol wins — **but only when corroborated**,
+because a server-side template failure prints a TRUNCATED symbol (`NSE Symbol CI` on an IFCI page,
+`Result Type AuditedEI`, trailing bare `null`). Trusting that would re-enter the same defect from
+the other side. Net effect: **80 false attributions removed, 30 true symbols recovered** (BHARTI,
+BELCERAMIC, KLGSYSTEL, BPLSANUTIL, GLOBLTRUST…). Unresolvable pages go to `_wb_unresolved.json`
+(7,013 — mostly era symbols we hold no key for) rather than being dropped, so the residue stays
+measurable instead of silently becoming a Class-A refusal.
 ⚠️ Use the **text** output. `output=json` truncates mid-string around 500KB and yields invalid JSON —
 a byte limit, not the row cap. And note **20,847 raw captures collapse to 10,871 distinct pages**;
 differencing raw against distinct is what nearly produced a phantom "truncated index" diagnosis.
