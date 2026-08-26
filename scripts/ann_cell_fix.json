@@ -42,6 +42,38 @@
    "fixed": 20151021,
    "why": "Pre-listing quarter (quarter ended before the 2015-08-11 listing; measured: NO Jun-2015 result filing exists - the BSE Result announcement list for 539268 starts 2015-10-20, and detres qtr 86.00 returns an empty no-dateend shell). The stored 20150814 is the qe+45d convention and happens to be 3 days after listing, but the value (as-filed 43.64, healed via fund_cell_fix.json) was first printed in the Sep-2015 filing's 'Preceding 3 months' column, broadcast 2015-10-20 19:14. Gated next-day = 20151021.",
    "found": "SYNGENE whole-row heal 2026-08-24 (runbook 108); the FAV14 handoff note flagged this quarter's value (ours 46.6 vs MC 43.6)"
+  },
+  {
+   "sym": "SPENCERS",
+   "qe": "20180630",
+   "basis": "std",
+   "was": 0,
+   "fixed": 20190814,
+   "why": "SPENCERS (Spencer's Retail) listed 2019-01-25 after demerger from CESC; Jun-2018 predates its tape, so no own Q1FY19 filing was ever published. The cell's ann is the 0 UNKNOWN sentinel, which makes a CORRECT value invisible to the engine. VALUES VERIFIED, NOT CHANGED: its Q1FY20 filing (14-Aug-2019, OutcomeofBM.pdf) prints Profit after tax 0.93 | 2.79 | 2.22 | 7.94 (standalone, Rs crore) and 'Profit/(loss) after tax' (2.46) | 1.83 | 0.62 | 2.39 (consolidated) under Quarter ended 30-Jun-2019 | 31-Mar-2019 | 30-Jun-2018 | Year 31-Mar-2019 - col 3 equals our stored std 2.22 and con 0.62 EXACTLY, and col 2 reproduces our stored Mar-2019 2.79/1.83. FIRST PUBLIC APPEARANCE of the Jun-2018 quarter is therefore that filing. Announcement 14-Aug-2019 14:58 (board outcome 14:10), both before 15:30 so the 12 gate keeps the same day -> 20190814. Self-consistent with the rest of the row: its Sep-2018/Dec-2017 cells carry ann 20190219 (Q3FY19 filing) and Mar-2018 carries 20190517 (Q4FY19), i.e. each pre-listing quarter is dated at the post-listing filing that first printed it. 99 floor satisfied: 20190814 >= first bar 20190125."
+  },
+  {
+   "sym": "SPENCERS",
+   "qe": "20180630",
+   "basis": "con",
+   "was": 0,
+   "fixed": 20190814,
+   "why": "SPENCERS (Spencer's Retail) listed 2019-01-25 after demerger from CESC; Jun-2018 predates its tape, so no own Q1FY19 filing was ever published. The cell's ann is the 0 UNKNOWN sentinel, which makes a CORRECT value invisible to the engine. VALUES VERIFIED, NOT CHANGED: its Q1FY20 filing (14-Aug-2019, OutcomeofBM.pdf) prints Profit after tax 0.93 | 2.79 | 2.22 | 7.94 (standalone, Rs crore) and 'Profit/(loss) after tax' (2.46) | 1.83 | 0.62 | 2.39 (consolidated) under Quarter ended 30-Jun-2019 | 31-Mar-2019 | 30-Jun-2018 | Year 31-Mar-2019 - col 3 equals our stored std 2.22 and con 0.62 EXACTLY, and col 2 reproduces our stored Mar-2019 2.79/1.83. FIRST PUBLIC APPEARANCE of the Jun-2018 quarter is therefore that filing. Announcement 14-Aug-2019 14:58 (board outcome 14:10), both before 15:30 so the 12 gate keeps the same day -> 20190814. Self-consistent with the rest of the row: its Sep-2018/Dec-2017 cells carry ann 20190219 (Q3FY19 filing) and Mar-2018 carries 20190517 (Q4FY19), i.e. each pre-listing quarter is dated at the post-listing filing that first printed it. 99 floor satisfied: 20190814 >= first bar 20190125."
+  },
+  {
+   "sym": "INFOBEAN",
+   "qe": "20180630",
+   "basis": "std",
+   "was": 0,
+   "fixed": 20190718,
+   "why": "INFOBEAN (InfoBeans Technologies) first traded bar in our tape 2019-07-15 (NSE main-board migration; it was on NSE EMERGE before). The cell's ann is the 0 UNKNOWN sentinel, hiding a correct value. VALUES VERIFIED, NOT CHANGED: its Q1FY20 filing (18-Jul-2019) prints 'Profit (Loss) for the period' 538.81 | 381.47 | 504.58 | 1,924.22 (standalone, Rs In Lakhs) and 504.07 | 141.09 | 524.00 | 1,726.31 (consolidated) under Quarter Ended 30/06/2019 | 31/03/2019 | 30/06/2018 | Year 31/03/2019 - col 3 equals our stored std 5.05 and con 5.24 EXACTLY, and col 1 reproduces our stored Jun-2019 5.39/5.04. Announcement 18-Jul-2019 10:46 (board outcome 10:44), before 15:30 -> 20190718. CONSERVATIVE BY CONSTRUCTION: the company filed on EMERGE earlier, so the true first disclosure may predate this, but 99 requires ann >= first bar (20190715) and a later date can only ever cost visibility, never create look-ahead."
+  },
+  {
+   "sym": "INFOBEAN",
+   "qe": "20180630",
+   "basis": "con",
+   "was": 0,
+   "fixed": 20190718,
+   "why": "INFOBEAN (InfoBeans Technologies) first traded bar in our tape 2019-07-15 (NSE main-board migration; it was on NSE EMERGE before). The cell's ann is the 0 UNKNOWN sentinel, hiding a correct value. VALUES VERIFIED, NOT CHANGED: its Q1FY20 filing (18-Jul-2019) prints 'Profit (Loss) for the period' 538.81 | 381.47 | 504.58 | 1,924.22 (standalone, Rs In Lakhs) and 504.07 | 141.09 | 524.00 | 1,726.31 (consolidated) under Quarter Ended 30/06/2019 | 31/03/2019 | 30/06/2018 | Year 31/03/2019 - col 3 equals our stored std 5.05 and con 5.24 EXACTLY, and col 1 reproduces our stored Jun-2019 5.39/5.04. Announcement 18-Jul-2019 10:46 (board outcome 10:44), before 15:30 -> 20190718. CONSERVATIVE BY CONSTRUCTION: the company filed on EMERGE earlier, so the true first disclosure may predate this, but 99 requires ann >= first bar (20190715) and a later date can only ever cost visibility, never create look-ahead."
   }
  ]
 }
