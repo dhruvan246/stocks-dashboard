@@ -131,6 +131,7 @@ th:hover{color:var(--text)}
 td{padding:7px 9px; border-bottom:1px solid var(--grid); text-align:right; white-space:nowrap}
 .tvscroll{max-height:min(64vh,520px); overflow-y:auto}          /* long table scrolls in place under its pinned header */
 .tvscroll tfoot td{position:sticky; bottom:0; z-index:1; border-top:1px solid var(--border)}
+@media(max-width:640px){ #closedBody .hide-sm{display:none} }   /* closed-trades table drops to Stock·Sold·Gain·P&L on a phone */
 tbody tr:hover{background:var(--surface-2)}
 tr.pfhead td{background:var(--surface-2); font-weight:700; font-size:11.5px; color:var(--text-2)}
 .nm{font-weight:600; max-width:230px; overflow:hidden; text-overflow:ellipsis}
@@ -1386,10 +1387,10 @@ function renderClosed(rows){
   shownSel.forEach(x=>{ (TRADES.monthly[x.pf]||[]).forEach(([ym,v])=>{ mAgg[ym]=(mAgg[ym]||0)+v; }); });
   const mKeys=Object.keys(mAgg).sort().slice(-18);   // last ~18 months (like investing's Monthly P/L)
   if(mKeys.length>1){ h+='<div class="note" style="padding:2px 4px 4px">Realized P&L by month'+(Object.keys(mAgg).length>mKeys.length?' (last '+mKeys.length+')':'')+'</div><div id="chClosedMonthly"></div>'; }
-  h+='<div class="twrap tvscroll"><table><thead><tr><th>Stock</th><th>Bought</th><th>Sold</th><th>Qty</th><th>Buy</th><th>Sell</th><th>Gain</th><th>P&L</th></tr></thead><tbody>';
+  h+='<div class="twrap tvscroll"><table><thead><tr><th>Stock</th><th class="hide-sm">Bought</th><th>Sold</th><th class="hide-sm">Qty</th><th class="hide-sm">Buy</th><th class="hide-sm">Sell</th><th>Gain</th><th>P&L</th></tr></thead><tbody>';
   trs.forEach(t=>{ h+='<tr><td><span class="secret"><b>'+esc(t.sym)+'</b></span></td>'+
-    '<td><span class="sym">'+shortDate(t.od)+'</span></td><td><span class="sym">'+shortDate(t.cd)+'</span></td>'+
-    '<td class="secret">'+Number(t.qty).toLocaleString('en-IN')+'</td><td>\u20b9'+(+t.opx).toFixed(2)+'</td><td>\u20b9'+(+t.cpx).toFixed(2)+'</td>'+
+    '<td class="hide-sm"><span class="sym">'+shortDate(t.od)+'</span></td><td><span class="sym">'+shortDate(t.cd)+'</span></td>'+
+    '<td class="hide-sm secret">'+Number(t.qty).toLocaleString('en-IN')+'</td><td class="hide-sm">\u20b9'+(+t.opx).toFixed(2)+'</td><td class="hide-sm">\u20b9'+(+t.cpx).toFixed(2)+'</td>'+
     '<td class="'+cls(t.gain)+'">'+pct(t.gain)+'</td><td class="'+cls(t.pnl)+' secret">'+inrSigned(t.pnl)+'</td></tr>'; });
   h+='</tbody></table></div>';
   body.innerHTML=h;
