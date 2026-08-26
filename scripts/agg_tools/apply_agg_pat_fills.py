@@ -150,6 +150,14 @@ def main():
     # rate is only meaningful where such cells exist: the store holds 120 rows in 2001 and NONE
     # before, so a 2000-2001 fill is running an UNCALIBRATED gate and must say so per cell.
     # Same for a thin-anchor symbol inside a calibrated era.
+    ap.add_argument("--new-symbols", action="store_true",
+                    help="permit CREATING a symbol key that sf_fundamentals does not have. OFF by "
+                         "default and it must stay that way: refusing is what keeps a typo'd or "
+                         "HTML-escaped phantom ticker out of the store (project-stocks-phantom-"
+                         "escaped-symbols). Pass it only for a batch whose symbols you have "
+                         "VERIFIED are real -- present in a point-in-time index roll, carrying a "
+                         "first traded bar, and with the source document naming the company. The "
+                         "run prints every symbol it creates so the claim is auditable.")
     ap.add_argument("--gate", help="the gate name to journal per cell, e.g. 'E2b'.")
     ap.add_argument("--calibration",
                     help="one sentence naming the hold-out this gate's setting was calibrated on "
@@ -164,6 +172,7 @@ def main():
     seam_syms = set(a.seam_syms.split(",")) if a.seam_syms else set()
 
     journal, skipped, created, filled = {}, [], 0, 0
+    created_syms = set()
     floored, no_tape, repaired, out_of_scope, seamed = [], [], [], [], []
     touched = set()                                  # (sym, qe) we intend to change
 
@@ -175,8 +184,12 @@ def main():
             continue
         p = props[key]
         arr = work.get(sym)
+        if arr is None and a.new_symbols:
+            arr = work[sym] = []
+            created_syms.add(sym)
         if arr is None:
-            skipped.append("%s: symbol absent from sf_fundamentals" % key)
+            skipped.append("%s: symbol absent from sf_fundamentals (pass --new-symbols only for "
+                           "VERIFIED-real symbols)" % key)
             continue
         i, ai = SLOT[field], ANN_SLOT[field]
         row = next((r for r in arr if r and r[0] == qe), None)
@@ -325,6 +338,11 @@ def main():
     print("%-32s %s %d cells (%d new rows created)"
           % ("docs/sf_fundamentals.json", "filled" if a.apply else "would fill", filled, created))
     print("  ann floored to the first traded bar: %d" % len(floored))
+    if created_syms:
+        # printed ALWAYS, never summarised away: creating a symbol key is the one write here that
+        # a typo cannot be walked back from, so the claim "these are verified real" must be visible.
+        print("  ⚠️ SYMBOL KEYS CREATED (--new-symbols): %d — %s"
+              % (len(created_syms), ", ".join(sorted(created_syms))))
     for s in floored:
         print("      %s" % s)
     if no_tape:

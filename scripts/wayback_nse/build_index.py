@@ -37,9 +37,15 @@ from wbcache import cached                                          # noqa: E402
 MON = {'JAN':1,'FEB':2,'MAR':3,'APR':4,'MAY':5,'JUN':6,
        'JUL':7,'AUG':8,'SEP':9,'OCT':10,'NOV':11,'DEC':12}
 QEND = {(3,31),(6,30),(9,30),(12,31)}
-MAX_FLAGS = 7
+# THE FLAG GRAMMAR, derived rather than assumed: on 1,987 entries whose symbol the PAGE itself
+# confirms, the run between the period token and the symbol matches ^[AU][A-Z]{0,5}E$ in 99.7% of
+# cases -- Audited/Unaudited first, always a trailing E (UNNNE, UNCXE, ANCNE, UNE, ACE, UCE...).
+# The 5 exceptions are precisely the corrupt pages whose own printed symbol is truncated.
+# This is what makes the URL parse DETERMINISTIC and cache-independent. Without it the longest-
+# suffix rule silently prefers a wrong longer key once the universe widens: `...Q3UNNNETIL` reads
+# as ETIL (flags UNNN, no trailing E) instead of TIL (flags UNNNE) -- and the page says TIL LTD.
 PREFIX = re.compile(r'^(\d{2}-[A-Z]{3}-\d{4})(\d{2}-[A-Z]{3}-\d{4})'
-                    r'(Q[1-4]|H[12]|AN|OT)([A-Z]{0,%d})$' % MAX_FLAGS)
+                    r'(Q[1-4]|H[12]|AN|OT)([AU][A-Z]{0,5}E)$')
 SPLIT = re.compile(r'^(\d{2}-[A-Z]{3}-\d{4})(\d{2}-[A-Z]{3}-\d{4})(.*)$')
 DECL = re.compile(r'NSE Symbol\s*</[^>]*>\s*[^<]*?([A-Z0-9&_-]{2,})|NSE Symbol\s+([A-Z0-9&_-]{2,})')
 
@@ -65,7 +71,31 @@ def main():
     av = sys.argv
     cdx = av[av.index('--cdx') + 1]
     out = av[av.index('--out') + 1] if '--out' in av else os.path.join(HERE, '_wb_index.json')
+    # ⚠️ THE KEY UNIVERSE MUST NOT BE sf_fundamentals ALONE -- that file EXCLUDES exactly the
+    # symbols worth indexing. A symbol we hold no row for is absent from it, so the URL parse can
+    # never key its pages, so it can never be found reachable, so it keeps no rows: a self-sealing
+    # gap, and a reachability verdict manufactured by our own key set rather than by the world.
+    # Measured 2026-08-26: of the 50 Nifty-500 members with NO fundamentals row at all pre-2009,
+    # sf_fundamentals contains ZERO as keys, so the index reported 1 of 50 reachable. Searching the
+    # raw CDX for the same 50 finds EIGHT with pages -- GLOBLTRUST 10, STDIND 8, SEARCHEMIN 8,
+    # SQRDSFWARE 7, INDOGULF 6, SURYCOTMIL 6, MUKAND 5, WELSPUNGUJ 1 (51 pre-2009 pages).
+    # Same class as runbook §112e: the answer was about our own frame, not the archive's contents.
+    # So the universe is every symbol we could ever ASK about: the fundamentals store, the price
+    # tape's metadata, and every point-in-time index roll.
     keys = set(json.load(open(os.path.join(ROOT, 'docs', 'sf_fundamentals.json'))))
+    try:
+        import gzip
+        D = json.loads(gzip.open(os.path.join(ROOT, 'docs', 'dash_slim.bin'), 'rb').read().decode('utf-8'))
+        for m in (D.get('meta') or {}).values():
+            if m.get('symbol'):
+                keys.add(m['symbol'])
+        for rolls in (D.get('indicesHistory') or {}).values():
+            for snap in rolls:
+                keys.update(snap.get('symbols') or [])
+    except Exception as e:
+        print('WARN: could not widen the key universe from dash_slim.bin (%s) -- '
+              'the index will be blind to symbols with no fundamentals row' % e)
+    print('key universe:', len(keys), 'symbols')
 
     idx, unresolved, stat = {}, [], collections.Counter()
     for line in open(cdx):
