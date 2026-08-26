@@ -4937,6 +4937,14 @@
    "was": 2.3,
    "fixed": 2.42,
    "why": "Runbook §108 restated-vintage. This cell was written EARLIER THE SAME DAY from the Moneycontrol deep feed (agg_pat_cell_fills.json, GATE E/E2b) at 2.3 cr. The ARCHIVED NSE filing page — exchange-native and AS-FILED, web.archive.org/20030301233706, marketinfo/companyinfo/eod/results.jsp — prints 242.0 Rs.lakhs = 2.42 cr for 01-APR-2001..30-JUN-2001 (First Quarter), declared 'Unaudited, Non-Cumulative'. The page's OWN arithmetic closes: printed Basic EPS 1.19 == NetProfit 242.0 x FaceValue 10.0 / PaidUp 2030.0 = 1.192. Tested and REJECTED the cumulative-in-quarter hypothesis (ours != archive + our preceding 1/2/3 quarters). An as-filed exchange read outranks an aggregator rendition, so the aggregator entry is marked skip and superseded rather than re-authored. Gate + hold-out (91 writes, 0 mismatches with this session's own fills excluded): scripts/wayback_nse/."
+  },
+  {
+   "sym": "GEOMETRIC",
+   "qe": "20020630",
+   "basis": "std",
+   "was": 2.45,
+   "fixed": 3.07,
+   "why": "Runbook §108 restated-vintage. Stored 2.45 came from the Moneycontrol deep feed (agg_pat_cell_fills.json). The ARCHIVED NSE filing page — exchange-native, AS-FILED, web.archive.org/20030507152751 — prints 307.0 Rs.lakhs = 3.07 cr for 01-APR-2002..30-JUN-2002 (First Quarter), declared 'Unaudited, Non-Cumulative'. The page's OWN arithmetic closes: printed Basic EPS 5.84 == NetProfit 307.0 x FaceValue 10.0 / PaidUp 526.0 = 5.837. 3.07 also sits between our own 20020331=3.81 and 20020930=3.38, where 2.45 did not. Flagged by the parallel revenue campaign reading the SAME page (revenue and PAT move together on one restated filing), adjudicated here on the PAT basis. An as-filed exchange read outranks an aggregator rendition."
   }
  ],
  "retracted": [

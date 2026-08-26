@@ -5,6 +5,16 @@ Measures the only number that licenses a write: of the cells the gate WOULD WRIT
 disagree with what we store? Run it before landing anything, and re-run it whenever a gate clause
 is relaxed (runbook §112f).
 
+★★ EXCLUDE EVERY AGGREGATOR-DERIVED CELL FROM THE TRUTH SIDE, not just this campaign's.
+`--exclude-agg` walks the aggregator ledgers BY GLOB (agg_pat_cell_fills, mc_*_fills,
+fav14_pat_std_fills — ~12,000 cells) and drops them. Measured 2026-08-26: with only this session's
+fills excluded the harness still read 7.14% on two-token pages, and the single mismatch
+(AJANTPHARM Mar-02, ours 0.79 vs archive 0.99) turned out to be a Moneycontrol cell landed by an
+EARLIER campaign on 2026-08-12. So the contamination is not just "today's work" — this era's store
+is substantially aggregator-derived, and a calibration that does not filter on PROVENANCE is
+measuring MC against MC and reporting the agreement as validation. A random split of a contaminated
+pool is still contaminated.
+
 ★ EXCLUDE THE CURRENT CAMPAIGN'S OWN FILLS. A hold-out is only a hold-out if the "truth" side is
 independent of the work being validated, and in a shared store that stops being true within HOURS.
 Measured 2026-08-26: the first run of this harness read 12% mismatch on two-token pages, and all
@@ -32,6 +42,26 @@ def main():
     n = int(av[av.index("--n") + 1]) if "--n" in av else 200
     seed = int(av[av.index("--seed") + 1]) if "--seed" in av else 5
     excl = set()
+    if "--exclude-agg" in av:
+        import glob
+        for path in (glob.glob(os.path.join(ROOT, "scripts", "agg_pat_cell_fills.json"))
+                     + glob.glob(os.path.join(ROOT, "scripts", "mc_*_fills.json"))
+                     + glob.glob(os.path.join(ROOT, "scripts", "fav14_pat_std_fills.json"))):
+            try:
+                d = json.load(open(path))
+            except Exception:
+                continue
+            if isinstance(d.get("fills"), dict):                  # nested {SYM:{QE:[...]}}
+                for sym, qs in d["fills"].items():
+                    for qe in qs:
+                        excl.add((sym, int(qe)))
+            else:
+                for k in d:
+                    if "|" in k:
+                        a, b = k.rsplit("|", 1)
+                        if b.isdigit():
+                            excl.add((a, int(b)))
+        print(f"provenance filter: {len(excl)} aggregator-derived cells excluded from the TRUTH side")
     if "--exclude" in av:
         for path in av[av.index("--exclude") + 1].split(","):
             for k in (json.load(open(path)).get("proposals") or {}):
