@@ -312,14 +312,30 @@ def main():
             stored = frow[1] if basis == "std" else (frow[3] if len(frow) > 3 else None)
             pat = pick(prows, R_PAT_OWN) if not isbank else None
             pat2 = pick(prows, R_PAT_ANY)
+            # R_PAT_SIGNED was DEFINED ABOVE BUT NEVER CALLED (found 2026-08-26, pre-2009 std-rev
+            # campaign). Its own comment describes the exact label it was written for --
+            # "Net Profit (+) / Loss (-) for the period" -- which made that comment the bug's
+            # alibi: the pattern existed, was correct, and no code path ever reached it, while
+            # R_REV_SIGNED two blocks below WAS wired in. That spelling is the DOMINANT one in the
+            # 2005-2008 archive: of 148 pages re-read for the refusals this campaign recorded, 128
+            # print it, and R_PAT_ANY matches none of them (it wants "loss" adjacent to "for the
+            # period"; here the "(-)" marker sits between). 121 std cells were refused as
+            # "pat-anchor None" with the number plainly on the page.
+            # Tried STRICTLY LAST, exactly as the comment above always claimed it was: the loop
+            # breaks on the first candidate matching the stored anchor, so a last-place candidate
+            # cannot change any page that resolves today -- it can only rescue one resolving None.
+            pat3 = pick(prows, R_PAT_SIGNED)
             hit = None
-            for cand in (pat, pat2):
+            for cand in (pat, pat2, pat3):
                 if close(cand, stored):
                     hit = cand
                     break
             if hit is None:
+                # report whichever PAT row WAS read, so a refusal stays diagnosable rather than
+                # printing None when only the signed spelling was present
+                seen = next((c for c in (pat2, pat3, pat) if c is not None), None)
                 skips["%s|%d|%s" % (sym, qe, basis)] = "pat-anchor %s vs stored %s" % (
-                    round(pat2, 2) if pat2 is not None else None, stored)
+                    round(seen, 2) if seen is not None else None, stored)
                 continue
             # `is None` chaining, never `or` -- a legitimate 0.00 is falsy and would fall through.
             if isbank:
