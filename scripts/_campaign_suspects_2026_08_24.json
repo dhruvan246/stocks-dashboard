@@ -40,6 +40,11 @@
   "observation": "The financial-format flag (sf_revop index 6) is unreliable store-wide. It is a per-FILING property (build_revop.py sets it when the XBRL carries InterestEarned / NetPremiumIncome / PremiumEarned) but is widely inconsistent: BALRAMCHIN, a SUGAR company, carries fin=1 on 63 of its 100 stored rows; even in the reliable post-2018 XBRL era a majority vote calls MOTILALOFS (a broker) NOT financial.",
   "status": "OPEN - a defect this campaign PARTLY CAUSED and is reporting rather than silently patching."
  },
+ "GEOMETRIC|20020630|npStd": {
+  "next_step": "Adjudicate the PAT with the std-PAT campaign; the same page is the evidence.",
+  "observation": "The archived NSE exchange page for Geometric Jun-2002 (declared First Quarter, Non-Cumulative, 3 months, own arithmetic closing at EPS 5.84 vs implied 5.837) reads Net Profit 3.07 cr against our stored npStd 2.45 cr. Its revenue disagreed too (ours 14.65 vs page 19.42) and has been healed on the revenue side.",
+  "status": "OPEN - PAT-side, surfaced by this campaign's Wayback revenue audit 2026-08-26. NOT healed here: docs/sf_fundamentals.json belongs to the concurrent std-PAT campaign."
+ },
  "HIMACHLFUT|20070930+20071231|npStd": {
   "next_step": "Identify which line the archive page is reading before treating either value as wrong.",
   "observation": "NSE archived filing pages read -16.44 and -15.04 against stored npStd -19.41 and -18.22: a consistent ~3cr offset in the same direction on two consecutive quarters, which is the signature of a different row (e.g. before/after an exceptional item) rather than random noise.",
@@ -197,6 +202,34 @@
   "status": "RESOLVED 2026-08-24 = 132.89. Fetched the holdcos OWN 2017-04-27 filing (Ujjivan Financial Services, scrip 539874); Note 9 Total Income from Operations (Net) Q4 = 13,289.29 lakhs = 132.89 cr, PAT 20.41 = stored. Filled via _vision_reads.",
   "todo": "Refetch Ujjivan Financial Services Limiteds OWN standalone Q4FY17 results (the filing that also carries our con revCon 314.53). Its standalone total income from operations, anchored to npStd 20.41, is the value.",
   "why_wrong": "Our ticker UJJIVAN in FY17 = Ujjivan Financial Services Limited (the listed HOLDCO), stored npStd 20.41 cr / npCon 19.35 / revCon 314.53. The holdco transferred its lending business to the bank on 2017-02-01. The subject-filtered refetch picked the bank subsidiary attachment, not the holdco standalone."
+ },
+ "WAYBACK-AUDIT|pre-2009|revStd": {
+  "defect_classes": "cumulative-in-quarter TESTED and REJECTED for all 18; gross-income (ours = Net Sales + Other Income) TESTED and HOLDS for 2 (VESUVIUS 2001-06, WIPRO 2001-06) -- those are revenue-DEFINITION defects; the remaining 16 are restated-vintage or an excise-inclusive line the page does not print. Direction is informative: 8 have ours ABOVE the page (consistent with a gross-of-excise line, ITC extreme at +126%%) and 8 have ours BELOW it, which excise cannot explain and which is therefore vintage.",
+  "denominator": "1,402 MC-derived revStd cells. 264 have an archived NSE results.jsp page whose period ENDS on that quarter. 90 were ADJUDICABLE through the full gate. 72 AGREE, 18 DISAGREE = 20.0%% on that 90. The other 1,138 cells have NO archived page at all and are neither confirmed nor contradicted -- that is a gap in the evidence, not agreement.",
+  "do_not_extrapolate": "The 20.0% is measured on 90 adjudicable cells and must travel with that denominator. Refusals among the 264, all classed: {'G2-not-3-months (cumulative/other period)': 119, 'G5-untestable (EPS/face/paid-up missing or zero)': 21, 'G5-fails (page arithmetic does not close)': 20, 'G3-consolidated': 2, 'G2-declared-cumulative': 1}; plus {'page-errored': 8, 'unreadable': 3}.",
+  "healed": [
+   "ABB 20010630 240.64 -> 225.4",
+   "ABB 20010930 237.23 -> 223.16",
+   "ACC 20010630 830.16 -> 842.51",
+   "BALRAMCHIN 20010630 149.34 -> 139.84",
+   "CYBERTECH 20020630 1.77 -> 2.06",
+   "GEOMETRIC 20010930 13.97 -> 14.85",
+   "GEOMETRIC 20011231 14.81 -> 16.09",
+   "GEOMETRIC 20020630 14.65 -> 19.42",
+   "GODREJCP 20011231 121.12 -> 126.43",
+   "GODREJCP 20020630 114.87 -> 117.93",
+   "HINDPETRO 20010630 11749.68 -> 11400.76",
+   "ITC 20010630 2371.66 -> 1047.89",
+   "ITC 20011231 2542.82 -> 1195.27",
+   "SAIL 20010630 2875.14 -> 3349.37",
+   "SAIL 20011231 3475.86 -> 3966.41",
+   "TATAPOWER 20010630 932.8 -> 920.8",
+   "VESUVIUS 20010630 21.57 -> 20.28",
+   "WIPRO 20010630 794.9 -> 785.2"
+  ],
+  "mechanism": "MC's OWN pre-2009 series switches revenue definition BETWEEN ADJACENT QUARTERS of the same symbol. ITC: MC gives 2371.66 for Jun-01 and 2542.82 for Dec-01 but 1206.72 for Sep-01, while the exchange page reads 1047.89 and 1195.27 -- so MC printed a gross-of-excise line on two quarters and the net line on the third. A convention gate that compares MC against a store partly built from MC structurally CANNOT see this: for ITC every non-campaign stored neighbour in the window also came from MC and agreed with it.",
+  "next_step": "The 1,138 cells with no archived page remain unaudited by an independent reader. Teaching the reader the BANKING row schema and the cumulative-page differencing would widen the adjudicable set; 119 of the 264 refusals are non-3-month periods and 21 are EPS-untestable.",
+  "status": "DONE 2026-08-26 -- this campaign audited its own MC-derived revenue cells against the archived NSE exchange page and healed every contradiction."
  },
  "_gate_failures_2026_08_24": {
   "per_name": {
