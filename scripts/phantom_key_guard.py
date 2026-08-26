@@ -39,7 +39,11 @@ ROOT = os.path.dirname(HERE)
 BASELINE = os.path.join(HERE, "phantom_key_baseline.json")
 
 # Stores that must NEVER carry a phantom key again. Missing/unparseable here is a FAILURE.
-ZERO_TOLERANCE = ["docs/sf_fundamentals.json", "scripts/fundamentals.json"]
+ZERO_TOLERANCE = ["docs/sf_fundamentals.json", "scripts/fundamentals.json",
+                  # added 2026-08-26 when sf_revop was closed too (runbook §115). The ledger is on
+                  # the list for the same reason it had to be retracted: build_revop.py RESUMES from
+                  # it, so a phantom there re-seeds the served payload on the very next build.
+                  "docs/sf_revop.json", "scripts/revop_fundamentals.json"]
 # Everything else is scanned and ratcheted against the baseline.
 SCANNED = ZERO_TOLERANCE + [
     "docs/sf_revop.json", "docs/discovery.json",
@@ -82,7 +86,10 @@ def _symbols(obj, out, depth=0):
     """Collect escaped symbol-shaped strings from keys AND values (discovery.json holds them as
     values, not keys -- a key-only scan reported that file clean while it was serving them)."""
     if isinstance(obj, str):
-        if is_escaped(obj) and len(obj) <= 24 and "&AMP;" in obj.upper():
+        # A SYMBOL NEVER CONTAINS `|`. Retraction provenance records the old key verbatim
+        # (`"rekeyed_from": "M&AMP;M|20200630|std"`), and without this the guard flagged its own
+        # audit trail as a fresh phantom — a guard tripping on the evidence that it worked.
+        if is_escaped(obj) and len(obj) <= 24 and "&AMP;" in obj.upper() and "|" not in obj:
             out.add(obj)
     elif isinstance(obj, dict):
         for k, v in obj.items():
@@ -193,8 +200,8 @@ def main():
     for rel, gone in shrunk:
         print("phantom-key guard: %s lost %d phantom key(s) (%s) — re-bless to tighten the ratchet:"
               "  python3 scripts/phantom_key_guard.py --bless" % (rel, len(gone), ", ".join(gone)))
-    print("phantom-key guard OK — %d phantom symbol entries, all within baseline; both fundamentals "
-          "stores clean" % total)
+    print("phantom-key guard OK — %d phantom symbol entries, all within baseline; all %d "
+          "zero-tolerance stores clean" % (total, len(ZERO_TOLERANCE)))
 
 
 if __name__ == "__main__":

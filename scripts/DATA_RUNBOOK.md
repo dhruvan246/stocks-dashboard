@@ -80,6 +80,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 
 ## 0. GOLDEN RULES (the things that bite if forgotten)
 - **§114** ★★★ THE HTML-ESCAPED PHANTOM SYMBOLS WERE NOT INVISIBLE — `M&AMP;M` was RENDERING in docs/discovery.json (47 rows / 21 buckets), and the fundamentals rows were NOT all duplicates (4 unique, 46 contested, both sides filing-sourced). Fundamentals stores retracted to zero + guarded; the Trendlyne sitemap escape was writing off all 10 ampersand tickers (**read before trusting any recorded coverage/absence claim, and before deleting a phantom key**)
+- **§115** ★★★ THE PHANTOM CLASS IS CLOSED — root cause was `build_revop.py` upper-casing a RAW XML capture (XBRL escapes `&`), still firing in a 2026 filing; closing sf_revop ADDED +784 values / +63 quarters. FOUR gate defects: a retraction that RAISED a score, a derived flag voting, "target has no row" read as nothing-to-do, and the resume-cache treated as a mirror. A filing's own ScripCode OUTRANKS the overlap proxy (**read before trusting any agreement gate, and before retracting anything a gate could still harvest**)
 - **★★★ NO ASSUMPTIONS. NO GUESSWORK. EVER.** User-mandated 2026-08-10; standing rule across
   this runbook AND every campaign/playbook doc (each carries the same line). Every value written
   and every claim made ("exists", "absent", "fixed", "live", "matches") must trace to something
@@ -12647,3 +12648,103 @@ field only where that document revision declares it, and calibrate the relaxed f
 before writing. ⚠️ And state the hold-out's own limit: a calibration against cells we already hold
 is evidence about **well-covered companies**, while the cells actually wanted are the ones with no
 stored value to check against.
+
+---
+
+## 115. ★★★ THE PHANTOM CLASS IS CLOSED — the root cause was one missing `unescape`, and the merge gate had four defects  (2026-08-26)
+
+§114 retracted the escaped keys from the two fundamentals stores and left `docs/sf_revop.json` open
+with "232 recoverable values". Closing that half found the cause, and found that the gate guarding it
+was wrong in four separate ways. **All 13 keys are now gone from all four stores**, and closing it
+ADDED data rather than losing it: **+784 values / +63 quarters** to `docs/sf_revop.json` and
+**+1,006 / +93** to `scripts/revop_fundamentals.json`.
+
+### 115a. THE ROOT CAUSE — `build_revop.py`, one line, still firing in 2026
+
+    sym = sm.group(1).strip().upper()          # line 403, before
+
+**XBRL is XML, so a filer's `&` arrives escaped.** The regex captures raw element text, so
+`<xbrli:identifier ...>J&amp;KBANK</xbrli:identifier>` yields `J&amp;KBANK` and `.upper()` makes
+`J&AMP;KBANK`. That key then flows into `revop_fundamentals.json` → `sf_revop.json` →
+`sf_fundamentals.json` → the per-stock slices → the discovery buckets. Only `&`-containing tickers
+are affected, which is why it survived years of coverage audits.
+
+Proven against the cache, not reasoned about: `J&amp;KBANK`, `S&amp;SPOWER`, `GET&amp;D`,
+`SURANAT&amp;P` all capture escaped, and one of the hits is
+`INTEGRATED_FILING_BANKING_1668204_16052026092112` — **a 2026 filing. It was still producing them.**
+Fixed to `html.unescape(sm.group(1)).strip().upper()` (unescape BEFORE upper).
+
+★ **And `revop_fundamentals.json` was never optional.** `build_revop.py` RESUMES from it
+(`data = json.load(open(OUT))`) and writes that same dict to BOTH itself and `docs/sf_revop.json`.
+Retracting only the served payload would have been undone by the next resumed build. Any future
+retraction in this family must clear the resume cache as well.
+
+### 115b. FOUR GATE DEFECTS, each of which changed an outcome
+
+1. **A RETRACTION MUST NOT IMPROVE A GATE SCORE.** Re-running the gate right after §114 moved
+   `S&AMP;SPOWER` from **18.3% REFUSED to 2.5% MERGE** — because ten of its eleven disagreements were
+   the con cells §114 had just deleted. It would then have merged 230 values on the strength of
+   evidence removal. Fixed: `retracted_evidence()` reads `phantom_symbol_retract.json` as a
+   first-class evidence source (DUP = an agreement, CONTESTED = a disagreement). All 13 reconcile
+   to their pre-retraction scores exactly. **This is the general lesson: if deleting data can raise
+   a score, the score was never measuring what you thought.**
+2. **A DERIVED FLAG WAS VOTING.** Slot 6 (`fin`) is set per FILING from the filename and which tags
+   appear — not a reported number, so two filings for one company-quarter legitimately differ. It
+   was being scored as a value agreement. `SCORELESS_REVOP_SLOTS = {6}` (it was already
+   un-propagatable; now it does not vote either). Honest note: this flipped **no** verdict.
+3. **"THE TARGET HAS NO ROW" WAS TREATED AS "NOTHING TO DO."** `if row is None: continue`, silently
+   and with no ledger entry — [[feedback-else-covers-two-states]] in reverse. It stranded 289 values,
+   and not at the edges: the readable `SURANAT&P` held **10** quarters while its phantom held **32**
+   back to 2018-06; `GMRP&UI` held **5** against **17**. Years of revenue history for live companies,
+   in the file, keyed where nothing reads it. Now creates the row from the builder's own default.
+4. **THE LEDGER WAS TREATED AS A MIRROR, NOT A TARGET.** The script wrote `revop_fundamentals.json`
+   only for cells it merged into docs, so anything docs already held was never carried across — 170
+   real values left keyed to a phantom in the file that seeds every future build.
+
+Also fixed, same class as §114's journal bug: `phantom_symbol_merge.json` was **clobbered** on every
+run (a re-run regenerates an `out` without the already-merged cells, erasing 324 entries of
+provenance). Append-only now. It grew 324 → 1,257 across this session's 933 merges.
+
+### 115c. ★★★ A DIRECT IDENTITY PROOF OUTRANKS THE STATISTICAL PROXY
+
+The overlap gate exists to answer ONE question — *is this phantom the same company?* — and answers it
+by proxy because the direct answer was unavailable. **It is available.** `build_revop` parses the
+symbol out of the company's own XBRL, and those files carry `<ScripCode>`. Twelve of the thirteen
+phantoms produce a filing whose ScripCode equals OUR stored BSE code for the target:
+
+    S&AMP;SPOWER   -> 517273  S&S POWER SWITCHGEARS LIMITED       SURANAT&AMP;P -> 517530
+    GMRP&AMP;UI    -> 543490  GMR POWER AND URBAN INFRA LIMITED   M&AMP;M       -> 500520
+    ... 12 of 13 (COX&AMP;KINGS's era of filings carries no ScripCode -> NO PROOF)
+
+That is the house rule (§76: gate a symbol→scrip mapping on the ISIN/scrip, never on the ticker
+looking right), not a new one. It mattered: `S&AMP;SPOWER` scored 16.7% REFUSED and **every**
+disagreement behind that number was a fundamentals con-PAT cell — a different quantity, in a
+different store, already journalled as a two-reader dispute — while its revop values agreed **40/0**.
+Honouring the proxy would have stranded **190 values / 24 quarters of S&S Power's 2018-2023 history**,
+with the readable key holding only 8 quarters back to 2024.
+
+⚠️ **Guard rails, so this is an override and not a loophole.** `scripts/phantom_identity_proof.json`
+is RE-VERIFIED against `bse_scrips.json` on every run; an entry whose code stops matching is ignored
+and the phantom falls back to the proxy. It settles IDENTITY ONLY — fill-only still stands, so a
+disagreeing value is never overwritten, only ever written where the target holds nothing.
+`COX&AMP;KINGS` has no proof and stayed REFUSED, which is the point.
+
+### 115d. Sequence, and the interlock that enforces it
+
+**Merge first, then retract** — `retract_phantom_symbols.py` now REFUSES to drop a key while the gate
+would still harvest from it (exit 2, naming the symbols and the count), so the order cannot be got
+wrong by accident. Retracting first would have destroyed 933 values.
+
+    1  merge_escaped_phantom_symbols.py --apply      933 values into readable keys, 91 quarters created
+    2  retract_phantom_symbols.py --apply            13 keys from 4 stores, 4,396 cells journalled
+    3  13 registered-ledger re-keys                  mc_pat_fills + mc_history_fills (both BLOCKING)
+    4  git rm docs/fin/*_AMP_*.json                  13 orphan slices, nothing regenerates them
+    5  phantom_key_guard.py --bless                  all 4 stores zero-tolerance; ratchet 90 -> 57
+
+**Dropped on purpose: 74 real values** (COX&KINGS, delisted, genuine revS/opS disagreements at 23.8%,
+no identity proof) plus 44 exact-0 sentinels — all journalled in `phantom_symbol_retract.json` with
+both readings and provenance, recoverable if that dispute is ever adjudicated.
+
+**A guard that trips on its own audit trail:** re-keying writes `"rekeyed_from": "M&AMP;M|20200630|std"`,
+and the value-scan flagged it as a fresh phantom. A symbol never contains `|`; the scan skips those now.
+

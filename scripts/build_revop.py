@@ -37,6 +37,7 @@ Output: scripts/revop_fundamentals.json = { SYM: { "QE": [revStd, revCon, opStd,
 Run:  python -X utf8 build_revop.py [--limit N] [--fresh]
 Resumable: checkpoints to scripts/_revop_progress.json every 10k files.
 """
+import html
 import os, re, sys, json, glob, concurrent.futures
 import scale_fix
 
@@ -400,7 +401,17 @@ def parse_file(path, fname):
     sm = RE_SYM.search(xml) or RE_SYM2.search(xml)
     if not sm:
         return None
-    sym = sm.group(1).strip().upper()
+    # ★★★ XBRL IS XML, SO A FILER'S `&` ARRIVES ESCAPED (2026-08-26, runbook §115 — THE ROOT CAUSE).
+    # This line is where the 13 phantom symbol keys were born. The regex captures raw element text,
+    # so `<xbrli:identifier ...>J&amp;KBANK</xbrli:identifier>` yields `J&amp;KBANK`, and .upper()
+    # turns it into `J&AMP;KBANK` — a ticker no exchange ever listed, given its own key in
+    # sf_revop.json + revop_fundamentals.json, and from there into sf_fundamentals, the per-stock
+    # slices and the discovery buckets. Only `&`-containing tickers are affected, which is exactly
+    # why it hid for years. Proven against the cache: J&KBANK, S&SPOWER, GET&D, SURANAT&P all
+    # capture escaped, and one of the hits is a 2026 filing — this was STILL producing phantoms.
+    # unescape BEFORE upper(): `&amp;` -> `&` -> `M&M`. (Upper-first also happens to work because
+    # HTML5 defines `&AMP;`, but relying on that is how the bug reads as harmless.)
+    sym = html.unescape(sm.group(1)).strip().upper()
     fin = 1 if ("InterestEarned" in xml or "NetPremiumIncome" in xml or "PremiumEarned" in xml
                 or fname.startswith("BANKING") or "NBFC" in fname
                 or "_LI_" in fname or "_GI_" in fname) else 0

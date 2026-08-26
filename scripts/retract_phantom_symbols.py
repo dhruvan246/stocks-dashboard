@@ -53,9 +53,21 @@ ledger still claims those cells and the next CI run reports MISSING and goes red
 re-keyed to the real symbol here, and only when the real symbol demonstrably holds the value
 (post-merge) — a re-key onto an empty slot would red CI just as surely.
 
-SCOPE. The two fundamentals stores only. `docs/sf_revop.json` carries the same 13 phantom keys and
-they still hold 232 values the gate would recover; retracting those needs that merge to run first
-and is left open on purpose (see the runbook section). The price bins were scanned and are CLEAN.
+SCOPE (extended 2026-08-26 to close sf_revop). FOUR stores, in two shapes:
+    fund  rows  [qe, npStd, annStd, npCon, annCon]   docs/sf_fundamentals.json, scripts/fundamentals.json
+    revop {qe: [revS,revC,opS,opC,patS,patC,fin,ebitS,ebitC]}
+                                                     docs/sf_revop.json, scripts/revop_fundamentals.json
+`scripts/revop_fundamentals.json` is NOT optional. `build_revop.py` RESUMES from it
+(`data = json.load(open(OUT))`) and writes that dict to BOTH itself and docs/sf_revop.json — so
+retracting the served payload alone would be undone by the very next resumed build.
+
+★ INTERLOCK: THIS REFUSES TO RETRACT A KEY THAT STILL HOLDS RECOVERABLE VALUE. Before dropping any
+revop key it re-runs the merge gate; if that gate would still MERGE cells out of the phantom, the
+retraction aborts and tells you to run `merge_escaped_phantom_symbols.py --apply` first. Deleting
+first would have destroyed 228 values. A REFUSED phantom's uniques are not recoverable by definition
+(the gate declined them) — those are journalled and dropped, which is the whole point of the journal.
+
+The price bins were scanned and are CLEAN.
 
 Run:  python3 -X utf8 scripts/retract_phantom_symbols.py [--apply]
 """
@@ -72,13 +84,18 @@ import merge_escaped_phantom_symbols as GATE   # ONE gate, imported — never re
 FUND = os.path.join(ROOT, "docs", "sf_fundamentals.json")
 TWIN = os.path.join(HERE, "fundamentals.json")
 REVOP = os.path.join(ROOT, "docs", "sf_revop.json")
+REVOP_LEDGER = os.path.join(HERE, "revop_fundamentals.json")
 RENAMES = os.path.join(HERE, "_rename_map.json")
 MCPAT = os.path.join(HERE, "mc_pat_fills.json")
+MCHIST = os.path.join(HERE, "mc_history_fills.json")
 XBRLC = os.path.join(HERE, "xbrl_comparative_fills.json")
 OUT = os.path.join(HERE, "phantom_symbol_retract.json")
 
 SLOT = {1: "std", 3: "con"}
 ANN = {1: 2, 3: 4}
+# sf_revop row layout. Slot 6 (`fin`) is a 0/1 flag whose 0 ALSO means "not present" -- the merge
+# script refuses to propagate an exact 0 for exactly that reason (feedback-zero-is-a-no-base-sentinel).
+REVOP_SLOT = ["revS", "revC", "opS", "opC", "patS", "patC", "fin", "ebitS", "ebitC"]
 
 
 def is_phantom(key):
@@ -132,26 +149,48 @@ def main():
     fund = json.load(open(FUND))
     twin = json.load(open(TWIN))
     revop = json.load(open(REVOP))
+    revled = json.load(open(REVOP_LEDGER))
     renames = json.load(open(RENAMES))
     mcpat = json.load(open(MCPAT))
     xbrlc = json.load(open(XBRLC))
     holds = held_cells()
 
-    phantoms = sorted({k for st in (fund, twin) for k in st if is_phantom(k)})
-    print("phantom keys in the fundamentals stores: %d" % len(phantoms))
+    STORES = [("docs/sf_fundamentals.json", fund, "fund"),
+              ("scripts/fundamentals.json", twin, "fund"),
+              ("docs/sf_revop.json", revop, "revop"),
+              ("scripts/revop_fundamentals.json", revled, "revop")]
 
-    # ---- the gate, computed by the SHARED module's rule over revop + both PAT slots -------------
+    phantoms = sorted({k for _n, st, _s in STORES for k in st if is_phantom(k)})
+    print("phantom keys across the four stores: %d" % len(phantoms))
+
+    # ---- the gate, computed by the SHARED module's rule, over revop + both PAT slots ------------
+    # The retraction journal is folded in as evidence exactly as the merge script now does, so a
+    # PREVIOUS retraction cannot flatter a phantom's score (that is how S&AMP;SPOWER briefly read
+    # 2.5% MERGE instead of 18.3% REFUSED -- see GATE.retracted_evidence).
     fmap = {s: {r[0]: r for r in rows} for s, rows in fund.items()}
+    prior = GATE.retracted_evidence()
+    proven = GATE.identity_proven()
     verdicts = {}
     for ph in phantoms:
-        target, chain = resolve(ph, (fund, twin, revop), renames)
-        agree = dis = 0
+        target, chain = resolve(ph, (fund, twin, revop, revled), renames)
+        agree, dis = list(prior.get(ph, [0, 0]))
         if target:
             for q, r in (revop.get(ph) or {}).items():
                 trow = (revop.get(target) or {}).get(q)
                 for i, pv in enumerate(r):
-                    if pv is None:
+                    if pv is None or i in GATE.SCORELESS_REVOP_SLOTS:
+                        continue                   # `fin` is a derived flag, it does not vote
+                    tv = trow[i] if trow and len(trow) > i else None
+                    if tv is None:
                         continue
+                    agree, dis = (agree + 1, dis) if GATE.close(tv, pv) else (agree, dis + 1)
+            # the ledger is scored too -- ONE gate, same evidence as merge_escaped_phantom_symbols,
+            # so the two tools can never disagree about whether a phantom is the same company.
+            for q, r in (revled.get(ph) or {}).items():
+                trow = (revled.get(target) or {}).get(q)
+                for i, pv in enumerate(r):
+                    if pv is None or i in GATE.SCORELESS_REVOP_SLOTS:
+                        continue                   # `fin` is a derived flag, it does not vote
                     tv = trow[i] if trow and len(trow) > i else None
                     if tv is None:
                         continue
@@ -167,77 +206,138 @@ def main():
                         continue
                     agree, dis = (agree + 1, dis) if GATE.close(tv, pv) else (agree, dis + 1)
         rate = dis / float(agree + dis) if (agree + dis) else 1.0
-        verdicts[ph] = (target, chain, agree, dis, rate,
-                        agree >= GATE.MIN_AGREE and rate < GATE.MAX_DIS_RATE)
+        ok = agree >= GATE.MIN_AGREE and rate < GATE.MAX_DIS_RATE
+        if not ok and ph in proven:
+            ok = True                  # identity settled by the filing's own ScripCode; ONE rule,
+                                       # re-verified inside GATE.identity_proven() on every run
+        verdicts[ph] = (target, chain, agree, dis, rate, ok)
+
+    # ---- ★ INTERLOCK: refuse to retract a key the gate would still harvest ----------------------
+    unharvested = {}
+    for ph in phantoms:
+        target, _c, _a, _d, _r, ok = verdicts[ph]
+        if not ok or not target:
+            continue                        # a REFUSED phantom's uniques are not recoverable, by definition
+        n = 0
+        for q, r in (revop.get(ph) or {}).items():
+            trow = (revop.get(target) or {}).get(q)
+            for i, pv in enumerate(r):
+                if pv is None or pv == 0:   # exact 0 = the builder's not-present sentinel, never merged
+                    continue
+                if trow is None or len(trow) <= i or trow[i] is None:
+                    n += 1
+        for q, r in (revled.get(ph) or {}).items():
+            trow = (revled.get(target) or {}).get(q)
+            for i, pv in enumerate(r):
+                if pv is None or pv == 0:
+                    continue
+                if trow is None or len(trow) <= i or trow[i] is None:
+                    n += 1
+        for r in fund.get(ph, []):
+            trow = (fmap.get(target) or {}).get(r[0])
+            for i in (1, 3):
+                if r[i] is None:
+                    continue
+                if trow is None or trow[i] is None:
+                    n += 1
+        if n:
+            unharvested[ph] = (target, n)
+    if unharvested:
+        print("\nREFUSING TO RETRACT — %d gate-PASSING phantom(s) still hold values the real symbol\n"
+              "lacks. Deleting now would destroy them." % len(unharvested))
+        for ph, (t, n) in sorted(unharvested.items()):
+            print("   %-16s -> %-12s %3d value(s) not yet merged" % (ph, t, n))
+        print("\nRun this first, then re-run:\n"
+              "   python3 -X utf8 scripts/fill2020_tools/merge_escaped_phantom_symbols.py --apply")
+        sys.exit(2)
 
     # ★ THE JOURNAL IS APPEND-ONLY. A second --apply run finds zero phantoms, so `ledger` is empty --
     # dumping it would erase the record of the first run, which is the ONLY place the retracted values
     # still exist. Caught by an idempotence re-run on 2026-08-26 (it wrote `{}` over 239 cells).
     ledger = json.load(open(OUT)) if os.path.exists(OUT) else {}
     merges, counts = [], {"DUP": 0, "SUBSET": 0, "UNIQUE": 0, "CONTESTED": 0}
+
+    def classify(pv, tv):
+        if pv is None:
+            return "SUBSET"
+        if tv is None:
+            return "UNIQUE"
+        return "DUP" if GATE.close(tv, pv) else "CONTESTED"
+
     for ph in phantoms:
         target, chain, agree, dis, rate, ok = verdicts[ph]
-        print("  %-16s -> %-12s agree %3d disagree %2d (%4.1f%%)  gate=%s"
-              % (ph, target or "(NO TARGET)", agree, dis, 100 * rate, "PASS" if ok else "REFUSED"))
-        for store_name, store in (("docs/sf_fundamentals.json", fund), ("scripts/fundamentals.json", twin)):
-            tmap = {r[0]: r for r in store.get(target, [])} if target else {}
-            for r in store.get(ph, []):
-                qe = r[0]
-                trow = tmap.get(qe)
-                for i in (1, 3):
-                    pv, tv = r[i], (trow[i] if trow else None)
-                    if pv is None and tv is None:
-                        continue
-                    key = "%s|%d|%s|%s" % (ph, qe, SLOT[i], store_name.split("/")[0])
-                    if pv is None:
-                        verdict = "SUBSET"
-                    elif tv is None:
-                        verdict = "UNIQUE"
-                    elif GATE.close(tv, pv):
-                        verdict = "DUP"
+        print("  %-16s -> %-12s agree %3d disagree %2d (%4.1f%%)  gate=%s%s"
+              % (ph, target or "(NO TARGET)", agree, dis, 100 * rate, "PASS" if ok else "REFUSED",
+                 "   [identity PROVEN by filing scrip %s]" % proven[ph]["scrip_code"]
+                 if (ph in proven and not (agree >= GATE.MIN_AGREE and rate < GATE.MAX_DIS_RATE)) else ""))
+        for store_name, store, shape in STORES:
+            if ph not in store:
+                continue
+            tgt = store.get(target) or ([] if shape == "fund" else {})
+            if shape == "fund":
+                tmap = {r[0]: r for r in tgt}
+                cells = [(r[0], i, r[i], (tmap.get(r[0]) or [None] * 5)[i] if tmap.get(r[0]) else None,
+                          SLOT[i], tmap.get(r[0])) for r in store[ph] for i in (1, 3)]
+            else:
+                cells = []
+                for q, r in store[ph].items():
+                    trow = tgt.get(q)
+                    for i, pv in enumerate(r):
+                        tv = trow[i] if trow and len(trow) > i else None
+                        cells.append((int(q), i, pv, tv, REVOP_SLOT[i], trow))
+            for qe, i, pv, tv, slot_name, trow in cells:
+                if pv is None and tv is None:
+                    continue
+                verdict = classify(pv, tv)
+                counts[verdict] += 1
+                key = "%s|%d|%s|%s" % (ph, qe, slot_name, store_name.split("/")[0])
+                entry = {"verdict": verdict, "phantom": ph, "real": target, "qe": qe,
+                         "basis": slot_name, "store": store_name,
+                         "phantom_value": pv, "real_value": tv}
+                if chain[1:]:
+                    entry["rename_chain"] = chain
+                prov = (xbrlc.get("%s|%d" % (ph, qe)) or {}).get("pat_%s" % slot_name)
+                if prov:
+                    entry["phantom_source"] = prov.get("src")
+                if verdict == "UNIQUE" and shape == "fund":
+                    ann = trow[ANN[1]] if trow else None
+                    blocked = None
+                    if not ok:
+                        blocked = ("phantom-to-target agreement too weak to trust its unique values: "
+                                   "%d agree, %d disagree (%.1f%%)" % (agree, dis, 100 * rate))
+                    elif (target, qe, slot_name) in holds:
+                        blocked = "a ledger HOLDS this cell absent — merging would resurrect it"
+                    elif not ann:
+                        blocked = "no annStd on the target row; con is never stored without annCon"
+                    if blocked:
+                        entry["action"] = "PRESERVED-NOT-MERGED"
+                        entry["why"] = blocked
                     else:
-                        verdict = "CONTESTED"
-                    counts[verdict] += 1
-                    entry = {"verdict": verdict, "phantom": ph, "real": target, "qe": qe,
-                             "basis": SLOT[i], "store": store_name,
-                             "phantom_value": pv, "real_value": tv}
-                    if chain[1:]:
-                        entry["rename_chain"] = chain
-                    prov = (xbrlc.get("%s|%d" % (ph, qe)) or {}).get("pat_%s" % SLOT[i])
-                    if prov:
-                        entry["phantom_source"] = prov.get("src")
-                    if verdict == "UNIQUE":
-                        ai = ANN[i]
-                        ann = trow[ANN[1]] if trow else None
-                        blocked = None
-                        if not ok:
-                            blocked = ("phantom-to-target agreement too weak to trust its unique "
-                                       "values: %d agree, %d disagree (%.1f%%)" % (agree, dis, 100 * rate))
-                        elif (target, qe, SLOT[i]) in holds:
-                            blocked = "a ledger HOLDS this cell absent — merging would resurrect it"
-                        elif not ann:
-                            blocked = "no annStd on the target row; con is never stored without annCon"
-                        if blocked:
-                            entry["action"] = "PRESERVED-NOT-MERGED"
-                            entry["why"] = blocked
-                        else:
-                            entry["action"] = "MERGED"
-                            entry["ann_written"] = ann
-                            entry["why"] = ("value absent from %s; phantom proved same company by "
-                                            "its own overlap (%d agree, %d disagree, %.1f%% < %.0f%%); "
-                                            "annCon takes the row's own annStd (the filing date)"
-                                            % (target, agree, dis, 100 * rate, 100 * GATE.MAX_DIS_RATE))
-                            merges.append((store, target, qe, i, ai, pv, ann, store_name))
-                    else:
-                        entry["action"] = "RETRACTED"
-                    ledger[key] = entry
+                        entry["action"] = "MERGED"
+                        entry["ann_written"] = ann
+                        entry["why"] = ("value absent from %s; phantom proved same company by its own "
+                                        "overlap (%d agree, %d disagree, %.1f%% < %.0f%%); annCon takes "
+                                        "the row's own annStd (the filing date)"
+                                        % (target, agree, dis, 100 * rate, 100 * GATE.MAX_DIS_RATE))
+                        merges.append((store, target, qe, i, ANN[i], pv, ann, store_name))
+                elif verdict == "UNIQUE":
+                    entry["action"] = "PRESERVED-NOT-MERGED"
+                    entry["why"] = (("the merge gate REFUSED this phantom (%d agree, %d disagree, "
+                                     "%.1f%%), so its unique values are not trusted for the real key"
+                                     % (agree, dis, 100 * rate)) if not ok else
+                                    "exact 0 is the builder's not-present sentinel, never propagated")
+                else:
+                    entry["action"] = "RETRACTED"
+                ledger[key] = entry
 
-    print("\ncell verdicts across both stores: %s" % counts)
+    print("\ncell verdicts across all stores: %s" % counts)
     print("fill-only merges into the real symbol: %d" % len(merges))
     for _s, t, qe, i, _ai, pv, ann, sn in merges:
         print("   MERGE %-12s %d %-3s = %-8s ann=%s   [%s]" % (t, qe, SLOT[i], pv, ann, sn))
+    preserved = sum(1 for v in ledger.values() if v.get("action") == "PRESERVED-NOT-MERGED")
+    print("values PRESERVED in the journal but not merged (gate refused / sentinel): %d" % preserved)
 
-    # ---- ledger re-key: mc_pat_fills is BLOCKING; it must not outlive the key it points at ------
+    # ---- ledger re-keys: a registered ledger must not outlive the key it points at --------------
     rekeys, rekey_blocked = [], []
     merged_now = {(t, qe, SLOT[i]) for _s, t, qe, i, _ai, _pv, _a, sn in merges
                   if sn == "docs/sf_fundamentals.json"}
@@ -255,15 +355,31 @@ def main():
         if live is None and (target, qe, basis) not in merged_now:
             rekey_blocked.append((k, "target slot is empty — a re-key here would report MISSING"))
             continue
-        rekeys.append((k, "%s|%d|%s" % (target, qe, basis)))
-    print("\nmc_pat_fills.json re-keys (BLOCKING ledger): %d" % len(rekeys))
-    for a, b in rekeys:
+        rekeys.append((MCPAT, mcpat, k, "%s|%d|%s" % (target, qe, basis)))
+    # mc_history_fills is registered against sf_revop, which THIS pass now retracts.
+    mchist = json.load(open(MCHIST))
+    for k in sorted(mchist):
+        p = k.split("|")
+        if len(p) != 3 or not is_phantom(p[0]):
+            continue
+        target = verdicts.get(p[0], (None,))[0]
+        if not target:
+            rekey_blocked.append((k, "no target")); continue
+        qe, basis = p[1], p[2]
+        row = (revop.get(target) or {}).get(qe)
+        i = 1 if basis == "con" else 0
+        if row is None or len(row) <= i or row[i] is None:
+            rekey_blocked.append((k, "target sf_revop slot is empty — a re-key would report MISSING"))
+            continue
+        rekeys.append((MCHIST, mchist, k, "%s|%s|%s" % (target, qe, basis)))
+    print("\nregistered-ledger re-keys (BLOCKING verify_fills_live): %d" % len(rekeys))
+    for _p, _d, a, b in rekeys:
         print("   %-28s -> %s" % (a, b))
     for a, why in rekey_blocked:
         print("   !! LEFT AS-IS %-24s (%s)" % (a, why))
 
     if not phantoms:
-        print("\nnothing to do — no phantom keys in either fundamentals store. "
+        print("\nnothing to do — no phantom keys in any store. "
               "Journal left untouched (%d cells from earlier runs)." % len(ledger))
         return
     if not apply_it:
@@ -276,19 +392,22 @@ def main():
                 r[i] = pv
                 if r[ai] is None:
                     r[ai] = ann
-    for k, nk in rekeys:
-        mcpat[nk] = dict(mcpat.pop(k), rekeyed_from=k,
-                         rekeyed_why="phantom key retracted from the fundamentals stores 2026-08-26")
+    for _path, d, k, nk in rekeys:
+        d[nk] = dict(d.pop(k), rekeyed_from=k,
+                     rekeyed_why="phantom key retracted from the stores 2026-08-26")
     for ph in phantoms:
-        fund.pop(ph, None)
-        twin.pop(ph, None)
+        for _n, st, _s in STORES:
+            st.pop(ph, None)
 
     json.dump(fund, open(FUND, "w"), separators=(",", ":"))
     json.dump(twin, open(TWIN, "w"), separators=(",", ":"))
+    json.dump(revop, open(REVOP, "w"), separators=(",", ":"))
+    json.dump(revled, open(REVOP_LEDGER, "w"), separators=(",", ":"))
     json.dump(mcpat, open(MCPAT, "w"), indent=1, sort_keys=True)
+    json.dump(mchist, open(MCHIST, "w"), indent=1, sort_keys=True)
     json.dump(ledger, open(OUT, "w"), indent=1, sort_keys=True)
-    print("\nAPPLIED — %d phantom keys retracted, %d cells journalled, %d merged, %d ledger re-keys"
-          % (len(phantoms), len(ledger), len(merges), len(rekeys)))
+    print("\nAPPLIED — %d phantom keys retracted from %d stores, %d cells journalled, %d merged, "
+          "%d ledger re-keys" % (len(phantoms), len(STORES), len(ledger), len(merges), len(rekeys)))
 
 
 if __name__ == "__main__":
