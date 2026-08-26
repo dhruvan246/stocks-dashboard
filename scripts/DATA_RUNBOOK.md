@@ -12414,3 +12414,73 @@ already records as worse than either. Belongs to the con-basis campaign
 Still open on the con side after this pass: 52 of the 53 (the forward reader is a lower bound —
 a hand pass at §113's sensitivity is the cheap next step before vision), plus COX&KINGS' series.
 Tools: `vintage113_{p2p3,forward}.py`.
+
+---
+
+## 112. ★★★ A FILL THAT RAISES "MISSING" — the pre-2009 N/A layer was resting on our own capture gap  (2026-08-26, FAV14 pre-2009)
+
+**Read before reporting ANY pre-2015 coverage number, and before enumerating a gap by calendar era.**
+
+Landing **1,409 genuine standalone-PAT quarters** into 2000-2008 **raised** the pre-2009 FAV14
+"missing" count by 349. Measured through the engine — two `--explain` bakes, those cells the only
+difference:
+
+| param | real coverage gained (`have`) | N/A withdrawn (`na`) | net "missing" |
+|---|---|---|---|
+| profitTTMStd | **+3,295** | −1,397 | −1,898 |
+| profitYoyStd | **+2,703** | −1,402 | −1,301 |
+| profitTTM | **+3,295** | −5,195 | **+1,900** |
+| profitYoyPct / profitStreak | **+2,703** each | −3,527 each | **+824** each |
+| **total** | **+14,699** | −15,048 | **+349** |
+
+### a. The mechanism
+`build_coverage_matrix.js` (≈L849-866) marks a con-blend cell **not-applicable** when the quarter a
+parameter reaches for is older than any row the symbol has — "it predates the company's existence as
+this entity". `REACH = {profitYoyPct:4, profitBase:4, profitStreak:4, profitAccel:5, profitTTM:7,
+composite:7}`. In the dense 2015+ era that inference is fair. **In 2000-2004 our store is thin
+(717 patStd rows in all of 2002, 120 in 2001, 0 before), so "we hold no older row" means "we never
+captured one", not "the company did not exist"** — §98 / `feedback-in-frame-is-about-our-data` from
+the other side. Every genuine 2000-2001 quarter landed PROVES the company was filing, the excuse
+evaporates, and thousands of written-off cells become visible gaps.
+
+### b. What to do about it
+1. **Report `have`, not `missing`, for any pre-2015 era.** `missing = members − have − na`, and in
+   this era `na` is a function of how much you have already filled. A campaign judged on `missing`
+   looks like it is going backwards while the data gets strictly better. (§91 recorded the same
+   shape for a *retraction*; this is the first case where a **fill** does it.)
+2. **A published pre-2009 baseline is an UNDERESTIMATE.** The blend family still carries 13,583
+   pre-2009 na (was 19,139). Filling the era converts that reserve into visible gaps.
+3. **Do NOT extend the REACH rule to the std family to "fix" the asymmetry.** `profitTTMStd` /
+   `profitYoyStd` carry only `nothingPublicYet` plus the per-name ledger (≈L991-1007), which is why
+   std reads 19,022 missing and the blend 6,392 **over an identical set of raw-uncovered cells**
+   (`have` is the same number for both, 15,844). Extending REACH would write off fillable cells
+   wholesale for exactly the reason in (a).
+
+### c. AND THE ENUMERATION TRAP THAT HID THE WORK — a window scan cannot list its own dependencies
+A parallel session bounded this era as "1,852 open pre-2009 patStd cells" = empty patStd slots
+**inside 2002-2008**. But `profitTTMStd` at a 2002-01-31 month-end needs eight calendar-consecutive
+quarters — back to **2000-03**, outside the window. A window-scoped scan structurally never lists
+its own reach-back. **Enumerate root cells to a FIXPOINT** (fill → re-derive → repeat; converged in
+6 iterations): 42,690 named missing member-months → **4,930 root cells / 621 symbols**, of which
+**953 are 2000-2001**. The same trap applies to revStd (reaches back to the last announced quarter)
+and to `diiChgPp` (needs the PRIOR quarter's SHP filing).
+
+### d. Two smaller findings from the same pass
+* **`mc_era.py`'s R2 rung silently never runs for era names.** It takes our ISIN from
+  `_bse_master_all.json` keyed by `scrip_id == our symbol` — the coincidence §76 says to disprove.
+  Measured: of 36 unresolved symbols, **only 5 appear as a BSE scrip_id at all**, so 31 fell to R3
+  ("give up") without the ISIN rung ever executing. GESHIPPING (NSE trades `GESHIP`), NIIT, PRICOL,
+  KBL, MUNJALAUTO, NAGARFERT, MONNETISPA, ORCHIDPHAR are live companies among them.
+* **`apply_agg_pat_fills.py` labels every GATE-E cell with the WRONG GATE.** Its default `evidence`
+  template opens "gate A/A2 passed" and GATE-E proposals carried no `evidence` of their own, so the
+  whole Gate-E ledger claims a gate that never ran. The applier's own comment says the template
+  "describes a gate A/A2 pass and nothing else" — the comment documented the defect instead of
+  fixing it (`feedback-config-that-never-took-effect`). Fixed forward: `agg_era_gate.py` now emits
+  its own sentence (`_evidence()`). Pre-2026-08-26 entries stay mislabelled; find them by the
+  presence of `fy_check`, which gate A/A2 never produces.
+* **A landed batch becomes its own anchor.** The gate anchors against `sf_fundamentals.json` at run
+  time, so a re-run counts your own fills as reproduced anchors (ABB 2000-03: "96 anchors, nearest
+  4q" before, "103 anchors, nearest **0**q" after). Keep the report from the run that DECIDED the
+  cell; never re-derive evidence from a post-fill run.
+
+Full campaign record, routes, residue and per-class owners: **`scripts/PLAN_FAV14_PRE2009.md`**.

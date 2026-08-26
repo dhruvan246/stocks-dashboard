@@ -292,6 +292,38 @@ def _era_annual(ident, con):
     return out, "mc: %d FYs" % len(out)
 
 
+def _evidence(rep):
+    """The provenance sentence for a GATE-E pass, written HERE because the applier's default is wrong.
+
+    apply_agg_pat_fills.py builds `evidence` only when a proposal does not carry its own, and its
+    template opens with "gate A/A2 passed" -- a gate that never ran on these cells. Its own comment
+    says the template "describes a gate A/A2 pass and nothing else", which is exactly the shape of a
+    comment that documents a defect instead of fixing it (memory: feedback-config-that-never-took-
+    effect), and every GATE-E cell already in scripts/agg_pat_cell_fills.json carries that wrong
+    claim. Emitting the sentence here fixes it forward for every future era fill; entries written
+    before 2026-08-26 stay mislabelled and are identified by the presence of `fy_check` (gate A/A2
+    never produces one).
+    """
+    c, d = rep.get("chosen") or {}, rep.get("detail") or {}
+    a5 = d.get("A5") or {}
+    restated = [t for t in ("prev", "next") if (a5.get(t) or {}).get("verdict") == "RESTATED"]
+    tgt = (a5.get("target") or {})
+    return (
+        "GATE E%s (pre-2015, runbook §90): E1 identity -- that site's own %s series reproduces "
+        "%d of our stored quarters, worst anchor error %s, %d disagreement(s) anywhere and NONE "
+        "within ±%dq; nearest anchor %d quarter(s) from the target. E2 the site's OWN FY "
+        "quarter-sum identity closes at the target FY (%s vs annual %s). E3 target and both "
+        "neighbour periods present. Precision %s.%s"
+        % ("2b" if restated else "",
+           c.get("cand"), d.get("anchors", 0), c.get("worst_anchor"), d.get("bad", 0),
+           NEAR_BAD_Q, c.get("nearest_anchor_q", -1),
+           tgt.get("sum4Q"), tgt.get("annual"), c.get("precision"),
+           (" E2b: the %s FY is RESTATED on the site and did NOT veto -- a neighbour restatement is "
+            "evidence about the NEIGHBOUR; hold-out calibrated on stored pre-2009 cells, and our "
+            "store holds 0 rows before 2001, so a target before 2001 has no calibration base."
+            % "/".join(restated)) if restated else ""))
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--cells", required=True)
@@ -330,6 +362,7 @@ def main():
                           "corroborated_by": [], "resolved_via": rep.get("resolved_via"),
                           "fy_check": rep["detail"].get("A5"),
                           "our_fy_identity": rep["detail"].get("our_fy_identity"),
+                          "evidence": _evidence(rep),
                           "sites": {"mc": rep.get("site_note")}}
         if (i + 1) % 100 == 0:
             print("[%4d/%4d] %-11s %-8s %-16s (%.0fs)  filled=%d"
