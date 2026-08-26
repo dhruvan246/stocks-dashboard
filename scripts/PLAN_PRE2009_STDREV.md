@@ -233,3 +233,70 @@ EXHAUSTED: 2,319 landed / 2,174 refused / 0 open. Do not re-run sweeps against i
 **Do not re-grind the MC route.** A final sweep with self-confirmation excluded stages exactly 2
 cells, and both are cells this campaign deliberately refused (BIRLACABLE 2001-12, DSKULKARNI
 2006-06). It has converged.
+
+---
+
+# ⚠️ POST-CAMPAIGN AUDIT vs THE ARCHIVED NSE EXCHANGE PAGE (2026-08-26, same day)
+
+An independent as-filed reader for this era — `scripts/wayback_nse/` — appeared after the batches
+landed, so this campaign's own output was re-audited against it. **It contradicts 20% of the cells
+it can adjudicate.** Read this before trusting any aggregator-derived pre-2009 revenue cell.
+
+## The numbers, with their denominator
+| | cells |
+|---|---|
+| MC-derived revStd this campaign landed | 1,402 |
+| …have an archived NSE `results.jsp` page ENDING on that quarter | 264 |
+| …**ADJUDICABLE** through the full gate | **90** |
+| **AGREE** | **72** |
+| **DISAGREE → all 18 healed to the archive** | **18 (20.0%)** |
+| have **NO archived page at all** — neither confirmed nor contradicted | **1,138** |
+
+Refusals among the 264, every one classed: 119 period not 3 months · 21 EPS-untestable · 20 the
+page's own arithmetic does not close · 8 the archive captured a `NullPointerException` **server
+error** instead of a page · 3 unreadable · 2 Consolidated · 1 Cumulative · 0 fetch failures.
+**Do not extrapolate 20.0% to the other 1,324.** 1,138 cells having no page is a gap in the
+evidence — never report it as agreement.
+
+## The mechanism — why a store-based gate could not catch this
+**MC's own pre-2009 series switches revenue definition BETWEEN ADJACENT QUARTERS of the same
+symbol.** ITC: MC gives **2371.66** (Jun-01) and **2542.82** (Dec-01) but **1206.72** (Sep-01),
+while the exchange page reads 1047.89 and 1195.27 — a gross-of-excise line on two quarters and the
+net line on the third. The ±2yr convention gate compares MC against **our store**, and for ITC every
+non-campaign stored neighbour in the window *also* came from MC and agreed with it.
+**MC-vs-MC proves identity and catches scale/entity errors; it cannot arbitrate vintage or
+definition.** Only an exchange-native reader can.
+
+## ⚠️ THE CALIBRATION WAS CONTAMINATED — both numbers, as required
+The gate calibration ran *after* batches 1-4 had landed, so the truth side already contained this
+campaign's own MC fills, which agree with MC by construction. Re-run on the original 426-symbol
+universe with every campaign MC cell removed from **both** the evidence and the truth side:
+
+| gate | as originally run | **clean** |
+|---|---|---|
+| ±2yr, ≥5 agreeing, 0 disagreeing | 0.989 | **0.983** |
+| ±2yr, ≥3 agreeing, 0 disagreeing | 0.987 | **0.980** |
+
+False-positive counts are *identical* (52 and 67); contamination padded the numerator with ~1,765
+trivially-true fires. So the inflation was ~0.6pp — **but that whole family of numbers measures
+agreement with our own store, and the archive says the real error rate where an as-filed reader
+exists is 20%.** A hold-out is only a hold-out if the truth side is independent of the work being
+validated, and in a shared store that stops being true within hours.
+
+## How much of the self-audit was really MC-vs-MC — measured
+Of the 1,402 cells: **933 were supported entirely by exchange-derived neighbours** (STEP D/N/W
+wayback / NSE-archive / BSE-detres reads), 53 mixed, **53 supported only by aggregator-derived
+neighbours**, and 363 had no independent support at all. The pre-2009 *revenue* store is 83%
+exchange-derived (9,823 of 11,807 cells from the STEP D/N/W ledgers) — so the revenue lane was less
+MC-vs-MC than the PAT lane, but ITC shows 53 cells is enough to hide a 2× definition error.
+
+## Defect classes among the 18 — tested, not assumed
+* **cumulative-in-quarter**: TESTED (ours vs archive + our own preceding 1/2/3 quarters) → **REJECTED for all 18**
+* **gross-income** (ours = the page's Net Sales + Other Income): TESTED → **HOLDS for 2** (VESUVIUS 2001-06, WIPRO 2001-06) — a revenue-DEFINITION defect, and the ledger says so rather than defaulting to "vintage"
+* the remaining 16 split by direction: 8 sit ABOVE the page (consistent with a gross-of-excise line the page does not print; ITC extreme at +126%) and 8 BELOW it, which excise cannot explain and which is therefore restated vintage
+
+## Reader/gate notes for the next session
+* `wb_read.parse()` already reads `net_sales` — it needs `/div` applied by the caller, the same way `pat_cr` is derived.
+* Added guard worth keeping: **G2a — the page's OWN declared period end must equal the quarter audited**, rather than trusting the index key.
+* `NullPointerException caught: null` pages render a valid header (period, type, scale) with a `null` body. They are a **captured server error**, not a filing without revenue — class them separately or they inflate "no data".
+* The peer caches at `~/stocks-wt/pre2015-stepw-harvest/scripts/_wb_cache` (4,702 files) and `~/stocks-wt/pre2009pat-bc68c8d0/scripts/_wbnse_cache` (1,290 gz) served **135 of 264** pages by exact timestamp+URL match. Check them before fetching — Wayback throttles to roughly 2 pages/min sustained.
