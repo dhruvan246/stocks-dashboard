@@ -80,12 +80,29 @@ def anchor_ok(a, b):
     return abs(a - b) <= max(2.0, 0.03 * max(abs(a), abs(b)))
 
 
-def verdicts(srev, q, lo=None, hi=None):
+def mc_sourced(sym):
+    """(sym, qe) pairs already filled FROM MONEYCONTROL by this campaign.
+
+    They must be EXCLUDED from the evidence set. A cell written from MC agrees with MC by
+    construction, so counting it as an agreeing neighbour lets the gate confirm itself: fill one
+    quarter, and it votes to fill the next. Measured 2026-08-26 -- with these left in, a re-run of
+    the batch-6 gate over an already-filled store staged 43 further cells whose "agreement" was
+    partly its own output."""
+    try:
+        led = json.load(open(os.path.join(HERE, "_mc_reads.json"), encoding="utf8"))
+    except Exception:
+        return set()
+    return {(s, int(qe)) for s, cells in led.items() for qe in cells}
+
+
+def verdicts(srev, q, lo=None, hi=None, exclude=()):
     """-> {field: {qe: bool}} -- does MC's field reproduce our stored revStd for that quarter."""
     out = {"rev_ops": {}, "rev_total": {}}
     for qe_s, rr in srev.items():
         qe = int(qe_s)
         if lo is not None and not (lo <= qe < hi):
+            continue
+        if qe in exclude:
             continue
         st, mc = rr[0], q.get(qe)
         if st is None or not mc:
@@ -119,6 +136,7 @@ def main():
     only = set(av[av.index("--only") + 1].split(",")) if "--only" in av else None
 
     gaps = json.load(open(gaps_path))
+    mcdone = mc_sourced(None)
     rev = json.load(open(os.path.join(ROOT, "docs", "sf_revop.json")))
     fund = json.load(open(os.path.join(ROOT, "docs", "sf_fundamentals.json")))
 
@@ -146,8 +164,9 @@ def main():
         # which is exactly what _apply_reads already defaults an empty cell to, and which can
         # never overwrite a stored value.
         finflag = 0
-        vd_all = verdicts(srev, q)                    # every quarter -- for the window gate
-        vd_era = verdicts(srev, q, LO, HI)            # 2002-2008 only -- for the era gate
+        ex = {qe for (s2, qe) in mcdone if s2 == sym}   # never let our own MC fills vote
+        vd_all = verdicts(srev, q, exclude=ex)        # every quarter -- for the window gate
+        vd_era = verdicts(srev, q, LO, HI, exclude=ex)  # 2002-2008 only -- for the era gate
         agree, disagree = collections.Counter(), collections.Counter()
         for f in ("rev_ops", "rev_total"):
             for ok in vd_era[f].values():

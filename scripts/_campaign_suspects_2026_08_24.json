@@ -1,4 +1,10 @@
 {
+ "ANANTRAJ|20080331|revStd": {
+  "next_step": "A second independent reader for ANANTRAJ Mar-2008 (BSE archived filing, or an archived aggregator page). Do not refill from MC alone.",
+  "note": "The as-filed NSE reads for ANANTRAJ Jun-07 = 104.27 etc. are NOT in doubt; a primary document with a matching PAT anchor outranks the aggregator. Only the MC-sourced Mar-08 cell was withdrawn.",
+  "status": "RETRACTED 2026-08-26 by the pre-2009 std-rev campaign. Was filled 315.5 from Moneycontrol in batch 5; removed from docs/sf_revop.json, scripts/revop_fundamentals.json, scripts/_mc_reads.json and scripts/vision_rev_fills.json, and the retraction re-verified by re-running _apply_reads (the cell does not come back).",
+  "why": "Moneycontrol is demonstrably unreliable for THIS symbol in THIS window. Against the NSE archived filing pages (primary documents, each PAT-anchored) MC agrees to 0.3% on Sep-07, Dec-07 and Jun-08, but reads 8.42 where the filing says 104.27 for Jun-07 (12x) and 9.68 against 8.10 for Mar-07 (16%). Right on 3 of 5 neighbours and wrong on 2 is not evidence for Mar-08, and no NSE page exists for Mar-08 to break the tie."
+ },
  "BIRLACABLE|20011231|revStd": {
   "next_step": "Read the original Dec-2001 filing. NSE's archive floors at 2005-03 so it cannot serve this; try BSE's archived site (PRE2015_CAMPAIGN.md 'STEP B candidate', scoped but never built) or an archived Moneycontrol/myiris quarterly page for FY2002.",
   "observation": "Moneycontrol's as-filed deep feed gives Net Sales 92.25 for Dec-2001 and its PAT 2.69 matches our stored npStd, so the FILING identity is proven. The value is not. It is 4.6x the preceding Sep-01 quarter (20.01, also MC, also anchor-matched) and the series then collapses to 22.11 by Dec-02 and to 3.77-8.85 through 2003-04. Birla Cable is a telecom-cable maker and the 2001-02 telecom bust is visible in the PAT (turning negative from 2002), so a single 4.6x revenue quarter mid-collapse is not explained by the business.",
@@ -55,6 +61,13 @@
   "status": "PROVEN WRONG - heal proposal, NOT written by this campaign (a heal is a different operation from a fill and needs its own ledger so the nightly rebuild does not clobber or re-apply it)",
   "stored": 3.09,
   "why_it_matters": "a ~98x understatement in a live cell; it also blocked the neighbourhood gate for the two Jun/Sep-2019 fills until the filing settled the convention directly"
+ },
+ "MC-RELIABILITY|pre-2009|audit": {
+  "action": "ANANTRAJ 2008-03 retracted (see its own entry). The other five were kept: for each, MC reproduces the symbol's stored series to the paisa across the whole surrounding window and the single contradicting quarter sits at the far edge (2 to 3 years away) and differs by 1-2.4%, which is era-boundary restatement, not a convention conflict.",
+  "method": "Every one of the 1,403 MC-sourced cells was re-tested against the +/-2yr window gate with EVERY campaign-filled MC cell excluded from the evidence set, so no fill could vote for itself.",
+  "next_step": "The 352 no-independent-evidence cells are the ones to re-verify first if a second pre-2009 reader ever becomes available (BSE archived site is the untried candidate).",
+  "result": "1,045 retain independent support; 352 have no independent evidence either way (2000: 160, 2001: 72, 2002: 92, 2003: 11, 2004: 8, 2005: 9 - the deep era where our store holds almost no pre-existing revenue); 6 are materially contradicted (>3%) by an independent neighbour: CASTEXTECH 2007-03/06/09, SAREGAMA 2007-03, THIRUSUGAR 2008-03, ANANTRAJ 2008-03.",
+  "status": "MEASURED 2026-08-26 - the campaign audited its own output."
  },
  "MTNL|20160331|revStd": {
   "filing_npStd": 174.58,
