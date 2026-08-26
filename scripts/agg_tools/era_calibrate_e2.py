@@ -49,7 +49,16 @@ def main():
     ap.add_argument("--seed", type=int, default=11)
     ap.add_argument("--to", type=int, default=20081231, help="hold-out era ceiling (quarter-end)")
     ap.add_argument("--out", default="/tmp/era_calib_e2.json")
+    ap.add_argument("--provenance",
+                    help="JSON [[SYM, QE, 'agg'|'indep'], ...]. Splits the reported mismatch by "
+                         "whether the TRUTH cell itself came from the aggregator route. ⚠️ A "
+                         "hold-out whose truth side was written by the route under test is that "
+                         "route agreeing with itself: it still proves identity and catches "
+                         "scale/entity errors, but it CANNOT arbitrate vintage. Report both.")
     a = ap.parse_args()
+    prov = {}
+    if a.provenance:
+        prov = {"%s|%d" % (s_, int(q_)): t_ for s_, q_, t_ in json.load(open(a.provenance))}
 
     reach = json.load(open(a.reach))
     idc = json.load(open(E._ISIN_CACHE))
@@ -71,6 +80,7 @@ def main():
     for label, neigh in (("E2 strict (target+prev+next)", True), ("E2b target FY only", False)):
         EG.NEIGHBOUR_FY_REQUIRED = neigh
         filled = match = 0
+        split = collections.defaultdict(lambda: [0, 0])      # provenance -> [filled, match]
         misses, byyear = [], collections.Counter()
         t0 = time.time()
         for sym, qe in pop:
@@ -80,7 +90,11 @@ def main():
                 continue
             filled += 1
             byyear[qe // 10000] += 1
-            if G._agree(ours[qe], val) != "no":
+            tag = prov.get("%s|%d" % (sym, qe), "unknown")
+            split[tag][0] += 1
+            good = G._agree(ours[qe], val) != "no"
+            split[tag][1] += good
+            if good:
                 match += 1
             else:
                 misses.append({"sym": sym, "qe": qe, "ours": ours[qe], "gate": val,
@@ -90,10 +104,17 @@ def main():
                           "mismatch": filled - match,
                           "mismatch_rate": round(100.0 * (filled - match) / max(1, filled), 2),
                           "coverage_of_holdout": round(100.0 * filled / max(1, len(pop)), 1),
-                          "by_year": dict(sorted(byyear.items())), "misses": misses[:60]}
+                          "by_year": dict(sorted(byyear.items())), "misses": misses[:60],
+                          "by_provenance": {k: {"filled": v[0], "match": v[1],
+                                                "mismatch": v[0] - v[1],
+                                                "mismatch_rate": round(100.0 * (v[0] - v[1]) / max(1, v[0]), 2)}
+                                            for k, v in sorted(split.items())}}
         print("%-30s fills %4d/%d (%4.1f%%)   reproduces ours %4d   MISMATCH %3d (%.2f%%)  [%.0fs]"
               % (label, filled, len(pop), 100.0 * filled / max(1, len(pop)), match,
                  filled - match, 100.0 * (filled - match) / max(1, filled), time.time() - t0))
+        for tag, v in sorted(split.items()):
+            print("      truth-provenance %-8s fills %4d  mismatch %3d (%.2f%%)"
+                  % (tag, v[0], v[0] - v[1], 100.0 * (v[0] - v[1]) / max(1, v[0])))
         sys.stdout.flush()
     EG.NEIGHBOUR_FY_REQUIRED = True
 

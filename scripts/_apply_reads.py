@@ -68,7 +68,15 @@ PRE2015_LEDGERS = [os.path.join(HERE, "pre2015_reads_d.json"),   # STEP D: BSE d
                    # 3,915 LANDED cells that carry it: seen == the landed pat, 0 exceptions), and put
                    # against Moneycontrol's independent standalone print. NSE/BSE and MC are separate
                    # publishers, unlike mc/tl/tt which are one vendor.
-                   os.path.join(HERE, "pre2015_reads_x.json")]
+                   os.path.join(HERE, "pre2015_reads_x.json"),
+                   # STEP W2: Wayback captures of NSE's OLD results.jsp that STEP W's CDX
+                   # enumeration missed. STEP W validated its enumeration against the CDX ROW cap;
+                   # the response also truncates on a ~500KB BYTE limit, so the index was short.
+                   # ⚠️ Measured before fetching: in 2002-2008, 89% of the reachable-and-open cells
+                   # were never in STEP W's universe at all and ZERO are its class A or B -- so the
+                   # truncation is NOT what makes this era's cells fillable, and saying otherwise
+                   # would be a flattering story. See scripts/wb_nse_results.py.
+                   os.path.join(HERE, "pre2015_reads_wb.json")]
 
 
 def _load_pre2015_reads():
