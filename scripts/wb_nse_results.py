@@ -64,11 +64,29 @@ PAT_TOL_REL = 0.03           # G5, applied to the PAT side -- see gate() for why
 
 
 def fetch(ts, original, tries=3):
+    # ⚠️ MEASURED 2026-08-26, by this module's own 4-worker run (489 ok / 611 fail) and reproduced
+    # by a peer: web.archive.org's throttling is CONNECTION CHURN, not a byte or rate limit. A new
+    # TCP connection per request is refused ~90% of the time under load and MORE WORKERS MAKE IT
+    # WORSE. One persistent requests.Session at a 0.4s pace does ~1.0s/page with no failures -- a
+    # ~30x speedup over what this module started with. So the fetch path is the shared keep-alive
+    # cache in scripts/wayback_nse/wbcache.py: SERIAL, never a pool. This module's own earlier
+    # cache is still read first so nothing already paid for is re-fetched.
     os.makedirs(CACHE, exist_ok=True)
     p = os.path.join(CACHE, re.sub(r"[^A-Za-z0-9]", "_", ts + original)[-180:] + ".gz")
     if os.path.exists(p):
         with gzip.open(p, "rt", encoding="utf-8") as f:
             return f.read()
+    try:
+        sys.path.insert(0, os.path.join(HERE, "wayback_nse"))
+        import wbcache
+        t = wbcache.fetch_cached(ts, original)
+        if t:
+            with gzip.open(p, "wt", encoding="utf-8") as f:
+                f.write(t)
+            return t
+        return None
+    except ImportError:
+        pass
     url = "https://web.archive.org/web/%sid_/%s" % (ts, original)
     for a in range(tries):
         try:
@@ -99,6 +117,14 @@ def parse(t):
     if not t:
         return None
     txt = _flat(t)
+    # ⚠️ THE ARCHIVE CAPTURED SERVER ERROR PAGES, AND THEY PASS A SIZE CHECK. A
+    # java.lang.NullPointerException stack trace is several KB of plausible-looking HTML with no
+    # results in it -- STEP W met the same trap in a different costume (2,832-byte "empty shells"
+    # its size guard accepted). It is its OWN refusal class: the fetch worked and the archive holds
+    # something for this URL, it just is not a filing. Recording that as "no data" would poison a
+    # later absence claim.
+    if "NullPointerException" in t or "javax.servlet.ServletException" in t or "Exception:" in txt[:4000]:
+        return {"_error_page": True}
     if "Financial Results" not in txt:
         return None
     out = {}
@@ -227,7 +253,11 @@ def main():
         raw = fetch(ts, u)
         p = parse(raw)
         klass = cls.get(key, "?")
-        if p is None:
+        if p is not None and p.get("_error_page"):
+            rej[key] = {"why": "ARCHIVED SERVER-ERROR PAGE (NullPointerException/servlet trace), not "
+                               "a filing -- the capture exists and is not data; NOT evidence of absence",
+                        "ts": ts, "stepw_class": klass, "bytes": len(raw or "")}
+        elif p is None:
             rej[key] = {"why": "unreadable page (no Result Period block)" if raw else
                               "FETCH FAILED -- an outage is NOT data absence, retry before concluding",
                         "ts": ts, "stepw_class": klass, "bytes": len(raw or "")}
