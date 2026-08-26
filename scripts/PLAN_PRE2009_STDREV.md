@@ -117,3 +117,119 @@ Heals go through ledgers, never raw edits: `fund_cell_fix.json` + `apply_fund_ce
 ## 7. Known-open from the 2009+ campaign (do NOT re-hunt; different era)
 OSWALGREEN 2007-03 (needs 2nd reader — **this one IS pre-2009, in scope**), AJMERA 2009-03 (no source),
 ABSLAMC 2020-06 + AETHER 2020-12 (DRHP-only).
+
+---
+
+# ✅ CAMPAIGN RUN 2026-08-26 — 1,662 cells landed. READ THIS BEFORE RE-OPENING ANY ROUTE.
+
+**All numbers below were measured, and every landed cell was verified BY CONTENT on origin.**
+
+## What landed
+| batch | route | cells |
+|---|---|---|
+| 1 | MC deep feed, era gate (>=3 agreeing / 0 disagreeing within 2002-2008) | 450 |
+| 2 | NSE archived filing pages | 165 |
+| 3 | NSE archived pages after the `R_PAT_SIGNED` dead-code fix | 95 |
+| 4 | MC era gate, re-run against the std-PAT campaign's new anchors | 64 |
+| 5 | MC per-cell **window** gate (+/-2yr, >=5 agreeing / 0 disagreeing) | 519 |
+| 6 | MC window gate widened to >=3 agreeing | 370 |
+| — | **retracted** ANANTRAJ 2008-03 (see suspects) | −1 |
+| | **TOTAL** | **1,662** |
+
+By year: 2000:178 2001:344 2002:282 2003:179 2004:213 2005:71 2006:45 2007:248 2008:102.
+
+## The scope correction that matters most — enumerate ROOT CELLS, not a date window
+`revStd` at a month-end is "the latest quarter announced on or before that date", so a Jan-2002
+month-end is served by a **2001** quarter. The original 2002-2008 framing could not see them.
+Re-enumerated as root cells (any anchored quarter with no revStd, no date floor) the gap was
+**2,441 across 353 symbols, 1,067 of them in 2000-2001**. The store floors at 2000; nothing earlier
+exists. Always re-enumerate this way.
+
+## Coverage AFTER (N500 point-in-time, `build_coverage_matrix.js --explain`, 2026-08-26)
+| year | revStd | patStd = **the ceiling** | revStd as % of its ceiling |
+|---|---|---|---|
+| 2002 | 20.4% | 43.4% | 47% |
+| 2003 | 63.7% | 75.6% | 84% |
+| 2004 | 74.2% | 86.5% | 86% |
+| 2005 | 85.3% | 92.5% | 92% |
+| 2006 | 94.5% | 96.0% | 98% |
+| 2007 | 95.6% | 96.8% | 99% |
+| 2008 | 97.1% | 97.8% | 99% |
+
+2006-2008 are at their ceiling — nothing meaningful is left there. **2002 is the weak year and it is
+NOT a revenue problem**: revenue cannot exceed PAT coverage, and 2002 PAT is 43.4%. The binding
+constraint is missing fundamentals ROWS. patStd itself moved (23.7% -> 43.4% in 2002) because the
+concurrent std-PAT campaign was creating rows throughout; **do not attribute that to this campaign.**
+
+## Route verdicts — MEASURED, do not re-litigate without new evidence
+* **Moneycontrol deep feed = the workhorse, and its revenue reach is HIGHEST in the deep era**:
+  it carries a revenue value for 86.5% of 2000 root-gap cells and 86.1% of 2001, falling to 68.7%
+  (2004) and 29.4% (2008). The claim "MC is a PAT source, not a revenue source, pre-2009" is FALSE
+  and comes from checking `rev_total`: the Clause-41 label "Total Income From Operations" only
+  starts ~2008-06, while "Net Sales/Income from operations" is present back to 1997.
+* **NSE archived filings floor at 2005-03-31** — measured across all 219 then-gap symbols, earliest
+  filing per symbol min AND median both 2005-03-31. The route CANNOT reach 2002-04. It closed
+  2007-08 almost completely.
+* **Trendlyne is dead for this era** — `quarterlyDataDump` returns 13 quarters, 2023-06 onward
+  (measured on CENTENKA, RELIANCE, NATIONALUM, FEDERALBNK). Do not re-probe.
+* **MC carries NO revenue row at all for BANKS pre-2009** (only PAT and Depreciation; measured on
+  FEDERALBNK, KTKBANK). The "Interest Earned" convention the plan expected is simply absent here,
+  so banks are an NSE/filing-route problem, never an MC one.
+
+## The gate, and why the obvious one is wrong
+MC's pre-2009 "Net Sales" is **gross of excise duty** for many manufacturers while our stored revStd
+is net — CENTENKA 0.82-0.86, LINDEINDIA 0.90, RELIANCE 0.91, NATIONALUM 0.92-0.94. Store-wide MC
+reproduces our stored pre-2009 revStd on only **63.6%** of 4,430 overlapping cells. A whole-history
+convention vote (what `_mc_batch_fill.py` does, correctly, for 2009+) would have written gross
+figures into net series.
+
+Calibrated leave-one-out over 398 (symbol, field) series, scoring the question a fill actually asks:
+
+    whole-era, >=3 agreeing, 0 disagreeing      precision 0.918  recall 0.293
+    +/-1yr window, >=2 agreeing, 0 disagreeing  precision 0.947  recall 0.565
+    +/-2yr window, >=5 agreeing, 0 disagreeing  precision 0.986  recall 0.648
+    +/-2yr window, >=3 agreeing, 0 disagreeing  precision 0.983  recall ~0.65
+
+The whole-era vote is weakest because **our own stored pre-2009 series is multi-route** (wayback
+2002-04, NSE archive 2005-07, detres 2008+) and changes convention mid-era. Cross-sub-era transfer
+is only ~0.86 precise in both directions, so never carry a symbol verdict across eras.
+⚠️ Two earlier calibrations returned 0.39 and 0.87 and were both MEASURING THE WRONG THING — they
+scored a symbol as "MC's line is not ours" if ANY quarter differed, condemning series that differ on
+one restated quarter in twenty (MARICO, ABB, SIEMENS sit at 0.92-0.94).
+
+## Bugs found (all fixed, all in the commit log)
+1. **`R_PAT_SIGNED` was dead code in `_nse_archive_revop.py`** — defined for
+   "Net Profit (+) / Loss (-) for the period" and never called, while `R_REV_SIGNED` in the same
+   block WAS wired in. That spelling is the DOMINANT one in the 2005-08 archive (128 of 148 pages).
+   Worth +95 cells. Its own comment described behaviour the code lacked — the alibi.
+2. **This campaign's stager inherited the `fin` flag symbol-wide** and propagated store
+   contamination (BALRAMCHIN, a sugar company, carries fin=1 on 63 of 100 stored rows). It caused a
+   real overwrite, caught by the per-batch cell-level diff. The route now asserts fin=0 = "no
+   evidence". 121 cells in batches 1/4/5 still carry the inherited flag — logged in the suspects file.
+3. **The gate was confirming its own output** — a cell filled from MC agrees with MC by
+   construction and then votes for its neighbour. Measured: 43 cells staged with campaign fills in
+   the evidence set, 2 with them excluded. The stager now excludes everything in `_mc_reads.json`.
+
+## Self-audit of the 1,402 surviving MC cells (evidence set excludes every campaign fill)
+1,045 retain independent support · 352 have no independent evidence either way (2000:160 2001:72
+2002:92 — the deep era, where the store has almost no pre-existing revenue) · 6 materially
+contradicted, of which 5 were explained and kept and **ANANTRAJ 2008-03 was retracted**.
+The 352 are the first thing to re-verify if a second pre-2009 reader ever appears.
+
+## What is left, and the only routes that could touch it
+Remaining root gap **1,583 cells / 221 symbols** (2000:193 2001:352 2002:397 2003:231 2004:281,
+plus 129 in 2005-08). Classified:
+| cells | class | reachable by? |
+|---|---|---|
+| ~789 | MC's revenue line materially DISAGREES with our convention (the excise class) | needs a primary document; no current route reaches 2000-04 |
+| ~392 | MC carries no revenue row (banks, holdcos) | NSE archive only from 2005; filings otherwise |
+| ~217 | neighbours agree but too few to gate | a second reader would settle these |
+| ~144 | no stored neighbour inside the window | ditto |
+| ~119 | MC has no such quarter / no MC table | different publisher |
+**The only untried publisher for 2002-04 is BSE's archived website** — `PRE2015_CAMPAIGN.md`
+"STEP B candidate", scoped 2026-08-07 and never built. STEP W (wayback NSE `results.jsp`) is
+EXHAUSTED: 2,319 landed / 2,174 refused / 0 open. Do not re-run sweeps against it.
+
+**Do not re-grind the MC route.** A final sweep with self-confirmation excluded stages exactly 2
+cells, and both are cells this campaign deliberately refused (BIRLACABLE 2001-12, DSKULKARNI
+2006-06). It has converged.
